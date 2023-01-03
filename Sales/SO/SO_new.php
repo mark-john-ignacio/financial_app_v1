@@ -585,7 +585,7 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 $(function(){
 	    $('#date_delivery').datetimepicker({
                  format: 'MM/DD/YYYY',
-				 minDate: new Date(),
+				// minDate: new Date(),
         });
 
 		$("#allbox").click(function(){
