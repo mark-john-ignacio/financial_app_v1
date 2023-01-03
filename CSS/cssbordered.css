@@ -1,0 +1,49 @@
+@font-face {
+	font-family: "Gravity";
+	src: url(calibri.ttf);
+}
+
+body {
+	font-family: "Gravity", Verdana, Helvetica, sans-serif;
+	font-size: 14px;
+}
+
+table{
+	border-collapse:collapse;
+
+}
+
+td {
+	font-family: Arial, Helvetica, sans-serif
+	font-size: 14px;
+	padding:2px;
+	border: solid 1px;
+	}
+
+th {
+	font-family: "Gravity", Verdana, Helvetica, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	text-align:left;
+	padding:10px;
+	background-color:#BFDEFF;
+	border: solid 1px;
+	}
+
+h1, h2, h3, h4{
+	margin:0px;
+}
+
+.rpthead {
+		border-top: solid 1px #039;
+}
+
+.rptGrand {
+		border-top: solid 2px ;
+		border-bottom: solid 2px ;
+		border-left: none;
+		border-right: none;
+		font-weight: bold;
+		padding-top: 10px;
+		padding-bottom: 10px;
+}

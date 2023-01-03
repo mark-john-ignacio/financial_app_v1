@@ -1,0 +1,11 @@
+body { font-family: 'Roboto', sans-serif; background-color: #E8F1F5; }
+h1 { margin:0px; font-size:24px; font-family: 'Courgette', cursive; padding:20px 0px; }
+a { color:#2856b6; }
+/*----------------------------------------------------*/
+/*----------------- table CSS -----------------*/
+/*----------------------------------------------------*/
+.table { background:#fff; box-shadow: 0 1px 1px rgba(0, 0, 0, .1); }
+.table thead th { vertical-align: bottom; border-bottom: 2px solid #eceeef; }
+.thead-inverse th { color: #fff; background-color: #2856b6; }
+.table td, .table th {padding: .75rem; vertical-align: top; border-top: 1px solid #eceeef; }
+.fixed { z-index: 999; top:0px; position:fixed; width:auto; display:none; border:none; }

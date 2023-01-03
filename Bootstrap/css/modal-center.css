@@ -1,0 +1,54 @@
+
+	.modal {
+	}
+	.vertical-alignment-helper {
+		display:table;
+		height: 100%;
+		width: 100%;
+	}
+	.vertical-align-center {
+		/* To center vertically */
+		display: table-cell;
+		vertical-align: middle;
+	}
+	.vertical-align-top {
+		/* To center vertically */
+		display: table-cell;
+		vertical-align: top;
+		padding-top:200px;
+	}
+	.modal-content {
+		/* Bootstrap sets the size of the modal in the modal-dialog class, we need to inherit it */
+		width:inherit;
+		height:inherit;
+		/* To center horizontally */
+		margin: 0 auto;
+	}
+	.alert-modal-danger {
+		padding: 10px;
+		border: 1px solid #888;
+		border-radius: 5px;
+		color: #a94442;
+		background-color: #f2dede;
+		border-color: #ebccd1;
+	}
+	.b-col {
+        float: left;
+    }
+	
+	.txtcgroup {
+    	width: 100%;
+	}
+	.searchclear {
+		position: absolute;
+		right: 5px;
+		top: 0;
+		bottom: 0;
+		height: 14px;
+		margin: auto;
+		font-size: 14px;
+		cursor: pointer;
+		color: #ccc;
+	}
+
+

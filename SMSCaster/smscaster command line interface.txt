@@ -1,0 +1,99 @@
+SMSCaster Command Line Interface v0.4
+
+Commnad line options for SMSCaster E-Marketer
+
+Syntax:
+  smscaster.exe [Project File] [-Option1 <arg1> <arg2> ...] [-Option2 <arg1> <arg2> ...] ...
+  
+Description:
+  All options begin with '/' or '-'. They are case insensitive.
+
+Available Command Line Options
+  -Compose
+  -ImportOutbox <filename>  
+  -Queue <N>
+  -Start
+  -Stop
+  -Long
+  -Flash
+  -ForceUCS2
+  -NoSplash
+  -NoRestore
+
+[Project File]
+  Meaning: The project file to be opened.
+  Example: smscaster.exe "c:\My Project.sms"
+  Remark: Filename must come first if any. 
+
+-Compose <PhoneNum>|<PhoneListFile> <Message>|<Message File>
+  Meaning: Compose new SMS to the outbox.
+        
+  Example 1. Send to a particular phone number. SMS is sent immediately
+    smscaster.exe -Compose +85291268167 "Hello World." -Start
+    
+  Example 2. Send to a particular phone number. SMS is stored in the outbox.
+    smscaster.exe -Compose +85291268167 "Hello World."    
+   
+  Example 3. Send to a list of phone numbers stored in a text file. 
+    smscaster.exe -Compose c:\PhoneNum.txt "Hello World."
+  
+  Example 4. Send to a particular phone number with content stored in a text file.
+    smscaster.exe -Compose +85291268167 c:\content.txt
+    
+  Example 5. Send to a list of phone numbers with content stored in a text file.    
+    smscaster.exe -Compose c:\PhoneNum.txt c:\content.txt
+  
+  Remark:
+    <Message> argument - If message content is passed directly in the argument, these characters need to be encoded:
+      "   Double Quote    -> %22
+      LF  Line Feed       -> %0A
+      CR  Carriage Return -> %0D
+    
+    <PhoneListFile> contains list of phone numbers, which are separated by comma or start on a new line.
+    
+-ImportOutbox <filename>  
+  Meaning: Import from a CSV file into the outbox
+  Example: smscaster.exe -ImportOutbox c:\outbox.csv
+  Remark: There are two columns in the CSV file. First is for phone number and second is for message content.  
+  
+-Queue <N>
+  Meaning: Specify which queue to go, where N is from 0-5. Works with -Compose and -ImportOutbox option.
+  
+  Example 1. Compose a single SMS and put it into queue 1.
+    smscaster.exe -Compose +85291268167 "Hello World." -Queue 1
+    
+  Example 2. Import from a CSV file into the outbox and specify which queue to go.
+    smscaster.exe -ImportOutbox C:\Outbox.csv -Queue 2
+    
+  Remarks: This is for the Enterprise Edition only.  
+
+-Start
+  Meaning: Start sending sms in the outbox and receiving.
+  Example: smscaster.exe -Start
+  Remark: To start automatically, you must have the COM port selected properly before automation.
+  
+-Stop
+  Meaning: Stop sending and receiving.
+  Example: smscaster.exe -Stop 
+  
+-Long
+  Meaning: This is a long SMS. Must be used with -Compose option to be meaningful.
+  Example: smscaster.exe -Compose +85291268167 "Very long sms here..." -Long
+  
+-Flash
+  Meaning: This is a flash SMS. Must be used with -Compose option to be meaningful.  
+  Example: smscaster.exe -Compose +85291268167 "Hello World." -Flash  
+  
+-ForceUCS2
+  Meaning: This SMS is encoded using UCS2. Must be used with -Compose option to be meaningful.    
+  Example: smscaster.exe -Compose +85291268167 "Hello World." -ForceUCS2
+  
+-NoSplash
+  Meaning: Do not display the splash screen. Applicable only when the program is started at the first time.
+  Example: smscaster.exe -NoSplash
+  
+-NoRestore
+  Meaning: Do not bring up and restore the existing window. Applicable only when the program is already started and running.
+  Example: smscaster.exe -NoRestore
+
+(Last update: January 28, 2008)

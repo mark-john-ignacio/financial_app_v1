@@ -1,0 +1,28 @@
+.jqbtk-row  {
+	text-align: center;
+}
+.jqbtk-container .btnx {
+	font-size: 1.5em;
+	width: 2.2em;
+	height: 2em;
+	text-align: center;
+	margin: 2px;
+}
+.jqbtk-container .jqbtk-space {
+	width: 12em;
+}
+.jqbtk-container .jqbtk-shift {
+	width: 4.4em;
+}
+.jqbtk-container .jqbtk-enter {
+	width: 4em;
+}
+.jqbtk-container .jqbtk-half {
+	width: 45%;
+	margin: 1px;
+
+}
+
+.popover {
+	max-width: 800px;
+}

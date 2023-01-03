@@ -1,0 +1,87 @@
+<?php
+if(!isset($_SESSION)){
+session_start();
+}
+include('../../Connection/connection_string.php');
+include('../../include/denied.php');
+
+$dmonth = date("m");
+$dyear = date("y");
+$company = $_SESSION['companyid'];
+
+
+$chkSales = mysqli_query($con,"select * from quote where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");
+if (mysqli_num_rows($chkSales)==0) {
+	$cSINo = "QO".$dmonth.$dyear."00000";
+}
+else {
+	while($row = mysqli_fetch_array($chkSales, MYSQLI_ASSOC)){
+		$lastSI = $row['ctranno'];
+	}
+	
+	
+	if(substr($lastSI,2,2) <> $dmonth){
+		$cSINo = "QO".$dmonth.$dyear."00000";
+	}
+	else{
+		$baseno = intval(substr($lastSI,6,5)) + 1;
+		$zeros = 5 - strlen($baseno);
+		$zeroadd = "";
+		
+		for($x = 1; $x <= $zeros; $x++){
+			$zeroadd = $zeroadd."0";
+		}
+		
+		$baseno = $zeroadd.$baseno;
+		$cSINo = "QO".$dmonth.$dyear.$baseno;
+	}
+}
+
+	$cCustID = $_REQUEST['ccode'];
+	$nGross = str_replace(",","",$_REQUEST['ngross']);
+
+	$ccontname = $_REQUEST['ccontname'];
+	$ccontdesg = $_REQUEST['ccontdesg'];
+	$ccontdept = $_REQUEST['ccontdept'];
+	$ccontemai = $_REQUEST['ccontemai'];
+	$ccontsalt = $_REQUEST['ccontsalt'];
+	$cvattyp = $_REQUEST['cvattyp'];
+	$cterms = $_REQUEST['cterms'];
+	$cdelinfo = $_REQUEST['cdelinfo'];
+	$cservinfo = $_REQUEST['cservinfo'];
+	$dDelDate = $_REQUEST['ddate'];
+	$cRemarks = $_REQUEST['crem'];  
+	$cSITyp= $_REQUEST['selsityp']; 
+
+	$CurrCode = $_REQUEST['currcode']; 
+	$CurrDesc = $_REQUEST['currdesc'];  
+	$CurrRate= $_REQUEST['currrate']; 
+	$BaseGross= str_replace(",","",$_REQUEST['basegross']); 
+
+	$preparedby = $_SESSION['employeeid'];
+	
+	//INSERT HEADER
+
+	if (!mysqli_query($con, "INSERT INTO quote(`compcode`, `ctranno`, `ccode`, `ddate`, `ccontactname`, `ccontactdesig`, `ccontactdept`, `ccontactemail`, `ccontactsalut`, `cvattype`, `cterms`, `cdelinfo`, `cservinfo`, `dcutdate`, `ngross`, `nbasegross`, `cremarks`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `cpreparedby`, `csalestype`) Values('$company', '$cSINo', '$cCustID', NOW(), '$ccontname', '$ccontdesg', '$ccontdept', '$ccontemai', '$ccontsalt', '$cvattyp', '$cterms', '$cdelinfo', '$cservinfo', STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$cRemarks', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby','$cSITyp')")) {
+		echo "False";
+	} 
+	else {
+		
+			//INSERT LOGFILE
+		$compname = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+		
+		mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
+		values('$company','$cSINo','$preparedby',NOW(),'INSERTED','QUOTATION','$compname','Inserted New Record')");
+		
+		// Delete previous details
+		mysqli_query($con, "Delete from quote_t Where compcode='$company' and ctranno='$cSINo'");
+		mysqli_query($con, "Delete from quote_t_info Where compcode='$company' and ctranno='$cSINo'");
+
+		
+		echo $cSINo;
+	}
+	
+	
+
+
+?>

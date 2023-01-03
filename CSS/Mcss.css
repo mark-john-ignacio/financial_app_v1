@@ -1,0 +1,138 @@
+@font-face {
+    font-family: "Pristina";
+    src: url(PRISTINA.TTF);
+}
+
+.embedfont {
+	font-family: "Pristina", Verdana, Helvetica, sans-serif;
+	font-size:28px;
+}
+
+.embedfont2 {
+	font-family: "Pristina", Verdana, Helvetica, sans-serif;
+	font-size:18px;
+}
+
+body {
+	font-family: Tahoma;
+	font-size: 11px;
+	margin:0px;
+	background-color:#ebebeb;
+}
+
+.bodywhite{
+	background-color:#06C;
+	margin:0px;
+}
+
+table{
+border-color:#000000;
+border-collapse:collapse;
+}
+
+td {
+	font-family: Tahoma;
+	font-size: 10px;
+	font-weight:normal;
+}
+
+td.td2 {
+	font-family: Tahoma;
+	font-size: 10px;
+	font-weight:lighter;
+}
+
+td.xmas {
+	font-family: "Comic Sans MS", cursive, sans-serif;
+	font-size: 30px;
+	font-weight:bolder;
+	text-shadow: 2px 2px 5px #ff0000;
+	color:#060;
+
+}
+
+td.xmas2 {
+	font-family: "Comic Sans MS", cursive, sans-serif;;
+	font-size: 15px;
+	font-weight:bolder;
+	text-shadow: -1px 0 #060, 0 1px #060, 1px 0 #060, 0 -1px #060;
+	color:#ff0000;
+	vertical-align:text-top;
+
+}
+
+td.xmas3 {
+	font-family: "Pristina", Verdana, Helvetica, sans-serif;
+	font-size: 25px;
+	font-weight:bolder;
+	text-shadow: 2px 2px 5px #ff0000;
+	color:#060;
+
+}
+
+th {
+	font-family: Tahoma;
+	font-size: 9px;
+	font-weight: bold;
+}
+form {
+font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+font-size: 9px;
+}
+input {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 9px;
+}
+select {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 9px;
+}
+a:link {
+	text-decoration: none;
+	color:#000000;
+}
+a:visited {
+	text-decoration: none;
+	color:#000000;
+}
+a:hover {
+	text-decoration: none;
+	color:#000000;
+}
+a:active {
+	text-decoration: none;
+}
+
+a.main{
+	text-decoration: none;
+	color:#FF6600;
+}
+
+.shadow {
+		margin:auto;
+		-moz-box-shadow: 0px 2px 4px 4px #ccc;
+		-webkit-box-shadow: 0px 2px 4px 4px #ccc;
+		box-shadow: 0px 2px 4px 4px #ccc;
+		filter:
+          progid:DXImageTransform.Microsoft.Shadow(color=#cccccc,direction=80,strength=5),
+		  progid:DXImageTransform.Microsoft.Shadow(color=#cccccc,direction=45,strength=5),
+		  progid:DXImageTransform.Microsoft.Shadow(color=#cccccc,direction=10,strength=5),
+		  progid:DXImageTransform.Microsoft.Shadow(color=#cccccc,direction=335,strength=5),
+		  progid:DXImageTransform.Microsoft.Shadow(color=#cccccc,direction=300,strength=5),
+
+}
+
+.login_button {
+	position:relative;
+		
+	background-color:transparent;
+	border:0px;
+	height:32px;
+	width:90px;
+	padding-bottom:2px;
+	font-family:tahoma;
+	font-size:12px;
+	background-image:url(../images/login.gif);
+	background-repeat: no-repeat;
+	/*login.png*/
+}

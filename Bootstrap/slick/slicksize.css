@@ -1,0 +1,33 @@
+    .slider {
+        width: 90%;
+        margin: auto auto;
+    }
+	
+		.slick-slide {
+		  margin: 0px 2px;
+		}
+
+    .slick-slide img {
+      width: 100px;
+	  border:solid #CCC 1px;
+    }
+
+    .slick-prev:before,
+    .slick-next:before {
+      color: black;
+    }
+
+
+    .slick-slide {
+      transition: all ease-in-out .3s;
+      opacity: 1;
+    }
+    
+    .slick-active {
+      opacity: 1;
+    }
+
+    .slick-current {
+      opacity: 1;
+    }
+
