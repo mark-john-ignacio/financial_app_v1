@@ -270,14 +270,14 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	  	<div class='col-xs-12 nopadwtop'>
 	  			<div class="col-xs-1"><b>Delivery</b></div>
 	  			<div class="col-xs-9 nopadwleft">
-	 				<input type='text' class="required form-control input-sm" id="txtdelinfo" name="txtdelinfo" value="5-15 days upon receipt of P.O for available items." required="true" value="<?php echo $cdelinfo; ?>"/>
+	 				<input type='text' class="required form-control input-sm" id="txtdelinfo" name="txtdelinfo" required="true" value="<?php echo $cdelinfo; ?>"/>
 	 			</div>
 	  	</div>
 
 	  	<div class='col-xs-12 nopadwtop'>
 	  			<div class="col-xs-1"><b>Service</b></div>
 	  			<div class="col-xs-9 nopadwleft">
-	 				<input type='text' class="required form-control input-sm" id="txtservinfo" name="txtservinfo" value="Free delivery/installation within Metro Manila / Cavite" required="true" value="<?php echo $cservinfo; ?>" />
+	 				<input type='text' class="required form-control input-sm" id="txtservinfo" name="txtservinfo" required="true" value="<?php echo $cservinfo; ?>" />
 	 			</div>
 	  	</div>
 
