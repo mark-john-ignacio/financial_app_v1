@@ -584,29 +584,7 @@ include('../../include/access2.php');
                     </div>
                  
                 </div>
-        
-                <div class="col-xs-10 nopadwtop">
-
-                    <div class="col-xs-2 nopadding">
-                		  <b>Sales Code</b>
-                    </div>
-
-                    <div class="col-xs-8 nopadwleft" id="accttypsingle">
-
-                               <div class="col-xs-7 nopadding">
-                            <input type="text" class="form-control input-sm" id="txtsalesacctCR" name="txtsalesacctCR" tabindex="23" placeholder="Search Acct Title.." autocomplete="off" required/>
-                               </div>
-                            
-                                <div class="col-xs-2 nopadwleft">
-                                    <input type="text" id="txtsalesacctCRD" name="txtsalesacctCRD" class="form-control input-sm" readonly>
-                                    <input type="hidden" id="txtsalesacctDIDCR" name="txtsalesacctDIDCR">
-                                </div>
-                                
-                                
-
-                    </div>
-
-                </div>
+      
 
 			 <div class="col-xs-10 nopadwtop">
                 	<div class="col-xs-2 nopadding">

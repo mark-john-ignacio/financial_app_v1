@@ -62,10 +62,10 @@ $myerror = "True";
 		$SalesCode = "";
 	}
 
-	$SalesCodeCR = $_REQUEST['txtsalesacctDIDCR'];
+	//$SalesCodeCR = $_REQUEST['txtsalesacctDIDCR']; , `cacctcodesalescr` = '$SalesCodeCR'
 
 	//IUPDATE ITEM
-	if (!mysqli_query($con,"UPDATE `customers` set `cname`='$cCustName', `ctradename` = '$cTradeName', `cacctcodesales` = '$SalesCode', `cacctcodesalescr` = '$SalesCodeCR', `cacctcodetype` = '$SalesCodeType', `ccustomertype`='$CustTyp', `ccustomerclass`='$CustCls', `cpricever` = '$PriceVer', `cvattype`='$VatType', `cterms` = '$Terms', `nlimit` = $CreditLimit, `chouseno` = $HouseNo, `ccity` = $City, `cstate` = $State, `ccountry` = $Country, `czip` = $ZIP, `cparentcode` = $PrentCode, `csman` = $csman, `cGroup1` = $cGrp1, `cGroup2` = $cGrp2, `cGroup3` = $cGrp3, `cGroup4` = $cGrp4, `cGroup5` = $cGrp5, `cGroup6` = $cGrp6, `cGroup7` = $cGrp7, `cGroup8` = $cGrp8, `cGroup9` = $cGrp9, `cGroup10` = $cGrp10 Where compcode='$company' and `cempid`='$cCustCode'")){
+	if (!mysqli_query($con,"UPDATE `customers` set `cname`='$cCustName', `ctradename` = '$cTradeName', `cacctcodesales` = '$SalesCode', `cacctcodetype` = '$SalesCodeType', `ccustomertype`='$CustTyp', `ccustomerclass`='$CustCls', `cpricever` = '$PriceVer', `cvattype`='$VatType', `cterms` = '$Terms', `nlimit` = $CreditLimit, `chouseno` = $HouseNo, `ccity` = $City, `cstate` = $State, `ccountry` = $Country, `czip` = $ZIP, `cparentcode` = $PrentCode, `csman` = $csman, `cGroup1` = $cGrp1, `cGroup2` = $cGrp2, `cGroup3` = $cGrp3, `cGroup4` = $cGrp4, `cGroup5` = $cGrp5, `cGroup6` = $cGrp6, `cGroup7` = $cGrp7, `cGroup8` = $cGrp8, `cGroup9` = $cGrp9, `cGroup10` = $cGrp10 Where compcode='$company' and `cempid`='$cCustCode'")){
 
 					if(mysqli_error($con)!=""){
 						$myerror = "Update Error: ". mysqli_error($con)."<br/><br/>";

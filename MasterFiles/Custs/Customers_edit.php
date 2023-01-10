@@ -25,7 +25,7 @@ if(mysqli_num_rows($sql) == 0){
 				
 				if($citemno <> ""){
 					
-					$sql = "select A.*, A1.cacctdesc as salescode, B.cname as cparentname, C.cname as csmaname, A1.cacctid, A2.cacctdesc as salescodecr, A2.cacctid as cacctidcr from customers A LEFT JOIN accounts A1 ON A.compcode=A1.compcode and (A.cacctcodesales = A1.cacctno) LEFT JOIN accounts A2 ON A.compcode=A2.compcode and (A.cacctcodesalescr = A2.cacctno) LEFT JOIN customers B ON (A.cparentcode = B.cempid)  LEFT JOIN salesman C ON (A.csman = C.ccode) where A.cempid='$citemno'";
+					$sql = "select A.*, A1.cacctdesc as salescode, B.cname as cparentname, C.cname as csmaname, A1.cacctid from customers A LEFT JOIN accounts A1 ON A.compcode=A1.compcode and (A.cacctcodesales = A1.cacctno) LEFT JOIN customers B ON (A.cparentcode = B.cempid)  LEFT JOIN salesman C ON (A.csman = C.ccode) where A.cempid='$citemno'";
 				}else{
 					header('Customers.php');
 					die();
@@ -77,10 +77,6 @@ if(mysqli_num_rows($sql) == 0){
 								$singlestat = "";
 								$multistat = "required";
 							}
-
-							$SaleCRID = $row['cacctcodesalescr']; 
-							$SaleCRIDCode = $row['cacctidcr'];
-							$SaleCRDesc = $row['salescodecr'];
 
 					}
 				}
@@ -566,7 +562,7 @@ if(mysqli_num_rows($sql) == 0){
 
 						<div id="menu3" class="tab-pane fade" style="padding-left:30px">
 							<p>
-								<div class="col-xs-12">            
+								<div class="col-xs-12 nopadding">            
 									<div class="col-xs-10 nopadwtop">
 
 										<div class="col-xs-2 nopadding">
@@ -636,26 +632,7 @@ if(mysqli_num_rows($sql) == 0){
 												
 									</div>
 
-									<div class="col-xs-10 nopadwtop">
-
-                    <div class="col-xs-2 nopadding">
-                		  <b>Sales Code</b>
-                    </div>
-
-                    <div class="col-xs-8 nopadwleft" id="accttypsingle">
-
-                               <div class="col-xs-7 nopadding">
-                            <input type="text" class="form-control input-sm" id="txtsalesacctCR" name="txtsalesacctCR" tabindex="23" placeholder="Search Acct Title.." autocomplete="off" required value="<?=$SaleCRDesc?>"/>
-                               </div>
-                            
-                                <div class="col-xs-2 nopadwleft">
-                                    <input type="text" id="txtsalesacctCRD" name="txtsalesacctCRD" class="form-control input-sm" readonly value="<?=$SaleCRIDCode?>">
-                                    <input type="hidden" id="txtsalesacctDIDCR" name="txtsalesacctDIDCR" value="<?=$SaleCRID?>"> 
-                                </div>
-                                
-                                
-
-                    </div>
+									
 
                 </div>
 
