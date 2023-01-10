@@ -324,6 +324,10 @@ if (mysqli_num_rows($sqlchk)!=0) {
 											var xcb = 0;
 											var xcbdue = 0;
 											
+											varnnet =  $("#txtnetvat<?php echo $cntr;?>").val();
+											varngrs = $("#txtSIGross<?php echo $cntr;?>").val();
+											ndue = $("#txtDue<?php echo $cntr;?>").val();
+
 											if(item.cbase=="NET"){
 												xcb = parseFloat(varnnet)*(item.nrate/100);
 											}else{
@@ -1584,6 +1588,10 @@ function save(){
 											var xcb = 0;
 											var xcbdue = 0;
 											
+											varnnet =  $("#txtnetvat"+lastRow).val();
+											varngrs = $("#txtSIGross"+lastRow).val();
+											ndue = $("#txtDue"+lastRow).val();
+
 											if(item.cbase=="NET"){
 												xcb = parseFloat(varnnet)*(item.nrate/100);
 											}else{

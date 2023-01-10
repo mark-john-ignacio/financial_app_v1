@@ -1164,7 +1164,7 @@ function save(){
 								
 							var c3=z.insertCell(-1);
 								c3.align = "right";
-								c3.innerHTML = "<div class='col-xs-12 nopadwleft'><input type='hidden' name='txtnetvat"+lastRow+"' id='txtnetvat"+lastRow+"' value='"+item.nnet+"' />"+item.nnet+"</div>";
+								c3.innerHTML = "<div class='col-xs-12 nopadwleft'><input type='hidden' name='txtnetvat"+lastRow+"' id='txtnetvat"+lastRow+"' value='"+item.nnet+"' />"+item.nnet+"</div>"; 
 							
 							var l=z.insertCell(-1);
 								l.style.width = "150px";
@@ -1245,6 +1245,12 @@ function save(){
 											
 											var xcb = 0;
 											var xcbdue = 0;
+
+											varnnet =  $("#txtnetvat"+lastRow).val();
+
+											varngrs = $("#txtSIGross"+lastRow).val();
+
+											ndue = $("#txtDue"+lastRow).val();
 											
 											if(item.cbase=="NET"){
 												xcb = parseFloat(varnnet)*(item.nrate/100);
