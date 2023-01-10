@@ -1245,6 +1245,8 @@ function chkform(){
 				var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
 				var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
 			
+				alert("Quote_newsavedet.php?trancode="+trancode+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+nprice+"&nbaseamt="+nbaseamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor);
+				
 				$.ajax ({
 					url: "Quote_newsavedet.php",
 					data: { trancode: trancode, indx:index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, nbaseamt:nbaseamt, namt:namt, mainunit:mainunit, nfactor:nfactor },
