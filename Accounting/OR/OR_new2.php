@@ -657,7 +657,7 @@ Back to Main<br>(ESC)</button>
 		items: 10,
 		source: function(request, response) {
 			$.ajax({
-				url: "../th_csall.php",
+				url: "../th_customer.php",
 				dataType: "json",
 				data: {
 					query: $("#txtcust").val()
@@ -669,7 +669,7 @@ Back to Main<br>(ESC)</button>
 		},
 		autoSelect: true,
 		displayText: function (item) {
-			 return '<div style="border-top:1px solid gray; width: 300px"><span><b>' + item.typ + ": </b>"+ item.id + '</span><br><small>' + item.value + "</small></div>";
+			 return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
 		},
 		highlighter: Object,
 		afterSelect: function(item) { 
