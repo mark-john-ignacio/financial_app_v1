@@ -2032,7 +2032,7 @@ function chkform(){
 
 }
 
-/*
+
 function convertCurrency(fromCurrency) {
   
   toCurrency = $("#basecurrvalmain").val(); //statgetrate
@@ -2056,7 +2056,7 @@ function convertCurrency(fromCurrency) {
  });
 
 }
-*/
+
 
 function recomputeCurr(){
 
