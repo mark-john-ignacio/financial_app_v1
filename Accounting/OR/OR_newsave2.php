@@ -185,6 +185,13 @@ elseif ($cPayMethod=="Cheque"){ //INSERT CHEQUE DETAILS
 					printf("Errormessage: %s\n", mysqli_error($con));
 				} 
 
+}else{
+	$CHKbank = mysqli_real_escape_string($con, $_REQUEST['txtOTBankName']);
+	$CHKchkno = mysqli_real_escape_string($con, $_REQUEST['txtOTRefNo']);
+
+	if (!mysqli_query($con, "INSERT INTO `receipt_opay_t`(`compcode`, `ctranno`, `cdescription`, `crefno`) values('$company', '$cSINo', '$CHKbank', '$CHKchkno')")) {
+		printf("Errormessage: %s\n", mysqli_error($con));
+	} 
 }
 
 //INSERT SALES DETAILS if Sales and Sales Type
