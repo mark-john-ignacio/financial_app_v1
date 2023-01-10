@@ -105,7 +105,7 @@ $company = $_SESSION['companyid'];
         </div>
     </div>        
     </td>
-    <tH width="150" style="padding:2px">OR No.:</tH>
+    <tH width="150" style="padding:2px">Receipt No.:</tH>
     <td style="padding:2px"><div class="col-xs-12 nopadding">
       <div class="col-xs-8 nopadding">
         <?php

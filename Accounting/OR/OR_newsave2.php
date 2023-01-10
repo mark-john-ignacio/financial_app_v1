@@ -260,7 +260,7 @@ if($rowcnt!=0){
 	//INSERT LOGFILE
 	$compname = php_uname('n');
 	
-	mysqli_query($con,"INSERT INTO receipt_others_t(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
+	mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
 	values('$company','$cSINo','$preparedby',NOW(),'INSERTED','RECEIVE PAYMENT','$compname','Inserted New Record')");
 
 ?>
@@ -269,5 +269,5 @@ if($rowcnt!=0){
 </form>
 <script>
 	alert('Record Succesfully Saved');
-   // document.forms['frmpos'].submit();
+  document.forms['frmpos'].submit();
 </script>

@@ -43,7 +43,7 @@ require_once "../Connection/connection_string.php";
 			}
 
 		
-			if (!mysqli_query($con,"UPDATE wtaxcodes set `cdesc` = '$desc', `nratedivisor` = '$divs', `cbase` = '$vbase', `nrate` = $lcomp where `compcode` = '$company' and `ctaxcode` = '$code'")) {
+			if (!mysqli_query($con,"UPDATE wtaxcodes set `cdesc` = '$desc', `nratedivisor` = '$divs', `cbase` = '$vbase', `nrate` = $rate where `compcode` = '$company' and `ctaxcode` = '$code'")) {
 				printf("Errormessage: %s\n", mysqli_error($con));
 			} 
 			else{

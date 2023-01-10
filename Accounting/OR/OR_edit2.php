@@ -37,7 +37,7 @@ $corno = $_REQUEST['txtctranno'];
 
 <?php
 
-    	$sqlchk = mysqli_query($con,"Select a.cacctcode, a.ccode, a.namount, a.cpaymethod, a.cpaytype, DATE_FORMAT(a.dcutdate,'%m/%d/%Y') as dcutdate, a.namount, a.napplied, a.lapproved, a.lcancelled, a.lprintposted, a.cornumber, a.cremarks, b.cname, d.cname as csuppname, c.cacctdesc, c.nbalance From receipt a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join accounts c on a.compcode=c.compcode and a.cacctcode=c.cacctno left join suppliers d on a.compcode=d.compcode and a.ccode=d.ccode where a.compcode='$company' and a.ctranno='$corno'");
+    	$sqlchk = mysqli_query($con,"Select a.cacctcode, a.ccode, a.namount, a.cpaymethod, a.cpaytype, DATE_FORMAT(a.dcutdate,'%m/%d/%Y') as dcutdate, a.namount, a.napplied, a.lapproved, a.lcancelled, a.lprintposted, a.cornumber, a.cremarks, b.cname, d.cname as csuppname, c.cacctdesc, c.nbalance From receipt a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join accounts c on a.compcode=c.compcode and a.cacctcode=c.cacctid left join suppliers d on a.compcode=d.compcode and a.ccode=d.ccode where a.compcode='$company' and a.ctranno='$corno'");
 if (mysqli_num_rows($sqlchk)!=0) {
 		while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
 			$nDebitDef = $row['cacctcode'];
@@ -139,16 +139,16 @@ if (mysqli_num_rows($sqlchk)!=0) {
         </div>
     </div>        
     </td>
-    <th valign="top" style="padding:2px">OR No.:</th>
+    <th valign="top" style="padding:2px">Receipt No.:</th>
     <td valign="top" style="padding:2px"><div class="col-xs-12 nopadding">
-      <div class="col-xs-4 nopadding">
+      <div class="col-xs-8 nopadding">
       <input type="text" class="form-control input-sm" id="txtORNo" name="txtORNo" width="20px" required value="<?php echo $cORNo;?>" readonly>
     </div>
-    
+    <!--
     <div class="col-xs-4 nopadwleft">
         <button type="button" class="btn btn-danger btn-sm" name="btnVoid" id="btnVoid">VOID OR</button>
       </div>
-      </div></td>
+      </div></td>-->
   </tr>
   <tr>
     <tH width="210" valign="top">Payment Method:</tH>
@@ -156,8 +156,12 @@ if (mysqli_num_rows($sqlchk)!=0) {
     <div class="col-xs-12 nopadding">
      <div class="col-xs-6 nopadding">
       <select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
-          <option value="Cash" <?php if($cPayMeth=="Cash") { echo "selected"; } ?>>Cash</option>
-          <option value="Cheque" <?php if($cPayMeth=="Cheque") { echo "selected"; } ?>>Cheque</option>
+          <option value="cash" <?php if($cPayMeth=="cash") { echo "selected"; } ?>>Cash</option>
+          <option value="cheque" <?php if($cPayMeth=="cheque") { echo "selected"; } ?>>Cheque</option>
+					<option value="bank transfer" <?php if($cPayMeth=="bank transfer") { echo "selected"; } ?>>Bank Transfer</option>
+					<option value="mobile payment" <?php if($cPayMeth=="mobile payment") { echo "selected"; } ?>>Mobile Payment</option>
+					<option value="credit card" <?php if($cPayMeth=="credit card") { echo "selected"; } ?>>Credit Card</option>
+					<option value="debit card" <?php if($cPayMeth=="debit card") { echo "selected"; } ?>>Debit Card</option>
         </select>
      </div>
      
@@ -851,6 +855,34 @@ Save<br>(CTRL+S)    </button>
 <!-- End Bootstrap modal -->
 
 
+<div class="modal fade" id="OthersModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title" id="chequeheader">TRANSACTION DETAILS</h3>
+            </div>
+            <div class="modal-body">
+            
+                  <table width="100%" border="0" class="table table-condensed">
+                      <tr>
+                        <td><b>Payment Description</b></td>
+                        <td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtOTBankName' id='txtOTBankName' placeholder="Input Description"/></div></td>
+                      </tr>
+											<tr>
+                        <td><b>Reference No.</b></td>
+                        <td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtOTRefNo' id='txtOTRefNo' placeholder="Input Reference No."/></div></td>
+                      </tr>
+                   </table>
+            
+            </div>
+            <div class="modal-footer">
+                
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
 </form>
 
 <?php
@@ -1139,11 +1171,12 @@ $(function() {
 	
 
 	$("#btnDet").on('click', function() {
-		if($('#selpayment').val() == "Cash"){
+		if($('#selpayment').val() == "cash"){
 			$('#CashModal').modal('show');
-		}
-		if($('#selpayment').val() == "Cheque"){
+		}else if($('#selpayment').val() == "cheque"){
 			$('#ChequeModal').modal('show');
+		}else{
+			$('#OthersModal').modal('show');
 		}
 	});
 
