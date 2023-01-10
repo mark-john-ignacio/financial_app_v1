@@ -34,16 +34,21 @@ include('../../include/denied.php');
 	}
 	
 	$csalesno = $_REQUEST['x'];
-	$sqlhead = mysqli_query($con,"select a.*,b.cname from dr a left join customers b on a.ccode=b.cempid where a.compcode='$company' and a.ctranno = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.chouseno,b.ccity,b.cstate,b.ctin,c.cname as cdelname from dr a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join customers c on a.compcode=c.compcode and a.cdelcode=c.cempid where a.compcode='$company' and a.ctranno = '$csalesno'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
 		$CustCode = $row['ccode'];
-		$CustName = $row['cname'];
+		$CustName = $row['cdelname'];
+    $CustDelName = $row['cname'];
 		$Remarks = $row['cremarks'];
 		$Date = $row['dcutdate'];
+    $Adds = $row['chouseno']." ". $row['ccity']." ". $row['cstate'];
+    $cTin = $row['ctin'];
+
 		//$SalesType = $row['csalestype'];
 		$Gross = $row['ngross'];
+    $cTerms = $row['cterms'];
 		
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
@@ -54,53 +59,38 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 <!DOCTYPE html>
 <html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="../../css/cssmed.css">
 
 <head>
 </head>
 
-<body style="padding:5px" onLoad="window.print();">
+<body style="padding-top:0.75in" onLoad="window.print()">
 
 <table width="100%" border="0" cellpadding="3" style="border-collapse:collapse;" id="tblMain">
   <tr>
-    <td><font size="3"><b><?php echo $companyname;?></b></font></td>
-    <td colspan="2" align="center"><font size="3"><b>Delivery Receipt</b></font></td>
+    <td colspan="2" align="right" style="height: 0.43in"><font size="3"><b><?php echo $csalesno;?></b></font></td>
   </tr>
+
   <tr>
-    <!--<td><font size="2"><b><?php //echo $companydesc;?></b></font></td>-->
-    <td><font size="2"><b><?php echo $companyadd;?></b></font></td>
-    <td width="100">Number:</td>
-    <td width="150"><?php echo $csalesno;?></td>
-  </tr>
-  <tr>
-    <td><font size="2"><b>TIN #<?php echo $companytin;?></b></font></td>
-    <td width="100">Delivery Date:</td>
-    <td width="150"><?php echo $Date;?></td>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td width="100">Page:</td>
-    <td width="150">&nbsp;</td>
-  </tr>
-  <tr>
-    <td colspan="3">&nbsp;</td>
-  </tr>
-  <tr>
-    <td colspan="3">
+    <td VALIGN="TOP">
     
-    <table width="100%" border="0" cellpadding="3" cellspacing="5">
-      <tr>
-        <td height="60" valign="top" style="border:1px solid; border-style:dashed;"><font size="2"><b>CUSTOMER:</b></font><br>&nbsp;&nbsp; &nbsp; <?php echo $CustCode;?> - <?php echo $CustName;?></td>
-        <td width="40%" height="60" valign="top" style="border:1px solid; border-style:dashed;"><font size="2"><b>DELIVERY DETAILS:</b></font><br>&nbsp;&nbsp; &nbsp; <?php echo $Remarks;?><br>
-        <?php
-        	if($lPrintPosted==1){
-				echo "<font color='#FF0000'><b><i>ORIGINAL DR ALREADY PRINTED<i></b></font>";
-			}
-		?>
-        
-        </td>
-      </tr>
-    </table>
+      <table width="100%" border="0" cellpadding="3" cellspacing="5">
+        <tr><td style="height: 0.35in; padding-left: 0.8in"> <?=$CustName?> </td></tr>
+        <tr><td style="height: 0.35in; padding-left: 0.5in"><?=$Adds?> </td></tr>
+        <tr><td style="height: 0.2in"> &nbsp;&nbsp;&nbsp; <?=$cTin?></td></tr>
+        <tr><td style="height: 0.2in; padding-left: 0.8in; font-size: 11px"> <?=$CustDelName?></td></tr>
+        </tr>
+      </table>
+
+    </td>
+    <td style="width: 2in"> 
+      <table width="100%" border="0" cellpadding="3" cellspacing="5">
+        <tr><td style="height: 0.28in"  align="right"> <?=date_format(date_create($Date), "M d, Y")?> </td></tr>
+        <tr><td style="height: 0.28in"  align="right"> <?=$cTerms?> </td></tr>
+        <tr><td style="height: 0.28in"  align="right"> &nbsp; </td></tr>
+        <tr><td style="height: 0.28in"  align="right"> &nbsp; </td></tr>
+      </table>
     </td>
   </tr>
   <tr>
@@ -110,13 +100,6 @@ if (mysqli_num_rows($sqlhead)!=0) {
     <td colspan="3">
     
     <table width="100%" border="0" cellpadding="3" style="border-style:dashed;">
-      <tr>
-        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Part No.</th>
-        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Item Details</th>
-        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Qty/UOM</th>
-        <th scope="col" style="border-top: 1px dashed; border-bottom: 1px dashed;">Price</th>
-        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Total Amount</th>
-      </tr>
       <?php 
 		$sqlbody = mysqli_query($con,"select a.*,b.citemdesc from dr_t a left join items b on a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$csalesno'");
 
@@ -129,28 +112,16 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	?>
       
       <tr>
-        <td style="border-right:1px dashed;"><?php echo $rowbody['citemno'];?></td>
-        <td style="border-right:1px dashed;"><?php echo $rowbody['citemdesc'];?></td>
-        <td style="border-right:1px dashed;" align="right"><?php echo $rowbody['nqty'];?> <?php echo $rowbody['cunit'];?></td>
-        <td style="border-right:1px dashed;" align="right"><?php echo $rowbody['nprice'];?></td>
-        <td align="right"><?php echo $rowbody['namount'];?></td>
-        
+        <td style="width: 0.6in"><?php echo $rowbody['nqty'];?></td> 
+        <td style="width: 0.7in"><?php echo $rowbody['cunit'];?></td> 
+        <td><?php echo $rowbody['citemno'];?></td>
+        <td style="text-overflow: ellipsis; width: 5in"><?php echo $rowbody['citemdesc'];?></td>
+               
       </tr>
-      <?php 
-	  		$totnqty = (float)$totnqty + (float)$rowbody['nqty'];
-		}
-		}
-	  ?>
-        <tr>
-        <td colspan="4" style="border-top:1px dashed;" align="right"  valign="bottom"><b>Total Gross: </b></td>
-        <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?php echo $Gross;?></b></td>
-        </tr>
-        <tr>
-          <td height="30" colspan="2" style="border-top:1px dashed;" valign="bottom">Prepared By: <?php echo $_SESSION['employeefull'];?></td>
-          <td height="30" colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>Total Qty Delivered:</b></td>
-          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?php echo $totnqty;?></b></td>
-        </tr>
-
+  <?php
+    }
+  }
+  ?>
     </table></td>
   </tr>
 </table>

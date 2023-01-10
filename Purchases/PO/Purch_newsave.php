@@ -50,6 +50,8 @@ else {
 	$cCustID = $_REQUEST['txtcustid'];
 	$dDelDate = $_REQUEST['date_needed'];
 	$cRemarks = chkgrp($_REQUEST['txtremarks']); 
+	$cContact = chkgrp($_REQUEST['txtcontactname']); 
+	$cContactEmail = chkgrp($_REQUEST['contact_email']);
 	$nGross = str_replace(",","",$_REQUEST['txtnGross']);
 
 	$CurrCode = $_REQUEST['selbasecurr']; 
@@ -72,7 +74,7 @@ else {
 	$preparedby = $_SESSION['employeeid'];
 	
 	//INSERT HEADER	
-	if (!mysqli_query($con,"INSERT INTO purchase(`compcode`, `cpono`, `ccode`, `cremarks`, `ddate`, `dneeded`, `ngross`, `nbasegross`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `cpreparedby`, `lcancelled`, `lapproved`, `lprintposted`, `ccustacctcode`) values('$company', '$cSINo', '$cCustID', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby', 0, 0, 0, '$AccntCode')")){
+	if (!mysqli_query($con,"INSERT INTO purchase(`compcode`, `cpono`, `ccode`, `cremarks`, `ddate`, `dneeded`, `ngross`, `nbasegross`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `cpreparedby`, `lcancelled`, `lapproved`, `lprintposted`, `ccustacctcode`, `ccontact`, `ccontactemail`) values('$company', '$cSINo', '$cCustID', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby', 0, 0, 0, '$AccntCode', $cContact, $cContactEmail)")){
 		echo "False";
 	}
 	else{

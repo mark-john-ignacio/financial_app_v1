@@ -34,7 +34,7 @@ include('../../include/denied.php');
 	}
 	
 	$csalesno = $_REQUEST['x'];
-	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.nlimit from sales a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.compcode='$company' and a.ctranno = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.nlimit from ntsales a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.compcode='$company' and a.ctranno = '$csalesno'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -157,7 +157,7 @@ function PrintRed(x){
         <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Total Amount</th>
       </tr>
       <?php 
-		$sqlbody = mysqli_query($con,"select a.*, b.citemdesc, c.nrate from sales_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno left join taxcode c on a.compcode=c.compcode and a.ctaxcode=c.ctaxcode where a.compcode='$company' and a.ctranno = '$csalesno'");
+		$sqlbody = mysqli_query($con,"select a.*, b.citemdesc, c.nrate from ntsales_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno left join taxcode c on a.compcode=c.compcode and a.ctaxcode=c.ctaxcode where a.compcode='$company' and a.ctranno = '$csalesno'");
 
 		if (mysqli_num_rows($sqlbody)!=0) {
 		$cntr = 0;
@@ -181,101 +181,12 @@ function PrintRed(x){
       </tr>
       <?php 
 	  
-	  		if((int)$rowbody['nrate']!=0){
-				//echo "A";
-				$totnetvat = (float)$totnetvat + (float)$rowbody['nnetvat'];
-				$totlessvat = (float)$totlessvat + (float)$rowbody['nlessvat'];
-				
-				$totvatable = (float)$totvatable + (float)$rowbody['namount'];
-			}
-			else{
-				//echo "B";
-				$totvatxmpt = (float)$totvatxmpt + (float)$rowbody['namount'];
-			}
+	  	
 		}
 		}
-		
-		
-		if($cvatcode=='VT' || $cvatcode=='NV'){
-			$printVATGross = number_format($Gross,2);
-			
-				if((float)$totvatxmpt==0){
-					//echo "A";
-					$printVEGross = "";
-				}else{
-					//echo "AB";
-					$printVEGross =  number_format($totvatxmpt,2);
-				}
 
-			$printZRGross = "";
-
-
-				$totnetvat = number_format($totnetvat,2);
-				$totlessvat = number_format($totlessvat,2);
-				$totvatable = number_format($totvatable,2);
-			
-		}elseif($cvatcode=='VE'){
-			$printVATGross = "";
-			$printVEGross = number_format($Gross,2);
-			$printZRGross = "";
-			
-				$totnetvat = "";
-				$totlessvat = "";
-				$totvatable = "";
-			
-		}elseif($cvatcode=='ZR'){
-			$printVATGross = "";
-			$printVEGross = "";
-			$printZRGross = number_format($Gross,2);
-
-				$totnetvat = "";
-				$totlessvat = "";
-				$totvatable = "";
-			
-		}
 	  ?>
-        <tr>
-        <td colspan="5" style="border-top:1px dashed;"><?php //echo $cvatcode.":".(float)$totvatxmpt." : ".$printVEGross;?></td>
-        </tr>
-
-        <tr>
-        <td colspan="4" style="border-top:1px dashed;" align="right"  valign="bottom"><b>Total Sales (VAT INCLUSIVE) </b></td>
-        <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?php echo $totvatable;?></b></td>
-        </tr>
-        <tr>
-          <td style="border-top:1px dashed;" align="right" valign="bottom"><b>Vatable Sales</b></td>
-          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%"><b><?php echo $totvatable;?></b></div></td>
-          <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>Amt. Net of VAT</b></td>
-          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?php echo $totnetvat;?></b></td>
-        </tr>
-        <tr>
-          <td style="border-top:1px dashed;" align="right" valign="bottom"><b>Vat-Exempt Sales</b></td>
-          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%"><b><?php echo $printVEGross;?></b></div></td>
-          <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>LESS: VAT</b></td>
-          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?php echo $totlessvat;?></b></td>
-        </tr>
-        <tr>
-          <td style="border-top:1px dashed;" align="right" valign="bottom"><b>Zero-Rated Sales</b></td>
-          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%"><b><?php echo $printZRGross;?></b></div></td>
-          <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>LESS: SC/PWD DISC.</b></td>
-          <td style="border-top:1px dashed;"  valign="bottom" align="right">&nbsp;</td>
-        </tr>
-        <tr>
-          <td style="border-top:1px dashed;" align="right" valign="bottom"><b>Vat Amt</b></td>
-          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%">&nbsp;</div></td>
-          <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>Amt. Due</b></td>
-          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?php echo $totnetvat;?></b></td>
-        </tr>
-        <tr>
-          <td colspan="2" style="border-top:1px dashed;" valign="bottom">&nbsp;</td>
-          <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>Less: Witholding Tax</b></td>
-          <td style="border-top:1px dashed;"  valign="bottom" align="right">&nbsp;</td>
-        </tr>
-        <tr>
-          <td colspan="2" style="border-top:1px dashed;" valign="bottom">&nbsp;</td>
-          <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>ADD VAT</b></td>
-          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?php echo $totlessvat;?></b></td>
-        </tr>
+        
         <tr>
           <td colspan="2" style="border-top:1px dashed;" valign="bottom">&nbsp;</td>
           <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>TOTAL AMT. DUE</b></td>

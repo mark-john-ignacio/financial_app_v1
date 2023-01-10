@@ -405,11 +405,11 @@ include('../../include/access2.php');
             </div>
             <div class="col-xs-12">
                 <div class="col-xs-2 nopadwtop">
-                    <b>Sales (AR)*</b>
+                    <b>Sales (AR)</b>
                 </div>
                 
                 <div class="col-xs-3 nopadwtop">
-                    <input type="text" class="required acctcontrol form-control input-sm" id="txtsalesacct" name="txtsalesacct" placeholder="Search Acct Title.." value="<?php echo $SalesCodeDesc; ?>" autocomplete="off">
+                    <input type="text" class="acctcontrol form-control input-sm" id="txtsalesacct" name="txtsalesacct" placeholder="Search Acct Title.." value="<?php echo $SalesCodeDesc; ?>" autocomplete="off">
                    
                 </div>
                 
@@ -421,11 +421,11 @@ include('../../include/access2.php');
 
             <div class="col-xs-12">
                 <div class="col-xs-2 nopadwtop">
-                    <b>Sales Return*</b>
+                    <b>Sales Return</b>
                 </div>
                 
                 <div class="col-xs-3 nopadwtop">
-                    <input type="text" class="required acctcontrol form-control input-sm" id="txtretacct" name="txtretacct" placeholder="Search Acct Title.." value="<?php echo $SRetCodeDesc; ?>" autocomplete="off">
+                    <input type="text" class="acctcontrol form-control input-sm" id="txtretacct" name="txtretacct" placeholder="Search Acct Title.." value="<?php echo $SRetCodeDesc; ?>" autocomplete="off">
                 </div>
                 <div class="col-xs-1 nopadwtop">
                     <input type="text" class="form-control input-sm" id="txtretacctID" name="txtretacctID" value="<?php echo $SRetCodeID; ?>" readonly>
@@ -435,11 +435,11 @@ include('../../include/access2.php');
         
             <div class="col-xs-12">
                 <div class="col-xs-2 nopadwtop">
-                    <b>Receiving (AP)*</b>
+                    <b>Receiving (AP)</b>
                 </div>
                 
                 <div class="col-xs-3 nopadwtop">
-                    <input type="text" class="required acctcontrol form-control input-sm" id="txtrracct" name="txtrracct" placeholder="Search Acct Title.." value="<?php echo $WRRCodeDesc; ?>" autocomplete="off">
+                    <input type="text" class="acctcontrol form-control input-sm" id="txtrracct" name="txtrracct" placeholder="Search Acct Title.." value="<?php echo $WRRCodeDesc; ?>" autocomplete="off">
                 </div>
                 <div class="col-xs-1 nopadwtop">
                     <input type="text" class="form-control input-sm" id="txtrracctID" name="txtrracctID" value="<?php echo $WRRCodeID;  ?>" readonly>

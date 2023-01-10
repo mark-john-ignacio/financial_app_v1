@@ -41,6 +41,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$CustCode = $row['ccode'];
 		$CustName = $row['cname'];
 		$Remarks = $row['cremarks'];
+		$TranDate = $row['ddate'];
 		$Date = $row['dcutdate'];
 		//$SalesType = $row['csalestype'];
 		$Gross = $row['ngross'];
@@ -127,52 +128,29 @@ function PrintRed(x){
 <br><br>
 <table width="100%" border="0" cellpadding="3" style="border-collapse:collapse;" id="tblMain">
   <tr>
-    <td><font size="3"><b><?php echo $companyname;?></b></font></td>
-    <td colspan="2" align="center"><font size="3"><b>Sales Order</b></font></td>
+    <td colspan="2"><font size="2"><b>JOB ORDER SLIP - <?php echo $csalesno;?></b></font></td>
   </tr>
   <tr>
-    <!--<td><font size="2"><b><?php //echo $companydesc;?></b></font></td>-->
-    <td><font size="2"><b><?php echo $companyadd;?></b></font></td>
-    <td width="100">Number:</td>
-    <td width="150"><?php echo $csalesno;?></td>
+    <td width="100">Customer:</td>
+    <td><?php echo $CustCode;?> - <?php echo $CustName;?></td>
   </tr>
   <tr>
-    <td><font size="2"><b>TIN #<?php echo $companytin;?></b></font></td>
+    <td width="100">JO Date:</td>
+    <td><?php echo date_format(date_create($TranDate),"M d, Y H:i:s");?></td>
+  </tr>
+  <tr>
     <td width="100">Delivery Date:</td>
-    <td width="150"><?php echo $Date;?></td>
+    <td><?php echo date_format(date_create($Date),"M d, Y");?></td>
   </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td width="100">Page:</td>
-    <td width="150">&nbsp;</td>
-  </tr>
-  <tr>
-    <td colspan="3">&nbsp;</td>
-  </tr>
-  <tr>
-    <td colspan="3">
-    
-    <table width="100%" border="0" cellpadding="3" cellspacing="5">
-      <tr>
-        <td height="60" valign="top" style="border:1px solid; border-style:dashed;"><font size="2"><b>CUSTOMER:</b></font><br>&nbsp;&nbsp; &nbsp; <?php echo $CustCode;?> - <?php echo $CustName;?></td>
-        <td width="40%" height="60" valign="top" style="border:1px solid; border-style:dashed;"><font size="2"><b>REMARKS:</b></font><br>&nbsp;&nbsp; &nbsp; <?php echo $Remarks;?></td>
-      </tr>
-    </table>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="3">&nbsp;</td>
-  </tr>
+ 
   <tr>
     <td colspan="3">
     
     <table width="100%" border="0" cellpadding="3" style="border-style:dashed;">
       <tr>
-        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Part No.</th>
-        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Item Details</th>
-        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Qty/UOM</th>
-        <th scope="col" style="border-top: 1px dashed; border-bottom: 1px dashed;">Price</th>
-        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Total Amount</th>
+        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Item Description</th>
+        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Qty</th>
+        <th scope="col" style="border-top: 1px dashed; border-bottom: 1px dashed;">Unit</th>
       </tr>
       <?php 
 		$sqlbody = mysqli_query($con,"select a.*,b.citemdesc from so_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$csalesno'");
@@ -185,11 +163,9 @@ function PrintRed(x){
 	?>
       
       <tr>
-        <td style="border-right:1px dashed;"><?php echo $rowbody['citemno'];?></td>
-        <td style="border-right:1px dashed;"><?php echo $rowbody['citemdesc'];?></td>
-        <td style="border-right:1px dashed;" align="right"><?php echo $rowbody['nqty'];?> <?php echo $rowbody['cunit'];?></td>
-        <td style="border-right:1px dashed;" align="right"><?php echo $rowbody['nprice'];?></td>
-        <td align="right"><?php echo $rowbody['namount'];?></td>
+        <td style="border-right:1px dashed;"><?php echo strtoupper($rowbody['citemdesc']);?></td>
+        <td style="border-right:1px dashed;" align="right"><?php echo $rowbody['nqty'];?></td>
+        <td style="border-right:1px dashed;" align="right"><?php echo $rowbody['cunit'];?></td>
         
       </tr>
       <?php 
@@ -197,9 +173,7 @@ function PrintRed(x){
 		}
 	  ?>
         <tr>
-        <td height="30" colspan="2" style="border-top:1px dashed;" valign="bottom">Prepared By: <?php echo $_SESSION['employeefull'];?></td>
-        <td colspan="2" style="border-top:1px dashed;" align="right"  valign="bottom"><b>Total Gross: </b></td>
-        <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?php echo $Gross;?></b></td>
+        <td height="30" colspan="3" style="border-top:1px dashed;" valign="bottom">Prepared By: <?php echo $_SESSION['employeefull'];?></td>
         </tr>
 
     </table></td>

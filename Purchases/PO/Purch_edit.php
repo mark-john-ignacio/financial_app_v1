@@ -16,7 +16,7 @@ else{
 		$cpono = $_REQUEST['txtcpono'];
 	}
 
-$sqlhead = mysqli_query($con,"select a.cpono, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dneeded,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.nbasegross, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.lcancelled, a.lapproved, a.lprintposted, a.ccustacctcode, b.cname from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
+$sqlhead = mysqli_query($con,"select a.cpono, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dneeded,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.nbasegross, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.lcancelled, a.lapproved, a.lprintposted, a.ccustacctcode, b.cname, a.ccontact, a.ccontactemail from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
 
 /*
 function listcurrencies(){ //API for currency list
@@ -69,6 +69,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$ccurrcode = $row['ccurrencycode']; 
 		$ccurrdesc = $row['ccurrencydesc']; 
 		$ccurrrate = $row['nexchangerate']; 
+
+		$ccontact = $row['ccontact']; 
+		$ccontactemail = $row['ccontactemail']; 
 		
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
@@ -80,7 +83,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
         <table width="100%" border="0">
   <tr>
     <tH>PO No.:</tH>
-    <td colspan="2" style="padding:2px"><div class="col-xs-3"><input type="text" class="form-control input-sm" id="txtcpono" name="txtcpono" width="20px" tabindex="1" value="<?php echo $cpono;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');"></div>
+    <td colspan="2" style="padding:2px"><div class="col-xs-3 nopadding"><input type="text" class="form-control input-sm" id="txtcpono" name="txtcpono" width="20px" tabindex="1" value="<?php echo $cpono;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');"></div>
       
       
       <input type="hidden" name="hdntranno" id="hdntranno" value="<?php echo $cpono;?>">
@@ -106,15 +109,19 @@ if (mysqli_num_rows($sqlhead)!=0) {
   <tr>
     <tH width="100">Supplier:</tH>
     <td style="padding:2px">
-    	<div class="col-xs-5">
-        	<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..." value="<?php echo $CustName;?>" autocomplete="off">
-        </div> 
-        &nbsp;&nbsp;
-        	<input type="text" id="txtcustid" name="txtcustid" style="border:none; height:30px" readonly value="<?php echo $CustCode;?>">
+			<div class="col-xs-12 nopadding">
+				<div class="col-xs-3 nopadding">
+					<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" value="<?php echo $CustCode;?>">
+				</div>
+
+				<div class="col-xs-8 nopadwleft">
+					<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" value="<?php echo $CustName;?>">
+				</div> 
+			</div>
     </td>
-    <tH width="150">Date:</tH>
-    <td style="padding:2px;">
-     <div class="col-xs-8">
+    <tH width="150">PO Date:</tH>
+    <td width="250" style="padding:2px;">
+     <div class="col-xs-5 nopadding">
 		<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $Date; ?>" readonly/>
 
      </div>
@@ -122,19 +129,39 @@ if (mysqli_num_rows($sqlhead)!=0) {
   </tr>
   <tr>
     <tH width="100">Remarks:</tH>
-    <td style="padding:2px"><div class="col-xs-8"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value="<?php echo $Remarks; ?>"></div></td>
-    <tH width="150" style="padding:2px">Date Needed:</tH>
+    <td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value="<?php echo $Remarks; ?>"></div></td>
+    <tH width="100" style="padding:2px">Date Needed:</tH>
     <td style="padding:2px">
-    <div class="col-xs-8">
+    <div class="col-xs-5 nopadding">
 		<input type='text' class="datepick form-control input-sm" id="date_needed" name="date_needed" value="<?php echo $DateNeeded; ?>" />
 
      </div>
     </td>
   </tr>
+
+	<tr>
+    <tH width="100">Contact:</tH>
+    <td style="padding:2px">
+			<div class="col-xs-3 nopadding"> 
+				<button class="btn btn-sm btn-block btn-warning" name="btnSearchCont" id="btnSearchCont" type="button">Search</button>
+			</div>
+			<div class="col-xs-8 nopadwleft">
+				<input type="text" id="txtcontactname" name="txtcontactname" class="required form-control input-sm" placeholder="Contact Person Name..." tabindex="1"  required="true" value="<?php echo $ccontact; ?>">
+			</div>
+		</td>
+    <tH width="100" style="padding:2px">Email:</tH>
+    <td style="padding:2px">
+    <div class="col-xs-11 nopadding">
+			<input type='text' class="form-control input-sm" id="contact_email" name="contact_email" value="<?php echo $ccontactemail; ?>" />
+
+     </div>
+    </td>
+  </tr>
+
   <tr>
     <tH width="100">Currency:</tH>
     <td style="padding:2px">
-		<div class="col-xs-12">
+			<div class="col-xs-12 nopadding">
 							<div class="col-xs-6 nopadding">
 								<select class="form-control input-sm" name="selbasecurr" id="selbasecurr"> 						
 									<?php
@@ -186,23 +213,17 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							<div class="col-xs-4" id="statgetrate" style="padding: 4px !important"> 
 										
 							</div>
-		</div>
-	</td>
-    <tH width="150" style="padding:2px">&nbsp;</tH>
+			</div>
+		</td>
+    <tH width="100" style="padding:2px">&nbsp;</tH>
     <td style="padding:2px">&nbsp;</td>
   </tr>
-  
-    <tr>
-    <td colspan="2">&nbsp;</td>
-    <th style="padding:2px"><!--<span style="padding:2px">PURCHASE TYPE:</span>--></th>
-    <td>&nbsp;</td>
-    </tr>
 
   <tr>
     <td colspan="4">&nbsp;</td>
     </tr>
 <tr>
-    <td colspan="2">
+    <td colspan="4">
       <div class="col-xs-12 nopadwdown">
         <div class="col-xs-3 nopadding">
           <input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." width="25" tabindex="4">
@@ -215,8 +236,6 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
         <input type="hidden" name="hdnunit" id="hdnunit">
     </td>
-    <td></td>
-    <td></td>
 
 </tr>
 </table>
@@ -272,8 +291,16 @@ Undo Edit<br>(CTRL+Z)
 	
 ?>
 
-   <button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>');" id="btnPrint" name="btnPrint">
+   <button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','Print');" id="btnPrint" name="btnPrint">
 Print<br>(CTRL+P)
+    </button>
+
+		<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','PDF');" id="btnPDF" name="btnPDF">
+View PDF<br>&nbsp;
+    </button>
+
+    			<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','Email');" id="btnEmail" name="btnEmail">
+Send Email<br>&nbsp;
     </button>
 
 <?php		
@@ -305,20 +332,21 @@ Save<br>(CTRL+S)    </button>
 }
 else{
 ?>
-<form action="Purch_edit.php" name="frmpos2" id="frmpos2" method="post">
-  <fieldset>
-   	<legend>Purchase Order</legend>	
-<table width="100%" border="0">
-  <tr>
-    <tH width="100">PO NO.:</tH>
-    <td colspan="3" style="padding:2px" align="left"><div class="col-xs-3"><input type="text" class="form-control input-sm" id="txtcpono" name="txtcpono" width="20px" tabindex="1" value="<?php echo $cpono;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos2');"></div></td>
-    </tr>
-  <tr>
-    <tH colspan="4" align="center" style="padding:10px"><font color="#FF0000"><b>PO No. DID NOT EXIST!</b></font></tH>
-    </tr>
-</table>
-</fieldset>
-</form>
+	<form action="Purch_edit.php" name="frmpos2" id="frmpos2" method="post">
+		<fieldset>
+			<legend>Purchase Order</legend>	
+
+			<table width="100%" border="0">
+				<tr>
+					<tH width="100">PO NO.:</tH>
+					<td colspan="3" style="padding:2px" align="left"><div class="col-xs-3"><input type="text" class="form-control input-sm" id="txtcpono" name="txtcpono" width="20px" tabindex="1" value="<?php echo $cpono;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos2');"></div></td>
+				</tr>
+				<tr>
+					<tH colspan="4" align="center" style="padding:10px"><font color="#FF0000"><b>PO No. DID NOT EXIST!</b></font></tH>
+				</tr>
+			</table>
+		</fieldset>
+	</form>
 <?php
 }
 ?>
@@ -360,8 +388,42 @@ else{
     </div>
 </div>
 
+<!-- MODAL FOR CONTACT NAME -->
+<div class="modal fade" id="ContactModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog vertical-align-top">
+        <div class="modal-content">
+        	<div class="modal-header">
+        		Select Contact Person
+            </div>
+            <div class="modal-body">
+            	<table id="ContactTbls" class="table table-condensed" width="100%">
+            		
+	            	<thead>
+	            		<tr>
+	            			<th>Name</th>
+	            			<th>Designation</th>
+	            			<th>Department</th>
+	            			<th>Email</th>
+	            		</tr>
+	            	</thead>
+	            	<tbody>
+
+	            	</tbody>
+            	</table>
+            </div>
+            <div class="modal-footer">
+            	<button type="button" class="btn btn-warning btn-sm" data-dismiss="modal" id="btnmodclose">CLOSE</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <form method="post" name="frmedit" id="frmedit" action="Purch_edit.php">
 	<input type="hidden" name="txtctranno" id="txtctranno" value="">
+</form>
+
+<form action="PrintPO.php" method="post" name="frmQPrint" id="frmQprint" target="_blank">
+	<input type="hidden" name="hdntransid" id="hdntransid" value="<?php echo $cpono; ?>">
 </form>
 
 </body>
@@ -391,7 +453,7 @@ else{
 	  else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
 		if($("#btnPrint").is(":disabled")==false){
 			e.preventDefault();
-			printchk('<?php echo $cpono;?>');
+			printchk('<?php echo $cpono;?>', 'Print');
 		}
 	  }
 	  else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
@@ -438,6 +500,7 @@ $(document).ready(function() {
 		});
 
 });
+
 
 $(function(){	
 
@@ -567,6 +630,58 @@ $(function(){
 		
 	});
 	
+
+	$("#btnSearchCont").on("click", function(){
+
+		//get contact names
+		if($('#txtcustid').val()!="" && $('#txtcust').val()!=""){
+			$('#ContactTbls tbody').empty(); 
+
+			$.ajax({
+						url:'get_contactinfonames.php',
+						data: 'c_id='+ $('#txtcustid').val(),  
+						dataType: "json",               
+						success: function(data){
+							
+							$.each(data,function(index,item){
+
+								//put to table
+								$("<tr class='bdydeigid' style='cursor:pointer'>").append(
+									$("<td class='disnme'>").text(item.cname),
+									$("<td class='disndesig'>").text(item.cdesig),
+									$("<td class='disdept'>").text(item.cdept),
+									$("<td class='disemls'>").text(item.cemail)
+								).appendTo("#ContactTbls tbody");
+
+							});
+				}
+			});
+
+			$("#ContactModal").modal("show");
+		}else{
+			alert("Supplier Required!");
+			document.getElementById("txtcust").focus();
+			return false;
+		}
+	});
+
+	$(document).on("click", "tr.bdydeigid" , function() {
+    var $row = $(this).closest("tr"),       // Finds the closest row <tr> 
+	  $tds = $row.find("td");             // Finds all children <td> elements
+
+		$.each($tds, function() {               // Visits every single <td> element
+		   // alert($(this).attr("class"));        // Prints out the text within the <td>
+
+		    if($(this).attr("class")=="disnme"){
+		    	$('#txtcontactname').val($(this).text());
+		    }
+		     if($(this).attr("class")=="disemls"){
+		    	$("#contact_email").val($(this).text());
+		    }
+		});
+
+		$("#ContactModal").modal("hide");
+  });
 
 });
 
@@ -1029,6 +1144,8 @@ function disabled(){
 	$("#btnMain").attr("disabled", false);
 	$("#btnNew").attr("disabled", false);
 	$("#btnPrint").attr("disabled", false);
+	$("#btnPDF").attr("disabled", false);   
+	$("#btnEmail").attr("disabled", false);
 	$("#btnEdit").attr("disabled", false);
 }
 
@@ -1055,23 +1172,47 @@ function enabled(){
 			$("#btnMain").attr("disabled", true);
 			$("#btnNew").attr("disabled", true);
 			$("#btnPrint").attr("disabled", true);
+			$("#btnPDF").attr("disabled", true);   
+			$("#btnEmail").attr("disabled", true);
 			$("#btnEdit").attr("disabled", true);
 	
 	}
 }
 
-function printchk(x){
+function printchk(x,typx){
 	if(document.getElementById("hdncancel").value==1){	
 		document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
 		document.getElementById("statmsgz").style.color = "#FF0000";
 	}
 	else{
-		  var url =  "Purch_confirmprint.php?x="+x;
+		 // var url =  "Purch_confirmprint.php?x="+x;
 		  
-		  $("#myprintframe").attr('src',url);
+		 // $("#myprintframe").attr('src',url);
 
 
-		$("#PrintModal").modal('show');
+			if(typx=="Print"){
+				//alert("PrintPO.php?hdntransid="+x);
+				$("#myprintframe").attr("src","Purch_confirmprint.php?x="+x);
+
+				$("#PrintModal").modal('show');
+			}else if(typx=="PDF"){
+				$("#frmQprint").attr("action","PrintPO_PDF.php");
+				$("#frmQprint").submit();
+			}else if(typx=="Email"){
+				if($("#contact_email").val()==""){
+					$("#AlertMsg").html("<b>ERROR: </b> Can't send email without the contact person email address!");
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
+				}else{
+					$("#frmQprint").attr("action","PrintPO_Email.php");
+					$("#frmQprint").submit();
+				}
+			}
+			//$("#frmQprint").submit();
+
+
+
+		
 
 	}
 }
@@ -1148,6 +1289,29 @@ function recomputeCurr(){
 	}
 
 	ComputeGross();
+}
+
+function getcontact(cid){
+
+$.ajax({
+			url:'../get_contactinfo.php',
+			data: 'c_id='+ cid,                 
+			success: function(value){
+				if(value!=""){
+					if(value.trim()=="Multi"){
+						$("#btnSearchCont").click();
+					}else{
+							var data = value.split(":");
+							
+							$('#txtcontactname').val(data[0]);
+							//$('#txtcontactdesig').val(data[1]);
+				//$('#txtcontactdept').val(data[2]);
+				$("#contact_email").val(data[3]);
+					}
+				}
+	}
+});
+
 }
 
 </script>

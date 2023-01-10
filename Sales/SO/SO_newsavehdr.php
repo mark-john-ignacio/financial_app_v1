@@ -11,9 +11,9 @@ $company = $_SESSION['companyid'];
 
 function chkgrp($valz) {
 	if($valz==''){
-		return "NULL";
+		return "''";
 	}else{
-    	return "'".$valz."'";
+		return "'".str_replace("'","\'",$valz)."'";
 	}
 }
 
@@ -53,10 +53,10 @@ else {
 	$cCPONO = $_REQUEST['txtcPONo'];
 	$salesman = $_REQUEST['txtsalesmanid'];
 	$delcodes = $_REQUEST['txtdelcustid'];
-	$delhousno = $_REQUEST['txtchouseno'];
-	$delcity = $_REQUEST['txtcCity'];
-	$delstate = $_REQUEST['txtcState'];
-	$delcountry = $_REQUEST['txtcCountry'];
+	$delhousno = chkgrp($_REQUEST['txtchouseno']);
+	$delcity = chkgrp($_REQUEST['txtcCity']);
+	$delstate = chkgrp($_REQUEST['txtcState']);
+	$delcountry = chkgrp($_REQUEST['txtcCountry']);
 	$delzip = $_REQUEST['txtcZip'];
 	$specins = chkgrp($_REQUEST['txtSpecIns']);
 
@@ -70,7 +70,7 @@ else {
 	//INSERT HEADER
 
 	if (!mysqli_query($con, "INSERT INTO so(`compcode`, `ctranno`, `ccode`, `cremarks`, `cspecins`, `ddate`, `dcutdate`, `ngross`, `nbasegross`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `cpreparedby`, `csalestype`, `cpono`, `csalesman`, `cdelcode`, `cdeladdno`, `cdeladdcity`, `cdeladdstate`, `cdeladdcountry`, `cdeladdzip`) 
-	values('$company', '$cSINo', '$cCustID', $cRemarks, $specins, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby', '$cSITyp', '$cCPONO', '$salesman', '$delcodes', '$delhousno', '$delcity', '$delstate', '$delcountry', '$delzip')")) {
+	values('$company', '$cSINo', '$cCustID', $cRemarks, $specins, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby', '$cSITyp', '$cCPONO', '$salesman', '$delcodes', $delhousno, $delcity, $delstate, $delcountry, '$delzip')")) {
 		echo "False";
 		//echo mysqli_error($con);
 	} 

@@ -34,7 +34,7 @@ include('../../include/denied.php');
 	}
 	
 	$csalesno = $_REQUEST['x'];
-	$sqlhead = mysqli_query($con,"select a.*,b.cname from sales a left join customers b on a.ccode=b.cempid where a.compcode='$company' and a.ctranno = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.chouseno,b.ccity,b.cstate from ntsales a left join customers b on a.ccode=b.cempid where a.compcode='$company' and a.ctranno = '$csalesno'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -42,6 +42,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$CustName = $row['cname'];
 		$Remarks = $row['cremarks'];
 		$Date = $row['dcutdate'];
+    $Adds = $row['chouseno']." ". $row['ccity']." ". $row['cstate'];
+
 		//$SalesType = $row['csalestype'];
 		//$Gross = $row['ngross'];
 		
@@ -59,66 +61,34 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <head>
 </head>
 
-<body style="padding:5px" onLoad="window.print();">
+<body style="padding:5px" >
 
 <table width="100%" border="0" cellpadding="3" style="border-collapse:collapse;" id="tblMain">
   <tr>
-    <td><font size="3"><b><?php echo $companyname;?></b></font></td>
-    <td colspan="2" align="center"><font size="3"><b>Sales Invoice</b></font></td>
+    <td><h1>SALES ORDER SLIP<h1></td>
+    <td colspan="2" align="center"><font size="3"><b><?php echo $csalesno;?></b></font></td>
   </tr>
   <tr>
-    <!--<td><font size="2"><b><?php //echo $companydesc;?></b></font></td>-->
-    <td><font size="2"><b><?php echo $companyadd;?></b></font></td>
-    <td width="100">Number:</td>
-    <td width="150"><?php echo $csalesno;?></td>
+    <td>To:&nbsp;&nbsp;&nbsp;<?=$CustName?></td>
+    <td>Date: &nbsp;&nbsp;&nbsp; <?php echo $Date;?> </td>
   </tr>
   <tr>
-    <td><font size="2"><b>TIN #<?php echo $companytin;?></b></font></td>
-    <td width="100">Delivery Date:</td>
-    <td width="150"><?php echo $Date;?></td>
+    <td colspan="2">Address:&nbsp;&nbsp;&nbsp;<?=$Adds?></td>
   </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td width="100">Page:</td>
-    <td width="150">&nbsp;</td>
-  </tr>
-  <tr>
-    <td colspan="3">&nbsp;</td>
-  </tr>
-  <tr>
-    <td colspan="3">
-    
-    <table width="100%" border="0" cellpadding="3" cellspacing="5">
-      <tr>
-        <td height="60" valign="top" style="border:1px solid; border-style:dashed;"><font size="2"><b>CUSTOMER:</b></font><br>&nbsp;&nbsp; &nbsp; <?php echo $CustCode;?> - <?php echo $CustName;?></td>
-        <td width="40%" height="60" valign="top" style="border:1px solid; border-style:dashed;"><font size="2"><b>DELIVERY DETAILS:</b></font><br>&nbsp;&nbsp; &nbsp; <?php echo $Remarks;?><br>
-        <?php
-        	if($lPrintPosted==1){
-				echo "<font color='#FF0000'><b><i>ORIGINAL SI ALREADY PRINTED<i></b></font>";
-			}
-		?>
-        
-        </td>
-      </tr>
-    </table>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="3">&nbsp;</td>
-  </tr>
+  
   <tr>
     <td colspan="3">
     
     <table width="100%" border="0" cellpadding="3" style="border-style:dashed;">
       <tr>
-        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Part No.</th>
-        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Item Details</th>
-        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Qty/UOM</th>
-        <th scope="col" style="border-top: 1px dashed; border-bottom: 1px dashed;">Price</th>
+        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Qty</th>
+        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Unit</th>
+        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Description</th>
+        <th scope="col" style="border-top: 1px dashed; border-bottom: 1px dashed;">Unit Price</th>
         <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Total Amount</th>
       </tr>
       <?php 
-		$sqlbody = mysqli_query($con,"select a.*,b.citemdesc from sales_t a left join items b on a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$csalesno' Order By a.cidentity");
+		$sqlbody = mysqli_query($con,"select a.*,b.citemdesc from ntsales_t a left join items b on a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$csalesno' Order By a.cidentity");
 
 		if (mysqli_num_rows($sqlbody)!=0) {
 		$cntr = 0;
@@ -132,11 +102,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	?>
       
       <tr>
-        <td style="border-right:1px dashed;"><?php echo $rowbody['citemno'];?></td>
+        <td style="border-right:1px dashed;"><?php echo number_format($rowbody['nqty'],2);?></td>
+        <td style="border-right:1px dashed;"><?php echo $rowbody['cunit'];?></td>
         <td style="border-right:1px dashed;"><?php echo $rowbody['citemdesc'];?></td>
-        <td style="border-right:1px dashed;" align="right"><?php echo $rowbody['nqty'];?> <?php echo $rowbody['cunit'];?></td>
-        <td style="border-right:1px dashed;" align="right"><?php echo $rowbody['nprice'];?></td>
-        <td align="right"><?php echo $rowbody['namount'];?></td>
+        <td style="border-right:1px dashed;" align="right"><?php echo number_format($rowbody['nprice'],2);?></td>
+        <td align="right"><?php echo number_format($rowbody['namount'],2);?></td>
         
       </tr>
       <?php 
@@ -150,7 +120,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		}
 	  ?>
         <tr>
-        <td colspan="4" style="border-top:1px dashed;" align="right"  valign="bottom"><b>Total Gross: </b></td>
+        <td colspan="4" style="border-top:1px dashed;" align="right"  valign="bottom"><b>Grand Total: </b></td>
         <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?php echo $Gross;?></b></td>
         </tr>
         <tr>

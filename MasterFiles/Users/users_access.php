@@ -577,26 +577,33 @@ xmlhttp.send();
 	 <br>
       <b><u><i>Purchase Order</i></u></b>
         <div style="padding-left:10px;"> 
-        <div class="col-xs-12 nopadwleft">
-         	<div class="col-xs-2 nopadding">
+          <div class="col-xs-12 nopadwleft">
+         	  <div class="col-xs-3 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="Purch.php" id="chkBox26">&nbsp;View List</label>
             </div>
-            <div class="col-xs-2 nopadding">
+            <div class="col-xs-3 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="Purch_new.php" id="chkBox27">&nbsp;Add New</label>
             </div>
-            <div class="col-xs-2 nopadding">
+            <div class="col-xs-3 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="Purch_edit.php" id="chkBox28">&nbsp;Edit</label>
             </div>
-            <div class="col-xs-2 nopadding">
+            <div class="col-xs-3 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="Purch_post" id="chkBox29">&nbsp;Post</label>
             </div>
-            <div class="col-xs-2 nopadding">
+          </div>
+          <div class="col-xs-12 nopadwleft">
+            <div class="col-xs-3 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="Purch_cancel" id="chkBox30">&nbsp;Cancel</label>
             </div>
-            <div class="col-xs-2 nopadding">
+
+            <div class="col-xs-3 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="Purch_unpost.php" id="chkBox188">&nbsp;Un-Post</label>
+            </div>
+
+            <div class="col-xs-3 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="Purch_print" id="chkBox113">&nbsp;Print</label>
             </div>
-		</div>
+		      </div>
 		</div>
 
 	   <br>
@@ -1037,7 +1044,7 @@ $(document).ready(function(){
 </script>
 
 
-<!-- LAST NUMBER chkBox187 -->
+<!-- LAST NUMBER chkBox188 -->
 </form>
 </body>
 </html>

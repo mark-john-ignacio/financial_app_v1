@@ -280,7 +280,6 @@ $(function() {
 						<th>Customer</th>
                         <th>Order Date</th>
 						<th>Delivery Date</th>
-						<th>Gross</th>
                         <th>Status</th>
 					</tr>
 				</thead>
@@ -300,29 +299,27 @@ $(function() {
  					<tr>
 						<td><a href="javascript:;" onClick="editfrm('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
 						<td><?php echo $row['ccode'];?> - <?php echo utf8_encode($row['cname']);?> </td>
-                        <td><?php echo $row['ddate'];?></td>
-                        <td><?php echo $row['dcutdate'];?></td>
-						<td align="right"><?php echo $row['ngross'];?></td>
-                        <td align="center">
-                        <div id="msg<?php echo $row['ctranno'];?>">
-                        	<?php 
-							if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
-							?>
-								<a href="javascript:;" onClick="trans('POST','<?php echo $row['ctranno'];?>','Posted','<?php echo $row['ccode'];?>',<?php echo $row['nlimit'];?>)">POST</a> | <a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['ctranno'];?>','Cancelled','','')">CANCEL</a>
-							<?php
-                            }
-							else{
-								if(intval($row['lcancelled'])==intval(1)){
-									echo "Cancelled";
-								}
-								if(intval($row['lapproved'])==intval(1)){
-									echo "Posted";
-								}
-							}
-							
-							?>
-                            </div>
-                        </td>
+            <td><?php echo $row['ddate'];?></td>
+            <td><?php echo $row['dcutdate'];?></td>
+            <td align="center">
+              <div id="msg<?php echo $row['ctranno'];?>">
+                <?php 
+									if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
+								?>
+									<a href="javascript:;" onClick="trans('POST','<?php echo $row['ctranno'];?>','Posted','<?php echo $row['ccode'];?>',<?php echo $row['nlimit'];?>)">POST</a> | <a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['ctranno'];?>','Cancelled','','')">CANCEL</a>
+								<?php
+                  }
+									else{
+										if(intval($row['lcancelled'])==intval(1)){
+											echo "Cancelled";
+										}
+										if(intval($row['lapproved'])==intval(1)){
+											echo "Posted";
+										}
+									}									
+								?>
+              </div>
+            </td>
 					</tr>
                 <?php 
 				}

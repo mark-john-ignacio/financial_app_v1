@@ -11,9 +11,9 @@ $company = $_SESSION['companyid'];
 
 function chkgrp($valz) {
 	if($valz==''){
-		return "NULL";
+		return "''";
 	}else{
-    	return "'".$valz."'";
+    return "'".str_replace("'","\'",$valz)."'";
 	}
 }
 
@@ -52,27 +52,29 @@ else {
 	$nDRPrintNo = chkgrp($_REQUEST['cdrprintno']);
 	$salesman = $_REQUEST['salesman'];
 	$delcodes = $_REQUEST['delcodes'];
-	$delhousno = $_REQUEST['delhousno'];
-	$delcity = $_REQUEST['delcity'];
-	$delstate = $_REQUEST['delstate'];
-	$delcountry = $_REQUEST['delcountry'];
+	$delhousno = chkgrp($_REQUEST['delhousno']);
+	$delcity = chkgrp($_REQUEST['delcity']);
+	$delstate = chkgrp($_REQUEST['delstate']);
+	$delcountry = chkgrp($_REQUEST['delcountry']);
 	$delzip = $_REQUEST['delzip'];
 
 	$preparedby = $_SESSION['employeeid'];
 	$cacctcode = "NULL";
 
-				$sqlhead = mysqli_query($con,"Select cacctcodesales from customers where compcode='$company' and cempid='$cCustID'");
+				$sqlhead = mysqli_query($con,"Select cacctcodesales,cterms from customers where compcode='$company' and cempid='$cCustID'");
 				if (mysqli_num_rows($sqlhead)!=0) {
 					$row = mysqli_fetch_assoc($sqlhead);
 					$cacctcode = "'".$row["cacctcodesales"]."'";
+					$cterms = "'".$row["cterms"]."'";
 				}
 	
 	//INSERT HEADER
 
-	if (!mysqli_query($con, "INSERT INTO dr(`compcode`, `ctranno`, `ccode`, `cremarks`, `ddate`, `dcutdate`, `ngross`, `cpreparedby`, `cacctcode`, `cdrprintno`, `csalesman`, `cdelcode`, `cdeladdno`, `cdeladdcity`, `cdeladdstate`, `cdeladdcountry`, `cdeladdzip`) 
-	values('$company', '$cSINo', '$cCustID', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$preparedby', $cacctcode, $nDRPrintNo, '$salesman', '$delcodes', '$delhousno', '$delcity', '$delstate', '$delcountry', '$delzip')")) {
+	if (!mysqli_query($con, "INSERT INTO dr(`compcode`, `ctranno`, `ccode`, `cterms`, `cremarks`, `ddate`, `dcutdate`, `ngross`, `cpreparedby`, `cacctcode`, `cdrprintno`, `csalesman`, `cdelcode`, `cdeladdno`, `cdeladdcity`, `cdeladdstate`, `cdeladdcountry`, `cdeladdzip`) 
+	values('$company', '$cSINo', '$cCustID', $cterms, $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$preparedby', $cacctcode, $nDRPrintNo, '$salesman', '$delcodes', $delhousno, $delcity, $delstate, $delcountry, '$delzip')")) {
 		echo "False";
-		//echo mysqli_error($con);
+
+		echo mysqli_error($con);
 	} 
 	else {
 

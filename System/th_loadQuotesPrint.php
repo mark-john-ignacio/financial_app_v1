@@ -5,9 +5,9 @@ session_start();
 require_once "../Connection/connection_string.php";
 
 
-	$company = $_SESSION['companyid'];
+$company = $_SESSION['companyid'];
 
-    $result = mysqli_query($con,"SELECT * FROM `parameters` where compcode='$company' and ccode in ('QUOTEHDR','QUOTEFTR')"); 
+    $result = mysqli_query($con,"SELECT * FROM `parameters` where compcode='$company' and ccode in ('QUOTEHDR','QUOTEFTR','POEMAILBODY')"); 
             
     if (mysqli_num_rows($result)!=0) {
       while($comprow = mysqli_fetch_array($result, MYSQLI_ASSOC)){

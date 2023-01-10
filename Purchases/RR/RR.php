@@ -218,8 +218,8 @@ $(function() {
 						<th>Customer</th>
 						<th class="text-center">Trans Date</th>
                         <th class="text-center">Received Date</th>
-						<th>Gross</th>
-						<!--<th>Purchase Type</th>-->
+						<!--<th>Gross</th>
+						<th>Purchase Type</th>-->
                         <th class="text-center">Status</th>
 					</tr>
 				</thead>
@@ -242,7 +242,7 @@ $(function() {
 						<td><?php echo $row['ccode'];?> - <?php echo $row['cname'];?> </td>
                         <td><?php echo $row['ddate'];?></td>
                          <td><?php echo $row['dreceived'];?></td>
-						<td align="right"><?php echo $row['ngross'];?></td>
+						<!--<td align="right"><?//php echo $row['ngross'];?></td>-->
                         <td align="center">
                         <div id="msg<?php echo $row['ctranno'];?>">
                         	<?php 

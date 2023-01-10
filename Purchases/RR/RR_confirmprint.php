@@ -144,9 +144,9 @@ function PrintRed(x){
         <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Part No.</th>
         <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Item Details</th>
         <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Qty/UOM</th>
-        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Price</th>
+        <!--<th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Price</th>
         <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">%</th>
-        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Total Php.</th>
+        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Total Php.</th>-->
       </tr>
       <?php 
 		$sqlbody = mysqli_query($con,"select a.*,b.citemdesc from receive_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$cpono' order by a.nident");
@@ -162,9 +162,9 @@ function PrintRed(x){
         <td style="border-right:1px dashed;"><?php echo $rowbody['citemno'];?></td>
         <td style="border-right:1px dashed;"><?php echo $rowbody['citemdesc'];?></td>
         <td style="border-right:1px dashed;" align="right"><?php echo $rowbody['nqty'];?> <?php echo $rowbody['cunit'];?></td>
-        <td style="border-right:1px dashed;" align="right"><?php echo $rowbody['nprice'];?></td>
+       <!-- <td style="border-right:1px dashed;" align="right"><?//php echo $rowbody['nprice'];?></td>
         <td style="border-right:1px dashed;">&nbsp;</td>
-        <td align="right"><?php echo $rowbody['namount'];?></td>
+        <td align="right"><?//php echo $rowbody['namount'];?></td>-->
         
       </tr>
       <?php 
@@ -172,9 +172,7 @@ function PrintRed(x){
 		}
 	  ?>
         <tr>
-        <td height="30" colspan="2" style="border-top:1px dashed;" valign="bottom">Prepared By: <?php echo $_SESSION['employeefull'];?></td>
-        <td colspan="3" style="border-top:1px dashed;" align="right"  valign="bottom"><b>Total Php: </b></td>
-        <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?php echo $Gross;?></b></td>
+        <td height="30" colspan="3" style="border-top:1px dashed;" valign="bottom">Prepared By: <?php echo $_SESSION['employeefull'];?></td>
         </tr>
 
     </table></td>

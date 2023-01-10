@@ -11,9 +11,9 @@ $company = $_SESSION['companyid'];
 
 function chkgrp($valz) {
 	if($valz==''){
-		return "NULL";
+		return "''";
 	}else{
-    	return "'".$valz."'";
+    return "'".str_replace("'","\'",$valz)."'";
 	}
 }
 
@@ -52,10 +52,10 @@ else {
 	$nDRPrintNo = chkgrp($_REQUEST['cdrprintno']);
 	$salesman = $_REQUEST['salesman'];
 	$delcodes = $_REQUEST['delcodes'];
-	$delhousno = $_REQUEST['delhousno'];
-	$delcity = $_REQUEST['delcity'];
-	$delstate = $_REQUEST['delstate'];
-	$delcountry = $_REQUEST['delcountry'];
+	$delhousno = chkgrp($_REQUEST['delhousno']);
+	$delcity = chkgrp($_REQUEST['delcity']);
+	$delstate = chkgrp($_REQUEST['delstate']);
+	$delcountry = chkgrp($_REQUEST['delcountry']);
 	$delzip = $_REQUEST['delzip'];
 
 	$preparedby = $_SESSION['employeeid'];
@@ -70,7 +70,7 @@ else {
 	//INSERT HEADER
 
 	if (!mysqli_query($con, "INSERT INTO ntdr(`compcode`, `ctranno`, `ccode`, `cremarks`, `ddate`, `dcutdate`, `ngross`, `cpreparedby`, `cacctcode`, `cdrprintno`, `csalesman`, `cdelcode`, `cdeladdno`, `cdeladdcity`, `cdeladdstate`, `cdeladdcountry`, `cdeladdzip`) 
-	values('$company', '$cSINo', '$cCustID', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$preparedby', $cacctcode, $nDRPrintNo, '$salesman', '$delcodes', '$delhousno', '$delcity', '$delstate', '$delcountry', '$delzip')")) {
+	values('$company', '$cSINo', '$cCustID', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$preparedby', $cacctcode, $nDRPrintNo, '$salesman', '$delcodes', $delhousno, $delcity, $delstate, $delcountry, '$delzip')")) {
 		echo "False";
 		//echo mysqli_error($con);
 	} 

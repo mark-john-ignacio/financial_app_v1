@@ -138,7 +138,7 @@ $(function() {
 </script>
 </head>
 
-<body style="padding:5px" onLoad="document.getElementById('txtcsalesno').focus();">
+<body style="padding:5px">
 	<div>
 		<section>
         <div>

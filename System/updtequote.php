@@ -12,6 +12,13 @@ require_once "../Connection/connection_string.php";
 	$y = $_REQUEST['nme'];
 
 	
+	if($y=="POEMAILBODY"){
+		$xmsg =  "PO EMAIL BODY";
+	}else{
+		$xmsg = "QUOTE PRINTOUT";
+	}
+
+	
 	$result = mysqli_query ($con, "Select * From parameters where compcode='$company' and ccode='$y'"); 
 	
 	if(mysqli_num_rows($result)==0){
@@ -23,7 +30,7 @@ require_once "../Connection/connection_string.php";
 				echo "True";
 	
 					mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-					values('$company','$y','$preparedby',NOW(),'INSERTED','QUOTE PRINTOUT','$compname','Inserted New Record')");
+					values('$company','$y','$preparedby',NOW(),'INSERTED','".$xmsg."','$compname','Inserted New Record')");
 
 			}
 	}
@@ -36,7 +43,7 @@ require_once "../Connection/connection_string.php";
 			else{
 
 				mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-					values('$company','$y','$preparedby',NOW(),'UPDATED','QUOTE PRINTOUT','$compname','Inserted New Record')");
+					values('$company','$y','$preparedby',NOW(),'UPDATED','".$xmsg."','$compname','Inserted New Record')");
 
 				echo "True";
 			}

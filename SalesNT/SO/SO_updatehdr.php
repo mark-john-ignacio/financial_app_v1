@@ -9,9 +9,9 @@ $company = $_SESSION['companyid'];
 
 function chkgrp($valz) {
 	if($valz==''){
-		return "NULL";
+		return "''";
 	}else{
-    	return "'".$valz."'";
+		return "'".str_replace("'","\'",$valz)."'";
 	}
 }
 
@@ -31,10 +31,10 @@ function chkgrp($valz) {
 
 	$salesman = $_REQUEST['txtsalesmanid'];
 	$delcodes = $_REQUEST['txtdelcustid'];
-	$delhousno = $_REQUEST['txtchouseno'];
-	$delcity = $_REQUEST['txtcCity'];
-	$delstate = $_REQUEST['txtcState'];
-	$delcountry = $_REQUEST['txtcCountry'];
+	$delhousno = chkgrp($_REQUEST['txtchouseno']);
+	$delcity = chkgrp($_REQUEST['txtcCity']);
+	$delstate = chkgrp($_REQUEST['txtcState']);
+	$delcountry = chkgrp($_REQUEST['txtcCountry']);
 	$delzip = $_REQUEST['txtcZip'];
 	$specins = chkgrp($_REQUEST['txtSpecIns']);
 	
@@ -42,7 +42,7 @@ function chkgrp($valz) {
 	
 	//INSERT HEADER
 
-	if (!mysqli_query($con, "UPDATE so set `ccode` = '$cCustID', `cremarks` = $cRemarks, `cspecins` = $specins, `dcutdate` = STR_TO_DATE('$dDelDate', '%m/%d/%Y'), `ngross` = '$nGross',  `nbasegross` = '$BaseGross', `ccurrencycode` = '$CurrCode', `ccurrencydesc` = '$CurrDesc', `nexchangerate` = '$CurrRate', `csalestype` = '$cSITyp', `cpono` = '$cCPONo', `csalesman` = '$salesman', `cdelcode` = '$delcodes', `cdeladdno` = '$delhousno', `cdeladdcity` = '$delcity', `cdeladdstate` = '$delstate', `cdeladdcountry` = '$delcountry', `cdeladdzip` = '$delzip'  where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
+	if (!mysqli_query($con, "UPDATE so set `ccode` = '$cCustID', `cremarks` = $cRemarks, `cspecins` = $specins, `dcutdate` = STR_TO_DATE('$dDelDate', '%m/%d/%Y'), `ngross` = '$nGross',  `nbasegross` = '$BaseGross', `ccurrencycode` = '$CurrCode', `ccurrencydesc` = '$CurrDesc', `nexchangerate` = '$CurrRate', `csalestype` = '$cSITyp', `cpono` = '$cCPONo', `csalesman` = '$salesman', `cdelcode` = '$delcodes', `cdeladdno` = $delhousno, `cdeladdcity` = $delcity, `cdeladdstate` = $delstate, `cdeladdcountry` = $delcountry, `cdeladdzip` = '$delzip'  where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
 		//print_r( mysqli_error($con));
 		echo "False";
 	} 

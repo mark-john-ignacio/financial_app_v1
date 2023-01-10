@@ -102,6 +102,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$cservinfo = $row['cservinfo'];
 		$cSelType = $row['csalestype'];
 
+		$cQOType = $row['quotetype'];
+		$cRCType = $row['crecurrtype'];
+
 		$Remarks = $row['cremarks'];
 		$Date = $row['dcutdate'];
 		$cpricever = $row['cpricever'];
@@ -133,7 +136,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
       			<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
       			<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
       		</div>
-     		<div class="col-xs-2 nopadwleft">
+     			<div class="col-xs-2 nopadwleft">
       			<div id="statmsgz" style="display:inline"></div>
       		</div>
       		<div class="col-xs-5" style="text-align: right;">
@@ -149,16 +152,40 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					?>
 				</div>
       		</div>
-      		<div class="col-xs-2">
-    			<b>Sales Type</b>
-    		</div>
-			<div class="col-xs-2 nopadding">
-				<select id="selsityp" name="selsityp" class="form-control input-sm selectpicker"  tabindex="1">
-	                <option value="Goods" <?php if($cSelType=="Goods") { echo "selected"; } ?> >Goods</option>
-	                <option value="Services" <?php if($cSelType=="Services") { echo "selected"; } ?>>Services</option>
-	            </select>
-       		</div>
+      		
         </div>
+
+				<div class="col-xs-12 nopadwtop">
+					<div class="col-xs-2">
+							<b>Quote Type</b>
+						</div>
+					<div class="col-xs-2 nopadding">
+						<select id="selqotyp" name="selqotyp" class="form-control input-sm selectpicker"  tabindex="1">
+							<option value="quote" <?php if($cQOType=="quote") { echo "selected"; }  ?> >Quote</option>
+							<option value="billing" <?php if($cQOType=="billing") { echo "selected"; }  ?> >Billing</option>
+						</select>
+					</div>
+					<div class="col-xs-2">
+							<b>Reccur Every</b>
+						</div>
+					<div class="col-xs-2 nopadding">
+						<select id="selrecurrtyp" name="selrecurrtyp" class="form-control input-sm selectpicker"  tabindex="1">
+							<option value="weekly" <?php if($cRCType=="weekly") { echo "selected"; }  ?> >Weekly</option>
+							<option value="monthly" <?php if($cRCType=="monthly") { echo "selected"; }  ?> >Monthly</option>
+							<option value="quartertly" <?php if($cRCType=="quartertly") { echo "selected"; }  ?> >Quartertly</option>
+							<option value="yearly" <?php if($cRCType=="yearly") { echo "selected"; }  ?> >Yearly</option>
+						</select>
+					</div>
+					<div class="col-xs-2">
+						<b>Sales Type</b>
+					</div>
+					<div class="col-xs-2 nopadding">
+						<select id="selsityp" name="selsityp" class="form-control input-sm selectpicker"  tabindex="1">
+							<option value="Goods" <?php if($cSelType=="Goods") { echo "selected"; } ?> >Goods</option>
+							<option value="Services" <?php if($cSelType=="Services") { echo "selected"; } ?>>Services</option>
+						</select>
+       		</div>
+				</div>
 
 
 <fieldset class="scheduler-border">

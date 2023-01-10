@@ -506,21 +506,22 @@ include('../../include/access2.php');
          <p>
            <div class="col-xs-12">
             
-			 <div class="col-xs-10 nopadwtop">
+			          <div class="col-xs-10 nopadwtop">
                 	<div class="col-xs-2 nopadding">
-                		<b>Account Code</b>
-                    </div>
+                		<b>AR Code</b>
+                  </div>
                     
-                    <div class="col-xs-3 nopadwleft">
+                  <div class="col-xs-3 nopadwleft">
                     
-                    	<select name="selaccttyp" id="selaccttyp" class="form-control input-sm" tabindex="22">
-                        	<option value="single" selected>Single Account</option>
-                            <option value="multiple">Per Item Type</option>
-                        </select>
+                  <select name="selaccttyp" id="selaccttyp" class="form-control input-sm" tabindex="22">
+                    <option value="single" selected>Single Account</option>
+                    <option value="multiple">Per Item Type</option>
+                  </select>
                     
-                    </div>
-        </p>            
                 </div>
+                   
+                </div>
+                </p> 
 
 
 			 <div class="col-xs-10 nopadwtop">
@@ -582,6 +583,29 @@ include('../../include/access2.php');
 
                     </div>
                  
+                </div>
+        
+                <div class="col-xs-10 nopadwtop">
+
+                    <div class="col-xs-2 nopadding">
+                		  <b>Sales Code</b>
+                    </div>
+
+                    <div class="col-xs-8 nopadwleft" id="accttypsingle">
+
+                               <div class="col-xs-7 nopadding">
+                            <input type="text" class="form-control input-sm" id="txtsalesacctCR" name="txtsalesacctCR" tabindex="23" placeholder="Search Acct Title.." autocomplete="off" required/>
+                               </div>
+                            
+                                <div class="col-xs-2 nopadwleft">
+                                    <input type="text" id="txtsalesacctCRD" name="txtsalesacctCRD" class="form-control input-sm" readonly>
+                                    <input type="hidden" id="txtsalesacctDIDCR" name="txtsalesacctDIDCR">
+                                </div>
+                                
+                                
+
+                    </div>
+
                 </div>
 
 			 <div class="col-xs-10 nopadwtop">
@@ -834,6 +858,38 @@ $(function() {
 				$('#txtsalesacct').val("").change();
         $('#txtsalesacctDID').val()==""
 				$('#txtsalesacct').focus();
+			}
+		});
+
+    $("#txtsalesacctCR").typeahead({						 
+			autoSelect: true,
+			source: function(request, response) {							
+				$.ajax({
+					url: "../th_accounts.php",
+					dataType: "json",
+					data: { query: request },
+					success: function (data) {
+						response(data);
+					}
+				});
+				},
+				displayText: function (item) {
+					return item.id + " : " + item.name;
+				},
+				highlighter: Object,
+				afterSelect: function(item) { 					
+					$('#txtsalesacctCR').val(item.name).change(); 
+					$('#txtsalesacctCRD').val(item.id); 
+          $('#txtsalesacctDIDCR').val(item.idcode);
+							
+				}
+		});
+		
+		$("#txtsalesacctCR").on("blur", function() {
+			if($('#txtsalesacctCRD').val()==""){
+				$('#txtsalesacctCR').val("").change();
+        $('#txtsalesacctDIDCR').val()==""
+				$('#txtsalesacctCR').focus();
 			}
 		});
 

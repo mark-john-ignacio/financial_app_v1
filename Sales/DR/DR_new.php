@@ -593,7 +593,7 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 $(function(){
 	    $('#date_delivery').datetimepicker({
                  format: 'MM/DD/YYYY',
-				 //minDate: new Date(),
+				// minDate: new Date(),
         });
 
 		$("#allbox").click(function(){
@@ -1915,7 +1915,7 @@ function chkform(){
 		var delcountry = $("#txtcCountry").val();
 		var delzip = $("#txtcZip").val();
 		
-		//alert("SO_newsavehdr.php?ccode=" + ccode + "&crem="+ crem + "&ddate="+ ddate + "&ngross="+ngross);
+		//alert("DR_newsavehdr.php?ccode=" + ccode + "&crem="+ crem + "&ddate="+ ddate + "&ngross="+ngross+"&cdrprintno="+cdrprintno+"&salesman="+salesman+"&delcodes="+delcodes+"&delhousno="+delhousno+"&delcity="+delcity+"&delstate="+delstate+"&delcountry="+delcountry+"&delzip="+delzip);
 		
 		$.ajax ({
 			url: "DR_newsavehdr.php",

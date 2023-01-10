@@ -79,16 +79,36 @@ $ndcutdate = date("m/d/Y", strtotime($ndcutdate . "+1 day"));
     	<legend>New Quotation</legend>	
 
     	<div class="col-xs-12 nopadwtop">
+				<div class="col-xs-2">
+						<b>Quote Type</b>
+					</div>
+				<div class="col-xs-2 nopadding">
+					<select id="selqotyp" name="selqotyp" class="form-control input-sm selectpicker"  tabindex="1">
+						<option value="quote">Quote</option>
+						<option value="billing">Billing</option>
+					</select>
+				</div>
+				<div class="col-xs-2">
+						<b>Reccur Every</b>
+					</div>
+				<div class="col-xs-2 nopadding">
+					<select id="selrecurrtyp" name="selrecurrtyp" class="form-control input-sm selectpicker"  tabindex="1">
+						<option value="weekly">Weekly</option>
+						<option value="monthly">Monthly</option>
+						<option value="quartertly">Quartertly</option>
+						<option value="yearly">Yearly</option>
+					</select>
+				</div>
     		<div class="col-xs-2">
     			<b>Sales Type</b>
     		</div>
-			<div class="col-xs-2 nopadding">
-				<select id="selsityp" name="selsityp" class="form-control input-sm selectpicker"  tabindex="1">
-	                <option value="Goods">Goods</option>
-	                <option value="Services">Services</option>
-	            </select>
-       		</div>
+				<div class="col-xs-2 nopadding">
+					<select id="selsityp" name="selsityp" class="form-control input-sm selectpicker"  tabindex="1">
+	          <option value="Goods">Goods</option>
+	          <option value="Services">Services</option>
+	        </select>
        	</div>
+      </div>
 
 	<br>
    <fieldset class="scheduler-border">
@@ -690,8 +710,8 @@ $(function(){
 	});
 
 	$(document).on("click", "tr.bdydeigid" , function() {
-        var $row = $(this).closest("tr"),       // Finds the closest row <tr> 
-	    $tds = $row.find("td");             // Finds all children <td> elements
+    var $row = $(this).closest("tr"),       // Finds the closest row <tr> 
+	  $tds = $row.find("td");             // Finds all children <td> elements
 
 		$.each($tds, function() {               // Visits every single <td> element
 		   // alert($(this).attr("class"));        // Prints out the text within the <td>
@@ -711,7 +731,7 @@ $(function(){
 		});
 
 		$("#ContactModal").modal("hide");
-    });
+  });
 
     $("#selsityp").on("change", function(){
 
@@ -1188,12 +1208,14 @@ function chkform(){
 		var basegross = $("#txtnBaseGross").val();
 
 		var selsityp = $("#selsityp").val();
+		var selqotyp = $("#selqotyp").val(); 
+		var selrecurrtyp = $("#selrecurrtyp").val(); 
 		
 		//alert("Quote_newsavehdr.php?ccode=" + ccode + "&crem="+ crem + "&ddate="+ ddate + "&ngross="+ngross + "&ccontname="+ ccontname + "&ccontdesg="+ ccontdesg + "&ccontdept="+ ccontdept + "&ccontemai="+ ccontemai + "&ccontsalt="+ ccontsalt + "&cvattyp="+ cvattyp + "&cterms="+ cterms + "&cdelinfo="+ cdelinfo + "&cservinfo="+ cservinfo); 
 		
 		$.ajax ({
 			url: "Quote_newsavehdr.php",
-			data: { ccode: ccode, ngross: ngross, ccontname: ccontname, ccontdesg: ccontdesg, ccontdept: ccontdept, ccontemai: ccontemai, ccontsalt: ccontsalt, cvattyp: cvattyp, cterms: cterms, cdelinfo: cdelinfo, cservinfo: cservinfo, ddate: ddate, crem: crem, selsityp:selsityp, currcode: currcode, currdesc: currdesc, currrate: currrate, basegross:basegross },
+			data: { ccode: ccode, ngross: ngross, ccontname: ccontname, ccontdesg: ccontdesg, ccontdept: ccontdept, ccontemai: ccontemai, ccontsalt: ccontsalt, cvattyp: cvattyp, cterms: cterms, cdelinfo: cdelinfo, cservinfo: cservinfo, ddate: ddate, crem: crem, selsityp:selsityp, currcode: currcode, currdesc: currdesc, currrate: currrate, basegross:basegross, selqotyp:selqotyp, selrecurrtyp:selrecurrtyp },
 			async: false,
 			beforeSend: function(){
 				$("#AlertMsg").html("&nbsp;&nbsp;<b>SAVING NEW QUOTATION: </b> Please wait a moment...");

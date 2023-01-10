@@ -9,17 +9,17 @@ include('../Connection/connection_string.php');
 include('../include/denied.php');
 include('../include/access.php');
 
-$sqlhead=mysqli_query($con,"Select * from groupings where ctype='ITEMTYP'");
+$sqlhead=mysqli_query($con,"Select * from groupings where ctype='ITEMTYP' and cstatus='ACTIVE' and compcode='".$_SESSION['companyid']."'");
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
 		@$itmtype[] = array("ccode" => $row['ccode'], "cdesc" => $row['cdesc']);
 	}
 } 
 
-$sqlhead=mysqli_query($con,"Select * from groupings where ctype='SUPTYP'");
+$sqlhead=mysqli_query($con,"Select * from groupings where ctype='SUPTYP' and cstatus='ACTIVE' and compcode='".$_SESSION['companyid']."'");
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-		@$suptype[] = array("ccode" => $row['ccode'], "cdesc" => $row['cdesc']);
+		@$suptype[] = array("ccode" => $row['ccode'], "cdesc" => $row['cdesc']); 
 	}
 }
 
@@ -59,6 +59,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		<link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 		<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
 		<link rel="stylesheet" type="text/css" href="../Bootstrap/css/DigiClock.css"> 
+
+		<script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="../include/select2/select2.min.css?x=<?=time()?>"> 
+		<script src="../include/select2/select2.full.min.js"></script>
 
 		<style>
 .btn span.glyphicon {    			
@@ -1170,6 +1175,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 									<div class="collapse" id="itmpo">  
 
+									<!--
 										<div class="col-xs-12">
 											<div class="col-xs-2 nopadwtop2x">
 												<b>Auto post upon printing</b>
@@ -1177,7 +1183,35 @@ if (mysqli_num_rows($sqlhead)!=0) {
 											</div>                    
 											<div class="col-xs-3 nopadwtop2x">
 												<?php
-													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='AUTO_POST_PO'"); 
+													//$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='AUTO_POST_PO'"); 
+												
+												//	if (mysqli_num_rows($result)!=0) {
+												//		$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
+												//		$nvalue = $all_course_data['cvalue']; 												
+												//	}
+												//	else{
+												//		$nvalue = "";
+												//	}
+												?>
+												<select class="form-control input-sm selectpicker" name="selpoautopost" id="selpoautopost" onChange="setparamval('AUTO_POST_PO',this.value,'popostmsg')">
+													<option value="0" <?//php if ($nvalue==0) { echo "selected"; } ?>> NO </option>
+													<option value="1" <?//php if ($nvalue==1) { echo "selected"; } ?>> YES </option>
+												</select>
+											</div>                   
+											<div class="col-xs-1 nopadwtop2x" id="popostmsg">
+											</div>												
+										</div>
+									-->
+
+
+										<div class="col-xs-12" style="margin-bottom: 15px !important; margin-left: 15px !important">
+											<div class="col-xs-3 nopadwtop2x">
+												<b>Send Approval Email Notif.</b>
+												<div id="divPOEmailprint" style="display:inline; padding-left:5px"></div>
+											</div>                    
+											<div class="col-xs-3 nopadwtop2x">
+												<?php
+													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='PO_APP_EMAIL'"); 
 												
 													if (mysqli_num_rows($result)!=0) {
 														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
@@ -1187,129 +1221,471 @@ if (mysqli_num_rows($sqlhead)!=0) {
 														$nvalue = "";
 													}
 												?>
-												<select class="form-control input-sm selectpicker" name="selpoautopost" id="selpoautopost" onChange="setparamval('AUTO_POST_PO',this.value,'popostmsg')">
+												<select class="form-control input-sm selectpicker" name="selpoautopost" id="selpoautopost" onChange="setparamval('PO_APP_EMAIL',this.value,'poemailmsg')">
 													<option value="0" <?php if ($nvalue==0) { echo "selected"; } ?>> NO </option>
 													<option value="1" <?php if ($nvalue==1) { echo "selected"; } ?>> YES </option>
 												</select>
 											</div>                   
-											<div class="col-xs-1 nopadwtop2x" id="popostmsg">
+											<div class="col-xs-1 nopadwtop2x" id="poemailmsg">
 											</div>												
 										</div>
 
-										<form action="th_savepolevels.php" method="POST" name="frmPOLvls" id="frmPOLvls" onSubmit="return chkpolvlform();">
+											<?php
+												$resPOAppsHDR = mysqli_query($con,"SELECT * FROM `purchase_approvals` WHERE compcode='".$_SESSION['companyid']."'"); 
+												while($rowpoaph=mysqli_fetch_array($resPOAppsHDR, MYSQLI_ASSOC)){
+													$i = $rowpoaph['nlevel'];
+													$rwpoapphdramt[$i] = $rowpoaph['namount'];
+												}
 
-											<div class="col-xs-12">
-												<div class="col-xs-2 nopadwtop2x">
+												$resPOApps = mysqli_query($con,"SELECT * FROM `purchase_approvals_id` WHERE compcode='".$_SESSION['companyid']."'"); 
+											?>
+
+
+										<form action="th_savepolevels.php" method="POST" name="frmPOLvls" id="frmPOLvls" onSubmit="return chkpolvlform();" target="_self" enctype="multipart/form-data">
+
+										<input type="hidden" name="tbLVL1count" id="tbLVL1count" value="0">
+										<input type="hidden" name="tbLVL2count" id="tbLVL2count" value="0">
+										<input type="hidden" name="tbLVL3count" id="tbLVL3count" value="0">
+
+											<div class="col-xs-12" style="padding-bottom: 5px !important">
+												<div class="col-xs-2">
 													<b>Approval Levels</b>
 												</div>                    
-												<div class="col-xs-3 nopadwtop2x">
+												<div class="col-xs-3">
 													<button type="submit" class="btn btn-xs btn-success" name="btnsavePOApp" id="btnsavePOApp"><i class="fa fa-save"></i>&nbsp; &nbsp;Save Approvals</button>
 												</div>
 											</div>
 
-											<div class="col-xs-12">
-												
-												<div class="col-xs-12" style="padding-left: 10px !important; padding-top: 10px !important">
+
+											<div class="col-xs-12" style="margin-top: 5px !important; margin-left: 15px !important">
+
+												<ul class="nav nav-tabs">
+													<li class="active"><a data-toggle="tab" href="#level1">Level 1</a></li>
+													<li><a data-toggle="tab" href="#level2">Level 2</a></li>
+													<li><a data-toggle="tab" href="#level3">Level 3</a></li>
+												</ul>
 
 
-													<table cellpadding="3px" width="100%" border="0" style="font-size: 14px" id="POAPP1">
-														<thead>
-															<tr>
-																<td style="border-bottom: 1px solid; padding-bottom: 10px;" width="200px">
-																	<b>LEVEL 1 </b> 
-																	<input type='hidden' name='tbLVL1count' id='tbLVL1count' value='0'>
-																</td>
+												<div class="tab-content col-lg-12 nopadwtop2x">   
 
-																<td colspan="6" style="border-bottom: 1px solid; padding-bottom: 10px"><button type="button" class="btn btn-xs btn-primary" name="btnaddapplvl1" id="btnaddapplvl1" onClick="addpolevel(1,'POAPP1');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button></td>
+													<!-- LEVEL 1 -->
+														<div id="level1" class="tab-pane fade in active">
 
-															</tr>
+															<div class="col-xs-12 nopadding">
+											
+																<div class="col-xs-2 nopadding"> 
+																	<button type="button" class="btn btn-xs btn-primary" name="btnaddapplvl1" id="btnaddapplvl1" onClick="addpolevel(1,'POAPP1');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button> 															
+																</div>
 
-															<tr>
-																<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">User ID</td>
-																<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Item Type</td>
-																<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Supplier Type</td>
-																<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Signature</td>
-																<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px"><small>Delete</small></td>
-															</tr>
-														</thead>
+															</div>
 
-														<tbody>
-																			
-														</tbody>
+															<div class="col-xs-12 border pre-scrollable" style="height: 150px; margin-top: 5px !important">
 
-														<tfoot>
-															<tr>
-																	<td colspan="6" style="padding-bottom: 10px">&nbsp;</td>
-															</tr>
-														</tfoot>
-													</table> 
+																	<table cellpadding="3px" width="100%" border="0" style="font-size: 14px" id="POAPP1">
+																		<thead>
+																			<tr>
+																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">User ID</td>
+																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Item Type</td>
+																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Supplier Type</td>
+																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Signature</td>
+																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px"><small>Delete</small></td>
+																			</tr>
+																		</thead>
+																		<tbody>
+																			<?php
+																			if (mysqli_num_rows($resPOApps)!=0) {
+																				$cntr = 0;
 
-													<table cellpadding="3px" width="100%" border="0" style="font-size: 14px"  id="POAPP2">
-														<thead>
-															<tr>
-																<td style="border-bottom: 1px solid; padding-bottom: 10px;" width="200px">
-																	<b>LEVEL 2 </b> 
-																	<input type='hidden' name='tbLVL2count' id='tbLVL2count' value='0'>
-																</td>
+																				while($rowxcv=mysqli_fetch_array($resPOApps, MYSQLI_ASSOC)){
+																					$rowPOresult[] = $rowxcv;
+																				}
 
-																<td colspan="5" style="border-bottom: 1px solid; padding-bottom: 10px"><button type="button" class="btn btn-xs btn-primary" name="btnaddapplvl2" id="btnaddapplvl2" onClick="addpolevel(2,'POAPP2');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button></td>
+																				foreach ($rowPOresult as $row){
+																					if($row['po_approval_id']==1){
+																						$cntr++;
+																			?>	
+																				<tr>
+																					<td width="200px" style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																						<select class="form-control" name="selposuser<?=$row['po_approval_id'].$cntr?>" id="selposuser<?=$row['po_approval_id'].$cntr?>" >
 
-															</tr>
+																							<?php
+																								foreach(@$ursnmse as $rsusr){
+																									if($rsusr['userid']==$row['userid']){
+																										$xscd = "selected";
+																									}else{
+																										$xscd = "";
+																									}
+																									echo "<option value='".$rsusr['userid']."' ".$xscd."> ".$rsusr['name']." </option>";
+																								}
+																							?> 
+																						</select>
+																					</td>
+																					<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">																
+																						<select required multiple class="form-control" name="selpoitmtyp<?=$row['po_approval_id'].$cntr?>[]" id="selpoitmtyp<?=$row['po_approval_id'].$cntr?>" >
 
-															<tr>
-																<td style="padding-top: 5px">User ID</td>
-																<td style="padding-top: 5px">Item Type</td>
-																<td style="padding-top: 5px">Supplier Type</td>
-																<td style="padding-top: 5px">Signature</td>
-															</tr>
-														</thead>
+																						<option value='ALL' <?=($row['items']=="ALL") ? "selected" : ""?>> ALL</option>
 
-														<tbody>
-																			
-														</tbody>
+																							<?php
+																								foreach(@$itmtype as $rsitm){
 
-														<tfoot>
-															<tr>
-																	<td colspan="6" style="padding-bottom: 10px">&nbsp;</td>
-															</tr>
-														</tfoot>
-													</table> 
+																									$xsc = "";
+																									if($row['items']!=="" && $row['items']!==null){
+																										if(in_array($rsitm['ccode'], explode(",",$row['items']))){
+																											$xsc = "selected";
+																										}
+																									}
+																									
+																									echo "<option value='".$rsitm['ccode']."' ".$xsc."> ".$rsitm['cdesc']." </option>";
+																								}
+																							?> 
+																						</select>  
+																					</td>
+																					<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																						<select required multiple class="form-control" name="selposutyp<?=$row['po_approval_id'].$cntr?>[]" id="selposutyp<?=$row['po_approval_id'].$cntr?>" >
 
-													<table cellpadding="3px" width="100%" border="0" style="font-size: 14px" id="POAPP3">
-														<thead>
-															<tr>
-																<td style="border-bottom: 1px solid; padding-bottom: 10px;" width="200px">
-																	<b>LEVEL 3 </b> 
-																	<input type='hidden' name='tbLVL3count' id='tbLVL3count' value='0'>
-																</td>
+																						<option value='ALL' <?=($row['suppliers']=="ALL") ? "selected" : ""?>> ALL</option>
 
-																<td colspan="5" style="border-bottom: 1px solid; padding-bottom: 10px"><button type="button" class="btn btn-xs btn-primary" name="btnaddapplvl3" id="btnaddapplvl3" onClick="addpolevel(3,'POAPP3');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button></td>
+																							<?php
+																								foreach(@$suptype as $rssup){
+																									
+																									$xsc = "";
+																									if($row['suppliers']!=="" && $row['suppliers']!==null){
+																										if(in_array($rssup['ccode'], explode(",",$row['suppliers']))){
+																											$xsc = "selected";
+																										}
+																									}
 
-															</tr>
+																									echo "<option value='".$rssup['ccode']."' ".$xsc."> ".$rssup['cdesc']." </option>";
+																								}
+																							?> 
+																						</select>
+																					</td>
+																					<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<?php
+																						if($row['sign']!=="" && $row['sign']!==null){
+																					?>
+																						<a href="javascript:;" title="Click to remove image" onclick="potransset('sign',<?=$row['id']?>)">
+																							<img src = "<?=$row['sign']?>" height="50px" alt="Click to remove image">
+																						</a>
+																					<?php
+																						}else{
+																					?>
+																						<input type="file" name="filsign<?=$row['po_approval_id'].$cntr?>" id="filsign<?=$row['po_approval_id'].$cntr?>" value="">
+																					<?php
+																						}
+																					?>
+																					</td>
+																					<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																						<button class="btn btn-danger btn-sm" type="button" onclick="potransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
+																					</td>
+																				</tr>
 
-															<tr>
-																<td style="padding-top: 5px">User ID</td>
-																<td style="padding-top: 5px">Item Type</td>
-																<td style="padding-top: 5px">Supplier Type</td>
-																<td style="padding-top: 5px">Signature</td>
-															</tr>
-														</thead>
+																				<script>
+																					$(document).ready(function(e) {
+																						$('#selposuser<?=$row['po_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
+																						$('#selpoitmtyp<?=$row['po_approval_id'].$cntr?>').select2({width: '100%'});
+																						$('#selposutyp<?=$row['po_approval_id'].$cntr?>').select2({width: '100%'});
+																					});
+																				</script>
+																			<?php
+																					}
+																				}
+																			}
+																			?>
+																		</tbody>
+																	</table> 
 
-														<tbody>
-																			
-														</tbody>
+															</div>
 
-														<tfoot>
-															<tr>
-																	<td colspan="6" style="padding-bottom: 10px">&nbsp;</td>
-															</tr>
-														</tfoot>
-													</table> 
+														</div>
+
+													<!-- LEVEL 2 -->
+														<div id="level2" class="tab-pane fade in">
+
+															<div class="col-xs-12 nopadding">
+											
+																<div class="col-xs-2 nopadding"> 
+																	<button type="button" class="btn btn-xs btn-primary" name="btnaddapplvl2" id="btnaddapplvl2" onClick="addpolevel(2,'POAPP2');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button>															
+																</div>
+
+																<div class="col-xs-2 nopadwleft"> 
+																	<b>Minimum Amount</b>
+																</div>
+
+																<div class="col-xs-2 nopadwleft"> 
+																	<input type="text" class="lvlamtcls form-control input-xs" data-id="2" id = "lvlamt2" value="<?=$rwpoapphdramt[2]?>">
+																	
+																</div>
+
+																<div class="col-xs-3 nopadwleft" id="divlevel2amounts"> 
+																	
+																</div>
+
+															</div>
+
+															<div class="col-xs-12 border pre-scrollable" style="height: 150px; margin-top: 5px !important">
+
+																<table cellpadding="3px" width="100%" border="0" style="font-size: 14px"  id="POAPP2">
+																	<thead>
+																		<tr>
+																			<td style="padding-top: 5px">User ID</td>
+																			<td style="padding-top: 5px">Item Type</td>
+																			<td style="padding-top: 5px">Supplier Type</td>
+																			<td style="padding-top: 5px">Signature</td>
+																		</tr>
+																	</thead>
+
+																	<tbody>
+																		<?php
+																		if (mysqli_num_rows($resPOApps)!=0) {
+																			$cntr = 0;
+																			foreach ($rowPOresult as $row){
+																				if(intval($row['po_approval_id'])==2){
+																					$cntr++;
+																		?>	
+																			<tr>
+																				<td width="200px" style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<select class="form-control" name="selposuser<?=$row['po_approval_id'].$cntr?>" id="selposuser<?=$row['po_approval_id'].$cntr?>" >
+																						<?php
+																							foreach(@$ursnmse as $rsusr){
+																								if($rsusr['userid']==$row['userid']){
+																									$xscd = "selected";
+																								}else{
+																									$xscd = "";
+																								}
+
+																								echo "<option value='".$rsusr['userid']."' ".$xscd."> ".$rsusr['name']." </option>";
+																							}
+																						?> 
+																					</select>
+																				</td>
+																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">																
+																					<select required multiple class="form-control" name="selpoitmtyp<?=$row['po_approval_id'].$cntr?>[]" id="selpoitmtyp<?=$row['po_approval_id'].$cntr?>" >
+
+																					<option value='ALL' <?=($row['items']=="ALL") ? "selected" : ""?>> ALL</option>
+
+																						<?php
+																							foreach(@$itmtype as $rsitm){
+
+																								$xsc = "";
+																								if($row['items']!==""){
+																									if(in_array($rsitm['ccode'], explode(",",$row['items']))){
+																										$xsc = "selected";
+																									}
+																								}
+																								
+																								echo "<option value='".$rsitm['ccode']."' ".$xsc."> ".$rsitm['cdesc']." </option>";
+																							}
+																						?> 
+																					</select>  
+																				</td>
+																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<select required multiple class="form-control" name="selposutyp<?=$row['po_approval_id'].$cntr?>[]" id="selposutyp<?=$row['po_approval_id'].$cntr?>" >
+
+																					<option value='ALL' <?=($row['suppliers']=="ALL") ? "selected" : ""?>> ALL</option>
+
+																						<?php
+																							foreach(@$suptype as $rssup){
+																								
+																								$xsc = "";
+																								if($row['suppliers']!==""){
+																									if(in_array($rssup['ccode'], explode(",",$row['suppliers']))){
+																										$xsc = "selected";
+																									}
+																								}
+
+																								echo "<option value='".$rssup['ccode']."' ".$xsc."> ".$rssup['cdesc']." </option>";
+																							}
+																						?> 
+																					</select>
+																				</td>
+																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																				<?php
+																					if($row['sign']!=="" && $row['sign']!==null){
+																				?>
+																					<a href="javascript:;" title="Click to remove image" onclick="potransset('sign',<?=$row['id']?>)">
+																						<img src = "<?=$row['sign']?>" height="50px" alt="Click to remove image">
+																					</a>
+																				<?php
+																					}else{
+																				?>
+																					<input type="file" name="filsign<?=$row['po_approval_id'].$cntr?>" id="filsign<?=$row['po_approval_id'].$cntr?>" value="">
+																				<?php
+																					}
+																				?>
+																				</td>
+																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<button class="btn btn-danger btn-sm" type="button" onclick="potransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
+																				</td>
+																			</tr>
+
+																			<script>
+																				$(document).ready(function(e) {
+																					$('#selposuser<?=$row['po_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
+																					$('#selpoitmtyp<?=$row['po_approval_id'].$cntr?>').select2({width: '100%'});
+																					$('#selposutyp<?=$row['po_approval_id'].$cntr?>').select2({width: '100%'});
+																				});
+																			</script>
+																		<?php
+																				}
+																			}
+																		}
+																		?>
+																	</tbody>
+																</table> 
+
+															</div>
+
+														</div>
+
+														<div id="level3" class="tab-pane fade in">
+
+															<div class="col-xs-12 nopadding">
+											
+																<div class="col-xs-2 nopadding"> 
+																	<button type="button" class="lvlamtcls btn btn-xs btn-primary" name="btnaddapplvl3" id="btnaddapplvl3" onClick="addpolevel(3,'POAPP3');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button>															
+																</div>
+
+																<div class="col-xs-2 nopadwleft"> 
+																	<b>Minimum Amount</b>
+																</div>
+
+																<div class="col-xs-2 nopadwleft"> 
+																	<input type="text" class="form-control input-xs" data-id="3" id = "lvlamt3" value="<?=$rwpoapphdramt[3]?>">
+																</div>
+
+																<div class="col-xs-3 nopadwleft" id="divlevel3amounts"> 
+																</div>
+
+															</div>
+
+															<div class="col-xs-12 border pre-scrollable" style="height: 150px; margin-top: 5px !important">
+
+																<table cellpadding="3px" width="100%" border="0" style="font-size: 14px" id="POAPP3">
+																	<thead>
+																		<tr>
+																			<td style="padding-top: 5px">User ID</td>
+																			<td style="padding-top: 5px">Item Type</td>
+																			<td style="padding-top: 5px">Supplier Type</td>
+																			<td style="padding-top: 5px">Signature</td>
+																		</tr>
+																	</thead>
+
+																	<tbody>
+																		<?php
+																		if (mysqli_num_rows($resPOApps)!=0) {
+																			$cntr = 0;
+																			foreach ($rowPOresult as $row){
+																				if($row['po_approval_id']==3){
+																					$cntr++;
+																		?>	
+																			<tr>
+																				<td width="200px" style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<select class="form-control" name="selposuser<?=$row['po_approval_id'].$cntr?>" id="selposuser<?=$row['po_approval_id'].$cntr?>" >
+																						<?php
+																							foreach(@$ursnmse as $rsusr){
+																								echo "<option value='".$rsusr['userid']."'> ".$rsusr['name']." </option>";
+																							}
+																						?> 
+																					</select>
+																				</td>
+																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">																
+																					<select required multiple class="form-control" name="selpoitmtyp<?=$row['po_approval_id'].$cntr?>[]" id="selpoitmtyp<?=$row['po_approval_id'].$cntr?>" >
+
+																					<option value='ALL' <?=($row['items']=="ALL") ? "selected" : ""?>> ALL</option>
+
+																						<?php
+																							foreach(@$itmtype as $rsitm){
+
+																								$xsc = "";
+																								if($row['items']!==""){
+																									if(in_array($rsitm['ccode'], explode(",",$row['items']))){
+																										$xsc = "selected";
+																									}
+																								}
+																								
+																								echo "<option value='".$rsitm['ccode']."' ".$xsc."> ".$rsitm['cdesc']." </option>";
+																							}
+																						?> 
+																					</select>  
+																				</td>
+																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<select required multiple class="form-control" name="selposutyp<?=$row['po_approval_id'].$cntr?>[]" id="selposutyp<?=$row['po_approval_id'].$cntr?>" >
+
+																					<option value='ALL' <?=($row['suppliers']=="ALL") ? "selected" : ""?>> ALL</option>
+
+																						<?php
+																							foreach(@$suptype as $rssup){
+																								
+																								$xsc = "";
+																								if($row['suppliers']!==""){
+																									if(in_array($rssup['ccode'], explode(",",$row['suppliers']))){
+																										$xsc = "selected";
+																									}
+																								}
+
+																								echo "<option value='".$rssup['ccode']."' ".$xsc."> ".$rssup['cdesc']." </option>";
+																							}
+																						?> 
+																					</select>
+																				</td>
+																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																				<?php
+																					if($row['sign']!=="" && $row['sign']!==null){
+																				?>
+																					<a href="javascript:;" title="Click to remove image" onclick="potransset('sign',<?=$row['id']?>)">
+																						<img src = "<?=$row['sign']?>" height="50px" alt="Click to remove image">
+																					</a>
+																				<?php
+																					}else{
+																				?>
+																					<input type="file" name="filsign<?=$row['po_approval_id'].$cntr?>" id="filsign<?=$row['po_approval_id'].$cntr?>" value="">
+																				<?php
+																					}
+																				?>
+																				</td>
+																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<button class="btn btn-danger btn-sm" type="button" onclick="potransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
+																				</td>
+																			</tr>
+
+																			<script>
+																				$(document).ready(function(e) {
+																					$('#selposuser<?=$row['po_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
+																					$('#selpoitmtyp<?=$row['po_approval_id'].$cntr?>').select2({width: '100%'});
+																					$('#selposutyp<?=$row['po_approval_id'].$cntr?>').select2({width: '100%'});
+																				});
+																			</script>
+																		<?php
+																				}
+																			}
+																		}
+																		?>
+																	</tbody>
+																</table> 
+
+															</div>
+
+														</div>
 
 												</div>
+
 											</div>
 
+
 										</form>
+
+
+
+													<div class="col-xs-12" style="margin-top: 10px !important; margin-left: 15px !important; padding-top: 10px !important">
+														<b>Default Email Body</b>
+														<div id="divPOBodyEmail" style="display:inline; padding-left:5px"></div>
+													</div>
+													<div class="col-xs-12" style="margin-left: 15px !important; margin-bottom: 15px !important;">
+														<textarea rows="5" class="form-control input-sm" name="txtPOBodyEmail" id="txtPOBodyEmail">													
+														</textarea>
+													</div>
+
 										
 									</div>
 
@@ -1571,11 +1947,15 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						</div>
 				</div>
 
+				<form id="frmPOTrans" name="frmPOTrans" action="th_savepotrans.php" method="POST">
+					<input type='hidden' id='POTransID' name='POTransID' value=''>
+					<input type='hidden' id='POTransTP' name='POTransTP' value=''>
+				</form>
 	</body>
 
 </html>
 
-<script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
+
 <script src="../Bootstrap/js/bootstrap3-typeahead.js"></script>
 <script src="../Bootstrap/js/jquery.numeric.js"></script>
 <script src="../Bootstrap/js/jquery.inputlimiter.min.js"></script>
@@ -2740,6 +3120,22 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				}
 			});
 
+			$("#txtPOBodyEmail").on("blur", function(){
+					$.ajax({
+						url: 'updtequote.php',
+						data: { val: $(this).val(), nme:"POEMAILBODY" },
+						dataType: "text",
+							success: function(response){
+
+								if(response.trim() == "True"){
+
+									$("#divPOBodyEmail").html("Header Saved!");
+
+								}
+							},
+					});
+			});
+
 			$("#txtQuotePrintHdr").on("blur", function(){
 					$.ajax({
 						url: 'updtequote.php',
@@ -2767,6 +3163,25 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							if(response.trim() == "True"){
 
 								$("#divQuotePrintFtr").html("Footer Saved!");
+
+							}
+						},
+					});
+			});
+
+			$(".lvlamtcls").on("blur", function(){
+
+				var dlvl =  $(this).data("id");
+					$.ajax({
+						url: 'updtepoamt.php',
+						data: { val: $(this).val(), id: dlvl},
+						dataType: "text",
+						success: function(response){
+
+							if(response.trim() == "True"){
+								//alert("divlevel"+dlvl+"amounts");
+
+								$("#divlevel"+dlvl+"amounts").html("Amount Saved!");
 
 							}
 						},
@@ -2844,6 +3259,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 							if(item.ccode=='QUOTEFTR'){
 									$("#txtQuotePrintFtr").val(item.cdesc);
+							}
+
+							if(item.ccode=='POEMAILBODY'){
+									$("#txtPOBodyEmail").val(item.cdesc);
 							}
 
 					});     
@@ -3737,14 +4156,14 @@ if (mysqli_num_rows($sqlhead)!=0) {
 function addpolevel($lvl, $tbl){
 
 		var xz = $("#atitemtype").val();
-		var htmlITM = "<option value=''>NONE</option>";
+		var htmlITM = "<option value='ALL'> ALL </option>";
 
 		$.each(jQuery.parseJSON(xz), function() {  
 			htmlITM = htmlITM + '<option value="' +this['ccode'] + '">' + this['cdesc'] + '</option>';
 		});
 
 		var xz = $("#atsupptype").val();
-		var htmlSUPP = "<option value=''>NONE</option>";
+		var htmlSUPP = "<option value='ALL'> ALL</option>";
 
 		$.each(jQuery.parseJSON(xz), function() {  
 			htmlSUPP = htmlSUPP + '<option value="' +this['ccode'] + '">' + this['cdesc'] + '</option>';
@@ -3758,7 +4177,7 @@ function addpolevel($lvl, $tbl){
 		});
 
 	var tbl = document.getElementById($tbl).getElementsByTagName('tr');
-	var lastRow = tbl.length-2;
+	var lastRow = tbl.length;
 
 	var tblz = document.getElementById($tbl).getElementsByTagName('tbody')[0];
 	var a=tblz.insertRow(tblz.rows.length);
@@ -3786,16 +4205,21 @@ function addpolevel($lvl, $tbl){
 		za.style.paddingRight = "1px";
 								
 	u.innerHTML = "<select class=\"form-control input-xs\" name=\"selposuser"+$lvl+""+lastRow+"\" id=\"selposuser"+$lvl+""+lastRow+"\" > "+htmlUSERS+" </select>";
-	x.innerHTML = "<select class=\"form-control input-xs\" name=\"selpoitmtyp"+$lvl+""+lastRow+"\" id=\"selpoitmtyp"+$lvl+""+lastRow+"\" >"+htmlITM+"</select>";
-	y.innerHTML = "<select class=\"form-control input-xs\" name=\"selposutyp"+$lvl+""+lastRow+"\" id=\"selposutyp"+$lvl+""+lastRow+"\" >"+htmlSUPP+"</select>";
-	z.innerHTML = "<input type=\"file\" id=\"name=\"filsign"+$lvl+""+lastRow+"\" id=\"filsign"+$lvl+""+lastRow+"\"\">";
-	za.innerHTML = "<button class=\"btn btn-danger btn-sm\" type=\"button\"> <i class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></button>";
+	x.innerHTML = "<select required multiple class=\"form-control input-xs\" name=\"selpoitmtyp"+$lvl+""+lastRow+"[]\" id=\"selpoitmtyp"+$lvl+""+lastRow+"\" >"+htmlITM+"</select>";
+	y.innerHTML = "<select required multiple class=\"form-control input-xs\" name=\"selposutyp"+$lvl+""+lastRow+"[]\" id=\"selposutyp"+$lvl+""+lastRow+"\" >"+htmlSUPP+"</select>";
+	z.innerHTML = "<input type=\"file\" name=\"filsign"+$lvl+""+lastRow+"\" id=\"filsign"+$lvl+""+lastRow+"\" >";
+	za.innerHTML = "";
 
-			
+	$('#selposuser'+$lvl+""+lastRow).select2({minimumResultsForSearch: Infinity,width: '100%'});
+	$('#selpoitmtyp'+$lvl+""+lastRow).select2({width: '100%'});
+	$('#selposutyp'+$lvl+""+lastRow).select2({width: '100%'});
+
 }
 
 function chkpolvlform(){
 	var lastRow = $("#POAPP1 > tbody > tr").length;
+	var lastRow2 = $("#POAPP2 > tbody > tr").length;
+	var lastRow3 = $("#POAPP3 > tbody > tr").length;
 
 	if(lastRow==0){
 
@@ -3808,8 +4232,9 @@ function chkpolvlform(){
 
 		return false;
 	}else{
-		$("#tbLVL1count").val(lastRow);
-		
+		$("#tbLVL1count").val(lastRow);  
+		$("#tbLVL2count").val(lastRow2); 
+		$("#tbLVL3count").val(lastRow3); 
 
 		return true;
 
@@ -3817,4 +4242,11 @@ function chkpolvlform(){
 
 }
 
+function potransset(typ,id){
+	  
+	$("#POTransID").val(id);
+	$("#POTransTP").val(typ);
+
+	$("#frmPOTrans").submit();
+}
 </script>

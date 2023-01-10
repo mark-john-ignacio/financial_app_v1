@@ -207,7 +207,7 @@ if(@$lvlcompute==1){
 														?>
 													</td>
 													<td align="center" width="150px">
-														<a href="javascript:;" id="editusr" name="<?php echo $row['Userid'];?>" class="usredit">
+														<a href="javascript:;" id="editusr" name="<?php echo $row['Userid'];?>" onClick="editsrc('<?php echo $row['Userid'];?>')">
 															<i class="fa fa-user" style="font-size:20px;color:SlateGrey ;" title="Edit user's details"></i>
 														</a>
 															&nbsp;
@@ -305,7 +305,7 @@ if(@$lvlcompute==1){
             <td><b>Middle Intial: </b></td>
             <td style="padding:2px">
              <div class="col-xs-5">
-                <input type="text" class="form-control input-sm" placeholder="MI" name="Mname" id="Mname" required>
+                <input type="text" class="form-control input-sm" placeholder="MI" name="Mname" id="Mname">
              </div>
             </td>
           </tr>
@@ -439,7 +439,7 @@ if(@$lvlcompute==1){
 			
 		 var numz = 0;
 			$('input[type=text]').each(function(){
-			   if (this.value == "") {
+			   if (this.value == "" && this.id!=="Mname") {
 				   numz = numz + 1;
 					$("#add_err").css('display', 'inline', 'important');
 					$("#add_err").html("<div class='alert alert-danger' role='alert'><strong>ERROR!</strong> Complete the form</div>");
@@ -481,51 +481,13 @@ if(@$lvlcompute==1){
 		
 		
 		//Edit user Detail
-		$(".usredit").on("click", function() {
-			//alert('users_getdetail.php?id='+$(this).attr('name'));
-			$("#hdnmodtype").val("Edit");
-			
-				$.ajax({
-					url: 'users_getdetail.php',
-					data: 'id='+$(this).attr('name'),
-					dataType: 'json',
-					method: 'post',
-					async:false,
-					success: function (data) {
-					   console.log(data);
-                       $.each(data,function(index,item){
-						
-							$("#userid").val(item.id);
-							$("#Fname").val(item.fname);
-							$("#Mname").val(item.mname);
-							$("#Lname").val(item.lname);
-							$("#emailadd").val(item.emailadd);
-							
-							$('#previewing').attr('src',item.imgsrc);
-							
-					   });
-					   $("#btnSave").hide();
-					   $("#btnUpdate").show();
-					   
-					   $("#userid").attr('readonly',true);
-					   
-					   
-					   $('#myModalLabel').html("<b>Update User Details</b>");
-					   $('#myModal').modal('show');
-
-					}
-				});
-				
-				
-
-		});	
 		
 		//Save UPDATE on users Details
 		$("#btnUpdate").on("click", function() {
 			 var numz = 0;
 				$('input[type=text]').each(function(){
 
-				   if (this.value == "") {
+				   if (this.value == "" && this.id!=="Mname") {
 					   numz = numz + 1;
 						$("#add_err").css('display', 'inline', 'important');
 						$("#add_err").html("<div class='alert alert-danger' role='alert'><strong>ERROR!</strong> Complete the form</div>");
@@ -609,6 +571,41 @@ if(@$lvlcompute==1){
 		else {
 		return false;
 		}
+	}
+
+	function editsrc($xcv){
+		$("#hdnmodtype").val("Edit");
+			
+			$.ajax({
+				url: 'users_getdetail.php',
+				data: 'id='+$xcv,
+				dataType: 'json',
+				method: 'post',
+				async:false,
+				success: function (data) {
+					 console.log(data);
+										 $.each(data,function(index,item){
+					
+						$("#userid").val(item.id);
+						$("#Fname").val(item.fname);
+						$("#Mname").val(item.mname);
+						$("#Lname").val(item.lname);
+						$("#emailadd").val(item.emailadd);
+						
+						$('#previewing').attr('src',item.imgsrc);
+						
+					 });
+					 $("#btnSave").hide();
+					 $("#btnUpdate").show();
+					 
+					 $("#userid").attr('readonly',true);
+					 
+					 
+					 $('#myModalLabel').html("<b>Update User Details</b>");
+					 $('#myModal').modal('show');
+
+				}
+			});
 	}
 
 	</script>

@@ -52,25 +52,33 @@ function listcurrencies(){ //API for currency list
   <tr>
     <tH width="100">Supplier:</tH>
     <td style="padding:2px">
-    	<div class="col-xs-5">
-        	<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier's Name..." autocomplete="off">
-        </div> 
-        &nbsp;&nbsp;
-        	<input type="text" id="txtcustid" name="txtcustid" style="border:none; height:30px" readonly>
+			<div class="col-xs-12 nopadding">
+				<div class="col-xs-3 nopadding">
+					<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" value="" readonly>
+				</div>
+
+				<div class="col-xs-8 nopadwleft">
+					<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" value="">
+				</div> 
+			</div>
     </td>
     <tH width="150">PO Date:</tH>
-    <td style="padding:2px;">
-     <div class="col-xs-8">
+    <td width="250" style="padding:2px;">
+     <div class="col-xs-5 nopadding">
 		<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date("m/d/Y"); ?>" readonly/>
 	</div>
     </td>
   </tr>
   <tr>
     <tH width="100">Remarks:</tH>
-    <td style="padding:2px"><div class="col-xs-8"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div></td>
+    <td style="padding:2px">
+			<div class="col-xs-11 nopadding">
+				<input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2">
+			</div>
+		</td>
     <tH width="150" style="padding:2px">Date Needed:</tH>
     <td style="padding:2px">
-    <div class="col-xs-8">
+    <div class="col-xs-5 nopadding">
 
 		<input type='text' class="datepick form-control input-sm" id="date_needed" name="date_needed" />
 
@@ -78,10 +86,30 @@ function listcurrencies(){ //API for currency list
     </td>
   </tr>
 
+	<tr>
+    <tH width="100">Contact:</tH>
+    <td style="padding:2px">
+			<div class="col-xs-3 nopadding"> 
+				<button class="btn btn-sm btn-block btn-warning" name="btnSearchCont" id="btnSearchCont" type="button">Search</button>
+			</div>
+			<div class="col-xs-8 nopadwleft">
+				<input type="text" id="txtcontactname" name="txtcontactname" class="required form-control input-sm" placeholder="Contact Person Name..." tabindex="1"  required="true">
+			</div>
+		</td>
+    <tH width="100" style="padding:2px">Email:</tH>
+    <td style="padding:2px">
+    <div class="col-xs-11 nopadding">
+			<input type='text' class="form-control input-sm" id="contact_email" name="contact_email" />
+
+     </div>
+    </td>
+  </tr>
+
+
   <tr>
     <tH width="100">Currency:</tH>
     <td style="padding:2px">
-		<div class="col-xs-12">
+		<div class="col-xs-12 nopadding">
 							<div class="col-xs-6 nopadding">
 								<select class="form-control input-sm" name="selbasecurr" id="selbasecurr"> 						
 									<?php
@@ -242,6 +270,36 @@ Back to Main<br>(ESC)</button>
     </div>
 </div>
 
+<!-- MODAL FOR CONTACT NAME -->
+<div class="modal fade" id="ContactModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog vertical-align-top">
+        <div class="modal-content">
+        	<div class="modal-header">
+        		Select Contact Person
+            </div>
+            <div class="modal-body">
+            	<table id="ContactTbls" class="table table-condensed" width="100%">
+            		
+	            	<thead>
+	            		<tr>
+	            			<th>Name</th>
+	            			<th>Designation</th>
+	            			<th>Department</th>
+	            			<th>Email</th>
+	            		</tr>
+	            	</thead>
+	            	<tbody>
+
+	            	</tbody>
+            	</table>
+            </div>
+            <div class="modal-footer">
+            	<button type="button" class="btn btn-warning btn-sm" data-dismiss="modal" id="btnmodclose">CLOSE</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <form method="post" name="frmedit" id="frmedit" action="Purch_edit.php">
 	<input type="hidden" name="txtctranno" id="txtctranno" value="">
 </form>
@@ -341,6 +399,8 @@ $(function(){
 		afterSelect: function(item) { 
 			$('#txtcust').val(item.value).change(); 
 			$("#txtcustid").val(item.id);
+
+			getcontact(item.id);
 		}
 	});
 	
@@ -454,6 +514,62 @@ $(function(){
 		}
 		
 	});
+
+
+	$("#btnSearchCont").on("click", function(){
+
+		//get contact names
+		if($('#txtcustid').val()!="" && $('#txtcust').val()!=""){
+			$('#ContactTbls tbody').empty(); 
+
+			$.ajax({
+						url:'get_contactinfonames.php',
+						data: 'c_id='+ $('#txtcustid').val(),  
+						dataType: "json",               
+						success: function(data){
+							
+							$.each(data,function(index,item){
+
+								//put to table
+								$("<tr class='bdydeigid' style='cursor:pointer'>").append(
+									$("<td class='disnme'>").text(item.cname),
+									$("<td class='disndesig'>").text(item.cdesig),
+									$("<td class='disdept'>").text(item.cdept),
+									$("<td class='disemls'>").text(item.cemail)
+								).appendTo("#ContactTbls tbody");
+
+							});
+				}
+			});
+
+			$("#ContactModal").modal("show");
+		}else{
+			alert("Supplier Required!");
+			document.getElementById("txtcust").focus();
+			return false;
+		}
+
+
+	});
+
+	
+	$(document).on("click", "tr.bdydeigid" , function() {
+    var $row = $(this).closest("tr"),       // Finds the closest row <tr> 
+	  $tds = $row.find("td");             // Finds all children <td> elements
+
+		$.each($tds, function() {               // Visits every single <td> element
+		   // alert($(this).attr("class"));        // Prints out the text within the <td>
+
+		    if($(this).attr("class")=="disnme"){
+		    	$('#txtcontactname').val($(this).text());
+		    }
+		     if($(this).attr("class")=="disemls"){
+		    	$("#contact_email").val($(this).text());
+		    }
+		});
+
+		$("#ContactModal").modal("hide");
+  });
 	
 
 });
@@ -905,6 +1021,29 @@ function recomputeCurr(){
 	}
 
 	ComputeGross();
+}
+
+function getcontact(cid){
+
+	$.ajax({
+				url:'../get_contactinfo.php',
+				data: 'c_id='+ cid,                 
+				success: function(value){
+					if(value!=""){
+						if(value.trim()=="Multi"){
+							$("#btnSearchCont").click();
+						}else{
+								var data = value.split(":");
+								
+								$('#txtcontactname').val(data[0]);
+								//$('#txtcontactdesig').val(data[1]);
+					//$('#txtcontactdept').val(data[2]);
+					$("#contact_email").val(data[3]);
+						}
+					}
+		}
+	});
+
 }
 
 </script>

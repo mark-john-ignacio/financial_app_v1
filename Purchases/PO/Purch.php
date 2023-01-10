@@ -8,6 +8,22 @@ include('../../include/denied.php');
 include('../../include/access2.php');
 
 $company = $_SESSION['companyid'];
+
+//get users, post cancel and send access
+	//POST
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Purch_post'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
+	//CANCEL
+	$cancstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Purch_cancel'");
+	if(mysqli_num_rows($sql) == 0){
+		$cancstat = "False";
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -16,123 +32,11 @@ $company = $_SESSION['companyid'];
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
+<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
 <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">  
 <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 <script src="../../Bootstrap/js/bootstrap.js"></script>
-
-<script type="text/javascript">
-	$(document).keypress(function(e) {	 
-	  if(e.keyCode == 112) { //F1
-		window.location = "Purch_new.php";
-	  }
-	});
-
-function editfrm(x){
-	document.getElementById("txtctranno").value = x;
-	document.getElementById("frmedit").submit();
-}
-
-function trans(x,num){
-
-	$("#typ").val(x);
-	$("#modzx").val(num);
-
-		$("#AlertMsg").html("");
-							
-		$("#AlertMsg").html("Are you sure you want to "+x+" PO No.: "+num);
-		$("#alertbtnOK").hide();
-		$("#OK").show();
-		$("#Cancel").show();
-		$("#AlertModal").modal('show');
-
-}
-
-
-$(function() {	
-
-	var itmstat = "";
-	var x = "";
-	var num = "";
-	var msg = "";
-	
-	
-	$(".btnmodz").on("click", function (){
-
-		if($('#AlertModal').hasClass('in')==true){
-			var idz = $(this).attr('id');
-
-			if(idz=="OK"){
-				var x = $("#typ").val();
-				var num = $("#modzx").val();
-				
-				if(x=="POST"){
-					var msg = "POSTED";
-				}
-				else if(x=="CANCEL"){
-					var msg = "CANCELLED";
-				}
-				
-					$.ajax ({
-						url: "Purch_Tran.php",
-						data: { x: num, typ: x },
-						async: false,
-						dataType: "json",
-						beforeSend: function(){
-							$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
-							$("#alertbtnOK").hide();
-							$("#OK").hide();
-							$("#Cancel").hide();
-							$("#AlertModal").modal('show');
-						},
-						success: function( data ) {
-							console.log(data);
-							$.each(data,function(index,item){
-								
-								itmstat = item.stat;
-								
-								if(itmstat!="False"){
-									$("#msg"+num).html(item.stat);
-									
-										$("#AlertMsg").html("");
-										
-										$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+msg+"...");
-										$("#alertbtnOK").show();
-										$("#OK").hide();
-										$("#Cancel").hide();
-										$("#AlertModal").modal('show');
-				
-								}
-								else{
-									$("#AlertMsg").html("");
-									
-									$("#AlertMsg").html(item.ms);
-									$("#alertbtnOK").show();
-									$("#OK").hide();
-									$("#Cancel").hide();
-									$("#AlertModal").modal('show');
-				
-								}
-							});
-						}
-					});
-				
-			}
-			else if(idz=="Cancel"){
-				
-				$("#AlertMsg").html("");
-				$("#AlertModal").modal('hide');
-				
-			}
-			
-		}
-	});
-	
-});
-
-
-
-</script>
 </head>
 
 <body style="padding:5px">
@@ -146,16 +50,19 @@ $(function() {
         </div>
 			<br><br>
 			<button type="button" class="btn btn-primary" onClick="location.href='Purch_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+
+			<button type="button" class="btn btn-warning" onClick="location.href='Purch_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+
             <br><br>
 			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
-						<th>PO No</th>
-						<th>Customer</th>
-						<th>Trans Date</th>
-						<th>Gross</th>
-						<!--<th>Purchase Type</th>-->
-                        <th>Status</th>
+						<th class="text-center">PO No</th>
+						<th class="text-center">Customer</th>
+						<th class="text-center">Trans Date</th>
+						<th class="text-center">Gross</th>
+            <th class="text-center">Status</th>
+						<th class="text-center">Actions</th>
 					</tr>
 				</thead>
 
@@ -175,35 +82,68 @@ $(function() {
  					<tr>
 						<td><a href="javascript:;" onClick="editfrm('<?php echo $row['cpono'];?>');"><?php echo $row['cpono'];?></a></td>
 						<td><?php echo $row['ccode'];?> - <?php echo $row['cname'];?> </td>
-                        <td><?php echo $row['ddate'];?></td>
+             <td><?php echo $row['ddate'];?></td>
 						<td align="right"><?php echo $row['ngross'];?></td>
-						<!--<td><?php //echo $row['cpurchasetype']; ?></td>-->
-                        <td align="center">
-                        <div id="msg<?php echo $row['cpono'];?>">
-                        	<?php 
-							if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
-							?>
-								<a href="javascript:;" onClick="trans('POST','<?php echo $row['cpono'];?>')">POST</a> | <a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['cpono'];?>')">CANCEL</a>
+						<td align="center">
 							<?php
-                            }
-							else{
-								if(intval($row['lcancelled'])==intval(1)){
-									echo "Cancelled";
+								if(intval($row['lsent'])==intval(0)){
+									echo "For Sending";
+								}else{
+									if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
+										echo "For Approval";
+									}else{
+										if(intval($row['lapproved'])==intval(1)){
+											echo "Posted";
+										}elseif(intval($row['lcancelled'])==intval(1)){
+											echo "Cancelled";
+										}else{
+											echo "Pending";
+										}
+									}
 								}
-								if(intval($row['lapproved'])==intval(1)){
-									echo "Posted";
-								}
-							}
-							
 							?>
-                            </div>
-                        </td>
-					</tr>
+						</td>
+            <td align="center">
+              <div id="msg<?php echo $row['cpono'];?>">
                 <?php 
-				}
-				
-				mysqli_close($con);
-				
+									if(intval($row['lsent'])!==intval(1)){	
+								?>
+
+									<a href="javascript:;" onClick="trans('SEND','<?php echo $row['cpono'];?>')" class="btn btn-xs btn-default"> 
+										<i class="fa fa-share" style="font-size:20px;color: #ffb533;" title="Send transaction"></i>
+									</a>
+
+								<?php
+									}else{
+
+									if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0) && intval($row['lsent'])==intval(1)){
+
+								?>
+										<a href="javascript:;" onClick="trans('POST','<?php echo $row['cpono'];?>')" class="btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>">
+											<i class="fa fa-thumbs-up" style="font-size:20px;color:Green ;" title="Approve transaction"></i>
+										</a>
+
+										<a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['cpono'];?>')" class="btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>">
+											<i class="fa fa-thumbs-down" style="font-size:20px;color:Red ;" title="Cancel transaction"></i>
+										</a>
+
+								<?php
+									}				
+								?>
+									
+										<a href="javascript:;" onClick="track('<?php echo $row['cpono'];?>')" class="btn btn-xs btn-default"> 
+											<i class="fa fa-file-text-o" style="font-size:20px;color: #3374ff;" title="Track transaction"></i>
+										</a>
+
+								<?php
+									}							
+								?>
+              </div>
+            </td>
+					</tr>
+        <?php 
+				}				
+				mysqli_close($con);				
 				?>
                
 				</tbody>
@@ -226,8 +166,8 @@ $(function() {
                   <p id="AlertMsg"></p>
                 <p>
                     <center>
-                        <button type="button" class="btnmodz btn btn-primary btn-sm" id="OK">Ok</button>
-                        <button type="button" class="btnmodz btn btn-danger btn-sm" id="Cancel">Cancel</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="OK" onclick="trans_send('OK')">Ok</button>
+                        <button type="button" class="btn btn-danger btn-sm" id="Cancel" onclick="trans_send('Cancel')">Cancel</button>
                         
                         
                         <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
@@ -242,11 +182,165 @@ $(function() {
     </div>
 </div>
 
+<!-- 1) TRACKER Modal -->
+<div class="modal fade" id="TrackMod" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" id="InvListHdr">PO Approval Status</h3>
+      </div>
+            
+      <div class="modal-body pre-scrollable" id="divtracker" style="height: 45vh">
+				
+			</div>
+
+		</div>
+	</div>
+</div>
+
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
 	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
 	
 	<script>
-	$('#example').DataTable( {bSort:false} );
+		$(document).ready(function() {
+
+			$('#example').DataTable( {bSort:false} );
+
+		});
+
+		$(document).keypress(function(e) {	 
+			if(e.keyCode == 112) { //F1
+				window.location = "Purch_new.php";
+			}
+		});
+
+		function editfrm(x){
+			document.getElementById("txtctranno").value = x;
+			document.getElementById("frmedit").submit();
+		}
+
+		function trans(x,num){
+
+			$("#typ").val(x);
+			$("#modzx").val(num);
+
+				$("#AlertMsg").html("");
+									
+				$("#AlertMsg").html("Are you sure you want to "+x+" PO No.: "+num);
+				$("#alertbtnOK").hide();
+				$("#OK").show();
+				$("#Cancel").show();
+				$("#AlertModal").modal('show');
+
+		}
+
+		function track(xno){
+
+			$.ajax({
+        type: "POST",
+        url: "th_getapprovers.php",
+				data: 'x='+xno,
+        //contentType: "application/json; charset=utf-8",
+        success: function(result) {
+            $("#divtracker").html(result);
+        }
+      });
+
+
+			$("#TrackMod").modal("show");
+		}
+
+		function trans_send(idz){
+
+			var itmstat = "";
+			var x = "";
+			var num = "";
+			var msg = "";
+
+					if(idz=="OK"){
+						var x = $("#typ").val();
+						var num = $("#modzx").val();
+						
+						if(x=="POST"){
+							var msg = "POSTED";
+						}
+						else if(x=="CANCEL"){
+							var msg = "CANCELLED";
+						}
+						else if(x=="SEND"){
+							var msg = "SENT";
+						}
+
+							$.ajax ({
+								url: "Purch_Tran.php",
+								data: { x: num, typ: x },
+								dataType: "json",
+								beforeSend: function() {
+									$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+									$("#alertbtnOK").css("display", "none");
+									$("#OK").css("display", "none");
+									$("#Cancel").css("display", "none");
+								},
+								success: function( data ) {
+									console.log(data);
+									setmsg(data,num);
+								}
+							});
+						
+
+					}
+					else if(idz=="Cancel"){
+						
+						$("#AlertMsg").html("");
+						$("#AlertModal").modal('hide');
+						
+					}
+
+		}
+
+		function setmsg(data,num){
+									$.each(data,function(key,value){
+
+									//	alert( key + ": " + value );
+										
+									//	itmstat = value.stat;
+
+									//	alert(value.ms);
+										
+										
+										if(value.stat!="False"){
+											$("#msg"+num).html(value.stat);
+											
+												
+											$("#AlertMsg").html("");
+												
+												$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+value.stat+"...");
+												$("#alertbtnOK").show();
+												$("#OK").hide();
+												$("#Cancel").hide();
+												$("#AlertModal").modal('show');
+
+											
+						
+										}
+										else{
+										//	alert(item.ms);
+
+											
+											$("#AlertMsg").html("");
+											
+											$("#AlertMsg").html(value.ms);
+											$("#alertbtnOK").show();
+											$("#OK").hide();
+											$("#Cancel").hide();
+											$("#AlertModal").modal('show');
+											
+						
+										}
+									});
+		}
 	</script>
 
 </body>

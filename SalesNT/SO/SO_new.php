@@ -47,8 +47,11 @@ function listcurrencies(){ //API for currency list
     
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 <script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
+<script src="../../include/autoNumeric.js"></script>
+
+<!--
 <script src="../../Bootstrap/js/jquery.numeric.js"></script>
-<script src="../../Bootstrap/js/jquery.inputlimiter.min.js"></script>
+<script src="../../Bootstrap/js/jquery.inputlimiter.min.js"></script>-->
 
 <script src="../../Bootstrap/js/bootstrap.js"></script>
 <script src="../../Bootstrap/js/moment.js"></script>
@@ -511,6 +514,8 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
     			$(this).tab('show');
 			});
 	
+			$("#txtnBaseGross").autoNumeric('init',{mDec:4});
+			$("#txtnGross").autoNumeric('init',{mDec:4});
 
 	   			$.ajax({
 					url : "../../include/th_xtrasessions.php",
@@ -585,7 +590,7 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 $(function(){
 	    $('#date_delivery').datetimepicker({
                  format: 'MM/DD/YYYY',
-				 minDate: new Date(),
+				// minDate: new Date(),
         });
 
 		$("#allbox").click(function(){
@@ -903,16 +908,16 @@ $(function(){
 		//if value is not blank
 		 }
 		 
-		if(isItem=="NO"){		
+		//if(isItem=="NO"){		
 
 			myFunctionadd("","","","","","");
 			ComputeGross();	
 			
-	    }
-	    else{
+	  //  }
+	  //  else{
 			
-			addqty();
-		}
+		//	addqty();
+		//}
 		
 		$("#txtprodid").val("");
 		$("#txtprodnme").val("");
@@ -1083,17 +1088,17 @@ function addItemName(qty,price,curramt,amt,factr,cref){
 				}
 			});	
 
-	 if(isItem=="NO"){	
+	// if(isItem=="NO"){	
 	 	myFunctionadd(qty,price,curramt,amt,factr,cref);
 		
 		ComputeGross();	
 
-	 }
-	 else{
+	// }
+	// else{
 
-		addqty();	
+	//	addqty();	
 			
-	 }
+	// }
 		
 		$("#txtprodid").val("");
 		$("#txtprodnme").val("");
@@ -1194,13 +1199,13 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref){
 	var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmdesc+"</td>";
 	var tditmavail = avail;
 	var tditmunit = "<td width=\"100\" nowrap> <select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\">"+uomoptions+"</select> </td>";
-	var tditmqty = "<td width=\"100\" nowrap> <input type='text' value='"+itmtotqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' "+qtystat+"> <input type='hidden' value='"+itmqtyunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+factz+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
+	var tditmqty = "<td width=\"100\" nowrap> <input type='text' value='"+itmtotqty+"' data-v-min=\"1\" class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' "+qtystat+"> <input type='hidden' value='"+itmqtyunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+factz+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
 		
-	var tditmprice = "<td width=\"100\" nowrap> <input type='text' value='"+price+"' class='numericdec form-control input-xs' style='text-align:right' name=\"txtnprice\" id='txtnprice"+lastRow+"' \"  "+qtystat+"> </td>";
+	var tditmprice = "<td width=\"100\" nowrap> <input type='text' value='"+price+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnprice\" id='txtnprice"+lastRow+"' \"  "+qtystat+"> </td>";
 
 	var tditmbaseamount = "<td width=\"100\" nowrap> <input type='text' value='"+curramtz+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtntranamount\" id='txtntranamount"+lastRow+"' readonly> </td>";
 			
-	var tditmamount = "<td width=\"100\" nowrap> <input type='text' value='"+baseprice.toFixed(4)+"' class='form-control input-xs' style='text-align:right' name=\"txtnamount\" id='txtnamount"+lastRow+"'  readonly> </td>";
+	var tditmamount = "<td width=\"100\" nowrap> <input type='text' value='"+baseprice.toFixed(4)+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnamount\" id='txtnamount"+lastRow+"'  readonly> </td>";
 	
 	var tditmdel = "<td width=\90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' onClick=\"deleteRow(this);\"/> &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> </td>";
 
@@ -1209,9 +1214,13 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref){
 
 									$("#del"+itmcode).on('click', function() {
 										$(this).closest('tr').remove();
+
+										ComputeGross();
 									});
 
+									$("input.numeric").autoNumeric('init',{mDec:4});
 
+									/*
 									$("input.numeric").numeric(
 										{negative: false}
 									);
@@ -1222,6 +1231,7 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref){
 											decimalPlaces: 4
 										}
 									);
+									*/
 
 									$("input.numeric, input.numericdec").on("click", function () {
 									   $(this).select();
@@ -1258,9 +1268,9 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref){
 			var nnet = 0;
 			var nqty = 0;
 			
-			nqty = $("#txtnqty"+r).val();
+			nqty = $("#txtnqty"+r).val().replace(/,/g,'');
 			nqty = parseFloat(nqty)
-			nprc = $("#txtnprice"+r).val();
+			nprc = $("#txtnprice"+r).val().replace(/,/g,'');
 			nprc = parseFloat(nprc);
 			
 			namt = nqty * nprc;
@@ -1274,7 +1284,11 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref){
 
 			$("#txtnamount"+r).val(namt2);
 
+			$("#txtntranamount"+r).autoNumeric('destroy');
+			$("#txtnamount"+r).autoNumeric('destroy');
 
+			$("#txtntranamount"+r).autoNumeric('init',{mDec:4});
+			$("#txtnamount"+r).autoNumeric('init',{mDec:4});
 		}
 
 		function ComputeGross(){
@@ -1285,7 +1299,7 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref){
 			
 			if(rowCount>1){
 				for (var i = 1; i <= rowCount-1; i++) {
-					amt = $("#txtntranamount"+i).val();
+					amt = $("#txtntranamount"+i).val().replace(/,/g,'');
 					
 					gross = gross + parseFloat(amt);
 				}
@@ -1300,6 +1314,12 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref){
 			$("#txtnBaseGross").val(gross);
 
 			$("#txtnGross").val(gross2);
+
+			$("#txtnBaseGross").autoNumeric('destroy');
+			$("#txtnGross").autoNumeric('destroy');
+
+			$("#txtnBaseGross").autoNumeric('init',{mDec:4});
+			$("#txtnGross").autoNumeric('init',{mDec:4});
 			
 		}
 
@@ -1319,7 +1339,7 @@ function addqty(){
 		if(disID==itmcode){
 			
 			var itmqty = $(this).find("input[name='txtnqty']").val();
-			var itmprice = $(this).find("input[name='txtnprice']").val();
+			var itmprice = $(this).find("input[name='txtnprice']").val().replace(/,/g,'');
 			
 			//alert(itmqty +" : "+ itmprice);
 			
@@ -1327,7 +1347,17 @@ function addqty(){
 			$(this).find("input[name='txtnqty']").val(TotQty);
 			
 			TotAmt = TotQty * parseFloat(itmprice);
-			$(this).find("input[name='txtnamount']").val(TotAmt);
+			$(this).find("input[name='txtntranamount']").val(TotAmt.toFixed(4)); 
+
+			$("#txtntranamount"+r).autoNumeric('destroy');
+			$("#txtntranamount"+r).autoNumeric('init',{mDec:4});
+
+
+			namt2 = TotAmt * parseFloat($("#basecurrval").val());
+			$(this).find("input[name='txtnamount']").val(namt2.toFixed(4)); 
+
+			$("#txtnamount"+r).autoNumeric('destroy');
+			$("#txtnamount"+r).autoNumeric('init',{mDec:4});
 		}
 
 	});
@@ -1788,14 +1818,14 @@ function chkform(){
 		var ccode = $("#txtcustid").val();
 		var crem = $("#txtremarks").val();
 		var ddate = $("#date_delivery").val();
-		var ngross = $("#txtnGross").val();
+		var ngross = $("#txtnGross").val().replace(/,/g,'');
 		var csitype = $("#selsityp").val(); 
 		var custpono = $("#txtcPONo").val();
 
 		var ncurrcode = $("#selbasecurr").val();
 		var ncurrdesc = $("#selbasecurr option:selected").text();
 		var ncurrrate = $("#basecurrval").val();
-		var nbasegross = $("#txtnBaseGross").val();
+		var nbasegross = $("#txtnBaseGross").val().replace(/,/g,'');
 
 		$("#hidcurrvaldesc").val($("#selbasecurr option:selected").text());
 
@@ -1812,6 +1842,9 @@ function chkform(){
 		//data: { ccode: ccode, crem: crem, ddate: ddate, ngross: ngross, selsityp: csitype, custpono:custpono, salesman:salesman, delcodes:delcodes, delhousno:delhousno, delcity:delcity, delstate:delstate, delcountry:delcountry, delzip:delzip, specins:specins, ncurrcode:ncurrcode, ncurrdesc:ncurrdesc, ncurrrate:ncurrrate, nbasegross:nbasegross },  frmpos
 
 		var myform = $("#frmpos").serialize();
+
+		//alert(myform);
+
 		$.ajax ({
 			url: "SO_newsavehdr.php",
 			data: myform,
@@ -1842,6 +1875,13 @@ function chkform(){
 				var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
 				var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
 			
+				if(nqty!==undefined){
+					nqty = nqty.replace(/,/g,'');
+					nprice = nprice.replace(/,/g,'');
+					namt = namt.replace(/,/g,'');
+					nbaseamt = nbaseamt.replace(/,/g,'');
+				}
+
 				$.ajax ({
 					url: "SO_newsavedet.php",
 					data: { trancode: trancode, crefno: crefno, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, nbaseamt:nbaseamt, mainunit:mainunit, nfactor:nfactor },

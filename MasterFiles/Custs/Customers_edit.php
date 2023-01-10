@@ -2,13 +2,20 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "Customers_edit.php";
+$_SESSION['pageid'] = "Customers.php";
 
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 include('../../include/access2.php');
-?>
-              	<?php
+
+$poststat = "True";
+$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Customers_edit.php'");
+if(mysqli_num_rows($sql) == 0){
+	$poststat = "False";
+}
+
+
+
 			if(isset($_REQUEST["txtcitemno"])){
 				$citemno = $_REQUEST['txtcitemno'];
 			}else{
@@ -18,7 +25,7 @@ include('../../include/access2.php');
 				
 				if($citemno <> ""){
 					
-					$sql = "select A.*, A1.cacctdesc as salescode, B.cname as cparentname, C.cname as csmaname, A1.cacctid from customers A LEFT JOIN accounts A1 ON (A.cacctcodesales = A1.cacctid) LEFT JOIN customers B ON (A.cparentcode = B.cempid)  LEFT JOIN salesman C ON (A.csman = C.ccode) where A.cempid='$citemno'";
+					$sql = "select A.*, A1.cacctdesc as salescode, B.cname as cparentname, C.cname as csmaname, A1.cacctid, A2.cacctdesc as salescodecr, A2.cacctid as cacctidcr from customers A LEFT JOIN accounts A1 ON A.compcode=A1.compcode and (A.cacctcodesales = A1.cacctno) LEFT JOIN accounts A2 ON A.compcode=A2.compcode and (A.cacctcodesalescr = A2.cacctno) LEFT JOIN customers B ON (A.cparentcode = B.cempid)  LEFT JOIN salesman C ON (A.csman = C.ccode) where A.cempid='$citemno'";
 				}else{
 					header('Customers.php');
 					die();
@@ -71,6 +78,9 @@ include('../../include/access2.php');
 								$multistat = "required";
 							}
 
+							$SaleCRID = $row['cacctcodesalescr']; 
+							$SaleCRIDCode = $row['cacctidcr'];
+							$SaleCRDesc = $row['salescodecr'];
 
 					}
 				}
@@ -560,7 +570,7 @@ include('../../include/access2.php');
 									<div class="col-xs-10 nopadwtop">
 
 										<div class="col-xs-2 nopadding">
-											<b>Account Code</b>
+											<b>AR Code</b>
 										</div>
 														
 										<div class="col-xs-3 nopadwleft">                    
@@ -625,6 +635,29 @@ include('../../include/access2.php');
 										</div>
 												
 									</div>
+
+									<div class="col-xs-10 nopadwtop">
+
+                    <div class="col-xs-2 nopadding">
+                		  <b>Sales Code</b>
+                    </div>
+
+                    <div class="col-xs-8 nopadwleft" id="accttypsingle">
+
+                               <div class="col-xs-7 nopadding">
+                            <input type="text" class="form-control input-sm" id="txtsalesacctCR" name="txtsalesacctCR" tabindex="23" placeholder="Search Acct Title.." autocomplete="off" required value="<?=$SaleCRDesc?>"/>
+                               </div>
+                            
+                                <div class="col-xs-2 nopadwleft">
+                                    <input type="text" id="txtsalesacctCRD" name="txtsalesacctCRD" class="form-control input-sm" readonly value="<?=$SaleCRIDCode?>">
+                                    <input type="hidden" id="txtsalesacctDIDCR" name="txtsalesacctDIDCR" value="<?=$SaleCRID?>"> 
+                                </div>
+                                
+                                
+
+                    </div>
+
+                </div>
 
 									<div class="col-xs-10 nopadwtop">
 										<div class="col-xs-2 nopadding">
@@ -748,6 +781,9 @@ include('../../include/access2.php');
 				</div>
 
 				<br>
+				<?php
+					if($poststat == "True"){
+				?>
 				<table width="100%" border="0" cellpadding="3">
 					<tr>
 						<td>
@@ -766,7 +802,9 @@ include('../../include/access2.php');
 						</td>
 					</tr>
 				</table>
-
+			 <?php
+					}
+			 ?>
 	</fieldset>
 </form>
 
@@ -838,7 +876,6 @@ $(document).ready(function(){
 				}
 		});
 
-
 		$("#txtsalesacct").typeahead({						 
 			autoSelect: true,
 			source: function(request, response) {							
@@ -858,6 +895,7 @@ $(document).ready(function(){
 				afterSelect: function(item) { 					
 					$('#txtsalesacct').val(item.name).change(); 
 					$('#txtsalesacctD').val(item.id); 
+          $('#txtsalesacctDID').val(item.idcode);
 							
 				}
 		});
@@ -865,7 +903,40 @@ $(document).ready(function(){
 		$("#txtsalesacct").on("blur", function() {
 			if($('#txtsalesacctD').val()==""){
 				$('#txtsalesacct').val("").change();
+        $('#txtsalesacctDID').val()==""
 				$('#txtsalesacct').focus();
+			}
+		});
+
+		$("#txtsalesacctCR").typeahead({						 
+			autoSelect: true,
+			source: function(request, response) {							
+				$.ajax({
+					url: "../th_accounts.php",
+					dataType: "json",
+					data: { query: request },
+					success: function (data) {
+						response(data);
+					}
+				});
+				},
+				displayText: function (item) {
+					return item.id + " : " + item.name;
+				},
+				highlighter: Object,
+				afterSelect: function(item) { 					
+					$('#txtsalesacctCR').val(item.name).change(); 
+					$('#txtsalesacctCRD').val(item.id); 
+          $('#txtsalesacctDIDCR').val(item.idcode);
+							
+				}
+		});
+		
+		$("#txtsalesacctCR").on("blur", function() {
+			if($('#txtsalesacctCRD').val()==""){
+				$('#txtsalesacctCR').val("").change();
+        $('#txtsalesacctDIDCR').val()==""
+				$('#txtsalesacctCR').focus();
 			}
 		});
 		

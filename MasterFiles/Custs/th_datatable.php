@@ -11,7 +11,7 @@ $query = "SELECT * FROM customers WHERE compcode='".$_SESSION['companyid']."' ";
 
 if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
 {
- $query .= "WHERE cempid like '%".$_POST['searchByName']."%' OR cname like '%".$_POST['searchByName']."%'";
+ $query .= "and cempid like '%".$_POST['searchByName']."%' OR cname like '%".$_POST['searchByName']."%'";
 }
 
 if(isset($_POST['order']))

@@ -25,23 +25,23 @@ include('../../include/denied.php');
 
 		while($rowcomp = mysqli_fetch_array($sqlcomp, MYSQLI_ASSOC))
 		{
-			$companyid = $rowcomp['compcode'];
-			$companyname = $rowcomp['compname'];
-			$companydesc = $rowcomp['compdesc'];
-			$companyadd = $rowcomp['compadd'];
-			$companytin = $rowcomp['comptin'];
+			$logosrc = $rowcomp['clogoname'];
+			$logoaddrs = $rowcomp['compadd'];
+			$logonamz = $rowcomp['compname'];
 		}
 
 	}
 	
 	$cpono = $_REQUEST['x'];
-	$sqlhead = mysqli_query($con,"select a.*, b.cname from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
+	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, b.cterms from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
 		$CustCode = $row['ccode'];
 		$CustName = $row['cname'];
-	//	$CustAdd = $row['chouseno']." ".$row['ccity']." ".$row['cstate'];
+		$CustAdd = $row['chouseno']." ".$row['ccity']." ".$row['cstate']." ".$row['ccountry'];
+		$Terms = $row['cterms']; 
+		$CurrCode = $row['ccurrencycode'];
 		//$CustContactNo = $row['cphone'];
 	//		if($CustContactNo<>""){
 		//		$CustContactNo = $CustContactNo." / ".$row['cmobile'];
@@ -50,7 +50,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		//	}
 		$Remarks = $row['cremarks'];
 		$Date = $row['ddate'];
-		$DateNeeded = $row['dneeded'];
+		$DateNeeded = $row['dneeded']; 
 		$Gross = $row['ngross'];
 		
 		$lCancelled = $row['lcancelled'];
@@ -65,11 +65,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 <style type="text/css">
 #tblMain {
-/* the image you want to 'watermark' */
-background-image: url(../images/preview.png);
-background-position: center;
-background-size: contain;
-background-repeat: no-repeat;
+	/* the image you want to 'watermark' */
+	background-image: url(../../images/preview.png);
+	background-position: center;
+	background-size: contain;
+	background-repeat: no-repeat;
 }
 
 @media print {
@@ -122,109 +122,182 @@ function Print(x){
 						}
 					});
 				
-				location.href = "Purch_print.php?x="+x;
+				location.href = "PrintPO.php?hdntransid="+x;
 }
 
 
 function PrintRed(x){
-	location.href = "Purch_print.php?x="+x;
+	location.href = "PrintPO.php?hdntransid="+x;
 }
 </script>
 </head>
 
 <body>
 <br><br>
-<table width="100%" border="0" cellpadding="3" style="border-collapse:collapse;" id="tblMain">
-  <tr>
-    <td><font size="3"><b><?php echo $companyname;?></b></font></td>
-    <td colspan="2" align="center"><font size="3"><b>Purchase Order</b></font></td>
-  </tr>
-  <tr>
-   <!-- <td><font size="2"><b><?php //echo $companydesc;?></b></font></td> -->
-   <td><font size="2"><b><?php echo $companyadd;?></b></font></td>
-    <td width="100">Number:</td>
-    <td width="150"><?php echo $cpono;?></td>
-  </tr>
-  <tr>
-    <td><font size="2"><b>TIN #<?php echo $companytin;?></b></font></td>
-    <td width="100">Date:</td>
-    <td width="150"><?php echo date_format(date_create($Date), "m/d/Y"); ?></td>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td width="100">Date Needed:</td>
-    <td width="150"><?php echo date_format(date_create($DateNeeded), "m/d/Y"); ?></td>
-  </tr>
-  <tr>
-    <td colspan="3">&nbsp;</td>
-  </tr>
-  <tr>
-    <td colspan="3">
-    
-    <table width="100%" border="0" cellpadding="3" cellspacing="5">
-      <tr>
-        <td height="60" valign="top" style="border:1px solid; border-style:dashed;"><font size="2"><b>PURCHASE TO:</b></font>&nbsp;&nbsp; &nbsp; <?php echo $CustCode;?> - <?php echo $CustName;?><br>&nbsp;<?php //echo $CustAdd;?><br>&nbsp;<?php //echo $CustContactNo;?></td>
-        <td width="40%" height="60" valign="top" style="border:1px solid; border-style:dashed;"><font size="2"><b>DELIVERY DETAILS:</b></font><br>&nbsp;&nbsp; &nbsp; <?php echo $Remarks;?></td>
-      </tr>
-    </table>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="3">&nbsp;</td>
-  </tr>
-  <tr>
-    <td colspan="3">
-    
-    <table width="100%" border="0" cellpadding="3" style="border-style:dashed;">
-      <tr>
-        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Part No.</th>
-        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Item Details</th>
-        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Qty/UOM</th>
-        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Price</th>
-        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">%</th>
-        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Total Php.</th>
-      </tr>
-      <?php 
-		$sqlbody = mysqli_query($con,"select a.*,b.citemdesc, a.citemdesc as newdesc from purchase_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.cpono = '$cpono' Order by a.nident");
+<table border="0" width="100%" cellpadding="1px"  id="tblMain">
+	<tr>
+		<td align="center"> 
 
-		if (mysqli_num_rows($sqlbody)!=0) {
-		$cntr = 0;
+				<table border="0" width="100%">
+						<tr align="center">
+							<td><img src="<?php echo "../".$logosrc; ?>" width="80px" height="68px"></td>
+						</tr>
+						<tr align="center">
+							<td><font style="font-size: 18px;"><?php echo $logonamz; ?></font></td>
+						</tr>
+						<tr align="center">
+							<td style="padding-bottom: 20px"><font><?php echo $logoaddrs; ?></font></td>
+						</tr>
+				</table>
+
+		</td>
+	</tr>
+	<tr>
+		<td style="height: 5in; vertical-align: top; padding-top: 10px">
+
+			<table border="0" width="100%">
+				<tr>
+					<td colspan="4" align="center" style="padding-bottom: 20px">
+							<font style="font-size: 24px;">PURCHASE ORDER </font>
+					</td>
+				</tr>
+				<tr>
+					<td width="100px">
+							<b>Name: </b>
+					</td>
+					<td>
+							<?=$CustName?>
+					</td>
+					<td width="100px">
+							<b>PO#: </b>
+					</td>
+					<td>
+						<?=$cpono?>    
+					</td>
+				</tr>
+
+				<tr>
+					<td width="100px">
+							<b>Address: </b>
+					</td>
+					<td>
+						<?=$CustAdd?>
+					</td>
+					<td width="100px">
+							<b>PR#: </b>
+					</td>
+					<td>
 		
-		$itemdesc = "";
-		while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
-		 $cntr = $cntr + 1;
+					</td>
+				</tr>
 
-		 if($rowbody['citemno']=='NEW_ITEM'){
-			 $itemdesc = $rowbody['newdesc'];
-		 }
-		 else{
-			 $itemdesc = $rowbody['citemdesc'];
-		 }
-						
-	?>
-      
-      <tr>
-        <td style="border-right:1px dashed;"><?php echo $rowbody['citemno'];?></td>
-        <td style="border-right:1px dashed;"><?php echo $itemdesc;?></td>
-        <td style="border-right:1px dashed;" align="right"><?php echo $rowbody['nqty'];?> <?php echo $rowbody['cunit'];?></td>
-        <td style="border-right:1px dashed;" align="right"><?php echo $rowbody['nprice'];?></td>
-        <td style="border-right:1px dashed;">&nbsp;</td>
-        <td align="right"><?php echo $rowbody['namount'];?></td>
-        
-      </tr>
-      <?php 
-		}
-		}
-	  ?>
-        <tr>
-        <td height="30" colspan="2" style="border-top:1px dashed;" valign="bottom">Prepared By: <?php echo $_SESSION['employeefull'];?></td>
-        <td colspan="3" style="border-top:1px dashed;" align="right"  valign="bottom"><b>Total Php: </b></td>
-        <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?php echo $Gross;?></b></td>
-        </tr>
+				<tr>
+					<td width="100px">
+							<b>Date: </b>
+					</td>
+					<td>
+						<?=date_format(date_create($Date), "M d, Y H:i:s")?>
+					</td>
+					<td width="100px">
+							<b>Our Ref: </b>
+					</td>
+					<td>
+		
+					</td>
+				</tr>
 
-    </table></td>
-  </tr>
+				<tr>
+					<td width="100px">
+							<b>Del Date: </b>
+					</td>
+					<td>
+						<?=date_format(date_create($DateNeeded), "M d, Y")?>
+					</td>
+					<td width="100px">
+							<b>Terms: </b>
+					</td>
+					<td>
+						<?=$Terms?>
+					</td>
+				</tr>
+				
+			</table>
+			<br>
+			<table border="0" border-collapse="collapse" align="center" width="95%">
+	
+				<tr>
+					<th style="padding: 3px; border-bottom: 1px solid">Qty</th>
+					<th style="padding: 3px; border-bottom: 1px solid">Unit</th>
+					<th style="padding: 3px; border-bottom: 1px solid">Product Description/s</th>
+					<td style="padding: 3px; border-bottom: 1px solid" align="right"><b>Unit Price</b></td>
+					<td style="padding: 3px; border-bottom: 1px solid" align="right"><b>Amount</b></td>
+				</tr>
+
+				<?php 
+				$sqlbody = mysqli_query($con,"select a.*,b.citemdesc, a.citemdesc as newdesc from purchase_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.cpono = '$cpono' Order by a.nident");
+
+				if (mysqli_num_rows($sqlbody)!=0) {
+
+					while($rowdtls = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){ 
+				?>
+
+				<tr>
+					<td style="padding: 3px"><?php echo $rowdtls['nqty'];?></td>
+					<td style="padding: 3px"><?php echo $rowdtls['cunit'];?></td>					
+					<td style="padding: 3px"><?php echo $rowdtls['citemdesc'];?></td>
+					<td style="padding: 3px" align="right"><?php echo number_format($rowdtls['nprice'],2);?></td>
+					<td style="padding: 3px" align="right"><?php echo number_format($rowdtls['namount'],2) . " " . $CurrCode;?></td>
+					
+				</tr>
+
+				<?php 
+					} 
+
+				}
+				?>
+
+				<tr>
+					<td colspan="4" style="padding-top: 10px" align="right"><b>Total Amount</b></td>
+					<td style="padding-top: 10px" align="right"><?php echo number_format($Gross,2) . " " . $CurrCode;?></td>
+					
+				</tr>
+
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td style="height: 2in; vertical-align: bottom;">
+			
+			
+			<table border="0" width="100%">
+				<tr>
+					<td>
+						<table border=0 width="80%" align="center">
+
+								<tr>
+									<td align="center" colspan="2"><b>Signature and Acceptance:</b></td>
+								</tr>
+								<tr>
+									<td width="100px" align="right">Print Name:&nbsp;&nbsp;&nbsp;</td>
+									<td style="border-bottom: 1px solid #000; height: 30px">&nbsp;</td>
+								</tr>
+								<tr>
+									<td width="100px" align="right">Title:&nbsp;&nbsp;&nbsp;</td>
+									<td style="border-bottom: 1px solid #000; height: 30px">&nbsp;</td>
+								</tr>
+								<tr>
+									<td width="100px" align="right">Signature:&nbsp;&nbsp;&nbsp;</td>
+									<td style="border-bottom: 1px solid #000; height: 30px">&nbsp;</td>
+								</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+
+		</td>
+	</tr>
 </table>
+
 
 <div align="center" id="menu" class="noPrint">
 <div style="float:left;">&nbsp;&nbsp;<strong><font size="-1">PURCHASE ORDER</font></strong></div>
@@ -233,14 +306,14 @@ function PrintRed(x){
 $strqry = "";
 $valsub = "";
 
-if($lPosted==0 && $autopost==1){
-	$strqry = "Print('".$cpono."')";
-	$valsub = "PRINT AND POST PO";
-}
-else{
+//if($lPosted==0 && $autopost==1){
+//	$strqry = "Print('".$cpono."')";
+//	$valsub = "PRINT AND POST PO";
+//}
+//else{
 	$strqry = "PrintRed('".$cpono."')";
 	$valsub = "PRINT PO";
-}
+//}
 
 
 ?>

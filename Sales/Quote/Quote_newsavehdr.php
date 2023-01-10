@@ -52,6 +52,8 @@ else {
 	$dDelDate = $_REQUEST['ddate'];
 	$cRemarks = $_REQUEST['crem'];  
 	$cSITyp= $_REQUEST['selsityp']; 
+	$cQOTyp= $_REQUEST['selqotyp'];  
+	$cRCTyp= $_REQUEST['selrecurrtyp'];
 
 	$CurrCode = $_REQUEST['currcode']; 
 	$CurrDesc = $_REQUEST['currdesc'];  
@@ -62,7 +64,7 @@ else {
 	
 	//INSERT HEADER
 
-	if (!mysqli_query($con, "INSERT INTO quote(`compcode`, `ctranno`, `ccode`, `ddate`, `ccontactname`, `ccontactdesig`, `ccontactdept`, `ccontactemail`, `ccontactsalut`, `cvattype`, `cterms`, `cdelinfo`, `cservinfo`, `dcutdate`, `ngross`, `nbasegross`, `cremarks`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `cpreparedby`, `csalestype`) Values('$company', '$cSINo', '$cCustID', NOW(), '$ccontname', '$ccontdesg', '$ccontdept', '$ccontemai', '$ccontsalt', '$cvattyp', '$cterms', '$cdelinfo', '$cservinfo', STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$cRemarks', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby','$cSITyp')")) {
+	if (!mysqli_query($con, "INSERT INTO quote(`compcode`, `ctranno`, `ccode`, `ddate`, `ccontactname`, `ccontactdesig`, `ccontactdept`, `ccontactemail`, `ccontactsalut`, `cvattype`, `cterms`, `cdelinfo`, `cservinfo`, `dcutdate`, `ngross`, `nbasegross`, `cremarks`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `cpreparedby`, `csalestype`, `quotetype`, `crecurrtype`) Values('$company', '$cSINo', '$cCustID', NOW(), '$ccontname', '$ccontdesg', '$ccontdept', '$ccontemai', '$ccontsalt', '$cvattyp', '$cterms', '$cdelinfo', '$cservinfo', STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$cRemarks', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby','$cSITyp', '$cQOTyp', '$cRCTyp')")) {
 		echo "False";
 	} 
 	else {

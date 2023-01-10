@@ -21,6 +21,8 @@ function chkgrp($valz) {
 	$cCustID = $_REQUEST['txtcustid'];
 	$dDelDate = $_REQUEST['date_needed'];
 	$cRemarks = chkgrp($_REQUEST['txtremarks']); 
+	$cContact = chkgrp($_REQUEST['txtcontactname']); 
+	$cContactEmail = chkgrp($_REQUEST['contact_email']); 
 	$nGross = str_replace(",","",$_REQUEST['txtnGross']);
 
 	$CurrCode = $_REQUEST['selbasecurr']; 
@@ -44,7 +46,7 @@ function chkgrp($valz) {
 	
 	//UPDATE HEADER
 
-	if (!mysqli_query($con,"Update purchase set `ccode` ='$cCustID', `cremarks`=$cRemarks, `dneeded`=STR_TO_DATE('$dDelDate', '%m/%d/%Y'),`ngross`='$nGross', `ccustacctcode`='$AccntCode', `nbasegross`='$BaseGross', `ccurrencycode`='$CurrCode', `ccurrencydesc`='$CurrDesc', `nexchangerate`='$CurrRate' Where compcode='$company' and cpono='$cSINo'")){
+	if (!mysqli_query($con,"Update purchase set `ccode` ='$cCustID', `cremarks`=$cRemarks, `ccontact`=$cContact, `ccontactemail`=$cContactEmail, `dneeded`=STR_TO_DATE('$dDelDate', '%m/%d/%Y'),`ngross`='$nGross', `ccustacctcode`='$AccntCode', `nbasegross`='$BaseGross', `ccurrencycode`='$CurrCode', `ccurrencydesc`='$CurrDesc', `nexchangerate`='$CurrRate' Where compcode='$company' and cpono='$cSINo'")){
 		echo "False";
 	}
 	else{

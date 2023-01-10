@@ -320,13 +320,13 @@ session_start();
                             <i class="fgly-sm flaticon-035-invoice"></i>
 							DR Non-Trade</a>
 						</li>
-						<!--
+						
 						<li>
 							<a href="javascript:;" onClick="setpage('SalesNT/Sales/SI.php');">
                             <i class="fgly-sm flaticon-065-bill"></i> 
 							SI Non-Trade</a>
 						</li>
-                        
+             <!--           
                         <li>
 							<a href="javascript:;" onClick="setpage('POS');">
                             <i class="fgly flaticon-060-cash-register"></i>
@@ -406,11 +406,14 @@ session_start();
                             <i class="fa fa-credit-card"></i>
 							Accounts Payable<span class="arrow"></span></a>
                                         <ul class="sub-menu">
-	                                        <li>
+																						<li>
+                                            	<a href="javascript:;" onClick="setpage('Accounting/APInv/RR.php');"> <i class="fa fa-angle-double-right"></i> Supplier's Invoice </a>
+                                            </li>	
+	                                        	<li>
                                             	<a href="javascript:;" onClick="setpage('Accounting/APCM/APCM.php');"> <i class="fa fa-angle-double-right"></i> AP Credit Memo </a>
                                             </li>										
                                         	<li>
-                                            	<a href="javascript:;" onClick="setpage('Accounting/APInv/APV.php');"> <i class="fa fa-angle-double-right"></i> AP Voucher </a>
+                                            	<a href="javascript:;" onClick="setpage('Accounting/APV/APV.php');"> <i class="fa fa-angle-double-right"></i> AP Voucher </a>
                                             </li>
                                             <li>
                                                 <a href="javascript:;" onClick="setpage('Accounting/Pay/PayBill.php');"> <i class="fa fa-angle-double-right"></i> Bills Payment </a>
