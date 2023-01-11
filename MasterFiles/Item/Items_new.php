@@ -11,7 +11,7 @@ include('../../include/access2.php');
 
 $company = $_SESSION['companyid'];
 
-						 $result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEFMRKUP'"); 
+						 $result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='DEFMRKUP'"); 
 					
 						  if (mysqli_num_rows($result)!=0) {
 						 $all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
@@ -100,7 +100,7 @@ $company = $_SESSION['companyid'];
                 <div class="col-xs-4 nopadwtop">
                     <select id="seluom" name="seluom" class="form-control input-sm selectpicker"  tabindex="3">
                     <?php
-                $sql = "select * from groupings where ctype='ITMUNIT' order by cdesc";
+                $sql = "select * from groupings where ctype='ITMUNIT' and compcode='$company' order by cdesc";
                 $result=mysqli_query($con,$sql);
                     if (!mysqli_query($con, $sql)) {
                         printf("Errormessage: %s\n", mysqli_error($con));
@@ -128,7 +128,7 @@ $company = $_SESSION['companyid'];
                 <div class="col-xs-4 nopadwtop">
                 <select id="selclass" name="selclass" class="form-control input-sm selectpicker"  tabindex="4">
                     <?php
-                $sql = "select * from groupings where ctype='ITEMCLS' order by cdesc";
+                $sql = "select * from groupings where ctype='ITEMCLS' and compcode='$company' order by cdesc";
                 $result=mysqli_query($con,$sql);
                     if (!mysqli_query($con, $sql)) {
                         printf("Errormessage: %s\n", mysqli_error($con));
@@ -155,7 +155,7 @@ $company = $_SESSION['companyid'];
                 <div class="col-xs-4 nopadwtop">
                 <select id="seltype" name="seltype" class="form-control input-sm selectpicker"  tabindex="4">
                     <?php
-                $sql = "select * from groupings where ctype='ITEMTYP' order by cdesc";
+                $sql = "select * from groupings where ctype='ITEMTYP' and compcode='$company' order by cdesc";
                 $result=mysqli_query($con,$sql);
                     if (!mysqli_query($con, $sql)) {
                         printf("Errormessage: %s\n", mysqli_error($con));

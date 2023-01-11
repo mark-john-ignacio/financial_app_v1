@@ -28,6 +28,7 @@ include('../../include/denied.php');
 			$companydesc = $rowcomp['compdesc'];
 			$companyadd = $rowcomp['compadd'];
 			$companytin = $rowcomp['comptin'];
+			$imgsrc = $rowcomp['clogoname'];
 		}
 
 	}
