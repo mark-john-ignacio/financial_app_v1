@@ -7,6 +7,8 @@ include('../Connection/connection_string.php');
 include('../include/denied.php');
 include('../include/access.php');
 
+$company = $_SESSION['companyid'];
+
 ?><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
