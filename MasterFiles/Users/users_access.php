@@ -700,8 +700,33 @@ xmlhttp.send();
 		</div>
 		</div>
 
+    <br>
+       <b><u><i>AP Suppliers Invoice</i></u></b>
+        <div style="padding-left:10px;"> 
+        <div class="col-xs-12 nopadwleft">
+         	<div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="SuppInv" id="chkBox189">&nbsp;View List</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="SuppInv_new.php" id="chkBox190">&nbsp;Add New</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="SuppInv_edit.php" id="chkBox191">&nbsp;Edit</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="SuppInv_post" id="chkBox192">&nbsp;Post</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="SuppInv_cancel" id="chkBox193">&nbsp;Cancel</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="SuppInv_print" id="chkBox194">&nbsp;Print</label>
+            </div>
+		</div>
+		</div>
+
        <br>
-       <b><u><i>AP Invoices</i></u></b>
+       <b><u><i>AP Voucher</i></u></b>
         <div style="padding-left:10px;"> 
         <div class="col-xs-12 nopadwleft">
          	<div class="col-xs-2 nopadding">
@@ -726,7 +751,7 @@ xmlhttp.send();
 		</div>
           
        <br>
-       <b><u><i>AP Payments</i></u></b>
+       <b><u><i>AP Bills Payment</i></u></b>
         <div style="padding-left:10px;"> 
         <div class="col-xs-12 nopadwleft">
          	<div class="col-xs-2 nopadding">
@@ -1044,7 +1069,7 @@ $(document).ready(function(){
 </script>
 
 
-<!-- LAST NUMBER chkBox188 -->
+<!-- LAST NUMBER chkBox194 -->
 </form>
 </body>
 </html>

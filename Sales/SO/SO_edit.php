@@ -689,8 +689,8 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
     			$(this).tab('show');
 			});
 
-			$("#txtnBaseGross").autoNumeric('init',{mDec:4});
-			$("#txtnGross").autoNumeric('init',{mDec:4});
+			$("#txtnBaseGross").autoNumeric('init',{mDec:2});
+			$("#txtnGross").autoNumeric('init',{mDec:2});
 				
 	   			$.ajax({
 					url : "../../include/th_xtrasessions.php",
@@ -1387,7 +1387,7 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref){
 										ComputeGross();
 									});
 
-									$("input.numeric").autoNumeric('init',{mDec:4});
+									$("input.numeric").autoNumeric('init',{mDec:2});
 
 									/*
                   $("input.numeric").numeric(
@@ -1456,8 +1456,8 @@ function ComputeAmt(nme){
 			$("#txtntranamount"+r).autoNumeric('destroy');
 			$("#txtnamount"+r).autoNumeric('destroy');
 
-			$("#txtntranamount"+r).autoNumeric('init',{mDec:4});
-			$("#txtnamount"+r).autoNumeric('init',{mDec:4});
+			$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
+			$("#txtnamount"+r).autoNumeric('init',{mDec:2});
 
 
 		}
@@ -1489,8 +1489,8 @@ function ComputeAmt(nme){
 			$("#txtnBaseGross").autoNumeric('destroy');
 			$("#txtnGross").autoNumeric('destroy');
 
-			$("#txtnBaseGross").autoNumeric('init',{mDec:4});
-			$("#txtnGross").autoNumeric('init',{mDec:4});
+			$("#txtnBaseGross").autoNumeric('init',{mDec:2});
+			$("#txtnGross").autoNumeric('init',{mDec:2});
 			
 		}
 
@@ -1520,14 +1520,14 @@ function addqty(){
 			$(this).find("input[name='txtntranamount']").val(TotAmt.toFixed(4)); 
 
 			$("#txtntranamount"+r).autoNumeric('destroy');
-			$("#txtntranamount"+r).autoNumeric('init',{mDec:4});
+			$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
 
 
 			namt2 = TotAmt * parseFloat($("#basecurrval").val());
 			$(this).find("input[name='txtnamount']").val(namt2.toFixed(4)); 
 
 			$("#txtnamount"+r).autoNumeric('destroy');
-			$("#txtnamount"+r).autoNumeric('init',{mDec:4});
+			$("#txtnamount"+r).autoNumeric('init',{mDec:2});
 		}
 
 	});

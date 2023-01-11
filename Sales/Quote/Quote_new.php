@@ -42,8 +42,11 @@ $ndcutdate = date("m/d/Y", strtotime($ndcutdate . "+1 day"));
     
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 <script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
+<script src="../../include/autoNumeric.js"></script>
+<!--
 <script src="../../Bootstrap/js/jquery.numeric.js"></script>
 <script src="../../Bootstrap/js/jquery.inputlimiter.min.js"></script>
+-->
 
 <script src="../../Bootstrap/js/bootstrap.js"></script>
 <script src="../../Bootstrap/js/moment.js"></script>
@@ -447,7 +450,8 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 	        $(this).tab('show');
 	    });
 
-		$("#basecurrval").numeric();
+		$("#txtnBaseGross").autoNumeric('init',{mDec:2});
+		$("#txtnGross").autoNumeric('init',{mDec:2});
 	
 	
 	   			$.ajax({
@@ -896,16 +900,18 @@ function myFunctionadd(){
 										$(this).closest('tr').remove();
 									});
 
+									$("input.numeric").autoNumeric('init',{mDec:2});
 
-									$("input.numeric").numeric();
-									$("input.numeric").on("click", function () {
-									   $(this).select();
-									});
+
+									//$("input.numeric").numeric();
+								//	$("input.numeric").on("click", function () {
+									//   $(this).select();
+								//	});
 									
 									$("input.numeric").on("keyup", function () {
 									   ComputeAmt($(this).attr('id'));
 									   ComputeGross();
-									});
+										});
 									
 									$(".xseluom").on('change', function() {
 
@@ -935,9 +941,9 @@ function myFunctionadd(){
 			var nnet = 0;
 			var nqty = 0;
 			
-			nqty = $("#txtnqty"+r).val();
+			nqty = $("#txtnqty"+r).val().replace(/,/g,'');
 			nqty = parseFloat(nqty)
-			nprc = $("#txtnprice"+r).val();
+			nprc = $("#txtnprice"+r).val().replace(/,/g,'');
 			nprc = parseFloat(nprc);
 			
 			namt = nqty * nprc;
@@ -951,6 +957,12 @@ function myFunctionadd(){
 
 			$("#txtnamount"+r).val(namt2);
 
+			$("#txtntranamount"+r).autoNumeric('destroy');
+			$("#txtnamount"+r).autoNumeric('destroy');
+
+			$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
+			$("#txtnamount"+r).autoNumeric('init',{mDec:2});
+
 		}
 
 		function ComputeGross(){
@@ -961,7 +973,7 @@ function myFunctionadd(){
 			
 			if(rowCount>1){
 				for (var i = 1; i <= rowCount-1; i++) {
-					amt = $("#txtntranamount"+i).val();
+					amt = $("#txtntranamount"+i).val().replace(/,/g,'');
 					
 					gross = gross + parseFloat(amt);
 				}
@@ -976,6 +988,12 @@ function myFunctionadd(){
 			$("#txtnBaseGross").val(gross);
 
 			$("#txtnGross").val(gross2);
+
+			$("#txtnBaseGross").autoNumeric('destroy');
+			$("#txtnGross").autoNumeric('destroy');
+
+			$("#txtnBaseGross").autoNumeric('init',{mDec:2});
+			$("#txtnGross").autoNumeric('init',{mDec:2});
 			
 		}
 
@@ -992,8 +1010,8 @@ function addqty(){
 	//alert(disID);
 		if(disID==itmcode){
 			
-			var itmqty = $(this).find("input[name='txtnqty']").val();
-			var itmprice = $(this).find("input[name='txtnprice']").val();
+			var itmqty = $(this).find("input[name='txtnqty']").val().replace(/,/g,'');
+			var itmprice = $(this).find("input[name='txtnprice']").val().replace(/,/g,'');
 			
 			//alert(itmqty +" : "+ itmprice);
 			
@@ -1246,6 +1264,13 @@ function chkform(){
 				var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
 			
 				//alert("Quote_newsavedet.php?trancode="+trancode+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+nprice+"&nbaseamt="+nbaseamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor);
+
+				if(nqty!==undefined){
+					nqty = nqty.replace(/,/g,'');
+					nprice = nprice.replace(/,/g,'');
+					namt = namt.replace(/,/g,'');
+					nbaseamt = nbaseamt.replace(/,/g,'');
+				}
 
 				$.ajax ({
 					url: "Quote_newsavedet.php",

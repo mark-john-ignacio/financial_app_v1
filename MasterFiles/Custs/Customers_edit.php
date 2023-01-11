@@ -562,7 +562,7 @@ if(mysqli_num_rows($sql) == 0){
 
 						<div id="menu3" class="tab-pane fade" style="padding-left:30px">
 							<p>
-								<div class="col-xs-12 nopadding">            
+
 									<div class="col-xs-10 nopadwtop">
 
 										<div class="col-xs-2 nopadding">
@@ -631,10 +631,6 @@ if(mysqli_num_rows($sql) == 0){
 										</div>
 												
 									</div>
-
-									
-
-                </div>
 
 									<div class="col-xs-10 nopadwtop">
 										<div class="col-xs-2 nopadding">
@@ -713,7 +709,6 @@ if(mysqli_num_rows($sql) == 0){
 										</div>
 									</div>
 
-								</div>
 							</p>
 						</div>
 

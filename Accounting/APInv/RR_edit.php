@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "Receive_edit.php";
+$_SESSION['pageid'] = "SuppInvoice";
 
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
@@ -10,6 +10,14 @@ include('../../include/access2.php');
 
 $employeeid = $_SESSION['employeeid'];
 $company = $_SESSION['companyid'];
+
+$poststat = "True";
+$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SuppInvoice_edit'");
+if(mysqli_num_rows($sql) == 0){
+	$poststat = "False";
+}
+
+
 if(isset($_REQUEST['txtctranno'])){
 		$cpono = $_REQUEST['txtctranno'];
 }
@@ -336,6 +344,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	</div>
 
 <br>
+<?php
+	if($poststat=="True"){
+?>
 <table width="100%" border="0" cellpadding="3">
   <tr>
     <td rowspan="2">
@@ -355,7 +366,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
    			</button>
 
 				<?php
-					$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'Receive_print'");
+					$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'SuppInv_print'");
 
 					if(mysqli_num_rows($sql) == 1){
 					
@@ -391,7 +402,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		</td>
   </tr>
 </table>
-
+<?php
+	}
+?>
     </fieldset>
 </form>
 <?php
