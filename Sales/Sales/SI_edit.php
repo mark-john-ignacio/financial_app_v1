@@ -836,7 +836,7 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 		 
 		if(isItem=="NO"){		
 
-			myFunctionadd("","","","","","","","","");
+			myFunctionadd("","","","","","","","","","");
 			ComputeGross();	
 			
 	    }
@@ -1061,7 +1061,7 @@ function checkcustlimit(id,xcred){
 
 }
 
-function addItemName(qty,price,ndisc,curramt,amt,factr,cref,nrefident,citmcls){
+function addItemName(qty,price,ndisc,curramt,amt,factr,cref,nrefident,citmcls,cvat){
 
 	 if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
 
@@ -1080,7 +1080,7 @@ function addItemName(qty,price,ndisc,curramt,amt,factr,cref,nrefident,citmcls){
 			});	
 
 	 if(isItem=="NO"){	
-		myFunctionadd(qty,price,ndisc,curramt,amt,factr,cref,nrefident,citmcls);
+		myFunctionadd(qty,price,ndisc,curramt,amt,factr,cref,nrefident,citmcls,cvat);
 		//myFunctionadd(item.totqty,item.nprice,item.ndisc,item.namount,item.nfactor,item.xref,item.citmtyp)
 		
 		ComputeGross();	
@@ -1103,7 +1103,7 @@ function addItemName(qty,price,ndisc,curramt,amt,factr,cref,nrefident,citmcls){
 
 }
 
-function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcls){
+function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcls,cvat){
 
 	var itmcode = $("#txtprodid").val();
 	var itmdesc = $("#txtprodnme").val();
@@ -1176,7 +1176,7 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 			var xz = $("#hdntaxcodes").val();
 				taxoptions = "";
 				$.each(jQuery.parseJSON(xz), function() { 
-					if($("#hdncvat").val()==this['ctaxcode']){
+					if(cvat==this['ctaxcode']){
 						isselctd = "selected";
 					}else{
 						isselctd = "";
@@ -1325,10 +1325,14 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 								vatzTot = vatzTot + vatz;
 
 							//	alert(nnetTot);
-							}else{
-								nnetTot = nnetTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
 							}
+						}else{
+							nnetTot = nnetTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
 						}
+					}else{
+
+						nnetTot = nnetTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
+
 					}
 
 					gross = gross + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
@@ -1821,7 +1825,7 @@ function openinv(typ){
 									}
 
 
-									addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.crefident,item.citmcls)
+									addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.crefident,item.citmcls,item.ctaxcode)
 													
 							});
 							
@@ -1967,7 +1971,7 @@ function loaddetails(){
 				
 				//alert(item.citmtyp); myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident,citmcls)
 				//alert(item.ndisc);
-				myFunctionadd(item.totqty,item.nprice,item.ndisc,item.nbaseamount,item.namount,item.nfactor,item.xref,item.nrefident,item.citmtyp);
+				myFunctionadd(item.totqty,item.nprice,item.ndisc,item.nbaseamount,item.namount,item.nfactor,item.xref,item.nrefident,item.citmtyp,item.ctaxcode);
 				//addItemName(item.totqty,item.nprice,item.namount,item.nfactor,item.xref);
 			});
 			
@@ -2162,6 +2166,8 @@ function chkform(){
 					var crefident = $(this).find('input[type="hidden"][name="txtcrefident"]').val();
 					var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
 					var cuom = $(this).find('select[name="seluom"]').val();
+					var vatcode = $(this).find('select[name="selitmvatyp"]').val(); 
+						var nrate = $(this).find('select[name="selitmvatyp"] option:selected').data('id'); 
 					
 						if(cuom=="" || cuom==null){
 							var cuom = $(this).find('input[type="hidden"][name="seluom"]').val();

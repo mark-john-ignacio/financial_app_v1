@@ -28,27 +28,24 @@ function chkgrp($valz) {
 		$nDiscount = $_REQUEST['ndiscount'];
 		$nAmount = $_REQUEST['namt'];
 		$nTranAmount = $_REQUEST['ntranamt'];
-		
+		$ctaxcode = $_REQUEST["vatcode"]; 
+		$nrate = $_REQUEST["nrate"];
+
 		$cMainUOM = $_REQUEST['mainunit'];
 		$nFactor = $_REQUEST['nfactor'];
 		$cacctcode = "NULL";
-		$ctaxcode = "NULL";
-		$ntaxcode = "";
-		$nrate = 0;
+	
 		
 				$sqlhead = mysqli_query($con,"Select A.cacctcodesales, A.ctaxcode, B.nrate from items A left join taxcode B on A.compcode=B.compcode and A.ctaxcode=B.ctaxcode where A.compcode='$company' and A.cpartno='$cItemNo'");
 				
 				if (mysqli_num_rows($sqlhead)!=0) {
 					$row = mysqli_fetch_assoc($sqlhead);
 					$cacctcode = "'".$row["cacctcodesales"]."'";
-					$ctaxcode = "'".$row["ctaxcode"]."'";
-					$ntaxcode = $row["ctaxcode"];
-					$nrate = $row["nrate"];
 				}
 
 	$refcidenttran = $cSINo."P".$indexz;
 
-	if (!mysqli_query($con,"INSERT INTO sales_t(`compcode`, `cidentity`, `ctranno`, `creference`, `nrefident`, `nident`, `citemno`, `nqty`, `cunit`, `nprice`, `ndiscount`, `nbaseamount`, `namount`, `cmainunit`,`nfactor`,`cacctcode`,`ctaxcode`) values('$company', '$refcidenttran', '$cSINo', $crefno, $crefident, '$indexz', '$cItemNo', '$nQty', '$cUnit', '$nPrice', '$nDiscount', '$nTranAmount', '$nAmount', '$cMainUOM', '$nFactor', $cacctcode, $ctaxcode)")){
+	if (!mysqli_query($con,"INSERT INTO sales_t(`compcode`, `cidentity`, `ctranno`, `creference`, `nrefident`, `nident`, `citemno`, `nqty`, `cunit`, `nprice`, `ndiscount`, `nbaseamount`, `namount`, `cmainunit`,`nfactor`,`cacctcode`,`ctaxcode`, `nrate`) values('$company', '$refcidenttran', '$cSINo', $crefno, $crefident, '$indexz', '$cItemNo', '$nQty', '$cUnit', '$nPrice', '$nDiscount', '$nTranAmount', '$nAmount', '$cMainUOM', '$nFactor', $cacctcode, '$ctaxcode', '$nrate')")){
 		//echo "False";
 		
 		echo "Errormessage: %s\n", mysqli_error($con);
