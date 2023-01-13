@@ -1319,8 +1319,7 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 								//alert($("#txtnamount"+i).val() + "/ (1+" + slctdval + ")/100)))");
 
 								nnet = parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) / parseFloat(1 + (parseInt(slctdval)/100));
-								vatz = nnet * (parseInt(slctdval)/100);
-								
+								vatz = nnet * (parseInt(slctdval)/100);								
 
 								nnetTot = nnetTot + nnet;
 								vatzTot = vatzTot + vatz;

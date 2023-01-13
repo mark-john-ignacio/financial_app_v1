@@ -79,7 +79,6 @@ require_once "../../Connection/connection_string.php";
 					$gprice = floatval($row['nprice'])*(1+(floatval($row['nrate'])/100));
 					$gamount = $gprice*floatval($nqty1 - $nqty2);
 
-
 					$json['nprice'] = round($gprice,2);
 					$json['namount'] =  round($gamount,2);
 					$json['nbaseamount'] = round($gamount*floatval($row['nexchangerate']),2);

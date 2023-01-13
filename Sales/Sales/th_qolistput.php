@@ -68,11 +68,11 @@ require_once "../../Connection/connection_string.php";
 			$json['nbaseamount'] = $row['nbaseamount'];
 			$json['namount'] = $row['namount'];
 		 }elseif($_REQUEST['typ']=="QO"){
+
 			if($row['cvattype']=="VatIn"){
 
 				$gprice = floatval($row['nprice'])*(1+(floatval($row['nrate'])/100));
 				$gamount = $gprice*floatval($nqty1 - $nqty2);
-
 
 				$json['nprice'] = round($gprice,2);
 				$json['namount'] =  round($gamount,2);

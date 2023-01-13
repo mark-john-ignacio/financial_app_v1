@@ -1377,8 +1377,7 @@ $company = $_SESSION['companyid'];
 			$("#txtnNetVAT").autoNumeric('init',{mDec:2});
 			$("#txtnVAT").autoNumeric('init',{mDec:2});
 			$("#txtnGross").autoNumeric('init',{mDec:2});
-			$("#txtnBaseGross").autoNumeric('init',{mDec:2});
-			
+			$("#txtnBaseGross").autoNumeric('init',{mDec:2});			
 			
 	}
 		
