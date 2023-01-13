@@ -1326,6 +1326,8 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 								vatzTot = vatzTot + vatz;
 
 							//	alert(nnetTot);
+							}else{
+								nnetTot = nnetTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
 							}
 						}
 					}

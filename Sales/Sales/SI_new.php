@@ -125,6 +125,8 @@ $company = $_SESSION['companyid'];
 				          <input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
 				          <input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
 				          <input type="hidden" id="hdnpricever" name="hdnpricever" value="">
+
+
 			            </div>
 				        <div class="col-xs-8 nopadwleft">
 				          <input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
@@ -1347,7 +1349,13 @@ $company = $_SESSION['companyid'];
 								nnetTot = nnetTot + nnet;
 								vatzTot = vatzTot + vatz;
 							}
+						}else{
+							nnetTot = nnetTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
 						}
+					}else{
+
+						nnetTot = nnetTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
+
 					}
 
 					gross = gross + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
@@ -1598,11 +1606,15 @@ $company = $_SESSION['companyid'];
 				var xstat = "YES";
 				
 				//disable escape insert and save button muna
+				//alert($("#selsityp").val());
+
 				fltrsalestyp = "";
 				if(typ=="QO"){
 					fltrsalestyp = $("#selsityp").val();
 				}
 				
+				//alert('x='+x+'&typ='+typ+'&styp='+fltrsalestyp);
+
 				$.ajax({
 					url: 'th_qolist.php',
 					data: 'x='+x+'&typ='+typ+'&styp='+fltrsalestyp,
@@ -2171,7 +2183,7 @@ $company = $_SESSION['companyid'];
 	}
 
 
-	function getdiscount(xyz,  ){ //txtndisc txtnprice
+	function getdiscount(xyz,idnum){ //txtndisc txtnprice
 	
 		var xnprice = $("#txtnprice"+idnum).val().replace(/,/g,'')
 		if(parseFloat(xnprice)>0){

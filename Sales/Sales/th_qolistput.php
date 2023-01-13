@@ -68,7 +68,7 @@ require_once "../../Connection/connection_string.php";
 			$json['nbaseamount'] = $row['nbaseamount'];
 			$json['namount'] = $row['namount'];
 		 }elseif($_REQUEST['typ']=="QO"){
-			if($row['cvattype']=="VatEx"){
+			if($row['cvattype']=="VatIn"){
 
 				$gprice = floatval($row['nprice'])*(1+(floatval($row['nrate'])/100));
 				$gamount = $gprice*floatval($nqty1 - $nqty2);
@@ -87,7 +87,7 @@ require_once "../../Connection/connection_string.php";
 		
 		 $json['xref'] = $row['ctranno'];
 		 $json['citmcls'] = $row['ctype'];
-		 $json['ctaxcode'] = $row['ctaxcode'];
+		 $json['ctaxcode'] = ($row['cvattype']=="VatIn") ? "VT" : "NT";
 		 $json['ccurrencycode'] = $row['ccurrencycode']; 
 		 $json['ccurrencydesc'] = $row['ccurrencydesc']; 
 		 $json['nexchangerate'] = $row['nexchangerate'];
