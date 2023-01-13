@@ -69,20 +69,20 @@ require_once "../../Connection/connection_string.php";
 			$json['namount'] = $row['namount'];
 		 }elseif($_REQUEST['typ']=="QO"){
 
-			if($row['cvattype']=="VatIn"){
+		//	if($row['cvattype']=="VatIn"){
 
-				$gprice = floatval($row['nprice'])/(1+(floatval($row['nrate'])/100));
-				$gamount = $gprice*floatval($nqty1 - $nqty2);
+			//	$gprice = floatval($row['nprice'])/(1+(floatval($row['nrate'])/100));
+		//		$gamount = $gprice*floatval($nqty1 - $nqty2);
 
-				$json['nprice'] = round($gprice,2);
-				$json['namount'] =  round($gamount,2);
-				$json['nbaseamount'] = round($gamount*floatval($row['nexchangerate']),2);
+		//		$json['nprice'] = round($gprice,2);
+		//		$json['namount'] =  round($gamount,2);
+		//		$json['nbaseamount'] = round($gamount*floatval($row['nexchangerate']),2);
 
-			}else{
+		//	}else{
 				$json['nprice'] = $row['nprice'];
 				 $json['namount'] = $row['namount'];
 				 $json['nbaseamount'] = $row['nbaseamount'];
-			}
+		//	}
 		 }
 		
 		 $json['xref'] = $row['ctranno'];
