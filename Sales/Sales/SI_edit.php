@@ -2160,7 +2160,7 @@ function chkform(){
 		if(trancode!=""){
 			//Save Details
 			$("#MyTable > tbody > tr").each(function(index) {	
-				if(index>0){
+				//if(index>0){
 				
 					var crefno = $(this).find('input[type="hidden"][name="txtcreference"]').val();
 					var crefident = $(this).find('input[type="hidden"][name="txtcrefident"]').val();
@@ -2181,7 +2181,7 @@ function chkform(){
 					var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
 					var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
 				
-					//alert("trancode="+trancode+"&crefno="+crefno+"&crefident="+crefident+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+nprice+"&ndiscount="+ndiscount+"&ntranamt="+ntranamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&ccode="+ccode);
+				//	alert("trancode="+trancode+"&crefno="+crefno+"&crefident="+crefident+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+nprice+"&ndiscount="+ndiscount+"&ntranamt="+ntranamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&ccode="+ccode+"&vatcode="+vatcode+"&nrate="+nrate);
 
 					if(nqty!==undefined){
 							nqty = nqty.replace(/,/g,'');
@@ -2201,7 +2201,7 @@ function chkform(){
 							}
 						}
 					});
-				}
+				//}
 				
 			});
 
