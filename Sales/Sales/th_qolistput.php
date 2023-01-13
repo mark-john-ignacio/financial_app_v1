@@ -71,7 +71,7 @@ require_once "../../Connection/connection_string.php";
 
 			if($row['cvattype']=="VatIn"){
 
-				$gprice = floatval($row['nprice'])*(1+(floatval($row['nrate'])/100));
+				$gprice = floatval($row['nprice'])/(1+(floatval($row['nrate'])/100));
 				$gamount = $gprice*floatval($nqty1 - $nqty2);
 
 				$json['nprice'] = round($gprice,2);

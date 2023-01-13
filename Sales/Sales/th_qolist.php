@@ -9,8 +9,8 @@ require_once "../../Connection/connection_string.php";
 
 		//get all quotation
 		$resq = mysqli_query ($con, "Select ctranno, nident,citemno,nqty From dr_t where compcode='$company'");
-		if (mysqli_num_rows($result)!=0){
-			while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+		if (mysqli_num_rows($resq)!=0){
+			while($row = mysqli_fetch_array($resq, MYSQLI_ASSOC)){
 				@$arrresq[]=$row;
 			}
 		}
@@ -31,6 +31,7 @@ require_once "../../Connection/connection_string.php";
 
 
 	//get all existing SI
+	@$arrinv = array();
 	$resq = mysqli_query ($con, "Select creference, nrefident,citemno,sum(nqty) as nqty From sales_t a left join sales b on a.compcode=b.compcode and a.ctranno=b.ctranno where a.compcode='$company' and b.lcancelled=0 group by creference, nrefident,citemno");
 	if (mysqli_num_rows($result)!=0){
 		while($row = mysqli_fetch_array($resq, MYSQLI_ASSOC)){
