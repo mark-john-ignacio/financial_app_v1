@@ -307,7 +307,7 @@ mysqli_close($con);
 	});
 	
 	function editgrp(grp,code,desc){
-		var x = chkAccess('Groupings_Edit.php');
+		var x = chkAccess('SUPPGROUPS_Edit.php');
 		 
 		 if(x.trim()=="True"){
 		$("#btnSave").hide();

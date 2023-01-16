@@ -140,6 +140,11 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 
 					</td>
 
+					<td align="right">
+						<h4><?=$csalesno?></h4>
+
+					</td>
+
 				</tr>
 				<tr>
 					<td style="padding-bottom: 20px">

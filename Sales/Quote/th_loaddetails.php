@@ -12,13 +12,13 @@ require_once "../../Connection/connection_string.php";
 	$date1 = date("Y-m-d");
 	
 	if($avail==1){
-		$sql = "select X.citemno as cpartno, A.citemdesc, A.cunit, X.nqty as totqty, 1 as nqty, X.nprice, X.nbaseamount as namount, X.cunit as qtyunit, X.nfactor
+		$sql = "select X.nident, X.citemno as cpartno, A.citemdesc, A.cunit, X.nqty as totqty, 1 as nqty, X.nprice, X.nbaseamount as namount, X.cunit as qtyunit, X.nfactor
 		from quote_t X
 		left join items A on X.compcode=A.compcode and X.citemno=A.cpartno
 		where X.compcode='$company' and X.ctranno = '$csalesno'";
 	}
 	else{
-		$sql = "select X.citemno as cpartno, A.citemdesc, A.cunit, X.nqty as totqty, X.nprice, X.nbaseamount as namount, X.cunit as qtyunit, X.nfactor
+		$sql = "select X.nident, X.citemno as cpartno, A.citemdesc, A.cunit, X.nqty as totqty, X.nprice, X.nbaseamount as namount, X.cunit as qtyunit, X.nfactor
 		, ifnull(B.nqty,0) AS nqty
 		from quote_t X
 		left join items A on X.compcode=A.compcode and X.citemno=A.cpartno 
@@ -41,7 +41,7 @@ require_once "../../Connection/connection_string.php";
 		$json['id'] = $row2['cpartno'];
 		$json['desc'] = $row2['citemdesc'];
 		$json['cunit'] = $row2['cunit'];
-			if((float)$row2['nqty']==0){
+			if(floatval($row2['nqty'])==0){
 				$json['nqty'] = 0;
 			}else{
 				$json['nqty'] = $row2['nqty'];
@@ -51,6 +51,7 @@ require_once "../../Connection/connection_string.php";
 		$json['namount'] = $row2['namount'];
 		$json['cqtyunit'] = strtoupper($row2['qtyunit']);
 		$json['nfactor'] = $row2['nfactor'];
+		$json['nident'] = $row2['nident'];
 		
 		$json2[] = $json;
 

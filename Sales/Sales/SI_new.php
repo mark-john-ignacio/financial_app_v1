@@ -226,15 +226,23 @@ $company = $_SESSION['companyid'];
 						</tr>
 						<tr>
 								<td style="padding:2px"></td>
-								<td style="padding:2px">
-									<div class="col-xs-5 nopadding">
+								<td style="padding:2px"><!--
+									<div class="col-xs-6 nopadding">
 										<div class="input-group">
-											<span class="input-group-btn">
-												<button type="button" class="btn btn-warning btn-sm" id="btnsrchbill" onClick="openinv('QO');"><i class="fa fa-search" aria-hidden="true"></i> </button>
-											</span>										
+											<div class="input-group-btn">
+													<button type="button" data-toggle="dropdown" class="btn btn-warning btn-sm dropdown-toggle">
+															Reference <span class="caret"></span>
+													</button>
+													<ul class="dropdown-menu">
+															<li><a href="#">Billing</a></li>
+															<li><a href="#">Sales Order</a></li>
+															<li><a href="#">Delivery</a></li>
+													</ul>
+											</div>									
 											<input type="text" class="form-control input-sm" id="txtSearchBill" name="txtSearchBill" placeholder="Search/Enter Billing Reference...">
 										</div>
 									</div>
+												-->
 								</td>
 								<th><div class="chklimit">Balance:</div></th>
 								<td style="padding:2px;"  align="right">				          
@@ -314,29 +322,39 @@ $company = $_SESSION['companyid'];
 
 					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SI.php';" id="btnMain" name="btnMain">Back to Main<br>(ESC)</button>
 
-					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv('DR');" id="btnIns" name="btnIns">DR<br>(Insert)</button>
+					<!--<button type="button" class="btn btn-info btn-sm" tabindex="6" id="btnIns" name="btnIns">DR<br>(Insert)</button>-->
 
+					<div class="dropdown" style="display:inline-block !important;">
+						<button type="button" data-toggle="dropdown" class="btn btn-info btn-sm dropdown-toggle">
+							Reference <br>(Insert) <span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu">
+							<li><a href="javascript:;" onClick="openinv('QO');">Billing</a></li>
+							<li><a href="javascript:;" onClick="openinv('SO');">Sales Order</a></li>
+							<li><a href="javascript:;" onClick="openinv('DR');">Delivery</a></li>
+						</ul>
+					</div>
 					
 					<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
 					<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">SAVE<br> (CTRL+S)</button></td>
 					<td align="right" valign="top">
 					
-					<table width="50%" border="0" cellspacing="0" cellpadding="0">
+					<table width="90%" border="0" cellspacing="0" cellpadding="0">
 						<tr>
-							<td width="110px" align="right"><b>Net of VAT </b>&nbsp;&nbsp;</td>
-							<td width="150px"> <input type="text" id="txtnNetVAT" name="txtnNetVAT" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10"></td>
+							<td nowrap align="right"><b>Net of VAT </b>&nbsp;&nbsp;</td>
+							<td> <input type="text" id="txtnNetVAT" name="txtnNetVAT" readonly value="0" style="text-align:right; border:none;  background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20"></td>
 						</tr>
 						<tr>
-							<td width="110px" align="right"><b>VAT </b>&nbsp;&nbsp;</td> 
-							<td width="150px"> <input type="text" id="txtnVAT" name="txtnVAT" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10"></td>
+							<td nowrap align="right"><b>VAT </b>&nbsp;&nbsp;</td> 
+							<td> <input type="text" id="txtnVAT" name="txtnVAT" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20"></td>
 						</tr>
 						<tr>
-							<td width="110px" align="right"><b>Gross Amount </b>&nbsp;&nbsp;</td>
-							<td width="150px"> <input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10"></td>
+							<td nowrap align="right"><b>Gross Amount </b>&nbsp;&nbsp;</td>
+							<td> <input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20"></td>
 						</tr>
 						<tr>
-							<td width="110px" align="right"><b>Gross Amount in <?php echo $nvaluecurrbase; ?></b>&nbsp;&nbsp;</td>
-							<td width="150px"> <input type="text" id="txtnGross" name="txtnGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10"></td>
+							<td nowrap align="right"><b>Gross Amount in <?php echo $nvaluecurrbase; ?></b>&nbsp;&nbsp;</td>
+							<td> <input type="text" id="txtnGross" name="txtnGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20"></td>
 						</tr>
 					</table>
 				
@@ -519,7 +537,7 @@ $company = $_SESSION['companyid'];
 				</div>
 				
 				<div class="modal-footer">
-					<button type="button" id="btnInsDet" onClick="InsertSI('QO')" class="btn btn-primary">Insert</button>
+					<button type="button" id="btnQOInsDet" onClick="InsertSI('QO')" class="btn btn-primary">Insert</button>
 					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
 				</div>
 			</div><!-- /.modal-content -->
@@ -665,7 +683,7 @@ $company = $_SESSION['companyid'];
 				$('td input:checkbox',table).not(this).prop('checked', this.checked);
 			});
 
-			$("#txtcustid").keyup(function(event){
+		$("#txtcustid").keyup(function(event){
 			if(event.keyCode == 13){
 			
 			var dInput = this.value;
@@ -1583,9 +1601,9 @@ $company = $_SESSION['companyid'];
 
 				//clear table body if may laman
 				if(typ=="DR"){
-					$('#MyQOTbl tbody').empty(); 
-					$('#MyQODetList tbody').empty();
-				}else if(typ=="QO"){
+					$('#MyInvTbl tbody').empty(); 
+					$('#MyInvDetList tbody').empty();
+				}else if(typ=="QO" || typ=="SO"){
 					$('#MyQOTbl tbody').empty(); 
 					$('#MyQODetList tbody').empty();
 				}
@@ -1600,6 +1618,10 @@ $company = $_SESSION['companyid'];
 					$('#InvListHdr').html("SO List: " + $('#txtcust').val());
 				}else if(typ=="QO"){
 					$('#QOListHdr').html("Billing List: " + $('#txtcust').val());
+					$("#btnQOInsDet").attr("onclick","InsertSI('QO')");
+				}else if(typ=="SO"){
+					$('#QOListHdr').html("Sales Order List: " + $('#txtcust').val());
+					$("#btnQOInsDet").attr("onclick","InsertSI('SO')");
 				}
 
 				var xstat = "YES";
@@ -1630,8 +1652,10 @@ $company = $_SESSION['companyid'];
 								if(item.cpono=="NONE"){
 									if(typ=="DR"){
 										$("#AlertMsg").html("No Deliver Receipt Available");
-									}else{
+									}else if(typ=="QO"){
 										$("#AlertMsg").html("No For Billing Available");
+									}else{
+										$("#AlertMsg").html("No Sales Order Available");
 									}
 									
 									$("#alertbtnOK").show();
@@ -1652,7 +1676,7 @@ $company = $_SESSION['companyid'];
 										$("<td>").text(item.ngross)
 										).appendTo("#MyInvTbl tbody");
 
-									}else if(typ=="QO"){
+									}else if(typ=="QO" || typ=="SO"){
 
 										$("<tr>").append(
 										$("<td id='td"+item.cpono+"'>").text(item.cpono),
@@ -1677,7 +1701,7 @@ $company = $_SESSION['companyid'];
 							if(xstat=="YES"){
 								if(typ=="DR"){
 									$('#mySIRef').modal('show');
-								}else if(typ=="QO"){
+								}else if(typ=="QO" || typ=="SO"){
 									$('#myQORef').modal('show');
 								}
 							}
@@ -1706,12 +1730,14 @@ $company = $_SESSION['companyid'];
 			$('#InvListHdr').html("DR List: " + $('#txtcust').val() + " | DR Details: " + drno + "<div id='loadimg'><center><img src='../../images/cusload.gif' style='show:none;'> </center> </div>");
 		}else if(typ=="QO"){
 			$('#QOListHdr').html("Billing List: " + $('#txtcust').val() + " | Billing Details: " + drno + "<div id='loadimg'><center><img src='../../images/cusload.gif' style='show:none;'> </center> </div>");
+		}else if(typ=="SO"){
+			$('#QOListHdr').html("SO List: " + $('#txtcust').val() + " | SO Details: " + drno + "<div id='loadimg'><center><img src='../../images/cusload.gif' style='show:none;'> </center> </div>");
 		}
 		
 		if(typ=="DR"){
 			$('#MyInvDetList tbody').empty();
 			//$('#MyDRDetList tbody').empty();
-		}else if(typ=="QO"){
+		}else if(typ=="QO" || typ=="SO"){
 			$('#MyQODetList tbody').empty();
 			//$('#MyDRDetList tbody').empty();
 		}
@@ -1736,7 +1762,6 @@ $company = $_SESSION['companyid'];
 					
 				});
 
-						//alert('th_qolistdet.php?x='+drno+"&y="+salesnos+"&typ="+typ);
 						$.ajax({
 							url: 'th_qolistdet.php',
 							data: 'x='+drno+"&y="+salesnos+"&typ="+typ,
@@ -1767,7 +1792,7 @@ $company = $_SESSION['companyid'];
 												$("<td>").text(item.nbaseamount),
 												$("<td>").text(item.ccurrencycode)
 												).appendTo("#MyInvDetList tbody");
-											}else if(typ=="QO"){
+											}else if(typ=="QO" || typ=="SO"){
 												$("<tr>").append(
 												$("<td>").html("<input type='checkbox' value='"+item.citemno+"' name='chkSales[]' data-id=\""+drno+"\" data-curr=\""+item.ccurrencycode+"\">"),
 												$("<td>").text(item.citemno),
@@ -1828,10 +1853,10 @@ $company = $_SESSION['companyid'];
 
 				$("input[name='chkSales[]']:checked").each( function () {
 			
-		
 					var tranno = $(this).data("id");
-						var id = $(this).val();
-		
+					var id = $(this).val();
+					
+					//alert("th_qolistput.php?id=" + tranno + "&itm=" + id + "&typ=" + typ);
 						$.ajax({
 							url : "th_qolistput.php?id=" + tranno + "&itm=" + id + "&typ=" + typ,
 							type: "GET",
@@ -1875,7 +1900,7 @@ $company = $_SESSION['companyid'];
 			if(typ=="DR"){
 				//$('#mySIModal').modal('hide');
 				$('#mySIRef').modal('hide');
-			}else if(typ=="QO"){
+			}else if(typ=="QO" || typ=="SO"){
 			//	$('#myQOModal').modal('hide');
 				$('#myQORef').modal('hide');
 			}

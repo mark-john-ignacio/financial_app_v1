@@ -13,7 +13,7 @@ $query = "select a.*,b.cname from quote a left join customers b on a.ccode=b.cem
 
 if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
 {
- $query .= "WHERE ctranno like '%".$_POST['searchByName']."%' OR ccode like '%".$_POST['searchByName']."%' OR cname like '%".$_POST['searchByName']."%'";
+ $query .= "and (ctranno like '%".$_POST['searchByName']."%' OR ccode like '%".$_POST['searchByName']."%' OR cname like '%".$_POST['searchByName']."%')";
 }
 
 if(isset($_POST['order']))
@@ -66,6 +66,8 @@ foreach($result as $row)
  $sub_array[] = $row['lapproved'];
  $sub_array[] = $row['lcancelled'];
  $sub_array[] = $chexst;
+ $sub_array[] = ucfirst($row['quotetype']);
+ $sub_array[] = $row['lsent'];
  $data[] = $sub_array;
 }
 

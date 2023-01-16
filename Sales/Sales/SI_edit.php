@@ -307,6 +307,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	<tr>
 								<td style="padding:2px"></td>
 								<td style="padding:2px">
+								<!--
 									<div class="col-xs-5 nopadding">
 										<div class="input-group">
 											<span class="input-group-btn">
@@ -315,6 +316,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 											<input type="text" class="form-control input-sm" id="txtSearchBill" name="txtSearchBill" placeholder="Search/Enter Billing Reference...">
 										</div>
 									</div>
+										-->
 								</td>
 								<th>&nbsp;</th>
 								<td style="padding:2px;" align="right"><div class="chklimit col-xs-11 nopadwright" id="ncustbalance2"></div></td>
@@ -374,16 +376,27 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <table width="100%" border="0" cellpadding="3">
   <tr>
     <td>
-    <input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
- 
-<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SI.php';" id="btnMain" name="btnMain">
-Back to Main<br>(ESC)</button>
-   
-    <button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='SI_new.php';" id="btnNew" name="btnNew">
-New<br>(F1)</button>
+			<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
+	
+			<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SI.php';" id="btnMain" name="btnMain">
+	Back to Main<br>(ESC)</button>
+		
+			<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='SI_new.php';" id="btnNew" name="btnNew">
+	New<br>(F1)</button>
 
-    <button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
-DR<br>(Insert)</button>
+		<!-- <button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
+	DR<br>(Insert)</button>-->
+
+			<div class="dropdown" style="display:inline-block !important;">
+				<button type="button" data-toggle="dropdown" class="btn btn-info btn-sm dropdown-toggle">
+					Reference <br>(Insert) <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<li><a href="javascript:;" onClick="openinv('QO');">Billing</a></li>
+					<li><a href="javascript:;" onClick="openinv('SO');">Sales Order</a></li>
+					<li><a href="javascript:;" onClick="openinv('DR');">Delivery</a></li>
+				</ul>
+			</div>
 
     <button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
 Undo Edit<br>(CTRL+Z)
@@ -443,6 +456,7 @@ Save<br>(CTRL+S)    </button>
     </fieldset>
     
    
+	<!-- add details modal -->
   <div class="modal fade" id="MyDetModal" role="dialog">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -471,69 +485,157 @@ Save<br>(CTRL+S)    </button>
 	</div><!-- /.modal -->
 
 
-<!-- FULL PO LIST REFERENCES-->
+	<!-- FULL DR LIST REFERENCES-->
+	<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
+			<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+							<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+									<h3 class="modal-title" id="InvListHdr">DR List</h3>
+							</div>
+							
+							<div class="modal-body" style="height:40vh">
+							
+								<div class="col-xs-12 nopadding">
 
-<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="InvListHdr">DR List</h3>
-            </div>
-            
-            <div class="modal-body" style="height:40vh">
-            
-       				<div class="col-xs-12 nopadding">
+									<div class="form-group">
+											<div class="col-xs-3 nopadding pre-scrollable" style="height:37vh">
+														<table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight">
+														<thead>
+															<tr>
+																<th>DR No</th>
+																<th>Amount</th>
+															</tr>
+															</thead>
+															<tbody>
+															</tbody>
+														</table>
+											</div>
 
-                <div class="form-group">
-                    <div class="col-xs-3 nopadding pre-scrollable" style="height:37vh">
-                          <table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight">
-                           <thead>
-                            <tr>
-                              <th>DR No</th>
-                              <th>Amount</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                          </table>
-                    </div>
+											<div class="col-xs-9 nopadwleft pre-scrollable" style="height:37vh">
+														<table name='MyInvDetList' id='MyInvDetList' class="table table-small small">
+														<thead>
+															<tr>
+																<th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
+									<th>SO No.</th> 
+									<th>Item No</th>
+																<th>Description</th>
+																<th>UOM</th>
+																<th>Qty</th>
+									<th>Price</th>
+									<th>Amount</th>
+									<th>Cur</th>
+															</tr>
+															</thead>
+															<tbody>
+																
+															</tbody>
+														</table>
+											</div>
+								</div>
 
-                    <div class="col-xs-9 nopadwleft pre-scrollable" style="height:37vh">
-                          <table name='MyInvDetList' id='MyInvDetList' class="table table-small small">
-                           <thead>
-                            <tr>
-                              <th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
-							  <th>SO No.</th> 
-							  <th>Item No</th>
-                              <th>Description</th>
-                              <th>UOM</th>
-                              <th>Qty</th>
-							  <th>Price</th>
-							  <th>Amount</th>
-							  <th>Cur</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            	
-                            </tbody>
-                          </table>
-                    </div>
-               </div>
+					</div>
+												
+				</div>
+				
+							<div class="modal-footer">
+									<button type="button" id="btnInsDet" onClick="InsertSI()" class="btn btn-primary">Insert</button>
+									<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
 
-        </div>
-         	            
-			</div>
+							</div>
+					</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	<!-- End FULL INVOICE LIST -->
+
+
+	<!-- discount modal -->
+	<div class="modal fade" id="MyDiscModal" role="dialog">
+			<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+							<div class="modal-header">
+									<button type="button" class="close"  aria-label="Close" onclick="chkCloseDiscs();"><span aria-hidden="true">&times;</span></button>
+									<h3 class="modal-title" id="invheader"> Discounts </h3>           
+							</div>
 			
-            <div class="modal-footer">
-                <button type="button" id="btnInsDet" onClick="InsertSI()" class="btn btn-primary">Insert</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+							<div class="modal-body">
+									<input type="hidden" name="hdnrowcnt3" id="hdnrowcnt3">
+									<table id="MyTable3" class="MyTable table table-condensed" width="100%">
+										<tr>
+											<th style="border-bottom:1px solid #999" width="50%">Description</th>
+											<th style="border-bottom:1px solid #999">Type</th>
+											<th style="border-bottom:1px solid #999">Value</th>
+										</tr>
+										<tbody class="tbody">
+											
+										</tbody>
+									</table>
+			
+							</div>
 
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<!-- End FULL INVOICE LIST -->
+							<div class="modal-footer">
+
+							</div>
+					</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+	</div>
+	<!-- /discount.modal -->
+
+	<!-- QUOTE/BILLING-->
+	<div class="modal fade" id="myQORef" role="dialog" data-keyboard="false" data-backdrop="static">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h3 class="modal-title" id="QOListHdr">Billing Statement List</h3>
+				</div>
+							
+				<div class="modal-body" style="height:40vh">							
+					<div class="col-xs-12 nopadding">
+						<div class="form-group">
+							<div class="col-xs-3 nopadding pre-scrollable" style="height:37vh">
+								<table name='MyQOTbl' id='MyQOTbl' class="table table-small table-highlight small">
+									<thead>
+										<tr>
+											<th>Bill No</th>
+											<th>Amount</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+
+							<div class="col-xs-9 nopadwleft pre-scrollable" style="height:37vh">
+								<table name='MyQODetList' id='MyQODetList' class="table table-small small">
+									<thead>
+										<tr>
+											<th align="center"> <input name="allboxqo" id="allboxqo" type="checkbox" value="Check All" /></th>
+											<th>Item No</th>
+											<th>Description</th>
+											<th>UOM</th>
+											<th>Qty</th>
+											<th>Price</th>
+											<th>Amount</th>
+										</tr>
+									</thead>
+									<tbody>
+																
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>												
+				</div>
+				
+				<div class="modal-footer">
+					<button type="button" id="btnQOInsDet" onClick="InsertSI('QO')" class="btn btn-primary">Insert</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	<!-- End LIST REFERENCES -->
 
 </form>
 
@@ -1556,9 +1658,9 @@ function openinv(typ){
 
 				//clear table body if may laman
 				if(typ=="DR"){
-					$('#MyQOTbl tbody').empty(); 
-					$('#MyQODetList tbody').empty();
-				}else if(typ=="QO"){
+					$('#MyInvTbl tbody').empty(); 
+					$('#MyInvDetList tbody').empty();
+				}else if(typ=="QO" || typ=="SO"){
 					$('#MyQOTbl tbody').empty(); 
 					$('#MyQODetList tbody').empty();
 				}
@@ -1573,6 +1675,10 @@ function openinv(typ){
 					$('#InvListHdr').html("SO List: " + $('#txtcust').val());
 				}else if(typ=="QO"){
 					$('#QOListHdr').html("Billing List: " + $('#txtcust').val());
+					$("#btnQOInsDet").attr("onclick","InsertSI('QO')");
+				}else if(typ=="SO"){
+					$('#QOListHdr').html("Sales Order List: " + $('#txtcust').val());
+					$("#btnQOInsDet").attr("onclick","InsertSI('SO')");
 				}
 
 				var xstat = "YES";
@@ -1599,8 +1705,10 @@ function openinv(typ){
 								if(item.cpono=="NONE"){
 									if(typ=="DR"){
 										$("#AlertMsg").html("No Deliver Receipt Available");
-									}else{
+									}else if(typ=="QO"){
 										$("#AlertMsg").html("No For Billing Available");
+									}else{
+										$("#AlertMsg").html("No Sales Order Available");
 									}
 									
 									$("#alertbtnOK").show();
@@ -1621,7 +1729,7 @@ function openinv(typ){
 										$("<td>").text(item.ngross)
 										).appendTo("#MyInvTbl tbody");
 
-									}else if(typ=="QO"){
+									}else if(typ=="QO" || typ=="SO"){
 
 										$("<tr>").append(
 										$("<td id='td"+item.cpono+"'>").text(item.cpono),
@@ -1646,7 +1754,7 @@ function openinv(typ){
 							if(xstat=="YES"){
 								if(typ=="DR"){
 									$('#mySIRef').modal('show');
-								}else if(typ=="QO"){
+								}else if(typ=="QO" || typ=="SO"){
 									$('#myQORef').modal('show');
 								}
 							}
@@ -1675,12 +1783,14 @@ function openinv(typ){
 			$('#InvListHdr').html("DR List: " + $('#txtcust').val() + " | DR Details: " + drno + "<div id='loadimg'><center><img src='../../images/cusload.gif' style='show:none;'> </center> </div>");
 		}else if(typ=="QO"){
 			$('#QOListHdr').html("Billing List: " + $('#txtcust').val() + " | Billing Details: " + drno + "<div id='loadimg'><center><img src='../../images/cusload.gif' style='show:none;'> </center> </div>");
+		}else if(typ=="SO"){
+			$('#QOListHdr').html("SO List: " + $('#txtcust').val() + " | SO Details: " + drno + "<div id='loadimg'><center><img src='../../images/cusload.gif' style='show:none;'> </center> </div>");
 		}
 		
 		if(typ=="DR"){
 			$('#MyInvDetList tbody').empty();
 			//$('#MyDRDetList tbody').empty();
-		}else if(typ=="QO"){
+		}else if(typ=="QO" || typ=="SO"){
 			$('#MyQODetList tbody').empty();
 			//$('#MyDRDetList tbody').empty();
 		}
@@ -1736,7 +1846,7 @@ function openinv(typ){
 												$("<td>").text(item.nbaseamount),
 												$("<td>").text(item.ccurrencycode)
 												).appendTo("#MyInvDetList tbody");
-											}else if(typ=="QO"){
+											}else if(typ=="QO" || typ=="SO"){
 												$("<tr>").append(
 												$("<td>").html("<input type='checkbox' value='"+item.citemno+"' name='chkSales[]' data-id=\""+drno+"\" data-curr=\""+item.ccurrencycode+"\">"),
 												$("<td>").text(item.citemno),
@@ -1844,7 +1954,7 @@ function openinv(typ){
 			if(typ=="DR"){
 				//$('#mySIModal').modal('hide');
 				$('#mySIRef').modal('hide');
-			}else if(typ=="QO"){
+			}else if(typ=="QO" || typ=="SO"){
 			//	$('#myQOModal').modal('hide');
 				$('#myQORef').modal('hide');
 			}

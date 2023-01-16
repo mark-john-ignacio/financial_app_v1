@@ -7,7 +7,7 @@ require_once "../../Connection/connection_string.php";
 	$company = $_SESSION['companyid'];
 	$csalesno = $_REQUEST['id'];
 		
-		$sql = "select X.citemno as cpartno, A.citemdesc, X.cfldnme, X.cvalue
+		$sql = "select X.nrefident, X.citemno as cpartno, A.citemdesc, X.cfldnme, X.cvalue
 		from quote_t_info X
 		left join items A on X.compcode=A.compcode and X.citemno=A.cpartno
 		where X.compcode='$company' and X.ctranno = '$csalesno'";
@@ -22,6 +22,7 @@ require_once "../../Connection/connection_string.php";
 		$json['desc'] = $row2['citemdesc'];
 		$json['fldnme'] = $row2['cfldnme'];
 		$json['cvalue'] = $row2['cvalue'];
+		$json['refident'] = $row2['nrefident'];
 		
 		$json2[] = $json;
 

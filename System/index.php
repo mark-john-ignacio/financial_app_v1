@@ -9,6 +9,8 @@ include('../Connection/connection_string.php');
 include('../include/denied.php');
 include('../include/access.php');
 
+$company = $_SESSION['companyid'];
+
 $sqlhead=mysqli_query($con,"Select * from groupings where ctype='ITEMTYP' and cstatus='ACTIVE' and compcode='".$_SESSION['companyid']."'");
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -76,6 +78,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	</head>
 
 	<body style="padding:5px">
+		<input type='hidden' id='atitemtype' value='<?=json_encode(@$itmtype);?>'>
+		<input type='hidden' id='atsupptype' value='<?=json_encode(@$suptype);?>'>
+		<input type='hidden' id='atuserslst' value='<?=json_encode(@$ursnmse);?>'>
+
 		<fieldset>
 				<legend>System Setup</legend>
 
@@ -183,7 +189,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										<select class="form-control input-sm" name="selbasecurr" id="selbasecurr" onChange="setparamval('DEF_CURRENCY',this.value,'basecurrchkmsg')">
 									
 											<?php
-												$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+												$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='DEF_CURRENCY'"); 
 										
 												if (mysqli_num_rows($result)!=0) {
 													$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);									
@@ -842,7 +848,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</div>                    
 									<div class="col-xs-3 nopadwtop">
 										<?php
-											$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='INVPOST'"); 
+											$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='INVPOST'"); 
 							
 											if (mysqli_num_rows($result)!=0) {
 												$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
@@ -868,7 +874,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</div>                    
 									<div class="col-xs-3 nopadwtop">
 										<?php
-											$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='CRDLIMIT'"); 									
+											$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='CRDLIMIT'"); 									
 											if (mysqli_num_rows($result)!=0) {
 												$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);								
 												$nvalue = $all_course_data['cvalue']; 									
@@ -893,7 +899,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</div>                    
 									<div class="col-xs-3 nopadwtop">
 										<?php
-											$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='POSCLMT'"); 
+											$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='POSCLMT'"); 
 								
 											if (mysqli_num_rows($result)!=0) {
 												$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);								
@@ -968,19 +974,469 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									
 									<div class="collapse" id="itmqtes">
 
-										<div class="col-xs-12">
+									<!-- for approvals -->
+
+										<div class="col-xs-12" style="margin-bottom: 15px !important; margin-left: 15px !important">
+
+											<div class="col-xs-3 nopadwtop2x">
+												<b>Send Approval Email Notif.</b>
+												<div id="divPOEmailprint" style="display:inline; padding-left:5px"></div>
+											</div>                    
+											<div class="col-xs-3 nopadwtop2x">
+												<?php
+													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='QO_APP_EMAIL'"); 
+												
+													if (mysqli_num_rows($result)!=0) {
+														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
+														$nvalue = $all_course_data['cvalue']; 												
+													}
+													else{
+														$nvalue = "";
+													}
+												?>
+												<select class="form-control input-sm selectpicker" name="selpoautopost" id="selpoautopost" onChange="setparamval('QO_APP_EMAIL',this.value,'qoemailmsg')">
+													<option value="0" <?php if ($nvalue==0) { echo "selected"; } ?>> NO </option>
+													<option value="1" <?php if ($nvalue==1) { echo "selected"; } ?>> YES </option>
+												</select>
+											</div>                   
+											<div class="col-xs-1 nopadwtop2x" id="qoemailmsg">
+											</div>												
+										</div>
+
+											<?php
+												$resQOApps = mysqli_query($con,"SELECT * FROM `quote_approvals_id` WHERE compcode='".$_SESSION['companyid']."'"); 
+											?>
+
+
+										<form action="th_saveqolevels.php" method="POST" name="frmPOLvls" id="frmPOLvls" onSubmit="return chkqolvlform();" target="_self" enctype="multipart/form-data">
+
+											<input type="hidden" name="tbLQL1count" id="tbLQL1count" value="0">
+											<input type="hidden" name="tbLQL2count" id="tbLQL2count" value="0">
+											<input type="hidden" name="tbLQL3count" id="tbLQL3count" value="0"> 
+
+											<div class="col-xs-12" style="padding-bottom: 5px !important">
+												<div class="col-xs-2">
+													<b>Approval Levels</b>
+												</div>                    
+												<div class="col-xs-3">
+													<button type="submit" class="btn btn-xs btn-success" name="btnsaveQOApp" id="btnsaveQOApp"><i class="fa fa-save"></i>&nbsp; &nbsp;Save Approvals</button>
+												</div>
+											</div>
+
+
+											<div class="col-xs-12" style="margin-top: 5px !important; margin-left: 15px !important">
+
+												<ul class="nav nav-tabs">
+													<li class="active"><a data-toggle="tab" href="#qolevel1">Level 1</a></li>
+													<li><a data-toggle="tab" href="#qolevel2">Level 2</a></li>
+													<li><a data-toggle="tab" href="#qolevel3">Level 3</a></li>
+												</ul>
+
+
+												<div class="tab-content col-lg-12 nopadwtop2x">   
+
+													<!-- LEVEL 1 -->
+														<div id="qolevel1" class="tab-pane fade in active">
+
+															<div class="col-xs-12 nopadding">
+											
+																<div class="col-xs-2 nopadding"> 
+																	<button type="button" class="btn btn-xs btn-primary" name="btnaddqolvl1" id="btnaddqolvl1" onClick="addqolevel(1,'QOAPP1');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button> 															
+																</div>
+
+															</div>
+
+															<div class="col-xs-12 border pre-scrollable" style="height: 150px; margin-top: 5px !important">
+
+																	<table cellpadding="3px" width="100%" border="0" style="font-size: 14px" id="QOAPP1">
+																		<thead>
+																			<tr>
+																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">User ID</td>
+																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Item Type</td>
+																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Supplier Type</td>
+																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Signature</td>
+																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px"><small>Delete</small></td>
+																			</tr>
+																		</thead>
+																		<tbody>
+																			<?php
+																			if (mysqli_num_rows($resQOApps)!=0) {
+																				$cntr = 0;
+
+																				while($rowxcv=mysqli_fetch_array($resQOApps, MYSQLI_ASSOC)){
+																					$rowQOresult[] = $rowxcv;
+																				}
+
+																				foreach ($rowQOresult as $row){
+																					if($row['qo_approval_id']==1){
+																						$cntr++;
+																			?>	
+																				<tr>
+																					<td width="200px" style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																						<select class="form-control" name="selqosuser<?=$row['qo_approval_id'].$cntr?>" id="selqosuser<?=$row['qo_approval_id'].$cntr?>" >
+
+																							<?php
+																								foreach(@$ursnmse as $rsusr){
+																									if($rsusr['userid']==$row['userid']){
+																										$xscd = "selected";
+																									}else{
+																										$xscd = "";
+																									}
+																									echo "<option value='".$rsusr['userid']."' ".$xscd."> ".$rsusr['name']." </option>";
+																								}
+																							?> 
+																						</select>
+																					</td>
+																					<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">																
+																						<select required multiple class="form-control" name="selqoitmtyp<?=$row['qo_approval_id'].$cntr?>[]" id="selqoitmtyp<?=$row['qo_approval_id'].$cntr?>" >
+
+																						<option value='ALL' <?=($row['items']=="ALL") ? "selected" : ""?>> ALL</option>
+
+																							<?php
+																								foreach(@$itmtype as $rsitm){
+
+																									$xsc = "";
+																									if($row['items']!=="" && $row['items']!==null){
+																										if(in_array($rsitm['ccode'], explode(",",$row['items']))){
+																											$xsc = "selected";
+																										}
+																									}
+																									
+																									echo "<option value='".$rsitm['ccode']."' ".$xsc."> ".$rsitm['cdesc']." </option>";
+																								}
+																							?> 
+																						</select>  
+																					</td>
+																					<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																						<select required multiple class="form-control" name="selqosutyp<?=$row['qo_approval_id'].$cntr?>[]" id="selqosutyp<?=$row['qo_approval_id'].$cntr?>" >
+
+																						<option value='ALL' <?=($row['suppliers']=="ALL") ? "selected" : ""?>> ALL</option>
+
+																							<?php
+																								foreach(@$suptype as $rssup){
+																									
+																									$xsc = "";
+																									if($row['suppliers']!=="" && $row['suppliers']!==null){
+																										if(in_array($rssup['ccode'], explode(",",$row['suppliers']))){
+																											$xsc = "selected";
+																										}
+																									}
+
+																									echo "<option value='".$rssup['ccode']."' ".$xsc."> ".$rssup['cdesc']." </option>";
+																								}
+																							?> 
+																						</select>
+																					</td>
+																					<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<?php
+																						if($row['sign']!=="" && $row['sign']!==null){
+																					?>
+																						<a href="javascript:;" title="Click to remove image" onclick="qotransset('sign',<?=$row['id']?>)">
+																							<img src = "<?=$row['sign']?>" height="50px" alt="Click to remove image">
+																						</a>
+																					<?php
+																						}else{
+																					?>
+																						<input type="file" name="qofilsign<?=$row['qo_approval_id'].$cntr?>" id="qofilsign<?=$row['qo_approval_id'].$cntr?>" value="">
+																					<?php
+																						}
+																					?>
+																					</td>
+																					<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																						<button class="btn btn-danger btn-sm" type="button" onclick="qotransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
+																					</td>
+																				</tr>
+
+																				<script>
+																					$(document).ready(function(e) {
+																						$('#selqosuser<?=$row['qo_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
+																						$('#selqoitmtyp<?=$row['qo_approval_id'].$cntr?>').select2({width: '100%'});
+																						$('#selqosutyp<?=$row['qo_approval_id'].$cntr?>').select2({width: '100%'});
+																					});
+																				</script>
+																			<?php
+																					}
+																				}
+																			}
+																			?>
+																		</tbody>
+																	</table> 
+
+															</div>
+
+														</div>
+
+													<!-- LEVEL 2 -->
+														<div id="qolevel2" class="tab-pane fade in">
+
+															<div class="col-xs-12 nopadding">
+											
+																<div class="col-xs-2 nopadding"> 
+																	<button type="button" class="btn btn-xs btn-primary" name="btnaddqolvl2" id="btnaddqolvl2" onClick="addqolevel(2,'QOAPP2');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button>															
+																</div>
+
+															</div>
+
+															<div class="col-xs-12 border pre-scrollable" style="height: 150px; margin-top: 5px !important">
+
+																<table cellpadding="3px" width="100%" border="0" style="font-size: 14px"  id="QOAPP2">
+																	<thead>
+																		<tr>
+																			<td style="padding-top: 5px">User ID</td>
+																			<td style="padding-top: 5px">Item Type</td>
+																			<td style="padding-top: 5px">Supplier Type</td>
+																			<td style="padding-top: 5px">Signature</td>
+																		</tr>
+																	</thead>
+
+																	<tbody>
+																		<?php
+																		if (mysqli_num_rows($resQOApps)!=0) {
+																			$cntr = 0;
+																			foreach ($rowQOresult as $row){
+																				if(intval($row['qo_approval_id'])==2){
+																					$cntr++;
+																		?>	
+																			<tr>
+																				<td width="200px" style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<select class="form-control" name="selqosuser<?=$row['qo_approval_id'].$cntr?>" id="selqosuser<?=$row['qo_approval_id'].$cntr?>" >
+																						<?php
+																							foreach(@$ursnmse as $rsusr){
+																								if($rsusr['userid']==$row['userid']){
+																									$xscd = "selected";
+																								}else{
+																									$xscd = "";
+																								}
+
+																								echo "<option value='".$rsusr['userid']."' ".$xscd."> ".$rsusr['name']." </option>";
+																							}
+																						?> 
+																					</select>
+																				</td>
+																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">																
+																					<select required multiple class="form-control" name="selqoitmtyp<?=$row['qo_approval_id'].$cntr?>[]" id="selqoitmtyp<?=$row['qo_approval_id'].$cntr?>" >
+
+																					<option value='ALL' <?=($row['items']=="ALL") ? "selected" : ""?>> ALL</option>
+
+																						<?php
+																							foreach(@$itmtype as $rsitm){
+
+																								$xsc = "";
+																								if($row['items']!==""){
+																									if(in_array($rsitm['ccode'], explode(",",$row['items']))){
+																										$xsc = "selected";
+																									}
+																								}
+																								
+																								echo "<option value='".$rsitm['ccode']."' ".$xsc."> ".$rsitm['cdesc']." </option>";
+																							}
+																						?> 
+																					</select>  
+																				</td>
+																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<select required multiple class="form-control" name="selqosutyp<?=$row['qo_approval_id'].$cntr?>[]" id="selqosutyp<?=$row['qo_approval_id'].$cntr?>" >
+
+																					<option value='ALL' <?=($row['suppliers']=="ALL") ? "selected" : ""?>> ALL</option>
+
+																						<?php
+																							foreach(@$suptype as $rssup){
+																								
+																								$xsc = "";
+																								if($row['suppliers']!==""){
+																									if(in_array($rssup['ccode'], explode(",",$row['suppliers']))){
+																										$xsc = "selected";
+																									}
+																								}
+
+																								echo "<option value='".$rssup['ccode']."' ".$xsc."> ".$rssup['cdesc']." </option>";
+																							}
+																						?> 
+																					</select>
+																				</td>
+																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																				<?php
+																					if($row['sign']!=="" && $row['sign']!==null){
+																				?>
+																					<a href="javascript:;" title="Click to remove image" onclick="qotransset('sign',<?=$row['id']?>)">
+																						<img src = "<?=$row['sign']?>" height="50px" alt="Click to remove image">
+																					</a>
+																				<?php
+																					}else{
+																				?>
+																					<input type="file" name="qofilsign<?=$row['qo_approval_id'].$cntr?>" id="qofilsign<?=$row['qo_approval_id'].$cntr?>" value="">
+																				<?php
+																					}
+																				?>
+																				</td>
+																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<button class="btn btn-danger btn-sm" type="button" onclick="qotransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
+																				</td>
+																			</tr>
+
+																			<script>
+																				$(document).ready(function(e) {
+																					$('#selqosuser<?=$row['qo_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
+																					$('#selqoitmtyp<?=$row['qo_approval_id'].$cntr?>').select2({width: '100%'});
+																					$('#selqosutyp<?=$row['qo_approval_id'].$cntr?>').select2({width: '100%'});
+																				});
+																			</script>
+																		<?php
+																				}
+																			}
+																		}
+																		?>
+																	</tbody>
+																</table> 
+
+															</div>
+
+														</div>
+
+														<div id="qolevel3" class="tab-pane fade in">
+
+															<div class="col-xs-12 nopadding">
+											
+																<div class="col-xs-2 nopadding"> 
+																	<button type="button" class="lvlamtcls btn btn-xs btn-primary" name="btnaddqolvl3" id="btnaddqolvl3" onClick="addqolevel(3,'QOAPP3');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button>															
+																</div>
+
+															</div>
+
+															<div class="col-xs-12 border pre-scrollable" style="height: 150px; margin-top: 5px !important">
+
+																<table cellpadding="3px" width="100%" border="0" style="font-size: 14px" id="QOAPP3">
+																	<thead>
+																		<tr>
+																			<td style="padding-top: 5px">User ID</td>
+																			<td style="padding-top: 5px">Item Type</td>
+																			<td style="padding-top: 5px">Supplier Type</td>
+																			<td style="padding-top: 5px">Signature</td>
+																		</tr>
+																	</thead>
+
+																	<tbody>
+																		<?php
+																		if (mysqli_num_rows($resQOApps)!=0) {
+																			$cntr = 0;
+																			foreach ($rowQOresult as $row){
+																				if($row['qo_approval_id']==3){
+																					$cntr++;
+																		?>	
+																			<tr>
+																				<td width="200px" style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<select class="form-control" name="selqosuser<?=$row['qo_approval_id'].$cntr?>" id="selqosuser<?=$row['qo_approval_id'].$cntr?>" >
+																						<?php
+																							foreach(@$ursnmse as $rsusr){
+																								if($rsusr['userid']==$row['userid']){
+																									$xscd = "selected";
+																								}else{
+																									$xscd = "";
+																								}
+
+																								echo "<option value='".$rsusr['userid']."' ".$xscd."> ".$rsusr['name']." </option>";
+																							}
+																						?> 
+																					</select>
+																				</td>
+																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">																
+																					<select required multiple class="form-control" name="selqoitmtyp<?=$row['qo_approval_id'].$cntr?>[]" id="selqoitmtyp<?=$row['qo_approval_id'].$cntr?>" >
+
+																					<option value='ALL' <?=($row['items']=="ALL") ? "selected" : ""?>> ALL</option>
+
+																						<?php
+																							foreach(@$itmtype as $rsitm){
+
+																								$xsc = "";
+																								if($row['items']!==""){
+																									if(in_array($rsitm['ccode'], explode(",",$row['items']))){
+																										$xsc = "selected";
+																									}
+																								}
+																								
+																								echo "<option value='".$rsitm['ccode']."' ".$xsc."> ".$rsitm['cdesc']." </option>";
+																							}
+																						?> 
+																					</select>  
+																				</td>
+																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<select required multiple class="form-control" name="selqosutyp<?=$row['qo_approval_id'].$cntr?>[]" id="selqosutyp<?=$row['qo_approval_id'].$cntr?>" >
+
+																					<option value='ALL' <?=($row['suppliers']=="ALL") ? "selected" : ""?>> ALL</option>
+
+																						<?php
+																							foreach(@$suptype as $rssup){
+																								
+																								$xsc = "";
+																								if($row['suppliers']!==""){
+																									if(in_array($rssup['ccode'], explode(",",$row['suppliers']))){
+																										$xsc = "selected";
+																									}
+																								}
+
+																								echo "<option value='".$rssup['ccode']."' ".$xsc."> ".$rssup['cdesc']." </option>";
+																							}
+																						?> 
+																					</select>
+																				</td>
+																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																				<?php
+																					if($row['sign']!=="" && $row['sign']!==null){
+																				?>
+																					<a href="javascript:;" title="Click to remove image" onclick="qotransset('sign',<?=$row['id']?>)">
+																						<img src = "<?=$row['sign']?>" height="50px" alt="Click to remove image">
+																					</a>
+																				<?php
+																					}else{
+																				?>
+																					<input type="file" name="filsign<?=$row['qo_approval_id'].$cntr?>" id="filsign<?=$row['qo_approval_id'].$cntr?>" value="">
+																				<?php
+																					}
+																				?>
+																				</td>
+																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<button class="btn btn-danger btn-sm" type="button" onclick="qotransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
+																				</td>
+																			</tr>
+
+																			<script>
+																				$(document).ready(function(e) {
+																					$('#selqosuser<?=$row['qo_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
+																					$('#selqoitmtyp<?=$row['qo_approval_id'].$cntr?>').select2({width: '100%'});
+																					$('#selqosutyp<?=$row['qo_approval_id'].$cntr?>').select2({width: '100%'});
+																				});
+																			</script>
+																		<?php
+																				}
+																			}
+																		}
+																		?>
+																	</tbody>
+																</table> 
+
+															</div>
+
+														</div>
+
+												</div>
+
+											</div>
+
+
+										</form>
+
+										<div class="col-xs-12 nopadwtop2x" style="margin-left: 30px !important">
 											<b>Default PrintOut Header</b>
 											<div id="divQuotePrintHdr" style="display:inline; padding-left:5px"></div>
 										</div>
-										<div class="col-xs-12">
+										<div class="col-xs-12" style="margin-left: 15px !important">
 											<textarea rows="5" class="form-control input-sm" name="txtQuotePrintHdr" id="txtQuotePrintHdr">													
 											</textarea>
 										</div>
-										<div class="col-xs-12" style="padding-top: 2px">
+										<div class="col-xs-12 nopadwtop2x" style="margin-left: 30px !important">
 											<b>Default PrintOut Footer</b>
 											<div id="divQuotePrintFtr" style="display:inline; padding-left:5px"></div>
 										</div>
-										<div class="col-xs-12">
+										<div class="col-xs-12" style="margin-left: 15px !important">
 											<textarea rows="5" class="form-control input-sm" name="txtQuotePrintFtr" id="txtQuotePrintFtr">
 															
 											</textarea>
@@ -1000,7 +1456,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 														
 											<div class="col-xs-3 nopadwtop2x">
 												<?php
-													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='AUTO_POST_SO'"); 
+													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='AUTO_POST_SO'"); 
 												
 														if (mysqli_num_rows($result)!=0) {
 													$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
@@ -1031,7 +1487,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 												
 											<div class="col-xs-3 nopadwtop2x">
 												<?php
-													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='CRDLIMWAR'"); 
+													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='CRDLIMWAR'"); 
 												
 													if (mysqli_num_rows($result)!=0) {
 														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
@@ -1054,6 +1510,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</div>
 									
 								<div class="col-xs-12  nopadwtop">&nbsp;</div>
+								
 								<p data-toggle="collapse" data-target="#itmdr"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Delivery Receipt</b></u></p>
 									
 									<div class="collapse" id="itmdr">
@@ -1066,7 +1523,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 												
 											<div class="col-xs-3 nopadwtop2x">
 												<?php
-													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='AUTO_POST_DR'"); 
+													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='AUTO_POST_DR'"); 
 												
 													if (mysqli_num_rows($result)!=0) {
 														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
@@ -1102,7 +1559,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 											</div>                    
 											<div class="col-xs-3 nopadwtop2x">
 												<?php
-													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='AUTO_POST_POS'"); 
+													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='AUTO_POST_POS'"); 
 												
 													if (mysqli_num_rows($result)!=0) {
 														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
@@ -1168,10 +1625,6 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						<!-- PURCHASES SETUP -->
 							<div id="purch" class="tab-pane fade in">
 								<p data-toggle="collapse" data-target="#itmpo"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Purchase Order</b></u></p>
-								
-									<input type='hidden' id='atitemtype' value='<?=json_encode(@$itmtype);?>'>
-									<input type='hidden' id='atsupptype' value='<?=json_encode(@$suptype);?>'>
-									<input type='hidden' id='atuserslst' value='<?=json_encode(@$ursnmse);?>'>
 
 									<div class="collapse" id="itmpo">  
 
@@ -1211,7 +1664,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 											</div>                    
 											<div class="col-xs-3 nopadwtop2x">
 												<?php
-													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='PO_APP_EMAIL'"); 
+													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='PO_APP_EMAIL'"); 
 												
 													if (mysqli_num_rows($result)!=0) {
 														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
@@ -1243,9 +1696,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 										<form action="th_savepolevels.php" method="POST" name="frmPOLvls" id="frmPOLvls" onSubmit="return chkpolvlform();" target="_self" enctype="multipart/form-data">
 
-										<input type="hidden" name="tbLVL1count" id="tbLVL1count" value="0">
-										<input type="hidden" name="tbLVL2count" id="tbLVL2count" value="0">
-										<input type="hidden" name="tbLVL3count" id="tbLVL3count" value="0">
+											<input type="hidden" name="tbLVL1count" id="tbLVL1count" value="0">
+											<input type="hidden" name="tbLVL2count" id="tbLVL2count" value="0">
+											<input type="hidden" name="tbLVL3count" id="tbLVL3count" value="0">
 
 											<div class="col-xs-12" style="padding-bottom: 5px !important">
 												<div class="col-xs-2">
@@ -1538,6 +1991,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 														</div>
 
+													<!-- LEVEL 3 -->
 														<div id="level3" class="tab-pane fade in">
 
 															<div class="col-xs-12 nopadding">
@@ -1584,7 +2038,12 @@ if (mysqli_num_rows($sqlhead)!=0) {
 																					<select class="form-control" name="selposuser<?=$row['po_approval_id'].$cntr?>" id="selposuser<?=$row['po_approval_id'].$cntr?>" >
 																						<?php
 																							foreach(@$ursnmse as $rsusr){
-																								echo "<option value='".$rsusr['userid']."'> ".$rsusr['name']." </option>";
+																								if($rsusr['userid']==$row['userid']){
+																									$xscd = "selected";
+																								}else{
+																									$xscd = "";
+																								}
+																								echo "<option value='".$rsusr['userid']."' ".$xscd."> ".$rsusr['name']." </option>";
 																							}
 																						?> 
 																					</select>
@@ -1699,7 +2158,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 											</div>                    
 											<div class="col-xs-3 nopadwtop2x">
 												<?php
-													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='AUTO_POST_RR'"); 
+													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='AUTO_POST_RR'"); 
 												
 													if (mysqli_num_rows($result)!=0) {
 														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
@@ -1726,7 +2185,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 											</div>                   
 											<div class="col-xs-3 nopadwtop2x">
 												<?php
-													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='ALLOW_REF_RR'"); 										
+													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='ALLOW_REF_RR'"); 										
 													if (mysqli_num_rows($result)!=0) {
 														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
 														$nvalue = $all_course_data['cvalue']; 												
@@ -1760,7 +2219,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 												
 											<div class="col-xs-3 nopadwtop2x">
 												<?php
-													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='AUTO_POST_PR'"); 										
+													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='AUTO_POST_PR'"); 										
 													if (mysqli_num_rows($result)!=0) {
 														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);													
 														$nvalue = $all_course_data['cvalue']; 												
@@ -1793,7 +2252,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										</div>                    
 										<div class="col-xs-3 nopadwtop">
 											<?php
-												$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='INVSYSTEM'"); 
+												$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='INVSYSTEM'"); 
 								
 												if (mysqli_num_rows($result)!=0) {
 													$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
@@ -1950,6 +2409,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				<form id="frmPOTrans" name="frmPOTrans" action="th_savepotrans.php" method="POST">
 					<input type='hidden' id='POTransID' name='POTransID' value=''>
 					<input type='hidden' id='POTransTP' name='POTransTP' value=''>
+				</form>
+
+				<form id="frmQOTrans" name="frmQOTrans" action="th_saveqotrans.php" method="POST">
+					<input type='hidden' id='QOTransID' name='QOTransID' value=''>
+					<input type='hidden' id='QOTransTP' name='QOTransTP' value=''>
 				</form>
 	</body>
 
@@ -4248,5 +4712,104 @@ function potransset(typ,id){
 	$("#POTransTP").val(typ);
 
 	$("#frmPOTrans").submit();
+}
+
+
+function addqolevel($lvl, $tbl){
+
+	var xz = $("#atitemtype").val();
+	var htmlITM = "<option value='ALL'> ALL </option>";
+
+	$.each(jQuery.parseJSON(xz), function() {  
+		htmlITM = htmlITM + '<option value="' +this['ccode'] + '">' + this['cdesc'] + '</option>';
+	});
+
+	var xz = $("#atsupptype").val();
+	var htmlSUPP = "<option value='ALL'> ALL</option>";
+
+	$.each(jQuery.parseJSON(xz), function() {  
+		htmlSUPP = htmlSUPP + '<option value="' +this['ccode'] + '">' + this['cdesc'] + '</option>';
+	});
+
+	var xz = $("#atuserslst").val();
+	var htmlUSERS = "";
+
+	$.each(jQuery.parseJSON(xz), function() {  
+		htmlUSERS = htmlUSERS + '<option value="' +this['userid'] + '">' + this['name'] + '</option>';
+	});
+
+	var tbl = document.getElementById($tbl).getElementsByTagName('tr');
+	var lastRow = tbl.length;
+
+	var tblz = document.getElementById($tbl).getElementsByTagName('tbody')[0];
+	var a=tblz.insertRow(tblz.rows.length);
+						
+	var u=a.insertCell(0);
+	u.style.paddingTop = "2px";
+	u.style.paddingLeft = "1px";
+	u.style.paddingRight = "1px";
+	u.style.width = "200px";
+	var x=a.insertCell(1);
+	x.style.paddingTop = "2px";
+	x.style.paddingLeft = "1px";
+	x.style.paddingRight = "1px";
+	var y=a.insertCell(2);
+	y.style.paddingTop = "2px";
+	y.style.paddingLeft = "1px";
+	y.style.paddingRight = "1px";
+	var z=a.insertCell(3);
+	z.style.paddingTop = "2px";
+	z.style.paddingLeft = "1px";
+	z.style.paddingRight = "1px";
+	var za=a.insertCell(4);
+	za.style.paddingTop = "2px";
+	za.style.paddingLeft = "1px";
+	za.style.paddingRight = "1px";
+							
+	u.innerHTML = "<select class=\"form-control input-xs\" name=\"selqosuser"+$lvl+""+lastRow+"\" id=\"selqosuser"+$lvl+""+lastRow+"\" > "+htmlUSERS+" </select>";
+	x.innerHTML = "<select required multiple class=\"form-control input-xs\" name=\"selqoitmtyp"+$lvl+""+lastRow+"[]\" id=\"selqoitmtyp"+$lvl+""+lastRow+"\" >"+htmlITM+"</select>";
+	y.innerHTML = "<select required multiple class=\"form-control input-xs\" name=\"selqosutyp"+$lvl+""+lastRow+"[]\" id=\"selqosutyp"+$lvl+""+lastRow+"\" >"+htmlSUPP+"</select>";
+	z.innerHTML = "<input type=\"file\" name=\"qofilsign"+$lvl+""+lastRow+"\" id=\"qofilsign"+$lvl+""+lastRow+"\" >";
+	za.innerHTML = "";
+
+	$('#selqosuser'+$lvl+""+lastRow).select2({minimumResultsForSearch: Infinity,width: '100%'});
+	$('#selqoitmtyp'+$lvl+""+lastRow).select2({width: '100%'});
+	$('#selqosutyp'+$lvl+""+lastRow).select2({width: '100%'});
+
+}
+
+
+function chkqolvlform(){
+	var lastRow = $("#QOAPP1 > tbody > tr").length;
+	var lastRow2 = $("#QOAPP2 > tbody > tr").length;
+	var lastRow3 = $("#QOAPP3 > tbody > tr").length;
+
+	if(lastRow==0){
+
+			$("#AlertMsg").html("");
+			
+			$("#AlertMsg").html("<br><center>Atleast 1 approver is required in Level 1!</center><br>");
+			$("#alertbtnOK").show();
+			$("#AlertModal").modal('show');
+
+
+		return false;
+	}else{
+		$("#tbLQL1count").val(lastRow);     
+		$("#tbLQL2count").val(lastRow2); 
+		$("#tbLQL3count").val(lastRow3); 
+
+		return true;
+
+	}
+
+}
+
+function qotransset(typ,id){
+	  
+	$("#QOTransID").val(id);
+	$("#QOTransTP").val(typ);
+
+	$("#frmQOTrans").submit();
 }
 </script>

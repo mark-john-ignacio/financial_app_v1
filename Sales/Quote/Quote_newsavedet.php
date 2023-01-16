@@ -6,6 +6,7 @@ include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 
 $company = $_SESSION['companyid'];
+//$index = 0;
 
 		$cSINo = $_REQUEST['trancode'];
 		$indexz = $_REQUEST['indx'];
@@ -19,11 +20,11 @@ $company = $_SESSION['companyid'];
 		$cMainUOM = $_REQUEST['mainunit'];
 		$nFactor = $_REQUEST['nfactor'];
 
-		$index = $index + 1;
+		//$index = $index + 1;
 
-	$refcidenttran = $cSINo."P".$indexz;
+	$refcidenttran = $company.$cSINo."P".$indexz;
 	
-	if (!mysqli_query($con,"INSERT INTO quote_t(`compcode`, `cidentity`, `ctranno`, `nident`, `citemno`, `nqty`, `cunit`, `nprice`, `namount`, nbaseamount , `cmainunit`,`nfactor`) values('$company', '$refcidenttran', '$cSINo', '$index', '$cItemNo', '$nQty', '$cUnit', '$nPrice', '$nAmount', '$nBaseAmount', '$cMainUOM', $nFactor)")){
+	if (!mysqli_query($con,"INSERT INTO quote_t(`compcode`, `cidentity`, `ctranno`, `nident`, `citemno`, `nqty`, `cunit`, `nprice`, `namount`, nbaseamount , `cmainunit`,`nfactor`) values('$company', '$refcidenttran', '$cSINo', '$indexz', '$cItemNo', '$nQty', '$cUnit', '$nPrice', '$nAmount', '$nBaseAmount', '$cMainUOM', $nFactor)")){
 		echo "False";
 	}
 	else{

@@ -39,6 +39,8 @@ $ndcutdate = date("m/d/Y", strtotime($ndcutdate . "+1 day"));
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+
+	 <link rel="stylesheet" href="../../include/summernote/summernote.css">
     
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 <script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
@@ -51,6 +53,9 @@ $ndcutdate = date("m/d/Y", strtotime($ndcutdate . "+1 day"));
 <script src="../../Bootstrap/js/bootstrap.js"></script>
 <script src="../../Bootstrap/js/moment.js"></script>
 <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+
+<script src="../../include/summernote/summernote.js"></script>
+
 <style>
 	fieldset.scheduler-border {
 	    border: 1px groove #ddd !important;
@@ -95,7 +100,7 @@ $ndcutdate = date("m/d/Y", strtotime($ndcutdate . "+1 day"));
 						<b>Reccur Every</b>
 					</div>
 				<div class="col-xs-2 nopadding">
-					<select id="selrecurrtyp" name="selrecurrtyp" class="form-control input-sm selectpicker"  tabindex="1">
+					<select id="selrecurrtyp" name="selrecurrtyp" class="form-control input-sm selectpicker"  tabindex="1" disabled="true">
 						<option value="weekly">Weekly</option>
 						<option value="monthly">Monthly</option>
 						<option value="quartertly">Quartertly</option>
@@ -171,7 +176,7 @@ $ndcutdate = date("m/d/Y", strtotime($ndcutdate . "+1 day"));
 	 					<option value="VatIn">VAT Inclusive</option>
 	 				</select>
 	 			</div>
-	  			<div class="col-xs-2"><b>Price Validity</b></div>
+	  			<div class="col-xs-2" id="prcevallabel"><b>Price Validity</b></div>
 	 			<div class="col-xs-2 nopadwleft">
 	 				<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date_format(date_create($ndcutdate),'m/d/Y'); ?>" />
 	 			</div>
@@ -179,7 +184,7 @@ $ndcutdate = date("m/d/Y", strtotime($ndcutdate . "+1 day"));
 	 			<div class="col-xs-2 nopadwleft">
 	 				<select class="form-control input-sm" name="selterms" id="selterms">
 	 					<?php
-	 						$sqlters = mysqli_query($con,"Select ccode, cdesc From groupings Where ctype='TERMS' and cstatus='ACTIVE'");
+	 						$sqlters = mysqli_query($con,"Select ccode, cdesc From groupings Where compcode='$company' and ctype='TERMS' and cstatus='ACTIVE'");
 	 						while($row = mysqli_fetch_array($sqlters, MYSQLI_ASSOC)){
 	 							echo "<option value='".$row['ccode']."'>".$row['cdesc']."</option>";
 	 						}
@@ -205,7 +210,11 @@ $ndcutdate = date("m/d/Y", strtotime($ndcutdate . "+1 day"));
 	  	<div class='col-xs-12 nopadwtop'>
 	  			<div class="col-xs-1"><b>Remarks</b></div>
 	  			<div class="col-xs-9 nopadwleft">
-	 				<textarea rows="4" class="form-control input-sm" name="txtremarks" id="txtremarks">Should you have questions regarding our offer, kindly let us know or you can call at Tel. no. 09175513200 / 09499974988 / 09338632777 or email at sales@serttech.com.  Thank you for your interest in our products and services.</textarea>
+
+
+						<textarea rows="4" name="txtremarks" id="txtremarks" style="width: 100%; height: 300px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">Should you have questions regarding our offer, kindly let us know or you can call at Tel. no. 09175513200 / 09499974988 / 09338632777 or email at sales@serttech.com.  Thank you for your interest in our products and services.</textarea>
+
+
 	 			</div>
 	  	</div>
 
@@ -278,22 +287,22 @@ $ndcutdate = date("m/d/Y", strtotime($ndcutdate . "+1 day"));
 	  	<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 1px solid #919b9c;width: 100%;height: 300px;text-align: left;overflow: auto">
 	
             <table id="MyTable" class="MyTable table table-condensed" width="100%">
-					<tr>
-						<th style="border-bottom:1px solid #999">Code</th>
-						<th style="border-bottom:1px solid #999">Description</th>
+							<thead>
+								<tr id="0">
+									<th style="border-bottom:1px solid #999">Code</th>
+									<th style="border-bottom:1px solid #999">Description</th>
 			            <th style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
 			            <th style="border-bottom:1px solid #999">UOM</th>
 			            <th style="border-bottom:1px solid #999">Qty</th>
-						<th style="border-bottom:1px solid #999">Price</th>
+									<th style="border-bottom:1px solid #999">Price</th>
             			<th style="border-bottom:1px solid #999">Amount</th>
-						<th style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
+									<th style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
             			<th style="border-bottom:1px solid #999">&nbsp;</th>
-					</tr>
-                    
-					<tbody class="tbody">
-                    </tbody>
-                   
-			</table>
+								</tr>
+							</thead>       
+							<tbody class="tbody">
+              </tbody>                  
+						</table>
 
 		</div>
 
@@ -341,6 +350,7 @@ $ndcutdate = date("m/d/Y", strtotime($ndcutdate . "+1 day"));
             <div class="modal-body">
                 <input type="hidden" name="hdnrowcnt2" id="hdnrowcnt2">
                 <table id="MyTable2" class="MyTable table table-condensed" width="100%">
+									<thead>
     				<tr>
 						<th style="border-bottom:1px solid #999">Code</th>
 						<th style="border-bottom:1px solid #999">Description</th>
@@ -348,6 +358,7 @@ $ndcutdate = date("m/d/Y", strtotime($ndcutdate . "+1 day"));
 						<th style="border-bottom:1px solid #999">Value</th>
                         <th style="border-bottom:1px solid #999">&nbsp;</th>
 					</tr>
+						</thead>
 					<tbody class="tbody">
                     </tbody>
                 </table>
@@ -446,15 +457,25 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 	
 	$(document).ready(function(e) {
 
+		$('#txtremarks').summernote({
+			toolbar: [
+				['style', ['style']],
+				['font', ['bold', 'underline', 'clear']],
+				['fontname', ['fontname']],
+				['color', ['color']],
+				['para', ['ul', 'ol', 'paragraph']],
+			],
+		});
+
 		$(".nav-tabs a").click(function(){
-	        $(this).tab('show');
-	    });
+	    $(this).tab('show');
+	  });
 
 		$("#txtnBaseGross").autoNumeric('init',{mDec:2});
 		$("#txtnGross").autoNumeric('init',{mDec:2});
 	
 	
-	   			$.ajax({
+	   		$.ajax({
 					url : "../../include/th_xtrasessions.php",
 					type: "Post",
 					async:false,
@@ -477,60 +498,53 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 	  $('#txtprodid').attr("disabled", true);
 
 
-		
-
-
+	  $('#date_delivery').datetimepicker({
+      format: 'MM/DD/YYYY'
     });
-
-
-$(function(){
-	    $('#date_delivery').datetimepicker({
-                 format: 'MM/DD/YYYY'
-        });
 	
 		$("#txtcustid").keyup(function(event){
-		if(event.keyCode == 13){
-		
-		var dInput = this.value;
-		
-		$.ajax({
-        type:'post',
-        url:'../get_customerid.php',
-        data: 'c_id='+ dInput,                 
-        success: function(value){
-			//alert(value);
-			if(value!=""){
-				var data = value.split(":");
-				$('#txtcust').val(data[0]);
-				$('#imgemp').attr("src",data[3]);
-				$('#hdnpricever').val(data[2]);
-								
-				$('#hdnvalid').val("YES");
-
-				getcontact(dInput);
-				
-			}
-			else{
-				$('#txtcustid').val("");
-				$('#txtcust').val("");
-				$('#imgemp').attr("src","../../images/blueX.png");
-				$('#hdnpricever').val("");
-				
-				$('#hdnvalid').val("NO");
-			}
-		},
-		error: function(){
-			$('#txtcustid').val("");
-			$('#txtcust').val("");
-			$('#imgemp').attr("src","../../images/blueX.png");
-			$('#hdnpricever').val("");
+			if(event.keyCode == 13){
 			
-			$('#hdnvalid').val("NO");
-		}
-		});
+				var dInput = this.value;
+				
+					$.ajax({
+						type:'post',
+						url:'../get_customerid.php',
+						data: 'c_id='+ dInput,                 
+						success: function(value){
+							//alert(value);
+							if(value!=""){
+								var data = value.split(":");
+								$('#txtcust').val(data[0]);
+								$('#imgemp').attr("src",data[3]);
+								$('#hdnpricever').val(data[2]);
+												
+								$('#hdnvalid').val("YES");
 
-		}
-		
+								getcontact(dInput);
+								
+							}
+							else{
+								$('#txtcustid').val("");
+								$('#txtcust').val("");
+								$('#imgemp').attr("src","../../images/blueX.png");
+								$('#hdnpricever').val("");
+								
+								$('#hdnvalid').val("NO");
+							}
+						},
+						error: function(){
+							$('#txtcustid').val("");
+							$('#txtcust').val("");
+							$('#imgemp').attr("src","../../images/blueX.png");
+							$('#hdnpricever').val("");
+							
+							$('#hdnvalid').val("NO");
+						}
+					});
+
+			}
+			
 	});
 
 	$('#txtcust, #txtcustid').on("blur", function(){
@@ -548,6 +562,7 @@ $(function(){
 	
 		}
 	});
+
 	//Search Cust name
 	$('#txtcust').typeahead({
 		autoSelect: true,
@@ -616,59 +631,63 @@ $(function(){
 	
 	});
 
-
 	$("#txtprodid").keypress(function(event){
 		if(event.keyCode == 13){
 
-		$.ajax({
+			$.ajax({
         url:'../get_productid.php',
         data: 'c_id='+ $(this).val()+"&itmbal="+xChkBal+"&styp="+ $("#selsityp").val(),                 
         success: function(value){
-            var data = value.split(",");
-            $('#txtprodid').val(data[0]);
-            $('#txtprodnme').val(data[1]);
-			$('#hdnunit').val(data[2]);
-			$("#hdnqty").val(data[3]);
-			$("#hdnqtyunit").val(data[4]);
+        	var data = value.split(",");
+          $('#txtprodid').val(data[0]);
+          $('#txtprodnme').val(data[1]);
+					$('#hdnunit').val(data[2]);
+					$("#hdnqty").val(data[3]);
+					$("#hdnqtyunit").val(data[4]);
 
 
-		if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
-			var isItem = "NO";
-			var disID = "";
+					if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
+						//var isItem = "NO";
+						//	var disID = "";
 			
-			$("#MyTable > tbody > tr").each(function() {	
-				disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+							/*
+							$("#MyTable > tbody > tr").each(function() {	
+								disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
 
-				if($("#txtprodid").val()==disID){
-					
-					isItem = "YES";
+								if($("#txtprodid").val()==disID){
+									
+									isItem = "YES";
 
-				}
-			});	
+								}
+							});	
 
-		//if value is not blank
-		 }
-		 
-		if(isItem=="NO"){		
+						//if value is not blank
+						}
+						
+						if(isItem=="NO"){		
+							*/
 
-			myFunctionadd();
-			ComputeGross();	
-			
-	    }
-	    else{
-			
-			addqty();
-		}
+							myFunctionadd();
+							ComputeGross();	
 		
-		$("#txtprodid").val("");
-		$("#txtprodnme").val("");
-		$("#hdnunit").val("");
-		$("#hdnqty").val("");
-		$("#hdnqtyunit").val("");
+							/*
+							}
+							else{
+							
+							addqty();
+						}
+						*/
+		
+						$("#txtprodid").val("");
+						$("#txtprodnme").val("");
+						$("#hdnunit").val("");
+						$("#hdnqty").val("");
+						$("#hdnqtyunit").val("");
  
-	    //closing for success: function(value){
-	    }
-        }); 
+	    
+	    		} //closing for success: function(value){
+				}
+      }); 
 
 	
 		 
@@ -740,17 +759,17 @@ $(function(){
     $("#selsityp").on("change", function(){
 
     	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
-		var lastRow = tbl.length-1;
+			var lastRow = tbl.length-1;
 
-		if(lastRow > 0){
-			var x = confirm("Changing this will erase all details!");
-			if (x == true) {
-			  $("#MyTable").find("tr:gt(0)").remove();
+			if(lastRow > 0){
+				var x = confirm("Changing this will erase all details!");
+				if (x == true) {
+					$("#MyTable").find("tr:gt(0)").remove();
+				}
 			}
-		}
-		else{
-			$("#MyTable").find("tr:gt(0)").remove();
-		}
+			else{
+				$("#MyTable").find("tr:gt(0)").remove();
+			}
     });
 
 	$("#selbasecurr").on("change", function (){
@@ -767,6 +786,31 @@ $(function(){
 	$("#basecurrval").on("keyup", function () {
 		recomputeCurr();
 	});
+
+	$("#selqotyp").on("change", function (){
+		var dval = $(this).find(':selected').val();
+
+		if(dval=="billing"){
+			$("#selrecurrtyp").attr("disabled", false); 
+			$("#selterms").attr("disabled", true); 
+			$("#prcevallabel").html("<b>Due Date</b>");
+
+			xval = "<p>Kindly make all checks payable to <b>HRWEB INC</b><br>For bank transfer please deposit to:</p><b><u>For EASTWEST acct:</u></b><br><b>Account Name: HRWEB INC.</b><br><b>Account Number: 200044514167</b><br><b>Bank Address: IMUS Cavite</b><br><br><i>Note: Please settle your account to prevent service interruptions.</i><br><i>Kindly disregards pass due notice if payments have been made.</i><div><br></div><br><br><br><br><br>";
+
+		}else{
+			$("#selrecurrtyp").attr("disabled", true); 
+			$("#selterms").attr("disabled", false);
+			$("#prcevallabel").html("<b>Price Validity</b>");
+
+			xval = "Should you have questions regarding our offer, kindly let us know or you can call at Tel. no. 09175513200 / 09499974988 / 09338632777 or email at sales@serttech.com.  Thank you for your interest in our products and services.";
+		}
+
+		//$("#txtremarks").val(xval);
+
+		$("#txtremarks").summernote("code", xval);
+		
+	});
+	
 
 });
 
@@ -797,6 +841,7 @@ function addItemName(){
 
 	 if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
 
+		/*
 		var isItem = "NO";
 		var disID = "";
 
@@ -811,16 +856,18 @@ function addItemName(){
 			});	
 
 	 if(isItem=="NO"){	
+		*/
 	 	myFunctionadd();
 		
 		ComputeGross();	
-
+	/*
 	 }
 	 else{
 
 		addqty();	
 			
 	 }
+	 */
 		
 		$("#txtprodid").val("");
 		$("#txtprodnme").val("");
@@ -875,10 +922,13 @@ function myFunctionadd(){
 		});
 
 		
-	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
-	var lastRow = tbl.length;
+	//var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
+	//var lastRow = tbl.length;
 
-	
+	tbl = $('#MyTable tr:last').attr('id');
+	var lastRow = parseInt(tbl) + 1;
+
+	 
 	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+"</td>";
 	var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmdesc+"</td>";
 	var tditmavail = avail;
@@ -891,10 +941,10 @@ function myFunctionadd(){
 
 	var tditmamount = "<td width=\"100\" nowrap> <input type='text' value='"+baseprice.toFixed(4)+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnamount\" id='txtnamount"+lastRow+"' readonly> </td>";
 	
-	var tditmdel = "<td width=\90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' onClick=\"deleteRow(this);\"/> &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> </td>";
+	var tditmdel = "<td width=\90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' onClick=\"deleteRow(this);\"/> &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"','"+lastRow+"');\"/> </td>";
 
 
-	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmavail + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmamount+ tditmdel + '</tr>');
+	$('#MyTable > tbody:last-child').append('<tr id="'+lastRow+'">'+tditmcode + tditmdesc + tditmavail + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmamount+ tditmdel + '</tr>');
 
 									$("#del"+itmcode).on('click', function() {
 										$(this).closest('tr').remove();
@@ -904,9 +954,9 @@ function myFunctionadd(){
 
 
 									//$("input.numeric").numeric();
-								//	$("input.numeric").on("click", function () {
-									//   $(this).select();
-								//	});
+									$("input.numeric").on("click", function () {
+									   $(this).select();
+									});
 									
 									$("input.numeric").on("keyup", function () {
 									   ComputeAmt($(this).attr('id'));
@@ -971,13 +1021,22 @@ function myFunctionadd(){
 			var gross = 0;
 			var amt = 0;
 			
-			if(rowCount>1){
-				for (var i = 1; i <= rowCount-1; i++) {
-					amt = $("#txtntranamount"+i).val().replace(/,/g,'');
+		//	if(rowCount>1){
+		//		for (var i = 1; i <= rowCount-1; i++) {
+		//			amt = $("#txtntranamount"+i).val().replace(/,/g,'');
 					
-					gross = gross + parseFloat(amt);
-				}
-			}
+		//			gross = gross + parseFloat(amt);
+		//		}
+		//	}
+
+			$("#MyTable > tbody > tr").each(function() {
+
+				myid = this.id;
+
+				amt = $("#txtntranamount"+myid).val().replace(/,/g,'');					
+				gross = gross + parseFloat(amt);
+
+			});
 
 			gross = gross.toFixed(4);
 
@@ -997,39 +1056,42 @@ function myFunctionadd(){
 			
 		}
 
-function addqty(){
+		/*
+		function addqty(){
 
-	var itmcode = document.getElementById("txtprodid").value;
+			var itmcode = document.getElementById("txtprodid").value;
 
-	var TotQty = 0;
-	var TotAmt = 0;
-	
-	$("#MyTable > tbody > tr").each(function() {	
-	var disID = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-	
-	//alert(disID);
-		if(disID==itmcode){
+			var TotQty = 0;
+			var TotAmt = 0;
 			
-			var itmqty = $(this).find("input[name='txtnqty']").val().replace(/,/g,'');
-			var itmprice = $(this).find("input[name='txtnprice']").val().replace(/,/g,'');
+			$("#MyTable > tbody > tr").each(function() {	
+			var disID = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
 			
-			//alert(itmqty +" : "+ itmprice);
+			//alert(disID);
+				if(disID==itmcode){
+					
+					var itmqty = $(this).find("input[name='txtnqty']").val().replace(/,/g,'');
+					var itmprice = $(this).find("input[name='txtnprice']").val().replace(/,/g,'');
+					
+					//alert(itmqty +" : "+ itmprice);
+					
+					TotQty = parseFloat(itmqty) + 1;
+					$(this).find("input[name='txtnqty']").val(TotQty);
+					
+					TotAmt = TotQty * parseFloat(itmprice);
+					$(this).find("input[name='txtnamount']").val(TotAmt);
+				}
+
+			});
 			
-			TotQty = parseFloat(itmqty) + 1;
-			$(this).find("input[name='txtnqty']").val(TotQty);
-			
-			TotAmt = TotQty * parseFloat(itmprice);
-			$(this).find("input[name='txtnamount']").val(TotAmt);
+			ComputeGross();
+
 		}
 
-	});
-	
-	ComputeGross();
-
-}
+		*/
 
 
-function viewhidden(itmcde,itmnme){
+function viewhidden(itmcde,itmnme,ident){
 	var tbl = document.getElementById('MyTable2').getElementsByTagName('tr');
 	var lastRow2 = tbl.length-1;
 	
@@ -1037,8 +1099,10 @@ function viewhidden(itmcde,itmnme){
 			$("#MyTable2 > tbody > tr").each(function() {	
 			
 				var citmno = $(this).find('input[type="hidden"][name="txtinfocode"]').val();
-				alert(citmno+"!="+itmcde);
-				if(citmno!=itmcde){
+				var citmnoident = $(this).find('input[type="hidden"][name="txtinforefident"]').val();
+
+				//alert(citmno+"!="+itmcde);
+				if(citmno!=itmcde && citmnoident!==ident){
 					
 					$(this).find('input[name="txtinfofld"]').attr("disabled", true);
 					$(this).find('input[name="txtinfoval"]').attr("disabled", true);
@@ -1054,18 +1118,18 @@ function viewhidden(itmcde,itmnme){
 			});
 	}			
 			
-	addinfo(itmcde,itmnme);
+	addinfo(itmcde,itmnme,ident);
 	
 	$('#MyDetModal').modal('show');
 }
 
-function addinfo(itmcde,itmnme){
+function addinfo(itmcde,itmnme,refident){
 	//alert(itmcde+","+itmnme);
 	var tbl = document.getElementById('MyTable2').getElementsByTagName('tr');
 	var lastRow = tbl.length;
 
 	
-	var tdinfocode = "<td><input type='hidden' value='"+itmcde+"' name='txtinfocode' id='txtinfocode"+lastRow+"'>"+itmcde+"</td>";
+	var tdinfocode = "<td><input type='hidden' value='"+refident+"' name='txtinforefident' id='txtinforefident"+lastRow+"'><input type='hidden' value='"+itmcde+"' name='txtinfocode' id='txtinfocode"+lastRow+"'>"+itmcde+"</td>";
 	var tdinfodesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmnme+"</td>"
 	var tdinfofld = "<td><input type='text' name='txtinfofld' id='txtinfofld"+lastRow+"' class='form-control input-xs'></td>";
 	var tdinfoval = "<td><input type='text' name='txtinfoval' id='txtinfoval"+lastRow+"' class='form-control input-xs'></td>";
@@ -1084,10 +1148,10 @@ function addinfo(itmcde,itmnme){
 function chkCloseInfo(){
 	var isInfo = "TRUE";
 	
-	$("#MyTable > tbody > tr").each(function(index) {	
+	$("#MyTable2 > tbody > tr").each(function(index) {	
 			
-		var citmfld = $(this).find('input[name="txtinfofld"]');
-		var citmval = $(this).find('input[name="txtinfoval"]');
+		var citmfld = $(this).find('input[name="txtinfofld"]').val();
+		var citmval = $(this).find('input[name="txtinfoval"]').val();
 		
 		if(citmfld=="" || citmval==""){
 			isInfo = "FALSE";
@@ -1206,7 +1270,7 @@ function chkform(){
 	
 		//Saving the header
 		var ccode = $("#txtcustid").val();
-		var ngross = $("#txtnGross").val();
+		var ngross = $("#txtnGross").val().replace(/,/g,'');
 
 		var ccontname = $("#txtcontactname").val();
 		var ccontdesg = $("#txtcontactdesig").val();
@@ -1223,13 +1287,13 @@ function chkform(){
 		var currcode = $("#selbasecurr").val();
 		var currdesc = $("#selbasecurr option:selected").text();
 		var currrate = $("#basecurrval").val();
-		var basegross = $("#txtnBaseGross").val();
+		var basegross = $("#txtnBaseGross").val().replace(/,/g,'');
 
 		var selsityp = $("#selsityp").val();
 		var selqotyp = $("#selqotyp").val(); 
 		var selrecurrtyp = $("#selrecurrtyp").val(); 
 		
-		//alert("Quote_newsavehdr.php?ccode=" + ccode + "&crem="+ crem + "&ddate="+ ddate + "&ngross="+ngross + "&ccontname="+ ccontname + "&ccontdesg="+ ccontdesg + "&ccontdept="+ ccontdept + "&ccontemai="+ ccontemai + "&ccontsalt="+ ccontsalt + "&cvattyp="+ cvattyp + "&cterms="+ cterms + "&cdelinfo="+ cdelinfo + "&cservinfo="+ cservinfo); 
+		//alert("Quote_newsavehdr.php?ccode=" + ccode + "&crem="+ crem + "&ddate="+ ddate + "&ngross="+ngross + "&ccontname="+ ccontname + "&ccontdesg="+ ccontdesg + "&ccontdept="+ ccontdept + "&ccontemai="+ ccontemai + "&ccontsalt="+ ccontsalt + "&cvattyp="+ cvattyp + "&cterms="+ cterms + "&cdelinfo="+ cdelinfo + "&cservinfo="+ cservinfo + "&selsityp="+selsityp+"&currcode="+currcode+"&currdesc="+currdesc+"&currrate="+currrate+"&basegross="+basegross+"&selqotyp="+selqotyp+"&selrecurrtyp="+selrecurrtyp); 
 		
 		$.ajax ({
 			url: "Quote_newsavehdr.php",
@@ -1263,7 +1327,6 @@ function chkform(){
 				var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
 				var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
 			
-				//alert("Quote_newsavedet.php?trancode="+trancode+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+nprice+"&nbaseamt="+nbaseamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor);
 
 				if(nqty!==undefined){
 					nqty = nqty.replace(/,/g,'');
@@ -1272,9 +1335,11 @@ function chkform(){
 					nbaseamt = nbaseamt.replace(/,/g,'');
 				}
 
+				//alert("Quote_newsavedet.php?trancode="+trancode+"&indx="+this.id+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+nprice+"&nbaseamt="+nbaseamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor);
+
 				$.ajax ({
 					url: "Quote_newsavedet.php",
-					data: { trancode: trancode, indx:index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, nbaseamt:nbaseamt, namt:namt, mainunit:mainunit, nfactor:nfactor },
+					data: { trancode: trancode, indx:this.id, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, nbaseamt:nbaseamt, namt:namt, mainunit:mainunit, nfactor:nfactor },
 					async: false,
 					success: function( data ) {
 						if(data.trim()=="False"){
@@ -1289,13 +1354,14 @@ function chkform(){
 			//Save Info
 			$("#MyTable2 > tbody > tr").each(function(index) {	
 			  
+				var nrefidx = $(this).find('input[type="hidden"][name="txtinforefident"]').val();
 				var citmno = $(this).find('input[type="hidden"][name="txtinfocode"]').val();
 				var citmfld = $(this).find('input[name="txtinfofld"]').val();
 				var citmvlz = $(this).find('input[name="txtinfoval"]').val();
 			
 				$.ajax ({
 					url: "Quote_newsaveinfo.php",
-					data: { trancode: trancode, indx: index, citmno: citmno, citmfld: citmfld, citmvlz:citmvlz },
+					data: { trancode: trancode, indx: index, nrefidx:nrefidx, citmno: citmno, citmfld: citmfld, citmvlz:citmvlz },
 					async: false,
 					success: function( data ) {
 						if(data.trim()=="False"){

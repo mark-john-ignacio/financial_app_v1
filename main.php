@@ -21,7 +21,7 @@
 <link href="global/css/components.css" id="style_components" rel="stylesheet" type="text/css"/>
 <link href="global/css/plugins.css" rel="stylesheet" type="text/css"/>
 <link href="global/layout.css?h=<?php echo time();?>" rel="stylesheet" type="text/css"/>
-<link id="style_color" href="global/themes/blue.css?h=<?php echo time();?>" rel="stylesheet" type="text/css"/>
+<link href="global/themes/blue.css?h=<?php echo time();?>" id="style_color" rel="stylesheet" type="text/css"/>
 <link href="global/custom.css" rel="stylesheet" type="text/css"/>
 <!-- END THEME STYLES -->
 </head>
@@ -64,8 +64,8 @@
 
 						<?php
                         if(!isset($_SESSION)){
-session_start();
-}
+							session_start();
+							}
                         
                         //get user details
                         
@@ -365,7 +365,7 @@ session_start();
 							Purchase Return</a>
 						</li>
 
-<!--
+			<!--
 						<li class="side-item-category">Non Trade Transactions</li>
 
 
@@ -522,15 +522,14 @@ session_start();
 		</div>
 	</div>
 	<!-- END SIDEBAR -->
+
 	<!-- BEGIN CONTENT -->
 	<div class="page-content-wrapper">
 		<div class="page-content">
 			<!-- BEGIN PAGE CONTENT-->
-			<div class="row">
-				<div class="col-md-12 nopadding">
-					 
+			<div class="row"> 
+				<div class="col-xs-12 nopadding">																
           <iframe id="myframe" name="myframe" scrolling="no" style="width:100%; display:block; margin:0px; padding:0px; border:0px" src=""></iframe>
-
 				</div>
 			</div>
 			<!-- END PAGE CONTENT-->
@@ -561,18 +560,18 @@ session_start();
 <script src="admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
 <script src="admin/layout/scripts/demo.js" type="text/javascript"></script>
 <script>
-      jQuery(document).ready(function() {    
-        Metronic.init(); // init metronic core components
+  $(document).ready(function() {    
+    Metronic.init(); // init metronic core components
 		Layout.init(); // init current layout
 		QuickSidebar.init(); // init quick sidebar
 		Demo.init(); // init demo features
 		
-		loadxtrasession();
+			loadxtrasession();
 		
-      });
+  });
 	  
-	  function loadxtrasession(){
-		  		$.ajax ({
+	function loadxtrasession(){
+		  $.ajax ({
 				url: "include/th_xtrasessions.php",
 				async: false,
 				success: function( data ) {
@@ -584,30 +583,39 @@ session_start();
 	  
 	  function setpage(valz){
 	
-	if(valz=="POS"){
-		top.location.href="Sales/Win/index.php";
-	}
-	else{
-	  $("#myframe").attr('src',valz);
-	  
-	  var iframe = $("#myframe")[0];
-	  
-	  iframe.contentWindow.focus();
-	  
-	  
-	  var iFrameID = document.getElementById('myframe');
-		  
-		  if(iFrameID) {
-	
-				iFrameID.height = "";
-				x = parseInt(iFrameID.contentWindow.document.body.scrollHeight) + 300;
+			if(valz=="POS"){
+				top.location.href="Sales/Win/index.php";
+			}
+			else{
+
+				$("#myframe").attr('src',valz);
+
+				setInterval(function(){
+						document.getElementById("myframe").style.height = document.getElementById("myframe").contentWindow.document.body.scrollHeight + 'px';
+				},1000);
+
 				
-				iFrameID.height = x + "px";
+				/*
+				var iframe = $("#myframe")[0];
 				
-		  } 
-		  
-	}
-	  
+				iframe.contentWindow.focus();
+				
+				
+				var iFrameID = document.getElementById('myframe');
+					
+					if(iFrameID) {
+			
+						iFrameID.height = "";
+						x = parseInt(iFrameID.contentWindow.document.body.scrollHeight) + 300;
+						
+						iFrameID.height = x + "px";
+						
+					} 
+
+					*/
+					
+			}
+				
 	  }
 	  
    </script>

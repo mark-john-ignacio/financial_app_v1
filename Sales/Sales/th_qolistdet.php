@@ -43,6 +43,21 @@ require_once "../../Connection/connection_string.php";
 			 group by x.creference,x.citemno
 			) c on a.ctranno=c.creference and a.citemno=c.citemno
 		WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['x']."' ".$qry;
+	}elseif($_REQUEST['typ']=="SO"){
+		$sql = "select a.citemno,a.cunit,a.nqty,'' as creference,ifnull(c.nqty,0) as nqty2,b.citemdesc, 1 as navail, d.ccurrencycode, a.namount, a.nprice, a.nbaseamount, b.ctaxcode as cvattype, e.nrate, d.nexchangerate
+		from so_t a 
+		left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
+		left join so d on a.compcode=d.compcode and a.ctranno=d.ctranno
+		left join taxcode e on b.compcode=e.compcode and b.ctaxcode=e.ctaxcode
+		left join
+			(
+			 Select x.creference,x.citemno,sum(x.nqty) as nqty
+			 From sales_t x
+			 left join sales y on x.compcode=y.compcode and x.ctranno=y.ctranno
+			 Where x.compcode='$company' and x.creference='".$_REQUEST['x']."' and y.lcancelled=0
+			 group by x.creference,x.citemno
+			) c on a.ctranno=c.creference and a.citemno=c.citemno
+		WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['x']."' ".$qry;
 	}
 
 		
@@ -68,11 +83,11 @@ require_once "../../Connection/connection_string.php";
 			 $json['nqty'] = $nqty1 - $nqty2;
 			 $json['navail'] = $row['navail'];
 
-			 if($_REQUEST['typ']=="DR"){
+			// if($_REQUEST['typ']=="DR"){
 			 	$json['nprice'] = $row['nprice'];
 			 	$json['namount'] = $row['namount'];
 			 	$json['nbaseamount'] = $row['nbaseamount'];
-			 }elseif($_REQUEST['typ']=="QO"){
+		//	 }elseif($_REQUEST['typ']=="QO"){
 
 				//if($row['cvattype']=="VatIn"){
 
@@ -84,12 +99,12 @@ require_once "../../Connection/connection_string.php";
 				//	$json['nbaseamount'] = round($gamount*floatval($row['nexchangerate']),2);
 
 				//}else{
-					$json['nprice'] = $row['nprice'];
-			 		$json['namount'] = $row['namount'];
-			 		$json['nbaseamount'] = $row['nbaseamount'];
+		//			$json['nprice'] = $row['nprice'];
+		//	 		$json['namount'] = $row['namount'];
+		//	 		$json['nbaseamount'] = $row['nbaseamount'];
 			//	}
 					
-			 }
+		//	 }
 
 			 $json['ccurrencycode'] = $row['ccurrencycode'];
 			 $json['creference'] = $row['creference'];

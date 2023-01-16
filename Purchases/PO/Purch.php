@@ -116,7 +116,7 @@ $company = $_SESSION['companyid'];
 								<?php
 									}else{
 
-									if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0) && intval($row['lsent'])==intval(1)){
+										if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0) && intval($row['lsent'])==intval(1)){
 
 								?>
 										<a href="javascript:;" onClick="trans('POST','<?php echo $row['cpono'];?>')" class="btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>">
@@ -128,7 +128,7 @@ $company = $_SESSION['companyid'];
 										</a>
 
 								<?php
-									}				
+										}				
 								?>
 									
 										<a href="javascript:;" onClick="track('<?php echo $row['cpono'];?>')" class="btn btn-xs btn-default"> 
