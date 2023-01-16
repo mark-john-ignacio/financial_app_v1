@@ -45,7 +45,7 @@ include('../../include/denied.php');
 	}
 	
 	$csalesno = $_REQUEST['hdntransid'];
-	$sqlhead = mysqli_query($con,"select a.*,b.cname, b.chouseno, b.ccity, b.cstate, C.cdesc as termdesc from quote a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join groupings C on A.cterms = C.ccode where a.compcode='$company' and a.ctranno = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*,b.cname, b.chouseno, b.ccity, b.cstate, C.cdesc as termdesc, D.Fname, D.Minit, D.Lname from quote a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join groupings C on A.cterms = C.ccode left join users D on a.cpreparedby=D.Userid where a.compcode='$company' and a.ctranno = '$csalesno'");
 
 	if (mysqli_num_rows($sqlhead)!=0) {
 		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -92,6 +92,8 @@ include('../../include/denied.php');
 			
 			$lCancelled = $row['lcancelled'];
 			$lPosted = $row['lapproved'];
+
+			$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
 		}
 	}
 
@@ -123,7 +125,7 @@ include('../../include/denied.php');
 			font-family: Verdana, sans-serif;
 			font-size: 10pt;
 		}
-		table {
+		table.main {
 			border-color: #000000;
 			border-collapse: collapse;
 		}
@@ -132,11 +134,11 @@ include('../../include/denied.php');
 
 <body>
 
-<table border="0" width="100%" cellpadding="1px">
+<table border="0" width="100%" cellpadding="1px" class="main">
 	<tr>
 		<td style="height: 1in; border-bottom: 2px dashed #000"> 
 
-				<table border="0">
+				<table border="0" class="main">
 						<tr>
 							<td width="20%"><img src="<?php echo "../".$logosrc; ?>" width="136px" height="70px"></td>
 							<td><font style="font-size: 9pt;"><?php echo $printhdrsrc; ?></font></td>
@@ -148,7 +150,7 @@ include('../../include/denied.php');
 	<tr>
 		<td style="height: 5in; vertical-align: top;">
 
-			<table border="0" width="100%">
+			<table border="0" width="100%" class="main">
 
 				<tr>
 					<td style="height: 50px; vertical-align: top;" align="center" colspan="4">
@@ -194,7 +196,7 @@ include('../../include/denied.php');
 
 			</table>
 			
-			<table border="1" border-collapse="collapse" align="center" width="100%" style="margin-top: 30px">
+			<table border="1" border-collapse="collapse" align="center" width="100%" style="margin-top: 30px" class="main">
 	
 				<tr>
 					<th class="text-center" style="padding: 5px">BILL PERIOD</th>
@@ -289,21 +291,66 @@ include('../../include/denied.php');
 	<tr>
 		<td style="height: 2in; vertical-align: bottom;">
 			
+		<?php
+			@$rowaaprovals = array();
+			$sqdts = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname from quote_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.ctranno = '$csalesno' order by a.nlevel");
+
+			if (mysqli_num_rows($sqdts)!=0) {
+
+				while($row = mysqli_fetch_array($sqdts, MYSQLI_ASSOC)){
+					@$rowaaprovals[] = $row;
+				}
+			}
+		?>
 			
-		<table border="0" width="100%">
+		<table border="0" width="100%" cellspacing="20">
 				<tr>
 					<td width="25%" align="center">
-						Prepared By:
+						Prepared By:<br><br><br><br>
 					</td>
-					<td width="25%" align="center">
-						Checked By:
+
+					<?php
+						foreach(@$rowaaprovals as $row){
+					?>
+
+						<td width="25%" align="center">
+							<?php
+								if(intval($row['nlevel'])==1){
+									echo "Checked By:";
+								}elseif(intval($row['nlevel'])==2){
+									echo "Approved By:";
+								}if(intval($row['nlevel'])==3){
+									echo "Approved By:";
+								}
+							?><br><br><br><br>
+						</td>
+				  
+					<?php
+							}
+					?>
+					
+				</tr>
+
+				<tr>
+					<td width="25%" align="center" style="border-top: 1px solid">
+						<?=$cpreparedBy?>
 					</td>
-					<td width="25%" align="center">
-						Approved By:
-					</td>
-					<td width="25%" align="center">
-						Approved By:
-					</td>
+
+					<?php
+
+							foreach(@$rowaaprovals as $row){
+
+								$cnames = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
+					?>
+
+						<td width="25%" align="center" style="border-top: 1px solid">
+							<?=$cnames;?>
+						</td>
+				  
+					<?php
+							}
+					?>
+					
 				</tr>
 			</table>
 
