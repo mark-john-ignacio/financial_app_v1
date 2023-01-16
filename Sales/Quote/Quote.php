@@ -322,7 +322,7 @@ function fill_datatable(searchByName = ''){
 
 						var mgsx = "";
 						if(full[9]==0){
-							mgsx = mgsx + "<a href=\"javascript:;\" onClick=\"trans('trans','"+full[0]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-share\" style=\"font-size:20px;color: #ffb533;\" title=\"Send transaction\"></i></a>";
+							mgsx = mgsx + "<a href=\"javascript:;\" onClick=\"trans('SEND','"+full[0]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-share\" style=\"font-size:20px;color: #ffb533;\" title=\"Send transaction\"></i></a>";
 						}else{
 
 							if(full[5]==0 && full[6] == 0 && full[9] == 1){

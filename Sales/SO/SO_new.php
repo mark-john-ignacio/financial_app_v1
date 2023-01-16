@@ -868,7 +868,7 @@ $(function(){
 			$("#hdnqty").val(item.nqty);
 			$("#hdnqtyunit").val(item.cqtyunit);
 			
-			addItemName("","","","","","");
+			addItemName("","","","","","","");
 			
 			
 		}
@@ -910,7 +910,7 @@ $(function(){
 		 
 		//if(isItem=="NO"){		
 
-			myFunctionadd("","","","","","");
+			addItemName("","","","","","","");
 			ComputeGross();	
 			
 	 //   }
@@ -1070,7 +1070,7 @@ function checkcustlimit(id,xcred){
 
 }
 
-function addItemName(qty,price,curramt,amt,factr,cref){
+function addItemName(qty,price,curramt,amt,factr,cref,nrefident){
 
 	 if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
 
@@ -1089,7 +1089,7 @@ function addItemName(qty,price,curramt,amt,factr,cref){
 			});	
 
 //	 if(isItem=="NO"){	
-	 	myFunctionadd(qty,price,curramt,amt,factr,cref);
+	 	myFunctionadd(qty,price,curramt,amt,factr,cref,nrefident);
 		
 		ComputeGross();	
 
@@ -1110,7 +1110,7 @@ function addItemName(qty,price,curramt,amt,factr,cref){
 
 }
 
-function myFunctionadd(qty,pricex,curramt,amtx,factr,cref){
+function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 	//alert("hello");
 	var itmcode = $("#txtprodid").val();
 	var itmdesc = $("#txtprodnme").val();
@@ -1195,7 +1195,7 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref){
 		cref = ""
 	}
 	
-	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+" <input type='hidden' value='"+cref+"' name=\"txtcreference\" id=\"txtcreference\"></td>";
+	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+nrefident+"' name=\"hdnrefident\" id=\"hdnrefident\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+" <input type='hidden' value='"+cref+"' name=\"txtcreference\" id=\"txtcreference\"></td>";
 	var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmdesc+"</td>";
 	var tditmavail = avail;
 	var tditmunit = "<td width=\"100\" nowrap> <select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\">"+uomoptions+"</select> </td>";
@@ -1689,7 +1689,8 @@ function InsertSI(){
 							$("#hdnqty").val(item.nqty);
 							$("#hdnqtyunit").val(item.cqtyunit);
 							//alert(item.cqtyunit + ":" + item.cunit);
-							addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref)
+							//myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident)
+							addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.nident)
 											   
 					   });
 						
@@ -1863,6 +1864,7 @@ function chkform(){
 			//Save Details
 			$("#MyTable > tbody > tr").each(function(index) {	
 
+				var nrefident = $(this).find('input[type="hidden"][name="hdnrefident"]').val();
 				var crefno = $(this).find('input[type="hidden"][name="txtcreference"]').val();
 				var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
 				var cuom = $(this).find('select[name="seluom"]').val();
@@ -1882,7 +1884,7 @@ function chkform(){
 			
 				$.ajax ({
 					url: "SO_newsavedet.php",
-					data: { trancode: trancode, crefno: crefno, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, nbaseamt:nbaseamt, mainunit:mainunit, nfactor:nfactor },
+					data: { nrefident: nrefident, trancode: trancode, crefno: crefno, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, nbaseamt:nbaseamt, mainunit:mainunit, nfactor:nfactor },
 					async: false,
 					success: function( data ) {
 						if(data.trim()=="False"){

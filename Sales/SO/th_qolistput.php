@@ -10,7 +10,7 @@ require_once "../../Connection/connection_string.php";
 		$date1 = date("Y-m-d");
 		
 		if($avail==1){
-			$sql = "select a.ctranno, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, a.namount, a.nbaseamount, a.cmainunit as qtyunit, 
+			$sql = "select a.nident, a.ctranno, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, a.namount, a.nbaseamount, a.cmainunit as qtyunit, 
 			a.nfactor, ifnull(c.nqty,0) as totqty2 
 			from quote_t a 
 			left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
@@ -24,7 +24,7 @@ require_once "../../Connection/connection_string.php";
 			WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."' and a.citemno = '".$_REQUEST['itm']."'";
 		}
 		else{
-			$sql = "select a.ctranno, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, a.nprice, a.namount, a.nbaseamount, a.cmainunit as qtyunit,
+			$sql = "select a.nident, a.ctranno, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, a.nprice, a.namount, a.nbaseamount, a.cmainunit as qtyunit,
 			a.nfactor, ifnull(c.nqty,0) as totqty2, ifnull(d.nqty,0) AS nqty
 			from quote_t a 
 			left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
@@ -58,7 +58,7 @@ require_once "../../Connection/connection_string.php";
 		$nqty2 = $row['totqty2']; 
 		
 		 $json['id'] = $row['cpartno'];
-	     $json['desc'] = $row['citemdesc'];
+	   $json['desc'] = $row['citemdesc'];
 		 $json['nqty'] = $row['nqty'];
 		 $json['totqty'] = $nqty1 - $nqty2;
 		 $json['cqtyunit'] = $row['qtyunit'];
@@ -68,6 +68,7 @@ require_once "../../Connection/connection_string.php";
 		 $json['nbaseamount'] = $row['nbaseamount'];
 		 $json['namount'] = $row['namount'];	
 		 $json['xref'] = $row['ctranno'];
+		 $json['nident'] = $row['nident'];
 		 $json2[] = $json;
 
 	//}

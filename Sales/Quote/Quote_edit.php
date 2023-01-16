@@ -1448,7 +1448,7 @@ function loaddetails(){
 				$("#hdnqtyunit").val(item.cqtyunit);
 
 				// myFunctionadd(qty,pricex,amtx,factr,nident
-				myFunctionadd(item.totqty,item.nprice,item.namount,item.nfactor,item.nident);
+				addItemName(item.totqty,item.nprice,item.namount,item.nfactor,item.nident);
 			});
 
 		}

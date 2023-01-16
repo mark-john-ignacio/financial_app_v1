@@ -17,7 +17,8 @@ function chkgrp($valz) {
 $company = $_SESSION['companyid'];
 
 		$cSINo = $_REQUEST['trancode'];
-		$crefno = chkgrp($_REQUEST['crefno']);
+		$crefno = chkgrp($_REQUEST['crefno']); 
+		$nrefident = $_REQUEST['nrefident'];
 		$indexz = $_REQUEST['indx'];
 		$cItemNo = $_REQUEST['citmno'];
 		$nQty = $_REQUEST['nqty'];
@@ -31,7 +32,7 @@ $company = $_SESSION['companyid'];
 
 	$refcidenttran = $cSINo."P".$indexz;
 	
-	if (!mysqli_query($con,"INSERT INTO so_t(`compcode`, `cidentity`, `ctranno`, `creference`, `nident`, `citemno`, `nqty`, `cunit`, `nprice`, `namount`, `nbaseamount`, `cmainunit`,`nfactor`) values('$company', '$refcidenttran', '$cSINo', $crefno, '$indexz', '$cItemNo', '$nQty', '$cUnit', '$nPrice', '$nAmount', '$nBaseAmount', '$cMainUOM', $nFactor)")){
+	if (!mysqli_query($con,"INSERT INTO so_t(`compcode`, `cidentity`, `ctranno`, `creference`, `nrefident`, `nident`, `citemno`, `nqty`, `cunit`, `nprice`, `namount`, `nbaseamount`, `cmainunit`,`nfactor`) values('$company', '$refcidenttran', '$cSINo', $crefno, '$nrefident', '$indexz', '$cItemNo', '$nQty', '$cUnit', '$nPrice', '$nAmount', '$nBaseAmount', '$cMainUOM', $nFactor)")){
 		echo "False";
 	}
 	else{

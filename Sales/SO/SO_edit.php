@@ -741,7 +741,7 @@ $(function(){
         });
 
 	
-		$("#txtcustid").keyup(function(event){
+	$("#txtcustid").keyup(function(event){
 		if(event.keyCode == 13){
 		
 		var dInput = this.value;
@@ -1036,7 +1036,14 @@ $(function(){
 			$("#hdnqty").val(item.nqty);
 			$("#hdnqtyunit").val(item.cqtyunit);
 			
-			addItemName("","","","","","");
+			myFunctionadd("","","","","","","");
+			ComputeGross();	
+
+			$("#txtprodid").val("");
+			$("#txtprodnme").val("");
+			$("#hdnunit").val("");
+			$("#hdnqty").val("");
+			$("#hdnqtyunit").val("");
 			
 			
 		}
@@ -1048,50 +1055,50 @@ $(function(){
 		if(event.keyCode == 13){
 
 		$.ajax({
-        url:'../get_productid.php',
-        data: 'c_id='+ $(this).val() + "&itmbal=" + xChkBal+"&styp="+ $("#selsityp").val(),                 
-        success: function(value){
-            var data = value.split(",");
-            $('#txtprodid').val(data[0]);
-            $('#txtprodnme').val(data[1]);
-			$('#hdnunit').val(data[2]);
-			$("#hdnqty").val(data[3]);
-			$("#hdnqtyunit").val(data[4]);
+      url:'../get_productid.php',
+      data: 'c_id='+ $(this).val() + "&itmbal=" + xChkBal+"&styp="+ $("#selsityp").val(),                 
+      success: function(value){
+        var data = value.split(",");
+        $('#txtprodid').val(data[0]);
+        $('#txtprodnme').val(data[1]);
+				$('#hdnunit').val(data[2]);
+				$("#hdnqty").val(data[3]);
+				$("#hdnqtyunit").val(data[4]);
 
 
-		if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
-			var isItem = "NO";
-			var disID = "";
-			
-			$("#MyTable > tbody > tr").each(function() {	
-				disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-
-				if($("#txtprodid").val()==disID){
+				if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
+					var isItem = "NO";
+					var disID = "";
 					
-					isItem = "YES";
+					$("#MyTable > tbody > tr").each(function() {	
+						disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
 
+						if($("#txtprodid").val()==disID){
+							
+							isItem = "YES";
+
+						}
+					});	
+
+				//if value is not blank
 				}
-			});	
+				
+				//if(isItem=="NO"){		
 
-		//if value is not blank
-		 }
-		 
-		//if(isItem=="NO"){		
-
-			myFunctionadd("","","","","","");
-			ComputeGross();	
-			
-	 //   }
-	 //   else{
-			
-	//		addqty();
-	//	}
+					myFunctionadd("","","","","","","");
+					ComputeGross();	
+					
+			//   }
+			//   else{
+					
+			//		addqty();
+			//	}
 		
-		$("#txtprodid").val("");
-		$("#txtprodnme").val("");
-		$("#hdnunit").val("");
-		$("#hdnqty").val("");
-		$("#hdnqtyunit").val("");
+				$("#txtprodid").val("");
+				$("#txtprodnme").val("");
+				$("#hdnunit").val("");
+				$("#hdnqty").val("");
+				$("#hdnqtyunit").val("");
  
 	    //closing for success: function(value){
 	    }
@@ -1238,7 +1245,7 @@ function checkcustlimit(id,xcred){
 
 }
 
-function addItemName(qty,price,curramt,amt,factr,cref){
+function addItemName(qty,price,curramt,amt,factr,cref,nrefident){
 
 	 if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
 
@@ -1256,7 +1263,7 @@ function addItemName(qty,price,curramt,amt,factr,cref){
 			});	
 
 	 //if(isItem=="NO"){	
-	 	myFunctionadd(qty,price,curramt,amt,factr,cref);
+	 	myFunctionadd(qty,price,curramt,amt,factr,cref,nrefident);
 		
 		ComputeGross();	
 
@@ -1277,7 +1284,7 @@ function addItemName(qty,price,curramt,amt,factr,cref){
 
 }
 
-function myFunctionadd(qty,pricex,curramt,amtx,factr,cref){
+function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 	//alert("hello");
 	var itmcode = $("#txtprodid").val();
 	var itmdesc = $("#txtprodnme").val();
@@ -1365,7 +1372,7 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref){
 	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 	var lastRow = tbl.length;
 
-	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+" <input type='hidden' value='"+cref+"' name=\"txtcreference\" id=\"txtcreference\"></td>";
+	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+nrefident+"' name=\"hdnrefident\" id=\"hdnrefident\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+" <input type='hidden' value='"+cref+"' name=\"txtcreference\" id=\"txtcreference\"></td>";
 	var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmdesc+"</td>";
 	var tditmavail = avail;
 	var tditmunit = "<td width=\"100\" nowrap> <select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\">"+uomoptions+"</select> </td>";
@@ -1970,7 +1977,7 @@ function loaddetails(){
 				$("#hdnqty").val(item.nqty);
 				$("#hdnqtyunit").val(item.cqtyunit);
 
-				addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref)
+				addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.nident)
 			});
 
 		}
@@ -2156,6 +2163,7 @@ function chkform(){
 			//Save Details
 			$("#MyTable > tbody > tr").each(function(index) {	
 			//alert(index);
+				var nrefident = $(this).find('input[type="hidden"][name="hdnrefident"]').val();
 				var crefno = $(this).find('input[type="hidden"][name="txtcreference"]').val();
 				var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
 				var cuom = $(this).find('select[name="seluom"]').val();
@@ -2164,7 +2172,7 @@ function chkform(){
 				var namt = $(this).find('input[name="txtnamount"]').val();
 				var nbaseamt = $(this).find('input[name="txtntranamount"]').val();
 				var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
-				var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
+				var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val(); 
 
 				if(nqty!==undefined){
 					nqty = nqty.replace(/,/g,'');
@@ -2175,7 +2183,7 @@ function chkform(){
 			
 				$.ajax ({
 					url: "SO_newsavedet.php",
-					data: { trancode: trancode, crefno: crefno, indx:index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, nbaseamt:nbaseamt, mainunit:mainunit, nfactor:nfactor },
+					data: { nrefident:nrefident, trancode: trancode, crefno: crefno, indx:index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, nbaseamt:nbaseamt, mainunit:mainunit, nfactor:nfactor },
 					async: false,
 					success: function( data ) {
 						if(data.trim()=="False"){
