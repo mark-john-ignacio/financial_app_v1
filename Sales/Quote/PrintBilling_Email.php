@@ -367,36 +367,37 @@ $mpdf->WriteHTML($html);
 $mpdf->Output('../../PDFiles/Quotes/'.$csalesno.'.pdf', \Mpdf\Output\Destination::FILE);
 
 //Redirect to sending email file
-	$body = "Sending You The Quote"; 
-	$subject = "Myx Financials - Quotation Sending";
- 
-	$email_to = 'mhaitz.endriga@gmail.com';
+$output='<p>Dear '.$name.',</p>';
+$output.='<p>This email is to notify that the QO# '.$xpono.' is waiting for your approval.</p>'; 
+$output.='<p>Thanks,</p>';
+$output.='<p>Myx Financials,</p>';
 
-	$mail = new PHPMailer\PHPMailer\PHPMailer();
-	$mail->IsSMTP();
-	//$mail->SMTPDebug = 3;
-	//$mail->Debugoutput = 'html';
+$body = $output; 
+$subject = "Quotation";
 
-	$mail->Host = "smtp.gmail.com"; // Enter your host here
-	$mail->SMTPAuth = true;
-	$mail->Username = "myxwebportal@gmail.com"; // Enter your email here
-	$mail->Password = "?May052486..."; //Enter your password here
-	$mail->Port = 465;
-	$mail->SMTPSecure = 'ssl';
+$email_to = $email;
 
-	$mail->IsHTML(true);
-	$mail->SetFrom("myxwebportal@gmail.com","Myx Financials");
-	$mail->addReplyTo("myxwebportal@gmail.com","Myx Financials");
+$fromserver = "myxfin@serttech.com"; 
+$mail = new PHPMailer\PHPMailer\PHPMailer();
+$mail->IsSMTP();
+$mail->Host = "mail.serttech.com"; // Enter your host here
+$mail->SMTPAuth = true;
+$mail->Username = "myxfin@serttech.com"; // Enter your email here
+$mail->Password = "Sert@2022"; //Enter your password here
+$mail->SMTPSecure = 'tls';
+$mail->Port = 587;
+$mail->IsHTML(true);
+$mail->From = "noreply@serttech.com";
+$mail->FromName = "Myx Financials";
+$mail->Sender = "myxfin@serttech.com"; // indicates ReturnPath header
+$mail->Subject = $subject;
+$mail->Body = $body;
+$mail->AddAddress($email_to);
 
-	$mail->Subject = $subject;
-	$mail->Body = $body;
-	$mail->AddAddress($email_to);
-	$mail->AddCC('maita.galang@gmail.com','Sert Guro');
-	$mail->addAttachment("../../PDFiles/Quotes/".$csalesno.".pdf");
-	if(!$mail->Send()){
-		echo "Mailer Error: " . $mail->ErrorInfo;
-	}else{
-		echo "Email Successfully Sent";
-	}
+if(!$mail->Send()){
+//echo "Mailer Error: " . $mail->ErrorInfo;
+}else{
+//echo "Email Successfully Sent";
+}
 
 ?>

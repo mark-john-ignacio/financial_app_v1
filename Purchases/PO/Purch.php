@@ -67,7 +67,7 @@ $company = $_SESSION['companyid'];
 				</thead>
 
 				<tbody>
-              	<?php
+        <?php
 				$sql = "select a.*,b.cname from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' order by a.ddate desc";
 				
 				$result=mysqli_query($con,$sql);

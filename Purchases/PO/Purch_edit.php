@@ -46,7 +46,11 @@ function listcurrencies(){ //API for currency list
 
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 <script src="../../js/bootstrap3-typeahead.min.js"></script>
+
+<script src="../../include/autoNumeric.js"></script>
+<!--
 <script src="../../Bootstrap/js/jquery.numeric.js"></script>
+-->
 
 <script src="../../Bootstrap/js/bootstrap.js"></script>
 <script src="../../Bootstrap/js/moment.js"></script>
@@ -316,12 +320,12 @@ Save<br>(CTRL+S)    </button>
     
     </td>
 	<td width="110px" align="right"><b>Gross Amount </b>&nbsp;&nbsp;</td>
-    <td width="150px"> <input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="<?php echo number_format($nbasegross,4); ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10">
+    <td width="150px"> <input type="text" id="txtnBaseGross" name="txtnBaseGross" readonl style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10">
 	</td>
   </tr>
   <tr>
  	 <td width="110px" align="right"><b>Gross Amount in <?php echo $nvaluecurrbase; ?></b>&nbsp;&nbsp;</td>
-        <td width="150px"> <input type="text" id="txtnGross" name="txtnGross" readonly value="<?php echo number_format($Gross,4); ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10"></td>
+        <td width="150px"> <input type="text" id="txtnGross" name="txtnGross" readonly style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10"></td>
 
   </tr>
 </table>
@@ -809,7 +813,9 @@ function myFunctionadd(nqty, nprice, nbaseamt, namount, nfactor, cmainunit, dnee
 										$(this).closest('tr').remove();
 									});
 
-									$("input.numeric").numeric();
+									$("input.numeric").autoNumeric('init',{mDec:2});
+
+									//$("input.numeric").numeric();
 									$("input.numeric").on("click", function () {
 									   $(this).select();
 									});
@@ -838,6 +844,8 @@ function myFunctionadd(nqty, nprice, nbaseamt, namount, nfactor, cmainunit, dnee
 										$(this).datetimepicker({format: 'MM/DD/YYYY'});	
 									});
 
+									ComputeGross();
+
 
 }
 
@@ -847,10 +855,10 @@ function myFunctionadd(nqty, nprice, nbaseamt, namount, nfactor, cmainunit, dnee
 			var nnet = 0;
 			var nqty = 0;
 			
-			nqty = $("#txtnqty"+r).val();
+			nqty = $("#txtnqty"+r).val().replace(/,/g,'');
 			nqty = parseFloat(nqty)
 
-			nprc = $("#txtnprice"+r).val();
+			nprc = $("#txtnprice"+r).val().replace(/,/g,'');
 			nprc = parseFloat(nprc);
 
 			//ndsc = $("#txtndisc"+r).val();
@@ -872,6 +880,12 @@ function myFunctionadd(nqty, nprice, nbaseamt, namount, nfactor, cmainunit, dnee
 
 			$("#txtntranamount"+r).val(namt);
 
+			$("#txtntranamount"+r).autoNumeric('destroy');
+			$("#txtnamount"+r).autoNumeric('destroy');
+
+			$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
+			$("#txtnamount"+r).autoNumeric('init',{mDec:2});
+
 		}
 
 		function ComputeGross(){
@@ -882,7 +896,7 @@ function myFunctionadd(nqty, nprice, nbaseamt, namount, nfactor, cmainunit, dnee
 			
 			if(rowCount>1){
 				for (var i = 1; i <= rowCount-1; i++) {
-					amt = $("#txtntranamount"+i).val();
+					amt = $("#txtntranamount"+i).val().replace(/,/g,'');
 					gross = gross + parseFloat(amt);
 					
 				}
@@ -891,8 +905,14 @@ function myFunctionadd(nqty, nprice, nbaseamt, namount, nfactor, cmainunit, dnee
 			}
 			gross2 = gross * parseFloat($("#basecurrval").val());
 
-			$("#txtnGross").val(Number(gross2).toLocaleString('en', { minimumFractionDigits: 4 }));
-			$("#txtnBaseGross").val(Number(gross).toLocaleString('en', { minimumFractionDigits: 4 }));
+			$("#txtnGross").val(gross2);
+			$("#txtnBaseGross").val(gross);
+
+			$("#txtnGross").autoNumeric('destroy');
+			$("#txtnBaseGross").autoNumeric('destroy');
+
+			$("#txtnGross").autoNumeric('init',{mDec:2});
+			$("#txtnBaseGross").autoNumeric('init',{mDec:2});
 			
 		}
 
@@ -1084,6 +1104,13 @@ function chkform(){
 					
 							
 				//alert("Purch_updatesavedet.php?trancode="+ trancode + "&dneed="+ dneed + "&indx="+ index + "&citmno="+ citmno+ "&cuom="+ cuom+ "&nqty="+ nqty + "&nprice="+ nprice+ "&namt=" + namt + "&mainunit="+ mainunit + "&nfactor=" + nfactor + "&citmdesc=" + citmdesc);
+
+				if(nqty!==undefined){
+					nqty = nqty.replace(/,/g,'');
+					nprice = nprice.replace(/,/g,'');
+					namt = namt.replace(/,/g,'');
+					ntranamt = ntranamt.replace(/,/g,'');
+				}
 				
 					$.ajax ({
 						url: "Purch_newsavedet.php",

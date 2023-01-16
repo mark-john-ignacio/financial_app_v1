@@ -36,7 +36,10 @@ function listcurrencies(){ //API for currency list
 
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 <script src="../../js/bootstrap3-typeahead.min.js"></script>
+<script src="../../include/autoNumeric.js"></script>
+<!--
 <script src="../../Bootstrap/js/jquery.numeric.js"></script>
+-->
 
 <script src="../../Bootstrap/js/bootstrap.js"></script>
 <script src="../../Bootstrap/js/moment.js"></script>
@@ -661,7 +664,7 @@ function myFunctionadd(){
 			
 	var tditmbaseamount = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='"+itmprice+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtntranamount\" id='txtntranamount"+lastRow+"' readonly> </td>";
 
-	var tditmamount = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='"+itmprice+"' class='form-control input-xs' style='text-align:right' name='txtnamount' id='txtnamount"+lastRow+"' readonly> </td>";
+	var tditmamount = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='"+itmprice+"' class='numeric form-control input-xs' style='text-align:right' name='txtnamount' id='txtnamount"+lastRow+"' readonly> </td>";
 
 	var tdneeded = "<td width=\"100\" style=\"padding: 1px\" nowrap><input type='text' class='datepick form-control input-xs' id='dneed"+lastRow+"' name='dneed' value='"+dneeded+"' /></td>"
 	
@@ -675,7 +678,9 @@ function myFunctionadd(){
 										$(this).closest('tr').remove();
 									});
 
-									$("input.numeric").numeric();
+									$("input.numeric").autoNumeric('init',{mDec:2});
+
+								//	$("input.numeric").numeric();
 									$("input.numeric").on("click", function () {
 									   $(this).select();
 									});
@@ -710,10 +715,10 @@ function myFunctionadd(){
 			var nnet = 0;
 			var nqty = 0;
 			
-			nqty = $("#txtnqty"+r).val();
+			nqty = $("#txtnqty"+r).val().replace(/,/g,'');
 			nqty = parseFloat(nqty)
 
-			nprc = $("#txtnprice"+r).val();
+			nprc = $("#txtnprice"+r).val().replace(/,/g,'');
 			nprc = parseFloat(nprc);
 
 			//ndsc = $("#txtndisc"+r).val();
@@ -735,6 +740,12 @@ function myFunctionadd(){
 
 			$("#txtntranamount"+r).val(namt);
 
+			$("#txtntranamount"+r).autoNumeric('destroy');
+			$("#txtnamount"+r).autoNumeric('destroy');
+
+			$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
+			$("#txtnamount"+r).autoNumeric('init',{mDec:2});
+
 		}
 
 		function ComputeGross(){
@@ -745,7 +756,7 @@ function myFunctionadd(){
 			
 			if(rowCount>1){
 				for (var i = 1; i <= rowCount-1; i++) {
-					amt = $("#txtntranamount"+i).val();
+					amt = $("#txtntranamount"+i).val().replace(/,/g,'');
 					gross = gross + parseFloat(amt);
 					
 				}
@@ -754,8 +765,14 @@ function myFunctionadd(){
 			}
 			gross2 = gross * parseFloat($("#basecurrval").val());
 
-			$("#txtnGross").val(Number(gross2).toLocaleString('en', { minimumFractionDigits: 4 }));
-			$("#txtnBaseGross").val(Number(gross).toLocaleString('en', { minimumFractionDigits: 4 }));
+			$("#txtnGross").val(gross2);
+			$("#txtnBaseGross").val(gross);
+
+			$("#txtnGross").autoNumeric('destroy');
+			$("#txtnBaseGross").autoNumeric('destroy');
+
+			$("#txtnGross").autoNumeric('init',{mDec:2});
+			$("#txtnBaseGross").autoNumeric('init',{mDec:2});	
 			
 		}
 
@@ -935,6 +952,13 @@ function chkform(){
 				
 					
 				//alert("Purch_newsavedet.php?trancode="+ trancode + "&dneed="+ dneed + "&indx="+ index + "&citmno="+ citmno+ "&cuom="+ cuom+ "&nqty="+ nqty + "&nprice="+ nprice+ "&namt=" + namt + "&mainunit="+ mainunit + "&nfactor=" + nfactor + "&citmdesc=" + citmdesc);
+
+				if(nqty!==undefined){
+					nqty = nqty.replace(/,/g,'');
+					nprice = nprice.replace(/,/g,'');
+					namt = namt.replace(/,/g,'');
+					ntranamt = ntranamt.replace(/,/g,'');
+				}
 				
 				$.ajax ({
 					url: "Purch_newsavedet.php",
@@ -1026,7 +1050,7 @@ function recomputeCurr(){
 function getcontact(cid){
 
 	$.ajax({
-				url:'../get_contactinfo.php',
+				url:'get_contactinfo.php',
 				data: 'c_id='+ cid,                 
 				success: function(value){
 					if(value!=""){
