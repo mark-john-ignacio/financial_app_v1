@@ -8,6 +8,8 @@ include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 include('../../include/access2.php');
 
+
+$company = $_SESSION['companyid'];
 /*
 function listcurrencies(){ //API for currency list
 	$apikey = $_SESSION['currapikey'];
@@ -20,6 +22,19 @@ function listcurrencies(){ //API for currency list
 	return $json;
 }
 */
+
+	$sqlcomp = mysqli_query($con,"select * from company where compcode='$company'");
+
+	if(mysqli_num_rows($sqlcomp) != 0){
+
+		while($rowcomp = mysqli_fetch_array($sqlcomp, MYSQLI_ASSOC))
+		{
+			$compname = $rowcomp['compname'];
+			$compadd = $rowcomp['compadd'];
+		}
+
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -51,158 +66,241 @@ function listcurrencies(){ //API for currency list
 <form action="Purch_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
 	<fieldset>
     	<legend>Purchase Order</legend>	
-        <table width="100%" border="0">
-  <tr>
-    <tH width="100">Supplier:</tH>
-    <td style="padding:2px">
-			<div class="col-xs-12 nopadding">
-				<div class="col-xs-3 nopadding">
-					<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" value="" readonly>
+
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#home">PO Details</a></li>
+				<li><a href="#menu1">Delivery/Billing</a></li>
+			</ul>
+
+			<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left;overflow: auto">
+ 				<div class="tab-content">  
+
+      		<div id="home" class="tab-pane fade in active" style="padding-left:5px;">
+
+						<table width="100%" border="0">
+							<tr>
+								<tH width="100">Supplier:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-12 nopadding">
+										<div class="col-xs-3 nopadding">
+											<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" value="" readonly>
+										</div>
+
+										<div class="col-xs-8 nopadwleft">
+											<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" value="">
+										</div> 
+									</div>
+								</td>
+								<tH width="150">PO Date:</tH>
+								<td width="250" style="padding:2px;">
+									<div class="col-xs-5 nopadding">
+										<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date("m/d/Y"); ?>" readonly/>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<tH width="100">Remarks:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-11 nopadding">
+										<input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2">
+									</div>
+								</td>
+								<tH width="150" style="padding:2px">Date Needed:</tH>
+								<td style="padding:2px">
+								<div class="col-xs-5 nopadding">
+
+								<input type='text' class="datepick form-control input-sm" id="date_needed" name="date_needed" />
+
+								</div>
+								</td>
+							</tr>
+
+							<tr>
+								<tH width="100">Contact:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-3 nopadding"> 
+										<button class="btn btn-sm btn-block btn-warning" name="btnSearchCont" id="btnSearchCont" type="button">Search</button>
+									</div>
+									<div class="col-xs-8 nopadwleft">
+										<input type="text" id="txtcontactname" name="txtcontactname" class="required form-control input-sm" placeholder="Contact Person Name..." tabindex="1"  required="true">
+									</div>
+								</td>
+								<tH width="100" style="padding:2px">Email:</tH>
+								<td style="padding:2px">
+								<div class="col-xs-11 nopadding">
+									<input type='text' class="form-control input-sm" id="contact_email" name="contact_email" />
+
+								</div>
+								</td>
+							</tr>
+
+
+							<tr>
+								<tH width="100">Currency:</tH>
+								<td style="padding:2px">
+												<div class="col-xs-12 nopadding">
+													<div class="col-xs-6 nopadding">
+														<select class="form-control input-sm" name="selbasecurr" id="selbasecurr"> 						
+															<?php
+																	$nvaluecurrbase = "";	
+																	$nvaluecurrbasedesc = "";	
+																	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+																	
+																		if (mysqli_num_rows($result)!=0) {
+																			$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
+																			
+																			$nvaluecurrbase = $all_course_data['cvalue']; 
+																				
+																		}
+																		else{
+																			$nvaluecurrbase = "";
+																		}
+
+																		/*
+												
+																			$objcurrs = listcurrencies();
+																			$objrows = json_decode($objcurrs, true);
+																				
+																	foreach($objrows as $rows){
+																		if ($nvaluecurrbase==$rows['currencyCode']) {
+																			$nvaluecurrbasedesc = $rows['currencyName'];
+																		}
+
+																		if($rows['countryCode']!=="Crypto" && $rows['currencyName']!==null){
+
+																			*/
+
+																			$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+																			if (mysqli_num_rows($sqlhead)!=0) {
+																				while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+															?>
+																		<option value="<?=$rows['id']?>" <?php if ($nvaluecurrbase==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
+															<?php
+																		}
+																	}
+															?>
+														</select>
+															<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?php echo $nvaluecurrbase; ?>"> 	
+															<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?php echo $nvaluecurrbasedesc; ?>"> 
+													</div>
+													<div class="col-xs-2 nopadwleft">
+														<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
+													</div>
+
+													<div class="col-xs-4" id="statgetrate" style="padding: 4px !important"> 
+																
+													</div>
+												</div>
+									</td>
+									<tH width="150" style="padding:2px">Terms:</tH>
+									<td style="padding:2px">
+										<div class="col-xs-8 nopadding">							
+											<select id="selterms" name="selterms" class="form-control input-sm selectpicker">
+												<?php
+													$sql = "Select * From groupings where compcode='$company' and ctype='TERMS'";
+													$result=mysqli_query($con,$sql);
+														if (!mysqli_query($con, $sql)) {
+															printf("Errormessage: %s\n", mysqli_error($con));
+														}			
+																						
+														while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+														{
+												?>
+														<option value="<?php echo $row['ccode'];?>"><?php echo $row['cdesc']?></option>
+												<?php
+														}
+												?>
+											</select>
+										</div>
+									</td>
+							</tr>
+
+							<tr>
+								<td colspan="2">&nbsp;</td>
+								<th style="padding:2px"><!--<span style="padding:2px">PURCHASE TYPE:</span>-->&nbsp;</th>
+								<td>&nbsp;
+								<!--
+								<div class="col-xs-5">
+										<select id="seltype" name="seltype" class="form-control input-sm selectpicker"  tabindex="3">
+											<option value="Grocery">Grocery</option>
+											<option value="Cripples">Cripples</option>
+										</select>
+							</div>
+							-->
+							</td>
+							</tr>
+
+							<tr>
+								<td colspan="2">
+									<div class="col-xs-12 nopadwdown">
+										<div class="col-xs-3 nopadding">
+											<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." width="25" tabindex="4"  autocomplete="off">
+										</div>
+										<div class="col-xs-6 nopadwleft">
+											<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL+F) Search Product Name..." size="80" tabindex="5" autocomplete="off">
+										</div>
+									</div>
+
+										<input type="hidden" name="hdnunit" id="hdnunit">
+								</td>
+								<td></td>
+								<td></td>
+
+							</tr>
+						</table>
+
+					</div>
+
+					<div id="menu1" class="tab-pane fade" style="padding-left:5px">
+						<table width="100%" border="0">
+							<tr>
+								<td width="150"><b>Deliver To</b></td>
+								<td width="310" colspan="2" style="padding:2px">
+									<div class="col-xs-8 nopadding">
+										<div class="col-xs-12 nopadding">
+											<input type="text" class="form-control input-sm" id="txtdelcust" name="txtdelcust" width="20px" tabindex="1" placeholder="Enter Deliver To..."  size="60" autocomplete="off" value="<?=$compname?>">
+										</div> 
+									</div>						
+								</td>
+							</tr>
+							<tr>
+								<td><b>Delivery Address</b></td>
+								<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><textarea class="form-control input-sm" id="txtdeladd" name="txtdeladd" placeholder="Enter Delivery Address..." autocomplete="off"> <?=$compadd?> </textarea></div></td>
+							</tr>					
+
+							<tr>
+								<td width="150"><b>Delivery Notes</b></td>
+								<td width="310" colspan="2" style="padding:2px">
+									<div class="col-xs-8 nopadding">
+										<div class="col-xs-12 nopadding">
+											<input type="text" class="form-control input-sm" id="textdelnotes" name="textdelnotes" width="20px" tabindex="1" placeholder="Enter Delivery Notes..."  size="60" autocomplete="off">
+										</div> 
+									</div>						
+								</td>
+							</tr>
+
+							<tr>
+								<td width="150"><b>Bill To</b></td>
+								<td width="310" colspan="2" style="padding:2px">
+									<div class="col-xs-8 nopadding">
+										<div class="col-xs-12 nopadding">
+											<input type="text" class="form-control input-sm" id="txtbillto" name="txtbillto" width="20px" tabindex="1" placeholder="Enter Bill To..."  size="60" autocomplete="off" value="<?=$compname?>">
+										</div> 
+									</div>						
+								</td>
+							</tr>
+
+							<tr>
+								<td width="150" colspan="2"><br><br></td>
+
+							</tr>
+
+						</table>
+					</div>
 				</div>
-
-				<div class="col-xs-8 nopadwleft">
-					<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" value="">
-				</div> 
 			</div>
-    </td>
-    <tH width="150">PO Date:</tH>
-    <td width="250" style="padding:2px;">
-     <div class="col-xs-5 nopadding">
-		<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date("m/d/Y"); ?>" readonly/>
-	</div>
-    </td>
-  </tr>
-  <tr>
-    <tH width="100">Remarks:</tH>
-    <td style="padding:2px">
-			<div class="col-xs-11 nopadding">
-				<input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2">
-			</div>
-		</td>
-    <tH width="150" style="padding:2px">Date Needed:</tH>
-    <td style="padding:2px">
-    <div class="col-xs-5 nopadding">
 
-		<input type='text' class="datepick form-control input-sm" id="date_needed" name="date_needed" />
-
-     </div>
-    </td>
-  </tr>
-
-	<tr>
-    <tH width="100">Contact:</tH>
-    <td style="padding:2px">
-			<div class="col-xs-3 nopadding"> 
-				<button class="btn btn-sm btn-block btn-warning" name="btnSearchCont" id="btnSearchCont" type="button">Search</button>
-			</div>
-			<div class="col-xs-8 nopadwleft">
-				<input type="text" id="txtcontactname" name="txtcontactname" class="required form-control input-sm" placeholder="Contact Person Name..." tabindex="1"  required="true">
-			</div>
-		</td>
-    <tH width="100" style="padding:2px">Email:</tH>
-    <td style="padding:2px">
-    <div class="col-xs-11 nopadding">
-			<input type='text' class="form-control input-sm" id="contact_email" name="contact_email" />
-
-     </div>
-    </td>
-  </tr>
-
-
-  <tr>
-    <tH width="100">Currency:</tH>
-    <td style="padding:2px">
-		<div class="col-xs-12 nopadding">
-							<div class="col-xs-6 nopadding">
-								<select class="form-control input-sm" name="selbasecurr" id="selbasecurr"> 						
-									<?php
-											$nvaluecurrbase = "";	
-											$nvaluecurrbasedesc = "";	
-											$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
-											
-												if (mysqli_num_rows($result)!=0) {
-													$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
-													
-													$nvaluecurrbase = $all_course_data['cvalue']; 
-														
-												}
-												else{
-													$nvaluecurrbase = "";
-												}
-
-												/*
-						
-													$objcurrs = listcurrencies();
-													$objrows = json_decode($objcurrs, true);
-														
-											foreach($objrows as $rows){
-												if ($nvaluecurrbase==$rows['currencyCode']) {
-													$nvaluecurrbasedesc = $rows['currencyName'];
-												}
-
-												if($rows['countryCode']!=="Crypto" && $rows['currencyName']!==null){
-
-													*/
-
-													$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
-													if (mysqli_num_rows($sqlhead)!=0) {
-														while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-									?>
-												<option value="<?=$rows['id']?>" <?php if ($nvaluecurrbase==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
-									<?php
-												}
-											}
-									?>
-								</select>
-									<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?php echo $nvaluecurrbase; ?>"> 	
-									<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?php echo $nvaluecurrbasedesc; ?>"> 
-							</div>
-							<div class="col-xs-2 nopadwleft">
-								<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
-							</div>
-
-							<div class="col-xs-4" id="statgetrate" style="padding: 4px !important"> 
-										
-							</div>
-		</div>
-	</td>
-    <tH width="150" style="padding:2px">&nbsp;</tH>
-    <td style="padding:2px">&nbsp;</td>
-  </tr>
-
-  <tr>
-    <td colspan="2">&nbsp;</td>
-    <th style="padding:2px"><!--<span style="padding:2px">PURCHASE TYPE:</span>-->&nbsp;</th>
-    <td>&nbsp;
-    <!--
-    <div class="col-xs-5">
-        <select id="seltype" name="seltype" class="form-control input-sm selectpicker"  tabindex="3">
-          <option value="Grocery">Grocery</option>
-          <option value="Cripples">Cripples</option>
-        </select>
-   </div>
-   -->
-   </td>
-    </tr>
-<tr>
-    <td colspan="2">
-      <div class="col-xs-12 nopadwdown">
-        <div class="col-xs-3 nopadding">
-          <input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." width="25" tabindex="4"  autocomplete="off">
-        </div>
-        <div class="col-xs-6 nopadwleft">
-          <input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL+F) Search Product Name..." size="80" tabindex="5" autocomplete="off">
-        </div>
-      </div>
-
-        <input type="hidden" name="hdnunit" id="hdnunit">
-    </td>
-    <td></td>
-    <td></td>
-
-</tr>
-</table>
-         <div class="alt2" dir="ltr" style="
+        <div class="alt2" dir="ltr" style="
 					margin: 0px;
 					padding: 3px;
 					border: 1px solid #919b9c;
@@ -212,24 +310,25 @@ function listcurrencies(){ //API for currency list
 					overflow: auto">
 	
             <table id="MyTable" class="MyTable" width="100%">
+							<thead>
+								<tr>
+									<th style="border-bottom:1px solid #999">Code</th>
+									<th style="border-bottom:1px solid #999">Description</th>
+									<th style="border-bottom:1px solid #999">UOM</th>
+									<th style="border-bottom:1px solid #999">Qty</th>
+									<th style="border-bottom:1px solid #999">Price</th>
+									<th style="border-bottom:1px solid #999">Amount</th>
+									<th style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
+									<th style="border-bottom:1px solid #999">Date Needed</th>
+									<th style="border-bottom:1px solid #999">&nbsp;</th>
+								</tr>
+							</thead>
+							<tbody class="tbody">
+							</tbody>                    
+						</table>
 
-					<tr>
-						<th style="border-bottom:1px solid #999">Code</th>
-						<th style="border-bottom:1px solid #999">Description</th>
-                        <th style="border-bottom:1px solid #999">UOM</th>
-						<th style="border-bottom:1px solid #999">Qty</th>
-						<th style="border-bottom:1px solid #999">Price</th>
-						<th style="border-bottom:1px solid #999">Amount</th>
-						<th style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
-                        <th style="border-bottom:1px solid #999">Date Needed</th>
-                        <th style="border-bottom:1px solid #999">&nbsp;</th>
-					</tr>
-					<tbody class="tbody">
-                    </tbody>
-                    
-			</table>
+				</div>
 
-</div>
 <br>
 <table width="100%" border="0" cellpadding="3">
   <tr>
@@ -331,6 +430,12 @@ Back to Main<br>(ESC)</button>
 
 
 $(document).ready(function() {
+
+	$(".nav-tabs a").click(function(){
+    			$(this).tab('show');
+			});
+
+
     $('.datepick').datetimepicker({
         format: 'MM/DD/YYYY',
 		useCurrent: false,
@@ -402,6 +507,7 @@ $(function(){
 		afterSelect: function(item) { 
 			$('#txtcust').val(item.value).change(); 
 			$("#txtcustid").val(item.id);
+			$('#selterms').val(item.cterms).change(); 
 
 			getcontact(item.id);
 		}

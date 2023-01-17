@@ -66,7 +66,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 	</style>
 </head>
 
-<body onLoad="window.print();">
+<body >
 
 <table border="0" width="100%" cellpadding="1px"  id="tblMain">
 	<tr>
@@ -89,45 +89,55 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 	<tr>
 		<td style="vertical-align: top; padding-top: 10px">
 
-			<table border="0" width="100%">
+			<table border="1" width="100%">
 				<tr>
 					<td colspan="4" align="center" style="padding-bottom: 20px">
 							<font style="font-size: 24px;">PURCHASE ORDER </font>
 					</td>
 				</tr>
+
 				<tr>
-					<td width="100px">
-							<b>Name: </b>
+					<td colspan="2">
+					<font style="font-size: 14px;"><b>Date:</b> <?=date("F d, Y")?></font>
+					</td>
+
+					<td colspan="2" align="right">
+					<font style="font-size: 14px;"><b>No.:</b> <?=$csalesno?></font>
+					</td>
+				</tr>
+
+
+				<tr>
+					<td width="200px">
+							<b>SUPPLIER'S NAME: </b>
 					</td>
 					<td>
 							<?=$CustName?>
 					</td>
 					<td width="100px">
-							<b>PO#: </b>
+							<b>TERMS </b>
 					</td>
-					<td>
-						<?=$csalesno?>    
+					<td rowspan="2">
+						    
 					</td>
 				</tr>
 
 				<tr>
 					<td width="100px">
-							<b>Address: </b>
+							&nbsp;
 					</td>
 					<td>
 						<?=$CustAdd?>
 					</td>
 					<td width="100px">
-							<b>PR#: </b>
+							
 					</td>
-					<td>
-		
-					</td>
+
 				</tr>
 
 				<tr>
-					<td width="100px">
-							<b>Date: </b>
+					<td width="200px">
+							<b>DELIVERED TO: </b>
 					</td>
 					<td>
 						<?=date_format(date_create($Date), "M d, Y H:i:s")?>
@@ -141,9 +151,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 				</tr>
 
 				<tr>
-					<td width="100px">
-							<b>Del Date: </b>
-					</td>
+					<td width="100px">&nbsp;</td>
 					<td>
 						<?=date_format(date_create($DateNeeded), "M d, Y")?>
 					</td>

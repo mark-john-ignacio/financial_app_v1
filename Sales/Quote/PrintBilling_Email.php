@@ -33,6 +33,7 @@ include('../../include/denied.php');
 		while($rowcomp = mysqli_fetch_array($sqlcomp, MYSQLI_ASSOC))
 		{
 			$logosrc = $rowcomp['clogoname'];
+			$companame = $rowcomp['compname'];
 		}
 
 	}
@@ -54,7 +55,7 @@ include('../../include/denied.php');
 	}
 	
 	$csalesno = $_REQUEST['hdntransid'];
-	$sqlhead = mysqli_query($con,"select a.*,b.cname, b.chouseno, b.ccity, b.cstate, C.cdesc as termdesc from quote a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join groupings C on A.cterms = C.ccode left join users D on a.cpreparedby=D.Userid where a.compcode='$company' and a.ctranno = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*,b.cname, b.chouseno, b.ccity, b.cstate, C.cdesc as termdesc, D.Fname, D.Minit, D.Lname, D.cemailadd from quote a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join groupings C on A.cterms = C.ccode left join users D on a.cpreparedby=D.Userid where a.compcode='$company' and a.ctranno = '$csalesno'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -103,13 +104,29 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$lPosted = $row['lapproved'];
 
 		$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
+		$useremailadd = $row['cemailadd'];
 
 	
 	}
 }
 
 
-$sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t A left join items B on A.citemno=B.cpartno where A.compcode='$company' and A.ctranno = '$csalesno'");
+$sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic, C.nrate From quote_t A left join items B on A.compcode=B.compcode and A.citemno=B.cpartno left join taxcode C on B.compcode=C.compcode and B.ctaxcode=C.ctaxcode where A.compcode='$company' and A.ctranno = '$csalesno'");
+
+	if (mysqli_num_rows($sqldtlss)!=0) {
+		while($row = mysqli_fetch_array($sqldtlss, MYSQLI_ASSOC)){
+			@$arrdtls[] = $row;
+		}
+	}
+
+	$sqldtlss = mysqli_query($con,"select * From quote_t_info where compcode='$company' and ctranno = '$csalesno'");
+
+	@$arrdtlsinfo=array();
+	if (mysqli_num_rows($sqldtlss)!=0) {
+		while($row = mysqli_fetch_array($sqldtlss, MYSQLI_ASSOC)){
+			@$arrdtlsinfo[] = $row;
+		}
+	}
 
 ?>
 
@@ -359,45 +376,47 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 
 <?php
 
-$html = ob_get_contents();
-ob_end_clean();
+	$html = ob_get_contents();
+	ob_end_clean();
 
-// send the captured HTML from the output buffer to the mPDF class for processing
-$mpdf->WriteHTML($html);
-$mpdf->Output('../../PDFiles/Quotes/'.$csalesno.'.pdf', \Mpdf\Output\Destination::FILE);
+	// send the captured HTML from the output buffer to the mPDF class for processing
+	$mpdf->WriteHTML($html);
+	$mpdf->Output('../../PDFiles/Quotes/'.$csalesno.'.pdf', \Mpdf\Output\Destination::FILE);
 
-//Redirect to sending email file
-$output='<p>Dear '.$name.',</p>';
-$output.='<p>This email is to notify that the QO# '.$xpono.' is waiting for your approval.</p>'; 
-$output.='<p>Thanks,</p>';
-$output.='<p>Myx Financials,</p>';
+	//Redirect to sending email file
+	$output='<p>Dear '.$ccontname.',</p>';
+	$output.='<p>Please find here attached the BILLING STATEMENT.</p>'; 
+	$output.='<p>Thanks You for choosing <b>'.$companame.'</b>,</p>';
+	$output.='<p>Myx Financials,</p>';
 
-$body = $output; 
-$subject = "Quotation";
+	$body = $output; 
+	$subject = $companame." - Quotation";
 
-$email_to = $email;
+	$email_to = $email;
+	//$email_to = "mhaitzendriga@gmail.com";
 
-$fromserver = "myxfin@serttech.com"; 
-$mail = new PHPMailer\PHPMailer\PHPMailer();
-$mail->IsSMTP();
-$mail->Host = "mail.serttech.com"; // Enter your host here
-$mail->SMTPAuth = true;
-$mail->Username = "myxfin@serttech.com"; // Enter your email here
-$mail->Password = "Sert@2022"; //Enter your password here
-$mail->SMTPSecure = 'tls';
-$mail->Port = 587;
-$mail->IsHTML(true);
-$mail->From = "noreply@serttech.com";
-$mail->FromName = "Myx Financials";
-$mail->Sender = "myxfin@serttech.com"; // indicates ReturnPath header
-$mail->Subject = $subject;
-$mail->Body = $body;
-$mail->AddAddress($email_to);
+	$fromserver = "myxfin@serttech.com"; 
+	$mail = new PHPMailer\PHPMailer\PHPMailer();
+	$mail->IsSMTP();
+	$mail->Host = "mail.serttech.com"; // Enter your host here
+	$mail->SMTPAuth = true;
+	$mail->Username = "myxfin@serttech.com"; // Enter your email here
+	$mail->Password = "Sert@2022"; //Enter your password here
+	$mail->SMTPSecure = 'tls';
+	$mail->Port = 587;
+	$mail->IsHTML(true);
+	$mail->From = "noreply@serttech.com";
+	$mail->FromName = $companame;
+	$mail->Sender = $useremailadd; // indicates ReturnPath header
+	$mail->Subject = $subject;
+	$mail->Body = $body;
+	$mail->AddAddress($email_to);
+	$mail->addAttachment("../../PDFiles/Quotes/".$csalesno.".pdf");
 
-if(!$mail->Send()){
-//echo "Mailer Error: " . $mail->ErrorInfo;
-}else{
-//echo "Email Successfully Sent";
-}
+	if(!$mail->Send()){
+		echo "Mailer Error: " . $mail->ErrorInfo;
+	}else{
+		echo "Email Successfully Sent";
+	}
 
 ?>

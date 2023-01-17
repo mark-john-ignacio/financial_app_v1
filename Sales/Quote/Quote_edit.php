@@ -258,6 +258,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	 			<div class="col-xs-1"><b>Payment</b></div>
 	 			<div class="col-xs-2 nopadwleft">
 	 				<select class="form-control input-sm" name="selterms" id="selterms">
+					 	<option value='' <?=($cterms=='') ? "selected" : "";?>>N/A</option>
 	 					<?php
 	 						$sqlters = mysqli_query($con,"Select ccode, cdesc From groupings Where ctype='TERMS' and cstatus='ACTIVE'");
 	 						while($row = mysqli_fetch_array($sqlters, MYSQLI_ASSOC)){

@@ -265,8 +265,9 @@ function listcurrencies(){ //API for currency list
 						</td>
 					</tr>  
 				</table>
-        </div>
-			</div>
+      </div>
+			
+		</div>
 
 		</div><!--tab-content-->
 

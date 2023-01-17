@@ -13,9 +13,10 @@ require_once "../Connection/connection_string.php";
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 		
 
-	     $json['id'] = $row['ccode'];
-     	 $json['value'] = utf8_encode($row['cname']);
-		 $json2[] = $json;
+	  $json['id'] = $row['ccode'];
+    $json['value'] = utf8_encode($row['cname']);
+		$json['cterms'] = $row['cterms'];
+		$json2[] = $json;
 
 	}
 

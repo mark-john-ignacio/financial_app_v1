@@ -183,6 +183,7 @@ $ndcutdate = date("m/d/Y", strtotime($ndcutdate . "+1 day"));
 	 			<div class="col-xs-1"><b>Payment</b></div>
 	 			<div class="col-xs-2 nopadwleft">
 	 				<select class="form-control input-sm" name="selterms" id="selterms">
+					 	<option value=''>N/A</option>
 	 					<?php
 	 						$sqlters = mysqli_query($con,"Select ccode, cdesc From groupings Where compcode='$company' and ctype='TERMS' and cstatus='ACTIVE'");
 	 						while($row = mysqli_fetch_array($sqlters, MYSQLI_ASSOC)){

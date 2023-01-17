@@ -51,7 +51,7 @@ include('../../include/denied.php');
 	}
 	
 	$csalesno = $_REQUEST['hdntransid'];
-	$sqlhead = mysqli_query($con,"select a.*,b.cname, b.chouseno, b.ccity, b.cstate, C.cdesc as termdesc from quote a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join groupings C on A.cterms = C.ccode left join users D on a.cpreparedby=D.Userid where a.compcode='$company' and a.ctranno = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*,b.cname, b.chouseno, b.ccity, b.cstate, C.cdesc as termdesc, D.Fname, D.Minit, D.Lname from quote a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join groupings C on A.cterms = C.ccode left join users D on a.cpreparedby=D.Userid where a.compcode='$company' and a.ctranno = '$csalesno'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -104,7 +104,23 @@ if (mysqli_num_rows($sqlhead)!=0) {
 }
 
 
-$sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t A left join items B on A.citemno=B.cpartno where A.compcode='$company' and A.ctranno = '$csalesno'");
+$sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic, C.nrate From quote_t A left join items B on A.compcode=B.compcode and A.citemno=B.cpartno left join taxcode C on B.compcode=C.compcode and B.ctaxcode=C.ctaxcode where A.compcode='$company' and A.ctranno = '$csalesno'");
+
+	if (mysqli_num_rows($sqldtlss)!=0) {
+		while($row = mysqli_fetch_array($sqldtlss, MYSQLI_ASSOC)){
+			@$arrdtls[] = $row;
+		}
+	}
+
+	$sqldtlss = mysqli_query($con,"select * From quote_t_info where compcode='$company' and ctranno = '$csalesno'");
+
+	@$arrdtlsinfo=array();
+	if (mysqli_num_rows($sqldtlss)!=0) {
+		while($row = mysqli_fetch_array($sqldtlss, MYSQLI_ASSOC)){
+			@$arrdtlsinfo[] = $row;
+		}
+	}
+
 
 ?>
 
