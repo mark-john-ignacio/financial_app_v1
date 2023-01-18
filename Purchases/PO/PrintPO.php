@@ -79,7 +79,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 	</style>
 </head>
 
-<body >
+<body onLoad="window.print()">
 
 <table border="0" width="100%" cellpadding="1px"  id="tblMain">
 	<tr>
@@ -87,7 +87,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 
 				<table border="0" width="100%">
 						<tr align="center">
-							<td><img src="<?php echo "../".$logosrc; ?>" width="80px" height="68px"></td>
+							<td><img src="<?php echo "../".$logosrc; ?>" height="68px"></td>
 						</tr>
 						<tr align="center">
 							<td><font style="font-size: 18px;"><?php echo $logonamz; ?></font></td>
@@ -104,87 +104,67 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 
 			<table border="0" width="100%" style="border-collapse:collapse">
 				<tr>
-					<td colspan="4" align="center" style="padding-bottom: 20px">
+					<td colspan="2" align="center" style="padding-bottom: 20px">
 							<font style="font-size: 24px;">PURCHASE ORDER </font>
 					</td>
 				</tr>
 
 				<tr>
-					<td colspan="2" style="padding-bottom: 10px">
+					<td style="padding-bottom: 10px">
 						<font style="font-size: 14px;"><b>Date:</b> <?=date("F d, Y")?></font>
 					</td>
 
-					<td colspan="2" align="right" style="padding-bottom: 10px">
+					<td align="right" style="padding-bottom: 10px">
 					<font style="font-size: 14px;"><b>No.:</b> <?=$csalesno?></font>
 					</td>
 				</tr>
 
 
 				<tr>
-					<td width="200px" style=" border-top: 1px solid; border-left: 1px solid;">
-						<div style="padding: 10px">
-							<b>SUPPLIER'S NAME: </b>
-						</div>
-					</td>
-					<td style="border-top: 1px solid">
-						<div style="padding: 10px">
-							<?=$CustName?>
-						</div>
-					</td>
-					<td width="100px"  style="border-top: 1px solid;">
-						<div style="padding: 10px">
-							TERMS
-						</div>
-					</td>
-					<td style="border-right: 1px solid; border-top: 1px solid;">
-						<div style="padding: 10px; text-align: right">
-							<?=$cterms?>
-						</div>
-					</td>
-				</tr>
-
-				<tr>
-					<td width="100px" style="border-left: 1px solid; border-bottom: 1px solid;">
-							&nbsp;
-					</td> 
-					<td style="border-bottom: 1px solid;">
-						<div style="padding-left: 10px; padding-bottom: 10px;">
-							<?=$CustAdd?>
-						</div>
-					</td>
-					<td colspan="2" align="right" style="border-bottom: 1px solid;  border-right: 1px solid;">
-						<div style="padding-right: 10px;">
-							&nbsp;<?=$Remarks?>
-						</div>
+					<td colspan="2" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">
+							<table border="0" width="100%">
+								<tr>
+									<td width="150px" style="padding: 10px;">
+											<b>SUPPLIER'S NAME: </b>
+									</td>
+									<td style="padding: 10px;">
+											<?=$CustName?>
+											<br>
+											<?=$CustAdd?>
+									</td>
+									<td width="100px" style="padding: 10px;">
+											<b>TERMS</b>
+									</td>
+									<td style="padding: 10px;" align="right">
+											<?=$cterms?>
+											<br>
+											<?=$Remarks?>
+									</td>
+								</tr>
+							</table>
 					</td>
 				</tr>
 
 				<tr>
-					<td width="200px" style="border-left: 1px solid;">
-						<div style="padding: 10px">
-							<b>DELIVERED TO: </b>
-						</div>
+					<td colspan="2" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">
+							<table border="0" width="100%">
+								<tr>
+									<td width="150px" style="padding: 10px">
+										<b>DELIVERED TO: </b>									
+									</td>
+									<td style="padding: 10px">
+										<?=$delto?>
+										<br>
+										<?=$deladd?>
+									</td>
+									
+								</tr>
+							</table>
 					</td>
-					<td colspan="3" style="border-right: 1px solid;">
-						<div style="padding: 10px">
-							<?=$delto?>  
-						</div>
-					</td>
-					
 				</tr>
 
 				<tr>
-					<td width="100px" style="border-bottom: 1px solid;  border-left: 1px solid;">&nbsp;</td>
-					<td colspan="3" style="border-bottom: 1px solid;  border-right: 1px solid;">
-						<div style="padding-left: 10px">
-							<?=$deladd?>
-						</div>
-					</td>
-					
-				</tr>
-
-				<tr>
-					<td colspan="4" style="border-left: 1px solid; border-right: 1px solid;">
+					<td colspan="2" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">
 							<table border="0" width="100%">
 								<tr>
 									<td rowspan="2" style="padding-left: 10px;">
@@ -235,7 +215,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 					<td align="center" class="tdpadx tddetz"><?php echo $rowdtls['cunit'];?></td>					
 					<td align="center" class="tdpadx tddetz"><?php echo $rowdtls['citemdesc'];?></td>
 					<td align="right" class="tdpadx tddetz tdright"><?php echo number_format($rowdtls['nprice'],2);?></td>
-					<td align="right" class="tdpadx tddetz tdright"><?php echo number_format($rowdtls['namount'],2) . " " . $CurrCode;?></td>
+					<td align="right" class="tdpadx tddetz tdright"><?php echo number_format($rowdtls['namount'],2);?></td>
 					
 				</tr>
 
@@ -247,7 +227,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 
 				<tr>
 					<td colspan="4" align="right" class="tdpadx" style="border: 1px solid;padding-right: 10px"><b>TOTAL</b></td>
-					<td align="right"  class="tdpadx" style="border: 1px solid;padding-right: 10px"><?php echo number_format($Gross,2) . " " . $CurrCode;?></td>
+					<td align="right"  class="tdpadx" style="border: 1px solid;padding-right: 10px"><?php echo number_format($Gross,2);?></td>
 					
 				</tr>
 
@@ -262,53 +242,27 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 					<td>
 						<table border=0 width="100%">
 								<tr>
-									<td width="33%">
-
-										<div style="text-align: center; width: 95%">
-											<div><?=$cpreparedBy?></div>
-										</div>
-
-										<div style="text-align: center; border-top: 1px solid; width: 95%">
-											<div class="cols-xs-3">Prepared By</div>
-										</div>
+									<td width="25%">
+										<div style="padding-bottom: 50px; text-align: center">Accepted By</div>
+										<div style="text-align: center"><?=$CustName?></div>
 
 									</td>
+									<td width="25%">
+										<div style="padding-bottom: 50px; text-align: center">Prepared By</div>
+										<div style="text-align: center"><?=$cpreparedBy?></div>
 
-									<td>&nbsp;</td>
-									<td>&nbsp;</td>
-								</tr>
+									</td>
 
 								<?php
 
 									$sqdts = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname from purchase_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cpono = '$csalesno' order by a.nlevel");
 
 									if (mysqli_num_rows($sqdts)!=0) {
-										$nvevel = 0;
-										$cntr=0;
 										while($row = mysqli_fetch_array($sqdts, MYSQLI_ASSOC)){
-											if($nvevel!=$row['nlevel']){
-												$cntr++;
-												$nvevel=$row['nlevel'];
-
-												if($cntr>1){
-													echo "</tr>";
-												}
-												echo "<tr>";
-											}
 								?>
-											<td width="33%">
-
-												<div style="text-align: center; width: 95%">
-													<div><br><br>Approved By:<br><br><br><br></div>
-												</div>
-
-												<div style="text-align: center; width: 95%">
-													<div><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div>
-												</div>
-
-												<div style="text-align: center; border-top: 1px solid; width: 95%">
-													<div class="cols-xs-3">Authorized Signature/Date</div>
-												</div>
+											<td width="25%">
+												<div style="padding-bottom: 50px; text-align: center">Approved By</div>
+												<div style="text-align: center"><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div>
 
 											</td>
 
@@ -316,6 +270,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 										}
 									}
 								?>
+								</tr>
 								
 						</table>
 					</td>

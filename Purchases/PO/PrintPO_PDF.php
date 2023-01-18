@@ -43,6 +43,12 @@ include('../../include/denied.php');
 			$Date = $row['ddate'];
 			$DateNeeded = $row['dneeded'];
 			$Gross = $row['ngross'];
+
+			$cterms = $row['cterms']; 
+			$delto = $row['cdelto'];  
+			$deladd = $row['ddeladd']; 
+			$delinfo = $row['ddelinfo']; 
+			$billto = $row['cbillto']; 
 			
 			$lCancelled = $row['lcancelled'];
 			$lPosted = $row['lapproved'];
@@ -64,10 +70,18 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 			font-family: Verdana, sans-serif;
 			font-size: 9pt;
 		}
-		table {
-			border-color: #000000;
-			border-collapse: collapse;
+		.tdpadx{
+			padding-top: 5px; 
+			padding-bottom: 5px
 		}
+		.tddetz{
+			border-left: 1px solid; 
+			border-right: 1px solid;
+		}
+		.tdright{
+			padding-right: 10px;
+		}
+		
 	</style>
 </head>
 
@@ -78,7 +92,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 
 				<table border="0" width="100%">
 						<tr align="center">
-							<td><img src="<?php echo "../".$logosrc; ?>" width="80px" height="68px"></td>
+							<td><img src="<?php echo "../".$logosrc; ?>" height="68px"></td>
 						</tr>
 						<tr align="center">
 							<td><font style="font-size: 18px;"><?php echo $logonamz; ?></font></td>
@@ -91,84 +105,106 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 		</td>
 	</tr>
 	<tr>
-		<td style="height: 5in; vertical-align: top; padding-top: 10px">
+		<td style="vertical-align: top; padding-top: 10px">
 
-			<table border="0" width="100%">
+			<table border="0" width="100%" style="border-collapse:collapse">
 				<tr>
-					<td colspan="4" align="center" style="padding-bottom: 20px">
+					<td colspan="2" align="center" style="padding-bottom: 20px">
 							<font style="font-size: 24px;">PURCHASE ORDER </font>
 					</td>
 				</tr>
+
 				<tr>
-					<td width="100px">
-							<b>Name: </b>
+					<td style="padding-bottom: 10px">
+						<font style="font-size: 14px;"><b>Date:</b> <?=date("F d, Y")?></font>
 					</td>
-					<td>
-							<?=$CustName?>
+
+					<td align="right" style="padding-bottom: 10px">
+					<font style="font-size: 14px;"><b>No.:</b> <?=$csalesno?></font>
 					</td>
-					<td width="100px">
-							<b>PO#: </b>
-					</td>
-					<td>
-						<?=$csalesno?>    
+				</tr>
+
+
+				<tr>
+					<td colspan="2" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">
+							<table border="0" width="100%">
+								<tr>
+									<td width="150px" style="padding: 10px;">
+											<b>SUPPLIER'S NAME: </b>
+									</td>
+									<td style="padding: 10px;">
+											<?=$CustName?>
+											<br>
+											<?=$CustAdd?>
+									</td>
+									<td width="100px" style="padding: 10px;">
+											<b>TERMS</b>
+									</td>
+									<td style="padding: 10px;" align="right">
+											<?=$cterms?>
+											<br>
+											<?=$Remarks?>
+									</td>
+								</tr>
+							</table>
 					</td>
 				</tr>
 
 				<tr>
-					<td width="100px">
-							<b>Address: </b>
-					</td>
-					<td>
-						<?=$CustAdd?>
-					</td>
-					<td width="100px">
-							<b>PR#: </b>
-					</td>
-					<td>
-		
-					</td>
-				</tr>
-
-				<tr>
-					<td width="100px">
-							<b>Date: </b>
-					</td>
-					<td>
-						<?=date_format(date_create($Date), "M d, Y H:i:s")?>
-					</td>
-					<td width="100px">
-							<b>Our Ref: </b>
-					</td>
-					<td>
-		
+					<td colspan="2" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">
+							<table border="0" width="100%">
+								<tr>
+									<td width="150px" style="padding: 10px">
+										<b>DELIVERED TO: </b>									
+									</td>
+									<td style="padding: 10px">
+										<?=$delto?>
+										<br>
+										<?=$deladd?>
+									</td>
+									
+								</tr>
+							</table>
 					</td>
 				</tr>
 
 				<tr>
-					<td width="100px">
-							<b>Del Date: </b>
+					<td colspan="2" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">
+							<table border="0" width="100%">
+								<tr>
+									<td rowspan="2" style="padding-left: 10px;">
+										<b> BILL TO: </b> <?=$billto?>
+									</td>
+									<td>
+										<b> DELIVERY DATE: </b> <?=date_format(date_create($DateNeeded),"F d, Y");?>
+									</td>
+									<td rowspan="2">
+										<b> REQUISITION NO. </b>
+									</td>
+								</tr>
+								<tr>
+
+									<td>
+										<b><i>Note</i>: </b> <?=$delinfo?>
+									</td>
+
+								</tr>
+							</table>
 					</td>
-					<td>
-						<?=date_format(date_create($DateNeeded), "M d, Y")?>
-					</td>
-					<td width="100px">
-							<b>Terms: </b>
-					</td>
-					<td>
-						<?=$Terms?>
-					</td>
+					
+					
 				</tr>
 				
 			</table>
-			<br>
-			<table border="0" border-collapse="collapse" align="center" width="95%">
+
+			<table border="0" align="center" width="100%" style="border-collapse: collapse;">
 	
 				<tr>
-					<th style="padding: 3px; border-bottom: 1px solid">Qty</th>
-					<th style="padding: 3px; border-bottom: 1px solid">Unit</th>
-					<th style="padding: 3px; border-bottom: 1px solid">Product Description/s</th>
-					<td style="padding: 3px; border-bottom: 1px solid" align="right"><b>Unit Price</b></td>
-					<td style="padding: 3px; border-bottom: 1px solid" align="right"><b>Amount</b></td>
+					<th style="border: 1px solid" class="tdpadx">Qty</th>
+					<th style="border: 1px solid" class="tdpadx">Unit</th>
+					<th style="border: 1px solid" class="tdpadx">Product Description/s</th>
+					<th style="border: 1px solid" class="tdpadx"><b>Unit Price</b></th>
+					<th style="border: 1px solid" class="tdpadx"><b>Amount</b></th>
 				</tr>
 
 				<?php 
@@ -180,11 +216,11 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 				?>
 
 				<tr>
-					<td style="padding: 3px"><?php echo $rowdtls['nqty'];?></td>
-					<td style="padding: 3px"><?php echo $rowdtls['cunit'];?></td>					
-					<td style="padding: 3px"><?php echo $rowdtls['citemdesc'];?></td>
-					<td style="padding: 3px" align="right"><?php echo number_format($rowdtls['nprice'],2);?></td>
-					<td style="padding: 3px" align="right"><?php echo number_format($rowdtls['namount'],2) . " " . $CurrCode;?></td>
+					<td align="center" class="tdpadx tddetz"><?php echo intval($rowdtls['nqty']);?></td>
+					<td align="center" class="tdpadx tddetz"><?php echo $rowdtls['cunit'];?></td>					
+					<td align="center" class="tdpadx tddetz"><?php echo $rowdtls['citemdesc'];?></td>
+					<td align="right" class="tdpadx tddetz tdright"><?php echo number_format($rowdtls['nprice'],2);?></td>
+					<td align="right" class="tdpadx tddetz tdright"><?php echo number_format($rowdtls['namount'],2);?></td>
 					
 				</tr>
 
@@ -195,8 +231,8 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 				?>
 
 				<tr>
-					<td colspan="4" style="padding-top: 10px" align="right"><b>Total Amount</b></td>
-					<td style="padding-top: 10px" align="right"><?php echo number_format($Gross,2) . " " . $CurrCode;?></td>
+					<td colspan="4" align="right" class="tdpadx" style="border: 1px solid;padding-right: 10px"><b>TOTAL</b></td>
+					<td align="right"  class="tdpadx" style="border: 1px solid;padding-right: 10px"><?php echo number_format($Gross,2);?></td>
 					
 				</tr>
 
@@ -204,61 +240,37 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 		</td>
 	</tr>
 	<tr>
-		<td style="height: 2in; vertical-align: bottom;">
-			
-			
-		<table border="0" width="100%">
+		<td style="vertical-align: bottom;">
+			<br><br>	<br><br>		
+			<table border="0" width="100%">
 				<tr>
 					<td>
 						<table border=0 width="100%">
 								<tr>
-									<td width="33%">
-
-										<div style="text-align: center; width: 95%">
-											<div><?=$cpreparedBy?></div>
-										</div>
-
-										<div style="text-align: center; border-top: 1px solid; width: 95%">
-											<div class="cols-xs-3">Prepared By</div>
-										</div>
+									<td width="25%" align="center">
+										<div style="margin-bottom: 50px; text-align: center">Accepted By</div>
+										<br><br>
+										<div style="text-align: center"><?=$CustName?></div>
 
 									</td>
+									<td width="25%" align="center">
+										<div style="margin-bottom: 50px; text-align: center">Prepared By</div>
+										<br><br>
+										<div style="text-align: center"><?=$cpreparedBy?></div>
 
-									<td>&nbsp;</td>
-									<td>&nbsp;</td>
-								</tr>
+									</td>
 
 								<?php
 
 									$sqdts = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname from purchase_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cpono = '$csalesno' order by a.nlevel");
 
 									if (mysqli_num_rows($sqdts)!=0) {
-										$nvevel = 0;
-										$cntr=0;
 										while($row = mysqli_fetch_array($sqdts, MYSQLI_ASSOC)){
-											if($nvevel!=$row['nlevel']){
-												$cntr++;
-												$nvevel=$row['nlevel'];
-
-												if($cntr>1){
-													echo "</tr>";
-												}
-												echo "<tr>";
-											}
 								?>
-											<td width="33%">
-
-												<div style="text-align: center; width: 95%">
-													<div><br><br>Approved By:<br><br><br><br></div>
-												</div>
-
-												<div style="text-align: center; width: 95%">
-													<div><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div>
-												</div>
-
-												<div style="text-align: center; border-top: 1px solid; width: 95%">
-													<div class="cols-xs-3">Authorized Signature/Date</div>
-												</div>
+											<td width="25%" align="center">
+												<div style="margin-bottom: 50px; text-align: center">Approved By</div>
+												<br><br>
+												<div style="text-align: center"><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div>
 
 											</td>
 
@@ -266,6 +278,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 										}
 									}
 								?>
+								</tr>
 								
 						</table>
 					</td>
