@@ -153,7 +153,7 @@ if (isset($_GET["key"]) && isset($_GET["email"]) && isset($_GET["action"])
 						<p>The link is invalid/expired. Either you did not copy the correct link
 						from the email, or you have already used the key in which case it is 
 						deactivated.</p>
-						<p><a href="http://localhost/MyxFin/forgotpassword.php">
+						<p><a href="https://<?=$_SERVER['HTTP_HOST']?>/forgotpassword.php">
 						Click here</a> to reset password.</p>
 
 					</div>
@@ -252,7 +252,7 @@ if(isset($_POST["email"]) && isset($_POST["action"]) && ($_POST["action"]=="upda
 		mysqli_query($con,"DELETE FROM `password_reset_temp` WHERE `email`='".$email."'");
 		 
 		$error = '<div class="error"><p>Congratulations! Your password has been updated successfully.</p>
-		<p><a href="http://localhost/MyxFin">
+		<p><a href="https://'.$_SERVER['HTTP_HOST'].'">
 		Click here</a> to Login.</p></div><br />';
    } 
 ?>

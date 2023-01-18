@@ -181,7 +181,7 @@ $error = "";
 	  $output='<p>Dear user,</p>';
 	  $output.='<p>Please click on the following link to reset your password.</p>';
 	  $output.='<p>-------------------------------------------------------------</p>';
-	  $output.='<p><a href="http://localhost/MyxFin/include/reset-password.php?key='.$key.'&email='.$email.'&action=reset" target="_blank">Reset Password</a></p>'; 
+	  $output.='<p><a href="https://'.$_SERVER['HTTP_HOST'].'/include/reset-password.php?key='.$key.'&email='.$email.'&action=reset" target="_blank">Reset Password</a></p>'; 
 		$output.='<p>-------------------------------------------------------------</p>';
 		$output.='<p>The link will expire after 1 day for security reason.</p>';
 		$output.='<p>If you did not request this forgotten password email, no action 
