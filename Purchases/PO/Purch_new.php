@@ -229,24 +229,6 @@ function listcurrencies(){ //API for currency list
 							-->
 							</td>
 							</tr>
-
-							<tr>
-								<td colspan="2">
-									<div class="col-xs-12 nopadwdown">
-										<div class="col-xs-3 nopadding">
-											<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." width="25" tabindex="4"  autocomplete="off">
-										</div>
-										<div class="col-xs-6 nopadwleft">
-											<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL+F) Search Product Name..." size="80" tabindex="5" autocomplete="off">
-										</div>
-									</div>
-
-										<input type="hidden" name="hdnunit" id="hdnunit">
-								</td>
-								<td></td>
-								<td></td>
-
-							</tr>
 						</table>
 
 					</div>
@@ -300,6 +282,17 @@ function listcurrencies(){ //API for currency list
 				</div>
 			</div>
 
+			<div class="col-xs-12 nopadwdown">
+				<div class="col-xs-3 nopadding">
+					<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." width="25" tabindex="4"  autocomplete="off">
+				</div>
+				<div class="col-xs-6 nopadwleft">
+					<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL+F) Search Product Name..." size="80" tabindex="5" autocomplete="off">
+
+					<input type="hidden" name="hdnunit" id="hdnunit">
+				</div>
+			</div>
+
         <div class="alt2" dir="ltr" style="
 					margin: 0px;
 					padding: 3px;
@@ -311,7 +304,7 @@ function listcurrencies(){ //API for currency list
 	
             <table id="MyTable" class="MyTable" width="100%">
 							<thead>
-								<tr>
+								<tr id="0">
 									<th style="border-bottom:1px solid #999">Code</th>
 									<th style="border-bottom:1px solid #999">Description</th>
 									<th style="border-bottom:1px solid #999">UOM</th>
@@ -457,6 +450,7 @@ $(document).ready(function() {
 });
 	
 $(function(){	
+	/*
 	$('#BlankItmModal').on('shown.bs.modal', function () {
 		$('#txtblankitm').focus();
 	}) 
@@ -483,6 +477,7 @@ $(function(){
 
 		}
 	});
+	*/
 	
 	$('#txtcust').typeahead({
 	
@@ -693,7 +688,6 @@ function addItemName(tranno){
 			 var cntr = rowCount-1;
 			 
 			 for (var counter = 1; counter <= cntr; counter++) {
-				// alert(counter);
 				if($("#txtprodid").val()==$("#txtitemcode"+counter).val()){
 					isItem = "YES";
 					itemindex = counter;
@@ -758,10 +752,13 @@ function myFunctionadd(){
 			});
 		}
 		
-	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
-	var lastRow = tbl.length;
+	//var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
+	//var lastRow = tbl.length;
 
-	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+"</td>";
+	tbl = $('#MyTable tr:last').attr('id');
+	var lastRow = parseInt(tbl) + 1;
+
+	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+lastRow+"' name=\"hdnrefident\" id=\"hdnrefident\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode"+lastRow+"\">"+itmcode+"</td>";
 	var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\"><input type='hidden' value='"+itmdesc.toUpperCase()+"' name=\"txtitemdesc\" id=\"txtitemdesc\">"+itmdesc.toUpperCase()+"</td>";
 	var tditmunit = "<td width=\"80\" style=\"padding: 1px\" nowrap> <select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\">"+uomoptions+"</select> </td>";
 	var tditmqty = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='1' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+itmunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='1' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
@@ -777,7 +774,7 @@ function myFunctionadd(){
 	var tditmdel = "<td width=\"80\" style=\"padding: 1px\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + lastRow + "' value='delete' /> </td>";
 
 
-	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmamount+ tdneeded + tditmdel + '</tr>');
+	$('#MyTable > tbody:last-child').append('<tr id="'+lastRow+'">'+tditmcode + tditmdesc + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmamount+ tdneeded + tditmdel + '</tr>');
 
 
 									$("#del"+lastRow).on('click', function() {
@@ -860,6 +857,7 @@ function myFunctionadd(){
 			var gross = 0;
 			var amt = 0;
 			
+			/*
 			if(rowCount>1){
 				for (var i = 1; i <= rowCount-1; i++) {
 					amt = $("#txtntranamount"+i).val().replace(/,/g,'');
@@ -869,6 +867,17 @@ function myFunctionadd(){
 				
 				
 			}
+			*/
+
+			$("#MyTable > tbody > tr").each(function() {
+
+				myid = this.id;
+
+				amt = $("#txtntranamount"+myid).val().replace(/,/g,'');					
+				gross = gross + parseFloat(amt);
+
+			});
+
 			gross2 = gross * parseFloat($("#basecurrval").val());
 
 			$("#txtnGross").val(gross2);
@@ -881,6 +890,7 @@ function myFunctionadd(){
 			$("#txtnBaseGross").autoNumeric('init',{mDec:2});	
 			
 		}
+
 
 function addqty(){
 
@@ -895,8 +905,8 @@ function addqty(){
 	//alert(disID);
 		if(disID==itmcode){
 			
-			var itmqty = $(this).find("input[name='txtnqty']").val();
-			var itmprice = $(this).find("input[name='txtnprice']").val();
+			var itmqty = $(this).find("input[name='txtnqty']").val().replace(/,/g,'');
+			var itmprice = $(this).find("input[name='txtnprice']").val().replace(/,/g,'');
 			
 			//alert(itmqty +" : "+ itmprice);
 			
@@ -904,7 +914,21 @@ function addqty(){
 			$(this).find("input[name='txtnqty']").val(TotQty);
 			
 			TotAmt = TotQty * parseFloat(itmprice);
-			$(this).find("input[name='txtnamount']").val(TotAmt);
+			//$(this).find("input[name='txtnamount']").val(TotAmt);
+
+
+			namt2 = TotAmt * parseFloat($("#basecurrval").val());
+			namt2 = namt2.toFixed(4);
+		
+			$(this).find("input[name='txtnamount']").val(namt2)
+			$(this).find("input[name='txtntranamount']").val(TotAmt);
+
+			$(this).find("input[name='txtntranamount']").autoNumeric('destroy');
+			$(this).find("input[name='txtnamount']").autoNumeric('destroy');
+
+			$(this).find("input[name='txtntranamount']").autoNumeric('init',{mDec:2});
+			$(this).find("input[name='txtnamount']").autoNumeric('init',{mDec:2});
+
 		}
 
 	});
@@ -912,6 +936,7 @@ function addqty(){
 	ComputeGross();
 
 }
+
 
 function chkprice(itmcode,itmunit){
 	var result;
@@ -1045,6 +1070,8 @@ function chkform(){
 			//Save Details
 			$("#MyTable > tbody > tr").each(function(index) {	
 			
+				
+				var nident = $(this).find('input[type="hidden"][name="hdnrefident"]').val();
 				var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
 				var citmdesc = $(this).find('input[type="hidden"][name="txtitemdesc"]').val();
 				var cuom = $(this).find('select[name="seluom"]').val();
@@ -1068,7 +1095,7 @@ function chkform(){
 				
 				$.ajax ({
 					url: "Purch_newsavedet.php",
-					data: { trancode: trancode, dneed: dneed, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, citmdesc:citmdesc, ntranamt:ntranamt },
+					data: { nident:nident, trancode: trancode, dneed: dneed, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, citmdesc:citmdesc, ntranamt:ntranamt },
 					async: false,
 					success: function( data ) {
 						if(data.trim()=="False"){

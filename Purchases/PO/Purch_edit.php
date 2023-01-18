@@ -16,7 +16,7 @@ else{
 		$cpono = $_REQUEST['txtcpono'];
 	}
 
-$sqlhead = mysqli_query($con,"select a.cpono, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dneeded,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.nbasegross, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.lcancelled, a.lapproved, a.lprintposted, a.ccustacctcode, b.cname, a.ccontact, a.ccontactemail from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
+$sqlhead = mysqli_query($con,"select a.cpono, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dneeded,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.nbasegross, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.lcancelled, a.lapproved, a.lprintposted, a.ccustacctcode, b.cname, a.ccontact, a.ccontactemail, a.cterms, a.cdelto, a.ddeladd, a.ddelinfo, a.cbillto from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
 
 /*
 function listcurrencies(){ //API for currency list
@@ -76,6 +76,12 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 		$ccontact = $row['ccontact']; 
 		$ccontactemail = $row['ccontactemail']; 
+
+		$cterms = $row['cterms']; 
+		$delto = $row['cdelto']; 
+		$deladd = $row['ddeladd']; 
+		$delinfo = $row['ddelinfo']; 
+		$billto = $row['cbillto']; 
 		
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
@@ -83,167 +89,244 @@ if (mysqli_num_rows($sqlhead)!=0) {
 ?>
 <form action="Purch_editsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
 	<fieldset>
-    	<legend>Purchase Order Details</legend>	
-        <table width="100%" border="0">
-  <tr>
-    <tH>PO No.:</tH>
-    <td colspan="2" style="padding:2px"><div class="col-xs-3 nopadding"><input type="text" class="form-control input-sm" id="txtcpono" name="txtcpono" width="20px" tabindex="1" value="<?php echo $cpono;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');"></div>
-      
-      
-      <input type="hidden" name="hdntranno" id="hdntranno" value="<?php echo $cpono;?>">
-      <input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
-      <input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
-      &nbsp;&nbsp;
-      <div id="statmsgz" style="display:inline"></div>
-    </td>
-    <td style="padding:2px" align="center">
-    <div id="salesstat">
-    <?php
-	if($lCancelled==1){
-		echo "<font color='#FF0000'><b>CANCELLED</b></font>";
-	}
-	
-	if($lPosted==1){
-		echo "<font color='#FF0000'><b>POSTED</b></font>";
-	}
-	?>
-    </div>
-    </td>
-    </tr>
-  <tr>
-    <tH width="100">Supplier:</tH>
-    <td style="padding:2px">
-			<div class="col-xs-12 nopadding">
-				<div class="col-xs-3 nopadding">
-					<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" value="<?php echo $CustCode;?>">
-				</div>
+    <legend>Purchase Order Details</legend>	
 
-				<div class="col-xs-8 nopadwleft">
-					<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" value="<?php echo $CustName;?>">
-				</div> 
-			</div>
-    </td>
-    <tH width="150">PO Date:</tH>
-    <td width="250" style="padding:2px;">
-     <div class="col-xs-5 nopadding">
-		<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $Date; ?>" readonly/>
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#home">PO Details</a></li>
+				<li><a href="#menu1">Delivery/Billing</a></li>
+			</ul>
 
-     </div>
-    </td>
-  </tr>
-  <tr>
-    <tH width="100">Remarks:</tH>
-    <td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value="<?php echo $Remarks; ?>"></div></td>
-    <tH width="100" style="padding:2px">Date Needed:</tH>
-    <td style="padding:2px">
-    <div class="col-xs-5 nopadding">
-		<input type='text' class="datepick form-control input-sm" id="date_needed" name="date_needed" value="<?php echo $DateNeeded; ?>" />
+			<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left;overflow: auto">
+ 				<div class="tab-content">  
 
-     </div>
-    </td>
-  </tr>
+      		<div id="home" class="tab-pane fade in active" style="padding-left:5px;">
 
-	<tr>
-    <tH width="100">Contact:</tH>
-    <td style="padding:2px">
-			<div class="col-xs-3 nopadding"> 
-				<button class="btn btn-sm btn-block btn-warning" name="btnSearchCont" id="btnSearchCont" type="button">Search</button>
-			</div>
-			<div class="col-xs-8 nopadwleft">
-				<input type="text" id="txtcontactname" name="txtcontactname" class="required form-control input-sm" placeholder="Contact Person Name..." tabindex="1"  required="true" value="<?php echo $ccontact; ?>">
-			</div>
-		</td>
-    <tH width="100" style="padding:2px">Email:</tH>
-    <td style="padding:2px">
-    <div class="col-xs-11 nopadding">
-			<input type='text' class="form-control input-sm" id="contact_email" name="contact_email" value="<?php echo $ccontactemail; ?>" />
-
-     </div>
-    </td>
-  </tr>
-
-  <tr>
-    <tH width="100">Currency:</tH>
-    <td style="padding:2px">
-			<div class="col-xs-12 nopadding">
-							<div class="col-xs-6 nopadding">
-								<select class="form-control input-sm" name="selbasecurr" id="selbasecurr"> 						
-									<?php
-											$nvaluecurrbase = "";	
-											$nvaluecurrbasedesc = "";	
-											$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
-											
-												if (mysqli_num_rows($result)!=0) {
-													$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
-													
-													$nvaluecurrbase = $all_course_data['cvalue']; 
-														
-												}
-												else{
-													$nvaluecurrbase = "";
-												}
-						
-												/*
-													$objcurrs = listcurrencies();
-													$objrows = json_decode($objcurrs, true);
-														
-											foreach($objrows as $rows){
-												if ($nvaluecurrbase==$rows['currencyCode']) {
-													$nvaluecurrbasedesc = $rows['currencyName'];
-												}
-
-												if($rows['countryCode']!=="Crypto" && $rows['currencyName']!==null){
-
-													*/
-
-													$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
-													if (mysqli_num_rows($sqlhead)!=0) {
-														while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-									?>
-												<option value="<?=$rows['id']?>" <?php if ($ccurrcode==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
-									<?php
-
-												}
-											}
-									?>
-								</select>
-									<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?php echo $nvaluecurrbase; ?>"> 	
-									<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?php echo $ccurrdesc; ?>"> 
-							</div>
-							<div class="col-xs-2 nopadwleft">
-								<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="<?php echo $ccurrrate; ?>">	 
-							</div>
-
-							<div class="col-xs-4" id="statgetrate" style="padding: 4px !important"> 
+						<table width="100%" border="0">
+							<tr>
+								<tH>PO No.:</tH>
+								<td colspan="2" style="padding:2px"><div class="col-xs-3 nopadding"><input type="text" class="form-control input-sm" id="txtcpono" name="txtcpono" width="20px" tabindex="1" value="<?php echo $cpono;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');"></div>
+									
+									
+									<input type="hidden" name="hdntranno" id="hdntranno" value="<?php echo $cpono;?>">
+									<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
+									<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
+									&nbsp;&nbsp;
+									<div id="statmsgz" style="display:inline"></div>
+								</td>
+								<td style="padding:2px" align="center">
+									<div id="salesstat">
+										<?php
+										if($lCancelled==1){
+											echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+										}
 										
-							</div>
+										if($lPosted==1){
+											echo "<font color='#FF0000'><b>POSTED</b></font>";
+										}
+										?>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<tH width="100">Supplier:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-12 nopadding">
+										<div class="col-xs-3 nopadding">
+											<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" value="<?php echo $CustCode;?>">
+										</div>
+
+										<div class="col-xs-8 nopadwleft">
+											<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" value="<?php echo $CustName;?>">
+										</div> 
+									</div>
+								</td>
+								<tH width="150">PO Date:</tH>
+								<td width="250" style="padding:2px;">
+								<div class="col-xs-5 nopadding">
+								<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $Date; ?>" readonly/>
+
+								</div>
+								</td>
+							</tr>
+							<tr>
+								<tH width="100">Remarks:</tH>
+								<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value="<?php echo $Remarks; ?>"></div></td>
+								<tH width="100" style="padding:2px">Date Needed:</tH>
+								<td style="padding:2px">
+								<div class="col-xs-5 nopadding">
+								<input type='text' class="datepick form-control input-sm" id="date_needed" name="date_needed" value="<?php echo $DateNeeded; ?>" />
+
+								</div>
+								</td>
+							</tr>
+
+							<tr>
+								<tH width="100">Contact:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-3 nopadding"> 
+										<button class="btn btn-sm btn-block btn-warning" name="btnSearchCont" id="btnSearchCont" type="button">Search</button>
+									</div>
+									<div class="col-xs-8 nopadwleft">
+										<input type="text" id="txtcontactname" name="txtcontactname" class="required form-control input-sm" placeholder="Contact Person Name..." tabindex="1"  required="true" value="<?php echo $ccontact; ?>">
+									</div>
+								</td>
+								<tH width="100" style="padding:2px">Email:</tH>
+								<td style="padding:2px">
+								<div class="col-xs-11 nopadding">
+									<input type='text' class="form-control input-sm" id="contact_email" name="contact_email" value="<?php echo $ccontactemail; ?>" />
+
+								</div>
+								</td>
+							</tr>
+
+							<tr>
+								<tH width="100">Currency:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-12 nopadding">
+													<div class="col-xs-6 nopadding">
+														<select class="form-control input-sm" name="selbasecurr" id="selbasecurr"> 						
+															<?php
+																	$nvaluecurrbase = "";	
+																	$nvaluecurrbasedesc = "";	
+																	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+																	
+																		if (mysqli_num_rows($result)!=0) {
+																			$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
+																			
+																			$nvaluecurrbase = $all_course_data['cvalue']; 
+																				
+																		}
+																		else{
+																			$nvaluecurrbase = "";
+																		}
+												
+																		/*
+																			$objcurrs = listcurrencies();
+																			$objrows = json_decode($objcurrs, true);
+																				
+																	foreach($objrows as $rows){
+																		if ($nvaluecurrbase==$rows['currencyCode']) {
+																			$nvaluecurrbasedesc = $rows['currencyName'];
+																		}
+
+																		if($rows['countryCode']!=="Crypto" && $rows['currencyName']!==null){
+
+																			*/
+
+																			$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+																			if (mysqli_num_rows($sqlhead)!=0) {
+																				while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+															?>
+																		<option value="<?=$rows['id']?>" <?php if ($ccurrcode==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
+															<?php
+
+																		}
+																	}
+															?>
+														</select>
+															<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?php echo $nvaluecurrbase; ?>"> 	
+															<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?php echo $ccurrdesc; ?>"> 
+													</div>
+													<div class="col-xs-2 nopadwleft">
+														<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="<?php echo $ccurrrate; ?>">	 
+													</div>
+
+													<div class="col-xs-4" id="statgetrate" style="padding: 4px !important"> 
+																
+													</div>
+									</div>
+								</td>
+								<tH width="150" style="padding:2px">Terms:</tH>
+									<td style="padding:2px">
+										<div class="col-xs-8 nopadding">							
+											<select id="selterms" name="selterms" class="form-control input-sm selectpicker">
+												<?php
+													$sql = "Select * From groupings where compcode='$company' and ctype='TERMS'";
+													$result=mysqli_query($con,$sql);
+														if (!mysqli_query($con, $sql)) {
+															printf("Errormessage: %s\n", mysqli_error($con));
+														}			
+																						
+														while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+														{
+												?>
+														<option value="<?php echo $row['ccode'];?>" <?=($cterms==$row['ccode']) ? "selected" : "";?>><?php echo $row['cdesc']?></option>
+												<?php
+														}
+												?>
+											</select>
+										</div>
+									</td>
+							</tr>
+
+							<tr>
+								<td colspan="4">&nbsp;</td>
+							</tr>
+						</table>
+					</div>
+
+					<div id="menu1" class="tab-pane fade" style="padding-left:5px">
+						<table width="100%" border="0">
+							<tr>
+								<td width="150"><b>Deliver To</b></td>
+								<td width="310" colspan="2" style="padding:2px">
+									<div class="col-xs-8 nopadding">
+										<div class="col-xs-12 nopadding">
+											<input type="text" class="form-control input-sm" id="txtdelcust" name="txtdelcust" width="20px" tabindex="1" placeholder="Enter Deliver To..."  size="60" autocomplete="off" value="<?=$delto?>">
+										</div> 
+									</div>						
+								</td>
+							</tr>
+							<tr>
+								<td><b>Delivery Address</b></td>
+								<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><textarea class="form-control input-sm" id="txtdeladd" name="txtdeladd" placeholder="Enter Delivery Address..." autocomplete="off"> <?=$deladd?> </textarea></div></td>
+							</tr>					
+
+							<tr>
+								<td width="150"><b>Delivery Notes</b></td>
+								<td width="310" colspan="2" style="padding:2px">
+									<div class="col-xs-8 nopadding">
+										<div class="col-xs-12 nopadding">
+											<input type="text" class="form-control input-sm" id="textdelnotes" name="textdelnotes" width="20px" tabindex="1" placeholder="Enter Delivery Notes..."  size="60" autocomplete="off" value="<?=$delinfo?>">
+										</div> 
+									</div>						
+								</td>
+							</tr>
+
+							<tr>
+								<td width="150"><b>Bill To</b></td>
+								<td width="310" colspan="2" style="padding:2px">
+									<div class="col-xs-8 nopadding">
+										<div class="col-xs-12 nopadding">
+											<input type="text" class="form-control input-sm" id="txtbillto" name="txtbillto" width="20px" tabindex="1" placeholder="Enter Bill To..."  size="60" autocomplete="off" value="<?=$billto?>">
+										</div> 
+									</div>						
+								</td>
+							</tr>
+
+							<tr>
+								<td width="150" colspan="2"><br><br></td>
+
+							</tr>
+
+						</table>
+					</div>
+				</div>
 			</div>
-		</td>
-    <tH width="100" style="padding:2px">&nbsp;</tH>
-    <td style="padding:2px">&nbsp;</td>
-  </tr>
 
-  <tr>
-    <td colspan="4">&nbsp;</td>
-    </tr>
-<tr>
-    <td colspan="4">
-      <div class="col-xs-12 nopadwdown">
-        <div class="col-xs-3 nopadding">
-          <input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." width="25" tabindex="4">
-        </div>
+			<div class="col-xs-12 nopadwdown">
+				<div class="col-xs-3 nopadding">
+					<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." width="25" tabindex="4"  autocomplete="off">
+				</div>
+				<div class="col-xs-6 nopadwleft">
+					<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL+F) Search Product Name..." size="80" tabindex="5" autocomplete="off">
 
-        <div class="col-xs-8 nopadwleft">
-          <input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="Search Product Name..." size="80" tabindex="5">
-        </div>
-      </div>
+					<input type="hidden" name="hdnunit" id="hdnunit">
+				</div>
+			</div>
 
-        <input type="hidden" name="hdnunit" id="hdnunit">
-    </td>
 
-</tr>
-</table>
-         <div class="alt2" dir="ltr" style="
+      <div class="alt2" dir="ltr" style="
 					margin: 0px;
 					padding: 3px;
 					border: 1px solid #919b9c;
@@ -253,84 +336,85 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					overflow: auto">
 	
             <table id="MyTable" class="MyTable" cellpadding"3px" width="100%" border="0">
+							<thead>
+								<tr id="0">
+									<th style="border-bottom:1px solid #999">Code</th>
+									<th style="border-bottom:1px solid #999">Description</th>
+									<th style="border-bottom:1px solid #999">UOM</th>
+									<th style="border-bottom:1px solid #999">Qty</th>
+									<th style="border-bottom:1px solid #999">Price</th>
+									<th style="border-bottom:1px solid #999">Amount</th>
+									<th style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
+									<th style="border-bottom:1px solid #999">Date Needed</th>
+									<th style="border-bottom:1px solid #999">&nbsp;</th>
+								</tr>
+							</thead>
+							<tbody class="tbody">
+              </tbody>                    
+						</table>
+			</div>
 
+				<br>
+				<table width="100%" border="0" cellpadding="3">
 					<tr>
-						<th style="border-bottom:1px solid #999">Code</th>
-						<th style="border-bottom:1px solid #999">Description</th>
-                        <th style="border-bottom:1px solid #999">UOM</th>
-						<th style="border-bottom:1px solid #999">Qty</th>
-						<th style="border-bottom:1px solid #999">Price</th>
-						<th style="border-bottom:1px solid #999">Amount</th>
-						<th style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
-                        <th style="border-bottom:1px solid #999">Date Needed</th>
-                        <th style="border-bottom:1px solid #999">&nbsp;</th>
+						<td rowspan="2" width="70%">
+							<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
+					
+					
+							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Purch.php';" id="btnMain" name="btnMain">
+								Back to Main<br>(ESC)
+							</button>
+						
+							<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='Purch_new.php';" id="btnNew" name="btnNew">
+								New<br>(F1)
+							</button>
+
+							<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
+								Undo Edit<br>(CTRL+Z)
+							</button>
+
+							<?php
+								$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'Purch_print'");
+
+								if(mysqli_num_rows($sql) == 1){
+								
+							?>
+
+								<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','Print');" id="btnPrint" name="btnPrint">
+									Print<br>(CTRL+P)
+								</button>
+
+								<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','PDF');" id="btnPDF" name="btnPDF">
+									View PDF<br>&nbsp;
+								</button>
+
+								<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','Email');" id="btnEmail" name="btnEmail">
+									Send Email<br>&nbsp;
+								</button>
+
+							<?php		
+									}
+							?>
+
+							<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
+								Edit<br>(CTRL+E)    
+							</button>
+							
+							<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
+								Save<br>(CTRL+S)    
+							</button>
+						
+						</td>
+						<td width="110px" align="right"><b>Gross Amount </b>&nbsp;&nbsp;</td>
+						<td width="150px"> <input type="text" id="txtnBaseGross" name="txtnBaseGross" readonl style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10"></td>
 					</tr>
-					<tbody class="tbody">
-                    </tbody>
-                    
-			</table>
+					<tr>
+						<td width="110px" align="right"><b>Gross Amount in <?php echo $nvaluecurrbase; ?></b>&nbsp;&nbsp;</td>
+						<td width="150px"> <input type="text" id="txtnGross" name="txtnGross" readonly style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10"></td>
+					</tr>
+				</table>
 
-</div>
-<br>
-<table width="100%" border="0" cellpadding="3">
-  <tr>
-    <td rowspan="2" width="70%">
-    <input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
- 
- 
- <button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Purch.php';" id="btnMain" name="btnMain">
-Back to Main<br>(ESC)</button>
-   
-    <button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='Purch_new.php';" id="btnNew" name="btnNew">
-New<br>(F1)</button>
-
-    <button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
-Undo Edit<br>(CTRL+Z)
-    </button>
-
-<?php
-	$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'Purch_print'");
-
-	if(mysqli_num_rows($sql) == 1){
-	
-?>
-
-   <button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','Print');" id="btnPrint" name="btnPrint">
-Print<br>(CTRL+P)
-    </button>
-
-		<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','PDF');" id="btnPDF" name="btnPDF">
-View PDF<br>&nbsp;
-    </button>
-
-    			<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','Email');" id="btnEmail" name="btnEmail">
-Send Email<br>&nbsp;
-    </button>
-
-<?php		
-	}
-
-?>
-
-    <button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
-Edit<br>(CTRL+E)    </button>
-    
-    <button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
-Save<br>(CTRL+S)    </button>
-    
-    </td>
-	<td width="110px" align="right"><b>Gross Amount </b>&nbsp;&nbsp;</td>
-    <td width="150px"> <input type="text" id="txtnBaseGross" name="txtnBaseGross" readonl style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10">
-	</td>
-  </tr>
-  <tr>
- 	 <td width="110px" align="right"><b>Gross Amount in <?php echo $nvaluecurrbase; ?></b>&nbsp;&nbsp;</td>
-        <td width="150px"> <input type="text" id="txtnGross" name="txtnGross" readonly style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10"></td>
-
-  </tr>
-</table>
-
-    </fieldset>
+  </fieldset>
 </form>
 <?php
 }
@@ -484,6 +568,10 @@ $(document).ready(function() {
         format: 'MM/DD/YYYY'
     });
 
+		$(".nav-tabs a").click(function(){
+    	$(this).tab('show');
+		});
+
 			loaddetails();
 		
 			$('#txtprodnme').attr("disabled", true);
@@ -559,7 +647,7 @@ $(function(){
 				$('#txtprodid').val(item.id); 
 				$("#hdnunit").val(item.cunit);
 				
-				addItemName();	
+				addItemName("");	
 							
 		}
 	
@@ -610,7 +698,7 @@ $(function(){
 				$(this).data('DateTimePicker').destroy();
 			});
 	
-				myFunctionadd("","","","","","","");
+				myFunctionadd("","","","","","","","");
 				ComputeGross();	
 									
 	    }
@@ -709,7 +797,7 @@ function addItemName(tranno){
 		 
 	 if(isItem=="NO"){	
 
-			myFunctionadd("","","","","","","");		
+			myFunctionadd("","","","","","","","");		
 			ComputeGross();	
 	 }
 	 else{
@@ -726,7 +814,7 @@ function addItemName(tranno){
 
 }
 
-function myFunctionadd(nqty, nprice, nbaseamt, namount, nfactor, cmainunit, dneed){
+function myFunctionadd(nqty, nprice, nbaseamt, namount, nfactor, cmainunit, dneed, nident){
 	var itmcode = document.getElementById("txtprodid").value;
 	var itmdesc = document.getElementById("txtprodnme").value;
 	var itmunit = document.getElementById("hdnunit").value;
@@ -788,10 +876,17 @@ function myFunctionadd(nqty, nprice, nbaseamt, namount, nfactor, cmainunit, dnee
 		 });
 		}
 		
-	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
-	var lastRow = tbl.length;
+	//var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
+	//var lastRow = tbl.length;
 
-	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+"</td>";
+	if(nident==""){
+		tbl = $('#MyTable tr:last').attr('id');
+		var lastRow = parseInt(tbl) + 1;
+	}else{
+		var lastRow = nident;
+	}
+
+	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+lastRow+"' name=\"hdnrefident\" id=\"hdnrefident\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+"</td>";
 	var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\"><input type='hidden' value='"+itmdesc.toUpperCase()+"' name=\"txtitemdesc\" id=\"txtitemdesc\">"+itmdesc.toUpperCase()+"</td>";
 	var tditmunit = "<td width=\"80\" style=\"padding: 1px\" nowrap> <select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\">"+uomoptions+"</select> </td>";
 	var tditmqty = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='"+itmnqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+mainuom+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+itmfactor+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
@@ -800,13 +895,13 @@ function myFunctionadd(nqty, nprice, nbaseamt, namount, nfactor, cmainunit, dnee
 			
 	var tditmbaseamount = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='"+itmbaseamnt+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtntranamount\" id='txtntranamount"+lastRow+"' readonly> </td>";
 
-	var tditmamount = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='"+itmamnt+"' class='form-control input-xs' style='text-align:right' name='txtnamount' id='txtnamount"+lastRow+"' readonly> </td>";
+	var tditmamount = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='"+itmamnt+"' class='numeric form-control input-xs' style='text-align:right' name='txtnamount' id='txtnamount"+lastRow+"' readonly> </td>";
 
 	var tdneeded = "<td width=\"100\" style=\"padding: 1px\" nowrap><input type='text' class='datepick form-control input-xs' id='dneed"+lastRow+"' name='dneed' value='"+dneeded+"' /></td>"
 	
 	var tditmdel = "<td width=\"80\" style=\"padding: 1px\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + lastRow + "' value='delete' /> </td>";
 
-	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmamount+ tdneeded + tditmdel + '</tr>');
+	$('#MyTable > tbody:last-child').append('<tr id="'+lastRow+'">'+tditmcode + tditmdesc + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmamount+ tdneeded + tditmdel + '</tr>');
 
 
 									$("#del"+lastRow).on('click', function() {
@@ -894,15 +989,25 @@ function myFunctionadd(nqty, nprice, nbaseamt, namount, nfactor, cmainunit, dnee
 			var gross = 0;
 			var amt = 0;
 			
-			if(rowCount>1){
-				for (var i = 1; i <= rowCount-1; i++) {
-					amt = $("#txtntranamount"+i).val().replace(/,/g,'');
-					gross = gross + parseFloat(amt);
-					
-				}
+		//	if(rowCount>1){
+		//		for (var i = 1; i <= rowCount-1; i++) {
+		//			amt = $("#txtntranamount"+i).val().replace(/,/g,'');
+		//			gross = gross + parseFloat(amt);
+		//			
+		//		}
 				
-				
-			}
+		//		
+		//	}
+
+			$("#MyTable > tbody > tr").each(function() {
+
+				myid = this.id;
+
+				amt = $("#txtntranamount"+myid).val().replace(/,/g,'');					
+				gross = gross + parseFloat(amt);
+
+			});
+
 			gross2 = gross * parseFloat($("#basecurrval").val());
 
 			$("#txtnGross").val(gross2);
@@ -922,15 +1027,15 @@ function addqty(){
 
 	var TotQty = 0;
 	var TotAmt = 0;
-	
+
 	$("#MyTable > tbody > tr").each(function() {	
 	var disID = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-	
+
 	//alert(disID);
 		if(disID==itmcode){
 			
-			var itmqty = $(this).find("input[name='txtnqty']").val();
-			var itmprice = $(this).find("input[name='txtnprice']").val();
+			var itmqty = $(this).find("input[name='txtnqty']").val().replace(/,/g,'');
+			var itmprice = $(this).find("input[name='txtnprice']").val().replace(/,/g,'');
 			
 			//alert(itmqty +" : "+ itmprice);
 			
@@ -938,11 +1043,25 @@ function addqty(){
 			$(this).find("input[name='txtnqty']").val(TotQty);
 			
 			TotAmt = TotQty * parseFloat(itmprice);
-			$(this).find("input[name='txtnamount']").val(TotAmt);
+			//$(this).find("input[name='txtnamount']").val(TotAmt);
+
+
+			namt2 = TotAmt * parseFloat($("#basecurrval").val());
+			namt2 = namt2.toFixed(4);
+		
+			$(this).find("input[name='txtnamount']").val(namt2)
+			$(this).find("input[name='txtntranamount']").val(TotAmt);
+
+			$(this).find("input[name='txtntranamount']").autoNumeric('destroy');
+			$(this).find("input[name='txtnamount']").autoNumeric('destroy');
+
+			$(this).find("input[name='txtntranamount']").autoNumeric('init',{mDec:2});
+			$(this).find("input[name='txtnamount']").autoNumeric('init',{mDec:2});
+
 		}
 
 	});
-	
+
 	ComputeGross();
 
 }
@@ -1080,41 +1199,33 @@ function chkform(){
 		if(trancode!=""){
 			//Save Details
 			$("#MyTable > tbody > tr").each(function(index) {	
-				if(index>0){
-					//alert("a");
+				//if(index>0){
+
+					var nident = $(this).find('input[type="hidden"][name="hdnrefident"]').val();
 					var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-					//alert("b");
 					var citmdesc = $(this).find('input[type="hidden"][name="txtitemdesc"]').val();
-					//alert("c");
 					var cuom = $(this).find('select[name="seluom"]').val();
-					//alert("d");
 					var nqty = $(this).find('input[name="txtnqty"]').val();
-					//alert("e");
 					var nprice = $(this).find('input[name="txtnprice"]').val();
-					//alert("f");
 					var ntranamt = $(this).find('input[name="txtntranamount"]').val();
 					var namt = $(this).find('input[name="txtnamount"]').val();
-					//alert("g");
 					var dneed = $(this).find('input[name="dneed"]').val();
-					//alert("h");
 					var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
-					//alert("i");
 					var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
-					//alert("j");
 					
 							
-				//alert("Purch_updatesavedet.php?trancode="+ trancode + "&dneed="+ dneed + "&indx="+ index + "&citmno="+ citmno+ "&cuom="+ cuom+ "&nqty="+ nqty + "&nprice="+ nprice+ "&namt=" + namt + "&mainunit="+ mainunit + "&nfactor=" + nfactor + "&citmdesc=" + citmdesc);
+				//	alert("Purch_updatesavedet.php?nident="+nident+"&trancode="+ trancode + "&dneed="+ dneed + "&indx="+ index + "&citmno="+ citmno+ "&cuom="+ cuom+ "&nqty="+ nqty + "&nprice="+ nprice+ "&namt=" + namt + "&mainunit="+ mainunit + "&nfactor=" + nfactor + "&citmdesc=" + citmdesc + "&ntranamt="+ntranamt);
 
-				if(nqty!==undefined){
-					nqty = nqty.replace(/,/g,'');
-					nprice = nprice.replace(/,/g,'');
-					namt = namt.replace(/,/g,'');
-					ntranamt = ntranamt.replace(/,/g,'');
-				}
-				
+					if(nqty!==undefined){
+						nqty = nqty.replace(/,/g,'');
+						nprice = nprice.replace(/,/g,'');
+						namt = namt.replace(/,/g,'');
+						ntranamt = ntranamt.replace(/,/g,'');
+					}
+					
 					$.ajax ({
 						url: "Purch_newsavedet.php",
-						data: { trancode: trancode, dneed: dneed, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, citmdesc:citmdesc, ntranamt:ntranamt },
+						data: { nident:nident, trancode: trancode, dneed: dneed, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, citmdesc:citmdesc, ntranamt:ntranamt },
 						async: false,
 						success: function( data ) {
 							if(data.trim()=="False"){
@@ -1122,7 +1233,7 @@ function chkform(){
 							}
 						}
 					});
-				}
+			//	}
 				
 			});
 			
@@ -1260,7 +1371,11 @@ function loaddetails(){
 				$('#txtprodid').val(item.id); 
 				$("#hdnunit").val(item.cunit); 
 				//alert(item.nqty);
-				myFunctionadd(item.nqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.cmainunit,item.dneed);
+				myFunctionadd(item.nqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.cmainunit,item.dneed,item.nident);
+
+				$('#txtprodnme').val(""); 
+				$('#txtprodid').val(""); 
+				$("#hdnunit").val(""); 
 			});
 
 		}
