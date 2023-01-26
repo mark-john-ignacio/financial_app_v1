@@ -25,8 +25,7 @@ require_once "../../Connection/connection_string.php";
 		}
 	}
 
-
-
+	$json = array();
 	if (mysqli_num_rows($result)!=0){
 
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
@@ -64,11 +63,13 @@ require_once "../../Connection/connection_string.php";
 			 $json['ngross'] = $row['ngross'];
 			 $json2[] = $json;
 
-			}else{
-				$json['cpono'] = "NONE";
-				$json2[] = $json;
 			}
 	
+		}
+
+		if(count($json)==0){
+			$json['cpono'] = "NONE";
+			$json2[] = $json;
 		}
 	}
 	else{
