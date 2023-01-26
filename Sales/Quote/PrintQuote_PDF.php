@@ -5,8 +5,8 @@ session_start();
 
 include('../../vendor/autoload.php');
 
-//$mpdf = new \Mpdf\Mpdf(['format' => 'Legal']);
-//ob_start();
+$mpdf = new \Mpdf\Mpdf(['format' => 'Legal']);
+ob_start();
 }
 
 include('../../Connection/connection_string.php');
@@ -368,11 +368,11 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 
 <?php
 
-//$html = ob_get_contents();
-////ob_end_clean();
+$html = ob_get_contents();
+ob_end_clean();
 
 // send the captured HTML from the output buffer to the mPDF class for processing
-//$mpdf->WriteHTML($html);
-//$mpdf->Output();
+$mpdf->WriteHTML($html);
+$mpdf->Output();
 
 ?>
