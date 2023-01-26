@@ -8,7 +8,7 @@ include('../../vendor/autoload.php');
 require("../../vendor/phpmailer/phpmailer/src/PHPMailer.php");
 require("../../vendor/phpmailer/phpmailer/src/SMTP.php");
 
-$mpdf = new \Mpdf\Mpdf();
+$mpdf = new \Mpdf\Mpdf(['format' => 'Legal']);
 ob_start();
 }
 

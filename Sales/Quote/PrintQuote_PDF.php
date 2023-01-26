@@ -5,7 +5,7 @@ session_start();
 
 include('../../vendor/autoload.php');
 
-$mpdf = new \Mpdf\Mpdf();
+$mpdf = new \Mpdf\Mpdf(['format' => 'Legal']);
 ob_start();
 }
 
