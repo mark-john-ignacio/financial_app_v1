@@ -1563,7 +1563,8 @@ function chkform(){
 		var cdelinfo = $("#txtdelinfo").val();
 		var cservinfo = $("#txtservinfo").val();
 
-		var crem = $("#txtremarks").val();
+		//var crem = $("#txtremarks").val();
+		var crem = $('#txtremarks').summernote('code');
 		var ddate = $("#date_delivery").val(); //price validity
 
 		var currcode = $("#selbasecurr").val();
@@ -1572,8 +1573,9 @@ function chkform(){
 		var basegross = $("#txtnBaseGross").val();
 
 		var selsityp = $("#selsityp").val();
+		//alert($('#txtremarks').html());
 		
-		//alert("Quote_updatehdr.php?id="+trancode+"&ccode=" + ccode + "&crem="+ crem + "&ddate="+ ddate + "&ngross="+ngross + "&ccontname="+ ccontname + "&ccontdesg="+ ccontdesg + "&ccontdept="+ ccontdept + "&ccontemai="+ ccontemai + "&ccontsalt="+ ccontsalt + "&cvattyp="+ cvattyp + "&cterms="+ cterms + "&cdelinfo="+ cdelinfo + "&cservinfo="+ cservinfo);
+		//alert("Quote_updatehdr.php?id="+trancode+"&ccode="+ccode+"&ngross="+ngross+"&ccontname="+ccontname+"&ccontdesg="+ccontdesg+"&ccontdept="+ccontdept+"&ccontemai="+ccontemai+"&ccontsalt="+ccontsalt+"&cvattyp="+cvattyp+"&cterms="+cterms+"&cdelinfo="+cdelinfo+"&cservinfo="+cservinfo+"&ddate="+ddate+"&crem="+crem+"&selsityp="+selsityp+"&currcode="+currcode+"&currdesc="+currdesc+"&currrate="+currrate+"&basegross="+basegross);
 		
 		$.ajax ({
 			url: "Quote_updatehdr.php",

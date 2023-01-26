@@ -213,7 +213,7 @@ $ndcutdate = date("m/d/Y", strtotime($ndcutdate . "+1 day"));
 	  			<div class="col-xs-9 nopadwleft">
 
 
-						<textarea rows="4" name="txtremarks" id="txtremarks" style="width: 100%; height: 300px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">Should you have questions regarding our offer, kindly let us know or you can call at Tel. no. 09175513200 / 09499974988 / 09338632777 or email at sales@serttech.com.  Thank you for your interest in our products and services.</textarea>
+						<textarea rows="4" name="txtremarks" id="txtremarks" style="width: 100%; height: 300px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"><b>WARRANTY </b>  : SERT Technology Inc. Guarantees the equipment and cable workmanship under this proposal to be free from defect for a period of Twelve (12) months from in service date. Provided that no party except  SERT Technology Inc. Trained technicians/enginners shall be entrusted with the service maintenance and repair of the equipment during the warranty period shall be at SERT Technology Inc. Defects arising from misuse, tampering, forced majored, such as fire earthquake, flood, lightning strike, and abnormal conditions are excluded from the above warranty.<br><br><br>If you have concern(s) please feel free to call at If you have concerns, please feel free to call at 02.8897.4830, 0917.503.1616, 0917.555.0849, 0917.551.3200.</textarea>
 
 
 	 			</div>
@@ -803,11 +803,8 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 			$("#selterms").attr("disabled", false);
 			$("#prcevallabel").html("<b>Price Validity</b>");
 
-			xval = "Should you have questions regarding our offer, kindly let us know or you can call at Tel. no. 09175513200 / 09499974988 / 09338632777 or email at sales@serttech.com.  Thank you for your interest in our products and services.";
+			xval = "<b>WARRANTY </b>  : SERT Technology Inc. Guarantees the equipment and cable workmanship under this proposal to be free from defect for a period of Twelve (12) months from in service date. Provided that no party except  SERT Technology Inc. Trained technicians/enginners shall be entrusted with the service maintenance and repair of the equipment during the warranty period shall be at SERT Technology Inc. Defects arising from misuse, tampering, forced majored, such as fire earthquake, flood, lightning strike, and abnormal conditions are excluded from the above warranty.<br><br><br>If you have concern(s) please feel free to call at If you have concerns, please feel free to call at 02.8897.4830, 0917.503.1616, 0917.555.0849, 0917.551.3200.<br><br><br> Very truly yours,";
 		}
-
-		//$("#txtremarks").val(xval);
-
 		$("#txtremarks").summernote("code", xval);
 		
 	});
@@ -1293,6 +1290,8 @@ function chkform(){
 		var selsityp = $("#selsityp").val();
 		var selqotyp = $("#selqotyp").val(); 
 		var selrecurrtyp = $("#selrecurrtyp").val(); 
+
+		//alert($('#txtremarks').html());
 		
 		//alert("Quote_newsavehdr.php?ccode=" + ccode + "&crem="+ crem + "&ddate="+ ddate + "&ngross="+ngross + "&ccontname="+ ccontname + "&ccontdesg="+ ccontdesg + "&ccontdept="+ ccontdept + "&ccontemai="+ ccontemai + "&ccontsalt="+ ccontsalt + "&cvattyp="+ cvattyp + "&cterms="+ cterms + "&cdelinfo="+ cdelinfo + "&cservinfo="+ cservinfo + "&selsityp="+selsityp+"&currcode="+currcode+"&currdesc="+currdesc+"&currrate="+currrate+"&basegross="+basegross+"&selqotyp="+selqotyp+"&selrecurrtyp="+selrecurrtyp); 
 		

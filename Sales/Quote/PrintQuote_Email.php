@@ -27,18 +27,19 @@ include('../../include/denied.php');
 
 	
 	$sqlcomp = mysqli_query($con,"select * from company where compcode='$company'");
+	$logosrc = "";
 
 	if(mysqli_num_rows($sqlcomp) != 0){
 
 		while($rowcomp = mysqli_fetch_array($sqlcomp, MYSQLI_ASSOC))
 		{
 			$logosrc = $rowcomp['clogoname'];
-			$companame = $rowcomp['compname'];
+			$compname = $rowcomp['compname'];
 		}
 
 	}
 
-	$sqlprint = mysqli_query($con,"select * from parameters where ccode in ('QUOTEHDR','QUOTEFTR')");
+	$sqlprint = mysqli_query($con,"select * from parameters where compcode='$company' and ccode in ('QUOTEHDR','QUOTEFTR')");
 
 	if(mysqli_num_rows($sqlprint) != 0){
 
@@ -53,9 +54,18 @@ include('../../include/denied.php');
 		}
 
 	}
+
+	$sqlusers = mysqli_query($con,"select * from users");
+	if(mysqli_num_rows($sqlauto) != 0){
+		while($rowusr = mysqli_fetch_array($sqlusers, MYSQLI_ASSOC))
+		{
+			$userinfo[$rowusr['Userid']] = $rowusr['Fname']." ".$rowusr['Minit'].(($rowusr['Minit']!=="" && $rowusr['Minit']!==null) ? " " : "").$rowusr['Lname'];
+			$userdept[$rowusr['Userid']] = $rowusr['cdepartment'];
+		}
+	}
 	
 	$csalesno = $_REQUEST['hdntransid'];
-	$sqlhead = mysqli_query($con,"select a.*,b.cname, b.chouseno, b.ccity, b.cstate, C.cdesc as termdesc, D.Fname, D.Minit, D.Lname, D.cemailadd from quote a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join groupings C on A.cterms = C.ccode left join users D on a.cpreparedby=D.Userid where a.compcode='$company' and a.ctranno = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*,b.cname, b.chouseno, b.ccity, b.cstate, C.cdesc as termdesc from quote a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join groupings C on A.cterms = C.ccode where a.compcode='$company' and a.ctranno = '$csalesno'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -99,12 +109,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$cservinfo = $row['cservinfo'];
 
 		$ctermsdesc = $row['termdesc']." upon delivery";
+
+		$cprepby =  $row['cpreparedby'];
 		
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
-
-		$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
-		$useremailadd = $row['cemailadd'];
 	}
 }
 
@@ -121,16 +130,23 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 			font-family: Verdana, sans-serif;
 			font-size: 10pt;
 		}
-		table {
-			border-color: #000000;
-			border-collapse: collapse;
+		.tblborder {
+			border-spacing: 0px;
+			border-collapse: collapse;  /* <--- add this so all the internal <td>s share adjacent borders  */
+			border: 1px solid black;  /* <--- so the outside of the <th> don't get missed  */
+		}
+
+		.tblhide {
+
+				border-spacing: 0px;  /* <---- won't really need this if you have border-collapse = collapse */
+				border-style: none;   /* <--- add this for no borders in the <th>s  */
 		}
 	</style>
 </head>
 
 <body>
 
-<table border="0" width="100%" cellpadding="1px">
+<table border="0" width="100%" cellpadding="1px" style="border-collapse: collapse">
 	<tr>
 		<td style="height: 1in; border-bottom: 2px dashed #000"> 
 
@@ -144,9 +160,9 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 		</td>
 	</tr>
 	<tr>
-		<td style="height: 7in; vertical-align: top;">
+		<td style="min-height: 6in; max-height: 7in; vertical-align: top;">
 
-			<table border="0">
+			<table border="0" style="border-collapse: collapse" width="100%">
 				<tr>
 					<td style="height: 50px; vertical-align: top;">
 						<b><?php echo date("F d, Y"); ?></b>
@@ -160,11 +176,18 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 
 				</tr>
 				<tr>
-					<td style="padding-bottom: 20px">
+					<td style="padding-bottom: 20px" colspan="2">
 						<b>
 							<?php 
 
-								echo $ccontname."<br>".$ccontdesg."<br>".$ccontdept."<br>".$CustName;
+								echo $ccontname;
+								if($ccontdesg<>""){
+									echo "<br>".$ccontdesg;
+								}
+								if($ccontdept<>""){
+									echo "<br>".$ccontdept;
+								}
+								echo "<br>".$CustName;
 								if($CustAddress<>""){
 									echo "<br>".$CustAddress;
 								}
@@ -176,7 +199,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 
 				</tr>
 				<tr>
-					<td style="height: 30px; vertical-align: top;">
+					<td style="height: 30px; vertical-align: top;" colspan="2">
 						<b>
 							<?php echo $ccontsalt; ?>
 						</b>
@@ -184,36 +207,44 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 
 				</tr>
 				<tr>
-					<td style="height: 25px; vertical-align: top; padding-left: 30px">
+					<td style="height: 25px; vertical-align: top; padding-left: 30px"  colspan="2">
 							This is our proposal for your requirement which includes the following:
 					</td>
 
 				</tr>
 			</table>
 			
-			<table border="1" border-collapse="collapse" align="center" width="95%">
+			<table border="0" align="center" width="95%" cellspacing="0">
 	
 				<tr>
-					<th class="text-center" style="padding: 3px">Qty</th>
-					<th class="text-center" style="padding: 3px">Product Description/s</th>
-					<th class="text-center" style="padding: 3px">Unit Price</th>
+					<th class="tblborder" style="padding: 3px;">ITEM</th>
+					<th class="tblborder" style="padding: 3px">PRODUCT</th>
+					<th class="tblborder" style="padding: 3px;">QTY</th>
+					<th class="tblborder" style="padding: 3px;">UOM</th>
+					<th class="tblborder" style="padding: 3px">TOTAL AMOUNT</th>
 				</tr>
 
 				<?php 
+				$cnt = 0;
+				$ggross=0;
 					while($rowdtls = mysqli_fetch_array($sqldtlss, MYSQLI_ASSOC)){ 
+						$cnt++;
+						$ggross = $ggross + floatval($rowdtls['namount']);
 				?>
 
 				<tr>
-					<td class="text-center" style="padding: 3px" align="center"><?php echo $rowdtls['nqty']. " " . $rowdtls['cunit'];?></td>
-					<td class="text-center" style="padding: 3px" align="center"><?php echo $rowdtls['citemdesc'];?></td>
-					<td class="text-center" style="padding: 3px" align="center">
+					<td class="tblborder" style="padding: 3px" align="center"><?=$cnt?></td>
+					<td class="tblborder" style="padding: 3px" align="center"><?php echo $rowdtls['citemdesc'];?></td>
+					<td class="tblborder" style="padding: 3px" align="center"><?php echo $rowdtls['nqty'];?></td>
+					<td class="tblborder" style="padding: 3px" align="center"><?php echo $rowdtls['cunit'];?></td>
+					<td class="tblborder" style="padding: 3px" align="center">
 						<?php
 
 								if($rowdtls['cuserpic']!=""){
 									echo "<img src='".$rowdtls['cuserpic']."' height='82' width='80'><br>";
 								}
 							?>
-							<?php echo $cCurrCode." ".$rowdtls['nprice'];?>
+							<?php echo $cCurrCode." ".number_format($rowdtls['namount'],2);?>
 
 					</td>
 				</tr>
@@ -222,13 +253,21 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 					} 
 				?>
 
+				<tr>
+					<td class="tblhide" align="right" colspan="4" style="padding: 3px; border: none !important;"><b>TOTAL</b></td>
+					<td class="tblhide" align="center" style="padding: 3px"><b><?php echo $cCurrCode." ".number_format($ggross,2);?></b></td>
+				</tr>
+
 			</table>
 
 			<br>
-			<table border="0">
+			<table border="0" style="border-collapse: collapse"> 
+				<tr>
+					<td><b>Terms & Conditions</b><td>
+				</tr>
 				<tr>
 					<td style="padding: 2px; padding-top: 20px !important" width="150px">
-						<b>PRICE</b>
+						<b>Price</b>
 					</td>
 					<td style="padding: 2px; padding-top: 20px !important">
 						:&nbsp;
@@ -243,7 +282,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 				</tr>
 				<tr>
 					<td style="padding: 2px;" width="150px">
-						<b>PAYMENT</b>
+						<b>Payment</b>
 					</td>
 					<td style="padding: 2px;">
 						:&nbsp;&nbsp;<?php echo $ctermsdesc; ?>
@@ -251,7 +290,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 				</tr>
 				<tr>
 					<td style="padding: 2px;" width="150px">
-						<b>DELIVERY</b>
+						<b>Delivery</b>
 					</td>
 					<td style="padding: 2px;">
 						:&nbsp;&nbsp;<?php echo $cdelinfo; ?>
@@ -259,23 +298,22 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 				</tr>
 				<tr>
 					<td style="padding: 2px;" width="150px">
-						<b>SERVICE</b>
+						<b>Service</b>
 					</td>
 					<td style="padding: 2px;">
-						:&nbsp;&nbsp;<?php echo $cservinfo; ?>
+							:&nbsp;&nbsp;<?php echo $cservinfo; ?>
 					</td>
 				</tr>				
 				<tr>
 					<td style="padding: 2px;" width="150px">
-						<b>PRICE VALIDTY</b>
+						<b>Price Validity</b>
 					</td>
 					<td style="padding: 2px;">
 						:&nbsp;&nbsp;<?php echo date("F d, Y", strtotime($Date)); ?>
 					</td>
 				</tr>
 				<tr>
-					<td style="padding: 2px; padding-top: 20px !important; vertical-align: bottom;" colspan="2">
-						<br>
+					<td style="padding: 2px;" colspan="2">
 						<?php echo $Remarks; ?>
 					</td>
 				</tr>	
@@ -289,8 +327,14 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 			
 			<table border="0" width="100%">
 				<tr>
-					<td width="40%">
-						<?php echo $printftrsrc; ?>	
+					<td width="40%"><br><br>
+						Very Truly Yours,<br><br><br><br><br><br>
+						<b><?=$userinfo[$cprepby]?></b> 
+						<br>	
+						<b><?=$userdept[$cprepby]?></b>
+						<br>
+						<?=ucwords(strtolower($compname))?>
+						
 					</td>
 					<td>
 						<table border=0 width="80%" align="center">
@@ -313,8 +357,11 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 						</table>
 					</td>
 				</tr>
-			</table>
 
+				
+			</table>
+			<br><br><hr>
+			<?php echo $printftrsrc; ?>	
 		</td>
 	</tr>
 </table>
@@ -334,11 +381,11 @@ $mpdf->Output('../../PDFiles/Quotes/'.$csalesno.'.pdf', \Mpdf\Output\Destination
 //Redirect to sending email file
 $output='<p>Dear '.$ccontname.',</p>';
 $output.='<p>Please find here attached the quotation you requested.</p>'; 
-$output.='<p>Thanks You for choosing <b>'.$companame.'</b>,</p>';
+$output.='<p>Thanks You for choosing <b>'.$compname.'</b>,</p>';
 $output.='<p>Myx Financials,</p>';
 
 $body = $output; 
-$subject = $companame." - Quotation";
+$subject = $compname." - Quotation";
 
 //$email_to = $email;
 $email_to = "mhaitzendriga@gmail.com";
@@ -354,8 +401,8 @@ $mail->SMTPSecure = 'tls';
 $mail->Port = 587;
 $mail->IsHTML(true);
 $mail->From = "noreply@serttech.com";
-$mail->FromName = $companame;
-$mail->Sender = $useremailadd; // indicates ReturnPath header
+$mail->FromName = $compname;
+$mail->Sender = "noreply@serttech.com"; // indicates ReturnPath header
 $mail->Subject = $subject;
 $mail->Body = $body;
 $mail->AddAddress($email_to);
