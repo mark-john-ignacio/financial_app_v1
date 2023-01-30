@@ -52,6 +52,8 @@ else {
 	$nGross = str_replace(",","",$_REQUEST['txtnGross']); 
 	$cCustSI = $_REQUEST['txtSuppSI'];
 
+	$cRefRR = $_REQUEST['txtrefrr'];
+
 	$CurrCode = $_REQUEST['selbasecurr'];
 	$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
 	$CurrRate= $_REQUEST['basecurrval']; 
@@ -72,8 +74,8 @@ else {
 	$preparedby = $_SESSION['employeeid'];
 	
 	//INSERT HEADER	
-	if (!mysqli_query($con,"INSERT INTO suppinv(`compcode`, `ctranno`, `ccode`, `cremarks`, `ddate`, `dreceived`, `ngross`, `nbasegross`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `cpreparedby`, `lcancelled`, `lapproved`, `lprintposted`, `ccustacctcode`, `crefsi`) 
-	values('$company', '$cSINo', '$cCustID', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby', 0, 0, 0, '$AccntCode','$cCustSI')")){
+	if (!mysqli_query($con,"INSERT INTO suppinv(`compcode`, `ctranno`, `ccode`, `cremarks`, `ddate`, `dreceived`, `ngross`, `nbasegross`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `cpreparedby`, `lcancelled`, `lapproved`, `lprintposted`, `ccustacctcode`, `crefsi`, `crefrr`) 
+	values('$company', '$cSINo', '$cCustID', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby', 0, 0, 0, '$AccntCode','$cCustSI','$cRefRR')")){
 		echo "False";
 	}
 	else{

@@ -111,6 +111,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$nnetvat = $row['nnet'];
 		$nvat = $row['nvat'];
 
+		$refmods = $row['crefmodule'];
+		$refmodstran = $row['crefmoduletran']; 
+
 		$nbasegross = $row['nbasegross'];
 		$ccurrcode = $row['ccurrencycode']; 
 		$ccurrdesc = $row['ccurrencydesc']; 
@@ -303,23 +306,27 @@ if (mysqli_num_rows($sqlhead)!=0) {
     </td>
 
   </tr>
+	
+	<tr>
+	<tH width="100">Reference:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-2 nopadding">
+										<input type="text" class="form-control input-sm" id="txtrefmod" name="txtrefmod" readonly value="<?=$refmods?>">
+									</div> 
+									<div class="col-xs-9 nopadwleft">
+										<input type="text" class="form-control input-sm" id="txtrefmodnos" name="txtrefmodnos" readonly value="<?=$refmodstran?>">
+									</div>
+								</td>
+						           
+		<th>&nbsp;</th>
+								<td style="padding:2px;" align="right"><div class="chklimit col-xs-11 nopadwright" id="ncustbalance2"></div></td>
+    </td>
+
+  </tr>
 
 	<tr>
-								<td style="padding:2px"></td>
-								<td style="padding:2px">
-								<!--
-									<div class="col-xs-5 nopadding">
-										<div class="input-group">
-											<span class="input-group-btn">
-												<button type="button" class="btn btn-warning btn-sm" id="btnsrchbill" onClick="openinv('QO');"><i class="fa fa-search" aria-hidden="true"></i> </button>
-											</span>										
-											<input type="text" class="form-control input-sm" id="txtSearchBill" name="txtSearchBill" placeholder="Search/Enter Billing Reference...">
-										</div>
-									</div>
-										-->
-								</td>
-								<th>&nbsp;</th>
-								<td style="padding:2px;" align="right"><div class="chklimit col-xs-11 nopadwright" id="ncustbalance2"></div></td>
+								<td style="padding:2px" colspan="4">&nbsp;</td>
+								
 						</tr>
 
 	<tr>
@@ -1322,7 +1329,7 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 
 									$("#selitmvatyp"+lastRow).on("change", function() {
 												ComputeGross();
-											});
+									});
 									/*
                   $("input.numeric").numeric(
                     {negative: false}
@@ -2403,10 +2410,12 @@ function recomputeCurr(){
 
  if(rowCount>1){
 	 for (var i = 1; i <= rowCount-1; i++) {
-		 amt = $("#txtntranamount"+i).val();			
+		 amt = $("#txtntranamount"+i).val().replace(/,/g,'');			
 		 recurr = parseFloat(newcurate) * parseFloat(amt);
 
-		 $("#txtnamount"+i).val(recurr.toFixed(4));
+		 $("#txtnamount"+i).val(recurr);
+		 $("#txtnamount"+i).autoNumeric('destroy');
+		 $("#txtnamount"+i).autoNumeric('init',{mDec:2});
 	 }
  }
 

@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "SuppInvoice_new";
+$_SESSION['pageid'] = "SuppInv_new.php";
 
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
@@ -330,8 +330,15 @@ $(document).ready(function() {
 
 	$("#selbasecurr").on("change", function (){
 			
-		convertCurrency($(this).val());
+		//convertCurrency($(this).val());
 				
+		var dval = $(this).find(':selected').attr('data-val');
+
+		$("#basecurrval").val(dval);
+		$("#statgetrate").html("");
+		recomputeCurr();
+
+
 	});
 				
 	$("#basecurrval").on("keyup", function () {
@@ -403,6 +410,11 @@ $(function(){
 						$("#txtcustid").val(item.ccode);
 
 						$('#date_received').val(item.dcutdate);
+
+						$("#basecurrval").val(item.currate);
+						$("#hidcurrvaldesc").val(item.currdesc); 
+						$("#selbasecurr").val(item.currcode).change();   
+						   
 					}
 						
 					});
@@ -427,21 +439,30 @@ $(function(){
 					async: false,
 					success: function(data)
 					{	
-					   console.log(data);
-					   $.each(data,function(index,item){
 
-						$('#txtprodnme').val(item.desc); 
-						$('#txtprodid').val(item.id); 
-						$("#hdnunit").val(item.cunit); 
-						//$("#hdnqty").val(item.nqty);
-					//	$("#hdnqtyunit").val(item.cqtyunit);
-						//alert(item.cqtyunit + ":" + item.cunit);
-						//addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident);
+						if(data.length==0){
+							$("#AlertMsg").html("");
+			
+							$("#AlertMsg").html("&nbsp;&nbsp;No details to add!");
+							$("#alertbtnOK").show();
+							$("#AlertModal").modal('show');
+						}else{
+							console.log(data);
+							$.each(data,function(index,item){
 
-						//nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident
-						myFunctionadd(item.totqty,item.nprice,item.namount,item.namount,item.nfactor,item.cqtyunit,item.xref,item.xrefident)
+								$('#txtprodnme').val(item.desc); 
+								$('#txtprodid').val(item.id); 
+								$("#hdnunit").val(item.cunit); 
+								//$("#hdnqty").val(item.nqty);
+							//	$("#hdnqtyunit").val(item.cqtyunit);
+								//alert(item.cqtyunit + ":" + item.cunit);
+								//addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident);
 
-					 });
+								//nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident
+								myFunctionadd(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.cmainunit,item.xref,item.xrefident);
+
+							});
+						}
 
 					},
 					error: function (jqXHR, textStatus, errorThrown)
@@ -646,39 +667,7 @@ function tblnav(xcode,txtinput){
 			$("#txtnGross").autoNumeric('init',{mDec:2});
 			
 		}
-function chkprice(itmcode,itmunit){
-	var result;
-	var ccode = document.getElementById("txtcustid").value;
-	
-	//alert("th_checkitmprice.php?itm="+itmcode+"&cust="+ccode+"&cunit="+itmunit)	;
-	$.ajax ({
-		url: "../th_checkitmprice.php",
-		data: { itm: itmcode, cust: ccode, cunit: itmunit},
-		async: false,
-		success: function( data ) {
-			 result = data;
-		}
-	});
-			
-	return result;
-	
-}
 
-function setfactor(itmunit, itmcode){
-	var result;
-			
-	$.ajax ({
-		url: "../th_checkitmfactor.php",
-		data: { itm: itmcode, cunit: itmunit },
-		async: false,
-		success: function( data ) {
-			 result = data;
-		}
-	});
-			
-	return result;
-	
-}
 
 function chkform(){
 	var ISOK = "YES";
@@ -895,10 +884,13 @@ function recomputeCurr(){
 
 	if(rowCount>1){
 		for (var i = 1; i <= rowCount-1; i++) {
-			amt = $("#txtntranamount"+i).val();			
+			amt = $("#txtntranamount"+i).val().replace(/,/g,'');			
 			recurr = parseFloat(newcurate) * parseFloat(amt);
 
-			$("#txtnamount"+i).val(recurr.toFixed(4));
+			$("#txtnamount"+i).val(recurr);
+
+			$("#txtnamount"+i).autoNumeric('destroy');
+			$("#txtnamount"+i).autoNumeric('init',{mDec:2}); 
 		}
 	}
 

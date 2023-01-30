@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "SuppInvoice";
+$_SESSION['pageid'] = "SuppInv_edit.php";
 
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
@@ -12,7 +12,7 @@ $employeeid = $_SESSION['employeeid'];
 $company = $_SESSION['companyid'];
 
 $poststat = "True";
-$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SuppInvoice_edit'");
+$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SuppInv_edit.php'");
 if(mysqli_num_rows($sql) == 0){
 	$poststat = "False";
 }
@@ -25,52 +25,7 @@ else{
 		$cpono = $_REQUEST['txtcpono'];
 	}
 
-$sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dreceived,'%m/%d/%Y') as dneeded, a.ngross, a.nbasegross, a.cpreparedby, a.lcancelled, a.lapproved, a.lprintposted, a.ccustacctcode, b.cname, a.crefsi, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate from suppinv a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.ctranno = '$cpono'");
-
-
-						 $result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='ALLOW_REF_RR'"); 
-					
-						 if (mysqli_num_rows($result)!=0) {
-						 $all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
-						 
-							 $nCHKREFvalue = $all_course_data['cvalue']; 
-							
-						 }
-
-						// 0 = Allow No Reference
-						// 1 = W/ Reference Check Qty .. Qty must be less than or equal to reference
-						// 2 = W/ Reference Open Qty .. allow qty even if more tha reference
-
-
-$AccRRQty = "NO";
-$AccRRAmt = "NO";
-
-    //edit access when posted
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Receive_edit.php'");
-
-	if(mysqli_num_rows($sql) != 0){
-	
-		$AccRRQty = "YES";
-	}
-	
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Receive_amt_edit.php'");
-
-	if(mysqli_num_rows($sql) != 0){
-	
-		$AccRRAmt = "YES";
-	}
-	
-	//check reference
-	$sqlrefx = "Select * From apv_d a left join apv b on a.compcode=b.compcode and a.ctranno=b.ctranno where A.compcode='$company' and A.crefno = '$cpono'";				
-	$resultrefx=mysqli_query($con,$sqlrefx);
-	$varwithref = "";
-	if(mysqli_num_rows($resultrefx) > 0){
-		$varwithref = "true";
-	}else{
-		$varwithref = "false";
-	}
-	
-
+$sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dreceived,'%m/%d/%Y') as dneeded, a.ngross, a.nbasegross, a.cpreparedby, a.lcancelled, a.lapproved, a.lprintposted, a.ccustacctcode, b.cname, a.crefsi, a.crefrr, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate from suppinv a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.ctranno = '$cpono'");
 
 	//function listcurrencies(){ //API for currency list
 	//	$apikey = $_SESSION['currapikey'];
@@ -128,9 +83,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$nbasegross = $row['nbasegross'];
 		$CustSI = $row['crefsi'];
 
+		$RefRR = $row['crefrr'];
+
 		$ccurrcode = $row['ccurrencycode'];
-		$nvaluecurrbase = $row['nexchangerate']; 
-		$nvaluecurrbasedesc = $row['ccurrencydesc'];
+		$ccurrrate = $row['nexchangerate'];   
+		$ccurrdesc = $row['ccurrencydesc'];
 		
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
@@ -151,7 +108,6 @@ if (mysqli_num_rows($sqlhead)!=0) {
   ?>
     </div>
         </legend>	
-        <input type="hidden" value="<?= $nCHKREFvalue;?>" name="hdnCHECKREFval" id="hdnCHECKREFval">
         <table width="100%" border="0">
   <tr>
     <tH>RR No.:</tH>
@@ -246,11 +202,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									?>
 								<!--</select>-->
 									<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?= $nvaluecurrbase; ?>"> 	
-									<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?= $nvaluecurrbasedesc; ?>">  
+									<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?=$ccurrdesc?>">  
 							</div>
-							<div class="col-xs-2 nopadwleft">
+							<div class="col-xs-2 nopadwleft"> 
 								<!--  -->
-								<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
+								<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="<?=$ccurrrate?>">	 
 							</div>
 
 							<div class="col-xs-5" id="statgetrate" style="padding: 4px !important"> 
@@ -261,7 +217,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	<tH width="100">Ref RR:</tH>
     <td style="padding:2px">
 			<div class="col-xs-11 nopadding">
-				<input type="text" class="form-control input-sm" id="txtrefrr" name="txtrefrr" width="20px" tabindex="2">
+				<input type="text" class="form-control input-sm" id="txtrefrr" name="txtrefrr" width="20px" tabindex="2" value="<?=$RefRR?>">
 			</div>
 		</td>
   </tr>
@@ -279,29 +235,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
     </tr>
 <tr>
     <td colspan="2">
-    <?php
-    	if($nCHKREFvalue==0) {
-	?>
-      <div class="col-xs-12 nopadwdown">
-        <div class="col-xs-3 nopadding">
-          <input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." width="25" tabindex="4"  autocomplete="off">
-        </div>
-        <div class="col-xs-8 nopadwleft">
-          <input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL+F) Search Product Name..." size="80" tabindex="5" autocomplete="off">
-        </div>
-      </div>
-     <?php
-		}
-		else{
-	 ?> 
-      <input type="hidden" id="txtprodid" name="txtprodid">
-      <input type="hidden" id="txtprodnme" name="txtprodnme">
-     <?php
-		}
-
-	 ?> 
-
-        <input type="hidden" name="hdnunit" id="hdnunit">
+			<input type="hidden" id="txtprodid" name="txtprodid">
+   		<input type="hidden" id="txtprodnme" name="txtprodnme">
+      <input type="hidden" name="hdnunit" id="hdnunit">
     </td>
     <td></td>
     <td>&nbsp;</td>
@@ -535,6 +471,24 @@ $(document).ready(function() {
 
 			disabled();
 
+
+		$("#selbasecurr").on("change", function (){
+			
+			//convertCurrency($(this).val());
+					
+			var dval = $(this).find(':selected').attr('data-val');
+	
+			$("#basecurrval").val(dval);
+			$("#statgetrate").html("");
+			recomputeCurr();
+	
+	
+		});
+					
+		$("#basecurrval").on("keyup", function () {
+			recomputeCurr();
+		});
+
 });
 
 $(function(){	
@@ -744,7 +698,6 @@ function myFunctionadd(nqty,nqtyorig,nprice,curramt,namount,nfactor,cmainunit,xr
 			var r = nme.replace( /^\D+/g, ''); // numeric only
 			var nnet = 0;
 			var nqty = 0;
-			var chkValref = $("#hdnCHECKREFval").val();
 			
 			nqty =  parseFloat($("#txtnqty"+r).val().replace(/,/g,''));
 			nprc = parseFloat($("#txtnprice"+r).val().replace(/,/g,''));
@@ -1159,6 +1112,30 @@ function loaddetails(){
 		$("#txtprodnme").val("");
 		$("#hdnunit").val("");
 
+}
+
+
+function recomputeCurr(){
+
+	var newcurate = $("#basecurrval").val();
+	var rowCount = $('#MyTable tr').length;
+			
+	var gross = 0;
+	var amt = 0;
+
+	if(rowCount>1){
+		for (var i = 1; i <= rowCount-1; i++) {
+			amt = $("#txtntranamount"+i).val().replace(/,/g,'');			
+			recurr = parseFloat(newcurate) * parseFloat(amt);
+
+			$("#txtnamount"+i).val(recurr);
+
+			$("#txtnamount"+i).autoNumeric('destroy');
+			$("#txtnamount"+i).autoNumeric('init',{mDec:2}); 
+		}
+	}
+
+	ComputeGross();
 }
 
 </script>

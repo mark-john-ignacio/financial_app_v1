@@ -7,44 +7,76 @@ require_once "../../Connection/connection_string.php";
 		$company = $_SESSION['companyid'];
 		$date1 = date("Y-m-d");
 		
-			$sql = "select a.nident, a.ctranno, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, a.namount, a.cmainunit as qtyunit, 
-			a.nfactor, ifnull(c.nqty,0) as totqty2 
-			from receive_t a 
-			left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
-			left join
-				(Select x.creference,x.citemno,sum(x.nqty) as nqty
-				 From suppinv_t x
-				 left join suppinv y on x.compcode=y.compcode and x.ctranno=y.ctranno
-				 Where x.creference='".$_REQUEST['id']."' and y.lcancelled=0
-				 group by x.creference,x.citemno
-				 ) c on a.ctranno=c.creference and a.citemno=c.citemno
-			WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."'";
-		
-		
-	//echo $sql;
-	
-	$result = mysqli_query ($con, $sql); 
-	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-	
-	//if($row['nqty']>=1){
-			
-		$nqty1 = $row['totqty'];
-		$nqty2 = $row['totqty2']; 
-		
-		 $json['id'] = $row['cpartno'];
-	     $json['desc'] = $row['citemdesc'];
-		 $json['nqty'] = $row['nqty'];
-		 $json['totqty'] = $nqty1 - $nqty2;
-		 $json['cqtyunit'] = $row['qtyunit'];
-		 $json['cunit'] = $row['cunit'];
-		 $json['nfactor'] = $row['nfactor'];
-		 $json['nprice'] = $row['nprice'];
-		 $json['namount'] = $row['namount'];
-		 $json['xref'] = $row['ctranno'];
-		 $json['xrefident'] = $row['nident'];
-		 $json2[] = $json;
+		//items
+		$arritm = array();
+		$result = mysqli_query ($con, "select * from items WHERE compcode='$company'"); 
+		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+			$arritmdsc[$row['cpartno']] = $row['citemdesc'];
+		}
 
-//	}
+		//rritems
+		$rrdetails = array();
+		$ponos = array();
+		$resrr = mysqli_query ($con, "select * from receive_t WHERE compcode='$company' and ctranno = '".$_REQUEST['id']."'"); 
+		while($rowrr = mysqli_fetch_array($resrr, MYSQLI_ASSOC)){
+			$rrdetails[] = $rowrr;
+			$ponos[] = $rowrr['creference'];
+		}
+
+		//poitems
+		$podetails = array();
+		$resrr = mysqli_query ($con, "select * from purchase_t WHERE compcode='$company' and cpono in ('".implode("','", $ponos)."')"); 
+		while($rowrr = mysqli_fetch_array($resrr, MYSQLI_ASSOC)){
+			$podetails[] = $rowrr;
+		}
+
+		//existing suppliers invoices
+		$invdetails = array();
+		$resinv = mysqli_query ($con, "select a.* from suppinv_t a left join suppinv b on a.compcode=b.compcode and a.ctranno=b.ctranno WHERE a.compcode='$company' and a.creference = '".$_REQUEST['id']."' and b.lcancelled=0"); 
+		while($rowinv = mysqli_fetch_array($resinv, MYSQLI_ASSOC)){
+			$invdetails[] = $rowinv;
+		}
+
+	$json2 = array();
+	foreach($rrdetails as $row){
+		$nqty1 = $row['nqty'];
+
+			//get qty ng suppinv if meron
+			if(count($invdetails)!=0){
+				$nqty2 = 0;
+				foreach($invdetails as $rowinvs){
+					if($row['citemno']==$rowinvs['citemno'] && $row['nident']==$rowinvs['nrefidentity']){
+						$nqty2 = $nqty2 + floatval($rowinvs['nqty']);
+					}
+				}
+			}else{
+				$nqty2 = 0;
+			}	
+
+			$totqty = $nqty1 - $nqty2;
+
+		if($totqty>0){
+			$json['totqty'] = $totqty;
+
+			$json['id'] = $row['citemno'];
+			$json['desc'] = $arritmdsc[$row['citemno']];
+			$json['nqty'] = $row['nqty'];		
+			$json['cunit'] = $row['cunit'];
+			$json['cmainunit'] = $row['cmainunit'];
+			$json['nfactor'] = $row['nfactor'];	
+			$json['xref'] = $row['ctranno'];
+			$json['xrefident'] = $row['nident'];
+
+			foreach($podetails as $rowpo){ // find price sa PO
+				if($row['citemno']==$rowpo['citemno'] && $row['nrefidentity']==$rowpo['nident']){
+					$json['nprice'] = $rowpo['nprice'];
+					$json['namount'] = $rowpo['namount'];	
+					$json['nbaseamount'] = $rowpo['nbaseamount'];	
+				}
+			}
+		
+		$json2[] = $json;
+		}
 	
 	}
 

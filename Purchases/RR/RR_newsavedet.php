@@ -13,8 +13,9 @@ $company = $_SESSION['companyid'];
 		$cItemNo = $_REQUEST['citmno'];
 		$nQty = $_REQUEST['nqty'];
 		$cUnit = $_REQUEST['cuom'];
-		$nPrice = $_REQUEST['nprice'];
-		$nAmount = $_REQUEST['namt'];
+		//$nPrice = $_REQUEST['nprice'];
+		//$nAmount = $_REQUEST['namt'];
+		//$nTranAmount = $_REQUEST['namt'];
 		
 		$cRef = $_REQUEST['xcref'];
 		$nQtyOrig = $_REQUEST['nqtyorig'];
@@ -36,22 +37,23 @@ $company = $_SESSION['companyid'];
 			$ItmAccnt = $itmaccnt['cacctcodewrr'];
 	
 		}
-		
+
+		/*
 		if($cUnit==$cMainUOM){
 			$ncost = $nPrice;
 		}
 		else{
-			$ncost = (float)$nPrice / ((float)$nQty * (float)$nFactor);
+			$ncost = floatval($nPrice) / (floatval($nQty) * floatval($nFactor));
 		}
+		*/
+
+		//echo floatval($nPrice) . " /  ( " . floatval($nQty) . " * " . floatval($nFactor) .")";
 
 	$refcidenttran = $cSINo."P".$indexz;
-
-	//echo "INSERT INTO receive_t(`compcode`, `cidentity`, `ctranno`, `nident`, `creference`, `nrefidentity`, `citemno`, `nqty`, `nqtyorig`, `cunit`, `nprice`, `namount`, `ncost`, `nfactor`, `cmainunit`, `cacctcode`) values('$company', '$refcidenttran', '$cSINo', '$indexz', '$cRef', '$nRefIdent', '$cItemNo', '$nQty', '$nQtyOrig', '$cUnit', '$nPrice', '$nAmount', $ncost, $nFactor, '$cMainUOM', '$ItmAccnt')";
 	
-	if (!mysqli_query($con,"INSERT INTO receive_t(`compcode`, `cidentity`, `ctranno`, `nident`, `creference`, `nrefidentity`, `citemno`, `nqty`, `nqtyorig`, `cunit`, `nprice`, `namount`, `ncost`, `nfactor`, `cmainunit`, `cacctcode`) values('$company', '$refcidenttran', '$cSINo', '$indexz', '$cRef', '$nRefIdent', '$cItemNo', '$nQty', '$nQtyOrig', '$cUnit', '$nPrice', '$nAmount', $ncost, $nFactor, '$cMainUOM', '$ItmAccnt')")){
+	if (!mysqli_query($con,"INSERT INTO receive_t(`compcode`, `cidentity`, `ctranno`, `nident`, `creference`, `nrefidentity`, `citemno`, `nqty`, `nqtyorig`, `cunit`,`nfactor`, `cmainunit`, `cacctcode`) values('$company', '$refcidenttran', '$cSINo', '$indexz', '$cRef', '$nRefIdent', '$cItemNo', '$nQty', '$nQtyOrig', '$cUnit', $nFactor, '$cMainUOM', '$ItmAccnt')")){
 		echo "False";
 		//echo "Error:".mysqli_error($con)."<br>";
-	//	echo "INSERT INTO receive_t(`compcode`, `cidentity`, `ctranno`, `nident`, `creference`, `nrefidentity`, `citemno`, `nqty`, `nqtyorig`, `cunit`, `nprice`, `namount`, `ncost`, `nfactor`, `cmainunit`, `cacctcode`) values('$company', '$refcidenttran', '$cSINo', '$indexz', '$cRef', '$nRefIdent', '$cItemNo', '$nQty', '$nQtyOrig', '$cUnit', '$nPrice', '$nAmount', $ncost, $nFactor, '$cMainUOM', '$ItmAccnt'";
 	}
 	else{
 		echo "True";

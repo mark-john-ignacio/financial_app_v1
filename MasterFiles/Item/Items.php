@@ -120,11 +120,11 @@ function editfrm(x,y){
 		fill_datatable();	
 		$("#searchByName").keyup(function(){
 		   var searchByName = $('#searchByName').val();
-		   if(searchByName != '')
-		   {
+		  // if(searchByName != '')
+		  // {
 		    $('#MyTable').DataTable().destroy();
 		    fill_datatable(searchByName);
-		   }
+		 //  }
 		});
 		
 	} );

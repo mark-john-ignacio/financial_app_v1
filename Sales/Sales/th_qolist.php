@@ -7,7 +7,7 @@ require_once "../../Connection/connection_string.php";
 	$company = $_SESSION['companyid'];
 	if($_REQUEST['typ']=="DR"){   //DELIVERY REFERENCE
 
-		//get all quotation
+		//get all dr
 		$resq = mysqli_query ($con, "Select ctranno, nident,citemno,nqty From dr_t where compcode='$company'");
 		if (mysqli_num_rows($resq)!=0){
 			while($row = mysqli_fetch_array($resq, MYSQLI_ASSOC)){
@@ -61,6 +61,7 @@ require_once "../../Connection/connection_string.php";
 		}
 	}
 
+	$json = array();
 	if (mysqli_num_rows($result)!=0){
 
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){

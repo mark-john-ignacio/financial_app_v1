@@ -8,28 +8,6 @@ include('../../include/denied.php');
 include('../../include/access2.php');
 
 $company = $_SESSION['companyid'];
-
-//check access for amount edit
-$varamtacc = "";
-$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'Receive_amt_edit.php'");
-if(mysqli_num_rows($sql) == 0){
-			
-	$varamtacc = "NO";
-}
-		
-function checkrefapv($xid){
-	global $company;
-	global $con;
-	$sql = "Select * From apv_d a left join apv b on a.compcode=b.compcode and a.ctranno=b.ctranno where A.compcode='$company' and A.crefno = '".$xid."'";				
-	$result=mysqli_query($con,$sql);
-	
-	if(mysqli_num_rows($result) > 0){
-		return "true";
-	}else{
-		return "false";
-	}
-	
-}
 ?>
 
 <!DOCTYPE html>

@@ -32,6 +32,9 @@ $company = $_SESSION['companyid'];
 	$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
 	$CurrRate= $_REQUEST['basecurrval']; 
 	$BaseGross= str_replace(",","",$_REQUEST['txtnBaseGross']);
+
+	$RefMods= $_REQUEST['txtrefmod']; 
+	$RefModsNo= $_REQUEST['txtrefmodnos']; 
 	
 	$preparedby = $_SESSION['employeeid'];
 	$cacctcode = "NULL";
@@ -45,7 +48,7 @@ $company = $_SESSION['companyid'];
 				}
 
 
-	if (!mysqli_query($con, "UPDATE sales set `ccode` = '$cCustID', `cremarks` = $cRemarks, `dcutdate` = STR_TO_DATE('$dDelDate', '%m/%d/%Y'), `ngross` = '$nGross', `nnet` = '$nnetvat', `nvat` = '$nvat', `cacctcode` = $cacctcode, `cvatcode` = $cvatcode, `lapproved` = 0, `csalestype` = '$selsitypz', `csiprintno` = $selsiseries, `nbasegross` = '$BaseGross', `ccurrencycode` = '$CurrCode', `ccurrencydesc` = '$CurrDesc', `nexchangerate` = '$CurrRate' where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
+	if (!mysqli_query($con, "UPDATE sales set `ccode` = '$cCustID', `cremarks` = $cRemarks, `dcutdate` = STR_TO_DATE('$dDelDate', '%m/%d/%Y'), `ngross` = '$nGross', `nnet` = '$nnetvat', `nvat` = '$nvat', `cacctcode` = $cacctcode, `cvatcode` = $cvatcode, `lapproved` = 0, `csalestype` = '$selsitypz', `csiprintno` = $selsiseries, `nbasegross` = '$BaseGross', `ccurrencycode` = '$CurrCode', `ccurrencydesc` = '$CurrDesc', `nexchangerate` = '$CurrRate', `crefmodule` = '$RefMods', `crefmoduletran` = '$RefModsNo' where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
 		echo "False";
 
 		

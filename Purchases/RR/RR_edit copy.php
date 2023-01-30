@@ -33,6 +33,36 @@ $sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.cremarks, DATE_FORMAT
 						// 1 = W/ Reference Check Qty .. Qty must be less than or equal to reference
 						// 2 = W/ Reference Open Qty .. allow qty even if more tha reference
 
+
+$AccRRQty = "NO";
+$AccRRAmt = "NO";
+
+    //edit access when posted
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Receive_edit.php'");
+
+	if(mysqli_num_rows($sql) != 0){
+	
+		$AccRRQty = "YES";
+	}
+	
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Receive_amt_edit.php'");
+
+	if(mysqli_num_rows($sql) != 0){
+	
+		$AccRRAmt = "YES";
+	}
+	
+	//check reference
+	$sqlrefx = "Select * From apv_d a left join apv b on a.compcode=b.compcode and a.ctranno=b.ctranno where A.compcode='$company' and A.crefno = '$cpono'";				
+	$resultrefx=mysqli_query($con,$sqlrefx);
+	$varwithref = "";
+	if(mysqli_num_rows($resultrefx) > 0){
+		$varwithref = "true";
+	}else{
+		$varwithref = "false";
+	}
+	
+
 /*
 	function listcurrencies(){ //API for currency list
 		$apikey = $_SESSION['currapikey'];
@@ -53,14 +83,13 @@ $sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.cremarks, DATE_FORMAT
 
 ?>
 
-
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Myx Financials</title>
+	<title>Coop Financials</title>
     
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
@@ -79,7 +108,7 @@ $sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.cremarks, DATE_FORMAT
 
 </head>
 
-<body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
+<body style="padding:5px">
 <?php
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -96,11 +125,24 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	}
 ?>
 
-<form action="RR_editsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
-	<fieldset>
-    	<legend>Receiving</legend>	
-        <input type="hidden" value="<?php echo $nCHKREFvalue;?>" name="hdnCHECKREFval" id="hdnCHECKREFval">
-        	<table width="100%" border="0">
+	<form action="RR_editsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
+		<fieldset>
+				<legend>
+					<div class="col-xs-6 nopadding"> Receiving Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
+						<?php
+							if($lCancelled==1){
+								echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+							}
+							
+							if($lPosted==1){
+								echo "<font color='#FF0000'><b>POSTED</b></font>";
+							}
+						?>
+					</div>
+				</legend>	
+
+					<input type="hidden" value="<?php echo $nCHKREFvalue;?>" name="hdnCHECKREFval" id="hdnCHECKREFval">
+					<table width="100%" border="0">
 						<tr>
 							<tH>RR No.:</tH>
 							<td colspan="2" style="padding:2px"><div class="col-xs-3 nopadding"><input type="text" class="form-control input-sm" id="txtcpono" name="txtcpono" width="20px" tabindex="1" value="<?php echo $cpono;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');"></div>
@@ -109,7 +151,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								<input type="hidden" name="hdntranno" id="hdntranno" value="<?php echo $cpono;?>">
 								<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
 								<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
-
+								
+								<input type="hidden" name="hdnRRQtyAcc" id="hdnRRQtyAcc" value="<?php echo $AccRRQty;?>">
+								<input type="hidden" name="hdnRRAmtAcc" id="hdnRRAmtAcc" value="<?php echo $AccRRAmt;?>">
+								<input type="hidden" name="hdnwRefAPC" id="hdnwRefAPC" value="<?php echo $varwithref;?>">
 								&nbsp;&nbsp;
 								<div id="statmsgz" style="display:inline"></div>
 								</td>
@@ -147,99 +192,95 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</div>
 							</td>
 						</tr>
-	
+
 						<tr>
-							<tH width="100"></tH>
+							<tH width="100">&nbsp;</tH>
 							<td style="padding:2px" colspan="3">
 								<div class="col-xs-12">
-												<div class="col-xs-3 nopadding">
-													<!--<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">--> 						
-														<?php
-														/*
-																$nvaluecurrbase = "";	
-																$nvaluecurrbasedesc = "";	
-																$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
-																
-																	if (mysqli_num_rows($result)!=0) {
-																		$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
-																		
-																		$nvaluecurrbase = $all_course_data['cvalue']; 
-																			
-																	}
-																	else{
-																		$nvaluecurrbase = "";
-																	}
-														*/
-																	//	$objcurrs = listcurrencies();
-																	//	$objrows = json_decode($objcurrs,true);
-																			
-																//foreach($objrows as $rows){
-																//	if ($nvaluecurrbase==$rows['currencyCode']) {
-																//		$nvaluecurrbasedesc = $rows['currencyName'];
-																//	}
-																	
-														?>
-																<!--	<option value="<?//=$rows['currencyCode']?>" <?//php if ($nvaluecurrbase==$rows['currencyCode']) { echo "selected='true'"; } ?>><?//=$rows['currencyCode']." - ".strtoupper($rows['currencyName'])?></option>-->
-														<?php
-																//}
-														?>
-													<!--</select>-->
-													<!--	<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?//php echo $nvaluecurrbase; ?>"> 	-->
-													<!--	<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?//php echo $nvaluecurrbasedesc; ?>"> -->
-												</div>
-												<div class="col-xs-1 nopadwleft"><!-- class="numeric required form-control input-sm text-right"
-													<input type='hidden' id="basecurrval" name="basecurrval" value="1">	 -->
-												</div>
-
-												<div class="col-xs-5" id="statgetrate" style="padding: 4px !important"> 															
-												</div>
-								</div>
-							</td>
+									<div class="col-xs-3 nopadding">
+										<!--<select class="form-control input-sm" name="selbasecurr" id="selbasecurr"> 		-->				
+										<?php
+												$nvaluecurrbase = "";	
+												$nvaluecurrbasedesc = "";	
+												$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+												
+													if (mysqli_num_rows($result)!=0) {
+														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
+														
+														$nvaluecurrbase = $all_course_data['cvalue']; 
+															
+													}
+													else{
+														$nvaluecurrbase = "";
+													}
 							
+												//		$objcurrs = listcurrencies();
+												//		$objrows = json_decode($objcurrs,true);
+															
+											//	foreach($objrows as $rows){
+												//	if ($nvaluecurrbase==$rows['currencyCode']) {
+												//		$nvaluecurrbasedesc = $rows['currencyName'];
+												//	}
+													
+										?>
+													<!--<option value="<?//=$rows['currencyCode']?>" <?//php if ($nvaluecurrbase==$rows['currencyCode']) { echo "selected='true'"; } ?>><?//=$rows['currencyCode']." - ".strtoupper($rows['currencyName'])?></option>-->
+										<?php
+											//	}
+										?>
+										<!--</select>-->
+										<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?php echo $nvaluecurrbase; ?>"> 	
+										<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?php echo $nvaluecurrbasedesc; ?>"> 
+									</div>
+									<div class="col-xs-1 nopadwleft">
+										<!-- class="numeric required form-control input-sm text-right" -->
+										<input type='hidden' id="basecurrval" name="basecurrval" value="1">	 
+									</div>
+
+									<div class="col-xs-5" id="statgetrate" style="padding: 4px !important"> 
+												
+									</div>
+								</div>
+							</td>    
 						</tr>
 
 						<tr>
 							<td colspan="2">&nbsp;</td>
-							<th style="padding:2px"><!--<span style="padding:2px">PURCHASE TYPE:</span>-->&nbsp;</th>
-							<td>&nbsp;
-								<!--
-								<div class="col-xs-5">
-										<select id="seltype" name="seltype" class="form-control input-sm selectpicker"  tabindex="3">
-											<option value="Grocery">Grocery</option>
-											<option value="Cripples">Cripples</option>
-										</select>
-								</div>
-								-->
-							</td>
-							</tr>
+							<th style="padding:2px"><!--<span style="padding:2px">PURCHASE TYPE:</span>--></th>
+							<td>&nbsp;</td>
+						</tr>
+
 						<tr>
-							<td colspan="2">
-							<?php
-								if($nCHKREFvalue==0) {
+							<td colspan="4">&nbsp;</td>
+						</tr>
+
+						<tr>
+								<td colspan="2">
+								<?php
+									if($nCHKREFvalue==0) {
 							?>
-								<div class="col-xs-12 nopadwdown">
-									<div class="col-xs-3 nopadding">
-										<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." width="25" tabindex="4"  autocomplete="off">
+									<div class="col-xs-12 nopadwdown">
+										<div class="col-xs-3 nopadding">
+											<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." width="25" tabindex="4"  autocomplete="off">
+										</div>
+										<div class="col-xs-8 nopadwleft">
+											<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL+F) Search Product Name..." size="80" tabindex="5" autocomplete="off">
+										</div>
 									</div>
-									<div class="col-xs-8 nopadwleft">
-										<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL+F) Search Product Name..." size="80" tabindex="5" autocomplete="off">
-									</div>
-								</div>
-							<?php
-								
-								}else{
+								<?php
+								}
+								else{
 							?> 
-								<input type="hidden" id="txtprodid" name="txtprodid">
-								<input type="hidden" id="txtprodnme" name="txtprodnme">
-							<?php
+									<input type="hidden" id="txtprodid" name="txtprodid">
+									<input type="hidden" id="txtprodnme" name="txtprodnme">
+								<?php
 								}
 
 							?> 
 
-									<input type="hidden" name="hdnunit" id="hdnunit">
-							</td>
-							<td></td>
-							<td></td>
+										<input type="hidden" name="hdnunit" id="hdnunit">
+								</td>
+								<td></td>
+								<td><input type="hidden" id="txtnGross" name="txtnGross" value="<?php echo $Gross; ?>"></td>
 
 						</tr>
 					</table>
@@ -250,71 +291,61 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					</ul>
 
 					<div class="tab-content nopadwtop2x">
-						<div class="tab-pane active" id="1Det">
 
-								<div class="alt2" dir="ltr" style="
-									margin: 0px;
-									padding: 3px;
-									border: 1px solid #919b9c;
-									width: 100%;
-									height: 300px;
-									text-align: left;
-									overflow: auto">
-					
-										<table id="MyTable" class="MyTable" width="100%" cellpadding="3px">
-												<thead>
-													<tr>
-														<th style="border-bottom:1px solid #999">&nbsp;</th>
-														<th style="border-bottom:1px solid #999">Code</th>
-														<th style="border-bottom:1px solid #999">Description</th>
-														<th style="border-bottom:1px solid #999">UOM</th>
-														<th style="border-bottom:1px solid #999">Qty</th>
-														<!--<th style="border-bottom:1px solid #999">Price</th>
-														<th style="border-bottom:1px solid #999">Amount</th>
-														<th style="border-bottom:1px solid #999">Total Amt in <?//php echo $nvaluecurrbase; ?></th>-->
-																				<!--<th style="border-bottom:1px solid #999">Date Expired</th>-->
-														<th style="border-bottom:1px solid #999">&nbsp;</th>
-													</tr>
-												</thead>
-												<tbody class="tbody">
-												</tbody>
-														
-										</table>
-								</div>
+						<div class="tab-pane active" id="1Det">
+							<div class="alt2" dir="ltr" style="
+								margin: 0px;
+								padding: 3px;
+								border: 1px solid #919b9c;
+								width: 100%;
+								height: 250px;
+								text-align: left;
+								overflow: auto">
+				
+									<table id="MyTable" class="MyTable" cellpadding"3px" width="100%" border="0">
+										<thead>
+											<tr>
+												<th style="border-bottom:1px solid #999">&nbsp;</th>
+												<th style="border-bottom:1px solid #999">Code</th>
+												<th style="border-bottom:1px solid #999">Description</th>
+												<th style="border-bottom:1px solid #999">UOM</th>
+												<th style="border-bottom:1px solid #999">Qty</th>
+												<!--<th style="border-bottom:1px solid #999">Price</th>
+												<th style="border-bottom:1px solid #999">Amount</th>-->
+																		<!--<th style="border-bottom:1px solid #999">Date Expired</th>-->
+												<th style="border-bottom:1px solid #999">&nbsp;</th>
+											</tr>
+										</thead>
+										<tbody>
+										</tbody>			                    
+									</table>
+
 							</div>
+						</div>
 
 						<div class="tab-pane" id="2Acct">
-
-										<div class="alt2" dir="ltr" style="
-																margin: 0px;
-																padding: 3px;
-																border: 1px solid #919b9c;
-																width: 100%;
-																height: 250px;
-																text-align: left;
-																overflow: auto">
-								
-												<table id="MyTable2" class="table" width="100%" border="0">
-													<thead>
-																<tr>
-																	
-																		<th style="border-bottom:1px solid #999">Item Code</th>
-																		<th style="border-bottom:1px solid #999">Serial No.</th>
-																		<th style="border-bottom:1px solid #999">Barcode</th>
-																		<th style="border-bottom:1px solid #999">UOM</th>
-																		<th style="border-bottom:1px solid #999">Qty</th>
-																		<th style="border-bottom:1px solid #999">Location</th>
-																		<th style="border-bottom:1px solid #999">Expiration Date</th>
-																		<th style="border-bottom:1px solid #999">&nbsp;</th>
-																</tr>
-													</thead>
-													<tbody>
-													</tbody>
-																
-												</table>
-													<input type="hidden" name="hdnserialscnt" id="hdnserialscnt">
-											</div>
+							<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 1px solid #919b9c;width: 100%;height: 250px;text-align: left;overflow: auto">
+					
+								<table id="MyTable2" cellpadding="3px" width="100%" border="0">
+									<thead>
+										<tr>                        	
+											<th style="border-bottom:1px solid #999">Item Code</th>
+											<th style="border-bottom:1px solid #999">Serial No.</th>
+											<th style="border-bottom:1px solid #999">Barcode</th>
+											<th style="border-bottom:1px solid #999">UOM</th>
+											<th style="border-bottom:1px solid #999">Qty</th>
+											<th style="border-bottom:1px solid #999">Location</th>
+											<th style="border-bottom:1px solid #999">Expiration Date</th>
+											<th style="border-bottom:1px solid #999">&nbsp;</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>                        
+								</table>
+								<input type="hidden" name="hdnserialscnt" id="hdnserialscnt">
+							</div>
 						</div>
+
 					</div>
 
 					<br>
@@ -361,20 +392,40 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									Edit<br>(CTRL+E)
 								</button>
 								
-								<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform()" id="btnSave" name="btnSave">
+								<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="testtable()" id="btnSave" name="btnSave">
 									Save<br>(CTRL+S)
 								</button>
-
-								<!--<input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="0">
-		 						<input type="hidden" id="txtnGross" name="txtnGross" value="0">
-								-->
 							
 							</td>
 						</tr>
 					</table>
 
-    </fieldset>
-    
+		</fieldset>
+	</form>
+
+<?php
+}
+else{
+?>
+	<form action="RR_edit.php" name="frmpos2" id="frmpos2" method="post">
+		<fieldset>
+			<legend>Receiving</legend>	
+				<table width="100%" border="0">
+					<tr>
+						<tH width="100">RR NO.:</tH>
+						<td colspan="3" style="padding:2px" align="left"><div class="col-xs-3"><input type="text" class="form-control input-sm" id="txtcpono" name="txtcpono" width="20px" tabindex="1" value="<?php echo $cpono;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos2');"></div></td>
+						</tr>
+					<tr>
+						<tH colspan="4" align="center" style="padding:10px"><font color="#FF0000"><b>PO No. DID NOT EXIST!</b></font></tH>
+						</tr>
+				</table>
+		</fieldset>
+	</form>
+<?php
+}
+?>
+
+
 <!-- FULL PO LIST REFERENCES-->
 
 <div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
@@ -390,12 +441,12 @@ if (mysqli_num_rows($sqlhead)!=0) {
        <div class="col-xs-12 nopadding">
 
                 <div class="form-group">
-                    <div class="col-xs-3 nopadding pre-scrollable" style="height:37vh">
-                          <table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight small">
+                    <div class="col-xs-4 nopadding pre-scrollable" style="height:37vh">
+                          <table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight">
                            <thead>
                             <tr>
                               <th>PO No</th>
-                              <th>Date</th>
+                              <th>Amount</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -403,8 +454,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
                           </table>
                     </div>
 
-                    <div class="col-xs-9 nopadwleft pre-scrollable" style="height:37vh">
-                          <table name='MyInvDetList' id='MyInvDetList' class="table table-small small">
+                    <div class="col-xs-8 nopadwleft pre-scrollable" style="height:37vh">
+                          <table name='MyInvDetList' id='MyInvDetList' class="table table-small">
                            <thead>
                             <tr>
                               <th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
@@ -412,9 +463,6 @@ if (mysqli_num_rows($sqlhead)!=0) {
                               <th>Description</th>
                               <th>UOM</th>
                               <th>Qty</th>
-															<!--<th>Price</th>
-															<th>Amount</th>
-															<th>Cur</th>-->
                             </tr>
                             </thead>
                             <tbody>
@@ -438,30 +486,24 @@ if (mysqli_num_rows($sqlhead)!=0) {
 </div><!-- /.modal -->
 <!-- End FULL INVOICE LIST -->
 
-</form>
 
 
-<?php
-}
-else{
-?>
-<form action="RR_edit.php" name="frmpos2" id="frmpos2" method="post">
-  <fieldset>
-   	<legend>Receiving</legend>	
-<table width="100%" border="0">
-  <tr>
-    <tH width="100">RR NO.:</tH>
-    <td colspan="3" style="padding:2px" align="left"><div class="col-xs-3"><input type="text" class="form-control input-sm" id="txtcpono" name="txtcpono" width="20px" tabindex="1" value="<?php echo $cpono;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos2');"></div></td>
-    </tr>
-  <tr>
-    <tH colspan="4" align="center" style="padding:10px"><font color="#FF0000"><b>PO No. DID NOT EXIST!</b></font></tH>
-    </tr>
-</table>
-</fieldset>
-</form>
-<?php
-}
-?>
+<!-- PRINT OUT MODAL-->
+<div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-contnorad">   
+            <div class="modal-bodylong">
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
+        
+               <iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:8.5in; display:block; margin:0px; padding:0px; border:0px"></iframe>
+    
+            	
+			</div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- End Bootstrap modal -->
+
 
 <!-- 1) Alert Modal -->
 <div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
@@ -480,6 +522,7 @@ else{
         </div>
     </div>
 </div>
+
 
 <div class="modal fade" id="SerialMod" role="dialog" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-lg">
@@ -500,7 +543,7 @@ else{
                                 <div class="row">
 										<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Barcode:</b></div>
 										<div class="col-xs-7 nopadwtop"><input type="text" class="form-control input-sm" name="serdisbarc" id="serdisbarc"></div>
-								</div>
+                                </div>
 								<div class="row">
 										<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;UOM</b></div>
 										<div class="col-xs-2 nopadwtop"><input type="text" class="form-control input-sm" name="serdisuom" id="serdisuom" readonly></div>
@@ -544,91 +587,90 @@ else{
 </html>
 
 <script type="text/javascript">
-
-$(document).keydown(function(e) {	 
+	$(document).keydown(function(e) {	 
 	
-	if(e.keyCode == 112) { //F1
-	 if($("#btnNew").is(":disabled")==false){
-		 e.preventDefault();
-		 window.location.href='RR_new.php';
-	 }
- }
- else if(e.keyCode == 83 && e.ctrlKey){//CTRL S
-	 if($("#btnSave").is(":disabled")==false){ 
-		 e.preventDefault();
-		 return chkform();
-	 }
- }
- else if(e.keyCode == 69 && e.ctrlKey){//CTRL E
-	 if($("#btnEdit").is(":disabled")==false){
-		 e.preventDefault();
-		 enabled();
-	 }
- }
- else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
-	 if($("#btnPrint").is(":disabled")==false){
-		 e.preventDefault();
-		 printchk('<?php echo $cpono;?>');
-	 }
- }
- else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
-	 if($("#btnUndo").is(":disabled")==false){
-		 e.preventDefault();
-		 chkSIEnter(13,'frmpos');
-	 }
- }
- else if(e.keyCode == 27){//ESC
-	 if($("#btnMain").is(":disabled")==false){
-		 e.preventDefault();
-		 $("#btnMain").click();
-	 }
- }
- else if(e.keyCode == 70 && e.ctrlKey) { // CTRL + F .. search product code
-	 e.preventDefault();
-	 $('#txtprodnme').focus();
- }
- else if(e.keyCode == 45) { //Insert
-	 if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
-		 openinv();
-	 }
- }else if(e.keyCode == 88 && e.ctrlKey){ //CTRL X - Close Modal
-	 if($('#SerialMod').hasClass('in')==true){
-			$("#btnClsSer").click();
-	 }
+	 if(e.keyCode == 112) { //F1
+		if($("#btnNew").is(":disabled")==false){
+			e.preventDefault();
+			window.location.href='RR_new.php';
+		}
+	  }
+	  else if(e.keyCode == 83 && e.ctrlKey){//CTRL S
+		if($("#btnSave").is(":disabled")==false){ 
+			e.preventDefault();
+			return chkform();
+		}
+	  }
+	  else if(e.keyCode == 69 && e.ctrlKey){//CTRL E
+		if($("#btnEdit").is(":disabled")==false){
+			e.preventDefault();
+			enabled();
+		}
+	  }
+	  else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
+		if($("#btnPrint").is(":disabled")==false){
+			e.preventDefault();
+			printchk('<?php echo $cpono;?>');
+		}
+	  }
+	  else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
+		if($("#btnUndo").is(":disabled")==false){
+			e.preventDefault();
+			chkSIEnter(13,'frmpos');
+		}
+	  }
+	  else if(e.keyCode == 27){//ESC
+		if($("#btnMain").is(":disabled")==false){
+			e.preventDefault();
+			$("#btnMain").click();
+		}
+	  }
+	  else if(e.keyCode == 70 && e.ctrlKey) { // CTRL + F .. search product code
+		e.preventDefault();
+		$('#txtprodnme').focus();
+      }
+	  else if(e.keyCode == 45) { //Insert
+	  	if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
+			openinv();
+		}
+	  }else if(e.keyCode == 88 && e.ctrlKey){ //CTRL X - Close Modal
+			if($('#SerialMod').hasClass('in')==true){
+		 		$("#btnClsSer").click();
+			}
 
- }
+	  }
 
-});
+	});
 
-	$(document).keypress(function(e) {
+$(document).keypress(function(e) {
 	  if ($("#SerialMod").hasClass('in') && (e.keycode == 13 || e.which == 13)) {
 	    $("#btnInsSer").click();
 	  }
 	});
 
-
 $(document).ready(function() {
     $('.datepick').datetimepicker({
-      format: 'MM/DD/YYYY',
-    });	
+        format: 'MM/DD/YYYY'
+    });
 
-		loaddetails();
-		loadserials();
+			loaddetails();
+			loadserials();
 
-		$('#txtprodnme').attr("disabled", true);
-		$('#txtprodid').attr("disabled", true);
+			$('#txtprodnme').attr("disabled", true);
+			$('#txtprodid').attr("disabled", true);
 		
-		$("#txtcpono").focus();
+			$("#txtcpono").focus();
 		
-		disabled();
+			disabled();
 
 });
-	
+
 $(function(){	
+
 	$("#allbox").click(function(){
 			$('input:checkbox').not(this).prop('checked', this.checked);
 	});
-	
+
 	$('#txtcust').typeahead({
 	
 		items: 10,
@@ -646,11 +688,11 @@ $(function(){
 		},
 		autoSelect: true,
 		displayText: function (item) {
-			 return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+			return '<div style="border-top:1px solid gray; width: 300px"><span>'+ item.id + '</span><br><small>' + item.value + '</small></div>';
 		},
 		highlighter: Object,
 		afterSelect: function(item) { 
-			$('#txtcust').val(item.value).change(); 
+			$("#txtcust").val(item.value).change(); 
 			$("#txtcustid").val(item.id);
 		}
 	});
@@ -681,12 +723,10 @@ $(function(){
 				$("#hdnunit").val(item.cunit);
 				
 				addItemName();	
-				
-			
+							
 		}
 	
 	});
-
 
 	$("#txtprodid").keydown(function(e){
 		if(e.keyCode == 13){
@@ -728,10 +768,10 @@ $(function(){
 		 
 		if(isItem=="NO"){		
 
-	
-				myFunctionadd("","","","","","","","");
-				//ComputeGross();	
-									
+				myFunctionadd("","","","","","","","","");
+				ComputeGross();	
+				
+					
 	    }
 	    else{
 			//alert("ITEM NOT IN THE MASTERLIST!");
@@ -753,7 +793,7 @@ $(function(){
 		
 	});
 	
-	$('#SerialMod').on('shown.bs.modal', function () {
+$('#SerialMod').on('shown.bs.modal', function () {
 	    $('#serdis').focus();
 	});
 
@@ -787,26 +827,26 @@ $(function(){
 			$("#serdis").focus();
   
 	});
-
 });
 
 function InsertToSerials(itmcode,serials,uoms,qtys,locas,locasdesc,expz,nident,refno,bcodes){
 
 	$("<tr>").append(
 		$("<td width=\"120px\" style=\"padding:1px\">").html("<input type='hidden' value='"+itmcode+"' name=\"sertabitmcode\" id=\"sertabitmcode\"><input type='hidden' value='"+nident+"' name=\"sertabident\" id=\"sertabident\"><input type='hidden' value='"+refno+"' name=\"sertabrefno\" id=\"sertabrefno\">"+itmcode),
-		$("<td>").html("<input type='hidden' value='"+serials+"' name=\"sertabserial\" id=\"sertabserial\">"+serials), 
+		$("<td>").html("<input type='hidden' value='"+serials+"' name=\"sertabserial\" id=\"sertabserial\">"+serials),
 		$("<td>").html("<input type='hidden' value='"+bcodes+"' name=\"sertabcodes\" id=\"sertabcodes\">"+bcodes), 
 		$("<td width=\"80px\" style=\"padding:1px\">").html("<input type='hidden' value='"+uoms+"' name=\"sertabuom\" id=\"sertabuom\">"+uoms),
 		$("<td width=\"80px\" style=\"padding:1px\">").html("<input type='hidden' value='"+qtys+"' name=\"sertabqty\" id=\"sertabqty\">"+qtys),
 		$("<td width=\"150x\" style=\"padding:1px\">").html("<input type='hidden' value='"+locas+"' name=\"sertablocas\" id=\"sertablocas\">"+locasdesc),
 		$("<td width=\"100px\" style=\"padding:1px\">").html("<input type='hidden' value='"+expz+"' name=\"sertabesp\" id=\"sertabesp\">"+expz),
-		$("<td width=\"80px\" style=\"padding:1px\">").html("<input class='btn btn-danger btn-xs' type='button' id='delsrx" + itmcode + "' value='delete' />")
+		$("<td width=\"80px\" style=\"padding:1px\">").html("<input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' />")
 	).appendTo("#MyTable2 tbody");
 
 									$("#delsrx"+itmcode).on('click', function() {
 										$(this).closest('tr').remove();
-									});
+									});		
 }
+
 
 function addItemName(){
 	 if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
@@ -828,8 +868,8 @@ function addItemName(){
 		 
 	 if(isItem=="NO"){	
 
-			myFunctionadd("","","","","","","","");		
-		//	ComputeGross();	
+			myFunctionadd("","","","","","","","","");		
+			ComputeGross();	
 	 }
 	 else{
 		
@@ -845,171 +885,193 @@ function addItemName(){
 
 }
 
-function myFunctionadd(nqty,nqtyOrig,nfactor,cmainunit,xref,nident){
+function myFunctionadd(nqty, nqtyorig, nprice, namount, nfactor, cmainunit, xcref, xcident, dexpired){
 
 	var itmcode = document.getElementById("txtprodid").value;
 	var itmdesc = document.getElementById("txtprodnme").value;
 	var itmunit = document.getElementById("hdnunit").value;
-	//var dneeded = document.getElementById("date_received").value;
+	//var dneeded= document.getElementById("date_received").value;
 	
-	if(nqty=="" && nprice=="" && namount=="" && nfactor=="" && cmainunit=="" && xref=="" && nident==""){	
-		//var itmprice = chkprice(itmcode,itmunit);
-		//var itmamnt = itmprice;
+	if(nqty=="" && nprice=="" && namount=="" && nfactor=="" && cmainunit=="" && xcref=="" && xcident=="" && dexpired==""){	
+		var itmprice = chkprice(itmcode,itmunit);
+		var itmamnt = itmprice;
 		var itmqty = 1;
 		var itmqtyorig = 0;
 		var itmfactor = 1;
 		var itmmainunit = itmunit;
 		var itmxref = "";
 		var itmident = "";
-
-		//var curramtz = price;
-
+		var itmexp = dneeded;
+		
 	}
 	else{
-		//var itmprice = nprice;
-		//var itmamnt = namount;
+		var itmprice = nprice;
+		var itmamnt = namount;
 		var itmqty = nqty;
-		var itmqtyorig = nqtyOrig;
+		var itmqtyorig = nqtyorig;
 		var itmfactor = nfactor;
 		var itmmainunit = cmainunit;
-		var itmxref = xref;
-		var itmident = nident;
-
-		//var curramtz = curramt;
+		var itmxref = xcref;
+		var itmident = xcident;
+		var itmexp = dexpired;
+		
 	}
 
-//	var baseprice = curramtz * parseFloat($("#basecurrval").val());
 
 	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 	var lastRow = tbl.length;
 
+	var a=document.getElementById('MyTable').insertRow(-1);
+	var s1=a.insertCell(0);
+		s1.style.width = "50px";
+	var s=a.insertCell(1);
+		s.style.width = "120px";		
+	var t=a.insertCell(2);
+		t.style.whiteSpace = "nowrap";
+		t.style.textOverflow = "ellipsis";
+		t.style.overflow = "hidden";
+		t.style.maxWidth = "1px";
+		t.style.paddingRight = "1px";
+	var u=a.insertCell(3);
+		u.style.width = "80px";
+		u.style.padding = "1px";
+	var v=a.insertCell(4);
+		v.style.width = "100px";
+		v.style.padding = "1px";
+	//var w=a.insertCell(5);
+//		w.style.width = "100px";
+//		w.style.padding = "1px";
+//	var x=a.insertCell(6);
+//		x.style.width = "100px";
+//		x.style.padding = "1px";	
+	var z=a.insertCell(5);
+		z.style.width = "80px";
+		z.style.padding = "1px";
 
-	var uomoptions = "";
-	
-	if(xref == ""){							
-		 $.ajax ({
-			url: "../th_loaduomperitm.php",
-			data: { id: itmcode },
-			async: false,
-			dataType: "json",
-			success: function( data ) {
-											
-				console.log(data);
-				$.each(data,function(index,item){
-					if(item.id==itmunit){
-						isselctd = "selected";
-					}
-					else{
-						isselctd = "";
-					}
-					
-					uomoptions = uomoptions + '<option value='+item.id+' '+isselctd+'>'+item.name+'</option>';
-				});
+
+		
+		var uomoptions = "";
+		
+		if(xcref==""){							
+			$.ajax ({
+				url: "../th_loaduomperitm.php",
+				data: { id: itmcode },
+				async: false,
+				dataType: "json",
+				success: function( data ) {
+												
+					console.log(data);
+					$.each(data,function(index,item){
+						if(item.id==itmunit){
+							isselctd = "selected";
+						}
+						else{
+							isselctd = "";
+						}
 						
-			}
-		});
+						uomoptions = uomoptions + '<option value='+item.id+' '+isselctd+'>'+item.name+'</option>';
+					});
+							
+				}
+			});
+			
+			uomoptions = "<select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\">"+uomoptions+"</select>";
+			
+		}else{
+			uomoptions = "<input type='hidden' value='"+itmunit+"' name=\"seluom\" id=\"seluom"+lastRow+"\">"+itmunit;
+		}
 		
-		uomoptions = "<select class='xseluom"+lastRow+" form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\">"+uomoptions+"</select>";
-		
-	}else{
-		uomoptions = "<input type='hidden' value='"+itmunit+"' name=\"seluom\" id=\"seluom\">"+itmunit;
-	}
+
+	s1.innerHTML = "<input class='btn btn-info btn-xs' type='button' name='btninsitm' id='ins" + itmcode + "' value='insert' />";
+	s.innerHTML = "<input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+"<input type='hidden' value='"+itmxref+"' name=\"txtcreference\" id=\"txtcreference\"> <input type='hidden' value='"+itmident+"' name=\"txtnrefident\" id=\"txtnrefident\">";
+	
+	t.innerHTML = itmdesc;
+	
+	u.innerHTML = uomoptions;
+	
+	v.innerHTML = "<input type='text' value='"+itmqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+nqtyorig+"' name=\"txtnqtyORIG\" id=\"txtnqtyORIG"+lastRow+"\"> <input type='hidden' value='"+itmprice+"' name='txtnprice' id='txtnprice"+lastRow+"'> <input type='hidden' value='"+itmmainunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+itmfactor+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> <input type='hidden' value='"+itmamnt+"' name='txtnamount' id='txtnamount"+lastRow+"'>";
+
+	//w.innerHTML = "<input type='text' value='"+itmprice+"' class='numeric form-control input-xs' style='text-align:right'name=\"txtnprice\" id='txtnprice"+lastRow+"' autocomplete='off' onFocus='this.select();'> <input type='hidden' value='"+itmmainunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+itmfactor+"' name='hdnfactor' id='hdnfactor"+lastRow+"'>";
+	
+//	x.innerHTML = "<input type='text' value='"+itmamnt+"' class='numeric form-control input-xs' style='text-align:right' name='txtnamount' id='txtnamount"+lastRow+"'>";
+	
+	z.innerHTML = "<input class='btn btn-danger btn-xs' type='button' name='btndelitm' id='del" + itmcode + lastRow +"' value='delete' />";
 
 
-	tditmbtn = "<td width=\"50\">  <input class='btn btn-info btn-xs' type='button' id='ins" + itmcode + "' value='insert' /> </td>";
-	
-	tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+"<input type='hidden' value='"+itmxref+"' name=\"txtcreference\" id=\"txtcreference\"> <input type='hidden' value='"+itmident+"' name=\"txtnrefident\" id=\"txtnrefident\"> </td>";
-	
-	tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\"> " + itmdesc + "</td>";
-	
-	tditmunit = "<td width=\"80\"> " + uomoptions + "</td>";
-	
-	tditmqty = "<td width=\"100\" style=\"padding:1px\"> <input type='text' value='"+itmqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+itmqtyorig+"' name=\"txtnqtyORIG\" id=\"txtnqtyORIG"+lastRow+"\"> <input type='hidden' value='"+itmmainunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+itmfactor+"' name='hdnfactor' id='hdnfactor"+lastRow+"'></td>"; 	 
-	
-	//tditmprice = "<td width=\"100\" style=\"padding:1px\"> <input type='text' value='"+itmprice+"' class='numeric form-control input-xs' style='text-align:right'name=\"txtnprice\" id='txtnprice"+lastRow+"' autocomplete='off' onFocus='this.select();'> <input type='hidden' value='"+itmmainunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+itmfactor+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
-
-	//tditmbaseamount = "<td width=\"100\" style=\"padding:1px\"> <input type='text' value='"+curramtz+"' class='form-control input-xs' style='text-align:right' name='txtntranamount' id='txtntranamount"+lastRow+"' readonly> </td>";
-	
-	//tditmamount = "<td width=\"100\" style=\"padding:1px\"> <input type='text' value='"+baseprice.toFixed(4)+"' class='form-control input-xs' style='text-align:right' name='txtnamount' id='txtnamount"+lastRow+"' readonly> </td>";
-	
-	tditmdel = "<td width=\"80\" style=\"padding:1px\" align=\"center\"> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' /> </td>";
-
-  //+ tditmprice + tditmbaseamount+ tditmamount 
-
-	$('#MyTable > tbody:last-child').append('<tr style=\"padding-top:1px\">'+tditmbtn+tditmcode + tditmdesc + tditmunit + tditmqty + tditmdel + '</tr>');
-
-
-									$("#del"+itmcode).on('click', function() {
+									$("#del"+itmcode+lastRow).on('click', function() {
 										$(this).closest('tr').remove();
-										// ComputeGross();
+										ComputeGross();
 									});
-									
+
 									$("#ins"+itmcode).on('click', function() {
 										 InsertDetSerial(itmcode,itmdesc,itmmainunit,itmident,itmxref);
 									});
-//alert("b");
 
 									$("input.numeric").autoNumeric('init',{mDec:2});
+
 									//$("input.numeric").numeric();
 									$("input.numeric").on("click", function () {
 									   $(this).select();
 									});
-//alert("c");									
-									$("input.numeric").on("keyup", function (e) {
-										chkqty($(this).attr('id'));
-									  // ComputeAmt($(this).attr('id'));
-									 //  ComputeGross();
-									   tblnav(e.keyCode,$(this).attr('id'));
+									
+									$("input.numeric").on("keyup", function () {
+										if($(this).attr('name')=="txtnamount"){
+									   		ComputePrc($(this).attr('id'));
+										}else{
+											ComputeAmt($(this).attr('id'));
+										}
+									   ComputeGross();
 									});
-	//alert("d");								
-									$(".xseluom"+lastRow).on('change', function() {
-										//alert($(this).val());
-										//var xyz = chkprice(itmcode,$(this).val());
+									
+									$("#seluom"+lastRow).on('change', function() {
+
+										var xyz = chkprice(itmcode,$(this).val());
 										
-									//	$('#txtnprice'+lastRow).val(xyz.trim());
+										$('#txtnprice'+lastRow).val(xyz.trim());
 										
-									//	ComputeAmt($(this).attr('id'));
-									//	ComputeGross();
+										ComputeAmt($(this).attr('id'));
+										ComputeGross();
 										
 										var fact = setfactor($(this).val(), itmcode);
 										
 										$('#hdnfactor'+lastRow).val(fact.trim());
 										
 									});
-//alert("e");	
 
 }
 
-function chkqty(nme){
+function InsertDetSerial(itmcode, itmname, itmunit, itemrrident,refrnce){
+	$("#InvSerDetHdr").text("Inventory Details ("+itmname+")");
+	$("#serdisuom").val(itmunit);
+	$("#serdisitmcode").val(itmcode);
+	$("#serdisrefident").val(itemrrident);
+	$("#serdisrefno").val(refrnce);
+
+	$("#TheSerialStat").text("");
+
+	$("#SerialMod").modal("show");
+}
+
+
+		function ComputePrc(nme){
+
 			var disnme = nme.replace(/[0-9]/g, ''); // string only
 			var r = nme.replace( /^\D+/g, ''); // numeric only
+
 			var nqty = 0;
-			var chkValref = $("#hdnCHECKREFval").val();
 
-					
-					if(parseInt(chkValref)==1){
-						nqty = $("#txtnqty"+r).val().replace(/,/g,'');
-						nqty = parseFloat(nqty);
-
-						nqtyorig = $("#txtnqtyORIG"+r).val();
-						nqtyorig = parseFloat(nqtyorig);
-						
-						if(nqty > nqtyorig){
-							
-							$("#AlertMsg").html("");
-							
-							$("#AlertMsg").html("<b>ERROR: </b>Bigger qty is not allowed!<br><b>Original Qty: </b>" + nqtyorig);
-							$("#alertbtnOK").show();
-							$("#AlertModal").modal('show');
-							
-							$("#txtnqty"+r).val(nqtyorig);
-						}
-						
-					}
+			nqty = $("#txtnqty"+r).val().replace(/,/g,'');
+			nqty = parseFloat(nqty);
+			namt = $("#txtnamount"+r).val(); 
+			namt = parseFloat(namt);
 			
-}
+			nprc = namt/nqty;
+			nprc = nprc.toFixed(4);
+						
+			$("#txtnprice"+r).val(nprc);
 
-/*
+		}
+		
 		function ComputeAmt(nme){
 			
 			var disnme = nme.replace(/[0-9]/g, ''); // string only
@@ -1054,53 +1116,24 @@ function chkqty(nme){
 		}
 
 		function ComputeGross(){
-			var rowCount = $('#MyTable tr').length;
 			
 			var gross = 0;
 			var amt = 0;
 			
-			if(rowCount>1){
-				for (var i = 1; i <= rowCount-1; i++) {
-					amt = $("#txtnamount"+i).val();
-					gross = gross + parseFloat(amt);
-				}
-			}
+			$("#MyTable > tbody > tr").each(function(index) {	
+				
+				amt = $(this).find('input[name="txtnamount"]').val();
+			 	if( isNaN(amt)){
+					amt = 0;
+			 	}
+			 	
+			 		gross = gross + parseFloat(amt);	
+				
+			});
 
 			$("#txtnGross").val(gross.toFixed(4));
 			
 		}
-*/
-function InsertDetSerial(itmcode, itmname, itmunit, itemrrident,refrnce){
-	$("#InvSerDetHdr").text("Inventory Details ("+itmname+")");
-	$("#serdisuom").val(itmunit);
-	$("#serdisitmcode").val(itmcode);
-	$("#serdisrefident").val(itemrrident);
-	$("#serdisrefno").val(refrnce);
-
-	$("#TheSerialStat").text("");
-
-	$("#SerialMod").modal("show");
-}
-
-function tblnav(xcode,txtinput){
-	//alert(xcode);
-				var inputCNT = txtinput.replace(/\D/g,'');
-				var inputNME = txtinput.replace(/\d+/g, '');
-				 
-				switch(xcode){
-					case 38: // <Up>  
-					 	var idx =  parseInt(inputCNT) - 1;
-               			$("#"+inputNME+idx).focus();
-						break;
-					case 13:
-					case 40: // <Down>
-					 	var idx =  parseInt(inputCNT) + 1;
-               			$("#"+inputNME+idx).focus();
-						break;
-				}       
-
-}
-
 
 function addqty(){
 
@@ -1115,30 +1148,28 @@ function addqty(){
 	//alert(disID);
 		if(disID==itmcode){
 			
-			var itmqty = $(this).find("input[name='txtnqty']").val();
-		//	var itmprice = $(this).find("input[name='txtnprice']").val();
+			var itmqty = $(this).find("input[name='txtnqty']").val().replace(/,/g,'');
+			var itmprice = $(this).find("input[name='txtnprice']").val();
 			
 			//alert(itmqty +" : "+ itmprice);
 			
 			TotQty = parseFloat(itmqty) + 1;
 			$(this).find("input[name='txtnqty']").val(TotQty);
 			
-		//	TotAmt = TotQty * parseFloat(itmprice);
-		//	$(this).find("input[name='txtnamount']").val(TotAmt);
+			TotAmt = TotQty * parseFloat(itmprice);
+			$(this).find("input[name='txtnamount']").val(TotAmt);
 		}
 
 	});
 	
-//	ComputeGross();
+	ComputeGross();
 
 }
 
-/*
 function chkprice(itmcode,itmunit){
 	var result;
 	var ccode = document.getElementById("txtcustid").value;
-	
-	//alert("th_checkitmprice.php?itm="+itmcode+"&cust="+ccode+"&cunit="+itmunit)	;
+			
 	$.ajax ({
 		url: "../th_checkitmprice.php",
 		data: { itm: itmcode, cust: ccode, cunit: itmunit},
@@ -1151,7 +1182,6 @@ function chkprice(itmcode,itmunit){
 	return result;
 	
 }
-*/
 
 function setfactor(itmunit, itmcode){
 	var result;
@@ -1195,16 +1225,15 @@ function openinv(){
 			//disable escape insert and save button muna
 			
 			$.ajax({
-                    url: 'th_qolist.php',
-					data: 'x='+x,
-                    dataType: 'json',
-                    method: 'post',
-                    success: function (data) {
-                       // var classRoomsTable = $('#mytable tbody');
-					   $("#allbox").prop('checked', false);
-					   
-                       console.log(data);
-                       $.each(data,function(index,item){
+        url: 'th_qolist.php',
+				data: 'x='+x,
+        dataType: 'json',
+        method: 'post',
+        success: function (data) {
+
+					$("#allbox").prop('checked', false);					   
+          console.log(data);
+          $.each(data,function(index,item){
 
 								
 						if(item.cpono=="NONE"){
@@ -1221,7 +1250,7 @@ function openinv(){
 						else{
 							$("<tr>").append(
 							$("<td id='td"+item.cpono+"'>").text(item.cpono),
-							$("<td>").text(item.dneeded)
+							$("<td>").text(item.ngross)
 							).appendTo("#MyInvTbl tbody");
 							
 							
@@ -1288,129 +1317,87 @@ function opengetdet(valz){
 
 					//alert('th_sinumdet.php?x='+drno+"&y="+salesnos);
 					$.ajax({
-            url: 'th_qolistdet.php',
-						data: 'x='+drno+"&y="+salesnos,
-            dataType: 'json',
-            method: 'post',
-            success: function (data) {
-
-					  	$("#allbox").prop('checked', false); 					   
-              console.log(data);
-					 		$.each(data,function(index,item){
-								if(item.citemno==""){
-									alert("NO more items to add!")
-								}
-								else{
-						
-										$("<tr>").append(
-											$("<td>").html("<input type='checkbox' value='"+item.nident+"' name='chkSales[]' data-id=\""+drno+"\">"),
-											$("<td>").text(item.citemno),
-											$("<td>").text(item.cdesc),
-											$("<td>").text(item.cunit),
-											$("<td>").text(item.nqty),
-										//	$("<td>").text(item.nprice),
-										//	$("<td>").text(item.nbaseamount),
-										//	$("<td>").text(item.ccurrencycode)
-										).appendTo("#MyInvDetList tbody");
-					 	 		}
-					 		});
-            },
-						complete: function(){
-							$('#loadimg').hide();
-						},
-            error: function (req, status, err) {
-							//alert('Something went wrong\nStatus: '+status +"\nError: "+err);
-							console.log('Something went wrong', status, err);
-							$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
-							$("#alertbtnOK").show();
-							$("#AlertModal").modal('show');
-            }
-          });
+                    url: 'th_qolistdet.php',
+					data: 'x='+drno+"&y="+salesnos,
+                    dataType: 'json',
+                    method: 'post',
+                    success: function (data) {
+                       // var classRoomsTable = $('#mytable tbody');
+					  $("#allbox").prop('checked', false); 
+					   
+                      console.log(data);
+					  $.each(data,function(index,item){
+						  if(item.citemno==""){
+							  alert("NO more items to add!")
+						  }
+						  else{
+						  
+							if (item.nqty>=1){
+								$("<tr>").append(
+								$("<td>").html("<input type='checkbox' value='"+item.nident+"' name='chkSales[]' data-id=\""+drno+"\">"),
+								$("<td>").text(item.citemno),
+								$("<td>").text(item.cdesc),
+								$("<td>").text(item.cunit),
+								$("<td>").text(item.nqty)
+								).appendTo("#MyInvDetList tbody");
+							}
+					 	 }
+					 });
+                    },
+					complete: function(){
+						$('#loadimg').hide();
+					},
+                    error: function (req, status, err) {
+						//alert('Something went wrong\nStatus: '+status +"\nError: "+err);
+						console.log('Something went wrong', status, err);
+ 						$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+						$("#alertbtnOK").show();
+						$("#AlertModal").modal('show');
+                   }
+                });
 
 }
 
-function InsertSI(){
+function InsertSI(){	
 	
-	//check muna if pareparehas ng currency
-	
-	//get defsult curr if may laman na ang details
-	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
-	var tblrowcnt = tbl.length;
-
-	//var trannocurr = "";
-	//var trannocurrcnt = 0;
-
-	//	if(tblrowcnt>1){
-	//		trannocurr = $("#selbasecurr").val();
-	//		trannocurrcnt = 1;
-	//	}
-
-	//	$("input[name='chkSales[]']:checked").each( function () {
-
-	//		if(trannocurr != $(this).data("curr")){
-	//			trannocurr = $(this).data("curr");
-	//			trannocurrcnt++;
-	//		}
-	//	});
-
-	//if(trannocurrcnt>1){
-	//	alert("Multi currency in one invoice is not allowed!");
-	//}
-//	else{
-
-	
-   		$("input[name='chkSales[]']:checked").each( function () {
+   $("input[name='chkSales[]']:checked").each( function () {
 	   
 	
 				var tranno = $(this).data("id");
-	   		var id = $(this).val();
-
+	   			var id = $(this).val();
 	   			$.ajax({
 					url : "th_qolistput.php?id=" + tranno + "&itm=" + id,
 					type: "GET",
 					dataType: "JSON",
 					success: function(data)
 					{	
-					   	console.log(data);
-              $.each(data,function(index,item){
+					   console.log(data);
+                       $.each(data,function(index,item){
 						
 							$('#txtprodnme').val(item.cdesc); 
 							$('#txtprodid').val(item.citemno); 
 							$("#hdnunit").val(item.cunit); 
 
-							//if(index==0){
-							//	$("#selbasecurr").val(item.ccurrencycode).change();
-							//	$("#hidcurrvaldesc").val(item.ccurrencydesc);
-							//	convertCurrency(item.ccurrencycode);
-							//}
-
 							//alert(item.cqtyunit + ":" + item.cunit);
-							
-								myFunctionadd(item.nqty,item.nqty,item.nfactor,item.cmainuom,item.xref,item.nident)
-								
-								$("#txtprodid").val("");
-								$("#txtprodnme").val("");	
-								$("#hdnunit").val("");	
-			   
+						  //myFunctionadd(item.nqty,item.nqtyorig,item.nprice,item.namount,item.nfactor,item.cmainuom,item.xref,item.nident,item.dexpired);
+							myFunctionadd(item.nqty,item.nqty,item.nprice,item.namount,item.nfactor,item.cmainuom,item.xref,item.nident,"")
+										   
+											   
 					   });
-						
-					//	ComputeGross();
 						
 					},
 					error: function (jqXHR, textStatus, errorThrown)
 					{
-						alert(jqXHR.responseText);
+					//	alert(jqXHR.responseText);
 					}
 					
 				});
 
-		});
-		//alert($("#hdnQuoteNo").val());
-		
-		$('#mySIModal').modal('hide');
-		$('#mySIRef').modal('hide');
-
-	//}
+   });
+   //alert($("#hdnQuoteNo").val());
+   
+   $('#mySIModal').modal('hide');
+   $('#mySIRef').modal('hide');
 
 }
 
@@ -1438,7 +1425,7 @@ function chkform(){
 
 			$("#AlertMsg").html("");
 			
-			$("#AlertMsg").html("&nbsp;&nbsp;Supplier DR is required!");
+			$("#AlertMsg").html("&nbsp;&nbsp;Supplier SI is required!");
 			$("#alertbtnOK").show();
 			$("#AlertModal").modal('show');
 
@@ -1451,6 +1438,8 @@ function chkform(){
 	
 	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 	var lastRow = tbl.length-1;
+
+
 	
 	if(lastRow == 0){
 			$("#AlertMsg").html("");
@@ -1472,14 +1461,14 @@ function chkform(){
 		$("#MyTable > tbody > tr").each(function(index) {
 			
 			myqty = $(this).find('input[name="txtnqty"]').val();
-		//	myprice = $(this).find('input[name="txtnprice"]').val();
-			
+			myprice = $(this).find('input[name="txtnprice"]').val();
+
 			if(myqty == 0 || myqty == ""){
 				msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero or blank qty is not allowed: row " + index;	
 			}
 			
-		//	if(myprice == 0 || myprice == ""){
-	//			msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero amount is not allowed: row " + index;	
+			//if(myprice == 0 || myprice == ""){
+			//	msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero amount is not allowed: row " + index;	
 		//	}
 
 		});
@@ -1499,13 +1488,19 @@ function chkform(){
 	if(ISOK == "YES"){
 	var trancode = "";
 	var isDone = "True";
-		
-		var myform = $("#frmpos").serialize();
 
+
+		//Saving the header
+		var pono = $("#txtcpono").val();
+		var ccode = $("#txtcustid").val();
+		var crem = $("#txtremarks").val();
+		var ddate = $("#date_received").val();
+		var ngross = $("#txtnGross").val();
+		var ccustsi = $("#txtSuppSI").val();
+				
 		$.ajax ({
 			url: "RR_editsave.php",
-			//data: { ccode: ccode, crem: crem, ddate: ddate, ngross: ngross, ccustsi:ccustsi },
-			data: myform,
+			data: { pono:pono, ccode: ccode, crem: crem, ddate: ddate, ngross: ngross, ccustsi:ccustsi },
 			async: false,
 			beforeSend: function(){
 				$("#AlertMsg").html("&nbsp;&nbsp;<b>UPDATING RR: </b> Please wait a moment...");
@@ -1518,47 +1513,46 @@ function chkform(){
 				}
 			}
 		});
-		
+
 		if(trancode!=""){
 			//Save Details
 			$("#MyTable > tbody > tr").each(function(index) {	
-			
-				var xcref = $(this).find('input[type="hidden"][name="txtcreference"]').val();
-				var crefidnt = $(this).find('input[type="hidden"][name="txtnrefident"]').val();
-				var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-				var cuom = $(this).find('select[name="seluom"]').val();
-						if(cuom=="" || cuom==null){
-							var cuom = $(this).find('input[type="hidden"][name="seluom"]').val();
-						}
-				var nqty = $(this).find('input[name="txtnqty"]').val();
-				var nqtyOrig = $(this).find('input[type="hidden"][name="txtnqtyORIG"]').val();
-			//	var nprice = $(this).find('input[type="hidden"][name="txtnprice"]').val();
-			//	var namt = $(this).find('input[type="hidden"][name="txtnamount"]').val();
-				var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
-				var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
-				//var dneed = $(this).find('input[name="dexpired"]').val();
-			
-				if(nqty!==undefined){
-					nqty = nqty.replace(/,/g,'');
-				}
-				
-				//alert("trancode="+ trancode+ "&indx=" + index+ "&citmno=" + citmno+ "&cuom=" + cuom+ "&nqty=" + nqty+ "&nprice=" + nprice+ "&namt=" + namt+ "&mainunit=" + mainunit+ "&nfactor=" + nfactor+ "&nqtyorig=" + nqtyOrig+ "&xcref=" + xcref+ "&crefidnt=" + crefidnt);
-				
-				$.ajax ({
-					url: "RR_newsavedet.php",
-					data: { trancode: trancode, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, mainunit:mainunit, nfactor:nfactor, nqtyorig:nqtyOrig, xcref:xcref, crefidnt:crefidnt},
-					async: false,
-					success: function( data ) {
-					//	alert(data);
-						if(data.trim()=="False"){
-							isDone = "False";
-						}
-					}
-				});
-				
-			});
 
+			var xcref = $(this).find('input[type="hidden"][name="txtcreference"]').val();
+			var crefidnt = $(this).find('input[type="hidden"][name="txtnrefident"]').val();
+			var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+			var cuom = $(this).find('select[name="seluom"]').val();
+					if(cuom=="" || cuom==null){
+						var cuom = $(this).find('input[type="hidden"][name="seluom"]').val();
+					}
+			var nqty = $(this).find('input[name="txtnqty"]').val();
+			var nqtyOrig = $(this).find('input[type="hidden"][name="txtnqtyORIG"]').val();
+			var nprice = $(this).find('input[type="hidden"][name="txtnprice"]').val();
+			var namt = $(this).find('input[type="hidden"][name="txtnamount"]').val();
+			var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
+			var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
+			//var dneed = $(this).find('input[name="dexpired"]').val();
+		
 			
+			//alert("trancode="+ trancode+ "&indx=" + index+ "&citmno=" + citmno+ "&cuom=" + cuom+ "&nqty=" + nqty+ "&nprice=" + nprice+ "&namt=" + namt+ "&mainunit=" + mainunit+ "&nfactor=" + nfactor+ "&nqtyorig=" + nqtyOrig+ "&xcref=" + xcref+ "&crefidnt=" + crefidnt);
+
+			if(nqty!==undefined){
+				nqty = nqty.replace(/,/g,'');
+			}
+			
+			$.ajax ({
+				url: "RR_newsavedet.php",
+				data: { trancode: trancode, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, nqtyorig:nqtyOrig, xcref:xcref, crefidnt:crefidnt},
+				async: false,
+				success: function( data ) {
+					if(data.trim()=="False"){
+						isDone = "False";
+					}
+				}
+			});
+			
+		});
+
 			$("#MyTable2 > tbody > tr").each(function(index) {	
 			
 				var xcref = $(this).find('input[type="hidden"][name="sertabrefno"]').val();   
@@ -1568,9 +1562,9 @@ function chkform(){
 				var nqty = $(this).find('input[type="hidden"][name="sertabqty"]').val();
 				var dneed = $(this).find('input[type="hidden"][name="sertabesp"]').val();
 				var clocas = $(this).find('input[type="hidden"][name="sertablocas"]').val();
-				var seiraln = $(this).find('input[type="hidden"][name="sertabserial"]').val(); 
-				var barcdln = $(this).find('input[type="hidden"][name="sertabcodes"]').val(); 
-
+				var seiraln = $(this).find('input[type="hidden"][name="sertabserial"]').val();
+				var barcdln = $(this).find('input[type="hidden"][name="sertabcodes"]').val();
+				
 				$.ajax ({
 					url: "RR_newsavedetserials.php",
 					data: { trancode: trancode, dneed: dneed, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, clocas:clocas, xcref:xcref, crefidnt:crefidnt, seiraln:seiraln, barcdln:barcdln },
@@ -1583,6 +1577,7 @@ function chkform(){
 				});
 				
 			});
+			
 			
 			
 			if(isDone=="True"){
@@ -1613,55 +1608,6 @@ function chkform(){
 	}
 
 }
-
-/*
-
-function convertCurrency(fromCurrency) {
-  
-  toCurrency = $("#basecurrvalmain").val(); //statgetrate
-   $.ajax ({
-	 url: "../../Sales/th_convertcurr.php",
-	 data: { fromcurr: fromCurrency, tocurr: toCurrency },
-	 async: false,
-	 beforeSend: function () {
-		 $("#statgetrate").html(" <i>Getting exchange rate please wait...</i>");
-	 },
-	 success: function( data ) {
-
-		 $("#basecurrval").val(data);
-		 $("#hidcurrvaldesc").val($( "#selbasecurr option:selected" ).text()); 
-
-	 },
-	 complete: function(){
-		 $("#statgetrate").html("");
-		 recomputeCurr();
-	 }
- });
-
-}
-
-function recomputeCurr(){
-
-	var newcurate = $("#basecurrval").val();
-	var rowCount = $('#MyTable tr').length;
-			
-	var gross = 0;
-	var amt = 0;
-
-	if(rowCount>1){
-		for (var i = 1; i <= rowCount-1; i++) {
-			amt = $("#txtntranamount"+i).val();			
-			recurr = parseFloat(newcurate) * parseFloat(amt);
-
-			$("#txtnamount"+i).val(recurr.toFixed(4));
-		}
-	}
-
-	ComputeGross();
-}
-
-*/
-
 
 function chkSIEnter(keyCode,frm){
 	if(keyCode==13){
@@ -1720,7 +1666,6 @@ function enabled(){
 
 					//readonly Qty if hdnRRQty Acc No
 				//	if(document.getElementById("hdnRRQtyAcc").value=="NO"){
-					/*
 						$("#MyTable > tbody > tr").each(function(index) {	
 						
 							var y = $(this).find('input[name="txtnqty"]');
@@ -1732,7 +1677,6 @@ function enabled(){
 							var y3 = $(this).find('input[name="btndelitm"]');
 							y3.attr("disabled", true);													
 						});
-						*/
 				//	}
 					
 				}
@@ -1795,8 +1739,8 @@ function loaddetails(){
 				$('#txtprodnme').val(item.cdesc); 
 				$('#txtprodid').val(item.id); 
 				$("#hdnunit").val(item.cunit); 
-
-				myFunctionadd(item.nqty,item.nqtyorig,item.nfactor,item.cmainuom,item.xref,item.nident);
+				//alert(item.nqty);
+				myFunctionadd(item.nqty,item.nqtyorig,item.nprice,item.namount,item.nfactor,item.cmainuom,item.xref,item.nident,item.dexpired);
 			});
 
 		}
@@ -1836,8 +1780,5 @@ function loadserials(){
 
 }
 
-function tblcheckk(){
-	alert($("#MyTable > tbody tr").length);
-}
-
 </script>
+

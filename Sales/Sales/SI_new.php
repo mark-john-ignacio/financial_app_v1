@@ -225,24 +225,14 @@ $company = $_SESSION['companyid'];
 								</td>
 						</tr>
 						<tr>
-								<td style="padding:2px"></td>
-								<td style="padding:2px"><!--
-									<div class="col-xs-6 nopadding">
-										<div class="input-group">
-											<div class="input-group-btn">
-													<button type="button" data-toggle="dropdown" class="btn btn-warning btn-sm dropdown-toggle">
-															Reference <span class="caret"></span>
-													</button>
-													<ul class="dropdown-menu">
-															<li><a href="#">Billing</a></li>
-															<li><a href="#">Sales Order</a></li>
-															<li><a href="#">Delivery</a></li>
-													</ul>
-											</div>									
-											<input type="text" class="form-control input-sm" id="txtSearchBill" name="txtSearchBill" placeholder="Search/Enter Billing Reference...">
-										</div>
+								<tH width="100">Reference:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-2 nopadding">
+										<input type="text" class="form-control input-sm" id="txtrefmod" name="txtrefmod" readonly>
 									</div>
-												-->
+									<div class="col-xs-9 nopadwleft">
+										<input type="text" class="form-control input-sm" id="txtrefmodnos" name="txtrefmodnos" readonly>
+									</div>
 								</td>
 								<th><div class="chklimit">Balance:</div></th>
 								<td style="padding:2px;"  align="right">				          
@@ -601,14 +591,14 @@ $company = $_SESSION['companyid'];
 					dataType: "json",
 					success: function(data)
 					{	
-					   console.log(data);
-                       $.each(data,function(index,item){
+					  console.log(data);
+            $.each(data,function(index,item){
 						   xChkBal = item.chkinv; //0 = Check ; 1 = Dont Check
 						   xChkLimit = item.chkcustlmt; //0 = Disable ; 1 = Enable
 						   xChkLimitWarn = item.chklmtwarn; //0 = Accept Warninf ; 1 = Accept Block ; 2 = Refuse Order
 						   xChkVatableStatus = item.chkcompvat;
 						   
-					   });
+					  });
 					}
 				});
 		//if(xChkBal==1){
@@ -1322,9 +1312,7 @@ $company = $_SESSION['companyid'];
 			ndsc = parseFloat(ndsc);
 			
 			if (parseFloat(ndsc) != 0) {
-				nprcdisc = parseFloat(nprc) * (parseFloat(ndsc) / 100);
-				nprc = parseFloat(nprc) - nprcdisc;
-
+				nprc = parseFloat(nprc) - parseFloat(ndsc);
 			}
 			
 			namt = nqty * nprc;
@@ -1338,7 +1326,7 @@ $company = $_SESSION['companyid'];
 			$("#txtnamount"+r).autoNumeric('destroy');
 
 			$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
-			$("#txtnamount"+r).autoNumeric('init',{mDec:2});
+			$("#txtnamount"+r).autoNumeric('init',{mDec:2}); 
 
 	}
 
@@ -1460,14 +1448,14 @@ $company = $_SESSION['companyid'];
 				$(this).find("input[name='txtntranamount']").val(TotAmt);
 
 				$("#txtntranamount"+r).autoNumeric('destroy');
-				$("#txtntranamount"+r).autoNumeric('init',{mDec:4});
+				$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
 
 
 				namt2 = TotAmt * parseFloat($("#basecurrval").val());
-				$(this).find("input[name='txtnamount']").val(namt2.toFixed(4)); 
+				$(this).find("input[name='txtnamount']").val(namt2); 
 
 				$("#txtnamount"+r).autoNumeric('destroy');
-				$("#txtnamount"+r).autoNumeric('init',{mDec:4});
+				$("#txtnamount"+r).autoNumeric('init',{mDec:2});
 
 			}
 
@@ -1782,7 +1770,7 @@ $company = $_SESSION['companyid'];
 
 											if(typ=="DR"){
 												$("<tr>").append(
-												$("<td>").html("<input type='checkbox' value='"+item.citemno+"' name='chkSales[]' data-id=\""+drno+"\" data-curr=\""+item.ccurrencycode+"\">"),
+												$("<td>").html("<input type='checkbox' value='"+item.id+"' name='chkSales[]' data-id=\""+drno+"\" data-curr=\""+item.ccurrencycode+"\">"),
 												$("<td>").text(item.creference),
 												$("<td>").text(item.citemno),
 												$("<td>").text(item.cdesc),
@@ -1794,7 +1782,7 @@ $company = $_SESSION['companyid'];
 												).appendTo("#MyInvDetList tbody");
 											}else if(typ=="QO" || typ=="SO"){
 												$("<tr>").append(
-												$("<td>").html("<input type='checkbox' value='"+item.citemno+"' name='chkSales[]' data-id=\""+drno+"\" data-curr=\""+item.ccurrencycode+"\">"),
+												$("<td>").html("<input type='checkbox' value='"+item.id+"' name='chkSales[]' data-id=\""+drno+"\" data-curr=\""+item.ccurrencycode+"\">"),
 												$("<td>").text(item.citemno),
 												$("<td>").text(item.cdesc),
 												$("<td>").text(item.cunit),
@@ -1877,11 +1865,15 @@ $company = $_SESSION['companyid'];
 									if(index==0){
 										$("#selbasecurr").val(item.ccurrencycode).change();
 										$("#hidcurrvaldesc").val(item.ccurrencydesc);
-										convertCurrency(item.ccurrencycode);
+										//convertCurrency(item.ccurrencycode);
 									}
 
 
 									addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.crefident,item.citmcls)
+
+									//get currentvalue of ref..
+									$("#txtrefmod").val(typ);
+									$("#txtrefmodnos").val(item.xref);
 													
 							});
 							
@@ -2162,30 +2154,6 @@ $company = $_SESSION['companyid'];
 
 	}
 
-	function convertCurrency(fromCurrency) {
-		
-		toCurrency = $("#basecurrvalmain").val(); //statgetrate
-		$.ajax ({
-			url: "../th_convertcurr.php",
-			data: { fromcurr: fromCurrency, tocurr: toCurrency },
-			async: false,
-			beforeSend: function () {
-				$("#statgetrate").html(" <i>Getting exchange rate please wait...</i>");
-			},
-			success: function( data ) {
-
-				$("#basecurrval").val(data);
-				$("#hidcurrvaldesc").val($( "#selbasecurr option:selected" ).text()); 
-			},
-			complete: function(){
-				$("#statgetrate").html("");
-				
-				recomputeCurr();
-			}
-		});
-
-	}
-
 	function recomputeCurr(){
 
 		var newcurate = $("#basecurrval").val();
@@ -2196,14 +2164,16 @@ $company = $_SESSION['companyid'];
 
 		if(rowCount>1){
 			for (var i = 1; i <= rowCount-1; i++) {
-				amt = $("#txtntranamount"+i).val();			
+				amt = $("#txtntranamount"+i).val().replace(/,/g,'');	
+				
 				recurr = parseFloat(newcurate) * parseFloat(amt);
 
-				$("#txtnamount"+i).val(recurr.toFixed(4));
+				$("#txtnamount"+i).val(recurr);
+
+				$("#txtnamount"+i).autoNumeric('destroy');
+				$("#txtnamount"+i).autoNumeric('init',{mDec:2}); 
 			}
 		}
-
-
 		ComputeGross();
 
 

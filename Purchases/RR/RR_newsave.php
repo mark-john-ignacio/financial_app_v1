@@ -49,13 +49,13 @@ else {
 	$cCustID = $_REQUEST['txtcustid'];
 	$dDelDate = $_REQUEST['date_received'];
 	$cRemarks = chkgrp($_REQUEST['txtremarks']); 
-	$nGross = str_replace(",","",$_REQUEST['txtnGross']); 
+	//$nGross = str_replace(",","",$_REQUEST['txtnGross']); 
 	$cCustSI = $_REQUEST['txtSuppSI'];
 
-	$CurrCode = $_REQUEST['basecurrval']; //$_REQUEST['selbasecurr']; 
-	$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
-	$CurrRate= $_REQUEST['basecurrval']; 
-	$BaseGross= str_replace(",","",$_REQUEST['txtnBaseGross']);
+	//$CurrCode = $_REQUEST['basecurrval']; //$_REQUEST['selbasecurr']; 
+	//$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
+	//$CurrRate= $_REQUEST['basecurrval']; 
+	//$BaseGross= str_replace(",","",$_REQUEST['txtnBaseGross']);
 	
 	$chkCustAcct = mysqli_query($con,"select cacctcode from suppliers where compcode='$company' and ccode='$cCustID'");
 
@@ -72,8 +72,8 @@ else {
 	$preparedby = $_SESSION['employeeid'];
 	
 	//INSERT HEADER	
-	if (!mysqli_query($con,"INSERT INTO receive(`compcode`, `ctranno`, `ccode`, `cremarks`, `ddate`, `dreceived`, `ngross`, `cpreparedby`, `lcancelled`, `lapproved`, `lprintposted`, `ccustacctcode`, `crefsi`) 
-	values('$company', '$cSINo', '$cCustID', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$preparedby', 0, 0, 0, '$AccntCode','$cCustSI')")){
+	if (!mysqli_query($con,"INSERT INTO receive(`compcode`, `ctranno`, `ccode`, `cremarks`, `ddate`, `dreceived`, `cpreparedby`, `lcancelled`, `lapproved`, `lprintposted`, `ccustacctcode`, `crefsi`) 
+	values('$company', '$cSINo', '$cCustID', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$preparedby', 0, 0, 0, '$AccntCode','$cCustSI')")){
 		echo "False";
 	}
 	else{

@@ -9,7 +9,7 @@ include('../../include/denied.php');
 include('../../include/access2.php');
 
 $employeeid = $_REQUEST['empedit'];
-
+@$arrpgist = array();
   $sql = mysqli_query($con,"select * from users_access where userid = '$employeeid'");
 	if (mysqli_num_rows($sql)!=0) {
 		while($row = mysqli_fetch_array($sql, MYSQLI_ASSOC)){
@@ -1045,7 +1045,7 @@ xmlhttp.send();
 
   <button type="submit" class="btn btn-success btn-sm">Save<br> (F2)</button>
     
-  <!--<input type="hidden" name="userid" id="userid" value="<?//php echo ;?>">-->
+  <input type="hidden" name="userid" id="userid" value="<?php echo $employeeid;?>">
 
 
 <script>

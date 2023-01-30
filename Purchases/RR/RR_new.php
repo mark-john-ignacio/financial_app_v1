@@ -21,6 +21,7 @@ include('../../include/access2.php');
 	// 1 = W/ Reference Check Qty .. Qty must be less than or equal to reference
 	// 2 = W/ Reference Open Qty .. allow qty even if more tha reference
 
+	/*
 	function listcurrencies(){ //API for currency list
 		$apikey = $_SESSION['currapikey'];
 		
@@ -36,6 +37,7 @@ include('../../include/access2.php');
 		//}
 		
 	}
+	*/
 
 ?>
 
@@ -45,7 +47,7 @@ include('../../include/access2.php');
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Coop Financials</title>
+	<title>Myx Financials</title>
     
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
@@ -53,7 +55,10 @@ include('../../include/access2.php');
 
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 <script src="../../js/bootstrap3-typeahead.min.js"></script>
+<script src="../../include/autoNumeric.js"></script>
+<!--
 <script src="../../Bootstrap/js/jquery.numeric.js"></script>
+-->
 
 <script src="../../Bootstrap/js/bootstrap.js"></script>
 <script src="../../Bootstrap/js/moment.js"></script>
@@ -69,25 +74,32 @@ include('../../include/access2.php');
     	<legend>Receiving</legend>	
         <input type="hidden" value="<?php echo $nCHKREFvalue;?>" name="hdnCHECKREFval" id="hdnCHECKREFval">
         <table width="100%" border="0">
-  <tr>
-    <tH width="100">Supplier:</tH>
-    <td style="padding:2px">
-    	<div class="col-xs-5">
-        	<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier's Name..." autocomplete="off">
-        </div> 
-        &nbsp;&nbsp;
-        	<input type="text" id="txtcustid" name="txtcustid" style="border:none; height:30px" readonly>
-    </td>
-    <tH width="150">Supplier DR</tH>
-    <td style="padding:2px;"><div class="col-xs-8">
-      <input type='text' class="form-control input-sm" id="txtSuppSI" name="txtSuppSI" required/>
-    </div></td>
-  </tr>
+					<tr>
+						<tH width="100">Supplier:</tH>
+						<td style="padding:2px">
+							<div class="col-xs-12 nopadding">
+								<div class="col-xs-3 nopadding">
+									<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" value="" readonly>
+								</div>
+
+								<div class="col-xs-8 nopadwleft">
+									<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" value="">
+								</div> 
+							</div>
+						</td>
+						<tH width="150">Supplier DR:</tH>
+						<td width="250" style="padding:2px;">
+							<div class="col-xs-8 nopadding">
+								<input type='text' class="form-control input-sm" id="txtSuppSI" name="txtSuppSI" required/>
+							</div>
+						</td>
+					</tr>
+
   <tr>
     <tH width="100">Remarks:</tH>
-    <td style="padding:2px"><div class="col-xs-8"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div></td>
+    <td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div></td>
     <tH width="150" style="padding:2px">Date Received:</tH>
-    <td style="padding:2px"><div class="col-xs-8">
+    <td style="padding:2px"><div class="col-xs-8 nopadding">
       <input type='text' class="datepick form-control input-sm" id="date_received" name="date_received" />
     </div>
 	
@@ -102,7 +114,7 @@ include('../../include/access2.php');
 							<div class="col-xs-3 nopadding">
 								<!--<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">--> 						
 									<?php
-									
+									/*
 											$nvaluecurrbase = "";	
 											$nvaluecurrbasedesc = "";	
 											$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
@@ -117,6 +129,7 @@ include('../../include/access2.php');
 													$nvaluecurrbase = "";
 												}
 						
+											*/
 												//	$objcurrs = listcurrencies();
 												//	$objrows = json_decode($objcurrs,true);
 														
@@ -130,12 +143,12 @@ include('../../include/access2.php');
 									<?php
 											//}
 									?>
-								<!--</select>-->
-									<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?php echo $nvaluecurrbase; ?>"> 	
-									<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?php echo $nvaluecurrbasedesc; ?>"> 
+								<!--</select>
+									<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?//php echo $nvaluecurrbase; ?>"> 	
+									<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?//php echo $nvaluecurrbasedesc; ?>"> -->
 							</div>
-							<div class="col-xs-1 nopadwleft"><!-- class="numeric required form-control input-sm text-right"  -->
-								<input type='hidden' id="basecurrval" name="basecurrval" value="1">	 
+							<div class="col-xs-1 nopadwleft"><!-- class="numeric required form-control input-sm text-right" 
+								<input type='hidden' id="basecurrval" name="basecurrval" value="1">	 -->
 							</div>
 
 							<div class="col-xs-5" id="statgetrate" style="padding: 4px !important"> 
@@ -208,8 +221,8 @@ include('../../include/access2.php');
 					text-align: left;
 					overflow: auto">
 	
-            <table id="MyTable" class="MyTable" width="100%" cellpadding="1px">
-							
+            <table id="MyTable" class="MyTable" width="100%" cellpadding="3px">
+								<thead>
 									<tr>
 										<th style="border-bottom:1px solid #999">&nbsp;</th>
 										<th style="border-bottom:1px solid #999">Code</th>
@@ -222,9 +235,9 @@ include('../../include/access2.php');
 				                        <!--<th style="border-bottom:1px solid #999">Date Expired</th>-->
 				            <th style="border-bottom:1px solid #999">&nbsp;</th>
 									</tr>
-	
-									<tbody class="tbody">
-                  </tbody>
+								</thead>
+								<tbody class="tbody">
+                </tbody>
                     
 						</table>
 				</div>
@@ -241,7 +254,7 @@ include('../../include/access2.php');
                         text-align: left;
                         overflow: auto">
         
-                <table id="MyTable2" cellpadding="3px" width="100%" border="0">
+                <table id="MyTable2" class="table" width="100%" border="0">
     							<thead>
                         <tr>
                         	
@@ -276,8 +289,10 @@ PO<br>(Insert)</button>
     
      <button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();">Save<br> (CTRL+S)</button>
 
+		 <!--
 		 <input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="0">
 		 <input type="hidden" id="txtnGross" name="txtnGross" value="0">
+	-->
     </td>
     <td width="110px" align="right">&nbsp;</td>
     <td width="150px"> &nbsp; </td>
@@ -313,7 +328,7 @@ PO<br>(Insert)</button>
                            <thead>
                             <tr>
                               <th>PO No</th>
-                              <th>Amount</th>
+                              <th>Date</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -598,7 +613,7 @@ $(function(){
 
 	
 				myFunctionadd("","","","","","","");
-				ComputeGross();	
+				//ComputeGross();	
 									
 	    }
 	    else{
@@ -697,7 +712,7 @@ function addItemName(){
 	 if(isItem=="NO"){	
 
 			myFunctionadd("","","","","","","");		
-			ComputeGross();	
+		//	ComputeGross();	
 	 }
 	 else{
 		
@@ -713,16 +728,16 @@ function addItemName(){
 
 }
 
-function myFunctionadd(nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident){
+function myFunctionadd(nqty,nfactor,cmainunit,xref,nident){
 
 	var itmcode = document.getElementById("txtprodid").value;
 	var itmdesc = document.getElementById("txtprodnme").value;
 	var itmunit = document.getElementById("hdnunit").value;
 	//var dneeded = document.getElementById("date_received").value;
 	
-	if(nqty=="" && nprice=="" && namount=="" && nfactor=="" && cmainunit=="" && xref=="" && nident==""){	
-		var itmprice = chkprice(itmcode,itmunit);
-		var itmamnt = itmprice;
+	if(nqty=="" && nfactor=="" && cmainunit=="" && xref=="" && nident==""){	
+	//	var itmprice = chkprice(itmcode,itmunit);
+	//	var itmamnt = itmprice;
 		var itmqty = 1;
 		var itmqtyorig = 0;
 		var itmfactor = 1;
@@ -730,12 +745,12 @@ function myFunctionadd(nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident
 		var itmxref = "";
 		var itmident = "";
 
-		var curramtz = price;
+	//	var curramtz = price;
 
 	}
 	else{
-		var itmprice = nprice;
-		var itmamnt = namount;
+	//	var itmprice = nprice;
+	//	var itmamnt = namount;
 		var itmqty = nqty;
 		var itmqtyorig = nqty;
 		var itmfactor = nfactor;
@@ -743,10 +758,10 @@ function myFunctionadd(nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident
 		var itmxref = xref;
 		var itmident = nident;
 
-		var curramtz = curramt;
+	//	var curramtz = curramt;
 	}
 
-	var baseprice = curramtz * parseFloat($("#basecurrval").val());
+	//var baseprice = curramtz * parseFloat($("#basecurrval").val());
 
 
 	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
@@ -793,7 +808,7 @@ function myFunctionadd(nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident
 	
 	tditmunit = "<td width=\"80\"> " + uomoptions + "</td>";
 	
-	tditmqty = "<td width=\"100\"> <input type='text' value='"+itmqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+itmqtyorig+"' name=\"txtnqtyORIG\" id=\"txtnqtyORIG"+lastRow+"\"> <input type='hidden' value='"+itmprice+"' name=\"txtnprice\" id='txtnprice"+lastRow+"'> <input type='hidden' value='"+itmmainunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+itmfactor+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> <input type='hidden' value='"+curramtz+"' name='txtntranamount' id='txtntranamount"+lastRow+"'> <input type='hidden' value='"+baseprice.toFixed(4)+"' name='txtnamount' id='txtnamount"+lastRow+"'></td>";
+	tditmqty = "<td width=\"100\" style=\"padding:1px\"> <input type='text' value='"+itmqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+itmqtyorig+"' name=\"txtnqtyORIG\" id=\"txtnqtyORIG"+lastRow+"\"> <input type='hidden' value='"+itmmainunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+itmfactor+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
 	
 	//tditmprice = "<td width=\"100\" style=\"padding:1px\"> <input type='text' value='"+itmprice+"' class='numeric form-control input-xs' style='text-align:right'name=\"txtnprice\" id='txtnprice"+lastRow+"' autocomplete='off' onFocus='this.select();'> <input type='hidden' value='"+itmmainunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+itmfactor+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
 
@@ -801,7 +816,7 @@ function myFunctionadd(nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident
 	
 	//tditmamount = "<td width=\"100\" style=\"padding:1px\"> <input type='text' value='"+baseprice.toFixed(4)+"' class='form-control input-xs' style='text-align:right' name='txtnamount' id='txtnamount"+lastRow+"' readonly> </td>";
 	
-	tditmdel = "<td width=\"80\" style=\"padding:1px\"> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' /> </td>";
+	tditmdel = "<td width=\"80\" style=\"padding:1px\" align=\"center\"> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' /> </td>";
 
   //+ tditmprice + tditmbaseamount+ tditmamount 
 
@@ -810,32 +825,35 @@ function myFunctionadd(nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident
 
 									$("#del"+itmcode).on('click', function() {
 										$(this).closest('tr').remove();
-										 ComputeGross();
+										// ComputeGross();
 									});
 									
 									$("#ins"+itmcode).on('click', function() {
 										 InsertDetSerial(itmcode,itmdesc,itmmainunit,itmident,itmxref);
 									});
 //alert("b");
-									$("input.numeric").numeric();
+
+									$("input.numeric").autoNumeric('init',{mDec:2});
+									//$("input.numeric").numeric();
 									$("input.numeric").on("click", function () {
 									   $(this).select();
 									});
 //alert("c");									
 									$("input.numeric").on("keyup", function (e) {
-									   ComputeAmt($(this).attr('id'));
-									   ComputeGross();
+										chkqty($(this).attr('id'));
+									 //  ComputeAmt($(this).attr('id'));
+									 //  ComputeGross();
 									   tblnav(e.keyCode,$(this).attr('id'));
 									});
 	//alert("d");								
 									$(".xseluom"+lastRow).on('change', function() {
-										alert($(this).val());
-										var xyz = chkprice(itmcode,$(this).val());
+									//	alert($(this).val());
+									//	var xyz = chkprice(itmcode,$(this).val());
 										
-										$('#txtnprice'+lastRow).val(xyz.trim());
+									//	$('#txtnprice'+lastRow).val(xyz.trim());
 										
-										ComputeAmt($(this).attr('id'));
-										ComputeGross();
+										//ComputeAmt($(this).attr('id'));
+									//	ComputeGross();
 										
 										var fact = setfactor($(this).val(), itmcode);
 										
@@ -846,55 +864,36 @@ function myFunctionadd(nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident
 
 }
 
-function InsertDetSerial(itmcode, itmname, itmunit, itemrrident,refrnce){
-	$("#InvSerDetHdr").text("Inventory Details ("+itmname+")");
-	$("#serdisuom").val(itmunit);
-	$("#serdisitmcode").val(itmcode);
-	$("#serdisrefident").val(itemrrident);
-	$("#serdisrefno").val(refrnce);
+function chkqty(nme){
+			var disnme = nme.replace(/[0-9]/g, ''); // string only
+			var r = nme.replace( /^\D+/g, ''); // numeric only
+			var nqty = 0;
+			var chkValref = $("#hdnCHECKREFval").val();
 
-	$("#TheSerialStat").text("");
+					
+					if(parseInt(chkValref)==1){
+						nqty = $("#txtnqty"+r).val().replace(/,/g,'');
+						nqty = parseFloat(nqty);
 
-	$("#SerialMod").modal("show");
+						nqtyorig = $("#txtnqtyORIG"+r).val();
+						nqtyorig = parseFloat(nqtyorig);
+						
+						if(nqty > nqtyorig){
+							
+							$("#AlertMsg").html("");
+							
+							$("#AlertMsg").html("<b>ERROR: </b>Bigger qty is not allowed!<br><b>Original Qty: </b>" + nqtyorig);
+							$("#alertbtnOK").show();
+							$("#AlertModal").modal('show');
+							
+							$("#txtnqty"+r).val(nqtyorig);
+						}
+						
+					}
+			
 }
 
-function tblnav(xcode,txtinput){
-	//alert(xcode);
-				var inputCNT = txtinput.replace(/\D/g,'');
-				var inputNME = txtinput.replace(/\d+/g, '');
-				 
-				switch(xcode){
-					case 39: // <Right>
-						if(inputNME=="txtnqty"){
-							$("#txtnprice"+inputCNT).focus();
-						}
-						else if(inputNME=="txtnprice"){
-							$("#txtnfactor"+inputCNT).focus();
-						}
-						 
-						break;
-					case 38: // <Up>  
-					 	var idx =  parseInt(inputCNT) - 1;
-               			$("#"+inputNME+idx).focus();
-						break;
-					case 37: // <Left>
-						if(inputNME=="txtnfactor"){
-							$("#txtnprice"+inputCNT).focus();
-						}
-						else if(inputNME=="txtnprice"){
-							$("#txtnqty"+inputCNT).focus();
-						}
-
-						break;
-					case 13:
-					case 40: // <Down>
-					 	var idx =  parseInt(inputCNT) + 1;
-               			$("#"+inputNME+idx).focus();
-						break;
-				}       
-
-}
-
+/*
 		function ComputeAmt(nme){
 			
 			var disnme = nme.replace(/[0-9]/g, ''); // string only
@@ -906,7 +905,7 @@ function tblnav(xcode,txtinput){
 				if(disnme=="txtnqty"){ // If qty textbox check muna ung qty vs orig pag 1 or 2 ung CHEKREFval
 					
 					if(parseInt(chkValref)==1){
-						nqty = $("#txtnqty"+r).val();
+						nqty = $("#txtnqty"+r).val().replace(/,/g,'');
 						nqty = parseFloat(nqty);
 
 						nqtyorig = $("#txtnqtyORIG"+r).val();
@@ -926,7 +925,7 @@ function tblnav(xcode,txtinput){
 					}
 				}
 			
-			nqty = $("#txtnqty"+r).val();
+			nqty = $("#txtnqty"+r).val().replace(/,/g,'');
 			nqty = parseFloat(nqty);
 			nprc = $("#txtnprice"+r).val();
 			nprc = parseFloat(nprc);
@@ -955,6 +954,40 @@ function tblnav(xcode,txtinput){
 			
 		}
 
+		*/
+
+function InsertDetSerial(itmcode, itmname, itmunit, itemrrident,refrnce){
+	$("#InvSerDetHdr").text("Inventory Details ("+itmname+")");
+	$("#serdisuom").val(itmunit);
+	$("#serdisitmcode").val(itmcode);
+	$("#serdisrefident").val(itemrrident);
+	$("#serdisrefno").val(refrnce);
+
+	$("#TheSerialStat").text("");
+
+	$("#SerialMod").modal("show");
+}
+
+function tblnav(xcode,txtinput){
+	//alert(xcode);
+				var inputCNT = txtinput.replace(/\D/g,'');
+				var inputNME = txtinput.replace(/\d+/g, '');
+				 
+				switch(xcode){
+					case 38: // <Up>  
+					 	var idx =  parseInt(inputCNT) - 1;
+               			$("#"+inputNME+idx).focus();
+						break;
+					case 13:
+					case 40: // <Down>
+					 	var idx =  parseInt(inputCNT) + 1;
+               			$("#"+inputNME+idx).focus();
+						break;
+				}       
+
+}
+
+
 function addqty(){
 
 	var itmcode = document.getElementById("txtprodid").value;
@@ -969,23 +1002,24 @@ function addqty(){
 		if(disID==itmcode){
 			
 			var itmqty = $(this).find("input[name='txtnqty']").val();
-			var itmprice = $(this).find("input[name='txtnprice']").val();
+		//	var itmprice = $(this).find("input[name='txtnprice']").val();
 			
 			//alert(itmqty +" : "+ itmprice);
 			
 			TotQty = parseFloat(itmqty) + 1;
 			$(this).find("input[name='txtnqty']").val(TotQty);
 			
-			TotAmt = TotQty * parseFloat(itmprice);
-			$(this).find("input[name='txtnamount']").val(TotAmt);
+		//	TotAmt = TotQty * parseFloat(itmprice);
+		//	$(this).find("input[name='txtnamount']").val(TotAmt);
 		}
 
 	});
 	
-	ComputeGross();
+//	ComputeGross();
 
 }
 
+/*
 function chkprice(itmcode,itmunit){
 	var result;
 	var ccode = document.getElementById("txtcustid").value;
@@ -1003,6 +1037,7 @@ function chkprice(itmcode,itmunit){
 	return result;
 	
 }
+*/
 
 function setfactor(itmunit, itmcode){
 	var result;
@@ -1072,7 +1107,7 @@ function openinv(){
 						else{
 							$("<tr>").append(
 							$("<td id='td"+item.cpono+"'>").text(item.cpono),
-							$("<td>").text(item.ngross)
+							$("<td>").text(item.dneeded)
 							).appendTo("#MyInvTbl tbody");
 							
 							
@@ -1139,47 +1174,44 @@ function opengetdet(valz){
 
 					//alert('th_sinumdet.php?x='+drno+"&y="+salesnos);
 					$.ajax({
-                    url: 'th_qolistdet.php',
-					data: 'x='+drno+"&y="+salesnos,
-                    dataType: 'json',
-                    method: 'post',
-                    success: function (data) {
-                       // var classRoomsTable = $('#mytable tbody');
-					  $("#allbox").prop('checked', false); 
-					   
-                      console.log(data);
-					  $.each(data,function(index,item){
-						  if(item.citemno==""){
-							  alert("NO more items to add!")
-						  }
-						  else{
-						  
-							if (item.nqty>=1){
-								$("<tr>").append(
-								$("<td>").html("<input type='checkbox' value='"+item.nident+"' name='chkSales[]' data-id=\""+drno+"\">"),
-								$("<td>").text(item.citemno),
-								$("<td>").text(item.cdesc),
-								$("<td>").text(item.cunit),
-								$("<td>").text(item.nqty),
-							//	$("<td>").text(item.nprice),
-							//	$("<td>").text(item.nbaseamount),
-							//	$("<td>").text(item.ccurrencycode)
-								).appendTo("#MyInvDetList tbody");
-							}
-					 	 }
-					 });
-                    },
-					complete: function(){
-						$('#loadimg').hide();
-					},
-                    error: function (req, status, err) {
-						//alert('Something went wrong\nStatus: '+status +"\nError: "+err);
-						console.log('Something went wrong', status, err);
- 						$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
-						$("#alertbtnOK").show();
-						$("#AlertModal").modal('show');
-                   }
-                });
+            url: 'th_qolistdet.php',
+						data: 'x='+drno+"&y="+salesnos,
+            dataType: 'json',
+            method: 'post',
+            success: function (data) {
+
+					  	$("#allbox").prop('checked', false); 					   
+              console.log(data);
+					 		$.each(data,function(index,item){
+								if(item.citemno==""){
+									alert("NO more items to add!")
+								}
+								else{
+						
+										$("<tr>").append(
+											$("<td>").html("<input type='checkbox' value='"+item.nident+"' name='chkSales[]' data-id=\""+drno+"\">"),
+											$("<td>").text(item.citemno),
+											$("<td>").text(item.cdesc),
+											$("<td>").text(item.cunit),
+											$("<td>").text(item.nqty),
+										//	$("<td>").text(item.nprice),
+										//	$("<td>").text(item.nbaseamount),
+										//	$("<td>").text(item.ccurrencycode)
+										).appendTo("#MyInvDetList tbody");
+					 	 		}
+					 		});
+            },
+						complete: function(){
+							$('#loadimg').hide();
+						},
+            error: function (req, status, err) {
+							//alert('Something went wrong\nStatus: '+status +"\nError: "+err);
+							console.log('Something went wrong', status, err);
+							$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+							$("#alertbtnOK").show();
+							$("#AlertModal").modal('show');
+            }
+          });
 
 }
 
@@ -1217,7 +1249,7 @@ function InsertSI(){
 	   
 	
 				var tranno = $(this).data("id");
-	   			var id = $(this).val();
+	   		var id = $(this).val();
 
 	   			$.ajax({
 					url : "th_qolistput.php?id=" + tranno + "&itm=" + id,
@@ -1225,22 +1257,22 @@ function InsertSI(){
 					dataType: "JSON",
 					success: function(data)
 					{	
-					   console.log(data);
-                       $.each(data,function(index,item){
+					   	console.log(data);
+              $.each(data,function(index,item){
 						
 							$('#txtprodnme').val(item.cdesc); 
-							$('#txtprodid').val(item.id); 
+							$('#txtprodid').val(item.citemno); 
 							$("#hdnunit").val(item.cunit); 
 
-							if(index==0){
-								$("#selbasecurr").val(item.ccurrencycode).change();
-								$("#hidcurrvaldesc").val(item.ccurrencydesc);
-								convertCurrency(item.ccurrencycode);
-							}
+							//if(index==0){
+							//	$("#selbasecurr").val(item.ccurrencycode).change();
+							//	$("#hidcurrvaldesc").val(item.ccurrencydesc);
+							//	convertCurrency(item.ccurrencycode);
+							//}
 
 							//alert(item.cqtyunit + ":" + item.cunit);
 							
-								myFunctionadd(item.nqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.cmainuom,item.xref,item.nident)
+								myFunctionadd(item.nqty,item.nfactor,item.cmainuom,item.xref,item.nident)
 								
 								$("#txtprodid").val("");
 								$("#txtprodnme").val("");	
@@ -1248,7 +1280,7 @@ function InsertSI(){
 			   
 					   });
 						
-						ComputeGross();
+					//	ComputeGross();
 						
 					},
 					error: function (jqXHR, textStatus, errorThrown)
@@ -1326,15 +1358,15 @@ function chkform(){
 		$("#MyTable > tbody > tr").each(function(index) {
 			
 			myqty = $(this).find('input[name="txtnqty"]').val();
-			myprice = $(this).find('input[name="txtnprice"]').val();
+			//myprice = $(this).find('input[name="txtnprice"]').val();
 			
 			if(myqty == 0 || myqty == ""){
 				msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero or blank qty is not allowed: row " + index;	
 			}
 			
-			if(myprice == 0 || myprice == ""){
-				msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero amount is not allowed: row " + index;	
-			}
+		//	if(myprice == 0 || myprice == ""){
+		//		msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero amount is not allowed: row " + index;	
+		//	}
 
 		});
 		
@@ -1356,12 +1388,14 @@ function chkform(){
 
 
 		//Saving the header
+
+		/*
 		var ccode = $("#txtcustid").val();
 		var crem = $("#txtremarks").val();
 		var ddate = $("#date_received").val();
 		var ngross = $("#txtnGross").val(); 
 		var ccustsi = $("#txtSuppSI").val();
-		
+		*/
 		var myform = $("#frmpos").serialize();
 
 		$.ajax ({
@@ -1395,18 +1429,22 @@ function chkform(){
 						}
 				var nqty = $(this).find('input[name="txtnqty"]').val();
 				var nqtyOrig = $(this).find('input[type="hidden"][name="txtnqtyORIG"]').val();
-				var nprice = $(this).find('input[name="txtnprice"]').val();
-				var namt = $(this).find('input[name="txtnamount"]').val();
+				//var nprice = $(this).find('input[type="hidden"][name="txtnprice"]').val();
+				//var namt = $(this).find('input[type="hidden"][name="txtnamount"]').val();
 				var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
 				var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
 				//var dneed = $(this).find('input[name="dexpired"]').val();
 			
 				
-				//$("#txtremarks").val("trancode="+ trancode+ "&indx=" + index+ "&citmno=" + citmno+ "&cuom=" + cuom+ "&nqty=" + nqty+ "&nprice=" + nprice+ "&namt=" + namt+ "&mainunit=" + mainunit+ "&nfactor=" + nfactor+ "&nqtyorig=" + nqtyOrig+ "&xcref=" + xcref+ "&crefidnt=" + crefidnt);
+				//alert("trancode="+ trancode+ "&indx=" + index+ "&citmno=" + citmno+ "&cuom=" + cuom+ "&nqty=" + nqty+ "&mainunit=" + mainunit+ "&nfactor=" + nfactor+ "&nqtyorig=" + nqtyOrig+ "&xcref=" + xcref+ "&crefidnt=" + crefidnt);
+
+				if(nqty!==undefined){
+					nqty = nqty.replace(/,/g,'');
+				}
 				
 				$.ajax ({
 					url: "RR_newsavedet.php",
-					data: { trancode: trancode, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, nqtyorig:nqtyOrig, xcref:xcref, crefidnt:crefidnt},
+					data: { trancode: trancode, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, mainunit:mainunit, nfactor:nfactor, nqtyorig:nqtyOrig, xcref:xcref, crefidnt:crefidnt},
 					async: false,
 					success: function( data ) {
 						if(data.trim()=="False"){
@@ -1473,6 +1511,7 @@ function chkform(){
 
 }
 
+/*
 function convertCurrency(fromCurrency) {
   
   toCurrency = $("#basecurrvalmain").val(); //statgetrate
@@ -1516,4 +1555,5 @@ function recomputeCurr(){
 
 	ComputeGross();
 }
+*/
 </script>

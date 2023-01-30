@@ -31,6 +31,7 @@ require_once "../../Connection/connection_string.php";
 			 $json['nqtyorig'] = $row['nqtyorig'];
 			 $json['cunit'] = $row['cunit'];
 			 $json['nprice'] = $row['nprice'];
+			 $json['nbaseamount'] = $row['nbaseamount'];
 			 $json['namount'] = $row['namount'];
 			 $json['cmainuom'] = $row['cmainunit'];
 			 $json['nfactor'] = $row['nfactor'];

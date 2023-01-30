@@ -10,7 +10,7 @@ require_once "../../Connection/connection_string.php";
 		$date1 = date("Y-m-d");
 		
 		if($_REQUEST['typ']=="DR"){
-			$sql = "select a.ctranno, a.crefident, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, 0 as ndiscount, a.nbaseamount, a.namount, a.cmainunit as qtyunit, a.nfactor, ifnull(c.nqty,0) as totqty2, b.ctype, b.ctaxcode, d.ccurrencycode, d.ccurrencydesc, d.nexchangerate
+			$sql = "select a.ctranno, a.crefident, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, 0 as ndiscount, a.nbaseamount, a.namount, a.cmainunit as qtyunit, a.nfactor, ifnull(c.nqty,0) as totqty2, b.ctype, b.ctaxcode, d.ccurrencycode, d.ccurrencydesc, d.nexchangerate, a.creference
 			from dr_t a 
 			left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
 			left join so d on a.compcode=d.compcode and a.creference=d.ctranno
@@ -22,12 +22,22 @@ require_once "../../Connection/connection_string.php";
 					Where x.compcode='$company' and x.creference='".$_REQUEST['id']."' and y.lcancelled=0
 				 	group by x.creference,x.citemno
 				 ) c on a.ctranno=c.creference and a.citemno=c.citemno
-			WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."' and a.citemno = '".$_REQUEST['itm']."'";
+			WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."' and a.nident = '".$_REQUEST['itm']."'";
+
+			//kunin ang SO details for the price and taxcode
+			@$arrefsos = array();
+			$ressos = mysqli_query ($con, "Select * From so_t where compcode='$company'");
+			if (mysqli_num_rows($ressos)!=0){
+				while($row = mysqli_fetch_array($ressos, MYSQLI_ASSOC)){
+					@$arrefsos[]=$row;
+				}
+			}
+
 		}elseif($_REQUEST['typ']=="QO"){
 			if($_REQUEST['itm']=="ALL"){
 				$itmvar = "";
 			}else{
-				$itmvar = " and a.citemno = '".$_REQUEST['itm']."'";
+				$itmvar = " and a.nidentity = '".$_REQUEST['itm']."'";
 			}
 
 			$sql = "select a.ctranno, a.nident as crefident, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, 0 as ndiscount, a.nbaseamount, a.namount, a.cmainunit as qtyunit, a.nfactor, ifnull(c.nqty,0) as totqty2, b.ctype, b.ctaxcode, d.ccurrencycode, d.ccurrencydesc, d.cvattype, e.nrate, d.nexchangerate
@@ -48,14 +58,13 @@ require_once "../../Connection/connection_string.php";
 			if($_REQUEST['itm']=="ALL"){
 				$itmvar = "";
 			}else{
-				$itmvar = " and a.citemno = '".$_REQUEST['itm']."'";
+				$itmvar = " and a.nident = '".$_REQUEST['itm']."'";
 			}
 
-			$sql = "select a.ctranno, a.creference, a.nident as crefident, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, 0 as ndiscount, a.nbaseamount, a.namount, a.cmainunit as qtyunit, a.nfactor, ifnull(c.nqty,0) as totqty2, b.ctype, b.ctaxcode, d.ccurrencycode, d.ccurrencydesc, b.ctaxcode, e.nrate, d.nexchangerate
+			$sql = "select a.ctranno, a.creference, a.nident as crefident, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, 0 as ndiscount, a.nbaseamount, a.namount, a.cmainunit as qtyunit, a.nfactor, ifnull(c.nqty,0) as totqty2, b.ctype, d.ccurrencycode, d.ccurrencydesc, a.nrate, d.nexchangerate, a.ctaxcode
 			from so_t a 
 			left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
 			left join so d on a.compcode=d.compcode and a.ctranno=d.ctranno
-			left join taxcode e on b.compcode=e.compcode and b.ctaxcode=e.ctaxcode
 			left join
 				(
 				 	Select x.creference,x.citemno,sum(x.nqty) as nqty
@@ -65,16 +74,6 @@ require_once "../../Connection/connection_string.php";
 				 	group by x.creference,x.citemno
 				 ) c on a.ctranno=c.creference and a.citemno=c.citemno
 			WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."'";
-
-
-			//get all quote na nsa SO na
-			@$arrefquotes = array();
-			$resquortes = mysqli_query ($con, "Select ctranno, cvattype From quote where compcode='$company'");
-			if (mysqli_num_rows($resquortes)!=0){
-				while($row = mysqli_fetch_array($resquortes, MYSQLI_ASSOC)){
-					@$arrefquotes[]=$row;
-				}
-			}
 		}
 		
 	//echo $sql;
@@ -110,32 +109,30 @@ require_once "../../Connection/connection_string.php";
 		//		$json['nbaseamount'] = round($gamount*floatval($row['nexchangerate']),2);
 
 		//	}else{
+
+			if($_REQUEST['typ']=="DR"){
+				foreach(@$arrefsos as $rowx){
+					if($row['creference'] == $rowx['ctranno'] && $row['crefident'] == $rowx['nident']){
+						$json['nprice'] = $rowx['nprice'];
+						$json['namount'] = $rowx['namount'];
+						$json['nbaseamount'] = $rowx['nbaseamount'];
+						$json['ctaxcode'] = $rowx['ctaxcode'];
+					}
+				}
+			}elseif($_REQUEST['typ']=="QO"){
 				$json['nprice'] = $row['nprice'];
-				 $json['namount'] = $row['namount'];
-				 $json['nbaseamount'] = $row['nbaseamount'];
+				$json['namount'] = $row['namount'];
+				$json['nbaseamount'] = $row['nbaseamount'];
+				$json['ctaxcode'] = ($row['cvattype']=="VatIn") ? "VT" : "NT";
+			}else{
+				$json['ctaxcode'] = $row['ctaxcode'];
+			}
 		//	}
 	//	 }
 		
 		 $json['xref'] = $row['ctranno'];
 		 $json['citmcls'] = $row['ctype'];
 
-		 if($_REQUEST['typ']=="DR"){
-			$json['ctaxcode'] = $row['ctaxcode'];
-		 }elseif($_REQUEST['typ']=="QO"){
-		 	$json['ctaxcode'] = ($row['cvattype']=="VatIn") ? "VT" : "NT";
-		 }else{
-
-			//check muna if may reference quote
-			$dcode = $row['ctaxcode'];
-			foreach(@$arrefquotes as $rsx){
-				if($rsx['ctranno']==$row['creference']){
-					$dcode =($rsx['cvattype']=="VatIn") ? "VT" : "NT";
-				}
-			}
-
-			$json['ctaxcode'] = $dcode;
-
-		 }
 		 $json['ccurrencycode'] = $row['ccurrencycode']; 
 		 $json['ccurrencydesc'] = $row['ccurrencydesc']; 
 		 $json['nexchangerate'] = $row['nexchangerate'];

@@ -8,14 +8,14 @@ require_once "../../Connection/connection_string.php";
 	$date1 = date("Y-m-d");
 
 	if($_REQUEST['y']!=""){
-		$qry = "and a.citemno not in ('". str_replace(",","','",$_REQUEST['y']) . "')";
+		$qry = "and a.nident not in ('". str_replace(",","','",$_REQUEST['y']) . "')";
 	}
 	else{
 		$qry = "";
 	}
 
 	if($_REQUEST['typ']=="DR"){
-		$sql = "select a.citemno,a.cunit,a.nqty,a.creference,ifnull(c.nqty,0) as nqty2,b.citemdesc, 1 as navail, d.ccurrencycode, a.nprice, a.namount, a.nbaseamount,'' as cvattype, '' as nrate
+		$sql = "select a.nident, a.citemno,a.cunit,a.nqty,a.creference,a.crefident,ifnull(c.nqty,0) as nqty2,b.citemdesc, 1 as navail, d.ccurrencycode, a.nprice, a.namount, a.nbaseamount,'' as cvattype, '' as nrate
 		from dr_t a 
 		left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
 		left join so d on a.compcode=d.compcode and a.creference=d.ctranno
@@ -28,8 +28,17 @@ require_once "../../Connection/connection_string.php";
 			 group by x.creference,x.citemno
 			) c on a.ctranno=c.creference and a.citemno=c.citemno
 		WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['x']."' ".$qry;
+
+		@$arrefsos = array();
+			$ressos = mysqli_query ($con, "Select A.*, B.cpono From so_t A left join so B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company'");
+			if (mysqli_num_rows($ressos)!=0){
+				while($row = mysqli_fetch_array($ressos, MYSQLI_ASSOC)){
+					@$arrefsos[]=$row;
+				}
+			}
+
 	}elseif($_REQUEST['typ']=="QO"){
-		$sql = "select a.citemno,a.cunit,a.nqty,'' as creference,ifnull(c.nqty,0) as nqty2,b.citemdesc, 1 as navail, d.ccurrencycode, a.namount, a.nprice, a.nbaseamount, d.cvattype, e.nrate, d.nexchangerate
+		$sql = "select a.nidentity as nident, a.citemno,a.cunit,a.nqty,'' as creference,ifnull(c.nqty,0) as nqty2,b.citemdesc, 1 as navail, d.ccurrencycode, a.namount, a.nprice, a.nbaseamount, d.cvattype, e.nrate, d.nexchangerate
 		from quote_t a 
 		left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
 		left join quote d on a.compcode=d.compcode and a.ctranno=d.ctranno
@@ -44,7 +53,7 @@ require_once "../../Connection/connection_string.php";
 			) c on a.ctranno=c.creference and a.citemno=c.citemno
 		WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['x']."' ".$qry;
 	}elseif($_REQUEST['typ']=="SO"){
-		$sql = "select a.citemno,a.cunit,a.nqty,'' as creference,ifnull(c.nqty,0) as nqty2,b.citemdesc, 1 as navail, d.ccurrencycode, a.namount, a.nprice, a.nbaseamount, b.ctaxcode as cvattype, e.nrate, d.nexchangerate
+		$sql = "select a.nident, a.citemno,a.cunit,a.nqty,'' as creference,ifnull(c.nqty,0) as nqty2,b.citemdesc, 1 as navail, d.ccurrencycode, a.namount, a.nprice, a.nbaseamount, b.ctaxcode as cvattype, e.nrate, d.nexchangerate, d.cpono
 		from so_t a 
 		left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
 		left join so d on a.compcode=d.compcode and a.ctranno=d.ctranno
@@ -77,36 +86,34 @@ require_once "../../Connection/connection_string.php";
 			$nqty1 = $row['nqty'];
 			$nqty2 = $row['nqty2']; 
 		
+			 $json['id'] = $row['nident'];
 			 $json['citemno'] = $row['citemno'];
 			 $json['cdesc'] = $row['citemdesc'];
 			 $json['cunit'] = $row['cunit'];
 			 $json['nqty'] = $nqty1 - $nqty2;
 			 $json['navail'] = $row['navail'];
 
-			// if($_REQUEST['typ']=="DR"){
-			 	$json['nprice'] = $row['nprice'];
-			 	$json['namount'] = $row['namount'];
-			 	$json['nbaseamount'] = $row['nbaseamount'];
-		//	 }elseif($_REQUEST['typ']=="QO"){
+			 if($_REQUEST['typ']=="DR"){
+				foreach(@$arrefsos as $rowx){
+					if($row['creference'] == $rowx['ctranno'] && $row['crefident'] == $rowx['nident']){
+						$json['nprice'] = $rowx['nprice'];
+						$json['namount'] = $rowx['namount'];
+						$json['nbaseamount'] = $rowx['nbaseamount'];
+						$json['ctaxcode'] = $rowx['ctaxcode'];
+						$json['cpono'] = $rowx['cpono'];
+					}
+				}
+			}elseif($_REQUEST['typ']=="QO"){
+				$json['nprice'] = $row['nprice'];
+				$json['namount'] = $row['namount'];
+				$json['nbaseamount'] = $row['nbaseamount'];
+				$json['ctaxcode'] = ($row['cvattype']=="VatIn") ? "VT" : "NT";
+				$json['cpono'] = "";
+			}else{
+				$json['cpono'] = $row['cpono'];
+				$json['ctaxcode'] = $row['ctaxcode'];
+			}
 
-				//if($row['cvattype']=="VatIn"){
-
-				//	$gprice = floatval($row['nprice'])/(1+(floatval($row['nrate'])/100));
-				//	$gamount = $gprice*floatval($nqty1 - $nqty2);
-
-				//	$json['nprice'] = round($gprice,2);
-				//	$json['namount'] =  round($gamount,2);
-				//	$json['nbaseamount'] = round($gamount*floatval($row['nexchangerate']),2);
-
-				//}else{
-		//			$json['nprice'] = $row['nprice'];
-		//	 		$json['namount'] = $row['namount'];
-		//	 		$json['nbaseamount'] = $row['nbaseamount'];
-			//	}
-					
-		//	 }
-
-			 $json['ccurrencycode'] = $row['ccurrencycode'];
 			 $json['creference'] = $row['creference'];
 			 $json2[] = $json;
 	

@@ -12,6 +12,8 @@ include('../../Connection/connection_string.php');
 		 $json['mname'] = $row['Minit'];
 		 $json['lname'] = $row['Lname'];
 		 $json['emailadd'] = $row['cemailadd'];
+		 $json['cdepartment'] = $row['cdepartment'];
+		 $json['cdesignation'] = $row['cdesignation'];
 		 $json['imgsrc'] = $row['cuserpic'];
 		 $json2[] = $json;
 

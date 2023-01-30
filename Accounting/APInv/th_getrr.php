@@ -5,6 +5,23 @@ session_start();
 require_once "../../Connection/connection_string.php";
 
 	$company = $_SESSION['companyid'];
+
+
+	//rritems
+	$rrdetails = array();
+	$ponos = array();
+	$resrr = mysqli_query ($con, "select * from receive_t WHERE compcode='$company' and ctranno = '".$_REQUEST['id']."'"); 
+	while($rowrr = mysqli_fetch_array($resrr, MYSQLI_ASSOC)){
+		$ponos[] = $rowrr['creference'];
+	}
+
+	//po details
+	$respo = mysqli_query ($con, "select ccurrencycode, nexchangerate, ccurrencydesc from purchase WHERE compcode='$company' and cpono in ('".implode("','", $ponos)."') order by ddate DESC LIMIT 1"); 
+	while($porow = mysqli_fetch_array($respo, MYSQLI_ASSOC)){
+		$json['currcode'] = $porow['ccurrencycode'];
+		$json['currate'] = $porow['nexchangerate'];
+		$json['currdesc'] = $porow['ccurrencydesc']; 
+	}
 	
 	$result = mysqli_query ($con, "Select A.*, B.cname From receive A left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode where A.compcode='".$company."' and A.ctranno='".$_REQUEST['id']."'"); 
 

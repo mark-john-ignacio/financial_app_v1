@@ -7,12 +7,14 @@ include('../../Connection/connection_string.php');
 	$cLName = $_POST['Lname']; 
 	$cPass = $_POST['passT']; 
 	$cEmail = $_POST['emailadd'];
+	$cDept = $_POST['cdept'];
+	$cDesig = $_POST['cdesig'];
 	
 	
 	$chkID = mysqli_query($con,"select * from users where UserID = '$cUserID'");
 	 
 	 
-	if (!mysqli_query($con, "UPDATE users set Fname = '$cFName', LName = '$cLName', Minit = '$cMI', cemailadd = '$cEmail' where Userid = '$cUserID'")) {
+	if (!mysqli_query($con, "UPDATE users set Fname = '$cFName', LName = '$cLName', Minit = '$cMI', cemailadd = '$cEmail', cdepartment = '$cDept', cdesignation = '$cDesig' where Userid = '$cUserID'")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	}
 	else{

@@ -15,14 +15,19 @@ function chkgrp($valz) {
 
 
 
-$cSINo = $_REQUEST['pono'];
+$cSINo = $_REQUEST['txtcpono'];
 $company = $_SESSION['companyid'];
 
-	$cCustID = $_REQUEST['ccode'];
-	$dDelDate = $_REQUEST['ddate'];
-	$cRemarks = chkgrp($_REQUEST['crem']); 
-	$nGross = $_REQUEST['ngross'];
-	$cCustSI = $_REQUEST['ccustsi'];
+	$cCustID = $_REQUEST['txtcustid'];
+	$dDelDate = $_REQUEST['date_received'];
+	$cRemarks = chkgrp($_REQUEST['txtremarks']); 
+	//$nGross = str_replace(",","",$_REQUEST['txtnGross']);
+	$cCustSI = $_REQUEST['txtSuppSI'];
+
+	//$CurrCode = $_REQUEST['basecurrval']; //$_REQUEST['selbasecurr']; 
+	//$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
+	//$CurrRate= $_REQUEST['basecurrval']; 
+	//$BaseGross= str_replace(",","",$_REQUEST['txtnBaseGross']);
 	
 	$chkCustAcct = mysqli_query($con,"select cacctcode from suppliers where compcode='$company' and ccode='$cCustID'");
 
@@ -40,7 +45,7 @@ $company = $_SESSION['companyid'];
 	
 	//UPDATE HEADER
 
-	if (!mysqli_query($con,"Update receive set `ccode` ='$cCustID', `cremarks`=$cRemarks, `dreceived`=STR_TO_DATE('$dDelDate', '%m/%d/%Y'),`ngross`='$nGross', `ccustacctcode`='$AccntCode', `lapproved` = 0, `crefsi` = '$cCustSI' Where compcode='$company' and ctranno='$cSINo'")){
+	if (!mysqli_query($con,"Update receive set `ccode` ='$cCustID', `cremarks`=$cRemarks, `dreceived`=STR_TO_DATE('$dDelDate', '%m/%d/%Y'), `ccustacctcode`='$AccntCode', `lapproved` = 0, `crefsi` = '$cCustSI' Where compcode='$company' and ctranno='$cSINo'")){
 		echo "False";
 	}
 	else{

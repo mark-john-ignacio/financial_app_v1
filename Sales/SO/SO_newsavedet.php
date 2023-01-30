@@ -30,9 +30,12 @@ $company = $_SESSION['companyid'];
 		$cMainUOM = $_REQUEST['mainunit'];
 		$nFactor = $_REQUEST['nfactor'];
 
+		$ctaxcode = $_REQUEST["vatcode"]; 
+		$nrate = $_REQUEST["nrate"];
+
 	$refcidenttran = $cSINo."P".$indexz;
 	
-	if (!mysqli_query($con,"INSERT INTO so_t(`compcode`, `cidentity`, `ctranno`, `creference`, `nrefident`, `nident`, `citemno`, `nqty`, `cunit`, `nprice`, `namount`, `nbaseamount`, `cmainunit`,`nfactor`) values('$company', '$refcidenttran', '$cSINo', $crefno, '$nrefident', '$indexz', '$cItemNo', '$nQty', '$cUnit', '$nPrice', '$nAmount', '$nBaseAmount', '$cMainUOM', $nFactor)")){
+	if (!mysqli_query($con,"INSERT INTO so_t(`compcode`, `cidentity`, `ctranno`, `creference`, `nrefident`, `nident`, `citemno`, `nqty`, `cunit`, `nprice`, `namount`, `nbaseamount`, `cmainunit`,`nfactor`,`ctaxcode`, `nrate`) values('$company', '$refcidenttran', '$cSINo', $crefno, '$nrefident', '$indexz', '$cItemNo', '$nQty', '$cUnit', '$nPrice', '$nAmount', '$nBaseAmount', '$cMainUOM', $nFactor, '$ctaxcode', '$nrate')")){
 		echo "False";
 	}
 	else{

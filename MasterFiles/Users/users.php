@@ -274,7 +274,7 @@ if(@$lvlcompute==1){
         
           <table width="100%" border="0" cellspacing="0" cellpadding="0">
           <tr>
-            <td rowspan="5" width="150px" valign="top" style="padding-top:10px; padding-left:5px">
+            <td rowspan="7" width="150px" valign="top" style="padding-top:10px; padding-left:5px">
             	            
             <div id="image_preview">
             	<img id="previewing" src="../../imgusers/preview.jpg" width="100px" height="100px"/>
@@ -325,6 +325,26 @@ if(@$lvlcompute==1){
             <td style="padding:2px">
             <div class="col-xs-12">
             	<input type="text" class="form-control input-sm" placeholder="Email Address..." name="emailadd" id="emailadd" required >
+            </div>
+
+            </td>
+          </tr>
+
+					<tr>
+            <td><b>Department: </b></td>
+            <td style="padding:2px">
+            <div class="col-xs-12">
+            	<input type="text" class="form-control input-sm" placeholder="Department..." name="cdept" id="cdept" required >
+            </div>
+
+            </td>
+          </tr>
+
+					<tr>
+            <td><b>Designation: </b></td>
+            <td style="padding:2px">
+            <div class="col-xs-12">
+            	<input type="text" class="form-control input-sm" placeholder="Designation..." name="cdesig" id="cdesig" required >
             </div>
 
             </td>
@@ -591,6 +611,8 @@ if(@$lvlcompute==1){
 						$("#Mname").val(item.mname);
 						$("#Lname").val(item.lname);
 						$("#emailadd").val(item.emailadd);
+						$("#cdept").val(item.cdepartment);
+						$("#cdesig").val(item.cdesignation);
 						
 						$('#previewing').attr('src',item.imgsrc);
 						
