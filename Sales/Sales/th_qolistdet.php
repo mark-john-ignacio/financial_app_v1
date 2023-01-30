@@ -38,7 +38,7 @@ require_once "../../Connection/connection_string.php";
 			}
 
 	}elseif($_REQUEST['typ']=="QO"){
-		$sql = "select a.nidentity as nident, a.citemno,a.cunit,a.nqty,'' as creference,ifnull(c.nqty,0) as nqty2,b.citemdesc, 1 as navail, d.ccurrencycode, a.namount, a.nprice, a.nbaseamount, d.cvattype, e.nrate, d.nexchangerate
+		$sql = "select a.nident, a.citemno,a.cunit,a.nqty,'' as creference,ifnull(c.nqty,0) as nqty2,b.citemdesc, 1 as navail, d.ccurrencycode, a.namount, a.nprice, a.nbaseamount, d.cvattype, e.nrate, d.nexchangerate
 		from quote_t a 
 		left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
 		left join quote d on a.compcode=d.compcode and a.ctranno=d.ctranno
