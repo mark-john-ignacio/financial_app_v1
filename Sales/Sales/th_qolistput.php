@@ -53,7 +53,7 @@ require_once "../../Connection/connection_string.php";
 					Where x.compcode='$company' and x.creference='".$_REQUEST['id']."' and y.lcancelled=0
 				 	group by x.creference,x.nrefident,x.citemno
 				 ) c on a.ctranno=c.creference and a.citemno=c.citemno and a.nident=c.nrefident
-			WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."'";
+			WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."' and a.nident = '".$_REQUEST['itm']."'";
 		}elseif($_REQUEST['typ']=="SO"){
 			if($_REQUEST['itm']=="ALL"){
 				$itmvar = "";
@@ -73,7 +73,7 @@ require_once "../../Connection/connection_string.php";
 					Where x.compcode='$company' and x.creference='".$_REQUEST['id']."' and y.lcancelled=0
 				 	group by x.creference,x.nrefident,x.citemno
 				 ) c on a.ctranno=c.creference and a.citemno=c.citemno and a.nident=c.nrefident
-			WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."'";
+			WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."' and a.nident = '".$_REQUEST['itm']."'";
 		}
 		
 	//echo $sql;
