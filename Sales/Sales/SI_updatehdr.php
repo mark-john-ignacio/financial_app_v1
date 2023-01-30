@@ -67,6 +67,6 @@ $company = $_SESSION['companyid'];
 	// Delete previous details
 	mysqli_query($con, "Delete from sales_t Where compcode='$company' and ctranno='$cSINo'");
 	mysqli_query($con, "Delete from sales_t_info Where compcode='$company' and ctranno='$cSINo'");
-
+	mysqli_query($con, "Delete from sales_t_disc Where compcode='$company' and ctranno='$cSINo'");
 
 ?>

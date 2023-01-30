@@ -452,17 +452,20 @@ $company = $_SESSION['companyid'];
 					<div class="modal-content">
 							<div class="modal-header">
 									<button type="button" class="close"  aria-label="Close" onclick="chkCloseDiscs();"><span aria-hidden="true">&times;</span></button>
-									<h3 class="modal-title" id="invheader"> Discounts </h3>           
+									<h3 class="modal-title" id="invdiscounthdr"> Discounts </h3>           
 							</div>
 			
 							<div class="modal-body">
+									<input type="hidden" id="currentITM" value="">
 									<input type="hidden" name="hdnrowcnt3" id="hdnrowcnt3">
 									<table id="MyTable3" class="MyTable table table-condensed" width="100%">
-										<tr>
-											<th style="border-bottom:1px solid #999" width="50%">Description</th>
-											<th style="border-bottom:1px solid #999">Type</th>
-											<th style="border-bottom:1px solid #999">Value</th>
-										</tr>
+										<thead>
+											<tr>
+												<th style="border-bottom:1px solid #999" width="50%">Description</th>
+												<th style="border-bottom:1px solid #999">Type</th>
+												<th style="border-bottom:1px solid #999">Value</th>
+											</tr>
+										</thead>
 										<tbody class="tbody">
 											
 										</tbody>
@@ -1102,31 +1105,31 @@ $company = $_SESSION['companyid'];
 
 		if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
 
-			var isItem = "NO";
-			var disID = "";
+			//var isItem = "NO";
+			//var disID = "";
 
-				$("#MyTable > tbody > tr").each(function() {	
-					disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-					disref = $(this).find('input[type="hidden"][name="txtcreference"]').val();
+			//	$("#MyTable > tbody > tr").each(function() {	
+			//		disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+			//		disref = $(this).find('input[type="hidden"][name="txtcreference"]').val();
 					
-					if($("#txtprodid").val()==disID && cref==disref){
+			//		if($("#txtprodid").val()==disID && cref==disref){
 						
-						isItem = "YES";
+			//			isItem = "YES";
 
-					}
-				});	
+			//		}
+		//		});	
 
-		if(isItem=="NO"){	
+	//	if(isItem=="NO"){	
 			myFunctionadd(qty,price,curramt,amt,factr,cref,nrefident,citmcls);
 			
 			ComputeGross();	
 
-		}
-		else{
+		//}
+	//	else{
 
-			addqty();	
+		//	addqty();	
 				
-		}
+		//}
 			
 			$("#txtprodid").val("");
 			$("#txtprodnme").val("");
@@ -1200,7 +1203,7 @@ $company = $_SESSION['companyid'];
 		}
 
 			
-		var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+" <input type='hidden' value='"+cref+"' name=\"txtcreference\" id=\"txtcreference\"> <input type='hidden' value='"+nrefident+"' name=\"txtcrefident\" id=\"txtcrefident\"> <input type='hidden' value='"+itmctype+"' name=\"hdncitmtype\" id=\"hdncitmtype"+lastRow+"\"> </td>";
+		var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode"+lastRow+"\">"+itmcode+" <input type='hidden' value='"+cref+"' name=\"txtcreference\" id=\"txtcreference\"> <input type='hidden' value='"+nrefident+"' name=\"txtcrefident\" id=\"txtcrefident\"> <input type='hidden' value='"+itmctype+"' name=\"hdncitmtype\" id=\"hdncitmtype"+lastRow+"\"> </td>";
 		var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmdesc+"</td>";
 
 		var tditmvats = "";
@@ -1234,7 +1237,9 @@ $company = $_SESSION['companyid'];
 
 		var tditmamount = "<td width=\"100\" nowrap> <input type='text' value='"+baseprice+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnamount\" id='txtnamount"+lastRow+"' readonly> </td>";
 
-		var tditmdel = "<td width=\90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del"+ itmcode +"' value='delete' data-var='"+lastRow+"'/> &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> </td>";
+		var tditmdel = "<td width=\90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del"+ itmcode +"' value='delete' data-var='"+lastRow+"'/> &nbsp; </td>";
+
+		//<input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/>
 
 		$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmvats + tditmunit + tditmqty + tditmprice + tditmdisc + tditmbaseamount+ tditmamount + tditmdel + '</tr>');
 
@@ -1242,6 +1247,14 @@ $company = $_SESSION['companyid'];
 											var xy = $(this).data('var');
 											
 											$(this).attr("data-var",parseInt(xy)-1);
+
+											//remove discounts rows
+											$("#MyTable3 > tbody > tr").each(function() {					
+												varxc = $(this).attr("class");
+												if(parseInt(varxc)!==parseInt(lastRow)){
+													$(this).remove();
+												}
+											});
 											
 											$(this).closest('tr').remove();
 											
@@ -1290,10 +1303,7 @@ $company = $_SESSION['companyid'];
 											//alert(fact);
 											$('#hdnfactor'+lastRow).val(fact.trim());
 											
-										});
-										
-										ComputeGross();
-										
+										});										
 										
 	}
 
@@ -1329,7 +1339,7 @@ $company = $_SESSION['companyid'];
 			$("#txtnamount"+r).autoNumeric('init',{mDec:2}); 
 
 	}
-
+	
 	function ComputeGross(){
 			var rowCount = $('#MyTable tr').length;
 			
@@ -1345,6 +1355,7 @@ $company = $_SESSION['companyid'];
 			
 					if(xChkVatableStatus==1){  
 						var slctdval = $("#selitmvatyp"+i+" option:selected").data('id');
+						var slctdvalid = $("#selitmvatyp"+i+" option:selected").val();
 
 						if(slctdval!=0){
 							if(parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) > 0 ){
@@ -1395,29 +1406,44 @@ $company = $_SESSION['companyid'];
 			if(rowCount>1){
 				for (var i = xy+1; i <= rowCount; i++) {
 					//alert(i);
+					var ITMCode = document.getElementById('txtitemcode' + i);
 					var SelUOM = document.getElementById('seluom' + i); 
-					var ItmTyp = document.getElementById('hdncitmtype' + i);
+					var ItmTyp = document.getElementById('hdncitmtype' + i); 
+					var SelVAT = document.getElementById('selitmvatyp' + i);
 					var nQty = document.getElementById('txtnqty' + i);
 					var MainUom = document.getElementById('hdnmainuom' + i);
 					var nFactor = document.getElementById('hdnfactor' + i);
 					var nPrice = document.getElementById('txtnprice' + i);
-					var nDisc = document.getElementById('txtndisc' + i);
+					var nDisc = document.getElementById('txtndisc' + i); 
+					var nTranAmount = document.getElementById('txtntranamount' + i);
 					var nAmount = document.getElementById('txtnamount' + i);
 					var RowInfo = document.getElementById('row_' + i + '_info');					
 					
 					var za = i - 1;
 					
 					//alert(za);
-					
+					ITMCode.id = "txtitemcode" + za;
 					SelUOM.id = "seluom" + za;
 					ItmTyp.id = "hdncitmtype" + za;
+					SelVAT.id = "selitmvatyp" + za;
 					nQty.id = "txtnqty" + za;
 					MainUom.id = "hdnmainuom" + za;
 					nFactor.id = "hdnfactor" + za;
 					nPrice.id = "txtnprice" + za;
 					nDisc.id = "txtndisc" + za;
+					nTranAmount.id = "txtntranamount" + za;
 					nAmount.id = "txtnamount" + za;
 					RowInfo.id = "row_" + za + "_info";
+
+
+					$("#MyTable3 > tbody > tr").each(function() {					
+						varxc = $(this).attr("class");
+						if(parseInt(varxc)!==parseInt(i)){
+							$(this).removeClass(i)
+         			$(this).addClass(za);
+						}
+					});
+
 					
 				}
 			}
@@ -1888,7 +1914,7 @@ $company = $_SESSION['companyid'];
 				});
 
 			//alert($("#hdnQuoteNo").val());
-		
+
 			if(typ=="DR"){
 				//$('#mySIModal').modal('hide');
 				$('#mySIRef').modal('hide');
@@ -1899,6 +1925,121 @@ $company = $_SESSION['companyid'];
 		}
 
 
+	}
+
+	function recomputeCurr(){
+
+		var newcurate = $("#basecurrval").val();
+		var rowCount = $('#MyTable tr').length;
+				
+		var gross = 0;
+		var amt = 0;
+
+		if(rowCount>1){
+			for (var i = 1; i <= rowCount-1; i++) {
+				amt = $("#txtntranamount"+i).val().replace(/,/g,'');	
+				
+				recurr = parseFloat(newcurate) * parseFloat(amt);
+
+				$("#txtnamount"+i).val(recurr);
+
+				$("#txtnamount"+i).autoNumeric('destroy');
+				$("#txtnamount"+i).autoNumeric('init',{mDec:2}); 
+			}
+		}
+		ComputeGross();
+
+
+	}
+
+
+	function getdiscount(xyz,idnum){ //txtndisc txtnprice
+
+		var xnprice = $("#txtnprice"+idnum).val().replace(/,/g,'');
+		var xnitemno = $("#txtitemcode"+idnum).val()
+		
+		$("#currentITM").val(idnum);
+
+		if(parseFloat(xnprice)>0){
+			var cnt = 0;
+			$("#MyTable3 > tbody > tr").each(function() {	
+				
+				varxc = $(this).attr("class");
+
+				if(parseInt(varxc)!==parseInt(idnum)){
+					$(this).hide();
+				}else{
+					$(this).show();
+					cnt++;
+				}
+						
+			});	
+
+
+			if(cnt==0){
+				var xz = $("#hdndiscs").val();
+				$.each(jQuery.parseJSON(xz), function() { 
+
+					var tbl = document.getElementById('MyTable3').getElementsByTagName('tr');
+					var lastRow = tbl.length;
+
+					var ident = this['ident'];
+					
+					var tddesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\"><input type='hidden' value='"+this['ccode']+"' name='txtdiscscode' id='txtdiscscode"+ident+idnum+"'> "+this['cdesc']+" <input type='hidden' value='"+this['acctno']+"' name='txtdiscacctno' id='txtdiscacctno"+ident+idnum+"'> <input type='hidden' value='"+xnitemno+"' name='txtdiscitemno' id='txtdiscitemno"+ident+idnum+"'></td>";
+					var tdtype = "<td><select class=\"form-control input-sm\" name=\"secdiscstyp\" id=\"secdiscstyp"+ident+idnum+"\"><option value=\"fix\" selected>FIX</options><option value=\"percentage\">PERCENTAGE</options></select></td>"
+					var tdvals = "<td><input type='text' name='txtdiscsval' id='txtdiscsval"+ident+idnum+"' class='form-control input-xs' value='0'></td>";
+					var tdamount = "<td><input type='text' name='txtdiscsamt' id='txtdiscsamt"+ident+idnum+"' class='form-control input-xs' value='0' readonly></td>";
+					
+					$('#MyTable3 > tbody:last-child').append('<tr class="'+idnum+'">'+tddesc + tdtype + tdvals + tdamount + '</tr>');
+
+					$("#txtdiscsval"+ident+idnum).on('keyup', function(event) {
+						if($("#secdiscstyp"+ident+idnum).val()=="fix"){
+							xamty = parseFloat($(this).val());
+							$("#txtdiscsamt"+ident+idnum).val(xamty.toFixed(4));
+						}else{
+							//getprice
+							xprice = $("#txtnprice"+idnum).val();
+
+							xamty = parseFloat(xprice) * (parseFloat($("#txtdiscsval"+ident+idnum).val()) / 100);
+							$("#txtdiscsamt"+ident+idnum).val(xamty.toFixed(4));
+						}
+					});
+
+
+				});
+			}
+
+			$('#invdiscounthdr').text('Discounts: '+ $("#txtitemcode"+idnum).val());
+			$('#MyDiscModal').modal('show');
+		}else{
+			$("#AlertMsg").html("Cannot add discount for zero price items!");
+			$("#alertbtnOK").show();
+			$("#AlertModal").modal('show');
+		}
+
+	}
+
+	function chkCloseDiscs(){
+
+		idnum = $("#currentITM").val();
+
+		vcvxg = 0;
+		$("#MyTable3 > tbody > tr").each(function() {
+			varxc = $(this).attr("class");
+
+			if(parseInt(varxc)==parseInt(idnum)){
+				vcvxg = vcvxg + parseFloat($(this).find('input[name="txtdiscsamt"]').val());
+			}
+
+		});
+
+		$("#txtndisc"+idnum).val(vcvxg);
+
+
+		ComputeAmt(idnum); 
+		ComputeGross();
+
+		$('#MyDiscModal').modal('hide');
 	}
 
 	function chkform(){
@@ -2091,7 +2232,7 @@ $company = $_SESSION['companyid'];
 
 						$.ajax ({
 							url: "SI_newsavedet.php",
-							data: { trancode: trancode, crefno: crefno, crefident:crefident, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, ndiscount:ndiscount, ntranamt:ntranamt, namt:namt, mainunit:mainunit, nfactor:nfactor, ccode:ccode, vatcode:vatcode, nrate:nrate },
+							data: { trancode: trancode, crefno: crefno, crefident:crefident, indx: parseInt(index) + 1, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, ndiscount:ndiscount, ntranamt:ntranamt, namt:namt, mainunit:mainunit, nfactor:nfactor, ccode:ccode, vatcode:vatcode, nrate:nrate },
 							async: false,
 							success: function( data ) {
 								if(data.trim()=="False"){
@@ -2113,6 +2254,38 @@ $company = $_SESSION['companyid'];
 					$.ajax ({
 						url: "SI_newsaveinfo.php",
 						data: { trancode: trancode, indx: index, citmno: citmno, citmfld: citmfld, citmvlz:citmvlz },
+						async: false,
+						success: function( data ) {
+							if(data.trim()=="False"){
+								isDone = "False";
+							}
+						}
+					});
+					
+				});
+
+				//show all
+				$("#MyTable3 > tbody > tr").each(function() {	
+				
+					$(this).show();
+
+				});	
+
+				//Save Discounts
+				$("#MyTable3 > tbody > tr").each(function(index) {	
+					
+					var discnme = $(this).find('input[type="hidden"][name="txtdiscscode"]').val();
+					var seldisctyp = $(this).find('select[name="secdiscstyp"]').val();
+					var discval = $(this).find('input[name="txtdiscsval"]').val();
+					var discamt = $(this).find('input[name="txtdiscsamt"]').val(); 
+					var discacctno = $(this).find('input[type="hidden"][name="txtdiscacctno"]').val();  
+					var discitmno = $(this).find('input[type="hidden"][name="txtdiscitemno"]').val();
+					var discitmnoident =  $(this).attr("class");
+
+				
+					$.ajax ({
+						url: "SI_newsavediscs.php",
+						data: { trancode: trancode, indx: parseInt(index) + 1, discnme: discnme, seldisctyp: seldisctyp, discval: discval, discamt: discamt, discacctno: discacctno, discitmno: discitmno, discitmnoident: discitmnoident},
 						async: false,
 						success: function( data ) {
 							if(data.trim()=="False"){
@@ -2152,88 +2325,6 @@ $company = $_SESSION['companyid'];
 			
 			
 
-	}
-
-	function recomputeCurr(){
-
-		var newcurate = $("#basecurrval").val();
-		var rowCount = $('#MyTable tr').length;
-				
-		var gross = 0;
-		var amt = 0;
-
-		if(rowCount>1){
-			for (var i = 1; i <= rowCount-1; i++) {
-				amt = $("#txtntranamount"+i).val().replace(/,/g,'');	
-				
-				recurr = parseFloat(newcurate) * parseFloat(amt);
-
-				$("#txtnamount"+i).val(recurr);
-
-				$("#txtnamount"+i).autoNumeric('destroy');
-				$("#txtnamount"+i).autoNumeric('init',{mDec:2}); 
-			}
-		}
-		ComputeGross();
-
-
-	}
-
-
-	function getdiscount(xyz,idnum){ //txtndisc txtnprice
-	
-		var xnprice = $("#txtnprice"+idnum).val().replace(/,/g,'')
-		if(parseFloat(xnprice)>0){
-			var cnt = 0;
-			$("#MyTable3 > tbody > tr").each(function() {	
-					
-				varxc = $(this).attr("data-id");
-						
-			});	
-
-			if(cnt==0){
-				var xz = $("#hdndiscs").val();
-				$.each(jQuery.parseJSON(xz), function() { 
-
-					var tbl = document.getElementById('MyTable3').getElementsByTagName('tr');
-					var lastRow = tbl.length;
-
-					var ident = this['ident'];
-					
-					var tddesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\"><input type='hidden' value='"+this['ccode']+"' name='txtdiscscode' id='txtdiscscode"+ident+"'>"+this['cdesc']+"</td>";
-					var tdtype = "<td><select class=\"form-control input-sm\" name=\"secdiscstyp\" id=\"secdiscstyp"+ident+"\"><option value=\"fix\" selected>FIX</options><option value=\"percentage\">PERCENTAGE</options></select></td>"
-					var tdvals = "<td><input type='text' name='txtdiscsval' id='txtdiscsval"+ident+"' class='form-control input-xs' value='0'></td>";
-					var tdamount = "<td><input type='text' name='txtdiscsamt' id='txtdiscsamt"+ident+"' class='form-control input-xs' value='0'></td>";
-					
-					$('#MyTable3 > tbody:last-child').append('<tr class="'+xyz+'">'+tddesc + tdtype + tdvals + tdamount + '</tr>');
-
-					$("#txtdiscsval"+ident).on('keyup', function(event) {
-						if($("#secdiscstyp"+ident).val()=="fix"){
-							xamty = parseFloat($(this).val());
-							$("#txtdiscsamt"+ident).val(xamty.toFixed(4));
-						}else{
-							//getprice
-							xprice = $("#txtnprice"+idnum).val();
-
-							xamty = parseFloat(xprice) * (parseFloat($("#txtdiscsval"+ident).val()) / 100);
-							$("#txtdiscsamt"+ident).val(xamty.toFixed(4));
-						}
-					});
-
-
-				});
-			}
-			$('#MyDiscModal').modal('show');
-		}else{
-			$("#AlertMsg").html("Cannot add discount for zero price items!");
-			$("#alertbtnOK").show();
-			$("#AlertModal").modal('show');
-		}
-
-	}
-
-	function chkCloseDiscs(){
-		$('#MyDiscModal').modal('hide');
 	}
 
 </script>
