@@ -16,12 +16,12 @@ require_once "../../Connection/connection_string.php";
 			left join so d on a.compcode=d.compcode and a.creference=d.ctranno
 			left join
 				(
-				 	Select x.creference,x.citemno,sum(x.nqty) as nqty
+				 	Select x.creference,x.nrefiden,x.citemno,sum(x.nqty) as nqty
 				 	From sales_t x
 				 	left join sales y on x.compcode=y.compcode and x.ctranno=y.ctranno
 					Where x.compcode='$company' and x.creference='".$_REQUEST['id']."' and y.lcancelled=0
-				 	group by x.creference,x.citemno
-				 ) c on a.ctranno=c.creference and a.citemno=c.citemno
+				 	group by x.creference,x.nrefiden,x.citemno
+				 ) c on a.ctranno=c.creference and a.citemno=c.citemno and a.nident=c.nrefident
 			WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."' and a.nident = '".$_REQUEST['itm']."'";
 
 			//kunin ang SO details for the price and taxcode
@@ -47,12 +47,12 @@ require_once "../../Connection/connection_string.php";
 			left join taxcode e on b.compcode=e.compcode and b.ctaxcode=e.ctaxcode
 			left join
 				(
-				 	Select x.creference,x.citemno,sum(x.nqty) as nqty
+				 	Select x.creference,x.nrefident,x.citemno,sum(x.nqty) as nqty
 				 	From sales_t x
 				 	left join sales y on x.compcode=y.compcode and x.ctranno=y.ctranno
 					Where x.compcode='$company' and x.creference='".$_REQUEST['id']."' and y.lcancelled=0
-				 	group by x.creference,x.citemno
-				 ) c on a.ctranno=c.creference and a.citemno=c.citemno
+				 	group by x.creference,x.nrefident,x.citemno
+				 ) c on a.ctranno=c.creference and a.citemno=c.citemno and a.nident=c.nrefident
 			WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."'";
 		}elseif($_REQUEST['typ']=="SO"){
 			if($_REQUEST['itm']=="ALL"){
@@ -67,12 +67,12 @@ require_once "../../Connection/connection_string.php";
 			left join so d on a.compcode=d.compcode and a.ctranno=d.ctranno
 			left join
 				(
-				 	Select x.creference,x.citemno,sum(x.nqty) as nqty
+				 	Select x.creference,x.nrefident,x.citemno,sum(x.nqty) as nqty
 				 	From sales_t x
 				 	left join sales y on x.compcode=y.compcode and x.ctranno=y.ctranno
 					Where x.compcode='$company' and x.creference='".$_REQUEST['id']."' and y.lcancelled=0
-				 	group by x.creference,x.citemno
-				 ) c on a.ctranno=c.creference and a.citemno=c.citemno
+				 	group by x.creference,x.nrefident,x.citemno
+				 ) c on a.ctranno=c.creference and a.citemno=c.citemno and a.nident=c.nrefident
 			WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."'";
 		}
 		
