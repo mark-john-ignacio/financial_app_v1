@@ -14,15 +14,14 @@ require_once "../../Connection/connection_string.php";
 		$qry = "";
 	}
 
-		$sql = "select a.*,ifnull(c.nqty,0) as nqty2,b.citemdesc, 1 as navail, d.ccurrencycode
+		$sql = "select a.*,ifnull(c.nqty,0) as nqty2,b.citemdesc, 1 as navail
 		from sales_t a 
 		left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
-		left join sales d on a.compcode=d.compcode and a.ctranno=d.ctranno
 		left join
 			(
 			 Select x.creference,x.citemno,x.nrefident,sum(x.nqty) as nqty
-			 From salesreturn_t x
-			 left join salesreturn y on x.compcode=y.compcode and x.ctranno=y.ctranno
+			 From aradj_t x
+			 left join aradj y on x.compcode=y.compcode and x.ctranno=y.ctranno
 			 Where x.creference='".$_REQUEST['x']."' and y.lcancelled=0
 			 group by x.creference,x.citemno,x.nrefident
 			) c on a.ctranno=c.creference and a.citemno=c.citemno and a.nident = c.nrefident
@@ -48,9 +47,6 @@ require_once "../../Connection/connection_string.php";
 			 $json['cunit'] = $row['cunit'];
 			 $json['nqty'] = $nqty1 - $nqty2;
 			 $json['navail'] = $row['navail'];
-			 $json['nprice'] = $row['nprice'];
-			 $json['nbaseamount'] = $row['nbaseamount'];
-			 $json['ccurrencycode'] = $row['ccurrencycode'];
 			 $json2[] = $json;
 	
 		}
@@ -62,9 +58,6 @@ require_once "../../Connection/connection_string.php";
 			$json['cunit'] = "";
 			$json['nqty'] = "";
 			$json['navail'] = "";
-			$json['nprice'] = "";
-			$json['nbaseamount'] = "";
-			$json['ccurrencycode'] = "";
 			$json2[] = $json;
 	}
 	

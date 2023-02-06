@@ -41,7 +41,7 @@ if($_REQUEST['typ']=="POST"){
 
 
 		if($chkwarn==1){ //Check if blocking is enabled... pag enabled chk limit b4 posting
-			$sqlhead = mysqli_query($con,"select a.ngross, B.nlimit from dr a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.ctranno = '$tranno' and a.compcode='$company'");
+			$sqlhead = mysqli_query($con,"select a.ngross, B.nlimit from ntdr a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.ctranno = '$tranno' and a.compcode='$company'");
 			if (mysqli_num_rows($sqlhead)!=0) {
 				$row = mysqli_fetch_assoc($sqlhead);
 				$grossxz = $row["ngross"];
@@ -59,7 +59,7 @@ if($_REQUEST['typ']=="POST"){
 						}
 						
 						mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`,`module`, `cmachine`, `cremarks`) 
-			values('$tranno','$preparedby',NOW(),'POSTED','DR NON-TRADE','$compname','Post Record')");
+			values('$tranno','$preparedby',NOW(),'POSTED','DR Non-Trade','$compname','Post Record')");
 
 
 				}

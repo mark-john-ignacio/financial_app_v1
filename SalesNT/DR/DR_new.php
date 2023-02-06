@@ -45,7 +45,7 @@ $ddeldate = date("m/d/Y", strtotime($ddeldate . "+1 day"));
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
 <form action="SO_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
 	<fieldset>
-    	<legend>New DR Non-Trade</legend>
+    	<legend>New Delivery Receipt</legend>
 		
 <div class="col-xs-12 nopadwdown"><b>Delivery Information</b></div>
 <ul class="nav nav-tabs">
@@ -113,7 +113,7 @@ $ddeldate = date("m/d/Y", strtotime($ddeldate . "+1 day"));
 					<div class="col-xs-8 nopadding">
 					</div>
 					<div class="col-xs-3 nopadwright">
-				  		<input type="text" class="form-control input-sm" id="txtsoref" name="txtsoref" width="20px" tabindex="6" placeholder="Reference JO">
+				  		<input type="text" class="form-control input-sm" id="txtsoref" name="txtsoref" width="20px" tabindex="6" placeholder="Reference SO">
 				  	</div>
 				</td>
 				<td style="padding:2px">
@@ -289,7 +289,7 @@ $ddeldate = date("m/d/Y", strtotime($ddeldate . "+1 day"));
 Back to Main<br>(ESC)</button>
 
     <button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
-JO<br>(Insert)</button>
+SO<br>(Insert)</button>
 
     
     <input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
@@ -340,7 +340,7 @@ JO<br>(Insert)</button>
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="InvListHdr">JO List</h3>
+                <h3 class="modal-title" id="InvListHdr">PO List</h3>
             </div>
             
             <div class="modal-body" style="height:40vh">
@@ -352,7 +352,7 @@ JO<br>(Insert)</button>
                           <table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight">
                            <thead>
                             <tr>
-                              <th>JO No</th>
+                              <th>SO No</th>
                               <th>Amount</th>
                             </tr>
                             </thead>
@@ -439,8 +439,8 @@ JO<br>(Insert)</button>
 		                            <th style="border-bottom:1px solid #999">Location</th>
 		                            <th style="border-bottom:1px solid #999">Exp. Date</th>
 		                            <th style="border-bottom:1px solid #999">Qty</th>
-																<th style="border-bottom:1px solid #999">UOM</th>	
-																<th style="border-bottom:1px solid #999">Qty Picked</th>
+									<th style="border-bottom:1px solid #999">UOM</th>	
+									<th style="border-bottom:1px solid #999">Qty Picked</th>
 									
 		                        </tr>
 		                   </thead>
@@ -593,7 +593,7 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 $(function(){
 	    $('#date_delivery').datetimepicker({
                  format: 'MM/DD/YYYY',
-				 //minDate: new Date(),
+				// minDate: new Date(),
         });
 
 		$("#allbox").click(function(){
@@ -1628,7 +1628,7 @@ function openinv(){
 
 								
 						if(item.cpono=="NONE"){
-						$("#AlertMsg").html("No Job Order Available");
+						$("#AlertMsg").html("No Sales Order Available");
 						$("#alertbtnOK").show();
 						$("#AlertModal").modal('show');
 
@@ -1915,7 +1915,7 @@ function chkform(){
 		var delcountry = $("#txtcCountry").val();
 		var delzip = $("#txtcZip").val();
 		
-		//alert("SO_newsavehdr.php?ccode=" + ccode + "&crem="+ crem + "&ddate="+ ddate + "&ngross="+ngross);
+		//alert("DR_newsavehdr.php?ccode=" + ccode + "&crem="+ crem + "&ddate="+ ddate + "&ngross="+ngross+"&cdrprintno="+cdrprintno+"&salesman="+salesman+"&delcodes="+delcodes+"&delhousno="+delhousno+"&delcity="+delcity+"&delstate="+delstate+"&delcountry="+delcountry+"&delzip="+delzip);
 		
 		$.ajax ({
 			url: "DR_newsavehdr.php",

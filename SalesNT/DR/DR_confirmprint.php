@@ -35,7 +35,7 @@ include('../../include/denied.php');
 	}
 	
 	$csalesno = $_REQUEST['x'];
-	$sqlhead = mysqli_query($con,"select a.*,b.cname, b.nlimit from dr a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.compcode='$company' and a.ctranno = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*,b.cname, b.nlimit from ntdr a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.compcode='$company' and a.ctranno = '$csalesno'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -153,11 +153,10 @@ function PrintRed(x){
     
     <table width="100%" border="0" cellpadding="3" style="border-style:dashed;">
       <tr>
-        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Part No.</th>
-        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Item Details</th>
         <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Qty/UOM</th>
-        <th scope="col" style="border-top: 1px dashed; border-bottom: 1px dashed;">Price</th>
-        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Total Amount</th>
+        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Product Code</th>
+        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Description</th>
+        
       </tr>
       <?php 
 		$sqlbody = mysqli_query($con,"select a.*,b.citemdesc from dr_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$csalesno'");
@@ -172,27 +171,16 @@ function PrintRed(x){
 	?>
       
       <tr>
+        <td style="border-right:1px dashed;"><?php echo $rowbody['nqty'];?> <?php echo $rowbody['cunit'];?></td>
         <td style="border-right:1px dashed;"><?php echo $rowbody['citemno'];?></td>
         <td style="border-right:1px dashed;"><?php echo $rowbody['citemdesc'];?></td>
-        <td style="border-right:1px dashed;" align="right"><?php echo $rowbody['nqty'];?> <?php echo $rowbody['cunit'];?></td>
-        <td style="border-right:1px dashed;" align="right"><?php echo $rowbody['nprice'];?></td>
-        <td align="right"><?php echo $rowbody['namount'];?></td>
+        
         
       </tr>
       <?php 
-	  		$totnqty = (float)$totnqty + (float)$rowbody['nqty'];
 		}
 		}
 	  ?>
-        <tr>
-        <td height="30" colspan="4" style="border-top:1px dashed;" align="right"  valign="bottom"><b>Total Gross: </b></td>
-        <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?php echo $Gross;?></b></td>
-        </tr>
-        <tr>
-          <td height="30" colspan="2" style="border-top:1px dashed;" valign="bottom">Prepared By: <?php echo $_SESSION['employeefull'];?></td>
-          <td height="30" colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>Total Qty Delivered:</b></td>
-          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?php echo $totnqty;?></b></td>
-        </tr>
 
     </table></td>
   </tr>

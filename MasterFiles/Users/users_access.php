@@ -787,7 +787,7 @@ xmlhttp.send();
 		</div>
 
 	   <br>
-       <b><u><i>AR Adjustment</i></u></b>
+       <b><u><i>AR Credit/Debit Memo</i></u></b>
         <div style="padding-left:10px;"> 
         <div class="col-xs-12 nopadwleft">
          	<div class="col-xs-2 nopadding">

@@ -53,7 +53,7 @@ function chkgrp($valz) {
 	$compname = php_uname('n');
 	
 	mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-	values('$company','$cSINo','$preparedby',NOW(),'UPDATED','DR NON-TRADE','$compname','Updated Record')");
+	values('$company','$cSINo','$preparedby',NOW(),'UPDATED','DR Non-Trade','$compname','Updated Record')");
 	
 	// Delete previous details
 	mysqli_query($con, "Delete from ntdr_t Where compcode='$company' and ctranno='$cSINo'");

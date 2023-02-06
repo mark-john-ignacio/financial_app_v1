@@ -1,4 +1,4 @@
-<?php
+ <?php
 if(!isset($_SESSION)){
 session_start();
 }
@@ -153,7 +153,7 @@ function POSTDR(){
 		
 				$.ajax ({
 					url: "../../include/th_toInv.php",
-					data: { tran: num, type: "DR" },
+					data: { tran: num, type: "DN" },
 					async: false,
 					success: function( data ) {
 							itmstat = data.trim();
@@ -164,7 +164,7 @@ function POSTDR(){
 			
 					$.ajax ({
 						url: "../../include/th_toAcc.php",
-						data: { tran: num, type: "DR" },
+						data: { tran: num, type: "DN" },
 						async: false,
 						success: function( data ) {
 							if(data.trim()!="False"){

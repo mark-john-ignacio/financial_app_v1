@@ -9,9 +9,9 @@ $company = $_SESSION['companyid'];
 
 function chkgrp($valz) {
 	if($valz==''){
-		return "''";
+		return "NULL";
 	}else{
-		return "'".str_replace("'","\'",$valz)."'";
+    return "'".str_replace("'","\'",$valz)."'";
 	}
 }
 
@@ -42,7 +42,7 @@ function chkgrp($valz) {
 	
 	//INSERT HEADER
 
-	if (!mysqli_query($con, "UPDATE so set `ccode` = '$cCustID', `cremarks` = $cRemarks, `cspecins` = $specins, `dcutdate` = STR_TO_DATE('$dDelDate', '%m/%d/%Y'), `ngross` = '$nGross',  `nbasegross` = '$BaseGross', `ccurrencycode` = '$CurrCode', `ccurrencydesc` = '$CurrDesc', `nexchangerate` = '$CurrRate', `csalestype` = '$cSITyp', `cpono` = '$cCPONo', `csalesman` = '$salesman', `cdelcode` = '$delcodes', `cdeladdno` = $delhousno, `cdeladdcity` = $delcity, `cdeladdstate` = $delstate, `cdeladdcountry` = $delcountry, `cdeladdzip` = '$delzip'  where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
+	if (!mysqli_query($con, "UPDATE ntso set `ccode` = '$cCustID', `cremarks` = $cRemarks, `cspecins` = $specins, `dcutdate` = STR_TO_DATE('$dDelDate', '%m/%d/%Y'), `ngross` = '$nGross',  `nbasegross` = '$BaseGross', `ccurrencycode` = '$CurrCode', `ccurrencydesc` = '$CurrDesc', `nexchangerate` = '$CurrRate', `csalestype` = '$cSITyp', `cpono` = '$cCPONo', `csalesman` = '$salesman', `cdelcode` = '$delcodes', `cdeladdno` = $delhousno, `cdeladdcity` = $delcity, `cdeladdstate` = $delstate, `cdeladdcountry` = $delcountry, `cdeladdzip` = '$delzip'  where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
 		//print_r( mysqli_error($con));
 		echo "False";
 	} 
@@ -54,11 +54,11 @@ function chkgrp($valz) {
 	$compname = php_uname('n');
 	
 	mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-	values('$company','$cSINo','$preparedby',NOW(),'UPDATED','SALES ORDER','$compname','Updated Record')");
+	values('$company','$cSINo','$preparedby',NOW(),'UPDATED','SO Non-Trade','$compname','Updated Record')");
 	
 	// Delete previous details
-	mysqli_query($con, "Delete from so_t Where compcode='$company' and ctranno='$cSINo'");
-	mysqli_query($con, "Delete from so_t_info Where compcode='$company' and ctranno='$cSINo'");
+	mysqli_query($con, "Delete from ntso_t Where compcode='$company' and ctranno='$cSINo'");
+	mysqli_query($con, "Delete from ntso_t_info Where compcode='$company' and ctranno='$cSINo'");
 
 
 ?>

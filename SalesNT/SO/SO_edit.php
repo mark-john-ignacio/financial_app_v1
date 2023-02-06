@@ -35,6 +35,14 @@ function listcurrencies(){ //API for currency list
 
 */
 
+	$getfctrs = mysqli_query($con,"SELECT * FROM `items_factor` where compcode='$company' and cstatus='ACTIVE' order By nidentity"); 
+	if (mysqli_num_rows($getfctrs)!=0) {
+		while($row = mysqli_fetch_array($getfctrs, MYSQLI_ASSOC)){
+			@$arruomslist[] = array('cpartno' => $row['cpartno'], 'nfactor' => $row['nfactor'], 'cunit' => $row['cunit']); 
+		}
+	}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -63,6 +71,9 @@ function listcurrencies(){ //API for currency list
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcsalesno').focus(); ">
+<input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes">  
+<input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
+
 <?php
 $sqlhead = mysqli_query($con,"select a.*,b.cname,b.cpricever, (TRIM(TRAILING '.' FROM(CAST(TRIM(TRAILING '0' FROM B.nlimit)AS char)))) as nlimit, c.cname as cdelname, d.cname as salesmaname from ntso a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join customers c on a.compcode=c.compcode and a.cdelcode=c.cempid left join salesman d on a.compcode=b.compcode and a.csalesman=d.ccode where a.ctranno = '$txtctranno' and a.compcode='$company'");
 
@@ -110,7 +121,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 ?>
 <form action="SO_edit.php" name="frmpos" id="frmpos" method="post">
 	<fieldset>
-    <legend><div class="col-xs-6 nopadding"> SO Non-Trade Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
+    <legend><div class="col-xs-6 nopadding"> Sales Order Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
 				<?php
 			if($lCancelled==1){
 				echo "<font color='#FF0000'><b>CANCELLED</b></font>";
@@ -123,7 +134,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				</div>
 		</legend>	
     
-	<div class="col-xs-12 nopadwdown"><b>Order Information</b></div>
+	<div class="col-xs-12 nopadwdown"><b>Sales Order Information</b></div>
 	<ul class="nav nav-tabs">
 			<li class="active"><a href="#home">Order Details</a></li>
 			<li><a href="#menu1">Delivered To</a></li>
@@ -344,7 +355,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <div class="col-xs-12 nopadwdown"><b>Details</b></div>
 
 <div class="col-xs-12 nopadwdown">
-	      <input type="hidden" name="hdnqty" id="hdnqty">
+	    <input type="hidden" name="hdnqty" id="hdnqty">
       <input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
       <input type="hidden" name="hdnunit" id="hdnunit">
       
@@ -355,80 +366,76 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 1px solid #919b9c;width: 100%;height: 30vh;text-align: left;overflow: auto">
 	
             <table id="MyTable" class="MyTable table table-condensed" width="100%">
-
-					<tr>
-						<th style="border-bottom:1px solid #999">Code</th>
-						<th style="border-bottom:1px solid #999">Description</th>
-                        <th style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
-                        <th style="border-bottom:1px solid #999">UOM</th>
-                        <th style="border-bottom:1px solid #999">Qty</th>
-						<th style="border-bottom:1px solid #999">Price</th>
-                        <th style="border-bottom:1px solid #999">Amount</th>
-												<th style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
-                        <th style="border-bottom:1px solid #999">&nbsp;</th>
-					</tr>
-                    
-					<tbody class="tbody">
-					</tbody>                    
-			</table>
+							<thead>
+								<tr>
+									<th style="border-bottom:1px solid #999">Code</th>
+									<th style="border-bottom:1px solid #999">Description</th>
+									<th style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
+									<th style="border-bottom:1px solid #999">UOM</th>
+									<th style="border-bottom:1px solid #999">Qty</th>
+									<th style="border-bottom:1px solid #999">Price</th>
+									<th style="border-bottom:1px solid #999">Amount</th>
+									<th style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
+									<th style="border-bottom:1px solid #999">&nbsp;</th>
+								</tr>
+							</thead>
+							<tbody class="tbody">
+							</tbody>                    
+					</table>
 
 </div>
-<br>
-	<div class="col-xs-12 nopadwtop2x">
-			<div class="col-xs-7">
-			<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
-	
-				<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SO.php';" id="btnMain" name="btnMain">Back to Main<br>(ESC)</button>
 
-				<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='SO_new.php';" id="btnNew" name="btnNew">New<br>(F1)</button>
+<table width="100%" border="0" cellpadding="3" style="margin-top: 5px">
+			<tr>
+				<td valign="top">
 
-				<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">Quote<br>(Insert)</button>
-
-				<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">Undo Edit<br>(CTRL+Z)
-				</button>
-
-				<?php
-					$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'SO_print'");
-
-					if(mysqli_num_rows($sql) == 1){
-					
-				?>
-						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $txtctranno;?>');" id="btnPrint" name="btnPrint">
-				Print<br>(CTRL+P)
-						</button>
-
-				<?php		
-					}
-
-				?>
-				
-				<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">Edit<br>(CTRL+E)    </button>
-				
-				<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">Save<br>(CTRL+S)    </button>
-			</div>	
-
-			<div class="col-xs-2"  style="padding-top: 14px !important;">
-					<b>TOTAL AMOUNT </b>
-			</div>
-			<div class="col-xs-3"  style="padding-top: 14px !important;">
-				<input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="<?php echo  number_format($nbasegross,4); ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10">
-			</div>
-		</div>  
+					<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
 		
-		<div class="col-xs-12 nopadding">
-			<div class="col-xs-7">
+					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SO.php';" id="btnMain" name="btnMain">Back to Main<br>(ESC)</button>
+
+					<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='SO_new.php';" id="btnNew" name="btnNew">New<br>(F1)</button>
+
+					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">Quote<br>(Insert)</button>
+
+					<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">Undo Edit<br>(CTRL+Z)
+					</button>
+
+					<?php
+						$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'SO_print'");
+
+						if(mysqli_num_rows($sql) == 1){
+						
+					?>
+							<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $txtctranno;?>');" id="btnPrint" name="btnPrint">
+					Print<br>(CTRL+P)
+							</button>
+
+					<?php		
+						}
+
+					?>
 					
-			</div>	
+					<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">Edit<br>(CTRL+E)    </button>
+					
+					<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">Save<br>(CTRL+S)    </button>
+				</td>	
 
-			<div class="col-xs-2">
-					<b>TOTAL AMOUNT IN <?php echo $nvaluecurrbase; ?></b>
-			</div>
-			<div class="col-xs-3" >
-				<input type="text" id="txtnGross" name="txtnGross" readonly value="<?php echo  number_format($Gross,4); ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10">
-			</div>
-		</div>
-
-
+				<td align="right" valign="top">
+					
+					<table width="90%" border="0" cellspacing="0" cellpadding="0">
+						<tr>
+							<td nowrap align="right"><b>Gross Amount </b>&nbsp;&nbsp;</td>
+							<td> <input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20" value="<?=$nbasegross; ?>"></td>
+						</tr>
+						<tr>
+							<td nowrap align="right"><b>Gross Amount in <?php echo $nvaluecurrbase; ?></b>&nbsp;&nbsp;</td>
+							<td> <input type="text" id="txtnGross" name="txtnGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20" value="<?=$Gross; ?>"></td>
+						</tr>
+					</table>
+				
+				</td>
+			</tr>
+		</table>
 
 </fieldset>
     
@@ -689,8 +696,8 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
     			$(this).tab('show');
 			});
 
-			$("#txtnBaseGross").autoNumeric('init',{mDec:4});
-			$("#txtnGross").autoNumeric('init',{mDec:4});
+			$("#txtnBaseGross").autoNumeric('init',{mDec:2});
+			$("#txtnGross").autoNumeric('init',{mDec:2});
 				
 	   			$.ajax({
 					url : "../../include/th_xtrasessions.php",
@@ -704,11 +711,10 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 						   xChkBal = item.chkinv; //0 = Check ; 1 = Dont Check
 						   xChkLimit = item.chkcustlmt; //0 = Disable ; 1 = Enable
 						   xChkLimitWarn = item.chklmtwarn; //0 = Accept Warninf ; 1 = Accept Block ; 2 = Refuse Order
-						   
 					   });
 					}
 				});
-	
+
 		if(xChkBal==1){
 			$("#tblAvailable").hide();
 		}
@@ -741,7 +747,7 @@ $(function(){
         });
 
 	
-		$("#txtcustid").keyup(function(event){
+	$("#txtcustid").keyup(function(event){
 		if(event.keyCode == 13){
 		
 		var dInput = this.value;
@@ -1036,7 +1042,14 @@ $(function(){
 			$("#hdnqty").val(item.nqty);
 			$("#hdnqtyunit").val(item.cqtyunit);
 			
-			addItemName("","","","","","");
+			myFunctionadd("","","","","","","");
+			ComputeGross();	
+
+			$("#txtprodid").val("");
+			$("#txtprodnme").val("");
+			$("#hdnunit").val("");
+			$("#hdnqty").val("");
+			$("#hdnqtyunit").val("");
 			
 			
 		}
@@ -1048,9 +1061,9 @@ $(function(){
 		if(event.keyCode == 13){
 
 		$.ajax({
-        url:'../get_productid.php',
-        data: 'c_id='+ $(this).val() + "&itmbal=" + xChkBal+"&styp="+ $("#selsityp").val(),                 
-        success: function(value){
+      url:'../get_productid.php',
+      data: 'c_id='+ $(this).val() + "&itmbal=" + xChkBal+"&styp="+ $("#selsityp").val(),                 
+      success: function(value){
         var data = value.split(",");
         $('#txtprodid').val(data[0]);
         $('#txtprodnme').val(data[1]);
@@ -1059,39 +1072,39 @@ $(function(){
 				$("#hdnqtyunit").val(data[4]);
 
 
-		if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
-			var isItem = "NO";
-			var disID = "";
-			
-			$("#MyTable > tbody > tr").each(function() {	
-				disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-
-				if($("#txtprodid").val()==disID){
+				if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
+					var isItem = "NO";
+					var disID = "";
 					
-					isItem = "YES";
+					$("#MyTable > tbody > tr").each(function() {	
+						disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
 
+						if($("#txtprodid").val()==disID){
+							
+							isItem = "YES";
+
+						}
+					});	
+
+				//if value is not blank
 				}
-			});	
+				
+				//if(isItem=="NO"){		
 
-		//if value is not blank
-		 }
-		 
-	//	if(isItem=="NO"){		
-
-			myFunctionadd("","","","","","");
-			ComputeGross();	
-			
-	 //   }
-	 //   else{
-			
-		//	addqty();
-	//	}
+					myFunctionadd("","","","","","","");
+					ComputeGross();	
+					
+			//   }
+			//   else{
+					
+			//		addqty();
+			//	}
 		
-		$("#txtprodid").val("");
-		$("#txtprodnme").val("");
-		$("#hdnunit").val("");
-		$("#hdnqty").val("");
-		$("#hdnqtyunit").val("");
+				$("#txtprodid").val("");
+				$("#txtprodnme").val("");
+				$("#hdnunit").val("");
+				$("#hdnqty").val("");
+				$("#hdnqtyunit").val("");
  
 	    //closing for success: function(value){
 	    }
@@ -1238,10 +1251,10 @@ function checkcustlimit(id,xcred){
 
 }
 
-function addItemName(qty,price,curramt,amt,factr,cref){
+function addItemName(qty,price,curramt,amt,factr,cref,nrefident){
 
 	 if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
-
+/*
 		var isItem = "NO";
 		var disID = "";
 
@@ -1254,9 +1267,9 @@ function addItemName(qty,price,curramt,amt,factr,cref){
 
 				}
 			});	
-
-	// if(isItem=="NO"){	
-	 	myFunctionadd(qty,price,curramt,amt,factr,cref);
+*/
+	 //if(isItem=="NO"){	
+	 	myFunctionadd(qty,price,curramt,amt,factr,cref,nrefident);
 		
 		ComputeGross();	
 
@@ -1272,12 +1285,13 @@ function addItemName(qty,price,curramt,amt,factr,cref){
 		$("#hdnunit").val("");
 		$("#hdnqty").val("");
 		$("#hdnqtyunit").val("");
+		$("#hdnvat").val("");
 		
 	 }
 
 }
 
-function myFunctionadd(qty,pricex,curramt,amtx,factr,cref){
+function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 	//alert("hello");
 	var itmcode = $("#txtprodid").val();
 	var itmdesc = $("#txtprodnme").val();
@@ -1331,30 +1345,21 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref){
 		}
 		
 	
-		var uomoptions = "";
-								
-		 $.ajax ({
-			url: "../th_loaduomperitm.php",
-			data: { id: itmcode },
-			async: false,
-			dataType: "json",
-			success: function( data ) {
-				var isselctd="";							
-				console.log(data);
-				$.each(data,function(index,item){
-					if(item.id==itmunit){
-						isselctd = "selected";
-					}
-					else{
-						isselctd = "";
-					}
-					
-					uomoptions = uomoptions + '<option value='+item.id+' '+isselctd+'>'+item.name+'</option>';
-				});
-						
-											 
+		var xz = $("#hdnitmfactors").val();
+		var uomoptions = "<option value='"+itmunit+"' selected>"+itmunit+"</option>";
+
+		$.each(jQuery.parseJSON(xz), function() { 
+			if(itmcode==this['cpartno']){
+				if(itmunit==this['cunit']){
+					isselctd = "selected";
+				}
+				else{
+					isselctd = "";
+				}
+				uomoptions = uomoptions + "<option value='"+this['cunit']+"' "+isselctd+">"+this['cunit']+"</option>";
+
 			}
-		});
+		});			
 
 	if(cref==null){
 		cref = ""
@@ -1365,9 +1370,10 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref){
 	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 	var lastRow = tbl.length;
 
-	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+" <input type='hidden' value='"+cref+"' name=\"txtcreference\" id=\"txtcreference\"></td>";
+	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+nrefident+"' name=\"hdnrefident\" id=\"hdnrefident\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+" <input type='hidden' value='"+cref+"' name=\"txtcreference\" id=\"txtcreference\"></td>";
 	var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmdesc+"</td>";
 	var tditmavail = avail;
+
 	var tditmunit = "<td width=\"100\" nowrap> <select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\">"+uomoptions+"</select> </td>";
 	var tditmqty = "<td width=\"100\" nowrap> <input type='text' value='"+itmtotqty+"' data-v-min=\"1\" class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' "+qtystat+"> <input type='hidden' value='"+itmqtyunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+factz+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
 		
@@ -1383,10 +1389,11 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref){
 
 									$("#del"+itmcode).on('click', function() {
 										$(this).closest('tr').remove();
+
 										ComputeGross();
 									});
 
-									$("input.numeric").autoNumeric('init',{mDec:4});
+									$("input.numeric").autoNumeric('init',{mDec:2});
 
 									/*
                   $("input.numeric").numeric(
@@ -1455,9 +1462,8 @@ function ComputeAmt(nme){
 			$("#txtntranamount"+r).autoNumeric('destroy');
 			$("#txtnamount"+r).autoNumeric('destroy');
 
-			$("#txtntranamount"+r).autoNumeric('init',{mDec:4});
-			$("#txtnamount"+r).autoNumeric('init',{mDec:4});
-
+			$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
+			$("#txtnamount"+r).autoNumeric('init',{mDec:2});
 
 
 		}
@@ -1466,32 +1472,32 @@ function ComputeAmt(nme){
 			var rowCount = $('#MyTable tr').length;
 			
 			var gross = 0;
-			var amt = 0;
-			
+			var nnet = 0;
+			var vatz = 0;
+
+			var nnetTot = 0;
+			var vatzTot = 0;
+
 			if(rowCount>1){
 				for (var i = 1; i <= rowCount-1; i++) {
-					amt = $("#txtntranamount"+i).val().replace(/,/g,'');
-					
-					gross = gross + parseFloat(amt);
+
+					gross = gross + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
 				}
 			}
 
-			gross = gross.toFixed(4);
-
-			gross2 = gross * parseFloat($("#basecurrval").val());
-			gross2 = gross2.toFixed(4);
-
-			
-			$("#txtnBaseGross").val(gross);
+			gross2 = gross * parseFloat($("#basecurrval").val().replace(/,/g,''));
 
 			$("#txtnGross").val(gross2);
-			
-			$("#txtnBaseGross").autoNumeric('destroy');
+			$("#txtnBaseGross").val(gross);
+	
 			$("#txtnGross").autoNumeric('destroy');
+			$("#txtnBaseGross").autoNumeric('destroy');
 
-			$("#txtnBaseGross").autoNumeric('init',{mDec:4});
-			$("#txtnGross").autoNumeric('init',{mDec:4});
+			$("#txtnGross").autoNumeric('init',{mDec:2});
+			$("#txtnBaseGross").autoNumeric('init',{mDec:2});			
+			
 		}
+
 
 
 function addqty(){
@@ -1519,15 +1525,14 @@ function addqty(){
 			$(this).find("input[name='txtntranamount']").val(TotAmt.toFixed(4)); 
 
 			$("#txtntranamount"+r).autoNumeric('destroy');
-			$("#txtntranamount"+r).autoNumeric('init',{mDec:4});
+			$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
 
 
 			namt2 = TotAmt * parseFloat($("#basecurrval").val());
 			$(this).find("input[name='txtnamount']").val(namt2.toFixed(4)); 
 
 			$("#txtnamount"+r).autoNumeric('destroy');
-			$("#txtnamount"+r).autoNumeric('init',{mDec:4});
-
+			$("#txtnamount"+r).autoNumeric('init',{mDec:2});
 		}
 
 	});
@@ -1745,6 +1750,8 @@ function checkcurrency(tranno,currcode,currrate){
 				//$("#basecurrval").val(currrate);
 				opengetdet(tranno);
 			}
+		}else{
+			opengetdet(tranno);
 		}
 	}else{
 		$("#hdncurr").val(currcode);
@@ -1802,7 +1809,7 @@ function opengetdet(valz){
 						  
 							if (item.nqty>=1){
 								if(item.navail>=1){
-									var xxmsg = "<input type='checkbox' value='"+item.citemno+"' name='chkSales[]' data-id=\""+drno+"\">";
+									var xxmsg = "<input type='checkbox' value='"+item.id+"' name='chkSales[]' data-id=\""+drno+"\">";
 								}
 								else{
 									var xxmsg = "<font color='red'><b>X</b></font>";
@@ -1846,7 +1853,7 @@ function InsertSI(){
 				var tranno = $(this).data("id");
 	   			var id = $(this).val();
 	   			$.ajax({
-					url : "th_qolistput.php?id=" + tranno + "&itm=" + id,
+					url : "th_qolistput.php?id=" + tranno + "&itm=" + id + "&itmbal=" + xChkBal,
 					type: "GET",
 					dataType: "JSON",
 					success: function(data)
@@ -1970,7 +1977,7 @@ function loaddetails(){
 				$("#hdnqty").val(item.nqty);
 				$("#hdnqtyunit").val(item.cqtyunit);
 
-				addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref)
+				addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.nident)
 			});
 
 		}
@@ -2069,9 +2076,9 @@ function chkform(){
         }
 			}
 			
-			if(myprice == 0 || myprice == ""){
-				msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero amount is not allowed: row " + index;	
-			}
+			//if(myprice == 0 || myprice == ""){
+			//	msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero amount is not allowed: row " + index;	
+		//	}
 
 			
 		});
@@ -2132,8 +2139,6 @@ function chkform(){
 		
 		//alert("SO_updatehdr.php?ccode=" + ccode + "&crem="+ crem + "&ddate="+ ddate + "&ngross="+ngross + "&selsityp="+csitype+"&ccpono="+ ccpono+"&salesman="+ salesman+"&delcodes="+ delcodes+"&delhousno="+ delhousno+"&delcity="+ delcity+"&delstate="+ delstate+"&delcountry="+ delcountry+"&delzip="+ delzip+"&specins="+ specins);
 		//data: { id:trancode, ccode: ccode, crem: crem, ddate: ddate, ngross: ngross, selsityp: csitype, ccpono:ccpono, salesman:salesman, delcodes:delcodes, delhousno:delhousno, delcity:delcity, delstate:delstate, delcountry:delcountry, delzip:delzip, specins:specins },
-		
-		//alert(myform);
 		var myform = $("#frmpos").serialize();
 		$.ajax ({
 			url: "SO_updatehdr.php",
@@ -2158,6 +2163,7 @@ function chkform(){
 			//Save Details
 			$("#MyTable > tbody > tr").each(function(index) {	
 			//alert(index);
+				var nrefident = $(this).find('input[type="hidden"][name="hdnrefident"]').val();
 				var crefno = $(this).find('input[type="hidden"][name="txtcreference"]').val();
 				var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
 				var cuom = $(this).find('select[name="seluom"]').val();
@@ -2166,18 +2172,19 @@ function chkform(){
 				var namt = $(this).find('input[name="txtnamount"]').val();
 				var nbaseamt = $(this).find('input[name="txtntranamount"]').val();
 				var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
-				var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
-			
+				var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val(); 
+
 				if(nqty!==undefined){
 					nqty = nqty.replace(/,/g,'');
 					nprice = nprice.replace(/,/g,'');
 					namt = namt.replace(/,/g,'');
 					nbaseamt = nbaseamt.replace(/,/g,'');
 				}
-
+			
+				alert("nrefident="+nrefident+"&trancode="+trancode+"&crefno="+crefno+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+nprice+"&namt="+namt+"&nbaseamt="+nbaseamt+"&mainunit="+mainunit+"&nfactor="+nfactor);
 				$.ajax ({
 					url: "SO_newsavedet.php",
-					data: { trancode: trancode, crefno: crefno, indx:index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, nbaseamt:nbaseamt, mainunit:mainunit, nfactor:nfactor },
+					data: { nrefident:nrefident, trancode: trancode, crefno: crefno, indx:index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, nbaseamt:nbaseamt, mainunit:mainunit, nfactor:nfactor},
 					async: false,
 					success: function( data ) {
 						if(data.trim()=="False"){
@@ -2274,23 +2281,25 @@ function convertCurrency(fromCurrency) {
 
 function recomputeCurr(){
 
- var newcurate = $("#basecurrval").val();
- var rowCount = $('#MyTable tr').length;
-		 
- var gross = 0;
- var amt = 0;
+var newcurate = $("#basecurrval").val();
+var rowCount = $('#MyTable tr').length;
+		
+var gross = 0;
+var amt = 0;
 
- if(rowCount>1){
-	 for (var i = 1; i <= rowCount-1; i++) {
-		 amt = $("#txtntranamount"+i).val();			
-		 recurr = parseFloat(newcurate) * parseFloat(amt);
+if(rowCount>1){
+	for (var i = 1; i <= rowCount-1; i++) {
+		amt = $("#txtntranamount"+i).val().replace(/,/g,'');	
+		
+		recurr = parseFloat(newcurate) * parseFloat(amt);
 
-		 $("#txtnamount"+i).val(recurr.toFixed(4));
-	 }
- }
+		$("#txtnamount"+i).val(recurr);
 
-
- ComputeGross();
+		$("#txtnamount"+i).autoNumeric('destroy');
+		$("#txtnamount"+i).autoNumeric('init',{mDec:2}); 
+	}
+}
+ComputeGross();
 
 
 }

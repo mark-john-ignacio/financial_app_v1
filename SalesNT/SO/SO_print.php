@@ -32,7 +32,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$CustCode = $row['ccode'];
 		$CustName = $row['cname'];
 		$Remarks = $row['cremarks'];
-		$TranDate = $row['ddate'];
+    $TranDate = $row['ddate'];
 		$Date = $row['dcutdate'];
 		//$SalesType = $row['csalestype'];
 		$Gross = $row['ngross'];
@@ -52,8 +52,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 </head>
 
 <body style="padding:5px" onLoad="window.print();">
-
-<table width="100%" border="0" cellpadding="3" style="border-collapse:collapse;" id="tblMain">
+<table width="100%" border="0" cellpadding="3" style="border-collapse:collapse;">
   <tr>
     <td colspan="2"><font size="2"><b>JOB ORDER SLIP - <?php echo $csalesno;?></b></font></td>
   </tr>
@@ -69,7 +68,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
     <td width="100">Delivery Date:</td>
     <td><?php echo date_format(date_create($Date),"M d, Y");?></td>
   </tr>
- 
+
   <tr>
     <td colspan="3">
     
@@ -90,7 +89,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	?>
       
       <tr>
-        <td style="border-right:1px dashed;"><?php echo strtoupper($rowbody['citemdesc']);?></td>
+        <td style="border-right:1px dashed;"><?php echo strtoupper($rowbody['citemdesc'])?></td>
         <td style="border-right:1px dashed;" align="right"><?php echo $rowbody['nqty'];?></td>
         <td style="border-right:1px dashed;" align="right"><?php echo $rowbody['cunit'];?></td>
         

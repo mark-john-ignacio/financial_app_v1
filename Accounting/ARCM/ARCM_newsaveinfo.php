@@ -14,9 +14,11 @@ $company = $_SESSION['companyid'];
 		$cinfofld = $_REQUEST['citmfld'];
 		$cinfovlue = $_REQUEST['citmvlz'];
 		
-		$indexz = $indexz + 1;
+		//$indexz = $indexz + 1;
 
-		if (!mysqli_query($con,"INSERT INTO salesreturn_t_info(`compcode`, `ctranno`, `nident`, `citemno`, `cfldnme`, `cvalue`) values('$company', '$cSINo', '$z2', '$cinfocode', '$cinfofld', '$cinfovlue')")){
+		$refcidenttran = $cSINo."P".$indexz;
+		
+		if (!mysqli_query($con,"INSERT INTO aradj_t_info(`compcode`, `cidentity`, `ctranno`, `nident`, `citemno`, `cfldnme`, `cvalue`) values('$company','$refcidenttran',  '$cSINo', '$indexz', '$cinfocode', '$cinfofld', '$cinfovlue')")){
 			echo "Errormessage: %s\n", mysqli_error($con);
 		}
 		else{

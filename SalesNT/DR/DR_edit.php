@@ -15,7 +15,7 @@ if(isset($_REQUEST['txtctranno'])){
 }
 else{
 		$txtctranno = $_REQUEST['txtcsalesno'];
-}
+	}
 	
 $company = $_SESSION['companyid'];
 
@@ -372,22 +372,20 @@ SO<br>(Insert)</button>
 Undo Edit<br>(CTRL+Z)
     </button>
 
-		<!--
 <?php
-	//$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'DR_print'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'DR_print'");
 
-	//if(mysqli_num_rows($sql) == 1){
+	if(mysqli_num_rows($sql) == 1){
 	
 ?>
-    <button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?//php echo $txtctranno;?>');" id="btnPrint" name="btnPrint">
+    <button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $txtctranno;?>');" id="btnPrint" name="btnPrint">
 Print<br>(CTRL+P)
     </button>
 
 <?php		
-	//}
+	}
 
 ?>
--->
     
     <button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
 Edit<br>(CTRL+E)    </button>

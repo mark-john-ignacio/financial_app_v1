@@ -29,23 +29,27 @@ require_once "../../Connection/connection_string.php";
 				
 		$nqty1 = $row['totqty'];
 		$nqty2 = $row['totqty2']; 
+
+
+		$remainqty =  floatval($nqty1) - floatval($nqty2);
+
+		$nprice = floatval($row['nprice']) - floatval($row['ndiscount']);
 		
-		 $json['ident'] = $row['nident'];
-		 $json['id'] = $row['cpartno'];
-	     $json['desc'] = $row['citemdesc'];
-		 $json['totqty'] = $nqty1 - $nqty2;
-		 $json['cqtyunit'] = $row['qtyunit'];
-		 $json['cunit'] = $row['cunit'];
-		 $json['nfactor'] = $row['nfactor'];
-		 $json['ndiscount'] = $row['ndiscount'];
-		 $json['nprice'] = $row['nprice'];
-		 $json['nbaseamount'] = $row['nbaseamount'];
-		 $json['namount'] = $row['namount']; 
-		 $json['xref'] = $row['ctranno'];
-		 $json['ccurrencycode'] = $row['ccurrencycode']; 
-		 $json['ccurrencydesc'] = $row['ccurrencydesc']; 
-		 $json['nexchangerate'] = $row['nexchangerate'];
-		 $json2[] = $json;
+		$json['ident'] = $row['nident'];
+		$json['id'] = $row['cpartno'];
+	  $json['desc'] = $row['citemdesc'];
+		$json['totqty'] = $remainqty;
+		$json['cqtyunit'] = $row['qtyunit'];
+		$json['cunit'] = $row['cunit'];
+		$json['nfactor'] = $row['nfactor'];
+		$json['nprice'] = $nprice;
+		$json['nbaseamount'] = 0;
+		$json['namount'] = 0; 
+		$json['xref'] = $row['ctranno'];
+		$json['ccurrencycode'] = $row['ccurrencycode']; 
+		$json['ccurrencydesc'] = $row['ccurrencydesc']; 
+		$json['nexchangerate'] = $row['nexchangerate'];
+		$json2[] = $json;
 	
 	}
 

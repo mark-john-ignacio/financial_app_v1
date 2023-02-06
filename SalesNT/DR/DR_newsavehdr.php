@@ -61,18 +61,20 @@ else {
 	$preparedby = $_SESSION['employeeid'];
 	$cacctcode = "NULL";
 
-				$sqlhead = mysqli_query($con,"Select cacctcodesales from customers where compcode='$company' and cempid='$cCustID'");
+				$sqlhead = mysqli_query($con,"Select cacctcodesales,cterms from customers where compcode='$company' and cempid='$cCustID'");
 				if (mysqli_num_rows($sqlhead)!=0) {
 					$row = mysqli_fetch_assoc($sqlhead);
 					$cacctcode = "'".$row["cacctcodesales"]."'";
+					$cterms = "'".$row["cterms"]."'";
 				}
 	
 	//INSERT HEADER
 
-	if (!mysqli_query($con, "INSERT INTO ntdr(`compcode`, `ctranno`, `ccode`, `cremarks`, `ddate`, `dcutdate`, `ngross`, `cpreparedby`, `cacctcode`, `cdrprintno`, `csalesman`, `cdelcode`, `cdeladdno`, `cdeladdcity`, `cdeladdstate`, `cdeladdcountry`, `cdeladdzip`) 
-	values('$company', '$cSINo', '$cCustID', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$preparedby', $cacctcode, $nDRPrintNo, '$salesman', '$delcodes', $delhousno, $delcity, $delstate, $delcountry, '$delzip')")) {
+	if (!mysqli_query($con, "INSERT INTO ntdr(`compcode`, `ctranno`, `ccode`, `cterms`, `cremarks`, `ddate`, `dcutdate`, `ngross`, `cpreparedby`, `cacctcode`, `cdrprintno`, `csalesman`, `cdelcode`, `cdeladdno`, `cdeladdcity`, `cdeladdstate`, `cdeladdcountry`, `cdeladdzip`) 
+	values('$company', '$cSINo', '$cCustID', $cterms, $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$preparedby', $cacctcode, $nDRPrintNo, '$salesman', '$delcodes', $delhousno, $delcity, $delstate, $delcountry, '$delzip')")) {
 		echo "False";
-		//echo mysqli_error($con);
+
+		echo mysqli_error($con);
 	} 
 	else {
 
@@ -80,7 +82,7 @@ else {
 		$compname = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 		
 		mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-		values('$company','$cSINo','$preparedby',NOW(),'INSERTED','DR NON-TRADE','$compname','Inserted New Record')");
+		values('$company','$cSINo','$preparedby',NOW(),'INSERTED','DR Non-Trade','$compname','Inserted New Record')");
 		
 		// Delete previous details
 		mysqli_query($con, "Delete from ntdr_t Where compcode='$company' and ctranno='$cSINo'");

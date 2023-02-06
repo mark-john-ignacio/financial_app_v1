@@ -16,7 +16,7 @@ $company = $_SESSION['companyid'];
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Coop Financials</title>
+	<title>Myx Financials</title>
 
 <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">  
 <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
@@ -174,64 +174,62 @@ $(function(){
 			<br><br>
 			<button type="button" class="btn btn-primary btn-md" onClick="location.href='SR_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
-            <br><br>
+      <br><br>
+			
 			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
 						<th>Cm No</th>
 						<th>Customer</th>
-                        <th>Transaction Date</th>
+            <th>Transaction Date</th>
 						<th>Return Date</th>
 						<th>Gross</th>
-                        <th>Status</th>
+            <th>Status</th>
 					</tr>
 				</thead>
 
 				<tbody>
-              	<?php
-				$sql =$sql = "select a.*,b.cname from aradj a left join customers b on a.ccode=b.cempid Where a.compcode='$company' and a.ctype='Credit' order by a.ddate desc";;
-				$result=mysqli_query($con,$sql);
-				
-					if (!mysqli_query($con, $sql)) {
-						printf("Errormessage: %s\n", mysqli_error($con));
-					} 
-					
-				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-				{
-				?>
+          <?php
+						$sql =$sql = "select a.*,b.cname from aradj a left join customers b on a.ccode=b.cempid Where a.compcode='$company' and a.ctype='Credit' order by a.ddate desc";;
+						$result=mysqli_query($con,$sql);
+						
+							if (!mysqli_query($con, $sql)) {
+								printf("Errormessage: %s\n", mysqli_error($con));
+							} 
+							
+						while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+						{
+					?>
  					<tr>
 						<td><a href="javascript:;" onClick="editfrm('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
 						<td><?php echo $row['ccode'];?> - <?php echo utf8_encode($row['cname']);?> </td>
-                        <td><?php echo $row['ddate'];?></td>
-                        <td><?php echo $row['dcutdate'];?></td>
+            <td><?php echo $row['ddate'];?></td>
+             <td><?php echo $row['dcutdate'];?></td>
 						<td align="right"><?php echo $row['ngross'];?></td>
-                        <td align="center">
-                        <div id="msg<?php echo $row['ctranno'];?>">
-                        	<?php 
-							if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
-							?>
-								<a href="javascript:;" onClick="trans('POST','<?php echo $row['ctranno'];?>')">POST</a> | <a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['ctranno'];?>')">CANCEL</a>
-							<?php
-                            }
-							else{
-								if(intval($row['lcancelled'])==intval(1)){
-									echo "Cancelled";
-								}
-								if(intval($row['lapproved'])==intval(1)){
-									echo "Posted";
-								}
-							}
-							
-							?>
-                            </div>
-                        </td>
-					</tr>
+            <td align="center">
+              <div id="msg<?php echo $row['ctranno'];?>">
                 <?php 
-				}
-				
-				mysqli_close($con);
-				
-				?>
+									if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
+								?>
+								<a href="javascript:;" onClick="trans('POST','<?php echo $row['ctranno'];?>')">POST</a> | <a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['ctranno'];?>')">CANCEL</a>
+								<?php
+									}
+									else{
+										if(intval($row['lcancelled'])==intval(1)){
+											echo "Cancelled";
+										}
+										if(intval($row['lapproved'])==intval(1)){
+											echo "Posted";
+										}
+									}							
+								?>
+              </div>
+            </td>
+					</tr>
+          <?php 
+						}				
+						mysqli_close($con);				
+					?>
                
 				</tbody>
 			</table>

@@ -76,7 +76,7 @@ function trans(x,num){
 					<tr>
 						<th>Tran No</th>
 						<th>OR No.</th>
-                        <th>Payor</th>
+            <th>Payor</th>
 						<th>Gross</th>
 						<th>Date</th>
 						<th>Status</th>
@@ -103,7 +103,7 @@ function trans(x,num){
 						<td><a href="javascript:;" onClick="editfrm('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
 						<td><?php echo $row['cornumber'];?></td>
  						<td><?php echo $row['ccode'];?> - <?php echo $ccustname;?> </td>
-                        <td align="right"><?php echo $row['namount'];?></td>
+                        <td align="right"><?php echo number_format($row['namount'],2);?></td>
                         <td><?php echo $row['dcutdate'];?></td>
 						<td align="center">
                         <div id="msg<?php echo $row['ctranno'];?>">

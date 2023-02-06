@@ -1,5 +1,11 @@
 <?php
+if(!isset($_SESSION)){
+	session_start();
+}
+
 require_once "../Connection/connection_string.php";
+
+$company = $_SESSION['companyid'];
 //$q = strtolower($_GET["q"]);
 
 //if (!$q) return;
@@ -21,7 +27,7 @@ require_once "../Connection/connection_string.php";
 //echo $sql;
 
  $c_id = $_POST['c_id'];
- $result = mysqli_query($con,"SELECT * FROM customers WHERE cempid = '$c_id'"); 
+ $result = mysqli_query($con,"SELECT * FROM customers WHERE compcode='$company' and cempid = '$c_id'"); 
  if (mysqli_num_rows($result)!=0) {
  $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
  

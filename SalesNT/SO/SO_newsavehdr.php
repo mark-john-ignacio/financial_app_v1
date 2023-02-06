@@ -13,7 +13,7 @@ function chkgrp($valz) {
 	if($valz==''){
 		return "''";
 	}else{
-    	return "'".str_replace("'","\'",$valz)."'";
+		return "'".str_replace("'","\'",$valz)."'";
 	}
 }
 
@@ -80,7 +80,7 @@ else {
 		$compname = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 		
 		mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-		values('$company','$cSINo','$preparedby',NOW(),'INSERTED','JOB ORDER','$compname','Inserted New Record')");
+		values('$company','$cSINo','$preparedby',NOW(),'INSERTED','SO Non-Trade','$compname','Inserted New Record')");
 		
 		// Delete previous details
 		mysqli_query($con, "Delete from ntso_t Where compcode='$company' and ctranno='$cSINo'");

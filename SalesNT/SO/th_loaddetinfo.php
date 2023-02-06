@@ -8,7 +8,7 @@ require_once "../../Connection/connection_string.php";
 	$csalesno = $_REQUEST['id'];
 		
 		$sql = "select X.citemno as cpartno, A.citemdesc, X.cfldnme, X.cvalue
-		from ntso_t_info X
+		from so_t_info X
 		left join items A on X.compcode=A.compcode and X.citemno=A.cpartno
 		where X.compcode='$company' and X.ctranno = '$csalesno'";
 

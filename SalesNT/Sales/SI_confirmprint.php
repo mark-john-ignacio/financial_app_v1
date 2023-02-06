@@ -34,7 +34,7 @@ include('../../include/denied.php');
 	}
 	
 	$csalesno = $_REQUEST['x'];
-	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.nlimit from ntsales a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.compcode='$company' and a.ctranno = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.nlimit from sales a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.compcode='$company' and a.ctranno = '$csalesno'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -109,19 +109,19 @@ function PrintRed(x){
 <span style="border-top:1px dashed;"><?php //echo $_SESSION['employeefull'];?></span>
 <table width="100%" border="0" cellpadding="3" style="border-collapse:collapse;" id="tblMain">
   <tr>
-    <td><font size="3"><b><?php echo $companyname;?></b></font></td>
+    <td><font size="3"><b><?=$companyname;?></b></font></td>
     <td colspan="2" align="center"><font size="3"><b>Sales Invoice</b></font></td>
   </tr>
   <tr>
     <!--<td><font size="2"><b><?php //echo $companydesc;?></b></font></td>-->
-    <td><font size="2"><b><?php echo $companyadd;?></b></font></td>
+    <td><font size="2"><b><?=$companyadd;?></b></font></td>
     <td width="100">Number:</td>
-    <td width="150"><?php echo $csalesno;?></td>
+    <td width="150"><?=$csalesno;?></td>
   </tr>
   <tr>
-    <td><font size="2"><b>TIN #<?php echo $companytin;?></b></font></td>
+    <td><font size="2"><b>TIN #<?=$companytin;?></b></font></td>
     <td width="100">Delivery Date:</td>
-    <td width="150"><?php echo $Date;?></td>
+    <td width="150"><?=$Date;?></td>
   </tr>
   <tr>
     <td>&nbsp;</td>
@@ -136,8 +136,8 @@ function PrintRed(x){
     
     <table width="100%" border="0" cellpadding="3" cellspacing="5">
       <tr>
-        <td height="60" valign="top" style="border:1px solid; border-style:dashed;"><font size="2"><b>CUSTOMER:</b></font><br>&nbsp;&nbsp; &nbsp; <?php echo $CustCode;?> - <?php echo $CustName;?></td>
-        <td width="40%" height="60" valign="top" style="border:1px solid; border-style:dashed;"><font size="2"><b>REMARKS:</b></font><br>&nbsp;&nbsp; &nbsp; <?php echo $Remarks;?></td>
+        <td height="60" valign="top" style="border:1px solid; border-style:dashed;"><font size="2"><b>CUSTOMER:</b></font><br>&nbsp;&nbsp; &nbsp; <?=$CustCode;?> - <?=$CustName;?></td>
+        <td width="40%" height="60" valign="top" style="border:1px solid; border-style:dashed;"><font size="2"><b>REMARKS:</b></font><br>&nbsp;&nbsp; &nbsp; <?=$Remarks;?></td>
       </tr>
     </table>
     </td>
@@ -157,7 +157,7 @@ function PrintRed(x){
         <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Total Amount</th>
       </tr>
       <?php 
-		$sqlbody = mysqli_query($con,"select a.*, b.citemdesc, c.nrate from ntsales_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno left join taxcode c on a.compcode=c.compcode and a.ctaxcode=c.ctaxcode where a.compcode='$company' and a.ctranno = '$csalesno'");
+		$sqlbody = mysqli_query($con,"select a.*, b.citemdesc, c.nrate from sales_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno left join taxcode c on a.compcode=c.compcode and a.ctaxcode=c.ctaxcode where a.compcode='$company' and a.ctranno = '$csalesno'");
 
 		if (mysqli_num_rows($sqlbody)!=0) {
 		$cntr = 0;
@@ -167,30 +167,120 @@ function PrintRed(x){
 		$totvatable = 0;
 		
 		while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
-		 $cntr = $cntr + 1;
+		  $cntr = $cntr + 1;
 						
 	?>
       
       <tr>
-        <td style="border-right:1px dashed;"><?php echo $rowbody['citemno'];?></td>
-        <td style="border-right:1px dashed;"><?php echo $rowbody['citemdesc'];?></td>
-        <td style="border-right:1px dashed;" align="right"><?php echo $rowbody['nqty'];?> <?php echo $rowbody['cunit'];?></td>
-        <td style="border-right:1px dashed;" align="right"><?php echo $rowbody['nprice'];?></td>
-        <td align="right"><?php echo $rowbody['namount'];?></td>
+        <td style="border-right:1px dashed;"><?=$rowbody['citemno'];?></td>
+        <td style="border-right:1px dashed;"><?=$rowbody['citemdesc'];?></td>
+        <td style="border-right:1px dashed;" align="right"><?=$rowbody['nqty'];?> <?=$rowbody['cunit'];?></td>
+        <td style="border-right:1px dashed;" align="right"><?=number_format($rowbody['nprice'],2);?></td>
+        <td align="right"><?=number_format($rowbody['namount'],2);?></td>
         
       </tr>
       <?php 
 	  
-	  	
+	  		if((int)$rowbody['nrate']!=0){
+				//echo "A";
+				$totnetvat = (float)$totnetvat + (float)$rowbody['nnetvat'];
+				$totlessvat = (float)$totlessvat + (float)$rowbody['nlessvat'];
+				
+				$totvatable = (float)$totvatable + (float)$rowbody['namount'];
+          }
+          else{
+            //echo "B";
+            $totvatxmpt = (float)$totvatxmpt + (float)$rowbody['namount'];
+          }
+    }
+    
 		}
-		}
+		
+		
+		if($cvatcode=='VT' || $cvatcode=='NV'){
+			$printVATGross = number_format($Gross,2);
+			
+				if((float)$totvatxmpt==0){
+					//echo "A";
+					$printVEGross = "";
+				}else{
+					//echo "AB";
+					$printVEGross =  number_format($totvatxmpt,2);
+				}
 
+			$printZRGross = "";
+
+
+				$totnetvat = number_format($totnetvat,2);
+				$totlessvat = number_format($totlessvat,2);
+				$totvatable = number_format($totvatable,2);
+			
+		}elseif($cvatcode=='VE'){
+			$printVATGross = "";
+			$printVEGross = number_format($Gross,2);
+			$printZRGross = "";
+			
+				$totnetvat = "";
+				$totlessvat = "";
+				$totvatable = "";
+			
+		}elseif($cvatcode=='ZR'){
+			$printVATGross = "";
+			$printVEGross = "";
+			$printZRGross = number_format($Gross,2);
+
+				$totnetvat = "";
+				$totlessvat = "";
+				$totvatable = "";
+			
+		}
 	  ?>
-        
+        <tr>
+        <td colspan="5" style="border-top:1px dashed;"><?php //echo $cvatcode.":".(float)$totvatxmpt." : ".$printVEGross;?></td>
+        </tr>
+
+        <tr>
+        <td colspan="4" style="border-top:1px dashed;" align="right"  valign="bottom"><b>Total Sales (VAT INCLUSIVE) </b></td>
+        <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($totvatable!=="") ? number_format(floatval($totvatable),2) : "";?></b></td>
+        </tr>
+        <tr>
+          <td style="border-top:1px dashed;" align="right" valign="bottom"><b>Vatable Sales</b></td>
+          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%"><b><?=($totvatable!=="") ? number_format(floatval($totvatable),2) : "";?></b></div></td>
+          <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>Amt. Net of VAT</b></td>
+          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($totnetvat!=="") ? number_format(floatval($totnetvat),2) : "";?></b></td>
+        </tr>
+        <tr>
+          <td style="border-top:1px dashed;" align="right" valign="bottom"><b>Vat-Exempt Sales</b></td>
+          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%"><b><?=($printVEGross!=="") ? number_format(floatval($printVEGross),2) : "";?></b></div></td>
+          <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>LESS: VAT</b></td>
+          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($totlessvat!=="") ? number_format(floatval($totlessvat),2) : "";?></b></td>
+        </tr>
+        <tr>
+          <td style="border-top:1px dashed;" align="right" valign="bottom"><b>Zero-Rated Sales</b></td>
+          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%"><b><?=($printZRGross!=="") ? number_format(floatval($printZRGross),2) : "";?></b></div></td>
+          <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>LESS: SC/PWD DISC.</b></td>
+          <td style="border-top:1px dashed;"  valign="bottom" align="right">&nbsp;</td>
+        </tr>
+        <tr>
+          <td style="border-top:1px dashed;" align="right" valign="bottom"><b>Vat Amt</b></td>
+          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%">&nbsp;</div></td>
+          <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>Amt. Due</b></td>
+          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($totnetvat!=="") ? number_format(floatval($totnetvat),2) : "";?></b></td>
+        </tr>
+        <tr>
+          <td colspan="2" style="border-top:1px dashed;" valign="bottom">&nbsp;</td>
+          <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>Less: Witholding Tax</b></td>
+          <td style="border-top:1px dashed;"  valign="bottom" align="right">&nbsp;</td>
+        </tr>
+        <tr>
+          <td colspan="2" style="border-top:1px dashed;" valign="bottom">&nbsp;</td>
+          <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>ADD VAT</b></td>
+          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($totlessvat!=="") ? number_format(floatval($totlessvat),2) : "";?></b></td>
+        </tr>
         <tr>
           <td colspan="2" style="border-top:1px dashed;" valign="bottom">&nbsp;</td>
           <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>TOTAL AMT. DUE</b></td>
-          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?php echo $Gross;?></b></td>
+          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($Gross!=="") ? number_format(floatval($Gross),2) : "";?></b></td>
         </tr>
 
     </table></td>
@@ -217,7 +307,7 @@ else{
 //echo $lPosted."==0 && ".$autopost."==1";
 ?>
 
-<input type="button" value="<?php echo $valsub;?>" onClick="<?php echo $strqry;?>;" class="noPrint"/>
+<input type="button" value="<?=$valsub;?>" onClick="<?=$strqry;?>;" class="noPrint"/>
 
 
 </div>

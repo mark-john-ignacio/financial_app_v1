@@ -8,15 +8,15 @@ require_once "../../Connection/connection_string.php";
 
 		$date1 = date("Y-m-d");
 		
-			$sql = "select a.nident, a.ctranno, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, a.ndiscount, a.nbaseamount, a.namount, a.cmainunit as qtyunit, a.nfactor, ifnull(c.nqty,0) as totqty2, d.ccurrencycode, d.ccurrencydesc, d.nexchangerate
+			$sql = "select a.nident, a.ctranno, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, a.namount, a.cmainunit as qtyunit, 
+			a.nfactor, ifnull(c.nqty,0) as totqty2 
 			from sales_t a 
-			left join sales d on a.compcode=d.compcode and a.ctranno=d.ctranno
 			left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
 			left join
 				(
 					Select x.creference,x.citemno,x.nrefident,sum(x.nqty) as nqty
-					From salesreturn_t x
-					left join salesreturn y on x.compcode=y.compcode and x.ctranno=y.ctranno
+					From aradj_t x
+					left join aradj y on x.compcode=y.compcode and x.ctranno=y.ctranno
 					Where x.creference='".$_REQUEST['id']."' and y.lcancelled=0
 					group by x.creference,x.citemno
 				 ) c on a.ctranno=c.creference and a.citemno=c.citemno and a.nident = c.nrefident
@@ -37,14 +37,9 @@ require_once "../../Connection/connection_string.php";
 		 $json['cqtyunit'] = $row['qtyunit'];
 		 $json['cunit'] = $row['cunit'];
 		 $json['nfactor'] = $row['nfactor'];
-		 $json['ndiscount'] = $row['ndiscount'];
 		 $json['nprice'] = $row['nprice'];
-		 $json['nbaseamount'] = $row['nbaseamount'];
-		 $json['namount'] = $row['namount']; 
+		 $json['namount'] = $row['namount'];
 		 $json['xref'] = $row['ctranno'];
-		 $json['ccurrencycode'] = $row['ccurrencycode']; 
-		 $json['ccurrencydesc'] = $row['ccurrencydesc']; 
-		 $json['nexchangerate'] = $row['nexchangerate'];
 		 $json2[] = $json;
 	
 	}

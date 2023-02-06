@@ -48,35 +48,42 @@ else {
 	$cCustID = $_REQUEST['txtcustid'];
 	$dDelDate = $_REQUEST['date_delivery'];
 	$cRemarks = chkgrp($_REQUEST['txtremarks']); 
-	$nGross = str_replace(",","",$_REQUEST['txtnGross']);
 	
-	$CurrCode = $_REQUEST['selbasecurr']; 
-	$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
-	$CurrRate= $_REQUEST['basecurrval']; 
-	$BaseGross= str_replace(",","",$_REQUEST['txtnBaseGross']);
+	/*
+		$nGross = str_replace(",","",$_REQUEST['txtnGross']);
+		$CurrCode = $_REQUEST['selbasecurr']; 
+		$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
+		$CurrRate= $_REQUEST['basecurrval']; 
+		$BaseGross= str_replace(",","",$_REQUEST['txtnBaseGross']);
+		
+		, `ngross`, `nbasegross`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`
+		, '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate'
+
+	*/
 
 	$preparedby = $_SESSION['employeeid'];
 	
 	//INSERT HEADER
 
-	if (!mysqli_query($con, "INSERT INTO salesreturn(`compcode`, `ctranno`, `ccode`, `cremarks`, `ddate`, `dreceived`, `ngross`, `nbasegross`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `cpreparedby`) values('$company', '$cSINo', '$cCustID', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby')")) {
+	if (!mysqli_query($con, "INSERT INTO salesreturn(`compcode`, `ctranno`, `ccode`, `cremarks`, `ddate`, `dreceived`, `cpreparedby`) values('$company', '$cSINo', '$cCustID', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$preparedby')")) {
 		echo "False";
 		//echo mysqli_error($con);
 	} 
 	else {
 		echo $cSINo;
+
+		//INSERT LOGFILE
+		$compname = php_uname('n');
+	
+		mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
+		values('$company','$cSINo','$preparedby',NOW(),'INSERTED','SALES RETURN','$compname','Inserted New Record')");
+		
+		// Delete previous details
+		mysqli_query($con, "Delete from salesreturn_t Where compcode='$company' and ctranno='$cSINo'");
 	}
 	
-	
-	//INSERT LOGFILE
-	$compname = php_uname('n');
-	
-	mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-	values('$company','$cSINo','$preparedby',NOW(),'INSERTED','SALES RETURN','$compname','Inserted New Record')");
-	
-	// Delete previous details
-	mysqli_query($con, "Delete from salesreturn_t Where compcode='$company' and ctranno='$cSINo'");
-	mysqli_query($con, "Delete from salesreturn_t_info Where compcode='$company' and ctranno='$cSINo'");
+
+	//mysqli_query($con, "Delete from salesreturn_t_info Where compcode='$company' and ctranno='$cSINo'");
 
 
 ?>

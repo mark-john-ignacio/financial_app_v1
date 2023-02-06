@@ -278,6 +278,9 @@
                             <i class="fgly flaticon-020-receipt"></i>
 							Quotation</a>
 						</li>
+
+						<li class="side-item-category">Trade Transactions</li>
+
 						<li>
 							<a href="javascript:;" onClick="setpage('Sales/SO/SO.php');">
                             <i class="fgly-sm flaticon-003-shopping-list"></i>
@@ -299,11 +302,11 @@
                             <i class="fgly flaticon-060-cash-register"></i>
 							Point of Sale</a>
 						</li>
-						-->
-                        <li>
+																			-->
+            <li>
 							<a href="javascript:;" onClick="setpage('Sales/Return/SR.php');">
-                            <i class="icon-action-undo"></i>
-							Sales Return</a>
+                <i class="icon-action-undo"></i>
+								Sales Return</a>
 						</li>
                  
 						
@@ -326,19 +329,26 @@
                             <i class="fgly-sm flaticon-065-bill"></i> 
 							SI Non-Trade</a>
 						</li>
+
+						<!--
+						<li>
+							<a href="javascript:;" onClick="setpage('SalesNT/Return/SR.php');">
+                <i class="icon-action-undo"></i>
+								SR Non-Trade</a>
+						</li>-->
              <!--           
                         <li>
 							<a href="javascript:;" onClick="setpage('POS');">
                             <i class="fgly flaticon-060-cash-register"></i>
 							Point of Sale</a>
 						</li>
-						
+						-->
 
             <li>
 							<a href="javascript:;" onClick="setpage('SalesNT/Return/SR.php');">
                             <i class="icon-action-undo"></i>
-							Returns</a>
-						</li>-->
+							SR Non-Trade</a>
+						</li>
                         
 					</ul>
 				</li>
@@ -428,10 +438,10 @@
 							Accounts Receivable<span class="arrow"></span></a>
                                         <ul class="sub-menu">
                                         	<li>
-                                            	<a href="javascript:;" onClick="setpage('Accounting/CM/SR.php');"> <i class="fa fa-angle-double-right"></i> Credit Memo </a>
+                                            	<a href="javascript:;" onClick="setpage('Accounting/ARCM/ARCM.php');"> <i class="fa fa-angle-double-right"></i> Credit Memo </a>
                                             </li>
                                         	<li>
-                                            	<a href="javascript:;" onClick="setpage('Accounting/DM/SR.php');"> <i class="fa fa-angle-double-right"></i> Debit Memo </a>
+                                            	<a href="javascript:;" onClick="setpage('Accounting/ARDM/ARDM.php');"> <i class="fa fa-angle-double-right"></i> Debit Memo </a>
                                             </li>
                                             <li>
                                                 <a href="javascript:;" onClick="setpage('Accounting/OR/OR.php');"> <i class="fa fa-angle-double-right"></i> AR Payments </a>

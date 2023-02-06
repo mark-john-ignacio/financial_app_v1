@@ -5,21 +5,71 @@ session_start();
 require_once "../../Connection/connection_string.php";
 
 	$company = $_SESSION['companyid'];
+
+	//get all SO
+	$resq = mysqli_query ($con, "Select ctranno, nident,citemno,nqty From so_t where compcode='$company'");
+	if (mysqli_num_rows($resq)!=0){
+		while($row = mysqli_fetch_array($resq, MYSQLI_ASSOC)){
+			@$arrresq[]=$row;
+		}
+	}
+
+	$result = mysqli_query ($con, "select * from ntso where compcode='$company' and lapproved=1 and ccode='".$_REQUEST['x']."' order by dcutdate desc, ctranno desc"); 
 	
-	$result = mysqli_query ($con, "select B.ctranno, B.ddate, B.ngross, sum(A.nqty*A.nfactor), ifnull(sum(C.nqty*C.nfactor),0) from ntso_t A left join ntso B on A.compcode=B.compcode and A.ctranno=B.ctranno left join ntdr_t C on A.compcode=C.compcode and A.ctranno=C.creference and A.citemno=C.citemno and A.nident = C.crefident where A.compcode='".$company."' and B.lapproved=1 and B.ccode='".$_REQUEST['x']."' and B.csalestype='Goods' Group by B.ctranno, B.ddate, B.ngross HAVING (sum(A.nqty*A.nfactor) - ifnull(sum(C.nqty*C.nfactor),0)) > 0 order by B.ddate desc, A.ctranno desc"); 
+	//get all existing DR
+	@$arrinv = array();
+	$resq = mysqli_query ($con, "Select creference, crefident,citemno,sum(nqty) as nqty From ntdr_t a left join ntdr b on a.compcode=b.compcode and a.ctranno=b.ctranno where a.compcode='$company' and b.lcancelled=0 group by creference, crefident,citemno");
+	if (mysqli_num_rows($result)!=0){
+		while($row = mysqli_fetch_array($resq, MYSQLI_ASSOC)){
+			@$arrinv[]=$row;
+		}
+	}
 
-	$f1 = 0;
-
+	$json = array();
 	if (mysqli_num_rows($result)!=0){
 
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-		$f1 = $f1 + 1;
-	
+
+			$remqty = 0;
+			foreach(@$arrresq as $rsc){
+				if($rsc['ctranno']==$row['ctranno']){
+
+					$inarray = "No";
+
+					foreach(@$arrinv as $rsibnv){
+						if($rsc['ctranno']==$rsibnv['creference']){
+							if($rsc['citemno']==$rsibnv['citemno'] && $rsc['nident']==$rsibnv['crefident']){
+								$inarray = "Yes";
+
+								$rem = floatval($rsc['nqty']) - floatval($rsibnv['nqty']);
+								if($rem>=1){
+									$remqty++;
+								}
+							}
+						}
+					}
+
+					if($inarray=="No"){
+						$remqty++;
+					}
+
+				}
+			}
+			
+			if($remqty>=1 || count(@$arrinv)==0){
+
 			 $json['cpono'] = $row['ctranno'];
 			 $json['dcutdate'] = $row['ddate'];
 			 $json['ngross'] = $row['ngross'];
 			 $json2[] = $json;
+
+			}
 	
+		}
+
+		if(count($json)==0){
+			$json['cpono'] = "NONE";
+			$json2[] = $json;
 		}
 	}
 	else{

@@ -32,7 +32,7 @@ if($_REQUEST['typ']=="POST"){
 		$status = "Posted";
 	
 	mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`,`module`, `cmachine`, `cremarks`) 
-	values('$tranno','$preparedby',NOW(),'POSTED','JOB ORDER','$compname','Post Record')");
+	values('$tranno','$preparedby',NOW(),'POSTED','SO Non-Trade','$compname','Post Record')");
 
 	}
 
@@ -49,7 +49,7 @@ if($_REQUEST['typ']=="CANCEL"){
 		$status = "Cancelled";
 		
 		mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`,`module`, `cmachine`, `cremarks`) 
-	values('$tranno','$preparedby',NOW(),'CANCELLED','JOB ORDER','$compname','Cancel Record')");
+	values('$tranno','$preparedby',NOW(),'CANCELLED','SO Non-Trade','$compname','Cancel Record')");
 
 	}
 
