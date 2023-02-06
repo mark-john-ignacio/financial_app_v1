@@ -157,7 +157,7 @@ if(x=="POST"){
 			$.ajax ({
 				dataType: "text",
 				url: "../../include/th_toAcc.php",
-				data: { tran: num, type: "SI" },
+				data: { tran: num, type: "IN" },
 				async: false,
 				success: function( data ) {
 					//alert(data.trim());
@@ -189,8 +189,10 @@ else{
 	var itmstat = "OK";	
 }
 
-
 if(itmstat=="OK"){
+
+	alert("SI_Tran.php?x="+num+"&typ="+x);
+	
 	$.ajax ({
 		url: "SI_Tran.php",
 		data: { x: num, typ: x },
@@ -230,7 +232,8 @@ if(itmstat=="OK"){
 			});
 		}
 	});
-}else{				$("#AlertMsg").html("");
+}else{				
+					$("#AlertMsg").html("");
 
 					$("#AlertMsg").html("<b>ERROR: </b>There's a problem with your transaction!<br>"+itmstat);
 					$("#alertbtnOK").show();

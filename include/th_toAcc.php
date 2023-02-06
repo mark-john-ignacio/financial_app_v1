@@ -27,6 +27,17 @@ if($typ=="SI"){
 
 }
 
+if($typ=="IN"){
+
+	$sqlhead = mysqli_query($con,"Select B.cacctcodetype from ntsales A left join customers B on A.compcode=B.compcode and A.ccode=B.cempid where A.compcode='$company' and A.ctranno='$tran'");
+	if (mysqli_num_rows($sqlhead)!=0) {
+		$row = mysqli_fetch_assoc($sqlhead);
+		$cSIsalescodetype = $row["cacctcodetype"];
+	}
+
+
+}
+
 
 function getDefAcct($id){
 	global $company;
@@ -241,6 +252,52 @@ function getSetAcct($id){
 
 	}//if($typ=="SI")
 	
+	else if($typ=="IN"){
+
+		//get Item entry
+		global $con;
+		global $compcode;
+		global $xcomp;		
+	
+		//get Customer Entry
+	if($cSIsalescodetype=="multiple"){
+		$qrySI = "INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','IN','$tran',A.dcutdate,B.cacctno,D.cacctdesc,C.ngross,0,0,NOW()
+				From ntsales A
+				left join customers_accts B on A.compcode=B.compcode and A.ccode=B.ccode
+				right join (
+					Select B.ctype, sum(A.namount) as ngross
+					From ntsales_t A
+					left join items B on A.compcode=B.compcode and A.citemno=B.cpartno
+					where A.compcode='$company' and A.ctranno='$tran'
+					Group By B.ctype
+				) C on B.citemtype=C.ctype
+				left join accounts D on B.compcode=D.compcode and B.cacctno=D.cacctno 
+				where A.compcode='$company' and A.ctranno='$tran'";
+	}else{
+		$qrySI = "INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','IN','$tran',A.dcutdate,A.cacctcode,B.cacctdesc,A.ngross,0,0,NOW() From ntsales A left join accounts B on A.compcode=B.compcode and A.cacctcode=B.cacctno where A.compcode='$company' and A.ctranno='$tran'";
+	}
+	
+		
+	if (!mysqli_query($con,$qrySI)){
+		
+		echo "False";
+	}
+	else{
+	
+	//Items Entry	
+		
+		if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','IN','$tran',B.dcutdate,A.cacctcode,C.cacctdesc,0,ROUND(SUM(A.namount),2),0,NOW() From ntsales_t A left join ntsales B on A.compcode=B.compcode and A.ctranno=B.ctranno left join accounts C on A.compcode=C.compcode and A.cacctcode=C.cacctno where A.compcode='$company' and A.ctranno='$tran' group by B.dcutdate,A.cacctcode,C.cacctdesc")){
+			echo "False";
+		}
+		else{
+			echo "True";
+		}
+
+	}
+
+
+}
+
 	else if($typ=="APV"){
 	
 					if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','APV','$tranno',A.dapvdate,B.cacctno,B.ctitle,B.ndebit,B.ncredit,0,NOW() From apv A left join apv_t B on  A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and A.ctranno='$tran'")){
