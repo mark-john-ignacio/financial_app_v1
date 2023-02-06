@@ -5,11 +5,11 @@ session_start();
 require_once "../../Connection/connection_string.php";
 
 if($_REQUEST['typ']=="POST"){
-	$_SESSION['pageid'] = "SalesRet_post";
+	$_SESSION['pageid'] = "AR_post";
 }
 
 if($_REQUEST['typ']=="CANCEL"){
-	$_SESSION['pageid'] = "SalesRet_cancel";
+	$_SESSION['pageid'] = "AR_cancel";
 }
 
 require_once "../../include/denied.php";
@@ -24,7 +24,7 @@ $compname = php_uname('n');
 
 if($_REQUEST['typ']=="POST"){
 			
-	if (!mysqli_query($con,"Update apcm set lapproved=1 where compcode='$company' and ctranno='$tranno'")) {
+	if (!mysqli_query($con,"Update aradj set lapproved=1 where compcode='$company' and ctranno='$tranno'")) {
 		$msgz = "<b>ERROR: </b>There's a problem posting your transaction!";
 		$status = "False";
 	} 
@@ -34,13 +34,13 @@ if($_REQUEST['typ']=="POST"){
 	}
 				
 	mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`,`module`, `cmachine`, `cremarks`) 
-	values('$tranno','$preparedby',NOW(),'POSTED','AP CREDIT MEMO','$compname','Post Record')");
+	values('$tranno','$preparedby',NOW(),'POSTED','AR DEBIT MEMO','$compname','Post Record')");
 
 }
 
 if($_REQUEST['typ']=="CANCEL"){
 
-	if (!mysqli_query($con,"Update apcm set lcancelled=1 where compcode='$company' and ctranno='$tranno'")) {
+	if (!mysqli_query($con,"Update aradj set lcancelled=1 where compcode='$company' and ctranno='$tranno'")) {
 		$msgz = "<b>ERROR: </b>There's a problem cancelling your transaction!";
 		$status = "False";
 	} 
@@ -50,7 +50,7 @@ if($_REQUEST['typ']=="CANCEL"){
 	}
 
 mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`,`module`, `cmachine`, `cremarks`) 
-	values('$tranno','$preparedby',NOW(),'CANCELLED','AP CREDIT MEMO','$compname','Cancel Record')");
+	values('$tranno','$preparedby',NOW(),'CANCELLED','AR DEBIT MEMO','$compname','Cancel Record')");
 
 }
 

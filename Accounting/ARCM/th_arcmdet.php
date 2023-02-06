@@ -20,7 +20,7 @@ require_once "../../Connection/connection_string.php";
     $json['ngross'] = $row['ngross'];
 		$json['ddate'] = date_format(date_create($row['dcutdate']),"m/d/Y");
 		$json['crefno'] = $row['crefno'];
-		$json['cwithref'] = $row['cwithref'];
+		$json['tblref'] = $row['tblref'];
 		$json['lapproved'] = $row['lapproved'];
 		$json['lcancelled'] = $row['lcancelled'];
 		$json2[] = $json;

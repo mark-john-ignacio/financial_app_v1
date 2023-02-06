@@ -202,67 +202,34 @@ if($rowcntS!=0){
 		
 		$csalesno = $_REQUEST['txtcSalesNo'.$z];
 				
-		$namount = $_REQUEST['txtSIGross'.$z];
-		$nnetamt = $_REQUEST['txtnetvat'.$z];
-		$nvat = $_REQUEST['txtvatamt'.$z];
+		$namount = str_replace(",","",$_REQUEST['txtSIGross'.$z]);
+		$nnetamt = str_replace(",","",$_REQUEST['txtnetvat'.$z]);
+		$nvat = str_replace(",","",$_REQUEST['txtvatamt'.$z]);
 		$ewtcode = $_REQUEST['txtnEWT'.$z];
-		$ewtrate = $_REQUEST['txtnEWTRate'.$z];
-		$ewtamt = $_REQUEST['txtnEWTAmt'.$z];
+		$ewtrate = str_replace(",","",$_REQUEST['txtnEWTRate'.$z]);
+		$ewtamt =str_replace(",","", $_REQUEST['txtnEWTAmt'.$z]);
 		//$ndiscount = mysqli_real_escape_string($con, $_REQUEST['txtDiscount'.$z]);
 		
-		$ndm = $_REQUEST['txtndebit'.$z];
-		$ncm = $_REQUEST['txtncredit'.$z];
-		$npayments = $_REQUEST['txtnpayments'.$z];
-		$ndue = $_REQUEST['txtDue'.$z];
-		$napplied = $_REQUEST['txtApplied'.$z];
+		$ndm = str_replace(",","",$_REQUEST['txtndebit'.$z]);
+		$ncm = str_replace(",","",$_REQUEST['txtncredit'.$z]);
+		$npayments = str_replace(",","",$_REQUEST['txtnpayments'.$z]);
+		$ndue = str_replace(",","",$_REQUEST['txtDue'.$z]);
+		$napplied = str_replace(",","",$_REQUEST['txtApplied'.$z]);
 		
 		$cacctno = $_REQUEST['txtcSalesAcctNo'.$z];
 					
 		$cnt = $cnt + 1;
 
 		$refcidenttran = $cSINo."P".$cnt;
-		
+
 			if (!mysqli_query($con, "INSERT INTO `receipt_sales_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `csalesno`, `namount`, `nnet`, `nvat`, `cewtcode`, `newtrate`, `newtamt`, `ndiscount`, `ndue`, `ndm`, `ncm`, `npayment`, `napplied`, `cacctno`) values('$company', '$refcidenttran', '$cnt', '$cSINo', '$csalesno', $namount, $nnetamt, $nvat, '$ewtcode', $ewtrate, $ewtamt, 0, $ndue, $ndm, $ncm, $npayments, $napplied, '$cacctno')")) {
-				//echo("INSERT INTO `receipt_sales_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `csalesno`, `namount`, `nnet`, `nvat`, `cewtcode`, `newtrate`, `newtamt`, `ndiscount`, `ndue`, `ndm`, `ncm`, `npayment`, `napplied`, `cacctno`) values('$company', '$refcidenttran', '$cnt', '$cSINo', '$csalesno', $namount, $nnetamt, $nvat, '$ewtcode', $ewtrate, $ewtamt, 0, $ndue, $ndm, $ncm, $npayments, $napplied, '$cacctno')<br>");
+				
 				printf("Errormessage: %s\n", mysqli_error($con));
 			} 
 
 	}
 	
 }
-
-//INSERT OTHERS DETAILS
-$rowcnt = $_REQUEST['hdnOthcnt'];
-
-	if (!mysqli_query($con, "DELETE FROM `receipt_others_t` where `compcode`='$company' and `ctranno`= '$cSINo'")) {
-		printf("Errormessage: %s\n", mysqli_error($con));
-	} 
-
-if($rowcnt!=0){	
-
-	$cnt = 0;	 
-	for($z=1; $z<=$rowcnt; $z++){
-		
-		$cacctno = mysqli_real_escape_string($con, $_REQUEST['txtacctno'.$z]);
-		$ctitle = mysqli_real_escape_string($con, $_REQUEST['txtacctitle'.$z]);
-		$nOthDR = mysqli_real_escape_string($con, $_REQUEST['txtnotDR'.$z]);
-		$nOthCR = mysqli_real_escape_string($con, $_REQUEST['txtnotCR'.$z]);
-		
-		$cnt = $cnt + 1;
-		
-		$refcidenttran = $cSINo."P".$cnt;
-
-			if (!mysqli_query($con, "INSERT INTO `receipt_others_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `cacctno`, `ctitle`,  `ncredit`, `ndebit`) values('$company', '$refcidenttran', '$cnt', '$cSINo', '$cacctno', '$ctitle', $nOthCR, $nOthDR)")) {
-				
-				printf("INSERT INTO `receipt_others_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `cacctno`, `ctitle`,  `ncredit`, `ndebit`) values('$company', '$refcidenttran', '$cnt', '$cSINo', '$cacctno', '$ctitle', $nOthDR, $nOthCR)\n");
-				
-				printf("Errormessage: %s\n", mysqli_error($con));
-			} 
-
-
-	}
-}
-
 
 	//INSERT LOGFILE
 	$compname = php_uname('n');

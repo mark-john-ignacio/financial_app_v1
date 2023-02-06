@@ -51,12 +51,15 @@ if($_REQUEST['hdtsavetyp']=="new"){
 	$cRemarks = chkgrp($_REQUEST['txtremarks']); 
 	$nGross = $_REQUEST['txtnamt'];
 	
+	$cref = $_REQUEST['selrefnotyp'];
+	$crefno = $_REQUEST['txtcrefno'];
+
 	//$ctype="Credit";
 	$preparedby = $_SESSION['employeeid'];
 	
 
 
-	if (!mysqli_query($con, "INSERT INTO aradj(`compcode`, `ctranno`, `ccode`, `cremarks`, `ddate`, `dcutdate`, `ngross`, `cpreparedby`,`ctype`) values('$company', '$cSINo', '$cCustID', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$preparedby', 'Debit')")) {
+	if (!mysqli_query($con, "INSERT INTO aradj(`compcode`, `ctranno`, `ccode`, `cremarks`, `ddate`, `dcutdate`, `ngross`, `cpreparedby`,`crefno`,`tblref`,`ctype`) values('$company', '$cSINo', '$cCustID', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$preparedby', '$crefno', '$cref', 'Debit')")) {
 		echo "False";
 		//echo mysqli_error($con);
 	} 
@@ -79,20 +82,14 @@ if($_REQUEST['hdtsavetyp']=="new"){
 	$cRemarks = chkgrp($_REQUEST['txtremarks']); 
 	$nGross = $_REQUEST['txtnamt'];
 	
-	if(isset($_REQUEST['chkwithref'])){
-		$cref = 1;
-	}
-	else{
-		$cref = 0;			
-	}
-
+	$cref = $_REQUEST['selrefnotyp'];
 	$crefno = $_REQUEST['txtcrefno'];
 
 	//$ctype="Credit";
 	$preparedby = $_SESSION['employeeid'];
 	
 
-	if (!mysqli_query($con, "Update aradj set `ccode` = '$cCustID',  `cremarks` = $cRemarks, `dcutdate` = STR_TO_DATE('$dDelDate', '%m/%d/%Y'), `ngross` = '$nGross', `crefno` = '$crefno', `cwithref` = $cref where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
+	if (!mysqli_query($con, "Update aradj set `ccode` = '$cCustID',  `cremarks` = $cRemarks, `dcutdate` = STR_TO_DATE('$dDelDate', '%m/%d/%Y'), `ngross` = '$nGross', `crefno` = '$crefno', `tblref` = '$cref' where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
 		echo "False";
 		//echo mysqli_error($con);
 	} 

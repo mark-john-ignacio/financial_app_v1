@@ -4,21 +4,28 @@ require_once "../../Connection/connection_string.php";
 
 	$company = $_SESSION['companyid'];
 	
+	$tbl = "";
+	if($_REQUEST['typ']=="Trade"){
+		$tbl = "sales";
+	}elseif($_REQUEST['typ']=="Non-Trade"){
+		$tbl = "ntsales";
+	}
+
 	//"SELECT ctranno, dcutdate, ngross FROM sales WHERE compcode='$company' and ctranno = '".$_GET['id']."'"
 	
 	$sql = "select A.ctranno, A.dcutdate, A.ngross, A.nnet, A.nvat, IFNULL(B.namount,0) as nCredit, IFNULL(C.namount,0) as nDebit, IFNULL(D.namount,0) as nPayments, E.acctno, E.ctitle 
-	from sales A 
+	from ".$tbl." A 
 	left join 
 		( 
-			select X.creference, sum(X.namount) as namount from aradj_t X left join aradj Y on X.compcode=Y.compcode and X.ctranno=Y.ctranno 
-			where X.compcode='$company' and Y.lcancelled = 0 and Y.ctype='Credit' 
-			GROUP BY X.creference 
-		) B on A.ctranno=B.creference left join 
+			select crefno, sum(ngross) as namount from aradj 
+			where compcode='$company' and lapproved = 1 and ctype='Credit' 
+			GROUP BY crefno 
+		) B on A.ctranno=B.crefno left join 
 		( 
-			select U.creference, sum(U.namount) as namount from aradj_t U left join aradj V on U.compcode=V.compcode and U.ctranno=V.ctranno 
-			where U.compcode='$company' and V.lcancelled = 0 and V.ctype='Debit' 
-			GROUP BY U.creference 
-		) C on A.ctranno=C.creference left join
+			select crefno, sum(ngross) as namount from aradj
+			where compcode='$company' and lapproved = 1 and ctype='Debit' 
+			GROUP BY crefno 
+		) C on A.ctranno=C.crefno left join
 		( 
 			select S.csalesno, sum(S.napplied) as namount from receipt_sales_t S left join receipt T on S.compcode=T.compcode and S.ctranno=T.ctranno 
 			where S.compcode='$company' and T.lcancelled = 0

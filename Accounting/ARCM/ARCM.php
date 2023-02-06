@@ -50,7 +50,7 @@ function trans(x,num){
 
 		$("#AlertMsg").html("");
 							
-		$("#AlertMsg").html("Are you sure you want to "+x+" APV No.: "+num);
+		$("#AlertMsg").html("Are you sure you want to "+x+" CM No.: "+num);
 		$("#alertbtnOK").hide();
 		$("#OK").show();
 		$("#Cancel").show();
@@ -187,7 +187,7 @@ $(function(){
                        	<td><?php echo $row['cremarks'];?></td>
                        <!-- <td><?php// echo $row['ddate'];?></td>-->
                         <td><?php echo $row['dcutdate'];?></td>
-						<td><?php echo $row['ngross'];?></td>
+						<td align="right"><?php echo number_format($row['ngross'],2);?></td>
 						<td align="center">
                         <div id="msg<?php echo $row['ctranno'];?>">
                         	<?php 
@@ -250,104 +250,112 @@ $(function(){
 
 	
 	<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="myModalLabel"><b>Add New Type</b></h5>        
-      </div>
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="myModalLabel"><b>Add New Type</b></h5>        
+				</div>
 
-	<form name="frmapcm" id="frmapcm" method="post" action="APCM_newsavehdr.php">
-		<input type="hidden" id="hdtsavetyp" name="hdtsavetyp" value="">
-	  <div class="modal-body" style="height: 35vh">
-    	
-         <div class="col-xs-12">
-            <div class="cgroup col-xs-2 nopadwtop" id="cGroup5">
-                <b>Customer</b>
-            </div>
-            
-            <div class="col-xs-9 nopadwtop">
-                 <div class="col-xs-12 nopadding">
-					<div class="col-xs-3 nopadding">
-						<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" required>
-						<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
+				<form name="frmapcm" id="frmapcm" method="post" action="APCM_newsavehdr.php">
+					<input type="hidden" id="hdtsavetyp" name="hdtsavetyp" value="">
+					<div class="modal-body" style="height: 35vh">
+					
+						<div class="col-xs-12">
+							<div class="cgroup col-xs-2 nopadwtop" id="cGroup5">
+								<b>AR CM Date</b>
+							</div>
+								
+							<div class="col-xs-9 nopadwtop">
+								<div class="col-xs-12 nopadding">
+									<div class="col-xs-3 nopadwtop">
+										<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date("m/d/Y"); ?>" />
+									</div>
+								</div>
+							</div>
+						</div> 
+
+						<div class="col-xs-12">
+							<div class="cgroup col-xs-2 nopadwtop" id="cGroup5">
+								<b>Customer</b>
+							</div>
+								
+							<div class="col-xs-9 nopadwtop">
+								<div class="col-xs-12 nopadding">
+									<div class="col-xs-3 nopadding">
+										<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" required>
+										<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
+									</div>
+
+									<div class="col-xs-8 nopadwleft">
+										<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" required>
+									</div> 
+								</div>	
+							</div>
+						</div>   
+
+						<div class="col-xs-12">
+							<div class="cgroup col-xs-2 nopadwtop" id="cGroup5">
+								<b>Remarks</b>
+							</div>
+								
+							<div class="col-xs-9 nopadwtop">
+								<div class="col-xs-12 nopadding">
+									<div class="col-xs-11 nopadding">
+										<input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks"  placeholder="Enter Remarks..">
+									</div>	
+								</div>
+							</div>               
+						</div>   
+				
+						<div class="col-xs-12">
+							<div class="cgroup col-xs-2 nopadwtop" id="cGroup5">
+								<b>Reference</b>
+							</div>
+								
+							<div class="col-xs-2 nopadwtop">
+								<select class="form-control input-sm" name="selrefnotyp" id="selrefnotyp">
+									<optgroup label="Trade">
+										<option value="salesreturn">Sales Return</option>
+										<option value="sales">Sales Invoice</option>
+									<optgroup label="Non-Trade">
+										<option value="ntsalesreturn">Sales Return</option>
+										<option value="ntsales">Sales Invoice</option>
+								</select>
+							</div>
+
+							<div class="col-xs-3 nopadwtop" style="padding-left: 3px !important">
+								<input type="text" class="form-control input-sm" id="txtcrefno" name="txtcrefno"  placeholder="Enter Trans. No..." autocomplete="off">
+							</div>	
+						</div> 
+					
+
+						<div class="col-xs-12">
+							<div class="cgroup col-xs-2 nopadwtop" id="cGroup5">
+								<b>Total Amount</b>
+							</div>
+								
+							<div class="col-xs-3 nopadwtop">
+								<input type="text" class="numeric form-control input-sm text-right font-weight-bold" id="txtnamt" name="txtnamt"  value="0.00" required>
+							</div>
+						</div> 
+
+						<div class="alert alert-danger nopadding" id="add_err"></div>         
+
+			
 					</div>
+				
+					<div class="modal-footer">
+						<button type="Submit" id="btnSave" name="Save" class="btn btn-primary btn-sm">Save Transaction</button>
+						<button type="Submit" id="btnUpdate" name="Update" class="btn btn-success btn-sm">Update Detail</button>
+						<button type="button" class="btn btn-danger  btn-sm" data-dismiss="modal">Cancel</button>
+					</div>
+				</form>
 
-					<div class="col-xs-8 nopadwleft">
-						<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" required>
-					</div> 
-				  </div>
-            </div>
-        </div>   
-
-        <div class="col-xs-12">
-            <div class="cgroup col-xs-2 nopadwtop" id="cGroup5">
-                <b>Remarks</b>
-            </div>
-            
-            <div class="col-xs-9 nopadwtop">
-                 <div class="col-xs-12 nopadding">
-					<div class="col-xs-11 nopadding">
-						<input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks"  placeholder="Enter Remarks..">
-					 </div>	
-				</div>
 			</div>
-                
-        </div>   
- 
-		<div class="col-xs-12">
-            <div class="cgroup col-xs-2 nopadwtop" id="cGroup5">
-                <b>AR CM Date</b>
-            </div>
-            
-            <div class="col-xs-3 nopadwtop">
-                <input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date("m/d/Y"); ?>" />
-            </div>
-        </div> 
-
-			 
-		<div class="col-xs-12">
-            <div class="cgroup col-xs-2 nopadwtop" id="cGroup5">
-                <b>Reference</b>
-            </div>
-            
-            <div class="col-xs-3 nopadwtop">
-                <input type="text" class="form-control input-sm" id="txtcrefno" name="txtcrefno"  placeholder="Sales Return Trans. No..." readonly autocomplete="off">
-            </div>
-			
-			<div class="col-xs-3 nopadwleft">
-                <div class="checkbox">
-				  <label><input type="checkbox" value="YES" name="chkwithref" id="chkwithref">With Reference</label>
-				</div>
-            </div>
-			
-        </div> 
-		  
-
-		<div class="col-xs-12">
-            <div class="cgroup col-xs-2 nopadwtop" id="cGroup5">
-                <b>Total Amount</b>
-            </div>
-            
-            <div class="col-xs-3 nopadwtop">
-                <input type="text" class="numeric form-control input-sm text-right font-weight-bold" id="txtnamt" name="txtnamt"  value="0.00" required>
-            </div>
-        </div> 		  
-        <div class="alert alert-danger nopadding" id="add_err"></div>         
-
-	
+		</div>
 	</div>
-    
- 	<div class="modal-footer">
-                <button type="Submit" id="btnSave" name="Save" class="btn btn-primary btn-sm">Save Transaction</button>
-                <button type="Submit" id="btnUpdate" name="Update" class="btn btn-success btn-sm">Update Detail</button>
-                <button type="button" class="btn btn-danger  btn-sm" data-dismiss="modal">Cancel</button>
-	</div>
-    </form>
-    </div>
-  </div>
-</div>
-<!-- Modal -->	
+	<!-- Modal -->	
 	
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
 	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
@@ -402,8 +410,9 @@ $(function(){
 			 
 			$("#txtcust").focus();
 			$("#txtcrefno").attr("required", false);
-			$("#txtcrefno").attr("readonly", true);	
-			$("#txtnamt").attr("readonly", false);	
+			//$("#txtcrefno").attr("readonly", false);	
+			$("#selrefnotyp").val("salesreturn");	
+			$("#txtnamt").attr("readonly", true);	
 			 
 			$('#myModalLabel').html("<b>Add New AR Credit Memo</b>");
 			$('#myModal').modal('show');
@@ -417,88 +426,89 @@ $(function(){
 		$("#txtcustid").keyup(function(event){
 			if(event.keyCode == 13){
 			
-			var dInput = this.value;
-			
-			$.ajax({
+				var dInput = this.value;
+				
+				$.ajax({
 					type:'post',
 					url:'../get_customerid.php',
 					data: 'c_id='+ $(this).val(),                 
 					success: function(value){
-				//alert(value);
-				if(value!=""){
-					var data = value.split(":");
-					$('#txtcust').val(data[0]);
-								
-					$('#hdnvalid').val("YES");
-					
-					$('#txtremarks').focus();
-									
-				}
-				else{
-					$('#txtcustid').val("");
-					$('#txtcust').val("");
-					
-					$('#hdnvalid').val("NO");
-				}
-			},
-			error: function(){
-				$('#txtcustid').val("");
-				$('#txtcust').val("");
-				
-				$('#hdnvalid').val("NO");
-			}
-			});
-
-		}
-		
-	});
-
-	$('#txtcust, #txtcustid').on("blur", function(){
-		if($('#hdnvalid').val()=="NO"){
-		  $('#txtcust').attr("placeholder", "ENTER A VALID CUSTOMER FIRST...");
-		  
-		 // $('#txtprodnme').attr("disabled", true);
-		 // $('#txtprodid').attr("disabled", true);
-		}else{
-			
-		 // $('#txtprodnme').attr("disabled", false);
-		 // $('#txtprodid').attr("disabled", false);
-		  
-		  $('#txtremarks').focus();
-	
-		}
-	});
-	//Search Cust name
-	$('#txtcust').typeahead({
-		autoSelect: true,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_customer.php",
-				dataType: "json",
-				data: {
-					query: $("#txtcust").val()
-				},
-				success: function (data) {
-					response(data);
-				}
-			});
-		},
-		displayText: function (item) {
-			return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 					
+						//alert(value);
+						if(value!=""){
+							var data = value.split(":");
+							$('#txtcust').val(data[0]);
+										
+							$('#hdnvalid').val("YES");
+							
+							$('#txtremarks').focus();
+											
+						}
+						else{
+							$('#txtcustid').val("");
+							$('#txtcust').val("");
+							
+							$('#hdnvalid').val("NO");
+						}
+					},
+					error: function(){
+						$('#txtcustid').val("");
+						$('#txtcust').val("");
 						
-			$('#txtcust').val(item.value).change(); 
-			$("#txtcustid").val(item.id);
-			
-			$('#hdnvalid').val("YES");
-			
-			$('#txtremarks').focus();			
-			
-		}
-	
-	});
+						$('#hdnvalid').val("NO");
+					}
+				});
+
+			}
+		
+		});
+
+		$('#txtcust, #txtcustid').on("blur", function(){
+			if($('#hdnvalid').val()=="NO"){
+				$('#txtcust').attr("placeholder", "ENTER A VALID CUSTOMER FIRST...");
+				
+			// $('#txtprodnme').attr("disabled", true);
+			// $('#txtprodid').attr("disabled", true);
+			}else{
+				
+			// $('#txtprodnme').attr("disabled", false);
+			// $('#txtprodid').attr("disabled", false);
+				
+				$('#txtremarks').focus();
+		
+			}
+		});
+
+		//Search Cust name
+		$('#txtcust').typeahead({
+			autoSelect: true,
+			source: function(request, response) {
+				$.ajax({
+					url: "../th_customer.php",
+					dataType: "json",
+					data: {
+						query: $("#txtcust").val()
+					},
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 					
+							
+				$('#txtcust').val(item.value).change(); 
+				$("#txtcustid").val(item.id);
+				
+				$('#hdnvalid').val("YES");
+				
+				$('#txtremarks').focus();			
+				
+			}
+		
+		});
 		
 		$('#txtcrefno').typeahead({
 			autoSelect: true,
@@ -507,7 +517,7 @@ $(function(){
 					url: "get_refSR.php",
 					dataType: "json",
 					data: {
-						id: $('#txtcustid').val(), query: $("#txtcrefno").val()
+						id: $('#txtcustid').val(), query: $("#txtcrefno").val(), typ: $("#selrefnotyp").val()
 					},
 					success: function (data) {
 						response(data);
@@ -522,7 +532,11 @@ $(function(){
 
 				$('#txtcrefno').val(item.id).change(); 	
 				$('#txtnamt').val(item.value);
-				$("#txtnamt").attr("readonly", true);
+
+				if($("#selrefnotyp").val()=="salesreturn" || $("#selrefnotyp").val()=="ntsalesreturn"){					
+					$("#txtnamt").attr("readonly", true);
+				}
+				
 
 			}
 		});
@@ -561,81 +575,90 @@ $(function(){
 		ev.preventDefault();
 			
 		});
+
+		$("#selrefnotyp").on("change", function(){
+			$("#txtcrefno").val("");
+			$("#txtnamt").val("0.00");
+			if($(this).val()=="sales" || $(this).val()=="ntsales"){
+				$("#txtnamt").attr("readonly", false);
+			}else{
+				$("#txtnamt").attr("readonly", true);
+			}
+		});
 		
+		/*
 		$("#chkwithref").click(function(){ 
 			  if($(this).prop("checked") == true) {
 				  if($("#txtcustid").val()=="" || $("#txtcust").val()=="" ){
-					 alert("Select a valid supplier!");
-					 $(this).prop("checked", false);
-				   }else{
+					 	alert("Select a valid supplier!");
+					 	$(this).prop("checked", false);
+				  }else{
 				  	$("#txtcrefno").attr("required", true);
 				    $("#txtcrefno").attr("readonly", false);
-			  	   }
-              }
-              else if($(this).prop("checked") == false) {
+						$("#selrefnotyp").attr("disabled", false);	
+			  	}
+        }
+        else if($(this).prop("checked") == false) {
 					$("#txtcrefno").val("");
-				  	$("#txtcrefno").attr("required", false);
-				    $("#txtcrefno").attr("readonly", true);
-              }
+				  $("#txtcrefno").attr("required", false);
+				  $("#txtcrefno").attr("readonly", true);
+					$("#selrefnotyp").attr("disabled", true);	
+        }
 		});
+		*/
 		
 		
 
 });
 		
 	function editgrp(code){
-		 var x = chkAccess('TYPE_Edit.php');
+		var x = chkAccess('TYPE_Edit.php');
 
-		 if(x.trim()=="True"){
+		if(x.trim()=="True"){
 			$("#btnSave").hide();
 			$("#btnUpdate").show();
 			$("#hdtsavetyp").val(code)
 			 
 			//get details
-			 $.ajax({
-                    url: 'th_arcmdet.php',
-					data: { code:code },
-                    dataType: 'json',
-                    method: 'post',
-                    success: function (data) {
+			$.ajax({
+        url: 'th_arcmdet.php',
+				data: { code:code },
+        dataType: 'json',
+        method: 'post',
+        success: function (data) {
 
-                       console.log(data);
-                       $.each(data,function(index,item){
+          console.log(data);
+          $.each(data,function(index,item){
 						  
-						   $("#txtcustid").val(item.ccode);
-						   $("#txtcust").val(item.cname);
-						   $("#txtremarks").val(item.crem);
-						   $("#txtcrefno").val(item.crefno);
-						   $("#date_delivery").val(item.ddate);
-						   if(item.cwithref==1){
-							   	$("#chkwithref").prop("checked",true);
-				  				$("#txtcrefno").attr("required", true);
-				    			$("#txtcrefno").attr("readonly", false);
-							   
-							    $("#txtnamt").attr("readonly", true);
-						   }else{
-				  				$("#txtcrefno").attr("required", false);
-				    			$("#txtcrefno").attr("readonly", true);	
-							    
-							    $("#txtnamt").attr("readonly", false);
-						   }
-						   $("#txtnamt").val(item.ngross);
+						$("#txtcustid").val(item.ccode);
+						$("#txtcust").val(item.cname);
+						$("#txtremarks").val(item.crem);
+						$("#txtcrefno").val(item.crefno);
+						$("#date_delivery").val(item.ddate);
+						$("#selrefnotyp").val(item.tblref); 
+						$("#txtnamt").val(item.ngross);
+	
+						if(item.tblref=="sales" || item.tblref=="ntsales"){
+							$("#txtnamt").attr("readonly", false);
+						}else{
+							$("#txtnamt").attr("readonly", true);
+						}
 						   
-						   if(item.lapproved==1 || item.lcancelled==1){
-							  $("#btnUpdate").attr("disabled",true);
-						   }
+						if(item.lapproved==1 || item.lcancelled==1){
+							$("#btnUpdate").attr("disabled",true);
+						}
 						   
-					   });
+					});
 						
-					}
-			 });			
+				}
+			});			
 			
 			$('#myModalLabel').html("<b>Update Detail ("+code+")</b>");
 			$('#myModal').modal('show');
-		 } else {
-			 $("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
-			 $("#AlertModal").modal('show');
-		 }
+		}else {
+			$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+			$("#AlertModal").modal('show');
+		}
 
 	}
 		

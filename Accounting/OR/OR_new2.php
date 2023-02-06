@@ -15,511 +15,517 @@ $company = $_SESSION['companyid'];
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Coop Financials</title>
+	<title>Myx Financials</title>
     
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
-    <link href="../../global/plugins/font-awesome/css/font-awesome.min.css?h=<?php echo time();?>" rel="stylesheet" type="text/css"/>
+  <link href="../../global/plugins/font-awesome/css/font-awesome.min.css?h=<?php echo time();?>" rel="stylesheet" type="text/css"/>
 
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../js/bootstrap3-typeahead.min.js"></script>
-<script src="../../Bootstrap/js/jquery.numeric.js"></script>
-<script src="../../include/jquery-maskmoney.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../js/bootstrap3-typeahead.min.js"></script>
+	<script src="../../include/autoNumeric.js"></script>
+<!--
+	<script src="../../Bootstrap/js/jquery.numeric.js"></script>
+	<script src="../../include/jquery-maskmoney.js" type="text/javascript"></script>
+-->
 
-<script src="../../Bootstrap/js/bootstrap.js"></script>
-<script src="../../Bootstrap/js/moment.js"></script>
-<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<script src="../../Bootstrap/js/moment.js"></script>
+	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 </head>
 
 <body style="padding:5px; height:700px" onLoad="document.getElementById('txtcust').focus();">
 
-<form action="OR_newsave2.php" name="frmOR" id="frmOR" method="post">
+<form action="OR_newsave2.php" name="frmOR" id="frmOR" method="post"  onSubmit="return chkform();">
 	<fieldset>
-    	<legend>Receive Payment</legend>	
-        <table width="100%" border="0">
-  <tr>
-    <tH width="210">
-    	Deposit To Account
-    
-    </tH>
-    <td style="padding:2px;" width="500">
-    <?php
-    $sqlchk = mysqli_query($con,"Select a.cacctno, b.cacctdesc, IFNULL(b.nbalance,0) as nbalance From accounts_default a left join accounts b on a.compcode=b.compcode and a.cacctno=b.cacctid where a.compcode='$company' and a.ccode='ORDEBCASH'");
-	if (mysqli_num_rows($sqlchk)!=0) {
-		while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
-			$nDebitDef = $row['cacctno'];
-			$nDebitDesc = $row['cacctdesc'];
-			//$nBalance = $row['nbalance'];
-		}
-	}else{
-		$nDebitDef = "";
-		$nDebitDesc =  "";
-		//$nBalance = 0.000;
-	}
-	?>
-  <div class="col-xs-12 nopadding">
-    <div class="col-xs-6 nopadding">
-        	<input type="text" class="form-control input-sm" id="txtcacct" name="txtcacct" width="20px" tabindex="1" placeholder="Search Account Description..." required value="<?php echo $nDebitDesc;?>"  autocomplete="off">
-    </div> 
-	<div class="col-xs-6 nopadwleft">
-        	<input type="text" id="txtcacctid" name="txtcacctid" style="border:none; height:30px;" readonly  value="<?php echo $nDebitDef;?>">
-    </div>
-   </div>     
-    </td>
-    <tH width="150"><span style="padding:2px">Date:</span></tH>
-    <td style="padding:2px;"><div class="col-xs-8 nopadding">
-      <?php
-	//get last date
-	$ornostat = "";
-    	$sqlchk = mysqli_query($con,"select * from receipt where compcode='$company' Order By ddate desc LIMIT 1");
-	if (mysqli_num_rows($sqlchk)!=0) {
-		while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
-			$dORLastDate = date("m/d/Y", strtotime($row['dcutdate']));
-		}
-	}else{
-			$dORLastDate = date("m/d/Y");
-	}
-	?>
-      <input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $dORLastDate; ?>"/>
-      <!--</a>-->
-    </div>
-   
-     </td>
-  </tr>
-  <tr>
-    <tH>&nbsp;</tH>
-    <td style="padding:2px;">&nbsp;</td>
-    <tH>&nbsp;</tH>
-    <td style="padding:2px;">&nbsp;</td>
-  </tr>
-  <tr>
-    <tH width="100" valign="top">Payor:</tH>
-    <td valign="top" style="padding:2px">
-    <div class="col-xs-12 nopadding">
-        <div class="col-xs-6 nopadding">
-        	<input type="text" class="typeahead form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="2" placeholder="Search Customer Name..." required autocomplete="off">
-		</div> 
-		<div class="col-xs-3 nopadwleft">
-        	<input type="text" id="txtcustid" name="txtcustid" style="border:none; height:30px;" readonly>
-        </div>
-    </div>        
-    </td>
-    <tH width="150" style="padding:2px">Receipt No.:</tH>
-    <td style="padding:2px"><div class="col-xs-12 nopadding">
-      <div class="col-xs-8 nopadding">
-        <?php
-				/*
-					$ornostat = "";
-    			$sqlchk = mysqli_query($con,"select A.cornumber from (select cornumber from receipt where compcode='$company' UNION ALL Select cornumber from receipt_voids where compcode='$company') A Order By cornumber desc LIMIT 1");
-					if (mysqli_num_rows($sqlchk)!=0) {
-						while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
-							$cORNOm = $row['cornumber'];
-							$ornostat = "readonly";
-							
-							$cORNOm = $cORNOm + 1;
-							
-							if(strlen($cORNOm) <> strlen($row['cornumber'])){
-								
-								$varcnt = (int)strlen($row['cornumber']) - (int)strlen($cORNOm);
-								
-								for($zx=1; $zx<=$varcnt; $zx++){
-									$cORNOm = "0".$cORNOm;
+    <legend>Receive Payment</legend>	
+      <table width="100%" border="0">
+				<tr>
+					<tH width="210">
+						Deposit To Account					
+					</tH>
+					<td style="padding:2px;" width="500">
+						<?php
+							$sqlchk = mysqli_query($con,"Select a.cacctno, b.cacctdesc, IFNULL(b.nbalance,0) as nbalance From accounts_default a left join accounts b on a.compcode=b.compcode and a.cacctno=b.cacctid where a.compcode='$company' and a.ccode='ORDEBCASH'");
+							if (mysqli_num_rows($sqlchk)!=0) {
+								while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
+									$nDebitDef = $row['cacctno'];
+									$nDebitDesc = $row['cacctdesc'];
+									//$nBalance = $row['nbalance'];
 								}
+							}else{
+								$nDebitDef = "";
+								$nDebitDesc =  "";
+								//$nBalance = 0.000;
 							}
-						}
-					}else{
-							$cORNOm = "";
-							$ornostat = "";
-					}
-					*/ 
-				?>
-				<!-- value="<?//php echo $cORNOm;?>" <?//php echo $ornostat; ?> -->
-        <input type="text" class="form-control input-sm" id="txtORNo" name="txtORNo" width="20px" required >
-      </div>
-      <!--<div class="col-xs-4 nopadwleft">
-        <button type="button" class="btn btn-danger btn-sm" name="btnVoid" id="btnVoid">VOID OR</button>
-      </div>-->
-    </div></td>
-  </tr>
-  <tr>
-    <tH width="100" valign="top">Payment Method:</tH>
-    <td valign="top" style="padding:2px">
-    
-    
-    <div class="col-xs-12 nopadding">
-     <div class="col-xs-6 nopadding">
-      <select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
-          <option value="cash">Cash</option>
-          <option value="cheque">Cheque</option>
-					<option value="bank transfer">Bank Transfer</option>
-					<option value="mobile payment">Mobile Payment</option>
-					<option value="credit card">Credit Card</option>
-					<option value="debit card">Debit Card</option>
-        </select>
-     </div>
-     
-     <div class="col-xs-4 nopadwleft">
-       <button type="button" class="btn btn-primary btn-sm" tabindex="6" style="width:100%" name="btnDet" id="btnDet">Details</button>
-   </div>
-    </div>
-    
-    
-    </td>
-    <th valign="top" style="padding:2px">Amount Received:</th>
-    <td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
-      <input type="text" id="txtnGross" name="txtnGross" class="numericchkamt form-control input-sm  text-right numeric" value="0.00" style="text-align:right;" autocomplete="off" required onKeyUp="computeGross();">
-    </div></td>
-  </tr>
-  <tr>
-    <tH width="100" rowspan="2" valign="top">Memo:</tH>
-    <td rowspan="2" valign="top" style="padding:2px">
-    <div class="col-xs-12 nopadding">
-      <div class="col-xs-10 nopadding">
-        <textarea class="form-control" rows="2" id="txtremarks" name="txtremarks"></textarea>
-      </div>
-    </div>
-    </td>
-    <th valign="top" style="padding:2px">Amount Applied:</th>
-    <td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
-      <input type="text" id="txtnApplied" name="txtnApplied" class="numericchkamt form-control input-sm" value="0.00" style="text-align:right;" autocomplete="off" readonly>
-    </div></td>
-    </tr>
-    <!--
-  <tr>
-     <th valign="top" style="padding:2px">EWT:</th>
-    <td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
-      <input type="text" id="txtnEWTApp" name="txtnEWTApp" class="numericchkamt form-control input-sm" value="0.00" style="text-align:right;" autocomplete="off" readonly>
-    </div></td>
-  </tr>-->
-  <tr>
-    <th valign="top" style="padding:2px">Out of Balance:</th>
-    <td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
-      <input type="text" id="txtnOutBal" name="txtnOutBal" class="numericchkamt form-control input-sm" value="0.00" style="text-align:right;" autocomplete="off" readonly>
-    </div></td>
-  </tr>
+						?>
+						<div class="col-xs-12 nopadding">
+							<div class="col-xs-6 nopadding">
+								<input type="text" class="form-control input-sm" id="txtcacct" name="txtcacct" width="20px" tabindex="1" placeholder="Search Account Description..." required value="<?php echo $nDebitDesc;?>"  autocomplete="off">
+							</div> 
+							<div class="col-xs-6 nopadwleft">
+								<input type="text" id="txtcacctid" name="txtcacctid" style="border:none; height:30px;" readonly  value="<?php echo $nDebitDef;?>">
+							</div>
+						</div>     
+					</td>
+    			<tH width="150"><span style="padding:2px">Date:</span></tH>
+					<td style="padding:2px;">
+						<div class="col-xs-8 nopadding">
+							<?php
+								//get last date
+								$ornostat = "";
+										$sqlchk = mysqli_query($con,"select * from receipt where compcode='$company' Order By ddate desc LIMIT 1");
+								if (mysqli_num_rows($sqlchk)!=0) {
+									while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
+										$dORLastDate = date("m/d/Y", strtotime($row['dcutdate']));
+									}
+								}else{
+										$dORLastDate = date("m/d/Y");
+								}
+							?>
+							<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $dORLastDate; ?>"/>
+						</div>   
+					</td>
+  			</tr>
+				<tr>
+					<tH>&nbsp;</tH>
+					<td style="padding:2px;">&nbsp;</td>
+					<tH>&nbsp;</tH>
+					<td style="padding:2px;">&nbsp;</td>
+				</tr>
+				<tr>
+					<tH width="100" valign="top">Payor:</tH>
+					<td valign="top" style="padding:2px">
+					<div class="col-xs-12 nopadding">
+							<div class="col-xs-6 nopadding">
+								<input type="text" class="typeahead form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="2" placeholder="Search Customer Name..." required autocomplete="off">
+					</div> 
+					<div class="col-xs-3 nopadwleft">
+								<input type="text" id="txtcustid" name="txtcustid" style="border:none; height:30px;" readonly>
+							</div>
+					</div>        
+					</td>
+					<tH width="150" style="padding:2px">Receipt No.:</tH>
+					<td style="padding:2px"><div class="col-xs-12 nopadding">
+						<div class="col-xs-8 nopadding">
+							<?php
+							/*
+								$ornostat = "";
+								$sqlchk = mysqli_query($con,"select A.cornumber from (select cornumber from receipt where compcode='$company' UNION ALL Select cornumber from receipt_voids where compcode='$company') A Order By cornumber desc LIMIT 1");
+								if (mysqli_num_rows($sqlchk)!=0) {
+									while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
+										$cORNOm = $row['cornumber'];
+										$ornostat = "readonly";
+										
+										$cORNOm = $cORNOm + 1;
+										
+										if(strlen($cORNOm) <> strlen($row['cornumber'])){
+											
+											$varcnt = (int)strlen($row['cornumber']) - (int)strlen($cORNOm);
+											
+											for($zx=1; $zx<=$varcnt; $zx++){
+												$cORNOm = "0".$cORNOm;
+											}
+										}
+									}
+								}else{
+										$cORNOm = "";
+										$ornostat = "";
+								}
+								*/ 
+							?>
+							<!-- value="<?//php echo $cORNOm;?>" <?//php echo $ornostat; ?> -->
+							<input type="text" class="form-control input-sm" id="txtORNo" name="txtORNo" width="20px" required >
+						</div>
+						<!--<div class="col-xs-4 nopadwleft">
+							<button type="button" class="btn btn-danger btn-sm" name="btnVoid" id="btnVoid">VOID OR</button>
+						</div>-->
+					</div></td>
+				</tr>
+				<tr>
+					<tH width="100" valign="top">Payment Method:</tH>
+					<td valign="top" style="padding:2px">
+					
+					
+					<div class="col-xs-12 nopadding">
+					<div class="col-xs-6 nopadding">
+						<select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
+								<option value="cash">Cash</option>
+								<option value="cheque">Cheque</option>
+								<option value="bank transfer">Bank Transfer</option>
+								<option value="mobile payment">Mobile Payment</option>
+								<option value="credit card">Credit Card</option>
+								<option value="debit card">Debit Card</option>
+							</select>
+					</div>
+					
+					<div class="col-xs-4 nopadwleft">
+						<button type="button" class="btn btn-primary btn-sm" tabindex="6" style="width:100%" name="btnDet" id="btnDet">Details</button>
+				</div>
+					</div>
+					
+					
+					</td>
+					<th valign="top" style="padding:2px">Amount Received:</th>
+					<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
+						<input type="text" id="txtnGross" name="txtnGross" class="numericchkamt form-control input-sm  text-right numeric" value="0.00" style="text-align:right;" autocomplete="off" required onKeyUp="computeGross();">
+					</div></td>
+				</tr>
+				<tr>
+					<tH width="100" rowspan="2" valign="top">Memo:</tH>
+					<td rowspan="2" valign="top" style="padding:2px">
+					<div class="col-xs-12 nopadding">
+						<div class="col-xs-10 nopadding">
+							<textarea class="form-control" rows="2" id="txtremarks" name="txtremarks"></textarea>
+						</div>
+					</div>
+					</td>
+					<th valign="top" style="padding:2px">Amount Applied:</th>
+					<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
+						<input type="text" id="txtnApplied" name="txtnApplied" class="numericchkamt form-control input-sm" value="0.00" style="text-align:right;" autocomplete="off" readonly>
+					</div></td>
+				</tr>
+				<tr>
+					<th valign="top" style="padding:2px">Out of Balance:</th>
+					<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
+						<input type="text" id="txtnOutBal" name="txtnOutBal" class="numericchkamt form-control input-sm" value="0.00" style="text-align:right;" autocomplete="off" readonly>
+					</div></td>
+				</tr>
       </table>
 
-  <ul class="nav nav-tabs">
-    <li class="active"><a href="#divSales">Sales Invoice</a></li>
-    <!--<li><a href="#divLoans">Loans</a></li>-->
-    <li><a href="#divOthers">Others</a></li>
-  </ul>
-
-
-<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;height: 30vh;text-align: left;overflow: auto">
-
-    <div class="tab-content">
-    
-        <div id="divSales" class="tab-pane fade in active">
-		<div class="col-xs-12 nopadwdown">
-            <button type="button" class="btn btn-xs btn-info" onClick="getInvs();">
-            	<i class="fa fa-search"></i>&nbsp; Find Invoice
-            </button>
-        </div>
-			<br>
-                 <div id="tableContainer" class="alt2" dir="ltr" style="
-                                    margin: 0px;
-                                    padding: 3px;
-                                    border: 1px solid #919b9c;
-                                    width: 1500px;
-                                    height: 260px;
-                                    text-align: left;
-                                    overflow: auto">
-                    <table id="MyTable" border="1" bordercolor="#CCCCCC" class="table table-sm table-bordered">
-                        <thead>
-                          <tr>
-                            <th scope="col" width="10%" nowrap>Invoice No</th>
-                            <th scope="col" width="110px" class="text-center" nowrap>Date</th>
-                            <th scope="col" width="110px" class="text-center" nowrap>Amount</th>
-                            <th scope="col" width="110px" class="text-center" nowrap>VAT</th>
-                            <th scope="col" width="110px" class="text-center" nowrap>NetofVat</th>
-                            <th scope="col" class="text-center" nowrap>EWTCode</th>                            <th scope="col" class="text-center" nowrap>EWTRate(%)</th>
-                            <th scope="col" class="text-center" nowrap>EWTAmt</th>
-                            <th scope="col" width="110px" class="text-center" nowrap>DM</th>
-                            <th scope="col" width="110px" class="text-center" nowrap>CM</th>
-                            <th scope="col" width="110px" class="text-center" nowrap>Payments</th>
-                            <th scope="col" width="110px" class="text-center" nowrap>Total Due</th>
-                            <th scope="col" width="110px" class="text-center" nowrap>Amt Applied&nbsp;</th>
-                            
-                            <th scope="col" width="100px">&nbsp;Acct No</th>
-                            <th scope="col" width="500px" nowrap>&nbsp;Acct Desc</th>
-                             <th scope="col">&nbsp;</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        
-                        </tbody>
-                        </table>
-            <input type="hidden" name="hdnrowcnt" id="hdnrowcnt" value="0">
-                    </div>
-
-		</div>
-        
-        <div id="divOthers" class="tab-pane fade">
-          <div class="col-xs-12 nopadwdown">
-            <button type="button" class="btn btn-xs btn-info" onClick="addacct();">
-            	<i class="fa fa-plus"></i>&nbsp; Add New Line
-            </button>
-          </div>
-
-                  <div id="tblOtContainer" class="alt2" dir="ltr" style="
-                                    margin: 0px;
-                                    padding: 3px;
-                                    border: 1px solid #919b9c;
-                                    width: 100%;
-                                    height: 200px;
-                                    text-align: left;
-                                    overflow: auto">
-                    <table width="100%" border="0" cellpadding="3" id="MyTblOthers">
-                    <thead>
-                      <tr>
-                        <th scope="col">Account No.</th>
-                        <th scope="col">Account Title</th>
-                        <th scope="col">Debit</th>
-                        <th scope="col">Credit</th>
-                        <th scope="col">&nbsp;</th>
-                      </tr>
-                    </thead>
-                    </table>
-                    <input type="hidden" name="hdnOthcnt" id="hdnOthcnt" value="0">
-                   </div>
-
-
-        </div>
- </div>
-</div>
-
-<table width="100%" border="0" cellpadding="3">
-  <tr>
-    <td width="50%">
-    
-   <button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='OR.php';" id="btnMain" name="btnMain">
-Back to Main<br>(ESC)</button>
-
-   
-  <button type="submit" class="btn btn-success btn-sm" tabindex="6" id="btnSave">Save<br> (CTRL+S)</button>
-
-</td>
-    <td align="right">&nbsp;</td>
-  </tr>
-</table>
-
-    </fieldset>
-
-
-
-<!-- Bootstrap modal INVOICES -->
-<div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="invheader">Invoice List</h3>
-            </div>
-            
-            <div class="modal-body" style="height:40vh">
-            
-            	<div class="col-xs-12 nopadding pre-scrollable" style="height:37vh">
-                  <table name='MyORTbl' id='MyORTbl' class="table table-scroll table-striped">
-                   <thead>
-                    <tr>
-                      <th align="center">
-                      <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
-                      <th>Invoice No</th>
-                      <th>Sales Date</th>
-                      <th>Gross</th>
-                      <th>DM</th>
-                      <th>CM</th>
-                      <th>&nbsp;</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-				  </table>
-                
-             </div>
-			</div>
+			<!--
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#divSales">Sales Invoice</a></li>
+				<li><a href="#divLoans">Loans</a></li>
+				<li><a href="#divOthers">Others</a></li>
+			</ul>
 			
-            <div class="modal-footer">
-                
-                <button type="button" id="btnInsert" onclick="save();" class="btn btn-primary">Insert</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+			<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;height: 40vh;text-align: left;overflow: auto">
+    		<div class="tab-content">    
+        	<div id="divSales" class="tab-pane fade in active">
+							
+						<div class="col-xs-12 nopadwdown">
+							<button type="button" class="btn btn-xs btn-info" onClick="getInvs();">
+								<i class="fa fa-search"></i>&nbsp; Find Invoice
+							</button>
+        		</div>
+			-->
+						<br>
+						<div style="border: 1px solid #919b9c; height: 40vh; overflow: auto">
+							<div id="tableContainer" class="alt2" dir="ltr" style="
+								margin: 0px;
+								padding: 3px;
+								width: 2500px;
+								height: 300px;
+								text-align: left;">
 
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<!-- End Bootstrap modal -->
+								<table id="MyTable" border="1" bordercolor="#CCCCCC" class="table table-sm table-bordered">
+									<thead>
+										<tr>
+											<th scope="col" width="100px" nowrap>Invoice No</th>
+											<th scope="col" width="110px" class="text-center" nowrap>Date</th>
+											<th scope="col" width="150px" class="text-center" nowrap>Amount</th>
+											<th scope="col" width="150px" class="text-center" nowrap>VAT</th>
+											<th scope="col" width="150px" class="text-center" nowrap>NetofVat</th>
+											<th scope="col" class="text-center" nowrap>EWTCode</th>                            
+											<th scope="col" class="text-center" nowrap>EWTRate(%)</th>
+											<th scope="col" class="text-center" nowrap>EWTAmt</th>
+											<th scope="col" width="150px" class="text-center" nowrap>DM</th>
+											<th scope="col" width="150px" class="text-center" nowrap>CM</th>
+											<th scope="col" width="150px" class="text-center" nowrap>Payments</th>
+											<th scope="col" width="150px" class="text-center" nowrap>Total Due</th>
+											<th scope="col" width="150px" class="text-center" nowrap>Amt Applied&nbsp;</th>
+															
+											<th scope="col" nowrap>&nbsp;Acct No</th>
+											<th scope="col" width="500px" nowrap>&nbsp;Acct Desc</th>
+											<th scope="col">&nbsp;</th>
+										</tr>
+									</thead>
+									<tbody>
+													
+									</tbody>
+								</table>
+								<input type="hidden" name="hdnrowcnt" id="hdnrowcnt" value="0">
+							</div>
+						</div>
 
-<!--CASH DETAILS DENOMINATIONS -->
-<div class="modal fade" id="CashModal" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="cashheader">CASH DENOMINATION</h3>
-            </div>
-            <div class="modal-body" style="height:40vh">
-            
-            	 <div class="form-group">
-                    <div class="col-xs-12 nopadding pre-scrollable" style="height:37vh">
+					<!--
+					</div>
+        
+					<div id="divOthers" class="tab-pane fade">
+						<div class="col-xs-12 nopadwdown">
+							<button type="button" class="btn btn-xs btn-info" onClick="addacct();">
+								<i class="fa fa-plus"></i>&nbsp; Add New Line
+							</button>
+						</div>
 
-                  <table width="100%" border="0" class="table table-scroll table-condensed">
-                  <thead>
-                      <tr>
-                        <td align="center"><b>Denomination</b></td>
-                        <td align="center"><b>Pieces</b></td>
-                        <td align="center"><b>Amount</b></td>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      <tr>
-                        <td align="center">1000</td>
-                        <td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom1000' id='txtDenom1000' /></div></td>
-                        <td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt1000' id='txtAmt1000' readonly/></div></td>
-                      </tr>
-                      <tr>
-                        <td align="center">500</td>
-                        <td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom500' id='txtDenom500'/></div></td>
-                        <td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt500' id='txtAmt500' readonly/></div></td>
-                      </tr>
-                      <tr>
-                        <td align="center">200</td>
-                        <td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom200' id='txtDenom200'/></div></td>
-                        <td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt200' id='txtAmt200' readonly/></div></td>
-                      </tr>
-                      <tr>
-                        <td align="center">100</td>
-                        <td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom100' id='txtDenom100'/></div></td>
-                        <td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt100' id='txtAmt100' readonly/></div></td>
-                      </tr>
-                      <tr>
-                        <td align="center">50</td>
-                        <td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom50' id='txtDenom50'/></div></td>
-                        <td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt50' id='txtAmt50' readonly/></div></td>
-                      </tr>
-                      <tr>
-                        <td align="center">20</td>
-                        <td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom20' id='txtDenom20'/></div></td>
-                        <td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt20' id='txtAmt20' readonly/></div></td>
-                      </tr>
-                      <tr>
-                        <td align="center">10</td>
-                        <td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom10' id='txtDenom10'/></div></td>
-                        <td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt10' id='txtAmt10' readonly/></div></td>
-                      </tr>
-                      <tr>
-                        <td align="center">5</td>
-                        <td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom5' id='txtDenom5'/></div></td>
-                        <td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt5' id='txtAmt5' readonly/></div></td>
-                      </tr>
-                      <tr>
-                        <td align="center">1</td>
-                        <td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom1' id='txtDenom1'/></div></td>
-                        <td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt1' id='txtAmt1' readonly/></div></td>
-                      </tr>
-                      <tr>
-                        <td align="center">0.25</td>
-                        <td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom025' id='txtDenom025'/></div></td>
-                        <td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt025' id='txtAmt025' readonly/></div></td>
-                      </tr>
-                      <tr>
-                        <td align="center">0.10</td>
-                        <td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom010' id='txtDenom010'/></div></td>
-                        <td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt010' id='txtAmt010' readonly/></div></td>
-                      </tr>
-                      <tr>
-                        <td align="center">0.05</td>
-                        <td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom005' id='txtDenom005'/></div></td>
-                        <td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt005' id='txtAmt005' readonly/></div></td>
-                      </tr>
-                    </tbody>
-                    </table>
-                 </div>
-               </div>
-            
-            </div>
-            <div class="modal-footer">
-                
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<!-- End Bootstrap modal -->
+            <div id="tblOtContainer" class="alt2" dir="ltr" style="
+              margin: 0px;
+              padding: 3px;
+              border: 1px solid #919b9c;
+              width: 100%;
+              height: 200px;
+              text-align: left;
+              overflow: auto">
 
-
-<div class="modal fade" id="ChequeModal" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="chequeheader">CHEQUE DETAILS</h3>
+              <table width="100%" border="0" cellpadding="3" id="MyTblOthers">
+                <thead>
+                  <tr>
+                    <th scope="col">Account No.</th>
+                    <th scope="col">Account Title</th>
+                    <th scope="col">Debit</th>
+                    <th scope="col">Credit</th>
+                    <th scope="col">&nbsp;</th>
+                  </tr>
+                </thead>
+              </table>
+              <input type="hidden" name="hdnOthcnt" id="hdnOthcnt" value="0">
             </div>
-            <div class="modal-body">
-            
-                  <table width="100%" border="0" class="table table-condensed">
-                      <tr>
-                        <td><b>Bank Name</b></td>
-                        <td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtBankName' id='txtBankName' placeholder="Input Bank Name"/></div></td>
-                      </tr>
-                      <tr>
-                        <td><b>Cheque Date</b></td>
-                        <td>
-                        <div class='col-sm-12'>
-                            <input type='text' class="form-control input-sm" placeholder="Pick a Date" name="txtChekDate" id="txtChekDate"/>
+       	 	</div>
+ 				</div>
+			</div>
+			-->
+			
+			<br>
+			<table width="100%" border="0" cellpadding="3">
+				<tr>
+					<td width="50%">					
+						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='OR.php';" id="btnMain" name="btnMain">
+							Back to Main<br>(ESC)
+						</button>
 
-                        </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td><b>Cheque Number</b></td>
-                        <td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtCheckNo' id='txtCheckNo' placeholder="Input Cheque Number" /></div></td>
-                      </tr>
-                       <tr>
-                        <td><b>Cheque Amount</b></td>
-                        <td><div class='col-xs-12'><input type='text' class='numericchkamt form-control input-sm' name='txtCheckAmt' id='txtCheckAmt' placeholder="Input Cheque Amount" /></div></td>
-                      </tr>
-                   </table>
-            
-            </div>
-            <div class="modal-footer">
-                
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+						<div class="dropdown" style="display:inline-block !important;">
+							<button type="button" data-toggle="dropdown" class="btn btn-info btn-sm dropdown-toggle">
+								SI <br>(Insert) <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<li><a href="javascript:;" onClick="getInvs('Trade');">Trade</a></li>
+								<li><a href="javascript:;" onClick="getInvs('Non-Trade');">Non-Trade</a></li>
+							</ul>
+						</div>
+				
+						<button type="submit" class="btn btn-success btn-sm" tabindex="6" id="btnSave">
+							Save<br> (CTRL+S)
+						</button>
+					</td>
+					<td align="right">&nbsp;</td>
+				</tr>
+			</table>
 
+  </fieldset>
 
-<div class="modal fade" id="OthersModal" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="chequeheader">TRANSACTION DETAILS</h3>
-            </div>
-            <div class="modal-body">
-            
-                  <table width="100%" border="0" class="table table-condensed">
-                      <tr>
-                        <td><b>Payment Description</b></td>
-                        <td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtOTBankName' id='txtOTBankName' placeholder="Input Description"/></div></td>
-                      </tr>
+	<!-- Bootstrap modal INVOICES -->
+	<div class="modal fade" id="myModal" role="dialog">
+			<div class="modal-dialog">
+					<div class="modal-content">
+							<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+									<h3 class="modal-title" id="invheader">Invoice List</h3>
+									<input name="invtyp" id="invtyp" type="hidden" value="" />
+							</div>
+							
+							<div class="modal-body" style="height:40vh">
+							
+								<div class="col-xs-12 nopadding pre-scrollable" style="height:37vh">
+										<table name='MyORTbl' id='MyORTbl' class="table table-scroll table-striped">
+										<thead>
 											<tr>
-                        <td><b>Reference No.</b></td>
-                        <td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtOTRefNo' id='txtOTRefNo' placeholder="Input Reference No."/></div></td>
-                      </tr>
-                   </table>
-            
-            </div>
-            <div class="modal-footer">
-                
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div>
-<!-- End Bootstrap modal -->
+												<th align="center">
+												<input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
+												<th>Invoice No</th>
+												<th>Sales Date</th>
+												<th>Gross</th>
+												<th>DM</th>
+												<th>CM</th>
+												<th>&nbsp;</th>
+											</tr>
+											</thead>
+											<tbody>
+											</tbody>
+						</table>
+									
+							</div>
+				</div>
+				
+							<div class="modal-footer">
+									
+									<button type="button" id="btnInsert" onclick="save();" class="btn btn-primary">Insert</button>
+									<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
 
+							</div>
+					</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	<!-- End Bootstrap modal -->
+
+	<!--CASH DETAILS DENOMINATIONS -->
+	<div class="modal fade" id="CashModal" role="dialog">
+			<div class="modal-dialog">
+					<div class="modal-content">
+							<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+									<h3 class="modal-title" id="cashheader">CASH DENOMINATION</h3>
+							</div>
+							<div class="modal-body" style="height:40vh">
+							
+								<div class="form-group">
+											<div class="col-xs-12 nopadding pre-scrollable" style="height:37vh">
+
+										<table width="100%" border="0" class="table table-scroll table-condensed">
+										<thead>
+												<tr>
+													<td align="center"><b>Denomination</b></td>
+													<td align="center"><b>Pieces</b></td>
+													<td align="center"><b>Amount</b></td>
+												</tr>
+										</thead>
+										<tbody>
+												<tr>
+													<td align="center">1000</td>
+													<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom1000' id='txtDenom1000' /></div></td>
+													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt1000' id='txtAmt1000' readonly/></div></td>
+												</tr>
+												<tr>
+													<td align="center">500</td>
+													<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom500' id='txtDenom500'/></div></td>
+													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt500' id='txtAmt500' readonly/></div></td>
+												</tr>
+												<tr>
+													<td align="center">200</td>
+													<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom200' id='txtDenom200'/></div></td>
+													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt200' id='txtAmt200' readonly/></div></td>
+												</tr>
+												<tr>
+													<td align="center">100</td>
+													<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom100' id='txtDenom100'/></div></td>
+													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt100' id='txtAmt100' readonly/></div></td>
+												</tr>
+												<tr>
+													<td align="center">50</td>
+													<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom50' id='txtDenom50'/></div></td>
+													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt50' id='txtAmt50' readonly/></div></td>
+												</tr>
+												<tr>
+													<td align="center">20</td>
+													<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom20' id='txtDenom20'/></div></td>
+													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt20' id='txtAmt20' readonly/></div></td>
+												</tr>
+												<tr>
+													<td align="center">10</td>
+													<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom10' id='txtDenom10'/></div></td>
+													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt10' id='txtAmt10' readonly/></div></td>
+												</tr>
+												<tr>
+													<td align="center">5</td>
+													<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom5' id='txtDenom5'/></div></td>
+													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt5' id='txtAmt5' readonly/></div></td>
+												</tr>
+												<tr>
+													<td align="center">1</td>
+													<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom1' id='txtDenom1'/></div></td>
+													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt1' id='txtAmt1' readonly/></div></td>
+												</tr>
+												<tr>
+													<td align="center">0.25</td>
+													<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom025' id='txtDenom025'/></div></td>
+													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt025' id='txtAmt025' readonly/></div></td>
+												</tr>
+												<tr>
+													<td align="center">0.10</td>
+													<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom010' id='txtDenom010'/></div></td>
+													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt010' id='txtAmt010' readonly/></div></td>
+												</tr>
+												<tr>
+													<td align="center">0.05</td>
+													<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom005' id='txtDenom005'/></div></td>
+													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt005' id='txtAmt005' readonly/></div></td>
+												</tr>
+											</tbody>
+											</table>
+									</div>
+								</div>
+							
+							</div>
+							<div class="modal-footer">
+									
+							</div>
+					</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	<!-- End Bootstrap modal -->
+
+
+	<div class="modal fade" id="ChequeModal" role="dialog">
+			<div class="modal-dialog">
+					<div class="modal-content">
+							<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+									<h3 class="modal-title" id="chequeheader">CHEQUE DETAILS</h3>
+							</div>
+							<div class="modal-body">
+							
+										<table width="100%" border="0" class="table table-condensed">
+												<tr>
+													<td><b>Bank Name</b></td>
+													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtBankName' id='txtBankName' placeholder="Input Bank Name"/></div></td>
+												</tr>
+												<tr>
+													<td><b>Cheque Date</b></td>
+													<td>
+													<div class='col-sm-12'>
+															<input type='text' class="form-control input-sm" placeholder="Pick a Date" name="txtChekDate" id="txtChekDate"/>
+
+													</div>
+													</td>
+												</tr>
+												<tr>
+													<td><b>Cheque Number</b></td>
+													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtCheckNo' id='txtCheckNo' placeholder="Input Cheque Number" /></div></td>
+												</tr>
+												<tr>
+													<td><b>Cheque Amount</b></td>
+													<td><div class='col-xs-12'><input type='text' class='numericchkamt form-control input-sm' name='txtCheckAmt' id='txtCheckAmt' placeholder="Input Cheque Amount" /></div></td>
+												</tr>
+										</table>
+							
+							</div>
+							<div class="modal-footer">
+									
+							</div>
+					</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
+
+	<div class="modal fade" id="OthersModal" role="dialog">
+			<div class="modal-dialog">
+					<div class="modal-content">
+							<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+									<h3 class="modal-title" id="chequeheader">TRANSACTION DETAILS</h3>
+							</div>
+							<div class="modal-body">
+							
+										<table width="100%" border="0" class="table table-condensed">
+												<tr>
+													<td><b>Payment Description</b></td>
+													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtOTBankName' id='txtOTBankName' placeholder="Input Description"/></div></td>
+												</tr>
+												<tr>
+													<td><b>Reference No.</b></td>
+													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtOTRefNo' id='txtOTRefNo' placeholder="Input Reference No."/></div></td>
+												</tr>
+										</table>
+							
+							</div>
+							<div class="modal-footer">
+									
+							</div>
+					</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+	</div>
+	<!-- End Bootstrap modal -->
 
 </form>
 
@@ -538,9 +544,13 @@ Back to Main<br>(ESC)</button>
 	});
 	
 	$(document).ready(function(){
+
 		$(".nav-tabs a").click(function(){
 			$(this).tab('show');
 		});
+
+		$("input.numericchkamt").autoNumeric('init',{mDec:2});
+		$("input.numericint").autoNumeric('init',{mDec:0});
 		
 		$("input.numericchkamt, input.numericint").on("click focus", function () {
 			$(this).select();
@@ -549,9 +559,6 @@ Back to Main<br>(ESC)</button>
 		 $('#datetimepicker4, #txtChekDate, #date_delivery').datetimepicker({
 		  format: 'MM/DD/YYYY'
 		});
-			   
-		$("input.numericchkamt").numeric({decimalPlaces: 4});
-		$("input.numericint").numeric( {decimalPlaces: false, negative: false} );
 
 	
 	});
@@ -564,8 +571,6 @@ Back to Main<br>(ESC)</button>
   		return false;
   	}
 	});
-	            
-    // Bootstrap DateTimePicker v4
 										
 	$('.numericint').keydown(function (e) {
 		
@@ -748,21 +753,7 @@ Back to Main<br>(ESC)</button>
                 $(this).prop("checked", false);
             });
         }
-    }); 
-	
-	$("#allboxLO").click(function () {
-        if ($("#allboxLO").is(':checked')) {
-            $("input[name='chkLoans[]']").each(function () {
-                $(this).prop("checked", true);
-            });
-
-        } else {
-            $("input[name='chkLoans[]']").each(function () {
-                $(this).prop("checked", false);
-            });
-        }
-    }); 
-
+    });
 
 	$("#btnVoid").on("click", function(){
 		var rems = prompt("Please enter your reason...", "");
@@ -786,8 +777,11 @@ Back to Main<br>(ESC)</button>
 		}
 	});
 	
-	
-	$('#frmOR').submit(function() {
+
+});
+
+function chkform(){
+
 		var subz = "YES";
 	
 		if($('#txtcustid').val() == "" || $('#txtcustid').val() == ""){
@@ -807,14 +801,14 @@ Back to Main<br>(ESC)</button>
 			subz = "NO";
 		}
 			
-		if($('#selpayment').val() == "cheque"){
+		if($('#selpayment').val() !== "cheque" && $('#selpayment').val() !== "cash"){
 			if($('#txtOTRefNo').val() == ""){
 				alert("Reference number required for this payment method!");
 				subz = "NO";
 			}
 		}
 
-		if($('#selpayment').val() !== "cheque" && $('#selpayment').val() !== "cash"){
+		if($('#selpayment').val() == "cheque"){
 			if($('#txtBankName').val() == "" || $('#txtChekDate').val() == "" || $('#txtCheckNo').val() == "" || $('#txtCheckAmt').val() == ""){
 				alert("Please complete your cheque details!");
 				subz = "NO";
@@ -832,21 +826,8 @@ Back to Main<br>(ESC)</button>
 				$("#hdnrowcnt").val(lastRow1);				
 			}
 				
-			var tbl2 = document.getElementById('MyTbl').getElementsByTagName('tr');
-			lastRow2 = tbl2.length-1;
-					
-			if(lastRow2!=0){
-				$("#hdnLocnt").val(lastRow2);	
-			}
 	
-			var tbl3 = document.getElementById('MyTblOthers').getElementsByTagName('tr');
-			lastRow3 = tbl3.length-1;
-					
-			if(lastRow3!=0){
-				$("#hdnOthcnt").val(lastRow3);	
-			}
-	
-		if(lastRow1==0 && lastRow2==0 && lastRow3==0){
+		if(lastRow1==0){
 				alert("Details Required!");
 				subz = "NO";
 		}
@@ -862,44 +843,13 @@ Back to Main<br>(ESC)</button>
 		}
 		else{
 			if($('#selpayment').val() == "Cheque"){
-				$('#txtCheckAmt').val($('#txtCheckAmt').maskMoney('unmasked')[0]);
+				//$('#txtCheckAmt').val($('#txtCheckAmt').maskMoney('unmasked')[0]);
 			}
 			
-			
-			//$("#frmOR").submit();
 			return true;
+			$("#frmOR").submit();
+			
 		}
-
-	});
-
-	
-
-});
-
-function computeAmt(str,valz){
-
-	var numberPattern = /\d+/g;
-	var r = str.match(numberPattern);
-		
-	var rwcnt = parseInt(r);
-	
-	var amtz = $("#txtAmt"+rwcnt).val(); 
-	var dmamt = $("#txtndebit"+rwcnt).val(); 
-	var cmamt = $("#txtncredit"+rwcnt).val();
-	
-	varduebal = (parseFloat(amtz) + parseFloat(dmamt))-parseFloat(cmamt)
-									
-	if(valz!=""){							
-		var thisvalz = parseFloat(valz);
-											
-		var Totdicnt = (thisvalz/100) * varduebal;
-		var TotDue = varduebal - Totdicnt;
-											
-		$("#txtDue"+rwcnt).val(TotDue.toFixed(4));
-	}
-	else{
-		$("#txtDue"+rwcnt).val(varduebal.toFixed(4));
-	}
 
 }
 
@@ -938,49 +888,11 @@ computeGross();
 
 }
 
-function deleteRow2(r) {
-	var tbl = document.getElementById('MyTbl').getElementsByTagName('tr');
-	var lastRow = tbl.length;
-	var i=r.parentNode.parentNode.rowIndex;
-	 document.getElementById('MyTbl').deleteRow(i);
-	 var lastRow = tbl.length;
-	 var z; //for loop counter changing textboxes ID;
-	 
-		for (z=i+1; z<=lastRow; z++){
-			var tempsalesno = document.getElementById('txtcLoanNo' + z);
-			var tempsalesacctno = document.getElementById('txtcLoanAcctNo' + z);
-			var tempamt = document.getElementById('txtLoTotal' + z);
-			var tempdisc= document.getElementById('txtLoDedct' + z);
-			var tempdue= document.getElementById('txtLoBalnc' + z);
-			var tempapplies = document.getElementById('txtLoApplied' + z);
-			
-			var x = z-1;
-			tempsalesno.id = "txtcLoanNo" + x;
-			tempsalesno.name = "txtcLoanNo" + x;
-			tempsalesacctno.id = "txtcLoanAcctNo" + x;
-			tempsalesacctno.name = "txtcLoanAcctNo" + x;
-			tempamt.id = "txtLoTotal" + x;
-			tempamt.name = "txtLoTotal" + x;
-			tempdisc.id = "txtLoDedct" + x;
-			tempdisc.name = "txtLoDedct" + x;
-			tempdue.id = "txtLoBalnc" + x;
-			tempdue.name = "txtLoBalnc" + x;
-			tempapplies.id = "txtLoApplied" + x;
-			tempapplies.name = "txtLoApplied" + x;
-			
-		}
-
-computeGross();
-
-}
-
-
 function computeGross(){
 	//alert("Hello";)
 	var tot = 0;
 	var tot2 = 0;
 	var tot3 = 0;
-  var totEWT = 0;
 	
 	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 	var lastRow = tbl.length-1;
@@ -988,7 +900,7 @@ function computeGross(){
 		var x = 0;
 		
 		for (z=1; z<=lastRow; z++){
-			x = document.getElementById('txtApplied' + z).value;
+			x = $("#txtApplied" + z).val().replace(/,/g,'');
 			
 			x = x.replace(",","");
 			if(x!=0 && x!=""){
@@ -1006,7 +918,7 @@ function computeGross(){
 	
 	
 	//alert(parseFloat(tot2));
-
+	/*
 	var tbl3 = document.getElementById('MyTblOthers').getElementsByTagName('tr');
 	var lastRow3 = tbl3.length-1;
 	var totDR = 0;
@@ -1034,19 +946,22 @@ function computeGross(){
 		
 		tot3 = parseFloat(totCR) - parseFloat(totDR);	
 	}
+	*/
 	
 	
-	var XTOTGross = parseFloat(tot) + parseFloat(tot2) + parseFloat(tot3);
-	
-	document.getElementById('txtnApplied').value = XTOTGross.toFixed(2);
- // document.getElementById('txtnEWTApp').value = totEWT.toFixed(2);
+	$("#txtnApplied").val(tot);
+	$("#txtnApplied").autoNumeric('destroy');
+	$("#txtnApplied").autoNumeric('init',{mDec:2});
 
-  var outbalyy = parseFloat($("#txtnGross").val()) - parseFloat(XTOTGross);
-  document.getElementById('txtnOutBal').value = outbalyy.toFixed(2);
+  var outbalyy = parseFloat($("#txtnGross").val().replace(/,/g,'')) - parseFloat(tot);
+  $("#txtnOutBal").val(outbalyy);
+
+	$("#txtnOutBal").autoNumeric('destroy');
+	$("#txtnOutBal").autoNumeric('init',{mDec:2, vMin:-99999999999999999.99});
 
 }
 
-function getInvs(){
+function getInvs(typ){
 	
 		if($('#txtcustid').val() == ""){
 			alert("Please pick a valid customer!");
@@ -1054,9 +969,8 @@ function getInvs(){
 		else{
 			
 			//clear table body if may laman
-			
-
 			$('#MyORTbl tbody').empty();
+			$('#invtyp').val(typ);
 			
 			//get salesno na selected na
 			var y;
@@ -1074,31 +988,31 @@ function getInvs(){
 			$('#invheader').html("Invoice List: " + $('#txtcust').val())
 			
 			$.ajax({
-                    url: 'th_orlist.php',
-					data: 'x='+x+"&y="+salesnos,
-                    dataType: 'json',
-                    method: 'post',
-                    success: function (data) {
-                       // var classRoomsTable = $('#mytable tbody');
-                        console.log(data);
-                       $.each(data,function(index,item){
-                        $("<tr>").append(
-						$("<td>").html("<input type='checkbox' value='"+item.csalesno+"' name='chkSales[]'>"),
-                        $("<td>").text(item.csalesno),
-                        $("<td>").text(item.dcutdate),
-						$("<td>").text(item.ngross),
-						$("<td>").text(item.ndebit),
-						$("<td>").text(item.ncredit)
-                        ).appendTo("#MyORTbl tbody");
+        url: 'th_orlist.php',
+				data: { x:x, y:salesnos, typ:typ },
+        dataType: 'json',
+        method: 'post',
+        success: function (data) {
+          // var classRoomsTable = $('#mytable tbody');
+          console.log(data);
+          $.each(data,function(index,item){
+            $("<tr>").append(
+							$("<td>").html("<input type='checkbox' value='"+item.csalesno+"' name='chkSales[]'>"),
+              $("<td>").text(item.csalesno),
+              $("<td>").text(item.dcutdate),
+							$("<td>").text(item.ngross),
+							$("<td>").text(item.ndebit),
+							$("<td>").text(item.ncredit)
+            ).appendTo("#MyORTbl tbody");
 
-                       });
-                    },
-                    error: function (jqXHR, textStatus, errorThrown)
-					{
-						if(errorThrown!="Unexpected end of JSON input"){
-						}
+          });
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+				{
+					if(errorThrown!="Unexpected end of JSON input"){
 					}
-                });
+				}
+      });
 			
 			$('#myModal').modal('show');
 			
@@ -1122,29 +1036,28 @@ function save(){
 	  		
 	   			var id = $(this).val();
 	   			$.ajax({
-					url : "th_getsalesdetails.php?id=" + id,
+					url : "th_getsalesdetails.php?id=" + id + "&typ=" + $('#invtyp').val(),
 					type: "GET",
 					dataType: "JSON",
 					success: function(data)
 					{				
 					
-					   console.log(data);
-                       $.each(data,function(index,item){
+					  console.log(data);
+          	$.each(data,function(index,item){
 						   
-						   var ngross = item.ngross;
-						   var ndebit = item.ndebit;
-						   var ncredit = item.ncredit;
-						   var npayment = item.npayment;
-						   var ndue = 0;
+						  var ngross = item.ngross;
+						  var ndebit = item.ndebit;
+						  var ncredit = item.ncredit;
+						  var npayment = item.npayment;
+						  var ndue = 0;
 						   
-						   	ndue = ((parseFloat(ngross) + parseFloat(ndebit)) - parseFloat(ncredit)) - parseFloat(npayment);
+						  ndue = ((parseFloat(ngross) + parseFloat(ndebit)) - parseFloat(ncredit)) - parseFloat(npayment);
 							
 							if(parseFloat(npayment)==0){
-								npayment = "0.0000"
+								npayment = "0.00"
 							}
 							
-							var lastRow = tbl.rows.length + 1;
-							
+							var lastRow = tbl.rows.length + 1;							
 							var z=tbl.insertRow(-1);
 
 							var a=z.insertCell(-1);
@@ -1156,46 +1069,43 @@ function save(){
 								
 							var c=z.insertCell(-1);
 								c.align = "right";
-								c.innerHTML = "<div class='col-xs-12 nopadwleft'><input type='hidden' name='txtSIGross"+lastRow+"' id='txtSIGross"+lastRow+"' value='"+item.ngross+"' />"+item.ngross+"</div>";
+								c.innerHTML = "<div class='col-xs-12 nopadwleft'><input type='text' class='numeric form-control input-xs text-right' name='txtSIGross"+lastRow+"' id='txtSIGross"+lastRow+"' value='"+item.ngross+"' readonly /></div>";
 								
 							var c2=z.insertCell(-1);
 								c2.align = "right";
-								c2.innerHTML = "<div class='col-xs-12 nopadwleft'><input type='hidden' name='txtvatamt"+lastRow+"' id='txtvatamt"+lastRow+"' value='"+item.nvat+"' />"+item.nvat+"</div>";
+								c2.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtvatamt"+lastRow+"' id='txtvatamt"+lastRow+"' value='"+item.nvat+"' readonly />";
 								
 							var c3=z.insertCell(-1);
 								c3.align = "right";
-								c3.innerHTML = "<div class='col-xs-12 nopadwleft'><input type='hidden' name='txtnetvat"+lastRow+"' id='txtnetvat"+lastRow+"' value='"+item.nnet+"' />"+item.nnet+"</div>"; 
+								c3.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtnetvat"+lastRow+"' id='txtnetvat"+lastRow+"' value='"+item.nnet+"' readonly />"; 
 							
 							var l=z.insertCell(-1);
-								l.style.width = "150px";
 								l.innerHTML = "<input type='text' class='form-control input-xs' placeholder='EWT Code' name='txtnEWT"+lastRow+"' id='txtnEWT"+lastRow+"' autocomplete=\"off\" />";
 							
 							var l2=z.insertCell(-1);
-								l2.style.width = "150px";
 								l2.innerHTML = "<input type='text' class='form-control input-xs text-right' placeholder='EWT Rate' name='txtnEWTRate"+lastRow+"' value=\"0\" id='txtnEWTRate"+lastRow+"' readonly=\"true\" />";
 								
 							var l3=z.insertCell(-1);
-								l3.style.width = "180px";
-								l3.innerHTML = "<input type='text' class='form-control input-xs text-right' placeholder='EWT Amt' name='txtnEWTAmt"+lastRow+"'  value=\"0.0000\" id='txtnEWTAmt"+lastRow+"' readonly=\"true\" />";
+								l3.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' placeholder='EWT Amt' name='txtnEWTAmt"+lastRow+"'  value=\"0.00\" id='txtnEWTAmt"+lastRow+"' readonly=\"true\" />";
 									
 							var d=z.insertCell(-1);
 								d.align = "right";
-								d.innerHTML = "<input type='hidden' name='txtndebit"+lastRow+"' id='txtndebit"+lastRow+"' value='"+item.ndebit+"' />"+item.ndebit+"";
+								d.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtndebit"+lastRow+"' id='txtndebit"+lastRow+"' value='"+item.ndebit+"' readonly=\"true\" />";
 								
 							var e=z.insertCell(-1);
 								e.align = "right";
-								e.innerHTML = "<input type='hidden' name='txtncredit"+lastRow+"' id='txtncredit"+lastRow+"' value='"+item.ncredit+"' />"+item.ncredit+"";
+								e.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtncredit"+lastRow+"' id='txtncredit"+lastRow+"' value='"+item.ncredit+"' readonly=\"true\" />";
 								
 							var f=z.insertCell(-1);
 								f.align = "right";
-								f.innerHTML = "<input type='hidden' name='txtnpayments"+lastRow+"' id='txtnpayments"+lastRow+"' value='"+item.npayment+"' />"+npayment+"";
+								f.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtnpayments"+lastRow+"' id='txtnpayments"+lastRow+"' value='"+item.npayment+"' readonly=\"true\" />";
 								
 							var g=z.insertCell(-1);
 								g.align = "right";
-								g.innerHTML = "<input type='text' name='txtDue"+lastRow+"' id='txtDue"+lastRow+"' value='"+ndue.toFixed(4)+"' class='numeric form-control input-xs text-right' readonly=\"true\" />";
+								g.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtDue"+lastRow+"' id='txtDue"+lastRow+"' value='"+ndue+"' readonly=\"true\" />";
 								
 							var h=z.insertCell(-1);
-								h.innerHTML = "<div class='col-xs-12 nopadwleft'><input type='text' class='numeric form-control input-xs text-right' name='txtApplied"+lastRow+"' id='txtApplied"+lastRow+"' value='0.0000' style='text-align:right' autocomplete=\"off\" /></div>";
+								h.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtApplied"+lastRow+"' id='txtApplied"+lastRow+"' value='"+ndue+"' style='text-align:right' autocomplete=\"off\" />";
 
 							var i=z.insertCell(-1);
 								i.innerHTML = "<div class='col-xs-12 nopadding'><input type='text' class='form-control input-xs' name='txtcSalesAcctNo"+lastRow+"' id='txtcSalesAcctNo"+lastRow+"' value='"+item.cacctno+"' autocomplete=\"off\" /></div>";
@@ -1209,7 +1119,7 @@ function save(){
 							var varnnet = item.nnet;
 							var varngrs = item.ngross;	
 										   
-									$("input.numeric").numeric({decimalPlaces: 4});
+									$("input.numeric").autoNumeric('init',{mDec:2});
 									$("input.numeric").on("click focus", function () {
 									   $(this).select();
 									});
@@ -1246,11 +1156,9 @@ function save(){
 											var xcb = 0;
 											var xcbdue = 0;
 
-											varnnet =  $("#txtnetvat"+lastRow).val();
-
-											varngrs = $("#txtSIGross"+lastRow).val();
-
-											ndue = $("#txtDue"+lastRow).val();
+											varnnet =  $("#txtnetvat"+lastRow).val().replace(/,/g,'');
+											varngrs = $("#txtSIGross"+lastRow).val().replace(/,/g,'');
+											ndue = $("#txtDue"+lastRow).val().replace(/,/g,'');
 											
 											if(item.cbase=="NET"){
 												xcb = parseFloat(varnnet)*(item.nrate/100);
@@ -1258,12 +1166,24 @@ function save(){
 												xcb = parseFloat(varngrs)*(item.nrate/100);
 											}
 											
-											$("#txtnEWTAmt"+lastRow).val(xcb.toFixed(4));
+											$("#txtnEWTAmt"+lastRow).val(xcb);
 											//recompute due
 											xcbdue = ndue - xcb;
 											
-											$("#txtDue"+lastRow).val(xcbdue.toFixed(4)); 
+											$("#txtDue"+lastRow).val(xcbdue);
+
+											$("#txtApplied"+lastRow).val(xcbdue);
+
+											$("#txtnEWTAmt"+lastRow).autoNumeric('destroy');
+											$("#txtnEWTAmt"+lastRow).autoNumeric('init',{mDec:2});
+
+											$("#txtDue"+lastRow).autoNumeric('destroy');
+											$("#txtDue"+lastRow).autoNumeric('init',{mDec:2});
 											
+											$("#txtApplied"+lastRow).autoNumeric('destroy');
+											$("#txtApplied"+lastRow).autoNumeric('init',{mDec:2});
+											
+											computeGross();
 											
 											//setPosi("txtcSalesAcctTitle"+lastRow,13,'MyTable');
 											
@@ -1301,38 +1221,37 @@ function save(){
 									
 									$("#txtcSalesAcctTitle"+lastRow).typeahead({
 								
-									items: 10,
-									source: function(request, response) {
-										$.ajax({
-											url: "../th_accounts.php",
-											dataType: "json",
-											data: {
-												query: $("#txtcSalesAcctTitle"+lastRow).val()
-											},
-											success: function (data) {
-												response(data);
-												
-											}
-										});
-									},
-									autoSelect: true,
-									displayText: function (item) {
-										 return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.name + "</small></div>";
-									},
-									highlighter: Object,
-									afterSelect: function(item, event) { 
-										$("#txtcSalesAcctTitle"+lastRow).val(item.name).change(); 
-										$("#txtcSalesAcctNo"+lastRow).val(item.id);
-										
-										setPosi("txtcSalesAcctTitle"+lastRow,13,'MyTable');
-										
-									}
+										items: 10,
+										source: function(request, response) {
+											$.ajax({
+												url: "../th_accounts.php",
+												dataType: "json",
+												data: {
+													query: $("#txtcSalesAcctTitle"+lastRow).val()
+												},
+												success: function (data) {
+													response(data);
+													
+												}
+											});
+										},
+										autoSelect: true,
+										displayText: function (item) {
+											return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.name + "</small></div>";
+										},
+										highlighter: Object,
+										afterSelect: function(item, event) { 
+											$("#txtcSalesAcctTitle"+lastRow).val(item.name).change(); 
+											$("#txtcSalesAcctNo"+lastRow).val(item.id);
+											
+											setPosi("txtcSalesAcctTitle"+lastRow,13,'MyTable');
+											
+										}
 									});
-							
-					   
-					   	
-					   });
+											   	
+					  });
 
+						computeGross();
 					},
 					error: function (jqXHR, textStatus, errorThrown)
 					{
@@ -1362,7 +1281,7 @@ function setPosi(nme,keyCode,tbl){
 		var tbl = document.getElementById(tbl).getElementsByTagName('tr');
 		var lastRow = tbl.length-1;
 		
-//
+	//
 		//if(namez=="txtApplied"){
 			//alert(keyCode);
 			if(keyCode==38 && r!=1){//Up
@@ -1379,7 +1298,7 @@ function setPosi(nme,keyCode,tbl){
 
 }
 
-
+/*
 function addacct(){
 
 	var tbl = document.getElementById('MyTblOthers').getElementsByTagName('tr');
@@ -1511,9 +1430,8 @@ function deleteRow3(r) {
 		}
 
 computeGross();
-
 }
-
+*/
 
 </script>
 

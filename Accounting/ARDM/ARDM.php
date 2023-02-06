@@ -15,7 +15,7 @@ include('../../include/access2.php');
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Coop Financials</title>
+	<title>Myx Financials</title>
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css"> 
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
@@ -50,7 +50,7 @@ function trans(x,num){
 
 		$("#AlertMsg").html("");
 							
-		$("#AlertMsg").html("Are you sure you want to "+x+" APV No.: "+num);
+		$("#AlertMsg").html("Are you sure you want to "+x+" DM No.: "+num);
 		$("#alertbtnOK").hide();
 		$("#OK").show();
 		$("#Cancel").show();
@@ -187,7 +187,7 @@ $(function(){
                        	<td><?php echo $row['cremarks'];?></td>
                        <!-- <td><?php// echo $row['ddate'];?></td>-->
                         <td><?php echo $row['dcutdate'];?></td>
-						<td><?php echo $row['ngross'];?></td>
+						<td align="right"><?php echo number_format($row['ngross'],2);?></td>
 						<td align="center">
                         <div id="msg<?php echo $row['ctranno'];?>">
                         	<?php 
@@ -250,87 +250,110 @@ $(function(){
 
 	
 	<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="myModalLabel"><b>Add New Type</b></h5>        
-      </div>
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="myModalLabel"><b>Add New Type</b></h5>        
+				</div>
 
-		<form name="frmapcm" id="frmapcm" method="post" action="ARDM_newsavehdr.php">
-			<input type="hidden" id="hdtsavetyp" name="hdtsavetyp" value="">
-				<div class="modal-body" style="height: 35vh">
-    	
-         	<div class="col-xs-12">
-            <div class="cgroup col-xs-2 nopadwtop" id="cGroup5">
-                <b>Customer</b>
-            </div>
-            
-            <div class="col-xs-9 nopadwtop">
-              <div class="col-xs-12 nopadding">
-								<div class="col-xs-3 nopadding">
-									<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" required>
-									<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
+				<form name="frmapcm" id="frmapcm" method="post" action="ARDM_newsavehdr.php">
+					<input type="hidden" id="hdtsavetyp" name="hdtsavetyp" value="">
+					<div class="modal-body" style="height: 35vh">
+					
+						<div class="col-xs-12">
+							<div class="cgroup col-xs-2 nopadwtop" id="cGroup5">
+								<b>AR DM Date</b>
+							</div>
+								
+							<div class="col-xs-9 nopadwtop">
+								<div class="col-xs-12 nopadding">
+									<div class="col-xs-3 nopadwtop">
+										<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date("m/d/Y"); ?>" />
+									</div>
 								</div>
+							</div>
+						</div> 
 
-								<div class="col-xs-8 nopadwleft">
-									<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" required>
-								</div> 
-				 		 	</div>
-            </div>
-        	</div>   
+						<div class="col-xs-12">
+							<div class="cgroup col-xs-2 nopadwtop" id="cGroup5">
+								<b>Customer</b>
+							</div>
+								
+							<div class="col-xs-9 nopadwtop">
+								<div class="col-xs-12 nopadding">
+									<div class="col-xs-3 nopadding">
+										<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" required>
+										<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
+									</div>
 
-        	<div class="col-xs-12">
-            <div class="cgroup col-xs-2 nopadwtop" id="cGroup5">
-                <b>Remarks</b>
-            </div>
-            
-            <div class="col-xs-9 nopadwtop">
-              <div class="col-xs-12 nopadding">
-								<div class="col-xs-11 nopadding">
-									<input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks"  placeholder="Enter Remarks..">
+									<div class="col-xs-8 nopadwleft">
+										<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" required>
+									</div> 
 								</div>	
 							</div>
-						</div>               
-       	 	</div>   
- 
-					<div class="col-xs-12">
-            <div class="cgroup col-xs-2 nopadwtop" id="cGroup5">
-                <b>AR CM Date</b>
-            </div>
-            
-            <div class="col-xs-3 nopadwtop">
-                <input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date("m/d/Y"); ?>" />
-            </div>
-        	</div> 
-	  
+						</div>   
 
-					<div class="col-xs-12">
-            <div class="cgroup col-xs-2 nopadwtop" id="cGroup5">
-                <b>Total Amount</b>
-            </div>
-            
-            <div class="col-xs-3 nopadwtop">
-                <input type="text" class="numeric form-control input-sm text-right font-weight-bold" id="txtnamt" name="txtnamt"  value="0.00" required>
-            </div>
-        	</div> 		  
-        	<div class="alert alert-danger nopadding" id="add_err"></div>         
+						<div class="col-xs-12">
+							<div class="cgroup col-xs-2 nopadwtop" id="cGroup5">
+								<b>Remarks</b>
+							</div>
+								
+							<div class="col-xs-9 nopadwtop">
+								<div class="col-xs-12 nopadding">
+									<div class="col-xs-11 nopadding">
+										<input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks"  placeholder="Enter Remarks..">
+									</div>	
+								</div>
+							</div>               
+						</div>   
+				
+						<div class="col-xs-12">
+							<div class="cgroup col-xs-2 nopadwtop" id="cGroup5">
+								<b>Reference SI</b>
+							</div>
 
+							<div class="col-xs-2 nopadwtop">
+								<select class="form-control input-sm" name="selrefnotyp" id="selrefnotyp">
+										<option value="sales">SI - Trade</option>
+										<option value="ntsales">SI  - Non-Trade</option>
+								</select>
+							</div>
+
+							<div class="col-xs-3 nopadwtop" style="padding-left: 3px !important">
+								<input type="text" class="form-control input-sm" id="txtcrefno" name="txtcrefno"  placeholder="Enter Trans. No..." autocomplete="off">
+							</div>	
+						</div> 
+					
+
+						<div class="col-xs-12">
+							<div class="cgroup col-xs-2 nopadwtop" id="cGroup5">
+								<b>Total Amount</b>
+							</div>
+								
+							<div class="col-xs-3 nopadwtop">
+								<input type="text" class="numeric form-control input-sm text-right font-weight-bold" id="txtnamt" name="txtnamt"  value="0.00" required>
+							</div>
+						</div> 
+
+						<div class="alert alert-danger nopadding" id="add_err"></div>         
+
+			
+					</div>
+				
+					<div class="modal-footer">
+						<button type="Submit" id="btnSave" name="Save" class="btn btn-primary btn-sm">Save Transaction</button>
+						<button type="Submit" id="btnUpdate" name="Update" class="btn btn-success btn-sm">Update Detail</button>
+						<button type="button" class="btn btn-danger  btn-sm" data-dismiss="modal">Cancel</button>
+					</div>
+				</form>
+
+			</div>
+		</div>
+	</div>
+	<!-- Modal -->	
 	
-				</div>
-    
-				<div class="modal-footer">
-					<button type="Submit" id="btnSave" name="Save" class="btn btn-primary btn-sm">Save Transaction</button>
-					<button type="Submit" id="btnUpdate" name="Update" class="btn btn-success btn-sm">Update Detail</button>
-					<button type="button" class="btn btn-danger  btn-sm" data-dismiss="modal">Cancel</button>
-				</div>
-    </form>
-    </div>
-  </div>
-</div>
-<!-- Modal -->	
-	
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
 	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
 	
 	<script>
@@ -384,7 +407,7 @@ $(function(){
 			$("#txtcust").focus();
 			//$("#txtcrefno").attr("required", false);
 			//$("#txtcrefno").attr("readonly", true);	
-			$("#txtnamt").attr("readonly", false);	
+			//$("#txtnamt").attr("readonly", false);	
 			 
 			$('#myModalLabel').html("<b>Add New AR Debit Memo</b>");
 			$('#myModal').modal('show');
@@ -480,6 +503,37 @@ $(function(){
 		}
 	
 	});
+
+		$('#txtcrefno').typeahead({
+			autoSelect: true,
+			source: function(request, response) {
+				$.ajax({
+					url: "get_refSI.php",
+					dataType: "json",
+					data: {
+						id: $('#txtcustid').val(), query: $("#txtcrefno").val(), typ: $("#selrefnotyp").val()
+					},
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.ddate + ' - ' + item.value + '</small></div>';
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 					
+
+				$('#txtcrefno').val(item.id).change(); 	
+				$('#txtnamt').val(item.value);
+
+				if($("#selrefnotyp").val()=="salesreturn" || $("#selrefnotyp").val()=="ntsalesreturn"){					
+					$("#txtnamt").attr("readonly", true);
+				}
+				
+
+			}
+		});
 	
 		
 		$("#frmapcm").submit(function (ev) {

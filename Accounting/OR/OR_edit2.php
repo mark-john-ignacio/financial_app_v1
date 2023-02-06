@@ -25,8 +25,11 @@ $corno = $_REQUEST['txtctranno'];
 
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 <script src="../../js/bootstrap3-typeahead.min.js"></script>
+<script src="../../include/autoNumeric.js"></script>
+<!--
 <script src="../../Bootstrap/js/jquery.numeric.js"></script>
 <script src="../../include/jquery-maskmoney.js" type="text/javascript"></script>
+-->
 
 <script src="../../Bootstrap/js/bootstrap.js"></script>
 <script src="../../Bootstrap/js/moment.js"></script>
@@ -66,228 +69,207 @@ if (mysqli_num_rows($sqlchk)!=0) {
 		}
 
 ?>
-<form action="OR_editsave2.php" name="frmOR" id="frmOR" method="post">
-	<fieldset>
+	<form action="OR_editsave2.php" name="frmOR" id="frmOR" method="post" onSubmit="return chkform();">
+		<fieldset>
     	<legend>
         <div class="col-xs-6 nopadding"> Receive Payment </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
-    <?php
-  if($lCancelled==1){
-    echo "<font color='#FF0000'><b>CANCELLED</b></font>";
-  }
-  
-  if($lPosted==1){
-    echo "<font color='#FF0000'><b>POSTED</b></font>";
-  }
-  ?>
-    </div>
-        </legend>	
-        <table width="100%" border="0">
-  <tr>
-    <tH>Trans. No.:</tH>
-    <td colspan="3" style="padding:2px;">
-    <div class="col-xs-12 nopadding">
-    <div class="col-xs-2 nopadding"><input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?php echo $corno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmOR');"></div>
-      
-      <input type="hidden" name="hdnorigNo" id="hdnorigNo" value="<?php echo $corno;?>">
-      
-      <input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
-      <input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
-      <input type="hidden" name="hdnprintpost" id="hdnprintpost" value="<?php echo $lPrintPost;?>">
-      &nbsp;&nbsp;
-      <div id="statmsgz" style="display:inline"></div>
-      </div>
-      
-    </td>
-    </tr>
-  <tr>
-    <tH width="210">
-    	Deposit To Account
-    
-    </tH>
-    <td style="padding:2px;" width="500">
-  <div class="col-xs-12 nopadding">
-    <div class="col-xs-6 nopadding">
-        	<input type="text" class="form-control input-sm" id="txtcacct" name="txtcacct" width="20px" tabindex="1" placeholder="Search Account Description..." required value="<?php echo $nDebitDesc;?>">
-    </div> 
-	<div class="col-xs-6 nopadding">
-        	<input type="text" id="txtcacctid" name="txtcacctid" style="border:none; height:30px;" readonly  value="<?php echo $nDebitDef;?>">
-   	</div>
-   </div>     
-    </td>
-    <tH width="150">Date:</tH>
-    <td style="padding:2px;">
-    	<div class="col-xs-8 nopadding">
-      <input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date_format(date_create($dDate),'m/d/Y'); ?>" />
-    </div>
-    </td>
-  </tr>
-  <tr>
-    <tH>&nbsp;</tH>
-    <td style="padding:2px;">&nbsp;</td>
-    <tH>&nbsp;</tH>
-    <td style="padding:2px;">&nbsp;</td>
-  </tr>
-  <tr>
-    <tH width="210" valign="top">Payor:</tH>
-    <td valign="top" style="padding:2px">
-    <div class="col-xs-12 nopadding">
-        <div class="col-xs-6 nopadding">
-        	<input type="text" class="typeahead form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="2" placeholder="Search Customer Name..." required autocomplete="off" value="<?php echo $cName ;?>"  />
-		</div> 
-		<div class="col-xs-3 nopadwleft">
-        	<input type="text" id="txtcustid" name="txtcustid" style="border:none; height:30px;" readonly value="<?php echo $cCode ;?>">
-        </div>
-    </div>        
-    </td>
-    <th valign="top" style="padding:2px">Receipt No.:</th>
-    <td valign="top" style="padding:2px"><div class="col-xs-12 nopadding">
-      <div class="col-xs-8 nopadding">
-      <input type="text" class="form-control input-sm" id="txtORNo" name="txtORNo" width="20px" required value="<?php echo $cORNo;?>" readonly>
-    </div>
-    <!--
-    <div class="col-xs-4 nopadwleft">
-        <button type="button" class="btn btn-danger btn-sm" name="btnVoid" id="btnVoid">VOID OR</button>
-      </div>
-      </div></td>-->
-  </tr>
-  <tr>
-    <tH width="210" valign="top">Payment Method:</tH>
-    <td valign="top" style="padding:2px">
-    <div class="col-xs-12 nopadding">
-     <div class="col-xs-6 nopadding">
-      <select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
-          <option value="cash" <?php if($cPayMeth=="cash") { echo "selected"; } ?>>Cash</option>
-          <option value="cheque" <?php if($cPayMeth=="cheque") { echo "selected"; } ?>>Cheque</option>
-					<option value="bank transfer" <?php if($cPayMeth=="bank transfer") { echo "selected"; } ?>>Bank Transfer</option>
-					<option value="mobile payment" <?php if($cPayMeth=="mobile payment") { echo "selected"; } ?>>Mobile Payment</option>
-					<option value="credit card" <?php if($cPayMeth=="credit card") { echo "selected"; } ?>>Credit Card</option>
-					<option value="debit card" <?php if($cPayMeth=="debit card") { echo "selected"; } ?>>Debit Card</option>
-        </select>
-     </div>
-     
-     <div class="col-xs-4 nopadwleft">
-       <button type="button" class="btn btn-primary btn-sm" tabindex="6" style="width:100%" name="btnDet" id="btnDet">Details</button>
-     </div>
-    </div>
-    
-    
-    </td>
-    <tH style="padding:2px">Amount Received:</tH>
-    <td valign="top" style="padding:2px"><?php 
-		if($cPayMeth=="Cheque") 
-		{ 
-			$vargrossstat = "readonly"; 
-		} else{
-			$vargrossstat = "";
-		}
-	?>
-      <div class="col-xs-8 nopadding">
-        <input type="text" id="txtnGross" name="txtnGross" class="form-control text-right numeric" value="<?php echo $nAmount;?>" <?php echo $vargrossstat; ?> autocomplete="off" onKeyUp="computeGross();" required>
-      </div></td>
-    </tr>
-  <tr>
-    <tH width="210" rowspan="2" valign="top">Memo:</tH>
+					<?php
+						if($lCancelled==1){
+							echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+						}
+						
+						if($lPosted==1){
+							echo "<font color='#FF0000'><b>POSTED</b></font>";
+						}
+					?>
+   			</div>
+  		</legend>	
 
-    <td rowspan="2" valign="top" style="padding:2px">
-    <div class="col-xs-12 nopadding">
-      <div class="col-xs-10 nopadding">
-        <textarea class="form-control" rows="1" id="txtremarks" name="txtremarks"><?php echo $cRemarks;?></textarea>
-      </div>
-    </div>
-    </td>
-    <th valign="top" style="padding:2px">Amount Applied:</th>
-    <td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
-      <input type="text" id="txtnApplied" name="txtnApplied" class="form-control" value="<?php echo $nApplied;?>" style="text-align:right" readonly>
-    </div></td>
-    </tr>
- <tr>
-    <th valign="top" style="padding:2px">Out of Balance:</th>
-    <td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
-      <input type="text" id="txtnOutBal" name="txtnOutBal" class="numericchkamt form-control input-sm" value="0.00" style="text-align:right;" autocomplete="off" readonly>
-    </div></td>
-  </tr>
+      <table width="100%" border="0">
+				<tr>
+					<tH>Trans. No.:</tH>
+					<td colspan="3" style="padding:2px;">
+						<div class="col-xs-12 nopadding">
+							<div class="col-xs-2 nopadding"><input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?php echo $corno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmOR');"></div>
+						
+							<input type="hidden" name="hdnorigNo" id="hdnorigNo" value="<?php echo $corno;?>">
+						
+							<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
+							<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
+							<input type="hidden" name="hdnprintpost" id="hdnprintpost" value="<?php echo $lPrintPost;?>">
+								&nbsp;&nbsp;
+							<div id="statmsgz" style="display:inline"></div>
+							</div>						
+					</td>
+				</tr>
+				<tr>
+					<tH width="210">
+						Deposit To Account    
+					</tH>
+					<td style="padding:2px;" width="500">
+						<div class="col-xs-12 nopadding">
+							<div class="col-xs-6 nopadding">
+								<input type="text" class="form-control input-sm" id="txtcacct" name="txtcacct" width="20px" tabindex="1" placeholder="Search Account Description..." required value="<?php echo $nDebitDesc;?>">
+							</div> 
+							<div class="col-xs-6 nopadding">
+								<input type="text" id="txtcacctid" name="txtcacctid" style="border:none; height:30px;" readonly  value="<?php echo $nDebitDef;?>">
+							</div>
+						</div>     
+					</td>
+					<tH width="150">Date:</tH>
+					<td style="padding:2px;">
+						<div class="col-xs-8 nopadding">
+						<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date_format(date_create($dDate),'m/d/Y'); ?>" />
+					</div>
+					</td>
+				</tr>
+				<tr>
+					<tH>&nbsp;</tH>
+					<td style="padding:2px;">&nbsp;</td>
+					<tH>&nbsp;</tH>
+					<td style="padding:2px;">&nbsp;</td>
+				</tr>
+				<tr>
+					<tH width="210" valign="top">Payor:</tH>
+					<td valign="top" style="padding:2px">
+					<div class="col-xs-12 nopadding">
+							<div class="col-xs-6 nopadding">
+								<input type="text" class="typeahead form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="2" placeholder="Search Customer Name..." required autocomplete="off" value="<?php echo $cName ;?>"  />
+					</div> 
+					<div class="col-xs-3 nopadwleft">
+								<input type="text" id="txtcustid" name="txtcustid" style="border:none; height:30px;" readonly value="<?php echo $cCode ;?>">
+							</div>
+					</div>        
+					</td>
+					<th valign="top" style="padding:2px">Receipt No.:</th>
+					<td valign="top" style="padding:2px"><div class="col-xs-12 nopadding">
+						<div class="col-xs-8 nopadding">
+						<input type="text" class="form-control input-sm" id="txtORNo" name="txtORNo" width="20px" required value="<?php echo $cORNo;?>" readonly>
+					</div>
+				</tr>
+				<tr>
+					<tH width="210" valign="top">Payment Method:</tH>
+					<td valign="top" style="padding:2px">
+					<div class="col-xs-12 nopadding">
+					<div class="col-xs-6 nopadding">
+						<select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
+								<option value="cash" <?php if($cPayMeth=="cash") { echo "selected"; } ?>>Cash</option>
+								<option value="cheque" <?php if($cPayMeth=="cheque") { echo "selected"; } ?>>Cheque</option>
+								<option value="bank transfer" <?php if($cPayMeth=="bank transfer") { echo "selected"; } ?>>Bank Transfer</option>
+								<option value="mobile payment" <?php if($cPayMeth=="mobile payment") { echo "selected"; } ?>>Mobile Payment</option>
+								<option value="credit card" <?php if($cPayMeth=="credit card") { echo "selected"; } ?>>Credit Card</option>
+								<option value="debit card" <?php if($cPayMeth=="debit card") { echo "selected"; } ?>>Debit Card</option>
+							</select>
+					</div>
+					
+					<div class="col-xs-4 nopadwleft">
+						<button type="button" class="btn btn-primary btn-sm" tabindex="6" style="width:100%" name="btnDet" id="btnDet">Details</button>
+					</div>
+					</div>
+					
+					
+					</td>
+					<tH style="padding:2px">Amount Received:</tH>
+					<td valign="top" style="padding:2px">
+						<?php 
+							if($cPayMeth=="Cheque") 
+							{ 
+								$vargrossstat = "readonly"; 
+							} else{
+								$vargrossstat = "";
+							}
+						?>
+						<div class="col-xs-8 nopadding">
+							<input type="text" id="txtnGross" name="txtnGross" class="numericchkamt form-control text-right" value="<?php echo $nAmount;?>" <?php echo $vargrossstat; ?> autocomplete="off" onKeyUp="computeGross();" required>
+						</div></td>
+				</tr>
+				<tr>
+					<tH width="210" rowspan="2" valign="top">Memo:</tH>
+
+					<td rowspan="2" valign="top" style="padding:2px">
+					<div class="col-xs-12 nopadding">
+						<div class="col-xs-10 nopadding">
+							<textarea class="form-control" rows="1" id="txtremarks" name="txtremarks"><?php echo $cRemarks;?></textarea>
+						</div>
+					</div>
+					</td>
+					<th valign="top" style="padding:2px">Amount Applied:</th>
+					<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
+						<input type="text" id="txtnApplied" name="txtnApplied" class="numericchkamt form-control" value="<?php echo $nApplied;?>" style="text-align:right" readonly>
+					</div></td>
+				</tr>
+				<tr>
+					<th valign="top" style="padding:2px">Out of Balance:</th>
+					<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
+						<input type="text" id="txtnOutBal" name="txtnOutBal" class="numericchkamt form-control input-sm" value="0.00" style="text-align:right;" autocomplete="off" readonly>
+					</div></td>
+				</tr>
       </table>
-      
-      
-  <ul class="nav nav-tabs">
-    <li class="active"><a href="#divSales">Sales Invoice</a></li>
+			<br>
+						<div style="border: 1px solid #919b9c; height: 40vh; overflow: auto">
+							<div id="tableContainer" class="alt2" dir="ltr" style="
+								margin: 0px;
+								padding: 3px;
+								width: 2500px;
+								height: 300px;
+								text-align: left;">
+                <table id="MyTable" border="1" bordercolor="#CCCCCC" class="table table-sm table-bordered">
+									<thead>
+										<tr>
+											<th scope="col" width="100px" nowrap>Invoice No</th>
+											<th scope="col" width="110px" class="text-center" nowrap>Date</th>
+											<th scope="col" width="150px" class="text-center" nowrap>Amount</th>
+											<th scope="col" width="150px" class="text-center" nowrap>VAT</th>
+											<th scope="col" width="150px" class="text-center" nowrap>NetofVat</th>
+											<th scope="col" class="text-center" nowrap>EWTCode</th>                            
+											<th scope="col" class="text-center" nowrap>EWTRate(%)</th>
+											<th scope="col" class="text-center" nowrap>EWTAmt</th>
+											<th scope="col" width="150px" class="text-center" nowrap>DM</th>
+											<th scope="col" width="150px" class="text-center" nowrap>CM</th>
+											<th scope="col" width="150px" class="text-center" nowrap>Payments</th>
+											<th scope="col" width="150px" class="text-center" nowrap>Total Due</th>
+											<th scope="col" width="150px" class="text-center" nowrap>Amt Applied&nbsp;</th>
+															
+											<th scope="col" nowrap>&nbsp;Acct No</th>
+											<th scope="col" width="500px" nowrap>&nbsp;Acct Desc</th>
+											<th scope="col">&nbsp;</th>
+										</tr>
+									</thead>
+                  <tbody>           
+                			<?php
 
-     <li><a href="#divOthers">Others</a></li>
-  </ul>
-
-
-<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;height: 30vh;text-align: left;overflow: auto">
-
-    <div class="tab-content">
-    
-        <div id="divSales" class="tab-pane fade in active">
-        	<div class="col-xs-12 nopadwdown">
-             <button type="button" class="btn btn-xs btn-info" onClick="getInvs();">
-            	<i class="fa fa-search"></i>&nbsp; Find Invoice
-             </button>
-			</div>
-                  <div id="tableContainer" class="alt2" dir="ltr" style="
-                                    margin: 0px;
-                                    padding: 3px;
-                                    border: 1px solid #919b9c;
-                                    width: 1500px;
-                                    height: 260px;
-                                    text-align: left;
-                                    overflow: auto">
-                   <table id="MyTable" border="1" bordercolor="#CCCCCC" class="table table-sm table-bordered">
-                        <thead>
-                          <tr>
-                            <th scope="col" width="10%" nowrap>Invoice No</th>
-                            <th scope="col" width="110px" class="text-center" nowrap>Date</th>
-                            <th scope="col" width="110px" class="text-center" nowrap>Amount</th>
-                            <th scope="col" width="110px" class="text-center" nowrap>VAT</th>
-                            <th scope="col" width="110px" class="text-center" nowrap>NetofVat</th>
-                            <th scope="col" class="text-center" nowrap>EWTCode</th>                            <th scope="col" class="text-center" nowrap>EWTRate(%)</th>
-                            <th scope="col" class="text-center" nowrap>EWTAmt</th>
-                            <th scope="col" width="110px" class="text-center" nowrap>DM</th>
-                            <th scope="col" width="110px" class="text-center" nowrap>CM</th>
-                            <th scope="col" width="110px" class="text-center" nowrap>Payments</th>
-                            <th scope="col" width="110px" class="text-center" nowrap>Total Due</th>
-                            <th scope="col" width="110px" class="text-center" nowrap>Amt Applied&nbsp;</th>
-                            
-                            <th scope="col" width="100px">&nbsp;Acct No</th>
-                            <th scope="col" width="500px" nowrap>&nbsp;Acct Desc</th>
-                             <th scope="col">&nbsp;</th>
-                          </tr>
-                        </thead>
-                     <tbody>
-            
-                <?php
-                        
-                        $sqlbody = mysqli_query($con,"select a.*,b.dcutdate, c.cacctdesc from receipt_sales_t a left join sales b on a.csalesno=b.ctranno and a.compcode=b.compcode left join accounts c on a.cacctno=c.cacctno and a.compcode=b.compcode where a.compcode='$company' and a.ctranno = '$corno' order by a.nidentity");
+                        $sqlbody = mysqli_query($con,"select a.*,b.dcutdate, c.cacctdesc from receipt_sales_t a left join sales b on a.csalesno=b.ctranno and a.compcode=b.compcode left join accounts c on a.cacctno=c.cacctid and a.compcode=c.compcode where a.compcode='$company' and a.ctranno = '$corno' order by a.nidentity");
             
                         if (mysqli_num_rows($sqlbody)!=0) {
-                            $cntr = 0;
-                            while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
-                                            $cntr = $cntr + 1;
-                ?>
-                           <tr>
+                          $cntr = 0;
+                          while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
+                            $cntr = $cntr + 1;
+                			?>
+                          <tr>
                             <td><div class='col-xs-12 nopadding'><input type='hidden' name='txtcSalesNo<?php echo $cntr;?>' id='txtcSalesNo<?php echo $cntr;?>' value='<?php echo $rowbody['csalesno'];?>'  /><?php echo $rowbody['csalesno'];?></div></td>
                             <td align='center'><?php echo $rowbody['dcutdate'];?></td>
                             
-                            <td align='right'><div class='col-xs-12 nopadwleft'><input type='hidden' name='txtSIGross<?php echo $cntr;?>' id='txtSIGross<?php echo $cntr;?>' value='<?php echo $rowbody['namount'];?>' /><?php echo $rowbody['namount'];?></div></td>
+                            <td align='right'><input type='text' class='numericchkamt form-control input-xs text-right' name='txtSIGross<?php echo $cntr;?>' id='txtSIGross<?php echo $cntr;?>' value='<?php echo $rowbody['namount'];?>' readonly="true" /></div></td>
                             
-                            <td align='right'><div class='col-xs-12 nopadwleft'><input type='hidden' name='txtvatamt<?php echo $cntr;?>' id='txtvatamt<?php echo $cntr;?>' value='<?php echo $rowbody['nvat'];?>' /><?php echo $rowbody['nvat'];?></div></td>
-                            <td align='right'><div class='col-xs-12 nopadwleft'><input type='hidden' name='txtnetvat<?php echo $cntr;?>' id='txtnetvat<?php echo $cntr;?>' value='<?php echo $rowbody['nnet'];?>' /><?php echo $rowbody['nnet'];?></div></td>
+                            <td align='right'><input type='text' class='numericchkamt form-control input-xs text-right' name='txtvatamt<?php echo $cntr;?>' id='txtvatamt<?php echo $cntr;?>' value='<?php echo $rowbody['nvat'];?>' readonly="true" /></td>
+
+                            <td align='right'><input type='text' class='numericchkamt form-control input-xs text-right' name='txtnetvat<?php echo $cntr;?>' id='txtnetvat<?php echo $cntr;?>' value='<?php echo $rowbody['nnet'];?>' readonly="true" /></td>
                             
                              <td width="150px"><input type='text' class='form-control input-xs' placeholder='EWT Code' name='txtnEWT<?php echo $cntr;?>' id='txtnEWT<?php echo $cntr;?>' autocomplete=\"off\" value="<?php echo $rowbody['cewtcode'];?>" /></td>
+
                              <td width="150px"><input type='text' class='form-control input-xs text-right' placeholder='EWT Rate' name='txtnEWTRate<?php echo $cntr;?>' value="<?php echo $rowbody['newtrate'];?>" id='txtnEWTRate<?php echo $cntr;?>' readonly="true" /></td>
-                             <td width="180px"><input type='text' class='form-control input-xs text-right' placeholder='EWT Amt' name='txtnEWTAmt<?php echo $cntr;?>'  value="<?php echo $rowbody['newtamt'];?>" id='txtnEWTAmt<?php echo $cntr;?>' readonly="true" /></td>
+
+                             <td width="180px"><input type='text' class='numericchkamt form-control input-xs text-right' placeholder='EWT Amt' name='txtnEWTAmt<?php echo $cntr;?>'  value="<?php echo $rowbody['newtamt'];?>" id='txtnEWTAmt<?php echo $cntr;?>' readonly="true" /></td>
              
-                             <td align='right'><div class='col-xs-12 nopadwleft'><input type='hidden' name='txtndebit<?php echo $cntr;?>' id='txtndebit<?php echo $cntr;?>' value='<?php echo $rowbody['ndm'];?>' /><?php echo $rowbody['ndm'];?></div></td>
+                             <td align='right'><input type='text' class='numericchkamt form-control input-xs text-right' name='txtndebit<?php echo $cntr;?>' id='txtndebit<?php echo $cntr;?>' value='<?php echo $rowbody['ndm'];?>' readonly="true" /></td>
             
-                            <td align='right'><div class='col-xs-12 nopadwleft'><input type='hidden' name='txtncredit<?php echo $cntr;?>' id='txtncredit<?php echo $cntr;?>' value='<?php echo $rowbody['ncm'];?>' /><?php echo $rowbody['ncm'];?></div></td>
+                            <td align='right'><input type='text' class='numericchkamt form-control input-xs text-right' name='txtncredit<?php echo $cntr;?>' id='txtncredit<?php echo $cntr;?>' value='<?php echo $rowbody['ncm'];?>' readonly="true" /></td>
             
-                            <td align='right'><div class='col-xs-12 nopadwleft'><input type='hidden' name='txtnpayments<?php echo $cntr;?>' id='txtnpayments<?php echo $cntr;?>' value='<?php echo $rowbody['npayment'];?>' /><?php echo $rowbody['npayment'];?></div></td>
+                            <td align='right'><input type='text' class='numericchkamt form-control input-xs text-right' name='txtnpayments<?php echo $cntr;?>' id='txtnpayments<?php echo $cntr;?>' value='<?php echo $rowbody['npayment'];?>' readonly="true" /></td>
             
-                            <td align='right'><div class='col-xs-12 nopadwleft'><input type='text' name='txtDue<?php echo $cntr;?>' id='txtDue<?php echo $cntr;?>' value='<?php echo $rowbody['ndue'];?>' class='numeric form-control input-xs text-right' readonly="true" /></div></td>
+                            <td align='right'><input type='text' name='txtDue<?php echo $cntr;?>' id='txtDue<?php echo $cntr;?>' value='<?php echo $rowbody['ndue'];?>' class='numericchkamt form-control input-xs text-right' readonly="true" /></div></td>
                             
-                            <td><div class='col-xs-12 nopadwleft'><input type='text' class='numeric form-control input-xs' name='txtApplied<?php echo $cntr;?>' id='txtApplied<?php echo $cntr;?>' value="<?php echo $rowbody['napplied'];?>" style="text-align:right" autocomplete="off" /></div></td>
+                            <td><input type='text' class='numericchkamt form-control input-xs' name='txtApplied<?php echo $cntr;?>' id='txtApplied<?php echo $cntr;?>' value="<?php echo $rowbody['napplied'];?>" style="text-align:right" autocomplete="off" /></div></td>
                             
                              <td><div class='col-xs-12 nopadding'><input type='text' name='txtcSalesAcctNo<?php echo $cntr;?>' id='txtcSalesAcctNo<?php echo $cntr;?>' value='<?php echo $rowbody['cacctno'];?>' class='form-control input-xs' autocomplete="off" /></td>
                              
@@ -297,272 +279,175 @@ if (mysqli_num_rows($sqlchk)!=0) {
                           </tr>
                           
                           <script>
-						  			$("#txtnEWT<?php echo $cntr;?>").typeahead({
-										items: 10,
-										source: function(request, response) {
-											$.ajax({
-												url: "../th_ewtcodes.php",
-												dataType: "json",
-												data: {
-													query: $("#txtnEWT<?php echo $cntr;?>").val()
-												},
-												success: function (data) {
-													response(data);
+														$("#txtnEWT<?php echo $cntr;?>").typeahead({
+															items: 10,
+															source: function(request, response) {
+																$.ajax({
+																	url: "../th_ewtcodes.php",
+																	dataType: "json",
+																	data: {
+																		query: $("#txtnEWT<?php echo $cntr;?>").val()
+																	},
+																	success: function (data) {
+																		response(data);
+																		
+																	}
+																});
+															},
+															autoSelect: true,
+															displayText: function (item) {
+																return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.ctaxcode + '</span><br><small>' + item.cdesc + "</small></div>";
+															},
+															highlighter: Object,
+															afterSelect: function(item, event) { 
+																$("#txtnEWT<?php echo $cntr;?>").val(item.ctaxcode).change(); 
+																$("#txtnEWTRate<?php echo $cntr;?>").val(item.nrate);
+																
+																var xcb = 0;
+																var xcbdue = 0;
+																
+																varnnet =  $("#txtnetvat<?php echo $cntr;?>").val().replace(/,/g,'');
+																varngrs = $("#txtSIGross<?php echo $cntr;?>").val().replace(/,/g,'');
+																ndue = $("#txtDue<?php echo $cntr;?>").val().replace(/,/g,'');
+
+																if(item.cbase=="NET"){
+																	xcb = parseFloat(varnnet)*(item.nrate/100);
+																}else{
+																	xcb = parseFloat(varngrs)*(item.nrate/100);
+																}
+																
+																$("#txtnEWTAmt<?php echo $cntr;?>").val(xcb);
+																//recompute due
+																xcbdue = ndue - xcb;
+																
+																$("#txtDue<?php echo $cntr;?>").val(xcbdue); 
+																
+																$("#txtnEWTAmt<?php echo $cntr;?>").autoNumeric('destroy');
+																$("#txtnEWTAmt<?php echo $cntr;?>").autoNumeric('init',{mDec:2});
+
+																$("#txtDue<?php echo $cntr;?>").autoNumeric('destroy');
+																$("#txtDue<?php echo $cntr;?>").autoNumeric('init',{mDec:2});
+																
+																$("#txtApplied<?php echo $cntr;?>").autoNumeric('destroy');
+																$("#txtApplied<?php echo $cntr;?>").autoNumeric('init',{mDec:2});
+																
+																computeGross();
+																
+																//setPosi("txtcSalesAcctTitle"+lastRow,13,'MyTable');
+																
+															}
+														});
 													
-												}
-											});
-										},
-										autoSelect: true,
-										displayText: function (item) {
-											 return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.ctaxcode + '</span><br><small>' + item.cdesc + "</small></div>";
-										},
-										highlighter: Object,
-										afterSelect: function(item, event) { 
-											$("#txtnEWT<?php echo $cntr;?>").val(item.ctaxcode).change(); 
-											$("#txtnEWTRate<?php echo $cntr;?>").val(item.nrate);
-											
-											var xcb = 0;
-											var xcbdue = 0;
-											
-											varnnet =  $("#txtnetvat<?php echo $cntr;?>").val();
-											varngrs = $("#txtSIGross<?php echo $cntr;?>").val();
-											ndue = $("#txtDue<?php echo $cntr;?>").val();
-
-											if(item.cbase=="NET"){
-												xcb = parseFloat(varnnet)*(item.nrate/100);
-											}else{
-												xcb = parseFloat(varngrs)*(item.nrate/100);
-											}
-											
-											$("#txtnEWTAmt<?php echo $cntr;?>").val(xcb.toFixed(4));
-											//recompute due
-											xcbdue = ndue - xcb;
-											
-											$("#txtDue<?php echo $cntr;?>").val(xcbdue.toFixed(4)); 
-											
-											
-											//setPosi("txtcSalesAcctTitle"+lastRow,13,'MyTable');
-											
-										}
-									});
+														$("#txtcSalesAcctNo<?php echo $cntr;?>, #txtcSalesAcctTitle<?php echo $cntr;?>").on("click focus", function(event) {
+															$(this).select();
+														});
 									
-						  			$("#txtcSalesAcctNo<?php echo $cntr;?>, #txtcSalesAcctTitle<?php echo $cntr;?>").on("click focus", function(event) {
-										$(this).select();
-									});
+														$("#txtcSalesAcctNo<?php echo $cntr;?>").on("keyup", function(event) {
+															if(event.keyCode == 13 || event.keyCode== 38 || event.keyCode==40){
+															
+																if(event.keyCode==13 ){	
+																var dInput = this.value;
+														
+																	$.ajax({
+																		type:'post',
+																		url:'../getaccountid.php',
+																		data: 'c_id='+ $(this).val(),                 
+																		success: function(value){
+																			if(value.trim()!=""){
+																				$("#txtcSalesAcctTitle<?php echo $cntr;?>").val(value.trim());
+																			}
+																		}
+																	});
+																}
+																
+																setPosi("txtcSalesAcctNo<?php echo $cntr;?>",event.keyCode,'MyTable');
+																
+															}
+															
+														});
 									
-									$("#txtcSalesAcctNo<?php echo $cntr;?>").on("keyup", function(event) {
-										if(event.keyCode == 13 || event.keyCode== 38 || event.keyCode==40){
-										
-											if(event.keyCode==13 ){	
-											var dInput = this.value;
-									
-												$.ajax({
-													type:'post',
-													url:'../getaccountid.php',
-													data: 'c_id='+ $(this).val(),                 
-													success: function(value){
-														if(value.trim()!=""){
-															$("#txtcSalesAcctTitle<?php echo $cntr;?>").val(value.trim());
-														}
-													}
-												});
-											}
-											
-											setPosi("txtcSalesAcctNo<?php echo $cntr;?>",event.keyCode,'MyTable');
-											
-										}
-										
-									});
-									
-									$("#txtcSalesAcctTitle<?php echo $cntr;?>").typeahead({
-								
-									items: 10,
-									source: function(request, response) {
-										$.ajax({
-											url: "../th_accounts.php",
-											dataType: "json",
-											data: {
-												query: $("#txtcSalesAcctTitle<?php echo $cntr;?>").val()
-											},
-											success: function (data) {
-												response(data);
-												
-											}
-										});
-									},
-									autoSelect: true,
-									displayText: function (item) {
-										 return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.name + "</small></div>";
-									},
-									highlighter: Object,
-									afterSelect: function(item, event) { 
-										$("#txtcSalesAcctTitle<?php echo $cntr;?>").val(item.name).change(); 
-										$("#txtcSalesAcctNo<?php echo $cntr;?>").val(item.id);
-										
-										setPosi("txtcSalesAcctTitle<?php echo $cntr;?>",13,'MyTable');
-										
-									}
-									});
-						  </script>
+														$("#txtcSalesAcctTitle<?php echo $cntr;?>").typeahead({
+													
+															items: 10,
+															source: function(request, response) {
+																$.ajax({
+																	url: "../th_accounts.php",
+																	dataType: "json",
+																	data: {
+																		query: $("#txtcSalesAcctTitle<?php echo $cntr;?>").val()
+																	},
+																	success: function (data) {
+																		response(data);
+																		
+																	}
+																});
+															},
+															autoSelect: true,
+															displayText: function (item) {
+																return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.name + "</small></div>";
+															},
+															highlighter: Object,
+															afterSelect: function(item, event) { 
+																$("#txtcSalesAcctTitle<?php echo $cntr;?>").val(item.name).change(); 
+																$("#txtcSalesAcctNo<?php echo $cntr;?>").val(item.id);
+																
+																setPosi("txtcSalesAcctTitle<?php echo $cntr;?>",13,'MyTable');
+																
+															}
+														});
+						 						 </script>
                 
-                <?php
-                                        }
-                                    }
-                ?>
-            </tbody>
-            </table>
-            <input type="hidden" name="hdnrowcnt" id="hdnrowcnt" value="0">
-            </div>
-
+												<?php
+													}
+												}
+												?>
+           				</tbody>
+            		</table>
+            		<input type="hidden" name="hdnrowcnt" id="hdnrowcnt" value="0">
+							</div>
+						</div>
+<!--
 		</div>
-
-        <div id="divOthers" class="tab-pane fade">
-          <div class="col-xs-12 nopadwdown">
-            <button type="button" class="btn btn-xs btn-info" onClick="addacct();">
-            	<i class="fa fa-plus"></i>&nbsp; Add New Line
-            </button>
-          </div>
-
-                  <div id="tblOtContainer" class="alt2" dir="ltr" style="
-                                    margin: 0px;
-                                    padding: 3px;
-                                    border: 1px solid #919b9c;
-                                    width: 100%;
-                                    height: 200px;
-                                    text-align: left;
-                                    overflow: auto">
-                    <table width="100%" border="0" cellpadding="3" id="MyTblOthers">
-                    <thead>
-                      <tr>
-                        <th scope="col">Account No.</th>
-                        <th scope="col">Account Title</th>
-                        <th scope="col">Debit</th>
-                        <th scope="col">Credit</th>
-
-                        <th scope="col">&nbsp;</th>
-                      </tr>
-					 </thead>
-                     <tbody>
-					<?php
-                            
-                            $sqlbody = mysqli_query($con,"select a.*,b.cacctdesc from receipt_others_t a left join accounts b on a.cacctno=b.cacctno and a.compcode=b.compcode where a.compcode='$company' and a.ctranno = '$corno' order by a.nidentity");
-                
-                            if (mysqli_num_rows($sqlbody)!=0) {
-                                $cntr = 0;
-                                while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
-                                                $cntr = $cntr + 1;
-                    ?>
-                      <tr>
-                        <td width="150px" style="padding:1px"><input type='text' name="txtacctno<?php echo $cntr;?>" id="txtacctno<?php echo $cntr;?>" class="form-control input-sm" placeholder="Enter Acct Code..." style="text-transform:uppercase" autocomplete="off" value="<?php echo $rowbody['cacctno'];?>"></td>
-                        <td style="padding:1px"><input type='text' name="txtacctitle<?php echo $cntr;?>" id="txtacctitle<?php echo $cntr;?>" class="form-control input-sm" placeholder="Search Acct Desc..." style="text-transform:uppercase" autocomplete="off" value="<?php echo $rowbody['cacctdesc'];?>"></td>
-                        
-                        <td width="100px" style="padding:1px"><input type='text' name="txtnotDR<?php echo $cntr;?>" id="txtnotDR<?php echo $cntr;?>" class="numeric form-control input-sm" style="text-align:right" value="<?php echo $rowbody['ndebit'];?>" required autocomplete="off"></td>
-                       
-                        <td width="100px" style="padding:1px"><input type='text' name="txtnotCR<?php echo $cntr;?>" id="txtnotCR<?php echo $cntr;?>" class="numeric form-control input-sm" style="text-align:right" value="<?php echo $rowbody['ncredit'];?>" required autocomplete="off"></td>
-                       
-                        <td width="50px" style="padding:1px"><input class='btn btn-danger btn-xs' type='button' id='row3_<?php echo $cntr;?>_delete' value='delete' onClick="deleteRow3(this);"/></td>
-                      </tr>                 
-                    
-                    			<script>
-								$("#txtacctno<?php echo $cntr;?>, #txtacctitle<?php echo $cntr;?>").on("click focus", function(event) {
-										$(this).select();
-									});
-
-									$("#txtacctno<?php echo $cntr;?>").on("keyup", function(event) {
-										
-										if(event.keyCode == 13 || event.keyCode== 38 || event.keyCode==40){
-										
-											if(event.keyCode==13 ){	
-												var dInput = this.value;
-										
-												$.ajax({
-													type:'post',
-													url:'../getaccountid.php',
-													data: 'c_id='+ $(this).val(),                 
-													success: function(value){
-														//alert(value);
-														if(value.trim()!=""){
-															$("#txtacctitle<?php echo $cntr;?>").val(value.trim());
-														}
-													}
-												});
-											}
-											
-											setPosi("txtacctno<?php echo $cntr;?>",event.keyCode,'MyTblOthers');
-										}
-											
-									});
-									
-									$("#txtacctitle<?php echo $cntr;?>").typeahead({
-									
-										items: 10,
-										source: function(request, response) {
-											$.ajax({
-												url: "../th_accounts.php",
-												dataType: "json",
-												data: {
-													query: $("#txtacctitle<?php echo $cntr;?>").val()
-												},
-												success: function (data) {
-													response(data);
-												}
-											});
-										},
-										autoSelect: true,
-										displayText: function (item) {
-											 return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.name + "</small></div>";
-										},
-										highlighter: Object,
-										afterSelect: function(item) { 
-											$("#txtacctitle<?php echo $cntr;?>").val(item.name).change(); 
-											$("#txtacctno<?php echo $cntr;?>").val(item.id);
-																						
-											setPosi("txtacctitle<?php echo $cntr;?>",13,'MyTblOthers');
-										}
-									});
-								</script>
-                    
-                    <?php
-                                }
-                            }
-                    ?>
-
-
-                   </tbody>
-                    </table>
-                    <input type="hidden" name="hdnOthcnt" id="hdnOthcnt" value="0">
-                   </div>
-
-
-        </div>
 
 	</div>
 </div>
+																	-->
 
+																	<br>
 <table width="100%" border="0" cellpadding="3">
   <tr>
     <td width="50%">
-<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='OR.php';" id="btnMain" name="btnMain">
-Back to Main<br>(ESC)</button>
-   
-    <button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='OR_new2.php';" id="btnNew" name="btnNew">
-New<br>(F1)</button>
+			<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='OR.php';" id="btnMain" name="btnMain">
+			Back to Main<br>(ESC)</button>
+				
+					<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='OR_new2.php';" id="btnNew" name="btnNew">
+			New<br>(F1)</button>
 
-    <button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmOR');" id="btnUndo" name="btnUndo">
-Undo Edit<br>(CTRL+Z)
-    </button>
+						<div class="dropdown" style="display:inline-block !important;">
+							<button type="button" data-toggle="dropdown" class="btn btn-info btn-sm dropdown-toggle">
+								SI <br>(Insert) <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<li><a href="javascript:;" onClick="getInvs('Trade');">Trade</a></li>
+								<li><a href="javascript:;" onClick="getInvs('Non-Trade');">Non-Trade</a></li>
+							</ul>
+						</div>
 
-    <button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $corno;?>');" id="btnPrint" name="btnPrint">
-Print<br>(CTRL+P)
-    </button>
-    
-    <button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
-Edit<br>(CTRL+E)    </button>
-    
-    <button type="submit" class="btn btn-success btn-sm" tabindex="6" id="btnSave" name="btnSave">
-Save<br>(CTRL+S)    </button>
+					<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmOR');" id="btnUndo" name="btnUndo">
+						Undo Edit<br>(CTRL+Z)
+					</button>
 
-</td>
+					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $corno;?>');" id="btnPrint" name="btnPrint">
+			Print<br>(CTRL+P)
+					</button>
+					
+					<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
+			Edit<br>(CTRL+E)    </button>
+					
+					<button type="submit" class="btn btn-success btn-sm" tabindex="6" id="btnSave" name="btnSave">
+			Save<br>(CTRL+S)    </button>
+
+		</td>
     <td align="right">&nbsp;</td>
   </tr>
 </table>
@@ -583,6 +468,7 @@ Save<br>(CTRL+S)    </button>
             <div class="modal-body" style="height:40vh">
             
             	<div class="col-xs-12 nopadding pre-scrollable" style="height:37vh">
+							<input name="invtyp" id="invtyp" type="hidden" value="" />
                   <table name='MyORTbl' id='MyORTbl' class="table table-scroll table-striped">
                    <thead>
                     <tr>
@@ -957,6 +843,11 @@ else{
 	});
 	
 	$(document).ready(function(){
+
+		$("input.numericchkamt").autoNumeric('init',{mDec:2});
+		$("input.numericint").autoNumeric('init',{mDec:0});
+
+
 		$(".nav-tabs a").click(function(){
 			$(this).tab('show');
 		});
@@ -1196,8 +1087,13 @@ $(function() {
             });
         }
     });
-	
-	$('#frmOR').submit(function() {
+
+
+});
+
+function chkform(){
+
+
 		var subz = "YES";
 	
 		if($('#txtcustid').val() == "" || $('#txtcustid').val() == ""){
@@ -1225,19 +1121,11 @@ $(function() {
 		
 			var tbl1 = document.getElementById('MyTable').getElementsByTagName('tr');
 			var lastRow1 = tbl1.length-1;
-		
 			if(lastRow1!=0){
 				$("#hdnrowcnt").val(lastRow1);				
 			}
 	
-			var tbl3 = document.getElementById('MyTblOthers').getElementsByTagName('tr');
-			lastRow3 = tbl3.length-1;
-					
-			if(lastRow3!=0){
-				$("#hdnOthcnt").val(lastRow3);	
-			}
-	
-		if(lastRow1==0 && lastRow2==0 && lastRow3==0){
+		if(lastRow1==0){
 				alert("Details Required!");
 				subz = "NO";
 		}
@@ -1253,41 +1141,17 @@ $(function() {
 		}
 		else{
 			if($('#selpayment').val() == "Cheque"){
-				$('#txtCheckAmt').val($('#txtCheckAmt').maskMoney('unmasked')[0]);
+				//$('#txtCheckAmt').val($('#txtCheckAmt').maskMoney('unmasked')[0]);
 			}
 			
-			
+			return true;
 			$("#frmOR").submit();
 		}
-	
-	});
 
 
-});
-
-function computeAmt(str,valz){
-
-	var numberPattern = /\d+/g;
-	var r = str.match(numberPattern);
-		
-	var rwcnt = parseInt(r);
-	
-	var amtz = $("#txtAmt"+rwcnt).val();
-
-									
-	if(valz!=""){							
-		var thisvalz = parseFloat(valz);
-											
-		var Totdicnt = (thisvalz/100) * amtz;
-		var TotDue = amtz - Totdicnt;
-											
-		$("#txtDue"+rwcnt).val(TotDue.toFixed(4));
-	}
-	else{
-		$("#txtDue"+rwcnt).val(amtz);
-	}
 
 }
+
 
 function deleteRow(r) {
 	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
@@ -1326,7 +1190,6 @@ function computeGross(){
 	var tot = 0;
 	var tot2 = 0;
 	var tot3 = 0;
-    var totEWT = 0;
 	
 	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 	var lastRow = tbl.length-1;
@@ -1334,313 +1197,327 @@ function computeGross(){
 		var x = 0;
 		
 		for (z=1; z<=lastRow; z++){
-			x = document.getElementById('txtApplied' + z).value;
+			x = $("#txtApplied" + z).val().replace(/,/g,'');
 			
 			x = x.replace(",","");
 			if(x!=0 && x!=""){
 				tot = parseFloat(x) + parseFloat(tot);	
 			}
+
+			 // xEWT = document.getElementById('txtnEWT' + z).value;
+			  
+			//  xEWT = xEWT.replace(",","");
+			//  if(xEWT!=0 && xEWT!=""){
+			//	totEWT = parseFloat(xEWT) + parseFloat(totEWT);  
+			//  }
 		}
 	}
 	
 	
-		//alert(parseFloat(tot2));
+	//alert(parseFloat(tot2));
+	/*
+	var tbl3 = document.getElementById('MyTblOthers').getElementsByTagName('tr');
+	var lastRow3 = tbl3.length-1;
+	var totDR = 0;
+	var totCR = 0;
+	var tot3 = 0;
 	
-		var tbl3 = document.getElementById('MyTblOthers').getElementsByTagName('tr');
-		var lastRow3 = tbl3.length-1;
-		var totDR = 0;
-		var totCR = 0;
-		var tot3 = 0;
+	if(lastRow3!=0){
+		var x3DR = 0;
+		var x3CR = 0;
 		
-		if(lastRow3!=0){
-			var x3DR = 0;
-			var x3CR = 0;
+		for (z3=1; z3<=lastRow3; z3++){
+			x3DR = document.getElementById('txtnotDR' + z3).value;
+			x3CR = document.getElementById('txtnotCR' + z3).value;
 			
-			for (z3=1; z3<=lastRow3; z3++){
-				x3DR = document.getElementById('txtnotDR' + z3).value;
-				x3CR = document.getElementById('txtnotCR' + z3).value;
-				
-				x3DR = x3DR.replace(",","");
-				if(x3DR!=0 && x3DR!=""){
-					totDR = parseFloat(x3DR) + parseFloat(totDR);	
-				}
-				
-				x3CR = x3CR.replace(",","");
-				if(x3CR!=0 && x3CR!=""){
-					totCR = parseFloat(x3CR) + parseFloat(totCR);	
-				}
+			x3DR = x3DR.replace(",","");
+			if(x3DR!=0 && x3DR!=""){
+				totDR = parseFloat(x3DR) + parseFloat(totDR);	
 			}
 			
-			tot3 = parseFloat(totCR) - parseFloat(totDR);	
+			x3CR = x3CR.replace(",","");
+			if(x3CR!=0 && x3CR!=""){
+				totCR = parseFloat(x3CR) + parseFloat(totCR);	
+			}
 		}
+		
+		tot3 = parseFloat(totCR) - parseFloat(totDR);	
+	}
+	*/
 	
 	
-	var XTOTGross = parseFloat(tot) + parseFloat(tot2) + parseFloat(tot3);
-	
-	document.getElementById('txtnApplied').value = XTOTGross.toFixed(2);
- // document.getElementById('txtnEWTApp').value = totEWT.toFixed(2);
+	$("#txtnApplied").val(tot);
+	$("#txtnApplied").autoNumeric('destroy');
+	$("#txtnApplied").autoNumeric('init',{mDec:2});
 
-  	var outbalyy = parseFloat($("#txtnGross").val()) - parseFloat(XTOTGross);
-  	document.getElementById('txtnOutBal').value = outbalyy.toFixed(2);
+  var outbalyy = parseFloat($("#txtnGross").val().replace(/,/g,'')) - parseFloat(tot);
+  $("#txtnOutBal").val(outbalyy);
+
+	$("#txtnOutBal").autoNumeric('destroy');
+	$("#txtnOutBal").autoNumeric('init',{mDec:2, vMin:-99999999999999999.99});
 
 }
 
-function getInvs(){
+function getInvs(typ){
 	
-		if($('#txtcustid').val() == ""){
-			alert("Please pick a valid customer!");
-		}
-		else{
-			
-			//clear table body if may laman
-			
-
-			$('#MyORTbl tbody').empty();
-			
-			//get salesno na selected na
-			var y;
-			var salesnos = "";
-			var rc = $('#MyTable tr').length;
-			//alert(rc);
-			for(y=1;y<=rc-1;y++){ 
-			  if(y>1){
-				  salesnos = salesnos + ",";
-			  }
-				salesnos = salesnos + $('#txtcSalesNo'+y).val();
-				//alert(salesnos)
+	if($('#txtcustid').val() == ""){
+		alert("Please pick a valid customer!");
+	}
+	else{
+		
+		//clear table body if may laman
+		$('#MyORTbl tbody').empty();
+		$('#invtyp').val(typ);
+		
+		//get salesno na selected na
+		var y;
+		var salesnos = "";
+		var rc = $('#MyTable tr').length;
+		for(y=1;y<=rc-1;y++){ 
+			if(y>1){
+				salesnos = salesnos + ",";
 			}
+			salesnos = salesnos + $('#txtcSalesNo'+y).val();
+		}
 
-			//ajax lagay table details sa modal body
-			var x = $('#txtcustid').val();
-			$('#invheader').html("Invoice List: " + $('#txtcust').val())
-			
-			//alert('x='+x+"&y="+salesnos)
-			$.ajax({
-                    url: 'th_orlist.php',
-					data: 'x='+x+"&y="+salesnos,
-                    dataType: 'json',
-                    method: 'post',
-                    success: function (data) {
-                       // var classRoomsTable = $('#mytable tbody');
-                       console.log(data);
-                       $.each(data,function(index,item){
-                        $("<tr>").append(
+		//ajax lagay table details sa modal body
+		var x = $('#txtcustid').val();
+		$('#invheader').html("Invoice List: " + $('#txtcust').val())
+		
+		$.ajax({
+			url: 'th_orlist.php',
+			data: { x:x, y:salesnos, typ:typ },
+			dataType: 'json',
+			method: 'post',
+			success: function (data) {
+				// var classRoomsTable = $('#mytable tbody');
+				console.log(data);
+				$.each(data,function(index,item){
+					$("<tr>").append(
 						$("<td>").html("<input type='checkbox' value='"+item.csalesno+"' name='chkSales[]'>"),
-                        $("<td>").text(item.csalesno),
-                        $("<td>").text(item.dcutdate),
+						$("<td>").text(item.csalesno),
+						$("<td>").text(item.dcutdate),
 						$("<td>").text(item.ngross),
 						$("<td>").text(item.ndebit),
 						$("<td>").text(item.ncredit)
-                        ).appendTo("#MyORTbl tbody");
+					).appendTo("#MyORTbl tbody");
 
-                       });
-                    },
-                    error: function (jqXHR, textStatus, errorThrown)
-					{
-						if(errorThrown!="Unexpected end of JSON input"){
-						}
-					}
-                });
-			
-			$('#myModal').modal('show');
-			
-		}
+				});
+			},
+			error: function (jqXHR, textStatus, errorThrown)
+			{
+				if(errorThrown!="Unexpected end of JSON input"){
+				}
+			}
+		});
+		
+		$('#myModal').modal('show');
+		
+	}
 
 
 }
 
 function save(){
 
-	var i = 0;
-	var rcnt = 0;
-	
-	//var rowCount = $('#MyTable tr').length-1;
-	//var rcnt = rowCount - 1;	
-   $("input[name='chkSales[]']:checked").each( function () {
-	   i += 1;
-	  // rcnt += 1;
-	  var tbl = document.getElementById('MyTable').getElementsByTagName('tbody')[0];
-	 // alert(tbl.rows.length);
-	  		
-	   			var id = $(this).val();
-	   			$.ajax({
-					url : "th_getsalesdetails.php?id=" + id,
-					type: "GET",
-					dataType: "JSON",
-					success: function(data)
-					{				
-					
-					   console.log(data);
-                       $.each(data,function(index,item){
-						   
-						   var ngross = item.ngross;
-						   var ndebit = item.ndebit;
-						   var ncredit = item.ncredit;
-						   var npayment = item.npayment;
-						   var ndue = 0;
-						   
-						   	ndue = ((parseFloat(ngross) + parseFloat(ndebit)) - parseFloat(ncredit)) - parseFloat(npayment);
-							
-							if(parseFloat(npayment)==0){
-								npayment = "0.0000"
-							}
-							
-							var lastRow = tbl.rows.length + 1;
-							
-							var z=tbl.insertRow(-1);
+var i = 0;
+var rcnt = 0;
 
-							var a=z.insertCell(-1);
-								a.innerHTML ="<div class='col-xs-12 nopadding'><input type='hidden' name='txtcSalesNo"+lastRow+"' id='txtcSalesNo"+lastRow+"' value='"+item.csalesno+"' />"+item.csalesno+"</div>";
-							
-							var b=z.insertCell(-1);
-								b.align = "center";
-								b.innerHTML = item.dcutdate;
-								
-							var c=z.insertCell(-1);
-								c.align = "right";
-								c.innerHTML = "<div class='col-xs-12 nopadwleft'><input type='hidden' name='txtSIGross"+lastRow+"' id='txtSIGross"+lastRow+"' value='"+item.ngross+"' />"+item.ngross+"</div>";
-								
-							var c2=z.insertCell(-1);
-								c2.align = "right";
-								c2.innerHTML = "<div class='col-xs-12 nopadwleft'><input type='hidden' name='txtvatamt"+lastRow+"' id='txtvatamt"+lastRow+"' value='"+item.nvat+"' />"+item.nvat+"</div>";
-								
-							var c3=z.insertCell(-1);
-								c3.align = "right";
-								c3.innerHTML = "<div class='col-xs-12 nopadwleft'><input type='hidden' name='txtnetvat"+lastRow+"' id='txtnetvat"+lastRow+"' value='"+item.nnet+"' />"+item.nnet+"</div>";
-							
-							var l=z.insertCell(-1);
-								l.style.width = "150px";
-								l.innerHTML = "<input type='text' class='form-control input-xs' placeholder='EWT Code' name='txtnEWT"+lastRow+"' id='txtnEWT"+lastRow+"' autocomplete=\"off\" />";
-							
-							var l2=z.insertCell(-1);
-								l2.style.width = "150px";
-								l2.innerHTML = "<input type='text' class='form-control input-xs text-right' placeholder='EWT Rate' name='txtnEWTRate"+lastRow+"' value=\"0\" id='txtnEWTRate"+lastRow+"' readonly=\"true\" />";
-								
-							var l3=z.insertCell(-1);
-								l3.style.width = "180px";
-								l3.innerHTML = "<input type='text' class='form-control input-xs text-right' placeholder='EWT Amt' name='txtnEWTAmt"+lastRow+"'  value=\"0.0000\" id='txtnEWTAmt"+lastRow+"' readonly=\"true\" />";
-									
-							var d=z.insertCell(-1);
-								d.align = "right";
-								d.innerHTML = "<input type='hidden' name='txtndebit"+lastRow+"' id='txtndebit"+lastRow+"' value='"+item.ndebit+"' />"+item.ndebit+"";
-								
-							var e=z.insertCell(-1);
-								e.align = "right";
-								e.innerHTML = "<input type='hidden' name='txtncredit"+lastRow+"' id='txtncredit"+lastRow+"' value='"+item.ncredit+"' />"+item.ncredit+"";
-								
-							var f=z.insertCell(-1);
-								f.align = "right";
-								f.innerHTML = "<input type='hidden' name='txtnpayments"+lastRow+"' id='txtnpayments"+lastRow+"' value='"+item.npayment+"' />"+npayment+"";
-								
-							var g=z.insertCell(-1);
-								g.align = "right";
-								g.innerHTML = "<input type='text' name='txtDue"+lastRow+"' id='txtDue"+lastRow+"' value='"+ndue.toFixed(4)+"' class='numeric form-control input-xs text-right' readonly=\"true\" />";
-								
-							var h=z.insertCell(-1);
-								h.innerHTML = "<div class='col-xs-12 nopadwleft'><input type='text' class='numeric form-control input-xs text-right' name='txtApplied"+lastRow+"' id='txtApplied"+lastRow+"' value='0.0000' style='text-align:right' autocomplete=\"off\" /></div>";
+//var rowCount = $('#MyTable tr').length-1;
+//var rcnt = rowCount - 1;	
+ $("input[name='chkSales[]']:checked").each( function () {
+	 i += 1;
+	// rcnt += 1;
+	var tbl = document.getElementById('MyTable').getElementsByTagName('tbody')[0];
+ // alert(tbl.rows.length);
+			
+				 var id = $(this).val();
+				 $.ajax({
+				url : "th_getsalesdetails.php?id=" + id + "&typ=" + $('#invtyp').val(),
+				type: "GET",
+				dataType: "JSON",
+				success: function(data)
+				{				
+				
+					console.log(data);
+					$.each(data,function(index,item){
+						 
+						var ngross = item.ngross;
+						var ndebit = item.ndebit;
+						var ncredit = item.ncredit;
+						var npayment = item.npayment;
+						var ndue = 0;
+						 
+						ndue = ((parseFloat(ngross) + parseFloat(ndebit)) - parseFloat(ncredit)) - parseFloat(npayment);
+						
+						if(parseFloat(npayment)==0){
+							npayment = "0.00"
+						}
+						
+						var lastRow = tbl.rows.length + 1;							
+						var z=tbl.insertRow(-1);
 
-							var i=z.insertCell(-1);
-								i.innerHTML = "<div class='col-xs-12 nopadding'><input type='text' class='form-control input-xs' name='txtcSalesAcctNo"+lastRow+"' id='txtcSalesAcctNo"+lastRow+"' value='"+item.cacctno+"' autocomplete=\"off\" /></div>";
-								
-							var j=z.insertCell(-1);
-								j.innerHTML = "<div class='col-xs-12 nopadding'><input type='text' class='form-control input-xs' name='txtcSalesAcctTitle"+lastRow+"' id='txtcSalesAcctTitle"+lastRow+"' value='"+item.ctitle+"' autocomplete=\"off\" /></div>";
-								
-							var k=z.insertCell(-1);
-								k.innerHTML = "<div class='col-xs-12 nopadwleft'><input class='btn btn-danger btn-xs' type='button' id='row_"+lastRow+"_delete' value='delete' onClick='deleteRow(this);' /></div>";
+						var a=z.insertCell(-1);
+							a.innerHTML ="<div class='col-xs-12 nopadding'><input type='hidden' name='txtcSalesNo"+lastRow+"' id='txtcSalesNo"+lastRow+"' value='"+item.csalesno+"' />"+item.csalesno+"</div>";
+						
+						var b=z.insertCell(-1);
+							b.align = "center";
+							b.innerHTML = item.dcutdate;
 							
-							var varnnet = item.nnet;
-							var varngrs = item.ngross;	
-										   
-									$("input.numeric").numeric({decimalPlaces: 4});
-									$("input.numeric").on("click focus", function () {
-									   $(this).select();
-									});
-									
-									$("input.numeric").on("keyup", function (e) {
-										setPosi($(this).attr('name'),e.keyCode,'MyTable');
+						var c=z.insertCell(-1);
+							c.align = "right";
+							c.innerHTML = "<div class='col-xs-12 nopadwleft'><input type='text' class='numeric form-control input-xs text-right' name='txtSIGross"+lastRow+"' id='txtSIGross"+lastRow+"' value='"+item.ngross+"' readonly /></div>";
+							
+						var c2=z.insertCell(-1);
+							c2.align = "right";
+							c2.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtvatamt"+lastRow+"' id='txtvatamt"+lastRow+"' value='"+item.nvat+"' readonly />";
+							
+						var c3=z.insertCell(-1);
+							c3.align = "right";
+							c3.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtnetvat"+lastRow+"' id='txtnetvat"+lastRow+"' value='"+item.nnet+"' readonly />"; 
+						
+						var l=z.insertCell(-1);
+							l.innerHTML = "<input type='text' class='form-control input-xs' placeholder='EWT Code' name='txtnEWT"+lastRow+"' id='txtnEWT"+lastRow+"' autocomplete=\"off\" />";
+						
+						var l2=z.insertCell(-1);
+							l2.innerHTML = "<input type='text' class='form-control input-xs text-right' placeholder='EWT Rate' name='txtnEWTRate"+lastRow+"' value=\"0\" id='txtnEWTRate"+lastRow+"' readonly=\"true\" />";
+							
+						var l3=z.insertCell(-1);
+							l3.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' placeholder='EWT Amt' name='txtnEWTAmt"+lastRow+"'  value=\"0.00\" id='txtnEWTAmt"+lastRow+"' readonly=\"true\" />";
+								
+						var d=z.insertCell(-1);
+							d.align = "right";
+							d.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtndebit"+lastRow+"' id='txtndebit"+lastRow+"' value='"+item.ndebit+"' readonly=\"true\" />";
+							
+						var e=z.insertCell(-1);
+							e.align = "right";
+							e.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtncredit"+lastRow+"' id='txtncredit"+lastRow+"' value='"+item.ncredit+"' readonly=\"true\" />";
+							
+						var f=z.insertCell(-1);
+							f.align = "right";
+							f.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtnpayments"+lastRow+"' id='txtnpayments"+lastRow+"' value='"+item.npayment+"' readonly=\"true\" />";
+							
+						var g=z.insertCell(-1);
+							g.align = "right";
+							g.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtDue"+lastRow+"' id='txtDue"+lastRow+"' value='"+ndue+"' readonly=\"true\" />";
+							
+						var h=z.insertCell(-1);
+							h.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtApplied"+lastRow+"' id='txtApplied"+lastRow+"' value='"+ndue+"' style='text-align:right' autocomplete=\"off\" />";
+
+						var i=z.insertCell(-1);
+							i.innerHTML = "<div class='col-xs-12 nopadding'><input type='text' class='form-control input-xs' name='txtcSalesAcctNo"+lastRow+"' id='txtcSalesAcctNo"+lastRow+"' value='"+item.cacctno+"' autocomplete=\"off\" /></div>";
+							
+						var j=z.insertCell(-1);
+							j.innerHTML = "<div class='col-xs-12 nopadding'><input type='text' class='form-control input-xs' name='txtcSalesAcctTitle"+lastRow+"' id='txtcSalesAcctTitle"+lastRow+"' value='"+item.ctitle+"' autocomplete=\"off\" /></div>";
+							
+						var k=z.insertCell(-1);
+							k.innerHTML = "<div class='col-xs-12 nopadwleft'><input class='btn btn-danger btn-xs' type='button' id='row_"+lastRow+"_delete' value='delete' onClick='deleteRow(this);' /></div>";
+						
+						var varnnet = item.nnet;
+						var varngrs = item.ngross;	
+										 
+								$("input.numeric").autoNumeric('init',{mDec:2});
+								$("input.numeric").on("click focus", function () {
+									 $(this).select();
+								});
+								
+								$("input.numeric").on("keyup", function (e) {
+									setPosi($(this).attr('name'),e.keyCode,'MyTable');
+									computeGross();
+								});
+								
+								$("#txtnEWT"+lastRow).typeahead({
+									items: 10,
+									source: function(request, response) {
+										$.ajax({
+											url: "../th_ewtcodes.php",
+											dataType: "json",
+											data: {
+												query: $("#txtnEWT"+lastRow).val()
+											},
+											success: function (data) {
+												response(data);
+												
+											}
+										});
+									},
+									autoSelect: true,
+									displayText: function (item) {
+										 return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.ctaxcode + '</span><br><small>' + item.cdesc + "</small></div>";
+									},
+									highlighter: Object,
+									afterSelect: function(item, event) { 
+										$("#txtnEWT"+lastRow).val(item.ctaxcode).change(); 
+										$("#txtnEWTRate"+lastRow).val(item.nrate);
+										
+										var xcb = 0;
+										var xcbdue = 0;
+
+										varnnet =  $("#txtnetvat"+lastRow).val().replace(/,/g,'');
+										varngrs = $("#txtSIGross"+lastRow).val().replace(/,/g,'');
+										ndue = $("#txtDue"+lastRow).val().replace(/,/g,'');
+										
+										if(item.cbase=="NET"){
+											xcb = parseFloat(varnnet)*(item.nrate/100);
+										}else{
+											xcb = parseFloat(varngrs)*(item.nrate/100);
+										}
+										
+										$("#txtnEWTAmt"+lastRow).val(xcb);
+										//recompute due
+										xcbdue = ndue - xcb;
+										
+										$("#txtDue"+lastRow).val(xcbdue);
+
+										$("#txtApplied"+lastRow).val(xcbdue);
+
+										$("#txtnEWTAmt"+lastRow).autoNumeric('destroy');
+										$("#txtnEWTAmt"+lastRow).autoNumeric('init',{mDec:2});
+
+										$("#txtDue"+lastRow).autoNumeric('destroy');
+										$("#txtDue"+lastRow).autoNumeric('init',{mDec:2});
+										
+										$("#txtApplied"+lastRow).autoNumeric('destroy');
+										$("#txtApplied"+lastRow).autoNumeric('init',{mDec:2});
+										
 										computeGross();
-									});
+										
+										//setPosi("txtcSalesAcctTitle"+lastRow,13,'MyTable');
+										
+									}
+								});
+								
+								
+								$("#txtcSalesAcctNo"+lastRow+", #txtcSalesAcctTitle"+lastRow).on("click focus", function(event) {
+									$(this).select();
+								});
+								
+								$("#txtcSalesAcctNo"+lastRow).on("keyup", function(event) {
+									if(event.keyCode == 13 || event.keyCode== 38 || event.keyCode==40){
 									
-									$("#txtnEWT"+lastRow).typeahead({
-										items: 10,
-										source: function(request, response) {
+										if(event.keyCode==13 ){	
+										var dInput = this.value;
+								
 											$.ajax({
-												url: "../th_ewtcodes.php",
-												dataType: "json",
-												data: {
-													query: $("#txtnEWT"+lastRow).val()
-												},
-												success: function (data) {
-													response(data);
-													
+												type:'post',
+												url:'../getaccountid.php',
+												data: 'c_id='+ $(this).val(),                 
+												success: function(value){
+													if(value.trim()!=""){
+														$("#txtcSalesAcctTitle"+lastRow).val(value.trim());
+													}
 												}
 											});
-										},
-										autoSelect: true,
-										displayText: function (item) {
-											 return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.ctaxcode + '</span><br><small>' + item.cdesc + "</small></div>";
-										},
-										highlighter: Object,
-										afterSelect: function(item, event) { 
-											$("#txtnEWT"+lastRow).val(item.ctaxcode).change(); 
-											$("#txtnEWTRate"+lastRow).val(item.nrate);
-											
-											var xcb = 0;
-											var xcbdue = 0;
-											
-											varnnet =  $("#txtnetvat"+lastRow).val();
-											varngrs = $("#txtSIGross"+lastRow).val();
-											ndue = $("#txtDue"+lastRow).val();
-
-											if(item.cbase=="NET"){
-												xcb = parseFloat(varnnet)*(item.nrate/100);
-											}else{
-												xcb = parseFloat(varngrs)*(item.nrate/100);
-											}
-											
-											$("#txtnEWTAmt"+lastRow).val(xcb.toFixed(4));
-											//recompute due
-											xcbdue = ndue - xcb;
-											
-											$("#txtDue"+lastRow).val(xcbdue.toFixed(4)); 
-											
-											
-											//setPosi("txtcSalesAcctTitle"+lastRow,13,'MyTable');
-											
-										}
-									});
-									
-									
-									$("#txtcSalesAcctNo"+lastRow+", #txtcSalesAcctTitle"+lastRow).on("click focus", function(event) {
-										$(this).select();
-									});
-									
-									$("#txtcSalesAcctNo"+lastRow).on("keyup", function(event) {
-										if(event.keyCode == 13 || event.keyCode== 38 || event.keyCode==40){
-										
-											if(event.keyCode==13 ){	
-											var dInput = this.value;
-									
-												$.ajax({
-													type:'post',
-													url:'../getaccountid.php',
-													data: 'c_id='+ $(this).val(),                 
-													success: function(value){
-														if(value.trim()!=""){
-															$("#txtcSalesAcctTitle"+lastRow).val(value.trim());
-														}
-													}
-												});
-											}
-											
-											setPosi("txtcSalesAcctNo"+lastRow,event.keyCode,'MyTable');
-											
 										}
 										
-									});
+										setPosi("txtcSalesAcctNo"+lastRow,event.keyCode,'MyTable');
+										
+									}
 									
-									$("#txtcSalesAcctTitle"+lastRow).typeahead({
+								});
 								
+								$("#txtcSalesAcctTitle"+lastRow).typeahead({
+							
 									items: 10,
 									source: function(request, response) {
 										$.ajax({
@@ -1657,7 +1534,7 @@ function save(){
 									},
 									autoSelect: true,
 									displayText: function (item) {
-										 return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.name + "</small></div>";
+										return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.name + "</small></div>";
 									},
 									highlighter: Object,
 									afterSelect: function(item, event) { 
@@ -1667,32 +1544,32 @@ function save(){
 										setPosi("txtcSalesAcctTitle"+lastRow,13,'MyTable');
 										
 									}
-									});
-							
-					   
-					   	
-					   });
+								});
+												 
+					});
 
-					},
-					error: function (jqXHR, textStatus, errorThrown)
-					{
-						alert(jqXHR.responseText);
-					}
-					
-				});
+					computeGross();
+				},
+				error: function (jqXHR, textStatus, errorThrown)
+				{
+					alert(jqXHR.responseText);
+				}
+				
+			});
 
-	   
-	   
-	   
-   });
-   
-   if(i==0){
-	   alert("No Invoice is selected!")
-   }
-   
-   $('#myModal').modal('hide');
-   
+	 
+	 
+	 
+ });
+ 
+ if(i==0){
+	 alert("No Invoice is selected!")
+ }
+ 
+ $('#myModal').modal('hide');
+ 
 }
+
 function setPosi(nme,keyCode,tbl){
 		var r = nme.replace(/\D/g,'');
 		var namez = nme.replace(/[0-9]/g, '');
@@ -1718,140 +1595,6 @@ function setPosi(nme,keyCode,tbl){
 
 }
 
-
-function addacct(){
-
-	var tbl = document.getElementById('MyTblOthers').getElementsByTagName('tr');
-	var lastRow = tbl.length;
-
-	var a=document.getElementById('MyTblOthers').insertRow(-1);
-	
-	var v=a.insertCell(0);
-		v.style.width = "150px";
-		v.style.padding = "1px";
-	var w=a.insertCell(1);
-		w.style.padding = "1px";
-	var xDR=a.insertCell(2);
-		xDR.style.width = "100px";
-		xDR.style.padding = "1px";
-	var xCR=a.insertCell(3);
-		xCR.style.width = "100px";
-		xCR.style.padding = "1px";
-	var y=a.insertCell(4);
-		y.style.width = "50px";
-		y.style.padding = "1px";
-
-	v.innerHTML = "<input type='text' name=\"txtacctno"+lastRow+"\" id=\"txtacctno"+lastRow+"\" class=\"form-control input-sm\" placeholder=\"Enter Acct Code...\" style=\"text-transform:uppercase\" autocomplete=\"off\">";
-	w.innerHTML = "<input type='text' name=\"txtacctitle"+lastRow+"\" id=\"txtacctitle"+lastRow+"\" class=\"form-control input-sm\" placeholder=\"Search Acct Desc...\" style=\"text-transform:uppercase\" autocomplete=\"off\">";
-	xDR.innerHTML = "<input type='text' name=\"txtnotDR"+lastRow+"\" id=\"txtnotDR"+lastRow+"\" class=\"numeric form-control input-sm\" style=\"text-align:right\" value=\"0.0000\" required autocomplete=\"off\">";
-	xCR.innerHTML = "<input type='text' name=\"txtnotCR"+lastRow+"\" id=\"txtnotCR"+lastRow+"\" class=\"numeric form-control input-sm\" style=\"text-align:right\" value=\"0.0000\" required autocomplete=\"off\">";
-	y.innerHTML = "<input class='btn btn-danger btn-xs' type='button' id='row3_"+lastRow+"_delete' value='delete' onClick=\"deleteRow3(this);\"/>";
-
-	//alert(lastRow);
-		$("#txtacctitle"+lastRow).focus();
-
-									$("input.numeric").numeric({decimalPlaces: 4});
-									$("input.numeric").on("click focus", function () {
-									   $(this).select();
-									});
-									
-									$("input.numeric").on("keyup", function (e) {
-										setPosi($(this).attr('name'),e.keyCode,'MyTblOthers');
-										computeGross();
-									});
-								
-									$("#txtacctno"+lastRow+", #txtacctitle"+lastRow).on("click focus", function(event) {
-										$(this).select();
-									});
-
-									$("#txtacctno"+lastRow).on("keyup", function(event) {
-										
-										if(event.keyCode == 13 || event.keyCode== 38 || event.keyCode==40){
-										
-											if(event.keyCode==13 ){	
-												var dInput = this.value;
-										
-												$.ajax({
-													type:'post',
-													url:'../getaccountid.php',
-													data: 'c_id='+ $(this).val(),                 
-													success: function(value){
-														//alert(value);
-														if(value.trim()!=""){
-															$("#txtacctitle"+lastRow).val(value.trim());
-														}
-													}
-												});
-											}
-											
-											setPosi("txtacctno"+lastRow,event.keyCode,'MyTblOthers');
-										}
-											
-									});
-									
-									$("#txtacctitle"+lastRow).typeahead({
-									
-										items: 10,
-										source: function(request, response) {
-											$.ajax({
-												url: "../th_accounts.php",
-												dataType: "json",
-												data: {
-													query: $("#txtacctitle"+lastRow).val()
-												},
-												success: function (data) {
-													response(data);
-												}
-											});
-										},
-										autoSelect: true,
-										displayText: function (item) {
-											 return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.name + "</small></div>";
-										},
-										highlighter: Object,
-										afterSelect: function(item) { 
-											$("#txtacctitle"+lastRow).val(item.name).change(); 
-											$("#txtacctno"+lastRow).val(item.id);
-																						
-											setPosi("txtacctitle"+lastRow,13,'MyTblOthers');
-										}
-									});
-
-
-}
-
-function deleteRow3(r) {
-	var tbl = document.getElementById('MyTblOthers').getElementsByTagName('tr');
-	var lastRow = tbl.length;
-	var i=r.parentNode.parentNode.rowIndex;
-	 document.getElementById('MyTblOthers').deleteRow(i);
-	 var lastRow = tbl.length;
-	 var z; //for loop counter changing textboxes ID;
-	 
-		for (z=i+1; z<=lastRow; z++){
-			var tempOacctno = document.getElementById('txtacctno' + z);
-			var tempOctitle = document.getElementById('txtacctitle' + z);
-			var tempODR = document.getElementById('txtnotDR' + z);
-			var tempOCR = document.getElementById('txtnotCR' + z);
-			var tempOdelbtn = document.getElementById('row3_'+z+'_delete');
-			
-			var x = z-1;
-			tempOacctno.id = "txtacctno" + x;
-			tempOacctno.name = "txtacctno" + x;
-			tempOctitle.id = "txtacctitle" + x;
-			tempOctitle.name = "txtacctitle" + x;
-			tempODR.id = "txtnotDR" + x;
-			tempODR.name = "txtnotDR" + x;
-			tempOCR.id = "txtnotCR" + x;
-			tempOCR.name = "txtnotCR" + x;
-			tempOdelbtn.id = "row3_"+x+"_delete";
-			tempOdelbtn.name = "row3_"+x+"_delete";
-			
-		}
-
-computeGross();
-
-}
 
 function disabled(){
 

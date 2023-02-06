@@ -6,7 +6,7 @@ require_once "../../Connection/connection_string.php";
 
 	$company = $_SESSION['companyid'];
 	
-	$result = mysqli_query ($con, "select * from sales where compcode='$company' and lapproved=1 and ccode='".$_REQUEST['x']."' order by ddate desc, ctranno desc"); 
+	$result = mysqli_query ($con, "select * from sales where compcode='$company' and lapproved=1 and ccode='".$_REQUEST['x']."' and csalestype='Goods' order by ddate desc, ctranno desc"); 
 //echo "select * from sales where compcode='$company' and lapproved=1 and ccode='".$_REQUEST['x']."' order by ddate desc, ctranno desc";
 	$f1 = 0;
 
