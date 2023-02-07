@@ -234,19 +234,19 @@ if (mysqli_num_rows($sqlpostdte)!=0) {
 	else if($typ=="OR"){
 				
 		//OR -> Customer account -> Credit
-			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'OR', '$tran', A.dcutdate, A.ccustacctcode, B.cacctdesc, 0, A.namount, 0, '$dtepost' From receipt A left join accounts B on A.compcode=B.compcode and A.ccustacctcode=B.cacctno where A.compcode='$company' and A.ctranno='$tran' ")){
-				echo "False";
-			}
-			else{
-					//OR -> Deposit account -> Debit
-					if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'OR', '$tran', A.dcutdate, A.cacctcode, B.cacctdesc, A.namount, 0, 0, '$dtepost' From receipt A left join accounts B on A.compcode=B.compcode and A.cacctcode=B.cacctno where A.compcode='$company' and A.ctranno='$tran'")){
-						echo "False";
-					}
-					else{
-						echo "True";
-					}
-				
-			}
+		if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'OR', '$tran', C.dcutdate, A.cacctno, B.cacctdesc, 0, sum(A.namount) as namount, 0, NOW() From receipt_sales_t A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid join receipt C on A.compcode=C.compcode and A.ctranno=C.ctranno where A.compcode='$company' and A.ctranno='$tran'  Group by C.dcutdate, A.cacctno, B.cacctdesc ")){
+			echo "False";
+		}
+		else{
+				//OR -> Deposit account -> Debit
+				if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'OR', '$tran', A.dcutdate, A.cacctcode, B.cacctdesc, A.namount, 0, 0, NOW() From receipt A left join accounts B on A.compcode=B.compcode and A.cacctcode=B.cacctid where A.compcode='$company' and A.ctranno='$tran'")){
+					echo "False";
+				}
+				else{
+					echo "True";
+				}
+			
+		}
 
 	}
 	else if($typ=="BD"){

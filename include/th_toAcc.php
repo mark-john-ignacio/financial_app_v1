@@ -16,6 +16,14 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	$xcomp = $row["lcompute"];
 }
 
+//periodic or perpetual for DR entry
+$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='INVSYSTEM'"); 
+								
+if (mysqli_num_rows($result)!=0) {
+	$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
+	$invsystem= $all_course_data['cvalue']; 							
+}
+
 if($typ=="SI"){
 
 	$sqlhead = mysqli_query($con,"Select B.cacctcodetype from sales A left join customers B on A.compcode=B.compcode and A.ccode=B.cempid where A.compcode='$company' and A.ctranno='$tran'");
@@ -97,7 +105,6 @@ function getSetAcct($id){
 
 	}
 
-
 	if($typ=="PRet"){
 		
 		if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','PR','$tran',B.dreturned,A.cacctcode,C.cacctdesc,0,SUM(A.namount),0,NOW() From purchreturn_t A left join purchreturn B on A.compcode=B.compcode and A.ctranno=B.ctranno left join accounts C on A.compcode=C.compcode and A.cacctcode=C.cacctno where A.compcode='$company' and A.ctranno='$tran' group by B.dreturned,A.cacctcode,C.cacctdesc")){
@@ -120,8 +127,7 @@ function getSetAcct($id){
 
 	}
 
-	
-	else if($typ=="DR"){
+	else if($typ=="DR" && $invsystem=="perpetual"){
 		
 		//Insert DR Side (costcode)
 		if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','DR','$tran',B.dcutdate,X.cacctcodecog,C.cacctdesc,SUM(D.ncost),0,0,NOW() From dr_t A left join dr B on A.compcode=B.compcode and A.ctranno=B.ctranno left join items X on A.citemno=X.cpartno and A.compcode=X.compcode left join accounts C on X.compcode=C.compcode and X.cacctcodecog=C.cacctno left join ( Select citemno, sum(ntotqty*ncost) as ncost from tblinvout where compcode='$company' and ctranno='$tran' ) D on A.citemno = D.citemno where A.compcode='$company' and A.ctranno='$tran' group by B.dcutdate,X.cacctcodecog,C.cacctdesc")){
@@ -249,53 +255,53 @@ function getSetAcct($id){
 		}
 
 
-	}//if($typ=="SI")
+	}
 	
 	else if($typ=="IN"){
 
-		//get Item entry
-		global $con;
-		global $compcode;
-		global $xcomp;		
-	
-		//get Customer Entry
-	if($cSIsalescodetype=="multiple"){
-		$qrySI = "INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','IN','$tran',A.dcutdate,B.cacctno,D.cacctdesc,C.ngross,0,0,NOW()
-				From ntsales A
-				left join customers_accts B on A.compcode=B.compcode and A.ccode=B.ccode
-				right join (
-					Select B.ctype, sum(A.namount) as ngross
-					From ntsales_t A
-					left join items B on A.compcode=B.compcode and A.citemno=B.cpartno
-					where A.compcode='$company' and A.ctranno='$tran'
-					Group By B.ctype
-				) C on B.citemtype=C.ctype
-				left join accounts D on B.compcode=D.compcode and B.cacctno=D.cacctno 
-				where A.compcode='$company' and A.ctranno='$tran'";
-	}else{
-		$qrySI = "INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','IN','$tran',A.dcutdate,B.cacctid,B.cacctdesc,A.ngross,0,0,NOW() From ntsales A left join accounts B on A.compcode=B.compcode and A.cacctcode=B.cacctno where A.compcode='$company' and A.ctranno='$tran'";
-	}
-	
+			//get Item entry
+			global $con;
+			global $compcode;
+			global $xcomp;		
 		
-	if (!mysqli_query($con,$qrySI)){
+			//get Customer Entry
+		if($cSIsalescodetype=="multiple"){
+			$qrySI = "INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','IN','$tran',A.dcutdate,B.cacctno,D.cacctdesc,C.ngross,0,0,NOW()
+					From ntsales A
+					left join customers_accts B on A.compcode=B.compcode and A.ccode=B.ccode
+					right join (
+						Select B.ctype, sum(A.namount) as ngross
+						From ntsales_t A
+						left join items B on A.compcode=B.compcode and A.citemno=B.cpartno
+						where A.compcode='$company' and A.ctranno='$tran'
+						Group By B.ctype
+					) C on B.citemtype=C.ctype
+					left join accounts D on B.compcode=D.compcode and B.cacctno=D.cacctno 
+					where A.compcode='$company' and A.ctranno='$tran'";
+		}else{
+			$qrySI = "INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','IN','$tran',A.dcutdate,B.cacctid,B.cacctdesc,A.ngross,0,0,NOW() From ntsales A left join accounts B on A.compcode=B.compcode and A.cacctcode=B.cacctno where A.compcode='$company' and A.ctranno='$tran'";
+		}
 		
-		echo "False";
-	}
-	else{
-	
-	//Items Entry	
-		
-		if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','IN','$tran',B.dcutdate,C.cacctid as cacctcode,C.cacctdesc,0,ROUND(SUM(A.namount),2),0,NOW() From ntsales_t A left join ntsales B on A.compcode=B.compcode and A.ctranno=B.ctranno left join accounts C on A.compcode=C.compcode and A.cacctcode=C.cacctno where A.compcode='$company' and A.ctranno='$tran' group by B.dcutdate,C.cacctid,C.cacctdesc")){
+			
+		if (!mysqli_query($con,$qrySI)){
+			
 			echo "False";
 		}
 		else{
-			echo "True";
+		
+		//Items Entry	
+			
+			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','IN','$tran',B.dcutdate,C.cacctid as cacctcode,C.cacctdesc,0,ROUND(SUM(A.namount),2),0,NOW() From ntsales_t A left join ntsales B on A.compcode=B.compcode and A.ctranno=B.ctranno left join accounts C on A.compcode=C.compcode and A.cacctcode=C.cacctno where A.compcode='$company' and A.ctranno='$tran' group by B.dcutdate,C.cacctid,C.cacctdesc")){
+				echo "False";
+			}
+			else{
+				echo "True";
+			}
+
 		}
 
+
 	}
-
-
-}
 
 	else if($typ=="APV"){
 	
@@ -327,6 +333,7 @@ function getSetAcct($id){
 			}
 
 	}
+
 	else if($typ=="JE"){
 				
 		//Accounts Payable -> supplier account -> Debit
@@ -339,6 +346,7 @@ function getSetAcct($id){
 			}
 
 	}
+
 	else if($typ=="OR"){
 				
 		//OR -> Customer account -> Credit
@@ -357,6 +365,7 @@ function getSetAcct($id){
 			}
 
 	}
+
 	else if($typ=="BD"){
 				
 		//Bank Deposit -> Debit Account -> Debit
@@ -389,6 +398,7 @@ function getSetAcct($id){
 			}
 
 	}
+
 	else if($typ=="DM"){ //Ginaya lng sa invoice
 
 			//get Item entry
@@ -481,6 +491,7 @@ function getSetAcct($id){
 
 
 	}//if($typ=="DM")
+	
 	else if($typ=="CM"){ //Ginaya lng sa invoice pero baliktad entry
 
 			//get Item entry
@@ -573,69 +584,6 @@ function getSetAcct($id){
 
 
 	}//if($typ=="DM")
-
-
-	else if($typ=="LOAN"){ //Loan Application
-	
-			//get if member or non member
-			
-				$sqlmem = mysqli_query($con,"select nmembertype from loans where compcode='$company' and ctranno='$tran'");
-			if (mysqli_num_rows($sqlmem)!=0) {
-				$rowmem = mysqli_fetch_assoc($sqlmem);
-				
-				if($rowmem["nmembertype"]=="MEMBER"){
-					$shareid = "LOANCAPTL";
-				}
-				else{
-					$shareid = "LOANSRVFEE";
-				}
-				
-			}
-
-	
-			$Sales_Vat = getSetAcct("LOANCRACCT");
-
-			$SID = $Sales_Vat["id"];
-			$SNM = $Sales_Vat["name"];
-			
-			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','LOAN','$tran',dcutdate,'$SID','$SNM',0,namount,0,ddate from loans where compcode='$company' and ctranno='$tran'")){
-						
-						echo "False";
-
-						$isok = "False";
-			}
-			else{
-				echo "True";
-					//Debit Accounts
-					$LoanAP = getSetAcct("LOANAPACCT");
-
-					$SID1 = $LoanAP["id"];
-					$SNM1 = $LoanAP["name"];
-					
-					mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','LOAN','$tran',dcutdate,'$SID1','$SNM1',npayamt,0,0,ddate from loans where compcode='$company' and ctranno='$tran'");
-
-					$LoanIT = getSetAcct("LOANINTRST");
-
-					$SID2 = $LoanIT["id"];
-					$SNM2 = $LoanIT["name"];
-					
-					mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','LOAN','$tran',dcutdate,'$SID2','$SNM2',0,ntotint,0,ddate from loans where compcode='$company' and ctranno='$tran'");
-	
-					$LoanSH = getSetAcct("".$shareid."");
-
-					$SID3 = $LoanSH["id"];
-					$SNM3 = $LoanSH["name"];
-					
-					mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','LOAN','$tran',dcutdate,'$SID3','$SNM3',0,naddfee,0,ddate from loans where compcode='$company' and ctranno='$tran'");
-				
-					
-
-
-			}
-
-		
-	}
-	
 
 	
 //Iupdate ang Balance ng COA

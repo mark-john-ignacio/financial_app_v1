@@ -53,7 +53,7 @@ var itm = $("#txtctranno").val();
 			//generate GL ENtry muna
 			$.ajax ({
 				dataType: "text",
-				url: "th_toAcc.php",
+				url: "'../../include/th_toAcc.php",
 				data: { tran: itm, type: "SI" },
 				async: false,
 				success: function( data ) {
