@@ -19,7 +19,7 @@ $company = $_SESSION['companyid'];
 
 <?php
 
-$result=mysqli_query($con,"Select * From sales where compcode='$company' and lapproved=1");
+$result=mysqli_query($con,"Select * From receipt where compcode='$company' and lapproved=1");
 while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 
 	echo $row['ctranno'];
@@ -28,7 +28,7 @@ while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 	<script>
 			$.ajax ({
 								url: "../../include/th_toAcc.php",
-								data: { tran: "<?=$row['ctranno']?>", type: "SI" },
+								data: { tran: "<?=$row['ctranno']?>", type: "OR" },
 								async: false,
 								success: function( data ) {
 									//alert(data.trim());
