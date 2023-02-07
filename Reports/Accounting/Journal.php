@@ -108,8 +108,8 @@ $result=mysqli_query($con,$sql);
     <td width="300px"><?php echo $cmemo;?></td>
     <td><?php echo $row['cacctno'];?></td>
     <td><?php echo $row['ctitle'];?></td>
-    <td align="right"><?php if( $row['ndebit'] != 0) { echo number_format($row['ndebit'],4); } ?></td>
-    <td align="right"><?php if( $row['ncredit'] != 0) { echo number_format($row['ncredit'],4); } ?></td>
+    <td align="right"><?php if( $row['ndebit'] != 0) { echo number_format($row['ndebit'],2); } ?></td>
+    <td align="right"><?php if( $row['ncredit'] != 0) { echo number_format($row['ncredit'],2); } ?></td>
   </tr>
 <?php 
 

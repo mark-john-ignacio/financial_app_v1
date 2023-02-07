@@ -60,7 +60,7 @@ $varmsg = "";
                 
                 
 			) A 
-	left JOIN accounts B on A.cacctno=B.cacctno
+	left JOIN accounts B on A.cacctno=B.cacctid
 	where A.cacctno IS NOT NULL
 	Order By A.ctyp, A.cacctno";
 	
@@ -246,7 +246,7 @@ $varmsg = "";
                 <td class="text-right">
                     <?php 
 					if($RowvalArr[$y]!=0){
-						echo $RowvalArr[$y];
+						echo number_format($RowvalArr[$y],2);
 						$RowvalArrTOTAL[$y] = $RowvalArrTOTAL[$y] + $RowvalArr[$y];
 						
 					}
@@ -301,7 +301,7 @@ $varmsg = "";
                 <td class="text-right">
                     <?php 
 					if($RowvalArr[$y]!=0){
-						echo $RowvalArr[$y];
+						echo number_format($RowvalArr[$y],2);
 						$RowvalArrTOTAL[$y] = $RowvalArrTOTAL[$y] + $RowvalArr[$y];
 					}
 					?>
@@ -321,7 +321,7 @@ $varmsg = "";
                 <td class="text-right">
                     <?php 
 					if($RowvalArrTOTAL[$y]!=0){
-						echo "<b>".$RowvalArrTOTAL[$y]."</b>";
+						echo "<b>".number_format($RowvalArrTOTAL[$y],2)."</b>";
 					}
 					?>
                 </td>
