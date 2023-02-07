@@ -1,6 +1,6 @@
 <?php
 if(!isset($_SESSION)){
-session_start();
+	session_start();
 }
 include('../../Connection/connection_string.php');
 
@@ -21,12 +21,14 @@ $company = $_SESSION['companyid'];
 
 $result=mysqli_query($con,"Select * From sales where compcode='$company' and lapproved=1");
 while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+
+	echo $row['ctranno'];
 ?>
 
 	<script>
 			$.ajax ({
-								url: "'../../include/th_toAcc.php",
-								data: { tran: <?=$row['ctranno']?>, type: "SI" },
+								url: "../../include/th_toAcc.php",
+								data: { tran: "<?=$row['ctranno']?>", type: "SI" },
 								async: false,
 								success: function( data ) {
 									//alert(data.trim());
@@ -49,4 +51,5 @@ while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 ?>
 </body>
 </html>
+
 
