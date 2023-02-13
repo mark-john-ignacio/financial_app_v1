@@ -369,7 +369,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 			<table width="100%" border="0" cellpadding="3">
 				<tr>
-					<td>
+					<td valign="top">
 						<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
 				
 						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SI.php';" id="btnMain" name="btnMain">

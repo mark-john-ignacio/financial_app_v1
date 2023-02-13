@@ -181,16 +181,17 @@ function PrintRed(x){
       </tr>
       <?php 
 	  
-	  		if((int)$rowbody['nrate']!=0){
+	  		if(floatval($rowbody['nrate'])!=0){
 				//echo "A";
-				$totnetvat = (float)$totnetvat + (float)$rowbody['nnetvat'];
-				$totlessvat = (float)$totlessvat + (float)$rowbody['nlessvat'];
+				$totnetvat = floatval($totnetvat) + floatval($rowbody['nnetvat']);
+				$totlessvat = floatval($totlessvat) + floatval($rowbody['nlessvat']);
 				
-				$totvatable = (float)$totvatable + (float)$rowbody['namount'];
+				$totvatable = floatval($totvatable) + floatval($rowbody['namount']);
+
           }
           else{
             //echo "B";
-            $totvatxmpt = (float)$totvatxmpt + (float)$rowbody['namount'];
+            $totvatxmpt = floatVAL($totvatxmpt) + floatval($rowbody['namount']);
           }
     }
     
@@ -241,23 +242,23 @@ function PrintRed(x){
 
         <tr>
         <td colspan="4" style="border-top:1px dashed;" align="right"  valign="bottom"><b>Total Sales (VAT INCLUSIVE) </b></td>
-        <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($totvatable!=="") ? number_format(floatval($totvatable),2) : "";?></b></td>
+        <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($totvatable!=="") ? $totvatable : "";?></b></td>
         </tr>
         <tr>
           <td style="border-top:1px dashed;" align="right" valign="bottom"><b>Vatable Sales</b></td>
-          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%"><b><?=($totvatable!=="") ? number_format(floatval($totvatable),2) : "";?></b></div></td>
+          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%"><b><?=($totvatable!=="") ? $totvatable : "";?></b></div></td>
           <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>Amt. Net of VAT</b></td>
-          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($totnetvat!=="") ? number_format(floatval($totnetvat),2) : "";?></b></td>
+          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($totnetvat!=="") ? $totnetvat : "";?></b></td>
         </tr>
         <tr>
           <td style="border-top:1px dashed;" align="right" valign="bottom"><b>Vat-Exempt Sales</b></td>
-          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%"><b><?=($printVEGross!=="") ? number_format(floatval($printVEGross),2) : "";?></b></div></td>
+          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%"><b><?=($printVEGross!=="") ? $printVEGross : "";?></b></div></td>
           <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>LESS: VAT</b></td>
-          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($totlessvat!=="") ? number_format(floatval($totlessvat),2) : "";?></b></td>
+          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($totlessvat!=="") ? $totlessvat : "";?></b></td>
         </tr>
         <tr>
           <td style="border-top:1px dashed;" align="right" valign="bottom"><b>Zero-Rated Sales</b></td>
-          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%"><b><?=($printZRGross!=="") ? number_format(floatval($printZRGross),2) : "";?></b></div></td>
+          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%"><b><?=($printZRGross!=="") ? $printZRGross : "";?></b></div></td>
           <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>LESS: SC/PWD DISC.</b></td>
           <td style="border-top:1px dashed;"  valign="bottom" align="right">&nbsp;</td>
         </tr>
@@ -265,7 +266,7 @@ function PrintRed(x){
           <td style="border-top:1px dashed;" align="right" valign="bottom"><b>Vat Amt</b></td>
           <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%">&nbsp;</div></td>
           <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>Amt. Due</b></td>
-          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($totnetvat!=="") ? number_format(floatval($totnetvat),2) : "";?></b></td>
+          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($totnetvat!=="") ? $totnetvat: "";?></b></td>
         </tr>
         <tr>
           <td colspan="2" style="border-top:1px dashed;" valign="bottom">&nbsp;</td>
@@ -275,12 +276,12 @@ function PrintRed(x){
         <tr>
           <td colspan="2" style="border-top:1px dashed;" valign="bottom">&nbsp;</td>
           <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>ADD VAT</b></td>
-          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($totlessvat!=="") ? number_format(floatval($totlessvat),2) : "";?></b></td>
+          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($totlessvat!=="") ? $totlessvat : "";?></b></td>
         </tr>
         <tr>
           <td colspan="2" style="border-top:1px dashed;" valign="bottom">&nbsp;</td>
           <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>TOTAL AMT. DUE</b></td>
-          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($Gross!=="") ? number_format(floatval($Gross),2) : "";?></b></td>
+          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($Gross!=="") ? number_format($Gross,2) : "";?></b></td>
         </tr>
 
     </table></td>
@@ -288,29 +289,29 @@ function PrintRed(x){
 </table>
 
 <div align="center" id="menu" class="noPrint">
-<div style="float:left;">&nbsp;&nbsp;<strong><font size="-1">Sales Invoice</font></strong></div>
-<div style="float:right;">
+  <div style="float:left;">&nbsp;&nbsp;<strong><font size="-1">Sales Invoice</font></strong></div>
+  <div style="float:right;">
 
-<?php 
-$strqry = "";
-$valsub = "";
+        <?php     
+        $strqry = "";
+        $valsub = "";
 
-if($lPosted==0 && $autopost==1){
-	$strqry = "Print('".$csalesno."','".$CustCode."','".$nLimit."')";
-	$valsub = "PRINT AND POST INVOICE";
-}
-else{
-	$strqry = "PrintRed('".$csalesno."')";
-	$valsub = "PRINT INVOICE";
-}
+        if($lPosted==0 && $autopost==1){
+          $strqry = "Print('".$csalesno."','".$CustCode."','".$nLimit."')";
+          $valsub = "PRINT AND POST INVOICE";
+        }
+        else{
+          $strqry = "PrintRed('".$csalesno."')";
+          $valsub = "PRINT INVOICE";
+        }
 
-//echo $lPosted."==0 && ".$autopost."==1";
-?>
+        //echo $lPosted."==0 && ".$autopost."==1";
+        ?>
 
-<input type="button" value="<?=$valsub;?>" onClick="<?=$strqry;?>;" class="noPrint"/>
+      <input type="button" value="<?=$valsub;?>" onClick="<?=$strqry;?>;" class="noPrint"/>
 
 
-</div>
+  </div>
 </div>
 
 </body>

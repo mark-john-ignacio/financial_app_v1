@@ -48,7 +48,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     $cvatcode = $row['cvatcode'];
 
-		//$SalesType = $row['csalestype'];
+		$SalesType = $row['csalestype'];
+    $PayType = $row['cpaytype'];
 		$Gross = $row['ngross'];
 		
 		$lCancelled = $row['lcancelled'];
@@ -60,44 +61,45 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 <!DOCTYPE html>
 <html>
-<link rel="stylesheet" type="text/css" href="../../css/cssmed.css">
+<link rel="stylesheet" type="text/css" href="../../css/cssSM.css">
 
 <head>
 </head>
 
-<body style="padding-top:0.75in" onLoad="window.print()">
+<body style="padding-top:0.97in" onLoad="window.print()">
 
-<table width="100%" border="0" cellpadding="3" style="border-collapse:collapse;" id="tblMain">
+<table width="100%" border="0" cellpadding="1" style="border-collapse:collapse;" id="tblMain">
   <tr>
-    <td colspan="2" align="right" style="height: 0.43in"><font size="3"><b><?php echo $csalesno;?></b></font></td>
+    <td colspan="2" style="padding-right: 0.25in;" align="right">&nbsp;<font size="3"><b><?//php echo $csalesno;?></b></font></td>
   </tr>
 
   <tr>
     <td VALIGN="TOP">
-    
-      <table width="100%" border="0" cellpadding="3" cellspacing="5">
-        <tr><td style="height: 0.35in; padding-left: 0.8in"> <?=$CustName?> </td></tr>
-        <tr><td style="height: 0.35in; padding-left: 0.5in"><?=$Adds?> </td></tr>
-        <tr><td style="height: 0.2in"> &nbsp;&nbsp;&nbsp; <?=$cTin?></td></tr>
-        <tr><td style="height: 0.2in; padding-left: 0.8in; font-size: 11px"></td></tr>
+
+      <table width="100%" border="0" cellpadding="2" style=" margin-top: 0.18in !important">
+        <tr><td style="padding-left: 1.2in;"> <?=$CustName?> </td></tr>
+        <tr><td style="padding-left: 1.2in; padding-top: 10px"><?=$cTin?></td></tr>
+        <tr><td style="padding-left: 1.2in; padding-top: 5px"><?=$Adds?> </td></tr>       
         </tr>
       </table>
 
     </td>
-    <td style="width: 2in"> 
-      <table width="100%" border="0" cellpadding="3" cellspacing="5">
-        <tr><td style="height: 0.28in"  align="right"> <?=date_format(date_create($Date), "M d, Y")?> </td></tr>
-        <tr><td style="height: 0.28in"  align="right"> <?=$cTerms?> </td></tr>
-        <tr><td style="height: 0.28in"  align="right"> &nbsp; </td></tr>
-        <tr><td style="height: 0.28in"  align="right"> &nbsp; </td></tr>
+    <td style="width: 2.7in" VALIGN="TOP"> 
+      <table width="100%" border="0">
+        <tr><td style="padding-right: 0.3in;" align="right"> <?=($PayType=="Credit") ? date_format(date_create($Date), "M d, Y") : "&nbsp;";?> </td></tr>
+        <tr><td style="padding-right: 0.3in; padding-top: 5px" align="right"> <?=($PayType=="Cash") ? date_format(date_create($Date), "M d, Y") : "&nbsp;";?> </td></tr>
+        <tr><td style="padding-right: 0.3in; padding-top: 10px" align="right"> <?=($PayType=="Credit") ? $cTerms : "&nbsp;";?> <??> </td></tr>
+        <tr><td style="padding-right: 0.3in; padding-top: 5px" align="right"> &nbsp; </td></tr>
       </table>
     </td>
   </tr>
+
+
   <tr>
     <td colspan="2">&nbsp;</td>
   </tr>
   <tr>
-    <td colspan="2" style="height: 4.4in !important" valign="top">
+    <td colspan="3" style="height: 5.7in; padding-left: 0.25in; padding-top: 13px;" VALIGN="TOP">
     
     <table width="100%" border="0" cellpadding="3">
       <?php 
@@ -111,18 +113,22 @@ if (mysqli_num_rows($sqlhead)!=0) {
           $totvatxmpt = 0;
           $totvatable = 0;
 
+          $nnetprice = 0;
+
           while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
           $cntr = $cntr + 1;
+          $nnetprice = floatval($rowbody['nprice']) - floatval($rowbody['ndiscount']);
                 
       ?>
       
-            <tr>
-              <td style="width: 0.6in"><?php echo $rowbody['nqty'];?></td> 
-              <td style="width: 0.5in"><?php echo $rowbody['cunit'];?></td> 
-              <td><?php echo $rowbody['citemno'];?></td>
-              <td style="text-overflow: ellipsis; width: 3in"><?php echo $rowbody['citemdesc'];?></td>
-              <td style="text-overflow: ellipsis; width: 1in" align="right"><?php echo number_format($rowbody['nprice'],2);?></td>
-              <td style="text-overflow: ellipsis; width: 1.25in" align="right"><?php echo number_format($rowbody['namount'],2);?></td>
+            <tr> 
+              <td style="width: 0.4in"  align="center"><?=$cntr;?></td>
+              <td style="text-overflow: ellipsis; width: 0.8in">&nbsp;&nbsp;<?php echo $rowbody['citemno'];?></td>
+              <td style="text-overflow: ellipsis; width: 3.25in"><?php echo $rowbody['citemdesc'];?></td>
+              <td style="width: 0.5in" align="center"><?php echo number_format($rowbody['nqty']);?></td> 
+              <td style="width: 0.5in" align="center"><?php echo $rowbody['cunit'];?></td>
+              <td style="text-overflow: ellipsis; width: 1in" align="right"><?php echo number_format($nnetprice,2);?></td>
+              <td style="padding-right: 0.3in" align="right"><?php echo number_format($rowbody['namount'],2);?></td>
                     
             </tr>
       <?php
@@ -145,36 +151,36 @@ if (mysqli_num_rows($sqlhead)!=0) {
             
               if(floatval($totvatxmpt)==0){
                 //echo "A";
-                $printVEGross = "";
+                $printVEGross = 0;
               }else{
                 //echo "AB";
-                $printVEGross =  number_format($totvatxmpt,2);
+                $printVEGross =  $totvatxmpt;
               }
 
-            $printZRGross = "";
+            $printZRGross = 0;
 
 
-              $totnetvat = number_format($totnetvat,2);
-              $totlessvat = number_format($totlessvat,2);
-              $totvatable = number_format($totvatable,2);
+              $totnetvat = $totnetvat;
+              $totlessvat = $totlessvat;
+              $totvatable = $totvatable;
             
           }elseif($cvatcode=='VE'){
-            $printVATGross = "";
-            $printVEGross = number_format($Gross,2);
-            $printZRGross = "";
+            $printVATGross = 0;
+            $printVEGross = $Gross;
+            $printZRGross = 0;
             
-              $totnetvat = "";
-              $totlessvat = "";
-              $totvatable = "";
+              $totnetvat = 0;
+              $totlessvat = 0;
+              $totvatable = 0;
             
           }elseif($cvatcode=='ZR'){
-            $printVATGross = "";
-            $printVEGross = "";
-            $printZRGross = number_format($Gross,2);
+            $printVATGross = 0;
+            $printVEGross = 0;
+            $printZRGross = $Gross;
 
-              $totnetvat = "";
-              $totlessvat = "";
-              $totvatable = "";
+              $totnetvat = 0;
+              $totlessvat = 0;
+              $totvatable = 0;
             
           }
 
@@ -184,59 +190,104 @@ if (mysqli_num_rows($sqlhead)!=0) {
   </td>
   </tr>
 
+  <?php
+    if($SalesType=="Services"){
+  ?>
   <tr>
-    <td colspan="2" valign="top">
-      <table width="100%" border="0" cellpadding="2">
+    <td colspan="2" valign="top" style="padding-top: 5px !important">
+      <table width="100%" border="0">
 
         <tr>
-          <td colspan="4" align="right"  valign="bottom"><!--<b>Total Sales (VAT INCLUSIVE) </b>--></td>
-          <td  valign="top" align="right"><b><?=$totvatable?></b></td>
+          <td colspan="4" align="right"  valign="bottom"><!--<b>Total Sales (VAT INCLUSIVE) </b>-->&nbsp;</td>
+          <td  valign="top" align="right"><b><?//=$totvatable?>&nbsp;</b></td>
         </tr>
         <tr>
           <td colspan="2" valign="bottom">&nbsp;</td>
-          <td colspan="2" valign="bottom" align="right"><!--<b><b>LESS: VAT</b>--></td>
-          <td  valign="bottom" align="right"><b><?=$totlessvat?></b></td>
+          <td colspan="2" valign="bottom" align="right"><!--<b><b>LESS: VAT</b>-->&nbsp;</td>
+          <td  valign="bottom" align="right"><b><?//=$totlessvat?></b>&nbsp;</td>
         </tr>
         <tr>
-          <td align="right" valign="bottom" style="width: 1.24in"><!--<b><b>Vatable Sales</b>--></td>
-          <td valign="bottom"><div style="text-align:right; width:50%"><b><?=$totvatable?></b></div></td>
-          <td colspan="2" valign="bottom" align="right"><!--<b><b>Amt. Net of VAT</b>--></td>
-          <td  valign="bottom" align="right"><b><?=$totnetvat?></b></td>
+          <td align="right" valign="bottom" style="width: 1.24in"><!--<b><b>Vatable Sales</b>-->&nbsp;</td>
+          <td valign="bottom"><div style="text-align:right; width:50%"><b><?//=$totvatable?></b>&nbsp;</div></td>
+          <td colspan="2" valign="bottom" align="right"><!--<b><b>Amt. Net of VAT</b>-->&nbsp;</td>
+          <td  valign="bottom" align="right"><b><?//=$totnetvat?></b>&nbsp;</td>
         </tr>
         <tr>
-          <td align="right" valign="bottom"><!--<b><b>Vat-Exempt Sales</b>--></td>
-          <td valign="bottom"><div style="text-align:right; width:50%"><b><?=$printVEGross?></b></div></td>
-          <td colspan="2" valign="bottom" align="right"><!--<b><b>LESS: SC/PWD DISC.</b>--></td>
-          <td  valign="bottom" align="right"><b>&nbsp;</b></td>
+          <td align="right" valign="bottom"><!--<b><b>Vat-Exempt Sales</b>-->&nbsp;</td>
+          <td valign="bottom"><div style="text-align:right; width:50%"><b><?//=$printVEGross?></b>&nbsp;</div></td>
+          <td colspan="2" valign="bottom" align="right"><!--<b><b>LESS: SC/PWD DISC.</b>-->&nbsp;</td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?//=number_format($Gross,2)?>&nbsp;</b></td>
         </tr>
         <tr>
-          <td align="right" valign="bottom"><!--<b><b>Zero-Rated Sales</b>--></td>
-          <td valign="bottom"><div style="text-align:right; width:50%"><b><?=$printZRGross?></b></div></td>
-          <td colspan="2" valign="bottom" align="right"><!--<b><b>Amt. Due</b>--></td>
-          <td  valign="bottom" align="right"><b><?=$totnetvat?></b></td>
+          <td align="right" valign="bottom"><!--<b><b>Zero-Rated Sales</b>-->&nbsp;</td>
+          <td valign="bottom"><div style="text-align:right; width:50%"><b><?//=$printZRGross?></b>&nbsp;</div></td>
+          <td colspan="2" valign="bottom" align="right"><!--<b><b>Amt. Due</b>-->&nbsp;</td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=number_format($totvatable,2)?></b></td>
         </tr>
-        <!--
         <tr>
-          <td colspan="2" valign="bottom">&nbsp;</td>
-          <td colspan="2" valign="bottom" align="right"><b><b>Less: Witholding Tax</b></td>
-          <td  valign="bottom" align="right">&nbsp;</td>
-        </tr>
-        -->
-        <tr>
-          <td align="right" valign="bottom"><!--<b><b>Vat Amt</b>--></td>
+          <td align="right" valign="bottom"><!--<b><b>Vat Amt</b>-->&nbsp;</td>
           <td valign="bottom"><div style="text-align:right; width:50%">&nbsp;</div></td>
-          <td colspan="2" valign="bottom" align="right"><!--<b><b>ADD VAT</b>--></td>
-          <td  valign="bottom" align="right"><b><?=$totlessvat?></b></td>
+          <td colspan="2" valign="bottom" align="right"><!--<b><b>ADD VAT</b>-->&nbsp;</td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=number_format($totlessvat,2)?></b></td>
         </tr>
         <tr>
           <td colspan="2" valign="bottom">&nbsp;</td>
-          <td colspan="2" valign="bottom" align="right"><!--<b><b>TOTAL AMT. DUE</b>--></td>
-          <td  valign="bottom" align="right"><b><?=number_format($Gross,2)?></b></td>
+          <td colspan="2" valign="bottom" align="right"><!--<b><b>TOTAL AMT. DUE</b>-->&nbsp;</td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=number_format($Gross,2)?></b></td>
         </tr>
 
       </table>
     </td>
   </tr>
+  <?php
+    }else{
+?>
+<tr>
+    <td colspan="2" valign="top" style="padding-top: 10px !important">
+      <table width="100%" border="0" cellpadding="1px">
+
+        <tr>
+          <td rowspan="7" valign="top" align="right" style="width: 4in; padding-top: 13px !important">
+
+            <table width="100%" border="0" cellpadding="1px">
+              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($totvatable!==0) ? number_format($totvatable,2) : ""?> </b></td></tr>
+              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($printVEGross!==0) ? number_format($printVEGross,2) : ""?> </b> </td></tr>
+              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($printZRGross!==0) ? number_format($printZRGross,2) : ""?> </b> </td></tr>
+              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($totlessvat!==0) ? number_format($totlessvat,2) : ""?></b> </td></tr>
+            </table>
+
+          </td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in; height: 0.22in"><b><?=($totvatable!==0) ? number_format($totvatable,2) : ""?>&nbsp;</b></td>
+        </tr>
+        <tr>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=($totlessvat!==0) ? number_format($totlessvat,2) : ""?></b>&nbsp;</td>
+        </tr>
+        <tr>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in; padding-top: 3px !important"><b><?=($totnetvat!==0) ? number_format($totnetvat,2) : ""?></b>&nbsp;</td>
+        </tr>
+        <tr>
+
+          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?//=number_format($Gross,2)?>&nbsp;</b></td>
+        </tr>
+        <tr>
+
+          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=($totvatable!==0) ? number_format($totvatable,2) : ""?></b></td>
+        </tr>
+        <tr>
+
+          <td valign="bottom" align="right" style="padding-right: 0.3in"><b><?=($totlessvat!==0) ? number_format($totlessvat,2) : ""?></b></td>
+        </tr>
+        <tr>
+         
+          <td valign="bottom" align="right" style="padding-right: 0.3in"><b><?=number_format($Gross,2)?></b></td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+<?php
+    }
+  ?>
 </table>
 </body>
 </html>
