@@ -34,7 +34,7 @@ include('../../include/denied.php');
 	}
 	
 	$csalesno = $_REQUEST['x'];
-	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.chouseno,b.ccity,b.cstate,b.ctin,c.cname as cdelname from ntdr a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join customers c on a.compcode=c.compcode and a.cdelcode=c.cempid where a.compcode='$company' and a.ctranno = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.chouseno,b.ccity,b.cstate,b.ctin,c.cname as cdelname from dr a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join customers c on a.compcode=c.compcode and a.cdelcode=c.cempid where a.compcode='$company' and a.ctranno = '$csalesno'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -65,31 +65,30 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <head>
 </head>
 
-<body style="padding-top:0.75in" onLoad="window.print()">
+<body style="padding-top:0.97in" onLoad="window.print()">
 
-<table width="100%" border="0" cellpadding="3" style="border-collapse:collapse;" id="tblMain">
+<table width="100%" border="0" cellpadding="1" style="border-collapse:collapse;" id="tblMain">
   <tr>
-    <td colspan="2" align="right" style="height: 0.43in"><font size="3"><b><?php echo $csalesno;?></b></font></td>
+    <td colspan="2" style="padding-right: 0.25in;" align="right"><font size="3"><b><?php echo $csalesno;?></b></font></td>
   </tr>
 
   <tr>
     <td VALIGN="TOP">
-    
-      <table width="100%" border="0" cellpadding="3" cellspacing="5">
-        <tr><td style="height: 0.35in; padding-left: 0.8in"> <?=$CustName?> </td></tr>
-        <tr><td style="height: 0.35in; padding-left: 0.5in"><?=$Adds?> </td></tr>
-        <tr><td style="height: 0.2in"> &nbsp;&nbsp;&nbsp; <?=$cTin?></td></tr>
-        <tr><td style="height: 0.2in; padding-left: 0.8in; font-size: 11px"> <?=$CustDelName?></td></tr>
+
+      <table width="100%" border="0" cellpadding="2" style=" margin-top: 0.18in !important">
+        <tr><td style="padding-left: 1.2in;"> <?=$CustName?> </td></tr>
+        <tr><td style="padding-left: 1.2in"><?=$cTin?></td></tr>
+        <tr><td style="padding-left: 1.2in"><?=$Adds?> </td></tr>       
         </tr>
       </table>
 
     </td>
-    <td style="width: 2in"> 
-      <table width="100%" border="0" cellpadding="3" cellspacing="5">
-        <tr><td style="height: 0.28in"  align="right"> <?=date_format(date_create($Date), "M d, Y")?> </td></tr>
-        <tr><td style="height: 0.28in"  align="right"> <?=$cTerms?> </td></tr>
-        <tr><td style="height: 0.28in"  align="right"> &nbsp; </td></tr>
-        <tr><td style="height: 0.28in"  align="right"> &nbsp; </td></tr>
+    <td style="width: 2.7in" VALIGN="TOP"> 
+      <table width="100%" border="0">
+        <tr><td style="padding-right: 0.3in;" align="right"> <?=date_format(date_create($Date), "M d, Y")?> </td></tr>
+        <tr><td style="padding-right: 0.3in;" align="right"> &nbsp; </td></tr>
+        <tr><td style="padding-right: 0.3in;" align="right"> <?=$cTerms?> </td></tr>
+        <tr><td style="padding-right: 0.3in;" align="right"> &nbsp; </td></tr>
       </table>
     </td>
   </tr>
@@ -97,11 +96,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
     <td colspan="3">&nbsp;</td>
   </tr>
   <tr>
-    <td colspan="3">
+    <td colspan="3" style="padding-left: 0.7in; padding-top: 13px;">
     
-    <table width="100%" border="0" cellpadding="3" style="border-style:dashed;">
+    <table width="100%" border="0" cellpadding="2">
       <?php 
-		$sqlbody = mysqli_query($con,"select a.*,b.citemdesc from ntdr_t a left join items b on a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$csalesno'");
+		$sqlbody = mysqli_query($con,"select a.*,b.citemdesc from dr_t a left join items b on a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$csalesno'");
 
 		if (mysqli_num_rows($sqlbody)!=0) {
 		$cntr = 0;
@@ -112,8 +111,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	?>
       
       <tr>
-        <td style="width: 0.6in"><?php echo $rowbody['nqty'];?></td> 
-        <td style="width: 0.7in"><?php echo $rowbody['cunit'];?></td> 
+        <td style="width: 0.7in"><?php echo number_format($rowbody['nqty']);?></td> 
+        <td style="width: 0.8in"><?php echo $rowbody['cunit'];?></td> 
         <td><?php echo $rowbody['citemno'];?></td>
         <td style="text-overflow: ellipsis; width: 5in"><?php echo $rowbody['citemdesc'];?></td>
                
