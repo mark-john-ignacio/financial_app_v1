@@ -11,7 +11,7 @@ $query = "SELECT * FROM customers WHERE compcode='".$_SESSION['companyid']."' ";
 
 if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
 {
- $query .= "and cempid like '%".$_POST['searchByName']."%' OR cname like '%".$_POST['searchByName']."%'";
+ $query .= "and (cempid like '%".$_POST['searchByName']."%' OR cname like '%".$_POST['searchByName']."%')";
 }
 
 if(isset($_POST['order']))
@@ -59,17 +59,17 @@ foreach($result as $row)
 
 function count_all_data($connect)
 {
- $query = "SELECT * FROM customers";
+ $query = "SELECT * FROM customers WHERE compcode='".$_SESSION['companyid']."'";
  $statement = $connect->prepare($query);
  $statement->execute();
  return $statement->rowCount();
 }
 
 $output = array(
- "draw"       =>  intval($_POST["draw"]),
- "recordsTotal"   =>  count_all_data($connect),
- "recordsFiltered"  =>  $number_filter_row,
- "data"       =>  $data
+ "draw" => intval($_POST["draw"]),
+ "recordsTotal" => count_all_data($connect),
+ "recordsFiltered" => $number_filter_row,
+ "data" => $data
 );
 
 echo json_encode($output);
