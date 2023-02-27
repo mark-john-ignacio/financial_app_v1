@@ -139,10 +139,10 @@ if($_REQUEST['typ']=="POST"){
 
 			//echo $counter;
 
-			print_r(@$arrapprovers);
-			echo "<br><br>";
-			echo $preparedby;
-			echo "<br><br>";
+			//print_r(@$arrapprovers);
+			//echo "<br><br>";
+			//echo $preparedby;
+			//echo "<br><br>";
 
 			//echo intval($cntfinalall)." - ".intval($cntfinalapp);
 		//check if ung nakalogin ay isa sa mga mag aapprove.
