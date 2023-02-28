@@ -1122,7 +1122,7 @@ function chkform(){
 		}
 
 
-		if( parseFloat($('#txtnGross').val()) != parseFloat($('#txtnApplied').val()) ){
+		if( parseFloat($('#txtnGross').val().replace(/,/g,'')) != parseFloat($('#txtnApplied').val().replace(/,/g,'')) ){
 			alert("Unbalanced Transaction!");
 			subz = "NO";
 		}
