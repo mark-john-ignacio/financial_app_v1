@@ -318,7 +318,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
 																
 																$("#txtnEWTAmt<?php echo $cntr;?>").val(xcb);
 																//recompute due
-																xcbdue = ndue - xcb;
+																xcbdue = varngrs - xcb;
 																
 																$("#txtDue<?php echo $cntr;?>").val(xcbdue); 
 																

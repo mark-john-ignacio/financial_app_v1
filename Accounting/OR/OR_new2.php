@@ -1168,7 +1168,7 @@ function save(){
 											
 											$("#txtnEWTAmt"+lastRow).val(xcb);
 											//recompute due
-											xcbdue = ndue - xcb;
+											xcbdue = varngrs - xcb;
 											
 											$("#txtDue"+lastRow).val(xcbdue);
 
