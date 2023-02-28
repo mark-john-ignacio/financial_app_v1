@@ -176,6 +176,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						</div>
 					<div class="col-xs-2 nopadding">
 						<select id="selrecurrtyp" name="selrecurrtyp" class="form-control input-sm selectpicker"  tabindex="1">
+							<option value="one" <?php if($cRCType=="one") { echo "selected"; }  ?>>One Time Only</option>
 							<option value="weekly" <?php if($cRCType=="weekly") { echo "selected"; }  ?> >Weekly</option>
 							<option value="monthly" <?php if($cRCType=="monthly") { echo "selected"; }  ?> >Monthly</option>
 							<option value="quartertly" <?php if($cRCType=="quartertly") { echo "selected"; }  ?> >Quartertly</option>

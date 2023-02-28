@@ -101,6 +101,7 @@ $ndcutdate = date("m/d/Y", strtotime($ndcutdate . "+1 day"));
 					</div>
 				<div class="col-xs-2 nopadding">
 					<select id="selrecurrtyp" name="selrecurrtyp" class="form-control input-sm selectpicker"  tabindex="1" disabled="true">
+						<option value="one">One Time Only</option>	
 						<option value="weekly">Weekly</option>
 						<option value="monthly">Monthly</option>
 						<option value="quartertly">Quartertly</option>
