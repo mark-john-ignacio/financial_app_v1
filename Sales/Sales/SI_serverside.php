@@ -55,7 +55,7 @@ require('../../Connection/config.php');
 // require( 'ssp.class.php' );
 require('ssp.customized.class.php' );
 
-$joinQuery = "FROM `sales` AS `u` LEFT JOIN `customers` AS `ud` ON (`u`.`ccode` = `ud`.`cempid`)";
+$joinQuery = "FROM `sales` AS `u` LEFT JOIN `customers` AS `ud` ON (`u`.`compcode` = `ud`.`compcode` and `u`.`ccode` = `ud`.`cempid`)";
 $extraWhere = "`u`.`compcode` = '001'";
 //$groupBy = "";
 //$having = "";
