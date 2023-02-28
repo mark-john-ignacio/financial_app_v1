@@ -798,7 +798,7 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 			$("#selterms").attr("disabled", true); 
 			$("#prcevallabel").html("<b>Due Date</b>");
 
-			xval = "<p>Kindly make all checks payable to <b>HRWEB INC</b><br>For bank transfer please deposit to:</p><b><u>For EASTWEST acct:</u></b><br><b>Account Name: HRWEB INC.</b><br><b>Account Number: 200044514167</b><br><b>Bank Address: IMUS Cavite</b><br><br><i>Note: Please settle your account to prevent service interruptions.</i><br><i>Kindly disregards pass due notice if payments have been made.</i><div><br></div><br><br><br><br><br>";
+			xval = "<p>Kindly make all checks payable to <b>SERT TECHNOLOGY INC</b><br>For bank transfer please deposit to:</p><b><u>For MBTC acct:</u></b><br><b>Account Name: SERT TECHNOLOGY INC.</b><br><b>Account Number: 3547354509772</b><br><b>Bank Address: Mangghan,Gen. Trias, Cavite</b><br><br><i>Note: Please settle your account to prevent service interruptions.</i><br><i>Kindly disregards pass due notice if payments have been made.</i><div><br></div><br><br><br><br><br>";
 
 		}else{
 			$("#selrecurrtyp").attr("disabled", true); 

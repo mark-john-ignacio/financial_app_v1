@@ -844,18 +844,24 @@ else{
 	
 	$(document).ready(function(){
 
-		$("input.numericchkamt").autoNumeric('init',{mDec:2});
-		$("input.numericint").autoNumeric('init',{mDec:0});
-
-
 		$(".nav-tabs a").click(function(){
 			$(this).tab('show');
 		});
+
+		$("input.numericchkamt").autoNumeric('init',{mDec:2});
+		$("input.numericchkamt").on("click focus", function () {
+      $(this).select();
+    });
+
+		$("input.numericint").autoNumeric('init',{mDec:0});
+ 		$("input.numericint").on("click focus", function () {
+      $(this).select();
+    });
 		
-		$("input.numeric").numeric({decimalPlaces: 4});
-        $("input.numeric").on("click focus", function () {
-              $(this).select();
-        });
+		$("input.numeric").autoNumeric('init',{mDec:2});
+    $("input.numeric").on("click focus", function () {
+      $(this).select();
+    });
 
 		
 		$("input.numeric").on("keyup", function (e) {
@@ -876,12 +882,6 @@ else{
 		
 		
 
-	
-	});
-
-
-$(function() {   
-
 	$('#frmOR').on('keyup keypress', function(e) {
 	  var keyCode = e.keyCode || e.which;
 	  if (keyCode === 13) { 
@@ -893,16 +893,7 @@ $(function() {
            $('#datetimepicker4, #txtChekDate, #date_delivery').datetimepicker({
                  format: 'MM/DD/YYYY'
            });
-		   
-	$("input.numericchkamt").numeric({decimalPlaces: 4});
-	$("input.numericchkamt").on("click focus", function () {
-		$(this).select();
-	});
-	
-	$("input.numericint").numeric( {decimalPlaces: false, negative: false} );
-	$("input.numericint").on("click focus", function () {
-		$(this).select();
-	});
+
 											
 	$('.numericint').keydown(function (e) {
 		
