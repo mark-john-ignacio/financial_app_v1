@@ -8,6 +8,8 @@ include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 include('../../include/access2.php');
 
+$company = $_SESSION['companyid'];
+
 $poststat = "True";
 $sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Customers_edit.php'");
 if(mysqli_num_rows($sql) == 0){
@@ -25,7 +27,7 @@ if(mysqli_num_rows($sql) == 0){
 				
 				if($citemno <> ""){
 					
-					$sql = "select A.*, A1.cacctdesc as salescode, B.cname as cparentname, C.cname as csmaname, A1.cacctid from customers A LEFT JOIN accounts A1 ON A.compcode=A1.compcode and (A.cacctcodesales = A1.cacctno) LEFT JOIN customers B ON (A.cparentcode = B.cempid)  LEFT JOIN salesman C ON (A.csman = C.ccode) where A.cempid='$citemno'";
+					$sql = "select A.*, A1.cacctdesc as salescode, B.cname as cparentname, C.cname as csmaname, A1.cacctid from customers A LEFT JOIN accounts A1 ON A.compcode=A1.compcode and (A.cacctcodesales = A1.cacctno) LEFT JOIN customers B ON (A.cparentcode = B.cempid)  LEFT JOIN salesman C ON (A.csman = C.ccode) where A.compcode='$company' and A.cempid='$citemno'";
 				}else{
 					header('Customers.php');
 					die();
@@ -88,7 +90,7 @@ if(mysqli_num_rows($sql) == 0){
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Coop Financials</title>
+	<title>Myx Financials</title>
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?v=<?php echo time();?>"> 
     <link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>   
     
