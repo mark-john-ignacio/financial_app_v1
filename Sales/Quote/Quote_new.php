@@ -105,6 +105,7 @@ $ndcutdate = date("m/d/Y", strtotime($ndcutdate . "+1 day"));
 						<option value="monthly">Monthly</option>
 						<option value="quartertly">Quartertly</option>
 						<option value="yearly">Yearly</option>
+						<option value="semi_annual">Semi Annual</option>
 					</select>
 				</div>
     		<div class="col-xs-2">

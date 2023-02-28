@@ -180,6 +180,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							<option value="monthly" <?php if($cRCType=="monthly") { echo "selected"; }  ?> >Monthly</option>
 							<option value="quartertly" <?php if($cRCType=="quartertly") { echo "selected"; }  ?> >Quartertly</option>
 							<option value="yearly" <?php if($cRCType=="yearly") { echo "selected"; }  ?> >Yearly</option>
+							<option value="semi_annual" <?php if($cRCType=="semi_annual") { echo "selected"; }  ?>>Semi Annual</option>
 						</select>
 					</div>
 					<div class="col-xs-2">
