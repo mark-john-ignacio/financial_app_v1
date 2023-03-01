@@ -14,7 +14,7 @@ require_once "../Connection/connection_string.php";
 	$acctid = $_REQUEST['cacctid'];
 	$nidentz = $_REQUEST['trancode'];
 		
-	$result = mysqli_query ($con, "Select * From accounts_default where compcode='$company' and ccode='$code' and nidentity='$nidentz'"); 
+	$result = mysqli_query ($con, "Select * From accounts_default where compcode='$company' and ccode='$code'"); 
 	
 	if(mysqli_num_rows($result)==0){
 		
@@ -41,7 +41,7 @@ require_once "../Connection/connection_string.php";
 			}
 
 		
-			if (!mysqli_query($con,"UPDATE accounts_default set `cdescription` = '$desc', cacctno = '$acctid' where `compcode` = '$company' and `ccode` = '$code' and nidentity='$nidentz'")) {
+			if (!mysqli_query($con,"UPDATE accounts_default set `cdescription` = '$desc', cacctno = '$acctid' where `compcode` = '$company' and `ccode` = '$code'")) {
 				printf("Errormessage: %s\n", mysqli_error($con));
 			} 
 			else{

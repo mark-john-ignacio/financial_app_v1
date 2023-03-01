@@ -13,7 +13,7 @@ $company = $_SESSION['companyid'];
 	$cAcctNo =  mysqli_real_escape_string($con, $_REQUEST['txtcacctid']);
 	$dTranDate = $_REQUEST['date_delivery'];
 	$cRemarks =  mysqli_real_escape_string($con, $_REQUEST['txtremarks']); 
-	$cPayMethod =  mysqli_real_escape_string($con, $_REQUEST['selpayment']);
+	$cPayMethod =  "";
 	
 	$nGross =  mysqli_real_escape_string($con, $_REQUEST['txtnGross']);
 	$nGross = str_replace(",","",$nGross);

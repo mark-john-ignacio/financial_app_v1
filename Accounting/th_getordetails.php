@@ -15,9 +15,10 @@ require_once "../Connection/connection_string.php";
 	     $json['ctranno'] = $row['ctranno'];
 		 $json['corno'] = $row['cornumber'];
 		 $json['dcutdate'] = $row['dcutdate'];
-	     $json['cpaymethod'] = $row['cpaymethod'];
+	     $json['cpaymethod'] = ucwords($row['cpaymethod']);
 		 $json['cremarks'] = $row['cremarks'];
-		 $json['namount'] = $row['namount'];
+		 $json['namount'] = number_format($row['namount'],2);
+		 $json['namountorig'] = $row['namount'];
 		 $json2[] = $json;
 
 	}

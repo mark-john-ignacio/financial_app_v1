@@ -29,7 +29,7 @@ $sqlchk = mysqli_query($con,"Select a.cvalue,b.cacctdesc From parameters a left 
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Coop Financials</title>
+	<title>Myx   Financials</title>
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../Bootstrap/css/alert-modal.css">
 
@@ -72,24 +72,27 @@ function trans(x,num){
 </head>
 
 <body style="padding:5px; height:750px">
-	<div>
-		<section>
-         <div>
+		<div>
+			<section>
+        <div>
         	<div style="float:left; width:50%">
-				<font size="+2"><u>Bank Deposit</u></font>	
-            </div>
+						<font size="+2"><u>Bank Deposit</u></font>	
+          </div>
         </div>
 			<br><br>
+
 			<button type="button" class="btn btn-primary" onClick="location.href='Deposit_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
-            <button type="button" class="btn btn-warning btn-md" id="btnSet" name="btnSet"><span class="glyphicon glyphicon-cog"></span> Settings</button>
+			<!--
+    	<button type="button" class="btn btn-warning btn-md" id="btnSet" name="btnSet"><span class="glyphicon glyphicon-cog"></span> Settings</button>
+-->
                  
             <br><br>
 			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
 						<th>Trans No.</th>
-                        <th>Deposit Acct</th>
+            <th>Deposit Acct</th>
 						<th>Amount</th>
 						<th>Date</th>
 						<th>Status</th>
@@ -164,23 +167,31 @@ function trans(x,num){
             <div class="modal-body">
 
                 <form method="post" name="frmSet" id="frmSet" action="Deposit_setsave.php">
-                <fieldset>
+                	<fieldset>
                     <legend>Account Settings</legend>
-                <table width="100%" border="0" cellpadding="0" align="right">
-                  <tr>
-                    <th scope="row" width="200">Default Deposit to Account</th>
-                    <td style="padding:2px">
-                    
-                    
-                    <div class="col-xs-10"><input type="text" class="form-control input-xs" name="paydebit" id="paydebit" placeholder="Search Account Description..." required tabindex="1" value="<?php echo $nDebitDesc; ?>"> <input type="hidden" name="paydebitid" id="paydebitid"  value="<?php echo $nDebitDef; ?>"> </div></td>
-                  </tr>
-                </table>
-                
-                </fieldset>
-                <br><br>
-                <center>
-                <button type="button" class="btn btn-success btn-sm" name="setSubmit" id="setSubmit"><span class="glyphicon glyphicon glyphicon-floppy-disk"></span> Save</button>
-                </center>
+										<table width="100%" border="0" cellpadding="0" align="right">
+											<tr>
+												<th scope="row" width="200">Default Deposit to Account</th>
+												<td style="padding:2px">
+												
+												
+												<div class="col-xs-10"><input type="text" class="form-control input-xs" name="paydebit" id="paydebit" placeholder="Search Account Description..." required tabindex="1" value="<?php echo $nDebitDesc; ?>"> <input type="hidden" name="paydebitid" id="paydebitid"  value="<?php echo $nDebitDef; ?>"> </div></td>
+											</tr>
+
+											<tr>
+												<th scope="row" width="200">On Hand Account</th>
+												<td style="padding:2px">
+												
+												
+												<div class="col-xs-10"><input type="text" class="form-control input-xs" name="payonhand" id="payonhand" placeholder="Search Account Description..." required tabindex="1" value="<?php echo $nDebitDesc; ?>"> <input type="hidden" name="paydebitid" id="paydebitid"  value="<?php echo $nDebitDef; ?>"> </div></td>
+											</tr>
+
+										</table>                
+               		</fieldset>
+									<br><br>
+									<center>
+										<button type="button" class="btn btn-success btn-sm" name="setSubmit" id="setSubmit"><span class="glyphicon glyphicon glyphicon-floppy-disk"></span> Save</button>
+									</center>
                 </form>
                 
             </div>

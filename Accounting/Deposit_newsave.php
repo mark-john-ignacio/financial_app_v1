@@ -46,7 +46,7 @@ else {
 	$cAcctNo =  mysqli_real_escape_string($con, $_REQUEST['txtcacctid']);
 	$dTranDate = $_REQUEST['date_delivery'];
 	$cRemarks =  mysqli_real_escape_string($con, $_REQUEST['txtremarks']); 
-	$cPayMethod =  mysqli_real_escape_string($con, $_REQUEST['selpayment']);
+	$cPayMethod =  "";
 	
 	$nGross =  mysqli_real_escape_string($con, $_REQUEST['txtnGross']);
 	$nGross = str_replace(",","",$nGross);
@@ -70,7 +70,7 @@ else {
 		 $refcidenttran = $cSINo."P".$cnt;
 
 			if (!mysqli_query($con, "INSERT INTO `deposit_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `corno`) values('$company', '$refcidenttran', '$cnt', '$cSINo', '$csalesno')")) {
-				printf("INSERT INTO `deposit_t`(`compcode`, `ctranno`, `corno`) values('$company', '$cSINo', '$csalesno')\n");
+				//printf("INSERT INTO `deposit_t`(`compcode`, `ctranno`, `corno`) values('$company', '$cSINo', '$csalesno')\n");
 				printf("Errormessage: %s\n", mysqli_error($con));
 			} 
 
@@ -89,5 +89,5 @@ else {
 </form>
 <script>
 	alert('Record Succesfully Saved');
-    document.forms['frmpos'].submit();
+  document.forms['frmpos'].submit();
 </script>

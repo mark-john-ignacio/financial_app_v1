@@ -19,25 +19,29 @@ $corno = $_REQUEST['txtctranno'];
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Coop Financials</title>
-    
+	<title>Myx Financials</title>
+
+  <link rel="stylesheet" type="text/css" href="../global/plugins/font-awesome/css/font-awesome.min.css"/>  
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="../Bootstrap/css/alert-modal.css">
+  <link rel="stylesheet" type="text/css" href="../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
 
-<script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../js/bootstrap3-typeahead.min.js"></script>
-<script src="../Bootstrap/js/jquery.numeric.js"></script>
+	<script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../js/bootstrap3-typeahead.min.js"></script>
+	<script src="../../include/autoNumeric.js"></script>
+	<!--
+	<script src="../Bootstrap/js/jquery.numeric.js"></script>
+	-->
 
-<script src="../Bootstrap/js/bootstrap.js"></script>
-<script src="../Bootstrap/js/moment.js"></script>
-<script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+	<script src="../Bootstrap/js/bootstrap.js"></script>
+	<script src="../Bootstrap/js/moment.js"></script>
+	<script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 </head>
 
 <body style="padding:5px; height:700px" onLoad="disabled();">
 <?php
 
-    	$sqlchk = mysqli_query($con,"Select a.cacctcode, a.namount, a.cortype, DATE_FORMAT(a.dcutdate,'%m/%d/%Y') as dcutdate, a.namount, a.lapproved, a.lcancelled, a.lprintposted, a.cremarks, c.cacctdesc, c.nbalance From deposit a left join accounts c on a.compcode=c.compcode and a.cacctcode=c.cacctno where a.compcode='$company' and a.ctranno='$corno'");
+    	$sqlchk = mysqli_query($con,"Select a.cacctcode, a.namount, a.cortype, DATE_FORMAT(a.dcutdate,'%m/%d/%Y') as dcutdate, a.namount, a.lapproved, a.lcancelled, a.lprintposted, a.cremarks, c.cacctdesc, c.nbalance From deposit a left join accounts c on a.compcode=c.compcode and a.cacctcode=c.cacctid where a.compcode='$company' and a.ctranno='$corno'");
 if (mysqli_num_rows($sqlchk)!=0) {
 		while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
 			$nDebitDef = $row['cacctcode'];
@@ -106,6 +110,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
     <td style="padding:2px;">&nbsp;</td>
   </tr>
   <tr>
+		<!--
     <tH width="200" valign="top">Receipt By:</tH>
     <td valign="top" style="padding:2px">
       
@@ -120,6 +125,15 @@ if (mysqli_num_rows($sqlchk)!=0) {
           </div>      
       </div> 
       </td>
+		-->
+		<tH width="200" rowspan="2" valign="top">Remarks:</tH>
+    <td rowspan="2" valign="top" style="padding:2px">
+			<div class="col-xs-12 nopadding">
+				<div class="col-xs-10 nopadding">
+					<textarea class="form-control" rows="2" id="txtremarks" name="txtremarks"><?php echo $cRemarks; ?></textarea>
+				</div>
+			</div>
+		</td>
     <tH style="padding:2px">Date:</tH>
     <td style="padding:2px"><div class="col-xs-8 nopadding">
       <input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $dDate; ?>"/>
@@ -127,15 +141,10 @@ if (mysqli_num_rows($sqlchk)!=0) {
     </div></td>
   </tr>
   <tr>
-    <tH width="200" rowspan="2" valign="top">Memo:</tH>
-    <td rowspan="2" valign="top" style="padding:2px"><div class="col-xs-12 nopadding">
-      <div class="col-xs-10 nopadding">
-        <textarea class="form-control" rows="2" id="txtremarks" name="txtremarks"><?php echo $cRemarks; ?></textarea>
-      </div>
-    </div></td>
+
     <th valign="top" style="padding:2px">Total Deposited:</th>
     <td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
-      <input type="text" id="txtnGross" name="txtnGross" class="form-control" value="<?php echo $nAmount;?>" readonly>
+      <input type="text" id="txtnGross" name="txtnGross" class="form-control text-right" value="<?php echo number_format($nAmount,2);?>" readonly>
     </div></td>
     </tr>
   <tr>
@@ -145,16 +154,9 @@ if (mysqli_num_rows($sqlchk)!=0) {
       </table>
 <br>
 
-<button type="button" class="btn btn-xs btn-info" onClick="getInvs();">
-
-	<!--<button type="button" class="btn btn-xs btn-primary" onClick="popup('add_asset.asp?types=asset');" name="openBtn" id="openBtn">-->
-  	<table border="0">
-    <tr>
-      <td valign="top"><img src="../images/Find.png" border="0" height="20" width="20" />&nbsp;</td>
-      <td>Load OR</td>
-    </tr>
-  	</table>
-    </button>
+				<button type="button" class="btn btn-xs btn-info" onClick="getInvs();">
+					<i class="fa fa-search"></i>&nbsp;Load OR
+    		</button>
 
     <br><br>
 	  <div id="tableContainer" class="alt2" dir="ltr" style="
@@ -193,8 +195,8 @@ if (mysqli_num_rows($sqlchk)!=0) {
                 <td><?php echo $rowbody['cornumber'];?></td>
                 <td><?php echo $rowbody['dcutdate'];?></td>
                 <td><?php echo $rowbody['cremarks'];?></td>
-                <td><?php echo $rowbody['cpaymethod'];?></td>
-                <td align='right'><div class='col-xs-12'><input type='hidden' name='txtnAmt<?php echo $cntr;?>' id='txtAmt' value='<?php echo $rowbody['namount'];?>' /><?php echo $rowbody['namount'];?></div></td>
+                <td><?php echo ucwords($rowbody['cpaymethod']);?></td>
+                <td align='right'><div class='col-xs-12'><input type='hidden' name='txtnAmt<?php echo $cntr;?>' id='txtAmt' value='<?php echo $rowbody['namount'];?>' /><?php echo number_format($rowbody['namount'],2);?></div></td>
                 <td align='center'><input class='btn btn-danger btn-xs' type='button' id='row_<?php echo $cntr;?>_delete' value='delete' onClick='deleteRow(this);' /></td>
               </tr>
 	    <?php
@@ -242,7 +244,7 @@ Save<br>(CTRL+S)    </button>
 
     </fieldset>
 
-
+		</form>
 
 <!-- Bootstrap modal -->
 <div class="modal fade" id="myModal" role="dialog">
@@ -286,7 +288,26 @@ Save<br>(CTRL+S)    </button>
 </div><!-- /.modal -->
 <!-- End Bootstrap modal -->
 
-</form>
+			<!-- Alert Modal -->
+			<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+				<div class="vertical-alignment-helper">
+					<div class="modal-dialog vertical-align-top">
+						<div class="modal-content">
+							<div class="alert-modal-danger">
+								<p id="AlertMsg"></p>
+								<p>
+									<center>
+										<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+									</center>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- End Alert Modal -->
+
+
 
 <?php
 }
@@ -448,71 +469,60 @@ function computeGross(){
 
 }
 
-function getInvs(){
+		function getInvs(){	
+			
+			//clear table body if may laman			
 	
-		if($('#selpayment').val() == ""){
-			alert("Cannot read Receipt By!");
-		}
-		else{
-			
-			//clear table body if may laman
-			
-
 			$('#MyORTbl tbody').empty();
-			
+				
 			//get or na selected na
 			var y;
 			var salesnos = "";
 			var rc = $('#MyTable tr').length;
-			
+				
 			if(rc>1){
 				for(y=1;y<=rc-1;y++){ 
-				  if(y>1){
-					  salesnos = salesnos + ",";
-				  }
+					if(y>1){
+						salesnos = salesnos + ",";
+					}
 					salesnos = salesnos + $('input[name=txtcSalesNo'+y+']').val();
 				}
 			}
-
-			//ajax lagay table details sa modal body
-			var x = $('#selpayment').val();
-			var z = $('#txtcacctid').val();
-			
+	
+			//ajax lagay table details sa modal body			
 			$('#invheader').html("OR List: " + $('#selpayment').val())
-			
+				
 			$.ajax({
-                    url: 'th_depositlist.php',
-					data: 'z='+z+'&x='+x+"&y="+salesnos,
-                    dataType: 'json',
-                    method: 'post',
-					async: false,
-                    success: function (data) {
-                       // var classRoomsTable = $('#mytable tbody');
-                        console.log(data);
-                       $.each(data,function(index,item){
-                        $("<tr>").append(
-						$("<td>").html("<input type='checkbox' value='"+item.ctranno+"' name='chkSales[]'>"),
-                        $("<td>").text(item.ctranno),
-						$("<td>").text(item.corno),
-                        $("<td>").text(item.dcutdate),
-						$("<td>").text(item.namount)
-                        ).appendTo("#MyORTbl tbody");
-
-                       });
-					   
-					   $('#myModal').modal('show');
-                    },
-                    error: function (err) {
-                        alert(err+"\n"+"Or No receipt to be deposited!");
-                    }
-                });
-			
-			
-			
+				url: 'th_depositlist.php',
+				data: { y: salesnos },
+				dataType: 'json',
+				method: 'post',
+				async: false,
+				success: function (data) {
+	
+					console.log(data);
+					$.each(data,function(index,item){
+						$("<tr>").append(
+							$("<td>").html("<input type='checkbox' value='"+item.ctranno+"' name='chkSales[]'>"),
+							$("<td>").text(item.ctranno),
+							$("<td>").text(item.cpaymethod),
+							$("<td>").text(item.corno),
+							$("<td>").text(item.dcutdate),
+							$("<td>").text(item.namount)
+						).appendTo("#MyORTbl tbody");
+					});
+							 
+					$('#myModal').modal('show');
+				},
+				error: function (err) {
+	
+					$("#AlertMsg").html("<b>ERROR: </b>Loading Error \n"+"or No receipt to be deposited!");
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
+				}
+			});
+	
 		}
-
-
-}
 
 function save(){
 

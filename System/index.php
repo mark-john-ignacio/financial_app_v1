@@ -3321,7 +3321,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					var cdesc = $(this).find('input[name="txtcdesc[]"]').val();
 					var cacctid = $(this).find('input[name="txtcacctid[]"]').val();
 					var nident = $(this).find('input[type="hidden"][name="txtnident[]"]').val();
-					
+
 					$.ajax ({
 						url: "th_saveacctdefaults.php",
 						data: { trancode: nident, ccode: ccode, cdesc: cdesc, cacctid: cacctid },
@@ -3335,7 +3335,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					
 				});
 			
-			
+			//alert(isOk);
+
 				if(isOk == "True"){
 					$('#TblAcctDef tbody').empty();
 					loadacctdefaults();
