@@ -22,7 +22,7 @@ require_once "../Connection/connection_string.php";
 	}
 
 	$acctsorlist = array();
-	$result = mysqli_query ($con, "select B.corno from deposit_t A left join deposit B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lcancelled=0"); 
+	$result = mysqli_query ($con, "select A.corno from deposit_t A left join deposit B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lcancelled=0"); 
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 		$acctsorlist[] = $row['corno'];
 	}
