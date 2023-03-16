@@ -248,27 +248,40 @@ include('../../include/access2.php');
              </p>
          </div>
 
-         <div id="menu1" class="tab-pane fade" style="padding-left:30px">
-             <p>
-             
-             <input type="button" value="Add Contact" name="btnNewCont" id="btnNewCont" class="btn btn-primary btn-xs" onClick="addcontlist();">
-            
-            <input name="hdncontlistcnt" id="hdncontlistcnt" type="hidden" value="0">
-            <br>
-                <table width="100%" border="0" cellpadding="2" id="myUnitTable">
+            <div id="menu1" class="tab-pane fade" style="padding-left:10px; padding-top:10px;">
+              <p>
+                    
+                <input type="button" value="Add Contact" name="btnNewCont" id="btnNewCont" class="btn btn-primary btn-xs" onClick="addcontlist();">
+                <input name="hdncontlistcnt" id="hdncontlistcnt" type="hidden" value="0">
+                <br>
+
+                <table width="150%" border="0" cellpadding="2" id="myContactDetTable">
                   <tr>
-                    <th scope="col">Name</th>
+                    <th scope="col" width="200">Name</th>
                     <th scope="col" width="180">Designation</th>
                     <th scope="col" width="180">Department</th>
-                    <th scope="col" width="180">Email Add</th>
-                    <th scope="col" width="120">Tel No.</th>
-                    <th scope="col" width="120">Mobile No.</th>
-                    <th scope="col" width="80">&nbsp;</th>
+                      <?php
+                          $arrcontctsdet = array();
+                          $sql = "Select * From contacts_types where compcode='$company'";
+                          $result=mysqli_query($con,$sql);
+                          if (!mysqli_query($con, $sql)) {
+                            printf("Errormessage: %s\n", mysqli_error($con));
+                          }			
+                                      
+                          while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+                          {
+                            $arrcontctsdet[] = array('cid' => $row['cid'], 'cdesc' => $row['cdesc']);
+                        ?>
+                            <th scope="col" width="180"><?=$row['cdesc']?></th>
+                        <?php
+                          }
+                      ?>
+                    <th scope="col" width="80"><input type='hidden' id='conctsadddet' value='<?=json_encode($arrcontctsdet)?>'></th>
                   </tr>
-            	</table>
+                </table>
 
-             </p>
-         </div>
+              </p>
+            </div>
          
          <div id="menu4" class="tab-pane fade" style="padding-left:30px">
              <p>
@@ -996,7 +1009,7 @@ $(function() {
 		$("#frmITEM").on('submit', function (e) {
 		e.preventDefault();
 		
-		var tbl = document.getElementById('myUnitTable').getElementsByTagName('tr');
+		var tbl = document.getElementById('myContactDetTable').getElementsByTagName('tr');
 		var lastRow = tbl.length-1;											
 		document.getElementById('hdncontlistcnt').value = lastRow;
 
@@ -1207,27 +1220,33 @@ function chkGroupVal(){
 }
 
 function addcontlist(){
-	var tbl = document.getElementById('myUnitTable').getElementsByTagName('tr');
-	var lastRow = tbl.length;
+    var tbl = document.getElementById('myContactDetTable').getElementsByTagName('tr');
+    var lastRow = tbl.length;
 
-	var a=document.getElementById('myUnitTable').insertRow(-1);
-	var b=a.insertCell(0);
-	var c=a.insertCell(1);
-	var d=a.insertCell(2);
-	var e=a.insertCell(3);
-	var f=a.insertCell(4);
-	var g=a.insertCell(5);
-  var h=a.insertCell(6);
-	
-	b.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtConNme"+lastRow+"' name='txtConNme"+lastRow+"' value='' required></div>";
-	c.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtConDes"+lastRow+"' name='txtConDes"+lastRow+"' value=''> </div>";
-  d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtConDept"+lastRow+"' name='txtConDept"+lastRow+"' value=''> </div>";
-	e.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtConeml"+lastRow+"' name='txtConeml"+lastRow+"' value=''> </div>";
-	f.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtContel"+lastRow+"' name='txtContel"+lastRow+"' value=''> </div>";
-	g.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtConmob"+lastRow+"' name='txtConmob"+lastRow+"' value=''> </div>";
-	h.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRowconts(this);\"/></div>";
-	
-}
+    var a=document.getElementById('myContactDetTable').insertRow(-1);
+    var b=a.insertCell(0);
+    var c=a.insertCell(1);
+    var d=a.insertCell(2);
+
+    b.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConNme"+lastRow+"' name='txtConNme"+lastRow+"' value='' required></div>";
+    c.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConDes"+lastRow+"' name='txtConDes"+lastRow+"' value=''> </div>";
+    d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConDept"+lastRow+"' name='txtConDept"+lastRow+"' value=''> </div>";
+
+    $cntng = 2;
+    var xz = $("#conctsadddet").val();
+			$.each(jQuery.parseJSON(xz), function() { 
+				$cntng = $cntng + 1;
+        var e=a.insertCell($cntng);
+
+        e.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConAdd"+this['cid']+lastRow+"' name='txtConAdd"+this['cid']+lastRow+"' value=''> </div>";
+
+			});
+
+    $cntng = $cntng + 1
+    var h=a.insertCell($cntng);
+    h.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input class='btn btn-danger btn-block btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRowconts(this);\"/></div>";
+    
+  }
 
 function deleteRowconts(r) {
 	var tbl = document.getElementById('myUnitTable').getElementsByTagName('tr');

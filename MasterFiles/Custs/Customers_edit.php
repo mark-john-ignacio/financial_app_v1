@@ -314,22 +314,45 @@ if(mysqli_num_rows($sql) == 0){
 							</p>
 						</div>
 
-						<div id="menu1" class="tab-pane fade" style="padding-left:30px">
+						<div id="menu1" class="tab-pane fade" style="padding-left:10px">
 							<p>
 								<input type="button" value="Add Contact" name="btnNewCont" id="btnNewCont" class="btn btn-primary btn-xs" onClick="addcontlist();">
 								<input name="hdncontlistcnt" id="hdncontlistcnt" type="hidden" value="0">
 								<br>
-								<table width="100%" border="0" cellpadding="2" id="myUnitTable">
+								<table width="150%" border="0" cellpadding="2" id="myUnitTable">
 									<tr>
-										<th scope="col">Name</th>
-										<th scope="col" width="180">Designation</th>
-										<th scope="col" width="180">Department</th>
-										<th scope="col" width="180">Email Add</th>
-										<th scope="col" width="120">Tel No.</th>
-										<th scope="col" width="120">Mobile No.</th>
-										<th scope="col" width="80">&nbsp;</th>
+										<th scope="col" width="200">Name</th>
+                    <th scope="col" width="180">Designation</th>
+                    <th scope="col" width="180">Department</th>
+											<?php
+                          $arrcontctsdet = array();
+                          $sql = "Select * From contacts_types where compcode='$company'";
+                          $result=mysqli_query($con,$sql);
+                          if (!mysqli_query($con, $sql)) {
+                            printf("Errormessage: %s\n", mysqli_error($con));
+                          }			
+                                      
+                          while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+                          {
+                            $arrcontctsdet[] = array('cid' => $row['cid'], 'cdesc' => $row['cdesc']);
+                        ?>
+                            <th scope="col" width="180"><?=$row['cdesc']?></th>
+                        <?php
+                          }
+                      ?>
+										<th scope="col" width="80"><input type='hidden' id='conctsadddet' value='<?=json_encode($arrcontctsdet)?>'></th>
 									</tr>
 									<?php
+										$darrcntcts = array();
+										$qrydcntcts = "Select * From customers_contacts_nos where compcode = '$company'";
+										$rowdcntcts = mysqli_query($con, $qrydcntcts) or die(mysqli_error($con));
+										while($row = mysqli_fetch_array($rowdcntcts, MYSQLI_ASSOC))
+										{
+											$darrcntcts[] = array('cid' => $row['cid'], 'contct_id' => $row['customers_contacts_cid'], 'contact_type' => $row['contact_type'], 'cnumber' => $row['cnumber']);
+										}
+										
+										
+
 										$cntrstrx = 0;
 										$qrycontx = "Select * From customers_contacts where ccode = '$citemno' Order by cid";
 										$rowcontx = mysqli_query($con, $qrycontx) or die(mysqli_error($con));
@@ -341,10 +364,20 @@ if(mysqli_num_rows($sql) == 0){
 												<td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConNme<?php echo $cntrstrx;?>' name='txtConNme<?php echo $cntrstrx;?>' value='<?php echo $row['cname'];?>' required></div></td>
 												<td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConDes<?php echo $cntrstrx;?>' name='txtConDes<?php echo $cntrstrx;?>' value='<?php echo $row['cdesignation'];?>'> </div></td>
 												<td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConDept<?php echo $cntrstrx;?>' name='txtConDept<?php echo $cntrstrx;?>' value='<?php echo $row['cdept'];?>'> </div></td>
-														
-												<td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConeml<?php echo $cntrstrx;?>' name='txtConeml<?php echo $cntrstrx;?>' value='<?php echo $row['cemail'];?>'> </div></td>
-												<td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtContel<?php echo $cntrstrx;?>' name='txtContel<?php echo $cntrstrx;?>' value='<?php echo $row['cphone'];?>'> </div></td>
-												<td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConmob<?php echo $cntrstrx;?>' name='txtConmob<?php echo $cntrstrx;?>' value='<?php echo $row['cmobile'];?>'> </div></td>
+												
+												<?php
+													foreach($arrcontctsdet as $ckdh){
+														$dval = "";
+														foreach($darrcntcts as $zxc){
+															if($ckdh['cid']==$zxc['contact_type'] && $row['cid']==$zxc['contct_id']){
+																$dval = $zxc['cnumber'];
+															}
+														}
+												?>
+												<td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConAdd<?=$ckdh['cid'].$cntrstrx;?>' name='txtConAdd<?=$ckdh['cid'].$cntrstrx;?>' value='<?=$dval?>'> </div></td>
+												<?php
+													}
+												?>
 												<td><div class="col-xs-12 nopadtopleft"><input class='btn btn-danger btn-xs' type='button' id='row_<?php echo $cntrstrx;?>_delete' class='delete' value='Delete' onClick="deleteRowconts(this);"/></div></td>
 											</tr>
 									<?php
@@ -1330,27 +1363,33 @@ function loadgroupvalues(){
 }
 
 function addcontlist(){
-	var tbl = document.getElementById('myUnitTable').getElementsByTagName('tr');
-	var lastRow = tbl.length;
+    var tbl = document.getElementById('myUnitTable').getElementsByTagName('tr');
+    var lastRow = tbl.length;
 
-	var a=document.getElementById('myUnitTable').insertRow(-1);
-	var b=a.insertCell(0);
-	var c=a.insertCell(1);
-	var d=a.insertCell(2);
-	var e=a.insertCell(3);
-	var f=a.insertCell(4);
-	var g=a.insertCell(5);
-  var h=a.insertCell(6);
-	
-	b.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtConNme"+lastRow+"' name='txtConNme"+lastRow+"' value='' required></div>";
-	c.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtConDes"+lastRow+"' name='txtConDes"+lastRow+"' value=''> </div>";
-  d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtConDept"+lastRow+"' name='txtConDept"+lastRow+"' value=''> </div>";
-	e.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtConeml"+lastRow+"' name='txtConeml"+lastRow+"' value=''> </div>";
-	f.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtContel"+lastRow+"' name='txtContel"+lastRow+"' value=''> </div>";
-	g.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtConmob"+lastRow+"' name='txtConmob"+lastRow+"' value=''> </div>";
-	h.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRowconts(this);\"/></div>";
-	
-}
+    var a=document.getElementById('myUnitTable').insertRow(-1);
+    var b=a.insertCell(0);
+    var c=a.insertCell(1);
+    var d=a.insertCell(2);
+
+    b.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConNme"+lastRow+"' name='txtConNme"+lastRow+"' value='' required></div>";
+    c.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConDes"+lastRow+"' name='txtConDes"+lastRow+"' value=''> </div>";
+    d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConDept"+lastRow+"' name='txtConDept"+lastRow+"' value=''> </div>";
+
+    $cntng = 2;
+    var xz = $("#conctsadddet").val();
+			$.each(jQuery.parseJSON(xz), function() { 
+				$cntng = $cntng + 1;
+        var e=a.insertCell($cntng);
+
+        e.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConAdd"+this['cid']+lastRow+"' name='txtConAdd"+this['cid']+lastRow+"' value=''> </div>";
+
+			});
+
+    $cntng = $cntng + 1
+    var h=a.insertCell($cntng);
+    h.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input class='btn btn-danger btn-block btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRowconts(this);\"/></div>";
+    
+  }
 
 function deleteRowconts(r) {
 	var tbl = document.getElementById('myUnitTable').getElementsByTagName('tr');
