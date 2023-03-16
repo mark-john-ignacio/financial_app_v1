@@ -1,24 +1,24 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-
-function chkgrp($valz) {
-	global $con;
-	
-	if($valz==''){
-		return "NULL";
-	}else{
-    	return "'".mysqli_real_escape_string($con, $valz)."'";
+	if(!isset($_SESSION)){
+		session_start();
 	}
-}
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
 
-$cCustCode = strtoupper($_REQUEST['txtccode']);
-$company = $_SESSION['companyid'];
-$mymsg = "True";
-$myerror = "True";
+	function chkgrp($valz) {
+		global $con;
+		
+		if($valz==''){
+			return "NULL";
+		}else{
+				return "'".mysqli_real_escape_string($con, $valz)."'";
+		}
+	}
+
+	$cCustCode = strtoupper($_REQUEST['txtccode']);
+	$company = $_SESSION['companyid'];
+	$mymsg = "True";
+	$myerror = "True";
 	
 	$cCustName = mysqli_real_escape_string($con, strtoupper($_REQUEST['txtcdesc']));
 	$cTradeName = mysqli_real_escape_string($con, strtoupper($_REQUEST['txttradename']));
@@ -64,6 +64,8 @@ $myerror = "True";
 					}
 	}
 
+	//echo "UPDATE `suppliers` set `cname`='$cCustName', `ctradename`='$cTradeName', `cacctcode` = '$SalesCodeID', `cterms` = '$Terms',`csuppliertype` = '$Type', `csupplierclass` = '$Class', `chouseno` = $HouseNo, `ccity` = $City, `cstate` = $State, `ccountry` = $Country, `czip` = $ZIP, `cGroup1` = $cGrp1, `cGroup2` = $cGrp2, `cGroup3` = $cGrp3, `cGroup4` = $cGrp4, `cGroup5` = $cGrp5, `cGroup6` = $cGrp6, `cGroup7` = $cGrp7, `cGroup8` = $cGrp8, `cGroup9` = $cGrp9, `cGroup10` = $cGrp10, `cvattype` = '$VatType', `ctin` = '$Tin', `nvatrate` = $VatTypeRate, `newtcode` = $VatEWTCode Where compcode='$company' and `ccode`='$cCustCode'";
+
 
 	//cntacts
 		$UnitRowCnt = $_REQUEST['hdncontlistcnt'];
@@ -71,19 +73,32 @@ $myerror = "True";
 		if($UnitRowCnt>=1){
 			mysqli_query($con,"DELETE FROM `suppliers_contacts` where ccode = '$cCustCode'");
 			//echo $UnitRowCnt;
+
+			$arridxcv = array();
+			$sql = "Select * From contacts_types where compcode='$company'";
+			$result=mysqli_query($con,$sql);
+			while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+			{
+				$arridxcv[] = $row['cid'];
+			}
+
 			for($z=1; $z<=$UnitRowCnt; $z++){
 				$cIConNme = $_REQUEST['txtConNme'.$z];
 				$cIConDes = $_REQUEST['txtConDes'.$z];
 				$cIConDept = $_REQUEST['txtConDept'.$z];
-				$cIConEml = $_REQUEST['txtConeml'.$z];
-				$cIConTel = $_REQUEST['txtContel'.$z];
-				$cIConMob = $_REQUEST['txtConmob'.$z];
 										
-				if (!mysqli_query($con, "INSERT INTO `suppliers_contacts`(`compcode`, `ccode`, `cname`, `cdesignation`, `cdept`, `cemail`, `cphone`, `cmobile`) VALUES ('$company','$cCustCode','$cIConNme','$cIConDes','$cIConDept','$cIConEml','$cIConTel','$cIConMob')")) {
-						if(mysqli_error($con)!=""){
-							$myerror = "Contact Lists Error: ". mysqli_error($con)."<br/><br/>";
-						}
-				} 
+				if (!mysqli_query($con, "INSERT INTO `suppliers_contacts`(`compcode`, `ccode`, `cname`, `cdesignation`, `cdept`) VALUES ('$company','$cCustCode','$cIConNme','$cIConDes','$cIConDept')")) {
+					echo "Error Contacts: ".mysqli_error($con);
+				}else{
+					$xcid = mysqli_insert_id($con);
+
+					mysqli_query($con,"DELETE FROM `suppliers_contacts_nos` where customers_contacts_cid = '$xcid'");
+
+					foreach($arridxcv as $rmnb){
+						$xcvlxcz = $_REQUEST['txtConAdd'.$rmnb.$z];
+						mysqli_query($con, "INSERT INTO `suppliers_contacts_nos`(`compcode`, `customers_contacts_cid`, `contact_type`, `cnumber`) VALUES ('$company','$xcid','$rmnb','$xcvlxcz')");
+					}
+				}
 	
 			}
 		}

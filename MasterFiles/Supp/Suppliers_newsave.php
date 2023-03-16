@@ -70,19 +70,29 @@ $company = $_SESSION['companyid'];
 	$UnitRowCnt = $_REQUEST['hdncontlistcnt'];
 		//INSERT CONTACTS IF MERON
 		if($UnitRowCnt>=1){
-			//echo $UnitRowCnt;
+			
+			$arridxcv = array();
+			$sql = "Select * From contacts_types where compcode='$company'";
+			$result=mysqli_query($con,$sql);
+			while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+			{
+				$arridxcv[] = $row['cid'];
+			}
+
 			for($z=1; $z<=$UnitRowCnt; $z++){
 				$cIConNme = $_REQUEST['txtConNme'.$z];
 				$cIConDes = $_REQUEST['txtConDes'.$z]; 
 				$cIConDept = $_REQUEST['txtConDept'.$z];
-				$cIConEml = $_REQUEST['txtConeml'.$z];
-				$cIConTel = $_REQUEST['txtContel'.$z];
-				$cIConMob = $_REQUEST['txtConmob'.$z];
 										
-				if (!mysqli_query($con, "INSERT INTO `suppliers_contacts`(`compcode`, `ccode`, `cname`, `cdesignation`, `cdept`, `cemail`, `cphone`, `cmobile`) VALUES ('$company','$cCustCode','$cIConNme','$cIConDes','$cIConDept','$cIConEml','$cIConTel','$cIConMob')")) {
-						if(mysqli_error($con)!=""){
-							echo "Error Contacts: ".mysqli_error($con);
-						}
+				if (!mysqli_query($con, "INSERT INTO `suppliers_contacts`(`compcode`, `ccode`, `cname`, `cdesignation`, `cdept`) VALUES ('$company','$cCustCode','$cIConNme','$cIConDes','$cIConDept')")) {
+					echo "Error Contacts: ".mysqli_error($con);
+				}else{
+					$xcid = mysqli_insert_id($con);
+
+					foreach($arridxcv as $rmnb){
+						$xcvlxcz = $_REQUEST['txtConAdd'.$rmnb.$z];
+						mysqli_query($con, "INSERT INTO `suppliers_contacts_nos`(`compcode`, `customers_contacts_cid`, `contact_type`, `cnumber`) VALUES ('$company','$xcid','$rmnb','$xcvlxcz')");
+					}
 				} 
 	
 			}

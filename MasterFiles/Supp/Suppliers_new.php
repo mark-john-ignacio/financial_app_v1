@@ -39,7 +39,7 @@ include('../../include/access2.php');
     <td width="310" colspan="2" style="padding:2px">
 			<div class="col-xs-12 nopadding">
 				<div class="col-xs-4 nopadding">
-					<input type="text" class="form-control input-sm" id="txtccode" name="txtccode" tabindex="1" placeholder="Input Supplier Code.." required autocomplete="off" />
+					<input type="text" class="required form-control input-sm has-error" id="txtccode" name="txtccode" tabindex="1" placeholder="Input Supplier Code.." autocomplete="off" />
 				</div>
 			
 				<div class="col-xs-4 nopadwleft">		
@@ -50,15 +50,15 @@ include('../../include/access2.php');
   </tr>
   <tr>
     <td><b>Registered Name</b></td>
-    <td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="form-control input-sm text-uppercase" id="txtcdesc" name="txtcdesc" tabindex="2" placeholder="Registered Name.." required autocomplete="off" /></div></td>
+    <td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="required form-control input-sm text-uppercase" id="txtcdesc" name="txtcdesc" tabindex="2" placeholder="Registered Name.." autocomplete="off" /></div></td>
   </tr>
 	<tr>
     <td><b>Business/Trade Name</b></td>
-    <td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="form-control input-sm text-uppercase" id="txttradename" name="txttradename" tabindex="2" placeholder="Business/Trade Name.." required autocomplete="off" /></div></td>
+    <td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="required form-control input-sm text-uppercase" id="txttradename" name="txttradename" tabindex="2" placeholder="Business/Trade Name.." autocomplete="off" /></div></td>
   </tr>
   <tr>
     <td><b>Tin No.: </b></td>
-    <td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="form-control input-sm" id="txtTinNo" name="txtTinNo" tabindex="2" placeholder="Tin No.." required autocomplete="off" /></div></td>
+    <td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="required form-control input-sm" id="txtTinNo" name="txtTinNo" tabindex="2" placeholder="Tin No.."  autocomplete="off" /></div></td>
   </tr>
 	<tr>
     <td><b>Address</b></td>
@@ -102,18 +102,18 @@ include('../../include/access2.php');
 
 <p>&nbsp;</p>
   <ul class="nav nav-tabs">
-    <li class="active"><a href="#home">General</a></li>
-    <li><a href="#menu1">Contacts List</a></li>
-    <li><a href="#menu2">Addresses</a></li>
-    <li><a href="#menu3">Groupings</a></li>
-    <li><a href="#menu4">Accounting</a></li>
+    <li class="ulist active"><a href="#menu0">General</a></li>
+    <li class="ulist"><a href="#menu1">Contacts List</a></li>
+    <li class="ulist"><a href="#menu2">Addresses</a></li>
+    <li class="ulist"><a href="#menu3">Groupings</a></li>
+    <li class="ulist"><a href="#menu4">Accounting</a></li>
 	<!--<li><a href="#menu2">Product Details</a></li>-->
   </ul>
   
 <div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;height: 30vh;text-align: left;overflow: auto">
     <div class="tab-content">
     
-         <div id="home" class="tab-pane fade in active" style="padding-left:10px">
+         <div id="menu0" class="tab-pane fade in active" style="padding-left:10px">
              <p>
 
 				<div class="col-xs-7 nopadwtop">
@@ -184,24 +184,37 @@ include('../../include/access2.php');
         		</p>       
 				 </div>
 
-         <div id="menu1" class="tab-pane fade" style="padding-left:10px">
+         <div id="menu1" class="tab-pane fade" style="padding-left:10px; padding-top:10px;">
              <p>
 
                  <input type="button" value="Add Contact" name="btnNewCont" id="btnNewCont" class="btn btn-primary btn-xs" onClick="addcontlist();">
             
 	            <input name="hdncontlistcnt" id="hdncontlistcnt" type="hidden" value="0">
 	            <br>
-	                <table width="100%" border="0" cellpadding="2" id="myUnitTable">
-	                  <tr>
-	                    <th scope="col">Name</th>
-	                    <th scope="col" width="180">Designation</th>
-	                    <th scope="col" width="180">Department</th>
-	                    <th scope="col" width="180">Email Add</th>
-	                    <th scope="col" width="120">Tel No.</th>
-	                    <th scope="col" width="120">Mobile No.</th>
-	                    <th scope="col" width="80">&nbsp;</th>
-	                  </tr>
-	            	</table>
+								<table width="150%" border="0" cellpadding="2" id="myContactDetTable">
+                  <tr>
+                    <th scope="col" width="200">Name</th>
+                    <th scope="col" width="180">Designation</th>
+                    <th scope="col" width="180">Department</th>
+                      <?php
+                          $arrcontctsdet = array();
+                          $sql = "Select * From contacts_types where compcode='$company'";
+                          $result=mysqli_query($con,$sql);
+                          if (!mysqli_query($con, $sql)) {
+                            printf("Errormessage: %s\n", mysqli_error($con));
+                          }			
+                                      
+                          while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+                          {
+                            $arrcontctsdet[] = array('cid' => $row['cid'], 'cdesc' => $row['cdesc']);
+                        ?>
+                            <th scope="col" width="180"><?=$row['cdesc']?></th>
+                        <?php
+                          }
+                      ?>
+                    <th scope="col" width="80"><input type='hidden' id='conctsadddet' value='<?=json_encode($arrcontctsdet)?>'></th>
+                  </tr>
+                </table>
 
              </p>
          </div>
@@ -505,7 +518,7 @@ include('../../include/access2.php');
                                 </div>
                                 
                                 <div class="col-xs-2 nopadding">
-                                	<input type="text" class="form-control input-sm text-right" id="txttaxrate" name="txttaxrate"  tabindex="5" required autocomplete="off" value="0.00" />
+                                	<input type="text" class="form-control input-sm text-right required" id="txttaxrate" name="txttaxrate"  tabindex="5"  autocomplete="off" value="0.00" />
                                 </div>
                                 <div class="col-xs-1  nopadwtop"> 
                                 	<b>&nbsp;% </b>
@@ -546,7 +559,7 @@ include('../../include/access2.php');
                    		<div class="col-xs-9 nopadwleft">
 
                            <div class="col-xs-7 nopadding">
-                        		<input type="text" class="form-control input-sm" id="txtsalesacct" name="txtsalesacct"  tabindex="5" placeholder="Search Acct Title.." required autocomplete="off" />
+                        		<input type="text" class="required form-control input-sm" id="txtsalesacct" name="txtsalesacct"  tabindex="5" placeholder="Search Acct Title.." autocomplete="off" />
                            </div>
                         
                             <div class="col-xs-3 nopadwleft">
@@ -703,65 +716,94 @@ $(function() {
 
 		$("#frmITEM").on('submit', function (e) {
 			e.preventDefault();
-
-			var tbl = document.getElementById('myUnitTable').getElementsByTagName('tr');
-			var lastRow = tbl.length-1;
-											
-			document.getElementById('hdncontlistcnt').value = lastRow;
-
-		var tbldl = document.getElementById('myDelAddTable').getElementsByTagName('tr');
-		var lastRowdl = tbldl.length-1;
-		document.getElementById('hdnaddresscnt').value = lastRowdl;
-
 			var form = $("#frmITEM");
-			var formdata = form.serialize();
-			$.ajax({
-				url: 'Suppliers_newsave.php',
-				type: 'POST',
-				async: false,
-				data: formdata,
-				beforeSend: function(){
-					$("#AlertMsg").html("<b>SAVING NEW SUPPLIER: </b> Please wait a moment...");
-					$("#AlertModal").modal('show');
-				},
-				success: function(data) {
 
-					if(data.trim()=="True"){
+			var dis = form.find('.required').filter(function(){ return this.value === '' });
+
+			if (dis.length > 0) {
+				e.preventDefault();
 						
-						var x = saveprodz();						
-						
-						if(x.trim()=="True"){
-							
-							$("#AlertMsg").html("<b>SUCCESS: </b>Succesfully saved! <br><br> Loading new supplier... <br> Please wait!");
-						}
-						else{
-							$("#AlertMsg").html("<b>SUCCESS: </b>Succesfully saved!<br><b>ERROR: </b>Supplier Details saving... <br><br> Loading new supplier... <br> Please wait!");
-						}
-						
-							setTimeout(function() {
-								 $("#AlertMsg").html("");
-								 $('#AlertModal').modal('hide');
-												  
-								 $("#txtcitemno").val($("#txtccode").val());
-										$("#frmedit").submit();
-							}, 2000); // milliseconds = 2seconds
+				$.each(dis, function( index, value ) {
+					parentId = $("#"+this.id).parents("div[id*='menu']").attr("id");
+					tabIndex = $("li a[href='#"+parentId+"']").parents("li");
+
+					
+					if(parentId!==undefined){
+
+						$(".tab-pane").attr("class", "tab-pane fade");
+
+						$("#"+parentId).attr("class", "tab-pane fade in active");
+						tabIndex.attr("class", "active");
+
+						$("#"+this.id).addClass("with-error");
+
+					}
+
+					return false;
+				});
+
+				return false;
 												
-					}
+			}else{
 
-					else{
-						$("#AlertMsg").html(data);	
+				var tbl = document.getElementById('myContactDetTable').getElementsByTagName('tr');
+				var lastRow = tbl.length-1;
+												
+				document.getElementById('hdncontlistcnt').value = lastRow;
+
+				var tbldl = document.getElementById('myDelAddTable').getElementsByTagName('tr');
+				var lastRowdl = tbldl.length-1;
+				document.getElementById('hdnaddresscnt').value = lastRowdl;
+
+				var formdata = form.serialize();
+				$.ajax({
+					url: 'Suppliers_newsave.php',
+					type: 'POST',
+					async: false,
+					data: formdata,
+					beforeSend: function(){
+						$("#AlertMsg").html("<b>SAVING NEW SUPPLIER: </b> Please wait a moment...");
+						$("#AlertModal").modal('show');
+					},
+					success: function(data) {
+
+						if(data.trim()=="True"){
+							
+							var x = saveprodz();						
+							
+							if(x.trim()=="True"){
+								
+								$("#AlertMsg").html("<b>SUCCESS: </b>Succesfully saved! <br><br> Loading new supplier... <br> Please wait!");
+							}
+							else{
+								$("#AlertMsg").html("<b>SUCCESS: </b>Succesfully saved!<br><b>ERROR: </b>Supplier Details saving... <br><br> Loading new supplier... <br> Please wait!");
+							}
+							
+								setTimeout(function() {
+									$("#AlertMsg").html("");
+									$('#AlertModal').modal('hide');
+														
+									$("#txtcitemno").val($("#txtccode").val());
+											$("#frmedit").submit();
+								}, 2000); // milliseconds = 2seconds
+													
+						}
+
+						else{
+							$("#AlertMsg").html(data);	
+						}
+					},
+					error: function(){
+						$("#AlertMsg").html("");
+						$("#AlertModal").modal('hide');
+										
+						$("#itmcode_err").html("<b><font color='red'>ERROR: </font></b> Unable to save new supplier!");
+						$("#itmcode_err").show();
+										
 					}
-				},
-				error: function(){
-					$("#AlertMsg").html("");
-					$("#AlertModal").modal('hide');
-									
-					$("#itmcode_err").html("<b><font color='red'>ERROR: </font></b> Unable to save new supplier!");
-					$("#itmcode_err").show();
-								  
-				}
-			});		
+				});		
 			
+			}
 								
 
 		});
@@ -1093,28 +1135,34 @@ function setgrpvals(code,desc,r){
   $("#myGrpModal").modal('hide');
 }
 
-function addcontlist(){
-	var tbl = document.getElementById('myUnitTable').getElementsByTagName('tr');
-	var lastRow = tbl.length;
+	function addcontlist(){
+    var tbl = document.getElementById('myContactDetTable').getElementsByTagName('tr');
+    var lastRow = tbl.length;
 
-	var a=document.getElementById('myUnitTable').insertRow(-1);
-	var b=a.insertCell(0);
-	var c=a.insertCell(1);
-	var d=a.insertCell(2);
-	var e=a.insertCell(3);
-	var f=a.insertCell(4);
-	var g=a.insertCell(5);
-  var h=a.insertCell(6);
-	
-	b.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtConNme"+lastRow+"' name='txtConNme"+lastRow+"' value='' required></div>";
-	c.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtConDes"+lastRow+"' name='txtConDes"+lastRow+"' value=''> </div>";
-  d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtConDept"+lastRow+"' name='txtConDept"+lastRow+"' value=''> </div>";
-	e.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtConeml"+lastRow+"' name='txtConeml"+lastRow+"' value=''> </div>";
-	f.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtContel"+lastRow+"' name='txtContel"+lastRow+"' value=''> </div>";
-	g.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtConmob"+lastRow+"' name='txtConmob"+lastRow+"' value=''> </div>";
-	h.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRowconts(this);\"/></div>";
-	
-}
+    var a=document.getElementById('myContactDetTable').insertRow(-1);
+    var b=a.insertCell(0);
+    var c=a.insertCell(1);
+    var d=a.insertCell(2);
+
+    b.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='required form-control input-xs' id='txtConNme"+lastRow+"' name='txtConNme"+lastRow+"' value=''></div>";
+    c.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConDes"+lastRow+"' name='txtConDes"+lastRow+"' value=''> </div>";
+    d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConDept"+lastRow+"' name='txtConDept"+lastRow+"' value=''> </div>";
+
+    $cntng = 2;
+    var xz = $("#conctsadddet").val();
+			$.each(jQuery.parseJSON(xz), function() { 
+				$cntng = $cntng + 1;
+        var e=a.insertCell($cntng);
+
+        e.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConAdd"+this['cid']+lastRow+"' name='txtConAdd"+this['cid']+lastRow+"' value=''> </div>";
+
+			});
+
+    $cntng = $cntng + 1
+    var h=a.insertCell($cntng);
+    h.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input class='btn btn-danger btn-block btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRowconts(this);\"/></div>";
+    
+  }
 
 function adddeladdlist(){
 	var tbl = document.getElementById('myDelAddTable').getElementsByTagName('tr');
@@ -1128,7 +1176,7 @@ function adddeladdlist(){
 	var f=a.insertCell(4);
   var h=a.insertCell(5);
 	
-	b.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtdeladdno"+lastRow+"' name='txtdeladdno"+lastRow+"' value='' required></div>";
+	b.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='required form-control input-sm' id='txtdeladdno"+lastRow+"' name='txtdeladdno"+lastRow+"' value=''></div>";
 	c.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtdeladdcity"+lastRow+"' name='txtdeladdcity"+lastRow+"' value=''> </div>";
   d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtdeladdstt"+lastRow+"' name='txtdeladdstt"+lastRow+"' value=''> </div>";
 	e.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtdeladdcntr"+lastRow+"' name='txtdeladdcntr"+lastRow+"' value=''> </div>";
