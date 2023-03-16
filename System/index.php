@@ -831,7 +831,38 @@ if (mysqli_num_rows($sqlhead)!=0) {
 												
 									</div> 
 								
-		
+									<p data-toggle="collapse" data-target="#contypescollapse"> <i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Contacts Details</b></u></p>
+									
+									<div class="collapse" id="contypescollapse">
+										<div class="col-xs-12 nopadwdown">   
+											<div style="display:inline" class="col-xs-3">
+												<button class="btn btn-xs btn-primary" name="btnaddcondet" id="btnaddcondet"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add</button>
+												<button class="btn btn-xs btn-success" name="btcntctdets" id="btcntctdets"><i class="fa fa-save"></i>&nbsp; &nbsp;Save Contacts Details</button>
+											</div>
+														
+											<div style="display:inline" class="col-xs-5"> 
+												<div class="alert alert-danger nopadding" id="ConDetAlertMsg">                         
+												</div>
+												<div class="alert alert-success nopadding" id="ConDetAlertDone">                              
+												</div>
+											</div>                 
+										</div>
+
+										<div class="col-xs-12 nopadding"> 
+											<div class="col-xs-4 nopadwleft">
+												<b>Description</b> 
+											</div>
+			
+											<div class="col-xs-1 nopadwleft">
+												<b>Status</b> 
+											</div>                     
+										</div>
+
+										<div style="height:20vh; border:1px solid #CCC" class="col-lg-12 nopadding pre-scrollable" id="TblCONTDET">
+													
+										</div>
+												
+									</div>
 							
 								
 							</div> 
@@ -2438,6 +2469,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		loadewt();
 
 		loaddiscs();
+
+		loadConDets();
 		
 		loadtax();
 		
@@ -2498,7 +2531,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				$("#acctdefAlertDone").hide(); 
 				$("#DiscAlertMsg").hide(); 
 				$("#DiscAlertDone").hide(); 				
-				 
+				$("#ConDetAlertDone").hide();
+				$("#ConDetAlertMsg").hide();
 				
 						var $input = $(".txtacctsel");
 						
@@ -3704,6 +3738,73 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 			});
 
+
+			$("#btnaddcondet").on("click", function(){
+
+				if($('div.cntctdetdetail').length>=1){
+					var xy = parseInt($('div.cntctdetdetail:last').attr("id")) + 1;
+				}else{
+					var xy = parseInt(1);
+				}
+
+				var divhead = "<div class=\"cntctdetdetail col-xs-12 nopadwtop\" id=\""+xy+"\">";
+
+				var divdesc = "<div class=\"col-xs-4 nopadwleft\"><input type=\"text\" name=\"txtcntctdetdesc[]\" id=\"txtcntctdetdesc"+xy+"\" value=\"\" class=\"form-control input-xs\"  placeholder=\"Enter Description...\" /> <input type=\"hidden\" name=\"txtcntctdetid[]\" id=\"txtcntctdetid"+xy+"\" value=\"new\" /></div>";
+																															
+				var divstat = "<div class=\"col-xs-1 nopadwleft\">&nbsp;<span class='label label-success'>Active</span></div>";                                               
+				var divend = "</div>";
+								
+				$("#TblCONTDET").append(divhead + divdesc + divstat + divend);
+
+			});
+
+			$("#btcntctdets").on("click", function(){
+
+				var isOk = "True";
+
+				$('.cntctdetdetail').each(function(i, obj) {
+
+					divid = $(this).attr("id");
+					varcntctid = $(this).find('input[type=hidden][name="txtcntctdetid[]"]').val();
+					varcntct = $(this).find('input[name="txtcntctdetdesc[]"]').val();
+
+					$.ajax ({
+						url: "th_savcntctsdet.php",
+						data: { desc: varcntct, code: varcntctid},
+						async: false,
+						success: function( data ) {
+							if(data.trim()!="True"){
+								isOk = data;
+							}
+						}
+					
+					});
+										
+				});	
+
+
+				if(isOk == "True"){
+					$('#TblCONTDET').html("");
+					loadConDets();
+					
+					$("#ConDetAlertDone").html("<b>SUCCESS: </b> Contacts Details successfully saved!");        
+					$("#ConDetAlertDone").show(); 
+
+							$("#ConDetAlertMsg").html("");
+							$("#ConDetAlertMsg").hide();
+					
+				}
+				else{
+					$("#ConDetAlertMsg").html("<b>Error Saving:</b>"+isOk);
+					$("#ConDetAlertMsg").show();
+
+							$("#ConDetAlertDone").html("");
+							$("#ConDetAlertDone").hide();
+
+				}
+
+			});
+
 			
 			
 	});
@@ -4813,4 +4914,37 @@ function qotransset(typ,id){
 
 	$("#frmQOTrans").submit();
 }
+
+	function loadConDets(){
+		$.ajax ({
+			url: "th_loadcontctdet.php",
+			dataType: 'json',
+			async:false,
+			success: function( result ) {
+
+				console.log(result);
+				$.each(result,function(index,item){
+
+					if(item.cid!=""){
+						if(item.cstat == "ACTIVE"){ 
+							var spanstat = "<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setCNTCTDETStat('"+item.cid+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>";
+						} else{
+							var spanstat = "<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setCNTCTDETStat('"+item.cid+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>";
+						}
+
+						var divhead = "<div class=\"dsccodedetail col-xs-12 nopadwtop\" id=\""+item.cid+"\">";
+																									
+						var divdesc = "<div class=\"col-xs-4 nopadwleft\"><input type=\"text\" name=\"txtcntctdetdesc[]\" id=\"txtcntctdetdesc"+item.cid+"\" value=\""+item.cdesc+"\" class=\"form-control input-xs\"  placeholder=\"Enter Description...\" /> <input type=\"hidden\" name=\"txtcntctdetid[]\" id=\"txtcntctdetid"+item.cid+"\" value=\""+item.cid+"\" /> </div>";												
+																															
+						var divstat = "<div class=\"col-xs-2 nopadwleft\">&nbsp;"+spanstat+"</div>";                                               
+						var divend = "</div>";
+								
+						$("#TblCONTDET").append(divhead + divdesc + divstat + divend);
+					}
+
+				});
+
+			}
+		});
+	}
 </script>
