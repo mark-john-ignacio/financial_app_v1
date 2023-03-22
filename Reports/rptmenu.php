@@ -179,7 +179,11 @@ function resizeIframe(obj) {
             <h4 class="nopadwtop2x">Financial Reports</h4>
             <hr class="alert-danger nopadding">
               <div style="padding-left:10px; padding-top:3px">
-					    <ul class="ver-inline-menu tabbable margin-bottom-25">         
+					    <ul class="ver-inline-menu tabbable margin-bottom-25">       
+                <li>
+          				<a href="" onClick="setI('A','GJournal.php')" data-toggle="tab">
+                  <i class="fa fa-book"></i> General Journal </a>
+                </li>  
           			<li>
           				<a href="" onClick="setI('A','TBal.php')" data-toggle="tab">
                   <i class="fa fa-book"></i> Trial Balance </a>

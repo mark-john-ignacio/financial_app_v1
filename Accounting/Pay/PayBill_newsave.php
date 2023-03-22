@@ -10,7 +10,7 @@ $dyear = date("y");
 $company = $_SESSION['companyid'];
 
 
-$chkSales = mysqli_query($con,"select * from paybill where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");
+$chkSales = mysqli_query($con,"select * from paybill where compcode='$company' and YEAR(dtrandate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");
 if (mysqli_num_rows($chkSales)==0) {
 	$cSINo = "PV".$dmonth.$dyear."00001";
 }
@@ -44,13 +44,25 @@ else {
 	$cAcctNo = mysqli_real_escape_string($con, $_POST['txtcacctid']);
 	$dDate = mysqli_real_escape_string($con, $_POST['date_delivery']);
 	$nGross = mysqli_real_escape_string($con, $_POST['txtnGross']);
+
+	$nGross = str_replace( ',', '', $nGross );
+
+
 	$npaid = mysqli_real_escape_string($con, $_POST['txttotpaid']);	
+
+	$npaid = str_replace( ',', '', $npaid );
+
+
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
-	$paymeth = mysqli_real_escape_string($con, $_POST['selpayment']);
+	$paymeth = mysqli_real_escape_string($con, $_POST['selpayment']); 
+	$paytype = mysqli_real_escape_string($con, $_POST['selpaytype']); 
+	$particulars = mysqli_real_escape_string($con, $_POST['txtparticulars']);
+
+
 	if($paymeth=="cash"){
 		$dTranDate = mysqli_real_escape_string($con, $dDate);
 	}else{
-		$dTranDate = mysqli_real_escape_string($con, $_POST['txtChekDate']);
+		$dTranDate = mysqli_real_escape_string($con, $_POST['txtChekDate']); 
 	}
 	
 
@@ -68,7 +80,7 @@ else {
 	}
 	
 
-	if (!mysqli_query($con, "INSERT INTO `paybill`(`compcode`, `ctranno`, `ccode`, `cpayee`, `cpaymethod`, `cbankcode`, `ccheckno`, `cacctno`, `cpayrefno`, `ddate`, `dcheckdate`, `ngross`, `npaid`, `cpreparedby`) values('$company', '$cSINo', '$cCustID', '$cPayee', '$paymeth', '$cBankCode', '$cCheckNo', '$cAcctNo', '$cPayRefNo', STR_TO_DATE('$dDate', '%m/%d/%Y'), STR_TO_DATE('$dTranDate', '%m/%d/%Y'), $nGross, $npaid, '$preparedby')")) {
+	if (!mysqli_query($con, "INSERT INTO `paybill`(`compcode`, `ctranno`, `ccode`, `cpayee`, `cpaymethod`, `cbankcode`, `ccheckno`, `cacctno`, `cpayrefno`, `ddate`, `dcheckdate`, `ngross`, `npaid`, `cpreparedby`, `cparticulars`, `cpaytype`) values('$company', '$cSINo', '$cCustID', '$cPayee', '$paymeth', '$cBankCode', '$cCheckNo', '$cAcctNo', '$cPayRefNo', STR_TO_DATE('$dDate', '%m/%d/%Y'), STR_TO_DATE('$dTranDate', '%m/%d/%Y'), $nGross, $npaid, '$preparedby', '$particulars', '$paytype')")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 
@@ -83,10 +95,16 @@ else {
 		$capvno = mysqli_real_escape_string($con, $_POST['cTranNo'.$z]);
 		$dapvdate = $_POST['dApvDate'.$z];
 		$namnt = mysqli_real_escape_string($con, $_POST['nAmount'.$z]);
+		$namnt = str_replace( ',', '', $namnt );
+
 		//$ndiscount = mysqli_real_escape_string($con, $_POST['nDiscount'.$z]);
 		$ndiscount = 0;
 		$nowed = mysqli_real_escape_string($con, $_POST['cTotOwed'.$z]);
+		$nowed = str_replace( ',', '', $nowed );
+
 		$napplied = mysqli_real_escape_string($con, $_POST['nApplied'.$z]);
+		$napplied = str_replace( ',', '', $napplied );
+
 		$caccno = mysqli_real_escape_string($con, $_POST['cacctno'.$z]);
 
 		if($napplied<>0){
@@ -122,5 +140,5 @@ else {
 </form>
 <script>
 	alert('Record Succesfully Saved');
-   document.forms['frmpos'].submit();
+  document.forms['frmpos'].submit();
 </script>

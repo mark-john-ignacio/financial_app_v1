@@ -7,7 +7,7 @@ require_once "../../Connection/connection_string.php";
 	$company = $_SESSION['companyid'];
 	$cpono = $_REQUEST['id'];
 	
-		$sql = "select X.nident, X.citemno as cpartno, A.citemdesc as citemdesc1, X.citemdesc as citemdesc2, X.cunit, X.nqty, X.nprice, X.nbaseamount, X.namount, X.cmainunit, X.nfactor, X.ddateneeded
+		$sql = "select X.citemno as cpartno, A.citemdesc as citemdesc1, X.citemdesc as citemdesc2, X.cunit, X.nqty, X.nprice, X.nbaseamount, X.namount, X.cmainunit, X.nfactor, X.ddateneeded, ifnull(X.cremarks,'') as cremarks
 		from purchase_t X
 		left join items A on X.compcode=A.compcode and X.citemno=A.cpartno
 		where X.compcode='$company' and X.cpono = '$cpono' order by nident";
@@ -32,8 +32,7 @@ require_once "../../Connection/connection_string.php";
 		$json['cmainunit'] = strtoupper($row2['cmainunit']);
 		$json['nfactor'] = $row2['nfactor'];
 		$json['dneed'] = $row2['ddateneeded'];
-		$json['nident'] = $row2['nident'];
-
+		$json['cremarks'] = $row2['cremarks'];
 		$json2[] = $json;
 
 	}

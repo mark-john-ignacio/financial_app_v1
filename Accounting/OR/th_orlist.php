@@ -2,6 +2,7 @@
 session_start();
 require_once "../../Connection/connection_string.php";
 
+
 	$company = $_SESSION['companyid'];
 	
 	if ($_REQUEST['y'] <> "") {
@@ -16,65 +17,110 @@ require_once "../../Connection/connection_string.php";
 	$tbl = "";
 	if($_REQUEST['typ']=="Trade"){
 		$tbl = "sales";
+		$tbl2 = "sales_t";
 	}elseif($_REQUEST['typ']=="Non-Trade"){
 		$tbl = "ntsales";
+		$tbl2 = "ntsales_t";
 	}
-	
-	//"select * from sales where compcode='$company' and lapproved=1 and ccode='".$_POST['x']."'".$qry."order by dcutdate desc, ctranno desc"
-	
-	$sql = "select A.ctranno, A.dcutdate, A.ngross, IFNULL(B.namount,0) as nCredit, IFNULL(C.namount,0) as nDebit, IFNULL(D.namount,0) as nPayments  , E.acctno, E.ctitle 
-	from ".$tbl." A 
-	left join 
-		( 
-			select crefno, sum(ngross) as namount from aradj 
-			where compcode='$company' and lapproved = 1 and ctype='Credit' 
-			GROUP BY crefno 
-		) B on A.ctranno=B.crefno left join 
-		( 
-			select crefno, sum(ngross) as namount from aradj
-			where compcode='$company' and lapproved = 1 and ctype='Debit' 
-			GROUP BY crefno 
-		) C on A.ctranno=C.crefno left join
-		( 
-			select S.csalesno, sum(S.namount) as namount from receipt_sales_t S left join receipt T on S.compcode=T.compcode and S.ctranno=T.ctranno 
-			where S.compcode='$company' and T.lcancelled = 0
-			GROUP BY S.csalesno 
-		) D on A.ctranno=D.csalesno
-		left join glactivity E on A.compcode=E.compcode and A.ctranno=E.ctranno and E.ndebit <> 0
-		left join customers F on A.compcode=F.compcode and A.ccode=F.cempid
-	where A.compcode='$company' and A.lapproved=1 and A.ccode='".$_REQUEST['x']."' ".$qry." order by A.dcutdate, A.ctranno";
-	
-	//echo $sql;
-	
+
+	//alldebitlist
+	@$arradjlist = array();
+	$sqlardj = "select X.ctranno from aradjustment X where X.compcode='$company' and X.ccode='".$_REQUEST['x']."' and X.isreturn = 0 and X.lapproved = 1 and X.ctranno not in (Select A.aradjustment_ctranno from receipt_deds A left join receipt B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lcancelled=0)";
+	$resardj = mysqli_query ($con, $sqlardj);
+	while($rowardj = mysqli_fetch_array($resardj, MYSQLI_ASSOC)){
+		@$arradjlist[] = $rowardj;		
+	}
+
+	//allpayemnts
+	@$arrpaymnts = array();
+	$sqlpay = "select X.ctranno, X.ctaxcode, X.cewtcode, sum(X.napplied) as ngross from receipt_sales_t X left join receipt B on X.compcode=B.compcode and X.ctranno=B.ctranno where X.compcode='$company' and B.lapproved = 1 GROUP BY X.ctranno, X.ctaxcode, X.cewtcode";
+	$respay = mysqli_query ($con, $sqlpay);
+	while($rowardj = mysqli_fetch_array($respay, MYSQLI_ASSOC)){
+		@$arrpaymnts[] = array('crefno' =>  $rowardj['crefno'], 'ngross' =>  $rowardj['ngross']);
+	}
+
+
+	$sql = "Select A.ctranno, A.cacctid, A.cacctdesc, A.ctaxcode, A.cewtcode, A.newtrate, A.dcutdate, SUM(ROUND(A.namountfull,2)) as ngross, SUM(ROUND(A.namount,2)) as cm, SUM(nvatgross) as nvatgross, (SUM(ROUND(A.namountfull,2)) - SUM(ROUND(A.namount,2)) - SUM(nvatgross)) as vatamt, SUM(A.newtgross) as newtgross
+	From (
+		Select A.ctranno, A.citemno, ((A.nqtyreturned) * A.nprice) as namount, (A.nqty * A.nprice) as namountfull, B.dcutdate, D.cacctid, D.cacctdesc, A.ctaxcode, A.cewtcode, A.newtrate, 
+				CASE 
+					WHEN IFNULL(A.newtrate,0) <> 0 
+					THEN 
+						CASE 
+							WHEN E.cbase='NET' 
+							THEN ROUND((ROUND(((A.nqty-A.nqtyreturned)*A.nprice)/(1 + (A.nrate/100)),2) * (A.newtrate/100)),2)
+							ELSE ROUND((((A.nqty-A.nqtyreturned)*A.nprice) * (A.newtrate/100)),2)
+							END 
+					ELSE 
+						0 
+					END as newtgross,
+					CASE 
+						WHEN IFNULL(A.nrate,0) <> 0 
+						THEN 
+							ROUND(((A.nqty-A.nqtyreturned)*A.nprice)/(1 + (A.nrate/100)),2)
+						ELSE 
+							0 
+						END as nvatgross
+	From sales_t A 
+	left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno 
+	left join customers C on B.compcode=C.compcode and B.ccode=C.cempid 
+	left join accounts D on C.compcode=D.compcode and C.cacctcodesales=D.cacctno 
+	left join wtaxcodes E on A.compcode=E.compcode and A.cewtcode=E.ctaxcode 
+	where A.compcode='$company' and B.lapproved=1 and B.ccode='".$_REQUEST['x']."') A
+	Group By A.ctranno, A.cacctid, A.cacctdesc, A.ctaxcode, A.cewtcode, A.newtrate, A.dcutdate
+	order by A.dcutdate, A.ctranno";
+
 	$result = mysqli_query ($con, $sql);
 	
-
+	$json2 = array();
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 
 		$ngross = $row['ngross'];
-		$ndm = $row['nDebit'];
-		$ncm = $row['nCredit'];
-		$npay = $row['nPayments'];
-		
-		$ntotal = (((float)$ngross + (float)$ndm) - (float)$ncm) - (float)$npay;
 
-		if((float)$ntotal > 0)
+			$nwithadj = 0;
+			 foreach(@$arradjlist as $rxdebit){
+				if($rxdebit['crefsi']==$row['ctranno']){
+					$nwithadj = 1;
+				}
+			 }
+
+			 $npay = 0;
+			 foreach(@$arrpaymnts as $rxpymnts){
+				if($rxcredit['ctranno']==$rxpymnts['ctranno'] && $rxcredit['ctaxcode']==$rxpymnts['ctaxcode'] && $rxcredit['cewtcode']==$rxpymnts['cewtcode']){
+					$npay = $rxcredit['ngross'];
+				}
+			 }
+		
+		$ntotal = floatval($ngross) - floatval($npay);
+
+		if(floatval($ntotal) > 0)
 		{
 			
 			 $json['csalesno'] = $row['ctranno'];
+			 $json['cewtcode'] = $row['cewtcode'];
+			 $json['newtrate'] = $row['newtrate'];
+			 $json['ctaxcode'] = $row['ctaxcode'];
+			 $json['cvatamt'] = $row['vatamt'];
+			 $json['cnetamt'] = $row['nvatgross'];
+			 $json['cewtamt'] = $row['newtgross'];
+			 $json['ccm'] = $row['cm'];
 			 $json['dcutdate'] = $row['dcutdate'];
-			 $json['ngross'] = number_format($row['ngross'],2);
-			 $json['ndebit'] = number_format($row['nDebit'],2);
-			 $json['ncredit'] = number_format($row['nCredit'],2);
-			 $json['npayment'] = number_format($row['nPayments'],2);
-			 $json['cacctno'] = $row['acctno'];
-			 $json['ctitle'] = $row['ctitle'];
+			 $json['ngross'] = $row['ngross'];			 
+			 $json['withadj'] = $nwithadj;
+			 $json['npayment'] = $npay;
+			 $json['cacctno'] = $row['cacctid'];
+			 $json['ctitle'] = $row['cacctdesc'];
 			 $json2[] = $json;
 		 
 		}
 
 	}
-	
+
+	echo json_encode($json2);
+
+	/*
+
+	//For PARENT CODE
 	$sql0 = "select A.ctranno, A.dcutdate, A.ngross, IFNULL(B.namount,0) as nCredit, IFNULL(C.namount,0) as nDebit, IFNULL(D.namount,0) as nPayments  , E.acctno, E.ctitle 
 	from sales A 
 	left join 
@@ -135,5 +181,6 @@ require_once "../../Connection/connection_string.php";
 		echo "";
 	}
 
+	*/
 
 ?>

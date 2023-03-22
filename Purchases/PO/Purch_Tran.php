@@ -12,11 +12,12 @@ if($_REQUEST['typ']=="CANCEL"){
 	$_SESSION['pageid'] = "Purch_cancel";
 }
 
-require("../../vendor/phpmailer/phpmailer/src/PHPMailer.php");
-require("../../vendor/phpmailer/phpmailer/src/SMTP.php");
-
 require_once "../../include/denied.php";
 require_once "../../include/access.php";
+
+
+require("../../vendor/phpmailer/phpmailer/src/PHPMailer.php");
+require("../../vendor/phpmailer/phpmailer/src/SMTP.php");
 
 
 function sendEmail($email,$name,$xpono){

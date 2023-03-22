@@ -1,12 +1,21 @@
 <?php
-session_start();
-$_SESSION['pageid'] = "OR_new.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "OR_new.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
-$company = $_SESSION['companyid'];
+	$company = $_SESSION['companyid'];
+
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `taxcode` where compcode='$company' order By nidentity"); 
+	if (mysqli_num_rows($gettaxcd)!=0) {
+		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+			@$arrtaxlist[] = array('ctaxcode' => $row['ctaxcode'], 'ctaxdesc' => $row['ctaxdesc'], 'nrate' => $row['nrate']); 
+		}
+	}
 ?>
 
 <!DOCTYPE html>
@@ -36,6 +45,7 @@ $company = $_SESSION['companyid'];
 </head>
 
 <body style="padding:5px; height:700px" onLoad="document.getElementById('txtcust').focus();">
+<input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes">  
 
 <form action="OR_newsave2.php" name="frmOR" id="frmOR" method="post"  onSubmit="return chkform();">
 	<fieldset>
@@ -226,19 +236,18 @@ $company = $_SESSION['companyid'];
 											<th scope="col" width="100px" nowrap>Invoice No</th>
 											<th scope="col" width="110px" class="text-center" nowrap>Date</th>
 											<th scope="col" width="150px" class="text-center" nowrap>Amount</th>
+											<th scope="col" width="150px" class="text-center" nowrap>DM</th>
+											<th scope="col" width="150px" class="text-center" nowrap>CM</th>
+											<th scope="col" width="150px" class="text-center" nowrap>Payments</th>
+											<th scope="col" width="150px" class="text-center" nowrap>VAT Code</th>
 											<th scope="col" width="150px" class="text-center" nowrap>VAT</th>
 											<th scope="col" width="150px" class="text-center" nowrap>NetofVat</th>
 											<th scope="col" class="text-center" nowrap>EWTCode</th>                            
 											<th scope="col" class="text-center" nowrap>EWTRate(%)</th>
 											<th scope="col" class="text-center" nowrap>EWTAmt</th>
-											<th scope="col" width="150px" class="text-center" nowrap>DM</th>
-											<th scope="col" width="150px" class="text-center" nowrap>CM</th>
-											<th scope="col" width="150px" class="text-center" nowrap>Payments</th>
 											<th scope="col" width="150px" class="text-center" nowrap>Total Due</th>
-											<th scope="col" width="150px" class="text-center" nowrap>Amt Applied&nbsp;</th>
-															
-											<th scope="col" nowrap>&nbsp;Acct No</th>
-											<th scope="col" width="500px" nowrap>&nbsp;Acct Desc</th>
+											<th scope="col" width="150px" class="text-center" nowrap>Amt Applied</th>
+											<th scope="col" width="500px" nowrap>&nbsp;Credit Acct</th>
 											<th scope="col">&nbsp;</th>
 										</tr>
 									</thead>
@@ -247,6 +256,7 @@ $company = $_SESSION['companyid'];
 									</tbody>
 								</table>
 								<input type="hidden" name="hdnrowcnt" id="hdnrowcnt" value="0">
+								<input type="hidden" name="hdnrowcntcmdm" id="hdnrowcntcmdm" value="0">
 							</div>
 						</div>
 
@@ -314,50 +324,6 @@ $company = $_SESSION['companyid'];
 			</table>
 
   </fieldset>
-
-	<!-- Bootstrap modal INVOICES -->
-	<div class="modal fade" id="myModal" role="dialog">
-			<div class="modal-dialog">
-					<div class="modal-content">
-							<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-									<h3 class="modal-title" id="invheader">Invoice List</h3>
-									<input name="invtyp" id="invtyp" type="hidden" value="" />
-							</div>
-							
-							<div class="modal-body" style="height:40vh">
-							
-								<div class="col-xs-12 nopadding pre-scrollable" style="height:37vh">
-										<table name='MyORTbl' id='MyORTbl' class="table table-scroll table-striped">
-										<thead>
-											<tr>
-												<th align="center">
-												<input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
-												<th>Invoice No</th>
-												<th>Sales Date</th>
-												<th>Gross</th>
-												<th>DM</th>
-												<th>CM</th>
-												<th>&nbsp;</th>
-											</tr>
-											</thead>
-											<tbody>
-											</tbody>
-						</table>
-									
-							</div>
-				</div>
-				
-							<div class="modal-footer">
-									
-									<button type="button" id="btnInsert" onclick="save();" class="btn btn-primary">Insert</button>
-									<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-
-							</div>
-					</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->
-	<!-- End Bootstrap modal -->
 
 	<!--CASH DETAILS DENOMINATIONS -->
 	<div class="modal fade" id="CashModal" role="dialog">
@@ -455,7 +421,6 @@ $company = $_SESSION['companyid'];
 	</div><!-- /.modal -->
 	<!-- End Bootstrap modal -->
 
-
 	<div class="modal fade" id="ChequeModal" role="dialog">
 			<div class="modal-dialog">
 					<div class="modal-content">
@@ -527,7 +492,87 @@ $company = $_SESSION['companyid'];
 	</div>
 	<!-- End Bootstrap modal -->
 
+	<!-- add CM Module -->
+				<div class="modal fade" id="MyAdjustmentModal" role="dialog">
+   				<div class="modal-dialog modal-lg">
+        		<div class="modal-content">
+            	<div class="modal-header">
+                <button type="button" class="close"  aria-label="Close"  onclick="chkCloseInfo();"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="invadjheader"> Additional AR Adjustment <button class="btn btn-sm btn-primary" name="btnaddcm" id="btnaddcm" type="button">Add</button></h4>           
+							</div>
+    
+            	<div class="modal-body">
+                <input type="hidden" name="hdnrowcnt2" id="hdnrowcnt2"> 
+								<input type="hidden" name="txtdetsinoinfo" id="txtdetsinoinfo">  
+								<input type="hidden" name="txthdnTYPAdj" id="txthdnTYPAdj"> 
+								<input type="hidden" name="txthdnCMtxtbx" id="txthdnCMtxtbx"> 
+				
+                <table id="MyTableCMx" class="MyTable table table-sm" width="100%">
+									<thead>
+										<tr>
+											<th style="border-bottom:1px solid #999" width="50px">Adj Type</th>
+											<th style="border-bottom:1px solid #999">AP CM No.</th>
+											<th style="border-bottom:1px solid #999">Date</th>
+											<th style="border-bottom:1px solid #999">Amount</th>
+											<th style="border-bottom:1px solid #999" width="200px">Remarks</th>
+											<th style="border-bottom:1px solid #999">&nbsp;</th>
+										</tr>
+									</thead>
+									<tbody class="tbody">						
+                  </tbody>
+                </table>
+    
+							</div>
+        		</div><!-- /.modal-content -->
+    			</div><!-- /.modal-dialog -->
+				</div>
+			<!-- /.modal -->
+
 </form>
+
+		<!-- Bootstrap modal INVOICES -->
+		<div class="modal fade" id="myModal" role="dialog">
+			<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+							<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+									<h3 class="modal-title" id="invheader">Invoice List</h3>
+									<input name="invtyp" id="invtyp" type="hidden" value="" />
+							</div>
+							
+							<div class="modal-body" style="height:40vh">
+							
+								<div class="col-xs-12 nopadding pre-scrollable" style="height:37vh">
+										<table name='MyORTbl' id='MyORTbl' class="table table-scroll table-striped">
+										<thead>
+											<tr>
+												<th align="center">
+												<input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
+												<th>Invoice No</th>
+												<th>Sales Date</th>
+												<th>Gross</th>
+												<th>EWT</th>
+												<th>VAT</th>
+												<th>&nbsp;</th>
+											</tr>
+											</thead>
+											<tbody>
+											</tbody>
+						</table>
+									
+							</div>
+				</div>
+				
+							<div class="modal-footer">
+									
+									<button type="button" id="btnInsert" onclick="save();" class="btn btn-primary">Insert</button>
+									<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+
+							</div>
+					</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	<!-- End Bootstrap modal -->
 
 
 <script type="text/javascript">
@@ -560,17 +605,13 @@ $company = $_SESSION['companyid'];
 		  format: 'MM/DD/YYYY'
 		});
 
-	
-	});
-
-  $(function() {  
   	$('#frmOR').on('keyup keypress', function(e) {
   	  var keyCode = e.keyCode || e.which;
   	  if (keyCode === 13) { 
-  		e.preventDefault();
-  		return false;
-  	}
-	});
+  			e.preventDefault();
+  			return false;
+  		}
+		});
 										
 	$('.numericint').keydown(function (e) {
 		
@@ -742,7 +783,7 @@ $company = $_SESSION['companyid'];
 		}
 	});
 
-   $("#allbox").click(function () {
+   	$("#allbox").click(function () {
         if ($("#allbox").is(':checked')) {
             $("input[name='chkSales[]']").each(function () {
                 $(this).prop("checked", true);
@@ -776,6 +817,15 @@ $company = $_SESSION['companyid'];
 
 		}
 	});
+
+		$("#btnaddcm").on("click", function(){			
+
+			var xsino = $("#txtdetsinoinfo").val();
+			var xadjtype = $("#txthdnTYPAdj").val();
+
+			AddRefAdj(xadjtype,xsino,"","","","");
+		
+		});
 	
 
 });
@@ -817,19 +867,22 @@ function chkform(){
 		
 			var lastRow1 = 0; 
 			var lastRow2 = 0;
-			var lastRow3 = 0; 
 			
 			var tbl1 = document.getElementById('MyTable').getElementsByTagName('tr');
 			lastRow1 = tbl1.length-1;
+
+			var tbl2 = document.getElementById('MyTableCMx').getElementsByTagName('tr');
+			lastRow2 = tbl2.length-1;
+			$("#hdnrowcntcmdm").val(lastRow2);
 					
-			if(lastRow1!=0){
-				$("#hdnrowcnt").val(lastRow1);				
-			}
+		if(lastRow1!=0){
+			$("#hdnrowcnt").val(lastRow1);				
+		}
 				
 	
 		if(lastRow1==0){
-				alert("Details Required!");
-				subz = "NO";
+			alert("Details Required!");
+			subz = "NO";
 		}
 		
 		//if( parseFloat($('#txtnOutBal').val()) != parseFloat($('#txtnApplied').val()) ){
@@ -845,6 +898,19 @@ function chkform(){
 			if($('#selpayment').val() == "Cheque"){
 				//$('#txtCheckAmt').val($('#txtCheckAmt').maskMoney('unmasked')[0]);
 			}
+
+
+				var tx2 = 0;
+				$("#MyTableCMx > tbody > tr").each(function(index) {   
+					tx2 = index+1;
+					$(this).find('input[name="hdnctypeadj"]').attr("name","hdnctypeadj"+tx2);
+					$(this).find('input[type=hidden][name="hdndetsino"]').attr("name","hdndetsino"+tx2);					
+					$(this).find('input[type=hidden][name="hdnisgiven"]').attr("name","hdnisgiven"+tx2);
+					$(this).find('input[name="txtapcmdm"]').attr("name","txtapcmdm" + tx2);
+					$(this).find('input[name="txtapdte"]').attr("name","txtapdte" + tx2);
+					$(this).find('input[name="txtapamt"]').attr("name","txtapamt" + tx2);
+					$(this).find('input[name="txtremz"]').attr("name","txtremz" + tx2);
+				});
 			
 			return true;
 			$("#frmOR").submit();
@@ -863,28 +929,64 @@ function deleteRow(r) {
 	 
 		for (z=i+1; z<=lastRow; z++){
 			var tempsalesno = document.getElementById('txtcSalesNo' + z);
-			var tempsalesacctno = document.getElementById('txtcSalesAcctNo' + z);
-			var tempamt = document.getElementById('txtAmt' + z);
+			            
+			var tempgross = document.getElementById('txtSIGross' + z);
+			var tempdebit = document.getElementById('txtndebit' + z);
+			var tempcredit = document.getElementById('txtncredit' + z);
+			var temppaymnts = document.getElementById('txtnpayments' + z);
+
+			var tempvcode = document.getElementById('txtnvatcode' + z);
+			var tempvamt = document.getElementById('txtvatamt' + z);
+			var tempvnetamt = document.getElementById('txtnetvat' + z);
+
+			var tempewtcode= document.getElementById('txtnEWT' + z);
+			var tempewtrate = document.getElementById('txtnEWTRate' + z);
+			var tempewtamt = document.getElementById('txtnEWTAmt' + z);
+
 			var tempdue= document.getElementById('txtDue' + z);
 			var tempapplies = document.getElementById('txtApplied' + z);
-			
+			var tempsalesacctno = document.getElementById('txtcSalesAcctNo' + z); 
+
 			var x = z-1;
 			tempsalesno.id = "txtcSalesNo" + x;
-			tempsalesno.name = "txtcSalesNo" + x;
-			tempsalesacctno.id = "txtcSalesAcctNo" + x;
-			tempsalesacctno.name = "txtcSalesAcctNo" + x;
-			tempamt.id = "txtAmt" + x;
-			tempamt.name = "txtAmt" + x;
+			tempsalesno.name = "txtcSalesNo" + x;	
+
+			tempgross.id = "txtSIGross" + x;
+			tempgross.name = "txtSIGross" + x;
+
+			tempdebit.id = "txtndebit" + x;
+			tempdebit.name = "txtndebit" + x;
+			tempcredit.id = "txtncredit" + x;
+			tempcredit.name = "txtncredit" + x;
+			temppaymnts.id = "txtnpayments" + x;
+			temppaymnts.name = "txtnpayments" + x;
+
+			tempvcode.id = "txtnvatcode" + x;
+			tempvcode.name = "txtnvatcode" + x;
+			tempvamt.id = "txtvatamt" + x;
+			tempvamt.name = "txtvatamt" + x;
+			tempvnetamt.id = "txtnetvat" + x;
+			tempvnetamt.name = "txtnetvat" + x;
+
+			tempewtcode.id = "txtnEWT" + x;
+			tempewtcode.name = "txtnEWT" + x;
+			tempewtrate.id = "txtnEWTRate" + x;
+			tempewtrate.name = "txtnEWTRate" + x;
+			tempewtamt.id = "txtnEWTAmt" + x;
+			tempewtamt.name = "txtnEWTAmt" + x;
+
 			tempdue.id = "txtDue" + x;
 			tempdue.name = "txtDue" + x;
 			tempapplies.id = "txtApplied" + x;
 			tempapplies.name = "txtApplied" + x;
+			tempsalesacctno.id = "txtcSalesAcctNo" + x;
+			tempsalesacctno.name = "txtcSalesAcctNo" + x;
 			
 			//tempnqty.onkeyup = function(){ computeamt(this.value,x,event.keyCode); };
 
 		}
 
-computeGross();
+	computeGross();
 
 }
 
@@ -987,6 +1089,7 @@ function getInvs(typ){
 			var x = $('#txtcustid').val();
 			$('#invheader').html("Invoice List: " + $('#txtcust').val())
 			
+			//alert("th_orlist.php?x="+x+"&y="+salesnos+"&typ="+typ);
 			$.ajax({
         url: 'th_orlist.php',
 				data: { x:x, y:salesnos, typ:typ },
@@ -997,12 +1100,12 @@ function getInvs(typ){
           console.log(data);
           $.each(data,function(index,item){
             $("<tr>").append(
-							$("<td>").html("<input type='checkbox' value='"+item.csalesno+"' name='chkSales[]'>"),
+							$("<td>").html("<input type='checkbox' value='"+item.csalesno+"' name='chkSales[]' data-cm='"+item.ccm+"' data-payment='"+item.npayment+"' data-vatcode='"+item.ctaxcode+"' data-vat='"+item.cvatamt+"' data-netvat='"+item.cnetamt+"' data-ewtcode='"+item.cewtcode+"' data-ewtrate='"+item.newtrate+"' data-ewtamt='"+item.cewtamt+"' data-amt='"+item.ngross+"' data-acctid='"+item.cacctno+"' data-acctdesc='"+item.ctitle+"' data-cutdate='"+item.dcutdate+"'>"),
               $("<td>").text(item.csalesno),
               $("<td>").text(item.dcutdate),
 							$("<td>").text(item.ngross),
-							$("<td>").text(item.ndebit),
-							$("<td>").text(item.ncredit)
+							$("<td>").text(item.cewtcode),
+							$("<td>").text(item.ctaxcode)
             ).appendTo("#MyORTbl tbody");
 
           });
@@ -1026,108 +1129,126 @@ function save(){
 	var i = 0;
 	var rcnt = 0;
 	
-	//var rowCount = $('#MyTable tr').length-1;
-	//var rcnt = rowCount - 1;	
-   $("input[name='chkSales[]']:checked").each( function () {
-	   i += 1;
-	  // rcnt += 1;
-	  var tbl = document.getElementById('MyTable').getElementsByTagName('tbody')[0];
-	 // alert(tbl.rows.length);
-	  		
-	   			var id = $(this).val();
-	   			$.ajax({
-					url : "th_getsalesdetails.php?id=" + id + "&typ=" + $('#invtyp').val(),
-					type: "GET",
-					dataType: "JSON",
-					success: function(data)
-					{				
-					
-					  console.log(data);
-          	$.each(data,function(index,item){
-						   
-						  var ngross = item.ngross;
-						  var ndebit = item.ndebit;
-						  var ncredit = item.ncredit;
-						  var npayment = item.npayment;
-						  var ndue = 0;
-						   
-						  ndue = ((parseFloat(ngross) + parseFloat(ndebit)) - parseFloat(ncredit)) - parseFloat(npayment);
-							
-							if(parseFloat(npayment)==0){
-								npayment = "0.00"
-							}
-							
-							var lastRow = tbl.rows.length + 1;							
-							var z=tbl.insertRow(-1);
+  $("input[name='chkSales[]']:checked").each( function () {
+		i++;
+		var tbl = document.getElementById('MyTable').getElementsByTagName('tbody')[0];
 
-							var a=z.insertCell(-1);
-								a.innerHTML ="<div class='col-xs-12 nopadding'><input type='hidden' name='txtcSalesNo"+lastRow+"' id='txtcSalesNo"+lastRow+"' value='"+item.csalesno+"' />"+item.csalesno+"</div>";
-							
-							var b=z.insertCell(-1);
-								b.align = "center";
-								b.innerHTML = item.dcutdate;
-								
-							var c=z.insertCell(-1);
-								c.align = "right";
-								c.innerHTML = "<div class='col-xs-12 nopadwleft'><input type='text' class='numeric form-control input-xs text-right' name='txtSIGross"+lastRow+"' id='txtSIGross"+lastRow+"' value='"+item.ngross+"' readonly /></div>";
-								
-							var c2=z.insertCell(-1);
-								c2.align = "right";
-								c2.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtvatamt"+lastRow+"' id='txtvatamt"+lastRow+"' value='"+item.nvat+"' readonly />";
-								
-							var c3=z.insertCell(-1);
-								c3.align = "right";
-								c3.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtnetvat"+lastRow+"' id='txtnetvat"+lastRow+"' value='"+item.nnet+"' readonly />"; 
-							
-							var l=z.insertCell(-1);
-								l.innerHTML = "<input type='text' class='form-control input-xs' placeholder='EWT Code' name='txtnEWT"+lastRow+"' id='txtnEWT"+lastRow+"' autocomplete=\"off\" />";
-							
-							var l2=z.insertCell(-1);
-								l2.innerHTML = "<input type='text' class='form-control input-xs text-right' placeholder='EWT Rate' name='txtnEWTRate"+lastRow+"' value=\"0\" id='txtnEWTRate"+lastRow+"' readonly=\"true\" />";
-								
-							var l3=z.insertCell(-1);
-								l3.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' placeholder='EWT Amt' name='txtnEWTAmt"+lastRow+"'  value=\"0.00\" id='txtnEWTAmt"+lastRow+"' readonly=\"true\" />";
-									
-							var d=z.insertCell(-1);
-								d.align = "right";
-								d.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtndebit"+lastRow+"' id='txtndebit"+lastRow+"' value='"+item.ndebit+"' readonly=\"true\" />";
-								
-							var e=z.insertCell(-1);
-								e.align = "right";
-								e.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtncredit"+lastRow+"' id='txtncredit"+lastRow+"' value='"+item.ncredit+"' readonly=\"true\" />";
-								
-							var f=z.insertCell(-1);
-								f.align = "right";
-								f.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtnpayments"+lastRow+"' id='txtnpayments"+lastRow+"' value='"+item.npayment+"' readonly=\"true\" />";
-								
-							var g=z.insertCell(-1);
-								g.align = "right";
-								g.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtDue"+lastRow+"' id='txtDue"+lastRow+"' value='"+ndue+"' readonly=\"true\" />";
-								
-							var h=z.insertCell(-1);
-								h.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtApplied"+lastRow+"' id='txtApplied"+lastRow+"' value='"+ndue+"' style='text-align:right' autocomplete=\"off\" />";
 
-							var i=z.insertCell(-1);
-								i.innerHTML = "<div class='col-xs-12 nopadding'><input type='text' class='form-control input-xs' name='txtcSalesAcctNo"+lastRow+"' id='txtcSalesAcctNo"+lastRow+"' value='"+item.cacctno+"' autocomplete=\"off\" /></div>";
-								
-							var j=z.insertCell(-1);
-								j.innerHTML = "<div class='col-xs-12 nopadding'><input type='text' class='form-control input-xs' name='txtcSalesAcctTitle"+lastRow+"' id='txtcSalesAcctTitle"+lastRow+"' value='"+item.ctitle+"' autocomplete=\"off\" /></div>";
-								
-							var k=z.insertCell(-1);
-								k.innerHTML = "<div class='col-xs-12 nopadwleft'><input class='btn btn-danger btn-xs' type='button' id='row_"+lastRow+"_delete' value='delete' onClick='deleteRow(this);' /></div>";
-							
-							var varnnet = item.nnet;
-							var varngrs = item.ngross;	
-										   
-									$("input.numeric").autoNumeric('init',{mDec:2});
-									$("input.numeric").on("click focus", function () {
-									   $(this).select();
-									});
+			var tranno = $(this).val();
+			var dcutdate = $(this).data("cutdate");
+			var ngross = $(this).data("amt");
+			var ncm = $(this).data("cm");
+			var npayments = $(this).data("payment");
+			var nvat = $(this).data("vat");
+			var vatcode = $(this).data("vatcode"); 
+			var nnetvat = $(this).data("netvat");
+			var newtcode = $(this).data("ewtcode");
+			var newtrate = $(this).data("ewtrate");
+			var newtamt = $(this).data("ewtamt");
+
+			var acctcode = $(this).data("acctid");
+			var acctdesc = $(this).data("acctdesc");
+
+			var ntotdue = parseFloat(ngross) - parseFloat(ncm) - parseFloat(npayments) - parseFloat(newtamt);
+		
+
+			var lastRow = tbl.rows.length + 1;							
+			var z=tbl.insertRow(-1);
+
+			var a=z.insertCell(-1);
+			a.innerHTML ="<div class='col-xs-12 nopadding'><input type='hidden' name='txtcSalesNo"+lastRow+"' id='txtcSalesNo"+lastRow+"' value='"+tranno+"' />"+tranno+"</div>";
 									
-									$("input.numeric").on("keyup", function (e) {
-										setPosi($(this).attr('name'),e.keyCode,'MyTable');
-										computeGross();
-									});
+			var b=z.insertCell(-1);
+			b.align = "center";
+			b.innerHTML = dcutdate;
+										
+			var c=z.insertCell(-1);
+			c.align = "right";
+			c.innerHTML = "<div class='col-xs-12 nopadwleft'><input type='text' class='numeric form-control input-xs text-right' name='txtSIGross"+lastRow+"' id='txtSIGross"+lastRow+"' value='"+ngross+"' readonly /></div>";
+
+			var d=z.insertCell(-1);
+			d.align = "right";
+			d.innerHTML = "<div class=\"input-group\"><input type='text' name='txtndebit"+lastRow+"' id='txtndebit"+lastRow+"' class=\"numeric form-control input-xs\" value=\"0.00\" style=\"text-align:right\" readonly><span class=\"input-group-btn\"><button class=\"btn btn-primary btn-xs\" name=\"btnadddm\" id=\"btnadddm"+lastRow+"\" type=\"button\" onclick=\"addCM('DM','"+tranno+"','txtncm"+lastRow+"')\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span></button></span></div>";
+										
+			var e=z.insertCell(-1);
+			e.align = "right";
+			e.innerHTML = " <div class=\"input-group\"><input type='text' name='txtncredit"+lastRow+"' id='txtncredit"+lastRow+"' class=\"numeric form-control input-xs\" value=\""+ncm+"\" style=\"text-align:right\" readonly><span class=\"input-group-btn\"><button class=\"btn btn-primary btn-xs\" name=\"btnaddcm\" id=\"btnaddcm"+lastRow+"\" type=\"button\" onclick=\"addCM('CM','"+tranno+"','txtncm"+lastRow+"')\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span></button></span></div>";
+										
+			var f=z.insertCell(-1);
+			f.align = "right";
+			f.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtnpayments"+lastRow+"' id='txtnpayments"+lastRow+"' value='"+npayments+"' readonly=\"true\" />";
+
+			/*
+			var xz = $("#hdntaxcodes").val();
+			taxoptions = "";
+			$.each(jQuery.parseJSON(xz), function() { 
+
+				if(vatcode==this['ctaxcode']){
+					isselctd = "selected";
+				}else{
+					isselctd = "";
+				}
+				taxoptions = taxoptions + "<option value='"+this['ctaxcode']+"' data-id='"+this['nrate']+"' "+isselctd+">"+this['ctaxdesc']+"</option>";
+			});
+
+			var c1=z.insertCell(-1);
+			c1.align = "right";
+			c1.innerHTML = "<select class='form-control input-xs' name=\"txtnvatcode\" id=\"txtnvatcode"+lastRow+"\" readonly> " + taxoptions + " </select>";
+			*/
+
+			var c1=z.insertCell(-1);
+			c1.align = "right";
+			c1.innerHTML = "<input type='text' class='form-control input-xs text-right' name=\"txtnvatcode"+lastRow+"\" id=\"txtnvatcode"+lastRow+"\" readonly value='"+vatcode+"' readonly />";
+
+			var c2=z.insertCell(-1);
+			c2.align = "right";
+			c2.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtvatamt"+lastRow+"' id='txtvatamt"+lastRow+"' value='"+nvat+"' readonly />";
+										
+			var c3=z.insertCell(-1);
+			c3.align = "right";
+			c3.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtnetvat"+lastRow+"' id='txtnetvat"+lastRow+"' value='"+nnetvat+"' readonly />"; 
+			
+			$ifrdonly = "";
+			$ifrdonlyint = 0;
+			if(newtcode!=="none" && newtcode!==""){
+				$ifrdonly = "readonly";
+				$ifrdonlyint = 1;
+			}
+
+			var l=z.insertCell(-1);
+			l.innerHTML = "<input type='text' class='ewtcode form-control input-xs' placeholder='EWT Code' name='txtnEWT"+lastRow+"' id='txtnEWT"+lastRow+"' autocomplete=\"off\" value='"+newtcode+"' "+$ifrdonly+"/> <input type='hidden' name='hdnewtgiven"+lastRow+"' id='hdnewtgiven"+lastRow+"' value='"+$ifrdonlyint+"' />";
+
+			var l2=z.insertCell(-1);
+			l2.innerHTML = "<input type='text' class='form-control input-xs text-right' placeholder='EWT Rate' name='txtnEWTRate"+lastRow+"' value=\""+newtrate+"\" id='txtnEWTRate"+lastRow+"' readonly=\"true\" />";
+										
+			var l3=z.insertCell(-1);
+			l3.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' placeholder='EWT Amt' name='txtnEWTAmt"+lastRow+"'  value=\""+newtamt+"\" id='txtnEWTAmt"+lastRow+"' readonly=\"true\" />";
+										
+			var g=z.insertCell(-1);
+			g.align = "right";
+			g.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtDue"+lastRow+"' id='txtDue"+lastRow+"' value='"+ntotdue+"' readonly=\"true\" />";
+										
+			var h=z.insertCell(-1);
+			h.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtApplied"+lastRow+"' id='txtApplied"+lastRow+"' value='"+ntotdue+"' style='text-align:right' autocomplete=\"off\" />";
+									
+			var j=z.insertCell(-1);
+			j.innerHTML = "<div class='col-xs-12 nopadding'><input type='text' class='form-control input-xs' name='txtcSalesAcctTitle"+lastRow+"' id='txtcSalesAcctTitle"+lastRow+"' value='"+acctdesc+"' autocomplete=\"off\" /> <input type='hidden' name='txtcSalesAcctNo"+lastRow+"' id='txtcSalesAcctNo"+lastRow+"' value='"+acctcode+"' /></div>";
+										
+			var k=z.insertCell(-1);
+			k.innerHTML = "<div class='col-xs-12 nopadwleft'><input class='btn btn-danger btn-xs' type='button' id='row_"+lastRow+"_delete' value='delete' onClick='deleteRow(this);' /></div>";
+									
+			//var varnnet = item.nnet;
+			//var varngrs = item.ngross;	
+													
+			$("input.numeric").autoNumeric('init',{mDec:2});
+			$("input.numeric").on("click focus", function () {
+				$(this).select();
+			});
+											
+			$("input.numeric").on("keyup", function (e) {
+				setPosi($(this).attr('name'),e.keyCode,'MyTable');
+				computeGross();
+			});
 									
 									$("#txtnEWT"+lastRow).typeahead({
 										items: 10,
@@ -1153,36 +1274,8 @@ function save(){
 											$("#txtnEWT"+lastRow).val(item.ctaxcode).change(); 
 											$("#txtnEWTRate"+lastRow).val(item.nrate);
 											
-											var xcb = 0;
-											var xcbdue = 0;
-
-											varnnet =  $("#txtnetvat"+lastRow).val().replace(/,/g,'');
-											varngrs = $("#txtSIGross"+lastRow).val().replace(/,/g,'');
-											ndue = $("#txtDue"+lastRow).val().replace(/,/g,'');
 											
-											if(item.cbase=="NET"){
-												xcb = parseFloat(varnnet)*(item.nrate/100);
-											}else{
-												xcb = parseFloat(varngrs)*(item.nrate/100);
-											}
-											
-											$("#txtnEWTAmt"+lastRow).val(xcb);
-											//recompute due
-											xcbdue = varngrs - xcb;
-											
-											$("#txtDue"+lastRow).val(xcbdue);
-
-											$("#txtApplied"+lastRow).val(xcbdue);
-
-											$("#txtnEWTAmt"+lastRow).autoNumeric('destroy');
-											$("#txtnEWTAmt"+lastRow).autoNumeric('init',{mDec:2});
-
-											$("#txtDue"+lastRow).autoNumeric('destroy');
-											$("#txtDue"+lastRow).autoNumeric('init',{mDec:2});
-											
-											$("#txtApplied"+lastRow).autoNumeric('destroy');
-											$("#txtApplied"+lastRow).autoNumeric('init',{mDec:2});
-											
+											computeDue();
 											computeGross();
 											
 											//setPosi("txtcSalesAcctTitle"+lastRow,13,'MyTable');
@@ -1191,32 +1284,8 @@ function save(){
 									});
 									
 									
-									$("#txtcSalesAcctNo"+lastRow+", #txtcSalesAcctTitle"+lastRow).on("click focus", function(event) {
+									$("#txtcSalesAcctTitle"+lastRow).on("click focus", function(event) {
 										$(this).select();
-									});
-									
-									$("#txtcSalesAcctNo"+lastRow).on("keyup", function(event) {
-										if(event.keyCode == 13 || event.keyCode== 38 || event.keyCode==40){
-										
-											if(event.keyCode==13 ){	
-											var dInput = this.value;
-									
-												$.ajax({
-													type:'post',
-													url:'../getaccountid.php',
-													data: 'c_id='+ $(this).val(),                 
-													success: function(value){
-														if(value.trim()!=""){
-															$("#txtcSalesAcctTitle"+lastRow).val(value.trim());
-														}
-													}
-												});
-											}
-											
-											setPosi("txtcSalesAcctNo"+lastRow,event.keyCode,'MyTable');
-											
-										}
-										
 									});
 									
 									$("#txtcSalesAcctTitle"+lastRow).typeahead({
@@ -1249,18 +1318,13 @@ function save(){
 										}
 									});
 											   	
-					  });
 
-						computeGross();
-					},
-					error: function (jqXHR, textStatus, errorThrown)
-					{
-						alert(jqXHR.responseText);
-					}
-					
-				});
 
-	   
+						computeGross(); 
+
+						if(parseFloat(ncm)!==0){
+							getrefreturn(tranno);
+						}
 	   
 	   
    });
@@ -1271,6 +1335,47 @@ function save(){
    
    $('#myModal').modal('hide');
    
+}
+
+function computeDue(){
+
+	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
+	var lastRow = tbl.length-1;
+	if(lastRow!=0){
+		var x = 0;
+		
+		for (z=1; z<=lastRow; z++){
+			var varngrs = $("#txtvatamt"+lastRow).val().replace(/,/g,'');
+			var varngrs = $("#txtSIGross"+lastRow).val().replace(/,/g,'');
+			var varngrs = $("#txtSIGross"+lastRow).val().replace(/,/g,'');
+		}
+
+	}
+
+	varnnet =  $("#txtnetvat"+lastRow).val().replace(/,/g,'');
+	ndue = $("#txtDue"+lastRow).val().replace(/,/g,'');
+											
+	if(item.cbase=="NET"){
+		xcb = parseFloat(varnnet)*(item.nrate/100);
+	}else{
+		xcb = parseFloat(varngrs)*(item.nrate/100);
+	}
+											
+	$("#txtnEWTAmt"+lastRow).val(xcb);
+	xcbdue = varngrs - xcb;
+											
+	$("#txtDue"+lastRow).val(xcbdue);
+	$("#txtApplied"+lastRow).val(xcbdue);
+
+	$("#txtnEWTAmt"+lastRow).autoNumeric('destroy');
+	$("#txtnEWTAmt"+lastRow).autoNumeric('init',{mDec:2});
+
+	$("#txtDue"+lastRow).autoNumeric('destroy');
+	$("#txtDue"+lastRow).autoNumeric('init',{mDec:2});
+											
+	$("#txtApplied"+lastRow).autoNumeric('destroy');
+	$("#txtApplied"+lastRow).autoNumeric('init',{mDec:2});
+
 }
 
 function setPosi(nme,keyCode,tbl){
@@ -1432,6 +1537,198 @@ function deleteRow3(r) {
 computeGross();
 }
 */
+
+	function addCM(xyadjtype,xytran,txtbx){
+		var tbl = document.getElementById('MyTableCMx').getElementsByTagName('tr');
+		var lastRow2 = tbl.length-1;
+
+		if(lastRow2>=1){
+			$("#MyTableCMx > tbody > tr").each(function() {	
+			
+				var citmno = $(this).find('input[type="hidden"][name="hdndetsino"]').val();
+				var cadjyp = $(this).find('input[name="hdnctypeadj"]').val();
+				//alert(citmno+"!="+itmcde);
+				if(citmno!=xytran && cadjyp!==xyadjtype){
+
+					$(this).find('input[name="txtapcmdm"]').attr("readonly", true);
+					//$(this).find('input[name="txtcmamt"]').attr("readonly", true);
+					$(this).find('input[name="txtremz"]').attr("readonly", true);   
+				
+					$(this).find('input[type="button"][name="delinfo"]').attr("class", "btn btn-danger btn-xs disabled");
+					$(this).find('input[type="button"][name="delinfo"]').prop("disabled",true);
+					
+				}
+				else{
+					var ctnnn = $(this).find('input[type="hidden"][name="hdnisgiven"]').val();
+
+					if(ctnnn==1){
+						$(this).find('input[name="txtapcmdm"]').attr("readonly", true);
+					}else{
+						$(this).find('input[name="txtapcmdm"]').attr("readonly", false);
+					}
+						
+						//$(this).find('input[name="txtapamt"]').attr("readonly", false);
+						$(this).find('input[name="txtremz"]').attr("readonly", false);
+						$(this).find('input[type="button"][name="delinfo"]').attr("class", "btn btn-danger btn-xs");
+						$(this).find('input[type="button"][name="delinfo"]').prop("disabled",false);
+
+				}
+				
+			});
+		}			
+			
+		$('#txtdetsinoinfo').val(xytran); 
+		$('#txthdnTYPAdj').val(xyadjtype);   
+		$("#txthdnCMtxtbx").val(txtbx);
+		$('#MyAdjustmentModal').modal('show');
+	}
+
+	function chkCloseInfo(){
+		var isInfo = "TRUE";
+		
+		$("#MyTableCMx > tbody > tr").each(function(index) {	
+				
+			var citmfld1 = $(this).find('input[name="txtapcmdm"]').val();
+			//var citmfld2 = $(this).find('input[name="txtremz"]').val();
+
+			if(citmfld1==""){
+				isInfo = "FALSE";
+			}
+					
+		});
+
+	
+		if(isInfo == "TRUE"){
+			//recompute details
+			var tot = 0;
+			var xinfo = $("#txthdnCMinfo").val();
+			var dsc = $("#txthdnCMtxtbx").val();
+			
+			$("#MyTableCMx > tbody > tr").each(function(index) {	
+				if(index>0){
+				var x = $(this).find('input[name="txtapamt"]').val().replace(/,/g,'');
+				var y = $(this).find('input[type="hidden"][name="txtcmrr"]').val();
+
+					if(xinfo==y){
+						tot = tot + parseFloat(x);
+					}	
+				}
+				
+			});
+			
+			if(parseFloat(tot)>0){
+				$("#"+dsc).val(tot);
+
+				$("#"+dsc).autoNumeric('destroy');
+				$("#"+dsc).autoNumeric('init',{mDec:2});
+			}
+			
+
+		//	recomlines();
+		//	compgross1();
+												
+			$('#MyAdjustmentModal').modal('hide');	
+		}
+		else{
+			alert("Incomplete info values!");
+		}
+	}
+
+	function getrefreturn(cinvno){
+
+			$.ajax({
+        url: 'th_getreturn.php',
+				data: { x:cinvno },
+        dataType: 'json',
+        method: 'post',
+        success: function (data) {
+          console.log(data);
+          $.each(data,function(index,item){
+
+
+						AddRefAdj(item.ctype,item.refsi,item.reftran,item.dte,item.grss,item.rmks);
+					});
+				}
+
+			});
+	}
+
+	function AddRefAdj($adjtyp,$adjsi,$adjtran,$adjdte,$adjgrss,$rmks){
+
+			var tbl = document.getElementById('MyTableCMx').getElementsByTagName('tr');
+			var lastRow = tbl.length;
+
+			if($adjtran==""){
+				$did = "0";
+			}else{
+				$did = "1";
+			}
+
+			var tdaptypx = "<td><input type='text' class='form-control input-xs' name='hdnctypeadj' id='hdnctypeadj"+lastRow+"' value='"+$adjtyp+"' readonly></td>";
+
+			var tdapcm = "<td><input type='hidden' name='hdndetsino' id='hdndetsino"+lastRow+"' value='"+$adjsi+"'><input type='hidden' name='hdnisgiven' id='hdnisgiven"+lastRow+"' value='"+$did+"'><input type='text' name='txtapcmdm' id='txtapcmdm"+lastRow+"' class='form-control input-xs' value='"+$adjtran+"'></td>";
+
+			var tddate = "<td><input type='text' name='txtapdte' id='txtapdte"+lastRow+"' class='form-control input-xs' readonly value='"+$adjdte+"'></td>";
+
+			var tdamt = "<td><input type='text' name='txtapamt' id='txtapamt"+lastRow+"' class='form-control input-xs text-right' readonly value='"+$adjgrss+"'></td>";
+
+			var tdrem = "<td><input type='text' name='txtremz' id='txtremz"+lastRow+"' value='"+$rmks+"' class='form-control input-xs'></td>";
+
+			if($adjtran==""){
+				var tdels = "<td><input class='btn btn-danger btn-xs' type='button' name='delinfo' id='delinfo" + $adjsi + lastRow + "' value='delete' /></td>";
+			}else{
+				var tdels = "<td>&nbsp;</td>";
+			}
+
+			$('#MyTableCMx > tbody:last-child').append('<tr>'+tdaptypx+tdapcm + tddate + tdamt + tdrem + tdels + '</tr>'); 
+
+			if($adjtran==""){
+				$("#delinfo"+$adjsi+lastRow).on('click', function() { 
+					$(this).closest('tr').remove();
+				});
+		
+				$("#txtapcmdm"+lastRow).typeahead({
+					items: 10,
+					source: function(request, response) {
+						var apcmlist = "";
+						$("#MyTableCMx > tbody > tr").each(function(index) {	
+							if(index>0){
+
+								var citmfld1 = $(this).find('input[name="txtapcmdm"]').val();
+								if(index>1){
+									apcmlist = apcmlist + ",";
+								}
+								
+								apcmlist = apcmlist + citmfld1;
+							}
+
+						});
+						
+						$.ajax({
+							url: "th_getapcm.php",
+							dataType: "json",
+							data: {
+								query: $("#txtapcmdm"+lastRow).val(), code: $("#txtcustid").val(), lst: apcmlist
+							},
+							success: function (data) {
+								response(data);
+							}
+						});
+					},
+					autoSelect: true,
+					displayText: function (item) {
+						return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.ddate + ' - ' +  item.ngross + '</small><br><small>' + item.crem + '</small></div>';
+					},
+					highlighter: Object,
+					afterSelect: function(item) { 
+						$("#txtapcmdm"+lastRow).val(item.id).change(); 
+						$("#txtapdte"+lastRow).val(item.ddate);
+						$("#txtapamt"+lastRow).val(item.ngross);
+					}
+				});
+			}
+	}
+
 
 </script>
 

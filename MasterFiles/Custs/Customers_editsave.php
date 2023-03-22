@@ -74,35 +74,34 @@ $myerror = "True";
 
 		if($SalesCodeType=="multiple") {
 			
-			$sql = "select A.ccode, A.cdesc, ifnull(B.ccode,'') as custcode from groupings A left join customers_accts B on A.ccode=B.citemtype and B.ccode='$cCustCode' where A.compcode='$company' and ctype='ITEMTYP' and cstatus='ACTIVE' order by cdesc";
-            $result=mysqli_query($con,$sql);
-             
-			//echo  "select A.ccode, A.cdesc, ifnull(B.ccode,'') as custcode from groupings A left join customers_accts B on A.ccode=B.citemtype and B.ccode='$cCustCode' where A.compcode='$company' and ctype='ITEMTYP' and cstatus='ACTIVE' order by cdesc";
+				$sql = "select A.ccode, A.cdesc, ifnull(B.ccode,'') as custcode from groupings A left join customers_accts B on A.ccode=B.citemtype and B.ccode='$cCustCode' where A.compcode='$company' and ctype='ITEMTYP' and cstatus='ACTIVE' order by cdesc";
+        $result=mysqli_query($con,$sql);
 			              
-         while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-            {
+        while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+        {
 				//echo "<br>".$row['custcode'];
 				if($row['custcode']==""){
+
 					$citemtype = $row['ccode'];
-					$cacctno = $_REQUEST['txtsalesacctDID'.$citemtype];
+					$cacctno = $_REQUEST['txtsalesacctD'.$citemtype];
+
 					
-				mysqli_query($con,"INSERT INTO customers_accts(`compcode`, `ccode`, `citemtype`, `cacctno`) 
-				values('$company', '$cCustCode','$citemtype','$cacctno')");
-						if(mysqli_error($con)!=""){
-							//printf("Errormessage: %s\n", mysqli_error($con));	
-							printf("Error creating customer acct codes: %s\n", mysqli_error($con));	
-						}
+					mysqli_query($con,"INSERT INTO customers_accts(`compcode`, `ccode`, `citemtype`, `cacctno`) 
+					values('$company', '$cCustCode','$citemtype','$cacctno')");
+					if(mysqli_error($con)!=""){
+						printf("Error creating customer acct codes: %s\n", mysqli_error($con));	
+					}
 
 					
 				}else{
 					$citemtype = $row['ccode'];
-					$cacctno = $_REQUEST['txtsalesacctDID'.$citemtype];
+					$cacctno = $_REQUEST['txtsalesacctD'.$citemtype];
 
-				mysqli_query($con,"Update customers_accts set `cacctno` = '$cacctno' where `compcode` = '$company' and `citemtype` = '$citemtype' and  `ccode` = '$cCustCode'");
-						if(mysqli_error($con)!=""){
-							//printf("Errormessage: %s\n", mysqli_error($con));	
-							printf("Error updating customer acct codes: %s\n", mysqli_error($con));	
-						}
+					mysqli_query($con,"Update customers_accts set `cacctno` = '$cacctno' where `compcode` = '$company' and `citemtype` = '$citemtype' and  `ccode` = '$cCustCode'");
+					if(mysqli_error($con)!=""){
+						//printf("Errormessage: %s\n", mysqli_error($con));	
+						printf("Error updating customer acct codes: %s\n", mysqli_error($con));	
+					}
 					
 				}
 							

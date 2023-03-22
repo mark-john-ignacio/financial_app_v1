@@ -191,7 +191,7 @@ else{
 
 if(itmstat=="OK"){
 
-	alert("SI_Tran.php?x="+num+"&typ="+x);
+	//alert("SI_Tran.php?x="+num+"&typ="+x);
 	
 	$.ajax ({
 		url: "SI_Tran.php",

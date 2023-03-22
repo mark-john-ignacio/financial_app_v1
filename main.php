@@ -279,7 +279,7 @@
 							Quotation</a>
 						</li>
 
-						<li class="side-item-category">Trade Transactions</li>
+					<li class="side-item-category">Trade Transactions</li>
 
 						<li>
 							<a href="javascript:;" onClick="setpage('Sales/SO/SO.php');">
@@ -296,18 +296,20 @@
                             <i class="fgly-sm flaticon-065-bill"></i> 
 							Sales Invoice</a>
 						</li>
-                        <!--
+
+						<li>
+							<a href="javascript:;" onClick="setpage('Sales/Return/SR.php');">
+                <i class="icon-action-undo"></i>
+								Sales Return</a>
+						</li>
+            <!--
                         <li>
 							<a href="javascript:;" onClick="setpage('POS');">
                             <i class="fgly flaticon-060-cash-register"></i>
 							Point of Sale</a>
 						</li>
-																			-->
-            <li>
-							<a href="javascript:;" onClick="setpage('Sales/Return/SR.php');">
-                <i class="icon-action-undo"></i>
-								Sales Return</a>
-						</li>
+																			-->											
+           
                  
 						
 						<li class="side-item-category">Non Trade Transactions</li>
@@ -330,25 +332,19 @@
 							SI Non-Trade</a>
 						</li>
 
-						<!--
+
 						<li>
 							<a href="javascript:;" onClick="setpage('SalesNT/Return/SR.php');">
                 <i class="icon-action-undo"></i>
 								SR Non-Trade</a>
-						</li>-->
-             <!--           
-                        <li>
+						</li>
+            <!--           
+            <li>
 							<a href="javascript:;" onClick="setpage('POS');">
                             <i class="fgly flaticon-060-cash-register"></i>
 							Point of Sale</a>
 						</li>
 						-->
-
-            <li>
-							<a href="javascript:;" onClick="setpage('SalesNT/Return/SR.php');">
-                            <i class="icon-action-undo"></i>
-							SR Non-Trade</a>
-						</li>
                         
 					</ul>
 				</li>
@@ -434,19 +430,25 @@
 
 						<li>
 							<a href="javascript:;" class="nav-link nav-toggle">
-                            <i class="fa fa-money"></i>
-							Accounts Receivable<span class="arrow"></span></a>
-                                        <ul class="sub-menu">
-                                        	<li>
-                                            	<a href="javascript:;" onClick="setpage('Accounting/ARCM/ARCM.php');"> <i class="fa fa-angle-double-right"></i> Credit Memo </a>
-                                            </li>
-                                        	<li>
-                                            	<a href="javascript:;" onClick="setpage('Accounting/ARDM/ARDM.php');"> <i class="fa fa-angle-double-right"></i> Debit Memo </a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:;" onClick="setpage('Accounting/OR/OR.php');"> <i class="fa fa-angle-double-right"></i> AR Payments </a>
-                                            </li>
-                                        </ul>
+                <i class="fa fa-money"></i>
+							Accounts Receivable<span class="arrow"></span>
+							</a>
+                <ul class="sub-menu">
+									<!--
+                  <li>
+                    <a href="javascript:;" onClick="setpage('Accounting/ARCM/ARCM.php');"> <i class="fa fa-angle-double-right"></i> Credit Memo </a>
+                  </li>
+                  <li>
+                    <a href="javascript:;" onClick="setpage('Accounting/ARDM/ARDM.php');"> <i class="fa fa-angle-double-right"></i> Debit Memo </a>
+                  </li>
+									-->
+									<li>
+                    <a href="javascript:;" onClick="setpage('Accounting/ARAdj/ARAdj.php');"> <i class="fa fa-angle-double-right"></i> Adjustments </a>
+                  </li>
+                  <li>
+                    <a href="javascript:;" onClick="setpage('Accounting/OR/OR.php');"> <i class="fa fa-angle-double-right"></i> AR Payments </a>
+                  </li>
+                </ul>
 						</li>
 
 						<li>

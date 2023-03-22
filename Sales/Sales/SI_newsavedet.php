@@ -28,6 +28,8 @@ function chkgrp($valz) {
 		$nDiscount = $_REQUEST['ndiscount'];
 		$nAmount = $_REQUEST['namt'];
 		$nTranAmount = $_REQUEST['ntranamt'];
+		$cewtcode = $_REQUEST["ewtcode"];  
+		$cewtrate = $_REQUEST["ewtrate"];
 		$ctaxcode = $_REQUEST["vatcode"]; 
 		$nrate = $_REQUEST["nrate"];
 
@@ -45,7 +47,7 @@ function chkgrp($valz) {
 
 	$refcidenttran = $cSINo."P".$indexz;
 
-	if (!mysqli_query($con,"INSERT INTO sales_t(`compcode`, `cidentity`, `ctranno`, `creference`, `nrefident`, `nident`, `citemno`, `nqty`, `cunit`, `nprice`, `ndiscount`, `nbaseamount`, `namount`, `cmainunit`,`nfactor`,`cacctcode`,`ctaxcode`, `nrate`) values('$company', '$refcidenttran', '$cSINo', $crefno, $crefident, '$indexz', '$cItemNo', '$nQty', '$cUnit', '$nPrice', '$nDiscount', '$nTranAmount', '$nAmount', '$cMainUOM', '$nFactor', $cacctcode, '$ctaxcode', '$nrate')")){
+	if (!mysqli_query($con,"INSERT INTO sales_t(`compcode`, `cidentity`, `ctranno`, `creference`, `nrefident`, `nident`, `citemno`, `nqty`, `cunit`, `nprice`, `ndiscount`, `nbaseamount`, `namount`, `cmainunit`,`nfactor`,`cacctcode`,`ctaxcode`, `nrate`, `cewtcode`, `newtrate`) values('$company', '$refcidenttran', '$cSINo', $crefno, $crefident, '$indexz', '$cItemNo', '$nQty', '$cUnit', '$nPrice', '$nDiscount', '$nTranAmount', '$nAmount', '$cMainUOM', '$nFactor', $cacctcode, '$ctaxcode', '$nrate', '$cewtcode', '$cewtrate')")){
 		//echo "False";
 		
 		echo "Errormessage: %s\n", mysqli_error($con);

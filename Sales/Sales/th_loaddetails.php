@@ -9,7 +9,7 @@ require_once "../../Connection/connection_string.php";
 
 	$date1 = date("Y-m-d");
 	
-		$sql = "select X.creference as ctranno, X.nrefident, X.citemno as cpartno, A.citemdesc, X.cunit, X.nqty as totqty, 1 as nqty, X.nprice,  X.nbaseamount, X.namount, A.cunit as qtyunit, X.nfactor, X.ndiscount, A.ctype, X.ctaxcode
+		$sql = "select X.creference as ctranno, X.nrefident, X.citemno as cpartno, A.citemdesc, X.cunit, X.nqty as totqty, 1 as nqty, X.nprice,  X.nbaseamount, X.namount, A.cunit as qtyunit, X.nfactor, X.ndiscount, A.ctype, X.ctaxcode, X.cewtcode
 		from sales_t X
 		left join items A on X.compcode=A.compcode and X.citemno=A.cpartno
 		where X.compcode='$company' and X.ctranno = '$csalesno' Order By X.nident";
@@ -35,6 +35,7 @@ require_once "../../Connection/connection_string.php";
 		$json['nrefident'] = $row2['nrefident'];
 		$json['citmtyp'] = $row2['ctype'];
 		$json['ctaxcode'] = $row2['ctaxcode'];
+		$json['cewtcode'] = $row2['cewtcode'];
 
 		$json2[] = $json;
 

@@ -171,7 +171,25 @@ function getSetAcct($id){
 					left join accounts D on B.compcode=D.compcode and B.cacctno=D.cacctno 
 					where A.compcode='$company' and A.ctranno='$tran'";
 		}else{
-			$qrySI = "INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','SI','$tran',A.dcutdate,B.cacctid,B.cacctdesc,A.ngross,0,0,NOW() From sales A left join accounts B on A.compcode=B.compcode and A.cacctcode=B.cacctno where A.compcode='$company' and A.ctranno='$tran'";
+
+			$qrySI  = "INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','SI','$tran',A.dcutdate,A.cacctid,A.cacctdesc,sum(A.ngross),0,0,NOW()
+			From (Select B.dcutdate, C.cacctid,C.cacctdesc, A.citemno, A.nrate, A.newtrate, D.cbase, nqty, nprice, 
+			CASE 
+				WHEN IFNULL(A.newtrate,0) <> 0 
+				THEN 
+					CASE 
+						WHEN cbase='NET' 
+						THEN A.namount - ROUND((ROUND(A.namount/(1 + (A.nrate/100)),2) * (A.newtrate/100)),2)
+						ELSE A.namount - ROUND((A.namount * (A.newtrate/100)),2)
+						END 
+				ELSE 
+					A.namount 
+				END as ngross
+			From sales_t A 
+			left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno 
+			left join accounts C on A.compcode=C.compcode and B.cacctcode=C.cacctno 
+			left join wtaxcodes D on A.compcode=D.compcode and A.cewtcode=D.ctaxcode 
+			where A.compcode='$company' and A.ctranno='$tran') A Group By A.dcutdate,A.cacctid,A.cacctdesc";
 		}
 		
 			
@@ -180,7 +198,45 @@ function getSetAcct($id){
 			echo "False";
 		}
 		else{
-		
+			//EWT ENTRY - ALSO DEBIT SIDE
+			$Sales_Ewt = getDefAcct("EWTREC");
+
+			$SID = $Sales_Ewt["id"];
+			$SNM = $Sales_Ewt["name"];
+
+			$qrySIEWT  = "Select A.dcutdate,A.cacctid,A.cacctdesc,sum(A.newtgross) as newtgross
+			From (Select B.dcutdate, C.cacctid,C.cacctdesc, A.citemno, A.nrate, A.newtrate, D.cbase, nqty, nprice, 
+			CASE 
+				WHEN IFNULL(A.newtrate,0) <> 0 
+				THEN 
+					CASE 
+						WHEN cbase='NET' 
+						THEN ROUND((ROUND(A.namount/(1 + (A.nrate/100)),2) * (A.newtrate/100)),2)
+						ELSE ROUND((A.namount * (A.newtrate/100)),2)
+						END 
+				ELSE 
+					0 
+				END as newtgross
+			From sales_t A 
+			left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno 
+			left join accounts C on A.compcode=C.compcode and B.cacctcode=C.cacctno 
+			left join wtaxcodes D on A.compcode=D.compcode and A.cewtcode=D.ctaxcode 
+			where A.compcode='$company' and A.ctranno='$tran') A Group By A.dcutdate,A.cacctid,A.cacctdesc";
+			$resewt = mysqli_query($con,$qrySIEWT);
+				$isok = "True";
+				if (mysqli_num_rows($resewt)!=0) {
+					while($rowewt = mysqli_fetch_array($resewt, MYSQLI_ASSOC)){
+						
+						if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) values ('$company','SI','$tran','".$rowewt["dcutdate"]."','$SID','$SNM',".$rowewt["newtgross"].",0,0, NOW())")){
+							echo "False";
+							//echo mysqli_error($con);
+							$isok = "False";
+						}
+					
+					}
+				
+				}
+
 		//Items Entry	
 		
 		 if($xcomp==1){ // Pag ung mismo may ari system ay Vatable
@@ -350,7 +406,7 @@ function getSetAcct($id){
 	else if($typ=="OR"){
 				
 		//OR -> Customer account -> Credit
-			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'OR', '$tran', C.dcutdate, A.cacctno, B.cacctdesc, 0, sum(A.namount) as namount, 0, NOW() From receipt_sales_t A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid join receipt C on A.compcode=C.compcode and A.ctranno=C.ctranno where A.compcode='$company' and A.ctranno='$tran'  Group by C.dcutdate, A.cacctno, B.cacctdesc ")){
+			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'OR', '$tran', C.dcutdate, A.cacctno, B.cacctdesc, 0, sum(A.napplied) as namount, 0, NOW() From receipt_sales_t A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid join receipt C on A.compcode=C.compcode and A.ctranno=C.ctranno where A.compcode='$company' and A.ctranno='$tran'  Group by C.dcutdate, A.cacctno, B.cacctdesc ")){
 				echo "False";
 			}
 			else{

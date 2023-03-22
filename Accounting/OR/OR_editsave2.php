@@ -20,11 +20,17 @@ $company = $_SESSION['companyid'];
 	$nApplied =  mysqli_real_escape_string($con, $_REQUEST['txtnApplied']);
 	$nApplied = str_replace(",","",$nApplied);
 
+	$cOTDesc = "";
+	$cOTRef = "";
+	if ($cPayMethod!=="Cash" && $cPayMethod!=="Cheque"){
+		$cOTDesc = mysqli_real_escape_string($con, $_REQUEST['txtOTBankName']);
+		$cOTRef = mysqli_real_escape_string($con, $_REQUEST['txtOTRefNo']);	
+	}
 	
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 
 	
-	if (!mysqli_query($con, "UPDATE `receipt` set `ccode` = '$cCustID', `dcutdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `cpaymethod` = '$cPayMethod', `cpaytype` = '$cPayType', `cremarks` = '$cRemarks', `namount` = $nGross, `napplied` = $nApplied, `cacctcode` = '$cAcctNo' where `compcode`='$company' and `ctranno`= '$cSINo'")) {
+	if (!mysqli_query($con, "UPDATE `receipt` set `ccode` = '$cCustID', `dcutdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `cpaymethod` = '$cPayMethod', `cpaytype` = '$cPayType', `cremarks` = '$cRemarks', `namount` = $nGross, `napplied` = $nApplied, `cacctcode` = '$cAcctNo', `cpaydesc` = '$cOTDesc', `cpayrefno` = '$cOTRef' where `compcode`='$company' and `ctranno`= '$cSINo'")) {
 				
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
@@ -163,19 +169,11 @@ elseif ($cPayMethod=="Cheque"){ //INSERT CHEQUE DETAILS
 					printf("Errormessage: %s\n", mysqli_error($con));
 				} 
 
-}else{
-	$CHKbank = mysqli_real_escape_string($con, $_REQUEST['txtOTBankName']);
-	$CHKchkno = mysqli_real_escape_string($con, $_REQUEST['txtOTRefNo']);
-
-	if (!mysqli_query($con, "INSERT INTO `receipt_opay_t`(`compcode`, `ctranno`, `cdescription`, `crefno`) values('$company', '$cSINo', '$CHKbank', '$CHKchkno')")) {
-		printf("Errormessage: %s\n", mysqli_error($con));
-	} 
 }
 
 
 //INSERT SALES DETAILS if Sales and Sales Type
 $rowcntS = $_REQUEST['hdnrowcnt'];
-
 if($rowcntS!=0){	
 
 	if (!mysqli_query($con, "DELETE FROM `receipt_sales_t` where `compcode`='$company' and `ctranno`= '$cSINo'")) {
@@ -188,33 +186,65 @@ if($rowcntS!=0){
 		$csalesno = $_REQUEST['txtcSalesNo'.$z];
 				
 		$namount = str_replace(",","",$_REQUEST['txtSIGross'.$z]);
-		$nnetamt = str_replace(",","",$_REQUEST['txtnetvat'.$z]);
-		$nvat = str_replace(",","",$_REQUEST['txtvatamt'.$z]);
-		$ewtcode = $_REQUEST['txtnEWT'.$z];
-		$ewtrate = str_replace(",","",$_REQUEST['txtnEWTRate'.$z]);
-		$ewtamt =str_replace(",","", $_REQUEST['txtnEWTAmt'.$z]);
-		//$ndiscount = mysqli_real_escape_string($con, $_REQUEST['txtDiscount'.$z]);
-		
 		$ndm = str_replace(",","",$_REQUEST['txtndebit'.$z]);
 		$ncm = str_replace(",","",$_REQUEST['txtncredit'.$z]);
 		$npayments = str_replace(",","",$_REQUEST['txtnpayments'.$z]);
+
+		$cvatcode = str_replace(",","",$_REQUEST['txtnvatcode'.$z]);
+		$nvat = str_replace(",","",$_REQUEST['txtvatamt'.$z]);
+		$nnetamt = str_replace(",","",$_REQUEST['txtnetvat'.$z]);
+
+		$ewtcode = $_REQUEST['txtnEWT'.$z];
+		$ewtrate = str_replace(",","",$_REQUEST['txtnEWTRate'.$z]);
+		$ewtamt = str_replace(",","", $_REQUEST['txtnEWTAmt'.$z]);
+				
 		$ndue = str_replace(",","",$_REQUEST['txtDue'.$z]);
 		$napplied = str_replace(",","",$_REQUEST['txtApplied'.$z]);
 		
 		$cacctno = $_REQUEST['txtcSalesAcctNo'.$z];
-
+					
 		$cnt = $cnt + 1;
 
-	    $refcidenttran = $cSINo."P".$cnt;
-		
-		
-			if (!mysqli_query($con, "INSERT INTO `receipt_sales_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `csalesno`, `namount`, `nnet`, `nvat`, `cewtcode`, `newtrate`, `newtamt`, `ndiscount`, `ndue`, `ndm`, `ncm`, `npayment`, `napplied`, `cacctno`) values('$company', '$refcidenttran', '$cnt', '$cSINo', '$csalesno', $namount, $nnetamt, $nvat, '$ewtcode', $ewtrate, $ewtamt, 0, $ndue, $ndm, $ncm, $npayments, $napplied, '$cacctno')")) {
+		$refcidenttran = $cSINo."P".$cnt;
 
+			if (!mysqli_query($con, "INSERT INTO `receipt_sales_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `csalesno`, `namount`, `ctaxcode`, `nnet`, `nvat`, `cewtcode`, `newtrate`, `newtamt`, `ndue`, `ndm`, `ncm`, `npayment`, `napplied`, `cacctno`) values('$company', '$refcidenttran', '$cnt', '$cSINo', '$csalesno', $namount, '$cvatcode', $nnetamt, $nvat, '$ewtcode', $ewtrate, $ewtamt, $ndue, $ndm, $ncm, $npayments, $napplied, '$cacctno')")) {
+				
 				printf("Errormessage: %s\n", mysqli_error($con));
 			} 
 
 	}
 	
+}
+
+//INSERT CM/DM REFERENCES
+$rowcntcmdm = $_REQUEST['hdnrowcntcmdm'];
+if($rowcntcmdm!=0){
+
+	if (!mysqli_query($con, "DELETE FROM `receipt_deds` where `compcode`='$company' and `ctranno`= '$cSINo'")) {
+		printf("Errormessage: %s\n", mysqli_error($con));
+	}
+
+	$cnt = 0;	 
+	for($z=1; $z<=$rowcntS; $z++){
+
+		$cnt++;
+
+		$adjtype = $_REQUEST['hdnctypeadj'.$z];
+		$adjrefsi = $_REQUEST['hdndetsino'.$z];
+		$adjtrano = $_REQUEST['txtapcmdm'.$z];
+		$adjdte = $_REQUEST['txtapdte'.$z];
+		$adjgrss = str_replace(",","",$_REQUEST['txtapamt'.$z]);
+		$adjremz = $_REQUEST['txtremz'.$z]; 
+		$adjisgiven = $_REQUEST['hdnisgiven'.$z];
+
+		$refcidenttran = $cSINo."P".$cnt;
+
+		if (!mysqli_query($con, "INSERT INTO `receipt_deds`(`compcode`,`cidentity`,`nidentity`,`ctranno`,`aradjustment_ctype`,`aradjustment_ctranno`,`aradjustment_crefsi`,`aradjustment_dcutdate`,`aradjustment_ngross`,`cremarks`,`isgiven`) values('$company', '$refcidenttran', '$cnt', '$cSINo','$adjtype','$adjtrano','$adjrefsi', '$adjdte', $adjgrss, '$adjremz', '$adjisgiven')")){
+			printf("Errormessage: %s\n", mysqli_error($con));
+		}
+
+	}
+
 }
 
 	//INSERT LOGFILE

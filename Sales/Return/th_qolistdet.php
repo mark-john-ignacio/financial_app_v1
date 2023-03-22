@@ -13,7 +13,7 @@ require_once "../../Connection/connection_string.php";
 	else{
 		$qry = "";
 	}
-
+/*
 		$sql = "select a.*,ifnull(c.nqty,0) as nqty2,b.citemdesc, 1 as navail, d.ccurrencycode
 		from sales_t a 
 		left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
@@ -29,6 +29,14 @@ require_once "../../Connection/connection_string.php";
 
 		WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['x']."' ".$qry." Order By a.nident";
 
+		*/
+
+		$sql = "select a.*,b.citemdesc, 1 as navail, d.ccurrencycode
+		from sales_t a 
+		left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
+		left join sales d on a.compcode=d.compcode and a.ctranno=d.ctranno
+		WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['x']."' ".$qry." Order By a.nident";
+
 	//echo $sql;
 	
 	$result = mysqli_query ($con, $sql); 
@@ -40,7 +48,7 @@ require_once "../../Connection/connection_string.php";
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 		
 			$nqty1 = $row['nqty'];
-			$nqty2 = $row['nqty2']; 
+			$nqty2 = $row['nqtyreturned']; 
 		
 			 $json['ident'] = $row['nident'];
 			 $json['citemno'] = $row['citemno'];

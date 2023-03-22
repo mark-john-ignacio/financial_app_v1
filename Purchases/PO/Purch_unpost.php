@@ -115,9 +115,14 @@ $company = $_SESSION['companyid'];
 </body>
 </html>
 
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
+<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
+
 <script type="text/javascript">
 
 	$(document).ready(function () {
+		$("#example").DataTable();
+		
 			$('#btnsubmit').click(function() {
 				checked = $("input[type=checkbox]:checked").length;
 

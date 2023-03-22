@@ -6,8 +6,15 @@ require_once "../../Connection/connection_string.php";
 
 	$company = $_SESSION['companyid'];
 	
+	//$myqry = "select A.ngross,B.cvattype,B.nvatrate,ifnull(B.newtcode,'') as newtcode,CASE WHEN ifnull(B.newtcode,'') = '' THEN 0 Else C.nrate End as nrate,C.cbase from suppinv A left join suppliers B on A.ccode=B.ccode LEFT JOIN wtaxcodes C ON B.newtcode = C.ctaxcode where A.compcode='$company' and A.ctranno = '".$_REQUEST['rrid']."'";
+
 	$myqry = "select A.ngross,B.cvattype,B.nvatrate,ifnull(B.newtcode,'') as newtcode,CASE WHEN ifnull(B.newtcode,'') = '' THEN 0 Else C.nrate End as nrate,C.cbase from suppinv A left join suppliers B on A.ccode=B.ccode LEFT JOIN wtaxcodes C ON B.newtcode = C.ctaxcode where A.compcode='$company' and A.ctranno = '".$_REQUEST['rrid']."'";
 	$result = mysqli_query ($con, $myqry);
+
+//vats sa items
+	$myqry = "select ctranno, sum(nnetvat) as nnetvat, sum(nlessvat) as nlessvat from suppinv_t where compcode='$company' and ctranno = '".$_REQUEST['rrid']."'";
+	$resdvat = mysqli_query ($con, $myqry);
+	
 	
 	//echo $myqry; 
 	$npaymnt = 0;
@@ -36,10 +43,15 @@ require_once "../../Connection/connection_string.php";
 			$vatnet = $row['ngross'];
 			$ewtamt = 0;
 			
-			if($row['nvatrate']<>0){
-				$vatnet = floatval($row['ngross']) / floatval(1 + (floatval($row['nvatrate'])/100));
-				$vatamt = floatval($row['ngross']) - floatval($vatnet); 
+			//if($row['nvatrate']<>0){
+			//	$vatnet = floatval($row['ngross']) / floatval(1 + (floatval($row['nvatrate'])/100));
+			//	$vatamt = floatval($row['ngross']) - floatval($vatnet); 
+			//}
+			while($rowats = mysqli_fetch_array($resdvat, MYSQLI_ASSOC)){
+				$vatnet = $rowats['nnetvat'];
+				$vatamt = $rowats['nlessvat'];
 			}
+			
 			
 			$ewtamt = floatval($vatnet)*(floatval($row['nrate'])/100);
 			

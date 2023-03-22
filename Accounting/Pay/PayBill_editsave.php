@@ -15,9 +15,15 @@ include('../../include/denied.php');
 	$cAcctNo = mysqli_real_escape_string($con, $_REQUEST['txtcacctid']);
 	$dDate = mysqli_real_escape_string($con, $_REQUEST['date_delivery']);
 	$nGross = mysqli_real_escape_string($con, $_REQUEST['txtnGross']);
-	$npaid = mysqli_real_escape_string($con, $_REQUEST['txttotpaid']);	
+	$nGross = str_replace( ',', '', $nGross );
+
+	$npaid = mysqli_real_escape_string($con, $_REQUEST['txttotpaid']);
+	$npaid = str_replace( ',', '', $npaid );
+
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 	$paymeth = mysqli_real_escape_string($con, $_POST['selpayment']);
+	$paytype = mysqli_real_escape_string($con, $_POST['selpaytype']); 
+	$particulars = mysqli_real_escape_string($con, $_POST['txtparticulars']);
 
 	if($paymeth=="cash"){
 		$dTranDate = mysqli_real_escape_string($con, $dDate);
@@ -37,7 +43,7 @@ include('../../include/denied.php');
 		$cPayRefNo = mysqli_real_escape_string($con, $_POST['txtPayRefrnce']);
 	}
 	
-	if (!mysqli_query($con, "UPDATE `paybill` set `dcheckdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `ccode` = '$cCustID', `cpayee` = '$cPayee', `ngross` = $nGross, `npaid` = $npaid, `cacctno` = '$cAcctNo', ddate = STR_TO_DATE('$dDate', '%m/%d/%Y'), dcheckdate = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `cbankcode` = '$cBankCode', `ccheckno` = '$cCheckNo', `cpaymethod` = '$paymeth', `cpayrefno` = '$cPayRefNo' where `compcode` = '$company' and `ctranno` = '$cCVNo'")) {
+	if (!mysqli_query($con, "UPDATE `paybill` set `dcheckdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `ccode` = '$cCustID', `cpayee` = '$cPayee', `ngross` = $nGross, `npaid` = $npaid, `cacctno` = '$cAcctNo', ddate = STR_TO_DATE('$dDate', '%m/%d/%Y'), dcheckdate = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `cbankcode` = '$cBankCode', `ccheckno` = '$cCheckNo', `cpaymethod` = '$paymeth', `cpayrefno` = '$cPayRefNo', `cparticulars` = '$particulars', `cpaytype` = '$paytype' where `compcode` = '$company' and `ctranno` = '$cCVNo'")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 
@@ -58,10 +64,16 @@ include('../../include/denied.php');
 		$capvno = mysqli_real_escape_string($con, $_REQUEST['cTranNo'.$z]);
 		$dapvdate = $_REQUEST['dApvDate'.$z];
 		$namnt = mysqli_real_escape_string($con, $_REQUEST['nAmount'.$z]);
+		$namnt = str_replace( ',', '', $namnt );
+		
 		//$ndiscount = mysqli_real_escape_string($con, $_REQUEST['nDiscount'.$z]);
 		$ndiscount = 0;
 		$nowed = mysqli_real_escape_string($con, $_REQUEST['cTotOwed'.$z]);
+		$nowed = str_replace( ',', '', $nowed );
+
 		$napplied = mysqli_real_escape_string($con, $_REQUEST['nApplied'.$z]);
+		$napplied = str_replace( ',', '', $napplied );
+
 		$caccno = mysqli_real_escape_string($con, $_REQUEST['cacctno'.$z]);
 
 		if($napplied<>0){
@@ -92,5 +104,5 @@ include('../../include/denied.php');
 </form>
 <script>
 	alert('Record Succesfully Updated');
-    document.forms['frmpos'].submit();
+  document.forms['frmpos'].submit();
 </script>

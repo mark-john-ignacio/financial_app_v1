@@ -7,16 +7,24 @@ include('../../include/denied.php');
 
 $company = $_SESSION['companyid'];
 
+function chkgrp($valz) {
+	if($valz==''){
+		return "NULL";
+	}else{
+    	return "'".$valz."'";
+	}
+}
+
 		$cSINo = $_REQUEST['trancode'];
 		$dneed = $_REQUEST['dneed'];
 		$indexz = $_REQUEST['indx'];
-		$nIdent = $_REQUEST['nident'];
 		$cItemNo = $_REQUEST['citmno'];
 		$nQty = $_REQUEST['nqty'];
 		$cUnit = $_REQUEST['cuom'];
 		$nPrice = $_REQUEST['nprice'];
 		$nBaseAmount = $_REQUEST['ntranamt'];
-		$nAmount = $_REQUEST['namt'];
+		$nAmount = $_REQUEST['namt']; 
+		$cRemarks = chkgrp(mysqli_real_escape_string($con,$_REQUEST['citmremarks']));
 		
 		$cMainUOM = $_REQUEST['mainunit'];
 		$nFactor = $_REQUEST['nfactor'];
@@ -41,9 +49,9 @@ $company = $_SESSION['companyid'];
 			$cItemDesc = "NULL";
 		}
 		
-	$refcidenttran = $cSINo."P".$nIdent;
+	$refcidenttran = $cSINo."P".$indexz;
 
-	if (!mysqli_query($con,"INSERT INTO purchase_t(`compcode`, `cidentity`, `cpono`, `nident`, `citemno`, `citemdesc`, `nqty`, `cunit`, `nprice`, `nbaseamount`, `namount`, `ncost`, `nfactor`, `cmainunit`, `cacctcode`, `ddateneeded`) values('$company', '$refcidenttran', '$cSINo', '$nIdent', '$cItemNo',  $cItemDesc, '$nQty', '$cUnit', '$nPrice', '$nBaseAmount', '$nAmount', 0, $nFactor, '$cMainUOM', '$ItmAccnt', STR_TO_DATE('$dneed', '%m/%d/%Y'))")){
+	if (!mysqli_query($con,"INSERT INTO purchase_t(`compcode`, `cidentity`, `cpono`, `nident`, `citemno`, `citemdesc`, `nqty`, `cunit`, `nprice`, `nbaseamount`, `namount`, `ncost`, `nfactor`, `cmainunit`, `cacctcode`, `ddateneeded`, `cremarks`) values('$company', '$refcidenttran', '$cSINo', '$indexz', '$cItemNo',  $cItemDesc, '$nQty', '$cUnit', '$nPrice', '$nBaseAmount', '$nAmount', 0, $nFactor, '$cMainUOM', '$ItmAccnt', STR_TO_DATE('$dneed', '%m/%d/%Y'), $cRemarks)")){
 		echo "False";
 	}
 	else{

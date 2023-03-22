@@ -19,8 +19,8 @@ include('../../include/access2.php');
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Coop Financials</title>
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css"> 
+	<title>Myx Financials</title>
+    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>"> 
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
     
        
@@ -78,24 +78,32 @@ function set(){
 <body style="padding:5px; height:900px">
 	<div>
 		<section>
-
-          <div>
-        	<div style="float:left; width:50%">
-				<font size="+2"><u>Bills Payment</u></font>	
-            </div>
+    	<div>
+        <div style="float:left; width:50%">
+					<font size="+2"><u>Bills Payment</u></font>	
         </div>
+      </div>
+			
 			<br><br>
-			<button type="button" class="btn btn-primary" onClick="location.href='PayBill_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
-             <button type="button" class="btn btn-warning btn-md" name="btnSet" id="btnSet"><span class="glyphicon glyphicon-cog"></span> Settings</button>
+			
+			<button type="button" class="btn btn-primary" onClick="location.href='PayBill_new.php'">
+				<span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)
+			</button>
+      <!--
+			<button type="button" class="btn btn-warning btn-md" name="btnSet" id="btnSet">
+				<span class="glyphicon glyphicon-cog"></span> Settings
+			</button>
+			-->
 
-            <br><br>
+      <br><br>
+			
 			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
 						<th>Payment No</th>
                         <th>Paid To</th>
                         <th>Bank Acct</th>
-                        <th>Cheque No.</th>
+                        <th>Cheque/Ref No.</th>
 						<th>Payment Date</th>
 						<th>Status</th>
 					</tr>
@@ -103,7 +111,7 @@ function set(){
 
 				<tbody>
               	<?php
-				$sql = "select a.*, a.ccheckno, b.cname, e.cname as bankname, d.cname as custname from paybill a left join bank e on a.compcode=e.compcode and a.cbankcode=e.ccode left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join customers d on a.compcode=d.compcode and a.ccode=d.cempid where a.compcode='$company' order by a.ccheckno DESC";
+				$sql = "select a.*, a.ccheckno, b.cname, e.cname as bankname, d.cname as custname from paybill a left join bank e on a.compcode=e.compcode and a.cbankcode=e.ccode left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join customers d on a.compcode=d.compcode and a.ccode=d.cempid where a.compcode='$company' order by a.dtrandate DESC";
 				$result=mysqli_query($con,$sql);
 				
 					if (!mysqli_query($con, $sql)) {
@@ -113,9 +121,9 @@ function set(){
 				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 				{
 				?>
- 					<tr>
-						<td><a href="javascript:;" onClick="editfrm('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
- 						<td><?php echo $row['ccode'];?> - <?php 
+ 					<tr <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?>>
+						<td><a <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?> href="javascript:;" onClick="editfrm('<?=$row['ctranno'];?>');"><?=$row['ctranno'];?></a></td>
+ 						<td><?=$row['ccode'];?> - <?php 
 						if($row['cname']=="") { 
 							echo $row['custname']; 
 						} else{ 
@@ -123,20 +131,20 @@ function set(){
 						}
 						?> 
                         </td>
-                        <td><?php echo $row['bankname'];?></td>
-                       <td><?php echo $row['ccheckno'];?></td>
-                        <td><?php echo $row['dcheckdate'];?></td>
+                        <td><?=$row['bankname'];?></td>
+                       <td><?=($row['cpaymethod']=="cheque") ? $row['ccheckno'] : $row['cpayrefno'];?></td>
+                        <td><?=$row['dcheckdate'];?></td>
 						<td align="center">
-                        <div id="msg<?php echo $row['ctranno'];?>">
+                        <div id="msg<?=$row['ctranno'];?>">
                         	<?php 
 							if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
 							?>
-								<a href="javascript:;" onClick="trans('POST','<?php echo $row['ctranno'];?>')">POST</a> | <a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['ctranno'];?>')">CANCEL</a>
+								<a href="javascript:;" onClick="trans('POST','<?=$row['ctranno'];?>')">POST</a> | <a href="javascript:;" onClick="trans('CANCEL','<?=$row['ctranno'];?>')">CANCEL</a>
 							<?php
                             }
 							else{
 								if(intval($row['lcancelled'])==intval(1)){
-									echo "Cancelled";
+									echo "<b>Cancelled</b>";
 								}
 								if(intval($row['lapproved'])==intval(1)){
 									echo "Posted";
@@ -217,7 +225,7 @@ function set(){
                         }
                         ?>
                     
-                            <div class="col-xs-10"><input type="text" class="form-control input-xs" name="cprepared" id="cprepared" placeholder="Enter Name or Initials..."  tabindex="3" value="<?php echo $cprepared;?>"></div></td>
+                            <div class="col-xs-10"><input type="text" class="form-control input-xs" name="cprepared" id="cprepared" placeholder="Enter Name or Initials..."  tabindex="3" value="<?=$cprepared;?>"></div></td>
                             <td style="padding:2px; widows:170px"><b>Verified By</b></td>
                             <td style="padding:2px"><?php
                             $sqlchk = mysqli_query($con,"Select cvalue From parameters where ccode='CVVERI'");
@@ -230,7 +238,7 @@ function set(){
                         }
                         ?>
                               <div class="col-xs-10">
-                                <input type="text" class="form-control input-xs" name="cverified" id="cverified" placeholder="Enter Name or Initials..." tabindex="5" value="<?php echo $cverify;?>">
+                                <input type="text" class="form-control input-xs" name="cverified" id="cverified" placeholder="Enter Name or Initials..." tabindex="5" value="<?=$cverify;?>">
                             </div></td>
                           </tr>
                           <tr>
@@ -247,7 +255,7 @@ function set(){
                         }
                         ?>
                     
-                            <div class="col-xs-10"><input type="text" class="form-control input-xs" name="creviewed" id="creviewed" placeholder="Enter Name or Initials..." tabindex="4" value="<?php echo $creview;?>"></div></td>
+                            <div class="col-xs-10"><input type="text" class="form-control input-xs" name="creviewed" id="creviewed" placeholder="Enter Name or Initials..." tabindex="4" value="<?=$creview;?>"></div></td>
                             <td style="padding:2px"><b>Approved By</b></td>
                             <td style="padding:2px"><?php
                             $sqlchk = mysqli_query($con,"Select cvalue From parameters where ccode='CVAPPR'");
@@ -260,7 +268,7 @@ function set(){
                         }
                         ?>
                               <div class="col-xs-10">
-                                <input type="text" class="form-control input-xs" name="capproved" id="capproved" placeholder="Enter Name or Initials..." tabindex="6" value="<?php echo $capprv;?>">
+                                <input type="text" class="form-control input-xs" name="capproved" id="capproved" placeholder="Enter Name or Initials..." tabindex="6" value="<?=$capprv;?>">
                             </div></td>
                           </tr>
                       </table>

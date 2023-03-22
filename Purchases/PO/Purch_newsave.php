@@ -58,14 +58,19 @@ else {
 	$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
 	$CurrRate= $_REQUEST['basecurrval']; 
 	$BaseGross= str_replace(",","",$_REQUEST['txtnBaseGross']);
+	$PayType = $_REQUEST['selpaytype']; 
 
+	if(isset($_REQUEST['selterms'])){
+		$PayTerms = "'".$_REQUEST['selterms']."'";
+	}else{
+		$PayTerms = "NULL";
+	}
 
 	$delto = chkgrp($_REQUEST['txtdelcust']); 
 	$deladd = chkgrp($_REQUEST['txtdeladd']); 
 	$delnotes = chkgrp($_REQUEST['textdelnotes']);
 	$billto = chkgrp($_REQUEST['txtbillto']); 
 	$cterms = chkgrp($_REQUEST['selterms']); 
-
 
 	$chkCustAcct = mysqli_query($con,"select cacctcode from suppliers where compcode='$company' and ccode='$cCustID'");
 
@@ -82,7 +87,7 @@ else {
 	$preparedby = $_SESSION['employeeid'];
 	
 	//INSERT HEADER	
-	if (!mysqli_query($con,"INSERT INTO purchase(`compcode`, `cpono`, `ccode`, `cremarks`, `ddate`, `dneeded`, `ngross`, `nbasegross`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `cpreparedby`, `lcancelled`, `lapproved`, `lprintposted`, `ccustacctcode`, `ccontact`, `ccontactemail`, `cdelto`, `ddeladd`, `ddelinfo`, `cbillto`, `cterms`) values('$company', '$cSINo', '$cCustID', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby', 0, 0, 0, '$AccntCode', $cContact, $cContactEmail, $delto, $deladd, $delnotes, $billto, $cterms)")){
+	if (!mysqli_query($con,"INSERT INTO purchase(`compcode`, `cpono`, `ccode`, `cremarks`, `ddate`, `dneeded`, `ngross`, `nbasegross`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `cpreparedby`, `lcancelled`, `lapproved`, `lprintposted`, `ccustacctcode`, `ccontact`, `ccontactemail`, `ladvancepay`, `cterms`, `cdelto`, `ddeladd`, `ddelinfo`, `cbillto`) values('$company', '$cSINo', '$cCustID', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby', 0, 0, 0, '$AccntCode', $cContact, $cContactEmail, $PayType, $PayTerms, $delto, $deladd, $delnotes, $billto)")){
 		echo "False";
 	}
 	else{

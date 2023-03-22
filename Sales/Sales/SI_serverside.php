@@ -36,7 +36,7 @@ $columns = array(
 																	return date( 'Y-m-d', strtotime($d));
 																}),
 	array('db'  => '`u`.`ngross`', 'dt' => 4, 'field' => 'ngross', 'formatter' => function( $d, $row ) {
-																return number_format($d, 4);
+																return number_format($d, 2);
 															}),
 	array('db'  => '`u`.`lapproved`', 'dt' => 5, 'field' => 'lapproved'),
 	array('db'  => '`u`.`lcancelled`', 'dt' => 6, 'field' => 'lcancelled'),

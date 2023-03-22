@@ -1,35 +1,29 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "Purch_edit.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "Purch.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
-$company = $_SESSION['companyid'];
-if(isset($_REQUEST['txtctranno'])){
+	$company = $_SESSION['companyid'];
+	if(isset($_REQUEST['txtctranno'])){
 		$cpono = $_REQUEST['txtctranno'];
-}
-else{
+	}
+	else{
 		$cpono = $_REQUEST['txtcpono'];
 	}
 
-$sqlhead = mysqli_query($con,"select a.cpono, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dneeded,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.nbasegross, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.lcancelled, a.lapproved, a.lprintposted, a.ccustacctcode, b.cname, a.ccontact, a.ccontactemail, a.cterms, a.cdelto, a.ddeladd, a.ddelinfo, a.cbillto from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Purch_edit.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
 
-/*
-function listcurrencies(){ //API for currency list
-	$apikey = $_SESSION['currapikey'];
-  
-//	$json = file_get_contents("https://free.currconv.com/api/v7/currencies?&apiKey={$apikey}");
-	//$obj = json_decode($json, true);
+	$sqlhead = mysqli_query($con,"select a.cpono, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dneeded,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.nbasegross, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.lcancelled, a.lapproved, a.lprintposted, a.ccustacctcode, b.cname, a.ccontact, a.ccontactemail, a.ladvancepay, a.cterms, a.cdelto, a.ddeladd, a.ddelinfo, a.cbillto from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
 
-	$json = file_get_contents("https://api.currencyfreaks.com/supported-currencies");
-  
-	return $json;
-}
-*/
 ?>
 
 <!DOCTYPE html>
@@ -38,7 +32,7 @@ function listcurrencies(){ //API for currency list
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Coop Financials</title>
+	<title>Myx Financials</title>
     
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
@@ -46,7 +40,6 @@ function listcurrencies(){ //API for currency list
 
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 <script src="../../js/bootstrap3-typeahead.min.js"></script>
-
 <script src="../../include/autoNumeric.js"></script>
 <!--
 <script src="../../Bootstrap/js/jquery.numeric.js"></script>
@@ -54,7 +47,7 @@ function listcurrencies(){ //API for currency list
 
 <script src="../../Bootstrap/js/bootstrap.js"></script>
 <script src="../../Bootstrap/js/moment.js"></script>
-<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+<script src="../../Bootstrap/js/bootstrap-datetimepicker.js"></script>
 
 </head>
 
@@ -73,6 +66,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$ccurrcode = $row['ccurrencycode']; 
 		$ccurrdesc = $row['ccurrencydesc']; 
 		$ccurrrate = $row['nexchangerate']; 
+		$cpaytype = $row['ladvancepay']; 
+		$cpayterms = $row['cterms']; 
 
 		$ccontact = $row['ccontact']; 
 		$ccontactemail = $row['ccontactemail']; 
@@ -87,9 +82,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$lPosted = $row['lapproved'];
 	}
 ?>
-<form action="Purch_editsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
-	<fieldset>
-    <legend>Purchase Order Details</legend>	
+	<form action="Purch_editsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
+		<fieldset>
+    	<legend>Purchase Order Details</legend>	
 
 			<ul class="nav nav-tabs">
 				<li class="active"><a href="#home">PO Details</a></li>
@@ -104,9 +99,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						<table width="100%" border="0">
 							<tr>
 								<tH>PO No.:</tH>
-								<td colspan="2" style="padding:2px"><div class="col-xs-3 nopadding"><input type="text" class="form-control input-sm" id="txtcpono" name="txtcpono" width="20px" tabindex="1" value="<?php echo $cpono;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');"></div>
-									
-									
+								<td colspan="2" style="padding:2px">
+									<div class="col-xs-3 nopadding">
+										<input type="text" class="form-control input-sm" id="txtcpono" name="txtcpono" width="20px" tabindex="1" value="<?php echo $cpono;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
+									</div>     
 									<input type="hidden" name="hdntranno" id="hdntranno" value="<?php echo $cpono;?>">
 									<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
 									<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
@@ -116,17 +112,18 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								<td style="padding:2px" align="center">
 									<div id="salesstat">
 										<?php
-										if($lCancelled==1){
-											echo "<font color='#FF0000'><b>CANCELLED</b></font>";
-										}
-										
-										if($lPosted==1){
-											echo "<font color='#FF0000'><b>POSTED</b></font>";
-										}
+											if($lCancelled==1){
+												echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+											}
+											
+											if($lPosted==1){
+												echo "<font color='#FF0000'><b>POSTED</b></font>";
+											}
 										?>
 									</div>
 								</td>
 							</tr>
+
 							<tr>
 								<tH width="100">Supplier:</tH>
 								<td style="padding:2px">
@@ -148,6 +145,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</div>
 								</td>
 							</tr>
+
 							<tr>
 								<tH width="100">Remarks:</tH>
 								<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value="<?php echo $Remarks; ?>"></div></td>
@@ -236,33 +234,44 @@ if (mysqli_num_rows($sqlhead)!=0) {
 													</div>
 									</div>
 								</td>
-								<tH width="150" style="padding:2px">Terms:</tH>
-									<td style="padding:2px">
-										<div class="col-xs-8 nopadding">							
-											<select id="selterms" name="selterms" class="form-control input-sm selectpicker">
+								<tH width="150" style="padding:2px">Payment Type: </tH>
+								<td style="padding:2px">
+									<select class="form-control input-sm" name="selpaytype" id="selpaytype">
+										<option value="0" <?=($cpaytype==0) ? "selected" : ""?>>Credit (Paid After Delivery)</option>
+										<option value="1" <?=($cpaytype==1) ? "selected" : ""?>>Advance (Payment Before Delivery)</option>
+									</select>
+								</td>
+							</tr>
+
+							<tr>
+									<td colspan="2">&nbsp;</td>
+									<tH width="150" style="padding:2px">Terms: </tH> 
+									<td style="padding:2px">				
+											<select id="selterms" name="selterms" class="form-control input-sm selectpicker">  
 												<?php
 													$sql = "Select * From groupings where compcode='$company' and ctype='TERMS'";
 													$result=mysqli_query($con,$sql);
-														if (!mysqli_query($con, $sql)) {
-															printf("Errormessage: %s\n", mysqli_error($con));
-														}			
-																						
-														while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-														{
+													if (!mysqli_query($con, $sql)) {
+														printf("Errormessage: %s\n", mysqli_error($con));
+													}			
+																													
+													while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+													{
 												?>
-														<option value="<?php echo $row['ccode'];?>" <?=($cterms==$row['ccode']) ? "selected" : "";?>><?php echo $row['cdesc']?></option>
+													<option value="<?php echo $row['ccode'];?>" <?=($cpayterms==$row['ccode']) ? "selected" : ""?>><?php echo $row['cdesc']?></option>
 												<?php
-														}
+													}
 												?>
 											</select>
-										</div>
 									</td>
-							</tr>
+								</tr>
 
 							<tr>
 								<td colspan="4">&nbsp;</td>
 							</tr>
+
 						</table>
+					
 					</div>
 
 					<div id="menu1" class="tab-pane fade" style="padding-left:5px">
@@ -314,6 +323,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				</div>
 			</div>
 
+
 			<div class="col-xs-12 nopadwdown">
 				<div class="col-xs-3 nopadding">
 					<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." width="25" tabindex="4"  autocomplete="off">
@@ -326,18 +336,18 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			</div>
 
 
-      <div class="alt2" dir="ltr" style="
-					margin: 0px;
-					padding: 3px;
-					border: 1px solid #919b9c;
-					width: 100%;
-					height: 250px;
-					text-align: left;
-					overflow: auto">
+        <div class="alt2" dir="ltr" style="
+						margin: 0px;
+						padding: 3px;
+						border: 1px solid #919b9c;
+						width: 100%;
+						height: 250px;
+						text-align: left;
+						overflow: auto">
 	
             <table id="MyTable" class="MyTable" cellpadding"3px" width="100%" border="0">
 							<thead>
-								<tr id="0">
+								<tr>
 									<th style="border-bottom:1px solid #999">Code</th>
 									<th style="border-bottom:1px solid #999">Description</th>
 									<th style="border-bottom:1px solid #999">UOM</th>
@@ -346,20 +356,25 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									<th style="border-bottom:1px solid #999">Amount</th>
 									<th style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
 									<th style="border-bottom:1px solid #999">Date Needed</th>
+									<th style="border-bottom:1px solid #999">Remarks</th>
 									<th style="border-bottom:1px solid #999">&nbsp;</th>
 								</tr>
 							</thead>
 							<tbody class="tbody">
               </tbody>                    
 						</table>
-			</div>
+
+				</div>
 
 				<br>
+
+				<?php
+					if($poststat=="True"){
+				?>
 				<table width="100%" border="0" cellpadding="3">
 					<tr>
 						<td rowspan="2" width="70%">
 							<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
-					
 					
 							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Purch.php';" id="btnMain" name="btnMain">
 								Back to Main<br>(ESC)
@@ -388,12 +403,16 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									View PDF<br>&nbsp;
 								</button>
 
+								<?php
+									if($lPosted==1){
+								?>
 								<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','Email');" id="btnEmail" name="btnEmail">
 									Send Email<br>&nbsp;
 								</button>
 
 							<?php		
 									}
+								}
 							?>
 
 							<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
@@ -401,21 +420,26 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</button>
 							
 							<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
-								Save<br>(CTRL+S)    
+								Save<br>(CTRL+S)
 							</button>
 						
 						</td>
 						<td width="110px" align="right"><b>Gross Amount </b>&nbsp;&nbsp;</td>
-						<td width="150px"> <input type="text" id="txtnBaseGross" name="txtnBaseGross" readonl style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10"></td>
+							<td width="150px"> <input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="<?php echo number_format($nbasegross,4); ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10">
+						</td>
 					</tr>
 					<tr>
 						<td width="110px" align="right"><b>Gross Amount in <?php echo $nvaluecurrbase; ?></b>&nbsp;&nbsp;</td>
-						<td width="150px"> <input type="text" id="txtnGross" name="txtnGross" readonly style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10"></td>
+						<td width="150px"> <input type="text" id="txtnGross" name="txtnGross" readonly value="<?php echo number_format($Gross,4); ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10"></td>
 					</tr>
 				</table>
+				<?php
+					}
+				?>
 
-  </fieldset>
-</form>
+    </fieldset>
+	</form>
+
 <?php
 }
 else{
@@ -563,200 +587,6 @@ else{
 
 	});
 
-$(document).ready(function() {
-    $('.datepick').datetimepicker({
-        format: 'MM/DD/YYYY'
-    });
-
-		$(".nav-tabs a").click(function(){
-    	$(this).tab('show');
-		});
-
-			loaddetails();
-		
-			$('#txtprodnme').attr("disabled", true);
-			$('#txtprodid').attr("disabled", true);
-		
-			$("#txtcpono").focus();
-		
-			disabled();
-
-		$("#selbasecurr").on("change", function (){
-			
-			convertCurrency($(this).val());
-				
-		});
-				
-		$("#basecurrval").on("keyup", function () {
-			recomputeCurr();
-		});
-
-});
-
-
-$(function(){	
-
-	$('#txtcust').typeahead({
-	
-		items: 10,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_supplier.php",
-				dataType: "json",
-				data: {
-					query: $("#txtcust").val()
-				},
-				success: function (data) {
-					response(data);
-				}
-			});
-		},
-		autoSelect: true,
-		displayText: function (item) {
-			 return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 
-			$('#txtcust').val(item.value).change(); 
-			$("#txtcustid").val(item.id);
-		}
-	});
-	
-	$('#txtprodnme').typeahead({
-		autoSelect: true,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_product.php",
-				dataType: "json",
-				data: {
-					query: $("#txtprodnme").val()
-				},
-				success: function (data) {
-					response(data);
-				}
-			});
-		},
-		displayText: function (item) {
-			return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.cname+'</span><br><small><span class="dropdown-item-extra">' + item.cunit + '</span></small></div>';
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 					
-
-								
-				$('#txtprodnme').val(item.cname).change(); 
-				$('#txtprodid').val(item.id); 
-				$("#hdnunit").val(item.cunit);
-				
-				addItemName("");	
-							
-		}
-	
-	});
-
-
-	$("#txtprodid").keydown(function(e){
-		if(e.keyCode == 13){
-
-		$.ajax({
-        url:'../get_productid.php',
-        data: 'c_id='+ $(this).val(),                 
-        success: function(value){
-			
-            var data = value.split(",");
-            $('#txtprodid').val(data[0]);
-            $('#txtprodnme').val(data[1]);
-			$('#hdnunit').val(data[2]);
-		
-
-		if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
-			var rowCount = $('#MyTable tr').length;
-			var isItem = "NO";
-			var itemindex = 1;
-		
-			if(rowCount > 1){
-			 var cntr = rowCount-1;
-			 
-			 for (var counter = 1; counter <= cntr; counter++) {
-				// alert(counter);
-				if($("#txtprodid").val()==$("#txtitemcode"+counter).val()){
-					isItem = "YES";
-					itemindex = counter;
-					//alert($("#txtitemcode"+counter).val());
-					//alert(isItem);
-				//if prd id exist
-				}
-			//for loop
-			 }
-		   //if rowcount >1
-		   }
-		//if value is not blank
-		 }
-		 
-		if(isItem=="NO"){		
-
-			$('.datepick').each(function(){
-				$(this).data('DateTimePicker').destroy();
-			});
-	
-				myFunctionadd("","","","","","","","");
-				ComputeGross();	
-									
-	    }
-	    else{
-			//alert("ITEM NOT IN THE MASTERLIST!");
-			addqty();
-		}
-		
-		$("#txtprodid").val("");
-		$("#txtprodnme").val("");
-		$("#hdnunit").val("");
- 
-	    //closing for success: function(value){
-	    }
-        }); 
-
-	
-		 
-		//if ebter is clicked
-		}
-		
-	});
-	
-
-	$("#btnSearchCont").on("click", function(){
-
-		//get contact names
-		if($('#txtcustid').val()!="" && $('#txtcust').val()!=""){
-			$('#ContactTbls tbody').empty(); 
-
-			$.ajax({
-						url:'get_contactinfonames.php',
-						data: 'c_id='+ $('#txtcustid').val(),  
-						dataType: "json",               
-						success: function(data){
-							
-							$.each(data,function(index,item){
-
-								//put to table
-								$("<tr class='bdydeigid' style='cursor:pointer'>").append(
-									$("<td class='disnme'>").text(item.cname),
-									$("<td class='disndesig'>").text(item.cdesig),
-									$("<td class='disdept'>").text(item.cdept),
-									$("<td class='disemls'>").text(item.cemail)
-								).appendTo("#ContactTbls tbody");
-
-							});
-				}
-			});
-
-			$("#ContactModal").modal("show");
-		}else{
-			alert("Supplier Required!");
-			document.getElementById("txtcust").focus();
-			return false;
-		}
-	});
-
 	$(document).on("click", "tr.bdydeigid" , function() {
     var $row = $(this).closest("tr"),       // Finds the closest row <tr> 
 	  $tds = $row.find("td");             // Finds all children <td> elements
@@ -775,174 +605,380 @@ $(function(){
 		$("#ContactModal").modal("hide");
   });
 
-});
+	$(document).ready(function() {
+    $('.datepick').datetimepicker({
+        format: 'MM/DD/YYYY'
+    });
 
-function addItemName(tranno){
-	 if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
-		var rowCount = $('#MyTable tr').length;
-		var isItem = "NO";
-		var itemindex = 1;
-		
-		if(rowCount > 1){
-			 var cntr = rowCount-1;
-			 
-			 for (var counter = 1; counter <= cntr; counter++) {
-				// alert(counter);
-				if($("#txtprodid").val()==$("#txtitemcode"+counter).val()){
-					isItem = "YES";
-					itemindex = counter;
-				}
-			 }
-		 }
-		 
-	 if(isItem=="NO"){	
+		$(".nav-tabs a").click(function(){
+    	$(this).tab('show');
+		});
 
-			myFunctionadd("","","","","","","","");		
-			ComputeGross();	
-	 }
-	 else{
+		loaddetails();
 		
-		addqty();	
+		$('#txtprodnme').attr("disabled", true);
+		$('#txtprodid').attr("disabled", true);
+		
+		$("#txtcpono").focus();
+		
+		disabled();
+
+		$("#selbasecurr").on("change", function (){
 			
-	 }
-		
-		$("#txtprodid").val("");
-		$("#txtprodnme").val("");
-		$("#hdnunit").val("");
-		
-	 }
-
-}
-
-function myFunctionadd(nqty, nprice, nbaseamt, namount, nfactor, cmainunit, dneed, nident){
-	var itmcode = document.getElementById("txtprodid").value;
-	var itmdesc = document.getElementById("txtprodnme").value;
-	var itmunit = document.getElementById("hdnunit").value;
+			//convertCurrency($(this).val());
 	
+			var dval = $(this).find(':selected').attr('data-val');
 	
-	if(nqty=="" && nprice=="" && namount=="" && nfactor=="" && cmainunit==""){
-		var itmprice = chkprice(itmcode,itmunit);
-		var itmamnt = itmprice;
-		var itmbaseamnt = itmprice;
-		var itmfactor = 1;
-		var mainuom = itmunit;
-		var itmnqty = 1;
-		var dneeded= document.getElementById("date_needed").value;
-	}
-	else{
-		var itmprice = nprice;
-		var itmamnt = namount;
-		var itmbaseamnt = nbaseamt;
-		var itmfactor = nfactor;
-		var mainuom = cmainunit;
-		var itmnqty = nqty;
-		var dneeded = moment(dneed).format('MM/DD/YYYY');;
+			$("#basecurrval").val(dval);
+			$("#statgetrate").html("");
+			recomputeCurr();
 		
-			if(itmprice == null){
-				var itmnqty = 1;
-				var itmprice = 0;
-				var itmamnt = 0;
-				var itmfactor = 1;
-				var mainuom = itmunit.toUpperCase();
-			}
-	}
+		});
+		
+		$("#basecurrval").on("keyup", function () {
+			recomputeCurr();
+		});
 
-		var uomoptions = "";
+		$('#txtcust').typeahead({
 		
-		if(itmcode == "NEW_ITEM"){				
-			uomoptions = "<option value='"+itmunit.toUpperCase()+"'>"+itmunit.toUpperCase()+"</option>";
-		}else{						
-		 $.ajax ({
-			url: "../th_loaduomperitm.php",
-			data: { id: itmcode },
-			async: false,
-			dataType: "json",
-			success: function( data ) {
-											
-				console.log(data);
-				$.each(data,function(index,item){
-					if(item.id==itmunit){
-						isselctd = "selected";
+			items: 10,
+			source: function(request, response) {
+				$.ajax({
+					url: "../th_supplier.php",
+					dataType: "json",
+					data: {
+						query: $("#txtcust").val()
+					},
+					success: function (data) {
+						response(data);
 					}
-					else{
-						isselctd = "";
-					}
-					
-					uomoptions = uomoptions + '<option value='+item.id+' '+isselctd+'>'+item.name+'</option>';
 				});
-						
-											 
+			},
+			autoSelect: true,
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 
+				$('#txtcust').val(item.value).change(); 
+				$("#txtcustid").val(item.id);
 			}
-		 });
-		}
-		
-	//var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
-	//var lastRow = tbl.length;
+		});
+	
+		$('#txtprodnme').typeahead({
+			autoSelect: true,
+			source: function(request, response) {
+				$.ajax({
+					url: "../th_product.php",
+					dataType: "json",
+					data: {
+						query: $("#txtprodnme").val()
+					},
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.cname+'</span><br><small><span class="dropdown-item-extra">' + item.cunit + '</span></small></div>';
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 					
 
-	if(nident==""){
-		tbl = $('#MyTable tr:last').attr('id');
-		var lastRow = parseInt(tbl) + 1;
-	}else{
-		var lastRow = nident;
+									
+					$('#txtprodnme').val(item.cname).change(); 
+					$('#txtprodid').val(item.id); 
+					$("#hdnunit").val(item.cunit);
+					
+					addItemName();	
+								
+			}
+		
+		});
+
+
+		$("#txtprodid").keydown(function(e){
+			if(e.keyCode == 13){
+
+			$.ajax({
+					url:'../get_productid.php',
+					data: 'c_id='+ $(this).val(),                 
+					success: function(value){
+				
+							var data = value.split(",");
+							$('#txtprodid').val(data[0]);
+							$('#txtprodnme').val(data[1]);
+				$('#hdnunit').val(data[2]);
+			
+
+			if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
+				var rowCount = $('#MyTable tr').length;
+				var isItem = "NO";
+				var itemindex = 1;
+			
+				if(rowCount > 1){
+				var cntr = rowCount-1;
+				
+				for (var counter = 1; counter <= cntr; counter++) {
+					// alert(counter);
+					if($("#txtprodid").val()==$("#txtitemcode"+counter).val()){
+						isItem = "YES";
+						itemindex = counter;
+						//alert($("#txtitemcode"+counter).val());
+						//alert(isItem);
+					//if prd id exist
+					}
+				//for loop
+				}
+				//if rowcount >1
+				}
+			//if value is not blank
+			}
+			
+			if(isItem=="NO"){		
+
+				$('.datepick').each(function(){
+					$(this).data('DateTimePicker').destroy();
+				});
+		
+					myFunctionadd("","","","","","","");
+					ComputeGross();	
+										
+				}
+				else{
+				//alert("ITEM NOT IN THE MASTERLIST!");
+				addqty();
+			}
+			
+			$("#txtprodid").val("");
+			$("#txtprodnme").val("");
+			$("#hdnunit").val("");
+	
+				//closing for success: function(value){
+				}
+					}); 
+
+		
+			
+			//if ebter is clicked
+			}
+			
+		});
+	
+
+		$("#btnSearchCont").on("click", function(){
+
+			//get contact names
+			if($('#txtcustid').val()!="" && $('#txtcust').val()!=""){
+				$('#ContactTbls tbody').empty(); 
+
+				$.ajax({
+							url:'get_contactinfonames.php',
+							data: 'c_id='+ $('#txtcustid').val(),  
+							dataType: "json",               
+							success: function(data){
+								
+								$.each(data,function(index,item){
+
+									//put to table
+									$("<tr class='bdydeigid' style='cursor:pointer'>").append(
+										$("<td class='disnme'>").text(item.cname),
+										$("<td class='disndesig'>").text(item.cdesig),
+										$("<td class='disdept'>").text(item.cdept),
+										$("<td class='disemls'>").text(item.cemail)
+									).appendTo("#ContactTbls tbody");
+
+								});
+					}
+				});
+
+				$("#ContactModal").modal("show");
+			}else{
+				alert("Supplier Required!");
+				document.getElementById("txtcust").focus();
+				return false;
+			}
+		});
+
+		$("#selpaytype").on("change", function(){
+			if($(this).val()==1){
+				$("#selterms").attr("disabled", true);
+			}else{
+				$("#selterms").attr("disabled", false);
+			}
+		});
+
+	});
+
+	function addItemName(tranno){
+		if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
+			var rowCount = $('#MyTable tr').length;
+			var isItem = "NO";
+			var itemindex = 1;
+			
+			if(rowCount > 1){
+				var cntr = rowCount-1;
+				
+				for (var counter = 1; counter <= cntr; counter++) {
+					// alert(counter);
+					if($("#txtprodid").val()==$("#txtitemcode"+counter).val()){
+						isItem = "YES";
+						itemindex = counter;
+					}
+				}
+			}
+			
+		if(isItem=="NO"){	
+
+				myFunctionadd("","","","","","","");		
+				ComputeGross();	
+		}
+		else{
+			
+			addqty();	
+				
+		}
+			
+			$("#txtprodid").val("");
+			$("#txtprodnme").val("");
+			$("#hdnunit").val("");
+			
+		}
+
 	}
 
-	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+lastRow+"' name=\"hdnrefident\" id=\"hdnrefident\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+"</td>";
-	var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\"><input type='hidden' value='"+itmdesc.toUpperCase()+"' name=\"txtitemdesc\" id=\"txtitemdesc\">"+itmdesc.toUpperCase()+"</td>";
-	var tditmunit = "<td width=\"80\" style=\"padding: 1px\" nowrap> <select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\">"+uomoptions+"</select> </td>";
-	var tditmqty = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='"+itmnqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+mainuom+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+itmfactor+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
+	function myFunctionadd(nqty, nprice, nbaseamt, namount, nfactor, cmainunit, dneed, crem=""){
+		var itmcode = document.getElementById("txtprodid").value;
+		var itmdesc = document.getElementById("txtprodnme").value;
+		var itmunit = document.getElementById("hdnunit").value;
 		
-	var tditmprice = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='"+itmprice+"' class='numeric form-control input-xs' style='text-align:right'name=\"txtnprice\" id='txtnprice"+lastRow+"' autocomplete='off' onFocus='this.select();'> </td>";
+		
+		if(nqty=="" && nprice=="" && namount=="" && nfactor=="" && cmainunit==""){
+			var itmprice = chkprice(itmcode,itmunit);
+			var itmamnt = itmprice;
+			var itmbaseamnt = itmprice;
+			var itmfactor = 1;
+			var mainuom = itmunit;
+			var itmnqty = 1;
+			var dneeded= document.getElementById("date_needed").value;
+		}
+		else{
+			var itmprice = nprice;
+			var itmamnt = namount;
+			var itmbaseamnt = nbaseamt;
+			var itmfactor = nfactor;
+			var mainuom = cmainunit;
+			var itmnqty = nqty;
+			var dneeded = moment(dneed).format('MM/DD/YYYY');;
 			
-	var tditmbaseamount = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='"+itmbaseamnt+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtntranamount\" id='txtntranamount"+lastRow+"' readonly> </td>";
+				if(itmprice == null){
+					var itmnqty = 1;
+					var itmprice = 0;
+					var itmamnt = 0;
+					var itmfactor = 1;
+					var mainuom = itmunit.toUpperCase();
+				}
+		}
 
-	var tditmamount = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='"+itmamnt+"' class='numeric form-control input-xs' style='text-align:right' name='txtnamount' id='txtnamount"+lastRow+"' readonly> </td>";
+			var uomoptions = "";
+			
+			if(itmcode == "NEW_ITEM"){				
+				uomoptions = "<option value='"+itmunit.toUpperCase()+"'>"+itmunit.toUpperCase()+"</option>";
+			}else{						
+			$.ajax ({
+				url: "../th_loaduomperitm.php",
+				data: { id: itmcode },
+				async: false,
+				dataType: "json",
+				success: function( data ) {
+												
+					console.log(data);
+					$.each(data,function(index,item){
+						if(item.id==itmunit){
+							isselctd = "selected";
+						}
+						else{
+							isselctd = "";
+						}
+						
+						uomoptions = uomoptions + '<option value='+item.id+' '+isselctd+'>'+item.name+'</option>';
+					});
+							
+												
+				}
+			});
+			}
+			
+		var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
+		var lastRow = tbl.length;
 
-	var tdneeded = "<td width=\"100\" style=\"padding: 1px\" nowrap><input type='text' class='datepick form-control input-xs' id='dneed"+lastRow+"' name='dneed' value='"+dneeded+"' /></td>"
-	
-	var tditmdel = "<td width=\"80\" style=\"padding: 1px\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + lastRow + "' value='delete' /> </td>";
+		var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+"</td>";
+		var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\"><input type='hidden' value='"+itmdesc.toUpperCase()+"' name=\"txtitemdesc\" id=\"txtitemdesc\">"+itmdesc.toUpperCase()+"</td>";
+		var tditmunit = "<td width=\"80\" style=\"padding: 1px\" nowrap> <select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\">"+uomoptions+"</select> </td>";
+		var tditmqty = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='"+itmnqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+mainuom+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+itmfactor+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
+			
+		var tditmprice = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='"+itmprice+"' class='numeric form-control input-xs' style='text-align:right'name=\"txtnprice\" id='txtnprice"+lastRow+"' autocomplete='off' onFocus='this.select();'> </td>";
+				
+		var tditmbaseamount = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='"+itmbaseamnt+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtntranamount\" id='txtntranamount"+lastRow+"' readonly> </td>";
 
-	$('#MyTable > tbody:last-child').append('<tr id="'+lastRow+'">'+tditmcode + tditmdesc + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmamount+ tdneeded + tditmdel + '</tr>');
+		var tditmamount = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='"+itmamnt+"' class='numeric form-control input-xs' style='text-align:right' name='txtnamount' id='txtnamount"+lastRow+"' readonly> </td>";
+
+		var tdneeded = "<td width=\"100\" style=\"padding: 1px; position:relative;\" nowrap><input type='text' class='datepick form-control input-xs' id='dneed"+lastRow+"' name='dneed' value='"+dneeded+"' /></td>"
+		
+		var tditmdel = "<td width=\"80\" style=\"padding: 1px\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + lastRow + "' value='delete' /> </td>";
+
+		var tditmremarks = "<td width=\"150\"> <input type='text' class='form-control input-xs' value='"+crem+"' name=\"txtitemrem\" id=\"txtitemrem" + lastRow + "\" maxlength=\"255\"></td>";
+
+		$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmamount+ tdneeded + tditmremarks + tditmdel + '</tr>');
 
 
-									$("#del"+lastRow).on('click', function() {
-										$(this).closest('tr').remove();
-									});
+										$("#del"+lastRow).on('click', function() {
+											$(this).closest('tr').remove();
+										});
 
-									$("input.numeric").autoNumeric('init',{mDec:2});
+										//$("input.numeric").numeric();
 
-									//$("input.numeric").numeric();
-									$("input.numeric").on("click", function () {
-									   $(this).select();
-									});
-									
-									$("input.numeric").on("keyup", function () {
-									   ComputeAmt($(this).attr('id'));
-									   ComputeGross();
-									});
-									
-									$("#seluom"+lastRow).on('change', function() {
+										$("input.numeric").autoNumeric('init',{mDec:2});
 
-										var xyz = chkprice(itmcode,$(this).val());
+										$("input.numeric").on("click", function () {
+											$(this).select();
+										});
 										
-										$('#txtnprice'+lastRow).val(xyz.trim());
+										$("input.numeric").on("keyup", function () {
+											ComputeAmt($(this).attr('id'));
+											ComputeGross();
+										});
 										
-										ComputeAmt($(this).attr('id'));
+										$("#seluom"+lastRow).on('change', function() {
+
+											var xyz = chkprice(itmcode,$(this).val());
+											
+											$('#txtnprice'+lastRow).val(xyz.trim());
+											
+											ComputeAmt($(this).attr('id'));
+											ComputeGross();
+											
+											var fact = setfactor($(this).val(), itmcode);
+											
+											$('#hdnfactor'+lastRow).val(fact.trim());
+											
+										});
+										
+										$('#dneed'+lastRow).datetimepicker({
+											format: 'MM/DD/YYYY',
+											useCurrent: false,
+											minDate: moment().format('L'),
+											defaultDate: moment().format('L'),
+											widgetPositioning: {
+													horizontal: 'right',
+													vertical: 'bottom'
+											}
+										});
+
 										ComputeGross();
-										
-										var fact = setfactor($(this).val(), itmcode);
-										
-										$('#hdnfactor'+lastRow).val(fact.trim());
-										
-									});
-									
-									$("#dneed"+lastRow).each(function(){
-										$(this).datetimepicker({format: 'MM/DD/YYYY'});	
-									});
-
-									ComputeGross();
 
 
-}
+	}
 
 
 		function ComputeAmt(nme){
@@ -966,10 +1002,8 @@ function myFunctionadd(nqty, nprice, nbaseamt, namount, nfactor, cmainunit, dnee
 			//}
 			
 			namt = nqty * nprc;
-			namt = namt.toFixed(4);
 
 			namt2 = namt * parseFloat($("#basecurrval").val());
-			namt2 = namt2.toFixed(4);
 		
 			$("#txtnamount"+r).val(namt2);
 
@@ -989,472 +1023,472 @@ function myFunctionadd(nqty, nprice, nbaseamt, namount, nfactor, cmainunit, dnee
 			var gross = 0;
 			var amt = 0;
 			
-		//	if(rowCount>1){
-		//		for (var i = 1; i <= rowCount-1; i++) {
-		//			amt = $("#txtntranamount"+i).val().replace(/,/g,'');
-		//			gross = gross + parseFloat(amt);
-		//			
-		//		}
+			if(rowCount>1){
+				for (var i = 1; i <= rowCount-1; i++) {
+					amt = $("#txtntranamount"+i).val().replace(/,/g,'');
+					gross = gross + parseFloat(amt);
+					
+				}
 				
-		//		
-		//	}
+				
+			}
+			gross2 = gross * parseFloat($("#basecurrval").val());
 
-			$("#MyTable > tbody > tr").each(function() {
+			//	$("#txtnGross").val(Number(gross2).toLocaleString('en', { minimumFractionDigits: 4 }));
+			//	$("#txtnBaseGross").val(Number(gross).toLocaleString('en', { minimumFractionDigits: 4 }));
 
-				myid = this.id;
+			$("#txtnBaseGross").val(gross);
 
-				amt = $("#txtntranamount"+myid).val().replace(/,/g,'');					
-				gross = gross + parseFloat(amt);
+			$("#txtnGross").val(gross2);
+
+			$("#txtnBaseGross").autoNumeric('destroy');
+			$("#txtnGross").autoNumeric('destroy');
+
+			$("#txtnBaseGross").autoNumeric('init',{mDec:2});
+			$("#txtnGross").autoNumeric('init',{mDec:2});
+			
+		}
+
+		function addqty(){
+
+			var itmcode = document.getElementById("txtprodid").value;
+
+			var TotQty = 0;
+			var TotAmt = 0;
+
+			$("#MyTable > tbody > tr").each(function() {	
+			var disID = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+
+			//alert(disID);
+				if(disID==itmcode){
+					
+					var itmqty = $(this).find("input[name='txtnqty']").val().replace(/,/g,'');
+					var itmprice = $(this).find("input[name='txtnprice']").val().replace(/,/g,'');
+					
+					//alert(itmqty +" : "+ itmprice);
+					
+					TotQty = parseFloat(itmqty) + 1;
+					$(this).find("input[name='txtnqty']").val(TotQty);
+					
+					TotAmt = TotQty * parseFloat(itmprice);
+					$(this).find("input[name='txtntranamount']").val(TotAmt); 
+
+					$("#txtntranamount"+r).autoNumeric('destroy');
+					$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
+
+
+					namt2 = TotAmt * parseFloat($("#basecurrval").val());
+					$(this).find("input[name='txtnamount']").val(namt2); 
+
+					$("#txtnamount"+r).autoNumeric('destroy');
+					$("#txtnamount"+r).autoNumeric('init',{mDec:2});
+				}
 
 			});
 
-			gross2 = gross * parseFloat($("#basecurrval").val());
-
-			$("#txtnGross").val(gross2);
-			$("#txtnBaseGross").val(gross);
-
-			$("#txtnGross").autoNumeric('destroy');
-			$("#txtnBaseGross").autoNumeric('destroy');
-
-			$("#txtnGross").autoNumeric('init',{mDec:2});
-			$("#txtnBaseGross").autoNumeric('init',{mDec:2});
-			
-		}
-
-function addqty(){
-
-	var itmcode = document.getElementById("txtprodid").value;
-
-	var TotQty = 0;
-	var TotAmt = 0;
-
-	$("#MyTable > tbody > tr").each(function() {	
-	var disID = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-
-	//alert(disID);
-		if(disID==itmcode){
-			
-			var itmqty = $(this).find("input[name='txtnqty']").val().replace(/,/g,'');
-			var itmprice = $(this).find("input[name='txtnprice']").val().replace(/,/g,'');
-			
-			//alert(itmqty +" : "+ itmprice);
-			
-			TotQty = parseFloat(itmqty) + 1;
-			$(this).find("input[name='txtnqty']").val(TotQty);
-			
-			TotAmt = TotQty * parseFloat(itmprice);
-			//$(this).find("input[name='txtnamount']").val(TotAmt);
-
-
-			namt2 = TotAmt * parseFloat($("#basecurrval").val());
-			namt2 = namt2.toFixed(4);
-		
-			$(this).find("input[name='txtnamount']").val(namt2)
-			$(this).find("input[name='txtntranamount']").val(TotAmt);
-
-			$(this).find("input[name='txtntranamount']").autoNumeric('destroy');
-			$(this).find("input[name='txtnamount']").autoNumeric('destroy');
-
-			$(this).find("input[name='txtntranamount']").autoNumeric('init',{mDec:2});
-			$(this).find("input[name='txtnamount']").autoNumeric('init',{mDec:2});
+			ComputeGross();
 
 		}
 
-	});
-
-	ComputeGross();
-
-}
-
-function chkprice(itmcode,itmunit){
-	var result;
-	var ccode = document.getElementById("txtcustid").value;
-			
-	$.ajax ({
-		url: "../th_checkitmprice.php",
-		data: { itm: itmcode, cust: ccode, cunit: itmunit},
-		async: false,
-		success: function( data ) {
-			 result = data;
-		}
-	});
-			
-	return result;
-	
-}
-
-function setfactor(itmunit, itmcode){
-	var result;
-			
-	$.ajax ({
-		url: "../th_checkitmfactor.php",
-		data: { itm: itmcode, cunit: itmunit },
-		async: false,
-		success: function( data ) {
-			 result = data;
-		}
-	});
-			
-	return result;
-	
-}
-
-function chkform(){
-	var ISOK = "YES";
-	
-	if(document.getElementById("txtcust").value=="" && document.getElementById("txtcustid").value==""){
-
-			$("#AlertMsg").html("");
-			
-			$("#AlertMsg").html("&nbsp;&nbsp;Supplier Required!");
-			$("#alertbtnOK").show();
-			$("#AlertModal").modal('show');
-
-		document.getElementById("txtcust").focus();
-		return false;
-
-		
-		ISOK = "NO";
-	}
-	
-	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
-	var lastRow = tbl.length-1;
-	
-	if(lastRow == 0){
-			$("#AlertMsg").html("");
-			
-			$("#AlertMsg").html("&nbsp;&nbsp;NO details found!");
-			$("#alertbtnOK").show();
-			$("#AlertModal").modal('show');
-
-		return false;
-		ISOK = "NO";
-	}
-	else{
-		var msgz = "";
-		var myqty = "";
-		var myav = "";
-		var myfacx = "";
-		var myprice = "";
-
-		$("#MyTable > tbody > tr").each(function(index) {
-			
-			myqty = $(this).find('input[name="txtnqty"]').val();
-			myprice = $(this).find('input[name="txtnprice"]').val();
-			
-			if(myqty == 0 || myqty == ""){
-				msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero or blank qty is not allowed: row " + index;	
+	function chkprice(itmcode,itmunit){
+		var result;
+		var ccode = document.getElementById("txtcustid").value;
+				
+		$.ajax ({
+			url: "../th_checkitmprice.php",
+			data: { itm: itmcode, cust: ccode, cunit: itmunit},
+			async: false,
+			success: function( data ) {
+				result = data;
 			}
-			
-			if(myprice == 0 || myprice == ""){
-				msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero amount is not allowed: row " + index;	
-			}
-
 		});
+				
+		return result;
 		
-		if(msgz!=""){
-			$("#AlertMsg").html("");
+	}
+
+	function setfactor(itmunit, itmcode){
+		var result;
+				
+		$.ajax ({
+			url: "../th_checkitmfactor.php",
+			data: { itm: itmcode, cunit: itmunit },
+			async: false,
+			success: function( data ) {
+				result = data;
+			}
+		});
+				
+		return result;
+		
+	}
+
+	function chkform(){
+		var ISOK = "YES";
+		
+		if(document.getElementById("txtcust").value=="" && document.getElementById("txtcustid").value==""){
+
+				$("#AlertMsg").html("");
+				
+				$("#AlertMsg").html("&nbsp;&nbsp;Supplier Required!");
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
+
+			document.getElementById("txtcust").focus();
+			return false;
+
 			
-			$("#AlertMsg").html("&nbsp;&nbsp;Details Error: "+msgz);
-			$("#alertbtnOK").show();
-			$("#AlertModal").modal('show');
+			ISOK = "NO";
+		}
+		
+		var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
+		var lastRow = tbl.length-1;
+		
+		if(lastRow == 0){
+				$("#AlertMsg").html("");
+				
+				$("#AlertMsg").html("&nbsp;&nbsp;NO details found!");
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
 
 			return false;
 			ISOK = "NO";
 		}
-	}
-	
-	if(ISOK == "YES"){
-	var trancode = "";
-	var isDone = "True";
+		else{
+			var msgz = "";
+			var myqty = "";
+			var myav = "";
+			var myfacx = "";
+			var myprice = "";
 
-
-		//Saving the header
-		var pono = $("#txtcpono").val();
-		var ccode = $("#txtcustid").val();
-		var crem = $("#txtremarks").val();
-		var ddate = $("#date_needed").val();
-		var ngross = $("#txtnGross").val();
+			$("#MyTable > tbody > tr").each(function(index) {
 				
-		var myform = $("#frmpos").serialize();	
-		//alert(myform);	
-		$.ajax ({
-			url: "Purch_editsave.php",
-			//data: { pono:pono, ccode: ccode, crem: crem, ddate: ddate, ngross: ngross },
-			data: myform,
-			async: false,
-			beforeSend: function(){
-				$("#AlertMsg").html("&nbsp;&nbsp;<b>UPDATING PO: </b> Please wait a moment...");
-				$("#alertbtnOK").hide();
-				$("#AlertModal").modal('show');
-			},
-			success: function( data ) {
-				if(data.trim()!="False"){
-					trancode = data.trim();
+				myqty = $(this).find('input[name="txtnqty"]').val();
+				myprice = $(this).find('input[name="txtnprice"]').val();
+				
+				if(myqty == 0 || myqty == ""){
+					msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero or blank qty is not allowed: row " + index;	
 				}
-			}
-		});
 				
-		
-		if(trancode!=""){
-			//Save Details
-			$("#MyTable > tbody > tr").each(function(index) {	
-				//if(index>0){
+				if(myprice == 0 || myprice == ""){
+					msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero amount is not allowed: row " + index;	
+				}
 
-					var nident = $(this).find('input[type="hidden"][name="hdnrefident"]').val();
-					var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-					var citmdesc = $(this).find('input[type="hidden"][name="txtitemdesc"]').val();
-					var cuom = $(this).find('select[name="seluom"]').val();
-					var nqty = $(this).find('input[name="txtnqty"]').val();
-					var nprice = $(this).find('input[name="txtnprice"]').val();
-					var ntranamt = $(this).find('input[name="txtntranamount"]').val();
-					var namt = $(this).find('input[name="txtnamount"]').val();
-					var dneed = $(this).find('input[name="dneed"]').val();
-					var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
-					var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
-					
-							
-				//	alert("Purch_updatesavedet.php?nident="+nident+"&trancode="+ trancode + "&dneed="+ dneed + "&indx="+ index + "&citmno="+ citmno+ "&cuom="+ cuom+ "&nqty="+ nqty + "&nprice="+ nprice+ "&namt=" + namt + "&mainunit="+ mainunit + "&nfactor=" + nfactor + "&citmdesc=" + citmdesc + "&ntranamt="+ntranamt);
-
-					if(nqty!==undefined){
-						nqty = nqty.replace(/,/g,'');
-						nprice = nprice.replace(/,/g,'');
-						namt = namt.replace(/,/g,'');
-						ntranamt = ntranamt.replace(/,/g,'');
-					}
-					
-					$.ajax ({
-						url: "Purch_newsavedet.php",
-						data: { nident:nident, trancode: trancode, dneed: dneed, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, citmdesc:citmdesc, ntranamt:ntranamt },
-						async: false,
-						success: function( data ) {
-							if(data.trim()=="False"){
-								isDone = "False";
-							}
-						}
-					});
-			//	}
-				
 			});
 			
-			
-			if(isDone=="True"){
-				$("#AlertMsg").html("<b>SUCCESFULLY SAVED: </b> Please wait a moment...");
-				$("#alertbtnOK").hide();
-
-					setTimeout(function() {
-						$("#AlertMsg").html("");
-						$('#AlertModal').modal('hide');
-			
-							$("#txtctranno").val(trancode);
-							$("#frmedit").submit();
-			
-					}, 3000); // milliseconds = 3seconds
-
+			if(msgz!=""){
+				$("#AlertMsg").html("");
 				
-			}
-
-		}
-		else{
-				$("#AlertMsg").html("<b>ERROR: </b> There's a problem saving your transaction...<br><br>" + trancode);
+				$("#AlertMsg").html("&nbsp;&nbsp;Details Error: "+msgz);
 				$("#alertbtnOK").show();
 				$("#AlertModal").modal('show');
-		}
 
-
-
-	}
-
-}
-
-function chkSIEnter(keyCode,frm){
-	if(keyCode==13){
-		document.getElementById(frm).action = "Purch_edit.php";
-		document.getElementById(frm).submit();
-	}
-}
-
-function disabled(){
-	$("#frmpos :input").attr("disabled", true);
-	
-	
-	$("#txtcpono").attr("disabled", false);
-	$("#btnMain").attr("disabled", false);
-	$("#btnNew").attr("disabled", false);
-	$("#btnPrint").attr("disabled", false);
-	$("#btnPDF").attr("disabled", false);   
-	$("#btnEmail").attr("disabled", false);
-	$("#btnEdit").attr("disabled", false);
-}
-
-function enabled(){
-	if(document.getElementById("hdnposted").value==1 || document.getElementById("hdncancel").value==1){
-		if(document.getElementById("hdnposted").value==1){
-			var msgsx = "POSTED"
-		}
-		
-		if(document.getElementById("hdncancel").value==1){
-			var msgsx = "CANCELLED"
-		}
-		
-		document.getElementById("statmsgz").innerHTML = "TRANSACTION IS ALREADY "+msgsx+", EDITING IS NOT ALLOWED!";
-		document.getElementById("statmsgz").style.color = "#FF0000";
-		
-	}
-	else{
-		
-		$("#frmpos :input").attr("disabled", false);
-		
-			$("#txtcpono").val($("#hdntranno").val());
-			$("#txtcpono").attr("readonly", true);
-			$("#btnMain").attr("disabled", true);
-			$("#btnNew").attr("disabled", true);
-			$("#btnPrint").attr("disabled", true);
-			$("#btnPDF").attr("disabled", true);   
-			$("#btnEmail").attr("disabled", true);
-			$("#btnEdit").attr("disabled", true);
-	
-	}
-}
-
-function printchk(x,typx){
-	if(document.getElementById("hdncancel").value==1){	
-		document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
-		document.getElementById("statmsgz").style.color = "#FF0000";
-	}
-	else{
-		 // var url =  "Purch_confirmprint.php?x="+x;
-		  
-		 // $("#myprintframe").attr('src',url);
-
-
-			if(typx=="Print"){
-				//alert("PrintPO.php?hdntransid="+x);
-				$("#myprintframe").attr("src","Purch_confirmprint.php?x="+x);
-
-				$("#PrintModal").modal('show');
-			}else if(typx=="PDF"){
-				$("#frmQprint").attr("action","PrintPO_PDF.php");
-				$("#frmQprint").submit();
-			}else if(typx=="Email"){
-				if($("#contact_email").val()==""){
-					$("#AlertMsg").html("<b>ERROR: </b> Can't send email without the contact person email address!");
-					$("#alertbtnOK").show();
-					$("#AlertModal").modal('show');
-				}else{
-					$("#frmQprint").attr("action","PrintPO_Email.php");
-					$("#frmQprint").submit();
-				}
+				return false;
+				ISOK = "NO";
 			}
-			//$("#frmQprint").submit();
-
-
-
+		}
 		
-
-	}
-}
-
-function loaddetails(){
-	//alert("th_loaddetails.php?id="+$("#txtcpono").val());
-	$.ajax ({
-		url: "th_loaddetails.php",
-		data: { id: $("#txtcpono").val() },
-		async: false,
-		dataType: "json",
-		success: function( data ) {
-											
-			console.log(data);
-			$.each(data,function(index,item){
-
-				$('#txtprodnme').val(item.desc); 
-				$('#txtprodid').val(item.id); 
-				$("#hdnunit").val(item.cunit); 
-				//alert(item.nqty);
-				myFunctionadd(item.nqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.cmainunit,item.dneed,item.nident);
-
-				$('#txtprodnme').val(""); 
-				$('#txtprodid').val(""); 
-				$("#hdnunit").val(""); 
-			});
-
-		}
-	});
-	
-	
-		$("#txtprodid").val("");
-		$("#txtprodnme").val("");
-		$("#hdnunit").val("");
+		if(ISOK == "YES"){
+		var trancode = "";
+		var isDone = "True";
 
 
-}
-
-function convertCurrency(fromCurrency) {
-  
-  toCurrency = $("#basecurrvalmain").val(); //statgetrate
-   $.ajax ({
-	 url: "../../Sales/th_convertcurr.php",
-	 data: { fromcurr: fromCurrency, tocurr: toCurrency },
-	 async: false,
-	 beforeSend: function () {
-		 $("#statgetrate").html(" <i>Getting exchange rate please wait...</i>");
-	 },
-	 success: function( data ) {
-
-		 $("#basecurrval").val(data);
-		 $("#hidcurrvaldesc").val($( "#selbasecurr option:selected" ).text()); 
-
-	 },
-	 complete: function(){
-		 $("#statgetrate").html("");
-		 recomputeCurr();
-	 }
- });
-
-}
-
-function recomputeCurr(){
-
-	var newcurate = $("#basecurrval").val();
-	var rowCount = $('#MyTable tr').length;
-			
-	var gross = 0;
-	var amt = 0;
-
-	if(rowCount>1){
-		for (var i = 1; i <= rowCount-1; i++) {
-			amt = $("#txtntranamount"+i).val();			
-			recurr = parseFloat(newcurate) * parseFloat(amt);
-
-			$("#txtnamount"+i).val(recurr.toFixed(4));
-		}
-	}
-
-	ComputeGross();
-}
-
-function getcontact(cid){
-
-$.ajax({
-			url:'../get_contactinfo.php',
-			data: 'c_id='+ cid,                 
-			success: function(value){
-				if(value!=""){
-					if(value.trim()=="Multi"){
-						$("#btnSearchCont").click();
-					}else{
-							var data = value.split(":");
-							
-							$('#txtcontactname').val(data[0]);
-							//$('#txtcontactdesig').val(data[1]);
-				//$('#txtcontactdept').val(data[2]);
-				$("#contact_email").val(data[3]);
+			//Saving the header
+			var pono = $("#txtcpono").val();
+			var ccode = $("#txtcustid").val();
+			var crem = $("#txtremarks").val();
+			var ddate = $("#date_needed").val();
+			var ngross = $("#txtnGross").val();
+					
+			var myform = $("#frmpos").serialize();	
+			//alert(myform);	
+			$.ajax ({
+				url: "Purch_editsave.php",
+				//data: { pono:pono, ccode: ccode, crem: crem, ddate: ddate, ngross: ngross },
+				data: myform,
+				async: false,
+				beforeSend: function(){
+					$("#AlertMsg").html("&nbsp;&nbsp;<b>UPDATING PO: </b> Please wait a moment...");
+					$("#alertbtnOK").hide();
+					$("#AlertModal").modal('show');
+				},
+				success: function( data ) {
+					if(data.trim()!="False"){
+						trancode = data.trim();
 					}
 				}
-	}
-});
+			});
+					
+			
+			if(trancode!=""){
+				//Save Details
+				$("#MyTable > tbody > tr").each(function(index) {	
+					//if(index>0){
+						//alert("a");
+						var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+						//alert("b");
+						var citmdesc = $(this).find('input[type="hidden"][name="txtitemdesc"]').val();
+						//alert("c");
+						var cuom = $(this).find('select[name="seluom"]').val();
+						//alert("d");
+						var nqty = $(this).find('input[name="txtnqty"]').val();
+						//alert("e");
+						var nprice = $(this).find('input[name="txtnprice"]').val();
+						//alert("f");
+						var ntranamt = $(this).find('input[name="txtntranamount"]').val();
+						var namt = $(this).find('input[name="txtnamount"]').val();
+						//alert("g");
+						var dneed = $(this).find('input[name="dneed"]').val();
+						//alert("h");
+						var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
+						//alert("i");
+						var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
+						//alert("j");
+						var citmremarks = $(this).find('input[name="txtitemrem"]').val();
+				
 
-}
+						if(nqty!==undefined){
+							nqty = nqty.replace(/,/g,'');
+							nprice = nprice.replace(/,/g,'');
+							namt = namt.replace(/,/g,'');
+							ntranamt = ntranamt.replace(/,/g,'');
+						}
+
+						//alert("Purch_updatesavedet.php?trancode="+ trancode + "&dneed="+ dneed + "&indx="+ index + "&citmno="+ citmno+ "&cuom="+ cuom+ "&nqty="+ nqty + "&nprice="+ nprice+ "&namt=" + namt + "&mainunit="+ mainunit + "&nfactor=" + nfactor + "&citmdesc=" + citmdesc + "&ntranamt="+ntranamt+"&citmremarks="+citmremarks);
+					
+						$.ajax ({
+							url: "Purch_newsavedet.php",
+							data: { trancode: trancode, dneed: dneed, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, citmdesc:citmdesc, ntranamt:ntranamt, citmremarks:citmremarks },
+							async: false,
+							success: function( data ) {
+								if(data.trim()=="False"){
+									isDone = "False";
+								}
+							}
+						});
+					//}
+					
+				});
+				
+				
+				if(isDone=="True"){
+					$("#AlertMsg").html("<b>SUCCESFULLY SAVED: </b> Please wait a moment...");
+					$("#alertbtnOK").hide();
+
+						setTimeout(function() {
+							$("#AlertMsg").html("");
+							$('#AlertModal').modal('hide');
+				
+								$("#txtctranno").val(trancode);
+								$("#frmedit").submit();
+				
+						}, 3000); // milliseconds = 3seconds
+
+					
+				}
+
+			}
+			else{
+					$("#AlertMsg").html("<b>ERROR: </b> There's a problem saving your transaction...<br><br>" + trancode);
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
+			}
+
+
+
+		}
+
+	}
+
+	function chkSIEnter(keyCode,frm){
+		if(keyCode==13){
+			document.getElementById(frm).action = "Purch_edit.php";
+			document.getElementById(frm).submit();
+		}
+	}
+
+	function disabled(){
+		$("#frmpos :input").attr("disabled", true);
+		
+		
+		$("#txtcpono").attr("disabled", false);
+		$("#btnMain").attr("disabled", false);
+		$("#btnNew").attr("disabled", false);
+		$("#btnPrint").attr("disabled", false);
+		$("#btnPDF").attr("disabled", false);   
+		$("#btnEmail").attr("disabled", false);
+		$("#btnEdit").attr("disabled", false);
+	}
+
+	function enabled(){
+		if(document.getElementById("hdnposted").value==1 || document.getElementById("hdncancel").value==1){
+			if(document.getElementById("hdnposted").value==1){
+				var msgsx = "POSTED"
+			}
+			
+			if(document.getElementById("hdncancel").value==1){
+				var msgsx = "CANCELLED"
+			}
+			
+			document.getElementById("statmsgz").innerHTML = "TRANSACTION IS ALREADY "+msgsx+", EDITING IS NOT ALLOWED!";
+			document.getElementById("statmsgz").style.color = "#FF0000";
+			
+		}
+		else{
+			
+			$("#frmpos :input").attr("disabled", false);
+			
+				$("#txtcpono").val($("#hdntranno").val());
+				$("#txtcpono").attr("readonly", true);
+				$("#btnMain").attr("disabled", true);
+				$("#btnNew").attr("disabled", true);
+				$("#btnPrint").attr("disabled", true);
+				$("#btnPDF").attr("disabled", true);   
+				$("#btnEmail").attr("disabled", true);
+				$("#btnEdit").attr("disabled", true);
+		
+		}
+	}
+
+	function printchk(x,typx){
+		if(document.getElementById("hdncancel").value==1){	
+			document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
+			document.getElementById("statmsgz").style.color = "#FF0000";
+		}
+		else{
+			// var url =  "Purch_confirmprint.php?x="+x;
+				
+			// $("#myprintframe").attr('src',url);
+
+
+				if(typx=="Print"){
+					//alert("PrintPO.php?hdntransid="+x);
+					$("#myprintframe").attr("src","Purch_confirmprint.php?x="+x);
+
+					$("#PrintModal").modal('show');
+				}else if(typx=="PDF"){
+					$("#frmQprint").attr("action","PrintPO_PDF.php");
+					$("#frmQprint").submit();
+				}else if(typx=="Email"){
+					if($("#contact_email").val()==""){
+						$("#AlertMsg").html("<b>ERROR: </b> Can't send email without the contact person email address!");
+						$("#alertbtnOK").show();
+						$("#AlertModal").modal('show');
+					}else{
+						$("#frmQprint").attr("action","PrintPO_Email.php");
+						$("#frmQprint").submit();
+					}
+				}
+				//$("#frmQprint").submit();
+
+
+
+			
+
+		}
+	}
+
+	function loaddetails(){
+		//alert("th_loaddetails.php?id="+$("#txtcpono").val());
+		$.ajax ({
+			url: "th_loaddetails.php",
+			data: { id: $("#txtcpono").val() },
+			async: false,
+			dataType: "json",
+			success: function( data ) {
+												
+				console.log(data);
+				$.each(data,function(index,item){
+
+					$('#txtprodnme').val(item.desc); 
+					$('#txtprodid').val(item.id); 
+					$("#hdnunit").val(item.cunit); 
+					//alert(item.nqty);
+					myFunctionadd(item.nqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.cmainunit,item.dneed,item.cremarks);
+				});
+
+			}
+		});
+		
+		
+			$("#txtprodid").val("");
+			$("#txtprodnme").val("");
+			$("#hdnunit").val("");
+
+
+	}
+
+	function convertCurrency(fromCurrency) {
+		
+		toCurrency = $("#basecurrvalmain").val(); //statgetrate
+		$.ajax ({
+		url: "../../Sales/th_convertcurr.php",
+		data: { fromcurr: fromCurrency, tocurr: toCurrency },
+		async: false,
+		beforeSend: function () {
+			$("#statgetrate").html(" <i>Getting exchange rate please wait...</i>");
+		},
+		success: function( data ) {
+
+			$("#basecurrval").val(data);
+			$("#hidcurrvaldesc").val($( "#selbasecurr option:selected" ).text()); 
+
+		},
+		complete: function(){
+			$("#statgetrate").html("");
+			recomputeCurr();
+		}
+	});
+
+	}
+
+	function recomputeCurr(){
+
+		var newcurate = $("#basecurrval").val();
+		var rowCount = $('#MyTable tr').length;
+				
+		var gross = 0;
+		var amt = 0;
+
+		if(rowCount>1){
+			for (var i = 1; i <= rowCount-1; i++) {
+				amt = $("#txtntranamount"+i).val().replace(/,/g,'');			
+				recurr = parseFloat(newcurate) * parseFloat(amt);
+
+				$("#txtnamount"+i).val(recurr);
+
+				$("#txtnamount"+i).autoNumeric('destroy');
+				$("#txtnamount"+i).autoNumeric('init',{mDec:2});
+			}
+		}
+
+
+		ComputeGross();
+
+	}
+
+	function getcontact(cid){
+
+		$.ajax({
+					url:'../get_contactinfo.php',
+					data: 'c_id='+ cid,                 
+					success: function(value){
+						if(value!=""){
+							if(value.trim()=="Multi"){
+								$("#btnSearchCont").click();
+							}else{
+									var data = value.split(":");
+									
+									$('#txtcontactname').val(data[0]);
+									//$('#txtcontactdesig').val(data[1]);
+						//$('#txtcontactdept').val(data[2]);
+						$("#contact_email").val(data[3]);
+							}
+						}
+			}
+		});
+
+	}
 
 </script>
 

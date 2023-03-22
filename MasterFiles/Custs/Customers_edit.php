@@ -637,7 +637,7 @@ if(mysqli_num_rows($sql) == 0){
 												</tr>
 																
 												<?php
-													$sql = "select A.ccode, A.cdesc, ifnull(B.ccode,'') as custcode, B.cacctno, C.cacctdesc, C.cacctid from groupings A left join customers_accts B on A.compcode=B.compcode and A.ccode=B.citemtype and B.ccode='$cCustCode' left join accounts C on B.compcode=C.compcode and B.cacctno=C.cacctno where A.compcode='$company' and A.ctype='ITEMTYP' and A.cstatus='ACTIVE' order by A.cdesc";
+													$sql = "select A.ccode, A.cdesc, ifnull(B.ccode,'') as custcode, B.cacctno, C.cacctdesc, C.cacctid from groupings A left join customers_accts B on A.compcode=B.compcode and A.ccode=B.citemtype and B.ccode='$cCustCode' left join accounts C on B.compcode=C.compcode and B.cacctno=C.cacctid where A.compcode='$company' and A.ctype='ITEMTYP' and A.cstatus='ACTIVE' order by A.cdesc";
 													$result=mysqli_query($con,$sql);
 													if (!mysqli_query($con, $sql)) {
 														printf("Errormessage: %s\n", mysqli_error($con));
@@ -1102,7 +1102,9 @@ $(document).ready(function(){
 								document.getElementById('hdnaddresscnt').value = lastRowdl;							
 							  var formx = document.getElementById("frmCust");
 								var formData = new FormData(formx);
-							//alert(formData.serialize());
+
+							//alert($("#frmCust").serialize());
+
 							  $.ajax({
 								type: 'post',
 								url: 'Customers_editsave.php',

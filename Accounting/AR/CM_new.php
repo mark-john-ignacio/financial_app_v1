@@ -2,11 +2,10 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "AR_new.php";
+
 
 include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+
 
 $company = $_SESSION['companyid'];
 

@@ -4,9 +4,12 @@ session_start();
 }
 $_SESSION['pageid'] = "SuppInv_new.php";
 
+
+//echo $_SESSION['pageid'];
+
 include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+//include('../../include/denied.php');
+//include('../../include/access2.php');
 
 
 	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='ALLOW_REF_RR'"); 
@@ -460,6 +463,10 @@ $(function(){
 
 								//nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident
 								myFunctionadd(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.cmainunit,item.xref,item.xrefident);
+
+								$('#txtprodnme').val("").change(); 
+								$('#txtprodid').val(""); 
+								$("#hdnunit").val(""); 
 
 							});
 						}

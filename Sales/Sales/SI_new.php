@@ -66,6 +66,14 @@ $company = $_SESSION['companyid'];
 		}
 	}
 
+	@$arrewtlist = array();
+	$getewt = mysqli_query($con,"SELECT * FROM `wtaxcodes` WHERE compcode='$company'"); 
+	if (mysqli_num_rows($getewt)!=0) {
+		while($rows = mysqli_fetch_array($getewt, MYSQLI_ASSOC)){
+			@$arrewtlist[] = array('ctaxcode' => $rows['ctaxcode'], 'nrate' => $rows['nrate']); 
+		}
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -98,7 +106,8 @@ $company = $_SESSION['companyid'];
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
 <input type="hidden" value='<?=json_encode(@$arrdisclist)?>' id="hdndiscs"> 
 <input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes">  
-<input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
+<input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors"> 
+<input type="hidden" value='<?=json_encode(@$arrewtlist)?>' id="hdnewtlist"> 
 
 <form action="SI_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
 	<fieldset>
@@ -210,6 +219,10 @@ $company = $_SESSION['companyid'];
 								</div>
 							</td>
 						</tr>
+
+								
+
+
 						<tr>
 							<tH width="100">Remarks:</tH>
 							<td style="padding:2px"><div class="col-xs-11 nopadding">
@@ -217,12 +230,25 @@ $company = $_SESSION['companyid'];
 								</div>
 							</td>
 
-								
-								<td><b><div class="chklimit">Credit Limit:</div></b></td>
-								<td style="padding:2px;" align="right">
-									<div class="chklimit col-xs-11 nopadding" id="ncustlimit"></div>
-									<input type="hidden" id="hdncustlimit" name="hdncustlimit" value="">
+							<tH width="100">EWT Code</tH>
+								<td style="padding:2px">
+									<div class="col-xs-11 nopadding">
+										<select id="selewt" name="selewt" class="form-control input-sm selectpicker"  tabindex="3">
+												<option value="none">None</option>
+												<option value="multi">Multiple</option>
+												<?php
+													foreach(@$arrewtlist as $rows){
+														echo "<option value=\"".$rows['ctaxcode']."\">".$rows['ctaxcode'].": ".$rows['nrate']."%</option>";
+													}
+												?>
+												
+										</select>
+									</div>
 								</td>
+
+
+								
+								
 						</tr>
 						<tr>
 								<tH width="100">Reference:</tH>
@@ -234,12 +260,26 @@ $company = $_SESSION['companyid'];
 										<input type="text" class="form-control input-sm" id="txtrefmodnos" name="txtrefmodnos" readonly>
 									</div>
 								</td>
+
+								<td><b><div class="chklimit">Credit Limit:</div></b></td>
+								<td style="padding:2px;" align="right">
+									<div class="chklimit col-xs-11 nopadding" id="ncustlimit"></div>
+									<input type="hidden" id="hdncustlimit" name="hdncustlimit" value="">
+								</td>
+
+								
+						</tr>
+
+						<tr>
+								<td style="padding:2px" colspan="2"></td>
+								
 								<th><div class="chklimit">Balance:</div></th>
 								<td style="padding:2px;"  align="right">				          
 													<div class="chklimit col-xs-11 nopadding" id="ncustbalance"></div>
 												<input type="hidden" id="hdncustbalance" name="hdncustbalance" value="">
 								</td>
 						</tr>
+
 
 						<tr>
 								<td style="padding:2px" colspan="2"></td>
@@ -287,6 +327,7 @@ $company = $_SESSION['companyid'];
 								<tr>
 									<th style="border-bottom:1px solid #999">Code</th>
 									<th style="border-bottom:1px solid #999">Description</th>
+									<th style="border-bottom:1px solid #999" class="chkVATClass">EWTCode</th>
 									<th style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
 									<th style="border-bottom:1px solid #999">UOM</th>
 									<th style="border-bottom:1px solid #999">Qty</th>
@@ -1036,6 +1077,28 @@ $company = $_SESSION['companyid'];
 
 			}
 		});
+
+		$("#selewt").on("change", function(){ 
+			var rowCount = $('#MyTable tr').length;
+
+			if(rowCount>1){
+				if($(this).val()!=="multi"){			
+						for (var i = 1; i <= rowCount-1; i++) {
+
+							$("#selitmewtyp"+i).attr("disabled", false);
+
+							var slctdvalid = $("#selitmewtyp"+i).val($(this).val());
+
+							$("#selitmewtyp"+i).attr("disabled", true);
+						}
+				}else{
+					for (var i = 1; i <= rowCount-1; i++) {
+						$("#selitmewtyp"+i).attr("disabled", false);
+					}
+				}
+
+			}
+		});
 		
 
 	});
@@ -1206,6 +1269,32 @@ $company = $_SESSION['companyid'];
 		var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode"+lastRow+"\">"+itmcode+" <input type='hidden' value='"+cref+"' name=\"txtcreference\" id=\"txtcreference\"> <input type='hidden' value='"+nrefident+"' name=\"txtcrefident\" id=\"txtcrefident\"> <input type='hidden' value='"+itmctype+"' name=\"hdncitmtype\" id=\"hdncitmtype"+lastRow+"\"> </td>";
 		var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmdesc+"</td>";
 
+		var tditmewts = "";
+		if(xChkVatableStatus==1){ 
+			
+				var gvnewt = $("#selewt").val();
+				var xz = $("#hdnewtlist").val();
+				ewtoptions = "";
+				$.each(jQuery.parseJSON(xz), function() { 
+					if(gvnewt==this['ctaxcode']){
+						isselctd = "selected";
+					}else{
+						isselctd = "";
+					}
+					ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
+				});
+
+				if(gvnewt=="none" || gvnewt=="multi"){
+					isdisabled = "disabled";
+				}else{
+					isdisabled = "";
+				}
+
+				tditmewts = "<td width=\"100\" nowrap> <select class='form-control input-xs' name=\"selitmewtyp\" id=\"selitmewtyp"+lastRow+"\" "+isdisabled+"> <option value=\"none\">None</option>" + ewtoptions + "</select> </td>";
+
+		}
+
+
 		var tditmvats = "";
 		if(xChkVatableStatus==1){ 
 			
@@ -1241,7 +1330,7 @@ $company = $_SESSION['companyid'];
 
 		//<input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/>
 
-		$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmvats + tditmunit + tditmqty + tditmprice + tditmdisc + tditmbaseamount+ tditmamount + tditmdel + '</tr>');
+		$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmewts + tditmvats + tditmunit + tditmqty + tditmprice + tditmdisc + tditmbaseamount+ tditmamount + tditmdel + '</tr>');
 
 										$("#del"+itmcode).on('click', function() { 
 											var xy = $(this).data('var');
@@ -2200,9 +2289,13 @@ $company = $_SESSION['companyid'];
 				$("#MyTable > tbody > tr").each(function(index) {	
 					//if(index>0){
 						
+						$(this).find('select[name="selitmewtyp"]').attr("disabled", false);
+
 						var crefno = $(this).find('input[type="hidden"][name="txtcreference"]').val();
 						var crefident = $(this).find('input[type="hidden"][name="txtcrefident"]').val();
-						var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+						var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val(); 
+						var ewtcode = $(this).find('select[name="selitmewtyp"]').val();
+						var ewtrate = $(this).find('select[name="selitmewtyp"] option:selected').data('rate'); 
 						var vatcode = $(this).find('select[name="selitmvatyp"]').val(); 
 						var nrate = $(this).find('select[name="selitmvatyp"] option:selected').data('id'); 
 
@@ -2232,7 +2325,7 @@ $company = $_SESSION['companyid'];
 
 						$.ajax ({
 							url: "SI_newsavedet.php",
-							data: { trancode: trancode, crefno: crefno, crefident:crefident, indx: parseInt(index) + 1, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, ndiscount:ndiscount, ntranamt:ntranamt, namt:namt, mainunit:mainunit, nfactor:nfactor, ccode:ccode, vatcode:vatcode, nrate:nrate },
+							data: { trancode: trancode, crefno: crefno, crefident:crefident, indx: parseInt(index) + 1, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, ndiscount:ndiscount, ntranamt:ntranamt, namt:namt, mainunit:mainunit, nfactor:nfactor, ccode:ccode, vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate },
 							async: false,
 							success: function( data ) {
 								if(data.trim()=="False"){

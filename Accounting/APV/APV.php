@@ -7,6 +7,18 @@ $_SESSION['pageid'] = "APV.php";
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 include('../../include/access2.php');
+
+
+$company = $_SESSION['companyid'];
+
+
+
+$poststat = "True";
+$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'APV_unpost'");
+if(mysqli_num_rows($sql) == 0){
+	$poststat = "False";
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -15,8 +27,10 @@ include('../../include/access2.php');
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Coop Financials</title>
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css"> 
+	<title>Myx Financials</title>
+
+		<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>"> 
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
     <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
     <script src="../../Bootstrap/js/bootstrap.js"></script>
@@ -69,7 +83,7 @@ $(function(){
 					var msg = "POSTED";
 					
 					//generate Account Entries
-					if(apx=="Purchases"){
+					if(apx=="Purchases" || apx=="PurchAdv"){
 						$.ajax ({
 							url: "th_acctentry.php",
 							data: { tran: num },
@@ -164,6 +178,14 @@ $(function(){
 			<br><br>
 			<button type="button" class="btn btn-primary" onClick="location.href='APV_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
+			<?php
+						if($poststat=="True"){
+					?>
+					<button type="button" class="btn btn-warning btn-md" onClick="location.href='APV_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+					<?php
+						}
+					?>
+
             <br><br>
 			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
@@ -180,7 +202,7 @@ $(function(){
 
 				<tbody>
               	<?php
-				$sql = "select a.*,b.cname, c.cname as custname from apv a left join suppliers b on a.ccode=b.ccode left join customers c on a.ccode=c.cempid order by a.ddate DESC";
+				$sql = "select a.*,b.cname, c.cname as custname from apv a left join suppliers b on a.ccode=b.ccode left join customers c on a.ccode=c.cempid where a.compcode='$company' order by a.ddate DESC";
 				$result=mysqli_query($con,$sql);
 				
 					if (!mysqli_query($con, $sql)) {
@@ -189,17 +211,13 @@ $(function(){
 					
 				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 				{
-						if($row['captype']=="Loans" or $row['captype']=="Savings"){
-							$myname = $row['custname'];
-						}else{
-							$myname = $row['cname'];
-						}
+					
 				?>
- 					<tr>
-						<td><a href="javascript:;" onClick="editfrm('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
- 						<td><?php echo $row['ccode'];?> - <?php echo $myname;?> </td>
-                       <td><?php echo $row['captype'];?></td>
-                       <!-- <td><?php// echo $row['ddate'];?></td>-->
+ 					<tr <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?>>
+						<td><a <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?> href="javascript:;" onClick="editfrm('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
+ 						<td><?php echo $row['ccode'];?> - <?php echo $row['cname'];?> </td>
+            <td><?php echo $row['captype'];?></td>
+            <!-- <td><?php// echo $row['ddate'];?></td>-->
                         <td><?php echo $row['dapvdate'];?></td>
 						<td align="center">
                         <div id="msg<?php echo $row['ctranno'];?>">
@@ -211,7 +229,7 @@ $(function(){
                             }
 							else{
 								if(intval($row['lcancelled'])==intval(1)){
-									echo "Cancelled";
+									echo "<b>Cancelled</b>";
 								}
 								if(intval($row['lapproved'])==intval(1)){
 									echo "Posted";

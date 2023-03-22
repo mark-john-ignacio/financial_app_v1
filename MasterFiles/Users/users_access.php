@@ -733,6 +733,10 @@ xmlhttp.send();
             <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="SuppInv_print" id="chkBox194" <?=(in_array("SuppInv_print",@$arrpgist)) ? "checked" : "";?>>&nbsp;Print</label>
             </div>
+
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="SuppInv2" id="SuppInv2" <?=(in_array("SuppInv2",@$arrpgist)) ? "checked" : "";?>>&nbsp;Per Items Entry</label>
+            </div>
 		</div>
 		</div>
 
@@ -787,26 +791,26 @@ xmlhttp.send();
 		</div>
 
 	   <br>
-       <b><u><i>AR Credit/Debit Memo</i></u></b>
+       <b><u><i>AR Adjustments</i></u></b>
         <div style="padding-left:10px;"> 
         <div class="col-xs-12 nopadwleft">
          	<div class="col-xs-2 nopadding">
-            	<label><input type="checkbox" name="chkAcc[]" value="AR.php" id="chkBox149" <?=(in_array("AR.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;View List</label>
+            	<label><input type="checkbox" name="chkAcc[]" value="ARAdj.php" id="chkBox149" <?=(in_array("ARAdj.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;View List</label>
             </div>
             <div class="col-xs-2 nopadding">
-            	<label><input type="checkbox" name="chkAcc[]" value="AR_new.php" id="chkBox149" <?=(in_array("AR_new.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Add New</label>
+            	<label><input type="checkbox" name="chkAcc[]" value="ARAdj_new.php" id="chkBox149" <?=(in_array("ARAdj_new.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Add New</label>
             </div>
             <div class="col-xs-2 nopadding">
-            	<label><input type="checkbox" name="chkAcc[]" value="AR_edit.php" id="chkBox150" <?=(in_array("AR_edit.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
+            	<label><input type="checkbox" name="chkAcc[]" value="ARAdj_edit.php" id="chkBox150" <?=(in_array("ARAdj_edit.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
             </div>
             <div class="col-xs-2 nopadding">
-            	<label><input type="checkbox" name="chkAcc[]" value="AR_post" id="chkBox151" <?=(in_array("AR_post",@$arrpgist)) ? "checked" : "";?>>&nbsp;Post</label>
+            	<label><input type="checkbox" name="chkAcc[]" value="ARAdj_post" id="chkBox151" <?=(in_array("ARAdj_post",@$arrpgist)) ? "checked" : "";?>>&nbsp;Post</label>
             </div>
             <div class="col-xs-2 nopadding">
-            	<label><input type="checkbox" name="chkAcc[]" value="AR_cancel" id="chkBox152" <?=(in_array("AR_cancel",@$arrpgist)) ? "checked" : "";?>>&nbsp;Cancel</label>
+            	<label><input type="checkbox" name="chkAcc[]" value="ARAdj_cancel" id="chkBox152" <?=(in_array("ARAdj_cancel",@$arrpgist)) ? "checked" : "";?>>&nbsp;Cancel</label>
             </div>
             <div class="col-xs-2 nopadding">
-            	<label><input type="checkbox" name="chkAcc[]" value="AR_print" id="chkBox153" <?=(in_array("AR_print",@$arrpgist)) ? "checked" : "";?>>&nbsp;Print</label>
+            	<label><input type="checkbox" name="chkAcc[]" value="ARAdj_print" id="chkBox153" <?=(in_array("ARAdj_print",@$arrpgist)) ? "checked" : "";?>>&nbsp;Print</label>
             </div>
 		</div>
 		</div>

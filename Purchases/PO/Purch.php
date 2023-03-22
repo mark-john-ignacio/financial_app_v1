@@ -33,7 +33,7 @@ $company = $_SESSION['companyid'];
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
 <link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">  
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>">  
 <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 <script src="../../Bootstrap/js/bootstrap.js"></script>
@@ -67,7 +67,7 @@ $company = $_SESSION['companyid'];
 				</thead>
 
 				<tbody>
-        <?php
+              	<?php
 				$sql = "select a.*,b.cname from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' order by a.ddate desc";
 				
 				$result=mysqli_query($con,$sql);
@@ -79,8 +79,8 @@ $company = $_SESSION['companyid'];
 				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 				{
 				?>
- 					<tr>
-						<td><a href="javascript:;" onClick="editfrm('<?php echo $row['cpono'];?>');"><?php echo $row['cpono'];?></a></td>
+ 					<tr <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?>>
+						<td><a <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?> href="javascript:;" onClick="editfrm('<?php echo $row['cpono'];?>');"><?php echo $row['cpono'];?></a></td>
 						<td><?php echo $row['ccode'];?> - <?php echo $row['cname'];?> </td>
              <td><?php echo $row['ddate'];?></td>
 						<td align="right"><?php echo $row['ngross'];?></td>
@@ -95,7 +95,7 @@ $company = $_SESSION['companyid'];
 										if(intval($row['lapproved'])==intval(1)){
 											echo "Posted";
 										}elseif(intval($row['lcancelled'])==intval(1)){
-											echo "Cancelled";
+											echo "<b>Cancelled</b>";
 										}else{
 											echo "Pending";
 										}
@@ -116,7 +116,7 @@ $company = $_SESSION['companyid'];
 								<?php
 									}else{
 
-										if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0) && intval($row['lsent'])==intval(1)){
+									if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0) && intval($row['lsent'])==intval(1)){
 
 								?>
 										<a href="javascript:;" onClick="trans('POST','<?php echo $row['cpono'];?>')" class="btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>">
@@ -128,7 +128,7 @@ $company = $_SESSION['companyid'];
 										</a>
 
 								<?php
-										}				
+									}				
 								?>
 									
 										<a href="javascript:;" onClick="track('<?php echo $row['cpono'];?>')" class="btn btn-xs btn-default"> 
@@ -204,16 +204,20 @@ $company = $_SESSION['companyid'];
 	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
 	
 	<script>
-		$(document).ready(function() {
+		
 
-			$('#example').DataTable( {bSort:false} );
+		$(document).on("keyup",function(){ 
+			var keycode = (event.keyCode ? event.keyCode : event.which);
 
-		});
-
-		$(document).keypress(function(e) {	 
-			if(e.keyCode == 112) { //F1
+			if(keyCode == 112) { //F1
 				window.location = "Purch_new.php";
 			}
+		});
+
+		$(document).ready(function() {
+
+		$('#example').DataTable( {bSort:false} );
+
 		});
 
 		function editfrm(x){

@@ -15,8 +15,8 @@ include('../../include/access2.php');
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Coop Financials</title>
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css"> 
+	<title>Myx Financials</title>
+    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>"> 
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
 	
@@ -158,11 +158,11 @@ $(function(){
 				<thead>
 					<tr>
 						<th>CM No</th>
-                        <th>Supplier</th>
-                        <th>Remarks</th>
+            <th>Supplier</th>
+            <th>Remarks</th>
 						<!--<th>Payee</th>-->
 						<!--<th>Trans Date</th>-->
-                        <th>CM Date</th>
+            <th>CM Date</th>
 						<th>Amount</th>
 						<th>Status</th>
 					</tr>
@@ -180,8 +180,8 @@ $(function(){
 				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 				{
 				?>
- 					<tr>
-						<td><a href="javascript:;" onClick="editgrp('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
+ 					<tr <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?>>
+						<td><a <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?> href="javascript:;" onClick="editgrp('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
  						<td><?php echo $row['ccode'];?> - <?php echo $row['cname'];?> </td>
                        	<td><?php echo $row['cremarks'];?></td>
                        <!-- <td><?php// echo $row['ddate'];?></td>-->
@@ -197,7 +197,7 @@ $(function(){
                             }
 							else{
 								if(intval($row['lcancelled'])==intval(1)){
-									echo "Cancelled";
+									echo "<b>Cancelled</b>";
 								}
 								if(intval($row['lapproved'])==intval(1)){
 									echo "Posted";

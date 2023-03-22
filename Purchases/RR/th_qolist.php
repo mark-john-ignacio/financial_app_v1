@@ -28,7 +28,7 @@ require_once "../../Connection/connection_string.php";
 	$qry = "select * from purchase where compcode='$company' and lapproved=1 and ccode='".$_REQUEST['x']."' order by ddate desc, cpono desc"; 
 	$result = mysqli_query ($con, $qry); 
 
-
+	$json = array();
 	if (mysqli_num_rows($result)!=0){
 
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){

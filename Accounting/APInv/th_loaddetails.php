@@ -35,6 +35,7 @@ require_once "../../Connection/connection_string.php";
 			 $json['nbaseamount'] = $row['nbaseamount'];
 			 $json['cmainuom'] = $row['cmainunit'];
 			 $json['nfactor'] = $row['nfactor'];
+			 $json['cvatcode'] = $row['cvatcode'];
 			// $json['dexpired'] = $row['ddateex'];
 			 
 			 

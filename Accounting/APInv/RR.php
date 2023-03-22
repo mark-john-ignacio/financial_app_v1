@@ -9,12 +9,28 @@ include('../../include/access2.php');
 
 $company = $_SESSION['companyid'];
 
+$poststat = "True";
+$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SuppInv_unpost'");
+if(mysqli_num_rows($sql) == 0){
+	$poststat = "False";
+}
+
 //check access for amount edit
+/*
 $varamtacc = "";
 $sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'Receive_amt_edit.php'");
 if(mysqli_num_rows($sql) == 0){
 			
 	$varamtacc = "NO";
+}
+*/
+
+//access for items encoding
+$varitmenc = "";
+$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'SuppInv2'");
+if(mysqli_num_rows($sql) == 0){
+			
+	$varitmenc = "NO";
 }
 		
 function checkrefapv($xid){
@@ -38,7 +54,8 @@ function checkrefapv($xid){
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">  
+<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>">  
 <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 <script src="../../Bootstrap/js/bootstrap.js"></script>
@@ -96,31 +113,7 @@ $(function() {
 					var msg = "CANCELLED";
 				}
 
-
-	if(x=="POST"){
-				///insert o inventory
-				$.ajax ({
-					dataType: "text",
-					url: "../../include/th_toInv.php",
-					data: { tran: num, type: "RR" },
-					async: false,
-					success: function( data ) {
-					//	alert(data.trim());
-					 if(data.trim()=="True"){
-							itmstat = "OK";							
-						}
-						else{
-							itmstat = data.trim();	
-						}
-					}
-				});
-				//alert(itmstat);
-					
-		}
-	else{
-		var itmstat = "OK";	
-	}
-
+	var itmstat = "OK";	
 
 	if(itmstat=="OK"){
 	
@@ -209,15 +202,24 @@ $(function() {
             </div>
         </div>
 			<br><br>
-			<button type="button" class="btn btn-primary" onClick="location.href='RR_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+			<button type="button" class="btn btn-primary" onClick="location.href='<?=($varitmenc=="NO") ? "RR_new.php": "RR_new2.php" ?>'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+
+			<?php
+						if($poststat=="True"){
+					?>
+					<button type="button" class="btn btn-warning btn-md" onClick="location.href='RR_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+					<?php
+						}
+					?>
+
             <br><br>
 			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
-						<th>Tran No</th>
+						<th>Trans No</th>
 						<th>Customer</th>
 						<th class="text-center">Trans Date</th>
-                        <th class="text-center">Received Date</th>
+            <th class="text-center">Invoice Date</th>
 						<th>Gross</th>
 						<!--<th>Purchase Type</th>-->
                         <th class="text-center">Status</th>
@@ -237,8 +239,8 @@ $(function() {
 				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 				{
 				?>
- 					<tr>
-						<td><a href="javascript:;" onClick="editfrm('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
+ 					<tr <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?>>
+						<td><a <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?> href="javascript:;" onClick="editfrm('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
 						<td><?php echo $row['ccode'];?> - <?php echo $row['cname'];?> </td>
                         <td><?php echo $row['ddate'];?></td>
                          <td><?php echo $row['dreceived'];?></td>
@@ -253,7 +255,7 @@ $(function() {
                             }
 							else{
 								if(intval($row['lcancelled'])==intval(1)){
-									echo "Cancelled";
+									echo "<b>Cancelled</b>";
 								}
 								if(intval($row['lapproved'])==intval(1)){
 									//if($varamtacc=="NO"){ // if may access to edit price
@@ -286,7 +288,7 @@ $(function() {
 		</section>
 	</div>		
     
-<form name="frmedit" id="frmedit" method="post" action="RR_edit.php">
+<form name="frmedit" id="frmedit" method="post" action="<?=($varitmenc=="NO") ? "RR_edit.php": "RR_edit2.php" ?>">
 	<input type="hidden" name="txtctranno" id="txtctranno" />
 </form>		
 

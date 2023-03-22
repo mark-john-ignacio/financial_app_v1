@@ -29,13 +29,19 @@ function chkgrp($valz) {
 	$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
 	$CurrRate= $_REQUEST['basecurrval']; 
 	$BaseGross= str_replace(",","",$_REQUEST['txtnBaseGross']);
+	$PayType = $_REQUEST['selpaytype']; 
+
+	if(isset($_REQUEST['selterms'])){
+		$PayTerms = "'".$_REQUEST['selterms']."'";
+	}else{
+		$PayTerms = "NULL";
+	}
 
 	$delto = chkgrp($_REQUEST['txtdelcust']); 
 	$deladd = chkgrp($_REQUEST['txtdeladd']); 
 	$delnotes = chkgrp($_REQUEST['textdelnotes']);
 	$billto = chkgrp($_REQUEST['txtbillto']); 
-	$cterms = chkgrp($_REQUEST['selterms']);
-	
+
 	$chkCustAcct = mysqli_query($con,"select cacctcode from suppliers where compcode='$company' and ccode='$cCustID'");
 
 	if (!mysqli_query($con, "select cacctcode from suppliers where compcode='$company' and ccode='$cCustID'")) {
@@ -51,7 +57,8 @@ function chkgrp($valz) {
 	$preparedby = $_SESSION['employeeid'];
 	
 	//UPDATE HEADER
-	if (!mysqli_query($con,"Update purchase set `ccode` ='$cCustID', `cremarks`=$cRemarks, `ccontact`=$cContact, `ccontactemail`=$cContactEmail, `dneeded`=STR_TO_DATE('$dDelDate', '%m/%d/%Y'),`ngross`='$nGross', `ccustacctcode`='$AccntCode', `nbasegross`='$BaseGross', `ccurrencycode`='$CurrCode', `ccurrencydesc`='$CurrDesc', `nexchangerate`='$CurrRate', `cdelto` = $delto, `ddeladd` = $deladd, `ddelinfo` = $delnotes, `cbillto` = $billto, `cterms` = $cterms Where compcode='$company' and cpono='$cSINo'")){
+
+	if (!mysqli_query($con,"Update purchase set `ccode` ='$cCustID', `cremarks`=$cRemarks, `ccontact`=$cContact, `ccontactemail`=$cContactEmail, `dneeded`=STR_TO_DATE('$dDelDate', '%m/%d/%Y'),`ngross`='$nGross', `ccustacctcode`='$AccntCode', `nbasegross`='$BaseGross', `ccurrencycode`='$CurrCode', `ccurrencydesc`='$CurrDesc', `nexchangerate`='$CurrRate', `ladvancepay` = $PayType, `cterms` = $PayTerms, `cdelto` = $delto, `ddeladd` = $deladd, `ddelinfo` = $delnotes, `cbillto` = $billto Where compcode='$company' and cpono='$cSINo'")){
 		echo "False";
 	}
 	else{
