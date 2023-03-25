@@ -36,7 +36,7 @@ require_once "../../Connection/connection_string.php";
 	$sqlpay = "select X.ctranno, X.ctaxcode, X.cewtcode, sum(X.napplied) as ngross from receipt_sales_t X left join receipt B on X.compcode=B.compcode and X.ctranno=B.ctranno where X.compcode='$company' and B.lapproved = 1 GROUP BY X.ctranno, X.ctaxcode, X.cewtcode";
 	$respay = mysqli_query ($con, $sqlpay);
 	while($rowardj = mysqli_fetch_array($respay, MYSQLI_ASSOC)){
-		@$arrpaymnts[] = array('crefno' =>  $rowardj['crefno'], 'ngross' =>  $rowardj['ngross']);
+		@$arrpaymnts[] = $rowardj;
 	}
 
 
@@ -77,7 +77,7 @@ require_once "../../Connection/connection_string.php";
 
 		$ngross = $row['ngross'];
 
-			$nwithadj = 0;
+			  $nwithadj = 0;
 			 foreach(@$arradjlist as $rxdebit){
 				if($rxdebit['crefsi']==$row['ctranno']){
 					$nwithadj = 1;
