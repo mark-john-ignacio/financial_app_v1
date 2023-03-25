@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "ARAdj_edit.php";
+	$_SESSION['pageid'] = "APAdj_edit.php";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');

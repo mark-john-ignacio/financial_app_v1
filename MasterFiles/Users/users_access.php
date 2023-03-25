@@ -101,7 +101,9 @@ xmlhttp.send();
 	<fieldset>
     	<legend>User's Access (<?php echo $_REQUEST['empedit'];?>)    <input name="allbox" type="checkbox" value="Check All" onclick="javascript:checkAll(document.frmuser)" /> CHECK ALL
 </legend>	
-    
+
+<div class="col-xs-12 nopadding"><button type="submit" class="btn btn-block btn-success btn-sm">Save (F2)</button></div>
+    <br><br>
   <ul class="nav nav-tabs">
     <li class="active"><a href="#home">Maintenance</a></li>
     <li><a href="#menu1">Sales</a></li>
@@ -113,7 +115,7 @@ xmlhttp.send();
 
 </fieldset>
 
-<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;height: 68vh;text-align: left;overflow: auto">
+<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;height: 90vh;text-align: left;overflow: auto">
 
   <div class="tab-content">
    
@@ -711,7 +713,7 @@ xmlhttp.send();
 		</div>
 		</div>
 
-    <br>
+    <br><br><br>
        <b><u><i>AP Suppliers Invoice</i></u></b>
         <div style="padding-left:10px;"> 
         <div class="col-xs-12 nopadwleft">
@@ -737,6 +739,37 @@ xmlhttp.send();
             <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="SuppInv2" id="SuppInv2" <?=(in_array("SuppInv2",@$arrpgist)) ? "checked" : "";?>>&nbsp;Per Items Entry</label>
             </div>
+		</div>
+		</div>
+
+    <br>
+       <b><u><i>AP Adjustments</i></u></b>
+        <div style="padding-left:10px;"> 
+        <div class="col-xs-12 nopadwleft">
+         	<div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="APAdj.php" id="chkBox189" <?=(in_array("APAdj",@$arrpgist)) ? "checked" : "";?>>&nbsp;View List</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="APAdj_new.php" id="chkBox190" <?=(in_array("APAdj_new.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Add New</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="APAdj_edit.php" id="chkBox191" <?=(in_array("APAdj_edit.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="APAdj_post" id="chkBox192" <?=(in_array("APAdj_post",@$arrpgist)) ? "checked" : "";?>>&nbsp;Post</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="APAdj_cancel" id="chkBox193" <?=(in_array("APAdj_cancel",@$arrpgist)) ? "checked" : "";?>>&nbsp;Cancel</label>
+            </div>
+            <!--
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="SuppInv_print" id="chkBox194" <?//=(in_array("SuppInv_print",@$arrpgist)) ? "checked" : "";?>>&nbsp;Print</label>
+            </div>
+
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="SuppInv2" id="SuppInv2" <?//=(in_array("SuppInv2",@$arrpgist)) ? "checked" : "";?>>&nbsp;Per Items Entry</label>
+            </div>
+            -->
 		</div>
 		</div>
 
@@ -790,7 +823,7 @@ xmlhttp.send();
 		</div>
 		</div>
 
-	   <br>
+	   <br><br><br>
        <b><u><i>AR Adjustments</i></u></b>
         <div style="padding-left:10px;"> 
         <div class="col-xs-12 nopadwleft">
@@ -809,9 +842,11 @@ xmlhttp.send();
             <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="ARAdj_cancel" id="chkBox152" <?=(in_array("ARAdj_cancel",@$arrpgist)) ? "checked" : "";?>>&nbsp;Cancel</label>
             </div>
+            <!--
             <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="ARAdj_print" id="chkBox153" <?=(in_array("ARAdj_print",@$arrpgist)) ? "checked" : "";?>>&nbsp;Print</label>
             </div>
+-->
 		</div>
 		</div>
 
@@ -840,7 +875,7 @@ xmlhttp.send();
 		</div>
 		</div>
 
-		<br>
+		<br><br><br>
        <b><u><i>Prepare Bank Deposit</i></u></b>
         <div style="padding-left:10px;"> 
         <div class="col-xs-12 nopadwleft">
@@ -1050,7 +1085,7 @@ xmlhttp.send();
 
 </div>
 
-  <button type="submit" class="btn btn-success btn-sm">Save<br> (F2)</button>
+  
     
   <input type="hidden" name="userid" id="userid" value="<?php echo $employeeid;?>">
 
