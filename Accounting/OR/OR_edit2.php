@@ -262,13 +262,13 @@ if (mysqli_num_rows($sqlchk)!=0) {
 
 														<td align='right'><input type='text' class='numeric form-control input-xs text-right' name='txtnpayments<?=$cntr;?>' id='txtnpayments<?=$cntr;?>' value='<?=$rowbody['npayment'];?>' readonly="true" /></td>
 
-														<td align='right'><input type='text' class='form-control input-xs text-right' name="txtnvatcode<?=$cntr;?>" id="txtnvatcode<?=$cntr;?>" readonly value='<?=$rowbody['ctaxcode'];?>' readonly /></td>
+														<td align='right'><input type='text' class='form-control input-xs text-right' name="txtnvatcode<?=$cntr;?>" id="txtnvatcode<?=$cntr;?>" readonly value='<?=$rowbody['ctaxcode'];?>' readonly /> <input type='hidden' name="txtnvatcodeorig<?=$cntr;?>" id="txtnvatcodeorig<?=$cntr;?>" value='<?=$rowbody['ctaxcodeorig'];?>' /></td>
 
                             <td align='right'><input type='text' class='numeric form-control input-xs text-right' name='txtvatamt<?=$cntr;?>' id='txtvatamt<?=$cntr;?>' value='<?=$rowbody['nvat'];?>' readonly="true" /></td>
 
                             <td align='right'><input type='text' class='numeric form-control input-xs text-right' name='txtnetvat<?=$cntr;?>' id='txtnetvat<?=$cntr;?>' value='<?=$rowbody['nnet'];?>' readonly="true" /></td>
                             
-                             <td width="150px"><input type='text' class='form-control input-xs' placeholder='EWT Code' name='txtnEWT<?=$cntr;?>' id='txtnEWT<?=$cntr;?>' autocomplete="off" value="<?=$rowbody['cewtcode'];?>" <?=($rowbody['newtgiven']==1) ? "readonly" : ""?>/> <input type='hidden' name='hdnewtgiven<?=$cntr;?>' id='hdnewtgiven<?=$cntr;?>' value='<?=$rowbody['newtgiven'];?>' /></td>
+                             <td width="150px"><input type='text' class='form-control input-xs' placeholder='EWT Code' name='txtnEWT<?=$cntr;?>' id='txtnEWT<?=$cntr;?>' autocomplete="off" value="<?=$rowbody['cewtcode'];?>" <?=($rowbody['newtgiven']==1) ? "readonly" : ""?>/> <input type='hidden' name='hdnewtgiven<?=$cntr;?>' id='hdnewtgiven<?=$cntr;?>' value='<?=$rowbody['newtgiven'];?>' /> <input type='hidden' name='txtnEWTorig<?=$cntr;?>' id='txtnEWTorig<?=$cntr;?>' value='<?=$rowbody['cewtcodeorig'];?>' /></td>
 
                              <td width="150px"><input type='text' class='form-control input-xs text-right' placeholder='EWT Rate' name='txtnEWTRate<?=$cntr;?>' value="<?=$rowbody['newtrate'];?>" id='txtnEWTRate<?=$cntr;?>' readonly="true" /></td>
 
