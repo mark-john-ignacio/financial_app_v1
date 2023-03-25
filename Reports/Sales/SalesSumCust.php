@@ -73,7 +73,7 @@ if($postedtran!==""){
 
 if($trantype=="Trade"){
 
-	$result=mysqli_query($con,"select a.compcode, b.ccode, d.ctradename as cname, b.lapproved, d.ccustomertype as ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.nprice*a.nqty) as nprice
+	$result=mysqli_query($con,"select a.compcode, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, d.ccustomertype as ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.nprice*a.nqty) as nprice
 	From sales_t a	
 	left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 	left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
@@ -89,7 +89,7 @@ if($trantype=="Trade"){
 
 }elseif($trantype=="Non-Trade"){
 
-	$result=mysqli_query($con,"select a.compcode, b.ccode, d.ctradename as cname, b.lapproved, d.ccustomertype as ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.nprice*a.nqty) as nprice
+	$result=mysqli_query($con,"select a.compcode, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, d.ccustomertype as ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.nprice*a.nqty) as nprice
 	From ntsales_t a	
 	left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 	left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
@@ -97,7 +97,7 @@ if($trantype=="Trade"){
 	left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
 	where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
 	".$qryitm.$qrycust.$qryposted."
-	Group By a.compcode, b.ccode, d.ctradename, b.lapproved, d.ccustomertype, e.cdesc
+	Group By a.compcode, b.ccode, IFNULL(d.ctradename,d.cname), b.lapproved, d.ccustomertype, e.cdesc
 	order by sum(A.nprice*a.nqty) DESC");
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 		$finarray[] = $row;
@@ -106,7 +106,7 @@ if($trantype=="Trade"){
 }else{
 	$result=mysqli_query($con,"Select A.compcode, A.ccode, A.cname, A.lapproved, A.ctype, A.typdesc, sum(A.nqty) as nqty, sum(A.nprice) as nprice
 	From (
-		select a.compcode, b.ccode, d.ctradename as cname, b.lapproved, d.ccustomertype as ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.nprice*a.nqty) as nprice
+		select a.compcode, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, d.ccustomertype as ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.nprice*a.nqty) as nprice
 		From sales_t a	
 		left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
@@ -114,9 +114,9 @@ if($trantype=="Trade"){
 		left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
 		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
 		".$qryitm.$qrycust.$qryposted."
-		Group By a.compcode, b.ccode, d.ctradename, b.lapproved, d.ccustomertype, e.cdesc
+		Group By a.compcode, b.ccode, IFNULL(d.ctradename,d.cname), b.lapproved, d.ccustomertype, e.cdesc
 		UNION ALL
-		select a.compcode, b.ccode, d.ctradename as cname, b.lapproved, d.ccustomertype as ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.nprice*a.nqty) as nprice
+		select a.compcode, b.ccode,IFNULL(d.ctradename,d.cname) as cname, b.lapproved, d.ccustomertype as ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.nprice*a.nqty) as nprice
 		From ntsales_t a	
 		left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
@@ -124,7 +124,7 @@ if($trantype=="Trade"){
 		left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
 		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
 		".$qryitm.$qrycust.$qryposted."
-		Group By a.compcode, b.ccode, d.ctradename, b.lapproved, d.ccustomertype, e.cdesc
+		Group By a.compcode, b.ccode, IFNULL(d.ctradename,d.cname), b.lapproved, d.ccustomertype, e.cdesc
 	) A 
 	Group By A.compcode, A.ccode, A.cname, A.lapproved, A.ctype, A.typdesc order by sum(A.nprice) DESC");
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
