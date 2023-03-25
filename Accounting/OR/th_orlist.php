@@ -33,12 +33,11 @@ require_once "../../Connection/connection_string.php";
 
 	//allpayemnts
 	@$arrpaymnts = array();
-	$sqlpay = "select X.ctranno, X.ctaxcode, X.cewtcode, sum(X.napplied) as ngross from receipt_sales_t X left join receipt B on X.compcode=B.compcode and X.ctranno=B.ctranno where X.compcode='$company' and B.lapproved = 1 GROUP BY X.ctranno, X.ctaxcode, X.cewtcode";
+	$sqlpay = "select X.csalesno, X.ctaxcode, X.cewtcode, sum(X.napplied) as ngross, sum(X.newtamt) as newtamt from receipt_sales_t X left join receipt B on X.compcode=B.compcode and X.ctranno=B.ctranno where X.compcode='$company' and B.lapproved = 1 GROUP BY X.csalesno, X.ctaxcode, X.cewtcode";
 	$respay = mysqli_query ($con, $sqlpay);
 	while($rowardj = mysqli_fetch_array($respay, MYSQLI_ASSOC)){
 		@$arrpaymnts[] = $rowardj;
 	}
-
 
 	$sql = "Select A.ctranno, A.cacctid, A.cacctdesc, A.ctaxcode, A.cewtcode, A.newtrate, A.dcutdate, SUM(ROUND(A.namountfull,2)) as ngross, SUM(ROUND(A.namount,2)) as cm, SUM(nvatgross) as nvatgross, (SUM(ROUND(A.namountfull,2)) - SUM(ROUND(A.namount,2)) - SUM(nvatgross)) as vatamt, SUM(A.newtgross) as newtgross
 	From (
@@ -85,13 +84,15 @@ require_once "../../Connection/connection_string.php";
 			 }
 
 			 $npay = 0;
+			 $npayewt= 0;
 			 foreach(@$arrpaymnts as $rxpymnts){
-				if($row['ctranno']==$rxpymnts['ctranno'] && $row['ctaxcode']==$rxpymnts['ctaxcode'] && $row['cewtcode']==$rxpymnts['cewtcode']){
+				if($row['ctranno']==$rxpymnts['ctranno']){
 					$npay = $rxpymnts['ngross'];
+					$npayewt = $rxpymnts['newtamt'];
 				}
 			 }
 		
-		$ntotal = floatval($ngross) - floatval($npay);
+		$ntotal = floatval($ngross) - (floatval($npay) + floatval($npayewt));
 
 		if(floatval($ntotal) > 0)
 		{
