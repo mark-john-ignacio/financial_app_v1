@@ -2322,7 +2322,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 																					
 									</div>
 												
-									<div style="height:20vh; border:1px solid #CCC" class="col-lg-12 nopadding pre-scrollable">                     
+									<div style="height:50vh; border:1px solid #CCC" class="col-lg-12 nopadding pre-scrollable">                     
 										<table id="TblAcctDef" cellpadding="3px" width="100%" border="0">
 											<thead>
 												<tr>

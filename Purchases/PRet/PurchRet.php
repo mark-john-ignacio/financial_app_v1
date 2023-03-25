@@ -1,13 +1,13 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "PurchRet.php";
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "PurchRet.php";
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
-$company = $_SESSION['companyid'];
+	$company = $_SESSION['companyid'];
 ?>
 
 <!DOCTYPE html>
@@ -16,10 +16,10 @@ $company = $_SESSION['companyid'];
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>">  
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>">  
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
 
 <script type="text/javascript">
 	$(document).keypress(function(e) {	 
@@ -210,14 +210,14 @@ $(function() {
 						<th>RR No</th>
 						<th>Customer</th>
 						<th>Trans Date</th>
-						<th>Gross</th>
+						<th>Return Date</th>
 						<!--<th>Purchase Type</th>-->
-                        <th>Status</th>
+            <th>Status</th>
 					</tr>
 				</thead>
 
 				<tbody>
-              	<?php
+          <?php
 				$sql = "select a.*,b.cname from purchreturn a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' order by a.ddate desc";
 				
 				$result=mysqli_query($con,$sql);
@@ -233,7 +233,7 @@ $(function() {
 						<td><a <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?> href="javascript:;" onClick="editfrm('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
 						<td><?php echo $row['ccode'];?> - <?php echo $row['cname'];?> </td>
                         <td><?php echo $row['ddate'];?></td>
-						<td align="right"><?php echo $row['ngross'];?></td>
+						<td align="right"><?php echo $row['dreturned'];?></td>
                         <td align="center">
                         <div id="msg<?php echo $row['ctranno'];?>">
                         	<?php 

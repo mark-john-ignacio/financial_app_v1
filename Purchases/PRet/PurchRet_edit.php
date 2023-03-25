@@ -26,23 +26,23 @@ $sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.cremarks, DATE_FORMAT
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Coop Financials</title>
+	<title>Myx Financials</title>
     
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
 
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../js/bootstrap3-typeahead.min.js"></script>
-<script src="../../Bootstrap/js/jquery.numeric.js"></script>
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../js/bootstrap3-typeahead.min.js"></script>
+	<script src="../../Bootstrap/js/jquery.numeric.js"></script>
 
-<script src="../../Bootstrap/js/bootstrap.js"></script>
-<script src="../../Bootstrap/js/moment.js"></script>
-<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<script src="../../Bootstrap/js/moment.js"></script>
+	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
 </head>
 
-<body style="padding:5px"">
+<body style="padding:5px">
 <?php
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -62,201 +62,193 @@ if (mysqli_num_rows($sqlhead)!=0) {
     	<legend>Purchase Return Details</legend>	
 
         <table width="100%" border="0">
-  <tr>
-    <tH>PURCH RET NO.:</tH>
-    <td colspan="2" style="padding:2px"><div class="col-xs-3"><input type="text" class="form-control input-sm" id="txtcpono" name="txtcpono" width="20px" tabindex="1" value="<?php echo $cpono;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');"></div>
-      
-      
-      <input type="hidden" name="hdntranno" id="hdntranno" value="<?php echo $cpono;?>">
-      <input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
-      <input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
-      &nbsp;&nbsp;
-      <div id="statmsgz" style="display:inline"></div>
-    </td>
-    <td style="padding:2px" align="center">
-    <div id="salesstat">
-    <?php
-	if($lCancelled==1){
-		echo "<font color='#FF0000'><b>CANCELLED</b></font>";
-	}
-	
-	if($lPosted==1){
-		echo "<font color='#FF0000'><b>POSTED</b></font>";
-	}
-	?>
-    </div>
-    </td>
-    </tr>
-  <tr>
-    <tH width="100">SUPPLIER:</tH>
-    <td style="padding:2px">
-    	<div class="col-xs-5">
-        	<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..." value="<?php echo $CustName;?>" autocomplete="off">
-        </div> 
-        &nbsp;&nbsp;
-        	<input type="text" id="txtcustid" name="txtcustid" style="border:none; height:30px" readonly value="<?php echo $CustCode;?>">
-    </td>
-    <tH width="150">DATE:</tH>
-    <td style="padding:2px;">
-     <div class="col-xs-8">
-		<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $Date; ?>" readonly/>
+					<tr>
+						<tH>Transaction No.:</tH>
+						<td colspan="2" style="padding:2px"><div class="col-xs-3 nopadding"><input type="text" class="form-control input-sm" id="txtcpono" name="txtcpono" width="20px" tabindex="1" value="<?php echo $cpono;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');"></div>
+							
+							
+							<input type="hidden" name="hdntranno" id="hdntranno" value="<?php echo $cpono;?>">
+							<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
+							<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
+							&nbsp;&nbsp;
+							<div id="statmsgz" style="display:inline"></div>
+						</td>
+						<td style="padding:2px" align="center">
+							<div id="salesstat">
+								<?php
+									if($lCancelled==1){
+										echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+									}
+									
+									if($lPosted==1){
+										echo "<font color='#FF0000'><b>POSTED</b></font>";
+									}
+								?>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<tH width="120">Supplier:</tH>
+						<td style="padding:2px">
+							<div class="col-xs-12 nopadding">
+								<div class="col-xs-3 nopadding">
+									<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" value="<?php echo $CustCode;?>" readonly>
+								</div>
 
-     </div>
-    </td>
-  </tr>
-  <tr>
-    <tH width="100">REMARKS:</tH>
-    <td style="padding:2px"><div class="col-xs-8"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value="<?php echo $Remarks; ?>"></div></td>
-    <tH width="150" style="padding:2px">DATE RETURNED:</tH>
-    <td style="padding:2px">
-    <div class="col-xs-8">
-		<input type='text' class="datepick form-control input-sm" id="date_returned" name="date_returned" value="<?php echo $DateNeeded; ?>" />
-
-     </div>
-    </td>
-  </tr>
+								<div class="col-xs-8 nopadwleft">
+									<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" value="<?php echo $CustName;?>">
+								</div> 
+							</div>
+						</td>
+						<tH width="150" style="padding:2px">Date Returned:</tH>
+						<td style="padding:2px">
+							<div class="col-xs-8">
+								<input type='text' class="datepick form-control input-sm" id="date_returned" name="date_returned" value="<?php echo $DateNeeded; ?>" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<tH width="100">Remarks:</tH>
+						<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value="<?php echo $Remarks; ?>"></div></td>
+						<tH width="150" style="padding:2px">&nbsp;</tH>
+						<td style="padding:2px">&nbsp;</td>
+					</tr>
   
-    <tr>
-    <td colspan="2">&nbsp;</td>
-    <th style="padding:2px"><!--<span style="padding:2px">PURCHASE TYPE:</span>--></th>
-    <td>&nbsp;</td>
-    </tr>
+					<tr>
+							<td colspan="2">
+								<input type="hidden" id="txtprodid" name="txtprodid">
+								<input type="hidden" id="txtprodnme" name="txtprodnme">
+								<input type="hidden" name="hdnunit" id="hdnunit">
+							</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
 
-  <tr>
-    <td colspan="4">&nbsp;</td>
-    </tr>
-<tr>
-    <td colspan="2">
-      <input type="hidden" id="txtprodid" name="txtprodid">
-      <input type="hidden" id="txtprodnme" name="txtprodnme">
-        <input type="hidden" name="hdnunit" id="hdnunit">
-    </td>
-    <td><b>TOTAL AMOUNT : </b></td>
-    <td><input type="text" id="txtnGross" name="txtnGross" readonly value="<?php echo $Gross; ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10"></td>
+					</tr>
+				</table>
 
-</tr>
-</table>
+				<ul class="nav nav-tabs">
+					<li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Items List</a></li>
+					<li id="liacct"><a href="#2Acct" data-toggle="tab">Items Inventory</a></li>
+				</ul>
 
-<ul class="nav nav-tabs">
-  <li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Items List</a></li>
-  <li id="liacct"><a href="#2Acct" data-toggle="tab">Items Inventory</a></li>
-</ul>
+				<div class="tab-content nopadwtop2x">
+					<div class="tab-pane active" id="1Det">
 
-  <div class="tab-content nopadwtop2x">
-    <div class="tab-pane active" id="1Det">
+							<div class="alt2" dir="ltr" style="
+								margin: 0px;
+								padding: 3px;
+								border: 1px solid #919b9c;
+								width: 100%;
+								height: 250px;
+								text-align: left;
+								overflow: auto">
+				
+									<table id="MyTable" class="MyTable" cellpadding"3px" width="100%" border="0">
+										<thead>
+											<tr>
+												<th style="border-bottom:1px solid #999">&nbsp;</th>
+												<th style="border-bottom:1px solid #999">Code</th>
+												<th style="border-bottom:1px solid #999">Description</th>
+												<th style="border-bottom:1px solid #999">UOM</th>
+												<th style="border-bottom:1px solid #999">Qty</th>
+												<th style="border-bottom:1px solid #999">Remarks</th>
+												<th style="border-bottom:1px solid #999">&nbsp;</th>
+											</tr>
+										</thead>
+										<tbody class="tbody">
+										</tbody>																
+									</table>
+							</div>
 
-         <div class="alt2" dir="ltr" style="
-					margin: 0px;
-					padding: 3px;
-					border: 1px solid #919b9c;
-					width: 100%;
-					height: 250px;
-					text-align: left;
-					overflow: auto">
-	
-            <table id="MyTable" class="MyTable" cellpadding"3px" width="100%" border="0">
+						</div>
 
-								<tr>
-									<th style="border-bottom:1px solid #999">&nbsp;</th>
-									<th style="border-bottom:1px solid #999">Code</th>
-									<th style="border-bottom:1px solid #999">Description</th>
-			            <th style="border-bottom:1px solid #999">UOM</th>
-									<th style="border-bottom:1px solid #999">Qty</th>
-									<th style="border-bottom:1px solid #999">Price</th>
-									<th style="border-bottom:1px solid #999">Amount</th>
-			            <th style="border-bottom:1px solid #999">Remarks</th>
-			            <th style="border-bottom:1px solid #999">&nbsp;</th>
-								</tr>
-								<tbody class="tbody">
-			          </tbody>
-			                    
-						</table>
+						<div class="tab-pane" id="2Acct">
+
+									<div class="alt2" dir="ltr" style="
+															margin: 0px;
+															padding: 3px;
+															border: 1px solid #919b9c;
+															width: 100%;
+															height: 250px;
+															text-align: left;
+															overflow: auto">
+							
+											<table id="MyTable2" cellpadding="3px" width="100%" border="0">
+												<thead>
+															<tr>
+																
+																	<th style="border-bottom:1px solid #999">Item Code</th>
+																	<th style="border-bottom:1px solid #999">Serial No.</th>
+																	<th style="border-bottom:1px solid #999">UOM</th>
+																	<th style="border-bottom:1px solid #999">Qty</th>
+																	<th style="border-bottom:1px solid #999">Location</th>
+																	<th style="border-bottom:1px solid #999">Expiration Date</th>
+																	<th style="border-bottom:1px solid #999">&nbsp;</th>
+															</tr>
+												</thead>
+												<tbody>
+												</tbody>
+															
+											</table>
+												<input type="hidden" name="hdnserialscnt" id="hdnserialscnt">
+										</div>
+						</div>
 				</div>
 
-			</div>
-
-			<div class="tab-pane" id="2Acct">
-
-             <div class="alt2" dir="ltr" style="
-                        margin: 0px;
-                        padding: 3px;
-                        border: 1px solid #919b9c;
-                        width: 100%;
-                        height: 250px;
-                        text-align: left;
-                        overflow: auto">
-        
-                <table id="MyTable2" cellpadding="3px" width="100%" border="0">
-    							<thead>
-                        <tr>
-                        	
-                            <th style="border-bottom:1px solid #999">Item Code</th>
-                            <th style="border-bottom:1px solid #999">Serial No.</th>
-                            <th style="border-bottom:1px solid #999">UOM</th>
-                            <th style="border-bottom:1px solid #999">Qty</th>
-                            <th style="border-bottom:1px solid #999">Location</th>
-                            <th style="border-bottom:1px solid #999">Expiration Date</th>
-                            <th style="border-bottom:1px solid #999">&nbsp;</th>
-                        </tr>
-                   </thead>
-                   <tbody>
-                   </tbody>
-                        
-                </table>
-            			<input type="hidden" name="hdnserialscnt" id="hdnserialscnt">
-							</div>
-			</div>
-	</div>
-<br>
-<table width="100%" border="0" cellpadding="3">
-  <tr>
-    <td>
-    <input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
- 
- 
- <button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PurchRet.php';" id="btnMain" name="btnMain">
-Back to Main<br>(ESC)</button>
-   
-    <button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='PurchRet_new.php';" id="btnNew" name="btnNew">
-New<br>(F1)</button>
+				<br>
+				<table width="100%" border="0" cellpadding="3">
+					<tr>
+						<td>
+							<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
+				
+				
+							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PurchRet.php';" id="btnMain" name="btnMain">
+								Back to Main<br>(ESC)
+							</button>
+					
+							<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='PurchRet_new.php';" id="btnNew" name="btnNew">
+								New<br>(F1)
+							</button>
 
 
-    <button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
-RR<br>(Insert)</button>
+							<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
+								RR<br>(Insert)
+							</button>
 
-    <button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
-Undo Edit<br>(CTRL+Z)
-    </button>
+							<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
+								Undo Edit<br>(CTRL+Z)
+							</button>
 
-<?php
-	$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'PurchRet_print'");
+							<?php
+								$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'PurchRet_print'");
 
-	if(mysqli_num_rows($sql) == 1){
-	
-?>
+								if(mysqli_num_rows($sql) == 1){
+								
+							?>
 
-   <button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>');" id="btnPrint" name="btnPrint">
-Print<br>(CTRL+P)
-    </button>
+							<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>');" id="btnPrint" name="btnPrint">
+								Print<br>(CTRL+P)
+							</button>
 
-<?php		
-	}
+							<?php		
+								}
+							?>
 
-?>
-
-    <button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
-Edit<br>(CTRL+E)    </button>
-    
-    <button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
-Save<br>(CTRL+S)    </button>
-    
-    </td>
-
-  </tr>
-</table>
+							<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
+								Edit<br>(CTRL+E)    
+							</button>
+						
+							<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
+								Save<br>(CTRL+S)    
+							</button>
+						
+						</td>
+					</tr>
+				</table>
 
     </fieldset>
 </form>
+
 <?php
 }
 else{
@@ -507,9 +499,6 @@ $(document).ready(function() {
 		
 			disabled();
 
-});
-
-$(function(){	
 
 	$('#txtcust').typeahead({
 	
@@ -535,102 +524,6 @@ $(function(){
 			$('#txtcust').val(item.value).change(); 
 			$("#txtcustid").val(item.id);
 		}
-	});
-	
-	$('#txtprodnme').typeahead({
-		autoSelect: true,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_product.php",
-				dataType: "json",
-				data: {
-					query: $("#txtprodnme").val()
-				},
-				success: function (data) {
-					response(data);
-				}
-			});
-		},
-		displayText: function (item) {
-			return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.cname+'</span><br><small><span class="dropdown-item-extra">' + item.cunit + '</span></small></div>';
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 					
-
-								
-				$('#txtprodnme').val(item.cname).change(); 
-				$('#txtprodid').val(item.id); 
-				$("#hdnunit").val(item.cunit);
-				
-				addItemName();	
-							
-		}
-	
-	});
-
-	$("#txtprodid").keydown(function(e){
-		if(e.keyCode == 13){
-
-		$.ajax({
-        url:'../get_productid.php',
-        data: 'c_id='+ $(this).val(),                 
-        success: function(value){
-			
-            var data = value.split(",");
-            $('#txtprodid').val(data[0]);
-            $('#txtprodnme').val(data[1]);
-			$('#hdnunit').val(data[2]);
-		
-
-		if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
-			var rowCount = $('#MyTable tr').length;
-			var isItem = "NO";
-			var itemindex = 1;
-		
-			if(rowCount > 1){
-			 var cntr = rowCount-1;
-			 
-			 for (var counter = 1; counter <= cntr; counter++) {
-				// alert(counter);
-				if($("#txtprodid").val()==$("#txtitemcode"+counter).val()){
-					isItem = "YES";
-					itemindex = counter;
-					//alert($("#txtitemcode"+counter).val());
-					//alert(isItem);
-				//if prd id exist
-				}
-			//for loop
-			 }
-		   //if rowcount >1
-		   }
-		//if value is not blank
-		 }
-		 
-		if(isItem=="NO"){		
-
-				myFunctionadd("","","","","","","","","");
-				ComputeGross();	
-				
-					
-	    }
-	    else{
-			//alert("ITEM NOT IN THE MASTERLIST!");
-			addqty();
-		}
-		
-		$("#txtprodid").val("");
-		$("#txtprodnme").val("");
-		$("#hdnunit").val("");
- 
-	    //closing for success: function(value){
-	    }
-        }); 
-
-	
-		 
-		//if ebter is clicked
-		}
-		
 	});
 	
 	$("#btnInsSer").on("click", function(){
@@ -772,46 +665,16 @@ function myFunctionadd(nqty, nqtyorig, nprice, namount, nfactor, cmainunit, xcre
 	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 	var lastRow = tbl.length;
 
-	var a=document.getElementById('MyTable').insertRow(-1);
-	var s1=a.insertCell(0);
-		s1.style.width = "50px";
-	var s=a.insertCell(1);
-		s.style.width = "120px";
-	var t=a.insertCell(2);
-		t.style.whiteSpace = "nowrap";
-		t.style.textOverflow = "ellipsis";
-		t.style.overflow = "hidden";
-		t.style.maxWidth = "1px";
-	var u=a.insertCell(3);
-		u.style.width = "80px";
-		u.style.padding = "1px";
-	var v=a.insertCell(4);
-		v.style.width = "100px";
-		v.style.padding = "1px";
-	var w=a.insertCell(5);
-		w.style.width = "100px";
-		w.style.padding = "1px";
-	var x=a.insertCell(6);
-		x.style.width = "100px";
-		x.style.padding = "1px";
-	var y=a.insertCell(7);
-		y.style.width = "100px";
-		y.style.padding = "1px";
-		y.align = "right";
-	var z=a.insertCell(8);
-		z.style.width = "80px";
-		z.style.padding = "1px";
-
-	s1.innerHTML = "<input class='btn btn-info btn-xs' type='button' id='ins" + itmcode + "' value='insert' />";
-	s.innerHTML = "<input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+"<input type='hidden' value='"+itmxref+"' name=\"txtcreference\" id=\"txtcreference\"> <input type='hidden' value='"+itmident+"' name=\"txtnrefident\" id=\"txtnrefident\">";
-	t.innerHTML = itmdesc;
-	u.innerHTML = uomoptions;
-	v.innerHTML = "<input type='text' value='"+itmqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+nqtyorig+"' name=\"txtnqtyORIG\" id=\"txtnqtyORIG"+lastRow+"\">";
-	w.innerHTML = "<input type='text' value='"+itmprice+"' class='form-control input-xs' style='text-align:right'name=\"txtnprice\" id='txtnprice"+lastRow+"' readonly> <input type='hidden' value='"+itmmainunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+itmfactor+"' name='hdnfactor' id='hdnfactor"+lastRow+"'>";
-	x.innerHTML = "<input type='text' value='"+itmamnt+"' class='form-control input-xs' style='text-align:right' name='txtnamount' id='txtnamount"+lastRow+"' readonly>";
-	y.innerHTML = "<input type='text' class='form-control input-xs' id='dremarks"+lastRow+"' name='dremarks' value='"+cremarks+"'  placeholder='Enter remarks...' />";
-	z.innerHTML = "<input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' />";
-
+		$('#MyTable > tbody:last-child').append(
+			"<tr>"
+			+"<td width='50px'><input class='btn btn-info btn-xs' type='button' id='ins" + itmcode + "' value='insert' /></td>"
+			+"<td width='120px'><input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+"<input type='hidden' value='"+itmxref+"' name=\"txtcreference\" id=\"txtcreference\"> <input type='hidden' value='"+itmident+"' name=\"txtnrefident\" id=\"txtnrefident\"></td>"
+			+"<td width='120px' nowrap style='padding:1px;overflow: hidden;text-overflow: ellipsis;'>"+itmdesc+"</td>"
+			+"<td width='80px' style='padding:1px'>"+uomoptions+"</td>"
+			+"<td width='100px' style='padding:1px'><input type='text' value='"+itmqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+itmqtyorig+"' name=\"txtnqtyORIG\" id=\"txtnqtyORIG"+lastRow+"\"> <input type='hidden' value='"+itmprice+"' name=\"txtnprice\" id='txtnprice"+lastRow+"'> <input type='hidden' value='"+itmmainunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+itmfactor+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> <input type='hidden' value='"+itmamnt+"' name='txtnamount' id='txtnamount"+lastRow+"'></td>"
+			+"<td width='100px' style='padding:1px'><input type='text' class='form-control input-xs' id='dremarks"+lastRow+"' name='dremarks' placeholder='Enter remarks...' /value='"+cremarks+"'></td>"
+			+"<td width='80px' style='padding:1px'><input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' /></td>"
+		);	
 
 									$("#del"+itmcode).on('click', function() {
 										$(this).closest('tr').remove();
@@ -855,7 +718,7 @@ function InsertDetSerial(itmcode, itmname, itmunit, itemrrident, itemqty, itmfct
 	$("#htmlserqtyneed").text(itemqty); 
 	$("#hdnserqtyuom").val(itemcunit); 
 	$("#htmlserqtyuom").text(itemcunit);
-//alert("th_serialslist-manual.php?itm="+itmcode+"&cuom="+itmunit+"&qty="+itemqty+"&factr="+itmfctr+"&mainuom="+itemcunit);
+	//alert("th_serialslist-manual.php?itm="+itmcode+"&cuom="+itmunit+"&qty="+itemqty+"&factr="+itmfctr+"&mainuom="+itemcunit);
 
 	$('#MyTableSerials tbody').empty();
 
@@ -979,37 +842,6 @@ function InsertToSerials(itmcode,serials,uoms,qtys,locas,locasdesc,expz,nident,r
 			$("#txtnGross").val(gross.toFixed(4));
 			
 		}
-
-function addqty(){
-
-	var itmcode = document.getElementById("txtprodid").value;
-
-	var TotQty = 0;
-	var TotAmt = 0;
-	
-	$("#MyTable > tbody > tr").each(function() {	
-	var disID = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-	
-	//alert(disID);
-		if(disID==itmcode){
-			
-			var itmqty = $(this).find("input[name='txtnqty']").val();
-			var itmprice = $(this).find("input[name='txtnprice']").val();
-			
-			//alert(itmqty +" : "+ itmprice);
-			
-			TotQty = parseFloat(itmqty) + 1;
-			$(this).find("input[name='txtnqty']").val(TotQty);
-			
-			TotAmt = TotQty * parseFloat(itmprice);
-			$(this).find("input[name='txtnamount']").val(TotAmt);
-		}
-
-	});
-	
-	ComputeGross();
-
-}
 
 function setfactor(itmunit, itmcode){
 	var result;
@@ -1272,14 +1104,10 @@ function chkform(){
 		$("#MyTable > tbody > tr").each(function(index) {
 			
 			myqty = $(this).find('input[name="txtnqty"]').val();
-			myprice = $(this).find('input[name="txtnprice"]').val();
+			//myprice = $(this).find('input[name="txtnprice"]').val();
 			
 			if(myqty == 0 || myqty == ""){
 				msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero or blank qty is not allowed: row " + index;	
-			}
-			
-			if(myprice == 0 || myprice == ""){
-				msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero amount is not allowed: row " + index;	
 			}
 
 		});
@@ -1306,7 +1134,7 @@ function chkform(){
 		var ccode = $("#txtcustid").val();
 		var crem = $("#txtremarks").val();
 		var ddate = $("#date_returned").val();
-		var ngross = $("#txtnGross").val();
+		var ngross = 0;
 				
 		$.ajax ({
 			url: "PurchRet_editsave.php",
@@ -1338,14 +1166,12 @@ function chkform(){
 						}
 				var nqty = $(this).find('input[name="txtnqty"]').val();
 				var nqtyOrig = $(this).find('input[type="hidden"][name="txtnqtyORIG"]').val();
-				var nprice = $(this).find('input[name="txtnprice"]').val();
-				var namt = $(this).find('input[name="txtnamount"]').val();
+				var nprice = $(this).find('input[type="hidden"][name="txtnprice"]').val();
+				var namt = $(this).find('input[type="hidden"][name="txtnamount"]').val();
 				var drems = $(this).find('input[name="dremarks"]').val();
 				var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
 				var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
-			
-				
-				
+							
 				$.ajax ({
 					url: "PurchRet_newsavedet.php",
 					data: { trancode: trancode, drems: drems, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, nqtyorig:nqtyOrig, xcref:xcref, crefidnt:crefidnt },

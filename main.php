@@ -404,29 +404,29 @@
 					<ul class="sub-menu">
 						<li>
 							<a href="javascript:;" onClick="setpage('Accounting/Journal.php');">
-                            <i class="fa fa-book"> </i>
-							Journal Entry</a>
-						</li>
-						<li>
-							<a href="javascript:;" class="nav-link nav-toggle">
-                            <i class="fa fa-credit-card"></i>
-							Accounts Payable<span class="arrow"></span></a>
-                                        <ul class="sub-menu">
-																						<li>
-                                            	<a href="javascript:;" onClick="setpage('Accounting/APInv/RR.php');"> <i class="fa fa-angle-double-right"></i> Supplier's Invoice </a>
-                                            </li>	
-	                                        	<li>
-                                            	<a href="javascript:;" onClick="setpage('Accounting/APCM/APCM.php');"> <i class="fa fa-angle-double-right"></i> AP Credit Memo </a>
-                                            </li>										
-                                        	<li>
-                                            	<a href="javascript:;" onClick="setpage('Accounting/APV/APV.php');"> <i class="fa fa-angle-double-right"></i> AP Voucher </a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:;" onClick="setpage('Accounting/Pay/PayBill.php');"> <i class="fa fa-angle-double-right"></i> Bills Payment </a>
-                                            </li>
-                                        </ul>
+                <i class="fa fa-book"> </i>Journal Entry
+							</a>
 						</li>
 
+						<li>
+							<a href="javascript:;" class="nav-link nav-toggle">
+                <i class="fa fa-credit-card"> </i> Accounts Payable<span class="arrow"></span>
+							</a>
+              <ul class="sub-menu">
+								<li>
+                  <a href="javascript:;" onClick="setpage('Accounting/APInv/RR.php');"> <i class="fa fa-angle-double-right"></i> Supplier's Invoice </a>
+                </li>	
+	              <li>
+                  <a href="javascript:;" onClick="setpage('Accounting/APAdj/APAdj.php');"> <i class="fa fa-angle-double-right"></i> Adjustments </a>
+                </li>										
+                <li>
+                  <a href="javascript:;" onClick="setpage('Accounting/APV/APV.php');"> <i class="fa fa-angle-double-right"></i> AP Voucher </a>
+                </li>
+                <li>
+                  <a href="javascript:;" onClick="setpage('Accounting/Pay/PayBill.php');"> <i class="fa fa-angle-double-right"></i> Bills Payment </a>
+                </li>
+              </ul>
+						</li>
 
 						<li>
 							<a href="javascript:;" class="nav-link nav-toggle">
@@ -454,7 +454,7 @@
 						<li>
 							<a href="javascript:;" onClick="setpage('Accounting/Deposit.php');">
                             <i class="fa fa-bank"> </i>
-							Prepare Bank Deposit</a>
+							Bank Deposit</a>
 						</li>
 
 					</ul>

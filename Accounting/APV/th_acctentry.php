@@ -170,7 +170,7 @@ require_once "../../Connection/connection_string.php";
 				) A HAVING Sum(A.nVat) <> 0";
 				
 			
-			$resultTX = mysqli_query ($con, $sqlvat); 
+			$resultTX = mysqli_query ($con, $sqlvat);  
 
 			if(mysqli_num_rows($resultTX)!=0){
 				while($rowTX = mysqli_fetch_array($resultTX, MYSQLI_ASSOC)){
