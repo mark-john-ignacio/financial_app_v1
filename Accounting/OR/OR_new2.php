@@ -938,10 +938,12 @@ function deleteRow(r) {
 			var tempvcode = document.getElementById('txtnvatcode' + z);
 			var tempvamt = document.getElementById('txtvatamt' + z);
 			var tempvnetamt = document.getElementById('txtnetvat' + z);
+			var tempvcodeorig = document.getElementById('txtnvatcodeorig' + z);
 
 			var tempewtcode= document.getElementById('txtnEWT' + z);
 			var tempewtrate = document.getElementById('txtnEWTRate' + z);
 			var tempewtamt = document.getElementById('txtnEWTAmt' + z);
+			var tempewtcodeorig= document.getElementById('txtnEWTorig' + z);
 
 			var tempdue= document.getElementById('txtDue' + z);
 			var tempapplies = document.getElementById('txtApplied' + z);
@@ -967,6 +969,8 @@ function deleteRow(r) {
 			tempvamt.name = "txtvatamt" + x;
 			tempvnetamt.id = "txtnetvat" + x;
 			tempvnetamt.name = "txtnetvat" + x;
+			tempvcodeorig.id = "txtnvatcodeorig" + x;
+			tempvcodeorig.name = "txtnvatcodeorig" + x;
 
 			tempewtcode.id = "txtnEWT" + x;
 			tempewtcode.name = "txtnEWT" + x;
@@ -974,6 +978,8 @@ function deleteRow(r) {
 			tempewtrate.name = "txtnEWTRate" + x;
 			tempewtamt.id = "txtnEWTAmt" + x;
 			tempewtamt.name = "txtnEWTAmt" + x;
+			tempewtcodeorig.id = "txtnEWTorig" + x;
+			tempewtcodeorig.name = "txtnEWTorig" + x;
 
 			tempdue.id = "txtDue" + x;
 			tempdue.name = "txtDue" + x;
@@ -1198,7 +1204,7 @@ function save(){
 
 			var c1=z.insertCell(-1);
 			c1.align = "right";
-			c1.innerHTML = "<input type='text' class='form-control input-xs text-right' name=\"txtnvatcode"+lastRow+"\" id=\"txtnvatcode"+lastRow+"\" readonly value='"+vatcode+"' readonly />";
+			c1.innerHTML = "<input type='text' class='form-control input-xs text-right' name=\"txtnvatcode"+lastRow+"\" id=\"txtnvatcode"+lastRow+"\" value='"+vatcode+"' readonly /> <input type='hidden' name=\"txtnvatcodeorig"+lastRow+"\" id=\"txtnvatcodeorig"+lastRow+"\" value='"+vatcode+"' />";
 
 			var c2=z.insertCell(-1);
 			c2.align = "right";
@@ -1216,7 +1222,7 @@ function save(){
 			}
 
 			var l=z.insertCell(-1);
-			l.innerHTML = "<input type='text' class='ewtcode form-control input-xs' placeholder='EWT Code' name='txtnEWT"+lastRow+"' id='txtnEWT"+lastRow+"' autocomplete=\"off\" value='"+newtcode+"' "+$ifrdonly+"/> <input type='hidden' name='hdnewtgiven"+lastRow+"' id='hdnewtgiven"+lastRow+"' value='"+$ifrdonlyint+"' />";
+			l.innerHTML = "<input type='text' class='ewtcode form-control input-xs' placeholder='EWT Code' name='txtnEWT"+lastRow+"' id='txtnEWT"+lastRow+"' autocomplete=\"off\" value='"+newtcode+"' "+$ifrdonly+"/> <input type='hidden' name='hdnewtgiven"+lastRow+"' id='hdnewtgiven"+lastRow+"' value='"+$ifrdonlyint+"' /> <input type='hidden' name='txtnEWTorig"+lastRow+"' id='txtnEWTorig"+lastRow+"' value='"+newtcode+"' />";
 
 			var l2=z.insertCell(-1);
 			l2.innerHTML = "<input type='text' class='form-control input-xs text-right' placeholder='EWT Rate' name='txtnEWTRate"+lastRow+"' value=\""+newtrate+"\" id='txtnEWTRate"+lastRow+"' readonly=\"true\" />";
