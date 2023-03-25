@@ -33,7 +33,7 @@ require_once "../../Connection/connection_string.php";
 
 	//allpayemnts
 	@$arrpaymnts = array();
-	$sqlpay = "select X.csalesno, X.ctaxcode, X.cewtcode, sum(X.napplied) as ngross, sum(X.newtamt) as newtamt from receipt_sales_t X left join receipt B on X.compcode=B.compcode and X.ctranno=B.ctranno where X.compcode='$company' and B.lapproved = 1 GROUP BY X.csalesno, X.ctaxcode, X.cewtcode";
+	$sqlpay = "select X.csalesno, X.ctaxcodeorig, X.cewtcodeorig, sum(X.napplied) as ngross, sum(X.newtamt) as newtamt from receipt_sales_t X left join receipt B on X.compcode=B.compcode and X.ctranno=B.ctranno where X.compcode='$company' and B.lapproved = 1 GROUP BY X.csalesno, X.ctaxcode, X.cewtcode";
 	$respay = mysqli_query ($con, $sqlpay);
 	while($rowardj = mysqli_fetch_array($respay, MYSQLI_ASSOC)){
 		@$arrpaymnts[] = $rowardj;
@@ -86,7 +86,7 @@ require_once "../../Connection/connection_string.php";
 			 $npay = 0;
 			 $npayewt= 0;
 			 foreach(@$arrpaymnts as $rxpymnts){
-				if($row['csalesno']==$rxpymnts['ctranno'] && $row['ctaxcode']==$rxpymnts['ctaxcodeorig'] && $row['cewtcode']==$rxpymnts['cewtcodeorig']){
+				if($row['ctranno']==$rxpymnts['csalesno'] && $row['ctaxcode']==$rxpymnts['ctaxcodeorig'] && $row['cewtcode']==$rxpymnts['cewtcodeorig']){
 					$npay = $rxpymnts['ngross'];
 					$npayewt = $rxpymnts['newtamt'];
 				}
