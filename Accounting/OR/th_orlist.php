@@ -85,9 +85,10 @@ require_once "../../Connection/connection_string.php";
 			 }
 
 			 $npay = 0;
+
 			 foreach(@$arrpaymnts as $rxpymnts){
-				if($rxcredit['ctranno']==$rxpymnts['ctranno'] && $rxcredit['ctaxcode']==$rxpymnts['ctaxcode'] && $rxcredit['cewtcode']==$rxpymnts['cewtcode']){
-					$npay = $rxcredit['ngross'];
+				if($row['ctranno']==$rxpymnts['ctranno'] && $row['ctaxcode']==$rxpymnts['ctaxcode'] && $row['cewtcode']==$rxpymnts['cewtcode']){
+					$npay = $row['ngross'];
 				}
 			 }
 		
