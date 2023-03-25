@@ -8,10 +8,13 @@ include('../Connection/connection_string.php');
 include('../include/denied.php');
 include('../include/access.php');
 
+$company = $_SESSION['companyid'];
+
 ?>
 <html>
 <head>
-
+    
+    <link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>     
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
 
@@ -24,7 +27,7 @@ include('../include/access.php');
 <script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Coop Financials</title>
+<title>Myx Financials</title>
 </head>
 
 <body style="padding-left:50px;">
@@ -34,8 +37,8 @@ include('../include/access.php');
 <form action="Sales/SalesPerItem.php" method="post" name="frmrep" id="frmrep" target="_blank">
 <table width="100%" border="0" cellpadding="2">
   <tr>
-    <td rowspan="2" valign="top" width="50" style="padding:2px">
-    <button type="submit" class="btn btn-danger navbar-btn" id="btnsales">
+    <td valign="top" width="50" style="padding:2px">
+    <button type="button" class="btn btn-danger btn-block" id="btnView">
     <span class="glyphicon glyphicon-search"></span> View Report
     </button>
     </td>
@@ -51,6 +54,59 @@ include('../include/access.php');
         </div>
    </td>
   </tr>
+
+  <tr>
+        <td rowspan="3" valign="top" width="50" style="padding:2px">
+            <button type="button" class="btn btn-success btn-block" id="btnexcel">
+                <i class="fa fa-file-excel-o"></i> To Excel
+            </button>
+        </td>
+        <td width="150" style="padding-left:10px"><b>Customer Type:</b></td>
+        <td style="padding:2px">
+        <div class="col-xs-8 nopadding">
+            <select id="seltype" name="seltype" class="form-control input-sm selectpicker"  tabindex="4">
+                <option value="">All Customers</option>
+                    <?php
+                        $sql = "select * from groupings where compcode='$company' and ctype='CUSTYP' order by cdesc";
+                        $result=mysqli_query($con,$sql);
+                        if (!mysqli_query($con, $sql)) {
+                            printf("Errormessage: %s\n", mysqli_error($con));
+                        }			
+                
+                        while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+                        {
+                        ?>   
+                            <option value="<?php echo $row['ccode'];?>"><?php echo $row['cdesc']?></option>
+                        <?php
+                        }                        
+                        ?>     
+                    </select>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="padding-left:10px"><b>Transaction Type: </b></td>
+        <td style="padding:2px">
+            <div class="col-xs-4 nopadding">
+                <select id="seltrantype" name="seltrantype" class="form-control input-sm selectpicker"  tabindex="4">
+                    <option value="">All Transactions</option>   
+                    <option value="Trade">Trade</option>      
+                    <option value="Non-Trade">Non-Trade</option>           
+                </select>               
+            </div>
+            <div class="col-xs-4 nopadwleft">
+                <select id="sleposted" name="sleposted" class="form-control input-sm selectpicker"  tabindex="4">
+                    <option value="">All Transactions</option>   
+                    <option value="1">Posted</option>      
+                    <option value="0">UnPosted</option>           
+                </select>
+                    
+            </div>
+        </td>
+    </tr>
+
+
   <tr>
     <td style="padding-left:10px"><b>Date Range: </b></td>
     <td style="padding:2px">
@@ -81,44 +137,50 @@ include('../include/access.php');
 <script type="text/javascript">
 $(function(){
 
-	        $('.datepick').datetimepicker({
-                 format: 'MM/DD/YYYY'
-           });
+	$('.datepick').datetimepicker({
+        format: 'MM/DD/YYYY'
+    });
 
 	//proddesc searching	
 	
-$('#txtCust').typeahead({
-	autoSelect: true,
-    source: function(request, response) {
-        $.ajax({
-            url: "th_product.php",
-            dataType: "json",
-            data: {
-                query: $("#txtCust").val()
-            },
-            success: function (data) {
-                response(data);
-            }
-        });
-    },
-    displayText: function (item) {
-        return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
-    },
-	highlighter: Object,
-	afterSelect: function(item) { 					
-					
-		$('#txtCust').val(item.value).change(); 
-		$("#txtCustID").val(item.id);
-		
-	}
+    $('#txtCust').typeahead({
+        autoSelect: true,
+        source: function(request, response) {
+            $.ajax({
+                url: "th_product.php",
+                dataType: "json",
+                data: {
+                    query: $("#txtCust").val()
+                },
+                success: function (data) {
+                    response(data);
+                }
+            });
+        },
+        displayText: function (item) {
+            return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+        },
+        highlighter: Object,
+        afterSelect: function(item) { 					
+                        
+            $('#txtCust').val(item.value).change(); 
+            $("#txtCustID").val(item.id);
+            
+        }
+
+    });
+
+    $('#btnView').on("click", function(){
+        $('#frmrep').attr("action", "Sales/SalesPerItem.php");
+        $('#frmrep').submit();
+    });
+
+    $('#btnexcel').on("click", function(){
+        $('#frmrep').attr("action", "Sales/SalesPerItem_xls.php");
+        $('#frmrep').submit();
+    });
+
 
 });
-
-});
-
-
-function setact(x){
-	document.getElementById("frmrep").action = x;
-}
 
 </script>

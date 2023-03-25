@@ -139,7 +139,7 @@ $result=mysqli_query($con,$sql);
 		
 	?>
 
-            <td align="right"  style="border-left:solid 1px #039;"><?php echo (($myarrqty[$x] > 0) ? $myarrqty[$x] : '');?></td>
+            <td align="right"  style="border-left:solid 1px #039;"><?php echo (($myarrqty[$x] > 0) ? number_format($myarrqty[$x]) : '');?></td>
             <td align="right"><?php echo (($myarrret[$x] > 0) ? number_format($myarrret[$x],2) : '') ;?></td>
            <!-- <td align="right"><?php //echo (($myarrcost[$x] > 0) ? $myarrcost[$x] : '') ;?></td>-->
     
@@ -190,7 +190,7 @@ $classcode="";
 		
 	?>
 
-            <td align="right"  style="border-left:solid 1px #039;"><?php echo (($myarrqty[$x] > 0) ? $myarrqty[$x] : '');?></td>
+            <td align="right"  style="border-left:solid 1px #039;"><?php echo (($myarrqty[$x] > 0) ? number_format($myarrqty[$x]) : '');?></td>
             <td align="right"><?php echo (($myarrret[$x] > 0) ? number_format($myarrret[$x],2) : '') ;?></td>
             <!--<td align="right"><?php //echo (($myarrcost[$x] > 0) ? $myarrcost[$x] : '') ;?></td>-->
     

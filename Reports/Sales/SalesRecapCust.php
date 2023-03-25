@@ -101,8 +101,8 @@ $result=mysqli_query($con,$sql);
 ?>  
           <tr <?php echo $classcode;?>>
             <td colspan="4">&nbsp;</td>
-            <td align="right" class="rpttot"><?php echo (($totDebit > 0) ? number_format($totDebit,2) : '');?></td>
-            <td align="right" class="rpttot"><?php echo (($totCredit > 0) ? number_format($totCredit,2) : '');?></td>
+            <td align="right" class="rpttot"><?php echo (($totDebit > 0) ? number_format($totDebit,4) : '');?></td>
+            <td align="right" class="rpttot"><?php echo (($totCredit > 0) ? number_format($totCredit,4) : '');?></td>
           </tr>
   
   <?php 
@@ -123,8 +123,8 @@ $result=mysqli_query($con,$sql);
     <td><?php echo $name;?></td>
     <td><?php echo $row['acctno'];?></td>
     <td><?php echo $row['ctitle'];?></td>
-    <td align="right"><?php echo (($row['ndebit'] > 0) ? number_format($row['ndebit'],2) : '');?></td>
-    <td align="right"><?php echo (($row['ncredit'] > 0) ? number_format($row['ncredit'],2) : '');?></td>
+    <td align="right"><?php echo (($row['ndebit'] > 0) ? number_format($row['ndebit'],4) : '');?></td>
+    <td align="right"><?php echo (($row['ncredit'] > 0) ? number_format($row['ncredit'],4) : '');?></td>
   </tr>
 <?php 
 		$codeval = "";
@@ -139,15 +139,15 @@ $result=mysqli_query($con,$sql);
 
           <tr<?php echo $classcode;?>> 
             <td colspan="4">&nbsp;</td>
-            <td align="right" class="rpttot"><?php echo (($totDebit > 0) ? number_format($totDebit,2) : '');?></td>
-            <td align="right" class="rpttot"><?php echo (($totCredit > 0) ? number_format($totCredit,2) : '');?></td>
+            <td align="right" class="rpttot"><?php echo (($totDebit > 0) ? number_format($totDebit,4) : '');?></td>
+            <td align="right" class="rpttot"><?php echo (($totCredit > 0) ? number_format($totCredit,4) : '');?></td>
           </tr>
 
 
           <tr class="rptGrand">
             <td colspan="4" align="right"><b>GRAND TOTAL:</b></td>
-            <td align="right"><b><?php echo (($totDebitGRAND > 0) ? number_format($totDebitGRAND,2) : '');?></b></td>
-            <td align="right"><b><?php echo (($totCreditGRAND > 0) ? number_format($totCreditGRAND,2) : '');?></b></td>
+            <td align="right"><b><?php echo (($totDebitGRAND > 0) ? number_format($totDebitGRAND,4) : '');?></b></td>
+            <td align="right"><b><?php echo (($totCreditGRAND > 0) ? number_format($totCreditGRAND,4) : '');?></b></td>
           </tr>
 
 </table>

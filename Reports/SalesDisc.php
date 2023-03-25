@@ -2,17 +2,17 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "SalesSummary.php";
+$_SESSION['pageid'] = "SalesDisc.php";
 
 include('../Connection/connection_string.php');
 include('../include/denied.php');
 include('../include/access.php');
 
-$company = $_SESSION['companyid'];
+?>
 
-?><html>
+<html>
 <head>
-    <link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
+  <link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>   
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
 
@@ -29,73 +29,25 @@ $company = $_SESSION['companyid'];
 </head>
 
 <body style="padding-left:50px;">
-<center><font size="+1"><b><u>Sales Summary</u></b></font></center>
+<center><font size="+1"><b><u>SO vs DR vs SI</u></b></font></center>
 <br>
 
-<form action="Sales/SalesSumItem.php" method="post" name="frmrep" id="frmrep" target="_blank"> 
+<form action="Sales/SalesDisc.php" method="post" name="frmrep" id="frmrep" target="_blank">
+
 <table width="100%" border="0" cellpadding="2">
   <tr>
-    <td valign="top" width="70" style="padding:2px">
-        <button type="button" class="btn btn-danger btn-block" id="btnView">
-            <span class="glyphicon glyphicon-search"></span> View Report
-        </button>
+    <td valign="top" style="padding:2px">
+      <button type="button" class="btn btn-danger btn-block" id="btnView">
+        <span class="glyphicon glyphicon-search"></span> View Report
+      </button>
     </td>
-    <td width="150" style="padding-left:10px"><b>Report Type: </b></td>
-    <td>
-			<div class="col-xs-6 nopadding">	
-			<SELECT name="seltyp" id="seltyp" class="form-control input-sm">
-            
-            	<option value="Sales/SalesSumItem">Per Item</option>
-                <option value="Sales/SalesSumCust">Per Customer</option>
-                <option value="Sales/SalesSumInv">Per Transaction</option>
-                <option value="Sales/SalesSumMonth">Per Month</option>
-               <!-- <option value="Sales/SalesSumCutOff.php">Per Customer/CutOFf</option>-->
-                
-            </SELECT>
-            </div>	
-   </td>
-  </tr>
-  <tr>
-    <td rowspan="4" valign="top" style="padding:2px">
-        <button type="button" class="btn btn-success btn-block" id="btnexcel">
-            <i class="fa fa-file-excel-o"></i> To Excel
-        </button>
-    </td>
-    <td style="padding-left:10px"><b>Item Type: </b></td>
-    <td style="padding:2px">
-    <div class="col-xs-6 nopadding">
-    			<select id="seltype" name="seltype" class="form-control input-sm selectpicker"  tabindex="4">
-                <option value="">All Items</option> 
-                    <?php
-                $sql = "select * from groupings where compcode='$company' and ctype='ITEMTYP' order by cdesc";
-                $result=mysqli_query($con,$sql);
-                    if (!mysqli_query($con, $sql)) {
-                        printf("Errormessage: %s\n", mysqli_error($con));
-                    }			
-        
-                    while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-                        {
-                    ?>   
-                    <option value="<?php echo $row['ccode'];?>"><?php echo $row['cdesc']?></option>
-                    <?php
-                        }
-                        
-                        
-                    ?>   
-                     
-                </select>
-                
-                </div>
-    </td>
-  </tr>
-  <tr>
     <td style="padding-left:10px"><b>Customer Type: </b></td>
     <td style="padding:2px">
-    <div class="col-xs-6 nopadding">
+    <div class="col-xs-8 nopadding">
     			<select id="selcustype" name="selcustype" class="form-control input-sm selectpicker"  tabindex="4">
                 <option value="">All Customers</option> 
                     <?php
-                $sql = "select * from groupings where compcode='$company' and ctype='CUSTYP' order by cdesc";
+                $sql = "select * from groupings where ctype='CUSTYP' order by cdesc";
                 $result=mysqli_query($con,$sql);
                     if (!mysqli_query($con, $sql)) {
                         printf("Errormessage: %s\n", mysqli_error($con));
@@ -116,17 +68,23 @@ $company = $_SESSION['companyid'];
                 </div>
     </td>
   </tr>
+
   <tr>
+    <td valign="top" width="70" style="padding:2px"  rowspan="2">
+      <button type="button" class="btn btn-success btn-block" id="btnexcel">
+        <i class="fa fa-file-excel-o"></i> To Excel
+      </button>
+    </td>
     <td style="padding-left:10px"><b>Transaction Type: </b></td>
     <td style="padding:2px">
-        <div class="col-xs-3 nopadding">
+        <div class="col-xs-4 nopadding">
     	    <select id="seltrantype" name="seltrantype" class="form-control input-sm selectpicker"  tabindex="4">
                 <option value="">All Transactions</option>   
                 <option value="Trade">Trade</option>      
                 <option value="Non-Trade">Non-Trade</option>           
             </select>               
         </div>
-        <div class="col-xs-3 nopadwleft">
+        <div class="col-xs-4 nopadwleft">
     	    <select id="sleposted" name="sleposted" class="form-control input-sm selectpicker"  tabindex="4">
                 <option value="">All Transactions</option>   
                 <option value="1">Posted</option>      
@@ -165,7 +123,7 @@ $company = $_SESSION['companyid'];
 					$now = date("Y");
 					//$varyr = $now - 2014;
 					
-					for ($x=2022; $x<=$now; $x++){
+					for ($x=2015; $x<=$now; $x++){
 				?>
                 	<option value="<?php echo $x;?>" <?php if($x==$now){echo "selected";}?>><?php echo $x;?></option>
                 <?php } ?>
@@ -175,26 +133,25 @@ $company = $_SESSION['companyid'];
     </td>
   </tr>
 </table>
+
 </form>
 </body>
 </html>
 <script type="text/javascript">
-$(function(){
+  $(function(){
 
-	$('.datepick').datetimepicker({
+      $('.datepick').datetimepicker({
         format: 'MM/DD/YYYY'
-    });
+      });
 
-    $('#btnView').on("click", function(){
-        $dval = $("#seltyp").val();
-        $('#frmrep').attr("action", $dval+".php");
+      $('#btnView').on("click", function(){
+        $('#frmrep').attr("action", "Sales/SalesDisc.php");
         $('#frmrep').submit();
-    });
+      });
 
-    $('#btnexcel').on("click", function(){
-        $dval = $("#seltyp").val();
-        $('#frmrep').attr("action", $dval+"_xls.php");
+      $('#btnexcel').on("click", function(){
+        $('#frmrep').attr("action", "Sales/SalesDisc_xls.php");
         $('#frmrep').submit();
-    });
-});
+      });
+  });
 </script>

@@ -104,8 +104,8 @@ $result=mysqli_query($con,$sql);
 ?>
   <tr>
     <td colspan="2" class="rptGrand">&nbsp;</td>
-    <td align="right" class="rptGrand"><?php echo (($ndebitTot > 0) ? number_format($ndebitTot,2) : '');?></td>
-    <td align="right" class="rptGrand"><?php echo (($ncreditTot > 0) ? number_format($ncreditTot,2) : '');?></td>
+    <td align="right" class="rptGrand"><?php echo (($ndebitTot > 0) ? number_format($ndebitTot,4) : '');?></td>
+    <td align="right" class="rptGrand"><?php echo (($ncreditTot > 0) ? number_format($ncreditTot,4) : '');?></td>
   </tr>
 
 <?php
@@ -121,8 +121,8 @@ $result=mysqli_query($con,$sql);
   <tr>
     <td><?php echo $acctno;?></td>
     <td><?php echo $ctitle;?></td>
-    <td align="right"><?php echo (($row['ndebit'] > 0) ? number_format($row['ndebit'],2) : '');?></td>
-    <td align="right"><?php echo (($row['ncredit'] > 0) ? number_format($row['ncredit'],2) : '');?></td>
+    <td align="right"><?php echo (($row['ndebit'] > 0) ? number_format($row['ndebit'],4) : '');?></td>
+    <td align="right"><?php echo (($row['ncredit'] > 0) ? number_format($row['ncredit'],4) : '');?></td>
   </tr>
 <?php 
 
@@ -132,8 +132,8 @@ $result=mysqli_query($con,$sql);
 
   <tr>
     <td colspan="2" class="rptGrand">&nbsp;</td>
-    <td align="right" class="rptGrand"><?php echo (($ndebitTot > 0) ? number_format($ndebitTot,2) : '');?></td>
-    <td align="right" class="rptGrand"><?php echo (($ncreditTot > 0) ? number_format($ncreditTot,2) : '');?></td>
+    <td align="right" class="rptGrand"><?php echo (($ndebitTot > 0) ? number_format($ndebitTot,4) : '');?></td>
+    <td align="right" class="rptGrand"><?php echo (($ncreditTot > 0) ? number_format($ncreditTot,4) : '');?></td>
   </tr>
 
 </table>

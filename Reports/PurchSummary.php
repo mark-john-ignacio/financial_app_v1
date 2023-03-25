@@ -34,8 +34,8 @@ include('../include/access.php');
 <form action="Purchases/PurchSumItem.php" method="post" name="frmrep" id="frmrep" target="_blank">
 <table width="100%" border="0" cellpadding="2">
   <tr>
-    <td rowspan="3" valign="top" width="50" style="padding:2px">
-    <button type="submit" class="btn btn-danger navbar-btn" id="btnsales">
+    <td valign="top" width="50" style="padding:2px">
+    <button type="button" class="btn btn-danger btn-block" id="btnView">
     <span class="glyphicon glyphicon-search"></span> View Report
     </button>
     </td>
@@ -44,14 +44,32 @@ include('../include/access.php');
 			<div class="col-xs-6 nopadding">	
 			<SELECT name="seltyp" id="seltyp" class="form-control input-sm" onChange="setact(this.value);">
             
-            	<option value="Purchases/PurchSumItem.php">Per Item</option>
-                <option value="Purchases/PurchSumCust.php">Per Customer</option>
-                <option value="Purchases/PurchSumInv.php">Per Transaction</option>
-                <option value="Purchases/PurchSumMonth.php">Per Month</option>
+            	<option value="Purchases/PurchSumItem">Per Item</option>
+                <option value="Purchases/PurchSumCust">Per Customer</option>
+                <option value="Purchases/PurchSumInv">Per Transaction</option>
+                <option value="Purchases/PurchSumMonth">Per Month</option>
                 
             </SELECT>
             </div>	
    </td>
+  </tr>
+  <tr>
+    <td rowspan="2" valign="top" width="50" style="padding:2px">
+      <button type="button" class="btn btn-success btn-block" id="btnexcel">
+        <i class="fa fa-file-excel-o"></i> To Excel
+      </button>
+    </td>
+    <td style="padding-left:10px"><b>Transaction Type: </b></td>
+    <td style="padding:2px">
+      <div class="col-xs-6 nopadding">
+                <select id="sleposted" name="sleposted" class="form-control input-sm selectpicker"  tabindex="4">
+                    <option value="">All Transactions</option>   
+                    <option value="1">Posted</option>      
+                    <option value="0">UnPosted</option>           
+                </select>
+                    
+            </div>  
+    </td>
   </tr>
   <tr>
     <td style="padding-left:10px"><b>Date Range: </b></td>
@@ -98,9 +116,22 @@ include('../include/access.php');
 <script type="text/javascript">
 $(function(){
 
-	        $('.datepick').datetimepicker({
-                 format: 'MM/DD/YYYY'
-           });
+	  $('.datepick').datetimepicker({
+      format: 'MM/DD/YYYY'
+    });
+
+    $('#btnView').on("click", function(){
+      $dval = $("#seltyp").val();
+      $('#frmrep').attr("action", $dval+".php");
+      $('#frmrep').submit();
+    });
+
+    $('#btnexcel').on("click", function(){
+      $dval = $("#seltyp").val();
+      $('#frmrep').attr("action", $dval+"_xls.php");
+      $('#frmrep').submit();
+    });
+
 });
 
 function setact(x){

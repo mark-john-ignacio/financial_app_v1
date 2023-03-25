@@ -122,8 +122,8 @@ $result=mysqli_query($con,$sql);
     <td><?php echo $name;?></td>
     <td><?php echo $row['acctno'];?></td>
     <td><?php echo $row['ctitle'];?></td>
-    <td align="right"><?php echo (($row['ndebit'] > 0) ? number_format($row['ndebit'],2) : '');?></td>
-    <td align="right"><?php echo (($row['ncredit'] > 0) ? number_format($row['ncredit'],2) : '');?></td>
+    <td align="right"><?php echo (($row['ndebit'] > 0) ? number_format($row['ndebit'],4) : '');?></td>
+    <td align="right"><?php echo (($row['ncredit'] > 0) ? number_format($row['ncredit'],4) : '');?></td>
   </tr>
 <?php 
 		$code = "";
@@ -140,8 +140,8 @@ $result=mysqli_query($con,$sql);
 
     <tr class='rptGrand'>
     	<td colspan="6" align="right"><b>G R A N D&nbsp;&nbsp;T O T A L:</b></td>
-        <td align="right"><b><?php echo number_format($totDebit,2);?></b></td>
-        <td align="right"><b><?php echo number_format($totCredit,2);?></b></td>
+        <td align="right"><b><?php echo number_format($totDebit,4);?></b></td>
+        <td align="right"><b><?php echo number_format($totCredit,4);?></b></td>
     </tr>
 </table>
 

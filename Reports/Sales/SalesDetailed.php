@@ -32,59 +32,109 @@ $company = $_SESSION['companyid'];
 </center>
 
 <br><br>
-<table width="100%" border="0" align="center">
+<table width="100%" border="0" align="center" cellpadding="5px">
   <tr>
-    <th>Date</th>
-    <th>Invoice No.</th>
-    <th>Rank</th>
-    <th>Customer Code</th>
-    <th>Customer Name</th>
-    <!--<th>Gross</th>-->
-    <th colspan="2">Product</th>
-    <th>UOM</th>
-    <th>Qty</th>
-    <th>Price</th>
-    <th>Amount</th>
+    <th nowrap>Date</th>
+    <th nowrap>Invoice No.</th>
+    <th nowrap>Customer Type</th>
+    <th nowrap>Customer Code</th>
+    <th nowrap>Customer Name</th>
+    <th nowrap colspan="2">Product</th>
+    <th nowrap>UOM</th>
+    <td nowrap align="right"><b>Qty</b></td>
+    <td nowrap align="right"><b>Price</b></td>
+		<td nowrap align="right"><b>Discount</b></td>
+		<td nowrap align="right"><b>Net Price</b></td>
+    <td nowrap align="right"><b>Amount</b></td>
   </tr>
   
 <?php
 
 $date1 = $_POST["date1"];
 $date2 = $_POST["date2"];
-$rpt = $_POST["seltype"];
-$postz = $_POST["optradio"];
-//echo $postz;
-if($postz=="posted"){
-	$qry = " and b.lapproved=1";
-}
-else{
-	$qry = "";
+
+$itmtype = $_POST["seltype"];
+$custype = $_POST["selcustype"];
+$trantype = $_POST["seltrantype"]; 
+$postedtran = $_POST["sleposted"];
+
+$mainqry = "";
+$finarray = array();
+
+$qryitm = "";
+if($itmtype!==""){
+	$qryitm = " and c.ctype='".$itmtype."'";
 }
 
-$qrytyp = "";
-if($rpt==""){
-	$qrytyp = "";
+$qrycust = "";
+if($custype!==""){
+	$qrycust = " and d.ccustomertype='".$custype."'";
+}
+
+$qryposted = "";
+if($postedtran!==""){
+	$qryposted = " and b.lapproved=".$postedtran."";
+}
+
+if($trantype=="Trade"){
+
+	$result=mysqli_query($con,"select b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
+	From sales_t a	
+	left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
+	left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
+	left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
+	left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
+	where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
+	".$qryitm.$qrycust.$qryposted."
+	order by a.ctranno, a.nident");
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+		$finarray[] = $row;
+	}
+
+}elseif($trantype=="Non-Trade"){
+
+	$result=mysqli_query($con,"select b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
+	From ntsales_t a	
+	left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
+	left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
+	left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
+	left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
+	where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
+	".$qryitm.$qrycust.$qryposted."
+	order by a.ctranno, a.nident");
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+		$finarray[] = $row;
+	}
+
 }else{
-	$qrytyp = " and d.ctype='$rpt'";
+	$result=mysqli_query($con,"Select A.dcutdate, A.ctranno, A.ctype, A.typdesc, A.ccode, A.cname, A.lapproved, A.citemno, A.citemdesc, A.cunit, A.nqty, A.nprice, A.ndiscount, A.namount
+	From (
+		select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
+		From sales_t a	
+		left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
+		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
+		left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
+		left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
+		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
+		".$qryitm.$qrycust.$qryposted."
+
+		UNION ALL
+
+		select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
+		From ntsales_t a	
+		left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
+		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
+		left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
+		left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
+		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
+		".$qryitm.$qrycust.$qryposted."
+	) A 
+	order by A.ctranno, A.nident");
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+		$finarray[] = $row;
+	}
 }
 
-$sql = "select b.dcutdate,c.ccustomerclass, a.ctranno as csalesno, b.ccode, c.cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice, a.namount, b.cremarks, b.ngross
-From sales_t a
-left join sales b on a.ctranno=b.ctranno
-left join customers c on b.ccode=c.cempid
-left join items d on a.citemno=d.cpartno
-where a.compcode='001' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled = 0" .$qry. $qrytyp. "
-order by b.dcutdate, a.ctranno";
-
-
-//echo $sql;
-
-$result=mysqli_query($con,$sql);
-				
-	if (!mysqli_query($con, $sql)) {
-						printf("Errormessage: %s\n", mysqli_error($con));
-	} 
-	
 	$salesno = "";
 	$remarks = "";
 	$invval = "";
@@ -94,36 +144,39 @@ $result=mysqli_query($con,$sql);
 	$classcode="";
 	$totAmount=0;	
 	$ngross = 0;
-	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	foreach($finarray as $row)
 	{
 		//if($salesno==""){
 			//$salesno = $row['csalesno'];
 		//}
 		
-		if($salesno!=$row['csalesno']){
-			$invval = $row['csalesno'];
+		if($salesno!=$row['ctranno']){
+			$invval = $row['ctranno'];
 			$remarks = $row['cname'];
 			$ccode = $row['ccode'];
-			$crank = $row['ccustomerclass'];
-			$ngross = $row['ngross'];
+			$crank = $row['typdesc'];
+		//	$ngross = $row['ngross'];
 			$dateval= date_format(date_create($row['dcutdate']),"m/d/Y");
 			$classcode="class='rpthead'";
 		}
+
+		$netprice = floatval($row['nprice']) - floatval($row['ndiscount']);
 		
 ?>  
   <tr <?php echo $classcode;?>>
-    <td><?php echo $dateval;?></td>
-    <td><?php echo $invval;?></td>
-    <td><?php echo $crank;?></td>
-    <td><?php echo $ccode;?></td>
-    <td><?php echo $remarks;?></td>
-    <!--<td><?php //echo $ngross;?></td>-->
-    <td><?php echo $row['citemno'];?></td>
-    <td><?php echo $row['citemdesc'];?></td>
-    <td><?php echo $row['cunit'];?></td>
-    <td align="right"><?php echo $row['nqty'];?></td>
-    <td align="right"><?php echo $row['nprice'];?></td>
-    <td align="right"><?php echo $row['namount'];?></td>
+    <td nowrap><?php echo $dateval;?></td>
+    <td nowrap><?php echo $invval;?></td>
+    <td nowrap><?php echo $crank;?></td>
+    <td nowrap><?php echo $ccode;?></td>
+    <td nowrap><?php echo $remarks;?></td>
+    <td nowrap><?php echo $row['citemno'];?></td>
+    <td nowrap><?php echo $row['citemdesc'];?></td>
+    <td nowrap><?php echo $row['cunit'];?></td>
+    <td nowrap align="right"><?php echo number_format($row['nqty']);?></td>
+    <td nowrap align="right"><?php echo number_format($row['nprice'],2);?></td>
+		<td nowrap align="right"><?=(floatval($row['ndiscount'])!==0.00) ? number_format($row['ndiscount'],2) : ""?></td>
+		<td nowrap align="right"><?php echo number_format($netprice,2);?></td>
+    <td nowrap align="right"><?php echo number_format($row['namount'],2);?></td>
   </tr>
 <?php 
 		$invval = "";
@@ -133,14 +186,14 @@ $result=mysqli_query($con,$sql);
 		$ngross = "";
 		$crank = "";
 		$ccode = "";
-		$salesno=$row['csalesno'];
+		$salesno=$row['ctranno'];
 		$totAmount = $totAmount + $row['namount'];
 	}
 ?>
 
     <tr class='rptGrand'>
-    	<td colspan="10" align="right"><b>G R A N D&nbsp;&nbsp;T O T A L:</b></td>
-        <td align="right"><b><?php echo $totAmount;?></b></td>
+    	<td colspan="12" align="right"><b>G R A N D&nbsp;&nbsp;T O T A L:</b></td>
+        <td align="right"><b><?php echo number_format($totAmount,2);?></b></td>
     </tr>
 </table>
 

@@ -53,11 +53,12 @@ $date1 = $_POST["date1"];
 $date2 = $_POST["date2"];
 
 $sql = "select a.dreceived as dcutdate, a.ctranno as csalesno, a.ccode, c.cname, b.acctno, b.ctitle, b.ncredit, b.ndebit, a.lcancelled, a.lapproved
-From receive a
+From suppinv a
 left join glactivity b on a.ctranno=b.ctranno and a.compcode=b.compcode
 left join suppliers c on a.ccode=c.ccode and a.compcode=c.compcode
 where a.compcode='$company' and a.dreceived between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
 order by a.dreceived, a.ctranno, b.ndebit desc";
+//echo $sql;
 
 $result=mysqli_query($con,$sql);
 				

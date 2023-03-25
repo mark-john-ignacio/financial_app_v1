@@ -12,8 +12,9 @@ $company = $_SESSION['companyid'];
 ?><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Coop Financials</title>
+<title>Myx Financials</title>
 
+<link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
 
@@ -34,8 +35,8 @@ $company = $_SESSION['companyid'];
 <form action="Sales/SalesPerCustomer.php" method="post" name="frmrep" id="frmrep" target="_blank">
 <table width="100%" border="0" cellpadding="2">
   <tr>
-    <td rowspan="3" valign="top" width="50" style="padding:2px">
-    	<button type="submit" class="btn btn-danger navbar-btn" id="btnsales">
+    <td valign="top" width="50" style="padding:2px">
+    	<button type="button" class="btn btn-danger btn-block" id="btnView">
     		<span class="glyphicon glyphicon-search"></span> View Report
     	</button>
     </td>
@@ -52,31 +53,56 @@ $company = $_SESSION['companyid'];
    </td>
   </tr>
   
-   <tr>
-    <td width="150" style="padding-left:10px"><b>Item Type:</b></td>
-    <td style="padding:2px">
-    <div class="col-xs-8 nopadding">
-    	<select id="seltype" name="seltype" class="form-control input-sm selectpicker"  tabindex="4">
-                    <?php
-                $sql = "select * from groupings where ctype='ITEMTYP' and compcode='$company' order by cdesc";
-                $result=mysqli_query($con,$sql);
-                    if (!mysqli_query($con, $sql)) {
-                        printf("Errormessage: %s\n", mysqli_error($con));
-                    }			
-        
-                    while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-                        {
-                    ?>   
-                    <option value="<?php echo $row['ccode'];?>"><?php echo $row['cdesc']?></option>
-                    <?php
-                        }
-                        
-                        
-                    ?>     
+    <tr>
+        <td rowspan="3" valign="top" width="50" style="padding:2px">
+                <button type="button" class="btn btn-success btn-block" id="btnexcel">
+                    <i class="fa fa-file-excel-o"></i> To Excel
+                </button>
+            </td>
+            <td width="150" style="padding-left:10px"><b>Item Type:</b></td>
+            <td style="padding:2px">
+            <div class="col-xs-8 nopadding">
+                <select id="seltype" name="seltype" class="form-control input-sm selectpicker"  tabindex="4">
+                    <option value="">All Items</option>
+                            <?php
+                        $sql = "select * from groupings where compcode='$company' and ctype='ITEMTYP' order by cdesc";
+                        $result=mysqli_query($con,$sql);
+                            if (!mysqli_query($con, $sql)) {
+                                printf("Errormessage: %s\n", mysqli_error($con));
+                            }			
+                
+                            while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+                                {
+                            ?>   
+                            <option value="<?php echo $row['ccode'];?>"><?php echo $row['cdesc']?></option>
+                            <?php
+                                }                        
+                            ?>     
+                        </select>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="padding-left:10px"><b>Transaction Type: </b></td>
+        <td style="padding:2px">
+            <div class="col-xs-4 nopadding">
+                <select id="seltrantype" name="seltrantype" class="form-control input-sm selectpicker"  tabindex="4">
+                    <option value="">All Transactions</option>   
+                    <option value="Trade">Trade</option>      
+                    <option value="Non-Trade">Non-Trade</option>           
+                </select>               
+            </div>
+            <div class="col-xs-4 nopadwleft">
+                <select id="sleposted" name="sleposted" class="form-control input-sm selectpicker"  tabindex="4">
+                    <option value="">All Transactions</option>   
+                    <option value="1">Posted</option>      
+                    <option value="0">UnPosted</option>           
                 </select>
-     </div>
-   </td>
-  </tr>
+                    
+            </div>
+        </td>
+    </tr>
   
   <tr>
     <td style="padding-left:10px"><b>Date Range: </b></td>
@@ -142,12 +168,17 @@ $('#txtCust').typeahead({
 
 });
 
+    $('#btnView').on("click", function(){
+        $('#frmrep').attr("action", "Sales/SalesPerCustomer.php");
+        $('#frmrep').submit();
+      });
+
+      $('#btnexcel').on("click", function(){
+        $('#frmrep').attr("action", "Sales/SalesPerCustomer_xls.php");
+        $('#frmrep').submit();
+      });
 
 
-})
 
-function setact(x){
-	document.getElementById("frmrep").action = x;
-}
-
+});
 </script>
