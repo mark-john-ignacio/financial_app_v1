@@ -27,11 +27,11 @@ include('../include/access.php');
 
 <body style="padding-left:50px;">
 <center>
-  <font size="+1"><b><u>General Journal</u></b></font>
+  <font size="+1"><b><u>General Ledger</u></b></font>
 </center>
 <br>
 
-<form action="Accounting/GJournal.php" method="post" name="frmrep" id="frmrep" target="_blank">
+<form action="Accounting/GLedger.php" method="post" name="frmrep" id="frmrep" target="_blank">
 <table width="100%" border="0" cellpadding="2">
   <tr>
     <td valign="top" width="50" style="padding:2px"><button type="submit" class="btn btn-danger navbar-btn" id="btnsales">

@@ -10,8 +10,7 @@ require_once "../../Connection/connection_string.php";
 		$date1 = date("Y-m-d");
 		
 		if($avail==1){
-			$sql = "select a.nident, a.ctranno, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, a.nbaseamount, a.namount, a.cmainunit as qtyunit, 
-			a.nfactor, ifnull(c.nqty,0) as totqty2 
+			$sql = "select a.nident, a.ctranno, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, a.nbaseamount, a.namount, a.cmainunit as qtyunit, a.nfactor, ifnull(c.nqty,0) as totqty2 
 			from so_t a 
 			left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
 			left join
@@ -21,7 +20,7 @@ require_once "../../Connection/connection_string.php";
 				 Where x.creference='".$_REQUEST['id']."' and y.lcancelled=0
 				 group by x.creference,x.citemno
 				 ) c on a.ctranno=c.creference and a.citemno=c.citemno
-			WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."' and a.citemno = '".$_REQUEST['itm']."'";
+			WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."' and a.nident = '".$_REQUEST['itm']."'";
 		}
 		else{
 			$sql = "select a.nident, a.ctranno, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, a.nprice, a.nbaseamount, a.namount, a.cmainunit as qtyunit,
@@ -43,7 +42,7 @@ require_once "../../Connection/connection_string.php";
 					Group by X.cmainunit, X.citemno
 				) d on a.citemno=d.citemno
 	
-			WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."' and a.citemno = '".$_REQUEST['itm']."'";
+			WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."' and a.nident = '".$_REQUEST['itm']."'";
 
 		}
 		

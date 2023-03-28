@@ -186,7 +186,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 															<?php
 																	$nvaluecurrbase = "";	
 																	$nvaluecurrbasedesc = "";	
-																	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+																	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='DEF_CURRENCY'"); 
 																	
 																		if (mysqli_num_rows($result)!=0) {
 																			$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
@@ -266,9 +266,6 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</td>
 								</tr>
 
-							<tr>
-								<td colspan="4">&nbsp;</td>
-							</tr>
 
 						</table>
 					
@@ -313,17 +310,14 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</td>
 							</tr>
 
-							<tr>
-								<td width="150" colspan="2"><br><br></td>
-
-							</tr>
-
 						</table>
 					</div>
 				</div>
 			</div>
 
 
+		<hr>
+		<div class="col-xs-12 nopadwdown"><b>Details</b></div>
 			<div class="col-xs-12 nopadwdown">
 				<div class="col-xs-3 nopadding">
 					<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." width="25" tabindex="4"  autocomplete="off">

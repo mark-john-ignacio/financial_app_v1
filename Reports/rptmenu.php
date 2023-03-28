@@ -140,7 +140,7 @@ function resizeIframe(obj) {
 					<ul class="ver-inline-menu tabbable margin-bottom-25">
 						<li>
               <a href="" onClick="setI('A','SalesReg.php')" data-toggle="tab">
-              <i class="fa fa-book"></i> Sales Register </a>
+              <i class="fa fa-book"></i> Sales Journal </a>
             </li>
             <li>
 							<a href="" onClick="setI('A','CashBook.php')" data-toggle="tab">
@@ -184,6 +184,10 @@ function resizeIframe(obj) {
           				<a href="" onClick="setI('A','GJournal.php')" data-toggle="tab">
                   <i class="fa fa-book"></i> General Journal </a>
                 </li>  
+                <li>
+          				<a href="" onClick="setI('A','GLedger.php')" data-toggle="tab">
+                  <i class="fa fa-book"></i> General Ledger </a>
+                </li> 
           			<li>
           				<a href="" onClick="setI('A','TBal.php')" data-toggle="tab">
                   <i class="fa fa-book"></i> Trial Balance </a>

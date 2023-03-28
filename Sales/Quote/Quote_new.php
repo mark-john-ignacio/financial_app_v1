@@ -25,6 +25,12 @@ $ndcutdate = date("m/d/Y", strtotime($ndcutdate . "+1 day"));
 //	return $json;
 //}
 
+$getfctrs = mysqli_query($con,"SELECT * FROM `items_factor` where compcode='$company' and cstatus='ACTIVE' order By nidentity"); 
+	if (mysqli_num_rows($getfctrs)!=0) {
+		while($row = mysqli_fetch_array($getfctrs, MYSQLI_ASSOC)){
+			@$arruomslist[] = array('cpartno' => $row['cpartno'], 'nfactor' => $row['nfactor'], 'cunit' => $row['cunit']); 
+		}
+	}
 
 ?>
 
@@ -34,27 +40,27 @@ $ndcutdate = date("m/d/Y", strtotime($ndcutdate . "+1 day"));
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Coop Financials</title>
+	<title>Myx Financials</title>
     
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
-   <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
 
-	 <link rel="stylesheet" href="../../include/summernote/summernote.css">
+	<link rel="stylesheet" href="../../include/summernote/summernote.css">
     
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
-<script src="../../include/autoNumeric.js"></script>
-<!--
-<script src="../../Bootstrap/js/jquery.numeric.js"></script>
-<script src="../../Bootstrap/js/jquery.inputlimiter.min.js"></script>
--->
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
+	<script src="../../include/autoNumeric.js"></script>
+	<!--
+	<script src="../../Bootstrap/js/jquery.numeric.js"></script>
+	<script src="../../Bootstrap/js/jquery.inputlimiter.min.js"></script>
+	-->
 
-<script src="../../Bootstrap/js/bootstrap.js"></script>
-<script src="../../Bootstrap/js/moment.js"></script>
-<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<script src="../../Bootstrap/js/moment.js"></script>
+	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
-<script src="../../include/summernote/summernote.js"></script>
+	<script src="../../include/summernote/summernote.js"></script>
 
 <style>
 	fieldset.scheduler-border {
@@ -82,6 +88,8 @@ $ndcutdate = date("m/d/Y", strtotime($ndcutdate . "+1 day"));
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
+<input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
+
 <form action="Quote_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
 	<fieldset>
     	<legend>New Quotation</legend>	
@@ -296,7 +304,8 @@ $ndcutdate = date("m/d/Y", strtotime($ndcutdate . "+1 day"));
 									<th style="border-bottom:1px solid #999">Description</th>
 			            <th style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
 			            <th style="border-bottom:1px solid #999">UOM</th>
-			            <th style="border-bottom:1px solid #999">Qty</th>
+									<th style="border-bottom:1px solid #999">Factor</th>
+			            <th style="border-bottom:1px solid #999">Qty</th>									
 									<th style="border-bottom:1px solid #999">Price</th>
             			<th style="border-bottom:1px solid #999">Amount</th>
 									<th style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
@@ -904,24 +913,22 @@ function myFunctionadd(){
 		
 	
 		var uomoptions = "";
-								
-		 $.ajax ({
-			url: "../th_loaduomperitm.php",
-			data: { id: itmcode },
-			async: false,
-			dataType: "json",
-			success: function( data ) {
-											
-				console.log(data);
-				$.each(data,function(index,item){
-					uomoptions = uomoptions + '<option value='+item.id+'>'+item.name+'</option>';
-				});
-						
-											 
-			}
-		});
+		var xz = $("#hdnitmfactors").val();
+		var uomoptions = "<option value='"+itmunit+"' selected data-factor='1'>"+itmunit+"</option>";
 
-		
+		$.each(jQuery.parseJSON(xz), function() { 
+			if(itmcode==this['cpartno']){
+				if(itmunit==this['cunit']){
+					isselctd = "selected";
+				}
+				else{
+					isselctd = ""; 
+				}
+				uomoptions = uomoptions + "<option value='"+this['cunit']+"' data-factor='"+this['nfactor']+"' "+isselctd+">"+this['cunit']+"</option>";
+
+			}
+		});			
+										
 	//var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 	//var lastRow = tbl.length;
 
@@ -932,8 +939,9 @@ function myFunctionadd(){
 	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+"</td>";
 	var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmdesc+"</td>";
 	var tditmavail = avail;
-	var tditmunit = "<td width=\"100\" nowrap> <select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\">"+uomoptions+"</select> </td>";
-	var tditmqty = "<td width=\"100\" nowrap> <input type='text' value='1' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();'> <input type='hidden' value='"+itmunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='1' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
+	var tditmunit = "<td width=\"100\" nowrap> <select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\" data-main='"+itmunit+"'>"+uomoptions+"</select> </td>";
+	var tditmfactor = "<td width=\"100\" nowrap> <input type='text' value='1' class='numeric form-control input-xs' style='text-align:right' name='hdnfactor' id='hdnfactor"+lastRow+"' readonly> </td>";
+	var tditmqty = "<td width=\"100\" nowrap> <input type='text' value='1' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();'> <input type='hidden' value='"+itmunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'>  </td>";
 		
 	var tditmprice = "<td width=\"100\" nowrap> <input type='text' value='"+price.trim()+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnprice\" id='txtnprice"+lastRow+"' \"> </td>";
 			
@@ -944,7 +952,7 @@ function myFunctionadd(){
 	var tditmdel = "<td width=\90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' onClick=\"deleteRow(this);\"/> &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"','"+lastRow+"');\"/> </td>";
 
 
-	$('#MyTable > tbody:last-child').append('<tr id="'+lastRow+'">'+tditmcode + tditmdesc + tditmavail + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmamount+ tditmdel + '</tr>');
+	$('#MyTable > tbody:last-child').append('<tr id="'+lastRow+'">'+tditmcode + tditmdesc + tditmavail + tditmunit + tditmfactor + tditmqty + tditmprice + tditmbaseamount + tditmamount+ tditmdel + '</tr>');
 
 									$("#del"+itmcode).on('click', function() {
 										$(this).closest('tr').remove();
@@ -963,20 +971,29 @@ function myFunctionadd(){
 									   ComputeGross();
 										});
 									
-									$(".xseluom").on('change', function() {
+									$("#seluom"+lastRow).on('change', function() {
 
 										var xyz = chkprice(itmcode,$(this).val(),itmccode,xtoday);
+										var mainuomdata = $(this).data("main");
+										var fact = $(this).find(':selected').data('factor');
+										
+										if(fact!=0){
+											$('#hdnfactor'+lastRow).val(fact);
+										}
+
+										if(mainuomdata!==$(this).val()){
+											$('#hdnfactor'+lastRow).attr("readonly", false);
+										}else{
+											$('#hdnfactor'+lastRow).attr("readonly", true);
+										}
 										
 										$('#txtnprice'+lastRow).val(xyz.trim());
 										//alert($(this).attr('id'));
 										ComputeAmt($(this).attr('id'));
 										ComputeGross();
 										
-										var fact = setfactor($(this).val(), itmcode);
+										//var fact = setfactor($(this).val(), itmcode);
 										//alert(fact);
-										if(fact!=0){
-											$('#hdnfactor'+lastRow).val(fact.trim());
-										}
 										
 									});
 									
@@ -1021,13 +1038,13 @@ function myFunctionadd(){
 			var gross = 0;
 			var amt = 0;
 			
-		//	if(rowCount>1){
-		//		for (var i = 1; i <= rowCount-1; i++) {
-		//			amt = $("#txtntranamount"+i).val().replace(/,/g,'');
+			//	if(rowCount>1){
+			//		for (var i = 1; i <= rowCount-1; i++) {
+			//			amt = $("#txtntranamount"+i).val().replace(/,/g,'');
 					
-		//			gross = gross + parseFloat(amt);
-		//		}
-		//	}
+			//			gross = gross + parseFloat(amt);
+			//		}
+			//	}
 
 			$("#MyTable > tbody > tr").each(function() {
 
@@ -1091,81 +1108,81 @@ function myFunctionadd(){
 		*/
 
 
-function viewhidden(itmcde,itmnme,ident){
-	var tbl = document.getElementById('MyTable2').getElementsByTagName('tr');
-	var lastRow2 = tbl.length-1;
-	
-	if(lastRow2>=1){
-			$("#MyTable2 > tbody > tr").each(function() {	
+		function viewhidden(itmcde,itmnme,ident){
+			var tbl = document.getElementById('MyTable2').getElementsByTagName('tr');
+			var lastRow2 = tbl.length-1;
 			
-				var citmno = $(this).find('input[type="hidden"][name="txtinfocode"]').val();
-				var citmnoident = $(this).find('input[type="hidden"][name="txtinforefident"]').val();
-
-				//alert(citmno+"!="+itmcde);
-				if(citmno!=itmcde && citmnoident!==ident){
+			if(lastRow2>=1){
+					$("#MyTable2 > tbody > tr").each(function() {	
 					
-					$(this).find('input[name="txtinfofld"]').attr("disabled", true);
-					$(this).find('input[name="txtinfoval"]').attr("disabled", true);
-					$(this).find('input[type="button"][name="delinfo"]').attr("class", "btn btn-danger btn-xs disabled");
+						var citmno = $(this).find('input[type="hidden"][name="txtinfocode"]').val();
+						var citmnoident = $(this).find('input[type="hidden"][name="txtinforefident"]').val();
+
+						//alert(citmno+"!="+itmcde);
+						if(citmno!=itmcde && citmnoident!==ident){
+							
+							$(this).find('input[name="txtinfofld"]').attr("disabled", true);
+							$(this).find('input[name="txtinfoval"]').attr("disabled", true);
+							$(this).find('input[type="button"][name="delinfo"]').attr("class", "btn btn-danger btn-xs disabled");
+							
+						}
+						else{
+							$(this).find('input[name="txtinfofld"]').attr("disabled", false);
+							$(this).find('input[name="txtinfoval"]').attr("disabled", false);
+							$(this).find('input[type="button"][id="delinfo'+itmcde+'"]').attr("class", "btn btn-danger btn-xs");
+						}
+						
+					});
+			}			
 					
-				}
-				else{
-					$(this).find('input[name="txtinfofld"]').attr("disabled", false);
-					$(this).find('input[name="txtinfoval"]').attr("disabled", false);
-					$(this).find('input[type="button"][id="delinfo'+itmcde+'"]').attr("class", "btn btn-danger btn-xs");
-				}
-				
-			});
-	}			
+			addinfo(itmcde,itmnme,ident);
 			
-	addinfo(itmcde,itmnme,ident);
-	
-	$('#MyDetModal').modal('show');
-}
-
-function addinfo(itmcde,itmnme,refident){
-	//alert(itmcde+","+itmnme);
-	var tbl = document.getElementById('MyTable2').getElementsByTagName('tr');
-	var lastRow = tbl.length;
-
-	
-	var tdinfocode = "<td><input type='hidden' value='"+refident+"' name='txtinforefident' id='txtinforefident"+lastRow+"'><input type='hidden' value='"+itmcde+"' name='txtinfocode' id='txtinfocode"+lastRow+"'>"+itmcde+"</td>";
-	var tdinfodesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmnme+"</td>"
-	var tdinfofld = "<td><input type='text' name='txtinfofld' id='txtinfofld"+lastRow+"' class='form-control input-xs'></td>";
-	var tdinfoval = "<td><input type='text' name='txtinfoval' id='txtinfoval"+lastRow+"' class='form-control input-xs'></td>";
-	var tdinfodel = "<td><input class='btn btn-danger btn-xs' type='button' name='delinfo' id='delinfo" + lastRow + itmcde + "' value='delete' /></td>";
-
-	//alert(tdinfocode + "\n" + tdinfodesc + "\n" + tdinfofld + "\n" + tdinfoval + "\n" + tdinfodel);
-	
-	$('#MyTable2 > tbody:last-child').append('<tr>'+tdinfocode + tdinfodesc + tdinfofld + tdinfoval + tdinfodel + '</tr>');
-
-									$("#delinfo"+lastRow+itmcde).on('click', function() {
-										$(this).closest('tr').remove();
-									});
-
-}
-
-function chkCloseInfo(){
-	var isInfo = "TRUE";
-	
-	$("#MyTable2 > tbody > tr").each(function(index) {	
-			
-		var citmfld = $(this).find('input[name="txtinfofld"]').val();
-		var citmval = $(this).find('input[name="txtinfoval"]').val();
-		
-		if(citmfld=="" || citmval==""){
-			isInfo = "FALSE";
+			$('#MyDetModal').modal('show');
 		}
-				
-	});
 
-	
-	if(isInfo == "TRUE"){
-		$('#MyDetModal').modal('hide');	}
-	else{
-		alert("Incomplete info values!");
-	}
-}
+		function addinfo(itmcde,itmnme,refident){
+			//alert(itmcde+","+itmnme);
+			var tbl = document.getElementById('MyTable2').getElementsByTagName('tr');
+			var lastRow = tbl.length;
+
+			
+			var tdinfocode = "<td><input type='hidden' value='"+refident+"' name='txtinforefident' id='txtinforefident"+lastRow+"'><input type='hidden' value='"+itmcde+"' name='txtinfocode' id='txtinfocode"+lastRow+"'>"+itmcde+"</td>";
+			var tdinfodesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmnme+"</td>"
+			var tdinfofld = "<td><input type='text' name='txtinfofld' id='txtinfofld"+lastRow+"' class='form-control input-xs'></td>";
+			var tdinfoval = "<td><input type='text' name='txtinfoval' id='txtinfoval"+lastRow+"' class='form-control input-xs'></td>";
+			var tdinfodel = "<td><input class='btn btn-danger btn-xs' type='button' name='delinfo' id='delinfo" + lastRow + itmcde + "' value='delete' /></td>";
+
+			//alert(tdinfocode + "\n" + tdinfodesc + "\n" + tdinfofld + "\n" + tdinfoval + "\n" + tdinfodel);
+			
+			$('#MyTable2 > tbody:last-child').append('<tr>'+tdinfocode + tdinfodesc + tdinfofld + tdinfoval + tdinfodel + '</tr>');
+
+											$("#delinfo"+lastRow+itmcde).on('click', function() {
+												$(this).closest('tr').remove();
+											});
+
+		}
+
+		function chkCloseInfo(){
+			var isInfo = "TRUE";
+			
+			$("#MyTable2 > tbody > tr").each(function(index) {	
+					
+				var citmfld = $(this).find('input[name="txtinfofld"]').val();
+				var citmval = $(this).find('input[name="txtinfoval"]').val();
+				
+				if(citmfld=="" || citmval==""){
+					isInfo = "FALSE";
+				}
+						
+			});
+
+			
+			if(isInfo == "TRUE"){
+				$('#MyDetModal').modal('hide');	}
+			else{
+				alert("Incomplete info values!");
+			}
+		}
 
 
 function chkprice(itmcode,itmunit,ccode,datez){
@@ -1327,7 +1344,7 @@ function chkform(){
 				var nbaseamt = $(this).find('input[name="txtntranamount"]').val();
 				var namt = $(this).find('input[name="txtnamount"]').val();
 				var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
-				var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
+				var nfactor = $(this).find('input[name="hdnfactor"]').val();
 			
 
 				if(nqty!==undefined){

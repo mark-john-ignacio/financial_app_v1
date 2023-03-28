@@ -48,17 +48,19 @@ require_once "../../Connection/connection_string.php";
 			$nqty1 = $row['nqty'];
 			$nqty2 = $row['nqty2']; 
 		
-			 $json['citemno'] = $row['citemno'];
-			 $json['cdesc'] = $row['citemdesc'];
-			 $json['cunit'] = $row['cunit'];
-			 $json['nqty'] = $nqty1 - $nqty2;
-			 $json['navail'] = $row['navail'];
-			 $json2[] = $json;
+			$json['nident'] = $row['nident'];
+			$json['citemno'] = $row['citemno'];
+			$json['cdesc'] = $row['citemdesc'];
+			$json['cunit'] = $row['cunit'];
+			$json['nqty'] = $nqty1 - $nqty2;
+			$json['navail'] = $row['navail'];
+			$json2[] = $json;
 	
 		}
 
 	}
 	else{
+			$json['nident'] = "";
 			$json['citemno'] = "";
 			$json['cdesc'] = "";
 			$json['cunit'] = "";

@@ -372,6 +372,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									<th style="border-bottom:1px solid #999">Description</th>
 									<th style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
 									<th style="border-bottom:1px solid #999">UOM</th>
+									<th style="border-bottom:1px solid #999">Factor</th>
 									<th style="border-bottom:1px solid #999">Qty</th>
 									<th style="border-bottom:1px solid #999">Price</th>
 									<th style="border-bottom:1px solid #999">Amount</th>
@@ -1346,7 +1347,12 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 		
 	
 		var xz = $("#hdnitmfactors").val();
-		var uomoptions = "<option value='"+itmunit+"' selected>"+itmunit+"</option>";
+		if(itmqtyunit==itmunit){
+			isselctd = "selected";
+		}else{
+			isselctd = "";
+		}
+		var uomoptions = "<option value='"+itmqtyunit+"' data-factor='1' "+isselctd+">"+itmqtyunit+"</option>";
 
 		$.each(jQuery.parseJSON(xz), function() { 
 			if(itmcode==this['cpartno']){
@@ -1356,8 +1362,7 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 				else{
 					isselctd = "";
 				}
-				uomoptions = uomoptions + "<option value='"+this['cunit']+"' "+isselctd+">"+this['cunit']+"</option>";
-
+				uomoptions = uomoptions + "<option value='"+this['cunit']+"' data-factor='"+this['nfactor']+"' "+isselctd+">"+this['cunit']+"</option>";
 			}
 		});			
 
@@ -1374,8 +1379,16 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 	var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmdesc+"</td>";
 	var tditmavail = avail;
 
-	var tditmunit = "<td width=\"100\" nowrap> <select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\">"+uomoptions+"</select> </td>";
-	var tditmqty = "<td width=\"100\" nowrap> <input type='text' value='"+itmtotqty+"' data-v-min=\"1\" class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' "+qtystat+"> <input type='hidden' value='"+itmqtyunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+factz+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
+	var tditmunit = "<td width=\"100\" nowrap> <select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\" data-main='"+itmqtyunit+"'>"+uomoptions+"</select> </td>";
+
+	isfactoread = "";
+	if(itmqtyunit==itmunit){
+		isfactoread = "readonly";
+	}
+
+	var tditmfactor = "<td width=\"100\" nowrap> <input type='text' value='"+factz+"' class='numeric form-control input-xs' style='text-align:right' name='hdnfactor' id='hdnfactor"+lastRow+"' "+isfactoread+"> </td>";
+
+	var tditmqty = "<td width=\"100\" nowrap> <input type='text' value='"+itmtotqty+"' data-v-min=\"1\" class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' "+qtystat+"> <input type='hidden' value='"+itmqtyunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> </td>";
 		
 	var tditmprice = "<td width=\"100\" nowrap> <input type='text' value='"+price+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnprice\" id='txtnprice"+lastRow+"' "+qtystat+" \"> </td>";
 
@@ -1385,7 +1398,7 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 
 	var tditmdel = "<td width=\90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' onClick=\"deleteRow(this);\"/> &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> </td>";
 
-	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmavail + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmamount + tditmdel + '</tr>');
+	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmavail + tditmunit + tditmfactor + tditmqty + tditmprice + tditmbaseamount + tditmamount + tditmdel + '</tr>');
 
 									$("#del"+itmcode).on('click', function() {
 										$(this).closest('tr').remove();
@@ -1417,19 +1430,27 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
                      ComputeGross();
                   }); 
 
-									$(".xseluom").on('change', function() {
+									$("#seluom"+lastRow).on('change', function() {
 
 										var xyz = chkprice(itmcode,$(this).val(),itmccode,xtoday);
-										
+										var mainuomdata = $(this).data("main");
+										var fact = $(this).find(':selected').data('factor');
+
+										if(fact!=0){
+											$('#hdnfactor'+lastRow).val(fact);
+										}
+
+										if(mainuomdata!==$(this).val()){
+											$('#hdnfactor'+lastRow).attr("readonly", false);
+										}else{
+											$('#hdnfactor'+lastRow).attr("readonly", true);
+										}
+
 										$('#txtnprice'+lastRow).val(xyz.trim());
 										//alert($(this).attr('id'));
 										ComputeAmt($(this).attr('id'));
 										ComputeGross();
-										
-										var fact = setfactor($(this).val(), itmcode);
-										//alert(fact);
-										$('#hdnfactor'+lastRow).val(fact.trim());
-										
+
 									});
 									
 									ComputeGross();
@@ -2060,7 +2081,7 @@ function chkform(){
 		$("#MyTable > tbody > tr").each(function(index) {
 			myqty = $(this).find('input[name="txtnqty"]').val();
 			myav = $(this).find('input[type="hidden"][name="hdnavailqty"]').val();
-			myfacx = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
+			myfacx = $(this).find('input[name="hdnfactor"]').val();
 			
 			myprice = $(this).find('input[name="txtnamount"]').val();
 			
@@ -2172,7 +2193,7 @@ function chkform(){
 				var namt = $(this).find('input[name="txtnamount"]').val();
 				var nbaseamt = $(this).find('input[name="txtntranamount"]').val();
 				var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
-				var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val(); 
+				var nfactor = $(this).find('input[name="hdnfactor"]').val(); 
 
 				if(nqty!==undefined){
 					nqty = nqty.replace(/,/g,'');

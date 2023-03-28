@@ -386,7 +386,7 @@ if($_REQUEST['typ']=="SEND"){
 
 
 	}else{
-		$msgz = "<b>ERROR: </b>PO Approvals not set!";
+		$msgz = "<b>ERROR: </b>Quotation Approvals not set!";
 		$status = "False";
 	}
 

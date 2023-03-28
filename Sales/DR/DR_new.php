@@ -1,22 +1,29 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "DR_new.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "DR_new.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
-$company = $_SESSION['companyid'];
+	$company = $_SESSION['companyid'];
 
-//echo $_SESSION['chkitmbal']."<br>";
-//echo $_SESSION['chkcompvat'];
+	//echo $_SESSION['chkitmbal']."<br>";
+	//echo $_SESSION['chkcompvat'];
 
-$ddeldate = date("m/d/Y");
-$ddeldate = date("m/d/Y", strtotime($ddeldate . "+1 day"));
+	$ddeldate = date("m/d/Y");
+	$ddeldate = date("m/d/Y", strtotime($ddeldate . "+1 day"));
 
-//echo $ddeldate;
+	//echo $ddeldate;
+
+	$getfctrs = mysqli_query($con,"SELECT * FROM `items_factor` where compcode='$company' and cstatus='ACTIVE' order By nidentity"); 
+	if (mysqli_num_rows($getfctrs)!=0) {
+		while($row = mysqli_fetch_array($getfctrs, MYSQLI_ASSOC)){
+			@$arruomslist[] = array('cpartno' => $row['cpartno'], 'nfactor' => $row['nfactor'], 'cunit' => $row['cunit']); 
+		}
+	}
 ?>
 
 <!DOCTYPE html>
@@ -25,7 +32,7 @@ $ddeldate = date("m/d/Y", strtotime($ddeldate . "+1 day"));
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Coop Financials</title>
+	<title>Myx Financials</title>
     
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
@@ -43,6 +50,8 @@ $ddeldate = date("m/d/Y", strtotime($ddeldate . "+1 day"));
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
+<input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
+
 <form action="SO_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
 	<fieldset>
     	<legend>New Delivery Receipt</legend>
@@ -234,6 +243,7 @@ $ddeldate = date("m/d/Y", strtotime($ddeldate . "+1 day"));
 									<th style="border-bottom:1px solid #999">Description</th>
 			            <th style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
 			            <th style="border-bottom:1px solid #999">UOM</th>
+									<th style="border-bottom:1px solid #999">Factor</th>
 			            <th style="border-bottom:1px solid #999">Qty</th>
 									<!--<th style="border-bottom:1px solid #999">Price</th>
 			            <th style="border-bottom:1px solid #999">Amount</th>-->
@@ -908,16 +918,16 @@ $(function(){
 		//if value is not blank
 		 }
 		 
-		if(isItem=="NO"){		
+		//if(isItem=="NO"){		
 
 			myFunctionadd("","","","","","","");
 			ComputeGross();	
 			
-	    }
-	    else{
+	   // }
+	   // else{
 			
-			addqty();
-		}
+		//	addqty();
+		//}
 		
 		$("#txtprodid").val("");
 		$("#txtprodnme").val("");
@@ -1189,17 +1199,17 @@ function addItemName(qty,price,curramt,amt,factr,cref,crefident){
 				}
 			});	
 
-	 if(isItem=="NO"){	
+	// if(isItem=="NO"){	
 	 	myFunctionadd(qty,price,curramt,amt,factr,cref,crefident);
 		
 		ComputeGross();	
 
-	 }
-	 else{
+//	 }
+	// else{
 
-		addqty();	
+//		addqty();	
 			
-	 }
+//	 }
 		
 		$("#txtprodid").val("");
 		$("#txtprodnme").val("");
@@ -1251,32 +1261,28 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,crefident){
 			}
 		}
 		
-	
-		var uomoptions = "";
-								
-		 $.ajax ({
-			url: "../th_loaduomperitm.php",
-			data: { id: itmcode },
-			async: false,
-			dataType: "json",
-			success: function( data ) {
-											
-				console.log(data);
-				$.each(data,function(index,item){
-					if(item.id==itmunit){
-						isselctd = "selected";
-					}
-					else{
-						isselctd = "";
-					}
-					
-					uomoptions = uomoptions + '<option value='+item.id+' '+isselctd+'>'+item.name+'</option>';
-				});
-						
-											 
-			}
-		});
 
+		var xz = $("#hdnitmfactors").val();
+		if(itmqtyunit==itmunit){
+			isselctd = "selected";
+		}else{
+			isselctd = "";
+		}
+		var uomoptions = "<option value='"+itmqtyunit+"' data-factor='1' "+isselctd+">"+itmqtyunit+"</option>";
+
+		$.each(jQuery.parseJSON(xz), function() { 
+			if(itmcode==this['cpartno']){
+				if(itmunit==this['cunit']){
+					isselctd = "selected";
+				}
+				else{
+					isselctd = "";
+				}
+				uomoptions = uomoptions + "<option value='"+this['cunit']+"' data-factor='"+this['nfactor']+"' "+isselctd+">"+this['cunit']+"</option>";
+
+			}
+		});	
+								
 		
 	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 	var lastRow = tbl.length;
@@ -1289,8 +1295,17 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,crefident){
 	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+" <input type='hidden' value='"+cref+"' name=\"txtcreference\" id=\"txtcreference\"><input type='hidden' value='"+crefident+"' name=\"txtcrefident\" id=\"txtcrefident\"></td>";
 	var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmdesc+"</td>";
 	var tditmavail = avail;
-	var tditmunit = "<td width=\"100\" nowrap> <select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\">"+uomoptions+"</select> </td>";
-	var tditmqty = "<td width=\"100\" nowrap> <input type='text' value='"+itmtotqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' "+qtystat+"> <input type='hidden' value='"+itmqtyunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+factz+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> <input type='hidden' value='"+itmorgqty+"' name='hdnqtyorig' id='hdnqtyorig"+lastRow+"'> <input type='hidden' value='"+price+"' name=\"txtnprice\" id='txtnprice"+lastRow+"' \> <input type='hidden' value='"+amtz+"' name=\"txtnamount\" id='txtnamount"+lastRow+"' \> <input type='hidden' value='"+curramt+"' name=\"txtntranamount\" id='txtntranamount"+lastRow+"' \> </td>";
+	var tditmunit = "<td width=\"100\" nowrap> <select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\" data-main='"+itmqtyunit+"'>"+uomoptions+"</select> </td>";
+
+	isfactoread = "";
+	if(itmqtyunit==itmunit){
+		isfactoread = "readonly";
+	}
+
+	var tditmfactor = "<td width=\"100\" nowrap> <input type='text' value='"+factz+"' class='numeric form-control input-xs' style='text-align:right' name='hdnfactor' id='hdnfactor"+lastRow+"' "+isfactoread+"> </td>";
+
+
+	var tditmqty = "<td width=\"100\" nowrap> <input type='text' value='"+itmtotqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' "+qtystat+"> <input type='hidden' value='"+itmqtyunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+itmorgqty+"' name='hdnqtyorig' id='hdnqtyorig"+lastRow+"'> <input type='hidden' value='"+price+"' name=\"txtnprice\" id='txtnprice"+lastRow+"' \> <input type='hidden' value='"+amtz+"' name=\"txtnamount\" id='txtnamount"+lastRow+"' \> <input type='hidden' value='"+curramt+"' name=\"txtntranamount\" id='txtntranamount"+lastRow+"' \> </td>";
 		
 	//var tditmprice = "<td width=\"100\" nowrap> <input type='text' value='"+price+"' class='form-control input-xs' style='text-align:right' name=\"txtnprice\" id='txtnprice"+lastRow+"' readonly=\"true\" \"> </td>";
 			
@@ -1299,7 +1314,7 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,crefident){
 	var tditmdel = "<td width=\90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' onClick=\"deleteRow(this);\"/> &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> </td>";
 
 //tditmprice + tditmamount +
-	$('#MyTable > tbody:last-child').append('<tr>'+insbtn+tditmcode + tditmdesc + tditmavail + tditmunit + tditmqty +  tditmdel + '</tr>');
+	$('#MyTable > tbody:last-child').append('<tr>'+insbtn+tditmcode + tditmdesc + tditmavail + tditmunit + tditmfactor + tditmqty +  tditmdel + '</tr>');
 
 									$("#del"+itmcode).on('click', function() {
 										$(this).closest('tr').remove();
@@ -1319,20 +1334,28 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,crefident){
 									   ComputeAmt($(this).attr('id'));
 									   ComputeGross();
 									});
-									
-									$(".xseluom").on('change', function() {
+
+									$("#seluom"+lastRow).on('change', function() {
 
 										var xyz = chkprice(itmcode,$(this).val(),itmccode,xtoday);
-										
+										var mainuomdata = $(this).data("main");
+										var fact = $(this).find(':selected').data('factor');
+
+										if(fact!=0){
+											$('#hdnfactor'+lastRow).val(fact);
+										}
+
+										if(mainuomdata!==$(this).val()){
+											$('#hdnfactor'+lastRow).attr("readonly", false);
+										}else{
+											$('#hdnfactor'+lastRow).attr("readonly", true);
+										}
+
 										$('#txtnprice'+lastRow).val(xyz.trim());
 										//alert($(this).attr('id'));
 										ComputeAmt($(this).attr('id'));
 										ComputeGross();
-										
-										var fact = setfactor($(this).val(), itmcode);
-										//alert(fact);
-										$('#hdnfactor'+lastRow).val(fact.trim());
-										
+
 									});
 									
 									ComputeGross();
@@ -1725,7 +1748,7 @@ function opengetdet(valz){
 						  
 							if (item.nqty>=1){
 								$("<tr>").append(
-								$("<td>").html("<input type='checkbox' value='"+item.citemno+"' name='chkSales[]' data-id=\""+drno+"\">"),
+								$("<td>").html("<input type='checkbox' value='"+item.nident+"' name='chkSales[]' data-id=\""+drno+"\">"),
 								$("<td>").text(item.citemno),
 								$("<td>").text(item.cdesc),
 								$("<td>").text(item.cunit),
@@ -1845,7 +1868,7 @@ function chkform(){
 			
 			myqty = $(this).find('input[name="txtnqty"]').val();
 			myav = $(this).find('input[type="hidden"][name="hdnavailqty"]').val();
-			myfacx = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
+			myfacx = $(this).find('input[name="hdnfactor"]').val();
 			
 			myprice = $(this).find('input[name="txtnamount"]').val();
 			
@@ -1946,7 +1969,7 @@ function chkform(){
 				var ntransamt = $(this).find('input[type="hidden"][name="txtntranamount"]').val();
 				var namt = $(this).find('input[type="hidden"][name="txtnamount"]').val();
 				var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
-				var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
+				var nfactor = $(this).find('input[name="hdnfactor"]').val();
 				var norigqty = $(this).find('input[type="hidden"][name="hdnqtyorig"]').val(); 
 
 				$.ajax ({

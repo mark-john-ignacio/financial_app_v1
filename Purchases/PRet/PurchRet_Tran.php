@@ -44,7 +44,7 @@ if($_REQUEST['typ']=="POST"){
 				else {
 					$msgz = "<b>SUCCESS: </b>Your transaction is successfully posted!";
 					$status = "Posted";
-
+					
 					mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
 						values('$tranno','$preparedby',NOW(),'POSTED','PURCH RETURN','$compname','Post Record')");
 

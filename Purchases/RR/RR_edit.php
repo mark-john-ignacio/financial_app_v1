@@ -51,6 +51,13 @@ $sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.cremarks, DATE_FORMAT
 	}
 	*/
 
+	$getfctrs = mysqli_query($con,"SELECT * FROM `items_factor` where compcode='$company' and cstatus='ACTIVE' order By nidentity"); 
+	if (mysqli_num_rows($getfctrs)!=0) {
+		while($row = mysqli_fetch_array($getfctrs, MYSQLI_ASSOC)){
+			@$arruomslist[] = array('cpartno' => $row['cpartno'], 'nfactor' => $row['nfactor'], 'cunit' => $row['cunit']); 
+		}
+	}
+
 ?>
 
 
@@ -80,6 +87,8 @@ $sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.cremarks, DATE_FORMAT
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
+<input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
+
 <?php
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -268,6 +277,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 														<th style="border-bottom:1px solid #999">Code</th>
 														<th style="border-bottom:1px solid #999">Description</th>
 														<th style="border-bottom:1px solid #999">UOM</th>
+														<th style="border-bottom:1px solid #999">Factor</th>
 														<th style="border-bottom:1px solid #999">Qty</th>
 														<!--<th style="border-bottom:1px solid #999">Price</th>
 														<th style="border-bottom:1px solid #999">Amount</th>
@@ -512,7 +522,7 @@ else{
 										<div class="col-xs-2 nopadwtop">
 														<select class="form-control input-sm" name="selserloc" id="selserloc">
 															<?php
-																	$qrya = mysqli_query($con,"Select * From receive_putaway_location Order By cdesc");
+																	$qrya = mysqli_query($con,"Select * From locations Order By cdesc");
 																	while($row = mysqli_fetch_array($qrya, MYSQLI_ASSOC)){
 																		echo "<option value=\"".$row['nid']."\" data-id=\"".$row['cdesc']."\">".$row['cdesc']."</option>";
 																	}
@@ -887,29 +897,28 @@ function myFunctionadd(nqty,nqtyOrig,nfactor,cmainunit,xref,nident){
 	var uomoptions = "";
 	
 	if(xref == ""){							
-		 $.ajax ({
-			url: "../th_loaduomperitm.php",
-			data: { id: itmcode },
-			async: false,
-			dataType: "json",
-			success: function( data ) {
-											
-				console.log(data);
-				$.each(data,function(index,item){
-					if(item.id==itmunit){
-						isselctd = "selected";
-					}
-					else{
-						isselctd = "";
-					}
-					
-					uomoptions = uomoptions + '<option value='+item.id+' '+isselctd+'>'+item.name+'</option>';
-				});
-						
+		var xz = $("#hdnitmfactors").val();
+		if(itmqtyunit==itmunit){
+			isselctd = "selected";
+		}else{
+			isselctd = "";
+		}
+		var uomoptions = "<option value='"+itmmainunit+"' data-factor='1' "+isselctd+">"+itmmainunit+"</option>";
+
+		$.each(jQuery.parseJSON(xz), function() { 
+			if(itmcode==this['cpartno']){
+				if(itmunit==this['cunit']){
+					isselctd = "selected";
+				}
+				else{
+					isselctd = "";
+				}
+				uomoptions = uomoptions + "<option value='"+this['cunit']+"' data-factor='"+this['nfactor']+"' "+isselctd+">"+this['cunit']+"</option>";
+
 			}
-		});
+		});	
 		
-		uomoptions = "<select class='xseluom"+lastRow+" form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\">"+uomoptions+"</select>";
+		uomoptions = "<select class='xseluom"+lastRow+" form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\"  data-main='"+itmmainunit+"'>"+uomoptions+"</select>";
 		
 	}else{
 		uomoptions = "<input type='hidden' value='"+itmunit+"' name=\"seluom\" id=\"seluom\">"+itmunit;
@@ -923,8 +932,16 @@ function myFunctionadd(nqty,nqtyOrig,nfactor,cmainunit,xref,nident){
 	tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\"> " + itmdesc + "</td>";
 	
 	tditmunit = "<td width=\"80\"> " + uomoptions + "</td>";
+
+	isfactoread = "";
+	if(itmmainunit==itmunit){
+		isfactoread = "readonly";
+	}
+
+	var tditmfactor = "<td width=\"100\" nowrap> <input type='text' value='"+itmfactor+"' class='numeric form-control input-xs' style='text-align:right' name='hdnfactor' id='hdnfactor"+lastRow+"' "+isfactoread+"> </td>";
 	
-	tditmqty = "<td width=\"100\" style=\"padding:1px\"> <input type='text' value='"+itmqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+itmqtyorig+"' name=\"txtnqtyORIG\" id=\"txtnqtyORIG"+lastRow+"\"> <input type='hidden' value='"+itmmainunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+itmfactor+"' name='hdnfactor' id='hdnfactor"+lastRow+"'></td>"; 	 
+	
+	tditmqty = "<td width=\"100\" style=\"padding:1px\"> <input type='text' value='"+itmqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+itmqtyorig+"' name=\"txtnqtyORIG\" id=\"txtnqtyORIG"+lastRow+"\"> <input type='hidden' value='"+itmmainunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> </td>"; 	 
 	
 	//tditmprice = "<td width=\"100\" style=\"padding:1px\"> <input type='text' value='"+itmprice+"' class='numeric form-control input-xs' style='text-align:right'name=\"txtnprice\" id='txtnprice"+lastRow+"' autocomplete='off' onFocus='this.select();'> <input type='hidden' value='"+itmmainunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+itmfactor+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
 
@@ -936,7 +953,7 @@ function myFunctionadd(nqty,nqtyOrig,nfactor,cmainunit,xref,nident){
 
   //+ tditmprice + tditmbaseamount+ tditmamount 
 
-	$('#MyTable > tbody:last-child').append('<tr style=\"padding-top:1px\">'+tditmbtn+tditmcode + tditmdesc + tditmunit + tditmqty + tditmdel + '</tr>');
+	$('#MyTable > tbody:last-child').append('<tr style=\"padding-top:1px\">'+tditmbtn+tditmcode + tditmdesc + tditmunit + tditmfactor + tditmqty + tditmdel + '</tr>');
 
 
 									$("#del"+itmcode).on('click', function() {
@@ -962,18 +979,27 @@ function myFunctionadd(nqty,nqtyOrig,nfactor,cmainunit,xref,nident){
 									   tblnav(e.keyCode,$(this).attr('id'));
 									});
 	//alert("d");								
-									$(".xseluom"+lastRow).on('change', function() {
-										//alert($(this).val());
-										//var xyz = chkprice(itmcode,$(this).val());
+									$("#seluom"+lastRow).on('change', function() {
+									//	alert($(this).val());
+									//	var xyz = chkprice(itmcode,$(this).val());
 										
 									//	$('#txtnprice'+lastRow).val(xyz.trim());
 										
-									//	ComputeAmt($(this).attr('id'));
+										//ComputeAmt($(this).attr('id'));
 									//	ComputeGross();
 										
-										var fact = setfactor($(this).val(), itmcode);
-										
-										$('#hdnfactor'+lastRow).val(fact.trim());
+										var mainuomdata = $(this).data("main");
+										var fact = $(this).find(':selected').data('factor');
+
+										if(fact!=0){
+											$('#hdnfactor'+lastRow).val(fact);
+										}
+
+										if(mainuomdata!==$(this).val()){
+											$('#hdnfactor'+lastRow).attr("readonly", false);
+										}else{
+											$('#hdnfactor'+lastRow).attr("readonly", true);
+										}
 										
 									});
 //alert("e");	
@@ -1535,7 +1561,7 @@ function chkform(){
 			//	var nprice = $(this).find('input[type="hidden"][name="txtnprice"]').val();
 			//	var namt = $(this).find('input[type="hidden"][name="txtnamount"]').val();
 				var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
-				var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
+				var nfactor = $(this).find('input[name="hdnfactor"]').val();
 				//var dneed = $(this).find('input[name="dexpired"]').val();
 			
 				if(nqty!==undefined){

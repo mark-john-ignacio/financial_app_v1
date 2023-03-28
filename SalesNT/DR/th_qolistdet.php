@@ -48,6 +48,7 @@ require_once "../../Connection/connection_string.php";
 			$nqty1 = $row['nqty'];
 			$nqty2 = $row['nqty2']; 
 		
+			$json['nident'] = $row['nident'];
 			 $json['citemno'] = $row['citemno'];
 			 $json['cdesc'] = $row['citemdesc'];
 			 $json['cunit'] = $row['cunit'];

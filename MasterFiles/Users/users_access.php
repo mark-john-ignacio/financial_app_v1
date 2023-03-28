@@ -1061,6 +1061,9 @@ xmlhttp.send();
           <label><input type="checkbox" name="chkAcc[]" value="GJournal.php" id="chkBox169" <?=(in_array("GJournal.php",@$arrpgist)) ? "checked" : "";?>>
           General Journal</label>
           <br>
+          <label><input type="checkbox" name="chkAcc[]" value="GLedger.php" id="chkBox169" <?=(in_array("GLedger.php",@$arrpgist)) ? "checked" : "";?>>
+          General Ledger</label>
+          <br>
           <label><input type="checkbox" name="chkAcc[]" value="TBal.php" id="chkBox169" <?=(in_array("TBal.php",@$arrpgist)) ? "checked" : "";?>>
           Trial Balance</label>
         </div>

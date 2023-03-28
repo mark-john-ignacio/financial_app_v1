@@ -9,7 +9,7 @@ require_once "../../Connection/connection_string.php";
 		$avail = $_REQUEST['itmbal'];
 		$date1 = date("Y-m-d");
 		
-		if($avail==1){
+		//if($avail==1){
 			$sql = "select a.nident, a.ctranno, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, a.nbaseamount, a.namount, a.cmainunit as qtyunit, 
 			a.nfactor, ifnull(c.nqty,0) as totqty2 
 			from ntso_t a 
@@ -21,9 +21,10 @@ require_once "../../Connection/connection_string.php";
 				 Where x.creference='".$_REQUEST['id']."' and y.lcancelled=0
 				 group by x.creference,x.citemno
 				 ) c on a.ctranno=c.creference and a.citemno=c.citemno
-			WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."' and a.citemno = '".$_REQUEST['itm']."'";
-		}
-		else{
+			WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."' and a.nident = '".$_REQUEST['itm']."'";
+	//	}
+	//	else{
+		/*
 			$sql = "select a.nident, a.ctranno, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, a.nprice, a.nbaseamount, a.namount, a.cmainunit as qtyunit,
 			a.nfactor, ifnull(c.nqty,0) as totqty2, (TRIM(TRAILING '.' FROM(CAST(TRIM(TRAILING '0' FROM d.nqty)AS char)))) AS nqty
 			from ntso_t a 
@@ -44,8 +45,9 @@ require_once "../../Connection/connection_string.php";
 				) d on a.citemno=d.citemno
 	
 			WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."' and a.citemno = '".$_REQUEST['itm']."'";
+			*/
 
-		}
+	//	}
 		
 	//echo $sql;
 	

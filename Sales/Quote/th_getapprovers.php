@@ -7,6 +7,7 @@ require_once "../../Connection/connection_string.php";
 	$company = $_SESSION['companyid'];
 	$cpono = $_POST['x'];
 	
+  $rowPOresult = array();
 	$sql = mysqli_query($con,"SELECT a.*,b.Fname,b.Minit,b.Lname,b.cemailadd FROM `quote_trans_approvals` a left join users b on a.userid=b.Userid where a.compcode='$company' and a.ctranno='$cpono' order by a.nlevel");
 	
   while($rowxcv=mysqli_fetch_array($sql, MYSQLI_ASSOC)){
@@ -15,6 +16,7 @@ require_once "../../Connection/connection_string.php";
 
   //get ung mga levels
   $templvl = "";
+  @$dlevels = array();
   foreach($rowPOresult as $rs){
     if($templvl!=$rs['nlevel']){
       $templvl=$rs['nlevel'];

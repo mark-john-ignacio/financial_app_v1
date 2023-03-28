@@ -25,7 +25,7 @@ $company = $_SESSION['companyid'];
 <head>
 	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Purchase Register</title>
+<title>Purchase Journal</title>
 </head>
 
 <body style="padding:10px">

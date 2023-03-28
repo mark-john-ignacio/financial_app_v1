@@ -1,4 +1,5 @@
 <?php
+
 	if(!isset($_SESSION)){
 		session_start();
 	}
@@ -11,8 +12,8 @@
 	$seltyp = $_POST['radtype'];
 	$selcat = $_POST['selcat'];  
 	$sellvl = $_POST['selvl']; 
-	$iscontra = (isset($_POST['chkcontra'])) ? 1 : 0; 
-	$selhdr = (isset($_POST['selhdr'])) ? $_POST['selhdr']: 0;
+	$iscontra = (isset($_POST['chkcontra2'])) ? 1 : 0; 
+	$selhdr = (isset($_POST['selhdr2'])) ? $_POST['selhdr2']: 0;
 
 	if($selcat=="ASSETS" || $selcat=="LIABILITIES" || $selcat=="EQUITY"){
 		$selfingrp = "Balance Sheet";

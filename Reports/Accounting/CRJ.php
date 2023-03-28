@@ -13,6 +13,7 @@
 	$result=mysqli_query($con,$sql);
 
 	$arrallaccts = array();
+	$arrtotaccts = array();
 					
 	if (!mysqli_query($con, $sql)) {
 		printf("Errormessage: %s\n", mysqli_error($con));
@@ -59,20 +60,20 @@
 
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?=time();?>">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Cash Receipts Journal</title>
+	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Cash Receipts Journal</title>
 </head>
 
 <body style="padding:20px">
 <center>
 <h2 class="nopadding"><?=strtoupper($compname);  ?></h2>
-<h3 class="nopadding">Cash Receipts Journal</h3>
-<h4 class="nopadding">For the Period <?=date_format(date_create($_POST["date1"]),"F d, Y");?> to <?=date_format(date_create($_POST["date2"]),"F d, Y");?></h4>
+<h2 class="nopadding">Cash Receipts Journal</h2>
+<h3 class="nopadding">For the Period <?=date_format(date_create($_POST["date1"]),"F d, Y");?> to <?=date_format(date_create($_POST["date2"]),"F d, Y");?></h3>
 </center>
 
-<hr>
-<table border="1" align="center" class="table table-condensed">
+<br><br>
+<table width="80%" border="1" align="center" cellpadding = "3">
   <tr>
     <th width="100" style="vertical-align:middle">Date</th>
     <th width="100" style="vertical-align:middle">Trans No.</th>
@@ -83,8 +84,9 @@
 		$arrundrs = array_intersect_key( $arrdebits , array_unique( array_map('serialize' , $arrdebits ) ) );
    	foreach($arrundrs as $rsdr) {
 			$arrallaccts[$rsdr['cacctno']] = 0;
+			$arrtotaccts[$rsdr['cacctno']] = 0;
    ?>
-   	<th class="text-center small" style="vertical-align:bottom" width="150">
+   	<th style="vertical-align:bottom; text-align: center !important" width="150">
     	<?=$rsdr['cacctno'];?><br><?=$rsdr['cacctdesc'];?><br>Dr.      
     </th>
    <?php
@@ -94,9 +96,10 @@
 	<?php
 		$arruncrs = array_intersect_key( $arrcredits , array_unique( array_map('serialize' , $arrcredits ) ) );
    	foreach($arruncrs as $rscr) {
-			$arrallaccts[$rsdr['cacctno']] = 0;
+			$arrallaccts[$rscr['cacctno']] = 0;
+			$arrtotaccts[$rscr['cacctno']] = 0;
    ?>
-   	<th class="text-center small" style="vertical-align:bottom" width="150">
+   	<th align="center" style="vertical-align:bottom; text-align: center !important" width="150">
     	<?=$rscr['cacctno'];?><br><?=$rscr['cacctdesc'];?><br>Cr.      
     </th>
    <?php
@@ -106,10 +109,12 @@
   </tr>
   
 	<?php
-	$ctranno = $arrallqry[0]['ctranno'];
-	$cddate = $arrallqry[0]['ddate'];
-	$cname = $arrallqry[0]['cname'];
-	$crmrks = $arrallqry[0]['cremarks'];
+	if(count($arrallqry) > 0){
+
+		$ctranno = $arrallqry[0]['ctranno'];
+		$cddate = $arrallqry[0]['ddate'];
+		$cname = $arrallqry[0]['cname'];
+		$crmrks = $arrallqry[0]['cremarks'];
 		foreach($arrallqry as $rsallqry){
 			if($ctranno==$rsallqry['ctranno']){
 
@@ -139,6 +144,7 @@
 			foreach($arrundrs as $rsdr) {
 
 				if(isset($arrallaccts[$rsdr['cacctno']])){
+					$arrtotaccts[$rsdr['cacctno']] = $arrtotaccts[$rsdr['cacctno']] + floatval($arrallaccts[$rsdr['cacctno']]);
 		?>
 			<td align="right">
 				<?=number_format($arrallaccts[$rsdr['cacctno']],2);?>     
@@ -152,6 +158,7 @@
 			$arruncrs = array_intersect_key( $arrcredits , array_unique( array_map('serialize' , $arrcredits ) ) );
 			foreach($arruncrs as $rscr) {
 				if(isset($arrallaccts[$rscr['cacctno']])){
+					$arrtotaccts[$rscr['cacctno']] = $arrtotaccts[$rscr['cacctno']] + floatval($arrallaccts[$rscr['cacctno']]);
 		?>
 			<td align="right">
 				<?=number_format($arrallaccts[$rscr['cacctno']],2);?>  
@@ -183,6 +190,7 @@
 			foreach($arrundrs as $rsdr) {
 
 				if(isset($arrallaccts[$rsdr['cacctno']])){
+					$arrtotaccts[$rsdr['cacctno']] = $arrtotaccts[$rsdr['cacctno']] + floatval($arrallaccts[$rsdr['cacctno']]);
 		?>
 			<td align="right">
 				<?=number_format($arrallaccts[$rsdr['cacctno']],2);?>     
@@ -196,6 +204,7 @@
 			$arruncrs = array_intersect_key( $arrcredits , array_unique( array_map('serialize' , $arrcredits ) ) );
 			foreach($arruncrs as $rscr) {
 				if(isset($arrallaccts[$rscr['cacctno']])){
+					$arrtotaccts[$rscr['cacctno']] = $arrtotaccts[$rscr['cacctno']] + floatval($arrallaccts[$rscr['cacctno']]);
 		?>
 			<td align="right">
 				<?=number_format($arrallaccts[$rscr['cacctno']],2);?>  
@@ -207,6 +216,40 @@
 
 
 	<tr>
+
+	<!-- TOTALS -->
+	<tr>
+    <td colspan="4" align="right"><b>Total: </b></td>
+		<?php
+			$arrundrs = array_intersect_key( $arrdebits , array_unique( array_map('serialize' , $arrdebits ) ) );
+			foreach($arrundrs as $rsdr) {
+
+				if(isset($arrallaccts[$rsdr['cacctno']])){
+		?>
+			<td align="right">
+				<b><?=number_format($arrtotaccts[$rsdr['cacctno']],2);?></b>  
+			</td>
+		<?php
+				}
+			}
+		?>
+
+		<?php
+			$arruncrs = array_intersect_key( $arrcredits , array_unique( array_map('serialize' , $arrcredits ) ) );
+			foreach($arruncrs as $rscr) {
+				if(isset($arrallaccts[$rscr['cacctno']])){
+		?>
+			<td align="right">
+			<b><?=number_format($arrtotaccts[$rscr['cacctno']],2);?> </b> 
+			</td>
+		<?php
+				}
+			}
+		?>
+	</tr>
+	<?php
+	}
+	?>
 </table>
 
 </body>
