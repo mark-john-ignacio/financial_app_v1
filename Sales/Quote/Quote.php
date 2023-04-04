@@ -159,10 +159,12 @@ $(document).ready(function() {
 });
 	
 $(document).keydown(function(e) {	
-	e.preventDefault();
+	
 	 
 	  if(e.keyCode == 112) { //F2
+		e.preventDefault();
 		window.location = "Quote_new.php";
+		
 	  }
 	});
 
