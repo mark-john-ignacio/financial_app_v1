@@ -9,6 +9,14 @@ require_once "../Connection/connection_string.php";
 	$typ = $_REQUEST['type'];
 
 
+	$arruomlist = array();
+	$sqluom = mysqli_query($con,"Select * from items_factor where compcode='$company'");
+	if (mysqli_num_rows($sqluom)!=0) {
+		while($row = mysqli_fetch_array($sqluom, MYSQLI_ASSOC)){
+			$arruomlist[]  = array('cpartno' => $row['cpartno'],'cunit' => $row['cunit'],'nfactor' => $row['nfactor'],'crule' => $row['crule']);
+		}
+	}
+
 
 function getcostfromin($getcitmno, $getnqty){
 	global $company;
@@ -19,6 +27,7 @@ function getcostfromin($getcitmno, $getnqty){
 	//echo $sql;
 	
 	$sqlcostinvin = mysqli_query($con,$sql);
+	$array = array();
 	
 	if (mysqli_num_rows($sqlcostinvin)!=0) {
 		$rowcostinvin = mysqli_fetch_assoc($sqlcostinvin);
@@ -44,33 +53,140 @@ function getcostfromin($getcitmno, $getnqty){
 	mysqli_query($con,"DELETE FROM `tblinvout` where `ctranno` = '$tran'");
 	 
 
-	if($typ=="INVCNT"){
-		if (!mysqli_query($con,"INSERT INTO `tblinventory`(`compcode`, `ctranno`, `ddatetime`, `dcutdate`, `ctype`, `citemno`, `cunit`, `nqty`, `cmainunit`, `nfactor`, `nqtyin`, `ncostin`, `nretailin`, `nqtyout`, `ncostout`, `nretailout`) Select '$company', '$tran', NOW(),B.ddatetime,'$typ', A.citemno, A.cunit, A.nqty, A.cunit, 1, A.nqty, A.nunitcost, 0, 0, 0, 0 From invcount_t A left join invcount b on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and A.ctranno='$tran'")){
-			echo "False";
-			echo mysqli_error($con);
+	if($typ=="INVTRANS"){
+
+		$witherr = 0;
+		$dsql = mysqli_query($con,"Select A.*, B.csection1, B.csection2, B.dcutdate, C.cunit as cmainunit, B.ctrantype From invtransfer_t A left join invtransfer b on A.compcode=B.compcode and A.ctranno=B.ctranno left join items C on A.compcode=C.compcode and A.citemno=C.cpartno where A.compcode='$company' and A.ctranno='$tran'");
+		while($rowinv = mysqli_fetch_array($dsql, MYSQLI_ASSOC)){
+
+				$nqtytotal = $rowinv['nqty2'];
+				$nfactor = 1;
+				foreach($arruomlist as $xrowx){
+					if($rowinv['cunit']==$xrowx['cunit'] && $rowinv['citemno']==$xrowx['cpartno']){
+						$nfactor = $xrowx['nfactor'];
+
+						if($xrowx['crule']=="div"){
+							$nqtytotal = floatval($rowinv['nqty2']) / floatval($xrowx['nfactor']);
+							break;
+						}elseif($xrowx['crule']=="mul"){
+							$nqtytotal = floatval($rowinv['nqty2']) * floatval($xrowx['nfactor']);
+							break;
+						}
+					}
+				}
+
+				if($rowinv['ctrantype'] == "request"){
+					$csecin = $rowinv['csection1'];
+					$csecout = $rowinv['csection2'];
+				}elseif($rowinv['ctrantype'] == "transfer"){
+					$csecin = $rowinv['csection2'];
+					$csecout = $rowinv['csection1'];
+				}elseif($rowinv['ctrantype'] == "fg_transfer"){
+					$csecin = $rowinv['csection2'];
+					$csecout = $rowinv['csection1'];
+				}	
+
+
+				$amtcost = 0;
+				$amtretial = 0;
+
+			//section IN
+			if (!mysqli_query($con,"INSERT INTO `tblinventory`(`compcode`, `ctranno`, `ddatetime`, `dcutdate`, `ctype`, `citemno`, `cunit`, `nqty`, `cmainunit`, `nfactor`, `nsection_id`,  `nqtyin`, `ncostin`, `nretailin`, `nqtyout`, `ncostout`, `nretailout`) VALUES ('$company','".$rowinv['ctranno']."', NOW(), '".$rowinv['dcutdate']."', '$typ', '".$rowinv['citemno']."', '".$rowinv['cunit']."', ".$rowinv['nqty2'].", '".$rowinv['cmainunit']."', ".$nfactor.", ".$csecin.", ".$nqtytotal.", ".$amtcost.", ".$amtretial.", 0, 0, 0 )")){
+				$witherr = 1;
+			}
+
+			//section OUT
+			if (!mysqli_query($con,"INSERT INTO `tblinventory`(`compcode`, `ctranno`, `ddatetime`, `dcutdate`, `ctype`, `citemno`, `cunit`, `nqty`, `cmainunit`, `nfactor`, `nsection_id`,  `nqtyin`, `ncostin`, `nretailin`, `nqtyout`, `ncostout`, `nretailout`) VALUES ('$company','".$rowinv['ctranno']."', NOW(), '".$rowinv['dcutdate']."', '$typ', '".$rowinv['citemno']."', '".$rowinv['cunit']."', ".$rowinv['nqty2'].", '".$rowinv['cmainunit']."', ".$nfactor.", ".$csecout.", 0, 0, 0 , ".$nqtytotal.", ".$amtcost.", ".$amtretial.")")){
+				$witherr = 1;
+			}
 		}
-		else{
+
+		if ($witherr==1){
+			echo "False";
+		}else{
 			echo "True";
-			
-			mysqli_query($con,"INSERT INTO `tblinvin`(`compcode`, `ctranno`, `citemno`, `cunit`, `cserial`,`cbarcode`,`nlocation`,`nqty`, `cmainunit`, `nfactor`, `ntotqty`, `ncost`, `ddate`, `dexpired`) Select '$company', '$tran', A.citemno, A.cunit, A.cserial, A.cbarcode, A.nlocation, A.nqty, A.cunit, 1, A.nqty, A.nunitcost, NOW(), A.dexpdte From invcount_t A left join invcount b on A.compcode=B.compcode and A.ctranno=B.ctranno where A.ctranno='$tran'");	
+		}
+		
+	}
+
+	if($typ=="INVCNT"){
+
+		$witherr = 0;
+
+		$amtcost = 0;
+		$amtretial = 0;
+
+		//section IN
+		if (!mysqli_query($con,"INSERT INTO `tblinventory`(`compcode`, `ctranno`, `ddatetime`, `dcutdate`, `ctype`, `citemno`, `cunit`, `nqty`, `cmainunit`, `nfactor`, `nsection_id`,  `nqtyin`, `ncostin`, `nretailin`, `nqtyout`, `ncostout`, `nretailout`) Select '$company', A.ctranno, NOW(), B.dcutdate, '$typ', A.citemno, A.cunit, A.nqty, C.cunit, 1, B.section_nid, A.nqty, ".$amtcost.", ".$amtretial.",0,0,0 From invcount_t A left join invcount B on A.compcode=B.compcode and A.ctranno=B.ctranno left join items C on A.compcode=C.compcode and A.citemno=C.cpartno where A.compcode='$company' and A.ctranno='$tran'")){
+			$witherr = 1;
+		}
+
+		if ($witherr==1){
+			echo "False";
+		}else{
+			echo "True";
 		}
 	}
 
 	if($typ=="RR"){
-		if (!mysqli_query($con,"INSERT INTO `tblinventory`(`compcode`, `ctranno`, `ddatetime`, `dcutdate`, `ctype`, `citemno`, `cunit`, `nqty`, `cmainunit`, `nfactor`, `nqtyin`, `ncostin`, `nretailin`, `nqtyout`, `ncostout`, `nretailout`) Select '$company', '$tran', NOW(),B.dreceived,'$typ', A.citemno, A.cunit, A.nqty, A.cmainunit, A.nfactor, A.nqty*A.nfactor, A.ncost, 0, 0, 0, 0 From receive_t A left join receive b on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and A.ctranno='$tran'")){
+		$witherr = 0;
+
+		$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_WHIN' and compcode='$company'"); 				
+		$csecin = 0;
+		if (mysqli_num_rows($result)!=0) {
+			$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
+			$csecin = $all_course_data['cvalue']; 							
+		}
+
+		$dsql = mysqli_query($con,"Select A.*,B.dreceived From receive_t A left join receive b on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and A.ctranno='$tran'");
+		while($rowinv = mysqli_fetch_array($dsql, MYSQLI_ASSOC)){
+
+			$nqtytotal = $rowinv['nqty'];
+				$nfactor = 1;
+				foreach($arruomlist as $xrowx){
+					if($rowinv['cunit']==$xrowx['cunit'] && $rowinv['citemno']==$xrowx['cpartno']){
+						$nfactor = $rowinv['nfactor'];
+
+						if($xrowx['crule']=="div"){ //mas maliit ung UOM sa main UOM
+							$nqtytotal = floatval($rowinv['nqty']) / floatval($nfactor);
+							break;
+						}elseif($xrowx['crule']=="mul"){ //mas malaki ung UOM sa main UOM
+							$nqtytotal = floatval($rowinv['nqty']) * floatval($nfactor);
+							break;
+						}
+					}
+				}
+
+				$amtcost = 0;
+				$amtretial = 0;
+
+			if (!mysqli_query($con,"INSERT INTO `tblinventory`(`compcode`, `ctranno`, `ddatetime`, `dcutdate`, `ctype`, `citemno`, `cunit`, `nqty`, `cmainunit`, `nfactor`, `nsection_id`,  `nqtyin`, `ncostin`, `nretailin`, `nqtyout`, `ncostout`, `nretailout`) VALUES ('$company','".$rowinv['ctranno']."', NOW(), '".$rowinv['dreceived']."', '$typ', '".$rowinv['citemno']."', '".$rowinv['cunit']."', ".$rowinv['nqty'].", '".$rowinv['cmainunit']."', ".$nfactor.", ".$csecin.", ".$nqtytotal.", ".$amtcost.", ".$amtretial.", 0, 0, 0 )")){
+				$witherr = 1;
+			}
+
+		}
+
+
+		if ($witherr == 1){
 			echo "False";
-			echo mysqli_error($con);
 		}
 		else{
-			echo "True";
-			
+			echo "True";			
 			mysqli_query($con,"INSERT INTO `tblinvin`(`compcode`, `ctranno`, `citemno`, `cunit`, `cserial`,`cbarcode`,`nlocation`, `nqty`, `cmainunit`, `nfactor`, `ntotqty`, `ncost`, `ddate`, `dexpired`) Select '$company', '$tran', A.citemno, A.cunit, A.cserial, A.cbarcode, A.nlocation, A.nqty, A.cmainunit, A.nfactor, A.nqty*A.nfactor, B.ncost, NOW(), A.dexpired From receive_t_serials A left join receive_t B on A.compcode=B.compcode and A.ctranno=B.ctranno and A.citemno=B.citemno and  A.nrefidentity=B.nident where A.ctranno='$tran'");	
 		}
-	}
-
+	} 
 
 	if($typ=="PRet"){
-		if (!mysqli_query($con,"INSERT INTO `tblinventory`(`compcode`, `ctranno`, `ddatetime`, `dcutdate`, `ctype`, `citemno`, `cunit`, `nqty`, `cmainunit`, `nfactor`, `nqtyin`, `ncostin`, `nretailin`, `nqtyout`, `ncostout`, `nretailout`) Select '$company', '$tran', NOW(),B.dreturned,'$typ', A.citemno, A.cunit, A.nqty, A.cmainunit, A.nfactor, 0, 0, 0, A.nqty*A.nfactor, A.ncost, 0 From purchreturn_t A left join purchreturn b on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and A.ctranno='$tran'")){
+
+		$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_PROUT' and compcode='$company'"); 
+				
+		$csecout = 0;
+		if (mysqli_num_rows($result)!=0) {
+			$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
+			$csecout = $all_course_data['cvalue']; 							
+		}
+
+		if (!mysqli_query($con,"INSERT INTO `tblinventory`(`compcode`, `ctranno`, `ddatetime`, `dcutdate`, `ctype`, `citemno`, `cunit`, `nqty`, `cmainunit`, `nfactor`, `nsection_id`, `nqtyin`, `ncostin`, `nretailin`, `nqtyout`, `ncostout`, `nretailout`) Select '$company', '$tran', NOW(),B.dreturned,'$typ', A.citemno, A.cunit, A.nqty, A.cmainunit, A.nfactor, ".$csecout.", 0, 0, 0, A.nqty*A.nfactor, A.ncost, 0 From purchreturn_t A left join purchreturn b on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and A.ctranno='$tran'")){
 			echo "False";
 			echo mysqli_error($con);
 		}
@@ -80,20 +196,67 @@ function getcostfromin($getcitmno, $getnqty){
 			mysqli_query($con,"INSERT INTO `tblinvout`(`compcode`, `ctranno`, `citemno`, `cunit`, `nqty`, `cmainunit`, `nfactor`, `ntotqty`, `ncost`, `cserial`, `cbarcode`, `nlocation`, `ddate`, `dcutdate`,`crefin`) Select '$company', '$tran', A.citemno, A.cunit, A.nqty, A.cmainunit, A.nfactor, A.nqty*A.nfactor, B.ncost, A.cserial, A.cbarcode, A.nlocation, NOW(), A.dexpired, B.creference From purchreturn_t_serials A left join purchreturn_t B on A.compcode=B.compcode and A.ctranno=B.ctranno and A.citemno=B.citemno and  A.nrefidentity=B.nident where A.ctranno='$tran'");	
 		}
 	}
-
 	
-	else if($typ=="DR"){
-		
-		if (!mysqli_query($con,"INSERT INTO `tblinventory`(`compcode`, `ctranno`, `ddatetime`, `dcutdate`, `ctype`, `citemno`, `cunit`, `nqty`, `cmainunit`, `nfactor`, `nqtyin`, `ncostin`, `nretailin`, `nqtyout`, `ncostout`, `nretailout`) Select '$company', '$tran', NOW(),'B.dcutdate','$typ', A.citemno, A.cunit, A.nqty, A.cmainunit,A.nfactor, 0, 0, 0, A.nqty*A.nfactor, 0, A.nprice From dr_t A left join dr b on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and A.ctranno='$tran'")){
+	if($typ=="DR" || $typ=="DRNT"){
+
+		if($typ=="DR"){
+			$tbl = "dr";
+			$tblt = "dr_t";
+		}else{	
+			$tbl = "ntdr";
+			$tblt = "ntdr_t";
+		}
+
+		$witherr = 0;
+		$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_WHOUT' and compcode='$company'"); 
+				
+		$csecout = 0;
+		if (mysqli_num_rows($result)!=0) {
+			$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
+			$csecout = $all_course_data['cvalue']; 							
+		}
+
+
+		$dcutdate = "";
+
+		$dsql = mysqli_query($con,"Select A.*,B.dcutdate From dr_t A left join dr b on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and A.ctranno='$tran'");
+		while($rowinv = mysqli_fetch_array($dsql, MYSQLI_ASSOC)){
+
+			$nqtytotal = $rowinv['nqty'];
+				$nfactor = 1;
+				foreach($arruomlist as $xrowx){
+					if($rowinv['cunit']==$xrowx['cunit'] && $rowinv['citemno']==$xrowx['cpartno']){
+						$nfactor = $rowinv['nfactor'];
+
+						if($xrowx['crule']=="div"){ //mas maliit ung UOM sa main UOM
+							$nqtytotal = floatval($rowinv['nqty']) / floatval($nfactor);
+							break;
+						}elseif($xrowx['crule']=="mul"){ //mas malaki ung UOM sa main UOM
+							$nqtytotal = floatval($rowinv['nqty']) * floatval($nfactor);
+							break;
+						}
+					}
+				}
+
+			$amtcost = 0;
+			$dcutdate = $rowinv['dcutdate'];
+
+			if (!mysqli_query($con,"INSERT INTO `tblinventory`(`compcode`, `ctranno`, `ddatetime`, `dcutdate`, `ctype`, `citemno`, `cunit`, `nqty`, `cmainunit`, `nfactor`, `nsection_id`,  `nqtyin`, `ncostin`, `nretailin`, `nqtyout`, `ncostout`, `nretailout`) VALUES ('$company','".$rowinv['ctranno']."', NOW(), '".$rowinv['dcutdate']."', '$typ', '".$rowinv['citemno']."', '".$rowinv['cunit']."', ".$rowinv['nqty'].", '".$rowinv['cmainunit']."', ".$nfactor.", ".$csecout.", 0, 0, 0, ".$nqtytotal.", ".$amtcost.", ".$rowinv['nprice'].")")){
+				$witherr = 1;
+			}
+
+		}
+
+
+		if ($witherr == 1){
 			echo "False";
 		}
 		else{
-			echo "True";
-			
-			
+			echo "True";			
+
 			//get cost and ref in
 				
-			$sqldrdet = "Select A.citemno, A.cunit, A.nqty, A.cmainunit, A.nfactor, A.nqty*A.nfactor as totqty, A.dexpired, A.cserial, A.cbarcode, A.nlocation From dr_t_serials A where A.compcode='$company' and A.ctranno='$tran'";
+			$sqldrdet = "Select A.citemno, A.cunit, A.nqty, A.cmainunit, A.nfactor, A.nqty*A.nfactor as totqty From ".$tblt." A where A.compcode='$company' and A.ctranno='$tran'";
 			
 			$resdrdet= mysqli_query ($con, $sqldrdet); 
 		
@@ -109,11 +272,6 @@ function getcostfromin($getcitmno, $getnqty){
 				 $drmainuom = $row['cmainunit'];
 				 $drfactor = $row['nfactor'];
 				 
-				 $dcutdate = $row['dexpired'];
-				 $cxserial = $row['cserial'];
-				 $cxbarcode = $row['cbarcode'];
-				 $cnlocationid = $row['nlocation'];
-				 
 				 $citemgetqty = 0;
 				 $totqty = 0;
 				 $totqtyremain = $drtotqty;
@@ -123,9 +281,16 @@ function getcostfromin($getcitmno, $getnqty){
 				 do {
 					 $citemget = getcostfromin($drtitmno, $drtotqty);
 					 
-					 $citemgetid = $citemget["id"];
-					 $citemgetcost = $citemget["cost"];
-					 $citemgetqty = $citemget["qty"];
+					 if(count($citemget) > 0){
+						$citemgetid = $citemget["id"];
+						$citemgetcost = $citemget["cost"];
+						$citemgetqty = $citemget["qty"];
+					 }else{
+						$citemgetid = $drtitmno;
+						$citemgetcost = 0;
+						$citemgetqty = $drtotqty;
+					 }
+					 
 					 
 					 if($citemgetqty > $totqtyremain){
 						//echo "SA A: ".$citemgetqty. " > " . $totqtyremain."<br>";
@@ -148,15 +313,38 @@ function getcostfromin($getcitmno, $getnqty){
 					// echo "TOTQty.: ".$citemgetqty."<br>";
 					// echo "QtyRem.: ".$totqtyremain."<br>";
 					
-					 mysqli_query($con,"INSERT INTO `tblinvout`(`compcode`, `ctranno`, `citemno`, `cunit`, `nqty`, `cmainunit`, `cserial`, `cbarcode`, `nlocation`, `nfactor`, `ntotqty`, `ncost`, `ddate`, `dcutdate`,`crefin`) values ('$company','$tran','$drtitmno','$drunit','$drqty','$drmainuom','$cxserial','$cxbarcode','$cnlocationid','$drfactor','$qtyinsert','$citemgetcost', NOW(),'$dcutdate','$citemgetid') "); 
+					 mysqli_query($con,"INSERT INTO `tblinvout`(`compcode`, `ctranno`, `citemno`, `cunit`, `nqty`, `cmainunit`, `cserial`, `cbarcode`, `nlocation`, `nfactor`, `ntotqty`, `ncost`, `ddate`, `dcutdate`,`crefin`) values ('$company','$tran','$drtitmno','$drunit','$drqty','$drmainuom','','','','$drfactor','$qtyinsert','$citemgetcost', NOW(),'$dcutdate','$citemgetid') "); 
 					 
 				 }while($totqty < $drtotqty);
 				 
 			}
 	
-
 		}
 		
+	}
+
+	if($typ=="SRet"){
+
+		$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_SRIN' and compcode='$company'"); 
+				
+		$csecin = 0;
+		if (mysqli_num_rows($result)!=0) {
+			$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
+			$csecin = $all_course_data['cvalue']; 							
+		}
+
+		$amtcost = 0;
+		$amtretial = 0;
+
+		if (!mysqli_query($con,"INSERT INTO `tblinventory`(`compcode`, `ctranno`, `ddatetime`, `dcutdate`, `ctype`, `citemno`, `cunit`, `nqty`, `cmainunit`, `nfactor`, `nsection_id`, `nqtyin`, `ncostin`, `nretailin`, `nqtyout`, `ncostout`, `nretailout`) Select '$company', '$tran', NOW(),B.dreceived,'$typ', A.citemno, A.cunit, A.nqty, A.cmainunit, A.nfactor, ".$csecin.", A.nqty*A.nfactor,".$amtcost.", 0, 0, 0, 0 From salesreturn_t A left join salesreturn b on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and A.ctranno='$tran'")){
+			echo "False";
+			echo mysqli_error($con);
+		}
+		else{
+			echo "True";
+			
+			mysqli_query($con,"INSERT INTO `tblinvin`(`compcode`, `ctranno`, `citemno`, `cunit`, `nqty`, `cmainunit`, `nfactor`, `ntotqty`, `ncost`, `cserial`, `cbarcode`, `nlocation`, `ddate`, `dcutdate`) Select '$company', '$tran', A.citemno, A.cunit, A.nqty, A.cmainunit, A.nfactor, A.nqty*A.nfactor, ".$amtcost.", null, null, null, NOW(), null From salesreturn_t A where A.ctranno='$tran'");	
+		}
 	}
 
 ?>

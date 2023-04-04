@@ -12,16 +12,22 @@ $company = $_SESSION['companyid'];
 //get users, post cancel and send access
 	//POST
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Purch_post'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Quote_post'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
 	}
 
 	//CANCEL
 	$cancstat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Purch_cancel'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Quote_cancel'");
 	if(mysqli_num_rows($sql) == 0){
 		$cancstat = "False";
+	}
+
+	$unpoststat = "True";	
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Quote_unpost.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$unpoststat = "False";
 	}
 ?>
 
@@ -50,11 +56,19 @@ $company = $_SESSION['companyid'];
 			<br><br>
 
 			<div class="col-xs-12 nopadding">
-				<div class="col-xs-2 nopadding">
+				<div class="col-xs-4 nopadding">
 					<button type="button" class="btn btn-primary btn-md" onClick="location.href='Quote_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
+					<?php
+						if($unpoststat=="True"){
+					?>
+						<button type="button" class="btn btn-warning btn-md" onClick="location.href='Quote_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+					<?php
+						}
+					?>
+
 				</div>
-				<div class="col-xs-7 nopadding">
+				<div class="col-xs-5 nopadding">
 				</div>
 				<div class="col-xs-3 text-right nopadding">
 					<input type="text" name="searchByName" id="searchByName" value="" class="form-control input-sm" placeholder="Enter Code or Desc...">

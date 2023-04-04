@@ -1,83 +1,67 @@
 <?php
-if(!isset($_SESSION)){
-	session_start();
-}
 
-include('../../Connection/connection_string.php');
+/*
+ * DataTables example server-side processing script.
+ *
+ * Please note that this script is intentionally extremely simply to show how
+ * server-side processing can be implemented, and probably shouldn't be used as
+ * the basis for a large complex system. It is suitable for simple use cases as
+ * for learning.
+ *
+ * See http://datatables.net/usage/server-side for full details on the server-
+ * side processing requirements of DataTables.
+ *
+ * @license MIT - http://datatables.net/license_mit
+ */
 
-$column = array('A.ctranno', 'B.cname', 'A.ddate', 'A.dcutdate', 'A.lapproved', 'A.lcancelled', 'A.ccode', 'B.nlimit');
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Easy set variables
+ */
 
-$query = "SELECT * FROM `so` A LEFT JOIN `customers` B ON A.`ccode` = B.`cempid` where A.compcode='".$_SESSION['companyid']."' ";
+// DB table to use
+$table = 'dr';
 
-if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
-{
- $query .= "and B.cname like '%".$_POST['searchByName']."%' OR A.ctranno like '%".$_POST['searchByName']."%'";
-}
+// Table's primary key
+$primaryKey = 'ctranno';
 
-if(isset($_POST['order']))
-{
- $query .= 'ORDER BY '.$column[$_POST['order']['0']['column']].' '.$_POST['order']['0']['dir'].' ';
-}
-else
-{
- $query .= 'ORDER BY A.ddate DESC ';
-}
-
-$query1 = '';
-
-if($_POST["length"] != -1)
-{
- $query1 = 'LIMIT ' . $_POST['start'] . ', ' . $_POST['length'];
-}
-
-$statement = $connect->prepare($query);
-
-$statement->execute();
-
-$number_filter_row = $statement->rowCount();
-
-$statement = $connect->prepare($query . $query1);
-
-$statement->execute();
-
-$result = $statement->fetchAll();
-
-
-
-$data = array();
-
-//'A.ctranno', 'A.cdrprintno', 'B.ctradename', 'A.dcutdate', 'A.lapproved', 'A.lcancelled', 'A.ccode', 'B.nlimit'
-
-foreach($result as $row)
-{
- $sub_array = array();
- $sub_array[] = $row['ctranno'];
- $sub_array[] = $row['cname'];
- $sub_array[] = date_format(date_create($row['ddate']),"M d, Y H:i:s");
- $sub_array[] = date_format(date_create($row['dcutdate']),"M d, Y");
- $sub_array[] = number_format($row['ngross'],2);
- $sub_array[] = $row['lapproved'];
- $sub_array[] = $row['lcancelled'];
- $sub_array[] = $row['ccode'];
- $sub_array[] = $row['nlimit'];
- $data[] = $sub_array;
-}
-
-function count_all_data($connect)
-{
- $query = "SELECT * FROM so where compcode='".$_SESSION['companyid']."'";
- $statement = $connect->prepare($query);
- $statement->execute();
- return $statement->rowCount();
-}
-
-$output = array(
- "draw"       =>  intval($_POST["draw"]),
- "recordsTotal"   =>  count_all_data($connect),
- "recordsFiltered"  =>  $number_filter_row,
- "data"       =>  $data
+// Array of database columns which should be read and sent back to DataTables.
+// The `db` parameter represents the column name in the database, while the `dt`
+// parameter represents the DataTables column identifier. In this case simple
+// indexes
+$columns = array(
+	array( 'db' => '`u`.`ctranno`', 'dt' => 0, 'field' => 'ctranno' ),
+	array( 'db' => '`ud`.`cname`',  'dt' => 1, 'field' => 'cname' ),
+	array( 'db' => '`u`.`ddate`', 'dt' => 2, 'field' => 'ddate'),
+	array( 'db' => '`u`.`dcutdate`', 'dt' => 3, 'field' => 'dcutdate', 'formatter' => function( $d, $row ) {
+																	return date( 'Y-m-d', strtotime($d));
+																}),
+	array('db'  => '`u`.`ngross`', 'dt' => 4, 'field' => 'ngross', 'formatter' => function( $d, $row ) {
+																return number_format($d, 2);
+															}),
+	array('db'  => '`u`.`lapproved`', 'dt' => 5, 'field' => 'lapproved'),
+	array('db'  => '`u`.`lcancelled`', 'dt' => 6, 'field' => 'lcancelled'),
+	array('db'  => '`u`.`ccode`', 'dt' => 7, 'field' => 'ccode'),
+	array('db'  => '`ud`.`nlimit`', 'dt' => 8, 'field' => 'nlimit'),
+	array( 'db' => '`ud`.`ctradename`',  'dt' => 9, 'field' => 'ctradename' ),
+	array( 'db' => '`u`.`cpono`',  'dt' => 10, 'field' => 'cpono' ),
 );
 
-echo json_encode($output);
+// SQL server connection information
+require('../../Connection/config.php');
 
-?>
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * If you just want to use the basic configuration for DataTables with PHP
+ * server-side, there is no need to edit below this line.
+ */
+
+// require( 'ssp.class.php' );
+require('../Sales/ssp.customized.class.php' );
+
+$joinQuery = "FROM `so` AS `u` LEFT JOIN `customers` AS `ud` ON (`u`.`ccode` = `ud`.`cempid`)";
+$extraWhere = "`u`.`compcode` = '001'";
+//$groupBy = "";
+//$having = "";
+
+echo json_encode(
+	SSP::simple( $_POST, $sql_details, $table, $primaryKey, $columns, $joinQuery, $extraWhere)
+);

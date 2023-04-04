@@ -223,7 +223,12 @@ if(mysqli_num_rows($sql) == 0){
 					{ "data": null,
 						"render": function (data, type, full, row) {
 								
-									return "<a href=\"javascript:;\" onClick=\"editfrm('"+full[0]+"');\">"+full[0]+"</a>";
+							var sts = "";
+							if (full[6] == 1) {
+								sts="class='text-danger'";
+							}
+
+									return "<a "+sts+" href=\"javascript:;\" onClick=\"editfrm('"+full[0]+"');\">"+full[0]+"</a>";
 								
 						}
 							
@@ -237,15 +242,15 @@ if(mysqli_num_rows($sql) == 0){
 	
 								if (full[5] == 1) {
 									
-									return 'POSTED';
+									return 'Posted';
 								
 								}
 								
 								else if (full[6] == 1) {
-								
-									return 'CANCELLED';
-								
-								}
+						 
+						 return '<b>Cancelled</b>';
+						
+					 }
 								
 								else{
 									return " <div id=\"msg"+full[0]+"\"><a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"')\">POST</a> | <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"')\">CANCEL</a></div>";
@@ -263,6 +268,13 @@ if(mysqli_num_rows($sql) == 0){
 							"className": "text-center dt-body-nowrap"
 						}
 					],
+					"createdRow": function( row, data, dataIndex ) {
+						// Set the data-status attribute, and add a class
+						if(data[6]==1){
+							$(row).addClass('text-danger');
+						}
+							
+					}
 		  });
 	}
 	function editfrm(x){

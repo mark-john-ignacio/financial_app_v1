@@ -1,13 +1,19 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "POS.php";
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "POS.php";
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
-$company = $_SESSION['companyid'];
+	$company = $_SESSION['companyid'];
+
+	$poststat = "True";	
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SI_unpost.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
 ?>
 
 <!DOCTYPE html>
@@ -18,10 +24,11 @@ $company = $_SESSION['companyid'];
 
 	<title>Myx Financials</title>
 
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">    
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">    
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
 
 
 </head>
@@ -36,6 +43,14 @@ $company = $_SESSION['companyid'];
         </div>
 			<br><br>
 			<button type="button" class="btn btn-primary btn-md" onClick="location.href='SI_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+
+			<?php
+				if($poststat=="True"){
+			?>
+				<button type="button" class="btn btn-warning btn-md" onClick="location.href='SI_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+			<?php
+				}
+			?>
 
             <br><br>
 			<table id="example" class="display" cellspacing="0" width="100%">
@@ -88,8 +103,13 @@ $company = $_SESSION['companyid'];
 			"columns": [
 				{ "data": null,
 					"render": function (data, type, full, row) {
+
+						var sts = "";
+							if (full[6] == 1) {
+								sts="class='text-danger'";
+							}
  							
-							return "<a href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
+							return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
 					}
 						
 				},
@@ -102,13 +122,13 @@ $company = $_SESSION['companyid'];
  
 						if (full[5] == 1) {
 							
-							return 'POSTED';
+							return 'Posted';
 						
 						}
 						 
 						else if (full[6] == 1) {
 						 
-							return 'CANCELLED';
+							return '<b>Cancelled</b>';
 						 
 						}
 						
@@ -124,10 +144,23 @@ $company = $_SESSION['companyid'];
 				type: "POST",
 			},
 			"order": [[ 2, "desc" ]],
-			"columnDefs": [ {
-			  "targets": 4,
+			"columnDefs": [ 
+				{
+			  "targets": [3,4],
 			  "className": "text-right"
-			} ],
+				},
+				{
+			  "targets": 5,
+			  "className": "text-center"
+				}
+			],
+				"createdRow": function( row, data, dataIndex ) {
+					// Set the data-status attribute, and add a class
+					if(data[6]==1){
+						$(row).addClass('text-danger');
+					}
+						
+				}
 		} );
 			
 	

@@ -25,10 +25,10 @@ if(mysqli_num_rows($sql) == 0){
 	<title>Myx Financials</title>
 
 	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">  
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>">  
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
 </head>
 
 <body style="padding:5px">
@@ -50,11 +50,12 @@ if(mysqli_num_rows($sql) == 0){
 				}
 			?>
 
-      <br><br>
-			<table id="MyTable" class="display" cellspacing="0" width="100%">
+            <br><br>
+			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
 						<th>SO No</th>
+						<th>PO No</th>
 						<th>Customer</th>
             <th>Order Date</th>
 						<th>Delivery Date</th>
@@ -115,16 +116,7 @@ if(mysqli_num_rows($sql) == 0){
 
 	$(document).ready(function(e) {
 
-		fill_datatable();	
-			$("#searchByName").keyup(function(){
-				var searchByName = $('#searchByName').val();
-			//	if(searchByName != '')
-			//	{
-					$('#MyTable').DataTable().destroy();
-					fill_datatable(searchByName);
-			//	}
-			});
-
+		filltable();
 
 		var itmstat = "";
 		var x = "";
@@ -205,66 +197,90 @@ if(mysqli_num_rows($sql) == 0){
 
 	});
 
-	function fill_datatable(searchByName = '')
-	{
-		  var dataTable = $('#MyTable').DataTable({
-		    "processing" : true,
-		    "serverSide" : true,
-		    "lengthChange": true,
-		    "order" : [],
-		    "searching" : false,
-		    "ajax" : {
-					url:"SI_serverside.php",
-					type:"POST",
-					data:{
-						searchByName:searchByName
-					}
-		    },
-		    "columns": [
-					{ "data": null,
-						"render": function (data, type, full, row) {
-								
-									return "<a href=\"javascript:;\" onClick=\"editfrm('"+full[0]+"');\">"+full[0]+"</a>";
-								
-						}
+	function filltable(){
+
+		var table = $('#example').DataTable({
+			"searching": true,
+			"paging": true,
+			"columns": [
+				{ "data": null,
+						"render": function (data, type, full, row) {	
 							
-					},
-					{ "data": 1 },
-					{ "data": 2 },
-					{ "data": 3 },
-					{ "data": 4 },
-					{ "data": null,
-							"render": function (data, type, full, row) {
-	
-								if (full[5] == 1) {
-									
-									return 'POSTED';
-								
-								}
-								
-								else if (full[6] == 1) {
-								
-									return 'CANCELLED';
-								
-								}
-								
-								else{
-									return " <div id=\"msg"+full[0]+"\"><a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"')\">POST</a> | <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"')\">CANCEL</a></div>";
-								}
+							var sts = "";
+							if (full[6] == 1) {
+								sts="class='text-danger'";
 							}
-						}				
-        	],
-					"columnDefs": [
-						{
-							"targets": [3,4],
-							"className": "text-right"
-						},
-						{
-							"targets": 5,
-							"className": "text-center dt-body-nowrap"
+							return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
+						}						
+				},
+				{ "data": 9 },
+				{ "data": null,
+			
+					"render": function (data, type, full, row) {
+
+					//	if (full[1] !== full[9]) {
+							
+							return full[1];
+
+						//}
+						//else{
+						//	return full[1];
+						//}
+					}
+				},
+				{ "data": 2 },
+				{ "data": 3 },
+				{ "data": 4 },
+				{ "data": null,
+					"render": function (data, type, full, row) {
+
+						if (full[5] == 1) {
+							
+							return 'Posted';
+						
 						}
-					],
-		  });
+						
+						else if (full[6] == 1) {
+						
+							return '<b>Cancelled</b>';
+						
+						}
+						
+						else{
+							return " <div id=\"msg"+full[0]+"\"><a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"','Posted','"+full[7]+"',"+full[8]+")\">POST</a> | <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"','Cancelled')\">CANCEL</a></div>";
+						}
+					}
+				}
+			],
+			"serverSide": true,
+			"ajax": {
+				url: "th_datatable.php",
+				type: "POST",
+			},
+			"order": [[ 3, "desc" ]],
+			"columnDefs": [
+				{
+					"targets": 6,
+					"className": "text-center"
+				},
+				{
+					"targets": 5,
+					"className": "text-right"
+				},
+				{
+					"targets": 4,
+					"className": "text-right"
+				}
+			],
+			"createdRow": function( row, data, dataIndex ) {
+        // Set the data-status attribute, and add a class
+				if(data[6]==1){
+					$(row).addClass('text-danger');
+				}
+        
+    	}
+		});
+
 	}
 
 	function editfrm(x){
