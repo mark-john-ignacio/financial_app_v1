@@ -6,6 +6,8 @@ require_once "../../Connection/connection_string.php";
 
 		$company = $_SESSION['companyid'];
 
+		$json2 = array();
+
 		//$avail = $_REQUEST['itmbal'];
 		$date1 = date("Y-m-d");
 		
