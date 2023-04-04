@@ -2069,6 +2069,8 @@ function openinv(typ){
 					var tranno = $(this).data("id");
 						var id = $(this).val();
 		
+						alert("th_qolistput.php?id=" + tranno + "&itm=" + id + "&typ=" + typ);
+						
 						$.ajax({
 							url : "th_qolistput.php?id=" + tranno + "&itm=" + id + "&typ=" + typ,
 							type: "GET",
