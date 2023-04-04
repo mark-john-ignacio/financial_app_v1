@@ -1994,7 +1994,7 @@ function openinv(typ){
 
 											if(typ=="DR"){
 												$("<tr>").append(
-												$("<td>").html("<input type='checkbox' value='"+item.citemno+"' name='chkSales[]' data-id=\""+drno+"\" data-curr=\""+item.ccurrencycode+"\">"),
+												$("<td>").html("<input type='checkbox' value='"+item.id+"' name='chkSales[]' data-id=\""+drno+"\" data-curr=\""+item.ccurrencycode+"\">"),
 												$("<td>").text(item.creference),
 												$("<td>").text(item.citemno),
 												$("<td>").text(item.cdesc),
@@ -2006,7 +2006,7 @@ function openinv(typ){
 												).appendTo("#MyInvDetList tbody");
 											}else if(typ=="QO" || typ=="SO"){
 												$("<tr>").append(
-												$("<td>").html("<input type='checkbox' value='"+item.citemno+"' name='chkSales[]' data-id=\""+drno+"\" data-curr=\""+item.ccurrencycode+"\">"),
+												$("<td>").html("<input type='checkbox' value='"+item.id+"' name='chkSales[]' data-id=\""+drno+"\" data-curr=\""+item.ccurrencycode+"\">"),
 												$("<td>").text(item.citemno),
 												$("<td>").text(item.cdesc),
 												$("<td>").text(item.cunit),
@@ -2069,8 +2069,8 @@ function openinv(typ){
 					var tranno = $(this).data("id");
 						var id = $(this).val();
 		
-						alert("th_qolistput.php?id=" + tranno + "&itm=" + id + "&typ=" + typ);
-						
+						//alert("th_qolistput.php?id=" + tranno + "&itm=" + id + "&typ=" + typ);
+
 						$.ajax({
 							url : "th_qolistput.php?id=" + tranno + "&itm=" + id + "&typ=" + typ,
 							type: "GET",
