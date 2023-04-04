@@ -58,7 +58,7 @@ require_once "../../Connection/connection_string.php";
 						THEN 
 							ROUND(((A.nqty-A.nqtyreturned)*A.nprice)/(1 + (A.nrate/100)),2)
 						ELSE 
-							0 
+							A.namount 
 						END as nvatgross
 	From sales_t A 
 	left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno 

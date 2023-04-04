@@ -1281,7 +1281,7 @@ function save(){
 											$("#txtnEWTRate"+lastRow).val(item.nrate);
 											
 											
-											computeDue();
+											computeDue(item.cbase,item.nrate);
 											computeGross();
 											
 											//setPosi("txtcSalesAcctTitle"+lastRow,13,'MyTable');
@@ -1343,7 +1343,7 @@ function save(){
    
 }
 
-function computeDue(){
+function computeDue(cbase,nrate){
 
 	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 	var lastRow = tbl.length-1;
@@ -1361,10 +1361,10 @@ function computeDue(){
 	varnnet =  $("#txtnetvat"+lastRow).val().replace(/,/g,'');
 	ndue = $("#txtDue"+lastRow).val().replace(/,/g,'');
 											
-	if(item.cbase=="NET"){
-		xcb = parseFloat(varnnet)*(item.nrate/100);
+	if(cbase=="NET"){
+		xcb = parseFloat(varnnet)*(nrate/100);
 	}else{
-		xcb = parseFloat(varngrs)*(item.nrate/100);
+		xcb = parseFloat(varngrs)*(nrate/100);
 	}
 											
 	$("#txtnEWTAmt"+lastRow).val(xcb);
