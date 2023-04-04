@@ -151,10 +151,16 @@ $company = $_SESSION['companyid'];
 
 <script type="text/javascript">
 $(document).ready(function() {
-		
-	$('#example').DataTable({bSort:false});
 
 	fill_datatable();	
+	$("#searchByName").keyup(function(){
+		var searchByName = $('#searchByName').val();
+			//	if(searchByName != '')
+			//	{
+			$('#MyTable').DataTable().destroy();
+			fill_datatable(searchByName);
+			//	}
+	});
 		
 });
 	
