@@ -111,9 +111,9 @@ require_once "../../Connection/connection_string.php";
 				$json['cpono'] = $row['cpono'];
 			}
 
-				$json['ccurrencycode'] = $row['ccurrencycode'];
-			 $json['creference'] = $row['creference'];
-			 $json2[] = $json;
+			$json['ccurrencycode'] = $row['ccurrencycode'];
+			$json['creference'] = $row['creference'];
+			$json2[] = $json;
 	
 		}
 

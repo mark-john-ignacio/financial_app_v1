@@ -60,8 +60,8 @@ require_once "../../Connection/connection_string.php";
 						ELSE 
 							A.namount 
 						END as nvatgross
-	From sales_t A 
-	left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno 
+	From ".$tbl2." A 
+	left join ".$tbl." B on A.compcode=B.compcode and A.ctranno=B.ctranno 
 	left join customers C on B.compcode=C.compcode and B.ccode=C.cempid 
 	left join accounts D on C.compcode=D.compcode and C.cacctcodesales=D.cacctno 
 	left join wtaxcodes E on A.compcode=E.compcode and A.cewtcode=E.ctaxcode 
