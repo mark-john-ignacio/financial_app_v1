@@ -264,7 +264,7 @@ if($_REQUEST['typ']=="CANCEL"){
 				$status = "False";	
 			}else{
 
-				mysqli_query($con,"Update quote set lcancelled=1 where compcode='$company' and cpono='$tranno'");
+				mysqli_query($con,"Update quote set lcancelled=1 where compcode='$company' and ctranno='$tranno'");
 
 				$msgz = "<b>SUCCESS: </b>Your transaction is successfully cancelled!";
 				$status = "Cancelled";
