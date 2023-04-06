@@ -33,15 +33,15 @@ require_once "../../Connection/connection_string.php";
 
 	//allpayemnts
 	@$arrpaymnts = array();
-	$sqlpay = "select X.csalesno, X.ctaxcodeorig, X.cewtcodeorig, sum(X.napplied) as ngross, sum(X.newtamt) as newtamt from receipt_sales_t X left join receipt B on X.compcode=B.compcode and X.ctranno=B.ctranno where X.compcode='$company' and B.lapproved = 1 GROUP BY X.csalesno, X.ctaxcode, X.cewtcode";
+	$sqlpay = "select X.* from receipt_sales_t X left join receipt B on X.compcode=B.compcode and X.ctranno=B.ctranno where X.compcode='$company' and B.lcancelled = 0 order By X.csalesno, B.ddate";
 	$respay = mysqli_query ($con, $sqlpay);
 	while($rowardj = mysqli_fetch_array($respay, MYSQLI_ASSOC)){
 		@$arrpaymnts[] = $rowardj;
 	}
 
-	$sql = "Select A.ctranno, A.cacctid, A.cacctdesc, A.ctaxcode, A.cewtcode, A.newtrate, A.dcutdate, SUM(ROUND(A.namountfull,2)) as ngross, SUM(ROUND(A.namount,2)) as cm, SUM(nvatgross) as nvatgross, (SUM(ROUND(A.namountfull,2)) - SUM(ROUND(A.namount,2)) - SUM(nvatgross)) as vatamt, SUM(A.newtgross) as newtgross
+	$sql = "Select A.ctranno, A.cacctid, A.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, A.dcutdate, SUM(ROUND(A.namountfull,2)) as ngross, SUM(ROUND(A.namount,2)) as cm, SUM(nvatgross) as nvatgross, (SUM(ROUND(A.namountfull,2)) - SUM(ROUND(A.namount,2)) - SUM(nvatgross)) as vatamt, SUM(A.newtgross) as newtgross
 	From (
-		Select A.ctranno, A.citemno, ((A.nqtyreturned) * A.nprice) as namount, (A.nqty * A.nprice) as namountfull, B.dcutdate, D.cacctid, D.cacctdesc, A.ctaxcode, A.cewtcode, A.newtrate, 
+		Select A.ctranno, A.citemno, ((A.nqtyreturned) * A.nprice) as namount, (A.nqty * A.nprice) as namountfull, B.dcutdate, D.cacctid, D.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, 
 				CASE 
 					WHEN IFNULL(A.newtrate,0) <> 0 
 					THEN 
@@ -66,14 +66,16 @@ require_once "../../Connection/connection_string.php";
 	left join accounts D on C.compcode=D.compcode and C.cacctcodesales=D.cacctno 
 	left join wtaxcodes E on A.compcode=E.compcode and A.cewtcode=E.ctaxcode 
 	where A.compcode='$company' and B.lapproved=1 and B.ccode='".$_REQUEST['x']."') A
-	Group By A.ctranno, A.cacctid, A.cacctdesc, A.ctaxcode, A.cewtcode, A.newtrate, A.dcutdate
+	Group By A.ctranno, A.cacctid, A.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, A.dcutdate
 	order by A.dcutdate, A.ctranno";
+
+	//echo $sql;
 
 	$result = mysqli_query ($con, $sql);
 	
 	$json2 = array();
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-
+		$ntotal = $row['ngross'];
 		$ngross = $row['ngross'];
 
 			  $nwithadj = 0;
@@ -84,34 +86,58 @@ require_once "../../Connection/connection_string.php";
 			 }
 
 			 $npay = 0;
-			 $npayewt= 0;
+			 $cntofist = 0;
 			 foreach(@$arrpaymnts as $rxpymnts){
 				if($row['ctranno']==$rxpymnts['csalesno'] && $row['ctaxcode']==$rxpymnts['ctaxcodeorig'] && $row['cewtcode']==$rxpymnts['cewtcodeorig']){
-					$npay = $rxpymnts['ngross'];
-					$npayewt = $rxpymnts['newtamt'];
+					$cntofist++;
+					
+					if($cntofist==1){
+						$ntotal = floatval($rxpymnts['ndue']) - floatval($rxpymnts['napplied']);
+					}
+
+					$npay = $npay + floatval($rxpymnts['napplied']);
 				}
 			 }
 		
-		$ntotal = floatval($ngross) - (floatval($npay) + floatval($npayewt));
-
+		
+		//echo $ntotal." - ".$npay."<br><br>";
 		if(floatval($ntotal) > 0)
 		{
 			
-			 $json['csalesno'] = $row['ctranno'];
-			 $json['cewtcode'] = $row['cewtcode'];
-			 $json['newtrate'] = $row['newtrate'];
-			 $json['ctaxcode'] = $row['ctaxcode'];
-			 $json['cvatamt'] = $row['vatamt'];
-			 $json['cnetamt'] = $row['nvatgross'];
-			 $json['cewtamt'] = $row['newtgross'];
-			 $json['ccm'] = $row['cm'];
-			 $json['dcutdate'] = $row['dcutdate'];
-			 $json['ngross'] = $row['ngross'];			 
-			 $json['withadj'] = $nwithadj;
-			 $json['npayment'] = $npay;
-			 $json['cacctno'] = $row['cacctid'];
-			 $json['ctitle'] = $row['cacctdesc'];
-			 $json2[] = $json;
+			$json['csalesno'] = $row['ctranno'];
+			$json['cewtcode'] = $row['cewtcode'];
+			$json['newtrate'] = $row['newtrate'];
+
+			$json['vatrate'] = $row['nrate'];
+			$json['ctaxcode'] = $row['ctaxcode'];
+
+			if($npay==0){
+				
+				$json['cewtamt'] = $row['newtgross'];				
+				$json['cvatamt'] = $row['vatamt'];
+				$json['cnetamt'] = $row['nvatgross'];
+				
+			}else{
+					//get VATABLE AMOUNT OF PAID - ibawas ang ewtrate
+
+					$grossamt = floatval($npay) / ((100-floatval($row['newtrate']))/100);
+					$dewt = round($grossamt,2) * (floatval($row['newtrate'])/100);
+					$vatableamt = round($grossamt,2) / (1+(floatval($row['nrate'])/100));
+					$dvatamt = round($vatableamt,2) * (floatval($row['nrate'])/100);
+
+					$json['cewtamt'] = floatval($row['newtgross']) - round($dewt,2);				
+					$json['cvatamt'] = floatval($row['vatamt']) - round($dvatamt,2);
+					$json['cnetamt'] = floatval($row['nvatgross']) - round($vatableamt,2);
+			}	
+					 			 
+			$json['ccm'] = $row['cm'];
+			$json['dcutdate'] = $row['dcutdate'];
+			$json['ngross'] = $row['ngross'];			 
+			$json['withadj'] = $nwithadj;
+			$json['npayment'] = $npay;
+			$json['cacctno'] = $row['cacctid'];
+			$json['ctitle'] = $row['cacctdesc'];
+			$json2[] = $json;
 		 
 		}
 

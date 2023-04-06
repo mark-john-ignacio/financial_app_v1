@@ -262,7 +262,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
 
 														<td align='right'><input type='text' class='numeric form-control input-xs text-right' name='txtnpayments<?=$cntr;?>' id='txtnpayments<?=$cntr;?>' value='<?=$rowbody['npayment'];?>' readonly="true" /></td>
 
-														<td align='right'><input type='text' class='form-control input-xs text-right' name="txtnvatcode<?=$cntr;?>" id="txtnvatcode<?=$cntr;?>" readonly value='<?=$rowbody['ctaxcode'];?>' readonly /> <input type='hidden' name="txtnvatcodeorig<?=$cntr;?>" id="txtnvatcodeorig<?=$cntr;?>" value='<?=$rowbody['ctaxcodeorig'];?>' /></td>
+														<td align='right'><input type='text' class='form-control input-xs text-right' name="txtnvatcode<?=$cntr;?>" id="txtnvatcode<?=$cntr;?>" readonly value='<?=$rowbody['ctaxcode'];?>' readonly /> <input type='hidden' name="txtnvatrate<?=$cntr;?>" id="txtnvatrate<?=$cntr;?>" value='<?=$rowbody['ntaxrate'];?>' /> <input type='hidden' name="txtnvatcodeorig<?=$cntr;?>" id="txtnvatcodeorig<?=$cntr;?>" value='<?=$rowbody['ctaxcodeorig'];?>' /></td>
 
                             <td align='right'><input type='text' class='numeric form-control input-xs text-right' name='txtvatamt<?=$cntr;?>' id='txtvatamt<?=$cntr;?>' value='<?=$rowbody['nvat'];?>' readonly="true" /></td>
 
@@ -1269,6 +1269,7 @@ function deleteRow(r) {
 			var temppaymnts = document.getElementById('txtnpayments' + z);
 
 			var tempvcode = document.getElementById('txtnvatcode' + z);
+			var tempvrate = document.getElementById('txtnvatrate' + z);
 			var tempvamt = document.getElementById('txtvatamt' + z);
 			var tempvnetamt = document.getElementById('txtnetvat' + z);
 			var tempvcodeorig = document.getElementById('txtnvatcodeorig' + z);
@@ -1298,6 +1299,8 @@ function deleteRow(r) {
 
 			tempvcode.id = "txtnvatcode" + x;
 			tempvcode.name = "txtnvatcode" + x;
+			tempvrate.id = "txtnvatrate" + x;
+			tempvrate.name = "txtnvatrate" + x;
 			tempvamt.id = "txtvatamt" + x;
 			tempvamt.name = "txtvatamt" + x;
 			tempvnetamt.id = "txtnetvat" + x;
@@ -1439,7 +1442,7 @@ function getInvs(typ){
 				console.log(data);
 				$.each(data,function(index,item){
 					$("<tr>").append(
-						$("<td>").html("<input type='checkbox' value='"+item.csalesno+"' name='chkSales[]' data-cm='"+item.ccm+"' data-payment='"+item.npayment+"' data-vatcode='"+item.ctaxcode+"' data-vat='"+item.cvatamt+"' data-netvat='"+item.cnetamt+"' data-ewtcode='"+item.cewtcode+"' data-ewtrate='"+item.newtrate+"' data-ewtamt='"+item.cewtamt+"' data-amt='"+item.ngross+"' data-acctid='"+item.cacctno+"' data-acctdesc='"+item.ctitle+"' data-cutdate='"+item.dcutdate+"'>"),
+						$("<td>").html("<input type='checkbox' value='"+item.csalesno+"' name='chkSales[]' data-cm='"+item.ccm+"' data-payment='"+item.npayment+"' data-vatcode='"+item.ctaxcode+"' data-vat='"+item.cvatamt+"' data-vatrate='"+item.vatrate+"' data-netvat='"+item.cnetamt+"' data-ewtcode='"+item.cewtcode+"' data-ewtrate='"+item.newtrate+"' data-ewtamt='"+item.cewtamt+"' data-amt='"+item.ngross+"' data-acctid='"+item.cacctno+"' data-acctdesc='"+item.ctitle+"' data-cutdate='"+item.dcutdate+"'>"),
 						$("<td>").text(item.csalesno),
 						$("<td>").text(item.dcutdate),
 						$("<td>").text(item.ngross),
@@ -1480,6 +1483,7 @@ function save(){
 		var npayments = $(this).data("payment");
 		var nvat = $(this).data("vat");
 		var vatcode = $(this).data("vatcode"); 
+		var vatrate = $(this).data("vatrate");
 		var nnetvat = $(this).data("netvat");
 		var newtcode = $(this).data("ewtcode");
 		var newtrate = $(this).data("ewtrate");
@@ -1537,7 +1541,7 @@ function save(){
 
 		var c1=z.insertCell(-1);
 		c1.align = "right";
-		c1.innerHTML = "<input type='text' class='form-control input-xs text-right' name=\"txtnvatcode"+lastRow+"\" id=\"txtnvatcode"+lastRow+"\" readonly value='"+vatcode+"' readonly /> <input type='hidden' name=\"txtnvatcodeorig"+lastRow+"\" id=\"txtnvatcodeorig"+lastRow+"\" value='"+vatcode+"' />";
+		c1.innerHTML = "<input type='text' class='form-control input-xs text-right' name=\"txtnvatcode"+lastRow+"\" id=\"txtnvatcode"+lastRow+"\" readonly value='"+vatcode+"' readonly /> <input type='hidden' name=\"txtnvatrate"+lastRow+"\" id=\"txtnvatrate"+lastRow+"\" value='"+vatrate+"' /> <input type='hidden' name=\"txtnvatcodeorig"+lastRow+"\" id=\"txtnvatcodeorig"+lastRow+"\" value='"+vatcode+"' />";
 
 		var c2=z.insertCell(-1);
 		c2.align = "right";
