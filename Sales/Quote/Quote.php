@@ -161,6 +161,7 @@ $(document).ready(function() {
 			fill_datatable(searchByName);
 			//	}
 	});
+
 		
 });
 	
@@ -170,7 +171,7 @@ $(document).keydown(function(e) {
 	  if(e.keyCode == 112) { //F2
 		e.preventDefault();
 		window.location = "Quote_new.php";
-		
+			
 	  }
 	});
 
@@ -246,7 +247,7 @@ function trans_send(idz){
 function setmsg(data,num){
 	$.each(data,function(key,value){
 																		
-		if(value.stat!="False"){
+		if(value.stat!=="False"){
 			$("#msg"+num).html(value.stat);																							
 			$("#AlertMsg").html("");
 												
@@ -268,6 +269,7 @@ function setmsg(data,num){
 																
 		}
 	});
+
 }
 
 function track(xno){
@@ -304,8 +306,13 @@ function fill_datatable(searchByName = ''){
 				{ "data": null,
 
 					"render": function (data, type, full, row) {
+
+							var sts = "";
+							if (full[6] == 1) {
+								sts="class='text-danger'";
+							}
  							
-							return "<a href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
+							return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
 					}
 				},
 				{ "data": 8 },
@@ -329,7 +336,7 @@ function fill_datatable(searchByName = ''){
 								if(full[5]==1){
 									return "Posted";
 								}else if(full[6]==1){
-									return "Cancelled";
+									return '<b>Cancelled</b>';
 								}else{
 									return "Pending";
 								}
@@ -367,6 +374,13 @@ function fill_datatable(searchByName = ''){
 						orderable: false
 					}
 			  ],
+				"createdRow": function( row, data, dataIndex ) {
+					// Set the data-status attribute, and add a class
+					if(data[6]==1){
+						$(row).addClass('text-danger');
+					}
+						
+				}
 	});
 }
 </script>

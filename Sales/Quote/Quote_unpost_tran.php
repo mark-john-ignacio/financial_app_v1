@@ -21,6 +21,8 @@
 				$status = "False";	
 			}else{
 
+				mysqli_query($con,"Update quote_trans_approvals set lapproved=0, lreject=0, ddatetimeapp=null, ddatetimereject=null where compcode='$company' and ctranno in ('".implode("','",$_POST["allbox"])."')");
+
 				$status = "True";
 
 				foreach($_POST["allbox"] as $rz){
