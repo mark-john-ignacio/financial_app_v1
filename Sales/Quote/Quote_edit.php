@@ -1633,6 +1633,7 @@ function chkform(){
 					nprice = nprice.replace(/,/g,'');
 					namt = namt.replace(/,/g,'');
 					nbaseamt = nbaseamt.replace(/,/g,'');
+					nfactor = nfactor.replace(/,/g,'');
 				}
 
 

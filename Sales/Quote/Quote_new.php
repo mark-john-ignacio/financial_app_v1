@@ -1352,6 +1352,7 @@ function chkform(){
 					nprice = nprice.replace(/,/g,'');
 					namt = namt.replace(/,/g,'');
 					nbaseamt = nbaseamt.replace(/,/g,'');
+					nfactor = nfactor.replace(/,/g,'');
 				}
 
 				//alert("Quote_newsavedet.php?trancode="+trancode+"&indx="+this.id+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+nprice+"&nbaseamt="+nbaseamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor);

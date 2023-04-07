@@ -461,8 +461,8 @@ if (mysqli_num_rows($sqlchk)!=0) {
                       <th>Invoice No</th>
                       <th>Sales Date</th>
                       <th>Gross</th>
-                      <th>DM</th>
-                      <th>CM</th>
+                      <th>EWT</th>
+                      <th>VAT</th>
                       <th>&nbsp;</th>
                     </tr>
                     </thead>
