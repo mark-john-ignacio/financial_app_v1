@@ -41,14 +41,14 @@ require_once "../../Connection/connection_string.php";
 
 	$sql = "Select A.ctranno, A.cacctid, A.cacctdesc, IFNULL(A.ctaxcode,'') as ctaxcode, A.nrate, IFNULL(A.cewtcode,'') as cewtcode, A.newtrate, A.dcutdate, SUM(ROUND(A.namountfull,2)) as ngross, SUM(ROUND(A.namount,2)) as cm, SUM(nvatgross) as nvatgross, (SUM(ROUND(A.namountfull,2)) - SUM(ROUND(A.namount,2)) - SUM(nvatgross)) as vatamt, SUM(A.newtgross) as newtgross
 	From (
-		Select A.ctranno, A.citemno, ((A.nqtyreturned) * A.nprice) as namount, (A.nqty * A.nprice) as namountfull, B.dcutdate, D.cacctid, D.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, 
+		Select A.ctranno, A.citemno, ((A.nqtyreturned) * (A.nprice-A.ndiscount)) as namount, (A.nqty * (A.nprice-A.ndiscount)) as namountfull, B.dcutdate, D.cacctid, D.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, 
 				CASE 
 					WHEN IFNULL(A.newtrate,0) <> 0 
 					THEN 
 						CASE 
 							WHEN E.cbase='NET' 
-							THEN ROUND((ROUND(((A.nqty-A.nqtyreturned)*A.nprice)/(1 + (A.nrate/100)),2) * (A.newtrate/100)),2)
-							ELSE ROUND((((A.nqty-A.nqtyreturned)*A.nprice) * (A.newtrate/100)),2)
+							THEN ROUND((ROUND(((A.nqty-A.nqtyreturned)*(A.nprice-A.ndiscount))/(1 + (A.nrate/100)),2) * (A.newtrate/100)),2)
+							ELSE ROUND((((A.nqty-A.nqtyreturned)*(A.nprice-A.ndiscount)) * (A.newtrate/100)),2)
 							END 
 					ELSE 
 						0 
@@ -56,7 +56,7 @@ require_once "../../Connection/connection_string.php";
 					CASE 
 						WHEN IFNULL(A.nrate,0) <> 0 
 						THEN 
-							ROUND(((A.nqty-A.nqtyreturned)*A.nprice)/(1 + (A.nrate/100)),2)
+							ROUND(((A.nqty-A.nqtyreturned)*(A.nprice-A.ndiscount))/(1 + (A.nrate/100)),2)
 						ELSE 
 							A.namount 
 						END as nvatgross
