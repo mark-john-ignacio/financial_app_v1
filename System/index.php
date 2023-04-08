@@ -3496,18 +3496,20 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				vardscdesc = $(this).find('input[name="txtcdscdesc[]"]').val();
 				vardscacctcode = $(this).find('input[name="txtdscacct[]"]').val();
 
-				//	alert("th_savewtcodes.php?code="+varewtcode+"&desc="+varewtdesc+"&rate="+varewtrate+"&divs="+varewtratedivs+"&vbase="+varewtselbase);
-				$.ajax ({
-					url: "th_savdsccodes.php",
-					data: { code: vardsccode,  desc: vardscdesc, acctid: vardscacctcode },
-					async: false,
-					success: function( data ) {
-						if(data.trim()!="True"){
-							isOk = data;
+				if(vardsccode!=="" && vardsccode!==undefined){
+					alert("th_savdsccodes.php?code="+vardsccode+"&desc="+vardscdesc+"&acctid="+vardscacctcode);
+					$.ajax ({
+						url: "th_savdsccodes.php",
+						data: { code: vardsccode,  desc: vardscdesc, acctid: vardscacctcode },
+						async: false,
+						success: function( data ) {
+							if(data.trim()!="True"){
+								isOk = data;
+							}
 						}
-					}
-				
-				});
+					
+					});
+				}
 									
 			});	
 
