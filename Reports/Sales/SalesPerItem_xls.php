@@ -62,7 +62,7 @@ if($trantype=="Trade"){
 	$sql = "select A.dcutdate, A.csalesno, A.ccode, A.cname, A.citemno, A.citemdesc, A.cunit, A.nqty, A.nprice, A.ndiscount,A.namount, A.lapproved
 	FROM
 	(
-		select b.dcutdate, a.ctranno as csalesno, b.ccode, c.ctradename as cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice,a.ndiscount, a.namount, b.lapproved
+		select b.dcutdate, a.ctranno as csalesno, b.ccode, IFNULL(c.ctradename,c.cname) as cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice,a.ndiscount, a.namount, b.lapproved
 		From sales_t a
 		left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join customers c on b.ccode=c.cempid and b.compcode=c.compcode
@@ -75,7 +75,7 @@ if($trantype=="Trade"){
 	$sql = "select A.dcutdate, A.csalesno, A.ccode, A.cname, A.citemno, A.citemdesc, A.cunit, A.nqty, A.nprice, A.ndiscount,A.namount, A.lapproved
 	FROM
 	(
-		select b.dcutdate, a.ctranno as csalesno, b.ccode, c.ctradename as cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice,a.ndiscount, a.namount, b.lapproved
+		select b.dcutdate, a.ctranno as csalesno, b.ccode, IFNULL(c.ctradename,c.cname) as cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice,a.ndiscount, a.namount, b.lapproved
 		From ntsales_t a
 		left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join customers c on b.ccode=c.cempid and b.compcode=c.compcode
@@ -88,7 +88,7 @@ if($trantype=="Trade"){
 	$sql = "select A.dcutdate, A.csalesno, A.ccode, A.cname, A.citemno, A.citemdesc, A.cunit, A.nqty, A.nprice, A.ndiscount,A.namount, A.lapproved
 	FROM
 	(
-		select b.dcutdate, a.ctranno as csalesno, b.ccode, c.ctradename as cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice,a.ndiscount, a.namount, b.lapproved
+		select b.dcutdate, a.ctranno as csalesno, b.ccode, IFNULL(c.ctradename,c.cname) as cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice,a.ndiscount, a.namount, b.lapproved
 		From sales_t a
 		left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join customers c on b.ccode=c.cempid and b.compcode=c.compcode
@@ -97,7 +97,7 @@ if($trantype=="Trade"){
 
 		UNION ALL
 
-		select b.dcutdate, a.ctranno as csalesno, b.ccode, c.ctradename as cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice,a.ndiscount, a.namount, b.lapproved
+		select b.dcutdate, a.ctranno as csalesno, b.ccode, IFNULL(c.ctradename,c.cname) as cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice,a.ndiscount, a.namount, b.lapproved
 		From ntsales_t a
 		left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join customers c on b.ccode=c.cempid and b.compcode=c.compcode

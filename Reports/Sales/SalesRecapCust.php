@@ -53,7 +53,7 @@ $date2 = $_POST["date2"];
 $sql = "select  A.ccode, A.cname, A.acctno, A.ctitle, Sum(A.ncredit) as ncredit, Sum(A.ndebit) as ndebit
 FROM
 (
-select  a.ccode, c.cname, b.acctno, b.ctitle, b.ncredit, b.ndebit
+select  a.ccode, IFNULL(c.ctradename,c.cname), b.acctno, b.ctitle, b.ncredit, b.ndebit
 From sales a
 left join glactivity b on a.ctranno=b.ctranno and a.compcode=b.compcode
 left join customers c on a.ccode=c.cempid and a.compcode=c.compcode
@@ -61,7 +61,7 @@ where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/
 
 UNION ALL
 
-select  a.ccode, c.cname, b.acctno, b.ctitle, b.ncredit, b.ndebit
+select  a.ccode, IFNULL(c.ctradename,c.cname), b.acctno, b.ctitle, b.ncredit, b.ndebit
 From ntsales a
 left join glactivity b on a.ctranno=b.ctranno and a.compcode=b.compcode
 left join customers c on a.ccode=c.cempid and a.compcode=c.compcode

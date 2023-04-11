@@ -74,7 +74,7 @@ if($postedtran!==""){
 if($trantype=="Trade"){
 	$sql = "select A.dcutdate, A.ctranno as csalesno, A.ccode, A.cname, A.citemno, A.citemdesc, A.cunit, A.nqty, A.nprice, A.ndiscount, A.namount
 	FROM(
-	select b.dcutdate, a.ctranno, b.ccode, c.cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
+	select b.dcutdate, a.ctranno, b.ccode, IFNULL(c.ctradename,c.cname), a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
 	From sales_t a
 	left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 	left join customers c on b.ccode=c.cempid and b.compcode=c.compcode
@@ -83,7 +83,7 @@ if($trantype=="Trade"){
 }elseif($trantype=="Non-Trade"){
 	$sql = "select A.dcutdate, A.ctranno as csalesno, A.ccode, A.cname, A.citemno, A.citemdesc, A.cunit, A.nqty, A.ndiscount, A.nprice, A.namount
 	FROM(
-	select b.dcutdate, a.ctranno, b.ccode, c.cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
+	select b.dcutdate, a.ctranno, b.ccode, IFNULL(c.ctradename,c.cname), a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
 	From ntsales_t a
 	left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 	left join customers c on b.ccode=c.cempid and b.compcode=c.compcode
@@ -92,7 +92,7 @@ if($trantype=="Trade"){
 }else{
 	$sql = "select A.dcutdate, A.ctranno as csalesno, A.ccode, A.cname, A.citemno, A.citemdesc, A.cunit, A.nqty, A.ndiscount, A.nprice, A.namount
 	FROM(
-		select b.dcutdate, a.ctranno, b.ccode, c.cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
+		select b.dcutdate, a.ctranno, b.ccode, IFNULL(c.ctradename,c.cname), a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
 		From sales_t a
 		left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join customers c on b.ccode=c.cempid and b.compcode=c.compcode
@@ -101,7 +101,7 @@ if($trantype=="Trade"){
 
 		UNION ALL
 
-		select b.dcutdate, a.ctranno, b.ccode, c.cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
+		select b.dcutdate, a.ctranno, b.ccode, IFNULL(c.ctradename,c.cname), a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
 		From ntsales_t a
 		left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join customers c on b.ccode=c.cempid and b.compcode=c.compcode

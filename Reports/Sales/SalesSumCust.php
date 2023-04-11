@@ -1,25 +1,27 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "SalesSummary.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "SalesSummary.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
-$company = $_SESSION['companyid'];
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
+	$company = $_SESSION['companyid'];
+	$compname = "";
 
-				$sql = "select * From company where compcode='$company'";
-				$result=mysqli_query($con,$sql);
+	$sql = "select * From company where compcode='$company'";
+	$result=mysqli_query($con,$sql);
 				
-					if (!mysqli_query($con, $sql)) {
-						printf("Errormessage: %s\n", mysqli_error($con));
-					} 
-					
-				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-				{
-					$compname =  $row['compname'];
-				}
+	if (!mysqli_query($con, $sql)) {
+		printf("Errormessage: %s\n", mysqli_error($con));
+	}else{
+		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+		{
+			$compname =  $row['compname'];
+		}
+	}
+						
 ?>
 
 <html>
@@ -81,7 +83,7 @@ if($trantype=="Trade"){
 	left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
 	where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
 	".$qryitm.$qrycust.$qryposted."
-	Group By a.compcode, b.ccode, d.ctradename, b.lapproved, d.ccustomertype, e.cdesc
+	Group By a.compcode, b.ccode, IFNULL(d.ctradename,d.cname), b.lapproved, d.ccustomertype, e.cdesc
 	order by sum(A.nprice*a.nqty) DESC");
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 		$finarray[] = $row;

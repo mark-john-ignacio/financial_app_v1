@@ -56,7 +56,7 @@ $date2 = $_POST["date2"];
 $sql = "
 select A.dcutdate, A.csalesno, A.ccode, A.cname, A.acctno, A.ctitle, A.ncredit, A.ndebit, A.lcancelled, A.lapproved
 FROM(
-select a.dcutdate, a.ctranno as csalesno, a.ccode, c.cname, b.acctno, b.ctitle, b.ncredit, b.ndebit, a.lcancelled, a.lapproved
+select a.dcutdate, a.ctranno as csalesno, a.ccode, IFNULL(c.ctradename,c.cname), b.acctno, b.ctitle, b.ncredit, b.ndebit, a.lcancelled, a.lapproved
 From sales a
 left join glactivity b on a.ctranno=b.ctranno and a.compcode=b.compcode
 left join customers c on a.ccode=c.cempid and a.compcode=c.compcode
@@ -64,7 +64,7 @@ where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/
 
 UNION ALL
 
-select a.dcutdate, a.ctranno as csalesno, a.ccode, c.cname, b.acctno, b.ctitle, b.ncredit, b.ndebit, a.lcancelled, a.lapproved
+select a.dcutdate, a.ctranno as csalesno, a.ccode, IFNULL(c.ctradename,c.cname), b.acctno, b.ctitle, b.ncredit, b.ndebit, a.lcancelled, a.lapproved
 From ntsales a
 left join glactivity b on a.ctranno=b.ctranno and a.compcode=b.compcode
 left join customers c on a.ccode=c.cempid and a.compcode=c.compcode
