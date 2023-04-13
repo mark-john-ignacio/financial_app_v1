@@ -141,7 +141,7 @@ require_once "../../Connection/connection_string.php";
 			$json['ccm'] = floatval($row['cm']) + $nwithadjcm;
 			$json['dcutdate'] = $row['dcutdate'];
 			$json['ngross'] = $row['ngross'];			 
-			$json['withadj'] = $nwithadj;
+			//$json['withadj'] = $nwithadj;
 			$json['npayment'] = $npay;
 			$json['cacctno'] = $row['cacctid'];
 			$json['ctitle'] = $row['cacctdesc'];
