@@ -87,8 +87,7 @@
 
 		$arrundrs = array_intersect_key( $arrdebits , array_unique( array_map('serialize' , $arrdebits ) ) );
    	foreach($arrundrs as $rsdr) {
-			$arrallaccts[$rsdr['cacctno']] = 0;
-			$arrtotaccts[$rsdr['cacctno']] = 0;
+			$sumtot[$rsdr['cacctno']] = 0;
    ?>
    	<th style="vertical-align:bottom; text-align: center !important" width="150">
     	<?=$rsdr['cacctno'];?><br><?=$rsdr['cacctdesc'];?><br>Dr.      
@@ -100,8 +99,7 @@
 	<?php
 		$arruncrs = array_intersect_key( $arrcredits , array_unique( array_map('serialize' , $arrcredits ) ) );
    	foreach($arruncrs as $rscr) {
-			$arrallaccts[$rscr['cacctno']] = 0;
-			$arrtotaccts[$rscr['cacctno']] = 0;
+			$sumtot[$rscr['cacctno']] = 0;
    ?>
    	<th align="center" style="vertical-align:bottom; text-align: center !important" width="150">
     	<?=$rscr['cacctno'];?><br><?=$rscr['cacctdesc'];?><br>Cr.      
@@ -142,6 +140,7 @@
 			<?=($drval!=0) ? number_format($drval,2) : "";?>     
 			</td>
 		<?php
+			$sumtot[$rsdr['cacctno']] = $sumtot[$rsdr['cacctno']] + floatval($drval);
 			$drval = 0;
 			}
 		?>
@@ -161,6 +160,7 @@
 				<?=($drval!=0) ? number_format($drval,2) : "";?>      
 			</td>
 		<?php
+			$sumtot[$rsdr['cacctno']] = $sumtot[$rsdr['cacctno']] + floatval($drval);
 			$drval = 0;
 			}
 		?>
@@ -172,6 +172,34 @@
 
 }
 	?>
+
+	<!-- TOTAL -->
+	<tr>
+    <td colspan="4" style="text-align: right"><b>TOTAL: </b></td>
+
+		<?php
+			$arrundrs = array_intersect_key( $arrdebits , array_unique( array_map('serialize' , $arrdebits ) ) );
+			foreach($arrundrs as $rsdr) {				
+		?>
+			<td style="text-align: right !important">
+				<b><?=($sumtot[$rsdr['cacctno']]!=0) ? number_format($sumtot[$rsdr['cacctno']]) : "";?></b>
+			</td>
+		<?php
+			}
+		?>
+
+		<?php
+			$arrundrs = array_intersect_key( $arrcredits , array_unique( array_map('serialize' , $arrcredits ) ) );
+			foreach($arrundrs as $rsdr) {				
+		?>
+			<td style="text-align: right !important">
+				<b><?=($sumtot[$rsdr['cacctno']]!=0) ? number_format($sumtot[$rsdr['cacctno']]) : "";?></b>  
+			</td>
+		<?php
+			}
+		?>
+
+
 </table>
 
 </body>
