@@ -275,7 +275,7 @@ Back to Main<br>(ESC)</button>
 	$(document).ready(function(){
 	  $('#date_delivery').datetimepicker({
       format: 'MM/DD/YYYY',
-			minDate: new Date(),
+			//minDate: new Date(),
     });
 
 		$("input.numeric").autoNumeric('init',{mDec:2});
