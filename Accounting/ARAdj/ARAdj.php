@@ -168,13 +168,13 @@ include('../../include/access.php');
 						{
 					?>
 						<tr>
-							<td><a href="javascript:;" onClick="editfrm('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
-							<td><?php echo $row['ctype'];?></td>
-							<td><?php echo $row['dcutdate'];?></td>
-							<td><?php echo $row['cname'];?></td>
+							<td nowrap><a href="javascript:;" onClick="editfrm('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
+							<td nowrap><?php echo $row['ctype'];?></td>
+							<td nowrap><?php echo $row['dcutdate'];?></td>
+							<td nowrap><?php echo $row['cname'];?></td>
 							<td><?php echo $row['cremarks'];?></td>
-							<td><?php echo number_format($row['ngross'],2);?></td>
-							<td align="center">
+							<td style="text-align: right" nowrap><?php echo number_format($row['ngross'],2);?></td>
+							<td align="center" nowrap>
 								<div id="msg<?php echo $row['ctranno'];?>">
 								<?php 
 									if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
