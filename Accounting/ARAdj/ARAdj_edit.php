@@ -153,7 +153,7 @@
 						<tH width="150">&nbsp;</tH>
 						<td style="padding:2px"><div class="col-xs-11 nopadding">
 							<div class="form-check">
-								<input class="form-check-input" type="checkbox" value="<?=(intval($lsreturn)==1) ? 1 : 0;?>" id="isReturn" name="isReturn"  checked/>
+								<input class="form-check-input" type="checkbox" value="1" id="isReturn" name="isReturn"  <?=(intval($lsreturn)==1) ? "checked" : "";?>/>
 								<label class="form-check-label" for="flexCheckChecked">Sales Return</label>
 							</div>
 						</div></td>
