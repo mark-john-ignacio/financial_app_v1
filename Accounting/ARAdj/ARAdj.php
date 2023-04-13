@@ -147,6 +147,7 @@ include('../../include/access.php');
 						<th>Type</th>
             <th>Date</th>
 						<th>Customer</th>
+						<th>Remarks</th>
 						<th>Amount</th>
 						<th>Status</th>
 					</tr>
@@ -171,6 +172,7 @@ include('../../include/access.php');
 							<td><?php echo $row['ctype'];?></td>
 							<td><?php echo $row['dcutdate'];?></td>
 							<td><?php echo $row['cname'];?></td>
+							<td><?php echo $row['cremarks'];?></td>
 							<td><?php echo number_format($row['ngross'],2);?></td>
 							<td align="center">
 								<div id="msg<?php echo $row['ctranno'];?>">
