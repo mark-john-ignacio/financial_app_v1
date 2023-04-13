@@ -22,6 +22,7 @@ $company = $_SESSION['companyid'];
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
 	<title>Myx Financials</title>
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
     
