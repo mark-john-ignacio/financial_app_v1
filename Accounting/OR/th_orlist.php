@@ -25,7 +25,7 @@ require_once "../../Connection/connection_string.php";
 
 	//alldebitlist
 	@$arradjlist = array();
-	$sqlardj = "select X.ctranno,X.crefsi, X.ngross from aradjustment X where X.compcode='$company' and X.ccode='".$_REQUEST['x']."' and IFNULL(crefsi,'') <> '' and isreturn = 0 and X.lapproved = 1 and X.ctranno not in (Select A.aradjustment_ctranno from receipt_deds A left join receipt B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lcancelled=0)";
+	$sqlardj = "select X.ctranno,X.crefsi, X.ngross, X.ctype from aradjustment X where X.compcode='$company' and X.ccode='".$_REQUEST['x']."' and IFNULL(crefsi,'') <> '' and isreturn = 0 and X.lapproved = 1 and X.ctranno not in (Select A.aradjustment_ctranno from receipt_deds A left join receipt B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lcancelled=0)";
 	$resardj = mysqli_query ($con, $sqlardj);
 	while($rowardj = mysqli_fetch_array($resardj, MYSQLI_ASSOC)){
 		@$arradjlist[] = $rowardj;		
@@ -79,14 +79,12 @@ require_once "../../Connection/connection_string.php";
 		$ngross = $row['ngross'];
 
 			 $nwithadjcm = 0;
+			 $nwithadjdm = 0;
 			 foreach(@$arradjlist as $rxdebit){
 				if($rxdebit['crefsi']==$row['ctranno'] && $rxdebit['ctype']="Credit"){
 					$nwithadjcm = $nwithadjcm + $rxdebit['ngross'];
 				}
-			 }
 
-			 $nwithadjdm = 0;
-			 foreach(@$arradjlist as $rxdebit){
 				if($rxdebit['crefsi']==$row['ctranno'] && $rxdebit['ctype']="Debit"){
 					$nwithadjdm = $nwithadjdm + $rxdebit['ngross'];
 				}
