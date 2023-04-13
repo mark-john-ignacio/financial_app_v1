@@ -54,9 +54,9 @@
 				$arrcredits[] = array('cacctno' => $row['acctno'], 'cacctdesc' => $row['cacctdesc']);
 			}
 
-			$arralltrans[] = array('ctranno' => $row['ctranno'], 'ddate' => $row['ddate'], 'cname' => $row['cname'], 'cremarks' => $row['cremarks']);
+			$arralltrans[] = $row['ctranno'];
 
-			$arrallqry[$row['ctranno']][] = $row;
+			$arrallqry[$row['ctranno']] = $row;
 		}
 
 ?>
@@ -113,64 +113,161 @@
   </tr>
   
 	<?php
-
 	if(count($arralltrans) > 0){
 
-		$arruntransno = array_intersect_key( $arralltrans , array_unique( array_map('serialize' , $arralltrans ) ) );
-		foreach($arruntransno as $rsnoxc){
+		$ctranno = $arrallqry[0]['ctranno'];
+		$cddate = $arrallqry[0]['ddate'];
+		$cname = $arrallqry[0]['cname'];
+		$crmrks = $arrallqry[0]['cremarks'];
+
+		foreach($arrallqry as $rsallqry){
+			if($ctranno==$rsallqry['ctranno']){
+
+				foreach($arrundrs as $rsdr) {
+					if($rsdr['cacctno']==$rsallqry['acctno']){
+						$arrallaccts[$rsdr['cacctno']] = $rsallqry['ndebit'];
+					}
+				}
+
+				foreach($arruncrs as $rscr) {
+					if($rscr['cacctno']==$rsallqry['acctno']){
+						$arrallaccts[$rscr['cacctno']] = $rsallqry['ncredit'];
+					}
+				}
+
+			}else{
 
 	?>
 
 	<tr>
-    <td nowrap><?=$rsnoxc['ddate']?></td>
-    <td nowrap><?=$rsnoxc['ctranno']?></td>
-    <td nowrap><?=$rsnoxc['cname']?></td>
-    <td nowrap><?=$rsnoxc['cremarks']?></td>
+    <td nowrap><?=$cddate?></td>
+    <td nowrap><?=$ctranno?></td>
+    <td nowrap><?=$cname?></td>
+    <td nowrap><?=$crmrks?></td>
 	
 		<?php
 			$arrundrs = array_intersect_key( $arrdebits , array_unique( array_map('serialize' , $arrdebits ) ) );
-			foreach($arrundrs as $rsdr) {				
-				$drval = 0;
-				foreach($arrallqry[$rsnoxc['ctranno']] as $rx2lo){
-					if($rx2lo['acctno']==$rsdr['cacctno']){
-						$drval = $rx2lo['ndebit'];
-						break;
-					}
-				}
+			foreach($arrundrs as $rsdr) {
+
+				if(isset($arrallaccts[$rsdr['cacctno']])){
+					$arrtotaccts[$rsdr['cacctno']] = $arrtotaccts[$rsdr['cacctno']] + floatval($arrallaccts[$rsdr['cacctno']]);
 		?>
-			<td style="text-align: right !important">
-				<?=$drval;?>      
+			<td align="right" nowrap>
+				<?=number_format($arrallaccts[$rsdr['cacctno']],2);?>     
 			</td>
 		<?php
-			$drval = 0;
+				}
 			}
 		?>
 
 		<?php
-			$arrundrs = array_intersect_key( $arrcredits , array_unique( array_map('serialize' , $arrcredits ) ) );
-			foreach($arrundrs as $rsdr) {				
-				$drval = 0;
-				foreach($arrallqry[$rsnoxc['ctranno']] as $rx2lo){
-					if($rx2lo['acctno']==$rsdr['cacctno']){
-						$drval = $rx2lo['ncredit'];
-						break;
-					}
-				}
+			$arruncrs = array_intersect_key( $arrcredits , array_unique( array_map('serialize' , $arrcredits ) ) );
+			foreach($arruncrs as $rscr) {
+				if(isset($arrallaccts[$rscr['cacctno']])){
+					$arrtotaccts[$rscr['cacctno']] = $arrtotaccts[$rscr['cacctno']] + floatval($arrallaccts[$rscr['cacctno']]);
 		?>
-			<td style="text-align: right !important">
-				<?=$drval;?>      
+			<td align="right" nowrap>
+				<?=number_format($arrallaccts[$rscr['cacctno']],2);?>  
 			</td>
 		<?php
-			$drval = 0;
+				}
 			}
 		?>
 
 
+	<tr>
+	<?php
+				$ctranno = $rsallqry['ctranno'];
+				$cddate = $rsallqry['ddate'];
+				$cname = $rsallqry['cname'];
+				$crmrks = $rsallqry['cremarks'];
 
+				foreach($arrundrs as $rsdr) {
+					if($rsdr['cacctno']==$rsallqry['acctno']){
+						$arrallaccts[$rsdr['cacctno']] = $rsallqry['ndebit'];
+					}
+				}
+
+				foreach($arruncrs as $rscr) {
+					if($rscr['cacctno']==$rsallqry['acctno']){
+						$arrallaccts[$rscr['cacctno']] = $rsallqry['ncredit'];
+					}
+				}
+				
+			}
+		}
+	?>
+
+	<tr>
+    <td nowrap><?=$cddate?></td>
+    <td nowrap><?=$ctranno?></td>
+    <td nowrap><?=$cname?></td>
+    <td nowrap><?=$crmrks?></td>
+	
+		<?php
+			$arrundrs = array_intersect_key( $arrdebits , array_unique( array_map('serialize' , $arrdebits ) ) );
+			foreach($arrundrs as $rsdr) {
+
+				if(isset($arrallaccts[$rsdr['cacctno']])){
+					$arrtotaccts[$rsdr['cacctno']] = $arrtotaccts[$rsdr['cacctno']] + floatval($arrallaccts[$rsdr['cacctno']]);
+		?>
+			<td align="right" nowrap>
+				<?=number_format($arrallaccts[$rsdr['cacctno']],2);?>     
+			</td>
+		<?php
+				}
+			}
+		?>
+
+		<?php
+			$arruncrs = array_intersect_key( $arrcredits , array_unique( array_map('serialize' , $arrcredits ) ) );
+			foreach($arruncrs as $rscr) {
+				if(isset($arrallaccts[$rscr['cacctno']])){
+					$arrtotaccts[$rscr['cacctno']] = $arrtotaccts[$rscr['cacctno']] + floatval($arrallaccts[$rscr['cacctno']]);
+		?>
+			<td align="right" nowrap>
+				<?=number_format($arrallaccts[$rscr['cacctno']],2);?>  
+			</td>
+		<?php
+				}
+			}
+		?>
+
+
+	<tr>
+
+	<!-- TOTALS -->
+	<tr>
+    <td colspan="4" align="right"><b>Total: </b></td>
+		<?php
+			$arrundrs = array_intersect_key( $arrdebits , array_unique( array_map('serialize' , $arrdebits ) ) );
+			foreach($arrundrs as $rsdr) {
+
+				if(isset($arrallaccts[$rsdr['cacctno']])){
+		?>
+			<td align="right">
+				<b><?=number_format($arrtotaccts[$rsdr['cacctno']],2);?></b>  
+			</td>
+		<?php
+				}
+			}
+		?>
+
+		<?php
+			$arruncrs = array_intersect_key( $arrcredits , array_unique( array_map('serialize' , $arrcredits ) ) );
+			foreach($arruncrs as $rscr) {
+				if(isset($arrallaccts[$rscr['cacctno']])){
+		?>
+			<td align="right">
+			<b><?=number_format($arrtotaccts[$rscr['cacctno']],2);?> </b> 
+			</td>
+		<?php
+				}
+			}
+		?>
+	</tr>
 	<?php
 	}
-
-}
 	?>
 </table>
 

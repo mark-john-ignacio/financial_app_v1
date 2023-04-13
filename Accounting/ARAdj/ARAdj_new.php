@@ -122,9 +122,10 @@
     </tr>
 </table>
 
-<div class="col-xs-12 nopadding">
-	<div class="col-xs-4 nopadding"><small><i>*Press <b>ENTER</b> on remarks field (last row) to add new line..</i></small></div>
-	<div class="col-xs-8 nopadding text-danger" style='text-align: right !important' id="unbaltext"></div>
+<div class="col-xs-12 nopadwdown">
+	<div class="col-xs-1 nopadwright"><button type="button" class="btn btn-xs btn-warning btn-block" id="btnaddline">Add Line</button></div>
+	<div class="col-xs-4 nopadding"><small><i> OR *Press <b>ENTER</b> on remarks field (last row) to add new line..</i></small></div>
+	<div class="col-xs-7 nopadding text-danger" style='text-align: right !important' id="unbaltext"></div>
 </div>
 
 
@@ -535,6 +536,13 @@ Back to Main<br>(ESC)</button>
 				$("#btnSISearch").attr("disabled", true);
 				$("#txtInvoiceRef").attr("readonly", false);
 			}
+		});
+
+		$('#btnaddline').on('click', function(e) {
+				var cnt = $('#MyTable tr').length;
+				
+				InsertRows('',cnt);
+
 		});
 
 	});
