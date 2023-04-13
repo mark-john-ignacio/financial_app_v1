@@ -1109,7 +1109,7 @@ function getInvs(typ){
           console.log(data);
           $.each(data,function(index,item){
             $("<tr>").append(
-							$("<td>").html("<input type='checkbox' value='"+item.csalesno+"' name='chkSales[]' data-cm='"+item.ccm+"' data-payment='"+item.npayment+"' data-vatcode='"+item.ctaxcode+"' data-vatrate='"+item.vatrate+"' data-vat='"+item.cvatamt+"' data-netvat='"+item.cnetamt+"' data-ewtcode='"+item.cewtcode+"' data-ewtrate='"+item.newtrate+"' data-ewtamt='"+item.cewtamt+"' data-amt='"+item.ngross+"' data-acctid='"+item.cacctno+"' data-acctdesc='"+item.ctitle+"' data-cutdate='"+item.dcutdate+"'>"),
+							$("<td>").html("<input type='checkbox' value='"+item.csalesno+"' name='chkSales[]' data-dm='"+item.cdm+"' data-cm='"+item.ccm+"' data-payment='"+item.npayment+"' data-vatcode='"+item.ctaxcode+"' data-vatrate='"+item.vatrate+"' data-vat='"+item.cvatamt+"' data-netvat='"+item.cnetamt+"' data-ewtcode='"+item.cewtcode+"' data-ewtrate='"+item.newtrate+"' data-ewtamt='"+item.cewtamt+"' data-amt='"+item.ngross+"' data-acctid='"+item.cacctno+"' data-acctdesc='"+item.ctitle+"' data-cutdate='"+item.dcutdate+"'>"),
               $("<td>").text(item.csalesno),
               $("<td>").text(item.dcutdate),
 							$("<td>").text(item.ngross),
@@ -1146,6 +1146,7 @@ function save(){
 			var tranno = $(this).val();
 			var dcutdate = $(this).data("cutdate");
 			var ngross = $(this).data("amt");
+			var ndm = $(this).data("dm");
 			var ncm = $(this).data("cm");
 			var npayments = $(this).data("payment");
 			var nvat = $(this).data("vat");
@@ -1181,7 +1182,7 @@ function save(){
 
 			var d=z.insertCell(-1);
 			d.align = "right";
-			d.innerHTML = "<div class=\"input-group\"><input type='text' name='txtndebit"+lastRow+"' id='txtndebit"+lastRow+"' class=\"numeric form-control input-xs\" value=\"0.00\" style=\"text-align:right\" readonly><span class=\"input-group-btn\"><button class=\"btn btn-primary btn-xs\" name=\"btnadddm\" id=\"btnadddm"+lastRow+"\" type=\"button\" onclick=\"addCM('DM','"+tranno+"','txtncm"+lastRow+"')\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span></button></span></div>";
+			d.innerHTML = "<div class=\"input-group\"><input type='text' name='txtndebit"+lastRow+"' id='txtndebit"+lastRow+"' class=\"numeric form-control input-xs\" value=\""+ndm+"\" style=\"text-align:right\" readonly><span class=\"input-group-btn\"><button class=\"btn btn-primary btn-xs\" name=\"btnadddm\" id=\"btnadddm"+lastRow+"\" type=\"button\" onclick=\"addCM('DM','"+tranno+"','txtncm"+lastRow+"')\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span></button></span></div>";
 										
 			var e=z.insertCell(-1);
 			e.align = "right";
