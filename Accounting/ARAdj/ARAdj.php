@@ -7,6 +7,15 @@ $_SESSION['pageid'] = "ARAdj_new.php";
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 include('../../include/access.php');
+
+$company = $_SESSION['companyid'];
+
+	$poststat = "True";	
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'ARAdj_unpost.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -138,6 +147,14 @@ include('../../include/access.php');
         </div>
 			<br><br>
 			<button type="button" class="btn btn-primary" onClick="location.href='ARAdj_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+
+			<?php
+				if($poststat=="True"){
+			?>
+				<button type="button" class="btn btn-warning btn-md" onClick="location.href='ARAdj_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+			<?php
+				}
+			?>
 
       <br><br>
 			<table id="example" class="display" cellspacing="0" width="100%">

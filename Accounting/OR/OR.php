@@ -7,6 +7,12 @@ include('../../include/denied.php');
 include('../../include/access2.php');
 
 $company = $_SESSION['companyid'];
+
+	$poststat = "True";	
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'OR_unpost.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
 ?>
 
 <!DOCTYPE html>
@@ -69,6 +75,13 @@ function trans(x,num){
 			<br><br>
 			<button type="button" class="btn btn-primary" onClick="location.href='OR_new2.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
+			<?php
+				if($poststat=="True"){
+			?>
+				<button type="button" class="btn btn-warning btn-md" onClick="location.href='OR_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+			<?php
+				}
+			?>
         
             <br><br>
 			<table id="example" class="display" cellspacing="0" width="100%">

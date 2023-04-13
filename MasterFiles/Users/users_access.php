@@ -862,6 +862,11 @@ xmlhttp.send();
             <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="ARAdj_cancel" id="chkBox152" <?=(in_array("ARAdj_cancel",@$arrpgist)) ? "checked" : "";?>>&nbsp;Cancel</label>
             </div>
+
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="ARAdj_unpost.php" id="chkBox118" <?=(in_array("ARAdj_unpost.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Un-Post</label>
+            </div>
+
             <!--
             <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="ARAdj_print" id="chkBox153" <?=(in_array("ARAdj_print",@$arrpgist)) ? "checked" : "";?>>&nbsp;Print</label>
@@ -891,6 +896,10 @@ xmlhttp.send();
             </div>
             <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="OR_print" id="chkBox118" <?=(in_array("OR_print",@$arrpgist)) ? "checked" : "";?>>&nbsp;Print</label>
+            </div>
+
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="OR_unpost.php" id="chkBox118" <?=(in_array("OR_unpost.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Un-Post</label>
             </div>
 		</div>
 		</div>
