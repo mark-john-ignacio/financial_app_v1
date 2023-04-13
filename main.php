@@ -520,7 +520,7 @@
 						<li>
 							<a href="javascript:;" onClick="setpage('Reports/rptmenu.php?id=acc');">
                             <i class="glyphicon glyphicon-file "> </i>
-							Financial</a>
+							GL Reports</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('Reports/rptmenu.php?id=inv');">

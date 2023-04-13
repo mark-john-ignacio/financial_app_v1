@@ -26,7 +26,7 @@ $(document).ready(function() {
 		$("#divname").html("<font size=\"+2\"><u>Purchase Reports</u></font>");
 	}
 	else if($("#hdntyp").val()=="acc"){
-		$("#divname").html("<font size=\"+2\"><u>Finance Reports</u></font>");
+		$("#divname").html("<font size=\"+2\"><u>GL Reports</u></font>");
 	}
 	else if($("#hdntyp").val()=="inv"){
 		$("#divname").html("<font size=\"+2\"><u>Inventory Reports</u></font>");
