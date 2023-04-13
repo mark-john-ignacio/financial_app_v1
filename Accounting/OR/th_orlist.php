@@ -81,11 +81,11 @@ require_once "../../Connection/connection_string.php";
 			 $nwithadjcm = 0;
 			 $nwithadjdm = 0;
 			 foreach(@$arradjlist as $rxdebit){
-				if($rxdebit['crefsi']==$row['ctranno'] && $rxdebit['ctype']="Credit"){
+				if($rxdebit['crefsi']==$row['ctranno'] && $rxdebit['ctype']=="Credit"){
 					$nwithadjcm = $nwithadjcm + $rxdebit['ngross'];
 				}
 
-				if($rxdebit['crefsi']==$row['ctranno'] && $rxdebit['ctype']="Debit"){
+				if($rxdebit['crefsi']==$row['ctranno'] && $rxdebit['ctype']=="Debit"){
 					$nwithadjdm = $nwithadjdm + $rxdebit['ngross'];
 				}
 			 }
