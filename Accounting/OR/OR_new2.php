@@ -1718,7 +1718,7 @@ computeGross();
 						});
 						
 						$.ajax({
-							url: "th_getapcm.php",
+							url: "th_getreturn.php",
 							dataType: "json",
 							data: {
 								query: $("#txtapcmdm"+lastRow).val(), code: $("#txtcustid").val(), lst: apcmlist
