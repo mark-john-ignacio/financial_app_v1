@@ -139,7 +139,7 @@
 				}
 		?>
 			<td style="text-align: right !important">
-				<?=number_format($drval,2);?>      
+			<?=($drval!=0) ? number_format($drval,2) : "";?>     
 			</td>
 		<?php
 			$drval = 0;
@@ -158,7 +158,7 @@
 				}
 		?>
 			<td style="text-align: right !important">
-				<?=number_format($drval,2);?>      
+				<?=($drval!=0) ? number_format($drval,2) : "";?>      
 			</td>
 		<?php
 			$drval = 0;
