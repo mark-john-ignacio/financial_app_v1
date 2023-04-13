@@ -36,7 +36,7 @@
 			From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
 			left join receipt C on A.compcode=C.compcode and A.ctranno=C.ctranno
 			left join customers D on C.compcode=D.compcode and C.ccode=D.cempid
-			Where A.compcode='$company' and A.cmodule='OR' and A.ddate between STR_TO_DATE('".$_REQUEST['date1']."', '%m/%d/%Y') and STR_TO_DATE('".$_REQUEST['date2']."', '%m/%d/%Y') Order By A.dpostdate, A.ctranno, A.ndebit desc, A.ncredit desc";
+			Where A.compcode='$company' and A.cmodule='OR' and A.ddate between STR_TO_DATE('".$_REQUEST['date1']."', '%m/%d/%Y') and STR_TO_DATE('".$_REQUEST['date2']."', '%m/%d/%Y') Order By A.ddate, A.ctranno, A.ndebit desc, A.ncredit desc";
 
 	$result = mysqli_query($con, $sql);
 		
@@ -139,7 +139,7 @@
 				}
 		?>
 			<td style="text-align: right !important">
-				<?=$drval;?>      
+				<?=number_format($drval,2);?>      
 			</td>
 		<?php
 			$drval = 0;
@@ -158,7 +158,7 @@
 				}
 		?>
 			<td style="text-align: right !important">
-				<?=$drval;?>      
+				<?=number_format($drval,2);?>      
 			</td>
 		<?php
 			$drval = 0;
