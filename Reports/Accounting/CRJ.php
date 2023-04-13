@@ -45,11 +45,12 @@
 	$arrallqry = array();
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 		{
-			if(floatval($row['ndebit'])!==0 && floatval($row['ncredit'])==0){
+			if(floatval($row['ndebit'])!=0){
+
 				$arrdebits[] = array('cacctno' => $row['acctno'], 'cacctdesc' => $row['cacctdesc']);
 			}
 
-			if(floatval($row['ncredit'])!==0 && floatval($row['ndebit'])==0){
+			if(floatval($row['ncredit'])!=0){
 				$arrcredits[] = array('cacctno' => $row['acctno'], 'cacctdesc' => $row['cacctdesc']);
 			}
 
@@ -73,7 +74,7 @@
 </center>
 
 <br><br>
-<table width="80%" border="1" align="center" cellpadding = "3">
+<table border="1" align="center" cellpadding = "3">
   <tr>
     <th width="100" style="vertical-align:middle">Date</th>
     <th width="100" style="vertical-align:middle">Trans No.</th>
@@ -81,6 +82,7 @@
     <th style="vertical-align:middle">Description</th>
       
    <?php
+
 		$arrundrs = array_intersect_key( $arrdebits , array_unique( array_map('serialize' , $arrdebits ) ) );
    	foreach($arrundrs as $rsdr) {
 			$arrallaccts[$rsdr['cacctno']] = 0;
@@ -115,6 +117,7 @@
 		$cddate = $arrallqry[0]['ddate'];
 		$cname = $arrallqry[0]['cname'];
 		$crmrks = $arrallqry[0]['cremarks'];
+
 		foreach($arrallqry as $rsallqry){
 			if($ctranno==$rsallqry['ctranno']){
 
@@ -131,13 +134,14 @@
 				}
 
 			}else{
+
 	?>
 
 	<tr>
-    <td><?=$cddate?></td>
-    <td><?=$ctranno?></td>
-    <td><?=$cname?></td>
-    <td><?=$crmrks?></td>
+    <td nowrap><?=$cddate?></td>
+    <td nowrap><?=$ctranno?></td>
+    <td nowrap><?=$cname?></td>
+    <td nowrap><?=$crmrks?></td>
 	
 		<?php
 			$arrundrs = array_intersect_key( $arrdebits , array_unique( array_map('serialize' , $arrdebits ) ) );
@@ -146,7 +150,7 @@
 				if(isset($arrallaccts[$rsdr['cacctno']])){
 					$arrtotaccts[$rsdr['cacctno']] = $arrtotaccts[$rsdr['cacctno']] + floatval($arrallaccts[$rsdr['cacctno']]);
 		?>
-			<td align="right">
+			<td align="right" nowrap>
 				<?=number_format($arrallaccts[$rsdr['cacctno']],2);?>     
 			</td>
 		<?php
@@ -160,7 +164,7 @@
 				if(isset($arrallaccts[$rscr['cacctno']])){
 					$arrtotaccts[$rscr['cacctno']] = $arrtotaccts[$rscr['cacctno']] + floatval($arrallaccts[$rscr['cacctno']]);
 		?>
-			<td align="right">
+			<td align="right" nowrap>
 				<?=number_format($arrallaccts[$rscr['cacctno']],2);?>  
 			</td>
 		<?php
@@ -175,15 +179,28 @@
 				$cddate = $rsallqry['ddate'];
 				$cname = $rsallqry['cname'];
 				$crmrks = $rsallqry['cremarks'];
+
+				foreach($arrundrs as $rsdr) {
+					if($rsdr['cacctno']==$rsallqry['acctno']){
+						$arrallaccts[$rsdr['cacctno']] = $rsallqry['ndebit'];
+					}
+				}
+
+				foreach($arruncrs as $rscr) {
+					if($rscr['cacctno']==$rsallqry['acctno']){
+						$arrallaccts[$rscr['cacctno']] = $rsallqry['ncredit'];
+					}
+				}
+				
 			}
 		}
 	?>
 
 	<tr>
-    <td><?=$cddate?></td>
-    <td><?=$ctranno?></td>
-    <td><?=$cname?></td>
-    <td><?=$crmrks?></td>
+    <td nowrap><?=$cddate?></td>
+    <td nowrap><?=$ctranno?></td>
+    <td nowrap><?=$cname?></td>
+    <td nowrap><?=$crmrks?></td>
 	
 		<?php
 			$arrundrs = array_intersect_key( $arrdebits , array_unique( array_map('serialize' , $arrdebits ) ) );
@@ -192,7 +209,7 @@
 				if(isset($arrallaccts[$rsdr['cacctno']])){
 					$arrtotaccts[$rsdr['cacctno']] = $arrtotaccts[$rsdr['cacctno']] + floatval($arrallaccts[$rsdr['cacctno']]);
 		?>
-			<td align="right">
+			<td align="right" nowrap>
 				<?=number_format($arrallaccts[$rsdr['cacctno']],2);?>     
 			</td>
 		<?php
@@ -206,7 +223,7 @@
 				if(isset($arrallaccts[$rscr['cacctno']])){
 					$arrtotaccts[$rscr['cacctno']] = $arrtotaccts[$rscr['cacctno']] + floatval($arrallaccts[$rscr['cacctno']]);
 		?>
-			<td align="right">
+			<td align="right" nowrap>
 				<?=number_format($arrallaccts[$rscr['cacctno']],2);?>  
 			</td>
 		<?php
