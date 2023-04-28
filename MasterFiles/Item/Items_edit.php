@@ -172,7 +172,10 @@ include('../../include/access2.php');
         </div>
         
         <div class="col-xs-6 nopadwtop">
-			<input type="text" class="form-control input-sm" id="txtcdesc" name="txtcdesc" tabindex="2" value="<?php echo htmlentities($cItemDesc, ENT_QUOTES); ?>" placeholder="Input Item Description.." required autocomplete="off" maxlength="90"/>
+			<!--<input type="text" class="form-control input-sm" id="txtcdesc" name="txtcdesc" tabindex="2" value="" placeholder="Input Item Description.." required autocomplete="off" maxlength="90"/>-->
+
+            <textarea class="form-control input-sm" id="txtcdesc" name="txtcdesc" tabindex="2" placeholder="Input Item Description.." required autocomplete="off"><?php echo htmlentities($cItemDesc, ENT_QUOTES); ?></textarea>
+
 		</div>
         
        </div>
@@ -183,7 +186,10 @@ include('../../include/access2.php');
         </div>
         
         <div class="col-xs-6 nopadwtop">
-			<input type="text" class="form-control input-sm" id="txtcnotes" name="txtcnotes" tabindex="3" placeholder="Enter some notes.." autocomplete="off" value="<?php echo htmlentities($cNotes, ENT_QUOTES); ?>" maxlength="90" />
+			<!--<input type="text" class="form-control input-sm" id="txtcnotes" name="txtcnotes" tabindex="3" placeholder="Enter some notes.." autocomplete="off" value="" maxlength="90" />-->
+
+            <textarea class="form-control input-sm" id="txtcnotes" name="txtcnotes" tabindex="3" placeholder="Enter some notes.." autocomplete="off"><?php echo htmlentities($cNotes, ENT_QUOTES); ?></textarea>
+
 		</div>
         
        </div>

@@ -76,7 +76,11 @@ $company = $_SESSION['companyid'];
         </div>
         
         <div class="col-xs-6 nopadwtop">
-                    <input type="text" class="form-control input-sm" id="txtcdesc" name="txtcdesc" tabindex="2" placeholder="Input Item Description.." required autocomplete="off" />
+           <!-- <input type="text" class="form-control input-sm" id="txtcdesc" name="txtcdesc" tabindex="2" placeholder="Input Item Description.." required autocomplete="off" />-->
+
+            <textarea class="form-control input-sm" id="txtcdesc" name="txtcdesc" tabindex="2" placeholder="Input Item Description.." required autocomplete="off">
+
+            </textarea>
                 </div>        
        </div>
 
@@ -86,7 +90,11 @@ $company = $_SESSION['companyid'];
         </div>
         
         <div class="col-xs-6 nopadwtop">
-                    <input type="text" class="form-control input-sm" id="txtcnotes" name="txtcnotes" tabindex="3" placeholder="Enter some notes.." autocomplete="off" />
+            <!--<input type="text" class="form-control input-sm" id="txtcnotes" name="txtcnotes" tabindex="3" placeholder="Enter some notes.." autocomplete="off" />-->
+
+                    <textarea class="form-control input-sm" id="txtcnotes" name="txtcnotes" tabindex="3" placeholder="Enter some notes.." autocomplete="off">
+
+            </textarea>
                 </div>        
        </div>
        
