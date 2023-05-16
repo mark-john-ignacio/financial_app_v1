@@ -269,7 +269,7 @@
 		<div class="col-xs-12 nopadwdown">
 			<input type="hidden" name="hdnunit" id="hdnunit">
 					
-			<div class="col-xs-3 nopadding"><input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4"></div>
+			<div class="col-xs-3 nopadding"><input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Item/SKU Code..." tabindex="4"></div>
 				<div class="col-xs-5 nopadwleft"><input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL + F) Search Product Name..." size="80" tabindex="5"></div>
 		</div>  
 

@@ -12,7 +12,7 @@ require_once "../../Connection/connection_string.php";
 		//left join items A on X.compcode=A.compcode and X.citemno=A.cpartno
 		//where X.compcode='$company' and X.ctranno = '$cpono' Order by X.nident";
 
-		$sql = "select X.*, A.citemdesc
+		$sql = "select X.*, A.citemdesc, IFNULL(A.cskucode,'') as skuitem
 		from receive_t X
 		left join items A on X.compcode=A.compcode and X.citemno=A.cpartno
 		where X.compcode='$company' and X.ctranno = '$cpono' Order by X.nident";
@@ -36,6 +36,8 @@ require_once "../../Connection/connection_string.php";
 			 $json['cmainuom'] = $row['cmainunit'];
 			 $json['nfactor'] = $row['nfactor'];
 			// $json['dexpired'] = $row['ddateex'];
+			$json['cskucode'] = ($row['cskucode']!==null)? $row['cskucode'] : "";
+			$json['itemsku'] = $row['skuitem'];
 			 
 			 
 		

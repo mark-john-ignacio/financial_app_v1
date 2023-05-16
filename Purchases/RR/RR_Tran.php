@@ -48,6 +48,17 @@ if($_REQUEST['typ']=="POST"){
 				$status = "Posted";
 			}
 
+			//chek ung skuc
+				$sqlitem = mysqli_query($con,"Select A.citemno, IFNULL(A.cskucode,'') as cskucode, IFNULL(B.cskucode,'') as itmsku FROM `receive_t` A left join items B on A.compcode=B.compcode and A.citemno=B.cpartno Where A.compcode='$company' and A.ctranno='$tranno'");
+				if (mysqli_num_rows($sqlitem)!=0) {
+					while($row = mysqli_fetch_array($sqlitem, MYSQLI_ASSOC)){
+						if($row['itmsku']=="" && $row['cskucode']!==""){
+							$con->query("Update items set cskucode = '" .$row['cskucode']. "' Where cpartno='".$row['citemno']."'");
+						}
+					}
+				}
+			//end sku code
+
 	}
 
 mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 

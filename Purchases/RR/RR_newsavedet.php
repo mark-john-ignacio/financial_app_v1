@@ -11,6 +11,7 @@ $company = $_SESSION['companyid'];
 		//$dneed = $_REQUEST['dneed'];
 		$indexz = $_REQUEST['indx'];
 		$cItemNo = $_REQUEST['citmno'];
+		$cSKUNo = $_REQUEST['cskuno'];
 		$nQty = $_REQUEST['nqty'];
 		$cUnit = $_REQUEST['cuom'];
 		//$nPrice = $_REQUEST['nprice'];
@@ -51,7 +52,7 @@ $company = $_SESSION['companyid'];
 
 	$refcidenttran = $cSINo."P".$indexz;
 	
-	if (!mysqli_query($con,"INSERT INTO receive_t(`compcode`, `cidentity`, `ctranno`, `nident`, `creference`, `nrefidentity`, `citemno`, `nqty`, `nqtyorig`, `cunit`,`nfactor`, `cmainunit`, `cacctcode`) values('$company', '$refcidenttran', '$cSINo', '$indexz', '$cRef', '$nRefIdent', '$cItemNo', '$nQty', '$nQtyOrig', '$cUnit', $nFactor, '$cMainUOM', '$ItmAccnt')")){
+	if (!mysqli_query($con,"INSERT INTO receive_t(`compcode`, `cidentity`, `ctranno`, `nident`, `creference`, `nrefidentity`, `citemno`, `cskucode`, `nqty`, `nqtyorig`, `cunit`,`nfactor`, `cmainunit`, `cacctcode`) values('$company', '$refcidenttran', '$cSINo', '$indexz', '$cRef', '$nRefIdent', '$cItemNo', '$cSKUNo', '$nQty', '$nQtyOrig', '$cUnit', $nFactor, '$cMainUOM', '$ItmAccnt')")){
 		echo "False";
 		//echo "Error:".mysqli_error($con)."<br>";
 	}

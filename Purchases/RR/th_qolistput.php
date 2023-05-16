@@ -26,11 +26,12 @@ require_once "../../Connection/connection_string.php";
 
 	//echo $sql;
 	
-	$items = mysqli_query ($con, "Select * From items where compcode='$company' and cstatus='ACTIVE'");
+	$items = mysqli_query ($con, "Select cpartno, citemdesc, cunit, IFNULL(cskucode,'') as cskucode From items where compcode='$company' and cstatus='ACTIVE'");
 	if (mysqli_num_rows($items)!=0){
 		while($row = mysqli_fetch_array($items, MYSQLI_ASSOC)){
 			@$arrresq[$row['cpartno']]=$row['citemdesc'];
 			@$arrresquinit[$row['cpartno']]=$row['cunit'];
+			@$arrcskuid[$row['cpartno']]=$row['cskucode']; //null nalabas
 		}
 	}
 
@@ -71,6 +72,7 @@ require_once "../../Connection/connection_string.php";
 
 				$json['nident'] = $row['nident'];
 				$json['citemno'] = $row['citemno'];
+				$json['cskucode'] = @$arrcskuid[$row['citemno']];
 				$json['cdesc'] = @$arrresq[$row['citemno']];
 				$json['nqty'] = $remain;
 				$json['cunit'] = $row['cunit'];

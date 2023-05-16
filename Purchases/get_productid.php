@@ -8,9 +8,9 @@ require_once "../Connection/connection_string.php";
  	$company = $_SESSION['companyid'];
 	$c_id = $_REQUEST['c_id'];
 	
-		$sql = "select  A.cpartno, A.citemdesc, A.cunit
+		$sql = "select  A.cpartno, A.citemdesc, A.cunit, A.cskucode
 		from items A 
-		where A.compcode='$company' and A.cpartno = '".$c_id."' and A.cstatus='ACTIVE'";
+		where A.compcode='$company' and (A.cpartno = '".$c_id."' OR A.cskucode = '".$c_id."') and A.cstatus='ACTIVE'";
 
 	//echo $sql;
 	$rsd = mysqli_query($con,$sql);
@@ -18,12 +18,13 @@ require_once "../Connection/connection_string.php";
 		while($rs = mysqli_fetch_array($rsd, MYSQLI_ASSOC)) {
 		 
 		 $c_prodid = $rs['cpartno'];
+		 $c_cskuid = $rs['cskucode'];
 		 $c_prodnme = $rs['citemdesc']; 
 		 $c_unit = $rs['cunit']; 
 		 
 		}
 		
-		echo $c_prodid.",".$c_prodnme.",".$c_unit;
+		echo $c_prodid.",".$c_prodnme.",".$c_unit.",".$c_cskuid;
 	} 
 	
 	else {

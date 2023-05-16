@@ -187,8 +187,9 @@ $company = $_SESSION['companyid'];
 	?>
       <div class="col-xs-12 nopadwdown">
         <div class="col-xs-3 nopadding">
-          <input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." width="25" tabindex="4"  autocomplete="off">
-        </div>
+          <input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Item/SKU Code..." width="25" tabindex="4"  autocomplete="off">
+					<input type="hidden" id="txtcskuid" name="txtcskuid">
+        </div> 
         <div class="col-xs-8 nopadwleft">
           <input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL+F) Search Product Name..." size="80" tabindex="5" autocomplete="off">
         </div>
@@ -199,6 +200,7 @@ $company = $_SESSION['companyid'];
 	 ?> 
       <input type="hidden" id="txtprodid" name="txtprodid">
       <input type="hidden" id="txtprodnme" name="txtprodnme">
+			<input type="hidden" id="txtcskuid" name="txtcskuid">
      <?php
 		}
 
@@ -233,7 +235,8 @@ $company = $_SESSION['companyid'];
 								<thead>
 									<tr>
 										<th style="border-bottom:1px solid #999">&nbsp;</th>
-										<th style="border-bottom:1px solid #999">Code</th>
+										<th style="border-bottom:1px solid #999">Item Code</th>
+										<th style="border-bottom:1px solid #999">SKU Code</th>
 										<th style="border-bottom:1px solid #999">Description</th>
 				            <th style="border-bottom:1px solid #999">UOM</th>
 										<th style="border-bottom:1px solid #999">Factor</th>
@@ -241,7 +244,7 @@ $company = $_SESSION['companyid'];
 										<!--<th style="border-bottom:1px solid #999">Price</th>
 										<th style="border-bottom:1px solid #999">Amount</th>
 										<th style="border-bottom:1px solid #999">Total Amt in <?//php echo $nvaluecurrbase; ?></th>-->
-				                        <!--<th style="border-bottom:1px solid #999">Date Expired</th>-->
+				            <!--<th style="border-bottom:1px solid #999">Date Expired</th>-->
 				            <th style="border-bottom:1px solid #999">&nbsp;</th>
 									</tr>
 								</thead>
@@ -571,6 +574,7 @@ $(function(){
 				$('#txtprodnme').val(item.cname).change(); 
 				$('#txtprodid').val(item.id); 
 				$("#hdnunit").val(item.cunit);
+				$("#txtcskuid").val(item.cskucode);
 				
 				addItemName();	
 				
@@ -583,65 +587,64 @@ $(function(){
 	$("#txtprodid").keydown(function(e){
 		if(e.keyCode == 13){
 
-		$.ajax({
-        url:'../get_productid.php',
-        data: 'c_id='+ $(this).val(),                 
-        success: function(value){
+			$.ajax({
+				url:'../get_productid.php',
+				data: 'c_id='+ $(this).val(),                 
+				success: function(value){
+				
+					var data = value.split(",");
+					$('#txtprodid').val(data[0]);
+					$('#txtprodnme').val(data[1]);
+					$('#hdnunit').val(data[2]);
+					$('#txtcskuid').val(data[3]);
 			
-            var data = value.split(",");
-            $('#txtprodid').val(data[0]);
-            $('#txtprodnme').val(data[1]);
-			$('#hdnunit').val(data[2]);
-		
 
-		if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
-			var rowCount = $('#MyTable tr').length;
-			var isItem = "NO";
-			var itemindex = 1;
-		
-			if(rowCount > 1){
-			 var cntr = rowCount-1;
-			 
-			 for (var counter = 1; counter <= cntr; counter++) {
-				// alert(counter);
-				if($("#txtprodid").val()==$("#txtitemcode"+counter).val()){
-					isItem = "YES";
-					itemindex = counter;
-					//alert($("#txtitemcode"+counter).val());
-					//alert(isItem);
-				//if prd id exist
+					if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
+						var rowCount = $('#MyTable tr').length;
+						var isItem = "NO";
+						var itemindex = 1;
+					
+						if(rowCount > 1){
+						var cntr = rowCount-1;
+						
+						for (var counter = 1; counter <= cntr; counter++) {
+							// alert(counter);
+							if($("#txtprodid").val()==$("#txtitemcode"+counter).val()){
+								isItem = "YES";
+								itemindex = counter;
+								//alert($("#txtitemcode"+counter).val());
+								//alert(isItem);
+							//if prd id exist
+							}
+						//for loop
+						}
+						//if rowcount >1
+						}
+					//if value is not blank
+					}
+			
+					if(isItem=="NO"){		
+
+				
+							myFunctionadd("","","","","","","");
+							//ComputeGross();	
+												
+						}
+						else{
+						//alert("ITEM NOT IN THE MASTERLIST!");
+						addqty();
+					}
+					
+					$("#txtprodid").val("");
+					$("#txtprodnme").val("");
+					$("#hdnunit").val("");
+					$("#txtcskuid").val("");
+	
+				//closing for success: function(value){
 				}
-			//for loop
-			 }
-		   //if rowcount >1
-		   }
-		//if value is not blank
-		 }
-		 
-		if(isItem=="NO"){		
-
-	
-				myFunctionadd("","","","","","","");
-				//ComputeGross();	
-									
-	    }
-	    else{
-			//alert("ITEM NOT IN THE MASTERLIST!");
-			addqty();
-		}
-		
-		$("#txtprodid").val("");
-		$("#txtprodnme").val("");
-		$("#hdnunit").val("");
- 
-	    //closing for success: function(value){
-	    }
-        }); 
-
-	
-		 
-		//if ebter is clicked
-		}
+			}); 
+	 	
+		}//if ebter is clicked
 		
 	});
 	
@@ -720,7 +723,7 @@ function addItemName(){
 		 
 	 if(isItem=="NO"){	
 
-			myFunctionadd("","","","","","","");		
+			myFunctionadd("","","","","","","","");		
 		//	ComputeGross();	
 	 }
 	 else{
@@ -732,6 +735,7 @@ function addItemName(){
 		$("#txtprodid").val("");
 		$("#txtprodnme").val("");
 		$("#hdnunit").val("");
+		$("#txtcskuid").val("");
 		
 	 }
 
@@ -740,6 +744,7 @@ function addItemName(){
 function myFunctionadd(nqty,nfactor,cmainunit,xref,nident){
 
 	var itmcode = document.getElementById("txtprodid").value;
+	var itmcsku = document.getElementById("txtcskuid").value;
 	var itmdesc = document.getElementById("txtprodnme").value;
 	var itmunit = document.getElementById("hdnunit").value;
 	//var dneeded = document.getElementById("date_received").value;
@@ -812,8 +817,15 @@ function myFunctionadd(nqty,nfactor,cmainunit,xref,nident){
 	tditmbtn = "<td width=\"50\">  <input class='btn btn-info btn-xs' type='button' id='ins" + itmcode + "' value='insert' /> </td>";
 	
 	tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+"<input type='hidden' value='"+itmxref+"' name=\"txtcreference\" id=\"txtcreference\"> <input type='hidden' value='"+itmident+"' name=\"txtnrefident\" id=\"txtnrefident\"> </td>";
+
+	if(itmcsku!==""){
+		tdskucode = "<td width=\"200\" style=\"padding:1px\">"+itmcsku+"<input type='hidden' value='"+itmcsku+"' name=\"txtcskuode\" id=\"txtcskuode\"> </td>";
+	}else{
+		tdskucode = "<td width=\"200\" style=\"padding:1px\"><input type='text' value='"+itmcsku+"' class='form-control input-xs' name=\"txtcskuode\" id=\"txtcskuode\"> </td>";
+	}
 	
-	tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\"> " + itmdesc + "</td>";
+	
+	tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px; padding:1px\"> " + itmdesc + "</td>";
 	
 	tditmunit = "<td width=\"80\"> " + uomoptions + "</td>";
 	
@@ -836,7 +848,7 @@ function myFunctionadd(nqty,nfactor,cmainunit,xref,nident){
 
   //+ tditmprice + tditmbaseamount+ tditmamount 
 
-	$('#MyTable > tbody:last-child').append('<tr style=\"padding-top:1px\">'+tditmbtn+tditmcode + tditmdesc + tditmunit + tditmfactor + tditmqty + tditmdel + '</tr>');
+	$('#MyTable > tbody:last-child').append('<tr style=\"padding-top:1px\">'+tditmbtn+tditmcode + tdskucode + tditmdesc + tditmunit + tditmfactor + tditmqty + tditmdel + '</tr>');
 
 
 									$("#del"+itmcode).on('click', function() {
@@ -1284,10 +1296,11 @@ function InsertSI(){
 					{	
 					   	console.log(data);
               $.each(data,function(index,item){
-						
+
 							$('#txtprodnme').val(item.cdesc); 
 							$('#txtprodid').val(item.citemno); 
 							$("#hdnunit").val(item.cunit); 
+							$("#txtcskuid").val(item.cskucode);
 
 							//if(index==0){
 							//	$("#selbasecurr").val(item.ccurrencycode).change();
@@ -1302,6 +1315,8 @@ function InsertSI(){
 								$("#txtprodid").val("");
 								$("#txtprodnme").val("");	
 								$("#hdnunit").val("");	
+								$("#txtcskuid").val("");
+
 			   
 					   });
 						
@@ -1448,6 +1463,7 @@ function chkform(){
 				var xcref = $(this).find('input[type="hidden"][name="txtcreference"]').val();
 				var crefidnt = $(this).find('input[type="hidden"][name="txtnrefident"]').val();
 				var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+				var cskuno = $(this).find('input[type="hidden"][name="txtcskuode"]').val();
 				var cuom = $(this).find('select[name="seluom"]').val();
 						if(cuom=="" || cuom==null){
 							var cuom = $(this).find('input[type="hidden"][name="seluom"]').val();
@@ -1469,7 +1485,7 @@ function chkform(){
 				
 				$.ajax ({
 					url: "RR_newsavedet.php",
-					data: { trancode: trancode, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, mainunit:mainunit, nfactor:nfactor, nqtyorig:nqtyOrig, xcref:xcref, crefidnt:crefidnt},
+					data: { trancode: trancode, indx: index, citmno: citmno, cskuno:cskuno, cuom: cuom, nqty:nqty, mainunit:mainunit, nfactor:nfactor, nqtyorig:nqtyOrig, xcref:xcref, crefidnt:crefidnt},
 					async: false,
 					success: function( data ) {
 						if(data.trim()=="False"){

@@ -320,7 +320,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		<div class="col-xs-12 nopadwdown"><b>Details</b></div>
 			<div class="col-xs-12 nopadwdown">
 				<div class="col-xs-3 nopadding">
-					<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." width="25" tabindex="4"  autocomplete="off">
+					<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Item/SKU Code..." width="25" tabindex="4"  autocomplete="off">
 				</div>
 				<div class="col-xs-6 nopadwleft">
 					<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL+F) Search Product Name..." size="80" tabindex="5" autocomplete="off">

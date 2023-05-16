@@ -14,6 +14,7 @@ require_once "../Connection/connection_string.php";
 		$json['id'] = $rs['cpartno'];
 		$json['cname'] = $rs['citemdesc'];
 		$json['cunit'] = $rs['cunit'];
+		$json['cskucode'] = $rs['cskucode'];
 
 		$json2[] = $json;
 	
