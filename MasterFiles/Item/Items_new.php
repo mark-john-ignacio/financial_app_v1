@@ -56,19 +56,28 @@ $company = $_SESSION['companyid'];
 
         <div class="col-xs-12">
             <div class="col-xs-2 nopadwtop">
-            <b>Item Code*</b>
-        </div>
-        
-        <div class="col-xs-3 nopadwtop">
-          <div class="col-xs-8 nopadwtop">
-                        <input type="text" class="form-control input-sm" id="txtcpartno" name="txtcpartno" tabindex="1" placeholder="Input Item Code.." required autocomplete="off" />
-                    </div>      
-        </div>
-          
-        <div class="col-xs-4 nopadwtop">        
-           <div id="itmcode_err" style="padding: 5px 10px;"></div>
-        </div>           
+                <b>Item Code*</b>
             </div>
+        
+            <div class="col-xs-3 nopadwtop">
+                <input type="text" class="form-control input-sm" id="txtcpartno" name="txtcpartno" tabindex="1" placeholder="Input Item Code.." required autocomplete="off" maxlength="50"/>     
+            </div>
+
+            <div class="col-xs-4 nopadwtop">        
+                <div id="itmcode_err" style="padding: 5px 10px;"></div>
+            </div>  
+        </div> 
+
+        <div class="col-xs-12">
+            <div class="col-xs-2 nopadwtop">
+                <b>SKU Code</b>
+            </div>
+        
+            <div class="col-xs-6 nopadwtop">
+                <input type="text" class="form-control input-sm" id="txtcSKU" name="txtcSKU" tabindex="1" placeholder="Input Item SKU.." required autocomplete="off" maxlength="255" /> 
+            </div>
+                   
+        </div>
 
        <div class="col-xs-12">
             <div class="col-xs-2 nopadwtop">
@@ -78,7 +87,7 @@ $company = $_SESSION['companyid'];
         <div class="col-xs-6 nopadwtop">
            <!-- <input type="text" class="form-control input-sm" id="txtcdesc" name="txtcdesc" tabindex="2" placeholder="Input Item Description.." required autocomplete="off" />-->
 
-            <textarea class="form-control input-sm" id="txtcdesc" name="txtcdesc" tabindex="2" placeholder="Input Item Description.." required autocomplete="off">
+            <textarea class="form-control input-sm" id="txtcdesc" name="txtcdesc" tabindex="2" placeholder="Input Item Description.." required autocomplete="off" maxlength="500">
 
             </textarea>
                 </div>        
@@ -225,13 +234,13 @@ $company = $_SESSION['companyid'];
 
             <div class="col-xs-12">
                 <div class="col-xs-2 nopadwtop">
-                    <b>Tax Code</b>
+                    <b>VAT Code</b>
                 </div>
                 
                 <div class="col-xs-4 nopadwtop">
                 <select id="seltax" name="seltax" class="form-control input-sm selectpicker"  tabindex="4">
                     <?php
-                        $sql = "select * from taxcode where compcode='$company' and cstatus='ACTIVE' order by nidentity";
+                        $sql = "select * from vatcode where compcode='$company' and cstatus='ACTIVE' order by nidentity";
                         $result=mysqli_query($con,$sql);
                     if (!mysqli_query($con, $sql)) {
                         printf("Errormessage: %s\n", mysqli_error($con));
@@ -240,7 +249,7 @@ $company = $_SESSION['companyid'];
                     while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
                         {
                     ?>   
-                    <option value="<?php echo $row['ctaxcode'];?>"> <?php echo $row['ctaxdesc'];?> - <?php echo $row['nrate']."%";?>
+                    <option value="<?php echo $row['cvatcode'];?>"> <?php echo $row['cvatdesc'];?> - <?php echo number_format($row['nrate'])."%";?>
                     </option>
                     <?php
                         }

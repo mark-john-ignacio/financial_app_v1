@@ -17,6 +17,7 @@ function chkgrp($valz) {
 $company = $_SESSION['companyid'];
 
 	$cItemNo = strtoupper($_REQUEST['txtcpartno']);
+	$cSKUCode =  mysqli_real_escape_string($con, strtoupper($_REQUEST['txtcSKU']));
 	$cItemDesc =  mysqli_real_escape_string($con, strtoupper($_REQUEST['txtcdesc']));
 	$cNotes = chkgrp(mysqli_real_escape_string($con, strtoupper($_REQUEST['txtcnotes'])));
 	
@@ -76,7 +77,7 @@ $company = $_SESSION['companyid'];
 
 	
 	//INSERT NEW ITEM
-	if (!mysqli_query($con, "INSERT INTO `items`(`compcode`, `cpartno`, `citemdesc`, `cunit`, `cclass`, `ctype`, `ctaxcode`, `cpricetype`, `nmarkup`, `cacctcodesales`, `cacctcodewrr`, `cacctcodedr`, `cacctcoderet`, `cacctcodecog`, `cGroup1`, `cGroup2`, `cGroup3`, `cGroup4`, `cGroup5`, `cGroup6`, `cGroup7`, `cGroup8`, `cGroup9`, `cGroup10`, `cnotes`, `lSerial`, `lbarcode`, `lpack`, `ninvmin` , `ninvmax` , `ninvordpt` , `csalestype`, `ctradetype`) VALUES ('$company', '$cItemNo', '$cItemDesc', '$cUnit', '$cClass', '$cType', '$Seltax', '$PriceTyp', '$nMarkUp', '$SalesCode', '$WRRCode', '$DRCode', '$SRetCode', '$COGCode', $cGrp1, $cGrp2, $cGrp3, $cGrp4, $cGrp5, $cGrp6, $cGrp7, $cGrp8, $cGrp9, $cGrp10, $cNotes,$chkSer,$chkBCode,$chkPckd,$InvMin,$InvMax,$InvRoPt,'$SelSITyp','$cTradeType')"));	
+	if (!mysqli_query($con, "INSERT INTO `items`(`compcode`, `cpartno`, `cskucode`, `citemdesc`, `cunit`, `cclass`, `ctype`, `ctaxcode`, `cpricetype`, `nmarkup`, `cacctcodesales`, `cacctcodewrr`, `cacctcodedr`, `cacctcoderet`, `cacctcodecog`, `cGroup1`, `cGroup2`, `cGroup3`, `cGroup4`, `cGroup5`, `cGroup6`, `cGroup7`, `cGroup8`, `cGroup9`, `cGroup10`, `cnotes`, `lSerial`, `lbarcode`, `lpack`, `ninvmin` , `ninvmax` , `ninvordpt` , `csalestype`, `ctradetype`) VALUES ('$company', '$cItemNo', '$cSKUCode', '$cItemDesc', '$cUnit', '$cClass', '$cType', '$Seltax', '$PriceTyp', '$nMarkUp', '$SalesCode', '$WRRCode', '$DRCode', '$SRetCode', '$COGCode', $cGrp1, $cGrp2, $cGrp3, $cGrp4, $cGrp5, $cGrp6, $cGrp7, $cGrp8, $cGrp9, $cGrp10, $cNotes,$chkSer,$chkBCode,$chkPckd,$InvMin,$InvMax,$InvRoPt,'$SelSITyp','$cTradeType')"));	
 	{
 		if(mysqli_error($con)!=""){
 			echo "Error Main: ".mysqli_error($con);

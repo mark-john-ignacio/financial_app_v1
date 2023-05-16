@@ -56,7 +56,8 @@ include('../../include/access2.php');
 				if (mysqli_num_rows($sqlhead)!=0) {
 					while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
 
-						$cItemNo = $row['cpartno'];
+						$cItemNo = $row['cpartno']; 
+                        $cSKUCode = $row['cskucode'];
 						$cItemDesc = $row['citemdesc'];
 						$cNotes = $row['cnotes'];
 
@@ -153,7 +154,7 @@ include('../../include/access2.php');
         
         <div class="col-xs-3 nopadwtop">
           <div class="col-xs-8 nopadwtop">
-			<input type="text" class="form-control input-sm" id="txtcpartno" name="txtcpartno" tabindex="1" placeholder="Input Item Code.." required autocomplete="off" value="<?php echo $cItemNo;?>" maxlength="40" onKeyUp="chkSIEnter(event.keyCode,'frmITEM');" />
+			<input type="text" class="form-control input-sm" id="txtcpartno" name="txtcpartno" tabindex="1" placeholder="Input Item Code.." required autocomplete="off" value="<?php echo $cItemNo;?>" maxlength="40" onKeyUp="chkSIEnter(event.keyCode,'frmITEM');" maxlength="50"/>
             
             <input type="hidden" name="hdncpartno" id="hdncpartno" value="<?php echo $cItemNo;?>">
           </div>
@@ -167,6 +168,17 @@ include('../../include/access2.php');
        </div>
 
        <div class="col-xs-12">
+            <div class="col-xs-2 nopadwtop">
+                <b>SKU Code</b>
+            </div>
+        
+            <div class="col-xs-6 nopadwtop">
+                <input type="text" class="form-control input-sm" id="txtcSKU" name="txtcSKU" tabindex="1" placeholder="Input Item SKU.." required autocomplete="off" value="<?php echo $cSKUCode;?>" maxlength="255"/> 
+            </div>
+                   
+        </div>
+
+       <div class="col-xs-12">
     	<div class="col-xs-2 nopadwtop">
         	<b>Description*</b>
         </div>
@@ -174,7 +186,7 @@ include('../../include/access2.php');
         <div class="col-xs-6 nopadwtop">
 			<!--<input type="text" class="form-control input-sm" id="txtcdesc" name="txtcdesc" tabindex="2" value="" placeholder="Input Item Description.." required autocomplete="off" maxlength="90"/>-->
 
-            <textarea class="form-control input-sm" id="txtcdesc" name="txtcdesc" tabindex="2" placeholder="Input Item Description.." required autocomplete="off"><?php echo htmlentities($cItemDesc, ENT_QUOTES); ?></textarea>
+            <textarea class="form-control input-sm" id="txtcdesc" name="txtcdesc" tabindex="2" placeholder="Input Item Description.." required autocomplete="off" maxlength="500"><?php echo htmlentities($cItemDesc, ENT_QUOTES); ?></textarea>
 
 		</div>
         

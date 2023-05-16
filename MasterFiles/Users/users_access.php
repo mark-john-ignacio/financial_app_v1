@@ -407,8 +407,8 @@ xmlhttp.send();
 		 </div>
         </div>
          
-        <br>
-        <b><u><i>Bank Master List</i></u></b>
+    <br>
+    <b><u><i>Bank Master List</i></u></b>
 		<div style="padding-left:10px;">
          <div class="col-xs-12 nopadwleft">
          	<div class="col-xs-2 nopadding">
@@ -423,21 +423,36 @@ xmlhttp.send();
 		 </div>
 		</div>
 
-        
-        <br> 
-        <b><u><i>Users List</i></u></b>
+    <br>
+    <b><u><i>Sections List</i></u></b>
 		<div style="padding-left:10px;">
          <div class="col-xs-12 nopadwleft">
          	<div class="col-xs-2 nopadding">
-            	<label><input type="checkbox" name="chkAcc[]" value="users.php" id="chkBox13" <?=(in_array("users.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Classification List</label>
+            	<label><input type="checkbox" name="chkAcc[]" value="Locations.php" id="chkBox157" <?=(in_array("Locations.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;View List</label>
             </div>
             <div class="col-xs-2 nopadding">
-            	<label><input type="checkbox" name="chkAcc[]" value="users_add.php" id="chkBox14" <?=(in_array("users_add.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Add New</label>
+            	<label><input type="checkbox" name="chkAcc[]" value="Locations_New.php" id="chkBox158" <?=(in_array("Locations_New.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Add New</label>
             </div>
             <div class="col-xs-2 nopadding">
-            	<label><input type="checkbox" name="chkAcc[]" value="users_access.php" id="chkBox15" <?=(in_array("users_access.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
+            	<label><input type="checkbox" name="chkAcc[]" value="Locations_Edit.php" id="chkBox159" <?=(in_array("Locations_Edit.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
             </div>
 		 </div>
+		</div>
+        
+    <br> 
+    <b><u><i>Users List</i></u></b>
+		<div style="padding-left:10px;">
+      <div class="col-xs-12 nopadwleft">
+        <div class="col-xs-2 nopadding">
+          <label><input type="checkbox" name="chkAcc[]" value="users.php" id="chkBox13" <?=(in_array("users.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Classification List</label>
+        </div>
+        <div class="col-xs-2 nopadding">
+          <label><input type="checkbox" name="chkAcc[]" value="users_add.php" id="chkBox14" <?=(in_array("users_add.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Add New</label>
+        </div>
+        <div class="col-xs-2 nopadding">
+          <label><input type="checkbox" name="chkAcc[]" value="users_access.php" id="chkBox15" <?=(in_array("users_access.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
+        </div>
+		  </div>
 		</div>
         
 		<br> 

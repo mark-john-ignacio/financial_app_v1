@@ -19,6 +19,7 @@ $mymsg = "True";
 $myerror = "True";
 
 	$cItemNo = strtoupper($_REQUEST['txtcpartno']);
+	$SKUCode =  mysqli_real_escape_string($con, strtoupper($_REQUEST['txtcSKU']));
 	$cItemDesc =  mysqli_real_escape_string($con, strtoupper($_REQUEST['txtcdesc']));
 	$cNotes = chkgrp(mysqli_real_escape_string($con, strtoupper($_REQUEST['txtcnotes'])));
 	
@@ -76,7 +77,7 @@ $myerror = "True";
 		$chkPckd = 0;
 	}
 	//INSERT NEW ITEM , `cpricetype`='$PriceTyp'
-	if (!mysqli_query($con, "UPDATE `items` set `citemdesc` = '$cItemDesc', `cunit` = '$cUnit', `cclass` = '$cClass', `ctype` = '$cType', `ctaxcode` = '$Seltax', `cpricetype`='$PriceTyp', `nmarkup`='$nMarkUp', `cacctcodesales` = '$SalesCode', `cacctcodewrr` = '$WRRCode', `cacctcodedr` = '$DRCode', `cacctcoderet` = '$SRetCode', `cacctcodecog` = '$COGCode', `cGroup1` = $cGrp1, `cGroup2` = $cGrp2, `cGroup3` = $cGrp3, `cGroup4` = $cGrp4, `cGroup5` = $cGrp5, `cGroup6` = $cGrp6, `cGroup7` = $cGrp7, `cGroup8` = $cGrp8, `cGroup9` = $cGrp9, `cGroup10` = $cGrp10, `cnotes` = $cNotes, `lSerial` = $chkSer, `lbarcode` = $chkBCode, `lpack` = $chkPckd, `ninvmin` = $InvMin , `ninvmax` = $InvMax , `ninvordpt` = $InvRoPt , `csalestype` = '$SelSITyp', `ctradetype` = '$cTradeType' where `compcode` = '$company' and `cpartno` = '$cItemNo'"));	
+	if (!mysqli_query($con, "UPDATE `items` set `cskucode` = '$SKUCode', `citemdesc` = '$cItemDesc', `cunit` = '$cUnit', `cclass` = '$cClass', `ctype` = '$cType', `ctaxcode` = '$Seltax', `cpricetype`='$PriceTyp', `nmarkup`='$nMarkUp', `cacctcodesales` = '$SalesCode', `cacctcodewrr` = '$WRRCode', `cacctcodedr` = '$DRCode', `cacctcoderet` = '$SRetCode', `cacctcodecog` = '$COGCode', `cGroup1` = $cGrp1, `cGroup2` = $cGrp2, `cGroup3` = $cGrp3, `cGroup4` = $cGrp4, `cGroup5` = $cGrp5, `cGroup6` = $cGrp6, `cGroup7` = $cGrp7, `cGroup8` = $cGrp8, `cGroup9` = $cGrp9, `cGroup10` = $cGrp10, `cnotes` = $cNotes, `lSerial` = $chkSer, `lbarcode` = $chkBCode, `lpack` = $chkPckd, `ninvmin` = $InvMin , `ninvmax` = $InvMax , `ninvordpt` = $InvRoPt , `csalestype` = '$SelSITyp', `ctradetype` = '$cTradeType' where `compcode` = '$company' and `cpartno` = '$cItemNo'"));	
 	{
 		if(mysqli_error($con)!=""){
 			$myerror =  "Error Main: ".mysqli_error($con);
