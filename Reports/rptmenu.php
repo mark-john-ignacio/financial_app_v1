@@ -149,10 +149,14 @@ function resizeIframe(obj) {
 						<!--<li>
 							<a href="" onClick="setI('A','ARStat.php')" data-toggle="tab">
 							<i class="fa fa-book"></i> Sales Book </a>
+						</li>-->
+            <li>
+							<a href="" onClick="setI('A','MonthlyVAT.php')" data-toggle="tab">
+							<i class="fa fa-book"></i> Monthly Ouput VAT</a>
 						</li>
             <li>
               <a href="" onClick="setI('A','ARAgeing.php')" data-toggle="tab">
-              <i class="fa fa-book"></i> AR Ageing </a>-->
+              <i class="fa fa-book"></i> AR Ageing </a>
             </li>            
           </ul>
 					</div>
@@ -172,6 +176,14 @@ function resizeIframe(obj) {
   						<li>
   							<a href="" onClick="setI('A','CDJ.php')" data-toggle="tab">
   							<i class="fa fa-book"></i> Cash Disbursement Journal </a>
+  						</li>
+              <li>
+  							<a href="" onClick="setI('A','Monthly_IVat.php')" data-toggle="tab">
+  							<i class="fa fa-book"></i> Monthly Input VAT and W/Tax </a>
+  						</li>
+							<li>
+  							<a href="" onClick="setI('A','APAgeing.php')" data-toggle="tab">
+  							<i class="fa fa-book"></i> AP Ageing Report </a>
   						</li>
             </ul>
   					</div>

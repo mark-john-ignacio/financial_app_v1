@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "ARAgeing.php";
+$_SESSION['pageid'] = "APAgeing.php";
 
 include('../Connection/connection_string.php');
 include('../include/denied.php');
@@ -29,7 +29,7 @@ $company = $_SESSION['companyid'];
 
 <body style="padding-left:50px;">
 <center>
-<b><u><font size="+1">AR Ageing Report</font></u></b>
+<b><u><font size="+1">AP Ageing Report</font></u></b>
 
 </center>
 <br>
@@ -50,13 +50,13 @@ $company = $_SESSION['companyid'];
 
 		    </div>
         <div class="col-xs-5 nopadwleft">
-
+<!--
           <select class="form-control input-sm" id="selstat" name="selstat">
             <option value="">ALL Transactions</options>
-            <option value="Trade">Trade</options>
-            <option value="Non-Trade">Non-Trade</options>
+            <option value="1">Posted</options>
+            <option value="0">Unposted</options>
           </select>
-
+-->
         </div>
      </div>   
     </td>
@@ -78,7 +78,7 @@ $company = $_SESSION['companyid'];
   <div class="col-xs-6 col-xs-offset-3">
 
     <form action="th_agesave.php" method="post" name="frmage" id="frmage">
-      <input type="hidden" name="hndtyp" id="hndtyp" value="AR">
+      <input type="hidden" name="hndtyp" id="hndtyp" value="AP">
       <input type="hidden" name="hdncnts" id="hdncnts" value="">
       <h4>Ageing Periods</h4>
         <div class="col-xs-12 nopadding">
@@ -103,7 +103,7 @@ $company = $_SESSION['companyid'];
               <th width="50px">&nbsp;</th>
             </tr>
             <?php
-            $sql = "select * from ageing_days where compcode='$company' and cagetype='AR' order by id";
+            $sql = "select * from ageing_days where compcode='$company' and cagetype='AP' order by id";
             $result=mysqli_query($con,$sql);
             $cntr = 0;
                 while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
@@ -152,12 +152,12 @@ $(document).ready(function(e) {
     });
 
     $('#btnView').on("click", function(){
-        $('#frmrep').attr("action", "Accounting/ARAgeing.php");
+        $('#frmrep').attr("action", "Accounting/APAgeing.php");
         $('#frmrep').submit();
     });
 
     $('#btnexcel').on("click", function(){
-        $('#frmrep').attr("action", "Accounting/ARAgeing_xls.php");
+        $('#frmrep').attr("action", "Accounting/APAgeing_xls.php");
         $('#frmrep').submit();
     });
 
