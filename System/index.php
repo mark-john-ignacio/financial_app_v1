@@ -1294,6 +1294,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 																							?> 
 																						</select>
 																					</td>
+																					
 																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
 																					<button class="btn btn-danger btn-sm" type="button" onclick="qotransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
 																				</td>
@@ -1304,6 +1305,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 																					$('#selqosuser<?=$row['qo_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
 																					$('#selqoitmtyp<?=$row['qo_approval_id'].$cntr?>').select2({width: '100%'});
 																					$('#selqosutyp<?=$row['qo_approval_id'].$cntr?>').select2({width: '100%'});
+																					$('#selqotrtyp<?=$row['qo_approval_id'].$cntr?>').select2({width: '100%'});
 																				});
 																			</script>
 																		<?php
@@ -1406,7 +1408,26 @@ if (mysqli_num_rows($sqlhead)!=0) {
 																						?> 
 																					</select>
 																				</td>
-																				
+																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																						<select required multiple class="form-control" name="selqotrtyp<?=$row['qo_approval_id'].$cntr?>[]" id="selqotrtyp<?=$row['qo_approval_id'].$cntr?>" >
+
+																							<option value='ALL' <?=($row['qotype']=="ALL") ? "selected" : ""?>> ALL</option>
+
+																							<?php
+																								foreach(@$qortype as $rssup){
+																									
+																									$xsc = "";
+																									if($row['qotype']!=="" && $row['qotype']!==null){
+																										if(in_array($rssup['ccode'], explode(",",$row['qotype']))){
+																											$xsc = "selected";
+																										}
+																									}
+
+																									echo "<option value='".$rssup['ccode']."' ".$xsc."> ".$rssup['cdesc']." </option>";
+																								}
+																							?> 
+																						</select>
+																					</td>
 																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
 																					<button class="btn btn-danger btn-sm" type="button" onclick="qotransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
 																				</td>
@@ -1417,6 +1438,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 																					$('#selqosuser<?=$row['qo_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
 																					$('#selqoitmtyp<?=$row['qo_approval_id'].$cntr?>').select2({width: '100%'});
 																					$('#selqosutyp<?=$row['qo_approval_id'].$cntr?>').select2({width: '100%'});
+																					$('#selqotrtyp<?=$row['qo_approval_id'].$cntr?>').select2({width: '100%'});
 																				});
 																			</script>
 																		<?php
