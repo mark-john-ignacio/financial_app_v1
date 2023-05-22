@@ -26,6 +26,8 @@ $compname = php_uname('n');
 
 $status = "True";
 
+$tranqotyp = $_REQUEST['qotyp']; 
+
 
 //email notif parameters
 $isemail = 0;
@@ -329,7 +331,7 @@ if($_REQUEST['typ']=="SEND"){
 		while($row = mysqli_fetch_array($resPOApps, MYSQLI_ASSOC)){
 
 			//pag ALL criteria insert na for approval
-			if(in_array("ALL", explode(",",$row['items'])) && in_array("ALL", explode(",",$row['suppliers']))){
+			if(in_array("ALL", explode(",",$row['items'])) && in_array("ALL", explode(",",$row['suppliers'])) && ($row['qotype'] == "ALL" || $row['qotype'] == $tranqotyp)){
 
 				$sql = "INSERT INTO quote_trans_approvals (`compcode`,`ctranno`,`nlevel`,`userid`) values ('$company','$tranno','".$row['qo_approval_id']."','".$row['userid']."')";
 

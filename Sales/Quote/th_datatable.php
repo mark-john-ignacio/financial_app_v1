@@ -68,6 +68,7 @@ foreach($result as $row)
  $sub_array[] = $chexst;
  $sub_array[] = ucfirst($row['quotetype']);
  $sub_array[] = $row['lsent'];
+ $sub_array[] = $row['quotetype'];
  $data[] = $sub_array;
 }
 

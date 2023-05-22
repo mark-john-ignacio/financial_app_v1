@@ -116,7 +116,8 @@ $company = $_SESSION['companyid'];
                         <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
                         
                         <input type="hidden" id="typ" name="typ" value = "">
-                        <input type="hidden" id="modzx" name="modzx" value = "">
+                        <input type="hidden" id="modzx" name="modzx" value = ""> 
+												<input type="hidden" id="modqotyp" name="modqotyp" value = "">
                     </center>
                 </p>
                </div> 
@@ -181,10 +182,11 @@ function editfrm(x){
 	document.getElementById("frmedit").submit();
 }
 
-function trans(x,num){
+function trans(x,num,qotyp){
 
 	$("#typ").val(x);
 	$("#modzx").val(num);
+	$("#modqotyp").val(qotyp);
 
 		$("#AlertMsg").html("");
 							
@@ -206,6 +208,7 @@ function trans_send(idz){
 		if(idz=="OK"){
 			var x = $("#typ").val();
 			var num = $("#modzx").val();
+			var qotyp = $("#modqotyp").val();
 			
 			if(x=="POST"){
 				var msg = "POSTED";
@@ -219,7 +222,7 @@ function trans_send(idz){
 
 				$.ajax ({
 					url: "Quote_Tran.php",
-					data: { x: num, typ: x },
+					data: { x: num, typ: x, qotyp: qotyp },
 					dataType: "json",
 					beforeSend: function() {
 						$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
@@ -351,11 +354,11 @@ function fill_datatable(searchByName = ''){
 
 						var mgsx = "";
 						if(full[9]==0){
-							mgsx = mgsx + "<a href=\"javascript:;\" onClick=\"trans('SEND','"+full[0]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-share\" style=\"font-size:20px;color: #ffb533;\" title=\"Send transaction\"></i></a>";
+							mgsx = mgsx + "<a href=\"javascript:;\" onClick=\"trans('SEND','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-share\" style=\"font-size:20px;color: #ffb533;\" title=\"Send transaction\"></i></a>";
 						}else{
 
 							if(full[5]==0 && full[6] == 0 && full[9] == 1){
-								mgsx = mgsx + "<a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a>";
+								mgsx = mgsx + "<a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a>";
 							}
 						}
 

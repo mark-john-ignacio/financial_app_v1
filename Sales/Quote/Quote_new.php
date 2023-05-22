@@ -32,6 +32,21 @@ $getfctrs = mysqli_query($con,"SELECT * FROM `items_factor` where compcode='$com
 		}
 	}
 
+
+
+	$postbilling = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'qotype_billing'");
+	if(mysqli_num_rows($sql) == 0){
+		$postbilling = "False";
+	}
+
+
+	$postquote = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'qotype_quote'");
+	if(mysqli_num_rows($sql) == 0){
+		$postquote = "False";
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -100,8 +115,19 @@ $getfctrs = mysqli_query($con,"SELECT * FROM `items_factor` where compcode='$com
 					</div>
 				<div class="col-xs-2 nopadding">
 					<select id="selqotyp" name="selqotyp" class="form-control input-sm selectpicker"  tabindex="1">
+						<?php						
+							if($postbilling=="True"){
+						?>
 						<option value="quote">Quote</option>
+						<?php
+							}
+												
+							if($postquote=="True"){
+						?>
 						<option value="billing">Billing</option>
+						<?php
+							}
+						?>
 					</select>
 				</div>
 				<div class="col-xs-2">
