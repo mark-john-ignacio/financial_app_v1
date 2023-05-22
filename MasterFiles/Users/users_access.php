@@ -495,6 +495,14 @@ xmlhttp.send();
             <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="Quote_unpost.php" id="chkBox111" <?=(in_array("Quote_unpost.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Un-Post</label>
             </div>
+
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="qotype_billing" id="chkBox111" <?=(in_array("qotype_billing",@$arrpgist)) ? "checked" : "";?>>&nbsp;Billing</label>
+            </div>
+
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="qotype_quote" id="chkBox111" <?=(in_array("qotype_quote",@$arrpgist)) ? "checked" : "";?>>&nbsp;Quotation</label>
+            </div>
 		</div>
 		</div>
 
@@ -1090,6 +1098,9 @@ xmlhttp.send();
           <label><input type="checkbox" name="chkAcc[]" value="CashBook.php" id="chkBox163" <?=(in_array("CashBook.php",@$arrpgist)) ? "checked" : "";?>>
           Cash Receipts Journal</label>
           <br>
+          <label><input type="checkbox" name="chkAcc[]" value="MonthlyVAT.php" id="chkBox163" <?=(in_array("MonthlyVAT.php",@$arrpgist)) ? "checked" : "";?>>
+          BIR - Monthly VAT</label>
+          <br>
           <label><input type="checkbox" name="chkAcc[]" value="ARAgeing.php" id="chkBox164" <?=(in_array("ARAgeing.php",@$arrpgist)) ? "checked" : "";?>>
           AR Ageing</label>
           <br>
@@ -1101,6 +1112,12 @@ xmlhttp.send();
           <br>
           <label><input type="checkbox" name="chkAcc[]" value="CDJ.php" id="chkBox168" <?=(in_array("CDJ.php",@$arrpgist)) ? "checked" : "";?>>
           Cash Disbursement Journal</label>
+          <br>
+          <label><input type="checkbox" name="chkAcc[]" value="Monthly_IVAT.php" id="chkBox168" <?=(in_array("Monthly_IVAT.php",@$arrpgist)) ? "checked" : "";?>>
+          Monthly Input VAT and W/Tax Report</label>
+          <br>
+          <label><input type="checkbox" name="chkAcc[]" value="APAgeing.php" id="chkBox168" <?=(in_array("APAgeing.php",@$arrpgist)) ? "checked" : "";?>>
+          AP Ageing Report</label>
           <br>
           <label><input type="checkbox" name="chkAcc[]" value="GJournal.php" id="chkBox169" <?=(in_array("GJournal.php",@$arrpgist)) ? "checked" : "";?>>
           General Journal</label>
