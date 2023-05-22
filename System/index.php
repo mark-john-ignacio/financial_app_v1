@@ -51,12 +51,14 @@ if (mysqli_num_rows($sqlhead)!=0) {
 ////	}
 //}
 
+@$qortype = array(array('ccode' => 'quote', 'cdesc' => 'Quotation'),array('ccode' => 'billing', 'cdesc' => 'Billing'));
+
 ?>
 <html>
 
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title>Coop Financials</title>
+		<title>Myx Financials</title>
 		<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css?v=<?php echo time();?>">
 		<link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 		<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
@@ -81,6 +83,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		<input type='hidden' id='atitemtype' value='<?=json_encode(@$itmtype);?>'>
 		<input type='hidden' id='atsupptype' value='<?=json_encode(@$suptype);?>'>
 		<input type='hidden' id='atuserslst' value='<?=json_encode(@$ursnmse);?>'>
+		<input type='hidden' id='qotyplst' value='<?=json_encode(@$qortype);?>'>
 
 		<fieldset>
 				<legend>System Setup</legend>
@@ -91,7 +94,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						<li><a data-toggle="tab" href="#sales">Sales &amp; Delivery</a></li>
 						<li><a data-toggle="tab" href="#purch">Purchases</a></li>
 						<li><a data-toggle="tab" href="#acct">Accounting</a></li>
-						<!--<li><a data-toggle="tab" href="#loan">Loan Mgr</a></li>-->
+						<li><a data-toggle="tab" href="#invntry">Inventory</a></li>
 						<li><a data-toggle="tab" href="#rpts">Reports</a></li>
 					</ul>
 							
@@ -610,51 +613,6 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 									</div>	
 
-								<p data-toggle="collapse" data-target="#vatcodecollapse"> <i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Customers Business Type</b></u></p>
-										
-									<div class="collapse" id="vatcodecollapse">
-										<div class="col-xs-12 nopadwdown">   
-											<div style="display:inline" class="col-xs-3">
-												<button class="btn btn-xs btn-primary" name="btnaddvat" id="btnaddvat"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add</button>
-												<button class="btn btn-xs btn-success" name="btnvat" id="btnvat"><i class="fa fa-save"></i>&nbsp; &nbsp;Save Vat Exempt Codes</button>
-											</div>
-														
-											<div style="display:inline" class="col-xs-5"> 
-												<div class="alert alert-danger nopadding" id="VATAlertMsg">                              
-												</div>
-												<div class="alert alert-success nopadding" id="VATAlertDone">                              
-												</div>
-											</div>                 
-										</div>
-
-										<div class="col-xs-12 nopadding">
-											<div class="col-xs-1">
-												<b>Code</b> 
-											</div>
-														
-											<div class="col-xs-4">
-												<b>Description</b>  
-											</div>
-														
-											<div class="col-xs-3">
-												<b>Remarks</b> 
-											</div>
-		
-											<div class="col-xs-1">
-												<b>Compute</b> 
-											</div>
-														
-											<div class="col-xs-2">
-												<b>Status</b> 
-											</div>                      
-										</div>
-
-										<div style="height:20vh; border:1px solid #CCC" class="col-lg-12 nopadding pre-scrollable" id="TblVAT">
-													
-										</div>
-										
-									</div>
-								
 								<p data-toggle="collapse" data-target="#custermscollapse"> <i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Customers Terms</b></u></p>
 									
 									<div class="collapse" id="custermscollapse">
@@ -691,7 +649,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 												
 									</div>	
 
-								<p data-toggle="collapse" data-target="#taxcodecollapse"> <i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Items VAT Codes</b></u></p>
+								<!--
+								<p data-toggle="collapse" data-target="#taxcodecollapse"> <i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>VAT Codes</b></u></p>
 
 									<div class="collapse" id="taxcodecollapse">
 										<div class="col-xs-12 nopadwdown">   
@@ -731,7 +690,57 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										</div>
 												
 									</div>
+								-->		
+
+								<p data-toggle="collapse" data-target="#vatcodecollapse"> <i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>VAT Codes</b></u></p>
 										
+									<div class="collapse" id="vatcodecollapse">
+										<div class="col-xs-12 nopadwdown">   
+											<div style="display:inline" class="col-xs-3">
+												<button class="btn btn-xs btn-primary" name="btnaddvat" id="btnaddvat"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add</button>
+												<button class="btn btn-xs btn-success" name="btnvat" id="btnvat"><i class="fa fa-save"></i>&nbsp; &nbsp;Save Vat Codes</button>
+											</div>
+														
+											<div style="display:inline" class="col-xs-5"> 
+												<div class="alert alert-danger nopadding" id="VATAlertMsg">                              
+												</div>
+												<div class="alert alert-success nopadding" id="VATAlertDone">                              
+												</div>
+											</div>                 
+										</div>
+
+										<div class="col-xs-12 nopadding">
+											<div class="col-xs-1">
+												<b>Code</b> 
+											</div>
+
+											<div class="col-xs-1">
+												<b>Rate %</b> 
+											</div>
+														
+											<div class="col-xs-4">
+												<b>Description</b>  
+											</div>
+														
+											<div class="col-xs-3">
+												<b>Remarks</b> 
+											</div>
+		
+											<div class="col-xs-1">
+												<b>Compute</b> 
+											</div>
+														
+											<div class="col-xs-2">
+												<b>Status</b> 
+											</div>                      
+										</div>
+
+										<div style="height:20vh; border:1px solid #CCC;" class="col-lg-12 nopadwleft pre-scrollable" id="TblVAT">
+													
+										</div>
+										
+									</div>
+								
 								
 								<p data-toggle="collapse" data-target="#ewtcodecollapse"> <i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>EWT Codes</b></u></p>
 									
@@ -870,33 +879,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 						<!-- SALES SETUP -->
 							<div id="sales" class="tab-pane fade in">  
-
-								<div class="col-xs-12">
-									<div class="col-xs-2 nopadwtop">
-										<b>Inventory Checking</b>
-										<div id="divInvChecking" style="display:inline; padding-left:5px">
-										</div>
-									</div>                    
-									<div class="col-xs-3 nopadwtop">
-										<?php
-											$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='INVPOST'"); 
-							
-											if (mysqli_num_rows($result)!=0) {
-												$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
-												$nvalue = $all_course_data['cvalue']; 							
-											}
-											else{
-												$nvalue = "";
-											}
-										?>
-										<select class="form-control input-sm selectpicker" name="selchkinv" id="selchkinv" onChange="setparamval('INVPOST',this.value,'invchkmsg')">
-											<option value="1" <?php if ($nvalue==1) { echo "selected"; } ?>> Don't Check Available Inventory </option>
-											<option value="0" <?php if ($nvalue==0) { echo "selected"; } ?>> Always Check Available Inventory </option>
-										</select>
-									</div>                    
-									<div class="col-xs-1 nopadwtop" id="invchkmsg">
-									</div>                    
-								</div>                
+              
 								<div class="col-xs-12">
 									<div class="col-xs-2 nopadwtop">
 										<b>Customer's Credit Limit</b>
@@ -1039,7 +1022,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 											?>
 
 
-										<form action="th_saveqolevels.php" method="POST" name="frmPOLvls" id="frmPOLvls" onSubmit="return chkqolvlform();" target="_self" enctype="multipart/form-data">
+										<form action="th_saveqolevels.php" method="POST" name="frmPOLvls" id="frmPOLvls" onSubmit="return chkqolvlform();" target="_self">
 
 											<input type="hidden" name="tbLQL1count" id="tbLQL1count" value="0">
 											<input type="hidden" name="tbLQL2count" id="tbLQL2count" value="0">
@@ -1084,8 +1067,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 																			<tr>
 																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">User ID</td>
 																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Item Type</td>
-																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Supplier Type</td>
-																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Signature</td>
+																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Customer Type</td>
+																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Quote Type</td>
 																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px"><small>Delete</small></td>
 																			</tr>
 																		</thead>
@@ -1159,19 +1142,24 @@ if (mysqli_num_rows($sqlhead)!=0) {
 																						</select>
 																					</td>
 																					<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
-																					<?php
-																						if($row['sign']!=="" && $row['sign']!==null){
-																					?>
-																						<a href="javascript:;" title="Click to remove image" onclick="qotransset('sign',<?=$row['id']?>)">
-																							<img src = "<?=$row['sign']?>" height="50px" alt="Click to remove image">
-																						</a>
-																					<?php
-																						}else{
-																					?>
-																						<input type="file" name="qofilsign<?=$row['qo_approval_id'].$cntr?>" id="qofilsign<?=$row['qo_approval_id'].$cntr?>" value="">
-																					<?php
-																						}
-																					?>
+																						<select required multiple class="form-control" name="selqotrtyp<?=$row['qo_approval_id'].$cntr?>[]" id="selqotrtyp<?=$row['qo_approval_id'].$cntr?>" >
+
+																							<option value='ALL' <?=($row['qotype']=="ALL") ? "selected" : ""?>> ALL</option>
+
+																							<?php
+																								foreach(@$qortype as $rssup){
+																									
+																									$xsc = "";
+																									if($row['qotype']!=="" && $row['qotype']!==null){
+																										if(in_array($rssup['ccode'], explode(",",$row['qotype']))){
+																											$xsc = "selected";
+																										}
+																									}
+
+																									echo "<option value='".$rssup['ccode']."' ".$xsc."> ".$rssup['cdesc']." </option>";
+																								}
+																							?> 
+																						</select>
 																					</td>
 																					<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
 																						<button class="btn btn-danger btn-sm" type="button" onclick="qotransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
@@ -1183,6 +1171,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 																						$('#selqosuser<?=$row['qo_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
 																						$('#selqoitmtyp<?=$row['qo_approval_id'].$cntr?>').select2({width: '100%'});
 																						$('#selqosutyp<?=$row['qo_approval_id'].$cntr?>').select2({width: '100%'});
+																						$('#selqotrtyp<?=$row['qo_approval_id'].$cntr?>').select2({width: '100%'});
 																					});
 																				</script>
 																			<?php
@@ -1213,10 +1202,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 																<table cellpadding="3px" width="100%" border="0" style="font-size: 14px"  id="QOAPP2">
 																	<thead>
 																		<tr>
-																			<td style="padding-top: 5px">User ID</td>
-																			<td style="padding-top: 5px">Item Type</td>
-																			<td style="padding-top: 5px">Supplier Type</td>
-																			<td style="padding-top: 5px">Signature</td>
+																			<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">User ID</td>
+																			<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Item Type</td>
+																			<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Customer Type</td>
+																			<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Quote Type</td>
+																			<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px"><small>Delete</small></td>
 																		</tr>
 																	</thead>
 
@@ -1285,20 +1275,25 @@ if (mysqli_num_rows($sqlhead)!=0) {
 																					</select>
 																				</td>
 																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
-																				<?php
-																					if($row['sign']!=="" && $row['sign']!==null){
-																				?>
-																					<a href="javascript:;" title="Click to remove image" onclick="qotransset('sign',<?=$row['id']?>)">
-																						<img src = "<?=$row['sign']?>" height="50px" alt="Click to remove image">
-																					</a>
-																				<?php
-																					}else{
-																				?>
-																					<input type="file" name="qofilsign<?=$row['qo_approval_id'].$cntr?>" id="qofilsign<?=$row['qo_approval_id'].$cntr?>" value="">
-																				<?php
-																					}
-																				?>
-																				</td>
+																						<select required multiple class="form-control" name="selqotrtyp<?=$row['qo_approval_id'].$cntr?>[]" id="selqotrtyp<?=$row['qo_approval_id'].$cntr?>" >
+
+																							<option value='ALL' <?=($row['qotype']=="ALL") ? "selected" : ""?>> ALL</option>
+
+																							<?php
+																								foreach(@$qortype as $rssup){
+																									
+																									$xsc = "";
+																									if($row['qotype']!=="" && $row['qotype']!==null){
+																										if(in_array($rssup['ccode'], explode(",",$row['qotype']))){
+																											$xsc = "selected";
+																										}
+																									}
+
+																									echo "<option value='".$rssup['ccode']."' ".$xsc."> ".$rssup['cdesc']." </option>";
+																								}
+																							?> 
+																						</select>
+																					</td>
 																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
 																					<button class="btn btn-danger btn-sm" type="button" onclick="qotransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
 																				</td>
@@ -1323,6 +1318,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 														</div>
 
+													<!-- LEVEL 3 -->
 														<div id="qolevel3" class="tab-pane fade in">
 
 															<div class="col-xs-12 nopadding">
@@ -1338,10 +1334,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 																<table cellpadding="3px" width="100%" border="0" style="font-size: 14px" id="QOAPP3">
 																	<thead>
 																		<tr>
-																			<td style="padding-top: 5px">User ID</td>
-																			<td style="padding-top: 5px">Item Type</td>
-																			<td style="padding-top: 5px">Supplier Type</td>
-																			<td style="padding-top: 5px">Signature</td>
+																			<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">User ID</td>
+																			<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Item Type</td>
+																			<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Customer Type</td>
+																			<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Quote Type</td>
+																			<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px"><small>Delete</small></td>
 																		</tr>
 																	</thead>
 
@@ -1409,21 +1406,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 																						?> 
 																					</select>
 																				</td>
-																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
-																				<?php
-																					if($row['sign']!=="" && $row['sign']!==null){
-																				?>
-																					<a href="javascript:;" title="Click to remove image" onclick="qotransset('sign',<?=$row['id']?>)">
-																						<img src = "<?=$row['sign']?>" height="50px" alt="Click to remove image">
-																					</a>
-																				<?php
-																					}else{
-																				?>
-																					<input type="file" name="filsign<?=$row['qo_approval_id'].$cntr?>" id="filsign<?=$row['qo_approval_id'].$cntr?>" value="">
-																				<?php
-																					}
-																				?>
-																				</td>
+																				
 																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
 																					<button class="btn btn-danger btn-sm" type="button" onclick="qotransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
 																				</td>
@@ -1725,7 +1708,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 											?>
 
 
-										<form action="th_savepolevels.php" method="POST" name="frmPOLvls" id="frmPOLvls" onSubmit="return chkpolvlform();" target="_self" enctype="multipart/form-data">
+										<form action="th_savepolevels.php" method="POST" name="frmPOLvls" id="frmPOLvls" onSubmit="return chkpolvlform();" target="_self">
 
 											<input type="hidden" name="tbLVL1count" id="tbLVL1count" value="0">
 											<input type="hidden" name="tbLVL2count" id="tbLVL2count" value="0">
@@ -1754,7 +1737,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 													<!-- LEVEL 1 -->
 														<div id="level1" class="tab-pane fade in active">
-
+															<input type="hidden" data-id="2" id = "lvlamt1" name = "lvlamt1" value="0">
 															<div class="col-xs-12 nopadding">
 											
 																<div class="col-xs-2 nopadding"> 
@@ -1771,7 +1754,6 @@ if (mysqli_num_rows($sqlhead)!=0) {
 																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">User ID</td>
 																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Item Type</td>
 																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Supplier Type</td>
-																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Signature</td>
 																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px"><small>Delete</small></td>
 																			</tr>
 																		</thead>
@@ -1843,22 +1825,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 																								}
 																							?> 
 																						</select>
-																					</td>
-																					<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
-																					<?php
-																						if($row['sign']!=="" && $row['sign']!==null){
-																					?>
-																						<a href="javascript:;" title="Click to remove image" onclick="potransset('sign',<?=$row['id']?>)">
-																							<img src = "<?=$row['sign']?>" height="50px" alt="Click to remove image">
-																						</a>
-																					<?php
-																						}else{
-																					?>
-																						<input type="file" name="filsign<?=$row['po_approval_id'].$cntr?>" id="filsign<?=$row['po_approval_id'].$cntr?>" value="">
-																					<?php
-																						}
-																					?>
-																					</td>
+																					</td>																					
 																					<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
 																						<button class="btn btn-danger btn-sm" type="button" onclick="potransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
 																					</td>
@@ -1897,7 +1864,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 																</div>
 
 																<div class="col-xs-2 nopadwleft"> 
-																	<input type="text" class="lvlamtcls form-control input-xs" data-id="2" id = "lvlamt2" value="<?=$rwpoapphdramt[2]?>">
+																	<input type="text" class="lvlamtcls form-control input-xs" data-id="2" id = "lvlamt2" name = "lvlamt2" value="<?=$rwpoapphdramt[2]?>">
 																	
 																</div>
 
@@ -1915,7 +1882,6 @@ if (mysqli_num_rows($sqlhead)!=0) {
 																			<td style="padding-top: 5px">User ID</td>
 																			<td style="padding-top: 5px">Item Type</td>
 																			<td style="padding-top: 5px">Supplier Type</td>
-																			<td style="padding-top: 5px">Signature</td>
 																		</tr>
 																	</thead>
 
@@ -1984,21 +1950,6 @@ if (mysqli_num_rows($sqlhead)!=0) {
 																					</select>
 																				</td>
 																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
-																				<?php
-																					if($row['sign']!=="" && $row['sign']!==null){
-																				?>
-																					<a href="javascript:;" title="Click to remove image" onclick="potransset('sign',<?=$row['id']?>)">
-																						<img src = "<?=$row['sign']?>" height="50px" alt="Click to remove image">
-																					</a>
-																				<?php
-																					}else{
-																				?>
-																					<input type="file" name="filsign<?=$row['po_approval_id'].$cntr?>" id="filsign<?=$row['po_approval_id'].$cntr?>" value="">
-																				<?php
-																					}
-																				?>
-																				</td>
-																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
 																					<button class="btn btn-danger btn-sm" type="button" onclick="potransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
 																				</td>
 																			</tr>
@@ -2036,7 +1987,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 																</div>
 
 																<div class="col-xs-2 nopadwleft"> 
-																	<input type="text" class="form-control input-xs" data-id="3" id = "lvlamt3" value="<?=$rwpoapphdramt[3]?>">
+																	<input type="text" class="form-control input-xs" data-id="3" id="lvlamt3" name="lvlamt3" value="<?=$rwpoapphdramt[3]?>">
 																</div>
 
 																<div class="col-xs-3 nopadwleft" id="divlevel3amounts"> 
@@ -2052,7 +2003,6 @@ if (mysqli_num_rows($sqlhead)!=0) {
 																			<td style="padding-top: 5px">User ID</td>
 																			<td style="padding-top: 5px">Item Type</td>
 																			<td style="padding-top: 5px">Supplier Type</td>
-																			<td style="padding-top: 5px">Signature</td>
 																		</tr>
 																	</thead>
 
@@ -2118,22 +2068,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 																							}
 																						?> 
 																					</select>
-																				</td>
-																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
-																				<?php
-																					if($row['sign']!=="" && $row['sign']!==null){
-																				?>
-																					<a href="javascript:;" title="Click to remove image" onclick="potransset('sign',<?=$row['id']?>)">
-																						<img src = "<?=$row['sign']?>" height="50px" alt="Click to remove image">
-																					</a>
-																				<?php
-																					}else{
-																				?>
-																					<input type="file" name="filsign<?=$row['po_approval_id'].$cntr?>" id="filsign<?=$row['po_approval_id'].$cntr?>" value="">
-																				<?php
-																					}
-																				?>
-																				</td>
+																				</td>																				
 																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
 																					<button class="btn btn-danger btn-sm" type="button" onclick="potransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
 																				</td>
@@ -2275,40 +2210,12 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						<!-- ACCOUNTING SETUP -->
 							<div id="acct" class="tab-pane fade in">
 							
-								<div class="col-xs-12">
-										<div class="col-xs-2 nopadwtop">
-											<b>Inventory Type</b>
-											<div id="divInvChecking" style="display:inline; padding-left:5px">
-											</div>
-										</div>                    
-										<div class="col-xs-3 nopadwtop">
-											<?php
-												$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='INVSYSTEM'"); 
-								
-												if (mysqli_num_rows($result)!=0) {
-													$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
-													$nvalue = $all_course_data['cvalue']; 							
-												}
-												else{
-													$nvalue = "";
-												}
-											?>
-											<select class="form-control input-sm selectpicker" name="selchkinvsys" id="selchkinvsys" onChange="setparamval('INVSYSTEM',this.value,'invsyschkmsg')">
-												<option value="periodic" <?php if ($nvalue=='periodic') { echo "selected"; } ?>> Periodic Inventory</option>
-												<option value="perpetual" <?php if ($nvalue=='perpetual') { echo "selected"; } ?>> Perpetual Inventory </option>
-											</select>
-										</div>                    
-										<div class="col-xs-1 nopadwtop" id="invsyschkmsg">
-										</div>                    
-									</div> 
-
-
 								<p data-toggle="collapse" data-target="#accdefcollapse"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Account Defaults</b></u> <i></i></p>
 												
 								<div class="collapse" id="accdefcollapse">  
 
-									<div class="col-xs-12">                        
-										<div style="display:inline" class="col-xs-3">
+									<div class="col-xs-12 nopadding" style="margin-bottom: 10px !important">                        
+										<div style="display:inline" class="col-xs-3 nopadding">
 											<button class="btn btn-xs btn-primary" name="btnaddacctdef" id="btnaddacctdef"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add</button>
 											<button class="btn btn-xs btn-success" name="btnacctdef" id="btnacctdef"><i class="fa fa-save"></i>&nbsp; &nbsp;Save Account Codes</button>
 										</div>
@@ -2322,7 +2229,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 																					
 									</div>
 												
-									<div style="height:50vh; border:1px solid #CCC" class="col-lg-12 nopadding pre-scrollable">                     
+									<div style="height:50vh; " class="col-lg-12 pre-scrollable">                     
 										<table id="TblAcctDef" cellpadding="3px" width="100%" border="0">
 											<thead>
 												<tr>
@@ -2338,9 +2245,217 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										</table>                    
 									</div>				
 								</div>
+
+								<div class="col-xs-12">
+									<div class="col-xs-2 nopadwtop">
+										<b>Income Account</b>
+										<!--<div id="divInvChecking" style="display:inline; padding-left:5px">
+										</div>-->
+									</div>                    
+									<div class="col-xs-3 nopadwtop">
+										<?php
+											$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='INVSYSTEM'"); 
+									
+											if (mysqli_num_rows($result)!=0) {
+												$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
+												$nvalue = $all_course_data['cvalue']; 							
+											}
+											else{
+												$nvalue = "";
+											}
+										?>
+											<select class="form-control input-sm selectpicker" name="selchkinvsys" id="selchkinvsys" onChange="setparamval('INVSYSTEM',this.value,'invsyschkmsg')">
+												<option value="periodic" <?php if ($nvalue=='periodic') { echo "selected"; } ?>> Sales Per Item</option>
+												<option value="perpetual" <?php if ($nvalue=='perpetual') { echo "selected"; } ?>> Sales Per Customer </option>
+												<option value="perpetual" <?php if ($nvalue=='perpetual') { echo "selected"; } ?>> Sales Per SI Type </option>
+											</select>
+									</div>                    
+									<div class="col-xs-1 nopadwtop" id="invsyschkmsg">
+									</div>                    
+								</div> 
 													
 							</div>
 						<!-- ACCOUNTING SETUP END -->
+
+						<!-- INVENTORY SETUP -->
+							<div id="invntry" class="tab-pane fade in">
+										<div class="col-xs-12">
+											<div class="col-xs-2 nopadwtop">
+												<b>Inventory Type</b>
+												<div id="divInvChecking" style="display:inline; padding-left:5px">
+												</div>
+											</div>                    
+											<div class="col-xs-3 nopadwtop">
+												<?php
+													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='INVSYSTEM'"); 
+									
+													if (mysqli_num_rows($result)!=0) {
+														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
+														$nvalue = $all_course_data['cvalue']; 							
+													}
+													else{
+														$nvalue = "";
+													}
+												?>
+												<select class="form-control input-sm selectpicker" name="selchkinvsys" id="selchkinvsys" onChange="setparamval('INVSYSTEM',this.value,'invsyschkmsg')">
+													<option value="periodic" <?php if ($nvalue=='periodic') { echo "selected"; } ?>> Periodic Inventory</option>
+													<option value="perpetual" <?php if ($nvalue=='perpetual') { echo "selected"; } ?>> Perpetual Inventory </option>
+												</select>
+											</div>                    
+											<div class="col-xs-1 nopadwtop" id="invsyschkmsg">
+											</div>                    
+										</div> 
+
+									<div class="col-xs-12">
+										<div class="col-xs-2 nopadwtop">
+											<b>Inventory Checking</b>
+											<div id="divInvChecking" style="display:inline; padding-left:5px">
+											</div>
+										</div>                    
+										<div class="col-xs-3 nopadwtop">
+											<?php
+												$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='".$_SESSION['companyid']."' and ccode='INVPOST'"); 
+								
+												if (mysqli_num_rows($result)!=0) {
+													$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
+													$nvalue = $all_course_data['cvalue']; 							
+												}
+												else{
+													$nvalue = "";
+												}
+											?>
+											<select class="form-control input-sm selectpicker" name="selchkinv" id="selchkinv" onChange="setparamval('INVPOST',this.value,'invchkmsg')">
+												<option value="1" <?php if ($nvalue==1) { echo "selected"; } ?>> Don't Check Available Inventory </option>
+												<option value="0" <?php if ($nvalue==0) { echo "selected"; } ?>> Always Check Available Inventory </option>
+											</select>
+										</div>                    
+										<div class="col-xs-1 nopadwtop" id="invchkmsg">
+										</div>                    
+									</div> 
+
+									<?php
+										$sqlempsec = mysqli_query($con,"select A.nid, A.cdesc From locations A Where A.compcode='$company' and A.cstatus='ACTIVE' Order By A.cdesc");
+										$arrseclist[] = 0;
+										$rowdetloc = $sqlempsec->fetch_all(MYSQLI_ASSOC);
+										foreach($rowdetloc as $row0){
+											$arrallsec[] = array('nid' => $row0['nid'], 'cdesc' => $row0['cdesc']);
+										}
+
+										$sqlparams = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='".$_SESSION['companyid']."' and ccode in ('DEF_WHOUT','DEF_WHIN','DEF_PROUT','DEF_SRIN')");
+										$rowdetprms = $sqlparams->fetch_all(MYSQLI_ASSOC);
+										foreach($rowdetprms as $rowx){
+
+											if($rowx['ccode']=="DEF_WHOUT"){
+												$def_whout = $rowx['cvalue'];
+											}
+											
+											if($rowx['ccode']=="DEF_WHIN"){
+												$def_whin = $rowx['cvalue'];
+											}
+
+											if($rowx['ccode']=="DEF_PROUT"){
+												$def_prout = $rowx['cvalue'];
+											}
+
+											if($rowx['ccode']=="DEF_SRIN"){
+												$def_srin = $rowx['cvalue'];
+											}
+										
+										}
+									?>
+									
+									<div class="col-xs-12">
+										<div class="col-xs-2 nopadwtop">
+											<b>Finished Goods (Out)</b>
+											<div id="divInvChecking" style="display:inline; padding-left:5px">
+											</div>
+										</div> 
+										<div class="col-xs-3 nopadwtop">
+											<select class="form-control input-sm" name="selfgout" id="selfgout" onChange="setparamval('DEF_WHOUT',this.value,'invdefwhout')">
+												<?php
+														foreach($arrallsec as $localocs){
+													?>
+														<option value="<?php echo $localocs['nid'];?>" <?=($def_whout==$localocs['nid']) ? "selected" : ""?>><?php echo $localocs['cdesc'];?></option>										
+													<?php	
+														}						
+													?>
+											</select>
+										</div>
+										<div class="col-xs-1 nopadwtop" id="invdefwhout">
+										</div> 
+									</div>
+
+									<div class="col-xs-12">
+										<div class="col-xs-2 nopadwtop">
+											<b>Main Warehouse (In)</b>
+											<div id="divInvChecking" style="display:inline; padding-left:5px">
+											</div>
+										</div>
+										<div class="col-xs-3 nopadwtop">
+											<select class="form-control input-sm" name="selwhiin" id="selwhiin" onChange="setparamval('DEF_WHIN',this.value,'invdefwhin')">
+												<?php
+													$issel = 0;
+														foreach($arrallsec as $localocs){
+															$issel++;
+													?>
+														<option value="<?php echo $localocs['nid'];?>" <?=($def_whin==$localocs['nid']) ? "selected" : ""?>><?php echo $localocs['cdesc'];?></option>										
+													<?php	
+														}						
+													?>
+											</select>
+										</div>
+										<div class="col-xs-1 nopadwtop" id="invdefwhin">
+										</div>
+									</div>
+
+									<div class="col-xs-12">
+										<div class="col-xs-2 nopadwtop">
+											<b>Purchase Return (Out)</b>
+											<div id="divInvChecking" style="display:inline; padding-left:5px">
+											</div>
+										</div> 
+										<div class="col-xs-3 nopadwtop">
+											<select class="form-control input-sm" name="selprout" id="selprout" onChange="setparamval('DEF_PROUT',this.value,'invdefprout')">
+												<?php
+													$issel = 0;
+														foreach($arrallsec as $localocs){
+															$issel++;
+													?>
+														<option value="<?php echo $localocs['nid'];?>" <?=($def_prout==$localocs['nid']) ? "selected" : ""?>><?php echo $localocs['cdesc'];?></option>										
+													<?php	
+														}						
+													?>
+											</select>
+										</div>
+										<div class="col-xs-1 nopadwtop" id="invdefprout">
+										</div>
+									</div>
+
+									<div class="col-xs-12">
+										<div class="col-xs-2 nopadwtop">
+											<b>Sales Return (In)</b>
+											<div id="divInvChecking" style="display:inline; padding-left:5px">
+											</div>
+										</div>
+										<div class="col-xs-3 nopadwtop">
+											<select class="form-control input-sm" name="selsrin" id="selsrin" onChange="setparamval('DEF_SRIN',this.value,'invdefsrin')">
+												<?php
+													$issel = 0;
+														foreach($arrallsec as $localocs){
+															$issel++;
+													?>
+														<option value="<?php echo $localocs['nid'];?>" <?=($def_srin==$localocs['nid']) ? "selected" : ""?>><?php echo $localocs['cdesc'];?></option>										
+													<?php	
+														}						
+													?>
+											</select>
+										</div>
+										<div class="col-xs-1 nopadwtop" id="invdefsrin">
+										</div>
+									</div>
+
+							</div>
+						<!-- INVENTORY SETUP END -->
 
 						<div id="rpts" class="tab-pane fade in">
 							<p data-toggle="collapse" data-target="#rpt_sofp"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Statement of Financial Position Template</b></u></p>
@@ -2809,7 +2924,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			
 		});
 		
-		
+		/*
 		$("#btntax").on("click", function() {
 			var isOk = "YES";
 			
@@ -2820,7 +2935,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				vardesc = $(this).find('input[name="txtctaxdesc[]"]').val();
 				varrate = $(this).find('input[name="txtctaxrate[]"]').val();
 				
-
+				alert("th_savetax.php?code="+varcode+"&desc="+vardesc+"&rate="+varrate);
 				$.ajax ({
 					url: "th_savetax.php",
 					data: { code: varcode,  desc: vardesc, rate: varrate },
@@ -2857,7 +2972,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				}
 			
 		});	
-		
+		*/
 		
 		$("#btnaddvat").on("click", function(){
 
@@ -2878,14 +2993,15 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				});
 				*/
 							var divhead = "<div class=\"vatdetail col-xs-12 nopadwtop\" id=\""+xy+"\">";
-							var divcode = "<div class=\"col-xs-1\"><input type=\"text\" name=\"txtcvatcode[]\" id=\"txtcvatcode"+xy+"\" data-citmno=\""+xy+"\" class=\"form-control input-xs\" placeholder=\"Code...\" /></div>";
-							var divdesc = "<div class=\"col-xs-4\"><input type=\"text\" name=\"txtcvatdesc[]\" id=\"txtcvatdesc"+xy+"\" data-citmno=\""+xy+"\" class=\"form-control input-xs\" placeholder=\"Enter Description...\" /></div>";
-							var divrem = "<div class=\"col-xs-3\"><input type=\"text\" name=\"txtcvatrem[]\" id=\"txtcvatrem"+xy+"\" data-citmno=\""+xy+"\" class=\"form-control input-xs\" placeholder=\"Enter Remarks...\" /></div>";                                                 
-							var divcomp = "<div class=\"col-xs-1\"><select class=\"form-control input-xs\" name=\"selcomp[]\" id=\"selcomp"+xy+"\" ><option value=\"1\">YES</option><option value=\"0\">NO</option></select></div>";                                                 
-							var divstat = "<div class=\"col-xs-2\">&nbsp;<span class='label label-success'>Active</span></div>";                                                 
+							var divcode = "<div class=\"col-xs-1 nopadwright\"><input type=\"text\" name=\"txtcvatcode[]\" id=\"txtcvatcode"+xy+"\" data-citmno=\""+xy+"\" class=\"form-control input-xs\" placeholder=\"Code...\" /></div>";
+							var divrates = "<div class=\"col-xs-1 nopadwright\"><input type=\"text\" name=\"txtnrates[]\" id=\"txtnrates"+xy+"\" data-citmno=\""+xy+"\" class=\"form-control input-xs\" placeholder=\"Rate...\" /></div>";
+							var divdesc = "<div class=\"col-xs-4 nopadwright\"><input type=\"text\" name=\"txtcvatdesc[]\" id=\"txtcvatdesc"+xy+"\" data-citmno=\""+xy+"\" class=\"form-control input-xs\" placeholder=\"Enter Description...\" /></div>";
+							var divrem = "<div class=\"col-xs-3 nopadwright\"><input type=\"text\" name=\"txtcvatrem[]\" id=\"txtcvatrem"+xy+"\" data-citmno=\""+xy+"\" class=\"form-control input-xs\" placeholder=\"Enter Remarks...\" /></div>";                                                 
+							var divcomp = "<div class=\"col-xs-1 nopadwright\"><select class=\"form-control input-xs\" name=\"selcomp[]\" id=\"selcomp"+xy+"\" ><option value=\"1\">YES</option><option value=\"0\">NO</option></select></div>";                                                 
+							var divstat = "<div class=\"col-xs-2 nopadwright\">&nbsp;<span class='label label-success'>Active</span></div>";                                                 
 							var divend = "</div>";
 
-							$("#TblVAT").append(divhead + divcode + divdesc + divrem + divcomp + divstat + divend);
+							$("#TblVAT").append(divhead + divcode + divrates + divdesc + divrem + divcomp + divstat + divend);
 
 								$("#txtcvatcode"+xy).on("keyup", function() {
 									var valz = $(this).val();
@@ -3497,7 +3613,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				vardscacctcode = $(this).find('input[name="txtdscacct[]"]').val();
 
 				if(vardsccode!=="" && vardsccode!==undefined){
-					alert("th_savdsccodes.php?code="+vardsccode+"&desc="+vardscdesc+"&acctid="+vardscacctcode);
+					//alert("th_savdsccodes.php?code="+vardsccode+"&desc="+vardscdesc+"&acctid="+vardscacctcode);
 					$.ajax ({
 						url: "th_savdsccodes.php",
 						data: { code: vardsccode,  desc: vardscdesc, acctid: vardscacctcode },
@@ -4006,47 +4122,48 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 	function loadvat(){
 		
-					$.ajax ({
-							url: "th_loadvat.php",
-				dataType: 'json',
-				async:false,
-							success: function( result ) {
+				$.ajax ({
+					url: "th_loadvat.php",
+					dataType: 'json',
+					async:false,
+						success: function( result ) {
 
-								console.log(result);
-					$.each(result,function(index,item){
+							console.log(result);
+							$.each(result,function(index,item){
 
-						if(item.cvatcode!=""){	
-							if(item.cstat == "ACTIVE"){ 
-								var spanstat = "<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setVATStat('"+item.cvatcode+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>";
-							} else{
-								var spanstat = "<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setVATStat('"+item.cvatcode+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>";
-							}
+								if(item.cvatcode!=""){	
+									if(item.cstat == "ACTIVE"){ 
+										var spanstat = "<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setVATStat('"+item.cvatcode+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>";
+									} else{
+										var spanstat = "<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setVATStat('"+item.cvatcode+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>";
+									}
 
-							if(item.lcomp == 1){ 
-								var isYes = "selected";
-								var isNo = "";
-							} else{
-								var isNo = "selected";
-								var isYes = "";
-							}
-											
-							var divhead = "<div class=\"vatdetail col-xs-12 nopadwtop\" id=\""+item.nident+"\">";
-							var divcode = "<div class=\"col-xs-1\"><input type=\"text\" name=\"txtcvatcode[]\" id=\"txtcvatcode"+item.nident+"\" value=\""+item.cvatcode+"\" data-citmno=\""+item.nident+"\" class=\"form-control input-xs\" readonly /></div>";
-							var divdesc = "<div class=\"col-xs-4\"><input type=\"text\" name=\"txtcvatdesc[]\" id=\"txtcvatdesc"+item.nident+"\" value=\""+item.cvatdesc+"\" data-citmno=\""+item.nident+"\" class=\"form-control input-xs\"  placeholder=\"Enter Description...\" /></div>";						
-							var divrem = "<div class=\"col-xs-3\"><input type=\"text\" name=\"txtcvatrem[]\" id=\"txtcvatrem"+item.nident+"\" value=\""+item.nrem+"\" data-citmno=\""+item.nident+"\" class=\"form-control input-xs\"  placeholder=\"Enter Remarks...\" /></div>"; 
-							var divcomp = "<div class=\"col-xs-1\"><select class=\"form-control input-xs\" name=\"selcomp[]\" id=\"selcomp"+item.nident+"\"><option value=\"1\" "+isYes+">YES</option><option value=\"0\" "+isNo+">NO</option></select></div>";                                                 
-							var divstat = "<div class=\"col-xs-2\">&nbsp;"+spanstat+"</div>";                                               
-							var divend = "</div>";
-							
+									if(item.lcomp == 1){ 
+										var isYes = "selected";
+										var isNo = "";
+									} else{
+										var isNo = "selected";
+										var isYes = "";
+									}
+													
+									var divhead = "<div class=\"vatdetail col-xs-12 nopadwtop\" id=\""+item.nident+"\">";
+									var divcode = "<div class=\"col-xs-1 nopadwright\"><input type=\"text\" name=\"txtcvatcode[]\" id=\"txtcvatcode"+item.nident+"\" value=\""+item.cvatcode+"\" data-citmno=\""+item.nident+"\" class=\"form-control input-xs\" readonly /></div>";
+									var divrates = "<div class=\"col-xs-1 nopadwright\"><input type=\"text\" name=\"txtnrates[]\" id=\"txtnrates"+item.nident+"\" value=\""+item.nrate+"\" data-citmno=\""+item.nident+"\" class=\"form-control input-xs text-right\" placeholder=\"Rate...\" /></div>";
+									var divdesc = "<div class=\"col-xs-4 nopadwright\"><input type=\"text\" name=\"txtcvatdesc[]\" id=\"txtcvatdesc"+item.nident+"\" value=\""+item.cvatdesc+"\" data-citmno=\""+item.nident+"\" class=\"form-control input-xs\"  placeholder=\"Enter Description...\" /></div>";						
+									var divrem = "<div class=\"col-xs-3 nopadwright\"><input type=\"text\" name=\"txtcvatrem[]\" id=\"txtcvatrem"+item.nident+"\" value=\""+item.nrem+"\" data-citmno=\""+item.nident+"\" class=\"form-control input-xs\"  placeholder=\"Enter Remarks...\" /></div>"; 
+									var divcomp = "<div class=\"col-xs-1 nopadwright text-cebter\"><select class=\"form-control input-xs\" name=\"selcomp[]\" id=\"selcomp"+item.nident+"\"><option value=\"1\" "+isYes+">YES</option><option value=\"0\" "+isNo+">NO</option></select></div>";                                                 
+									var divstat = "<div class=\"col-xs-2 nopadwright\">&nbsp;"+spanstat+"</div>";                                               
+									var divend = "</div>";
+									
+										
+									$("#TblVAT").append(divhead + divcode + divrates + divdesc + divrem + divcomp + divstat + divend);
+									//$("#TblTax").html("Hello String");
+
+								}
 								
-							$("#TblVAT").append(divhead + divcode + divdesc + divrem + divcomp + divstat + divend);
-							//$("#TblTax").html("Hello String");
-
+							});
 						}
-						
-					});
-							}
-					});
+				});
 		
 		
 	}
@@ -4763,11 +4880,7 @@ function addpolevel($lvl, $tbl){
 		y.style.paddingTop = "2px";
 		y.style.paddingLeft = "1px";
 		y.style.paddingRight = "1px";
-	var z=a.insertCell(3);
-		z.style.paddingTop = "2px";
-		z.style.paddingLeft = "1px";
-		z.style.paddingRight = "1px";
-	var za=a.insertCell(4);
+	var za=a.insertCell(3);
 		za.style.paddingTop = "2px";
 		za.style.paddingLeft = "1px";
 		za.style.paddingRight = "1px";
@@ -4775,7 +4888,6 @@ function addpolevel($lvl, $tbl){
 	u.innerHTML = "<select class=\"form-control input-xs\" name=\"selposuser"+$lvl+""+lastRow+"\" id=\"selposuser"+$lvl+""+lastRow+"\" > "+htmlUSERS+" </select>";
 	x.innerHTML = "<select required multiple class=\"form-control input-xs\" name=\"selpoitmtyp"+$lvl+""+lastRow+"[]\" id=\"selpoitmtyp"+$lvl+""+lastRow+"\" >"+htmlITM+"</select>";
 	y.innerHTML = "<select required multiple class=\"form-control input-xs\" name=\"selposutyp"+$lvl+""+lastRow+"[]\" id=\"selposutyp"+$lvl+""+lastRow+"\" >"+htmlSUPP+"</select>";
-	z.innerHTML = "<input type=\"file\" name=\"filsign"+$lvl+""+lastRow+"\" id=\"filsign"+$lvl+""+lastRow+"\" >";
 	za.innerHTML = "";
 
 	$('#selposuser'+$lvl+""+lastRow).select2({minimumResultsForSearch: Infinity,width: '100%'});
@@ -4822,14 +4934,14 @@ function potransset(typ,id){
 function addqolevel($lvl, $tbl){
 
 	var xz = $("#atitemtype").val();
-	var htmlITM = "<option value='ALL'> ALL </option>";
+	var htmlITM = "<option value='ALL' selected> ALL </option>";
 
 	$.each(jQuery.parseJSON(xz), function() {  
 		htmlITM = htmlITM + '<option value="' +this['ccode'] + '">' + this['cdesc'] + '</option>';
 	});
 
 	var xz = $("#atsupptype").val();
-	var htmlSUPP = "<option value='ALL'> ALL</option>";
+	var htmlSUPP = "<option value='ALL' selected> ALL</option>";
 
 	$.each(jQuery.parseJSON(xz), function() {  
 		htmlSUPP = htmlSUPP + '<option value="' +this['ccode'] + '">' + this['cdesc'] + '</option>';
@@ -4841,6 +4953,14 @@ function addqolevel($lvl, $tbl){
 	$.each(jQuery.parseJSON(xz), function() {  
 		htmlUSERS = htmlUSERS + '<option value="' +this['userid'] + '">' + this['name'] + '</option>';
 	});
+
+	var xz = $("#qotyplst").val();
+	var htmlQRTYP = "<option value='ALL' selected> ALL</option>";
+
+	$.each(jQuery.parseJSON(xz), function() {  
+		htmlQRTYP = htmlQRTYP + '<option value="' +this['ccode'] + '">' + this['cdesc'] + '</option>';
+	});
+
 
 	var tbl = document.getElementById($tbl).getElementsByTagName('tr');
 	var lastRow = tbl.length;
@@ -4873,12 +4993,13 @@ function addqolevel($lvl, $tbl){
 	u.innerHTML = "<select class=\"form-control input-xs\" name=\"selqosuser"+$lvl+""+lastRow+"\" id=\"selqosuser"+$lvl+""+lastRow+"\" > "+htmlUSERS+" </select>";
 	x.innerHTML = "<select required multiple class=\"form-control input-xs\" name=\"selqoitmtyp"+$lvl+""+lastRow+"[]\" id=\"selqoitmtyp"+$lvl+""+lastRow+"\" >"+htmlITM+"</select>";
 	y.innerHTML = "<select required multiple class=\"form-control input-xs\" name=\"selqosutyp"+$lvl+""+lastRow+"[]\" id=\"selqosutyp"+$lvl+""+lastRow+"\" >"+htmlSUPP+"</select>";
-	z.innerHTML = "<input type=\"file\" name=\"qofilsign"+$lvl+""+lastRow+"\" id=\"qofilsign"+$lvl+""+lastRow+"\" >";
+	z.innerHTML = "<select required multiple class=\"form-control\" name=\"selqotrtyp"+$lvl+""+lastRow+"[]\" id=\"selqotrtyp"+$lvl+""+lastRow+"\" >"+htmlQRTYP+"</select>";
 	za.innerHTML = "";
 
 	$('#selqosuser'+$lvl+""+lastRow).select2({minimumResultsForSearch: Infinity,width: '100%'});
 	$('#selqoitmtyp'+$lvl+""+lastRow).select2({width: '100%'});
 	$('#selqosutyp'+$lvl+""+lastRow).select2({width: '100%'});
+	$('#selqotrtyp'+$lvl+""+lastRow).select2({width: '100%'});
 
 }
 
@@ -4934,7 +5055,7 @@ function qotransset(typ,id){
 							var spanstat = "<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setCNTCTDETStat('"+item.cid+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>";
 						}
 
-						var divhead = "<div class=\"dsccodedetail col-xs-12 nopadwtop\" id=\""+item.cid+"\">";
+						var divhead = "<div class=\"cntctdetdetail col-xs-12 nopadwtop\" id=\""+item.cid+"\">";
 																									
 						var divdesc = "<div class=\"col-xs-4 nopadwleft\"><input type=\"text\" name=\"txtcntctdetdesc[]\" id=\"txtcntctdetdesc"+item.cid+"\" value=\""+item.cdesc+"\" class=\"form-control input-xs\"  placeholder=\"Enter Description...\" /> <input type=\"hidden\" name=\"txtcntctdetid[]\" id=\"txtcntctdetid"+item.cid+"\" value=\""+item.cid+"\" /> </div>";												
 																															

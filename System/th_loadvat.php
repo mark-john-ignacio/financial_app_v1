@@ -18,6 +18,7 @@ require_once "../Connection/connection_string.php";
 			$json['cvatcode'] = $rs['cvatcode'];
 			$json['cvatdesc'] = $rs['cvatdesc'];
 			$json['nrem'] = $rs['cremarks'];
+			$json['nrate'] = number_format($rs['nrate']);
 			$json['lcomp'] = $rs['lcompute']; 
 			$json['cstat'] = $rs['cstatus'];
 			$json2[] = $json;

@@ -20,6 +20,10 @@ require_once "../Connection/connection_string.php";
 
 		$x1 = intval($_POST['tbLVL'.$lvlnum.'count']);
 
+		$amtmin = $_POST['lvlamt'.$lvlnum];
+
+		$con->query("Update purchase_approvals set namount = '".$amtmin."' where compcode='$company' and nlevel='".$lvlnum."'");
+
 		if($x1>0){
 			for ($x = 1; $x <= $x1; $x++) {
 				$userdid1 = $_POST['selposuser'.$lvlnum.$x];
@@ -35,8 +39,6 @@ require_once "../Connection/connection_string.php";
 				}else{
 					$supptyp1 = "";
 				}
-				
-				$signtyp1 =  (isset($_POST['filsign'.$lvlnum.$x]) ? $_POST['filsign'.$lvlnum.$x] : "");
 
 				$sql = "INSERT INTO purchase_approvals_id (`compcode`,`po_approval_id`,`userid`,`items`,`suppliers`) values ('$company','$lvlnum','$userdid1','$itmtypd1','$supptyp1')";
 
@@ -45,49 +47,6 @@ require_once "../Connection/connection_string.php";
 
 					mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
 					values('$company','$userdid1','$preparedby',NOW(),'UPDATED','PO APPROVALS $lvlnum','$compname','Update Record')");
-				
-					if($_FILES["filsign".$lvlnum.$x]["name"]!="")
-					{
-						$validextensions = array("jpeg", "jpg", "png");
-						$temporary = explode(".", $_FILES["filsign".$lvlnum.$x]["name"]);
-						$file_extension = end($temporary);
-					
-						if ((($_FILES["filsign".$lvlnum.$x]["type"] == "image/png") || ($_FILES["filsign".$lvlnum.$x]["type"] == "image/jpg") || ($_FILES["filsign".$lvlnum.$x]["type"] == "image/jpeg")
-						) && ($_FILES["filsign".$lvlnum.$x]["size"] < 100000)//Approx. 100kb files can be uploaded.
-						&& in_array($file_extension, $validextensions)) {
-							if ($_FILES["filsign".$lvlnum.$x]["error"] > 0)
-							{
-								echo "\nReturn Code: " . $_FILES["filsign".$lvlnum.$x]["error"];
-							}
-							else
-							{
-								if (file_exists("../imgsigns/" . $_FILES["filsign".$lvlnum.$x]["name"])) {
-									unlink ("../imgsigns/" . $_FILES["filsign".$lvlnum.$x]["name"]);
-								}
-								
-									$sourcePath = $_FILES['filsign'.$lvlnum.$x]['tmp_name']; // Storing source path of the file in a variable
-									$targetPath = "../imgsigns/".$_FILES['filsign'.$lvlnum.$x]['name']; // Target path where file is to be stored
-									
-									$newtargetPath = "../imgsigns/".$last_id.".".$file_extension;
-									move_uploaded_file($sourcePath,$newtargetPath) ; // Moving Uploaded file
-									//echo "\nImage Uploaded Successfully...!!";
-									//echo "\nFile Name: " . $newtargetPath;
-									//echo "\nFile Type: " . $_FILES["filsign".$lvlnum.$x]["type"];
-									//echo "\nFile Size: " . ($_FILES["filsign".$lvlnum.$x]["size"] / 1024) . " kB";
-					
-					
-									//update file name in users table
-									if (!mysqli_query($con, "UPDATE purchase_approvals_id set sign = '$newtargetPath' where id = '$last_id'")) {
-										printf("Errormessage: %s\n", mysqli_error($con));
-									}
-								
-							}
-						}
-						else
-						{
-							echo "\n***Invalid file Size or Type***";
-						}
-					}
 
 				} 
 				else{

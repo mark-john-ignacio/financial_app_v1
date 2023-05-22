@@ -35,59 +35,20 @@ require_once "../Connection/connection_string.php";
 				}else{
 					$supptyp1 = "";
 				}
-				
-				$signtyp1 =  (isset($_POST['qoqofilsign'.$lvlnum.$x]) ? $_POST['qoqofilsign'.$lvlnum.$x] : "");
 
-				$sql = "INSERT INTO quote_approvals_id (`compcode`,`qo_approval_id`,`userid`,`items`,`suppliers`) values ('$company','$lvlnum','$userdid1','$itmtypd1','$supptyp1')";
+				if(isset($_POST['selqotrtyp'.$lvlnum.$x])){
+					$qortyp1 =  ($_POST['selqotrtyp'.$lvlnum.$x]!=="") ? implode(",",$_POST['selqotrtyp'.$lvlnum.$x]) : "";
+				}else{
+					$qortyp1 = "";
+				}
+
+				$sql = "INSERT INTO quote_approvals_id (`compcode`,`qo_approval_id`,`userid`,`items`,`suppliers`,`qotype`) values ('$company','$lvlnum','$userdid1','$itmtypd1','$supptyp1','$qortyp1')";
 
 				if ($con->query($sql) === TRUE) {
 					$last_id = $con->insert_id;
 
 					mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
 					values('$company','$userdid1','$preparedby',NOW(),'UPDATED','QUOTE APPROVALS $lvlnum','$compname','Update Record')");
-				
-					if($_FILES["qofilsign".$lvlnum.$x]["name"]!="")
-					{
-						$validextensions = array("jpeg", "jpg", "png");
-						$temporary = explode(".", $_FILES["qoqofilsign".$lvlnum.$x]["name"]);
-						$file_extension = end($temporary);
-					
-						if ((($_FILES["qofilsign".$lvlnum.$x]["type"] == "image/png") || ($_FILES["qoqofilsign".$lvlnum.$x]["type"] == "image/jpg") || ($_FILES["qofilsign".$lvlnum.$x]["type"] == "image/jpeg")
-						) && ($_FILES["qofilsign".$lvlnum.$x]["size"] < 100000)//Approx. 100kb files can be uploaded.
-						&& in_array($file_extension, $validextensions)) {
-							if ($_FILES["qofilsign".$lvlnum.$x]["error"] > 0)
-							{
-								echo "\nReturn Code: " . $_FILES["qofilsign".$lvlnum.$x]["error"];
-							}
-							else
-							{
-								if (file_exists("../imgsigns/" . $_FILES["qofilsign".$lvlnum.$x]["name"])) {
-									unlink ("../imgsigns/" . $_FILES["qofilsign".$lvlnum.$x]["name"]);
-								}
-								
-									$sourcePath = $_FILES['qofilsign'.$lvlnum.$x]['tmp_name']; // Storing source path of the file in a variable
-									$targetPath = "../imgsigns/".$_FILES['qofilsign'.$lvlnum.$x]['name']; // Target path where file is to be stored
-									
-									$newtargetPath = "../imgsigns/".$last_id.".".$file_extension;
-									move_uploaded_file($sourcePath,$newtargetPath) ; // Moving Uploaded file
-									//echo "\nImage Uploaded Successfully...!!";
-									//echo "\nFile Name: " . $newtargetPath;
-									//echo "\nFile Type: " . $_FILES["qofilsign".$lvlnum.$x]["type"];
-									//echo "\nFile Size: " . ($_FILES["qofilsign".$lvlnum.$x]["size"] / 1024) . " kB";
-					
-					
-									//update file name in users table
-									if (!mysqli_query($con, "UPDATE quote_approvals_id set sign = '$newtargetPath' where id = '$last_id'")) {
-										printf("Errormessage: %s\n", mysqli_error($con));
-									}
-								
-							}
-						}
-						else
-						{
-							echo "\n***Invalid file Size or Type***";
-						}
-					}
 
 				} 
 				else{
