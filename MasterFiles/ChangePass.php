@@ -84,24 +84,24 @@ else{
         <table width="50%" border="0" cellspacing="0" cellpadding="0" align="center">
           <tr>
             <td style="padding:2px" align="center">
-            <input type="password" class="form-control" placeholder="Old Password" name="OldPass" id="OldPass" required size="50" maxlength="10">
+            <input type="password" class="form-control" placeholder="Old Password" name="OldPass" id="OldPass" size="50" required maxlength="15">
             </td>
           </tr>
           <tr>
             <td style="padding:2px" align="center">
-             <input type="password" class="form-control" placeholder="New Password" name="NewPass" id="NewPass" required size="50" maxlength="10"> </td>
+             <input type="password" class="form-control" placeholder="New Password" name="NewPass" id="NewPass" size="50" required maxlength="15"> </td>
           </tr>
 
           <tr>
             <td style="padding:2px" align="center">
-             <input type="password" class="form-control" placeholder="Confirm New Password" name="passT" id="passT" required maxlength="10"  size="50"></td>
+             <input type="password" class="form-control" placeholder="Confirm New Password" name="passT" id="passT" size="50" required maxlength="15"></td>
           </tr>
 
           <tr>
             <td align="center">&nbsp;</td>
           </tr>
           <tr>
-            <td align="center"><button type="submit" class="btn btn-primary" name="btnAdd" id="btnAdd">Change Password</button><br><br><i>Maximum of 10 characters only</i> </td>
+            <td align="center"><button type="submit" class="btn btn-primary" name="btnAdd" id="btnAdd">Change Password</button><br><br><i>Maximum of 15 characters only</i> </td>
           </tr>
         </table>
 
