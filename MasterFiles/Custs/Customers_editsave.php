@@ -114,8 +114,8 @@ $myerror = "True";
 		$UnitRowCnt = $_REQUEST['hdncontlistcnt'];
 		//INSERT CONTACTS IF MERON
 		if($UnitRowCnt>=1){
-			mysqli_query($con,"DELETE FROM `customers_contacts` where ccode = '$cCustCode'");
-			mysqli_query($con,"DELETE FROM `customers_contacts_nos` where ccode = '$cCustCode'");
+			mysqli_query($con,"DELETE FROM `customers_contacts` where `compcode` = '$company' and ccode = '$cCustCode'");
+			mysqli_query($con,"DELETE A FROM `customers_contacts_nos` A left join `customers_contacts` B on A.compcode=B.compcode and A.customers_contacts_cid=B.cid where A.`compcode` = '$company' and B.ccode = '$cCustCode'");
 			//echo $UnitRowCnt;
 
 			$arridxcv = array();
