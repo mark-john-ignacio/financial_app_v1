@@ -189,13 +189,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					<div class="col-xs-2 nopadding">
 						<select id="selqotyp" name="selqotyp" class="form-control input-sm selectpicker"  tabindex="1">
 							<?php						
-								if($postbilling=="True"){
+								if($postquote=="True"){ 
 							?>
 								<option value="quote" <?php if($cQOType=="quote") { echo "selected"; }  ?> >Quote</option>
 							<?php
 								}
 													
-								if($postquote=="True"){
+								if($postbilling=="True"){
 							?>
 								<option value="billing" <?php if($cQOType=="billing") { echo "selected"; }  ?> >Billing</option>
 							<?php

@@ -116,13 +116,13 @@ $getfctrs = mysqli_query($con,"SELECT * FROM `items_factor` where compcode='$com
 				<div class="col-xs-2 nopadding">
 					<select id="selqotyp" name="selqotyp" class="form-control input-sm selectpicker"  tabindex="1">
 						<?php						
-							if($postbilling=="True"){
+							if($postquote=="True"){
 						?>
 						<option value="quote">Quote</option>
 						<?php
 							}
 												
-							if($postquote=="True"){
+							if($postbilling=="True"){postquote
 						?>
 						<option value="billing">Billing</option>
 						<?php
