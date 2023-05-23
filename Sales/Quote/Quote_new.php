@@ -122,7 +122,7 @@ $getfctrs = mysqli_query($con,"SELECT * FROM `items_factor` where compcode='$com
 						<?php
 							}
 												
-							if($postbilling=="True"){postquote
+							if($postbilling=="True"){
 						?>
 						<option value="billing">Billing</option>
 						<?php
