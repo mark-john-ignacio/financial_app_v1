@@ -74,7 +74,7 @@ $company = $_SESSION['companyid'];
             </div>
         
             <div class="col-xs-6 nopadwtop">
-                <input type="text" class="form-control input-sm" id="txtcSKU" name="txtcSKU" tabindex="1" placeholder="Input Item SKU.." required autocomplete="off" maxlength="255" /> 
+                <input type="text" class="form-control input-sm" id="txtcSKU" name="txtcSKU" tabindex="1" placeholder="Input Item SKU.." autocomplete="off" maxlength="255" /> 
             </div>
                    
         </div>

@@ -173,7 +173,7 @@ include('../../include/access2.php');
             </div>
         
             <div class="col-xs-6 nopadwtop">
-                <input type="text" class="form-control input-sm" id="txtcSKU" name="txtcSKU" tabindex="1" placeholder="Input Item SKU.." required autocomplete="off" value="<?php echo $cSKUCode;?>" maxlength="255"/> 
+                <input type="text" class="form-control input-sm" id="txtcSKU" name="txtcSKU" tabindex="1" placeholder="Input Item SKU.." autocomplete="off" value="<?php echo $cSKUCode;?>" maxlength="255"/> 
             </div>
                    
         </div>
