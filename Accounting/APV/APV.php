@@ -203,7 +203,7 @@ $(function(){
 
 				<tbody>
               	<?php
-				$sql = "select a.*,b.cname, c.cname as custname from apv a left join suppliers b on a.ccode=b.ccode left join customers c on a.ccode=c.cempid where a.compcode='$company' order by a.ddate DESC";
+				$sql = "select a.*,b.cname from apv a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' order by a.ddate DESC";
 				$result=mysqli_query($con,$sql);
 				
 					if (!mysqli_query($con, $sql)) {
