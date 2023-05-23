@@ -127,6 +127,11 @@ $getfctrs = mysqli_query($con,"SELECT * FROM `items_factor` where compcode='$com
 						<option value="billing">Billing</option>
 						<?php
 							}
+
+							$isdisblerecurr = "disabled='true'";
+							if($postquote=="False" && $postbilling=="True"){
+								$isdisblerecurr = "";
+							}
 						?>
 					</select>
 				</div>
@@ -134,7 +139,7 @@ $getfctrs = mysqli_query($con,"SELECT * FROM `items_factor` where compcode='$com
 						<b>Reccur Every</b>
 					</div>
 				<div class="col-xs-2 nopadding">
-					<select id="selrecurrtyp" name="selrecurrtyp" class="form-control input-sm selectpicker"  tabindex="1" disabled="true">
+					<select id="selrecurrtyp" name="selrecurrtyp" class="form-control input-sm selectpicker"  tabindex="1" <?=$isdisblerecurr?>>
 						<option value="one">One Time Only</option>	
 						<option value="weekly">Weekly</option>
 						<option value="monthly">Monthly</option>
