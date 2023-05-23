@@ -22,6 +22,21 @@
 
 	}
 
+	@$arrewtlist = array();
+	$getewt = mysqli_query($con,"SELECT * FROM `wtaxcodes` WHERE compcode='$company'"); 
+	if (mysqli_num_rows($getewt)!=0) {
+		while($rows = mysqli_fetch_array($getewt, MYSQLI_ASSOC)){
+			@$arrewtlist[] = array('ctaxcode' => $rows['ctaxcode'], 'nrate' => $rows['nrate']); 
+		}
+	}
+
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `taxcode` where compcode='$company' order By nidentity"); 
+	if (mysqli_num_rows($gettaxcd)!=0) {
+		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+			@$arrtaxlist[] = array('ctaxcode' => $row['ctaxcode'], 'ctaxdesc' => $row['ctaxdesc'], 'nrate' => $row['nrate']); 
+		}
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -52,6 +67,9 @@
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
 
+	<input type="hidden" value='<?=json_encode(@$arrewtlist)?>' id="hdnewtlist"> 
+	<input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes"> 
+
 	<form action="Purch_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
 		<fieldset>
 				<legend>Purchase Order</legend>	
@@ -80,7 +98,7 @@
 											</div> 
 										</div>
 									</td>
-									<tH width="150">PO Date:</tH>
+									<tH width="150" style="padding:2px">PO Date:</tH>
 									<td width="250" style="padding:2px;">
 										<div class="col-xs-5 nopadding">
 											<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date("m/d/Y"); ?>" readonly/>
@@ -115,16 +133,47 @@
 											<input type="text" id="txtcontactname" name="txtcontactname" class="required form-control input-sm" placeholder="Contact Person Name..." tabindex="1"  required="true">
 										</div>
 									</td>
-									<tH width="100" style="padding:2px">Email:</tH>
+									<tH width="150" style="padding:2px">Terms: </tH>
+									<td style="padding:2px">				
+											<select id="selterms" name="selterms" class="form-control input-sm selectpicker">  
+												<?php
+													$sql = "Select * From groupings where compcode='$company' and ctype='TERMS'";
+													$result=mysqli_query($con,$sql);
+													if (!mysqli_query($con, $sql)) {
+														printf("Errormessage: %s\n", mysqli_error($con));
+													}			
+																													
+													while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+													{
+												?>
+													<option value="<?php echo $row['ccode'];?>"><?php echo $row['cdesc']?></option>
+												<?php
+													}
+												?>
+											</select>
+									</td>
+								</tr>
+
+								<tr>
+									<tH width="100">Email:</tH>
 									<td style="padding:2px">
-										<input type='text' class="form-control input-sm" id="contact_email" name="contact_email" />
+										<div class="col-xs-11 nopadding">
+											<input type='text' class="form-control input-sm" id="contact_email" name="contact_email" />
+										</div>
+									</td>
+									<tH width="150" style="padding:2px">Payment Type: </tH>
+									<td style="padding:2px">
+										<select class="form-control input-sm" name="selpaytype" id="selpaytype">
+											<option value="0">Credit (Paid After Delivery)</option>
+											<option value="1">Advance (Payment Before Delivery)</option>
+										</select>
 									</td>
 								</tr>
 
 								<tr>
 									<tH width="100">Currency:</tH>
 									<td style="padding:2px">
-									<div class="col-xs-12 nopadding">
+													<div class="col-xs-12 nopadding">
 														<div class="col-xs-6 nopadding">
 															<select class="form-control input-sm" name="selbasecurr" id="selbasecurr"> 						
 																<?php
@@ -176,37 +225,22 @@
 														<div class="col-xs-4" id="statgetrate" style="padding: 4px !important"> 
 																	
 														</div>
-									</div>
+													</div>
 									</td>
-									<tH width="150" style="padding:2px">Payment Type: </tH>
+									<tH width="150" style="padding:2px"><div id="setewt" style="display:none">EWT Code: </div> </tH>
 									<td style="padding:2px">
-										<select class="form-control input-sm" name="selpaytype" id="selpaytype">
-											<option value="0">Credit (Paid After Delivery)</option>
-											<option value="1">Advance (Payment Before Delivery)</option>
-										</select>
-									</td>
-								</tr>
-
-								<tr>
-									<td colspan="2">&nbsp;</td>
-									<tH width="150" style="padding:2px">Terms: </tH>
-									<td style="padding:2px">				
-											<select id="selterms" name="selterms" class="form-control input-sm selectpicker">  
-												<?php
-													$sql = "Select * From groupings where compcode='$company' and ctype='TERMS'";
-													$result=mysqli_query($con,$sql);
-													if (!mysqli_query($con, $sql)) {
-														printf("Errormessage: %s\n", mysqli_error($con));
-													}			
-																													
-													while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-													{
-												?>
-													<option value="<?php echo $row['ccode'];?>"><?php echo $row['cdesc']?></option>
-												<?php
-													}
-												?>
+										<div id="setewtval" style="display:none"> 
+											<select id="selewt" name="selewt" class="form-control input-sm selectpicker"  tabindex="3">
+													<option value="none">None</option>
+													<option value="multi">Multiple</option>
+													<?php
+														foreach(@$arrewtlist as $rows){
+															echo "<option value=\"".$rows['ctaxcode']."\">".$rows['ctaxcode'].": ".$rows['nrate']."%</option>";
+														}
+													?>
+													
 											</select>
+										</div>
 									</td>
 								</tr>
 				
@@ -280,13 +314,15 @@
 							width: 100%;
 							height: 300px;
 							text-align: left;
-							overflow: auto">
+							overflow: scroll">
 		
-							<table id="MyTable" class="MyTable" width="100%">
+							<table id="MyTable" class="MyTable" width="130%">
 								<thead>
 									<tr>
 										<th style="border-bottom:1px solid #999">Code</th>
 										<th style="border-bottom:1px solid #999">Description</th>
+										<th style="border-bottom:1px solid #999; display: none" class="codeshdn">EWT Code</th>
+										<th style="border-bottom:1px solid #999; display: none" class="codeshdn">VAT</th>
 										<th style="border-bottom:1px solid #999">UOM</th>
 										<th style="border-bottom:1px solid #999">Qty</th>
 										<th style="border-bottom:1px solid #999">Price</th>
@@ -651,10 +687,42 @@ $(document).ready(function() {
 	$("#selpaytype").on("change", function(){
 		if($(this).val()==1){
 			$("#selterms").attr("disabled", true);
+
+			$("#setewtval").show();  
+			$("#setewt").show(); 
+			$(".codeshdn").show();
+
 		}else{
 			$("#selterms").attr("disabled", false);
+
+			$("#setewtval").hide();
+			$("#setewt").hide();
+			$(".codeshdn").hide();
+
 		}
 	});
+
+		$("#selewt").on("change", function(){ 
+			var rowCount = $('#MyTable tr').length;
+
+			if(rowCount>1){
+				if($(this).val()!=="multi"){			
+						for (var i = 1; i <= rowCount-1; i++) {
+
+							$("#selitmewtyp"+i).attr("disabled", false);
+
+							var slctdvalid = $("#selitmewtyp"+i).val($(this).val());
+
+							$("#selitmewtyp"+i).attr("disabled", true);
+						}
+				}else{
+					for (var i = 1; i <= rowCount-1; i++) {
+						$("#selitmewtyp"+i).attr("disabled", false);
+					}
+				}
+
+			}
+		});
 	
 
 });
@@ -741,6 +809,49 @@ function myFunctionadd(){
 	var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\"><input type='hidden' value='"+itmdesc.toUpperCase()+"' name=\"txtitemdesc\" id=\"txtitemdesc\">"+itmdesc.toUpperCase()+"</td>";
 	var tditmunit = "<td width=\"80\" style=\"padding: 1px\" nowrap> <select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\">"+uomoptions+"</select> </td>";
 
+
+		if($("#selpaytype").val()=="1"){
+			var ewtstyle="";
+		}else{
+			var ewtstyle="display: none";
+		}
+
+				var gvnewt = $("#selewt").val();
+				var xz = $("#hdnewtlist").val();
+				ewtoptions = "";
+				$.each(jQuery.parseJSON(xz), function() { 
+					if(gvnewt==this['ctaxcode']){
+						isselctd = "selected";
+					}else{
+						isselctd = "";
+					}
+					ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
+				});
+
+				if(gvnewt=="none" || gvnewt=="multi"){
+					isdisabled = "disabled";
+				}else{
+					isdisabled = "";
+				}
+
+				var ewttd = "<td width=\"100\" nowrap style=\""+ewtstyle+"\" class=\"codeshdn\"> <select class='form-control input-xs' name=\"selitmewtyp\" id=\"selitmewtyp"+lastRow+"\" "+isdisabled+"> <option value=\"none\">None</option>" + ewtoptions + "</select> </td>";
+
+
+
+				var xz = $("#hdntaxcodes").val();
+				taxoptions = "";
+				$.each(jQuery.parseJSON(xz), function() { 
+					if($("#hdncvat").val()==this['ctaxcode']){
+						isselctd = "selected";
+					}else{
+						isselctd = "";
+					}
+					taxoptions = taxoptions + "<option value='"+this['ctaxcode']+"' data-id='"+this['nrate']+"' "+isselctd+">"+this['ctaxdesc']+"</option>";
+				});
+
+				var vattd = "<td width=\"120\" nowrap style=\""+ewtstyle+"\" class=\"codeshdn\"> <select class='form-control input-xs' name=\"selitmvatyp\" id=\"selitmvatyp"+lastRow+"\">" + taxoptions + "</select> </td>";
+
+
 	var tditmqty = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='1' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+itmunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='1' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
 		
 	var tditmprice = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='"+itmprice+"' class='numeric form-control input-xs' style='text-align:right'name=\"txtnprice\" id='txtnprice"+lastRow+"' autocomplete='off' onFocus='this.select();'> </td>";
@@ -755,7 +866,7 @@ function myFunctionadd(){
 
 	var tditmremarks = "<td width=\"150\"> <input type='text' class='form-control input-xs' value='' name=\"txtitemrem\" id=\"txtitemrem" + lastRow + "\" maxlength=\"255\"></td>";
 
-	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmamount+ tdneeded  + tditmremarks + tditmdel + '</tr>');
+	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + ewttd + vattd + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmamount+ tdneeded  + tditmremarks + tditmdel + '</tr>');
 
 
 									$("#del"+lastRow).on('click', function() {
@@ -1058,6 +1169,12 @@ function chkform(){
 				var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val(); 
 				var citmremarks = $(this).find('input[name="txtitemrem"]').val();
 
+
+				var ewtcode = $(this).find('select[name="selitmewtyp"]').val();
+				var ewtrate = $(this).find('select[name="selitmewtyp"] option:selected').data('rate'); 
+				var vatcode = $(this).find('select[name="selitmvatyp"]').val(); 
+				var nrate = $(this).find('select[name="selitmvatyp"] option:selected').data('id'); 
+
 				if(nqty!==undefined){
 					nqty = nqty.replace(/,/g,'');
 					nprice = nprice.replace(/,/g,'');
@@ -1069,7 +1186,7 @@ function chkform(){
 				
 				$.ajax ({
 					url: "Purch_newsavedet.php",
-					data: { trancode: trancode, dneed: dneed, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, citmdesc:citmdesc, ntranamt:ntranamt, citmremarks:citmremarks },
+					data: { trancode: trancode, dneed: dneed, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, citmdesc:citmdesc, ntranamt:ntranamt, citmremarks:citmremarks, vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate },
 					async: false,
 					success: function( data ) {
 						if(data.trim()=="False"){

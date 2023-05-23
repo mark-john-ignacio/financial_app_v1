@@ -164,6 +164,23 @@ if($_REQUEST['typ']=="POST"){
 
 					mysqli_query($con,"Update purchase set lapproved=1 where compcode='$company' and cpono='$tranno'");
 
+
+					//compute ung due for reference sa bills payment for advance payments
+					$ntotjuice = 0;
+					$gettaxcd = mysqli_query($con,"SELECT namount, IFNULL(newtrate,0) as newtrate FROM `purchase_t` where compcode='$company' and cpono='$tranno'"); 
+					if (mysqli_num_rows($gettaxcd)!=0) {
+						while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+							if(floatval($row['newtrate'])!==0){
+								$newt = floatval($row['namount']) * (floatval($row['newtrate']) / 100);
+								$ntotjuice = $ntotjuice + (floatval($row['namount'])-$newt);
+							}else{
+								$ntotjuice = $ntotjuice + floatval($row['namount']);
+							}							
+						}
+					}
+
+					mysqli_query($con,"Update purchase set ndueamt=".$ntotjuice." where compcode='$company' and cpono='$tranno'");
+
 				}else{ //pag nde pa send to next approver
 
 					//Check if sending email is set to 1

@@ -787,11 +787,11 @@ function myFunctionadd(nqty,nfactor,cmainunit,xref,nident){
 	if(xref == ""){				
 		
 		var xz = $("#hdnitmfactors").val();
-		if(itmqtyunit==itmunit){
-			isselctd = "selected";
-		}else{
+		//if(itmqtyunit==itmunit){
+		//	isselctd = "selected";
+		//}else{
 			isselctd = "";
-		}
+		//}
 		var uomoptions = "<option value='"+itmmainunit+"' data-factor='1' "+isselctd+">"+itmmainunit+"</option>";
 
 		$.each(jQuery.parseJSON(xz), function() { 
@@ -814,9 +814,9 @@ function myFunctionadd(nqty,nfactor,cmainunit,xref,nident){
 	}
 		
 
-	tditmbtn = "<td width=\"50\">  <input class='btn btn-info btn-xs' type='button' id='ins" + itmcode + "' value='insert' /> </td>";
+	tditmbtn = "<td width=\"50\" style=\"padding:1px\">  <input class='btn btn-info btn-xs' type='button' id='ins" + itmcode + "' value='insert' /> </td>";
 	
-	tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+"<input type='hidden' value='"+itmxref+"' name=\"txtcreference\" id=\"txtcreference\"> <input type='hidden' value='"+itmident+"' name=\"txtnrefident\" id=\"txtnrefident\"> </td>";
+	tditmcode = "<td width=\"120\" style=\"padding:1px\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+"<input type='hidden' value='"+itmxref+"' name=\"txtcreference\" id=\"txtcreference\"> <input type='hidden' value='"+itmident+"' name=\"txtnrefident\" id=\"txtnrefident\"> </td>";
 
 	if(itmcsku!==""){
 		tdskucode = "<td width=\"200\" style=\"padding:1px\">"+itmcsku+"<input type='hidden' value='"+itmcsku+"' name=\"txtcskuode\" id=\"txtcskuode\"> </td>";
@@ -827,14 +827,14 @@ function myFunctionadd(nqty,nfactor,cmainunit,xref,nident){
 	
 	tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px; padding:1px\"> " + itmdesc + "</td>";
 	
-	tditmunit = "<td width=\"80\"> " + uomoptions + "</td>";
+	tditmunit = "<td width=\"80\" style=\"padding:1px\"> " + uomoptions + "</td>";
 	
 	isfactoread = "";
 	if(itmmainunit==itmunit){
 		isfactoread = "readonly";
 	}
 
-	var tditmfactor = "<td width=\"100\" nowrap> <input type='text' value='"+itmfactor+"' class='numeric form-control input-xs' style='text-align:right' name='hdnfactor' id='hdnfactor"+lastRow+"' "+isfactoread+"> </td>";
+	var tditmfactor = "<td width=\"100\" nowrap style=\"padding:1px\"> <input type='text' value='"+itmfactor+"' class='numeric form-control input-xs' style='text-align:right' name='hdnfactor' id='hdnfactor"+lastRow+"' "+isfactoread+"> </td>";
 	
 	tditmqty = "<td width=\"100\" style=\"padding:1px\"> <input type='text' value='"+itmqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+itmqtyorig+"' name=\"txtnqtyORIG\" id=\"txtnqtyORIG"+lastRow+"\"> <input type='hidden' value='"+itmmainunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> </td>";
 	
