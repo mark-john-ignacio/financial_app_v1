@@ -25,7 +25,7 @@ require_once "../../Connection/connection_string.php";
 
 		//poitems
 		$podetails = array();
-		$resrr = mysqli_query ($con, "select * from purchase_t WHERE compcode='$company' and cpono in ('".implode("','", $ponos)."')"); 
+		$resrr = mysqli_query ($con, "select A.*, B.ladvancepay from purchase_t A left join purchase B on A.compcode=B.compcode and A.cpono=B.cpono WHERE A.compcode='$company' and A.cpono in ('".implode("','", $ponos)."')"); 
 		while($rowrr = mysqli_fetch_array($resrr, MYSQLI_ASSOC)){
 			$podetails[] = $rowrr;
 		}
@@ -67,11 +67,17 @@ require_once "../../Connection/connection_string.php";
 			$json['xref'] = $row['ctranno'];
 			$json['xrefident'] = $row['nident'];
 
+			$json['xrefPO'] = $row['creference'];
+			$json['xrefidentPO'] = $row['nrefidentity'];
+
 			foreach($podetails as $rowpo){ // find price sa PO
-				if($row['citemno']==$rowpo['citemno'] && $row['nrefidentity']==$rowpo['nident']){
+				if($row['citemno']==$rowpo['citemno'] && $row['nrefidentity']==$rowpo['nident'] && $row['creference']==$rowpo['cpono']){
 					$json['nprice'] = $rowpo['nprice'];
 					$json['namount'] = $rowpo['namount'];	
 					$json['nbaseamount'] = $rowpo['nbaseamount'];	
+					$json['ctaxcode'] = $rowpo['ctaxcode'];	
+					$json['cewtcode'] = $rowpo['cewtcode'];
+					$json['ladvancepay'] = $rowpo['ladvancepay'];
 				}
 			}
 		

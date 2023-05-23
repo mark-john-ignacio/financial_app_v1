@@ -191,11 +191,12 @@ $(function(){
 				<thead>
 					<tr>
 						<th>AP No</th>
-                        <th>Paid To</th>
-                        <th>AP Type</th>
+            <th>Paid To</th>
+            <th>AP Type</th>
 						<!--<th>Payee</th>-->
 						<!--<th>Trans Date</th>-->
-                        <th>AP Date</th>
+            <th>AP Date</th>
+						<th>Gross</th>
 						<th>Status</th>
 					</tr>
 				</thead>
@@ -219,6 +220,7 @@ $(function(){
             <td><?php echo $row['captype'];?></td>
             <!-- <td><?php// echo $row['ddate'];?></td>-->
                         <td><?php echo $row['dapvdate'];?></td>
+						<td align="right"><?php echo number_format($row['ngross'],2);?></td>
 						<td align="center">
                         <div id="msg<?php echo $row['ctranno'];?>">
                         	<?php 

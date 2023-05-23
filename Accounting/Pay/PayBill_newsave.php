@@ -93,6 +93,7 @@ else {
 		
 		
 		$capvno = mysqli_real_escape_string($con, $_POST['cTranNo'.$z]);
+		$crefrr = mysqli_real_escape_string($con, $_POST['cRefRRNo'.$z]);
 		$dapvdate = $_POST['dApvDate'.$z];
 		$namnt = mysqli_real_escape_string($con, $_POST['nAmount'.$z]);
 		$namnt = str_replace( ',', '', $namnt );
@@ -114,7 +115,7 @@ else {
 			$refcidenttran = $cSINo."P".$cnt;
 		
 			
-			if (!mysqli_query($con, "INSERT INTO `paybill_t`(`compcode`, `cidentity`, `nident`, `ctranno`, `capvno`, `dapvdate`, `namount`, `ndiscount`, `nowed`, `napplied`, `cacctno`) values('$company', '$refcidenttran', '$cnt', '$cSINo', '$capvno', STR_TO_DATE('$dapvdate', '%m/%d/%Y'), $namnt, $ndiscount, $nowed, $napplied, '$caccno')")) {
+			if (!mysqli_query($con, "INSERT INTO `paybill_t`(`compcode`, `cidentity`, `nident`, `ctranno`, `crefrr`, `capvno`, `dapvdate`, `namount`, `ndiscount`, `nowed`, `napplied`, `cacctno`) values('$company', '$refcidenttran', '$cnt', '$cSINo', '$crefrr', '$capvno', STR_TO_DATE('$dapvdate', '%m/%d/%Y'), $namnt, $ndiscount, $nowed, $napplied, '$caccno')")) {
 			printf("Errormessage: %s\n", mysqli_error($con));
 			} 
 

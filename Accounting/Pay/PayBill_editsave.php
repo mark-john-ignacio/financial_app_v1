@@ -62,6 +62,7 @@ include('../../include/denied.php');
 		
 		
 		$capvno = mysqli_real_escape_string($con, $_REQUEST['cTranNo'.$z]);
+		$crefrr = mysqli_real_escape_string($con, $_POST['cRefRRNo'.$z]);
 		$dapvdate = $_REQUEST['dApvDate'.$z];
 		$namnt = mysqli_real_escape_string($con, $_REQUEST['nAmount'.$z]);
 		$namnt = str_replace( ',', '', $namnt );
@@ -83,7 +84,7 @@ include('../../include/denied.php');
 			$refcidenttran = $cCVNo."P".$cnt;
 		
 			
-			if (!mysqli_query($con, "INSERT INTO `paybill_t`(`compcode`, `cidentity`, `nident`, `ctranno`, `capvno`, `dapvdate`, `namount`, `ndiscount`, `nowed`, `napplied`, `cacctno`) values('$company', '$refcidenttran', '$cnt', '$cCVNo', '$capvno', STR_TO_DATE('$dapvdate', '%m/%d/%Y'), $namnt, $ndiscount, $nowed, $napplied, '$caccno')")) {
+			if (!mysqli_query($con, "INSERT INTO `paybill_t`(`compcode`, `cidentity`, `nident`, `ctranno`, `crefrr`, `capvno`, `dapvdate`, `namount`, `ndiscount`, `nowed`, `napplied`, `cacctno`) values('$company', '$refcidenttran', '$cnt', '$cCVNo', '$crefrr', '$capvno', STR_TO_DATE('$dapvdate', '%m/%d/%Y'), $namnt, $ndiscount, $nowed, $napplied, '$caccno')")) {
 			printf("Errormessage: %s\n", mysqli_error($con));
 			} 
 

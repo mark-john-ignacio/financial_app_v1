@@ -35,6 +35,16 @@ if($_REQUEST['typ']=="POST"){
 		mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) values('$tranno','$preparedby',NOW(),'POSTED','APV','$compname','Post Record')");
 		
 		
+		//update total due sa suppinv
+		$sqlhead = mysqli_query($con,"Select * from apv_d where compcode='$company' and ctranno='$tranno'");
+		if (mysqli_num_rows($sqlhead)!=0) {
+			while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+
+				mysqli_query($con,"UPDATE suppinv set ndue='".$row['ndue']."' where compcode='".$row['compcode']."' and ctranno='".$row['crefno']."'");
+
+			}
+		}
+		
 		//insert to gl
 		mysqli_query($con,"DELETE FROM `glactivity` where `ctranno` = '$tranno'");
 		

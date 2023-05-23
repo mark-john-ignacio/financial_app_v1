@@ -296,6 +296,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
                          <thead>
                           <tr>
 														<th scope="col" id="hdnRefTitle">APV No</th>
+														<th>Ref No.</th>
                             <th scope="col" width="150px">Date</th>
                             <th scope="col" class="text-right" width="150px">Amount</th>
                             <th scope="col" class="text-right" width="150px">Payed&nbsp;&nbsp;&nbsp;</th>
@@ -345,7 +346,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
 								</td>
 								<td align="right">
 									<div class="col-xs-12">
-										<div class="col-xs-5 text-right"> <b>Total Amount : </span> </div>
+										<div class="col-xs-5 text-right"> <b>Total Owed : </span> </div>
 										<div class="col-xs-7"> <input type="text" id="txtnGross" name="txtnGross" class="numericchkamt form-control input-sm" value="<?php echo number_format($nAmount,2); ?>" style="font-size:16px; font-weight:bold; text-align:right" readonly> </div>
 									</div>
 								</td>
@@ -434,6 +435,7 @@ else{
                             <tr>
                               <th><input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
                               <th>AP No.</th>
+															<th>Ref No.</th>
                               <th>Date</th>
                               <th>Acct Code</th>
                               <th>Acct Desc</th>
@@ -802,51 +804,46 @@ else{
 	});
 
 	function showapvmod(custid){
-						$('#MyAPVList tbody').empty();
+		$('#MyAPVList tbody').empty();
 			
-						$.ajax({
-											url: 'th_APVlist.php',
-						data: 'code='+custid,
-											dataType: 'json',
-						async:false,
-											method: 'post',
-											success: function (data) {
+		$.ajax({
+			url: 'th_APVlist.php',
+			data: { code: custid, typ: $("#selpaytype").val() },
+			dataType: 'json',
+			async:false,
+			method: 'post',
+			success: function (data) {
 
-												console.log(data);
-												$.each(data,function(index,item){
+				console.log(data);
+				$.each(data,function(index,item){
 
-							if(item.ctranno=="NO"){
-								alert("No Available APV.");
-									$('#txtcust').val("").change(); 
-									$("#txtcustid").val("");
-
-							}
-							else{
+					if(item.ctranno=="NO"){
+						alert("No Available APV.");
+						$('#txtcust').val("").change(); 
+						$("#txtcustid").val("");
+					}
+					else{							
+						$("<tr id=\"APV"+index+"\">").append(
+							$("<td>").html("<input type='checkbox' value='"+index+"' name='chkSales[]'>"),
+							$("<td>").html(item.ctranno+"<input type='hidden' id='APVtxtno"+index+"' name='APVtxtno"+index+"' value='"+item.ctranno+"'>"),
+							$("<td>").html(item.crefno+"<input type='hidden' id='APVrrno"+index+"' name='APVrrno"+index+"' value='"+item.crefno+"'>"),
+							$("<td>").html(item.dapvdate+"<input type='hidden' id='APVdte"+index+"' name='APVdte"+index+"' value='"+item.dapvdate+"'>"),
+							$("<td>").html(item.cacctno+"<input type='hidden' id='APVacctno"+index+"' name='APVacctno"+index+"' value='"+item.cacctno+"'>"),
+							$("<td>").html(item.cacctdesc+"<input type='hidden' id='APVacctdesc"+index+"' name='APVacctdesc"+index+"' value='"+item.cacctdesc+"'>"),
+							$("<td>").html(item.namount+"<input type='hidden' id='APVamt"+index+"' name='APVamt"+index+"' value='"+item.namount+"'> <input type='hidden' id='APVpayed"+index+"' name='APVpayed"+index+"' value='"+item.napplied+"'>")
+						).appendTo("#MyAPVList tbody");
 								
-								$("<tr id=\"APV"+index+"\">").append(
-								$("<td>").html("<input type='checkbox' value='"+index+"' name='chkSales[]'>"),
-								$("<td>").html(item.ctranno+"<input type='hidden' id='APVtxtno"+index+"' name='APVtxtno"+index+"' value='"+item.ctranno+"'>"),
-								$("<td>").html(item.dapvdate+"<input type='hidden' id='APVdte"+index+"' name='APVdte"+index+"' value='"+item.dapvdate+"'>"),
-								$("<td>").html(item.cacctno+"<input type='hidden' id='APVacctno"+index+"' name='APVacctno"+index+"' value='"+item.cacctno+"'>"),
-								$("<td>").text(item.cacctdesc+"<input type='hidden' id='APVacctdesc"+index+"' name='APVacctdesc"+index+"' value='"+item.cacctdesc+"'>"),
-								$("<td>").html(item.namount+"<input type='hidden' id='APVamt"+index+"' name='APVamt"+index+"' value='"+item.namount+"'> <input type='hidden' id='APVpayed"+index+"' name='APVpayed"+index+"' value='"+item.napplied+"'>")
-								).appendTo("#MyAPVList tbody");
-								
-								$("#myAPModal").modal("show");
-							
-							}
+						$("#myAPModal").modal("show");							
+					}
+				});
 
-												});
-
-											},
-											error: function (req, status, err) {
-							alert('Something went wrong\nStatus: '+status +"\nError: "+err);
-							console.log('Something went wrong', status, err);
-						}
-									});
-
-			
-					
+			},
+			error: function (req, status, err) {
+				alert('Something went wrong\nStatus: '+status +"\nError: "+err);
+				console.log('Something went wrong', status, err);
+			}
+		});
+				
 	}
 
 	function InsertSI(){	
@@ -857,6 +854,7 @@ else{
 			var xyz = $(this).val();
 					
 				var a = $("#APVtxtno"+xyz).val();
+				var a2 = $("#APVrrno"+xyz).val();
 				var b = $("#APVdte"+xyz).val();
 				var c = $("#APVacctno"+xyz).val();
 				var d = $("#APVamt"+xyz).val().replace(/,/g,'');
@@ -865,9 +863,9 @@ else{
 			
 			var owed = parseFloat(d) - parseFloat(e);
 
-			addrrdet(a,b,d,e,owed,c,0,f);
+			addrrdet(a,b,d,e,owed,c,owed,f,a2);
 			
-			totGross = parseFloat(totGross) + parseFloat(owed) ;
+			//totGross = parseFloat(totGross) + parseFloat(owed) ;
 
 		});
 
@@ -875,16 +873,16 @@ else{
 		$('#myAPModal').modal('hide');
 		$('#myAPModal').on('hidden.bs.modal', function (e) {
 
-				$("#txtnGross").val(totGross);
-				$("#txtnGross").autoNumeric('destroy');
-				$("#txtnGross").autoNumeric('init',{mDec:2});
+				//$("#txtnGross").val(totGross);
+			//	$("#txtnGross").autoNumeric('destroy');
+			//	$("#txtnGross").autoNumeric('init',{mDec:2});
 		
 		});
 		
 
 	}
 
-	function addrrdet(ctranno,ddate,namount,npayed,ntotowed,cacctno,napplied,cacctdesc){
+	function addrrdet(ctranno,ddate,namount,npayed,ntotowed,cacctno,napplied,cacctdesc,refno){
 
 		var ctypref = $("#selpaytype").val();
 		ctyprefval = "";
@@ -900,6 +898,8 @@ else{
 		var lastRow = tbl.length;
 		
 		var u = "<td>"+ctranno+"<input type=\"hidden\" name=\"cTranNo"+lastRow+"\" id=\"cTranNo"+lastRow+"\" value=\""+ctranno+"\" /> <input type=\"hidden\" name=\"cacctno"+lastRow+"\" id=\"cacctno"+lastRow+"\" value=\""+cacctno+"\" /> </td>";
+
+		var u2 = "<td>"+refno+"<input type=\"hidden\" name=\"cRefRRNo"+lastRow+"\" id=\"cRefRRNo"+lastRow+"\" value=\""+refno+"\" /> </td>";
 		
 		var v = "<td>"+ddate+"<input type=\"hidden\" name=\"dApvDate"+lastRow+"\" id=\"dApvDate"+lastRow+"\" value=\""+ddate+"\" /></td>";
 		
@@ -915,7 +915,7 @@ else{
 		
 		//alert('<tr>'+u + v + w + x + y + '</tr>');		
 		
-		$('#MyTable > tbody:last-child').append('<tr>'+u + v + w + x + y + z + t + '</tr>');
+		$('#MyTable > tbody:last-child').append('<tr>'+ u + u2 + v + w + x + y + z + t + '</tr>');
 		
 			
 									//$("input.numeric").numeric({decimalPlaces: 4});
@@ -1043,15 +1043,22 @@ function numcom(x) {
 		var lastRow = tbl.length-1;
 		var z;
 		var gross = 0;
+		var owed = 0;
 		
 		for (z=1; z<=lastRow; z++){
 			gross = parseFloat(gross) + parseFloat($("#nApplied"+z).val().replace(/,/g,''));
+			owed = parseFloat(owed) + parseFloat($("#cTotOwed"+z).val().replace(/,/g,''));
 		}
 		
-		//document.getElementById("txtnGross").value = gross.toFixed(2);
+		//document.getElementById("txtnGross").value = gross.toFixed(2); txtnGross
 		$("#txttotpaid").val(gross);
 		$("#txttotpaid").autoNumeric('destroy');
 		$("#txttotpaid").autoNumeric('init',{mDec:2});
+
+
+		$("#txtnGross").val(owed);
+		$("#txtnGross").autoNumeric('destroy');
+		$("#txtnGross").autoNumeric('init',{mDec:2});
 
 }
 
@@ -1136,7 +1143,7 @@ function numcom(x) {
 												// var classRoomsTable = $('#mytable tbody');
 												console.log(data);
 												$.each(data,function(index,item){
-								addrrdet(item.capvno,item.dapvdate,item.namount,item.npayed,item.nowed,item.cacctno,item.napplied,item.cacctdesc);
+								addrrdet(item.capvno,item.dapvdate,item.namount,item.npayed,item.nowed,item.cacctno,item.napplied,item.cacctdesc,item.crefrr);
 							});
 							
 						}

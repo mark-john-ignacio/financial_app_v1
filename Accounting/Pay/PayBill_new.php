@@ -183,7 +183,7 @@ foreach($rowdetloc as $row0){
 										</div>
 
 										<div class="col-xs-5 nopadding">
-											<div class="form-control input-sm no-border" style="color: red" id="chknochek">
+											<div class="input-sm no-border" style="color: red" id="chknochek">
 											
 											</div>
 										</div>
@@ -219,6 +219,7 @@ foreach($rowdetloc as $row0){
 							<thead>
 								<tr>
 									<th scope="col" id="hdnRefTitle">APV No</th>
+									<th scope="col">Ref No</th>
 									<th scope="col" width="150px">Date</th>
 									<th scope="col" class="text-right" width="150px">Amount</th>
 									<th scope="col" class="text-right" width="150px">Payed&nbsp;&nbsp;&nbsp;</th>
@@ -320,6 +321,7 @@ foreach($rowdetloc as $row0){
 															<tr>
 																<th><input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
 																<th>AP No.</th>
+																<th>Ref No.</th>
 																<th>Date</th>
 																<th>Acct Code</th>
 																<th>Acct Desc</th>
@@ -669,6 +671,7 @@ function showapvmod(custid){
 									$("<tr id=\"APV"+index+"\">").append(
 									$("<td>").html("<input type='checkbox' value='"+index+"' name='chkSales[]'>"), 
 									$("<td>").html(item.ctranno+"<input type='hidden' id='APVtxtno"+index+"' name='APVtxtno"+index+"' value='"+item.ctranno+"'>"),
+									$("<td>").html(item.crefno+"<input type='hidden' id='APVrrno"+index+"' name='APVrrno"+index+"' value='"+item.crefno+"'>"),
 									$("<td>").html(item.dapvdate+"<input type='hidden' id='APVdte"+index+"' name='APVdte"+index+"' value='"+item.dapvdate+"'>"),
 									$("<td>").html(item.cacctno+"<input type='hidden' id='APVacctno"+index+"' name='APVacctno"+index+"' value='"+item.cacctno+"'>"),
 									$("<td>").html(item.cacctdesc+"<input type='hidden' id='APVacctdesc"+index+"' name='APVacctdesc"+index+"' value='"+item.cacctdesc+"'>"),
@@ -698,6 +701,7 @@ function InsertSI(){
 	   var xyz = $(this).val();
 	    
 		  var a = $("#APVtxtno"+xyz).val();
+			var a2 = $("#APVrrno"+xyz).val();
 		  var b = $("#APVdte"+xyz).val();
 		  var c = $("#APVacctno"+xyz).val();
 		  var d = $("#APVamt"+xyz).val().replace(/,/g,'');
@@ -706,7 +710,7 @@ function InsertSI(){
 		
 		 var owed = parseFloat(d) - parseFloat(e);
 
-		 addrrdet(a,b,d,e,owed,c,f);
+		 addrrdet(a,b,d,e,owed,c,f,a2);
 		 
 		 totGross = parseFloat(totGross) + parseFloat(owed) ;
 
@@ -725,7 +729,7 @@ function InsertSI(){
 
 }
 
-function addrrdet(ctranno,ddate,namount,npayed,ntotowed,cacctno,cacctdesc){
+function addrrdet(ctranno,ddate,namount,npayed,ntotowed,cacctno,cacctdesc,refno){
 
 	var ctypref = $("#selpaytype").val();
 	ctyprefval = "";
@@ -741,6 +745,8 @@ function addrrdet(ctranno,ddate,namount,npayed,ntotowed,cacctno,cacctdesc){
 		var lastRow = tbl.length;
 		
 		var u = "<td>"+ctranno+"<input type=\"hidden\" name=\"cTranNo"+lastRow+"\" id=\"cTranNo"+lastRow+"\" value=\""+ctranno+"\" /> </td>";
+
+		var u2 = "<td>"+refno+"<input type=\"hidden\" name=\"cRefRRNo"+lastRow+"\" id=\"cRefRRNo"+lastRow+"\" value=\""+refno+"\" /> </td>";
 		
 		var v = "<td>"+ddate+"<input type=\"hidden\" name=\"dApvDate"+lastRow+"\" id=\"dApvDate"+lastRow+"\" value=\""+ddate+"\" /></td>";
 		
@@ -754,7 +760,7 @@ function addrrdet(ctranno,ddate,namount,npayed,ntotowed,cacctno,cacctdesc){
 
 		var t = "<td style=\"padding:2px\" align=\"center\"><input type=\"text\" class=\"form-control input-sm\" name=\"cacctdesc"+lastRow+"\" id=\"cacctdesc"+lastRow+"\"  value=\""+cacctdesc+"\" "+ctyprefval+"/> <input type=\"hidden\" name=\"cacctno"+lastRow+"\" id=\"cacctno"+lastRow+"\" value=\""+cacctno+"\" /></td>";	
 		
-		$('#MyTable > tbody:last-child').append('<tr>'+u + v + w + x + y + z + t + '</tr>');
+		$('#MyTable > tbody:last-child').append('<tr>'+ u + u2 + v + w + x + y + z + t + '</tr>');
 		
 								$("input.numeric").autoNumeric('init',{mDec:2});
 		

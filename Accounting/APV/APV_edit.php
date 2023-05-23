@@ -354,13 +354,14 @@ if (mysqli_num_rows($sqlhead)!=0) {
                             <th style="border-bottom:1px solid #999">Credit</th>
                             <!--<th style="border-bottom:1px solid #999">Subsidiary</th>-->
                             <th style="border-bottom:1px solid #999">Remarks</th>
+														<th style="border-bottom:1px solid #999">EWT Code</th>
                             <!--<th style="border-bottom:1px solid #999">Type</th>-->
                             <th style="border-bottom:1px solid #999">&nbsp;</th>
                         </tr>
                         </thead>
                         <tbody>
                           <?php 
-							$sqlbody = mysqli_query($con,"select a.cacctno, a.ctitle, a.ndebit, a.ncredit, a.cremarks, a.csubsidiary, a.cacctrem from apv_t a where a.compcode = '$company' and a.ctranno = '$ctranno' order by a.nidentity");
+							$sqlbody = mysqli_query($con,"select a.cacctno, a.ctitle, a.ndebit, a.ncredit, a.cremarks, a.csubsidiary, a.cacctrem, a.cewtcode, a.newtrate from apv_t a where a.compcode = '$company' and a.ctranno = '$ctranno' order by a.nidentity");
 
 						if (mysqli_num_rows($sqlbody)!=0) {
 							$cntr = 0;
@@ -388,6 +389,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
                                 <td style="padding:1px">
                                 <input type='text' name="txtacctrem<?php echo $cntr;?>" id="txtacctrem<?php echo $cntr;?>" class="form-control input-sm" value='<?php echo $rowbody['cremarks'];?>'>
                                 </td>
+																<td style="padding:1px">
+																	<input type='text' name="txtewtcodeothers<?php echo $cntr;?>" id="txtewtcodeothers<?php echo $cntr;?>" class="form-control input-sm" autocomplete="off" value='<?php echo $rowbody['cewtcode'];?>'> <input type='hidden' name="txtewtrateothers<?php echo $cntr;?>" id="txtewtrateothers<?php echo $cntr;?>" value="<?php echo $rowbody['newtrate'];?>" autocomplete="off">
+																</td>
                                <!--
 																<td style="padding:1px" width="100px">
 																	<select name="selacctpaytyp<?//php echo $cntr;?>" id="selacctpaytyp<?//php echo $cntr;?>" class="form-control input-sm selectpicker">
@@ -403,6 +407,33 @@ if (mysqli_num_rows($sqlhead)!=0) {
                                 </td>
                             	
                             </tr>
+
+															<script type="text/javascript">
+																$("#txtewtcodeothers<?php echo $cntr;?>").typeahead({
+																	items: 10,
+																	source: function(request, response) {
+																		$.ajax({
+																			url: "../th_ewtcodes.php",
+																			dataType: "json",
+																			data: {
+																				query: $("#txtewtcodeothers<?php echo $cntr;?>").val()
+																			},
+																			success: function (data) {
+																				response(data);														
+																			}
+																		});
+																	},
+																	autoSelect: true,
+																	displayText: function (item) {
+																		return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.ctaxcode + '</span><br><small>' + item.cdesc + "</small></div>";
+																	},
+																	highlighter: Object,
+																	afterSelect: function(item, event) { 
+																		$("#txtewtcodeothers<?php echo $cntr;?>").val(item.ctaxcode).change(); 		
+																		$("#txtewtrateothers<?php echo $cntr;?>").val(item.nrate); 																	
+																	}
+																});
+															</script>
                          <?php
 							}
 						}
@@ -771,13 +802,14 @@ else{
             
                           <table name='MyDRDetList' id='MyDRDetList' class="table table-small">
                            <thead>
-                            <tr>
-                              <th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
-                              <th>Trans No</th>
-                              <th>Received Date</th>
-                              <th>Gross</th>
-                              <th>Remarks</th>
-                            </tr>
+													 <tr>
+															<th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
+															<th>Trans No</th>
+															<th>Supp Inv Date</th>
+															<th>Gross</th>
+															<th>EWT Code</th>
+															<th>VAT Code</th>
+														</tr>
                             </thead>
                             <tbody>
                             	
@@ -1196,8 +1228,8 @@ else{
 	
 	});
 
-	function addrrdet(rrno,amt,acctno,ctitle,crem,suppsi,nadvpaydue){
-
+	//function addrrdet(rrno,amt,acctno,ctitle,crem,suppsi,nadvpaydue){
+	function addrrdet(rrno,amt,netvat,vatval,vatcode,vatrate,ewtamt,ewtcode,ewtrate,acctno,suppsi,nadvpaydue){
 		var paymeth = $("#selaptyp").val();
 		var isread="";
 		if(paymeth=="PurchAdv"){
@@ -1292,6 +1324,7 @@ else{
 
 		$('#MyTable > tbody:last-child').append('<tr>'+a + b + gcm + gdisc + c + c1 + c2 + d + e + f + g + i + k +'</tr>');
 
+		compgross1();
 	
 							$("input.numeric").autoNumeric('init',{mDec:2});
 
@@ -1464,12 +1497,13 @@ else{
 								gross = gross.toLocaleString('en-US', {minimumFractionDigits: 1, maximumFractionDigits: 1});
 
 								$("<tr>").append(
-									$("<td>").html("<input type='checkbox' name='chkSales[]' value='"+item.crrno+"' data-id1 = '"+item.ngross+"' data-id2 = '"+item.cremarks+"' data-id3 = '"+item.vatyp+"' data-id4 = '"+item.vatrte+"' data-id5 = '"+item.crefsi+"' data-id6 = '"+item.nadvpay+"'  data-id7 = '"+item.cacctno+"'>"),
-									$("<td>").text(item.crrno),
-									$("<td>").text(item.ddate),
-									$("<td align='center'>").text(gross),
-									$("<td>").text(item.cremarks)
-								).appendTo("#"+tblid+" tbody");
+										$("<td>").html("<input type='checkbox' name='chkSales[]' value='"+item.crrno+"' data-id1 = '"+item.ngross+"' data-id2 = '"+item.vatamt+"' data-id3 = '"+item.vatyp+"' data-id4 = '"+item.vatrte+"' data-id5 = '"+item.crefsi+"' data-id6 = '"+item.nadvpay+"' data-id7 = '"+item.cacctno+"' data-id8 = '"+item.newtamt+"' data-id9 = '"+item.cewtcode+"' data-id10 = '"+item.newtrate+"'  data-id11 = '"+item.nnetamt+"'>"),
+										$("<td>").text(item.crrno),
+										$("<td>").text(item.ddate),
+										$("<td align='center'>").text(gross),
+										$("<td>").text(item.cewtcode),
+										$("<td>").text(item.vatyp)
+									).appendTo("#"+tblid+" tbody");
 							}
 
             });
@@ -1499,15 +1533,20 @@ else{
 			var rrno = $(this).val();
 
 			var amt=$(this).data("id1");
+			vtamt=$(this).data("id2");
 			vttp=$(this).data("id3");
 			vtrt=$(this).data("id4");
 			suppsi =$(this).data("id5"); 
 			advpaydue =$(this).data("id6"); 
 			acttno =$(this).data("id7"); 
+			ewtamt=$(this).data("id8");
+			ewttp=$(this).data("id9");
+			ewtrt=$(this).data("id10");
+			netamt=$(this).data("id11");
 			
 			var crem = "";
 			modnme = "mySIModal";
-			addrrdet(rrno,amt,acttno,"",crem,suppsi,advpaydue);		 
+			addrrdet(rrno,amt,netamt,vtamt,vttp,vtrt,ewtamt,ewttp,ewtrt,acttno,suppsi,advpaydue);	 
 			//totGross = parseFloat(totGross) + parseFloat(amt) ;
 
 		});
@@ -1585,10 +1624,10 @@ else{
 		//	y.style.padding = "1px";
 		var z=a.insertCell(4);
 			z.style.padding = "1px";
-		//var t=a.insertCell(5);
-		//	t.style.padding = "1px";
-		//	t.style.width = "100px";		
-		var b=a.insertCell(5);
+		var t=a.insertCell(5);
+			t.style.padding = "1px";
+			t.style.width = "100px";		
+		var b=a.insertCell(6);
 			b.style.width = "50px";
 			b.style.padding = "1px";
 
@@ -1602,6 +1641,8 @@ else{
 		
 		//t.innerHTML = "<select name=\"selacctpaytyp"+lastRow+"\" id=\"selacctpaytyp"+lastRow+"\" class=\"form-control input-sm selectpicker\"><option value=\"Payables\">Payables</options><option value=\"Others\">Others</options></select>";
 		
+		t.innerHTML = "<input type='text' name=\"txtewtcodeothers"+lastRow+"\" id=\"txtewtcodeothers"+lastRow+"\" class=\"form-control input-sm\" value=\"\"  autocomplete=\"off\"> <input type='hidden' name=\"txtewtrateothers"+lastRow+"\" id=\"txtewtrateothers"+lastRow+"\" value=\"0\"  autocomplete=\"off\">";
+
 		b.innerHTML = "<input class='btn btn-danger btn-xs' type='button' id='row2_"+lastRow+"_delete' value='delete' onClick=\"deleteRow2(this);\"/>";
 		
 		//alert(lastRow);
@@ -1657,6 +1698,31 @@ else{
 					$("#txtacctitle"+lastRow).val(item.name).change(); 
 					$("#txtacctno"+lastRow).val(item.id);
 					$("#txtdebit"+lastRow).focus();
+				}
+			});
+
+			$("#txtewtcodeothers"+lastRow).typeahead({
+				items: 10,
+				source: function(request, response) {
+					$.ajax({
+						url: "../th_ewtcodes.php",
+						dataType: "json",
+						data: {
+							query: $("#txtewtcodeothers"+lastRow).val()
+						},
+						success: function (data) {
+							response(data);														
+						}
+					});
+				},
+				autoSelect: true,
+				displayText: function (item) {
+					return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.ctaxcode + '</span><br><small>' + item.cdesc + "</small></div>";
+				},
+				highlighter: Object,
+				afterSelect: function(item, event) { 
+					$("#txtewtcodeothers"+lastRow).val(item.ctaxcode).change(); 
+					$("#txtewtrateothers"+lastRow).val(item.nrate);																					
 				}
 			});
 

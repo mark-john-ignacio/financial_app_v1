@@ -35,6 +35,26 @@ if($_REQUEST['typ']=="POST"){
 		mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
 	values('$tranno','$preparedby',NOW(),'POSTED','PAY BILLS','$compname','Post Record')");
 
+		//update suppinv
+		$rrlist = array();
+		$sqlchk = mysqli_query($con,"Select crefrr, napplied from paybill_t A left join paybill B on A.compcode=B.compcode and A.ctranno=B.ctranno Where A.compcode='$company' and A.ctranno='$tranno' and crefrr <> ''");
+		while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
+			$rrlist[] = array('crefrr' => $row['crefrr'], 'napplied' => $row['napplied']);
+		}
+
+		foreach($rrlist as $rsx){
+			$sqlchk = mysqli_query($con,"Select npaidamount from suppinv where ctranno='".$rsx['crefrr']."'");
+			$rowdetloc = $sqlchk->fetch_all(MYSQLI_ASSOC);
+			foreach($rowdetloc as $row0){
+				$npdamt = $row0['npaidamount'];
+
+				$ntotpaid = floatval($npdamt) + floatval($rsx['napplied']);
+				$con->query("Update suppinv set npaidamount = " .$ntotpaid. " Where ctranno='".$rsx['crefrr']."'");
+
+			}
+
+		}
+
 	}
 }
 

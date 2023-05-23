@@ -155,6 +155,7 @@
                         </tr>
                         </thead>
                         <tbody class="tbody">
+													
                  	    </tbody>
                         
                 </table>
@@ -183,6 +184,7 @@
                             <th style="border-bottom:1px solid #999">Credit</th>
                             <!--<th style="border-bottom:1px solid #999">Subsidiary</th>-->
                             <th style="border-bottom:1px solid #999">Remarks</th>
+														<th style="border-bottom:1px solid #999">EWT Code</th>
                             <th style="border-bottom:1px solid #999">&nbsp;</th>
                         </tr>
                         </thead>
@@ -291,43 +293,42 @@ Back to Main<br>(ESC)</button>
 </form>
 
 
-<!-- DETAILS ONLY -->
-<div class="modal fade" id="mySIModal" role="dialog" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
+				<!-- DETAILS ONLY -->
+				<div class="modal fade" id="mySIModal" role="dialog" data-keyboard="false" data-backdrop="static">
+    			<div class="modal-dialog modal-lg">
+        		<div class="modal-content">
+            	<div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h3 class="modal-title" id="DRListHeader">Supplier's Invoice List</h3>
-            </div>
+            	</div>
             
-            <div class="modal-body pre-scrollable">
+            	<div class="modal-body pre-scrollable">
             
-                          <table name='MyDRDetList' id='MyDRDetList' class="table table-small">
-                           <thead>
-                            <tr>
-                              <th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
-                              <th>Trans No</th>
-                              <th>Received Date</th>
-                              <th>Gross</th>
-                              <th>Remarks</th>
-                            </tr>
-                            </thead>
-                            <tbody>
+                <table name='MyDRDetList' id='MyDRDetList' class="table table-small">
+                  <thead>
+                    <tr>
+                      <th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
+                      <th>Trans No</th>
+                      <th>Supp Inv Date</th>
+                      <th>Gross</th>
+                      <th>EWT Code</th>
+											<th>VAT Code</th>
+                    </tr>
+                  </thead>
+                  <tbody>
                             	
-                            </tbody>
-                          </table>
-            </div>         	
-                
-           			
-            <div class="modal-footer">
+                  </tbody>
+                </table>
+           	 	</div>         	
+         			
+           	 	<div class="modal-footer">
                 <button type="button" id="btnSave" onClick="InsertSI()" class="btn btn-primary">Insert</button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<!-- End Bootstrap modal -->
+           	</div>
+        	</div><!-- /.modal-content -->
+    		</div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+			<!-- End Bootstrap modal -->
 
 <!-- 1) Alert Modal -->
 <div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
@@ -651,7 +652,9 @@ Back to Main<br>(ESC)</button>
 		
 	});
 
-	function addrrdet(rrno,amt,acctno,ctitle,crem,suppsi,nadvpaydue){
+	function addrrdet(rrno,amt,netvat,vatval,vatcode,vatrate,ewtamt,ewtcode,ewtrate,acctno,suppsi,nadvpaydue){
+
+				//addrrdet(rrno,amt,vtamt,vttp,vtrt,ewtamt,ewttp,ewtrt,acttno,suppsi,advpaydue);   
 
 		var paymeth = $("#selaptyp").val();
 		var isread="";
@@ -659,59 +662,25 @@ Back to Main<br>(ESC)</button>
 			isread = "readonly";
 		}
 
-		var vatval, vatamt, ewtcode, ewtrate, ewtamt, ndue, npaymnt, vatcode, vatrate, nncmx
-		vatcode = "";
-		vatrate = 0;
-		vatval = 0;
-		vatamt = 0;
-		ewtcode = "";
-		ewtrate = "";
-		ewtamt = 0;
-		ndue = 0;
-		npaymnt = 0;
-		nncmx = 0;
-		//get vat
-		$.ajax({
-				url: 'th_rrvats.php',
-			data: 'rrid='+rrno,
-				dataType: 'json',
-			async:false,
-				success: function (data) {
+		var nncmx = 0;
 
-						console.log(data);
-						$.each(data,function(index,item){
-						vatval = item.vatval;
-						vatamt = item.vatnet;
-						ewtcode = item.ewtcode;
-						ewtrate = item.ewtrate;
-						ewtamt = item.ewtamt;
-						npaymnt = item.npaymnt;
-						vatcode = item.vatcode;
-						vatrate = item.vatrate;
-						nncmx = item.ncm;
-					
-				});
-							
-			}
-		});
-
-		ndue = parseFloat(amt) - parseFloat(ewtamt) - parseFloat(npaymnt) - parseFloat(nncmx);
+		ndue = parseFloat(amt) - parseFloat(ewtamt);
 
 
 		if(document.getElementById("txtcustid").value!=""){
 			
-		$('#txtcust').attr('readonly', true);
-			
-		var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
-		var lastRow = tbl.length;
+			$('#txtcust').attr('readonly', true);
+				
+			var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
+			var lastRow = tbl.length;
 
-		var a = "<td  width=\"130px\" style=\"padding:1px\"> <input type='text' name=\"txtrefno\" id=\"txtrefno"+lastRow+"\" class=\"txtrefsi form-control input-sm\" required value=\""+rrno+"\" readonly> <input type='hidden' name=\"txtrefacctno\" id=\"txtrefacctno"+lastRow+"\" value=\""+acctno+"\"> <input type='hidden' name=\"txtrefsi\" id=\"txtrefsi"+lastRow+"\" value=\""+suppsi+"\"> </td>";
+			var a = "<td  width=\"130px\" style=\"padding:1px\"> <input type='text' name=\"txtrefno\" id=\"txtrefno"+lastRow+"\" class=\"txtrefsi form-control input-sm\" required value=\""+rrno+"\" readonly> <input type='hidden' name=\"txtrefacctno\" id=\"txtrefacctno"+lastRow+"\" value=\""+acctno+"\"> <input type='hidden' name=\"txtrefsi\" id=\"txtrefsi"+lastRow+"\" value=\""+suppsi+"\"> </td>";
 
-		var b = "<td  width=\"150px\" style=\"padding:1px\"><input type='text' name=\"txtnamount\" id=\"txtnamount"+lastRow+"\" class=\"numeric form-control input-sm\" value=\""+amt+"\" style=\"text-align:right\" readonly></td>";
+			var b = "<td  width=\"150px\" style=\"padding:1px\"><input type='text' name=\"txtnamount\" id=\"txtnamount"+lastRow+"\" class=\"numeric form-control input-sm\" value=\""+amt+"\" style=\"text-align:right\" readonly></td>";
 
-		var gcm = "<td  width=\"150px\" style=\"padding:1px\"><div class=\"input-group\"><input type='text' name=\"txtncm\" id=\"txtncm"+lastRow+"\" class=\"numeric form-control input-sm\" value=\""+nncmx+"\" style=\"text-align:right\" readonly><span class=\"input-group-btn\"><button class=\"btn btn-primary btn-sm\" name=\"btnaddcm\" id=\"btnaddcm"+lastRow+"\" type=\"button\" onclick=\"addCM('"+rrno+"','txtncm"+lastRow+"')\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span></button></span></div></td>";  
+			var gcm = "<td  width=\"150px\" style=\"padding:1px\"><div class=\"input-group\"><input type='text' name=\"txtncm\" id=\"txtncm"+lastRow+"\" class=\"numeric form-control input-sm\" value=\""+nncmx+"\" style=\"text-align:right\" readonly><span class=\"input-group-btn\"><button class=\"btn btn-primary btn-sm\" name=\"btnaddcm\" id=\"btnaddcm"+lastRow+"\" type=\"button\" onclick=\"addCM('"+rrno+"','txtncm"+lastRow+"')\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span></button></span></div></td>";  
 
-		var gdisc = "<td  width=\"150px\" style=\"padding:1px\"><div class=\"input-group\"><input type='text' name=\"txtndiscs\" id=\"txtndiscs"+lastRow+"\" class=\"numeric form-control input-sm\" value=\"0.00\" style=\"text-align:right\" readonly><span class=\"input-group-btn\"><button class=\"btn btn-primary btn-sm\" type=\"button\" name=\"btnadddc\" id=\"btnadddc"+lastRow+"\" onclick=\"addDISCS('"+rrno+"','txtndiscs"+lastRow+"')\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span></button></span></div></td>"; 
+			var gdisc = "<td  width=\"150px\" style=\"padding:1px\"><div class=\"input-group\"><input type='text' name=\"txtndiscs\" id=\"txtndiscs"+lastRow+"\" class=\"numeric form-control input-sm\" value=\"0.00\" style=\"text-align:right\" readonly><span class=\"input-group-btn\"><button class=\"btn btn-primary btn-sm\" type=\"button\" name=\"btnadddc\" id=\"btnadddc"+lastRow+"\" onclick=\"addDISCS('"+rrno+"','txtndiscs"+lastRow+"')\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span></button></span></div></td>"; 
 
 
 				var xz = $("#hdntaxcodes").val();
@@ -725,34 +694,35 @@ Back to Main<br>(ESC)</button>
 					taxoptions = taxoptions + "<option value='"+this['ctaxcode']+"' data-id='"+this['nrate']+"' "+isselctd+">"+this['ctaxdesc']+"</option>";
 				});
 
-		//VAT
-		var c = "<td  width=\"100px\" style=\"padding:1px\"><select class='form-control input-sm' name=\"txtnvatcode\" id=\"txtnvatcode"+lastRow+"\"> " + taxoptions + " </select> </td>"; 
-		var c1 = "<td  width=\"50px\" style=\"padding:1px\"><input type='text' class=\"numeric form-control input-sm text-right\" name=\"txtnvatrate\" id=\"txtnvatrate"+lastRow+"\" value=\""+vatrate+"\" readonly></td>"; 
-		var c2 = "<td  width=\"150px\" style=\"padding:1px\"><input type='text' name=\"txtnvatval\" id=\"txtnvatval"+lastRow+"\" class=\"numeric form-control input-sm\" value=\""+vatval+"\" style=\"text-align:right\" readonly></td>"; 
+			//VAT
+			var c = "<td  width=\"100px\" style=\"padding:1px\"><select class='form-control input-sm' name=\"txtnvatcode\" id=\"txtnvatcode"+lastRow+"\"> " + taxoptions + " </select> </td>"; 
+			var c1 = "<td  width=\"50px\" style=\"padding:1px\"><input type='text' class=\"numeric form-control input-sm text-right\" name=\"txtnvatrate\" id=\"txtnvatrate"+lastRow+"\" value=\""+vatrate+"\" readonly></td>"; 
+			var c2 = "<td  width=\"150px\" style=\"padding:1px\"><input type='text' name=\"txtnvatval\" id=\"txtnvatval"+lastRow+"\" class=\"numeric form-control input-sm\" value=\""+vatval+"\" style=\"text-align:right\" readonly></td>"; 
 
-		//NETVAT
-		var d = "<td  width=\"150px\" style=\"padding:1px\"><input type='text' name=\"txtvatnet\" id=\"txtvatnet"+lastRow+"\" class=\"numeric form-control input-sm\" value=\""+vatamt+"\" style=\"text-align:right\" readonly></td>"; 
+			//NETVAT
+			var d = "<td  width=\"150px\" style=\"padding:1px\"><input type='text' name=\"txtvatnet\" id=\"txtvatnet"+lastRow+"\" class=\"numeric form-control input-sm\" value=\""+netvat+"\" style=\"text-align:right\" readonly></td>"; 
 
-		//EWT
-		var e = "<td  width=\"100px\" style=\"padding:1px\"><input type='text' name=\"txtewtcode\" id=\"txtewtcode"+lastRow+"\" class=\"form-control input-sm\" value=\""+ewtcode+"\"  autocomplete=\"off\"></td>";
-		var f = "<td  width=\"50px\" style=\"padding:1px\"><input type='text' name=\"txtewtrate\" id=\"txtewtrate"+lastRow+"\" class=\"numeric form-control input-sm\" value=\""+ewtrate+"\" style=\"text-align:right\" readonly></td>";
-		var g = "<td  width=\"150px\" style=\"padding:1px\"><input type='text' name=\"txtewtamt\" id=\"txtewtamt"+lastRow+"\" class=\"numeric form-control input-sm\" value=\""+ewtamt+"\" style=\"text-align:right\" readonly></td>";
+			//EWT 
+			var e = "<td width=\"100px\" style=\"padding:1px\"><input type='text' name=\"txtewtcode\" id=\"txtewtcode"+lastRow+"\" class=\"form-control input-sm\" value=\""+ewtcode+"\" autocomplete=\"off\"></td>";
+			var f = "<td width=\"50px\" style=\"padding:1px\"><input type='text' name=\"txtewtrate\" id=\"txtewtrate"+lastRow+"\" class=\"numeric form-control input-sm\" value=\""+ewtrate+"\" style=\"text-align:right\" readonly></td>";
+			var g = "<td width=\"150px\" style=\"padding:1px\"><input type='text' name=\"txtewtamt\" id=\"txtewtamt"+lastRow+"\" class=\"numeric form-control input-sm\" value=\""+ewtamt+"\" style=\"text-align:right\" readonly></td>";
 
-		/*
-		var h = "<td  width=\"150px\" style=\"padding:1px\"><input type='text' name=\"txtpayment\" id=\"txtpayment"+lastRow+"\" class=\"numeric form-control input-sm\" value=\""+npaymnt+"\" style=\"text-align:right\" readonly></td>";
-		*/
+			/*
+			var h = "<td  width=\"150px\" style=\"padding:1px\"><input type='text' name=\"txtpayment\" id=\"txtpayment"+lastRow+"\" class=\"numeric form-control input-sm\" value=\""+npaymnt+"\" style=\"text-align:right\" readonly></td>";
+			*/
 
-		var i = "<td  width=\"150px\" style=\"padding:1px\"><input type='text' name=\"txtDue\" id=\"txtDue"+lastRow+"\" class=\"numeric form-control input-sm\" value=\""+ndue.toFixed(4)+"\" style=\"text-align:right\" readonly></td>";
-		
-		/*
-		var j = "<td style=\"padding:1px\"><input type='text' name=\"txtnapplied\" id=\"txtnapplied"+lastRow+"\" class=\"numeric form-control input-sm text-right\" value=\""+nadvpaydue+"\" onkeyup=\"compgross1();\"  autocomplete=\"off\" "+isread+"></td>";
-		*/
-		
-		var k = "<td width=\"50px\" style=\"padding:1px\"><input class='btn btn-danger btn-xs' type='button' id='row_"+rrno+lastRow+"_delete' class='delete' value='delete' onClick=\"deleteRow1(this);\"/></td>";
-
-		$('#MyTable > tbody:last-child').append('<tr>'+a + b + gcm + gdisc + c + c1 + c2 + d + e + f + g + i + k +'</tr>');
-		
+			var i = "<td  width=\"150px\" style=\"padding:1px\"><input type='text' name=\"txtDue\" id=\"txtDue"+lastRow+"\" class=\"numeric form-control input-sm\" value=\""+ndue.toFixed(4)+"\" style=\"text-align:right\" readonly></td>";
 			
+			/*
+			var j = "<td style=\"padding:1px\"><input type='text' name=\"txtnapplied\" id=\"txtnapplied"+lastRow+"\" class=\"numeric form-control input-sm text-right\" value=\""+nadvpaydue+"\" onkeyup=\"compgross1();\"  autocomplete=\"off\" "+isread+"></td>";
+			*/
+			
+			var k = "<td width=\"50px\" style=\"padding:1px\"><input class='btn btn-danger btn-xs' type='button' id='row_"+rrno+lastRow+"_delete' class='delete' value='delete' onClick=\"deleteRow1(this);\"/></td>";
+
+			$('#MyTable > tbody:last-child').append('<tr>'+a + b + gcm + gdisc + c + c1 + c2 + d + e + f + g + i + k +'</tr>');
+			
+									compgross1();	
+		
 									$("input.numeric").autoNumeric('init',{mDec:2});
 
 									//$("input.numeric").numeric({negative: false, decimalPlaces: 4}); 
@@ -815,9 +785,9 @@ Back to Main<br>(ESC)</button>
 											}
 										});
 			
-				if(parseFloat(nncmx)!=0){
+				//if(parseFloat(nncmx)!=0){
 					addCMReturn(rrno,'txtncm'+lastRow);
-				}
+				//}
 		}
 		else{
 			alert("Paid To Required!");
@@ -839,6 +809,7 @@ Back to Main<br>(ESC)</button>
 				var vatrate = $(this).find('input[name="txtnvatrate"]').val().replace(/,/g,''); 
 
 				var nnet = parseFloat(dmt) / parseFloat(1 + (parseInt(vatrate)/100));
+
 				$(this).find('input[name="txtvatnet"]').val(nnet);
 				$(this).find('input[name="txtvatnet"]').autoNumeric('destroy');
 				$(this).find('input[name="txtvatnet"]').autoNumeric('init',{mDec:2});
@@ -903,6 +874,7 @@ Back to Main<br>(ESC)</button>
 					}
 
 					//alert(''+url+'.php?x='+x+'&cust='+modcust+'&y='+salesnos+'&typ='+$('#selaptyp').val());
+
 					$.ajax({
 						url: ''+url+'.php',
 						data: { x:x, cust:modcust, y:salesnos, typ:$('#selaptyp').val() },
@@ -915,7 +887,6 @@ Back to Main<br>(ESC)</button>
 							$.each(data,function(index,item){
 								
 								if(item.crrno=="NONE"){
-
 									$("#txtcustid").attr("readonly", false);
 									$("#txtcust").attr("readonly", false);
 								}
@@ -924,11 +895,12 @@ Back to Main<br>(ESC)</button>
 									gross = gross.toLocaleString('en-US', {minimumFractionDigits: 1, maximumFractionDigits: 1});
 
 									$("<tr>").append(
-										$("<td>").html("<input type='checkbox' name='chkSales[]' value='"+item.crrno+"' data-id1 = '"+item.ngross+"' data-id2 = '"+item.cremarks+"' data-id3 = '"+item.vatyp+"' data-id4 = '"+item.vatrte+"' data-id5 = '"+item.crefsi+"' data-id6 = '"+item.nadvpay+"'  data-id7 = '"+item.cacctno+"'>"),
+										$("<td>").html("<input type='checkbox' name='chkSales[]' value='"+item.crrno+"' data-id1 = '"+item.ngross+"' data-id2 = '"+item.vatamt+"' data-id3 = '"+item.vatyp+"' data-id4 = '"+item.vatrte+"' data-id5 = '"+item.crefsi+"' data-id6 = '"+item.nadvpay+"' data-id7 = '"+item.cacctno+"' data-id8 = '"+item.newtamt+"' data-id9 = '"+item.cewtcode+"' data-id10 = '"+item.newtrate+"'  data-id11 = '"+item.nnetamt+"'>"),
 										$("<td>").text(item.crrno),
 										$("<td>").text(item.ddate),
 										$("<td align='center'>").text(gross),
-										$("<td>").text(item.cremarks)
+										$("<td>").text(item.cewtcode),
+										$("<td>").text(item.vatyp)
 									).appendTo("#"+tblid+" tbody");
 								}
 
@@ -959,15 +931,20 @@ Back to Main<br>(ESC)</button>
 			var rrno = $(this).val();
 
 			var amt=$(this).data("id1");
+			vtamt=$(this).data("id2");
 			vttp=$(this).data("id3");
 			vtrt=$(this).data("id4");
 			suppsi =$(this).data("id5"); 
 			advpaydue =$(this).data("id6"); 
 			acttno =$(this).data("id7"); 
+			ewtamt=$(this).data("id8");
+			ewttp=$(this).data("id9");
+			ewtrt=$(this).data("id10");
+			netamt=$(this).data("id11");
 			
 			var crem = "";
 			modnme = "mySIModal";
-			addrrdet(rrno,amt,acttno,"",crem,suppsi,advpaydue);		 
+			addrrdet(rrno,amt,netamt,vtamt,vttp,vtrt,ewtamt,ewttp,ewtrt,acttno,suppsi,advpaydue);		 
 			//totGross = parseFloat(totGross) + parseFloat(amt) ;
 
 		});
@@ -1012,10 +989,10 @@ Back to Main<br>(ESC)</button>
 		//	y.style.padding = "1px";
 		var z=a.insertCell(4);
 			z.style.padding = "1px";
-		//var t=a.insertCell(5);
-		//	t.style.padding = "1px";
-		//	t.style.width = "100px";
-		var b=a.insertCell(5);
+		var t=a.insertCell(5);
+			t.style.padding = "1px";
+			t.style.width = "100px";
+		var b=a.insertCell(6);
 			b.style.width = "50px";
 			b.style.padding = "1px";
 
@@ -1029,6 +1006,8 @@ Back to Main<br>(ESC)</button>
 		//y.innerHTML = "<input type='text' name=\"txtsubs"+lastRow+"\" id=\"txtsubs"+lastRow+"\" class=\"form-control input-sm\" placeholder=\"Search Name...\" onkeyup=\"searchSUBS(this.name);\"> <input type='hidden' name=\"txtsubsid"+lastRow+"\" id=\"txtsubsid"+lastRow+"\" autocomplete=\"off\">";
 		z.innerHTML = "<input type='text' name=\"txtacctrem"+lastRow+"\" id=\"txtacctrem"+lastRow+"\" class=\"form-control input-sm\" autocomplete=\"off\">";
 		
+		t.innerHTML = "<input type='text' name=\"txtewtcodeothers"+lastRow+"\" id=\"txtewtcodeothers"+lastRow+"\" class=\"form-control input-sm\" value=\"\"  autocomplete=\"off\"> <input type='hidden' name=\"txtewtrateothers"+lastRow+"\" id=\"txtewtrateothers"+lastRow+"\" value=\"0\"  autocomplete=\"off\">";
+			
 		//t.innerHTML = "<select name=\"selacctpaytyp"+lastRow+"\" id=\"selacctpaytyp"+lastRow+"\" class=\"form-control input-sm selectpicker\"><option value=\"Payables\">Payables</option><option value=\"Others\">Others</option></select>";
 			
 		b.innerHTML = "<input class='btn btn-danger btn-xs' type='button' id='row2_"+lastRow+"_delete' value='delete' onClick=\"deleteRow2(this);\"/>";
@@ -1093,6 +1072,31 @@ Back to Main<br>(ESC)</button>
 					
 					var xz = chkDef(item.id,'PAYABLES');
 					$("#selacctpaytyp"+lastRow).val(xz);
+				}
+			});
+
+			$("#txtewtcodeothers"+lastRow).typeahead({
+				items: 10,
+				source: function(request, response) {
+					$.ajax({
+						url: "../th_ewtcodes.php",
+						dataType: "json",
+						data: {
+							query: $("#txtewtcodeothers"+lastRow).val()
+						},
+						success: function (data) {
+							response(data);														
+						}
+					});
+				},
+				autoSelect: true,
+				displayText: function (item) {
+					return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.ctaxcode + '</span><br><small>' + item.cdesc + "</small></div>";
+				},
+				highlighter: Object,
+				afterSelect: function(item, event) { 
+					$("#txtewtcodeothers"+lastRow).val(item.ctaxcode).change(); 
+					$("#txtewtrateothers"+lastRow).val(item.nrate);																			
 				}
 			});
 
@@ -1277,6 +1281,8 @@ Back to Main<br>(ESC)</button>
 				var tempdbet = document.getElementById('txtdebit' + z);
 				var tempcdet = document.getElementById('txtcredit' + z);
 				var tempracrem = document.getElementById('txtacctrem' + z);
+				var tempdewt = document.getElementById('txtewtcodeothers' + z); 
+				var tempdewtrate = document.getElementById('txtewtrateothers' + z);
 				//var tempptyps = document.getElementById('selacctpaytyp' + z);
 				
 				var tempbtn= document.getElementById('row2_' + z + '_delete');
@@ -1292,6 +1298,10 @@ Back to Main<br>(ESC)</button>
 				tempcdet.name = "txtcredit" + x;
 				tempracrem.id = "txtacctrem" + x;
 				tempracrem.name = "txtacctrem" + x;
+				tempdewt.id = "txtewtcodeothers" + x;
+				tempdewt.name = "txtewtcodeothers" + x; 
+				tempdewtrate.id = "txtewtrateothers" + x;
+				tempdewtrate.name = "txtewtrateothers" + x;
 				//tempptyps.id = "selacctpaytyp" + x;
 			//	tempptyps.name = "selacctpaytyp" + x;
 				tempbtn.id = "row2_" + x + "_delete";
@@ -1344,6 +1354,7 @@ Back to Main<br>(ESC)</button>
 	
 	function addCMReturn(xytran,txtbx){
 
+		$cnt = 0;
 		$.ajax({
 			url: 'th_getrefreturns.php',
 			data: 'rrid='+xytran,
@@ -1353,7 +1364,7 @@ Back to Main<br>(ESC)</button>
 
 				console.log(data);
 				$.each(data,function(index,item){
-		
+					$cnt = $cnt + 1;
 					var tbl = document.getElementById('MyTableCMx').getElementsByTagName('tr');
 					var lastRow = tbl.length;
 
@@ -1422,7 +1433,10 @@ Back to Main<br>(ESC)</button>
 			}
 		});
 		
-		recomlines();
+		if($cnt>0){
+			recomlines();
+		}
+		
 	}
 	
 	function addDISCS(xrrno,txtbx){  

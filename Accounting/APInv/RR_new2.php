@@ -46,17 +46,27 @@ if(mysqli_num_rows($sql) == 0){
 	$varitmenc = "NO";
 }
 
-$gettaxcd = mysqli_query($con,"SELECT * FROM `taxcode` where compcode='$company' order By nidentity"); 
+	@$arrtaxlist = array();
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `taxcode` where compcode='$company' order By nidentity"); 
 	if (mysqli_num_rows($gettaxcd)!=0) {
 		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
 			@$arrtaxlist[] = array('ctaxcode' => $row['ctaxcode'], 'ctaxdesc' => $row['ctaxdesc'], 'nrate' => $row['nrate']); 
 		}
 	}
 
+	@$arruomslist = array();
 	$getfctrs = mysqli_query($con,"SELECT * FROM `items_factor` where compcode='$company' and cstatus='ACTIVE' order By nidentity"); 
 	if (mysqli_num_rows($getfctrs)!=0) {
 		while($row = mysqli_fetch_array($getfctrs, MYSQLI_ASSOC)){
 			@$arruomslist[] = array('cpartno' => $row['cpartno'], 'nfactor' => $row['nfactor'], 'cunit' => $row['cunit']); 
+		}
+	}
+
+	@$arrewtlist = array();
+	$getewt = mysqli_query($con,"SELECT * FROM `wtaxcodes` WHERE compcode='$company'"); 
+	if (mysqli_num_rows($getewt)!=0) {
+		while($rows = mysqli_fetch_array($getewt, MYSQLI_ASSOC)){
+			@$arrewtlist[] = array('ctaxcode' => $rows['ctaxcode'], 'nrate' => $rows['nrate']); 
 		}
 	}
 
@@ -89,6 +99,7 @@ $gettaxcd = mysqli_query($con,"SELECT * FROM `taxcode` where compcode='$company'
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
 <input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes">  
 <input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
+<input type="hidden" value='<?=json_encode(@$arrewtlist)?>' id="hdnewtlist">
 
 <form action="RR_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
 	<fieldset>
@@ -235,6 +246,7 @@ $gettaxcd = mysqli_query($con,"SELECT * FROM `taxcode` where compcode='$company'
 										<!--<th style="border-bottom:1px solid #999">&nbsp;</th>-->
 										<th style="border-bottom:1px solid #999">Code</th>
 										<th style="border-bottom:1px solid #999">Description</th>
+										<th style="border-bottom:1px solid #999">EWTCode</th>
 				            <th style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
 										<th style="border-bottom:1px solid #999">UOM</th>
 										<th style="border-bottom:1px solid #999">Qty</th>
@@ -534,7 +546,7 @@ $(document).ready(function() {
 								//addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident);
 
 								//nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident
-								myFunctionadd(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.cmainunit,item.xref,item.xrefident);
+								myFunctionadd(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.cmainunit,item.xref,item.xrefident,item.ctaxcode,item.cewtcode,item.xrefPO,item.xrefidentPO,item.ladvancepay);
 
 								$('#txtprodnme').val("").change(); 
 								$('#txtprodid').val(""); 
@@ -590,7 +602,7 @@ $(document).ready(function() {
 				$("#hdnunit").val(item.cunit);
 				$("#hdncvat").val(item.ctaxcode);
 				
-				myFunctionadd(1,0,0,0,1,item.cunit,"","");
+				myFunctionadd(1,0,0,0,1,item.cunit,"","","","","","");
 
 				$('#txtprodnme').val("").change(); 
 				$('#txtprodid').val(""); 
@@ -616,7 +628,7 @@ $(document).ready(function() {
 			$('#hdncvat').val(data[3]);
 		
 
-			myFunctionadd(1,0,0,0,1,item.cunit,"","");
+			myFunctionadd(1,0,0,0,1,item.cunit,"","","","","","");
 		
 		$("#txtprodid").val("");
 		$("#txtprodnme").val("");
@@ -637,7 +649,7 @@ $(document).ready(function() {
 });
 
 
-function myFunctionadd(nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident){
+function myFunctionadd(nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident,ctaxcode,cewtcode,itmxrefPO,itmidentPO,itemladvpay){
 
 	var itmcode = document.getElementById("txtprodid").value;
 	var itmdesc = document.getElementById("txtprodnme").value;
@@ -671,9 +683,34 @@ function myFunctionadd(nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident
 
 	tditmbtn = "<td width=\"50\">  <input class='btn btn-info btn-xs' type='button' id='ins" + itmcode + "' value='insert' /> </td>";
 	
-	tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+"<input type='hidden' value='"+itmxref+"' name=\"txtcreference\" id=\"txtcreference\"> <input type='hidden' value='"+itmident+"' name=\"txtnrefident\" id=\"txtnrefident\"> </td>";
+	tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+"<input type='hidden' value='"+itmxref+"' name=\"txtcreference\" id=\"txtcreference\"> <input type='hidden' value='"+itmident+"' name=\"txtnrefident\" id=\"txtnrefident\"> <input type='hidden' value='"+itmxrefPO+"' name=\"txtcrefPO\" id=\"txtcrefPO\"> <input type='hidden' value='"+itmidentPO+"' name=\"txtnrefidentPO\" id=\"txtnrefidentPO\"> </td>";
 	
 	tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\"> " + itmdesc + "</td>";
+
+
+
+				var gvnewt = cewtcode;
+				var xz = $("#hdnewtlist").val();
+				ewtoptions = "";
+				$.each(jQuery.parseJSON(xz), function() { 
+
+						if(gvnewt==this['ctaxcode']){
+							isselctd = "selected";
+						}else{
+							isselctd = "";
+						}
+
+					ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
+				});
+
+				if(itemladvpay=="1"){
+					isdisabled = "disabled";
+				}else{
+					isdisabled = "";
+				}
+
+				var ewttd = "<td width=\"100\" nowrap> <select class='form-control input-xs' name=\"selitmewtyp\" id=\"selitmewtyp"+lastRow+"\" "+isdisabled+"> <option value=\"none\">None</option>" + ewtoptions + "</select> </td>";
+
 
 	var tditmvats = "";
 		if(xChkVatableStatus==1){ 
@@ -681,21 +718,40 @@ function myFunctionadd(nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident
 			var xz = $("#hdntaxcodes").val();
 			taxoptions = "";
 			$.each(jQuery.parseJSON(xz), function() { 
-				if($("#hdncvat").val()==this['ctaxcode']){
-					isselctd = "selected";
+
+				if(ctaxcode==""){
+
+					if($("#hdncvat").val()==this['ctaxcode']){
+						isselctd = "selected";
+					}else{
+						isselctd = "";
+					}
+
 				}else{
-					isselctd = "";
+
+					if(ctaxcode==this['ctaxcode']){
+						isselctd = "selected";
+					}else{
+						isselctd = "";
+					}
+
 				}
 				taxoptions = taxoptions + "<option value='"+this['ctaxcode']+"' data-id='"+this['nrate']+"' "+isselctd+">"+this['ctaxdesc']+"</option>";
 			});
 
-			tditmvats = "<td width=\"100\" nowrap> <select class='form-control input-xs' name=\"selitmvatyp\" id=\"selitmvatyp"+lastRow+"\">" + taxoptions + "</select> </td>";
+			tditmvats = "<td width=\"100\" nowrap style=\"padding:1px\"> <select class='form-control input-xs' name=\"selitmvatyp\" id=\"selitmvatyp"+lastRow+"\">" + taxoptions + "</select> </td>";
 
 		}
 
 	tditmunit = "<td width=\"100\"> &nbsp; " + uomoptions + "</td>";
 	
-	tditmqty = "<td width=\"100\"> <input type='text' value='"+itmqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off'/> <input type='hidden' value='"+itmqtyorig+"' name=\"txtnqtyORIG\" id=\"txtnqtyORIG"+lastRow+"\"> </td>";
+	if(itmxref!==""){
+		$qtystatx = "readonly";
+	}else{
+
+		$qtystatx = "";
+	}
+	tditmqty = "<td width=\"100\"> <input type='text' value='"+itmqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' "+$qtystatx+"/> <input type='hidden' value='"+itmqtyorig+"' name=\"txtnqtyORIG\" id=\"txtnqtyORIG"+lastRow+"\"> </td>";
 	
 	tditmprice = "<td width=\"100\" style=\"padding:1px\"> <input type='text' value='"+itmprice+"' class='numeric form-control input-xs' style='text-align:right'name=\"txtnprice\" id='txtnprice"+lastRow+"' autocomplete='off' onFocus='this.select();'> <input type='hidden' value='"+itmmainunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+itmfactor+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
 
@@ -705,7 +761,7 @@ function myFunctionadd(nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident
 	
 	tditmdel = "<td width=\"80\" style=\"padding:1px\"> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' /> </td>";
 
-	$('#MyTable > tbody:last-child').append('<tr style=\"padding-top:1px\">'+tditmcode + tditmdesc + tditmvats + tditmunit + tditmqty + tditmprice + tditmbaseamount+ tditmamount  + '</tr>'); //tditmdel tditmbtn
+	$('#MyTable > tbody:last-child').append('<tr style=\"padding-top:1px\">'+tditmcode + tditmdesc + ewttd + tditmvats + tditmunit + tditmqty + tditmprice + tditmbaseamount+ tditmamount  + '</tr>'); //tditmdel tditmbtn
 
 
 								//	$("#del"+itmcode).on('click', function() {
@@ -995,10 +1051,17 @@ function chkform(){
 			
 				var xcref = $(this).find('input[type="hidden"][name="txtcreference"]').val();
 				var crefidnt = $(this).find('input[type="hidden"][name="txtnrefident"]').val();
+
+				var xcrefPO = $(this).find('input[type="hidden"][name="txtcrefPO"]').val();
+				var crefidntPO = $(this).find('input[type="hidden"][name="txtnrefidentPO"]').val();
+
 				var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
 
 				var vatcode = $(this).find('select[name="selitmvatyp"]').val(); 
 				var nrate = $(this).find('select[name="selitmvatyp"] option:selected').data('id'); 
+				var ewtcode = $(this).find('select[name="selitmewtyp"]').val();
+				var ewtrate = $(this).find('select[name="selitmewtyp"] option:selected').data('rate'); 
+
 
 				var cuom = $(this).find('select[name="seluom"]').val();
 						if(cuom=="" || cuom==null){
@@ -1012,7 +1075,7 @@ function chkform(){
 				var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
 				var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
 				//var dneed = $(this).find('input[name="dexpired"]').val();
-			
+				
 				
 				//$("#txtremarks").val("trancode="+ trancode+ "&indx=" + index+ "&citmno=" + citmno+ "&cuom=" + cuom+ "&nqty=" + nqty+ "&nprice=" + nprice+ "&namt=" + namt+ "&mainunit=" + mainunit+ "&nfactor=" + nfactor+ "&nqtyorig=" + nqtyOrig+ "&xcref=" + xcref+ "&crefidnt=" + crefidnt);
 				
@@ -1024,8 +1087,8 @@ function chkform(){
 				}
 
 				$.ajax ({
-					url: "RR_newsavedet.php",
-					data: { trancode: trancode, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, nbaseamt:nbaseamt, mainunit:mainunit, nfactor:nfactor, nqtyorig:nqtyOrig, xcref:xcref, crefidnt:crefidnt, vatcode:vatcode, nrate:nrate},
+					url: "RR_newsavedet.php",  
+					data: { trancode: trancode, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, nbaseamt:nbaseamt, mainunit:mainunit, nfactor:nfactor, nqtyorig:nqtyOrig, xcref:xcref, crefidnt:crefidnt, vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate, xcrefPO:xcrefPO, crefidntPO:crefidntPO },
 					async: false,
 					success: function( data ) {
 						if(data.trim()=="False"){

@@ -91,11 +91,13 @@ $company = $_SESSION['companyid'];
 		$ncredit = mysqli_real_escape_string($con, str_replace( ',', '', $_REQUEST['txtcredit'.$z]));
 		//$nsubid = mysqli_real_escape_string($con,$_REQUEST['txtsubsid'.$z]);
 		$cacctrem= mysqli_real_escape_string($con,$_REQUEST['txtacctrem'.$z]);
+		$cacewtcode= mysqli_real_escape_string($con,$_REQUEST['txtewtcodeothers'.$z]); 
+		$cacewteate = mysqli_real_escape_string($con, str_replace( ',', '', $_REQUEST['txtewtrateothers'.$z]));
 	//	$cacctpaytyp= mysqli_real_escape_string($con,$_REQUEST['selacctpaytyp'.$z]);
 
 		$refcidenttran = $cPVNo."P".$z;
 		
-		mysqli_query($con,"INSERT INTO `apv_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `crefrr`, `cacctno`, `ctitle`, `cremarks`, `ndebit`, `ncredit`) values('$company', '$refcidenttran', '$z', '$cPVNo', '$crefrr', '$cacctno', '$ctitle', '$cacctrem', $ndebit, $ncredit)");
+		mysqli_query($con,"INSERT INTO `apv_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `crefrr`, `cacctno`, `ctitle`, `cremarks`, `ndebit`, `ncredit`, `cewtcode`, `newtrate`) values('$company', '$refcidenttran', '$z', '$cPVNo', '$crefrr', '$cacctno', '$ctitle', '$cacctrem', $ndebit, $ncredit, '$cacewtcode', $cacewteate)");
 
 	}
 

@@ -50,17 +50,27 @@ if(mysqli_num_rows($sql) == 0){
 	$varitmenc = "NO";
 }
 
-$gettaxcd = mysqli_query($con,"SELECT * FROM `taxcode` where compcode='$company' order By nidentity"); 
+	@$arrtaxlist = array();
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `taxcode` where compcode='$company' order By nidentity"); 	
 	if (mysqli_num_rows($gettaxcd)!=0) {
 		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
 			@$arrtaxlist[] = array('ctaxcode' => $row['ctaxcode'], 'ctaxdesc' => $row['ctaxdesc'], 'nrate' => $row['nrate']); 
 		}
 	}
 
+	@$arruomslist = array();
 	$getfctrs = mysqli_query($con,"SELECT * FROM `items_factor` where compcode='$company' and cstatus='ACTIVE' order By nidentity"); 
 	if (mysqli_num_rows($getfctrs)!=0) {
 		while($row = mysqli_fetch_array($getfctrs, MYSQLI_ASSOC)){
 			@$arruomslist[] = array('cpartno' => $row['cpartno'], 'nfactor' => $row['nfactor'], 'cunit' => $row['cunit']); 
+		}
+	}
+
+	@$arrewtlist = array();
+	$getewt = mysqli_query($con,"SELECT * FROM `wtaxcodes` WHERE compcode='$company'"); 
+	if (mysqli_num_rows($getewt)!=0) {
+		while($rows = mysqli_fetch_array($getewt, MYSQLI_ASSOC)){
+			@$arrewtlist[] = array('ctaxcode' => $rows['ctaxcode'], 'nrate' => $rows['nrate']); 
 		}
 	}
 
@@ -94,6 +104,7 @@ $gettaxcd = mysqli_query($con,"SELECT * FROM `taxcode` where compcode='$company'
 <body style="padding:5px">
 <input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes">  
 <input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
+<input type="hidden" value='<?=json_encode(@$arrewtlist)?>' id="hdnewtlist">
 
 
 <?php
@@ -290,6 +301,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									<!--<th style="border-bottom:1px solid #999">&nbsp;</th>-->
 									<th style="border-bottom:1px solid #999">Code</th>
 									<th style="border-bottom:1px solid #999">Description</th>
+									<th style="border-bottom:1px solid #999">EWTCode</th>
 									<th style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
 			            <th style="border-bottom:1px solid #999">UOM</th>
 									<th style="border-bottom:1px solid #999">Qty</th>
@@ -653,7 +665,7 @@ $(document).ready(function() {
 						//addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident);
 
 						//nqty,nqtyorig,nprice,curramt,namount,nfactor,cmainunit,xref,nident
-						myFunctionadd(item.totqty,item.totqty,item.nprice,item.namount,item.namount,item.nfactor,item.cqtyunit,item.xref,item.xrefident)
+						myFunctionadd(item.totqty,item.totqty,item.nprice,item.namount,item.namount,item.nfactor,item.cqtyunit,item.xref,item.xrefident,item.xrefPO,item.xrefidentPO,item.ladvancepay)
 
 					 });
 
@@ -701,7 +713,7 @@ $(document).ready(function() {
 				$("#hdnunit").val(item.cunit);
 				$("#hdncvat").val(item.ctaxcode);
 				
-				myFunctionadd(1,1,0,0,0,1,item.cunit,"","");
+				myFunctionadd(1,1,0,0,0,1,item.cunit,"","","","");
 
 				$('#txtprodnme').val("").change(); 
 				$('#txtprodid').val(""); 
@@ -726,7 +738,7 @@ $(document).ready(function() {
 					$('#hdnunit').val(data[2]);
 					$("#hdncvat").val(data[3]);
 		 	
-					myFunctionadd(1,1,0,0,0,1,item.cunit,"","");
+					myFunctionadd(1,1,0,0,0,1,item.cunit,"","","","","","");
 			
 					$("#txtprodid").val("");
 					$("#txtprodnme").val("");
@@ -746,7 +758,7 @@ $(document).ready(function() {
 	
 });
 
-function myFunctionadd(nqty,nqtyorig,nprice,curramt,namount,nfactor,cmainunit,xref,nident){
+function myFunctionadd(nqty,nqtyorig,nprice,curramt,namount,nfactor,cmainunit,xref,nident,ctaxcode,cewtcode,itmxrefPO,itmidentPO,ladvpay){
 
 	var itmcode = document.getElementById("txtprodid").value;
 	var itmdesc = document.getElementById("txtprodnme").value;
@@ -763,7 +775,6 @@ function myFunctionadd(nqty,nqtyorig,nprice,curramt,namount,nfactor,cmainunit,xr
 	var itmident = nident;
 	var itmbaseamt = curramt;
 
-
 	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 	var lastRow = tbl.length;
 
@@ -772,20 +783,55 @@ function myFunctionadd(nqty,nqtyorig,nprice,curramt,namount,nfactor,cmainunit,xr
 	uomoptions = "<input type='hidden' value='"+itmunit+"' name=\"seluom\" id=\"seluom"+lastRow+"\">"+itmunit;
 
 	tditmbtn = "<td width=\"50\">  <input class='btn btn-info btn-xs' type='button' name='btninsitm' id='ins" + itmcode + "' value='insert' /> </td>";
-	tditmcode = "<td width=\"120\">  <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+"<input type='hidden' value='"+itmxref+"' name=\"txtcreference\" id=\"txtcreference\"> <input type='hidden' value='"+itmident+"' name=\"txtnrefident\" id=\"txtnrefident\"> </td>";
+	tditmcode = "<td width=\"120\">  <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+"<input type='hidden' value='"+itmxref+"' name=\"txtcreference\" id=\"txtcreference\"> <input type='hidden' value='"+itmident+"' name=\"txtnrefident\" id=\"txtnrefident\"> <input type='hidden' value='"+itmxrefPO+"' name=\"txtcrefPO\" id=\"txtcrefPO\"> <input type='hidden' value='"+itmidentPO+"' name=\"txtnrefidentPO\" id=\"txtnrefidentPO\"> </td>";
 	
 	tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\"> " +  itmdesc + "</td>";
 	
+
+				var gvnewt = cewtcode;
+				var xz = $("#hdnewtlist").val();
+				ewtoptions = "";
+				$.each(jQuery.parseJSON(xz), function() { 
+				
+						if(gvnewt==this['ctaxcode']){
+							isselctd = "selected";
+						}else{
+							isselctd = "";
+						}
+
+					ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
+				});
+
+				if(ladvpay=="1" ){
+					isdisabled = "disabled";
+				}else{
+					isdisabled = "";
+				}
+
+				var ewttd = "<td width=\"100\" nowrap> <select class='form-control input-xs "+isdisabled+"' name=\"selitmewtyp\" id=\"selitmewtyp"+lastRow+"\"> <option value=\"none\">None</option>" + ewtoptions + "</select> </td>";
+
 	var tditmvats = "";
 		if(xChkVatableStatus==1){ 
 
 			var xz = $("#hdntaxcodes").val();
 			taxoptions = "";
 			$.each(jQuery.parseJSON(xz), function() { 
-				if($("#hdncvat").val()==this['ctaxcode']){
-					isselctd = "selected";
+				if(ctaxcode==""){
+
+					if($("#hdncvat").val()==this['ctaxcode']){
+						isselctd = "selected";
+					}else{
+						isselctd = "";
+					}
+
 				}else{
-					isselctd = "";
+
+					if(ctaxcode==this['ctaxcode']){
+						isselctd = "selected";
+					}else{
+						isselctd = "";
+					}
+
 				}
 				taxoptions = taxoptions + "<option value='"+this['ctaxcode']+"' data-id='"+this['nrate']+"' "+isselctd+">"+this['ctaxdesc']+"</option>";
 			});
@@ -806,7 +852,7 @@ function myFunctionadd(nqty,nqtyorig,nprice,curramt,namount,nfactor,cmainunit,xr
 	
 	tditmdel = "<td width=\"80\" style=\"padding:1px\">  <input class='btn btn-danger btn-xs' type='button' name='btndelitm' id='del" + itmcode + lastRow +"' value='delete' /> </td>";
 
-	$('#MyTable > tbody:last-child').append('<tr style=\"padding-top:1px\">'+tditmcode + tditmdesc + tditmvats + tditmunit + tditmqty + tditmprice + tditmbaseamount+ tditmamount  + '</tr>'); //tditmdel tditmbtn
+	$('#MyTable > tbody:last-child').append('<tr style=\"padding-top:1px\">'+tditmcode + tditmdesc + ewttd + tditmvats + tditmunit + tditmqty + tditmprice + tditmbaseamount+ tditmamount  + '</tr>'); //tditmdel tditmbtn
 
 									//$("#del"+itmcode+lastRow).on('click', function() {
 									//	$(this).closest('tr').remove();
@@ -1089,8 +1135,13 @@ function chkform(){
 					var crefidnt = $(this).find('input[type="hidden"][name="txtnrefident"]').val();
 					var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
 
+					var xcrefPO = $(this).find('input[type="hidden"][name="txtcrefPO"]').val();
+					var crefidntPO = $(this).find('input[type="hidden"][name="txtnrefidentPO"]').val();
+
 					var vatcode = $(this).find('select[name="selitmvatyp"]').val(); 
 					var nrate = $(this).find('select[name="selitmvatyp"] option:selected').data('id'); 
+					var ewtcode = $(this).find('select[name="selitmewtyp"]').val();
+					var ewtrate = $(this).find('select[name="selitmewtyp"] option:selected').data('rate'); 
 
 					var cuom = $(this).find('select[name="seluom"]').val();
 							if(cuom=="" || cuom==null){
@@ -1117,7 +1168,7 @@ function chkform(){
 
 					$.ajax ({
 						url: "RR_newsavedet.php",
-						data: { trancode: trancode, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, nbaseamt:nbaseamt, mainunit:mainunit, nfactor:nfactor, nqtyorig:nqtyOrig, xcref:xcref, crefidnt:crefidnt, vatcode:vatcode, nrate:nrate},
+						data: { trancode: trancode, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, nbaseamt:nbaseamt, mainunit:mainunit, nfactor:nfactor, nqtyorig:nqtyOrig, xcref:xcref, crefidnt:crefidnt, vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate, xcrefPO:xcrefPO, crefidntPO:crefidntPO },
 						async: false,
 						success: function( data ) {
 							if(data.trim()=="False"){
@@ -1178,9 +1229,11 @@ function disabled(){
 }
 
 function enabled(){
+
 	var msgsx = "";
-	
-	if(document.getElementById("hdnposted").value==1 || document.getElementById("hdncancel").value==1){
+
+	if($("#hdnposted").val()==1 || $("#hdncancel").val()==1){
+
 		if(document.getElementById("hdnposted").value==1){
 			var msgsx = "POSTED"
 			
@@ -1198,36 +1251,6 @@ function enabled(){
 					$("#btnNew").attr("disabled", true);
 					$("#btnPrint").attr("disabled", true);
 					$("#btnEdit").attr("disabled", true);	
-					
-					//readonly Amt if hdnRRAmt Acc No
-					//if(document.getElementById("hdnRRAmtAcc").value=="NO"){
-						//$("#MyTable > tbody > tr").each(function(index) {	
-						
-						//	var x = $(this).find('input[name="txtnamount"]');
-							
-						//	x.attr("readonly", true);
-							
-						//	var z = $(this).find('input[name="txtnprice"]');
-							
-						//	z.attr("readonly", true);
-						
-						//});
-					//}
-
-					//readonly Qty if hdnRRQty Acc No
-				//	if(document.getElementById("hdnRRQtyAcc").value=="NO"){
-						$("#MyTable > tbody > tr").each(function(index) {	
-						
-							var y = $(this).find('input[name="txtnqty"]');
-							y.attr("readonly", true);
-
-							var y2 = $(this).find('input[name="btninsitm"]');
-							y2.attr("disabled", true);
-
-							var y3 = $(this).find('input[name="btndelitm"]');
-							y3.attr("disabled", true);													
-						});
-				//	}
 					
 				}
 
@@ -1255,6 +1278,19 @@ function enabled(){
 			$("#btnPrint").attr("disabled", true);
 			$("#btnEdit").attr("disabled", true);
 	
+
+						$("#MyTable > tbody > tr").each(function(index) {	
+						
+							var yref = $(this).find('input[name="txtcreference"]');
+
+							if(yref!==""){
+								var y = $(this).find('input[name="txtnqty"]');
+								y.attr("readonly", true);
+							}											
+						});
+
+			$(".disabled").attr("disabled", true);
+
 	}
 }
 
@@ -1293,7 +1329,7 @@ function loaddetails(){
 				//alert(item.nqty);
 
 				//myFunctionadd(nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident)
-				myFunctionadd(item.nqty,item.nqtyorig,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.cmainuom,item.xref,item.nident);
+				myFunctionadd(item.nqty,item.nqtyorig,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.cmainuom,item.xref,item.nident,item.cvatcode,item.cewtcode,item.xrefPO,item.nidentPO,item.ladvancepay);
 			});
 
 		}
