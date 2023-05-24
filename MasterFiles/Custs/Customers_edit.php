@@ -1099,7 +1099,8 @@ $(document).ready(function(){
 
 								var tbldl = document.getElementById('myDelAddTable').getElementsByTagName('tr');
 								var lastRowdl = tbldl.length-1;
-								document.getElementById('hdnaddresscnt').value = lastRowdl;							
+								document.getElementById('hdnaddresscnt').value = lastRowdl;			
+
 							  var formx = document.getElementById("frmCust");
 								var formData = new FormData(formx);
 
