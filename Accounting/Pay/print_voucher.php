@@ -258,7 +258,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							<tr>
 								<td><?=$row['cacctdesc']?></td>
 								<td align="right"><?=number_format($row['napplied'],2)?></td>
-								<td align="right">0.00</td>
+								<td align="right">&nbsp;</td>
 							</tr>
 							<?php
 								}
@@ -268,7 +268,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							?>
 							<tr>
 								<td><?=$row['cacctdesc']?></td>
-								<td align="right">0.00</td>
+								<td align="right">&nbsp;</td>
 								<td align="right"><?=number_format($row['ngross'],2)?></td>
 							</tr>
 							<?php
