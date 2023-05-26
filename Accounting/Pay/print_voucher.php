@@ -250,18 +250,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								<th>DEBIT</th>
 								<th>CREDIT</th>
 							</tr>
+							
 							<?php
-								$sql1 = mysqli_query($con,"Select A.cacctno, B.cacctdesc, A.ngross From paybill A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ctranno='$csalesno'");
-								while($row = mysqli_fetch_array($sql1, MYSQLI_ASSOC)){
-							?>
-							<tr>
-								<td><?=$row['cacctdesc']?></td>
-								<td align="right">0.00</td>
-								<td align="right"><?=number_format($row['ngross'],2)?></td>
-							</tr>
-							<?php
-								}
-
 								$sql2 = mysqli_query($con,"Select A.cacctno, B.cacctdesc, sum(A.napplied) as napplied From paybill_t A left join paybill C on A.compcode=C.compcode and A.ctranno=C.ctranno left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ctranno='$csalesno' group by A.cacctno, B.cacctdesc");
 								while($row = mysqli_fetch_array($sql2, MYSQLI_ASSOC)){
 							?>
@@ -269,6 +259,17 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								<td><?=$row['cacctdesc']?></td>
 								<td align="right"><?=number_format($row['napplied'],2)?></td>
 								<td align="right">0.00</td>
+							</tr>
+							<?php
+								}
+
+								$sql1 = mysqli_query($con,"Select A.cacctno, B.cacctdesc, A.ngross From paybill A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ctranno='$csalesno'");
+								while($row = mysqli_fetch_array($sql1, MYSQLI_ASSOC)){
+							?>
+							<tr>
+								<td><?=$row['cacctdesc']?></td>
+								<td align="right">0.00</td>
+								<td align="right"><?=number_format($row['ngross'],2)?></td>
 							</tr>
 							<?php
 								}
