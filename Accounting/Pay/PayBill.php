@@ -8,8 +8,7 @@ include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 include('../../include/access2.php');
 
-
-		$company = $_SESSION['companyid'];
+$company = $_SESSION['companyid'];
 
 ?>
 
@@ -19,7 +18,7 @@ include('../../include/access2.php');
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Myx Financials</title>
+		<title>Myx Financials</title>
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>"> 
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
     

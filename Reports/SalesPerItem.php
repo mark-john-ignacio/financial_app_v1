@@ -8,8 +8,6 @@ include('../Connection/connection_string.php');
 include('../include/denied.php');
 include('../include/access.php');
 
-$company = $_SESSION['companyid'];
-
 ?>
 <html>
 <head>
@@ -67,7 +65,7 @@ $company = $_SESSION['companyid'];
             <select id="seltype" name="seltype" class="form-control input-sm selectpicker"  tabindex="4">
                 <option value="">All Customers</option>
                     <?php
-                        $sql = "select * from groupings where compcode='$company' and ctype='CUSTYP' order by cdesc";
+                        $sql = "select * from groupings where ctype='CUSTYP' order by cdesc";
                         $result=mysqli_query($con,$sql);
                         if (!mysqli_query($con, $sql)) {
                             printf("Errormessage: %s\n", mysqli_error($con));
@@ -147,7 +145,7 @@ $(function(){
         autoSelect: true,
         source: function(request, response) {
             $.ajax({
-                url: "th_product.php",
+                url: "th_product_trade.php",
                 dataType: "json",
                 data: {
                     query: $("#txtCust").val()

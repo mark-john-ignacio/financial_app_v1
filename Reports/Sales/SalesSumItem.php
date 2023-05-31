@@ -25,6 +25,8 @@ $company = $_SESSION['companyid'];
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>Sales Summary</title>
 </head>
@@ -37,7 +39,7 @@ $company = $_SESSION['companyid'];
 </center>
 
 <br><br>
-<table width="100%" border="0" align="center">
+<table width="100%" border="0" align="center" id="MyTable">
   <tr>
   	<th>Item Type</th>
     <th colspan="2">Product</th>
@@ -151,7 +153,7 @@ $mnths = (int)abs((strtotime($date1) - strtotime($date2))/(60*60*24*30)) + 1;
   <tr <?php echo $classcode;?> >
     <td><b><?php echo $classval;?></b></td>
     <td><?php echo $row['citemno'];?></td>
-    <td><?php echo $row['citemdesc'];?></td>
+    <td><?php echo strtoupper($row['citemdesc']);?></td>
     <td><?php echo $row['cunit'];?></td>
     <td align="right"><?php echo floatval($row['nqty']) / $mnths;?></td>
     <td align="right"><?php echo number_format($row['nqty']);?></td>
@@ -176,3 +178,10 @@ $classcode="";
 </table>
 </body>
 </html>
+
+<script type="text/javascript">
+$( document ).ready(function() {
+
+	$('#MyTable tbody tr:last').clone().insertBefore('#MyTable tbody tr:first');
+});
+</script>

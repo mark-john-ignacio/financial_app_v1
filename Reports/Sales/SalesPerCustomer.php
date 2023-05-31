@@ -24,6 +24,8 @@ $company = $_SESSION['companyid'];
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Sales Per Customer</title>
 </head>
@@ -37,7 +39,7 @@ $company = $_SESSION['companyid'];
 </center>
 
 <br><br>
-<table width="100%" border="0" align="center">
+<table width="100%" border="0" align="center" id="MyTable">
   <tr>
     <th>Date</th>
     <th>Invoice No.</th>
@@ -74,7 +76,7 @@ if($postedtran!==""){
 if($trantype=="Trade"){
 	$sql = "select A.dcutdate, A.ctranno as csalesno, A.ccode, A.cname, A.citemno, A.citemdesc, A.cunit, A.nqty, A.nprice, A.ndiscount, A.namount
 	FROM(
-	select b.dcutdate, a.ctranno, b.ccode, IFNULL(c.ctradename,c.cname) as cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
+	select b.dcutdate, a.ctranno, b.ccode, c.cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
 	From sales_t a
 	left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 	left join customers c on b.ccode=c.cempid and b.compcode=c.compcode
@@ -83,7 +85,7 @@ if($trantype=="Trade"){
 }elseif($trantype=="Non-Trade"){
 	$sql = "select A.dcutdate, A.ctranno as csalesno, A.ccode, A.cname, A.citemno, A.citemdesc, A.cunit, A.nqty, A.ndiscount, A.nprice, A.namount
 	FROM(
-	select b.dcutdate, a.ctranno, b.ccode, IFNULL(c.ctradename,c.cname) as cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
+	select b.dcutdate, a.ctranno, b.ccode, c.cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
 	From ntsales_t a
 	left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 	left join customers c on b.ccode=c.cempid and b.compcode=c.compcode
@@ -92,7 +94,7 @@ if($trantype=="Trade"){
 }else{
 	$sql = "select A.dcutdate, A.ctranno as csalesno, A.ccode, A.cname, A.citemno, A.citemdesc, A.cunit, A.nqty, A.ndiscount, A.nprice, A.namount
 	FROM(
-		select b.dcutdate, a.ctranno, b.ccode, IFNULL(c.ctradename,c.cname) as cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
+		select b.dcutdate, a.ctranno, b.ccode, c.cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
 		From sales_t a
 		left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join customers c on b.ccode=c.cempid and b.compcode=c.compcode
@@ -101,7 +103,7 @@ if($trantype=="Trade"){
 
 		UNION ALL
 
-		select b.dcutdate, a.ctranno, b.ccode, IFNULL(c.ctradename,c.cname) as cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
+		select b.dcutdate, a.ctranno, b.ccode, c.cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
 		From ntsales_t a
 		left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join customers c on b.ccode=c.cempid and b.compcode=c.compcode
@@ -183,3 +185,10 @@ $result=mysqli_query($con,$sql);
 
 </body>
 </html>
+
+<script type="text/javascript">
+$( document ).ready(function() {
+
+	$('#MyTable tbody tr:last').clone().insertBefore('#MyTable tbody tr:first');
+});
+</script>

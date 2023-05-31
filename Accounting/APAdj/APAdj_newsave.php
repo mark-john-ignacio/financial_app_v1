@@ -8,9 +8,9 @@ $dmonth = date("m");
 $dyear = date("y");
 $company = $_SESSION['companyid'];
 
-$chkSales = mysqli_query($con,"select * from aradjustment where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");
+$chkSales = mysqli_query($con,"select * from apadjustment where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");
 if (mysqli_num_rows($chkSales)==0) {
-	$cSINo = "AJ".$dmonth.$dyear."00000";
+	$cSINo = "PJ".$dmonth.$dyear."00000";
 }
 else {
 	while($row = mysqli_fetch_array($chkSales, MYSQLI_ASSOC)){
@@ -20,7 +20,7 @@ else {
 	//echo $lastSI."<br>";
 	//echo substr($lastSI,2,2)." <> ".$dmonth."<br>";
 	if(substr($lastSI,2,2) <> $dmonth){
-		$cSINo = "AJ".$dmonth.$dyear."00000";
+		$cSINo = "PJ".$dmonth.$dyear."00000";
 	}
 	else{
 		$baseno = intval(substr($lastSI,6,5)) + 1;
@@ -32,7 +32,7 @@ else {
 		}
 		
 		$baseno = $zeroadd.$baseno;
-		$cSINo = "AJ".$dmonth.$dyear.$baseno;
+		$cSINo = "PJ".$dmonth.$dyear.$baseno;
 	}
 }
 	
@@ -52,7 +52,7 @@ else {
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 	
 
-	if (!mysqli_query($con, "INSERT INTO `aradjustment`(`compcode`, `ctranno`, `ccode`, `ddate`, `dcutdate`, `ctype`, `cremarks`, `ngross`, `crefsr`, `crefsi`, `isreturn`,`cpreparedby`) values('$company', '$cSINo', '$cCustID', NOW(), STR_TO_DATE('$dTranDate', '%m/%d/%Y'), '$cSelType', '$cRemarks', '$ngross', '$cSRRef', '$cSIRef', $dret, '$preparedby')")) {
+	if (!mysqli_query($con, "INSERT INTO `apadjustment`(`compcode`, `ctranno`, `ccode`, `ddate`, `dcutdate`, `ctype`, `cremarks`, `ngross`, `crefsr`, `crefsi`, `isreturn`,`cpreparedby`) values('$company', '$cSINo', '$cCustID', NOW(), STR_TO_DATE('$dTranDate', '%m/%d/%Y'), '$cSelType', '$cRemarks', '$ngross', '$cSRRef', '$cSIRef', $dret, '$preparedby')")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 	
@@ -77,7 +77,7 @@ else {
 
 		$refcidenttran = $cSINo."P".$z;
 	
-		mysqli_query($con,"INSERT INTO `aradjustment_t`(`compcode`, `cidentity`, `nident`, `ctranno`, `cacctno`, `ctitle`, `ndebit`, `ncredit`, `cremarks`) values('$company', '$refcidenttran', '$z', '$cSINo', '$cacctno', '$cacctdesc', $ndebit, $ncredit, $crem)");
+		mysqli_query($con,"INSERT INTO `apadjustment_t`(`compcode`, `cidentity`, `nident`, `ctranno`, `cacctno`, `ctitle`, `ndebit`, `ncredit`, `cremarks`) values('$company', '$refcidenttran', '$z', '$cSINo', '$cacctno', '$cacctdesc', $ndebit, $ncredit, $crem)");
 
 	}
 	
@@ -86,10 +86,10 @@ else {
 	$compname = php_uname('n');
 	
 	mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-	values('$company','$cSINo','$preparedby',NOW(),'INSERTED','AR ADJUSTMENT','$compname','Inserted New Record')");
+	values('$company','$cSINo','$preparedby',NOW(),'INSERTED','AP ADJUSTMENT','$compname','Inserted New Record')");
 
 ?>
-<form action="ARAdj_edit.php" name="frmpos" id="frmpos" method="post">
+<form action="APAdj_edit.php" name="frmpos" id="frmpos" method="post">
 	<input type="hidden" name="txtctranno" id="txtctranno" value="<?php echo $cSINo;?>" />
 </form>
 <script>

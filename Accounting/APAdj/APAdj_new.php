@@ -41,7 +41,7 @@
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
-<form action="ARAdj_newsave.php" name="frmpos" id="frmpos" method="post">
+<form action="APAdj_newsave.php" name="frmpos" id="frmpos" method="post">
 	<fieldset>
     	<legend>AP Adjustment</legend>	
         <table width="100%" border="0">
@@ -228,7 +228,8 @@ Back to Main<br>(ESC)</button>
                            <thead>
                             <tr>
                               <th>PR No.</th>
-															<th>Ref Supp. Inv.</th>
+															<th>Receiving.</th>
+															<th>Supp. Inv.</th>
                               <th>Date</th>
                             </tr>
                             </thead>
@@ -275,7 +276,7 @@ Back to Main<br>(ESC)</button>
 	$(document).ready(function(){
 	  $('#date_delivery').datetimepicker({
       format: 'MM/DD/YYYY',
-			minDate: new Date(),
+			//minDate: new Date(),
     });
 
 		$("input.numeric").autoNumeric('init',{mDec:2});
@@ -493,7 +494,7 @@ Back to Main<br>(ESC)</button>
 					});
 				},
 				displayText: function (item) {
-					return '<div style="border-top:1px solid gray; width: 300px"><span clas="dropdown-item-extra">'+item.no+'</span><br><small>' + item.cname + '</small><br><small>' + item.cutdate;
+					return '<div style="border-top:1px solid gray; width: 300px"><span clas="dropdown-item-extra">'+item.no+'</span><br><small>' + item.ngross + '</small><br><small>' + item.cutdate;
 				},
 				highlighter: Object,
 				afterSelect: function(item) { 		
@@ -604,15 +605,28 @@ Back to Main<br>(ESC)</button>
 							}
 							else{
 
-								$("<tr>").append(
-									$("<td id='td"+item.cpono+"'>").html("<a href=\"javascript:;\" data-dismiss=\"modal\" onclick=\"setinvref('"+item.cpono+"', '"+item.cref+"', '"+item.typx+"')\">"+item.cpono+"</a>"),
-									$("<td>").text(item.cref),
-									$("<td>").text(item.dcutdate)
-								).appendTo("#MyInvTbl tbody");
-															
-								$("#td"+item.cpono).on("mouseover", function(){
-									$(this).css('cursor','pointer');
-								});
+								if(item.crefinv!==""){
+									
+									$("<tr>").append(
+										$("<td id='td"+item.cpono+"'>").html("<a href=\"javascript:;\" data-dismiss=\"modal\" onclick=\"setinvref('"+item.cpono+"', '"+item.crefinv+"')\">"+item.cpono+"</a>"),
+										$("<td>").text(item.cref),
+										$("<td>").text(item.crefinv),
+										$("<td>").text(item.dcutdate)
+									).appendTo("#MyInvTbl tbody");
+																
+									$("#td"+item.cpono).on("mouseover", function(){
+										$(this).css('cursor','pointer');
+									});
+
+								}else{
+									$("<tr>").append(
+										$("<td id='td"+item.cpono+"'>").html(item.cpono),
+										$("<td>").text(item.cref),
+										$("<td>").text("No Inv."),
+										$("<td>").text(item.dcutdate)
+									).appendTo("#MyInvTbl tbody");
+								}
+
 							}
 						});
 							
@@ -640,17 +654,16 @@ Back to Main<br>(ESC)</button>
 		}
 	}
 
-	function setinvref(srno,invno,typx){
+	function setinvref(srno,invno){
 		$('#txtSIRef').val(srno);
 		$('#txtInvoiceRef').val(invno);
-		$('#invtyp').val(typx);		
-
+		
 		//default entry from invoice... reverese
 		$('#MyTable > tbody').empty();	
 
 		$.ajax({
 			url: 'th_getsientry.php',
-			data: 'srno='+srno+'&invno='+invno+'&styp='+$('#invtyp').val(),
+			data: 'srno='+srno+'&invno='+invno,
 			dataType: 'json',
 			method: 'post',
 			success: function (data) {

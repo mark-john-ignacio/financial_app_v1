@@ -649,13 +649,17 @@ Back to Main<br>(ESC)</button>
 	}
 
 	function setinvref(srno,invno,typx){
+
 		$('#txtSIRef').val(srno);
 		$('#txtInvoiceRef').val(invno);
 		$('#invtyp').val(typx);		
 
+		//alert(srno+","+invno+","+typx);
+
 		//default entry from invoice... reverese
 		$('#MyTable > tbody').empty();	
 
+		//alert('srno='+srno+'&invno='+invno+'&styp='+$('#invtyp').val());
 		$.ajax({
 			url: 'th_getsientry.php',
 			data: 'srno='+srno+'&invno='+invno+'&styp='+$('#invtyp').val(),

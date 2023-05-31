@@ -29,8 +29,8 @@ $date2 = $_POST["date2"];
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>General Journal</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>General Journal</title>
 </head>
 
 <body style="padding:10px">
@@ -41,12 +41,12 @@ $date2 = $_POST["date2"];
 </center>
 
 <br><br>
-<table width="80%" border="0" align="center" cellpadding = "3">
+<table width="100%" border="0" align="center" cellpadding = "3">
   <tr>
-    <th rowspan="2" width="100px">Date</th>
-		<th rowspan="2" width="100px">Reference</th>
-    <!--<th rowspan="2" style="text-align:center" width="100px">Account No. </th>-->
-    <th rowspan="2" style="text-align:center">Account</th>
+    <th rowspan="2" width="50px">Module</th>
+		<th rowspan="2" width="50px">Transaction No.</th>
+    <th rowspan="2" style="text-align:center" width="100px">Account No. </th>
+    <th rowspan="2" style="text-align:center">Account Name</th>
     <th colspan="2" style="text-align:center">Amount</th>
   </tr>
   <tr>
@@ -79,12 +79,11 @@ $date2 = $_POST["date2"];
 		$cntr++;
 
 			if($tranno!==$row['ctranno']){
-				//$cmod = $row['cmodule'];
-				$cmod = date_format(date_create($row['ddate']), "d-M-y");
+				$cmod = $row['cmodule'];
 				$ecode = $row['ctranno'];
 
 				if($cntr>1){
-					echo "<tr><td colspan ='3' align='right'>&nbsp;</td><td style='text-align:right; border-top: 2px solid !important'><b>".number_format($ntotdebit,2)."</b></td><td style='text-align:right; border-top: 2px solid !important'><b>".number_format($ntotcredit,2)."</b></td><tr>";
+					echo "<tr><td colspan ='4' align='right'>&nbsp;</td><td style='text-align:right; border-top: 2px solid !important'><b>".number_format($ntotdebit,2)."</b></td><td style='text-align:right; border-top: 2px solid !important'><b>".number_format($ntotcredit,2)."</b></td><tr>";
 
 					$ntotdebit = 0;
 					$ntotcredit = 0;
@@ -93,9 +92,9 @@ $date2 = $_POST["date2"];
 
 ?>
    <tr>
-		<td <?=($cntr>1 && $ecode !== "") ? "style='border-top: 2px solid !important'" : ""?> nowrap><?=$cmod;?></td>
+		<td <?=($cntr>1 && $ecode !== "") ? "style='border-top: 2px solid !important'" : ""?>><?=$cmod;?></td>
 		<td <?=($cntr>1 && $ecode !== "") ? "style='border-top: 2px solid !important'" : ""?>><?=$ecode;?></td>
-    <!--<td <?//=($cntr>1 && $ecode !== "") ? "style='border-top: 2px solid !important'" : ""?>><?//php echo $row['acctno'];?></td>-->
+    <td <?=($cntr>1 && $ecode !== "") ? "style='border-top: 2px solid !important'" : ""?>><?php echo $row['acctno'];?></td>
     <td <?=($cntr>1 && $ecode !== "") ? "style='border-top: 2px solid !important'" : ""?>><?php echo $row['cacctdesc'];?></td>
   	<td style="text-align:right <?=($cntr>1 && $ecode !== "") ? "; border-top: 2px solid !important" : ""?>"><?=(floatval($row['ndebit'])<>0) ? number_format(floatval($row['ndebit']), 2) : ""?></td>
     <td style="text-align:right <?=($cntr>1 && $ecode !== "") ? "; border-top: 2px solid !important" : ""?>"><?=(floatval($row['ncredit'])<>0) ? number_format(floatval($row['ncredit']), 2) : ""?></td>
@@ -112,7 +111,7 @@ $date2 = $_POST["date2"];
 	}
 
 
-	echo "<tr><td colspan ='3' align='right'>&nbsp;</td><td style='text-align:right; border-top: 2px solid !important'><b>".number_format($ntotdebit,2)."</b></td><td style='text-align:right; border-top: 2px solid !important'><b>".number_format($ntotcredit,2)."</b></td><tr>";
+	echo "<tr><td colspan ='4' align='right'>&nbsp;</td><td style='text-align:right; border-top: 2px solid !important'><b>".number_format($ntotdebit,2)."</b></td><td style='text-align:right; border-top: 2px solid !important'><b>".number_format($ntotcredit,2)."</b></td><tr>";
 ?>
 
  

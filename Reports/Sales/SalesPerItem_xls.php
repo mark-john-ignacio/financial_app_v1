@@ -24,19 +24,19 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
 // Add some data
 $spreadsheet->setActiveSheetIndex(0)
-    ->setCellValue('A1', 'Date')
-    ->setCellValue('B1', 'Invoice No.')
-		->setCellValue('C1', 'Customer')
-		->setCellValue('D1', '')
-		->setCellValue('E1', 'QTY')
-		->setCellValue('F1', 'UOM')
-		->setCellValue('G1', 'Price')
-		->setCellValue('H1', 'Discount')
-		->setCellValue('I1', 'Net Price')
-		->setCellValue('J1', 'Amount');
+    ->setCellValue('A2', 'Date')
+    ->setCellValue('B2', 'Invoice No.')
+		->setCellValue('C2', 'Customer')
+		->setCellValue('D2', '')
+		->setCellValue('E2', 'QTY')
+		->setCellValue('F2', 'UOM')
+		->setCellValue('G2', 'Price')
+		->setCellValue('H2', 'Discount')
+		->setCellValue('I2', 'Net Price')
+		->setCellValue('J2', 'Amount');
 
-$spreadsheet->getActiveSheet()->mergeCells("C1:D1");
-$spreadsheet->getActiveSheet()->getStyle('A1:J1')->getFont()->setBold(true);
+$spreadsheet->getActiveSheet()->mergeCells("C2:D2");
+$spreadsheet->getActiveSheet()->getStyle('A2:J2')->getFont()->setBold(true);
 
 //start ng details//
 $company = $_SESSION['companyid'];
@@ -62,7 +62,7 @@ if($trantype=="Trade"){
 	$sql = "select A.dcutdate, A.csalesno, A.ccode, A.cname, A.citemno, A.citemdesc, A.cunit, A.nqty, A.nprice, A.ndiscount,A.namount, A.lapproved
 	FROM
 	(
-		select b.dcutdate, a.ctranno as csalesno, b.ccode, IFNULL(c.ctradename,c.cname) as cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice,a.ndiscount, a.namount, b.lapproved
+		select b.dcutdate, a.ctranno as csalesno, b.ccode, c.ctradename as cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice,a.ndiscount, a.namount, b.lapproved
 		From sales_t a
 		left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join customers c on b.ccode=c.cempid and b.compcode=c.compcode
@@ -75,7 +75,7 @@ if($trantype=="Trade"){
 	$sql = "select A.dcutdate, A.csalesno, A.ccode, A.cname, A.citemno, A.citemdesc, A.cunit, A.nqty, A.nprice, A.ndiscount,A.namount, A.lapproved
 	FROM
 	(
-		select b.dcutdate, a.ctranno as csalesno, b.ccode, IFNULL(c.ctradename,c.cname) as cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice,a.ndiscount, a.namount, b.lapproved
+		select b.dcutdate, a.ctranno as csalesno, b.ccode, c.ctradename as cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice,a.ndiscount, a.namount, b.lapproved
 		From ntsales_t a
 		left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join customers c on b.ccode=c.cempid and b.compcode=c.compcode
@@ -88,7 +88,7 @@ if($trantype=="Trade"){
 	$sql = "select A.dcutdate, A.csalesno, A.ccode, A.cname, A.citemno, A.citemdesc, A.cunit, A.nqty, A.nprice, A.ndiscount,A.namount, A.lapproved
 	FROM
 	(
-		select b.dcutdate, a.ctranno as csalesno, b.ccode, IFNULL(c.ctradename,c.cname) as cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice,a.ndiscount, a.namount, b.lapproved
+		select b.dcutdate, a.ctranno as csalesno, b.ccode, c.ctradename as cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice,a.ndiscount, a.namount, b.lapproved
 		From sales_t a
 		left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join customers c on b.ccode=c.cempid and b.compcode=c.compcode
@@ -97,7 +97,7 @@ if($trantype=="Trade"){
 
 		UNION ALL
 
-		select b.dcutdate, a.ctranno as csalesno, b.ccode, IFNULL(c.ctradename,c.cname) as cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice,a.ndiscount, a.namount, b.lapproved
+		select b.dcutdate, a.ctranno as csalesno, b.ccode, c.ctradename as cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice,a.ndiscount, a.namount, b.lapproved
 		From ntsales_t a
 		left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join customers c on b.ccode=c.cempid and b.compcode=c.compcode
@@ -119,7 +119,7 @@ $classcode="";
 $totAmount=0;	
 $totQty=0;
 
-$cnt = 1;
+$cnt = 2;
 while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 {
 	$cnt++;
@@ -172,6 +172,22 @@ while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 	$spreadsheet->setActiveSheetIndex(0)->getStyle("A".$cnt)->getAlignment()->setHorizontal('right');
 	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":J".$cnt)->getFont()->setBold(true);
 //End Details
+
+//top
+$cnt = 1;
+	$spreadsheet->getActiveSheet()->mergeCells("A".$cnt.":C".$cnt);
+	$spreadsheet->setActiveSheetIndex(0)
+    ->setCellValue('A'.$cnt, "G R A N D  T O T A L:")
+		->setCellValue('E'.$cnt, $totQty)
+		->setCellValue('F'.$cnt, "")
+		->setCellValue('G'.$cnt, "")
+		->setCellValue('H'.$cnt, "")
+		->setCellValue('I'.$cnt, "")
+    ->setCellValue('J'.$cnt, $totAmount);
+	$spreadsheet->setActiveSheetIndex(0)->getStyle('E'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
+	$spreadsheet->setActiveSheetIndex(0)->getStyle('J'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
+	$spreadsheet->setActiveSheetIndex(0)->getStyle("A".$cnt)->getAlignment()->setHorizontal('right');
+	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":J".$cnt)->getFont()->setBold(true);
 
 
 // Rename worksheet

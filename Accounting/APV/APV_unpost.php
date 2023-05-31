@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 	session_start();
 }
-$_SESSION['pageid'] = "APV_unpost";
+$_SESSION['pageid'] = "APV_unpost.php";
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 include('../../include/access2.php');

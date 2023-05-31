@@ -54,11 +54,11 @@ $varmsg = "";
   
 <?php
 
-	$sql = "Select b.ctranno, b.ccode, b.cpayee, b.cpaymentfor, a.acctno, a.ctitle, a.ndebit, a.ncredit, b.dapvdate 
-	From glactivity a 
+	$sql = "Select b.ctranno, b.ccode, b.cpayee, b.cpaymentfor, a.cacctno, a.ctitle, a.ndebit, a.ncredit, b.dapvdate 
+	From apv_t a 
 	left join apv b on a.compcode=b.compcode and a.ctranno=b.ctranno
-	where a.compcode='$company' and a.cmodule='APV' and b.dapvdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
-	order by b.ctranno, a.ndebit, a.acctno, a.ncredit, a.acctno";
+	where a.compcode='$company' and b.dapvdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
+	order by b.ctranno, a.ndebit, a.cacctno, a.ncredit";
 
 	$result=mysqli_query($con,$sql);
 				
@@ -122,7 +122,7 @@ $varmsg = "";
 		?>
 
     <tr>
-    	<td><?php echo $row['acctno'];?></td>
+    	<td><?php echo $row['cacctno'];?></td>
     	<td><?php echo $row['ctitle'];?></td>
         <td align="right"><?php if($row['ndebit'] <> 0) 
 		{ 

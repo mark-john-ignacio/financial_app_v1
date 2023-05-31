@@ -21,20 +21,21 @@ require_once "../Connection/connection_string.php";
 			$imgsrc = "../../imgcust/".$row['cempid'] .".jpg";
 		}
 
-	     $json['id'] = $row['cempid'];
-     	 $json['value'] = utf8_encode($row['cname']);
-		 $json['nlimit'] = $row['nlimit'];
-		 $json['ncrlimit'] = 0;
-		 $json['cver'] = $row['cpricever'];
-		 $json['imgsrc'] = $imgsrc;
-		 $json['chouseno'] = $row['chouseno'];
-		 $json['ccity'] = $row['ccity'];
-		 $json['cstate'] = $row['cstate'];
-		 $json['ccountry'] = $row['ccountry'];
-		 $json['czip'] = $row['czip'];
-		 $json['csman'] = $row['csman'];
-		 $json['smaname'] = $row['smaname'];
-		 $json2[] = $json;
+	  $json['id'] = $row['cempid'];
+    $json['value'] = utf8_encode($row['cname']);
+		$json['nlimit'] = $row['nlimit'];
+		$json['ncrlimit'] = 0;
+		$json['cver'] = $row['cpricever'];
+		$json['imgsrc'] = $imgsrc;
+		$json['chouseno'] = $row['chouseno'];
+		$json['ccity'] = $row['ccity'];
+		$json['cstate'] = $row['cstate'];
+		$json['ccountry'] = $row['ccountry'];
+		$json['czip'] = $row['czip'];
+		$json['csman'] = $row['csman'];
+		$json['smaname'] = $row['smaname'];
+		$json['cterms'] = $row['cterms'];
+		$json2[] = $json;
 
 	}
 

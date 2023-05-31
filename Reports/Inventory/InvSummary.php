@@ -1,202 +1,97 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "InvSum.php";
-
-
-ini_set('MAX_EXECUTION_TIME', 900);
-
-
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
-$company = $_SESSION['companyid'];
-				$sql = "select * From company where compcode='$company'";
-				$result=mysqli_query($con,$sql);
-				
-					if (!mysqli_query($con, $sql)) {
-						printf("Errormessage: %s\n", mysqli_error($con));
-					} 
-					
-				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-				{
-					$compname =  $row['compname'];
-				}
-$totcost = 0;
-$totretail = 0;
-
-$cMonth = $_REQUEST['selm'];
-$cYear = $_REQUEST['sely'];		
-$date01 = $cYear."-".$cMonth."-01";
-
-		$monthPrev  = floatval($cMonth)-1;
-        $monthNum  = floatval($cMonth);
-
-$date = date("Y-m-t", strtotime($date01));
-
-echo $date;
-
-function chkprice($citemno,$date){
-	global $con;
-	global $company;
-	global $totcost;
-	global $totretail;
-	
-	$totcost = 0;
-	
-	$sql = "select A.dcutdate, A.ddate, A.ncost  
-			from 
-			(
-				Select dcutdate, ddate, ncost 
-				from tblinvin 
-				where compcode='$company' and ctranno not in (Select ctranno from receive) and citemno='$citemno'
-				
-				UNION ALL
-				
-				Select b.dreceived as dcutdate, b.ddate, a.ncost
-			 	from receive_t a left join receive b on a.compcode=b.compcode and a.ctranno=b.ctranno
-				where a.compcode='$company' and b.dreceived <= '$date' and a.citemno='$citemno'
-			) A order by dcutdate desc, ddate desc LIMIT 1";
-
-	$result0=mysqli_query($con,$sql);
-	
-	while($rowchk = mysqli_fetch_array($result0, MYSQLI_ASSOC))
-	{
-		
-			$totcost = $rowchk['ncost'];
-		
+	if(!isset($_SESSION)){
+		session_start();
 	}
-	
-	
-	$sqlchkpricing = mysqli_query($con,"Select cpricetype, nmarkup from items where compcode='$company' and cpartno='$citemno'");
-	if (mysqli_num_rows($sqlchkpricing)!=0) {
-		$rowcostinvin = mysqli_fetch_assoc($sqlchkpricing);
-		
-		$grandret = 0;
-		
-		if($rowcostinvin["cpricetype"]=="MU"){
-			$qtyMU = $rowcostinvin["nmarkup"];
-			$totretail = (float)$totcost + ((float)$totcost*((float)$qtyMU/100));
-		}
-	}
+	$_SESSION['pageid'] = "InvSum.php";
 
 
-}
+	ini_set('MAX_EXECUTION_TIME', 900);
 
-function chkpriceave($citemno,$date1,$date2){
-	global $con;
-	global $company;
-	global $totcost;
-	global $totretail;
-	
-	$totcost = 0;
-	
-	$sql = "select A.dcutdate, A.ddate, A.ncost  
-			from 
-			(
-				Select dcutdate, ddate, ncost 
-				from tblinvin 
-				where compcode='$company' and ctranno not in (Select ctranno from receive) and citemno='$citemno'
-				
-				UNION ALL
-				
-				Select b.dreceived as dcutdate, b.ddate, a.ncost
-			 	from receive_t a left join receive b on a.compcode=b.compcode and a.ctranno=b.ctranno
-				where a.compcode='$company' and b.dreceived between '$date1' and '$date2' and a.citemno='$citemno'
-			) A order by dcutdate desc, ddate desc LIMIT 1";
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
-	$result0=mysqli_query($con,$sql);
-	
-	while($rowchk = mysqli_fetch_array($result0, MYSQLI_ASSOC))
-	{
-		
-			$totcost = $rowchk['ncost'];
-		
-	}
-	
-	
-	$sqlchkpricing = mysqli_query($con,"Select cpricetype, nmarkup from items where compcode='$company' and cpartno='$citemno'");
-	if (mysqli_num_rows($sqlchkpricing)!=0) {
-		$rowcostinvin = mysqli_fetch_assoc($sqlchkpricing);
-		
-		$grandret = 0;
-		
-		if($rowcostinvin["cpricetype"]=="MU"){
-			$qtyMU = $rowcostinvin["nmarkup"];
-			$totretail = (float)$totcost + ((float)$totcost*((float)$qtyMU/100));
-		}
-	}
-
-
-}
-
-
-function chkqty($tbl1,$tbl2,$dtecol,$citmno){
-	global $con;
-	global $cMonth;
-	global $cYear;
-	global $monthPrev;
-	global $monthNum;
-	global $totqty;
-	
-	$totqty = 0;
-	
-	$sql = "select a.citemno, sum(a.nqty*nfactor) as nqty
-	from ".$tbl1." a 
-	left join ".$tbl2." b on a.compcode=b.compcode and a.ctranno = b.ctranno 
-	where a.compcode='001' and MONTH(b.".$dtecol.") = $monthNum and YEAR(b.".$dtecol.") = $cYear and a.citemno='$citmno'
-	and b.lcancelled=0
-	Group by a.citemno";
-//echo $sql."<br>";
-	$result0=mysqli_query($con,$sql);
-	
-	if (mysqli_num_rows($result0)!=0) {
-		while($rowchk = mysqli_fetch_array($result0, MYSQLI_ASSOC))
+		$company = $_SESSION['companyid'];
+		$sql = "select * From company where compcode='$company'";
+		$result=mysqli_query($con,$sql);					
+		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 		{
-				$totqty = $rowchk['nqty'];		
-	
+			$compname =  $row['compname'];
 		}
-	}
-	else{
-		$totqty = 0;
-	}
 
-} 
+		//get FG whse
+		$whseFG = "";
+		$whseRR = "";
+		$whsePRET = "";
+		$whseSRET = "";
 
-$totbal = 0;
+		$sql = "select * From parameters where compcode='$company' and ccode in ('DEF_WHOUT','DEF_WHIN','DEF_PROUT','DEF_SRIN')";
 
-function chkbal($citmno){
-	global $con;
-	global $cMonth;
-	global $cYear;
-	global $monthPrev;
-	global $monthNum;
-	global $totbal;
-	
-	$totbal = 0;
-	
-	$sql2 = "select a.citemno, sum(a.nactual) as nbal
-	from adjustments_t a 
-	left join adjustments b on a.compcode=b.compcode and a.ctrancode = b.ctrancode 
-	where a.compcode='001' and b.dmonth = '$monthPrev' and b.dyear = '$cYear' and a.citemno='$citmno' and b.lapproved=1
-	Group by a.citemno";
-
-	//echo $sql2."<br>";
-	$result2=mysqli_query($con,$sql2);
-	
-	if (mysqli_num_rows($result2)!=0) {
-		while($rowchk2 = mysqli_fetch_array($result2, MYSQLI_ASSOC))
+		$result=mysqli_query($con,$sql);					
+		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 		{
-				$totbal = $rowchk2['nbal'];		
-	
+			if($row['ccode']=="DEF_WHOUT"){
+				$whseFG =  $row['cvalue'];
+			}
+
+			if($row['ccode']=="DEF_WHIN"){
+				$whseRR =  $row['cvalue']; 
+			}
+
+			if($row['ccode']=="DEF_PROUT"){
+				$whsePRET =  $row['cvalue'];
+			}
+
+			if($row['ccode']=="DEF_SRIN"){
+				$whseSRET =  $row['cvalue'];
+			}
 		}
-	}
-	else{
-		$totbal = 0;
+
+	$dtfrom = $_POST["date1"];
+	$dtto = $_POST["date2"];
+
+	//BEGINNING BALANCE
+	$arravails = array();
+	$arritmslist = array();
+
+	$sql = "select a.citemno, b.citemdesc, b.cunit, COALESCE((Sum(a.nqtyin)-sum(a.nqtyout)),0) as nqty
+	From tblinventory a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno 
+	where a.compcode='$company' and a.nsection_id='".$whseFG."' and b.ctradetype='Trade' and b.linventoriable=0 and a.dcutdate < STR_TO_DATE('$dtfrom', '%m/%d/%Y')
+	group by a.citemno, b.citemdesc, b.cunit Order By  b.citemdesc";
+
+	$sqltblinv= mysqli_query($con,$sql);
+	$rowTemplate = $sqltblinv->fetch_all(MYSQLI_ASSOC);
+	foreach($rowTemplate as $row0){
+		$arravails[] = array('citemno' => $row0['citemno'], 'citemdesc' => $row0['citemdesc'], 'cunit' => $row0['cunit'], 'nqty' => $row0['nqty']);
+		$arritmslist[] = $row0['citemno'];
 	}
 
-}
+	//OTHERS
+	$arrothers = array();
+	$sql = "select a.citemno, b.citemdesc, b.cunit, a.ctype, a.nsection_id, COALESCE(Sum(a.nqtyin),0) as nqtyin, COALESCE(Sum(a.nqtyout),0) as nqtyout
+	From tblinventory a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno 
+	where a.compcode='$company' and a.nsection_id='".$whseFG."' and b.ctradetype='Trade' and b.linventoriable=0 and a.dcutdate between STR_TO_DATE('$dtfrom', '%m/%d/%Y') and STR_TO_DATE('$dtto', '%m/%d/%Y') group by a.citemno, b.citemdesc, b.cunit, a.ctype, a.nsection_id Order By b.citemdesc";
+
+	$invothers = mysqli_query($con,$sql);
+	$rowOthers = $invothers->fetch_all(MYSQLI_ASSOC);
+	foreach($rowOthers as $row0){
+		$arrothers[] = array('citemno' => $row0['citemno'], 'citemdesc' => $row0['citemdesc'], 'cunit' => $row0['cunit'], 'nqtyin' => $row0['nqtyin'], 'nqtyout' => $row0['nqtyout'], 'ctype' => $row0['ctype']);
+		$arritmslist[] = $row0['citemno'];
+	}
+
+	//Actual Count / Inventory Ending
+	$arrending = array();
+	$sql = "select a.citemno, sum(a.nqty) as nqty
+	From invcount_t a left join invcount b on a.compcode=b.compcode and a.ctranno=b.ctranno 
+	left join items c on a.compcode=c.compcode and a.citemno=c.cpartno 
+	where a.compcode='$company' and b.section_nid='".$whseFG."' and b.ctype='ending' and c.linventoriable=0 and b.dcutdate between STR_TO_DATE('$dtfrom', '%m/%d/%Y') and STR_TO_DATE('$dtto', '%m/%d/%Y') group by a.citemno";
+
+	$invending= mysqli_query($con,$sql);
+	$rowEnd = $invending->fetch_all(MYSQLI_ASSOC);
+	foreach($rowEnd as $row0){
+		$arrending[] = array('citemno' => $row0['citemno'],'nqty' => $row0['nqty']);
+		$arritmslist[] = $row0['citemno'];
+	}
 
 
 ?>
@@ -204,173 +99,211 @@ function chkbal($citmno){
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
-    <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Inventory Summary</title>
+  <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>FG Inventory Report</title>
 </head>
 
-<body style="padding:10px">
+<body style="padding:20px">
 <center>
-<h2><?php echo strtoupper($compname);  ?></h2>
-<h2>Inventory Summary</h2>
-<h3>For <?php         $dateObj   = DateTime::createFromFormat('!m', $monthNum);
-        $monthName = $dateObj->format('F'); // March
-        
-        echo $monthName . " " . $cYear;
-		
-		if(strlen($monthPrev)==1){
-			$monthPrev = "0".$monthPrev;
-		}
- ?></h3><br>
+<h2 class="nopadding"><?php echo strtoupper($compname);  ?></h2>
+<h3 class="nopadding">FG Inventory Report</h3>
+<h4 class="nopadding">For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h4>
 </center>
-
+<br>
 <table width="100%" border="0" align="center" cellpadding="3">
   <tr>
-    <th rowspan="2">Classification</th>
+		<?php
+			if($whseRR==$whseFG){
+		?>
+    <td>PU - Purchases</td>
+		<?php
+			}
+		?>
+		<td>SR - Sales Return</td>
+		<td>IT - Inventory Transfer</td>
+		<td>DR - Delivery Receipt</td>
+		<?php
+			if($whseRR==$whseFG){
+		?>
+		<td>PR - Purchase Return</td>
+		<?php
+			}
+		?>
+  </tr>
+
+</table>
+<br>
+<table width="100%" border="0" align="center" cellpadding="3">
+  <tr>
     <th colspan="2" rowspan="2" style="text-align:center;">Product</th>
     <th rowspan="2" style="text-align:center; border-right:1px solid">UOM</th>
     <th rowspan="2" style="text-align:center; border-right:1px solid">Beg</th>
-    <th colspan="2" style="text-align:center; border-right:1px solid">Qty In</th>
-    <th colspan="2" style="text-align:center; border-right:1px solid">Qty Out</th>
-    <th style="text-align:center; border-right:1px solid">Theo</th>
-    <!--<th style="text-align:center; border-right:1px solid">Actual</th>-->
-    <th rowspan="2" style="text-align:center; border-right:1px solid">Ave Cost/Unit</th>
-    <th rowspan="2" style="text-align:center; border-right:1px solid">Ave Retail/Unit</th>
+    <th colspan="<?=($whseRR==$whseFG) ? "3" : "2"?>" style="text-align:center; border-right:1px solid">Inventory In</th>
+		<th rowspan="2" style="text-align:center; border-right:1px solid">Total Available</th>
+    <th colspan="<?=($whsePRET==$whseFG) ? "3" : "2"?>" style="text-align:center; border-right:1px solid">Inventory Out</th>
+    <th rowspan="2" style="text-align:center; border-right:1px solid">Theo End</th>
+		<th rowspan="2" style="text-align:center; border-right:1px solid">Actual Count</th>
+		<th rowspan="2" style="text-align:center; border-right:1px solid">Variance</th>
+    <!--<th rowspan="2" style="text-align:center; border-right:1px solid">Ave Cost/Unit</th>
+    <th rowspan="2" style="text-align:center; border-right:1px solid">Ave Retail/Unit</th>-->
   </tr>
   <tr>
-    <th style="text-align:center; border-right:1px solid">Purchases</th>
-    <th style="text-align:center; border-right:1px solid">Sales Returns</th>
-    <th style="text-align:center; border-right:1px solid">Sales</th>
-    <th style="text-align:center; border-right:1px solid">Purchase Returns</th>
-    <th style="text-align:center; border-right:1px solid">Ending Inv.</th>
+		<?php
+			if($whseRR==$whseFG){
+		?>
+    <th style="text-align:center; border-right:1px solid">PU</th>
+		<?php
+			}
+		?>
+    <th style="text-align:center; border-right:1px solid">SR</th>
+		<th style="text-align:center; border-right:1px solid">IT</th>
+    <th style="text-align:center; border-right:1px solid">DR</th>
+		<?php
+			if($whseRR==$whseFG){
+		?>
+    <th style="text-align:center; border-right:1px solid">PR</th>
+		<?php
+			}
+		?>
+    <th style="text-align:center; border-right:1px solid">IT</th>
   </tr>
   <?php
+		$rwitms = mysqli_query($con,"Select cpartno as citemno,citemdesc,cunit from items where compcode='$company' and cpartno in ('".implode("','", $arritmslist)."')");
+		$rowallietsm = $rwitms->fetch_all(MYSQLI_ASSOC);
+		$totIn = 0;
+		$totOut = 0; 
+		$totVar = 0; 
+		foreach($rowallietsm as $rxrow){
+	?>
+		<tr>
+			<td><?php echo $rxrow['citemno'];?></td>
+			<td><?php echo strtoupper($rxrow['citemdesc']);?></td>
+			<td style="border-right:1px solid"><?php echo $rxrow['cunit'];?></td>
+			<td align="center" style="text-align: center; border-right:1px solid">
+				<?php
+					foreach($arravails as $rsx){
+						if($rsx['citemno']==$rxrow['citemno']){
+							echo number_format($rsx['nqty']);
+							$totIn = $totIn + floatval($rsx['nqty']);
+							break;
+						}
+					}
+				?>
+			</td>
+			<?php
+				if($whseRR==$whseFG){
+			?>
 
-//$date1 = date_format(date_create($_POST["date1"]),"Y-m-d");
+			<td align="center" style="text-align: center; border-right:1px solid">
+				<?php
+					foreach($arrothers as $rsx){
+						if($rsx['ctype']=="RR" && $rsx['citemno']==$rxrow['citemno']){
+							echo number_format($rsx['nqtyin']);
+							$totIn = $totIn + floatval($rsx['nqtyin']);
+							break;
+						}
+					}
+				?>
+			</td>
+			<?php
+				}
+			?>
+			<td align="center" style="text-align: center; border-right:1px solid">
+				<?php
+					foreach($arrothers as $rsx){
+						if($rsx['ctype']=="SRet" && $rsx['citemno']==$rxrow['citemno']){
+							echo number_format($rsx['nqtyin']);
+							$totIn = $totIn + floatval($rsx['nqtyin']);
+							break;
+						}
+					}
+				?> 
+			</td>
+			<td align="center" style="text-align: center; border-right:1px solid">
+				<?php
+					foreach($arrothers as $rsx){
+						if($rsx['ctype']=="INVTRANS" && $rsx['citemno']==$rxrow['citemno']){
+							echo number_format($rsx['nqtyin']);
+							$totIn = $totIn + floatval($rsx['nqtyin']);
+							break;
+						}
+					}
+				?>
+			</td> 
+			<td align="center" style="text-align: center; border-right:1px solid"><b><?=number_format($totIn)?></b></td>
+			<td align="center" style="text-align: center; border-right:1px solid">
+				<?php
+					foreach($arrothers as $rsx){
+						if(($rsx['ctype']=="DR" || $rsx['ctype']=="DRNT") && $rsx['citemno']==$rxrow['citemno']){
+							echo number_format($rsx['nqtyout']);
+							$totOut = $totOut + floatval($rsx['nqtyout']);
+							break;
+						}
+					}
+				?>
+			</td>
+			<?php
+				if($whseRR==$whseFG){
+			?>
+			<td align="center" style="text-align: center; border-right:1px solid">
+				<?php
+					foreach($arrothers as $rsx){
+						if($rsx['ctype']=="PRet" && $rsx['citemno']==$rxrow['citemno']){
+							echo number_format($rsx['nqtyout']);
+							$totOut = $totOut + floatval($rsx['nqtyout']);
+							break;
+						}
+					}
+				?>
+			</td>
+			<?php
+				}
+			?>
+			<td align="center" style="text-align: center; border-right:1px solid">
+				<?php
+					foreach($arrothers as $rsx){
+						if($rsx['ctype']=="INVTRANS" && $rsx['citemno']==$rxrow['citemno']){
+							echo (intval($rsx['nqtyout'])!==0) ? number_format($rsx['nqtyout']) : "";
+							$totOut = $totOut + floatval($rsx['nqtyout']);
+							break;
+						}
+					}
+				?>
+			</td> 
+			<td align="center" style="text-align: center; border-right:1px solid">
+					<b><?=$totIn-$totOut?></b>
+			</td>
+			<td align="center" style="text-align: center; border-right:1px solid">
+				<b>
+				<?php
+					$actcount = 0;
+					foreach($arrending as $rsx){
+						if($rsx['citemno']==$rxrow['citemno']){
+							$actcount = $rsx['nqty'];
+							break;
+						}
+					}
 
-$sql = "Select B.cpartno as citemno, B.citemdesc, B.cunit, B.cclass, C.cdesc
-		from items B
-		left join groupings C on B.compcode=C.compcode and B.cclass=C.ccode and C.ctype='ITEMCLS'
-		order by B.cclass, B.citemdesc";
-
-$result=mysqli_query($con,$sql);
-				
-	if (!mysqli_query($con, $sql)) {
-		printf("Errormessage: %s\n", mysqli_error($con));
-	} 
-	
-	$class="";
-	$classval="";
-	$classcode="";
-	$totPrice=0;	
-	$totCost=0;
-	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-	{
-		chkqty('receive_t','receive','dreceived',$row['citemno']);
-			$nrrin = $totqty;
-	
-		chkqty('salesreturn_t','salesreturn','dreceived',$row['citemno']);
-			$nsretin = $totqty;
-		
-		chkqty('sales_t','sales','dcutdate',$row['citemno']);
-			$nsalesout = $totqty;
-		
-		chkqty('purchreturn_t','purchreturn','dreturned',$row['citemno']);
-			$npretout = $totqty;
-
-		chkbal($row['citemno']);
-			$nbal = $totbal;
-
-	if(floatval($nbal) == 0 && floatval($nrrin) == 0 && floatval($nsretin) == 0 && floatval($nsalesout) == 0 && floatval($npretout) == 0){
-	
-	}
-	else{
-				
-	
-	$nqty =  (floatval($nbal) + floatval($nrrin) + floatval($nsretin)) - floatval($nsalesout) - floatval($npretout);
-		if(floatval($nqty)>=1){
-			
-			chkpriceave($row['citemno'],$date01,$date);
-			
-				$nretprice = $totretail * $nqty;
-				$ncosprice = $totcost * $nqty;
-
-		}
-		else{
-				$nretprice = 0;
-				$ncosprice = 0;
-
-		}
-		
-		if($class!=$row['cclass']){
-			$classval=$row['cdesc'];
-			$classcode="class='rpthead'";
-		}
-
-	
-	
-?>
-  <tr <?php echo $classcode;?>>
-    <td><b><?php echo $classval;?></b></td>
-    <td><?php echo $row['citemno'];?></td>
-    <td><?php echo $row['citemdesc'];?></td>
-    <td style="border-right:1px solid"><?php echo $row['cunit'];?></td>
-    <td align="right" style="text-align: right; border-right:1px solid"><?php 
-		if (floatval($nbal)<>0) { 
-			echo number_format($nbal,4); 
-		} 
-	?></td>
-    <td align="right" style="text-align: right; border-right:1px solid"><?php 
-		if (floatval($nrrin)<>0) { 
-			echo number_format($nrrin,4); 
-		} 
-	?></td>
-    <td align="right" style="text-align: right; border-right:1px solid"><?php 
-		if (floatval($nsretin)<>0) { 
-			echo number_format($nsretin,4); 
-		} 
-	?></td>
-    <td align="right" style="text-align: right; border-right:1px solid"><?php 
-		if (floatval($nsalesout)<>0) { 
-			echo number_format($nsalesout,4); 
-		} 
-	?></td>
-    <td align="right" style="text-align: right; border-right:1px solid"><?php 
-		if (floatval($npretout)<>0) { 
-			echo number_format($npretout,4); 
-		} 
-	?></td>
-    <td align="right" style="text-align: right; border-right:1px solid"><?php 
-		if (floatval($nqty)<>0) { 
-			echo number_format($nqty,4); 
-		} else{
-			echo "-";
-		}
-	?></td>
-    <td align="right" style="text-align: right; border-right:1px solid"><?php 
-		if (floatval($ncosprice)<>0) { 
-			echo number_format($ncosprice,4); 
-		} 
-	?></td>
-    <td align="right" style="text-align: right; border-right:1px solid"><?php
-		if (floatval($nretprice)<>0) { 
-			echo number_format($nretprice ,4); 
-		} 
-    
-	?></td>
-  </tr>
+					echo (intval($actcount)!==0) ? number_format($actcount) : "";
+				?>
+				</b>
+			</td>
+			<td align="center" style="text-align: center; border-right:1px solid">
+					<b>
+						<?php
+							$totVar = floatval($actcount) - ($totIn-$totOut);					
+							echo (intval($totVar)!==0) ? number_format($totVar) : "";
+						?>
+					</b>
+			</td>
+		</tr>
   <?php 
-  
-		$class=$row['cclass'];
-		$classval="";
-		$classcode="";
-
-
-	}
-		//$totCost = $totCost + $row['ncost'];
-		//$totPrice = $totPrice + $row['nprice'];
-	}
-?>
+			$totIn = 0;
+			$totOut = 0;
+			$totVar = 0;
+		}
+	?>
 </table>
 
 </body>

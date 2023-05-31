@@ -10,7 +10,7 @@ include('../../include/access2.php');
 $company = $_SESSION['companyid'];
 
 $poststat = "True";
-$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SuppInv_unpost'");
+$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SuppInv_unpost.php'");
 if(mysqli_num_rows($sql) == 0){
 	$poststat = "False";
 }

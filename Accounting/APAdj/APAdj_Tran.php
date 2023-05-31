@@ -47,13 +47,13 @@ if($_REQUEST['typ']=="POST"){
 
 		mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'ARADJ', '$tranno', B.dcutdate, A.cacctno, A.ctitle, A.ndebit, A.ncredit, 0, NOW() From apadjustment_t A left join apadjustment B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and A.ctranno='$tranno'");
 
-		//update qtyreturned sa RR kung purchreturn
+		//update qtyreturned sa Suppinv kung purchreturn
 		if($isReturn==1){
-			mysqli_query($con,"UPDATE suppinv_t a JOIN purchasereturn_t b ON a.compcode=b.compcode and a.citemno=b.citemno and a.nident=b.nrefident and b.ctranno='$SRRef' SET a.nqtyreturned = b.nqty + a.nqtyreturned WHERE a.compcode='$company' and a.ctranno='$SIRef'");
+			mysqli_query($con,"UPDATE suppinv_t a JOIN purchreturn_t b ON A.compcode=B.compcode and a.citemno=b.citemno and a.creference=b.creference and a.nrefidentity=b.nrefidentity SET a.nqtyreturned = b.nqty + a.nqtyreturned WHERE a.compcode='$company' and a.ctranno='$SIRef'");
 		}
 		
 		mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-	values('$tranno','$preparedby',NOW(),'POSTED','JOURNAL ENTRY','$compname','Post Record')");
+	values('$tranno','$preparedby',NOW(),'POSTED','AP ADJUSTMENT','$compname','Post Record')");
 
 	}
 	
@@ -63,7 +63,7 @@ if($_REQUEST['typ']=="CANCEL"){
 	
 	//echo $_REQUEST['x'];
 	
-		if (!mysqli_query($con,"Update aradjustment set lcancelled=1 where compcode='$company' and ctranno='$tranno'")){
+		if (!mysqli_query($con,"Update apadjustment set lcancelled=1 where compcode='$company' and ctranno='$tranno'")){
 			$msgz = "<b>ERROR: </b>There's a problem cancelling your transaction!";
 			$status = "False";
 		} 
@@ -74,7 +74,7 @@ if($_REQUEST['typ']=="CANCEL"){
 			mysqli_query($con,"DELETE FROM `glactivity` Where compcode='$company' and ctranno='$tranno'");
 			
 			mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-	values('$tranno','$preparedby',NOW(),'CANCELLED','JOURNAL ENTRY','$compname','Cancel Record')");
+	values('$tranno','$preparedby',NOW(),'CANCELLED','AP ADJUSTMENT','$compname','Cancel Record')");
 
 		}
 

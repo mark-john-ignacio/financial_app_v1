@@ -42,7 +42,7 @@ require_once "../../Connection/connection_string.php";
 				$itmvar = " and a.nidentity = '".$_REQUEST['itm']."'";
 			}
 
-			$sql = "select a.ctranno, a.nident as crefident, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, 0 as ndiscount, a.nbaseamount, a.namount, a.cmainunit as qtyunit, a.nfactor, ifnull(c.nqty,0) as totqty2, b.ctype, b.ctaxcode, d.ccurrencycode, d.ccurrencydesc, d.cvattype, e.nrate, d.nexchangerate
+			$sql = "select a.ctranno, a.nident as crefident, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, 0 as ndiscount, a.nbaseamount, a.namount, a.cmainunit as qtyunit, a.nfactor, ifnull(c.nqty,0) as totqty2, b.ctype, b.ctaxcode, d.ccurrencycode, d.ccurrencydesc, d.cvattype, e.nrate, d.nexchangerate, d.cterms
 			from quote_t a 
 			left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
 			left join quote d on a.compcode=d.compcode and a.ctranno=d.ctranno
@@ -131,6 +131,12 @@ require_once "../../Connection/connection_string.php";
 			}
 		//	}
 	//	 }
+
+			if($_REQUEST['typ']=="QO"){
+				$json['cterms'] = $row['cterms'];
+			}else{
+				$json['cterms'] = "";
+			}
 		
 		 $json['xref'] = $row['ctranno'];
 		 $json['citmcls'] = $row['ctype'];

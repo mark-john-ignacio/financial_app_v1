@@ -1,12 +1,19 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "APAdj.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "APAdj.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access.php');
+
+	
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'APV_unpost.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
 ?>
 
 <!DOCTYPE html>
@@ -16,6 +23,8 @@ include('../../include/access.php');
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
 	<title>Myx Financials</title>
+
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
   <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">   
   <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css"> 
   <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
@@ -25,7 +34,7 @@ include('../../include/access.php');
 		$(document).keydown(function(e) {	 
 			if(e.keyCode == 112) { //F1
 				e.preventDefault();
-			window.location = "Journal_new.php";
+			window.location = "APAdj_new.php";
 			}
 		});
 
@@ -66,7 +75,7 @@ include('../../include/access.php');
 						var num = $("#modzx").val();
 
 							$.ajax ({
-								url: "ARAdj_Tran.php",
+								url: "APAdj_Tran.php",
 								data: { x: num, typ: x},
 								async: false,
 								dataType: "json",
@@ -138,6 +147,14 @@ include('../../include/access.php');
         </div>
 			<br><br>
 			<button type="button" class="btn btn-primary" onClick="location.href='APAdj_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+
+			<?php
+				if($poststat=="True"){
+			?>
+				<button type="button" class="btn btn-warning btn-md" onClick="location.href='APAdj_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+			<?php
+				}
+			?>
 
       <br><br>
 			<table id="example" class="display" cellspacing="0" width="100%">

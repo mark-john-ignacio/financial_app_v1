@@ -255,6 +255,11 @@
 							Banks</a>
 						</li>
 						<li>
+							<a href="javascript:;" onClick="setpage('MasterFiles/Locations/locations.php');">
+              <i class="fa fa-barcode"></i>
+							Sections</a>
+						</li>
+						<li>
 							<a href="javascript:;" onClick="setpage('MasterFiles/Users/users.php?f=');">
                             <i class="fa fa-users"></i>
 							System Users</a>
@@ -520,7 +525,7 @@
 						<li>
 							<a href="javascript:;" onClick="setpage('Reports/rptmenu.php?id=acc');">
                             <i class="glyphicon glyphicon-file "> </i>
-							GL Reports</a>
+							GL & BIR Reports</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('Reports/rptmenu.php?id=inv');">

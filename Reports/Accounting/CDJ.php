@@ -1,255 +1,179 @@
 <?php
-	if(!isset($_SESSION)){
-		session_start();
-	}
-	$_SESSION['pageid'] = "CDJ.php";
+if(!isset($_SESSION)){
+session_start();
+}
+$_SESSION['pageid'] = "Journal.php";
 
-	include('../../Connection/connection_string.php');
-	include('../../include/denied.php');
-	include('../../include/access2.php');
+include('../../Connection/connection_string.php');
+include('../../include/denied.php');
+include('../../include/access2.php');
 
-	$company = $_SESSION['companyid'];
-	$sql = "select * From company where compcode='$company'";
-	$result=mysqli_query($con,$sql);
-
-	$arrallaccts = array();
-	$arrtotaccts = array();
+$company = $_SESSION['companyid'];
+				$sql = "select * From company where compcode='$company'";
+				$result=mysqli_query($con,$sql);
+				
+					if (!mysqli_query($con, $sql)) {
+						printf("Errormessage: %s\n", mysqli_error($con));
+					} 
 					
-	if (!mysqli_query($con, $sql)) {
-		printf("Errormessage: %s\n", mysqli_error($con));
-	} 
-						
-	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-	{
-		$compname =  $row['compname'];
-	}
+				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+				{
+					$compname =  $row['compname'];
+				}
 
 
-	$date1 = $_POST["date1"];
-	$date2 = $_POST["date2"];
-	$qry = "";
-	$varmsg = "";
-
-	$cntrCredz = 0;
-	
-	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit, D.cname, C.cremarks
-			From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
-			left join receipt C on A.compcode=C.compcode and A.ctranno=C.ctranno
-			left join customers D on C.compcode=D.compcode and C.ccode=D.cempid
-			Where A.compcode='$company' and A.cmodule='PV' and A.ddate between STR_TO_DATE('".$_REQUEST['date1']."', '%m/%d/%Y') and STR_TO_DATE('".$_REQUEST['date2']."', '%m/%d/%Y') Order By A.dpostdate, A.ctranno, A.ndebit desc, A.ncredit desc";
-
-	$result = mysqli_query($con, $sql);
-		
-	$arrdebits = array();
-	$arrcredits = array();
-	$arrallqry = array();
-		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-		{
-			if(floatval($row['ndebit'])!==0 && floatval($row['ncredit'])==0){
-				$arrdebits[] = array('cacctno' => $row['acctno'], 'cacctdesc' => $row['cacctdesc']);
-			}
-
-			if(floatval($row['ncredit'])!==0 && floatval($row['ndebit'])==0){
-				$arrcredits[] = array('cacctno' => $row['acctno'], 'cacctdesc' => $row['cacctdesc']);
-			}
-
-			$arrallqry[] = $row;
-		}
+$date1 = $_POST["date1"];
+$date2 = $_POST["date2"];
+$qry = "";
+$varmsg = "";
 
 ?>
 
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Cash Disbursement Journal</title>
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Cash Disbursement</title>
 </head>
 
 <body style="padding:20px">
 <center>
-<h2 class="nopadding"><?=strtoupper($compname);  ?></h2>
-<h2 class="nopadding">Cash Disbursement Journal</h2>
-<h3 class="nopadding">For the Period <?=date_format(date_create($_POST["date1"]),"F d, Y");?> to <?=date_format(date_create($_POST["date2"]),"F d, Y");?></h3>
+<h2 class="nopadding"><?php echo strtoupper($compname);  ?></h2>
+<h3 class="nopadding">Cash Disbursement Journal</h3>
+<h4 class="nopadding">For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h4>
 </center>
 
-<br><br>
-<table width="80%" border="1" align="center" cellpadding = "3">
+<hr>
+<table width="100%" border="0" align="center" cellpadding="2px">
   <tr>
-    <th width="100" style="vertical-align:middle">Date</th>
-    <th width="100" style="vertical-align:middle">Trans No.</th>
-    <th style="vertical-align:middle">Account Credited</th>
-    <th style="vertical-align:middle">Description</th>
-      
-   <?php
-		$arrundrs = array_intersect_key( $arrdebits , array_unique( array_map('serialize' , $arrdebits ) ) );
-   	foreach($arrundrs as $rsdr) {
-			$arrallaccts[$rsdr['cacctno']] = 0;
-			$arrtotaccts[$rsdr['cacctno']] = 0;
-   ?>
-   	<th style="vertical-align:bottom; text-align: center !important" width="150">
-    	<?=$rsdr['cacctno'];?><br><?=$rsdr['cacctdesc'];?><br>Dr.      
-    </th>
-   <?php
-		}
-   ?>
-
-	<?php
-		$arruncrs = array_intersect_key( $arrcredits , array_unique( array_map('serialize' , $arrcredits ) ) );
-   	foreach($arruncrs as $rscr) {
-			$arrallaccts[$rscr['cacctno']] = 0;
-			$arrtotaccts[$rscr['cacctno']] = 0;
-   ?>
-   	<th align="center" style="vertical-align:bottom; text-align: center !important" width="150">
-    	<?=$rscr['cacctno'];?><br><?=$rscr['cacctdesc'];?><br>Cr.      
-    </th>
-   <?php
-		}
-   ?>
-
+    <th width="100">Acct Code</th>
+    <th>Account Title</th>
+    <th class="text-right" width="150">Debit</th>
+    <th class="text-right" width="150">Credit</th>
   </tr>
   
-	<?php
-	if(count($arrallqry) > 0){
+<?php
 
-		$ctranno = $arrallqry[0]['ctranno'];
-		$cddate = $arrallqry[0]['ddate'];
-		$cname = $arrallqry[0]['cname'];
-		$crmrks = $arrallqry[0]['cremarks'];
-		foreach($arrallqry as $rsallqry){
-			if($ctranno==$rsallqry['ctranno']){
+	$sql = "Select b.ctranno, b.ccode, b.cpayee, b.ccheckno, a.acctno, a.ctitle, a.ndebit, a.ncredit, b.dcheckdate, b.cpayrefno, b.cpaymethod
+	From glactivity a
+	left join paybill b on a.compcode=b.compcode and a.ctranno=b.ctranno
+	where a.compcode='$company' and a.cmodule='PV' and b.dcheckdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
+	order by b.ctranno, a.ndebit";
 
-				foreach($arrundrs as $rsdr) {
-					if($rsdr['cacctno']==$rsallqry['acctno']){
-						$arrallaccts[$rsdr['cacctno']] = $rsallqry['ndebit'];
-					}
-				}
-
-				foreach($arruncrs as $rscr) {
-					if($rscr['cacctno']==$rsallqry['acctno']){
-						$arrallaccts[$rscr['cacctno']] = $rsallqry['ncredit'];
-					}
-				}
-
-			}else{
-	?>
-
-	<tr>
-    <td><?=$cddate?></td>
-    <td><?=$ctranno?></td>
-    <td><?=$cname?></td>
-    <td><?=$crmrks?></td>
+	$result=mysqli_query($con,$sql);
+				
+	if (!mysqli_query($con, $sql)) {
+		printf("Errormessage: %s\n", mysqli_error($con));
+	} 
 	
-		<?php
-			$arrundrs = array_intersect_key( $arrdebits , array_unique( array_map('serialize' , $arrdebits ) ) );
-			foreach($arrundrs as $rsdr) {
+	//get 1st row data
+			//$row1 = $result->fetch_assoc();
+			$ctran = "";
+			$ddate = "";
+			$ccode = "";
+			$cpayee = "";
+			$cchecko = "";
+	
+	$ntotdebit = 0;
+	$ntotcredit = 0;
+	$cntr=0;
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
+		
+		if($ctran!=$row['ctranno']){
+			$cntr++;		
+			$ctran = $row['ctranno'];
+			$ddate = $row['dcheckdate'];
+			$ccode = $row['ccode'];
+			$cpayee = $row['cpayee'];
+			$cpaymeth = $row['cpaymethod'];
+			$cchecko = ($cpaymeth=="cheque") ? $row['ccheckno'] : $row['cpayrefno'];
+			
+			//if($cntr>1){
+				echo "<tr><td colspan='4'>&nbsp;</td></tr>";
+			//}
 
-				if(isset($arrallaccts[$rsdr['cacctno']])){
-					$arrtotaccts[$rsdr['cacctno']] = $arrtotaccts[$rsdr['cacctno']] + floatval($arrallaccts[$rsdr['cacctno']]);
-		?>
-			<td align="right">
-				<?=number_format($arrallaccts[$rsdr['cacctno']],2);?>     
+		?>  
+		  <tr>
+			<td colspan="4">
+			
+			<div class="col-xs-12">
+            
+            	<div class="col-xs-2">
+                	<b><?php echo $ctran;?></b>
+                </div>
+                <div class="col-xs-2">
+                	<b><?php echo $ddate;?></b>
+                </div>
+                <div class="col-xs-4">
+                	<b><?php echo $cpayee;?></b>
+                </div>
+                <div class="col-xs-4">
+                	<b><?php echo "Reference: ".$cpaymeth." / ".$cchecko;?></b>
+                </div>
+                
+            </div>
+            
+            
 			</td>
-		<?php
-				}
-			}
-		?>
+		  </tr>
+		<?php 
 
-		<?php
-			$arruncrs = array_intersect_key( $arrcredits , array_unique( array_map('serialize' , $arrcredits ) ) );
-			foreach($arruncrs as $rscr) {
-				if(isset($arrallaccts[$rscr['cacctno']])){
-					$arrtotaccts[$rscr['cacctno']] = $arrtotaccts[$rscr['cacctno']] + floatval($arrallaccts[$rscr['cacctno']]);
-		?>
-			<td align="right">
-				<?=number_format($arrallaccts[$rscr['cacctno']],2);?>  
-			</td>
-		<?php
-				}
-			}
-		?>
-
-
-	<tr>
-	<?php
-				$ctranno = $rsallqry['ctranno'];
-				$cddate = $rsallqry['ddate'];
-				$cname = $rsallqry['cname'];
-				$crmrks = $rsallqry['cremarks'];
-			}
 		}
-	?>
-
-	<tr>
-    <td><?=$cddate?></td>
-    <td><?=$ctranno?></td>
-    <td><?=$cname?></td>
-    <td><?=$crmrks?></td>
-	
-		<?php
-			$arrundrs = array_intersect_key( $arrdebits , array_unique( array_map('serialize' , $arrdebits ) ) );
-			foreach($arrundrs as $rsdr) {
-
-				if(isset($arrallaccts[$rsdr['cacctno']])){
-					$arrtotaccts[$rsdr['cacctno']] = $arrtotaccts[$rsdr['cacctno']] + floatval($arrallaccts[$rsdr['cacctno']]);
-		?>
-			<td align="right">
-				<?=number_format($arrallaccts[$rsdr['cacctno']],2);?>     
-			</td>
-		<?php
-				}
-			}
 		?>
 
-		<?php
-			$arruncrs = array_intersect_key( $arrcredits , array_unique( array_map('serialize' , $arrcredits ) ) );
-			foreach($arruncrs as $rscr) {
-				if(isset($arrallaccts[$rscr['cacctno']])){
-					$arrtotaccts[$rscr['cacctno']] = $arrtotaccts[$rscr['cacctno']] + floatval($arrallaccts[$rscr['cacctno']]);
-		?>
-			<td align="right">
-				<?=number_format($arrallaccts[$rscr['cacctno']],2);?>  
-			</td>
-		<?php
-				}
-			}
-		?>
+    <tr>
+    	<td><?php echo $row['acctno'];?></td>
+    	<td><?php echo $row['ctitle'];?></td>
+        <td align="right"><?php if($row['ndebit'] <> 0) 
+		{ 
+			echo number_format($row['ndebit'],2) ;
+			
+				$ntotdebit = $ntotdebit + $row['ndebit'] ;
 
+		}
+		
+		?></td>
+        <td align="right">
+		<?php if($row['ncredit'] <> 0) 
+		{ 
+			echo number_format($row['ncredit'],2) ;
+			
+			$ntotcredit = $ntotcredit + $row['ncredit'];
 
-	<tr>
+		}
+		
+		?></td>
+    </tr>
+    
+    <?php
+    
 
-	<!-- TOTALS -->
-	<tr>
-    <td colspan="4" align="right"><b>Total: </b></td>
-		<?php
-			$arrundrs = array_intersect_key( $arrdebits , array_unique( array_map('serialize' , $arrdebits ) ) );
-			foreach($arrundrs as $rsdr) {
-
-				if(isset($arrallaccts[$rsdr['cacctno']])){
-		?>
-			<td align="right">
-				<b><?=number_format($arrtotaccts[$rsdr['cacctno']],2);?></b>  
-			</td>
-		<?php
-				}
-			}
-		?>
-
-		<?php
-			$arruncrs = array_intersect_key( $arrcredits , array_unique( array_map('serialize' , $arrcredits ) ) );
-			foreach($arruncrs as $rscr) {
-				if(isset($arrallaccts[$rscr['cacctno']])){
-		?>
-			<td align="right">
-			<b><?=number_format($arrtotaccts[$rscr['cacctno']],2);?> </b> 
-			</td>
-		<?php
-				}
-			}
-		?>
-	</tr>
-	<?php
 	}
+	
 	?>
+    <tr>
+      <td colspan="2" align="right" ><b>TOTAL</b></td>
+      <td align="right" style="border-top:5px double; border-bottom:8px double; padding-top:6px; padding-bottom:6px"><b>
+      <?php if($ntotdebit <> 0) 
+		{ 
+			echo number_format($ntotdebit,2) ;
+			
+		}
+		
+		?></b>
+      </td>
+      <td align="right" style="border-top:5px double; border-bottom:8px double; padding:5px; padding-top:6px; padding-bottom:6px"><b>
+      <?php if($ntotcredit <> 0) 
+		{ 
+			echo number_format($ntotcredit,2) ;
+			
+		}
+		
+	  ?></b>
+      </td>
+    </tr>
+
 </table>
 
 </body>

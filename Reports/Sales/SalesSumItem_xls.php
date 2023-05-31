@@ -24,16 +24,16 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
 // Add some data
 $spreadsheet->setActiveSheetIndex(0)
-    ->setCellValue('A1', 'Item Type')
-    ->setCellValue('B1', 'Product')
-    ->setCellValue('C1', '')
-    ->setCellValue('D1', 'UOM')
-		->setCellValue('E1', 'Ave. Sales / Month')
-		->setCellValue('F1', 'Qty')
-		->setCellValue('G1', 'Total Amount');
+    ->setCellValue('A2', 'Item Type')
+    ->setCellValue('B2', 'Product')
+    ->setCellValue('C2', '')
+    ->setCellValue('D2', 'UOM')
+		->setCellValue('E2', 'Ave. Sales / Month')
+		->setCellValue('F2', 'Qty')
+		->setCellValue('G2', 'Total Amount');
 
-$spreadsheet->getActiveSheet()->mergeCells("B1:C1");
-$spreadsheet->getActiveSheet()->getStyle('A1:G1')->getFont()->setBold(true);
+$spreadsheet->getActiveSheet()->mergeCells("B2:C2");
+$spreadsheet->getActiveSheet()->getStyle('A2:G2')->getFont()->setBold(true);
 
 //start ng details//
 $company = $_SESSION['companyid'];
@@ -125,14 +125,14 @@ if($trantype=="Trade"){
 	$mnths = (int)abs((strtotime($date1) - strtotime($date2))/(60*60*24*30)) + 1;
 	
 	$totPrice=0;	
-	$cnt = 1;
+	$cnt = 2;
 	foreach($finarray as $row)
 	{
 		$cnt++;
 		$aveval = floatval($row['nqty']) / $mnths;
 		$spreadsheet->setActiveSheetIndex(0)
     	->setCellValue('A'.$cnt, $row['typdesc'])
-    	->setCellValue('B'.$cnt, $row['citemno'])
+    	->setCellValue('B'.$cnt, strtoupper($row['citemno']))
     	->setCellValue('C'.$cnt, $row['citemdesc'])
     	->setCellValue('D'.$cnt, $row['cunit'])
 			->setCellValue('E'.$cnt, round($aveval,2))
@@ -157,6 +157,15 @@ if($trantype=="Trade"){
 	$spreadsheet->setActiveSheetIndex(0)->getStyle("A".$cnt)->getAlignment()->setHorizontal('right');
 	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":G".$cnt)->getFont()->setBold(true);
 //End Details
+
+//TOP
+	$spreadsheet->getActiveSheet()->mergeCells("A1:F1");
+	$spreadsheet->setActiveSheetIndex(0)
+    ->setCellValue('A1', "GRAND TOTAL:")
+    ->setCellValue('G1', $totPrice);
+	$spreadsheet->setActiveSheetIndex(0)->getStyle('G1')->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
+	$spreadsheet->setActiveSheetIndex(0)->getStyle("A1")->getAlignment()->setHorizontal('right');
+	$spreadsheet->getActiveSheet()->getStyle("A1:G1")->getFont()->setBold(true);
 
 
 // Rename worksheet

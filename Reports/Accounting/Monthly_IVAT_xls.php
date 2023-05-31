@@ -20,6 +20,7 @@
   
     Select compcode, IFNULL(cewtcode,'') as cewtcode, newtrate
     From apv_t
+    where IFNULL(cewtcode,'') <> ''
     
   ) A
   where A.compcode='$company' order by A.newtrate";
@@ -113,7 +114,8 @@
       CASE WHEN A.cacctno = 'LIAB04005' THEN SUM(A.ndebit) Else 0 END as nvatamt,    
       CASE WHEN A.cacctno = 'LIAB04004' THEN SUM(A.ncredit) Else 0 END as newtamt
       From apv_t A 
-      where A.compcode='$company'
+      left join apv B on A.compcode=B.compcode and A.ctranno=B.ctranno
+      where A.compcode='$company' and B.captype in ('Others','PettyCash')
       Group By A.compcode, A.ctranno, A.cacctno, A.cewtcode
       ) A
       left join apv B on A.compcode=B.compcode and A.ctranno=B.ctranno

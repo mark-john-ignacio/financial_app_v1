@@ -9,25 +9,11 @@
 
 	$date1 = $_POST["date1"];
 
-
-	//get all RR and PO combo
-	$arrporefs = array();
-	$sqlsuppinv = "Select DISTINCT A.ctranno, A.creference, B.ladvancepay
-	from receive_t A left join purchase B on A.compcode=B.compcode and A.creference=B.cpono
-	Where A.compcode='$company'";
-	$result=mysqli_query($con,$sqlsuppinv);
-
-	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-	{
-		$arrporefs[] = $row;
-	}
-
-
 	$arrinvs = array();
 	$arrsupplist = array();
 
 	//select all Suppliers Invoice
-	$sqlsuppinv = "Select A.ctranno, A.ngross, A.ndue, A.npaidamount, A.ccode, A.dreceived, A.crefrr
+	$sqlsuppinv = "Select A.ctranno, A.ngross, A.ndue, A.npaidamount, A.ccode, A.dreceived
 	from suppinv A Where compcode='$company' and dreceived <= STR_TO_DATE('$date1', '%m/%d/%Y') and lapproved=1";
 	$result=mysqli_query($con,$sqlsuppinv);
 
@@ -35,14 +21,7 @@
 	{
 		$arrinvs[] = $row;
 
-		$isok = "True";
-		foreach($arrporefs as $rspox){
-			if($row['crefrr']==$rspox['ctranno'] && $rspox['ladvancepay']==1){
-				$isok = "False";
-			}
-		}
-
-		if((floatval($row['ndue']) > floatval($row['npaidamount']) || floatval($row['ndue']) == 0) && $isok=="True"){
+		if(floatval($row['ndue']) > floatval($row['npaidamount']) || floatval($row['ndue']) == 0){
 			$arrsupplist[] = $row['ccode'];
 		}
 	}
@@ -115,17 +94,8 @@
 			$cols++;
 
 			$nmtot = 0;
-			
 			foreach($arrinvs as $xr2){
-
-				$isok = "True";
-				foreach($arrporefs as $rspox){
-					if($xr2['crefrr']==$rspox['ctranno'] && $rspox['ladvancepay']==1){
-						$isok = "False";
-					}
-				}
-
-				if($xr2['ccode']==$rws0['ccode'] && $isok=="True"){
+				if($xr2['ccode']==$rws0['ccode']){
 					if(floatval($xr2['ndue']) > floatval($xr2['npaidamount']) || floatval($xr2['ndue']) == 0){
 
 						$dategvn = $xr2['dreceived'];

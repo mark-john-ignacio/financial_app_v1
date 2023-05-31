@@ -43,7 +43,9 @@ $company = $_SESSION['companyid'];
 			<th nowrap>UOM</th>
 			<td nowrap align="center"><b>SO Qty</b></td>
 			<td nowrap align="center"><b>DR Qty</b></td>
+			<td nowrap align="center"><b>SI Price</b></td>
 			<td nowrap align="center"><b>SI Qty</b></td>
+			<td nowrap align="center"><b>Returned</b></td>
 		</tr>
 	</thead>
   
@@ -78,7 +80,7 @@ if($trantype=="Trade"){
 }
 
 if($trantype!==""){
-	$xsql = "select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.namount
+	$xsql = "select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.namount
 	From ".$tbldtl." a	
 	left join ".$tblhdr." b on a.ctranno=b.ctranno and a.compcode=b.compcode
 	left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
@@ -92,7 +94,7 @@ if($trantype!==""){
 }else{
 	$xsql = "Select A.nident, A.dcutdate, A.ctranno, A.ctype, A.typdesc, A.ccode, A.cname, A.lapproved, A.citemno, A.citemdesc, A.cunit, A.nqty, A.nprice, A.namount
 	From (
-		select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.namount
+		select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.namount
 		From so_t a	
 		left join so b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
@@ -103,7 +105,7 @@ if($trantype!==""){
 
 		UNION ALL
 
-		select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.namount
+		select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.namount
 		From ntso_t a	
 		left join ntso b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
@@ -122,7 +124,7 @@ while($row = mysqli_fetch_array($resDR, MYSQLI_ASSOC)){
 	$findr[] = $row;
 }
 
-$resSI=mysqli_query($con,"Select creference, nrefident, citemno, sum(nqty) as nqty from sales_t A left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 Group By creference, nrefident, citemno UNION ALL Select creference, nrefident, citemno, sum(nqty) as nqty from ntsales_t A left join ntsales B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 Group By creference, nrefident, citemno");
+$resSI=mysqli_query($con,"Select creference, nrefident, citemno, A.nprice, sum(nqty) as nqty, sum(A.nqtysr) as nqtysr from sales_t A left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 Group By creference, nrefident, citemno, A.nprice UNION ALL Select creference, nrefident, citemno, A.nprice, sum(nqty) as nqty, sum(A.nqtysr) as nqtysr from ntsales_t A left join ntsales B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 Group By creference, nrefident, citemno, A.nprice");
 $finsi = array();
 while($row = mysqli_fetch_array($resSI, MYSQLI_ASSOC)){
 	$finsi[] = $row;
@@ -159,9 +161,13 @@ while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 		}
 
 		$esiqty = 0;
+		$esiqtyret = 0;
+		$esiprice = 0;
 		foreach($finsi as $srow){
 			if(in_array($srow['creference'], $drnos) && in_array($srow['nrefident'], $dridents) && $srow['citemno']==$row['citemno']){
 				$esiqty = $esiqty + floatval($srow['nqty']);
+				$esiqtyret = $esiqtyret + floatval($srow['nqtysr']);
+				$esiprice = $srow['nprice'];
 				break;
 			}
 		}
@@ -185,8 +191,10 @@ while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
     <td nowrap><?php echo $row['cunit'];?></td>
     <td nowrap align="right"><?php echo number_format($row['nqty']);?></td>
     <td nowrap align="right"><?php echo number_format($edrqty);?></td>
-		<td nowrap align="right"><?php echo number_format($esiqty);?></td>
-  </tr>
+		<td nowrap align="right"><?php echo number_format($esiprice,2);?></td>
+		<td nowrap align="right"><?php echo number_format($esiqty);?></td> 
+		<td nowrap align="right"><?php echo number_format($esiqtyret);?></td>
+  </tr> 
 <?php 
 		$salesno = "";
 		$remarks = "";

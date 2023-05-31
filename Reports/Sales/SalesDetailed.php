@@ -20,6 +20,8 @@ $company = $_SESSION['companyid'];
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Sales Per Customer</title>
 </head>
@@ -32,7 +34,7 @@ $company = $_SESSION['companyid'];
 </center>
 
 <br><br>
-<table width="100%" border="0" align="center" cellpadding="5px">
+<table width="100%" border="0" align="center" cellpadding="5px" id="MyTable">
   <tr>
     <th nowrap>Date</th>
     <th nowrap>Invoice No.</th>
@@ -78,7 +80,7 @@ if($postedtran!==""){
 
 if($trantype=="Trade"){
 
-	$result=mysqli_query($con,"select b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
+	$result=mysqli_query($con,"select b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
 	From sales_t a	
 	left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 	left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
@@ -93,7 +95,7 @@ if($trantype=="Trade"){
 
 }elseif($trantype=="Non-Trade"){
 
-	$result=mysqli_query($con,"select b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
+	$result=mysqli_query($con,"select b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
 	From ntsales_t a	
 	left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 	left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
@@ -109,7 +111,7 @@ if($trantype=="Trade"){
 }else{
 	$result=mysqli_query($con,"Select A.dcutdate, A.ctranno, A.ctype, A.typdesc, A.ccode, A.cname, A.lapproved, A.citemno, A.citemdesc, A.cunit, A.nqty, A.nprice, A.ndiscount, A.namount
 	From (
-		select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
+		select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
 		From sales_t a	
 		left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
@@ -120,7 +122,7 @@ if($trantype=="Trade"){
 
 		UNION ALL
 
-		select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
+		select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
 		From ntsales_t a	
 		left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
@@ -170,7 +172,7 @@ if($trantype=="Trade"){
     <td nowrap><?php echo $ccode;?></td>
     <td nowrap><?php echo $remarks;?></td>
     <td nowrap><?php echo $row['citemno'];?></td>
-    <td nowrap><?php echo $row['citemdesc'];?></td>
+    <td nowrap><?php echo strtoupper($row['citemdesc']);?></td>
     <td nowrap><?php echo $row['cunit'];?></td>
     <td nowrap align="right"><?php echo number_format($row['nqty']);?></td>
     <td nowrap align="right"><?php echo number_format($row['nprice'],2);?></td>
@@ -199,3 +201,10 @@ if($trantype=="Trade"){
 
 </body>
 </html>
+
+<script type="text/javascript">
+$( document ).ready(function() {
+
+	$('#MyTable tbody tr:last').clone().insertBefore('#MyTable tbody tr:first');
+});
+</script>

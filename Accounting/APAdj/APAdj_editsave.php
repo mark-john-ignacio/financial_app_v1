@@ -23,13 +23,13 @@ $company = $_SESSION['companyid'];
 
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 	
-	if (!mysqli_query($con, "UPDATE `aradjustment` set `ccode` = '$cCustID', `dcutdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `ctype` = '$cSelType', `cremarks` = '$cRemarks', `ngross` = '$ngross', `crefsr` = '$cSRRef', `crefsi` = '$cSIRef', `isreturn` = '$dret' where `compcode`='$company' and `ctranno` = '$cSINo'")) {
+	if (!mysqli_query($con, "UPDATE `apadjustment` set `ccode` = '$cCustID', `dcutdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `ctype` = '$cSelType', `cremarks` = '$cRemarks', `ngross` = '$ngross', `crefsr` = '$cSRRef', `crefsi` = '$cSIRef', `isreturn` = '$dret' where `compcode`='$company' and `ctranno` = '$cSINo'")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 
 
 		//DELETE Details
-		if (!mysqli_query($con, "UPDATE `aradjustment_t` set ctranno='xxx', compcode='xxx', cidentity=CONCAT(cidentity,'xxx') where `compcode`='$company' and `ctranno`= '$cSINo'")) {
+		if (!mysqli_query($con, "UPDATE `apadjustment_t` set ctranno='xxx', compcode='xxx', cidentity=CONCAT(cidentity,'xxx') where `compcode`='$company' and `ctranno`= '$cSINo'")) {
 			printf("Errormessage: %s\n", mysqli_error($con));
 		}
 	
@@ -53,14 +53,14 @@ $company = $_SESSION['companyid'];
 
 		$refcidenttran = $cSINo."P".$z;
 	
-		if (!mysqli_query($con,"INSERT INTO `aradjustment_t`(`compcode`, `cidentity`, `nident`, `ctranno`, `cacctno`, `ctitle`, `ndebit`, `ncredit`, `cremarks`) values('$company', '$refcidenttran', '$z', '$cSINo', '$cacctno', '$cacctdesc', $ndebit, $ncredit, $crem)")){
+		if (!mysqli_query($con,"INSERT INTO `apadjustment_t`(`compcode`, `cidentity`, `nident`, `ctranno`, `cacctno`, `ctitle`, `ndebit`, `ncredit`, `cremarks`) values('$company', '$refcidenttran', '$z', '$cSINo', '$cacctno', '$cacctdesc', $ndebit, $ncredit, $crem)")){
 			$isok = "No";
 		}
 
 	}
 
 	if($isok=="YES"){
-		mysqli_query($con, "DELETE FROM `aradjustment_t` where `compcode`='xxx' and `ctranno`= 'xxx'");
+		mysqli_query($con, "DELETE FROM `apadjustment_t` where `compcode`='xxx' and `ctranno`= 'xxx'");
 	}
 	
 	
@@ -68,10 +68,10 @@ $company = $_SESSION['companyid'];
 	$compname = php_uname('n');
 	
 	mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-	values('$company','$cSINo','$preparedby',NOW(),'UPDATED','AR ADJUSTMENT','$compname','Updated Record')");
+	values('$company','$cSINo','$preparedby',NOW(),'UPDATED','AP ADJUSTMENT','$compname','Updated Record')");
 
 ?>
-<form action="ARAdj_edit.php" name="frmpos" id="frmpos" method="post">
+<form action="APAdj_edit.php" name="frmpos" id="frmpos" method="post">
 	<input type="hidden" name="txtctranno" id="txtctranno" value="<?php echo $cSINo;?>" />
 </form>
 <script>

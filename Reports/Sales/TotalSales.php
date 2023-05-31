@@ -62,7 +62,7 @@ $company = $_SESSION['companyid'];
 $sql = "
 select  A.dcutdate, A.ddate, A.csalesno, A.ccode, A.cname, A.ncreditlimit, A.ncreditbal, A.ngross, A.ccustomerclass
 FROM(
-select  a.dcutdate, a.ddate, a.csalesno, a.ccode, IFNULL(c.ctradename,c.cname) as cname, a.ncreditlimit, a.ncreditbal, a.ngross, c.ccustomerclass
+select  a.dcutdate, a.ddate, a.csalesno, a.ccode, c.cname, a.ncreditlimit, a.ncreditbal, a.ngross, c.ccustomerclass
 From sales a
 left join customers c on a.ccode=c.cempid and a.compcode=c.compcode
 where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and lcancelled=0 and lapproved=1
@@ -70,7 +70,7 @@ where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/
 
 UNION ALL
 
-select  a.dcutdate, a.ddate, a.csalesno, a.ccode, IFNULL(c.ctradename,c.cname) as cname, a.ncreditlimit, a.ncreditbal, a.ngross, c.ccustomerclass
+select  a.dcutdate, a.ddate, a.csalesno, a.ccode, c.cname, a.ncreditlimit, a.ncreditbal, a.ngross, c.ccustomerclass
 From salesback a
 left join customers c on a.ccode=c.cempid and a.compcode=c.compcode
 where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and lcancelled=0 and lapproved=1

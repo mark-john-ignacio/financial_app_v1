@@ -38,6 +38,8 @@
 			left join customers D on C.compcode=D.compcode and C.ccode=D.cempid
 			Where A.compcode='$company' and A.cmodule='OR' and A.ddate between STR_TO_DATE('".$_REQUEST['date1']."', '%m/%d/%Y') and STR_TO_DATE('".$_REQUEST['date2']."', '%m/%d/%Y') Order By A.ddate, A.ctranno, A.ndebit desc, A.ncredit desc";
 
+			//echo $sql;
+
 	$result = mysqli_query($con, $sql);
 		
 	$arrdebits = array();
@@ -45,12 +47,12 @@
 	$arrallqry = array();
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 		{
-			if(floatval($row['ndebit'])!=0){
+			if(floatval($row['ndebit'])!==0){
 
 				$arrdebits[] = array('cacctno' => $row['acctno'], 'cacctdesc' => $row['cacctdesc']);
 			}
 
-			if(floatval($row['ncredit'])!=0){
+			if(floatval($row['ncredit'])!==0){
 				$arrcredits[] = array('cacctno' => $row['acctno'], 'cacctdesc' => $row['cacctdesc']);
 			}
 
@@ -86,6 +88,7 @@
    <?php
 
 		$arrundrs = array_intersect_key( $arrdebits , array_unique( array_map('serialize' , $arrdebits ) ) );
+
    	foreach($arrundrs as $rsdr) {
 			$sumtot[$rsdr['cacctno']] = 0;
    ?>
@@ -182,7 +185,7 @@
 			foreach($arrundrs as $rsdr) {				
 		?>
 			<td style="text-align: right !important">
-				<b><?=($sumtot[$rsdr['cacctno']]!=0) ? number_format($sumtot[$rsdr['cacctno']]) : "";?></b>
+				<b><?=($sumtot[$rsdr['cacctno']]!=0) ? number_format($sumtot[$rsdr['cacctno']],2) : "";?></b>
 			</td>
 		<?php
 			}

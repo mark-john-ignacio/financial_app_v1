@@ -31,6 +31,14 @@ require_once "../../Connection/connection_string.php";
 		}
 	}
 
+	//get CMs
+	$nCM = array();
+	$resultcm = mysqli_query ($con, "Select crefsi, IFNULL(sum(A.ngross),0) as ncm from apadjustment A Where A.compcode='$company' and A.lapproved=1 Group By crefsi");
+	if(mysqli_num_rows($resultcm)!=0){
+		while($rowpayref = mysqli_fetch_array($resultcm, MYSQLI_ASSOC)){
+			$nCM[] = $rowpayref; 
+		}
+	}
 
 	$arrRRLISTING = array();
 	$qryres = "select A.ctranno, sum(A.namount) as ngross, C.cacctid, C.cacctdesc, IFNULL(A.cewtcode,0) as cewtcode, IFNULL(A.newtrate,0) as newtrate, A.cvatcode, A.nrate, ifnull(B.crefsi,'') as crefsi, E.ladvancepay, B.dreceived
@@ -70,10 +78,19 @@ require_once "../../Connection/connection_string.php";
 					$newtamt = $nnet * (floatval($row['newtrate'])/100);
 				}
 
+				//allcm
+				$xcm = 0;
+				foreach($nCM as $row90){
+					if($row90['crefsi']==$row['ctranno']){
+						$xcm = $row90['ncm'];
+					}
+				}
+
 				$cntr = $cntr + 1;
 				$json['crrno'] = $row['ctranno'];
 				$json['ngross'] = $row['ngross'];
 				$json['napplied'] = 0;
+				$json['ncm'] = $xcm;
 				$json['vatyp'] = $row['cvatcode'];
 				$json['vatrte'] = $row['nrate'];
 				$json['vatamt'] = round($nvatamt,2);

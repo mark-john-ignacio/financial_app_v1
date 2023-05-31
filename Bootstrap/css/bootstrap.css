@@ -68,6 +68,10 @@ body {
    margin: 0 !important;
 }
 
+.no-border{
+  border: none !important;
+}
+
 .font-weight-bold{
 	font-weight: bold !important;
 }

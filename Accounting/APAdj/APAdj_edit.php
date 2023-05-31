@@ -14,7 +14,7 @@
 	
 	$cjeno = $_REQUEST['txtctranno'];
 
-	$sqlhead = mysqli_query($con,"select a.*, b.cname from aradjustment a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.compcode='$company' and a.ctranno = '$cjeno'");
+	$sqlhead = mysqli_query($con,"select a.*, b.cname from apadjustment a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.ctranno = '$cjeno'");
 
 	if (mysqli_num_rows($sqlhead)!=0) {
 		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -63,9 +63,9 @@
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
-	<form action="ARAdj_editsave.php" name="frmpos" id="frmpos" method="post">
+	<form action="APAdj_editsave.php" name="frmpos" id="frmpos" method="post">
 		<fieldset>
-    	<legend>AR Adjustment Details</legend>	
+    	<legend>AP Adjustment Details</legend>	
         <table width="100%" border="0">
 					<tr>
 						<tH width="150">&nbsp;Transaction No.:</tH>
@@ -99,7 +99,7 @@
    					</td>
   				</tr>
 					<tr>
-						<tH width="150">&nbsp;Customer:</tH>
+						<tH width="150">&nbsp;Supplier:</tH>
 						<td style="padding:2px">
 							<div class="col-xs-12 nopadding">
 								<div class="col-xs-3 nopadding">
@@ -153,8 +153,8 @@
 						<tH width="150">&nbsp;</tH>
 						<td style="padding:2px"><div class="col-xs-11 nopadding">
 							<div class="form-check">
-								<input class="form-check-input" type="checkbox" value="1" id="isReturn" name="isReturn"  checked/>
-								<label class="form-check-label" for="flexCheckChecked">Sales Return</label>
+								<input class="form-check-input" type="checkbox" value="1" id="isReturn" name="isReturn" <?=($lsreturn==1) ? "checked": ""?>/>
+								<label class="form-check-label" for="flexCheckChecked">Purchase Return</label>
 							</div>
 						</div></td>
 						<td style="padding:2px"  align="right">&nbsp;</td>
@@ -200,7 +200,7 @@
 						<tbody class="tbody">
 							<?php
 								$cnt = 0;
-								$sqldtls = mysqli_query($con,"select * From aradjustment_t a where a.compcode='$company' and a.ctranno = '$cjeno'");
+								$sqldtls = mysqli_query($con,"select * From apadjustment_t a where a.compcode='$company' and a.ctranno = '$cjeno'");
 								while($row = mysqli_fetch_array($sqldtls, MYSQLI_ASSOC)){
 									$cnt++;
 							?>
@@ -225,11 +225,11 @@
 				<table width="100%" border="0" cellpadding="3">
 					<tr>
 						<td>
-							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='ARAdj.php';" id="btnMain" name="btnMain">
+							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='APAdj.php';" id="btnMain" name="btnMain">
 								Back to Main<br>(ESC)
 							</button>
 
-							<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='ARAdj_new.php';" id="btnNew" name="btnNew">
+							<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='APAdj_new.php';" id="btnNew" name="btnNew">
 								New<br>(F1)
 							</button>
 
@@ -300,7 +300,8 @@
                            <thead>
                             <tr>
                               <th>SR No.</th>
-															<th>Ref Invoice</th>
+															<th>Receiving.</th>
+															<th>Supp. Inv.</th>
                               <th>Date</th>
                             </tr>
                             </thead>
@@ -348,7 +349,7 @@
 
 	  $('#date_delivery').datetimepicker({
       format: 'MM/DD/YYYY',
-			minDate: new Date(),
+			//minDate: new Date(),
     });
 
 		$("input.numeric").autoNumeric('init',{mDec:2});
@@ -677,15 +678,28 @@
 							}
 							else{
 
-								$("<tr>").append(
-									$("<td id='td"+item.cpono+"'>").html("<a href=\"javascript:;\" data-dismiss=\"modal\" onclick=\"setinvref('"+item.cpono+"', '"+item.cref+"', '"+item.typx+"')\">"+item.cpono+"</a>"),
-									$("<td>").text(item.cref),
-									$("<td>").text(item.dcutdate)
-								).appendTo("#MyInvTbl tbody");
-															
-								$("#td"+item.cpono).on("mouseover", function(){
-									$(this).css('cursor','pointer');
-								});
+								if(item.crefinv!==""){
+									
+									$("<tr>").append(
+										$("<td id='td"+item.cpono+"'>").html("<a href=\"javascript:;\" data-dismiss=\"modal\" onclick=\"setinvref('"+item.cpono+"', '"+item.crefinv+"')\">"+item.cpono+"</a>"),
+										$("<td>").text(item.cref),
+										$("<td>").text(item.crefinv),
+										$("<td>").text(item.dcutdate)
+									).appendTo("#MyInvTbl tbody");
+																
+									$("#td"+item.cpono).on("mouseover", function(){
+										$(this).css('cursor','pointer');
+									});
+
+								}else{
+									$("<tr>").append(
+										$("<td id='td"+item.cpono+"'>").html(item.cpono),
+										$("<td>").text(item.cref),
+										$("<td>").text("No Inv."),
+										$("<td>").text(item.dcutdate)
+									).appendTo("#MyInvTbl tbody");
+								}
+								
 							}
 						});
 							
@@ -713,7 +727,7 @@
 		}
 	}
 
-	function setinvref(srno,invno,typx){
+	function setinvref(srno,invno){
 		$('#txtSIRef').val(srno);
 		$('#txtInvoiceRef').val(invno);
 		$('#invtyp').val(typx);		
@@ -723,7 +737,7 @@
 
 		$.ajax({
 			url: 'th_getsientry.php',
-			data: 'srno='+srno+'&invno='+invno+'&styp='+$('#invtyp').val(),
+			data: 'srno='+srno+'&invno='+invno,
 			dataType: 'json',
 			method: 'post',
 			success: function (data) {

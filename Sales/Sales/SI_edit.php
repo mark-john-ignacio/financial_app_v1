@@ -1405,7 +1405,7 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 					ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
 				});
 
-				if(gvnewt=="none" || gvnewt=="multi"){
+				if(gvnewt!=="none" || gvnewt!=="multi"){
 					isdisabled = "disabled";
 				}else{
 					isdisabled = "";
@@ -2624,6 +2624,8 @@ function getdiscount(xyz,idnum){ //txtndisc txtnprice
 	var xnprice = $("#txtnprice"+idnum).val().replace(/,/g,'');
 	var xnitemno = $("#txtitemcode"+idnum).val()
 
+	alert(xnprice);
+
 	$("#currentITM").val(idnum);
 
 	if(parseFloat(xnprice)>0){
@@ -2664,9 +2666,8 @@ function getdiscount(xyz,idnum){ //txtndisc txtnprice
 						$("#txtdiscsamt"+ident+idnum).val(xamty.toFixed(2));
 					}else{
 						//getprice
-						xprice = $("#txtnprice"+idnum).val();
 
-						xamty = parseFloat(xprice) * (parseFloat($("#txtdiscsval"+ident+idnum).val()) / 100);
+						xamty = parseFloat(xnprice) * (parseFloat($("#txtdiscsval"+ident+idnum).val()) / 100);
 						$("#txtdiscsamt"+ident+idnum).val(xamty.toFixed(2));
 					}
 				});

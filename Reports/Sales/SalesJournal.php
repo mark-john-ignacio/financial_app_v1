@@ -1,32 +1,31 @@
 <?php
-	if(!isset($_SESSION)){
-		session_start();
-	}
-	$_SESSION['pageid'] = "SalesReg.php";
+if(!isset($_SESSION)){
+session_start();
+}
+$_SESSION['pageid'] = "SalesReg.php";
 
-	include('../../Connection/connection_string.php');
-	include('../../include/denied.php');
-	include('../../include/access2.php');
-
-	$company = $_SESSION['companyid'];
-	$sql = "select * From company where compcode='$company'";
-	$result=mysqli_query($con,$sql);
+include('../../Connection/connection_string.php');
+include('../../include/denied.php');
+include('../../include/access2.php');
+$company = $_SESSION['companyid'];
+				$sql = "select * From company where compcode='$company'";
+				$result=mysqli_query($con,$sql);
 				
-	if (!mysqli_query($con, $sql)) {
-		printf("Errormessage: %s\n", mysqli_error($con));
-	} 
+					if (!mysqli_query($con, $sql)) {
+						printf("Errormessage: %s\n", mysqli_error($con));
+					} 
 					
-	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-	{
-		$compname =  $row['compname'];
-	}
+				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+				{
+					$compname =  $row['compname'];
+				}
 ?>
 
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Sales Register</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Sales Register</title>
 </head>
 
 <body style="padding:10px">
@@ -56,16 +55,8 @@ $date2 = $_POST["date2"];
 $sql = "
 select A.dcutdate, A.csalesno, A.ccode, A.cname, A.acctno, A.ctitle, A.ncredit, A.ndebit, A.lcancelled, A.lapproved
 FROM(
-select a.dcutdate, a.ctranno as csalesno, a.ccode, IFNULL(c.ctradename,c.cname) as cname, b.acctno, b.ctitle, b.ncredit, b.ndebit, a.lcancelled, a.lapproved
+select a.dcutdate, a.ctranno as csalesno, a.ccode, c.cname, b.acctno, b.ctitle, b.ncredit, b.ndebit, a.lcancelled, a.lapproved
 From sales a
-left join glactivity b on a.ctranno=b.ctranno and a.compcode=b.compcode
-left join customers c on a.ccode=c.cempid and a.compcode=c.compcode
-where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
-
-UNION ALL
-
-select a.dcutdate, a.ctranno as csalesno, a.ccode, IFNULL(c.ctradename,c.cname) as cname, b.acctno, b.ctitle, b.ncredit, b.ndebit, a.lcancelled, a.lapproved
-From ntsales a
 left join glactivity b on a.ctranno=b.ctranno and a.compcode=b.compcode
 left join customers c on a.ccode=c.cempid and a.compcode=c.compcode
 where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
@@ -131,8 +122,8 @@ $result=mysqli_query($con,$sql);
     <td><?php echo $name;?></td>
     <td><?php echo $row['acctno'];?></td>
     <td><?php echo $row['ctitle'];?></td>
-    <td align="right"><?php echo (($row['ndebit'] > 0) ? number_format($row['ndebit'],2) : '');?></td>
-    <td align="right"><?php echo (($row['ncredit'] > 0) ? number_format($row['ncredit'],2) : '');?></td>
+    <td align="right"><?php echo (($row['ndebit'] > 0) ? number_format($row['ndebit'],4) : '');?></td>
+    <td align="right"><?php echo (($row['ncredit'] > 0) ? number_format($row['ncredit'],4) : '');?></td>
   </tr>
 <?php 
 		$code = "";
@@ -149,8 +140,8 @@ $result=mysqli_query($con,$sql);
 
     <tr class='rptGrand'>
     	<td colspan="6" align="right"><b>G R A N D&nbsp;&nbsp;T O T A L:</b></td>
-        <td align="right"><b><?php echo number_format($totDebit,2);?></b></td>
-        <td align="right"><b><?php echo number_format($totCredit,2);?></b></td>
+        <td align="right"><b><?php echo number_format($totDebit,4);?></b></td>
+        <td align="right"><b><?php echo number_format($totCredit,4);?></b></td>
     </tr>
 </table>
 

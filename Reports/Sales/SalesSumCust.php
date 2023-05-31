@@ -1,32 +1,32 @@
 <?php
-	if(!isset($_SESSION)){
-		session_start();
-	}
-	$_SESSION['pageid'] = "SalesSummary.php";
+if(!isset($_SESSION)){
+session_start();
+}
+$_SESSION['pageid'] = "SalesSummary.php";
 
-	include('../../Connection/connection_string.php');
-	include('../../include/denied.php');
-	include('../../include/access2.php');
-	$company = $_SESSION['companyid'];
-	$compname = "";
+include('../../Connection/connection_string.php');
+include('../../include/denied.php');
+include('../../include/access2.php');
+$company = $_SESSION['companyid'];
 
-	$sql = "select * From company where compcode='$company'";
-	$result=mysqli_query($con,$sql);
+				$sql = "select * From company where compcode='$company'";
+				$result=mysqli_query($con,$sql);
 				
-	if (!mysqli_query($con, $sql)) {
-		printf("Errormessage: %s\n", mysqli_error($con));
-	}else{
-		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-		{
-			$compname =  $row['compname'];
-		}
-	}
-						
+					if (!mysqli_query($con, $sql)) {
+						printf("Errormessage: %s\n", mysqli_error($con));
+					} 
+					
+				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+				{
+					$compname =  $row['compname'];
+				}
 ?>
 
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>Sales Summary</title>
 </head>
@@ -39,7 +39,7 @@
 </center>
 
 <br><br>
-<table width="100%" border="0" align="center">
+<table width="100%" border="0" align="center" id="MyTable">
   <tr>
   	<th>Customer Type</th>
     <th colspan="2">Customer</th>
@@ -75,7 +75,7 @@ if($postedtran!==""){
 
 if($trantype=="Trade"){
 
-	$result=mysqli_query($con,"select a.compcode, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, d.ccustomertype as ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.nprice*a.nqty) as nprice
+	$sqlx = "select a.compcode, b.ccode, d.ctradename as cname, b.lapproved, d.ccustomertype as ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.namount) as nprice
 	From sales_t a	
 	left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 	left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
@@ -83,15 +83,12 @@ if($trantype=="Trade"){
 	left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
 	where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
 	".$qryitm.$qrycust.$qryposted."
-	Group By a.compcode, b.ccode, IFNULL(d.ctradename,d.cname), b.lapproved, d.ccustomertype, e.cdesc
-	order by sum(A.nprice*a.nqty) DESC");
-	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-		$finarray[] = $row;
-	}
+	Group By a.compcode, b.ccode, d.ctradename, b.lapproved, d.ccustomertype, e.cdesc
+	order by d.ccustomertype, sum(A.namount) DESC";
 
 }elseif($trantype=="Non-Trade"){
 
-	$result=mysqli_query($con,"select a.compcode, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, d.ccustomertype as ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.nprice*a.nqty) as nprice
+	$sqlx = "select a.compcode, b.ccode, d.ctradename as cname, b.lapproved, d.ccustomertype as ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.namount) as nprice
 	From ntsales_t a	
 	left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 	left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
@@ -99,16 +96,14 @@ if($trantype=="Trade"){
 	left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
 	where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
 	".$qryitm.$qrycust.$qryposted."
-	Group By a.compcode, b.ccode, IFNULL(d.ctradename,d.cname), b.lapproved, d.ccustomertype, e.cdesc
-	order by sum(A.nprice*a.nqty) DESC");
-	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-		$finarray[] = $row;
-	}
+	Group By a.compcode, b.ccode, d.ctradename, b.lapproved, d.ccustomertype, e.cdesc
+	order by d.ccustomertype, sum(A.namount) DESC";
 
 }else{
-	$result=mysqli_query($con,"Select A.compcode, A.ccode, A.cname, A.lapproved, A.ctype, A.typdesc, sum(A.nqty) as nqty, sum(A.nprice) as nprice
+
+	$sqlx = "Select A.compcode, A.ccode, A.cname, A.lapproved, A.ctype, A.typdesc, sum(A.nqty) as nqty, sum(A.nprice) as nprice
 	From (
-		select a.compcode, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, d.ccustomertype as ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.nprice*a.nqty) as nprice
+		select a.compcode, b.ccode, d.ctradename as cname, b.lapproved, d.ccustomertype as ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.namount) as nprice
 		From sales_t a	
 		left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
@@ -116,9 +111,9 @@ if($trantype=="Trade"){
 		left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
 		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
 		".$qryitm.$qrycust.$qryposted."
-		Group By a.compcode, b.ccode, IFNULL(d.ctradename,d.cname), b.lapproved, d.ccustomertype, e.cdesc
+		Group By a.compcode, b.ccode, d.ctradename, b.lapproved, d.ccustomertype, e.cdesc
 		UNION ALL
-		select a.compcode, b.ccode,IFNULL(d.ctradename,d.cname) as cname, b.lapproved, d.ccustomertype as ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.nprice*a.nqty) as nprice
+		select a.compcode, b.ccode, d.ctradename as cname, b.lapproved, d.ccustomertype as ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.namount) as nprice
 		From ntsales_t a	
 		left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
@@ -126,13 +121,16 @@ if($trantype=="Trade"){
 		left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
 		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
 		".$qryitm.$qrycust.$qryposted."
-		Group By a.compcode, b.ccode, IFNULL(d.ctradename,d.cname), b.lapproved, d.ccustomertype, e.cdesc
+		Group By a.compcode, b.ccode, d.ctradename, b.lapproved, d.ccustomertype, e.cdesc
 	) A 
-	Group By A.compcode, A.ccode, A.cname, A.lapproved, A.ctype, A.typdesc order by sum(A.nprice) DESC");
+	Group By A.compcode, A.ccode, A.cname, A.lapproved, A.ctype, A.typdesc order by A.ctype, sum(A.nprice) DESC";
+
+}
+
+	$result=mysqli_query($con,$sqlx);
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 		$finarray[] = $row;
 	}
-}
 	
 	$class="";
 	$classval="";
@@ -142,7 +140,8 @@ if($trantype=="Trade"){
 	foreach($finarray as $row)
 	{
 		
-		if($class!=$row['ctype']){
+		if($class != TRIM($row['ctype'])){
+
 			$classval=$row['typdesc'];
 			$classcode="class='rpthead'";
 		}
@@ -154,9 +153,9 @@ if($trantype=="Trade"){
     <td align="right"><?php echo number_format($row['nprice'],2);?></td>
   </tr>
 <?php 
-$class=$row['ctype'];
-$classval="";
-$classcode="";
+	$class = TRIM($row['ctype']);
+	$classval = "";
+	$classcode = "";
 
 		//$totCost = $totCost + $row['ncost'];
 		$totPrice = $totPrice + $row['nprice'];
@@ -170,3 +169,11 @@ $classcode="";
 </table>
 </body>
 </html>
+
+
+<script type="text/javascript">
+$( document ).ready(function() {
+
+	$('#MyTable tbody tr:last').clone().insertBefore('#MyTable tbody tr:first');
+});
+</script>

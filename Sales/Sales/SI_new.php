@@ -74,6 +74,15 @@ $company = $_SESSION['companyid'];
 		}
 	}
 
+	@$arrcterms = array();
+	$getewt = mysqli_query($con,"SELECT * FROM `groupings` WHERE compcode='$company' and ctype='TERMS'"); 
+	if (mysqli_num_rows($getewt)!=0) {
+		while($rows = mysqli_fetch_array($getewt, MYSQLI_ASSOC)){
+			@$arrcterms[] = array('ccode' => $rows['ccode'], 'cdesc' => $rows['cdesc']); 
+		}
+	}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -220,9 +229,6 @@ $company = $_SESSION['companyid'];
 							</td>
 						</tr>
 
-								
-
-
 						<tr>
 							<tH width="100">Remarks:</tH>
 							<td style="padding:2px"><div class="col-xs-11 nopadding">
@@ -230,15 +236,13 @@ $company = $_SESSION['companyid'];
 								</div>
 							</td>
 
-							<tH width="100">EWT Code</tH>
+							<tH width="100">Terms</tH>
 								<td style="padding:2px">
 									<div class="col-xs-11 nopadding">
-										<select id="selewt" name="selewt" class="form-control input-sm selectpicker"  tabindex="3">
-												<option value="none">None</option>
-												<option value="multi">Multiple</option>
+										<select id="selcterms" name="selcterms" class="form-control input-sm selectpicker"  tabindex="3">
 												<?php
-													foreach(@$arrewtlist as $rows){
-														echo "<option value=\"".$rows['ctaxcode']."\">".$rows['ctaxcode'].": ".$rows['nrate']."%</option>";
+													foreach(@$arrcterms as $rows){
+														echo "<option value=\"".$rows['ccode']."\">".$rows['cdesc']."</option>";
 													}
 												?>
 												
@@ -261,17 +265,38 @@ $company = $_SESSION['companyid'];
 									</div>
 								</td>
 
-								<td><b><div class="chklimit">Credit Limit:</div></b></td>
-								<td style="padding:2px;" align="right">
-									<div class="chklimit col-xs-11 nopadding" id="ncustlimit"></div>
-									<input type="hidden" id="hdncustlimit" name="hdncustlimit" value="">
+								<tH width="100">EWT Code</tH>
+								<td style="padding:2px">
+									<div class="col-xs-11 nopadding">
+										<select id="selewt" name="selewt" class="form-control input-sm selectpicker"  tabindex="3">
+												<option value="none">None</option>
+												<option value="multi">Multiple</option>
+												<?php
+													foreach(@$arrewtlist as $rows){
+														echo "<option value=\"".$rows['ctaxcode']."\">".$rows['ctaxcode'].": ".$rows['nrate']."%</option>";
+													}
+												?>
+												
+										</select>
+									</div>
 								</td>
 
 								
 						</tr>
 
 						<tr>
-								<td style="padding:2px" colspan="2"></td>
+								<td style="padding:2px" colspan="2">&nbsp;</td>
+								
+								<td><b><div class="chklimit">Credit Limit:</div></b></td>
+								<td style="padding:2px;" align="right">
+									<div class="chklimit col-xs-11 nopadding" id="ncustlimit"></div>
+									<input type="hidden" id="hdncustlimit" name="hdncustlimit" value="">
+								</td>
+						</tr>
+
+
+						<tr>
+								<td style="padding:2px" colspan="2">&nbsp;</td>
 								
 								<th><div class="chklimit">Balance:</div></th>
 								<td style="padding:2px;"  align="right">				          
@@ -282,17 +307,7 @@ $company = $_SESSION['companyid'];
 
 
 						<tr>
-								<td style="padding:2px" colspan="2"></td>
-								
-								<td>&nbsp;</td>
-								<td style="padding:2px;"  align="right">
-									<div class="chklimit col-xs-11 nopadding" id="ncustbalance2"></div>
-								</td>
-						</tr>
-
-
-						<tr>
-								<td colspan="2">
+								<td colspan="2">&nbsp;
 									<div class="col-xs-12 nopadding">
 										<div class="chkitmsadd col-xs-3 nopadwdown">
 											<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4">
@@ -308,7 +323,9 @@ $company = $_SESSION['companyid'];
 									<input type="hidden" name="hdncvat" id="hdncvat"> 
 								</td>
 								<td>&nbsp;</td>
-								<td style="padding:2px;"  align="right">&nbsp;</td>
+								<td style="padding:2px;"  align="right">
+									<div class="chklimit col-xs-11 nopadding" id="ncustbalance2"></div>
+								</td>
 						</tr>
 
 				</table>
@@ -322,7 +339,7 @@ $company = $_SESSION['companyid'];
 						text-align: left;
 						overflow: auto">
 		
-						<table id="MyTable" class="MyTable table table-condensed" width="100%">
+						<table id="MyTable" class="MyTable table table-condensed" width="120%">
 							<thead>
 								<tr>
 									<th style="border-bottom:1px solid #999">Code</th>
@@ -505,6 +522,7 @@ $company = $_SESSION['companyid'];
 												<th style="border-bottom:1px solid #999" width="50%">Description</th>
 												<th style="border-bottom:1px solid #999">Type</th>
 												<th style="border-bottom:1px solid #999">Value</th>
+												<th style="border-bottom:1px solid #999">Total</th>
 											</tr>
 										</thead>
 										<tbody class="tbody">
@@ -733,6 +751,7 @@ $company = $_SESSION['companyid'];
 					$('#txtcust').val(data[0]);
 					$('#hdnpricever').val(data[1]);
 				//	$('#imgemp').attr("src",data[2]);
+					$('#selcterms').val(data[12]).change();
 					
 									
 					$('#hdnvalid').val("YES");
@@ -826,7 +845,8 @@ $company = $_SESSION['companyid'];
 				$("#txtcustid").val(item.id);
 				//$("#imgemp").attr("src",item.imgsrc); 
 				$("#hdnpricever").val(item.cver);
-				
+				$("#selcterms").val(item.cterms);
+
 				$('#hdnvalid').val("YES"); 
 				
 				$('#txtremarks').focus();
@@ -1989,6 +2009,10 @@ $company = $_SESSION['companyid'];
 									//get currentvalue of ref..
 									$("#txtrefmod").val(typ);
 									$("#txtrefmodnos").val(item.xref);
+
+									if(typ=="QO" && item.cterms!==""){
+										$("#selcterms").val(item.cterms).change();
+									}
 													
 							});
 							
@@ -2087,9 +2111,8 @@ $company = $_SESSION['companyid'];
 							$("#txtdiscsamt"+ident+idnum).val(xamty.toFixed(4));
 						}else{
 							//getprice
-							xprice = $("#txtnprice"+idnum).val();
-
-							xamty = parseFloat(xprice) * (parseFloat($("#txtdiscsval"+ident+idnum).val()) / 100);
+							
+							xamty = parseFloat(xnprice) * (parseFloat($("#txtdiscsval"+ident+idnum).val()) / 100);
 							$("#txtdiscsamt"+ident+idnum).val(xamty.toFixed(4));
 						}
 					});

@@ -652,7 +652,7 @@ Back to Main<br>(ESC)</button>
 		
 	});
 
-	function addrrdet(rrno,amt,netvat,vatval,vatcode,vatrate,ewtamt,ewtcode,ewtrate,acctno,suppsi,nadvpaydue){
+	function addrrdet(rrno,amt,netvat,vatval,vatcode,vatrate,ewtamt,ewtcode,ewtrate,acctno,suppsi,nadvpaydue,cmamt){
 
 				//addrrdet(rrno,amt,vtamt,vttp,vtrt,ewtamt,ewttp,ewtrt,acttno,suppsi,advpaydue);   
 
@@ -662,7 +662,7 @@ Back to Main<br>(ESC)</button>
 			isread = "readonly";
 		}
 
-		var nncmx = 0;
+		var nncmx = cmamt;
 
 		ndue = parseFloat(amt) - parseFloat(ewtamt);
 
@@ -808,7 +808,7 @@ Back to Main<br>(ESC)</button>
 
 				var vatrate = $(this).find('input[name="txtnvatrate"]').val().replace(/,/g,''); 
 
-				var nnet = parseFloat(dmt) / parseFloat(1 + (parseInt(vatrate)/100));
+				var nnet = parseFloat(nmounts) / parseFloat(1 + (parseInt(vatrate)/100));
 
 				$(this).find('input[name="txtvatnet"]').val(nnet);
 				$(this).find('input[name="txtvatnet"]').autoNumeric('destroy');
@@ -895,7 +895,7 @@ Back to Main<br>(ESC)</button>
 									gross = gross.toLocaleString('en-US', {minimumFractionDigits: 1, maximumFractionDigits: 1});
 
 									$("<tr>").append(
-										$("<td>").html("<input type='checkbox' name='chkSales[]' value='"+item.crrno+"' data-id1 = '"+item.ngross+"' data-id2 = '"+item.vatamt+"' data-id3 = '"+item.vatyp+"' data-id4 = '"+item.vatrte+"' data-id5 = '"+item.crefsi+"' data-id6 = '"+item.nadvpay+"' data-id7 = '"+item.cacctno+"' data-id8 = '"+item.newtamt+"' data-id9 = '"+item.cewtcode+"' data-id10 = '"+item.newtrate+"'  data-id11 = '"+item.nnetamt+"'>"),
+										$("<td>").html("<input type='checkbox' name='chkSales[]' value='"+item.crrno+"' data-id1 = '"+item.ngross+"' data-id2 = '"+item.vatamt+"' data-id3 = '"+item.vatyp+"' data-id4 = '"+item.vatrte+"' data-id5 = '"+item.crefsi+"' data-id6 = '"+item.nadvpay+"' data-id7 = '"+item.cacctno+"' data-id8 = '"+item.newtamt+"' data-id9 = '"+item.cewtcode+"' data-id10 = '"+item.newtrate+"'  data-id11 = '"+item.nnetamt+"' data-id12 = '"+item.ncm+"'>"),
 										$("<td>").text(item.crrno),
 										$("<td>").text(item.ddate),
 										$("<td align='center'>").text(gross),
@@ -941,10 +941,11 @@ Back to Main<br>(ESC)</button>
 			ewttp=$(this).data("id9");
 			ewtrt=$(this).data("id10");
 			netamt=$(this).data("id11");
+			cmamt=$(this).data("id12");
 			
 			var crem = "";
 			modnme = "mySIModal";
-			addrrdet(rrno,amt,netamt,vtamt,vttp,vtrt,ewtamt,ewttp,ewtrt,acttno,suppsi,advpaydue);		 
+			addrrdet(rrno,amt,netamt,vtamt,vttp,vtrt,ewtamt,ewttp,ewtrt,acttno,suppsi,advpaydue,cmamt);		 
 			//totGross = parseFloat(totGross) + parseFloat(amt) ;
 
 		});

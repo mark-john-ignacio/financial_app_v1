@@ -48,6 +48,7 @@
   
     Select compcode, IFNULL(cewtcode,'') as cewtcode, newtrate
     From apv_t
+    where IFNULL(cewtcode,'') <> ''
     
   ) A
   where A.compcode='$company' order by A.newtrate";
@@ -84,7 +85,8 @@
     <th>PARTICULARS</th>
     <th>TIN</th>
     <th>Address</th>
-    <th>Amount</th>
+    <th>Check Amount</th>
+    <th>Gross Amount</th>
     <th>Vatable Amount</th>
     <th>Input VAT</th>
     <?php
@@ -119,23 +121,24 @@
 
      //all apv with amt and ewt
      $arrapvdets = array();
-     $sql = "Select A.ctranno, A.cewtcode, SUM(A.nvatamt) as nvatamt,  SUM(A.nnet) as nnet, SUM(A.newtamt) as newtamt
+     $sql = "Select A.ctranno, SUM(A.namount) as namount, A.cewtcode, SUM(A.nvatamt) as nvatamt,  SUM(A.nnet) as nnet, SUM(A.newtamt) as newtamt
       From apv_d A left join apv B on A.compcode=B.compcode and A.ctranno=B.ctranno
       where A.compcode='$company' and B.lcancelled=0 Group By A.ctranno, A.cewtcode
      
       UNION ALL
 
-      Select A.ctranno, group_concat(A.cewtcode SEPARATOR '') as cewtcode, SUM(A.nvatamt) as nvatamt,  (B.ngross - SUM(A.nvatamt)) as nnet, SUM(A.newtamt) as newtamt
+      Select A.ctranno, B.ngross as namount, group_concat(A.cewtcode SEPARATOR '') as cewtcode, SUM(A.nvatamt) as nvatamt,  (B.ngross - SUM(A.nvatamt)) as nnet, SUM(A.newtamt) as newtamt
       From (
       Select A.compcode, A.ctranno, A.cacctno, IFNULL(cewtcode,'') as cewtcode,
       CASE WHEN A.cacctno = 'LIAB04005' THEN SUM(A.ndebit) Else 0 END as nvatamt,    
       CASE WHEN A.cacctno = 'LIAB04004' THEN SUM(A.ncredit) Else 0 END as newtamt
-      From apv_t A 
-      where A.compcode='$company'
+      From apv_t A
+      left join apv B on A.compcode=B.compcode and A.ctranno=B.ctranno
+      where A.compcode='$company' and B.captype in ('Others','PettyCash')
       Group By A.compcode, A.ctranno, A.cacctno, A.cewtcode
       ) A
       left join apv B on A.compcode=B.compcode and A.ctranno=B.ctranno
-      Where B.lcancelled=0 Group by A.ctranno";
+      Where B.lcancelled=0 Group by A.ctranno, B.ngross";
      $resapvs=mysqli_query($con,$sql);
    
      while($row = mysqli_fetch_array($resapvs, MYSQLI_ASSOC))
@@ -186,6 +189,7 @@
       //get values sa apv array
       $nvattot = 0;
       $nvatabletot = 0;
+      $napvgross = 0;
       foreach(@$arrewtcodes as $rsx){
         $arrewtamt[$rsx['code']] = 0;
       }
@@ -196,6 +200,7 @@
           if($rs3['ctranno']==$rs0){
             $nvattot = $nvattot + $rs3['nvatamt'];
             $nvatabletot = $nvatabletot + $rs3['nnet'];
+            $napvgross =  $rs3['namount'];
             if($rs3['cewtcode']!==""){
               $arrewtamt[$rs3['cewtcode']] = $arrewtamt[$rs3['cewtcode']] + $rs3['newtamt'];
             }
@@ -204,6 +209,7 @@
       }
     ?>
     <td align="right" nowrap><?=number_format($row['npaid'],2);?></td>
+    <td align="right" nowrap><?=number_format($napvgross,2);?></td>
     <td align="right" nowrap><?=number_format($nvatabletot,2);?></td>
     <td align="right" nowrap><?=number_format($nvattot,2);?></td>
     <?php

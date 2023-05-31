@@ -28,48 +28,53 @@ include('../include/access.php');
 </head>
 
 <body style="padding-left:50px;">
-<center><font size="+1"><b><u>Inventory Summary</u></b></font></center>
+<center><font size="+1"><b><u>FG Inventory Report</u></b></font></center>
 <br>
 
-<form action="Inventory/InvSummary.php" method="post" name="frmrep" id="frmrep" target="_blank">
-<table width="100%" border="0" cellpadding="2">
-  <tr>
-    <td valign="top" width="50" style="padding:2px">
-    <button type="submit" class="btn btn-danger navbar-btn" id="btnsales">
-    <span class="glyphicon glyphicon-search"></span> View Report
-    </button>
-    </td>
-    <td width="80" style="padding-left:10px"><b>For: </b></td>
-    <td style="padding:2px">
-    <div class="col-xs-7 nopadding">
-                    <div class="col-xs-8" style="padding:10px">
-                        <select name="selm" id="selm" class="form-control">
-                            <option value="<?php echo date("m");?>"><?php echo strftime("%B");?></option>
-                            <option value="01">January</option>
-                            <option value="02">February</option>
-                            <option value="03">March</option>
-                            <option value="04">April</option>
-                            <option value="05">May</option>
-                            <option value="06">June</option>
-                            <option value="07">July</option>
-                            <option value="08">August</option>
-                            <option value="09">September</option>
-                            <option value="10">October</option>
-                            <option value="11">November</option>
-                            <option value="12">December</option>
-                        </select>
-                      </div>
-                      
-                      <div class="col-xs-4" style="padding:10px">  
-                        <select name="sely" id="sely" class="form-control">
-                            <option value="<?php echo date("Y");?>"><?php echo date("Y");?></option>
-                            <option value="<?php echo date("Y",strtotime("-1 year"));?>"><?php echo date("Y",strtotime("-1 year"));?></option>
-                        </select>
-                	 </div>
-    </div>
-    </td>
-  </tr>
-</table>
-</form>
+  <form action="Inventory/InvSummary.php" method="post" name="frmrep" id="frmrep" target="_blank">
+    <table width="100%" border="0" cellpadding="2">
+      <tr>
+        <td valign="top" width="50" style="padding:2px">
+        <button type="submit" class="btn btn-danger navbar-btn" id="btnsales">
+        <span class="glyphicon glyphicon-search"></span> View Report
+        </button>
+        </td>
+        <td style="padding-left:10px"><b>Date Range: </b></td>
+        <td style="padding:2px">
+
+          <div class="col-xs-12 nopadding">
+            <div class="col-xs-3 nopadding">
+
+              <input type='text' class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/d/Y"); ?>" />
+
+            </div>
+            
+            <div class="col-xs-2 nopadding" style="vertical-align:bottom;" align="center">
+              <label style="padding:1px;">TO</label>
+            </div>
+    
+            <div class="col-xs-3 nopadding">
+
+              <input type='text' class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>" />
+
+            </div>
+
+        </div> 
+        </td>
+      </tr>
+    </table>
+  </form>
 </body>
 </html>
+
+<script type="text/javascript">
+  $(function(){
+
+	  $('.datepick').datetimepicker({
+      format: 'MM/DD/YYYY'
+    });
+
+  });
+  
+</script>
+
