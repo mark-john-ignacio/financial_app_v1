@@ -856,12 +856,38 @@ xmlhttp.send();
             </div>
 		</div>
 		</div>
+
+    <br>
+       <b><u><i>Request For Payment</i></u></b>
+        <div style="padding-left:10px;"> 
+          <div class="col-xs-12 nopadwleft">
+         	  <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="RFP.php" id="chkBox62" <?=(in_array("RFP.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;View List</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="RFP_new.php" id="chkBox63" <?=(in_array("RFP_new.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Add New</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="RFP_edit.php" id="chkBox64" <?=(in_array("RFP_edit.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="RFP_post" id="chkBox65" <?=(in_array("RFP_post",@$arrpgist)) ? "checked" : "";?>>&nbsp;Post</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="RFP_cancel" id="chkBox66" <?=(in_array("RFP_cancel",@$arrpgist)) ? "checked" : "";?>>&nbsp;Cancel</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="RFP_print" id="chkBox117" <?=(in_array("RFP_print",@$arrpgist)) ? "checked" : "";?>>&nbsp;Print</label>
+            </div>
+            
+          </div>
+		    </div>
           
        <br>
        <b><u><i>AP Bills Payment</i></u></b>
         <div style="padding-left:10px;"> 
-        <div class="col-xs-12 nopadwleft">
-         	<div class="col-xs-2 nopadding">
+          <div class="col-xs-12 nopadwleft">
+         	  <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="PayBill.php" id="chkBox62" <?=(in_array("PayBill.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;View List</label>
             </div>
             <div class="col-xs-2 nopadding">
@@ -879,8 +905,12 @@ xmlhttp.send();
             <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="PayBill_print" id="chkBox117" <?=(in_array("PayBill_print",@$arrpgist)) ? "checked" : "";?>>&nbsp;Print</label>
             </div>
-		</div>
-		</div>
+
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="check_override" id="chkBox117" <?=(in_array("check_override",@$arrpgist)) ? "checked" : "";?>>&nbsp;Check Override</label>
+            </div>
+          </div>
+		    </div>
 
 	   <br><br><br>
        <b><u><i>AR Adjustments</i></u></b>

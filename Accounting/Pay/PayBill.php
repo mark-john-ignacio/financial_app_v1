@@ -100,66 +100,60 @@ function set(){
 				<thead>
 					<tr>
 						<th>Payment No</th>
-                        <th>Paid To</th>
-                        <th>Bank Acct</th>
-                        <th>Cheque/Ref No.</th>
+            <th>Paid To</th>
+            <th>Bank Acct</th>
+            <th>Cheque/Ref No.</th>
 						<th>Payment Date</th>
 						<th>Status</th>
 					</tr>
 				</thead>
 
 				<tbody>
-              	<?php
-				$sql = "select a.*, a.ccheckno, b.cname, e.cname as bankname, d.cname as custname from paybill a left join bank e on a.compcode=e.compcode and a.cbankcode=e.ccode left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join customers d on a.compcode=d.compcode and a.ccode=d.cempid where a.compcode='$company' order by a.dtrandate DESC";
-				$result=mysqli_query($con,$sql);
+          <?php
+						$sql = "select a.*, a.ccheckno, b.cname, e.cname as bankname
+						from paybill a 
+						left join bank e on a.compcode=e.compcode and a.cbankcode=e.ccode 
+						left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode 
+						where a.compcode='$company' order by a.dtrandate DESC";
+						$result=mysqli_query($con,$sql);
 				
-					if (!mysqli_query($con, $sql)) {
-						printf("Errormessage: %s\n", mysqli_error($con));
-					} 
+						if (!mysqli_query($con, $sql)) {
+							printf("Errormessage: %s\n", mysqli_error($con));
+						} 
 					
-				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-				{
-				?>
- 					<tr <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?>>
-						<td><a <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?> href="javascript:;" onClick="editfrm('<?=$row['ctranno'];?>');"><?=$row['ctranno'];?></a></td>
- 						<td><?=$row['ccode'];?> - <?php 
-						if($row['cname']=="") { 
-							echo $row['custname']; 
-						} else{ 
-							echo $row['cname']; 
-						}
-						?> 
-                        </td>
-                        <td><?=$row['bankname'];?></td>
-                       <td><?=($row['cpaymethod']=="cheque") ? $row['ccheckno'] : $row['cpayrefno'];?></td>
-                        <td><?=$row['dcheckdate'];?></td>
-						<td align="center">
-                        <div id="msg<?=$row['ctranno'];?>">
-                        	<?php 
-							if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
-							?>
-								<a href="javascript:;" onClick="trans('POST','<?=$row['ctranno'];?>')">POST</a> | <a href="javascript:;" onClick="trans('CANCEL','<?=$row['ctranno'];?>')">CANCEL</a>
-							<?php
-                            }
-							else{
-								if(intval($row['lcancelled'])==intval(1)){
-									echo "<b>Cancelled</b>";
-								}
-								if(intval($row['lapproved'])==intval(1)){
-									echo "Posted";
-								}
-							}
-							
-							?>
-                            </div>
-                        </td>
-					</tr>
-                <?php 
-				}
-				
-				
-				
-				?>
+						while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+						{
+					?>
+						<tr <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?>>
+							<td><a <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?> href="javascript:;" onClick="editfrm('<?=$row['ctranno'];?>');"><?=$row['ctranno'];?></a></td>
+							<td><?=$row['ccode'];?> - <?=$row['cname']?> </td>
+							<td><?=$row['bankname'];?></td>
+							<td><?=($row['cpaymethod']=="cheque") ? $row['ccheckno'] : $row['cpayrefno'];?></td>
+							<td><?=$row['dcheckdate'];?></td>
+							<td align="center">
+								<div id="msg<?=$row['ctranno'];?>">
+									<?php 
+										if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
+									?>
+										<a href="javascript:;" onClick="trans('POST','<?=$row['ctranno'];?>')">POST</a> | <a href="javascript:;" onClick="trans('CANCEL','<?=$row['ctranno'];?>')">CANCEL</a>
+									<?php
+										}
+										else{
+											if(intval($row['lcancelled'])==intval(1)){
+												echo "<b>Cancelled</b>";
+											}
+											if(intval($row['lapproved'])==intval(1)){
+												echo "Posted";
+											}
+										}
+								
+									?>
+								</div>
+							</td>
+						</tr>
+          <?php 
+						}			
+					?>
                
 				</tbody>
 			</table>

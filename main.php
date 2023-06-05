@@ -72,7 +72,7 @@
                         include('Connection/connection_string.php');
                         include('include/denied.php');
                         
-                       // $company = $_SESSION['companyid'];
+                        $company = $_SESSION['companyid'];
                         $id = $_SESSION['employeeid'];
                         
                                         $sql = "select * From users where Userid='$id'";
@@ -427,6 +427,18 @@
                 <li>
                   <a href="javascript:;" onClick="setpage('Accounting/APV/APV.php');"> <i class="fa fa-angle-double-right"></i> AP Voucher </a>
                 </li>
+
+								<?php
+									$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='RFPMODULE'"); 
+									
+									if (mysqli_num_rows($result)!=0) {
+								?>
+									<li>
+										<a href="javascript:;" onClick="setpage('Accounting/RFP/RFP.php');"> <i class="fa fa-angle-double-right"></i> Request For Payment </a>
+									</li>
+								<?php
+									}
+								?>
                 <li>
                   <a href="javascript:;" onClick="setpage('Accounting/Pay/PayBill.php');"> <i class="fa fa-angle-double-right"></i> Bills Payment </a>
                 </li>

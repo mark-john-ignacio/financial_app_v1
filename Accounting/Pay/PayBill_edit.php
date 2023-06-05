@@ -37,21 +37,17 @@ foreach($rowdetloc as $row0){
 	<title>Myx Financials</title>
     
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?<?php echo time();?>">
-    <link href="../../global/plugins/font-awesome/css/font-awesome.min.css?h=<?php echo time();?>" rel="stylesheet" type="text/css"/>
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+  <link rel="stylesheet" type="text/css" href="../../global/plugins/font-awesome/css/font-awesome.min.css?h=<?php echo time();?>" />
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
 
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../js/bootstrap3-typeahead.min.js"></script>
-<script src="../../include/autoNumeric.js"></script>
-<!--
-<script src="../../Bootstrap/js/jquery.numeric.js"></script>
-<script src="../../Bootstrap/js/jquery.inputlimiter.min.js"></script>
--->
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../js/bootstrap3-typeahead.min.js"></script>
+	<script src="../../include/autoNumeric.js"></script>
 
-<script src="../../Bootstrap/js/bootstrap.js"></script>
-<script src="../../Bootstrap/js/moment.js"></script>
-<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<script src="../../Bootstrap/js/moment.js"></script>
+	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
 </head>
 
@@ -110,7 +106,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
    	  
 				<table width="100%" border="0" cellspacing="0" cellpadding="0">
 					<tr>
-						<tH>TRAN No.:</tH>
+						<tH>Tran No.:</tH>
 						<td colspan="3" style="padding:2px;">
 						<div class="col-xs-2 nopadding"><input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?php echo $ccvno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');"></div>
 							
@@ -250,8 +246,25 @@ if (mysqli_num_rows($sqlchk)!=0) {
 							<div class="col-xs-12"  style="padding-left:2px">
 
 								<div class="col-xs-7 nopadding" style="<?=($cpaymeth!=="cheque") ? "; display: none" : ""?>" id="paymntrefrdet">
-									<input type='text' class='noref form-control input-sm' name='txtCheckNo' id='txtCheckNo' value="<?php echo $cCheckNo; ?>" placeholder="Check No."/>
+
+									<div class="col-xs-7 nopadding">
+										<input type='text' class='noref form-control input-sm' name='txtCheckNo' id='txtCheckNo' value="<?php echo $cCheckNo; ?>" readonly required placeholder="Check No."/>
+										<input type='hidden' name='txtChkBkNo' id='txtChkBkNo' value="" />
+									</div>	
+									<div class="col-xs-5 nopadwleft">
+										<?php
+											if($cCheckNo==""){
+												$xstst = "disabled";
+											}else{
+												$xstst = "";
+											}
+										?>
+										<button type="button" class="btn btn-danger btn-sm <?=$xstst?>" name="btnVoid" id="btnVoid" data-toggle="popover" data-content="Void Check" data-trigger="hover" data-placement="top" <?=$xstst?>><i class="fa fa-ban" aria-hidden="true"></i></button> 
+												
+										<button type="button" class="btn btn-warning btn-sm <?=$xstst?>" name="btnreserve" id="btnreserve" data-toggle="popover" data-content="Reserve Check" data-trigger="hover" data-placement="top" <?=$xstst?>><i class="fa fa-calendar-plus-o" aria-hidden="true"></i></button> 	
+									</div>
 								</div>
+
 
 								<div class="col-xs-7 nopadding" style="<?=($cpaymeth=="cheque" || $cpaymeth=="cash") ? "; display: none" : ""?>" id="payrefothrsdet">
 									<input type="text" id="txtPayRefrnce" class="noref form-control input-sm" name="txtPayRefrnce" value="<?php echo $cPayRefr; ?>" placeholder="Reference No.">
@@ -284,33 +297,33 @@ if (mysqli_num_rows($sqlchk)!=0) {
 
 				<br>
 
-	  				<div id="tableContainer" class="alt2" dir="ltr" style="
-                        margin: 0px;
-                        padding: 3px;
-                        border: 1px solid #919b9c;
-                        width: 100%;
-                        height: 250px;
-                        text-align: left;
-                        overflow: auto">
-                        <table width="100%" border="0" cellpadding="0" id="MyTable">
-                         <thead>
-                          <tr>
-														<th scope="col" id="hdnRefTitle">APV No</th>
-														<th>Ref No.</th>
-                            <th scope="col" width="150px">Date</th>
-                            <th scope="col" class="text-right" width="150px">Amount</th>
-                            <th scope="col" class="text-right" width="150px">Payed&nbsp;&nbsp;&nbsp;</th>
-                            <th scope="col" width="150px" class="text-right">Total Owed&nbsp;&nbsp;&nbsp;</th>
-                            <th scope="col" width="150px" class="text-center">Amount Applied</th>
-														<th scope="col" >Dr Acct</th>
-                          </tr>
-                         </thead>
-                         <tbody>
-                         </tbody>
-                        </table>
-					</div>
+	  		<div id="tableContainer" class="alt2" dir="ltr" style="
+          margin: 0px;
+          padding: 3px;
+          border: 1px solid #919b9c;
+        	width: 100%;
+          height: 250px;
+          text-align: left;
+          overflow: auto">
+            <table width="100%" border="0" cellpadding="0" id="MyTable">
+              <thead>
+                <tr>
+									<th scope="col" id="hdnRefTitle">APV No</th>
+									<th>Ref No.</th>
+                  <th scope="col" width="150px">Date</th>
+                	<th scope="col" class="text-right" width="150px">Amount</th>
+                	<th scope="col" class="text-right" width="150px">Payed&nbsp;&nbsp;&nbsp;</th>
+                  <th scope="col" width="150px" class="text-right">Total Owed&nbsp;&nbsp;&nbsp;</th>
+                  <th scope="col" width="150px" class="text-center">Amount Applied</th>
+									<th scope="col" >Dr Acct</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+          	</table>
+				</div>
                     
-                    <br>
+            <br>
 						<table width="100%" border="0" cellpadding="3">
 							<tr>
 								<td width="60%" rowspan="2">
@@ -370,122 +383,184 @@ if (mysqli_num_rows($sqlchk)!=0) {
 else{
 ?>
 
-<form action="PayBill_edit.php" name="frmpos2" id="frmpos2" method="post">
-  <fieldset>
-   	<legend>Pay Bills</legend>	
-<table width="100%" border="0">
-  <tr>
-    <tH width="100">PV NO:</tH>
-    <td colspan="3" style="padding:2px" align="left"><div class="col-xs-2"><input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?php echo $ccvno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos2');"></div></td>
-    </tr>
-  <tr>
-    <tH colspan="4" align="center" style="padding:10px"><font color="#FF0000"><b>PV No. DID NOT EXIST!</b></font></tH>
-    </tr>
-</table>
-</fieldset>
-</form>
+	<form action="PayBill_edit.php" name="frmpos2" id="frmpos2" method="post">
+		<fieldset>
+			<legend>Pay Bills</legend>	
+			<table width="100%" border="0">
+				<tr>
+					<tH width="100">PV NO:</tH>
+					<td colspan="3" style="padding:2px" align="left"><div class="col-xs-2"><input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?php echo $ccvno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos2');"></div></td>
+					</tr>
+				<tr>
+					<tH colspan="4" align="center" style="padding:10px"><font color="#FF0000"><b>PV No. DID NOT EXIST!</b></font></tH>
+					</tr>
+			</table>
+		</fieldset>
+	</form>
+
 <?php
 }
 ?>
 
-<!-- DETAILS ONLY -->
-<div class="modal fade" id="myChkModal" role="dialog" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="DRListHeader">Bank List</h3>
-            </div>
-            
-            <div class="modal-body pre-scrollable">
-            
-                          <table name='MyDRDetList' id='MyDRDetList' class="table table-small table-hoverO" style="cursor:pointer">
-                           <thead>
-                            <tr>
-                              <th>Bank Code</th>
-                              <th>Bank Name</th>
-                              <th>Bank Acct No</th>
-                              <th>Checkbook No.</th>
-                              <th>Check No.</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            	
-                            </tbody>
-                          </table>
-            </div>         	
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<!-- End Bootstrap modal -->
+				<!-- DETAILS ONLY -->
+				<div class="modal fade" id="myAPModal" role="dialog" data-keyboard="false" data-backdrop="static">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+								<h3 class="modal-title" id="APListHeader">AP List</h3>
+							</div>
+										
+							<div class="modal-body pre-scrollable">
+										
+								<table name='MyAPVList' id='MyAPVList' class="table table-small table-hoverO" style="cursor:pointer">
+									<thead>
+										<tr>
+											<th><input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
+											<th>AP No.</th>
+											<th>Ref No.</th>
+											<th>Date</th>
+											<th>Acct Code</th>
+											<th>Acct Desc</th>
+											<th>Payable Amount</th>
+										</tr>
+									</thead>
+									<tbody>
+																			
+									</tbody>
+								</table>
 
-<!-- DETAILS ONLY -->
-<div class="modal fade" id="myAPModal" role="dialog" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="APListHeader">AP List</h3>
-            </div>
-            
-            <div class="modal-body pre-scrollable">
-            
-                          <table name='MyAPVList' id='MyAPVList' class="table table-small table-hoverO" style="cursor:pointer">
-                           <thead>
-                            <tr>
-                              <th><input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
-                              <th>AP No.</th>
-															<th>Ref No.</th>
-                              <th>Date</th>
-                              <th>Acct Code</th>
-                              <th>Acct Desc</th>
-                              <th>Payable Amount</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            	
-                            </tbody>
-                          </table>
-            </div> 
-            
-            <div class="modal-footer">
-                	<button type="button" id="btnSave2" onClick="InsertSI()" class="btn btn-primary">Insert</button>
-                	<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-            </div>        	
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<!-- End Bootstrap modal -->
+							</div> 
+										
+							<div class="modal-footer">
+								<button type="button" id="btnSave2" onClick="InsertSI()" class="btn btn-primary">Insert</button>
+								<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+							</div>        	
+						</div><!-- /.modal-content -->
+					</div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->
+				<!-- End Bootstrap modal -->
+
+				<!-- Banks List -->
+				<div class="modal fade" id="myChkModal" role="dialog" data-keyboard="false" data-backdrop="static">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+								<h3 class="modal-title" id="BanksListHeader">Bank List</h3>
+							</div>
+							
+							<div class="modal-body pre-scrollable">
+							
+								<table name='MyDRDetList' id='MyDRDetList' class="table table-small table-hoverO" style="cursor:pointer">
+									<thead>
+										<tr>
+											<th>Bank Code</th>
+											<th>Bank Name</th>
+											<th>Bank Acct No</th>
+											<th class="bnkchk">Checkbook No.</th>
+											<th class="bnkchk">Check No.</th>
+										</tr>
+									</thead>
+									<tbody>																
+									</tbody>
+								</table>
+							</div>         	
+						</div><!-- /.modal-content -->
+					</div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->
+				<!-- End Banks modal -->
+
+				<!-- override modal -->
+				<div class="modal fade" id="mychkover" role="dialog" data-keyboard="false" data-backdrop="static">
+					<div class="modal-dialog modal-sm">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+								<h3 class="modal-title" id="APListHeader">Authentication</h3>
+							</div>
+							
+							<div class="modal-body">
+								<form action="index.php" method="post">
+									<div class="form-group">
+										<input type="text" class="form-control" name="authen_id" id="authen_id" placeholder="Username" required value="" autocomplete="off">		
+									</div>
+														
+									<div class="form-group">
+										<input type="password" class="form-control" name="authen_pass" id="authen_pass" placeholder="Password" required  value=""  autocomplete="off">	
+									</div>
+																											
+									<div class="form-group" id="add_err">
+																			
+									</div>
+
+								</form>
+							</div> 
+							
+							<div class="modal-footer">
+								<button type="button" id="btnauthenticate" class="btn btn-primary">Proceed</button>
+								<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+							</div>        	
+						</div><!-- /.modal-content -->
+					</div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->
+				<!-- End override modal -->
+
+				<!-- reason modal -->
+				<div class="modal fade" id="reasonmod" role="dialog" data-keyboard="false" data-backdrop="static">
+					<div class="modal-dialog modal-sm">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+								<h3 class="modal-title" id="APListHeader">Reason</h3>
+
+								<input type="hidden" name="modevent" id="modevent" value="">
+								<input type="hidden" name="authcode" id="authcode" value="">
+							</div>
+							
+							<div class="modal-body">
+								<div class="form-group">
+									<label for="comment">Reason:</label>
+									<textarea class="form-control" rows="5" id="txtreason"></textarea>
+								</div> 
+							</div> 
+							
+							<div class="modal-footer">
+								<button type="button" id="btnresonok" class="btn btn-primary">Proceed</button>
+								<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+							</div>        	
+						</div><!-- /.modal-content -->
+					</div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->
+				<!-- End override modal -->
+
+				<!-- 1) Alert Modal -->
+				<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+					<div class="vertical-alignment-helper">
+						<div class="modal-dialog vertical-align-top">
+							<div class="modal-content">
+								<div class="alert-modal-danger">
+									<p id="AlertMsg"></p>
+									<p><center>
+										<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+									</center></p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- End Alert modal -->
 
 
-<!-- 1) Alert Modal -->
-<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-    <div class="vertical-alignment-helper">
-        <div class="modal-dialog vertical-align-top">
-            <div class="modal-content">
-               <div class="alert-modal-danger">
-                  <p id="AlertMsg"></p>
-                <p>
-                    <center>
-                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-                    </center>
-                </p>
-               </div>
-            </div>
-        </div>
-    </div>
-</div>
+	<form action="print_voucher.php" name="frmvoucher" id="frmvoucher" method="post" target="_blank">
+		<input type="hidden" name="id" id="id" value="<?php echo $ccvno;?>">
+		<input type="submit" style="display: none" id="btnvoucher">
+	</form>
 
-
-<form action="print_voucher.php" name="frmvoucher" id="frmvoucher" method="post" target="_blank">
-	<input type="hidden" name="id" id="id" value="<?php echo $ccvno;?>">
-	<input type="submit" style="display: none" id="btnvoucher">
-</form>
-
-<form action="print_check.php" name="frmchek" id="frmchek" method="post" target="_blank"> 
-	<input type="hidden" name="id" id="id" value="<?php echo $ccvno;?>">
-	<input type="submit" style="display: none" id="btncheck"> 
-</form>
+	<form action="print_check.php" name="frmchek" id="frmchek" method="post" target="_blank"> 
+		<input type="hidden" name="id" id="id" value="<?php echo $ccvno;?>">
+		<input type="submit" style="display: none" id="btncheck"> 
+	</form>
 
 </body>
 </html>
@@ -540,18 +615,15 @@ else{
 
 
 	$(document).ready(function() {
-			$('.datepick').datetimepicker({
-					format: 'MM/DD/YYYY',
-			});
+		$('.datepick').datetimepicker({
+			format: 'MM/DD/YYYY',
+		});
+
+		$('[data-toggle="popover"]').popover();
 		
 		loadDets();
 		
 		disabled();
-		
-	});
-
-
-	$(function(){ 
 
 		$('#txtcacct').typeahead({
 		
@@ -580,18 +652,17 @@ else{
 		
 		});
 		
-			$("#allbox").click(function () {
-					if ($("#allbox").is(':checked')) {
-							$("input[name='chkSales[]']").each(function () {
-									$(this).prop("checked", true);
-							});
-
-					} else {
-							$("input[name='chkSales[]']").each(function () {
-									$(this).prop("checked", false);
-							});
-					}
-			});
+		$("#allbox").click(function () {
+			if ($("#allbox").is(':checked')) {
+				$("input[name='chkSales[]']").each(function () {
+					$(this).prop("checked", true);
+				});
+			} else {
+				$("input[name='chkSales[]']").each(function () {
+					$(this).prop("checked", false);
+				});
+			}
+		});
 
 		$('#txtcust').typeahead({
 		
@@ -623,62 +694,152 @@ else{
 			}
 		});
 			
-		$("#btnVoid").on("click", function(){
-			var rems = prompt("Please enter your reason...", "");
-			if (rems == null || rems == "") {
-				alert("No remarks entered!\nCheque cannot be void!");
-			}
-			else{
-				//alert( "id="+ $("#txtBankName").val()+"&chkno="+ $("#txtCheckNo").val()+"&rem="+ rems);
-						$.ajax ({
-						url: "PayBill_voidchkno.php",
-						data: { id: $("#txtBank").val(), chkno: $("#txtCheckNo").val(), rem: rems },
-						async: false,
-						success: function( data ) {
-							if(data.trim()!="False"){
-								$("#txtCheckNo").val(data.trim());
-								$("#btnVoid").attr("disabled", false);
-							}
-						}
-						});
+		$("#btnVoid").on("click", function() { 		
+			$("#modevent").val("void");
+			$("#mychkover").modal("show");
+		});
 
+		$("#btnreserve").on("click", function() {
+			$("#modevent").val("reserve");
+			$("#mychkover").modal("show");
+		});
+
+		$("#btnauthenticate").on("click", function() {
+			if($("#authen_pass").val()=="" || $("#authen_id").val()==""){
+				$("#AlertMsg").html("<b>ERROR: </b>Username and Password is required!");
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
+			}else{
+
+				$.ajax ({
+					url: "PayBill_authenticate.php",
+					data: { id: $("#authen_id").val(), pass: $("#authen_pass").val(), xval: "<?=$_SESSION['myxtoken']?>" },
+					async: false,
+					success: function( data ) {
+	
+						$("#mychkover").modal("hide");
+
+						if(data.trim()=="True"){
+
+							$("#authcode").val($("#authen_id").val());
+
+							$("#authen_id").val("");
+							$("#authen_pass").val("");
+							$("#reasonmod").modal("show");
+					
+						}else{
+
+							$("#AlertMsg").html("<b>ERROR: </b>Authentication Failed!<br>"+data.trim());
+							$("#alertbtnOK").show();
+							$("#AlertModal").modal('show');
+
+						}
+					}
+				});
 			}
 		});
 
+		$("#btnresonok").on("click", function() {
+
+			if($("#txtreason").val()==""){
+
+				$("#AlertMsg").html("<b>ERROR: </b> Enter a valid reason!<br>");
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
+
+			}else{
+
+				$.ajax ({
+					url: "PayBill_voidchkno.php",
+					data: { id: $("#txtBank").val(), chkno: $("#txtCheckNo").val(), chkbkno: $("#txtChkBkNo").val(), rem: $("#txtreason").val(), xtyp: $("#modevent").val(), authcode: $("#authcode").val() },
+					async: false,
+					success: function( data ) {
+						if(data.trim()!="False"){
+							$("#txtCheckNo").val(data.trim());
+
+							$("#txtreason").text("");
+							$("#reasonmod").modal("hide");
+						}
+					}
+				});
+
+			}
+
+		});
 
 		$("#btnsearchbank").on("click", function() {
-			
+
+			if($("#selpayment").val()=="cheque"){
+				$(".bnkchk").show();
+
+				$("#BanksListHeader").text("Bank/Cheque No.");
+			}else{
+				$(".bnkchk").hide();
+
+				$("#BanksListHeader").text("Banks");
+			}
+
 			$('#MyDRDetList tbody').empty();
-			
+
 				$.ajax({
 					url: 'th_banklist.php',
+					data: { id: $("#selpayment").val() },
 					dataType: 'json',
 					async:false,
 					method: 'post',
 					success: function (data) {
-												// var classRoomsTable = $('#mytable tbody');
+					// var classRoomsTable = $('#mytable tbody');
 						console.log(data);
 						$.each(data,function(index,item){
 
-							$("<tr id=\"bank"+index+"\">").append(
-								$("<td>").text(item.ccode),
-								$("<td>").text(item.cname),
-								$("<td>").text(item.cbankacctno),
-								$("<td>").text(item.ccheckno),
-								$("<td>").text(item.ccurrentcheck)
-							).appendTo("#MyDRDetList tbody");
-										
+							if($("#selpayment").val()=="cheque"){
+								$("<tr id=\"bank"+index+"\">").append(
+									$("<td>").text(item.ccode),
+									$("<td>").text(item.cname),
+									$("<td>").text(item.cbankacctno),
+									$("<td>").text(item.ccheckno),
+									$("<td>").text(item.ccurrentcheck)
+								).appendTo("#MyDRDetList tbody");
+
+							}else{
+								$("<tr id=\"bank"+index+"\">").append(
+									$("<td>").text(item.ccode),
+									$("<td>").text(item.cname),
+									$("<td>").text(item.cbankacctno)
+								).appendTo("#MyDRDetList tbody");
+							}
+									
 							$("#bank"+index).on("click", function() {
 								$("#txtBank").val(item.ccode);
 								$("#txtBankName").val(item.cname);
-								$("#txtCheckNo").val(item.ccurrentcheck);
 								$("#txtcacctid").val(item.cacctno);
 								$("#txtcacct").val(item.cacctdesc);
 
 								if($("#selpayment").val()=="cheque"){
 									$("#txtCheckNo").val(item.ccurrentcheck);
+									$("#txtChkBkNo").val(item.nidentity);
+
+									if(item.ccurrentcheck!==""){
+
+										$("#btnVoid").attr("disabled", false);
+										$("#btnreserve").attr("disabled", false);
+
+										$("#btnVoid").removeClass("disabled");
+										$("#btnreserve").removeClass("disabled");
+
+									}else{
+
+										$("#btnVoid").attr("disabled", true);
+										$("#btnreserve").attr("disabled", true);
+
+										$("#btnVoid").addClass("disabled");
+										$("#btnreserve").addClass("disabled");
+
+									}
+
+
 								}
-											
+										
 								$("#myChkModal").modal("hide");
 							});
 
@@ -691,7 +852,6 @@ else{
 					}
 				});
 
-			
 			$("#myChkModal").modal("show");
 		});
 		
@@ -713,6 +873,14 @@ else{
 		});
 
 		$("#selpayment").on("change", function(){  
+
+			$("#txtBank").val("");
+			$("#txtBankName").val("");
+			$("#txtcacctid").val("");
+			$("#txtcacct").val("");
+			$("#txtCheckNo").val("");
+			$("#txtPayRefrnce").val("");
+
 			if($(this).val()=="cash"){       //paymntdesc paymntdescdet
 				$("#paymntdesc").html(" ");
 				$("#paymntrefr").html(" ");		
@@ -965,10 +1133,10 @@ else{
 		}
 	}
 
-function numcom(x) {
-		var xcv = parseFloat(x).toFixed(2);
-    return xcv.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
+	function numcom(x) {
+			var xcv = parseFloat(x).toFixed(2);
+			return xcv.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	}
 
 	function setPosi(nme,keyCode){
 			var r = nme.replace(/\D/g,'');
@@ -1060,7 +1228,7 @@ function numcom(x) {
 		$("#txtnGross").autoNumeric('destroy');
 		$("#txtnGross").autoNumeric('init',{mDec:2});
 
-}
+	}
 
 	function chkSIEnter(keyCode,frm){
 		if(keyCode==13){

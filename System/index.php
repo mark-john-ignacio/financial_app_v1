@@ -2268,6 +2268,342 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</div>				
 								</div>
 
+
+								<p data-toggle="collapse" data-target="#rfpcollapse"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Request For Payment</b></u> <i></i></p>
+												
+								<div class="collapse" id="rfpcollapse">
+
+										<div class="col-xs-12" style="margin-bottom: 1px !important; margin-left: 15px !important">
+											<div class="col-xs-3 nopadwtop">
+												<b>Request for Payment</b>
+												<!--<div id="divInvChecking" style="display:inline; padding-left:5px">
+												</div>-->
+											</div>                    
+											<div class="col-xs-3 nopadwtop">
+
+												<?php
+													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='RFPMODULE'"); 
+											
+													if (mysqli_num_rows($result)!=0) {
+														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
+														$nvalue = $all_course_data['cvalue']; 							
+													}
+													else{
+														$nvalue = "";
+													}
+												?>
+
+													<select class="form-control input-sm selectpicker" name="selchkinvsys" id="selchkinvsys" onChange="setparamval('RFPMODULE',this.value,'rfpmodchkmsg')">
+														<option value="1" <?php if ($nvalue=='1') { echo "selected"; } ?>> Enabled </option>
+														<option value="0" <?php if ($nvalue=='0') { echo "selected"; } ?>> Disabled </option>
+													</select>
+											</div>                    
+											<div class="col-xs-1 nopadwtop" id="rfpmodchkmsg">
+											</div>                    
+										</div>
+
+										<div class="col-xs-12" style="margin-bottom: 15px !important; margin-left: 15px !important">
+											<div class="col-xs-3 nopadwtop2x">
+												<b>Send Approval Email Notif.</b>
+												<div id="divRFPEmailprint" style="display:inline; padding-left:5px"></div>
+											</div>                    
+											<div class="col-xs-3 nopadwtop2x">
+												<?php
+													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='RFP_APP_EMAIL'"); 
+												
+													if (mysqli_num_rows($result)!=0) {
+														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
+														$nvalue = $all_course_data['cvalue']; 												
+													}
+													else{
+														$nvalue = "";
+													}
+												?>
+												<select class="form-control input-sm selectpicker" name="selrfpemailnoti" id="selrfpemailnoti" onChange="setparamval('RFP_APP_EMAIL',this.value,'rfpemailmsg')">
+													<option value="0" <?php if ($nvalue==0) { echo "selected"; } ?>> NO </option>
+													<option value="1" <?php if ($nvalue==1) { echo "selected"; } ?>> YES </option>
+												</select>
+											</div>                   
+											<div class="col-xs-1 nopadwtop2x" id="rfpemailmsg">
+											</div>												
+										</div>									
+
+											<?php
+												$resRFPAppsHDR = mysqli_query($con,"SELECT * FROM `rfp_approvals` WHERE compcode='".$_SESSION['companyid']."'"); 
+												while($rowrfpaph=mysqli_fetch_array($resRFPAppsHDR, MYSQLI_ASSOC)){
+													$i = $rowrfpaph['nlevel'];
+													$rwrfpapphdramt[$i] = $rowrfpaph['namount'];
+												}
+
+												$resRFPApps = mysqli_query($con,"SELECT * FROM `rfp_approvals_id` WHERE compcode='".$_SESSION['companyid']."'"); 
+											?>
+
+										<form action="th_saverfplevels.php" method="POST" name="frmRFPLvls" id="frmRFPLvls" onSubmit="return chkrfplvlform();" target="_self">
+
+											<input type="hidden" name="tbLRFPL1count" id="tbLRFPL1count" value="0">
+											<input type="hidden" name="tbLRFPL2count" id="tbLRFPL2count" value="0">
+											<input type="hidden" name="tbLRFPL3count" id="tbLRFPL3count" value="0">
+
+											<div class="col-xs-12" style="padding-bottom: 5px !important">
+												<div class="col-xs-2">
+													<b>Approval Levels</b>
+												</div>                    
+												<div class="col-xs-3">
+													<button type="submit" class="btn btn-xs btn-success" name="btnsaveRFPApp" id="btnsaveRFPApp"><i class="fa fa-save"></i>&nbsp; &nbsp;Save Approvals</button>
+												</div>
+											</div>
+
+
+											<div class="col-xs-12" style="margin-top: 5px !important; margin-left: 15px !important">
+
+												<ul class="nav nav-tabs">
+													<li class="active"><a data-toggle="tab" href="#rfplevel1">Level 1</a></li>
+													<li><a data-toggle="tab" href="#rfplevel2">Level 2</a></li>
+													<li><a data-toggle="tab" href="#rfplevel3">Level 3</a></li>
+												</ul>
+
+
+												<div class="tab-content col-lg-12 nopadwtop2x">   
+
+													<!-- LEVEL 1 -->
+														<div id="rfplevel1" class="tab-pane fade in active">
+															<input type="hidden" data-id="2" id = "lvlamt1" name = "lvlamt1" value="0">
+															<div class="col-xs-12 nopadding">
+											
+																<div class="col-xs-2 nopadding"> 
+																	<button type="button" class="btn btn-xs btn-primary" name="btnaddrfpapplvl1" id="btnaddrfpapplvl1" onClick="addrfplevel(1,'RFPAPP1');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button> 															
+																</div>
+
+															</div>
+
+															<div class="col-xs-12 border pre-scrollable" style="height: 150px; margin-top: 5px !important">
+
+																	<table cellpadding="3px" width="100%" border="0" style="font-size: 14px" id="RFPAPP1">
+																		<thead>
+																			<tr>
+																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px" width="60%">User ID</td>
+																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px"><small>Delete</small></td>
+																			</tr>
+																		</thead>
+																		<tbody>
+																			<?php
+																			if (mysqli_num_rows($resRFPApps)!=0) {
+																				$cntr = 0;
+
+																				while($rowxcv=mysqli_fetch_array($resRFPApps, MYSQLI_ASSOC)){
+																					$rowRFPresult[] = $rowxcv;
+																				}
+
+																				foreach ($rowRFPresult as $row){
+																					if($row['rfp_approval_id']==1){
+																						$cntr++;
+																			?>	
+																				<tr>
+																					<td width="200px" style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																						<select class="form-control" name="selrfpsuser<?=$row['rfp_approval_id'].$cntr?>" id="selrfpsuser<?=$row['rfp_approval_id'].$cntr?>" >
+
+																							<?php
+																								foreach(@$ursnmse as $rsusr){
+																									if($rsusr['userid']==$row['userid']){
+																										$xscd = "selected";
+																									}else{
+																										$xscd = "";
+																									}
+																									echo "<option value='".$rsusr['userid']."' ".$xscd."> ".$rsusr['name']." </option>";
+																								}
+																							?> 
+																						</select>
+																					</td>																			
+																					<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																						<button class="btn btn-danger btn-sm" type="button" onclick="rfptransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
+																					</td>
+																				</tr>
+
+																				<script>
+																					$(document).ready(function(e) {
+																						$('#selrfpsuser<?=$row['rfp_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
+																					});
+																				</script>
+																			<?php
+																					}
+																				}
+																			}
+																			?>
+																		</tbody>
+																	</table> 
+
+															</div>
+
+														</div>
+
+													<!-- LEVEL 2 -->
+														<div id="rfplevel2" class="tab-pane fade in">
+
+															<div class="col-xs-12 nopadding">
+											
+																<div class="col-xs-2 nopadding"> 
+																	<button type="button" class="btn btn-xs btn-primary" name="btnaddrfpapplvl2" id="btnaddrfpapplvl2" onClick="addrfplevel(2,'RFPAPP2');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button>															
+																</div>
+
+																<div class="col-xs-2 nopadwleft"> 
+																	<b>Minimum Amount</b>
+																</div>
+
+																<div class="col-xs-2 nopadwleft"> 
+																	<input type="text" class="lvlamtcls form-control input-xs" data-id="2" id = "lvlamt2" name = "lvlamt2" value="<?=$rwrfpapphdramt[2]?>">
+																	
+																</div>
+
+																<div class="col-xs-3 nopadwleft" id="divlevel2amounts"> 
+																	
+																</div>
+
+															</div>
+
+															<div class="col-xs-12 border pre-scrollable" style="height: 150px; margin-top: 5px !important">
+
+																<table cellpadding="3px" width="100%" border="0" style="font-size: 14px"  id="RFPAPP2">
+																	<thead>
+																		<tr>
+																			<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px" width="60%">User ID</td>
+																			<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px"><small>Delete</small></td>
+																		</tr>
+																	</thead>
+
+																	<tbody>
+																		<?php
+																		if (mysqli_num_rows($resRFPApps)!=0) { 
+																			$cntr = 0;
+																			foreach ($rowRFPresult as $row){
+																				if(intval($row['rfp_approval_id'])==2){
+																					$cntr++;
+																		?>	
+																			<tr>
+																				<td width="200px" style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<select class="form-control" name="selrfpsuser<?=$row['rfp_approval_id'].$cntr?>" id="selrfpsuser<?=$row['rfp_approval_id'].$cntr?>" >
+																						<?php
+																							foreach(@$ursnmse as $rsusr){
+																								if($rsusr['userid']==$row['userid']){
+																									$xscd = "selected";
+																								}else{
+																									$xscd = "";
+																								}
+
+																								echo "<option value='".$rsusr['userid']."' ".$xscd."> ".$rsusr['name']." </option>";
+																							}
+																						?> 
+																					</select>
+																				</td>
+
+																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<button class="btn btn-danger btn-sm" type="button" onclick="rfptransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
+																				</td>
+																			</tr>
+
+																			<script>
+																				$(document).ready(function(e) {
+																					$('#selrfpsuser<?=$row['rfp_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
+																				});
+																			</script>
+																		<?php
+																				}
+																			}
+																		}
+																		?>
+																	</tbody>
+																</table> 
+
+															</div>
+
+														</div>
+
+													<!-- LEVEL 3 -->
+														<div id="rfplevel3" class="tab-pane fade in">
+
+															<div class="col-xs-12 nopadding">
+											
+																<div class="col-xs-2 nopadding"> 
+																	<button type="button" class="lvlamtcls btn btn-xs btn-primary" name="btnaddrfpapplvl3" id="btnaddrfpapplvl3" onClick="addrfplevel(3,'RFPAPP3');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button>															
+																</div>
+
+																<div class="col-xs-2 nopadwleft"> 
+																	<b>Minimum Amount</b>
+																</div>
+
+																<div class="col-xs-2 nopadwleft"> 
+																	<input type="text" class="form-control input-xs" data-id="3" id="lvlamt3" name="lvlamt3" value="<?=$rwrfpapphdramt[3]?>">
+																</div>
+
+																<div class="col-xs-3 nopadwleft" id="divlevel3amounts"> 
+																</div>
+
+															</div>
+
+															<div class="col-xs-12 border pre-scrollable" style="height: 150px; margin-top: 5px !important">
+
+																<table cellpadding="3px" width="100%" border="0" style="font-size: 14px" id="RFPAPP3">
+																	<thead>
+																		<tr>
+																			<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px" width="60%">User ID</td>
+																			<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px"><small>Delete</small></td>
+																		</tr>
+																	</thead>
+
+																	<tbody>
+																		<?php
+																		if (mysqli_num_rows($resRFPApps)!=0) {  
+																			$cntr = 0;
+																			foreach ($rowRFPresult as $row){
+																				if($row['rfp_approval_id']==3){
+																					$cntr++;
+																		?>	
+																			<tr>
+																				<td width="200px" style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<select class="form-control" name="selrfpsuser<?=$row['rfp_approval_id'].$cntr?>" id="selrfpsuser<?=$row['rfp_approval_id'].$cntr?>" >
+																						<?php
+																							foreach(@$ursnmse as $rsusr){
+																								if($rsusr['userid']==$row['userid']){
+																									$xscd = "selected";
+																								}else{
+																									$xscd = "";
+																								}
+																								echo "<option value='".$rsusr['userid']."' ".$xscd."> ".$rsusr['name']." </option>";
+																							}
+																						?> 
+																					</select>
+																				</td>
+																			
+																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<button class="btn btn-danger btn-sm" type="button" onclick="rfptransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
+																				</td>
+																			</tr>
+
+																			<script>
+																				$(document).ready(function(e) {
+																					$('#rfp_approval_id<?=$row['rfp_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
+																				});
+																			</script>
+																		<?php
+																				}
+																			}
+																		}
+																		?>
+																	</tbody>
+																</table> 
+
+															</div>
+
+														</div>
+
+												</div>
+
+											</div>
+
+
+										</form>
+
+								</div>
+
 								<div class="col-xs-12">
 									<div class="col-xs-2 nopadwtop">
 										<b>Income Account</b>
@@ -2582,6 +2918,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				<form id="frmQOTrans" name="frmQOTrans" action="th_saveqotrans.php" method="POST">
 					<input type='hidden' id='QOTransID' name='QOTransID' value=''>
 					<input type='hidden' id='QOTransTP' name='QOTransTP' value=''>
+				</form>
+
+				<form id="frmRFPTrans" name="frmRFPTrans" action="th_saverfptrans.php" method="POST">
+					<input type='hidden' id='RFPTransID' name='RFPTransID' value=''>
+					<input type='hidden' id='RFPTransTP' name='RFPTransTP' value=''>
 				</form>
 	</body>
 
@@ -4859,18 +5200,111 @@ if (mysqli_num_rows($sqlhead)!=0) {
     $('#previewing').attr('height', '145px');
   };
 
-	//add applevel
-function addpolevel($lvl, $tbl){
+	//add po app level
+	function addpolevel($lvl, $tbl){
+
+			var xz = $("#atitemtype").val();
+			var htmlITM = "<option value='ALL'> ALL </option>";
+
+			$.each(jQuery.parseJSON(xz), function() {  
+				htmlITM = htmlITM + '<option value="' +this['ccode'] + '">' + this['cdesc'] + '</option>';
+			});
+
+			var xz = $("#atsupptype").val();
+			var htmlSUPP = "<option value='ALL'> ALL</option>";
+
+			$.each(jQuery.parseJSON(xz), function() {  
+				htmlSUPP = htmlSUPP + '<option value="' +this['ccode'] + '">' + this['cdesc'] + '</option>';
+			});
+
+			var xz = $("#atuserslst").val();
+			var htmlUSERS = "";
+
+			$.each(jQuery.parseJSON(xz), function() {  
+				htmlUSERS = htmlUSERS + '<option value="' +this['userid'] + '">' + this['name'] + '</option>';
+			});
+
+		var tbl = document.getElementById($tbl).getElementsByTagName('tr');
+		var lastRow = tbl.length;
+
+		var tblz = document.getElementById($tbl).getElementsByTagName('tbody')[0];
+		var a=tblz.insertRow(tblz.rows.length);
+								
+		var u=a.insertCell(0);
+			u.style.paddingTop = "2px";
+			u.style.paddingLeft = "1px";
+			u.style.paddingRight = "1px";
+			u.style.width = "200px";
+		var x=a.insertCell(1);
+			x.style.paddingTop = "2px";
+			x.style.paddingLeft = "1px";
+			x.style.paddingRight = "1px";
+		var y=a.insertCell(2);
+			y.style.paddingTop = "2px";
+			y.style.paddingLeft = "1px";
+			y.style.paddingRight = "1px";
+		var za=a.insertCell(3);
+			za.style.paddingTop = "2px";
+			za.style.paddingLeft = "1px";
+			za.style.paddingRight = "1px";
+									
+		u.innerHTML = "<select class=\"form-control input-xs\" name=\"selposuser"+$lvl+""+lastRow+"\" id=\"selposuser"+$lvl+""+lastRow+"\" > "+htmlUSERS+" </select>";
+		x.innerHTML = "<select required multiple class=\"form-control input-xs\" name=\"selpoitmtyp"+$lvl+""+lastRow+"[]\" id=\"selpoitmtyp"+$lvl+""+lastRow+"\" >"+htmlITM+"</select>";
+		y.innerHTML = "<select required multiple class=\"form-control input-xs\" name=\"selposutyp"+$lvl+""+lastRow+"[]\" id=\"selposutyp"+$lvl+""+lastRow+"\" >"+htmlSUPP+"</select>";
+		za.innerHTML = "";
+
+		$('#selposuser'+$lvl+""+lastRow).select2({minimumResultsForSearch: Infinity,width: '100%'});
+		$('#selpoitmtyp'+$lvl+""+lastRow).select2({width: '100%'});
+		$('#selposutyp'+$lvl+""+lastRow).select2({width: '100%'});
+
+	}
+
+	function chkpolvlform(){
+		var lastRow = $("#POAPP1 > tbody > tr").length;
+		var lastRow2 = $("#POAPP2 > tbody > tr").length;
+		var lastRow3 = $("#POAPP3 > tbody > tr").length;
+
+		if(lastRow==0){
+
+				$("#AlertMsg").html("");
+				
+				$("#AlertMsg").html("<br><center>Atleast 1 approver is required in Level 1!</center><br>");
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
+
+
+			return false;
+		}else{
+			$("#tbLVL1count").val(lastRow);  
+			$("#tbLVL2count").val(lastRow2); 
+			$("#tbLVL3count").val(lastRow3); 
+
+			return true;
+
+		}
+
+	}
+
+	function potransset(typ,id){
+			
+		$("#POTransID").val(id);
+		$("#POTransTP").val(typ);
+
+		$("#frmPOTrans").submit();
+	}
+
+	//add qo app level
+	function addqolevel($lvl, $tbl){
 
 		var xz = $("#atitemtype").val();
-		var htmlITM = "<option value='ALL'> ALL </option>";
+		var htmlITM = "<option value='ALL' selected> ALL </option>";
 
 		$.each(jQuery.parseJSON(xz), function() {  
 			htmlITM = htmlITM + '<option value="' +this['ccode'] + '">' + this['cdesc'] + '</option>';
 		});
 
 		var xz = $("#atsupptype").val();
-		var htmlSUPP = "<option value='ALL'> ALL</option>";
+		var htmlSUPP = "<option value='ALL' selected> ALL</option>";
 
 		$.each(jQuery.parseJSON(xz), function() {  
 			htmlSUPP = htmlSUPP + '<option value="' +this['ccode'] + '">' + this['cdesc'] + '</option>';
@@ -4883,182 +5317,155 @@ function addpolevel($lvl, $tbl){
 			htmlUSERS = htmlUSERS + '<option value="' +this['userid'] + '">' + this['name'] + '</option>';
 		});
 
-	var tbl = document.getElementById($tbl).getElementsByTagName('tr');
-	var lastRow = tbl.length;
+		var xz = $("#qotyplst").val();
+		var htmlQRTYP = "<option value='ALL' selected> ALL</option>";
 
-	var tblz = document.getElementById($tbl).getElementsByTagName('tbody')[0];
-	var a=tblz.insertRow(tblz.rows.length);
+		$.each(jQuery.parseJSON(xz), function() {  
+			htmlQRTYP = htmlQRTYP + '<option value="' +this['ccode'] + '">' + this['cdesc'] + '</option>';
+		});
+
+
+		var tbl = document.getElementById($tbl).getElementsByTagName('tr');
+		var lastRow = tbl.length;
+
+		var tblz = document.getElementById($tbl).getElementsByTagName('tbody')[0];
+		var a=tblz.insertRow(tblz.rows.length);
 							
-	var u=a.insertCell(0);
+		var u=a.insertCell(0);
 		u.style.paddingTop = "2px";
 		u.style.paddingLeft = "1px";
 		u.style.paddingRight = "1px";
 		u.style.width = "200px";
-	var x=a.insertCell(1);
+		var x=a.insertCell(1);
 		x.style.paddingTop = "2px";
 		x.style.paddingLeft = "1px";
 		x.style.paddingRight = "1px";
-	var y=a.insertCell(2);
+		var y=a.insertCell(2);
 		y.style.paddingTop = "2px";
 		y.style.paddingLeft = "1px";
 		y.style.paddingRight = "1px";
-	var za=a.insertCell(3);
+		var z=a.insertCell(3);
+		z.style.paddingTop = "2px";
+		z.style.paddingLeft = "1px";
+		z.style.paddingRight = "1px";
+		var za=a.insertCell(4);
 		za.style.paddingTop = "2px";
 		za.style.paddingLeft = "1px";
 		za.style.paddingRight = "1px";
 								
-	u.innerHTML = "<select class=\"form-control input-xs\" name=\"selposuser"+$lvl+""+lastRow+"\" id=\"selposuser"+$lvl+""+lastRow+"\" > "+htmlUSERS+" </select>";
-	x.innerHTML = "<select required multiple class=\"form-control input-xs\" name=\"selpoitmtyp"+$lvl+""+lastRow+"[]\" id=\"selpoitmtyp"+$lvl+""+lastRow+"\" >"+htmlITM+"</select>";
-	y.innerHTML = "<select required multiple class=\"form-control input-xs\" name=\"selposutyp"+$lvl+""+lastRow+"[]\" id=\"selposutyp"+$lvl+""+lastRow+"\" >"+htmlSUPP+"</select>";
-	za.innerHTML = "";
+		u.innerHTML = "<select class=\"form-control input-xs\" name=\"selqosuser"+$lvl+""+lastRow+"\" id=\"selqosuser"+$lvl+""+lastRow+"\" > "+htmlUSERS+" </select>";
+		x.innerHTML = "<select required multiple class=\"form-control input-xs\" name=\"selqoitmtyp"+$lvl+""+lastRow+"[]\" id=\"selqoitmtyp"+$lvl+""+lastRow+"\" >"+htmlITM+"</select>";
+		y.innerHTML = "<select required multiple class=\"form-control input-xs\" name=\"selqosutyp"+$lvl+""+lastRow+"[]\" id=\"selqosutyp"+$lvl+""+lastRow+"\" >"+htmlSUPP+"</select>";
+		z.innerHTML = "<select required multiple class=\"form-control\" name=\"selqotrtyp"+$lvl+""+lastRow+"[]\" id=\"selqotrtyp"+$lvl+""+lastRow+"\" >"+htmlQRTYP+"</select>";
+		za.innerHTML = "";
 
-	$('#selposuser'+$lvl+""+lastRow).select2({minimumResultsForSearch: Infinity,width: '100%'});
-	$('#selpoitmtyp'+$lvl+""+lastRow).select2({width: '100%'});
-	$('#selposutyp'+$lvl+""+lastRow).select2({width: '100%'});
-
-}
-
-function chkpolvlform(){
-	var lastRow = $("#POAPP1 > tbody > tr").length;
-	var lastRow2 = $("#POAPP2 > tbody > tr").length;
-	var lastRow3 = $("#POAPP3 > tbody > tr").length;
-
-	if(lastRow==0){
-
-			$("#AlertMsg").html("");
-			
-			$("#AlertMsg").html("<br><center>Atleast 1 approver is required in Level 1!</center><br>");
-			$("#alertbtnOK").show();
-			$("#AlertModal").modal('show');
-
-
-		return false;
-	}else{
-		$("#tbLVL1count").val(lastRow);  
-		$("#tbLVL2count").val(lastRow2); 
-		$("#tbLVL3count").val(lastRow3); 
-
-		return true;
+		$('#selqosuser'+$lvl+""+lastRow).select2({minimumResultsForSearch: Infinity,width: '100%'});
+		$('#selqoitmtyp'+$lvl+""+lastRow).select2({width: '100%'});
+		$('#selqosutyp'+$lvl+""+lastRow).select2({width: '100%'});
+		$('#selqotrtyp'+$lvl+""+lastRow).select2({width: '100%'});
 
 	}
 
-}
+	function chkqolvlform(){
+		var lastRow = $("#QOAPP1 > tbody > tr").length;
+		var lastRow2 = $("#QOAPP2 > tbody > tr").length;
+		var lastRow3 = $("#QOAPP3 > tbody > tr").length;
 
-function potransset(typ,id){
-	  
-	$("#POTransID").val(id);
-	$("#POTransTP").val(typ);
+		if(lastRow==0){
 
-	$("#frmPOTrans").submit();
-}
-
-
-function addqolevel($lvl, $tbl){
-
-	var xz = $("#atitemtype").val();
-	var htmlITM = "<option value='ALL' selected> ALL </option>";
-
-	$.each(jQuery.parseJSON(xz), function() {  
-		htmlITM = htmlITM + '<option value="' +this['ccode'] + '">' + this['cdesc'] + '</option>';
-	});
-
-	var xz = $("#atsupptype").val();
-	var htmlSUPP = "<option value='ALL' selected> ALL</option>";
-
-	$.each(jQuery.parseJSON(xz), function() {  
-		htmlSUPP = htmlSUPP + '<option value="' +this['ccode'] + '">' + this['cdesc'] + '</option>';
-	});
-
-	var xz = $("#atuserslst").val();
-	var htmlUSERS = "";
-
-	$.each(jQuery.parseJSON(xz), function() {  
-		htmlUSERS = htmlUSERS + '<option value="' +this['userid'] + '">' + this['name'] + '</option>';
-	});
-
-	var xz = $("#qotyplst").val();
-	var htmlQRTYP = "<option value='ALL' selected> ALL</option>";
-
-	$.each(jQuery.parseJSON(xz), function() {  
-		htmlQRTYP = htmlQRTYP + '<option value="' +this['ccode'] + '">' + this['cdesc'] + '</option>';
-	});
+				$("#AlertMsg").html("");
+				
+				$("#AlertMsg").html("<br><center>Atleast 1 approver is required in Level 1!</center><br>");
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
 
 
-	var tbl = document.getElementById($tbl).getElementsByTagName('tr');
-	var lastRow = tbl.length;
+			return false;
+		}else{
+			$("#tbLQL1count").val(lastRow);     
+			$("#tbLQL2count").val(lastRow2); 
+			$("#tbLQL3count").val(lastRow3); 
 
-	var tblz = document.getElementById($tbl).getElementsByTagName('tbody')[0];
-	var a=tblz.insertRow(tblz.rows.length);
-						
-	var u=a.insertCell(0);
-	u.style.paddingTop = "2px";
-	u.style.paddingLeft = "1px";
-	u.style.paddingRight = "1px";
-	u.style.width = "200px";
-	var x=a.insertCell(1);
-	x.style.paddingTop = "2px";
-	x.style.paddingLeft = "1px";
-	x.style.paddingRight = "1px";
-	var y=a.insertCell(2);
-	y.style.paddingTop = "2px";
-	y.style.paddingLeft = "1px";
-	y.style.paddingRight = "1px";
-	var z=a.insertCell(3);
-	z.style.paddingTop = "2px";
-	z.style.paddingLeft = "1px";
-	z.style.paddingRight = "1px";
-	var za=a.insertCell(4);
-	za.style.paddingTop = "2px";
-	za.style.paddingLeft = "1px";
-	za.style.paddingRight = "1px";
+			return true;
+
+		}
+
+	}
+
+	function qotransset(typ,id){
+			
+		$("#QOTransID").val(id);
+		$("#QOTransTP").val(typ);
+
+		$("#frmQOTrans").submit();
+	}
+
+	//addrfp app level
+	function addrfplevel($lvl, $tbl){
+
+		var xz = $("#atuserslst").val();
+		var htmlUSERS = "";
+
+		$.each(jQuery.parseJSON(xz), function() {  
+			htmlUSERS = htmlUSERS + '<option value="' +this['userid'] + '">' + this['name'] + '</option>';
+		});
+
+		var tbl = document.getElementById($tbl).getElementsByTagName('tr');
+		var lastRow = tbl.length;
+
+		var tblz = document.getElementById($tbl).getElementsByTagName('tbody')[0];
+		var a=tblz.insertRow(tblz.rows.length);
 							
-	u.innerHTML = "<select class=\"form-control input-xs\" name=\"selqosuser"+$lvl+""+lastRow+"\" id=\"selqosuser"+$lvl+""+lastRow+"\" > "+htmlUSERS+" </select>";
-	x.innerHTML = "<select required multiple class=\"form-control input-xs\" name=\"selqoitmtyp"+$lvl+""+lastRow+"[]\" id=\"selqoitmtyp"+$lvl+""+lastRow+"\" >"+htmlITM+"</select>";
-	y.innerHTML = "<select required multiple class=\"form-control input-xs\" name=\"selqosutyp"+$lvl+""+lastRow+"[]\" id=\"selqosutyp"+$lvl+""+lastRow+"\" >"+htmlSUPP+"</select>";
-	z.innerHTML = "<select required multiple class=\"form-control\" name=\"selqotrtyp"+$lvl+""+lastRow+"[]\" id=\"selqotrtyp"+$lvl+""+lastRow+"\" >"+htmlQRTYP+"</select>";
-	za.innerHTML = "";
+		var u=a.insertCell(0);
+		u.style.paddingTop = "2px";
+		u.style.paddingLeft = "1px";
+		u.style.paddingRight = "1px";
+		u.style.width = "200px";
+		var za=a.insertCell(1);
+		za.style.paddingTop = "2px";
+		za.style.paddingLeft = "1px";
+		za.style.paddingRight = "1px";
+								
+		u.innerHTML = "<select class=\"form-control input-xs\" name=\"selrfpsuser"+$lvl+""+lastRow+"\" id=\"selrfpsuser"+$lvl+""+lastRow+"\" > "+htmlUSERS+" </select>";
+		za.innerHTML = "";
 
-	$('#selqosuser'+$lvl+""+lastRow).select2({minimumResultsForSearch: Infinity,width: '100%'});
-	$('#selqoitmtyp'+$lvl+""+lastRow).select2({width: '100%'});
-	$('#selqosutyp'+$lvl+""+lastRow).select2({width: '100%'});
-	$('#selqotrtyp'+$lvl+""+lastRow).select2({width: '100%'});
-
-}
-
-
-function chkqolvlform(){
-	var lastRow = $("#QOAPP1 > tbody > tr").length;
-	var lastRow2 = $("#QOAPP2 > tbody > tr").length;
-	var lastRow3 = $("#QOAPP3 > tbody > tr").length;
-
-	if(lastRow==0){
-
-			$("#AlertMsg").html("");
-			
-			$("#AlertMsg").html("<br><center>Atleast 1 approver is required in Level 1!</center><br>");
-			$("#alertbtnOK").show();
-			$("#AlertModal").modal('show');
-
-
-		return false;
-	}else{
-		$("#tbLQL1count").val(lastRow);     
-		$("#tbLQL2count").val(lastRow2); 
-		$("#tbLQL3count").val(lastRow3); 
-
-		return true;
-
+		$('#selrfpsuser'+$lvl+""+lastRow).select2({minimumResultsForSearch: Infinity,width: '100%'});
 	}
 
-}
+	function chkrfplvlform(){
+		var lastRow = $("#RFPAPP1 > tbody > tr").length;
+		var lastRow2 = $("#RFPAPP2 > tbody > tr").length;
+		var lastRow3 = $("#RFPAPP3 > tbody > tr").length;
 
-function qotransset(typ,id){
+		if(lastRow==0){
+
+				$("#AlertMsg").html("");
+				
+				$("#AlertMsg").html("<br><center>Atleast 1 approver is required in Level 1!</center><br>");
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
+
+
+			return false;
+		}else{
+			$("#tbLRFPL1count").val(lastRow);  
+			$("#tbLRFPL2count").val(lastRow2); 
+			$("#tbLRFPL3count").val(lastRow3); 
+
+			return true;
+
+		}
+
+	}
+	
+	function rfptransset(typ,id){
 	  
-	$("#QOTransID").val(id);
-	$("#QOTransTP").val(typ);
+		$("#RFPTransID").val(id);
+		$("#RFPTransTP").val(typ);
+	
+		$("#frmRFPTrans").submit();
+	}
 
-	$("#frmQOTrans").submit();
-}
 
 	function loadConDets(){
 		$.ajax ({

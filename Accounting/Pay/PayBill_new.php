@@ -26,6 +26,8 @@ foreach($rowdetloc as $row0){
 	}
 	
 }
+
+$_SESSION['myxtoken'] = gen_token();
 		
 ?>
 
@@ -63,7 +65,7 @@ foreach($rowdetloc as $row0){
 		<fieldset>
 				<legend>Bills Payment</legend>
 				
-					<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					<table width="100%" border="0 " cellspacing="0" cellpadding="0">
 						<tr>
 							<td><span style="padding:2px"><b>Paid To:</b></span></td>
 							<td>
@@ -151,7 +153,7 @@ foreach($rowdetloc as $row0){
 							<td><span style="padding:2px"><b>Payment Acct (Cr): </b></span></td>
 								<td>
 								<div class="col-xs-12"  style="padding-left:2px">
-									<div class="col-xs-3 nopadding">
+									<div class="col-xs-3 nopadding">                              
 										<input type="text" id="txtcacctid" class="form-control input-sm" name="txtcacctid" value="" placeholder="Account Code" required>
 									</div>
 									<div class="col-xs-9 nopadwleft">
@@ -172,10 +174,20 @@ foreach($rowdetloc as $row0){
 						<tr>
 							<td><span style="padding:2px" id="paymntrefr"><b>Check No.</b></span></td>
 								<td>
+									
 									<div class="col-xs-12"  style="padding-left:2px">
 
 										<div class="col-xs-7 nopadding" id="paymntrefrdet">
-											<input type='text' class='noref form-control input-sm' name='txtCheckNo' id='txtCheckNo' value="" required placeholder="Check No."/>
+
+											<div class="col-xs-7 nopadding">
+												<input type='text' class='noref form-control input-sm' name='txtCheckNo' id='txtCheckNo' value="" readonly required placeholder="Check No."/>
+												<input type='hidden' name='txtChkBkNo' id='txtChkBkNo' value="" />
+											</div>	
+											<div class="col-xs-5 nopadwleft">
+												<button type="button" class="btn btn-danger btn-sm disabled" name="btnVoid" id="btnVoid" data-toggle="popover" data-content="Void Check" data-trigger="hover" data-placement="top" disabled><i class="fa fa-ban" aria-hidden="true"></i></button> 
+												
+												<button type="button" class="btn btn-warning btn-sm disabled" name="btnreserve" id="btnreserve" data-toggle="popover" data-content="Reserve Check" data-trigger="hover" data-placement="top" disabled><i class="fa fa-calendar-plus-o" aria-hidden="true"></i></button> 	
+											</div>
 										</div>
 
 										<div class="col-xs-7 nopadding" style="display: none" id="payrefothrsdet">
@@ -187,11 +199,6 @@ foreach($rowdetloc as $row0){
 											
 											</div>
 										</div>
-										<!--
-										<div class="col-xs-6 nopadwleft">
-											<button type="button" class="btn btn-danger btn-sm" name="btnVoid" id="btnVoid">VOID CHECK NO. </button> 
-										</div>
-										-->
 									</div>
 
 							</td>
@@ -273,94 +280,154 @@ foreach($rowdetloc as $row0){
 
 	</form>
 
-
-	<!-- DETAILS ONLY -->
-	<div class="modal fade" id="myChkModal" role="dialog" data-keyboard="false" data-backdrop="static">
-			<div class="modal-dialog modal-lg">
-					<div class="modal-content">
+				<!-- DETAILS ONLY -->
+				<div class="modal fade" id="myAPModal" role="dialog" data-keyboard="false" data-backdrop="static">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
 							<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-									<h3 class="modal-title" id="DRListHeader">Bank List</h3>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+								<h3 class="modal-title" id="APListHeader">AP List</h3>
+							</div>
+										
+							<div class="modal-body pre-scrollable">
+										
+								<table name='MyAPVList' id='MyAPVList' class="table table-small table-hoverO" style="cursor:pointer">
+									<thead>
+										<tr>
+											<th><input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
+											<th>AP No.</th>
+											<th>Ref No.</th>
+											<th>Date</th>
+											<th>Acct Code</th>
+											<th>Acct Desc</th>
+											<th>Payable Amount</th>
+										</tr>
+									</thead>
+									<tbody>
+																			
+									</tbody>
+								</table>
+
+							</div> 
+										
+							<div class="modal-footer">
+								<button type="button" id="btnSave2" onClick="InsertSI()" class="btn btn-primary">Insert</button>
+								<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+							</div>        	
+						</div><!-- /.modal-content -->
+					</div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->
+				<!-- End Bootstrap modal -->
+
+				<!-- Banks List -->
+				<div class="modal fade" id="myChkModal" role="dialog" data-keyboard="false" data-backdrop="static">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+								<h3 class="modal-title" id="BanksListHeader">Bank List</h3>
 							</div>
 							
 							<div class="modal-body pre-scrollable">
 							
-														<table name='MyDRDetList' id='MyDRDetList' class="table table-small table-hoverO" style="cursor:pointer">
-														<thead>
-															<tr>
-																<th>Bank Code</th>
-																<th>Bank Name</th>
-																<th>Bank Acct No</th>
-																<th>Checkbook No.</th>
-																<th>Check No.</th>
-															</tr>
-															</thead>
-															<tbody>
-																
-															</tbody>
-														</table>
+								<table name='MyDRDetList' id='MyDRDetList' class="table table-small table-hoverO" style="cursor:pointer">
+									<thead>
+										<tr>
+											<th>Bank Code</th>
+											<th>Bank Name</th>
+											<th>Bank Acct No</th>
+											<th class="bnkchk">Checkbook No.</th>
+											<th class="bnkchk">Check No.</th>
+										</tr>
+									</thead>
+									<tbody>																
+									</tbody>
+								</table>
 							</div>         	
-					</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->
-	<!-- End Bootstrap modal -->
+						</div><!-- /.modal-content -->
+					</div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->
+				<!-- End Banks modal -->
 
-	<!-- DETAILS ONLY -->
-	<div class="modal fade" id="myAPModal" role="dialog" data-keyboard="false" data-backdrop="static">
-			<div class="modal-dialog modal-lg">
-					<div class="modal-content">
+				<!-- override modal -->
+				<div class="modal fade" id="mychkover" role="dialog" data-keyboard="false" data-backdrop="static">
+					<div class="modal-dialog modal-sm">
+						<div class="modal-content">
 							<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-									<h3 class="modal-title" id="APListHeader">AP List</h3>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+								<h3 class="modal-title" id="APListHeader">Authentication</h3>
 							</div>
 							
-							<div class="modal-body pre-scrollable">
-							
-														<table name='MyAPVList' id='MyAPVList' class="table table-small table-hoverO" style="cursor:pointer">
-														<thead>
-															<tr>
-																<th><input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
-																<th>AP No.</th>
-																<th>Ref No.</th>
-																<th>Date</th>
-																<th>Acct Code</th>
-																<th>Acct Desc</th>
-																<th>Payable Amount</th>
-															</tr>
-															</thead>
-															<tbody>
-																
-															</tbody>
-														</table>
+							<div class="modal-body">
+								<form action="index.php" method="post">
+									<div class="form-group">
+										<input type="text" class="form-control" name="authen_id" id="authen_id" placeholder="Username" required value="" autocomplete="off">		
+									</div>
+														
+									<div class="form-group">
+										<input type="password" class="form-control" name="authen_pass" id="authen_pass" placeholder="Password" required  value=""  autocomplete="off">	
+									</div>
+																											
+									<div class="form-group" id="add_err">
+																			
+									</div>
+
+								</form>
 							</div> 
 							
 							<div class="modal-footer">
-										<button type="button" id="btnSave2" onClick="InsertSI()" class="btn btn-primary">Insert</button>
-										<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+								<button type="button" id="btnauthenticate" class="btn btn-primary">Proceed</button>
+								<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
 							</div>        	
-					</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->
-	<!-- End Bootstrap modal -->
+						</div><!-- /.modal-content -->
+					</div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->
+				<!-- End override modal -->
 
+				<!-- reason modal -->
+				<div class="modal fade" id="reasonmod" role="dialog" data-keyboard="false" data-backdrop="static">
+					<div class="modal-dialog modal-sm">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+								<h3 class="modal-title" id="APListHeader">Reason</h3>
 
-	<!-- 1) Alert Modal -->
-	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-			<div class="vertical-alignment-helper">
-					<div class="modal-dialog vertical-align-top">
+								<input type="hidden" name="modevent" id="modevent" value="">
+								<input type="hidden" name="authcode" id="authcode" value="">
+							</div>
+							
+							<div class="modal-body">
+								<div class="form-group">
+									<label for="comment">Reason:</label>
+									<textarea class="form-control" rows="5" id="txtreason"></textarea>
+								</div> 
+							</div> 
+							
+							<div class="modal-footer">
+								<button type="button" id="btnresonok" class="btn btn-primary">Proceed</button>
+								<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+							</div>        	
+						</div><!-- /.modal-content -->
+					</div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->
+				<!-- End override modal -->
+
+				<!-- 1) Alert Modal -->
+				<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+					<div class="vertical-alignment-helper">
+						<div class="modal-dialog vertical-align-top">
 							<div class="modal-content">
 								<div class="alert-modal-danger">
-										<p id="AlertMsg"></p>
-									<p>
-											<center>
-													<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-											</center>
-									</p>
+									<p id="AlertMsg"></p>
+									<p><center>
+										<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+									</center></p>
 								</div>
 							</div>
+						</div>
 					</div>
-			</div>
-	</div>
+				</div>
+				<!-- End Alert modal -->
 
 </body>
 </html>
@@ -387,61 +454,58 @@ foreach($rowdetloc as $row0){
 
 
 $(document).ready(function() {
-    $('.datepick').datetimepicker({
-        format: 'MM/DD/YYYY',
-    });
+  $('.datepick').datetimepicker({
+    format: 'MM/DD/YYYY',
+  });
+
+	$('[data-toggle="popover"]').popover();
 	
-});
-
-
-$(function(){ 
-
 	$('#txtcacct').typeahead({
-	
-		source: function (query, process) {
-			return $.getJSON(
-				'../th_accounts.php',
-				{ query: query },
-				function (data) {
-					newData = [];
-					map = {};
+			source: function (query, process) {
+				return $.getJSON(
+					'../th_accounts.php',
+					{ query: query },
+					function (data) {
+						newData = [];
+						map = {};
+						
+						$.each(data, function(i, object) {
+							map[object.name] = object;
+							newData.push(object.name);
+						});
+						
+						process(newData);
+					}
+				);
+			},
+			updater: function (item) {	
 					
-					$.each(data, function(i, object) {
-						map[object.name] = object;
-						newData.push(object.name);
-					});
-					
-					process(newData);
-				});
-		},
-		updater: function (item) {	
-			  
-				$('#txtcacctid').val(map[item].id);
-				$('#txtnbalance').val(map[item].balance);
-				return item;
-		}
-	
+					$('#txtcacctid').val(map[item].id);
+					$('#txtnbalance').val(map[item].balance);
+					return item;
+			}
+		
 	});
-	
-    $("#allbox").click(function () {
-        if ($("#allbox").is(':checked')) {
-            $("input[name='chkSales[]']").each(function () {
-                $(this).prop("checked", true);
-            });
 
-        } else {
-            $("input[name='chkSales[]']").each(function () {
-                $(this).prop("checked", false);
-            });
-        }
-    });
+	$("#allbox").click(function () {
+		if ($("#allbox").is(':checked')) {
+			$("input[name='chkSales[]']").each(function () {
+				$(this).prop("checked", true);
+			});
+
+		} else {
+			$("input[name='chkSales[]']").each(function () {
+				$(this).prop("checked", false);
+			});
+		}
+	});
 
 	$('#txtcust').typeahead({
-	
+		
 		items: 10,
 		source: function(request, response) {
 			$.ajax({
-				url: "../th_supplier.php",
+				url: "../th_csall.php",
 				dataType: "json",
 				data: {
 					query: $("#txtcust").val(), x: $("#selaptyp").val()
@@ -453,48 +517,110 @@ $(function(){
 		},
 		autoSelect: true,
 		displayText: function (item) {
-			 return '<div style="border-top:1px solid gray; width: 300px"><span>'+ item.id + '</span><br><small>' + item.value + "</small></div>";
+			return '<div style="border-top:1px solid gray; width: 300px"><span><b>' + item.typ + ": </b>"+ item.id + '</span><br><small>' + item.value + "</small></div>";
 		},
 		highlighter: Object,
 		afterSelect: function(item) { 
 			$('#txtcust').val(item.value).change(); 
 			$("#txtcustid").val(item.id);
 			$("#txtpayee").val(item.value);
-			
+				
 			showapvmod(item.id);
 
 		}
 	});
+	
+	$("#btnVoid").on("click", function() { 
 		
-	$("#btnVoid").on("click", function(){
-		var rems = prompt("Please enter your reason...", "");
-		if (rems == null || rems == "") {
-			alert("No remarks entered!\nCheque cannot be void!");
-		}
-		else{
-			//alert( "id="+ $("#txtBankName").val()+"&chkno="+ $("#txtCheckNo").val()+"&rem="+ rems);
-					$.ajax ({
-					url: "PayBill_voidchkno.php",
-					data: { id: $("#txtBank").val(), chkno: $("#txtCheckNo").val(), rem: rems },
-					async: false,
-					success: function( data ) {
-						if(data.trim()!="False"){
-							$("#txtCheckNo").val(data.trim());
-							$("#btnVoid").attr("disabled", false);
-						}
-					}
-					});
+		$("#modevent").val("void");
+		$("#mychkover").modal("show");
+	});
 
+	$("#btnreserve").on("click", function() {
+		$("#modevent").val("reserve");
+		$("#mychkover").modal("show");
+	});
+
+	$("#btnauthenticate").on("click", function() {
+		if($("#authen_pass").val()=="" || $("#authen_id").val()==""){
+			$("#AlertMsg").html("<b>ERROR: </b>Username and Password is required!");
+			$("#alertbtnOK").show();
+			$("#AlertModal").modal('show');
+		}else{
+
+			$.ajax ({
+				url: "PayBill_authenticate.php",
+				data: { id: $("#authen_id").val(), pass: $("#authen_pass").val(), xval: "<?=$_SESSION['myxtoken']?>" },
+				async: false,
+				success: function( data ) {
+ 
+					$("#mychkover").modal("hide");
+
+					if(data.trim()=="True"){
+
+						$("#authcode").val($("#authen_id").val());
+
+						$("#authen_id").val("");
+						$("#authen_pass").val("");
+						$("#reasonmod").modal("show");
+				
+					}else{
+
+						$("#AlertMsg").html("<b>ERROR: </b>Authentication Failed!<br>"+data.trim());
+						$("#alertbtnOK").show();
+						$("#AlertModal").modal('show');
+
+					}
+				}
+			});
 		}
 	});
 
+	$("#btnresonok").on("click", function() {
+
+		if($("#txtreason").val()==""){
+
+			$("#AlertMsg").html("<b>ERROR: </b> Enter a valid reason!<br>");
+			$("#alertbtnOK").show();
+			$("#AlertModal").modal('show');
+
+		}else{
+
+			$.ajax ({
+				url: "PayBill_voidchkno.php",
+				data: { id: $("#txtBank").val(), chkno: $("#txtCheckNo").val(), chkbkno: $("#txtChkBkNo").val(), rem: $("#txtreason").val(), xtyp: $("#modevent").val(), authcode: $("#authcode").val() },
+				async: false,
+				success: function( data ) {
+					if(data.trim()!="False"){
+						$("#txtCheckNo").val(data.trim());
+
+						$("#txtreason").text("");
+						$("#reasonmod").modal("hide");
+					}
+				}
+			});
+
+		}
+
+	});
 
 	$("#btnsearchbank").on("click", function() {
+
+		if($("#selpayment").val()=="cheque"){
+			$(".bnkchk").show();
+
+			$("#BanksListHeader").text("Bank/Cheque No.");
+		}else{
+			$(".bnkchk").hide();
+
+			$("#BanksListHeader").text("Banks");
+		}
 		
 		$('#MyDRDetList tbody').empty();
 		
 			$.ajax({
         url: 'th_banklist.php',
+				data: { id: $("#selpayment").val() },
         dataType: 'json',
 				async:false,
         method: 'post',
@@ -503,13 +629,22 @@ $(function(){
           console.log(data);
           $.each(data,function(index,item){
 
-						$("<tr id=\"bank"+index+"\">").append(
-							$("<td>").text(item.ccode),
-							$("<td>").text(item.cname),
-							$("<td>").text(item.cbankacctno),
-							$("<td>").text(item.ccheckno),
-							$("<td>").text(item.ccurrentcheck)
-						).appendTo("#MyDRDetList tbody");
+						if($("#selpayment").val()=="cheque"){
+							$("<tr id=\"bank"+index+"\">").append(
+								$("<td>").text(item.ccode),
+								$("<td>").text(item.cname),
+								$("<td>").text(item.cbankacctno),
+								$("<td>").text(item.ccheckno),
+								$("<td>").text(item.ccurrentcheck)
+							).appendTo("#MyDRDetList tbody");
+
+						}else{
+							$("<tr id=\"bank"+index+"\">").append(
+								$("<td>").text(item.ccode),
+								$("<td>").text(item.cname),
+								$("<td>").text(item.cbankacctno)
+							).appendTo("#MyDRDetList tbody");
+						}
 								
 						$("#bank"+index).on("click", function() {
 							$("#txtBank").val(item.ccode);
@@ -519,6 +654,27 @@ $(function(){
 
 							if($("#selpayment").val()=="cheque"){
 								$("#txtCheckNo").val(item.ccurrentcheck);
+								$("#txtChkBkNo").val(item.nidentity);
+
+								if(item.ccurrentcheck!==""){
+
+									$("#btnVoid").attr("disabled", false);
+									$("#btnreserve").attr("disabled", false);
+
+									$("#btnVoid").removeClass("disabled");
+									$("#btnreserve").removeClass("disabled");
+
+								}else{
+
+									$("#btnVoid").attr("disabled", true);
+									$("#btnreserve").attr("disabled", true);
+
+									$("#btnVoid").addClass("disabled");
+									$("#btnreserve").addClass("disabled");
+
+								}
+
+
 							}
 									
 							$("#myChkModal").modal("hide");
@@ -536,7 +692,6 @@ $(function(){
 		
 		$("#myChkModal").modal("show");
 	});
-	
 	
 	$("#btnAPVIns").on("click", function() {
 		var custid = $("#txtcustid").val();
@@ -557,6 +712,15 @@ $(function(){
 	});
 
 	$("#selpayment").on("change", function(){  
+
+		$("#txtBank").val("");
+		$("#txtBankName").val("");
+		$("#txtcacctid").val("");
+		$("#txtcacct").val("");
+		$("#txtCheckNo").val("");
+		$("#txtPayRefrnce").val("");
+
+
 		if($(this).val()=="cash"){       //paymntdesc paymntdescdet
 			$("#paymntdesc").html(" ");
 			$("#paymntrefr").html(" ");		
@@ -643,53 +807,54 @@ $(function(){
 		});
 	});
 
-
 });
 		
 function showapvmod(custid){
-					$('#MyAPVList tbody').empty();
-		      //alert('th_APVlist.php?code='+custid);
-					$.ajax({
-          	url: 'th_APVlist.php',
-						data: { code: custid, typ: $("#selpaytype").val() },
-            dataType: 'json',
-						async:false,
-            method: 'post',
-            success: function (data) {
-              console.log(data);
-              $.each(data,function(index,item){
+
+	$('#MyAPVList tbody').empty();
+
+	$.ajax({
+    url: 'th_APVlist.php',
+		data: { code: custid, typ: $("#selpaytype").val() },
+    dataType: 'json',
+		async:false,
+    method: 'post',
+    success: function (data) {
+
+      console.log(data);
+      $.each(data,function(index,item){
 						
-								if(item.ctranno=="NO"){
-									alert("No Available Reference.");
+				if(item.ctranno=="NO"){
+					alert("No Available Reference.");
 									
-										$('#txtcust').val("").change(); 
-										$("#txtcustid").val("");
+					$('#txtcust').val("").change(); 
+					$("#txtcustid").val("");
 
-								}
-								else{
+				}
+				else{
 			
-									$("<tr id=\"APV"+index+"\">").append(
-									$("<td>").html("<input type='checkbox' value='"+index+"' name='chkSales[]'>"), 
-									$("<td>").html(item.ctranno+"<input type='hidden' id='APVtxtno"+index+"' name='APVtxtno"+index+"' value='"+item.ctranno+"'>"),
-									$("<td>").html(item.crefno+"<input type='hidden' id='APVrrno"+index+"' name='APVrrno"+index+"' value='"+item.crefno+"'>"),
-									$("<td>").html(item.dapvdate+"<input type='hidden' id='APVdte"+index+"' name='APVdte"+index+"' value='"+item.dapvdate+"'>"),
-									$("<td>").html(item.cacctno+"<input type='hidden' id='APVacctno"+index+"' name='APVacctno"+index+"' value='"+item.cacctno+"'>"),
-									$("<td>").html(item.cacctdesc+"<input type='hidden' id='APVacctdesc"+index+"' name='APVacctdesc"+index+"' value='"+item.cacctdesc+"'>"),
-									$("<td>").html(item.namount+"<input type='hidden' id='APVamt"+index+"' name='APVamt"+index+"' value='"+item.namount+"'> <input type='hidden' id='APVpayed"+index+"' name='APVpayed"+index+"' value='"+item.napplied+"'>")
-									).appendTo("#MyAPVList tbody");
+					$("<tr id=\"APV"+index+"\">").append(
+						$("<td>").html("<input type='checkbox' value='"+index+"' name='chkSales[]'>"), 
+						$("<td>").html(item.ctranno+"<input type='hidden' id='APVtxtno"+index+"' name='APVtxtno"+index+"' value='"+item.ctranno+"'>"),
+						$("<td>").html(item.crefno+"<input type='hidden' id='APVrrno"+index+"' name='APVrrno"+index+"' value='"+item.crefno+"'>"),
+						$("<td>").html(item.dapvdate+"<input type='hidden' id='APVdte"+index+"' name='APVdte"+index+"' value='"+item.dapvdate+"'>"),
+						$("<td>").html(item.cacctno+"<input type='hidden' id='APVacctno"+index+"' name='APVacctno"+index+"' value='"+item.cacctno+"'>"),
+						$("<td>").html(item.cacctdesc+"<input type='hidden' id='APVacctdesc"+index+"' name='APVacctdesc"+index+"' value='"+item.cacctdesc+"'>"),
+						$("<td>").html(item.namount+"<input type='hidden' id='APVamt"+index+"' name='APVamt"+index+"' value='"+item.namount+"'> <input type='hidden' id='APVpayed"+index+"' name='APVpayed"+index+"' value='"+item.napplied+"'>")
+					).appendTo("#MyAPVList tbody");
 									
-									$("#myAPModal").modal("show");
+					$("#myAPModal").modal("show");
 								
-								}
+				}
 
-              });
+      });
 
-            },
-            error: function (req, status, err) {
-							alert('Something went wrong\nStatus: '+status +"\nError: "+err);
-							console.log('Something went wrong', status, err);
-						}
-          });
+    },
+    error: function (req, status, err) {
+			alert('Something went wrong\nStatus: '+status +"\nError: "+err);
+			console.log('Something went wrong', status, err);
+		}
+  });
 
 }
 
