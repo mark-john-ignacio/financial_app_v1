@@ -17,6 +17,13 @@ require_once "../../Connection/connection_string.php";
 	}
 
 
+	$nRFPvalue = 0;
+	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='RFPMODULE'"); 											
+	if (mysqli_num_rows($result)!=0) {
+		$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
+		$nRFPvalue = $all_course_data['cvalue']; 							
+	}
+
 	$rfplist = array();
 	$sql = "Select capvno from rfp where compcode='$company' and lapproved = 1";
 	$result = mysqli_query ($con, $sql); 
@@ -93,7 +100,7 @@ require_once "../../Connection/connection_string.php";
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 
 			$isyes = "True";
-			if($typ=="apv"){
+			if($typ=="apv" && $nRFPvalue==1){
 				if(!in_array($row['ctranno'], $rfplist)){
 					$isyes = "False";
 				}
