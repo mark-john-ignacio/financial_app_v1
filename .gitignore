@@ -6,4 +6,5 @@ include/deny.php
 Connection/connection_string.php
 Connection/config.php
 Connection/rptconfig.php
-images/cv01.png
+RFP_Files/*
+images/*
