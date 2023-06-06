@@ -7,7 +7,7 @@ require_once "../../Connection/connection_string.php";
 	$company = $_SESSION['companyid'];
 	$cpono = $_POST['x'];
 	
-	$sql = mysqli_query($con,"SELECT a.*,b.Fname,b.Minit,b.Lname,b.cemailadd FROM `rfp_trans_approvals` a left join users b on a.userid=b.Userid where a.compcode='$company' and a.cpono='$cpono' order by a.nlevel");
+	$sql = mysqli_query($con,"SELECT a.*,b.Fname,b.Minit,b.Lname,b.cemailadd FROM `rfp_trans_approvals` a left join users b on a.userid=b.Userid where a.compcode='$company' and a.crfpno='$cpono' order by a.nlevel");
 	
   while($rowxcv=mysqli_fetch_array($sql, MYSQLI_ASSOC)){
 		$rowPOresult[] = $rowxcv;

@@ -11,10 +11,29 @@
 	$company = $_SESSION['companyid'];
 	$ccvno = $_REQUEST['txtctranno'];
 
-	echo $_SERVER['SERVER_NAME'];
+	//echo $_SERVER['SERVER_NAME'];
 
 	$sqlchk = mysqli_query($con,"select a.*, a.capvno, b.cname, e.cname as cbankname from rfp a left join bank e on a.compcode=e.compcode and a.cbankcode=e.ccode left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.ctranno='$ccvno'");
 
+	@$arrfiles = array();
+	@$arrname = array();
+
+	if (file_exists('../../RFP_Files/'.$ccvno.'/')) {
+		$allfiles = scandir('../../RFP_Files/'.$ccvno.'/');
+		$files = array_diff($allfiles, array('.', '..'));
+		foreach($files as $file) {
+
+			$fileNameParts = explode('.', $file);
+			$ext = end($fileNameParts);
+
+			@$arrname[] = array("name" => $file, "ext" => $ext);
+		}
+	
+	}else{
+		echo "NO FILES";
+	}
+
+	//echo json_encode(@$arrname);
 ?>
 
 <!DOCTYPE html>
@@ -52,6 +71,8 @@
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
+
+<input type="hidden" value='<?=json_encode(@$arrname)?>' id="hdnfileconfig"> 
 
 <?php
 	if (mysqli_num_rows($sqlchk)!=0) {
@@ -163,7 +184,7 @@
 							<td>
 								<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
 									<div class='col-xs-8 nopadding'>
-											<input type='text' class="datepick form-control input-sm" placeholder="Pick a Date" name="txtChekDate" id="txtChekDate" value="<?=$dTransdate; ?>" />
+											<input type='text' class="datepick form-control input-sm" placeholder="Pick a Date" name="txtChekDate" id="txtChekDate" value="<?=date("m/d/Y",strtotime($dTransdate));?>" />
 									</div>
 								</div>
 							</td>							
@@ -319,6 +340,48 @@
 
 <script type="text/javascript">
 
+	var fileslist = [];
+	/*
+	var xz = $("#hdnfiles").val();
+	$.each(jQuery.parseJSON(xz), function() { 
+		fileslist.push(xz);
+	});
+	*/
+
+	console.log(fileslist);
+	var filesconfigs = [];
+	var xzconfig = JSON.parse($("#hdnfileconfig").val());
+
+	//alert(xzconfig.length);
+
+	var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
+	var arrimg = new Array("jpg","png","gif","jpeg");
+
+	var xtc = "";
+	for (var i = 0; i < xzconfig.length; i++) {
+    var object = xzconfig[i];
+		//alert(object.ext + " : " + object.name);
+		fileslist.push("https://<?=$_SERVER['HTTP_HOST']?>/RFP_Files/<?=$ccvno?>/" + object.name)
+
+		if(jQuery.inArray(object.ext, arroffice) !== -1){
+			xtc = "office";
+		}else if(jQuery.inArray(object.ext, arrimg) !== -1){
+			xtc = "image";
+		}else if(object.ext=="txt"){
+			xtc = "text";
+		}else{
+			xtc = object.ext;
+		}
+
+		filesconfigs.push({
+			type : xtc, 
+			caption : object.name,
+			width : "120px",
+			url: "th_filedelete.php?id="+object.name+"&code=<?=$ccvno?>", 
+			key: i + 1
+		});
+	}
+
 	$(document).keydown(function(e) {	 
 		
 		if(e.keyCode == 112) { //F1
@@ -360,21 +423,42 @@
 	});
 
 	$(document).ready(function() {
-		$('.datepick').datetimepicker({
+		$('#txtChekDate').datetimepicker({
 			format: 'MM/DD/YYYY',
 		});
 
-		$("#file-0").fileinput({
-			theme: 'fa5',
-			uploadUrl: '#',
-			showUpload: false,
-			showClose: false,
-			allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
-			overwriteInitial: false,
-			maxFileSize:2000,
-			maxFileCount: 5,
-			fileActionSettings: { showUpload: false, showDrag: false,}
-		});
+
+		if(fileslist.length>0){
+			$("#file-0").fileinput({
+				theme: 'fa5',
+				uploadUrl: '#',
+				showUpload: false,
+				showClose: false,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:2000,
+				maxFileCount: 5,
+				fileActionSettings: { showUpload: false, showDrag: false, },
+				initialPreview: fileslist,
+				initialPreviewAsData: true,
+				initialPreviewFileType: 'image',
+				initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/RFP_Files/<?=$ccvno?>/{filename}',
+				initialPreviewConfig: filesconfigs
+			});
+		}else{
+			$("#file-0").fileinput({
+				theme: 'fa5',
+				uploadUrl: '#',
+				showUpload: false,
+				showClose: false,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:2000,
+				maxFileCount: 5,
+				fileActionSettings: { showUpload: false, showDrag: false, }
+			});
+		}
+
 
 		$('#txtcust').typeahead({
 			
@@ -553,6 +637,7 @@
 		$("#btnNew").attr("disabled", false);
 		$("#btnPrint").attr("disabled", false);
 		$("#btnEdit").attr("disabled", false);
+		$(".kv-file-zoom").attr("disabled", false);
 
 	}
 

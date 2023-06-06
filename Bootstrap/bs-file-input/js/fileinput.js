@@ -1,5 +1,5 @@
 /*!
- * bootstrap-fileinput v5.5.1
+ * bootstrap-fileinput v5.5.3
  * http://plugins.krajee.com/file-input
  *
  * Author: Kartik Visweswaran
@@ -445,7 +445,8 @@
             }
             return str.match(/^\s*<\?xml/i) && (str.match(/<!DOCTYPE svg/i) || str.match(/<svg/i));
         },
-        getMimeType: function (signature, contents, type) {
+        getMimeType: function (sign, contents, type) {
+            var signature = sign || "";
             switch (signature) {
                 case 'ffd8ffe0':
                 case 'ffd8ffe1':
@@ -6233,8 +6234,12 @@
         var args = Array.apply(null, arguments), retvals = [];
         args.shift();
         this.each(function () {
-            var self = $(this), data = self.data('fileinput'), options = typeof option === 'object' && option,
-                theme = options.theme || self.data('theme'), l = {}, t = {},
+            var options = {};
+            if (typeof option === 'object') {
+                options = $.extend(true, {}, $.fn.fileinput.defaults, option);
+            }
+            var self = $(this), data = self.data('fileinput'),
+                theme = options.theme || self.data('theme') || $.fn.fileinput.defaults.theme, l = {}, t = {},
                 lang = options.language || self.data('language') || $.fn.fileinput.defaults.language || 'en', opt;
             if (!data) {
                 if (theme) {

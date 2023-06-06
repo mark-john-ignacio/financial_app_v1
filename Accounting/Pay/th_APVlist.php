@@ -15,6 +15,15 @@ require_once "../../Connection/connection_string.php";
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 		$disreg[] = $row['cacctno'];
 	}
+
+
+	$rfplist = array();
+	$sql = "Select capvno from rfp where compcode='$company' and lapproved = 1";
+	$result = mysqli_query ($con, $sql); 
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+		$rfplist[] = $row['capvno'];
+	}
+
 	
 	if($typ=="apv"){
 
@@ -82,30 +91,41 @@ require_once "../../Connection/connection_string.php";
 	//$json = [];
 	if(mysqli_num_rows($result)!=0){
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+
+			$isyes = "True";
+			if($typ=="apv"){
+				if(!in_array($row['ctranno'], $rfplist)){
+					$isyes = "False";
+				}
+			}
+
+			if($isyes=="True"){
 			
-			$remain = floatval($row['namount']) - floatval($row['napplied']);
+				$remain = floatval($row['namount']) - floatval($row['napplied']);
 
-			if($remain>0){
-	
-			 $json['ctranno'] = $row['ctranno'];
-			 $json['crefno'] = $row['crefno'];
-			 $json['dapvdate'] = $row['dapvdate'];
-			 $json['namount'] = number_format($row['namount'],2);
-			 $json['napplied'] = $row['napplied'];
+				if($remain>0){
+		
+					$json['ctranno'] = $row['ctranno'];
+					$json['crefno'] = $row['crefno'];
+					$json['dapvdate'] = $row['dapvdate'];
+					$json['namount'] = number_format($row['namount'],2);
+					$json['napplied'] = $row['napplied'];
 
-			 if($typ=="apv"){
-			 	$json['cacctno'] = $row['cacctno'];
-			 	$json['cacctdesc'] = $row['cacctdesc'];
-			 }elseif($typ=="po"){
-					//get default acct code for advance payments
-					$readvcode = mysqli_query ($con, "Select A.cacctno, B.cacctdesc From accounts_default A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid Where A.compcode='$company' and A.ccode='PO_ADV_PAYMENT'");
-					while($rowadv = mysqli_fetch_array($readvcode, MYSQLI_ASSOC)){
-						$json['cacctno'] = $rowadv['cacctno'];
-			 			$json['cacctdesc'] = $rowadv['cacctdesc'];
+					if($typ=="apv"){
+						$json['cacctno'] = $row['cacctno'];
+						$json['cacctdesc'] = $row['cacctdesc'];
+					}elseif($typ=="po"){
+							//get default acct code for advance payments
+							$readvcode = mysqli_query ($con, "Select A.cacctno, B.cacctdesc From accounts_default A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid Where A.compcode='$company' and A.ccode='PO_ADV_PAYMENT'");
+							while($rowadv = mysqli_fetch_array($readvcode, MYSQLI_ASSOC)){
+								$json['cacctno'] = $rowadv['cacctno'];
+								$json['cacctdesc'] = $rowadv['cacctdesc'];
+							}
 					}
-			 }
-			 
-			 $json2[] = $json;
+					
+					$json2[] = $json;
+
+				}
 
 			}
 	

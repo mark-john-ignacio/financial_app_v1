@@ -146,6 +146,7 @@
 
 				//echo intval($cntfinalall)." - ".intval($cntfinalapp);
 			//check if ung nakalogin ay isa sa mga mag aapprove.
+
 			if(in_array(trim($preparedby),@$arrapprovers)){
 
 				if (!mysqli_query($con,"Update rfp_trans_approvals set lapproved=1,ddatetimeapp='".date('Y-m-d H:i:s')."' where compcode='$company' and crfpno='$tranno' and userid='$preparedby'")){
@@ -161,7 +162,7 @@
 
 					if((intval($cntfinalall) - intval($cntfinalapp)) == 1){ //pag 1 meaning last approver na sya.. set to posted na ang transaction
 
-						mysqli_query($con,"Update rfp set lapproved=1 where compcode='$company' and crfpno='$tranno'");
+						mysqli_query($con,"Update rfp set lapproved=1 where compcode='$company' and ctranno='$tranno'");
 
 					}else{ //pag nde pa send to next approver
 
@@ -313,7 +314,7 @@
 
 		if($status !== "False"){
 
-			if (!mysqli_query($con,"Update rfp set lsent=1, ddatetimesent='".date('Y-m-d H:i:s')."', csentby='".$preparedby."' where compcode='$company' and crfpno='$tranno'")){
+			if (!mysqli_query($con,"Update rfp set lsent=1, ddatetimesent='".date('Y-m-d H:i:s')."', csentby='".$preparedby."' where compcode='$company' and ctranno='$tranno'")){
 				$msgz = "<b>ERROR: </b>There's a problem sending your transaction!";
 				$status = "False";
 			}else{
