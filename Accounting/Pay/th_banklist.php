@@ -7,11 +7,27 @@
 	$company = $_SESSION['companyid'];
 
 	if($_REQUEST['id']=="cheque"){	
-	
-		$result = mysqli_query ($con, "SELECT B.nidentity, A.ccode, A.cname, A.cbankacctno, IFNULL(B.ccheckno,'') as ccheckno, IFNULL(B.ccurrentcheck, '') as ccurrentcheck, A.cacctno, C.cacctdesc
+		
+		$mxsql = "Select A.nidentity, A.ccode, A.cname, A.cbankacctno, A.ccheckno, 
+		A.ccurrentcheck, A.cacctno, A.cacctdesc
+		From (
+		SELECT B.nidentity, A.ccode, A.cname, A.cbankacctno, IFNULL(B.ccheckno,'') as ccheckno, 
+		IFNULL(B.ccurrentcheck, '') as ccurrentcheck, A.cacctno, C.cacctdesc
 		FROM `bank` A left join `bank_check` B on A.compcode=B.compcode and A.ccode=B.ccode
 		left join `accounts` C on A.compcode=C.compcode and A.cacctno=C.cacctid
-		WHERE A.compcode='$company'"); 
+		WHERE A.compcode='$company'
+		
+		UNION ALL
+		
+		SELECT B.nidentity, A.ccode, A.cname, A.cbankacctno, 'reserved' as ccheckno, 
+		IFNULL(B.ccheckno, '') as ccurrentcheck, A.cacctno, C.cacctdesc
+		FROM `bank` A
+		right join `bank_reserves` B on A.compcode=B.compcode and A.ccode=B.cbankcode
+		left join `accounts` C on A.compcode=C.compcode and A.cacctno=C.cacctid
+		WHERE A.compcode='$company' and lused = 0 
+		) A Where A.ccurrentcheck <> '' Order By A.cname";
+
+		$result = mysqli_query ($con, $mxsql); 
 
 		// and A.ccurrentcheck < A.ccheckto
 
