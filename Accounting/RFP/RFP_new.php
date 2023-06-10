@@ -115,7 +115,7 @@ include('../../include/access2.php');
 						<tr>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>
-							<td><span style="padding:2px" id="chkdate"><b>Trans Date:</b></span></td>
+							<td><span style="padding:2px" id="chkdate"><b>Due Date:</b></span></td>
 							<td>
 								<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
 									<div class='col-xs-8 nopadding'>

@@ -1115,6 +1115,10 @@ xmlhttp.send();
           <br>
           <label><input type="checkbox" name="chkAcc[]" value="SODRDisc.php" id="chkBox45" <?=(in_array("SODRDisc.php",@$arrpgist)) ? "checked" : "";?>>
           Discrepancy Report - SO vs DR</label>
+          <br>
+          <label><input type="checkbox" name="chkAcc[]" value="ARAgeing.php" id="chkBox164" <?=(in_array("ARAgeing.php",@$arrpgist)) ? "checked" : "";?>>
+          AR Ageing</label>
+          <br>
        </div>
        
        <br>
@@ -1145,23 +1149,21 @@ xmlhttp.send();
           <br>
           <label><input type="checkbox" name="chkAcc[]" value="PurchMonitoring.php" id="chkBox45" <?=(in_array("PurchMonitoring.php",@$arrpgist)) ? "checked" : "";?>>
           PO Price Monitoring</label>
+          <br>
+          <label><input type="checkbox" name="chkAcc[]" value="APAgeing.php" id="chkBox168" <?=(in_array("APAgeing.php",@$arrpgist)) ? "checked" : "";?>>
+          AP Ageing Report</label>
+          <br>
        </div>
 
        <br>
-       <b><u><i>Financials</i></u></b><br>
+       <b><u><i>GL Reports</i></u></b><br>
         <div style="padding-left:10px;"> 
         <label><input type="checkbox" name="chkAcc[]" value="SalesReg.php" id="chkBox41" <?=(in_array("SalesReg.php",@$arrpgist)) ? "checked" : "";?>>
           Sales Register</label>
           <br>
           <label><input type="checkbox" name="chkAcc[]" value="CashBook.php" id="chkBox163" <?=(in_array("CashBook.php",@$arrpgist)) ? "checked" : "";?>>
           Cash Receipts Journal</label>
-          <br>
-          <label><input type="checkbox" name="chkAcc[]" value="MonthlyVAT.php" id="chkBox163" <?=(in_array("MonthlyVAT.php",@$arrpgist)) ? "checked" : "";?>>
-          BIR - Monthly VAT</label>
-          <br>
-          <label><input type="checkbox" name="chkAcc[]" value="ARAgeing.php" id="chkBox164" <?=(in_array("ARAgeing.php",@$arrpgist)) ? "checked" : "";?>>
-          AR Ageing</label>
-          <br>
+          <br>         
           <label><input type="checkbox" name="chkAcc[]" value="PurchJourn.php" id="chkBox166" <?=(in_array("PurchJourn.php",@$arrpgist)) ? "checked" : "";?>>
           Purchase Journal</label>
           <br>
@@ -1170,13 +1172,7 @@ xmlhttp.send();
           <br>
           <label><input type="checkbox" name="chkAcc[]" value="CDJ.php" id="chkBox168" <?=(in_array("CDJ.php",@$arrpgist)) ? "checked" : "";?>>
           Cash Disbursement Journal</label>
-          <br>
-          <label><input type="checkbox" name="chkAcc[]" value="Monthly_IVAT.php" id="chkBox168" <?=(in_array("Monthly_IVAT.php",@$arrpgist)) ? "checked" : "";?>>
-          Monthly Input VAT and W/Tax Report</label>
-          <br>
-          <label><input type="checkbox" name="chkAcc[]" value="APAgeing.php" id="chkBox168" <?=(in_array("APAgeing.php",@$arrpgist)) ? "checked" : "";?>>
-          AP Ageing Report</label>
-          <br>
+          <br>         
           <label><input type="checkbox" name="chkAcc[]" value="GJournal.php" id="chkBox169" <?=(in_array("GJournal.php",@$arrpgist)) ? "checked" : "";?>>
           General Journal</label>
           <br>
@@ -1185,9 +1181,19 @@ xmlhttp.send();
           <br>
           <label><input type="checkbox" name="chkAcc[]" value="TBal.php" id="chkBox169" <?=(in_array("TBal.php",@$arrpgist)) ? "checked" : "";?>>
           Trial Balance</label>
+          
         </div>
 
-
+        <br>
+        <b><u><i>BIR Reports</i></u></b><br>
+          <label><input type="checkbox" name="chkAcc[]" value="MonthlyVAT.php" id="chkBox163" <?=(in_array("MonthlyVAT.php",@$arrpgist)) ? "checked" : "";?>>
+          BIR - Monthly Output VAT</label>
+          <br>
+          <label><input type="checkbox" name="chkAcc[]" value="Monthly_IVAT.php" id="chkBox168" <?=(in_array("Monthly_IVAT.php",@$arrpgist)) ? "checked" : "";?>>
+          Monthly Input VAT and W/Tax Report</label>
+          <br>
+          <label><input type="checkbox" name="chkAcc[]" value="bir2307.php" id="chkBox168" <?=(in_array("bir2307.php",@$arrpgist)) ? "checked" : "";?>>
+          BIR Form - 2307</label>
          <br>
          <b><u><i>Inventory</i></u></b><br>
          <div style="padding-left:10px;"> 

@@ -180,7 +180,7 @@
 						<tr>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>
-							<td><span style="padding:2px" id="chkdate"><b>Trans Date:</b></span></td>
+							<td><span style="padding:2px" id="chkdate"><b>Due Date:</b></span></td>
 							<td>
 								<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
 									<div class='col-xs-8 nopadding'>
@@ -212,7 +212,7 @@
 												Undo Edit<br>(CTRL+Z)
 											</button>
 									
-											<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk();" id="btnPrint" name="btnPrint">
+											<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?=$ccvno?>');" id="btnPrint" name="btnPrint">
 												Print<br>(F4)
 											</button>
 								    
@@ -335,6 +335,21 @@
 				</div>
 				<!-- End Alert modal -->
 
+				<!-- PRINT OUT MODAL-->
+				<div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
+						<div class="modal-dialog modal-lg">
+								<div class="modal-contnorad">   
+										<div class="modal-bodylong">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
+								
+											<iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:8.5in; display:block; margin:0px; padding:0px; border:0px"></iframe>
+						
+											
+							</div>
+								</div><!-- /.modal-content -->
+						</div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->
+
 </body>
 </html>
 
@@ -405,7 +420,7 @@
 		else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
 			if($("#btnPrint").is(":disabled")==false){
 				e.preventDefault();
-				printchk();
+				printchk('<?=$ccvno?>');
 			}
 		}
 		else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
@@ -671,4 +686,20 @@
 
 	}
 
+	function printchk(x){
+		if(document.getElementById("hdncancel").value==1){	
+			document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
+			document.getElementById("statmsgz").style.color = "#FF0000";
+		}
+		else{
+
+				var url = "RFP_print.php?x="+x;
+				
+				$("#myprintframe").attr('src',url);
+
+
+				$("#PrintModal").modal('show');
+
+		}
+	}
 </script>

@@ -88,32 +88,32 @@ $(function(){
 
 	//proddesc searching	
 	
-$('#txtCust').typeahead({
-	autoSelect: true,
-    source: function(request, response) {
-        $.ajax({
-            url: "th_supplier.php",
-            dataType: "json",
-            data: {
-                query: $("#txtCust").val()
-            },
-            success: function (data) {
-                response(data);
-            }
-        });
-    },
-    displayText: function (item) {
-        return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
-    },
-	highlighter: Object,
-	afterSelect: function(item) { 					
-					
-		$('#txtCust').val(item.value).change(); 
-		$("#txtCustID").val(item.id);
-		
-	}
+    $('#txtCust').typeahead({
+        autoSelect: true,
+        source: function(request, response) {
+            $.ajax({
+                url: "th_supplier.php",
+                dataType: "json",
+                data: {
+                    query: $("#txtCust").val()
+                },
+                success: function (data) {
+                    response(data);
+                }
+            });
+        },
+        displayText: function (item) {
+            return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+        },
+        highlighter: Object,
+        afterSelect: function(item) { 					
+                        
+            $('#txtCust').val(item.value).change(); 
+            $("#txtCustID").val(item.id);
+            
+        }
 
-});
+    });
 
 });
 

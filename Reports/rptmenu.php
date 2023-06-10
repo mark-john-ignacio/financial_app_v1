@@ -211,6 +211,12 @@ function resizeIframe(obj) {
 											<a href="" onClick="setI('A','Monthly_IVat.php')" data-toggle="tab">
 											<i class="fa fa-book"></i> Monthly Input VAT and W/Tax </a>
 										</li>
+										<!--
+											<li>
+												<a href="" onClick="setI('A','bir2307.php')" data-toggle="tab">
+												<i class="fa fa-book"></i> BIR FORM - 2307 </a>
+											</li>
+										-->
 									</ul>
 								</div>
 
