@@ -446,6 +446,7 @@ function numberTowords($num)
 
 					if (mysqli_num_rows($sqdts)!=0) {
 						while($row = mysqli_fetch_array($sqdts, MYSQLI_ASSOC)){
+
 							if(intval($row['nlevel'])==1){
 								if($row['lapproved']==1){
 									$unapp = "<img src = '".$row['cusersign']."?x=".time()."' >";
@@ -456,17 +457,17 @@ function numberTowords($num)
 
 							if(intval($row['nlevel'])==2){
 								if($row['lapproved']==1){
-									$unapp = "<img src = '".$row['cusersign']."?x=".time()."' >";
+									$dalapp = "<img src = '".$row['cusersign']."?x=".time()."' >";
 								}else{
-									$unapp  = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname']."<br>".$row['cdesignation'];
+									$dalapp  = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname']."<br>".$row['cdesignation'];
 								}
 							}
 
 							if(intval($row['nlevel'])==3){
 								if($row['lapproved']==1){
-									$unapp = "<img src = '".$row['cusersign']."?x=".time()."' >";
+									$tatpp = "<img src = '".$row['cusersign']."?x=".time()."' >";
 								}else{
-									$unapp  = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname']."<br>".$row['cdesignation'];
+									$tatpp  = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname']."<br>".$row['cdesignation'];
 								}
 							}
 						}
