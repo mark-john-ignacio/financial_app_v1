@@ -15,7 +15,7 @@ require_once "../../Connection/connection_string.php";
 		}
 	}
 
-		$mysql = "Select A.cacctno, A.crefrr, a.capvno, DATE_FORMAT(a.dapvdate,'%m/%d/%Y') as dapvdate, a.namount, a.nowed, a.napplied, IFNULL(b.npayed,0) as npayed, c.cacctdesc
+		$mysql = "Select A.cacctno, A.crefrr, a.capvno, DATE_FORMAT(a.dapvdate,'%m/%d/%Y') as dapvdate, a.namount, a.nowed, a.napplied, IFNULL(b.npayed,0) as npayed, c.cacctdesc, a.newtamt
 		From paybill_t a
 		left join
 			(
@@ -44,7 +44,8 @@ require_once "../../Connection/connection_string.php";
 			 $json['namount'] = $row['namount'];
 			 $json['nowed'] = $row['nowed'];
 			 $json['napplied'] = $row['napplied'];
-			 $json['npayed'] = $row['npayed'];
+			 $json['npayed'] = $row['npayed']; 
+			 $json['newtamt'] = $row['newtamt']; 
 			 $json2[] = $json;
 	
 		}

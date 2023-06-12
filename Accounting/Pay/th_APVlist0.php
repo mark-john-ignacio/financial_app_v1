@@ -6,6 +6,7 @@ require_once "../../Connection/connection_string.php";
 
 	$company = $_SESSION['companyid'];
 	$code = $_REQUEST['code'];
+	$typ = $_REQUEST['typ'];
 
 	//ewt and vat accts PURCH_VAT EWTPAY
 	$disreg = array();
@@ -27,14 +28,17 @@ require_once "../../Connection/connection_string.php";
 		$nRFPvalue = $all_course_data['cvalue']; 							
 	}
 
-		$rfplist = array();
-		$sql = "Select capvno from rfp where compcode='$company' and lapproved = 1";
-		$result = mysqli_query ($con, $sql); 
-		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-			$rfplist[] = $row['capvno'];
-		}
+	$rfplist = array();
+	$sql = "Select capvno from rfp where compcode='$company' and lapproved = 1";
+	$result = mysqli_query ($con, $sql); 
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+		$rfplist[] = $row['capvno'];
+	}
 
-		$sql="SELECT A.ctranno, B.crefno, DATE_FORMAT(A.dapvdate,'%m/%d/%Y') as dapvdate, sum(B.ncredit) as namount, IFNULL(sum(D.napplied),0) as napplied, IFNULL(sum(B.newtamt),0) as newtamt, B.cacctno, C.cacctdesc
+	
+	if($typ=="apv"){
+
+		$sql="SELECT A.ctranno, B.crefno, DATE_FORMAT(A.dapvdate,'%m/%d/%Y') as dapvdate, sum(B.ncredit) as namount, IFNULL(sum(D.napplied),0) as napplied, B.cacctno, C.cacctdesc
 		FROM `apv` A
 		left join 
 			(
@@ -63,6 +67,21 @@ require_once "../../Connection/connection_string.php";
 		where A.compcode='$company' and A.lapproved=1 and B.ncredit <> 0 and C.ccategory='LIABILITIES' and A.ccode='$code'
 		group by B.cacctno,B.crefno,A.ctranno,A.dapvdate order by A.dapvdate";
 
+	}elseif($typ=="po"){
+
+		$sql = "SELECT A.cpono as ctranno, '' as crefno, DATE_FORMAT(A.ddate,'%m/%d/%Y') as dapvdate, sum(A.ndueamt) as namount, IFNULL(sum(D.napplied),0) as napplied, '' as cacctno, '' as cacctdesc
+		FROM `purchase` A 
+		left join 
+			(	
+				select a.napplied, a.capvno, a.ctranno
+				from paybill_t a
+				left join paybill b on a.ctranno=b.ctranno
+				where b.lcancelled=0
+			) D on A.cpono=D.capvno
+		where A.compcode='$company' and A.ladvancepay = 1 and A.lapproved=1 and A.ccode='$code'
+		order by A.ddate";
+	}
+	
 	$result = mysqli_query ($con, $sql); 
 
 	$json = array();
@@ -71,7 +90,7 @@ require_once "../../Connection/connection_string.php";
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 
 			$isyes = "True";
-			if($nRFPvalue==1){
+			if($typ=="apv" && $nRFPvalue==1){
 				if(!in_array($row['ctranno'], $rfplist)){
 					$isyes = "False";
 				}
@@ -88,9 +107,19 @@ require_once "../../Connection/connection_string.php";
 					$json['dapvdate'] = $row['dapvdate'];
 					$json['namount'] = number_format($row['namount'],2);
 					$json['napplied'] = $row['napplied'];
-					$json['cacctno'] = $row['cacctno'];
-					$json['cacctdesc'] = $row['cacctdesc']; 
-					$json['newtamt'] = $row['newtamt'];		
+
+					if($typ=="apv"){
+						$json['cacctno'] = $row['cacctno'];
+						$json['cacctdesc'] = $row['cacctdesc'];
+					}elseif($typ=="po"){
+							//get default acct code for advance payments
+							$readvcode = mysqli_query ($con, "Select A.cacctno, B.cacctdesc From accounts_default A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid Where A.compcode='$company' and A.ccode='PO_ADV_PAYMENT'");
+							while($rowadv = mysqli_fetch_array($readvcode, MYSQLI_ASSOC)){
+								$json['cacctno'] = $rowadv['cacctno'];
+								$json['cacctdesc'] = $rowadv['cacctdesc'];
+							}
+					}
+					
 					$json2[] = $json;
 
 				}

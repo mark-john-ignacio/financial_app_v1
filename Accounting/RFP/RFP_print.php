@@ -436,11 +436,48 @@ function numberTowords($num)
           <th width="25%"> Approved By </th>
         </tr>
 
+				<?php
+
+					$unapp = "";
+					$dalapp = "";
+					$tatpp = "";
+
+					$sqdts = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname, c.cdesignation, c.cusersign from rfp_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.crfpno = '$csalesno' order by a.nlevel");
+
+					if (mysqli_num_rows($sqdts)!=0) {
+						while($row = mysqli_fetch_array($sqdts, MYSQLI_ASSOC)){
+							if(intval($row['nlevel'])==1){
+								if($row['lapproved']==1){
+									$unapp = "<img src = '".$row['cusersign']."?x=".time()."' >";
+								}else{
+									$unapp  = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname']."<br>".$row['cdesignation'];
+								}
+							}
+
+							if(intval($row['nlevel'])==2){
+								if($row['lapproved']==1){
+									$unapp = "<img src = '".$row['cusersign']."?x=".time()."' >";
+								}else{
+									$unapp  = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname']."<br>".$row['cdesignation'];
+								}
+							}
+
+							if(intval($row['nlevel'])==3){
+								if($row['lapproved']==1){
+									$unapp = "<img src = '".$row['cusersign']."?x=".time()."' >";
+								}else{
+									$unapp  = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname']."<br>".$row['cdesignation'];
+								}
+							}
+						}
+					}
+				?>
+
         <tr>
           <td align="center" style="padding-top: 50px"> <?php echo $cpreparedBy;?><br><?=$cpreparedByDesig?> </td>
-          <td> </td>
-          <td> </td>
-          <td> </td>
+          <td align="center" style="padding-top: 50px"> <?=$unapp?> </td>
+          <td align="center" style="padding-top: 50px"> <?=$dalapp?> </td>
+					<td align="center" style="padding-top: 50px"> <?=$tatpp?> </td>
         </tr>
       </table>            
     </td>

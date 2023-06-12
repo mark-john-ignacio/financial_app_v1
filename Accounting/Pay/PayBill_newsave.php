@@ -55,7 +55,8 @@ else {
 
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 	$paymeth = mysqli_real_escape_string($con, $_POST['selpayment']); 
-	$paytype = mysqli_real_escape_string($con, $_POST['selpaytype']); 
+	//$paytype = mysqli_real_escape_string($con, $_POST['selpaytype']); 
+	$paytype = "apv";
 	$particulars = mysqli_real_escape_string($con, $_POST['txtparticulars']);
 
 
@@ -106,7 +107,8 @@ else {
 		$napplied = mysqli_real_escape_string($con, $_POST['nApplied'.$z]);
 		$napplied = str_replace( ',', '', $napplied );
 
-		$caccno = mysqli_real_escape_string($con, $_POST['cacctno'.$z]);
+		$caccno = mysqli_real_escape_string($con, $_POST['cacctno'.$z]); 
+		$hdnewt = mysqli_real_escape_string($con, $_POST['napvewt'.$z]); 
 
 		if($napplied<>0){
 			
@@ -115,7 +117,7 @@ else {
 			$refcidenttran = $cSINo."P".$cnt;
 		
 			
-			if (!mysqli_query($con, "INSERT INTO `paybill_t`(`compcode`, `cidentity`, `nident`, `ctranno`, `crefrr`, `capvno`, `dapvdate`, `namount`, `ndiscount`, `nowed`, `napplied`, `cacctno`) values('$company', '$refcidenttran', '$cnt', '$cSINo', '$crefrr', '$capvno', STR_TO_DATE('$dapvdate', '%m/%d/%Y'), $namnt, $ndiscount, $nowed, $napplied, '$caccno')")) {
+			if (!mysqli_query($con, "INSERT INTO `paybill_t`(`compcode`, `cidentity`, `nident`, `ctranno`, `crefrr`, `capvno`, `dapvdate`, `namount`, `ndiscount`, `nowed`, `napplied`, `cacctno`, `newtamt`) values('$company', '$refcidenttran', '$cnt', '$cSINo', '$crefrr', '$capvno', STR_TO_DATE('$dapvdate', '%m/%d/%Y'), $namnt, $ndiscount, $nowed, $napplied, '$caccno', $hdnewt)")) {
 			printf("Errormessage: %s\n", mysqli_error($con));
 			} 
 

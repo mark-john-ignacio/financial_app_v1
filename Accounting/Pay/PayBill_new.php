@@ -110,20 +110,22 @@ $_SESSION['myxtoken'] = gen_token();
 									<div class="col-xs-3" style="padding:2px !important">
 										&nbsp;&nbsp;&nbsp;<b>Payment Type</b>
 									</div>
-									<div class="col-xs-4 nopadding">
-										<select id="selpaytype" name="selpaytype" class="form-control input-sm selectpicker">
-											<option value="apv">AP Voucher</option>
-											<option value="po">PO Pre-Payment</option>
-										</select>
-									</div>
+									<!--
+										<div class="col-xs-4 nopadding">
+											<select id="selpaytype" name="selpaytype" class="form-control input-sm selectpicker">
+												<option value="apv">AP Voucher</option>
+												<option value="po">PO Pre-Payment</option>
+											</select>
+										</div>
+									-->
 							</td>
 							<td><span style="padding:2px"><b>Particulars:</b></span></td>
 							<td rowspan="2">
-							<div class="col-xs-12"  style="padding-bottom:2px">
+								<div class="col-xs-12"  style="padding-bottom:2px">
 									<div class='col-xs-12 nopadding'>
 										<textarea class="form-control" rows="2" id="txtparticulars" name="txtparticulars"></textarea>
 									</div>
-							</div>
+								</div>
 							</td>
 						</tr>
 						<tr>
@@ -698,6 +700,7 @@ $(document).ready(function() {
 		showapvmod(custid)
 	});
 
+	/*
 	$("#selpaytype").on("change", function() {
 
 		$('#MyTable > tbody').empty();
@@ -710,6 +713,7 @@ $(document).ready(function() {
 			$("#hdnRefTitle").text("PO No");
 		}
 	});
+	*/
 
 	$("#selpayment").on("change", function(){  
 
@@ -811,11 +815,11 @@ $(document).ready(function() {
 		
 function showapvmod(custid){
 
-	$('#MyAPVList tbody').empty();
+	$('#MyAPVList tbody').empty(); /* , typ: $("#selpaytype").val()  */
 
 	$.ajax({
     url: 'th_APVlist.php',
-		data: { code: custid, typ: $("#selpaytype").val() },
+		data: { code: custid},
     dataType: 'json',
 		async:false,
     method: 'post',
@@ -835,7 +839,7 @@ function showapvmod(custid){
 			
 					$("<tr id=\"APV"+index+"\">").append(
 						$("<td>").html("<input type='checkbox' value='"+index+"' name='chkSales[]'>"), 
-						$("<td>").html(item.ctranno+"<input type='hidden' id='APVtxtno"+index+"' name='APVtxtno"+index+"' value='"+item.ctranno+"'>"),
+						$("<td>").html(item.ctranno+"<input type='hidden' id='APVtxtno"+index+"' name='APVtxtno"+index+"' value='"+item.ctranno+"'> <input type='hidden' id='hdnAPVewt"+index+"' name='hdnAPVewt"+index+"' value='"+item.newtamt+"'>"),
 						$("<td>").html(item.crefno+"<input type='hidden' id='APVrrno"+index+"' name='APVrrno"+index+"' value='"+item.crefno+"'>"),
 						$("<td>").html(item.dapvdate+"<input type='hidden' id='APVdte"+index+"' name='APVdte"+index+"' value='"+item.dapvdate+"'>"),
 						$("<td>").html(item.cacctno+"<input type='hidden' id='APVacctno"+index+"' name='APVacctno"+index+"' value='"+item.cacctno+"'>"),
@@ -871,11 +875,12 @@ function InsertSI(){
 		  var c = $("#APVacctno"+xyz).val();
 		  var d = $("#APVamt"+xyz).val().replace(/,/g,'');
 		  var e = $("#APVpayed"+xyz).val();
-			var f = $("#APVacctdesc"+xyz).val();
-		
+			var f = $("#APVacctdesc"+xyz).val(); 
+			var g = $("#hdnAPVewt"+xyz).val(); 
+
 		 var owed = parseFloat(d) - parseFloat(e);
 
-		 addrrdet(a,b,d,e,owed,c,f,a2);
+		 addrrdet(a,b,d,e,owed,c,f,a2,g);
 		 
 		 totGross = parseFloat(totGross) + parseFloat(owed) ;
 
@@ -894,13 +899,13 @@ function InsertSI(){
 
 }
 
-function addrrdet(ctranno,ddate,namount,npayed,ntotowed,cacctno,cacctdesc,refno){
+function addrrdet(ctranno,ddate,namount,npayed,ntotowed,cacctno,cacctdesc,refno,ewtamt){
 
-	var ctypref = $("#selpaytype").val();
+	//var ctypref = $("#selpaytype").val();
 	ctyprefval = "";
-	if(ctypref=="apv"){
-		ctyprefval = "readonly";
-	}
+	//if(ctypref=="apv"){
+	//	ctyprefval = "readonly";
+	//}
 	
 	if(document.getElementById("txtcustid").value!=""){
 		
@@ -909,7 +914,7 @@ function addrrdet(ctranno,ddate,namount,npayed,ntotowed,cacctno,cacctdesc,refno)
 		var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 		var lastRow = tbl.length;
 		
-		var u = "<td>"+ctranno+"<input type=\"hidden\" name=\"cTranNo"+lastRow+"\" id=\"cTranNo"+lastRow+"\" value=\""+ctranno+"\" /> </td>";
+		var u = "<td>"+ctranno+"<input type=\"hidden\" name=\"cTranNo"+lastRow+"\" id=\"cTranNo"+lastRow+"\" value=\""+ctranno+"\" /> <input type=\"hidden\" name=\"napvewt"+lastRow+"\" id=\"napvewt"+lastRow+"\" value=\""+ewtamt+"\" /></td>";
 
 		var u2 = "<td>"+refno+"<input type=\"hidden\" name=\"cRefRRNo"+lastRow+"\" id=\"cRefRRNo"+lastRow+"\" value=\""+refno+"\" /> </td>";
 		

@@ -26,6 +26,8 @@ foreach($rowdetloc as $row0){
 	
 }
 
+$_SESSION['myxtoken'] = gen_token();
+
 ?>
 
 <!DOCTYPE html>
@@ -100,10 +102,11 @@ if (mysqli_num_rows($sqlchk)!=0) {
 
 <input type="hidden" id="existingnos" value='<?=json_encode($arrnoslist)?>'>
 
+
 <form action="PayBill_editsave.php" name="frmpos" id="frmpos" method="post" onsubmit="return chkform();">
 	<fieldset>
    	  <legend>Bills Payment Details</legend>
-   	  
+
 				<table width="100%" border="0" cellspacing="0" cellpadding="0">
 					<tr>
 						<tH>Tran No.:</tH>
@@ -161,15 +164,17 @@ if (mysqli_num_rows($sqlchk)!=0) {
 														<option value="debit card" <?=($cpaymeth=="debit card") ? "selected" : ""?>>Debit Card</option>
 													</select>
 												</div>
+												<!--
 												<div class="col-xs-3" style="padding:2px !important">
 													&nbsp;&nbsp;&nbsp;<b>Payment Type</b>
 												</div>
 												<div class="col-xs-4 nopadding">
 													<select id="selpaytype" name="selpaytype" class="form-control input-sm selectpicker">
-														<option value="apv" <?=($cpaytype=="apv") ? "selected" : ""?>>AP Voucher</option>
-														<option value="po" <?=($cpaytype=="po") ? "selected" : ""?>>PO Pre-Payment</option>
+														<option value="apv" <?//=($cpaytype=="apv") ? "selected" : ""?>>AP Voucher</option>
+														<option value="po" <?//=($cpaytype=="po") ? "selected" : ""?>>PO Pre-Payment</option>
 													</select>
 												</div>
+												-->
 										</td>
 										<td><span style="padding:2px"><b>Particulars:</b></span></td>
 											<td rowspan="2">
@@ -247,8 +252,8 @@ if (mysqli_num_rows($sqlchk)!=0) {
 
 								<div class="col-xs-7 nopadding" style="<?=($cpaymeth!=="cheque") ? "; display: none" : ""?>" id="paymntrefrdet">
 
-									<div class="col-xs-7 nopadding">
-										<input type='text' class='noref form-control input-sm' name='txtCheckNo' id='txtCheckNo' value="<?php echo $cCheckNo; ?>" readonly required placeholder="Check No."/>
+									<div class="col-xs-7 nopadding"><!-- noref -->
+										<input type='text' class='form-control input-sm' name='txtCheckNo' id='txtCheckNo' value="<?php echo $cCheckNo; ?>" readonly required placeholder="Check No."/>
 										<input type='hidden' name='txtChkBkNo' id='txtChkBkNo' value="" />
 									</div>	
 									<div class="col-xs-5 nopadwleft">
@@ -552,15 +557,20 @@ else{
 				<!-- End Alert modal -->
 
 
-	<form action="print_voucher.php" name="frmvoucher" id="frmvoucher" method="post" target="_blank">
-		<input type="hidden" name="id" id="id" value="<?php echo $ccvno;?>">
-		<input type="submit" style="display: none" id="btnvoucher">
-	</form>
+				<form action="print_voucher.php" name="frmvoucher" id="frmvoucher" method="post" target="_blank">
+					<input type="hidden" name="id" id="id" value="<?php echo $ccvno;?>">
+					<input type="submit" style="display: none" id="btnvoucher">
+				</form>
 
-	<form action="print_check.php" name="frmchek" id="frmchek" method="post" target="_blank"> 
-		<input type="hidden" name="id" id="id" value="<?php echo $ccvno;?>">
-		<input type="submit" style="display: none" id="btncheck"> 
-	</form>
+				<form action="print_check.php" name="frmchek" id="frmchek" method="post" target="_blank"> 
+					<input type="hidden" name="id" id="id" value="<?php echo $ccvno;?>">
+					<input type="submit" style="display: none" id="btncheck"> 
+				</form>
+
+				<form action="bir2307.php" name="frmbir2307" id="frmbir2307" method="post" target="_blank"> 
+					<input type="hidden" name="id" id="id" value="<?php echo $ccvno;?>">
+					<input type="submit" style="display: none" id="btn2307"> 
+				</form>
 
 </body>
 </html>
@@ -860,6 +870,7 @@ else{
 			showapvmod(custid)
 		});
 
+		/*
 		$("#selpaytype").on("change", function() {
 			$('#MyTable > tbody').empty();
 
@@ -871,6 +882,7 @@ else{
 				$("#hdnRefTitle").text("PO No");
 			}
 		});
+		*/
 
 		$("#selpayment").on("change", function(){  
 
@@ -957,26 +969,27 @@ else{
 			var disval = $(this).val();
 			var xz = $("#existingnos").val();
 
-			$.each(jQuery.parseJSON(xz), function() { 
-
-				if(disval==this['noid']){
-					$("#chknochek").text("With Reference: " + this['ctranno']);
-					return false; // breaks
-				}else{
-					$("#chknochek").text("");
-				}
-
-			});
+			if(xz!=""){
+				$.each(jQuery.parseJSON(xz), function() { 
+					if(disval==this['noid']){
+						$("#chknochek").text("With Reference: " + this['ctranno']);
+						return false; // breaks
+					}else{
+						$("#chknochek").text("");
+					}
+				});
+			}
+			
 		});
 
 	});
 
 	function showapvmod(custid){
-		$('#MyAPVList tbody').empty();
+		$('#MyAPVList tbody').empty(); /*, typ: $("#selpaytype").val() */
 			
 		$.ajax({
 			url: 'th_APVlist.php',
-			data: { code: custid, typ: $("#selpaytype").val() },
+			data: { code: custid },
 			dataType: 'json',
 			async:false,
 			method: 'post',
@@ -993,7 +1006,7 @@ else{
 					else{							
 						$("<tr id=\"APV"+index+"\">").append(
 							$("<td>").html("<input type='checkbox' value='"+index+"' name='chkSales[]'>"),
-							$("<td>").html(item.ctranno+"<input type='hidden' id='APVtxtno"+index+"' name='APVtxtno"+index+"' value='"+item.ctranno+"'>"),
+							$("<td>").html(item.ctranno+"<input type='hidden' id='APVtxtno"+index+"' name='APVtxtno"+index+"' value='"+item.ctranno+"'> <input type='hidden' id='hdnAPVewt"+index+"' name='hdnAPVewt"+index+"' value='"+item.newtamt+"'>"),
 							$("<td>").html(item.crefno+"<input type='hidden' id='APVrrno"+index+"' name='APVrrno"+index+"' value='"+item.crefno+"'>"),
 							$("<td>").html(item.dapvdate+"<input type='hidden' id='APVdte"+index+"' name='APVdte"+index+"' value='"+item.dapvdate+"'>"),
 							$("<td>").html(item.cacctno+"<input type='hidden' id='APVacctno"+index+"' name='APVacctno"+index+"' value='"+item.cacctno+"'>"),
@@ -1027,11 +1040,12 @@ else{
 				var c = $("#APVacctno"+xyz).val();
 				var d = $("#APVamt"+xyz).val().replace(/,/g,'');
 				var e = $("#APVpayed"+xyz).val();
-				var f = $("#APVacctdesc"+xyz).val();
-			
+				var f = $("#APVacctdesc"+xyz).val(); 
+				var g = $("#hdnAPVewt"+xyz).val();
+
 			var owed = parseFloat(d) - parseFloat(e);
 
-			addrrdet(a,b,d,e,owed,c,owed,f,a2);
+			addrrdet(a,b,d,e,owed,c,owed,f,a2,g);
 			
 			//totGross = parseFloat(totGross) + parseFloat(owed) ;
 
@@ -1050,13 +1064,13 @@ else{
 
 	}
 
-	function addrrdet(ctranno,ddate,namount,npayed,ntotowed,cacctno,napplied,cacctdesc,refno){
+	function addrrdet(ctranno,ddate,namount,npayed,ntotowed,cacctno,napplied,cacctdesc,refno,ewtamt){
 
-		var ctypref = $("#selpaytype").val();
+		//var ctypref = $("#selpaytype").val();
 		ctyprefval = "";
-		if(ctypref=="apv"){
-			ctyprefval = "readonly";
-		}
+		//if(ctypref=="apv"){
+		//	ctyprefval = "readonly";
+		//}
 		
 		if(document.getElementById("txtcustid").value!=""){
 			
@@ -1065,7 +1079,7 @@ else{
 		var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 		var lastRow = tbl.length;
 		
-		var u = "<td>"+ctranno+"<input type=\"hidden\" name=\"cTranNo"+lastRow+"\" id=\"cTranNo"+lastRow+"\" value=\""+ctranno+"\" /> <input type=\"hidden\" name=\"cacctno"+lastRow+"\" id=\"cacctno"+lastRow+"\" value=\""+cacctno+"\" /> </td>";
+		var u = "<td>"+ctranno+"<input type=\"hidden\" name=\"cTranNo"+lastRow+"\" id=\"cTranNo"+lastRow+"\" value=\""+ctranno+"\" /> <input type=\"hidden\" name=\"napvewt"+lastRow+"\" id=\"napvewt"+lastRow+"\" value=\""+ewtamt+"\" /> </td>";
 
 		var u2 = "<td>"+refno+"<input type=\"hidden\" name=\"cRefRRNo"+lastRow+"\" id=\"cRefRRNo"+lastRow+"\" value=\""+refno+"\" /> </td>";
 		
@@ -1280,7 +1294,6 @@ else{
 
 	}
 
-
 	function printchk(){
 
 		if(document.getElementById("hdncancel").value==1){
@@ -1296,27 +1309,38 @@ else{
 			$("#btnvoucher").click(); 
 			$("#btncheck").click();
 
+			$ewtamt = 0;
+			xintval = 0;
+			$("#MyTable > tbody > tr").each(function(index) {	
+				$xintval = index + 1;
+
+				$ewtamt = $("#napvewt"+$xintval).val();
+
+			});
+
+			if($ewtamt > 0){
+				$("#btn2307").click();
+			}
 		}
 	}
 
 	function loadDets(){
-					var xno = $("#txtctranno").val();
-					$.ajax({
-											url: 'th_PaybillDet.php',
-						data: 'x='+xno,
-											dataType: 'json',
-						async:false,
-											method: 'post',
-											success: function (data) {
-												// var classRoomsTable = $('#mytable tbody');
-												console.log(data);
-												$.each(data,function(index,item){
-								addrrdet(item.capvno,item.dapvdate,item.namount,item.npayed,item.nowed,item.cacctno,item.napplied,item.cacctdesc,item.crefrr);
-							});
-							
-						}
-					});
+		var xno = $("#txtctranno").val();
+		$.ajax({
+			url: 'th_PaybillDet.php',
+			data: 'x='+xno,
+			dataType: 'json',
+			async:false,
+			method: 'post',
+			success: function (data) {
 
+				console.log(data);
+				$.each(data,function(index,item){
+					addrrdet(item.capvno,item.dapvdate,item.namount,item.npayed,item.nowed,item.cacctno,item.napplied,item.cacctdesc,item.crefrr,item.newtamt);
+				});
+							
+			}
+		});
 	}
 
 </script>
