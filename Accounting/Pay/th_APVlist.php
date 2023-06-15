@@ -28,10 +28,12 @@ require_once "../../Connection/connection_string.php";
 	}
 
 		$rfplist = array();
-		$sql = "Select capvno from rfp where compcode='$company' and lapproved = 1";
+		$rfplistamt = array();
+		$sql = "Select capvno,ngross from rfp where compcode='$company' and lapproved = 1";
 		$result = mysqli_query ($con, $sql); 
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 			$rfplist[] = $row['capvno'];
+			$rfplistamt[$row['capvno']] = $row['ngross'];
 		}
 
 		$sql="SELECT A.ctranno, B.crefno, DATE_FORMAT(A.dapvdate,'%m/%d/%Y') as dapvdate, sum(B.ncredit) as namount, IFNULL(sum(D.napplied),0) as napplied, IFNULL(sum(B.newtamt),0) as newtamt, B.cacctno, C.cacctdesc
@@ -71,6 +73,7 @@ require_once "../../Connection/connection_string.php";
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 
 			$isyes = "True";
+			$xdngross = 0;
 			if($nRFPvalue==1){
 				if(!in_array($row['ctranno'], $rfplist)){
 					$isyes = "False";
@@ -78,15 +81,23 @@ require_once "../../Connection/connection_string.php";
 			}
 
 			if($isyes=="True"){
+
+				if($nRFPvalue==1){
+					$xdngross = $rfplistamt[$row['ctranno']];
+				}else{
+					$xdngross = $row['namount'];
+				}
+
+				
 			
-				$remain = floatval($row['namount']) - floatval($row['napplied']);
+				$remain = floatval($xdngross) - floatval($row['napplied']);
 
 				if($remain>0){
 		
 					$json['ctranno'] = $row['ctranno'];
 					$json['crefno'] = $row['crefno'];
 					$json['dapvdate'] = $row['dapvdate'];
-					$json['namount'] = number_format($row['namount'],2);
+					$json['namount'] = number_format($xdngross,2);
 					$json['napplied'] = $row['napplied'];
 					$json['cacctno'] = $row['cacctno'];
 					$json['cacctdesc'] = $row['cacctdesc']; 

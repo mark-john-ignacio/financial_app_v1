@@ -101,6 +101,16 @@
 		$date2 = "1231".$dyear;
 	}
 
+
+	//get sign
+	//PAYEE INFO
+	$signimg = "";
+	$sqlimg = "select * From parameters where compcode='$company' and ccode='BIR2307_sign'";
+	$result=mysqli_query($con,$sqlimg);
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
+		$signimg = $row['cvalue'];
+	}
 	
 ?>
 
@@ -314,8 +324,16 @@
 			font-size: 11px;
 			text-align: right;
 			font-weight: bold;
-		}
+		} 
 		 
+		.signimg{
+			position: absolute;
+			top: 1020px;
+			left: 255px;
+			width: 3.5in;
+			height:  20px;    
+			/*border: 1px solid;*/
+		}
 	</style>
 </head>
 
@@ -405,7 +423,9 @@
 	</div>
 
 	<div class="alltotal" ><?=number_format($totdues,2)?></div> 
-	<div class="allewtamt"><?=number_format($totewts,2)?></div> 
+	<div class="allewtamt"><?=number_format($totewts,2)?></div>  
+
+	<div class="signimg"><img src = "../../bir_forms/sign/<?=$signimg?>" style="width: 3in"></div>
 
 </body>
 </html>

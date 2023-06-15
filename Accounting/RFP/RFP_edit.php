@@ -13,7 +13,7 @@
 
 	//echo $_SERVER['SERVER_NAME'];
 
-	$sqlchk = mysqli_query($con,"select a.*, a.capvno, b.cname, e.cname as cbankname from rfp a left join bank e on a.compcode=e.compcode and a.cbankcode=e.ccode left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.ctranno='$ccvno'");
+	$sqlchk = mysqli_query($con,"select a.*, b.cname, e.cname as cbankname from rfp a left join bank e on a.compcode=e.compcode and a.cbankcode=e.ccode left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.ctranno='$ccvno'");
 
 	@$arrfiles = array();
 	@$arrname = array();
@@ -88,6 +88,11 @@
 			$cRefAPVNo = $row['capvno'];
 
 			$dTransdate = $row['dtransdate'];
+
+			$cnAmount = $row['ngross']; 
+			$cnBalamt = $row['nbalance'];
+
+			$cdRemarks = $row['cremarks'];
 		
 			$lPosted = $row['lapproved'];
 			$lCancelled = $row['lcancelled'];
@@ -178,8 +183,12 @@
 						</tr>
 
 						<tr>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
+							<td><span style="padding:2px"><b>Remarks</b></span></td>
+							<td>
+								<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
+									<input type="text" class="form-control input-sm" id="txtcremarks" name="txtcremarks" tabindex="1" placeholder="Remarks..." value="<?=$cdRemarks?>" autocomplete="off">
+								</div>
+							</td>
 							<td><span style="padding:2px" id="chkdate"><b>Due Date:</b></span></td>
 							<td>
 								<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
@@ -188,6 +197,20 @@
 									</div>
 								</div>
 							</td>							
+						</tr>
+
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td><span style="padding:2px" id="chkdate"><b>Amount to Pay:</b></span></td>
+							<td>
+								<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
+									<div class='col-xs-8 nopadding'>
+											<input type='text' class="form-control input-sm text-right" name="txtnamount" id="txtnamount" value="<?=$cnAmount?>" />
+											<input type='hidden' name="txtnamountbal" id="txtnamountbal" value="<?=$cnBalamt?>" />   
+									</div>
+								</div>
+							</td>
 						</tr>
 
 					</table>

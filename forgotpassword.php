@@ -2,6 +2,7 @@
 <?php
 
 	require("vendor/phpmailer/phpmailer/src/PHPMailer.php");
+	require("vendor/phpmailer/phpmailer/src/Exception.php");
   require("vendor/phpmailer/phpmailer/src/SMTP.php");
 
 if(!isset($_SESSION)){
@@ -194,6 +195,10 @@ $error = "";
  
 		$email_to = $email;
 		$fromserver = "myxfin@serttech.com"; 
+
+		//use PHPMailer\PHPMailer\PHPMailer; 	
+		//use PHPMailer\PHPMailer\Exception;
+
 		$mail = new PHPMailer\PHPMailer\PHPMailer();
 		$mail->IsSMTP();
 		$mail->Host = "mail.serttech.com"; // Enter your host here

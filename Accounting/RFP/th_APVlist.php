@@ -16,11 +16,14 @@ require_once "../../Connection/connection_string.php";
 		}
 	
 
-		$sql="SELECT A.ctranno, IFNULL(B.ctranno,'') as crfp, A.dapvdate, A.ngross, A.cpaymentfor
+		$sql="SELECT A.ctranno, A.dapvdate, A.ngross, sum(IFNULL(B.ngross,0)) as npaid, A.cpaymentfor
 		FROM `apv` A
 		left join rfp B on A.compcode=B.compcode and A.ctranno=B.capvno
 		where A.compcode='$company' and A.lapproved=1 and A.ccode='$code'
+		group by A.ctranno, A.dapvdate, A.ngross, A.cpaymentfor
 		order by A.dapvdate DESC";
+
+		//echo $sql;
 
 	$result = mysqli_query ($con, $sql); 
 
@@ -29,11 +32,14 @@ require_once "../../Connection/connection_string.php";
 	if(mysqli_num_rows($result)!=0){
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 			
-			if($row['crfp'] == "" && !in_array($row['ctranno'], $disreg)){
+			$nbalx = floatval($row['ngross']) - floatval($row['npaid']);
+
+			if($nbalx > 0 && !in_array($row['ctranno'], $disreg)){
 	
 			 $json['ctranno'] = $row['ctranno'];
 			 $json['dapvdate'] = $row['dapvdate'];
 			 $json['namount'] = number_format($row['ngross'],2);
+			 $json['nbalance'] = number_format($nbalx,2);
 			 $json['cpaymentfor'] = $row['cpaymentfor'];
 			 
 			 $json2[] = $json;

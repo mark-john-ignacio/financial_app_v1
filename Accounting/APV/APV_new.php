@@ -16,6 +16,14 @@
 			@$arrtaxlist[] = array('ctaxcode' => $row['ctaxcode'], 'ctaxdesc' => $row['ctaxdesc'], 'nrate' => $row['nrate']); 
 		}
 	}
+
+	@$arrwtxlist = array();
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `wtaxcodes` where compcode='$company'"); 
+	if (mysqli_num_rows($gettaxcd)!=0) {
+		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+			@$arrwtxlist[] = array('ctaxcode' => $row['ctaxcode'], 'cbase' => $row['cbase']); 
+		}
+	}
 ?>
 
 <!DOCTYPE html>
@@ -27,202 +35,210 @@
 	<title>Myx Financials</title>
     
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css"> 
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css"> 
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
 
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../js/bootstrap3-typeahead.min.js"></script>
-<script src="../../include/autoNumeric.js"></script>
-<!--
-<script src="../../Bootstrap/js/jquery.numeric.js"></script>
-<script src="../../Bootstrap/js/jquery.inputlimiter.min.js"></script>
--->
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../js/bootstrap3-typeahead.min.js"></script>
+	<script src="../../include/autoNumeric.js"></script>
+	<!--
+	<script src="../../Bootstrap/js/jquery.numeric.js"></script>
+	<script src="../../Bootstrap/js/jquery.inputlimiter.min.js"></script>
+	-->
 
-<script src="../../Bootstrap/js/bootstrap.js"></script>
-<script src="../../Bootstrap/js/moment.js"></script>
-<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<script src="../../Bootstrap/js/moment.js"></script>
+	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
-<input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes">  
+	<input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes">  
+	<input type="hidden" value='<?=json_encode(@$arrwtxlist)?>' id="hdnxtax">  
 
-<form action="APV_newsave.php" name="frmpos" id="frmpos" method="post">
-	<fieldset>
+	<form action="APV_newsave.php" name="frmpos" id="frmpos" method="post">
+		<fieldset>
     	<legend>AP Voucher</legend>	
         <table width="100%" border="0">
-  <!--
-  <tr>
-    <tH>APV No.:</tH>
-    <td style="padding:2px;"><div class="col-xs-8">
-      <input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" placeholder="Enter APV No..." required>
-    </div></td>
-    <tH>&nbsp;</tH>
-    <td style="padding:2px;">&nbsp;</td>
-  </tr>
-  -->
-  <tr>
-    <tH width="150">PAID TO:</tH>
-    <td style="padding:2px;" width="500">
-    <div class="col-xs-12 nopadding">
-    	<div class="col-xs-6 nopadding">
-        	<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..." required autocomplete="off">
-		</div> 
-		<div class="col-xs-6 nopadwleft">
-        	<input type="text" id="txtcustid" name="txtcustid" style="border:none; height:30px;" readonly>
-		</div>
-    </div>
-            
-            <input type="hidden" id="txtcustchkr" name="txtcustchkr">
-            <input type="hidden" id="seltype" name="seltype">
-            
-    </td>
-    <tH width="150" style="padding:2px">AP Type:<input type="hidden" id="txtpayee" name="txtpayee"></tH>
-    <td style="padding:2px;">
-    <div class="col-xs-12">
-				<select id="selaptyp" name="selaptyp" class="form-control input-sm selectpicker" tabindex="2">
-          <option value="Purchases">Purchases (Credit)</option>
-					<option value="PurchAdv">Purchases (Advance Payment Application)</option>
-          <option value="PettyCash">Petty Cash Replenishment</option>
-          <option value="Others">Others</option>
-        </select>
+					<!--
+					<tr>
+						<tH>APV No.:</tH>
+						<td style="padding:2px;"><div class="col-xs-8">
+							<input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" placeholder="Enter APV No..." required>
+						</div></td>
+						<tH>&nbsp;</tH>
+						<td style="padding:2px;">&nbsp;</td>
+					</tr>
+					-->
+					<tr>
+						<tH width="150">PAID TO:</tH>
+						<td style="padding:2px;" width="500">
+							<div class="col-xs-12 nopadding">
+								<div class="col-xs-6 nopadding">
+									<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..." required autocomplete="off">
+								</div> 
+								<div class="col-xs-6 nopadwleft">
+									<input type="text" id="txtcustid" name="txtcustid" style="border:none; height:30px;" readonly>
+								</div>
+							</div>
+										
+							<input type="hidden" id="txtcustchkr" name="txtcustchkr">
+							<input type="hidden" id="seltype" name="seltype">
+										
+						</td>
+						<tH width="150" style="padding:2px">AP Type:<input type="hidden" id="txtpayee" name="txtpayee"></tH>
+						<td style="padding:2px;">
+							<div class="col-xs-12">
+								<select id="selaptyp" name="selaptyp" class="form-control input-sm selectpicker" tabindex="2">
+									<option value="Purchases">Purchases (Credit)</option>
+									<option value="PurchAdv">Purchases (Advance Payment)</option>
+									<option value="PettyCash">Petty Cash Replenishment</option>
+									<option value="Others">Others</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<tH width="150" rowspan="2" valign="top">REMARKS:</tH>
+						<td rowspan="2" valign="top" style="padding:2px"><div class="col-xs-10 nopadding">
+							<textarea class="form-control" rows="2" id="txtremarks" name="txtremarks"></textarea>
+						</div></td>
+						<tH width="150" style="padding:2px">AP DATE:</tH>
+						<td style="padding:2px"><div class="col-xs-8">
+							<input type='text' class="datepick form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date("m/d/Y"); ?>" />
+					</div></td>
+					</tr>
+					<tr>
+						<tH style="padding:2px">TOTAL AMOUNT :</tH>
+						<td style="padding:2px">
+						<div class="col-xs-8">
+							<input type="text" class="form-control input-sm" id="txtnGross" name="txtnGross" tabindex="1" required value="0.00" style="font-weight:bold; color:#F00; text-align:right" readonly>
+						</div>
+						
+					</td>
+					</tr>
+      	</table>
 
-    </div>
-    </td>
-  </tr>
-  <tr>
-    <tH width="150" rowspan="2" valign="top">REMARKS:</tH>
-    <td rowspan="2" valign="top" style="padding:2px"><div class="col-xs-10 nopadding">
-       <textarea class="form-control" rows="2" id="txtremarks" name="txtremarks"></textarea>
-    </div></td>
-    <tH width="150" style="padding:2px">AP DATE:</tH>
-    <td style="padding:2px"><div class="col-xs-8">
-      <input type='text' class="datepick form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date("m/d/Y"); ?>" />
-   </div></td>
-  </tr>
-  <tr>
-    <tH style="padding:2px">TOTAL AMOUNT :</tH>
-    <td style="padding:2px">
-    <div class="col-xs-8">
-      <input type="text" class="form-control input-sm" id="txtnGross" name="txtnGross" tabindex="1" required value="0.00" style="font-weight:bold; color:#F00; text-align:right" readonly>
-    </div>
-    
-   </td>
-  </tr>
-      </table>
-<br>
+				<br>
 
-<ul class="nav nav-tabs">
-  <li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Details</a></li>
-  <li id="liacct"><a href="#2Acct" data-toggle="tab">Accounting</a></li>
-</ul>
+				<ul class="nav nav-tabs">
+					<li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Details</a></li>
+					<li id="liacct"><a href="#2Acct" data-toggle="tab">Accounting</a></li>
+				</ul>
 
+				<div class="tab-content nopadwtop2x">
 
-  <div class="tab-content nopadwtop2x">
-    <div class="tab-pane active" id="1Det">  
+					<div class="tab-pane active" id="1Det">  
 
-             <div class="alt2" dir="ltr" style="
-                        margin: 0px;
-                        padding: 3px;
-                        border: 1px solid #919b9c;
-                        width: 100%;
-                        height: 250px;
-                        text-align: left;
-                        overflow: scroll">
+            <div class="alt2" dir="ltr" style="
+              margin: 0px;
+              padding: 3px;
+              border: 1px solid #919b9c;
+              width: 100%;
+              height: 250px;
+              text-align: left;
+              overflow: scroll">
         
-                <table id="MyTable" border="1" bordercolor="#CCCCCC" width="170%">
-                        <thead>
-                        <tr>
-                            <th style="border-bottom:1px solid #999">Ref No.</th>
-                            <!--<th style="border-bottom:1px solid #999">Supplier SI</th>-->
-                            <!--<th style="border-bottom:1px solid #999">Description</th>-->
-                            <th style="border-bottom:1px solid #999">Amount</th>
-														<th scope="col" class="text-center" nowrap>Total CM</th>
-														<th scope="col" class="text-center" nowrap>Total Disc.</th>
-                            <!--<th style="border-bottom:1px solid #999">Remarks</th>-->
-                               
-														<th scope="col" class="text-center" nowrap>VATCode</th>
-														<th scope="col" class="text-center" nowrap>VATRate(%)</th>
-                            <th scope="col" class="text-center" nowrap>VATAmt</th>
-                            <th scope="col" class="text-center" nowrap>NetofVat</th>
-                            <th scope="col" class="text-center" nowrap>EWTCode</th>                            
-                            <th scope="col" class="text-center" nowrap>EWTRate(%)</th>
-                            <th scope="col" class="text-center" nowrap>EWTAmt</th>
-                           <!--<th scope="col" class="text-center" nowrap>Payments</th>-->
-                            <th scope="col" class="text-center" nowrap>Total Due</th>
-                           <!-- <th scope="col" class="text-center" nowrap>Amt Applied&nbsp;</th>-->
-                            <th style="border-bottom:1px solid #999">&nbsp;</th>
-                        </tr>
-                        </thead>
-                        <tbody class="tbody">
+              <table id="MyTable" border="1" bordercolor="#CCCCCC" width="170%">
+                <thead>
+                  <tr>
+                    <th style="border-bottom:1px solid #999">Ref No.</th>
+                    <!--<th style="border-bottom:1px solid #999">Supplier SI</th>-->
+                    <!--<th style="border-bottom:1px solid #999">Description</th>-->
+                    <th style="border-bottom:1px solid #999">Amount</th>
+										<th scope="col" class="text-center" nowrap>Total CM</th>
+										<th scope="col" class="text-center" nowrap>Total Disc.</th>
+                    <!--<th style="border-bottom:1px solid #999">Remarks</th>-->
+
+										<th scope="col" class="text-center" nowrap>VATCode</th>
+										<th scope="col" class="text-center" nowrap>VATRate(%)</th>
+                    <th scope="col" class="text-center" nowrap>VATAmt</th>
+                    <th scope="col" class="text-center" nowrap>NetofVat</th>
+                    <th scope="col" class="text-center" nowrap>EWTCode</th>                            
+                    <th scope="col" class="text-center" nowrap>EWTRate(%)</th>
+                    <th scope="col" class="text-center" nowrap>EWTAmt</th>
+                    <!--<th scope="col" class="text-center" nowrap>Payments</th>-->
+                    <th scope="col" class="text-center" nowrap>Total Due</th>
+                    <!-- <th scope="col" class="text-center" nowrap>Amt Applied&nbsp;</th>-->
+                    <th style="border-bottom:1px solid #999">&nbsp;</th>
+                  </tr>
+                </thead>
+                <tbody class="tbody">
 													
-                 	    </tbody>
+                </tbody>
                         
-                </table>
-    		<input type="hidden" name="hdnRRCnt" id="hdnRRCnt"> 
+              </table>
+    					<input type="hidden" name="hdnRRCnt" id="hdnRRCnt"> 
             </div>
  
-     </div>
-     	<div class="tab-pane" id="2Acct">
+     			</div>
 
-             <div class="alt2" dir="ltr" style="
-                        margin: 0px;
-                        padding: 3px;
-                        border: 1px solid #919b9c;
-                        width: 100%;
-                        height: 250px;
-                        text-align: left;
-                        overflow: auto">
+     			<div class="tab-pane" id="2Acct">
+
+            <div class="alt2" dir="ltr" style="
+              margin: 0px;
+              padding: 3px;
+              border: 1px solid #919b9c;
+              width: 100%;
+              height: 250px;
+              text-align: left;
+              overflow: auto">
         
                 <table id="MyTable2" cellpadding="3px" width="100%" border="0">
-    					<thead>
-                        <tr>
-                        	
-                            <th style="border-bottom:1px solid #999">Acct#</th>
-                            <th style="border-bottom:1px solid #999">Account Title</th>
-                            <th style="border-bottom:1px solid #999">Debit</th>
-                            <th style="border-bottom:1px solid #999">Credit</th>
-                            <!--<th style="border-bottom:1px solid #999">Subsidiary</th>-->
-                            <th style="border-bottom:1px solid #999">Remarks</th>
-														<th style="border-bottom:1px solid #999">EWT Code</th>
-                            <th style="border-bottom:1px solid #999">&nbsp;</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                        
+    							<thead>
+                  	<tr>                       	
+                      <th style="border-bottom:1px solid #999">Acct#</th>
+                      <th style="border-bottom:1px solid #999">Account Title</th>
+                      <th style="border-bottom:1px solid #999">Debit</th>
+                      <th style="border-bottom:1px solid #999">Credit</th>
+                      <!--<th style="border-bottom:1px solid #999">Subsidiary</th>-->
+                      <th style="border-bottom:1px solid #999">Remarks</th>
+											<th style="border-bottom:1px solid #999">EWT Code</th>
+                      <th style="border-bottom:1px solid #999">&nbsp;</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>                       
                 </table>
-            <input type="hidden" name="hdnACCCnt" id="hdnACCCnt">
-			</div>
+            		<input type="hidden" name="hdnACCCnt" id="hdnACCCnt">
+						</div>
 
-	</div>
+					</div>
 
-    </div>
-
- 
+    		</div>	
             
-<br>
-<table width="100%" border="0" cellpadding="3">
-  <tr>
-    <td width="50%">
-    <button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='APV.php';" id="btnMain" name="btnMain">
-Back to Main<br>(ESC)</button>
+				<br>
 
-     <button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv('Purchases','supplier','MyDRDetList','DRListHeader','th_rrlistings','RR','mySIModal');" id="btnqo">Supp. Inv<br> (Insert)</button>
-     
-     <button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv('Loans','customer','MyLODetList','LOListHeader','th_lolistings','Loans','myLOModal');" id="btnlo" style="display:none">Loans<br> (Insert)</button>
-     
-     <button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="addacct();" id="btnacc" style="display:none">New Line<br> (Accounting)</button>
-    
-     <button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();">Save<br> (CTRL+S)</button>
+				<table width="100%" border="0" cellpadding="3">
+					<tr>
+						<td width="50%">
+							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='APV.php';" id="btnMain" name="btnMain">
+								Back to Main<br>(ESC)
+							</button>
 
-</td>
-    <td align="right">&nbsp;</td>
-  </tr>
-</table>
+							<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv('Purchases','supplier','MyDRDetList','DRListHeader','th_rrlistings','RR','mySIModal');" id="btnqo">
+								Supp. Inv<br> (Insert)
+							</button>
+
+							<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv('POAdv','supplier','MyDRDetList','DRListHeader','th_polistings','PO','mySIModal');" id="btnpo" style="display:none">P.O<br> (Insert)</button>
+							
+							<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv('Loans','customer','MyLODetList','LOListHeader','th_lolistings','Loans','myLOModal');" id="btnlo" style="display:none">
+								Loans<br> (Insert)
+							</button>
+							
+							<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="addacct();" id="btnacc" style="display:none">
+								New Line<br> (Accounting)
+							</button>
+							
+							<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();">
+								Save<br> (CTRL+S)
+							</button>
+						</td>
+						<td align="right">&nbsp;</td>
+					</tr>
+				</table>
 
     </fieldset>
-	
 	
 			<!-- add CM Module -->
 				<div class="modal fade" id="MyDetModal" role="dialog">
@@ -254,43 +270,46 @@ Back to Main<br>(ESC)</button>
                   </tbody>
                 </table>
     
-			</div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+							</div>
+        		</div><!-- /.modal-content -->
+   			 	</div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->
 	
-<!-- add DISC Module -->
-<div class="modal fade" id="MyDiscsModal" role="dialog">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
+			<!-- add DISC Module -->
+				<div class="modal fade" id="MyDiscsModal" role="dialog">
+    			<div class="modal-dialog modal-lg">
+        		<div class="modal-content">
+            	<div class="modal-header">
                 <button type="button" class="close"  aria-label="Close"  onclick="chkCloseDInfo();"><span aria-hidden="true">&times;</span></button>
                 <h3 class="modal-title" id="invdiscsheader"> Additional Discounts <button class="btn btn-sm btn-primary" name="btnaddcmdeisc" id="btnaddcmdeisc" type="button">Add</button></h3>           
-			</div>
+							</div>
     
-            <div class="modal-body">
-				<input type="hidden" name="hdnrowcnt3" id="hdnrowcnt3"> 
+            	<div class="modal-body">
+
+								<input type="hidden" name="hdnrowcnt3" id="hdnrowcnt3"> 
                 <input type="hidden" name="txthdnCMDinfo" id="txthdnCMDinfo"> 
-				<input type="hidden" name="txthdnCMDtxtbx" id="txthdnCMDtxtbx">
+								<input type="hidden" name="txthdnCMDtxtbx" id="txthdnCMDtxtbx">
 				
                 <table id="MyTableAdDisc" class="MyTable table table-condensed" width="100%">
-    				<tr>
-                        <th style="border-bottom:1px solid #999">Amount</th>
-						<th style="border-bottom:1px solid #999">Remarks</th>
-						<th style="border-bottom:1px solid #999">Acct No.</th>
-						<th style="border-bottom:1px solid #999">Acct Desc.</th>
-                        <th style="border-bottom:1px solid #999">&nbsp;</th>
-					</tr>
-					<tbody class="tbody">
-                    </tbody>
+									<thead>
+										<tr>
+											<th style="border-bottom:1px solid #999">Amount</th>
+											<th style="border-bottom:1px solid #999">Remarks</th>
+											<th style="border-bottom:1px solid #999">Acct No.</th>
+											<th style="border-bottom:1px solid #999">Acct Desc.</th>
+											<th style="border-bottom:1px solid #999">&nbsp;</th>
+										</tr>
+									</thead>
+									<tbody class="tbody">
+                  </tbody>
                 </table>
     
-			</div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+							</div>
+        		</div><!-- /.modal-content -->
+    			</div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->
 	
-</form>
+	</form>
 
 
 				<!-- DETAILS ONLY -->
@@ -324,31 +343,32 @@ Back to Main<br>(ESC)</button>
            	 	<div class="modal-footer">
                 <button type="button" id="btnSave" onClick="InsertSI()" class="btn btn-primary">Insert</button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-           	</div>
-        	</div><!-- /.modal-content -->
-    		</div><!-- /.modal-dialog -->
-			</div><!-- /.modal -->
-			<!-- End Bootstrap modal -->
+           		</div>
+        		</div><!-- /.modal-content -->
+    			</div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->
+				<!-- End Bootstrap modal -->
 
-<!-- 1) Alert Modal -->
-<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-    <div class="vertical-alignment-helper">
-        <div class="modal-dialog vertical-align-top">
-            <div class="modal-content">
-               <div class="alert-modal-danger">
-                  <p id="AlertMsg"></p>
-                <p>
-                    <center>
-                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-                    </center>
-                </p>
-               </div>
-            </div>
-        </div>
-    </div>
-</div>
+				<!-- 1) Alert Modal -->
+				<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+						<div class="vertical-alignment-helper">
+								<div class="modal-dialog vertical-align-top">
+										<div class="modal-content">
+											<div class="alert-modal-danger">
+													<p id="AlertMsg"></p>
+												<p>
+														<center>
+																<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+														</center>
+												</p>
+											</div>
+										</div>
+								</div>
+						</div>
+				</div>
 	
-
+</body>
+</html>
 
 <script type="text/javascript">
 	$(document).keydown(function(e) {	 
@@ -362,7 +382,11 @@ Back to Main<br>(ESC)</button>
 
 	  }
 	  else if(e.keyCode == 45) { //F1
-		openinv();
+			if($("#selaptyp").val()=="Purchases"){
+				$('#btnqo').trigger('click');
+			}else if($("#selaptyp").val()=="PurchAdv"){
+				$('#btnpo').trigger('click');
+			}
 	  }
 	});
 
@@ -416,9 +440,10 @@ Back to Main<br>(ESC)</button>
 		
 		$("#selaptyp").on("change", function() {
 			
-			if($(this).val()=="Purchases" || $(this).val()=="PurchAdv"){
+			if($(this).val()=="Purchases"){
 				
 				$("#btnqo").css("display", "inline");
+				$("#btnpo").css("display", "none");
 				$("#btnlo").css("display", "none");
 				$("#btnacc").css("display", "none");
 				
@@ -428,9 +453,23 @@ Back to Main<br>(ESC)</button>
 				$("#1Det").attr("class", "tab-pane active");
 				$("#2Acct").attr("class", "tab-pane");
 					
+			}else if($(this).val()=="PurchAdv"){	
+
+				$("#btnqo").css("display", "none");
+				$("#btnpo").css("display", "inline");
+				$("#btnlo").css("display", "none");
+				$("#btnacc").css("display", "none");
+
+				$("#lidet").attr("class", "active");
+				$("#liacct").attr("class", "");
+
+				$("#1Det").attr("class", "tab-pane active");
+				$("#2Acct").attr("class", "tab-pane");
+
 			}else if($(this).val()=="PettyCash"){
 
 				$("#btnqo").css("display", "none");
+				$("#btnpo").css("display", "none");
 				$("#btnlo").css("display", "none");
 				$("#btnacc").css("display", "inline");
 
@@ -443,6 +482,7 @@ Back to Main<br>(ESC)</button>
 			}else if($(this).val()=="Others"){
 
 				$("#btnqo").css("display", "none");
+				$("#btnpo").css("display", "none");
 				$("#btnlo").css("display", "none");
 				$("#btnacc").css("display", "inline");
 
@@ -453,16 +493,15 @@ Back to Main<br>(ESC)</button>
 				$("#2Acct").attr("class", "tab-pane active");
 
 			}
-			
-						
+									
 				$("#MyTable tbody > tr").remove();
 				$("#MyTable2 tbody > tr").remove();
 
 				//$("#txtcustid").val("");
 				//$("#txtcust").val("");
 				//$("#txtcust").attr("readonly", false);
-			//	$("#txtpayee").val("");
-			//	$("#txtnGross").val("");
+				//$("#txtpayee").val("");
+				//$("#txtnGross").val("");
 										
 		});
 		
@@ -580,8 +619,7 @@ Back to Main<br>(ESC)</button>
 		});
 		
 		$("#btnaddcmdeisc").on("click", function(){
-			
-			
+						
 			var tbl = document.getElementById('MyTableAdDisc').getElementsByTagName('tr');
 			var lastRow = tbl.length;
 			var xrrno = $("#txthdnCMDinfo").val(); 
@@ -654,7 +692,7 @@ Back to Main<br>(ESC)</button>
 
 	function addrrdet(rrno,amt,netvat,vatval,vatcode,vatrate,ewtamt,ewtcode,ewtrate,acctno,suppsi,nadvpaydue,cmamt){
 
-				//addrrdet(rrno,amt,vtamt,vttp,vtrt,ewtamt,ewttp,ewtrt,acttno,suppsi,advpaydue);   
+		//addrrdet(rrno,amt,vtamt,vttp,vtrt,ewtamt,ewttp,ewtrt,acttno,suppsi,advpaydue);   
 
 		var paymeth = $("#selaptyp").val();
 		var isread="";
@@ -665,7 +703,6 @@ Back to Main<br>(ESC)</button>
 		var nncmx = cmamt;
 
 		ndue = parseFloat(amt) - parseFloat(ewtamt);
-
 
 		if(document.getElementById("txtcustid").value!=""){
 			
@@ -764,11 +801,14 @@ Back to Main<br>(ESC)</button>
 												$("#txtewtamt"+lastRow).autoNumeric('destroy');
 												$("#txtewtamt"+lastRow).autoNumeric('init',{mDec:2});
 												//recompute due
-												//xcbdue = ndue - xcb;
+												var ndiscs = $("#txtndiscs"+lastRow).val().replace(/,/g,''); 
+												xcbdue = ndue - xcb - parseFloat(ndiscs);
+													
+												$("#txtDue"+lastRow).val(xcbdue);
+												$("#txtDue"+lastRow).autoNumeric('destroy');
+												$("#txtDue"+lastRow).autoNumeric('init',{mDec:2}); 
 												
-												//$("#txtDue"+lastRow).val(xcbdue.toFixed(4)); 
-												
-												recomlines();
+												//recomlines();
 												compgross1();
 												//setPosi("txtcSalesAcctTitle"+lastRow,13,'MyTable');
 												
@@ -778,11 +818,20 @@ Back to Main<br>(ESC)</button>
 										$("#txtewtcode"+lastRow).on("blur", function() {
 											if($(this).val()==""){
 												$("#txtewtamt"+lastRow).val(0.00);
-												$("#txtewtrate"+lastRow).val("");
+												$("#txtewtrate"+lastRow).val(0);
 
-												recomlines();
+												//recomlines();
 												compgross1();
 											}
+										});
+
+										$("#txtnvatcode"+lastRow).on("change", function() {
+											var zxc = $(this).find(':selected').data('id');
+											var zxcamt = $("#txtnamount"+lastRow).val().replace(/,/g,'');
+
+											compvat(lastRow,zxc,zxcamt);
+											compgross1();
+
 										});
 			
 				//if(parseFloat(nncmx)!=0){
@@ -794,6 +843,7 @@ Back to Main<br>(ESC)</button>
 		}
 	}
 
+	/*
 	function recomlines(){
 		 $("#MyTable > tbody > tr").each(function(index) {	
 			  
@@ -831,6 +881,56 @@ Back to Main<br>(ESC)</button>
 		  });
 
 	}
+	*/
+
+		function compvat(lastRow,zxc,zxcamt){
+			var xnetxcvat = parseFloat(zxcamt) * (parseFloat(zxc)/100);
+			var xnetxcnet = parseFloat(zxcamt) / (1+(parseFloat(zxc)/100));
+
+			$("#txtnvatval"+lastRow).val(xnetxcvat);  
+			$("#txtnvatrate"+lastRow).val(zxc); 
+			$("#txtvatnet"+lastRow).val(xnetxcnet);
+
+			$("#txtnvatval"+lastRow).autoNumeric('destroy');
+			$("#txtnvatval"+lastRow).autoNumeric('init',{mDec:2});
+
+			$("#txtvatnet"+lastRow).autoNumeric('destroy');
+			$("#txtvatnet"+lastRow).autoNumeric('init',{mDec:2});
+
+			var xtaxcode = $("#txtewtcode"+lastRow).val();
+			varnbase = 0;
+			var xz = $("#hdnxtax").val();
+			$.each(jQuery.parseJSON(xz), function() { 
+				if(xtaxcode==this['ctaxcode']){
+					varnbase = this['cbase'];
+				}
+			});
+
+			var dxrate = $("#txtewtrate"+lastRow).val();
+			var xcb = 0;
+			if(parseFloat(dxrate)==0){
+				$("#txtewtamt"+lastRow).val(0)
+			}else{
+
+				if(varnbase=="NET"){
+					xcb = parseFloat($("#txtvatnet"+lastRow).val().replace(/,/g,''))*(dxrate/100);
+				}else{
+					xcb = parseFloat($("#txtnamount"+lastRow).val().replace(/,/g,''))*(dxrate/100);
+				}
+														
+				$("#txtewtamt"+lastRow).val(xcb)
+
+			}
+			$("#txtewtamt"+lastRow).autoNumeric('destroy');
+			$("#txtewtamt"+lastRow).autoNumeric('init',{mDec:2});
+
+			var ndiscs = $("#txtndiscs"+lastRow).val().replace(/,/g,''); 
+			var remain = parseFloat(zxcamt) - parseFloat(xcb) - parseFloat(ndiscs);
+			$("#txtDue"+lastRow).val(remain);
+			$("#txtDue"+lastRow).autoNumeric('destroy');
+			$("#txtDue"+lastRow).autoNumeric('init',{mDec:2});
+
+		}
 
 	function openinv(typ,suppcust,tblid,hdrid,url,msg,modz){
 			if($('#txtcustid').val() == ""){
@@ -1700,6 +1800,3 @@ Back to Main<br>(ESC)</button>
 		
 
 </script>
-
-</body>
-</html>

@@ -177,6 +177,7 @@ function numberTowords($num)
       $Date = $row['ddate'];
       $DateNeeded = $row['dtransdate'];
       $Gross = $row['ngross'];
+			$GrossBal = $row['nbalance'];
 
       $cTin = $row['ctin'];
       
@@ -198,7 +199,7 @@ function numberTowords($num)
   }
 
   //get details
-  if($cAPtype=="Purchases"){
+  if($cAPtype=="Purchases" || $cAPtype=="PurchAdv"){
 
     $xsql = "select A.ctranno, A.cpaymentfor, Sum(B.namount) as ntotamt, SUM(B.nvatamt) as ntotvat, Sum(B.newtamt) as ntotewt, Sum(ndue) as ntotdue
     from apv A left join apv_d B on A.compcode=B.compcode and A.ctranno=B.ctranno
@@ -372,12 +373,39 @@ function numberTowords($num)
 					<td align="right" class="tdpadx tdright" nowrap><?php echo number_format($rowdtls['ntotamt'],2);?></td>					
 					<td align="right" class="tdpadx tdright" nowrap><?=(floatval($rowdtls['ntotvat'])!=0) ? number_format($rowdtls['ntotvat'],2) : "-";?></td>
 					<td align="right" class="tdpadx tdright" nowrap><?=(floatval($rowdtls['ntotewt'])!=0) ? number_format($rowdtls['ntotewt'],2) : "-";?></td>
-					<td align="right" class="tdpadx tdright" nowrap><?php echo number_format($rowdtls['ntotdue'],2);?></td>
+					<td align="right" class="tdpadx tdright" nowrap>
+					<?php
+						if(floatval($Gross) == floatval($tottopay)){
+
+							echo "<span style=\"border-bottom: 5px solid #000; border-bottom-style: double\"><font size=\"2\">".number_format($rowdtls['ntotdue'],2)."</font></span>";
+
+						}else{
+
+							echo number_format($rowdtls['ntotdue'],2);
+
+						}
+					?>
+							
+					</td>
 					
 				</tr>
 
 				<?php 
-					} 
+					}
+					$xlabel = "";
+					if(floatval($Gross) < floatval($tottopay)){
+						
+						if(floatval($GrossBal)==floatval($Gross)){
+							$xlabel = "Completion Payment Amount";
+						}else{
+							$xlabel = "Partial Payment Amount";
+						}
+				?>
+					<tr>
+						<td align="right" class="tdpadx tdright" colspan="5" ><b><?=$xlabel?>: &nbsp;&nbsp;&nbsp;<span style="border-bottom: 5px solid #000; border-bottom-style: double"><font size="2"><?php echo number_format($Gross,2);?> </font></span></b></td>						
+					</tr>
+				<?php
+					}
 				?>
 
 			</table>
@@ -405,7 +433,7 @@ function numberTowords($num)
 
           <tr>
             <td> <?=$row['cacctdesc']?> </td>
-            <td align="right" class="tdpadx tdright" nowrap><?php echo number_format($row['namt'],2);?></td>
+            <td align="right" class="tdpadx tdright" nowrap><?php echo number_format($Gross,2);?></td>
             <td>&nbsp;</td>
           </tr>
           <?php
@@ -417,12 +445,12 @@ function numberTowords($num)
           <tr>
             <td><?=$Bankacctdesc?></td>
             <td>&nbsp;</td>
-            <td align="right" class="tdpadx tdright" nowrap><?php echo number_format($tottopay,2);?></td>
+            <td align="right" class="tdpadx tdright" nowrap><?php echo number_format($Gross,2);?></td>
           </tr>
 
         </table>
 
-      <div style="padding-top: 20px !important"><i>Amount in words: </i> <?=strtoupper(numberTowords($tottopay));?></div>
+      <div style="padding-top: 20px !important"><i>Amount in words: </i> <?=strtoupper(numberTowords($Gross));?></div>
 		</td>
 	</tr>
   <tr>

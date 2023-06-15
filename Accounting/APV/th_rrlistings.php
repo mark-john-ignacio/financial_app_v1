@@ -14,13 +14,13 @@ require_once "../../Connection/connection_string.php";
 		$qry = "";
 	}
 
-	if($_REQUEST['typ']=="PurchAdv"){
-		$qry = $qry." and E.ladvancepay=1";
-	}
+	//if($_REQUEST['typ']=="PurchAdv"){
+	//	$qry = $qry." and E.ladvancepay=1";
+//	}
 
-	if($_REQUEST['typ']=="Purchases"){
+//	if($_REQUEST['typ']=="Purchases"){
 		$qry = $qry." and IFNULL(E.ladvancepay,0)=0";
-	}
+//	}
 
 	//all existing suppinv in apv
 	$arrrefinvx = array();

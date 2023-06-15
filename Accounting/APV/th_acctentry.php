@@ -116,44 +116,76 @@ require_once "../../Connection/connection_string.php";
 	//Input Tax if VATABLE and Net Gross
 	
 			//Net Gross
-			$sqlnet = "Select A.cacctcode, A.cacctdesc, Sum(A.nVat) as nNetVat
-				From (
-					Select D.cacctid as cacctcode,D.cacctdesc, 
-					CASE WHEN H.lcompute=1 THEN ROUND(SUM(A.nnetvat),4) ELSE ROUND(SUM(A.namount),4) END AS nVat
-					From suppinv_t A
-					left join items C on A.compcode=C.compcode and A.citemno=C.cpartno 
-					left join accounts D on C.compcode=D.compcode and C.cacctcodewrr=D.cacctno
-					left join taxcode E on C.compcode=E.compcode and C.ctaxcode=E.ctaxcode
-					left join suppinv F on A.compcode=F.compcode and A.ctranno=F.ctranno  
-					left join suppliers G on F.compcode=G.compcode and F.ccode=G.ccode 
-					left join vatcode H on G.compcode=H.compcode and G.cvattype=H.cvatcode   
-					where A.compcode='$company' and A.ctranno in (Select crefno from apv_d where ctranno='$tran')
-					group by C.cacctcodewrr,D.cacctdesc
-				) A group by A.cacctcode,A.cacctdesc HAVING Sum(A.nVat) <> 0";
-				
-			
-			$resultNET = mysqli_query ($con, $sqlnet); 
-
-			if(mysqli_num_rows($resultNET)!=0){
-				while($rowNET = mysqli_fetch_array($resultNET, MYSQLI_ASSOC)){
-				$z = $z+1;
-				$refcidenttran = $tran."P".$z;
-							
-					$xy = getAcctDef($rowNET['cacctcode'],"PAYABLES");
-					$xyValx = "";
-					if($xy=="None"){
-						$xyValx = "Others";
-					}else{
-						$xyValx = "Payables";
-					}
-				 				 
-				 mysqli_query ($con, "INSERT INTO `apv_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `crefrr`, `cacctno`, `ctitle`, `cremarks`, `ndebit`, `ncredit`, `cacctrem`) VALUES ('$company','$refcidenttran',$z,'$tran','','".$rowNET['cacctcode']."','".$rowNET['cacctdesc']."','',".$rowNET['nNetVat'].",0,'$xyValx')");
-			
+			$captypes = "";
+			$resulthdr = mysqli_query ($con, "Select captype from apv where compcode='$company' and ctranno = '$tran'"); 
+			if(mysqli_num_rows($resulthdr)!=0){
+				while($rowhdr = mysqli_fetch_array($resulthdr, MYSQLI_ASSOC)){
+					$captypes = $rowhdr['captype'];
 				}
 			}
+
+			if($captypes=="Purchases"){
+				$sqlnet = "Select A.cacctcode, A.cacctdesc, Sum(A.nVat) as nNetVat
+					From (
+						Select D.cacctid as cacctcode,D.cacctdesc, 
+						CASE WHEN H.lcompute=1 THEN ROUND(SUM(A.nnetvat),4) ELSE ROUND(SUM(A.namount),4) END AS nVat
+						From suppinv_t A
+						left join items C on A.compcode=C.compcode and A.citemno=C.cpartno 
+						left join accounts D on C.compcode=D.compcode and C.cacctcodewrr=D.cacctno
+						left join taxcode E on C.compcode=E.compcode and C.ctaxcode=E.ctaxcode
+						left join suppinv F on A.compcode=F.compcode and A.ctranno=F.ctranno  
+						left join suppliers G on F.compcode=G.compcode and F.ccode=G.ccode 
+						left join vatcode H on G.compcode=H.compcode and G.cvattype=H.cvatcode   
+						where A.compcode='$company' and A.ctranno in (Select crefno from apv_d where ctranno='$tran')
+						group by C.cacctcodewrr,D.cacctdesc
+					) A group by A.cacctcode,A.cacctdesc HAVING Sum(A.nVat) <> 0";
+					
+				
+				$resultNET = mysqli_query ($con, $sqlnet); 
+
+				if(mysqli_num_rows($resultNET)!=0){
+					while($rowNET = mysqli_fetch_array($resultNET, MYSQLI_ASSOC)){
+					$z = $z+1;
+					$refcidenttran = $tran."P".$z;
+								
+						$xy = getAcctDef($rowNET['cacctcode'],"PAYABLES");
+						$xyValx = "";
+						if($xy=="None"){
+							$xyValx = "Others";
+						}else{
+							$xyValx = "Payables";
+						}
+									
+					mysqli_query ($con, "INSERT INTO `apv_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `crefrr`, `cacctno`, `ctitle`, `cremarks`, `ndebit`, `ncredit`, `cacctrem`) VALUES ('$company','$refcidenttran',$z,'$tran','','".$rowNET['cacctcode']."','".$rowNET['cacctdesc']."','',".$rowNET['nNetVat'].",0,'$xyValx')");
+				
+					}
+				}
+			}elseif($captypes=="PurchAdv"){
+				$resultNET = mysqli_query ($con, "Select Sum(A.nnet) as nNetVat from apv_d A left join apv B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and A.ctranno = '$tran'"); 
+
+				if(mysqli_num_rows($resultNET)!=0){
+					while($rowNET = mysqli_fetch_array($resultNET, MYSQLI_ASSOC)){
+					$z = $z+1;
+					$refcidenttran = $tran."P".$z;
+								
+
+						$Sales_Vat = getSetAcct("PO_ADV_PAYMENT");
+
+						$SID = $Sales_Vat["id"];
+						$SNM = $Sales_Vat["name"];
+
+					mysqli_query ($con, "INSERT INTO `apv_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `crefrr`, `cacctno`, `ctitle`, `cremarks`, `ndebit`, `ncredit`, `cacctrem`) VALUES ('$company','$refcidenttran',$z,'$tran','','".$SID."','".$SNM."','',".$rowNET['nNetVat'].",0,'Others')");
+
+					//echo "'$company','$refcidenttran',$z,'$tran','','".$SID."','".$SNM."','',".$rowNET['nNetVat'].",0,'Others'";
 			
+					}
+				}
+			}
+				
 			//InputVat
-			
+			//getvat from vat amount in apv_d
+			$sqlvat = "Select Sum(A.nvatamt) as nVat from apv_d A left join apv B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and A.ctranno = '$tran'";
+			/*
 			$sqlvat = "Select Sum(A.nVat) as nVat
 				From (
 					Select C.cacctcodewrr as cacctcode,D.cacctdesc, 
@@ -168,7 +200,7 @@ require_once "../../Connection/connection_string.php";
 					where A.compcode='$company' and A.ctranno in (Select crefno from apv_d where ctranno='$tran')
 					group by C.cacctcodewrr,D.cacctdesc
 				) A HAVING Sum(A.nVat) <> 0";
-				
+				*/
 			
 			$resultTX = mysqli_query ($con, $sqlvat);  
 

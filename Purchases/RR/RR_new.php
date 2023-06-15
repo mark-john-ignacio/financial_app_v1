@@ -1464,6 +1464,9 @@ function chkform(){
 				var crefidnt = $(this).find('input[type="hidden"][name="txtnrefident"]').val();
 				var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
 				var cskuno = $(this).find('input[type="hidden"][name="txtcskuode"]').val();
+				if(cskuno==undefined){
+					var cskuno = $(this).find('input[name="txtcskuode"]').val();
+				}
 				var cuom = $(this).find('select[name="seluom"]').val();
 						if(cuom=="" || cuom==null){
 							var cuom = $(this).find('input[type="hidden"][name="seluom"]').val();

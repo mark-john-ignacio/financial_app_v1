@@ -7,15 +7,16 @@ include('../../Connection/connection_string.php');
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 		
 
-	     $json['id'] = $row['Userid'];
-     	 $json['fname'] = $row['Fname'];
-		 $json['mname'] = $row['Minit'];
-		 $json['lname'] = $row['Lname'];
-		 $json['emailadd'] = $row['cemailadd'];
-		 $json['cdepartment'] = $row['cdepartment'];
-		 $json['cdesignation'] = $row['cdesignation'];
-		 $json['imgsrc'] = $row['cuserpic'];
-		 $json2[] = $json;
+	  $json['id'] = $row['Userid'];
+    $json['fname'] = $row['Fname'];
+		$json['mname'] = $row['Minit'];
+		$json['lname'] = $row['Lname'];
+		$json['emailadd'] = $row['cemailadd'];
+		$json['cdepartment'] = $row['cdepartment'];
+		$json['cdesignation'] = $row['cdesignation'];
+		$json['imgsrc'] = $row['cuserpic'];
+		$json['signsrc'] = $row['cusersign'];
+		$json2[] = $json;
 
 	}
 

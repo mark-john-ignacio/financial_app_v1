@@ -26,21 +26,21 @@ include('../../include/access2.php');
 
 	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
 
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../js/bootstrap3-typeahead.min.js"></script>
-<script src="../../include/autoNumeric.js"></script>
-<!--
-<script src="../../Bootstrap/js/jquery.numeric.js"></script>
-<script src="../../Bootstrap/js/jquery.inputlimiter.min.js"></script>
--->
-<script src="../../Bootstrap/js/bootstrap.js"></script>
-<script src="../../Bootstrap/js/moment.js"></script>
-<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../js/bootstrap3-typeahead.min.js"></script>
+	<script src="../../include/autoNumeric.js"></script>
+	<!--
+	<script src="../../Bootstrap/js/jquery.numeric.js"></script>
+	<script src="../../Bootstrap/js/jquery.inputlimiter.min.js"></script>
+	-->
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<script src="../../Bootstrap/js/moment.js"></script>
+	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
-<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
-<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
-<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
-<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
 
 </head>
 
@@ -113,13 +113,31 @@ include('../../include/access2.php');
 						</tr>
 
 						<tr>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
+							<td><span style="padding:2px"><b>Remarks</b></span></td>
+							<td>
+								<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
+									<input type="text" class="form-control input-sm" id="txtcremarks" name="txtcremarks" tabindex="1" placeholder="Remarks..." value="" autocomplete="off">
+								</div>
+							</td>
 							<td><span style="padding:2px" id="chkdate"><b>Due Date:</b></span></td>
 							<td>
 								<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
 									<div class='col-xs-8 nopadding'>
 											<input type='text' class="datepick form-control input-sm" placeholder="Pick a Date" name="txtChekDate" id="txtChekDate" value="<?php echo date("m/d/Y"); ?>" />
+									</div>
+								</div>
+							</td>
+						</tr>
+
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td><span style="padding:2px" id="chkdate"><b>Amount to Pay:</b></span></td>
+							<td>
+								<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
+									<div class='col-xs-8 nopadding'>
+											<input type='text' class="form-control input-sm text-right" name="txtnamount" id="txtnamount" value="0.00" />
+											<input type='hidden' name="txtnamountbal" id="txtnamountbal" value="0.00" /> 
 									</div>
 								</div>
 							</td>
@@ -167,7 +185,8 @@ include('../../include/access2.php');
 											<th>AP No.</th>
 											<th>Date</th>
 											<th>Payment For</th>
-											<th>Payable Amount</th>
+											<th>Total Payable</th>
+											<th>Payable Balance</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -249,6 +268,9 @@ include('../../include/access2.php');
 
 
 $(document).ready(function() {
+
+	$("#txtnamount").autoNumeric('init',{mDec:2});
+
   $('.datepick').datetimepicker({
     format: 'MM/DD/YYYY',
   });
@@ -374,7 +396,8 @@ function showapvmod(custid){
 						$("<td>").html("<a href='javascript:;' onclick='InsertSI("+index+")'>"+item.ctranno+"</a> <input type='hidden' id='APVtxtno"+index+"' name='APVtxtno"+index+"' value='"+item.ctranno+"'>"),
 						$("<td>").html(item.dapvdate+"<input type='hidden' id='APVdte"+index+"' name='APVdte"+index+"' value='"+item.dapvdate+"'>"),
 						$("<td>").html(item.cpaymentfor+"<input type='hidden' id='APVPayFor"+index+"' name='APVPayFor"+index+"' value='"+item.cpaymentfor+"'>"),
-						$("<td>").html(item.namount+"<input type='hidden' id='APVamt"+index+"' name='APVamt"+index+"' value='"+item.namount+"'>")
+						$("<td>").html(item.namount+"<input type='hidden' id='APVamt"+index+"' name='APVamt"+index+"' value='"+item.namount+"'>"),
+						$("<td>").html(item.nbalance+"<input type='hidden' id='APVBal"+index+"' name='APVBal"+index+"' value='"+item.nbalance+"'>")
 					).appendTo("#MyAPVList tbody");
 									
 					$("#myAPModal").modal("show");
@@ -399,8 +422,16 @@ function showapvmod(custid){
 	function InsertSI(xyz){	
 	    
 		var a = $("#APVtxtno"+xyz).val();
+		var b = $("#APVamt"+xyz).val();
+		var c = $("#APVBal"+xyz).val();
 
 		$("#txtrefapv").val(a);
+		$("#txtnamount").val(c);
+		$("#txtnamountbal").val(c);
+
+		$("#txtnamount").autoNumeric('destroy');
+		$("#txtnamount").autoNumeric('init',{mDec:2});
+
 		$('#myAPModal').modal('hide');
   
 	};
