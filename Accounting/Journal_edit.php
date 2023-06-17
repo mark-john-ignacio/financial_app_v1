@@ -43,8 +43,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 <script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
 <script src="../js/bootstrap3-typeahead.min.js"></script>
+<script src="../include/autoNumeric.js"></script>
+<!--
 <script src="../Bootstrap/js/jquery.numeric.js"></script>
 <script src="../Bootstrap/js/jquery.inputlimiter.min.js"></script>
+-->
 
 <script src="../Bootstrap/js/bootstrap.js"></script>
 <script src="../Bootstrap/js/moment.js"></script>
@@ -383,7 +386,8 @@ $(function(){
                  format: 'MM/DD/YYYY'
            });
 	
-			$("input.numeric").numeric();
+					 $("input.numeric").autoNumeric('init',{mDec:2,wEmpty: 'zero'});
+			//$("input.numeric").numeric();
 			$("input.numeric").on("focus", function () {
 				$(this).select();
 			});
@@ -580,8 +584,9 @@ function InsertRows(thisKey,thisNme,rowCount){
 			   
 			});
 			
+			$("input.numeric").autoNumeric('init',{mDec:2,wEmpty: 'zero'});
 	
-									$("input.numeric").numeric();
+									//$("input.numeric").numeric();
 									$("input.numeric").on("focus", function () {
 									   $(this).select();
 									});
@@ -640,51 +645,57 @@ function deleteRow(r) {
 }
 
 
-function GoToComp(Nme){
-	var thisname = Nme.replace(/\d+/g, '')
-	var cnt = $('#MyTable tr').length;
-	
-	cnt = cnt - 1;
-
-		var x = 0;
+	function GoToComp(Nme){
+		var thisname = Nme.replace(/\d+/g, '')
+		var cnt = $('#MyTable tr').length;
 		
-		for (i = 1; i <= cnt; i++) {
-			x = x + parseFloat($("#"+thisname+i).val());
+		cnt = cnt - 1;
+
+			var x = 0;
+			
+			for (i = 1; i <= cnt; i++) {
+				x = x + parseFloat($("#"+thisname+i).val().replace(/,/g,''));
+			}
+
+		
+		if(thisname=="txtnDebit"){
+							
+			$("#txtnDebit").val(x);
+			$("#txtnDebit").autoNumeric('destroy');
+			$("#txtnDebit").autoNumeric('init',{mDec:2,wEmpty:'zero'});
+			
 		}
+		else if(thisname=="txtnCredit"){
+			
+			$("#txtnCredit").val(x);
+			$("#txtnCredit").autoNumeric('destroy');
+			$("#txtnCredit").autoNumeric('init',{mDec:2,wEmpty:'zero'});
+			
+		}
+		
+		//Compute out of balance
+			if ($("#txtnDebit").val().replace(/,/g,'') >= $("#txtnCredit").val().replace(/,/g,'')){
+			var xcrd = $("#txtnDebit").val().replace(/,/g,'');
+			var xdeb = $("#txtnCredit").val().replace(/,/g,'');
+			}
+			else if($("#txtnCredit").val().replace(/,/g,'') >= $("#txtnDebit").val().replace(/,/g,'')){
+			var xdeb = $("#txtnDebit").val().replace(/,/g,'');
+			var xcrd = $("#txtnCredit").val().replace(/,/g,'');
+			}
+			else if((parseFloat($("#txtnCredit").val().replace(/,/g,'')) == 0 && parseFloat($("#txtnDebit").val().replace(/,/g,'')) == 0)){
+				var xdeb = 0;
+			var xcrd = 0;
+			}
+			
+			
+			txtnOutBal = Math.abs(xdeb - xcrd); 
+			
+			$("#txtnOutBal").val(txtnOutBal);
+			$("#txtnOutBal").autoNumeric('destroy');
+			$("#txtnOutBal").autoNumeric('init',{mDec:2,wEmpty:'zero'});
+			
 
-	
-	if(thisname=="txtnDebit"){
-						
-		$("#txtnDebit").val(x.toFixed(2));
-		
 	}
-	else if(thisname=="txtnCredit"){
-		
-		$("#txtnCredit").val(x.toFixed(2));
-		
-	}
-	
-	//Compute out of balance
-	  if ($("#txtnDebit").val() >= $("#txtnCredit").val()){
-		var xcrd = $("#txtnDebit").val();
-		var xdeb = $("#txtnCredit").val();
-	  }
-	  else if($("#txtnCredit").val() >= $("#txtnDebit").val()){
-		var xdeb = $("#txtnDebit").val();
-		var xcrd = $("#txtnCredit").val();
-	  }
-	  else if((parseFloat($("#txtnCredit").val()) == 0 && parseFloat($("#txtnDebit").val()) == 0)){
-	  	var xdeb = 0;
-		var xcrd = 0;
-	  }
-	  
-		
-		txtnOutBal = Math.abs(xdeb - xcrd); 
-		
-		$("#txtnOutBal").val(txtnOutBal.toFixed(2));
-		
-
-}
 
 function chkform(){
 	//Double Chk Journal Number

@@ -15,20 +15,23 @@ include('../include/access.php');
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Coop Financials</title>
+	<title>Myx Financials</title>
     
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="../Bootstrap/css/alert-modal.css">
+  <link rel="stylesheet" type="text/css" href="../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
 
-<script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../js/bootstrap3-typeahead.min.js"></script>
-<script src="../Bootstrap/js/jquery.numeric.js"></script>
-<script src="../Bootstrap/js/jquery.inputlimiter.min.js"></script>
+	<script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../js/bootstrap3-typeahead.min.js"></script>
+	<script src="../include/autoNumeric.js"></script>
+	<!--
+		<script src="../Bootstrap/js/jquery.numeric.js"></script>
+		<script src="../Bootstrap/js/jquery.inputlimiter.min.js"></script>
+	-->
 
-<script src="../Bootstrap/js/bootstrap.js"></script>
-<script src="../Bootstrap/js/moment.js"></script>
-<script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+	<script src="../Bootstrap/js/bootstrap.js"></script>
+	<script src="../Bootstrap/js/moment.js"></script>
+	<script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtctranno').focus();">
@@ -245,12 +248,13 @@ Back to Main<br>(ESC)</button>
 
 
 	$(function(){
-					$('#date_delivery').datetimepicker({
-									format: 'MM/DD/YYYY'
-						});
+		$('#date_delivery').datetimepicker({
+			format: 'MM/DD/YYYY',
+		});
 		
 		
-				$("input.numeric").numeric();
+				$("input.numeric").autoNumeric('init',{mDec:2,wEmpty: 'zero'});
+				//$("input.numeric").numeric();
 				$("input.numeric").on("focus", function () {
 					$(this).select();
 				});
@@ -398,111 +402,107 @@ Back to Main<br>(ESC)</button>
 
 	function InsertRows(thisKey,thisNme,rowCount){
 
-		//alert(thisKey +" and "+ thisNme);
 			if(thisKey==9){
-			$('#MyTable > tbody:last-child').append(
-							'<tr>'// need to change closing tag to an opening `<tr>` tag.
-							+'<td width="100px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtcAcctNo'+rowCount+'" id="txtcAcctNo'+rowCount+'"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();"></td>'
-							+'<td><input type="text" class="form-control input-xs" name="txtcAcctDesc'+rowCount+'" id="txtcAcctDesc'+rowCount+'"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();"></td>'
-							+'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit'+rowCount+'" id="txtnDebit'+rowCount+'" value="0.00" autocomplete="off"></td>'
-							+'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit'+rowCount+'" id="txtnCredit'+rowCount+'" value="0.00" autocomplete="off"></td>'
-				+'<td width="100px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtnSub'+rowCount+'" id="txtnSub'+rowCount+'" placeholder="Subsidiary..." autocomplete="off" onFocus="this.select();"></td>'
-				+'<td width="200px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtcRem'+rowCount+'" id="txtcRem'+rowCount+'" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"></td>'
-				+'<td width="40px" align="right"><input class="btn btn-danger btn-xs" type="button" id="row_'+rowCount+'_delete" value="delete" onClick="deleteRow(this);"/></td>'
-							+'</tr>');
+				$('#MyTable > tbody:last-child').append(
+					'<tr>'
+						+'<td width="100px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtcAcctNo'+rowCount+'" id="txtcAcctNo'+rowCount+'"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();"></td>'
+						+'<td><input type="text" class="form-control input-xs" name="txtcAcctDesc'+rowCount+'" id="txtcAcctDesc'+rowCount+'"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();"></td>'
+						+'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit'+rowCount+'" id="txtnDebit'+rowCount+'" value="0.00" autocomplete="off"></td>'
+						+'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit'+rowCount+'" id="txtnCredit'+rowCount+'" value="0.00" autocomplete="off"></td>'
+						+'<td width="100px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtnSub'+rowCount+'" id="txtnSub'+rowCount+'" placeholder="Subsidiary..." autocomplete="off" onFocus="this.select();"></td>'
+						+'<td width="200px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtcRem'+rowCount+'" id="txtcRem'+rowCount+'" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"></td>'
+						+'<td width="40px" align="right"><input class="btn btn-danger btn-xs" type="button" id="row_'+rowCount+'_delete" value="delete" onClick="deleteRow(this);"/></td>'
+					+'</tr>');
 							
 							$("#txtcAcctNo"+rowCount).typeahead({
-							autoSelect: true,
-							source: function(request, response) {
-								$.ajax({
-									url: "th_accounts.php",
-									dataType: "json",
-									data: {
-										query: $("#txtcAcctNo"+rowCount).val()
-									},
-									success: function (data) {
-										response(data);
-									}
-								});
-							},
-							displayText: function (item) {
-								return '<div style="border-top:1px solid gray; width: 300px"><span clas="dropdown-item-extra">'+item.name+'</span><br><small>' + item.id + '</small>';
-							},
-							highlighter: Object,
-							afterSelect: function(item) { 					
-											
-								$('#txtcAcctNo'+rowCount).val(item.id).change(); 
-								$('#txtcAcctDesc'+rowCount).val(item.name); 
-								$('#txtnDebit'+rowCount).focus();
-								
-							}
-						});
-
+								autoSelect: true,
+								source: function(request, response) {
+									$.ajax({
+										url: "th_accounts.php",
+										dataType: "json",
+										data: {
+											query: $("#txtcAcctNo"+rowCount).val()
+										},
+										success: function (data) {
+											response(data);
+										}
+									});
+								},
+								displayText: function (item) {
+									return '<div style="border-top:1px solid gray; width: 300px"><span clas="dropdown-item-extra">'+item.name+'</span><br><small>' + item.id + '</small>';
+								},
+								highlighter: Object,
+								afterSelect: function(item) { 					
+												
+									$('#txtcAcctNo'+rowCount).val(item.id).change(); 
+									$('#txtcAcctDesc'+rowCount).val(item.name); 
+									$('#txtnDebit'+rowCount).focus();
+									
+								}
+							});
 
 
 							$("#txtcAcctDesc"+rowCount).typeahead({
-							autoSelect: true,
-							source: function(request, response) {
-								$.ajax({
-									url: "th_accounts.php",
-									dataType: "json",
-									data: {
-										query: $("#txtcAcctDesc"+rowCount).val()
-									},
-									success: function (data) {
-										response(data);
-									}
-								});
-							},
-							displayText: function (item) {
-								return '<div style="border-top:1px solid gray; width: 300px"><span clas="dropdown-item-extra">'+item.name+'</span><br><small>' + item.id + '</small>';
-							},
-							highlighter: Object,
-							afterSelect: function(item) { 					
-											
-								$('#txtcAcctDesc'+rowCount).val(item.name).change(); 
-								$('#txtcAcctNo'+rowCount).val(item.id); 
-								$('#txtnDebit'+rowCount).focus();
-								
-							}
-						});
+								autoSelect: true,
+								source: function(request, response) {
+									$.ajax({
+										url: "th_accounts.php",
+										dataType: "json",
+										data: {
+											query: $("#txtcAcctDesc"+rowCount).val()
+										},
+										success: function (data) {
+											response(data);
+										}
+									});
+								},
+								displayText: function (item) {
+									return '<div style="border-top:1px solid gray; width: 300px"><span clas="dropdown-item-extra">'+item.name+'</span><br><small>' + item.id + '</small>';
+								},
+								highlighter: Object,
+								afterSelect: function(item) { 					
+												
+									$('#txtcAcctDesc'+rowCount).val(item.name).change(); 
+									$('#txtcAcctNo'+rowCount).val(item.id); 
+									$('#txtnDebit'+rowCount).focus();
+									
+								}
+							});
 
-				$('#MyTable :input').keydown(function(e) {
-					var cnt = $('#MyTable tr').length;
-					var inFocus = $(this).attr('id');
-					var thisName = inFocus.replace(/\d+/g, '')
-					var thisindex = inFocus.replace(/\D/g,'');
-					
-					var lstrow = parseInt(cnt)-1;
-					
-					if(thisName=="txtcRem"){
-						if(e.keyCode==9){
-						e.preventDefault();
-						}
-						if(parseInt(thisindex)==lstrow){
-						InsertRows(e.keyCode,thisName,cnt);
-						}
-					}
-			
-					tblnavigate(e.keyCode,inFocus);
-					
-				});
+							$('#MyTable :input').keydown(function(e) {
+								var cnt = $('#MyTable tr').length;
+								var inFocus = $(this).attr('id');
+								var thisName = inFocus.replace(/\d+/g, '')
+								var thisindex = inFocus.replace(/\D/g,'');
+								
+								var lstrow = parseInt(cnt)-1;
+								
+								if(thisName=="txtcRem"){
+									if(e.keyCode==9){
+									e.preventDefault();
+									}
+									if(parseInt(thisindex)==lstrow){
+									InsertRows(e.keyCode,thisName,cnt);
+									}
+								}
+						
+								tblnavigate(e.keyCode,inFocus);
+								
+							});
 				
 		
-										$("input.numeric").numeric();
-										$("input.numeric").on("focus", function () {
-											$(this).select();
-										});
+							$("input.numeric").autoNumeric('init',{mDec:2,wEmpty: 'zero'});
+							$("input.numeric").on("focus", function () {
+								$(this).select();
+							});
 										
-										$("input.numeric").on("keyup", function () {
-											GoToComp($(this).attr('name'));
-										});
+							$("input.numeric").on("keyup", function () {
+								GoToComp($(this).attr('name'));
+							});
 			
-				$("#txtcAcctNo"+rowCount).focus();
-			///	$("#txtcAcctNo"+rowCount).focus();
+							$("#txtcAcctNo"+rowCount).focus();
 
-
-		}
+			}
 
 	}
 
@@ -557,31 +557,35 @@ Back to Main<br>(ESC)</button>
 			var x = 0;
 			
 			for (i = 1; i <= cnt; i++) {
-				x = x + parseFloat($("#"+thisname+i).val());
+				x = x + parseFloat($("#"+thisname+i).val().replace(/,/g,''));
 			}
 
 		
 		if(thisname=="txtnDebit"){
 							
-			$("#txtnDebit").val(x.toFixed(2));
+			$("#txtnDebit").val(x);
+			$("#txtnDebit").autoNumeric('destroy');
+			$("#txtnDebit").autoNumeric('init',{mDec:2,wEmpty:'zero'});
 			
 		}
 		else if(thisname=="txtnCredit"){
 			
-			$("#txtnCredit").val(x.toFixed(2));
+			$("#txtnCredit").val(x);
+			$("#txtnCredit").autoNumeric('destroy');
+			$("#txtnCredit").autoNumeric('init',{mDec:2,wEmpty:'zero'});
 			
 		}
 		
 		//Compute out of balance
-			if ($("#txtnDebit").val() >= $("#txtnCredit").val()){
-			var xcrd = $("#txtnDebit").val();
-			var xdeb = $("#txtnCredit").val();
+			if ($("#txtnDebit").val().replace(/,/g,'') >= $("#txtnCredit").val().replace(/,/g,'')){
+			var xcrd = $("#txtnDebit").val().replace(/,/g,'');
+			var xdeb = $("#txtnCredit").val().replace(/,/g,'');
 			}
-			else if($("#txtnCredit").val() >= $("#txtnDebit").val()){
-			var xdeb = $("#txtnDebit").val();
-			var xcrd = $("#txtnCredit").val();
+			else if($("#txtnCredit").val().replace(/,/g,'') >= $("#txtnDebit").val().replace(/,/g,'')){
+			var xdeb = $("#txtnDebit").val().replace(/,/g,'');
+			var xcrd = $("#txtnCredit").val().replace(/,/g,'');
 			}
-			else if((parseFloat($("#txtnCredit").val()) == 0 && parseFloat($("#txtnDebit").val()) == 0)){
+			else if((parseFloat($("#txtnCredit").val().replace(/,/g,'')) == 0 && parseFloat($("#txtnDebit").val().replace(/,/g,'')) == 0)){
 				var xdeb = 0;
 			var xcrd = 0;
 			}
@@ -589,7 +593,9 @@ Back to Main<br>(ESC)</button>
 			
 			txtnOutBal = Math.abs(xdeb - xcrd); 
 			
-			$("#txtnOutBal").val(txtnOutBal.toFixed(2));
+			$("#txtnOutBal").val(txtnOutBal);
+			$("#txtnOutBal").autoNumeric('destroy');
+			$("#txtnOutBal").autoNumeric('init',{mDec:2,wEmpty:'zero'});
 			
 
 	}
