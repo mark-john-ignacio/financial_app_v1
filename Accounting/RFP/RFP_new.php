@@ -269,7 +269,7 @@ include('../../include/access2.php');
 
 $(document).ready(function() {
 
-	$("#txtnamount").autoNumeric('init',{mDec:2});
+	$("#txtnamount").autoNumeric('init',{mDec:2,wEmpty:'zero'});
 
   $('.datepick').datetimepicker({
     format: 'MM/DD/YYYY',

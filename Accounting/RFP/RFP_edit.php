@@ -461,6 +461,9 @@
 	});
 
 	$(document).ready(function() {
+
+		$("#txtnamount").autoNumeric('init',{mDec:2,wEmpty:'zero'});
+		
 		$('#txtChekDate').datetimepicker({
 			format: 'MM/DD/YYYY',
 		});

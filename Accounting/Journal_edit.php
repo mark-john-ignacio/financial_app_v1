@@ -266,35 +266,39 @@ if (mysqli_num_rows($sqlhead)!=0) {
             <input type="hidden" name="hdnACCCnt" id="hdnACCCnt">
 			</div>
 
-<br>
-<table width="100%" border="0" cellpadding="3">
-  <tr>
-    <td width="50%">
+			<br>
+			<table width="100%" border="0" cellpadding="3">
+				<tr>
+					<td width="50%">
 
-<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Journal.php';" id="btnMain" name="btnMain">
-Back to Main<br>(ESC)</button>
-   
-    <button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='Journal_new.php';" id="btnNew" name="btnNew">
-New<br>(F1)</button>
+						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Journal.php';" id="btnMain" name="btnMain">
+							Back to Main<br>(ESC)
+						</button>
+				
+						<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='Journal_new.php';" id="btnNew" name="btnNew">
+							New<br>(F1)
+						</button>
 
-    <button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
-Undo Edit<br>(CTRL+Z)
-    </button>
+						<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
+							Undo Edit<br>(CTRL+Z)
+						</button>
 
-   <!-- <button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php //echo $csalesno;?>');" id="btnPrint" name="btnPrint">
-Print<br>(F4)
-    </button>-->
-    
-    <button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
-Edit<br>(CTRL+E)    </button>
-    
-    <button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
-Save<br>(CTRL+S)    </button>
+						<!-- <button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php //echo $csalesno;?>');" id="btnPrint" name="btnPrint">
+							Print<br>(F4)
+						</button>-->
+					
+						<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
+							Edit<br>(CTRL+E)    
+						</button>
+					
+						<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
+							Save<br>(CTRL+S)    
+						</button>
 
-</td>
-    <td align="right">&nbsp;</td>
-  </tr>
-</table>
+					</td>
+					<td align="right">&nbsp;</td>
+				</tr>
+			</table>
 
     </fieldset>
 </form>
@@ -303,25 +307,25 @@ Save<br>(CTRL+S)    </button>
 }
 else{
 ?>
-<form action="Journal_edit.php" name="frmpos2" id="frmpos2" method="post">
-  <fieldset>
-   	<legend>Record Journal Entry </legend>	
-<table width="100%" border="0">
-  <tr>
-    <tH width="100">JOURNAL No.:</tH>
-    <td style="padding:2px;">
-    <div class="col-xs-2 nopadding">
-      <input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" placeholder="Enter Journal No..." required autocomplete="off" value="<?php echo $cjeno;?>"  onKeyUp="chkSIEnter(event.keyCode,'frmpos2');">
-    </div>
-    </td>
-    </tr>
-  <tr>
-    <tH colspan="4" align="center" style="padding:10px"><font color="#FF0000"><b>Journal No. DID NOT EXIST!</b></font></tH>
-    </tr>
-</table>
-</fieldset>
-</form>
-<?php
+	<form action="Journal_edit.php" name="frmpos2" id="frmpos2" method="post">
+		<fieldset>
+			<legend>Record Journal Entry </legend>	
+			<table width="100%" border="0">
+				<tr>
+					<tH width="100">JOURNAL No.:</tH>
+					<td style="padding:2px;">
+					<div class="col-xs-2 nopadding">
+						<input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" placeholder="Enter Journal No..." required autocomplete="off" value="<?php echo $cjeno;?>"  onKeyUp="chkSIEnter(event.keyCode,'frmpos2');">
+					</div>
+					</td>
+					</tr>
+				<tr>
+					<tH colspan="4" align="center" style="padding:10px"><font color="#FF0000"><b>Journal No. DID NOT EXIST!</b></font></tH>
+				</tr>
+			</table>
+		</fieldset>
+	</form>
+	<?php
 }
 ?>
 
@@ -343,6 +347,8 @@ else{
     </div>
 </div>
 
+</body>
+</html>
 
 <script type="text/javascript">
 
@@ -381,12 +387,13 @@ else{
 
 	});
 
-$(function(){
-	       $('#date_delivery').datetimepicker({
-                 format: 'MM/DD/YYYY'
-           });
+	$(function(){
+
+	    $('#date_delivery').datetimepicker({
+        format: 'MM/DD/YYYY'
+      });
 	
-					 $("input.numeric").autoNumeric('init',{mDec:2,wEmpty: 'zero'});
+			$("input.numeric").autoNumeric('init',{mDec:2,wEmpty: 'zero'});
 			//$("input.numeric").numeric();
 			$("input.numeric").on("focus", function () {
 				$(this).select();
@@ -399,434 +406,427 @@ $(function(){
 			$("#txtnDebit").autoNumeric('init',{mDec:2,wEmpty:'zero'});
 			$("#txtnCredit").autoNumeric('init',{mDec:2,wEmpty:'zero'});
 
-
-	$('#MyTable :input').keydown(function(e) {
-
-				
-	   var cnt = $('#MyTable tr').length;
-	   var inFocus = $(this).attr('id');
-	   var thisName = inFocus.replace(/\d+/g, '');
-	   var thisindex = inFocus.replace(/\D/g,'');
-		
-		var lstrow = parseInt(cnt)-1;
-		
-	   if(thisName=="txtcRem"){
-		   if(e.keyCode==9){
-		    e.preventDefault();
-		   }
-		  if(parseInt(thisindex)==lstrow){
-	   	   InsertRows(e.keyCode,thisName,cnt);
-		  }
-	   }
-	   
-	   
-	   
-	   //TABLE NAVIGATION
-	   tblnavigate(e.keyCode,inFocus);	   
-	   
-	});
-
-
-
-	
-});
-
-function tblnavigate(x,txtinput){
-	
-				var inputCNT = txtinput.replace(/\D/g,'');
-				var inputNME = txtinput.replace(/\d+/g, '');
-				 
-				switch(x){
-					case 39: // <Left>
-						if(inputNME=="txtcAcctNo"){
-							$("#txtcAcctDesc"+inputCNT).focus();
-						}
-						else if(inputNME=="txtcAcctDesc"){
-							$("#txtnDebit"+inputCNT).focus();
-						}
-						else if(inputNME=="txtnDebit"){
-							$("#txtnCredit"+inputCNT).focus();
-						}
-						else if(inputNME=="txtnCredit"){
-							$("#txtnSub"+inputCNT).focus();
-						}
-						else if(inputNME=="txtnSub"){
-							$("#txtcRem"+inputCNT).focus();
-						}
-						else if(inputNME=="txtcRem"){
-							var idx =  parseInt(inputCNT) + 1;
-							$("#txtcAcctNo"+idx).focus();
-						}
-						 
-						break;
-					case 38: // <Up>  
-					 	var idx =  parseInt(inputCNT) - 1;
-               			$("#"+inputNME+idx).focus();
-						break;
-					case 37: // <Right>
-						if(inputNME=="txtcAcctNo"){
-							var idx =  parseInt(inputCNT) - 1;
-							$("#txtcRem"+idx).focus();
-						}
-						else if(inputNME=="txtcAcctDesc"){
-							$("#txtcAcctNo"+inputCNT).focus();
-						}
-						else if(inputNME=="txtnDebit"){
-							$("#txtcAcctDesc"+inputCNT).focus();
-						}
-						else if(inputNME=="txtnCredit"){
-							$("#txtnDebit"+inputCNT).focus();
-						}
-						else if(inputNME=="txtnSub"){
-							$("#txtnCredit"+inputCNT).focus();
-						}
-						else if(inputNME=="txtcRem"){
-							$("#txtnSub"+inputCNT).focus();
-						}
-
-						break;
-					case 40: // <Down>
-					 	var idx =  parseInt(inputCNT) + 1;
-               			$("#"+inputNME+idx).focus();
-						break;
-				}       
-
-
-}
-
-
-function InsertRows(thisKey,thisNme,rowCount){
-
-	//alert(thisKey +" and "+ thisNme);
-  	if(thisKey==9){
-		$('#MyTable > tbody:last-child').append(
-            '<tr>'// need to change closing tag to an opening `<tr>` tag.
-            +'<td width="100px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtcAcctNo'+rowCount+'" id="txtcAcctNo'+rowCount+'"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();"></td>'
-            +'<td><input type="text" class="form-control input-xs" name="txtcAcctDesc'+rowCount+'" id="txtcAcctDesc'+rowCount+'"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();"></td>'
-            +'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit'+rowCount+'" id="txtnDebit'+rowCount+'" value="0.00" autocomplete="off"></td>'
-            +'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit'+rowCount+'" id="txtnCredit'+rowCount+'" value="0.00" autocomplete="off"></td>'
-			+'<td width="100px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtnSub'+rowCount+'" id="txtnSub'+rowCount+'" placeholder="Subsidiary..." autocomplete="off" onFocus="this.select();"></td>'
-			+'<td width="200px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtcRem'+rowCount+'" id="txtcRem'+rowCount+'" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"></td>'
-			+'<td width="40px" align="right"><input class="btn btn-danger btn-xs" type="button" id="row_'+rowCount+'_delete" value="delete" onClick="deleteRow(this);"/></td>'
-            +'</tr>');
-						
-				  	$("#txtcAcctNo"+rowCount).typeahead({
-						autoSelect: true,
-						source: function(request, response) {
-							$.ajax({
-								url: "th_accounts.php",
-								dataType: "json",
-								data: {
-									query: $("#txtcAcctNo"+rowCount).val()
-								},
-								success: function (data) {
-									response(data);
-								}
-							});
-						},
-						displayText: function (item) {
-							return '<div style="border-top:1px solid gray; width: 300px"><span clas="dropdown-item-extra">'+item.name+'</span><br><small>' + item.id + '</small>';
-						},
-						highlighter: Object,
-						afterSelect: function(item) { 					
-										
-							$('#txtcAcctNo'+rowCount).val(item.id).change(); 
-							$('#txtcAcctDesc'+rowCount).val(item.name); 
-							$('#txtnDebit'+rowCount).focus();
-							
-						}
-					});
-
-
-
-				  	$("#txtcAcctDesc"+rowCount).typeahead({
-						autoSelect: true,
-						source: function(request, response) {
-							$.ajax({
-								url: "th_accounts.php",
-								dataType: "json",
-								data: {
-									query: $("#txtcAcctDesc"+rowCount).val()
-								},
-								success: function (data) {
-									response(data);
-								}
-							});
-						},
-						displayText: function (item) {
-							return '<div style="border-top:1px solid gray; width: 300px"><span clas="dropdown-item-extra">'+item.name+'</span><br><small>' + item.id + '</small>';
-						},
-						highlighter: Object,
-						afterSelect: function(item) { 					
-										
-							$('#txtcAcctDesc'+rowCount).val(item.name).change(); 
-							$('#txtcAcctNo'+rowCount).val(item.id); 
-							$('#txtnDebit'+rowCount).focus();
-							
-						}
-					});
-
 			$('#MyTable :input').keydown(function(e) {
-			   var cnt = $('#MyTable tr').length;
-			   var inFocus = $(this).attr('id');
-			   var thisName = inFocus.replace(/\d+/g, '')
-			   var thisindex = inFocus.replace(/\D/g,'');
+
+						
+				var cnt = $('#MyTable tr').length;
+				var inFocus = $(this).attr('id');
+				var thisName = inFocus.replace(/\d+/g, '');
+				var thisindex = inFocus.replace(/\D/g,'');
 				
 				var lstrow = parseInt(cnt)-1;
 				
-			   if(thisName=="txtcRem"){
-				   if(e.keyCode==9){
-					e.preventDefault();
-				   }
-				  if(parseInt(thisindex)==lstrow){
-				   InsertRows(e.keyCode,thisName,cnt);
-				  }
-			   }
-	   
-			   tblnavigate(e.keyCode,inFocus);
-			   
-			});
-			
-			$("input.numeric").autoNumeric('init',{mDec:2,wEmpty: 'zero'});
-	
-									//$("input.numeric").numeric();
-									$("input.numeric").on("focus", function () {
-									   $(this).select();
-									});
-									
-									$("input.numeric").on("keyup", function () {
-									   GoToComp($(this).attr('name'));
-									});
-		
-			$("#txtcAcctNo"+rowCount).focus();
-		///	$("#txtcAcctNo"+rowCount).focus();
-
-
-	}
-
-}
-
-function deleteRow(r) {
-	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
-	var lastRow = tbl.length;
-	var i=r.parentNode.parentNode.rowIndex;
-	 document.getElementById('MyTable').deleteRow(i);
-
-	 var lastRow = tbl.length;
-	 var z; //for loop counter changing textboxes ID;
-	 
-		for (z=i+1; z<=lastRow; z++){ 
-			var tempcAcctNo = document.getElementById('txtcAcctNo' + z);
-			var tempcAcctDesc = document.getElementById('txtcAcctDesc' + z);
-			var tempnDebit = document.getElementById('txtnDebit' + z);
-			var tempnCredit= document.getElementById('txtnCredit' + z);
-			var tempnSub= document.getElementById('txtnSub' + z);
-			var tempcRem= document.getElementById('txtcRem' + z);
-			var tempdel = document.getElementById('row_'+z+'_delete');
-			
-			var x = z-1;
-			tempcAcctNo.id = "txtcAcctNo" + x;
-			tempcAcctNo.name = "txtcAcctNo" + x;
-			tempcAcctDesc.id = "txtcAcctDesc" + x;
-			tempcAcctDesc.name = "txtcAcctDesc" + x;
-			tempnDebit.id = "txtnDebit" + x;
-			tempnDebit.name = "txtnDebit" + x;
-			tempnCredit.id = "txtnCredit" + x;
-			tempnCredit.name = "txtnCredit" + x;
-			tempnSub.id = "txtnSub" + x;
-			tempnSub.name = "txtnSub" + x;
-			tempcRem.id = "txtcRem" + x;
-			tempcRem.name = "txtcRem" + x;
-			tempdel.id = "row_"+x+"_delete";
-			tempdel .name = "row_"+x+"_delete"; 
-			//tempnqty.onkeyup = function(){ computeamt(this.value,x,event.keyCode); };
-
-		}
-		GoToComp("txtnDebit" + x);
-		
-		GoToComp("txtnCredit" + x);
-}
-
-
-	function GoToComp(Nme){
-		var thisname = Nme.replace(/\d+/g, '')
-		var cnt = $('#MyTable tr').length;
-		
-		cnt = cnt - 1;
-
-			var x = 0;
-			
-			for (i = 1; i <= cnt; i++) {
-				x = x + parseFloat($("#"+thisname+i).val().replace(/,/g,''));
-			}
-
-		
-		if(thisname=="txtnDebit"){
-							
-			$("#txtnDebit").val(x);
-			$("#txtnDebit").autoNumeric('destroy');
-			$("#txtnDebit").autoNumeric('init',{mDec:2,wEmpty:'zero'});
-			
-		}
-		else if(thisname=="txtnCredit"){
-			
-			$("#txtnCredit").val(x);
-			$("#txtnCredit").autoNumeric('destroy');
-			$("#txtnCredit").autoNumeric('init',{mDec:2,wEmpty:'zero'});
-			
-		}
-		
-		//Compute out of balance
-			if ($("#txtnDebit").val().replace(/,/g,'') >= $("#txtnCredit").val().replace(/,/g,'')){
-			var xcrd = $("#txtnDebit").val().replace(/,/g,'');
-			var xdeb = $("#txtnCredit").val().replace(/,/g,'');
-			}
-			else if($("#txtnCredit").val().replace(/,/g,'') >= $("#txtnDebit").val().replace(/,/g,'')){
-			var xdeb = $("#txtnDebit").val().replace(/,/g,'');
-			var xcrd = $("#txtnCredit").val().replace(/,/g,'');
-			}
-			else if((parseFloat($("#txtnCredit").val().replace(/,/g,'')) == 0 && parseFloat($("#txtnDebit").val().replace(/,/g,'')) == 0)){
-				var xdeb = 0;
-			var xcrd = 0;
-			}
-			
-			
-			txtnOutBal = Math.abs(xdeb - xcrd); 
-			
-			$("#txtnOutBal").val(txtnOutBal);
-			$("#txtnOutBal").autoNumeric('destroy');
-			$("#txtnOutBal").autoNumeric('init',{mDec:2,wEmpty:'zero'});
-			
-
-	}
-
-function chkform(){
-	//Double Chk Journal Number
-		var ISOK = "YES";
-	
-	if ($("#txtctranno").val()==""){
-
-			$("#AlertMsg").html("");
-								
-			$("#AlertMsg").html("Journal No. Required!");
-			$("#alertbtnOK").show();
-			$("#AlertModal").modal('show');
-
-		$("#txtctranno").focus();
-		return false;
-		
-		ISOK = "NO";
-	}
-	
-	//Details Checking
-	var cnt = $('#MyTable tr').length;
-	cnt  = parseInt(cnt)-1;
-	
-	for (i = 1; i <= cnt; i++) {
-		if($("#txtcAcctNo"+i).val() == "" || $("#txtcAcctDesc"+i).val() == ""){
-			$("#AlertMsg").html("");
-								
-			$("#AlertMsg").html("Valid Account ID and Description is required!");
-			$("#alertbtnOK").show();
-			$("#AlertModal").modal('show');
-
-			$("#txtcAcctNo"+i).focus();
-			
-			return false;
-			
-			
-			
-			ISOK = "NO";
-		}
-		
-		if($("#txtnCredit"+i).val().replace(/,/g,'')==0 && $("#txtnDebit"+i).val().replace(/,/g,'')==0){
-			$("#AlertMsg").html("");
-								
-			$("#AlertMsg").html("Input Debit or Credit amount for this row!");
-			$("#alertbtnOK").show();
-			$("#AlertModal").modal('show');
-			$("#txtnDebit"+i).focus();
-			
-			return false;
-			
-			
-			
-			ISOK = "NO";
-		}
-		
-	}
-	
-	if(parseFloat($("#txtnDebit").val().replace(/,/g,'')) != parseFloat($("#txtnCredit").val().replace(/,/g,''))){ 
-			$("#AlertMsg").html("");
-								
-			$("#AlertMsg").html("Unbalanced details!");
-			$("#alertbtnOK").show();
-			$("#AlertModal").modal('show');
-		return false;
-		
-		ISOK = "NO";
-	}
-	
-	if(ISOK=="YES"){
-		$("#hdnACCCnt").val(cnt);
-		document.getElementById("frmpos").submit();
-	}
-	else{
-		return false;
-	}
-}
-
-
-function chkSIEnter(keyCode,frm){
-	if(keyCode==13){
-		document.getElementById(frm).action = "Journal_edit.php";
-		document.getElementById(frm).submit();
-	}
-}
-
-function disabled(){
-
-	$("#frmpos :input").attr("disabled", true);
-	
-	
-	$("#txtctranno").attr("disabled", false);
-	$("#btnMain").attr("disabled", false);
-	$("#btnNew").attr("disabled", false);
-	$("#btnPrint").attr("disabled", false);
-	$("#btnEdit").attr("disabled", false);
-
-}
-
-function enabled(){
-	if(document.getElementById("hdnposted").value==1 || document.getElementById("hdncancel").value==1){
-		if(document.getElementById("hdnposted").value==1){
-			var msgsx = "POSTED"
-		}
-		
-		if(document.getElementById("hdncancel").value==1){
-			var msgsx = "CANCELLED"
-		}
-		
-		$("#statmsgz").html("&nbsp;&nbsp;TRANSACTION IS ALREADY "+msgsx+", EDITING IS NOT ALLOWED!");
-		//$("#statmsgz").show();
-		
-	}
-	else{
-
-		$("#frmpos :input").attr("disabled", false);
-		
-			$("#txtctranno").val($("#hdntranno").val());
-			$("#txtctranno").attr("readonly", true);
-			$("#btnMain").attr("disabled", true);
-			$("#btnNew").attr("disabled", true);
-			$("#btnPrint").attr("disabled", true);
-			$("#btnEdit").attr("disabled", true);
+				if(thisName=="txtcRem"){
+					if(e.keyCode==9){
+						e.preventDefault();
+					}
+					if(parseInt(thisindex)==lstrow){
+						InsertRows(e.keyCode,thisName,cnt);
+					}
+				}
 				
+				
+				
+				//TABLE NAVIGATION
+				tblnavigate(e.keyCode,inFocus);	   
+				
+			});
+
+	});
+
+	function tblnavigate(x,txtinput){
+		
+					var inputCNT = txtinput.replace(/\D/g,'');
+					var inputNME = txtinput.replace(/\d+/g, '');
+					
+					switch(x){
+						case 39: // <Left>
+							if(inputNME=="txtcAcctNo"){
+								$("#txtcAcctDesc"+inputCNT).focus();
+							}
+							else if(inputNME=="txtcAcctDesc"){
+								$("#txtnDebit"+inputCNT).focus();
+							}
+							else if(inputNME=="txtnDebit"){
+								$("#txtnCredit"+inputCNT).focus();
+							}
+							else if(inputNME=="txtnCredit"){
+								$("#txtnSub"+inputCNT).focus();
+							}
+							else if(inputNME=="txtnSub"){
+								$("#txtcRem"+inputCNT).focus();
+							}
+							else if(inputNME=="txtcRem"){
+								var idx =  parseInt(inputCNT) + 1;
+								$("#txtcAcctNo"+idx).focus();
+							}
+							
+							break;
+						case 38: // <Up>  
+							var idx =  parseInt(inputCNT) - 1;
+											$("#"+inputNME+idx).focus();
+							break;
+						case 37: // <Right>
+							if(inputNME=="txtcAcctNo"){
+								var idx =  parseInt(inputCNT) - 1;
+								$("#txtcRem"+idx).focus();
+							}
+							else if(inputNME=="txtcAcctDesc"){
+								$("#txtcAcctNo"+inputCNT).focus();
+							}
+							else if(inputNME=="txtnDebit"){
+								$("#txtcAcctDesc"+inputCNT).focus();
+							}
+							else if(inputNME=="txtnCredit"){
+								$("#txtnDebit"+inputCNT).focus();
+							}
+							else if(inputNME=="txtnSub"){
+								$("#txtnCredit"+inputCNT).focus();
+							}
+							else if(inputNME=="txtcRem"){
+								$("#txtnSub"+inputCNT).focus();
+							}
+
+							break;
+						case 40: // <Down>
+							var idx =  parseInt(inputCNT) + 1;
+											$("#"+inputNME+idx).focus();
+							break;
+					}       
+
+
 	}
 
-}
+
+	function InsertRows(thisKey,thisNme,rowCount){
+
+		//alert(thisKey +" and "+ thisNme);
+			if(thisKey==9){
+			$('#MyTable > tbody:last-child').append(
+							'<tr>'// need to change closing tag to an opening `<tr>` tag.
+							+'<td width="100px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtcAcctNo'+rowCount+'" id="txtcAcctNo'+rowCount+'"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();"></td>'
+							+'<td><input type="text" class="form-control input-xs" name="txtcAcctDesc'+rowCount+'" id="txtcAcctDesc'+rowCount+'"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();"></td>'
+							+'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit'+rowCount+'" id="txtnDebit'+rowCount+'" value="0.00" autocomplete="off"></td>'
+							+'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit'+rowCount+'" id="txtnCredit'+rowCount+'" value="0.00" autocomplete="off"></td>'
+				+'<td width="100px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtnSub'+rowCount+'" id="txtnSub'+rowCount+'" placeholder="Subsidiary..." autocomplete="off" onFocus="this.select();"></td>'
+				+'<td width="200px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtcRem'+rowCount+'" id="txtcRem'+rowCount+'" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"></td>'
+				+'<td width="40px" align="right"><input class="btn btn-danger btn-xs" type="button" id="row_'+rowCount+'_delete" value="delete" onClick="deleteRow(this);"/></td>'
+							+'</tr>');
+							
+							$("#txtcAcctNo"+rowCount).typeahead({
+							autoSelect: true,
+							source: function(request, response) {
+								$.ajax({
+									url: "th_accounts.php",
+									dataType: "json",
+									data: {
+										query: $("#txtcAcctNo"+rowCount).val()
+									},
+									success: function (data) {
+										response(data);
+									}
+								});
+							},
+							displayText: function (item) {
+								return '<div style="border-top:1px solid gray; width: 300px"><span clas="dropdown-item-extra">'+item.name+'</span><br><small>' + item.id + '</small>';
+							},
+							highlighter: Object,
+							afterSelect: function(item) { 					
+											
+								$('#txtcAcctNo'+rowCount).val(item.id).change(); 
+								$('#txtcAcctDesc'+rowCount).val(item.name); 
+								$('#txtnDebit'+rowCount).focus();
+								
+							}
+						});
+
+
+
+							$("#txtcAcctDesc"+rowCount).typeahead({
+							autoSelect: true,
+							source: function(request, response) {
+								$.ajax({
+									url: "th_accounts.php",
+									dataType: "json",
+									data: {
+										query: $("#txtcAcctDesc"+rowCount).val()
+									},
+									success: function (data) {
+										response(data);
+									}
+								});
+							},
+							displayText: function (item) {
+								return '<div style="border-top:1px solid gray; width: 300px"><span clas="dropdown-item-extra">'+item.name+'</span><br><small>' + item.id + '</small>';
+							},
+							highlighter: Object,
+							afterSelect: function(item) { 					
+											
+								$('#txtcAcctDesc'+rowCount).val(item.name).change(); 
+								$('#txtcAcctNo'+rowCount).val(item.id); 
+								$('#txtnDebit'+rowCount).focus();
+								
+							}
+						});
+
+				$('#MyTable :input').keydown(function(e) {
+					var cnt = $('#MyTable tr').length;
+					var inFocus = $(this).attr('id');
+					var thisName = inFocus.replace(/\d+/g, '')
+					var thisindex = inFocus.replace(/\D/g,'');
+					
+					var lstrow = parseInt(cnt)-1;
+					
+					if(thisName=="txtcRem"){
+						if(e.keyCode==9){
+						e.preventDefault();
+						}
+						if(parseInt(thisindex)==lstrow){
+						InsertRows(e.keyCode,thisName,cnt);
+						}
+					}
+			
+					tblnavigate(e.keyCode,inFocus);
+					
+				});
+				
+				$("input.numeric").autoNumeric('init',{mDec:2,wEmpty: 'zero'});
+		
+										//$("input.numeric").numeric();
+										$("input.numeric").on("focus", function () {
+											$(this).select();
+										});
+										
+										$("input.numeric").on("keyup", function () {
+											GoToComp($(this).attr('name'));
+										});
+			
+				$("#txtcAcctNo"+rowCount).focus();
+			///	$("#txtcAcctNo"+rowCount).focus();
+
+
+		}
+
+	}
+
+	function deleteRow(r) {
+		var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
+		var lastRow = tbl.length;
+		var i=r.parentNode.parentNode.rowIndex;
+		document.getElementById('MyTable').deleteRow(i);
+
+		var lastRow = tbl.length;
+		var z; //for loop counter changing textboxes ID;
+		
+			for (z=i+1; z<=lastRow; z++){ 
+				var tempcAcctNo = document.getElementById('txtcAcctNo' + z);
+				var tempcAcctDesc = document.getElementById('txtcAcctDesc' + z);
+				var tempnDebit = document.getElementById('txtnDebit' + z);
+				var tempnCredit= document.getElementById('txtnCredit' + z);
+				var tempnSub= document.getElementById('txtnSub' + z);
+				var tempcRem= document.getElementById('txtcRem' + z);
+				var tempdel = document.getElementById('row_'+z+'_delete');
+				
+				var x = z-1;
+				tempcAcctNo.id = "txtcAcctNo" + x;
+				tempcAcctNo.name = "txtcAcctNo" + x;
+				tempcAcctDesc.id = "txtcAcctDesc" + x;
+				tempcAcctDesc.name = "txtcAcctDesc" + x;
+				tempnDebit.id = "txtnDebit" + x;
+				tempnDebit.name = "txtnDebit" + x;
+				tempnCredit.id = "txtnCredit" + x;
+				tempnCredit.name = "txtnCredit" + x;
+				tempnSub.id = "txtnSub" + x;
+				tempnSub.name = "txtnSub" + x;
+				tempcRem.id = "txtcRem" + x;
+				tempcRem.name = "txtcRem" + x;
+				tempdel.id = "row_"+x+"_delete";
+				tempdel .name = "row_"+x+"_delete"; 
+				//tempnqty.onkeyup = function(){ computeamt(this.value,x,event.keyCode); };
+
+			}
+			GoToComp("txtnDebit" + x);
+			
+			GoToComp("txtnCredit" + x);
+	}
+
+
+		function GoToComp(Nme){
+			var thisname = Nme.replace(/\d+/g, '')
+			var cnt = $('#MyTable tr').length;
+			
+			cnt = cnt - 1;
+
+				var x = 0;
+				
+				for (i = 1; i <= cnt; i++) {
+					x = x + parseFloat($("#"+thisname+i).val().replace(/,/g,''));
+				}
+
+			
+			if(thisname=="txtnDebit"){
+								
+				$("#txtnDebit").val(x);
+				$("#txtnDebit").autoNumeric('destroy');
+				$("#txtnDebit").autoNumeric('init',{mDec:2,wEmpty:'zero'});
+				
+			}
+			else if(thisname=="txtnCredit"){
+				
+				$("#txtnCredit").val(x);
+				$("#txtnCredit").autoNumeric('destroy');
+				$("#txtnCredit").autoNumeric('init',{mDec:2,wEmpty:'zero'});
+				
+			}
+			
+			//Compute out of balance
+				if ($("#txtnDebit").val().replace(/,/g,'') >= $("#txtnCredit").val().replace(/,/g,'')){
+				var xcrd = $("#txtnDebit").val().replace(/,/g,'');
+				var xdeb = $("#txtnCredit").val().replace(/,/g,'');
+				}
+				else if($("#txtnCredit").val().replace(/,/g,'') >= $("#txtnDebit").val().replace(/,/g,'')){
+				var xdeb = $("#txtnDebit").val().replace(/,/g,'');
+				var xcrd = $("#txtnCredit").val().replace(/,/g,'');
+				}
+				else if((parseFloat($("#txtnCredit").val().replace(/,/g,'')) == 0 && parseFloat($("#txtnDebit").val().replace(/,/g,'')) == 0)){
+					var xdeb = 0;
+				var xcrd = 0;
+				}
+				
+				
+				txtnOutBal = Math.abs(xdeb - xcrd); 
+				
+				$("#txtnOutBal").val(txtnOutBal);
+				$("#txtnOutBal").autoNumeric('destroy');
+				$("#txtnOutBal").autoNumeric('init',{mDec:2,wEmpty:'zero'});
+				
+
+		}
+
+	function chkform(){
+		//Double Chk Journal Number
+			var ISOK = "YES";
+		
+		if ($("#txtctranno").val()==""){
+
+				$("#AlertMsg").html("");
+									
+				$("#AlertMsg").html("Journal No. Required!");
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
+
+			$("#txtctranno").focus();
+			return false;
+			
+			ISOK = "NO";
+		}
+		
+		//Details Checking
+		var cnt = $('#MyTable tr').length;
+		cnt  = parseInt(cnt)-1;
+		
+		for (i = 1; i <= cnt; i++) {
+			if($("#txtcAcctNo"+i).val() == "" || $("#txtcAcctDesc"+i).val() == ""){
+				$("#AlertMsg").html("");
+									
+				$("#AlertMsg").html("Valid Account ID and Description is required!");
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
+
+				$("#txtcAcctNo"+i).focus();
+				
+				return false;
+				
+				
+				
+				ISOK = "NO";
+			}
+			
+			if($("#txtnCredit"+i).val().replace(/,/g,'')==0 && $("#txtnDebit"+i).val().replace(/,/g,'')==0){
+				$("#AlertMsg").html("");
+									
+				$("#AlertMsg").html("Input Debit or Credit amount for this row!");
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
+				$("#txtnDebit"+i).focus();
+				
+				return false;
+				
+				
+				
+				ISOK = "NO";
+			}
+			
+		}
+		
+		if(parseFloat($("#txtnDebit").val().replace(/,/g,'')) != parseFloat($("#txtnCredit").val().replace(/,/g,''))){ 
+				$("#AlertMsg").html("");
+									
+				$("#AlertMsg").html("Unbalanced details!");
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
+			return false;
+			
+			ISOK = "NO";
+		}
+		
+		if(ISOK=="YES"){
+			$("#hdnACCCnt").val(cnt);
+			document.getElementById("frmpos").submit();
+		}
+		else{
+			return false;
+		}
+	}
+
+
+	function chkSIEnter(keyCode,frm){
+		if(keyCode==13){
+			document.getElementById(frm).action = "Journal_edit.php";
+			document.getElementById(frm).submit();
+		}
+	}
+
+	function disabled(){
+
+		$("#frmpos :input").attr("disabled", true);
+		
+		
+		$("#txtctranno").attr("disabled", false);
+		$("#btnMain").attr("disabled", false);
+		$("#btnNew").attr("disabled", false);
+		$("#btnPrint").attr("disabled", false);
+		$("#btnEdit").attr("disabled", false);
+
+	}
+
+	function enabled(){
+		if(document.getElementById("hdnposted").value==1 || document.getElementById("hdncancel").value==1){
+			if(document.getElementById("hdnposted").value==1){
+				var msgsx = "POSTED"
+			}
+			
+			if(document.getElementById("hdncancel").value==1){
+				var msgsx = "CANCELLED"
+			}
+			
+			$("#statmsgz").html("&nbsp;&nbsp;TRANSACTION IS ALREADY "+msgsx+", EDITING IS NOT ALLOWED!");
+			//$("#statmsgz").show();
+			
+		}
+		else{
+
+			$("#frmpos :input").attr("disabled", false);
+			
+				$("#txtctranno").val($("#hdntranno").val());
+				$("#txtctranno").attr("readonly", true);
+				$("#btnMain").attr("disabled", true);
+				$("#btnNew").attr("disabled", true);
+				$("#btnPrint").attr("disabled", true);
+				$("#btnEdit").attr("disabled", true);
+					
+		}
+
+	}
 
 </script>
-
-</body>
-</html>
