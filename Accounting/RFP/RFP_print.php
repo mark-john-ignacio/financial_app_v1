@@ -436,7 +436,7 @@ function numberTowords($num)
 
           <tr>
             <td> <?=$row['cacctdesc']?> </td>
-            <td align="right" class="tdpadx tdright" nowrap><?php echo number_format($Gross,2);?></td>
+            <td align="right" class="tdpadx tdright" nowrap><?php echo number_format($row['namt'],2);?></td>
             <td>&nbsp;</td>
           </tr>
           <?php
