@@ -396,6 +396,9 @@ $(function(){
 				GoToComp($(this).attr('name'));
 			});
 
+			$("#txtnDebit").autoNumeric('init',{mDec:2,wEmpty:'zero'});
+			$("#txtnCredit").autoNumeric('init',{mDec:2,wEmpty:'zero'});
+
 
 	$('#MyTable :input').keydown(function(e) {
 
@@ -736,7 +739,7 @@ function chkform(){
 			ISOK = "NO";
 		}
 		
-		if($("#txtnCredit"+i).val()==0 && $("#txtnDebit"+i).val()==0){
+		if($("#txtnCredit"+i).val().replace(/,/g,'')==0 && $("#txtnDebit"+i).val().replace(/,/g,'')==0){
 			$("#AlertMsg").html("");
 								
 			$("#AlertMsg").html("Input Debit or Credit amount for this row!");
@@ -753,7 +756,7 @@ function chkform(){
 		
 	}
 	
-	if(parseFloat($("#txtnDebit").val()) != parseFloat($("#txtnCredit").val())){ 
+	if(parseFloat($("#txtnDebit").val().replace(/,/g,'')) != parseFloat($("#txtnCredit").val().replace(/,/g,''))){ 
 			$("#AlertMsg").html("");
 								
 			$("#AlertMsg").html("Unbalanced details!");

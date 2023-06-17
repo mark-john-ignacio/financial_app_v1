@@ -425,6 +425,9 @@ function numberTowords($num)
           from apv_t A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid
           where A.compcode='$company' and A.ctranno = '$RefAPV' 
           Group By A.cacctno, B.cacctdesc";
+
+					//echo $xsql;
+
           $sqlhead = mysqli_query($con,$xsql);
           if (mysqli_num_rows($sqlhead)!=0) {
             while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){

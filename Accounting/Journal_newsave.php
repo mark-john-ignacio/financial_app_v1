@@ -12,6 +12,9 @@ $cSINo =  mysqli_real_escape_string($con, $_REQUEST['txtctranno']);
 	$cRemarks =  mysqli_real_escape_string($con, $_REQUEST['txtremarks']); 
 	$cTotDeb =  mysqli_real_escape_string($con, $_REQUEST['txtnDebit']);
 	$cTotCrd =  mysqli_real_escape_string($con, $_REQUEST['txtnCredit']);
+
+	$cTotDeb = str_replace( ',', '', $cTotDeb );
+	$cTotCrd = str_replace( ',', '', $cTotCrd );
 	//$cTotTax =  mysqli_real_escape_string($con, $_REQUEST['txtnTax']);
 	$cTotTax = 0;
 	
@@ -41,6 +44,9 @@ $cSINo =  mysqli_real_escape_string($con, $_REQUEST['txtctranno']);
 		$ncredit = mysqli_real_escape_string($con, $_REQUEST['txtnCredit'.$z]);
 		$nsub = mysqli_real_escape_string($con, $_REQUEST['txtnSub'.$z]);
 		$crem = mysqli_real_escape_string($con, $_REQUEST['txtcRem'.$z]);
+
+		$ndebit = str_replace( ',', '', $ndebit );
+		$ncredit = str_replace( ',', '', $ncredit );
 		
 		if($nsub==""){
 			$nsub = "NULL";

@@ -623,7 +623,7 @@ Back to Main<br>(ESC)</button>
 		cnt  = parseInt(cnt)-1;
 		
 		for (i = 1; i <= cnt; i++) {
-			if($("#txtcAcctNo"+i).val() == "" || $("#txtcAcctDesc"+i).val() == ""){
+			if($("#txtcAcctNo"+i).val().replace(/,/g,'') == "" || $("#txtcAcctDesc"+i).val().replace(/,/g,'') == ""){
 
 				$("#AlertMsg").html("");
 									
@@ -640,7 +640,7 @@ Back to Main<br>(ESC)</button>
 				ISOK = "NO";
 			}
 			
-			if($("#txtnCredit"+i).val()==0 && $("#txtnDebit"+i).val()==0){
+			if($("#txtnCredit"+i).val().replace(/,/g,'')==0 && $("#txtnDebit"+i).val().replace(/,/g,'')==0){
 
 				$("#AlertMsg").html("");
 									
@@ -659,7 +659,7 @@ Back to Main<br>(ESC)</button>
 			
 		}
 		
-		if(parseFloat($("#txtnDebit").val()) != parseFloat($("#txtnCredit").val())){ 
+		if(parseFloat($("#txtnDebit").val().replace(/,/g,'')) != parseFloat($("#txtnCredit").val().replace(/,/g,''))){ 
 
 				$("#AlertMsg").html("");
 									
