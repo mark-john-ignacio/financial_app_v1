@@ -427,11 +427,12 @@ function numberTowords($num)
           Group By A.cacctno, B.cacctdesc";
 
 					//echo $xsql;
-
+					$forpay = 0;
           $sqlhead = mysqli_query($con,$xsql);
           if (mysqli_num_rows($sqlhead)!=0) {
             while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
               if(floatval($row['namt']) != 0){
+								$forpay = $forpay + floatval($row['namt']);
           ?> 
 
           <tr>
@@ -448,12 +449,12 @@ function numberTowords($num)
           <tr>
             <td><?=$Bankacctdesc?></td>
             <td>&nbsp;</td>
-            <td align="right" class="tdpadx tdright" nowrap><?php echo number_format($Gross,2);?></td>
+            <td align="right" class="tdpadx tdright" nowrap><?php echo number_format($forpay,2);?></td>
           </tr>
 
         </table>
 
-      <div style="padding-top: 20px !important"><i>Amount in words: </i> <?=strtoupper(numberTowords($Gross));?></div>
+      <div style="padding-top: 20px !important"><i>Amount in words: </i> <?=strtoupper(numberTowords($forpay));?></div>
 		</td>
 	</tr>
   <tr>
