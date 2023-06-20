@@ -54,10 +54,10 @@ $varmsg = "";
   
 <?php
 
-	$sql = "Select b.ctranno, b.ccode, b.cpayee, b.cpaymentfor, a.cacctno, a.ctitle, a.ndebit, a.ncredit, b.dapvdate 
+	$sql = "Select b.ctranno, b.ccode, b.cpayee, b.cpaymentfor, a.cacctno, a.ctitle, a.ndebit, a.ncredit, b.dapvdate, b.lapproved
 	From apv_t a 
 	left join apv b on a.compcode=b.compcode and a.ctranno=b.ctranno
-	where a.compcode='$company' and b.dapvdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
+	where a.compcode='$company' and b.dapvdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled = 0 and (a.ncredit<>0 and b.ndebit<>0)
 	order by b.ctranno, a.ndebit, a.cacctno, a.ncredit";
 
 	$result=mysqli_query($con,$sql);
