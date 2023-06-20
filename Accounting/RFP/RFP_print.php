@@ -213,7 +213,8 @@ function numberTowords($num)
     CASE WHEN B.cacctno='".$disregEWT."' THEN SUM(B.ncredit) ELSE 0 END as ntotewt, 
     CASE WHEN B.cacctno not in ('".implode("','",$disreg)."') THEN SUM(B.ncredit) ELSE 0 END as ntotdue
     from apv A left join apv_t B on A.compcode=B.compcode and A.ctranno=B.ctranno
-    where A.compcode='$company' and A.ctranno = '$RefAPV'
+		left join accounts C on B.compcode=C.compcode and B.cacctno=C.cacctid
+    where A.compcode='$company' and A.ctranno = '$RefAPV' and C.ccategory='LIABILITIES'
     Group By A.ctranno, A.cpaymentfor, A.ngross";
 
   }
