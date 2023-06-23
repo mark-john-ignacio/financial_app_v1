@@ -399,7 +399,7 @@
 	for (var i = 0; i < xzconfig.length; i++) {
     var object = xzconfig[i];
 		//alert(object.ext + " : " + object.name);
-		fileslist.push("https://<?=$_SERVER['HTTP_HOST']?>/RFP_Files/<?=$ccvno?>/" + object.name)
+		fileslist.push("https://<?=$_SERVER['HTTP_HOST']?>/RFP_Files/<?=$company."_".$ccvno?>/" + object.name)
 
 		if(jQuery.inArray(object.ext, arroffice) !== -1){
 			xtc = "office";
