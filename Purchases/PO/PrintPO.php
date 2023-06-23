@@ -136,9 +136,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 											<b>TERMS</b>
 									</td>
 									<td style="padding: 10px;" align="right">
-											<?=$cterms?>
-											<br>
-											<?=$Remarks?>
+											<?=$cterms?>										
 									</td>
 								</tr>
 							</table>
@@ -157,7 +155,17 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 										<br>
 										<?=$deladd?>
 									</td>
-									
+									 
+								</tr> 
+
+								<tr>
+									<td width="150px" style="padding: 10px">
+										<b>Remarks: </b>									
+									</td>
+									<td style="padding: 10px">
+										<?=$Remarks?>
+									</td>
+									 
 								</tr>
 							</table>
 					</td>
