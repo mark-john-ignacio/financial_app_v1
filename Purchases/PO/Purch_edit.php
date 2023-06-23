@@ -1499,7 +1499,7 @@ else{
 
 				if(typx=="Print"){
 					//alert("PrintPO.php?hdntransid="+x);
-					$("#myprintframe").attr("src","Purch_confirmprint.php?x="+x);
+					$("#myprintframe").attr("src","PrintPO.php?hdntransid="+x);
 
 					$("#PrintModal").modal('show');
 				}else if(typx=="PDF"){
