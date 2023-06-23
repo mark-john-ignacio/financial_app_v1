@@ -135,7 +135,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 									<td width="100px" style="padding: 10px;">
 											<b>TERMS</b>
 									</td>
-									<td style="padding: 10px;" align="right">
+									<td width="150px" style="padding: 10px;" align="right">
 											<?=$Terms?>										
 									</td>
 								</tr>
