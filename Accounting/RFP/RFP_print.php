@@ -478,6 +478,12 @@ function numberTowords($num)
 					$unapp = "";
 					$dalapp = "";
 					$tatpp = "";
+					$tsentapp = "";
+
+					$tpad0 = "";
+					$tpad1 = "";
+					$tpad2 = "";
+					$tpad3 = "";
 
 					$sqdts = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname, c.cdesignation, c.cusersign from rfp_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.crfpno = '$csalesno' order by a.nlevel");
 
@@ -487,24 +493,30 @@ function numberTowords($num)
 							if(intval($row['nlevel'])==1){
 								if($row['lapproved']==1){
 									$unapp = "<img src = '".$row['cusersign']."?x=".time()."' >";
+									$tpad1 = "10px";
 								}else{
 									$unapp  = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname']."<br>".$row['cdesignation'];
+									$tpad1 = "50px";
 								}
 							}
 
 							if(intval($row['nlevel'])==2){
 								if($row['lapproved']==1){
 									$dalapp = "<img src = '".$row['cusersign']."?x=".time()."' >";
+									$tpad2 = "10px";
 								}else{
 									$dalapp  = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname']."<br>".$row['cdesignation'];
+									$tpad2 = "50px";
 								}
 							}
 
 							if(intval($row['nlevel'])==3){
 								if($row['lapproved']==1){
 									$tatpp = "<img src = '".$row['cusersign']."?x=".time()."' >";
+									$tpad3 = "10px";
 								}else{
 									$tatpp  = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname']."<br>".$row['cdesignation'];
+									$tpad3 = "50px";
 								}
 							}
 						}
@@ -512,16 +524,18 @@ function numberTowords($num)
 
 					if($lSent==1){
 						$tsentapp = "<img src = '".$cpreparedBySign."?x=".time()."' >";
+						$tpad0 = "10px";
 					}else{
 						$tsentapp = $cpreparedBy."<br>".$cpreparedByDesig;
+						$tpad0 = "50px";
 					}
 				?>
 
         <tr>
-          <td align="center" style="padding-top: 50px"> <?=$tsentapp?></td>
-          <td align="center" style="padding-top: 50px"> <?=$unapp?> </td>
-          <td align="center" style="padding-top: 50px"> <?=$dalapp?> </td>
-					<td align="center" style="padding-top: 50px"> <?=$tatpp?> </td>
+          <td align="center" style="padding-top: <?=$tpad0?>"> <?=$tsentapp?></td>
+          <td align="center" style="padding-top: <?=$tpad1?>"> <?=$unapp?> </td>
+          <td align="center" style="padding-top: <?=$tpad2?>"> <?=$dalapp?> </td>
+					<td align="center" style="padding-top: <?=$tpad3?>"> <?=$tatpp?> </td>
         </tr>
       </table>            
     </td>
