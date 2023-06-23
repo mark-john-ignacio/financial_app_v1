@@ -152,7 +152,7 @@ function numberTowords($num)
 	
   //header
 	$csalesno = $_REQUEST['x'];
-	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, c.Fname, c.Minit, c.Lname, c.cdesignation , b.ctin, d.captype, e.cacctno as acctbank, f.cacctdesc as acctdescbank
+	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, c.Fname, c.Minit, c.Lname, c.cdesignation , b.ctin, d.captype, e.cacctno as acctbank, f.cacctdesc as acctdescbank, c.cusersign
   from rfp a 
   left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode 
   left join users c on a.cpreparedby=c.Userid 
@@ -185,9 +185,11 @@ function numberTowords($num)
       
       $lCancelled = $row['lcancelled'];
       $lPosted = $row['lapproved'];
+			$lSent = $row['lsent'];
 
       $cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
       $cpreparedByDesig = $row['cdesignation'];
+			$cpreparedBySign = $row['cusersign'];
     }
   }
 
@@ -507,10 +509,16 @@ function numberTowords($num)
 							}
 						}
 					}
+
+					if($lSent==1){
+						$tsentapp = "<img src = '".$cpreparedBySign."?x=".time()."' >";
+					}else{
+						$tsentapp = $cpreparedBy."<br>".$cpreparedByDesig;
+					}
 				?>
 
         <tr>
-          <td align="center" style="padding-top: 50px"> <?php echo $cpreparedBy;?><br><?=$cpreparedByDesig?> </td>
+          <td align="center" style="padding-top: 50px"> <?=$tsentapp?></td>
           <td align="center" style="padding-top: 50px"> <?=$unapp?> </td>
           <td align="center" style="padding-top: 50px"> <?=$dalapp?> </td>
 					<td align="center" style="padding-top: 50px"> <?=$tatpp?> </td>
