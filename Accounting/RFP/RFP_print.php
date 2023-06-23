@@ -180,6 +180,8 @@ function numberTowords($num)
 			$GrossBal = $row['nbalance'];
 
       $cTin = $row['ctin'];
+
+			$cremakrs = $row['cremarks'];
       
       $lCancelled = $row['lcancelled'];
       $lPosted = $row['lapproved'];
@@ -370,7 +372,7 @@ function numberTowords($num)
 				?>
 
 				<tr>
-					<td align="center" class="tdpadx"><?=$rowdtls['cpaymentfor'];?></td>
+					<td align="center" class="tdpadx"><?=$cremakrs;?></td>
 					<td align="right" class="tdpadx tdright" nowrap><?php echo number_format($rowdtls['ntotamt'],2);?></td>					
 					<td align="right" class="tdpadx tdright" nowrap><?=(floatval($rowdtls['ntotvat'])!=0) ? number_format($rowdtls['ntotvat'],2) : "-";?></td>
 					<td align="right" class="tdpadx tdright" nowrap><?=(floatval($rowdtls['ntotewt'])!=0) ? number_format($rowdtls['ntotewt'],2) : "-";?></td>
