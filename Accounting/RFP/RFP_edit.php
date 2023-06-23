@@ -483,7 +483,7 @@
 				initialPreview: fileslist,
 				initialPreviewAsData: true,
 				initialPreviewFileType: 'image',
-				initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/RFP_Files/<?=$ccvno?>/{filename}',
+				initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/RFP_Files/<?=$company."_".$ccvno?>/{filename}',
 				initialPreviewConfig: filesconfigs
 			});
 		}else{
