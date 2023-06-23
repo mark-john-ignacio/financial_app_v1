@@ -18,8 +18,8 @@
 	@$arrfiles = array();
 	@$arrname = array();
 
-	if (file_exists('../../RFP_Files/'.$ccvno.'/')) {
-		$allfiles = scandir('../../RFP_Files/'.$ccvno.'/');
+	if (file_exists('../../RFP_Files/'.$company.'_'.$ccvno.'/')) {
+		$allfiles = scandir('../../RFP_Files/'.$company.'_'.$ccvno.'/');
 		$files = array_diff($allfiles, array('.', '..'));
 		foreach($files as $file) {
 
