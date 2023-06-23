@@ -172,7 +172,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 							<tr>
 								<tH width="100">Remarks:</tH>
-								<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value="<?php echo $Remarks; ?>"></div></td>
+								<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value='<?php echo str_replace("'","\'",$Remarks); ?>'></div></td>
 								<tH width="100" style="padding:2px">Date Needed:</tH>
 								<td style="padding:2px">
 								<div class="col-xs-5 nopadding">
