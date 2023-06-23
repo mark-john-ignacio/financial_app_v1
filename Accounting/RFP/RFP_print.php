@@ -485,36 +485,36 @@ function numberTowords($num)
 						while($row = mysqli_fetch_array($sqdts, MYSQLI_ASSOC)){
 
 							if(intval($row['nlevel'])==1){
-							//	if($row['lapproved']==1){
-							//		$unapp = "<img src = '".$row['cusersign']."?x=".time()."' >";
-							//	}else{
+								if($row['lapproved']==1){
+									$unapp = "<img src = '".$row['cusersign']."?x=".time()."' >";
+								}else{
 									$unapp  = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname']."<br>".$row['cdesignation'];
-							//	}
+								}
 							}
 
 							if(intval($row['nlevel'])==2){
-						//		if($row['lapproved']==1){
-									//$dalapp = "<img src = '".$row['cusersign']."?x=".time()."' >";
-						//		}else{
+								if($row['lapproved']==1){
+									$dalapp = "<img src = '".$row['cusersign']."?x=".time()."' >";
+								}else{
 									$dalapp  = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname']."<br>".$row['cdesignation'];
-						//		}
+								}
 							}
 
 							if(intval($row['nlevel'])==3){
-								//if($row['lapproved']==1){
-								//	$tatpp = "<img src = '".$row['cusersign']."?x=".time()."' >";
-								//}else{
+								if($row['lapproved']==1){
+									$tatpp = "<img src = '".$row['cusersign']."?x=".time()."' >";
+								}else{
 									$tatpp  = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname']."<br>".$row['cdesignation'];
-								//}
+								}
 							}
 						}
 					}
 
-					//if($lSent==1){
-					//	$tsentapp = "<img src = '".$cpreparedBySign."?x=".time()."' >";
-				//	}else{
+					if($lSent==1){
+						$tsentapp = "<img src = '".$cpreparedBySign."?x=".time()."' >";
+					}else{
 						$tsentapp = $cpreparedBy."<br>".$cpreparedByDesig;
-					//}
+					}
 				?>
 
         <tr>
