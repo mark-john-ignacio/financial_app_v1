@@ -291,6 +291,8 @@ mysqli_close($con);
 			}
 		});
 
+		$("#InvListHdr").text("RFP Approval Status: "+xno);
+
 
 		$("#TrackMod").modal("show");
 	}
