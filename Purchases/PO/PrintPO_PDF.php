@@ -28,7 +28,7 @@ include('../../include/denied.php');
 	}
 	
 	$csalesno = $_REQUEST['hdntransid'];
-	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, b.cterms, c.Fname, c.Minit, c.Lname from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join users c on a.cpreparedby=c.Userid where a.compcode='$company' and a.cpono = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, c.Fname, c.Minit, c.Lname, d.cdesc as termsdesc from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join users c on a.cpreparedby=c.Userid left join groupings d on a.compcode=b.compcode and a.cterms=d.ccode and d.ctype='TERMS' where a.compcode='$company' and a.cpono = '$csalesno'");
 
 	if (mysqli_num_rows($sqlhead)!=0) {
 		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -36,7 +36,7 @@ include('../../include/denied.php');
 			$CustName = $row['cname'];
 
 			$CustAdd = $row['chouseno']." ".$row['ccity']." ".$row['cstate']." ".$row['ccountry'];
-			$Terms = $row['cterms']; 
+			$Terms = $row['termsdesc']; 
 			$CurrCode = $row['ccurrencycode'];
 
 			$Remarks = $row['cremarks'];
@@ -44,7 +44,6 @@ include('../../include/denied.php');
 			$DateNeeded = $row['dneeded'];
 			$Gross = $row['ngross'];
 
-			$cterms = $row['cterms']; 
 			$delto = $row['cdelto'];  
 			$deladd = $row['ddeladd']; 
 			$delinfo = $row['ddelinfo']; 
@@ -137,13 +136,11 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 											<br>
 											<?=$CustAdd?>
 									</td>
-									<td width="100px" style="padding: 10px;">
+									<td width="100px" style="padding: 10px;" align="right">
 											<b>TERMS</b>
 									</td>
-									<td style="padding: 10px;" align="right">
-											<?=$cterms?>
-											<br>
-											<?=$Remarks?>
+									<td width="100px" style="padding: 10px;" align="right">
+											<?=$Terms?>										
 									</td>
 								</tr>
 							</table>
@@ -164,6 +161,17 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 									</td>
 									
 								</tr>
+
+								<tr>
+									<td width="150px" style="padding: 10px">
+										<b>Remarks/Notes: </b>									
+									</td>
+									<td style="padding: 10px">
+										<?=$Remarks?><br><?=$delinfo?>
+									</td>
+									 
+								</tr>
+
 							</table>
 					</td>
 				</tr>
@@ -172,22 +180,15 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 					<td colspan="2" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">
 							<table border="0" width="100%">
 								<tr>
-									<td rowspan="2" style="padding-left: 10px;">
+									<td style="padding-left: 10px;">
 										<b> BILL TO: </b> <?=$billto?>
 									</td>
 									<td>
 										<b> DELIVERY DATE: </b> <?=date_format(date_create($DateNeeded),"F d, Y");?>
 									</td>
-									<td rowspan="2">
+									<td>
 										<b> REQUISITION NO. </b>
 									</td>
-								</tr>
-								<tr>
-
-									<td>
-										<b><i>Note</i>: </b> <?=$delinfo?>
-									</td>
-
 								</tr>
 							</table>
 					</td>

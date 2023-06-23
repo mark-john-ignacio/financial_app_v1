@@ -37,8 +37,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$Date = $row['ddate'];
 		$DateNeeded = $row['dneeded'];
 		$Gross = $row['ngross'];
-
-		$cterms = $row['cterms']; 
+		
 		$delto = $row['cdelto'];  
 		$deladd = $row['ddeladd']; 
 		$delinfo = $row['ddelinfo']; 
@@ -132,10 +131,10 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 											<br>
 											<?=$CustAdd?>
 									</td>
-									<td width="100px" style="padding: 10px;">
+									<td width="100px" style="padding: 10px;" align="right">
 											<b>TERMS</b>
 									</td>
-									<td width="150px" style="padding: 10px;" align="right">
+									<td width="100px" style="padding: 10px;" align="right">
 											<?=$Terms?>										
 									</td>
 								</tr>
