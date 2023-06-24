@@ -56,7 +56,7 @@ $date2 = $_POST["date2"];
  <?php
 
 	$sql = "Select A.acctno, B.cacctdesc, sum(A.ndebit) as ndebit, sum(A.ncredit) as ncredit
-			From trialbal A left join accounts B on A.acctno=B.cacctid
+			From glactivity A left join accounts B on A.acctno=B.cacctid
 			Group By A.acctno, B.cacctdesc
 			Order By A.acctno";
 
