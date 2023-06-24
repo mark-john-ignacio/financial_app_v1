@@ -43,6 +43,8 @@ require_once "../../Connection/connection_string.php";
 
 	}
 
+	$z=0;
+
 	//Debit Side		
 	//Input Tax if VATABLE and Net Gross
 	
@@ -163,7 +165,6 @@ require_once "../../Connection/connection_string.php";
 
 	//Credit Side
 	//Payable
-	$z=0;
 	
 	$z = $z+1;
 	$refcidenttran = $tran."P".$z;
