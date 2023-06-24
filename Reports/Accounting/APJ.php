@@ -58,7 +58,7 @@ $varmsg = "";
 	From apv_t a 
 	left join apv b on a.compcode=b.compcode and a.ctranno=b.ctranno
 	where a.compcode='$company' and b.dapvdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled = 0 and (a.ncredit<>0 or a.ndebit<>0)
-	order by b.ctranno, a.ndebit, a.cacctno, a.ncredit";
+	order by b.ctranno";
 
 	$result=mysqli_query($con,$sql);
 				
@@ -73,6 +73,7 @@ $varmsg = "";
 			$ccode = "";
 			$cpayee = "";
 			$cpaymentfor = "";
+			$lapproved = "";
 	
 	$ntotdebit = 0;
 	$ntotcredit = 0;
@@ -87,6 +88,7 @@ $varmsg = "";
 			$ccode = $row['ccode'];
 			$cpayee = $row['cpayee'];
 			$cpaymentfor = $row['cpaymentfor'];
+			$lapproved = $row['lapproved'];
 			
 			//if($cntr>1){
 				echo "<tr><td colspan='4'>&nbsp;</td></tr>";
@@ -99,7 +101,13 @@ $varmsg = "";
 			<div class="col-xs-12">
             
             	<div class="col-xs-2">
-                	<b><?php echo $ctran;?></b>
+                	<b><?php echo $ctran;?>
+									<?php
+										if(intval($lapproved)==0){
+											echo "(Unposted)";
+										}
+									?>
+									</b>
                 </div>
                 <div class="col-xs-2">
                 	<b><?php echo $ddate;?></b>
