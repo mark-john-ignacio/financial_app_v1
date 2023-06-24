@@ -43,75 +43,6 @@ require_once "../../Connection/connection_string.php";
 
 	}
 
-
-	//Credit Side
-	//Payable
-	$z=0;
-	
-	$z = $z+1;
-	$refcidenttran = $tran."P".$z;
-
-		$result = mysqli_query ($con, "Select A.cacctno as cacctcode, D.cacctdesc, sum(A.napplied) as nappld From apv_d A left join apv B on A.compcode=B.compcode and A.ctranno=B.ctranno left join suppliers C on B.compcode=C.compcode and B.ccode=C.ccode left join accounts D on C.compcode=D.compcode and A.cacctno=D.cacctid Where A.compcode='$company' and A.ctranno='$tran' Group By C.cacctcode, D.cacctdesc"); 
-	
-		if(mysqli_num_rows($result)!=0){
-			while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-				
-					$xy = getAcctDef($row['cacctcode'],"PAYABLES");
-					$xyValx = "";
-					if($xy=="None"){
-						$xyValx = "Others";
-					}else{
-						$xyValx = "Payables";
-					}
-				
-				 mysqli_query ($con, "INSERT INTO `apv_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `crefrr`, `cacctno`, `ctitle`, `cremarks`, `ndebit`, `ncredit`, `cacctrem`) VALUES ('$company','$refcidenttran',$z,'$tran','','".$row['cacctcode']."','".$row['cacctdesc']."','',0,".$row['nappld'].",'$xyValx')");
-				 
-		
-			}
-		}
-		
-	//EWT
-		
-		$result = mysqli_query ($con, "Select D.cacctid as cacctcode, D.cacctdesc, sum(A.newtamt) as nappld From apv_d A left join apv B on A.compcode=B.compcode and A.ctranno=B.ctranno left join suppliers C on B.compcode=C.compcode and B.ccode=C.ccode left join accounts D on C.compcode=D.compcode and C.cacctcode=D.cacctno Where A.compcode='$company' and A.ctranno='$tran' Group By C.cacctcode, D.cacctdesc Having sum(A.newtamt) > 0"); 
-	
-		if(mysqli_num_rows($result)!=0){
-			while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-				$z = $z+1;
-				$refcidenttran = $tran."P".$z;
-		
-					$Sales_EWT = getSetAcct("EWTPAY");
-					$SID = $Sales_EWT["id"];
-					$SNM = $Sales_EWT["name"];
-					
-					$xy = getAcctDef($SID,"PAYABLES");
-					$xyValx = "";
-					if($xy=="None"){
-						$xyValx = "Others";
-					}else{
-						$xyValx = "Payables";
-					}
-				 				 
-				 mysqli_query ($con, "INSERT INTO `apv_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `crefrr`, `cacctno`, `ctitle`, `cremarks`, `ndebit`, `ncredit`, `cacctrem`) VALUES ('$company','$refcidenttran',$z,'$tran','','$SID','$SNM','',0,".$row['nappld'].",'$xyValx')");
-				 
-		
-			}
-		}
-
-	//credits and discunts
-	$result = mysqli_query ($con, "Select D.cacctid as cacctno, D.cacctdesc, sum(A.namount) as namount From apv_deds A left join accounts D on A.compcode=D.compcode and A.cacctno=D.cacctid Where A.compcode='$company' and A.ctranno='$tran' Group By D.cacctid, D.cacctdesc Having sum(A.namount) > 0"); 
-	
-		if(mysqli_num_rows($result)!=0){
-			while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-				$z = $z+1;
-				$refcidenttran = $tran."P".$z;
-				 				 
-				 mysqli_query ($con, "INSERT INTO `apv_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `crefrr`, `cacctno`, `ctitle`, `cremarks`, `ndebit`, `ncredit`, `cacctrem`) VALUES ('$company','$refcidenttran',$z,'$tran','','".$row['cacctno']."','".$row['cacctdesc']."','',0,".$row['namount'].",'Others')");
-				 
-		
-			}
-		}	
-
-		
 	//Debit Side		
 	//Input Tax if VATABLE and Net Gross
 	
@@ -228,5 +159,73 @@ require_once "../../Connection/connection_string.php";
 			
 				}
 			}
+
+
+	//Credit Side
+	//Payable
+	$z=0;
+	
+	$z = $z+1;
+	$refcidenttran = $tran."P".$z;
+
+		$result = mysqli_query ($con, "Select A.cacctno as cacctcode, D.cacctdesc, sum(A.napplied) as nappld From apv_d A left join apv B on A.compcode=B.compcode and A.ctranno=B.ctranno left join suppliers C on B.compcode=C.compcode and B.ccode=C.ccode left join accounts D on C.compcode=D.compcode and A.cacctno=D.cacctid Where A.compcode='$company' and A.ctranno='$tran' Group By C.cacctcode, D.cacctdesc"); 
+	
+		if(mysqli_num_rows($result)!=0){
+			while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+				
+					$xy = getAcctDef($row['cacctcode'],"PAYABLES");
+					$xyValx = "";
+					if($xy=="None"){
+						$xyValx = "Others";
+					}else{
+						$xyValx = "Payables";
+					}
+				
+				 mysqli_query ($con, "INSERT INTO `apv_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `crefrr`, `cacctno`, `ctitle`, `cremarks`, `ndebit`, `ncredit`, `cacctrem`) VALUES ('$company','$refcidenttran',$z,'$tran','','".$row['cacctcode']."','".$row['cacctdesc']."','',0,".$row['nappld'].",'$xyValx')");
+				 
+		
+			}
+		}
+		
+	//EWT
+		
+		$result = mysqli_query ($con, "Select D.cacctid as cacctcode, D.cacctdesc, sum(A.newtamt) as nappld From apv_d A left join apv B on A.compcode=B.compcode and A.ctranno=B.ctranno left join suppliers C on B.compcode=C.compcode and B.ccode=C.ccode left join accounts D on C.compcode=D.compcode and C.cacctcode=D.cacctno Where A.compcode='$company' and A.ctranno='$tran' Group By C.cacctcode, D.cacctdesc Having sum(A.newtamt) > 0"); 
+	
+		if(mysqli_num_rows($result)!=0){
+			while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+				$z = $z+1;
+				$refcidenttran = $tran."P".$z;
+		
+					$Sales_EWT = getSetAcct("EWTPAY");
+					$SID = $Sales_EWT["id"];
+					$SNM = $Sales_EWT["name"];
+					
+					$xy = getAcctDef($SID,"PAYABLES");
+					$xyValx = "";
+					if($xy=="None"){
+						$xyValx = "Others";
+					}else{
+						$xyValx = "Payables";
+					}
+				 				 
+				 mysqli_query ($con, "INSERT INTO `apv_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `crefrr`, `cacctno`, `ctitle`, `cremarks`, `ndebit`, `ncredit`, `cacctrem`) VALUES ('$company','$refcidenttran',$z,'$tran','','$SID','$SNM','',0,".$row['nappld'].",'$xyValx')");
+				 
+		
+			}
+		}
+
+	//credits and discunts
+	$result = mysqli_query ($con, "Select D.cacctid as cacctno, D.cacctdesc, sum(A.namount) as namount From apv_deds A left join accounts D on A.compcode=D.compcode and A.cacctno=D.cacctid Where A.compcode='$company' and A.ctranno='$tran' Group By D.cacctid, D.cacctdesc Having sum(A.namount) > 0"); 
+	
+		if(mysqli_num_rows($result)!=0){
+			while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+				$z = $z+1;
+				$refcidenttran = $tran."P".$z;
+				 				 
+				 mysqli_query ($con, "INSERT INTO `apv_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `crefrr`, `cacctno`, `ctitle`, `cremarks`, `ndebit`, `ncredit`, `cacctrem`) VALUES ('$company','$refcidenttran',$z,'$tran','','".$row['cacctno']."','".$row['cacctdesc']."','',0,".$row['namount'].",'Others')");
+				 
+		
+			}
+		}	
 
 ?>
