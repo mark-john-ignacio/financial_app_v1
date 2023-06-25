@@ -9,3 +9,7 @@ Connection/rptconfig.php
 RFP_Files/*
 images/*
 imgsigns/*
+imgitm/*
+imgcust/*
+imgsupp/*
+imgsman/*
