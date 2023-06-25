@@ -50,7 +50,7 @@ include('../include/access.php');
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Coop Financials</title>
+	<title>Myx Financials</title>
     
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
    	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
@@ -119,7 +119,7 @@ include('../include/access.php');
 			<table width="100%" border="0">
 				<tr>
 					<td colspan="3">
-						<font style="font:normal 16pt Arial; color:#FFF"><b>
+						<font style="font:normal 12pt Arial; color:#FFF"><b>
 							<?php
 								$ccomp = $_SESSION['companyid'];
 								$result = mysqli_query($con,"SELECT * FROM `company` WHERE compcode='$ccomp'"); 

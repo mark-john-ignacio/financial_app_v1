@@ -30,7 +30,7 @@ $sqlchk = mysqli_query($con,"Select a.cvalue,b.cacctdesc From parameters a left 
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
 	<title>Myx   Financials</title>
-	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css?x=<?=time()?>">
     <link rel="stylesheet" type="text/css" href="../Bootstrap/css/alert-modal.css">
 
 <script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>

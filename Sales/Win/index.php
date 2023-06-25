@@ -9,10 +9,9 @@ $company = $_SESSION['companyid'];
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 include('../../include/access2.php');
-$company = $_SESSION['companyid'];
-?>
 
-        <?php
+$company = $_SESSION['companyid'];
+
 		$sql = "select * from groupings where compcode='$company' and ctype='ITEMCLS' LIMIT 1";
 		$result=mysqli_query($con,$sql);
 		$rowcnt = mysqli_num_rows($result);
@@ -52,92 +51,91 @@ $company = $_SESSION['companyid'];
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Coop Financials</title>
+	<title>Myx Financials</title>
     
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?v=<?php echo time();?>">
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
-<link href="../../global/css/googleapis.css" rel="stylesheet" type="text/css"/>
-<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/DigiClock.css"> 
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?v=<?php echo time();?>">
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+	<link href="../../global/css/googleapis.css" rel="stylesheet" type="text/css"/>
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/DigiClock.css"> 
 
   <link rel="stylesheet" type="text/css" href="../../Bootstrap/slick/slick.css">
   <link rel="stylesheet" type="text/css" href="../../Bootstrap/slick/slick-theme.css">
   <link rel="stylesheet" type="text/css" href="../../Bootstrap/slick/slicksize.css">
   <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/keypadz.css?v=<?php echo time();?>">
 
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
+	<script src="../../Bootstrap/js/jquery.numeric.js"></script>
 
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
-<script src="../../Bootstrap/js/jquery.numeric.js"></script>
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<script src="../../Bootstrap/js/moment.js"></script>
 
-<script src="../../Bootstrap/js/bootstrap.js"></script>
-<script src="../../Bootstrap/js/moment.js"></script>
+	<style type="text/css">
+		.modal {
+		}
+		.vertical-alignment-helper {
+			display:table;
+			height: 100%;
+			width: 100%;
+		}
+		.vertical-align-center {
+			/* To center vertically */
+			display: table-cell;
+			vertical-align: middle;
+		}
+		.modal-content {
+			/* Bootstrap sets the size of the modal in the modal-dialog class, we need to inherit it */
+			width:inherit;
+			height:inherit;
+			/* To center horizontally */
+			margin: 0 auto;
+		}
+		.alert-modal-danger {
+			padding: 10px;
+			border: 1px solid #888;
+			border-radius: 5px;
+			color: #a94442;
+			background-color: #f2dede;
+			border-color: #ebccd1;
+		}
+		.b-col {
+					float: left;
 
-<style type="text/css">
-	.modal {
-	}
-	.vertical-alignment-helper {
-		display:table;
-		height: 100%;
-		width: 100%;
-	}
-	.vertical-align-center {
-		/* To center vertically */
-		display: table-cell;
-		vertical-align: middle;
-	}
-	.modal-content {
-		/* Bootstrap sets the size of the modal in the modal-dialog class, we need to inherit it */
-		width:inherit;
-		height:inherit;
-		/* To center horizontally */
-		margin: 0 auto;
-	}
-	.alert-modal-danger {
-		padding: 10px;
-		border: 1px solid #888;
-		border-radius: 5px;
-		color: #a94442;
-		background-color: #f2dede;
-		border-color: #ebccd1;
-	}
-	.b-col {
-        float: left;
+			}
 
-    }
+	</style>
 
-</style>
+	<script>
+		$(document).keydown(function(e) {	 
+		
+			if(e.keyCode == 113) { //F2
+			//  alert("saved");
+			checkform();
+			}
+			else if(e.keyCode == 45) { //Insert
+			//  alert("pressed");
+			InsertQty(); 
+			}
+			else if(e.keyCode == 36) { //Home
+			//  alert("pressed");
+			InsertBarcode(); 
+			}
+			else if(e.keyCode == 46) { //Delete
+			//  alert("pressed");
+			location.reload(); 
+			}  
+			else if(e.keyCode == 27) { //Delete
+			//  alert("pressed");
+			location.href="../../main.php";
+			}
+			else if (e.keyCode == 13 && e.ctrlKey) {
+				chksubmit();
+			}
+			
+		});
 
-<script>
-	$(document).keydown(function(e) {	 
-	 
-	  if(e.keyCode == 113) { //F2
-	 //  alert("saved");
-		checkform();
-	  }
-	  else if(e.keyCode == 45) { //Insert
-	//  alert("pressed");
-		InsertQty(); 
-	  }
-	  else if(e.keyCode == 36) { //Home
-	//  alert("pressed");
-		InsertBarcode(); 
-	  }
-	  else if(e.keyCode == 46) { //Delete
-	//  alert("pressed");
-		location.reload(); 
-	  }  
-	  else if(e.keyCode == 27) { //Delete
-	//  alert("pressed");
-		location.href="../../main.php";
-	  }
-	  else if (e.keyCode == 13 && e.ctrlKey) {
-        chksubmit();
-      }
-	  
-	});
-
-</script>
+	</script>
 </head>
 
 <body style="background-color:#2b3643; padding:10px">
@@ -194,7 +192,7 @@ $company = $_SESSION['companyid'];
                 </div>
             
             <!-- BODY -->
-                <div style="height:50vh;" class="col-lg-12 nopadding pre-scrollable" id="TblItems"> 
+                <div style="height:70vh;" class="col-lg-12 nopadding pre-scrollable" id="TblItems"> 
                 
                 </div> 
                 
@@ -203,7 +201,7 @@ $company = $_SESSION['companyid'];
                     <div class="col-lg-3 divbak" style="text-align:right; padding:10px; font-size:20px">
                         <b>Total Items:</b>
                     </div>
-                    <div class="col-lg-3 divbak" style="padding:10px; font-size:20px"" id="ItmTotQty">
+                    <div class="col-lg-3 divbak" style="padding:10px; font-size:20px" id="ItmTotQty">
                       0
                     </div>
                      <div class="col-lg-2 divbak" style="text-align:right; padding:10px; font-size:20px">
@@ -235,6 +233,7 @@ $company = $_SESSION['companyid'];
         
         </div> <!-- DISPLAY TABLE -->   
        </div>
+			 <!--
        <div class="col-lg-12 nopadwtop">
        		<div style="height:20vh; background-color: #f5f5f5; padding:15px;">
              <div class="col-lg-12 nopadding">
@@ -244,7 +243,7 @@ $company = $_SESSION['companyid'];
               <div class="col-lg-12 nopadtop" id="MyMsgs">
               </div>
             </div>
-       </div> 
+       </div> -->
        
    </div> <!-- col-lg-6 -->
     
@@ -269,60 +268,61 @@ $company = $_SESSION['companyid'];
        <!-- Items -->     
             <div class="col-lg-12 wrapper pre-scrollable" style="max-height: 70vh; min-height: 65vh">
             
-				<?php
-                //Columns must be a factor of 12 (1,2,3,4,6,12)
-                $numOfCols = 6;
-                $rowCount = 0;
-                $bootstrapColWidth = (12 / $numOfCols);
-				$date1 = date("Y-m-d");
-                ?>
-                <div class="row">
+							<?php
+								//Columns must be a factor of 12 (1,2,3,4,6,12)
+								$numOfCols = 6;
+								$rowCount = 0;
+								$bootstrapColWidth = (12 / $numOfCols);
+								$date1 = date("Y-m-d");
+							?>
+              <div class="row">
                 <?php
-					$sql = "select a.cpartno, a.cpartno as cscancode, a.citemdesc, 0 as nretailcost, 0 as npurchcost, a.cunit, a.cstatus, 0 as ltaxinc, a.cclass, 1 as nqty
-							from items a 
-							left join
-								(
-									select a.citemno, COALESCE((Sum(nqtyin)-sum(nqtyout)),0) as nqty
-									From tblinventory a
-									right join items d on a.citemno=d.cpartno and a.compcode=d.compcode
-									where a.compcode='$company' and  a.dcutdate <= '$date1' and d.cstatus = 'ACTIVE'
-									group by a.citemno
-								 ) c on a.cpartno=c.citemno
-							WHERE a.compcode='$company' and a.cstatus = 'ACTIVE' order by a.cclass, a.citemdesc";
-					$result=mysqli_query($con,$sql);
-					$rowcnt = mysqli_num_rows($result);
-					
-						if (!mysqli_query($con, $sql)) {
-							printf("Errormessage: %s\n", mysqli_error($con));
-						}			
-					$cntr = 0;
-					
-					while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-						$cntr = $cntr + 1;
+
+									$sql = "select a.cpartno, a.cpartno as cscancode, a.citemdesc, 0 as nretailcost, 0 as npurchcost, a.cunit, a.cstatus, 0 as ltaxinc, a.cclass, 1 as nqty
+									from items a 
+									left join
+									(
+										select a.citemno, COALESCE((Sum(nqtyin)-sum(nqtyout)),0) as nqty
+										From tblinventory a
+										right join items d on a.citemno=d.cpartno and a.compcode=d.compcode
+										where a.compcode='$company' and  a.dcutdate <= '$date1' and d.cstatus = 'ACTIVE'
+										group by a.citemno
+									) c on a.cpartno=c.citemno
+									WHERE a.compcode='$company' and a.cstatus = 'ACTIVE' order by a.cclass, a.citemdesc";
+
+									$result=mysqli_query($con,$sql);
+									$rowcnt = mysqli_num_rows($result);
 						
-						if((float)$row["nqty"] > 0){
+									if (!mysqli_query($con, $sql)) {
+										printf("Errormessage: %s\n", mysqli_error($con));
+									}			
+									$cntr = 0;
+					
+									while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+										$cntr = $cntr + 1;
+										
+										if((float)$row["nqty"] > 0){
 				
                 ?>  
-                        <div class="itmslist col-md-<?php echo $bootstrapColWidth; ?> nopadding" id="<?php echo $row["cscancode"]; ?>" data-itemcls="<?php echo $row["cclass"]; ?>">
-                            <div style="height:80px; 
-                                    word-wrap:break-word;
-                                    background-color:#019aca; 
-                                    border:solid 1px #036;
-                                    padding:3px;
-                                    text-align:center;">
-                                <font size="-2"><?php echo $row["citemdesc"]; ?></font>
-                            </div>
-                        </div>
+                  <div class="itmslist col-md-<?php echo $bootstrapColWidth; ?> nopadding" id="<?php echo $row["cscancode"]; ?>" data-itemcls="<?php echo $row["cclass"]; ?>">
+                    <div style="height:80px; 
+                      word-wrap:break-word;
+                      background-color:#019aca; 
+                      border:solid 1px #036;
+                      padding:3px;
+                      text-align:center;">
+                      <font size="-2"><?php echo $row["citemdesc"]; ?></font>
+                   </div>
+                  </div>
                 <?php
 				
-						$rowCount++;
-						if($rowCount % $numOfCols == 0) echo '</div><div class="row">';
-						
-						}
-					}
+										$rowCount++;
+										if($rowCount % $numOfCols == 0) echo '</div><div class="row">';
+										
+										}
+									}
                 ?>
-                </div>
-
+              </div>
             </div> 
             
 
@@ -578,24 +578,23 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 
 	$(document).ready(function(e) {
 		//relod div
-		
+		/*
 		setTimeout(function() {
 			$("#MyMsgs").load("SI_SMSREAD.php");
 		}, 3000); // milliseconds = 3seconds
+		*/
 		
-		
-	   			$.ajax({
+	   		$.ajax({
 					url : "../../include/th_xtrasessions.php",
 					type: "Post",
 					async:false,
 					dataType: "json",
 					success: function(data)
 					{	
-					   console.log(data);
-                       $.each(data,function(index,item){
-						   xChkBal = item.chkinv; //0 = Check ; 1 = Dont Check
-						   
-					   });
+					  console.log(data);
+            $.each(data,function(index,item){
+						   xChkBal = item.chkinv; //0 = Check ; 1 = Dont Check						   
+					  });
 					}
 				});
 
@@ -941,59 +940,58 @@ if ($('#Itm'+xy).length!=0) {
 
 				}
 				else if(isadd == "YES"){
-					
+
 					$.ajax({
-                    url: '../th_productid.php',
-					data: 'c_id='+xy+'&itmbal='+xChkBal,
-                    dataType: 'json',
-                    method: 'post',
-                    success: function (data) {
-						//alert(data);
-                      console.log(data);
-					  $.each(data,function(index,item){
+            url: '../th_productid.php',
+						data: 'c_id='+xy+'&itmbal='+xChkBal,
+            dataType: 'json',
+            method: 'post',
+            success: function (data) {
+              console.log(data);
+					 		$.each(data,function(index,item){
+
 						  if(item.id==""){
-							$("#AlertMsg").text("Barcode number does not exist!");
-							$("#AlertModal").modal('show');
+								$("#AlertMsg").text("Barcode number does not exist!");
+								$("#AlertModal").modal('show');
 						  }
 						  else{
 
-						  if(parseFloat(item.nqty)<=0){
-							$("#AlertMsg").text("No more stocks on hand!");
-							$("#AlertModal").modal('show');
-						  }
-						  else{
-							finqtydesc = "";
-							xprice = chkprice(item.id,item.cunit,code,xtoday);
-
-							if(finqty==1){
-								var finprice = "</div>";
-								var finamt = parseFloat(xprice);
-							}
-							else{
-								
-								
-								if(parseFloat(finqty) > parseFloat(item.nqty)){
-									//alert("A");
-									finqtydesc = " <font color=\"#FF0000\"> ("+finqty+")</font>";
-									finqty = parseFloat(item.nqty);
+								if(parseFloat(item.nqty)<=0){
+									$("#AlertMsg").text("No more stocks on hand!");
+									$("#AlertModal").modal('show');
+								}
+						  	else{
+									finqtydesc = "";
+									xprice = chkprice(item.id,item.cunit,code,xtoday);
 
 									if(finqty==1){
 										var finprice = "</div>";
 										var finamt = parseFloat(xprice);
 									}
-									else {
-										var finprice = "<p style=\"text-indent: 20px\">@ "+xprice+"/"+item.cunit+"</p></div>";
-										var finamt = parseFloat(xprice) * parseFloat(finqty);
-									}
-									
-								}
-								else{
-									//alert("B");
-										var finprice = "<p style=\"text-indent: 20px\">@ "+xprice+"/"+item.cunit+"</p></div>";
-										var finamt = parseFloat(xprice) * parseFloat(finqty);
+									else{
+																
+										if(parseFloat(finqty) > parseFloat(item.nqty)){
+											//alert("A");
+											finqtydesc = " <font color=\"#FF0000\"> ("+finqty+")</font>";
+											finqty = parseFloat(item.nqty);
 
-								}
-							}
+											if(finqty==1){
+												var finprice = "</div>";
+												var finamt = parseFloat(xprice);
+											}
+											else {
+												var finprice = "<p style=\"text-indent: 20px\">@ "+xprice+"/"+item.cunit+"</p></div>";
+												var finamt = parseFloat(xprice) * parseFloat(finqty);
+											}
+											
+										}
+										else{
+											//alert("B");
+												var finprice = "<p style=\"text-indent: 20px\">@ "+xprice+"/"+item.cunit+"</p></div>";
+												var finamt = parseFloat(xprice) * parseFloat(finqty);
+
+										}
+									}
 								
 							}
 							

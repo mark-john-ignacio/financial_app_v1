@@ -355,7 +355,7 @@
 
 
 		<?php
-			$sqlrfp = "select B.compcode, B.ctranno, B.cewtcode, sum(B.namount) as namount, sum(B.ndue) as ndue, sum(B.newtamt) as newtamt, C.cdesc as ewtdesc, C.nrate
+			$sqlrfp = "select B.compcode, B.ctranno, GROUP_CONCAT(B.cewtcode,'') as cewtcode, sum(B.namount) as namount, sum(B.ndue) as ndue, sum(B.newtamt) as newtamt, C.cdesc as ewtdesc, C.nrate
 			From paybill_t A 
 			left join
 				(
@@ -376,7 +376,9 @@
 				) B on A.compcode=B.compcode and A.capvno=B.ctranno		
 			left join wtaxcodes C on B.compcode=C.compcode and B.cewtcode=C.ctaxcode
 			where A.compcode='$company' and A.ctranno='".$_POST["id"]."'
-			Group By B.compcode, B.ctranno, B.cewtcode";
+			Group By B.compcode, B.ctranno";
+
+			//echo $sqlrfp;
 
 			$deftop = 496;
 			$result=mysqli_query($con,$sqlrfp);
@@ -392,7 +394,7 @@
 					}
 		?>
 					<div class="detewtdesc" style="top: <?=$deftop?>px !important"><?=$row['ewtdesc']."(".$row['nrate'].")"?></div>   
-					<div class="detewtcode" style="top: <?=$deftop?>px !important"><?=$row['cewtcode']?></div>
+					<div class="detewtcode" style="top: <?=$deftop?>px !important"><?=str_replace(",","",$row['cewtcode'])?></div>
 
 					<?php
 

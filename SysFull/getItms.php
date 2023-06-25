@@ -37,11 +37,11 @@ $cntr = $cntr + 1;
 
 ?>
     <?php 
-	if(!file_exists("../imgitm/".$rs["cpartno"].".jpg")){
+	if(!file_exists(str_replace("../../","../",$rs["cuserpic"]))){
 		$imgsrc = "../images/blueX.png";
 	}
 	else{
-		$imgsrc = "../imgitm/".$rs["cpartno"].".jpg";
+		$imgsrc = $rs["cuserpic"];
 	}
 	?>
     
@@ -51,7 +51,7 @@ $cntr = $cntr + 1;
    <div style="border:1px solid #333;">
 	<table align="center" border="0px" cellpadding="0px" style="table-layout: fixed; width: 100%; height:85px">
 		<tr>
-			<td width="80" style="padding-left:2px"><img src="../imgitm/<?php echo $imgsrc;?>" width="80" height="75" align="absmiddle"></td>
+			<td width="80" style="padding-left:2px"><img src="<?php echo str_replace("../../","../",$imgsrc);?>" width="80" height="75" align="absmiddle"></td>
 			<!--<td>&nbsp;<font style="font-size:12px"><?php echo $rs["citemdesc"];?><br>&nbsp;<?php echo $rs["cpartno"];?></font></td>
 			<td width="50"><font style="font-size:42px"><b></b></font></td>-->
 			<td>

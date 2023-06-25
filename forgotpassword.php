@@ -201,13 +201,16 @@ $error = "";
 
 		$mail = new PHPMailer\PHPMailer\PHPMailer();
 		$mail->IsSMTP();
-		$mail->Host = "mail.serttech.com"; // Enter your host here
+		$mail->SMTPDebug = 2;  // debugging: 1 = errors and messages, 2 = messages only
 		$mail->SMTPAuth = true;
+		$mail->SMTPSecure = 'tls';
+		$mail->SMTPAutoTLS = false;
+		$mail->Host = "ssl://mail.serttech.com"; // Enter your host here
+		$mail->Port = 587;
+
+		$mail->IsHTML(true);
 		$mail->Username = "myxfin@serttech.com"; // Enter your email here
 		$mail->Password = "Sert@2022"; //Enter your password here
-		$mail->SMTPSecure = 'tls';
-		$mail->Port = 587;
-		$mail->IsHTML(true);
 		$mail->From = "noreply@serttech.com";
 		$mail->FromName = "Myx Financials";
 		$mail->Sender = "myxfin@serttech.com"; // indicates ReturnPath header
@@ -215,7 +218,9 @@ $error = "";
 		$mail->Body = $body;
 		$mail->AddAddress($email_to);
 		if(!$mail->Send()){
-			echo "Mailer Error: " . $mail->ErrorInfo;
+			$error = 'Mail error: '.$mail->ErrorInfo;
+
+			return false;
 		}else{
 
 ?>	

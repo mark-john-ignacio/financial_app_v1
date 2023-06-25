@@ -1,4 +1,5 @@
 <?php
+
 	if(!isset($_SESSION)){
 		session_start();
 	}
@@ -9,11 +10,14 @@
 
 	$company = $_SESSION['companyid'];
 
-	$poststat = "True";	
+	$company = $_SESSION['companyid'];
+
+	$poststat = "True";
 	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SI_unpost.php'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
 	}
+
 ?>
 
 <!DOCTYPE html>
@@ -24,11 +28,11 @@
 
 	<title>Myx Financials</title>
 
-	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
-	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">    
-	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
-	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-	<script src="../../Bootstrap/js/bootstrap.js"></script>
+<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>">    
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+<script src="../../Bootstrap/js/bootstrap.js"></script>
 
 
 </head>
@@ -42,26 +46,40 @@
             </div>
         </div>
 			<br><br>
-			<button type="button" class="btn btn-primary btn-md" onClick="location.href='SI_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
-			<?php
-				if($poststat=="True"){
-			?>
-				<button type="button" class="btn btn-warning btn-md" onClick="location.href='SI_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
-			<?php
-				}
-			?>
-
-            <br><br>
+			<div class="col-xs-12 nopadding">
+				<div class="col-xs-4 nopadding">
+					<button type="button" class="btn btn-primary btn-md" onClick="location.href='SI_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+					<?php
+						if($poststat=="True"){
+					?>
+						<button type="button" class="btn btn-warning btn-md" onClick="location.href='SI_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+					<?php
+						}
+					?>
+				</div>
+        <div class="col-xs-3 nopadding">
+					<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
+				</div>
+        <div class="col-xs-2 nopadwtop" style="height:30px !important;">
+          <b> Search Customer/SI No: </b>
+        </div>
+				<div class="col-xs-3 text-right nopadding">
+					<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Enter Trans No or Customer...">
+				</div>
+			</div>
+			
+			
+      <br><br>
 			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
 						<th>Invoice No</th>
+						<th>SI Series No</th>
 						<th>Customer</th>
-                        <th>Order Date</th>
 						<th>Delivery Date</th>
 						<th>Gross</th>
-                        <th width="100">Status</th>
+            <th width="100">Status</th>
 					</tr>
 				</thead>
 			</table>
@@ -71,6 +89,7 @@
     
 <form name="frmedit" id="frmedit" method="post" action="SI_edit.php">
 	<input type="hidden" name="txtctranno" id="txtctranno" />
+	<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
 </form>		
 
 
@@ -92,105 +111,50 @@
     </div>
 </div>
 
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
+</body>
+</html>
+
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
 	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
 	
 	<script>
 	$(document).ready(function() {
-		var table = $('#example').DataTable( {
-			"searching": true,
-        	"paging": true,
-			"columns": [
-				{ "data": null,
-					"render": function (data, type, full, row) {
-
-						var sts = "";
-							if (full[6] == 1) {
-								sts="class='text-danger'";
-							}
- 							
-							return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
-					}
-						
-				},
-				{ "data": 1 },
-				{ "data": 2 },
-				{ "data": 3 },
-				{ "data": 4 },	
-				{ "data": null,
-					"render": function (data, type, full, row) {
- 
-						if (full[5] == 1) {
-							
-							return 'Posted';
-						
-						}
-						 
-						else if (full[6] == 1) {
-						 
-							return '<b>Cancelled</b>';
-						 
-						}
-						
-						else{
-							return " <div id=\"msg"+full[0]+"\"><a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"','Posted','"+full[7]+"',"+full[8]+")\">POST</a> | <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"','Cancelled')\">CANCEL</a></div>";
-						}
-					}
-				}
-        	],
-			"serverSide": true,
-			"ajax": {
-				url: "SI_serverside.php",
-				type: "POST",
-			},
-			"order": [[ 2, "desc" ]],
-			"columnDefs": [ 
-				{
-			  "targets": [3,4],
-			  "className": "text-right"
-				},
-				{
-			  "targets": 5,
-			  "className": "text-center"
-				}
-			],
-				"createdRow": function( row, data, dataIndex ) {
-					// Set the data-status attribute, and add a class
-					if(data[6]==1){
-						$(row).addClass('text-danger');
-					}
-						
-				}
-		} );
 			
+		fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>");	
+
+			$("#searchByName").keyup(function(){
+					var searchByName = $('#searchByName').val();
+
+					$('#example').DataTable().destroy();
+					fill_datatable(searchByName);
+
+			});
 	
 	} );
 
 		
-$(document).keydown(function(e) {	
-	
-	 
-	  if(e.keyCode == 112) { //F2
-		  e.preventDefault();
-		  window.location = "SI_new.php";
-	  }
-});
+	$(document).keydown(function(e) {		 
+			if(e.keyCode == 112) { //F2
+				e.preventDefault();
+				window.location = "SI_new.php";
+			}
+	});
 
+	function editfrm(x){
+		$('#txtctranno').val(x); 
+		$('#hdnsrchval').val($('#searchByName').val()); 
+		document.getElementById("frmedit").submit();
+	}
 
-function editfrm(x){
-	document.getElementById("txtctranno").value = x;
-	document.getElementById("frmedit").submit();
-}
+	function trans(x,num,msg,id,xcred){
+		var itmstat = "";
 
-function trans(x,num,msg,id,xcred){
-var itmstat = "";
-
-if(x=="POST"){
+		if(x=="POST"){
 			//generate GL ENtry muna
 			$.ajax ({
 				dataType: "text",
 				url: "../../include/th_toAcc.php",
-				data: { tran: num, type: "IN" },
+				data: { tran: num, type: "NTSI" },
 				async: false,
 				success: function( data ) {
 					//alert(data.trim());
@@ -217,64 +181,129 @@ if(x=="POST"){
 			//});
 
 
-	}
-else{
-	var itmstat = "OK";	
-}
+		}
+		else{
+			var itmstat = "OK";	
+		}
 
-if(itmstat=="OK"){
 
-	//alert("SI_Tran.php?x="+num+"&typ="+x);
-	
-	$.ajax ({
-		url: "SI_Tran.php",
-		data: { x: num, typ: x },
-		async: false,
-		dataType: "json",
-		beforeSend: function(){
-			$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
-			$("#alertbtnOK").hide();
-			$("#AlertModal").modal('show');
-		},
-		success: function( data ) {
-			
-			console.log(data);
-			$.each(data,function(index,item){
-				
-				itmstat = item.stat;
-				
-				if(itmstat!="False"){
-					varx0 = item.stat;
-					$("#msg"+num).html(varx0.toUpperCase());
-					
-						$("#AlertMsg").html("");
-						
-						$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+msg+"...");
-						$("#alertbtnOK").show();
-						$("#AlertModal").modal('show');
-
-				}
-				else{
-					$("#AlertMsg").html("");
-					
-					$("#AlertMsg").html(item.ms);
-					$("#alertbtnOK").show();
+		if(itmstat=="OK"){
+			$.ajax ({
+				url: "SI_Tran.php",
+				data: { x: num, typ: x },
+				async: false,
+				dataType: "json",
+				beforeSend: function(){
+					$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+					$("#alertbtnOK").hide();
 					$("#AlertModal").modal('show');
+				},
+				success: function( data ) {
+					
+					console.log(data);
+					$.each(data,function(index,item){
+						
+						itmstat = item.stat;
+						
+						if(itmstat!="False"){
+							varx0 = item.stat;
+							$("#msg"+num).html(varx0.toUpperCase());
+							
+								$("#AlertMsg").html("");
+								
+								$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+msg+"...");
+								$("#alertbtnOK").show();
+								$("#AlertModal").modal('show');
 
+						}
+						else{
+							$("#AlertMsg").html("");
+							
+							$("#AlertMsg").html(item.ms);
+							$("#alertbtnOK").show();
+							$("#AlertModal").modal('show');
+
+						}
+					});
 				}
 			});
+		}else{				$("#AlertMsg").html("");
+
+							$("#AlertMsg").html("<b>ERROR: </b>There's a problem with your transaction!<br>"+itmstat);
+							$("#alertbtnOK").show();
+							$("#AlertModal").modal('show');
+
 		}
-	});
-}else{				
-					$("#AlertMsg").html("");
+	}
 
-					$("#AlertMsg").html("<b>ERROR: </b>There's a problem with your transaction!<br>"+itmstat);
-					$("#alertbtnOK").show();
-					$("#AlertModal").modal('show');
+	function fill_datatable(searchByName){
+			var dataTable = $('#example').DataTable( {
+				stateSave: true,
+		    "processing" : true,
+		    "serverSide" : true,
+		    "lengthChange": true,
+		    "order" : [],
+		    "searching" : false,
+		    "ajax" : {
+					url:"th_datatable.php",
+					type:"POST",
+					data:{
+						searchByName: searchByName
+					}
+		    },
+					"columns": [
+						{ "data": null,
+								"render": function (data, type, full, row) {
+										var sts = "";
+										if (full[6] == 1) {
+											sts="class='text-danger'";
+										}
+										return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
+								}								
+						},
+						{ "data": 1 },
+						{ "data": 2 },
+						{ "data": 4 },
+						{ "data": 9 },	
+						{ "data": null,
+							"render": function (data, type, full, row) {
+		
+								if (full[5] == 1) {
+									
+									return 'Posted';
+								
+								}
+								
+								else if (full[6] == 1) {
+								
+									return '<b>Cancelled</b>';
+								
+								}
+								
+								else{
+									return " <div id=\"msg"+full[0]+"\"><a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"','Posted','"+full[7]+"',"+full[8]+")\">POST</a> | <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"','Cancelled')\">CANCEL</a></div>";
+								}
+							}
+						}
+					],
+					"columnDefs": [ 
+						{
+							"targets": [3,4],
+							"className": "text-right"
+						},
+						{
+							"targets": 5,
+							"className": "text-center dt-body-nowrap"
+						}
+					],
+					"createdRow": function( row, data, dataIndex ) {
+						// Set the data-status attribute, and add a class
+						if(data[6]==1){
+							$(row).addClass('text-danger');
+						}
+						
+					}
+				});
+	}
 
-}
-}
 </script>
-
-</body>
-</html>

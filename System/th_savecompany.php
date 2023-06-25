@@ -13,12 +13,15 @@ require_once "../Connection/connection_string.php";
 	$add = $_REQUEST['add'];
 	$tin = $_REQUEST['tin'];
 	$vat = $_REQUEST['vatz']; 
+	$email = $_REQUEST['email'];
+	$cpnum = $_REQUEST['cpnum'];
+	$czip = $_REQUEST['zip'];
 	//$txthdr = $_REQUEST['txthdr']; 
 
 	//, `txtheader` = '$txthdr'
 
 
-			if (!mysqli_query($con,"UPDATE company set `compname` = '$name', `compdesc` = '$desc', `compadd` = '$add', `comptin` = '$tin', `compvat` = '$vat' where `compcode` = '$company'")) {
+			if (!mysqli_query($con,"UPDATE company set `compname` = '$name', `compdesc` = '$desc', `compadd` = '$add', `comptin` = '$tin', `compvat` = '$vat', `compzip` = '$czip', `email` = '$email', `cpnum` = '$cpnum' where `compcode` = '$company'")) {
 				printf("Errormessage: %s\n", mysqli_error($con));
 			} 
 			else{										

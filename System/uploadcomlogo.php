@@ -5,6 +5,7 @@ session_start();
 require_once "../Connection/connection_string.php";
 
 
+
 	if(isset($_FILES['file']['name'])){
 	  
 	   /* Getting file name */
@@ -26,7 +27,9 @@ require_once "../Connection/connection_string.php";
 	         $response = $location;
 	      }
 
-	      mysqli_query($con,"UPDATE company set `clogoname` = '$location'");
+				$company = $_SESSION['companyid'];
+
+	      mysqli_query($con,"UPDATE company set `clogoname` = '$location' where `compcode`='$company'");
 	   }
 
 	   echo $response;

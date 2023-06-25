@@ -11,10 +11,14 @@ require_once "../Connection/connection_string.php";
 	$c_id = $_REQUEST['c_id'];
 	
 	if($avail==1){
+		//$sql = "select  B.cpartno, B.citemdesc, B.cunit, 1 as nqty, B.cunit as qtyunit
+		//from invcount_t A 
+		//left join items B on A.compcode=B.compcode and A.citemno=B.cpartno
+		//where A.compcode='$company' and B.cpartno = '".$c_id."' and B.cstatus='ACTIVE'";
+
 		$sql = "select  B.cpartno, B.citemdesc, B.cunit, 1 as nqty, B.cunit as qtyunit
-		from invcount_t A 
-		left join items B on A.compcode=B.compcode and A.citemno=B.cpartno
-		where A.compcode='$company' and A.cscancode = '".$c_id."' and B.cstatus='ACTIVE'";
+		from items B 
+		where B.compcode='$company' and B.cpartno = '".$c_id."' and B.cstatus='ACTIVE'";
 	}
 	else{
 		$sql = "select A.cpartno, A.citemdesc, A.cunit, B.cunit as qtyunit
@@ -22,10 +26,10 @@ require_once "../Connection/connection_string.php";
 		from items A 
 		left join 
 			(
-					select COALESCE((Sum(nqtyin)-sum(nqtyout)),0) as nqty, X.cmainunit as cunit, X.citemno, X.nfactor
-					From tblinventory X
-					where X.compcode='$company' and X.dcutdate <= '$date1'
-					Group by X.cmainunit, X.citemno
+				select COALESCE((Sum(nqtyin)-sum(nqtyout)),0) as nqty, X.cmainunit as cunit, X.citemno, X.nfactor
+				From tblinventory X
+				where X.compcode='$company' and X.dcutdate <= '$date1'
+				Group by X.cmainunit, X.citemno
 			) B on A.cpartno=B.citemno
 		where A.compcode='$company' and A.cpartno = '".$c_id."' and A.cstatus='ACTIVE'";
 	}

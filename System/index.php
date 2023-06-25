@@ -127,30 +127,39 @@ if (mysqli_num_rows($sqlhead)!=0) {
 														<img src="<?php echo $imgsrc;?>" width="145" height="145" name="previewing" id="previewing">                       
 													</td>
 													<td width="200"><b>Registered Name:</b></td>
-													<td style="padding:2px" colspan="3"><div class="col-xs-10"><input type="text" name="txtcompanycom" id="txtcompanycom" class="form-control input-sm" placeholder="Company Name..." maxlength="90"></div></td>
+													<td style="padding:2px" colspan="3"><div class="col-xs-10 nopadding"><input type="text" name="txtcompanycom" id="txtcompanycom" class="form-control input-sm" placeholder="Company Name..." maxlength="90"></div></td>
 												</tr>											
 												<tr>
 													<td><b>Business/Trade Name:</b></td>
 													<td style="padding:2px" colspan="3">
-														<div class="col-xs-10">
+														<div class="col-xs-10 nopadding">
 															<input type="text" name="txtcompanydesc" id="txtcompanydesc" class="form-control input-sm" placeholder="Company Description..." maxlength="90" >
 														</div>
 													</td>
 												</tr>
 												<tr>
-													<td><b>Address:</b></td>
+													<td><b>Address / ZIP Code:</b></td>
 													<td style="padding:2px" colspan="3">
-														<div class="col-xs-10">
-															<input type="text" name="txtcompanyadd" id="txtcompanyadd" class="form-control input-sm" placeholder="Address..." maxlength="90">
+														<div class="col-xs-8 nopadwright">
+															<input type="text" name="txtcompanyadd" id="txtcompanyadd" class="form-control input-sm" placeholder="Address..." maxlength="500">
+														</div>
+														<div class="col-xs-2 nopadding">
+															<input type="text" name="txtcompanyzip" id="txtcompanyzip" class="form-control input-sm" placeholder="ZIP Code..." maxlength="25">
 														</div>
 													</td>
 												</tr>
 												<tr>                        
-													<td><b>Tin No.:</b></td>
+													<td><b>Email / Contact No.:</b></td>
 													<td style="padding:2px" colspan="3">
-													<div class="col-xs-10">
-														<input type="text" name="txtcompanytin" id="txtcompanytin" class="form-control input-sm" placeholder="TINADD No..." maxlength="50">
-													</div></td>
+
+														<div class="col-xs-4 nopadwright">
+															<input type="text" name="txtcompanyemail" id="txtcompanyemail" class="form-control input-sm" placeholder="Email Address..." maxlength="255">
+														</div>
+														<div class="col-xs-6 nopadding">
+														<input type="text" name="txtcompanycpnum" id="txtcompanycpnum" class="form-control input-sm" placeholder="Contact Nos..." maxlength="255">
+														</div>
+
+													</td>
 												</tr>
 												<tr>
 													<td align="center">
@@ -158,18 +167,17 @@ if (mysqli_num_rows($sqlhead)!=0) {
 															Browse Image&hellip; <input type="file" name="file" id="filecpmnid" style="display: none;">
 														</label>
 													</td>
-													<td><b>Business Type:</b></td>
-													<td style="padding:2px"  width="200px">
-														<div class="col-xs-12">
-															<select class="form-control input-xs" name="selcompanyvat" id="selcompanyvat">
+													<td><b>Business Type / TIN:</b></td>
+													<td style="padding:2px" colspan="3">
+
+														<div class="col-xs-5 nopadwright">
+															<select class="form-control input-sm" name="selcompanyvat" id="selcompanyvat">
 															</select>
 														</div>
-													</td>
-													<td  width="100px"><b>Email:</b></td>
-													<td style="padding:2px">
-														<div class="col-xs-8">
-															<input type="text" name="txtcompanyemail" id="txtcompanyemail" class="form-control input-sm" placeholder="Email Address..." maxlength="50">
+														<div class="col-xs-5 nopadding">
+															<input type="text" name="txtcompanytin" id="txtcompanytin" class="form-control input-sm" placeholder="TIN..." maxlength="50">
 														</div>
+
 													</td>
 												</tr>
 												<tr>
@@ -3456,13 +3464,16 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			var nme = $("#txtcompanycom").val();
 			var desc = $("#txtcompanydesc").val();
 			var add = $("#txtcompanyadd").val();
+			var zip = $("#txtcompanyzip").val();
 			var tin = $("#txtcompanytin").val();
 			var vatz = $("#selcompanyvat").val();
-			var texthdr = $("#texthdr").val();
+			var email = $("#txtcompanyemail").val();
+			var cpnum = $("#txtcompanycpnum").val();
+			//var texthdr = $("#texthdr").val();
 			
 				$.ajax ({
 					url: "th_savecompany.php",
-					data: { nme: nme,  desc: desc, add: add, tin: tin, vatz: vatz, txthdr: texthdr },
+					data: { nme: nme,  desc: desc, add: add, tin: tin, vatz: vatz, zip: zip, email: email, cpnum: cpnum },
 					async: false,
 					success: function( data ) {
 						if(data.trim()!="True"){
@@ -4330,11 +4341,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					$.each(result,function(index,item){
 						$("#txtcompanycom").val(item.cname);
 						$("#txtcompanydesc").val(item.cdesc);
-						$("#txtcompanyadd").val(item.cadd);
+						$("#txtcompanyadd").val(item.cadd); 
+						$("#txtcompanyzip").val(item.czip);
 						$("#txtcompanytin").val(item.ctin);
-						$("#txtcompanyemail").val(item.emailadd
-						);
-						$("#txtcompanynos").val(item.ccpnum);
+						$("#txtcompanyemail").val(item.emailadd);
+						$("#txtcompanycpnum").val(item.ccpnum);
 
 						$("#previewing").attr('src',item.clogoname);
 

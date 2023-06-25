@@ -59,7 +59,7 @@ foreach($result as $row)
 
 function count_all_data($connect)
 {
- $query = "SELECT * FROM customers";
+ $query = "SELECT * FROM suppliers";
  $statement = $connect->prepare($query);
  $statement->execute();
  return $statement->rowCount();

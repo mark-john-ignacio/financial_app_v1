@@ -24,7 +24,7 @@
 	<title>Myx Financials</title>
 
 	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
-  <link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css">   
+  <link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css?x=<?=time()?>">   
   <link rel="stylesheet" type="text/css" href="../Bootstrap/css/alert-modal.css"> 
   <script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
   <script src="../Bootstrap/js/bootstrap.js"></script>

@@ -20,7 +20,20 @@
 	require("../../vendor/phpmailer/phpmailer/src/SMTP.php");
 
 
-	function sendEmail($email,$name,$xpono){
+	$company = $_SESSION['companyid'];
+
+	$sqlcomp = mysqli_query($con,"select * from company where compcode='$company'");
+	if(mysqli_num_rows($sqlcomp) != 0){
+
+		while($rowcomp = mysqli_fetch_array($sqlcomp, MYSQLI_ASSOC))
+		{
+			$logonamz = $rowcomp['compname'];
+		}
+
+	}
+
+
+	function sendEmail($email,$name,$xpono,$logonamz){
 
 		$output='<p>Dear '.$name.',</p>';
 		$output.='<p>This email is to notify that the RFP# '.$xpono.' is waiting for your approval.</p>'; 
@@ -28,7 +41,7 @@
 		$output.='<p>Myx Financials,</p>';
 
 		$body = $output; 
-		$subject = "Chocovron Global Corp. - Request For Payment";
+		$subject = $logonamz." - Request For Payment";
 	
 		$email_to = $email;
 
@@ -43,7 +56,7 @@
 		$mail->Port = 587;
 		$mail->IsHTML(true);
 		$mail->From = "noreply@serttech.com";
-		$mail->FromName = "Chocovron Global Corp.";
+		$mail->FromName = $logonamz;
 		$mail->Sender = "myxfin@serttech.com"; // indicates ReturnPath header
 		$mail->Subject = $subject;
 		$mail->Body = $body;
@@ -185,7 +198,7 @@
 							if(count(@$nextapprovers)>=1){
 								foreach($rowPOresult as $rs){
 									if(in_array(trim($rs['userid']),@$nextapprovers)){
-										sendEmail($rs['cemailadd'],$rs['Fname'],$tranno);
+										sendEmail($rs['cemailadd'],$rs['Fname'],$tranno,$logonamz);
 									}
 								}
 							}
@@ -332,7 +345,7 @@
 					if (mysqli_num_rows($resemailapps)!=0) {
 						while($row = mysqli_fetch_array($resemailapps, MYSQLI_ASSOC)){
 
-							sendEmail($row['cemailadd'],$row['Fname'],$tranno);
+							sendEmail($row['cemailadd'],$row['Fname'],$tranno,$logonamz);
 
 						}
 					}

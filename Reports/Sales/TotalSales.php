@@ -60,23 +60,25 @@ $company = $_SESSION['companyid'];
 
 
 $sql = "
-select  A.dcutdate, A.ddate, A.csalesno, A.ccode, A.cname, A.ncreditlimit, A.ncreditbal, A.ngross, A.ccustomerclass
+select  A.dcutdate, A.ddate, A.ctranno, A.ccode, A.cname, A.ncreditlimit, A.ncreditbal, A.ngross, A.ccustomerclass
 FROM(
-select  a.dcutdate, a.ddate, a.csalesno, a.ccode, c.cname, a.ncreditlimit, a.ncreditbal, a.ngross, c.ccustomerclass
+select  a.dcutdate, a.ddate, a.ctranno, a.ccode, c.cname, c.nlimit as ncreditlimit, b.ncreditbal, a.ngross, c.ccustomerclass
 From sales a
+left join sales_t_dues b on a.ctranno=b.ctranno and a.compcode=b.compcode
 left join customers c on a.ccode=c.cempid and a.compcode=c.compcode
 where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and lcancelled=0 and lapproved=1
 
 
 UNION ALL
 
-select  a.dcutdate, a.ddate, a.csalesno, a.ccode, c.cname, a.ncreditlimit, a.ncreditbal, a.ngross, c.ccustomerclass
+select  a.dcutdate, a.ddate, a.ctranno, a.ccode, c.cname, c.nlimit as ncreditlimit, b.ncreditbal, a.ngross, c.ccustomerclass
 From salesback a
+left join sales_t_dues b on a.ctranno=b.ctranno and a.compcode=b.compcode
 left join customers c on a.ccode=c.cempid and a.compcode=c.compcode
 where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and lcancelled=0 and lapproved=1
 ) A
 
-order by A.ccode, A.dcutdate
+order by A.ccode, A.dcutdate, A.ddate
 ";
 
 //echo $sql;
@@ -98,32 +100,32 @@ $result=mysqli_query($con,$sql);
     <td><?php echo date_format(date_create($row["ddate"]),"m/d/Y h:i:s A");?></td>
     <td><?php echo $row["ccode"];?> - <?php echo $row["cname"];?></td>
     <td><?php echo $row["ccustomerclass"];?></td>
-    <td><?php echo $row["csalesno"];?></td>
+    <td><?php echo $row["ctranno"];?></td>
     <td align="right"><?php echo number_format($row["ncreditlimit"],4);?></td>
     <td align="right"><?php echo number_format($row["ncreditbal"],4);?></td>
     <td align="right"><?php echo number_format($row["ngross"],4);?></td>
     <td align="right">
 	<b>
 	<?php 
-	//if($row["ncreditbal"] > $row["ngross"]){
-		//	echo number_format($row["ngross"],4);
+	if($row["ncreditbal"] > $row["ngross"]){
+			echo number_format($row["ngross"],4);
 			
-		//	$totCredit = $totCredit + $row["ngross"];
-	//}
-	//else{
-	//	if($row["ncreditbal"]==0){
+			$totCredit = $totCredit + $row["ngross"];
+	}
+	else{
+		if($row["ncreditbal"]==0){
 			
 			echo number_format($row["ncreditlimit"],4);
 			$totCredit = $totCredit + $row["ngross"];
 			
-		//}
-		//else{
+		}
+		else{
 
-		//    echo number_format($row["ncreditbal"],4);
-		//}
+		    echo number_format($row["ncreditbal"],4);
+		}
 			
-		//	$totCredit = $totCredit + $row["ncreditbal"];
-	//}
+			$totCredit = $totCredit + $row["ncreditbal"];
+	}
 ?>
 </b></td>
     
@@ -138,7 +140,7 @@ $result=mysqli_query($con,$sql);
    ?>
 
    <tr>
-     <td colspan="7" align="right"><b>TOTAL CREDIT AMOUNT: </b></td>
+     <td colspan="7" align="right" style="padding-right: 10px"><b>TOTAL CREDIT AMOUNT </b></td>
      <td align="right" style="border-top:2px solid #000000; border-bottom:5px double #000000"><b><?php echo number_format($totCredit,4);?></b></td>
    </tr>
 
@@ -164,11 +166,12 @@ $date1 = $_POST["date1"];
 $date2 = $_POST["date2"];
 $company = $_SESSION['companyid'];
 
-$sql = "select  a.dcutdate, a.ddate, a.csalesno, a.ccode, c.cname, a.ncreditlimit, a.ncreditbal, a.ngross, c.ccustomerclass
+$sql = "select  a.dcutdate, a.ddate, a.ctranno, a.ccode, c.cname, c.nlimit as ncreditlimit, b.ncreditbal, a.ngross, c.ccustomerclass
 From sales a
+left join sales_t_dues b on a.ctranno=b.ctranno and a.compcode=b.compcode
 left join customers c on a.ccode=c.cempid and a.compcode=c.compcode
-where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and a.npayed <> 0 and lcancelled=0 and lapproved=1
-order by a.ccode, a.dcutdate";
+where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.npayed <> 0 and lcancelled=0 and lapproved=1
+order by a.ccode, a.dcutdate, a.ddate";
 
 $result=mysqli_query($con,$sql);
 				
@@ -186,7 +189,7 @@ $result=mysqli_query($con,$sql);
     <td><?php echo date_format(date_create($row["ddate"]),"m/d/Y h:i:s A");?></td>
     <td><?php echo $row["ccode"];?> - <?php echo $row["cname"];?></td>
     <td><?php echo $row["ccustomerclass"];?></td>
-    <td><?php echo $row["csalesno"];?></td>
+    <td><?php echo $row["ctranno"];?></td>
     <td align="right"><?php echo number_format($row["ncreditlimit"],4);?></td>
     <td align="right"><?php echo number_format($row["ncreditbal"],4);?></td>
     <td align="right"><?php echo number_format($row["ngross"],4);?></td>
@@ -212,7 +215,7 @@ $result=mysqli_query($con,$sql);
    ?>
 
    <tr>
-     <td colspan="7"  align="right"><b>TOTAL PAYED AMOUNT: </b></td>
+     <td colspan="7"  align="right" style="padding-right: 10px"><b>TOTAL PAYED AMOUNT </b></td>
      <td align="right" style="border-top:2px solid #000000; border-bottom:5px double #000000"><b><?php echo number_format($totPayed,4);?></b></td>
    </tr>
 

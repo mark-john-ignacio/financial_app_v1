@@ -1,5 +1,9 @@
 <?php
+if(!isset($_SESSION)){
+	session_start();
+	}
 
+	$company = $_SESSION['companyid'];
 /*
  * DataTables example server-side processing script.
  *
@@ -56,7 +60,7 @@ require('../../Connection/config.php');
 require('ssp.customized.class.php' );
 
 $joinQuery = "FROM `sales` AS `u` LEFT JOIN `customers` AS `ud` ON (`u`.`compcode` = `ud`.`compcode` and `u`.`ccode` = `ud`.`cempid`)";
-$extraWhere = "`u`.`compcode` = '001'";
+$extraWhere = "`u`.`compcode` = '$company'";
 //$groupBy = "";
 //$having = "";
 

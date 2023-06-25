@@ -16,12 +16,15 @@ require_once "../../Connection/connection_string.php";
 		}
 	
 
-		$sql="SELECT A.ctranno, A.dapvdate, A.ngross, sum(IFNULL(B.ngross,0)) as npaid, A.cpaymentfor
-		FROM `apv` A
-		left join rfp B on A.compcode=B.compcode and A.ctranno=B.capvno
-		where A.compcode='$company' and A.lapproved=1 and A.ccode='$code'
-		group by A.ctranno, A.dapvdate, A.ngross, A.cpaymentfor
-		order by A.dapvdate DESC";
+		$sql="SELECT A.ctranno, B.dapvdate, A.cacctno, D.cacctdesc, A.ncredit, sum(IFNULL(C.ngross,0)) as npaid, B.cpaymentfor
+		FROM `apv_t` A
+		left join apv B on A.compcode=B.compcode and A.ctranno=B.ctranno
+		left join rfp C on B.compcode=C.compcode and B.ctranno=C.capvno and A.cacctno=C.cacctno
+		left join accounts D on B.compcode=D.compcode and A.cacctno=D.cacctid
+		where A.compcode='$company' and B.lapproved=1 and B.ccode='$code'
+		and D.ccategory='LIABILITIES' and A.ncredit > 0
+		group by A.ctranno, B.dapvdate, A.cacctno, D.cacctdesc, A.ncredit, B.cpaymentfor
+		order by B.dapvdate DESC";
 
 		//echo $sql;
 
@@ -32,13 +35,15 @@ require_once "../../Connection/connection_string.php";
 	if(mysqli_num_rows($result)!=0){
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 			
-			$nbalx = floatval($row['ngross']) - floatval($row['npaid']);
+			$nbalx = floatval($row['ncredit']) - floatval($row['npaid']);
 
 			if($nbalx > 0 && !in_array($row['ctranno'], $disreg)){
 	
 			 $json['ctranno'] = $row['ctranno'];
+			 $json['cacctno'] = $row['cacctno'];
+			 $json['cacctdesc'] = $row['cacctdesc'];
 			 $json['dapvdate'] = $row['dapvdate'];
-			 $json['namount'] = number_format($row['ngross'],2);
+			 $json['namount'] = number_format($row['ncredit'],2);
 			 $json['nbalance'] = number_format($nbalx,2);
 			 $json['cpaymentfor'] = $row['cpaymentfor'];
 			 

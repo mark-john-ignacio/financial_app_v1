@@ -35,7 +35,7 @@
 	<title>Myx Financials</title>
 
 	<link rel="stylesheet" type="text/css" href="../../global/plugins/font-awesome/css/font-awesome.min.css"/> 
-	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">  
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>">  
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
@@ -52,17 +52,34 @@
         </div>
 
 				<br><br>
-				<button type="button" class="btn btn-primary btn-md" onClick="location.href='DR_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+				
 
-				<?php
-					if($poststat=="True"){
-				?>
-					<button type="button" class="btn btn-warning btn-md" onClick="location.href='DR_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
-				<?php
-					}
-				?>
+			<div class="col-xs-12 nopadding">
+				<div class="col-xs-4 nopadding">
+					<button type="button" class="btn btn-primary btn-md" onClick="location.href='DR_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
-        <br><br>
+					<?php
+						if($poststat=="True"){
+					?>
+						<button type="button" class="btn btn-warning btn-md" onClick="location.href='DR_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+					<?php
+						}
+					?>
+				</div>
+        <div class="col-xs-3 nopadding">
+					<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
+				</div>
+        <div class="col-xs-2 nopadwtop" style="height:30px !important;">
+          <b> Search Customer/DR No: </b>
+        </div>
+				<div class="col-xs-3 text-right nopadding">
+					<input type="text" name="searchByName" id="searchByName" value="" class="form-control input-sm" placeholder="Enter Trans No or Customer...">
+				</div>
+
+			</div>
+
+
+        <br><br><br>
 
 				<table id="MyTable" class="display" cellspacing="0" width="100%">
 					<thead>

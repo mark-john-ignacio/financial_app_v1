@@ -15,6 +15,7 @@ require_once "../Connection/connection_string.php";
         $json['cname'] = $comprow['compname']; 
         $json['cdesc'] = $comprow['compdesc']; 
         $json['cadd']= $comprow['compadd']; 
+        $json['czip']= $comprow['compzip']; 
         $json['ctin'] = $comprow['comptin']; 
 		$json['lvat'] = $comprow['compvat'];
         $json['txtheader'] = $comprow['txtheader'];

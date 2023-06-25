@@ -40,17 +40,31 @@ if(mysqli_num_rows($sql) == 0){
             </div>
         </div>
 			<br><br>
-			<button type="button" class="btn btn-primary btn-md" onClick="location.href='SO_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
-			<?php
-				if($poststat=="True"){
-			?>
-			<button type="button" class="btn btn-warning btn-md" onClick="location.href='SO_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
-			<?php
-				}
-			?>
+			<div class="col-xs-12 nopadding">
+				<div class="col-xs-4 nopadding">
+					<button type="button" class="btn btn-primary btn-md" onClick="location.href='SO_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
-            <br><br>
+					<?php
+						if($poststat=="True"){
+					?>
+					<button type="button" class="btn btn-warning btn-md" onClick="location.href='SO_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+					<?php
+						}
+					?>
+				</div>
+        <div class="col-xs-3 nopadding">
+					<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
+				</div>
+        <div class="col-xs-2 nopadwtop" style="height:30px !important;">
+          <b> Search Customer/SO No: </b>
+        </div>
+				<div class="col-xs-3 text-right nopadding">
+					<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>" class="form-control input-sm" placeholder="Enter Trans No or Customer...">
+				</div>
+			</div>
+
+      <br><br><br>
 			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
@@ -72,6 +86,7 @@ if(mysqli_num_rows($sql) == 0){
     
 <form name="frmedit" id="frmedit" method="post" action="SO_edit.php">
 	<input type="hidden" name="txtctranno" id="txtctranno" />
+	<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
 </form>		
 
 
@@ -116,7 +131,15 @@ if(mysqli_num_rows($sql) == 0){
 
 	$(document).ready(function(e) {
 
-		filltable();
+		fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");	
+
+		$("#searchByName").keyup(function(){
+				var searchByName = $('#searchByName').val();
+
+				$('#example').DataTable().destroy();
+				fill_datatable(searchByName);
+
+		});
 
 		var itmstat = "";
 		var x = "";
@@ -197,11 +220,20 @@ if(mysqli_num_rows($sql) == 0){
 
 	});
 
-	function filltable(){
+	function fill_datatable(searchByName){
 
 		var table = $('#example').DataTable({
-			"searching": true,
+			stateSave: true,
+			"searching": false,
 			"paging": true,
+			"serverSide": true,
+			"ajax": {
+				url: "th_datatable.php",
+				type: "POST",
+				data:{
+					searchByName: searchByName
+				}
+			},
 			"columns": [
 				{ "data": null,
 						"render": function (data, type, full, row) {	
@@ -213,14 +245,14 @@ if(mysqli_num_rows($sql) == 0){
 							return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
 						}						
 				},
-				{ "data": 9 },
+				{ "data": 1 },
 				{ "data": null,
 			
 					"render": function (data, type, full, row) {
 
 					//	if (full[1] !== full[9]) {
 							
-							return full[1];
+							return full[2];
 
 						//}
 						//else{
@@ -228,9 +260,9 @@ if(mysqli_num_rows($sql) == 0){
 						//}
 					}
 				},
-				{ "data": 2 },
 				{ "data": 3 },
 				{ "data": 4 },
+				{ "data": 9 },
 				{ "data": null,
 					"render": function (data, type, full, row) {
 
@@ -252,24 +284,19 @@ if(mysqli_num_rows($sql) == 0){
 					}
 				}
 			],
-			"serverSide": true,
-			"ajax": {
-				url: "th_datatable.php",
-				type: "POST",
-			},
 			"order": [[ 3, "desc" ]],
 			"columnDefs": [
 				{
 					"targets": 6,
-					"className": "text-center"
+					"className": "text-center dt-body-nowrap"
 				},
 				{
-					"targets": 5,
+					"targets": [5,4],
 					"className": "text-right"
 				},
 				{
-					"targets": 4,
-					"className": "text-right"
+					"targets": 2,
+					"className": "dt-body-nowrap"
 				}
 			],
 			"createdRow": function( row, data, dataIndex ) {
@@ -284,7 +311,8 @@ if(mysqli_num_rows($sql) == 0){
 	}
 
 	function editfrm(x){
-		document.getElementById("txtctranno").value = x;
+		$('#txtctranno').val(x); 
+		$('#hdnsrchval').val($('#searchByName').val()); 
 		document.getElementById("frmedit").submit();
 	}
 

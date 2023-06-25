@@ -7,7 +7,7 @@ include('../../Connection/connection_string.php');
 
 $column = array('A.ctranno', 'A.cdrprintno', 'B.ctradename', 'A.dcutdate', 'A.lapproved', 'A.lcancelled', 'A.ccode', 'B.nlimit', 'B.cname');
 
-$query = "SELECT * FROM `ntdr` A LEFT JOIN `customers` B ON A.`ccode` = B.`cempid` where A.compcode='".$_SESSION['companyid']."' ";
+$query = "SELECT * FROM `ntdr` A LEFT JOIN `customers` B ON A.`compcode` = B.`compcode` and A.`ccode` = B.`cempid` where A.compcode='".$_SESSION['companyid']."' ";
 
 if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
 {

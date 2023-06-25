@@ -9,7 +9,7 @@ $company = $_SESSION['companyid'];
 
 $column = array('ctranno', 'ccode', 'cname', 'ddate', 'ngross', 'lcancelled', 'lapproved');
 
-$query = "select a.*,b.cname from quote a left join customers b on a.ccode=b.cempid and a.compcode=b.compcode where a.compcode='$company'";
+$query = "select a.*,b.cname from quote a left join customers b on a.`compcode` = b.`compcode` and a.ccode=b.cempid and a.compcode=b.compcode where a.compcode='$company'";
 
 if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
 {

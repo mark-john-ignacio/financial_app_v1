@@ -66,7 +66,7 @@
 
 			</div>
 
-      <br><br>
+      <br><br><br>
 			<table id="MyTable" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>

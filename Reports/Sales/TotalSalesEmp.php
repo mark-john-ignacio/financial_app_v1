@@ -2,11 +2,11 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "TotalSales.php";
+//$_SESSION['pageid'] = "TotalSales.php";
 
 include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+//include('../../include/denied.php');
+//include('../../include/access2.php');
 
 $date1 = $_POST["date1"];
 $date2 = $_POST["date2"];

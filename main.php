@@ -12,7 +12,8 @@
 <link href="global/css/googleapis.css" rel="stylesheet" type="text/css"/>
 <link href="global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 <link href="global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>
-<link href="global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+<!--<link href="global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>-->
+<link href="Bootstrap/css/bootstrap.css?x=<?=time()?>" rel="stylesheet" type="text/css"/>
 <link href="Bootstrap/css/shopfont/flaticon.css?h=<?php echo time();?>" rel="stylesheet" type="text/css"/>
 <link href="global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css"/>
 <link href="global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css"/>
@@ -37,6 +38,23 @@
 <!-- DOC: Apply "page-sidebar-reversed" class to put the sidebar on the right side -->
 <!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
 <body class="page-header-fixed page-quick-sidebar-over-content" onLoad="setpage('MAIN/index.html');">
+	<?php
+		if(!isset($_SESSION)){
+			session_start();
+		}
+
+		include('Connection/connection_string.php');
+		include('include/denied.php');
+		$company = $_SESSION['companyid'];     
+
+		//get user details
+		$result=mysqli_query($con,"select * From company where compcode='$company'");								
+		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+		{
+			$compname =  $row['compname'];
+			$logoname =  str_replace("../","",$row['clogoname']);
+		}   
+	?>
 <!-- BEGIN HEADER -->
 <div class="page-header navbar navbar-fixed-top">
 	<!-- BEGIN HEADER INNER -->
@@ -44,10 +62,16 @@
 		<!-- BEGIN LOGO -->
 		<div class="page-logo">
 			<a href="index.html">
-			<img src="images/LOGOTOP.png" alt="logo" class="logo-default" width="150" height="48" />
+				<img src="images/LOGOTOP.png" alt="logo" class="logo-default" width="150" height="48" />
 			</a>
 			<div class="menu-toggler sidebar-toggler hide">
 				<!-- DOC: Remove the above "hide" to enable the sidebar toggler button on header -->
+			</div>
+		</div>
+
+		<div class="page-comname">
+			<div style="display: table-cell; vertical-align: middle;">
+				<h4 style="color:#fff"><?=$compname?></h4>
 			</div>
 		</div>
 		<!-- END LOGO -->
@@ -62,53 +86,43 @@
 				<!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
 				<li class="dropdown dropdown-user">
 
-						<?php
-                        if(!isset($_SESSION)){
-							session_start();
-							}
+						<?php                    
+             
+              $id = $_SESSION['employeeid'];
                         
-                        //get user details
-                        
-                        include('Connection/connection_string.php');
-                        include('include/denied.php');
-                        
-                        $company = $_SESSION['companyid'];
-                        $id = $_SESSION['employeeid'];
-                        
-                                        $sql = "select * From users where Userid='$id'";
-                                        $result=mysqli_query($con,$sql);
+              $sql = "select * From users where Userid='$id'";
+              $result=mysqli_query($con,$sql);
                                         
-                                            if (!mysqli_query($con, $sql)) {
-                                                printf("Errormessage: %s\n", mysqli_error($con));
-                                            } 
-                                        $cfname = "";
-                                        
+              if (!mysqli_query($con, $sql)) {
+                printf("Errormessage: %s\n", mysqli_error($con));
+              } 
+              
+							$cfname = "";                                       
                         
-                                        while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-                                        {
-                                            $cfname =  $row['Fname'];
-                                            $imgsrc =  $row['cuserpic'];
+              while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+              {
+                $cfname =  $row['Fname'];
+                $imgsrc =  $row['cuserpic'];
                                             
-                                            $imgsrc =  str_replace("../","",$imgsrc);
-                                        }
+                $imgsrc =  str_replace("../","",$imgsrc);
+              }
                                         
-                                        if($imgsrc == ""){
-                                            $imgsrc = "imgusers/emp.jpg";	
-                                        }
+              if($imgsrc == ""){
+                $imgsrc = "imgusers/emp.jpg";	
+              }
                         
-                        ?>
+            ?>
 
+					
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-					<img alt="" class="img-circle" src="<?php echo $imgsrc; ?>" />
-					<span class="username username-hide-on-mobile"> <?php echo $cfname; ?> </span>
-					<i class="fa fa-angle-down"></i>
+						<img alt="" class="img-circle" src="<?php echo $imgsrc; ?>" />
+						<span class="username username-hide-on-mobile"> <?php echo $cfname; ?> </span>
+						<i class="fa fa-angle-down"></i>
 					</a>
 					<ul class="dropdown-menu dropdown-menu-default">
 						<li>
 							<a href="javascript:;" onClick="setpage('MasterFiles/ChangePass.php');" >
 							<i class="icon-user"></i> Change Password </a>
-						</li>
-						<li class="divider">
 						</li>
 						<li>
 							<a href="logout.php">
@@ -158,7 +172,7 @@
 					<!-- END SIDEBAR TOGGLER BUTTON -->
 				</li>
 				<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-				<li class="start ">
+				<li class="start">
 					<a href="javascript:;">
 					<i class="icon-settings"></i>
 					<span class="title">Master Data Files</span>
@@ -167,107 +181,127 @@
 					<ul class="sub-menu">
 						<li>
 							<a href="javascript:;" onClick="setpage('MasterFiles/Accounts/Accounts.php?f=');">
-                            <i class="fa fa-bars"></i>
+              <i class="fa fa-bars"></i>
 							Chart of Accounts</a>
 						</li>
 						<li>
 							<a href="javascript:;" class="nav-link nav-toggle">
-                            <i class="icon-handbag"></i> Items <span class="arrow"></span> </a> <!-- Maintenance/Items.php -->
+                <i class="icon-handbag"></i> Items <span class="arrow"></span> 
+							</a> <!-- Maintenance/Items.php -->
                              
-                                        <ul class="sub-menu">
-                                        	<li>
-                                            	<a href="javascript:;" onClick="setpage('MasterFiles/Item/Items.php');"> <i class="fa fa-list-ul "></i> Master List </a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:;" onClick="setpage('MasterFiles/Items/UOM.php');"> <i class="fa fa-angle-double-right"></i> Unit of Measure </a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:;" onClick="setpage('MasterFiles/Items/TYPE.php?f=');"> <i class="fa fa-angle-double-right"></i> Types </a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:;" onClick="setpage('MasterFiles/Items/CLASS.php?f=');"> <i class="fa fa-angle-double-right"></i> Classification </a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:;" onClick="setpage('MasterFiles/Items/Groupings.php');"> <i class="fa fa-angle-double-right"></i> Groupings </a>
-                                            </li>
-                                        </ul>
+              <ul class="sub-menu">
+                <li>
+                  <a href="javascript:;" onClick="setpage('MasterFiles/Item/Items.php');"> <i class="fa fa-list-ul "></i> Master List </a>
+                </li>
+                <li>
+                  <a href="javascript:;" onClick="setpage('MasterFiles/Items/UOM.php');"> <i class="fa fa-angle-double-right"></i> Unit of Measure </a>
+                </li>
+                <li>
+                  <a href="javascript:;" onClick="setpage('MasterFiles/Items/TYPE.php?f=');"> <i class="fa fa-angle-double-right"></i> Types </a>
+                </li>
+                <li>
+                  <a href="javascript:;" onClick="setpage('MasterFiles/Items/CLASS.php?f=');"> <i class="fa fa-angle-double-right"></i> Classification </a>
+                </li>
+                <li>
+                  <a href="javascript:;" onClick="setpage('MasterFiles/Items/Groupings.php');"> <i class="fa fa-angle-double-right"></i> Groupings </a>
+                </li>
+              </ul>
 						</li>
 						<li>
 							<a href="javascript:;" class="nav-link nav-toggle">
-                            <i class="fa fa-rub"></i> Price List <span class="arrow"></span> </a>
-                             
-                                        <ul class="sub-menu">
-                                        	<li>
-                                                <a href="javascript:;" onClick="setpage('MasterFiles/Items/PM.php');"> <i class="fa fa-angle-double-right"></i> Sale Pricelist </a>
-                                            </li>
-                                        	<li>
-                                                <a href="javascript:;" onClick="setpage('MasterFiles/Items/PP.php');"> <i class="fa fa-angle-double-right"></i> Purchase Pricelist </a>
-											</li>
-
-										</ul>
-                         </li>
+                <i class="fa fa-rub"></i> Price List <span class="arrow"></span>
+							</a>                            
+              <ul class="sub-menu">
+                <li>
+                  <a href="javascript:;" onClick="setpage('MasterFiles/Items/PM.php');"> 
+										<i class="fa fa-angle-double-right"></i> Sale Pricelist 
+									</a>
+                </li>
+                <li>
+                  <a href="javascript:;" onClick="setpage('MasterFiles/Items/PP.php');"> 
+										<i class="fa fa-angle-double-right"></i> Purchase Pricelist 
+									</a>
+								</li>
+							</ul>
+            </li>
 						<li>
 							<a href="javascript:;" class="nav-link nav-toggle">
-                            <i class="icon-basket-loaded"></i>
-							Customers<span class="arrow"></span></a>
-                                        <ul class="sub-menu">
-                                        	<li>
-                                            	<a href="javascript:;" onClick="setpage('MasterFiles/Custs/Customers.php?f=');"> <i class="fa fa-list-ul "></i> Master List </a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:;" onClick="setpage('MasterFiles/Custs/TYPE.php');"> <i class="fa fa-angle-double-right"></i> Types </a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:;" onClick="setpage('MasterFiles/Custs/CLASS.php');"> <i class="fa fa-angle-double-right"></i> Classification </a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:;" onClick="setpage('MasterFiles/Custs/Groups/Groupings.php');"> <i class="fa fa-angle-double-right"></i> Groupings </a>
-                                            </li>
-                                        </ul>
+                <i class="icon-basket-loaded"></i> Customers<span class="arrow"></span>
+							</a>
+              <ul class="sub-menu">
+								<li>
+									<a href="javascript:;" onClick="setpage('MasterFiles/Custs/Customers.php?f=');"> 
+										<i class="fa fa-list-ul "></i> Master List 
+									</a>
+								</li>
+								<li>
+									<a href="javascript:;" onClick="setpage('MasterFiles/Custs/TYPE.php');"> 
+										<i class="fa fa-angle-double-right"></i> Types 
+									</a>
+								</li>
+								<li>
+									<a href="javascript:;" onClick="setpage('MasterFiles/Custs/CLASS.php');"> 
+										<i class="fa fa-angle-double-right"></i> Classification 
+									</a>
+								</li>
+								<li>
+									<a href="javascript:;" onClick="setpage('MasterFiles/Custs/Groups/Groupings.php');"> 
+										<i class="fa fa-angle-double-right"></i> Groupings 
+									</a>
+								</li>
+							</ul>
 						</li>
 						<li>
 							<a href="javascript:;" class="nav-link nav-toggle">
-                            <i class="fa fa-truck"></i>
-							Suppliers<span class="arrow"></span></a>
-                                        <ul class="sub-menu">
-                                        	<li>
-                                            	<a href="javascript:;" onClick="setpage('MasterFiles/Supp/Suppliers.php?f=');"> <i class="fa fa-list-ul "></i> Master List </a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:;" onClick="setpage('MasterFiles/Supp/TYPE.php');"> <i class="fa fa-angle-double-right"></i> Types </a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:;" onClick="setpage('MasterFiles/Supp/CLASS.php');"> <i class="fa fa-angle-double-right"></i> Classification </a>
-                                            </li>
-                                            <li>
-                                                <a href="javascript:;" onClick="setpage('MasterFiles/Supp/Groups/Groupings.php');"> <i class="fa fa-angle-double-right"></i> Groupings </a>
-                                            </li>
-                                        </ul>
+                <i class="fa fa-truck"></i> Suppliers<span class="arrow"></span>
+							</a>
+              <ul class="sub-menu">
+                <li>
+                  <a href="javascript:;" onClick="setpage('MasterFiles/Supp/Suppliers.php?f=');"> 
+										<i class="fa fa-list-ul "></i> Master List 
+									</a>
+                </li>
+                <li>
+                  <a href="javascript:;" onClick="setpage('MasterFiles/Supp/TYPE.php');"> 
+										<i class="fa fa-angle-double-right"></i> Types 
+									</a>
+                </li>
+                <li>
+                  <a href="javascript:;" onClick="setpage('MasterFiles/Supp/CLASS.php');"> 
+										<i class="fa fa-angle-double-right"></i> Classification 
+									</a>
+                </li>
+                <li>
+                  <a href="javascript:;" onClick="setpage('MasterFiles/Supp/Groups/Groupings.php');"> 
+										<i class="fa fa-angle-double-right"></i> Groupings 
+									</a>
+                </li>
+              </ul>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('MasterFiles/Salesman/Salesman.php');">
-                            <i class="fa fa-user-secret"></i>
-							Salesman</a>
+                <i class="fa fa-user-secret"></i> Salesman
+							</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('Maintenance/Bank.php');">
-                            <i class="fa fa-bank"></i>
-							Banks</a>
+                <i class="fa fa-bank"></i> Banks
+							</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('MasterFiles/Locations/locations.php');">
-              <i class="fa fa-barcode"></i>
-							Sections</a>
+              <i class="fa fa-barcode"></i> Sections
+						</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('MasterFiles/Users/users.php?f=');">
-                            <i class="fa fa-users"></i>
-							System Users</a>
+                <i class="fa fa-users"></i> System Users
+							</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('System/');">
-                            <i class="fa fa-gears"></i>
-							System Setup</a>
+                <i class="fa fa-gears"></i> System Setup
+							</a>
 						</li>
 					</ul>
 				</li>
@@ -280,77 +314,58 @@
 					<ul class="sub-menu"> 
 						<li>
 							<a href="javascript:;" onClick="setpage('Sales/Quote/Quote.php');">
-                            <i class="fgly flaticon-020-receipt"></i>
-							Quotation</a>
+                <i class="fgly flaticon-020-receipt"></i> Quotation
+							</a>
 						</li>
-
-					<li class="side-item-category">Trade Transactions</li>
-
+						<li class="side-item-category">Trade Transactions</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('Sales/SO/SO.php');">
-                            <i class="fgly-sm flaticon-003-shopping-list"></i>
-							Sales Order</a>
+                <i class="fgly-sm flaticon-003-shopping-list"></i> Sales Order
+							</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('Sales/DR/DR.php');">
-                            <i class="fgly-sm flaticon-035-invoice"></i>
-							Delivery Receipt</a>
+                <i class="fgly-sm flaticon-035-invoice"></i> Delivery Receipt
+							</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('Sales/Sales/SI.php');">
-                            <i class="fgly-sm flaticon-065-bill"></i> 
-							Sales Invoice</a>
+                <i class="fgly-sm flaticon-065-bill"></i> Sales Invoice
+							</a>
 						</li>
-
 						<li>
 							<a href="javascript:;" onClick="setpage('Sales/Return/SR.php');">
-                <i class="icon-action-undo"></i>
-								Sales Return</a>
+                <i class="icon-action-undo"></i> Sales Return 
+							</a>
 						</li>
             <!--
-                        <li>
+            <li>
 							<a href="javascript:;" onClick="setpage('POS');">
-                            <i class="fgly flaticon-060-cash-register"></i>
-							Point of Sale</a>
+                <i class="fgly flaticon-060-cash-register"></i> Point of Sale
+							</a>
 						</li>
-																			-->											
-           
-                 
-						
-						<li class="side-item-category">Non Trade Transactions</li>
-                   
-						
+						-->																	
+						<li class="side-item-category">Non Trade Transactions</li>						
 						<li>
 							<a href="javascript:;" onClick="setpage('SalesNT/SO/SO.php');">
-                            <i class="fgly-sm flaticon-003-shopping-list"></i>
-							SO Non Trade</a>
+                <i class="fgly-sm flaticon-003-shopping-list"></i> SO Non Trade
+							</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('SalesNT/DR/DR.php');">
-                            <i class="fgly-sm flaticon-035-invoice"></i>
-							DR Non-Trade</a>
-						</li>
-						
+                <i class="fgly-sm flaticon-035-invoice"></i> DR Non-Trade
+							</a>
+						</li>						
 						<li>
 							<a href="javascript:;" onClick="setpage('SalesNT/Sales/SI.php');">
-                            <i class="fgly-sm flaticon-065-bill"></i> 
-							SI Non-Trade</a>
+                <i class="fgly-sm flaticon-065-bill"></i> SI Non-Trade
+							</a>
 						</li>
-
-
 						<li>
 							<a href="javascript:;" onClick="setpage('SalesNT/Return/SR.php');">
-                <i class="icon-action-undo"></i>
-								SR Non-Trade</a>
-						</li>
-            <!--           
-            <li>
-							<a href="javascript:;" onClick="setpage('POS');">
-                            <i class="fgly flaticon-060-cash-register"></i>
-							Point of Sale</a>
-						</li>
-						-->
-                        
+                <i class="icon-action-undo"></i> SR Non-Trade
+							</a>
+						</li>                        
 					</ul>
 				</li>
 				<li>
@@ -362,44 +377,21 @@
 					<ul class="sub-menu">
 						<li>
 							<a href="javascript:;" onClick="setpage('Purchases/PO/Purch.php');">
-                            <i class="glyphicon glyphicon-list"> </i>
-							Purchase Order</a>
+                <i class="glyphicon glyphicon-list"> </i> Purchase Order
+							</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('Purchases/RR/RR.php');">
-                            <i class="fa fa-download"> </i>
-							Receiving</a>
+                <i class="fa fa-download"> </i> Receiving
+							</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('Purchases/PRet/PurchRet.php');">
-                            <i class="fa fa-upload"> </i>
-							Purchase Return</a>
+                <i class="fa fa-upload"> </i> Purchase Return\
+							</a>
 						</li>
-
-			<!--
-						<li class="side-item-category">Non Trade Transactions</li>
-
-
-						<li>
-							<a href="javascript:;" onClick="setpage('PurchasesNT/PO/Purch.php');">
-                            <i class="glyphicon glyphicon-list"> </i>
-							Purchase Order</a>
-						</li>
-						<li>
-							<a href="javascript:;" onClick="setpage('PurchasesNT/RR/RR.php');">
-                            <i class="fa fa-download"> </i>
-							Receiving</a>
-						</li>
-						
-						<li>
-							<a href="javascript:;" onClick="setpage('PurchasesNT/PRet/PurchRet.php');">
-                            <i class="fa fa-upload"> </i>
-							Purchase Return</a>
-						</li>
-																			-->
 					</ul>
 				</li>
-
 				<li>
 					<a href="javascript:;">
 					<i class="icon-book-open "></i>
@@ -412,20 +404,25 @@
                 <i class="fa fa-book"> </i>Journal Entry
 							</a>
 						</li>
-
 						<li>
 							<a href="javascript:;" class="nav-link nav-toggle">
                 <i class="fa fa-credit-card"> </i> Accounts Payable<span class="arrow"></span>
 							</a>
               <ul class="sub-menu">
 								<li>
-                  <a href="javascript:;" onClick="setpage('Accounting/APInv/RR.php');"> <i class="fa fa-angle-double-right"></i> Supplier's Invoice </a>
+                  <a href="javascript:;" onClick="setpage('Accounting/APInv/RR.php');"> 
+										<i class="fa fa-angle-double-right"></i> Supplier's Invoice 
+									</a>
                 </li>	
 	              <li>
-                  <a href="javascript:;" onClick="setpage('Accounting/APAdj/APAdj.php');"> <i class="fa fa-angle-double-right"></i> Adjustments </a>
+                  <a href="javascript:;" onClick="setpage('Accounting/APAdj/APAdj.php');"> 
+										<i class="fa fa-angle-double-right"></i> Adjustments 
+									</a>
                 </li>										
                 <li>
-                  <a href="javascript:;" onClick="setpage('Accounting/APV/APV.php');"> <i class="fa fa-angle-double-right"></i> AP Voucher </a>
+                  <a href="javascript:;" onClick="setpage('Accounting/APV/APV.php');"> 
+										<i class="fa fa-angle-double-right"></i> AP Voucher 
+									</a>
                 </li>
 
 								<?php
@@ -447,8 +444,7 @@
 
 						<li>
 							<a href="javascript:;" class="nav-link nav-toggle">
-                <i class="fa fa-money"></i>
-							Accounts Receivable<span class="arrow"></span>
+                <i class="fa fa-money"></i> Accounts Receivable<span class="arrow"></span>
 							</a>
                 <ul class="sub-menu">
 									<!--
@@ -460,18 +456,22 @@
                   </li>
 									-->
 									<li>
-                    <a href="javascript:;" onClick="setpage('Accounting/ARAdj/ARAdj.php');"> <i class="fa fa-angle-double-right"></i> Adjustments </a>
+                    <a href="javascript:;" onClick="setpage('Accounting/ARAdj/ARAdj.php');"> 
+											<i class="fa fa-angle-double-right"></i> Adjustments 
+										</a>
                   </li>
                   <li>
-                    <a href="javascript:;" onClick="setpage('Accounting/OR/OR.php');"> <i class="fa fa-angle-double-right"></i> AR Payments </a>
+                    <a href="javascript:;" onClick="setpage('Accounting/OR/OR.php');"> 
+											<i class="fa fa-angle-double-right"></i> AR Payments 
+										</a>
                   </li>
                 </ul>
 						</li>
 
 						<li>
 							<a href="javascript:;" onClick="setpage('Accounting/Deposit.php');">
-                            <i class="fa fa-bank"> </i>
-							Bank Deposit</a>
+                <i class="fa fa-bank"> </i> Bank Deposit
+							</a>
 						</li>
 
 					</ul>
@@ -483,37 +483,20 @@
 					<span class="arrow "></span>
 					</a>
 					<ul class="sub-menu">
-						<!--
-                        <li>
-							<a href="javascript:;" onClick="setpage('RECOM/');"> 
-                            <i class="fa fa-history"> </i>
-							Recompute</a>
-						</li>
-                        
-						<li>
-							<a href="javascript:;" onClick="setpage('InvRec/Inv.php');">
-							 <i class="fa fa-tasks"> </i>
-                            Putaway</a>
-						</li>
-						<li>
-							<a href="javascript:;" onClick="setpage('InvPick/Inv.php');">
-							 <i class="fa fa-tasks"> </i>
-                            Picking</a>
-						</li>-->
 						<li>
 							<a href="javascript:;" onClick="setpage('InvCnt/Inv.php');">
-							 <i class="fa fa-tasks"> </i>
-                            Inventory Count</a>
+							 <i class="fa fa-tasks"> </i> Inventory Count
+							</a>
 						</li>   
 						<li>
 							<a href="javascript:;" onClick="setpage('InvTrans/Inv.php');">
-							 <i class="fa fa-tasks"> </i>
-                            Inventory Transfer</a>
+							 <i class="fa fa-tasks"> </i> Inventory Transfer
+							</a>
 						</li>  						
 						<li>
 							<a href="javascript:;" onClick="setpage('InvAdj/Inv.php');">
-							 <i class="fa fa-tasks"> </i>
-                            Inventory Adjustment</a>
+							 <i class="fa fa-tasks"> </i> Inventory Adjustment
+							</a>
 						</li>
 					</ul>
 				</li>
@@ -526,23 +509,23 @@
 					<ul class="sub-menu">
 						<li>
 							<a href="javascript:;" onClick="setpage('Reports/rptmenu.php?id=sales');">
-                            <i class="glyphicon glyphicon-file "> </i>
-							Sales</a>
+                <i class="glyphicon glyphicon-file "> </i> Sales
+							</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('Reports/rptmenu.php?id=purch');">
-                            <i class="glyphicon glyphicon-file "> </i>
-							Purchases</a>
+                <i class="glyphicon glyphicon-file "> </i> Purchases
+							</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('Reports/rptmenu.php?id=acc');">
-                            <i class="glyphicon glyphicon-file "> </i>
-							GL & BIR Reports</a>
+                <i class="glyphicon glyphicon-file "> </i> GL & BIR Reports
+							</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('Reports/rptmenu.php?id=inv');">
-                            <i class="glyphicon glyphicon-file "> </i>
-							Inventory</a>
+                <i class="glyphicon glyphicon-file "> </i> Inventory
+							</a>
 						</li>
 					</ul>
 				</li>

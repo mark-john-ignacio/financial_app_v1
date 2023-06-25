@@ -24,11 +24,15 @@ $company = $_SESSION['companyid'];
 
 $date1 = $_POST["date1"];
 $date2 = $_POST["date2"];
+
+function getbalance($cnt, $bal, $ndebit, $ncredit){
+
+}
 ?>
 
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
+	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css?x=<?=time()?>">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>General Ledger</title>
 </head>
@@ -60,38 +64,73 @@ $date2 = $_POST["date2"];
 	$arrundrs = array_intersect_key( $arracctnos , array_unique( array_map('serialize' , $arracctnos ) ) );
 
 	$cntr = 0;
+	$dcurrentacct = "";
 	foreach($arrundrs as $rowxz){
 		$cntr++;
 		if($cntr>1){
 			echo "<br><br>";
 		}
+
+		$dcurrentacct = $rowxz['cacctno'];
 ?>
 
-<table width="50%" border="0" align="center" cellpadding = "3">
-	<tr><th colspan="4"><?=$rowxz['cacctdesc'] . " (".$rowxz['cacctno'].")"; ?></th></tr>
+<table width="55%" border="0" align="center" cellpadding = "3" class="tbl-serate">
+	<tr>
+		<th colspan="5">
+			<table width="100%" border="0" align="center" cellpadding = "3">
+				<tr>
+					<td width="30%"><b>Acct ID:</b> <?=$rowxz['cacctno']?></td>
+					<td><b>Description:</b> <?=$rowxz['cacctdesc']; ?></td>
+					<td width="30%" style="text-align:right"><!--<b>Balance:</b> <?//=$rowxz['cacctdesc']; ?>--></td>
+				</tr>
+			</table>
+		</th>
+	</tr>
   <tr>
-		<th width="200px">Reference</th>
+		<th>Reference</th>
 		<th width="100px">Date</th>
-    <th style="text-align:right">Debit</th>
-    <th style="text-align:right">Credit</th>
+    <th style="text-align:right" width="150px">Debit</th>
+    <th style="text-align:right" width="150px">Credit</th>
   </tr>
 
  <?php
-
+	$totdebit = 0;
+	$totcredit = 0;
+	$cntr = 0;
+	$xv = 0;
 	foreach($arrallqry as $drow)
 	{
 		if($drow['acctno']==$rowxz['cacctno']){
+			$cntr++;
+
+			$totdebit = $totdebit + floatval($drow['ndebit']);
+			$totcredit = $totcredit + floatval($drow['ncredit']);
 	?>
    <tr>
 		<td><?=$drow['ctranno']?></td>
 		<td><?=date_format(date_create($drow['ddate']), "d-M-y")?></td>
-  	<td style="text-align:right"><?=(floatval($drow['ndebit'])<>0) ? number_format(floatval($drow['ndebit']), 2) : ""?></td>
+  	<td style="text-align:right;"><?=(floatval($drow['ndebit'])<>0) ? number_format(floatval($drow['ndebit']), 2) : ""?></td>
     <td style="text-align:right"><?=(floatval($drow['ncredit'])<>0) ? number_format(floatval($drow['ncredit']), 2) : ""?></td>
+		<!--<td style="text-align:right">
+			<?php
+					//$xv = getbalance($cntr, $xv, $drow['ndebit'], $drow['ncredit']);
+					//echo number_format(floatval($xv), 2);
+			?>
+		</td>-->
   </tr>
 	<?php
 		}
 	}
 	?>
+
+	<tr>
+		<td style="text-align:right;" colspan="2"><b>Total <?=$dcurrentacct?></b></td>
+  	<td style="text-align:right; border-bottom-style: double; border-top: 1px solid"><b><?=(floatval($totdebit)<>0) ? number_format(floatval($totdebit), 2) : ""?></b></td>
+    <td style="text-align:right; border-bottom-style: double; border-top: 1px solid"><b><?=(floatval($totcredit)<>0) ? number_format(floatval($totcredit), 2) : ""?></b></td>
+		<!--<td>
+			&nbsp;
+		</td>-->
+  </tr>
 
  
 </table>

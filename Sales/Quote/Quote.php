@@ -40,7 +40,7 @@ $company = $_SESSION['companyid'];
 	<title>Myx Financials</title>
 
 	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
-	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">   
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>">   
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css"> 
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css">
 </head>
@@ -76,7 +76,7 @@ $company = $_SESSION['companyid'];
 			</div>
 
 
-            <br><br>
+    	<br><br><br>
 			<table id="MyTable" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
@@ -295,7 +295,6 @@ function fill_datatable(searchByName = ''){
 	var dataTable = $('#MyTable').DataTable({
 		    "processing" : true,
 		    "serverSide" : true,
-		    "lengthChange": false,
 		    "order" : [],
 		    "searching" : false,
 		    "ajax" : {

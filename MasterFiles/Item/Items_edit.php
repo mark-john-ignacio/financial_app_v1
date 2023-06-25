@@ -60,6 +60,7 @@ include('../../include/access2.php');
                         $cSKUCode = $row['cskucode'];
 						$cItemDesc = $row['citemdesc'];
 						$cNotes = $row['cnotes'];
+                        $cUserPic = $row['cuserpic'];
 
 						$cUnit = $row['cunit'];
 						$cClass = $row['cclass'];
@@ -136,11 +137,11 @@ include('../../include/access2.php');
 <div class="col-xs-12">
  <div class="col-xs-2 nopadding" align="left">
  	<?php 
-	if(!file_exists("../../imgitm/".$cItemNo.".jpg")){
+	if(!file_exists($cUserPic)){
 		$imgsrc = "../../images/emp.jpg";
 	}
 	else{
-		$imgsrc = "../../imgitm/".$cItemNo.".jpg";
+		$imgsrc = $cUserPic;
 	}
 	?>
     <img src="<?php echo $imgsrc;?>" width="145" height="145" id="previewing">

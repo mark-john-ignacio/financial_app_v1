@@ -56,34 +56,34 @@ function listcurrencies(){ //API for currency list
 	<title>Myx Financials</title>
     
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
     
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
-<script src="../../include/autoNumeric.js"></script>
-<!--<script src="../../Bootstrap/js/jquery.numeric.js"></script>
-<script src="../../Bootstrap/js/jquery.inputlimiter.min.js"></script>-->
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
+	<script src="../../include/autoNumeric.js"></script>
+	<!--<script src="../../Bootstrap/js/jquery.numeric.js"></script>
+	<script src="../../Bootstrap/js/jquery.inputlimiter.min.js"></script>-->
 
-<script src="../../Bootstrap/js/bootstrap.js"></script>
-<script src="../../Bootstrap/js/moment.js"></script>
-<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<script src="../../Bootstrap/js/moment.js"></script>
+	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
-<input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes">  
-<input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
+	<input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes">  
+	<input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
 
 
-<form action="SO_newsave.php" name="frmpos" id="frmpos" method="post">
-	<fieldset>
+	<form action="SO_newsave.php" name="frmpos" id="frmpos" method="post">
+		<fieldset>
     	<legend>New Sales Order</legend>	
-<div class="col-xs-12 nopadwdown"><b>Sales Order Information</b></div>
-<ul class="nav nav-tabs">
-    <li class="active"><a href="#home">Order Details</a></li>
-    <li><a href="#menu1">Delivered To</a></li>
-</ul>
+				<div class="col-xs-12 nopadwdown"><b>Sales Order Information</b></div>
+				<ul class="nav nav-tabs">
+						<li class="active"><a href="#home">Order Details</a></li>
+						<li><a href="#menu1">Delivered To</a></li>
+				</ul>
  
  <div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left;overflow: auto">
  		<div class="tab-content">  

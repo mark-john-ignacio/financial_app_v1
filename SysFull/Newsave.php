@@ -156,62 +156,60 @@ else {
 ?>
 <html>
 <head>
-	<title>Coop Financials</title>
-      <script type="text/javascript" src="../js/jquery.js"></script>
-<style>
-td{ font-size:11px; font-family:Tahoma, Geneva, sans-serif }
-.td2 { font-size:14px; font-family:Tahoma, Geneva, sans-serif }
-.td1 { font-size:14px; font-family:Tahoma, Geneva, sans-serif; font-weight:bold }
+	<title>Myx Financials</title>
+  <script type="text/javascript" src="../js/jquery.js"></script>
+	<style>
+		td{ font-size:11px; font-family:Tahoma, Geneva, sans-serif }
+		.td2 { font-size:14px; font-family:Tahoma, Geneva, sans-serif }
+		.td1 { font-size:14px; font-family:Tahoma, Geneva, sans-serif; font-weight:bold }
 
-.contz {
-	margin:0px;
-	width: 50%;
-	max-width: 1366px;
-	min-width: 780px;
- /*  background: blue; /*For browsers that do not support gradients */
-/*   background: -webkit-linear-gradient(top left, #06C, #0CF); /* For Safari 5.1 to 6.0 */
- /*  background: -o-linear-gradient(right bottom, #06C, #0CF); /* For Opera 11.1 to 12.0 */
-/*   background: -moz-linear-gradient(right bottom, #06C, #0CF); /* For Firefox 3.6 to 15 */
-/*   background: linear-gradient(top right bottom, #06C, #0CF); /* Standard syntax */	
-	overflow: hidden;
-	height:90%;
+		.contz {
+			margin:0px;
+			width: 50%;
+			max-width: 1366px;
+			min-width: 780px;
+		/*  background: blue; /*For browsers that do not support gradients */
+			/*   background: -webkit-linear-gradient(top left, #06C, #0CF); /* For Safari 5.1 to 6.0 */
+			/*  background: -o-linear-gradient(right bottom, #06C, #0CF); /* For Opera 11.1 to 12.0 */
+			/*   background: -moz-linear-gradient(right bottom, #06C, #0CF); /* For Firefox 3.6 to 15 */
+			/*   background: linear-gradient(top right bottom, #06C, #0CF); /* Standard syntax */	
+			overflow: hidden;
+			height:90%;
 
-}
-.sidebar1 {
-	float: left;
-	width: 30%;
-	margin: 0px;
-					padding: 10px;
-					border: 2px solid #06F;
-					height:350px;
-					text-align: left;
-					overflow: auto; border-radius: 10px;
-}
-.content {
-	float: right;
-	width: 63%;
-	margin: 0px;
-					padding: 10px;
-					border: 2px solid #06F;
-					text-align: left;
-					height:350px;
-					overflow: auto; border-radius: 10px;
-					text-align:center
-	}
-table{ border-collapse:collapse}
-#lblSum{
-	font-family:Tahoma, Geneva, sans-serif;
-	font-weight:bold;
+		}
+		.sidebar1 {
+			float: left;
+			width: 30%;
+			margin: 0px;
+							padding: 10px;
+							border: 2px solid #06F;
+							height:350px;
+							text-align: left;
+							overflow: auto; border-radius: 10px;
+		}
+		.content {
+			float: right;
+			width: 63%;
+			margin: 0px;
+							padding: 10px;
+							border: 2px solid #06F;
+							text-align: left;
+							height:350px;
+							overflow: auto; border-radius: 10px;
+							text-align:center
+			}
+		table{ border-collapse:collapse}
+		#lblSum{
+			font-family:Tahoma, Geneva, sans-serif;
+			font-weight:bold;
 
-	text-align:center; }
-	
-.btn{
-color:#fff;background-color:#428bca;border-color:#357ebd;
-display:inline-block;padding:6px 12px;margin-bottom:0;font-size:14px;font-weight:400;line-height:1.42857143;text-align:center;white-space:nowrap;vertical-align:middle;cursor:pointer;background-image:none;border:1px solid transparent;border-radius:4px; width:100%;
-}
-
-}
-</style>
+			text-align:center; }
+			
+		.btn{
+			color:#fff;background-color:#428bca;border-color:#357ebd;
+			display:inline-block;padding:6px 12px;margin-bottom:0;font-size:14px;font-weight:400;line-height:1.42857143;text-align:center;white-space:nowrap;vertical-align:middle;cursor:pointer;background-image:none;border:1px solid transparent;border-radius:4px; width:100%;
+		}
+	</style>
 <body>
 <center>
 <div class="contz">

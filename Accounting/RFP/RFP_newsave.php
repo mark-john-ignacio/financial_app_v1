@@ -43,6 +43,8 @@
 	$paymeth = mysqli_real_escape_string($con, $_POST['selpayment']); 
 	$cBankCode = mysqli_real_escape_string($con, $_POST['txtBank']);
 
+	$cAcctCode = mysqli_real_escape_string($con, $_POST['txtcacctnoref']);
+
 	$npaid = mysqli_real_escape_string($con, $_POST['txtnamount']);	
 	$npaid = str_replace( ',', '', $npaid );
 
@@ -54,7 +56,7 @@
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 
 
-	if (!mysqli_query($con, "INSERT INTO `rfp`(`compcode`, `ctranno`, `ccode`, `cpaymethod`, `cbankcode`, `capvno`, `ngross`, `nbalance`, `dtransdate`, `cpreparedby`, `cremarks`) values('$company', '$cSINo', '$cCustID', '$paymeth', '$cBankCode', '$cRefAPV', $npaid, $nbalance, STR_TO_DATE('$dDate', '%m/%d/%Y'), '$preparedby', '$cremarks')")) {
+	if (!mysqli_query($con, "INSERT INTO `rfp`(`compcode`, `ctranno`, `ccode`, `cpaymethod`, `cbankcode`, `capvno`, `cacctno`, `ngross`, `nbalance`, `dtransdate`, `cpreparedby`, `cremarks`) values('$company', '$cSINo', '$cCustID', '$paymeth', '$cBankCode', '$cRefAPV', '$cAcctCode', $npaid, $nbalance, STR_TO_DATE('$dDate', '%m/%d/%Y'), '$preparedby', '$cremarks')")) {
 		$mggx = "Errormessage: ". mysqli_error($con);
 	} else{
 		$mggx = "Record Succesfully Saved";
