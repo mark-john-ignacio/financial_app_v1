@@ -328,7 +328,7 @@
 		 
 		.signimg{
 			position: absolute;
-			top: 1020px;
+			top: 990px;
 			left: 255px;
 			width: 3.5in;
 			height:  20px;    

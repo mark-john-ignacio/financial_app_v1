@@ -44,13 +44,18 @@ require_once "../../Connection/connection_string.php";
 				Group by ctranno, crefno, cacctno
 				
 				UNION ALL 
-				
-				Select G.compcode, G.ctranno, '' as crefno, sum(G.ncredit) as ncredit, 
-				CASE WHEN G.cacctno = '".$disregEWT."' THEN SUM(G.ncredit) ELSE 0 END as newtamt,
-				G.cacctno
-				From apv_t G left join apv H on G.compcode=H.compcode and G.ctranno=H.ctranno
-				Where G.compcode='$company' and H.captype='Others' and G.ncredit <> 0 and G.cacctno not in ('".implode("','",$disreg)."')
-				Group by G.ctranno, G.cacctno
+
+				Select X.compcode, X.ctranno, X.crefno, SUM(ncredit), SUM(newtamt), GROUP_CONCAT(X.cacctno)
+				From (
+					Select G.compcode, G.ctranno, '' as crefno, 
+					CASE WHEN G.cacctno not in ('".implode("','",$disreg)."') THEN G.ncredit ELSE 0 END as ncredit, 
+					CASE WHEN G.cacctno = '".$disregEWT."' THEN G.ncredit ELSE 0 END as newtamt,
+					CASE WHEN G.cacctno not in ('".implode("','",$disreg)."') THEN G.cacctno ELSE null END as cacctno 
+					From apv_t G left join apv H on G.compcode=H.compcode and G.ctranno=H.ctranno 
+					Where G.compcode='$company' and H.captype='Others' and G.ncredit <> 0 
+				) X 
+				Group By X.compcode, X.ctranno, X.crefno
+
 			) B on A.compcode=B.compcode and A.ctranno=B.ctranno
 		left join `accounts` C on B.compcode=C.compcode and B.cacctno=C.cacctid
 		left join 
@@ -64,6 +69,7 @@ require_once "../../Connection/connection_string.php";
 		where A.compcode='$company' and A.lapproved=1 and B.ncredit <> 0 and C.ccategory='LIABILITIES' and A.ccode='$code'
 		group by B.cacctno,B.crefno,A.ctranno,A.dapvdate order by A.dapvdate";
 
+	//echo $sql;
 	$result = mysqli_query ($con, $sql); 
 
 	$json = array();

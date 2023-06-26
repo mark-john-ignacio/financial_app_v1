@@ -130,22 +130,22 @@ function numberTowords($num)
 	$csalesno = $_REQUEST['id'];
 	$sqlhead = mysqli_query($con,"select A.*, B.cname, B.cdoctype from paybill A left join bank B on A.compcode=B.compcode and A.cbankcode=B.ccode where A.compcode='$company' and A.ctranno = '$csalesno'");
 
-if (mysqli_num_rows($sqlhead)!=0) {
-	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-		$Payee = $row['cpayee'];
-		$Date = $row['dcheckdate'];
+	if (mysqli_num_rows($sqlhead)!=0) {
+		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+			$Payee = $row['cpayee'];
+			$Date = $row['dcheckdate'];
 
-		$Particulars = $row['cparticulars'];
-		$Amount = $row['npaid']; 
+			$Particulars = $row['cparticulars'];
+			$Amount = $row['npaid']; 
 
-		$Bankname = $row['cname']; 
+			$Bankname = $row['cname']; 
 
-		$Paymeth = $row['cpaymethod'];
-		$Refno = ($row['cpaymethod']=="cheque") ? $row['ccheckno'] : $row['cpayrefno']; 
+			$Paymeth = $row['cpaymethod'];
+			$Refno = ($row['cpaymethod']=="cheque") ? $row['ccheckno'] : $row['cpayrefno']; 
 
-		$cdoctype = $row['cdoctype'];
+			$cdoctype = $row['cdoctype'];
+		}
 	}
-}
 
 ?>
 
@@ -166,6 +166,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <body>
 
 <?php
+
 	if($cdoctype==1){
 ?>
 

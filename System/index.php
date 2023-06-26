@@ -2612,6 +2612,313 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 								</div>
 
+								<p data-toggle="collapse" data-target="#blpcollapse"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Bills Payment</b></u> <i></i></p>
+												
+								<div class="collapse" id="blpcollapse">
+
+										<div class="col-xs-12" style="margin-bottom: 15px !important; margin-left: 15px !important">
+											<div class="col-xs-3 nopadwtop2x">
+												<b>Send Approval Email Notif.</b>
+												<div id="divRFPEmailprint" style="display:inline; padding-left:5px"></div>
+											</div>                    
+											<div class="col-xs-3 nopadwtop2x">
+												<?php
+													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='BIP_APP_EMAIL'"); 
+												
+													if (mysqli_num_rows($result)!=0) {
+														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
+														$nvalue = $all_course_data['cvalue']; 												
+													}
+													else{
+														$nvalue = "";
+													}
+												?>
+												<select class="form-control input-sm selectpicker" name="selrfpemailnoti" id="selrfpemailnoti" onChange="setparamval('BIP_APP_EMAIL',this.value,'bilpemailmsg')">
+													<option value="0" <?php if ($nvalue==0) { echo "selected"; } ?>> NO </option>
+													<option value="1" <?php if ($nvalue==1) { echo "selected"; } ?>> YES </option>
+												</select>
+											</div>                   
+											<div class="col-xs-1 nopadwtop2x" id="bilpemailmsg">
+											</div>												
+										</div>									
+
+											<?php
+												$resPAYAppsHDR = mysqli_query($con,"SELECT * FROM `paybill_approvals` WHERE compcode='".$_SESSION['companyid']."'"); 
+												while($rowrfpaph=mysqli_fetch_array($resPAYAppsHDR, MYSQLI_ASSOC)){
+													$i = $rowrfpaph['nlevel'];
+													$rwrfpapphdramt[$i] = $rowrfpaph['namount'];
+												}
+
+												$resPAYApps = mysqli_query($con,"SELECT * FROM `paybill_approvals_id` WHERE compcode='".$_SESSION['companyid']."'"); 
+											?>
+
+										<form action="th_savepaylevels.php" method="POST" name="frmPAYLvls" id="frmPAYLvls" onSubmit="return chkpaylvlform();" target="_self">
+
+											<input type="hidden" name="tbLPAYL1count" id="tbLPAYL1count" value="0">
+											<input type="hidden" name="tbLPAYL2count" id="tbLPAYL2count" value="0">
+											<input type="hidden" name="tbLPAYL3count" id="tbLPAYL3count" value="0">
+
+											<div class="col-xs-12" style="padding-bottom: 5px !important">
+												<div class="col-xs-2">
+													<b>Approval Levels</b>
+												</div>                    
+												<div class="col-xs-3">
+													<button type="submit" class="btn btn-xs btn-success" name="btnsavePAYApp" id="btnsavePAYApp"><i class="fa fa-save"></i>&nbsp; &nbsp;Save Approvals</button>
+												</div>
+											</div>
+
+
+											<div class="col-xs-12" style="margin-top: 5px !important; margin-left: 15px !important">
+
+												<ul class="nav nav-tabs">
+													<li class="active"><a data-toggle="tab" href="#paylevel1">Level 1</a></li>
+													<li><a data-toggle="tab" href="#paylevel2">Level 2</a></li>
+													<li><a data-toggle="tab" href="#paylevel3">Level 3</a></li>
+												</ul>
+
+
+												<div class="tab-content col-lg-12 nopadwtop2x">   
+
+													<!-- LEVEL 1 -->
+														<div id="paylevel1" class="tab-pane fade in active">
+															<input type="hidden" data-id="2" id = "lvlamt1" name = "lvlamt1" value="0">
+															<div class="col-xs-12 nopadding">
+											
+																<div class="col-xs-2 nopadding"> 
+																	<button type="button" class="btn btn-xs btn-primary" name="btnaddpayapplvl1" id="btnaddpayapplvl1" onClick="addpaylevel(1,'PAYAPP1');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button> 															
+																</div>
+
+															</div>
+
+															<div class="col-xs-12 border pre-scrollable" style="height: 150px; margin-top: 5px !important">
+
+																	<table cellpadding="3px" width="100%" border="0" style="font-size: 14px" id="PAYAPP1">
+																		<thead>
+																			<tr>
+																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px" width="60%">User ID</td>
+																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px"><small>Delete</small></td>
+																			</tr>
+																		</thead>
+																		<tbody>
+																			<?php
+																			if (mysqli_num_rows($resPAYApps)!=0) {
+																				$cntr = 0;
+
+																				while($rowxcv=mysqli_fetch_array($resPAYApps, MYSQLI_ASSOC)){
+																					$rowPAYresult[] = $rowxcv;
+																				}
+
+																				foreach ($rowPAYresult as $row){
+
+																					if($row['pay_approval_id']==1){
+																						$cntr++;
+																			?>	
+																				<tr>
+																					<td width="200px" style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																						<select class="form-control" name="selpaysuser<?=$row['pay_approval_id'].$cntr?>" id="selpaysuser<?=$row['pay_approval_id'].$cntr?>" >
+
+																							<?php
+																								foreach(@$ursnmse as $rsusr){
+																									if($rsusr['userid']==$row['userid']){
+																										$xscd = "selected";
+																									}else{
+																										$xscd = "";
+																									}
+																									echo "<option value='".$rsusr['userid']."' ".$xscd."> ".$rsusr['name']." </option>";
+																								}
+																							?> 
+																						</select>
+																					</td>																			
+																					<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																						<button class="btn btn-danger btn-sm" type="button" onclick="paytransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
+																					</td>
+																				</tr>
+
+																				<script>
+																					$(document).ready(function(e) {
+																						$('#selpaysuser<?=$row['pay_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
+																					});
+																				</script>
+																			<?php
+																					}
+																				}
+																			}
+																			?>
+																		</tbody>
+																	</table> 
+
+															</div>
+
+														</div>
+
+													<!-- LEVEL 2 -->
+														<div id="paylevel2" class="tab-pane fade in">
+
+															<div class="col-xs-12 nopadding">
+											
+																<div class="col-xs-2 nopadding"> 
+																	<button type="button" class="btn btn-xs btn-primary" name="btnaddpayapplvl2" id="btnaddpayapplvl2" onClick="addpaylevel(2,'PAYAPP2');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button>															
+																</div>
+
+																<div class="col-xs-2 nopadwleft"> 
+																	<b>Minimum Amount</b>
+																</div>
+
+																<div class="col-xs-2 nopadwleft"> 
+																	<input type="text" class="lvlamtcls form-control input-xs" data-id="2" id = "lvlamt2" name = "lvlamt2" value="<?=$rwrfpapphdramt[2]?>">
+																	
+																</div>
+
+																<div class="col-xs-3 nopadwleft" id="divlevel2amounts"> 
+																	
+																</div>
+
+															</div>
+
+															<div class="col-xs-12 border pre-scrollable" style="height: 150px; margin-top: 5px !important">
+
+																<table cellpadding="3px" width="100%" border="0" style="font-size: 14px"  id="PAYAPP2">
+																	<thead>
+																		<tr>
+																			<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px" width="60%">User ID</td>
+																			<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px"><small>Delete</small></td>
+																		</tr>
+																	</thead>
+
+																	<tbody>
+																		<?php
+																		if (mysqli_num_rows($resPAYApps)!=0) { 
+																			$cntr = 0;
+																			foreach ($rowPAYresult as $row){
+																				if(intval($row['pay_approval_id'])==2){
+																					$cntr++;
+																		?>	
+																			<tr>
+																				<td width="200px" style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<select class="form-control" name="selpaysuser<?=$row['pay_approval_id'].$cntr?>" id="selpaysuser<?=$row['pay_approval_id'].$cntr?>" >
+																						<?php
+																							foreach(@$ursnmse as $rsusr){
+																								if($rsusr['userid']==$row['userid']){
+																									$xscd = "selected";
+																								}else{
+																									$xscd = "";
+																								}
+
+																								echo "<option value='".$rsusr['userid']."' ".$xscd."> ".$rsusr['name']." </option>";
+																							}
+																						?> 
+																					</select>
+																				</td>
+
+																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<button class="btn btn-danger btn-sm" type="button" onclick="paytransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
+																				</td>
+																			</tr>
+
+																			<script>
+																				$(document).ready(function(e) {
+																					$('#selpaysuser<?=$row['pay_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
+																				});
+																			</script>
+																		<?php
+																				}
+																			}
+																		}
+																		?>
+																	</tbody>
+																</table> 
+
+															</div>
+
+														</div>
+
+													<!-- LEVEL 3 -->
+														<div id="paylevel3" class="tab-pane fade in">
+
+															<div class="col-xs-12 nopadding">
+											
+																<div class="col-xs-2 nopadding"> 
+																	<button type="button" class="lvlamtcls btn btn-xs btn-primary" name="btnaddpayapplvl3" id="btnaddrfpapplvl3" onClick="addpaylevel(3,'PAYAPP3');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button>															
+																</div>
+
+																<div class="col-xs-2 nopadwleft"> 
+																	<b>Minimum Amount</b>
+																</div>
+
+																<div class="col-xs-2 nopadwleft"> 
+																	<input type="text" class="form-control input-xs" data-id="3" id="lvlamt3" name="lvlamt3" value="<?=$rwrfpapphdramt[3]?>">
+																</div>
+
+																<div class="col-xs-3 nopadwleft" id="divlevel3amounts"> 
+																</div>
+
+															</div>
+
+															<div class="col-xs-12 border pre-scrollable" style="height: 150px; margin-top: 5px !important">
+
+																<table cellpadding="3px" width="100%" border="0" style="font-size: 14px" id="PAYAPP3">
+																	<thead>
+																		<tr>
+																			<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px" width="60%">User ID</td>
+																			<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px"><small>Delete</small></td>
+																		</tr>
+																	</thead>
+
+																	<tbody>
+																		<?php
+																		if (mysqli_num_rows($resPAYApps)!=0) {  
+																			$cntr = 0;
+																			foreach ($rowPAYresult as $row){
+																				if($row['pay_approval_id']==3){
+																					$cntr++;
+																		?>	
+																			<tr>
+																				<td width="200px" style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<select class="form-control" name="selpaysuser<?=$row['pay_approval_id'].$cntr?>" id="selpaysuser<?=$row['pay_approval_id'].$cntr?>" >
+																						<?php
+																							foreach(@$ursnmse as $rsusr){
+																								if($rsusr['userid']==$row['userid']){
+																									$xscd = "selected";
+																								}else{
+																									$xscd = "";
+																								}
+																								echo "<option value='".$rsusr['userid']."' ".$xscd."> ".$rsusr['name']." </option>";
+																							}
+																						?> 
+																					</select>
+																				</td>
+																			
+																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<button class="btn btn-danger btn-sm" type="button" onclick="paytransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
+																				</td>
+																			</tr>
+
+																			<script>
+																				$(document).ready(function(e) {
+																					$('#selpaysuser<?=$row['pay_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
+																				});
+																			</script>
+																		<?php
+																				}
+																			}
+																		}
+																		?>
+																	</tbody>
+																</table> 
+
+															</div>
+
+														</div>
+
+												</div>
+
+											</div>
+
+
+										</form>
+
+								</div>
+
 								<div class="col-xs-12">
 									<div class="col-xs-2 nopadwtop">
 										<b>Income Account</b>
@@ -2931,6 +3238,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				<form id="frmRFPTrans" name="frmRFPTrans" action="th_saverfptrans.php" method="POST">
 					<input type='hidden' id='RFPTransID' name='RFPTransID' value=''>
 					<input type='hidden' id='RFPTransTP' name='RFPTransTP' value=''>
+				</form>
+
+				<form id="frmPAYTrans" name="frmPAYTrans" action="th_savepaytrans.php" method="POST">
+					<input type='hidden' id='PAYTransID' name='PAYTransID' value=''>
+					<input type='hidden' id='PAYTransTP' name='PAYTransTP' value=''>
 				</form>
 	</body>
 
@@ -5441,6 +5753,37 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		za.innerHTML = "";
 
 		$('#selrfpsuser'+$lvl+""+lastRow).select2({minimumResultsForSearch: Infinity,width: '100%'});
+	} 
+
+	function addpaylevel($lvl, $tbl){
+
+		var xz = $("#atuserslst").val();
+		var htmlUSERS = "";
+
+		$.each(jQuery.parseJSON(xz), function() {  
+			htmlUSERS = htmlUSERS + '<option value="' +this['userid'] + '">' + this['name'] + '</option>';
+		});
+
+		var tbl = document.getElementById($tbl).getElementsByTagName('tr');
+		var lastRow = tbl.length;
+
+		var tblz = document.getElementById($tbl).getElementsByTagName('tbody')[0];
+		var a=tblz.insertRow(tblz.rows.length);
+							
+		var u=a.insertCell(0);
+		u.style.paddingTop = "2px";
+		u.style.paddingLeft = "1px";
+		u.style.paddingRight = "1px";
+		u.style.width = "200px";
+		var za=a.insertCell(1);
+		za.style.paddingTop = "2px";
+		za.style.paddingLeft = "1px";
+		za.style.paddingRight = "1px";
+								
+		u.innerHTML = "<select class=\"form-control input-xs\" name=\"selpaysuser"+$lvl+""+lastRow+"\" id=\"selpaysuser"+$lvl+""+lastRow+"\" > "+htmlUSERS+" </select>";
+		za.innerHTML = "";
+
+		$('#selpaysuser'+$lvl+""+lastRow).select2({minimumResultsForSearch: Infinity,width: '100%'});
 	}
 
 	function chkrfplvlform(){
@@ -5468,6 +5811,32 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		}
 
 	}
+
+	function chkpaylvlform(){
+		var lastRow = $("#PAYAPP1 > tbody > tr").length;
+		var lastRow2 = $("#PAYAPP2 > tbody > tr").length;
+		var lastRow3 = $("#PAYAPP3 > tbody > tr").length;
+
+		if(lastRow==0){
+
+				$("#AlertMsg").html("");
+				
+				$("#AlertMsg").html("<br><center>Atleast 1 approver is required in Level 1!</center><br>");
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
+
+
+			return false;
+		}else{
+			$("#tbLPAYL1count").val(lastRow);  
+			$("#tbLPAYL2count").val(lastRow2); 
+			$("#tbLPAYL3count").val(lastRow3); 
+
+			return true;
+
+		}
+
+	}
 	
 	function rfptransset(typ,id){
 	  
@@ -5475,6 +5844,14 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$("#RFPTransTP").val(typ);
 	
 		$("#frmRFPTrans").submit();
+	}
+	
+	function paytransset(typ,id){
+	  
+		$("#PAYTransID").val(id);
+		$("#PAYTransTP").val(typ);
+	
+		$("#frmPAYTrans").submit();
 	}
 
 

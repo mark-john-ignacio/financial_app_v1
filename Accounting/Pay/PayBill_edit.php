@@ -1306,9 +1306,6 @@ else{
 			//$("#frmvoucher").delay(300).submit();
     	//$("#frmchek").delay(300).submit();
 
-			$("#btnvoucher").click(); 
-			$("#btncheck").click();
-
 			$ewtamt = 0;
 			xintval = 0;
 			$("#MyTable > tbody > tr").each(function(index) {	
@@ -1321,6 +1318,13 @@ else{
 			if($ewtamt > 0){
 				$("#btn2307").click();
 			}
+
+			if($("#selpayment").val()=="cheque"){
+				$("#btncheck").click();
+			}
+
+			$("#btnvoucher").click(); 
+
 		}
 	}
 

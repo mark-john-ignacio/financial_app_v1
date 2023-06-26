@@ -45,50 +45,6 @@
     
   <script src="../../Bootstrap/js/bootstrap.js"></script>
 
-	<script type="text/javascript">
-
-
-		$(document).keydown(function(e) {	 
-			if(e.keyCode == 112) { //F2
-				e.preventDefault();
-			window.location = "PayBill_new.php";
-			}
-		});
-
-
-		function editfrm(x){
-			document.getElementById("txtctranno").value = x;
-			document.getElementById("frmedit").submit();
-		}
-
-		function trans(x,num){
-			
-			$("#typ").val(x);
-			$("#modzx").val(num);
-
-
-				$("#AlertMsg").html("");
-									
-				$("#AlertMsg").html("Are you sure you want to "+x+" Payment No.: "+num);
-				$("#alertbtnOK").hide();
-				$("#OK").show();
-				$("#Cancel").show();
-				$("#AlertModal").modal('show');
-			
-
-		}
-
-		function set(){
-						var left = (screen.width/2)-(500/2);
-						var top = (screen.height/2)-(400/2);
-						var sFeatures="dialogHeight: 400px; dialogWidth: 500px; dialogTop: " + top + "px; dialogLeft: " + left + "px;";
-						
-						var url = "PayBill_set.php?"
-						
-						window.showModalDialog(url, "", sFeatures)
-
-		}
-	</script>
 </head>
 
 <body style="padding:5px; height:900px">
@@ -151,7 +107,7 @@
 							<td align="right"><?=number_format($row['ngross'],2);?></td>
 							<td align="center">
 								<?php
-									if(intval($row['lsent'])==intval(0)){
+									if(intval($row['lsent'])==intval(0) && intval($row['lcancelled'])==intval(0)){
 										echo "For Sending";
 									}else{
 										if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
@@ -181,7 +137,11 @@
 									<?php
 										}else{
 
-										if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0) && intval($row['lsent'])==intval(1)){
+											if(intval($row['lcancelled'])==intval(1)){
+												echo " - ";
+											}else{
+
+												if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0) && intval($row['lsent'])==intval(1)){
 
 									?>
 											<a href="javascript:;" onClick="trans('POST','<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>">
@@ -193,7 +153,7 @@
 											</a>
 
 									<?php
-										}				
+												}				
 									?>
 										
 											<a href="javascript:;" onClick="track('<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default"> 
@@ -201,7 +161,9 @@
 											</a>
 
 									<?php
-										}							
+											}		
+										
+										}
 									?>
 								</div>
 							</td>
@@ -281,6 +243,36 @@ mysqli_close($con);
 		$('#example').DataTable({bSort:false});
 
 	});
+
+	$(document).keydown(function(e) {	 
+		if(e.keyCode == 112) { //F2
+			e.preventDefault();
+			window.location = "PayBill_new.php";
+		}
+	});
+
+
+		function editfrm(x){
+			document.getElementById("txtctranno").value = x;
+			document.getElementById("frmedit").submit();
+		}
+
+		function trans(x,num){
+			
+			$("#typ").val(x);
+			$("#modzx").val(num);
+
+
+				$("#AlertMsg").html("");
+									
+				$("#AlertMsg").html("Are you sure you want to "+x+" Payment No.: "+num);
+				$("#alertbtnOK").hide();
+				$("#OK").show();
+				$("#Cancel").show();
+				$("#AlertModal").modal('show');
+			
+
+		}
 
 	function track(xno){
 
