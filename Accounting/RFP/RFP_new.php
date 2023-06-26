@@ -292,8 +292,9 @@ include('../../include/access2.php');
 	  }
 		else if(e.keyCode == 45) { //Insert
 	  	if($('#myAPModal').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
-			var custid = $("#txtcustid").val();
-			showapvmod(custid)
+				var custid = $("#txtcustid").val();
+				showapvmod(custid);
+			}
 		}
 	});
 

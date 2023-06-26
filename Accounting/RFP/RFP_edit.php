@@ -506,8 +506,9 @@
 		}
 		else if(e.keyCode == 45) { //Insert
 	  	if($('#myAPModal').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
-			var custid = $("#txtcustid").val();
-			showapvmod(custid)
+				var custid = $("#txtcustid").val();
+				showapvmod(custid);
+			}
 		}
 		else if(e.keyCode == 27){//ESC
 			if($("#btnMain").is(":disabled")==false){
