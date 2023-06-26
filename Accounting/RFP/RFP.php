@@ -120,6 +120,7 @@
 						<th class="text-center">Reference</th>
             <th class="text-center">Paid To</th>
 						<th class="text-center">Bank</th>
+						<th class="text-center">Gross</th>
 						<th class="text-center">Status</th>
 						<th class="text-center">Actions</th>
 					</tr>
@@ -127,11 +128,12 @@
 
 				<tbody>
           <?php
-						$sql = "select a.*, a.capvno, b.cname, e.cname as bankname
+						$sql = "select a.ctranno, a.lsent, a.lapproved, a.lcancelled, a.ccode, a.ngross, b.cname, e.cname as bankname, GROUP_CONCAT(c.capvno) as capvno
 						from rfp a 
+						left join rfp_t c on a.compcode=c.compcode and a.ctranno=c.ctranno 
 						left join bank e on a.compcode=e.compcode and a.cbankcode=e.ccode 
 						left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode 
-						where a.compcode='$company' order by a.ddate DESC";
+						where a.compcode='$company' Group By a.ctranno, a.lsent, a.lapproved, a.lcancelled, a.ccode, a.ngross, b.cname, e.cname order by a.ddate DESC";
 						$result=mysqli_query($con,$sql);
 				
 						if (!mysqli_query($con, $sql)) {
@@ -146,6 +148,7 @@
 							<td><?=$row['capvno'];?></td>
 							<td><?=$row['ccode'];?> - <?=$row['cname']?> </td>
 							<td><?=$row['bankname'];?></td>
+							<td align="right"><?=number_format($row['ngross'],2);?></td>
 							<td align="center">
 								<?php
 									if(intval($row['lsent'])==intval(0)){

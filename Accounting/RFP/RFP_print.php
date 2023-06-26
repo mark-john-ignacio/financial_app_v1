@@ -203,25 +203,18 @@ function numberTowords($num)
   }
 
   //get details
-  if($cAPtype=="Purchases" || $cAPtype=="PurchAdv"){
 
-    $xsql = "select A.ctranno, A.cpaymentfor, Sum(B.namount) as ntotamt, SUM(B.nvatamt) as ntotvat, Sum(B.newtamt) as ntotewt, Sum(ndue) as ntotdue
-    from apv A left join apv_d B on A.compcode=B.compcode and A.ctranno=B.ctranno
-    where A.compcode='$company' and A.ctranno in (Select capvno from rfp_t where compcode='$company' and ctranno='$csalesno')
-    Group By A.ctranno, A.cpaymentfor, A.ngross";
+  $xsql = "select A.ctranno, B.cacctno, A.cpaymentfor, Sum(B.ncredit) as ntotamt, 
+  CASE WHEN B.cacctno='".$disregVAT."' THEN SUM(B.ndebit) ELSE 0 END as ntotvat, 
+  CASE WHEN B.cacctno='".$disregEWT."' THEN SUM(B.ncredit) ELSE 0 END as ntotewt, 
+  CASE WHEN B.cacctno not in ('".implode("','",$disreg)."') THEN SUM(B.ncredit) ELSE 0 END as ntotdue
+  from apv A left join apv_t B on A.compcode=B.compcode and A.ctranno=B.ctranno
+	left join accounts C on B.compcode=C.compcode and B.cacctno=C.cacctid
+  where A.compcode='$company' 
+	and A.ctranno in (Select capvno from rfp_t where compcode='$company' and ctranno='$csalesno')	
+  Group By A.ctranno, B.cacctno, A.cpaymentfor, A.ngross";
 
-  }else{
-
-    $xsql = "select A.ctranno, A.cpaymentfor, Sum(B.ncredit) as ntotamt, 
-    CASE WHEN B.cacctno='".$disregVAT."' THEN SUM(B.ndebit) ELSE 0 END as ntotvat, 
-    CASE WHEN B.cacctno='".$disregEWT."' THEN SUM(B.ncredit) ELSE 0 END as ntotewt, 
-    CASE WHEN B.cacctno not in ('".implode("','",$disreg)."') THEN SUM(B.ncredit) ELSE 0 END as ntotdue
-    from apv A left join apv_t B on A.compcode=B.compcode and A.ctranno=B.ctranno
-		left join accounts C on B.compcode=C.compcode and B.cacctno=C.cacctid
-    where A.compcode='$company' and A.ctranno in (Select capvno from rfp_t where compcode='$company' and ctranno='$csalesno') and C.ccategory='LIABILITIES'
-    Group By A.ctranno, A.cpaymentfor, A.ngross";
-
-  }
+	//echo $xsql."<br><br>";
 
   $dparticdet = array();
   $sqldtlss = mysqli_query($con,$xsql);
@@ -230,7 +223,9 @@ function numberTowords($num)
       $dparticdet[] = $row;
     }
   }
-
+	//echo "<pre>";
+	//print_r($dparticdet);
+	//echo "</pre>";
 ?>
 
 <!DOCTYPE html>
@@ -256,7 +251,7 @@ function numberTowords($num)
 	</style>
 </head>
 
-<body onLoad="window.print()">
+<body onLoad="window.print()"> <!---->
 
 <table border="0" width="100%" cellpadding="1px"  id="tblMain">
 	<tr>
@@ -369,24 +364,49 @@ function numberTowords($num)
 
 				<?php 
           $tottopay = 0;
-          foreach($dparticdet as $rowdtls){
-            $tottopay = $rowdtls['ntotdue'];
+
+					$xsql = "Select * from rfp_t where compcode='$company' and ctranno = '$csalesno'";
+					$sqlhead = mysqli_query($con,$xsql);
+
+					$totamt = 0;
+					$vatamt = 0;
+					$ewtamt = 0;
+					$dueamt = 0;
+          foreach($sqlhead as $rowdtls){
+						
+						foreach($dparticdet as $rssxz){
+							if($rowdtls['capvno']==$rssxz['ctranno'] && $rowdtls['cacctno']==$rssxz['cacctno']){
+								$totamt = $rssxz['ntotamt'];
+								$dueamt = $rssxz['ntotdue'];
+							}
+
+							if($rowdtls['capvno']==$rssxz['ctranno'] && $rssxz['cacctno']==$disregEWT){
+								$ewtamt = $rssxz['ntotewt'];
+							}
+
+							if($rowdtls['capvno']==$rssxz['ctranno'] && $rssxz['cacctno']==$disregVAT){
+								$vatamt = $rssxz['ntotvat'];
+							}
+
+						}
+
+            $tottopay = $rowdtls['npayable'];
 				?>
 
 				<tr>
 					<td align="center" class="tdpadx"><?=$cremakrs;?></td>
-					<td align="right" class="tdpadx tdright" nowrap><?php echo number_format($rowdtls['ntotamt'],2);?></td>					
-					<td align="right" class="tdpadx tdright" nowrap><?=(floatval($rowdtls['ntotvat'])!=0) ? number_format($rowdtls['ntotvat'],2) : "-";?></td>
-					<td align="right" class="tdpadx tdright" nowrap><?=(floatval($rowdtls['ntotewt'])!=0) ? number_format($rowdtls['ntotewt'],2) : "-";?></td>
+					<td align="right" class="tdpadx tdright" nowrap><?php echo number_format((floatval($totamt) + floatval($ewtamt)),2);?></td>					
+					<td align="right" class="tdpadx tdright" nowrap><?=(floatval($vatamt)!=0) ? number_format($vatamt,2) : "-";?></td>
+					<td align="right" class="tdpadx tdright" nowrap><?=(floatval($ewtamt)!=0) ? number_format($ewtamt,2) : "-";?></td>
 					<td align="right" class="tdpadx tdright" nowrap>
 					<?php
-						if(floatval($Gross) == floatval($tottopay)){
+						if(floatval($dueamt) == floatval($tottopay)){
 
-							echo "<span style=\"border-bottom: 5px solid #000; border-bottom-style: double\"><font size=\"2\">".number_format($rowdtls['ntotdue'],2)."</font></span>";
+							echo "<span style=\"border-bottom: 5px solid #000; border-bottom-style: double\"><font size=\"2\">".number_format($dueamt,2)."</font></span>";
 
 						}else{
 
-							echo number_format($rowdtls['ntotdue'],2);
+							echo number_format($dueamt,2);
 
 						}
 					?>
@@ -398,9 +418,10 @@ function numberTowords($num)
 				<?php 
 					}
 					$xlabel = "";
-					if(floatval($Gross) < floatval($tottopay)){
+					echo floatval($dueamt)." < ".floatval($tottopay);
+					if(floatval($tottopay) < floatval($dueamt)){
 						
-						if(floatval($GrossBal)==floatval($Gross)){
+						if(floatval($dueamt)==floatval($Gross)){
 							$xlabel = "Completion Payment Amount";
 						}else{
 							$xlabel = "Partial Payment Amount";
