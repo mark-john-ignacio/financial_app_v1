@@ -21,7 +21,7 @@ require_once "../../Connection/connection_string.php";
 		left join apv B on A.compcode=B.compcode and A.ctranno=B.ctranno
 		left join 
 			(
-				Select A.compcode, A.ctranno, A.capvno, A.cacctno, A.npayable
+				Select A.compcode, A.ctranno, A.capvno, A.cacctno, A.npayable as ngross
 				From rfp_t A left join rfp B on A.compcode=B.compcode and A.ctranno=B.ctranno
 				Where A.compcode='' and B.lcancelled=0
 			) C on B.compcode=C.compcode and B.ctranno=C.capvno and A.cacctno=C.cacctno
