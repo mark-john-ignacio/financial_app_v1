@@ -135,7 +135,7 @@ function numberTowords($num)
 	}
 	
 	$csalesno = $_REQUEST['id'];
-	$sqlhead = mysqli_query($con,"select A.*, B.cname from paybill A left join bank B on A.compcode=B.compcode and A.cbankcode=B.ccode where A.compcode='$company' and A.ctranno = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select A.*, B.cname, c.Fname, c.Minit, c.Lname, c.cdesignation, c.cusersign from paybill A left join bank B on A.compcode=B.compcode and A.cbankcode=B.ccode left join users c on A.cpreparedby=c.Userid where A.compcode='$company' and A.ctranno = '$csalesno'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -149,6 +149,12 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 		$Paymeth = $row['cpaymethod'];
 		$Refno = ($row['cpaymethod']=="cheque") ? $row['ccheckno'] : $row['cpayrefno']; 
+
+		$lSent = $row['lsent'];
+
+    $cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
+    $cpreparedByDesig = $row['cdesignation'];
+		$cpreparedBySign = $row['cusersign'];
 	}
 }
 
@@ -172,51 +178,72 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <body>
 
 <table border="0" width="100%" cellpadding="1px"  id="tblMain">
+
 	<tr>
 		<td align="center"> 
 
 				<table border="0" width="100%">
-						<tr>
-							<td rowspan="3" align="center" width="100px"><img src="<?php echo "../".$logosrc; ?>" width="80px" height="68px"></td>
-							<td valign="bottom"><font style="font-size: 18px;"><?php echo $logonamz; ?></font></td>
-							<td rowspan="2" align="center" valign="middle" width="200px"><font style="font-size: 18px;">CHECK VOUCHER</font></td>
+						<tr align="center">
+							<td><img src="<?php echo "../".$logosrc; ?>" height="68px"></td>
 						</tr>
-						<tr>							
-							<td valign="top"><?php echo $logoaddrs; ?></td>
+						<tr align="center">
+							<td><font style="font-size: 18px;"><?php echo $logonamz; ?></font></td>
 						</tr>
-						<tr>							
-							<td valign="top"><?php echo $logotins; ?></td>
+						<tr align="center">
+							<td style="padding-bottom: 20px"><font><?php echo $logoaddrs; ?></font></td>
 						</tr>
 				</table>
 
 		</td>
 	</tr>
+
 	<tr>
 		<td style="vertical-align: top; padding-top: 10px">
 
 			<table border="0" width="100%">
+
 				<tr>
-					<td style="padding-right: 10px" width="80px" align="right" rowspan="2">
-							<b> PAYEE </b>
+					<td colspan="4" align="center" style="padding-bottom: 20px">
+							<font style="font-size: 24px;"> CHECK VOUCHER </font>
 					</td>
-					<td rowspan="2">
-							<div style="border: 1px solid; padding: 20px; ">
-								<?=$Payee?>
-							</div>
+				</tr>
+
+				<tr>
+					<td style="padding-right: 10px" width="80px">
+							<b> Paid To </b>
 					</td>
+					<td><?=$Payee?></td>
+
 					<td style="padding-right: 10px" width="100px" align="right">
-							<b> No. </b>
+							<b> CV No. </b>
 					</td>
 					<td style="padding-right: 10px" width="100px">
 							<?=$csalesno?>
 					</td>
 				</tr>
 				<tr>
+					<td style="padding-right: 10px" width="80px">
+						<b> Bank </b>
+					</td>
+					<td><?=$Bankname?></td>
 					<td style="padding-right: 10px" width="100px" align="right">
 							<b> Date. </b>
 					</td>
 					<td style="padding-right: 10px" width="100px">
 							<?=$Date?>
+					</td>
+				</tr>
+
+				<tr>
+					<td style="padding-right: 10px" width="80px">
+						<b> Check No. </b>
+					</td>
+					<td><?=$Refno?></td>
+					<td style="padding-right: 10px" width="100px" align="right">
+							&nbsp;
+					</td>
+					<td style="padding-right: 10px" width="100px">
+						&nbsp;
 					</td>
 				</tr>
 			
@@ -243,7 +270,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	
 				<tr>
 					<td width="60%" valign="top">
-						<font style="font-size: 10px;">Distribution of Accounts</font>
+						<font style="font-size: 12px;">Entry</font>
 						<table border="1" width="100%" cellpadding="3">
 							<tr>
 								<th>ACCOUNT TITLE</th>
@@ -278,24 +305,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					</td>
 					<td>
 
-						<table border="0" width="100%">
-							<tr>
-								<td colspan="2">Pesos:
-									<b><?php 
-									//	$f = new NumberFormatter("en", NumberFormatter::SPELLOUT);
-									//	echo ucwords($f->format($Amount)." pesos");
-									echo numberTowords($Amount);
-									?>
-									</b>	
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2">Bank: <b><?=$Bankname?></b></td>  
-							</tr>
-							<tr>
-								<td colspan="2"><?=($Paymeth=="cheque") ? "Check No." : "Ref No."?>: <b><?=$Refno?></b></td>
-							</tr>
-						</table>
+						&nbsp;
 
 					</td>
 				</tr>
@@ -305,16 +315,108 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	</tr>
 	<tr>
 		<td>
-			<br>
-			<table border="0" width="100%">
-							<tr>
-								<td width="50%">Prepared By: </td>
-								<td>Received Payment By: </td>
-							</tr>
-							<tr style="border-bottom: 1px solid">
-								<td colspan="2">&nbsp;</td>
-							</tr>
-						</table>
+			<table border="0" width="60%" style="margin-top: 20px">		
+				<tr>
+					<td width="100px">
+						Received By: 
+					</td>
+					<td style="border-bottom: 1px solid #000">
+						&nbsp;
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<table border="0" width="60%" style="margin-top: 10px">	
+				<tr>
+					<td>
+						the amount of: 
+					</td>
+					<td>
+						<?=numberTowords($Amount);?>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<br><br>	<br><br>	
+      <table border="0" width="100%">
+        <tr>
+          <th width="25%"> Prepared By </th>
+          <th width="25%"> Checked By </th>
+          <th width="25%"> Verified By </th>
+          <th width="25%"> Approved By </th>
+        </tr>
+
+				<?php
+
+					$unapp = "";
+					$dalapp = "";
+					$tatpp = "";
+					$tsentapp = "";
+
+					$tpad0 = "";
+					$tpad1 = "";
+					$tpad2 = "";
+					$tpad3 = "";
+
+					$sqdts = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname, c.cdesignation, c.cusersign from paybill_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cpayno = '$csalesno' order by a.nlevel");
+
+					if (mysqli_num_rows($sqdts)!=0) {
+						while($row = mysqli_fetch_array($sqdts, MYSQLI_ASSOC)){
+
+							if(intval($row['nlevel'])==1){
+								if($row['lapproved']==1){
+									$unapp = "<img src = '".$row['cusersign']."?x=".time()."' >";
+									$tpad1 = "10px";
+								}else{
+									$unapp  = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname']."<br>".$row['cdesignation'];
+									$tpad1 = "50px";
+								}
+							}
+
+							if(intval($row['nlevel'])==2){
+								if($row['lapproved']==1){
+									$dalapp = "<img src = '".$row['cusersign']."?x=".time()."' >";
+									$tpad2 = "10px";
+								}else{
+									$dalapp  = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname']."<br>".$row['cdesignation'];
+									$tpad2 = "50px";
+								}
+							}
+
+							if(intval($row['nlevel'])==3){
+								if($row['lapproved']==1){
+									$tatpp = "<img src = '".$row['cusersign']."?x=".time()."' >";
+									$tpad3 = "10px";
+								}else{
+									$tatpp  = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname']."<br>".$row['cdesignation'];
+									$tpad3 = "50px";
+								}
+							}
+						}
+					}
+
+					if($lSent==1){
+						$tsentapp = "<img src = '".$cpreparedBySign."?x=".time()."' >";
+						$tpad0 = "10px";
+					}else{
+						$tsentapp = $cpreparedBy."<br>".$cpreparedByDesig;
+						$tpad0 = "50px";
+					}
+				?>
+
+        <tr>
+          <td align="center" style="padding-top: <?=$tpad0?>"> <?=$tsentapp?></td>
+          <td align="center" style="padding-top: <?=$tpad1?>"> <?=$unapp?> </td>
+          <td align="center" style="padding-top: <?=$tpad2?>"> <?=$dalapp?> </td>
+					<td align="center" style="padding-top: <?=$tpad3?>"> <?=$tatpp?> </td>
+        </tr>
+      </table> 
 		</td>
 	</tr>
 </table>
