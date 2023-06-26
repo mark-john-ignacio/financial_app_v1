@@ -19,7 +19,12 @@ require_once "../../Connection/connection_string.php";
 		$sql="SELECT A.ctranno, B.dapvdate, A.cacctno, D.cacctdesc, A.ncredit, sum(IFNULL(C.ngross,0)) as npaid, B.cpaymentfor
 		FROM `apv_t` A
 		left join apv B on A.compcode=B.compcode and A.ctranno=B.ctranno
-		left join rfp C on B.compcode=C.compcode and B.ctranno=C.capvno and A.cacctno=C.cacctno
+		left join 
+			(
+				Select A.compcode, A.ctranno, A.capvno, A.cacctno, A.npayable
+				From rfp_t A left join rfp B on A.compcode=B.compcode and A.ctranno=B.ctranno
+				Where A.compcode='' and B.lcancelled=0
+			) C on B.compcode=C.compcode and B.ctranno=C.capvno and A.cacctno=C.cacctno
 		left join accounts D on B.compcode=D.compcode and A.cacctno=D.cacctid
 		where A.compcode='$company' and B.lapproved=1 and B.ccode='$code'
 		and D.ccategory='LIABILITIES' and A.ncredit > 0
