@@ -286,6 +286,10 @@
 											<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?=$ccvno?>');" id="btnPrint" name="btnPrint">
 												Print<br>(F4)
 											</button>
+
+											<button type="button" class="btn btn-info btn-sm" id="btnShowApv" name="btnShowApv">
+												APV<br> (Insert)
+											</button>	
 								    
 											<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
 												Edit<br>(CTRL+E)

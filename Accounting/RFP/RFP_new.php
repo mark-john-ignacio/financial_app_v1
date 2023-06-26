@@ -176,7 +176,7 @@ include('../../include/access2.php');
 									Back to Main<br>(ESC)
 								</button>		
 								<button type="button" class="btn btn-info btn-sm" id="btnShowApv" name="btnShowApv">
-									Save<br> (CTRL+S)
+									APV<br> (Insert)
 								</button>																																		
 								<button type="submit" class="btn btn-success btn-sm" tabindex="6">
 									Save<br> (CTRL+S)
