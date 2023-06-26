@@ -13,7 +13,7 @@
 	$cSINo = $_POST['txtctranno'];
 
 	$cCustID = mysqli_real_escape_string($con, $_POST['txtcustid']);
-	$cRefAPV = mysqli_real_escape_string($con, $_POST['txtrefapv']);
+	//$cRefAPV = mysqli_real_escape_string($con, $_POST['txtrefapv']);
 	$dDate = mysqli_real_escape_string($con, $_POST['txtChekDate']);
 	$paymeth = mysqli_real_escape_string($con, $_POST['selpayment']); 
 	$cBankCode = mysqli_real_escape_string($con, $_POST['txtBank']);
@@ -21,17 +21,35 @@
 	$npaid = mysqli_real_escape_string($con, $_POST['txtnamount']);	
 	$npaid = str_replace( ',', '', $npaid );
 
-	$nbalance = mysqli_real_escape_string($con, $_POST['txtnamountbal']);	
-	$nbalance = str_replace( ',', '', $nbalance );
+	//$nbalance = mysqli_real_escape_string($con, $_POST['txtnamountbal']);	
+	//$nbalance = str_replace( ',', '', $nbalance );
 
 	$cremarks = mysqli_real_escape_string($con, $_POST['txtcremarks']);
 
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 
 
-	if (!mysqli_query($con, "UPDATE `rfp` set `ccode` = '$cCustID', `cpaymethod` = '$paymeth', `cbankcode` = '$cBankCode', `capvno` = '$cRefAPV', `dtransdate` = STR_TO_DATE('$dDate', '%m/%d/%Y'), `ngross` = $npaid, `nbalance` = $nbalance, `cremarks` = '$cremarks' where`compcode` = '$company' and `ctranno` = '$cSINo'")) {
+	if (!mysqli_query($con, "UPDATE `rfp` set `ccode` = '$cCustID', `cpaymethod` = '$paymeth', `cbankcode` = '$cBankCode', `dtransdate` = STR_TO_DATE('$dDate', '%m/%d/%Y'), `ngross` = $npaid, `cremarks` = '$cremarks' where`compcode` = '$company' and `ctranno` = '$cSINo'")) {
 		$mggx = "Errormessage: ". mysqli_error($con);
 	} else{
+
+		//Savedetails
+		if (!mysqli_query($con, "DELETE FROM `rfp_t` Where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
+			printf("Errormessage: %s\n", mysqli_error($con));
+		} 
+		
+		$rowcnt = $_REQUEST['hdndetails'];		 
+		for($z=1; $z<=$rowcnt; $z++){
+			$capvno = mysqli_real_escape_string($con, $_REQUEST['txtcapvno'.$z]);	
+			$capvdate = mysqli_real_escape_string($con, $_REQUEST['txtcapvdate'.$z]);		
+			$acctno = mysqli_real_escape_string($con, $_REQUEST['txtapvacctid'.$z]); 
+			$acctdesc = mysqli_real_escape_string($con, $_REQUEST['txtapvacctitle'.$z]);
+			$amnttot = mysqli_real_escape_string($con, str_replace( ',', '', $_REQUEST['txtapvamt'.$z]));
+			$amtbal = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtapvbal'.$z]));
+
+			mysqli_query($con, "INSERT INTO `rfp_t`(`compcode`, `ctranno`, `capvno`, `dapvdate`, `cacctno`, `cacctdesc`, `ngrossamt`, `npayable`) values('$company', '$cSINo', '$capvno', '$capvdate', '$acctno', '$acctdesc', $amnttot, $amtbal)");
+		}
+
 		$mggx = "Record Succesfully Saved";
 
 		//insert attachment

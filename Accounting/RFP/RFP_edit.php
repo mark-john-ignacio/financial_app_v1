@@ -134,16 +134,12 @@
 									</div>
 								</div>
 							</td>
-							<td><span style="padding:2px"><b>APV No.:</b></span></td>
+							<td><span style="padding:2px" id="chkdate"><b>Due Date:</b></span></td>
 							<td>
 								<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
-									<div class="col-xs-6 nopadding">
-										<input type="text" class="form-control input-sm required" id="txtrefapv" name="txtrefapv" width="20px" placeholder="Search APV No..." required autocomplete="off" tabindex="4" readonly value="<?=$cRefAPVNo?>">
+									<div class='col-xs-8 nopadding'>
+											<input type='text' class="datepick form-control input-sm" placeholder="Pick a Date" name="txtChekDate" id="txtChekDate" value="<?=date("m/d/Y",strtotime($dTransdate));?>" />
 									</div>
-									<div class="col-xs-2 nopadwleft">
-										<button type="button" class="btn btn-block btn-primary btn-sm" name="btnsearchapv" id="btnsearchapv"><i class="fa fa-search"></i></button>
-									</div>
-
 								</div>
 							</td>
 						</tr>
@@ -183,40 +179,92 @@
 						</tr>
 
 						<tr>
-							<td><span style="padding:2px"><b>Remarks</b></span></td>
+							<td valign="top" style="padding-top:8px;"><span style="padding:2px;"><b>Remarks</b></span></td>
 							<td>
 								<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
-									<input type="text" class="form-control input-sm" id="txtcremarks" name="txtcremarks" tabindex="1" placeholder="Remarks..." value="<?=$cdRemarks?>" autocomplete="off">
+									<textarea class="form-control input-sm" id="txtcremarks" name="txtcremarks" rows="3"><?=$cdRemarks?></textarea>
 								</div>
 							</td>
-							<td><span style="padding:2px" id="chkdate"><b>Due Date:</b></span></td>
-							<td>
+							<td valign="top" style="padding-top:8px;"><span style="padding:2px" id="chkdate"><b>Total Amount to Pay:</b></span></td>
+							<td valign="top">
 								<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
 									<div class='col-xs-8 nopadding'>
-											<input type='text' class="datepick form-control input-sm" placeholder="Pick a Date" name="txtChekDate" id="txtChekDate" value="<?=date("m/d/Y",strtotime($dTransdate));?>" />
-									</div>
-								</div>
-							</td>							
-						</tr>
-
-						<tr>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
-							<td><span style="padding:2px" id="chkdate"><b>Amount to Pay:</b></span></td>
-							<td>
-								<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
-									<div class='col-xs-8 nopadding'>
-											<input type='text' class="form-control input-sm text-right" name="txtnamount" id="txtnamount" value="<?=$cnAmount?>" />
+											<input type='text' class="form-control input-sm text-right" name="txtnamount" id="txtnamount" value="<?=$cnAmount?>" readonly/>
 											<input type='hidden' name="txtnamountbal" id="txtnamountbal" value="<?=$cnBalamt?>" />   
 									</div>
 								</div>
-							</td>
+							</td>						
 						</tr>
 
 					</table>
 
-					<h4>Attachments <small><i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></small></h4> 
-					<input id="file-0" name="upload[]" type="file" multiple>
+					<ul class="nav nav-tabs">
+						<li class="active"><a href="#apv">APV List</a></li>
+						<li><a href="#attc">Attachments</a></li>
+					</ul>
+
+					<div class="alt2" dir="ltr" style="margin: 0px; padding: 3px;border: 0px;width: 100%;text-align: left;overflow: auto">
+						<div class="tab-content">  
+
+							<div id="apv" class="tab-pane fade in active" style="padding-top:10px;">
+
+								<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 1px solid #919b9c;width: 100%;height: 40vh;text-align: left;overflow: auto">
+									<input type='hidden' name="hdndetails" id="hdndetails" value="0"/>
+									<table id="MyTable" class="MyTable table table-condensed" width="100%">
+										<thead>
+											<tr>
+												<th style="border-bottom:1px solid #999">APV No.</th>
+												<th style="border-bottom:1px solid #999">Date</th>
+												<th style="border-bottom:1px solid #999">Account Code</th>
+												<th style="border-bottom:1px solid #999">Account Title</th>
+												<th style="border-bottom:1px solid #999">Amount</th>
+												<th style="border-bottom:1px solid #999">&nbsp;</th>
+											</tr>	
+											</thead>														
+										<tbody class="tbody">
+											<?php 
+												$sqlbody = mysqli_query($con,"select a.* from rfp_t a where a.compcode = '$company' and a.ctranno = '$ccvno' order by a.nid");
+
+												if (mysqli_num_rows($sqlbody)!=0) {
+													$cntr = 0;
+													while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
+														$cntr = $cntr + 1;
+											?>
+												<tr>
+													<td> <?=$rowbody['capvno']?> <input type='hidden' id='txtcapvno<?=$cntr?>' name='txtcapvno' value='<?=$rowbody['capvno']?>'> </td>
+													<td> <?=$rowbody['dapvdate']?> <input type='hidden' id='txtcapvdate<?=$cntr?>' name='txtcapvdate' value='<?=$rowbody['dapvdate']?>'> </td>
+													<td> <?=$rowbody['cacctno']?> <input type='hidden' id='txtapvacctid<?=$cntr?>' name='txtapvacctid' value='<?=$rowbody['cacctno']?>'> </td>
+													<td> <?=$rowbody['cacctdesc']?> <input type='hidden' id='txtapvacctitle<?=$cntr?>' name='txtapvacctitle' value='<?=$rowbody['cacctdesc']?>'> </td>
+													<td width="150px"> <input type='text' class='numeric form-control input-xs text-right' id='txtapvbal<?=$cntr?>' name='txtapvbal' value='<?=$rowbody['npayable']?>'> <input type='hidden' id='txtapvamt<?=$cntr?>' name='txtapvamt' value='<?=$rowbody['ngrossamt']?>'> </td>
+													<td align='center'><input class='btn btn-danger btn-xs' type='button' name='delinfo' id='delinfo<?=$cntr?>' value='delete' /></td>
+												</tr>
+												<script>
+														$("#delinfo<?=$cntr?>").on('click', function() { 
+															$(this).closest('tr').remove();
+															recomdel();
+															comtotamt();
+														});
+												</script>
+											<?php
+													}
+												}
+											?>
+
+										</tbody>															
+									</table>
+
+								</div>
+
+
+							</div>
+
+							<div id="attc" class="tab-pane fade in" style="padding-top:10px;">
+
+								<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+								<input id="file-0" name="upload[]" type="file" multiple>
+
+							</div>
+					</div>
 
 					<br>
 					<table width="100%" border="0" cellpadding="3">
@@ -462,7 +510,22 @@
 
 	$(document).ready(function() {
 
+		$(".nav-tabs a").click(function(){
+			$(this).tab('show');
+		});
+
 		$("#txtnamount").autoNumeric('init',{mDec:2,wEmpty:'zero'});
+
+		$("input.numeric").autoNumeric('destroy');
+		$("input.numeric").autoNumeric('init',{mDec:2});
+
+		$("input.numeric").on("focus", function () {
+			$(this).select();
+		});
+
+		$("input.numeric").on("keyup", function () {
+			comtotamt();
+		});
 		
 		$('#txtChekDate').datetimepicker({
 			format: 'MM/DD/YYYY',
@@ -575,9 +638,20 @@
 			$("#myChkModal").modal("show");
 		});
 		
-		$("#btnsearchapv").on("click", function() {
-			var custid = $("#txtcustid").val();
-			showapvmod(custid)
+		$("#btnShowApv").on("click", function() {
+			if($("#txtcustid").val()!==""){
+				showapvmod($("#txtcustid").val());
+			}else{
+				$("#AlertMsg").html("<b>ERROR: </b>Pick a valid customer!");
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
+			}
+			
+		});
+		
+		$("#allbox").click(function(e){
+			var table= $(e.target).closest('table');
+			$('td input:checkbox',table).not(this).prop('checked', this.checked);
 		});
 
 		disabled();
@@ -585,6 +659,10 @@
 	});
 			
 	function showapvmod(custid){
+
+		if ( $.fn.DataTable.isDataTable('#MyAPVList') ) {
+			$('#MyAPVList').DataTable().destroy();
+		}
 
 		$('#MyAPVList tbody').empty();
 
@@ -609,16 +687,32 @@
 					else{
 				
 						$("<tr id=\"APV"+index+"\">").append(
-							$("<td>").html("<a href='javascript:;' onclick='InsertSI("+index+")'>"+item.ctranno+"</a> <input type='hidden' id='APVtxtno"+index+"' name='APVtxtno"+index+"' value='"+item.ctranno+"'>"),
-							$("<td>").html(item.dapvdate+"<input type='hidden' id='APVdte"+index+"' name='APVdte"+index+"' value='"+item.dapvdate+"'>"),
-							$("<td>").html(item.cpaymentfor+"<input type='hidden' id='APVPayFor"+index+"' name='APVPayFor"+index+"' value='"+item.cpaymentfor+"'>"),
-							$("<td>").html(item.namount+"<input type='hidden' id='APVamt"+index+"' name='APVamt"+index+"' value='"+item.namount+"'>")
+							$("<td>").html("<input type='checkbox' value='"+index+"' name='chkSales[]'>"), 
+							$("<td>").html(item.ctranno+"<input type='hidden' id='APVtxtno"+index+"' name='APVtxtno' value='"+item.ctranno+"'>"),
+							$("<td>").html(item.dapvdate+"<input type='hidden' id='APVdte"+index+"' name='APVdte' value='"+item.dapvdate+"'>"),
+							$("<td>").html(item.cacctno+" - "+item.cacctdesc+"<input type='hidden' id='APVAcctPay"+index+"' name='APVAcctPay' value='"+item.cacctno+"'><input type='hidden' id='APVAcctPayDesc"+index+"' name='APVAcctPayDesc' value='"+item.cacctdesc+"'>"),
+							$("<td align='right'>").html(item.namount+"<input type='hidden' id='APVamt"+index+"' name='APVamt' value='"+item.namount+"'>"),
+							$("<td align='right'>").html(item.nbalance+"<input type='hidden' id='APVBal"+index+"' name='APVBal' value='"+item.nbalance+"'>")
+							
 						).appendTo("#MyAPVList tbody");
 										
 						$("#myAPModal").modal("show");
 									
 					}
 
+				});
+
+				$('#MyAPVList').dataTable({
+							"info":false, 
+							"ordering":true, 
+							"paging":false,
+							"autoWidth": false,
+							"columnDefs": [
+								{ "width": "5%", "className": "text-center", "targets": 0 },
+								{ "width": "10%", "targets": 1 },
+								{ "width": "8%", "targets": 2 }
+							],
+						
 				});
 
 			},
@@ -634,14 +728,84 @@
 
 	}
 
-	function InsertSI(xyz){	
-	    
-		var a = $("#APVtxtno"+xyz).val();
+	function InsertSI(){	
 
-		$("#txtrefapv").val(a);
+		var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
+		var tblrowcnt = tbl.length;
+
+		$("input[name='chkSales[]']:checked").each( function () {
+
+			xyz = $(this).val();
+			
+			var a = $("#APVtxtno"+xyz).val();
+			var b = $("#APVamt"+xyz).val();
+			var c = $("#APVBal"+xyz).val();
+			var d = $("#APVAcctPay"+xyz).val();
+			var e = $("#APVAcctPayDesc"+xyz).val(); 
+			var f = $("#APVdte"+xyz).val();
+
+			var tdapcm = "<td>"+a+"<input type='hidden' id='txtcapvno"+tblrowcnt+"' name='txtcapvno' value='"+a+"'></td>";
+			var tddate = "<td>"+f+"<input type='hidden' id='txtcapvdate"+tblrowcnt+"' name='txtcapvdate' value='"+f+"'></td>";
+			var tdaccid = "<td>"+d+"<input type='hidden' id='txtapvacctid"+tblrowcnt+"' name='txtapvacctid' value='"+d+"'></td>";
+			var tdaccdsc = "<td>"+e+"<input type='hidden' id='txtapvacctitle"+tblrowcnt+"' name='txtapvacctitle' value='"+e+"'></td>";
+			var tdamt = "<td width='150px'><input type='text' class='numeric form-control input-xs text-right' id='txtapvbal"+tblrowcnt+"' name='txtapvbal' value='"+c+"'> <input type='hidden' id='txtapvamt"+tblrowcnt+"' name='txtapvamt' value='"+b+"'></td>";
+			var tddels = "<td align='center'><input class='btn btn-danger btn-xs' type='button' name='delinfo' id='delinfo" + tblrowcnt + "' value='delete' /></td>";
+
+			$('#MyTable > tbody:last-child').append('<tr>'+tdapcm + tddate + tdaccid + tdaccdsc + tdamt + tddels + '</tr>'); 
+
+			$("#delinfo"+tblrowcnt).on('click', function() { 
+				$(this).closest('tr').remove();
+				recomdel();
+				comtotamt();
+			});
+
+			$("input.numeric").autoNumeric('destroy');
+			$("input.numeric").autoNumeric('init',{mDec:2});
+
+			$("input.numeric").on("focus", function () {
+				$(this).select();
+			});
+
+			$("input.numeric").on("keyup", function () {
+				comtotamt();
+			});
+
+			tblrowcnt = tblrowcnt + 1;
+
+		});
+
 		$('#myAPModal').modal('hide');
-  
+		comtotamt();
+
 	};
+
+	function recomdel(){
+		$("#MyTable > tbody > tr").each(function(index) {
+			tx = index + 1;
+			$(this).find('input[name="txtcapvno"]').attr("id","txtcapvno"+tx);
+			$(this).find('input[name="txtcapvdate"]').attr("id","txtcapvdate"+tx);
+			$(this).find('input[name="txtapvacctid"]').attr("id","txtapvacctid"+tx);
+			$(this).find('input[name="txtapvacctitle"]').attr("id","txtapvacctitle"+tx);
+			$(this).find('input[name="txtapvbal"]').attr("id","txtapvbal"+tx);
+			$(this).find('input[name="txtapvamt"]').attr("id","txtapvamt"+tx);
+			$(this).find('input[name="delinfo"]').attr("id","delinfo"+tx);
+		});
+	}
+
+	function comtotamt(){
+		var rowCount = $('#MyTable tr').length;			
+		var gross = 0;
+
+		if(rowCount>1){
+			for (var i = 1; i <= rowCount-1; i++) {
+				gross = gross + parseFloat($("#txtapvbal"+i).val().replace(/,/g,''));
+			}
+		}
+
+		$("#txtnamount").val(gross);
+		$("#txtnamount").autoNumeric('destroy');
+		$("#txtnamount").autoNumeric('init',{mDec:2});
+	}
 
 	function chkform(){
 		
@@ -650,6 +814,21 @@
 		}).length;
 
 		if (emptyFields === 0) {
+
+			var tx = 0;
+			$("#MyTable > tbody > tr").each(function(index) {
+				tx = index + 1;
+				$(this).find('input[name="txtcapvno"]').attr("name","txtcapvno"+tx);
+				$(this).find('input[name="txtcapvdate"]').attr("name","txtcapvdate"+tx);
+				$(this).find('input[name="txtapvacctid"]').attr("name","txtapvacctid"+tx);
+				$(this).find('input[name="txtapvacctitle"]').attr("name","txtapvacctitle"+tx);
+				$(this).find('input[name="txtapvbal"]').attr("name","txtapvbal"+tx);
+				$(this).find('input[name="txtapvamt"]').attr("name","txtapvamt"+tx);
+				$(this).find('input[name="delinfo"]').attr("name","delinfo"+tx);
+			});
+
+			$("#hdndetails").val(tx);
+			
 			return true;
 		} else {
 			

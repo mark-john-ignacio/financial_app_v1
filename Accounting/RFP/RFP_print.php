@@ -207,7 +207,7 @@ function numberTowords($num)
 
     $xsql = "select A.ctranno, A.cpaymentfor, Sum(B.namount) as ntotamt, SUM(B.nvatamt) as ntotvat, Sum(B.newtamt) as ntotewt, Sum(ndue) as ntotdue
     from apv A left join apv_d B on A.compcode=B.compcode and A.ctranno=B.ctranno
-    where A.compcode='$company' and A.ctranno = '$RefAPV'
+    where A.compcode='$company' and A.ctranno in (Select capvno from rfp_t where compcode='$company' and ctranno='$csalesno')
     Group By A.ctranno, A.cpaymentfor, A.ngross";
 
   }else{
@@ -218,7 +218,7 @@ function numberTowords($num)
     CASE WHEN B.cacctno not in ('".implode("','",$disreg)."') THEN SUM(B.ncredit) ELSE 0 END as ntotdue
     from apv A left join apv_t B on A.compcode=B.compcode and A.ctranno=B.ctranno
 		left join accounts C on B.compcode=C.compcode and B.cacctno=C.cacctid
-    where A.compcode='$company' and A.ctranno = '$RefAPV' and C.ccategory='LIABILITIES'
+    where A.compcode='$company' and A.ctranno in (Select capvno from rfp_t where compcode='$company' and ctranno='$csalesno') and C.ccategory='LIABILITIES'
     Group By A.ctranno, A.cpaymentfor, A.ngross";
 
   }
@@ -425,11 +425,10 @@ function numberTowords($num)
 
           <?php
           $ntotdebit = 0;
-          $xsql = "select A.cacctno, B.cacctdesc,
-          CASE WHEN A.cacctno not in ('".implode("','",$disreg)."') AND B.ccategory='LIABILITIES' THEN SUM(A.ncredit) ELSE 0 END as namt
-          from apv_t A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid
-          where A.compcode='$company' and A.ctranno = '$RefAPV' 
-          Group By A.cacctno, B.cacctdesc";
+          $xsql = "select A.cacctno, A.cacctdesc, A.npayable as namt
+          from rfp_t A
+          where A.compcode='$company' and A.ctranno = '$csalesno' 
+          Group By A.cacctno, A.cacctdesc";
 
 					//echo $xsql;
 					$forpay = 0;

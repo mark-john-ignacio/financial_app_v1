@@ -29,11 +29,10 @@ require_once "../../Connection/connection_string.php";
 
 		$rfplist = array();
 		$rfplistamt = array();
-		$sql = "Select capvno,ngross from rfp where compcode='$company' and lapproved = 1";
+		$sql = "Select A.ctranno, A.capvno, A.cacctno, A.npayable from rfp_t A left join rfp B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved = 1";
 		$result = mysqli_query ($con, $sql); 
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-			$rfplist[] = $row['capvno'];
-			$rfplistamt[$row['capvno']] = $row['ngross'];
+			$rfplist[] = $row;
 		}
 
 		$sql="SELECT A.ctranno, B.crefno, DATE_FORMAT(A.dapvdate,'%m/%d/%Y') as dapvdate, sum(B.ncredit) as namount, IFNULL(sum(D.napplied),0) as napplied, IFNULL(sum(B.newtamt),0) as newtamt, B.cacctno, C.cacctdesc
@@ -69,21 +68,30 @@ require_once "../../Connection/connection_string.php";
 
 	$json = array();
 	//$json = [];
+	$iswith = 0;
 	if(mysqli_num_rows($result)!=0){
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 
-			$isyes = "True";
+			$isyes = "False";
 			$xdngross = 0;
+			$xrefrfp = "";
+			$xrefrfpay = 0;
 			if($nRFPvalue==1){
-				if(!in_array($row['ctranno'], $rfplist)){
-					$isyes = "False";
+				foreach($rfplist as $rs0){
+					if($row['ctranno']==$rs0['capvno'] && $row['cacctno']==$rs0['cacctno']){
+						$isyes = "True";
+						$xrefrfpay = $rs0['npayable'];
+						$xrefrfp = $rs0['ctranno'];
+					}
 				}
+			}else{
+				$isyes = "True";
 			}
 
 			if($isyes=="True"){
 
 				if($nRFPvalue==1){
-					$xdngross = $rfplistamt[$row['ctranno']];
+					$xdngross = $xrefrfpay;
 				}else{
 					$xdngross = $row['namount'];
 				}
@@ -93,9 +101,10 @@ require_once "../../Connection/connection_string.php";
 				$remain = floatval($xdngross) - floatval($row['napplied']);
 
 				if($remain>0){
-		
+					$iswith++;
+
 					$json['ctranno'] = $row['ctranno'];
-					$json['crefno'] = $row['crefno'];
+					$json['crefno'] = $xrefrfp;
 					$json['dapvdate'] = $row['dapvdate'];
 					$json['namount'] = number_format($xdngross,2);
 					$json['napplied'] = $row['napplied'];
@@ -121,6 +130,11 @@ require_once "../../Connection/connection_string.php";
 			$json2[] = $json;
 	}
 	
+	if($iswith > 0){
+		$key_values = array_column($json2, 'crefno'); 
+		array_multisort($key_values, SORT_ASC, $json2);
+	}
+
 	echo json_encode($json2);
 
 

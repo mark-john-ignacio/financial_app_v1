@@ -139,11 +139,12 @@ include('../../include/access2.php');
 							<div id="apv" class="tab-pane fade in active" style="padding-top:10px;">
 
 								<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 1px solid #919b9c;width: 100%;height: 40vh;text-align: left;overflow: auto">
-				
+									<input type='hidden' name="hdndetails" id="hdndetails" value="0"/>
 									<table id="MyTable" class="MyTable table table-condensed" width="100%">
 										<thead>
 											<tr>
 												<th style="border-bottom:1px solid #999">APV No.</th>
+												<th style="border-bottom:1px solid #999">Date</th>
 												<th style="border-bottom:1px solid #999">Account Code</th>
 												<th style="border-bottom:1px solid #999">Account Title</th>
 												<th style="border-bottom:1px solid #999">Amount</th>
@@ -410,74 +411,75 @@ $(document).ready(function() {
 });
 
 		
-function showapvmod(custid){
+	function showapvmod(custid){
 
-	if ( $.fn.DataTable.isDataTable('#MyAPVList') ) {
-		$('#MyAPVList').DataTable().destroy();
-	}
-
-	$('#MyAPVList tbody').empty();
-
-	$.ajax({
-    url: 'th_APVlist.php',
-		data: { code: custid },
-    dataType: 'json',
-		async:false,
-    method: 'post',
-    success: function (data) {
-
-      console.log(data);
-      $.each(data,function(index,item){
-						
-				if(item.ctranno=="NO"){
-					alert("No Available Reference.");
-									
-					$('#txtcust').val("").change(); 
-					$("#txtcustid").val("");
-
-				}
-				else{
-			
-					$("<tr id=\"APV"+index+"\">").append(
-						$("<td>").html("<input type='checkbox' value='"+index+"' name='chkSales[]'>"), 
-						$("<td>").html(item.ctranno+"<input type='hidden' id='APVtxtno"+index+"' name='APVtxtno"+index+"' value='"+item.ctranno+"'>"),
-						$("<td>").html(item.dapvdate+"<input type='hidden' id='APVdte"+index+"' name='APVdte"+index+"' value='"+item.dapvdate+"'>"),
-						$("<td>").html(item.cacctno+" - "+item.cacctdesc+"<input type='hidden' id='APVAcctPay"+index+"' name='APVAcctPay"+index+"' value='"+item.cacctno+"'><input type='hidden' id='APVAcctPayDesc"+index+"' name='APVAcctPayDesc"+index+"' value='"+item.cacctdesc+"'>"),
-						$("<td align='right'>").html(item.namount+"<input type='hidden' id='APVamt"+index+"' name='APVamt"+index+"' value='"+item.namount+"'>"),
-						$("<td align='right'>").html(item.nbalance+"<input type='hidden' id='APVBal"+index+"' name='APVBal"+index+"' value='"+item.nbalance+"'>")
-					).appendTo("#MyAPVList tbody");
-									
-					$("#myAPModal").modal("show");
-								
-				}
-
-      });
-
-			$('#MyAPVList').dataTable({
-						"info":false, 
-						"ordering":true, 
-						"paging":false,
-						"autoWidth": false,
-						"columnDefs": [
-							{ "width": "5%", "className": "text-center", "targets": 0 },
-							{ "width": "10%", "targets": 1 },
-							{ "width": "8%", "targets": 2 }
-						],
-					
-			});
-
-    },
-    error: function (req, status, err) {
-
-			$("#AlertMsg").html("<b>ERROR: </b>Something went wrong!<br>Status: "+ status + "<br>Error: "+err);
-			$("#alertbtnOK").show();
-			$("#AlertModal").modal('show');
-
-			console.log('Something went wrong', status, err);
+		if ( $.fn.DataTable.isDataTable('#MyAPVList') ) {
+			$('#MyAPVList').DataTable().destroy();
 		}
-  });
 
-}
+		$('#MyAPVList tbody').empty();
+
+		$.ajax({
+			url: 'th_APVlist.php',
+			data: { code: custid },
+			dataType: 'json',
+			async:false,
+			method: 'post',
+			success: function (data) {
+
+				console.log(data);
+				$.each(data,function(index,item){
+							
+					if(item.ctranno=="NO"){
+						alert("No Available Reference.");
+										
+						$('#txtcust').val("").change(); 
+						$("#txtcustid").val("");
+
+					}
+					else{
+				
+						$("<tr id=\"APV"+index+"\">").append(
+							$("<td>").html("<input type='checkbox' value='"+index+"' name='chkSales[]'>"), 
+							$("<td>").html(item.ctranno+"<input type='hidden' id='APVtxtno"+index+"' name='APVtxtno' value='"+item.ctranno+"'>"),
+							$("<td>").html(item.dapvdate+"<input type='hidden' id='APVdte"+index+"' name='APVdte' value='"+item.dapvdate+"'>"),
+							$("<td>").html(item.cacctno+" - "+item.cacctdesc+"<input type='hidden' id='APVAcctPay"+index+"' name='APVAcctPay' value='"+item.cacctno+"'><input type='hidden' id='APVAcctPayDesc"+index+"' name='APVAcctPayDesc' value='"+item.cacctdesc+"'>"),
+							$("<td align='right'>").html(item.namount+"<input type='hidden' id='APVamt"+index+"' name='APVamt' value='"+item.namount+"'>"),
+							$("<td align='right'>").html(item.nbalance+"<input type='hidden' id='APVBal"+index+"' name='APVBal' value='"+item.nbalance+"'>")
+							
+						).appendTo("#MyAPVList tbody");
+										
+						$("#myAPModal").modal("show");
+									
+					}
+
+				});
+
+				$('#MyAPVList').dataTable({
+							"info":false, 
+							"ordering":true, 
+							"paging":false,
+							"autoWidth": false,
+							"columnDefs": [
+								{ "width": "5%", "className": "text-center", "targets": 0 },
+								{ "width": "10%", "targets": 1 },
+								{ "width": "8%", "targets": 2 }
+							],
+						
+				});
+
+			},
+			error: function (req, status, err) {
+
+				$("#AlertMsg").html("<b>ERROR: </b>Something went wrong!<br>Status: "+ status + "<br>Error: "+err);
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
+
+				console.log('Something went wrong', status, err);
+			}
+		});
+
+	}
 
 	function InsertSI(){	
 
@@ -492,16 +494,23 @@ function showapvmod(custid){
 			var b = $("#APVamt"+xyz).val();
 			var c = $("#APVBal"+xyz).val();
 			var d = $("#APVAcctPay"+xyz).val();
-			var e = $("#APVAcctPayDesc"+xyz).val();
+			var e = $("#APVAcctPayDesc"+xyz).val(); 
+			var f = $("#APVdte"+xyz).val();
 
-			$("<tr>").append(
-				$("<td>").html(a+"<input type='hidden' id='txtcapvno"+tblrowcnt+"' name='txtcapvno"+tblrowcnt+"' value='"+a+"'>"),
-				$("<td>").html(d+"<input type='hidden' id='txtapvacctid"+tblrowcnt+"' name='txtapvacctid"+tblrowcnt+"' value='"+d+"'>"),
-				$("<td>").html(e+"<input type='hidden' id='txtapvacctitle"+tblrowcnt+"' name='txtapvacctitle"+tblrowcnt+"' value='"+e+"'>"),
-				$("<td width='150px'>").html("<input type='text' class='numeric form-control input-sm text-right' id='txtapvbal"+tblrowcnt+"' name='txtapvbal"+tblrowcnt+"' value='"+c+"'> <input type='hidden' id='txtapvamt"+tblrowcnt+"' name='txtapvamt"+tblrowcnt+"' value='"+b+"'>")
-			).appendTo("#MyTable tbody");
+			var tdapcm = "<td>"+a+"<input type='hidden' id='txtcapvno"+tblrowcnt+"' name='txtcapvno' value='"+a+"'></td>";
+			var tddate = "<td>"+f+"<input type='hidden' id='txtcapvdate"+tblrowcnt+"' name='txtcapvdate' value='"+f+"'></td>";
+			var tdaccid = "<td>"+d+"<input type='hidden' id='txtapvacctid"+tblrowcnt+"' name='txtapvacctid' value='"+d+"'></td>";
+			var tdaccdsc = "<td>"+e+"<input type='hidden' id='txtapvacctitle"+tblrowcnt+"' name='txtapvacctitle' value='"+e+"'></td>";
+			var tdamt = "<td width='150px'><input type='text' class='numeric form-control input-xs text-right' id='txtapvbal"+tblrowcnt+"' name='txtapvbal' value='"+c+"'> <input type='hidden' id='txtapvamt"+tblrowcnt+"' name='txtapvamt' value='"+b+"'></td>";
+			var tddels = "<td align='center'><input class='btn btn-danger btn-xs' type='button' name='delinfo' id='delinfo" + tblrowcnt + "' value='delete' /></td>";
 
-			tblrowcnt++;
+			$('#MyTable > tbody:last-child').append('<tr>'+tdapcm + tddate + tdaccid + tdaccdsc + tdamt + tddels + '</tr>'); 
+
+			$("#delinfo"+tblrowcnt).on('click', function() { 
+				$(this).closest('tr').remove();
+				recomdel();
+				comtotamt();
+			});
 		
 			$("input.numeric").autoNumeric('destroy');
 			$("input.numeric").autoNumeric('init',{mDec:2});
@@ -514,12 +523,27 @@ function showapvmod(custid){
 				comtotamt();
 			});
 
+			tblrowcnt = tblrowcnt + 1;
+
 		});
 
 		$('#myAPModal').modal('hide');
 		comtotamt();
   
 	};
+
+	function recomdel(){
+		$("#MyTable > tbody > tr").each(function(index) {
+			tx = index + 1;
+			$(this).find('input[name="txtcapvno"]').attr("id","txtcapvno"+tx);
+			$(this).find('input[name="txtcapvdate"]').attr("id","txtcapvdate"+tx);
+			$(this).find('input[name="txtapvacctid"]').attr("id","txtapvacctid"+tx);
+			$(this).find('input[name="txtapvacctitle"]').attr("id","txtapvacctitle"+tx);
+			$(this).find('input[name="txtapvbal"]').attr("id","txtapvbal"+tx);
+			$(this).find('input[name="txtapvamt"]').attr("id","txtapvamt"+tx);
+			$(this).find('input[name="delinfo"]').attr("id","delinfo"+tx);
+		});
+	}
 
 	function comtotamt(){
 		var rowCount = $('#MyTable tr').length;			
@@ -543,6 +567,21 @@ function showapvmod(custid){
 		}).length;
 
 		if (emptyFields === 0) {
+
+			var tx = 0;
+			$("#MyTable > tbody > tr").each(function(index) {
+				tx = index + 1;
+				$(this).find('input[name="txtcapvno"]').attr("name","txtcapvno"+tx);
+				$(this).find('input[name="txtcapvdate"]').attr("name","txtcapvdate"+tx);
+				$(this).find('input[name="txtapvacctid"]').attr("name","txtapvacctid"+tx);
+				$(this).find('input[name="txtapvacctitle"]').attr("name","txtapvacctitle"+tx);
+				$(this).find('input[name="txtapvbal"]').attr("name","txtapvbal"+tx);
+				$(this).find('input[name="txtapvamt"]').attr("name","txtapvamt"+tx);
+				$(this).find('input[name="delinfo"]').attr("name","delinfo"+tx);
+			});
+
+			$("#hdndetails").val(tx);
+
 			return true;
 		} else {
 			
