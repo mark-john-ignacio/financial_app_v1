@@ -199,6 +199,7 @@ $company = $_SESSION['companyid'];
 <form action="APAgeing_Det.php" name="frmdet" id="frmdet" target="_blank" method="POST">
 	<input type="hidden" name="ccode" id="ccode" value="">
 	<input type="hidden" name="date1" id="date1" value="">
+</form>
 </body>
 </html>
 
