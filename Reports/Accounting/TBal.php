@@ -95,7 +95,7 @@ $date2 = $_POST["date2"];
     <td onclick="funcset('<?=$row['acctno']?>','<?=$date1?>','<?=$date2?>')" style="cursor: pointer "><?php echo $row['cacctdesc'];?></td>
   	<td style="text-align:right"><?php if (floatval($row['ndebit'])<>0) { echo number_format(floatval($row['ndebit']), 2); }?></td>
     <td style="text-align:right"><?php if (floatval($row['ncredit'])<>0) { echo number_format(floatval($row['ncredit']), 2); }?></td>
-		<td style="text-align:right"><?=$ntotbal < 0 ? "(".abs($ntotbal).")" : $ntotbal ?></td>
+		<td style="text-align:right"><?=$ntotbal < 0 ? "(".number_format(abs($ntotbal),2).")" : number_format($ntotbal,2) ?></td>
   </tr>
 <?php
 	}
