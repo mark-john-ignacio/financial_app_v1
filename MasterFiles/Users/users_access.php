@@ -1181,11 +1181,18 @@ xmlhttp.send();
           <br>
           <label><input type="checkbox" name="chkAcc[]" value="TBal.php" id="chkBox169" <?=(in_array("TBal.php",@$arrpgist)) ? "checked" : "";?>>
           Trial Balance</label>
+          <br>
+          <label><input type="checkbox" name="chkAcc[]" value="BalSheet.php" id="chkBox169" <?=(in_array("BalSheet.php",@$arrpgist)) ? "checked" : "";?>>
+          Balance Sheet</label>
+          <br>
+          <label><input type="checkbox" name="chkAcc[]" value="IStatement.php" id="chkBox169" <?=(in_array("IStatement.php",@$arrpgist)) ? "checked" : "";?>>
+          Income Statement</label>
           
         </div>
 
         <br>
         <b><u><i>BIR Reports</i></u></b><br>
+        <div style="padding-left:10px;"> 
           <label><input type="checkbox" name="chkAcc[]" value="MonthlyVAT.php" id="chkBox163" <?=(in_array("MonthlyVAT.php",@$arrpgist)) ? "checked" : "";?>>
           BIR - Monthly Output VAT</label>
           <br>
@@ -1195,6 +1202,8 @@ xmlhttp.send();
           <label><input type="checkbox" name="chkAcc[]" value="bir2307.php" id="chkBox168" <?=(in_array("bir2307.php",@$arrpgist)) ? "checked" : "";?>>
           BIR Form - 2307</label>
          <br>
+        </div>
+        
          <b><u><i>Inventory</i></u></b><br>
          <div style="padding-left:10px;"> 
           <label>
