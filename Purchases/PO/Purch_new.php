@@ -462,7 +462,7 @@ $(document).ready(function() {
     $('.datepick').datetimepicker({
       format: 'MM/DD/YYYY',
 			useCurrent: false,
-			minDate: moment(),
+			//minDate: moment(),
 			defaultDate: moment(),
     });
 
