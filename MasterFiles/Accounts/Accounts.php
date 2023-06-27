@@ -501,7 +501,7 @@ mysqli_close($con);
 
 		var table = $('#MyTable').DataTable( {
 			"searching": true,
-      "paging": true,
+      "paging": false,
 			"serverSide": true,
 			"ordering": false,
 			"lengthChange": false,
