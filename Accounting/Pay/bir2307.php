@@ -417,7 +417,7 @@
 					<div class="detewttotal" style="top: <?=$deftop?>px !important"><?=number_format($row['namount'],2)?></div>
 					<div class="detewtamt" style="top: <?=$deftop?>px !important"><?=number_format($row['newtamt'],2)?></div>
 		<?php
-				$totdues = $totdues + floatval($row['ndue']);
+				$totdues = $totdues + floatval($row['namount']);
 				$totewts = $totewts + floatval($row['newtamt']);;
 			}
 		
