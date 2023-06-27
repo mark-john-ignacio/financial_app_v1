@@ -66,22 +66,22 @@ else {
 		$dTranDate = mysqli_real_escape_string($con, $_POST['txtChekDate']); 
 	}
 	
-
-
 	if($paymeth=="cheque"){
 		$cBankCode = mysqli_real_escape_string($con, $_POST['txtBank']);
-		$cCheckNo = mysqli_real_escape_string($con, $_POST['txtCheckNo']);			
+		$cCheckNo = mysqli_real_escape_string($con, $_POST['txtCheckNo']);	
+		$cCheckBK = mysqli_real_escape_string($con, $_POST['txtChkBkNo']);		
 
 		$cPayRefNo = "";
 	}else{
 		$cBankCode = mysqli_real_escape_string($con, $_POST['txtBank']);
-		$cCheckNo = "";	
+		$cCheckNo = "";
+		$cCheckBK = "";	
 
 		$cPayRefNo = mysqli_real_escape_string($con, $_POST['txtPayRefrnce']);
 	}
 	
 
-	if (!mysqli_query($con, "INSERT INTO `paybill`(`compcode`, `ctranno`, `ccode`, `cpayee`, `cpaymethod`, `cbankcode`, `ccheckno`, `cacctno`, `cpayrefno`, `ddate`, `dcheckdate`, `ngross`, `npaid`, `cpreparedby`, `cparticulars`, `cpaytype`) values('$company', '$cSINo', '$cCustID', '$cPayee', '$paymeth', '$cBankCode', '$cCheckNo', '$cAcctNo', '$cPayRefNo', STR_TO_DATE('$dDate', '%m/%d/%Y'), STR_TO_DATE('$dTranDate', '%m/%d/%Y'), $nGross, $npaid, '$preparedby', '$particulars', '$paytype')")) {
+	if (!mysqli_query($con, "INSERT INTO `paybill`(`compcode`, `ctranno`, `ccode`, `cpayee`, `cpaymethod`, `cbankcode`, `ccheckno`, `ccheckbook`, `cacctno`, `cpayrefno`, `ddate`, `dcheckdate`, `ngross`, `npaid`, `cpreparedby`, `cparticulars`, `cpaytype`) values('$company', '$cSINo', '$cCustID', '$cPayee', '$paymeth', '$cBankCode', '$cCheckNo', '$cCheckBK', '$cAcctNo', '$cPayRefNo', STR_TO_DATE('$dDate', '%m/%d/%Y'), STR_TO_DATE('$dTranDate', '%m/%d/%Y'), $nGross, $npaid, '$preparedby', '$particulars', '$paytype')")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 
@@ -126,9 +126,11 @@ else {
 
 	}
 
-
 	$newchk = floatval($cCheckNo) + 1;
 	mysqli_query($con,"UPDATE bank_check set ccurrentcheck='$newchk' where compcode='$company' and ccode='$cBankCode' and ccurrentcheck='$cCheckNo'");
+
+
+	mysqli_query($con,"UPDATE bank_reserves set lused=1 where compcode='$company' and cbankcode='$cBankCode' and ccheckno='$cCheckNo'");
 	
 	
 	//INSERT LOGFILE

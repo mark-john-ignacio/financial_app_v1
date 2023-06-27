@@ -55,7 +55,7 @@ $_SESSION['myxtoken'] = gen_token();
 
 <body style="padding:5px" onLoad="document.getElementById('txtctranno').focus();">
 <?php
-    	$sqlchk = mysqli_query($con,"Select a.cacctno, c.cacctdesc, a.ccode, a.cpaymethod, a.cbankcode, a.ccheckno, a.cpaydesc, a.cpayrefno, e.cname as cbankname, a.cpayee, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dcheckdate,'%m/%d/%Y') as dcheckdate, a.ngross, a.npaid, a.lapproved, a.lcancelled, a.lprintposted, b.cname, d.cname as custname, c.cacctdesc, a.cparticulars, a.cpaytype
+    	$sqlchk = mysqli_query($con,"Select a.cacctno, c.cacctdesc, a.ccode, a.cpaymethod, a.cbankcode, a.ccheckno, a.ccheckbook, a.cpaydesc, a.cpayrefno, e.cname as cbankname, a.cpayee, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dcheckdate,'%m/%d/%Y') as dcheckdate, a.ngross, a.npaid, a.lapproved, a.lcancelled, a.lprintposted, b.cname, d.cname as custname, c.cacctdesc, a.cparticulars, a.cpaytype
 		From paybill a 
 		left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode 
 		left join accounts c on a.cacctno=c.cacctid 
@@ -80,6 +80,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
 			$cBank = $row['cbankcode'];
 			$cBankName = $row['cbankname'];
 			$cCheckNo = $row['ccheckno'];
+			$cCheckBK = $row['ccheckbook'];
 
 			$cPayDesc = $row['cpaydesc'];
 			$cPayRefr = $row['cpayrefno'];
@@ -254,7 +255,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
 
 									<div class="col-xs-7 nopadding"><!-- noref -->
 										<input type='text' class='form-control input-sm' name='txtCheckNo' id='txtCheckNo' value="<?php echo $cCheckNo; ?>" readonly required placeholder="Check No."/>
-										<input type='hidden' name='txtChkBkNo' id='txtChkBkNo' value="" />
+										<input type='hidden' name='txtChkBkNo' id='txtChkBkNo' value="<?=$cCheckBK?>" />
 									</div>	
 									<div class="col-xs-5 nopadwleft">
 										<?php
@@ -759,13 +760,18 @@ else{
 
 			}else{
 
+				//alert("PayBill_voidchkno.php?id="+$("#txtBank").val()+"&chkno="+$("#txtCheckNo").val()+"&chkbkno="+$("#txtChkBkNo").val()+"&rem="+$("#txtreason").val()+"&xtyp="+$("#modevent").val()+"&authcode="+$("#authcode").val());
+
 				$.ajax ({
 					url: "PayBill_voidchkno.php",
 					data: { id: $("#txtBank").val(), chkno: $("#txtCheckNo").val(), chkbkno: $("#txtChkBkNo").val(), rem: $("#txtreason").val(), xtyp: $("#modevent").val(), authcode: $("#authcode").val() },
 					async: false,
 					success: function( data ) {
 						if(data.trim()!="False"){
-							$("#txtCheckNo").val(data.trim());
+
+							$str = data.split(":");
+							$("#txtCheckNo").val($str[0]);
+							$("#txtChkBkNo").val($str[1]);
 
 							$("#txtreason").text("");
 							$("#reasonmod").modal("hide");
@@ -827,7 +833,7 @@ else{
 
 								if($("#selpayment").val()=="cheque"){
 									$("#txtCheckNo").val(item.ccurrentcheck);
-									$("#txtChkBkNo").val(item.nidentity);
+									$("#txtChkBkNo").val(item.ccheckno);
 
 									if(item.ccurrentcheck!==""){
 

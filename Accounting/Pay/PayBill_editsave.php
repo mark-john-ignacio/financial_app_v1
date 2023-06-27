@@ -32,19 +32,21 @@ include('../../include/denied.php');
 		$dTranDate = mysqli_real_escape_string($con, $_POST['txtChekDate']);
 	}
 
-	if($paymeth=="Cheque"){
+	if($paymeth=="cheque"){
 		$cBankCode = mysqli_real_escape_string($con, $_POST['txtBank']);
 		$cCheckNo = mysqli_real_escape_string($con, $_POST['txtCheckNo']);			
+		$cCheckBK = mysqli_real_escape_string($con, $_POST['txtChkBkNo']);
 
 		$cPayRefNo = "";
 	}else{
 		$cBankCode = mysqli_real_escape_string($con, $_POST['txtBank']);
 		$cCheckNo = "";	
+		$cCheckBK = "";
 
 		$cPayRefNo = mysqli_real_escape_string($con, $_POST['txtPayRefrnce']);
 	}
 	
-	if (!mysqli_query($con, "UPDATE `paybill` set `dcheckdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `ccode` = '$cCustID', `cpayee` = '$cPayee', `ngross` = $nGross, `npaid` = $npaid, `cacctno` = '$cAcctNo', ddate = STR_TO_DATE('$dDate', '%m/%d/%Y'), dcheckdate = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `cbankcode` = '$cBankCode', `ccheckno` = '$cCheckNo', `cpaymethod` = '$paymeth', `cpayrefno` = '$cPayRefNo', `cparticulars` = '$particulars', `cpaytype` = '$paytype' where `compcode` = '$company' and `ctranno` = '$cCVNo'")) {
+	if (!mysqli_query($con, "UPDATE `paybill` set `dcheckdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `ccode` = '$cCustID', `cpayee` = '$cPayee', `ngross` = $nGross, `npaid` = $npaid, `cacctno` = '$cAcctNo', ddate = STR_TO_DATE('$dDate', '%m/%d/%Y'), dcheckdate = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `cbankcode` = '$cBankCode', `ccheckno` = '$cCheckNo', `ccheckbook` = '$cCheckBK', `cpaymethod` = '$paymeth', `cpayrefno` = '$cPayRefNo', `cparticulars` = '$particulars', `cpaytype` = '$paytype' where `compcode` = '$company' and `ctranno` = '$cCVNo'")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 
@@ -94,6 +96,25 @@ include('../../include/denied.php');
 		}
 
 	}
+
+	//pag same sa currentchck ung andito.. add 1
+	$ccurchk = "";
+	$ccurchklast = "";
+	$ccurchkbk = "";
+	$sql = mysqli_query($con,"Select * from bank_check where compcode='$company' and ccode='$cBankCode' and ccheckto <> ccurrentcheck"); 
+	while($row = mysqli_fetch_array($sql, MYSQLI_ASSOC))
+	{
+		$ccurchk = $row['ccurrentcheck'];
+		$ccurchklast = $row['ccheckto'];
+		$ccurchkbk = $row['ccheckno'];
+	}
+
+	if(floatval($cCheckNo)==floatval($ccurchk) && floatval($ccurchk) < floatval($ccurchklast)){
+		$newchk = floatval($cCheckNo) + 1;
+		mysqli_query($con,"UPDATE bank_check set ccurrentcheck='$newchk' where compcode='$company' and ccode='$cBankCode' and ccheckno='$ccurchkbk'");
+	}
+
+	mysqli_query($con,"UPDATE bank_reserves set lused=1 where compcode='$company' and cbankcode='$cBankCode' and ccheckno='$cCheckNo'");
 	
 	//INSERT LOGFILE
 	$compname = php_uname('n');

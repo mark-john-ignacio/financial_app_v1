@@ -593,7 +593,10 @@
 					async: false,
 					success: function( data ) {
 						if(data.trim()!="False"){
-							$("#txtCheckNo").val(data.trim());
+							
+							$str = data.split(":");
+							$("#txtCheckNo").val($str[0]);
+							$("#txtChkBkNo").val($str[1]);
 
 							$("#txtreason").text("");
 							$("#reasonmod").modal("hide");
@@ -655,7 +658,7 @@
 
 								if($("#selpayment").val()=="cheque"){
 									$("#txtCheckNo").val(item.ccurrentcheck);
-									$("#txtChkBkNo").val(item.nidentity);
+									$("#txtChkBkNo").val(item.ccheckno);
 
 									if(item.ccurrentcheck!==""){
 
