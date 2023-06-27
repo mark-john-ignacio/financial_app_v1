@@ -68,6 +68,8 @@ $date2 = $_POST["date2"];
 			Group By A.acctno, B.cacctdesc
 			Order By A.acctno";
 
+		//	echo $sql;
+
 	$result=mysqli_query($con,$sql);
 				
 	if (!mysqli_query($con, $sql)) {

@@ -2,56 +2,56 @@
 <head>
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
-    <link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
-    <link href="../global/css/components.css" id="style_components" rel="stylesheet" type="text/css"/>
+  <link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+  <link href="../global/css/components.css" id="style_components" rel="stylesheet" type="text/css"/>
 
-<script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../js/bootstrap3-typeahead.min.js"></script>
+	<script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../js/bootstrap3-typeahead.min.js"></script>
 
-<script src="../Bootstrap/js/bootstrap.js"></script>
-<script src="../Bootstrap/js/moment.js"></script>
-<script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+	<script src="../Bootstrap/js/bootstrap.js"></script>
+	<script src="../Bootstrap/js/moment.js"></script>
+	<script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
-<script type="text/javascript">//<![CDATA[
+	<script type="text/javascript">//<![CDATA[
 
-$(document).ready(function() {
-    $(".divhid").hide();
-	
-	$("#<?php echo $_GET["id"];?>").show();
-	
-	if($("#hdntyp").val()=="sales"){
-		$("#divname").html("<font size=\"+2\"><u>Sales Reports</u></font>");
-	}
-	else if($("#hdntyp").val()=="purch"){
-		$("#divname").html("<font size=\"+2\"><u>Purchase Reports</u></font>");
-	}
-	else if($("#hdntyp").val()=="acc"){
-		$("#divname").html("<font size=\"+2\"><u>GL & BIR Reports</u></font>");
-	}
-	else if($("#hdntyp").val()=="inv"){
-		$("#divname").html("<font size=\"+2\"><u>Inventory Reports</u></font>");
-	}
+		$(document).ready(function() {
+				$(".divhid").hide();
+			
+			$("#<?php echo $_GET["id"];?>").show();
+			
+			if($("#hdntyp").val()=="sales"){
+				$("#divname").html("<font size=\"+2\"><u>Sales Reports</u></font>");
+			}
+			else if($("#hdntyp").val()=="purch"){
+				$("#divname").html("<font size=\"+2\"><u>Purchase Reports</u></font>");
+			}
+			else if($("#hdntyp").val()=="acc"){
+				$("#divname").html("<font size=\"+2\"><u>GL & BIR Reports</u></font>");
+			}
+			else if($("#hdntyp").val()=="inv"){
+				$("#divname").html("<font size=\"+2\"><u>Inventory Reports</u></font>");
+			}
 
-});
+		});
 
+		function setI(typ,x){
+			if(typ=='A'){
+				document.getElementById("myreport").src = x;
+			}
+			else if(typ=='B'){
+				document.getElementById("myreport").src = "";
+				document.getElementById("transnew").action = x;
+				document.getElementById("transnew").submit();
+			}
+		}
 
-function setI(typ,x){
-	if(typ=='A'){
-		document.getElementById("myreport").src = x;
-	}
-	else if(typ=='B'){
-		document.getElementById("myreport").src = "";
-		document.getElementById("transnew").action = x;
-		document.getElementById("transnew").submit();
-	}
-}
-
-function resizeIframe(obj) {
-            // here you can make the height, I delete it first, then I make it again
+		function resizeIframe(obj) {
+			// here you can make the height, I delete it first, then I make it again
 			var x = obj.contentWindow.document.body.scrollHeight + 30;
 			obj.style.height = x + 'px';      
-			}   
-</script>
+		}   
+	</script>
+
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Myx Financials</title>
 </head>
@@ -193,8 +193,13 @@ function resizeIframe(obj) {
                 </li>
                 
     						<li>
-    							<a href="" onClick="setI('A','SFP.php')" data-toggle="tab">
-    							<i class="fa fa-book"></i> Statement of Financial Position </a>
+    							<a href="" onClick="setI('A','BalSheet.php')" data-toggle="tab">
+    							<i class="fa fa-book"></i> Balance Sheet </a>
+    						</li> 
+
+								<li>
+    							<a href="" onClick="setI('A','IStatement.php')" data-toggle="tab">
+    							<i class="fa fa-book"></i> Income Statement </a>
     						</li> 
 						</ul>
 					</div>
