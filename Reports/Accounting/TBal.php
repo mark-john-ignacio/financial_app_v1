@@ -47,7 +47,7 @@ $date2 = $_POST["date2"];
 </center>
 
 <br><br>
-<table width="80%" border="0" align="center">
+<table width="70%" border="0" align="center">
   <tr>
     <th rowspan="2" width="50px">&nbsp;</th>
     <th rowspan="2" style="text-align:center" width="100px">Account No. </th>
