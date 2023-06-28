@@ -48,11 +48,17 @@
 		$company = $_SESSION['companyid'];     
 
 		//get user details
-		$result=mysqli_query($con,"select * From company where compcode='$company'");								
+		$arrcompz = array();
+		$cntzcompany = 0;
+		$result=mysqli_query($con,"select * From company");								
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 		{
-			$compname =  $row['compname'];
-			$logoname =  str_replace("../","",$row['clogoname']);
+			$cntzcompany++;
+			$arrcompz[] = $row;
+			if($row['compcode'] == $company){
+				$compname =  $row['compname'];
+				$logoname =  str_replace("../","",$row['clogoname']);
+			}
 		}   
 	?>
 <!-- BEGIN HEADER -->
@@ -69,9 +75,36 @@
 			</div>
 		</div>
 
-		<div class="page-comname">
+		<div class="dropdown page-comname">
 			<div style="display: table-cell; vertical-align: middle;">
-				<h4 style="color:#fff"><?=$compname?></h4>
+
+					<?php
+						if($cntzcompany==1){
+							echo "<font size='3' style='color:#fff'>".$compname."</font>";
+						}else{
+					?>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+							<font size="3" style="color:#fff"><?=$compname?></font>
+							<i class="fa fa-angle-down" style="color:white"></i>
+						</a>
+
+						<ul class="dropdown-menu" style="margin-left: 20px">
+						<?php
+							foreach($arrcompz as $rs1){
+								if($rs1['compcode'] !== $company){
+						?>
+							<li>
+								<a href="javascript:;" onClick="setpage('MasterFiles/ChangeCompany.php?x=<?=$rs1['compcode']?>');" >
+								<?=$rs1['compname']?> </a>
+							</li>
+						<?php
+								}
+							}
+						?>
+						</ul>
+					<?php
+						}
+					?>
 			</div>
 		</div>
 		<!-- END LOGO -->

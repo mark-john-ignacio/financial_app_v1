@@ -41,6 +41,7 @@
 				where A.compcode='$company' and A.ddate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
 				and B.cFinGroup = 'Balance Sheet'
 				Group By A.acctno, B.cacctdesc
+				Having sum(A.ndebit)<>0 or sum(A.ncredit)<>0
 				Order By A.acctno";
 //echo $sql;
 
@@ -287,6 +288,8 @@
 
 							$xmain = intval($row['nlevel']) - 1;
 							
+						}elseif(floatval($xcvb) < 0){
+							echo "(".number_format(abs($xcvb),2).")";
 						}else{
 							echo "-";
 						}
