@@ -46,10 +46,10 @@ $varmsg = "";
 <hr>
 <table width="40%" border="0" align="center" cellpadding="2px">
   <tr>
-    <th width="100">Acct Code</th>
+    <th width="80">Acct Code</th>
     <th>Account Title</th>
-    <th class="text-right" width="150">Debit</th>
-    <th class="text-right" width="150">Credit</th>
+    <th class="text-right" width="80">Debit</th>
+    <th class="text-right" width="80">Credit</th>
   </tr>
   
 <?php
