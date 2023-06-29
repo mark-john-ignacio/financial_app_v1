@@ -241,7 +241,7 @@
 		}
 		
 		if($ccate!==$row['ccategory']){
-			echo "<tr><td colspan='2' style='border-bottom-style: double; border-top-style: double;'><b>TOTAL ".$ccate."</b></td><td align='right' style='border-bottom-style: double; border-top-style: double;'><b>".number_format($arrlvlamt[0],2)."</b></td></tr>";
+			echo "<tr><td colspan='2' style='border-bottom-style: double; border-top: 2px solid #000;'><b>TOTAL ".$ccate."</b></td><td align='right' style='border-bottom-style: double; border-top: 2px solid #000;'><b>".number_format($arrlvlamt[0],2)."</b></td></tr>";
 
 			if($ccate=="LIABILITIES" || $ccate=="EQUITY"){
 				$twinGross = $twinGross + floatval($arrlvlamt[0]);
@@ -311,7 +311,7 @@
 		echo "<tr><td>&nbsp;</td><td style='padding-left: ".$GENxyz1 ."px'><b>Total ".$arrlvldsc[intval($arrlvlcnt)-1]."</b></td><td align='right' style='border-bottom: 1px solid; border-top: 1px solid;'><b>".number_format($arrlvlamt[intval($arrlvlcnt)-1],2)."</b></td></tr>";
 	}
 
-	echo "<tr><td colspan='2' style='border-bottom-style: double; border-top-style: double;'><b>TOTAL ".$ccate."</b></td><td align='right' style='border-bottom-style: double; border-top-style: double;'><b>".number_format($arrlvlamt[0],2)."</b></td></tr>";
+	echo "<tr><td colspan='2' style='border-bottom-style: double; border-top: 2px solid #000;'><b>TOTAL ".$ccate."</b></td><td align='right' style='border-bottom-style: double; border-top: 2px solid #000;'><b>".number_format($arrlvlamt[0],2)."</b></td></tr>";
 
 	if($ccate=="LIABILITIES" || $ccate=="EQUITY"){
 		$twinGross = $twinGross + floatval($arrlvlamt[0]);

@@ -175,7 +175,7 @@
 <head>
 	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css?x=<?=time()?>">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Income Statement</title>
+	<title>Profit &amp; Lost Statement</title>
 
 	<style>
 			tr:hover {
@@ -187,7 +187,7 @@
 <body style="padding:10px">
 <center>
 <h2><?php echo strtoupper($compname);  ?></h2>
-<h2>Income Statement</h2>
+<h2>Profit &amp; Lost Statement</h2>
 <h3>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h3>
 </center>
 
@@ -246,12 +246,18 @@
 		}
 		
 		if($ccate!==$row['ccategory']){
-			echo "<tr><td colspan='2' style='border-bottom-style: double; border-top-style: double;'><b>TOTAL ".$ccate."</b></td><td align='right' style='border-bottom-style: double; border-top-style: double;'><b>".number_format($arrlvlamt[0],2)."</b></td></tr>";
+
+			echo "<tr><td colspan='2' style='border-bottom-style: double; border-top: 2px solid #000;'><b>TOTAL ".$ccate."</b></td><td align='right' style='border-bottom-style: double; border-top: 2px solid #000;'><b>".number_format($arrlvlamt[0],2)."</b></td></tr>";
 
 			if($ccate=="LIABILITIES" || $ccate=="EQUITY"){
 				$twinGross = $twinGross + floatval($arrlvlamt[0]);
 			}
 			$arrlvlamt[0] = 0;
+
+
+			if($row['ccategory']=="EXPENSES"){
+				echo "<tr><td colspan='2' style='padding-top:10px'><b>GROSS PROFIT</b></td><td align='right' style='border-bottom: 1px solid #000; padding-top:10px'><b>00</b></td></tr>";
+			}
 
 			echo "<tr><td colspan='3' style='padding-top: 20px'><b>".$row['ccategory']."</b></td></tr>";
 		}
@@ -316,18 +322,15 @@
 		echo "<tr><td>&nbsp;</td><td style='padding-left: ".$GENxyz1 ."px'><b>Total ".$arrlvldsc[intval($arrlvlcnt)-1]."</b></td><td align='right' style='border-bottom: 1px solid; border-top: 1px solid;'><b>".number_format($arrlvlamt[intval($arrlvlcnt)-1],2)."</b></td></tr>";
 	}
 
-	echo "<tr><td colspan='2' style='border-bottom-style: double; border-top-style: double;'><b>TOTAL ".$ccate."</b></td><td align='right' style='border-bottom-style: double; border-top-style: double;'><b>".number_format($arrlvlamt[0],2)."</b></td></tr>";
 
-	if($ccate=="LIABILITIES" || $ccate=="EQUITY"){
-		$twinGross = $twinGross + floatval($arrlvlamt[0]);
-	}
+	echo "<tr><td colspan='2' style='border-bottom-style: double; border-top: 2px solid #000;'><b>TOTAL ".$ccate."</b></td><td align='right' style='border-bottom-style: double; border-top: 2px solid #000;'><b>".number_format($arrlvlamt[0],2)."</b></td></tr>";
 
 ?>
 
 <tr><td colspan='3' style='padding-top: 20px'>&nbsp;</td></tr>
 <tr>
 	<td colspan='2' style='border-bottom-style: double; border-top: 1px solid #000;'>
-		<b>TOTAL LIABILITIES & EQUITY</b>
+		<b>NET INCOME/(LOSS) BEFORE TAX</b>
 	</td>
 	<td align='right' style='border-bottom-style: double; border-top: 1px solid #000;'>
 		<b><?=number_format($twinGross,2)?></b>

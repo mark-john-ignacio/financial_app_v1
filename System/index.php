@@ -95,7 +95,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						<li><a data-toggle="tab" href="#purch">Purchases</a></li>
 						<li><a data-toggle="tab" href="#acct">Accounting</a></li>
 						<li><a data-toggle="tab" href="#invntry">Inventory</a></li>
-						<li><a data-toggle="tab" href="#rpts">Reports</a></li>
+						<!--<li><a data-toggle="tab" href="#rpts">Reports</a></li>-->
 					</ul>
 							
 					<div class="tab-content col-lg-12 nopadwtop2x">   
@@ -3128,8 +3128,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</div>
 
 							</div>
-						<!-- INVENTORY SETUP END -->
-
+						
+						<!-- INVENTORY SETUP END 
 						<div id="rpts" class="tab-pane fade in">
 							<p data-toggle="collapse" data-target="#rpt_sofp"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Statement of Financial Position Template</b></u></p>
 
@@ -3150,16 +3150,16 @@ if (mysqli_num_rows($sqlhead)!=0) {
 													<table class="table table-condensed" style="margin-top: 10px; font-size: 11px">
 
 														<?php
-															$qry = mysqli_query ($con, "SELECT * FROM template_balsheet WHERE compcode='".$_SESSION['companyid']."' and accttype='ASSETS' order by sortno");
-															while($row = mysqli_fetch_array($qry, MYSQLI_ASSOC)){
+															//$qry = mysqli_query ($con, "SELECT * FROM template_balsheet WHERE compcode='".$_SESSION['companyid']."' and accttype='ASSETS' order by sortno");
+														//	while($row = mysqli_fetch_array($qry, MYSQLI_ASSOC)){
 														?>
 															<tr>
-																<td><?=$row['sortno']?></td>
-																<td><?=$row['cacctid']?></td>
-																<td><?=$row['cacctdesc']?></td>
+																<td><?//=$row['sortno']?></td>
+																<td><?//=$row['cacctid']?></td>
+																<td><?//=$row['cacctdesc']?></td>
 															</tr>
 														<?php
-															}
+														//	}
 														?>
 													</table>
 												</div>
@@ -3180,16 +3180,16 @@ if (mysqli_num_rows($sqlhead)!=0) {
 													<table class="table table-condensed" style="margin-top: 10px; font-size: 11px">
 
 														<?php
-															$qry = mysqli_query ($con, "SELECT * FROM template_balsheet WHERE compcode='".$_SESSION['companyid']."' and accttype='ASSETS' order by sortno");
-															while($row = mysqli_fetch_array($qry, MYSQLI_ASSOC)){
+														//	$qry = mysqli_query ($con, "SELECT * FROM template_balsheet WHERE compcode='".$_SESSION['companyid']."' and accttype='ASSETS' order by sortno");
+														//	while($row = mysqli_fetch_array($qry, MYSQLI_ASSOC)){
 														?>
 															<tr>
-																<td><?=$row['sortno']?></td>
-																<td><?=$row['cacctid']?></td>
-																<td><?=$row['cacctdesc']?></td>
+																<td><?//=$row['sortno']?></td>
+																<td><?//=$row['cacctid']?></td>
+																<td><?//=$row['cacctdesc']?></td>
 															</tr>
 														<?php
-															}
+														// 	}
 														?>
 													</table>
 												</div>
@@ -3199,7 +3199,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</div>	
 								</div>
 						</div> 
-								
+						-->	
 					</div>
 							
 			</fieldset>
