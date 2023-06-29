@@ -420,7 +420,7 @@
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('Purchases/PRet/PurchRet.php');">
-                <i class="fa fa-upload"> </i> Purchase Return\
+                <i class="fa fa-upload"> </i> Purchase Return
 							</a>
 						</li>
 					</ul>

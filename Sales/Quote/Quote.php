@@ -329,7 +329,8 @@ function fill_datatable(searchByName = ''){
 				{ "data": 3 },
 				{ "data": null,
 					"render": function(data, type, full, row) {
-						if(full[9]==0){
+
+						if(full[9]==0 && full[6]==0){
 							return "For Sending";
 						}else{
 							if(full[5]==0 && full[6]==0){
@@ -352,16 +353,23 @@ function fill_datatable(searchByName = ''){
 					"render": function(data, type, full, row) {
 
 						var mgsx = "";
-						if(full[9]==0){
-							mgsx = mgsx + "<a href=\"javascript:;\" onClick=\"trans('SEND','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-share\" style=\"font-size:20px;color: #ffb533;\" title=\"Send transaction\"></i></a>";
-						}else{
 
-							if(full[5]==0 && full[6] == 0 && full[9] == 1){
-								mgsx = mgsx + "<a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a>";
+						if(full[6] == 1){
+							mgsx = mgsx = "-";
+						}else{
+							if(full[9]==0){
+								mgsx = mgsx + "<a href=\"javascript:;\" onClick=\"trans('SEND','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-share\" style=\"font-size:20px;color: #ffb533;\" title=\"Send transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color: Red;\" title=\"Cancel transaction\"></i></a>";
+							}else{
+
+								if(full[5]==0 && full[6] == 0 && full[9] == 1){
+									mgsx = mgsx + "<a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('REJECT','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a>";
+								}
+							}
+
+							if(full[9] == 1){
+								mgsx = mgsx + "<a href=\"javascript:;\" onClick=\"track('"+full[0]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-file-text-o\" style=\"font-size:20px;color: #3374ff;\" title=\"Track transaction\"></i></a>";
 							}
 						}
-
-						mgsx = mgsx + "<a href=\"javascript:;\" onClick=\"track('"+full[0]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-file-text-o\" style=\"font-size:20px;color: #3374ff;\" title=\"Track transaction\"></i></a>";
 
 						return mgsx;
 

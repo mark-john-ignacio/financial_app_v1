@@ -8,7 +8,7 @@ if($_REQUEST['typ']=="POST"){
 	$_SESSION['pageid'] = "Quote_post";
 }
 
-if($_REQUEST['typ']=="CANCEL"){
+if($_REQUEST['typ']=="CANCEL" || $_REQUEST['typ']=="REJECT"){
 	$_SESSION['pageid'] = "Quote_cancel";
 }
 
@@ -207,7 +207,7 @@ if($_REQUEST['typ']=="POST"){
 
 }
 
-if($_REQUEST['typ']=="CANCEL"){
+if($_REQUEST['typ']=="REJECT"){
 	
 	//query lahat ng approvals order by nlevel -> isave sa array pra isang query lang
 	$postapprovers = mysqli_query($con,"SELECT a.ctranno,a.userid,a.nlevel,a.lapproved,a.lreject,b.Fname,b.cemailadd FROM `quote_trans_approvals` a left join users b on a.userid=b.Userid where a.compcode='$company' and a.ctranno='$tranno' order by a.nlevel");
@@ -425,6 +425,22 @@ if($_REQUEST['typ']=="SEND"){
 		
 	}
 
+}
+
+if($_REQUEST['typ']=="CANCEL"){
+	
+	if (!mysqli_query($con,"Update quote set lcancelled=1 where compcode='$company' and ctranno='$tranno'")){
+		$msgz = "<b>ERROR: </b>Error!";
+		$status = "False";
+	}else{
+		$msgz = "<b>SUCCESS: </b>Your transaction is successfully cancelled!";
+		$status = "Cancelled";
+	
+		mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
+		values('$tranno','$preparedby',NOW(),'CANCELLED','QUOTATION','$compname','Cancel Record')");
+	}
+
+	
 }
 
 
