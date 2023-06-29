@@ -44,7 +44,7 @@ $varmsg = "";
 </center>
 
 <hr>
-<table width="60%" border="0" align="center" cellpadding="2px">
+<table width="40%" border="0" align="center" cellpadding="2px">
   <tr>
     <th width="100">Acct Code</th>
     <th>Account Title</th>
