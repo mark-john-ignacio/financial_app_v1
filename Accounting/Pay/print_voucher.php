@@ -163,6 +163,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <!DOCTYPE html>
 <html>
 <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Check Voucher</title>
 	<style>
 		body{
 			font-family: Verdana, sans-serif;

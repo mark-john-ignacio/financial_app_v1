@@ -152,6 +152,8 @@ function numberTowords($num)
 <!DOCTYPE html>
 <html>
 <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Check</title>
 	<style>
 		body{
 			font-family: 'Courier New', monospace;

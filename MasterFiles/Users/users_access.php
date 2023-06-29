@@ -1185,7 +1185,7 @@ xmlhttp.send();
           <label><input type="checkbox" name="chkAcc[]" value="BalSheet.php" id="chkBox169" <?=(in_array("BalSheet.php",@$arrpgist)) ? "checked" : "";?>>
           Balance Sheet</label>
           <br>
-          <label><input type="checkbox" name="chkAcc[]" value="IStatement.php" id="chkBox169" <?=(in_array("IStatement.php",@$arrpgist)) ? "checked" : "";?>>
+          <label><input type="checkbox" name="chkAcc[]" value="IncomeStatement.php" id="chkBox169" <?=(in_array("IncomeStatement.php",@$arrpgist)) ? "checked" : "";?>>
           Income Statement</label>
           
         </div>

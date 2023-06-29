@@ -42,7 +42,7 @@ include('../include/access.php');
         <div class="col-xs-12 nopadding">
           <div class="col-xs-3 nopadding">
           
-            <input type='text' class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/d/Y"); ?>" />
+            <input type='text' class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/01/Y"); ?>" />
           
           </div>
         

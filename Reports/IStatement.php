@@ -47,7 +47,7 @@ $last_day_this_month  = date("Y-m-t", strtotime($first_day_this_month));
       <div class="col-xs-12 nopadding">
         <div class="col-xs-3 nopadding">
           
-          <input type='text' class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date_format(date_create($first_day_this_month),"m/d/Y"); ?>" />
+          <input type='text' class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/01/Y"); ?>"  />
           
           </div>
         
@@ -57,7 +57,7 @@ $last_day_this_month  = date("Y-m-t", strtotime($first_day_this_month));
         
         <div class="col-xs-3 nopadding">
           
-          <input type='text' class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date_format(date_create($last_day_this_month),"m/d/Y"); ?>" />
+          <input type='text' class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>" />
           
           </div>
         

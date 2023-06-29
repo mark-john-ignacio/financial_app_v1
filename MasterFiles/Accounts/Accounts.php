@@ -81,7 +81,7 @@ include('../../include/access2.php');
 								<option value="ASSETS">ASSETS</option>
 								<option value="LIABILITIES">LIABILITIES</option>
 								<option value="EQUITY">EQUITY</option>
-								<option value="INCOME">INCOME</option>
+								<option value="REVENUE">REVENUE</option>
 								<option value="EXPENSES">EXPENSES</option>											   
 							</select>
 					</div>
@@ -160,7 +160,7 @@ include('../../include/access2.php');
 										<option value="ASSETS">ASSETS</option>
 										<option value="LIABILITIES">LIABILITIES</option>
 										<option value="EQUITY">EQUITY</option>
-										<option value="INCOME">INCOME</option>
+										<option value="REVENUE">REVENUE</option>
 										<option value="EXPENSES">EXPENSES</option>
 									</select>
 								</div>
@@ -270,7 +270,7 @@ include('../../include/access2.php');
 										<option value="ASSETS">ASSETS</option>
 										<option value="LIABILITIES">LIABILITIES</option>
 										<option value="EQUITY">EQUITY</option>
-										<option value="INCOME">INCOME</option>
+										<option value="REVENUE">REVENUE</option>
 										<option value="EXPENSES">EXPENSES</option>
 									</select>
 								</div>
