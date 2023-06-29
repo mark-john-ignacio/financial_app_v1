@@ -48,8 +48,8 @@ $varmsg = "";
   <tr>
     <th width="80">Acct Code</th>
     <th>Account Title</th>
-    <th class="text-right" width="80">Debit</th>
-    <th class="text-right" width="80">Credit</th>
+    <th class="text-right" width="100">Debit</th>
+    <th class="text-right" width="100">Credit</th>
   </tr>
   
 <?php
@@ -98,9 +98,9 @@ $varmsg = "";
 		  <tr>
 			<td colspan="4">
 			
-			<div class="col-xs-12">
+						<div class="col-xs-12">
             
-            	<div class="col-xs-2">
+            	<div class="col-xs-4">
                 	<b><?php echo $ctran;?>
 									<?php
 										if(intval($lapproved)==0){
@@ -109,18 +109,18 @@ $varmsg = "";
 									?>
 									</b>
                 </div>
-                <div class="col-xs-2">
+                <div class="col-xs-4">
                 	<b><?php echo $ddate;?></b>
                 </div>
-                <div class="col-xs-3">
+                <div class="col-xs-4">
                 	<b><?php echo $cpayee;?></b>
                 </div>
-                <div class="col-xs-5">
-                	<b><?php echo $cpaymentfor;?></b>
-                </div>
+                
                 
             </div>
-            
+            <div class="col-xs-12">
+              <b><?php echo $cpaymentfor;?></b>
+						</div>
             
 			</td>
 		  </tr>
