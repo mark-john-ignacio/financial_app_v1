@@ -34,6 +34,14 @@ $varmsg = "";
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Accounts Payable</title>
+
+<style>
+	@media print {
+		.my-table {
+    	width: 100% !important;
+		}
+	}
+</style>
 </head>
 
 <body style="padding:10px">
@@ -44,7 +52,7 @@ $varmsg = "";
 </center>
 
 <hr>
-<table width="60%" border="0" align="center" cellpadding="2px">
+<table width="60%" border="0" align="center" cellpadding="2px" id="my-table">
   <tr>
     <th width="80">Acct Code</th>
     <th>Account Title</th>
