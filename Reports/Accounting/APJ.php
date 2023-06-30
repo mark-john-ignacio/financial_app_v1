@@ -52,7 +52,7 @@ $varmsg = "";
 </center>
 
 <hr>
-<table width="60%" border="0" align="center" cellpadding="2px" id="my-table">
+<table width="60%" border="0" align="center" cellpadding="2px" class="my-table">
   <tr>
     <th width="80">Acct Code</th>
     <th>Account Title</th>

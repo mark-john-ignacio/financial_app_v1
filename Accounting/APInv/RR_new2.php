@@ -1027,6 +1027,7 @@ function chkform(){
 
 		var myform = $("#frmpos").serialize();
 
+		//alert("RR_newsave.php?"+myform);
 		$.ajax ({
 			url: "RR_newsave.php",
 			//data: { ccode: ccode, crem: crem, ddate: ddate, ngross: ngross, ccustsi:ccustsi },
@@ -1085,6 +1086,8 @@ function chkform(){
 					namt = namt.replace(/,/g,'');
 					nbaseamt = nbaseamt.replace(/,/g,'');
 				}
+
+				//alert("trancode="+trancode+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+nprice+"&namt="+namt+"&nbaseamt="+nbaseamt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&nqtyorig="+nqtyOrig+"&xcref="+xcref+"&crefidnt="+crefidnt+"&vatcode="+vatcode+"&nrate="+nrate+"&ewtcode="+ewtcode+"&ewtrate="+ewtrate+"&xcrefPO="+xcrefPO+"&crefidntPO="+crefidntPO);
 
 				$.ajax ({
 					url: "RR_newsavedet.php",  

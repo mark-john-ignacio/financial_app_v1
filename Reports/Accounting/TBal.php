@@ -36,6 +36,11 @@ $date2 = $_POST["date2"];
 			tr:hover {
 				background-color: gainsboro;
 			}
+			@media print {
+				.my-table {
+					width: 100% !important;
+				}
+			}
 	</style>
 </head>
 
@@ -47,7 +52,7 @@ $date2 = $_POST["date2"];
 </center>
 
 <br><br>
-<table width="70%" border="0" align="center">
+<table width="70%" border="0" align="center" class="my-table">
   <tr>
     <th rowspan="2" width="50px">&nbsp;</th>
     <th rowspan="2" style="text-align:center" width="100px">Account No. </th>

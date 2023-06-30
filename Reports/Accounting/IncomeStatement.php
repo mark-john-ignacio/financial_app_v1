@@ -181,6 +181,11 @@
 			tr:hover {
 				background-color: gainsboro;
 			}
+			@media print {
+				.my-table {
+					width: 100% !important;
+				}
+			}
 	</style>
 </head>
 
@@ -192,7 +197,7 @@
 </center>
 
 <br><br>
-<table width="50%" border="0" align="center" cellpadding="3">
+<table width="50%" border="0" align="center" cellpadding="3" class="my-table">
   <tr>
 
     <th style="text-align:center" width="100px">Account No. </th>
@@ -206,7 +211,11 @@
  //print_r($mainarray);
  //echo "</pre>";
 
- $twinGross = 0;
+ $profitRevn = 0;
+ $profitCost= 0;
+ $BPROFITzc0 = 0;
+ $BPEXPzc0 = 0;
+
 
 	$arrlvl = array();
 	$arrlvldsc = array();
@@ -249,14 +258,21 @@
 
 			echo "<tr><td colspan='2' style='border-bottom-style: double; border-top: 2px solid #000;'><b>TOTAL ".$ccate."</b></td><td align='right' style='border-bottom-style: double; border-top: 2px solid #000;'><b>".number_format($arrlvlamt[0],2)."</b></td></tr>";
 
-			if($ccate=="LIABILITIES" || $ccate=="EQUITY"){
-				$twinGross = $twinGross + floatval($arrlvlamt[0]);
+			if($ccate=="REVENUE"){
+				$profitRevn = floatval($arrlvlamt[0]);
 			}
+
+			if($ccate=="COST OF SALES"){				
+ 				$profitCost= floatval($arrlvlamt[0]);
+			}
+
 			$arrlvlamt[0] = 0;
 
 
 			if($row['ccategory']=="EXPENSES"){
-				echo "<tr><td colspan='2' style='padding-top:10px'><b>GROSS PROFIT</b></td><td align='right' style='border-bottom: 1px solid #000; padding-top:10px'><b>00</b></td></tr>";
+				$BPROFITzc0 = floatval($profitRevn) - floatval($profitCost);
+				$donetwo = ($BPROFITzc0<0) ? "(".number_format(abs($BPROFITzc0),2).")" : number_format(($BPROFITzc0),2);
+				echo "<tr><td colspan='2' style='padding-top:10px'><b>GROSS PROFIT</b></td><td align='right' style='border-bottom: 1px solid #000; padding-top:10px'><b>".$donetwo."</b></td></tr>";
 			}
 
 			echo "<tr><td colspan='3' style='padding-top: 20px'><b>".$row['ccategory']."</b></td></tr>";
@@ -276,7 +292,7 @@
 				}
 			?>
 		</td>
-    <td onclick="funcset('<?=$row['cacctid']?>','<?=$date1?>','<?=$date2?>')" style="cursor: pointer; text-indent:<?=$GENxyz1?>px ">
+    <td onclick="funcset('<?=$row['cacctid']?>','<?=$date1?>','<?=$date2?>')" style="cursor: pointer; text-indent:<?=$GENxyz1?>px " nowrap>
 			<?php
 				if($row['ctype']=="General"){
 					echo "<b>".$row['cacctdesc']."</b>";
@@ -322,18 +338,66 @@
 		echo "<tr><td>&nbsp;</td><td style='padding-left: ".$GENxyz1 ."px'><b>Total ".$arrlvldsc[intval($arrlvlcnt)-1]."</b></td><td align='right' style='border-bottom: 1px solid; border-top: 1px solid;'><b>".number_format($arrlvlamt[intval($arrlvlcnt)-1],2)."</b></td></tr>";
 	}
 
+	$donetwo = ($arrlvlamt[0]<0) ? "(".number_format(abs($arrlvlamt[0]),2).")" : number_format(($arrlvlamt[0]),2);
+	echo "<tr><td colspan='2' style='border-bottom: 2px solid #000; border-top: 1px solid #000;'><b>TOTAL ".$ccate."</b></td><td align='right' style='border-bottom: 2px solid #000; border-top: 1px solid #000;'><b>".$donetwo."</b></td></tr>";
 
-	echo "<tr><td colspan='2' style='border-bottom-style: double; border-top: 2px solid #000;'><b>TOTAL ".$ccate."</b></td><td align='right' style='border-bottom-style: double; border-top: 2px solid #000;'><b>".number_format($arrlvlamt[0],2)."</b></td></tr>";
+	if($ccate=="EXPENSES"){
+		$BPEXPzc0 = floatval($arrlvlamt[0]);
+	}
 
+	$xctot = $BPROFITzc0-$BPEXPzc0;
+	$xctotax = 0;
+	$xctotaxaftr = 0;
 ?>
 
-<tr><td colspan='3' style='padding-top: 20px'>&nbsp;</td></tr>
+<tr><td colspan='3' style='padding-top: 10px'>&nbsp;</td></tr>
 <tr>
 	<td colspan='2' style='border-bottom-style: double; border-top: 1px solid #000;'>
 		<b>NET INCOME/(LOSS) BEFORE TAX</b>
 	</td>
-	<td align='right' style='border-bottom-style: double; border-top: 1px solid #000;'>
-		<b><?=number_format($twinGross,2)?></b>
+	<td align='right' style='border-bottom-style: double; border-top: 1px solid #000;'> 
+		<b><?=($xctot<0) ? "(".number_format(abs($xctot),2).")" : number_format(($xctot),2)?></b>
+	</td>
+</tr>
+
+<?php
+
+	if(($xctot) > 0) {
+		$xctotax = $xctot * (intval($_REQUEST['ITper'])/100);
+		$xctotaxaftr = $xctot - $xctotax;
+?>
+<tr>
+	<td colspan='2'>
+		<b>PROVISION FOR INCOME TAX <?=$_REQUEST['ITper']."%"?></b> 
+	</td>
+	<td align='right'> 
+		<b><?=($xctotax<0) ? "(".number_format(abs($xctotax),2).")" : number_format(($xctotax),2)?></b>
+	</td>
+</tr>
+<?php
+	}
+	if(($xctot) < 0) {
+		$xctotax = $BPROFITzc0 * (intval($_REQUEST['MCITper'])/100);
+		$xctotaxaftr = $xctot - $xctotax;
+?>
+
+<tr>
+	<td colspan='2' style='border-bottom: 1px solid #000;'>
+		<b>PROVISION FOR MCIT (<?=$_REQUEST['MCITper']."%"?> OF GROSS INCOME)</b>
+	</td>
+	<td align='right' style='border-bottom: 1px solid #000;'> 
+		<b><?=($xctotax<0) ? "(".number_format(abs($xctotax),2).")" : number_format(($xctotax),2)?></b>
+	</td>
+</tr>
+<?php
+	}
+?>
+<tr>
+	<td colspan='2' style='border-bottom-style: double;'>
+		<b>NET INCOME AFTER TAX</b>
+	</td>
+	<td align='right' style='border-bottom-style: double;'> 
+		<b><?=($xctotaxaftr<0) ? "(".number_format(abs($xctotaxaftr),2).")" : number_format(($xctotaxaftr),2)?></b>
 	</td>
 </tr>
  

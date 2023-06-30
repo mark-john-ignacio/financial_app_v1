@@ -53,7 +53,7 @@ $company = $_SESSION['companyid'];
 
 			<button type="button" class="btn btn-warning" onClick="location.href='Purch_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
 
-            <br><br>
+      <br><br>
 			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>

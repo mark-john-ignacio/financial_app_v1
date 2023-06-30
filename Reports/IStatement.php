@@ -17,13 +17,15 @@ $last_day_this_month  = date("Y-m-t", strtotime($first_day_this_month));
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Myx Financials</title>
 
-	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css?x=<?=time()?>">
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
 
 <script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
 
 <script src="../Bootstrap/js/bootstrap.js"></script>
 <script src="../Bootstrap/js/bootstrap3-typeahead.js"></script>
+
+<script src="../include/autoNumeric.js"></script>
 
 <script src="../Bootstrap/js/moment.js"></script>
 <script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
@@ -34,48 +36,90 @@ $last_day_this_month  = date("Y-m-t", strtotime($first_day_this_month));
 <center><font size="+1"><b><u>Income Statement</u></b></font></center>
 <br>
 
-<form action="Accounting/IncomeStatement.php" method="post" name="frmrep" id="frmrep" target="_blank">
-<table width="100%" border="0" cellpadding="2">
-  <tr>
-    <td valign="top" width="50" style="padding:2px">
-    <button type="submit" class="btn btn-danger navbar-btn" id="btnsales">
-    <span class="glyphicon glyphicon-search"></span> View Report
-    </button>
-    </td>
-    <td width="150" style="padding-left:10px"><b>Date Range: </b></td>
-    <td style="padding:2px">
-      <div class="col-xs-12 nopadding">
-        <div class="col-xs-3 nopadding">
-          
-          <input type='text' class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/01/Y"); ?>"  />
-          
-          </div>
-        
-        <div class="col-xs-2 nopadding" style="vertical-align:bottom;" align="center">
-          <label style="padding:1px;">TO</label>
-          </div>
-        
-        <div class="col-xs-3 nopadding">
-          
-          <input type='text' class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>" />
-          
-          </div>
-        
-        </div>   
-    </td>
+  <form action="Accounting/IncomeStatement.php" method="post" name="frmrep" id="frmrep" target="_blank">
+    <table width="100%" border="0" cellpadding="2">
+      <tr>
+        <td valign="top" width="50" style="padding:2px">
+        <button type="submit" class="btn btn-danger" id="btnsales">
+        <span class="glyphicon glyphicon-search"></span> View Report
+        </button>
+        </td>
+        <td width="150" style="padding-left:10px"><b>Date Range: </b></td>
+        <td style="padding:2px">
+          <div class="col-xs-12 nopadding">
+            <div class="col-xs-3 nopadding">
+              
+              <input type='text' class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/01/Y"); ?>"  />
+              
+              </div>
+            
+            <div class="col-xs-2 nopadding" style="vertical-align:bottom;" align="center">
+              <label style="padding:1px;">TO</label>
+              </div>
+            
+            <div class="col-xs-3 nopadding">
+              
+              <input type='text' class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>" />
+              
+              </div>
+            
+            </div>   
+        </td>
 
-  </tr>
-</table>
-</form>
+      </tr>
+      <tr>
+        <td valign="top" width="50" style="padding:2px">&nbsp;</td>
+        <td width="150" style="padding-left:10px"><b>Provision for IT: </b></td>
+        <td style="padding:2px">
+          <div class="col-xs-12 nopadding">
+            <div class="col-xs-3 nopadding">
+              
+              <div class="input-group input-group-sm mb-3">
+                <input class="numeric form-control text-right" name="ITper" id="ITper" value="20">
+                <div class="input-group-addon">%</div>
+              </div>
+            
+            </div>
+
+          </div>                   
+        </td>
+
+      </tr>
+      <tr>
+        <td valign="top" width="50" style="padding:2px">&nbsp;</td>
+        <td width="150" style="padding-left:10px"><b>Provision for MCIT: </b></td>
+        <td style="padding:2px">
+          <div class="col-xs-12 nopadding">
+            <div class="col-xs-3 nopadding">
+              
+              <div class="input-group input-group-sm mb-3">
+                <input class="numeric form-control text-right" name="MCITper" id="MCITper" value="2">
+                <div class="input-group-addon">%</div>
+              </div>
+            
+            </div>
+            
+          </div>                   
+        </td>
+
+      </tr>
+    </table>
+  </form>
+
 </body>
 </html>
 
 <script type="text/javascript">
 $(function(){
 
-	        $('.datepick').datetimepicker({
-                 format: 'MM/DD/YYYY'
-           });
+	$('.datepick').datetimepicker({
+    format: 'MM/DD/YYYY'
+  });
+
+  $("input.numeric").autoNumeric('init',{mDec:0});
+  $("input.numeric").on("click", function () {
+		$(this).select();
+	});
 
 	//proddesc searching	
 	

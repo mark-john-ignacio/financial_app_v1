@@ -176,6 +176,11 @@
 			tr:hover {
 				background-color: gainsboro;
 			}
+			@media print {
+				.my-table {
+					width: 100% !important;
+				}
+			}
 	</style>
 </head>
 
@@ -187,7 +192,7 @@
 </center>
 
 <br><br>
-<table width="50%" border="0" align="center" cellpadding="3">
+<table width="50%" border="0" align="center" cellpadding="3" class="my-table">
   <tr>
 
     <th style="text-align:center" width="100px">Account No. </th>

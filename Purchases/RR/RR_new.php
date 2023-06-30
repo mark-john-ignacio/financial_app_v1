@@ -1438,6 +1438,7 @@ function chkform(){
 		*/
 		var myform = $("#frmpos").serialize();
 
+		
 		$.ajax ({
 			url: "RR_newsave.php",
 			//data: { ccode: ccode, crem: crem, ddate: ddate, ngross: ngross, ccustsi:ccustsi },
