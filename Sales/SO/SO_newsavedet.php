@@ -36,8 +36,8 @@ $company = $_SESSION['companyid'];
 	$refcidenttran = $cSINo."P".$indexz;
 	
 
-	echo "INSERT INTO so_t(`compcode`, `cidentity`, `ctranno`, `creference`, `nrefident`, `nident`, `citemno`, `nqty`, `cunit`, `nprice`, `namount`, `nbaseamount`, `cmainunit`,`nfactor`,`ctaxcode`, `nrate`) values('$company', '$refcidenttran', '$cSINo', $crefno, '$nrefident', '$indexz', '$cItemNo', '$nQty', '$cUnit', '$nPrice', '$nAmount', '$nBaseAmount', '$cMainUOM', $nFactor, '$ctaxcode', '$nrate')";
-	
+	//echo "INSERT INTO so_t(`compcode`, `cidentity`, `ctranno`, `creference`, `nrefident`, `nident`, `citemno`, `nqty`, `cunit`, `nprice`, `namount`, `nbaseamount`, `cmainunit`,`nfactor`,`ctaxcode`, `nrate`) values('$company', '$refcidenttran', '$cSINo', $crefno, '$nrefident', '$indexz', '$cItemNo', '$nQty', '$cUnit', '$nPrice', '$nAmount', '$nBaseAmount', '$cMainUOM', $nFactor, '$ctaxcode', '$nrate')";
+
 	if (!mysqli_query($con,"INSERT INTO so_t(`compcode`, `cidentity`, `ctranno`, `creference`, `nrefident`, `nident`, `citemno`, `nqty`, `cunit`, `nprice`, `namount`, `nbaseamount`, `cmainunit`,`nfactor`,`ctaxcode`, `nrate`) values('$company', '$refcidenttran', '$cSINo', $crefno, '$nrefident', '$indexz', '$cItemNo', '$nQty', '$cUnit', '$nPrice', '$nAmount', '$nBaseAmount', '$cMainUOM', $nFactor, '$ctaxcode', '$nrate')")){
 		echo "False";
 	}

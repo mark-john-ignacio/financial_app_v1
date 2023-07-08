@@ -2159,7 +2159,7 @@ function chkform(){
 		$("#MyTable > tbody > tr").each(function(index) {
 			myqty = $(this).find('input[name="txtnqty"]').val();
 			myav = $(this).find('input[type="hidden"][name="hdnavailqty"]').val();
-			myfacx = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
+			myfacx = $(this).find('input[name="hdnfactor"]').val();
 			
 			myprice = $(this).find('input[name="txtnamount"]').val();
 			
@@ -2271,7 +2271,7 @@ function chkform(){
 				var namt = $(this).find('input[name="txtnamount"]').val();
 				var nbaseamt = $(this).find('input[name="txtntranamount"]').val();
 				var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
-				var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val(); 
+				var nfactor = $(this).find('input[name="hdnfactor"]').val(); 
 
 				var vatcode = $(this).find('select[name="selitmvatyp"]').val(); 
 				var nrate = $(this).find('select[name="selitmvatyp"] option:selected').data('id');
@@ -2283,8 +2283,8 @@ function chkform(){
 					nbaseamt = nbaseamt.replace(/,/g,'');
 				}
 			
-				alert("SO_newsavedet.php?nrefident="+nrefident+"&trancode="+trancode+"&crefno="+crefno+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+nprice+"&namt="+namt+"&nbaseamt="+nbaseamt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&vatcode="+vatcode+"&nrate="+nrate);
-				
+				//alert("SO_newsavedet.php?nrefident="+nrefident+"&trancode="+trancode+"&crefno="+crefno+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+nprice+"&namt="+namt+"&nbaseamt="+nbaseamt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&vatcode="+vatcode+"&nrate="+nrate);
+
 				$.ajax ({
 					url: "SO_newsavedet.php",
 					data: { nrefident:nrefident, trancode: trancode, crefno: crefno, indx:index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, nbaseamt:nbaseamt, mainunit:mainunit, nfactor:nfactor, vatcode:vatcode, nrate:nrate },
