@@ -8,7 +8,7 @@ require_once "../../Connection/connection_string.php";
 	if($_REQUEST['typ']=="DR"){   //DELIVERY REFERENCE
 
 		//get all dr
-		$resq = mysqli_query ($con, "Select ctranno, nident,citemno,nqty From dr_t where compcode='$company'");
+		$resq = mysqli_query ($con, "Select ctranno, nrefident as nident,citemno,nqty From dr_t where compcode='$company'");
 		if (mysqli_num_rows($resq)!=0){
 			while($row = mysqli_fetch_array($resq, MYSQLI_ASSOC)){
 				@$arrresq[]=$row;
