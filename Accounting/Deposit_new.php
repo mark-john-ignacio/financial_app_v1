@@ -202,7 +202,7 @@
                 <h3 class="modal-title" id="invheader">OR List</h3>
             	</div>
             
-            	<div class="modal-body">
+            	<div class="modal-body pre-scrollable">
                       	
                   <table name='MyORTbl' id='MyORTbl' class="table">
                    	<thead>
