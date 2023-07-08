@@ -22,7 +22,7 @@ function editfrm(x){
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Coop Financials</title>
+	<title>Myx Financials</title>
 
 <link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css">    
     <link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>  
@@ -44,7 +44,7 @@ function editfrm(x){
             </div>
         </div>
 			<br><br>
-           			 <button type="button" class="btn btn-primary btn-md" id="btnadd" name="btnadd"  onClick="location.href='Bank_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+           			 <button type="button" class="btn btn-primary btn-sm" id="btnadd" name="btnadd"  onClick="location.href='Bank_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 			<br><br>			
 			<table class="table table-hover" role="grid" id="MyTable">
 				<thead>

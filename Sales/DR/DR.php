@@ -58,7 +58,7 @@
 					<?php
 						if($poststat=="True"){
 					?>
-					<button type="button" class="btn btn-warning btn-md" onClick="location.href='DR_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+					<button type="button" class="btn btn-warning btn-sm" onClick="location.href='DR_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
 					<?php
 						}
 					?>

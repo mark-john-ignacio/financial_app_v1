@@ -70,13 +70,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		<script src="../include/select2/select2.full.min.js"></script>
 
 		<style>
-.btn span.glyphicon {    			
-	opacity: 0;				
-}
-.btn.active span.glyphicon {				
-	opacity: 1;				
-}
-			</style>
+			.btn span.glyphicon {    			
+				opacity: 0;				
+			}
+			.btn.active span.glyphicon {				
+				opacity: 1;				
+			}
+		</style>
 	</head>
 
 	<body style="padding:5px">

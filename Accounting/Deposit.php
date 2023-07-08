@@ -81,7 +81,7 @@ function trans(x,num){
         </div>
 			<br><br>
 
-			<button type="button" class="btn btn-primary" onClick="location.href='Deposit_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+			<button type="button" class="btn btn-primary btn-sm" onClick="location.href='Deposit_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
 			<!--
     	<button type="button" class="btn btn-warning btn-md" id="btnSet" name="btnSet"><span class="glyphicon glyphicon-cog"></span> Settings</button>

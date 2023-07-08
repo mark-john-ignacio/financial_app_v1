@@ -202,7 +202,7 @@ $(function() {
             </div>
         </div>
 			<br><br>
-			<button type="button" class="btn btn-primary" onClick="location.href='PurchRet_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+			<button type="button" class="btn btn-primary btn-sm" onClick="location.href='PurchRet_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
             <br><br>
 			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>

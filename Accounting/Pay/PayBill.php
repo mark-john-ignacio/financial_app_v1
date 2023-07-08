@@ -57,7 +57,7 @@ $company = $_SESSION['companyid'];
 			
 			<br><br>
 			
-			<button type="button" class="btn btn-primary" onClick="location.href='PayBill_new.php'">
+			<button type="button" class="btn btn-primary btn-sm" onClick="location.href='PayBill_new.php'">
 				<span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)
 			</button>
       <!--

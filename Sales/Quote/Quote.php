@@ -57,12 +57,12 @@ $company = $_SESSION['companyid'];
 
 			<div class="col-xs-12 nopadding">
 				<div class="col-xs-4 nopadding">
-					<button type="button" class="btn btn-primary btn-md" onClick="location.href='Quote_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+					<button type="button" class="btn btn-primary btn-sm" onClick="location.href='Quote_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
 					<?php
 						if($unpoststat=="True"){
 					?>
-						<button type="button" class="btn btn-warning btn-md" onClick="location.href='Quote_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+						<button type="button" class="btn btn-warning btn-sm" onClick="location.href='Quote_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
 					<?php
 						}
 					?>

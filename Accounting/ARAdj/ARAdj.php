@@ -147,12 +147,12 @@ $company = $_SESSION['companyid'];
             </div>
         </div>
 			<br><br>
-			<button type="button" class="btn btn-primary" onClick="location.href='ARAdj_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+			<button type="button" class="btn btn-primary btn-sm" onClick="location.href='ARAdj_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
 			<?php
 				if($poststat=="True"){
 			?>
-				<button type="button" class="btn btn-warning btn-md" onClick="location.href='ARAdj_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+				<button type="button" class="btn btn-warning btn-sm" onClick="location.href='ARAdj_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
 			<?php
 				}
 			?>

@@ -146,12 +146,12 @@
             </div>
         </div>
 			<br><br>
-			<button type="button" class="btn btn-primary" onClick="location.href='APAdj_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+			<button type="button" class="btn btn-primary btn-sm" onClick="location.href='APAdj_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
 			<?php
 				if($poststat=="True"){
 			?>
-				<button type="button" class="btn btn-warning btn-md" onClick="location.href='APAdj_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+				<button type="button" class="btn btn-warning btn-sm" onClick="location.href='APAdj_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
 			<?php
 				}
 			?>

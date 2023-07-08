@@ -44,7 +44,7 @@ function editfrm(x){
             </div>
         </div>
 			<br><br>
-           			 <button type="button" class="btn btn-primary btn-md" id="btnadd" name="btnadd"  onClick="location.href='Bank_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+           			 <button type="button" class="btn btn-primary btn-sm" id="btnadd" name="btnadd"  onClick="location.href='Bank_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 			<br><br>			
 			<table class="table table-hover" role="grid" id="MyTable">
 				<thead>

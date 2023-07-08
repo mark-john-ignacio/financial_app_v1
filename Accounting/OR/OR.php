@@ -74,17 +74,17 @@ function trans(x,num){
             </div>
         </div>
 			<br><br>
-			<button type="button" class="btn btn-primary" onClick="location.href='OR_new2.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+			<button type="button" class="btn btn-primary btn-sm" onClick="location.href='OR_new2.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
 			<?php
 				if($poststat=="True"){
 			?>
-				<button type="button" class="btn btn-warning btn-md" onClick="location.href='OR_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+				<button type="button" class="btn btn-warning btn-sm" onClick="location.href='OR_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
 			<?php
 				}
 			?>
         
-            <br><br>
+      <br><br>
 			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>

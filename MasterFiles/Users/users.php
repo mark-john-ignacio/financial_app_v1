@@ -95,7 +95,7 @@ if(@$lvlcompute==1){
   </script>
   </head>
 
-  <body style="padding-top:5px">
+  <body style="padding:5px">
 
 	<div>
 		<section>
@@ -127,7 +127,7 @@ if(@$lvlcompute==1){
 							$vrdiabled = "disabled";
 						}
 					?>
-					<button type="button" data-toggle="modal" class="btn btn-primary btn-md" id="btnadd" name="btnadd" <?=$vrdiabled?>><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+					<button type="button" data-toggle="modal" class="btn btn-primary btn-sm" id="btnadd" name="btnadd" <?=$vrdiabled?>><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
 				</td>
 			</tr>
