@@ -96,7 +96,7 @@ require_once "../../Connection/connection_string.php";
 	
 				$json['cpono'] = $row['ctranno'];
 				$json['dcutdate'] = $row['ddate'];
-				$json['ngross'] = $row['ngross'];
+				$json['ngross'] = number_format($row['ngross'],2);
 				$json2[] = $json;
 
 			}
