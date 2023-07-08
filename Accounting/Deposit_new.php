@@ -429,7 +429,7 @@
 		}
 
 		//ajax lagay table details sa modal body			
-		$('#invheader').html("OR List: " + $('#selpayment').val())
+		$('#invheader').html("OR List")
 			
 		$.ajax({
       url: 'th_depositlist.php',
