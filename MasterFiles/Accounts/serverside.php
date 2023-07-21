@@ -21,7 +21,7 @@
 
 	//$query .= 'ORDER BY ccategory, CASE WHEN A.mainacct=\'0\' OR ctype=\'General\' THEN A.cacctid ELSE A.mainacct END, nlevel, cacctid ';
 
-	$query .= 'ORDER BY ccategory, nlevel';
+	$query .= 'ORDER BY ccategory, nlevel, cacctid';
 
 	$query1 = '';
 
