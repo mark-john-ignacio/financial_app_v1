@@ -75,7 +75,7 @@ $company = $_SESSION['companyid'];
 							<td><?php echo $row['ccode'];?> - <?php echo $row['cname'];?> </td>
               <td><?php echo $row['bankname'];?></td>
 							<td><?=($row['cpaymethod']=="cheque") ? $row['ccheckno'] : $row['cpayrefno'];?></td>
-              <td><?php echo $row['dapvdate'];?></td>
+              <td><?php echo $row['dcheckdate'];?></td>
 						</tr>
 					<?php 
 					}				
