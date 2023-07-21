@@ -34,15 +34,14 @@ include('../../include/access2.php');
 
 	<title>Myx Financials</title>
 
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">    
-<link href="../../Bootstrap/css/jquery.bootstrap.treeselect.css" rel="stylesheet">
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">    
+	<link href="../../Bootstrap/css/jquery.bootstrap.treeselect.css" rel="stylesheet">
 
 
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
-<script src="../../Bootstrap/js/bootstrap.js"></script>
-
-
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
 
 </head>
 
@@ -62,7 +61,7 @@ include('../../include/access2.php');
 
 				<div class="col-xs-12 nopadding">
 					<div class="col-xs-5 nopadding">
-						<button type="button" data-toggle="modal" class="btn btn-primary btn-sm" id="btnadd" name="btnadd"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+						<button type="button" data-toggle="modal" class="btn btn-primary btn-sm" id="btnadd" name="btnadd"><i class="fa fa-file-text-o" aria-hidden="true"></i> &nbsp; Create New (F1)</button>
 						<a href="Accounts_xls.php" class="btn btn-success btn-sm"><i class="fa fa-file-excel-o"></i> &nbsp; Export To Excel</a>
 					</div>
 
