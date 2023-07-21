@@ -6,64 +6,64 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MYX Financials</title>
-<link href="Bootstrap/css/NFont.css" rel="stylesheet">
-<link href="global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
-<link rel="stylesheet" type="text/css" href="Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
+	<link href="Bootstrap/css/NFont.css" rel="stylesheet">
+	<link href="global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" type="text/css" href="Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
 
-<script src="Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="Bootstrap/js/bootstrap.js"></script>
+	<script src="Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="Bootstrap/js/bootstrap.js"></script>
 
-<style type="text/css">
-  body {
-		font-family: 'Varela Round', sans-serif;
-	}
-	.modal-login {		
-		color: #636363;
-		width: 350px;
-	}
-	.modal-login .modal-content {
-		padding: 20px;
-		border-radius: 5px;
-		border: none;
-	}
-	.modal-login .modal-header {
-	 border-bottom: none;   
-   position: relative;
-   justify-content: center;
-	}
-	.modal-login .form-control:focus {
-		border-color: #70c5c0;
-	}
-	.modal-login .form-control, .modal-login .btn {
-		min-height: 40px;
-		border-radius: 3px; 
-	}
-	.modal-login .modal-footer {
-		text-align: center;
-	}	
-	.modal-login.modal-dialog {
-		margin-top: 80px;
-	}
-  .modal-login .btn {
-        color: #fff;
-        border-radius: 4px;
-		background: #0089cb;
-		text-decoration: none;
-		transition: all 0.4s;
-        line-height: normal;
-        border: none;
-    }
-	.modal-login .btn:hover, .modal-login .btn:focus {
-		background: #0373a9;
-		outline: none;
-	}
-	.trigger-btn {
-		display: inline-block;
-		margin: 100px auto;
-	}
+	<style type="text/css">
+		body {
+			font-family: 'Varela Round', sans-serif;
+		}
+		.modal-login {		
+			color: #636363;
+			width: 350px;
+		}
+		.modal-login .modal-content {
+			padding: 20px;
+			border-radius: 5px;
+			border: none;
+		}
+		.modal-login .modal-header {
+		border-bottom: none;   
+		position: relative;
+		justify-content: center;
+		}
+		.modal-login .form-control:focus {
+			border-color: #70c5c0;
+		}
+		.modal-login .form-control, .modal-login .btn {
+			min-height: 40px;
+			border-radius: 3px; 
+		}
+		.modal-login .modal-footer {
+			text-align: center;
+		}	
+		.modal-login.modal-dialog {
+			margin-top: 80px;
+		}
+		.modal-login .btn {
+					color: #fff;
+					border-radius: 4px;
+			background: #0089cb;
+			text-decoration: none;
+			transition: all 0.4s;
+					line-height: normal;
+					border: none;
+			}
+		.modal-login .btn:hover, .modal-login .btn:focus {
+			background: #0373a9;
+			outline: none;
+		}
+		.trigger-btn {
+			display: inline-block;
+			margin: 100px auto;
+		}
 
 
-</style>
+	</style>
 </head>
 <body>
 <!-- Modal HTML -->

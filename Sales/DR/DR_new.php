@@ -1369,7 +1369,7 @@ function InsertDetSerial(itmcode, itmname, itmunit, itemrrident, itemqty, itmfct
 	$("#htmlserqtyneed").text(itemqty); 
 	$("#hdnserqtyuom").val(itemcunit); 
 	$("#htmlserqtyuom").text(itemcunit);
-//alert("th_serialslist-manual.php?itm="+itmcode+"&cuom="+itmunit+"&qty="+itemqty+"&factr="+itmfctr+"&mainuom="+itemcunit);
+	//alert("th_serialslist-manual.php?itm="+itmcode+"&cuom="+itmunit+"&qty="+itemqty+"&factr="+itmfctr+"&mainuom="+itemcunit);
 
 	$('#MyTableSerials tbody').empty();
 
@@ -1442,14 +1442,13 @@ function InsertToSerials(itmcode,serials,uoms,qtys,locas,locasdesc,expz,nident,r
 			var nnet = 0;
 			var nqty = 0;
 			
-			nqty = $("#txtnqty"+r).val();
+			nqty = $("#txtnqty"+r).val().replace(/,/g,'');
 			nqty = parseFloat(nqty)
 			nprc = $("#txtnprice"+r).val();
 			nprc = parseFloat(nprc);
 			
 			namt = nqty * nprc;
-			namt = namt.toFixed(4);
-						
+
 			$("#txtnamount"+r).val(namt);
 
 		}

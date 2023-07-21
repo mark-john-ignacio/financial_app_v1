@@ -47,12 +47,14 @@
 	$arrallqry = array();
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 		{
-			if(floatval($row['ndebit'])!==0){
+			if(floatval($row['ndebit'])!=0){
+
+				//echo "Debs: ".$row['acctno']." - ".floatval($row['ndebit'])."<br>";
 
 				$arrdebits[] = array('cacctno' => $row['acctno'], 'cacctdesc' => $row['cacctdesc']);
 			}
 
-			if(floatval($row['ncredit'])!==0){
+			if(floatval($row['ncredit'])!=0){
 				$arrcredits[] = array('cacctno' => $row['acctno'], 'cacctdesc' => $row['cacctdesc']);
 			}
 
@@ -196,7 +198,7 @@
 			foreach($arrundrs as $rsdr) {				
 		?>
 			<td style="text-align: right !important">
-				<b><?=($sumtot[$rsdr['cacctno']]!=0) ? number_format($sumtot[$rsdr['cacctno']]) : "";?></b>  
+				<b><?=($sumtot[$rsdr['cacctno']]!=0) ? number_format($sumtot[$rsdr['cacctno']],2) : "";?></b>  
 			</td>
 		<?php
 			}

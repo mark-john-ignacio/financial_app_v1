@@ -48,7 +48,7 @@ else {
 	$cCustID = $_REQUEST['ccode'];
 	$dDelDate = $_REQUEST['ddate'];
 	$cRemarks = chkgrp($_REQUEST['crem']); 
-	$nGross = $_REQUEST['ngross'];
+	$nGross = str_replace(",","",$_REQUEST['ngross']);
 	$nDRPrintNo = chkgrp($_REQUEST['cdrprintno']);
 	$salesman = $_REQUEST['salesman'];
 	$delcodes = $_REQUEST['delcodes'];

@@ -25,6 +25,12 @@ $company = $_SESSION['companyid'];
 		$cancstat = "False";
 	}
 
+	$pospbill = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PayBill_unpost.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$pospbill = "False";
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -60,11 +66,14 @@ $company = $_SESSION['companyid'];
 			<button type="button" class="btn btn-primary btn-sm" onClick="location.href='PayBill_new.php'">
 				<span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)
 			</button>
-      <!--
-			<button type="button" class="btn btn-warning btn-md" name="btnSet" id="btnSet">
-				<span class="glyphicon glyphicon-cog"></span> Settings
-			</button>
-			-->
+      
+			<?php
+				if($pospbill=="True"){
+			?>
+				<button type="button" class="btn btn-warning btn-sm" onClick="location.href='PayBill_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+			<?php
+				}
+			?>
 
       <br><br>
 			

@@ -61,11 +61,9 @@ include('../../include/access2.php');
            			 
 
 				<div class="col-xs-12 nopadding">
-					<div class="col-xs-2 nopadding">
+					<div class="col-xs-5 nopadding">
 						<button type="button" data-toggle="modal" class="btn btn-primary btn-sm" id="btnadd" name="btnadd"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
-					</div>
-					<div class="col-xs-3 nopadding">
-						<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
+						<a href="Accounts_xls.php" class="btn btn-success btn-sm"><i class="fa fa-file-excel-o"></i> &nbsp; Export To Excel</a>
 					</div>
 
 					<div class="col-xs-1 nopadwtop" style="height:30px !important;">

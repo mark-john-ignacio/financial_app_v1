@@ -1,19 +1,20 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "POS.php";
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
 
-$company = $_SESSION['companyid'];
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "POS.php";
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
-$poststat = "True";
-$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SI_unpost.php'");
-if(mysqli_num_rows($sql) == 0){
-	$poststat = "False";
-}
+	$company = $_SESSION['companyid'];
+
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SI_unpost.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
 
 
 ?>
@@ -23,14 +24,15 @@ if(mysqli_num_rows($sql) == 0){
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
+	<META NAME="robots" CONTENT="noindex,nofollow">
 
 	<title>Myx Financials</title>
 
-<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>">    
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>">    
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
 
 
 </head>
@@ -40,8 +42,8 @@ if(mysqli_num_rows($sql) == 0){
 		<section>
         <div>
         	<div style="float:left; width:50%">
-				<font size="+2"><u>Sales Invoice List</u></font>	
-            </div>
+						<font size="+2"><u>Sales Invoice List</u></font>	
+          </div>
         </div>
 			<br><br>
 
@@ -84,28 +86,24 @@ if(mysqli_num_rows($sql) == 0){
 		</section>
 	</div>		
     
-<form name="frmedit" id="frmedit" method="post" action="SI_edit.php">
-	<input type="hidden" name="txtctranno" id="txtctranno" />
-	<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
-</form>		
+	<form name="frmedit" id="frmedit" method="post" action="SI_edit.php">
+		<input type="hidden" name="txtctranno" id="txtctranno" />
+		<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
+	</form>		
 
-<!-- 1) Alert Modal -->
-<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-    <div class="vertical-alignment-helper">
-        <div class="modal-dialog vertical-align-top">
-            <div class="modal-content">
-               <div class="alert-modal-danger">
-                  <p id="AlertMsg"></p>
-                <p>
-                    <center>
-                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-                    </center>
-                </p>
-               </div>
-            </div>
-        </div>
-    </div>
-</div>
+	<!-- 1) Alert Modal -->
+	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+					<div class="alert-modal-danger">
+						<p id="AlertMsg"></p>
+						<p><center><button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button></center></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 </body>
 </html>

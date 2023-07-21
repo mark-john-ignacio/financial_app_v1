@@ -907,6 +907,10 @@ xmlhttp.send();
             </div>
 
             <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="PayBill_unpost.php" id="chkBox117" <?=(in_array("PayBill_unpost.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Un-Post</label>
+            </div>
+
+            <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="check_override" id="chkBox117" <?=(in_array("check_override",@$arrpgist)) ? "checked" : "";?>>&nbsp;Check Override</label>
             </div>
           </div>

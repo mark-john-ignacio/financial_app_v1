@@ -1,20 +1,20 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "Customers.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "Customers.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
-$company = $_SESSION['companyid'];
+	$company = $_SESSION['companyid'];
 
-$poststat = "True";
-$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Customers_edit.php'");
-if(mysqli_num_rows($sql) == 0){
-	$poststat = "False";
-}
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Customers_edit.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
 
 
 
@@ -91,16 +91,16 @@ if(mysqli_num_rows($sql) == 0){
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
 	<title>Myx Financials</title>
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?v=<?php echo time();?>"> 
-    <link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>   
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?v=<?php echo time();?>"> 
+  <link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>   
     
-    <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-    <script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
-    <script src="../../Bootstrap/js/bootstrap.js"></script>
+  <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+  <script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
+  <script src="../../Bootstrap/js/bootstrap.js"></script>
     
-    <script src="../../Bootstrap/js/moment.js"></script>
+  <script src="../../Bootstrap/js/moment.js"></script>
     
-     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/modal-center.css?v=<?php echo time();?>"> 
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/modal-center.css?v=<?php echo time();?>"> 
 
 
 </head>
@@ -805,6 +805,20 @@ if(mysqli_num_rows($sql) == 0){
 							<button type="button" class="btn btn-warning btn-sm" onClick="enabled();" id="btnEdit" name="btnEdit"> Edit<br>(CTRL+E) </button>
 
 							<button type="submit" class="btn btn-success btn-sm" name="btnSave" id="btnSave">Save<br> (CTRL+S)</button>
+
+							<?php
+							
+								$arrcompx = array();
+								$sqlcomx = "Select * From company where compcode <> '$company'";
+								$sqlcompanies=mysqli_query($con,$sqlcomx);
+					
+								if (mysqli_num_rows($sqlcompanies)!=0) {
+									$arrcompx = $sqlcompanies->fetch_all(MYSQLI_ASSOC);
+							?>
+									<button type="button" class="btn btn-info btn-sm" onClick="copyto();" id="btnCopyDet" name="btnCopyDet"> Copy<br>Details </button>
+							<?php
+								}
+							?>
 						
 						</td>
 					</tr>
@@ -830,6 +844,38 @@ if(mysqli_num_rows($sql) == 0){
 
 <!-- Modal -->		
 
+<!-- Copy MODAL -->
+		<div class="modal fade" id="ModCopyDet" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog modal-md">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						
+						<h5 class="modal-title" id="myModalLabel"><b>Copy Customer Details</b></h5>
+						
+					</div>
+
+					<div class="modal-body" style="height: 10vh">
+						<select name="" id="" class="form-control input-sm selectpicker">
+							<?php
+								foreach($arrcompx as $rsy){
+									echo "<option value='".$rsy['compcode']."'>".$rsy['compname']."</option>";
+								}
+							?>
+							</select>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" id="btncopyproceed" name="btncopyproceed" class="btn btn-primary">Save</button>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+<!-- Modal -->		
+
 
 <form name="frmedit" id="frmedit" action="Customers_edit.php" method="POST">
 	<input type="hidden" name="txtcitemno" id="txtcitemno" value="<?php echo $cCustCode;?>">
@@ -839,22 +885,20 @@ if(mysqli_num_rows($sql) == 0){
 </html>
 
 <script type="text/javascript">
-$(document).ready(function(){
+	$(document).ready(function(){
 
-	$(".nav-tabs a").click(function(){
-   $(this).tab('show');
-  });
+		$(".nav-tabs a").click(function(){
+  		$(this).tab('show');
+  	});
 
-	loadgroupnmes();
-	chkGroupVal();	
-	loadgroupvalues(); // load ung value ng group
+		loadgroupnmes();
+		chkGroupVal();	
+		loadgroupvalues(); // load ung value ng group
 
-	disabled();
+		disabled();
 
-	$("#itmcode_err").hide();
-	$("#txtccode").focus();
-});
-	$(function(){
+		$("#itmcode_err").hide();
+		$("#txtccode").focus();
 
 		$(".selsalesacctz").typeahead({						 
 			autoSelect: true,
@@ -1203,7 +1247,13 @@ $(document).ready(function(){
 
 		});
 
+		$("#btnCopyDet").on("click", function(){
+			$("#ModCopyDet").modal("show");
+		}); 
 
+		$("#btncopyproceed").on("click", function(){
+			
+		});
 
 	});
 
@@ -1242,40 +1292,40 @@ $(document).ready(function(){
 
 	});
 
+	function disabled(){
 
-function disabled(){
-
-	$("#frmCust :input, label").attr("disabled", true);
-	
-	
-	$("#txtccode").attr("disabled", false);
-	$("#btnMain").attr("disabled", false);
-	$("#btnNew").attr("disabled", false);
-	$("#btnEdit").attr("disabled", false);
-
-}
-
-function enabled(){
-
-		$("#frmCust :input, label").attr("disabled", false);
+		$("#frmCust :input, label").attr("disabled", true);
 		
-			
-			$("#txtccode").attr("readonly", true);
-			$("#btnMain").attr("disabled", true);
-			$("#btnNew").attr("disabled", true);
-			$("#btnEdit").attr("disabled", true);
-			
-			$("#txtcdesc").focus();
+		
+		$("#txtccode").attr("disabled", false);
+		$("#btnMain").attr("disabled", false);
+		$("#btnNew").attr("disabled", false);
+		$("#btnEdit").attr("disabled", false);
+		$("#btnCopyDet").attr("disabled", false);
 
-}
-
-function chkSIEnter(keyCode,frm){
-	if(keyCode==13){
-		document.getElementById(frm).action = "Customers_edit.php";
-		document.getElementById(frm).submit();
 	}
-}
 
+	function enabled(){
+
+			$("#frmCust :input, label").attr("disabled", false);
+			
+				
+				$("#txtccode").attr("readonly", true);
+				$("#btnMain").attr("disabled", true);
+				$("#btnNew").attr("disabled", true);
+				$("#btnEdit").attr("disabled", true);
+				$("#btnCopyDet").attr("disabled", true);
+				
+				$("#txtcdesc").focus();
+
+	}
+
+	function chkSIEnter(keyCode,frm){
+		if(keyCode==13){
+			document.getElementById(frm).action = "Customers_edit.php";
+			document.getElementById(frm).submit();
+		}
+	}
 
 	//preview of image
 	function imageIsLoaded(e) {
@@ -1287,198 +1337,197 @@ function chkSIEnter(keyCode,frm){
 	};
 
 
+	function loadgroupnmes(){
 
-function loadgroupnmes(){
+		$('.cgroup').each(function(i, obj) {
 
-	$('.cgroup').each(function(i, obj) {
+				var id = $(this).attr("id");
+				var r = id.replace( /^\D+/g, '');
 
-		   var id = $(this).attr("id");
-		   var r = id.replace( /^\D+/g, '');
+				$.ajax ({
+							url: "../th_loadgroup.php",
+				data: { id: id },
+				dataType: "text",
+							success: function(result) {
+					if(result.trim()!="False"){					
+						$("#CustGroup"+r).html("<b>" + result + "</b>");
+					}
+					else {
+						$("#CustGroup"+r).html("<b>Group " + r + "</b>");
+					}
+							}
+					});
+		});
+	}
 
-			$.ajax ({
-            url: "../th_loadgroup.php",
-			data: { id: id },
-			dataType: "text",
-            success: function(result) {
-				if(result.trim()!="False"){					
-					$("#CustGroup"+r).html("<b>" + result + "</b>");
-				}
-				else {
-					$("#CustGroup"+r).html("<b>Group " + r + "</b>");
-				}
-            }
-    		});
-	});
-}
-
-function chkGroupVal(){
-	$(".txtCustGroup").each(function(i, obj) {
-		   var id = $(this).attr("id");
-		   var r = id.replace( /^\D+/g, '');
-
-			var nme = "CustGroup"+r;
-			
-			$.ajax ({
-            url: "../th_checkexistcgroup.php",
-			data: { id: nme },
-            success: function(result) {
-				if(result.trim()=="False"){					
-					$("#"+id).attr("readonly", true);					
-					$("#btn"+nme).attr("disabled", true);
-				}
-            }
-    		});
-
-
-	});
-}
-
-function loadgroupvalues(){
+	function chkGroupVal(){
 		$(".txtCustGroup").each(function(i, obj) {
-			
-		   var id = $(this).attr("id");
-		   var r = id.replace( /^\D+/g, '');
+				var id = $(this).attr("id");
+				var r = id.replace( /^\D+/g, '');
 
-		   var nme = "CustGroup"+r;
-		   var citmno = $("#txtccode").val();
-			
-			$.ajax ({
-            url: "../th_loadcgroupvalue.php",
-			data: { id: r, grpno: nme, itm: citmno },
-			dataType: 'json',
-            success: function(data) {
-				console.log(data);
-				$.each(data,function(index,item){
-					
-				  if(item.id!=""){				  
-					$("#txtCustGroup"+r).val(item.name);
-					$("#txtCustGroup"+r+"D").val(item.id);
-				  }
-									  
-							
+				var nme = "CustGroup"+r;
+				
+				$.ajax ({
+							url: "../th_checkexistcgroup.php",
+				data: { id: nme },
+							success: function(result) {
+					if(result.trim()=="False"){					
+						$("#"+id).attr("readonly", true);					
+						$("#btn"+nme).attr("disabled", true);
+					}
+							}
+					});
+
+
+		});
+	}
+
+	function loadgroupvalues(){
+			$(".txtCustGroup").each(function(i, obj) {
+				
+				var id = $(this).attr("id");
+				var r = id.replace( /^\D+/g, '');
+
+				var nme = "CustGroup"+r;
+				var citmno = $("#txtccode").val();
+				
+				$.ajax ({
+							url: "../th_loadcgroupvalue.php",
+				data: { id: r, grpno: nme, itm: citmno },
+				dataType: 'json',
+							success: function(data) {
+					console.log(data);
+					$.each(data,function(index,item){
+						
+						if(item.id!=""){				  
+						$("#txtCustGroup"+r).val(item.name);
+						$("#txtCustGroup"+r+"D").val(item.id);
+						}
+											
+								
+					});
+
+							}
+					});
+
+		});
+
+	}
+
+	function addcontlist(){
+			var tbl = document.getElementById('myUnitTable').getElementsByTagName('tr');
+			var lastRow = tbl.length;
+
+			var a=document.getElementById('myUnitTable').insertRow(-1);
+			var b=a.insertCell(0);
+			var c=a.insertCell(1);
+			var d=a.insertCell(2);
+
+			b.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConNme"+lastRow+"' name='txtConNme"+lastRow+"' value='' required></div>";
+			c.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConDes"+lastRow+"' name='txtConDes"+lastRow+"' value=''> </div>";
+			d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConDept"+lastRow+"' name='txtConDept"+lastRow+"' value=''> </div>";
+
+			$cntng = 2;
+			var xz = $("#conctsadddet").val();
+				$.each(jQuery.parseJSON(xz), function() { 
+					$cntng = $cntng + 1;
+					var e=a.insertCell($cntng);
+
+					e.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConAdd"+this['cid']+lastRow+"' name='txtConAdd"+this['cid']+lastRow+"' value=''> </div>";
+
 				});
 
-            }
-    		});
-
-	});
-
-}
-
-function addcontlist(){
-    var tbl = document.getElementById('myUnitTable').getElementsByTagName('tr');
-    var lastRow = tbl.length;
-
-    var a=document.getElementById('myUnitTable').insertRow(-1);
-    var b=a.insertCell(0);
-    var c=a.insertCell(1);
-    var d=a.insertCell(2);
-
-    b.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConNme"+lastRow+"' name='txtConNme"+lastRow+"' value='' required></div>";
-    c.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConDes"+lastRow+"' name='txtConDes"+lastRow+"' value=''> </div>";
-    d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConDept"+lastRow+"' name='txtConDept"+lastRow+"' value=''> </div>";
-
-    $cntng = 2;
-    var xz = $("#conctsadddet").val();
-			$.each(jQuery.parseJSON(xz), function() { 
-				$cntng = $cntng + 1;
-        var e=a.insertCell($cntng);
-
-        e.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConAdd"+this['cid']+lastRow+"' name='txtConAdd"+this['cid']+lastRow+"' value=''> </div>";
-
-			});
-
-    $cntng = $cntng + 1
-    var h=a.insertCell($cntng);
-    h.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input class='btn btn-danger btn-block btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRowconts(this);\"/></div>";
-    
-  }
-
-function deleteRowconts(r) {
-	var tbl = document.getElementById('myUnitTable').getElementsByTagName('tr');
-	var lastRow = tbl.length;
-	var i=r.parentNode.parentNode.parentNode.rowIndex;
-	//alert(i)
-	 document.getElementById('myUnitTable').deleteRow(i);
-	 var lastRow = tbl.length;
-	 var z; //for loop counter changing textboxes ID;
-	 
-		for (z=i+1; z<=lastRow; z++){
-			var tempconnme = document.getElementById('txtConNme' + z);
-			var tempcondes = document.getElementById('txtConDes' + z);
-      var tempcondept = document.getElementById('txtConDept' + z);
-			var tempconeml = document.getElementById('txtConeml' + z);
-			var tempcontel = document.getElementById('txtContel' + z);
-			var tempconmob = document.getElementById('txtConmob' + z);
+			$cntng = $cntng + 1
+			var h=a.insertCell($cntng);
+			h.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input class='btn btn-danger btn-block btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRowconts(this);\"/></div>";
 			
-			var x = z-1;
-			tempconnme.id = "txtConNme" + x;
-			tempconnme.name = "txtConNme" + x;
-			tempcondes.id = "txtConDes" + x;
-			tempcondes.name = "txtConDes" + x;
-      tempcondept.id = "txtConDept" + x;
-      tempcondept.name = "txtConDept" + x;
-			tempconeml.id = "txtConeml" + x;
-			tempconeml.name = "txtConeml" + x;
-			tempcontel.id = "txtContel" + x;
-			tempcontel.name = "txtContel" + x;
-			tempconmob.id = "txtConmob" + x;
-			tempconmob.name = "txtConmob" + x;
-		}
-}
+	}
 
-function adddeladdlist(){
-	var tbl = document.getElementById('myDelAddTable').getElementsByTagName('tr');
-	var lastRow = tbl.length;
+	function deleteRowconts(r) {
+		var tbl = document.getElementById('myUnitTable').getElementsByTagName('tr');
+		var lastRow = tbl.length;
+		var i=r.parentNode.parentNode.parentNode.rowIndex;
+		//alert(i)
+		document.getElementById('myUnitTable').deleteRow(i);
+		var lastRow = tbl.length;
+		var z; //for loop counter changing textboxes ID;
+		
+			for (z=i+1; z<=lastRow; z++){
+				var tempconnme = document.getElementById('txtConNme' + z);
+				var tempcondes = document.getElementById('txtConDes' + z);
+				var tempcondept = document.getElementById('txtConDept' + z);
+				var tempconeml = document.getElementById('txtConeml' + z);
+				var tempcontel = document.getElementById('txtContel' + z);
+				var tempconmob = document.getElementById('txtConmob' + z);
+				
+				var x = z-1;
+				tempconnme.id = "txtConNme" + x;
+				tempconnme.name = "txtConNme" + x;
+				tempcondes.id = "txtConDes" + x;
+				tempcondes.name = "txtConDes" + x;
+				tempcondept.id = "txtConDept" + x;
+				tempcondept.name = "txtConDept" + x;
+				tempconeml.id = "txtConeml" + x;
+				tempconeml.name = "txtConeml" + x;
+				tempcontel.id = "txtContel" + x;
+				tempcontel.name = "txtContel" + x;
+				tempconmob.id = "txtConmob" + x;
+				tempconmob.name = "txtConmob" + x;
+			}
+	}
 
-	var a=document.getElementById('myDelAddTable').insertRow(-1);
-	var b=a.insertCell(0);
-	var c=a.insertCell(1);
-	var d=a.insertCell(2);
-	var e=a.insertCell(3);
-	var f=a.insertCell(4);
-  var h=a.insertCell(5);
-	
-	b.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtdeladdno"+lastRow+"' name='txtdeladdno"+lastRow+"' value='' required></div>";
-	c.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtdeladdcity"+lastRow+"' name='txtdeladdcity"+lastRow+"' value=''> </div>";
-  d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtdeladdstt"+lastRow+"' name='txtdeladdstt"+lastRow+"' value=''> </div>";
-	e.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtdeladdcntr"+lastRow+"' name='txtdeladdcntr"+lastRow+"' value=''> </div>";
-	f.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtdeladdzip"+lastRow+"' name='txtdeladdzip"+lastRow+"' value=''> </div>";
-	
-	h.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRowAddresss(this);\"/></div>";
-	
-}
+	function adddeladdlist(){
+		var tbl = document.getElementById('myDelAddTable').getElementsByTagName('tr');
+		var lastRow = tbl.length;
 
-function deleteRowAddresss(r) {
-	var tbl = document.getElementById('myDelAddTable').getElementsByTagName('tr');
-	var lastRow = tbl.length;
-	var i=r.parentNode.parentNode.parentNode.rowIndex;
-	//alert(i)
-	 document.getElementById('myDelAddTable').deleteRow(i);
-	 var lastRow = tbl.length;
-	 var z; //for loop counter changing textboxes ID;
-	 
-		for (z=i+1; z<=lastRow; z++){
-			var tempdeladdno = document.getElementById('txtdeladdno' + z);
-			var tempdeladdcity = document.getElementById('txtdeladdcity' + z);
-      		var tempdeladdstt = document.getElementById('txtdeladdstt' + z);
-			var tempdeladdntr = document.getElementById('txtdeladdcntr' + z);
-			var tempdeladdzip = document.getElementById('txtdeladdzip' + z);
-			var tempdeladddelt = document.getElementById('row_' + z + '_delete');
-			
-			var x = z-1;
-			tempdeladdno.id = "txtdeladdno" + x;
-			tempdeladdno.name = "txtdeladdno" + x;
-			tempdeladdcity.id = "txtdeladdcity" + x;
-			tempdeladdcity.name = "txtdeladdcity" + x;
-     		tempdeladdstt.id = "txtdeladdstt" + x;
-      		tempdeladdstt.name = "txtdeladdstt" + x;
-			tempdeladdntr.id = "txtdeladdcntr" + x;
-			tempdeladdntr.name = "txtdeladdcntr" + x;
-			tempdeladdzip.id = "txtdeladdzip" + x;
-			tempdeladdzip.name = "txtdeladdzip" + x;
-			tempdeladddelt.id = "row_" + x + "_delete";
-		}
-}
+		var a=document.getElementById('myDelAddTable').insertRow(-1);
+		var b=a.insertCell(0);
+		var c=a.insertCell(1);
+		var d=a.insertCell(2);
+		var e=a.insertCell(3);
+		var f=a.insertCell(4);
+		var h=a.insertCell(5);
+		
+		b.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtdeladdno"+lastRow+"' name='txtdeladdno"+lastRow+"' value='' required></div>";
+		c.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtdeladdcity"+lastRow+"' name='txtdeladdcity"+lastRow+"' value=''> </div>";
+		d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtdeladdstt"+lastRow+"' name='txtdeladdstt"+lastRow+"' value=''> </div>";
+		e.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtdeladdcntr"+lastRow+"' name='txtdeladdcntr"+lastRow+"' value=''> </div>";
+		f.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtdeladdzip"+lastRow+"' name='txtdeladdzip"+lastRow+"' value=''> </div>";
+		
+		h.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRowAddresss(this);\"/></div>";
+		
+	}
+
+	function deleteRowAddresss(r) {
+		var tbl = document.getElementById('myDelAddTable').getElementsByTagName('tr');
+		var lastRow = tbl.length;
+		var i=r.parentNode.parentNode.parentNode.rowIndex;
+		//alert(i)
+		document.getElementById('myDelAddTable').deleteRow(i);
+		var lastRow = tbl.length;
+		var z; //for loop counter changing textboxes ID;
+		
+			for (z=i+1; z<=lastRow; z++){
+				var tempdeladdno = document.getElementById('txtdeladdno' + z);
+				var tempdeladdcity = document.getElementById('txtdeladdcity' + z);
+						var tempdeladdstt = document.getElementById('txtdeladdstt' + z);
+				var tempdeladdntr = document.getElementById('txtdeladdcntr' + z);
+				var tempdeladdzip = document.getElementById('txtdeladdzip' + z);
+				var tempdeladddelt = document.getElementById('row_' + z + '_delete');
+				
+				var x = z-1;
+				tempdeladdno.id = "txtdeladdno" + x;
+				tempdeladdno.name = "txtdeladdno" + x;
+				tempdeladdcity.id = "txtdeladdcity" + x;
+				tempdeladdcity.name = "txtdeladdcity" + x;
+					tempdeladdstt.id = "txtdeladdstt" + x;
+						tempdeladdstt.name = "txtdeladdstt" + x;
+				tempdeladdntr.id = "txtdeladdcntr" + x;
+				tempdeladdntr.name = "txtdeladdcntr" + x;
+				tempdeladdzip.id = "txtdeladdzip" + x;
+				tempdeladdzip.name = "txtdeladdzip" + x;
+				tempdeladddelt.id = "row_" + x + "_delete";
+			}
+	}
 
 </script>
