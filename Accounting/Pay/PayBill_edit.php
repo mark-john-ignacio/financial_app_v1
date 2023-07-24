@@ -303,6 +303,10 @@ if (mysqli_num_rows($sqlchk)!=0) {
 
 				<br>
 
+				<div class="col-xs-12 nopadwdown">
+					<div class="col-xs-1 nopadwright"><button type="button" class="btn btn-xs btn-warning btn-block" id="btnaddline">Add Payable</button></div>
+				</div>
+
 	  		<div id="tableContainer" class="alt2" dir="ltr" style="
           margin: 0px;
           padding: 3px;
@@ -988,6 +992,12 @@ else{
 			
 		});
 
+		$('#btnaddline').on('click', function(e) {
+				
+				addrrdet("","",0,0,0,"",0,"","",0);
+
+		});
+
 	});
 
 	function showapvmod(custid){
@@ -1084,10 +1094,14 @@ else{
 			
 		var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 		var lastRow = tbl.length;
-		
-		var u = "<td>"+ctranno+"<input type=\"hidden\" name=\"cTranNo"+lastRow+"\" id=\"cTranNo"+lastRow+"\" value=\""+ctranno+"\" /> <input type=\"hidden\" name=\"napvewt"+lastRow+"\" id=\"napvewt"+lastRow+"\" value=\""+ewtamt+"\" /> </td>";
 
-		var u2 = "<td>"+refno+"<input type=\"hidden\" name=\"cRefRRNo"+lastRow+"\" id=\"cRefRRNo"+lastRow+"\" value=\""+refno+"\" /> </td>";
+		if(ctranno==""){
+			ddate = "";
+		}
+		
+		var u = "<td style='padding-right:5px'>"+ctranno+"<input type=\"hidden\" name=\"cTranNo"+lastRow+"\" id=\"cTranNo"+lastRow+"\" value=\""+ctranno+"\" /> <input type=\"hidden\" name=\"napvewt"+lastRow+"\" id=\"napvewt"+lastRow+"\" value=\""+ewtamt+"\" /> </td>";
+
+		var u2 = "<td style='padding-right:5px'>"+refno+"<input type=\"hidden\" name=\"cRefRRNo"+lastRow+"\" id=\"cRefRRNo"+lastRow+"\" value=\""+refno+"\" /> </td>";
 		
 		var v = "<td>"+ddate+"<input type=\"hidden\" name=\"dApvDate"+lastRow+"\" id=\"dApvDate"+lastRow+"\" value=\""+ddate+"\" /></td>";
 		

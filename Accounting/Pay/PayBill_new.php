@@ -215,6 +215,11 @@
 					</table>
 					<br>
 
+
+					<div class="col-xs-12 nopadwdown">
+						<div class="col-xs-1 nopadwright"><button type="button" class="btn btn-xs btn-warning btn-block" id="btnaddline">Add Payable</button></div>
+					</div>
+
 					<div id="tableContainer" class="alt2" dir="ltr" style="
 						margin: 0px;
 						padding: 3px;
@@ -813,6 +818,12 @@
 			});
 		});
 
+		$('#btnaddline').on('click', function(e) {
+				
+				addrrdet("","",0,0,0,"","","",0);
+
+		});
+
 	});
 		
 	function showapvmod(custid){
@@ -1070,4 +1081,5 @@
 			$("#txttotpaid").autoNumeric('init',{mDec:2});
 
 	}
+
 </script>

@@ -87,6 +87,10 @@ include('../../include/denied.php');
 			
 			$refcidenttran = $cCVNo."P".$cnt;
 		
+			if($dapvdate==""){
+				$dapvdate = date("m/d/Y");
+			}
+			
 			
 			if (!mysqli_query($con, "INSERT INTO `paybill_t`(`compcode`, `cidentity`, `nident`, `ctranno`, `crefrr`, `capvno`, `dapvdate`, `namount`, `ndiscount`, `nowed`, `napplied`, `cacctno`, `newtamt`) values('$company', '$refcidenttran', '$cnt', '$cCVNo', '$crefrr', '$capvno', STR_TO_DATE('$dapvdate', '%m/%d/%Y'), $namnt, $ndiscount, $nowed, $napplied, '$caccno', $hdnewt)")) {
 			printf("Errormessage: %s\n", mysqli_error($con));
