@@ -418,7 +418,7 @@ function numberTowords($num)
 				<?php 
 					}
 					$xlabel = "";
-					echo floatval($dueamt)." < ".floatval($tottopay);
+					//echo floatval($dueamt)." < ".floatval($tottopay);
 					if(floatval($tottopay) < floatval($dueamt)){
 						
 						if(floatval($dueamt)==floatval($Gross)){

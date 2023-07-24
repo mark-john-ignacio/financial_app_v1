@@ -45,7 +45,7 @@ require_once "../../Connection/connection_string.php";
 				
 				UNION ALL 
 
-				Select X.compcode, X.ctranno, X.crefno, SUM(ncredit), SUM(newtamt), GROUP_CONCAT(X.cacctno)
+				Select X.compcode, X.ctranno, X.crefno, SUM(ncredit), SUM(newtamt), X.cacctno
 				From (
 					Select G.compcode, G.ctranno, '' as crefno, 
 					CASE WHEN G.cacctno not in ('".implode("','",$disreg)."') THEN G.ncredit ELSE 0 END as ncredit, 
@@ -54,7 +54,7 @@ require_once "../../Connection/connection_string.php";
 					From apv_t G left join apv H on G.compcode=H.compcode and G.ctranno=H.ctranno 
 					Where G.compcode='$company' and H.captype='Others' and G.ncredit <> 0 
 				) X 
-				Group By X.compcode, X.ctranno, X.crefno
+				Group By X.compcode, X.ctranno, X.crefno, X.cacctno
 
 			) B on A.compcode=B.compcode and A.ctranno=B.ctranno
 		left join `accounts` C on B.compcode=C.compcode and B.cacctno=C.cacctid
