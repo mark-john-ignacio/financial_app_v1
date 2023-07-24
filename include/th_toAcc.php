@@ -374,7 +374,7 @@ function getSetAcct($id){
 	else if($typ=="PV"){
 				
 		//Accounts Payable -> supplier account -> Debit
-			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'PV', '$tran', A.dcheckdate, A.cacctno, B.cacctdesc, 0, A.ngross, 0, NOW() From paybill A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ctranno='$tran' ")){
+			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'PV', '$tran', A.dcheckdate, A.cacctno, B.cacctdesc, 0, A.npaid, 0, NOW() From paybill A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ctranno='$tran' ")){
 				echo "False";
 			}
 			else{
