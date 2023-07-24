@@ -55,6 +55,22 @@ require_once "../../Connection/connection_string.php";
 					Where G.compcode='$company' and H.captype='Others' and G.ncredit <> 0 
 				) X 
 				Group By X.compcode, X.ctranno, X.crefno, X.cacctno
+				HAVING SUM(newtamt) = 0
+
+				UNION ALL
+
+				Select X.compcode, X.ctranno, X.crefno, SUM(ncredit), SUM(newtamt), GROUP_CONCAT(X.cacctno) as cacctno
+				From (
+					SELECT G.compcode, G.ctranno, '' as crefno, 
+					CASE WHEN G.cacctno not in ('".implode("','",$disreg)."') THEN G.ncredit ELSE 0 END as ncredit, 
+					CASE WHEN G.cacctno = '".$disregEWT."' THEN G.ncredit ELSE 0 END as newtamt,
+					CASE WHEN G.cacctno not in ('".implode("','",$disreg)."') THEN G.cacctno ELSE null END as cacctno 
+					FROM apv_t G left join apv H on G.compcode=H.compcode and G.ctranno=H.ctranno 
+					WHERE G.compcode='$company' and H.captype='Others' and G.ncredit <> 0 
+				) X 
+				GROUP BY X.compcode, X.ctranno, X.crefno
+				HAVING SUM(newtamt) > 0
+
 
 			) B on A.compcode=B.compcode and A.ctranno=B.ctranno
 		left join `accounts` C on B.compcode=C.compcode and B.cacctno=C.cacctid
