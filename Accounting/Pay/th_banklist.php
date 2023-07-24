@@ -6,6 +6,8 @@
 
 	$company = $_SESSION['companyid'];
 
+	$json2 = array();
+
 	if($_REQUEST['id']=="cheque"){	
 		
 		$mxsql = "Select A.nidentity, A.ccode, A.cname, A.cbankacctno, A.ccheckno, 
@@ -30,8 +32,6 @@
 		$result = mysqli_query ($con, $mxsql); 
 
 		// and A.ccurrentcheck < A.ccheckto
-
-		//$json2 = array();
 		//$json = [];
 		if(mysqli_num_rows($result)!=0){
 			while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
