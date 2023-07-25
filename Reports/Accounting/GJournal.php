@@ -59,7 +59,7 @@ $date2 = $_POST["date2"];
 	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit
 			From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
 			Where A.compcode='$company' and A.ddate between STR_TO_DATE('".$_REQUEST['date1']."', '%m/%d/%Y') and STR_TO_DATE('".$_REQUEST['date2']."', '%m/%d/%Y')
-			Order By A.dpostdate, A.ctranno";
+			Order By A.dpostdate, A.ctranno, CASE WHEN (A.ndebit <> 0) THEN 1 ELSE 0 END desc, A.acctno";
 
 	$result=mysqli_query($con,$sql);
 				
