@@ -59,7 +59,7 @@ $date2 = $_POST["date2"];
 	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit
 			From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
 			Where A.compcode='$company' and A.ddate between STR_TO_DATE('".$_REQUEST['date1']."', '%m/%d/%Y') and STR_TO_DATE('".$_REQUEST['date2']."', '%m/%d/%Y')
-			Order By A.dpostdate, A.ctranno, A.ndebit desc, A.ncredit desc";
+			Order By A.dpostdate, A.ctranno";
 
 	$result=mysqli_query($con,$sql);
 				
