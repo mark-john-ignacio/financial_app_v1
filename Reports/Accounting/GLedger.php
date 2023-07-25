@@ -50,7 +50,7 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit
 	From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
 	Where A.compcode='$company' and A.ddate between STR_TO_DATE('".$_REQUEST['date1']."', '%m/%d/%Y') and STR_TO_DATE('".$_REQUEST['date2']."', '%m/%d/%Y')
-	Order By A.acctno, A.dpostdate, A.ctranno, A.ndebit desc, A.ncredit desc";
+	Order By A.acctno, A.dpostdate, A.ctranno, CASE WHEN (A.ndebit <> 0) THEN 1 ELSE 0 END desc, A.acctno";
 
 	$arracctnos = array();
 	$arrallqry = array();
