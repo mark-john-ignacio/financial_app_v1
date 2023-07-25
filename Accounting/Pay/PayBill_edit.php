@@ -317,16 +317,16 @@ if (mysqli_num_rows($sqlchk)!=0) {
           overflow: auto">
             <table width="100%" border="0" cellpadding="0" id="MyTable">
               <thead>
-                <tr>
+								<tr>
 									<th scope="col" id="hdnRefTitle">APV No</th>
-									<th>Ref No.</th>
-                  <th scope="col" width="150px">Date</th>
-                	<th scope="col" class="text-right" width="150px">Amount</th>
-                	<th scope="col" class="text-right" width="150px">Payed&nbsp;&nbsp;&nbsp;</th>
-                  <th scope="col" width="150px" class="text-right">Total Owed&nbsp;&nbsp;&nbsp;</th>
-                  <th scope="col" width="150px" class="text-center">Amount Applied</th>
-									<th scope="col" >Dr Acct</th>
-                </tr>
+									<th scope="col">Ref No</th>
+									<th scope="col">Date</th>
+									<th scope="col" class="text-right" width="120px">Amount</th>
+									<th scope="col" class="text-right" width="120px">Payed&nbsp;&nbsp;&nbsp;</th>
+									<th scope="col" width="120px" class="text-right">Total Owed&nbsp;&nbsp;&nbsp;</th>
+									<th scope="col" width="120px" class="text-center">Amount Applied</th>
+									<th scope="col" colspan="2">Dr Account</th>
+								</tr>
               </thead>
               <tbody>
               </tbody>
@@ -1113,11 +1113,13 @@ else{
 			
 		var z = "<td style=\"padding:2px\" align=\"center\"><input type=\"text\" class=\"numeric form-control input-sm\" name=\"nApplied"+lastRow+"\" id=\"nApplied"+lastRow+"\"  value=\""+napplied+"\" style=\"text-align:right\" /></td>";
 
-		var t = "<td style=\"padding:2px\" align=\"center\"><input type=\"text\" class=\"form-control input-sm\" name=\"cacctdesc"+lastRow+"\" id=\"cacctdesc"+lastRow+"\"  value=\""+cacctdesc+"\" "+ctyprefval+"/> <input type=\"hidden\" name=\"cacctno"+lastRow+"\" id=\"cacctno"+lastRow+"\" value=\""+cacctno+"\" /></td>";
+		var t = "<td style=\"padding:2px\" align=\"center\"><input type=\"text\" class=\"form-control input-sm\" name=\"cacctdesc"+lastRow+"\" id=\"cacctdesc"+lastRow+"\"  value=\""+cacctdesc+"\" "+ctyprefval+"/</td>";
+
+		var t2 = "<td style=\"padding:2px\" align=\"center\" width=\"80px\"><input type=\"text\" class=\"form-control input-sm\" name=\"cacctno"+lastRow+"\" id=\"cacctno"+lastRow+"\" value=\""+cacctno+"\" /></td>";
 		
 		//alert('<tr>'+u + v + w + x + y + '</tr>');		
 		
-		$('#MyTable > tbody:last-child').append('<tr>'+ u + u2 + v + w + x + y + z + t + '</tr>');
+		$('#MyTable > tbody:last-child').append('<tr>'+ u + u2 + v + w + x + y + z + t + t2 + '</tr>');
 		
 			
 									//$("input.numeric").numeric({decimalPlaces: 4});
