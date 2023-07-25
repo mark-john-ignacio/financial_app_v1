@@ -58,7 +58,7 @@ $varmsg = "";
 	From glactivity a
 	left join paybill b on a.compcode=b.compcode and a.ctranno=b.ctranno
 	where a.compcode='$company' and a.cmodule='PV' and b.dcheckdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
-	order by b.ctranno, a.ndebit DESC";
+	order by b.ctranno";
 
 	$result=mysqli_query($con,$sql);
 				
