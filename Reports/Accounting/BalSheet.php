@@ -284,12 +284,12 @@
 					if($row['ctype']=="Details"){
 						$xcvb = gettotal($row['cacctid'], $row['ccategory']);
 
+						for ($x = 0; $x < intval($row['nlevel']); $x++) {
+							$arrlvlamt[$x] = $arrlvlamt[$x] + $xcvb;
+						}  
+
 						if(floatval($xcvb) > 0){
 							echo number_format($xcvb,2);
-
-							for ($x = 0; $x < intval($row['nlevel']); $x++) {
-								$arrlvlamt[$x] = $arrlvlamt[$x] + $xcvb;
-							}  
 
 							$xmain = intval($row['nlevel']) - 1;
 							
