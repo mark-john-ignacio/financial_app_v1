@@ -1,9 +1,9 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-include('../../Connection/connection_string.php');
-$company = $_SESSION['companyid'];
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	include('../../Connection/connection_string.php');
+	$company = $_SESSION['companyid'];
 				$sql = "select * From company where compcode='$company'";
 				$result=mysqli_query($con,$sql);
 				
@@ -29,17 +29,15 @@ $company = $_SESSION['companyid'];
 <body style="padding:10px">
 <center>
 <h2><?php echo strtoupper($compname);  ?></h2>
-<h2>Purchased Summary: Per Transaction</h2>
+<h2>Purchase Summary: Per Supplier</h2>
 <h3>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h3><br>
 </center>
 
 <br><br>
 <table width="100%" border="0" align="center" id="MyTable">
   <tr>
-  	<th>Transaction No.</th>
-  	<th>Date</th>
     <th colspan="2">Supplier</th>
-    <th style="text-align: right">Total Amount</th>
+    <th style="text-align: right" >Total Amount</th>
   </tr>
   
 <?php
@@ -56,10 +54,10 @@ else{
 	$qry = "";
 }
 
-$sql = "select a.ccode, b.cname, a.ngross as namnt, a.ctranno as csalesno, a.dreceived as dcutdate
+$sql = "select a.ccode, b.cname, sum(a.ngross) as namnt
 From suppinv a
-left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode
-where a.compcode='001' and a.dreceived between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and a.lcancelled=0  ".$qry." order by a.ctranno";
+left join suppliers b on a.ccode=b.ccode
+where a.compcode='001' and a.dreceived between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and a.lcancelled=0 ".$qry." group by a.ccode, b.cname order by sum(a.ngross) DESC";
 
 //echo $sql;
 
@@ -69,27 +67,25 @@ $result=mysqli_query($con,$sql);
 						printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 	
-	$totPrice=0;	
+	$totPriceG=0;	
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 	{
 		
 ?>  
-  <tr >
-    <td><?php echo $row['csalesno'];?></td>
-    <td><?php echo $row['dcutdate'];?></td>
+  <tr>
     <td><?php echo $row['ccode'];?></td>
     <td><?php echo utf8_encode($row['cname']);?></td>
     <td align="right"><?php echo number_format($row['namnt'],2);?></td>
   </tr>
 <?php 
 
-		$totPrice = $totPrice + $row['namnt'];
+		$totPriceG = $totPriceG + $row['namnt'];
 	}
 ?>
 
     <tr class='rptGrand'>
-    	<td colspan="4" align="right"><b>G R A N D&nbsp;&nbsp;T O T A L:</b></td>
-    	<td align="right"><b><?php echo number_format($totPrice,2);?></b></td>
+    	<td colspan="2" align="right"><b>G R A N D&nbsp;&nbsp;T O T A L:</b></td>
+    	<td align="right"><b><?php echo number_format($totPriceG,2);?></b></td>
     </tr>
 </table>
 

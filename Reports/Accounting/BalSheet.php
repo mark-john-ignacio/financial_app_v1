@@ -76,6 +76,7 @@
 
 	//sort accounts .. tree mode
 	$mainarray = array();
+
 	$dacctarraylist = array();
 	$result=mysqli_query($con,"SELECT A.ccategory, A.cacctno, A.cacctid, A.cacctdesc, A.nlevel, A.mainacct, A.ctype FROM `accounts` A where A.compcode='$company' and A.cFinGroup='Balance Sheet' and A.cacctid in ('".implode("','", $arrallwithbal)."') ORDER BY CASE WHEN A.ccategory='ASSETS' THEN 1 WHEN A.ccategory='LIABILITIES' THEN 2 WHEN A.ccategory='EQUITY' THEN 3 END, A.nlevel, A.cacctid");
 
@@ -201,6 +202,9 @@
   </tr>
  
  <?php
+
+			if(count($mainarray)>0) {
+
 
  //echo "<pre>";
  //print_r($mainarray);
@@ -333,6 +337,10 @@
 		<b><?=number_format($twinGross,2)?></b>
 	</td>
 </tr>
+
+<?php
+			}
+?>
  
 </table>
 

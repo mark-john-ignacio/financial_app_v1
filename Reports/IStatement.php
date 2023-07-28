@@ -17,6 +17,7 @@ $last_day_this_month  = date("Y-m-t", strtotime($first_day_this_month));
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Myx Financials</title>
 
+  <link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css?x=<?=time()?>">
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
 
@@ -40,9 +41,9 @@ $last_day_this_month  = date("Y-m-t", strtotime($first_day_this_month));
     <table width="100%" border="0" cellpadding="2">
       <tr>
         <td valign="top" width="50" style="padding:2px">
-        <button type="submit" class="btn btn-danger" id="btnsales">
-        <span class="glyphicon glyphicon-search"></span> View Report
-        </button>
+          <button type="submit" class="btn btn-danger" id="btnView">
+            <span class="glyphicon glyphicon-search"></span> View Report
+          </button>
         </td>
         <td width="150" style="padding-left:10px"><b>Date Range: </b></td>
         <td style="padding:2px">
@@ -68,7 +69,11 @@ $last_day_this_month  = date("Y-m-t", strtotime($first_day_this_month));
 
       </tr>
       <tr>
-        <td valign="top" width="50" style="padding:2px">&nbsp;</td>
+        <td valign="top" width="50" style="padding:2px">
+          <button type="button" class="btn btn-success btn-block" id="btnexcel">
+            <i class="fa fa-file-excel-o"></i> To Excel
+          </button>
+        </td>
         <td width="150" style="padding-left:10px"><b>Provision for IT: </b></td>
         <td style="padding:2px">
           <div class="col-xs-12 nopadding">
@@ -110,45 +115,28 @@ $last_day_this_month  = date("Y-m-t", strtotime($first_day_this_month));
 </html>
 
 <script type="text/javascript">
-$(function(){
+  $(function(){
 
-	$('.datepick').datetimepicker({
-    format: 'MM/DD/YYYY'
+    $('.datepick').datetimepicker({
+      format: 'MM/DD/YYYY'
+    });
+
+    $("input.numeric").autoNumeric('init',{mDec:0});
+    $("input.numeric").on("click", function () {
+      $(this).select();
+    });
+
+    $('#btnView').on("click", function(){
+      $dval = $("#seltyp").val();
+      $('#frmrep').attr("action", "Accounting/IncomeStatement.php");
+      $('#frmrep').submit();
+    });
+
+    $('#btnexcel').on("click", function(){
+      $dval = $("#seltyp").val();
+      $('#frmrep').attr("action", "Accounting/IncomeStatement_xls.php");
+      $('#frmrep').submit();
+    });
+
   });
-
-  $("input.numeric").autoNumeric('init',{mDec:0});
-  $("input.numeric").on("click", function () {
-		$(this).select();
-	});
-
-	//proddesc searching	
-	
-$('#txtCust').typeahead({
-	autoSelect: true,
-    source: function(request, response) {
-        $.ajax({
-            url: "th_product.php",
-            dataType: "json",
-            data: {
-                query: $("#txtCust").val()
-            },
-            success: function (data) {
-                response(data);
-            }
-        });
-    },
-    displayText: function (item) {
-        return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
-    },
-	highlighter: Object,
-	afterSelect: function(item) { 					
-					
-		$('#txtCust').val(item.value).change(); 
-		$("#txtCustID").val(item.id);
-		
-	}
-
-});
-
-});
 </script>
