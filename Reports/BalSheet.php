@@ -40,25 +40,18 @@ include('../include/access.php');
             <span class="glyphicon glyphicon-search"></span> View Report
           </button>
         </td>
-        <td width="150" style="padding-left:10px"><b>Date Range: </b></td>
+        <td width="150" style="padding-left:10px"><b>Report Type: </b></td>
         <td style="padding:2px">
           <div class="col-xs-12 nopadding">
             <div class="col-xs-3 nopadding">
-            
-              <input type='text' class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/01/Y"); ?>" />
-            
+              
+              <select id="selrpt" name="selrpt" class="form-control input-sm selectpicker"  tabindex="4">
+                <option value="Accounting/BalSheet">Summary</option>   
+                <option value="Accounting/BalSheet_Monthly">Monthly</option>               
+              </select>
+              
             </div>
-          
-            <div class="col-xs-2 nopadding" style="vertical-align:bottom;" align="center">
-              <label style="padding:1px;">TO</label>
-            </div>
-          
-            <div class="col-xs-3 nopadding">
             
-              <input type='text' class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>" />
-            
-            </div>
-          
           </div>   
         </td>
       </tr>
@@ -68,8 +61,42 @@ include('../include/access.php');
             <i class="fa fa-file-excel-o"></i> To Excel
           </button>
         </td>
-        <td width="150" style="padding-left:10px">&nbsp;</td>
-        <td style="padding:2px">&nbsp;</td>
+        <td width="150" style="padding-left:10px"><div id="dtelabel"><b>Date Range: </b></div></td>
+        <td style="padding:2px">
+          <div id="dterange">
+            <div class="col-xs-12 nopadding">
+              <div class="col-xs-3 nopadding">             
+                <input type='text' class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/d/Y"); ?>" />              
+              </div>
+              
+              <div class="col-xs-2 nopadding" style="vertical-align:bottom;" align="center">
+                <label style="padding:1px;">TO</label>
+              </div>
+              
+              <div class="col-xs-3 nopadding">              
+                <input type='text' class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>" />              
+              </div>           
+            </div>   
+          </div>
+
+          <div id="dtemonth" style="display:none">
+              <div class="col-xs-12 nopadding">
+                <div class="col-xs-3 nopadding">          
+                  <select id="selyr" name="selyr" class="form-control input-sm selectpicker"  tabindex="4">
+                    <?php
+                      $yrnow = date("Y");
+                      $yrstart = 2023;
+                      for($i=$yrnow; $i>=$yrstart ; $i--){
+                    ?>
+                      <option value="<?=$i?>"><?=$i?></option>     
+                    <?php
+                      }
+                    ?>
+                  </select>           
+                </div>
+              </div>
+          </div>
+        </td>
       </tr>
     </table>
   </form>
@@ -83,17 +110,30 @@ include('../include/access.php');
       format: 'MM/DD/YYYY'
     });
 
+    $("#selrpt").on("change", function(){
+      if($(this).val()=="Accounting/BalSheet_Monthly"){
+        $("#dtelabel").html("<b>Year: </b>");
+        $("#dterange").hide();
+        $("#dtemonth").show();
+      }else{
+        $("#dtelabel").html("<b>Date Range: </b>");
+        $("#dterange").show();
+        $("#dtemonth").hide();
+      }
+    });
+
     $('#btnView').on("click", function(){
-      $dval = $("#seltyp").val();
-      $('#frmrep').attr("action", "Accounting/BalSheet.php");
+      $dval = $("#selrpt").val();
+      $('#frmrep').attr("action", $dval+".php");
       $('#frmrep').submit();
     });
 
     $('#btnexcel').on("click", function(){
-      $dval = $("#seltyp").val();
-      $('#frmrep').attr("action", "Accounting/BalSheet_xls.php");
+      $dval = $("#selrpt").val();
+      $('#frmrep').attr("action", $dval+"_xls.php");
       $('#frmrep').submit();
     });
+	
 	
   });
 
