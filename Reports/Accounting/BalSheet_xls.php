@@ -43,6 +43,18 @@
 		$compname =  $row['compname'];
 	}
 
+	//default acct for retained earnings
+	$tagwithRetained = 0;
+
+	$acct_retained = "";
+	$title_retained = "";
+	$result=mysqli_query($con,"Select * From accounts_default where compcode='$company' and ccode='EQ_RETAINED'");
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
+		$acct_retained = $row['cacctno'];
+		$title_retained = $row['cdescription'];
+	}
+
 	$date1 = $_POST["date1"];
 	$date2 = $_POST["date2"];
 
@@ -54,9 +66,46 @@
 		$allaccounts[] = $row;
 	}
 
+	//RETAINED EARNING - FROM INCOME STATEMENT
+	$RetainedGross = 0;
+	$RetainedREV = 0;
+	$RetainedCOS = 0;
+	$RetainedEXP = 0;
+		$sql = "Select B.ccategory, 
+		CASE WHEN B.ccategory='COST OF SALES' THEN sum(A.ndebit) - sum(A.ncredit) 
+				WHEN B.ccategory='EXPENSES' THEN sum(A.ndebit) - sum(A.ncredit)
+				WHEN B.ccategory='REVENUE' THEN sum(A.ncredit) - sum(A.ndebit)
+		END as nbalance
+		From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
+		where A.compcode='$company' and A.ddate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
+		and B.cFinGroup = 'Income Statement'
+		Group By B.ccategory
+		Having sum(A.ndebit)<>0 or sum(A.ncredit)<>0
+		Order By B.ccategory";
+	$result=mysqli_query($con,$sql);
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
+		if($row['ccategory']=="REVENUE"){
+			$RetainedREV = $row['nbalance'];
+		}
+
+		if($row['ccategory']=="COST OF SALES"){
+			$RetainedCOS = $row['nbalance'];
+		}
+
+		if($row['ccategory']=="EXPENSES"){
+			$RetainedEXP = $row['nbalance'];
+		}
+	}
+
+	$RetainedGross = (floatval($RetainedREV) - floatval($RetainedCOS)) - floatval($RetainedEXP);
 
 	//glactivity
 		$arrallwithbal = array();
+
+		$arrallwithbal[] = $acct_retained;
+		getparent($acct_retained);
+
 		$sql = "Select A.acctno, B.cacctdesc, sum(A.ndebit) as ndebit, sum(A.ncredit) as ncredit
 				From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
 				where A.compcode='$company' and A.ddate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
@@ -238,7 +287,13 @@
 			$cnt++;
 			$xcvb = "";
 			if($row['ctype']=="Details"){
-				$xcvb = gettotal($row['cacctid'], $row['ccategory']);
+
+				if($row['cacctid']==$acct_retained){
+					$tagwithRetained = 1;
+					$xcvb = $RetainedGross;
+				}else{
+					$xcvb = gettotal($row['cacctid'], $row['ccategory']);
+				}
 
 				for ($x = 0; $x < intval($row['nlevel']); $x++) {
 					$arrlvlamt[$x] = $arrlvlamt[$x] + $xcvb;
