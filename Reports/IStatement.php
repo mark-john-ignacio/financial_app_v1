@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "StockLedger.php";
+$_SESSION['pageid'] = "IncomeStatement.php";
 
 include('../Connection/connection_string.php');
 include('../include/denied.php');
