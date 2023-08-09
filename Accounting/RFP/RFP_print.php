@@ -404,8 +404,32 @@ function numberTowords($num)
 				<tr>
 					<td align="center" class="tdpadx"><?=$cremakrs;?></td> 
 					<td align="right" class="tdpadx tdright" nowrap><?php echo number_format((floatval($totamt) + floatval($ewtamt)),2);?></td>					
-					<td align="right" class="tdpadx tdright" nowrap><?=(floatval($totsAPVAT[$rowdtls['capvno']])!=0) ? number_format( $totsAPVAT[$rowdtls['capvno']],2) : "-";?></td>
-					<td align="right" class="tdpadx tdright" nowrap><?=(floatval($totsAPEWT[$rowdtls['capvno']])!=0) ? number_format($totsAPEWT[$rowdtls['capvno']],2) : "-";?></td>
+					<td align="right" class="tdpadx tdright" nowrap>
+						<?php
+							if(isset($totsAPVAT[$rowdtls['capvno']])){
+								if(floatval($totsAPVAT[$rowdtls['capvno']])!=0) {
+									echo number_format( $totsAPVAT[$rowdtls['capvno']],2);
+								}else{
+									echo "-";
+								}
+							}else{
+								"-";
+							}
+						?>
+					</td>
+					<td align="right" class="tdpadx tdright" nowrap>
+						<?php
+							if(isset($totsAPEWT[$rowdtls['capvno']])){
+								if(floatval($totsAPEWT[$rowdtls['capvno']])!=0) {
+									echo number_format( $totsAPEWT[$rowdtls['capvno']],2);
+								}else{
+									echo "-";
+								}
+							}else{
+								"-";
+							}
+						?>
+					</td>
 					<td align="right" class="tdpadx tdright" nowrap>
 					<?php
 						if(floatval($dueamt) == floatval($tottopay)){
