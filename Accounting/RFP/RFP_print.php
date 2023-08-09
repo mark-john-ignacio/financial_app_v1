@@ -217,15 +217,30 @@ function numberTowords($num)
 	//echo $xsql."<br><br>";
 
   $dparticdet = array();
+	$totsAPVAT = array();
+	$totsAPEWT = array();
   $sqldtlss = mysqli_query($con,$xsql);
   if (mysqli_num_rows($sqldtlss)!=0) {
     while($row = mysqli_fetch_array($sqldtlss, MYSQLI_ASSOC)){
-      $dparticdet[] = $row;
-    }
+			
+
+			if($row['cacctno'] != $disregVAT && $row['cacctno'] != $disregEWT){
+				if($row['ntotamt'] != 0 && $row['ntotdue'] != 0){
+					$dparticdet[] = $row;
+				}
+			}
+
+			if($row['cacctno'] == $disregVAT){
+				$totsAPVAT[$row['ctranno']] = $row['ntotvat'];
+			}
+
+			if($row['cacctno'] == $disregEWT){
+				$totsAPEWT[$row['ctranno']] = $row['ntotewt'];
+			}
+      
+    } 
   }
-	//echo "<pre>";
-	//print_r($dparticdet);
-	//echo "</pre>";
+
 ?>
 
 <!DOCTYPE html>
@@ -365,7 +380,8 @@ function numberTowords($num)
 				<?php 
           $tottopay = 0;
 
-					$xsql = "Select * from rfp_t where compcode='$company' and ctranno = '$csalesno'";
+					$xsql = "Select distinct capvno, cacctno, npayable from rfp_t where compcode='$company' and ctranno = '$csalesno' and cacctno not in ('".implode("','",$disreg)."')";
+
 					$sqlhead = mysqli_query($con,$xsql);
 
 					$totamt = 0;
@@ -380,24 +396,16 @@ function numberTowords($num)
 								$dueamt = $rssxz['ntotdue'];
 							}
 
-							if($rowdtls['capvno']==$rssxz['ctranno'] && $rssxz['cacctno']==$disregEWT){
-								$ewtamt = $rssxz['ntotewt'];
-							}
-
-							if($rowdtls['capvno']==$rssxz['ctranno'] && $rssxz['cacctno']==$disregVAT){
-								$vatamt = $rssxz['ntotvat'];
-							}
-
 						}
 
             $tottopay = $rowdtls['npayable'];
 				?>
 
 				<tr>
-					<td align="center" class="tdpadx"><?=$cremakrs;?></td>
+					<td align="center" class="tdpadx"><?=$cremakrs;?></td> 
 					<td align="right" class="tdpadx tdright" nowrap><?php echo number_format((floatval($totamt) + floatval($ewtamt)),2);?></td>					
-					<td align="right" class="tdpadx tdright" nowrap><?=(floatval($vatamt)!=0) ? number_format($vatamt,2) : "-";?></td>
-					<td align="right" class="tdpadx tdright" nowrap><?=(floatval($ewtamt)!=0) ? number_format($ewtamt,2) : "-";?></td>
+					<td align="right" class="tdpadx tdright" nowrap><?=(floatval($totsAPVAT[$rowdtls['capvno']])!=0) ? number_format( $totsAPVAT[$rowdtls['capvno']],2) : "-";?></td>
+					<td align="right" class="tdpadx tdright" nowrap><?=(floatval($totsAPEWT[$rowdtls['capvno']])!=0) ? number_format($totsAPEWT[$rowdtls['capvno']],2) : "-";?></td>
 					<td align="right" class="tdpadx tdright" nowrap>
 					<?php
 						if(floatval($dueamt) == floatval($tottopay)){
