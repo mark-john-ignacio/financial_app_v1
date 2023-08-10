@@ -8,6 +8,15 @@ require_once "../../Connection/connection_string.php";
 	$code = $_REQUEST['code'];
 
 		//ewt and vat accts PURCH_VAT EWTPAY
+		$EWTVATS = array();
+		$sql = "Select * from accounts_default where compcode='$company' and ccode in ('PURCH_VAT','EWTPAY')";
+		$result = mysqli_query ($con, $sql); 
+		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+			$EWTVATS[] = $row['cacctno'];
+		}
+
+
+		
 		$disreg = array();
 		$sql = "select a.capvno from paybill_t a left join paybill b on a.ctranno=b.ctranno where a.compcode='$company' and b.lcancelled=0";
 		$result = mysqli_query ($con, $sql); 
@@ -27,7 +36,7 @@ require_once "../../Connection/connection_string.php";
 			) C on B.compcode=C.compcode and A.ctranno=C.capvno and A.cacctno=C.cacctno
 		left join accounts D on A.compcode=D.compcode and A.cacctno=D.cacctid 
 		where A.compcode='$company' and B.lapproved=1 and B.ccode='$code'
-		and D.ccategory='LIABILITIES' and A.ncredit > 0
+		and D.ccategory='LIABILITIES' and A.ncredit > 0 and A.cacctno not in ('".implode("','",$EWTVATS)."')
 		group by A.ctranno, B.dapvdate, A.cacctno, D.cacctdesc, A.ncredit, B.cpaymentfor
 		order by B.dapvdate DESC";
 
