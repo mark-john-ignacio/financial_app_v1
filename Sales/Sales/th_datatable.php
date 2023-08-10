@@ -5,7 +5,7 @@
 
 	include('../../Connection/connection_string.php');
 
-	$column = array('A.ctranno', 'A.csiprintno', 'B.ctradename', 'A.ddate', 'A.dcutdate', 'A.lapproved', 'A.lcancelled', 'A.ccode', 'B.nlimit', 'A.ngross');
+	$column = array('A.ctranno', 'A.csiprintno', 'B.ctradename', 'A.dcutdate', 'A.ngross');
 
 	$query = "SELECT * FROM `sales` A LEFT JOIN `customers` B ON A.`compcode` = B.`compcode` and A.`ccode` = B.`cempid` where A.compcode='".$_SESSION['companyid']."' ";
 
