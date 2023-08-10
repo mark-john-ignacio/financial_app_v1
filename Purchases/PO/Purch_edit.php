@@ -115,7 +115,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				<li><a href="#menu1">Delivery/Billing</a></li>
 			</ul>
 
-			<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left;overflow: auto">
+			<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left; overflow: inherit !important;">
  				<div class="tab-content">  
 
       		<div id="home" class="tab-pane fade in active" style="padding-left:5px;">
@@ -380,7 +380,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						width: 100%;
 						height: 250px;
 						text-align: left;
-						overflow: scroll">
+						overflow: auto">
 	
             <table id="MyTable" class="MyTable" cellpadding"3px" width="130%" border="0">
 							<thead> 

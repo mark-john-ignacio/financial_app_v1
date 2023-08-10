@@ -79,7 +79,7 @@
 					<li><a href="#menu1">Delivery/Billing</a></li>
 				</ul>
 
-				<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left;overflow: auto">
+				<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left; overflow: inherit !important;">
 					<div class="tab-content">  
 
 						<div id="home" class="tab-pane fade in active" style="padding-left:5px;">
@@ -101,7 +101,7 @@
 									<tH width="150" style="padding:2px">PO Date:</tH>
 									<td width="250" style="padding:2px;">
 										<div class="col-xs-5 nopadding">
-											<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date("m/d/Y"); ?>" readonly/>
+											<input type='text' class="datepick form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date("m/d/Y"); ?>"/>
 										</div>
 									</td>
 								</tr>
@@ -314,7 +314,7 @@
 							width: 100%;
 							height: 300px;
 							text-align: left;
-							overflow: scroll">
+							overflow: auto">
 		
 							<table id="MyTable" class="MyTable" width="130%">
 								<thead>
