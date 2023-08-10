@@ -115,5 +115,5 @@
 </form>
 <script>
 	alert('<?=$mggx?>');
-  document.forms['frmpos'].submit();
+  //document.forms['frmpos'].submit();
 </script>
