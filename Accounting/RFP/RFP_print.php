@@ -468,6 +468,7 @@ function numberTowords($num)
 
 			</table>
 
+			<!--
         <div style="padding-top: 10px !important;"><b>Entry</b></div>
         <table border="0" width="60%" style="border-collapse: collapse;">  
           <tr>
@@ -477,6 +478,7 @@ function numberTowords($num)
           </tr>
 
           <?php
+					
           $ntotdebit = 0;
           $xsql = "select A.cacctno, A.cacctdesc, A.npayable as namt
           from rfp_t A
@@ -490,11 +492,12 @@ function numberTowords($num)
             while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
               if(floatval($row['namt']) != 0){
 								$forpay = $forpay + floatval($row['namt']);
+					
           ?> 
 
           <tr>
-            <td> <?=$row['cacctdesc']?> </td>
-            <td align="right" class="tdpadx tdright" nowrap><?php echo number_format($row['namt'],2);?></td>
+            <td> <?//=$row['cacctdesc']?> </td>
+            <td align="right" class="tdpadx tdright" nowrap><?php// echo number_format($row['namt'],2);?></td>
             <td>&nbsp;</td>
           </tr>
           <?php
@@ -504,13 +507,13 @@ function numberTowords($num)
           ?>
 
           <tr>
-            <td><?=$Bankacctdesc?></td>
+            <td><?//=$Bankacctdesc?></td>
             <td>&nbsp;</td>
-            <td align="right" class="tdpadx tdright" nowrap><?php echo number_format($forpay,2);?></td>
+            <td align="right" class="tdpadx tdright" nowrap><?php// echo number_format($forpay,2);?></td>
           </tr>
 
         </table>
-
+				-->
       <div style="padding-top: 20px !important"><i>Amount in words: </i> <?=strtoupper(numberTowords($forpay));?></div>
 		</td>
 	</tr>
@@ -526,7 +529,6 @@ function numberTowords($num)
         </tr>
 
 				<?php
-
 					$unapp = "";
 					$dalapp = "";
 					$tatpp = "";

@@ -28,6 +28,22 @@ $ctr = $ctr + 1;
 	}
 }
 
+
+$secz = $_POST['chkSections'];
+$ctr = 0;
+mysqli_query($con,"delete from users_sections where userid='$userid'");
+foreach ($secz as $id){
+	$ctr = $ctr + 1;
+
+	$sql = "insert into users_sections(section_nid,userid) 
+	values('$id','$userid')";
+	
+	if (!mysqli_query($con, $sql)) {
+		printf("Errormessage: %s\n", mysqli_error($con));
+	}
+}
+
+
 echo '<script language="javascript">
 alert("User\'s Access Successfully Updated")
 location.href="users.php?f="

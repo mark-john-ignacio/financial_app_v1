@@ -16,6 +16,15 @@ $employeeid = $_REQUEST['empedit'];
 			@$arrpgist[] = $row['pageid']; 
 		}
 	}
+
+  @$arrseclist[] = "";
+  $sql = mysqli_query($con,"select * from users_sections where userid = '$employeeid'");
+	if (mysqli_num_rows($sql)!=0) {
+		while($row = mysqli_fetch_array($sql, MYSQLI_ASSOC)){
+			@$arrseclist[] = $row['section_nid']; 
+		}
+	}
+  
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -630,6 +639,35 @@ xmlhttp.send();
     </div>
     
      <div id="menu2" class="tab-pane fade">
+     <br>
+       <b><u><i>Purchase Request</i></u></b>
+        <div style="padding-left:10px;"> 
+        <div class="col-xs-12 nopadwleft">
+         	<div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="PR.php" id="chkBox31" <?=(in_array("PR.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;View List</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="PR_new.php" id="chkBox32" <?=(in_array("PR_new.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Add New</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="PR_edit.php" id="chkBox33" <?=(in_array("PR_edit.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="PR_post" id="chkBox34" <?=(in_array("PR_post",@$arrpgist)) ? "checked" : "";?>>&nbsp;Post</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="PR_cancel" id="chkBox35" <?=(in_array("PR_cancel",@$arrpgist)) ? "checked" : "";?>>&nbsp;Cancel</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="PR_print" id="chkBox114" <?=(in_array("PR_print",@$arrpgist)) ? "checked" : "";?>>&nbsp;Print</label>
+            </div>
+
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="PR_unpost.php" id="chkBox114" <?=(in_array("PR_unpost.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Un-Post</label>
+            </div>
+		</div>
+		</div>
+
 	 <br>
       <b><u><i>Purchase Order</i></u></b>
         <div style="padding-left:10px;"> 
@@ -1047,8 +1085,8 @@ xmlhttp.send();
 		</div>
 		</div>
 		 
-	   <br>
-       <b><u><i>Inventory Adjustment</i></u></b>
+	    <br>
+      <b><u><i>Inventory Adjustment</i></u></b>
         <div style="padding-left:10px;"> 
         <div class="col-xs-12 nopadwleft">
          	<div class="col-xs-2 nopadding">
@@ -1066,8 +1104,29 @@ xmlhttp.send();
             <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="InvAdj_cancel" id="chkBox123" <?=(in_array("InvAdj_cancel",@$arrpgist)) ? "checked" : "";?>>&nbsp;Cancel</label>
             </div>
-		</div>
-		</div>
+		      </div>
+		    </div>
+
+        <br><br><br>
+
+					<h4><i>Sections Access</i></h4> 
+
+					<?php
+          $company = $_SESSION['companyid'];
+					$sqloc = mysqli_query($con,"select * from locations where compcode = '$company'");
+					if (mysqli_num_rows($sqloc)!=0) {
+						while($rowloc = mysqli_fetch_array($sqloc, MYSQLI_ASSOC)){
+					?>
+						<div class="col-xs-12 nopadwleft">
+							<label><input type="checkbox" name="chkSections[]" value="<?=$rowloc['nid']?>" <?=(in_array($rowloc['nid'],@$arrseclist)) ? "checked" : "";?>>&nbsp;<?=$rowloc['cdesc']?></label>
+						</div>
+
+					<?php
+						}
+					}
+
+					?>
+
       <!--  
       <br>
        <b><u><i>Inventory Receiving</i></u></b>

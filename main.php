@@ -351,7 +351,7 @@
                 <i class="fgly flaticon-020-receipt"></i> Quotation
 							</a>
 						</li>
-						<li class="side-item-category">Trade Transactions</li>
+						<!--<li class="side-item-category">Trade Transactions</li>-->
 						<li>
 							<a href="javascript:;" onClick="setpage('Sales/SO/SO.php');">
                 <i class="fgly-sm flaticon-003-shopping-list"></i> Sales Order
@@ -378,7 +378,7 @@
                 <i class="fgly flaticon-060-cash-register"></i> Point of Sale
 							</a>
 						</li>
-						-->																	
+																						
 						<li class="side-item-category">Non Trade Transactions</li>						
 						<li>
 							<a href="javascript:;" onClick="setpage('SalesNT/SO/SO.php');">
@@ -399,7 +399,7 @@
 							<a href="javascript:;" onClick="setpage('SalesNT/Return/SR.php');">
                 <i class="icon-action-undo"></i> SR Non-Trade
 							</a>
-						</li>                        
+						</li>   -->	                     
 					</ul>
 				</li>
 				<li>
@@ -409,6 +409,11 @@
 					<span class="arrow"></span>
 					</a>
 					<ul class="sub-menu">
+						<li>
+							<a href="javascript:;" onClick="setpage('Purchases/PR/PR.php');">
+							<i class="fa fa-cart-plus" ></i> Purchase Request
+							</a>
+						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('Purchases/PO/Purch.php');">
                 <i class="glyphicon glyphicon-list"> </i> Purchase Order
@@ -517,18 +522,18 @@
 					<span class="arrow "></span>
 					</a>
 					<ul class="sub-menu">
-						<li>
-							<a href="javascript:;" onClick="setpage('InvCnt/Inv.php');">
+					<li>
+							<a href="javascript:;" onClick="setpage('Inventory/Count/Inv.php');">
 							 <i class="fa fa-tasks"> </i> Inventory Count
 							</a>
 						</li>   
 						<li>
-							<a href="javascript:;" onClick="setpage('InvTrans/Inv.php');">
+							<a href="javascript:;" onClick="setpage('Inventory/Transfers/Inv.php');">
 							 <i class="fa fa-tasks"> </i> Inventory Transfer
 							</a>
 						</li>  						
 						<li>
-							<a href="javascript:;" onClick="setpage('InvAdj/Inv.php');">
+							<a href="javascript:;" onClick="setpage('Inventory/Adjustment/Inv.php');">
 							 <i class="fa fa-tasks"> </i> Inventory Adjustment
 							</a>
 						</li>

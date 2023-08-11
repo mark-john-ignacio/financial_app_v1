@@ -1445,7 +1445,7 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 			
 	var tditmamount = "<td width=\"100\" nowrap> <input type='text' value='"+baseprice.toFixed(4)+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnamount\" id='txtnamount"+lastRow+"' readonly> </td>";
 	
-	var tditmdel = "<td width=\"90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del"+ lastRow +"' value='delete' data-var='"+lastRow+"'/> &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> </td>";
+	var tditmdel = "<td width=\"90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del"+ lastRow +"' value='delete' data-var='"+lastRow+"'/> &nbsp; </td>"; // <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/>
 
 	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmewts + tditmvats + tditmunit + tditmqty + tditmprice + tditmdisc + tditmbaseamount + tditmamount + tditmdel + '</tr>');
 
