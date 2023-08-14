@@ -26,7 +26,7 @@ include('../../include/access2.php');
 
 	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
 
-	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../Bootstrap/js/jquery-3.6.0.min.js"></script>
 	<script src="../../js/bootstrap3-typeahead.min.js"></script>
 	<script src="../../include/autoNumeric.js"></script>
 	<!--
@@ -46,7 +46,7 @@ include('../../include/access2.php');
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
 
-	<form action="RFP_newsave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data" onsubmit="return chkform()">
+	<form action="RFP_newsave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
 		<fieldset>
 				<legend>Request For Payment</legend>
 				
@@ -178,7 +178,7 @@ include('../../include/access2.php');
 								<button type="button" class="btn btn-info btn-sm" id="btnShowApv" name="btnShowApv">
 									APV<br> (Insert)
 								</button>																																		
-								<button type="submit" class="btn btn-success btn-sm" tabindex="6">
+								<button type="button" class="btn btn-success btn-sm" tabindex="6" onclick="chkform();">
 									Save<br> (CTRL+S)
 								</button>														
 							</td>
@@ -190,7 +190,7 @@ include('../../include/access2.php');
 
 	</form>
 
-				<!-- DETAILS ONLY -->
+			<!-- DETAILS ONLY -->
 				<div class="modal fade" id="myAPModal" role="dialog" data-keyboard="false" data-backdrop="static">
 					<div class="modal-dialog modal-lg">
 						<div class="modal-content">
@@ -226,9 +226,9 @@ include('../../include/access2.php');
 						</div><!-- /.modal-content -->
 					</div><!-- /.modal-dialog -->
 				</div><!-- /.modal -->
-				<!-- End Bootstrap modal -->
+			<!-- End Bootstrap modal -->
 
-				<!-- Banks List -->
+			<!-- Banks List -->
 				<div class="modal fade" id="myChkModal" role="dialog" data-keyboard="false" data-backdrop="static">
 					<div class="modal-dialog modal-lg">
 						<div class="modal-content">
@@ -254,9 +254,9 @@ include('../../include/access2.php');
 						</div><!-- /.modal-content -->
 					</div><!-- /.modal-dialog -->
 				</div><!-- /.modal -->
-				<!-- End Banks modal -->
+			<!-- End Banks modal -->
 
-				<!-- 1) Alert Modal -->
+			<!-- 1) Alert Modal -->
 				<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
 					<div class="vertical-alignment-helper">
 						<div class="modal-dialog vertical-align-top">
@@ -271,7 +271,7 @@ include('../../include/access2.php');
 						</div>
 					</div>
 				</div>
-				<!-- End Alert modal -->
+			<!-- End Alert modal -->
 
 </body>
 </html>
@@ -299,124 +299,123 @@ include('../../include/access2.php');
 	});
 
 
-$(document).ready(function() {
+	$(document).ready(function() {
 
-	$(".nav-tabs a").click(function(){
-    $(this).tab('show');
-	});
+		$(".nav-tabs a").click(function(){
+			$(this).tab('show');
+		});
 
 
-	$("#txtnamount").autoNumeric('init',{mDec:2,wEmpty:'zero'});
+		$("#txtnamount").autoNumeric('init',{mDec:2,wEmpty:'zero'});
 
-  $('.datepick').datetimepicker({
-    format: 'MM/DD/YYYY',
-  });
+		$('.datepick').datetimepicker({
+			format: 'MM/DD/YYYY',
+		});
 
-	$("#file-0").fileinput({
-    theme: 'fa5',
-    uploadUrl: '#',
-		showUpload: false,
-		showClose: false,
-		allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
-		overwriteInitial: false,
-		maxFileSize:2000,
-		maxFileCount: 5,
-		fileActionSettings: { showUpload: false, showDrag: false,}
-  });
+		$("#file-0").fileinput({
+			showUpload: false,
+			showClose: false,
+			allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+			overwriteInitial: false,
+			maxFileSize:100000,
+			maxFileCount: 5,
+			browseOnZoneClick: true,
+			fileActionSettings: { showUpload: false, showDrag: false,}
+		});
 
-	$('#txtcust').typeahead({
-		
-		items: 10,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_supplier.php",
-				dataType: "json",
-				data: {
-					query: $("#txtcust").val()
-				},
-				success: function (data) {
-					response(data);
-				}
-			});
-		},
-		autoSelect: true,
-		displayText: function (item) {
-			return '<div style="border-top:1px solid gray; width: 300px"><span><b>' + item.id + '</span><br><small>' + item.value + "</small></div>";
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 
 
-			$('#txtcust').val(item.value).change(); 
-			$("#txtcustid").val(item.id);
-				
-			showapvmod(item.id);
+		$('#txtcust').typeahead({
+			
+			items: 10,
+			source: function(request, response) {
+				$.ajax({
+					url: "../th_supplier.php",
+					dataType: "json",
+					data: {
+						query: $("#txtcust").val()
+					},
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			autoSelect: true,
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span><b>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 
 
-		}
-	});
+				$('#txtcust').val(item.value).change(); 
+				$("#txtcustid").val(item.id);
+					
+				showapvmod(item.id);
 
-	$("#btnsearchbank").on("click", function() {
+			}
+		});
 
-		$('#MyDRDetList tbody').empty();
-		
-			$.ajax({
-        url: 'th_banklist.php',
-        dataType: 'json',
-				async:false,
-        method: 'post',
-        success: function (data) {
-        // var classRoomsTable = $('#mytable tbody');
-          console.log(data);
-          $.each(data,function(index,item){
+		$("#btnsearchbank").on("click", function() {
 
-							$("<tr id=\"bank"+index+"\">").append(
-								$("<td>").text(item.ccode),
-								$("<td>").text(item.cname),
-								$("<td>").text(item.cbankacctno)
-							).appendTo("#MyDRDetList tbody");
+			$('#MyDRDetList tbody').empty();
+			
+				$.ajax({
+					url: 'th_banklist.php',
+					dataType: 'json',
+					async:false,
+					method: 'post',
+					success: function (data) {
+					// var classRoomsTable = $('#mytable tbody');
+						console.log(data);
+						$.each(data,function(index,item){
+
+								$("<tr id=\"bank"+index+"\">").append(
+									$("<td>").text(item.ccode),
+									$("<td>").text(item.cname),
+									$("<td>").text(item.cbankacctno)
+								).appendTo("#MyDRDetList tbody");
+									
+							$("#bank"+index).on("click", function() {
+								$("#txtBank").val(item.ccode);
+								$("#txtBankName").val(item.cname);
 								
-						$("#bank"+index).on("click", function() {
-							$("#txtBank").val(item.ccode);
-							$("#txtBankName").val(item.cname);
-							
-							$("#myChkModal").modal("hide");
+								$("#myChkModal").modal("hide");
+							});
+
 						});
 
-          });
+					},
+					error: function (req, status, err) {
 
-        },
-        error: function (req, status, err) {
+						$("#AlertMsg").html("<b>ERROR: </b>Something went wrong!<br>Status: "+ status + "<br>Error: "+err);
+						$("#alertbtnOK").show();
+						$("#AlertModal").modal('show');
 
-					$("#AlertMsg").html("<b>ERROR: </b>Something went wrong!<br>Status: "+ status + "<br>Error: "+err);
-					$("#alertbtnOK").show();
-					$("#AlertModal").modal('show');
+						console.log('Something went wrong', status, err);
+					}
+				});
 
-					console.log('Something went wrong', status, err);
-				}
-      });
+			
+			$("#myChkModal").modal("show");
+		});
 
+		$("#btnShowApv").on("click", function() {
+			if($("#txtcustid").val()!==""){
+				showapvmod($("#txtcustid").val());
+			}else{
+				$("#AlertMsg").html("<b>ERROR: </b>Pick a valid customer!");
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
+			}
+			
+		});
 		
-		$("#myChkModal").modal("show");
+		$("#allbox").click(function(e){
+			var table= $(e.target).closest('table');
+			$('td input:checkbox',table).not(this).prop('checked', this.checked);
+		});
+
 	});
 
-	$("#btnShowApv").on("click", function() {
-		if($("#txtcustid").val()!==""){
-			showapvmod($("#txtcustid").val());
-		}else{
-			$("#AlertMsg").html("<b>ERROR: </b>Pick a valid customer!");
-			$("#alertbtnOK").show();
-			$("#AlertModal").modal('show');
-		}
-		
-	});
-	
-	$("#allbox").click(function(e){
-		var table= $(e.target).closest('table');
-		$('td input:checkbox',table).not(this).prop('checked', this.checked);
-	});
-
-});
-
-		
 	function showapvmod(custid){
 
 		if ( $.fn.DataTable.isDataTable('#MyAPVList') ) {
@@ -567,7 +566,7 @@ $(document).ready(function() {
 	}
 
 	function chkform(){
-		
+
 		var emptyFields = $('input.required').filter(function() {
 			return $(this).val() === "";
 		}).length;
@@ -588,14 +587,15 @@ $(document).ready(function() {
 
 			$("#hdndetails").val(tx);
 
-			return true;
+			//return true;
+			$("#frmpos").submit();
 		} else {
 			
 			$("#AlertMsg").html("<b>ERROR: </b>Required Fields!<br>Supplier Code/Name, Bank Code/Name, and APV No.");
 			$("#alertbtnOK").show();
 			$("#AlertModal").modal('show');
 
-			return false;
+			//return false;
 		}
 
 	}
