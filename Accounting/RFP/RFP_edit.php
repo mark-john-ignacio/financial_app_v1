@@ -545,9 +545,9 @@
 		if(fileslist.length>0){
 			$("#file-0").fileinput({
 				theme: 'fa5',
-				uploadUrl: '#',
 				showUpload: false,
 				showClose: false,
+				browseOnZoneClick: true,
 				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
 				overwriteInitial: false,
 				maxFileSize:2000,
@@ -562,9 +562,9 @@
 		}else{
 			$("#file-0").fileinput({
 				theme: 'fa5',
-				uploadUrl: '#',
 				showUpload: false,
 				showClose: false,
+				browseOnZoneClick: true,
 				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
 				overwriteInitial: false,
 				maxFileSize:2000,
