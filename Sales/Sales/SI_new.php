@@ -95,8 +95,9 @@ $company = $_SESSION['companyid'];
     
 	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
-   <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/select2/css/select2.css?h=<?php echo time();?>">
     
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 <script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
@@ -105,7 +106,7 @@ $company = $_SESSION['companyid'];
 	<script src="../../Bootstrap/js/jquery.numeric.js"></script>
 	<script src="../../Bootstrap/js/jquery.inputlimiter.min.js"></script>
 -->
-
+<script src="../../Bootstrap/select2/js/select2.full.min.js"></script>
 <script src="../../Bootstrap/js/bootstrap.js"></script>
 <script src="../../Bootstrap/js/moment.js"></script>
 <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
@@ -268,8 +269,8 @@ $company = $_SESSION['companyid'];
 								<tH width="100">EWT Code</tH>
 								<td style="padding:2px">
 									<div class="col-xs-11 nopadding">
-										<select id="selewt" name="selewt" class="form-control input-sm selectpicker"  tabindex="3">
-												<option value="none">None</option>
+										<select id="selewt" name="selewt[]" class="form-control input-sm selectpicker"  tabindex="3" multiple required>
+												<!--<option value="none">None</option>-->
 												<option value="multi">Multiple</option>
 												<?php
 													foreach(@$arrewtlist as $rows){
@@ -330,28 +331,27 @@ $company = $_SESSION['companyid'];
 
 				</table>
 
-				<div class="alt2" dir="ltr" style="
-						margin: 0px;
-						padding: 3px;
-						border: 1px solid #919b9c;
-						width: 100%;
-						height: 250px;
-						text-align: left;
-						overflow: auto">
+				<div style="border: 1px solid #919b9c; height: 40vh; overflow: auto">
+					<div id="tableContainer" class="alt2" dir="ltr" style="
+								margin: 0px;
+								padding: 3px;
+								width: 1250px;
+								height: 300px;
+								text-align: left;">
 		
-						<table id="MyTable" class="MyTable table table-condensed" width="120%">
+						<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
 							<thead>
 								<tr>
-									<th style="border-bottom:1px solid #999">Code</th>
-									<th style="border-bottom:1px solid #999">Description</th>
-									<th style="border-bottom:1px solid #999" class="chkVATClass">EWTCode</th>
-									<th style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
-									<th style="border-bottom:1px solid #999">UOM</th>
-									<th style="border-bottom:1px solid #999">Qty</th>
-									<th style="border-bottom:1px solid #999">Price</th>
-									<th style="border-bottom:1px solid #999">Discount</th>
-									<th style="border-bottom:1px solid #999">Amount</th>
-									<th style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
+									<th width="100px" style="border-bottom:1px solid #999">Code</th>
+									<th width="250px" style="border-bottom:1px solid #999">Description</th>
+									<th width="150px" style="border-bottom:1px solid #999" class="chkVATClass">EWTCode</th>
+									<th width="100px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
+									<th width="100px" style="border-bottom:1px solid #999">UOM</th>
+									<th width="100px" style="border-bottom:1px solid #999">Qty</th>
+									<th width="100px" style="border-bottom:1px solid #999">Price</th>
+									<th width="100px" style="border-bottom:1px solid #999">Discount</th>
+									<th width="100px" style="border-bottom:1px solid #999">Amount</th>
+									<th width="100px" style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
 									<th style="border-bottom:1px solid #999">&nbsp;</th>
 								</tr>
 							</thead>
@@ -359,7 +359,7 @@ $company = $_SESSION['companyid'];
 							</tbody>
 												
 						</table>
-
+					</div>
 				</div>
 
 		<br>
@@ -420,23 +420,25 @@ $company = $_SESSION['companyid'];
 							<div class="modal-header">
 									<button type="button" class="close"  aria-label="Close"  onclick="chkCloseInfo();"><span aria-hidden="true">&times;</span></button>
 									<h3 class="modal-title" id="invheader"> Additional Details Info</h3>           
-				</div>
+							</div>
 			
 							<div class="modal-body">
 									<input type="hidden" name="hdnrowcnt2" id="hdnrowcnt2">
 									<table id="MyTable2" class="MyTable table table-condensed" width="100%">
-							<tr>
-							<th style="border-bottom:1px solid #999">Code</th>
-							<th style="border-bottom:1px solid #999">Description</th>
-													<th style="border-bottom:1px solid #999">Field Name</th>
-							<th style="border-bottom:1px solid #999">Value</th>
-													<th style="border-bottom:1px solid #999">&nbsp;</th>
-						</tr>
-						<tbody class="tbody">
-											</tbody>
+										<thead>
+											<tr>
+												<th style="border-bottom:1px solid #999">Code</th>
+												<th style="border-bottom:1px solid #999">Description</th>
+												<th style="border-bottom:1px solid #999">Field Name</th>
+												<th style="border-bottom:1px solid #999">Value</th>
+												<th style="border-bottom:1px solid #999">&nbsp;</th>
+											</tr>
+										</thead>
+										<tbody class="tbody">
+										</tbody>
 									</table>
 			
-				</div>
+							</div>
 					</div><!-- /.modal-content -->
 			</div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
@@ -689,6 +691,8 @@ $company = $_SESSION['companyid'];
 	  $('#txtprodnme').attr("disabled", true);
 	  $('#txtprodid').attr("disabled", true);
 	  $(".chkitmsadd").hide();
+
+		$("#selewt").select2();
 
   });
 
@@ -1099,17 +1103,19 @@ $company = $_SESSION['companyid'];
 		});
 
 		$("#selewt").on("change", function(){ 
-			var rowCount = $('#MyTable tr').length;
 
+			var rowCount = $('#MyTable tr').length;
 			if(rowCount>1){
-				if($(this).val()!=="multi"){			
+				if($(this).val()!=""){			
 						for (var i = 1; i <= rowCount-1; i++) {
 
 							$("#selitmewtyp"+i).attr("disabled", false);
 
-							var slctdvalid = $("#selitmewtyp"+i).val($(this).val());
+							var slctdvalid = $(this).val();
 
-							$("#selitmewtyp"+i).attr("disabled", true);
+							$("#selitmewtyp"+i).val(slctdvalid);
+							$("#selitmewtyp"+i).trigger('change'); 
+							
 						}
 				}else{
 					for (var i = 1; i <= rowCount-1; i++) {
@@ -1286,17 +1292,31 @@ $company = $_SESSION['companyid'];
 		}
 
 			
-		var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode"+lastRow+"\">"+itmcode+" <input type='hidden' value='"+cref+"' name=\"txtcreference\" id=\"txtcreference\"> <input type='hidden' value='"+nrefident+"' name=\"txtcrefident\" id=\"txtcrefident\"> <input type='hidden' value='"+itmctype+"' name=\"hdncitmtype\" id=\"hdncitmtype"+lastRow+"\"> </td>";
+		var tditmcode = "<td> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode"+lastRow+"\">"+itmcode+" <input type='hidden' value='"+cref+"' name=\"txtcreference\" id=\"txtcreference\"> <input type='hidden' value='"+nrefident+"' name=\"txtcrefident\" id=\"txtcrefident\"> <input type='hidden' value='"+itmctype+"' name=\"hdncitmtype\" id=\"hdncitmtype"+lastRow+"\"> </td>";
 		var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmdesc+"</td>";
 
 		var tditmewts = "";
-		if(xChkVatableStatus==1){ 
+		//if(xChkVatableStatus==1){ 
 			
 				var gvnewt = $("#selewt").val();
 				var xz = $("#hdnewtlist").val();
 				ewtoptions = "";
+
 				$.each(jQuery.parseJSON(xz), function() { 
-					if(gvnewt==this['ctaxcode']){
+
+					$iswith = false;
+					var looptaxcode = this['ctaxcode'];
+					if(gvnewt!=""){
+						$('#selewt > option:selected').each(function() {
+							//alert($(this).val()+"=="+looptaxcode);
+							if($(this).val()==looptaxcode){
+								$iswith = true;
+								return false; 
+							}
+						});
+					}
+
+					if($iswith){
 						isselctd = "selected";
 					}else{
 						isselctd = "";
@@ -1304,15 +1324,15 @@ $company = $_SESSION['companyid'];
 					ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
 				});
 
-				if(gvnewt=="none" || gvnewt=="multi"){
+				if(gvnewt==""){
 					isdisabled = "disabled";
 				}else{
 					isdisabled = "";
 				}
 
-				tditmewts = "<td width=\"100\" nowrap> <select class='form-control input-xs' name=\"selitmewtyp\" id=\"selitmewtyp"+lastRow+"\" "+isdisabled+"> <option value=\"none\">None</option>" + ewtoptions + "</select> </td>";
+				tditmewts = "<td width=\"150\" nowrap> <select class='form-control input-xs' name=\"selitmewtyp\" id=\"selitmewtyp"+lastRow+"\" "+isdisabled+" multiple> <option value=\"none\">None</option>" + ewtoptions + "</select> </td>";
 
-		}
+	//	}
 
 
 		var tditmvats = "";
@@ -1329,24 +1349,24 @@ $company = $_SESSION['companyid'];
 					taxoptions = taxoptions + "<option value='"+this['ctaxcode']+"' data-id='"+this['nrate']+"' "+isselctd+">"+this['ctaxdesc']+"</option>";
 				});
 
-			tditmvats = "<td width=\"100\" nowrap> <select class='form-control input-xs' name=\"selitmvatyp\" id=\"selitmvatyp"+lastRow+"\">" + taxoptions + "</select> </td>";
+			tditmvats = "<td nowrap> <select class='form-control input-xs' name=\"selitmvatyp\" id=\"selitmvatyp"+lastRow+"\">" + taxoptions + "</select> </td>";
 
 		}
 
-		var tditmunit = "<td width=\"100\" nowrap>"+uomoptions+"</td>";
+		var tditmunit = "<td nowrap>"+uomoptions+"</td>";
 			
 		
-		var tditmqty = "<td width=\"100\" nowrap> <input type='text' value='"+itmtotqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' "+qtystat+"> <input type='hidden' value='"+itmqtyunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+factz+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
+		var tditmqty = "<td nowrap> <input type='text' value='"+itmtotqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' "+qtystat+"> <input type='hidden' value='"+itmqtyunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+factz+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
 
-		var tditmprice = "asd<td width=\"100\" nowrap> <input type='text' value='"+price+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnprice\" id='txtnprice"+lastRow+"' > </td>";
+		var tditmprice = "asd<td nowrap> <input type='text' value='"+price+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnprice\" id='txtnprice"+lastRow+"' > </td>";
 		
-		var tditmdisc = "<td width=\"100\" nowrap> <input type='text' value='0' class='numeric form-control input-xs' style='text-align:right; cursor: pointer' name=\"txtndisc\" id='txtndisc"+lastRow+"'  readonly onclick=\"getdiscount('"+itmcode+"', "+lastRow+")\"> </td>";
+		var tditmdisc = "<td nowrap> <input type='text' value='0' class='numeric form-control input-xs' style='text-align:right; cursor: pointer' name=\"txtndisc\" id='txtndisc"+lastRow+"'  readonly onclick=\"getdiscount('"+itmcode+"', "+lastRow+")\"> </td>";
 
-		var tditmbaseamount = "<td width=\"100\" nowrap> <input type='text' value='"+curramtz+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtntranamount\" id='txtntranamount"+lastRow+"' readonly> </td>";
+		var tditmbaseamount = "<td nowrap> <input type='text' value='"+curramtz+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtntranamount\" id='txtntranamount"+lastRow+"' readonly> </td>";
 
-		var tditmamount = "<td width=\"100\" nowrap> <input type='text' value='"+baseprice+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnamount\" id='txtnamount"+lastRow+"' readonly> </td>";
+		var tditmamount = "<td nowrap> <input type='text' value='"+baseprice+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnamount\" id='txtnamount"+lastRow+"' readonly> </td>";
 
-		var tditmdel = "<td width=\90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del"+ itmcode +"' value='delete' data-var='"+lastRow+"'/> &nbsp; </td>";
+		var tditmdel = "<td nowrap> <input class='btn btn-danger btn-xs btn-block' type='button' id='del"+ itmcode +"' value='delete' data-var='"+lastRow+"'/></td>";
 
 		//<input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/>
 
@@ -1376,6 +1396,8 @@ $company = $_SESSION['companyid'];
 											$("#selitmvatyp"+lastRow).on("change", function() {
 												ComputeGross();
 											});
+
+											$("#selitmewtyp"+lastRow).select2();
 											
 
 
@@ -2318,7 +2340,20 @@ $company = $_SESSION['companyid'];
 						var crefident = $(this).find('input[type="hidden"][name="txtcrefident"]').val();
 						var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val(); 
 						var ewtcode = $(this).find('select[name="selitmewtyp"]').val();
-						var ewtrate = $(this).find('select[name="selitmewtyp"] option:selected').data('rate'); 
+
+						//getrate of selected
+						var ewtrate = "";
+						var cnt = 0;
+						$(this).find('select[name="selitmewtyp"] > option:selected').each(function() {
+							//	alert($(this).data("rate"));
+							cnt++;
+							if(cnt>1){
+								ewtrate = ewtrate + ";" + $(this).data("rate");
+							}else{
+								ewtrate = ewtrate + $(this).data("rate");
+							}
+						});
+
 						var vatcode = $(this).find('select[name="selitmvatyp"]').val(); 
 						var nrate = $(this).find('select[name="selitmvatyp"] option:selected').data('id'); 
 
@@ -2344,7 +2379,7 @@ $company = $_SESSION['companyid'];
 							ntranamt = ntranamt.replace(/,/g,'');
 						}
 
-						//alert("SI_newsavedet.php?trancode="+trancode+"&crefno="+crefno+"&crefident="+crefident+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+ nprice+"&ndiscount="+ndiscount+"&ntranamt="+ntranamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&ccode="+ccode+"&vatcode="+vatcode+"&nrate="+nrate);
+						//alert("SI_newsavedet.php?trancode="+trancode+"&crefno="+crefno+"&crefident="+crefident+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+ nprice+"&ndiscount="+ndiscount+"&ntranamt="+ntranamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&ccode="+ccode+"&vatcode="+vatcode+"&nrate="+nrate+"&ewtcode="+ewtcode+"&ewtrate="+ewtrate);
 
 						$.ajax ({
 							url: "SI_newsavedet.php",

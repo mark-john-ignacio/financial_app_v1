@@ -1549,8 +1549,7 @@ function save(){
 		$("input.numeric").on("keyup", function (e) {
 			setPosi($(this).attr('name'),e.keyCode,'MyTable');
 			computeGross();
-		});
-								
+		});								
 								
 								$("#txtcSalesAcctTitle"+lastRow).on("click focus", function(event) {
 									$(this).select();

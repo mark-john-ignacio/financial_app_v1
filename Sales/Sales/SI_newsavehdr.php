@@ -63,7 +63,11 @@ else {
 	$CurrRate= $_REQUEST['basecurrval']; 
 	$BaseGross= str_replace(",","",$_REQUEST['txtnBaseGross']);
 
-	$cewtcode = $_REQUEST['selewt'];
+	if(isset($_REQUEST['selewt'])){
+		$cewtcode = implode(",",$_REQUEST['selewt']);
+	}else{
+		$cewtcode = "";
+	}
 	
 	$RefMods= $_REQUEST['txtrefmod']; 
 	$RefModsNo= $_REQUEST['txtrefmodnos']; 

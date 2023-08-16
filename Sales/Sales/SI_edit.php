@@ -73,12 +73,13 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Coop Financials</title>
+	<title>Myx Financials</title>
     
 	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?=time();?>">
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
-   	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/select2/css/select2.css?h=<?php echo time();?>">
     
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 <script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
@@ -87,7 +88,7 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 <script src="../../Bootstrap/js/jquery.numeric.js"></script>
 <script src="../../Bootstrap/js/jquery.inputlimiter.min.js"></script>
 -->
-
+<script src="../../Bootstrap/select2/js/select2.full.min.js"></script>
 <script src="../../Bootstrap/js/bootstrap.js"></script>
 <script src="../../Bootstrap/js/moment.js"></script>
 <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
@@ -290,19 +291,20 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						<tH width="100">EWT Code</tH>
 						<td style="padding:2px">
 							<div class="col-xs-11 nopadding">
-								<select id="selewt" name="selewt" class="form-control input-sm selectpicker"  tabindex="3">
-										<option value="none" <?=($cewtcode=="none") ? "selected" : ""?>>None</option>
-										<option value="multi" <?=($cewtcode=="multi") ? "selected" : ""?>>Multiple</option>
+								<select id="selewt" name="selewt[]" class="form-control input-sm selectpicker"  tabindex="3" multiple>
 										<?php
+											$isselctd = "";
 											foreach(@$arrewtlist as $rows){
-												if($cewtcode==$rows['ctaxcode']){
-													$isselected = "selected";
+											//	echo $rows['ctaxcode'].":".$cewtcode;
+												if(in_array($rows['ctaxcode'], explode(",",$cewtcode))){
+													$isselctd = "selected";
 												}else{
-													$isselected = "";
+													$isselctd = "";
 												}
-												echo "<option value=\"".$rows['ctaxcode']."\" ".$isselected.">".$rows['ctaxcode'].": ".$rows['nrate']."%</option>";
+
+												echo "<option value=\"".$rows['ctaxcode']."\" ".$isselctd.">".$rows['ctaxcode'].": ".$rows['nrate']."%</option>";
 											}
-										?>
+										?>                         
 												
 								</select>
 							</div>
@@ -375,35 +377,36 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					</tr>
 				</table>
 
-        <div class="alt2" dir="ltr" style="
-					margin: 0px;
-					padding: 3px;
-					border: 1px solid #919b9c;
-					width: 100%;
-					height: 250px;
-					text-align: left;
-					overflow: auto">
-	
-            <table id="MyTable" class="MyTable table table-condensed" width="100%">
+				<div style="border: 1px solid #919b9c; height: 40vh; overflow: auto">
+					<div id="tableContainer" class="alt2" dir="ltr" style="
+								margin: 0px;
+								padding: 3px;
+								width: 1250px;
+								height: 300px;
+								text-align: left;">
+		
+						<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
 							<thead>
 								<tr>
-									<th style="border-bottom:1px solid #999">Code</th>
-									<th style="border-bottom:1px solid #999">Description</th>
-									<th style="border-bottom:1px solid #999" class="chkVATClass">EWTCode</th> 
-									<th style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>            
-									<th style="border-bottom:1px solid #999">UOM</th>
-									<th style="border-bottom:1px solid #999">Qty</th>
-									<th style="border-bottom:1px solid #999">Price</th>
-									<th style="border-bottom:1px solid #999">Discount</th>
-									<th style="border-bottom:1px solid #999">Amount</th>
-									<th style="border-bottom:1px solid #999">Total Amt in <?=$nvaluecurrbase; ?></th>
+									<th width="100px" style="border-bottom:1px solid #999">Code</th>
+									<th width="250px" style="border-bottom:1px solid #999">Description</th>
+									<th width="150px" style="border-bottom:1px solid #999" class="chkVATClass">EWTCode</th>
+									<th width="100px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
+									<th width="100px" style="border-bottom:1px solid #999">UOM</th>
+									<th width="100px" style="border-bottom:1px solid #999">Qty</th>
+									<th width="100px" style="border-bottom:1px solid #999">Price</th>
+									<th width="100px" style="border-bottom:1px solid #999">Discount</th>
+									<th width="100px" style="border-bottom:1px solid #999">Amount</th>
+									<th width="100px" style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
 									<th style="border-bottom:1px solid #999">&nbsp;</th>
 								</tr>
-							</thead>						
+							</thead>
 							<tbody class="tbody">
 							</tbody>
-													
+												
 						</table>
+					</div>
+				</div>
 
 				</div>
 			<br>
@@ -887,6 +890,8 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 		}
 
 
+		$("#selewt").select2();
+
 		loaddetails();
 		loaddetinfo();
 
@@ -1188,17 +1193,19 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 		});
 
 		$("#selewt").on("change", function(){ 
-			var rowCount = $('#MyTable tr').length;
 
+			var rowCount = $('#MyTable tr').length;
 			if(rowCount>1){
-				if($(this).val()!=="multi"){			
+				if($(this).val()!=""){			
 						for (var i = 1; i <= rowCount-1; i++) {
 
 							$("#selitmewtyp"+i).attr("disabled", false);
 
-							var slctdvalid = $("#selitmewtyp"+i).val($(this).val());
+							var slctdvalid = $(this).val();
 
-							$("#selitmewtyp"+i).attr("disabled", true);
+							$("#selitmewtyp"+i).val(slctdvalid);
+							$("#selitmewtyp"+i).trigger('change'); 
+							
 						}
 				}else{
 					for (var i = 1; i <= rowCount-1; i++) {
@@ -1208,7 +1215,7 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 
 			}
 		});
-		
+
 
 });
 
@@ -1382,38 +1389,42 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 	var tditmunit = "<td width=\"100\" nowrap>"+uomoptions+"</td>";
 
 		var tditmewts = "";
-		if(xChkVatableStatus==1){ 
+		//if(xChkVatableStatus==1){ 
 			
-				var gvnewt = $("#selewt").val();
+			var gvnewt = $("#selewt").val();
 				var xz = $("#hdnewtlist").val();
 				ewtoptions = "";
+
 				$.each(jQuery.parseJSON(xz), function() { 
-					if(gvnewt=="multi"){
-						if(this['ctaxcode']==$("#hdncewt").val()){
-							isselctd = "selected";
-						}else{
-							isselctd = "";
-						}
-					}else{
-						if(gvnewt==this['ctaxcode']){
-							isselctd = "selected";
-						}else{
-							isselctd = "";
-						}
+
+					var newtcode = $("#hdncewt").val();
+					var splitString = newtcode.split(',');
+					var ewtFound;
+					for (var i = 0; i < splitString.length; i++) {
+						var stringPart = splitString[i];
+						if (stringPart != this['ctaxcode']) continue;
+
+						ewtFound = true;
+						break;
 					}
-					
+
+					if(ewtFound){
+						isselctd = "selected";
+					}else{
+						isselctd = "";
+					}
 					ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
 				});
 
-				if(gvnewt!=="none" || gvnewt!=="multi"){
+				if(gvnewt==""){
 					isdisabled = "disabled";
 				}else{
 					isdisabled = "";
 				}
 
-				tditmewts = "<td width=\"100\" nowrap> <select class='form-control input-xs' name=\"selitmewtyp\" id=\"selitmewtyp"+lastRow+"\" "+isdisabled+"> <option value=\"none\">None</option>" + ewtoptions + "</select> </td>";
+				tditmewts = "<td width=\"150\" nowrap> <select class='form-control input-xs' name=\"selitmewtyp[]\" id=\"selitmewtyp"+lastRow+"\" "+isdisabled+" multiple> <option value=\"none\">None</option>" + ewtoptions + "</select> </td>";
 
-		}
+		//}
 
   var tditmvats = "";
   var itsvats = "";
@@ -1471,6 +1482,8 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 									});
 
 									$("input.numeric").autoNumeric('init',{mDec:2});
+
+									$("#selitmewtyp"+lastRow).select2();
 
 									$("#selitmvatyp"+lastRow).on("change", function() {
 												ComputeGross();

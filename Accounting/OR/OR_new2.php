@@ -1085,11 +1085,22 @@ function save(){
 			taxoptions = "";
 			$.each(jQuery.parseJSON(xz), function() { 
 
-				if(newtcode==this['ctaxcode']){
+					var splitString = newtcode.split(',');
+					var ewtFound;
+					for (var i = 0; i < splitString.length; i++) {
+						var stringPart = splitString[i];
+						if (stringPart != this['ctaxcode']) continue;
+
+						ewtFound = true;
+						break;
+					}
+
+				if(ewtFound){
 					isselctd = "selected";
 				}else{
 					isselctd = "";
 				}
+
 				taxoptions = taxoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' data-base='"+this['cbase']+"' "+isselctd+">"+this['ctaxcode']+ "("+this['nrate']+"%)" + "</option>";
 			});
 			
