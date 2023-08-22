@@ -196,6 +196,10 @@
 <h3>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h3>
 </center>
 
+<?php
+	if(count($mainarray) > 0){
+
+?>
 <br><br>
 <table width="50%" border="0" align="center" cellpadding="3" class="my-table">
   <tr>
@@ -409,6 +413,12 @@
 	<input type="hidden" name="date1" id="date1" value="">
 	<input type="hidden" name="date2" id="date2" value="">
 </form>
+
+
+<?php
+	}
+
+?>
 
 </body>
 </html>
