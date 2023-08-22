@@ -45,6 +45,7 @@
 	$arrdebits = array();
 	$arrcredits = array();
 	$arrallqry = array();
+	$arralltrans = array();
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 		{
 			if(floatval($row['ndebit'])!=0){
