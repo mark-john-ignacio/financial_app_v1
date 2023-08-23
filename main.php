@@ -59,6 +59,7 @@
 			if($row['compcode'] == $company){
 				$compname =  $row['compname'];
 				$logoname =  str_replace("../","",$row['clogoname']);
+				$lallowNT =  $row['lallownontrade'];
 			}
 		}   
 	?>
@@ -351,7 +352,17 @@
                 <i class="fgly flaticon-020-receipt"></i> Quotation
 							</a>
 						</li>
-						<!--<li class="side-item-category">Trade Transactions</li>-->
+
+						<?php
+							if($lallowNT==1){
+						?>
+
+						<li class="side-item-category">Trade Transactions</li>
+
+						<?php
+							}
+						?> 
+
 						<li>
 							<a href="javascript:;" onClick="setpage('Sales/SO/SO.php');">
                 <i class="fgly-sm flaticon-003-shopping-list"></i> Sales Order
@@ -378,7 +389,11 @@
                 <i class="fgly flaticon-060-cash-register"></i> Point of Sale
 							</a>
 						</li>
-																						
+						-->
+						
+						<?php
+							if($lallowNT==1){
+						?>
 						<li class="side-item-category">Non Trade Transactions</li>						
 						<li>
 							<a href="javascript:;" onClick="setpage('SalesNT/SO/SO.php');">
@@ -399,7 +414,10 @@
 							<a href="javascript:;" onClick="setpage('SalesNT/Return/SR.php');">
                 <i class="icon-action-undo"></i> SR Non-Trade
 							</a>
-						</li>   -->	                     
+						</li>
+						<?php
+							}
+						?>                    
 					</ul>
 				</li>
 				<li>

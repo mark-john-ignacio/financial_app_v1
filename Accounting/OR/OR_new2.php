@@ -9,6 +9,15 @@
 	include('../../include/access2.php');
 
 	$company = $_SESSION['companyid'];
+	$lallowNT = 0;
+	$result=mysqli_query($con,"select * From company");								
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
+		if($row['compcode'] == $company){
+			$lallowNT =  $row['lallownontrade'];
+		}
+	}   
+
 
 	$gettaxcd = mysqli_query($con,"SELECT * FROM `taxcode` where compcode='$company' order By nidentity"); 
 	if (mysqli_num_rows($gettaxcd)!=0) {
@@ -314,6 +323,10 @@
 						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='OR.php';" id="btnMain" name="btnMain">
 							Back to Main<br>(ESC)
 						</button>
+						
+						<?php
+							if($lallowNT==1){
+						?>
 
 						<div class="dropdown" style="display:inline-block !important;">
 							<button type="button" data-toggle="dropdown" class="btn btn-info btn-sm dropdown-toggle">
@@ -324,6 +337,15 @@
 								<li><a href="javascript:;" onClick="getInvs('Non-Trade');">Non-Trade</a></li>
 							</ul>
 						</div>
+						<?php
+							}else{
+						?>
+							<button type="button" class="btn btn-info btn-sm" onClick="getInvs('Trade');">
+								SI <br>(Insert)
+							</button>
+						<?php
+							}
+						?>
 				
 						<button type="button" class="btn btn-success btn-sm" tabindex="6" id="btnSave" onclick="chkform();">
 							Save<br> (CTRL+S)
@@ -991,7 +1013,6 @@ function save(){
   $("input[name='chkSales[]']:checked").each( function () {
 		i++;
 		var tbl = document.getElementById('MyTable').getElementsByTagName('tbody')[0];
-
 
 			var tranno = $(this).val();
 			var dcutdate = $(this).data("cutdate");
