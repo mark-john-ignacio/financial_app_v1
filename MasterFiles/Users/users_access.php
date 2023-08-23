@@ -668,37 +668,36 @@ xmlhttp.send();
 		</div>
 		</div>
 
-	 <br>
+	    <br>
       <b><u><i>Purchase Order</i></u></b>
         <div style="padding-left:10px;"> 
           <div class="col-xs-12 nopadwleft">
-         	  <div class="col-xs-3 nopadding">
+         	  <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="Purch.php" id="chkBox26" <?=(in_array("Purch.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;View List</label>
             </div>
-            <div class="col-xs-3 nopadding">
+            <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="Purch_new.php" id="chkBox27" <?=(in_array("Purch_new.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Add New</label>
             </div>
-            <div class="col-xs-3 nopadding">
+            <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="Purch_edit.php" id="chkBox28" <?=(in_array("Purch_edit.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
             </div>
-            <div class="col-xs-3 nopadding">
+            <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="Purch_post" id="chkBox29" <?=(in_array("Purch_post",@$arrpgist)) ? "checked" : "";?>>&nbsp;Post</label>
             </div>
+          
+            <div class="col-xs-2 nopadding">
+              <label><input type="checkbox" name="chkAcc[]" value="Purch_cancel" id="chkBox30" <?=(in_array("Purch_cancel",@$arrpgist)) ? "checked" : "";?>>&nbsp;Cancel</label>
+            </div>
+
+            <div class="col-xs-2 nopadding">
+              <label><input type="checkbox" name="chkAcc[]" value="Purch_print" id="chkBox113" <?=(in_array("Purch_print",@$arrpgist)) ? "checked" : "";?>>&nbsp;Print</label>
+            </div>
+
+            <div class="col-xs-2 nopadding">
+              <label><input type="checkbox" name="chkAcc[]" value="Purch_unpost.php" id="chkBox188" <?=(in_array("Purch_unpost.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Un-Post</label>
+            </div>
           </div>
-          <div class="col-xs-12 nopadwleft">
-            <div class="col-xs-3 nopadding">
-            	<label><input type="checkbox" name="chkAcc[]" value="Purch_cancel" id="chkBox30" <?=(in_array("Purch_cancel",@$arrpgist)) ? "checked" : "";?>>&nbsp;Cancel</label>
-            </div>
-
-            <div class="col-xs-3 nopadding">
-            	<label><input type="checkbox" name="chkAcc[]" value="Purch_unpost.php" id="chkBox188" <?=(in_array("Purch_unpost.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Un-Post</label>
-            </div>
-
-            <div class="col-xs-3 nopadding">
-            	<label><input type="checkbox" name="chkAcc[]" value="Purch_print" id="chkBox113" <?=(in_array("Purch_print",@$arrpgist)) ? "checked" : "";?>>&nbsp;Print</label>
-            </div>
-		      </div>
-		</div>
+		    </div>
 
 	   <br>
        <b><u><i>Receiving</i></u></b>
@@ -721,6 +720,9 @@ xmlhttp.send();
             </div>
             <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="Receive_print" id="chkBox114" <?=(in_array("Receive_print",@$arrpgist)) ? "checked" : "";?>>&nbsp;Print</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="Receive_unpost.php" id="chkBox111" <?=(in_array("Receive_unpost.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Un-Post</label>
             </div>
 		</div>
 		</div>
@@ -764,6 +766,9 @@ xmlhttp.send();
             </div>
             <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="PurchRet_print" id="chkBox115" <?=(in_array("PurchRet_print",@$arrpgist)) ? "checked" : "";?>>&nbsp;Print</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="PurchRet_unpost.php" id="chkBox111" <?=(in_array("PurchRet_unpost.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Un-Post</label>
             </div>
 		</div>
 		</div>
@@ -917,6 +922,9 @@ xmlhttp.send();
             <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="RFP_print" id="chkBox117" <?=(in_array("RFP_print",@$arrpgist)) ? "checked" : "";?>>&nbsp;Print</label>
             </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="RFP_unpost" id="chkBox117" <?=(in_array("RFP_unpost",@$arrpgist)) ? "checked" : "";?>>&nbsp;Un-Post</label>
+            </div>
             
           </div>
 		    </div>
@@ -940,12 +948,13 @@ xmlhttp.send();
             <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="PayBill_cancel" id="chkBox66" <?=(in_array("PayBill_cancel",@$arrpgist)) ? "checked" : "";?>>&nbsp;Cancel</label>
             </div>
+
             <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="PayBill_print" id="chkBox117" <?=(in_array("PayBill_print",@$arrpgist)) ? "checked" : "";?>>&nbsp;Print</label>
             </div>
 
             <div class="col-xs-2 nopadding">
-            	<label><input type="checkbox" name="chkAcc[]" value="PayBill_unpost.php" id="chkBox117" <?=(in_array("PayBill_unpost.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Un-Post</label>
+            	<label><input type="checkbox" name="chkAcc[]" value="PayBill_unpost" id="chkBox117" <?=(in_array("PayBill_unpost",@$arrpgist)) ? "checked" : "";?>>&nbsp;Un-Post</label>
             </div>
 
             <div class="col-xs-2 nopadding">
@@ -975,7 +984,7 @@ xmlhttp.send();
             </div>
 
             <div class="col-xs-2 nopadding">
-            	<label><input type="checkbox" name="chkAcc[]" value="ARAdj_unpost.php" id="chkBox118" <?=(in_array("ARAdj_unpost.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Un-Post</label>
+            	<label><input type="checkbox" name="chkAcc[]" value="ARAdj_unpost" id="chkBox118" <?=(in_array("ARAdj_unpost",@$arrpgist)) ? "checked" : "";?>>&nbsp;Un-Post</label>
             </div>
 
             <!--
@@ -1010,7 +1019,7 @@ xmlhttp.send();
             </div>
 
             <div class="col-xs-2 nopadding">
-            	<label><input type="checkbox" name="chkAcc[]" value="OR_unpost.php" id="chkBox118" <?=(in_array("OR_unpost.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Un-Post</label>
+            	<label><input type="checkbox" name="chkAcc[]" value="OR_unpost" id="chkBox118" <?=(in_array("OR_unpost",@$arrpgist)) ? "checked" : "";?>>&nbsp;Un-Post</label>
             </div>
 		</div>
 		</div>
@@ -1181,9 +1190,9 @@ xmlhttp.send();
           <br>
           <label><input type="checkbox" name="chkAcc[]" value="ARAgeing.php" id="chkBox164" <?=(in_array("ARAgeing.php",@$arrpgist)) ? "checked" : "";?>>
           AR Ageing</label>
-          <!--<br>
+          <br>
           <label><input type="checkbox" name="chkAcc[]" value="ARMonitoring.php" id="chkBox164" <?//=(in_array("ARMonitoring.php",@$arrpgist)) ? "checked" : "";?>>
-          AR Monitoring</label>-->
+          AR Monitoring</label>
           <br>
        </div>
        

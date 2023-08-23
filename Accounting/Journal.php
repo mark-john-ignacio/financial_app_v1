@@ -192,7 +192,7 @@
 					<thead>
 						<tr>
 							<th>Journal No</th>
-													<th>Date</th>
+							<th>Date</th>
 							<th>Memo</th>
 							<th>Status</th>
 						</tr>

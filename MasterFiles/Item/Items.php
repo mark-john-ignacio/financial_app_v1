@@ -72,10 +72,10 @@ function editfrm(x,y){
 					<tr>
 						<th width="100">Part No</th>
 						<th>Description</th>
-                        <th width="70">Main UOM</th>
+            <th width="70">Main UOM</th>
 						<th width="120" class="text-center">Price History</th>
 						<th width="70">Status</th>
-						<!--<th width="40">Delete</th>-->
+						<th width="40">BOM</th>
 					</tr>
 				</thead>
 
@@ -209,44 +209,44 @@ function editfrm(x,y){
 		     }
 		    },
 		    "columns": [
-				{ "data": null,
-					"render": function (data, type, full, row) {
-							
-								return "<a href=\"javascript:;\" onClick=\"editfrm('"+full[0]+"','Items_edit.php');\">"+full[0]+"</a>";
-							
-					}
-						
-				},
-				{ "data": 1 },
-				{ "data": 2 },
-				{ "data": null,
-					"render": function (data, type, full, row) {
-							
-								return "<div class=\"col-sm-12 nopadding\"><div class=\"col-sm-6 nopadding\"><a href=\"javascript:;\" data-toggle=\"modal\" data-target=\"#myPurchModal\" data-id=\""+full[0]+"\" data-label=\"Purchase Cost\" data-val=\"Purch\" class=\"viewCost\"><span class='label label-primary'>Purchase</span></a></div><div class=\"col-sm-6 nopadwleft\"><a href=\"javascript:;\" data-toggle=\"modal\" data-target=\"#myPurchModal\" data-id=\""+full[0]+"\" data-label=\"Sales Price\" data-val=\"Sales\" class=\"viewCost\"><span class='label label-info'>&nbsp;&nbsp;&nbsp;Sales&nbsp;&nbsp;&nbsp;</span></a>";
-							
-					}
-				},
-				{ "data": null,
-					"render": function (data, type, full, row){
 
-						
-						if(full[3]=="ACTIVE"){
-						 	return "<div id=\"itmstat"+full[0]+"\"><span class='label label-success'>&nbsp;Active&nbsp;</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+full[0]+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a></div>";
+					{ "data": null,
+						"render": function (data, type, full, row) {
+								
+									return "<a href=\"javascript:;\" onClick=\"editfrm('"+full[0]+"','Items_edit.php');\">"+full[0]+"</a>";
+								
 						}
-						else{
-							return "<div id=\"itmstat"+full[0]+"\"><span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+full[0]+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a></div>";
+							
+					},
+					{ "data": 1 },
+					{ "data": 2 },
+					{ "data": null,
+						"render": function (data, type, full, row) {
+								
+									return "<div class=\"col-sm-12 nopadding\"><div class=\"col-sm-6 nopadding\"><a href=\"javascript:;\" data-toggle=\"modal\" data-target=\"#myPurchModal\" data-id=\""+full[0]+"\" data-label=\"Purchase Cost\" data-val=\"Purch\" class=\"viewCost\"><span class='label label-primary'>Purchase</span></a></div><div class=\"col-sm-6 nopadwleft\"><a href=\"javascript:;\" data-toggle=\"modal\" data-target=\"#myPurchModal\" data-id=\""+full[0]+"\" data-label=\"Sales Price\" data-val=\"Sales\" class=\"viewCost\"><span class='label label-info'>&nbsp;&nbsp;&nbsp;Sales&nbsp;&nbsp;&nbsp;</span></a>";
+								
 						}
+					},
+					{ "data": null,
+						"render": function (data, type, full, row){
 
-					}
-				}
-				//,
-				//{ "data": null,
-				// 	"render": function(data, type, full, row){
+							
+							if(full[3]=="ACTIVE"){
+								return "<div id=\"itmstat"+full[0]+"\"><span class='label label-success'>&nbsp;Active&nbsp;</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+full[0]+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a></div>";
+							}
+							else{
+								return "<div id=\"itmstat"+full[0]+"\"><span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+full[0]+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a></div>";
+							}
+
+						}
+					},
+					{ "data": null,
+						"render": function(data, type, full, row){
+							
+							return "<div class=\"col-sm-12 nopadding\"><div class=\"col-sm-6 nopadding\"><a href=\"../../MRP/BOM/Items.php?itm="+full[0]+"\" target=\"_blank\"><span class='label label-warning'>View BOM</span></a></div>";
+						}
 						
-				//		return "<input class='btn btn-danger btn-xs' type='button' id='row_"+full[0]+"_delete' value='delete' onClick=\"deleteRow('"+full[0]+"');\"/>";
-				//	}
-					
-				//}
+					}
 				
         	],
 		   });
@@ -273,6 +273,7 @@ function editfrm(x,y){
 			
 			});
 		}
+
 	</script>
 
 

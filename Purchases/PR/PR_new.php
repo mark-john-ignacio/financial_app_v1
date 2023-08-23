@@ -165,7 +165,7 @@
 						<td>
 							<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
 
-							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PurchRet.php';" id="btnMain" name="btnMain">
+							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PR.php';" id="btnMain" name="btnMain">
 								Back to Main<br>(ESC)
 							</button>
 							
@@ -218,7 +218,7 @@
       }
 	  else if(e.keyCode == 27){ //ESC
 		 e.preventDefault();
-		 window.location.replace("RR.php");
+		 window.location.replace("PR.php");
 
 	  }
 	});
@@ -355,6 +355,9 @@ function myFunctionadd(){
 	var itmunit = document.getElementById("hdnunit").value;
 
 	var uomoptions = "";
+
+	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
+	var lastRow = tbl.length;
 								
 		$.ajax ({
 			url: "../th_loaduomperitm.php",
@@ -379,11 +382,6 @@ function myFunctionadd(){
 		});
 		
 		uomoptions = "<select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\">"+uomoptions+"</select>";
-
-		
-	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
-	var lastRow = tbl.length;
-
 
 		$('#MyTable > tbody:last-child').append(
 			"<tr>"

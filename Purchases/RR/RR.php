@@ -1,13 +1,34 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "Receive.php";
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "Receive.php";
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php'); // nandito ung $employeeid
 
-$company = $_SESSION['companyid'];
+	$company = $_SESSION['companyid'];
+
+	//POST
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Receive_post'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
+	//CANCEL
+	$cancstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Receive_cancel'");
+	if(mysqli_num_rows($sql) == 0){
+		$cancstat = "False";
+	}
+
+	//UNPOST
+	$unpostat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Receive_unpost.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$unpostat = "False";
+	}
 ?>
 
 <!DOCTYPE html>
@@ -16,6 +37,7 @@ $company = $_SESSION['companyid'];
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>">  
 <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
@@ -28,151 +50,151 @@ $company = $_SESSION['companyid'];
 	  }
 	});
 
-function editfrm(x){
-	document.getElementById("txtctranno").value = x;
-	document.getElementById("frmedit").submit();
-}
-
-
-function trans(x,num){
-	
-	$("#typ").val(x);
-	$("#modzx").val(num);
-
-		$("#AlertMsg").html("");
-							
-		$("#AlertMsg").html("Are you sure you want to "+x+" RR No.: "+num);
-		$("#alertbtnOK").hide();
-		$("#OK").show();
-		$("#Cancel").show();
-		$("#AlertModal").modal('show');
-
-}
-
-
-
-$(function() {	
-
-	var itmstat = "";
-	var x = "";
-	var num = "";
-	var msg = "";
-	
-	
-	$(".btnmodz").on("click", function (){
-		if($('#AlertModal').hasClass('in')==true){
-			var idz = $(this).attr('id');
-			
-			if(idz=="OK"){
-				var x = $("#typ").val();
-				var num = $("#modzx").val();
-				
-				if(x=="POST"){
-					var msg = "POSTED";
-				}
-				else if(x=="CANCEL"){
-					var msg = "CANCELLED";
-				}
-
-
-	if(x=="POST"){
-				///insert o inventory
-				$.ajax ({
-					dataType: "text",
-					url: "../../include/th_toInv.php",
-					data: { tran: num, type: "RR" },
-					async: false,
-					success: function( data ) {
-					//	alert(data.trim());
-					 if(data.trim()=="True"){
-							itmstat = "OK";							
-						}
-						else{
-							itmstat = data.trim();	
-						}
-					}
-				});
-				//alert(itmstat);
-					
-		}
-	else{
-		var itmstat = "OK";	
+	function editfrm(x){
+		document.getElementById("txtctranno").value = x;
+		document.getElementById("frmedit").submit();
 	}
 
 
-	if(itmstat=="OK"){
-	
-		$.ajax ({
-			url: "RR_Tran.php",
-			data: { x: num, typ: x },
-			async: false,
-			dataType: "json",
-			beforeSend: function(){
-				$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
-				$("#alertbtnOK").hide();
-				$("#OK").hide();
-				$("#Cancel").hide();
-				$("#AlertModal").modal('show');
-			},
-			success: function( data ) {
-				console.log(data);
-				$.each(data,function(index,item){
+	function trans(x,num){
+		
+		$("#typ").val(x);
+		$("#modzx").val(num);
+
+			$("#AlertMsg").html("");
+								
+			$("#AlertMsg").html("Are you sure you want to "+x+" RR No.: "+num);
+			$("#alertbtnOK").hide();
+			$("#OK").show();
+			$("#Cancel").show();
+			$("#AlertModal").modal('show');
+
+	}
+
+
+
+	$(function() {	
+
+		var itmstat = "";
+		var x = "";
+		var num = "";
+		var msg = "";
+		
+		
+		$(".btnmodz").on("click", function (){
+			if($('#AlertModal').hasClass('in')==true){
+				var idz = $(this).attr('id');
+				
+				if(idz=="OK"){
+					var x = $("#typ").val();
+					var num = $("#modzx").val();
 					
-					itmstat = item.stat;
-					
-					if(itmstat!="False"){
-						$("#msg"+num).html(item.stat);
+					if(x=="POST"){
+						var msg = "POSTED";
+					}
+					else if(x=="CANCEL"){
+						var msg = "CANCELLED";
+					}
+
+
+		if(x=="POST"){
+					///insert o inventory
+					$.ajax ({
+						dataType: "text",
+						url: "../../include/th_toInv.php",
+						data: { tran: num, type: "RR" },
+						async: false,
+						success: function( data ) {
+						//	alert(data.trim());
+						if(data.trim()=="True"){
+								itmstat = "OK";							
+							}
+							else{
+								itmstat = data.trim();	
+							}
+						}
+					});
+					//alert(itmstat);
 						
+			}
+		else{
+			var itmstat = "OK";	
+		}
+
+
+		if(itmstat=="OK"){
+		
+			$.ajax ({
+				url: "RR_Tran.php",
+				data: { x: num, typ: x },
+				async: false,
+				dataType: "json",
+				beforeSend: function(){
+					$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+					$("#alertbtnOK").hide();
+					$("#OK").hide();
+					$("#Cancel").hide();
+					$("#AlertModal").modal('show');
+				},
+				success: function( data ) {
+					console.log(data);
+					$.each(data,function(index,item){
+						
+						itmstat = item.stat;
+						
+						if(itmstat!="False"){
+							$("#msg"+num).html(item.stat);
+							
+								$("#AlertMsg").html("");
+								
+								$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+msg+"...");
+								$("#alertbtnOK").show();
+								$("#OK").hide();
+								$("#Cancel").hide();
+								$("#AlertModal").modal('show');
+		
+						}
+						else{
 							$("#AlertMsg").html("");
 							
-							$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+msg+"...");
+							$("#AlertMsg").html(item.ms);
 							$("#alertbtnOK").show();
 							$("#OK").hide();
 							$("#Cancel").hide();
 							$("#AlertModal").modal('show');
-	
-					}
-					else{
-						$("#AlertMsg").html("");
-						
-						$("#AlertMsg").html(item.ms);
-						$("#alertbtnOK").show();
-						$("#OK").hide();
-						$("#Cancel").hide();
-						$("#AlertModal").modal('show');
-	
-					}
-				});
-			}
-		});
 		
-	}else{
-						$("#AlertMsg").html("");
-	
-						$("#AlertMsg").html("<b>ERROR: </b>There's a problem with your transaction!<br>"+itmstat);
-						$("#alertbtnOK").show();
-						$("#OK").hide();
-						$("#Cancel").hide();
-						$("#AlertModal").modal('show');
-	}
-
-//----------------------------------------------
-
-
-			}
-			else if(idz=="Cancel"){
-				
-				$("#AlertMsg").html("");
-				$("#AlertModal").modal('hide');
-				
-			}
-
-
+						}
+					});
+				}
+			});
+			
+		}else{
+							$("#AlertMsg").html("");
+		
+							$("#AlertMsg").html("<b>ERROR: </b>There's a problem with your transaction!<br>"+itmstat);
+							$("#alertbtnOK").show();
+							$("#OK").hide();
+							$("#Cancel").hide();
+							$("#AlertModal").modal('show');
 		}
 
-	});
+		//----------------------------------------------
 
-});
+
+				}
+				else if(idz=="Cancel"){
+					
+					$("#AlertMsg").html("");
+					$("#AlertModal").modal('hide');
+					
+				}
+
+
+			}
+
+		});
+
+	});
 
 </script>
 </head>
@@ -188,17 +210,26 @@ $(function() {
         </div>
 			<br><br>
 			<button type="button" class="btn btn-primary btn-sm" onClick="location.href='RR_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
-            <br><br>
+
+			<?php
+				if($unpostat=="True"){
+			?>
+				<button type="button" class="btn btn-warning btn-sm" onClick="location.href='RR_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+			<?php
+				}
+			?>
+
+      <br><br>
 			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
 						<th>RR No</th>
 						<th>Customer</th>
 						<th class="text-center">Trans Date</th>
-                        <th class="text-center">Received Date</th>
+            <th class="text-center">Received Date</th>
 						<!--<th>Gross</th>
 						<th>Purchase Type</th>-->
-                        <th class="text-center">Status</th>
+            <th class="text-center">Status</th>
 					</tr>
 				</thead>
 
@@ -218,15 +249,22 @@ $(function() {
  					<tr <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?>>
 						<td><a <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?> href="javascript:;" onClick="editfrm('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
 						<td><?php echo $row['ccode'];?> - <?php echo $row['cname'];?> </td>
-                        <td><?php echo $row['ddate'];?></td>
-                         <td><?php echo $row['dreceived'];?></td>
+            <td><?php echo $row['ddate'];?></td>
+            <td><?php echo $row['dreceived'];?></td>
 						<!--<td align="right"><?//php echo $row['ngross'];?></td>-->
-                        <td align="center">
-                        <div id="msg<?php echo $row['ctranno'];?>">
-                        	<?php 
-							if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
-							?>
-								<a href="javascript:;" onClick="trans('POST','<?php echo $row['ctranno'];?>')">POST</a> | <a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['ctranno'];?>')">CANCEL</a>
+            <td align="center">
+              <div id="msg<?php echo $row['ctranno'];?>">
+                <?php 
+									if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
+								?>
+									<a href="javascript:;" onClick="trans('POST','<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>">
+										<i class="fa fa-thumbs-up" style="font-size:20px;color:Green ;" title="Approve transaction"></i>
+									</a>
+
+									<a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>">
+										<i class="fa fa-thumbs-down" style="font-size:20px;color:Red ;" title="Cancel transaction"></i>
+									</a>
+
 							<?php
                             }
 							else{

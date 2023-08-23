@@ -218,7 +218,6 @@ if($rowcntS!=0){
 			$ewtcode = "";
 		}
 		
-		
 		$ewtrate = str_replace(",","",$_REQUEST['txtnEWTRate'.$z]);
 
 		if($ewtrate==""){

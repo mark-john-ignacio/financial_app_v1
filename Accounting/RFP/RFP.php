@@ -26,6 +26,13 @@
 		$cancstat = "False";
 	}
 
+	$unpststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'RFP_unpost'");
+	if(mysqli_num_rows($sql) == 0){
+		$unpststat = "False";
+	}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -61,6 +68,14 @@
 			<button type="button" class="btn btn-primary btn-sm" onClick="location.href='RFP_new.php'">
 				<span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)
 			</button>
+
+			<?php
+				if($unpststat=="True"){
+			?>
+				<button type="button" class="btn btn-warning btn-sm" onClick="location.href='RFP_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+			<?php
+				}
+			?>
       <!--
 			<button type="button" class="btn btn-warning btn-md" name="btnSet" id="btnSet">
 				<span class="glyphicon glyphicon-cog"></span> Settings
@@ -127,18 +142,29 @@
 							<td align="center">
 								<div id="msg<?php echo $row['ctranno'];?>">
 									<?php 
-										if(intval($row['lsent'])!==intval(1)){	
+										if(intval($row['lsent'])==intval(0) && intval($row['lcancelled'])==intval(0)){	
 									?>
 
 										<a href="javascript:;" onClick="trans('SEND','<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default"> 
 											<i class="fa fa-share" style="font-size:20px;color: #ffb533;" title="Send transaction"></i>
 										</a>
 
+										<a href="javascript:;" onClick="trans('CANCEL1','<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>">
+											<i class="fa fa-thumbs-down" style="font-size:20px;color:Red ;" title="Cancel transaction"></i>
+										</a>
+
 									<?php
 										}else{
 
 											if(intval($row['lcancelled'])==intval(1)){
-												echo " - ";
+												if(intval($row['lsent'])==intval(0)){
+													echo " - ";
+												}else{?>
+													<a href="javascript:;" onClick="track('<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default"> 
+														<i class="fa fa-file-text-o" style="font-size:20px;color: #3374ff;" title="Track transaction"></i>
+													</a>
+												<?php
+												}
 											}else{
 
 												if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0) && intval($row['lsent'])==intval(1)){
@@ -156,13 +182,12 @@
 												}				
 									?>
 										
-											<a href="javascript:;" onClick="track('<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default"> 
-												<i class="fa fa-file-text-o" style="font-size:20px;color: #3374ff;" title="Track transaction"></i>
-											</a>
-
-									<?php
+												<a href="javascript:;" onClick="track('<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default"> 
+													<i class="fa fa-file-text-o" style="font-size:20px;color: #3374ff;" title="Track transaction"></i>
+												</a>
+	
+										<?php
 											}		
-										
 										}
 									?>
 								</div>
@@ -264,6 +289,10 @@ mysqli_close($con);
 
 
 				$("#AlertMsg").html("");
+
+				if(x=="CANCEL1"){
+					x = "CANCEL";
+				}
 									
 				$("#AlertMsg").html("Are you sure you want to "+x+" Payment No.: "+num);
 				$("#alertbtnOK").hide();
@@ -306,7 +335,7 @@ mysqli_close($con);
 			if(x=="POST"){
 				var msg = "POSTED";
 			}
-			else if(x=="CANCEL"){
+			else if(x=="CANCEL" || x=="CANCEL1"){
 				var msg = "CANCELLED";
 			}
 			else if(x=="SEND"){

@@ -5,9 +5,9 @@
 
 	include('../../Connection/connection_string.php');
 
-	$column = array('A.ctranno', 'A.csiprintno', 'B.ctradename', 'A.ddate', 'A.dcutdate', 'A.lapproved', 'A.lcancelled', 'A.ccode', 'B.nlimit', 'A.ngross');
+	$column = array('A.ctranno', 'A.csiprintno', 'B.ctradename', 'A.dneeded', 'A.ddate', 'A.lapproved');
 
-	$query = "SELECT A.ctranno, B.Lname, B.Fname, C.cdesc, A.dneeded, A.ddate, A.lapproved, A.lcancelled FROM `purchrequest` A LEFT JOIN `users` B ON A.`cpreparedby` = B.`Userid` LEFT JOIN `locations` C ON A.`locations_id` = C.`nid` where A.compcode='".$_SESSION['companyid']."' ";
+	$query = "SELECT A.ctranno, B.Lname, B.Fname, C.cdesc, A.dneeded, A.ddate, A.lapproved, A.lcancelled, A.lsent FROM `purchrequest` A LEFT JOIN `users` B ON A.`cpreparedby` = B.`Userid` LEFT JOIN `locations` C ON A.`locations_id` = C.`nid` where A.compcode='".$_SESSION['companyid']."' ";
 
 	if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
 	{
@@ -62,6 +62,7 @@
 		$sub_array[] = $row['ddate'];
 		$sub_array[] = $row['lapproved'];
 		$sub_array[] = $row['lcancelled'];
+		$sub_array[] = $row['lsent'];
 		$data[] = $sub_array;
 	}
 

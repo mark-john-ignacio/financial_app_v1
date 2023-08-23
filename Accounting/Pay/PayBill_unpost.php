@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 	session_start();
 }
-$_SESSION['pageid'] = "PayBill_unpost.php";
+$_SESSION['pageid'] = "PayBill_unpost";
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 include('../../include/access2.php');
@@ -25,7 +25,7 @@ $company = $_SESSION['companyid'];
 </head>
 
 <body style="padding:5px">
-	<form action="APV_unpost_tran.php" name="frmunpost" id="frmunpost" method="POST">
+	<form action="PayBill_unpost_tran.php" name="frmunpost" id="frmunpost" method="POST">
 	
 		<div>
 			<section>

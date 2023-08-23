@@ -24,6 +24,12 @@ $company = $_SESSION['companyid'];
 		$cancstat = "False";
 	}
 
+	//UNPOST
+	$unpostat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Purch_unpost.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$unpostat = "False";
+	}
 ?>
 
 <!DOCTYPE html>
@@ -51,7 +57,13 @@ $company = $_SESSION['companyid'];
 			<br><br>
 			<button type="button" class="btn btn-primary btn-sm" onClick="location.href='Purch_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
+			<?php
+				if($unpostat=="True"){
+			?>
 			<button type="button" class="btn btn-warning btn-sm" onClick="location.href='Purch_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+			<?php
+				}
+			?>
 
       <br><br>
 			<table id="example" class="display" cellspacing="0" width="100%">
@@ -87,7 +99,11 @@ $company = $_SESSION['companyid'];
 						<td align="center">
 							<?php
 								if(intval($row['lsent'])==intval(0)){
-									echo "For Sending";
+									if(intval($row['lcancelled'])==intval(0)){
+										echo "For Sending";
+									}else{
+										echo "<b>Cancelled</b>";
+									}
 								}else{
 									if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
 										echo "For Approval";
@@ -106,14 +122,22 @@ $company = $_SESSION['companyid'];
             <td align="center">
               <div id="msg<?php echo $row['cpono'];?>">
                 <?php 
-									if(intval($row['lsent'])!==intval(1)){	
+									if(intval($row['lsent'])!==intval(1)){
+										if(intval($row['lcancelled'])==intval(0)){
 								?>
 
 									<a href="javascript:;" onClick="trans('SEND','<?php echo $row['cpono'];?>')" class="btn btn-xs btn-default"> 
 										<i class="fa fa-share" style="font-size:20px;color: #ffb533;" title="Send transaction"></i>
 									</a>
 
+									<a href="javascript:;" onClick="trans('CANCEL1','<?php echo $row['cpono'];?>')" class="btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>">
+										<i class="fa fa-thumbs-down" style="font-size:20px;color:Red ;" title="Cancel transaction"></i>
+									</a>
+
 								<?php
+										}else{
+											echo "-";
+										}
 									}else{
 
 									if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0) && intval($row['lsent'])==intval(1)){
@@ -200,7 +224,7 @@ $company = $_SESSION['companyid'];
 	</div>
 </div>
 
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
 	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
 	
 	<script>
@@ -231,6 +255,10 @@ $company = $_SESSION['companyid'];
 			$("#modzx").val(num);
 
 				$("#AlertMsg").html("");
+
+				if(x=="CANCEL1"){
+					x = "CANCEL";
+				}
 									
 				$("#AlertMsg").html("Are you sure you want to "+x+" PO No.: "+num);
 				$("#alertbtnOK").hide();
@@ -270,7 +298,7 @@ $company = $_SESSION['companyid'];
 						if(x=="POST"){
 							var msg = "POSTED";
 						}
-						else if(x=="CANCEL"){
+						else if(x=="CANCEL" || x=="CANCEL1"){
 							var msg = "CANCELLED";
 						}
 						else if(x=="SEND"){

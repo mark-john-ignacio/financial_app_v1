@@ -236,7 +236,7 @@
 							<div id="tableContainer" class="alt2" dir="ltr" style="
 								margin: 0px;
 								padding: 3px;
-								width: 2200px;
+								width: 2300px;
 								height: 300px;
 								text-align: left;">
 
@@ -252,7 +252,8 @@
 											<th scope="col" width="150px" class="text-center" nowrap>VAT Code</th>
 											<th scope="col" width="150px" class="text-center" nowrap>VAT</th>
 											<th scope="col" width="150px" class="text-center" nowrap>NetofVat</th>
-											<th scope="col" width="250px" class="text-center" nowrap>EWTCode</th>                            
+											<th scope="col" width="250px" class="text-center" nowrap>EWTCode</th>
+											<th scope="col" width="100px" class="text-center" nowrap>EWTAmt/Rate</th>                          
 											<th scope="col" width="100px" class="text-center" nowrap>EWTAmt</th>
 											<th scope="col" width="150px" class="text-center" nowrap>Total Due</th>
 											<th scope="col" width="150px" class="text-center" nowrap>Amt Applied</th>
@@ -1107,8 +1108,8 @@ function save(){
 			var l=z.insertCell(-1); 
 			l.innerHTML = "<select name='txtnEWT[]' id='txtnEWT"+lastRow+"' class='select2' multiple='multiple' style='width: 100%'> "+ taxoptions +" </select> <input type='hidden' name='hdnewtgiven' id='hdnewtgiven"+lastRow+"' value='"+$ifrdonlyint+"' /> <input type='hidden' name='txtnEWTorig' id='txtnEWTorig"+lastRow+"' value='"+newtcode+"' /> <input type='hidden' name='txtnEWTRate' value=\""+newtrate+"\" id='txtnEWTRate"+lastRow+"' />";
 
-			//var l2=z.insertCell(-1);
-			//l2.innerHTML = "<input type='text' class='form-control input-xs text-right' placeholder='EWT Rate' name='txtnEWTRate"+lastRow+"' value=\""+newtrate+"\" id='txtnEWTRate"+lastRow+"' readonly=\"true\" />";
+			var l2=z.insertCell(-1);
+			l2.innerHTML = "<div id='txtnEWTPer"+lastRow+"' class='text-right'> - </div>";
 										
 			var l3=z.insertCell(-1);
 			l3.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' placeholder='EWT Amt' name='txtnEWTAmt'  value=\""+newtamt+"\" id='txtnEWTAmt"+lastRow+"' readonly=\"true\" />";

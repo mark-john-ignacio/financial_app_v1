@@ -26,7 +26,7 @@ $company = $_SESSION['companyid'];
 	}
 
 	$pospbill = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PayBill_unpost.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PayBill_unpost'");
 	if(mysqli_num_rows($sql) == 0){
 		$pospbill = "False";
 	}
@@ -141,14 +141,25 @@ $company = $_SESSION['companyid'];
 											<i class="fa fa-share" style="font-size:20px;color: #ffb533;" title="Send transaction"></i>
 										</a>
 
+										<a href="javascript:;" onClick="trans('CANCEL1','<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>">
+											<i class="fa fa-thumbs-down" style="font-size:20px;color:Red ;" title="Cancel transaction"></i>
+										</a>
+
 									<?php
 										}else{
 
 											if(intval($row['lcancelled'])==intval(1)){
-												echo " - ";
+												if(intval($row['lsent'])==intval(0)){
+													echo " - ";
+												}else{?>
+													<a href="javascript:;" onClick="track('<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default"> 
+														<i class="fa fa-file-text-o" style="font-size:20px;color: #3374ff;" title="Track transaction"></i>
+													</a>
+												<?php
+												}
 											}else{
 
-										if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0) && intval($row['lsent'])==intval(1)){
+												if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0) && intval($row['lsent'])==intval(1)){
 
 									?>
 											<a href="javascript:;" onClick="trans('POST','<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>">
@@ -160,7 +171,7 @@ $company = $_SESSION['companyid'];
 											</a>
 
 									<?php
-										}				
+												}				
 									?>
 										
 											<a href="javascript:;" onClick="track('<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default"> 
@@ -268,6 +279,10 @@ mysqli_close($con);
 
 
 		$("#AlertMsg").html("");
+
+		if(x=="CANCEL1"){
+			x = "CANCEL";
+		}
 									
 		$("#AlertMsg").html("Are you sure you want to "+x+" Payment No.: "+num);
 		$("#alertbtnOK").hide();
@@ -326,7 +341,7 @@ mysqli_close($con);
 					}
 				});
 			}
-			else if(x=="CANCEL"){
+			else if(x=="CANCEL" || x=="CANCEL1"){
 				var msg = "CANCELLED";
 			}
 			else if(x=="SEND"){

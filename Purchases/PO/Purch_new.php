@@ -22,6 +22,17 @@
 
 	}
 
+		$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='ALLOW_REF_PR'"); 
+												
+		if (mysqli_num_rows($result)!=0) {
+			$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
+			$xAllowPR = $all_course_data['cvalue']; 												
+		}
+		else{
+			$xAllowPR = "";
+		}
+
+
 	@$arrewtlist = array();
 	$getewt = mysqli_query($con,"SELECT * FROM `wtaxcodes` WHERE compcode='$company'"); 
 	if (mysqli_num_rows($getewt)!=0) {
@@ -300,11 +311,29 @@
 
 		<hr>
 		<div class="col-xs-12 nopadwdown"><b>Details</b></div>
-		<div class="col-xs-12 nopadwdown">
+		<div class="col-xs-12 nopadwdown"> 
+
+			<input type="hidden" name="hdnxrefrpr" id="hdnxrefrpr">
+			<input type="hidden" name="hdnxrefrprident" id="hdnxrefrprident">
+
 			<input type="hidden" name="hdnunit" id="hdnunit">
-					
+			<input type="hidden" name="hdnqty" id="hdnqty">
+			<input type="hidden" name="hdnfact" id="hdnfact">
+			<input type="hidden" name="hdnmainunit" id="hdnmainunit">
+
+			<?php
+				if($xAllowPR==0){
+			?>
 			<div class="col-xs-3 nopadding"><input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Item/SKU Code..." tabindex="4"></div>
-				<div class="col-xs-5 nopadwleft"><input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL + F) Search Product Name..." size="80" tabindex="5"></div>
+			<div class="col-xs-5 nopadwleft"><input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL + F) Search Product Name..." size="80" tabindex="5"></div>
+			<?php
+				}else{
+			?>
+				<input type="hidden" name="txtprodid" id="txtprodid">
+				<input type="hidden" name="txtprodnme" id="txtprodnme">
+			<?php
+				}
+			?>
 		</div>  
 
 					<div class="alt2" dir="ltr" style="
@@ -348,6 +377,10 @@
 							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Purch.php';" id="btnMain" name="btnMain">
 								Back to Main<br>(ESC)
 							</button>
+
+							<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
+								PR<br>(Insert)
+							</button>
 							
 							<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();">Save<br> (CTRL+S)</button>
 							</td>
@@ -365,53 +398,111 @@
 		</fieldset>
 	</form>
 
-<!-- 1) Alert Modal -->
-<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-    <div class="vertical-alignment-helper">
-        <div class="modal-dialog vertical-align-top">
-            <div class="modal-content">
-               <div class="alert-modal-danger">
-                  <p id="AlertMsg"></p>
-                <p>
-                    <center>
-                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-                    </center>
-                </p>
-               </div>
-            </div>
-        </div>
-    </div>
-</div>
+	<!-- 1) Alert Modal -->
+	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+			<div class="vertical-alignment-helper">
+					<div class="modal-dialog vertical-align-top">
+							<div class="modal-content">
+								<div class="alert-modal-danger">
+										<p id="AlertMsg"></p>
+									<p>
+											<center>
+													<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+											</center>
+									</p>
+								</div>
+							</div>
+					</div>
+			</div>
+	</div>
 
-<!-- MODAL FOR CONTACT NAME -->
-<div class="modal fade" id="ContactModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-    <div class="modal-dialog vertical-align-top">
-        <div class="modal-content">
-        	<div class="modal-header">
-        		Select Contact Person
-            </div>
-            <div class="modal-body">
-            	<table id="ContactTbls" class="table table-condensed" width="100%">
-            		
-	            	<thead>
-	            		<tr>
-	            			<th>Name</th>
-	            			<th>Designation</th>
-	            			<th>Department</th>
-	            			<th>Email</th>
-	            		</tr>
-	            	</thead>
-	            	<tbody>
+	<!-- MODAL FOR CONTACT NAME -->
+	<div class="modal fade" id="ContactModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+			<div class="modal-dialog vertical-align-top">
+					<div class="modal-content">
+						<div class="modal-header">
+							Select Contact Person
+							</div>
+							<div class="modal-body">
+								<table id="ContactTbls" class="table table-condensed" width="100%">
+									
+									<thead>
+										<tr>
+											<th>Name</th>
+											<th>Designation</th>
+											<th>Department</th>
+											<th>Email</th>
+										</tr>
+									</thead>
+									<tbody>
 
-	            	</tbody>
-            	</table>
-            </div>
-            <div class="modal-footer">
-            	<button type="button" class="btn btn-warning btn-sm" data-dismiss="modal" id="btnmodclose">CLOSE</button>
-            </div>
-        </div>
-    </div>
-</div>
+									</tbody>
+								</table>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-warning btn-sm" data-dismiss="modal" id="btnmodclose">CLOSE</button>
+							</div>
+					</div>
+			</div>
+	</div>
+
+	<!-- FULL PO LIST REFERENCES-->
+	<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
+		<div class="modal-dialog modal-lg">			
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h3 class="modal-title" id="InvListHdr">PR List</h3>
+				</div>
+							
+				<div class="modal-body" style="height:40vh">
+							
+					<div class="col-xs-12 nopadding">
+
+						<div class="form-group">
+							<div class="col-xs-3 nopadding pre-scrollable" style="height:37vh">
+								<table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight small">
+									<thead>
+										<tr>
+											<th>PR No</th>
+											<th>Section</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+
+							<div class="col-xs-9 nopadwleft pre-scrollable" style="height:37vh">
+								<table name='MyInvDetList' id='MyInvDetList' class="table table-small small">
+									<thead>
+										<tr>
+											<th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
+											<th>Item No</th>
+											<th>Description</th>
+											<th>UOM</th>
+											<th>Qty</th>
+										</tr>
+									</thead>
+									<tbody>
+																
+									</tbody>
+								</table>
+							</div>
+						</div>
+
+					</div>
+												
+				</div>
+				
+				<div class="modal-footer">
+					<button type="button" id="btnInsDet" onClick="InsertPRDets()" class="btn btn-primary">Insert</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	<!-- End FULL INVOICE LIST -->
 
 <form method="post" name="frmedit" id="frmedit" action="Purch_edit.php">
 	<input type="hidden" name="txtctranno" id="txtctranno" value="">
@@ -485,6 +576,10 @@ $(document).ready(function() {
 		$("#basecurrval").on("keyup", function () {
 			recomputeCurr();
 		});
+
+		$("#allbox").click(function(){
+			$('input:checkbox').not(this).prop('checked', this.checked);
+		});
 		
 
 	$('#BlankItmModal').on('shown.bs.modal', function () {
@@ -501,6 +596,12 @@ $(document).ready(function() {
 				document.getElementById("txtprodid").value = "NEW_ITEM";
 				document.getElementById("txtprodnme").value = x1[1];
 				document.getElementById("hdnunit").value = x1[0];
+
+				document.getElementById("hdnqty").value = 1;
+				document.getElementById("hdnfact").value = 1; 
+				document.getElementById("hdnmainunit").value = x1[0];
+				document.getElementById("hdnxrefrpr").value = "";
+				document.getElementById("hdnxrefrprident").value = "";
 	
 				myFunctionadd();
 				
@@ -509,7 +610,11 @@ $(document).ready(function() {
 				$("#txtprodid").val("");
 				$("#txtprodnme").val("");
 				$("#hdnunit").val("");
-
+				$("#hdnqty").val("");
+				$("#hdnfact").val(""); 
+				$("#hdnmainunit").val("");
+				$("#hdnxrefrpr").val("");
+				$("#hdnxrefrprident").val("");
 
 		}
 	});
@@ -569,7 +674,12 @@ $(document).ready(function() {
 				$('#txtprodnme').val(item.cname).change(); 
 				$('#txtprodid').val(item.id); 
 				$("#hdnunit").val(item.cunit);
-				
+				$("#hdnqty").val(1);
+				$("#hdnfact").val(1); 
+				$("#hdnmainunit").val(item.cunit);
+				$("#hdnxrefrpr").val("");
+				$("#hdnxrefrprident").val("");
+
 				addItemName("");	
 				
 			$('.datepick').each(function(){
@@ -584,64 +694,71 @@ $(document).ready(function() {
 	$("#txtprodid").keydown(function(e){
 		if(e.keyCode == 13){
 
-		$.ajax({
+			$.ajax({
         url:'../get_productid.php',
         data: 'c_id='+ $(this).val(),                 
         success: function(value){
 			
-            var data = value.split(",");
-            $('#txtprodid').val(data[0]);
-            $('#txtprodnme').val(data[1]);
-			$('#hdnunit').val(data[2]);
+          var data = value.split(",");
+          $('#txtprodid').val(data[0]);
+          $('#txtprodnme').val(data[1]);
+					$('#hdnunit').val(data[2]);
+					$('#hdnqty').val(1);
+					$("#hdnfact").val(1); 
+					$("#hdnmainunit").val(data[2]);
+					$("#hdnxrefrpr").val("");
+					$("#hdnxrefrprident").val("");
 		
 
-		if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
-			var rowCount = $('#MyTable tr').length;
-			var isItem = "NO";
-			var itemindex = 1;
-		
-			if(rowCount > 1){
-			 var cntr = rowCount-1;
-			 
-			 for (var counter = 1; counter <= cntr; counter++) {
-				// alert(counter);
-				if($("#txtprodid").val()==$("#txtitemcode"+counter).val()){
-					isItem = "YES";
-					itemindex = counter;
-					//alert($("#txtitemcode"+counter).val());
-					//alert(isItem);
-				//if prd id exist
-				}
-			//for loop
-			 }
-		   //if rowcount >1
-		   }
-		//if value is not blank
-		 }
-		 
-		if(isItem=="NO"){		
-
-	
-				myFunctionadd();
-				ComputeGross();	
-				
+					if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
+						var rowCount = $('#MyTable tr').length;
+						var isItem = "NO";
+						var itemindex = 1;
 					
-	    }
-	    else{
-			//alert("ITEM NOT IN THE MASTERLIST!");
-			addqty();
-		}
-		
-		$("#txtprodid").val("");
-		$("#txtprodnme").val("");
-		$("#hdnunit").val("");
- 
-	    //closing for success: function(value){
-	    }
-        }); 
+						if(rowCount > 1){
+						var cntr = rowCount-1;
+						
+						for (var counter = 1; counter <= cntr; counter++) {
+							// alert(counter);
+							if($("#txtprodid").val()==$("#txtitemcode"+counter).val()){
+								isItem = "YES";
+								itemindex = counter;
+								//alert($("#txtitemcode"+counter).val());
+								//alert(isItem);
+							//if prd id exist
+							}
+						//for loop
+						}
+						//if rowcount >1
+						}
+					//if value is not blank
+					}
+					
+					if(isItem=="NO"){		
 
-	
-		 
+				
+							myFunctionadd();
+							ComputeGross();	
+							
+								
+						}
+						else{
+						//alert("ITEM NOT IN THE MASTERLIST!");
+						addqty();
+					}
+					
+					$("#txtprodid").val("");
+					$("#txtprodnme").val("");
+					$("#hdnunit").val("");
+					$("#hdnqty").val("");
+					$("#hdnfact").val("");
+					$("#hdnmainunit").val("");
+					$("#hdnxrefrpr").val("");
+					$("#hdnxrefrprident").val("");
+						//closing for success: function(value){
+	    	}
+      }); 
+
 		//if ebter is clicked
 		}
 		
@@ -759,19 +876,32 @@ function addItemName(tranno){
 		$("#txtprodid").val("");
 		$("#txtprodnme").val("");
 		$("#hdnunit").val("");
-		
+		$("#hdnqty").val("");
+		$("#hdnfact").val("");
+		$("#hdnmainunit").val("");
+		$("#hdnxrefrpr").val("");
+		$("#hdnxrefrprident").val("");
 	 }
 
 }
 
 function myFunctionadd(){
+
+	var crefPR = document.getElementById("hdnxrefrpr").value;
+	var crefPRIdent = document.getElementById("hdnxrefrprident").value;
+
 	var itmcode = document.getElementById("txtprodid").value;
 	var itmdesc = document.getElementById("txtprodnme").value;
 	var itmunit = document.getElementById("hdnunit").value;
+	var itmnqty = document.getElementById("hdnqty").value; 
+	var itmnfact = document.getElementById("hdnfact").value;
+	var itmnmain = document.getElementById("hdnmainunit").value;
+
 	var dneeded= document.getElementById("date_needed").value;
 
 	var itmprice = chkprice(itmcode,itmunit);
-
+	var itmamt = parseFloat(itmnqty)*parseFloat(itmprice);
+	var itmbaseamt = parseFloat($("#basecurrval").val())*parseFloat(itmamt); 
 
 		var uomoptions = "";
 		
@@ -805,7 +935,7 @@ function myFunctionadd(){
 	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 	var lastRow = tbl.length;
 
-	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+"</td>";
+	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+" <input type='hidden' value='"+crefPR+"' name=\"hdncreference\" id=\"hdncreference\"> <input type='hidden' value='"+crefPRIdent+"' name=\"hdnrefident\" id=\"hdnrefident\"> </td>";
 	var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\"><input type='hidden' value='"+itmdesc.toUpperCase()+"' name=\"txtitemdesc\" id=\"txtitemdesc\">"+itmdesc.toUpperCase()+"</td>";
 	var tditmunit = "<td width=\"80\" style=\"padding: 1px\" nowrap> <select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\">"+uomoptions+"</select> </td>";
 
@@ -852,13 +982,13 @@ function myFunctionadd(){
 				var vattd = "<td width=\"120\" nowrap style=\""+ewtstyle+"\" class=\"codeshdn\"> <select class='form-control input-xs' name=\"selitmvatyp\" id=\"selitmvatyp"+lastRow+"\">" + taxoptions + "</select> </td>";
 
 
-	var tditmqty = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='1' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+itmunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='1' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
+	var tditmqty = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='"+itmnqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+itmnmain+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+itmnfact+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
 		
 	var tditmprice = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='"+itmprice+"' class='numeric form-control input-xs' style='text-align:right'name=\"txtnprice\" id='txtnprice"+lastRow+"' autocomplete='off' onFocus='this.select();'> </td>";
 			
-	var tditmbaseamount = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='"+itmprice+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtntranamount\" id='txtntranamount"+lastRow+"' readonly> </td>";
+	var tditmbaseamount = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='"+itmbaseamt+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtntranamount\" id='txtntranamount"+lastRow+"' readonly> </td>"; 
 
-	var tditmamount = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='"+itmprice+"' class='numeric form-control input-xs' style='text-align:right' name='txtnamount' id='txtnamount"+lastRow+"' readonly> </td>";
+	var tditmamount = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='"+itmamt+"' class='numeric form-control input-xs' style='text-align:right' name='txtnamount' id='txtnamount"+lastRow+"' readonly> </td>";
 
 	var tdneeded = "<td width=\"100\" style=\"padding: 1px; position:relative;\" nowrap><input type='text' class='form-control input-xs' id='dneed"+lastRow+"' name='dneed' value='"+dneeded+"' /></td>"
 	
@@ -1156,6 +1286,9 @@ function chkform(){
 		if(trancode!=""){
 			//Save Details
 			$("#MyTable > tbody > tr").each(function(index) {	
+
+				var crefpr = $(this).find('input[type="hidden"][name="hdncreference"]').val(); 
+				var crefprident = $(this).find('input[type="hidden"][name="hdnrefident"]').val();
 			
 				var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
 				var citmdesc = $(this).find('input[type="hidden"][name="txtitemdesc"]').val();
@@ -1186,7 +1319,7 @@ function chkform(){
 				
 				$.ajax ({
 					url: "Purch_newsavedet.php",
-					data: { trancode: trancode, dneed: dneed, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, citmdesc:citmdesc, ntranamt:ntranamt, citmremarks:citmremarks, vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate },
+					data: { trancode: trancode, crefpr:crefpr, crefprident:crefprident, dneed: dneed, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, citmdesc:citmdesc, ntranamt:ntranamt, citmremarks:citmremarks, vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate },
 					async: false,
 					success: function( data ) {
 						if(data.trim()=="False"){
@@ -1253,26 +1386,26 @@ function convertCurrency(fromCurrency) {
 
 function recomputeCurr(){
 
-var newcurate = $("#basecurrval").val();
-var rowCount = $('#MyTable tr').length;
-		
-var gross = 0;
-var amt = 0;
+	var newcurate = $("#basecurrval").val();
+	var rowCount = $('#MyTable tr').length;
+			
+	var gross = 0;
+	var amt = 0;
 
-if(rowCount>1){
-	for (var i = 1; i <= rowCount-1; i++) {
-		amt = $("#txtntranamount"+i).val().replace(/,/g,'');			
-		recurr = parseFloat(newcurate) * parseFloat(amt);
+	if(rowCount>1){
+		for (var i = 1; i <= rowCount-1; i++) {
+			amt = $("#txtntranamount"+i).val().replace(/,/g,'');			
+			recurr = parseFloat(newcurate) * parseFloat(amt);
 
-		$("#txtnamount"+i).val(recurr);
+			$("#txtnamount"+i).val(recurr);
 
-		$("#txtnamount"+i).autoNumeric('destroy');
-		$("#txtnamount"+i).autoNumeric('init',{mDec:2});
+			$("#txtnamount"+i).autoNumeric('destroy');
+			$("#txtnamount"+i).autoNumeric('init',{mDec:2});
+		}
 	}
-}
 
 
-ComputeGross();
+	ComputeGross();
 
 
 }
@@ -1299,5 +1432,162 @@ function getcontact(cid){
 	});
 
 }
+
+function openinv(){
+
+	//clear table body if may laman
+	$('#MyInvTbl tbody').empty(); 
+	$('#MyInvDetList tbody').empty();
+			
+	//get salesno na selected na
+	var y;
+	var salesnos = "";
+	var xstat =  "YES";
+
+	$.ajax({ //		data: 'x='+x,
+    url: 'th_prlist.php',
+    dataType: 'json',
+    method: 'post',
+    success: function (data) {
+
+			$("#allbox").prop('checked', false);
+					   
+      console.log(data);
+      $.each(data,function(index,item){
+							
+				if(item.cpono=="NONE"){
+					$("#AlertMsg").html("No Purchase Request Available");
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
+
+					xstat = "NO";
+								
+					$("#txtcustid").attr("readonly", false);
+					$("#txtcust").attr("readonly", false);
+
+				}
+				else{
+					$("<tr>").append(
+						$("<td id='td"+item.cprno+"'>").text(item.cprno),
+						$("<td>").text(item.cdesc)
+					).appendTo("#MyInvTbl tbody");
+								
+								
+					$("#td"+item.cprno).on("click", function(){
+						opengetdet($(this).text());
+					});
+								
+					$("#td"+item.cprno).on("mouseover", function(){
+						$(this).css('cursor','pointer');
+					});
+				}
+
+			});
+					   
+			if(xstat=="YES"){
+				$('#mySIRef').modal('show');
+			}
+  	},
+    error: function (req, status, err) {
+
+			console.log('Something went wrong', status, err);
+			$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+			$("#alertbtnOK").show();
+			$("#AlertModal").modal('show');
+		}
+  });
+
+}
+
+function opengetdet(valz){
+	var drno = valz;
+
+	$("#txtrefSI").val(drno);
+
+	$('#InvListHdr').html("PR Details: " + drno + "<div id='loadimg'><center><img src='../../images/cusload.gif' style='show:none;'> </center> </div>");
+	
+	$('#MyInvDetList tbody').empty();
+	$('#MyDRDetList tbody').empty();
+		
+	$('#loadimg').show();
+	
+	var salesnos = "";
+	var cnt = 0;
+			
+	$("#MyTable > tbody > tr").each(function() {
+		myxref = $(this).find('input[type="hidden"][name="txtcreference"]').val();
+				
+		if(myxref == drno){
+			cnt = cnt + 1;
+					
+			if(cnt>1){
+				salesnos = salesnos + ",";
+			}
+							  
+			salesnos = salesnos +  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+		}				
+	});
+
+	//alert('th_prlistdet.php?x='+drno+"&y="+salesnos);
+	$.ajax({
+  	url: 'th_prlistdet.php',
+		data: 'x='+drno+"&y="+salesnos,
+    dataType: 'json',
+    method: 'post',
+    success: function (data) {
+
+			$("#allbox").prop('checked', false); 					   
+      console.log(data);
+			$.each(data,function(index,item){
+				if(item.citemno==""){
+					alert("NO more items to add!")
+				}
+				else{
+						
+					$("<tr>").append(
+						$("<td>").html("<input type='checkbox' value='"+item.nident+"' name='chkSales[]' data-id=\""+drno+"\" data-ident=\""+item.nident+"\" data-itm='"+item.citemno+"' data-itmdesc='"+item.cdesc+"' data-itmunit='"+item.cunit+"' data-qty='"+item.nqty+"' data-factor='"+item.nqty+"'>"),
+						$("<td>").text(item.citemno),
+						$("<td>").text(item.cdesc),
+						$("<td>").text(item.cunit),
+						$("<td>").text(item.nqty),
+					).appendTo("#MyInvDetList tbody");
+				}
+			});
+    },
+		complete: function(){
+			$('#loadimg').hide();
+		},
+    error: function (req, status, err) {
+			console.log('Something went wrong', status, err);
+			$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+			$("#alertbtnOK").show();
+			$("#AlertModal").modal('show');
+    }
+  });
+
+}
+
+function InsertPRDets(){
+	var i = 0;
+	var rcnt = 0;
+	
+  $("input[name='chkSales[]']:checked").each( function () {
+
+		$("#hdnxrefrpr").val($(this).data("id"));
+		$("#hdnxrefrprident").val($(this).data("ident"));
+
+		$("#txtprodid").val($(this).data("itm"));
+		$("#txtprodnme").val($(this).data("itmdesc"));
+		$("#hdnunit").val($(this).data("itmunit"));
+		$("#hdnqty").val($(this).data("qty"));
+		$("#hdnfact").val($(this).data("factor"));
+
+		myFunctionadd();
+
+		$('#mySIRef').modal('hide');
+
+	});
+}
+
 
 </script>

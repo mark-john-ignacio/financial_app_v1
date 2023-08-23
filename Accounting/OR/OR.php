@@ -1,17 +1,34 @@
 <?php
-session_start();
-$_SESSION['pageid'] = "OR.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "OR.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
-$company = $_SESSION['companyid'];
+	$company = $_SESSION['companyid'];
 
-	$poststat = "True";	
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'OR_unpost.php'");
+
+	//POST
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'OR_post'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
+	}
+
+	//CANCEL
+	$cancstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'OR_cancel'");
+	if(mysqli_num_rows($sql) == 0){
+		$cancstat = "False";
+	}
+
+	$unpststat = "True";	
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'OR_unpost'");
+	if(mysqli_num_rows($sql) == 0){
+		$unpststat = "False";
 	}
 ?>
 
@@ -77,7 +94,7 @@ function trans(x,num){
 			<button type="button" class="btn btn-primary btn-sm" onClick="location.href='OR_new2.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
 			<?php
-				if($poststat=="True"){
+				if($unpststat=="True"){
 			?>
 				<button type="button" class="btn btn-warning btn-sm" onClick="location.href='OR_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
 			<?php
@@ -117,26 +134,34 @@ function trans(x,num){
 						<td><a href="javascript:;" onClick="editfrm('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
 						<td><?php echo $row['cornumber'];?></td>
  						<td><?php echo $row['ccode'];?> - <?php echo $ccustname;?> </td>
-                        <td align="right"><?php echo number_format($row['namount'],2);?></td>
-                        <td><?php echo $row['dcutdate'];?></td>
+            <td align="right"><?php echo number_format($row['namount'],2);?></td>
+            <td><?php echo $row['dcutdate'];?></td>
 						<td align="center">
-                        <div id="msg<?php echo $row['ctranno'];?>">
-                        	<?php 
-							if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
-							?>
-								<a href="javascript:;" onClick="trans('POST','<?php echo $row['ctranno'];?>')">POST</a> | <a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['ctranno'];?>')">CANCEL</a>
-							<?php
-                            }
-							else{
-								if(intval($row['lcancelled'])==intval(1)){
-									echo "Cancelled";
-								}
-								if(intval($row['lapproved'])==intval(1)){
-									echo "Posted";
-								}
-							}
+              <div id="msg<?php echo $row['ctranno'];?>">
+                <?php 
+									if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
+								?>
+
+									<a href="javascript:;" onClick="trans('POST','<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>">
+										<i class="fa fa-thumbs-up" style="font-size:20px;color:Green ;" title="Approve transaction"></i>
+									</a>
+
+									<a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>">
+										<i class="fa fa-thumbs-down" style="font-size:20px;color:Red ;" title="Cancel transaction"></i>
+									</a>
+
+								<?php
+                  }
+									else{
+										if(intval($row['lcancelled'])==intval(1)){
+											echo "Cancelled";
+										}
+										if(intval($row['lapproved'])==intval(1)){
+											echo "Posted";
+										}
+									}
 							
-							?>
+								?>
                             </div>
                         </td>
 					</tr>

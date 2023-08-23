@@ -301,6 +301,18 @@ if($_REQUEST['typ']=="CANCEL"){
 
 }
 
+if($_REQUEST['typ']=="CANCEL1"){
+
+	mysqli_query($con,"Update purchase set lcancelled=1 where compcode='$company' and cpono='$tranno'");
+
+	$msgz = "<b>SUCCESS: </b>Your transaction is successfully cancelled!";
+	$status = "Cancelled";
+
+	mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
+	values('$tranno','$preparedby',NOW(),'CANCELLED','PURCHASE ORDER','$compname','Cancel Record')");
+
+}
+
 if($_REQUEST['typ']=="SEND"){
 
 	//to be sure

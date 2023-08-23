@@ -1604,7 +1604,6 @@ function save(){
  
 }
 
-
 function computeDue(selewt){
 
 	lastRow = selewt.attributes["id"].value;

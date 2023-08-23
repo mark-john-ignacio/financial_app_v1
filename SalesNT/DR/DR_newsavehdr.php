@@ -68,7 +68,7 @@ else {
 					$cterms = "'".$row["cterms"]."'";
 				}
 	
-	//INSERT HEADER
+	//INSERT HEADER	
 
 	if (!mysqli_query($con, "INSERT INTO ntdr(`compcode`, `ctranno`, `ccode`, `cterms`, `cremarks`, `ddate`, `dcutdate`, `ngross`, `cpreparedby`, `cacctcode`, `cdrprintno`, `csalesman`, `cdelcode`, `cdeladdno`, `cdeladdcity`, `cdeladdstate`, `cdeladdcountry`, `cdeladdzip`) 
 	values('$company', '$cSINo', '$cCustID', $cterms, $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$preparedby', $cacctcode, $nDRPrintNo, '$salesman', '$delcodes', $delhousno, $delcity, $delstate, $delcountry, '$delzip')")) {

@@ -21,9 +21,9 @@ require_once "../Connection/connection_string.php";
 
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 
-	     $json['id'] = $row['cunit'];
-		 $json['name'] = $row['cDesc'];
-		 $json2[] = $json;
+	  $json['id'] = $row['cunit'];
+		$json['name'] = $row['cDesc'];
+		$json2[] = $json;
 
 	}
 

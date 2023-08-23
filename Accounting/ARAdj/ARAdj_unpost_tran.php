@@ -3,7 +3,7 @@
 		session_start();
 	}
 
-	$_SESSION['pageid'] = "ARAdj_unpost.php";
+	$_SESSION['pageid'] = "ARAdj_unpost";
 
 	require_once "../../Connection/connection_string.php";
 

@@ -107,6 +107,12 @@
 									<a href="" onClick="setI('A','ARAgeing.php')" data-toggle="tab">
 									<i class="fa fa-book"></i> AR Ageing </a>
 								</li>
+								<!--
+								<li>
+									<a href="" onClick="setI('A','ARMonitoring.php')" data-toggle="tab">
+									<i class="fa fa-book"></i> AR Monitoring </a>
+								</li>
+								-->
               </ul>
 					  </div>
 
