@@ -3348,6 +3348,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 										$sqlparams = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='".$_SESSION['companyid']."' and ccode in ('DEF_WHOUT','DEF_WHIN','DEF_PROUT','DEF_SRIN')");
 										$rowdetprms = $sqlparams->fetch_all(MYSQLI_ASSOC);
+
+										$def_whout = "";
+										$def_whin = "";
+										$def_prout = "";
+										$def_srin = "";
 										foreach($rowdetprms as $rowx){
 
 											if($rowx['ccode']=="DEF_WHOUT"){
@@ -3459,9 +3464,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										</div>
 									</div>
 
-							</div>
-						
+							</div>						
 						<!-- INVENTORY SETUP END 
+
+
 						<div id="rpts" class="tab-pane fade in">
 							<p data-toggle="collapse" data-target="#rpt_sofp"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Statement of Financial Position Template</b></u></p>
 
