@@ -14,11 +14,7 @@
 
 	require_once "../../include/denied.php";
 	require_once "../../include/access.php";
-
-
-	require("../../vendor/phpmailer/phpmailer/src/PHPMailer.php");
-	require("../../vendor/phpmailer/phpmailer/src/SMTP.php");
-
+	require_once "../../include/sendEmail.php";
 
 	$company = $_SESSION['companyid'];
 
@@ -30,43 +26,6 @@
 			$logonamz = $rowcomp['compname'];
 		}
 
-	}
-
-
-	function sendEmail($email,$name,$xpono,$logonamz){
-
-		$output='<p>Dear '.$name.',</p>';
-		$output.='<p>This email is to notify that the Bills Payment# '.$xpono.' is waiting for your approval.</p>'; 
-		$output.='<p>Thanks,</p>';
-		$output.='<p>Myx Financials,</p>';
-
-		$body = $output; 
-		$subject = $logonamz." - Request For Payment";
-	
-		$email_to = $email;
-
-		$fromserver = "myxfin@serttech.com"; 
-		$mail = new PHPMailer\PHPMailer\PHPMailer();
-		$mail->IsSMTP();
-		$mail->Host = "mail.serttech.com"; // Enter your host here
-		$mail->SMTPAuth = true;
-		$mail->Username = "myxfin@serttech.com"; // Enter your email here
-		$mail->Password = "Sert@2022"; //Enter your password here
-		$mail->SMTPSecure = 'tls';
-		$mail->Port = 587;
-		$mail->IsHTML(true);
-		$mail->From = "noreply@serttech.com";
-		$mail->FromName = $logonamz;
-		$mail->Sender = "myxfin@serttech.com"; // indicates ReturnPath header
-		$mail->Subject = $subject;
-		$mail->Body = $body;
-		$mail->AddAddress($email_to);
-
-		if(!$mail->Send()){
-			//echo "Mailer Error: " . $mail->ErrorInfo;
-		}else{
-			//echo "Email Successfully Sent";
-		}
 	}
 
 	//POST RECORD
@@ -198,7 +157,15 @@
 							if(count(@$nextapprovers)>=1){
 								foreach($rowPOresult as $rs){
 									if(in_array(trim($rs['userid']),@$nextapprovers)){
-										sendEmail($rs['cemailadd'],$rs['Fname'],$tranno,$logonamz);
+
+										$output='<p>Dear '.$rs['Fname'].',</p>';
+										$output.='<p>This email is to notify that the Bills Payment# '.$tranno.' is waiting for your approval.</p>'; 
+										$output.='<p>Thanks,</p>';
+										$output.='<p>Myx Financials,</p>';
+
+										$subject = $logonamz." - Bills Payment";
+
+										sendEmail($row['cemailadd'],$output,$tranno,$logonamz);
 									}
 								}
 							}

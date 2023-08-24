@@ -1,27 +1,27 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "Items_new.php";
+    if(!isset($_SESSION)){
+        session_start();
+    }
+    $_SESSION['pageid'] = "Items_new.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+    include('../../Connection/connection_string.php');
+    include('../../include/denied.php');
+    include('../../include/access2.php');
 
 
-$company = $_SESSION['companyid'];
+    $company = $_SESSION['companyid'];
 
-						 $result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='DEFMRKUP'"); 
+	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='DEFMRKUP'"); 
 					
-						  if (mysqli_num_rows($result)!=0) {
-						 $all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
+	if (mysqli_num_rows($result)!=0) {
+		$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
 						 
-							 $nvalue = $all_course_data['cvalue']; 
+		$nvalue = $all_course_data['cvalue']; 
 							
-						 }
-						 else{
-							 $nvalue = "";
-						 }
+	}
+	else{
+		$nvalue = "";
+	}
 
 ?>
 <!DOCTYPE html>

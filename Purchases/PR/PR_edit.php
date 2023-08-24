@@ -256,6 +256,12 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									<td width='200px' style='padding:1px'><input type='text' class='form-control input-xs' id='dremarks<?=$cntr?>' name='dremarks' placeholder='Enter remarks...'value="<?=$rowbody['cremarks']?>" /></td>
 									<td width='80px' style='padding:1px'><input class='btn btn-danger btn-xs' type='button' id='del<?=$cntr?>' value='delete' /></td>
 								</tr>
+
+									<script>
+										$("#del<?=$cntr?>").on('click', function() { 
+											$(this).closest('tr').remove();
+										});
+									</script>
 							<?php
 									}
 								}

@@ -29,142 +29,12 @@ if(mysqli_num_rows($sql) == 0){
 
 	<title>Myx Financials</title>
 
-		<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>"> 
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
-    <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-    <script src="../../Bootstrap/js/bootstrap.js"></script>
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>"> 
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
+  <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+  <script src="../../Bootstrap/js/bootstrap.js"></script>
 
-<script type="text/javascript">
-	$(document).keydown(function(e) {	 
-	  if(e.keyCode == 112) { //F1
-	    e.preventDefault();
-		window.location = "APV_new.php";
-	  }
-	});
-
-function editfrm(x){
-	document.getElementById("txtctranno").value = x;
-	document.getElementById("frmedit").submit();
-}
-
-function trans(x,num,aptyp){
-	
-	$("#typ").val(x);
-	$("#aptyp").val(aptyp);
-	$("#modzx").val(num);
-
-
-		$("#AlertMsg").html("");
-							
-		$("#AlertMsg").html("Are you sure you want to "+x+" APV No.: "+num);
-		$("#alertbtnOK").hide();
-		$("#OK").show();
-		$("#Cancel").show();
-		$("#AlertModal").modal('show');
-	
-
-}
-
-$(function(){
-	var x = "";
-	var num = "";
-	
-	$(".btnmodz").on("click", function (){
-		if($('#AlertModal').hasClass('in')==true){
-			var idz = $(this).attr('id');
-			
-			if(idz=="OK"){
-				var x = $("#typ").val();
-				var num = $("#modzx").val();
-				var apx = $("#aptyp").val();
-				
-				if(x=="POST"){
-					var msg = "POSTED";
-					
-					//generate Account Entries
-					if(apx=="Purchases" || apx=="PurchAdv"){
-						$.ajax ({
-							url: "th_acctentry.php",
-							data: { tran: num },
-							async: false,
-							dataType: "text",
-							success: function( data ) {
-								
-							}
-						});
-					}
-					
-					
-					
-				}
-				else if(x=="CANCEL"){
-					var msg = "CANCELLED";
-				}
-
-
-					$.ajax ({
-						url: "APV_Tran.php",
-						data: { x: num, typ: x },
-						async: false,
-						dataType: "json",
-						beforeSend: function(){
-							$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
-							$("#alertbtnOK").hide();
-							$("#OK").hide();
-							$("#Cancel").hide();
-							$("#AlertModal").modal('show');
-						},
-						success: function( data ) {
-							console.log(data);
-							$.each(data,function(index,item){
-								
-								itmstat = item.stat;
-								
-								if(itmstat!="False"){
-									$("#msg"+num).html(item.stat);
-									
-										$("#AlertMsg").html("");
-										
-										$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+msg+"...");
-										$("#alertbtnOK").show();
-										$("#OK").hide();
-										$("#Cancel").hide();
-										$("#AlertModal").modal('show');
-				
-								}
-								else{
-									$("#AlertMsg").html("");
-									
-									$("#AlertMsg").html(item.ms);
-									$("#alertbtnOK").show();
-									$("#OK").hide();
-									$("#Cancel").hide();
-									$("#AlertModal").modal('show');
-				
-								}
-							});
-						}
-					});
-
-
-			}
-			else if(idz=="Cancel"){
-				
-				$("#AlertMsg").html("");
-				$("#AlertModal").modal('hide');
-				
-			}
-
-
-
-
-		}
-	});
-	
-});
-
-</script>
 </head>
 
 <body style="padding:5px">
@@ -294,3 +164,132 @@ $(function(){
 
 </body>
 </html>
+
+<script type="text/javascript">
+	$(document).keydown(function(e) {	 
+	  if(e.keyCode == 112) { //F1
+	    e.preventDefault();
+			window.location = "APV_new.php";
+	  }
+	});
+
+	function editfrm(x){
+		document.getElementById("txtctranno").value = x;
+		document.getElementById("frmedit").submit();
+	}
+
+	function trans(x,num,aptyp){
+		
+		$("#typ").val(x);
+		$("#aptyp").val(aptyp);
+		$("#modzx").val(num);
+
+		$("#AlertMsg").html("");
+								
+		$("#AlertMsg").html("Are you sure you want to "+x+" APV No.: "+num);
+		$("#alertbtnOK").hide();
+		$("#OK").show();
+		$("#Cancel").show();
+		$("#AlertModal").modal('show');
+
+	}
+
+	$(function(){
+		var x = "";
+		var num = "";
+		
+		$(".btnmodz").on("click", function (){
+			if($('#AlertModal').hasClass('in')==true){
+				var idz = $(this).attr('id');
+				
+				if(idz=="OK"){
+					var x = $("#typ").val();
+					var num = $("#modzx").val();
+					var apx = $("#aptyp").val();
+					
+					if(x=="POST"){
+						var msg = "POSTED";
+						
+						//generate Account Entries
+						if(apx=="Purchases" || apx=="PurchAdv"){
+							$.ajax ({
+								url: "th_acctentry.php",
+								data: { tran: num },
+								async: false,
+								dataType: "text",
+								success: function( data ) {
+									alert(data);
+								}
+							});
+						}
+						
+						
+						
+					}
+					else if(x=="CANCEL"){
+						var msg = "CANCELLED";
+					}
+
+
+						$.ajax ({
+							url: "APV_Tran.php",
+							data: { x: num, typ: x },
+							async: false,
+							dataType: "json",
+							beforeSend: function(){
+								$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+								$("#alertbtnOK").hide();
+								$("#OK").hide();
+								$("#Cancel").hide();
+								$("#AlertModal").modal('show');
+							},
+							success: function( data ) {
+								console.log(data);
+								$.each(data,function(index,item){
+									
+									itmstat = item.stat;
+									
+									if(itmstat!="False"){
+										$("#msg"+num).html(item.stat);
+										
+											$("#AlertMsg").html("");
+											
+											$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+msg+"...");
+											$("#alertbtnOK").show();
+											$("#OK").hide();
+											$("#Cancel").hide();
+											$("#AlertModal").modal('show');
+					
+									}
+									else{
+										$("#AlertMsg").html("");
+										
+										$("#AlertMsg").html(item.ms);
+										$("#alertbtnOK").show();
+										$("#OK").hide();
+										$("#Cancel").hide();
+										$("#AlertModal").modal('show');
+					
+									}
+								});
+							}
+						});
+
+
+				}
+				else if(idz=="Cancel"){
+					
+					$("#AlertMsg").html("");
+					$("#AlertModal").modal('hide');
+					
+				}
+
+
+
+
+			}
+		});
+		
+	});
+
+</script>

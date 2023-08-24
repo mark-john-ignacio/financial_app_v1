@@ -83,6 +83,22 @@ $company = $_SESSION['companyid'];
 	}
 
 
+	$nicomeaccount = "";
+	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='INCOME_ACCOUNT'"); 								
+	if (mysqli_num_rows($result)!=0) {
+		$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
+		$nicomeaccount = $all_course_data['cvalue']; 							
+	}
+
+	@$incactsarr = array();
+	$getinct = mysqli_query($con,"SELECT * FROM `accounts_default` WHERE compcode='$company' and ccode='INCOME_ACCOUNT'"); 
+	if (mysqli_num_rows($getinct)!=0) {
+		while($rows = mysqli_fetch_array($getinct, MYSQLI_ASSOC)){
+			@$incactsarr[] = array('ccode' => $rows['cdescription'], 'cdesc' => $rows['cdescription']); 
+		}
+	}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -153,7 +169,7 @@ $company = $_SESSION['companyid'];
 			          </div>
 							</td>
 
-							<tH width="100"><b>Sales Type:</b></tH>
+							<tH width="100"><b>Item Sales Type:</b></tH>
 							<td style="padding:2px">
 								<div class="col-xs-11 nopadding">
 									<select id="selsityp" name="selsityp" class="form-control input-sm selectpicker"  tabindex="1">
@@ -219,15 +235,29 @@ $company = $_SESSION['companyid'];
 									</div>
 								</td>
 
-							<tH width="100"><b>Payment Type:</b></tH>
+							<?php
+								if($nicomeaccount=="si"){
+							?>
+							<tH width="100"><b>Income Account:</b></tH>
 							<td style="padding:2px">
 								<div class="col-xs-11 nopadding">
 									<select id="selpaytyp" name="selpaytyp" class="form-control input-sm selectpicker"  tabindex="1">
-											<option value="Credit">Credit</option>
-											<option value="Cash">Cash</option>
+										<?php
+										
+											foreach(@$incactsarr as $xr){
+										?>
+											<option value="<?=$xr['ccode']?>"><?=$xr['cdesc']?></option>
+										<?php
+											}
+										?>
 									</select>
 								</div>
 							</td>
+							<?php
+								}else{
+									echo "<th width=\"100\">&nbsp;</th><td style=\"padding:2px\"><input type=\"hidden\" id=\"selpaytyp\" name=\"selpaytyp\" value=\"Credit\"></td>";
+								}
+							?>
 						</tr>
 
 						<tr>

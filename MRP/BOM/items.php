@@ -270,8 +270,9 @@
 			highlighter: Object,
 			afterSelect: function(item) { 	
 
-				var rowCount = $('#MyTbl tr').length;
+				var rowCount = $('#MyTbl tbody > tr').length;
 
+				rowCount = rowCount + 1;
 				InsTotable(item.id,item.desc,item.cunit,rowCount);
 					
 				$('#txtscan').val("").change();
@@ -350,7 +351,7 @@
 		//loop check if item exist
 			var $tdrows = "";
 
-			$tdrows = "<tr><td><input type='text' class=\"form-control input-xs text-center\" value='"+sornum+"' name=\"txtsortnum\" id=\"txtsortnum"+sornum+"\" readonly></td><td><input type='hidden' value='"+itmid+"' name=\"txtitmcode\" id=\"txtitmcode"+sornum+"\">"+itmid+"</td><td><input type='hidden' value='"+itmdesc+"' name=\"txtitmdesc\" id=\"txtitmdesc"+sornum+"\">"+itmdesc+"</td><td><input type='hidden' value='"+itmunit+"' name=\"txtcunit\" id=\"txtcunit"+sornum+"\">"+itmunit+"</td><td><select class=\"form-control input-xs text-center\" name=\"txtcunit\" id=\"txtcunit"+sornum+"\"><option value='2'>2</option><option value='3'>3</option><options value='4'>4</option><option value='5'>5</option></select></td>";
+			$tdrows = "<td><input type='text' class=\"form-control input-xs text-center\" value='"+sornum+"' name=\"txtsortnum\" id=\"txtsortnum"+sornum+"\" readonly></td><td><input type='hidden' value='"+itmid+"' name=\"txtitmcode\" id=\"txtitmcode"+sornum+"\">"+itmid+"</td><td><input type='hidden' value='"+itmdesc+"' name=\"txtitmdesc\" id=\"txtitmdesc"+sornum+"\">"+itmdesc+"</td><td><input type='hidden' value='"+itmunit+"' name=\"txtcunit\" id=\"txtcunit"+sornum+"\">"+itmunit+"</td><td><select class=\"form-control input-xs text-center\" name=\"txtcunit\" id=\"txtcunit"+sornum+"\"><option value='2'>2</option><option value='3'>3</option><options value='4'>4</option><option value='5'>5</option></select></td>";
 
 
 			getcnt = parseInt($("#hdncount").val());
