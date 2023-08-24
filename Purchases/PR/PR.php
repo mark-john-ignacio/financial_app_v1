@@ -415,7 +415,7 @@
 			$.each(data,function(key,value){
 														
 							if(value.stat!="False"){
-								$("#msg"+num).html(value.stat);
+								//$("#msg"+num).html(value.stat);
 								
 									
 								$("#AlertMsg").html("");
