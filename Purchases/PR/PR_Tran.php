@@ -311,7 +311,7 @@ if($_REQUEST['typ']=="SEND"){
 	}
 
 	//GET LEVEL 1 Approver base on users access
-		$sqlprlvl1 = mysqli_query($con,"select DISTINCT userid from users_access where pageid in ('PR_post','PR_cancel') and userid in (select UserID from users_sections where section_nid = ".$SecsList.")");
+		$sqlprlvl1 = mysqli_query($con,"select DISTINCT userid from users_access where pageid in ('PR_post','PR_cancel') and userid in (select UserID from users_sections where section_nid = ".$SecsList." and UserID<>'Admin')");
 	//END  LEVEL 1 Approver
 
 		if (mysqli_num_rows($sqlprlvl1)!=0){
