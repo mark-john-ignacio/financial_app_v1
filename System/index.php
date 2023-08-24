@@ -3259,7 +3259,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</div>                    
 									<div class="col-xs-3 nopadwtop">
 										<?php
-											$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='INVSYSTEM'"); 
+											$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='INCOME_ACCOUNT'"); 
 									
 											if (mysqli_num_rows($result)!=0) {
 												$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
@@ -3269,13 +3269,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
 												$nvalue = "";
 											}
 										?>
-											<select class="form-control input-sm selectpicker" name="selchkinvsys" id="selchkinvsys" onChange="setparamval('INVSYSTEM',this.value,'invsyschkmsg')">
-												<option value="periodic" <?php if ($nvalue=='periodic') { echo "selected"; } ?>> Sales Per Item</option>
-												<option value="perpetual" <?php if ($nvalue=='perpetual') { echo "selected"; } ?>> Sales Per Customer </option>
-												<option value="perpetual" <?php if ($nvalue=='perpetual') { echo "selected"; } ?>> Sales Per SI Type </option>
+											<select class="form-control input-sm selectpicker" name="selchkinvsys" id="selchkinvsys" onChange="setparamval('INCOME_ACCOUNT',this.value,'acctgincomeaccount')">
+												<option value="item" <?php if ($nvalue=='item') { echo "selected"; } ?>> Sales Per Item</option>
+												<option value="customer" <?php if ($nvalue=='customer') { echo "selected"; } ?>> Sales Per Customer </option>
+												<option value="si" <?php if ($nvalue=='si') { echo "selected"; } ?>> Sales Per SI Type </option>
 											</select>
 									</div>                    
-									<div class="col-xs-1 nopadwtop" id="invsyschkmsg">
+									<div class="col-xs-1 nopadwtop" id="acctgincomeaccount">
 									</div>                    
 								</div> 
 													
@@ -5697,7 +5697,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								x.style.width = "400px";
 								
 							u.innerHTML = "<input type=\"hidden\" name=\"txtnident[]\" id=\"txtnident"+lastRow+"\" value=\""+lastRow+"\" data-citmno=\""+lastRow+"\" /><input type=\"text\" name=\"txtccode[]\" id=\"txtccode"+lastRow+"\" value=\""+item.ccode+"\" data-citmno=\""+item.nidentity+"\" class=\"form-control input-xs\" readonly />";
-							v.innerHTML = "<input type=\"text\" name=\"txtcdesc[]\" id=\"txtcdesc"+lastRow+"\" value=\""+item.cdesc+"\" data-citmno=\""+item.nidentity+"\" class=\"form-control input-xs\"  placeholder=\"Enter Description...\" />";
+							v.innerHTML = "<input type=\"text\" name=\"txtcdesc[]\" id=\"txtcdesc"+lastRow+"\" value=\""+item.cdesc+"\" data-citmno=\""+item.nidentity+"\" class=\"form-control input-xs\"  placeholder=\"Enter Description...\" readonly/>";
 							w.innerHTML = "<input type=\"text\" name=\"txtcacctid[]\" id=\"txtcacctid"+lastRow+"\" value=\""+item.cacctcode+"\" data-citmno=\""+item.nidentity+"\" class=\"form-control input-xs\"  placeholder=\"Enter Account Code...\" />";
 							x.innerHTML = "<input type=\"text\" name=\"txtcacctdesc[]\" id=\"txtcacctdesc"+lastRow+"\" value=\""+item.ctitle+"\" data-citmno=\""+item.nidentity+"\" class=\"form-control input-xs\"  placeholder=\"Enter Account Tile...\" />";
 								

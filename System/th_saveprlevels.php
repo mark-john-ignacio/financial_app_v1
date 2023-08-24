@@ -8,7 +8,7 @@ require_once "../Connection/connection_string.php";
 	$compname = php_uname('n');
 	$preparedby = $_SESSION['employeeid'];
 
-	print_r($_POST);
+	//print_r($_POST);
 
 	$company = $_SESSION['companyid'];
 
@@ -61,15 +61,15 @@ require_once "../Connection/connection_string.php";
 if($isokall=="True"){
 	?>
 	<script>
-		//alert("PR Approvals Successfully Saved!");
-		//window.location.replace("https://<?//=$_SERVER['HTTP_HOST']?>/System");
+		alert("PR Approvals Successfully Saved!");
+		window.location.replace("https://<?=$_SERVER['HTTP_HOST']?>/System");
 	</script>
 	<?php
 }else{
 	?>
 	<script>
-		//alert("PR Approvals has error saving!");
-		//window.location.replace("https://<?//=$_SERVER['HTTP_HOST']?>/System");
+		alert("PR Approvals has error saving!");
+		window.location.replace("https://<?=$_SERVER['HTTP_HOST']?>/System");
 	</script>
 	<?php
 }
