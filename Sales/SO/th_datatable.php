@@ -60,6 +60,7 @@
 		$sub_array[] = $row['ccode'];
 		$sub_array[] = $row['nlimit'];
 		$sub_array[] = number_format($row['ngross'],2);
+		$sub_array[] = $row['lsent'];
 		$data[] = $sub_array;
 	}
 

@@ -1,19 +1,28 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "SO.php";
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "SO.php";
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
-$company = $_SESSION['companyid'];
+	$company = $_SESSION['companyid'];
 
-$poststat = "True";
-$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SO_unpost.php'");
-if(mysqli_num_rows($sql) == 0){
-	$poststat = "False";
-}
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SO_unpost.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
+	$lallowMRP = 0;
+	$result=mysqli_query($con,"select * From company");								
+		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+		{
+			if($row['compcode'] == $company){
+				$lallowMRP =  $row['lmrpmodules'];
+			}
+		}  
 ?>
 
 <!DOCTYPE html>
@@ -75,6 +84,13 @@ if(mysqli_num_rows($sql) == 0){
 						<th>Delivery Date</th>
 						<th>Gross</th>
             <th>Status</th>
+						<?php
+							if($lallowMRP==1){
+						?>
+								<th width="40">JO</th>
+						<?php
+							}
+						?>
 					</tr>
 				</thead>
 
@@ -162,9 +178,14 @@ if(mysqli_num_rows($sql) == 0){
 					else if(x=="CANCEL"){
 						var msg = "CANCELLED";
 					}
+
+					urlx = "SO_Tran.php";
+					if(x=="SEND"){
+						urlx = "SO_GenJO.php";
+					}
 					
 						$.ajax ({
-							url: "SO_Tran.php",
+							url: urlx,
 							data: { x: num, typ: x },
 							async: false,
 							dataType: "json",
@@ -279,10 +300,28 @@ if(mysqli_num_rows($sql) == 0){
 						}
 						
 						else{
-							return " <div id=\"msg"+full[0]+"\"><a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"','Posted','"+full[7]+"',"+full[8]+")\">POST</a> | <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"','Cancelled')\">CANCEL</a></div>";
+							return " <div id=\"msg"+full[0]+"\"><a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"')\">POST</a> | <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"')\">CANCEL</a></div>";
 						}
 					}
-				}
+				}<?php
+						if($lallowMRP==1){
+					?>
+					,{ "data": null,
+						"render": function(data, type, full, row){
+
+							if (full[5] == 1 && full[10] == 0) {
+							
+								return "<a href=\"javascript:;\" onClick=\"trans('SEND','"+full[0]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-share\" style=\"font-size:20px;color: #ffb533;\" title=\"Generate JO\"></i></a>";
+
+							}else{
+								 return " - ";
+							}
+						}
+						
+					}
+					<?php
+						}
+					?>
 			],
 			"order": [[ 3, "desc" ]],
 			"columnDefs": [
