@@ -4,6 +4,7 @@ session_start();
 }
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
+require_once('../../Model/helper.php');
 
 $dmonth = date("m");
 $dyear = date("y");
@@ -66,11 +67,11 @@ else {
 	$BaseGross= str_replace(",","",$_REQUEST['txtnBaseGross']);
 
 	$preparedby = $_SESSION['employeeid'];
-	
 	//INSERT HEADER
 
 	if (!mysqli_query($con, "INSERT INTO so(`compcode`, `ctranno`, `ccode`, `cremarks`, `cspecins`, `ddate`, `dcutdate`, `ngross`, `nbasegross`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `cpreparedby`, `csalestype`, `cpono`, `csalesman`, `cdelcode`, `cdeladdno`, `cdeladdcity`, `cdeladdstate`, `cdeladdcountry`, `cdeladdzip`) 
 	values('$company', '$cSINo', '$cCustID', $cRemarks, $specins, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby', '$cSITyp', '$cCPONO', '$salesman', '$delcodes', $delhousno, $delcity, $delstate, $delcountry, '$delzip')")) {
+		
 		echo "False";
 		//echo mysqli_error($con);
 	} 
@@ -88,8 +89,14 @@ else {
 
 		echo $cSINo;
 	}
-	
-	
 
-
-?>
+	if(count($_FILES) != 0){
+		$directory = "../../Components/assets/SO/";
+		if(!is_dir($directory)){
+			mkdir($directory, 0777);
+		}
+		$directory .= "{$company}_{$cSINo}/";
+		var_dump($directory);
+		upload_image($_FILES, $directory);
+	}
+?>  

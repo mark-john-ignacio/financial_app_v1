@@ -240,6 +240,9 @@
                 <li>
                   <a href="javascript:;" onClick="setpage('MasterFiles/Items/Groupings.php');"> <i class="fa fa-angle-double-right"></i> Groupings </a>
                 </li>
+								<li>
+                  <a href="javascript:;" onClick="setpage('MasterFiles/Items/PROCESS.php');"> <i class="fa fa-angle-double-right"></i> Processes </a>
+                </li>
               </ul>
 						</li>
 						<li>

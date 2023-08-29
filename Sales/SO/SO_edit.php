@@ -7,6 +7,7 @@ $_SESSION['pageid'] = "SO_edit.php";
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 include('../../include/access2.php');
+require_once('../../Model/helper.php');
 
 $company = $_SESSION['companyid'];
 
@@ -49,6 +50,14 @@ function listcurrencies(){ //API for currency list
 		}
 	}
 
+	@$arrname = array();
+	$directory = "../../Components/assets/{$company}_{$txtctranno}/";
+	if(file_exists($directory)){
+		@$arrname = file_checker($directory);
+	} else {
+		echo "No Files!";
+	}
+	
 
 ?>
 
@@ -74,6 +83,17 @@ function listcurrencies(){ //API for currency list
 <script src="../../Bootstrap/js/bootstrap.js"></script>
 <script src="../../Bootstrap/js/moment.js"></script>
 <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+<!--
+--
+-- FileType Bootstrap Scripts and Link
+--
+-->
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
 
 </head>
 
@@ -82,7 +102,12 @@ function listcurrencies(){ //API for currency list
 <input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
 
 <?php
-$sqlhead = mysqli_query($con,"select a.*,b.cname,b.cpricever, (TRIM(TRAILING '.' FROM(CAST(TRIM(TRAILING '0' FROM B.nlimit)AS char)))) as nlimit, c.cname as cdelname, d.cname as salesmaname from so a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join customers c on a.compcode=c.compcode and a.cdelcode=c.cempid left join salesman d on a.compcode=b.compcode and a.csalesman=d.ccode where a.ctranno = '$txtctranno' and a.compcode='$company'");
+$sqlhead = mysqli_query($con,"select a.*,b.cname,b.cpricever, (TRIM(TRAILING '.' 
+FROM(CAST(TRIM(TRAILING '0' FROM B.nlimit)AS char)))) as nlimit, c.cname as cdelname,
+ d.cname as salesmaname from so a left join customers b on a.compcode=b.compcode and 
+ a.ccode=b.cempid left join customers c on a.compcode=c.compcode and a.cdelcode=c.cempid
+  left join salesman d on a.compcode=b.compcode and a.csalesman=d.ccode where a.ctranno 
+  = '$txtctranno' and a.compcode='$company'");
 
 
 if (mysqli_num_rows($sqlhead)!=0) {
@@ -145,6 +170,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	<ul class="nav nav-tabs">
 			<li class="active"><a href="#home">Order Details</a></li>
 			<li><a href="#menu1">Delivered To</a></li>
+			<li><a href="#attc">Attachment</a></li>
 	</ul>
  
 	<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left;overflow: auto">
@@ -355,7 +381,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</tr>   
 						</table>
 					</div>
-
+					<div id="attc" class="tab-pane fade in" style="padding-left: 10px;">
+							<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+							<input id="file-0" name="upload[]" type="file" multiple>
+					</div>
 			</div>
 	</div>
 <hr>
@@ -654,6 +683,47 @@ var xyyyy = xtoday.getFullYear();
 
 xtoday = xmm + '/' + xdd + '/' + xyyyy;
 
+var file_name = <?= json_encode(@$arrname) ?>;
+/**
+ * Checking of list files
+ */
+file_name.map(({name, ext}) => {
+		console.log("Name: " + name + " ext: " + ext)
+})
+
+var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
+var arrimg = new Array("jpg","png","gif","jpeg");
+
+var list_file = [];
+var file_config = [];
+var extender;
+/**
+ * setting up an list of file and config of a file
+ */
+file_name.map(({name, ext}, i) => {
+	list_file.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/<?=$company."_".$txtctranno?>/" + name)
+	console.log(ext);
+
+	if(jQuery.inArray(ext, arroffice) !== 1){
+		extender = "office";
+	} else if (jQuery.inArray(ext, arrimg) !== 1){
+		extender = "image";
+	} else if (ext == "txt"){
+		extender = "text";
+	} else {
+		extender =  ext;
+	}
+
+	console.log(extender)
+	file_config.push({
+		type : extender, 
+		caption : name,
+		width : "120px",
+		url: "th_filedelete.php?id="+name+"&code=<?=$txtctranno?>", 
+		key: i + 1
+	});
+})
+
 
 	$(document).keydown(function(e) {	
 			
@@ -713,6 +783,35 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 			$(".nav-tabs a").click(function(){
     			$(this).tab('show');
 			});
+
+			if(file_name.length > 0){
+				$('#file-0').fileinput({
+					showUpload: false,
+					showClose: false,
+					allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+					overwriteInitial: false,
+					maxFileSize:2000,
+					maxFileCount: 5,
+					fileActionSettings: { showUpload: false, showDrag: false, },
+					initialPreview: list_file,
+					initialPreviewAsData: true,
+					initialPreviewFileType: 'image',
+					initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/<?=$company."_".$txtctranno?>/{filename}',
+					initialPreviewConfig: file_config
+				});
+			} else {
+				$("#file-0").fileinput({
+					theme: 'fa5',
+					showUpload: false,
+					showClose: false,
+					allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+					overwriteInitial: false,
+					maxFileSize:2000,
+					maxFileCount: 5,
+					fileActionSettings: { showUpload: false, showDrag: false, }
+				});
+			}
+			
 
 			$("#txtnBaseGross").autoNumeric('init',{mDec:2});
 			$("#txtnGross").autoNumeric('init',{mDec:2});

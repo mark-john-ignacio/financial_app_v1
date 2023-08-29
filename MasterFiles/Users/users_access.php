@@ -190,7 +190,7 @@ xmlhttp.send();
             </div>
 		 </div>
 
-         <div class="col-xs-12 nopadwleft">
+        <div class="col-xs-12 nopadwleft">
          	<div class="col-xs-2 nopadding">
             	 <label><input type="checkbox" name="chkAcc[]" value="CLASS.php" id="chkBox89" <?=(in_array("CLASS.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Classification List</label>
             </div>
@@ -200,19 +200,33 @@ xmlhttp.send();
             <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="CLASS_Edit.php" id="chkBox91" <?=(in_array("CLASS_Edit.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
             </div>
-		 </div>
+		    </div>
 
-         <div class="col-xs-12 nopadwleft">
+        <div class="col-xs-12 nopadwleft">
          	<div class="col-xs-2 nopadding">
             	 <label><input type="checkbox" name="chkAcc[]" value="Groupings.php" id="chkBox92" <?=(in_array("Groupings.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Group Details List</label>
-            </div>
-            <div class="col-xs-2 nopadding">
+          </div>
+          <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="Groupings_New.php" id="chkBox93" <?=(in_array("Groupings_New.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Add New</label>
+          </div>
+          <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="Groupings_Edit.php" id="chkBox94" <?=(in_array("Groupings_Edit.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
+          </div>
+		    </div>
+
+
+        <div class="col-xs-12 nopadwleft">
+         	<div class="col-xs-2 nopadding">
+            	 <label><input type="checkbox" name="chkAcc[]" value="Process.php" <?=(in_array("Process.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Processes List</label>
             </div>
             <div class="col-xs-2 nopadding">
-            	<label><input type="checkbox" name="chkAcc[]" value="Groupings_Edit.php" id="chkBox94" <?=(in_array("Groupings_Edit.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
+            	<label><input type="checkbox" name="chkAcc[]" value="Process_New.php" <?=(in_array("Process_New.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Add New</label>
             </div>
-		 </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="Process_Edit.php" <?=(in_array("Process_Edit.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
+            </div>
+		    </div>
+
        </div>
  
         <br>
