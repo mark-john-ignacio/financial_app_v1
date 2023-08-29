@@ -13,17 +13,18 @@ include('../../include/access2.php');
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">   
-    <link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
-    <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-    <script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
-    <script src="../../Bootstrap/js/bootstrap.js"></script>
-<script type="text/javascript">
-function editfrm(x){
-	document.getElementById("txtcitemno").value = x;
-	document.getElementById("frmedit").submit();
-}
-</script>
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">   
+  <link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
+  <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+  <script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
+  <script src="../../Bootstrap/js/bootstrap.js"></script>
+
+	<script type="text/javascript">
+	function editfrm(x){
+		document.getElementById("txtcitemno").value = x;
+		document.getElementById("frmedit").submit();
+	}
+	</script>
 
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
@@ -36,28 +37,35 @@ function editfrm(x){
 	<div>
 		<section>
         <div>
+
         	<div style="float:left; width:50%">
-				<font size="+2"><u>Customers Master List</u></font>	
-            </div>
+						<font size="+2"><u>Customers Master List</u></font>	
+          </div>
+
+					<div style="float:right; width:50%; text-align:right">
+						<div class="itmalert alert alert-danger" id="itmerr" style="padding: 2px !important; display: none;"></div>
+          </div>
             
         </div>
 			<br><br>
           
-          <div class="col-xs-12 nopadding">
-				<div class="col-xs-2 nopadding">
-					<button type="button" class="btn btn-primary btn-sm" onClick="location.href='Customers_new.php'" id="btnNew" name="btnNew"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
-				</div>
-                <div class="col-xs-5 nopadding">
-					<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div>
-				</div>
-                <div class="col-xs-2 text-right nopadwtop" style="height:30px !important;">
-                	<b> Search Customer: &nbsp;</b>
-                </div>
-				<div class="col-xs-3 text-right nopadding">
-					<input type="text" name="searchByName" id="searchByName" value="" class="form-control input-sm" placeholder="Enter Code or Desc...">
-				</div>
+        <div class="col-xs-12 nopadding">
 
-			</div>
+					<div class="col-xs-7 nopadding">
+						<button type="button" class="btn btn-primary btn-sm" onClick="location.href='Customers_new.php'" id="btnNew" name="btnNew"><i class="fa fa-file-text-o" aria-hidden="true"></i> &nbsp; Create New (F1)</button>
+
+						<a href="Customers_xls.php" class="btn btn-success btn-sm"><i class="fa fa-file-excel-o"></i> &nbsp; Export To Excel</a>
+					</div>
+
+          <div class="col-xs-2 text-right nopadwtop" style="height:30px !important;">
+            <b> Search Customer: &nbsp;</b>
+          </div>
+
+					<div class="col-xs-3 text-right nopadding">
+						<input type="text" name="searchByName" id="searchByName" value="" class="form-control input-sm" placeholder="Enter Code or Desc...">
+					</div>
+
+				</div>
 			
 			<table id="MyTable" class="display" cellspacing="0" width="100%">
 				<thead>
@@ -67,7 +75,6 @@ function editfrm(x){
 						<th>Tin No.</th>
             <th>Terms</th>
 						<th width="80">Status</th>
-            <th width="80">Delete</th>
 					</tr>
 				</thead>
 
@@ -209,17 +216,10 @@ function editfrm(x){
 
                     }
                 },
-                { "data": null,
-                  "render": function(data, type, full, row){
-                        
-                      return "<input class='btn btn-danger btn-xs' type='button' id='row_"+full[0]+"_delete' value='delete' onClick=\"deleteRow('"+full[0]+"');\"/>";
-                  }
-                    
-                }
                 
             ],
             "columnDefs": [ {
-              "targets": [3,4,5],
+              "targets": [3,4],
               "className": "text-center"
             } ],
            });

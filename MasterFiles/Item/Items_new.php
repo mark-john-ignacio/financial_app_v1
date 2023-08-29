@@ -77,7 +77,7 @@
 
                     <div id="menu0" class="tab-pane fade in active" style="padding-left:10px">
 
-                        <div class="col-xs-12">
+                        <div class="col-xs-12" style="margin-top:10px !important">
                             <div class="col-xs-2 nopadwtop">
                                 <b>Item Code*</b>
                             </div>

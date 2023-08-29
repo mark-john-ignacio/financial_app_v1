@@ -1,15 +1,13 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "Items_edit.php";
+    if(!isset($_SESSION)){
+        session_start();
+    }
+    $_SESSION['pageid'] = "Items_edit.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
-?>
+    include('../../Connection/connection_string.php');
+    include('../../include/denied.php');
+    include('../../include/access2.php');
 
-              	<?php
 				$company = $_SESSION['companyid'];
 				//$citemno = $_REQUEST['txtcitemno'];
 				//echo $citemno;
@@ -103,7 +101,16 @@ include('../../include/access2.php');
 
 					}
 				}
-				?>
+
+    $arrprocess = array();
+    $sqlprocess = mysqli_query($con,"SELECT * FROM `items_process` WHERE compcode='$company' and cstatus='ACTIVE'"); 
+    if (mysqli_num_rows($sqlprocess)!=0) {
+        while($row = mysqli_fetch_array($sqlprocess, MYSQLI_ASSOC)){
+            $arrprocess[] = $row;
+        }
+    }
+
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -130,664 +137,721 @@ include('../../include/access2.php');
 </head>
 
 <body style="padding:5px; height:700px">
+<input type="hidden" value='<?=json_encode(@$arrprocess)?>' id="hdnprocess">  
+
 <form name="frmITEM" id="frmITEM"  method="post" enctype="multipart/form-data">
 	<fieldset>
     	<legend>Item Details <i><font size="-1">Note: Fields with (*) are mandatory fields...</font></i></legend>
 
-<div class="col-xs-12">
- <div class="col-xs-2 nopadding" align="left">
- 	<?php 
-	if(!file_exists($cUserPic)){
-		$imgsrc = "../../images/emp.jpg";
-	}
-	else{
-		$imgsrc = $cUserPic;
-	}
-	?>
-    <img src="<?php echo $imgsrc;?>" width="145" height="145" id="previewing">
- </div>
- <div class="col-xs-10 nopadwleft">
-        
-       <div class="col-xs-12">
-    	<div class="col-xs-2 nopadwtop">
-        	<b>Item Code*</b>
-        </div>
-        
-        <div class="col-xs-3 nopadwtop">
-          <div class="col-xs-8 nopadwtop">
-			<input type="text" class="form-control input-sm" id="txtcpartno" name="txtcpartno" tabindex="1" placeholder="Input Item Code.." required autocomplete="off" value="<?php echo $cItemNo;?>" maxlength="40" onKeyUp="chkSIEnter(event.keyCode,'frmITEM');" maxlength="50"/>
-            
-            <input type="hidden" name="hdncpartno" id="hdncpartno" value="<?php echo $cItemNo;?>">
-          </div>
-          
-           <div class="col-xs-4 nopadwtop">		
-            	 <div id="itmcode_err" style="padding: 5px 10px;"></div>
-           </div>
-           
-		</div>
-        
-       </div>
-
-       <div class="col-xs-12">
-            <div class="col-xs-2 nopadwtop">
-                <b>SKU Code</b>
-            </div>
-        
-            <div class="col-xs-6 nopadwtop">
-                <input type="text" class="form-control input-sm" id="txtcSKU" name="txtcSKU" tabindex="1" placeholder="Input Item SKU.." autocomplete="off" value="<?php echo $cSKUCode;?>" maxlength="255"/> 
-            </div>
-                   
-        </div>
-
-       <div class="col-xs-12">
-    	<div class="col-xs-2 nopadwtop">
-        	<b>Description*</b>
-        </div>
-        
-        <div class="col-xs-6 nopadwtop">
-			<!--<input type="text" class="form-control input-sm" id="txtcdesc" name="txtcdesc" tabindex="2" value="" placeholder="Input Item Description.." required autocomplete="off" maxlength="90"/>-->
-
-            <textarea class="form-control input-sm" id="txtcdesc" name="txtcdesc" tabindex="2" placeholder="Input Item Description.." required autocomplete="off" maxlength="500"><?php echo htmlentities($cItemDesc, ENT_QUOTES); ?></textarea>
-
-		</div>
-        
-       </div>
-
-       <div class="col-xs-12">
-    	<div class="col-xs-2 nopadwtop">
-        	<b>Notes</b>
-        </div>
-        
-        <div class="col-xs-6 nopadwtop">
-			<!--<input type="text" class="form-control input-sm" id="txtcnotes" name="txtcnotes" tabindex="3" placeholder="Enter some notes.." autocomplete="off" value="" maxlength="90" />-->
-
-            <textarea class="form-control input-sm" id="txtcnotes" name="txtcnotes" tabindex="3" placeholder="Enter some notes.." autocomplete="off"><?php echo htmlentities($cNotes, ENT_QUOTES); ?></textarea>
-
-		</div>
-        
-       </div>
-       
-       <div class="col-xs-12">
-    	<div class="col-xs-2 nopadwtop">
-        	<label class="btn btn-warning btn-xs">
-                Browse Image&hellip; <input type="file" name="file" id="file" style="display: none;">
-            </label>
-        </div>
-        
+        <ul class="nav nav-tabs">
+            <li class="active" id="liacc"><a href="#menu0">General</a></li>
+            <li id="liacc"><a href="#menu1">Financial</a></li>
+            <li id="licon"><a href="#menu2">Inventory</a></li>
+            <li id="ligrp"><a href="#menu3">Groupings</a></li>
+            <li id="liproc"><a href="#menu4">Processes</a></li>
+        </ul>
 
 
-       <!-- <div class="col-xs-2 nopadwtop">
-                <b>
-                <label class="checkbox-inline">
-                    <input type="checkbox" value="" name="chkInvn" id="chkInvn">Inventoriable
-                </label>
-                </b>
-            </div>-->
-                
-       </div>
+        <div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;height: 60vh;text-align: left;overflow: auto">
+            <div class="tab-content">
 
-</div>
-<div>
+                <div id="menu0" class="tab-pane fade in active" style="padding-left:10px">
 
-            <div class="col-xs-12">
-                <div class="col-xs-2 nopadwtop">
-                    <b>Unit of Measure</b>
-                </div>
-                
-                <div class="col-xs-4 nopadwtop">
-                    <select id="seluom" name="seluom" class="form-control input-sm selectpicker"  tabindex="3">
-                    <?php
-                $sql = "select * from groupings where ctype='ITMUNIT' and compcode='$company' order by cdesc";
-                $result=mysqli_query($con,$sql);
-                    if (!mysqli_query($con, $sql)) {
-                        printf("Errormessage: %s\n", mysqli_error($con));
-                    }			
-        
-                    while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-                        {
-                    ?>   
-                    <option value="<?php echo $row['ccode'];?>" <?php if($cUnit==$row['ccode']){ echo "selected"; } ?>><?php echo $row['cdesc']?></option>
-                    <?php
-                        }
-                        
-        
-                    ?>     
-                </select>
-                </div>
-            </div>
-        
-        
-            <div class="col-xs-12">
-                <div class="col-xs-2 nopadwtop">
-                    <b>Classification</b>
-                </div>
-                
-                <div class="col-xs-4 nopadwtop">
-                <select id="selclass" name="selclass" class="form-control input-sm selectpicker"  tabindex="4">
-                    <?php
-                $sql = "select * from groupings where ctype='ITEMCLS' and compcode='$company' order by cdesc";
-                $result=mysqli_query($con,$sql);
-                    if (!mysqli_query($con, $sql)) {
-                        printf("Errormessage: %s\n", mysqli_error($con));
-                    }			
-        
-                    while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-                        {
-                    ?>   
-                    <option value="<?php echo $row['ccode'];?>" <?php if($cClass==$row['ccode']){ echo "selected"; } ?>><?php echo $row['cdesc']?></option>
-                    <?php
-                        }
-                        
-                        
-                    ?>     
-                </select>
-                </div>
-            </div>
-            
-            <div class="col-xs-12">
-                <div class="col-xs-2 nopadwtop">
-                    <b>Type</b>
-                </div>
-                
-                <div class="col-xs-4 nopadwtop">
-                <select id="seltype" name="seltype" class="form-control input-sm selectpicker"  tabindex="4">
-                    <?php
-                $sql = "select * from groupings where ctype='ITEMTYP' and compcode='$company' order by cdesc";
-                $result=mysqli_query($con,$sql);
-                    if (!mysqli_query($con, $sql)) {
-                        printf("Errormessage: %s\n", mysqli_error($con));
-                    }			
-        
-                    while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-                        {
-                    ?>   
-                    <option value="<?php echo $row['ccode'];?>" <?php if($cType==$row['ccode']){ echo "selected"; } ?>><?php echo $row['cdesc']?></option>
-                    <?php
-                        }
-                        
-                        
-                    ?>     
-                </select>
-                </div> 
-            </div>
+                    <div class="col-xs-12" style="margin-top:10px !important">
+                        <div class="col-xs-2 nopadding" align="left">
+                            <?php 
+                            if(!file_exists($cUserPic)){
+                                $imgsrc = "../../images/emp.jpg";
+                            }
+                            else{
+                                $imgsrc = $cUserPic;
+                            }
+                            ?>
+                            <img src="<?php echo $imgsrc;?>" width="145" height="145" id="previewing">
+                        </div>
 
-            <div class="col-xs-12">
-                <div class="col-xs-2 nopadwtop">
-                    <b>Trade Type</b>
-                </div>
-                
-                <div class="col-xs-4 nopadwtop">
-                    <select id="seltradetype" name="seltradetype" class="form-control input-sm selectpicker"  tabindex="4">
-                        <option value="Trade" <?=($cTradeType=="Trade") ? "selected" : ""?>>Trade</option>
-                        <option value="Non-Trade" <?=($cTradeType=="Non-Trade") ? "selected" : ""?>>Non-Trade</option>
-                    </select>
-                </div>
-            </div>
-        
- 
+                        <div class="col-xs-10 nopadwleft">
 
-<p style="padding-top:10px">&nbsp;</p>
-  <ul class="nav nav-tabs">
-    <li class="active" id="liacc"><a href="#menu1">Financial</a></li>
-    <li id="licon"><a href="#menu2">Inventory</a></li>
-    <li id="ligrp"><a href="#menu3">Groupings</a></li>
-  </ul>
+                            <div class="col-xs-12">
+                                <div class="col-xs-2 nopadwtop">
+                                    <b>Item Code*</b>
+                                </div>
+                                
+                                <div class="col-xs-3 nopadwtop">
+                                    <div class="col-xs-8 nopadwtop">
+                                        <input type="text" class="form-control input-sm" id="txtcpartno" name="txtcpartno" tabindex="1" placeholder="Input Item Code.." required autocomplete="off" value="<?php echo $cItemNo;?>" maxlength="40" onKeyUp="chkSIEnter(event.keyCode,'frmITEM');" maxlength="50"/>
+                                        
+                                        <input type="hidden" name="hdncpartno" id="hdncpartno" value="<?php echo $cItemNo;?>">
+                                    </div>
+                                </div>
 
-<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;height: 40vh;text-align: left;overflow: auto">
+                                <div class="col-xs-4 nopadwtop">		
+                                    <div id="itmcode_err" style="padding: 5px 10px;"></div>
+                                </div>
+                                
+                            </div>
 
-    <div class="tab-content">
+                            <div class="col-xs-12">
+                                <div class="col-xs-2 nopadwtop">
+                                    <b>SKU Code</b>
+                                </div>
+                            
+                                <div class="col-xs-6 nopadwtop">
+                                    <input type="text" class="form-control input-sm" id="txtcSKU" name="txtcSKU" tabindex="1" placeholder="Input Item SKU.." autocomplete="off" value="<?php echo $cSKUCode;?>" maxlength="255"/> 
+                                </div>
+                                    
+                            </div>
 
-        <div id="menu1" class="tab-pane fade in active" style="padding-left:10px">
-         <p>
-            <div class="col-xs-12">
-                <div class="col-xs-2 nopadwtop">
-                    <b>Sales Type</b>
-                </div>
-                <div class="col-xs-4 nopadwtop">
-                    <select id="selsityp" name="selsityp" class="form-control input-sm selectpicker"  tabindex="4">
-                        <option value="Goods" <?php if($SITyp=="Goods") { echo "selected"; } ?> >Goods</option>
-                        <option value="Services" <?php if($SITyp=="Services") { echo "selected"; } ?>>Services</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-xs-12">
-                <div class="col-xs-2 nopadwtop">
-                    <b>Tax Code</b>
-                </div>
-                
-                <div class="col-xs-4 nopadwtop">
-                <select id="seltax" name="seltax" class="form-control input-sm selectpicker"  tabindex="4">
-                    <?php
-                $sql = "select * from taxcode where compcode='$company' order by nidentity";
-                $result=mysqli_query($con,$sql);
-                    if (!mysqli_query($con, $sql)) {
-                        printf("Errormessage: %s\n", mysqli_error($con));
-                    }           
-        
-                    while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-                        {
-                    ?>   
-                    <option value="<?php echo $row['ctaxcode'];?>" <?php if($Seltax==$row['ctaxcode']){ echo "selected"; } ?>> <?php echo $row['ctaxdesc'];?> - <?php echo $row['nrate']."%";?>
-                    </option>
-                    <?php
-                        }
-                        
-                        
-                    ?>     
-                </select>
-                </div>
-            </div>
-  
-            <div class="col-xs-12">
-                <div class="col-xs-2 nopadwtop">
-                    <b>Item Pricing</b>                         
+                            <div class="col-xs-12">
+                                <div class="col-xs-2 nopadwtop">
+                                    <b>Description*</b>
+                                </div>
+                                
+                                <div class="col-xs-6 nopadwtop">
+                                    <!--<input type="text" class="form-control input-sm" id="txtcdesc" name="txtcdesc" tabindex="2" value="" placeholder="Input Item Description.." required autocomplete="off" maxlength="90"/>-->
 
-                </div>
-                
-                <div class="col-xs-4 nopadwtop">
-                    <select id="selitmpricing" name="selitmpricing" class="form-control input-sm selectpicker"  tabindex="4">
-                        <option value="MU" <?php if($cPriceType=="MU") { echo "selected"; } ?>>Mark-Up %</option>
-                        <option value="MUFIX" <?php if($cPriceType=="MUFIX") { echo "selected"; } ?>>Fix Mark-Up</option>
-                        <option value="PM" <?php if($cPriceType=="PM") { echo "selected"; } ?>>Price Matrix</option>
-                    </select>
-                </div>
-             </div>
+                                    <textarea class="form-control input-sm" id="txtcdesc" name="txtcdesc" tabindex="2" placeholder="Input Item Description.." required autocomplete="off" maxlength="500"><?php echo htmlentities($cItemDesc, ENT_QUOTES); ?></textarea>
 
-             <div class="col-xs-12" id="divItmMarkUp" <?php if($cPriceType!="MU") { echo "style=\"display:none\""; } ?>>
-                <div class="col-xs-2 nopadwtop">
-                   <b>Mark Up %</b>
-                </div>
-                
-                <div class="col-xs-1 nopadwtop">
-                    <input type="text" class="numeric form-control input-sm" id="txtcmarkUp" name="txtcmarkUp" required value="<?php echo $MarkUp;?>" autocomplete="off"> 
-                </div>
-                <div class="col-xs-1 nopadwtop">
-                    <div style=" padding: 5px 10px;">
-                        %
+                                </div>
+                            
+                            </div>
+
+                            <div class="col-xs-12">
+                                <div class="col-xs-2 nopadwtop">
+                                    <b>Notes</b>
+                                </div>
+                                
+                                <div class="col-xs-6 nopadwtop">
+                                    <!--<input type="text" class="form-control input-sm" id="txtcnotes" name="txtcnotes" tabindex="3" placeholder="Enter some notes.." autocomplete="off" value="" maxlength="90" />-->
+
+                                    <textarea class="form-control input-sm" id="txtcnotes" name="txtcnotes" tabindex="3" placeholder="Enter some notes.." autocomplete="off"><?php echo htmlentities($cNotes, ENT_QUOTES); ?></textarea>
+
+                                </div>
+                            
+                            </div>
+
+                            <div class="col-xs-12">
+                                <div class="col-xs-2 nopadwtop">
+                                    <label class="btn btn-warning btn-xs">
+                                        Browse Image&hellip; <input type="file" name="file" id="file" style="display: none;">
+                                    </label>
+                                </div>
+
+                                <!-- <div class="col-xs-2 nopadwtop">
+                                    <b>
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" value="" name="chkInvn" id="chkInvn">Inventoriable
+                                    </label>
+                                    </b>
+                                </div>-->
+                                    
+                            </div>
+
+                        </div>
+
                     </div>
-                </div>
-             </div>
 
-             <div class="col-xs-12" id="divItmMarkUpFix" <?php if($cPriceType!="MUFIX") { echo "style=\"display:none\""; } ?>>
-                <div class="col-xs-2 nopadwtop">
-                   <b>Fix Mark Up</b>
-                </div>
+                    <div class="col-xs-12">
+                        <div class="col-xs-2 nopadwtop">
+                            <b>Unit of Measure</b>
+                        </div>
+                        
+                        <div class="col-xs-4 nopadwtop">
+                            <select id="seluom" name="seluom" class="form-control input-sm selectpicker"  tabindex="3">
+                            <?php
+                        $sql = "select * from groupings where ctype='ITMUNIT' and compcode='$company' order by cdesc";
+                        $result=mysqli_query($con,$sql);
+                            if (!mysqli_query($con, $sql)) {
+                                printf("Errormessage: %s\n", mysqli_error($con));
+                            }			
                 
-                <div class="col-xs-1 nopadwtop">
-                    <input type="text" class="numeric form-control input-sm" id="txtcmarkUp" name="txtcmarkUp" required value="<?php echo $MarkUp;?>" autocomplete="off"> 
-                </div>
-             </div>
-
-
-            <div class="col-xs-12" style="padding-top: 10px !important">
-                <b><u>ACCOUNT CODES</u></b>
-            </div>
-            <div class="col-xs-12">
-                <div class="col-xs-2 nopadwtop">
-                    <b>Sales (AR)</b>
-                </div>
+                            while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+                                {
+                            ?>   
+                            <option value="<?php echo $row['ccode'];?>" <?php if($cUnit==$row['ccode']){ echo "selected"; } ?>><?php echo $row['cdesc']?></option>
+                            <?php
+                                }
+                                
                 
-                <div class="col-xs-3 nopadwtop">
-                    <input type="text" class="acctcontrol form-control input-sm" id="txtsalesacct" name="txtsalesacct" placeholder="Search Acct Title.." value="<?php echo $SalesCodeDesc; ?>" autocomplete="off">
-                   
-                </div>
-                
-                <div class="col-xs-1 nopadwtop">
-                    <input type="text" class="form-control input-sm" id="txtsalesacctID" name="txtsalesacctID"  readonly value="<?php echo $SalesCodeID; ?>">
-                    <input type="hidden" id="txtsalesacctD" name="txtsalesacctD" value="<?php echo $SalesCode; ?>">
-                </div>
-            </div>
-
-            <div class="col-xs-12">
-                <div class="col-xs-2 nopadwtop">
-                    <b>Sales Return</b>
-                </div>
-                
-                <div class="col-xs-3 nopadwtop">
-                    <input type="text" class="acctcontrol form-control input-sm" id="txtretacct" name="txtretacct" placeholder="Search Acct Title.." value="<?php echo $SRetCodeDesc; ?>" autocomplete="off">
-                </div>
-                <div class="col-xs-1 nopadwtop">
-                    <input type="text" class="form-control input-sm" id="txtretacctID" name="txtretacctID" value="<?php echo $SRetCodeID; ?>" readonly>
-                    <input type="hidden" id="txtretacctD" name="txtretacctD" value="<?php echo $SRetCode; ?>">
-                </div>
-            </div>        
-        
-            <div class="col-xs-12">
-                <div class="col-xs-2 nopadwtop">
-                    <b>Receiving (AP)</b>
-                </div>
-                
-                <div class="col-xs-3 nopadwtop">
-                    <input type="text" class="acctcontrol form-control input-sm" id="txtrracct" name="txtrracct" placeholder="Search Acct Title.." value="<?php echo $WRRCodeDesc; ?>" autocomplete="off">
-                </div>
-                <div class="col-xs-1 nopadwtop">
-                    <input type="text" class="form-control input-sm" id="txtrracctID" name="txtrracctID" value="<?php echo $WRRCodeID;  ?>" readonly>
-                    <input type="hidden" id="txtrracctD" name="txtrracctD" value="<?php echo $WRRCode;  ?>">
-                </div>
-            </div>
-        
-            <div class="col-xs-12">
-                <div class="col-xs-2 nopadwtop">
-                    <b>DR</b>
-                </div>
-                
-                <div class="col-xs-3 nopadwtop">
-                    <input type="text" class="acctcontrol form-control input-sm" id="txtdracct" name="txtdracct" placeholder="Search Acct Title.." autocomplete="off" value="<?php echo $DRCodeDesc; ?>">
-                </div>
-                <div class="col-xs-1 nopadwtop">
-                    <input type="text" class="form-control input-sm" id="txtdracctID" name="txtdracctID" value="<?php echo $DRCodeID; ?>" readonly>
-                    <input type="hidden" id="txtdracctD" name="txtdracctD" value="<?php echo $DRCode; ?>">
-                </div>
-            </div>
-                
-            <div class="col-xs-12">
-                <div class="col-xs-2 nopadwtop">
-                    <b>Cost of Goods</b>
-                </div>
-                
-                <div class="col-xs-3 nopadwtop">
-                    <input type="text" class="acctcontrol form-control input-sm" id="txtcogacct" name="txtcogacct" placeholder="Search Acct Title.." autocomplete="off" value="<?php echo $COGCodeDesc; ?>">
-                </div>
-                 <div class="col-xs-1 nopadwtop">
-                    <input type="text" class="form-control input-sm" id="txtcogacctID" name="txtcogacctID" value="<?php echo $COGCodeID; ?>" readonly>
-                    <input type="hidden" id="txtcogacctD" name="txtcogacctD" value="<?php echo $COGCode; ?>">
-                </div>
-           </div>
-        
-        </p>
-        </div>
-        
-        <div id="menu2" class="tab-pane fade" style="padding-left:10px">
-		  <p style="padding-top:10px">
-
- <div class="col-xs-12">
-            <div class="col-xs-1 nopadwtop">
-                <b>Serial No.:</b>
-            </div>
-            <div class="col-xs-1 nopadwtop">
-                <input type="checkbox" value="" name="chkSer" id="chkSer"  <?php if($ChkSer==1) { echo "checked"; } ?>>
-            </div>
-            <div class="col-xs-1 nopadwtop">
-               
-            </div>
-            <div class="col-xs-1 nopadwtop">
-                <b>Barcoded.:</b>
-            </div>
-            <div class="col-xs-1 nopadwtop">
-                <input type="checkbox" value="" name="chkbarcoded" id="chkbarcoded"  <?php if($Chkbcode==1) { echo "checked"; } ?>>
-            </div>
-             <div class="col-xs-1 nopadwtop">
-               
-            </div>
-            <div class="col-xs-1 nopadwtop">
-                <b>Packed</b>
-            </div>
-            <div class="col-xs-1 nopadwtop">
-                <input type="checkbox" value="" name="chkPack" id="chkPack"  <?php if($Chkpkgs==1) { echo "checked"; } ?>>
-            </div>
-       </div>
-
-        <div class="col-xs-12" style="padding-top: 10px !important">
-                <b><u>INVENTORY LEVEL</u></b>
-        </div>
-        <div class="col-xs-12">
-            <div class="col-xs-1 nopadwtop">
-                <b>Minimum:</b>
-            </div>
-            <div class="col-xs-1 nopadwtop">
-                <input type="text" class="form-control input-sm text-right" id="txtInvMin" name="txtInvMin" value="<?php echo $InvMin; ?>">
-            </div>
-              <div class="col-xs-1 nopadwtop">
-              </div>
-
-
-            <div class="col-xs-1 nopadwtop">
-               <b>Maximum:</b>
-            </div>
-            <div class="col-xs-1 nopadwtop">
-                <input type="text" class="form-control input-sm text-right" id="txtInvMax" name="txtInvMax" value="<?php echo $InvMax; ?>" >
-            </div>
-             <div class="col-xs-1 nopadwtop">
-            </div>
-            <div class="col-xs-1 nopadwtop">
-                <b>ReOrder Pt.:</b>
-            </div>
-            <div class="col-xs-1 nopadwtop">
-                <input type="text" class="form-control input-sm text-right" id="txtInvRO" name="txtInvRO" value="<?php echo $InvRePt; ?>" >
-            </div>
-       </div>
-        <div class="col-xs-12" style="padding-top: 10px !important">
-                <b><u>CONVERTION FACTOR</u></b>
-        </div>
-
-            
-            <input type="button" value="Add Convertion" name="btnaddunit" id="btnaddunit" class="btn btn-primary btn-xs" onClick="addunitconv();">
-            
-            <input name="hdnunitrowcnt" id="hdnunitrowcnt" type="hidden" value="0">
-            <br>
-                <table width="50%" border="0" cellpadding="2" id="myUnitTable">
-                  <tr>
-                    <th scope="col" width="120">UNIT</th>
-                    <th scope="col">FACTOR<br><i>(qty/smallest unit)</i></th>
-                    <th scope="col" width="80">STATUS</th>
-                  </tr>
-            	</table>
-         </p>        
-       </div>
+                            ?>     
+                        </select>
+                        </div>
+                    </div>
               
-        <div id="menu3" class="tab-pane fade" style="padding-left:10px">
-         <p>
-            <div class="col-xs-12">
-                <div class="cgroup col-xs-2 nopadwtop" id="cGroup1">
-                    <b>Cost of Goods</b>
-                </div>
+                    <div class="col-xs-12">
+                        <div class="col-xs-2 nopadwtop">
+                            <b>Classification</b>
+                        </div>
+                        
+                        <div class="col-xs-4 nopadwtop">
+                        <select id="selclass" name="selclass" class="form-control input-sm selectpicker"  tabindex="4">
+                            <?php
+                        $sql = "select * from groupings where ctype='ITEMCLS' and compcode='$company' order by cdesc";
+                        $result=mysqli_query($con,$sql);
+                            if (!mysqli_query($con, $sql)) {
+                                printf("Errormessage: %s\n", mysqli_error($con));
+                            }			
                 
-                <div class="col-xs-3 nopadwtop">
-                 <div class="btn-group btn-group-justified nopadding">
-                   <input type="text" class="txtcgroup form-control input-sm" id="txtcGroup1" name="txtcGroup1" tabindex="11" placeholder="Search Group 1..">
-                   <span class="searchclear glyphicon glyphicon-remove-circle"></span>
-                 </div>
+                            while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+                                {
+                            ?>   
+                            <option value="<?php echo $row['ccode'];?>" <?php if($cClass==$row['ccode']){ echo "selected"; } ?>><?php echo $row['cdesc']?></option>
+                            <?php
+                                }
+                                
+                                
+                            ?>     
+                        </select>
+                        </div>
+                    </div>
                     
-                    <input type="hidden" id="txtcGroup1D" name="txtcGroup1D">
-                </div>
-         
-                <div class="col-xs-1 nopadwtop">
-                    &nbsp;
-                    <button class="btncgroup btn btn-sm btn-danger" type="button" id="btncGroup1"><i class="fa fa-search"></i></button>
-                </div>
-                
-                <div class="cgroup col-xs-2 nopadwtop" id="cGroup6">
-                    <b>Cost of Goods</b>
-                </div>
-        
-        
-                <div class="col-xs-3 nopadwtop">
-                 <div class="btn-group btn-group-justified nopadding">
-                   <input type="text" class="txtcgroup form-control input-sm" id="txtcGroup6" name="txtcGroup6" tabindex="11" placeholder="Search Group 6..">
-                   <span class="searchclear glyphicon glyphicon-remove-circle"></span>
-                 </div>
+                    <div class="col-xs-12">
+                        <div class="col-xs-2 nopadwtop">
+                            <b>Type</b>
+                        </div>
+                        
+                        <div class="col-xs-4 nopadwtop">
+                            <select id="seltype" name="seltype" class="form-control input-sm selectpicker"  tabindex="4">
+                                <?php
+                                    $sql = "select * from groupings where ctype='ITEMTYP' and compcode='$company' order by cdesc";
+                                    $result=mysqli_query($con,$sql);
+                                    if (!mysqli_query($con, $sql)) {
+                                        printf("Errormessage: %s\n", mysqli_error($con));
+                                    }			
+                        
+                                    while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+                                    {
+                                ?>   
+                                    <option value="<?php echo $row['ccode'];?>" <?php if($cType==$row['ccode']){ echo "selected"; } ?>><?php echo $row['cdesc']?></option>
+                                <?php
+                                    }                               
+                                ?>     
+                            </select>
+                        </div> 
+                    </div>
 
-                    <input type="hidden" id="txtcGroup6D" name="txtcGroup6D">
+                    <div class="col-xs-12">
+                        <div class="col-xs-2 nopadwtop">
+                            <b>Trade Type</b>
+                        </div>
+                        
+                        <div class="col-xs-4 nopadwtop">
+                            <select id="seltradetype" name="seltradetype" class="form-control input-sm selectpicker"  tabindex="4">
+                                <option value="Trade" <?=($cTradeType=="Trade") ? "selected" : ""?>>Trade</option>
+                                <option value="Non-Trade" <?=($cTradeType=="Non-Trade") ? "selected" : ""?>>Non-Trade</option>
+                            </select>
+                        </div>
+                    </div>
+
                 </div>
+
+                <div id="menu1" class="tab-pane fade" style="padding-left:10px">
+                    <p>
+                    <div class="col-xs-12">
+                        <div class="col-xs-2 nopadwtop">
+                            <b>Sales Type</b>
+                        </div>
+                        <div class="col-xs-4 nopadwtop">
+                            <select id="selsityp" name="selsityp" class="form-control input-sm selectpicker"  tabindex="4">
+                                <option value="Goods" <?php if($SITyp=="Goods") { echo "selected"; } ?> >Goods</option>
+                                <option value="Services" <?php if($SITyp=="Services") { echo "selected"; } ?>>Services</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="col-xs-2 nopadwtop">
+                            <b>Tax Code</b>
+                        </div>
+                        
+                        <div class="col-xs-4 nopadwtop">
+                        <select id="seltax" name="seltax" class="form-control input-sm selectpicker"  tabindex="4">
+                            <?php
+                        $sql = "select * from taxcode where compcode='$company' order by nidentity";
+                        $result=mysqli_query($con,$sql);
+                            if (!mysqli_query($con, $sql)) {
+                                printf("Errormessage: %s\n", mysqli_error($con));
+                            }           
+                
+                            while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+                                {
+                            ?>   
+                            <option value="<?php echo $row['ctaxcode'];?>" <?php if($Seltax==$row['ctaxcode']){ echo "selected"; } ?>> <?php echo $row['ctaxdesc'];?> - <?php echo $row['nrate']."%";?>
+                            </option>
+                            <?php
+                                }
+                                
+                                
+                            ?>     
+                        </select>
+                        </div>
+                    </div>
         
-                <div class="col-xs-1 nopadwtop">
-                    &nbsp;
-                    <button class="btncgroup btn btn-sm btn-danger" type="button"  id="btncGroup6"><i class="fa fa-search"></i></button>
-                </div>
-        
-            </div>
-        
-            <div class="col-xs-12">
-                <div class="cgroup col-xs-2 nopadwtop" id="cGroup2">
-                    <b>Cost of Goods</b>
+                    <div class="col-xs-12">
+                        <div class="col-xs-2 nopadwtop">
+                            <b>Item Pricing</b>                         
+
+                        </div>
+                        
+                        <div class="col-xs-4 nopadwtop">
+                            <select id="selitmpricing" name="selitmpricing" class="form-control input-sm selectpicker"  tabindex="4">
+                                <option value="MU" <?php if($cPriceType=="MU") { echo "selected"; } ?>>Mark-Up %</option>
+                                <option value="MUFIX" <?php if($cPriceType=="MUFIX") { echo "selected"; } ?>>Fix Mark-Up</option>
+                                <option value="PM" <?php if($cPriceType=="PM") { echo "selected"; } ?>>Price Matrix</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12" id="divItmMarkUp" <?php if($cPriceType!="MU") { echo "style=\"display:none\""; } ?>>
+                        <div class="col-xs-2 nopadwtop">
+                        <b>Mark Up %</b>
+                        </div>
+                        
+                        <div class="col-xs-1 nopadwtop">
+                            <input type="text" class="numeric form-control input-sm" id="txtcmarkUp" name="txtcmarkUp" required value="<?php echo $MarkUp;?>" autocomplete="off"> 
+                        </div>
+                        <div class="col-xs-1 nopadwtop">
+                            <div style=" padding: 5px 10px;">
+                                %
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12" id="divItmMarkUpFix" <?php if($cPriceType!="MUFIX") { echo "style=\"display:none\""; } ?>>
+                        <div class="col-xs-2 nopadwtop">
+                        <b>Fix Mark Up</b>
+                        </div>
+                        
+                        <div class="col-xs-1 nopadwtop">
+                            <input type="text" class="numeric form-control input-sm" id="txtcmarkUp" name="txtcmarkUp" required value="<?php echo $MarkUp;?>" autocomplete="off"> 
+                        </div>
+                    </div>
+
+
+                    <div class="col-xs-12" style="padding-top: 10px !important">
+                        <b><u>ACCOUNT CODES</u></b>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="col-xs-2 nopadwtop">
+                            <b>Sales (AR)</b>
+                        </div>
+                        
+                        <div class="col-xs-3 nopadwtop">
+                            <input type="text" class="acctcontrol form-control input-sm" id="txtsalesacct" name="txtsalesacct" placeholder="Search Acct Title.." value="<?php echo $SalesCodeDesc; ?>" autocomplete="off">
+                        
+                        </div>
+                        
+                        <div class="col-xs-1 nopadwtop">
+                            <input type="text" class="form-control input-sm" id="txtsalesacctID" name="txtsalesacctID"  readonly value="<?php echo $SalesCodeID; ?>">
+                            <input type="hidden" id="txtsalesacctD" name="txtsalesacctD" value="<?php echo $SalesCode; ?>">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12">
+                        <div class="col-xs-2 nopadwtop">
+                            <b>Sales Return</b>
+                        </div>
+                        
+                        <div class="col-xs-3 nopadwtop">
+                            <input type="text" class="acctcontrol form-control input-sm" id="txtretacct" name="txtretacct" placeholder="Search Acct Title.." value="<?php echo $SRetCodeDesc; ?>" autocomplete="off">
+                        </div>
+                        <div class="col-xs-1 nopadwtop">
+                            <input type="text" class="form-control input-sm" id="txtretacctID" name="txtretacctID" value="<?php echo $SRetCodeID; ?>" readonly>
+                            <input type="hidden" id="txtretacctD" name="txtretacctD" value="<?php echo $SRetCode; ?>">
+                        </div>
+                    </div>        
+                
+                    <div class="col-xs-12">
+                        <div class="col-xs-2 nopadwtop">
+                            <b>Receiving (AP)</b>
+                        </div>
+                        
+                        <div class="col-xs-3 nopadwtop">
+                            <input type="text" class="acctcontrol form-control input-sm" id="txtrracct" name="txtrracct" placeholder="Search Acct Title.." value="<?php echo $WRRCodeDesc; ?>" autocomplete="off">
+                        </div>
+                        <div class="col-xs-1 nopadwtop">
+                            <input type="text" class="form-control input-sm" id="txtrracctID" name="txtrracctID" value="<?php echo $WRRCodeID;  ?>" readonly>
+                            <input type="hidden" id="txtrracctD" name="txtrracctD" value="<?php echo $WRRCode;  ?>">
+                        </div>
+                    </div>
+                
+                    <div class="col-xs-12">
+                        <div class="col-xs-2 nopadwtop">
+                            <b>DR</b>
+                        </div>
+                        
+                        <div class="col-xs-3 nopadwtop">
+                            <input type="text" class="acctcontrol form-control input-sm" id="txtdracct" name="txtdracct" placeholder="Search Acct Title.." autocomplete="off" value="<?php echo $DRCodeDesc; ?>">
+                        </div>
+                        <div class="col-xs-1 nopadwtop">
+                            <input type="text" class="form-control input-sm" id="txtdracctID" name="txtdracctID" value="<?php echo $DRCodeID; ?>" readonly>
+                            <input type="hidden" id="txtdracctD" name="txtdracctD" value="<?php echo $DRCode; ?>">
+                        </div>
+                    </div>
+                        
+                    <div class="col-xs-12">
+                        <div class="col-xs-2 nopadwtop">
+                            <b>Cost of Goods</b>
+                        </div>
+                        
+                        <div class="col-xs-3 nopadwtop">
+                            <input type="text" class="acctcontrol form-control input-sm" id="txtcogacct" name="txtcogacct" placeholder="Search Acct Title.." autocomplete="off" value="<?php echo $COGCodeDesc; ?>">
+                        </div>
+                        <div class="col-xs-1 nopadwtop">
+                            <input type="text" class="form-control input-sm" id="txtcogacctID" name="txtcogacctID" value="<?php echo $COGCodeID; ?>" readonly>
+                            <input type="hidden" id="txtcogacctD" name="txtcogacctD" value="<?php echo $COGCode; ?>">
+                        </div>
+                    </div>
+                
+                    </p>
                 </div>
                 
-                <div class="col-xs-3 nopadwtop">
-                 <div class="btn-group btn-group-justified nopadding">
-                    <input type="text" class="txtcgroup form-control input-sm" id="txtcGroup2" name="txtcGroup2" tabindex="11" placeholder="Search Group 2..">
-                   <span class="searchclear glyphicon glyphicon-remove-circle"></span>
-                 </div>
-                   
-                    <input type="hidden" id="txtcGroup2D" name="txtcGroup2D">
-                </div>
-         
-         
-                <div class="col-xs-1 nopadwtop">
-                    &nbsp;
-                    <button class="btncgroup btn btn-sm btn-danger" type="button"  id="btncGroup2"><i class="fa fa-search"></i></button>
-                </div>
-                
-                <div class="cgroup col-xs-2 nopadwtop" id="cGroup7">
-                    <b>Cost of Goods</b>
-                </div>
-        
-        
-                <div class="col-xs-3 nopadwtop">
-                 <div class="btn-group btn-group-justified nopadding">
-                    <input type="text" class="txtcgroup form-control input-sm" id="txtcGroup7" name="txtcGroup7" tabindex="11" placeholder="Search Group 7..">
-                   <span class="searchclear glyphicon glyphicon-remove-circle"></span>
-                 </div>
+                <div id="menu2" class="tab-pane fade" style="padding-left:10px">
+                    <p style="padding-top:10px">
+
+                    <div class="col-xs-12">
+                        <div class="col-xs-1 nopadwtop">
+                            <b>Serial No.:</b>
+                        </div>
+                        <div class="col-xs-1 nopadwtop">
+                            <input type="checkbox" value="" name="chkSer" id="chkSer"  <?php if($ChkSer==1) { echo "checked"; } ?>>
+                        </div>
+                        <div class="col-xs-1 nopadwtop">
+                        
+                        </div>
+                        <div class="col-xs-1 nopadwtop">
+                            <b>Barcoded.:</b>
+                        </div>
+                        <div class="col-xs-1 nopadwtop">
+                            <input type="checkbox" value="" name="chkbarcoded" id="chkbarcoded"  <?php if($Chkbcode==1) { echo "checked"; } ?>>
+                        </div>
+                        <div class="col-xs-1 nopadwtop">
+                        
+                        </div>
+                        <div class="col-xs-1 nopadwtop">
+                            <b>Packed</b>
+                        </div>
+                        <div class="col-xs-1 nopadwtop">
+                            <input type="checkbox" value="" name="chkPack" id="chkPack"  <?php if($Chkpkgs==1) { echo "checked"; } ?>>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12" style="padding-top: 10px !important">
+                            <b><u>INVENTORY LEVEL</u></b>
+                    </div>
+
+                    <div class="col-xs-12">
+                        <div class="col-xs-1 nopadwtop">
+                            <b>Minimum:</b>
+                        </div>
+                        <div class="col-xs-1 nopadwtop">
+                            <input type="text" class="form-control input-sm text-right" id="txtInvMin" name="txtInvMin" value="<?php echo $InvMin; ?>">
+                        </div>
+                        <div class="col-xs-1 nopadwtop">
+                        </div>
+
+
+                        <div class="col-xs-1 nopadwtop">
+                        <b>Maximum:</b>
+                        </div>
+                        <div class="col-xs-1 nopadwtop">
+                            <input type="text" class="form-control input-sm text-right" id="txtInvMax" name="txtInvMax" value="<?php echo $InvMax; ?>" >
+                        </div>
+                        <div class="col-xs-1 nopadwtop">
+                        </div>
+                        <div class="col-xs-1 nopadwtop">
+                            <b>ReOrder Pt.:</b>
+                        </div>
+                        <div class="col-xs-1 nopadwtop">
+                            <input type="text" class="form-control input-sm text-right" id="txtInvRO" name="txtInvRO" value="<?php echo $InvRePt; ?>" >
+                        </div>
+                    </div>
                     
-                    <input type="hidden" id="txtcGroup7D" name="txtcGroup7D">
-                </div>
-        
-                <div class="col-xs-1 nopadwtop">
-                    &nbsp;
-                    <button class="btncgroup btn btn-sm btn-danger" type="button" id="btncGroup7"><i class="fa fa-search"></i></button>
-                </div>
-        
-            </div>
-        
-            <div class="col-xs-12">
-                <div class="cgroup col-xs-2 nopadwtop" id="cGroup3">
-                    <b>Cost of Goods</b>
-                </div>
-                
-                <div class="col-xs-3 nopadwtop">
-                 <div class="btn-group btn-group-justified nopadding">
-                    <input type="text" class="txtcgroup form-control input-sm" id="txtcGroup3" name="txtcGroup3" tabindex="11" placeholder="Search Group 3..">
-                   <span class="searchclear glyphicon glyphicon-remove-circle"></span>
-                 </div>
+                    <div class="col-xs-12" style="padding-top: 10px !important">
+                            <b><u>CONVERTION FACTOR</u></b>
+                    </div>
+
+                    <input type="button" value="Add Convertion" name="btnaddunit" id="btnaddunit" class="btn btn-primary btn-xs" onClick="addunitconv();">
                     
-                    <input type="hidden" id="txtcGroup3D" name="txtcGroup3D">
+                    <input name="hdnunitrowcnt" id="hdnunitrowcnt" type="hidden" value="0">
+                    <br>
+                        <table width="50%" border="0" cellpadding="2" id="myUnitTable">
+                        <tr>
+                            <th scope="col" width="120">UNIT</th>
+                            <th scope="col">FACTOR<br><i>(qty/smallest unit)</i></th>
+                            <th scope="col" width="80">STATUS</th>
+                        </tr>
+                        </table>
+                    </p>        
                 </div>
-         
-         
-                <div class="col-xs-1 nopadwtop">
-                    &nbsp;
-                    <button class="btncgroup btn btn-sm btn-danger" type="button" id="btncGroup3"><i class="fa fa-search"></i></button>
-                </div>
-                
-                <div class="cgroup col-xs-2 nopadwtop" id="cGroup8">
-                    <b>Cost of Goods</b>
-                </div>
-        
-        
-                <div class="col-xs-3 nopadwtop">
-                  <div class="btn-group btn-group-justified nopadding">
-                    <input type="text" class="txtcgroup form-control input-sm" id="txtcGroup8" name="txtcGroup8" tabindex="11" placeholder="Search Group 8..">
-                   <span class="searchclear glyphicon glyphicon-remove-circle"></span>
-                 </div>
-                   
-                    <input type="hidden" id="txtcGroup8D" name="txtcGroup8D">
-                </div>
-        
-                <div class="col-xs-1 nopadwtop">
-                    &nbsp;
-                    <button class="btncgroup btn btn-sm btn-danger" type="button" id="btncGroup8"><i class="fa fa-search"></i></button>
-                </div>
-        
-            </div>
-        
-            <div class="col-xs-12">
-                <div class="cgroup col-xs-2 nopadwtop" id="cGroup4">
-                    <b>Cost of Goods</b>
-                </div>
-                
-                <div class="col-xs-3 nopadwtop">
-                 <div class="btn-group btn-group-justified nopadding">
-                    <input type="text" class="txtcgroup form-control input-sm" id="txtcGroup4" name="txtcGroup4" tabindex="11" placeholder="Search Group 4..">
-                   <span class="searchclear glyphicon glyphicon-remove-circle"></span>
-                 </div>
                     
-                    <input type="hidden" id="txtcGroup4D" name="txtcGroup4D">
-                </div>
-         
-         
-                <div class="col-xs-1 nopadwtop">
-                    &nbsp;
-                    <button class="btncgroup btn btn-sm btn-danger" type="button" id="btncGroup4"><i class="fa fa-search"></i></button>
-                </div>
+                <div id="menu3" class="tab-pane fade" style="padding-left:10px">
+                    <p>
+                    <div class="col-xs-12">
+                        <div class="cgroup col-xs-2 nopadwtop" id="cGroup1">
+                            <b>Cost of Goods</b>
+                        </div>
+                        
+                        <div class="col-xs-3 nopadwtop">
+                        <div class="btn-group btn-group-justified nopadding">
+                        <input type="text" class="txtcgroup form-control input-sm" id="txtcGroup1" name="txtcGroup1" tabindex="11" placeholder="Search Group 1..">
+                        <span class="searchclear glyphicon glyphicon-remove-circle"></span>
+                        </div>
+                            
+                            <input type="hidden" id="txtcGroup1D" name="txtcGroup1D">
+                        </div>
                 
-                <div class="cgroup col-xs-2 nopadwtop" id="cGroup9">
-                    <b>Cost of Goods</b>
+                        <div class="col-xs-1 nopadwtop">
+                            &nbsp;
+                            <button class="btncgroup btn btn-sm btn-danger" type="button" id="btncGroup1"><i class="fa fa-search"></i></button>
+                        </div>
+                        
+                        <div class="cgroup col-xs-2 nopadwtop" id="cGroup6">
+                            <b>Cost of Goods</b>
+                        </div>
+                
+                
+                        <div class="col-xs-3 nopadwtop">
+                        <div class="btn-group btn-group-justified nopadding">
+                        <input type="text" class="txtcgroup form-control input-sm" id="txtcGroup6" name="txtcGroup6" tabindex="11" placeholder="Search Group 6..">
+                        <span class="searchclear glyphicon glyphicon-remove-circle"></span>
+                        </div>
+
+                            <input type="hidden" id="txtcGroup6D" name="txtcGroup6D">
+                        </div>
+                
+                        <div class="col-xs-1 nopadwtop">
+                            &nbsp;
+                            <button class="btncgroup btn btn-sm btn-danger" type="button"  id="btncGroup6"><i class="fa fa-search"></i></button>
+                        </div>
+                
+                    </div>
+                
+                    <div class="col-xs-12">
+                        <div class="cgroup col-xs-2 nopadwtop" id="cGroup2">
+                            <b>Cost of Goods</b>
+                        </div>
+                        
+                        <div class="col-xs-3 nopadwtop">
+                        <div class="btn-group btn-group-justified nopadding">
+                            <input type="text" class="txtcgroup form-control input-sm" id="txtcGroup2" name="txtcGroup2" tabindex="11" placeholder="Search Group 2..">
+                        <span class="searchclear glyphicon glyphicon-remove-circle"></span>
+                        </div>
+                        
+                            <input type="hidden" id="txtcGroup2D" name="txtcGroup2D">
+                        </div>
+                
+                
+                        <div class="col-xs-1 nopadwtop">
+                            &nbsp;
+                            <button class="btncgroup btn btn-sm btn-danger" type="button"  id="btncGroup2"><i class="fa fa-search"></i></button>
+                        </div>
+                        
+                        <div class="cgroup col-xs-2 nopadwtop" id="cGroup7">
+                            <b>Cost of Goods</b>
+                        </div>
+                
+                
+                        <div class="col-xs-3 nopadwtop">
+                        <div class="btn-group btn-group-justified nopadding">
+                            <input type="text" class="txtcgroup form-control input-sm" id="txtcGroup7" name="txtcGroup7" tabindex="11" placeholder="Search Group 7..">
+                        <span class="searchclear glyphicon glyphicon-remove-circle"></span>
+                        </div>
+                            
+                            <input type="hidden" id="txtcGroup7D" name="txtcGroup7D">
+                        </div>
+                
+                        <div class="col-xs-1 nopadwtop">
+                            &nbsp;
+                            <button class="btncgroup btn btn-sm btn-danger" type="button" id="btncGroup7"><i class="fa fa-search"></i></button>
+                        </div>
+                
+                    </div>
+                
+                    <div class="col-xs-12">
+                        <div class="cgroup col-xs-2 nopadwtop" id="cGroup3">
+                            <b>Cost of Goods</b>
+                        </div>
+                        
+                        <div class="col-xs-3 nopadwtop">
+                        <div class="btn-group btn-group-justified nopadding">
+                            <input type="text" class="txtcgroup form-control input-sm" id="txtcGroup3" name="txtcGroup3" tabindex="11" placeholder="Search Group 3..">
+                        <span class="searchclear glyphicon glyphicon-remove-circle"></span>
+                        </div>
+                            
+                            <input type="hidden" id="txtcGroup3D" name="txtcGroup3D">
+                        </div>
+                
+                
+                        <div class="col-xs-1 nopadwtop">
+                            &nbsp;
+                            <button class="btncgroup btn btn-sm btn-danger" type="button" id="btncGroup3"><i class="fa fa-search"></i></button>
+                        </div>
+                        
+                        <div class="cgroup col-xs-2 nopadwtop" id="cGroup8">
+                            <b>Cost of Goods</b>
+                        </div>
+                
+                
+                        <div class="col-xs-3 nopadwtop">
+                        <div class="btn-group btn-group-justified nopadding">
+                            <input type="text" class="txtcgroup form-control input-sm" id="txtcGroup8" name="txtcGroup8" tabindex="11" placeholder="Search Group 8..">
+                        <span class="searchclear glyphicon glyphicon-remove-circle"></span>
+                        </div>
+                        
+                            <input type="hidden" id="txtcGroup8D" name="txtcGroup8D">
+                        </div>
+                
+                        <div class="col-xs-1 nopadwtop">
+                            &nbsp;
+                            <button class="btncgroup btn btn-sm btn-danger" type="button" id="btncGroup8"><i class="fa fa-search"></i></button>
+                        </div>
+                
+                    </div>
+                
+                    <div class="col-xs-12">
+                        <div class="cgroup col-xs-2 nopadwtop" id="cGroup4">
+                            <b>Cost of Goods</b>
+                        </div>
+                        
+                        <div class="col-xs-3 nopadwtop">
+                        <div class="btn-group btn-group-justified nopadding">
+                            <input type="text" class="txtcgroup form-control input-sm" id="txtcGroup4" name="txtcGroup4" tabindex="11" placeholder="Search Group 4..">
+                        <span class="searchclear glyphicon glyphicon-remove-circle"></span>
+                        </div>
+                            
+                            <input type="hidden" id="txtcGroup4D" name="txtcGroup4D">
+                        </div>
+                
+                
+                        <div class="col-xs-1 nopadwtop">
+                            &nbsp;
+                            <button class="btncgroup btn btn-sm btn-danger" type="button" id="btncGroup4"><i class="fa fa-search"></i></button>
+                        </div>
+                        
+                        <div class="cgroup col-xs-2 nopadwtop" id="cGroup9">
+                            <b>Cost of Goods</b>
+                        </div>
+                
+                
+                        <div class="col-xs-3 nopadwtop">
+                        <div class="btn-group btn-group-justified nopadding">
+                            <input type="text" class="txtcgroup form-control input-sm" id="txtcGroup9" name="txtcGroup9" tabindex="11" placeholder="Search Group 9..">
+                        <span class="searchclear glyphicon glyphicon-remove-circle"></span>
+                        </div>
+                        
+                            <input type="hidden" id="txtcGroup9D" name="txtcGroup9D">
+                        </div>
+                
+                        <div class="col-xs-1 nopadwtop">
+                            &nbsp;
+                            <button class="btncgroup btn btn-sm btn-danger" type="button" id="btncGroup9"><i class="fa fa-search"></i></button>
+                        </div>
+                
+                    </div>
+                
+                    <div class="col-xs-12">
+                        <div class="cgroup col-xs-2 nopadwtop" id="cGroup5">
+                            <b>Cost of Goods</b>
+                        </div>
+                        
+                        <div class="col-xs-3 nopadwtop">
+                        <div class="btn-group btn-group-justified nopadding">
+                        <input type="text" class="txtcgroup form-control input-sm" id="txtcGroup5" name="txtcGroup5" tabindex="11" placeholder="Search Group 5..">
+                        <span class="searchclear glyphicon glyphicon-remove-circle"></span>
+                        </div>
+                            
+                            <input type="hidden" id="txtcGroup5D" name="txtcGroup5D">
+                        </div>
+                
+                
+                        <div class="col-xs-1 nopadwtop">
+                            &nbsp;
+                            <button class="btncgroup btn btn-sm btn-danger" type="button" id="btncGroup5"><i class="fa fa-search"></i></button>
+                        </div>
+                        
+                        <div class="cgroup col-xs-2 nopadwtop" id="cGroup10">
+                            <b>Cost of Goods</b>
+                        </div>
+                
+                
+                        <div class="col-xs-3 nopadwtop">
+                        <div class="btn-group btn-group-justified nopadding">
+                        <input type="text" class="txtcgroup form-control input-sm" id="txtcGroup10" name="txtcGroup10" tabindex="11" placeholder="Search Group 10...">
+                        <span class="searchclear glyphicon glyphicon-remove-circle"></span>
+                        </div>
+                            
+                            <input type="hidden" id="txtcGroup10D" name="txtcGroup10D">
+                        </div>
+                
+                        <div class="col-xs-1 nopadwtop">
+                            &nbsp;
+                            <button class="btncgroup btn btn-sm btn-danger" type="button" id="btncGroup10"><i class="fa fa-search"></i></button>
+                        </div>
+                
+                    </div>
+                
+                
+                    </p>
                 </div>
-        
-        
-                <div class="col-xs-3 nopadwtop">
-                  <div class="btn-group btn-group-justified nopadding">
-                    <input type="text" class="txtcgroup form-control input-sm" id="txtcGroup9" name="txtcGroup9" tabindex="11" placeholder="Search Group 9..">
-                   <span class="searchclear glyphicon glyphicon-remove-circle"></span>
-                 </div>
-                   
-                    <input type="hidden" id="txtcGroup9D" name="txtcGroup9D">
+
+                <div id="menu4" class="tab-pane fade" style="padding-left:2 0px">
+                    <p>
+
+                        <div class="col-xs-12">
+                            <input type="button" value="Add Process" name="btnaddprocess" id="btnaddprocess" class="btn btn-primary btn-xs" onClick="addprocess();">
+                                
+                            <input name="hdnprocesslist" id="hdnprocesslist" type="hidden" value="0">
+
+                            <table width="50%" border="0" cellpadding="2" id="myProcessTable" style="margin-top: 10px;">
+                                <tr>
+                                    <th scope="col">PROCESS</th>
+                                    <th scope="col" width="80">STATUS</th>
+                                </tr>
+
+                                <?php
+                                    $cbtr = 0;
+                                    $sqlprocess = mysqli_query($con,"SELECT * FROM `items_process_t` WHERE compcode='$company' and citemno='$citemno'"); 
+                                    if (mysqli_num_rows($sqlprocess)!=0) {
+                                        while($row = mysqli_fetch_array($sqlprocess, MYSQLI_ASSOC)){
+                                            $cbtr++;
+                                ?>
+
+                                    <tr>
+                                            <td>
+                                                <div id='divselproc<?=$cbtr?>' class="col-xs-12 nopadwright">
+                                                    <select name='selproc<?=$cbtr?>' id='selproc<?=$cbtr?>' class='form-control input-sm selectpicker'>
+                                                    <?php
+                                                        foreach(@$arrprocess as $xcv){
+                                                            $xselec = "";
+                                                            if($xcv['nid']==$row['items_process_id']){
+                                                                $xselec = " selected";
+                                                            }
+
+                                                            echo "<option value='".$xcv['nid']."'".$xselec."> ".$xcv['cdesc']." </option>";
+                                                        }
+                                                    ?>
+                                                    </select>
+                                                </div>  
+
+                                            </td>
+                                            <td>
+                                                <input class='btn btn-danger btn-xs' type='button' id='row_<?=$cbtr?>_delete' class='delete' value='Delete' onClick="delProcRow(this);"/>
+                                            </td>
+                                    </tr>
+
+                                <?php
+                                        }
+                                    }
+                                ?>
+                            </table>
+                        </div>
+                        
+                    </p>
                 </div>
-        
-                <div class="col-xs-1 nopadwtop">
-                    &nbsp;
-                    <button class="btncgroup btn btn-sm btn-danger" type="button" id="btncGroup9"><i class="fa fa-search"></i></button>
-                </div>
-        
+
             </div>
-        
-            <div class="col-xs-12">
-                <div class="cgroup col-xs-2 nopadwtop" id="cGroup5">
-                    <b>Cost of Goods</b>
-                </div>
-                
-                <div class="col-xs-3 nopadwtop">
-                 <div class="btn-group btn-group-justified nopadding">
-                   <input type="text" class="txtcgroup form-control input-sm" id="txtcGroup5" name="txtcGroup5" tabindex="11" placeholder="Search Group 5..">
-                   <span class="searchclear glyphicon glyphicon-remove-circle"></span>
-                 </div>
-                    
-                    <input type="hidden" id="txtcGroup5D" name="txtcGroup5D">
-                </div>
-         
-         
-                <div class="col-xs-1 nopadwtop">
-                    &nbsp;
-                    <button class="btncgroup btn btn-sm btn-danger" type="button" id="btncGroup5"><i class="fa fa-search"></i></button>
-                </div>
-                
-                <div class="cgroup col-xs-2 nopadwtop" id="cGroup10">
-                    <b>Cost of Goods</b>
-                </div>
-        
-        
-                <div class="col-xs-3 nopadwtop">
-                 <div class="btn-group btn-group-justified nopadding">
-                   <input type="text" class="txtcgroup form-control input-sm" id="txtcGroup10" name="txtcGroup10" tabindex="11" placeholder="Search Group 10...">
-                   <span class="searchclear glyphicon glyphicon-remove-circle"></span>
-                 </div>
-                    
-                    <input type="hidden" id="txtcGroup10D" name="txtcGroup10D">
-                </div>
-        
-                <div class="col-xs-1 nopadwtop">
-                    &nbsp;
-                    <button class="btncgroup btn btn-sm btn-danger" type="button" id="btncGroup10"><i class="fa fa-search"></i></button>
-                </div>
-        
-            </div>
-        
-        
-         </p>
         </div>
 
-    </div>
-
-</div>
 <br>
 <table width="100%" border="0" cellpadding="3">
   <tr>
@@ -1023,10 +1087,15 @@ $(function(){
 						
 					}else{
 						var submit = true;
-						var tbl = document.getElementById('myUnitTable').getElementsByTagName('tr');
-						var lastRow = tbl.length-1;
+                            var tbl = document.getElementById('myUnitTable').getElementsByTagName('tr');
+                            var lastRow = tbl.length-1;
 											
-						  document.getElementById('hdnunitrowcnt').value = lastRow;
+						    document.getElementById('hdnunitrowcnt').value = lastRow;
+
+                            var tbl = document.getElementById('myProcessTable').getElementsByTagName('tr');
+                            var lastRow = tbl.length-1;
+                                                
+                            document.getElementById('hdnprocesslist').value = lastRow;
 
 							e.preventDefault();							
 							//submit form objects to ajax:
@@ -1458,6 +1527,43 @@ function enabled(){
 		$('#previewing').attr('width', '145px');
 		$('#previewing').attr('height', '145px');
 	};
+
+    function addprocess(){
+        var tbl = document.getElementById('myProcessTable').getElementsByTagName('tr');
+        var lastRow = tbl.length;
+
+        var a=document.getElementById('myProcessTable').insertRow(-1);
+        var u=a.insertCell(0);
+        var y=a.insertCell(1);
+
+        var xz = $("#hdnprocess").val();
+		prooptions = "";
+		$.each(jQuery.parseJSON(xz), function() { 
+			prooptions = prooptions + "<option value='"+this['nid']+"'>"+this['cdesc']+"</option>";
+		});
+        
+        u.innerHTML = "<div id='divselproc"+lastRow+"' class=\"col-xs-12 nopadwright\"><select name='selproc"+lastRow+"' id='selproc"+lastRow+"' class='form-control input-sm selectpicker'>"+prooptions+"</select></div>";
+        y.innerHTML = "<input class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"delProcRow(this);\"/>";
+
+    }
+
+    function delProcRow(r) {
+        var tbl = document.getElementById('myProcessTable').getElementsByTagName('tr');
+        var lastRow = tbl.length;
+        var i=r.parentNode.parentNode.rowIndex;
+        document.getElementById('myProcessTable').deleteRow(i);
+        var lastRow = tbl.length;
+        var z; //for loop counter changing textboxes ID;
+        
+            for (z=i+1; z<=lastRow; z++){
+                var tempcitemno = document.getElementById('selproc' + z);
+                
+                var x = z-1;
+                tempcitemno.id = "selproc" + x;
+                tempcitemno.name = "selproc" + x;
+
+            }
+    }
 
 
 </script>

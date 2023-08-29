@@ -35,26 +35,34 @@ function editfrm(x){
 		<section>
         <div>
         	<div style="float:left; width:50%">
-				<font size="+2"><u>Suppliers Master List</u></font>	
-            </div>
-		</div>
+						<font size="+2"><u>Suppliers Master List</u></font>	
+          </div>
+
+					<div style="float:right; width:50%; text-align:right">
+						<div class="itmalert alert alert-danger" id="itmerr" style="padding: 2px !important; display: none;"></div>
+          </div>
+				</div>
+
 			<br><br>
+
 			<div class="col-xs-12 nopadding">
-				<div class="col-xs-2 nopadding">
-					<button type="button" class="btn btn-primary btn-sm" onClick="location.href='Suppliers_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+				<div class="col-xs-7 nopadding">
+					<button type="button" class="btn btn-primary btn-sm" onClick="location.href='Suppliers_new.php'"><i class="fa fa-file-text-o" aria-hidden="true"></i> &nbsp; Create New (F1)</button>
+
+					<a href="Suppliers_xls.php" class="btn btn-success btn-sm"><i class="fa fa-file-excel-o"></i> &nbsp; Export To Excel</a>
 				</div>
-                <div class="col-xs-5 nopadding">
-					<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div>
-				</div>
-                <div class="col-xs-2 text-right nopadwtop" style="height:30px !important;">
-                	<b> Search Supplier: &nbsp;</b>
-                </div>
+
+        <div class="col-xs-2 text-right nopadwtop" style="height:30px !important;">
+          <b> Search Supplier: &nbsp;</b>
+        </div>
+
 				<div class="col-xs-3 text-right nopadding">
 					<input type="text" name="searchByName" id="searchByName" value="" class="form-control input-sm" placeholder="Enter Code or Desc...">
 				</div>
 
 			</div>
-            <br><br>
+
+      <br><br>
 			
 			<table id="MyTable" class="display" cellspacing="0" width="100%">
 				<thead>
@@ -65,19 +73,16 @@ function editfrm(x){
 						<th width="120">Tin No.</th>
 						<th width="80">Terms</th>
             			<th width="80">Status</th>
-            			<th width="80">Delete</th>
 					</tr>
-				</thead>
-
-				
+				</thead>			
 			</table>
 
 		</section>
 	</div>		
 
-<form name="frmedit" id="frmedit" method="get" action="Suppliers_edit.php">
-	<input type="hidden" name="txtcitemno" id="txtcitemno" />
-</form>		
+	<form name="frmedit" id="frmedit" method="get" action="Suppliers_edit.php">
+		<input type="hidden" name="txtcitemno" id="txtcitemno" />
+	</form>		
 		
 
 </body>
@@ -206,18 +211,11 @@ function editfrm(x){
                         }
 
                     }
-                },
-                { "data": null,
-                  "render": function(data, type, full, row){
-                        
-                      return "<input class='btn btn-danger btn-xs' type='button' id='row_"+full[0]+"_delete' value='delete' onClick=\"deleteRow('"+full[0]+"');\"/>";
-                  }
-                    
                 }
                 
             ],
             "columnDefs": [ {
-              "targets": [3,4,5],
+              "targets": [3,4],
               "className": "text-center"
             } ],
            });

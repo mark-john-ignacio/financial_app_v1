@@ -8,7 +8,7 @@ include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 include('../../include/access2.php');
 
-$company = $_SESSION['companyid']; 
+	$company = $_SESSION['companyid']; 
 
 	$lallowMRP = 0;
 	$result=mysqli_query($con,"select * From company");								
@@ -48,57 +48,33 @@ function editfrm(x,y){
 		<section>
         <div>
         	<div style="float:left; width:50%">
-						<font size="+2"><u>Items Master List</u></font>	
-          </div>
+				<font size="+2"><u>Items Master List</u></font>	
+            </div>
             
-          <div style="float:right; width:30%; text-align:right">
-            	<!--<font size="+1"><a href="javascript:;" onClick="paramchnge('ITEMTYP')">Type</a> | <a href="javascript:;" onClick="paramchnge('ITEMCLS')">Classification</a> | <a href="javascript:;" onClick="paramchnge('ITMUNIT')">UOM</a></font>	-->
-
-						<div class="itmalert alert alert-danger text-center" style="padding: 2px !important; display: none" id="itmerr" >WRONG ERROR</div>
-							
-          </div>
+          <!--
+            <div style="float:right; width:30%; text-align:right">
+            	<font size="+1"><a href="javascript:;" onClick="paramchnge('ITEMTYP')">Type</a> | <a href="javascript:;" onClick="paramchnge('ITEMCLS')">Classification</a> | <a href="javascript:;" onClick="paramchnge('ITMUNIT')">UOM</a></font>	
+            </div>
+          -->
           
         </div>
 			<br><br>
 
 			<div class="col-xs-12 nopadding">
-				<div class="col-xs-5 nopadding">
-						<button type="button" class="btn btn-primary btn-sm"  onClick="location.href='Items_new.php'" id="btnNew" name="btnNew"><i class="fa fa-file-text-o" aria-hidden="true"></i> &nbsp; Create New (F1)</button>
-
-						<a href="Items_xls.php" class="btn btn-success btn-sm"><i class="fa fa-file-excel-o"></i> &nbsp; Export To Excel</a>
+				<div class="col-xs-2 nopadding">
+					<button type="button" class="btn btn-primary btn-sm"  onClick="location.href='Items_new.php'" id="btnNew" name="btnNew"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 				</div>
-
-        <div class="col-xs-1 nopadwtop" style="height:30px !important;">
-          <b> Search Item: </b>
-        </div>
+                <div class="col-xs-6 nopadding">
+					<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
+				</div>
+                <div class="col-xs-1 nopadwtop" style="height:30px !important;">
+                	<b> Search Item: </b>
+                </div>
 				<div class="col-xs-3 text-right nopadding">
 					<input type="text" name="searchByName" id="searchByName" value="" class="form-control input-sm" placeholder="Enter Code or Desc...">
 				</div>
 
-				<div class="col-xs-3 text-right nopadwleft">
-					<select id="seltype" name="seltype" class="form-control input-sm selectpicker"  tabindex="4">
-							<option value="">ALL</option>
-
-                    <?php
-                        $sql = "select * from groupings where ctype='ITEMTYP' order by cdesc";
-                        $result=mysqli_query($con,$sql);
-                        if (!mysqli_query($con, $sql)) {
-                            printf("Errormessage: %s\n", mysqli_error($con));
-                        }			
-            
-                        while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-                            {
-                    ?>   
-                        <option value="<?php echo $row['ccode'];?>"><?php echo $row['cdesc']?></option>
-                    <?php
-                        }                        
-                    ?>     
-                    </select>
-				</div>
-
 			</div>
-
-
             
             
             
@@ -106,9 +82,9 @@ function editfrm(x,y){
 			<table id="MyTable" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
-						<th width="100">Item Code</th>
+						<th width="100">Part No</th>
 						<th>Description</th>
-                        <th width="70">Main UOM</th>
+            <th width="70">Main UOM</th>
 						<th width="120" class="text-center">Price History</th>
 						<th width="70">Status</th>
 						<?php
@@ -162,24 +138,14 @@ function editfrm(x,y){
 		fill_datatable();	
 		$("#searchByName").keyup(function(){
 		   var searchByName = $('#searchByName').val();
-			 var searchByType = $('#seltype').val();
 		  // if(searchByName != '')
 		  // {
 		    $('#MyTable').DataTable().destroy();
-		    fill_datatable(searchByName,searchByType);
+		    fill_datatable(searchByName);
 		 //  }
 		});
-
-		$("#seltype").on("change", function(){
-			var searchByName = $('#searchByName').val();
-			 var searchByType = $('#seltype').val();
-
-		    $('#MyTable').DataTable().destroy();
-		    fill_datatable(searchByName,searchByType);
-
-		});
-
-	});
+		
+	} );
 
 	$(document).keydown(function(e) {
 		if(e.keyCode == 112){//F1
@@ -245,7 +211,7 @@ function editfrm(x,y){
 
 
   
-		  function fill_datatable(searchByName = '', searchByType = '')
+		  function fill_datatable(searchByName = '')
 		  {
 		   var dataTable = $('#MyTable').DataTable({
 		    "processing" : true,
@@ -257,40 +223,42 @@ function editfrm(x,y){
 		     url:"th_datatable.php",
 		     type:"POST",
 		     data:{
-		      searchByName:searchByName, searchByType:searchByType
+		      searchByName:searchByName
 		     }
 		    },
 		    "columns": [
-				{ "data": null,
-					"render": function (data, type, full, row) {
-							
-								return "<a href=\"javascript:;\" onClick=\"editfrm('"+full[0]+"','Items_edit.php');\">"+full[0]+"</a>";
-							
-					}
-						
-				},
-				{ "data": 1 },
-				{ "data": 2 },
-				{ "data": null,
-					"render": function (data, type, full, row) {
-							
-								return "<div class=\"col-sm-12 nopadding\"><div class=\"col-sm-6 nopadding\"><a href=\"javascript:;\" data-toggle=\"modal\" data-target=\"#myPurchModal\" data-id=\""+full[0]+"\" data-label=\"Purchase Cost\" data-val=\"Purch\" class=\"viewCost\"><span class='label label-primary'>Purchase</span></a></div><div class=\"col-sm-6 nopadwleft\"><a href=\"javascript:;\" data-toggle=\"modal\" data-target=\"#myPurchModal\" data-id=\""+full[0]+"\" data-label=\"Sales Price\" data-val=\"Sales\" class=\"viewCost\"><span class='label label-info'>&nbsp;&nbsp;&nbsp;Sales&nbsp;&nbsp;&nbsp;</span></a>";
-							
-					}
-				},
-				{ "data": null,
-					"render": function (data, type, full, row){
 
-						
-						if(full[3]=="ACTIVE"){
-						 	return "<div id=\"itmstat"+full[0]+"\"><span class='label label-success'>&nbsp;Active&nbsp;</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+full[0]+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a></div>";
+					{ "data": null,
+						"render": function (data, type, full, row) {
+								
+									return "<a href=\"javascript:;\" onClick=\"editfrm('"+full[0]+"','Items_edit.php');\">"+full[0]+"</a>";
+								
 						}
-						else{
-							return "<div id=\"itmstat"+full[0]+"\"><span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+full[0]+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a></div>";
+							
+					},
+					{ "data": 1 },
+					{ "data": 2 },
+					{ "data": null,
+						"render": function (data, type, full, row) {
+								
+									return "<div class=\"col-sm-12 nopadding\"><div class=\"col-sm-6 nopadding\"><a href=\"javascript:;\" data-toggle=\"modal\" data-target=\"#myPurchModal\" data-id=\""+full[0]+"\" data-label=\"Purchase Cost\" data-val=\"Purch\" class=\"viewCost\"><span class='label label-primary'>Purchase</span></a></div><div class=\"col-sm-6 nopadwleft\"><a href=\"javascript:;\" data-toggle=\"modal\" data-target=\"#myPurchModal\" data-id=\""+full[0]+"\" data-label=\"Sales Price\" data-val=\"Sales\" class=\"viewCost\"><span class='label label-info'>&nbsp;&nbsp;&nbsp;Sales&nbsp;&nbsp;&nbsp;</span></a>";
+								
 						}
+					},
+					{ "data": null,
+						"render": function (data, type, full, row){
 
+							
+							if(full[3]=="ACTIVE"){
+								return "<div id=\"itmstat"+full[0]+"\"><span class='label label-success'>&nbsp;Active&nbsp;</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+full[0]+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a></div>";
+							}
+							else{
+								return "<div id=\"itmstat"+full[0]+"\"><span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+full[0]+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a></div>";
+							}
+
+						}
 					}
-				}<?php
+					<?php
 						if($lallowMRP==1){
 					?>
 					,{ "data": null,
@@ -303,14 +271,6 @@ function editfrm(x,y){
 					<?php
 						}
 					?>
-				//,
-				//{ "data": null,
-				// 	"render": function(data, type, full, row){
-						
-				//		return "<input class='btn btn-danger btn-xs' type='button' id='row_"+full[0]+"_delete' value='delete' onClick=\"deleteRow('"+full[0]+"');\"/>";
-				//	}
-					
-				//}
 				
         	],
 		   });
@@ -337,6 +297,7 @@ function editfrm(x,y){
 			
 			});
 		}
+
 	</script>
 
 

@@ -113,7 +113,7 @@
 
 		<div class="col-xs-12 nopadwtop2x">	
 			<div class="col-xs-9 nopadwdown">	
-				<input type="text" class="form-control input-sm" id="txtscan" value="" placeholder="Search Item Name...">
+				<input type="text" class="form-control input-sm" id="txtscan" value="" placeholder="Level 2 - Search Item Name...">
 			</div>
 			<div class="col-xs-1 nopadwleft">	
 				<button type="button" class="btn btn-sm btn-warning btn-block" name="btnaddversion" id="btnaddversion"><i class="fa fa-plus" aria-hidden="true"></i>
@@ -273,7 +273,7 @@
 				var rowCount = $('#MyTbl tbody > tr').length;
 
 				rowCount = rowCount + 1;
-				InsTotable(item.id,item.desc,item.cunit,rowCount);
+				InsTotable(item.id,item.desc,item.cunit,rowCount,2);
 					
 				$('#txtscan').val("").change();
 
@@ -346,12 +346,12 @@
     });
 	} 
 
-	function InsTotable(itmid,itmdesc,itmunit,sornum,v1,v2,v3,v4,v5){
+	function InsTotable(itmid,itmdesc,itmunit,sornum,lvl){
 
 		//loop check if item exist
 			var $tdrows = "";
 
-			$tdrows = "<td><input type='text' class=\"form-control input-xs text-center\" value='"+sornum+"' name=\"txtsortnum\" id=\"txtsortnum"+sornum+"\" readonly></td><td><input type='hidden' value='"+itmid+"' name=\"txtitmcode\" id=\"txtitmcode"+sornum+"\">"+itmid+"</td><td><input type='hidden' value='"+itmdesc+"' name=\"txtitmdesc\" id=\"txtitmdesc"+sornum+"\">"+itmdesc+"</td><td><input type='hidden' value='"+itmunit+"' name=\"txtcunit\" id=\"txtcunit"+sornum+"\">"+itmunit+"</td><td><select class=\"form-control input-xs text-center\" name=\"txtcunit\" id=\"txtcunit"+sornum+"\"><option value='2'>2</option><option value='3'>3</option><options value='4'>4</option><option value='5'>5</option></select></td>";
+			$tdrows = "<td><input type='text' class=\"form-control input-xs text-center\" value='"+sornum+"' name=\"txtsortnum\" id=\"txtsortnum"+sornum+"\" readonly></td><td><input type='hidden' value='"+itmid+"' name=\"txtitmcode\" id=\"txtitmcode"+sornum+"\">"+itmid+"</td><td><input type='hidden' value='"+itmdesc+"' name=\"txtitmdesc\" id=\"txtitmdesc"+sornum+"\">"+itmdesc+"</td><td><input type='hidden' value='"+itmunit+"' name=\"txtcunit\" id=\"txtcunit"+sornum+"\">"+itmunit+"</td><td><input type=\"text\" class=\"form-control input-xs text-center\" name=\"txtlvl\" id=\"txtlvl"+sornum+"\" value=\""+lvl+"\" readonly></td>";
 
 
 			getcnt = parseInt($("#hdncount").val());
