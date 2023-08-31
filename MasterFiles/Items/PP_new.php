@@ -531,7 +531,8 @@ if($('#txtcustid').val()=="" || $('#date_delivery').val()==""){
 										var txtcitm = $(this).find("input[type='hidden'][name='txtcprtno']").val();
 										var txtcuom = $(this).find("input[name='txtcprtunit']").val();
 										var valz = $(this).find("input[name='txtnprice']").val();
-										//alert("code:"+ txtcitm + "&uom:" + txtcuom);
+										
+											//alert("code="+ txtcitm + "&uom=" + txtcuom + "&val="+ valz + "&tran="+ trancode + "&ident="+ nident);
 										
 												$.ajax ({
 													url: "th_saveppt.php",

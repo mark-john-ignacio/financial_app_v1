@@ -61,10 +61,8 @@ require_once "../../Connection/connection_string.php";
 			}
 
 	//INSERT LOGFILE
-	$compname = php_uname('n');
-	
 	mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-	values($company','$cSINo','$preparedby',NOW(),'INSERTED','PURCHASE PRICELIST','$compname','Inserted New Record')");
+	values ('$company','$cSINo','$preparedby',NOW(),'INSERTED','PURCHASE PRICELIST','$compname','Inserted New Record')");
 	
 	// Delete previous details
 	mysqli_query($con, "Delete from items_purch_cost_t Where compcode='$company' and ctranno='$cSINo'");
