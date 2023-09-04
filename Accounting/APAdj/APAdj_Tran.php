@@ -45,7 +45,7 @@ if($_REQUEST['typ']=="POST"){
 
 		mysqli_query($con,"DELETE FROM `glactivity` Where compcode='$company' and ctranno='$tranno'");
 
-		mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'ARADJ', '$tranno', B.dcutdate, A.cacctno, A.ctitle, A.ndebit, A.ncredit, 0, NOW() From apadjustment_t A left join apadjustment B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and A.ctranno='$tranno'");
+		mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'APADJ', '$tranno', B.dcutdate, A.cacctno, A.ctitle, A.ndebit, A.ncredit, 0, NOW() From apadjustment_t A left join apadjustment B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and A.ctranno='$tranno'");
 
 		//update qtyreturned sa Suppinv kung purchreturn
 		if($isReturn==1){
