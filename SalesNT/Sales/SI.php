@@ -151,10 +151,13 @@
 
 		if(x=="POST"){
 			//generate GL ENtry muna
+			
+			alert("th_toAcc.php?tran="+num+"&type=IN");
+			
 			$.ajax ({
 				dataType: "text",
 				url: "../../include/th_toAcc.php",
-				data: { tran: num, type: "NTSI" },
+				data: { tran: num, type: "IN" },
 				async: false,
 				success: function( data ) {
 					//alert(data.trim());
@@ -227,11 +230,12 @@
 					});
 				}
 			});
-		}else{				$("#AlertMsg").html("");
+		}else{				
+			$("#AlertMsg").html("");
 
-							$("#AlertMsg").html("<b>ERROR: </b>There's a problem with your transaction!<br>"+itmstat);
-							$("#alertbtnOK").show();
-							$("#AlertModal").modal('show');
+			$("#AlertMsg").html("<b>ERROR: </b>There's a problem with your transaction!<br>"+itmstat);
+			$("#alertbtnOK").show();
+			$("#AlertModal").modal('show');
 
 		}
 	}
