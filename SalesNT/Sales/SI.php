@@ -152,8 +152,8 @@
 		if(x=="POST"){
 			//generate GL ENtry muna
 			
-			alert("th_toAcc.php?tran="+num+"&type=IN");
-			
+			//alert("th_toAcc.php?tran="+num+"&type=IN");
+
 			$.ajax ({
 				dataType: "text",
 				url: "../../include/th_toAcc.php",
