@@ -4,6 +4,7 @@ session_start();
 }
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
+require_once('../../Model/helper.php');
 
 $dmonth = date("m");
 $dyear = date("y");
@@ -68,7 +69,7 @@ else {
 					$cterms = "'".$row["cterms"]."'";
 				}
 	
-	//INSERT HEADER	
+	//INSERT HEADER
 
 	if (!mysqli_query($con, "INSERT INTO ntdr(`compcode`, `ctranno`, `ccode`, `cterms`, `cremarks`, `ddate`, `dcutdate`, `ngross`, `cpreparedby`, `cacctcode`, `cdrprintno`, `csalesman`, `cdelcode`, `cdeladdno`, `cdeladdcity`, `cdeladdstate`, `cdeladdcountry`, `cdeladdzip`) 
 	values('$company', '$cSINo', '$cCustID', $cterms, $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$preparedby', $cacctcode, $nDRPrintNo, '$salesman', '$delcodes', $delhousno, $delcity, $delstate, $delcountry, '$delzip')")) {
@@ -91,7 +92,12 @@ else {
 		echo $cSINo;
 	}
 	
-	
-
-
+	if(count($_FILES) != 0){
+		$directory = "../../Components/assets/DR-N/";
+		if(!is_dir($directory)){
+			mkdir($directory, 0777);
+		}
+		$directory .= "{$company}_{$cSINo}/";
+		upload_image($_FILES, $directory);
+	}
 ?>

@@ -17,9 +17,13 @@ include('../include/access.php');
 
 	<title>Myx Financials</title>
     
-	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css?x=<?php echo time();?>">
+  <link rel="stylesheet" type="text/css" href="../global/plugins/font-awesome/css/font-awesome.min.css?h=<?php echo time();?>"/>
+	<link rel="stylesheet" type="text/css" href="../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
   <link rel="stylesheet" type="text/css" href="../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
+
+	<link href="../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
 
 	<script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../js/bootstrap3-typeahead.min.js"></script>
@@ -32,69 +36,96 @@ include('../include/access.php');
 	<script src="../Bootstrap/js/bootstrap.js"></script>
 	<script src="../Bootstrap/js/moment.js"></script>
 	<script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+
+	<script src="../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+	<script src="../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+	<script src="../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+	<script src="../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtctranno').focus();">
-<form action="Journal_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return chkform();">
+<form action="Journal_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return chkform();"  enctype="multipart/form-data">
 	<fieldset>
-    	<legend>Record Journal Entry </legend>	
-        <table width="100%" border="0">
-  <tr>
-    <tH>JOURNAL No.:</tH>
-    <td colspan="2" style="padding:2px;">
-      <div class="col-xs-5 nopadding">
-        <input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" placeholder="Enter Journal No..." required autocomplete="off">
-        
-        </div>
-        
-         <div id="statmsgz" style="color:#F00"></div>
-    </td>    
-    <td style="padding:2px;" align="left">
-      <!--<input type="checkbox" name="lTaxInc" id="lTaxInc" value="YES">-->
-    </td>
-  </tr>
-  <tr>
-    <tH><span style="padding:2px">DATE:</span></tH>
-    <td width="500" style="padding:2px;"><div class="col-xs-5 nopadding">
-      <input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date("m/d/Y"); ?>" />
-    </div>
-    <tH><span style="padding:2px">Total Debit:</span></tH>
-    <td style="padding:2px;">
-    <div class="col-xs-5 nopadding">
-    <input type='text' class='form-control input-sm' name='txtnDebit' id='txtnDebit' value="0.00" style="text-align:right" readonly>
-    </div>
-    </td>
-  </tr>
-  <tr>
-    <tH width="100" rowspan="3" valign="top">MEMO:</tH>
-    <td rowspan="3" style="padding:2px;" valign="top"><div class="col-xs-10 nopadding">
-      <textarea class="form-control" rows="3" id="txtremarks" name="txtremarks"></textarea>
-    </div>
-    <tH><span style="padding:2px">Total Credit:</span></tH>
-    <td style="padding:2px;">
-    <div class="col-xs-5 nopadding">
-    <input type='text' class='form-control input-sm' name='txtnCredit' id='txtnCredit' value="0.00" style="text-align:right" readonly>
-    </div>
-    </td>
-  </tr>
-  <tr>
-    <tH width="150" style="padding:2px">&nbsp;</tH>
-    <td style="padding:2px">
-    <!--
-    <div class="col-xs-5 nopadding">
-      <input type='text' class='form-control input-sm' name='txtnTax' id='txtnTax' value="0.00" style="text-align:right" readonly>
-    </div>
-    -->
-    </td>
-  </tr>
-  <tr>
-    <tH style="padding:2px">Out of Balance:</tH>
-    <td style="padding:2px"><div class="col-xs-5 nopadding">
-      <input type='text' class='form-control input-sm' name='txtnOutBal' id='txtnOutBal' value="0.00" style="text-align:right" readonly>
-    </div></td>
-  </tr>
-      </table>
-<br>
+    	<legend>New Journal Entry </legend>	
+
+				<ul class="nav nav-tabs">
+					<li class="active"><a href="#jed">Journal Details</a></li>
+					<li><a href="#attc">Attachments</a></li>
+				</ul>
+
+				<div class="alt2" dir="ltr" style="margin: 0px; padding: 3px;border: 0px;width: 100%;text-align: left;overflow: inherit !important">
+					<div class="tab-content">  
+
+						<div id="jed" class="tab-pane fade in active" style="padding-top:10px;">
+
+							<table width="100%" border="0">
+								<tr>
+									<tH>JOURNAL No.:</tH>
+									<td colspan="2" style="padding:2px;">
+										<div class="col-xs-5 nopadding">
+											<input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" placeholder="Enter Journal No..." required autocomplete="off">
+											
+											</div>
+											
+											<div id="statmsgz" style="color:#F00"></div>
+									</td>    
+									<td style="padding:2px;" align="left">
+										<!--<input type="checkbox" name="lTaxInc" id="lTaxInc" value="YES">-->
+									</td>
+								</tr>
+								<tr>
+									<tH><span style="padding:2px">DATE:</span></tH>
+									<td width="500" style="padding:2px;"><div class="col-xs-5 nopadding">
+										<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date("m/d/Y"); ?>" />
+									</div>
+									<tH><span style="padding:2px">Total Debit:</span></tH>
+									<td style="padding:2px;">
+									<div class="col-xs-5 nopadding">
+									<input type='text' class='form-control input-sm' name='txtnDebit' id='txtnDebit' value="0.00" style="text-align:right" readonly>
+									</div>
+									</td>
+								</tr>
+								<tr>
+									<tH width="100" rowspan="3" valign="top">MEMO:</tH>
+									<td rowspan="3" style="padding:2px;" valign="top"><div class="col-xs-10 nopadding">
+										<textarea class="form-control" rows="3" id="txtremarks" name="txtremarks"></textarea>
+									</div>
+									<tH><span style="padding:2px">Total Credit:</span></tH>
+									<td style="padding:2px;">
+									<div class="col-xs-5 nopadding">
+									<input type='text' class='form-control input-sm' name='txtnCredit' id='txtnCredit' value="0.00" style="text-align:right" readonly>
+									</div>
+									</td>
+								</tr>
+								<tr>
+									<tH width="150" style="padding:2px">&nbsp;</tH>
+									<td style="padding:2px">
+									<!--
+									<div class="col-xs-5 nopadding">
+										<input type='text' class='form-control input-sm' name='txtnTax' id='txtnTax' value="0.00" style="text-align:right" readonly>
+									</div>
+									-->
+									</td>
+								</tr>
+								<tr>
+									<tH style="padding:2px">Out of Balance:</tH>
+									<td style="padding:2px"><div class="col-xs-5 nopadding">
+										<input type='text' class='form-control input-sm' name='txtnOutBal' id='txtnOutBal' value="0.00" style="text-align:right" readonly>
+									</div></td>
+								</tr>
+							</table>
+						</div>
+						<div id="attc" class="tab-pane fade in" style="padding-top:10px;">
+
+								<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+								<input id="file-0" name="upload[]" type="file" multiple>
+
+							</div>
+					</div>
+				</div>
+
+
+			<br>
     
 <small><i>*Press tab after remarks field (last row) to add new line..</i></small>
 
@@ -247,11 +278,26 @@ Back to Main<br>(ESC)</button>
 	});
 
 
-	$(function(){
+	$(document).ready(function() {
+		$(".nav-tabs a").click(function(){
+			$(this).tab('show');
+		});
+
 		$('#date_delivery').datetimepicker({
 			format: 'MM/DD/YYYY',
 		});
 		
+
+		$("#file-0").fileinput({
+			showUpload: false,
+			showClose: false,
+			allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+			overwriteInitial: false,
+			maxFileSize:100000,
+			maxFileCount: 5,
+			browseOnZoneClick: true,
+			fileActionSettings: { showUpload: false, showDrag: false,}
+		});
 		
 				$("input.numeric").autoNumeric('init',{mDec:2,wEmpty: 'zero'});
 				//$("input.numeric").numeric();

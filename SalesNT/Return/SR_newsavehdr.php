@@ -4,6 +4,7 @@ session_start();
 }
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
+require_once('../../Model/helper.php');
 
 $dmonth = date("m");
 $dyear = date("y");
@@ -81,9 +82,13 @@ else {
 		// Delete previous details
 		mysqli_query($con, "Delete from ntsalesreturn_t Where compcode='$company' and ctranno='$cSINo'");
 	}
-	
-
 	//mysqli_query($con, "Delete from salesreturn_t_info Where compcode='$company' and ctranno='$cSINo'");
-
-
+	if(count($_FILES) != 0){
+		$directory = "../../Components/assets/SR-N/";
+		if(!is_dir($directory)){
+			mkdir($directory, 0777);
+		}
+		$directory .= "{$company}_{$cSINo}/";
+		upload_image($_FILES, $directory);
+	}
 ?>

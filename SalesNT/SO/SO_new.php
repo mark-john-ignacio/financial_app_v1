@@ -63,6 +63,18 @@ function listcurrencies(){ //API for currency list
 <script src="../../Bootstrap/js/moment.js"></script>
 <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
+<!--
+--
+-- FileType Bootstrap Scripts and Link
+--
+-->
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
@@ -70,18 +82,21 @@ function listcurrencies(){ //API for currency list
 <input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
 
 
-<form action="SO_newsave.php" name="frmpos" id="frmpos" method="post">
+<form action="SO_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;"  enctype="multipart/form-data">
 	<fieldset>
     	<legend>New SO Non-Trade</legend>	
-<div class="col-xs-12 nopadwdown"><b>SO Non-Trade Information</b></div>
-<ul class="nav nav-tabs">
-    <li class="active"><a href="#home">Order Details</a></li>
-    <li><a href="#menu1">Delivered To</a></li>
-</ul>
+	<div class="col-xs-12 nopadwdown"><b>SO Non-Trade Information</b></div>
+	<ul class="nav nav-tabs">
+		<li class="active"><a href="#home">Order Details</a></li>
+		<li><a href="#menu1">Delivered To</a></li>
+		<li><a href="#attc">Attachments</a></li>
+	</ul>
  
- <div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left;overflow: auto">
+ <div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left;overflow: inherit !important">
  		<div class="tab-content">  
-
+		<!--
+		-- Home Panel
+		-->
       <div id="home" class="tab-pane fade in active" style="padding-left:5px;">
              
         <table width="100%" border="0">
@@ -230,7 +245,9 @@ function listcurrencies(){ //API for currency list
 					</tr>
 				</table>		
       </div>
-        
+		<!--
+		-- Deliver To Panel
+		-->
       <div id="menu1" class="tab-pane fade" style="padding-left:5px">
 				<table width="100%" border="0">
 					<tr>
@@ -278,6 +295,21 @@ function listcurrencies(){ //API for currency list
 					</tr>  
 				</table>
       </div>
+		<div id="attc" class="tab-pane fade" style="padding-left:5px">
+			<!--
+			--
+			-- Import Files Modal
+			--
+			-->
+			<div class="col-sm-12 nopadding">
+				<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+				<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
+				<div class="col-sm-12 nopadding" style="padding-top:10px;">
+					<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+					<input type="file" name="upload[]" id="file-0" multiple />
+				</div>
+			</div>
+		</div>
 			
 		</div>
 
@@ -530,6 +562,25 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 
 			$(".nav-tabs a").click(function(){
     			$(this).tab('show');
+			});
+
+			/*
+			*
+			* Bootstrap JQueries Fields
+			*
+			*/
+
+			$("#file-0").fileinput({
+				theme: 'fa5',
+				uploadUrl: '#',
+				showUpload: false,
+				showClose: false,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false,}
 			});
 
 			$("#txtnBaseGross").autoNumeric('init',{mDec:2});
@@ -1851,9 +1902,21 @@ function chkform(){
 		//data: { ccode: ccode, crem: crem, ddate: ddate, ngross: ngross, selsityp: csitype, custpono:custpono, salesman:salesman, delcodes:delcodes, delhousno:delhousno, delcity:delcity, delstate:delstate, delcountry:delcountry, delzip:delzip, specins:specins, ncurrcode:ncurrcode, ncurrdesc:ncurrdesc, ncurrrate:ncurrrate, nbasegross:nbasegross },  frmpos
 
 		var myform = $("#frmpos").serialize();
+
+		var formdata = new FormData($('#frmpos')[0])
+		formdata.delete('upload[]')
+		jQuery.each($('#file-0')[0].files, function(i, file){
+			formdata.append('file-'+i, file);
+		})
+
 		$.ajax ({
 			url: "SO_newsavehdr.php",
-			data: myform,
+			data: formdata,
+			cache: false,
+			processData: false,
+			contentType: false,
+			method: 'post',
+			type: 'post',
 			async: false,
 			beforeSend: function(){
 				$("#AlertMsg").html("&nbsp;&nbsp;<b>SAVING NEW ORDER: </b> Please wait a moment...");

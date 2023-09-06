@@ -83,7 +83,7 @@
 			$total_count = count($_FILES['upload']['name']);
 
 			if($total_count>=1){
-				mkdir('../../RFP_Files/'.$company.'_'.$cSINo.'/',0777);
+				mkdir('../../Components/assets/RFP/'.$company.'_'.$cSINo.'/',0777);
 			}
 
 			// Loop through every file
@@ -93,7 +93,7 @@
 				//A file path needs to be present
 				if ($tmpFilePath != ""){
 						//Setup our new file path
-						$newFilePath = "../../RFP_Files/".$company.'_' . $cSINo . "/" . $_FILES['upload']['name'][$i];
+						$newFilePath = "../../Components/assets/RFP/".$company.'_' . $cSINo . "/" . $_FILES['upload']['name'][$i];
 						//File is uploaded to temp dir
 						move_uploaded_file($tmpFilePath, $newFilePath);
 						

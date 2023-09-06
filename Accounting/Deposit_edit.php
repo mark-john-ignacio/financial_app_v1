@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "OR_new.php";
+$_SESSION['pageid'] = "Deposit_edit.php";
 
 include('../Connection/connection_string.php');
 include('../include/denied.php');
@@ -10,6 +10,26 @@ include('../include/access.php');
 
 $company = $_SESSION['companyid'];
 $corno = $_REQUEST['txtctranno'];
+
+
+@$arrfiles = array();
+	@$arrname = array();
+
+	if (file_exists('../Components/assets/Deposit/'.$company.'_'.$corno.'/')) {
+		$allfiles = scandir('../Components/assets/Deposit/'.$company.'_'.$corno.'/');
+		$files = array_diff($allfiles, array('.', '..'));
+		foreach($files as $file) {
+
+			$fileNameParts = explode('.', $file);
+			$ext = end($fileNameParts);
+
+			@$arrname[] = array("name" => $file, "ext" => $ext);
+		}
+	
+	}else{
+		//echo "NO FILES";
+	}
+
 
 ?>
 
@@ -36,9 +56,25 @@ $corno = $_REQUEST['txtctranno'];
 	<script src="../Bootstrap/js/bootstrap.js"></script>
 	<script src="../Bootstrap/js/moment.js"></script>
 	<script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+
+	<!--
+	--
+	-- FileType Bootstrap Scripts and Link
+	--
+	-->
+	<link rel="stylesheet" type="text/css" href="../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+	<link href="../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+	<script src="../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+	<script src="../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+	<script src="../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+	<script src="../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+
 </head>
 
 <body style="padding:5px; height:700px" onLoad="disabled();">
+
+<input type="hidden" value='<?=json_encode(@$arrname)?>' id="hdnfileconfig"> 
+
 <?php
 
     	$sqlchk = mysqli_query($con,"Select a.cacctcode, a.namount, a.cortype, DATE_FORMAT(a.dcutdate,'%m/%d/%Y') as dcutdate, a.namount, a.lapproved, a.lcancelled, a.lprintposted, a.cremarks, c.cacctdesc, c.nbalance From deposit a left join accounts c on a.compcode=c.compcode and a.cacctcode=c.cacctid where a.compcode='$company' and a.ctranno='$corno'");
@@ -59,188 +95,225 @@ if (mysqli_num_rows($sqlchk)!=0) {
 
 ?>
 
-<form action="Deposit_editsave.php" name="frmOR" id="frmOR" method="post">
+<form action="Deposit_editsave.php" name="frmOR" id="frmOR" method="post" enctype="multipart/form-data">
 	<fieldset>
     	<legend>Bank Deposit</legend>	
         <table width="100%" border="0">
           <tr>
-    <tH>Deposit No.:</tH>
-    <td colspan="3" style="padding:2px;">
-    <div class="col-xs-12 nopadding">
-    <div class="col-xs-2 nopadding"><input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?php echo $corno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmOR');"></div>
-      
-      <input type="hidden" name="hdnorigNo" id="hdnorigNo" value="<?php echo $corno;?>">
-      
-      <input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
-      <input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
-      <input type="hidden" name="hdnprintpost" id="hdnprintpost" value="<?php echo $lPrintPost;?>">
-      &nbsp;&nbsp;
-      <div id="statmsgz" style="display:inline"></div>
-      </div>
-      
-    </td>
-    </tr>
+						<tH>Deposit No.:</tH>
+						<td colspan="3" style="padding:2px;">
+							<div class="col-xs-12 nopadding">
+							<div class="col-xs-2 nopadding"><input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?php echo $corno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmOR');"></div>
+								
+								<input type="hidden" name="hdnorigNo" id="hdnorigNo" value="<?php echo $corno;?>">
+								
+								<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
+								<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
+								<input type="hidden" name="hdnprintpost" id="hdnprintpost" value="<?php echo $lPrintPost;?>">
+								&nbsp;&nbsp;
+								<div id="statmsgz" style="display:inline"></div>
+							</div>
+							
+						</td>
+					</tr>
 
-  <tr>
-    <tH width="200">
-    	
-    	Deposit To Account:
-    </tH>
-    <td style="padding:2px;" width="500">
-  <div class="col-xs-12 nopadding">
-    <div class="col-xs-6 nopadding">
-        	<input type="text" class="form-control input-sm" id="txtcacct" name="txtcacct" width="20px" tabindex="1" placeholder="Search Account Description..." required value="<?php echo $nDebitDesc;?>">
-    </div> 
-	<div class="col-xs-6 nopadwleft">
-        	<input type="text" id="txtcacctid" name="txtcacctid" style="border:none; height:30px;" readonly  value="<?php echo $nDebitDef;?>">
-    </div>
-   </div>     
-    </td>
-    <tH width="150">Balance:</tH>
-    <td style="padding:2px;">
-    <div class="col-xs-8 nopadding">
-    <input type="text" id="txtacctbal" name="txtacctbal" class="form-control input-sm" readonly value="<?php echo $nBalance;?>">
-    </div>
-    </td>
-  </tr>
-  <tr>
-    <tH>&nbsp;</tH>
-    <td style="padding:2px;">&nbsp;</td>
-    <tH>&nbsp;</tH>
-    <td style="padding:2px;">&nbsp;</td>
-  </tr>
-  <tr>
-		<!--
-    <tH width="200" valign="top">Receipt By:</tH>
-    <td valign="top" style="padding:2px">
-      
-      
-      <div class="col-xs-12 nopadding">
-        <div class="col-xs-6 nopadding">
-          <select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
-            <option value="Cash" <?php if($cPayMeth=="Cash"){ echo "selected"; }?>>Cash</option>
-            <option value="Cheque" <?php if($cPayMeth=="Cheque"){ echo "selected"; }?>>Cheque</option>
-            <option value="All" <?php if($cPayMeth=="All"){ echo "selected"; }?>>All Methods</option>
-          </select>
-          </div>      
-      </div> 
-      </td>
-		-->
-		<tH width="200" rowspan="2" valign="top">Remarks:</tH>
-    <td rowspan="2" valign="top" style="padding:2px">
-			<div class="col-xs-12 nopadding">
-				<div class="col-xs-10 nopadding">
-					<textarea class="form-control" rows="2" id="txtremarks" name="txtremarks"><?php echo $cRemarks; ?></textarea>
-				</div>
-			</div>
-		</td>
-    <tH style="padding:2px">Date:</tH>
-    <td style="padding:2px"><div class="col-xs-8 nopadding">
-      <input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $dDate; ?>"/>
-      <!--</a>-->
-    </div></td>
-  </tr>
-  <tr>
+					<tr>
+						<tH width="200">   	
+							Deposit To Account:
+						</tH>
+						<td style="padding:2px;" width="500">
+							<div class="col-xs-12 nopadding">
+								<div class="col-xs-6 nopadding">
+									<input type="text" class="form-control input-sm" id="txtcacct" name="txtcacct" width="20px" tabindex="1" placeholder="Search Account Description..." required value="<?php echo $nDebitDesc;?>">
+								</div> 
+								<div class="col-xs-6 nopadwleft">
+									<input type="text" id="txtcacctid" name="txtcacctid" style="border:none; height:30px;" readonly  value="<?php echo $nDebitDef;?>">
+								</div>
+							</div>     
+						</td>
+						<tH width="150">Balance:</tH>
+						<td style="padding:2px;">
+						<div class="col-xs-8 nopadding">
+						<input type="text" id="txtacctbal" name="txtacctbal" class="form-control input-sm" readonly value="<?php echo $nBalance;?>">
+						</div>
+						</td>
+					</tr>
+					<tr>
+						<tH>&nbsp;</tH>
+						<td style="padding:2px;">&nbsp;</td>
+						<tH>&nbsp;</tH>
+						<td style="padding:2px;">&nbsp;</td>
+					</tr>
+					<tr>
+						<!--
+						<tH width="200" valign="top">Receipt By:</tH>
+						<td valign="top" style="padding:2px">
+							
+							
+							<div class="col-xs-12 nopadding">
+								<div class="col-xs-6 nopadding">
+									<select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
+										<option value="Cash" <?//php if($cPayMeth=="Cash"){ echo "selected"; }?>>Cash</option>
+										<option value="Cheque" <?//php if($cPayMeth=="Cheque"){ echo "selected"; }?>>Cheque</option>
+										<option value="All" <?//php if($cPayMeth=="All"){ echo "selected"; }?>>All Methods</option>
+									</select>
+									</div>      
+							</div> 
+							</td>
+						-->
+						<tH width="200" rowspan="2" valign="top">Remarks:</tH>
+						<td rowspan="2" valign="top" style="padding:2px">
+							<div class="col-xs-12 nopadding">
+								<div class="col-xs-10 nopadding">
+									<textarea class="form-control" rows="2" id="txtremarks" name="txtremarks"><?php echo $cRemarks; ?></textarea>
+								</div>
+							</div>
+						</td>
+						<tH style="padding:2px">Date:</tH>
+						<td style="padding:2px"><div class="col-xs-8 nopadding">
+							<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $dDate; ?>"/>
+							<!--</a>-->
+						</div></td>
+					</tr>
+					<tr>
 
-    <th valign="top" style="padding:2px">Total Deposited:</th>
-    <td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
-      <input type="text" id="txtnGross" name="txtnGross" class="form-control text-right" value="<?php echo number_format($nAmount,2);?>" readonly>
-    </div></td>
-    </tr>
-  <tr>
-    <th valign="top" style="padding:2px">&nbsp;</th>
-    <td valign="top" style="padding:2px">&nbsp;</td>
-  </tr>
-      </table>
-<br>
+						<th valign="top" style="padding:2px">Total Deposited:</th>
+						<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
+							<input type="text" id="txtnGross" name="txtnGross" class="form-control text-right" value="<?php echo number_format($nAmount,2);?>" readonly>
+						</div></td>
+						</tr>
+					<tr>
+						<th valign="top" style="padding:2px">&nbsp;</th>
+						<td valign="top" style="padding:2px">&nbsp;</td>
+					</tr>
+     	 	</table>
 
-				<button type="button" class="btn btn-xs btn-info" onClick="getInvs();">
-					<i class="fa fa-search"></i>&nbsp;Load OR
-    		</button>
+				<br>
 
-    <br><br>
-	  <div id="tableContainer" class="alt2" dir="ltr" style="
-                        margin: 0px;
-                        padding: 3px;
-                        border: 1px solid #919b9c;
-                        width: 100%;
-                        height: 200px;
-                        text-align: left;
-                        overflow: auto">
-                        
-            <table width="100%" border="0" cellpadding="3" id="MyTable" class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col" width="15%">Trans No</th>
-                <th scope="col">OR No.</th>
-                <th scope="col">Date</th>
-                <th scope="col">Remarks</th>
-                <th scope="col">Payment Method</th>
-                <th scope="col">Amount</th>
-                <th scope="col">&nbsp;</th>
-              </tr>
-            </thead>
-            <tbody>
-        <?php
-			
-			$sqlbody = mysqli_query($con,"select a.*, b.cornumber, b.dcutdate, b.cremarks, b.cpaymethod, b.namount from deposit_t a left join receipt b on a.compcode=b.compcode and a.corno=b.ctranno and a.compcode=b.compcode where a.compcode='$company' and a.ctranno = '$corno' order by a.nidentity");
+				<ul class="nav nav-tabs">
+					<li class="active"><a href="#items" data-toggle="tab">Details</a></li>
+					<li><a href="#attc" data-toggle="tab">Attachments</a></li>
+				</ul>
 
-						if (mysqli_num_rows($sqlbody)!=0) {
-							$cntr = 0;
-							while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
-								$cntr = $cntr + 1;
-		?>
-			  <tr>
-              	<td><div class='col-xs-12'><input type='hidden' name='txtcSalesNo<?php echo $cntr;?>' id='txttranno' value='<?php echo $rowbody['corno'];?>' /><?php echo $rowbody['corno'];?></div></td>
-                <td><?php echo $rowbody['cornumber'];?></td>
-                <td><?php echo $rowbody['dcutdate'];?></td>
-                <td><?php echo $rowbody['cremarks'];?></td>
-                <td><?php echo ucwords($rowbody['cpaymethod']);?></td>
-                <td align='right'><div class='col-xs-12'><input type='hidden' name='txtnAmt<?php echo $cntr;?>' id='txtAmt' value='<?php echo $rowbody['namount'];?>' /><?php echo number_format($rowbody['namount'],2);?></div></td>
-                <td align='center'><input class='btn btn-danger btn-xs' type='button' id='row_<?php echo $cntr;?>_delete' value='delete' onClick='deleteRow(this);' /></td>
-              </tr>
-	    <?php
-							}
-						}
+				<div class="tab-content">
 
-		?>
-	
+					<div id="items" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
 
-            </tbody>
-            </table>
-<input type="hidden" name="hdnrowcnt" id="hdnrowcnt" value="0">
+						<button type="button" class="btn btn-xs btn-info" onClick="getInvs();" style="margin-bottom:5px">
+							<i class="fa fa-search"></i>&nbsp;Load OR
+						</button>
+						<br>
+						<div id="tableContainer" class="alt2" dir="ltr" style="
+								margin: 0px;
+								padding: 3px;
+								border: 1px solid #919b9c;
+								width: 100%;
+								height: 200px;
+								text-align: left;
+								overflow: auto">
+														
+								<table width="100%" border="0" cellpadding="3" id="MyTable" class="table table-striped">
+									<thead>
+										<tr>
+											<th scope="col" width="15%">Trans No</th>
+											<th scope="col">OR No.</th>
+											<th scope="col">Date</th>
+											<th scope="col">Remarks</th>
+											<th scope="col">Payment Method</th>
+											<th scope="col">Amount</th>
+											<th scope="col">&nbsp;</th>
+										</tr>
+									</thead>
+									<tbody>
+										<?php
+						
+										$sqlbody = mysqli_query($con,"select a.*, b.cornumber, b.dcutdate, b.cremarks, b.cpaymethod, b.namount from deposit_t a left join receipt b on a.compcode=b.compcode and a.corno=b.ctranno and a.compcode=b.compcode where a.compcode='$company' and a.ctranno = '$corno' order by a.nidentity");
 
+										if (mysqli_num_rows($sqlbody)!=0) {
+											$cntr = 0;
+											while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
+												$cntr = $cntr + 1;
+										?>
+										<tr>
+											<td><div class='col-xs-12'><input type='hidden' name='txtcSalesNo<?php echo $cntr;?>' id='txttranno' value='<?php echo $rowbody['corno'];?>' /><?php echo $rowbody['corno'];?></div></td>
+											<td><?php echo $rowbody['cornumber'];?></td>
+											<td><?php echo $rowbody['dcutdate'];?></td>
+											<td><?php echo $rowbody['cremarks'];?></td>
+											<td><?php echo ucwords($rowbody['cpaymethod']);?></td>
+											<td align='right'><div class='col-xs-12'><input type='hidden' name='txtnAmt<?php echo $cntr;?>' id='txtAmt' value='<?php echo $rowbody['namount'];?>' /><?php echo number_format($rowbody['namount'],2);?></div></td>
+											<td align='center'><input class='btn btn-danger btn-xs' type='button' id='row_<?php echo $cntr;?>_delete' value='delete' onClick='deleteRow(this);' /></td>
+										</tr>
+										<?php
+											}
+										}
 
-</div>
+										?>
+				
 
-<br>
-<table width="100%" border="0" cellpadding="3">
-  <tr>
-    <td width="50%">
-<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Deposit.php';" id="btnMain" name="btnMain">
-Back to Main<br>(ESC)</button>
-   
-    <button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='Deposit_new.php';" id="btnNew" name="btnNew">
-New<br>(F1)</button>
+									</tbody>
+								</table>
+								<input type="hidden" name="hdnrowcnt" id="hdnrowcnt" value="0">
+						</div>
 
-    <button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmOR');" id="btnUndo" name="btnUndo">
-Undo Edit<br>(CTRL+Z)
-    </button>
+					</div>
 
-    <button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $corno;?>');" id="btnPrint" name="btnPrint">
-Print<br>(CTRL+P)
-    </button>
-    
-    <button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
-Edit<br>(CTRL+E)    </button>
-    
-    <button type="submit" class="btn btn-success btn-sm" tabindex="6" id="btnSave" name="btnSave">
-Save<br>(CTRL+S)    </button>
+					<div id="attc" class="tab-pane fade in" style="padding-left: 5px; padding-top: 10px;">
+						
+						<div class="alt2" dir="ltr" style="
+								margin: 0px;
+								padding: 3px;
+								width: 100%;
+								height: 450px;
+								text-align: left;
+								overflow: auto">
+								<table width="100%" border="0">
+									<tr>
+										<td>
+											<div class="col-sm-12 nopadding">
+												<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+												<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
+												<div class="col-sm-12 nopadding" style="padding-top:10px;">
+													<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+													<input type="file" name="upload[]" id="file-0" multiple />
+												</div>
+											</div>
+										</td>
+									</tr>
+								</table>
+						</div>
+						
+					</div>
 
-</td>
-    <td align="right">&nbsp;</td>
-  </tr>
-</table>
+				</div><!--tab-content-->	
+
+				<br>
+				<table width="100%" border="0" cellpadding="3">
+					<tr>
+						<td width="50%">
+				<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Deposit.php';" id="btnMain" name="btnMain">
+				Back to Main<br>(ESC)</button>
+					
+						<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='Deposit_new.php';" id="btnNew" name="btnNew">
+				New<br>(F1)</button>
+
+						<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmOR');" id="btnUndo" name="btnUndo">
+				Undo Edit<br>(CTRL+Z)
+						</button>
+
+						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $corno;?>');" id="btnPrint" name="btnPrint">
+				Print<br>(CTRL+P)
+						</button>
+						
+						<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
+				Edit<br>(CTRL+E)    </button>
+						
+						<button type="submit" class="btn btn-success btn-sm" tabindex="6" id="btnSave" name="btnSave">
+				Save<br>(CTRL+S)    </button>
+
+				</td>
+						<td align="right">&nbsp;</td>
+					</tr>
+				</table>
 
     </fieldset>
 
@@ -334,6 +407,49 @@ else{
 
 
 <script type="text/javascript">
+
+var fileslist = [];
+	/*
+	var xz = $("#hdnfiles").val();
+	$.each(jQuery.parseJSON(xz), function() { 
+		fileslist.push(xz);
+	});
+	*/
+
+	console.log(fileslist);
+	var filesconfigs = [];
+	var xzconfig = JSON.parse($("#hdnfileconfig").val());
+
+	//alert(xzconfig.length);
+
+	var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
+	var arrimg = new Array("jpg","png","gif","jpeg");
+
+	var xtc = "";
+	for (var i = 0; i < xzconfig.length; i++) {
+    var object = xzconfig[i];
+		//alert(object.ext + " : " + object.name);
+		fileslist.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/Deposit/<?=$company."_".$corno?>/" + object.name)
+
+		if(jQuery.inArray(object.ext, arroffice) !== -1){
+			xtc = "office";
+		}else if(jQuery.inArray(object.ext, arrimg) !== -1){
+			xtc = "image";
+		}else if(object.ext=="txt"){
+			xtc = "text";
+		}else{
+			xtc = object.ext;
+		}
+
+		filesconfigs.push({
+			type : xtc, 
+			caption : object.name,
+			width : "120px",
+			url: "th_filedelete.php?id="+object.name+"&code=<?=$corno?>"+"&typ=Deposit", 
+			key: i + 1
+		});
+	}
+
 	$(document).keydown(function(e) {	 
 	
 	 if(e.keyCode == 112) { //F1
@@ -376,13 +492,49 @@ else{
 
 
 
-$(function() {              
+	$(document).ready(function(){            
            // Bootstrap DateTimePicker v4
-	        $('#date_delivery').datetimepicker({
-                 format: 'MM/DD/YYYY'
-           });
-	   
-});
+		$('#date_delivery').datetimepicker({
+			format: 'MM/DD/YYYY'
+		});
+			
+
+		$(".nav-tabs a").click(function(){
+			$(this).tab('show');
+		});
+
+		if(fileslist.length>0){
+			$("#file-0").fileinput({
+				theme: 'fa5',
+				showUpload: false,
+				showClose: false,
+				browseOnZoneClick: true,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, },
+				initialPreview: fileslist,
+				initialPreviewAsData: true,
+				initialPreviewFileType: 'image',
+				initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/Deposit/<?=$company."_".$corno?>/{filename}',
+				initialPreviewConfig: filesconfigs
+			});
+		}else{
+			$("#file-0").fileinput({
+				theme: 'fa5',
+				showUpload: false,
+				showClose: false,
+				browseOnZoneClick: true,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, }
+			});
+		}
 			
 $('#txtcacct').typeahead({
 
@@ -412,7 +564,7 @@ $('#txtcacct').typeahead({
 });
 	
 
- $("#allbox").click(function () {
+ 	$("#allbox").click(function () {
         if ($("#allbox").is(':checked')) {
             $("input[name='chkSales[]']").each(function () {
                 $(this).prop("checked", true);
@@ -423,8 +575,9 @@ $('#txtcacct').typeahead({
                 $(this).prop("checked", false);
             });
         }
-    });
+	});
 
+});
 
 function deleteRow(r) {
 	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');

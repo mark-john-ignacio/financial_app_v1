@@ -70,6 +70,32 @@ else {
 		}
 
 	}
+
+
+		//insert attachment
+
+		$files = array_filter($_FILES['upload']['name']); //Use something similar before processing files.
+		// Count the number of uploaded files in array
+		$total_count = count($_FILES['upload']['name']);
+
+		if($total_count>=1){
+			mkdir('../../Components/assets/PReq/'.$company.'_'.$cSINo.'/',0777);
+		}
+
+		// Loop through every file
+		for( $i=0 ; $i < $total_count ; $i++ ) {
+			//The temp file path is obtained
+			$tmpFilePath = $_FILES['upload']['tmp_name'][$i];
+			//A file path needs to be present
+			if ($tmpFilePath != ""){
+					//Setup our new file path
+					$newFilePath = "../../Components/assets/PReq/".$company.'_' . $cSINo . "/" . $_FILES['upload']['name'][$i];
+					//File is uploaded to temp dir
+					move_uploaded_file($tmpFilePath, $newFilePath);
+					
+			}
+		}
+
 		
 	//INSERT LOGFILE
 	$compname = gethostbyaddr($_SERVER['REMOTE_ADDR']);

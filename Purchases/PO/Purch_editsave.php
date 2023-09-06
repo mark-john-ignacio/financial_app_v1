@@ -4,6 +4,7 @@ session_start();
 }
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
+require_once('../../Model/helper.php');
 
 function chkgrp($valz) {
 	if($valz==''){
@@ -79,5 +80,15 @@ function chkgrp($valz) {
 
 	// Delete previous details
 	mysqli_query($con, "Delete from purchase_t Where compcode='$company' and cpono='$cSINo'");
+
+
+	if(count($_FILES) != 0){
+		$directory = "../../Components/assets/PO/";
+		if(!is_dir($directory)){
+			mkdir($directory, 0777);
+		}
+		$directory .= "{$company}_{$cSINo}/";
+		upload_image($_FILES, $directory);
+	}
 
 ?>

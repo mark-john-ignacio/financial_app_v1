@@ -98,7 +98,7 @@ function listcurrencies(){ //API for currency list
 						<li><a href="#attc">Attachments</a></li>	
 				</ul>
  
- 	<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left;overflow: auto">
+ 	<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left; overflow: inherit !important;">
  		<div class="tab-content">  
 <!--
 --
@@ -316,14 +316,14 @@ function listcurrencies(){ //API for currency list
 		--
 		-->
 		<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-		<div class="col-sm-16 nopadding">
-			<div class="col-sx-12 nopadwdown"><i>Can Attach a file according to the ff: file type.</i></div>
-			<div id="attc" class="col-sm-12 row-sm-6 nopadding" style="padding-top:10px;">
-				<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
-				<input type="file" name="upload[]" id="upload" multiple />
+			<div class="col-sm-16 nopadding">
+				<div class="col-sx-12 nopadwdown"><i>Can Attach a file according to the ff: file type.</i></div>
+				<div id="attc" class="col-sm-12 row-sm-6 nopadding" style="padding-top:10px;">
+					<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+					<input type="file" name="upload[]" id="upload" multiple />
+				</div>
 			</div>
 		</div>
-	</div>
 			
 		</div>
 
@@ -589,13 +589,13 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 			});
 			
 			$("#upload").fileinput({
-				theme: 'fa5',
 				showUpload: false,
 				showClose: false,
 				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
 				overwriteInitial: false,
 				maxFileSize:100000,
 				maxFileCount: 5,
+				browseOnZoneClick: true,
 				fileActionSettings: { showUpload: false, showDrag: false,}
 			});
 
@@ -935,6 +935,48 @@ $(function(){
 				}
 			});
 		}
+	});
+
+	//Search Cust name
+	$('#txtdelcust').typeahead({
+		items: "all",
+		autoSelect: true,
+		fitToElement: true,
+		source: function(request, response) {
+			$.ajax({
+				url: "../th_customer.php",
+				dataType: "json",
+				data: {
+					query: request
+				},
+				success: function (data) {
+					response(data);
+				}
+			});
+		},
+		displayText: function (item) {
+			//if(item.cname != item.value){
+			//	return '<div style="border-top:1px solid gray;"><span>' + item.id + '</span><br><small>' + item.value + " / " + item.cname + "</small></div>";
+			//}else{
+				return '<div style="border-top:1px solid gray;"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+		//	}
+		},
+		highlighter: Object,
+		afterSelect: function(item) { 					
+						
+			$('#txtdelcust').val(item.value).change(); 
+			$("#txtdelcustid").val(item.id);
+				
+				$('#txtchouseno').val(item.chouseno);
+				$('#txtcCity').val(item.ccity);
+				$('#txtcState').val(item.cstate);
+				$('#txtcCountry').val(item.ccountry);
+				$('#txtcZip').val(item.czip);
+							
+			$('#hdnvalid').val("YES");
+			
+		}
+	
 	});
 	
 	$('#txtprodnme').typeahead({
@@ -2035,6 +2077,7 @@ function chkform(){
 		jQuery.each(jQuery('#upload')[0].files, function(i, file) {
 			formdata.append('file-'+i, file);
 		});
+
 		$.ajax ({
 			url: "SO_newsavehdr.php",
 			data: formdata,

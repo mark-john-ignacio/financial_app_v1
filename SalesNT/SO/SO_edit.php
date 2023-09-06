@@ -7,6 +7,7 @@ $_SESSION['pageid'] = "SO_edit.php";
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 include('../../include/access2.php');
+require_once('../../Model/helper.php');
 
 $company = $_SESSION['companyid'];
 
@@ -42,7 +43,11 @@ function listcurrencies(){ //API for currency list
 		}
 	}
 
-
+	@$arrname = array();
+	$directory = "../../Components/assets/SO-N/{$company}_{$txtctranno}/";
+	if(file_exists($directory)){
+		@$arrname = file_checker($directory);
+	}
 ?>
 
 <!DOCTYPE html>
@@ -67,6 +72,17 @@ function listcurrencies(){ //API for currency list
 <script src="../../Bootstrap/js/bootstrap.js"></script>
 <script src="../../Bootstrap/js/moment.js"></script>
 <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+<!--
+--
+-- FileType Bootstrap Scripts and Link
+--
+-->
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
 
 </head>
 
@@ -136,11 +152,12 @@ if (mysqli_num_rows($sqlhead)!=0) {
     
 	<div class="col-xs-12 nopadwdown"><b>Sales Order Information</b></div>
 	<ul class="nav nav-tabs">
-			<li class="active"><a href="#home">Order Details</a></li>
-			<li><a href="#menu1">Delivered To</a></li>
+			<li class="active"><a href="#home" data-toggle="tab">Order Details</a></li>
+			<li><a href="#menu1" data-toggle="tab">Delivered To</a></li>
+			<li><a href="#attc" data-toggle="tab">Attachments</a></li>
 	</ul>
  
-	<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left;overflow: auto">
+	<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left;overflow: inherit !important">
 			<div class="tab-content">
 			
 					<div id="home" class="tab-pane fade in active" style="padding-left:5px;">
@@ -349,6 +366,17 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						</table>
 					</div>
 
+
+					<div id="attc" class="tab-pane fade in" style="padding-left: 5px">
+						<div class="col-sm-12 nopadding">
+							<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+							<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>
+							<div id="attch" class="col-sm-12 nopadwdown" style="padding-top:10px;">
+								<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+								<input type="file" name="upload[]" id="file-0" multiple />
+							</div>	
+						</div>
+					</div>
 			</div>
 	</div>
 <hr>
@@ -636,6 +664,48 @@ var xmm = xtoday.getMonth()+1; //January is 0!
 var xyyyy = xtoday.getFullYear();
 
 xtoday = xmm + '/' + xdd + '/' + xyyyy;
+var file_name = <?= json_encode(@$arrname) ?>;
+/**
+ * Checking of list files
+ */
+if(file_name.length != 0){
+	file_name.map(({name, ext}) => {
+		console.log("Name: " + name + " ext: " + ext)
+	})
+
+	var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
+	var arrimg = new Array("jpg","png","gif","jpeg");
+
+	var list_file = [];
+	var file_config = [];
+	var extender;
+	/**
+	 * setting up an list of file and config of a file
+	 */
+	file_name.map(({name, ext}, i) => {
+		list_file.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/SO-N/<?=$company."_".$txtctranno?>/" + name)
+		console.log(ext);
+
+		if(jQuery.inArray(ext, arroffice) !== -1){
+			extender = "office";
+		} else if (jQuery.inArray(ext, arrimg) !== -1){
+			extender = "image";
+		} else if (ext == "txt"){
+			extender = "text";
+		} else {
+			extender =  ext;
+		}
+
+		console.log(extender)
+		file_config.push({
+			type : extender, 
+			caption : name,
+			width : "120px",
+			url: "th_filedelete.php?id="+name+"&code=<?=$txtctranno?>", 
+			key: i + 1
+		});
+	})
+}
 
 
 	$(document).keydown(function(e) {	
@@ -697,6 +767,35 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
     			$(this).tab('show');
 			});
 
+			if(file_name.length > 0){
+				$('#file-0').fileinput({
+					showUpload: false,
+					showClose: false,
+					allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+					overwriteInitial: false,
+					maxFileSize:100000,
+					maxFileCount: 5,
+					browseOnZoneClick: true,
+					fileActionSettings: { showUpload: false, showDrag: false, },
+					initialPreview: list_file,
+					initialPreviewAsData: true,
+					initialPreviewFileType: 'image',
+					initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/SO-N/<?=$company."_".$txtctranno?>/{filename}',
+					initialPreviewConfig: file_config
+				});
+			} else {
+				$("#file-0").fileinput({
+					showUpload: false,
+					showClose: false,
+					allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+					overwriteInitial: false,
+					maxFileSize:100000,
+					maxFileCount: 5,
+					browseOnZoneClick: true,
+					fileActionSettings: { showUpload: false, showDrag: false, }
+				});
+			}
+
 			$("#txtnBaseGross").autoNumeric('init',{mDec:2});
 			$("#txtnGross").autoNumeric('init',{mDec:2});
 				
@@ -747,6 +846,7 @@ $(function(){
                  format: 'MM/DD/YYYY'
         });
 
+		
 	
 	$("#txtcustid").keyup(function(event){
 		if(event.keyCode == 13){
@@ -2161,9 +2261,20 @@ function chkform(){
 		//alert("SO_updatehdr.php?ccode=" + ccode + "&crem="+ crem + "&ddate="+ ddate + "&ngross="+ngross + "&selsityp="+csitype+"&ccpono="+ ccpono+"&salesman="+ salesman+"&delcodes="+ delcodes+"&delhousno="+ delhousno+"&delcity="+ delcity+"&delstate="+ delstate+"&delcountry="+ delcountry+"&delzip="+ delzip+"&specins="+ specins);
 		//data: { id:trancode, ccode: ccode, crem: crem, ddate: ddate, ngross: ngross, selsityp: csitype, ccpono:ccpono, salesman:salesman, delcodes:delcodes, delhousno:delhousno, delcity:delcity, delstate:delstate, delcountry:delcountry, delzip:delzip, specins:specins },
 		var myform = $("#frmpos").serialize();
+
+		var formdata = new FormData($('#frmpos')[0]);
+		formdata.delete('upload[]');
+		jQuery.each($('#file-0')[0].files, function(i, file){
+			formdata.append('file-'+i, file);
+		})
 		$.ajax ({
 			url: "SO_updatehdr.php",
-			data: myform,
+			data: formdata,
+			cache: false,
+			processData: false,
+			contentType: false,
+			type: 'post',
+			method: 'post',
 			async: false,
 			beforeSend: function(){
 				$("#AlertMsg").html("&nbsp;&nbsp;<b>UPDATING SALES ORDER: </b> Please wait a moment...");

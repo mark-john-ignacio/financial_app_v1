@@ -28,6 +28,24 @@
 			@$arrwtxlist[] = array('ctaxcode' => $row['ctaxcode'], 'cbase' => $row['cbase']); 
 		}
 	}
+
+	@$arrfiles = array();
+	@$arrname = array();
+
+	if (file_exists('../../Components/assets/APV/'.$company.'_'.$ctranno.'/')) {
+		$allfiles = scandir('../../Components/assets/APV/'.$company.'_'.$ctranno.'/');
+		$files = array_diff($allfiles, array('.', '..'));
+		foreach($files as $file) {
+
+			$fileNameParts = explode('.', $file);
+			$ext = end($fileNameParts);
+
+			@$arrname[] = array("name" => $file, "ext" => $ext);
+		}
+	
+	}else{
+		//echo "NO FILES";
+	}
 ?>
 
 <!DOCTYPE html>
@@ -38,9 +56,13 @@
 
 	<title>Myx Financials</title>
     
-	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css"> 
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?<?php echo time();?>">
+  <link rel="stylesheet" type="text/css" href="../../global/plugins/font-awesome/css/font-awesome.min.css?h=<?php echo time();?>"/>
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+
+	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
 
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
   <script src="../../js/bootstrap3-typeahead.min.js"></script>
@@ -54,11 +76,18 @@
   <script src="../../Bootstrap/js/moment.js"></script>
   <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
+	<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtctranno').focus(); disabled();">
 	<input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes"> 
 	<input type="hidden" value='<?=json_encode(@$arrwtxlist)?>' id="hdnxtax">  
+
+	<input type="hidden" value='<?=json_encode(@$arrname)?>' id="hdnfileconfig"> 
 
 	<?php
 
@@ -79,7 +108,7 @@
 
 	?>
 
-	<form action="APV_editsave.php" name="frmpos" id="frmpos" method="post">
+	<form action="APV_editsave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
 		<fieldset>
 			<legend>AP Voucher</legend>	
 			<table width="100%" border="0">
@@ -166,6 +195,7 @@
 			<ul class="nav nav-tabs">
 				<li id="lidet" <?=($cAPType=="Purchases" || $cAPType=="PurchAdv") ? "class='active'" : ""?>><a href="#1" data-toggle="tab">Details</a></li>
 				<li id="liacct" <?=($cAPType!=="Purchases" && $cAPType!=="PurchAdv") ? "class='active'" : ""?>><a href="#2" data-toggle="tab">Accounting</a></li>
+				<li><a href="#attc" data-toggle="tab">Attachments</a></li>
 			</ul>
 
 
@@ -455,6 +485,33 @@
 						<input type="hidden" name="hdnACCCnt" id="hdnACCCnt">
 					</div>
 
+				</div>
+
+				<div id="attc" class="tab-pane" style="padding-left: 5px">
+						<div class="alt2" dir="ltr" style="
+								margin: 0px;
+								padding: 3px;
+								width: 100%;
+								height: 450px;
+								text-align: left;
+								overflow: auto">
+
+							<table width="100%" border="0">
+								<tr>
+									<td>
+										<div class="col-sm-12 nopadding">
+											<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+											<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
+											<div class="col-sm-12 nopadwdown" style="padding-top:10px;">
+												<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+												<input type="file" name="upload[]" id="file-0" multiple />
+											</div>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</div>
+						
 				</div>
 
     	</div>
@@ -918,6 +975,49 @@
 </html>
 
 <script type="text/javascript">
+
+	var fileslist = [];
+	/*
+	var xz = $("#hdnfiles").val();
+	$.each(jQuery.parseJSON(xz), function() { 
+		fileslist.push(xz);
+	});
+	*/
+
+	console.log(fileslist);
+	var filesconfigs = [];
+	var xzconfig = JSON.parse($("#hdnfileconfig").val());
+
+	//alert(xzconfig.length);
+
+	var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
+	var arrimg = new Array("jpg","png","gif","jpeg");
+
+	var xtc = "";
+	for (var i = 0; i < xzconfig.length; i++) {
+    var object = xzconfig[i];
+		//alert(object.ext + " : " + object.name);
+		fileslist.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/APV/<?=$company."_".$ctranno?>/" + object.name)
+
+		if(jQuery.inArray(object.ext, arroffice) !== -1){
+			xtc = "office";
+		}else if(jQuery.inArray(object.ext, arrimg) !== -1){
+			xtc = "image";
+		}else if(object.ext=="txt"){
+			xtc = "text";
+		}else{
+			xtc = object.ext;
+		}
+
+		filesconfigs.push({
+			type : xtc, 
+			caption : object.name,
+			width : "120px",
+			url: "th_filedelete.php?id="+object.name+"&code=<?=$ctranno?>", 
+			key: i + 1
+		});
+	}
+
 	$(document).keydown(function(e) {	 
 	 if(e.keyCode == 112) { //F1
 		if($("#btnNew").is(":disabled")==false){
@@ -979,6 +1079,39 @@
     $('.datepick').datetimepicker({
         format: 'MM/DD/YYYY'
     });
+
+		if(fileslist.length>0){
+			$("#file-0").fileinput({
+				theme: 'fa5',
+				showUpload: false,
+				showClose: false,
+				browseOnZoneClick: true,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, },
+				initialPreview: fileslist,
+				initialPreviewAsData: true,
+				initialPreviewFileType: 'image',
+				initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/APV/<?=$company."_".$ctranno?>/{filename}',
+				initialPreviewConfig: filesconfigs
+			});
+		}else{
+			$("#file-0").fileinput({
+				theme: 'fa5',
+				showUpload: false,
+				showClose: false,
+				browseOnZoneClick: true,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, }
+			});
+		}
 
 		$('#txtcust').typeahead({
 		

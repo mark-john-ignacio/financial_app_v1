@@ -47,23 +47,42 @@
 <script src="../../Bootstrap/js/moment.js"></script>
 <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
+<!--
+--
+-- FileType Bootstrap Scripts and Link
+--
+-->
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
 <input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
 
-<form action="SO_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
+<form action="SO_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;" enctype="multipart/form-data">
 	<fieldset>
     	<legend>New Delivery Receipt</legend>
 		
 <div class="col-xs-12 nopadwdown"><b>Delivery Information</b></div>
+<!-- 
+-- Navigators
+-->
 <ul class="nav nav-tabs">
     <li class="active"><a href="#home">Order Details</a></li>
     <li><a href="#menu1">Delivered To</a></li>
+	<li><a href="#attach_pane">Attachments</a></li>
 </ul>
 	
-<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left;overflow: auto">
+<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left;overflow: inherit !important;">
     <div class="tab-content">
+		<!--
+		-- Order Panel
+		-->	
     
          <div id="home" class="tab-pane fade in active" style="padding-left:5px;">
 			 
@@ -160,7 +179,9 @@
 			</table>
 			 
 		</div>
-		
+		<!--
+		-- Deliver To Panel
+		-->
 		<div id="menu1" class="tab-pane fade" style="padding-left:5px">
 			<table width="100%" border="0">
 			  <tr>
@@ -207,6 +228,22 @@
 			  </tr>
   			</table>
         </div>
+
+		<div id="attach_pane" class="tab-pane fade" style="padding-left:5px">
+			<!--
+			--
+			-- Import Files Modal
+			--
+			-->
+			<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+			<div class="col-sm-16 nopadding">
+				<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>
+				<div id="attc" class="col-sm-12 row-sm-6 nopadding" style="padding-top:10px;">
+					<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+					<input type="file" name="upload[]" id="file-0" multiple />
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 
@@ -543,6 +580,22 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 					   });
 					}
 				});
+			/*
+			*
+			* Bootstrap JQueries Fields
+			*
+			*/
+
+			$("#file-0").fileinput({
+				showUpload: false,
+				showClose: false,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false,}
+			});
 	
 		if(xChkBal==1){
 			$("#tblAvailable").hide();
@@ -1731,7 +1784,7 @@ function opengetdet(valz){
 					//alert('th_sinumdet.php?x='+drno+"&y="+salesnos);
 					$.ajax({
                     url: 'th_qolistdet.php',
-					data: 'x='+drno+"&y="+salesnos,
+					data: 'x='+drno+"&y="+salesnos+"&itmbal="+xChkBal,
                     dataType: 'json',
                     method: 'post',
                     success: function (data) {
@@ -1936,12 +1989,43 @@ function chkform(){
 		var delstate = $("#txtcState").val();
 		var delcountry = $("#txtcCountry").val();
 		var delzip = $("#txtcZip").val();
-		
+
+		var input_data = [
+			{	key: 'ccode', input: $("#txtcustid").val()	},
+			{	key: 'crem', input: $("#txtremarks").val()	},
+			{	key: 'ddate', input: $("#date_delivery").val()	},
+			{	key: 'ngross', input: $("#txtnGross").val()	},
+			{	key: 'cdrprintno', input: $("#cdrprintno").val()	},
+
+			{	key: 'salesman', input: $("#txtsalesmanid").val()	},
+			{	key: 'delcodes', input: $("#txtdelcustid").val()	},
+			{	key: 'delhousno', input: $("#txtchouseno").val()	},
+			{	key: 'delcity', input: $("#txtcCity").val()		},
+			{	key: 'delstate', input: $("#txtcState").val()	},
+			{	key: 'delcountry', input: $("#txtcCountry").val()	},
+			{	key: 'delzip', input: $("#txtcZip").val()	}
+		]
 		//alert("DR_newsavehdr.php?ccode=" + ccode + "&crem="+ crem + "&ddate="+ ddate + "&ngross="+ngross+"&cdrprintno="+cdrprintno+"&salesman="+salesman+"&delcodes="+delcodes+"&delhousno="+delhousno+"&delcity="+delcity+"&delstate="+delstate+"&delcountry="+delcountry+"&delzip="+delzip);
+		var formdata = new FormData();
+		jQuery.each(input_data, function(i, { key, input }){
+			formdata.append(key, input)
+		})
+		jQuery.each($('#file-0')[0].files, function(i, file) {
+			formdata.append('file-'+i, file)
+		})
+
 		
+		for(var par of formdata.entries()){
+			console.log(par)
+		}
 		$.ajax ({
 			url: "DR_newsavehdr.php",
-			data: { ccode: ccode, crem: crem, ddate: ddate, ngross: ngross, cdrprintno:cdrprintno, salesman:salesman, delcodes:delcodes, delhousno:delhousno, delcity:delcity, delstate:delstate, delcountry:delcountry, delzip:delzip },
+			data: formdata,
+			cache: false,
+			processData: false,
+			contentType: false,
+			method: 'post',
+			type: 'post',
 			async: false,
 			beforeSend: function(){
 				$("#AlertMsg").html("&nbsp;&nbsp;<b>SAVING NEW DR: </b> Please wait a moment...");

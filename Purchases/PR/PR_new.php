@@ -59,68 +59,122 @@
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
+	<!--
+	--
+	-- FileType Bootstrap Scripts and Link
+	--
+	-->
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+
 </head>
 
 <body style="padding:5px">
-	<form action="PR_newsave.php" name="frmpos" id="frmpos" method="post">
+	<form action="PR_newsave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
 		<fieldset>
     	<legend>Purchase Request</legend>	
 
-        <table width="100%" border="0">
-					<tr>
-						<tH width="100">Requested By:</tH>
-						<td style="padding:2px">
-							<div class="col-xs-12 nopadding">
-								<div class="col-xs-11 nopadding">
-									<input type="hidden" id="txtcustid" name="txtcustid" value="<?=$_SESSION['employeeid']?>">
-									<?=$cfname?>
-								</div>
-							</div>
-						</td>
-						<tH width="150" style="padding:2px">Date Needed:</tH>
-						<td style="padding:2px" width="200">
-							<div class="col-xs-8 nopadding">
-								<input type='text' class="datepick form-control input-sm" id="date_needed" name="date_needed" />
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<tH width="100">Section:</tH>
-						<td style="padding:2px">
-							<div class="col-xs-5 nopadding">
-							<select class="form-control input-sm" name="selwhfrom" id="selwhfrom"> 
-								<?php
-										foreach($rowdetloc as $localocs){									
-								?>
-											<option value="<?php echo $localocs['nid'];?>"><?php echo $localocs['cdesc'];?></option>										
-								<?php	
-										}						
-								?>
-							</select>
-							</div>
-						</td>
-						<tH width="150">&nbsp;</tH>
-						<td style="padding:2px;">
-						&nbsp;
-						</td>
-					</tr>
-					<tr>
-						<tH width="100">Remarks:</tH>
-						<td style="padding:2px">
-							<div class="col-xs-11 nopadding">
-								<textarea class="form-control input-sm" id="txtremarks" name="txtremarks"></textarea>
-							</div>
-						</td>
-						<tH width="150">&nbsp;</tH>
-						<td style="padding:2px;">
-						&nbsp;
-						</td>
-					</tr>
+				<ul class="nav nav-tabs">
+					<li class="active"><a href="#home">PR Details</a></li>
+					<li><a href="#attc">Attachments</a></li>
+				</ul>
 
-					<tr>
-						<td colspan="4">&nbsp;</td>
-					</tr>
-				</table>
+				<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left; overflow: inherit !important;">
+					<div class="tab-content">  
+
+						<div id="home" class="tab-pane fade in active" style="padding-left:5px;">
+
+							<table width="100%" border="0">
+								<tr>
+									<tH width="100">Requested By:</tH>
+									<td style="padding:2px">
+										<div class="col-xs-12 nopadding">
+											<div class="col-xs-11 nopadding">
+												<input type="hidden" id="txtcustid" name="txtcustid" value="<?=$_SESSION['employeeid']?>">
+												<?=$cfname?>
+											</div>
+										</div>
+									</td>
+									<tH width="150" style="padding:2px">Date Needed:</tH>
+									<td style="padding:2px" width="200">
+										<div class="col-xs-8 nopadding">
+											<input type='text' class="datepick form-control input-sm" id="date_needed" name="date_needed" />
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<tH width="100">Section:</tH>
+									<td style="padding:2px">
+										<div class="col-xs-5 nopadding">
+										<select class="form-control input-sm" name="selwhfrom" id="selwhfrom"> 
+											<?php
+													foreach($rowdetloc as $localocs){									
+											?>
+														<option value="<?php echo $localocs['nid'];?>"><?php echo $localocs['cdesc'];?></option>										
+											<?php	
+													}						
+											?>
+										</select>
+										</div>
+									</td>
+									<tH width="150">&nbsp;</tH>
+									<td style="padding:2px;">
+									&nbsp;
+									</td>
+								</tr>
+								<tr>
+									<tH width="100">Remarks:</tH>
+									<td style="padding:2px">
+										<div class="col-xs-11 nopadding">
+											<textarea class="form-control input-sm" id="txtremarks" name="txtremarks"></textarea>
+										</div>
+									</td>
+									<tH width="150">&nbsp;</tH>
+									<td style="padding:2px;">
+									&nbsp;
+									</td>
+								</tr>
+
+								<tr>
+									<td colspan="4">&nbsp;</td>
+								</tr>
+							</table>
+
+						</div>
+
+						<div id="attc" class="tab-pane fade in" style="padding-left: 5px;">
+							<!--
+							--
+							-- Import Files Modal
+							--
+							-->
+							<table width="100%" border="0">
+								<tr>
+									<td>
+										<div class="col-sm-12 nopadding">
+											<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+											<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
+											<div class="col-sm-12 nopadding" style="padding-top:10px;">
+												<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+												<input type="file" name="upload[]" id="file-0" multiple />
+											</div>
+										</div>
+									</td>
+								</tr>
+							</table>
+							
+						</div>
+
+					</div>
+				</div>
+
+
+				<hr>
+				<div class="col-xs-12 nopadwdown"><b>Details</b></div>
 
 				<div class="col-xs-12 nopadwdown">
 					<input type="hidden" name="hdnunit" id="hdnunit">
@@ -225,11 +279,27 @@
 
 	$(document).ready(function() {
 
+		$(".nav-tabs a").click(function(){
+    	$(this).tab('show');
+		});
+
 		$('#date_needed').datetimepicker({
 			format: 'MM/DD/YYYY',
 			useCurrent: false,
 			minDate: moment(),
 			defaultDate: moment(),
+		});
+
+		$("#file-0").fileinput({
+			uploadUrl: '#',
+			showUpload: false,
+			showClose: false,
+			allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+			overwriteInitial: false,
+			maxFileSize:100000,
+			maxFileCount: 5,
+			browseOnZoneClick: true,
+			fileActionSettings: { showUpload: false, showDrag: false,}
 		});
 
 		$('#txtprodnme').typeahead({

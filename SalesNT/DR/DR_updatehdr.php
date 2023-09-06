@@ -4,6 +4,7 @@ session_start();
 }
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
+require_once('../../Model/helper.php');
 
 $company = $_SESSION['companyid'];
 
@@ -24,7 +25,7 @@ function chkgrp($valz) {
 
 	$salesman = $_REQUEST['salesman'];
 	$delcodes = $_REQUEST['delcodes'];
-	$delhousno = chkgrp($_REQUEST['delhousno']);
+	$delhousno = chkgrp($_REQUEST['delhouseno']);
 	$delcity = chkgrp($_REQUEST['delcity']);
 	$delstate = chkgrp($_REQUEST['delstate']);
 	$delcountry = chkgrp($_REQUEST['delcountry']);
@@ -60,4 +61,14 @@ function chkgrp($valz) {
 	mysqli_query($con, "Delete from ntdr_t_info Where compcode='$company' and ctranno='$cSINo'");
 	mysqli_query($con, "Delete from ntdr_t_serials Where compcode='$company' and ctranno='$cSINo'");	
 
+
+	if(count($_FILES) != 0){
+		$directory = "../../Components/assets/DR-N/";
+		if(!is_dir($directory)){
+			mkdir($directory, 0777);
+		}
+		$directory .= "{$company}_{$cSINo}/";
+		var_dump($directory);
+		upload_image($_FILES, $directory);
+	}
 ?>

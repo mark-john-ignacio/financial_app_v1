@@ -7,6 +7,7 @@
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../include/access2.php');
+	require_once('../../Model/helper.php');
 
 	$company = $_SESSION['companyid'];
 	if(isset($_REQUEST['txtctranno'])){
@@ -51,6 +52,12 @@
 
 	$sqlhead = mysqli_query($con,"select a.cpono, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dneeded,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.nbasegross, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.lcancelled, a.lapproved, a.lprintposted, a.ccustacctcode, b.cname, a.ccontact, a.ccontactemail, a.ladvancepay, a.cterms, a.cdelto, a.ddeladd, a.ddelinfo, a.cbillto, a.cewtcode from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
 
+
+	@$arrname = array();
+	$directory = "../../Components/assets/PO/{$company}_{$cpono}/";
+	if(file_exists($directory)){
+		@$arrname = file_checker($directory);
+	}
 ?>
 
 <!DOCTYPE html>
@@ -75,6 +82,18 @@
 <script src="../../Bootstrap/js/bootstrap.js"></script>
 <script src="../../Bootstrap/js/moment.js"></script>
 <script src="../../Bootstrap/js/bootstrap-datetimepicker.js"></script>
+
+<!--
+--
+-- FileType Bootstrap Scripts and Link
+--
+-->
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
 
 </head>
 
@@ -123,6 +142,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			<ul class="nav nav-tabs">
 				<li class="active"><a href="#home">PO Details</a></li>
 				<li><a href="#menu1">Delivery/Billing</a></li>
+				<li><a href="#attc">Attachments</a></li>
 			</ul>
 
 			<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left; overflow: inherit !important;">
@@ -365,6 +385,24 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 						</table>
 					</div>
+
+					<div id="attc" class="tab-pane fade in" style="padding-left:5px">
+						<table width="100%" border="0">
+							<tr>
+								<td>
+									<div class="col-sm-12 nopadding">
+										<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+										<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
+										<div class="col-sm-12 nopadding" style="padding-top:10px;">
+											<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+											<input type="file" name="upload[]" id="file-0" multiple />
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+
 				</div>
 			</div>
 
@@ -666,6 +704,51 @@ else{
 </html>
 
 <script type="text/javascript">
+	
+	var file_name = <?= json_encode(@$arrname) ?>;
+	/**
+	 * Checking of list files
+	 */
+	if(file_name.length != 0){
+		file_name.map(({name, ext}) => {
+			console.log("Name: " + name + " ext: " + ext)
+		})
+
+		var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
+		var arrimg = new Array("jpg","png","gif","jpeg");
+
+		var list_file = [];
+		var file_config = [];
+		var extender;
+		/**
+		 * setting up an list of file and config of a file
+		 */
+		file_name.map(({name, ext}, i) => {
+
+			list_file.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/PO/<?=$company."_".$cpono?>/" + name)
+			console.log(ext);
+
+			if(jQuery.inArray(ext, arroffice) !== -1){
+				extender = "office";
+			} else if (jQuery.inArray(ext, arrimg) !== -1){
+				extender = "image";
+			} else if (ext == "txt"){
+				extender = "text";
+			} else {
+				extender =  ext;
+			}
+
+			console.log(extender)
+			file_config.push({
+				type : extender, 
+				caption : name,
+				width : "120px",
+				url: "th_filedelete.php?id="+name+"&code=<?=$cpono?>", 
+				key: i + 1
+			});
+		})
+	}
+
 	$(document).keydown(function(e) {	 
 	
 	 if(e.keyCode == 112) { //F1
@@ -738,7 +821,35 @@ else{
     	$(this).tab('show');
 		});
 
-		loaddetails();
+
+			if(file_name.length > 0){
+				$('#file-0').fileinput({
+					showUpload: false,
+					showClose: false,
+					allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+					overwriteInitial: false,
+					maxFileSize:100000,
+					maxFileCount: 5,
+					browseOnZoneClick: true,
+					fileActionSettings: { showUpload: false, showDrag: false, },
+					initialPreview: list_file,
+					initialPreviewAsData: true,
+					initialPreviewFileType: 'image',
+					initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/PO/<?=$company."_".$cpono?>/{filename}',
+					initialPreviewConfig: file_config
+				});
+			} else {
+				$("#file-0").fileinput({
+					showUpload: false,
+					showClose: false,
+					allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+					overwriteInitial: false,
+					maxFileSize:100000,
+					maxFileCount: 5,
+					browseOnZoneClick: true,
+					fileActionSettings: { showUpload: false, showDrag: false, }
+				});
+			}
 		
 		$('#txtprodnme').attr("disabled", true);
 		$('#txtprodid').attr("disabled", true);
@@ -749,6 +860,7 @@ else{
 			$('input:checkbox').not(this).prop('checked', this.checked);
 		});
 		
+		loaddetails();
 		disabled();
 
 		$("#selbasecurr").on("change", function (){
@@ -1449,10 +1561,21 @@ else{
 					
 			var myform = $("#frmpos").serialize();	
 			//alert(myform);	
+			var formdata = new FormData($('#frmpos')[0]);
+			formdata.delete('upload[]');
+			jQuery.each($('#file-0')[0].files, function(i, file){
+				formdata.append('file-'+i, file);
+			});
+
 			$.ajax ({
 				url: "Purch_editsave.php",
 				//data: { pono:pono, ccode: ccode, crem: crem, ddate: ddate, ngross: ngross },
-				data: myform,
+				data: formdata,
+				cache: false,
+				processData: false,
+				contentType: false,
+				method: 'post',
+				type: 'post',
 				async: false,
 				beforeSend: function(){
 					$("#AlertMsg").html("&nbsp;&nbsp;<b>UPDATING PO: </b> Please wait a moment...");

@@ -94,6 +94,18 @@ if(mysqli_num_rows($sql) == 0){
 <script src="../../Bootstrap/js/moment.js"></script>
 <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
+<!--
+--
+-- FileType Bootstrap Scripts and Link
+--
+-->
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
@@ -102,6 +114,7 @@ if(mysqli_num_rows($sql) == 0){
 <input type="hidden" value='<?=json_encode(@$arrewtlist)?>' id="hdnewtlist">
 
 <form action="RR_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
+	
 	<fieldset>
     	<legend>Supplier's Invoice</legend>	
         <input type="hidden" value="<?php echo $nCHKREFvalue;?>" name="hdnCHECKREFval" id="hdnCHECKREFval">
@@ -210,99 +223,129 @@ if(mysqli_num_rows($sql) == 0){
 									-->
 									</td>
 								</tr>
-								<tr>
-									<td colspan="2">
-										<div class="col-xs-12 nopadwdown">
-											<div class="col-xs-3 nopadding">
-												<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." width="25" tabindex="4"  autocomplete="off">
-											</div>
-											<div class="col-xs-6 nopadwleft">
-												<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL+F) Search Product Name..." size="80" tabindex="5" autocomplete="off">
-											</div>
-										</div>
-
-											<input type="hidden" name="hdnunit" id="hdnunit">
-											<input type="hidden" name="hdncvat" id="hdncvat">
-									</td>
-									<td></td>
-									<td></td>
-
-								</tr>
+								
 							</table>	
 
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#items" data-toggle="tab">Item List</a></li>
+				<li><a href="#attc" data-toggle="tab">Attachments</a></li>
+			</ul>
+        
+			<div class="tab-content">
+				<div id="items" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
 
-        <div class="alt2" dir="ltr" style="
-					margin: 0px;
-					padding: 3px;
-					border: 1px solid #919b9c;
-					width: 100%;
-					height: 300px;
-					text-align: left;
-					overflow: auto">
-	
-            <table id="MyTable" class="MyTable" width="100%" cellpadding="1px">
-								<thead>
-									<tr>
-										<!--<th style="border-bottom:1px solid #999">&nbsp;</th>-->
-										<th style="border-bottom:1px solid #999">Code</th>
-										<th style="border-bottom:1px solid #999">Description</th>
-										<th style="border-bottom:1px solid #999">EWTCode</th>
-				            <th style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
-										<th style="border-bottom:1px solid #999">UOM</th>
-										<th style="border-bottom:1px solid #999">Qty</th>
-										<th style="border-bottom:1px solid #999">Price</th>
-										<th style="border-bottom:1px solid #999">Amount</th>
-										<th style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
-				            <!--<th style="border-bottom:1px solid #999">Date Expired</th>-->
-				            <!--<th style="border-bottom:1px solid #999">&nbsp;</th>-->
-									</tr>
-								</thead>
-									<tbody id="MyyTbltbody">
-                  </tbody>
-                    
-						</table>
+					<div class="col-xs-12 nopadwdown">
+						<div class="col-xs-3 nopadding">
+							<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." width="25" tabindex="4"  autocomplete="off">
+						</div>
+						<div class="col-xs-6 nopadwleft">
+							<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL+F) Search Product Name..." size="80" tabindex="5" autocomplete="off">
+						</div>
+						<input type="hidden" name="hdnunit" id="hdnunit">
+						<input type="hidden" name="hdncvat" id="hdncvat">
+					</div>
+
+											
+					<div class="alt2" dir="ltr" style="
+						margin: 0px;
+						padding: 3px;
+						border: 1px solid #919b9c;
+						width: 100%;
+						height: 300px;
+						text-align: left;
+						overflow: auto">
+		
+							<table id="MyTable" class="MyTable" width="100%" cellpadding="1px">
+									<thead>
+										<tr>
+											<!--<th style="border-bottom:1px solid #999">&nbsp;</th>-->
+											<th style="border-bottom:1px solid #999">Code</th>
+											<th style="border-bottom:1px solid #999">Description</th>
+											<th style="border-bottom:1px solid #999">EWTCode</th>
+											<th style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
+											<th style="border-bottom:1px solid #999">UOM</th>
+											<th style="border-bottom:1px solid #999">Qty</th>
+											<th style="border-bottom:1px solid #999">Price</th>
+											<th style="border-bottom:1px solid #999">Amount</th>
+											<th style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
+											<!--<th style="border-bottom:1px solid #999">Date Expired</th>-->
+											<!--<th style="border-bottom:1px solid #999">&nbsp;</th>-->
+										</tr>
+									</thead>
+										<tbody id="MyyTbltbody">
+										</tbody>
+											
+							</table>
+					</div>
+
 				</div>
+				<div id="attc" class="tab-pane fade in" style="padding-left: 5px; padding-top: 10px;">
+					<div class="alt2" dir="ltr" style="
+							margin: 0px;
+							padding: 3px;
+							width: 100%;
+							height: 410px;
+							text-align: left;
+							overflow: auto">
+							<table width="100%" border="0">
+								<tr>
+									<td>
+										<div class="col-sm-12 nopadding">
+											<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+											<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
+											<div class="col-sm-12 nopadding" style="padding-top:10px;">
+												<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+												<input type="file" name="upload[]" id="file-0" multiple />
+											</div>
+										</div>
+									</td>
+								</tr>
+							</table>
+					</div>
+					
+				</div>
+			</div>
 
-<br>
-<table width="100%" border="0" cellpadding="3">
-  <tr>
-    <td rowspan="4" valign="top"><input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
+			<br>
+			<table width="100%" border="0" cellpadding="3">
+				<tr>
+					<td rowspan="4" valign="top"><input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
 
-    <button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='RR.php';" id="btnMain" name="btnMain">
-Back to Main<br>(ESC)</button>
+						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='RR.php';" id="btnMain" name="btnMain">
+							Back to Main<br>(ESC)
+						</button>
 
-     <button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();">Save<br> (CTRL+S)</button>
-    </td>
+						<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();">Save<br> (CTRL+S)</button>
+					</td>
 
-  	<td width="180px" align="right"><b>Net of VAT</b>&nbsp;&nbsp;</td>
-    <td width="180px"> 
-			<input type="text" id="txtnNetVAT" name="txtnNetVAT" readonly value="0.00" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="15">
-		</td>
-  </tr>
+					<td width="180px" align="right"><b>Net of VAT</b>&nbsp;&nbsp;</td>
+					<td width="180px"> 
+						<input type="text" id="txtnNetVAT" name="txtnNetVAT" readonly value="0.00" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="15">
+					</td>
+				</tr>
 
-  <tr>
- 	 	<td width="180px" align="right"><b>VAT</b>&nbsp;&nbsp;</td>
-    <td width="180px"> <input type="text" id="txtnVAT" name="txtnVAT" readonly value="0.00" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="15">
-		</td>
-	</tr>
+				<tr>
+					<td width="180px" align="right"><b>VAT</b>&nbsp;&nbsp;</td>
+					<td width="180px"> <input type="text" id="txtnVAT" name="txtnVAT" readonly value="0.00" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="15">
+					</td>
+				</tr>
 
-	<tr>
-		<td width="180px" align="right"><b>Gross Amount </b>&nbsp;&nbsp;</td>
-    <td width="180px"> 
-			<input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="0.00" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="15">
-		</td>
-	</tr>
+				<tr>
+					<td width="180px" align="right"><b>Gross Amount </b>&nbsp;&nbsp;</td>
+					<td width="180px"> 
+						<input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="0.00" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="15">
+					</td>
+				</tr>
 
-	<tr>
- 	 <td width="180px" align="right"><b>Gross Amount in <?=$nvaluecurrbase; ?></b>&nbsp;&nbsp;</td>
-      <td width="180px"> <input type="text" id="txtnGross" name="txtnGross" readonly value="0.00" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="15">
-		</td>
-	</tr>
-</table>
+				<tr>
+				<td width="180px" align="right"><b>Gross Amount in <?=$nvaluecurrbase; ?></b>&nbsp;&nbsp;</td>
+						<td width="180px"> <input type="text" id="txtnGross" name="txtnGross" readonly value="0.00" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="15">
+					</td>
+				</tr>
+			</table>
 
-    </fieldset>
+  </fieldset>
     
-
 </form>
 
 <!-- 1) Alert Modal -->
@@ -385,6 +428,18 @@ $(document).ready(function() {
 
 			$(".nav-tabs a").click(function(){
     		$(this).tab('show');
+			});
+
+			$("#file-0").fileinput({
+				theme: 'fa5',
+				showUpload: false,
+				showClose: false,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false,}
 			});
 
 
@@ -1026,12 +1081,22 @@ function chkform(){
 		$("#hidcurrvaldesc").val($("#selbasecurr option:selected").text());
 
 		var myform = $("#frmpos").serialize();
+		var formdata = new FormData($('#frmpos')[0])
+		formdata.delete('upload[]')
+		jQuery.each($('#file-0')[0].files, function(i, file){
+			formdata.append('file-'+i, file);
+		})
 
 		//alert("RR_newsave.php?"+myform);
 		$.ajax ({
 			url: "RR_newsave.php",
 			//data: { ccode: ccode, crem: crem, ddate: ddate, ngross: ngross, ccustsi:ccustsi },
-			data: myform,
+			data: formdata,
+			cache: false,
+			processData: false,
+			contentType: false,
+			method: 'post',
+			type: 'post',
 			async: false,
 			beforeSend: function(){
 				$("#AlertMsg").html("&nbsp;&nbsp;<b>SAVING NEW RR: </b> Please wait a moment...");

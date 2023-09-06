@@ -4,6 +4,7 @@ session_start();
 }
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
+require_once('../../Model/helper.php');
 
 $company = $_SESSION['companyid'];
 
@@ -52,4 +53,13 @@ function chkgrp($valz) {
 	}
 	
 
+	if(count($_FILES) != 0){
+		$directory = "../../Components/assets/SR-N/";
+		if(!is_dir($directory)){
+			mkdir($directory, 0777);
+		}
+		$directory .= "{$company}_{$cSINo}/";
+		var_dump($directory);
+		upload_image($_FILES, $directory);
+	}
 ?>

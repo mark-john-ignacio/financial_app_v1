@@ -4,32 +4,33 @@ session_start();
 }
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
+require_once('../../Model/helper.php');
 
 $company = $_SESSION['companyid'];
 
 
-	$cSINo = $_REQUEST['id'];
-	$cCustID = $_REQUEST['ccode'];
-	$nGross = str_replace(",","",$_REQUEST['ngross']);
+	$cSINo = $_REQUEST['txtcsalesno'];
+	$cCustID = $_REQUEST['txtcustid'];
+	$nGross = str_replace(",","",$_REQUEST['txtnGross']);
 
-	$ccontname = $_REQUEST['ccontname'];
-	$ccontdesg = $_REQUEST['ccontdesg'];
-	$ccontdept = $_REQUEST['ccontdept'];
-	$ccontemai = $_REQUEST['ccontemai'];
-	$ccontsalt = $_REQUEST['ccontsalt'];
-	$cvattyp = $_REQUEST['cvattyp'];
-	$cterms = $_REQUEST['cterms'];
-	$cdelinfo = $_REQUEST['cdelinfo'];
-	$cservinfo = $_REQUEST['cservinfo'];
+	$ccontname = $_REQUEST['txtcontactname'];
+	$ccontdesg = $_REQUEST['txtcontactdesig'];
+	$ccontdept = $_REQUEST['txtcontactdept'];
+	$ccontemai = $_REQUEST['txtcontactemail'];
+	$ccontsalt = $_REQUEST['txtcontactsalut'];
+	$cvattyp = $_REQUEST['selvattype'];
+	$cterms = $_REQUEST['selterms'];
+	$cdelinfo = $_REQUEST['txtdelinfo'];
+	$cservinfo = $_REQUEST['txtservinfo'];
 
-	$dDelDate = $_REQUEST['ddate'];
-	$cRemarks = $_REQUEST['crem']; 
+	$dDelDate = $_REQUEST['date_delivery'];
+	$cRemarks = $_REQUEST['txtremarks']; 
 	$cSITyp= $_REQUEST['selsityp'];
 
-	$CurrCode = $_REQUEST['currcode']; 
+	$CurrCode = $_REQUEST['selbasecurr']; 
 	$CurrDesc = $_REQUEST['currdesc'];  
-	$CurrRate= $_REQUEST['currrate']; 
-	$BaseGross= str_replace(",","",$_REQUEST['basegross']);
+	$CurrRate= $_REQUEST['basecurrval']; 
+	$BaseGross= str_replace(",","",$_REQUEST['txtnBaseGross']);
 
 	$preparedby = $_SESSION['employeeid'];
 	
@@ -56,4 +57,12 @@ $company = $_SESSION['companyid'];
 	mysqli_query($con, "Delete from quote_t_info Where compcode='$company' and ctranno='$cSINo'");
 
 
+	if(count($_FILES) != 0){
+		$directory = "../../Components/assets/QO/";
+		if(!is_dir($directory)){
+			mkdir($directory, 0777);
+		}
+		$directory .= "{$company}_{$cSINo}/";
+		upload_image($_FILES, $directory, count($_FILES)-1);
+	}
 ?>

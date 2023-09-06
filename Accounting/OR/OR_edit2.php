@@ -27,6 +27,24 @@ if (mysqli_num_rows($getewtcd)!=0) {
 	}
 }
 
+@$arrfiles = array();
+	@$arrname = array();
+
+	if (file_exists('../../Components/assets/OR/'.$company.'_'.$corno.'/')) {
+		$allfiles = scandir('../../Components/assets/OR/'.$company.'_'.$corno.'/');
+		$files = array_diff($allfiles, array('.', '..'));
+		foreach($files as $file) {
+
+			$fileNameParts = explode('.', $file);
+			$ext = end($fileNameParts);
+
+			@$arrname[] = array("name" => $file, "ext" => $ext);
+		}
+	
+	}else{
+		//echo "NO FILES";
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -42,6 +60,9 @@ if (mysqli_num_rows($getewtcd)!=0) {
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/select2/css/select2.css?h=<?php echo time();?>">
   <link rel="stylesheet" type="text/css" href="../../global/plugins/font-awesome/css/font-awesome.min.css?h=<?=time();?>">
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+
+	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
 
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../js/bootstrap3-typeahead.min.js"></script>
@@ -55,12 +76,19 @@ if (mysqli_num_rows($getewtcd)!=0) {
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+
+	<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+
 </head>
 
 <body style="padding:5px; height:700px" onLoad="document.getElementById('txtctranno').focus(); disabled();">
 
 <input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes">
 <input type="hidden" value='<?=json_encode($arrewtlist)?>' id="hdnewtcodes"> 
+<input type="hidden" value='<?=json_encode(@$arrname)?>' id="hdnfileconfig"> 
 
 <?php
 
@@ -93,7 +121,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
 		}
 
 ?>
-	<form action="OR_editsave2.php" name="frmOR" id="frmOR" method="post">
+	<form action="OR_editsave2.php" name="frmOR" id="frmOR" method="post" enctype="multipart/form-data">
 		<fieldset>
     	<legend>
         <div class="col-xs-6 nopadding"> Receive Payment </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
@@ -229,7 +257,17 @@ if (mysqli_num_rows($sqlchk)!=0) {
 					</div></td>
 				</tr>
       </table>
+
 			<br>
+
+			<ul class="nav nav-tabs">
+					<li class="active"><a href="#items" data-toggle="tab">Details List</a></li>
+					<li><a href="#attc" data-toggle="tab">Attachments</a></li>
+				</ul>
+				
+				<div class="tab-content">
+					<div id="items" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
+
 						<div style="border: 1px solid #919b9c; height: 40vh; overflow: auto">
 							<div id="tableContainer" class="alt2" dir="ltr" style="
 								margin: 0px;
@@ -238,7 +276,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
 								height: 300px;
 								text-align: left;">
                 <table id="MyTable" border="1" bordercolor="#CCCCCC" class="table table-sm table-bordered">
-								<thead>
+									<thead>
 										<tr>
 											<th scope="col" width="100px" nowrap>Invoice No</th>
 											<th scope="col" width="110px" class="text-center" nowrap>Date</th>
@@ -384,6 +422,40 @@ if (mysqli_num_rows($sqlchk)!=0) {
 								<input type="hidden" name="hdnrowcntcmdm" id="hdnrowcntcmdm" value="0">
 							</div>
 						</div>
+
+					</div>
+
+					<div id="attc" class="tab-pane fade in" style="padding-left: 5px; padding-top: 10px;">
+						
+						<div class="alt2" dir="ltr" style="
+								margin: 0px;
+								padding: 3px;
+								width: 100%;
+								height: 500px;
+								text-align: left;
+								overflow: auto">
+								<table width="100%" border="0">
+									<tr>
+										<td>
+											<div class="col-sm-12 nopadding">
+												<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+												<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
+												<div class="col-sm-12 nopadding" style="padding-top:10px;">
+													<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+													<input type="file" name="upload[]" id="file-0" multiple />
+												</div>
+											</div>
+										</td>
+									</tr>
+								</table>
+						</div>
+						
+					</div>
+
+				</div><!--tab-content-->
+
+
+
 <!--
 		</div>
 
@@ -846,6 +918,50 @@ else{
 </html>
 
 <script type="text/javascript">
+
+	var fileslist = [];
+	/*
+	var xz = $("#hdnfiles").val();
+	$.each(jQuery.parseJSON(xz), function() { 
+		fileslist.push(xz);
+	});
+	*/
+
+	console.log(fileslist);
+	var filesconfigs = [];
+	var xzconfig = JSON.parse($("#hdnfileconfig").val());
+
+	//alert(xzconfig.length);
+
+	var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
+	var arrimg = new Array("jpg","png","gif","jpeg");
+
+	var xtc = "";
+	for (var i = 0; i < xzconfig.length; i++) {
+    var object = xzconfig[i];
+		//alert(object.ext + " : " + object.name);
+		fileslist.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/OR/<?=$company."_".$corno?>/" + object.name)
+
+		if(jQuery.inArray(object.ext, arroffice) !== -1){
+			xtc = "office";
+		}else if(jQuery.inArray(object.ext, arrimg) !== -1){
+			xtc = "image";
+		}else if(object.ext=="txt"){
+			xtc = "text";
+		}else{
+			xtc = object.ext;
+		}
+
+		filesconfigs.push({
+			type : xtc, 
+			caption : object.name,
+			width : "120px",
+			url: "th_filedelete.php?id="+object.name+"&code=<?=$corno?>", 
+			key: i + 1
+		});
+	}
+
+
 	$(document).keydown(function(e) {	 
 	
 	 if(e.keyCode == 112) { //F1
@@ -891,6 +1007,39 @@ else{
 		$(".nav-tabs a").click(function(){
 			$(this).tab('show');
 		});
+
+		if(fileslist.length>0){
+			$("#file-0").fileinput({
+				theme: 'fa5',
+				showUpload: false,
+				showClose: false,
+				browseOnZoneClick: true,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, },
+				initialPreview: fileslist,
+				initialPreviewAsData: true,
+				initialPreviewFileType: 'image',
+				initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/OR/<?=$company."_".$corno?>/{filename}',
+				initialPreviewConfig: filesconfigs
+			});
+		}else{
+			$("#file-0").fileinput({
+				theme: 'fa5',
+				showUpload: false,
+				showClose: false,
+				browseOnZoneClick: true,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, }
+			});
+		}
 
 		$("input.numericchkamt").autoNumeric('init',{mDec:2});
 		$("input.numericchkamt").on("click focus", function () {
@@ -1398,9 +1547,6 @@ function save(){
 
 	$("input[name='chkSales[]']:checked").each( function () {
 		i++;
-		var tbl = document.getElementById('MyTable').getElementsByTagName('tbody')[0];
-
-
 		var tranno = $(this).val();
 		var dcutdate = $(this).data("cutdate");
 		var ngross = $(this).data("amt");
@@ -1418,9 +1564,10 @@ function save(){
 		var acctdesc = $(this).data("acctdesc");
 
 		var ntotdue = parseFloat(ngross) - parseFloat(ncm) - parseFloat(npayments) - parseFloat(newtamt);
-	
-
-		var lastRow = tbl.rows.length + 1;							
+								
+		var tbl = document.getElementById('MyTable').getElementsByTagName('tbody')[0];
+		var lastRow = tbl.rows.length + 1;
+		//alert(lastRow);
 		var z=tbl.insertRow(-1);
 
 		var a=z.insertCell(-1);
@@ -1483,6 +1630,14 @@ function save(){
 
 		/*var l=z.insertCell(-1);
 		l.innerHTML = "<input type='text' class='ewtcode form-control input-xs' placeholder='EWT Code' name='txtnEWT"+lastRow+"' id='txtnEWT"+lastRow+"' autocomplete=\"off\" value='"+newtcode+"' "+$ifrdonly+"/> <input type='hidden' name='txtnEWTorig"+lastRow+"' id='txtnEWTorig"+lastRow+"' value='"+newtcode+"' />";*/
+
+
+		$ifrdonly = "";
+			$ifrdonlyint = 0;
+			if(newtcode!=="none" && newtcode!==""){
+				$ifrdonly = "readonly";
+				$ifrdonlyint = 1;
+			}
 
 
 		var xz = $("#hdnewtcodes").val();

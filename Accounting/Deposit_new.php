@@ -17,10 +17,11 @@
 
 	<title>Myx Financials</title>
     
-	<link rel="stylesheet" type="text/css" href="../global/plugins/font-awesome/css/font-awesome.min.css"/>
+	<link href="../global/plugins/font-awesome/css/font-awesome.min.css?h=<?php echo time();?>" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css?x=<?=time()?>">
   <link rel="stylesheet" type="text/css" href="../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
+	
 
 	<script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../js/bootstrap3-typeahead.min.js"></script>
@@ -32,11 +33,23 @@
 	<script src="../Bootstrap/js/bootstrap.js"></script>
 	<script src="../Bootstrap/js/moment.js"></script>
 	<script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+
+	<!--
+	--
+	-- FileType Bootstrap Scripts and Link
+	--
+	-->
+	<link rel="stylesheet" type="text/css" href="../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+	<link href="../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+	<script src="../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+	<script src="../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+	<script src="../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+	<script src="../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+
 </head>
 
 <body style="padding:5px; height:700px" onLoad="document.getElementById('txtcust').focus();">
-
-	<form action="Deposit_newsave.php" name="frmOR" id="frmOR" method="post">
+	<form action="Deposit_newsave.php" name="frmOR" id="frmOR" method="post" enctype="multipart/form-data">
 		<fieldset>
 			<legend>Bank Deposit</legend>	
 				<table width="100%" border="0">
@@ -138,40 +151,81 @@
 
 				<br>
 
-				<button type="button" class="btn btn-xs btn-info" onClick="getInvs();">
-					<i class="fa fa-search"></i>&nbsp;Load OR
-    		</button>
+				<ul class="nav nav-tabs">
+					<li class="active"><a href="#items" data-toggle="tab">Details</a></li>
+					<li><a href="#attc" data-toggle="tab">Attachments</a></li>
+				</ul>
 
-    		<br><br>
+				<div class="tab-content">
 
-	  		<div id="tableContainer" class="alt2" dir="ltr" style="
-          margin: 0px;
-          padding: 3px;
-          border: 1px solid #919b9c;
-          width: 100%;
-          height: 200px;
-          text-align: left;
-          overflow: auto">
+					<div id="items" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
 
-						<table width="100%" border="0" cellpadding="3" id="MyTable" class="table table-striped">
-							<thead>
-								<tr>
-									<th scope="col" width="15%">Trans No</th>
-									<th scope="col">OR No.</th>
-									<th scope="col">Date</th>
-									<th scope="col">Remarks</th>
-									<th scope="col">Payment Method</th>
-									<th scope="col">Amount</th>
-									<th scope="col">&nbsp;</th>
-								</tr>
-							</thead>
-							<tbody>
+						<button type="button" class="btn btn-xs btn-info" onClick="getInvs();" style="margin-bottom:5px">
+							<i class="fa fa-search"></i>&nbsp;Load OR
+						</button>
 
-							</tbody>
-						</table>
+						<br>
 
-						<input type="hidden" name="hdnrowcnt" id="hdnrowcnt" value="0">
-				</div>
+						<div id="tableContainer" class="alt2" dir="ltr" style="
+							margin: 0px;
+							padding: 3px;
+							border: 1px solid #919b9c;
+							width: 100%;
+							height: 200px;
+							text-align: left;
+							overflow: auto">
+
+								<table width="100%" border="0" cellpadding="3" id="MyTable" class="table table-striped">
+									<thead>
+										<tr>
+											<th scope="col" width="15%">Trans No</th>
+											<th scope="col">OR No.</th>
+											<th scope="col">Date</th>
+											<th scope="col">Remarks</th>
+											<th scope="col">Payment Method</th>
+											<th scope="col">Amount</th>
+											<th scope="col">&nbsp;</th>
+										</tr>
+									</thead>
+									<tbody>
+
+									</tbody>
+								</table>
+
+								<input type="hidden" name="hdnrowcnt" id="hdnrowcnt" value="0">
+						</div>
+
+					</div>
+
+					<div id="attc" class="tab-pane fade in" style="padding-left: 5px; padding-top: 10px;">
+						
+						<div class="alt2" dir="ltr" style="
+								margin: 0px;
+								padding: 3px;
+								width: 100%;
+								height: 450px;
+								text-align: left;
+								overflow: auto">
+								<table width="100%" border="0">
+									<tr>
+										<td>
+											<div class="col-sm-12 nopadding">
+												<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+												<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
+												<div class="col-sm-12 nopadding" style="padding-top:10px;">
+													<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+													<input type="file" name="upload[]" id="file-0" multiple />
+												</div>
+											</div>
+										</td>
+									</tr>
+								</table>
+						</div>
+						
+					</div>
+
+				</div><!--tab-content-->	
+
 
 				<br>
 
@@ -271,6 +325,22 @@
 
 
 	$(document).ready(function(){
+
+		$(".nav-tabs a").click(function(){
+			$(this).tab('show');
+		});
+
+		$("#file-0").fileinput({
+			theme: 'fa5',
+			showUpload: false,
+			showClose: false,
+			allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+			overwriteInitial: false,
+			maxFileSize:100000,
+			maxFileCount: 5,
+			browseOnZoneClick: true,
+			fileActionSettings: { showUpload: false, showDrag: false,}
+		});
               
 		// Bootstrap DateTimePicker v4
 		$('#date_delivery').datetimepicker({

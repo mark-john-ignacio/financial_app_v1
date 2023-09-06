@@ -54,13 +54,25 @@
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
+	<!--
+	--
+	-- FileType Bootstrap Scripts and Link
+	--
+	-->
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
 
 	<input type="hidden" id="existingnos" value='<?=json_encode($arrnoslist)?>'>
 
-	<form action="PayBill_newsave.php" name="frmpos" id="frmpos" method="post" onsubmit="return chkform();">
+	<form action="PayBill_newsave.php" name="frmpos" id="frmpos" method="post" onsubmit="return chkform();" enctype="multipart/form-data">
 		<fieldset>
 				<legend>Bills Payment</legend>
 				
@@ -216,37 +228,76 @@
 					<br>
 
 
-					<div class="col-xs-12 nopadwdown">
-						<div class="col-xs-1 nopadwright"><button type="button" class="btn btn-xs btn-warning btn-block" id="btnaddline">Add Payable</button></div>
-					</div>
+					<ul class="nav nav-tabs">
+						<li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Details</a></li>
+						<li><a href="#attc" data-toggle="tab">Attachments</a></li>
+					</ul>
 
-					<div id="tableContainer" class="alt2" dir="ltr" style="
-						margin: 0px;
-						padding: 3px;
-						border: 1px solid #919b9c;
-						width: 100%;
-						height: 250px;
-						text-align: left;
-						overflow: auto">
-						<table width="100%" border="0" cellpadding="0" id="MyTable">
-							<thead>
-								<tr>
-									<th scope="col" id="hdnRefTitle">APV No</th>
-									<th scope="col">Ref No</th>
-									<th scope="col">Date</th>
-									<th scope="col" class="text-right" width="120px">Amount</th>
-									<th scope="col" class="text-right" width="120px">Payed&nbsp;&nbsp;&nbsp;</th>
-									<th scope="col" width="120px" class="text-right">Total Owed&nbsp;&nbsp;&nbsp;</th>
-									<th scope="col" width="120px" class="text-center">Amount Applied</th>
-									<th scope="col" colspan="2">Dr Account</th>
-								</tr>
-							</thead>
-							<tbody>
-							</tbody>
-						</table>
-					</div>
+					<div class="tab-content nopadwtop2x">
+						<div class="tab-pane active" id="1Det">
+
+							<div class="col-xs-12 nopadwdown">
+								<div class="col-xs-1 nopadwright"><button type="button" class="btn btn-xs btn-warning btn-block" id="btnaddline">Add Payable</button></div>
+							</div>
+
+							<div id="tableContainer" class="alt2" dir="ltr" style="
+								margin: 0px;
+								padding: 3px;
+								border: 1px solid #919b9c;
+								width: 100%;
+								height: 250px;
+								text-align: left;
+								overflow: auto">
+								<table width="100%" border="0" cellpadding="0" id="MyTable">
+									<thead>
+										<tr>
+											<th scope="col" id="hdnRefTitle">APV No</th>
+											<th scope="col">Ref No</th>
+											<th scope="col">Date</th>
+											<th scope="col" class="text-right" width="120px">Amount</th>
+											<th scope="col" class="text-right" width="120px">Payed&nbsp;&nbsp;&nbsp;</th>
+											<th scope="col" width="120px" class="text-right">Total Owed&nbsp;&nbsp;&nbsp;</th>
+											<th scope="col" width="120px" class="text-center">Amount Applied</th>
+											<th scope="col" colspan="2">Dr Account</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+
+						</div>
+
+						<div id="attc" class="tab-pane" style="padding-left: 5px">
+							<div class="alt2" dir="ltr" style="
+									margin: 0px;
+									padding: 3px;
+									width: 100%;
+									height: 450px;
+									text-align: left;
+									overflow: auto">
+
+								<table width="100%" border="0">
+									<tr>
+										<td>
+											<div class="col-sm-12 nopadding">
+												<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+												<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
+												<div class="col-sm-12 nopadwdown" style="padding-top:10px;">
+													<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+													<input type="file" name="upload[]" id="file-0" multiple />
+												</div>
+											</div>
+										</td>
+									</tr>
+								</table>
+							</div>
+							
+						</div>
+
+					</div>	
 											
-				<br>
+					<br>
 
 					<table width="100%" border="0" cellpadding="3">
 						<tr>
@@ -462,6 +513,19 @@
 	$(document).ready(function() {
 		$('.datepick').datetimepicker({
 			format: 'MM/DD/YYYY',
+		});
+
+		$("#file-0").fileinput({
+			theme: 'fa5',
+			uploadUrl: '#',
+			showUpload: false,
+			showClose: false,
+			allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+			overwriteInitial: false,
+			maxFileSize:100000,
+			maxFileCount: 5,
+			browseOnZoneClick: true,
+			fileActionSettings: { showUpload: false, showDrag: false,}
 		});
 
 		$('[data-toggle="popover"]').popover();

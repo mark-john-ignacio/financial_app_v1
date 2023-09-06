@@ -18,8 +18,8 @@
 	@$arrfiles = array();
 	@$arrname = array();
 
-	if (file_exists('../../RFP_Files/'.$company.'_'.$ccvno.'/')) {
-		$allfiles = scandir('../../RFP_Files/'.$company.'_'.$ccvno.'/');
+	if (file_exists('../../Components/assets/RFP/'.$company.'_'.$ccvno.'/')) {
+		$allfiles = scandir('../../Components/assets/RFP/'.$company.'_'.$ccvno.'/');
 		$files = array_diff($allfiles, array('.', '..'));
 		foreach($files as $file) {
 
@@ -451,7 +451,7 @@
 	for (var i = 0; i < xzconfig.length; i++) {
     var object = xzconfig[i];
 		//alert(object.ext + " : " + object.name);
-		fileslist.push("https://<?=$_SERVER['HTTP_HOST']?>/RFP_Files/<?=$company."_".$ccvno?>/" + object.name)
+		fileslist.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/RFP/<?=$company."_".$ccvno?>/" + object.name)
 
 		if(jQuery.inArray(object.ext, arroffice) !== -1){
 			xtc = "office";
@@ -550,13 +550,14 @@
 				browseOnZoneClick: true,
 				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
 				overwriteInitial: false,
-				maxFileSize:2000,
+				maxFileSize:100000,
 				maxFileCount: 5,
+				browseOnZoneClick: true,
 				fileActionSettings: { showUpload: false, showDrag: false, },
 				initialPreview: fileslist,
 				initialPreviewAsData: true,
 				initialPreviewFileType: 'image',
-				initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/RFP_Files/<?=$company."_".$ccvno?>/{filename}',
+				initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/RFP/<?=$company."_".$ccvno?>/{filename}',
 				initialPreviewConfig: filesconfigs
 			});
 		}else{
@@ -567,8 +568,9 @@
 				browseOnZoneClick: true,
 				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
 				overwriteInitial: false,
-				maxFileSize:2000,
+				maxFileSize:100000,
 				maxFileCount: 5,
+				browseOnZoneClick: true,
 				fileActionSettings: { showUpload: false, showDrag: false, }
 			});
 		}

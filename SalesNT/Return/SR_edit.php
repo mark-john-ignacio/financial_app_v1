@@ -7,6 +7,8 @@ $_SESSION['pageid'] = "SalesRet_edit.php";
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 include('../../include/access2.php');
+require_once('../../Model/helper.php');
+
 
 $company = $_SESSION['companyid'];
 
@@ -35,7 +37,11 @@ function listcurrencies(){ //API for currency list
 }
 
 */
-
+	@$arrname = array();
+	$directory = "../../Components/assets/SR-N/{$company}_{$txtctranno}/";
+	if(file_exists($directory)){
+		@$arrname = file_checker($directory);
+	}
 ?>
 
 <!DOCTYPE html>
@@ -61,6 +67,17 @@ function listcurrencies(){ //API for currency list
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+<!--
+--
+-- FileType Bootstrap Scripts and Link
+--
+-->
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
 
 </head>
 
@@ -89,86 +106,104 @@ function listcurrencies(){ //API for currency list
 			}
 
 	?>
-
+	<ul class="nav nav-tabs">
+		<li class="active"><a href="#home" data-toggle="tab">Details</a></li>
+		<li><a href="#attc" data-toggle="tab">Attachments</a></li>
+	</ul>
 	<form action="SR_edit.php" name="frmpos" id="frmpos" method="post">
 		<fieldset>
 			<legend>SR Non-Trade Details</legend>	
-				<table width="100%" border="0">
-					<tr>
-						<tH>&nbsp;Trans No.:</tH>
-						<td colspan="2" style="padding:2px">
-							<div class="col-xs-3 nopadding">   
-								<input type="text" class="form-control input-sm" id="txtcsalesno" name="txtcsalesno" width="20px" tabindex="1" value="<?php echo $txtctranno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
-							</div>     
-							<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
-							<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
-							&nbsp;&nbsp;
-							<div id="statmsgz" style="display:inline"></div>
-						</td>
-						<td style="padding:2px" align="center">
-							<div id="salesstat">
-							<?php
-								if($lCancelled==1){
-									echo "<font color='#FF0000'><b>CANCELLED</b></font>";
-								}
-								
-								if($lPosted==1){
-									echo "<font color='#FF0000'><b>POSTED</b></font>";
-								}
-							?>
-							</div>
-						</td>
-					</tr>
+			<div class="alt2" dir="ltr" style="margin: 0px; padding: 3px;border: 0px;width: 100%;text-align: left;overflow: inherit !important">
+				<div class="tab-content">
+					<div id="home" class="tab-pane fade in active" style="padding-left: 5px">
+						<table width="100%" border="0">
+							<tr>
+								<tH>&nbsp;Trans No.:</tH>
+								<td colspan="2" style="padding:2px">
+									<div class="col-xs-3 nopadding">   
+										<input type="text" class="form-control input-sm" id="txtcsalesno" name="txtcsalesno" width="20px" tabindex="1" value="<?php echo $txtctranno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
+									</div>     
+									<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
+									<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
+									&nbsp;&nbsp;
+									<div id="statmsgz" style="display:inline"></div>
+								</td>
+								<td style="padding:2px" align="center">
+									<div id="salesstat">
+									<?php
+										if($lCancelled==1){
+											echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+										}
+										
+										if($lPosted==1){
+											echo "<font color='#FF0000'><b>POSTED</b></font>";
+										}
+									?>
+									</div>
+								</td>
+							</tr>
 
-					<tr>
-						<tH width="100">&nbsp;Customer:</tH>
-						<td style="padding:2px">
-							<div class="col-xs-12 nopadding">
-								<div class="col-xs-3 nopadding">
-									<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1" value="<?php echo $CustCode; ?>">
-									<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
-									<input type="hidden" id="hdnpricever" name="hdnpricever" value="">
-								</div>
+							<tr>
+								<tH width="100">&nbsp;Customer:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-12 nopadding">
+										<div class="col-xs-3 nopadding">
+											<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1" value="<?php echo $CustCode; ?>">
+											<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
+											<input type="hidden" id="hdnpricever" name="hdnpricever" value="">
+										</div>
 
-								<div class="col-xs-8 nopadwleft">
-									<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" value="<?php echo $CustName; ?>">
-								</div> 
-							</div>
-						</td>
-						<tH width="150">Delivery Date:</tH>
-						<td style="padding:2px;">
-							<div class="col-xs-10 nopadding">
-								<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date_format(date_create($Date),'m/d/Y'); ?>" />
-							</div>
-						</td>
-					</tr>
+										<div class="col-xs-8 nopadwleft">
+											<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" value="<?php echo $CustName; ?>">
+										</div> 
+									</div>
+								</td>
+								<tH width="150">Delivery Date:</tH>
+								<td style="padding:2px;">
+									<div class="col-xs-10 nopadding">
+										<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date_format(date_create($Date),'m/d/Y'); ?>" />
+									</div>
+								</td>
+							</tr>
 
-					<tr>
-						<tH width="100">&nbsp;Remarks:</tH>
-						<td style="padding:2px">
-							<div class="col-xs-11 nopadding">
-								<input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value="<?php echo $Remarks;?>">
-							</div>
-						</td>
-						<tH width="150" style="padding:2px">&nbsp;</tH>
-						<td style="padding:2px" align="right">&nbsp;</td>
-					</tr>
+							<tr>
+								<tH width="100">&nbsp;Remarks:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-11 nopadding">
+										<input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value="<?php echo $Remarks;?>">
+									</div>
+								</td>
+								<tH width="150" style="padding:2px">&nbsp;</tH>
+								<td style="padding:2px" align="right">&nbsp;</td>
+							</tr>
 
-					<tr>
-						<td colspan="4">&nbsp;</td>
-					</tr>
+							<tr>
+								<td colspan="4">&nbsp;</td>
+							</tr>
 
-					<tr>
-						<td colspan="5">
-							<input type="hidden" id="txtprodid" name="txtprodid">
-							<input type="hidden" id="txtprodnme" name="txtprodnme">
-							<input type="hidden" name="hdnqty" id="hdnqty">
-							<input type="hidden" name="hdnqtyorig" id="hdnqtyorig">
-							<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
-							<input type="hidden" name="hdnunit" id="hdnunit">
-						</td>
-					</tr>
-				</table>
+							<tr>
+								<td colspan="5">
+									<input type="hidden" id="txtprodid" name="txtprodid">
+									<input type="hidden" id="txtprodnme" name="txtprodnme">
+									<input type="hidden" name="hdnqty" id="hdnqty">
+									<input type="hidden" name="hdnqtyorig" id="hdnqtyorig">
+									<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
+									<input type="hidden" name="hdnunit" id="hdnunit">
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div id="attc" class="tab-pane fade in" style="padding-bottom: 10px">
+						<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+						<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
+						<div class="col-sm-12 nopadding" style="padding-top:10px;">
+							<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+							<input type="file" name="upload[]" id="file-0" multiple />
+						</div>
+					</div>
+				</div>
+			</div>
+				
 
         <div class="alt2" dir="ltr" style="
 					margin: 0px;
@@ -379,7 +414,48 @@ function listcurrencies(){ //API for currency list
 	var xyyyy = xtoday.getFullYear();
 
 	xtoday = xmm + '/' + xdd + '/' + xyyyy;
+	var file_name = <?= json_encode(@$arrname) ?>;
+/**
+ * Checking of list files
+ */
+if(file_name.length != 0){
+	file_name.map(({name, ext}) => {
+		console.log("Name: " + name + " ext: " + ext)
+	})
 
+	var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
+	var arrimg = new Array("jpg","png","gif","jpeg");
+
+	var list_file = [];
+	var file_config = [];
+	var extender;
+	/**
+	 * setting up an list of file and config of a file
+	 */
+	file_name.map(({name, ext}, i) => {
+		list_file.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/SR-N/<?=$company."_".$txtctranno?>/" + name)
+		console.log(ext);
+
+		if(jQuery.inArray(ext, arroffice) !== -1){
+			extender = "office";
+		} else if (jQuery.inArray(ext, arrimg) !== -1){
+			extender = "image";
+		} else if (ext == "txt"){
+			extender = "text";
+		} else {
+			extender =  ext;
+		}
+
+		console.log(extender)
+		file_config.push({
+			type : extender, 
+			caption : name,
+			width : "120px",
+			url: "th_filedelete.php?id="+name+"&code=<?=$txtctranno?>", 
+			key: i + 1
+		});
+	})
+}
 
 	$(document).keydown(function(e) {	 
 	  if(e.keyCode == 112) { //F1
@@ -429,7 +505,35 @@ function listcurrencies(){ //API for currency list
 		
 		loaddetails();	
 		disabled();
-
+		if(file_name.length > 0){
+			$('#file-0').fileinput({
+				showUpload: false,
+				showClose: false,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, },
+				initialPreview: list_file,
+				initialPreviewAsData: true,
+				initialPreviewFileType: 'image',
+				initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/SR-N/<?=$company."_".$txtctranno?>/{filename}',
+				initialPreviewConfig: file_config
+			});
+		} else {
+			$("#file-0").fileinput({
+				theme: 'fa5',
+				showUpload: false,
+				showClose: false,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, }
+			});
+		}
 	  $('#date_delivery').datetimepicker({
       format: 'MM/DD/YYYY'
     });
@@ -1058,10 +1162,20 @@ function chkform(){
 		var myform = $("#frmpos").serialize();
 
 		//alert("SR_updatehdr.php?" +myform);
+		var formdata = new FormData($('#frmpos')[0]);
+		formdata.delete('upload[]');
+		jQuery.each($('#file-0')[0].files, function(i, file){
+			formdata.append('file-'+i, file)
+		})
 
 		$.ajax ({
 			url: "SR_updatehdr.php",
-			data: myform,
+			data: formdata,
+			cache: false,
+			processData: false,
+			contentType: false,
+			type: 'post',
+			method: 'post',
 			async: false,
 			beforeSend: function(){
 				$("#AlertMsg").html("&nbsp;&nbsp;<b>UPDATING SALES RETURN: </b> Please wait a moment...");

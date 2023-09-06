@@ -71,6 +71,38 @@ $cSINo =  mysqli_real_escape_string($con, $_REQUEST['txtctranno']);
 		mysqli_query($con,"INSERT INTO `journal_t`(`compcode`, `cidentity`, `nident`, `ctranno`, `cacctno`, `ctitle`, `ndebit`, `ncredit`, `csub`, `cremarks`) values('$company', '$refcidenttran', '$z', '$cSINo', '$cacctno', '$cacctdesc', $ndebit, $ncredit, $nsub, $crem)");
 
 	}
+
+
+	//insert attachment
+	$files = array_filter($_FILES['upload']['name']); //Use something similar before processing files.
+	// Count the number of uploaded files in array
+	$total_count = count($_FILES['upload']['name']);
+
+	if(file_exists('../Components/assets/Journal/'.$company.'_'.$cSINo.'/')) {
+		/*$allfiles = scandir('../../RFP_Files/'.$cSINo.'/');
+		$files = array_diff($allfiles, array('.', '..'));
+		foreach($files as $file) {
+			unlink("../../RFP_Files/".$cSINo."/".$file);
+		}*/
+	}else{
+		if($total_count>=1){
+			mkdir('../Components/assets/Journal/'.$company.'_'.$cSINo.'/',0777);
+		}
+	}
+
+	// Loop through every file
+	for( $i=0 ; $i < $total_count ; $i++ ) {
+		//The temp file path is obtained
+		$tmpFilePath = $_FILES['upload']['tmp_name'][$i];
+		//A file path needs to be present
+		if ($tmpFilePath != ""){
+				//Setup our new file path
+				$newFilePath = "../Components/assets/Journal/" .$company.'_'. $cSINo . "/" . $_FILES['upload']['name'][$i];
+				//File is uploaded to temp dir
+				move_uploaded_file($tmpFilePath, $newFilePath);
+				
+		}
+	}
 	
 	
 	//INSERT LOGFILE

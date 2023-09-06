@@ -7,6 +7,7 @@ $_SESSION['pageid'] = "Receive_edit.php";
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 include('../../include/access2.php');
+require_once('../../Model/helper.php');
 
 $employeeid = $_SESSION['employeeid'];
 $company = $_SESSION['companyid'];
@@ -59,6 +60,12 @@ $sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.cremarks, DATE_FORMAT
 		}
 	}
 
+	@$arrname = array();
+	$directory = "../../Components/assets/RR/{$company}_{$cpono}/";
+	if(file_exists($directory)){
+		@$arrname = file_checker($directory);
+	}
+
 ?>
 
 
@@ -84,6 +91,18 @@ $sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.cremarks, DATE_FORMAT
 <script src="../../Bootstrap/js/bootstrap.js"></script>
 <script src="../../Bootstrap/js/moment.js"></script>
 <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+
+<!--
+--
+-- FileType Bootstrap Scripts and Link
+--
+-->
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
 
 </head>
 
@@ -259,10 +278,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					<ul class="nav nav-tabs">
 						<li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Items List</a></li>
 						<li id="liacct"><a href="#2Acct" data-toggle="tab">Items Inventory</a></li>
+						<li><a href="#attc" data-toggle="tab">Attachments</a></li>
 					</ul>
 
-					<div class="tab-content nopadwtop2x">
-						<div class="tab-pane active" id="1Det">
+						<div class="tab-content nopadwtop2x">
+							<div class="tab-pane active" id="1Det">
 
 								<div class="alt2" dir="ltr" style="
 									margin: 0px;
@@ -297,38 +317,65 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</div>
 							</div>
 
-						<div class="tab-pane" id="2Acct">
+							<div class="tab-pane" id="2Acct">
 
-										<div class="alt2" dir="ltr" style="
-																margin: 0px;
-																padding: 3px;
-																border: 1px solid #919b9c;
-																width: 100%;
-																height: 250px;
-																text-align: left;
-																overflow: auto">
-								
-												<table id="MyTable2" class="table" width="100%" border="0">
-													<thead>
-																<tr>
+											<div class="alt2" dir="ltr" style="
+																	margin: 0px;
+																	padding: 3px;
+																	border: 1px solid #919b9c;
+																	width: 100%;
+																	height: 250px;
+																	text-align: left;
+																	overflow: auto">
+									
+													<table id="MyTable2" class="table" width="100%" border="0">
+														<thead>
+																	<tr>
+																		
+																			<th style="border-bottom:1px solid #999">Item Code</th>
+																			<th style="border-bottom:1px solid #999">Serial No.</th>
+																			<th style="border-bottom:1px solid #999">Barcode</th>
+																			<th style="border-bottom:1px solid #999">UOM</th>
+																			<th style="border-bottom:1px solid #999">Qty</th>
+																			<th style="border-bottom:1px solid #999">Location</th>
+																			<th style="border-bottom:1px solid #999">Expiration Date</th>
+																			<th style="border-bottom:1px solid #999">&nbsp;</th>
+																	</tr>
+														</thead>
+														<tbody>
+														</tbody>
 																	
-																		<th style="border-bottom:1px solid #999">Item Code</th>
-																		<th style="border-bottom:1px solid #999">Serial No.</th>
-																		<th style="border-bottom:1px solid #999">Barcode</th>
-																		<th style="border-bottom:1px solid #999">UOM</th>
-																		<th style="border-bottom:1px solid #999">Qty</th>
-																		<th style="border-bottom:1px solid #999">Location</th>
-																		<th style="border-bottom:1px solid #999">Expiration Date</th>
-																		<th style="border-bottom:1px solid #999">&nbsp;</th>
-																</tr>
-													</thead>
-													<tbody>
-													</tbody>
-																
-												</table>
-													<input type="hidden" name="hdnserialscnt" id="hdnserialscnt">
+													</table>
+														<input type="hidden" name="hdnserialscnt" id="hdnserialscnt">
+												</div>
+							</div>
+
+							<div class="tab-pane" id="attc">
+								<div class="alt2" dir="ltr" style="
+									margin: 0px;
+									padding: 3px;
+									border: 1px solid #919b9c;
+									width: 100%;
+									height: 450px;
+									text-align: left;
+									overflow: auto">
+									
+								<table width="100%" border="0">
+									<tr>
+										<td>
+											<div class="col-sm-12 nopadding">
+												<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+												<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
+												<div class="col-sm-12 nopadwdown" style="padding-top:10px;">
+													<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+													<input type="file" name="upload[]" id="file-0" multiple />
+												</div>
 											</div>
-						</div>
+										</td>
+									</tr>
+								</table>
+							</div>
+
 					</div>
 
 					<br>
@@ -559,60 +606,103 @@ else{
 
 <script type="text/javascript">
 
-$(document).keydown(function(e) {	 
-	
-	if(e.keyCode == 112) { //F1
-	 if($("#btnNew").is(":disabled")==false){
-		 e.preventDefault();
-		 window.location.href='RR_new.php';
-	 }
- }
- else if(e.keyCode == 83 && e.ctrlKey){//CTRL S
-	 if($("#btnSave").is(":disabled")==false){ 
-		 e.preventDefault();
-		 return chkform();
-	 }
- }
- else if(e.keyCode == 69 && e.ctrlKey){//CTRL E
-	 if($("#btnEdit").is(":disabled")==false){
-		 e.preventDefault();
-		 enabled();
-	 }
- }
- else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
-	 if($("#btnPrint").is(":disabled")==false){
-		 e.preventDefault();
-		 printchk('<?php echo $cpono;?>');
-	 }
- }
- else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
-	 if($("#btnUndo").is(":disabled")==false){
-		 e.preventDefault();
-		 chkSIEnter(13,'frmpos');
-	 }
- }
- else if(e.keyCode == 27){//ESC
-	 if($("#btnMain").is(":disabled")==false){
-		 e.preventDefault();
-		 $("#btnMain").click();
-	 }
- }
- else if(e.keyCode == 70 && e.ctrlKey) { // CTRL + F .. search product code
-	 e.preventDefault();
-	 $('#txtprodnme').focus();
- }
- else if(e.keyCode == 45) { //Insert
-	 if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
-		 openinv();
-	 }
- }else if(e.keyCode == 88 && e.ctrlKey){ //CTRL X - Close Modal
-	 if($('#SerialMod').hasClass('in')==true){
-			$("#btnClsSer").click();
-	 }
+	var file_name = <?= json_encode(@$arrname) ?>;
+	/**
+	 * Checking of list files
+	 */
+	if(file_name.length != 0){
+		file_name.map(({name, ext}) => {
+			console.log("Name: " + name + " ext: " + ext)
+		})
 
- }
+		var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
+		var arrimg = new Array("jpg","png","gif","jpeg");
 
-});
+		var list_file = [];
+		var file_config = [];
+		var extender;
+		/**
+		 * setting up an list of file and config of a file
+		 */
+		file_name.map(({name, ext}, i) => {
+			list_file.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/RR/<?=$company."_".$cpono?>/" + name)
+			console.log(ext);
+
+			if(jQuery.inArray(ext, arroffice) !== -1){
+				extender = "office";
+			} else if (jQuery.inArray(ext, arrimg) !== -1){
+				extender = "image";
+			} else if (ext == "txt"){
+				extender = "text";
+			} else {
+				extender =  ext;
+			}
+
+			console.log(extender)
+			file_config.push({
+				type : extender, 
+				caption : name,
+				width : "120px",
+				url: "th_filedelete.php?id="+name+"&code=<?=$cpono?>", 
+				key: i + 1
+			});
+		})
+	}
+
+	$(document).keydown(function(e) {	 
+		
+		if(e.keyCode == 112) { //F1
+		if($("#btnNew").is(":disabled")==false){
+			e.preventDefault();
+			window.location.href='RR_new.php';
+		}
+	}
+	else if(e.keyCode == 83 && e.ctrlKey){//CTRL S
+		if($("#btnSave").is(":disabled")==false){ 
+			e.preventDefault();
+			return chkform();
+		}
+	}
+	else if(e.keyCode == 69 && e.ctrlKey){//CTRL E
+		if($("#btnEdit").is(":disabled")==false){
+			e.preventDefault();
+			enabled();
+		}
+	}
+	else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
+		if($("#btnPrint").is(":disabled")==false){
+			e.preventDefault();
+			printchk('<?php echo $cpono;?>');
+		}
+	}
+	else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
+		if($("#btnUndo").is(":disabled")==false){
+			e.preventDefault();
+			chkSIEnter(13,'frmpos');
+		}
+	}
+	else if(e.keyCode == 27){//ESC
+		if($("#btnMain").is(":disabled")==false){
+			e.preventDefault();
+			$("#btnMain").click();
+		}
+	}
+	else if(e.keyCode == 70 && e.ctrlKey) { // CTRL + F .. search product code
+		e.preventDefault();
+		$('#txtprodnme').focus();
+	}
+	else if(e.keyCode == 45) { //Insert
+		if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
+			openinv();
+		}
+	}else if(e.keyCode == 88 && e.ctrlKey){ //CTRL X - Close Modal
+		if($('#SerialMod').hasClass('in')==true){
+				$("#btnClsSer").click();
+		}
+
+	}
+
+	});
 
 	$(document).keypress(function(e) {
 	  if ($("#SerialMod").hasClass('in') && (e.keycode == 13 || e.which == 13)) {
@@ -625,6 +715,37 @@ $(document).ready(function() {
     $('.datepick').datetimepicker({
       format: 'MM/DD/YYYY',
     });	
+
+		if(file_name.length > 0){
+				$('#file-0').fileinput({
+					showUpload: false,
+					showClose: false,
+					allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+					overwriteInitial: false,
+					maxFileSize:100000,
+					maxFileCount: 5,
+					browseOnZoneClick: true,
+					fileActionSettings: { showUpload: false, showDrag: false, },
+					initialPreview: list_file,
+					initialPreviewAsData: true,
+					initialPreviewFileType: 'image',
+					initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/RR/<?=$company."_".$cpono?>/{filename}',
+					initialPreviewConfig: file_config
+				});
+			} else {
+				$("#file-0").fileinput({
+					theme: 'fa5',
+					showUpload: false,
+					showClose: false,
+					allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+					overwriteInitial: false,
+					maxFileSize:100000,
+					maxFileCount: 5,
+					browseOnZoneClick: true,
+					fileActionSettings: { showUpload: false, showDrag: false, }
+				});
+			}
+
 
 		loaddetails();
 		loadserials();
@@ -1543,10 +1664,21 @@ function chkform(){
 		
 		var myform = $("#frmpos").serialize();
 
+		var formdata = new FormData($('#frmpos')[0]);
+		formdata.delete('upload[]');
+		jQuery.each($('#file-0')[0].files, function(i, file){
+			formdata.append('file-'+i, file)
+		})
+
 		$.ajax ({
 			url: "RR_editsave.php",
 			//data: { ccode: ccode, crem: crem, ddate: ddate, ngross: ngross, ccustsi:ccustsi },
-			data: myform,
+			data: formdata,
+			cache: false,
+			processData: false,
+			contentType: false,
+			type: 'post',
+			method: 'post',
 			async: false,
 			beforeSend: function(){
 				$("#AlertMsg").html("&nbsp;&nbsp;<b>UPDATING RR: </b> Please wait a moment...");

@@ -4,6 +4,7 @@ session_start();
 }
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
+require_once('../../Model/helper.php');
 
 function chkgrp($valz) {
 	if($valz==''){
@@ -65,4 +66,14 @@ $company = $_SESSION['companyid'];
 	mysqli_query($con, "Delete from ntsales_t_info Where compcode='$company' and ctranno='$cSINo'");
 	mysqli_query($con, "Delete from ntsales_t_disc Where compcode='$company' and ctranno='$cSINo'");
 
+
+	if(count($_FILES) != 0){
+		$directory = "../../Components/assets/SI-N/";
+		if(!is_dir($directory)){
+			mkdir($directory, 0777);
+		}
+		$directory .= "{$company}_{$cSINo}/";
+		var_dump($directory);
+		upload_image($_FILES, $directory);
+	}
 ?>

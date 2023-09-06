@@ -7,6 +7,7 @@ $_SESSION['pageid'] = "SuppInv_edit.php";
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 include('../../include/access2.php');
+require_once('../../Model/helper.php');
 
 $employeeid = $_SESSION['employeeid'];
 $company = $_SESSION['companyid'];
@@ -74,6 +75,12 @@ if(mysqli_num_rows($sql) == 0){
 		}
 	}
 
+	@$arrname = array();
+	$directory = "../../Components/assets/RI/{$company}_{$cpono}/";
+	if(file_exists($directory)){
+		@$arrname = file_checker($directory);
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -98,6 +105,18 @@ if(mysqli_num_rows($sql) == 0){
 <script src="../../Bootstrap/js/bootstrap.js"></script>
 <script src="../../Bootstrap/js/moment.js"></script>
 <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+
+<!--
+--
+-- FileType Bootstrap Scripts and Link
+--
+-->
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
 
 </head>
 
@@ -262,64 +281,88 @@ if (mysqli_num_rows($sqlhead)!=0) {
     <td>&nbsp;</td>
     </tr>
 
-  <tr>
-    <td colspan="4">&nbsp;</td>
-    </tr>
-		<tr>
-    <td colspan="2">
-      <div class="col-xs-12 nopadwdown">
-        <div class="col-xs-3 nopadding">
-          <input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." width="25" tabindex="4"  autocomplete="off">
-        </div>
-        <div class="col-xs-6 nopadwleft">
-          <input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL+F) Search Product Name..." size="80" tabindex="5" autocomplete="off">
-        </div>
-      </div>
-
-        <input type="hidden" name="hdnunit" id="hdnunit">
-				<input type="hidden" name="hdncvat" id="hdncvat">
-    </td>
-    <td></td>
-    <td></td>
-
-</tr>
 </table>
 
 
-         <div class="alt2" dir="ltr" style="
-					margin: 0px;
-					padding: 3px;
-					border: 1px solid #919b9c;
-					width: 100%;
-					height: 250px;
-					text-align: left;
-					overflow: auto">
-	
-            <table id="MyTable" class="MyTable" cellpadding"3px" width="100%" border="0">
-<thead>
-								<tr>
-									<!--<th style="border-bottom:1px solid #999">&nbsp;</th>-->
-									<th style="border-bottom:1px solid #999">Code</th>
-									<th style="border-bottom:1px solid #999">Description</th>
-									<th style="border-bottom:1px solid #999">EWTCode</th>
-									<th style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
-			            <th style="border-bottom:1px solid #999">UOM</th>
-									<th style="border-bottom:1px solid #999">Qty</th>
-									<th style="border-bottom:1px solid #999">Price</th>
-									<th style="border-bottom:1px solid #999">Amount</th>
-									<th style="border-bottom:1px solid #999">Total Amt in <?= $nvaluecurrbase; ?></th>
-			                        <!--<th style="border-bottom:1px solid #999">Date Expired</th>
-			                        <th style="border-bottom:1px solid #999">&nbsp;</th>-->  
-								</tr>
-	</thead>
-								<tbody id="MyyTbltbody">
-			                    </tbody>
-			                    
-						</table>
-				</div>
-			</div>
+<ul class="nav nav-tabs">
+	<li class="active"><a href="#item" data-toggle="tab">Item list</a></li>
+	<li><a href="#attc" data-toggle="tab">Attachments</a></li>
+</ul>
 
-	</div>
+			<div class="tab-content">
+
+				<div id="item" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
+
+					<div class="col-xs-12 nopadwdown">
+						<div class="col-xs-3 nopadding">
+							<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." width="25" tabindex="4"  autocomplete="off">
+						</div>
+						<div class="col-xs-6 nopadwleft">
+							<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL+F) Search Product Name..." size="80" tabindex="5" autocomplete="off">
+						</div>
+					</div>
+
+					<input type="hidden" name="hdnunit" id="hdnunit">
+					<input type="hidden" name="hdncvat" id="hdncvat">
+
+					<div class="alt2" dir="ltr" style="
+						margin: 0px;
+						padding: 3px;
+						border: 1px solid #919b9c;
+						width: 100%;
+						height: 250px;
+						text-align: left;
+						overflow: auto">
+		
+							<table id="MyTable" class="MyTable" cellpadding"3px" width="100%" border="0">
+								<thead>
+									<tr>
+										<!--<th style="border-bottom:1px solid #999">&nbsp;</th>-->
+										<th style="border-bottom:1px solid #999">Code</th>
+										<th style="border-bottom:1px solid #999">Description</th>
+										<th style="border-bottom:1px solid #999">EWTCode</th>
+										<th style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
+										<th style="border-bottom:1px solid #999">UOM</th>
+										<th style="border-bottom:1px solid #999">Qty</th>
+										<th style="border-bottom:1px solid #999">Price</th>
+										<th style="border-bottom:1px solid #999">Amount</th>
+										<th style="border-bottom:1px solid #999">Total Amt in <?= $nvaluecurrbase; ?></th>
+																<!--<th style="border-bottom:1px solid #999">Date Expired</th>
+																<th style="border-bottom:1px solid #999">&nbsp;</th>-->  
+									</tr>
+									</thead>
+									<tbody id="MyyTbltbody">
+														</tbody>
+														
+							</table>
+					</div>
+				</div>	
+				<div id="attc" class="tab-pane fade in" style="padding-left: 5px; padding-top: 10px;">
+					<div class="alt2" dir="ltr" style="
+							margin: 0px;
+							padding: 3px;
+							width: 100%;
+							height: 410px;
+							text-align: left;
+							overflow: auto">
+							<table width="100%" border="0">
+								<tr>
+									<td>
+										<div class="col-sm-12 nopadding">
+											<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+											<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
+											<div class="col-sm-12 nopadding" style="padding-top:10px;">
+												<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+												<input type="file" name="upload[]" id="file-0" multiple />
+											</div>
+										</div>
+									</td>
+								</tr>
+							</table>
+					</div>
+				</div>
+
+			</div>
 
 <br>
 <?php
@@ -466,6 +509,49 @@ else{
 <script type="text/javascript">
 	var xChkVatableStatus = "";
 
+	var file_name = <?= json_encode(@$arrname) ?>;
+	/**
+	 * Checking of list files
+	 */
+	if(file_name.length != 0){
+		file_name.map(({name, ext}) => {
+			console.log("Name: " + name + " ext: " + ext)
+		})
+
+		var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
+		var arrimg = new Array("jpg","png","gif","jpeg");
+
+		var list_file = [];
+		var file_config = [];
+		var extender;
+		/**
+		 * setting up an list of file and config of a file
+		 */
+		file_name.map(({name, ext}, i) => {
+			list_file.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/RI/<?=$company."_".$cpono?>/" + name)
+			console.log(ext);
+
+			if(jQuery.inArray(ext, arroffice) !== 1){
+				extender = "office";
+			} else if (jQuery.inArray(ext, arrimg) !== 1){
+				extender = "image";
+			} else if (ext == "txt"){
+				extender = "text";
+			} else {
+				extender =  ext;
+			}
+
+			console.log(extender)
+			file_config.push({
+				type : extender, 
+				caption : name,
+				width : "120px",
+				url: "th_filedelete.php?id="+name+"&code=<?=$cpono?>", 
+				key: i + 1
+			});
+		})
+	}
+
 
 	$(document).keydown(function(e) {	 
 	
@@ -529,6 +615,37 @@ $(document).ready(function() {
 					  });
 					}
 				});
+
+
+				if(file_name.length > 0){
+					$('#file-0').fileinput({
+						showUpload: false,
+						showClose: false,
+						allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+						overwriteInitial: false,
+						maxFileSize:100000,
+						maxFileCount: 5,
+						browseOnZoneClick: true,
+						fileActionSettings: { showUpload: false, showDrag: false, },
+						initialPreview: list_file,
+						initialPreviewAsData: true,
+						initialPreviewFileType: 'image',
+						initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/RI/<?=$company."_".$cpono?>/{filename}',
+						initialPreviewConfig: file_config
+					});
+				} else {
+					$("#file-0").fileinput({
+						theme: 'fa5',
+						showUpload: false,
+						showClose: false,
+						allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+						overwriteInitial: false,
+						maxFileSize:100000,
+						maxFileCount: 5,
+						browseOnZoneClick: true,
+						fileActionSettings: { showUpload: false, showDrag: false, }
+					});
+				}
 
 		if(xChkVatableStatus==1){
 			$(".chkVATClass").show();	
@@ -1108,10 +1225,23 @@ function chkform(){
 		$("#hidcurrvaldesc").val($("#selbasecurr option:selected").text());
 
 		var myform = $("#frmpos").serialize();
+
+		var myform = $("#frmpos").serialize();
+		var formdata = new FormData($('#frmpos')[0]);
+		formdata.delete('upload[]');
+		jQuery.each($('#file-0')[0].files, function(i, file){
+			formdata.append('file-'+i, file);
+		})
+
 //alert(myform);
 		$.ajax ({
 			url: "RR_editsave.php",
-			data: myform,
+			data: formdata,
+			cache: false,
+			processData: false,
+			contentType: false,
+			type: 'post',
+			method: 'post',
 			async: false,
 			beforeSend: function(){
 				$("#AlertMsg").html("&nbsp;&nbsp;<b>UPDATING RR: </b> Please wait a moment...");

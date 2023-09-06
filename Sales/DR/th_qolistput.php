@@ -6,7 +6,7 @@ require_once "../../Connection/connection_string.php";
 
 		$company = $_SESSION['companyid'];
 
-		$avail = $_REQUEST['itmbal'];
+		$avail = $_REQUEST['itm'];
 		$date1 = date("Y-m-d");
 		
 		if($avail==1){

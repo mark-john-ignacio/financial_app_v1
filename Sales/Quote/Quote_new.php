@@ -77,6 +77,18 @@ $getfctrs = mysqli_query($con,"SELECT * FROM `items_factor` where compcode='$com
 
 	<script src="../../include/summernote/summernote.js"></script>
 
+	<!--
+	--
+	-- FileType Bootstrap Scripts and Link
+	--
+	-->
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+
 <style>
 	fieldset.scheduler-border {
 	    border: 1px groove #ddd !important;
@@ -105,279 +117,302 @@ $getfctrs = mysqli_query($con,"SELECT * FROM `items_factor` where compcode='$com
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
 <input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
 
-<form action="Quote_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
+<form action="Quote_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;" enctype="multipart/form-data">
 	<fieldset>
     	<legend>New Quotation</legend>	
 
-    	<div class="col-xs-12 nopadwtop">
-				<div class="col-xs-2">
-						<b>Quote Type</b>
-					</div>
-				<div class="col-xs-2 nopadding">
-					<select id="selqotyp" name="selqotyp" class="form-control input-sm selectpicker"  tabindex="1">
-						<?php						
-							if($postquote=="True"){
-						?>
-						<option value="quote">Quote</option>
-						<?php
-							}
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#home">Quotation Details</a></li>
+				<li><a href="#attc">Attachments</a></li>
+			</ul>
+			<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left;overflow: auto">
+				<div class="tab-content">
+					<div id="home" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
+
+						<div class="col-xs-12 nopadwtop">
+							<div class="col-xs-2">
+									<b>Quote Type</b>
+								</div>
+							<div class="col-xs-2 nopadding">
+								<select id="selqotyp" name="selqotyp" class="form-control input-sm selectpicker"  tabindex="1">
+									<?php						
+										if($postquote=="True"){
+									?>
+									<option value="quote">Quote</option>
+									<?php
+										}
+															
+										if($postbilling=="True"){
+									?>
+									<option value="billing">Billing</option>
+									<?php
+										}
+
+										$isdisblerecurr = "disabled='true'";
+										if($postquote=="False" && $postbilling=="True"){
+											$isdisblerecurr = "";
+										}
+									?>
+								</select>
+							</div>
+							<div class="col-xs-2">
+									<b>Reccur Every</b>
+								</div>
+							<div class="col-xs-2 nopadding">
+								<select id="selrecurrtyp" name="selrecurrtyp" class="form-control input-sm selectpicker"  tabindex="1" <?=$isdisblerecurr?>>
+									<option value="one">One Time Only</option>	
+									<option value="weekly">Weekly</option>
+									<option value="monthly">Monthly</option>
+									<option value="quartertly">Quartertly</option>
+									<option value="yearly">Yearly</option>
+									<option value="semi_annual">Semi Annual</option>
+								</select>
+							</div>
+							<div class="col-xs-2">
+								<b>Sales Type</b>
+							</div>
+							<div class="col-xs-2 nopadding">
+								<select id="selsityp" name="selsityp" class="form-control input-sm selectpicker"  tabindex="1">
+									<option value="Goods">Goods</option>
+									<option value="Services">Services</option>
+								</select>
+							</div>
+						</div>
+
+						<br>
+						<fieldset class="scheduler-border">
+							<legend class="scheduler-border">Customer Details</legend>
+
+							<div class='col-xs-12 nopadding'>
+								<div class="col-xs-2"><b>Customer</b></div>
+								<div class="col-xs-1 nopadding">
+									<input type="text" id="txtcustid" name="txtcustid" class="required form-control input-sm" placeholder="Code..." tabindex="1" required="true">
+										<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
+										<input type="hidden" id="hdnpricever" name="hdnpricever" value="">
+								</div>
+								<div class="col-xs-4 nopadwleft">
+									<input type="text" class="required form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off" required="true">
+								</div>
+								<div class="col-xs-2"><b>Salutation</b></div>
+								<div class="col-xs-3 nopadding"> 
+									<input type="text" id="txtcontactsalut" name="txtcontactsalut" class="required form-control input-sm" placeholder="Salutation..." tabindex="1"  required="true">
+								</div>
+							</div>
+
+							<div class='col-xs-12 nopadwtop'>
+								<div class="col-xs-2"><b>Contact Person</b></div>
+								<div class="col-xs-1 nopadding"> 
+									<button class="btn btn-sm btn-block btn-warning" name="btnSearchCont" id="btnSearchCont" type="button">Search</button>
+								</div>
+								<div class="col-xs-4 nopadwleft">
+									<input type="text" id="txtcontactname" name="txtcontactname" class="required form-control input-sm" placeholder="Contact Person Name..." tabindex="1"  required="true">
+								</div>
+								<div class="col-xs-2"><b>Designation</b></div>
+								<div class="col-xs-3 nopadding"> 
+									<input type="text" id="txtcontactdesig" name="txtcontactdesig" class="form-control input-sm" placeholder="Designation..." tabindex="1">
+								</div>
+							</div>
+
+							<div class='col-xs-12 nopadwtop'>
+								<div class="col-xs-2"><b>Department</b></div>
+								<div class="col-xs-5 nopadding">
+									<input type="text" id="txtcontactdept" name="txtcontactdept" class="form-control input-sm" placeholder="Department..." tabindex="1">
+								</div>
+								<div class="col-xs-2"><b>Email Address</b></div>
+								<div class="col-xs-3 nopadding">
+									<input type="text" id="txtcontactemail" name="txtcontactemail" class="required form-control input-sm" placeholder="Email Address..." tabindex="1" required="true">
+								</div>
+							</div>
+
+						</fieldset>
+
+						<br>
+						<fieldset class="scheduler-border">
+							<legend class="scheduler-border">Terms &amp; Conditions</legend>
+
+							<div class='col-xs-12 nopadding'>
+								<div class="col-xs-1"><b>Vat Type</b></div>
+								<div class="col-xs-2 nopadwleft">
+									<select class="form-control input-sm" name="selvattype" id="selvattype">
+										<option value="VatEx">VAT Exclusive</option>
+										<option value="VatIn">VAT Inclusive</option>
+									</select>
+								</div>
+								<div class="col-xs-2" id="prcevallabel"><b>Price Validity</b></div>
+								<div class="col-xs-2 nopadwleft">
+									<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date_format(date_create($ndcutdate),'m/d/Y'); ?>" />
+								</div>
+								<div class="col-xs-1"><b>Payment</b></div>
+								<div class="col-xs-2 nopadwleft">
+									<select class="form-control input-sm" name="selterms" id="selterms">
+										<option value=''>N/A</option>
+										<?php
+											$sqlters = mysqli_query($con,"Select ccode, cdesc From groupings Where compcode='$company' and ctype='TERMS' and cstatus='ACTIVE'");
+											while($row = mysqli_fetch_array($sqlters, MYSQLI_ASSOC)){
+												echo "<option value='".$row['ccode']."'>".$row['cdesc']."</option>";
+											}
+										?>
+
+									</select>
+								</div>
+							</div>
+
+							<div class='col-xs-12 nopadwtop'>
+								<div class="col-xs-1"><b>Delivery</b></div>
+								<div class="col-xs-9 nopadwleft">
+									<input type='text' class="required form-control input-sm" id="txtdelinfo" name="txtdelinfo" value="5-15 days upon receipt of P.O for available items."  required="true"/>
+								</div>
+							</div>
+
+							<div class='col-xs-12 nopadwtop'>
+								<div class="col-xs-1"><b>Service</b></div>
+								<div class="col-xs-9 nopadwleft">
+									<input type='text' class="required form-control input-sm" id="txtservinfo" name="txtservinfo" value="Free delivery/installation within Metro Manila / Cavite" required="true" />
+								</div>
+							</div>
+
+							<div class='col-xs-12 nopadwtop'>
+								<div class="col-xs-1"><b>Remarks</b></div>
+								<div class="col-xs-9 nopadwleft">
+
+										<textarea rows="4" name="txtremarks" id="txtremarks" style="width: 100%; height: 300px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"><b>WARRANTY </b>  : SERT Technology Inc. Guarantees the equipment and cable workmanship under this proposal to be free from defect for a period of Twelve (12) months from in service date. Provided that no party except  SERT Technology Inc. Trained technicians/enginners shall be entrusted with the service maintenance and repair of the equipment during the warranty period shall be at SERT Technology Inc. Defects arising from misuse, tampering, forced majored, such as fire earthquake, flood, lightning strike, and abnormal conditions are excluded from the above warranty.<br><br><br>If you have concern(s) please feel free to call at If you have concerns, please feel free to call at 02.8897.4830, 0917.503.1616, 0917.555.0849, 0917.551.3200.</textarea>
+
+								</div>
+							</div>
+
+							<div class='col-xs-12 nopadwtop'>
+								<div class="col-xs-1"><b>Currency</b></div>
+								<div class="col-xs-3 nopadwleft">
+								<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">							
+								<?php
+									$nvaluecurrbase = "";	
+									$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+									
+										if (mysqli_num_rows($result)!=0) {
+											$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
+											
+											$nvaluecurrbase = $all_course_data['cvalue']; 
 												
-							if($postbilling=="True"){
-						?>
-						<option value="billing">Billing</option>
-						<?php
-							}
+										}
+										else{
+											$nvaluecurrbase = "";
+										}
+				
+										//$objcurrs = listcurrencies();
+									//	$objrows = json_decode($objcurrs, true);
+												
+									//foreach($objrows['results'] as $rows){
 
-							$isdisblerecurr = "disabled='true'";
-							if($postquote=="False" && $postbilling=="True"){
-								$isdisblerecurr = "";
-							}
-						?>
-					</select>
-				</div>
-				<div class="col-xs-2">
-						<b>Reccur Every</b>
-					</div>
-				<div class="col-xs-2 nopadding">
-					<select id="selrecurrtyp" name="selrecurrtyp" class="form-control input-sm selectpicker"  tabindex="1" <?=$isdisblerecurr?>>
-						<option value="one">One Time Only</option>	
-						<option value="weekly">Weekly</option>
-						<option value="monthly">Monthly</option>
-						<option value="quartertly">Quartertly</option>
-						<option value="yearly">Yearly</option>
-						<option value="semi_annual">Semi Annual</option>
-					</select>
-				</div>
-    		<div class="col-xs-2">
-    			<b>Sales Type</b>
-    		</div>
-				<div class="col-xs-2 nopadding">
-					<select id="selsityp" name="selsityp" class="form-control input-sm selectpicker"  tabindex="1">
-	          <option value="Goods">Goods</option>
-	          <option value="Services">Services</option>
-	        </select>
-       	</div>
-      </div>
-
-	<br>
-   <fieldset class="scheduler-border">
-    	<legend class="scheduler-border">Customer Details</legend>
-
-      <div class='col-xs-12 nopadding'>
-	 	<div class="col-xs-2"><b>Customer</b></div>
-	 	<div class="col-xs-1 nopadding">
-	 		<input type="text" id="txtcustid" name="txtcustid" class="required form-control input-sm" placeholder="Code..." tabindex="1" required="true">
-		    <input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
-		    <input type="hidden" id="hdnpricever" name="hdnpricever" value="">
-	 	</div>
-	 	<div class="col-xs-4 nopadwleft">
-	 		<input type="text" class="required form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off" required="true">
-	 	</div>
-	 	<div class="col-xs-2"><b>Salutation</b></div>
-	 	<div class="col-xs-3 nopadding"> 
-	 		<input type="text" id="txtcontactsalut" name="txtcontactsalut" class="required form-control input-sm" placeholder="Salutation..." tabindex="1"  required="true">
-	 	</div>
-	 </div>
-
-	 <div class='col-xs-12 nopadwtop'>
-	 	<div class="col-xs-2"><b>Contact Person</b></div>
-	 	<div class="col-xs-1 nopadding"> 
-	 		<button class="btn btn-sm btn-block btn-warning" name="btnSearchCont" id="btnSearchCont" type="button">Search</button>
-	 	</div>
-	 	<div class="col-xs-4 nopadwleft">
-	 		<input type="text" id="txtcontactname" name="txtcontactname" class="required form-control input-sm" placeholder="Contact Person Name..." tabindex="1"  required="true">
-	 	</div>
-	 	<div class="col-xs-2"><b>Designation</b></div>
-	 	<div class="col-xs-3 nopadding"> 
-	 		<input type="text" id="txtcontactdesig" name="txtcontactdesig" class="form-control input-sm" placeholder="Designation..." tabindex="1">
-	 	</div>
-	 </div>
-
-	<div class='col-xs-12 nopadwtop'>
-	 	<div class="col-xs-2"><b>Department</b></div>
-	 	<div class="col-xs-5 nopadding">
-	 		<input type="text" id="txtcontactdept" name="txtcontactdept" class="form-control input-sm" placeholder="Department..." tabindex="1">
-	 	</div>
-	 	<div class="col-xs-2"><b>Email Address</b></div>
-	 	<div class="col-xs-3 nopadding">
-	 		<input type="text" id="txtcontactemail" name="txtcontactemail" class="required form-control input-sm" placeholder="Email Address..." tabindex="1" required="true">
-	 	</div>
-	 </div>
-
-	</fieldset>
-		<br>
-    <fieldset class="scheduler-border">
-    	<legend class="scheduler-border">Terms &amp; Conditions</legend>
-
-	  	<div class='col-xs-12 nopadding'>
-	  			<div class="col-xs-1"><b>Vat Type</b></div>
-	 			<div class="col-xs-2 nopadwleft">
-	 				<select class="form-control input-sm" name="selvattype" id="selvattype">
-	 					<option value="VatEx">VAT Exclusive</option>
-	 					<option value="VatIn">VAT Inclusive</option>
-	 				</select>
-	 			</div>
-	  			<div class="col-xs-2" id="prcevallabel"><b>Price Validity</b></div>
-	 			<div class="col-xs-2 nopadwleft">
-	 				<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date_format(date_create($ndcutdate),'m/d/Y'); ?>" />
-	 			</div>
-	 			<div class="col-xs-1"><b>Payment</b></div>
-	 			<div class="col-xs-2 nopadwleft">
-	 				<select class="form-control input-sm" name="selterms" id="selterms">
-					 	<option value=''>N/A</option>
-	 					<?php
-	 						$sqlters = mysqli_query($con,"Select ccode, cdesc From groupings Where compcode='$company' and ctype='TERMS' and cstatus='ACTIVE'");
-	 						while($row = mysqli_fetch_array($sqlters, MYSQLI_ASSOC)){
-	 							echo "<option value='".$row['ccode']."'>".$row['cdesc']."</option>";
-	 						}
-	 					?>
-
-	 				</select>
-	 			</div>
-	  	</div>
-	  	<div class='col-xs-12 nopadwtop'>
-	  			<div class="col-xs-1"><b>Delivery</b></div>
-	  			<div class="col-xs-9 nopadwleft">
-	 				<input type='text' class="required form-control input-sm" id="txtdelinfo" name="txtdelinfo" value="5-15 days upon receipt of P.O for available items."  required="true"/>
-	 			</div>
-	  	</div>
-
-	  	<div class='col-xs-12 nopadwtop'>
-	  			<div class="col-xs-1"><b>Service</b></div>
-	  			<div class="col-xs-9 nopadwleft">
-	 				<input type='text' class="required form-control input-sm" id="txtservinfo" name="txtservinfo" value="Free delivery/installation within Metro Manila / Cavite" required="true" />
-	 			</div>
-	  	</div>
-
-	  	<div class='col-xs-12 nopadwtop'>
-	  			<div class="col-xs-1"><b>Remarks</b></div>
-	  			<div class="col-xs-9 nopadwleft">
-
-
-						<textarea rows="4" name="txtremarks" id="txtremarks" style="width: 100%; height: 300px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"><b>WARRANTY </b>  : SERT Technology Inc. Guarantees the equipment and cable workmanship under this proposal to be free from defect for a period of Twelve (12) months from in service date. Provided that no party except  SERT Technology Inc. Trained technicians/enginners shall be entrusted with the service maintenance and repair of the equipment during the warranty period shall be at SERT Technology Inc. Defects arising from misuse, tampering, forced majored, such as fire earthquake, flood, lightning strike, and abnormal conditions are excluded from the above warranty.<br><br><br>If you have concern(s) please feel free to call at If you have concerns, please feel free to call at 02.8897.4830, 0917.503.1616, 0917.555.0849, 0917.551.3200.</textarea>
-
-
-	 			</div>
-	  	</div>
-
-		<div class='col-xs-12 nopadwtop'>
-	  		<div class="col-xs-1"><b>Currency</b></div>
-	  		<div class="col-xs-3 nopadwleft">
-			  <select class="form-control input-sm" name="selbasecurr" id="selbasecurr">							
-				<?php
-					$nvaluecurrbase = "";	
-					$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
-					 
-						if (mysqli_num_rows($result)!=0) {
-							$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
-							 
-							$nvaluecurrbase = $all_course_data['cvalue']; 
+										$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+											if (mysqli_num_rows($sqlhead)!=0) {
+												while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+								?>
+										<option value="<?=$rows['id']?>" <?php if ($nvaluecurrbase==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
+								<?php
+												}
+											}
+								?>
+								</select>
+								<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?php echo $nvaluecurrbase; ?>">	
+								<input type='hidden' id="currdesc" name="currdesc" value="">	
 								
-						}
-						else{
-							$nvaluecurrbase = "";
-						}
- 
-						//$objcurrs = listcurrencies();
-					//	$objrows = json_decode($objcurrs, true);
-								 
-					//foreach($objrows['results'] as $rows){
+							</div>
 
-						$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
-							if (mysqli_num_rows($sqlhead)!=0) {
-								while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-				?>
-						<option value="<?=$rows['id']?>" <?php if ($nvaluecurrbase==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
-				<?php
-								}
-							}
-				?>
-			  </select>
-			  <input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?php echo $nvaluecurrbase; ?>">	
-			  
-			</div>
+							<div class="col-xs-1 nopadwleft">
+								<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
+							</div>
 
-			<div class="col-xs-1 nopadwleft">
-				<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
-			</div>
-
-			<div class="col-xs-5" id="statgetrate" style="padding: 4px !important"> 
+							<div class="col-xs-5" id="statgetrate" style="padding: 4px !important"></div>
+							
+						</fieldset>
 					
+					</div>
+
+					<div id="attc" class="tab-pane fade in" style="padding-left: 5px; padding-top: 10px;">
+						<!-- Import Files Modal -->
+						<div class="col-sm-12 nopadding">
+							<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+							<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
+							<div class="col-sm-12 nopadding" style="padding-top:10px;">
+								<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+								<input type="file" name="upload[]" id="upload" multiple />
+							</div>
+						</div>
+					</div>
+					
+				</div>
 			</div>
 
-	 	</div>
-	</fieldset>
+			<br>
+			<h4>Product Details</h4><hr class="nopadwdown">
 
-		<br>
-    <h4>Product Details</h4><hr class="nopadwdown">
+			<div class="col-xs-12 nopadwtop2x">
 
-		<div class="col-xs-12 nopadwtop2x">
+				<div class="col-xs-3 nopadwdown">
+					<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4">
 
-			<div class="col-xs-3 nopadwdown">
-				<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4">
+					<input type="hidden" name="hdnqty" id="hdnqty">
+					<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
+					<input type="hidden" name="hdnunit" id="hdnunit">
 
-				<input type="hidden" name="hdnqty" id="hdnqty">
-				<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
-				<input type="hidden" name="hdnunit" id="hdnunit">
-
+				</div>
+				<div class="col-xs-5 nopadwleft">
+					<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm" placeholder="Search Product Name..." size="80" tabindex="5">
+				</div>
 			</div>
-			<div class="col-xs-5 nopadwleft">
-				<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm" placeholder="Search Product Name..." size="80" tabindex="5">
-			</div>
-		</div>
 
-	  	<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 1px solid #919b9c;width: 100%;height: 300px;text-align: left;overflow: auto">
-	
-            <table id="MyTable" class="MyTable table table-condensed" width="100%">
-							<thead>
-								<tr id="0">
-									<th style="border-bottom:1px solid #999">Code</th>
-									<th style="border-bottom:1px solid #999">Description</th>
-			            <th style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
-			            <th style="border-bottom:1px solid #999">UOM</th>
-									<th style="border-bottom:1px solid #999">Factor</th>
-			            <th style="border-bottom:1px solid #999">Qty</th>									
-									<th style="border-bottom:1px solid #999">Price</th>
-            			<th style="border-bottom:1px solid #999">Amount</th>
-									<th style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
-            			<th style="border-bottom:1px solid #999">&nbsp;</th>
-								</tr>
-							</thead>       
-							<tbody class="tbody">
-              </tbody>                  
-						</table>
-
-		</div>
-
-		<div class="col-xs-12 nopadwtop2x">
-			<div class="col-xs-7">
-					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Quote.php';" id="btnMain" name="btnMain">
-			Back to Main<br>(ESC)</button>
-
-			    
-			<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> <button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();">SAVE<br> (F2)</button>
-			</div>	
-
-			<div class="col-xs-2"  style="padding-top: 14px !important;">
-					<b>TOTAL AMOUNT </b>
-			</div>
-			<div class="col-xs-3"  style="padding-top: 14px !important;">
-				<input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10">
-			</div>
-		</div>  
+				<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 1px solid #919b9c;width: 100%;height: 300px;text-align: left;overflow: auto">
 		
-		<div class="col-xs-12 nopadding">
-			<div class="col-xs-7">
-					
-			</div>	
+							<table id="MyTable" class="MyTable table table-condensed" width="100%">
+								<thead>
+									<tr id="0">
+										<th style="border-bottom:1px solid #999">Code</th>
+										<th style="border-bottom:1px solid #999">Description</th>
+										<th style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
+										<th style="border-bottom:1px solid #999">UOM</th>
+										<th style="border-bottom:1px solid #999">Factor</th>
+										<th style="border-bottom:1px solid #999">Qty</th>									
+										<th style="border-bottom:1px solid #999">Price</th>
+										<th style="border-bottom:1px solid #999">Amount</th>
+										<th style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
+										<th style="border-bottom:1px solid #999">&nbsp;</th>
+									</tr>
+								</thead>       
+								<tbody class="tbody">
+								</tbody>                  
+							</table>
 
-			<div class="col-xs-2">
-					<b>TOTAL AMOUNT IN <?php echo $nvaluecurrbase; ?></b>
 			</div>
-			<div class="col-xs-3" >
-			<input type="text" id="txtnGross" name="txtnGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10">
+
+			<div class="col-xs-12 nopadwtop2x">
+				<div class="col-xs-7">
+						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Quote.php';" id="btnMain" name="btnMain">
+				Back to Main<br>(ESC)</button>
+
+						
+				<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> <button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();">SAVE<br> (F2)</button>
+				</div>	
+
+				<div class="col-xs-2"  style="padding-top: 14px !important;">
+						<b>TOTAL AMOUNT </b>
+				</div>
+				<div class="col-xs-3"  style="padding-top: 14px !important;">
+					<input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10">
+				</div>
+			</div>  
+			
+			<div class="col-xs-12 nopadding">
+				<div class="col-xs-7">
+						
+				</div>	
+
+				<div class="col-xs-2">
+						<b>TOTAL AMOUNT IN <?php echo $nvaluecurrbase; ?></b>
+				</div>
+				<div class="col-xs-3" >
+				<input type="text" id="txtnGross" name="txtnGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10">
+				</div>
 			</div>
-		</div>
 
     </fieldset>
     
@@ -513,6 +548,19 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 		$(".nav-tabs a").click(function(){
 	    $(this).tab('show');
 	  });
+
+			$("#upload").fileinput({
+				theme: 'fa5',
+				showUpload: false,
+				showClose: false,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false,}
+			});
+
 
 		$("#txtnBaseGross").autoNumeric('init',{mDec:2});
 		$("#txtnGross").autoNumeric('init',{mDec:2});
@@ -1317,37 +1365,24 @@ function chkform(){
 	var isDone = "True";
 	
 		//Saving the header
-		var ccode = $("#txtcustid").val();
-		var ngross = $("#txtnGross").val().replace(/,/g,'');
-
-		var ccontname = $("#txtcontactname").val();
-		var ccontdesg = $("#txtcontactdesig").val();
-		var ccontdept = $("#txtcontactdept").val();
-		var ccontemai = $("#txtcontactemail").val();
-		var ccontsalt = $("#txtcontactsalut").val();
-		var cvattyp = $("#selvattype").val();
-		var cterms = $("#selterms").val();
-		var cdelinfo = $("#txtdelinfo").val();
-		var cservinfo = $("#txtservinfo").val();
-		var crem = $("#txtremarks").val();
-		var ddate = $("#date_delivery").val(); //price validity  
-
-		var currcode = $("#selbasecurr").val();
-		var currdesc = $("#selbasecurr option:selected").text();
-		var currrate = $("#basecurrval").val();
-		var basegross = $("#txtnBaseGross").val().replace(/,/g,'');
-
-		var selsityp = $("#selsityp").val();
-		var selqotyp = $("#selqotyp").val(); 
-		var selrecurrtyp = $("#selrecurrtyp").val(); 
-
-		//alert($('#txtremarks').html());
-		
-		//alert("Quote_newsavehdr.php?ccode=" + ccode + "&crem="+ crem + "&ddate="+ ddate + "&ngross="+ngross + "&ccontname="+ ccontname + "&ccontdesg="+ ccontdesg + "&ccontdept="+ ccontdept + "&ccontemai="+ ccontemai + "&ccontsalt="+ ccontsalt + "&cvattyp="+ cvattyp + "&cterms="+ cterms + "&cdelinfo="+ cdelinfo + "&cservinfo="+ cservinfo + "&selsityp="+selsityp+"&currcode="+currcode+"&currdesc="+currdesc+"&currrate="+currrate+"&basegross="+basegross+"&selqotyp="+selqotyp+"&selrecurrtyp="+selrecurrtyp); 
-		
+		$("#currdesc").val($("#selbasecurr option:selected").text());
+		var formdata = new FormData($("#frmpos")[0]);
+		/**
+		 * @property JQuery formulate every file to compose to formdata 
+		 * @property formdata.delete('#upload') delete an upload key without values
+		 */
+		formdata.delete('upload[]');
+		jQuery.each(jQuery('#upload')[0].files, function(i, file) {
+			formdata.append('file-'+i, file);
+		});
 		$.ajax ({
 			url: "Quote_newsavehdr.php",
-			data: { ccode: ccode, ngross: ngross, ccontname: ccontname, ccontdesg: ccontdesg, ccontdept: ccontdept, ccontemai: ccontemai, ccontsalt: ccontsalt, cvattyp: cvattyp, cterms: cterms, cdelinfo: cdelinfo, cservinfo: cservinfo, ddate: ddate, crem: crem, selsityp:selsityp, currcode: currcode, currdesc: currdesc, currrate: currrate, basegross:basegross, selqotyp:selqotyp, selrecurrtyp:selrecurrtyp },
+			data: formdata,
+			cache: false,
+			processData: false,
+			contentType: false,
+			method: 'post',
+			type: 'post',
 			async: false,
 			beforeSend: function(){
 				$("#AlertMsg").html("&nbsp;&nbsp;<b>SAVING NEW QUOTATION: </b> Please wait a moment...");

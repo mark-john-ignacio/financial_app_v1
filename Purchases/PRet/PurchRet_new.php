@@ -30,6 +30,18 @@ include('../../include/access2.php');
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
+	<!--
+	-- 
+	-- FileType Bootstrap Scripts and Link
+	--
+	-->
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
@@ -82,6 +94,7 @@ include('../../include/access2.php');
 				<ul class="nav nav-tabs">
 					<li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Items List</a></li>
 					<li id="liacct"><a href="#2Acct" data-toggle="tab">Items Inventory</a></li>
+					<li><a href="#attc" data-toggle="tab">Attachments</a></li>
 				</ul>
 
 				<div class="tab-content nopadwtop2x">
@@ -145,6 +158,23 @@ include('../../include/access2.php');
 											</table>
 												<input type="hidden" name="hdnserialscnt" id="hdnserialscnt">
 										</div>
+						</div>
+
+						<div id="attc" class="tab-pane">
+							<table width="100%" border="0">
+								<tr>
+									<td>
+										<div class="col-sm-12 nopadding">
+											<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+											<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
+											<div class="col-sm-12 nopadwdown" style="padding-top:10px;">
+												<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+												<input type="file" name="upload[]" id="file-0" multiple />
+											</div>
+										</div>
+									</td>
+								</tr>
+							</table>
 						</div>
 				</div>
 
@@ -340,12 +370,24 @@ include('../../include/access2.php');
 
 $(document).ready(function() {
     $('.datepick').datetimepicker({
-        format: 'MM/DD/YYYY',
-		useCurrent: false,
-		minDate: moment(),
-		defaultDate: moment(),
-    });
-	
+      format: 'MM/DD/YYYY',
+			useCurrent: false,
+			minDate: moment(),
+			defaultDate: moment(),
+		});
+
+		$("#file-0").fileinput({
+			uploadUrl: '#',
+			showUpload: false,
+			showClose: false,
+			allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+			overwriteInitial: false,
+			maxFileSize:100000,
+			maxFileCount: 5,
+			browseOnZoneClick: true,
+			fileActionSettings: { showUpload: false, showDrag: false,}
+		});
+		
 });
 	
 $(function(){	
@@ -973,9 +1015,30 @@ function chkform(){
 		var ddate = $("#date_returned").val();
 		var ngross = 0;
 
+		var inputs = [
+			{code: 'ccode', value: $("#txtcustid").val()},
+			{code: 'crem', value: $("#txtremarks").val()},
+			{code: 'ddate', value: $("#date_returned").val()},
+			{code: 'ngross', value: 0}
+		]
+
+		var formdata = new FormData();
+		jQuery.each($('#file-0')[0].files, function(i, file){
+			formdata.append('file-'+i, file);
+		})
+		jQuery.each(inputs, function(i, {code, value}){
+			formdata.append(code, value);
+		})
+
 		$.ajax ({
 			url: "PurchRet_newsave.php",
-			data: { ccode: ccode, crem: crem, ddate: ddate, ngross: ngross },
+			data: formdata,
+			cache: false,
+			contentType: false,
+			processData: false,
+			type: 'post',
+			method: 'post',
+
 			async: false,
 			beforeSend: function(){
 				$("#AlertMsg").html("&nbsp;&nbsp;<b>SAVING NEW PO: </b> Please wait a moment...");

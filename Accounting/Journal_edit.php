@@ -27,6 +27,24 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	}
 }
 
+@$arrfiles = array();
+	@$arrname = array();
+
+	if (file_exists('../Components/assets/Journal/'.$company.'_'.$cjeno.'/')) {
+		$allfiles = scandir('../Components/assets/Journal/'.$company.'_'.$cjeno.'/');
+		$files = array_diff($allfiles, array('.', '..'));
+		foreach($files as $file) {
+
+			$fileNameParts = explode('.', $file);
+			$ext = end($fileNameParts);
+
+			@$arrname[] = array("name" => $file, "ext" => $ext);
+		}
+	
+	}else{
+		//echo "NO FILES";
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -35,112 +53,144 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Coop Financials</title>
+	<title>Myx Financials</title>
     
-	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="../Bootstrap/css/alert-modal.css">
+	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css?<?php echo time();?>">
+  <link rel="stylesheet" type="text/css" href="../global/plugins/font-awesome/css/font-awesome.min.css?h=<?php echo time();?>"/>
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+  <link rel="stylesheet" type="text/css" href="../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
 
-<script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../js/bootstrap3-typeahead.min.js"></script>
-<script src="../include/autoNumeric.js"></script>
-<!--
-<script src="../Bootstrap/js/jquery.numeric.js"></script>
-<script src="../Bootstrap/js/jquery.inputlimiter.min.js"></script>
--->
+	<link href="../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
 
-<script src="../Bootstrap/js/bootstrap.js"></script>
-<script src="../Bootstrap/js/moment.js"></script>
-<script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+	<script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../js/bootstrap3-typeahead.min.js"></script>
+	<script src="../include/autoNumeric.js"></script>
+	<!--
+	<script src="../Bootstrap/js/jquery.numeric.js"></script>
+	<script src="../Bootstrap/js/jquery.inputlimiter.min.js"></script>
+	-->
+
+	<script src="../Bootstrap/js/bootstrap.js"></script>
+	<script src="../Bootstrap/js/moment.js"></script>
+	<script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+
+	<script src="../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+	<script src="../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+	<script src="../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+	<script src="../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtctranno').focus(); disabled();">
+<input type="hidden" value='<?=json_encode(@$arrname)?>' id="hdnfileconfig"> 
+
 <?php
 if (mysqli_num_rows($sqlhead)!=0) {
 ?>
 
-<form action="Journal_editsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return chkform();">
+<form action="Journal_editsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return chkform();" enctype="multipart/form-data">
 	<fieldset>
-    	<legend>Record Journal Entry </legend>	
-         
- <table width="100%" border="0">
-  <tr>
-    <tH>JOURNAL No.:</tH>
-    <td colspan="2" style="padding:2px;">
-        
-        <div class="col-xs-3 nopadding">
-          <input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" placeholder="Enter Journal No..." required autocomplete="off" value="<?php echo $cjeno;?>"  onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
-          </div>
-        
-      <input type="hidden" name="hdntranno" id="hdntranno" value="<?php echo $cjeno;?>">
-      
-      <input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
-      <input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
-     
-     
-     <div id="statmsgz" style="color:#F00"></div> 
-    </td>    
-    <td style="padding:2px;" align="left">
-      
-              <div class="col-xs-5 nopadding" style="text-align:right">
-          <?php
-        if($lCancelled==1){
-            echo "<font color='#FF0000'><b>CANCELLED</b></font>";
-        }
-        
-        if($lPosted==1){
-            echo "<font color='#FF0000'><b>POSTED</b></font>";
-        }
-        ?>    	
-          </div>
-        
-        </div>
+    	<legend>Journal Entry Details</legend>	
 
-      <!--<input type="checkbox" name="lTaxInc" id="lTaxInc" value="YES" <?php //if ($ltaxinc==1) { echo "checked"; }?> >-->
-    </td>
-  </tr>
-  <tr>
-    <tH><span style="padding:2px">DATE:</span></tH>
-    <td style="padding:2px;">
-    <div class="col-xs-5 nopadding">
-      <input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date_format(date_create($ddate),'m/d/Y'); ?>" />
-    </div>
-    <tH><span style="padding:2px">Total Debit:</span></tH>
-    <td style="padding:2px;">
-    <div class="col-xs-5 nopadding">
-    <input type='text' class='form-control input-sm' name='txtnDebit' id='txtnDebit' value="<?php echo $totdebit;?>" style="text-align:right" readonly>
-    </div>
-    </td>
-  </tr>
-  <tr>
-    <tH width="100" rowspan="3" valign="top">MEMO:</tH>
-    <td rowspan="3" style="padding:2px;" valign="top"><div class="col-xs-10 nopadding">
-      <textarea class="form-control" rows="3" id="txtremarks" name="txtremarks"><?php echo $cmemo;?></textarea>
-    </div>
-    <tH><span style="padding:2px">Total Credit:</span></tH>
-    <td style="padding:2px;">
-    <div class="col-xs-5 nopadding">
-    <input type='text' class='form-control input-sm' name='txtnCredit' id='txtnCredit' value="<?php echo $totcredit;?>" style="text-align:right" readonly>
-    </div>
-    </td>
-  </tr>
-  <tr>
-    <tH width="150" style="padding:2px">&nbsp;<!--Tax:--></tH>
-    <td style="padding:2px">&nbsp;
-    <!--
-    <div class="col-xs-5 nopadding">
-      <input type='text' class='form-control input-sm' name='txtnTax' id='txtnTax' value="<?php// echo $tottax;?>" style="text-align:right" readonly>
-    </div>
-    -->
-    </td>
-  </tr>
-  <tr>
-    <tH style="padding:2px">Out of Balance:</tH>
-    <td style="padding:2px"><div class="col-xs-5 nopadding">
-      <input type='text' class='form-control input-sm' name='txtnOutBal' id='txtnOutBal' value="0.00" style="text-align:right" readonly>
-    </div></td>
-  </tr>
-      </table>
+			<ul class="nav nav-tabs">
+					<li class="active"><a href="#jed">Journal Details</a></li>
+					<li><a href="#attc">Attachments</a></li>
+				</ul>
+
+				<div class="alt2" dir="ltr" style="margin: 0px; padding: 3px;border: 0px;width: 100%;text-align: left;overflow: inherit !important">
+					<div class="tab-content">  
+
+						<div id="jed" class="tab-pane fade in active" style="padding-top:10px;">
+         
+							<table width="100%" border="0">
+								<tr>
+									<tH>JOURNAL No.:</tH>
+									<td colspan="2" style="padding:2px;">
+											
+											<div class="col-xs-3 nopadding">
+												<input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" placeholder="Enter Journal No..." required autocomplete="off" value="<?php echo $cjeno;?>"  onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
+												</div>
+											
+										<input type="hidden" name="hdntranno" id="hdntranno" value="<?php echo $cjeno;?>">
+										
+										<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
+										<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
+									
+									
+									<div id="statmsgz" style="color:#F00"></div> 
+									</td>    
+									<td style="padding:2px;" align="left">
+										
+														<div class="col-xs-5 nopadding" style="text-align:right">
+												<?php
+											if($lCancelled==1){
+													echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+											}
+											
+											if($lPosted==1){
+													echo "<font color='#FF0000'><b>POSTED</b></font>";
+											}
+											?>    	
+												</div>
+											
+											</div>
+
+										<!--<input type="checkbox" name="lTaxInc" id="lTaxInc" value="YES" <?php //if ($ltaxinc==1) { echo "checked"; }?> >-->
+									</td>
+								</tr>
+								<tr>
+									<tH><span style="padding:2px">DATE:</span></tH>
+									<td style="padding:2px;">
+									<div class="col-xs-5 nopadding">
+										<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date_format(date_create($ddate),'m/d/Y'); ?>" />
+									</div>
+									<tH><span style="padding:2px">Total Debit:</span></tH>
+									<td style="padding:2px;">
+									<div class="col-xs-5 nopadding">
+									<input type='text' class='form-control input-sm' name='txtnDebit' id='txtnDebit' value="<?php echo $totdebit;?>" style="text-align:right" readonly>
+									</div>
+									</td>
+								</tr>
+								<tr>
+									<tH width="100" rowspan="3" valign="top">MEMO:</tH>
+									<td rowspan="3" style="padding:2px;" valign="top"><div class="col-xs-10 nopadding">
+										<textarea class="form-control" rows="3" id="txtremarks" name="txtremarks"><?php echo $cmemo;?></textarea>
+									</div>
+									<tH><span style="padding:2px">Total Credit:</span></tH>
+									<td style="padding:2px;">
+									<div class="col-xs-5 nopadding">
+									<input type='text' class='form-control input-sm' name='txtnCredit' id='txtnCredit' value="<?php echo $totcredit;?>" style="text-align:right" readonly>
+									</div>
+									</td>
+								</tr>
+								<tr>
+									<tH width="150" style="padding:2px">&nbsp;<!--Tax:--></tH>
+									<td style="padding:2px">&nbsp;
+									<!--
+									<div class="col-xs-5 nopadding">
+										<input type='text' class='form-control input-sm' name='txtnTax' id='txtnTax' value="<?php// echo $tottax;?>" style="text-align:right" readonly>
+									</div>
+									-->
+									</td>
+								</tr>
+								<tr>
+									<tH style="padding:2px">Out of Balance:</tH>
+									<td style="padding:2px"><div class="col-xs-5 nopadding">
+										<input type='text' class='form-control input-sm' name='txtnOutBal' id='txtnOutBal' value="0.00" style="text-align:right" readonly>
+									</div></td>
+								</tr>
+							</table>
+
+						</div>
+						<div id="attc" class="tab-pane fade in" style="padding-top:10px;">
+
+								<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+								<input id="file-0" name="upload[]" type="file" multiple>
+
+							</div>
+					</div>
+				</div>
 <br>
     
 <small><i>*Press tab after remarks field (last row) to add new line..</i></small>
@@ -352,6 +402,48 @@ else{
 
 <script type="text/javascript">
 
+	var fileslist = [];
+	/*
+	var xz = $("#hdnfiles").val();
+	$.each(jQuery.parseJSON(xz), function() { 
+		fileslist.push(xz);
+	});
+	*/
+
+	console.log(fileslist);
+	var filesconfigs = [];
+	var xzconfig = JSON.parse($("#hdnfileconfig").val());
+
+	//alert(xzconfig.length);
+
+	var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
+	var arrimg = new Array("jpg","png","gif","jpeg");
+
+	var xtc = "";
+	for (var i = 0; i < xzconfig.length; i++) {
+    var object = xzconfig[i];
+		//alert(object.ext + " : " + object.name);
+		fileslist.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/Journal/<?=$company."_".$cjeno?>/" + object.name)
+
+		if(jQuery.inArray(object.ext, arroffice) !== -1){
+			xtc = "office";
+		}else if(jQuery.inArray(object.ext, arrimg) !== -1){
+			xtc = "image";
+		}else if(object.ext=="txt"){
+			xtc = "text";
+		}else{
+			xtc = object.ext;
+		}
+
+		filesconfigs.push({
+			type : xtc, 
+			caption : object.name,
+			width : "120px",
+			url: "th_filedelete.php?id="+object.name+"&code=<?=$cjeno?>"+"&typ=Journal", 
+			key: i + 1
+		});
+	}
+
 	$(document).keydown(function(e) {	 
 	
 	 if(e.keyCode == 112) { //F1
@@ -389,9 +481,46 @@ else{
 
 	$(function(){
 
+		$(".nav-tabs a").click(function(){
+			$(this).tab('show');
+		});
+
 	    $('#date_delivery').datetimepicker({
         format: 'MM/DD/YYYY'
       });
+
+			if(fileslist.length>0){
+				$("#file-0").fileinput({
+					theme: 'fa5',
+					showUpload: false,
+					showClose: false,
+					browseOnZoneClick: true,
+					allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+					overwriteInitial: false,
+					maxFileSize:100000,
+					maxFileCount: 5,
+					browseOnZoneClick: true,
+					fileActionSettings: { showUpload: false, showDrag: false, },
+					initialPreview: fileslist,
+					initialPreviewAsData: true,
+					initialPreviewFileType: 'image',
+					initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/Journal/<?=$company."_".$cjeno?>/{filename}',
+					initialPreviewConfig: filesconfigs
+				});
+			}else{
+				$("#file-0").fileinput({
+					theme: 'fa5',
+					showUpload: false,
+					showClose: false,
+					browseOnZoneClick: true,
+					allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+					overwriteInitial: false,
+					maxFileSize:100000,
+					maxFileCount: 5,
+					browseOnZoneClick: true,
+					fileActionSettings: { showUpload: false, showDrag: false, }
+				})
+			}
 	
 			$("input.numeric").autoNumeric('init',{mDec:2,wEmpty: 'zero'});
 			//$("input.numeric").numeric();

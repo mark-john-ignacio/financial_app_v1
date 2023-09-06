@@ -62,6 +62,22 @@
 	// END UOM LIST
 
 	$sqlhead = mysqli_query($con,"Select A.*, B.Minit, B.Fname, B.Lname from purchrequest A left join users B on A.cpreparedby=B.Userid Where A.compcode='$company' and A.ctranno='$cprno'");
+
+	if (file_exists('../../Components/assets/PReq/'.$company.'_'.$cprno.'/')) {
+		$allfiles = scandir('../../Components/assets/PReq/'.$company.'_'.$cprno.'/');
+		$files = array_diff($allfiles, array('.', '..'));
+		foreach($files as $file) {
+
+			$fileNameParts = explode('.', $file);
+			$ext = end($fileNameParts);
+
+			@$arrname[] = array("name" => $file, "ext" => $ext);
+		}
+	
+	}else{
+		echo "NO FILES";
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -73,8 +89,12 @@
 	<title>Myx Financials</title>
     
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
+	<link rel="stylesheet" type="text/css" href="../../global/plugins/font-awesome/css/font-awesome.min.css?h=<?php echo time();?>"/>
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
   <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+
+	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
 
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../js/bootstrap3-typeahead.min.js"></script>
@@ -84,9 +104,17 @@
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
+	<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcprno').focus();">
+
+<input type="hidden" value='<?=json_encode(@$arrname)?>' id="hdnfileconfig"> 
+
 <?php
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -103,92 +131,134 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$lPosted = $row['lapproved'];
 	}
 ?>
-	<form action="PR_editsave.php" name="frmpos" id="frmpos" method="post">
+	<form action="PR_editsave.php" name="frmpos" id="frmpos" method="post"  enctype="multipart/form-data">
 		<fieldset>
     	<legend>Purchase Request</legend>	
 
-        <table width="100%" border="0">
-					<tr>
-								<tH>PR No.:</tH>
-								<td colspan="2" style="padding:2px">
-									<div class="col-xs-3 nopadding">
-										<input type="text" class="form-control input-sm" id="txtcprno" name="txtcprno" width="20px" tabindex="1" value="<?php echo $cprno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
-									</div>     
-									<input type="hidden" name="hdntranno" id="hdntranno" value="<?php echo $cprno;?>">
-									<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
-									<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
-									&nbsp;&nbsp;
-									<div id="statmsgz" style="display:inline"></div>
-								</td>
-								<td style="padding:2px" align="center">
-									<div id="salesstat">
-										<?php
-											if($lCancelled==1){
-												echo "<font color='#FF0000'><b>CANCELLED</b></font>";
-											}
-											
-											if($lPosted==1){
-												echo "<font color='#FF0000'><b>POSTED</b></font>";
-											}
-										?>
-									</div>
-								</td>
-							</tr>
+				<ul class="nav nav-tabs">
+					<li class="active"><a href="#home">PR Details</a></li>
+					<li><a href="#attc">Attachments</a></li>
+				</ul>
 
-					<tr>
-						<tH width="100">Requested By:</tH>
-						<td style="padding:2px">
-							<div class="col-xs-12 nopadding">
-								<div class="col-xs-11 nopadding">
-									<input type="hidden" id="txtcustid" name="txtcustid" value="<?=$cpreparedBy?>">
-									<?=$cpreparedName?>
-								</div>
-							</div>
-						</td>
-						<tH width="150" style="padding:2px">Date Needed:</tH>
-						<td style="padding:2px" width="200">
-							<div class="col-xs-8 nopadding">
-								<input type='text' class="form-control input-sm" id="date_needed" name="date_needed" value="<?=$dDueDate; ?>"/>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<tH width="100">Section:</tH>
-						<td style="padding:2px">
-							<div class="col-xs-5 nopadding">
-							<select class="form-control input-sm" name="selwhfrom" id="selwhfrom"> 
-								<?php
-										foreach($rowdetloc as $localocs){									
-								?>
-											<option value="<?php echo $localocs['nid'];?>" <?=($cSecID==$localocs['nid']) ? "selected" : "";?>><?php echo $localocs['cdesc'];?></option>										
-								<?php	
-										}						
-								?>
-							</select>
-							</div>
-						</td>
-						<tH width="150">&nbsp;</tH>
-						<td style="padding:2px;">
-						&nbsp;
-						</td>
-					</tr>
-					<tr>
-						<tH width="100">Remarks:</tH>
-						<td style="padding:2px">
-							<div class="col-xs-11 nopadding">
-								<textarea class="form-control input-sm" id="txtremarks" name="txtremarks"><?=$cRemarks?></textarea>
-							</div>
-						</td>
-						<tH width="150">&nbsp;</tH>
-						<td style="padding:2px;">
-						&nbsp;
-						</td>
-					</tr>
 
-					<tr>
-						<td colspan="4">&nbsp;</td>
-					</tr>
-				</table>
+				<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left; overflow: inherit !important;">
+					<div class="tab-content">  
+
+						<div id="home" class="tab-pane fade in active" style="padding-left:5px;">
+
+							<table width="100%" border="0">
+								<tr>
+											<tH>PR No.:</tH>
+											<td colspan="2" style="padding:2px">
+												<div class="col-xs-3 nopadding">
+													<input type="text" class="form-control input-sm" id="txtcprno" name="txtcprno" width="20px" tabindex="1" value="<?php echo $cprno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
+												</div>     
+												<input type="hidden" name="hdntranno" id="hdntranno" value="<?php echo $cprno;?>">
+												<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
+												<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
+												&nbsp;&nbsp;
+												<div id="statmsgz" style="display:inline"></div>
+											</td>
+											<td style="padding:2px" align="center">
+												<div id="salesstat">
+													<?php
+														if($lCancelled==1){
+															echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+														}
+														
+														if($lPosted==1){
+															echo "<font color='#FF0000'><b>POSTED</b></font>";
+														}
+													?>
+												</div>
+											</td>
+										</tr>
+
+								<tr>
+									<tH width="100">Requested By:</tH>
+									<td style="padding:2px">
+										<div class="col-xs-12 nopadding">
+											<div class="col-xs-11 nopadding">
+												<input type="hidden" id="txtcustid" name="txtcustid" value="<?=$cpreparedBy?>">
+												<?=$cpreparedName?>
+											</div>
+										</div>
+									</td>
+									<tH width="150" style="padding:2px">Date Needed:</tH>
+									<td style="padding:2px" width="200">
+										<div class="col-xs-8 nopadding">
+											<input type='text' class="form-control input-sm" id="date_needed" name="date_needed" value="<?=$dDueDate; ?>"/>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<tH width="100">Section:</tH>
+									<td style="padding:2px">
+										<div class="col-xs-5 nopadding">
+										<select class="form-control input-sm" name="selwhfrom" id="selwhfrom"> 
+											<?php
+													foreach($rowdetloc as $localocs){									
+											?>
+														<option value="<?php echo $localocs['nid'];?>" <?=($cSecID==$localocs['nid']) ? "selected" : "";?>><?php echo $localocs['cdesc'];?></option>										
+											<?php	
+													}						
+											?>
+										</select>
+										</div>
+									</td>
+									<tH width="150">&nbsp;</tH>
+									<td style="padding:2px;">
+									&nbsp;
+									</td>
+								</tr>
+								<tr>
+									<tH width="100">Remarks:</tH>
+									<td style="padding:2px">
+										<div class="col-xs-11 nopadding">
+											<textarea class="form-control input-sm" id="txtremarks" name="txtremarks"><?=$cRemarks?></textarea>
+										</div>
+									</td>
+									<tH width="150">&nbsp;</tH>
+									<td style="padding:2px;">
+									&nbsp;
+									</td>
+								</tr>
+
+								<tr>
+									<td colspan="4">&nbsp;</td>
+								</tr>
+							</table>
+
+						</div>
+
+						<div id="attc" class="tab-pane fade in" style="padding-left: 5px;">
+							<!--
+							--
+							-- Import Files Modal
+							--
+							-->
+							<table width="100%" border="0">
+								<tr>
+									<td>
+										<div class="col-sm-12 nopadding">
+											<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+											<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
+											<div class="col-sm-12 nopadding" style="padding-top:10px;">
+												<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+												<input type="file" name="upload[]" id="file-0" multiple />
+											</div>
+										</div>
+									</td>
+								</tr>
+							</table>
+							
+						</div>
+
+					</div>
+				</div>
+
+				<hr>
+				<div class="col-xs-12 nopadwdown"><b>Details</b></div>
 
 				<div class="col-xs-12 nopadwdown">
 					<input type="hidden" name="hdnunit" id="hdnunit">
@@ -393,6 +463,49 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 <script type="text/javascript">
 
+	var fileslist = [];
+	/*
+	var xz = $("#hdnfiles").val();
+	$.each(jQuery.parseJSON(xz), function() { 
+		fileslist.push(xz);
+	});
+	*/
+
+	console.log(fileslist);
+	var filesconfigs = [];
+	var xzconfig = JSON.parse($("#hdnfileconfig").val());
+
+	//alert(xzconfig.length);
+
+	var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
+	var arrimg = new Array("jpg","png","gif","jpeg");
+
+	var xtc = "";
+	for (var i = 0; i < xzconfig.length; i++) {
+    var object = xzconfig[i];
+		//alert(object.ext + " : " + object.name);
+		fileslist.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/PReq/<?=$company."_".$cprno?>/" + object.name)
+
+		if(jQuery.inArray(object.ext, arroffice) !== -1){
+			xtc = "office";
+		}else if(jQuery.inArray(object.ext, arrimg) !== -1){
+			xtc = "image";
+		}else if(object.ext=="txt"){
+			xtc = "text";
+		}else{
+			xtc = object.ext;
+		}
+
+		filesconfigs.push({
+			type : xtc, 
+			caption : object.name,
+			width : "120px",
+			url: "th_filedelete.php?id="+object.name+"&code=<?=$cprno?>", 
+			key: i + 1
+		});
+	}
+
+
 	$(document).keydown(function(e) {	 
 		
 		if(e.keyCode == 112) { //F1
@@ -440,9 +553,46 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 	$(document).ready(function() {
 
+		$(".nav-tabs a").click(function(){
+    	$(this).tab('show');
+		});
+
 		$('#date_needed').datetimepicker({
 			format: 'MM/DD/YYYY'
 		});
+
+		if(fileslist.length>0){
+			$("#file-0").fileinput({
+				theme: 'fa5',
+				showUpload: false,
+				showClose: false,
+				browseOnZoneClick: true,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, },
+				initialPreview: fileslist,
+				initialPreviewAsData: true,
+				initialPreviewFileType: 'image',
+				initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/PReq/<?=$company."_".$cprno?>/{filename}',
+				initialPreviewConfig: filesconfigs
+			});
+		}else{
+			$("#file-0").fileinput({
+				theme: 'fa5',
+				showUpload: false,
+				showClose: false,
+				browseOnZoneClick: true,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, }
+			});
+		}
 
 		$("input.numeric").autoNumeric('init',{mDec:2});
 		$("input.numeric").on("click", function () {

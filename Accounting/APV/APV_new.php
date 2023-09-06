@@ -34,7 +34,7 @@
 
 	<title>Myx Financials</title>
     
-	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?h=<?php echo time();?>">
   <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css"> 
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
 
@@ -50,13 +50,25 @@
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
+	<!--
+	--
+	-- FileType Bootstrap Scripts and Link
+	--
+	-->
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
 	<input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes">  
 	<input type="hidden" value='<?=json_encode(@$arrwtxlist)?>' id="hdnxtax">  
 
-	<form action="APV_newsave.php" name="frmpos" id="frmpos" method="post">
+	<form action="APV_newsave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
 		<fieldset>
     	<legend>AP Voucher</legend>	
         <table width="100%" border="0">
@@ -124,6 +136,7 @@
 				<ul class="nav nav-tabs">
 					<li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Details</a></li>
 					<li id="liacct"><a href="#2Acct" data-toggle="tab">Accounting</a></li>
+					<li><a href="#attc" data-toggle="tab">Attachments</a></li>
 				</ul>
 
 				<div class="tab-content nopadwtop2x">
@@ -203,6 +216,33 @@
             		<input type="hidden" name="hdnACCCnt" id="hdnACCCnt">
 						</div>
 
+					</div>
+
+					<div id="attc" class="tab-pane" style="padding-left: 5px">
+						<div class="alt2" dir="ltr" style="
+								margin: 0px;
+								padding: 3px;
+								width: 100%;
+								height: 450px;
+								text-align: left;
+								overflow: auto">
+
+							<table width="100%" border="0">
+								<tr>
+									<td>
+										<div class="col-sm-12 nopadding">
+											<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+											<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
+											<div class="col-sm-12 nopadwdown" style="padding-top:10px;">
+												<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+												<input type="file" name="upload[]" id="file-0" multiple />
+											</div>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</div>
+						
 					</div>
 
     		</div>	
@@ -391,10 +431,24 @@
 	});
 
 
-	$(function(){
+	$(document).ready(function(){
 			
 		$('.datepick').datetimepicker({
 			format: 'MM/DD/YYYY'
+		});
+
+		
+		$("#file-0").fileinput({
+			theme: 'fa5',
+			uploadUrl: '#',
+			showUpload: false,
+			showClose: false,
+			allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+			overwriteInitial: false,
+			maxFileSize:100000,
+			maxFileCount: 5,
+			browseOnZoneClick: true,
+			fileActionSettings: { showUpload: false, showDrag: false,}
 		});
 
 		$('#txtcust').typeahead({

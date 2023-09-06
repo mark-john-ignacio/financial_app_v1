@@ -88,6 +88,8 @@ else {
 		mysqli_query($con, "Delete from so_t_info Where compcode='$company' and ctranno='$cSINo'");
 
 		echo $cSINo;
+
+		print_r($_FILES);
 	}
 
 	if(count($_FILES) != 0){
@@ -96,7 +98,6 @@ else {
 			mkdir($directory, 0777);
 		}
 		$directory .= "{$company}_{$cSINo}/";
-		var_dump($directory);
 		upload_image($_FILES, $directory);
 	}
 ?>  

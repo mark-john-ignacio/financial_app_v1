@@ -4,6 +4,7 @@ session_start();
 }
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
+require_once('../../Model/helper.php');
 
 function chkgrp($valz) {
 	if($valz==''){
@@ -55,5 +56,14 @@ $company = $_SESSION['companyid'];
 	// Delete previous details
 	mysqli_query($con, "Delete from purchreturn_t Where compcode='$company' and ctranno='$cSINo'");
 	mysqli_query($con, "Delete from purchreturn_t_serials Where compcode='$company' and ctranno='$cSINo'");	
+
+	if(count($_FILES) != 0){
+		$directory = "../../Components/assets/PR/";
+		if(!is_dir($directory)){
+			mkdir($directory, 0777);
+		}
+		$directory .= "{$company}_{$cSINo}/";
+		upload_image($_FILES, $directory);
+	}
 
 ?>

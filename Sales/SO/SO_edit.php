@@ -51,11 +51,9 @@ function listcurrencies(){ //API for currency list
 	}
 
 	@$arrname = array();
-	$directory = "../../Components/assets/{$company}_{$txtctranno}/";
+	$directory = "../../Components/assets/SO/{$company}_{$txtctranno}/";
 	if(file_exists($directory)){
 		@$arrname = file_checker($directory);
-	} else {
-		echo "No Files!";
 	}
 	
 
@@ -173,7 +171,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			<li><a href="#attc">Attachment</a></li>
 	</ul>
  
-	<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left;overflow: auto">
+	<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left; overflow: inherit !important;">
 			<div class="tab-content">
 			
 					<div id="home" class="tab-pane fade in active" style="padding-left:5px;">
@@ -701,12 +699,12 @@ var extender;
  * setting up an list of file and config of a file
  */
 file_name.map(({name, ext}, i) => {
-	list_file.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/<?=$company."_".$txtctranno?>/" + name)
+	list_file.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/SO/<?=$company."_".$txtctranno?>/" + name)
 	console.log(ext);
 
-	if(jQuery.inArray(ext, arroffice) !== 1){
+	if(jQuery.inArray(ext, arroffice) !== -1){
 		extender = "office";
-	} else if (jQuery.inArray(ext, arrimg) !== 1){
+	} else if (jQuery.inArray(ext, arrimg) !== -1){
 		extender = "image";
 	} else if (ext == "txt"){
 		extender = "text";
@@ -790,24 +788,25 @@ file_name.map(({name, ext}, i) => {
 					showClose: false,
 					allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
 					overwriteInitial: false,
-					maxFileSize:2000,
+					maxFileSize:100000,
 					maxFileCount: 5,
+					browseOnZoneClick: true,
 					fileActionSettings: { showUpload: false, showDrag: false, },
 					initialPreview: list_file,
 					initialPreviewAsData: true,
 					initialPreviewFileType: 'image',
-					initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/<?=$company."_".$txtctranno?>/{filename}',
+					initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/SO/<?=$company."_".$txtctranno?>/{filename}',
 					initialPreviewConfig: file_config
 				});
 			} else {
 				$("#file-0").fileinput({
-					theme: 'fa5',
 					showUpload: false,
 					showClose: false,
 					allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
 					overwriteInitial: false,
-					maxFileSize:2000,
+					maxFileSize:100000,
 					maxFileCount: 5,
+					browseOnZoneClick: true,
 					fileActionSettings: { showUpload: false, showDrag: false, }
 				});
 			}
@@ -2338,9 +2337,21 @@ function chkform(){
 		//alert("SO_updatehdr.php?ccode=" + ccode + "&crem="+ crem + "&ddate="+ ddate + "&ngross="+ngross + "&selsityp="+csitype+"&ccpono="+ ccpono+"&salesman="+ salesman+"&delcodes="+ delcodes+"&delhousno="+ delhousno+"&delcity="+ delcity+"&delstate="+ delstate+"&delcountry="+ delcountry+"&delzip="+ delzip+"&specins="+ specins);
 		//data: { id:trancode, ccode: ccode, crem: crem, ddate: ddate, ngross: ngross, selsityp: csitype, ccpono:ccpono, salesman:salesman, delcodes:delcodes, delhousno:delhousno, delcity:delcity, delstate:delstate, delcountry:delcountry, delzip:delzip, specins:specins },
 		var myform = $("#frmpos").serialize();
+
+		var formdata = new FormData($('#frmpos')[0]);
+		formdata.delete('upload[]');
+		jQuery.each($('#file-0')[0].files, function(i, file){
+			formdata.append('file-'+i, file);
+		})
+
 		$.ajax ({
 			url: "SO_updatehdr.php",
-			data: myform,
+			data: formdata,
+			cache: false,
+			processData: false,
+			contentType: false,
+			type: 'post',
+			method: 'post',
 			async: false,
 			beforeSend: function(){
 				$("#AlertMsg").html("&nbsp;&nbsp;<b>UPDATING SALES ORDER: </b> Please wait a moment...");

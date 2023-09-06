@@ -38,149 +38,203 @@
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
+	<!--
+	--
+	-- FileType Bootstrap Scripts and Link
+	--
+	-->
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
-<form action="APAdj_newsave.php" name="frmpos" id="frmpos" method="post">
+<form action="APAdj_newsave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
 	<fieldset>
     	<legend>AP Adjustment</legend>	
-        <table width="100%" border="0">
-  <tr>
-    <tH width="100">&nbsp;Supplier:</tH>
-    <td style="padding:2px">
-    <div class="col-xs-12 nopadding">
-        <div class="col-xs-3 nopadding">
-        	<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
-            <input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
 
-        </div>
-
-    	<div class="col-xs-8 nopadwleft">
-        	<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off">
-        </div> 
-      </div>
-    </td>
-    <tH width="150">Date:</tH>
-    <td style="padding:2px;">
-     <div class="col-xs-11 nopadding">
-		<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $ddeldate; ?>" />
-     </div>
-    </td>
-  </tr>
-  <tr>
-    <tH width="100">&nbsp;Remarks:</tH>
-    <td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div></td>
-    <tH width="150">Type:</tH>
-    <td style="padding:2px" align="right">
-      <div class="col-xs-11 nopadding">
-    	<select name="seltype" id="seltype" class="form-control input-sm">
-            <option value="Credit">Credit</option>
-            <option value="Debit">Debit</option>
-        </select>
-      </div>
-    </td>
-  </tr>
-  <tr>
-  	<tH width="100">&nbsp;<!--RETURN NO.:-->Reference:</tH>
-    <td>       
-    	<div class="col-xs-12 nopadding">
-        	<div class="col-xs-3 nopadding">
-						<input type="text" class="form-control input-sm" id="txtSIRef" name="txtSIRef" width="20px" tabindex="2" readonly placeholder="Search Purchase Return No...">
-          </div>
-  
-          <div class="col-xs-1 nopadwleft">
-            <button class="btncgroup btn btn-block btn-sm btn-danger" type="button" id="btnSISearch" onClick="InsertDet('REF');"><i class="fa fa-search"></i></button>
-          </div>
-
-					<div class="col-xs-3 nopadwleft">
-						<input type="text" class="form-control input-sm" id="txtInvoiceRef" name="txtInvoiceRef" width="20px" tabindex="2" placeholder="Search Supplier's Inv No..." readonly>      
-						<input type="hidden" id="invtyp" name="invtyp" value="">      
-					</div>
-			</div>
-		</td>
-    <tH width="150">&nbsp;</tH>
-    <td style="padding:2px"><div class="col-xs-11 nopadding">
-			<div class="form-check">
-				<input class="form-check-input" type="checkbox" value="1" id="isReturn" name="isReturn"  checked/>
-				<label class="form-check-label" for="flexCheckChecked">Purchase Return</label>
-			</div>
-    </div></td>
-    <td style="padding:2px"  align="right">&nbsp;</td>
-  </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td style="padding:2px">&nbsp;</td>
-    <td style="padding:2px"  align="right">&nbsp;</td>
-  </tr>
-
-<tr>
-    <td colspan="5">
-     &nbsp;
-
-    </td>
-    </tr>
-</table>
-
-<div class="col-xs-12 nopadding">
-	<div class="col-xs-4 nopadding"><small><i>*Press <b>ENTER</b> on remarks field (last row) to add new line..</i></small></div>
-	<div class="col-xs-8 nopadding text-danger" style='text-align: right !important' id="unbaltext"></div>
-</div>
-
-
-         <div class="alt2" dir="ltr" style="
-					margin: 0px;
-					padding: 3px;
-					border: 1px solid #919b9c;
-					width: 100%;
-					height: 250px;
-					text-align: left;
-					overflow: auto">
-	
-          <table id="MyTable" class="MyTable table table-condensed" width="100%">
-					<thead>
+					<table width="100%" border="0">
 						<tr>
-							<th style="border-bottom:1px solid #999">Account No.</th>
-							<th style="border-bottom:1px solid #999">Account Title</th>
-							<th style="border-bottom:1px solid #999">Debit</th>
-							<th style="border-bottom:1px solid #999">Credit</th>
-							<th style="border-bottom:1px solid #999">Remarks</th>
-							<th style="border-bottom:1px solid #999">&nbsp;</th>
+							<tH width="100">&nbsp;Supplier:</tH>
+							<td style="padding:2px">
+							<div class="col-xs-12 nopadding">
+									<div class="col-xs-3 nopadding">
+										<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
+											<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
+
+									</div>
+
+								<div class="col-xs-8 nopadwleft">
+										<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off">
+									</div> 
+								</div>
+							</td>
+							<tH width="150">Date:</tH>
+							<td style="padding:2px;">
+							<div class="col-xs-11 nopadding">
+							<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $ddeldate; ?>" />
+							</div>
+							</td>
 						</tr>
-					</thead>   
-					<tbody class="tbody">
 						<tr>
-              <td width="100px" style="padding:1px"><input type="text" class="typeno form-control input-xs" name="txtcAcctNo1" id="txtcAcctNo1"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctDesc1" data-debit="txtnDebit1"></td>
+							<tH width="100">&nbsp;Remarks:</tH>
+							<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div></td>
+							<tH width="150">Type:</tH>
+							<td style="padding:2px" align="right">
+								<div class="col-xs-11 nopadding">
+								<select name="seltype" id="seltype" class="form-control input-sm">
+											<option value="Credit">Credit</option>
+											<option value="Debit">Debit</option>
+									</select>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<tH width="100">&nbsp;<!--RETURN NO.:-->Reference:</tH>
+							<td>       
+								<div class="col-xs-12 nopadding">
+										<div class="col-xs-3 nopadding">
+											<input type="text" class="form-control input-sm" id="txtSIRef" name="txtSIRef" width="20px" tabindex="2" readonly placeholder="Search Purchase Return No...">
+										</div>
+						
+										<div class="col-xs-1 nopadwleft">
+											<button class="btncgroup btn btn-block btn-sm btn-danger" type="button" id="btnSISearch" onClick="InsertDet('REF');"><i class="fa fa-search"></i></button>
+										</div>
 
-              <td style="padding:1px"><input type="text" class="typedesc form-control input-xs" name="txtcAcctDesc1" id="txtcAcctDesc1"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctNo1" data-debit="txtnDebit1"></td>
-              <td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit1" id="txtnDebit1" value="0.00" autocomplete="off"></td>
-              <td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit1" id="txtnCredit1" value="0.00" autocomplete="off"></td>
-              <td width="200px" style="padding:1px"><input type="text" class="cRem form-control input-xs" name="txtcRem1" id="txtcRem1" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"></td>
-              <td width="40px" align="right">&nbsp;</td>
-            </tr>
-          </tbody>
-                    
-			</table>
+										<div class="col-xs-3 nopadwleft">
+											<input type="text" class="form-control input-sm" id="txtInvoiceRef" name="txtInvoiceRef" width="20px" tabindex="2" placeholder="Search Supplier's Inv No..." readonly>      
+											<input type="hidden" id="invtyp" name="invtyp" value="">      
+										</div>
+								</div>
+							</td>
+							<tH width="150">&nbsp;</tH>
+							<td style="padding:2px"><div class="col-xs-11 nopadding">
+								<div class="form-check">
+									<input class="form-check-input" type="checkbox" value="1" id="isReturn" name="isReturn"  checked/>
+									<label class="form-check-label" for="flexCheckChecked">Purchase Return</label>
+								</div>
+							</div></td>
+							<td style="padding:2px"  align="right">&nbsp;</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td style="padding:2px">&nbsp;</td>
+							<td style="padding:2px"  align="right">&nbsp;</td>
+						</tr>
 
-</div>
-<br>
-<table width="100%" border="0" cellpadding="3">
-  <tr>
-    <td>
-    <button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='ARAdj.php';" id="btnMain" name="btnMain">
-Back to Main<br>(ESC)</button>
-    
-    <input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
-    <button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">SAVE<br> (F2)</button></td>
-    <td align="right" valign="top">
-    <b>TOTAL AMOUNT </b>
-    &nbsp;&nbsp;
-    <input type="text" id="txtnGross" name="txtnGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="25">
-      </td>
-    </tr>
-</table>
+						<tr>
+							<td colspan="5">
+							&nbsp;
 
-    </fieldset>
+							</td>
+						</tr>
+					</table>
+
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#items" data-toggle="tab">Details List</a></li>
+				<li><a href="#attc" data-toggle="tab">Attachments</a></li>
+			</ul>
+
+			<div class="tab-content">
+
+				<div id="items" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
+
+					<div class="col-xs-12 nopadding">
+						<div class="col-xs-4 nopadding"><small><i>*Press <b>ENTER</b> on remarks field (last row) to add new line..</i></small></div>
+						<div class="col-xs-8 nopadding text-danger" style='text-align: right !important' id="unbaltext"></div>
+					</div>
+
+					<div class="alt2" dir="ltr" style="
+						margin: 0px;
+						padding: 3px;
+						border: 1px solid #919b9c;
+						width: 100%;
+						height: 250px;
+						text-align: left;
+						overflow: auto">
+		
+						<table id="MyTable" class="MyTable table table-condensed" width="100%">
+							<thead>
+								<tr>
+									<th style="border-bottom:1px solid #999">Account No.</th>
+									<th style="border-bottom:1px solid #999">Account Title</th>
+									<th style="border-bottom:1px solid #999">Debit</th>
+									<th style="border-bottom:1px solid #999">Credit</th>
+									<th style="border-bottom:1px solid #999">Remarks</th>
+									<th style="border-bottom:1px solid #999">&nbsp;</th>
+								</tr>
+							</thead>   
+							<tbody class="tbody">
+								<tr>
+									<td width="100px" style="padding:1px"><input type="text" class="typeno form-control input-xs" name="txtcAcctNo1" id="txtcAcctNo1"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctDesc1" data-debit="txtnDebit1"></td>
+
+									<td style="padding:1px"><input type="text" class="typedesc form-control input-xs" name="txtcAcctDesc1" id="txtcAcctDesc1"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctNo1" data-debit="txtnDebit1"></td>
+									<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit1" id="txtnDebit1" value="0.00" autocomplete="off"></td>
+									<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit1" id="txtnCredit1" value="0.00" autocomplete="off"></td>
+									<td width="200px" style="padding:1px"><input type="text" class="cRem form-control input-xs" name="txtcRem1" id="txtcRem1" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"></td>
+									<td width="40px" align="right">&nbsp;</td>
+								</tr>
+							</tbody>
+												
+						</table>
+
+					</div>
+
+				</div>
+
+				<div id="attc" class="tab-pane fade in" style="padding-left: 5px; padding-top: 10px;">
+						
+						<div class="alt2" dir="ltr" style="
+								margin: 0px;
+								padding: 3px;
+								width: 100%;
+								height: 410px;
+								text-align: left;
+								overflow: auto">
+								<table width="100%" border="0">
+									<tr>
+										<td>
+											<div class="col-sm-12 nopadding">
+												<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+												<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
+												<div class="col-sm-12 nopadding" style="padding-top:10px;">
+													<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+													<input type="file" name="upload[]" id="file-0" multiple />
+												</div>
+											</div>
+										</td>
+									</tr>
+								</table>
+						</div>
+						
+				</div>
+
+			</div><!--tab-content-->
+
+		<br>
+		<table width="100%" border="0" cellpadding="3">
+			<tr>
+				<td>
+					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='ARAdj.php';" id="btnMain" name="btnMain">
+						Back to Main<br>(ESC)
+					</button>
+					
+					<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
+					<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">SAVE<br> (F2)</button></td>
+					<td align="right" valign="top">
+					<b>TOTAL AMOUNT </b>
+					&nbsp;&nbsp;
+					<input type="text" id="txtnGross" name="txtnGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="25">
+					</td>
+			</tr>
+		</table>
+
+  </fieldset>
     
     
 </form>
@@ -274,6 +328,23 @@ Back to Main<br>(ESC)</button>
 	});
 
 	$(document).ready(function(){
+
+		$(".nav-tabs a").click(function(){
+			$(this).tab('show');
+		});
+
+		$("#file-0").fileinput({
+			theme: 'fa5',
+			showUpload: false,
+			showClose: false,
+			allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+			overwriteInitial: false,
+			maxFileSize:100000,
+			maxFileCount: 5,
+			browseOnZoneClick: true,
+			fileActionSettings: { showUpload: false, showDrag: false,}
+		});
+
 	  $('#date_delivery').datetimepicker({
       format: 'MM/DD/YYYY',
 			//minDate: new Date(),

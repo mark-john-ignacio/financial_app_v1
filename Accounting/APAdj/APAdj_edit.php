@@ -33,6 +33,25 @@
 		}
 	}
 
+	@$arrfiles = array();
+	@$arrname = array();
+
+	if (file_exists('../../Components/assets/AP-ADJ/'.$company.'_'.$cjeno.'/')) {
+		$allfiles = scandir('../../Components/assets/AP-ADJ/'.$company.'_'.$cjeno.'/');
+		$files = array_diff($allfiles, array('.', '..'));
+		foreach($files as $file) {
+
+			$fileNameParts = explode('.', $file);
+			$ext = end($fileNameParts);
+
+			@$arrname[] = array("name" => $file, "ext" => $ext);
+		}
+	
+	}else{
+		//echo "NO FILES";
+	}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -44,9 +63,12 @@
 	<title>Myx Financials</title>
     
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
-  <link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
+  <link rel="stylesheet" type="text/css" href="../../global/plugins/font-awesome/css/font-awesome.min.css?h=<?php echo time();?>"/>
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
   <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
   <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+
+	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
     
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
@@ -60,10 +82,16 @@
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
+	<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
-	<form action="APAdj_editsave.php" name="frmpos" id="frmpos" method="post">
+<input type="hidden" value='<?=json_encode(@$arrname)?>' id="hdnfileconfig"> 
+	<form action="APAdj_editsave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
 		<fieldset>
     	<legend>AP Adjustment Details</legend>	
         <table width="100%" border="0">
@@ -172,54 +200,93 @@
 					</tr>
 				</table>
 
-				<div class="col-xs-12 nopadding">
-					<div class="col-xs-4 nopadding"><small><i>*Press <b>ENTER</b> on remarks field (last row) to add new line..</i></small></div>
-					<div class="col-xs-8 nopadding text-danger" style='text-align: right !important' id="unbaltext"></div>
-				</div>
+				<ul class="nav nav-tabs">
+					<li class="active"><a href="#items" data-toggle="tab">Details List</a></li>
+					<li><a href="#attc" data-toggle="tab">Attachments</a></li>
+				</ul>
+				
+				<div class="tab-content">
+					<div id="items" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
 
-        <div class="alt2" dir="ltr" style="
-					margin: 0px;
-					padding: 3px;
-					border: 1px solid #919b9c;
-					width: 100%;
-					height: 250px;
-					text-align: left;
-					overflow: auto">
-	
-          <table id="MyTable" class="MyTable table table-condensed" width="100%">
-						<thead>
-							<tr>
-								<th style="border-bottom:1px solid #999">Account No.</th>
-								<th style="border-bottom:1px solid #999">Account Title</th>
-								<th style="border-bottom:1px solid #999">Debit</th>
-								<th style="border-bottom:1px solid #999">Credit</th>
-								<th style="border-bottom:1px solid #999">Remarks</th>
-								<th style="border-bottom:1px solid #999">&nbsp;</th>
-							</tr>
-						</thead>   
-						<tbody class="tbody">
-							<?php
-								$cnt = 0;
-								$sqldtls = mysqli_query($con,"select * From apadjustment_t a where a.compcode='$company' and a.ctranno = '$cjeno'");
-								while($row = mysqli_fetch_array($sqldtls, MYSQLI_ASSOC)){
-									$cnt++;
-							?>
-							<tr>
-								<td width="100px" style="padding:1px"><input type="text" class="typeno form-control input-xs" name="txtcAcctNo<?=$cnt?>" id="txtcAcctNo<?=$cnt?>"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctDesc<?=$cnt?>" data-debit="txtnDebit<?=$cnt?>" value="<?=$row['cacctno']?>"></td>
+						<div class="col-xs-12 nopadding">
+							<div class="col-xs-4 nopadding"><small><i>*Press <b>ENTER</b> on remarks field (last row) to add new line..</i></small></div>
+							<div class="col-xs-8 nopadding text-danger" style='text-align: right !important' id="unbaltext"></div>
+						</div>
 
-								<td style="padding:1px"><input type="text" class="typedesc form-control input-xs" name="txtcAcctDesc<?=$cnt?>" id="txtcAcctDesc<?=$cnt?>"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctNo<?=$cnt?>" data-debit="txtnDebit<?=$cnt?>"  value="<?=$row['ctitle']?>"></td>
-								<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit<?=$cnt?>" id="txtnDebit<?=$cnt?>"  value="<?=$row['ndebit']?>" autocomplete="off"></td>
-								<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit<?=$cnt?>" id="txtnCredit<?=$cnt?>"  value="<?=$row['ncredit']?>" autocomplete="off"></td>
-								<td width="200px" style="padding:1px"><input type="text" class="cRem form-control input-xs" name="txtcRem<?=$cnt?>" id="txtcRem<?=$cnt?>" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"  value="<?=$row['cremarks']?>"></td>
-								<td width="40px" align="right">&nbsp;</td>
-							</tr>
-							<?php
-								}
-							?>
-						</tbody>                  
-					</table>
+						<div class="alt2" dir="ltr" style="
+							margin: 0px;
+							padding: 3px;
+							border: 1px solid #919b9c;
+							width: 100%;
+							height: 350px;
+							text-align: left;
+							overflow: auto">
+			
+							<table id="MyTable" class="MyTable table table-condensed" width="100%">
+								<thead>
+									<tr>
+										<th style="border-bottom:1px solid #999">Account No.</th>
+										<th style="border-bottom:1px solid #999">Account Title</th>
+										<th style="border-bottom:1px solid #999">Debit</th>
+										<th style="border-bottom:1px solid #999">Credit</th>
+										<th style="border-bottom:1px solid #999">Remarks</th>
+										<th style="border-bottom:1px solid #999">&nbsp;</th>
+									</tr>
+								</thead>   
+								<tbody class="tbody">
+									<?php
+										$cnt = 0;
+										$sqldtls = mysqli_query($con,"select * From apadjustment_t a where a.compcode='$company' and a.ctranno = '$cjeno'");
+										while($row = mysqli_fetch_array($sqldtls, MYSQLI_ASSOC)){
+											$cnt++;
+									?>
+									<tr>
+										<td width="100px" style="padding:1px"><input type="text" class="typeno form-control input-xs" name="txtcAcctNo<?=$cnt?>" id="txtcAcctNo<?=$cnt?>"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctDesc<?=$cnt?>" data-debit="txtnDebit<?=$cnt?>" value="<?=$row['cacctno']?>"></td>
 
-				</div>
+										<td style="padding:1px"><input type="text" class="typedesc form-control input-xs" name="txtcAcctDesc<?=$cnt?>" id="txtcAcctDesc<?=$cnt?>"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctNo<?=$cnt?>" data-debit="txtnDebit<?=$cnt?>"  value="<?=$row['ctitle']?>"></td>
+										<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit<?=$cnt?>" id="txtnDebit<?=$cnt?>"  value="<?=$row['ndebit']?>" autocomplete="off"></td>
+										<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit<?=$cnt?>" id="txtnCredit<?=$cnt?>"  value="<?=$row['ncredit']?>" autocomplete="off"></td>
+										<td width="200px" style="padding:1px"><input type="text" class="cRem form-control input-xs" name="txtcRem<?=$cnt?>" id="txtcRem<?=$cnt?>" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"  value="<?=$row['cremarks']?>"></td>
+										<td width="40px" align="right">&nbsp;</td>
+									</tr>
+									<?php
+										}
+									?>
+								</tbody>                  
+							</table>
+
+						</div>
+
+					</div>
+
+					<div id="attc" class="tab-pane fade in" style="padding-left: 5px; padding-top: 10px;">
+							
+							<div class="alt2" dir="ltr" style="
+									margin: 0px;
+									padding: 3px;
+									width: 100%;
+									height: 500px;
+									text-align: left;
+									overflow: auto">
+									<table width="100%" border="0">
+										<tr>
+											<td>
+												<div class="col-sm-12 nopadding">
+													<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+													<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
+													<div class="col-sm-12 nopadding" style="padding-top:10px;">
+														<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+														<input type="file" name="upload[]" id="file-0" multiple />
+													</div>
+												</div>
+											</td>
+										</tr>
+									</table>
+							</div>
+							
+					</div>
+
+				</div><!--tab-content-->
 
 				<br>
 				<table width="100%" border="0" cellpadding="3">
@@ -325,6 +392,49 @@
 
 <script type="text/javascript">
 
+	var fileslist = [];
+	/*
+	var xz = $("#hdnfiles").val();
+	$.each(jQuery.parseJSON(xz), function() { 
+		fileslist.push(xz);
+	});
+	*/
+
+	console.log(fileslist);
+	var filesconfigs = [];
+	var xzconfig = JSON.parse($("#hdnfileconfig").val());
+
+	//alert(xzconfig.length);
+
+	var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
+	var arrimg = new Array("jpg","png","gif","jpeg");
+
+	var xtc = "";
+	for (var i = 0; i < xzconfig.length; i++) {
+    var object = xzconfig[i];
+		//alert(object.ext + " : " + object.name);
+		fileslist.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/AP-ADJ/<?=$company."_".$cjeno?>/" + object.name)
+
+		if(jQuery.inArray(object.ext, arroffice) !== -1){
+			xtc = "office";
+		}else if(jQuery.inArray(object.ext, arrimg) !== -1){
+			xtc = "image";
+		}else if(object.ext=="txt"){
+			xtc = "text";
+		}else{
+			xtc = object.ext;
+		}
+
+		filesconfigs.push({
+			type : xtc, 
+			caption : object.name,
+			width : "120px",
+			url: "th_filedelete.php?id="+object.name+"&code=<?=$cjeno?>", 
+			key: i + 1
+		});
+	}
+
+
 	$(document).keydown(function(e) {	
 	
 	  if(e.keyCode == 113) { //F2
@@ -347,10 +457,47 @@
 	$(document).ready(function(){
 		disabled();
 
+		$(".nav-tabs a").click(function(){
+			$(this).tab('show');
+		});
+
 	  $('#date_delivery').datetimepicker({
       format: 'MM/DD/YYYY',
 			//minDate: new Date(),
     });
+
+		if(fileslist.length>0){
+			$("#file-0").fileinput({
+				theme: 'fa5',
+				showUpload: false,
+				showClose: false,
+				browseOnZoneClick: true,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, },
+				initialPreview: fileslist,
+				initialPreviewAsData: true,
+				initialPreviewFileType: 'image',
+				initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/AP-ADJ/<?=$company."_".$cjeno?>/{filename}',
+				initialPreviewConfig: filesconfigs
+			});
+		}else{
+			$("#file-0").fileinput({
+				theme: 'fa5',
+				showUpload: false,
+				showClose: false,
+				browseOnZoneClick: true,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, }
+			});
+		}
 
 		$("input.numeric").autoNumeric('init',{mDec:2});
 		$("input.numeric").on("focus click", function () {
@@ -926,7 +1073,7 @@
 
 	function chkSIEnter(keyCode,frm){
 		if(keyCode==13){
-			document.getElementById(frm).action = "ARAdj_edit.php";
+			document.getElementById(frm).action = "APAdj_edit.php";
 			document.getElementById(frm).submit();
 		}
 	}

@@ -161,45 +161,45 @@ if (isset($_GET["key"]) && isset($_GET["email"]) && isset($_GET["action"])
 			</div>
 		</div>
 <?php
- }else{
-  $row = mysqli_fetch_assoc($query);
-  $expDate = $row['expDate'];
-  if ($expDate >= $curDate){
-  ?>
-<div id="myModal">
-	<div class="modal-dialog modal-login">
-		<div class="modal-content">
-			<div class="modal-header">
-                <div class="logo">			
-					<img src="../images/LogoNew.png" width="90" height="120">	
-                </div>
+	}else{
+		$row = mysqli_fetch_assoc($query);
+		$expDate = $row['expDate'];
+		if ($expDate >= $curDate){
+		?>
+			<div id="myModal">
+				<div class="modal-dialog modal-login">
+					<div class="modal-content">
+						<div class="modal-header">
+											<div class="logo">			
+								<img src="../images/LogoNew.png" width="90" height="120">	
+											</div>
 
-			</div>
-			<div class="modal-body">
+						</div>
+						<div class="modal-body">
 
 
-			  <form method="post" action="" name="update">
-				  <input type="hidden" name="action" value="update" />
-					<div class="form-group">
-				  	<input type="password" class="form-control form-control-sm" name="pass1" maxlength="15" required placeholder="Enter New Password..."/>
-				  </div>
-					<div class="form-group">
-					<input type="password" class="form-control form-control-sm" name="pass2" maxlength="15" required placeholder="Re-Enter New Password..."/>
+							<form method="post" action="" name="update">
+								<input type="hidden" name="action" value="update" />
+								<div class="form-group">
+									<input type="password" class="form-control form-control-sm" name="pass1" maxlength="15" required placeholder="Enter New Password..."/>
+								</div>
+								<div class="form-group">
+								<input type="password" class="form-control form-control-sm" name="pass2" maxlength="15" required placeholder="Re-Enter New Password..."/>
+								</div>
+								<br /><br />
+								<input type="hidden" name="email" value="<?php echo $email;?>"/>
+								<input type="submit" value="Reset Password" class="btn btn-warning btn-lg btn-block login-btn" />
+							</form>
+
+						</div>
 					</div>
-				  <br /><br />
-				  <input type="hidden" name="email" value="<?php echo $email;?>"/>
-				  <input type="submit" value="Reset Password" class="btn btn-warning btn-lg btn-block login-btn" />
-			  </form>
-
+				</div>
 			</div>
-		</div>
-	</div>
-</div>
-<?php
-}else{
-?>
+		<?php
+		}else{
+	?>
 
-	<div id="myModal">
+		<div id="myModal">
 			<div class="modal-dialog modal-login">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -212,8 +212,8 @@ if (isset($_GET["key"]) && isset($_GET["email"]) && isset($_GET["action"])
 
 
 					  <h2>Link Expired</h2>
-<p>The link is expired. You are trying to use the expired link which 
-as valid only 24 hours (1 day after request).<br /><br /></p>
+						<p>The link is expired. You are trying to use the expired link which 
+						as valid only 24 hours (1 day after request).<br /><br /></p>
 
 					</div>
 				</div>
@@ -222,8 +222,8 @@ as valid only 24 hours (1 day after request).<br /><br /></p>
 
 <?php
 
-            }
-      }
+    }
+	}
 } // isset email key validate end
  
  

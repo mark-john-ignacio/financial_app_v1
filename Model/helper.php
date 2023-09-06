@@ -6,7 +6,7 @@
      * @param string $dir store directory 
      */
 
-    function upload_image($file, $dir) {
+    function upload_image($file, $dir, $cnt = "") {
         
          /**
          * @property string $files (return file name)
@@ -17,7 +17,12 @@
          */
 
         $files = array_filter($file);
-        $total_count = count($file);
+        if($cnt != ""){
+            $total_count = $cnt;
+        }else{
+            $total_count = count($file);
+        }
+        
 
         if($total_count >= 1){
             /**

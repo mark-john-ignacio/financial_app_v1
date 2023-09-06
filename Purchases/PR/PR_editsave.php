@@ -10,17 +10,21 @@ $dyear = date("y");
 $company = $_SESSION['companyid'];
 $preparedby = $_SESSION['employeeid'];
 
-	$cSINo = mysqli_real_escape_string($con, $_REQUEST['txtctranno']);
+	$cSINo = mysqli_real_escape_string($con, $_REQUEST['txtcprno']);
 	$cReqBy =  mysqli_real_escape_string($con, $_REQUEST['txtcustid']);
 	$dDateNeed = $_REQUEST['date_needed'];
 	$cRemarks =  mysqli_real_escape_string($con, $_REQUEST['txtremarks']); 
 	$cSection =  mysqli_real_escape_string($con, $_REQUEST['selwhfrom']);
 
-	if (!mysqli_query($con, "INSERT INTO `purchrequest`(`compcode`, `ctranno`, `dneeded`, `cremarks`, `cpreparedby`, `locations_id`) values('$company', '$cSINo', STR_TO_DATE('$dDateNeed', '%m/%d/%Y'),'$cRemarks', '$cReqBy', '$cSection')")) {
+	if (!mysqli_query($con, "UPDATE `purchrequest` set `locations_id` = '$cSection', `cremarks` = '$cRemarks', `dneeded` = STR_TO_DATE('$dDateNeed', '%m/%d/%Y') where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 	
 	//INSERT WRR DETAILS
+	//Savedetails
+	if (!mysqli_query($con, "DELETE FROM `purchrequest_t` Where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
+		printf("Errormessage: %s\n", mysqli_error($con));
+	} 
 	
 	$rowcnt = $_REQUEST['hdnrowcnt'];
 		 
@@ -40,6 +44,37 @@ $preparedby = $_SESSION['employeeid'];
 			printf("Errormessage: %s\n", mysqli_error($con));
 		}
 
+	}
+
+	//insert attachment
+	$files = array_filter($_FILES['upload']['name']); //Use something similar before processing files.
+	// Count the number of uploaded files in array
+	$total_count = count($_FILES['upload']['name']);
+
+	if(file_exists('../../Components/assets/PReq/'.$company.'_'.$cSINo.'/')) {
+		/*$allfiles = scandir('../../RFP_Files/'.$cSINo.'/');
+		$files = array_diff($allfiles, array('.', '..'));
+		foreach($files as $file) {
+			unlink("../../RFP_Files/".$cSINo."/".$file);
+		}*/
+	}else{
+		if($total_count>=1){
+			mkdir('../../Components/assets/PReq/'.$company.'_'.$cSINo.'/',0777);
+		}
+	}
+
+	// Loop through every file
+	for( $i=0 ; $i < $total_count ; $i++ ) {
+		//The temp file path is obtained
+		$tmpFilePath = $_FILES['upload']['tmp_name'][$i];
+		//A file path needs to be present
+		if ($tmpFilePath != ""){
+				//Setup our new file path
+				$newFilePath = "../../Components/assets/PReq/" .$company.'_'. $cSINo . "/" . $_FILES['upload']['name'][$i];
+				//File is uploaded to temp dir
+				move_uploaded_file($tmpFilePath, $newFilePath);
+				
+		}
 	}
 		
 	//INSERT LOGFILE

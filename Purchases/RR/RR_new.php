@@ -72,6 +72,18 @@ $company = $_SESSION['companyid'];
 <script src="../../Bootstrap/js/moment.js"></script>
 <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
+<!--
+-- 
+-- FileType Bootstrap Scripts and Link
+--
+-->
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
@@ -217,10 +229,12 @@ $company = $_SESSION['companyid'];
 <ul class="nav nav-tabs">
   <li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Items List</a></li>
   <li id="liacct"><a href="#2Acct" data-toggle="tab">Items Inventory</a></li>
+
+	<li><a href="#attc" data-toggle="tab">Attachments</a></li>
 </ul>
 
-  <div class="tab-content nopadwtop2x">
-    <div class="tab-pane active" id="1Det">
+  	<div class="tab-content nopadwtop2x">
+    	<div class="tab-pane active" id="1Det">
 
          <div class="alt2" dir="ltr" style="
 					margin: 0px;
@@ -255,7 +269,7 @@ $company = $_SESSION['companyid'];
 				</div>
 			</div>
 
-		<div class="tab-pane" id="2Acct">
+			<div class="tab-pane" id="2Acct">
 
              <div class="alt2" dir="ltr" style="
                         margin: 0px;
@@ -286,8 +300,37 @@ $company = $_SESSION['companyid'];
                 </table>
             			<input type="hidden" name="hdnserialscnt" id="hdnserialscnt">
 							</div>
+			</div>
+
+			<div id="attc" class="tab-pane" >
+				<div class="alt2" dir="ltr" style="
+						margin: 0px;
+						padding: 3px;
+						border: 1px solid #919b9c;
+						width: 100%;
+						height: 410px;
+						text-align: left;
+						overflow: auto">
+						
+					<table width="100%" border="0">
+						<tr>
+							<td>
+								<div class="col-sm-12 nopadding">
+									<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+									<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
+									<div class="col-sm-12 nopadwdown" style="padding-top:10px;">
+										<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+										<input type="file" name="upload[]" id="file-0" multiple />
+									</div>
+								</div>
+							</td>
+						</tr>
+					</table>
+					
+				</div>
+			</div>	
+
 		</div>
-	</div>
 <br>
 <table width="100%" border="0" cellpadding="3">
   <tr>
@@ -502,21 +545,33 @@ PO<br>(Insert)</button>
 
 $(document).ready(function() {
     $('.datepick').datetimepicker({
-        format: 'MM/DD/YYYY',
-		useCurrent: false,
-		minDate: moment(),
-		defaultDate: moment(),
+      format: 'MM/DD/YYYY',
+			useCurrent: false,
+			minDate: moment(),
+			defaultDate: moment(),
     });	
 
-	$("#selbasecurr").on("change", function (){
-			
-		convertCurrency($(this).val());
+		$("#file-0").fileinput({
+			uploadUrl: '#',
+			showUpload: false,
+			showClose: false,
+			allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+			overwriteInitial: false,
+			maxFileSize:100000,
+			maxFileCount: 5,
+			browseOnZoneClick: true,
+			fileActionSettings: { showUpload: false, showDrag: false,}
+		});
+
+		$("#selbasecurr").on("change", function (){
 				
-	});
-				
-	$("#basecurrval").on("keyup", function () {
-		recomputeCurr();
-	});
+			convertCurrency($(this).val());
+					
+		});
+					
+		$("#basecurrval").on("keyup", function () {
+			recomputeCurr();
+		});
 });
 	
 $(function(){	
@@ -1437,12 +1492,21 @@ function chkform(){
 		var ccustsi = $("#txtSuppSI").val();
 		*/
 		var myform = $("#frmpos").serialize();
-
+		var formdata = new FormData($('#frmpos')[0]);
+		formdata.delete('upload[]')
+		jQuery.each($('#file-0')[0].files, function(i, file){
+			formdata.append('file-'+i, file);
+		});
 		
 		$.ajax ({
 			url: "RR_newsave.php",
 			//data: { ccode: ccode, crem: crem, ddate: ddate, ngross: ngross, ccustsi:ccustsi },
-			data: myform,
+			data: formdata,
+			cache: false,
+			processData: false,
+			contentType: false,
+			method: 'post',
+			type: 'post',
 			async: false,
 			beforeSend: function(){
 				$("#AlertMsg").html("&nbsp;&nbsp;<b>SAVING NEW RR: </b> Please wait a moment...");

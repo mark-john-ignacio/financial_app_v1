@@ -55,56 +55,89 @@ function listcurrencies(){ //API for currency list
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+<!--
+--
+-- FileType Bootstrap Scripts and Link
+--
+-->
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
 
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
-	<form action="SR_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
+	<form action="SR_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;" enctype="multipart/form-data">
 
 		<fieldset>
-    	<legend>New SR Non-Trade</legend>	
-        <table width="100%" border="0">
-					<tr>
-						<tH width="100">&nbsp;Customer:</tH>
-						<td style="padding:2px">
-						<div class="col-xs-12 nopadding">
-								<div class="col-xs-3 nopadding">
-									<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
-										<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
-										<input type="hidden" id="hdnpricever" name="hdnpricever" value="">
+    	<legend>New SR Non-Trade</legend>
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="#home" data-toggle="tab">Sales Return Details</a></li>
+			<li><a href="#attc" data-toggle="tab">Attachments</a></li>
+		</ul>
+
+		<div class="alt2" dir="ltr" style="margin: 0px; padding: 3px;border: 0px;width: 100%;text-align: left;overflow: inherit !important">
+			<div class="tab-content">
+				<div id="home" class="tab-pane fade in active" style="padding-left:5px;">
+					<table width="100%" border="0">
+						<tr>
+							<tH width="100">&nbsp;Customer:</tH>
+							<td style="padding:2px">
+							<div class="col-xs-12 nopadding">
+									<div class="col-xs-3 nopadding">
+										<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
+											<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
+											<input type="hidden" id="hdnpricever" name="hdnpricever" value="">
+									</div>
+
+								<div class="col-xs-8 nopadwleft">
+										<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
+									</div> 
 								</div>
+							</td>
+							<tH width="150">Return Date:</tH>
+							<td style="padding:2px;">
+								<div class="col-xs-10 nopadding">
+									<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $ddeldate; ?>" />
+								</div>
+							</td>
+						</tr>
+						
+						<tr>
+							<tH width="100">&nbsp;Remarks:</tH>
+							<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div></td>
+							<tH width="150" style="padding:2px">&nbsp;</tH>
+							<td style="padding:2px" align="right">&nbsp;</td>
+						</tr>
 
-							<div class="col-xs-8 nopadwleft">
-									<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
-								</div> 
-							</div>
-						</td>
-						<tH width="150">Return Date:</tH>
-						<td style="padding:2px;">
-						<div class="col-xs-10 nopadding">
-						<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $ddeldate; ?>" />
-						</div>
-						</td>
-					</tr>
+						<tr>
+							<td colspan="5">
+								<input type="hidden" id="txtprodid" name="txtprodid">
+								<input type="hidden" id="txtprodnme" name="txtprodnme">
+								<input type="hidden" name="hdnqty" id="hdnqty">
+								<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
+								<input type="hidden" name="hdnunit" id="hdnunit">
+
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div id="attc" class="tab-pane fade" style="padding-left:5px;">
 					
-					<tr>
-						<tH width="100">&nbsp;Remarks:</tH>
-						<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div></td>
-						<tH width="150" style="padding:2px">&nbsp;</tH>
-						<td style="padding:2px" align="right">&nbsp;</td>
-					</tr>
-
-					<tr>
-						<td colspan="5">
-							<input type="hidden" id="txtprodid" name="txtprodid">
-							<input type="hidden" id="txtprodnme" name="txtprodnme">
-							<input type="hidden" name="hdnqty" id="hdnqty">
-							<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
-							<input type="hidden" name="hdnunit" id="hdnunit">
-
-						</td>
-					</tr>
-				</table>
+					<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+					<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
+					<div class="col-sm-12 nopadding" style="padding-top:10px;">
+						<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+						
+					</div>
+				
+					<input type="file" name="upload[]" id="file-0" multiple />
+				</div>
+			</div>
+		</div>
 
         <div class="alt2" dir="ltr" style="
 					margin: 10px 0px 0px 0px;
@@ -125,7 +158,7 @@ function listcurrencies(){ //API for currency list
 									<!--<th style="border-bottom:1px solid #999">Price</th>
 									<th style="border-bottom:1px solid #999">Discount</th>
 									<th style="border-bottom:1px solid #999">Amount</th>
-									<th style="border-bottom:1px solid #999">Total Amt in <?php// echo $nvaluecurrbase; ?></th>-->
+									<th style="border-bottom:1px solid #999">Total Amt in <!?php// echo $nvaluecurrbase; ?></th>-->
 									<th style="border-bottom:1px solid #999">Reason</th>
 									<th style="border-bottom:1px solid #999">&nbsp;</th>
 								</tr>
@@ -138,7 +171,7 @@ function listcurrencies(){ //API for currency list
 
 				<br>
 
-				<table width="100%" border="0	" cellpadding="3">
+				<table width="100%" border="0" cellpadding="3">
 					<tr>
 						<td rowspan="2">
 							<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
@@ -164,7 +197,7 @@ function listcurrencies(){ //API for currency list
 						</td>	
 					<tr>
 							<td align="right" valign="top">
-							<b>Gross Amount in <?php// echo $nvaluecurrbase; ?></b>&nbsp;&nbsp;
+							<b>Gross Amount in <!?php// echo $nvaluecurrbase; ?></b>&nbsp;&nbsp;
 							<input type="text" id="txtnGross" name="txtnGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10">
 								</td>
 						</tr>
@@ -289,6 +322,26 @@ function listcurrencies(){ //API for currency list
 
 	xtoday = xmm + '/' + xdd + '/' + xyyyy;
 
+	$(document).ready(function(){
+		/*
+		*
+		* Bootstrap JQueries Fields
+		*
+		*/
+
+		$("#file-0").fileinput({
+			theme: 'fa5',
+			uploadUrl: '#',
+			showUpload: false,
+			showClose: false,
+			allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+			overwriteInitial: false,
+			maxFileSize:100000,
+			maxFileCount: 5,
+			browseOnZoneClick: true,
+			fileActionSettings: { showUpload: false, showDrag: false,}
+		});
+	});
 
 	$(document).keydown(function(e) {	
 	
@@ -878,11 +931,21 @@ function listcurrencies(){ //API for currency list
 			var myform = $("#frmpos").serialize();
 
 			//alert("SR_newsavehdr.php?" + myform);
+			var formdata = new FormData($('#frmpos')[0]);
+			formdata.delete('upload[]');
+			jQuery.each($('#file-0')[0].files, function(i, file){
+				formdata.append('file-'+i, file);
+			})
 
 			$.ajax ({
 				url: "SR_newsavehdr.php",
 				//data: { ccode: ccode, crem: crem, ddate: ddate, ngross: ngross },
-				data: myform,
+				data: formdata,
+				cache: false,
+				processData: false,
+				contentType: false,
+				method: 'post',
+				type: 'post',
 				async: false,
 				beforeSend: function(){
 					$("#AlertMsg").html("&nbsp;&nbsp;<b>SAVING NEW SALES RETURN: </b> Please wait a moment...");

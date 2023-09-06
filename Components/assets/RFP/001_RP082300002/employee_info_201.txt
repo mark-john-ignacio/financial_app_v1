@@ -1,0 +1,71 @@
+ Í Personal Informationfa fa-userpersonal_info
+ Í Employment Informationfa fa-suitcaseemployment_info
+ Í Government Detailsfa fa-buildinggovernment_details
+ Í Addressfa fa-map-markeraddress
+ Í Residencefa fa-mapresidence
+ Í Contact Informationfa fa-mobilecontact_info
+ Í Familyfa fa-homefamily
+ Í Dependentsfa fa-child dependents
+ Í Educational Attainmentfa fa-graduation-capeducation
+ Í Trainings and Seminarsfa fa-certificatetrainings
+ Í Employment Experiencefa fa-briefcaseemployment_experience
+ Í Character Referencefa fa-userscharacter_ref
+ Í Skillfa fa-cogsskill
+ Í Contractfa fa-handshake-ocontract
+ Í Inventoryfa fa-tasksinventory
+ Í Employee Licensesfa fa-tasksemployee_licenses
+ Í Transactionsfa fa-taskstransactions
+ Í Login Informationfa fa-user-secretlogin_info
+ Í Log Historyfa fa-sign-inlog_history
+ Í Status Historyfa fa-file-textstatus_history
+ Í Employee Signaturefa fa-file-image-oemployee_sign
+ Í Movement Historyfa fa-arrows-altmovement_history
+ Í View Full Informationfa fa-file-image-oview_info
+ Í Other Infofa fa-linkother_info
+ Í Whole Body Picturefa fa-file-image-owhole_body_pic
+ Í Resigned Date Historyfa fa-linkresigned_history
+ Í Employment Date Historyfa fa-linkemployment_history
+ Í Long Service Leave Historyfa fa-linkleave_history
+ Í Bank Accountsfa fa-bankbank_accounts
+ Í Profile Picturefa fa-usersprofile_pic
+ Í Profile Bannerfa fa-file-picture-oprofile_banner
+ Í Profile Banner Bkgd Colorfa fa-magicprofile_bkgd_color
+ Í Profile Picturefa fa-usersprofile_pic employee_info
+ Í Profile Bannerfa fa-file-picture-oprofile_banner employee_info
+ Í Profile Banner Bkgd Colorfa fa-magicprofile_bkgd_color employee_info
+ Í Profile Picturefa fa-usersprofile_pic employee_infoemployee_info_for_update
+ Í Profile Bannerfa fa-file-picture-oprofile_banner employee_infoemployee_info_for_update
+ Í Profile Banner Bkgd Colorfa fa-magicprofile_bkgd_color employee_infoemployee_info_for_update
+ Í Personal Informationfa fa-userpersonal_info employee_info
+ Í Personal Informationfa fa-userpersonal_info employee_infoemployee_info_for_update
+ Í Employment Informationfa fa-suitcaseemployment_info employee_info
+ Í Employment Informationfa fa-suitcaseemployment_info employee_infoemployee_info_for_update
+ Í Addressfa fa-map-markeraddress employee_info
+ Í Addressfa fa-map-markeraddress employee_infoemployee_info_for_update
+ Í Residencefa fa-mapresidence employee_info
+ Í Residencefa fa-mapresidence employee_infoemployee_info_for_update
+ Í Contractfa fa-handshake-ocontract employee_info
+ Í Employee Signaturefa fa-file-image-oemployee_sign employee_info
+ Í Whole Body Picturefa fa-file-image-owhole_body_pic employee_info
+ Í Contractfa fa-handshake-ocontract employee_infoemployee_info_for_update
+ Í Employee Signaturefa fa-file-image-oemployee_sign employee_infoemployee_info_for_update
+ Í Whole Body Picturefa fa-file-image-owhole_body_pic employee_infoemployee_info_for_update#
+ Í Government Detailsfa fa-buildinggovernment_details employee_info_governmentemployee_info_government_for_update
+ Í Bank Accountsfa fa-bankbank_accounts employee_info_bank_accounts_update"
+ Í Bank Accountsfa fa-bankbank_accounts employee_info_bank_accountsemployee_info_bank_accounts_update 
+ Í Contact Informationfa fa-mobilecontact_info
+ employee_info_contact_nosemployee_info_contact_nos_update$
+ Í Contact Informationfa fa-mobilecontact_info
+ employee_info_contact_nosemployee_info_contact_nos_for_update
+ Í Familyfa fa-homefamily employee_info_familyemployee_info_family_for_update#
+ Í Dependentsfa fa-child dependents employee_info_dependentsemployee_info_dependents_for_update"
+ Í Educational Attainmentfa fa-graduation-capeducation
+ employee_info_educationemployee_info_education_for_update(
+ Í Employment Experiencefa fa-briefcaseemployment_experience employee_info_work_experienceemployee_info_work_experience_for_update,!
+ Í Character Referencefa fa-userscharacter_ref employee_info_character_referenceemployee_info_character_reference_for_update
+ Í Skillfa fa-cogsskill employee_info_skillsemployee_info_skills_for_update!
+ Í Contractfa fa-handshake-ocontract employee_info_contractemployee_info_contract_for_update 
+ Í Employee Licensesfa fa-tasksemployee_licenses employee_info_licenseemployee_info_license_for_update
+ Í Other Infofa fa-linkother_info emp_udf_dataemp_udf_data_for_update
+ Í Other Infofa fa-linkother_info employee_udf_dataemployee_udf_data_for_update&
+ Í Bank Accountsfa fa-bankbank_accounts employee_info_bank_accountsemployee_info_bank_accounts_for_update

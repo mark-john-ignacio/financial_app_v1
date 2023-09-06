@@ -26,6 +26,24 @@ foreach($rowdetloc as $row0){
 	
 }
 
+	@$arrfiles = array();
+	@$arrname = array();
+
+	if (file_exists('../../Components/assets/PV/'.$company.'_'.$ccvno.'/')) {
+		$allfiles = scandir('../../Components/assets/PV/'.$company.'_'.$ccvno.'/');
+		$files = array_diff($allfiles, array('.', '..'));
+		foreach($files as $file) {
+
+			$fileNameParts = explode('.', $file);
+			$ext = end($fileNameParts);
+
+			@$arrname[] = array("name" => $file, "ext" => $ext);
+		}
+	
+	}else{
+		//echo "NO FILES";
+	}
+
 $_SESSION['myxtoken'] = gen_token();
 
 ?>
@@ -51,9 +69,24 @@ $_SESSION['myxtoken'] = gen_token();
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
+	<!--
+	--
+	-- FileType Bootstrap Scripts and Link
+	--
+	-->
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtctranno').focus();">
+
+<input type="hidden" value='<?=json_encode(@$arrname)?>' id="hdnfileconfig"> 
+
 <?php
     	$sqlchk = mysqli_query($con,"Select a.cacctno, c.cacctdesc, a.ccode, a.cpaymethod, a.cbankcode, a.ccheckno, a.ccheckbook, a.cpaydesc, a.cpayrefno, e.cname as cbankname, a.cpayee, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dcheckdate,'%m/%d/%Y') as dcheckdate, a.ngross, a.npaid, a.lapproved, a.lcancelled, a.lprintposted, b.cname, d.cname as custname, c.cacctdesc, a.cparticulars, a.cpaytype
 		From paybill a 
@@ -104,7 +137,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
 <input type="hidden" id="existingnos" value='<?=json_encode($arrnoslist)?>'>
 
 
-<form action="PayBill_editsave.php" name="frmpos" id="frmpos" method="post" onsubmit="return chkform();">
+<form action="PayBill_editsave.php" name="frmpos" id="frmpos" method="post" onsubmit="return chkform();"enctype="multipart/form-data">
 	<fieldset>
    	  <legend>Bills Payment Details</legend>
 
@@ -303,35 +336,74 @@ if (mysqli_num_rows($sqlchk)!=0) {
 
 				<br>
 
-				<div class="col-xs-12 nopadwdown">
-					<div class="col-xs-1 nopadwright"><button type="button" class="btn btn-xs btn-warning btn-block" id="btnaddline">Add Payable</button></div>
-				</div>
+				<ul class="nav nav-tabs">
+						<li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Details</a></li>
+						<li><a href="#attc" data-toggle="tab">Attachments</a></li>
+					</ul>
 
-	  		<div id="tableContainer" class="alt2" dir="ltr" style="
-          margin: 0px;
-          padding: 3px;
-          border: 1px solid #919b9c;
-        	width: 100%;
-          height: 250px;
-          text-align: left;
-          overflow: auto">
-            <table width="100%" border="0" cellpadding="0" id="MyTable">
-              <thead>
-								<tr>
-									<th scope="col" id="hdnRefTitle">APV No</th>
-									<th scope="col">Ref No</th>
-									<th scope="col">Date</th>
-									<th scope="col" class="text-right" width="120px">Amount</th>
-									<th scope="col" class="text-right" width="120px">Payed&nbsp;&nbsp;&nbsp;</th>
-									<th scope="col" width="120px" class="text-right">Total Owed&nbsp;&nbsp;&nbsp;</th>
-									<th scope="col" width="120px" class="text-center">Amount Applied</th>
-									<th scope="col" colspan="2">Dr Account</th>
-								</tr>
-              </thead>
-              <tbody>
-              </tbody>
-          	</table>
-				</div>
+					<div class="tab-content nopadwtop2x">
+						<div class="tab-pane active" id="1Det">
+
+							<div class="col-xs-12 nopadwdown">
+								<div class="col-xs-1 nopadwright"><button type="button" class="btn btn-xs btn-warning btn-block" id="btnaddline">Add Payable</button></div>
+							</div>
+
+							<div id="tableContainer" class="alt2" dir="ltr" style="
+								margin: 0px;
+								padding: 3px;
+								border: 1px solid #919b9c;
+								width: 100%;
+								height: 250px;
+								text-align: left;
+								overflow: auto">
+									<table width="100%" border="0" cellpadding="0" id="MyTable">
+										<thead>
+											<tr>
+												<th scope="col" id="hdnRefTitle">APV No</th>
+												<th scope="col">Ref No</th>
+												<th scope="col">Date</th>
+												<th scope="col" class="text-right" width="120px">Amount</th>
+												<th scope="col" class="text-right" width="120px">Payed&nbsp;&nbsp;&nbsp;</th>
+												<th scope="col" width="120px" class="text-right">Total Owed&nbsp;&nbsp;&nbsp;</th>
+												<th scope="col" width="120px" class="text-center">Amount Applied</th>
+												<th scope="col" colspan="2">Dr Account</th>
+											</tr>
+										</thead>
+										<tbody>
+										</tbody>
+									</table>
+							</div>
+
+						</div>
+
+						<div id="attc" class="tab-pane" style="padding-left: 5px">
+							<div class="alt2" dir="ltr" style="
+									margin: 0px;
+									padding: 3px;
+									width: 100%;
+									height: 450px;
+									text-align: left;
+									overflow: auto">
+
+								<table width="100%" border="0">
+									<tr>
+										<td>
+											<div class="col-sm-12 nopadding">
+												<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+												<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
+												<div class="col-sm-12 nopadwdown" style="padding-top:10px;">
+													<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+													<input type="file" name="upload[]" id="file-0" multiple />
+												</div>
+											</div>
+										</td>
+									</tr>
+								</table>
+							</div>
+							
+						</div>
+
+					</div>		
                     
             <br>
 						<table width="100%" border="0" cellpadding="3">
@@ -582,6 +654,49 @@ else{
 
 <script type="text/javascript">
 
+	var fileslist = [];
+	/*
+	var xz = $("#hdnfiles").val();
+	$.each(jQuery.parseJSON(xz), function() { 
+		fileslist.push(xz);
+	});
+	*/
+
+	console.log(fileslist);
+	var filesconfigs = [];
+	var xzconfig = JSON.parse($("#hdnfileconfig").val());
+
+	//alert(xzconfig.length);
+
+	var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
+	var arrimg = new Array("jpg","png","gif","jpeg");
+
+	var xtc = "";
+	for (var i = 0; i < xzconfig.length; i++) {
+    var object = xzconfig[i];
+		//alert(object.ext + " : " + object.name);
+		fileslist.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/PV/<?=$company."_".$ccvno?>/" + object.name)
+
+		if(jQuery.inArray(object.ext, arroffice) !== -1){
+			xtc = "office";
+		}else if(jQuery.inArray(object.ext, arrimg) !== -1){
+			xtc = "image";
+		}else if(object.ext=="txt"){
+			xtc = "text";
+		}else{
+			xtc = object.ext;
+		}
+
+		filesconfigs.push({
+			type : xtc, 
+			caption : object.name,
+			width : "120px",
+			url: "th_filedelete.php?id="+object.name+"&code=<?=$ccvno?>", 
+			key: i + 1
+		});
+	}
+
+
 	$(document).keydown(function(e) {	 
 	
 	 if(e.keyCode == 112) { //F1
@@ -633,6 +748,39 @@ else{
 		$('.datepick').datetimepicker({
 			format: 'MM/DD/YYYY',
 		});
+
+		if(fileslist.length>0){
+			$("#file-0").fileinput({
+				theme: 'fa5',
+				showUpload: false,
+				showClose: false,
+				browseOnZoneClick: true,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, },
+				initialPreview: fileslist,
+				initialPreviewAsData: true,
+				initialPreviewFileType: 'image',
+				initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/PV/<?=$company."_".$ccvno?>/{filename}',
+				initialPreviewConfig: filesconfigs
+			});
+		}else{
+			$("#file-0").fileinput({
+				theme: 'fa5',
+				showUpload: false,
+				showClose: false,
+				browseOnZoneClick: true,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, }
+			});
+		}
 
 		$('[data-toggle="popover"]').popover();
 		

@@ -57,7 +57,7 @@
 			// Count the number of uploaded files in array
 			$total_count = count($_FILES['upload']['name']);
 
-			if(file_exists('../../RFP_Files/'.$company.'_'.$cSINo.'/')) {
+			if(file_exists('../../Components/assets/RFP/'.$company.'_'.$cSINo.'/')) {
 				/*$allfiles = scandir('../../RFP_Files/'.$cSINo.'/');
 				$files = array_diff($allfiles, array('.', '..'));
 				foreach($files as $file) {
@@ -65,7 +65,7 @@
 				}*/
 			}else{
 				if($total_count>=1){
-					mkdir('../../RFP_Files/'.$company.'_'.$cSINo.'/',0777);
+					mkdir('../../Components/assets/RFP/'.$company.'_'.$cSINo.'/',0777);
 				}
 			}
 
@@ -76,7 +76,7 @@
 				//A file path needs to be present
 				if ($tmpFilePath != ""){
 						//Setup our new file path
-						$newFilePath = "../../RFP_Files/" .$company.'_'. $cSINo . "/" . $_FILES['upload']['name'][$i];
+						$newFilePath = "../../Components/assets/RFP/" .$company.'_'. $cSINo . "/" . $_FILES['upload']['name'][$i];
 						//File is uploaded to temp dir
 						move_uploaded_file($tmpFilePath, $newFilePath);
 						
