@@ -267,14 +267,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 						<b>Price</b>
 					</td>
 					<td style="padding: 2px; padding-top: 20px !important">
-						:&nbsp;
-						<?php 
-							if($cvattyp=="VatEx"){
-								echo "VAT EXCLUSIVE";
-							}else{
-								echo "VAT INCLUSIVE";
-							}
-						?>
+						:&nbsp;Valid until <b><?php echo date("F d, Y", strtotime($Date)); ?></b> only. Thereafter, all prices will be subject to our confirmation
 					</td>
 				</tr>
 				<tr>
@@ -282,7 +275,16 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 						<b>Payment</b>
 					</td>
 					<td style="padding: 2px;">
-						:&nbsp;&nbsp;<?php echo $ctermsdesc; ?>
+						:&nbsp;&nbsp;<?php echo $ctermsdesc; ?>.
+						<b>
+						<?php 
+							if($cvattyp=="VatEx"){
+								echo "VAT EXCLUSIVE";
+							}else{
+								echo "VAT INCLUSIVE";
+							}
+						?>
+						</b>
 					</td>
 				</tr>
 				<tr>
@@ -301,14 +303,6 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 							:&nbsp;&nbsp;<?php echo $cservinfo; ?>
 					</td>
 				</tr>				
-				<tr>
-					<td style="padding: 2px;" width="150px">
-						<b>Price Validity</b>
-					</td>
-					<td style="padding: 2px;">
-						:&nbsp;&nbsp;<?php echo date("F d, Y", strtotime($Date)); ?>
-					</td>
-				</tr>
 				<tr>
 					<td style="padding: 2px;" colspan="2">
 						<?php echo $Remarks; ?>
