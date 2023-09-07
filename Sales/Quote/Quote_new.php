@@ -195,7 +195,7 @@ $getfctrs = mysqli_query($con,"SELECT * FROM `items_factor` where compcode='$com
 								</div>
 								<div class="col-xs-2"><b>Salutation</b></div>
 								<div class="col-xs-3 nopadding"> 
-									<input type="text" id="txtcontactsalut" name="txtcontactsalut" class="required form-control input-sm" placeholder="Salutation..." tabindex="1"  required="true">
+									<input type="text" id="txtcontactsalut" name="txtcontactsalut" class="required form-control input-sm" placeholder="Salutation..." tabindex="1"  required="true" value="Dear Ma’am/Sir,">
 								</div>
 							</div>
 
