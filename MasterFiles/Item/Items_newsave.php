@@ -106,25 +106,6 @@ $company = $_SESSION['companyid'];
 		}
 	}
 
-	$UnitRowCnt = $_REQUEST['hdnprocesslist'];
-	//INSERT FACTOR IF MERON
-	if($UnitRowCnt>=1){
-		//echo $UnitRowCnt;
-		for($z=1; $z<=$UnitRowCnt; $z++){
-			$cItemProc = $_REQUEST['selproc'.$z];
-			
-			//mysqli_query($con,"INSERT INTO `items_factor`(`compcode`, `cpartno`, `nfactor`, `cunit`, `npurchcost`, `nretailcost`) VALUES ('$company','$cItemNo',$cItemFactor,'$cItemUnit',$cItemPurch,$cItemRetail)");
-			
-			if (!mysqli_query($con, "INSERT INTO `items_process_t`(`compcode`, `items_process_id`, `citemno`) VALUES ('$company','$cItemProc','$cItemNo')")) {
-					if(mysqli_error($con)!=""){
-						echo "Error UOM: ".mysqli_error($con);
-					}
-			} 
-			$cItemProc = 0;
-
-		}
-	}
-
 	//INSERT LOGFILE
 	$compname = php_uname('n');
 	

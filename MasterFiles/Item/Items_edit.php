@@ -102,14 +102,6 @@
 					}
 				}
 
-    $arrprocess = array();
-    $sqlprocess = mysqli_query($con,"SELECT * FROM `items_process` WHERE compcode='$company' and cstatus='ACTIVE'"); 
-    if (mysqli_num_rows($sqlprocess)!=0) {
-        while($row = mysqli_fetch_array($sqlprocess, MYSQLI_ASSOC)){
-            $arrprocess[] = $row;
-        }
-    }
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -137,7 +129,6 @@
 </head>
 
 <body style="padding:5px; height:700px">
-<input type="hidden" value='<?=json_encode(@$arrprocess)?>' id="hdnprocess">  
 
 <form name="frmITEM" id="frmITEM"  method="post" enctype="multipart/form-data">
 	<fieldset>
@@ -148,7 +139,6 @@
             <li id="liacc"><a href="#menu1">Financial</a></li>
             <li id="licon"><a href="#menu2">Inventory</a></li>
             <li id="ligrp"><a href="#menu3">Groupings</a></li>
-            <li id="liproc"><a href="#menu4">Processes</a></li>
         </ul>
 
 
@@ -794,61 +784,6 @@
                     </p>
                 </div>
 
-                <div id="menu4" class="tab-pane fade" style="padding-left:2 0px">
-                    <p>
-
-                        <div class="col-xs-12">
-                            <input type="button" value="Add Process" name="btnaddprocess" id="btnaddprocess" class="btn btn-primary btn-xs" onClick="addprocess();">
-                                
-                            <input name="hdnprocesslist" id="hdnprocesslist" type="hidden" value="0">
-
-                            <table width="50%" border="0" cellpadding="2" id="myProcessTable" style="margin-top: 10px;">
-                                <tr>
-                                    <th scope="col">PROCESS</th>
-                                    <th scope="col" width="80">STATUS</th>
-                                </tr>
-
-                                <?php
-                                    $cbtr = 0;
-                                    $sqlprocess = mysqli_query($con,"SELECT * FROM `items_process_t` WHERE compcode='$company' and citemno='$citemno'"); 
-                                    if (mysqli_num_rows($sqlprocess)!=0) {
-                                        while($row = mysqli_fetch_array($sqlprocess, MYSQLI_ASSOC)){
-                                            $cbtr++;
-                                ?>
-
-                                    <tr>
-                                            <td>
-                                                <div id='divselproc<?=$cbtr?>' class="col-xs-12 nopadwright">
-                                                    <select name='selproc<?=$cbtr?>' id='selproc<?=$cbtr?>' class='form-control input-sm selectpicker'>
-                                                    <?php
-                                                        foreach(@$arrprocess as $xcv){
-                                                            $xselec = "";
-                                                            if($xcv['nid']==$row['items_process_id']){
-                                                                $xselec = " selected";
-                                                            }
-
-                                                            echo "<option value='".$xcv['nid']."'".$xselec."> ".$xcv['cdesc']." </option>";
-                                                        }
-                                                    ?>
-                                                    </select>
-                                                </div>  
-
-                                            </td>
-                                            <td>
-                                                <input class='btn btn-danger btn-xs' type='button' id='row_<?=$cbtr?>_delete' class='delete' value='Delete' onClick="delProcRow(this);"/>
-                                            </td>
-                                    </tr>
-
-                                <?php
-                                        }
-                                    }
-                                ?>
-                            </table>
-                        </div>
-                        
-                    </p>
-                </div>
-
             </div>
         </div>
 
@@ -1091,11 +1026,6 @@ $(function(){
                             var lastRow = tbl.length-1;
 											
 						    document.getElementById('hdnunitrowcnt').value = lastRow;
-
-                            var tbl = document.getElementById('myProcessTable').getElementsByTagName('tr');
-                            var lastRow = tbl.length-1;
-                                                
-                            document.getElementById('hdnprocesslist').value = lastRow;
 
 							e.preventDefault();							
 							//submit form objects to ajax:
@@ -1527,43 +1457,6 @@ function enabled(){
 		$('#previewing').attr('width', '145px');
 		$('#previewing').attr('height', '145px');
 	};
-
-    function addprocess(){
-        var tbl = document.getElementById('myProcessTable').getElementsByTagName('tr');
-        var lastRow = tbl.length;
-
-        var a=document.getElementById('myProcessTable').insertRow(-1);
-        var u=a.insertCell(0);
-        var y=a.insertCell(1);
-
-        var xz = $("#hdnprocess").val();
-		prooptions = "";
-		$.each(jQuery.parseJSON(xz), function() { 
-			prooptions = prooptions + "<option value='"+this['nid']+"'>"+this['cdesc']+"</option>";
-		});
-        
-        u.innerHTML = "<div id='divselproc"+lastRow+"' class=\"col-xs-12 nopadwright\"><select name='selproc"+lastRow+"' id='selproc"+lastRow+"' class='form-control input-sm selectpicker'>"+prooptions+"</select></div>";
-        y.innerHTML = "<input class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"delProcRow(this);\"/>";
-
-    }
-
-    function delProcRow(r) {
-        var tbl = document.getElementById('myProcessTable').getElementsByTagName('tr');
-        var lastRow = tbl.length;
-        var i=r.parentNode.parentNode.rowIndex;
-        document.getElementById('myProcessTable').deleteRow(i);
-        var lastRow = tbl.length;
-        var z; //for loop counter changing textboxes ID;
-        
-            for (z=i+1; z<=lastRow; z++){
-                var tempcitemno = document.getElementById('selproc' + z);
-                
-                var x = z-1;
-                tempcitemno.id = "selproc" + x;
-                tempcitemno.name = "selproc" + x;
-
-            }
-    }
 
 
 </script>
