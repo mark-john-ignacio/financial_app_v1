@@ -89,7 +89,7 @@ else {
 
 		echo $cSINo;
 
-		print_r($_FILES);
+		//print_r($_FILES);
 	}
 
 	if(count($_FILES) != 0){

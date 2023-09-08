@@ -84,13 +84,6 @@
 						<th>Delivery Date</th>
 						<th>Gross</th>
             <th>Status</th>
-						<?php
-							if($lallowMRP==1){
-						?>
-								<th width="40">JO</th>
-						<?php
-							}
-						?>
 					</tr>
 				</thead>
 
@@ -303,25 +296,7 @@
 							return " <div id=\"msg"+full[0]+"\"><a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"')\">POST</a> | <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"')\">CANCEL</a></div>";
 						}
 					}
-				}<?php
-						if($lallowMRP==1){
-					?>
-					,{ "data": null,
-						"render": function(data, type, full, row){
-
-							if (full[5] == 1 && full[10] == 0) {
-							
-								return "<a href=\"javascript:;\" onClick=\"trans('SEND','"+full[0]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-share\" style=\"font-size:20px;color: #ffb533;\" title=\"Generate JO\"></i></a>";
-
-							}else{
-								 return " - ";
-							}
-						}
-						
-					}
-					<?php
-						}
-					?>
+				}
 			],
 			"order": [[ 3, "desc" ]],
 			"columnDefs": [
