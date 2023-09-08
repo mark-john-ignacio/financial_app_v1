@@ -27,7 +27,7 @@
 </head>
 
 <body style="padding:5px">
-	<form action="DR_unpost_tran.php" name="frmunpost" id="frmunpost" method="POST">
+	<form action="RR_unpost_tran.php" name="frmunpost" id="frmunpost" method="POST">
 	
 		<div>
 			<section>
