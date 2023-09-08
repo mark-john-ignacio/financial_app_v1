@@ -252,7 +252,7 @@
   <div class="tab-content nopadwtop2x">
     <div class="tab-pane active" id="1Det">
 
-         <div class="alt2" dir="ltr" style="
+        <div class="alt2" dir="ltr" style="
 					margin: 0px;
 					padding: 3px;
 					border: 1px solid #919b9c;
@@ -260,14 +260,14 @@
 					height: 250px;
 					text-align: left;
 					overflow: auto">
-			      <input type="hidden" name="hdnqty" id="hdnqty">
-      			  <input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
-      			  <input type="hidden" name="hdnunit" id="hdnunit">
-                  <input type="hidden" id="txtprodid" name="txtprodid">
-                  <input type="hidden" id="txtprodnme" name="txtprodnme">
+			    <input type="hidden" name="hdnqty" id="hdnqty">
+      		<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
+      		<input type="hidden" name="hdnunit" id="hdnunit">
+          <input type="hidden" id="txtprodid" name="txtprodid">
+          <input type="hidden" id="txtprodnme" name="txtprodnme">
       
             <table id="MyTable" class="MyTable table table-condensed" width="100%">
-
+							<thead>
 								<tr>
 									<th style="border-bottom:1px solid #999">&nbsp;</th>
 									<th style="border-bottom:1px solid #999">Code</th>
@@ -280,13 +280,12 @@
 			            <th style="border-bottom:1px solid #999">Amount</th>-->
 			            <th style="border-bottom:1px solid #999">&nbsp;</th>
 								</tr>
-			                    
-								<tbody class="tbody">
-			          </tbody>
-                    
+							</thead>            
+							<tbody class="tbody">
+			        </tbody>                    
 						</table>
 
-					</div>
+				</div>
 			</div>
 
 			<div class="tab-pane" id="2Acct">
@@ -1069,6 +1068,8 @@ $(function(){
 		
 		if(event.keyCode == 13){
 
+			$('#MyTable tbody').empty();
+
 			//SO Header
 			$.ajax({
 				url : "th_getso.php?id=" + $(this).val() ,
@@ -1300,7 +1301,7 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,crefident){
 		}
 		else{
 			if(parseFloat(itmqty)>0){
-				var avail = "<td> <input type='hidden' name='hdnavailqty' id='hdnavailqty' value='"+itmqty+"'> " + itmqty + " " + itmqtyunit +" </td>";
+				var avail = "<td> <input type='hidden' name='hdnavailqty' id='hdnavailqty' value='"+itmqty+"'> " + itmqty.toLocaleString('en') + " " + itmqtyunit +" </td>";
 				var qtystat = "";
 			}
 			else{
@@ -1931,8 +1932,10 @@ function chkform(){
 			//	}
 		//	}
 			if(xChkBal==0){
-				if(myqty>myav){
-					msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Qty is greater than the available qty: row " + index;
+				//alert(myqty + ">" + myav);
+				if(parseFloat(myqty)>parseFloat(myav)){
+					$xcb = index+1;
+					msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Qty is greater than the available qty: row " + $xcb;
 				}
 			}
 			

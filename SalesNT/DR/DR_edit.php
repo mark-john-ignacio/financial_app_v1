@@ -339,7 +339,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
       <input type="hidden" id="txtprodnme" name="txtprodnme">
       
             <table id="MyTable" class="MyTable table table-condensed" width="100%">
-
+							<thead>
 								<tr>
 									<th style="border-bottom:1px solid #999">&nbsp;</th>
 									<th style="border-bottom:1px solid #999">Code</th>
@@ -352,9 +352,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									<th style="border-bottom:1px solid #999">Amount</th>-->
 									<th style="border-bottom:1px solid #999">&nbsp;</th>
 								</tr>
-			                    
-								<tbody class="tbody">
-								</tbody>                    
+							</thead>            
+							<tbody class="tbody">
+							</tbody>                    
 						</table>
 					</div>
 			</div>
@@ -1242,6 +1242,8 @@ $(function(){
 		var msgs = "";
 		
 		if(event.keyCode == 13){
+
+			$('#MyTable tbody').empty();
 
 			//SO Header
 			$.ajax({
@@ -2256,6 +2258,14 @@ function chkform(){
 		//		}
 		//	}
 			
+			if(xChkBal==0){
+				//alert(myqty + ">" + myav);
+				if(parseFloat(myqty)>parseFloat(myav)){
+					$xcb = index+1;
+					msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Qty is greater than the available qty: row " + $xcb;
+				}
+			}
+
 			if(myprice == 0 || myprice == ""){
 				msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero amount is not allowed: row " + index;	
 			}
