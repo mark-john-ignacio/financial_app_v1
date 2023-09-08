@@ -273,7 +273,7 @@
                   <input type="hidden" id="txtprodnme" name="txtprodnme">
       
             <table id="MyTable" class="MyTable table table-condensed" width="100%">
-
+							<thead>
 								<tr>
 									<th style="border-bottom:1px solid #999">&nbsp;</th>
 									<th style="border-bottom:1px solid #999">Code</th>
@@ -286,10 +286,9 @@
 			            <th style="border-bottom:1px solid #999">Amount</th>-->
 			            <th style="border-bottom:1px solid #999">&nbsp;</th>
 								</tr>
-			                    
-								<tbody class="tbody">
-			          </tbody>
-                    
+							</thead>            
+							<tbody class="tbody">
+			        </tbody>                   
 						</table>
 
 					</div>
@@ -1072,6 +1071,8 @@ $(function(){
 		var msgs = "";
 		
 		if(event.keyCode == 13){
+
+			$('#MyTable tbody').empty();
 
 			//SO Header
 			$.ajax({
@@ -1934,8 +1935,10 @@ function chkform(){
 			//	}
 		//	}
 			if(xChkBal==0){
-				if(myqty>myav){
-					msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Qty is greater than the available qty: row " + index;
+				//alert(myqty + ">" + myav);
+				if(parseFloat(myqty)>parseFloat(myav)){
+					$xcb = index+1;
+					msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Qty is greater than the available qty: row " + $xcb;
 				}
 			}
 			

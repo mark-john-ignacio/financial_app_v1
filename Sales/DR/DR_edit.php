@@ -337,7 +337,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
       <input type="hidden" id="txtprodnme" name="txtprodnme">
       
             <table id="MyTable" class="MyTable table table-condensed" width="100%">
-
+							<thead>
 								<tr>
 									<th style="border-bottom:1px solid #999">&nbsp;</th>
 									<th style="border-bottom:1px solid #999">Code</th>
@@ -350,43 +350,41 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									<th style="border-bottom:1px solid #999">Amount</th>-->
 									<th style="border-bottom:1px solid #999">&nbsp;</th>
 								</tr>
-			                    
-								<tbody class="tbody">
-								</tbody>                    
+							</thead>            
+							<tbody class="tbody">
+							</tbody>                    
 						</table>
 					</div>
 			</div>
 
 			<div class="tab-pane" id="2Acct">
 
-             <div class="alt2" dir="ltr" style="
-                        margin: 0px;
-                        padding: 3px;
-                        border: 1px solid #919b9c;
-                        width: 100%;
-                        height: 250px;
-                        text-align: left;
-                        overflow: auto">
+            	<div class="alt2" dir="ltr" style="
+                margin: 0px;
+                padding: 3px;
+                border: 1px solid #919b9c;
+                width: 100%;
+                height: 250px;
+                text-align: left;
+                overflow: auto">
         
                 <table id="MyTableInvSer" cellpadding="3px" width="100%" border="0">
     							<thead>
-                        <tr>
-                        	
-                            <th style="border-bottom:1px solid #999">Item Code</th>
-                            <th style="border-bottom:1px solid #999">Serial No.</th>
-                            <th style="border-bottom:1px solid #999">UOM</th>
-                            <th style="border-bottom:1px solid #999">Qty</th>
-                            <th style="border-bottom:1px solid #999">Location</th>
-                            <th style="border-bottom:1px solid #999">Expiration Date</th>
-							<th style="border-bottom:1px solid #999">Remarks</th>
-                            <th style="border-bottom:1px solid #999">&nbsp;</th>
-                        </tr>
-                   </thead>
-                   <tbody>
-                   </tbody>
-                        
+                    <tr>                        	
+                      <th style="border-bottom:1px solid #999">Item Code</th>
+                      <th style="border-bottom:1px solid #999">Serial No.</th>
+                      <th style="border-bottom:1px solid #999">UOM</th>
+                      <th style="border-bottom:1px solid #999">Qty</th>
+                      <th style="border-bottom:1px solid #999">Location</th>
+                      <th style="border-bottom:1px solid #999">Expiration Date</th>
+											<th style="border-bottom:1px solid #999">Remarks</th>
+                      <th style="border-bottom:1px solid #999">&nbsp;</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>                        
                 </table>
-            			<input type="hidden" name="hdnserialscnt" id="hdnserialscnt">
+            		<input type="hidden" name="hdnserialscnt" id="hdnserialscnt">
 							</div>
 			</div>
 	</div>
@@ -1242,6 +1240,8 @@ $(function(){
 		var msgs = "";
 		
 		if(event.keyCode == 13){
+
+			$('#MyTable tbody').empty();
 
 			//SO Header
 			$.ajax({
@@ -2260,6 +2260,13 @@ function chkform(){
 		//		}
 		//	}
 			
+			if(xChkBal==0){
+				if(parseFloat(myqty)>parseFloat(myav)){
+					$xcb = index+1;
+					msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Qty is greater than the available qty: row " + $xcb;
+				}
+			}
+
 			if(myprice == 0 || myprice == ""){
 				msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero amount is not allowed: row " + index;	
 			}
