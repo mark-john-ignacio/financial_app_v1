@@ -78,31 +78,31 @@ $sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.cremarks, DATE_FORMAT
 	<title>Myx Financials</title>
     
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
 
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../js/bootstrap3-typeahead.min.js"></script>
-<script src="../../include/autoNumeric.js"></script>
-<!--
-<script src="../../Bootstrap/js/jquery.numeric.js"></script>
--->
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../js/bootstrap3-typeahead.min.js"></script>
+	<script src="../../include/autoNumeric.js"></script>
+	<!--
+	<script src="../../Bootstrap/js/jquery.numeric.js"></script>
+	-->
 
-<script src="../../Bootstrap/js/bootstrap.js"></script>
-<script src="../../Bootstrap/js/moment.js"></script>
-<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<script src="../../Bootstrap/js/moment.js"></script>
+	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
-<!--
---
--- FileType Bootstrap Scripts and Link
---
--->
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
-<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
-<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
-<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
-<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
-<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+	<!--
+	--
+	-- FileType Bootstrap Scripts and Link
+	--
+	-->
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
 
 </head>
 
@@ -126,9 +126,18 @@ if (mysqli_num_rows($sqlhead)!=0) {
 ?>
 
 <form action="RR_editsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
+	<input type="hidden" value="<?php echo $nCHKREFvalue;?>" name="hdnCHECKREFval" id="hdnCHECKREFval">
 	<fieldset>
     	<legend>Receiving</legend>	
-        <input type="hidden" value="<?php echo $nCHKREFvalue;?>" name="hdnCHECKREFval" id="hdnCHECKREFval">
+        
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#home">RR Details</a></li>
+				<li><a href="#attc">Attachments</a></li>
+			</ul>
+
+			<div class="tab-content">  
+      	<div id="home" class="tab-pane fade in active" style="padding-left:5px; padding-top:10px">
+
         	<table width="100%" border="0">
 						<tr>
 							<tH>RR No.:</tH>
@@ -275,14 +284,27 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						</tr>
 					</table>
 
+				</div>
+
+				<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px">
+
+					<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+					<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+					<input type="file" name="upload[]" id="file-0" multiple />
+
+				</div>
+			</div>
+
+			<hr>
+		<div class="col-xs-12 nopadwdown"><b>Details</b></div>
+		
 					<ul class="nav nav-tabs">
 						<li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Items List</a></li>
 						<li id="liacct"><a href="#2Acct" data-toggle="tab">Items Inventory</a></li>
-						<li><a href="#attc" data-toggle="tab">Attachments</a></li>
 					</ul>
 
 						<div class="tab-content nopadwtop2x">
-							<div class="tab-pane active" id="1Det">
+							<div class="tab-pane fade in active" id="1Det" style="padding-left:5px; padding-top:10px">
 
 								<div class="alt2" dir="ltr" style="
 									margin: 0px;
@@ -317,7 +339,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</div>
 							</div>
 
-							<div class="tab-pane" id="2Acct">
+							<div class="tab-pane fade in" id="2Acct" style="padding-left:5px; padding-top:10px">
 
 											<div class="alt2" dir="ltr" style="
 																	margin: 0px;
@@ -348,32 +370,6 @@ if (mysqli_num_rows($sqlhead)!=0) {
 													</table>
 														<input type="hidden" name="hdnserialscnt" id="hdnserialscnt">
 												</div>
-							</div>
-
-							<div class="tab-pane" id="attc">
-								<div class="alt2" dir="ltr" style="
-									margin: 0px;
-									padding: 3px;
-									border: 1px solid #919b9c;
-									width: 100%;
-									height: 450px;
-									text-align: left;
-									overflow: auto">
-									
-								<table width="100%" border="0">
-									<tr>
-										<td>
-											<div class="col-sm-12 nopadding">
-												<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-												<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
-												<div class="col-sm-12 nopadwdown" style="padding-top:10px;">
-													<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
-													<input type="file" name="upload[]" id="file-0" multiple />
-												</div>
-											</div>
-										</td>
-									</tr>
-								</table>
 							</div>
 
 					</div>
@@ -652,55 +648,55 @@ else{
 	$(document).keydown(function(e) {	 
 		
 		if(e.keyCode == 112) { //F1
-		if($("#btnNew").is(":disabled")==false){
+			if($("#btnNew").is(":disabled")==false){
+				e.preventDefault();
+				window.location.href='RR_new.php';
+			}
+		}
+		else if(e.keyCode == 83 && e.ctrlKey){//CTRL S
+			if($("#btnSave").is(":disabled")==false){ 
+				e.preventDefault();
+				return chkform();
+			}
+		}
+		else if(e.keyCode == 69 && e.ctrlKey){//CTRL E
+			if($("#btnEdit").is(":disabled")==false){
+				e.preventDefault();
+				enabled();
+			}
+		}
+		else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
+			if($("#btnPrint").is(":disabled")==false){
+				e.preventDefault();
+				printchk('<?php echo $cpono;?>');
+			}
+		}
+		else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
+			if($("#btnUndo").is(":disabled")==false){
+				e.preventDefault();
+				chkSIEnter(13,'frmpos');
+			}
+		}
+		else if(e.keyCode == 27){//ESC
+			if($("#btnMain").is(":disabled")==false){
+				e.preventDefault();
+				$("#btnMain").click();
+			}
+		}
+		else if(e.keyCode == 70 && e.ctrlKey) { // CTRL + F .. search product code
 			e.preventDefault();
-			window.location.href='RR_new.php';
+			$('#txtprodnme').focus();
 		}
-	}
-	else if(e.keyCode == 83 && e.ctrlKey){//CTRL S
-		if($("#btnSave").is(":disabled")==false){ 
-			e.preventDefault();
-			return chkform();
-		}
-	}
-	else if(e.keyCode == 69 && e.ctrlKey){//CTRL E
-		if($("#btnEdit").is(":disabled")==false){
-			e.preventDefault();
-			enabled();
-		}
-	}
-	else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
-		if($("#btnPrint").is(":disabled")==false){
-			e.preventDefault();
-			printchk('<?php echo $cpono;?>');
-		}
-	}
-	else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
-		if($("#btnUndo").is(":disabled")==false){
-			e.preventDefault();
-			chkSIEnter(13,'frmpos');
-		}
-	}
-	else if(e.keyCode == 27){//ESC
-		if($("#btnMain").is(":disabled")==false){
-			e.preventDefault();
-			$("#btnMain").click();
-		}
-	}
-	else if(e.keyCode == 70 && e.ctrlKey) { // CTRL + F .. search product code
-		e.preventDefault();
-		$('#txtprodnme').focus();
-	}
-	else if(e.keyCode == 45) { //Insert
-		if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
-			openinv();
-		}
-	}else if(e.keyCode == 88 && e.ctrlKey){ //CTRL X - Close Modal
-		if($('#SerialMod').hasClass('in')==true){
-				$("#btnClsSer").click();
-		}
+		else if(e.keyCode == 45) { //Insert
+			if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
+				openinv();
+			}
+		}else if(e.keyCode == 88 && e.ctrlKey){ //CTRL X - Close Modal
+			if($('#SerialMod').hasClass('in')==true){
+					$("#btnClsSer").click();
+			}
 
-	}
+		}
 
 	});
 
@@ -712,6 +708,10 @@ else{
 
 
 $(document).ready(function() {
+		$(".nav-tabs a").click(function(){
+    	$(this).tab('show');
+		});
+
     $('.datepick').datetimepicker({
       format: 'MM/DD/YYYY',
     });	

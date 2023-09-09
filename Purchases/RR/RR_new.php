@@ -90,151 +90,172 @@ $company = $_SESSION['companyid'];
 <input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
 
 <form action="RR_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
+	<input type="hidden" value="<?php echo $nCHKREFvalue;?>" name="hdnCHECKREFval" id="hdnCHECKREFval">
 	<fieldset>
     	<legend>Receiving</legend>	
-        <input type="hidden" value="<?php echo $nCHKREFvalue;?>" name="hdnCHECKREFval" id="hdnCHECKREFval">
-        <table width="100%" border="0">
-					<tr>
-						<tH width="100">Supplier:</tH>
-						<td style="padding:2px">
-							<div class="col-xs-12 nopadding">
-								<div class="col-xs-3 nopadding">
-									<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" value="" readonly>
+       
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#home">RR Details</a></li>
+				<li><a href="#attc">Attachments</a></li>
+			</ul>
+
+			<div class="tab-content">  
+      	<div id="home" class="tab-pane fade in active" style="padding-left:5px; padding-top:10px">
+
+					<table width="100%" border="0">
+						<tr>
+							<tH width="100">Supplier:</tH>
+							<td style="padding:2px">
+								<div class="col-xs-12 nopadding">
+									<div class="col-xs-3 nopadding">
+										<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" value="" readonly>
+									</div>
+
+									<div class="col-xs-8 nopadwleft">
+										<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" value="">
+									</div> 
 								</div>
+							</td>
+							<tH width="150">Supplier DR:</tH>
+							<td width="250" style="padding:2px;">
+								<div class="col-xs-8 nopadding">
+									<input type='text' class="form-control input-sm" id="txtSuppSI" name="txtSuppSI" required/>
+								</div>
+							</td>
+						</tr>
 
-								<div class="col-xs-8 nopadwleft">
-									<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" value="">
-								</div> 
-							</div>
-						</td>
-						<tH width="150">Supplier DR:</tH>
-						<td width="250" style="padding:2px;">
-							<div class="col-xs-8 nopadding">
-								<input type='text' class="form-control input-sm" id="txtSuppSI" name="txtSuppSI" required/>
-							</div>
-						</td>
-					</tr>
-
-  <tr>
-    <tH width="100">Remarks:</tH>
-    <td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div></td>
-    <tH width="150" style="padding:2px">Date Received:</tH>
-    <td style="padding:2px"><div class="col-xs-8 nopadding">
-      <input type='text' class="datepick form-control input-sm" id="date_received" name="date_received" />
-    </div>
-	
-	</td>
-  </tr>
-
-	
-  <tr>
-    <tH width="100"></tH>
-    <td style="padding:2px" colspan="3">
-			<div class="col-xs-12">
-							<div class="col-xs-3 nopadding">
-								<!--<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">--> 						
-									<?php
-									/*
-											$nvaluecurrbase = "";	
-											$nvaluecurrbasedesc = "";	
-											$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+						<tr>
+							<tH width="100">Remarks:</tH>
+							<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div></td>
+							<tH width="150" style="padding:2px">Date Received:</tH>
+							<td style="padding:2px">
+								<div class="col-xs-8 nopadding">
+									<input type='text' class="datepick form-control input-sm" id="date_received" name="date_received" />
+								</div>		
+								</td>
+						</tr>
+		
+						<tr>
+							<tH width="100"></tH>
+							<td style="padding:2px" colspan="3">
+								<div class="col-xs-12">
+												<div class="col-xs-3 nopadding">
+													<!--<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">--> 						
+														<?php
+														/*
+																$nvaluecurrbase = "";	
+																$nvaluecurrbasedesc = "";	
+																$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+																
+																	if (mysqli_num_rows($result)!=0) {
+																		$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
+																		
+																		$nvaluecurrbase = $all_course_data['cvalue']; 
+																			
+																	}
+																	else{
+																		$nvaluecurrbase = "";
+																	}
 											
-												if (mysqli_num_rows($result)!=0) {
-													$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
-													
-													$nvaluecurrbase = $all_course_data['cvalue']; 
-														
-												}
-												else{
-													$nvaluecurrbase = "";
-												}
-						
-											*/
-												//	$objcurrs = listcurrencies();
-												//	$objrows = json_decode($objcurrs,true);
-														
-											//foreach($objrows as $rows){
-											//	if ($nvaluecurrbase==$rows['currencyCode']) {
-											//		$nvaluecurrbasedesc = $rows['currencyName'];
-											//	}
-												
-									?>
-											<!--	<option value="<?//=$rows['currencyCode']?>" <?//php if ($nvaluecurrbase==$rows['currencyCode']) { echo "selected='true'"; } ?>><?//=$rows['currencyCode']." - ".strtoupper($rows['currencyName'])?></option>-->
-									<?php
-											//}
-									?>
-								<!--</select>
-									<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?//php echo $nvaluecurrbase; ?>"> 	
-									<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?//php echo $nvaluecurrbasedesc; ?>"> -->
-							</div>
-							<div class="col-xs-1 nopadwleft"><!-- class="numeric required form-control input-sm text-right" 
-								<input type='hidden' id="basecurrval" name="basecurrval" value="1">	 -->
-							</div>
+																*/
+																	//	$objcurrs = listcurrencies();
+																	//	$objrows = json_decode($objcurrs,true);
+																			
+																//foreach($objrows as $rows){
+																//	if ($nvaluecurrbase==$rows['currencyCode']) {
+																//		$nvaluecurrbasedesc = $rows['currencyName'];
+																//	}
+																	
+														?>
+																<!--	<option value="<?//=$rows['currencyCode']?>" <?//php if ($nvaluecurrbase==$rows['currencyCode']) { echo "selected='true'"; } ?>><?//=$rows['currencyCode']." - ".strtoupper($rows['currencyName'])?></option>-->
+														<?php
+																//}
+														?>
+													<!--</select>
+														<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?//php echo $nvaluecurrbase; ?>"> 	
+														<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?//php echo $nvaluecurrbasedesc; ?>"> -->
+												</div>
+												<div class="col-xs-1 nopadwleft"><!-- class="numeric required form-control input-sm text-right" 
+													<input type='hidden' id="basecurrval" name="basecurrval" value="1">	 -->
+												</div>
 
-							<div class="col-xs-5" id="statgetrate" style="padding: 4px !important"> 
-										
-							</div>
-		</div>
-	</td>
-    
-  </tr>
+												<div class="col-xs-5" id="statgetrate" style="padding: 4px !important"> 
+															
+												</div>
+								</div>
+							</td>
+							
+						</tr>
 
-  <tr>
-    <td colspan="2">&nbsp;</td>
-    <th style="padding:2px"><!--<span style="padding:2px">PURCHASE TYPE:</span>-->&nbsp;</th>
-    <td>&nbsp;
-    <!--
-    <div class="col-xs-5">
-        <select id="seltype" name="seltype" class="form-control input-sm selectpicker"  tabindex="3">
-          <option value="Grocery">Grocery</option>
-          <option value="Cripples">Cripples</option>
-        </select>
-   </div>
-   --></td>
-    </tr>
-<tr>
-    <td colspan="2">
-    <?php
-    	if($nCHKREFvalue==0) {
-	?>
-      <div class="col-xs-12 nopadwdown">
-        <div class="col-xs-3 nopadding">
-          <input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Item/SKU Code..." width="25" tabindex="4"  autocomplete="off">
-					<input type="hidden" id="txtcskuid" name="txtcskuid">
-        </div> 
-        <div class="col-xs-8 nopadwleft">
-          <input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL+F) Search Product Name..." size="80" tabindex="5" autocomplete="off">
-        </div>
-      </div>
-     <?php
-		}
-		else{
-	 ?> 
-      <input type="hidden" id="txtprodid" name="txtprodid">
-      <input type="hidden" id="txtprodnme" name="txtprodnme">
-			<input type="hidden" id="txtcskuid" name="txtcskuid">
-     <?php
-		}
+						<tr>
+							<td colspan="2">&nbsp;</td>
+							<th style="padding:2px"><!--<span style="padding:2px">PURCHASE TYPE:</span>-->&nbsp;</th>
+							<td>&nbsp;
+							<!--
+							<div class="col-xs-5">
+									<select id="seltype" name="seltype" class="form-control input-sm selectpicker"  tabindex="3">
+										<option value="Grocery">Grocery</option>
+										<option value="Cripples">Cripples</option>
+									</select>
+						</div>
+						--></td>
+						</tr>
 
-	 ?> 
+						<tr>
+							<td colspan="2">
+							<?php
+								if($nCHKREFvalue==0) {
+							?>
+								<div class="col-xs-12 nopadwdown">
+									<div class="col-xs-3 nopadding">
+										<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Item/SKU Code..." width="25" tabindex="4"  autocomplete="off">
+										<input type="hidden" id="txtcskuid" name="txtcskuid">
+									</div> 
+									<div class="col-xs-8 nopadwleft">
+										<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL+F) Search Product Name..." size="80" tabindex="5" autocomplete="off">
+									</div>
+								</div>
+							<?php
+								}
+								else{
+							?> 
+								<input type="hidden" id="txtprodid" name="txtprodid">
+								<input type="hidden" id="txtprodnme" name="txtprodnme">
+								<input type="hidden" id="txtcskuid" name="txtcskuid">
+							<?php
+								}
 
-        <input type="hidden" name="hdnunit" id="hdnunit">
-    </td>
-    <td></td>
-    <td></td>
+							?> 
 
-</tr>
-</table>
+									<input type="hidden" name="hdnunit" id="hdnunit">
+							</td>
+							<td></td>
+							<td></td>
 
-<ul class="nav nav-tabs">
-  <li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Items List</a></li>
-  <li id="liacct"><a href="#2Acct" data-toggle="tab">Items Inventory</a></li>
+						</tr>
+					</table>
+				
+				</div>
 
-	<li><a href="#attc" data-toggle="tab">Attachments</a></li>
-</ul>
+				<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px">
+				
+					<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+					<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+					<input type="file" name="upload[]" id="file-0" multiple />
+
+				</div>
+			</div>
+
+		<hr>
+		<div class="col-xs-12 nopadwdown"><b>Details</b></div>
+
+		<ul class="nav nav-tabs">
+			<li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Items List</a></li>
+			<li id="liacct"><a href="#2Acct" data-toggle="tab">Items Inventory</a></li>
+		</ul>
 
   	<div class="tab-content nopadwtop2x">
-    	<div class="tab-pane active" id="1Det">
+    	<div class="tab-pane active" id="1Det" style="padding-left:5px; padding-top:10px">
 
          <div class="alt2" dir="ltr" style="
 					margin: 0px;
@@ -269,7 +290,7 @@ $company = $_SESSION['companyid'];
 				</div>
 			</div>
 
-			<div class="tab-pane" id="2Acct">
+			<div class="tab-pane fade in" id="2Acct" style="padding-left:5px; padding-top:10px">
 
              <div class="alt2" dir="ltr" style="
                         margin: 0px;
@@ -301,34 +322,6 @@ $company = $_SESSION['companyid'];
             			<input type="hidden" name="hdnserialscnt" id="hdnserialscnt">
 							</div>
 			</div>
-
-			<div id="attc" class="tab-pane" >
-				<div class="alt2" dir="ltr" style="
-						margin: 0px;
-						padding: 3px;
-						border: 1px solid #919b9c;
-						width: 100%;
-						height: 410px;
-						text-align: left;
-						overflow: auto">
-						
-					<table width="100%" border="0">
-						<tr>
-							<td>
-								<div class="col-sm-12 nopadding">
-									<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-									<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
-									<div class="col-sm-12 nopadwdown" style="padding-top:10px;">
-										<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
-										<input type="file" name="upload[]" id="file-0" multiple />
-									</div>
-								</div>
-							</td>
-						</tr>
-					</table>
-					
-				</div>
-			</div>	
 
 		</div>
 <br>
@@ -543,7 +536,11 @@ PO<br>(Insert)</button>
 	});
 
 
-$(document).ready(function() {
+	$(document).ready(function() {
+		$(".nav-tabs a").click(function(){
+    	$(this).tab('show');
+		});
+		
     $('.datepick').datetimepicker({
       format: 'MM/DD/YYYY',
 			useCurrent: false,
@@ -572,7 +569,7 @@ $(document).ready(function() {
 		$("#basecurrval").on("keyup", function () {
 			recomputeCurr();
 		});
-});
+	});
 	
 $(function(){	
 	$("#allbox").click(function(){

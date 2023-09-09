@@ -140,11 +140,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					<li><a href="#attc">Attachments</a></li>
 				</ul>
 
-
-				<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left; overflow: inherit !important;">
 					<div class="tab-content">  
 
-						<div id="home" class="tab-pane fade in active" style="padding-left:5px;">
+						<div id="home" class="tab-pane fade in active" style="padding-left:5px; padding-top: 10px;">
 
 							<table width="100%" border="0">
 								<tr>
@@ -231,31 +229,19 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 						</div>
 
-						<div id="attc" class="tab-pane fade in" style="padding-left: 5px;">
+						<div id="attc" class="tab-pane fade in" style="padding-left: 5px; padding-top: 10px;">
 							<!--
 							--
 							-- Import Files Modal
 							--
 							-->
-							<table width="100%" border="0">
-								<tr>
-									<td>
-										<div class="col-sm-12 nopadding">
-											<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-											<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
-											<div class="col-sm-12 nopadding" style="padding-top:10px;">
-												<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
-												<input type="file" name="upload[]" id="file-0" multiple />
-											</div>
-										</div>
-									</td>
-								</tr>
-							</table>
+							<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+							<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+							<input type="file" name="upload[]" id="file-0" multiple />
 							
 						</div>
 
 					</div>
-				</div>
 
 				<hr>
 				<div class="col-xs-12 nopadwdown"><b>Details</b></div>

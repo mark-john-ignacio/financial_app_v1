@@ -49,56 +49,76 @@ include('../../include/access2.php');
 		<fieldset>
     	<legend>Purchase Return</legend>	
 
-        <table width="100%" border="0">
-					<tr>
-						<tH width="100">Supplier:</tH>
-						<td style="padding:2px">
-											<div class="col-xs-12 nopadding">
-												<div class="col-xs-3 nopadding">
-													<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" value="" readonly>
-												</div>
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#home">Purchase Return Details</a></li>
+				<li><a href="#attc">Attachments</a></li>
+			</ul>
 
-												<div class="col-xs-8 nopadwleft">
-													<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" value="">
-												</div> 
-											</div>
-						</td>
-						<tH width="150" style="padding:2px">Date Returned:</tH>
-						<td style="padding:2px">
-							<div class="col-xs-8 nopadding">
-								<input type='text' class="datepick form-control input-sm" id="date_returned" name="date_returned" />
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<tH width="100">Remarks:</tH>
-						<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div></td>
-						<tH width="150">&nbsp;</tH>
-						<td style="padding:2px;">
-						&nbsp;
-						</td>
-					</tr>
+			<div class="tab-content">  
+      	<div id="home" class="tab-pane fade in active" style="padding-left:5px; padding-top:10px">
+			
+					<table width="100%" border="0">
+						<tr>
+							<tH width="100">Supplier:</tH>
+							<td style="padding:2px">
+								<div class="col-xs-12 nopadding">
+									<div class="col-xs-3 nopadding">
+										<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" value="" readonly>
+									</div>
 
-					<tr>
-							<td colspan="2">
-								<input type="hidden" id="txtprodid" name="txtprodid">
-								<input type="hidden" id="txtprodnme" name="txtprodnme">
-									<input type="hidden" name="hdnunit" id="hdnunit">
+									<div class="col-xs-8 nopadwleft">
+										<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" value="">
+									</div> 
+								</div>
 							</td>
-							<td>&nbsp;</td>
-							<td>&nbsp;</td>
+							<tH width="150" style="padding:2px">Date Returned:</tH>
+							<td style="padding:2px">
+								<div class="col-xs-8 nopadding">
+									<input type='text' class="datepick form-control input-sm" id="date_returned" name="date_returned" />
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<tH width="100">Remarks:</tH>
+							<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div></td>
+							<tH width="150">&nbsp;</tH>
+							<td style="padding:2px;">
+							&nbsp;
+							</td>
+						</tr>
 
-					</tr>
-				</table>
+						<tr>
+								<td colspan="2">
+									<input type="hidden" id="txtprodid" name="txtprodid">
+									<input type="hidden" id="txtprodnme" name="txtprodnme">
+										<input type="hidden" name="hdnunit" id="hdnunit">
+								</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+
+						</tr>
+					</table>
+				</div>
+
+				<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px">
+
+					<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+					<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+					<input type="file" name="upload[]" id="file-0" multiple />
+
+				</div>
+			</div>
+
+			<hr>
+			<div class="col-xs-12 nopadwdown"><b>Details</b></div>
 
 				<ul class="nav nav-tabs">
 					<li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Items List</a></li>
 					<li id="liacct"><a href="#2Acct" data-toggle="tab">Items Inventory</a></li>
-					<li><a href="#attc" data-toggle="tab">Attachments</a></li>
 				</ul>
 
 				<div class="tab-content nopadwtop2x">
-					<div class="tab-pane active" id="1Det">
+						<div class="tab-pane active" id="1Det">
 
 							<div class="alt2" dir="ltr" style="
 								margin: 0px;
@@ -160,22 +180,6 @@ include('../../include/access2.php');
 										</div>
 						</div>
 
-						<div id="attc" class="tab-pane">
-							<table width="100%" border="0">
-								<tr>
-									<td>
-										<div class="col-sm-12 nopadding">
-											<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-											<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
-											<div class="col-sm-12 nopadwdown" style="padding-top:10px;">
-												<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
-												<input type="file" name="upload[]" id="file-0" multiple />
-											</div>
-										</div>
-									</td>
-								</tr>
-							</table>
-						</div>
 				</div>
 
 				<br>
@@ -338,7 +342,7 @@ include('../../include/access2.php');
 
 	$(document).keydown(function(e) {	 
 	  if(e.keyCode == 83 && e.ctrlKey) { //Ctrl S
-	  	  e.preventDefault();
+	  	e.preventDefault();
 		  return chkform();
 	  }
 	  else if(e.keyCode == 70 && e.ctrlKey) { // CTRL + F .. search product code
@@ -368,7 +372,11 @@ include('../../include/access2.php');
 	  }
 	});
 
-$(document).ready(function() {
+	$(document).ready(function() {
+		$(".nav-tabs a").click(function(){
+    	$(this).tab('show');
+		});
+
     $('.datepick').datetimepicker({
       format: 'MM/DD/YYYY',
 			useCurrent: false,
@@ -388,65 +396,66 @@ $(document).ready(function() {
 			fileActionSettings: { showUpload: false, showDrag: false,}
 		});
 		
-});
-	
-$(function(){	
-	$('#txtcust').typeahead({
-	
-		items: 10,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_supplier.php",
-				dataType: "json",
-				data: {
-					query: $("#txtcust").val()
-				},
-				success: function (data) {
-					response(data);
-				}
-			});
-		},
-		autoSelect: true,
-		displayText: function (item) {
-			 return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 
-			$('#txtcust').val(item.value).change(); 
-			$("#txtcustid").val(item.id);
-		}
 	});
-
-	$("#btnInsSer").on("click", function(){
 	
-			var tbl = document.getElementById('MyTableSerials').getElementsByTagName('tr');
-			var lastRow = tbl.length;
-	
-			if(lastRow>1){
-					$("#MyTableSerials > tbody > tr").each(function(index) {
-						var zxitmcode = $(this).find('input[type="hidden"][name="lagyitmcode"]').val();
-						var zxserial = $(this).find('input[type="hidden"][name="lagyserial"]').val();
-						var zxuom = $(this).find('input[type="hidden"][name="lagycuom"]').val();	
-						var zxqty = $(this).find('input[name="lagyqtyput"]').val();		
-						var zxloca = $(this).find('input[type="hidden"][name="lagylocas"]').val();	
-						var zxlocadesc = $(this).find('input[type="hidden"][name="lagylocadesc"]').val();
-						var zxexpd = $(this).find('input[type="hidden"][name="lagyexpd"]').val();
-						var zxnident = $(this).find('input[type="hidden"][name="lagyrefident"]').val();
-						var zxreference = $(this).find('input[type="hidden"][name="lagyrefno"]').val();
-						var zxmainident = $("#serdisrefident").val();
-
-						if(parseFloat(zxqty) > 0){
-							InsertToSerials(zxitmcode,zxserial,zxuom,zxqty,zxloca,zxlocadesc,zxexpd,zxnident,zxreference,zxmainident);			
-						}
-
-					});
-			}
+	$(function(){	
 		
-			//close modal
-			$("#SerialMod").modal("hide");
-	});
+		$('#txtcust').typeahead({
+		
+			items: 10,
+			source: function(request, response) {
+				$.ajax({
+					url: "../th_supplier.php",
+					dataType: "json",
+					data: {
+						query: $("#txtcust").val()
+					},
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			autoSelect: true,
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 
+				$('#txtcust').val(item.value).change(); 
+				$("#txtcustid").val(item.id);
+			}
+		});
 
-});
+		$("#btnInsSer").on("click", function(){
+		
+				var tbl = document.getElementById('MyTableSerials').getElementsByTagName('tr');
+				var lastRow = tbl.length;
+		
+				if(lastRow>1){
+						$("#MyTableSerials > tbody > tr").each(function(index) {
+							var zxitmcode = $(this).find('input[type="hidden"][name="lagyitmcode"]').val();
+							var zxserial = $(this).find('input[type="hidden"][name="lagyserial"]').val();
+							var zxuom = $(this).find('input[type="hidden"][name="lagycuom"]').val();	
+							var zxqty = $(this).find('input[name="lagyqtyput"]').val();		
+							var zxloca = $(this).find('input[type="hidden"][name="lagylocas"]').val();	
+							var zxlocadesc = $(this).find('input[type="hidden"][name="lagylocadesc"]').val();
+							var zxexpd = $(this).find('input[type="hidden"][name="lagyexpd"]').val();
+							var zxnident = $(this).find('input[type="hidden"][name="lagyrefident"]').val();
+							var zxreference = $(this).find('input[type="hidden"][name="lagyrefno"]').val();
+							var zxmainident = $("#serdisrefident").val();
+
+							if(parseFloat(zxqty) > 0){
+								InsertToSerials(zxitmcode,zxserial,zxuom,zxqty,zxloca,zxlocadesc,zxexpd,zxnident,zxreference,zxmainident);			
+							}
+
+						});
+				}
+			
+				//close modal
+				$("#SerialMod").modal("hide");
+		});
+
+	});
 
 function addItemName(){
 	 if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){

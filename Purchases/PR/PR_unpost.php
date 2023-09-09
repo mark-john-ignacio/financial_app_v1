@@ -143,7 +143,7 @@
 	});
 
 	function printchk(x){
-		$("#myprintframe").attr("src","PrintPE.php?hdntransid="+x);
+		$("#myprintframe").attr("src","PrintPR.php?hdntransid="+x);
 		$("#PrintModal").modal('show');
 	}
 
