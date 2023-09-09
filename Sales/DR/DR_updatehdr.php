@@ -49,6 +49,16 @@ function chkgrp($valz) {
 		echo $cSINo;
 	}
 	
+	if(count($_FILES) != 0){
+		$directory = "../../Components/assets/DR/";
+		if(!is_dir($directory)){
+			mkdir($directory, 0777);
+		}
+		$directory .= "{$company}_{$cSINo}/";
+		var_dump($directory);
+		upload_image($_FILES, $directory);
+	}
+	
 	
 	//INSERT LOGFILE
 	$compname = php_uname('n');
@@ -61,14 +71,4 @@ function chkgrp($valz) {
 	mysqli_query($con, "Delete from dr_t_info Where compcode='$company' and ctranno='$cSINo'");
 	mysqli_query($con, "Delete from dr_t_serials Where compcode='$company' and ctranno='$cSINo'");	
 
-
-	if(count($_FILES) != 0){
-		$directory = "../../Components/assets/DR/";
-		if(!is_dir($directory)){
-			mkdir($directory, 0777);
-		}
-		$directory .= "{$company}_{$cSINo}/";
-		var_dump($directory);
-		upload_image($_FILES, $directory);
-	}
 ?>

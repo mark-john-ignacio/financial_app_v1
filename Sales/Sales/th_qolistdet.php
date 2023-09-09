@@ -15,7 +15,7 @@ require_once "../../Connection/connection_string.php";
 	}
 
 	if($_REQUEST['typ']=="DR"){
-		$sql = "select a.nident, a.citemno,a.cunit,a.nqty,a.creference,a.crefident,ifnull(c.nqty,0) as nqty2,b.citemdesc, 1 as navail, d.ccurrencycode, a.nprice, a.namount, a.nbaseamount,'' as cvattype, '' as nrate
+		$sql = "select a.nident, a.citemno,a.cunit,a.nqty,a.creference,a.crefident,ifnull(c.nqty,0) as nqty2,b.citemdesc, 1 as navail, d.ccurrencycode, a.nprice, a.namount, a.nbaseamount,'' as cvattype, '' as nrate, d.nexchangerate
 		from dr_t a 
 		left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
 		left join so d on a.compcode=d.compcode and a.creference=d.ctranno
@@ -90,23 +90,29 @@ require_once "../../Connection/connection_string.php";
 			 $json['citemno'] = $row['citemno'];
 			 $json['cdesc'] = $row['citemdesc'];
 			 $json['cunit'] = $row['cunit'];
-			 $json['nqty'] = $nqty1 - $nqty2;
+			 $json['nqty'] = number_format($nqty1 - $nqty2);
 			 $json['navail'] = $row['navail'];
 
 			 if($_REQUEST['typ']=="DR"){
 				foreach(@$arrefsos as $rowx){
 					if($row['creference'] == $rowx['ctranno'] && $row['crefident'] == $rowx['nident']){
-						$json['nprice'] = $rowx['nprice'];
-						$json['namount'] = $rowx['namount'];
-						$json['nbaseamount'] = $rowx['nbaseamount'];
+
+						$xnamt = ($nqty1 - $nqty2) * floatval($rowx['nprice']);
+						$json['nprice'] = number_format($rowx['nprice'],2);
+						//$json['namount'] = $rowx['namount'];
+						$json['namount'] = $xnamt;
+						$json['nbaseamount'] = number_format($xnamt * floatval($row['nexchangerate']),2);
 						$json['ctaxcode'] = $rowx['ctaxcode'];
 						$json['cpono'] = $rowx['cpono'];
 					}
 				}
 			}elseif($_REQUEST['typ']=="QO"){
-				$json['nprice'] = $row['nprice'];
-				$json['namount'] = $row['namount'];
-				$json['nbaseamount'] = $row['nbaseamount'];
+				$xnamt = ($nqty1 - $nqty2) * floatval($rowx['nprice']);
+
+				$json['nprice'] = number_format($row['nprice'],2);
+				//$json['namount'] = $row['namount'];
+				$json['namount'] = $xnamt;
+				$json['nbaseamount'] = number_format($xnamt * floatval($rowx['nexchangerate']),2);
 				$json['ctaxcode'] = ($row['cvattype']=="VatIn") ? "VT" : "NT";
 				$json['cpono'] = "";
 			}else{

@@ -2005,6 +2005,8 @@ $company = $_SESSION['companyid'];
 					
 				});
 
+				//alert('th_qolistdet.php?x='+drno+"&y="+salesnos+"&typ="+typ);
+
 						$.ajax({
 							url: 'th_qolistdet.php',
 							data: 'x='+drno+"&y="+salesnos+"&typ="+typ,

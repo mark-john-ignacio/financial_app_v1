@@ -2575,8 +2575,8 @@ function chkform(){
 			formdata.append('file-'+i, file);
 		})
 
-		console.log(formdata);
-		//alert(myform);
+		//console.log(formdata);
+		//alert(formdata);
 		$.ajax ({
 			url: "SI_updatehdr.php",
 			data: formdata,

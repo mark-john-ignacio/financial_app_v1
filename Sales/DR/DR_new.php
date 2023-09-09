@@ -64,382 +64,384 @@
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
 <input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
 
-<form action="SO_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;" enctype="multipart/form-data">
-	<fieldset>
+	<form action="SO_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;" enctype="multipart/form-data">
+		<fieldset>
     	<legend>New Delivery Receipt</legend>
 		
-<div class="col-xs-12 nopadwdown"><b>Delivery Information</b></div>
-<!-- 
--- Navigators
--->
-<ul class="nav nav-tabs">
-    <li class="active"><a href="#home">Order Details</a></li>
-    <li><a href="#menu1">Delivered To</a></li>
-	<li><a href="#attach_pane">Attachments</a></li>
-</ul>
+				<div class="col-xs-12 nopadwdown"><b>Delivery Information</b></div>
+				<!-- 
+				-- Navigators
+				-->
+				<ul class="nav nav-tabs">
+						<li class="active"><a href="#home">Order Details</a></li>
+						<li><a href="#menu1">Delivered To</a></li>
+					<li><a href="#attach_pane">Attachments</a></li>
+				</ul>
 	
-<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left;overflow: inherit !important;">
-    <div class="tab-content">
-		<!--
-		-- Order Panel
-		-->	
-    
-         <div id="home" class="tab-pane fade in active" style="padding-left:5px;">
-			 
-			<table width="100%" border="0">
-				<tr>
-				  <tH>&nbsp;Customer:</tH>
-				  <td style="padding:2px"><div class="col-xs-12 nopadding">
-					<div class="col-xs-3 nopadding">
-					  <input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
-					  <input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
-					  <input type="hidden" id="hdnpricever" name="hdnpricever" value="">
+				<div class="tab-content">
 
+         	<div id="home" class="tab-pane fade in active" style="padding-left:5px; padding-top:10px">
+			 
+						<table width="100%" border="0">
+							<tr>
+								<tH>&nbsp;Customer:</tH>
+								<td style="padding:2px"><div class="col-xs-12 nopadding">
+								<div class="col-xs-3 nopadding">
+									<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
+									<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
+									<input type="hidden" id="hdnpricever" name="hdnpricever" value="">
+
+								</div>
+								<div class="col-xs-8 nopadwleft">
+									<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
+								</div>
+								</div></td>
+								<tH>DR Series No.:</tH>
+								<td style="padding:2px;"><div class="col-xs-10 nopadding">
+								<input type='text' class="form-control input-sm" id="cdrprintno" name="cdrprintno" value="" autocomplete="off" tabindex="2" />
+								</div></td>
+							</tr>
+							<tr>
+								<tH width="100">&nbsp;Salesman:</tH>
+							<td style="padding:2px"><div class="col-xs-12 nopadding">
+								<div class="col-xs-3 nopadding">
+									<input type="text" id="txtsalesmanid" name="txtsalesmanid" class="form-control input-sm" placeholder="Customer Code..." tabindex="3">
+								</div>
+								<div class="col-xs-8 nopadwleft">
+									<input type="text" class="form-control input-sm" id="txtsalesman" name="txtsalesman" width="20px" tabindex="3" placeholder="Search Salesman Name..."  size="60" autocomplete="off">
+								</div>
+								</div></td>
+							<tH width="150">Delivery Date:</tH>
+							<td style="padding:2px;">
+							<div class="col-xs-10 nopadding">
+								<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $ddeldate; ?>" tabindex="4"  />
+							</div>
+							</td>
+							</tr>
+								<tr>
+									<tH width="100">&nbsp;Remarks:</tH>
+							<td style="padding:2px"><div class="col-xs-11 nopadding">
+								<input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="5">
+								</div></td>
+							<tH width="150" style="padding:2px">
+							<!--<div class="chklimit"><b>Credit Limit:</b></div>-->
+							</tH>
+							<td style="padding:2px" align="right">
+								<!-- <div class="chklimit col-xs-10 nopadding" id="ncustlimit"></div>
+								<input type="hidden" id="hdncustlimit" name="hdncustlimit" value="">-->
+							</td>
+							</tr>
+								<tr>
+									<td>&nbsp;</td>
+								<td>
+								<div class="col-xs-8 nopadding">
+								</div>
+								<div class="col-xs-3 nopadwright">
+										<input type="text" class="form-control input-sm" id="txtsoref" name="txtsoref" width="20px" tabindex="6" placeholder="Reference SO">
+									</div>
+							</td>
+							<td style="padding:2px">
+							<!--<div class="chklimit"><b>Balance:</b></div>-->
+							</td>
+							<td style="padding:2px"  align="right">
+								<!--
+								<div class="chklimit col-xs-10 nopadding" id="ncustbalance"></div>
+								<input type="hidden" id="hdncustbalance" name="hdncustbalance" value="">
+								<div class="chklimit col-xs-10 nopadding" id="ncustbalance2"></div>
+								-->
+							</td>
+							</tr>
+							<!--
+							<tr>
+								<td colspan="4">
+										<div class="col-xs-12 nopadwtop2x">
+											<div class="col-xs-3 nopadwdown">
+											<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4">
+											</div>
+											<div class="col-xs-5 nopadwleft">
+											<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL + F) Search Product Name..." size="80" tabindex="5">
+											</div>
+										</div>
+
+									<input type="hidden" name="hdnqty" id="hdnqty">
+									<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
+									<input type="hidden" name="hdnunit" id="hdnunit">
+
+								</td>
+								<td align="right" style="vertical-align:top">
+								<div class="chklimit col-xs-10 nopadding" id="ncustbalance2"></div>
+								</td>
+								</tr>-->
+						</table>
+						
 					</div>
-					<div class="col-xs-8 nopadwleft">
-					  <input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
-					</div>
-				  </div></td>
-				  <tH>DR Series No.:</tH>
-				  <td style="padding:2px;"><div class="col-xs-10 nopadding">
-					<input type='text' class="form-control input-sm" id="cdrprintno" name="cdrprintno" value="" autocomplete="off" tabindex="2" />
-				  </div></td>
-				</tr>
-				<tr>
-				  <tH width="100">&nbsp;Salesman:</tH>
-				<td style="padding:2px"><div class="col-xs-12 nopadding">
-				  <div class="col-xs-3 nopadding">
-					  <input type="text" id="txtsalesmanid" name="txtsalesmanid" class="form-control input-sm" placeholder="Customer Code..." tabindex="3">
-					</div>
-					<div class="col-xs-8 nopadwleft">
-					  <input type="text" class="form-control input-sm" id="txtsalesman" name="txtsalesman" width="20px" tabindex="3" placeholder="Search Salesman Name..."  size="60" autocomplete="off">
-					</div>
-				  </div></td>
-				<tH width="150">Delivery Date:</tH>
-				<td style="padding:2px;">
-				 <div class="col-xs-10 nopadding">
-					<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $ddeldate; ?>" tabindex="4"  />
-				 </div>
-				</td>
-			  </tr>
-			  	<tr>
-			  	  <tH width="100">&nbsp;Remarks:</tH>
-				<td style="padding:2px"><div class="col-xs-11 nopadding">
-				  <input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="5">
-				  </div></td>
-				<tH width="150" style="padding:2px">
-				<!--<div class="chklimit"><b>Credit Limit:</b></div>-->
-				</tH>
-				<td style="padding:2px" align="right">
-					<!-- <div class="chklimit col-xs-10 nopadding" id="ncustlimit"></div>
-					 <input type="hidden" id="hdncustlimit" name="hdncustlimit" value="">-->
-				</td>
-			  </tr>
-			  	<tr>
-			  	  <td>&nbsp;</td>
-				  <td>
-					<div class="col-xs-8 nopadding">
-					</div>
-					<div class="col-xs-3 nopadwright">
-				  		<input type="text" class="form-control input-sm" id="txtsoref" name="txtsoref" width="20px" tabindex="6" placeholder="Reference SO">
-				  	</div>
-				</td>
-				<td style="padding:2px">
-				<!--<div class="chklimit"><b>Balance:</b></div>-->
-				</td>
-				<td style="padding:2px"  align="right">
+
 					<!--
-					<div class="chklimit col-xs-10 nopadding" id="ncustbalance"></div>
-					<input type="hidden" id="hdncustbalance" name="hdncustbalance" value="">
-					<div class="chklimit col-xs-10 nopadding" id="ncustbalance2"></div>
+					-- Deliver To Panel
 					-->
-				</td>
-			  </tr>
-			  <!--
-			<tr>
-				<td colspan="4">
-						<div class="col-xs-12 nopadwtop2x">
-						  <div class="col-xs-3 nopadwdown">
-							<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4">
-						   </div>
-						  <div class="col-xs-5 nopadwleft">
-							<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL + F) Search Product Name..." size="80" tabindex="5">
-						  </div>
+					<div id="menu1" class="tab-pane fade" style="padding-left:5px; padding-top:10px">
+						<table width="100%" border="0">
+							<tr>
+							<td width="150"><b>Customer</b></td>
+							<td width="310" colspan="2" style="padding:2px">
+							<div class="col-xs-8 nopadding">
+										<div class="col-xs-3 nopadding">
+											<input type="text" id="txtdelcustid" name="txtdelcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
+										</div>
+
+										<div class="col-xs-9 nopadwleft">
+											<input type="text" class="form-control input-sm" id="txtdelcust" name="txtdelcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
+										</div> 
+										</div>
+
+							</td>
+							</tr>
+							<tr>
+							<td><button type="button" class="btn btn-primary btn-sm" tabindex="6" id="btnNewAdd" name="btnNewAdd">
+							Select Address</button></td>
+							<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="form-control input-sm" id="txtchouseno" name="txtchouseno" placeholder="House/Building No./Street..." autocomplete="off"  readonly="true" /></div></td>
+							</tr>
+
+							<tr>
+							<td>&nbsp;</td>
+							<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><div class="col-xs-6 nopadding">
+												<input type="text" class="form-control input-sm" id="txtcCity" name="txtcCity" placeholder="City..." autocomplete="off"  readonly="true" />
+											</div>
+
+											<div class="col-xs-6 nopadwleft">
+												<input type="text" class="form-control input-sm" id="txtcState" name="txtcState" placeholder="State..." autocomplete="off"   readonly="true" />
+											</div></div></td>
+							</tr>
+
+							<tr>
+							<td>&nbsp;</td>
+							<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><div class="col-xs-9 nopadding">
+												<input type="text" class="form-control input-sm" id="txtcCountry" name="txtcCountry" placeholder="Country..." autocomplete="off" readonly="true" />
+											</div>
+
+											<div class="col-xs-3 nopadwleft">
+												<input type="text" class="form-control input-sm" id="txtcZip" name="txtcZip" placeholder="Zip Code..." autocomplete="off"  readonly="true" />
+											</div></div></td>
+							</tr>
+						</table>
+					</div>
+
+					<div id="attach_pane" class="tab-pane fade" style="padding-left:5px; padding-top:10px">
+						<!--
+						--
+						-- Import Files Modal
+						--
+						-->
+						<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+						<div class="col-sm-16 nopadding">
+							<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>
+							<div id="attc" class="col-sm-12 row-sm-6 nopadding" style="padding-top:10px;">
+								<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
+							</div>
+							<input type="file" name="upload[]" id="file-0" multiple />
+						</div>
+					</div>
+
+				</div>
+
+				<hr>
+				<div class="col-xs-12 nopadwdown"><b>Details</b></div>
+						
+				<ul class="nav nav-tabs">
+					<li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Items List</a></li>
+					<li id="liacct"><a href="#2Acct" data-toggle="tab">Items Inventory</a></li>
+				</ul>
+
+				<div class="tab-content nopadwtop2x">
+					<div class="tab-pane active" id="1Det">
+
+							<div class="alt2" dir="ltr" style="
+								margin: 0px;
+								padding: 3px;
+								border: 1px solid #919b9c;
+								width: 100%;
+								height: 250px;
+								text-align: left;
+								overflow: auto">
+									<input type="hidden" name="hdnqty" id="hdnqty">
+										<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
+										<input type="hidden" name="hdnunit" id="hdnunit">
+												<input type="hidden" id="txtprodid" name="txtprodid">
+												<input type="hidden" id="txtprodnme" name="txtprodnme">
+						
+									<table id="MyTable" class="MyTable table table-condensed" width="100%">
+										<thead>
+											<tr>
+												<th style="border-bottom:1px solid #999">&nbsp;</th>
+												<th style="border-bottom:1px solid #999">Code</th>
+												<th style="border-bottom:1px solid #999">Description</th>
+												<th style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
+												<th style="border-bottom:1px solid #999">UOM</th>
+												<th style="border-bottom:1px solid #999">Factor</th>
+												<th style="border-bottom:1px solid #999">Qty</th>
+												<!--<th style="border-bottom:1px solid #999">Price</th>
+												<th style="border-bottom:1px solid #999">Amount</th>-->
+												<th style="border-bottom:1px solid #999">&nbsp;</th>
+											</tr>
+										</thead>            
+										<tbody class="tbody">
+										</tbody>                   
+									</table>
+
+								</div>
 						</div>
 
-				  <input type="hidden" name="hdnqty" id="hdnqty">
-				  <input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
-				  <input type="hidden" name="hdnunit" id="hdnunit">
+						<div class="tab-pane" id="2Acct">
 
-				</td>
-				<td align="right" style="vertical-align:top">
-				<div class="chklimit col-xs-10 nopadding" id="ncustbalance2"></div>
-				</td>
-				</tr>-->
-			</table>
-			 
-		</div>
-		<!--
-		-- Deliver To Panel
-		-->
-		<div id="menu1" class="tab-pane fade" style="padding-left:5px">
-			<table width="100%" border="0">
-			  <tr>
-				<td width="150"><b>Customer</b></td>
-				<td width="310" colspan="2" style="padding:2px">
-				<div class="col-xs-8 nopadding">
-							<div class="col-xs-3 nopadding">
-								<input type="text" id="txtdelcustid" name="txtdelcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
-							</div>
-
-							<div class="col-xs-9 nopadwleft">
-								<input type="text" class="form-control input-sm" id="txtdelcust" name="txtdelcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
-							</div> 
-						  </div>
-
-				</td>
-			  </tr>
-			  <tr>
-				<td><button type="button" class="btn btn-primary btn-sm" tabindex="6" id="btnNewAdd" name="btnNewAdd">
-			Select Address</button></td>
-				<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="form-control input-sm" id="txtchouseno" name="txtchouseno" placeholder="House/Building No./Street..." autocomplete="off"  readonly="true" /></div></td>
-			  </tr>
-
-			  <tr>
-				<td>&nbsp;</td>
-				<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><div class="col-xs-6 nopadding">
-									<input type="text" class="form-control input-sm" id="txtcCity" name="txtcCity" placeholder="City..." autocomplete="off"  readonly="true" />
-								</div>
-
-								<div class="col-xs-6 nopadwleft">
-									<input type="text" class="form-control input-sm" id="txtcState" name="txtcState" placeholder="State..." autocomplete="off"   readonly="true" />
-								</div></div></td>
-			  </tr>
-
-			  <tr>
-				<td>&nbsp;</td>
-				<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><div class="col-xs-9 nopadding">
-									<input type="text" class="form-control input-sm" id="txtcCountry" name="txtcCountry" placeholder="Country..." autocomplete="off" readonly="true" />
-								</div>
-
-								<div class="col-xs-3 nopadwleft">
-									<input type="text" class="form-control input-sm" id="txtcZip" name="txtcZip" placeholder="Zip Code..." autocomplete="off"  readonly="true" />
-								</div></div></td>
-			  </tr>
-  			</table>
-        </div>
-
-		<div id="attach_pane" class="tab-pane fade" style="padding-left:5px">
-			<!--
-			--
-			-- Import Files Modal
-			--
-			-->
-			<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-			<div class="col-sm-16 nopadding">
-				<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>
-				<div id="attc" class="col-sm-12 row-sm-6 nopadding" style="padding-top:10px;">
-					<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
-					<input type="file" name="upload[]" id="file-0" multiple />
+									<div class="alt2" dir="ltr" style="
+															margin: 0px;
+															padding: 3px;
+															border: 1px solid #919b9c;
+															width: 100%;
+															height: 250px;
+															text-align: left;
+															overflow: auto">
+							
+											<table id="MyTableInvSer" cellpadding="3px" width="100%" border="0">
+												<thead>
+															<tr>
+																
+																	<th style="border-bottom:1px solid #999">Item Code</th>
+																	<th style="border-bottom:1px solid #999">Serial No.</th>
+																	<th style="border-bottom:1px solid #999">UOM</th>
+																	<th style="border-bottom:1px solid #999">Qty</th>
+																	<th style="border-bottom:1px solid #999">Location</th>
+																	<th style="border-bottom:1px solid #999">Expiration Date</th>
+										<th style="border-bottom:1px solid #999">Remarks</th>
+																	<th style="border-bottom:1px solid #999">&nbsp;</th>
+															</tr>
+												</thead>
+												<tbody>
+												</tbody>
+															
+											</table>
+												<input type="hidden" name="hdnserialscnt" id="hdnserialscnt">
+										</div>
+						</div>
 				</div>
-			</div>
-		</div>
-	</div>
-</div>
 
-<hr>
-<div class="col-xs-12 nopadwdown"><b>Details</b></div>
-		
-<ul class="nav nav-tabs">
-  <li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Items List</a></li>
-  <li id="liacct"><a href="#2Acct" data-toggle="tab">Items Inventory</a></li>
-</ul>
+				<br>
+				<table width="100%" border="0" cellpadding="3">
+					<tr>
+						<td>
+						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='DR.php';" id="btnMain" name="btnMain">
+							Back to Main<br>(ESC)
+						</button>
 
-  <div class="tab-content nopadwtop2x">
-    <div class="tab-pane active" id="1Det">
+						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
+							SO<br>(Insert)
+						</button>
 
-         <div class="alt2" dir="ltr" style="
-					margin: 0px;
-					padding: 3px;
-					border: 1px solid #919b9c;
-					width: 100%;
-					height: 250px;
-					text-align: left;
-					overflow: auto">
-			      <input type="hidden" name="hdnqty" id="hdnqty">
-      			  <input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
-      			  <input type="hidden" name="hdnunit" id="hdnunit">
-                  <input type="hidden" id="txtprodid" name="txtprodid">
-                  <input type="hidden" id="txtprodnme" name="txtprodnme">
-      
-            <table id="MyTable" class="MyTable table table-condensed" width="100%">
-							<thead>
-								<tr>
-									<th style="border-bottom:1px solid #999">&nbsp;</th>
-									<th style="border-bottom:1px solid #999">Code</th>
-									<th style="border-bottom:1px solid #999">Description</th>
-			            <th style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
-			            <th style="border-bottom:1px solid #999">UOM</th>
-									<th style="border-bottom:1px solid #999">Factor</th>
-			            <th style="border-bottom:1px solid #999">Qty</th>
-									<!--<th style="border-bottom:1px solid #999">Price</th>
-			            <th style="border-bottom:1px solid #999">Amount</th>-->
-			            <th style="border-bottom:1px solid #999">&nbsp;</th>
-								</tr>
-							</thead>            
-							<tbody class="tbody">
-			        </tbody>                   
-						</table>
-
-					</div>
-			</div>
-
-			<div class="tab-pane" id="2Acct">
-
-             <div class="alt2" dir="ltr" style="
-                        margin: 0px;
-                        padding: 3px;
-                        border: 1px solid #919b9c;
-                        width: 100%;
-                        height: 250px;
-                        text-align: left;
-                        overflow: auto">
-        
-                <table id="MyTableInvSer" cellpadding="3px" width="100%" border="0">
-    							<thead>
-                        <tr>
-                        	
-                            <th style="border-bottom:1px solid #999">Item Code</th>
-                            <th style="border-bottom:1px solid #999">Serial No.</th>
-                            <th style="border-bottom:1px solid #999">UOM</th>
-                            <th style="border-bottom:1px solid #999">Qty</th>
-                            <th style="border-bottom:1px solid #999">Location</th>
-                            <th style="border-bottom:1px solid #999">Expiration Date</th>
-							<th style="border-bottom:1px solid #999">Remarks</th>
-                            <th style="border-bottom:1px solid #999">&nbsp;</th>
-                        </tr>
-                   </thead>
-                   <tbody>
-                   </tbody>
-                        
-                </table>
-            			<input type="hidden" name="hdnserialscnt" id="hdnserialscnt">
-							</div>
-			</div>
-	</div>
-<br>
-<table width="100%" border="0" cellpadding="3">
-  <tr>
-    <td>
-    <button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='DR.php';" id="btnMain" name="btnMain">
-Back to Main<br>(ESC)</button>
-
-    <button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
-SO<br>(Insert)</button>
-
-    
-    <input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
-    <button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">SAVE<br> (CTRL+S)</button></td>
-    <td align="right" valign="top">
-   <!-- <b>TOTAL AMOUNT </b>-->
-    &nbsp;&nbsp;
-    <input type="hidden" id="txtnGross" name="txtnGross" value="0">
-      </td>
-    </tr>
-</table>
+						
+						<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
+						<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">SAVE<br> (CTRL+S)</button></td>
+						<td align="right" valign="top">
+					<!-- <b>TOTAL AMOUNT </b>-->
+						&nbsp;&nbsp;
+						<input type="hidden" id="txtnGross" name="txtnGross" value="0">
+							</td>
+						</tr>
+				</table>
 
     </fieldset>
     
-   
-    <div class="modal fade" id="MyDetModal" role="dialog">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
+    	<div class="modal fade" id="MyDetModal" role="dialog">
+    		<div class="modal-dialog modal-lg">
+        	<div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close"  aria-label="Close"  onclick="chkCloseInfo();"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="invheader"> Additional Details Info</h3>           
-			</div>
+              <button type="button" class="close"  aria-label="Close"  onclick="chkCloseInfo();"><span aria-hidden="true">&times;</span></button>
+              <h3 class="modal-title" id="invheader"> Additional Details Info</h3>           
+						</div>
     
             <div class="modal-body">
-                <input type="hidden" name="hdnrowcnt2" id="hdnrowcnt2">
-                <table id="MyTable2" class="MyTable table table-condensed" width="100%">
-    				<tr>
-						<th style="border-bottom:1px solid #999">Code</th>
-						<th style="border-bottom:1px solid #999">Description</th>
-                        <th style="border-bottom:1px solid #999">Field Name</th>
-						<th style="border-bottom:1px solid #999">Value</th>
-                        <th style="border-bottom:1px solid #999">&nbsp;</th>
-					</tr>
-					<tbody class="tbody">
-                    </tbody>
-                </table>
+
+              <input type="hidden" name="hdnrowcnt2" id="hdnrowcnt2">
+              <table id="MyTable2" class="MyTable table table-condensed" width="100%">
+								<thead>
+									<tr>
+										<th style="border-bottom:1px solid #999">Code</th>
+										<th style="border-bottom:1px solid #999">Description</th>
+										<th style="border-bottom:1px solid #999">Field Name</th>
+										<th style="border-bottom:1px solid #999">Value</th>
+										<th style="border-bottom:1px solid #999">&nbsp;</th>
+									</tr>
+								</thead>
+								<tbody class="tbody">
+                </tbody>
+              </table>
     
-			</div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+						</div>
+        	</div><!-- /.modal-content -->
+    		</div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
 
 
-<!-- FULL PO LIST REFERENCES-->
+			<!-- FULL PO LIST REFERENCES-->
 
-<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="InvListHdr">PO List</h3>
-            </div>
-            
-            <div class="modal-body" style="height:40vh">
-            
-       <div class="col-xs-12 nopadding">
+			<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
+					<div class="modal-dialog modal-lg">
+							<div class="modal-content">
+									<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											<h3 class="modal-title" id="InvListHdr">PO List</h3>
+									</div>
+									
+									<div class="modal-body" style="height:40vh">
+									
+						<div class="col-xs-12 nopadding">
 
-                <div class="form-group">
-                    <div class="col-xs-4 nopadding pre-scrollable" style="height:37vh">
-                          <table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight">
-                           <thead>
-                            <tr>
-                              <th>SO No</th>
-                              <th>Amount</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                          </table>
-                    </div>
+											<div class="form-group">
+													<div class="col-xs-4 nopadding pre-scrollable" style="height:37vh">
+																<table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight">
+																<thead>
+																	<tr>
+																		<th>SO No</th>
+																		<th>Amount</th>
+																	</tr>
+																	</thead>
+																	<tbody>
+																	</tbody>
+																</table>
+													</div>
 
-                    <div class="col-xs-8 nopadwleft pre-scrollable" style="height:37vh">
-                          <table name='MyInvDetList' id='MyInvDetList' class="table table-small">
-                           <thead>
-                            <tr>
-                              <th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
-                              <th>Item No</th>
-                              <th>Description</th>
-                              <th>UOM</th>
-                              <th>Qty</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            	
-                            </tbody>
-                          </table>
-                    </div>
-               </div>
+													<div class="col-xs-8 nopadwleft pre-scrollable" style="height:37vh">
+																<table name='MyInvDetList' id='MyInvDetList' class="table table-small">
+																<thead>
+																	<tr>
+																		<th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
+																		<th>Item No</th>
+																		<th>Description</th>
+																		<th>UOM</th>
+																		<th>Qty</th>
+																	</tr>
+																	</thead>
+																	<tbody>
+																		
+																	</tbody>
+																</table>
+													</div>
+										</div>
 
-        </div>
-         	            
-			</div>
-			
-            <div class="modal-footer">
-                <button type="button" id="btnInsDet" onClick="InsertSI()" class="btn btn-primary">Insert</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+							</div>
+														
+						</div>
+						
+									<div class="modal-footer">
+											<button type="button" id="btnInsDet" onClick="InsertSI()" class="btn btn-primary">Insert</button>
+											<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
 
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<!-- End FULL INVOICE LIST -->
+									</div>
+							</div><!-- /.modal-content -->
+					</div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+			<!-- End FULL INVOICE LIST -->
 
-</form>
+	</form>
 
 
 <!-- 1) Alert Modal -->

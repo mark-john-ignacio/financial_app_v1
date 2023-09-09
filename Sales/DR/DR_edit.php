@@ -110,208 +110,212 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	//}
 
 ?>
-<form action="DR_edit.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;" enctype="multipart/form-data">
-	<fieldset>
-    	<legend><div class="col-xs-6 nopadding">Delivery Receipt Details
-</div><div class= "col-xs-6 text-right nopadding" id="salesstat">
-    <?php
-	if($lCancelled==1){
-		echo "<font color='#FF0000'><b>CANCELLED</b></font>";
-	}
-	
-	if($lPosted==1){
-		echo "<font color='#FF0000'><b>POSTED</b></font>";
-	}
-	?>
-</div>        
-        </legend>	
+	<form action="DR_edit.php" name="frmpos" id="frmpos" method="post">
+		<fieldset>
+    	<legend>
+				<div class="col-xs-6 nopadding">Delivery Receipt Details</div>
+				<div class= "col-xs-6 text-right nopadding" id="salesstat">
+					<?php
+						if($lCancelled==1){
+							echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+						}
+						
+						if($lPosted==1){
+							echo "<font color='#FF0000'><b>POSTED</b></font>";
+						}
+					?>
+				</div>        
+      </legend>	
 		
-<div class="col-xs-12 nopadwdown"><b>Delivery Information</b></div>
-<ul class="nav nav-tabs">
-    <li class="active"><a href="#home">Order Details</a></li>
-    <li><a href="#menu1">Delivered To</a></li>
-	<li><a href="#attc">Attachments</a></li>
-</ul>
+			<div class="col-xs-12 nopadwdown"><b>Delivery Information</b></div>
+			<ul class="nav nav-tabs">
+					<li class="active"><a href="#home">Order Details</a></li>
+					<li><a href="#menu1">Delivered To</a></li>
+				<li><a href="#attc">Attachments</a></li>
+			</ul>
 
-<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left;overflow: inherit !important;">
-    <div class="tab-content">
-    
-         <div id="home" class="tab-pane fade in active" style="padding-left:5px;">
-			 
-			<table width="100%" border="0">
-				 <tr>
-					<th>&nbsp;TRANS NO.:</th>
-					<td style="padding:2px">
-						<div class="col-xs-3 nopadding">
-							<input type="text" class="form-control input-sm" id="txtcsalesno" name="txtcsalesno" width="20px" tabindex="1" value="<?php echo $txtctranno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
-						</div>
-					  	<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
-					  	<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
-					  &nbsp;&nbsp;
-					  	<div id="statmsgz" style="display:inline"></div>
-					</td>
-					<th style="padding:2px">DR Series No.:</th>
-					<td style="padding:2px" align="center">
-						<div class="col-xs-10 nopadding"> 
-					  		<input type='text' class="form-control input-sm" id="cdrprintno" name="cdrprintno" value="<?php echo $cDRPrintNo;?>" autocomplete="off" />
-						</div>
-					</td>
-				 </tr>
-				 <tr>
-				    <th width="100">&nbsp;Customer:</th>
-					<td style="padding:2px">
-					<div class="col-xs-12 nopadding">
-						<div class="col-xs-3 nopadding">
-							<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1" value="<?php echo $CustCode; ?>">
-							<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
-							<input type="hidden" id="hdnpricever" name="hdnpricever" value="<?php echo $cpricever;?>">
-						</div>
-						<div class="col-xs-8 nopadwleft">
-							<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" value="<?php echo $CustName; ?>">
-						</div> 
-					  </div>
-					</td>
-					<th width="150" style="padding:2px">Delivery Date:</th>
-					<td style="padding:2px;">
-					 <div class="col-xs-10 nopadding">
-						<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date_format(date_create($Date),'m/d/Y'); ?>" />
-					 </div>
-					</td>
-				 </tr>
-				 <tr>
-				   <tH>&nbsp;Salesman:</tH>
-				   <td style="padding:2px">
-					<div class="col-xs-12 nopadding">
-						<div class="col-xs-3 nopadding">
-						  <input type="text" id="txtsalesmanid" name="txtsalesmanid" class="form-control input-sm" placeholder="Customer Code..." tabindex="3" value="<?php echo $salesman; ?>">
-						</div>
-						<div class="col-xs-8 nopadwleft">
-						  <input type="text" class="form-control input-sm" id="txtsalesman" name="txtsalesman" width="20px" tabindex="3" placeholder="Search Salesman Name..."  size="60" autocomplete="off" value="<?php echo $salesmaname; ?>">
-						</div>
-				    </div> 
-				   </td>
-				   <tH style="padding:2px">&nbsp;</tH>
-				   <td style="padding:2px">&nbsp;</td>
-		         </tr>
-				 <tr>
-				    <th width="100">&nbsp;Remarks:</th>
-					<td style="padding:2px">
-						<div class="col-xs-11 nopadding">
-							<input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value="<?php echo $Remarks; ?>">
-						</div>
-					</td>
-					<th width="150" style="padding:2px">
-						<div class="chklimit"><b>Credit Limit:</b></div>
-					</th>
-					<td style="padding:2px">
-						 <div class="chklimit col-xs-10 nopadding" id="ncustlimit"><b><font size='+1'><?php echo $nlimit;?></font></b></div>
-						 <input type="hidden" id="hdncustlimit" name="hdncustlimit" value="">    
-					</td>
-				  </tr>
-				 <tr>
-					<td>&nbsp;</td>
-					<td>
-						<div class="col-xs-8 nopadding">
-						</div>
-						<div class="col-xs-3 nopadwright">
-							<input type="text" class="form-control input-sm" id="txtsoref" name="txtsoref" width="20px" tabindex="6" placeholder="Reference SO">
-						</div>			 
-					</td>
-					<td style="padding:2px">
-						<div class="chklimit"><b>Balance:</b></div>
-					</td>
-					<td style="padding:2px">
-						<div class="chklimit col-xs-10 nopadding" id="ncustbalance"></div>
-						<input type="hidden" id="hdncustbalance" name="hdncustbalance" value="">
-						<div class="chklimit col-xs-10 nopadding" id="ncustbalance2"></div>
-					</td>
-				  </tr>
-			<!--
-	<tr>
-		<td colspan="4">
-				<div class="col-xs-12 nopadwtop2x">
-				  <div class="col-xs-3 nopadwdown">
-					<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4">
-				   </div>
-				  <div class="col-xs-5 nopadwleft">
-					<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL + F) Search Product Name..." size="80" tabindex="5">
-				  </div>
-				</div>
+			
+				<div class="tab-content">
+				
+					<div id="home" class="tab-pane fade in active" style="padding-left:5px;">			 
+						<table width="100%" border="0">
+							<tr>
+								<th>&nbsp;TRANS NO.:</th>
+								<td style="padding:2px">
+									<div class="col-xs-3 nopadding">
+										<input type="text" class="form-control input-sm" id="txtcsalesno" name="txtcsalesno" width="20px" tabindex="1" value="<?php echo $txtctranno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
+									</div>
+										<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
+										<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
+									&nbsp;&nbsp;
+										<div id="statmsgz" style="display:inline"></div>
+								</td>
+								<th style="padding:2px">DR Series No.:</th>
+								<td style="padding:2px" align="center">
+									<div class="col-xs-10 nopadding"> 
+											<input type='text' class="form-control input-sm" id="cdrprintno" name="cdrprintno" value="<?php echo $cDRPrintNo;?>" autocomplete="off" />
+									</div>
+								</td>
+							</tr>
+							<tr>
+									<th width="100">&nbsp;Customer:</th>
+								<td style="padding:2px">
+								<div class="col-xs-12 nopadding">
+									<div class="col-xs-3 nopadding">
+										<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1" value="<?php echo $CustCode; ?>">
+										<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
+										<input type="hidden" id="hdnpricever" name="hdnpricever" value="<?php echo $cpricever;?>">
+									</div>
+									<div class="col-xs-8 nopadwleft">
+										<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" value="<?php echo $CustName; ?>">
+									</div> 
+									</div>
+								</td>
+								<th width="150" style="padding:2px">Delivery Date:</th>
+								<td style="padding:2px;">
+								<div class="col-xs-10 nopadding">
+									<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date_format(date_create($Date),'m/d/Y'); ?>" />
+								</div>
+								</td>
+							</tr>
+							<tr>
+								<tH>&nbsp;Salesman:</tH>
+								<td style="padding:2px">
+								<div class="col-xs-12 nopadding">
+									<div class="col-xs-3 nopadding">
+										<input type="text" id="txtsalesmanid" name="txtsalesmanid" class="form-control input-sm" placeholder="Customer Code..." tabindex="3" value="<?php echo $salesman; ?>">
+									</div>
+									<div class="col-xs-8 nopadwleft">
+										<input type="text" class="form-control input-sm" id="txtsalesman" name="txtsalesman" width="20px" tabindex="3" placeholder="Search Salesman Name..."  size="60" autocomplete="off" value="<?php echo $salesmaname; ?>">
+									</div>
+									</div> 
+								</td>
+								<tH style="padding:2px">&nbsp;</tH>
+								<td style="padding:2px">&nbsp;</td>
+									</tr>
+							<tr>
+									<th width="100">&nbsp;Remarks:</th>
+								<td style="padding:2px">
+									<div class="col-xs-11 nopadding">
+										<input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value="<?php echo $Remarks; ?>">
+									</div>
+								</td>
+								<th width="150" style="padding:2px">
+									<div class="chklimit"><b>Credit Limit:</b></div>
+								</th>
+								<td style="padding:2px">
+									<div class="chklimit col-xs-10 nopadding" id="ncustlimit"><b><font size='+1'><?php echo $nlimit;?></font></b></div>
+									<input type="hidden" id="hdncustlimit" name="hdncustlimit" value="">    
+								</td>
+								</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td>
+									<div class="col-xs-8 nopadding">
+									</div>
+									<div class="col-xs-3 nopadwright">
+										<input type="text" class="form-control input-sm" id="txtsoref" name="txtsoref" width="20px" tabindex="6" placeholder="Reference SO">
+									</div>			 
+								</td>
+								<td style="padding:2px">
+									<div class="chklimit"><b>Balance:</b></div>
+								</td>
+								<td style="padding:2px">
+									<div class="chklimit col-xs-10 nopadding" id="ncustbalance"></div>
+									<input type="hidden" id="hdncustbalance" name="hdncustbalance" value="">
+									<div class="chklimit col-xs-10 nopadding" id="ncustbalance2"></div>
+								</td>
+							</tr>
+								<!--
+								<tr>
+									<td colspan="4">
+											<div class="col-xs-12 nopadwtop2x">
+												<div class="col-xs-3 nopadwdown">
+												<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4">
+												</div>
+												<div class="col-xs-5 nopadwleft">
+												<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL + F) Search Product Name..." size="80" tabindex="5">
+												</div>
+											</div>
 
-		  <input type="hidden" name="hdnqty" id="hdnqty">
-		  <input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
-		  <input type="hidden" name="hdnunit" id="hdnunit">
+										<input type="hidden" name="hdnqty" id="hdnqty">
+										<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
+										<input type="hidden" name="hdnunit" id="hdnunit">
 
-		</td>
+									</td>
 
-		<td align="right" style="vertical-align:top">
-		<div class="chklimit col-xs-10 nopadding" id="ncustbalance2"></div>
-		</td>
-		</tr>-->
-			</table>
-			 
-		</div>
+									<td align="right" style="vertical-align:top">
+									<div class="chklimit col-xs-10 nopadding" id="ncustbalance2"></div>
+									</td>
+								</tr>-->
+						</table>
+						
+					</div>
 		
-		<div id="menu1" class="tab-pane fade" style="padding-left:5px">
-			<table width="100%" border="0">
-			  <tr>
-				<td width="150"><b>Customer</b></td>
-				<td width="310" colspan="2" style="padding:2px">
-				<div class="col-xs-8 nopadding">
-							<div class="col-xs-3 nopadding">
-								<input type="text" id="txtdelcustid" name="txtdelcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1" value="<?php echo $delcode; ?>">
+					<div id="menu1" class="tab-pane fade" style="padding-left:5px">
+						<table width="100%" border="0">
+							<tr>
+							<td width="150"><b>Customer</b></td>
+							<td width="310" colspan="2" style="padding:2px">
+							<div class="col-xs-8 nopadding">
+										<div class="col-xs-3 nopadding">
+											<input type="text" id="txtdelcustid" name="txtdelcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1" value="<?php echo $delcode; ?>">
+										</div>
+
+										<div class="col-xs-9 nopadwleft">
+											<input type="text" class="form-control input-sm" id="txtdelcust" name="txtdelcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off" value="<?php echo $delname; ?>">
+										</div> 
+								</div>
+
+							</td>
+							</tr>
+							<tr>
+							<td><button type="button" class="btn btn-primary btn-sm" tabindex="6" id="btnNewAdd" name="btnNewAdd">
+							Select Address</button></td>
+							<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="form-control input-sm" id="txtchouseno" name="txtchouseno" placeholder="House/Building No./Street..." autocomplete="off"  readonly="true" value="<?php echo $delhousno; ?>" /></div></td>
+							</tr>
+
+							<tr>
+							<td>&nbsp;</td>
+							<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><div class="col-xs-6 nopadding">
+												<input type="text" class="form-control input-sm" id="txtcCity" name="txtcCity" placeholder="City..." autocomplete="off"  readonly="true"  value="<?php echo $delcity; ?>"/>
+											</div>
+
+											<div class="col-xs-6 nopadwleft">
+												<input type="text" class="form-control input-sm" id="txtcState" name="txtcState" placeholder="State..." autocomplete="off"   readonly="true"  value="<?php echo $delstate; ?>"/>
+											</div></div></td>
+							</tr>
+
+							<tr>
+							<td>&nbsp;</td>
+							<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><div class="col-xs-9 nopadding">
+												<input type="text" class="form-control input-sm" id="txtcCountry" name="txtcCountry" placeholder="Country..." autocomplete="off" readonly="true" value="<?php echo $delcountry; ?>"/>
+											</div>
+
+											<div class="col-xs-3 nopadwleft">
+												<input type="text" class="form-control input-sm" id="txtcZip" name="txtcZip" placeholder="Zip Code..." autocomplete="off"  readonly="true" value="<?php echo $delzip; ?>"/>
+											</div></div></td>
+							</tr>
+						</table>
+					</div>
+					
+					<div id="attc" class="tab-pane fade in" style="padding-left: 5px">
+						
+						<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+						<div class="col-sm-16 nopadding">
+							<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>
+							<div id="attc" class="col-sm-12 row-sm-6 nopadding" style="padding-top:10px;">
+								<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
 							</div>
+							<input type="file" name="upload[]" id="file-0" multiple />
+						</div> 
+						</div>
 
-							<div class="col-xs-9 nopadwleft">
-								<input type="text" class="form-control input-sm" id="txtdelcust" name="txtdelcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off" value="<?php echo $delname; ?>">
-							</div> 
-				  </div>
+					</div>
 
-				</td>
-			  </tr>
-			  <tr>
-				<td><button type="button" class="btn btn-primary btn-sm" tabindex="6" id="btnNewAdd" name="btnNewAdd">
-			Select Address</button></td>
-				<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="form-control input-sm" id="txtchouseno" name="txtchouseno" placeholder="House/Building No./Street..." autocomplete="off"  readonly="true" value="<?php echo $delhousno; ?>" /></div></td>
-			  </tr>
-
-			  <tr>
-				<td>&nbsp;</td>
-				<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><div class="col-xs-6 nopadding">
-									<input type="text" class="form-control input-sm" id="txtcCity" name="txtcCity" placeholder="City..." autocomplete="off"  readonly="true"  value="<?php echo $delcity; ?>"/>
-								</div>
-
-								<div class="col-xs-6 nopadwleft">
-									<input type="text" class="form-control input-sm" id="txtcState" name="txtcState" placeholder="State..." autocomplete="off"   readonly="true"  value="<?php echo $delstate; ?>"/>
-								</div></div></td>
-			  </tr>
-
-			  <tr>
-				<td>&nbsp;</td>
-				<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><div class="col-xs-9 nopadding">
-									<input type="text" class="form-control input-sm" id="txtcCountry" name="txtcCountry" placeholder="Country..." autocomplete="off" readonly="true" value="<?php echo $delcountry; ?>"/>
-								</div>
-
-								<div class="col-xs-3 nopadwleft">
-									<input type="text" class="form-control input-sm" id="txtcZip" name="txtcZip" placeholder="Zip Code..." autocomplete="off"  readonly="true" value="<?php echo $delzip; ?>"/>
-								</div></div></td>
-			  </tr>
-  			</table>
-        </div>
-		<div id="attc" class="tab-pane fade in" style="padding-left: 5px">
-			<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-			<div class="col-sm-16 nopadding">
-				<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>
-				<div id="attc" class="col-sm-12 row-sm-6 nopadding" style="padding-top:10px;">
-					<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
-					<input type="file" name="upload[]" id="file-0" multiple />
 				</div>
-			</div> 
-		</div>
-	</div>
-</div>
 
-		<hr>
+				<hr>
 <div class="col-xs-12 nopadwdown"><b>Details</b></div>
 
 <ul class="nav nav-tabs">
@@ -688,7 +692,7 @@ var file_name = <?= json_encode(@$arrname) ?>;
  */
 if(file_name.length != 0){
 	file_name.map(({name, ext}) => {
-		console.log("Name: " + name + " ext: " + ext)
+		//console.log("Name: " + name + " ext: " + ext)
 	})
 
 	var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
@@ -702,7 +706,7 @@ if(file_name.length != 0){
 	 */
 	file_name.map(({name, ext}, i) => {
 		list_file.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/DR/<?=$company."_".$txtctranno?>/" + name)
-		console.log(ext);
+		//console.log(ext);
 
 		if(jQuery.inArray(ext, arroffice) !== -1){
 			extender = "office";
@@ -714,7 +718,7 @@ if(file_name.length != 0){
 			extender =  ext;
 		}
 
-		console.log(extender)
+		//console.log(extender)
 		file_config.push({
 			type : extender, 
 			caption : name,
@@ -824,7 +828,7 @@ if(file_name.length != 0){
 					dataType: "json",
 					success: function(data)
 					{	
-					   console.log(data);
+					   //console.log(data);
                        $.each(data,function(index,item){
 						   xChkBal = item.chkinv; //0 = Check ; 1 = Dont Check
 						  // xChkLimit = item.chkcustlmt; //0 = Disable ; 1 = Enable
@@ -1251,7 +1255,7 @@ $(function(){
 				async: false,
 				success: function(data)
 				{	
-					console.log(data);
+					//console.log(data);
                     $.each(data,function(index,item){
 
 						if(item.lapproved==0 && item.lcancelled==0){
@@ -1304,7 +1308,7 @@ $(function(){
 					async: false,
 					success: function(data)
 					{	
-					   console.log(data);
+					  // console.log(data);
 					   $.each(data,function(index,item){
 
 						$('#txtprodnme').val(item.desc); 
@@ -1344,7 +1348,7 @@ $(function(){
 				dataType: "JSON",
 				success: function(data)
 				{	
-					console.log(data);
+					//console.log(data);
                     $.each(data,function(index,item){
 						
 						$("<tr>").append(
@@ -1385,7 +1389,7 @@ function checkcustlimit(id,xcred){
 			dataType: "json",
 			success: function( data ) {
 											
-				console.log(data);
+				//console.log(data);
 				$.each(data,function(index,item){
 					if(item.invs!=null){
 						xinvs = item.invs;
@@ -1629,7 +1633,7 @@ function InsertDetSerial(itmcode, itmname, itmunit, itemrrident, itemqty, itmfct
 					dataType: "JSON",
 					success: function(data)
 					{	
-					   console.log(data);
+					   //console.log(data);
 
              $.each(data,function(index,item){
 
@@ -1895,7 +1899,7 @@ function openinv(){
                        // var classRoomsTable = $('#mytable tbody');
 					   $("#allbox").prop('checked', false);
 					   
-                       console.log(data);
+                       //console.log(data);
                        $.each(data,function(index,item){
 
 								
@@ -1935,7 +1939,7 @@ function openinv(){
                     },
                     error: function (req, status, err) {
 						//alert();
-						console.log('Something went wrong', status, err);
+						//console.log('Something went wrong', status, err);
 						$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
 						$("#alertbtnOK").show();
 						$("#AlertModal").modal('show');
@@ -1985,13 +1989,13 @@ function opengetdet(valz){
                     dataType: 'json',
                     method: 'post',
 					beforeSend: function(data){
-						console.log(data)
+						//console.log(data)
 					},
                     success: function (data) {
                        // var classRoomsTable = $('#mytable tbody');
 					  $("#allbox").prop('checked', false); 
 					   
-                      console.log(data);
+                      //console.log(data);
 					  $.each(data,function(index,item){
 						  if(item.citemno==""){
 							  alert("NO more items to add!")
@@ -2044,7 +2048,7 @@ function InsertSI(){
 					dataType: "JSON",
 					success: function(data)
 					{	
-					   console.log(data);
+					   //console.log(data);
                        $.each(data,function(index,item){
 						
 							$('#txtprodnme').val(item.desc); 
@@ -2154,7 +2158,7 @@ function loaddetails(){
 		dataType: "json",
 		success: function( data ) {
 											
-			console.log(data);
+			//console.log(data);
 			$.each(data,function(index,item){
 
 				$('#txtprodnme').val(item.desc); 
@@ -2179,7 +2183,7 @@ function loaddetinfo(){
 		dataType: "json",
 		success: function( data ) {
 											
-			console.log(data);
+			//console.log(data);
 			$.each(data,function(index,item){
 
 				addinfo(item.id,item.desc,item.fldnme,item.cvalue);
@@ -2319,30 +2323,35 @@ function chkform(){
 		var delcountry = $("#txtcCountry").val();
 		var delzip = $("#txtcZip").val();
 		//alert("Quote_newsavehdr.php?ccode=" + ccode + "&crem="+ crem + "&ddate="+ ddate + "&ngross="+ngross);
-		var inputs = [
-			{code: "id", value: $("#txtcsalesno").val()},
-			{code: ccode, value: $("#txtcustid").val()},
-			{code: crem, value: $("#txtremarks").val()},
-			{code: ddate, value: $("#date_delivery").val()},
-			{code: ngross, value: $("#txtnGross").val()},
-			{code: cdrprintno, value: $("#cdrprintno").val()},
-			{code: salesman, value: $("#txtsalesmanid").val()},
-			{code: delcodes, value: $("#txtdelcustid").val()},
-			{code: delhousno, value:  $("#txtchouseno").val()},
-			{code: delcity, value: $("#txtcCity").val()},
-			{code: delstate, value: $("#txtcState").val()},
-			{code: delcountry, value: $("#txtcCountry").val()},
-			{code: delzip, value: $("#txtcZip").val()}
-		]
+		var input_data = [
+			{	key: 'id', input: $("#txtcsalesno").val()	},
+			{	key: 'ccode', input: $("#txtcustid").val()	},
+			{	key: 'crem', input: $("#txtremarks").val()	},
+			{	key: 'ddate', input: $("#date_delivery").val()	},
+			{	key: 'ngross', input: $("#txtnGross").val()	},
+			{	key: 'cdrprintno', input: $("#cdrprintno").val()	},
 
+			{	key: 'salesman', input: $("#txtsalesmanid").val()	},
+			{	key: 'delcodes', input: $("#txtdelcustid").val()	},
+			{	key: 'delhousno', input: $("#txtchouseno").val()	},
+			{	key: 'delcity', input: $("#txtcCity").val()		},
+			{	key: 'delstate', input: $("#txtcState").val()	},
+			{	key: 'delcountry', input: $("#txtcCountry").val()	},
+			{	key: 'delzip', input: $("#txtcZip").val()	}
+		]
+		//alert("DR_newsavehdr.php?ccode=" + ccode + "&crem="+ crem + "&ddate="+ ddate + "&ngross="+ngross+"&cdrprintno="+cdrprintno+"&salesman="+salesman+"&delcodes="+delcodes+"&delhousno="+delhousno+"&delcity="+delcity+"&delstate="+delstate+"&delcountry="+delcountry+"&delzip="+delzip);
 		var formdata = new FormData();
-		jQuery.each(inputs, function(i, {code, value}){
-			formdata.append(code, value)
+		jQuery.each(input_data, function(i, { key, input }){
+			formdata.append(key, input)
 		})
-		formdata.delete('upload[]');
-		jQuery.each($('#file-0')[0].files, function(i, file){
+		jQuery.each($('#file-0')[0].files, function(i, file) {
 			formdata.append('file-'+i, file)
 		})
+
+		
+		for(var par of formdata.entries()){
+			//console.log(par)
+		}
 		$.ajax ({
 			url: "DR_updatehdr.php",
 			data: formdata,
@@ -2359,6 +2368,7 @@ function chkform(){
 			},
 			success: function( data ) {
 				if(data.trim()!="False"){
+					//alert(data.trim());
 					trancode = data.trim();
 				}
 				else{
@@ -2418,7 +2428,7 @@ function chkform(){
 				});
 				
 			});
-			
+
 			$("#MyTableInvSer > tbody > tr").each(function(index) {	
 
 
@@ -2454,8 +2464,8 @@ function chkform(){
 						$("#AlertMsg").html("");
 						$('#AlertModal').modal('hide');
 			
-							//$("#txtcsalesno").val(trancode);
-							$("#frmpos").submit();
+						//$("#txtcsalesno").val(trancode);
+						$("#frmpos").submit();
 			
 					}, 3000); // milliseconds = 3seconds
 
@@ -2483,7 +2493,7 @@ function loadserials(){
 					async: false,
 					success: function(data)
 					{	
-					   console.log(data);
+					   //console.log(data);
              			$.each(data,function(index,item){
 
 								//InsertToSerials(itmcode,serials,uoms,qtys,locas,locasdesc,expz,nident,refe,mainident){);
