@@ -21,6 +21,21 @@ $sqlchk = mysqli_query($con,"Select a.cvalue,b.cacctdesc From parameters a left 
 		$nDebitDef = "";
 		$nDebitDesc =  "";
 	}
+
+
+	//POST
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Deposit_post'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
+	//CANCEL
+	$cancstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Deposit_cancel'");
+	if(mysqli_num_rows($sql) == 0){
+		$cancstat = "False";
+	}
 ?>
 
 <!DOCTYPE html>
@@ -29,9 +44,11 @@ $sqlchk = mysqli_query($con,"Select a.cvalue,b.cacctdesc From parameters a left 
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Myx   Financials</title>
+	<title>Myx Financials</title>
+
+	<link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css?x=<?=time()?>">
-    <link rel="stylesheet" type="text/css" href="../Bootstrap/css/alert-modal.css">
+  <link rel="stylesheet" type="text/css" href="../Bootstrap/css/alert-modal.css">
 
 <script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
 <script src="../js/bootstrap3-typeahead.min.js"></script>
@@ -93,15 +110,15 @@ function trans(x,num){
 					<tr>
 						<th>Trans No.</th>
             <th>Deposit Acct</th>
-						<th>Amount</th>
-						<th>Date</th>
-						<th>Status</th>
+						<th class="text-right">Total Deposited</th>
+						<th class="text-center">Date</th>
+						<th class="text-center">Status</th>
 					</tr>
 				</thead>
 
 				<tbody>
               	<?php
-				$sql = "select a.*,b.cacctdesc from deposit a left join accounts b on a.compcode=b.compcode and a.cacctcode=b.cacctno where a.compcode='$company' order by a.ddate DESC";
+				$sql = "select a.*,b.cacctdesc from deposit a left join accounts b on a.compcode=b.compcode and a.cacctcode=b.cacctid where a.compcode='$company' order by a.ddate DESC";
 				$result=mysqli_query($con,$sql);
 				
 					if (!mysqli_query($con, $sql)) {
@@ -114,14 +131,22 @@ function trans(x,num){
  					<tr>
 						<td><a href="javascript:;" onClick="editfrm('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
  						<td><?php echo $row['cacctcode'];?> - <?php echo $row['cacctdesc'];?> </td>
-                       <td><?php echo $row['namount'];?></td>
-                        <td><?php echo $row['dcutdate'];?></td>
+            <td align="right"><?php echo number_format($row['namount'],2);?></td>
+            <td class="text-center"><?php echo $row['dcutdate'];?></td>
 						<td align="center">
-                        <div id="msg<?php echo $row['ctranno'];?>">
-                        	<?php 
-							if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
-							?>
-								<a href="javascript:;" onClick="trans('POST','<?php echo $row['ctranno'];?>')">POST</a> | <a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['ctranno'];?>')">CANCEL</a>
+              <div id="msg<?php echo $row['ctranno'];?>">
+                <?php 
+									if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
+								?>
+
+								<a href="javascript:;" onClick="trans('POST','<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>">
+									<i class="fa fa-thumbs-up" style="font-size:20px;color:Green ;" title="Approve transaction"></i>
+								</a>
+
+								<a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>">
+									<i class="fa fa-thumbs-down" style="font-size:20px;color:Red ;" title="Cancel transaction"></i>
+								</a>
+
 							<?php
                             }
 							else{

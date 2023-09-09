@@ -102,111 +102,124 @@
 		<fieldset>
 				<legend>Request For Payment Details</legend>
 				
-					<table width="100%" border="0" cellspacing="0" cellpadding="2">
-						<tr>
-							<tH>Tran No.:</tH>
-							<td>
-								<div class="col-xs-12"  style="padding-left:2px">
-									<div class="col-xs-4 nopadding">
-										<input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?php echo $ccvno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
-										</div>
-									</div>
-								
-								<input type="hidden" name="hdnorigNo" id="hdnorigNo" value="<?php echo $ccvno;?>">
-								
-								<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
-								<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
-								
-							</td>
-							<td colspan="2"><div id="statmsgz" style="display:inline"></div></td>
-							
-						</tr>
-
-						<tr>
-							<td><span style="padding:2px"><b>Paid To:</b></span></td>
-							<td>
-								<div class="col-xs-12"  style="padding-left:2px">
-									<div class="col-xs-4 nopadding ">
-											<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm required" required placeholder="Supplier Code..." readonly value="<?=$cCode?>">
-									</div>
-									<div class="col-xs-8 nopadwleft">
-											<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" placeholder="Search Supplier Name..." required autocomplete="off" tabindex="4" value="<?=$cName?>">
-									</div>
-								</div>
-							</td>
-							<td><span style="padding:2px" id="chkdate"><b>Due Date:</b></span></td>
-							<td>
-								<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
-									<div class='col-xs-8 nopadding'>
-											<input type='text' class="datepick form-control input-sm" placeholder="Pick a Date" name="txtChekDate" id="txtChekDate" value="<?=date("m/d/Y",strtotime($dTransdate));?>" />
-									</div>
-								</div>
-							</td>
-						</tr>
-					
-						<tr>
-						<td width="150"><span style="padding:2px" id="paymntdesc"><b>Bank Name</b></span></td>
-							<td>
-								<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px" id="paymntdescdet">
-									<div class="col-xs-3 nopadding">
-										<input type="text" id="txtBank" class="form-control input-sm required" name="txtBank" value="<?=$cBank?>" placeholder="Bank Code" readonly required>
-									</div>
-									<div class="col-xs-1 nopadwleft">
-										<button type="button" class="btn btn-block btn-primary btn-sm" name="btnsearchbank" id="btnsearchbank"><i class="fa fa-search"></i></button>
-									</div>
-									<div class="col-xs-8 nopadwleft">
-										<input type="text" class="form-control input-sm required" id="txtBankName" name="txtBankName" width="20px" tabindex="1" placeholder="Bank Name..." required value="<?=$cBankName?>" autocomplete="off" readonly>
-									</div>
-									
-								</div>
-
-							</td>
-							<td width="150"><span style="padding:2px"><b>Payment Method</b></span></td>
-							<td>
-								<div class="col-xs-12" style="padding-left:2px; padding-bottom:2px">
-									<div class="col-xs-8 nopadding">
-										<select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
-											<option value="cheque" <?=($cpaymeth=="cheque") ? "selected" : ""?>>Cheque</option>
-											<option value="cash" <?=($cpaymeth=="cash") ? "selected" : ""?>>Cash</option>
-											<option value="bank transfer" <?=($cpaymeth=="bank transfer") ? "selected" : ""?>>Bank Transfer</option>
-											<option value="mobile payment" <?=($cpaymeth=="mobile payment") ? "selected" : ""?>>Mobile Payment</option>
-											<option value="credit card" <?=($cpaymeth=="credit card") ? "selected" : ""?>>Credit Card</option>
-											<option value="debit card" <?=($cpaymeth=="debit card") ? "selected" : ""?>>Debit Card</option>
-										</select>
-									</div>
-							</td>
-							
-						</tr>
-
-						<tr>
-							<td valign="top" style="padding-top:8px;"><span style="padding:2px;"><b>Remarks</b></span></td>
-							<td>
-								<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
-									<textarea class="form-control input-sm" id="txtcremarks" name="txtcremarks" rows="3"><?=$cdRemarks?></textarea>
-								</div>
-							</td>
-							<td valign="top" style="padding-top:8px;"><span style="padding:2px" id="chkdate"><b>Total Amount to Pay:</b></span></td>
-							<td valign="top">
-								<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
-									<div class='col-xs-8 nopadding'>
-											<input type='text' class="form-control input-sm text-right" name="txtnamount" id="txtnamount" value="<?=$cnAmount?>" readonly/>
-											<input type='hidden' name="txtnamountbal" id="txtnamountbal" value="<?=$cnBalamt?>" />   
-									</div>
-								</div>
-							</td>						
-						</tr>
-
-					</table>
-
-					<ul class="nav nav-tabs">
+				<ul class="nav nav-tabs">
 						<li class="active"><a href="#apv">APV List</a></li>
 						<li><a href="#attc">Attachments</a></li>
 					</ul>
 
-					<div class="alt2" dir="ltr" style="margin: 0px; padding: 3px;border: 0px;width: 100%;text-align: left;overflow: auto">
-						<div class="tab-content">  
+					<div class="tab-content">  
 
-							<div id="apv" class="tab-pane fade in active" style="padding-top:10px;">
+						<div id="apv" class="tab-pane fade in active" style="padding-left:5px; padding-top:10px;">
+
+							<table width="100%" border="0" cellspacing="0" cellpadding="2">
+								<tr>
+									<tH>Tran No.:</tH>
+									<td>
+										<div class="col-xs-12"  style="padding-left:2px">
+											<div class="col-xs-4 nopadding">
+												<input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?php echo $ccvno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
+												</div>
+											</div>
+										
+										<input type="hidden" name="hdnorigNo" id="hdnorigNo" value="<?php echo $ccvno;?>">
+										
+										<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
+										<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
+										
+									</td>
+									<td colspan="2"><div id="statmsgz" style="display:inline"></div></td>
+									
+								</tr>
+
+								<tr>
+									<td><span style="padding:2px"><b>Paid To:</b></span></td>
+									<td>
+										<div class="col-xs-12"  style="padding-left:2px">
+											<div class="col-xs-4 nopadding ">
+													<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm required" required placeholder="Supplier Code..." readonly value="<?=$cCode?>">
+											</div>
+											<div class="col-xs-8 nopadwleft">
+													<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" placeholder="Search Supplier Name..." required autocomplete="off" tabindex="4" value="<?=$cName?>">
+											</div>
+										</div>
+									</td>
+									<td><span style="padding:2px" id="chkdate"><b>Due Date:</b></span></td>
+									<td>
+										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
+											<div class='col-xs-8 nopadding'>
+													<input type='text' class="datepick form-control input-sm" placeholder="Pick a Date" name="txtChekDate" id="txtChekDate" value="<?=date("m/d/Y",strtotime($dTransdate));?>" />
+											</div>
+										</div>
+									</td>
+								</tr>
+							
+								<tr>
+								<td width="150"><span style="padding:2px" id="paymntdesc"><b>Bank Name</b></span></td>
+									<td>
+										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px" id="paymntdescdet">
+											<div class="col-xs-3 nopadding">
+												<input type="text" id="txtBank" class="form-control input-sm required" name="txtBank" value="<?=$cBank?>" placeholder="Bank Code" readonly required>
+											</div>
+											<div class="col-xs-1 nopadwleft">
+												<button type="button" class="btn btn-block btn-primary btn-sm" name="btnsearchbank" id="btnsearchbank"><i class="fa fa-search"></i></button>
+											</div>
+											<div class="col-xs-8 nopadwleft">
+												<input type="text" class="form-control input-sm required" id="txtBankName" name="txtBankName" width="20px" tabindex="1" placeholder="Bank Name..." required value="<?=$cBankName?>" autocomplete="off" readonly>
+											</div>
+											
+										</div>
+
+									</td>
+									<td width="150"><span style="padding:2px"><b>Payment Method</b></span></td>
+									<td>
+										<div class="col-xs-12" style="padding-left:2px; padding-bottom:2px">
+											<div class="col-xs-8 nopadding">
+												<select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
+													<option value="cheque" <?=($cpaymeth=="cheque") ? "selected" : ""?>>Cheque</option>
+													<option value="cash" <?=($cpaymeth=="cash") ? "selected" : ""?>>Cash</option>
+													<option value="bank transfer" <?=($cpaymeth=="bank transfer") ? "selected" : ""?>>Bank Transfer</option>
+													<option value="mobile payment" <?=($cpaymeth=="mobile payment") ? "selected" : ""?>>Mobile Payment</option>
+													<option value="credit card" <?=($cpaymeth=="credit card") ? "selected" : ""?>>Credit Card</option>
+													<option value="debit card" <?=($cpaymeth=="debit card") ? "selected" : ""?>>Debit Card</option>
+												</select>
+											</div>
+									</td>
+									
+								</tr>
+
+								<tr>
+									<td valign="top" style="padding-top:8px;"><span style="padding:2px;"><b>Remarks</b></span></td>
+									<td>
+										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
+											<textarea class="form-control input-sm" id="txtcremarks" name="txtcremarks" rows="3"><?=$cdRemarks?></textarea>
+										</div>
+									</td>
+									<td valign="top" style="padding-top:8px;"><span style="padding:2px" id="chkdate"><b>Total Amount to Pay:</b></span></td>
+									<td valign="top">
+										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
+											<div class='col-xs-8 nopadding'>
+													<input type='text' class="form-control input-sm text-right" name="txtnamount" id="txtnamount" value="<?=$cnAmount?>" readonly/>
+													<input type='hidden' name="txtnamountbal" id="txtnamountbal" value="<?=$cnBalamt?>" />   
+											</div>
+										</div>
+									</td>						
+								</tr>
+
+							</table>
+
+						</div>	
+
+						<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
+
+							<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+							<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+							<input type="file" name="upload[]" id="file-0" multiple />
+
+						</div>
+					</div>
+
+					<hr>
+					<div class="col-xs-12 nopadwdown"><b>Details</b></div>
 
 								<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 1px solid #919b9c;width: 100%;height: 40vh;text-align: left;overflow: auto">
 									<input type='hidden' name="hdndetails" id="hdndetails" value="0"/>
@@ -254,18 +267,7 @@
 									</table>
 
 								</div>
-
-
-							</div>
-
-							<div id="attc" class="tab-pane fade in" style="padding-top:10px;">
-
-								<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
-								<input id="file-0" name="upload[]" type="file" multiple>
-
-							</div>
-					</div>
-
+				
 					<br>
 					<table width="100%" border="0" cellpadding="3">
 						<tr>

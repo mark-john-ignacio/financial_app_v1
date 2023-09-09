@@ -82,159 +82,183 @@
 <form action="OR_newsave2.php" name="frmOR" id="frmOR" method="post" enctype="multipart/form-data">
 	<fieldset>
     <legend>Receive Payment</legend>	
-      <table width="100%" border="0">
-				<tr>
-					<tH width="210">
-						Deposit To Account					
-					</tH>
-					<td style="padding:2px;" width="500">
-						<?php
-							$sqlchk = mysqli_query($con,"Select a.cacctno, b.cacctdesc, IFNULL(b.nbalance,0) as nbalance From accounts_default a left join accounts b on a.compcode=b.compcode and a.cacctno=b.cacctid where a.compcode='$company' and a.ccode='ORDEBCASH'");
-							if (mysqli_num_rows($sqlchk)!=0) {
-								while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
-									$nDebitDef = $row['cacctno'];
-									$nDebitDesc = $row['cacctdesc'];
-									//$nBalance = $row['nbalance'];
-								}
-							}else{
-								$nDebitDef = "";
-								$nDebitDesc =  "";
-								//$nBalance = 0.000;
-							}
-						?>
-						<div class="col-xs-12 nopadding">
-							<div class="col-xs-6 nopadding">
-								<input type="text" class="form-control input-sm" id="txtcacct" name="txtcacct" width="20px" tabindex="1" placeholder="Search Account Description..." required value="<?php echo $nDebitDesc;?>"  autocomplete="off">
-							</div> 
-							<div class="col-xs-6 nopadwleft">
-								<input type="text" id="txtcacctid" name="txtcacctid" style="border:none; height:30px;" readonly  value="<?php echo $nDebitDef;?>">
-							</div>
-						</div>     
-					</td>
-    			<tH width="150"><span style="padding:2px">Date:</span></tH>
-					<td style="padding:2px;">
-						<div class="col-xs-8 nopadding">
-							<?php
-								//get last date
-								$ornostat = "";
-										$sqlchk = mysqli_query($con,"select * from receipt where compcode='$company' Order By ddate desc LIMIT 1");
-								if (mysqli_num_rows($sqlchk)!=0) {
-									while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
-										$dORLastDate = date("m/d/Y", strtotime($row['dcutdate']));
-									}
-								}else{
-										$dORLastDate = date("m/d/Y");
-								}
-							?>
-							<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $dORLastDate; ?>"/>
-						</div>   
-					</td>
-  			</tr>
-				<tr>
-					<tH>&nbsp;</tH>
-					<td style="padding:2px;">&nbsp;</td>
-					<tH>&nbsp;</tH>
-					<td style="padding:2px;">&nbsp;</td>
-				</tr>
-				<tr>
-					<tH width="100" valign="top">Payor:</tH>
-					<td valign="top" style="padding:2px">
-					<div class="col-xs-12 nopadding">
-							<div class="col-xs-6 nopadding">
-								<input type="text" class="typeahead form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="2" placeholder="Search Customer Name..." required autocomplete="off">
-					</div> 
-					<div class="col-xs-3 nopadwleft">
-								<input type="text" id="txtcustid" name="txtcustid" style="border:none; height:30px;" readonly>
-							</div>
-					</div>        
-					</td>
-					<tH width="150" style="padding:2px">Receipt No.:</tH>
-					<td style="padding:2px"><div class="col-xs-12 nopadding">
-						<div class="col-xs-8 nopadding">
-							<?php
-							/*
-								$ornostat = "";
-								$sqlchk = mysqli_query($con,"select A.cornumber from (select cornumber from receipt where compcode='$company' UNION ALL Select cornumber from receipt_voids where compcode='$company') A Order By cornumber desc LIMIT 1");
-								if (mysqli_num_rows($sqlchk)!=0) {
-									while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
-										$cORNOm = $row['cornumber'];
-										$ornostat = "readonly";
-										
-										$cORNOm = $cORNOm + 1;
-										
-										if(strlen($cORNOm) <> strlen($row['cornumber'])){
-											
-											$varcnt = (int)strlen($row['cornumber']) - (int)strlen($cORNOm);
-											
-											for($zx=1; $zx<=$varcnt; $zx++){
-												$cORNOm = "0".$cORNOm;
+
+				<ul class="nav nav-tabs">
+					<li class="active"><a href="#items" data-toggle="tab">Receive Payment Details</a></li>
+					<li><a href="#attc" data-toggle="tab">Attachments</a></li>
+				</ul>
+
+				<div class="tab-content">
+
+					<div id="items" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
+
+						<table width="100%" border="0">
+							<tr>
+								<tH width="210">
+									Deposit To Account					
+								</tH>
+								<td style="padding:2px;" width="500">
+									<?php
+										$sqlchk = mysqli_query($con,"Select a.cacctno, b.cacctdesc, IFNULL(b.nbalance,0) as nbalance From accounts_default a left join accounts b on a.compcode=b.compcode and a.cacctno=b.cacctid where a.compcode='$company' and a.ccode='ORDEBCASH'");
+										if (mysqli_num_rows($sqlchk)!=0) {
+											while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
+												$nDebitDef = $row['cacctno'];
+												$nDebitDesc = $row['cacctdesc'];
+												//$nBalance = $row['nbalance'];
 											}
+										}else{
+											$nDebitDef = "";
+											$nDebitDesc =  "";
+											//$nBalance = 0.000;
 										}
-									}
-								}else{
-										$cORNOm = "";
-										$ornostat = "";
-								}
-								*/ 
-							?>
-							<!-- value="<?//php echo $cORNOm;?>" <?//php echo $ornostat; ?> -->
-							<input type="text" class="form-control input-sm" id="txtORNo" name="txtORNo" width="20px" required >
-						</div>
-						<!--<div class="col-xs-4 nopadwleft">
-							<button type="button" class="btn btn-danger btn-sm" name="btnVoid" id="btnVoid">VOID OR</button>
-						</div>-->
-					</div></td>
-				</tr>
-				<tr>
-					<tH width="100" valign="top">Payment Method:</tH>
-					<td valign="top" style="padding:2px">
+									?>
+									<div class="col-xs-12 nopadding">
+										<div class="col-xs-6 nopadding">
+											<input type="text" class="form-control input-sm" id="txtcacct" name="txtcacct" width="20px" tabindex="1" placeholder="Search Account Description..." required value="<?php echo $nDebitDesc;?>"  autocomplete="off">
+										</div> 
+										<div class="col-xs-6 nopadwleft">
+											<input type="text" id="txtcacctid" name="txtcacctid" style="border:none; height:30px;" readonly  value="<?php echo $nDebitDef;?>">
+										</div>
+									</div>     
+								</td>
+								<tH width="150"><span style="padding:2px">Date:</span></tH>
+								<td style="padding:2px;">
+									<div class="col-xs-8 nopadding">
+										<?php
+											//get last date
+											$ornostat = "";
+													$sqlchk = mysqli_query($con,"select * from receipt where compcode='$company' Order By ddate desc LIMIT 1");
+											if (mysqli_num_rows($sqlchk)!=0) {
+												while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
+													$dORLastDate = date("m/d/Y", strtotime($row['dcutdate']));
+												}
+											}else{
+													$dORLastDate = date("m/d/Y");
+											}
+										?>
+										<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $dORLastDate; ?>"/>
+									</div>   
+								</td>
+							</tr>
+							<tr>
+								<tH>&nbsp;</tH>
+								<td style="padding:2px;">&nbsp;</td>
+								<tH>&nbsp;</tH>
+								<td style="padding:2px;">&nbsp;</td>
+							</tr>
+							<tr>
+								<tH width="100" valign="top">Payor:</tH>
+								<td valign="top" style="padding:2px">
+								<div class="col-xs-12 nopadding">
+										<div class="col-xs-6 nopadding">
+											<input type="text" class="typeahead form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="2" placeholder="Search Customer Name..." required autocomplete="off">
+								</div> 
+								<div class="col-xs-3 nopadwleft">
+											<input type="text" id="txtcustid" name="txtcustid" style="border:none; height:30px;" readonly>
+										</div>
+								</div>        
+								</td>
+								<tH width="150" style="padding:2px">Receipt No.:</tH>
+								<td style="padding:2px"><div class="col-xs-12 nopadding">
+									<div class="col-xs-8 nopadding">
+										<?php
+										/*
+											$ornostat = "";
+											$sqlchk = mysqli_query($con,"select A.cornumber from (select cornumber from receipt where compcode='$company' UNION ALL Select cornumber from receipt_voids where compcode='$company') A Order By cornumber desc LIMIT 1");
+											if (mysqli_num_rows($sqlchk)!=0) {
+												while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
+													$cORNOm = $row['cornumber'];
+													$ornostat = "readonly";
+													
+													$cORNOm = $cORNOm + 1;
+													
+													if(strlen($cORNOm) <> strlen($row['cornumber'])){
+														
+														$varcnt = (int)strlen($row['cornumber']) - (int)strlen($cORNOm);
+														
+														for($zx=1; $zx<=$varcnt; $zx++){
+															$cORNOm = "0".$cORNOm;
+														}
+													}
+												}
+											}else{
+													$cORNOm = "";
+													$ornostat = "";
+											}
+											*/ 
+										?>
+										<!-- value="<?//php echo $cORNOm;?>" <?//php echo $ornostat; ?> -->
+										<input type="text" class="form-control input-sm" id="txtORNo" name="txtORNo" width="20px" required >
+									</div>
+									<!--<div class="col-xs-4 nopadwleft">
+										<button type="button" class="btn btn-danger btn-sm" name="btnVoid" id="btnVoid">VOID OR</button>
+									</div>-->
+								</div></td>
+							</tr>
+							<tr>
+								<tH width="100" valign="top">Payment Method:</tH>
+								<td valign="top" style="padding:2px">
+								
+								
+								<div class="col-xs-12 nopadding">
+								<div class="col-xs-6 nopadding">
+									<select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
+											<option value="cash">Cash</option>
+											<option value="cheque">Cheque</option>
+											<option value="bank transfer">Bank Transfer</option>
+											<option value="mobile payment">Mobile Payment</option>
+											<option value="credit card">Credit Card</option>
+											<option value="debit card">Debit Card</option>
+										</select>
+								</div>
+								
+								<div class="col-xs-4 nopadwleft">
+									<button type="button" class="btn btn-primary btn-sm" tabindex="6" style="width:100%" name="btnDet" id="btnDet">Details</button>
+							</div>
+								</div>
+								
+								
+								</td>
+								<th valign="top" style="padding:2px">Amount Received:</th>
+								<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
+									<input type="text" id="txtnGross" name="txtnGross" class="numericchkamt form-control input-sm  text-right numeric" value="0.00" style="text-align:right;" autocomplete="off" required onKeyUp="computeGross();">
+								</div></td>
+							</tr>
+							<tr>
+								<tH width="100" rowspan="2" valign="top">Memo:</tH>
+								<td rowspan="2" valign="top" style="padding:2px">
+								<div class="col-xs-12 nopadding">
+									<div class="col-xs-10 nopadding">
+										<textarea class="form-control" rows="2" id="txtremarks" name="txtremarks"></textarea>
+									</div>
+								</div>
+								</td>
+								<th valign="top" style="padding:2px">Amount Applied:</th>
+								<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
+									<input type="text" id="txtnApplied" name="txtnApplied" class="numericchkamt form-control input-sm" value="0.00" style="text-align:right;" autocomplete="off" readonly>
+								</div></td>
+							</tr>
+							<tr>
+								<th valign="top" style="padding:2px">Out of Balance:</th>
+								<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
+									<input type="text" id="txtnOutBal" name="txtnOutBal" class="numericchkamt form-control input-sm" value="0.00" style="text-align:right;" autocomplete="off" readonly>
+								</div></td>
+							</tr>
+						</table>
 					
-					
-					<div class="col-xs-12 nopadding">
-					<div class="col-xs-6 nopadding">
-						<select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
-								<option value="cash">Cash</option>
-								<option value="cheque">Cheque</option>
-								<option value="bank transfer">Bank Transfer</option>
-								<option value="mobile payment">Mobile Payment</option>
-								<option value="credit card">Credit Card</option>
-								<option value="debit card">Debit Card</option>
-							</select>
+					</div>	
+
+					<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
+
+						<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+						<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+						<input type="file" name="upload[]" id="file-0" multiple />
+
 					</div>
-					
-					<div class="col-xs-4 nopadwleft">
-						<button type="button" class="btn btn-primary btn-sm" tabindex="6" style="width:100%" name="btnDet" id="btnDet">Details</button>
 				</div>
-					</div>
 					
-					
-					</td>
-					<th valign="top" style="padding:2px">Amount Received:</th>
-					<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
-						<input type="text" id="txtnGross" name="txtnGross" class="numericchkamt form-control input-sm  text-right numeric" value="0.00" style="text-align:right;" autocomplete="off" required onKeyUp="computeGross();">
-					</div></td>
-				</tr>
-				<tr>
-					<tH width="100" rowspan="2" valign="top">Memo:</tH>
-					<td rowspan="2" valign="top" style="padding:2px">
-					<div class="col-xs-12 nopadding">
-						<div class="col-xs-10 nopadding">
-							<textarea class="form-control" rows="2" id="txtremarks" name="txtremarks"></textarea>
-						</div>
-					</div>
-					</td>
-					<th valign="top" style="padding:2px">Amount Applied:</th>
-					<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
-						<input type="text" id="txtnApplied" name="txtnApplied" class="numericchkamt form-control input-sm" value="0.00" style="text-align:right;" autocomplete="off" readonly>
-					</div></td>
-				</tr>
-				<tr>
-					<th valign="top" style="padding:2px">Out of Balance:</th>
-					<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
-						<input type="text" id="txtnOutBal" name="txtnOutBal" class="numericchkamt form-control input-sm" value="0.00" style="text-align:right;" autocomplete="off" readonly>
-					</div></td>
-				</tr>
-      </table>
+				<hr>
+				<div class="col-xs-12 nopadwdown"><b>Details</b></div>
 
 			<!--
 			<ul class="nav nav-tabs">
@@ -253,16 +277,9 @@
 							</button>
         		</div>
 			-->
-				<br>
 
-				<ul class="nav nav-tabs">
-					<li class="active"><a href="#items" data-toggle="tab">Details List</a></li>
-					<li><a href="#attc" data-toggle="tab">Attachments</a></li>
-				</ul>
 
-				<div class="tab-content">
-
-					<div id="items" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
+			
 
 						<div style="border: 1px solid #919b9c; height: 40vh; overflow: auto">
 							<div id="tableContainer" class="alt2" dir="ltr" style="
@@ -302,36 +319,7 @@
 							</div>
 						</div>
 
-					</div>
-
-					<div id="attc" class="tab-pane fade in" style="padding-left: 5px; padding-top: 10px;">
-						
-						<div class="alt2" dir="ltr" style="
-								margin: 0px;
-								padding: 3px;
-								width: 100%;
-								height: 410px;
-								text-align: left;
-								overflow: auto">
-								<table width="100%" border="0">
-									<tr>
-										<td>
-											<div class="col-sm-12 nopadding">
-												<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-												<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
-												<div class="col-sm-12 nopadding" style="padding-top:10px;">
-													<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
-													<input type="file" name="upload[]" id="file-0" multiple />
-												</div>
-											</div>
-										</td>
-									</tr>
-								</table>
-						</div>
-						
-					</div>
-
-				</div><!--tab-content-->	
+			
 					<!--
 					</div>
         

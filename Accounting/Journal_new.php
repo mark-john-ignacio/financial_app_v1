@@ -53,10 +53,9 @@ include('../include/access.php');
 					<li><a href="#attc">Attachments</a></li>
 				</ul>
 
-				<div class="alt2" dir="ltr" style="margin: 0px; padding: 3px;border: 0px;width: 100%;text-align: left;overflow: inherit !important">
 					<div class="tab-content">  
 
-						<div id="jed" class="tab-pane fade in active" style="padding-top:10px;">
+						<div id="jed" class="tab-pane fade in active" style="padding-left:5px; padding-top:10px;">
 
 							<table width="100%" border="0">
 								<tr>
@@ -115,19 +114,19 @@ include('../include/access.php');
 								</tr>
 							</table>
 						</div>
-						<div id="attc" class="tab-pane fade in" style="padding-top:10px;">
+						<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
 
-								<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
-								<input id="file-0" name="upload[]" type="file" multiple>
+							<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+							<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+							<input type="file" name="upload[]" id="file-0" multiple />
 
-							</div>
+						</div>
 					</div>
-				</div>
 
-
-			<br>
+				<hr>
+				<div class="col-xs-12 nopadwdown"><b>Details</b></div>
     
-<small><i>*Press tab after remarks field (last row) to add new line..</i></small>
+				<small><i>*Press tab after remarks field (last row) to add new line..</i></small>
 
              <div class="alt2" dir="ltr" style="
                         margin: 0px;

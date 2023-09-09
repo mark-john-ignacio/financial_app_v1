@@ -137,136 +137,148 @@ if (mysqli_num_rows($sqlchk)!=0) {
    			</div>
   		</legend>	
 
-      <table width="100%" border="0">
-				<tr>
-					<tH>Trans. No.:</tH>
-					<td colspan="3" style="padding:2px;">
-						<div class="col-xs-12 nopadding">
-							<div class="col-xs-2 nopadding"><input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?=$corno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmOR');"></div>
-						
-							<input type="hidden" name="hdnorigNo" id="hdnorigNo" value="<?=$corno;?>">
-						
-							<input type="hidden" name="hdnposted" id="hdnposted" value="<?=$lPosted;?>">
-							<input type="hidden" name="hdncancel" id="hdncancel" value="<?=$lCancelled;?>">
-							<input type="hidden" name="hdnprintpost" id="hdnprintpost" value="<?=$lPrintPost;?>">
-								&nbsp;&nbsp;
-							<div id="statmsgz" style="display:inline"></div>
-							</div>						
-					</td>
-				</tr>
-				<tr>
-					<tH width="210">
-						Deposit To Account    
-					</tH>
-					<td style="padding:2px;" width="500">
-						<div class="col-xs-12 nopadding">
-							<div class="col-xs-6 nopadding">
-								<input type="text" class="form-control input-sm" id="txtcacct" name="txtcacct" width="20px" tabindex="1" placeholder="Search Account Description..." required value="<?=$nDebitDesc;?>">
-							</div> 
-							<div class="col-xs-6 nopadding">
-								<input type="text" id="txtcacctid" name="txtcacctid" style="border:none; height:30px;" readonly  value="<?=$nDebitDef;?>">
-							</div>
-						</div>     
-					</td>
-					<tH width="150">Date:</tH>
-					<td style="padding:2px;">
-						<div class="col-xs-8 nopadding">
-						<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?=date_format(date_create($dDate),'m/d/Y'); ?>" />
-					</div>
-					</td>
-				</tr>
-				<tr>
-					<tH>&nbsp;</tH>
-					<td style="padding:2px;">&nbsp;</td>
-					<tH>&nbsp;</tH>
-					<td style="padding:2px;">&nbsp;</td>
-				</tr>
-				<tr>
-					<tH width="210" valign="top">Payor:</tH>
-					<td valign="top" style="padding:2px">
-					<div class="col-xs-12 nopadding">
-							<div class="col-xs-6 nopadding">
-								<input type="text" class="typeahead form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="2" placeholder="Search Customer Name..." required autocomplete="off" value="<?=$cName ;?>"  />
-					</div> 
-					<div class="col-xs-3 nopadwleft">
-								<input type="text" id="txtcustid" name="txtcustid" style="border:none; height:30px;" readonly value="<?=$cCode ;?>">
-							</div>
-					</div>        
-					</td>
-					<th valign="top" style="padding:2px">Receipt No.:</th>
-					<td valign="top" style="padding:2px"><div class="col-xs-12 nopadding">
-						<div class="col-xs-8 nopadding">
-						<input type="text" class="form-control input-sm" id="txtORNo" name="txtORNo" width="20px" required value="<?=$cORNo;?>">
-					</div>
-				</tr>
-				<tr>
-					<tH width="210" valign="top">Payment Method:</tH>
-					<td valign="top" style="padding:2px">
-					<div class="col-xs-12 nopadding">
-					<div class="col-xs-6 nopadding">
-						<select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
-								<option value="cash" <?php if($cPayMeth=="cash") { echo "selected"; } ?>>Cash</option>
-								<option value="cheque" <?php if($cPayMeth=="cheque") { echo "selected"; } ?>>Cheque</option>
-								<option value="bank transfer" <?php if($cPayMeth=="bank transfer") { echo "selected"; } ?>>Bank Transfer</option>
-								<option value="mobile payment" <?php if($cPayMeth=="mobile payment") { echo "selected"; } ?>>Mobile Payment</option>
-								<option value="credit card" <?php if($cPayMeth=="credit card") { echo "selected"; } ?>>Credit Card</option>
-								<option value="debit card" <?php if($cPayMeth=="debit card") { echo "selected"; } ?>>Debit Card</option>
-							</select>
-					</div>
-					
-					<div class="col-xs-4 nopadwleft">
-						<button type="button" class="btn btn-primary btn-sm" tabindex="6" style="width:100%" name="btnDet" id="btnDet">Details</button>
-					</div>
-					</div>
-					
-					
-					</td>
-					<tH style="padding:2px">Amount Received:</tH>
-					<td valign="top" style="padding:2px">
-						<?php 
-							if($cPayMeth=="Cheque") 
-							{ 
-								$vargrossstat = "readonly"; 
-							} else{
-								$vargrossstat = "";
-							}
-						?>
-						<div class="col-xs-8 nopadding">
-							<input type="text" id="txtnGross" name="txtnGross" class="numericchkamt form-control text-right" value="<?=$nAmount;?>" <?=$vargrossstat; ?> autocomplete="off" onKeyUp="computeGross();" required>
-						</div></td>
-				</tr>
-				<tr>
-					<tH width="210" rowspan="2" valign="top">Memo:</tH>
-
-					<td rowspan="2" valign="top" style="padding:2px">
-					<div class="col-xs-12 nopadding">
-						<div class="col-xs-10 nopadding">
-							<textarea class="form-control" rows="1" id="txtremarks" name="txtremarks"><?=$cRemarks;?></textarea>
-						</div>
-					</div>
-					</td>
-					<th valign="top" style="padding:2px">Amount Applied:</th>
-					<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
-						<input type="text" id="txtnApplied" name="txtnApplied" class="numericchkamt form-control" value="<?=$nApplied;?>" style="text-align:right" readonly>
-					</div></td>
-				</tr>
-				<tr>
-					<th valign="top" style="padding:2px">Out of Balance:</th>
-					<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
-						<input type="text" id="txtnOutBal" name="txtnOutBal" class="numericchkamt form-control input-sm" value="0.00" style="text-align:right;" autocomplete="off" readonly>
-					</div></td>
-				</tr>
-      </table>
-
-			<br>
-
-			<ul class="nav nav-tabs">
-					<li class="active"><a href="#items" data-toggle="tab">Details List</a></li>
+				<ul class="nav nav-tabs">
+					<li class="active"><a href="#items" data-toggle="tab">Receive Payment Details</a></li>
 					<li><a href="#attc" data-toggle="tab">Attachments</a></li>
 				</ul>
 				
 				<div class="tab-content">
 					<div id="items" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
+
+						<table width="100%" border="0">
+							<tr>
+								<tH>Trans. No.:</tH>
+								<td colspan="3" style="padding:2px;">
+									<div class="col-xs-12 nopadding">
+										<div class="col-xs-2 nopadding"><input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?=$corno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmOR');"></div>
+									
+										<input type="hidden" name="hdnorigNo" id="hdnorigNo" value="<?=$corno;?>">
+									
+										<input type="hidden" name="hdnposted" id="hdnposted" value="<?=$lPosted;?>">
+										<input type="hidden" name="hdncancel" id="hdncancel" value="<?=$lCancelled;?>">
+										<input type="hidden" name="hdnprintpost" id="hdnprintpost" value="<?=$lPrintPost;?>">
+											&nbsp;&nbsp;
+										<div id="statmsgz" style="display:inline"></div>
+										</div>						
+								</td>
+							</tr>
+							<tr>
+								<tH width="210">
+									Deposit To Account    
+								</tH>
+								<td style="padding:2px;" width="500">
+									<div class="col-xs-12 nopadding">
+										<div class="col-xs-6 nopadding">
+											<input type="text" class="form-control input-sm" id="txtcacct" name="txtcacct" width="20px" tabindex="1" placeholder="Search Account Description..." required value="<?=$nDebitDesc;?>">
+										</div> 
+										<div class="col-xs-6 nopadding">
+											<input type="text" id="txtcacctid" name="txtcacctid" style="border:none; height:30px;" readonly  value="<?=$nDebitDef;?>">
+										</div>
+									</div>     
+								</td>
+								<tH width="150">Date:</tH>
+								<td style="padding:2px;">
+									<div class="col-xs-8 nopadding">
+									<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?=date_format(date_create($dDate),'m/d/Y'); ?>" />
+								</div>
+								</td>
+							</tr>
+							<tr>
+								<tH>&nbsp;</tH>
+								<td style="padding:2px;">&nbsp;</td>
+								<tH>&nbsp;</tH>
+								<td style="padding:2px;">&nbsp;</td>
+							</tr>
+							<tr>
+								<tH width="210" valign="top">Payor:</tH>
+								<td valign="top" style="padding:2px">
+								<div class="col-xs-12 nopadding">
+										<div class="col-xs-6 nopadding">
+											<input type="text" class="typeahead form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="2" placeholder="Search Customer Name..." required autocomplete="off" value="<?=$cName ;?>"  />
+								</div> 
+								<div class="col-xs-3 nopadwleft">
+											<input type="text" id="txtcustid" name="txtcustid" style="border:none; height:30px;" readonly value="<?=$cCode ;?>">
+										</div>
+								</div>        
+								</td>
+								<th valign="top" style="padding:2px">Receipt No.:</th>
+								<td valign="top" style="padding:2px"><div class="col-xs-12 nopadding">
+									<div class="col-xs-8 nopadding">
+									<input type="text" class="form-control input-sm" id="txtORNo" name="txtORNo" width="20px" required value="<?=$cORNo;?>">
+								</div>
+							</tr>
+							<tr>
+								<tH width="210" valign="top">Payment Method:</tH>
+								<td valign="top" style="padding:2px">
+								<div class="col-xs-12 nopadding">
+								<div class="col-xs-6 nopadding">
+									<select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
+											<option value="cash" <?php if($cPayMeth=="cash") { echo "selected"; } ?>>Cash</option>
+											<option value="cheque" <?php if($cPayMeth=="cheque") { echo "selected"; } ?>>Cheque</option>
+											<option value="bank transfer" <?php if($cPayMeth=="bank transfer") { echo "selected"; } ?>>Bank Transfer</option>
+											<option value="mobile payment" <?php if($cPayMeth=="mobile payment") { echo "selected"; } ?>>Mobile Payment</option>
+											<option value="credit card" <?php if($cPayMeth=="credit card") { echo "selected"; } ?>>Credit Card</option>
+											<option value="debit card" <?php if($cPayMeth=="debit card") { echo "selected"; } ?>>Debit Card</option>
+										</select>
+								</div>
+								
+								<div class="col-xs-4 nopadwleft">
+									<button type="button" class="btn btn-primary btn-sm" tabindex="6" style="width:100%" name="btnDet" id="btnDet">Details</button>
+								</div>
+								</div>
+								
+								
+								</td>
+								<tH style="padding:2px">Amount Received:</tH>
+								<td valign="top" style="padding:2px">
+									<?php 
+										if($cPayMeth=="Cheque") 
+										{ 
+											$vargrossstat = "readonly"; 
+										} else{
+											$vargrossstat = "";
+										}
+									?>
+									<div class="col-xs-8 nopadding">
+										<input type="text" id="txtnGross" name="txtnGross" class="numericchkamt form-control text-right" value="<?=$nAmount;?>" <?=$vargrossstat; ?> autocomplete="off" onKeyUp="computeGross();" required>
+									</div></td>
+							</tr>
+							<tr>
+								<tH width="210" rowspan="2" valign="top">Memo:</tH>
+
+								<td rowspan="2" valign="top" style="padding:2px">
+								<div class="col-xs-12 nopadding">
+									<div class="col-xs-10 nopadding">
+										<textarea class="form-control" rows="1" id="txtremarks" name="txtremarks"><?=$cRemarks;?></textarea>
+									</div>
+								</div>
+								</td>
+								<th valign="top" style="padding:2px">Amount Applied:</th>
+								<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
+									<input type="text" id="txtnApplied" name="txtnApplied" class="numericchkamt form-control" value="<?=$nApplied;?>" style="text-align:right" readonly>
+								</div></td>
+							</tr>
+							<tr>
+								<th valign="top" style="padding:2px">Out of Balance:</th>
+								<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
+									<input type="text" id="txtnOutBal" name="txtnOutBal" class="numericchkamt form-control input-sm" value="0.00" style="text-align:right;" autocomplete="off" readonly>
+								</div></td>
+							</tr>
+						</table>
+
+					</div>	
+
+					<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
+
+						<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+						<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+						<input type="file" name="upload[]" id="file-0" multiple />
+
+					</div>
+				</div>
+
+				<hr>
+				<div class="col-xs-12 nopadwdown"><b>Details</b></div>
 
 						<div style="border: 1px solid #919b9c; height: 40vh; overflow: auto">
 							<div id="tableContainer" class="alt2" dir="ltr" style="
@@ -422,37 +434,6 @@ if (mysqli_num_rows($sqlchk)!=0) {
 								<input type="hidden" name="hdnrowcntcmdm" id="hdnrowcntcmdm" value="0">
 							</div>
 						</div>
-
-					</div>
-
-					<div id="attc" class="tab-pane fade in" style="padding-left: 5px; padding-top: 10px;">
-						
-						<div class="alt2" dir="ltr" style="
-								margin: 0px;
-								padding: 3px;
-								width: 100%;
-								height: 500px;
-								text-align: left;
-								overflow: auto">
-								<table width="100%" border="0">
-									<tr>
-										<td>
-											<div class="col-sm-12 nopadding">
-												<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-												<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
-												<div class="col-sm-12 nopadding" style="padding-top:10px;">
-													<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
-													<input type="file" name="upload[]" id="file-0" multiple />
-												</div>
-											</div>
-										</td>
-									</tr>
-								</table>
-						</div>
-						
-					</div>
-
-				</div><!--tab-content-->
 
 
 

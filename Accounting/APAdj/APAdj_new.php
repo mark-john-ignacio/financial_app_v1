@@ -57,6 +57,15 @@
 	<fieldset>
     	<legend>AP Adjustment</legend>	
 
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#items" data-toggle="tab">AP Adjustment Details</a></li>
+				<li><a href="#attc" data-toggle="tab">Attachments</a></li>
+			</ul>
+
+			<div class="tab-content">
+
+				<div id="items" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
+
 					<table width="100%" border="0">
 						<tr>
 							<tH width="100">&nbsp;Supplier:</tH>
@@ -135,14 +144,18 @@
 						</tr>
 					</table>
 
-			<ul class="nav nav-tabs">
-				<li class="active"><a href="#items" data-toggle="tab">Details List</a></li>
-				<li><a href="#attc" data-toggle="tab">Attachments</a></li>
-			</ul>
+				</div>
+				<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
 
-			<div class="tab-content">
+					<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+					<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+					<input type="file" name="upload[]" id="file-0" multiple />
 
-				<div id="items" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
+				</div>
+			</div>
+
+					<hr>
+					<div class="col-xs-12 nopadwdown"><b>Details</b></div>
 
 					<div class="col-xs-12 nopadding">
 						<div class="col-xs-4 nopadding"><small><i>*Press <b>ENTER</b> on remarks field (last row) to add new line..</i></small></div>
@@ -185,36 +198,6 @@
 
 					</div>
 
-				</div>
-
-				<div id="attc" class="tab-pane fade in" style="padding-left: 5px; padding-top: 10px;">
-						
-						<div class="alt2" dir="ltr" style="
-								margin: 0px;
-								padding: 3px;
-								width: 100%;
-								height: 410px;
-								text-align: left;
-								overflow: auto">
-								<table width="100%" border="0">
-									<tr>
-										<td>
-											<div class="col-sm-12 nopadding">
-												<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-												<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
-												<div class="col-sm-12 nopadding" style="padding-top:10px;">
-													<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
-													<input type="file" name="upload[]" id="file-0" multiple />
-												</div>
-											</div>
-										</td>
-									</tr>
-								</table>
-						</div>
-						
-				</div>
-
-			</div><!--tab-content-->
 
 		<br>
 		<table width="100%" border="0" cellpadding="3">

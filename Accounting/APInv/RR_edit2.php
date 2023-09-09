@@ -92,31 +92,31 @@ if(mysqli_num_rows($sql) == 0){
 	<title>Myx Financials</title>
     
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?= time();?>">
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
 
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../js/bootstrap3-typeahead.min.js"></script>
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../js/bootstrap3-typeahead.min.js"></script>
 
-<script src="../../include/autoNumeric.js"></script>
-<!--
-<script src="../../Bootstrap/js/jquery.numeric.js"></script>-->
+	<script src="../../include/autoNumeric.js"></script>
+	<!--
+	<script src="../../Bootstrap/js/jquery.numeric.js"></script>-->
 
-<script src="../../Bootstrap/js/bootstrap.js"></script>
-<script src="../../Bootstrap/js/moment.js"></script>
-<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<script src="../../Bootstrap/js/moment.js"></script>
+	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
-<!--
---
--- FileType Bootstrap Scripts and Link
---
--->
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
-<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
-<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
-<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
-<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
-<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+	<!--
+	--
+	-- FileType Bootstrap Scripts and Link
+	--
+	-->
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
 
 </head>
 
@@ -152,146 +152,154 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	<fieldset>
     	<legend>
         <div class="col-xs-6 nopadding"> Supplier's Invoice Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
-    <?php
-  if($lCancelled==1){
-    echo "<font color='#FF0000'><b>CANCELLED</b></font>";
-  }
-  
-  if($lPosted==1){
-    echo "<font color='#FF0000'><b>POSTED</b></font>";
-  }
-  ?>
-    </div>
-        </legend>	
-        <table width="100%" border="0">
-  <tr>
-    <tH>RR No.:</tH>
-    <td colspan="2" style="padding:2px"><div class="col-xs-3 nopadding"><input type="text" class="form-control input-sm" id="txtcpono" name="txtcpono" width="20px" tabindex="1" value="<?= $cpono;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');"></div>
-      
-      
-      <input type="hidden" name="hdntranno" id="hdntranno" value="<?= $cpono;?>">
-      <input type="hidden" name="hdnposted" id="hdnposted" value="<?= $lPosted;?>">
-      <input type="hidden" name="hdncancel" id="hdncancel" value="<?= $lCancelled;?>">
-      &nbsp;&nbsp;
-      <div id="statmsgz" style="display:inline"></div>
-    </td>
-    <td style="padding:2px" align="center">
-      
-    </td>
-    </tr>
-  <tr>
-    <tH width="100">Supplier:</tH>
-    <td style="padding:2px">
-
-			<div class="col-xs-12 nopadding">
-				<div class="col-xs-3 nopadding">
-					<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" value="<?= $CustCode;?>" readonly>
-				</div>
-
-				<div class="col-xs-8 nopadwleft">
-					<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" value="<?= $CustName;?>">
-				</div> 
-			</div>
-
-    </td>
-    <tH width="150" style="padding:2px">SI Date:</tH>
-    <td style="padding:2px">
-    <div class="col-xs-11 nopadding">
-		<input type='text' class="datepick form-control input-sm" id="date_received" name="date_received" value="<?= $DateNeeded; ?>" />
-
-     </div>
-    </td>
-  </tr>
-  <tr>
-    <tH width="100">Remarks:</tH>
-    <td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value="<?= $Remarks; ?>"></div></td>
-
-		<tH width="150">Supplier SI:</tH>
-    <td style="padding:2px;"><div class="col-xs-11 nopadding">
-      <input type='text' class="form-control input-sm" id="txtSuppSI" name="txtSuppSI" value="<?= $CustSI; ?>" />
-    </div></td>
-
-    
-  </tr>
-
-	<tr>
-    <tH width="100">Currency: </tH>
-    <td style="padding:2px">
-					<div class="col-xs-12 nopadding">
-							<div class="col-xs-8 nopadding">
-								<select class="form-control input-sm" name="selbasecurr" id="selbasecurr"> 		
-									<?php
-											$nvaluecurrbase = "";	
-											$nvaluecurrbasedesc = "";	
-											$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
-											
-												if (mysqli_num_rows($result)!=0) {
-													$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
-													
-													$nvaluecurrbase = $all_course_data['cvalue']; 
-														
-												}
-												else{
-													$nvaluecurrbase = "";
-												}
+					<?php
+						if($lCancelled==1){
+							echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+						}
 						
-											//		$objcurrs = listcurrencies();
-											//		$objrows = json_decode($objcurrs,true);
-														
-										//	foreach($objrows as $rows){
-											//	if ($nvaluecurrbase==$rows['currencyCode']) {
-											//		$nvaluecurrbasedesc = $rows['currencyName'];
-											//	}
-											$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
-											if (mysqli_num_rows($sqlhead)!=0) {
-												while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-							?>
-										<option value="<?=$rows['id']?>" <?php if ($ccurrcode==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
-									<?php
-												}
-											}
-									?>
-								<!--</select>-->
-									<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?= $nvaluecurrbase; ?>"> 	
-									<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?=$ccurrdesc?>">  
-							</div>
-							<div class="col-xs-2 nopadwleft"> 
-								<!--  -->
-								<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="<?=$ccurrrate?>">	 
-							</div>
+						if($lPosted==1){
+							echo "<font color='#FF0000'><b>POSTED</b></font>";
+						}
+					?>
+				</div>
+      </legend>	
 
-							<div class="col-xs-5" id="statgetrate" style="padding: 4px !important"> 
-										
-							</div>
-		</div>
-	</td>
-	<tH width="100">Ref RR:</tH>
-    <td style="padding:2px">
-			<div class="col-xs-11 nopadding">
-				<input type="text" class="form-control input-sm" id="txtrefrr" name="txtrefrr" width="20px" tabindex="2" value="<?=$RefRR?>">
-			</div>
-		</td>
-  </tr>
-
-	
-  
-    <tr>
-    <td colspan="2">&nbsp;</td>
-    <th style="padding:2px"><!--<span style="padding:2px">PURCHASE TYPE:</span>--></th>
-    <td>&nbsp;</td>
-    </tr>
-
-</table>
-
-
-<ul class="nav nav-tabs">
-	<li class="active"><a href="#item" data-toggle="tab">Item list</a></li>
-	<li><a href="#attc" data-toggle="tab">Attachments</a></li>
-</ul>
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#item" data-toggle="tab">Supplier's Invoice Details</a></li>
+				<li><a href="#attc" data-toggle="tab">Attachments</a></li>
+			</ul>
 
 			<div class="tab-content">
-
 				<div id="item" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
+
+					<table width="100%" border="0">
+						<tr>
+							<tH>RR No.:</tH>
+							<td colspan="2" style="padding:2px"><div class="col-xs-3 nopadding"><input type="text" class="form-control input-sm" id="txtcpono" name="txtcpono" width="20px" tabindex="1" value="<?= $cpono;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');"></div>
+								
+								
+								<input type="hidden" name="hdntranno" id="hdntranno" value="<?= $cpono;?>">
+								<input type="hidden" name="hdnposted" id="hdnposted" value="<?= $lPosted;?>">
+								<input type="hidden" name="hdncancel" id="hdncancel" value="<?= $lCancelled;?>">
+								&nbsp;&nbsp;
+								<div id="statmsgz" style="display:inline"></div>
+							</td>
+							<td style="padding:2px" align="center">
+								
+							</td>
+						</tr>
+						<tr>
+							<tH width="100">Supplier:</tH>
+							<td style="padding:2px">
+
+								<div class="col-xs-12 nopadding">
+									<div class="col-xs-3 nopadding">
+										<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" value="<?= $CustCode;?>" readonly>
+									</div>
+
+									<div class="col-xs-8 nopadwleft">
+										<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" value="<?= $CustName;?>">
+									</div> 
+								</div>
+
+							</td>
+							<tH width="150" style="padding:2px">SI Date:</tH>
+							<td style="padding:2px">
+							<div class="col-xs-11 nopadding">
+							<input type='text' class="datepick form-control input-sm" id="date_received" name="date_received" value="<?= $DateNeeded; ?>" />
+
+							</div>
+							</td>
+						</tr>
+						<tr>
+							<tH width="100">Remarks:</tH>
+							<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value="<?= $Remarks; ?>"></div></td>
+
+							<tH width="150">Supplier SI:</tH>
+							<td style="padding:2px;"><div class="col-xs-11 nopadding">
+								<input type='text' class="form-control input-sm" id="txtSuppSI" name="txtSuppSI" value="<?= $CustSI; ?>" />
+							</div></td>					
+						</tr>
+
+						<tr>
+							<tH width="100">Currency: </tH>
+							<td style="padding:2px">
+								<div class="col-xs-12 nopadding">
+									<div class="col-xs-8 nopadding">
+										<select class="form-control input-sm" name="selbasecurr" id="selbasecurr"> 		
+											<?php
+													$nvaluecurrbase = "";	
+													$nvaluecurrbasedesc = "";	
+													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+													
+														if (mysqli_num_rows($result)!=0) {
+															$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
+															
+															$nvaluecurrbase = $all_course_data['cvalue']; 
+																
+														}
+														else{
+															$nvaluecurrbase = "";
+														}
+								
+													//		$objcurrs = listcurrencies();
+													//		$objrows = json_decode($objcurrs,true);
+																
+												//	foreach($objrows as $rows){
+													//	if ($nvaluecurrbase==$rows['currencyCode']) {
+													//		$nvaluecurrbasedesc = $rows['currencyName'];
+													//	}
+													$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+													if (mysqli_num_rows($sqlhead)!=0) {
+														while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+											?>
+												<option value="<?=$rows['id']?>" <?php if ($ccurrcode==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
+											<?php
+														}
+													}
+											?>
+										</select>
+										<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?= $nvaluecurrbase; ?>"> 	
+										<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?=$ccurrdesc?>">  
+									</div>
+									<div class="col-xs-2 nopadwleft"> 
+										<!--  -->
+										<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="<?=$ccurrrate?>">	 
+									</div>
+
+									<div class="col-xs-5" id="statgetrate" style="padding: 4px !important"> 
+												
+									</div>
+								</div>
+							</td>
+							<tH width="100">Ref RR:</tH>
+							<td style="padding:2px">
+								<div class="col-xs-11 nopadding">
+									<input type="text" class="form-control input-sm" id="txtrefrr" name="txtrefrr" width="20px" tabindex="2" value="<?=$RefRR?>">
+								</div>
+							</td>
+						</tr> 
+						<tr>
+							<td colspan="2">&nbsp;</td>
+							<th style="padding:2px"><!--<span style="padding:2px">PURCHASE TYPE:</span>--></th>
+							<td>&nbsp;</td>
+						</tr>
+
+					</table>
+
+				</div>	
+
+				<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
+
+					<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+					<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+					<input type="file" name="upload[]" id="file-0" multiple />
+
+				</div>
+			</div>
+
+			<hr>
+			<div class="col-xs-12 nopadwdown"><b>Details</b></div>
 
 					<div class="col-xs-12 nopadwdown">
 						<div class="col-xs-3 nopadding">
@@ -336,33 +344,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 														
 							</table>
 					</div>
-				</div>	
-				<div id="attc" class="tab-pane fade in" style="padding-left: 5px; padding-top: 10px;">
-					<div class="alt2" dir="ltr" style="
-							margin: 0px;
-							padding: 3px;
-							width: 100%;
-							height: 410px;
-							text-align: left;
-							overflow: auto">
-							<table width="100%" border="0">
-								<tr>
-									<td>
-										<div class="col-sm-12 nopadding">
-											<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-											<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
-											<div class="col-sm-12 nopadding" style="padding-top:10px;">
-												<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
-												<input type="file" name="upload[]" id="file-0" multiple />
-											</div>
-										</div>
-									</td>
-								</tr>
-							</table>
-					</div>
-				</div>
-
-			</div>
+				
 
 <br>
 <?php
@@ -531,9 +513,9 @@ else{
 			list_file.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/RI/<?=$company."_".$cpono?>/" + name)
 			console.log(ext);
 
-			if(jQuery.inArray(ext, arroffice) !== 1){
+			if(jQuery.inArray(ext, arroffice) !== -1){
 				extender = "office";
-			} else if (jQuery.inArray(ext, arrimg) !== 1){
+			} else if (jQuery.inArray(ext, arrimg) !== -1){
 				extender = "image";
 			} else if (ext == "txt"){
 				extender = "text";

@@ -76,165 +76,178 @@
 		<fieldset>
 				<legend>Bills Payment</legend>
 				
-					<table width="100%" border="0 " cellspacing="0" cellpadding="0">
-						<tr>
-							<td><span style="padding:2px"><b>Paid To:</b></span></td>
-							<td>
-							<div class="col-xs-12"  style="padding-left:2px">
-								<div class="col-xs-6 nopadding">
-										<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" placeholder="Search Supplier Name..." required autocomplete="off" tabindex="4">
-								</div>
-								<div class="col-xs-6 nopadwleft">
-										<input type="text" id="txtcustid" name="txtcustid" style="border:none; height:30px;" readonly>
-								</div>
-							</div>
-							</td>
-							<td><span style="padding:2px"><b>Payee:</b></span></td>
-							<td>
-							<div class="col-xs-12"  style="padding-bottom:2px">
-									<div class='col-xs-12 nopadding'>
-											<input type="text" class="form-control input-sm" id="txtpayee" name="txtpayee" tabindex="5">
-									</div>
-							</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td colspan="4">&nbsp;</td>
-						</tr>
-
-
-						<tr>
-							<td width="150"><span style="padding:2px"><b>Payment Method</b></span></td>
-							<td>
-								<div class="col-xs-12" style="padding-left:2px">
-									<div class="col-xs-4 nopadding">
-										<select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
-											<option value="cheque">Cheque</option>
-											<option value="cash">Cash</option>
-											<option value="bank transfer">Bank Transfer</option>
-											<option value="mobile payment">Mobile Payment</option>
-											<option value="credit card">Credit Card</option>
-											<option value="debit card">Debit Card</option>
-										</select>
-									</div>
-									<div class="col-xs-3" style="padding:2px !important">
-										&nbsp;&nbsp;&nbsp;<!--<b>Payment Type</b>-->
-									</div>
-									<!--
-										<div class="col-xs-4 nopadding">
-											<select id="selpaytype" name="selpaytype" class="form-control input-sm selectpicker">
-												<option value="apv">AP Voucher</option>
-												<option value="po">PO Pre-Payment</option>
-											</select>
-										</div>
-									-->
-							</td>
-							<td><span style="padding:2px"><b>Particulars:</b></span></td>
-							<td rowspan="2">
-								<div class="col-xs-12"  style="padding-bottom:2px">
-									<div class='col-xs-12 nopadding'>
-										<textarea class="form-control" rows="2" id="txtparticulars" name="txtparticulars"></textarea>
-									</div>
-								</div>
-							</td>
-						</tr>
-						<tr>
-
-						<td width="150"><span style="padding:2px" id="paymntdesc"><b>Bank Name</b></span></td>
-							<td>
-								<div class="col-xs-12"  style="padding-left:2px" id="paymntdescdet">
-									<div class="col-xs-3 nopadding">
-										<input type="text" id="txtBank" class="form-control input-sm" name="txtBank" value="" placeholder="Bank Code" readonly required>
-									</div>
-									<div class="col-xs-1 nopadwleft">
-										<button type="button" class="btn btn-block btn-primary btn-sm" name="btnsearchbank" id="btnsearchbank"><i class="fa fa-search"></i></button>
-									</div>
-									<div class="col-xs-8 nopadwleft">
-										<input type="text" class="form-control input-sm" id="txtBankName" name="txtBankName" width="20px" tabindex="1" placeholder="Bank Name..." required value="" autocomplete="off" readonly>
-									</div>
-									
-								</div>
-
-							</td>
-
-
-							
-							
-						</tr>
-						<tr>  
-							<td><span style="padding:2px"><b>Payment Acct (Cr): </b></span></td>
-								<td>
-								<div class="col-xs-12"  style="padding-left:2px">
-									<div class="col-xs-3 nopadding">                              
-										<input type="text" id="txtcacctid" class="form-control input-sm" name="txtcacctid" value="" placeholder="Account Code" required>
-									</div>
-									<div class="col-xs-9 nopadwleft">
-										<input type="text" class="form-control input-sm" id="txtcacct" name="txtcacct" width="20px" tabindex="1" placeholder="Search Account Description..." required value="" autocomplete="off">
-									</div>
-									
-								</div>
-							</td>
-							<td width="120"><span style="padding:2px"><b>Payment Date:</b></span></td>
-							<td>
-							<div class='col-xs-12' style="padding-bottom:2px">
-									<div class="col-xs-6 nopadding">
-										<input type='text' class="datepick form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date("m/d/Y"); ?>" tabindex="3"  />
-									</div>
-							</div>
-							</td>
-						</tr>
-						<tr>
-							<td><span style="padding:2px" id="paymntrefr"><b>Check No.</b></span></td>
-								<td>
-									
-									<div class="col-xs-12"  style="padding-left:2px">
-
-										<div class="col-xs-7 nopadding" id="paymntrefrdet">
-
-											<div class="col-xs-7 nopadding">
-												<input type='text' class='noref form-control input-sm' name='txtCheckNo' id='txtCheckNo' value="" readonly required placeholder="Check No."/>
-												<input type='hidden' name='txtChkBkNo' id='txtChkBkNo' value="" />
-											</div>	
-											<div class="col-xs-5 nopadwleft">
-												<button type="button" class="btn btn-danger btn-sm disabled" name="btnVoid" id="btnVoid" data-toggle="popover" data-content="Void Check" data-trigger="hover" data-placement="top" disabled><i class="fa fa-ban" aria-hidden="true"></i></button> 
-												
-												<button type="button" class="btn btn-warning btn-sm disabled" name="btnreserve" id="btnreserve" data-toggle="popover" data-content="Reserve Check" data-trigger="hover" data-placement="top" disabled><i class="fa fa-calendar-plus-o" aria-hidden="true"></i></button> 	
-											</div>
-										</div>
-
-										<div class="col-xs-7 nopadding" style="display: none" id="payrefothrsdet">
-											<input type="text" id="txtPayRefrnce" class="noref form-control input-sm" name="txtPayRefrnce" value="" placeholder="Reference No.">
-										</div>
-
-										<div class="col-xs-5 nopadding">
-											<div class="input-sm no-border" style="color: red" id="chknochek">
-											
-											</div>
-										</div>
-									</div>
-
-							</td>
-							<td><span style="padding:2px" id="chkdate"><b>Check Date:</b></span></td>
-							<td>
-							<div class="col-xs-12"  style="padding-bottom:2px">
-									<div class='col-xs-6 nopadding'>
-											<input type='text' class="datepick form-control input-sm" placeholder="Pick a Date" name="txtChekDate" id="txtChekDate" value="<?php echo date("m/d/Y"); ?>" />
-									</div>
-							</div>
-							</td>
-						</tr>
-					</table>
-					<br>
-
-
 					<ul class="nav nav-tabs">
-						<li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Details</a></li>
+						<li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Bills Payment Details</a></li>
 						<li><a href="#attc" data-toggle="tab">Attachments</a></li>
 					</ul>
 
 					<div class="tab-content nopadwtop2x">
 						<div class="tab-pane active" id="1Det">
+
+							<table width="100%" border="0 " cellspacing="0" cellpadding="0">
+								<tr>
+									<td><span style="padding:2px"><b>Paid To:</b></span></td>
+									<td>
+									<div class="col-xs-12"  style="padding-left:2px">
+										<div class="col-xs-6 nopadding">
+												<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" placeholder="Search Supplier Name..." required autocomplete="off" tabindex="4">
+										</div>
+										<div class="col-xs-6 nopadwleft">
+												<input type="text" id="txtcustid" name="txtcustid" style="border:none; height:30px;" readonly>
+										</div>
+									</div>
+									</td>
+									<td><span style="padding:2px"><b>Payee:</b></span></td>
+									<td>
+									<div class="col-xs-12"  style="padding-bottom:2px">
+											<div class='col-xs-12 nopadding'>
+													<input type="text" class="form-control input-sm" id="txtpayee" name="txtpayee" tabindex="5">
+											</div>
+									</div>
+									</td>
+								</tr>
+							
+								<tr>
+									<td colspan="4">&nbsp;</td>
+								</tr>
+
+
+								<tr>
+									<td width="150"><span style="padding:2px"><b>Payment Method</b></span></td>
+									<td>
+										<div class="col-xs-12" style="padding-left:2px">
+											<div class="col-xs-4 nopadding">
+												<select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
+													<option value="cheque">Cheque</option>
+													<option value="cash">Cash</option>
+													<option value="bank transfer">Bank Transfer</option>
+													<option value="mobile payment">Mobile Payment</option>
+													<option value="credit card">Credit Card</option>
+													<option value="debit card">Debit Card</option>
+												</select>
+											</div>
+											<div class="col-xs-3" style="padding:2px !important">
+												&nbsp;&nbsp;&nbsp;<!--<b>Payment Type</b>-->
+											</div>
+											<!--
+												<div class="col-xs-4 nopadding">
+													<select id="selpaytype" name="selpaytype" class="form-control input-sm selectpicker">
+														<option value="apv">AP Voucher</option>
+														<option value="po">PO Pre-Payment</option>
+													</select>
+												</div>
+											-->
+									</td>
+									<td><span style="padding:2px"><b>Particulars:</b></span></td>
+									<td rowspan="2">
+										<div class="col-xs-12"  style="padding-bottom:2px">
+											<div class='col-xs-12 nopadding'>
+												<textarea class="form-control" rows="2" id="txtparticulars" name="txtparticulars"></textarea>
+											</div>
+										</div>
+									</td>
+								</tr>
+								<tr>
+
+								<td width="150"><span style="padding:2px" id="paymntdesc"><b>Bank Name</b></span></td>
+									<td>
+										<div class="col-xs-12"  style="padding-left:2px" id="paymntdescdet">
+											<div class="col-xs-3 nopadding">
+												<input type="text" id="txtBank" class="form-control input-sm" name="txtBank" value="" placeholder="Bank Code" readonly required>
+											</div>
+											<div class="col-xs-1 nopadwleft">
+												<button type="button" class="btn btn-block btn-primary btn-sm" name="btnsearchbank" id="btnsearchbank"><i class="fa fa-search"></i></button>
+											</div>
+											<div class="col-xs-8 nopadwleft">
+												<input type="text" class="form-control input-sm" id="txtBankName" name="txtBankName" width="20px" tabindex="1" placeholder="Bank Name..." required value="" autocomplete="off" readonly>
+											</div>
+											
+										</div>
+
+									</td>
+
+
+									
+									
+								</tr>
+								<tr>  
+									<td><span style="padding:2px"><b>Payment Acct (Cr): </b></span></td>
+										<td>
+										<div class="col-xs-12"  style="padding-left:2px">
+											<div class="col-xs-3 nopadding">                              
+												<input type="text" id="txtcacctid" class="form-control input-sm" name="txtcacctid" value="" placeholder="Account Code" required>
+											</div>
+											<div class="col-xs-9 nopadwleft">
+												<input type="text" class="form-control input-sm" id="txtcacct" name="txtcacct" width="20px" tabindex="1" placeholder="Search Account Description..." required value="" autocomplete="off">
+											</div>
+											
+										</div>
+									</td>
+									<td width="120"><span style="padding:2px"><b>Payment Date:</b></span></td>
+									<td>
+									<div class='col-xs-12' style="padding-bottom:2px">
+											<div class="col-xs-6 nopadding">
+												<input type='text' class="datepick form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date("m/d/Y"); ?>" tabindex="3"  />
+											</div>
+									</div>
+									</td>
+								</tr>
+								<tr>
+									<td><span style="padding:2px" id="paymntrefr"><b>Check No.</b></span></td>
+										<td>
+											
+											<div class="col-xs-12"  style="padding-left:2px">
+
+												<div class="col-xs-7 nopadding" id="paymntrefrdet">
+
+													<div class="col-xs-7 nopadding">
+														<input type='text' class='noref form-control input-sm' name='txtCheckNo' id='txtCheckNo' value="" readonly required placeholder="Check No."/>
+														<input type='hidden' name='txtChkBkNo' id='txtChkBkNo' value="" />
+													</div>	
+													<div class="col-xs-5 nopadwleft">
+														<button type="button" class="btn btn-danger btn-sm disabled" name="btnVoid" id="btnVoid" data-toggle="popover" data-content="Void Check" data-trigger="hover" data-placement="top" disabled><i class="fa fa-ban" aria-hidden="true"></i></button> 
+														
+														<button type="button" class="btn btn-warning btn-sm disabled" name="btnreserve" id="btnreserve" data-toggle="popover" data-content="Reserve Check" data-trigger="hover" data-placement="top" disabled><i class="fa fa-calendar-plus-o" aria-hidden="true"></i></button> 	
+													</div>
+												</div>
+
+												<div class="col-xs-7 nopadding" style="display: none" id="payrefothrsdet">
+													<input type="text" id="txtPayRefrnce" class="noref form-control input-sm" name="txtPayRefrnce" value="" placeholder="Reference No.">
+												</div>
+
+												<div class="col-xs-5 nopadding">
+													<div class="input-sm no-border" style="color: red" id="chknochek">
+													
+													</div>
+												</div>
+											</div>
+
+									</td>
+									<td><span style="padding:2px" id="chkdate"><b>Check Date:</b></span></td>
+									<td>
+									<div class="col-xs-12"  style="padding-bottom:2px">
+											<div class='col-xs-6 nopadding'>
+													<input type='text' class="datepick form-control input-sm" placeholder="Pick a Date" name="txtChekDate" id="txtChekDate" value="<?php echo date("m/d/Y"); ?>" />
+											</div>
+									</div>
+									</td>
+								</tr>
+							</table>
+
+						</div>	
+
+						<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
+
+							<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+							<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+							<input type="file" name="upload[]" id="file-0" multiple />
+
+						</div>
+					</div>
+
+
+					<hr>
+					<div class="col-xs-12 nopadwdown"><b>Details</b></div>
 
 							<div class="col-xs-12 nopadwdown">
 								<div class="col-xs-1 nopadwright"><button type="button" class="btn btn-xs btn-warning btn-block" id="btnaddline">Add Payable</button></div>
@@ -266,36 +279,7 @@
 								</table>
 							</div>
 
-						</div>
-
-						<div id="attc" class="tab-pane" style="padding-left: 5px">
-							<div class="alt2" dir="ltr" style="
-									margin: 0px;
-									padding: 3px;
-									width: 100%;
-									height: 450px;
-									text-align: left;
-									overflow: auto">
-
-								<table width="100%" border="0">
-									<tr>
-										<td>
-											<div class="col-sm-12 nopadding">
-												<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-												<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
-												<div class="col-sm-12 nopadwdown" style="padding-top:10px;">
-													<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
-													<input type="file" name="upload[]" id="file-0" multiple />
-												</div>
-											</div>
-										</td>
-									</tr>
-								</table>
-							</div>
-							
-						</div>
-
-					</div>	
+					
 											
 					<br>
 

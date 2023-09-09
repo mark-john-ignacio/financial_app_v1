@@ -56,88 +56,103 @@
 <form action="ARAdj_newsave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
 	<fieldset>
     	<legend>AR Adjustment</legend>	
-        <table width="100%" border="0">
-					<tr>
-						<tH width="100">&nbsp;Customer:</tH>
-						<td style="padding:2px">
-						<div class="col-xs-12 nopadding">
-								<div class="col-xs-3 nopadding">
-									<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
-										<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
-
-								</div>
-
-							<div class="col-xs-8 nopadwleft">
-									<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
-								</div> 
-							</div>
-						</td>
-						<tH width="150">Date:</tH>
-						<td style="padding:2px;">
-						<div class="col-xs-11 nopadding">
-						<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $ddeldate; ?>" />
-						</div>
-						</td>
-					</tr>
-					<tr>
-						<tH width="100">&nbsp;Remarks:</tH>
-						<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div></td>
-						<tH width="150">Type:</tH>
-						<td style="padding:2px" align="right">
-							<div class="col-xs-11 nopadding">
-							<select name="seltype" id="seltype" class="form-control input-sm">
-										<option value="Credit">Credit</option>
-										<option value="Debit">Debit</option>
-								</select>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<tH width="100">&nbsp;<!--RETURN NO.:-->Reference:</tH>
-						<td>       
-							<div class="col-xs-12 nopadding">
-									<div class="col-xs-3 nopadding">
-										<input type="text" class="form-control input-sm" id="txtSIRef" name="txtSIRef" width="20px" tabindex="2" readonly placeholder="Search Sales Return No...">
-									</div>
-					
-									<div class="col-xs-1 nopadwleft">
-										<button class="btncgroup btn btn-block btn-sm btn-danger" type="button" id="btnSISearch" onClick="InsertDet('REF');"><i class="fa fa-search"></i></button>
-									</div>
-
-									<div class="col-xs-3 nopadwleft">
-										<input type="text" class="form-control input-sm" id="txtInvoiceRef" name="txtInvoiceRef" width="20px" tabindex="2" placeholder="Search Sales Invoice No..." readonly>      
-										<input type="hidden" id="invtyp" name="invtyp" value="">      
-									</div>
-							</div>
-						</td>
-						<tH width="150">&nbsp;</tH>
-						<td style="padding:2px"><div class="col-xs-11 nopadding">
-							<div class="form-check">
-								<input class="form-check-input" type="checkbox" value="1" id="isReturn" name="isReturn"  checked/>
-								<label class="form-check-label" for="flexCheckChecked">Sales Return</label>
-							</div>
-						</div></td>
-						<td style="padding:2px"  align="right">&nbsp;</td>
-					</tr>
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td style="padding:2px">&nbsp;</td>
-						<td style="padding:2px"  align="right">&nbsp;</td>
-					</tr>
-					<tr>
-						<td colspan="5">&nbsp;</td>
-					</tr>
-				</table>
 
 				<ul class="nav nav-tabs">
-					<li class="active"><a href="#items" data-toggle="tab">Details List</a></li>
+					<li class="active"><a href="#items" data-toggle="tab">AR Adjustment Details</a></li>
 					<li><a href="#attc" data-toggle="tab">Attachments</a></li>
 				</ul>
 
 				<div class="tab-content">
 
 					<div id="items" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
+
+						<table width="100%" border="0">
+							<tr>
+								<tH width="100">&nbsp;Customer:</tH>
+								<td style="padding:2px">
+								<div class="col-xs-12 nopadding">
+										<div class="col-xs-3 nopadding">
+											<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
+												<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
+
+										</div>
+
+									<div class="col-xs-8 nopadwleft">
+											<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
+										</div> 
+									</div>
+								</td>
+								<tH width="150">Date:</tH>
+								<td style="padding:2px;">
+								<div class="col-xs-11 nopadding">
+								<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $ddeldate; ?>" />
+								</div>
+								</td>
+							</tr>
+							<tr>
+								<tH width="100">&nbsp;Remarks:</tH>
+								<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div></td>
+								<tH width="150">Type:</tH>
+								<td style="padding:2px" align="right">
+									<div class="col-xs-11 nopadding">
+									<select name="seltype" id="seltype" class="form-control input-sm">
+												<option value="Credit">Credit</option>
+												<option value="Debit">Debit</option>
+										</select>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<tH width="100">&nbsp;<!--RETURN NO.:-->Reference:</tH>
+								<td>       
+									<div class="col-xs-12 nopadding">
+											<div class="col-xs-3 nopadding">
+												<input type="text" class="form-control input-sm" id="txtSIRef" name="txtSIRef" width="20px" tabindex="2" readonly placeholder="Search Sales Return No...">
+											</div>
+							
+											<div class="col-xs-1 nopadwleft">
+												<button class="btncgroup btn btn-block btn-sm btn-danger" type="button" id="btnSISearch" onClick="InsertDet('REF');"><i class="fa fa-search"></i></button>
+											</div>
+
+											<div class="col-xs-3 nopadwleft">
+												<input type="text" class="form-control input-sm" id="txtInvoiceRef" name="txtInvoiceRef" width="20px" tabindex="2" placeholder="Search Sales Invoice No..." readonly>      
+												<input type="hidden" id="invtyp" name="invtyp" value="">      
+											</div>
+									</div>
+								</td>
+								<tH width="150">&nbsp;</tH>
+								<td style="padding:2px"><div class="col-xs-11 nopadding">
+									<div class="form-check">
+										<input class="form-check-input" type="checkbox" value="1" id="isReturn" name="isReturn"  checked/>
+										<label class="form-check-label" for="flexCheckChecked">Sales Return</label>
+									</div>
+								</div></td>
+								<td style="padding:2px"  align="right">&nbsp;</td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td style="padding:2px">&nbsp;</td>
+								<td style="padding:2px"  align="right">&nbsp;</td>
+							</tr>
+							<tr>
+								<td colspan="5">&nbsp;</td>
+							</tr>
+						</table>
+					
+					</div>	
+
+					<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
+
+						<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+						<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+						<input type="file" name="upload[]" id="file-0" multiple />
+
+					</div>
+				</div>
+				
+						<hr>
+						<div class="col-xs-12 nopadwdown"><b>Details</b></div>
 
 						<div class="col-xs-12 nopadwdown">
 							<div class="col-xs-1 nopadwright"><button type="button" class="btn btn-xs btn-warning btn-block" id="btnaddline">Add Line</button></div>
@@ -179,37 +194,6 @@
 							</table>
 
 						</div>
-
-					</div>
-
-					<div id="attc" class="tab-pane fade in" style="padding-left: 5px; padding-top: 10px;">
-						
-						<div class="alt2" dir="ltr" style="
-								margin: 0px;
-								padding: 3px;
-								width: 100%;
-								height: 410px;
-								text-align: left;
-								overflow: auto">
-								<table width="100%" border="0">
-									<tr>
-										<td>
-											<div class="col-sm-12 nopadding">
-												<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-												<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
-												<div class="col-sm-12 nopadding" style="padding-top:10px;">
-													<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
-													<input type="file" name="upload[]" id="file-0" multiple />
-												</div>
-											</div>
-										</td>
-									</tr>
-								</table>
-						</div>
-						
-					</div>
-
-				</div><!--tab-content-->
 
 				<br>
 				<table width="100%" border="0" cellpadding="3">

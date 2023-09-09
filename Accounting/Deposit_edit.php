@@ -98,97 +98,6 @@ if (mysqli_num_rows($sqlchk)!=0) {
 <form action="Deposit_editsave.php" name="frmOR" id="frmOR" method="post" enctype="multipart/form-data">
 	<fieldset>
     	<legend>Bank Deposit</legend>	
-        <table width="100%" border="0">
-          <tr>
-						<tH>Deposit No.:</tH>
-						<td colspan="3" style="padding:2px;">
-							<div class="col-xs-12 nopadding">
-							<div class="col-xs-2 nopadding"><input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?php echo $corno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmOR');"></div>
-								
-								<input type="hidden" name="hdnorigNo" id="hdnorigNo" value="<?php echo $corno;?>">
-								
-								<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
-								<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
-								<input type="hidden" name="hdnprintpost" id="hdnprintpost" value="<?php echo $lPrintPost;?>">
-								&nbsp;&nbsp;
-								<div id="statmsgz" style="display:inline"></div>
-							</div>
-							
-						</td>
-					</tr>
-
-					<tr>
-						<tH width="200">   	
-							Deposit To Account:
-						</tH>
-						<td style="padding:2px;" width="500">
-							<div class="col-xs-12 nopadding">
-								<div class="col-xs-6 nopadding">
-									<input type="text" class="form-control input-sm" id="txtcacct" name="txtcacct" width="20px" tabindex="1" placeholder="Search Account Description..." required value="<?php echo $nDebitDesc;?>">
-								</div> 
-								<div class="col-xs-6 nopadwleft">
-									<input type="text" id="txtcacctid" name="txtcacctid" style="border:none; height:30px;" readonly  value="<?php echo $nDebitDef;?>">
-								</div>
-							</div>     
-						</td>
-						<tH width="150">Balance:</tH>
-						<td style="padding:2px;">
-						<div class="col-xs-8 nopadding">
-						<input type="text" id="txtacctbal" name="txtacctbal" class="form-control input-sm" readonly value="<?php echo $nBalance;?>">
-						</div>
-						</td>
-					</tr>
-					<tr>
-						<tH>&nbsp;</tH>
-						<td style="padding:2px;">&nbsp;</td>
-						<tH>&nbsp;</tH>
-						<td style="padding:2px;">&nbsp;</td>
-					</tr>
-					<tr>
-						<!--
-						<tH width="200" valign="top">Receipt By:</tH>
-						<td valign="top" style="padding:2px">
-							
-							
-							<div class="col-xs-12 nopadding">
-								<div class="col-xs-6 nopadding">
-									<select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
-										<option value="Cash" <?//php if($cPayMeth=="Cash"){ echo "selected"; }?>>Cash</option>
-										<option value="Cheque" <?//php if($cPayMeth=="Cheque"){ echo "selected"; }?>>Cheque</option>
-										<option value="All" <?//php if($cPayMeth=="All"){ echo "selected"; }?>>All Methods</option>
-									</select>
-									</div>      
-							</div> 
-							</td>
-						-->
-						<tH width="200" rowspan="2" valign="top">Remarks:</tH>
-						<td rowspan="2" valign="top" style="padding:2px">
-							<div class="col-xs-12 nopadding">
-								<div class="col-xs-10 nopadding">
-									<textarea class="form-control" rows="2" id="txtremarks" name="txtremarks"><?php echo $cRemarks; ?></textarea>
-								</div>
-							</div>
-						</td>
-						<tH style="padding:2px">Date:</tH>
-						<td style="padding:2px"><div class="col-xs-8 nopadding">
-							<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $dDate; ?>"/>
-							<!--</a>-->
-						</div></td>
-					</tr>
-					<tr>
-
-						<th valign="top" style="padding:2px">Total Deposited:</th>
-						<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
-							<input type="text" id="txtnGross" name="txtnGross" class="form-control text-right" value="<?php echo number_format($nAmount,2);?>" readonly>
-						</div></td>
-						</tr>
-					<tr>
-						<th valign="top" style="padding:2px">&nbsp;</th>
-						<td valign="top" style="padding:2px">&nbsp;</td>
-					</tr>
-     	 	</table>
-
-				<br>
 
 				<ul class="nav nav-tabs">
 					<li class="active"><a href="#items" data-toggle="tab">Details</a></li>
@@ -198,6 +107,110 @@ if (mysqli_num_rows($sqlchk)!=0) {
 				<div class="tab-content">
 
 					<div id="items" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
+
+						<table width="100%" border="0">
+							<tr>
+								<tH>Deposit No.:</tH>
+								<td colspan="3" style="padding:2px;">
+									<div class="col-xs-12 nopadding">
+									<div class="col-xs-2 nopadding"><input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?php echo $corno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmOR');"></div>
+										
+										<input type="hidden" name="hdnorigNo" id="hdnorigNo" value="<?php echo $corno;?>">
+										
+										<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
+										<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
+										<input type="hidden" name="hdnprintpost" id="hdnprintpost" value="<?php echo $lPrintPost;?>">
+										&nbsp;&nbsp;
+										<div id="statmsgz" style="display:inline"></div>
+									</div>
+									
+								</td>
+							</tr>
+
+							<tr>
+								<tH width="200">   	
+									Deposit To Account:
+								</tH>
+								<td style="padding:2px;" width="500">
+									<div class="col-xs-12 nopadding">
+										<div class="col-xs-6 nopadding">
+											<input type="text" class="form-control input-sm" id="txtcacct" name="txtcacct" width="20px" tabindex="1" placeholder="Search Account Description..." required value="<?php echo $nDebitDesc;?>">
+										</div> 
+										<div class="col-xs-6 nopadwleft">
+											<input type="text" id="txtcacctid" name="txtcacctid" style="border:none; height:30px;" readonly  value="<?php echo $nDebitDef;?>">
+										</div>
+									</div>     
+								</td>
+								<tH width="150">Balance:</tH>
+								<td style="padding:2px;">
+								<div class="col-xs-8 nopadding">
+								<input type="text" id="txtacctbal" name="txtacctbal" class="form-control input-sm" readonly value="<?php echo $nBalance;?>">
+								</div>
+								</td>
+							</tr>
+							<tr>
+								<tH>&nbsp;</tH>
+								<td style="padding:2px;">&nbsp;</td>
+								<tH>&nbsp;</tH>
+								<td style="padding:2px;">&nbsp;</td>
+							</tr>
+							<tr>
+								<!--
+								<tH width="200" valign="top">Receipt By:</tH>
+								<td valign="top" style="padding:2px">
+									
+									
+									<div class="col-xs-12 nopadding">
+										<div class="col-xs-6 nopadding">
+											<select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
+												<option value="Cash" <?//php if($cPayMeth=="Cash"){ echo "selected"; }?>>Cash</option>
+												<option value="Cheque" <?//php if($cPayMeth=="Cheque"){ echo "selected"; }?>>Cheque</option>
+												<option value="All" <?//php if($cPayMeth=="All"){ echo "selected"; }?>>All Methods</option>
+											</select>
+											</div>      
+									</div> 
+									</td>
+								-->
+								<tH width="200" rowspan="2" valign="top">Remarks:</tH>
+								<td rowspan="2" valign="top" style="padding:2px">
+									<div class="col-xs-12 nopadding">
+										<div class="col-xs-10 nopadding">
+											<textarea class="form-control" rows="2" id="txtremarks" name="txtremarks"><?php echo $cRemarks; ?></textarea>
+										</div>
+									</div>
+								</td>
+								<tH style="padding:2px">Date:</tH>
+								<td style="padding:2px"><div class="col-xs-8 nopadding">
+									<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $dDate; ?>"/>
+									<!--</a>-->
+								</div></td>
+							</tr>
+							<tr>
+
+								<th valign="top" style="padding:2px">Total Deposited:</th>
+								<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
+									<input type="text" id="txtnGross" name="txtnGross" class="form-control text-right" value="<?php echo number_format($nAmount,2);?>" readonly>
+								</div></td>
+								</tr>
+							<tr>
+								<th valign="top" style="padding:2px">&nbsp;</th>
+								<td valign="top" style="padding:2px">&nbsp;</td>
+							</tr>
+						</table>
+
+					</div>	
+
+					<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
+
+						<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+						<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+						<input type="file" name="upload[]" id="file-0" multiple />
+
+					</div>
+				</div>
+
+				<hr>
+				<div class="col-xs-12 nopadwdown"><b>Details</b></div>		
 
 						<button type="button" class="btn btn-xs btn-info" onClick="getInvs();" style="margin-bottom:5px">
 							<i class="fa fa-search"></i>&nbsp;Load OR
@@ -255,37 +268,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
 								<input type="hidden" name="hdnrowcnt" id="hdnrowcnt" value="0">
 						</div>
 
-					</div>
-
-					<div id="attc" class="tab-pane fade in" style="padding-left: 5px; padding-top: 10px;">
-						
-						<div class="alt2" dir="ltr" style="
-								margin: 0px;
-								padding: 3px;
-								width: 100%;
-								height: 450px;
-								text-align: left;
-								overflow: auto">
-								<table width="100%" border="0">
-									<tr>
-										<td>
-											<div class="col-sm-12 nopadding">
-												<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-												<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
-												<div class="col-sm-12 nopadding" style="padding-top:10px;">
-													<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
-													<input type="file" name="upload[]" id="file-0" multiple />
-												</div>
-											</div>
-										</td>
-									</tr>
-								</table>
-						</div>
-						
-					</div>
-
-				</div><!--tab-content-->	
-
+				
 				<br>
 				<table width="100%" border="0" cellpadding="3">
 					<tr>

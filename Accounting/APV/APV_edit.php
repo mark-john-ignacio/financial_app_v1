@@ -111,91 +111,111 @@
 	<form action="APV_editsave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
 		<fieldset>
 			<legend>AP Voucher</legend>	
-			<table width="100%" border="0">
-				<tr>
-					<tH>APV No.:</tH>
-					<td colspan="2" style="padding:2px;"><div class="col-xs-4 nopadding">
-						<input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" placeholder="Enter APV No..." required  value="<?php echo $ctranno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
-						</div>
-						<input type="hidden" name="hdnorigNo" id="hdnorigNo" value="<?php echo $ctranno;?>">
-						
-						<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
-						<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
-									&nbsp;&nbsp;
-						<div id="statmsgz" style="display:inline"></div>
-						
-					</td>
-					<td style="padding:2px;">
-						<div id="salesstat">
-							<?php
-								if($lCancelled==1){
-									echo "<font color='#FF0000'><b>CANCELLED</b></font>";
-								}
-								
-								if($lPosted==1){
-									echo "<font color='#FF0000'><b>POSTED</b></font>";
-								}
-							?>
-						</div>    
-					</td>
-				</tr>
-				<tr>
-					<tH width="150">PAID TO:</tH>
-					<td style="padding:2px;" width="500">
-						<div class="col-xs-12 nopadding">
-							<div class="col-xs-6 nopadding">
-								<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..." required autocomplete="off" value="<?php echo $CustName; ?>">
-							</div> 
-							<div class="col-xs-6 nopadwleft">
-								<input type="text" id="txtcustid" name="txtcustid" style="border:none; height:30px;" readonly value="<?php echo $CustCode; ?>">
-							</div>
-						</div>            
-						<input type="hidden" id="txtcustchkr" name="txtcustchkr">
-						<input type="hidden" id="seltype" name="seltype">
-									
-					</td>
-					<tH width="150" style="padding:2px">AP Type:<input type="hidden" id="txtpayee" name="txtpayee"></tH>
-					<td style="padding:2px;">
-						<div class="col-xs-12">
-							<select id="selaptyp" name="selaptyp" class="form-control input-sm selectpicker" tabindex="2">
-								<option value="Purchases" <?php if($cAPType=="Purchases"){ echo "selected"; } ?>>Purchases (Credit)</option>
-								<option value="PurchAdv" <?php if($cAPType=="PurchAdv"){ echo "selected"; } ?>>Purchases (Advance Payment)</option>
-								<option value="PettyCash" <?php if($cAPType=="PettyCash"){ echo "selected"; } ?>>Petty Cash Replenishment</option>
-								<option value="Others" <?php if($cAPType=="Others"){ echo "selected"; } ?>>Others</option>
-							</select>
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<tH width="150" rowspan="2" valign="top">REMARKS:</tH>
-					<td rowspan="2" valign="top" style="padding:2px">
-						<div class="col-xs-10 nopadding">
-							<textarea class="form-control" rows="2" id="txtremarks" name="txtremarks"><?php echo $Remarks;?></textarea>
-						</div>
-					</td>
-					<tH width="150" style="padding:2px">AP DATE:</tH>
-					<td style="padding:2px">
-						<div class="col-xs-8">
-							<input type='text' class="datepick form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $DateAPV; ?>" />
-					</div>
-					</td>
-				</tr>
-				<tr>
-					<tH style="padding:2px">TOTAL AMOUNT :</tH>
-					<td style="padding:2px">
-						<div class="col-xs-8">
-							<input type="text" class="form-control input-sm" id="txtnGross" name="txtnGross" tabindex="1" required value="<?php echo number_format($nGross,2);?>" style="font-weight:bold; color:#F00; text-align:right" readonly>
-						</div>   
-				</td>
-				</tr>
-      </table>
 
-			<br>
+			<ul class="nav nav-tabs">
+					<li class="active"><a href="#items" data-toggle="tab">AP Voucher Details</a></li>
+					<li><a href="#attc" data-toggle="tab">Attachments</a></li>
+				</ul>
+				
+				<div class="tab-content">
+					<div id="items" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
+
+						<table width="100%" border="0">
+							<tr>
+								<tH>APV No.:</tH>
+								<td colspan="2" style="padding:2px;"><div class="col-xs-4 nopadding">
+									<input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" placeholder="Enter APV No..." required  value="<?php echo $ctranno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
+									</div>
+									<input type="hidden" name="hdnorigNo" id="hdnorigNo" value="<?php echo $ctranno;?>">
+									
+									<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
+									<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
+												&nbsp;&nbsp;
+									<div id="statmsgz" style="display:inline"></div>
+									
+								</td>
+								<td style="padding:2px;">
+									<div id="salesstat">
+										<?php
+											if($lCancelled==1){
+												echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+											}
+											
+											if($lPosted==1){
+												echo "<font color='#FF0000'><b>POSTED</b></font>";
+											}
+										?>
+									</div>    
+								</td>
+							</tr>
+							<tr>
+								<tH width="150">PAID TO:</tH>
+								<td style="padding:2px;" width="500">
+									<div class="col-xs-12 nopadding">
+										<div class="col-xs-6 nopadding">
+											<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..." required autocomplete="off" value="<?php echo $CustName; ?>">
+										</div> 
+										<div class="col-xs-6 nopadwleft">
+											<input type="text" id="txtcustid" name="txtcustid" style="border:none; height:30px;" readonly value="<?php echo $CustCode; ?>">
+										</div>
+									</div>            
+									<input type="hidden" id="txtcustchkr" name="txtcustchkr">
+									<input type="hidden" id="seltype" name="seltype">
+												
+								</td>
+								<tH width="150" style="padding:2px">AP Type:<input type="hidden" id="txtpayee" name="txtpayee"></tH>
+								<td style="padding:2px;">
+									<div class="col-xs-12">
+										<select id="selaptyp" name="selaptyp" class="form-control input-sm selectpicker" tabindex="2">
+											<option value="Purchases" <?php if($cAPType=="Purchases"){ echo "selected"; } ?>>Purchases (Credit)</option>
+											<option value="PurchAdv" <?php if($cAPType=="PurchAdv"){ echo "selected"; } ?>>Purchases (Advance Payment)</option>
+											<option value="PettyCash" <?php if($cAPType=="PettyCash"){ echo "selected"; } ?>>Petty Cash Replenishment</option>
+											<option value="Others" <?php if($cAPType=="Others"){ echo "selected"; } ?>>Others</option>
+										</select>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<tH width="150" rowspan="2" valign="top">REMARKS:</tH>
+								<td rowspan="2" valign="top" style="padding:2px">
+									<div class="col-xs-10 nopadding">
+										<textarea class="form-control" rows="2" id="txtremarks" name="txtremarks"><?php echo $Remarks;?></textarea>
+									</div>
+								</td>
+								<tH width="150" style="padding:2px">AP DATE:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-8">
+										<input type='text' class="datepick form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $DateAPV; ?>" />
+								</div>
+								</td>
+							</tr>
+							<tr>
+								<tH style="padding:2px">TOTAL AMOUNT :</tH>
+								<td style="padding:2px">
+									<div class="col-xs-8">
+										<input type="text" class="form-control input-sm" id="txtnGross" name="txtnGross" tabindex="1" required value="<?php echo number_format($nGross,2);?>" style="font-weight:bold; color:#F00; text-align:right" readonly>
+									</div>   
+							</td>
+							</tr>
+						</table>
+
+					</div>
+
+					<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
+
+						<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+						<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+						<input type="file" name="upload[]" id="file-0" multiple />
+
+					</div>
+				</div>
+
+				<hr>
+				<div class="col-xs-12 nopadwdown"><b>Details</b></div>
 
 			<ul class="nav nav-tabs">
 				<li id="lidet" <?=($cAPType=="Purchases" || $cAPType=="PurchAdv") ? "class='active'" : ""?>><a href="#1" data-toggle="tab">Details</a></li>
 				<li id="liacct" <?=($cAPType!=="Purchases" && $cAPType!=="PurchAdv") ? "class='active'" : ""?>><a href="#2" data-toggle="tab">Accounting</a></li>
-				<li><a href="#attc" data-toggle="tab">Attachments</a></li>
 			</ul>
 
 
@@ -485,33 +505,6 @@
 						<input type="hidden" name="hdnACCCnt" id="hdnACCCnt">
 					</div>
 
-				</div>
-
-				<div id="attc" class="tab-pane" style="padding-left: 5px">
-						<div class="alt2" dir="ltr" style="
-								margin: 0px;
-								padding: 3px;
-								width: 100%;
-								height: 450px;
-								text-align: left;
-								overflow: auto">
-
-							<table width="100%" border="0">
-								<tr>
-									<td>
-										<div class="col-sm-12 nopadding">
-											<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-											<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
-											<div class="col-sm-12 nopadwdown" style="padding-top:10px;">
-												<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
-												<input type="file" name="upload[]" id="file-0" multiple />
-											</div>
-										</div>
-									</td>
-								</tr>
-							</table>
-						</div>
-						
 				</div>
 
     	</div>
