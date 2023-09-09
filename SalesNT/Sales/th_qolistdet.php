@@ -15,7 +15,7 @@ require_once "../../Connection/connection_string.php";
 	}
 
 	if($_REQUEST['typ']=="DR"){
-		$sql = "select a.nident, a.citemno,a.cunit,a.nqty,a.creference,a.crefident,ifnull(c.nqty,0) as nqty2,b.citemdesc, 1 as navail, d.ccurrencycode, a.nprice, a.namount, a.nbaseamount,'' as cvattype, '' as nrate
+		$sql = "select a.nident, a.citemno,a.cunit,a.nqty,a.creference,a.crefident,ifnull(c.nqty,0) as nqty2,b.citemdesc, 1 as navail, d.ccurrencycode, a.nprice, a.namount, a.nbaseamount,'' as cvattype, '' as nrate, d.nexchangerate
 		from ntdr_t a 
 		left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
 		left join ntso d on a.compcode=d.compcode and a.creference=d.ctranno
@@ -96,16 +96,22 @@ require_once "../../Connection/connection_string.php";
 			 if($_REQUEST['typ']=="DR"){
 				foreach(@$arrefsos as $rowx){
 					if($row['creference'] == $rowx['ctranno'] && $row['crefident'] == $rowx['nident']){
+
+						$xnamt = ($nqty1 - $nqty2) * floatval($rowx['nprice']);
 						$json['nprice'] = $rowx['nprice'];
-						$json['namount'] = $rowx['namount'];
-						$json['nbaseamount'] = $rowx['nbaseamount'];
+						//$json['namount'] = $rowx['namount'];
+						$json['namount'] = $xnamt;
+						$json['nbaseamount'] = number_format($xnamt * floatval($row['nexchangerate']),2);
 						$json['cpono'] = $rowx['cpono'];
 					}
 				}
 			}elseif($_REQUEST['typ']=="QO"){
+				$xnamt = ($nqty1 - $nqty2) * floatval($rowx['nprice']);
+
 				$json['nprice'] = $row['nprice'];
-				$json['namount'] = $row['namount'];
-				$json['nbaseamount'] = $row['nbaseamount'];
+				//$json['namount'] = $row['namount'];
+				$json['namount'] = $xnamt;
+				$json['nbaseamount'] = number_format($xnamt * floatval($rowx['nexchangerate']),2);
 				$json['cpono'] = "";
 			}else{
 				$json['cpono'] = $row['cpono'];

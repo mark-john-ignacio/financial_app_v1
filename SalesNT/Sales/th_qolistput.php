@@ -78,6 +78,9 @@ require_once "../../Connection/connection_string.php";
 		
 	//echo $sql;
 	
+	$xcamt = 0;
+	$xcamtbase = 0;
+	$xcprice = 0;
 	$result = mysqli_query ($con, $sql); 
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 				
@@ -114,15 +117,15 @@ require_once "../../Connection/connection_string.php";
 				
 				foreach(@$arrefsos as $rowx){
 					if($row['creference'] == $rowx['ctranno'] && $row['crefident'] == $rowx['nident']){
-						$json['nprice'] = $rowx['nprice'];
-						$json['namount'] = $rowx['namount'];
-						$json['nbaseamount'] = $rowx['nbaseamount'];
+						$xcprice = $rowx['nprice'];
+						$xcamt = $rowx['namount'];
+						$xcamtbase = $rowx['nbaseamount'];
 					}
 				}
 			}elseif($_REQUEST['typ']=="QO"){
-				$json['nprice'] = $row['nprice'];
-				$json['namount'] = $row['namount'];
-				$json['nbaseamount'] = $row['nbaseamount'];
+				$xcprice =  $row['nprice'];
+				$xcamt = $row['namount'];
+				$xcamtbase = $row['nbaseamount'];
 			}else{
 			}
 		//	}
@@ -131,6 +134,9 @@ require_once "../../Connection/connection_string.php";
 		 $json['xref'] = $row['ctranno'];
 		 $json['citmcls'] = $row['ctype'];
 
+		 $json['nprice'] = $xcprice;
+		 $json['namount'] = $xcprice * ($nqty1 - $nqty2);
+		 $json['nbaseamount'] = ($xcprice * ($nqty1 - $nqty2)) * floatval($row['nexchangerate']);
 		 $json['ccurrencycode'] = $row['ccurrencycode']; 
 		 $json['ccurrencydesc'] = $row['ccurrencydesc']; 
 		 $json['nexchangerate'] = $row['nexchangerate'];
