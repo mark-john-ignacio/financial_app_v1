@@ -221,7 +221,7 @@
 													<td>
 														<input type='text' class="form-control input-xs text-center" name="txtdiff" id="txtdiff<?=$cnt?>" value="<?=number_format($row['nadj'],2)?>" readonly>
 													</td>
-													<td align="center"><button class="<?=($row['creference']!=="") ? "btndeldet" : ""?> btn btn-danger btn-xs" name="btnDel" id="btnDel<?=$cnt?>" <?=($seltype!=="manual") ? "disabled" : ""?>><i class="fa fa-times"></i></button></td>
+													<td align="center"><button type="button" class="<?=($row['creference']!=="") ? "btndeldet" : ""?> btn btn-danger btn-xs" name="btnDel" id="btnDel<?=$cnt?>" <?=($seltype!=="manual") ? "disabled" : ""?>><i class="fa fa-times"></i></button></td>
 												</tr>
 
 													<script type="text/javascript">
@@ -481,7 +481,7 @@
 				$("<td>").html("<input type='text' class=\"form-control input-xs text-center\" name=\"txtnqtytheo\" id=\"txtnqtytheo"+sornum+"\" value=\""+theocount+"\" readonly>"),
 				$("<td>").html("<input type='text' class=\"numeric form-control input-xs text-center\" name=\"txtnqty\" id=\"txtnqty"+sornum+"\" value=\""+actcnt+"\">"),
 				$("<td>").html("<input type='text' class=\"form-control input-xs text-center\" value='"+itmadj+"' name=\"txtdiff"+sornum+"\" id=\"txtdiff"+sornum+"\" readonly>"),
-				$("<td align=\"center\">").html("<button class=\"btn btn-danger btn-xs\" id=\"btnDel\" id=\"btnDel"+sornum+"\"><i class=\"fa fa-times\"></i></button>")
+				$("<td align=\"center\">").html("<button type=\"button\" class=\"btn btn-danger btn-xs\" id=\"btnDel\" id=\"btnDel"+sornum+"\"><i class=\"fa fa-times\"></i></button>")
 			).appendTo("#MyTbl tbody");
 
 			$("#btnDel"+sornum).on('click', function() {
