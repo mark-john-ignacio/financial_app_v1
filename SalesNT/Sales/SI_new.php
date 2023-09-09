@@ -113,193 +113,190 @@ $company = $_SESSION['companyid'];
 			<li><a href="#attc" data-toggle="tab">Attachments</a></li>
 		</ul>
 
-		<div class="alt2" dir="ltr" style="margin: 0px; padding: 3px;border: 0px;width: 100%;text-align: left;overflow: inherit !important">
 			<div class="tab-content">
-				<div id="home" class="tab-pane fade in active" style="padding-left:5px;">
-				<table width="100%" border="0">
+				<div id="home" class="tab-pane fade in active" style="padding-left:5px; padding-top: 10px">
+					<table width="100%" border="0">
 						<tr>
 							<tH>SI Series No.</tH>
-				      <td style="padding:2px;">
-                <div class="col-xs-4 nopadding">
-					<input type='text' class="form-control input-sm" id="csiprintno" name="csiprintno" value="" autocomplete="off"/>
-					</div>
-				</td>
-								<tH width="150">Invoice Date:</tH>
-								<td style="padding:2px;">
-									<div class="col-xs-11 nopadding">
-										<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" onkeydown="event.preventDefault()" value="<?php echo date_format(date_create($ndcutdate),'m/d/Y'); ?>" />
-									</div>
-								</td>
-							</tr>
-					<tr>
-						<tH>Customer:</tH>
-						<td style="padding:2px"><div class="col-xs-12 nopadding">
-							<div class="col-xs-3 nopadding">
-							<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
-							<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
-							<input type="hidden" id="hdnpricever" name="hdnpricever" value="">
+							<td style="padding:2px;">
+								<div class="col-xs-4 nopadding">
+									<input type='text' class="form-control input-sm" id="csiprintno" name="csiprintno" value="" autocomplete="off"/>
+								</div>
+							</td>
+							<tH width="150">Invoice Date:</tH>
+							<td style="padding:2px;">
+								<div class="col-xs-11 nopadding">
+									<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" onkeydown="event.preventDefault()" value="<?php echo date_format(date_create($ndcutdate),'m/d/Y'); ?>" />
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<tH>Customer:</tH>
+							<td style="padding:2px"><div class="col-xs-12 nopadding">
+								<div class="col-xs-3 nopadding">
+								<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
+								<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
+								<input type="hidden" id="hdnpricever" name="hdnpricever" value="">
 
 
+								</div>
+								<div class="col-xs-8 nopadwleft">
+								<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
+								</div>
 							</div>
-							<div class="col-xs-8 nopadwleft">
-							<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
-							</div>
-						</div>
-								</td>
+									</td>
 
-								<tH width="100"><b>Sales Type:</b></tH>
-								<td style="padding:2px">
-									<div class="col-xs-11 nopadding">
-										<select id="selsityp" name="selsityp" class="form-control input-sm selectpicker"  tabindex="1">
-												<option value="Goods">Goods</option>
-												<option value="Services">Services</option>
-										</select>
-									</div>
-								</td>
-					</tr>
-							<tr>
-								<tH width="100"><b>Currency:</b></tH>
+									<tH width="100"><b>Sales Type:</b></tH>
 									<td style="padding:2px">
-										<div class="col-xs-4 nopadding">
-											<select class="form-control input-sm" name="selbasecurr" id="selbasecurr"> 						
-												<?php
-														$nvaluecurrbase = "";	
-														$nvaluecurrbasedesc = "";	
-														$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
-														
-															if (mysqli_num_rows($result)!=0) {
-																$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
-																
-																$nvaluecurrbase = $all_course_data['cvalue']; 
-																	
-															}
-															else{
-																$nvaluecurrbase = "";
-															}
-									
-															/*
-																$objcurrs = listcurrencies();
-																$objrows = json_decode($objcurrs, true);
-																	
-														foreach($objrows as $rows){
-															if ($nvaluecurrbase==$rows['id']) {
-																$nvaluecurrbasedesc = $rows['currencyName'];
-															}
-
-															if($rows['countryCode']!=="Crypto" && $rows['currencyName']!==null){
-
-																*/
-
-																$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
-																if (mysqli_num_rows($sqlhead)!=0) {
-																	while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-												?>
-															<option value="<?=$rows['id']?>" <?php if ($nvaluecurrbase==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
-												<?php
-
-															}
-														}
-												?>
+										<div class="col-xs-11 nopadding">
+											<select id="selsityp" name="selsityp" class="form-control input-sm selectpicker"  tabindex="1">
+													<option value="Goods">Goods</option>
+													<option value="Services">Services</option>
 											</select>
-												<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?php echo $nvaluecurrbase; ?>"> 	
-												<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?php echo $nvaluecurrbasedesc; ?>"> 
-										</div>
-										<div class="col-xs-2 nopadwleft">
-											<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
-										</div>
-
-										<div class="col-xs-4" id="statgetrate" style="padding: 4px !important"> 
-													
 										</div>
 									</td>
+						</tr>
+								<tr>
+									<tH width="100"><b>Currency:</b></tH>
+										<td style="padding:2px">
+											<div class="col-xs-4 nopadding">
+												<select class="form-control input-sm" name="selbasecurr" id="selbasecurr"> 						
+													<?php
+															$nvaluecurrbase = "";	
+															$nvaluecurrbasedesc = "";	
+															$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+															
+																if (mysqli_num_rows($result)!=0) {
+																	$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
+																	
+																	$nvaluecurrbase = $all_course_data['cvalue']; 
+																		
+																}
+																else{
+																	$nvaluecurrbase = "";
+																}
+										
+																/*
+																	$objcurrs = listcurrencies();
+																	$objrows = json_decode($objcurrs, true);
+																		
+															foreach($objrows as $rows){
+																if ($nvaluecurrbase==$rows['id']) {
+																	$nvaluecurrbasedesc = $rows['currencyName'];
+																}
 
-								<tH width="100"><b>Payment Type:</b></tH>
-								<td style="padding:2px">
-									<div class="col-xs-11 nopadding">
-										<select id="selpaytyp" name="selpaytyp" class="form-control input-sm selectpicker"  tabindex="1">
-												<option value="Credit">Credit</option>
-												<option value="Cash">Cash</option>
-										</select>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<tH width="100">Remarks:</tH>
-								<td style="padding:2px"><div class="col-xs-11 nopadding">
-									<input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2">
-									</div>
-								</td>
+																if($rows['countryCode']!=="Crypto" && $rows['currencyName']!==null){
 
-									
-									<td><b><div class="chklimit">Credit Limit:</div></b></td>
-									<td style="padding:2px;" align="right">
-										<div class="chklimit col-xs-11 nopadding" id="ncustlimit"></div>
-										<input type="hidden" id="hdncustlimit" name="hdncustlimit" value="">
-									</td>
-							</tr>
-							<tr>
-									<tH width="100">Reference:</tH>
+																	*/
+
+																	$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+																	if (mysqli_num_rows($sqlhead)!=0) {
+																		while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+													?>
+																<option value="<?=$rows['id']?>" <?php if ($nvaluecurrbase==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
+													<?php
+
+																}
+															}
+													?>
+												</select>
+													<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?php echo $nvaluecurrbase; ?>"> 	
+													<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?php echo $nvaluecurrbasedesc; ?>"> 
+											</div>
+											<div class="col-xs-2 nopadwleft">
+												<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
+											</div>
+
+											<div class="col-xs-4" id="statgetrate" style="padding: 4px !important"> 
+														
+											</div>
+										</td>
+
+									<tH width="100"><b>Payment Type:</b></tH>
 									<td style="padding:2px">
-										<div class="col-xs-2 nopadding">
-											<input type="text" class="form-control input-sm" id="txtrefmod" name="txtrefmod" readonly>
+										<div class="col-xs-11 nopadding">
+											<select id="selpaytyp" name="selpaytyp" class="form-control input-sm selectpicker"  tabindex="1">
+													<option value="Credit">Credit</option>
+													<option value="Cash">Cash</option>
+											</select>
 										</div>
-										<div class="col-xs-9 nopadwleft">
-											<input type="text" class="form-control input-sm" id="txtrefmodnos" name="txtrefmodnos" readonly>
+									</td>
+								</tr>
+								<tr>
+									<tH width="100">Remarks:</tH>
+									<td style="padding:2px"><div class="col-xs-11 nopadding">
+										<input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2">
 										</div>
 									</td>
-									<th><div class="chklimit">Balance:</div></th>
-									<td style="padding:2px;"  align="right">				          
-														<div class="chklimit col-xs-11 nopadding" id="ncustbalance"></div>
-													<input type="hidden" id="hdncustbalance" name="hdncustbalance" value="">
-									</td>
-							</tr>
 
-							<tr>
-									<td style="padding:2px" colspan="2"></td>
-									
-									<td>&nbsp;</td>
-									<td style="padding:2px;"  align="right">
-										<div class="chklimit col-xs-11 nopadding" id="ncustbalance2"></div>
-									</td>
-							</tr>
-
-
-							<tr>
-									<td colspan="2">
-										<div class="col-xs-12 nopadding">
-											<div class="chkitmsadd col-xs-3 nopadwdown">
-												<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4">
+										
+										<td><b><div class="chklimit">Credit Limit:</div></b></td>
+										<td style="padding:2px;" align="right">
+											<div class="chklimit col-xs-11 nopadding" id="ncustlimit"></div>
+											<input type="hidden" id="hdncustlimit" name="hdncustlimit" value="">
+										</td>
+								</tr>
+								<tr>
+										<tH width="100">Reference:</tH>
+										<td style="padding:2px">
+											<div class="col-xs-2 nopadding">
+												<input type="text" class="form-control input-sm" id="txtrefmod" name="txtrefmod" readonly>
 											</div>
-											<div class="chkitmsadd col-xs-8 nopadwleft">
-												<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="Search Product Name..." size="80" tabindex="5">
+											<div class="col-xs-9 nopadwleft">
+												<input type="text" class="form-control input-sm" id="txtrefmodnos" name="txtrefmodnos" readonly>
 											</div>
-										</div>
-										<input type="hidden" name="hdnqty" id="hdnqty">
-										<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
-										<input type="hidden" name="hdnunit" id="hdnunit"> 
-										<input type="hidden" name="hdnctype" id="hdnctype"> 
+										</td>
+										<th><div class="chklimit">Balance:</div></th>
+										<td style="padding:2px;"  align="right">				          
+															<div class="chklimit col-xs-11 nopadding" id="ncustbalance"></div>
+														<input type="hidden" id="hdncustbalance" name="hdncustbalance" value="">
+										</td>
+								</tr>
 
-									</td>
-									<td>&nbsp;</td>
-									<td style="padding:2px;"  align="right">&nbsp;</td>
-							</tr>
+								<tr>
+										<td style="padding:2px" colspan="2"></td>
+										
+										<td>&nbsp;</td>
+										<td style="padding:2px;"  align="right">
+											<div class="chklimit col-xs-11 nopadding" id="ncustbalance2"></div>
+										</td>
+								</tr>
+
+
+								<tr>
+										<td colspan="2">
+											<div class="col-xs-12 nopadding">
+												<div class="chkitmsadd col-xs-3 nopadwdown">
+													<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4">
+												</div>
+												<div class="chkitmsadd col-xs-8 nopadwleft">
+													<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="Search Product Name..." size="80" tabindex="5">
+												</div>
+											</div>
+											<input type="hidden" name="hdnqty" id="hdnqty">
+											<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
+											<input type="hidden" name="hdnunit" id="hdnunit"> 
+											<input type="hidden" name="hdnctype" id="hdnctype"> 
+
+										</td>
+										<td>&nbsp;</td>
+										<td style="padding:2px;"  align="right">&nbsp;</td>
+								</tr>
 
 					</table>
 				</div>
-				<div id="attc" class="tab-pane fade" style="padding-left:5px;">
-					<div class="col-sm-12 nopadding">
-						<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-						<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
-						<div class="col-sm-12 nopadding" style="padding-top:10px;">
-							<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
-							<input type="file" name="upload[]" id="file-0" multiple />
-						</div>
-					</div>
+				<div id="attc" class="tab-pane fade" style="padding-left:5px; padding-top: 10px">
+
+					<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+					<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+					<input type="file" name="upload[]" id="file-0" multiple />
+
 				</div>
 			</div>
-		</div>
-        
 
+        
+		<hr>
+<div class="col-xs-12 nopadwdown"><b>Details</b></div>
 				<div class="alt2" dir="ltr" style="
 						margin: 0px;
 						padding: 3px;

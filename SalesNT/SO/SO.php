@@ -9,10 +9,25 @@ include('../../include/access2.php');
 
 $company = $_SESSION['companyid'];
 
+
+//POST
 $poststat = "True";
-$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SO_unpost.php'");
+$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SO_post'");
 if(mysqli_num_rows($sql) == 0){
 	$poststat = "False";
+}
+
+//CANCEL
+$cancstat = "True";
+$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SO_cancel'");
+if(mysqli_num_rows($sql) == 0){
+	$cancstat = "False";
+}
+
+$unpoststat = "True";
+$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SO_unpost.php'");
+if(mysqli_num_rows($sql) == 0){
+	$unpoststat = "False";
 }
 ?>
 
@@ -269,7 +284,9 @@ if(mysqli_num_rows($sql) == 0){
 					 }
 								
 								else{
-									return " <div id=\"msg"+full[0]+"\"><a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"')\">POST</a> | <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"')\">CANCEL</a></div>";
+
+									return 	"<div id=\"msg"+full[0]+"\"> <a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a> </div>";
+
 								}
 							}
 						}				

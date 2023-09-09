@@ -347,19 +347,18 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</tr>
 						</table>
 					</div>
-					<div id="attc" class="tab-pane fade in" style="padding-left: 5px">
-						<div class="col-sm-12 nopadding">
-							<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-							<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
-							<div class="col-sm-12 nopadding" style="padding-top:10px;">
-								<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
-								<input type="file" name="upload[]" id="file-0" multiple />
-							</div>
-						</div>
+					<div id="attc" class="tab-pane fade in" style="padding-left: 5px; padding-top: 10px">
+
+						<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+						<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+						<input type="file" name="upload[]" id="file-0" multiple />
+
 					</div>
 			</div>
 		</div>
         	
+		<hr>
+<div class="col-xs-12 nopadwdown"><b>Details</b></div>
 
         <div class="alt2" dir="ltr" style="
 					margin: 0px;
