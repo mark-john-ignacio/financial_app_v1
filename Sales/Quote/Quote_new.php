@@ -125,8 +125,9 @@ $getfctrs = mysqli_query($con,"SELECT * FROM `items_factor` where compcode='$com
 				<li class="active"><a href="#home">Quotation Details</a></li>
 				<li><a href="#attc">Attachments</a></li>
 			</ul>
-			<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left;overflow: auto">
+
 				<div class="tab-content">
+
 					<div id="home" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
 
 						<div class="col-xs-12 nopadwtop">
@@ -330,21 +331,16 @@ $getfctrs = mysqli_query($con,"SELECT * FROM `items_factor` where compcode='$com
 
 					<div id="attc" class="tab-pane fade in" style="padding-left: 5px; padding-top: 10px;">
 						<!-- Import Files Modal -->
-						<div class="col-sm-12 nopadding">
 							<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-							<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>					
-							<div class="col-sm-12 nopadding" style="padding-top:10px;">
-								<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
-								<input type="file" name="upload[]" id="upload" multiple />
-							</div>
-						</div>
+							<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+							<input type="file" name="upload[]" id="file-0" multiple />
 					</div>
 					
 				</div>
-			</div>
 
-			<br>
-			<h4>Product Details</h4><hr class="nopadwdown">
+
+			<hr>
+			<div class="col-xs-12 nopadwdown"><b>Details</b></div>
 
 			<div class="col-xs-12 nopadwtop2x">
 
@@ -549,7 +545,7 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 	    $(this).tab('show');
 	  });
 
-			$("#upload").fileinput({
+			$("#file-0").fileinput({
 				theme: 'fa5',
 				showUpload: false,
 				showClose: false,
@@ -1372,7 +1368,7 @@ function chkform(){
 		 * @property formdata.delete('#upload') delete an upload key without values
 		 */
 		formdata.delete('upload[]');
-		jQuery.each(jQuery('#upload')[0].files, function(i, file) {
+		jQuery.each(jQuery('#file-0')[0].files, function(i, file) {
 			formdata.append('file-'+i, file);
 		});
 		$.ajax ({

@@ -82,8 +82,8 @@ function listcurrencies(){ //API for currency list
 				<li><a href="#attc" data-toggle="tab">Attachments</a></li>
 			</ul>
 		
-		<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left;overflow: inherit !important;">
 			<div class="tab-content">
+				
 				<div id="home" class="tab-pane fade in active" style="padding-left:5px; padding-top:10px;">
 					<table width="100%" border="0">
 						<tr>
@@ -133,19 +133,16 @@ function listcurrencies(){ //API for currency list
 					--
 					-- Import Files Modal
 					--
-					-->
-					<div class="col-sm-12 nopadding">
+					--> 
+
 						<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-						<div class="col-sx-12 nopadwdown"><i>Can attach a file according to the ff: file type.</i></div>
-						<div id="attch" class="col-sm-12 nopadwdown" style="padding-top:10px;">
-							<i>(jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i>
-							<input type="file" name="upload[]" id="file-0" multiple />
-						</div>	
-					</div>
+						<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+						<input type="file" name="upload[]" id="file-0" multiple />
 					
 				</div>
+
 			</div>
-		</div>
+
         
 
 				<hr>
@@ -194,10 +191,6 @@ function listcurrencies(){ //API for currency list
 
 							<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
 								SI<br>(Insert)
-							</button>
-
-							<button type="button" class="btn btn-warning btn-sm" tabindex="6" id="btnImport" name="btnImport">
-								Import <br> (f?)
 							</button>
 						
 							<button type="button" class="btn btn-success btn-sm" tabindex="6" id="btnSave" name="btnSave" onClick="return chkform();">

@@ -357,6 +357,8 @@ function fill_datatable(searchByName = ''){
 						if(full[6] == 1){
 							mgsx = mgsx = "-";
 						}else{
+							mgsx = "<div id=\"msg"+full[0]+"\"> ";
+
 							if(full[9]==0){
 								mgsx = mgsx + "<a href=\"javascript:;\" onClick=\"trans('SEND','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-share\" style=\"font-size:20px;color: #ffb533;\" title=\"Send transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"','"+full[10]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color: Red;\" title=\"Cancel transaction\"></i></a>";
 							}else{
@@ -369,6 +371,8 @@ function fill_datatable(searchByName = ''){
 							if(full[9] == 1){
 								mgsx = mgsx + "<a href=\"javascript:;\" onClick=\"track('"+full[0]+"')\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-file-text-o\" style=\"font-size:20px;color: #3374ff;\" title=\"Track transaction\"></i></a>";
 							}
+
+							mgsx = mgsx +  " </div>";
 						}
 
 						return mgsx;

@@ -9,20 +9,27 @@
 
 	$company = $_SESSION['companyid'];
 
+
+	//POST
 	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SO_unpost.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SO_post'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
 	}
 
-	$lallowMRP = 0;
-	$result=mysqli_query($con,"select * From company");								
-		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-		{
-			if($row['compcode'] == $company){
-				$lallowMRP =  $row['lmrpmodules'];
-			}
-		}  
+	//CANCEL
+	$cancstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SO_cancel'");
+	if(mysqli_num_rows($sql) == 0){
+		$cancstat = "False";
+	}
+
+	$unpoststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SO_unpost.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$unpoststat = "False";
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -55,7 +62,7 @@
 					<button type="button" class="btn btn-primary btn-sm" onClick="location.href='SO_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
 					<?php
-						if($poststat=="True"){
+						if($unpoststat=="True"){
 					?>
 					<button type="button" class="btn btn-warning btn-sm" onClick="location.href='SO_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
 					<?php
@@ -293,7 +300,9 @@
 						}
 						
 						else{
-							return " <div id=\"msg"+full[0]+"\"><a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"')\">POST</a> | <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"')\">CANCEL</a></div>";
+
+							return 	"<div id=\"msg"+full[0]+"\"> <a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a> </div>";
+
 						}
 					}
 				}
