@@ -107,12 +107,12 @@ require_once "../../Connection/connection_string.php";
 					}
 				}
 			}elseif($_REQUEST['typ']=="QO"){
-				$xnamt = ($nqty1 - $nqty2) * floatval($rowx['nprice']);
+				$xnamt = ($nqty1 - $nqty2) * floatval($row['nprice']);
 
 				$json['nprice'] = number_format($row['nprice'],2);
 				//$json['namount'] = $row['namount'];
 				$json['namount'] = $xnamt;
-				$json['nbaseamount'] = number_format($xnamt * floatval($rowx['nexchangerate']),2);
+				$json['nbaseamount'] = number_format($xnamt * floatval($row['nexchangerate']),2);
 				$json['ctaxcode'] = ($row['cvattype']=="VatIn") ? "VT" : "NT";
 				$json['cpono'] = "";
 			}else{
