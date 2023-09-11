@@ -26,7 +26,7 @@
 </head>
 
 <body style="padding:5px">
-	<form action="SR_unpost_tran.php" name="frmunpost" id="frmunpost" method="POST">
+	<form action="PurchRet_unpost_tran.php" name="frmunpost" id="frmunpost" method="POST">
 	
 		<div>
 			<section>
