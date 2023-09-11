@@ -1597,7 +1597,8 @@ $company = $_SESSION['companyid'];
 				//ajax lagay table details sa modal body
 				var x = $('#txtcustid').val();
 				if(typ=="DR"){
-					$('#InvListHdr').html("SO List: " + $('#txtcust').val());
+					$('#InvListHdr').html("DR List: " + $('#txtcust').val());
+					$("btnInsDet").attr("onclick","InsertSI('DR')");
 				}else if(typ=="QO"){
 					$('#QOListHdr').html("Billing List: " + $('#txtcust').val());
 					$("#btnQOInsDet").attr("onclick","InsertSI('QO')");
