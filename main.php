@@ -240,9 +240,7 @@
                 <li>
                   <a href="javascript:;" onClick="setpage('MasterFiles/Items/Groupings.php');"> <i class="fa fa-angle-double-right"></i> Groupings </a>
                 </li>
-								<li>
-                  <a href="javascript:;" onClick="setpage('MasterFiles/Items/PROCESS.php');"> <i class="fa fa-angle-double-right"></i> Processes </a>
-                </li>
+								
               </ul>
 						</li>
 						<li>
@@ -328,7 +326,7 @@
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('MasterFiles/Locations/locations.php');">
-              <i class="fa fa-barcode"></i> Sections
+              <i class="fa fa-sitemap"></i> Sections
 						</a>
 						</li>
 						<li>
@@ -539,23 +537,35 @@
 				<li>
 					<a href="javascript:;">
 					<i class="icon-puzzle"></i>
-					<span class="title">Inventory</span>
+					<span class="title">MES &amp; Inventory</span>
 					<span class="arrow "></span>
 					</a>
 					<ul class="sub-menu">
-					<li>
+						<li>
+							<a href="javascript:;" onClick="setpage('MRP/BOM/items_list.php');">
+							<i class="fa fa-cubes"> </i> Material BOM</a>
+						</li>
+						<li>
+                <a href="javascript:;" onClick="setpage('MRP/BOM/PROCESS.php');"> 
+								<i class="fa fa-recycle"></i> Production Processes </a>
+            </li>
+						<li>
+                <a href="javascript:;" onClick="setpage('MRP/JO/JO.php');"> 
+								<i class="fa fa-file-text-o"></i> Job Orders </a>
+            </li>
+						<li>
 							<a href="javascript:;" onClick="setpage('Inventory/Count/Inv.php');">
-							 <i class="fa fa-tasks"> </i> Inventory Count
+							 <i class="fa fa-barcode"> </i> Inventory Count
 							</a>
 						</li>   
 						<li>
 							<a href="javascript:;" onClick="setpage('Inventory/Transfers/Inv.php');">
-							 <i class="fa fa-tasks"> </i> Inventory Transfer
+							 <i class="fa fa-exchange"> </i> Inventory Transfer
 							</a>
 						</li>  						
 						<li>
 							<a href="javascript:;" onClick="setpage('Inventory/Adjustment/Inv.php');">
-							 <i class="fa fa-tasks"> </i> Inventory Adjustment
+							 <i class="fa fa-calculator"> </i> Inventory Adjustment
 							</a>
 						</li>
 					</ul>
