@@ -77,6 +77,12 @@
 
             <div style="padding-left:10px; padding-top:3px">
 					    <ul class="ver-inline-menu tabbable margin-bottom-25">  
+
+								<li>
+          				<a href="" onClick="setI('A','SalesOrders.php')" data-toggle="tab">
+                  <i class="fa fa-book"></i> Sales Orders </a>
+                </li>
+
                 <li>
           				<a href="" onClick="setI('A','SalesPerItem.php')" data-toggle="tab">
                   <i class="fa fa-book"></i> Sales Per Item </a>
