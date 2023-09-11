@@ -1747,7 +1747,7 @@ function openinv(typ){
 				var x = $('#txtcustid').val();
 				if(typ=="DR"){
 					$('#InvListHdr').html("DR List: " + $('#txtcust').val());
-					$("btnInsDet").attr("onclick","InsertSI('DR')");
+					$("#btnInsDet").attr("onclick","InsertSI('DR')");
 				}else if(typ=="QO"){
 					$('#QOListHdr').html("Billing List: " + $('#txtcust').val());
 					$("#btnQOInsDet").attr("onclick","InsertSI('QO')");
