@@ -303,7 +303,7 @@
 											<th scope="col" width="150px" class="text-center" nowrap>NetofVat</th>
 											<th scope="col" width="250px" class="text-center" nowrap>EWTCode</th>
 											<th scope="col" width="100px" class="text-center" nowrap>EWTAmt/Rate</th>                          
-											<th scope="col" width="100px" class="text-center" nowrap>EWTAmt</th>
+											<th scope="col" width="100px" class="text-center" nowrap>Total EWT</th>
 											<th scope="col" width="150px" class="text-center" nowrap>Total Due</th>
 											<th scope="col" width="150px" class="text-center" nowrap>Amt Applied</th>
 											<th scope="col" width="250px" nowrap>&nbsp;Credit Acct</th>
@@ -1035,7 +1035,7 @@ function getInvs(typ){
           console.log(data);
           $.each(data,function(index,item){
             $("<tr>").append(
-							$("<td>").html("<input type='checkbox' value='"+item.csalesno+"' name='chkSales[]' data-dm='"+item.cdm+"' data-cm='"+item.ccm+"' data-payment='"+item.npayment+"' data-vatcode='"+item.ctaxcode+"' data-vatrate='"+item.vatrate+"' data-vat='"+item.cvatamt+"' data-netvat='"+item.cnetamt+"' data-ewtcode='"+item.cewtcode+"' data-ewtrate='"+item.newtrate+"' data-ewtamt='"+item.cewtamt+"' data-amt='"+item.ngross+"' data-acctid='"+item.cacctno+"' data-acctdesc='"+item.ctitle+"' data-cutdate='"+item.dcutdate+"'>"),
+							$("<td>").html("<input type='checkbox' value='"+item.csalesno+"' name='chkSales[]' data-dm='"+item.cdm+"' data-cm='"+item.ccm+"' data-payment='"+item.npayment+"' data-vatcode='"+item.ctaxcode+"' data-vatrate='"+item.vatrate+"' data-vat='"+item.cvatamt+"' data-netvat='"+item.cnetamt+"' data-ewtcode='"+item.cewtcode+"' data-ewtrate='"+item.newtrate+"' data-amt='"+item.ngross+"' data-acctid='"+item.cacctno+"' data-acctdesc='"+item.ctitle+"' data-cutdate='"+item.dcutdate+"'>"),
               $("<td>").text(item.csalesno),
               $("<td>").text(item.dcutdate),
 							$("<td>").text(item.ngross),
@@ -1061,12 +1061,12 @@ function getInvs(typ){
 
 function save(){
 
-	var i = 0;
+	var icount = 0;
 	var rcnt = 0;
 	
   $("input[name='chkSales[]']:checked").each( function () {
-		i++;
-		var tbl = document.getElementById('MyTable').getElementsByTagName('tbody')[0];
+		icount++;
+			var tbl = document.getElementById('MyTable').getElementsByTagName('tbody')[0];
 
 			var tranno = $(this).val();
 			var dcutdate = $(this).data("cutdate");
@@ -1080,16 +1080,11 @@ function save(){
 			var nnetvat = $(this).data("netvat");
 			var newtcode = $(this).data("ewtcode");
 			var newtrate = $(this).data("ewtrate");
-			var newtamt = $(this).data("ewtamt");
+			var newtamt = 0; 
 
 			var acctcode = $(this).data("acctid");
 			var acctdesc = $(this).data("acctdesc");
-
-			if(parseFloat(npayments)!==0){
-				var ntotdue = (parseFloat(nnetvat) + parseFloat(nvat)) - parseFloat(ncm) - parseFloat(newtamt);
-			}else{
-				var ntotdue = parseFloat(ngross) - parseFloat(ncm) - parseFloat(npayments) - parseFloat(newtamt);
-			}
+			var ewtdesc = "";
 		
 			var lastRow = tbl.rows.length + 1;							
 			var z=tbl.insertRow(-1);
@@ -1183,12 +1178,32 @@ function save(){
 			var l=z.insertCell(-1); 
 			l.innerHTML = "<select name='txtnEWT[]' id='txtnEWT"+lastRow+"' class='select2' multiple='multiple' style='width: 100%'> "+ taxoptions +" </select> <input type='hidden' name='hdnewtgiven' id='hdnewtgiven"+lastRow+"' value='"+$ifrdonlyint+"' /> <input type='hidden' name='txtnEWTorig' id='txtnEWTorig"+lastRow+"' value='"+newtcode+"' /> <input type='hidden' name='txtnEWTRate' value=\""+newtrate+"\" id='txtnEWTRate"+lastRow+"' />";
 
+
+					var splitString = newtrate.split(';');
+					for (var i = 0; i < splitString.length; i++) {
+						var stringPart = splitString[i];
+						if (stringPart != 0 && stringPart != ""){
+							if(i > 0){
+								ewtdesc = ewtdesc + ";";
+							}
+							$jx = parseFloat(nnetvat)*(parseFloat(stringPart)/100);
+							newtamt = newtamt + $jx;
+							ewtdesc = ewtdesc + stringPart + "% - " + $jx.toFixed(2);
+						}
+					}
+
 			var l2=z.insertCell(-1);
-			l2.innerHTML = "<div id='txtnEWTPer"+lastRow+"' class='text-right'> - </div>";
+			l2.innerHTML = "<div id='txtnEWTPer"+lastRow+"' class='text-right'> "+ewtdesc.replace(";","<br>")+" </div>";
 										
 			var l3=z.insertCell(-1);
 			l3.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' placeholder='EWT Amt' name='txtnEWTAmt'  value=\""+newtamt+"\" id='txtnEWTAmt"+lastRow+"' readonly=\"true\" />";
-										
+
+				if(parseFloat(npayments)!==0){
+					var ntotdue = (parseFloat(nnetvat) + parseFloat(nvat)) - parseFloat(ncm) - parseFloat(newtamt);
+				}else{
+					var ntotdue = parseFloat(ngross) - parseFloat(ncm) - parseFloat(npayments) - parseFloat(newtamt);
+				}
+											
 			var g=z.insertCell(-1);
 			g.align = "right";
 			g.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtDue' id='txtDue"+lastRow+"' value='"+ntotdue+"' readonly=\"true\" />";
@@ -1274,7 +1289,7 @@ function save(){
 	   
    });
    
-   if(i==0){
+   if(icount==0){
 	   alert("No Invoice is selected!")
    }
    

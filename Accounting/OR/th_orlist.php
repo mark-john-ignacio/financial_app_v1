@@ -39,20 +39,9 @@ require_once "../../Connection/connection_string.php";
 		@$arrpaymnts[] = $rowardj;
 	}
 
-	$sql = "Select A.ctranno, A.cacctid, A.cacctdesc, IFNULL(A.ctaxcode,'') as ctaxcode, A.nrate, IFNULL(A.cewtcode,'') as cewtcode, A.newtrate, A.dcutdate, SUM(ROUND(A.namountfull,2)) as ngross, SUM(ROUND(A.namount,2)) as cm, SUM(nvatgross) as nvatgross, (SUM(ROUND(A.namountfull,2)) - SUM(ROUND(A.namount,2)) - SUM(nvatgross)) as vatamt, SUM(A.newtgross) as newtgross
+	$sql = "Select A.ctranno, A.cacctid, A.cacctdesc, IFNULL(A.ctaxcode,'') as ctaxcode, A.nrate, IFNULL(A.cewtcode,'') as cewtcode, A.newtrate, A.dcutdate, SUM(ROUND(A.namountfull,2)) as ngross, SUM(ROUND(A.namount,2)) as cm, SUM(nvatgross) as nvatgross, (SUM(ROUND(A.namountfull,2)) - SUM(ROUND(A.namount,2)) - SUM(nvatgross)) as vatamt
 	From (
 		Select A.ctranno, A.citemno, ((A.nqtyreturned) * (A.nprice-A.ndiscount)) as namount, (A.nqty * (A.nprice-A.ndiscount)) as namountfull, B.dcutdate, D.cacctid, D.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, 
-				CASE 
-					WHEN IFNULL(A.newtrate,0) <> 0 
-					THEN 
-						CASE 
-							WHEN E.cbase='NET' 
-							THEN ROUND((ROUND(((A.nqty-A.nqtyreturned)*(A.nprice-A.ndiscount))/(1 + (A.nrate/100)),2) * (A.newtrate/100)),2)
-							ELSE ROUND((((A.nqty-A.nqtyreturned)*(A.nprice-A.ndiscount)) * (A.newtrate/100)),2)
-							END 
-					ELSE 
-						0 
-					END as newtgross,
 					CASE 
 						WHEN IFNULL(A.nrate,0) <> 0 
 						THEN 
@@ -117,8 +106,7 @@ require_once "../../Connection/connection_string.php";
 			$json['ctaxcode'] = $row['ctaxcode'];
 
 			if($npay==0){
-				
-				$json['cewtamt'] = $row['newtgross'];				
+							
 				$json['cvatamt'] = $row['vatamt'];
 				$json['cnetamt'] = $row['nvatgross'];
 				
@@ -129,8 +117,7 @@ require_once "../../Connection/connection_string.php";
 					$dewt = round($grossamt,2) * (floatval($row['newtrate'])/100);
 					$vatableamt = round($grossamt,2) / (1+(floatval($row['nrate'])/100));
 					$dvatamt = round($vatableamt,2) * (floatval($row['nrate'])/100);
-
-					$json['cewtamt'] = floatval($row['newtgross']) - round($dewt,2);				
+							
 					$json['cvatamt'] = floatval($row['vatamt']) - round($dvatamt,2);
 					$json['cnetamt'] = floatval($row['nvatgross']) - round($vatableamt,2);
 			}	
@@ -143,6 +130,7 @@ require_once "../../Connection/connection_string.php";
 			$json['npayment'] = $npay;
 			$json['cacctno'] = $row['cacctid'];
 			$json['ctitle'] = $row['cacctdesc'];
+			
 			$json2[] = $json;
 		 
 		}
@@ -152,6 +140,23 @@ require_once "../../Connection/connection_string.php";
 	echo json_encode($json2);
 
 	/*
+
+	if($_REQUEST['typ']=="Trade"){
+
+				$ewtcodes = explode(";",$row['newtrate']);
+				$rsewtrates = array();
+				foreach($ewtcodes as $rsewt){
+					if($rsewt!="0" && $rsewt!=""){
+						$rsewtrates[] = $rsewt . "% - ". number_format(floatval($row['ngross']) * (floatval($rsewt)/100),2);
+					}
+				}
+
+				$json['cewtdesc'] = implode(";",$rsewtrates);
+			}else{
+				$json['cewtdesc'] = "-";
+			}
+
+			
 
 	//For PARENT CODE
 	$sql0 = "select A.ctranno, A.dcutdate, A.ngross, IFNULL(B.namount,0) as nCredit, IFNULL(C.namount,0) as nDebit, IFNULL(D.namount,0) as nPayments  , E.acctno, E.ctitle 

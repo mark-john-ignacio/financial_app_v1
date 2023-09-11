@@ -84,7 +84,7 @@ if (mysqli_num_rows($getewtcd)!=0) {
 
 </head>
 
-<body style="padding:5px; height:700px" onLoad="document.getElementById('txtctranno').focus(); disabled();">
+<body style="padding:5px; height:700px" onLoad="document.getElementById('txtctranno').focus();">
 
 <input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes">
 <input type="hidden" value='<?=json_encode($arrewtlist)?>' id="hdnewtcodes"> 
@@ -299,8 +299,9 @@ if (mysqli_num_rows($sqlchk)!=0) {
 											<th scope="col" width="150px" class="text-center" nowrap>VAT Code</th>
 											<th scope="col" width="150px" class="text-center" nowrap>VAT</th>
 											<th scope="col" width="150px" class="text-center" nowrap>NetofVat</th>
-											<th scope="col" width="250px" class="text-center" nowrap>EWTCode</th>                            
-											<th scope="col" width="100px" class="text-center" nowrap>EWTAmt</th>
+											<th scope="col" width="250px" class="text-center" nowrap>EWTCode</th>   
+											<th scope="col" width="100px" class="text-center" nowrap>EWTAmt/Rate</th>                          
+											<th scope="col" width="100px" class="text-center" nowrap>Total EWT</th>
 											<th scope="col" width="150px" class="text-center" nowrap>Total Due</th>
 											<th scope="col" width="150px" class="text-center" nowrap>Amt Applied</th>
 											<th scope="col" width="250px" nowrap>&nbsp;Credit Acct</th>
@@ -360,6 +361,27 @@ if (mysqli_num_rows($sqlchk)!=0) {
 														 	<select name='txtnEWT[]' id='txtnEWT<?=$cntr;?>' class='select2' multiple='multiple' style='width: 100%'><?=$xoptz?></select>
 
 															<!--<input type='text' class='form-control input-xs' placeholder='EWT Code' name='txtnEWT<?//=$cntr;?>' id='txtnEWT<?//=$cntr;?>' autocomplete="off" value="<?//=$rowbody['cewtcode'];?>" <?//=($rowbody['newtgiven']==1) ? "readonly" : ""?>/>--> <input type='hidden' name='hdnewtgiven<?=$cntr;?>' id='hdnewtgiven<?=$cntr;?>' value='<?=$rowbody['newtgiven'];?>' /> <input type='hidden' name='txtnEWTorig<?=$cntr;?>' id='txtnEWTorig<?=$cntr;?>' value='<?=$rowbody['cewtcodeorig'];?>' /> <input type='hidden' placeholder='EWT Rate' name='txtnEWTRate' value="<?=$rowbody['newtrate'];?>" id='txtnEWTRate<?=$cntr;?>' /></td>
+
+															<?php
+																$ewtdesc = "";
+																$rsewtrates = array();
+
+																if($rowbody['cewtcode']!="" && $rowbody['cewtcode']!="none"){
+																	$ewtcodes = explode(",",$rowbody['newtrate']);																	
+																	foreach($ewtcodes as $rsewt){
+																		if($rsewt!="0" && $rsewt!=""){
+																			$rsewtrates[] = $rsewt . "% - ". number_format(floatval($rowbody['nnet']) * (floatval($rsewt)/100),2);
+																		}
+																	}
+													
+																	$ewtdesc = implode(";",$rsewtrates);
+																}else{
+																	$ewtdesc = "-";
+																}
+													
+															?>
+
+															<td><div id='txtnEWTPer<?=$cntr;?>' class='text-right'> <?=str_replace(";","<br>",$ewtdesc);?> </div></td>
 
                              <td><input type='text' class='numeric form-control input-xs text-right' placeholder='EWT Amt' name='txtnEWTAmt'  value="<?=$rowbody['newtamt'];?>" id='txtnEWTAmt<?=$cntr;?>' readonly="true" /></td>
                                         
@@ -1283,7 +1305,7 @@ else{
 		
 	});
 	
-
+	disabled();
 
 });
 
@@ -1497,7 +1519,7 @@ function getInvs(typ){
 				console.log(data);
 				$.each(data,function(index,item){
 					$("<tr>").append(
-						$("<td>").html("<input type='checkbox' value='"+item.csalesno+"' name='chkSales[]' data-cm='"+item.ccm+"' data-payment='"+item.npayment+"' data-vatcode='"+item.ctaxcode+"' data-vat='"+item.cvatamt+"' data-vatrate='"+item.vatrate+"' data-netvat='"+item.cnetamt+"' data-ewtcode='"+item.cewtcode+"' data-ewtrate='"+item.newtrate+"' data-ewtamt='"+item.cewtamt+"' data-amt='"+item.ngross+"' data-acctid='"+item.cacctno+"' data-acctdesc='"+item.ctitle+"' data-cutdate='"+item.dcutdate+"'>"),
+						$("<td>").html("<input type='checkbox' value='"+item.csalesno+"' name='chkSales[]' data-cm='"+item.ccm+"' data-payment='"+item.npayment+"' data-vatcode='"+item.ctaxcode+"' data-vat='"+item.cvatamt+"' data-vatrate='"+item.vatrate+"' data-netvat='"+item.cnetamt+"' data-ewtcode='"+item.cewtcode+"' data-ewtrate='"+item.newtrate+"' data-amt='"+item.ngross+"' data-acctid='"+item.cacctno+"' data-acctdesc='"+item.ctitle+"' data-cutdate='"+item.dcutdate+"'>"),
 						$("<td>").text(item.csalesno),
 						$("<td>").text(item.dcutdate),
 						$("<td>").text(item.ngross),
@@ -1539,7 +1561,7 @@ function save(){
 		var nnetvat = $(this).data("netvat");
 		var newtcode = $(this).data("ewtcode");
 		var newtrate = $(this).data("ewtrate");
-		var newtamt = $(this).data("ewtamt");
+		var newtamt = 0; 
 
 		var acctcode = $(this).data("acctid");
 		var acctdesc = $(this).data("acctdesc");
@@ -1647,8 +1669,21 @@ function save(){
 			l.innerHTML = "<select name='txtnEWT[]' id='txtnEWT"+lastRow+"' class='select2' multiple='multiple' style='width: 100%'> "+ taxoptions +" </select> <input type='hidden' name='hdnewtgiven' id='hdnewtgiven"+lastRow+"' value='"+$ifrdonlyint+"' /> <input type='hidden' name='txtnEWTorig' id='txtnEWTorig"+lastRow+"' value='"+newtcode+"' /> <input type='hidden' name='txtnEWTRate' value=\""+newtrate+"\" id='txtnEWTRate"+lastRow+"' />";
 
 
-		/*var l2=z.insertCell(-1);
-		l2.innerHTML = "<input type='text' class='form-control input-xs text-right' placeholder='EWT Rate' name='txtnEWTRate"+lastRow+"' value=\""+newtrate+"\" id='txtnEWTRate"+lastRow+"' readonly=\"true\" />";*/
+			var splitString = newtrate.split(';');
+			for (var i = 0; i < splitString.length; i++) {
+				var stringPart = splitString[i];
+				if (stringPart != 0 && stringPart != ""){
+					if(i > 0){
+						ewtdesc = ewtdesc + ";";
+					}
+					$jx = parseFloat(nnetvat)*(parseFloat(stringPart)/100);
+					newtamt = newtamt + $jx;
+					ewtdesc = ewtdesc + stringPart + "% - " + $jx.toFixed(2);
+				}
+			}
+
+		var l2=z.insertCell(-1);
+		l2.innerHTML = "<div id='txtnEWTPer"+lastRow+"' class='text-right'> "+ewtdesc.replace(";","<br>")+" </div>";
 									
 		var l3=z.insertCell(-1);
 		l3.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' placeholder='EWT Amt' name='txtnEWTAmt'  value=\""+newtamt+"\" id='txtnEWTAmt"+lastRow+"' readonly=\"true\" />";
