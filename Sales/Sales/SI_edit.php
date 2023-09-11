@@ -1568,7 +1568,7 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 					isdisabled = "";
 				}
 
-				tditmewts = "<td width=\"150\" nowrap> <select class='form-control input-xs' name=\"selitmewtyp[]\" id=\"selitmewtyp"+lastRow+"\" "+isdisabled+" multiple> <option value=\"none\">None</option>" + ewtoptions + "</select> </td>";
+				tditmewts = "<td width=\"150\" nowrap> <select class='form-control input-xs' name=\"selitmewtyp\" id=\"selitmewtyp"+lastRow+"\" "+isdisabled+" multiple> <option value=\"none\">None</option>" + ewtoptions + "</select> </td>";
 
 		//}
 
@@ -2613,25 +2613,36 @@ function chkform(){
 					var crefno = $(this).find('input[type="hidden"][name="txtcreference"]').val();
 					var crefident = $(this).find('input[type="hidden"][name="txtcrefident"]').val();
 					var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-					var cuom = $(this).find('select[name="seluom"]').val();
 					var ewtcode = $(this).find('select[name="selitmewtyp"]').val();
-					var ewtrate = $(this).find('select[name="selitmewtyp"] option:selected').data('rate'); 
+
+						//getrate of selected
+						var ewtrate = "";
+						var cnt = 0;
+						$(this).find('select[name="selitmewtyp"] > option:selected').each(function() {
+							//	alert($(this).data("rate"));
+							cnt++;
+							if(cnt>1){
+								ewtrate = ewtrate + ";" + $(this).data("rate");
+							}else{
+								ewtrate = ewtrate + $(this).data("rate");
+							}
+						});
+
 					var vatcode = $(this).find('select[name="selitmvatyp"]').val(); 
-						var nrate = $(this).find('select[name="selitmvatyp"] option:selected').data('id'); 
-					
+					var nrate = $(this).find('select[name="selitmvatyp"] option:selected').data('id'); 
+					var cuom = $(this).find('select[name="seluom"]').val();
+						
 						if(cuom=="" || cuom==null){
 							var cuom = $(this).find('input[type="hidden"][name="seluom"]').val();
 						}
 						
 					var nqty = $(this).find('input[name="txtnqty"]').val();
 					var nprice = $(this).find('input[name="txtnprice"]').val();
-					var ndiscount = $(this).find('input[name="txtndisc"]').val();
+					var ndiscount = $(this).find('input[name="txtndisc"]').val(); 
 					var ntranamt = $(this).find('input[name="txtntranamount"]').val();
 					var namt = $(this).find('input[name="txtnamount"]').val();
 					var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
 					var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
-				
-				//	alert("trancode="+trancode+"&crefno="+crefno+"&crefident="+crefident+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+nprice+"&ndiscount="+ndiscount+"&ntranamt="+ntranamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&ccode="+ccode+"&vatcode="+vatcode+"&nrate="+nrate);
 
 					if(nqty!==undefined){
 							nqty = nqty.replace(/,/g,'');
@@ -2641,9 +2652,11 @@ function chkform(){
 							ntranamt = ntranamt.replace(/,/g,'');
 						}
 
+						alert("SI_newsavedet.php?trancode="+trancode+"&crefno="+crefno+"&crefident="+crefident+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+ nprice+"&ndiscount="+ndiscount+"&ntranamt="+ntranamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&ccode="+ccode+"&vatcode="+vatcode+"&nrate="+nrate+"&ewtcode="+ewtcode+"&ewtrate="+ewtrate);
+
 					$.ajax ({
 						url: "SI_newsavedet.php",
-						data: { trancode: trancode, crefno: crefno, crefident:crefident, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, ndiscount:ndiscount, ntranamt:ntranamt, namt:namt, mainunit:mainunit, nfactor:nfactor, ccode:ccode, vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate },
+						data: { trancode: trancode, crefno: crefno, crefident:crefident, indx: parseInt(index) + 1, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, ndiscount:ndiscount, ntranamt:ntranamt, namt:namt, mainunit:mainunit, nfactor:nfactor, ccode:ccode, vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate },
 						async: false,
 						success: function( data ) {
 							if(data.trim()=="False"){
