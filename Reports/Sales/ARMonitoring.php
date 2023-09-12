@@ -112,7 +112,7 @@
 		
 		UNION ALL
 
-		Select 'BS' as type, A.ctranno, A.ccode, COALESCE(B.ctradename, B.cname) as cname, '' as citemno, A.ngross, A.ngross as namountfull, A.dcutdate, C.cacctid, C.cacctdesc,'' as ctaxcode, 0 as nrate, '' as cewtcode, 0 as newtrate, 0 as nvatgross
+		Select 'BS' as type, A.ctranno, A.ccode, COALESCE(B.ctradename, B.cname) as cname, '' as citemno, A.ngross, A.ngross as namountfull, A.dcutdate, C.cacctid, C.cacctdesc,'' as ctaxcode, 0 as nrate, '' as cewtcode, 0 as newtrate, CASE WHEN A.cvattype='VatIn' THEN A.ngross ELSE 0 END as nvatgross
 		From quote A
 		left join customers B on A.compcode=B.compcode and A.ccode=B.cempid 
 		left join accounts C on B.compcode=C.compcode and B.cacctcodesales=C.cacctno 
@@ -211,7 +211,7 @@
 		<td nowrap><?=$dateval;?></td>
     <td nowrap><?= $row['ccode'];?></td>
     <td nowrap><?=$row['cname'];?></td>   
-		<td nowrap style="text-align: right"><?=number_format($row['nvatgross'],2)?></td> 
+		<td nowrap style="text-align: right"><?=(floatval($row['nvatgross'])!=0) ? number_format($row['nvatgross'],2) : ""?></td> 
     <td nowrap style="text-align: center"><?=(intval($row['nrate'])!=0 && intval($row['nrate'])!="") ? number_format($row['nrate'])."%" : ""?></td>
     <td nowrap style="text-align: right"><?=(floatval($row['vatamt'])!=0) ? number_format($row['vatamt'],2) : ""?></td>
 		<td nowrap style="text-align: right"><?=(floatval($row['ngross'])!=0) ? number_format($row['ngross'],2) : ""?></td>		
