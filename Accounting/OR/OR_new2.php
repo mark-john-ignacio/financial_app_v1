@@ -289,7 +289,7 @@
 								height: 300px;
 								text-align: left;">
 
-								<table id="MyTable" border="1" bordercolor="#CCCCCC" class="table table-sm table-bordered">
+								<table id="MyTable" border="1" bordercolor="#CCCCCC" class="table table-sm">
 									<thead>
 										<tr>
 											<th scope="col" width="100px" nowrap>Invoice No</th>
@@ -1178,8 +1178,9 @@ function save(){
 			var l=z.insertCell(-1); 
 			l.innerHTML = "<select name='txtnEWT[]' id='txtnEWT"+lastRow+"' class='select2' multiple='multiple' style='width: 100%'> "+ taxoptions +" </select> <input type='hidden' name='hdnewtgiven' id='hdnewtgiven"+lastRow+"' value='"+$ifrdonlyint+"' /> <input type='hidden' name='txtnEWTorig' id='txtnEWTorig"+lastRow+"' value='"+newtcode+"' /> <input type='hidden' name='txtnEWTRate' value=\""+newtrate+"\" id='txtnEWTRate"+lastRow+"' />";
 
+			  newtrateStr = newtrate.toString();
 
-					var splitString = newtrate.split(';');
+					var splitString = newtrateStr.split(';');
 					for (var i = 0; i < splitString.length; i++) {
 						var stringPart = splitString[i];
 						if (stringPart != 0 && stringPart != ""){
@@ -1191,6 +1192,7 @@ function save(){
 							ewtdesc = ewtdesc + stringPart + "% - " + $jx.toFixed(2);
 						}
 					}
+
 
 			var l2=z.insertCell(-1);
 			l2.innerHTML = "<div id='txtnEWTPer"+lastRow+"' class='text-right'> "+ewtdesc.replace(";","<br>")+" </div>";

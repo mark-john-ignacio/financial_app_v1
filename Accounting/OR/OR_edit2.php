@@ -287,7 +287,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
 								width: 2200px;
 								height: 300px;
 								text-align: left;">
-                <table id="MyTable" border="1" bordercolor="#CCCCCC" class="table table-sm table-bordered">
+                <table id="MyTable" border="1" bordercolor="#CCCCCC" class="table table-sm">
 									<thead>
 										<tr>
 											<th scope="col" width="100px" nowrap>Invoice No</th>
@@ -1669,7 +1669,9 @@ function save(){
 			l.innerHTML = "<select name='txtnEWT[]' id='txtnEWT"+lastRow+"' class='select2' multiple='multiple' style='width: 100%'> "+ taxoptions +" </select> <input type='hidden' name='hdnewtgiven' id='hdnewtgiven"+lastRow+"' value='"+$ifrdonlyint+"' /> <input type='hidden' name='txtnEWTorig' id='txtnEWTorig"+lastRow+"' value='"+newtcode+"' /> <input type='hidden' name='txtnEWTRate' value=\""+newtrate+"\" id='txtnEWTRate"+lastRow+"' />";
 
 
-			var splitString = newtrate.split(';');
+			newtrateStr = newtrate.toString();
+
+			var splitString = newtrateStr.split(';');
 			for (var i = 0; i < splitString.length; i++) {
 				var stringPart = splitString[i];
 				if (stringPart != 0 && stringPart != ""){
