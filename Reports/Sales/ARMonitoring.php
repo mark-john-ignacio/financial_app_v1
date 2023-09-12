@@ -207,7 +207,7 @@
   <tr>
     <td nowrap><?=$row['type'];?></td>
     <td nowrap><?=$row['ctranno'];?></td>
-		<td nowrap><?=$transrefDR[$row['ctranno']];?></td>
+		<td nowrap><?=($row['type']=="SI") ? $transrefDR[$row['ctranno']] : "";?></td>
 		<td nowrap><?=$dateval;?></td>
     <td nowrap><?= $row['ccode'];?></td>
     <td nowrap><?=$row['cname'];?></td>   
