@@ -112,7 +112,7 @@
 		
 		UNION ALL
 
-		Select 'BS' as type, A.ctranno, A.ccode, COALESCE(B.ctradename, B.cname) as cname, '' as citemno, A.ngross, A.ngross as namountfull, A.dcutdate, C.cacctid, C.cacctdesc,'' as ctaxcode, 0 as nrate, '' as cewtcode, 0 as newtrate, A.ngross as nvatgross
+		Select 'BS' as type, A.ctranno, A.ccode, COALESCE(B.ctradename, B.cname) as cname, '' as citemno, A.ngross, A.ngross as namountfull, A.dcutdate, C.cacctid, C.cacctdesc,'' as ctaxcode, 0 as nrate, '' as cewtcode, 0 as newtrate, 0 as nvatgross
 		From quote A
 		left join customers B on A.compcode=B.compcode and A.ccode=B.cempid 
 		left join accounts C on B.compcode=C.compcode and B.cacctcodesales=C.cacctno 
