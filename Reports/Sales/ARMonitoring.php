@@ -288,7 +288,8 @@
 
 
 <form action="PrintQuote_PDF.php" method="post" name="frmQPrint" id="frmQprint" target="_blank">
-	<input type="hidden" name="hdntransid" id="hdntransid" value="<?php echo $txtctranno; ?>">
+	<input type="hidden" name="hdntransid" id="hdntransid" value="">
+	<input type="hidden" name="x" id="x" value="">
 </form>
 
 </body>
@@ -305,7 +306,8 @@
 			$("#hdntransid").val(x);
 			$("#frmQprint").attr("action","../../Sales/Quote/PrintBilling_PDF.php");
 		}else{
-			$("#frmQprint").attr("action","PrintBilling_PDF.php");
+			$("#x").val(x);
+			$("#frmQprint").attr("action","../../Sales/Sales/SI_Print.php");
 		}
 
 		$("#frmQprint").submit();
