@@ -302,6 +302,7 @@
 
 	function printchk(x,$xtyp){
 		if($xtyp=="BS"){
+			$("#hdntransid").val(x);
 			$("#frmQprint").attr("action","../../Sales/Quote/PrintBilling_PDF.php");
 		}else{
 			$("#frmQprint").attr("action","PrintBilling_PDF.php");
