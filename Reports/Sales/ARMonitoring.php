@@ -307,7 +307,7 @@
 			$("#frmQprint").attr("action","../../Sales/Quote/PrintBilling_PDF.php");
 		}else{
 			$("#x").val(x);
-			$("#frmQprint").attr("action","../../Sales/Sales/SI_Print.php");
+			$("#frmQprint").attr("action","../../Sales/Sales/SI_confirmprint.php");
 		}
 
 		$("#frmQprint").submit();
