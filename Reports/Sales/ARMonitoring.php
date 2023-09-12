@@ -221,7 +221,15 @@
     <td nowrap><?=$row['cname'];?></td>   
 		<td nowrap style="text-align: right"><?=(floatval($row['nvatgross'])!=0) ? number_format($row['nvatgross'],2) : ""?></td> 
     <td nowrap style="text-align: center"><?=(intval($row['nrate'])!=0 && intval($row['nrate'])!="") ? number_format($row['nrate'])."%" : ""?></td>
-    <td nowrap style="text-align: right"><?=(floatval($row['vatamt'])!=0) ? number_format($row['vatamt'],2) : ""?></td>
+    <td nowrap style="text-align: right">
+			<?php
+				if(intval($row['nrate'])!=0 && intval($row['nrate'])!="")
+					if(floatval($row['vatamt'])!=0) {
+						echo number_format($row['vatamt'],2);
+					}
+				}
+			?>
+		</td>
 		<td nowrap style="text-align: right"><?=(floatval($row['ngross'])!=0) ? number_format($row['ngross'],2) : ""?></td>		
 		<td nowrap style="text-align: center"><?=(intval($ewtcode)!=0 && intval($ewtcode)!="") ? number_format($ewtcode)."%" : ""?></td>
 		<td nowrap style="text-align: right">
