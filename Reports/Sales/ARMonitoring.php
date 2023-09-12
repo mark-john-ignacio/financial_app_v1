@@ -112,7 +112,7 @@
 		
 		UNION ALL
 
-		Select 'BS' as type, A.ctranno, B.ccode, COALESCE(C.ctradename, C.cname) as cname, '' as citemno, A.namount, A.namount as namountfull, B.dcutdate, '' as cacctid, '' as cacctdesc, CASE WHEN B.cvattype='VatIn' THEN F.ctaxcode ELSE '' END as ctaxcode, CASE WHEN B.cvattype='VatIn' THEN F.nrate ELSE '' END as nrate, '' as cewtcode, 0 as newtrate, 	
+		Select 'BS' as type, A.ctranno, B.ccode, COALESCE(C.ctradename, C.cname) as cname, '' as citemno, 0 as namount, A.namount as namountfull, B.dcutdate, '' as cacctid, '' as cacctdesc, CASE WHEN B.cvattype='VatIn' THEN F.ctaxcode ELSE '' END as ctaxcode, CASE WHEN B.cvattype='VatIn' THEN F.nrate ELSE '' END as nrate, '' as cewtcode, 0 as newtrate, 	
 						CASE 
 							WHEN B.cvattype='VatIn'
 							THEN 
