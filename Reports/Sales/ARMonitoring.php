@@ -214,7 +214,7 @@
 ?>  
   <tr>
     <td nowrap><?=$row['type'];?></td>
-    <td nowrap><a href="javascript:;" onClick="printchk('<?=$row['ctranno'];?>','<?=$row['type'];?>');"><?=$row['ctranno'];?></a></td>
+    <td nowrap><a style="text-decoration: none;" href="javascript:;" onClick="printchk('<?=$row['ctranno'];?>','<?=$row['type'];?>');"><?=$row['ctranno'];?></a></td>
 		<td nowrap><?=($row['type']=="SI") ? $transrefDR[$row['ctranno']] : "";?></td>
 		<td nowrap><?=$dateval;?></td>
     <td nowrap><?= $row['ccode'];?></td>
