@@ -306,5 +306,7 @@
 		}else{
 			$("#frmQprint").attr("action","PrintBilling_PDF.php");
 		}
+
+		$("#frmQprint").submit();
 	}
 </script>
