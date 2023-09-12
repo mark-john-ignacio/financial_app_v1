@@ -10,13 +10,15 @@
 
   $company = $_SESSION['companyid'];
   $lallowNT = 0;
-	$result=mysqli_query($con,"select * From company where compcode='".$company."'");								
+	/*
+  $result=mysqli_query($con,"select * From company where compcode='".$company."'");								
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 	{
 		if($row['compcode'] == $company){
 			$lallowNT =  $row['lallownontrade'];
 		}
 	}
+  */
 
 ?>
 <html>
