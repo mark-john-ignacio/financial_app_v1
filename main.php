@@ -60,6 +60,7 @@
 				$compname =  $row['compname'];
 				$logoname =  str_replace("../","",$row['clogoname']);
 				$lallowNT =  $row['lallownontrade'];
+				$lallowMRP =  $row['lmrpmodules'];
 			}
 		}   
 	?>
@@ -537,7 +538,7 @@
 				<li>
 					<a href="javascript:;">
 					<i class="icon-puzzle"></i>
-					<span class="title">MES &amp; Inventory</span>
+					<span class="title"><?=($lallowMRP==1) ? "MES &amp; Inventory" : "Inventory";?></span>
 					<span class="arrow "></span>
 					</a>
 					<ul class="sub-menu">
