@@ -1284,7 +1284,7 @@ xmlhttp.send();
           <label><input type="checkbox" name="chkAcc[]" value="ARAgeing.php" id="chkBox164" <?=(in_array("ARAgeing.php",@$arrpgist)) ? "checked" : "";?>>
           AR Ageing</label>
           <br>
-          <label><input type="checkbox" name="chkAcc[]" value="ARMonitoring.php" id="chkBox164" <?//=(in_array("ARMonitoring.php",@$arrpgist)) ? "checked" : "";?>>
+          <label><input type="checkbox" name="chkAcc[]" value="ARMonitoring.php" <?=(in_array("ARMonitoring.php",@$arrpgist)) ? "checked" : "";?>>
           AR Monitoring</label>
           <br>
        </div>
