@@ -112,12 +112,20 @@
 		
 		UNION ALL
 
-		Select 'BS' as type, A.ctranno, A.ccode, COALESCE(B.ctradename, B.cname) as cname, '' as citemno, A.ngross, A.ngross as namountfull, A.dcutdate, C.cacctid, C.cacctdesc,'' as ctaxcode, 0 as nrate, '' as cewtcode, 0 as newtrate, CASE WHEN A.cvattype='VatIn' THEN A.ngross ELSE 0 END as nvatgross
-		From quote A
-		left join customers B on A.compcode=B.compcode and A.ccode=B.cempid 
-		left join accounts C on B.compcode=C.compcode and B.cacctcodesales=C.cacctno 
-		where A.compcode='$company' and A.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and A.lcancelled=0
-		".$qryposted2." and A.ctranno not in (Select Y.creference From sales_t Y left join sales X on Y.compcode=X.compcode and Y.ctranno=X.ctranno where Y.compcode='$company' and X.lcancelled=0)
+		Select 'BS' as type, A.ctranno, B.ccode, COALESCE(C.ctradename, C.cname) as cname, '' as citemno, A.namount, A.namount as namountfull, B.dcutdate, '' as cacctid, '' as cacctdesc, CASE WHEN B.cvattype='VatIn' THEN F.ctaxcode ELSE '' END as ctaxcode, CASE WHEN B.cvattype='VatIn' THEN F.nrate ELSE '' END as nrate, '' as cewtcode, 0 as newtrate, 	
+						CASE 
+							WHEN B.cvattype='VatIn'
+							THEN 
+								ROUND((A.nqty*A.nprice)/(1 + (F.nrate/100)),2)
+							ELSE 
+								A.namount 
+							END as nvatgross
+		From quote_t A
+		left join quote B on A.compcode=B.compcode and A.ctranno=B.ctranno
+		left join customers C on B.compcode=C.compcode and B.ccode=C.cempid 
+		left join items E on A.compcode=E.compcode and A.citemno=E.cpartno 
+		left join taxcode F on E.compcode=F.compcode and E.ctaxcode=F.ctaxcode
+		where A.compcode='$company' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.lcancelled=0 ".$qryposted." and A.ctranno not in (Select Y.creference From sales_t Y left join sales X on Y.compcode=X.compcode and Y.ctranno=X.ctranno where Y.compcode='$company' and X.lcancelled=0)
 
 		) A
 		Group By A.ctranno, A.ccode, A.cname, A.cacctid, A.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, A.dcutdate
