@@ -125,7 +125,7 @@
 		left join customers C on B.compcode=C.compcode and B.ccode=C.cempid 
 		left join items E on A.compcode=E.compcode and A.citemno=E.cpartno 
 		left join taxcode F on E.compcode=F.compcode and E.ctaxcode=F.ctaxcode
-		where A.compcode='$company' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.lcancelled=0 ".$qryposted." and A.ctranno not in (Select Y.creference From sales_t Y left join sales X on Y.compcode=X.compcode and Y.ctranno=X.ctranno where Y.compcode='$company' and X.lcancelled=0)
+		where A.compcode='$company' and B.quotetype='billing' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.lcancelled=0 ".$qryposted." and A.ctranno not in (Select Y.creference From sales_t Y left join sales X on Y.compcode=X.compcode and Y.ctranno=X.ctranno where Y.compcode='$company' and X.lcancelled=0)
 
 		) A
 		Group By A.ctranno, A.ccode, A.cname, A.cacctid, A.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, A.dcutdate
@@ -214,7 +214,7 @@
 ?>  
   <tr>
     <td nowrap><?=$row['type'];?></td>
-    <td nowrap><?=$row['ctranno'];?></td>
+    <td nowrap><a href="javascript:;" onClick="printchk('<?=$row['ctranno'];?>','<?=$row['type'];?>');"><?=$row['ctranno'];?></a></td>
 		<td nowrap><?=($row['type']=="SI") ? $transrefDR[$row['ctranno']] : "";?></td>
 		<td nowrap><?=$dateval;?></td>
     <td nowrap><?= $row['ccode'];?></td>
@@ -286,6 +286,11 @@
     </tr>-->
 </table>
 
+
+<form action="PrintQuote_PDF.php" method="post" name="frmQPrint" id="frmQprint" target="_blank">
+	<input type="hidden" name="hdntransid" id="hdntransid" value="<?php echo $txtctranno; ?>">
+</form>
+
 </body>
 </html>
 
@@ -294,4 +299,12 @@
 
 	$('#MyTable tbody tr:last').clone().insertBefore('#MyTable tbody tr:first');
 });*/
+
+	function printchk(x,$xtyp){
+		if($xtyp=="BS"){
+			$("#frmQprint").attr("action","PrintBilling_PDF.php");
+		}else{
+			$("#frmQprint").attr("action","PrintBilling_PDF.php");
+		}
+	}
 </script>
