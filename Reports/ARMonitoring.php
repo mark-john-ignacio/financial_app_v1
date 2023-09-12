@@ -1,13 +1,25 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "ARMonitoring.php";
-include('../Connection/connection_string.php');
-include('../include/denied.php');
-include('../include/access.php');
+  if(!isset($_SESSION)){
+    session_start();
+  }
 
-?><html>
+  $_SESSION['pageid'] = "ARMonitoring.php";
+  include('../Connection/connection_string.php');
+  include('../include/denied.php');
+  include('../include/access.php');
+
+  $company = $_SESSION['companyid'];
+  $lallowNT = 0;
+	$result=mysqli_query($con,"select * From company where compcode='".$company."'");								
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
+		if($row['compcode'] == $company){
+			$lallowNT =  $row['lallownontrade'];
+		}
+	}
+
+?>
+<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>Myx Financials</title>
@@ -40,19 +52,38 @@ include('../include/access.php');
             <span class="glyphicon glyphicon-search"></span> View Report
           </button>
         </td>
-        <td width="150" style="padding-left:10px"><b>Report Type: </b></td>
+        <td width="150" style="padding-left:10px"><b>Transaction Type: </b></td>
         <td style="padding:2px">
-          <div class="col-xs-12 nopadding">
-            <div class="col-xs-8 nopadding">
-              
-              <select id="selrpt" name="selrpt" class="form-control input-sm selectpicker"  tabindex="4">
-                <option value="posted">All Posted Transactions Only</option>   
-                <option value="unposted">Include Unposted Transactions</option>               
-              </select>
-              
-            </div>
-            
-          </div>   
+          <?php
+            if($lallowNT==1){
+          ?>
+          <div class="col-xs-4 nopadding">
+            <select id="seltrantype" name="seltrantype" class="form-control input-sm selectpicker"  tabindex="4">
+              <option value="">All Transactions</option>   
+              <option value="Trade">Trade</option>      
+              <option value="Non-Trade">Non-Trade</option>           
+            </select>               
+          </div>
+          <div class="col-xs-4 nopadwleft">
+            <select id="selrpt" name="selrpt" class="form-control input-sm selectpicker"  tabindex="4">
+              <option value="">All Transactions</option>   
+              <option value="1">Posted</option>      
+              <option value="0">UnPosted</option>           
+            </select>                            
+          </div>  
+          <?php
+            }else{
+          ?>
+          <div class="col-xs-8 nopadwleft">
+            <select id="selrpt" name="selrpt" class="form-control input-sm selectpicker"  tabindex="4">
+              <option value="">All Transactions</option>   
+              <option value="1">All Posted Transactions only</option>      
+              <option value="0">All UnPosted Transactions only</option>           
+            </select>                            
+          </div> 
+          <?php
+            }
+          ?>
         </td>
       </tr>
       <tr>
@@ -124,13 +155,13 @@ $(function(){
 
   $('#btnView').on("click", function(){
     //$dval = $("#selrpt").val();
-    $('#frmrep').attr("action", "ARMonitoring.php");
+    $('#frmrep').attr("action", "Sales/ARMonitoring.php");
     $('#frmrep').submit();
   });
 
   $('#btnexcel').on("click", function(){
     //$dval = $("#selrpt").val();
-    $('#frmrep').attr("action", "ARMonitoring_xls.php");
+    $('#frmrep').attr("action", "Sales/ARMonitoring_xls.php");
     $('#frmrep').submit();
   });
 	
