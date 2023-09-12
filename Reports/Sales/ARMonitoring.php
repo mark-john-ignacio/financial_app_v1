@@ -223,7 +223,7 @@
     <td nowrap style="text-align: center"><?=(intval($row['nrate'])!=0 && intval($row['nrate'])!="") ? number_format($row['nrate'])."%" : ""?></td>
     <td nowrap style="text-align: right">
 			<?php
-				if(intval($row['nrate'])!=0 && intval($row['nrate'])!="")
+				if(intval($row['nrate'])!=0 && intval($row['nrate'])!=""){
 					if(floatval($row['vatamt'])!=0) {
 						echo number_format($row['vatamt'],2);
 					}
