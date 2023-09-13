@@ -22,7 +22,7 @@ include('../../include/denied.php');
 	}
 	
 	$csalesno = $_REQUEST['hdntransid'];
-	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, c.Fname, c.Minit, c.Lname, d.cdesc as termsdesc from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join users c on a.cpreparedby=c.Userid left join groupings d on a.compcode=b.compcode and a.cterms=d.ccode and d.ctype='TERMS' where a.compcode='$company' and a.cpono = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign, d.cdesc as termsdesc from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join users c on a.cpreparedby=c.Userid left join groupings d on a.compcode=b.compcode and a.cterms=d.ccode and d.ctype='TERMS' where a.compcode='$company' and a.cpono = '$csalesno'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -45,8 +45,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
+		$lSent = $row['lsent'];
 
 		$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
+		$cpreparedBySign = $row['cusersign'];
 	}
 }
 
@@ -203,11 +205,15 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 				</tr>
 
 				<?php 
-				$sqlbody = mysqli_query($con,"select a.*,b.citemdesc, a.citemdesc as newdesc from purchase_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.cpono = '$csalesno' Order by a.nident");
+				$sqlbody = mysqli_query($con,"select a.*,b.citemdesc, a.citemdesc as newdesc, a.nrate from purchase_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.cpono = '$csalesno' Order by a.nident");
 
+				$xwithvat = 0;
 				if (mysqli_num_rows($sqlbody)!=0) {
 
 					while($rowdtls = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){ 
+						if(floatval($rowdtls['cunit']) > 0){
+							$xwithvat = 1;
+						}
 				?>
 
 				<tr>
@@ -215,8 +221,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 					<td align="center" class="tdpadx tddetz"><?php echo $rowdtls['cunit'];?></td>					
 					<td align="center" class="tdpadx tddetz"><?php echo $rowdtls['citemdesc'];?></td>
 					<td align="right" class="tdpadx tddetz tdright"><?php echo number_format($rowdtls['nprice'],2);?></td>
-					<td align="right" class="tdpadx tddetz tdright"><?php echo number_format($rowdtls['namount'],2);?></td>
-					
+					<td align="right" class="tdpadx tddetz tdright"><?php echo number_format($rowdtls['namount'],2);?></td>					
 				</tr>
 
 				<?php 
@@ -226,7 +231,16 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 				?>
 
 				<tr>
-					<td colspan="4" align="right" class="tdpadx" style="border: 1px solid;padding-right: 10px"><b>TOTAL</b></td>
+					<td colspan="3" class="tdpadx" style="border-top: 1px solid; border-left: 1px solid; border-bottom: 1px solid; padding-right: 10px">
+						<?php
+							if($xwithvat==1){
+								echo "<b><i>Note: Price inclusive of VAT</i></b>";
+							}else{
+								echo "<b><i>Note: Price exclusive of VAT</i></b>";
+							}
+						?>
+					</td>
+					<td align="right" class="tdpadx" style="border-top: 1px solid; border-right: 1px solid; border-bottom: 1px solid; padding-right: 10px"><b>TOTAL</b></td>
 					<td align="right"  class="tdpadx" style="border: 1px solid;padding-right: 10px"><?php echo number_format($Gross,2);?></td>
 					
 				</tr>
@@ -248,21 +262,45 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 
 									</td>
 									<td width="25%">
-										<div style="padding-bottom: 50px; text-align: center">Prepared By</div>
-										<div style="text-align: center"><?=$cpreparedBy?></div>
+
+									<?php
+										if($lSent==1 && $cpreparedBySign!=""){
+									?>
+										<div style="text-align: center">Prepared By</div>
+										<div style="text-align: center"><div><img src = '<?=$cpreparedBySign?>?x=<?=time()?>' ></div> 
+									
+										<?php
+										}else{
+										?>
+											<div style="padding-bottom: 50px; text-align: center">Prepared By</div>
+											<div style="text-align: center"><?=$cpreparedBy?></div>
+										<?php
+										}
+										?>
 
 									</td>
 
 								<?php
 
-									$sqdts = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname from purchase_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cpono = '$csalesno' order by a.nlevel");
+									$sqdts = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign from purchase_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cpono = '$csalesno' order by a.nlevel");
 
 									if (mysqli_num_rows($sqdts)!=0) {
 										while($row = mysqli_fetch_array($sqdts, MYSQLI_ASSOC)){
 								?>
 											<td width="25%">
-												<div style="padding-bottom: 50px; text-align: center">Approved By</div>
-												<div style="text-align: center"><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div>
+												<?php
+													if($row['lapproved']==1 && $row['cusersign']!=""){
+												?>
+												<div style="text-align: center">Approved By</div>
+												<div style="text-align: center"><div><img src = '<?=$row['cusersign']?>?x=<?=time()?>' ></div>
+												<?php
+													}else{
+												?>
+													<div style="padding-bottom: 50px; text-align: center">Approved By</div>
+													<div style="text-align: center"><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div>
+												<?php
+													}
+												?>
 
 											</td>
 
