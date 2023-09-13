@@ -226,11 +226,19 @@
 											<a href="" onClick="setI('A','Monthly_IVat.php')" data-toggle="tab">
 											<i class="fa fa-book"></i> Monthly Input VAT and W/Tax </a>
 										</li>
+										<li>
+											<a href="" onClick="setI('A', 'BIR_2307.php')" data-toggle="tab">
+											<i class="fa fa-book"></i>BIR FORM 2307</a>
+										</li>
+										<li>
+											<a href="" onClick="setI('A', 'BIR_2306.php')" data-toggle="tab">
+											<i class="fa fa-book"></i>BIR FORM 2306</a>
+										</li>
 										<!--
-											<li>
-												<a href="" onClick="setI('A','bir2307.php')" data-toggle="tab">
-												<i class="fa fa-book"></i> BIR FORM - 2307 </a>
-											</li>
+										<li>
+											<a href="" onClick="setI('A', 'BIR_Quartely.php')" data-toggle="tab">
+											<i class="fa fa-book"></i>2550Q Form</a>
+										</li>
 										-->
 									</ul>
 								</div>
