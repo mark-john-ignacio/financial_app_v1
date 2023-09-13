@@ -37,15 +37,13 @@
                             </button>
                     </td>
                     <td>
-                        <div class="col-sm-2 nopadwtop">
+                        <div class="col-sm-3">
                             <b>Enter Supplier: </b>
                         </div>
 
-                        <div class="col-md-1 nopadwlefts">
-                            <div class="col-xs-10">
+                            <div class="col-xs-9">
                                 <input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" placeholder="Search Supplier Name..." required autocomplete="off" tabindex="4">
                             </div>
-                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -55,13 +53,13 @@
                                 </button>
                     </td>
                     <td >
-                        <div class="col-xs-2 nopadwtop">
+                        <div class="col-xs-3">
                             <b>Transaction Type: </b>
                         </div>
 
-                        <div class="col-xs-10 nopadwlefts">
+                        <div class="col-xs-9 nopadwlefts">
                             <select class="form-control input-sm" id="trantype" name="trantype">
-                                    <option disabled> All Transactions </option>
+                                    <option> All Transactions </option>
                                     <option value="1">Posted</option>
                                     <option value="0">Unposted</option>
                             </select>
@@ -71,7 +69,7 @@
                 <tr>
                     <td colspan="0">&nbsp;</td>
                     <td>
-                        <div class="col-xs-2 nopadwtop" style="vertical-align:bottom;">
+                        <div class="col-xs-3" style="vertical-align:bottom;">
                             <b>Select a Year: </b>
                         </div>
                         <div class="col-xs-2 nopadwlefts">
