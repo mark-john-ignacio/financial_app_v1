@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "MaterialBOM";
+	$_SESSION['pageid'] = "MaterialBOM_new";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -10,59 +10,11 @@
 
 	$company = $_SESSION['companyid'];
 
-	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'MaterialBOM_edit'");
-	if(mysqli_num_rows($sql) == 0){
-		$poststat = "False";
-	}
-
-
-	$itm = "";
-	if(isset($_REQUEST['itm'])){
-		$itm = $_REQUEST['itm'];
-	}
-
-	$arrdefitems = array();
-	$sqllabelnme = mysqli_query($con,"select A.*, B.citemdesc from mrp_bom A left join items B on A.compcode=B.compcode and A.citemno=B.cpartno where A.compcode='$company' and A.cmainitemno='".$itm ."' order by A.nitemsort");
-	$rowlabelname = $sqllabelnme->fetch_all(MYSQLI_ASSOC);
-	foreach($rowlabelname as $rs3){
-		$arrdefitems[] = $rs3;
-	}
-
-	$itmname = "";
-	$itmuom = "";
-	$sqllabelnme = mysqli_query($con,"select * from items where compcode='$company' and cpartno='".$itm ."'");
-	$rowlabelname = $sqllabelnme->fetch_all(MYSQLI_ASSOC);
-	foreach($rowlabelname as $rs4){
-		$itmname = $rs4['citemdesc'];
-		$itmuom = $rs4['cunit'];
-	}
-
-
-	$arrbomlabel = array();
-	$sqllabelnme = mysqli_query($con,"select * from mrp_bom_label where compcode='$company' and citemno='".$itm ."'");
-
-	$rowcount=mysqli_num_rows($sqllabelnme);
-	$rowlabelname = $sqllabelnme->fetch_all(MYSQLI_ASSOC);
-
-	$totdcount = 1;
-	if($rowcount>1){
-		$totdcount = $rowcount;
-	}
-
 	$arrprocess = array();
   $sqlprocess = mysqli_query($con,"SELECT * FROM `mrp_process` WHERE compcode='$company' and cstatus='ACTIVE'"); 
   if (mysqli_num_rows($sqlprocess)!=0) {
     while($row = mysqli_fetch_array($sqlprocess, MYSQLI_ASSOC)){
       $arrprocess[] = $row;
-  	}
-  }
-
-	$arrparams = array();
-  $sqlprocess = mysqli_query($con,"SELECT * FROM `mrp_items_parameters` WHERE compcode='$company' and citemno='".$itm ."'"); 
-  if (mysqli_num_rows($sqlprocess)!=0) {
-    while($row = mysqli_fetch_array($sqlprocess, MYSQLI_ASSOC)){
-      $arrparams[] = $row;
   	}
   }
 
@@ -80,6 +32,7 @@
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
   <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
   <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css">  
     
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
@@ -89,6 +42,7 @@
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
 
 	<!--
 	--
@@ -146,17 +100,17 @@
 			<legend>Bill of Materials</legend>
 		</fieldset>	
 
-		<div class="col-xs-12 nopadwtop">
-			<div class="col-xs-2 nopadding"> <b>Product No.: </b> </div>
-			<div class="col-xs-2 nopadding"> <input type="text" class="form-control input-xs" name="cmainitemno"  id="cmainitemno" value="<?=$itm?>" readonly> </div>
-			<div class="col-xs-1 nopadding"> &nbsp; </div>
+		<div class="col-xs-12 nopadwtop"> 
+			<div class="col-xs-2 nopadding"> <b>Product No.: </b> </div> 
+			<div class="col-xs-2 nopadding"> <input type="text" class="form-control input-xs" name="cmainitemno"  id="cmainitemno" value="" readonly> </div>
+			<div class="col-xs-1 nopadwleft"> <button type="button" id="btnsrchprod" class="btn btn-xs btn-success" data-toggle="modal" data-target="#moditm"><i class="fa fa-search" aria-hidden="true"></i></button> </div>
 			<div class="col-xs-1 nopadding"> <b>Unit: </b> </div>
-			<div class="col-xs-2 nopadding"> <input type="text" class="form-control input-xs" name="cunit"  id="cunit" value="<?=$itmuom?>" readonly> </div>
+			<div class="col-xs-2 nopadding"> <input type="text" class="form-control input-xs" name="cunit"  id="cunit" value="" readonly> </div>
 		</div>
 
 		<div class="col-xs-12 nopadwtop">
 			<div class="col-xs-2 nopadding"> <b>Product Description: </b> </div>
-			<div class="col-xs-6 nopadding"> <input type="text" class="form-control input-xs" name="citemdesc"  id="citemdesc" value="<?=$itmname?>" readonly> </div>
+			<div class="col-xs-6 nopadding"> <input type="text" class="form-control input-xs" name="citemdesc"  id="citemdesc" value="" readonly> </div>
 		</div>
 
 		<div class="col-xs-12 nopadwtop2x">&nbsp;</div>
@@ -171,15 +125,15 @@
 				<div id="comp" class="tab-pane fade in active" style="padding-left:5px;">
 
 					<div class="col-xs-12 nopadwtop2x">	 
-						<div class="col-xs-8 nopadwdown">	
+						<div class="col-xs-10 nopadwdown">	
 							<input type="text" class="form-control input-sm" id="txtscan" value="" placeholder="Level 2 - Search Item Name...">
 						</div>
-						<div class="col-xs-2 nopadwleft">	
+						<!--<div class="col-xs-2 nopadwleft">	
 							<button type="button" class="btn btn-sm btn-warning btn-block" name="btnaddversion" id="btnaddversion"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Add Version</button>
-						</div>
+						</div>-->
 
 						<div class="col-xs-2 nopadwleft">	
-							<button type="button" class="btn btn-sm btn-success btn-block" name="btnuploadexcel" id="btnuploadexcel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;Upload Excel</button> 
+							<button type="button" class="btn btn-sm btn-success btn-block" name="btnuploadexcel" id="btnuploadexcel" disabled><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;Upload Excel</button> 
 						</div>
 						<input type="hidden" name="rowcnt" id="rowcnt" value=""> 
 					</div>
@@ -194,25 +148,10 @@
 								<th>Item Description</th>
 								<th width="70" class="text-center">Unit</th>
 								<th width="70" class="text-center">Level</th>
-								<?php
-									if($totdcount>1){
-										foreach($rowlabelname as $rowx){
-								?>
-								<th width="70" class="text-center"><?=$rowx['cdesc']?>
-									<br>
-									<input type="radio" name='radversion' value='<?=$rowx['nversion']?>' <?=($rowx['ldefault']==1) ? "checked" : ""?>>
-								</th>
-								<?php
-										}
-									}else{
-								?>
 								<th width="70" class="text-center">Default
 									<br>
 									<input type="radio" name='radversion' checked>
 								</th>
-								<?php
-									}
-								?>
 								<th width="50" class="text-center"><b>Del</b></td>
 								<th width="50" class="text-center"><b>Sub</b></td>
 							</tr>
@@ -224,17 +163,17 @@
 				<div id="para" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
 					<div class="col-xs-12 nopadwtop">
 						<div class="col-xs-2 nopadding"> <b>Working Hours.: </b> </div>
-						<div class="col-xs-2 nopadding"> <input type="text" class="numeric form-control input-xs" name="nworkinghrs"  id="nworkinghrs" value="<?=isset($arrparams[0]['nworkhrs']) ? $arrparams[0]['nworkhrs'] : 0;?>" > </div>
+						<div class="col-xs-2 nopadding"> <input type="text" class="numeric form-control input-xs" name="nworkinghrs"  id="nworkinghrs" value="0" > </div>
 					</div>
 
 					<div class="col-xs-12 nopadwtop">
 						<div class="col-xs-2 nopadding"> <b>Setup Time.: </b> </div>
-						<div class="col-xs-2 nopadding"> <input type="text" class="numeric form-control input-xs" name="nsetuptime"  id="nsetuptime" value="<?=isset($arrparams[0]['nsetuptime']) ? $arrparams[0]['nsetuptime'] : 0?>"> </div>
+						<div class="col-xs-2 nopadding"> <input type="text" class="numeric form-control input-xs" name="nsetuptime"  id="nsetuptime" value="0"> </div>
 					</div>
 
 					<div class="col-xs-12 nopadwtop">
 						<div class="col-xs-2 nopadding"> <b>Cycle Time.: </b> </div>
-						<div class="col-xs-2 nopadding"> <input type="text" class="numeric form-control input-xs" name="ncycletime"  id="ncycletime" value="<?=isset($arrparams[0]['ncycletime']) ? $arrparams[0]['ncycletime'] : 0?>"> </div>
+						<div class="col-xs-2 nopadding"> <input type="text" class="numeric form-control input-xs" name="ncycletime"  id="ncycletime" value="0"> </div>
 					</div>
 
 					&nbsp;
@@ -247,68 +186,18 @@
                 <th scope="col">PROCESS</th>
                 <th scope="col" width="80">STATUS</th>
               </tr>
-
-              <?php
-                $cbtr = 0;
-                $sqlprocess = mysqli_query($con,"SELECT * FROM `mrp_process_t` WHERE compcode='$company' and citemno='".$itm."' Order by nid"); 
-                if (mysqli_num_rows($sqlprocess)!=0) {
-                  while($row = mysqli_fetch_array($sqlprocess, MYSQLI_ASSOC)){
-                    $cbtr++;
-              ?>
-
-              <tr>
-                <td style="padding-top:1px">
-                  <div id='divselproc<?=$cbtr?>' class="col-xs-12 nopadwright">
-										<select name='selproc<?=$cbtr?>' id='selproc<?=$cbtr?>' class='form-control input-sm selectpicker'>
-											<?php
-												foreach(@$arrprocess as $xcv){
-													$xselec = "";
-													if($xcv['nid']==$row['items_process_id']){
-														$xselec = " selected";
-													}
-
-													echo "<option value='".$xcv['nid']."'".$xselec."> ".$xcv['cdesc']." </option>";
-												}
-											?>
-										</select>
-                  </div>  
-                </td>
-                <td style="padding-top:1px">
-                  <input class='btn btn-danger btn-xs' type='button' id='row_<?=$cbtr?>_delete' class='delete' value='Delete' onClick="delProcRow(this);"/>
-                </td>
-              </tr>
-
-              <?php
-                  }
-                }
-              ?>
             </table>
 				</div>
 
 			</div>
 
-		
-		<?php
-			if($poststat=="True"){
-		?>
+
 		<br>
 		<table width="100%" border="0" cellpadding="3">
 			<tr>
 				<td>
 					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='items_list.php';" id="btnMain" name="btnMain">
 						Back to Main<br>(ESC)
-					</button>
-
-					<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='items_new.php';" id="btn_New" name="btn_New">
-						New<br> (F1)
-					</button>
-
-					<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="window.location.href='Items.php?itm=<?=(isset($_REQUEST['itm'])) ? $_REQUEST['itm'] : ""?>'" id="btnUndo" name="btnUndo">
-						Undo Edit<br>(CTRL+Z)
-					</button>
-
-					<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
-						Edit<br> (CTRL+E)
 					</button>
 
 					<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="chkform();" id="btnSave" name="btnSave">
@@ -319,9 +208,6 @@
 
 				</tr>
 		</table>
-		<?php
-			}
-		?>
 
 	</form>
 
@@ -389,7 +275,7 @@
 													<h4>Select bom template to upload:</h4>
 													<br>
 													<input type="file" name="file" id="file" class="form-control">
-													<input type="hidden" name="xcitemno" id="xcitemno" value="<?=$_REQUEST['itm']?>">
+													<input type="hidden" name="xcitemno" id="xcitemno" value="">
 													<br>
 												</div>
 
@@ -415,6 +301,34 @@
 						</div>
 					</div>
 
+					<!-- Search Item -->
+					<div class="modal fade" id="moditm" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+						<div class="modal-dialog  modal-lg">
+							<div class="modal-content">
+
+								<div class="modal-header">
+									List of Items
+								</div>
+								<div class="modal-body" style="height:70vh" style="overflow: auto">
+											<input type="text" class="form-control input-sm" id="txtsrchitm" value="" placeholder="Search Item Name...">
+
+											<table id="tblitms" class="table table-sm table-striped" style="width:100%; padding-top: 5px">
+												<thead>
+													<tr>
+														<th>Item Code</th>
+														<th>Description</th>
+														<th>Unit</th>
+													</tr>
+												</thead>
+												<tbody>
+
+												</tbody>
+											</table>
+								</div>
+							</div>
+						</div>
+					</div>
+
 </body>
 
 </html>
@@ -423,9 +337,7 @@
 
 	$("#txtscan").focus();
 
-	<?php
-		if($poststat=="True"){
-	?>
+	fillitmtable();
 
 	$(document).keydown(function(e) {	 
 	  if(e.keyCode == 83 && e.ctrlKey){//CTRL S
@@ -434,16 +346,10 @@
 			return chkform();
 		}
 	  }
-		else if(e.keyCode == 112) { //F1
-		if($("#btn_New").is(":disabled")==false){
-			e.preventDefault();
-			window.location.href='items_new.php';
-		}
-	  }
 	  else if(e.keyCode == 27){//ESC
 		if($("#btnMain").is(":disabled")==false){
 			e.preventDefault();
-			window.location.href='items_list.php';
+			window.location.href='Inv.php';
 		}
 	  }
 		else if(e.keyCode == 69 && e.ctrlKey){//CTRL E
@@ -461,16 +367,8 @@
 
 	});
 
-	<?php
-		}
-	?>
-
 
 	$(document).ready(function() {
-
-		loadItms();
-
-		disabled();
 
 		$("input.numeric").autoNumeric('init',{mDec:2});
 		$("input.numeric").on("click", function () {
@@ -480,23 +378,6 @@
 		$(".nav-tabs a").click(function(){
     	$(this).tab('show');
 		});
-
-		$("#btnaddversion").on("click", function(){
-			let version = prompt("Please enter version description");
-			if (version != null) {
-				$.ajax({
-					url: "addver.php",
-					dataType: "text",
-					data: { ver: version, x: "<?=$_REQUEST['itm']?>" },
-					success: function (data) {
-						if(data.trim()=="True"){
-							window.location.href = "Items.php?itm=<?=$_REQUEST['itm']?>";
-						}
-
-					}
-				});
-			}
-		});  
 
 		$("#btnuploadexcel").on("click", function(){
 			$("#moduploadexcel").modal("show");
@@ -566,78 +447,13 @@
 		
 		});
 
-		$("input[name='radversion']").click(function(){
-      var radioValue = $("input[name='radversion']:checked").val();
-
-      if(radioValue){
-				$.ajax({
-					url: "set_default.php",
-					dataType: "text",
-					data: { ver: radioValue, x: "<?=$_REQUEST['itm']?>" },
-					success: function (data) {
-						if(data.trim()=="True"){
-							window.location.href = "Items.php?itm=<?=$_REQUEST['itm']?>";
-						}
-
-					}
-				});
-       }
-    });
+		$('#txtsrchitm').on("keyup", function (){
+			$('#tblitms').DataTable().destroy();
+			fillitmtable($(this).val());
+		});
+		
 
 	});
-
-	function loadItms(){
-		var selctdoption = $("#selwhfrom").val(); 
-		var selctdtempid = $("#seltempname").val();
-
-		var xz = $("#hdndefbom").val();
-
-		$.each(jQuery.parseJSON(xz), function() {  
-
-
-				itmid = this['citemno'];
-				itmdesc = this['citemdesc'];
-				itmunit = this['cunit'];
-				sornum = this['nitemsort'];
-
-				var $tdrows = "";
-
-				var GENxyz = parseInt(this['nlevel'])-1;
-						
-				var GENxyz0 = 0;
-				if(GENxyz>1){
-					GENxyz0 = (5 * GENxyz) + (GENxyz * 2);
-				}
-
-				$tdrows = "<td><input type='text' class=\"form-control input-xs text-center\" value='"+sornum+"' name=\"txtsortnum\" id=\"txtsortnum"+sornum+"\" readonly></td><td><input type='hidden' value='"+itmid+"' name=\"txtitmcode\" id=\"txtitmcode"+sornum+"\">"+itmid+"</td><td><input type='hidden' value='"+itmdesc+"' name=\"txtitmdesc\" id=\"txtitmdesc"+sornum+"\"><div style='text-indent:"+GENxyz0+"px'>"+itmdesc+"</div></td><td><input type='hidden' value='"+itmunit+"' name=\"txtcunit\" id=\"txtcunit"+sornum+"\">"+itmunit+"</td><td><input type=\"text\" class=\"form-control input-xs text-center\" name=\"txtlvl\" id=\"txtlvl"+sornum+"\" value=\""+this['nlevel']+"\" readonly></td>";
-
-
-				getcnt = parseInt($("#hdncount").val());
-				for (i = 1; i <= getcnt; i++) {
-
-					$tdrows = $tdrows + "<td><input type='text' class=\"form-control input-xs text-center\" value='"+this['nqty'+i]+"' name=\"txtnqty"+i+"\" id=\"txtnqty"+sornum+"\"></td>";
-
-				}
-
-				$tdrows = $tdrows + "<td class=\"text-center\"><button class=\"btn btn-danger btn-xs\" id=\"btnDel"+sornum+"\"><i class=\"fa fa-times\"></i></button></td>";
-
-				$tdrows = $tdrows + "<td class=\"text-center\"><button type='button' class=\"btn btn-success btn-xs\" name=\"btnAdd\" id=\"btnAdd"+sornum+"\"><i class=\"fa fa-arrow-circle-down\"></i></button></td>";
-				
-				$row = "<tr id='tr"+sornum+"' class=\"bg-level"+this['nlevel']+"\">"+$tdrows+"</tr>";
-				$("#MyTbl tbody").append($row);
-
-				$("#btnDel"+sornum).on('click', function() { 
-					$(this).closest('tr').remove();
-					recomdel();
-				});
-
-				$("#btnAdd"+sornum).on('click', function() { 
-					addsub(this);
-				});
-
-
-		});
-	} 
 
 	function InsTotable(itmid,itmdesc,itmunit,sornum,lvl,indx){
 
@@ -655,13 +471,7 @@
 
 			$tdrows = "<td><input type='text' class=\"form-control input-xs text-center\" value='"+sornum+"' name=\"txtsortnum\" id=\"txtsortnum"+sornum+"\" readonly></td><td><input type='hidden' value='"+itmid+"' name=\"txtitmcode\" id=\"txtitmcode"+sornum+"\">"+itmid+"</td><td><input type='hidden' value='"+itmdesc+"' name=\"txtitmdesc\" id=\"txtitmdesc"+sornum+"\"><div style='text-indent:"+GENxyz0+"px'>"+itmdesc+"</div></td><td><input type='hidden' value='"+itmunit+"' name=\"txtcunit\" id=\"txtcunit"+sornum+"\">"+itmunit+"</td><td><input type=\"text\" class=\"form-control input-xs text-center\" name=\"txtlvl\" id=\"txtlvl"+sornum+"\" value=\""+lvl+"\" readonly></td>";
 
-
-			getcnt = parseInt($("#hdncount").val());
-			for (i = 1; i <= getcnt; i++) {
-
-				$tdrows = $tdrows + "<td><input type='text' class=\"form-control input-xs text-center\" value='1' name=\"txtnqty"+i+"\" id=\"txtnqty"+i+sornum+"\"></td>";
-
-			}
+			$tdrows = $tdrows + "<td><input type='text' class=\"form-control input-xs text-center\" value='1' name=\"txtnqty\" id=\"txtnqty"+sornum+"\"></td>";
 
 			$tdrows = $tdrows + "<td class=\"text-center\"><button type='button' class=\"btn btn-danger btn-xs\" name=\"btnDel\" id=\"btnDel"+sornum+"\"><i class=\"fa fa-times\"></i></button></td>";
 
@@ -843,36 +653,41 @@
 		}
 	}
 
+	function fillitmtable(srchitm = "")
+	{
+		var dataTable = $('#tblitms').DataTable({
+		  "processing" : true,
+		  "serverSide" : true,
+		  "lengthChange": false,
+		  "searching" : false,
+		  "ajax" : {
+		    url:"th_itemsdata.php",
+		    type:"POST",
+		    data:{
+		      searchByName:srchitm
+		    }
+		  },
+		  "columns": [
+				{ "data": null,
+					"render": function (data, type, full, row) {							
+						return "<a href=\"javascript:;\" onClick=\"editfrm('"+full[0]+"','"+full[1]+"','"+full[2]+"');\">"+full[0]+"</a>";							
+					}						
+				},
+				{ "data": 1 },
+				{ "data": 2 }
+      ],
+		});
+	}
 
-	function disabled(){
+	function editfrm($xid,$xdesc,$xunit){
+		$("#cmainitemno").val($xid);
+		$("#citemdesc").val($xdesc);
+		$("#cunit").val($xunit);   
 
-		$("#frmBOM :input").attr("disabled", true);   
-
-		$("#btnMain").attr("disabled", false);
-		$("#btn_New").attr("disabled", false);
-		$("#btnaddversion").attr("disabled", false);
+		$("#xcitemno").val($xid);
 		$("#btnuploadexcel").attr("disabled", false); 
-		$("#btnEdit").attr("disabled", false);
-		$("#btndltemplate").attr("disabled", false);
 
-		$('input[name="radversion"]').attr("disabled",false);
-
+		$("#moditm").modal("hide");
 	}
-
-	function enabled(){
-
-		$("#frmBOM :input").attr("disabled", false);   
-
-		$("#btnMain").attr("disabled", true); 
-		$("#btn_New").attr("disabled", true);
-		$("#btnaddversion").attr("disabled", true);
-		$("#btnuploadexcel").attr("disabled", true); 
-		$("#btnEdit").attr("disabled", true);
-		$("#btndltemplate").attr("disabled", true);
-
-		$('input[name="radversion"]').attr("disabled",true);
-
-	}
-
 
 </script>

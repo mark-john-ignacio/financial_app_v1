@@ -8,16 +8,7 @@ include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 include('../../include/access2.php');
 
-$company = $_SESSION['companyid']; 
-
-	$lallowMRP = 0;
-	$result=mysqli_query($con,"select * From company");								
-		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-		{
-			if($row['compcode'] == $company){
-				$lallowMRP =  $row['lmrpmodules'];
-			}
-		}  
+$company = $_SESSION['companyid'];  
 
 ?>
 <!DOCTYPE html>
@@ -111,13 +102,6 @@ function editfrm(x,y){
                         <th width="70">Main UOM</th>
 						<th width="120" class="text-center">Price History</th>
 						<th width="70">Status</th>
-						<?php
-							if($lallowMRP==1){
-						?>
-								<th width="40">BOM</th>
-						<?php
-							}
-						?>
 					</tr>
 				</thead>
 
@@ -290,19 +274,7 @@ function editfrm(x,y){
 						}
 
 					}
-				}<?php
-						if($lallowMRP==1){
-					?>
-					,{ "data": null,
-						"render": function(data, type, full, row){
-							
-							return "<div class=\"col-sm-12 nopadding\"><div class=\"col-sm-6 nopadding\"><a href=\"../../MRP/BOM/Items.php?itm="+full[0]+"\" target=\"_blank\"><span class='label label-warning'>View BOM</span></a></div>";
-						}
-						
-					}
-					<?php
-						}
-					?>
+				}
 				//,
 				//{ "data": null,
 				// 	"render": function(data, type, full, row){

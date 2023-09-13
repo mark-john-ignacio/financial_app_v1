@@ -141,7 +141,7 @@
 				}
 			}
 
-			if (!mysqli_query($con, "INSERT INTO mrp_jo(`compcode`, `ctranno`, `ctranno_main`, `ccode`, `crefSO`, `citemno`, `cunit`, `nqty`) values('$company', '$cSINo', '0', '".$row2['ccode']."', '".$row2['ctranno']."', '".$row2['citemno']."', '".$row2['cunit']."', '".$row2['totqty']."')")) {
+			if (!mysqli_query($con, "INSERT INTO mrp_jo(`compcode`, `ctranno`, `ccode`, `crefSO`, `citemno`, `cunit`, `nqty`) values('$company', '$cSINo', '".$row2['ccode']."', '".$row2['ctranno']."', '".$row2['citemno']."', '".$row2['cunit']."', '".$row2['totqty']."')")) {
 			
 				$status = "False";
 				$msgz = $msgz . "<b>ERROR: </b>There's a problem generating your JO!";

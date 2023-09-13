@@ -1,0 +1,75 @@
+<?php
+if(!isset($_SESSION)){
+	session_start();
+}
+
+include('../../Connection/connection_string.php');
+
+$column = array('A.cmainitemno', 'B.citemdesc', 'B.cunit');
+
+$query = "SELECT DISTINCT A.cmainitemno, B.citemdesc, B.cunit FROM mrp_bom A left join items B on A.compcode=B.compcode and A.cmainitemno=B.cpartno WHERE A.compcode='".$_SESSION['companyid']."' and B.cstatus='ACTIVE'";
+
+if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
+{
+ $query .= " and (A.cmainitemno like '%".$_POST['searchByName']."%' OR B.citemdesc like '%".$_POST['searchByName']."%')";
+}
+
+if(isset($_POST['order']))
+{
+ $query .= ' ORDER BY '.$column[$_POST['order']['0']['column']].' '.$_POST['order']['0']['dir'].' ';
+}
+else
+{
+ $query .= ' ORDER BY B.citemdesc DESC ';
+}
+
+$query1 = '';
+
+if($_POST["length"] != -1)
+{
+ $query1 = ' LIMIT ' . $_POST['start'] . ', ' . $_POST['length'];
+}
+
+$statement = $connect->prepare($query);
+
+$statement->execute();
+
+$number_filter_row = $statement->rowCount();
+
+$statement = $connect->prepare($query . $query1);
+
+$statement->execute();
+
+$result = $statement->fetchAll();
+
+
+
+$data = array();
+
+foreach($result as $row)
+{
+ $sub_array = array();
+ $sub_array[] = $row['cmainitemno'];
+ $sub_array[] = $row['citemdesc'];
+ $sub_array[] = $row['cunit'];
+ $data[] = $sub_array;
+}
+
+function count_all_data($connect)
+{
+ $query = "SELECT DISTINCT cmainitemno FROM mrp_bom";
+ $statement = $connect->prepare($query);
+ $statement->execute();
+ return $statement->rowCount();
+}
+
+$output = array(
+ "draw"       =>  intval($_POST["draw"]),
+ "recordsTotal"   =>  count_all_data($connect),
+ "recordsFiltered"  =>  $number_filter_row,
+ "data"       =>  $data
+);
+
+echo json_encode($output);
+
+?>
