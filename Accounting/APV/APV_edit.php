@@ -12,7 +12,7 @@
 	$company = $_SESSION['companyid'];
 	$ctranno = $_REQUEST['txtctranno'];
 
-	$sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.captype, a.cpaymentfor, a.cpayee, DATE_FORMAT(a.dapvdate,'%m/%d/%Y') as dapvdate, a.ngross, a.cpreparedby, a.lcancelled, a.lapproved, a.lprintposted, b.cname from apv a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode = '$company' and a.ctranno = '$ctranno'");
+	$sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.captype, a.cpaymentfor, a.cpayee, DATE_FORMAT(a.dapvdate,'%m/%d/%Y') as dapvdate, a.ngross, a.cpreparedby, a.lcancelled, a.lapproved, a.lprintposted, b.cname, c.nrate, b.newtcode from apv a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join wtaxcodes c on b.compcode=c.compcode and b.newtcode=c.ctaxcode where a.compcode = '$company' and a.ctranno = '$ctranno'");
 
 	$gettaxcd = mysqli_query($con,"SELECT * FROM `taxcode` where compcode='$company' order By nidentity"); 
 	if (mysqli_num_rows($gettaxcd)!=0) {
@@ -45,6 +45,16 @@
 	
 	}else{
 		//echo "NO FILES";
+	}
+
+	
+	//get default EWT acct code
+	@$ewtpaydef = "";
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `accounts_default` where compcode='$company' and ccode='EWTPAY'"); 
+	if (mysqli_num_rows($gettaxcd)!=0) {
+		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+			@$ewtpaydef = $row['cacctno']; 
+		}
 	}
 ?>
 
@@ -86,6 +96,7 @@
 <body style="padding:5px" onLoad="document.getElementById('txtctranno').focus(); disabled();">
 	<input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes"> 
 	<input type="hidden" value='<?=json_encode(@$arrwtxlist)?>' id="hdnxtax">  
+	<input type="hidden" value='<?=@$ewtpaydef?>' id="hdnewtpay">
 
 	<input type="hidden" value='<?=json_encode(@$arrname)?>' id="hdnfileconfig"> 
 
@@ -100,6 +111,9 @@
 			$DateAPV = $row['dapvdate'];
 			$cAPType = $row['captype'];
 			$nGross = $row['ngross'];
+
+			$EWTCode = $row['newtcode'];
+			$EWTRate = $row['nrate'];
 			
 			$lCancelled = $row['lcancelled'];
 			$lPosted = $row['lapproved'];
@@ -157,6 +171,8 @@
 										</div> 
 										<div class="col-xs-6 nopadwleft">
 											<input type="text" id="txtcustid" name="txtcustid" style="border:none; height:30px;" readonly value="<?php echo $CustCode; ?>">
+											<input type="hidden" id="hdncustewt" name="hdncustewt" value="<?=$EWTCode?>">
+											<input type="hidden" id="hdncustewtrate" name="hdncustewtrate" value="<?=$EWTRate?>">
 										</div>
 									</div>            
 									<input type="hidden" id="txtcustchkr" name="txtcustchkr">
@@ -1130,6 +1146,8 @@
 				$('#txtcust').val(item.value).change(); 
 				$("#txtcustid").val(item.id);
 				$("#txtpayee").val(item.value);
+				$("#hdncustewt").val(item.cewtcode);
+				$("#hdncustewtrate").val(item.newtrate);
 			}
 		});
 
@@ -1881,6 +1899,15 @@
 							//alert(value);
 							if(value.trim()!=""){
 								$("#txtacctitle"+lastRow).val(value.trim());
+
+								var xz = chkDef(dInput,'PAYABLES');
+								$("#selacctpaytyp"+lastRow).val(xz);
+
+								if(this.value==$("#hdnewtpay").val()){
+									$("#txtewtcodeothers"+lastRow).val($("#hdncustewt").val());
+									$("#txtewtrateothers"+lastRow).val($("#hdncustewtrate").val());
+								}
+
 							}
 						}
 						});
@@ -1912,6 +1939,14 @@
 					$("#txtacctitle"+lastRow).val(item.name).change(); 
 					$("#txtacctno"+lastRow).val(item.id);
 					$("#txtdebit"+lastRow).focus();
+
+					var xz = chkDef(item.id,'PAYABLES');
+					$("#selacctpaytyp"+lastRow).val(xz);
+
+					if(item.id==$("#hdnewtpay").val()){
+						$("#txtewtcodeothers"+lastRow).val($("#hdncustewt").val());
+						$("#txtewtrateothers"+lastRow).val($("#hdncustewtrate").val());
+					}
 				}
 			});
 
@@ -2488,8 +2523,27 @@
 				isOK=="NO";
 				return false;
 			}
-			
-			
+
+			//chkewtcode  
+			for($ix=1;$ix<=lastRowAcc;$ix++){
+
+				$chkifewt = $("#txtacctno" + $ix).val();
+
+				if($chkifewt==$("#hdnewtpay").val()){
+					if($("#txtewtcodeothers" + $ix).val()==""){
+						$("#AlertMsg").html("");
+									
+						$("#AlertMsg").html("EWT Code required!");
+						$("#alertbtnOK").show();
+						$("#AlertModal").modal('show');
+
+						isOK=="NO";
+						return false;
+					}
+				}
+			};
+
+		
 			
 			if(isOK=="YES"){
 				document.getElementById("hdnRRCnt").value = lastRowRR;  

@@ -24,6 +24,15 @@
 			@$arrwtxlist[] = array('ctaxcode' => $row['ctaxcode'], 'cbase' => $row['cbase']); 
 		}
 	}
+
+	//get default EWT acct code
+	@$ewtpaydef = "";
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `accounts_default` where compcode='$company' and ccode='EWTPAY'"); 
+	if (mysqli_num_rows($gettaxcd)!=0) {
+		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+			@$ewtpaydef = $row['cacctno']; 
+		}
+	}
 ?>
 
 <!DOCTYPE html>
@@ -66,7 +75,8 @@
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
 	<input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes">  
-	<input type="hidden" value='<?=json_encode(@$arrwtxlist)?>' id="hdnxtax">  
+	<input type="hidden" value='<?=json_encode(@$arrwtxlist)?>' id="hdnxtax"> 
+	<input type="hidden" value='<?=@$ewtpaydef?>' id="hdnewtpay"> 
 
 	<form action="APV_newsave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
 		<fieldset>
@@ -100,6 +110,8 @@
 										</div> 
 										<div class="col-xs-6 nopadwleft">
 											<input type="text" id="txtcustid" name="txtcustid" style="border:none; height:30px;" readonly>
+											<input type="hidden" id="hdncustewt" name="hdncustewt" value="">
+											<input type="hidden" id="hdncustewtrate" name="hdncustewtrate" value="">
 										</div>
 									</div>
 												
@@ -468,6 +480,8 @@
 				$('#txtcust').val(item.value).change(); 
 				$("#txtcustid").val(item.id);
 				$("#txtpayee").val(item.value);
+				$("#hdncustewt").val(item.cewtcode);
+				$("#hdncustewtrate").val(item.newtrate);
 			}
 		});
 
@@ -1161,7 +1175,7 @@
 		b.innerHTML = "<input class='btn btn-danger btn-xs' type='button' id='row2_"+lastRow+"_delete' value='delete' onClick=\"deleteRow2(this);\"/>";
 		
 		//alert(lastRow);
-			$("#txtacctitle"+lastRow).focus();
+			$("#txtacctitle"+lastRow).focus(); 
 
 			$("input.numeric").autoNumeric('init',{mDec:2});
 
@@ -1186,6 +1200,11 @@
 								
 								var xz = chkDef(dInput,'PAYABLES');
 								$("#selacctpaytyp"+lastRow).val(xz);
+
+								if(this.value==$("#hdnewtpay").val()){
+									$("#txtewtcodeothers"+lastRow).val($("#hdncustewt").val());
+									$("#txtewtrateothers"+lastRow).val($("#hdncustewtrate").val());
+								}
 							}
 						}
 						});
@@ -1220,6 +1239,12 @@
 					
 					var xz = chkDef(item.id,'PAYABLES');
 					$("#selacctpaytyp"+lastRow).val(xz);
+
+					if(item.id==$("#hdnewtpay").val()){
+						$("#txtewtcodeothers"+lastRow).val($("#hdncustewt").val());
+						$("#txtewtrateothers"+lastRow).val($("#hdncustewtrate").val());
+					}
+
 				}
 			});
 
@@ -1780,8 +1805,25 @@
 				isOK=="NO";
 				return false;
 			}
-			
-			
+
+			//chkewtcode  
+			for($ix=1;$ix<=lastRowAcc;$ix++){
+
+				$chkifewt = $("#txtacctno" + $ix).val();
+
+				if($chkifewt==$("#hdnewtpay").val()){
+					if($("#txtewtcodeothers" + $ix).val()==""){
+						$("#AlertMsg").html("");
+									
+						$("#AlertMsg").html("EWT Code required!");
+						$("#alertbtnOK").show();
+						$("#AlertModal").modal('show');
+
+						isOK=="NO";
+						return false;
+					}
+				}
+			};
 			
 			if(isOK=="YES"){
 				document.getElementById("hdnRRCnt").value = lastRowRR;  

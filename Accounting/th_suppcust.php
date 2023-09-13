@@ -5,23 +5,17 @@ session_start();
 require_once "../Connection/connection_string.php";
 
 	$company = $_SESSION['companyid'];
-	
-	
-	if($_REQUEST['x']=="Loans" or $_REQUEST['x']=="Savings") {
-		$result = mysqli_query ($con, "select cempid as ccode, cname from customers WHERE compcode='$company' and cname like '%".$_REQUEST['query']."%'");
-
-	}
-	else{
-		
-		$result = mysqli_query ($con, "select ccode, cname from suppliers WHERE compcode='$company' and cname like '%".$_REQUEST['query']."%'");  
-	}
+			
+	$result = mysqli_query ($con, "select A.*, B.nrate from suppliers A left join wtaxcodes B on A.compcode=B.compcode and A.newtcode=B.ctaxcode WHERE A.compcode='$company' and A.cname like '%".$_GET['query']."%'");  
 
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 		
 
-	     $json['id'] = $row['ccode'];
-     	 $json['value'] = utf8_encode($row['cname']);
-		 $json2[] = $json;
+	  $json['id'] = $row['ccode'];
+    $json['value'] = utf8_encode($row['cname']);
+		$json['cewtcode'] = $row['newtcode'];
+		$json['newtrate'] = $row['nrate'];
+		$json2[] = $json;
 
 	}
 
