@@ -18,7 +18,7 @@
     $sql = "select cpayee, ctranno, lapproved, ddate
         from paybill 
         where compcode='$company' and ccode = '$supplier' ".$qrypos." and ddate BETWEEN  '$datefrom' and '$dateto'
-        and ctranno in (Select c tranno from paybill_t where newtamt > 0)
+        and ctranno in (Select ctranno from paybill_t where newtamt > 0)
         order by dtrandate DESC";
 
     @$arr = array();
