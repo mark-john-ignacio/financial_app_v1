@@ -205,7 +205,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 				</tr>
 
 				<?php 
-				$sqlbody = mysqli_query($con,"select a.*,b.citemdesc, a.citemdesc as newdesc, a.nrate from purchase_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.cpono = '$csalesno' Order by a.nident");
+				$sqlbody = mysqli_query($con,"select a.*,b.citemdesc, a.citemdesc as newdesc from purchase_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.cpono = '$csalesno' Order by a.nident");
 
 				$xwithvat = 0;
 				if (mysqli_num_rows($sqlbody)!=0) {
