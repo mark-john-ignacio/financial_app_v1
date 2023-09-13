@@ -60,14 +60,19 @@
 	$ncycle = str_replace( ',', '', $ncycle);
 	$ntottime = str_replace( ',', '', $ntottime);
 
+	$dret = 0;
+	if(isset($_REQUEST['isWRef'])){
+		$dret = 1;
+	}
+
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 
 
-	if (!mysqli_query($con, "INSERT INTO mrp_jo(`compcode`, `ctranno`, `ccode`, `crefSO`, `nrefident`, `citemno`, `cunit`, `nqty`, `dtargetdate`, `cpriority`, `nworkhrs`, `nsetuptime`, `ncycletime`, `ntottime`) values('$company', '$cSINo', '$cCustID', '$cRefSO', '$cItemIdent', '$cItemNo', '$cItemUnit', '$njoqty', STR_TO_DATE('$dTargetDate', '%m/%d/%Y'), '$cPriority', '$nworkhrs', '$nsetup', '$ncycle', '$ntottime')")) {
+	if (!mysqli_query($con, "INSERT INTO mrp_jo(`compcode`, `ctranno`, `ccode`, `crefSO`, `nrefident`, `citemno`, `cunit`, `nqty`, `dtargetdate`, `cpriority`, `nworkhrs`, `nsetuptime`, `ncycletime`, `ntottime`, `location_id`, `lnoref`, `cremarks`) values('$company', '$cSINo', '$cCustID', '$cRefSO', '$cItemIdent', '$cItemNo', '$cItemUnit', '$njoqty', STR_TO_DATE('$dTargetDate', '%m/%d/%Y'), '$cPriority', '$nworkhrs', '$nsetup', '$ncycle', '$ntottime', '$cDept', $dret,'$cRemarks')")) {
 		$mggx = "Errormessage: ". mysqli_error($con);
 	} else{
 
-		$mggx = "Record Succesfully Saved";
+		$mggx = "Record Succesfully Saved\nProceed to process and material generation!";
 
 		//insert attachment
 
@@ -75,7 +80,8 @@
 			// Count the number of uploaded files in array
 			$total_count = count($_FILES['upload']['name']);
 
-			if($total_count>=1){
+
+			if($total_count>=1 && $_FILES['upload']['name'][0] !=""){
 				mkdir('../../Components/assets/JOR/'.$company.'_'.$cSINo.'/',0777);
 			}
 
@@ -99,18 +105,55 @@
 		mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
 		values('$company','$cSINo','$preparedby',NOW(),'INSERTED','JOR','$compname','Inserted New Record')");
 
-
-		//generate sub processes
-		getsubs($cItemNo,$cSINo,$cRefSO,1);
-
 	}
 	
 
 ?>
-<form action="JO_edit.php" name="frmpos" id="frmpos" method="post">
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
+
+	<title>Myx Financials</title>
+
+	<script src="../../Bootstrap/js/jquery-3.6.0.min.js"></script>
+</head>
+
+<body style="padding-top:20px">
+
+<h2><center>SAVING JOB ORDER...</center><h2>
+<h1><center><span id="counter"> 0 </span></center><h1>
+
+<form action="JO_GenJO.php" name="frmpos" id="frmpos" method="post">
 	<input type="hidden" name="txtctranno" id="txtctranno" value="<?php echo $cSINo;?>" />
 </form>
-<script>
-	alert('<?=$mggx?>');
- // document.forms['frmpos'].submit();
+
+</body>
+</html>
+
+<script type="text/javascript">
+
+	var count = 5;
+
+	$(document).ready(function() {
+		counter();
+	});
+
+	function counter()
+  {
+		if ( count > 0 )
+    {
+			count--;
+      document.querySelector("#counter").innerHTML = count;
+			var c = setTimeout( counter, 500 );
+		}else
+    {
+			document.forms['frmpos'].submit();
+		}
+	}
+
+
+ 
 </script>

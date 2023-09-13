@@ -95,7 +95,7 @@
 		</section>
 	</div>		
     
-<form name="frmedit" id="frmedit" method="post" action="SO_edit.php">
+<form name="frmedit" id="frmedit" method="post" action="JO_edit.php">
 	<input type="hidden" name="txtctranno" id="txtctranno" />
 	<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
 </form>		

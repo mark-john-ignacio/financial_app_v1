@@ -2,15 +2,17 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "JobOrders_new";
+	$_SESSION['pageid'] = "JobOrders_edit";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../include/access2.php');
+	require_once('../../Model/helper.php');
 
 	$company = $_SESSION['companyid'];
-	$_SESSION['myxtoken'] = gen_token();
+	$tranno = $_REQUEST['txtctranno'];
 
+	$_SESSION['myxtoken'] = gen_token();
 
 	$arrallsec = array();
 	$sqlempsec = mysqli_query($con,"select A.nid, A.cdesc From locations A Where A.compcode='$company' and A.cstatus='ACTIVE' Order By A.cdesc");
@@ -19,6 +21,29 @@
 	foreach($rowdetloc as $row0){
 		$arrallsec[] = array('nid' => $row0['nid'], 'cdesc' => $row0['cdesc']);				
 	}
+
+
+	$arrmrpjo = array();
+	$sql = "select X.*, A.citemdesc, C.cname from mrp_jo X left join items A on X.compcode=A.compcode and X.citemno=A.cpartno left join customers C on X.compcode=C.compcode and X.ccode=C.cempid  where X.compcode='$company' and X.ctranno = '$tranno'";
+	$resultmain = mysqli_query ($con, $sql); 
+	while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
+		$arrmrpjo[] = $row2;				
+	}
+
+
+	$arrmrpjo_pt = array();
+	$sql = "select * from mrp_jo_process_t X where X.compcode='$company' and X.ctranno in (Select ctranno from mrp_jo_process where compcode='$company' and mrp_jo_ctranno  = '$tranno')";
+	$resultmain = mysqli_query ($con, $sql); 
+	while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
+		$arrmrpjo_pt[] = $row2;				
+	}
+
+	@$arrname = array();
+	$directory = "../../Components/assets/JOR/{$company}_{$tranno}/";
+	if(file_exists($directory)){
+		@$arrname = file_checker($directory);
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -50,17 +75,26 @@
 	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
 	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
 
+	<style>
+		.selectedJO {
+			background-color: LightGoldenRodYellow;
+		}
+
+	</style>
+
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
 
 	<form action="JO_newsave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
 		<fieldset>
-				<legend>Job Order</legend>
+				<legend>Job Order No.: <?=$tranno?></legend>
 				
 					<ul class="nav nav-tabs">
 						<li class="active"><a href="#apv">JO Details</a></li>
 						<li><a href="#attc">Attachments</a></li>
+						<li><a href="#subjo">Sub-Job Orders</a></li>
+						<li><a href="#mats">Materials Request</a></li>
 					</ul>
 
 					<div class="tab-content" style="overflow: inherit !important">  
@@ -73,10 +107,10 @@
 									<td>
 										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
 											<div class="col-xs-4 nopadding ">
-													<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm required" required placeholder="Supplier Code..." readonly>
+													<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm required" required placeholder="Supplier Code..." readonly value="<?=$arrmrpjo[0]['ccode']?>">
 											</div>
 											<div class="col-xs-8 nopadwleft">
-													<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" placeholder="Search Supplier Name..." required autocomplete="off" tabindex="4">
+													<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" placeholder="Search Supplier Name..." required autocomplete="off" tabindex="4" value="<?=$arrmrpjo[0]['cname']?>">
 											</div>
 										</div>
 									</td>
@@ -84,7 +118,7 @@
 									<td>
 										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
 											<div class='col-xs-8 nopadding'>
-													<input type='text' class="datepick form-control input-sm" placeholder="Pick a Date" name="txtTargetDate" id="txtTargetDate" value="<?php echo date("m/d/Y"); ?>" />
+													<input type='text' class="datepick form-control input-sm" placeholder="Pick a Date" name="txtTargetDate" id="txtTargetDate" value="<?=date_format(date_create($arrmrpjo[0]['dtargetdate']),"m/d/Y")?>" />
 											</div>
 										</div>
 									</td>
@@ -95,7 +129,7 @@
 									<td>
 										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
 											<div class="col-xs-3 nopadding">
-												<input type="text" class="form-control input-sm required" id="crefSO" name="crefSO" value="" placeholder="Reference SO No." readonly required>
+												<input type="text" class="form-control input-sm required" id="crefSO" name="crefSO" value="<?=$arrmrpjo[0]['crefSO']?>" placeholder="Reference SO No." readonly required>
 											</div>
 											<div class="col-xs-1 nopadwleft">
 												<button type="button" class="btn btn-block btn-primary btn-sm" name="btnsearchSO" id="btnsearchSO"><i class="fa fa-search"></i></button>
@@ -103,8 +137,8 @@
 											
 											<div class="col-xs-8 nopadwright">
 												<div class="form-check" style="padding-top: 3px; padding-left: 10px">
-													<input class="form-check-input" type="checkbox" value="1" id="isWRef" name="isWRef"/>
-													<label class="form-check-label" for="flexCheckChecked">No Reference</label>
+													<input class="form-check-input" type="checkbox" value="1" id="isWRef" name="isWRef" <?=($arrmrpjo[0]['lnoref']==1) ? "checked" : "" ?>/>
+													<label class="form-check-label" for="isWRef">No Reference</label>
 												</div>
 											</div>
 										</div>
@@ -116,9 +150,9 @@
 										<div class="col-xs-12" style="padding-left:2px; padding-bottom:2px">
 											<div class="col-xs-8 nopadding">
 												<select id="selpriority" name="selpriority" class="form-control input-sm selectpicker">
-													<option value="Low">Low</option>
-													<option value="Normal" selected>Normal</option>
-													<option value="High">High</option>
+													<option value="Low" <?=($arrmrpjo[0]['cpriority']=="Low") ? "selected" : "" ?>>Low</option>
+													<option value="Normal" <?=($arrmrpjo[0]['cpriority']=="Normal") ? "selected" : ""?>>Normal</option>
+													<option value="High" <?=($arrmrpjo[0]['cpriority']=="High") ? "selected" : ""?>>High</option>
 												</select>
 											</div>
 									</td>		
@@ -129,7 +163,7 @@
 									<td valign="top" style="padding-top:8px;"><span style="padding:2px;"><b>Remarks</b></span></td>
 									<td>
 										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
-											<textarea class="form-control input-sm" id="txtcremarks" name="txtcremarks" rows="3"></textarea>
+											<textarea class="form-control input-sm" id="txtcremarks" name="txtcremarks" rows="3"><?=$arrmrpjo[0]['cremarks']?></textarea>
 										</div>
 									</td>
 									<td valign="top" style="padding-top:8px;"><span style="padding:2px"><b>Department:</b></span></td>
@@ -140,7 +174,7 @@
 													<?php
 														foreach($arrallsec as $localocs){
 													?>
-														<option value="<?php echo $localocs['nid'];?>"><?php echo $localocs['cdesc'];?></option>										
+														<option value="<?php echo $localocs['nid'];?>" <?=($arrmrpjo[0]['location_id']==$localocs['nid']) ? "selected" : "" ?>><?php echo $localocs['cdesc'];?></option>										
 													<?php	
 														}						
 													?>
@@ -165,14 +199,15 @@
 							</div>
 
 							<div class="col-xs-12  nopadwtop">
-								<div class="col-xs-6 nopadwleft"><input type="text" id="citemdesc" name="citemdesc" class="form-control input-sm required" required placeholder="Item Description..." readonly> <input type="hidden" id="citemno" name="citemno" value=""> <input type="hidden" id="nrefident" name="nrefident" value=""></div>
-								<div class="col-xs-1 nopadwleft"><input type="text" id="txtcunit" name="txtcunit" class="form-control input-sm required" required placeholder="UOM..." readonly></div>
-								<div class="col-xs-1 nopadwleft"><input type="text" id="txtjoqty" name="txtjoqty" class="form-control input-sm required text-right numeric" required placeholder="0.00"></div>
-								<div class="col-xs-1 nopadwleft"><input type="text" id="txtworkinghrs" name="txtworkinghrs" class="form-control input-sm required text-right numeric" required placeholder="0.00"></div>
-								<div class="col-xs-1 nopadwleft"><input type="text" id="txtsetuptime" name="txtsetuptime" class="form-control input-sm required text-right numeric" required placeholder="0.00"></div>
-								<div class="col-xs-1 nopadwleft"><input type="text" id="txtcycletime" name="txtcycletime" class="form-control input-sm required text-right numeric" required placeholder="0.00"></div>
-								<div class="col-xs-1 nopadwleft"><input type="text" id="txtntotal" name="txtntotal" class="form-control input-sm required text-right numeric" required placeholder="0.00" readonly></div>
+								<div class="col-xs-6 nopadwleft"><input type="text" id="citemdesc" name="citemdesc" class="form-control input-sm required" required placeholder="Item Description..." readonly value="<?=$arrmrpjo[0]['citemdesc']?>"> <input type="hidden" id="citemno" name="citemno" value=""> <input type="hidden" id="nrefident" name="nrefident" value="<?=$arrmrpjo[0]['citemno']?>"></div>
+								<div class="col-xs-1 nopadwleft"><input type="text" id="txtcunit" name="txtcunit" class="form-control input-sm required" required placeholder="UOM..." readonly  value="<?=$arrmrpjo[0]['cunit']?>"></div>
+								<div class="col-xs-1 nopadwleft"><input type="text" id="txtjoqty" name="txtjoqty" class="form-control input-sm required text-right numeric" required placeholder="0.00"  value="<?=$arrmrpjo[0]['nqty']?>"></div>
+								<div class="col-xs-1 nopadwleft"><input type="text" id="txtworkinghrs" name="txtworkinghrs" class="form-control input-sm required text-right numeric" required placeholder="0.00"  value="<?=$arrmrpjo[0]['nworkhrs']?>"></div>
+								<div class="col-xs-1 nopadwleft"><input type="text" id="txtsetuptime" name="txtsetuptime" class="form-control input-sm required text-right numeric" required placeholder="0.00"  value="<?=$arrmrpjo[0]['nsetuptime']?>"></div>
+								<div class="col-xs-1 nopadwleft"><input type="text" id="txtcycletime" name="txtcycletime" class="form-control input-sm required text-right numeric" required placeholder="0.00"  value="<?=$arrmrpjo[0]['ncycletime']?>"></div>
+								<div class="col-xs-1 nopadwleft"><input type="text" id="txtntotal" name="txtntotal" class="form-control input-sm required text-right numeric" required placeholder="0.00" readonly  value="<?=$arrmrpjo[0]['ntottime']?>"></div>
 							</div>
+						
 							
 						</div>	
 
@@ -183,10 +218,102 @@
 							<input type="file" name="upload[]" id="file-0" multiple />
 
 						</div>
-					</div>
 
-					
+						<div id="subjo" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
+							<table id="TblJO" class="MyTable table table-condensed" width="100%">
+								<thead>
+									<tr>
+										<th style="border-bottom:1px solid #999">Sub JO No.</th>
+										<th style="border-bottom:1px solid #999">Item</th>
+										<th style="border-bottom:1px solid #999">UOM</th>
+										<th style="border-bottom:1px solid #999; text-align: right">Qty</th>
+										<th style="border-bottom:1px solid #999; text-align: right">Working Hours</th>
+										<th style="border-bottom:1px solid #999; text-align: right">Setup Time</th>
+										<th style="border-bottom:1px solid #999; text-align: right">Cycle Time</th>
+										<th style="border-bottom:1px solid #999; text-align: right">Total Time</th>
+									</tr>
+								</thead>
+								<tbody class="tbody">
+									<?php
+										$sql = "select X.*, A.citemdesc from mrp_jo_process X left join items A on X.compcode=A.compcode and X.citemno=A.cpartno where X.compcode='$company' and X.mrp_jo_ctranno = '$tranno' Order By X.nid";
+										$resultmain = mysqli_query ($con, $sql); 
+										while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
+									?>
+										<tr id="tr<?=$row2['nid']?>">
+											<td><a href="javascript:;" onclick="getprocess('<?=$row2['ctranno']?>','<?=$row2['citemdesc']?>','tr<?=$row2['nid']?>')"><?=$row2['ctranno']?></a></td>
+											<td><?=$row2['citemdesc']?></td>
+											<td><?=$row2['cunit']?></td>
+											<td style="text-align: right"><?=number_format($row2['nqty'])?></td>
+											<td style="text-align: right"><?=number_format($row2['nworkhrs'],2)?></td>
+											<td style="text-align: right"><?=number_format($row2['nsetuptime'],2)?></td>
+											<td style="text-align: right"><?=number_format($row2['ncycletime'],2)?></td>
+											<td style="text-align: right"><?=number_format($row2['ntottime'],2)?></td>
+										</tr>
+									<?php
+										}
+									?>
+								</tbody>                    
+							</table>			
 							
+							<hr>
+							<div class="col-xs-12 nopadwdown" id="subjodets"><h5>Sub-JO Details</h5></div>
+
+							<table id="MyJOSubs" class="MyTable table table-condensed" width="100%">
+								<thead>
+									<tr>
+										<th style="border-bottom:1px solid #999">Machine</th>
+										<th style="border-bottom:1px solid #999">Process</th>
+										<th style="border-bottom:1px solid #999">Date Started</th>
+										<th style="border-bottom:1px solid #999">Date Ended</th>
+										<th style="border-bottom:1px solid #999">Actual Output</th>
+										<th style="border-bottom:1px solid #999">Operator</th>
+										<th style="border-bottom:1px solid #999; text-align: right">Reject Qty</th>
+										<th style="border-bottom:1px solid #999; text-align: right">Scrap Qty</th>
+										<th style="border-bottom:1px solid #999">QC</th>
+										<th style="border-bottom:1px solid #999">Remarks</th>
+									</tr>
+								</thead>
+								<tbody class="tbody">
+
+								</tbody>
+							</table>
+
+
+						</div>
+
+						<div id="mats" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
+
+							<table id="MyMaterials" class="MyTable table table-condensed" width="100%">
+								<thead>
+									<tr>
+										<th style="border-bottom:1px solid #999">Material Code</th>
+										<th style="border-bottom:1px solid #999">Material Description</th>
+										<th style="border-bottom:1px solid #999">UOM</th>
+										<th style="border-bottom:1px solid #999; text-align: right">Qty</th>
+									</tr>
+								</thead>
+								<tbody class="tbody">
+									<?php
+										$sql = "select X.*, A.citemdesc from mrp_jo_process_m X left join items A on X.compcode=A.compcode and X.citemno=A.cpartno where X.compcode='$company' and X.mrp_jo_ctranno = '$tranno' Order By X.nid";
+										$resultmain = mysqli_query ($con, $sql); 
+										while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
+									?>
+										<tr>
+											<td><?=$row2['citemno']?></td>
+											<td><?=$row2['citemdesc']?></td>
+											<td><?=$row2['cunit']?></td>
+											<td style="text-align: right"><?=number_format($row2['nqty'])?></td>
+										</tr>
+									<?php
+										}
+									?>
+								</tbody>                    
+							</table>
+
+						</div>
+
+					</div>
+						
 						
 					<br><br><br><br><br>
 					<table width="100%" border="0" cellpadding="3">
@@ -285,6 +412,47 @@
 
 <script type="text/javascript">
 
+	var file_name = <?= json_encode(@$arrname) ?>;
+	/**
+	 * Checking of list files
+	 */
+	file_name.map(({name, ext}) => {
+			console.log("Name: " + name + " ext: " + ext)
+	})
+
+	var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
+	var arrimg = new Array("jpg","png","gif","jpeg");
+
+	var list_file = [];
+	var file_config = [];
+	var extender;
+	/**
+	 * setting up an list of file and config of a file
+	 */
+	file_name.map(({name, ext}, i) => {
+		list_file.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/JOR/<?=$company."_".$tranno?>/" + name)
+		console.log(ext);
+
+		if(jQuery.inArray(ext, arroffice) !== -1){
+			extender = "office";
+		} else if (jQuery.inArray(ext, arrimg) !== -1){
+			extender = "image";
+		} else if (ext == "txt"){
+			extender = "text";
+		} else {
+			extender =  ext;
+		}
+
+		console.log(extender)
+		file_config.push({
+			type : extender, 
+			caption : name,
+			width : "120px",
+			url: "th_filedelete.php?id="+name+"&code=<?=$tranno?>", 
+			key: i + 1
+		});
+	})
+
 	$(document).keydown(function(e) {	 
 	  if(e.keyCode == 83 && e.ctrlKey) { //Ctrl S
 	  	  e.preventDefault();
@@ -292,7 +460,7 @@
 	  }
 	  else if(e.keyCode == 27){ //ESC
 		 e.preventDefault();
-		 window.location.replace("JO.php");
+		 window.location.replace("RFP.php");
 	  }
 	});
 
@@ -314,6 +482,36 @@
 		$("input.numeric").on("keyup", function () {
 			computeTot();
 		}); 
+
+
+		if(file_name.length > 0){
+				$('#file-0').fileinput({
+					showUpload: false,
+					showClose: false,
+					allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+					overwriteInitial: false,
+					maxFileSize:100000,
+					maxFileCount: 5,
+					browseOnZoneClick: true,
+					fileActionSettings: { showUpload: false, showDrag: false, },
+					initialPreview: list_file,
+					initialPreviewAsData: true,
+					initialPreviewFileType: 'image',
+					initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/JOR/<?=$company."_".$tranno?>/{filename}',
+					initialPreviewConfig: file_config
+				});
+			} else {
+				$("#file-0").fileinput({
+					showUpload: false,
+					showClose: false,
+					allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+					overwriteInitial: false,
+					maxFileSize:100000,
+					maxFileCount: 5,
+					browseOnZoneClick: true,
+					fileActionSettings: { showUpload: false, showDrag: false, }
+				});
+			}
 
 		//Search Cust name
 		$('#txtcust').typeahead({
@@ -559,6 +757,40 @@
 		$("#txtntotal").autoNumeric('destroy');
 		$("#txtntotal").autoNumeric('init',{mDec:2});
 
+	}
+
+	function getprocess($xtran,$xitms,$trid){
+		var file_name = '<?= json_encode($arrmrpjo_pt) ?>';
+
+		$('tr').removeClass("selectedJO");
+
+		$("#"+$trid).addClass("selectedJO");
+
+		$("#subjodets").html("<h5>"+$xtran+": "+$xitms+"<h5>");
+		$("#MyJOSubs tbody").empty(); 
+
+		var obj = jQuery.parseJSON(file_name);
+		$.each(obj, function(key,value) {
+			if(value.ctranno == $xtran){
+				//alert(value.mrp_process_desc);
+
+				var tdmachine = "<td>&nbsp;</td>";
+				var tdprocess = "<td>"+value.mrp_process_desc+"</td>";
+				var tddatest = "<td>&nbsp;</td>";
+				var tddateen = "<td>&nbsp;</td>";
+				var tdactual = "<td>&nbsp;</td>";
+				var tdoperator = "<td>&nbsp;</td>";
+				var tdreject = "<td>&nbsp;</td>";
+				var tdscrap = "<td>&nbsp;</td>";
+				var tdqc = "<td>&nbsp;</td>";
+				var tdrems = "<td>&nbsp;</td>";
+
+				//alert(tdinfocode + "\n" + tdinfodesc + "\n" + tdinfofld + "\n" + tdinfoval + "\n" + tdinfodel);
+				
+				$('#MyJOSubs > tbody:last-child').append('<tr>'+tdmachine + tdprocess + tddatest + tddateen + tdactual + tdoperator + tdreject + tdscrap + tdqc + tdrems + '</tr>');
+
+			}
+		}); 
 	}
 
 </script>

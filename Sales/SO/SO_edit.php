@@ -685,7 +685,7 @@ var xyyyy = xtoday.getFullYear();
 
 xtoday = xmm + '/' + xdd + '/' + xyyyy;
 
-var file_name = <?= json_encode(@$arrname) ?>;
+var file_name = '<?= json_encode(@$arrname) ?>';
 /**
  * Checking of list files
  */
