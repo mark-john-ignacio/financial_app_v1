@@ -42,7 +42,9 @@
                         </div>
                 
                         <div class="col-xs-10 nopadwlefts">
-                                <input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" placeholder="Search Supplier Name..." required autocomplete="off" tabindex="4">
+                            <input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" placeholder="Search Supplier Name..." required autocomplete="off" tabindex="4">
+
+                            <input type="hidden" class="form-control input-sm" id="txtcustid" name="txtcustid">
                             
                         </div>
                     </td>
@@ -148,7 +150,7 @@
                         url: "BIR/thPaybill.php",
                         dataType: "json",
                         data: { 
-                            name:  $('#txtcust').val(),
+                            name:  $('#txtcustid').val(),
                             trantype: $('#trantype').val(),
                             dateto: $('#dateto').val(),
                             datefrom: $('#datefrom').val()
@@ -218,7 +220,8 @@
             highlighter: Object,
 			afterSelect: function(item) { 
                 const supplier = item.name;
-                $('#txtcust').val(supplier).change();
+                $('#txtcust').val(supplier).change(); 
+                $('#txtcustid').val(item.code);
                 
             }
         })

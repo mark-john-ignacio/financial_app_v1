@@ -17,7 +17,7 @@
 
     $sql = "select cpayee, ctranno, lapproved, ddate
         from paybill 
-        where compcode='$company' and cpayee = '$supplier' ".$qrypos." and ddate BETWEEN  STR_TO_DATE('$datefrom', '%m/%d/%Y') and  STR_TO_DATE('$dateto', '%m/%d/%Y')   
+        where compcode='$company' and ccode = '$supplier' ".$qrypos." and ddate BETWEEN  '$datefrom' and '$dateto'
         and ctranno in (Select c tranno from paybill_t where newtamt > 0)
         order by dtrandate DESC";
 
