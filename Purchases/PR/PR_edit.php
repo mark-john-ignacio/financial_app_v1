@@ -63,6 +63,7 @@
 
 	$sqlhead = mysqli_query($con,"Select A.*, B.Minit, B.Fname, B.Lname from purchrequest A left join users B on A.cpreparedby=B.Userid Where A.compcode='$company' and A.ctranno='$cprno'");
 
+	@$arrname = array();
 	if (file_exists('../../Components/assets/PReq/'.$company.'_'.$cprno.'/')) {
 		$allfiles = scandir('../../Components/assets/PReq/'.$company.'_'.$cprno.'/');
 		$files = array_diff($allfiles, array('.', '..'));
