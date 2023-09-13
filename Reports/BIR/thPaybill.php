@@ -10,9 +10,15 @@
     $datefrom = $_GET['datefrom'];
     $dateto = $_GET['dateto'];
 
+    $qrypos = "";
+    if($trantype!=""){
+        $qrypos = " and lapproved = '$trantype'";
+    }
+
     $sql = "select cpayee, ctranno, lapproved, ddate
         from paybill 
-        where compcode='$company' and cpayee = '$supplier' and lapproved = '$trantype' and ddate BETWEEN '$datefrom' and '$dateto'   
+        where compcode='$company' and cpayee = '$supplier' ".$qrypos." and ddate BETWEEN  STR_TO_DATE('$datefrom', '%m/%d/%Y') and  STR_TO_DATE('$dateto', '%m/%d/%Y')   
+        and ctranno in (Select c tranno from paybill_t where newtamt > 0)
         order by dtrandate DESC";
 
     @$arr = array();

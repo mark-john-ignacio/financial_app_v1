@@ -60,7 +60,7 @@
 
                         <div class="col-xs-10 nopadwlefts">
                             <select class="form-control input-sm" id="trantype" name="trantype">
-                                    <option disabled> All Transactions </option>
+                                    <option value=""> All Transactions </option>
                                     <option value="1">Posted</option>
                                     <option value="0">Unposted</option>
                             </select>
