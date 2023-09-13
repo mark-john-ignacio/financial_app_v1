@@ -7,6 +7,7 @@ include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 
 	$company = $_SESSION['companyid'];
+	$xwithvat = 0;
 
 	$sqlcomp = mysqli_query($con,"select * from company where compcode='$company'");
 
@@ -207,11 +208,10 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 				<?php 
 				$sqlbody = mysqli_query($con,"select a.*,b.citemdesc, a.citemdesc as newdesc from purchase_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.cpono = '$csalesno' Order by a.nident");
 
-				$xwithvat = 0;
 				if (mysqli_num_rows($sqlbody)!=0) {
 
 					while($rowdtls = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){ 
-						if(floatval($rowdtls['cunit']) > 0){
+						if(floatval($rowdtls['nrate']) > 0){
 							$xwithvat = 1;
 						}
 				?>
