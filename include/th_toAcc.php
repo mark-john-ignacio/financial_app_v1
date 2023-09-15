@@ -226,11 +226,15 @@ function getSetAcct($id){
 				$isok = "True";
 				if (mysqli_num_rows($resewt)!=0) {
 					while($rowewt = mysqli_fetch_array($resewt, MYSQLI_ASSOC)){
+
+						if(floatval($rowewt["newtgross"]) != 0){
 						
-						if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) values ('$company','SI','$tran','".$rowewt["dcutdate"]."','$SID','$SNM',".$rowewt["newtgross"].",0,0, NOW())")){
-							echo "False";
-							//echo mysqli_error($con);
-							$isok = "False";
+							if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) values ('$company','SI','$tran','".$rowewt["dcutdate"]."','$SID','$SNM',".$rowewt["newtgross"].",0,0, NOW())")){
+								echo "False";
+								//echo mysqli_error($con);
+								$isok = "False";
+							}
+
 						}
 					
 					}
