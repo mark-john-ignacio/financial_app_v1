@@ -30,6 +30,7 @@
 			
 			$lCancelled = $row['lcancelled'];
 			$lPosted = $row['lapproved'];
+			$lVoid = $row['lvoid'];
 		}
 	}
 
@@ -93,7 +94,24 @@
 
 	<form action="ARAdj_editsave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
 		<fieldset>
-    	<legend>AR Adjustment Details</legend>	
+    	<legend>
+				<div class="col-xs-6 nopadding"> AR Adjustment Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
+					<?php
+						if($lCancelled==1){
+							echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+						}
+						
+						if($lPosted==1){
+							if($lVoid==1){
+								echo "<font color='#FF0000'><b>VOIDED</b></font>";
+							}else{
+								echo "<font color='#FF0000'><b>POSTED</b></font>";
+							}
+						}
+					?>
+   			</div>
+
+			</legend>	
 
 				<ul class="nav nav-tabs">
 					<li class="active"><a href="#items" data-toggle="tab">AR Adjustment Details</a></li>
@@ -107,32 +125,21 @@
 						<table width="100%" border="0">
 							<tr>
 								<tH width="150">&nbsp;Transaction No.:</tH>
-								<td colspan="2" style="padding:2px;">
+								<td style="padding:2px;">
 						
 									<div class="col-xs-3 nopadding">
 										<input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" placeholder="Enter Journal No..." required autocomplete="off" value="<?php echo $cjeno;?>"  onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
 									</div>
 									
 									<input type="hidden" name="hdntranno" id="hdntranno" value="<?php echo $cjeno;?>">
-
 									<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
 									<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
-							
-									<div id="statmsgz" style="color:#F00"></div> 
+									<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?php echo $lVoid;?>">
+								
 								</td>    
-								<td style="padding:2px;" align="left">
+								<td colspan="2" style="padding:2px;" align="right">
 					
-									<div class="col-xs-5 nopadding" style="text-align:right">
-											<?php
-										if($lCancelled==1){
-												echo "<font color='#FF0000'><b>CANCELLED</b></font>";
-										}
-										
-										if($lPosted==1){
-												echo "<font color='#FF0000'><b>POSTED</b></font>";
-										}
-										?>    	
-									</div>
+									<div id="statmsgz" class="small" style="display:inline"></div>
 						
 								</td>
 							</tr>
@@ -195,7 +202,6 @@
 										<label class="form-check-label" for="flexCheckChecked">Sales Return</label>
 									</div>
 								</div></td>
-								<td style="padding:2px"  align="right">&nbsp;</td>
 							</tr>
 							<tr>
 								<td>&nbsp;</td>
@@ -204,7 +210,7 @@
 								<td style="padding:2px"  align="right">&nbsp;</td>
 							</tr>
 							<tr>
-								<td colspan="5">
+								<td colspan="4">
 								&nbsp;
 								</td>
 							</tr>
@@ -1079,8 +1085,8 @@ function enabled(){
 			var msgsx = "CANCELLED"
 		}
 		
-		$("#statmsgz").html("&nbsp;&nbsp;TRANSACTION IS ALREADY "+msgsx+", EDITING IS NOT ALLOWED!");
-		//$("#statmsgz").show();
+		document.getElementById("statmsgz").innerHTML = "TRANSACTION IS ALREADY "+msgsx+", EDITING IS NOT ALLOWED!";
+		document.getElementById("statmsgz").style.color = "#FF0000";
 		
 	}
 	else{

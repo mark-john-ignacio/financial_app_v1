@@ -79,7 +79,7 @@ require_once "../../Connection/connection_string.php";
 				select sum(a.napplied) as napplied, a.capvno, a.cacctno
 				from paybill_t a
 				left join paybill b on a.ctranno=b.ctranno
-				where b.lcancelled=0
+				where (b.lcancelled=0 and b.lvoid=0)
 				group by a.capvno, a.cacctno
 			) D on  A.ctranno=D.capvno and B.cacctno=D.cacctno
 		where A.compcode='$company' and A.lapproved=1 and B.ncredit <> 0 and C.ccategory='LIABILITIES' and A.ccode='$code'

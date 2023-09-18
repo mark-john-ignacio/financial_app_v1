@@ -130,11 +130,30 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
+		$lVoid = $row['lvoid'];
 	}
 ?>
 	<form action="PR_editsave.php" name="frmpos" id="frmpos" method="post"  enctype="multipart/form-data">
 		<fieldset>
-    	<legend>Purchase Request</legend>	
+    	<legend>
+
+				<div class="col-xs-6 nopadding"> Purchase Request Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
+					<?php
+						if($lCancelled==1){
+							echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+						}
+								
+						if($lPosted==1){
+							if($lVoid==1){
+								echo "<font color='#FF0000'><b>VOIDED</b></font>";
+							}else{
+								echo "<font color='#FF0000'><b>POSTED</b></font>";
+							}
+						}
+					?>
+				</div>
+
+			</legend>	
 
 				<ul class="nav nav-tabs">
 					<li class="active"><a href="#home">PR Details</a></li>
@@ -148,28 +167,19 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							<table width="100%" border="0">
 								<tr>
 											<tH>PR No.:</tH>
-											<td colspan="2" style="padding:2px">
+											<td style="padding:2px">
 												<div class="col-xs-3 nopadding">
 													<input type="text" class="form-control input-sm" id="txtcprno" name="txtcprno" width="20px" tabindex="1" value="<?php echo $cprno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
 												</div>     
 												<input type="hidden" name="hdntranno" id="hdntranno" value="<?php echo $cprno;?>">
 												<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
 												<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
+												<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?php echo $lVoid;?>">
 												&nbsp;&nbsp;
-												<div id="statmsgz" style="display:inline"></div>
+												
 											</td>
-											<td style="padding:2px" align="center">
-												<div id="salesstat">
-													<?php
-														if($lCancelled==1){
-															echo "<font color='#FF0000'><b>CANCELLED</b></font>";
-														}
-														
-														if($lPosted==1){
-															echo "<font color='#FF0000'><b>POSTED</b></font>";
-														}
-													?>
-												</div>
+											<td colspan="2"  style="padding:2px" align="right">
+												<div id="statmsgz" class="small" style="display:inline"></div>
 											</td>
 										</tr>
 
@@ -792,7 +802,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	function enabled(){
 		if(document.getElementById("hdnposted").value==1 || document.getElementById("hdncancel").value==1){
 			if(document.getElementById("hdnposted").value==1){
-				var msgsx = "POSTED"
+				if(document.getElementById("hdnvoid").value==1){
+					var msgsx = "VOIDED";
+				}else{
+					var msgsx = "POSTED";
+				}
 			}
 			
 			if(document.getElementById("hdncancel").value==1){

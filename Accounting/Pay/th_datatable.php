@@ -5,13 +5,14 @@
 
 	include('../../Connection/connection_string.php');
 
-	$column = array('a.ctranno', 'b.cname', 'e.cname', 'a.ccheckno', 'a.cpayrefno', 'a.dcheckdate', 'a.lapproved', 'a.lcancelled', 'a.lsent');
 
-	$query = "select a.ctranno, b.cname, e.cname as bankname, CASE WHEN a.cpaymethod='cheque' THEN a.ccheckno ELSE a.cpayrefno END as cpayref, a.dcheckdate, a.lapproved, a.lcancelled, a.lsent from paybill a left join bank e on a.compcode=e.compcode and a.cbankcode=e.ccode left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='".$_SESSION['companyid']."'";
+	$column = array('a.ctranno', 'd.cref', 'd.crefrr', 'CONCAT(a.ccode,"-",b.cname)', 'CONCAT(a.cbankcode)', 'a.ddate', 'CASE WHEN a.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN a.lcancelled=1 THEN "Cancelled" ELSE CASE WHEN a.lsent=0 THEN "For Sending" ELSE "For Approval" END END','');
+
+	$query = "select a.*, b.cname, e.cname as bankname, d.cref ,d.crefrr from paybill a left join bank e on a.compcode=e.compcode and a.cbankcode=e.ccode left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode LEFT JOIN (Select x.ctranno, GROUP_CONCAT(DISTINCT x.capvno) as cref, GROUP_CONCAT(DISTINCT CONCAT(x.crefrr,\": \",y.crefsi)) as crefrr from paybill_t x left join suppinv y on x.compcode=y.compcode and x.crefrr=y.ctranno where x.compcode='".$_SESSION['companyid']."' group by x.ctranno) d on a.ctranno=d.ctranno where a.compcode='".$_SESSION['companyid']."' ";
 
 	if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
 	{
-		$query .= " and (LOWER(b.cname) like LOWER('%".$_POST['searchByName']."%') OR LOWER(a.ctranno) like LOWER('%".$_POST['searchByName']."%') OR LOWER(a.ccheckno) like LOWER('%".$_POST['searchByName']."%') OR LOWER(a.cpayrefno) like LOWER('%".$_POST['searchByName']."%'))";
+		$query .= "and (LOWER(b.cname) like LOWER('%".$_POST['searchByName']."%') OR LOWER(a.ctranno) like LOWER('%".$_POST['searchByName']."%') OR LOWER(d.cref) like LOWER('%".$_POST['searchByName']."%') OR LOWER(d.crefrr) like LOWER('%".$_POST['searchByName']."%'))";
 	}
 
 	if(isset($_POST['order']))
@@ -25,14 +26,10 @@
 
 	$query1 = '';
 
-	
 	if($_POST["length"] != -1)
 	{
 		$query1 = 'LIMIT ' . $_POST['start'] . ', ' . $_POST['length'];
 	}
-	
-
-	echo $query;
 
 	$statement = $connect->prepare($query);
 
@@ -52,13 +49,19 @@
 	{
 		$sub_array = array();
 		$sub_array[] = $row['ctranno'];
+		$sub_array[] = $row['ccode'];
 		$sub_array[] = $row['cname'];
-		$sub_array[] = $row['bankname'];
-		$sub_array[] = $row['cpayref'];
-		$sub_array[] = $row['dcheckdate'];
+		$sub_array[] = date_format(date_create($row['ddate']), "m/d/Y");
 		$sub_array[] = $row['lapproved'];
 		$sub_array[] = $row['lcancelled'];
+		$sub_array[] = str_replace(",","<br>",$row['cref']);
+		$sub_array[] = str_replace(",","<br>",$row['crefrr']);
+		$sub_array[] = $row['cbankcode']; 
+		$sub_array[] = $row['ccheckno'];
+		$sub_array[] = $row['cpayrefno'];
+		$sub_array[] = $row['cpaymethod'];
 		$sub_array[] = $row['lsent'];
+		$sub_array[] = $row['lvoid'];
 		$data[] = $sub_array;
 	}
 

@@ -377,15 +377,16 @@ function getSetAcct($id){
 	
 	else if($typ=="PV"){
 				
-		//Accounts Payable -> supplier account -> Debit
-			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'PV', '$tran', A.dcheckdate, A.cacctno, B.cacctdesc, 0, A.npaid, 0, NOW() From paybill A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ctranno='$tran' ")){
+			//Accounts Payable -> supplier account -> Debit
+			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'PV', '$tran', C.dcheckdate, A.cacctno, B.cacctdesc, A.napplied, 0, 0, NOW() From paybill_t A left join paybill C on A.compcode=C.compcode and A.ctranno=C.ctranno left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ctranno='$tran' ")){
 				echo "False";
 			}
 			else{
+
 					//Accounts Payable -> supplier account -> Credit
-					if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'PV', '$tran', C.dcheckdate, A.cacctno, B.cacctdesc, A.napplied, 0, 0, NOW() From paybill_t A left join paybill C on A.compcode=C.compcode and A.ctranno=C.ctranno left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ctranno='$tran' ")){
+					if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'PV', '$tran', A.dcheckdate, A.cacctno, B.cacctdesc, 0, A.npaid, 0, NOW() From paybill A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ctranno='$tran' ")){
 						echo "False";
-					}
+					}				
 					else{
 						echo "True";
 					}
@@ -409,13 +410,15 @@ function getSetAcct($id){
 
 	else if($typ=="OR"){
 				
-		//OR -> Customer account -> Credit
-			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'OR', '$tran', C.dcutdate, A.cacctno, B.cacctdesc, 0, sum(A.napplied) as namount, 0, NOW() From receipt_sales_t A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid join receipt C on A.compcode=C.compcode and A.ctranno=C.ctranno where A.compcode='$company' and A.ctranno='$tran'  Group by C.dcutdate, A.cacctno, B.cacctdesc ")){
+		
+			//OR -> Deposit account -> Debit
+			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'OR', '$tran', A.dcutdate, A.cacctcode, B.cacctdesc, A.namount, 0, 0, NOW() From receipt A left join accounts B on A.compcode=B.compcode and A.cacctcode=B.cacctid where A.compcode='$company' and A.ctranno='$tran'")){
 				echo "False";
 			}
 			else{
-					//OR -> Deposit account -> Debit
-					if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'OR', '$tran', A.dcutdate, A.cacctcode, B.cacctdesc, A.namount, 0, 0, NOW() From receipt A left join accounts B on A.compcode=B.compcode and A.cacctcode=B.cacctid where A.compcode='$company' and A.ctranno='$tran'")){
+					
+					//OR -> Customer account -> Credit
+					if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'OR', '$tran', C.dcutdate, A.cacctno, B.cacctdesc, 0, sum(A.napplied) as namount, 0, NOW() From receipt_sales_t A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid join receipt C on A.compcode=C.compcode and A.ctranno=C.ctranno where A.compcode='$company' and A.ctranno='$tran'  Group by C.dcutdate, A.cacctno, B.cacctdesc ")){
 						echo "False";
 					}
 					else{
@@ -429,14 +432,14 @@ function getSetAcct($id){
 	else if($typ=="BD"){
 				
 		//Bank Deposit -> Debit Account -> Debit
-			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'BD', '$tran', A.dcutdate, A.cacctcode, B.cacctdesc, A.namount, 0, 0, NOW() From deposit A left join accounts B on A.compcode=B.compcode and A.cacctcode=B.cacctno where A.compcode='$company' and A.ctranno='$tran' ")){
+
+			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'BD', '$tran', A.dcutdate, A.cacctcode, B.cacctdesc, A.namount, 0, 0, NOW() From deposit A left join accounts B on A.compcode=B.compcode and A.cacctcode=B.cacctid where A.compcode='$company' and A.ctranno='$tran' ")){
 				echo "False";
 			}
 			else{
 					//ORs in details -> debit account -> Credit
 					
-					$sqlbd = "Select A.ctranno, B.dcutdate, C.cacctcode, D.cacctdesc, C.namount From deposit_t A left join deposit B on A.compcode=B.compcode and A.ctranno=B.ctranno left join receipt C on A.compcode=C.compcode and A.corno=C.ctranno left join accounts D on C.compcode=D.compcode and C.cacctcode=D.cacctno where A.compcode='$company' and A.ctranno='$tran'";
-
+					$sqlbd = "Select A.ctranno, B.dcutdate, C.cacctcode, D.cacctdesc, C.namount From deposit_t A left join deposit B on A.compcode=B.compcode and A.ctranno=B.ctranno left join receipt C on A.compcode=C.compcode and A.corno=C.ctranno left join accounts D on C.compcode=D.compcode and C.cacctcode=D.cacctid where A.compcode='$company' and A.ctranno='$tran'";
 
 					$resbd = mysqli_query($con,$sqlbd);
 					$isok = "True";

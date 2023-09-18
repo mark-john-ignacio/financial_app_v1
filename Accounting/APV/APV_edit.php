@@ -12,7 +12,7 @@
 	$company = $_SESSION['companyid'];
 	$ctranno = $_REQUEST['txtctranno'];
 
-	$sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.captype, a.cpaymentfor, a.cpayee, DATE_FORMAT(a.dapvdate,'%m/%d/%Y') as dapvdate, a.ngross, a.cpreparedby, a.lcancelled, a.lapproved, a.lprintposted, b.cname, c.nrate, b.newtcode from apv a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join wtaxcodes c on b.compcode=c.compcode and b.newtcode=c.ctaxcode where a.compcode = '$company' and a.ctranno = '$ctranno'");
+	$sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.captype, a.cpaymentfor, a.cpayee, DATE_FORMAT(a.dapvdate,'%m/%d/%Y') as dapvdate, a.ngross, a.cpreparedby, a.lcancelled, a.lapproved, a.lprintposted, a.lvoid, b.cname, c.nrate, b.newtcode from apv a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join wtaxcodes c on b.compcode=c.compcode and b.newtcode=c.ctaxcode where a.compcode = '$company' and a.ctranno = '$ctranno'");
 
 	$gettaxcd = mysqli_query($con,"SELECT * FROM `taxcode` where compcode='$company' order By nidentity"); 
 	if (mysqli_num_rows($gettaxcd)!=0) {
@@ -118,13 +118,30 @@
 			$lCancelled = $row['lcancelled'];
 			$lPosted = $row['lapproved'];
 			$lPrinted = $row['lprintposted'];
+			$lVoid = $row['lvoid'];
 		}
 
 	?>
 
 	<form action="APV_editsave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
 		<fieldset>
-			<legend>AP Voucher</legend>	
+			<legend>
+				<div class="col-xs-6 nopadding"> AP Voucher </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
+				<?php
+					if($lCancelled==1){
+						echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+					}
+							
+					if($lPosted==1){
+						if($lVoid==1){
+							echo "<font color='#FF0000'><b>VOIDED</b></font>";
+						}else{
+							echo "<font color='#FF0000'><b>POSTED</b></font>";
+						}
+					}
+				?>
+				</div>
+			</legend>	
 
 			<ul class="nav nav-tabs">
 					<li class="active"><a href="#items" data-toggle="tab">AP Voucher Details</a></li>
@@ -137,29 +154,20 @@
 						<table width="100%" border="0">
 							<tr>
 								<tH>APV No.:</tH>
-								<td colspan="2" style="padding:2px;"><div class="col-xs-4 nopadding">
+								<td style="padding:2px;"><div class="col-xs-4 nopadding">
 									<input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" placeholder="Enter APV No..." required  value="<?php echo $ctranno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
 									</div>
 									<input type="hidden" name="hdnorigNo" id="hdnorigNo" value="<?php echo $ctranno;?>">
 									
 									<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
 									<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
-												&nbsp;&nbsp;
-									<div id="statmsgz" style="display:inline"></div>
+									<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?php echo $lVoid;?>">
+									&nbsp;&nbsp;
+									
 									
 								</td>
-								<td style="padding:2px;">
-									<div id="salesstat">
-										<?php
-											if($lCancelled==1){
-												echo "<font color='#FF0000'><b>CANCELLED</b></font>";
-											}
-											
-											if($lPosted==1){
-												echo "<font color='#FF0000'><b>POSTED</b></font>";
-											}
-										?>
-									</div>    
+								<td colspan="2" style="padding:2px;" align="right">
+								<div id="statmsgz" class="small" style="display:inline"></div>    
 								</td>
 							</tr>
 							<tr>
@@ -2165,7 +2173,11 @@
 		
 		if(document.getElementById("hdnposted").value==1 || document.getElementById("hdncancel").value==1){
 			if(document.getElementById("hdnposted").value==1){
-				var msgsx = "POSTED";
+				if(document.getElementById("hdnvoid").value==1){
+				var msgsx = "VOIDED";
+				}else{
+					var msgsx = "POSTED";
+				}
 			}
 						
 			if(document.getElementById("hdncancel").value==1){

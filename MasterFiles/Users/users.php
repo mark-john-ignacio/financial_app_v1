@@ -143,8 +143,8 @@ if(@$lvlcompute==1){
 										<th>UserID</th>
 											<th>Name</th>
 											<th>Email</th>
-											<th>Status</th>
-											<th>Actions</th>
+											<th style="text-align: center">Status</th>
+											<th style="text-align: center">Actions</th>
 											<!--<th>Password</th>-->
 									</tr>
 								</thead>
@@ -192,7 +192,7 @@ if(@$lvlcompute==1){
 														<td><?php echo $row['Userid'];?></td>
 														<td><?php echo $row['Fname']." ".$row['Lname'];?></td>
 														<td><?php echo $row['cemailadd'];?></td>
-														<td>
+														<td align="center">
 															<?php 
 																@$allemailadd[] = array('cemailadd' => $row['cemailadd'], 'Userid' => $row['Userid']);
 
@@ -201,6 +201,9 @@ if(@$lvlcompute==1){
 																}
 																elseif ($row['cstatus']=="Inactive"){
 																	echo "<span class='label label-danger'>Inactive</span>";
+																}
+																elseif ($row['cstatus']=="Deactivate"){
+																	echo "<span class='label label-danger'>Blocked</span>";
 																}
 																else{
 																	echo "<span class='label label-default'>Status error!</h1></span>";
@@ -256,6 +259,8 @@ if(@$lvlcompute==1){
 							<input type="hidden" value='<?=json_encode(@$allemailadd)?>' id="hdnemails">
               
     </div> <!-- /container -->
+
+	
 
 
 	<!-- Modal -->
@@ -407,6 +412,11 @@ if(@$lvlcompute==1){
 	
 	$(function(){
 		// Adding new user
+		$('#editpass').on('click', function (){
+			
+		});
+
+
 		$("#btnadd").on("click", function() {
 			$("#hdnmodtype").val("Add");
 			$("#btnSave").show();
@@ -523,7 +533,7 @@ if(@$lvlcompute==1){
 		
 		
 		//Edit user Detail
-		
+
 		//Save UPDATE on users Details
 		$("#btnUpdate").on("click", function() {
 			 var numz = 0;
@@ -615,6 +625,8 @@ if(@$lvlcompute==1){
 		}
 	}
 
+	
+
 	function editsrc($xcv){
 		$("#hdnmodtype").val("Edit");
 			
@@ -660,7 +672,7 @@ if(@$lvlcompute==1){
 
 </script>
     
-<form method="post" action="users_access.php" name="frmedit" id="frmedit">
+<form method="post" action="users_access.php" name="frmedit" id="frmedit"> 
 	<input type="hidden" name="empedit" id="empedit" value="">
 </form>
 

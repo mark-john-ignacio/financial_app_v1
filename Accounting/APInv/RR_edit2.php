@@ -26,7 +26,7 @@ else{
 		$cpono = $_REQUEST['txtcpono'];
 	}
 
-$sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dreceived,'%m/%d/%Y') as dneeded, a.ngross, a.nbasegross, a.cpreparedby, a.lcancelled, a.lapproved, a.lprintposted, a.ccustacctcode, b.cname, a.crefsi, a.crefrr, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate from suppinv a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.ctranno = '$cpono'");
+$sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dreceived,'%m/%d/%Y') as dneeded, a.ngross, a.nbasegross, a.cpreparedby, a.lcancelled, a.lapproved, a.lprintposted, a.lvoid, a.ccustacctcode, b.cname, a.crefsi, a.crefrr, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate from suppinv a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.ctranno = '$cpono'");
 
 	//function listcurrencies(){ //API for currency list
 	//	$apikey = $_SESSION['currapikey'];
@@ -146,6 +146,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
+		$lVoid = $row['lvoid'];
 	}
 ?>
 <form action="RR_editsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
@@ -158,7 +159,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						}
 						
 						if($lPosted==1){
-							echo "<font color='#FF0000'><b>POSTED</b></font>";
+							if($lVoid==1){
+								echo "<font color='#FF0000'><b>VOIDED</b></font>";
+							}else{
+								echo "<font color='#FF0000'><b>POSTED</b></font>";
+							}
 						}
 					?>
 				</div>
@@ -175,17 +180,18 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					<table width="100%" border="0">
 						<tr>
 							<tH>RR No.:</tH>
-							<td colspan="2" style="padding:2px"><div class="col-xs-3 nopadding"><input type="text" class="form-control input-sm" id="txtcpono" name="txtcpono" width="20px" tabindex="1" value="<?= $cpono;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');"></div>
+							<td style="padding:2px"><div class="col-xs-3 nopadding"><input type="text" class="form-control input-sm" id="txtcpono" name="txtcpono" width="20px" tabindex="1" value="<?= $cpono;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');"></div>
 								
 								
 								<input type="hidden" name="hdntranno" id="hdntranno" value="<?= $cpono;?>">
 								<input type="hidden" name="hdnposted" id="hdnposted" value="<?= $lPosted;?>">
 								<input type="hidden" name="hdncancel" id="hdncancel" value="<?= $lCancelled;?>">
+								<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?php echo $lVoid;?>">
 								&nbsp;&nbsp;
-								<div id="statmsgz" style="display:inline"></div>
-							</td>
-							<td style="padding:2px" align="center">
 								
+							</td>
+							<td colspan="2" style="padding:2px" align="center">
+								<div id="statmsgz" class="small" style="display:inline"></div>
 							</td>
 						</tr>
 						<tr>
@@ -1347,25 +1353,11 @@ function enabled(){
 	if($("#hdnposted").val()==1 || $("#hdncancel").val()==1){
 
 		if(document.getElementById("hdnposted").value==1){
-			var msgsx = "POSTED"
-			
-				if(document.getElementById("hdnRRAmtAcc").value=="YES" && document.getElementById("hdnwRefAPC").value=="false"){
-				
-					var msgsx = "";
-					
-					$("#frmpos :input").attr("disabled", false);
-				
-					
-					$("#txtctranno").attr("readonly", true);
-					$("#txtctranno").val($("#hdnorigNo").val());
-					
-					$("#btnMain").attr("disabled", true);
-					$("#btnNew").attr("disabled", true);
-					$("#btnPrint").attr("disabled", true);
-					$("#btnEdit").attr("disabled", true);	
-					
+				if(document.getElementById("hdnvoid").value==1){
+					var msgsx = "VOIDED";
+				}else{
+					var msgsx = "POSTED";
 				}
-
 		}
 		
 		if(document.getElementById("hdncancel").value==1){

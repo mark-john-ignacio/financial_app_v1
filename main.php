@@ -350,7 +350,7 @@
 					</a>
 					<ul class="sub-menu"> 
 						<li>
-							<a href="javascript:;" onClick="setpage('Sales/Quote/Quote.php');">
+							<a href="javascript:;" onClick="setpage('Sales/Quote/Quote.php?ix=');">
                 <i class="fgly flaticon-020-receipt"></i> Quotation
 							</a>
 						</li>
@@ -366,22 +366,22 @@
 						?> 
 
 						<li>
-							<a href="javascript:;" onClick="setpage('Sales/SO/SO.php');">
+							<a href="javascript:;" onClick="setpage('Sales/SO/SO.php?ix=');">
                 <i class="fgly-sm flaticon-003-shopping-list"></i> Sales Order
 							</a>
 						</li>
 						<li>
-							<a href="javascript:;" onClick="setpage('Sales/DR/DR.php');">
+							<a href="javascript:;" onClick="setpage('Sales/DR/DR.php?ix=');">
                 <i class="fgly-sm flaticon-035-invoice"></i> Delivery Receipt
 							</a>
 						</li>
 						<li>
-							<a href="javascript:;" onClick="setpage('Sales/Sales/SI.php');">
+							<a href="javascript:;" onClick="setpage('Sales/Sales/SI.php?ix=');">
                 <i class="fgly-sm flaticon-065-bill"></i> Sales Invoice
 							</a>
 						</li>
 						<li>
-							<a href="javascript:;" onClick="setpage('Sales/Return/SR.php');">
+							<a href="javascript:;" onClick="setpage('Sales/Return/SR.php?ix=');">
                 <i class="icon-action-undo"></i> Sales Return 
 							</a>
 						</li>
@@ -398,22 +398,22 @@
 						?>
 						<li class="side-item-category">Non Trade Transactions</li>						
 						<li>
-							<a href="javascript:;" onClick="setpage('SalesNT/SO/SO.php');">
+							<a href="javascript:;" onClick="setpage('SalesNT/SO/SO.php?ix=');">
                 <i class="fgly-sm flaticon-003-shopping-list"></i> SO Non Trade
 							</a>
 						</li>
 						<li>
-							<a href="javascript:;" onClick="setpage('SalesNT/DR/DR.php');">
+							<a href="javascript:;" onClick="setpage('SalesNT/DR/DR.php?ix=');">
                 <i class="fgly-sm flaticon-035-invoice"></i> DR Non-Trade
 							</a>
 						</li>						
 						<li>
-							<a href="javascript:;" onClick="setpage('SalesNT/Sales/SI.php');">
+							<a href="javascript:;" onClick="setpage('SalesNT/Sales/SI.php?ix=');">
                 <i class="fgly-sm flaticon-065-bill"></i> SI Non-Trade
 							</a>
 						</li>
 						<li>
-							<a href="javascript:;" onClick="setpage('SalesNT/Return/SR.php');">
+							<a href="javascript:;" onClick="setpage('SalesNT/Return/SR.php?ix=');">
                 <i class="icon-action-undo"></i> SR Non-Trade
 							</a>
 						</li>
@@ -430,22 +430,22 @@
 					</a>
 					<ul class="sub-menu">
 						<li>
-							<a href="javascript:;" onClick="setpage('Purchases/PR/PR.php');">
+							<a href="javascript:;" onClick="setpage('Purchases/PR/PR.php?ix=');">
 							<i class="fa fa-cart-plus" ></i> Purchase Request
 							</a>
 						</li>
 						<li>
-							<a href="javascript:;" onClick="setpage('Purchases/PO/Purch.php');">
+							<a href="javascript:;" onClick="setpage('Purchases/PO/Purch.php?ix=');">
                 <i class="glyphicon glyphicon-list"> </i> Purchase Order
 							</a>
 						</li>
 						<li>
-							<a href="javascript:;" onClick="setpage('Purchases/RR/RR.php');">
+							<a href="javascript:;" onClick="setpage('Purchases/RR/RR.php?ix=');">
                 <i class="fa fa-download"> </i> Receiving
 							</a>
 						</li>
 						<li>
-							<a href="javascript:;" onClick="setpage('Purchases/PRet/PurchRet.php');">
+							<a href="javascript:;" onClick="setpage('Purchases/PRet/PurchRet.php?ix=');">
                 <i class="fa fa-upload"> </i> Purchase Return
 							</a>
 						</li>
@@ -459,7 +459,7 @@
 					</a>
 					<ul class="sub-menu">
 						<li>
-							<a href="javascript:;" onClick="setpage('Accounting/Journal.php');">
+							<a href="javascript:;" onClick="setpage('Accounting/Journal/Journal.php?ix=');">
                 <i class="fa fa-book"> </i>Journal Entry
 							</a>
 						</li>
@@ -469,17 +469,17 @@
 							</a>
               <ul class="sub-menu">
 								<li>
-                  <a href="javascript:;" onClick="setpage('Accounting/APInv/RR.php');"> 
+                  <a href="javascript:;" onClick="setpage('Accounting/APInv/RR.php?ix=');"> 
 										<i class="fa fa-angle-double-right"></i> Supplier's Invoice 
 									</a>
                 </li>	
 	              <li>
-                  <a href="javascript:;" onClick="setpage('Accounting/APAdj/APAdj.php');"> 
+                  <a href="javascript:;" onClick="setpage('Accounting/APAdj/APAdj.php?ix=');"> 
 										<i class="fa fa-angle-double-right"></i> Adjustments 
 									</a>
                 </li>										
                 <li>
-                  <a href="javascript:;" onClick="setpage('Accounting/APV/APV.php');"> 
+                  <a href="javascript:;" onClick="setpage('Accounting/APV/APV.php?ix=');"> 
 										<i class="fa fa-angle-double-right"></i> AP Voucher 
 									</a>
                 </li>
@@ -490,13 +490,13 @@
 									if (mysqli_num_rows($result)!=0) {
 								?>
 									<li>
-										<a href="javascript:;" onClick="setpage('Accounting/RFP/RFP.php');"> <i class="fa fa-angle-double-right"></i> Request For Payment </a>
+										<a href="javascript:;" onClick="setpage('Accounting/RFP/RFP.php?ix=');"> <i class="fa fa-angle-double-right"></i> Request For Payment </a>
 									</li>
 								<?php
 									}
 								?>
                 <li>
-                  <a href="javascript:;" onClick="setpage('Accounting/Pay/PayBill.php');"> <i class="fa fa-angle-double-right"></i> Bills Payment </a>
+                  <a href="javascript:;" onClick="setpage('Accounting/Pay/PayBill.php?ix=');"> <i class="fa fa-angle-double-right"></i> Bills Payment </a>
                 </li>
               </ul>
 						</li>
@@ -515,12 +515,12 @@
                   </li>
 									-->
 									<li>
-                    <a href="javascript:;" onClick="setpage('Accounting/ARAdj/ARAdj.php');"> 
+                    <a href="javascript:;" onClick="setpage('Accounting/ARAdj/ARAdj.php?ix=');"> 
 											<i class="fa fa-angle-double-right"></i> Adjustments 
 										</a>
                   </li>
                   <li>
-                    <a href="javascript:;" onClick="setpage('Accounting/OR/OR.php');"> 
+                    <a href="javascript:;" onClick="setpage('Accounting/OR/OR.php?ix=');"> 
 											<i class="fa fa-angle-double-right"></i> AR Payments 
 										</a>
                   </li>
@@ -528,7 +528,7 @@
 						</li>
 
 						<li>
-							<a href="javascript:;" onClick="setpage('Accounting/Deposit.php');">
+							<a href="javascript:;" onClick="setpage('Accounting/Deposit/Deposit.php?ix=');">
                 <i class="fa fa-bank"> </i> Bank Deposit
 							</a>
 						</li>
@@ -599,6 +599,12 @@
 							</a>
 						</li>
 					</ul>
+				</li>
+				<li>
+					<a href="javascript:;" onClick="setpage('MasterFiles/AuditTrail/AuditTrail.php');">
+					<i class="fa fa-search-plus" aria-hidden="true"></i>
+					<span class="title">Audit Trail</span>
+					</a>
 				</li>
 			</ul>
 			<!-- END SIDEBAR MENU -->

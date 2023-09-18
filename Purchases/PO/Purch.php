@@ -51,126 +51,47 @@ $company = $_SESSION['companyid'];
 			<font size="+2"><u></u></font>
         <div>
         	<div style="float:left; width:50%">
-				<font size="+2"><u>Purchase Order List</u></font>	
-            </div>
+						<font size="+2"><u>Purchase Order List</u></font>	
+          </div>
         </div>
-			<br><br>
-			<button type="button" class="btn btn-primary btn-sm" onClick="location.href='Purch_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
-			<?php
-				if($unpostat=="True"){
-			?>
-			<button type="button" class="btn btn-warning btn-sm" onClick="location.href='Purch_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
-			<?php
-				}
-			?>
+				<div class="col-xs-12 nopadding">
+					<div class="col-xs-4 nopadding">
+						<button type="button" class="btn btn-primary btn-sm"  onClick="location.href='Purch_new.php'" id="btnNew" name="btnNew"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+
+						<?php
+							if($unpostat=="True"){
+						?>
+							<button type="button" class="btn btn-danger btn-sm" onClick="location.href='Purch_void.php'"><span class="fa fa-times"></span>&nbsp;Void Transaction</button>
+						<?php
+							}
+						?>
+					</div>
+					<div class="col-xs-2 nopadding">
+						<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
+					</div>
+					<div class="col-xs-3 nopadwtop" style="height:30px !important;">
+						<b> Search Supplier / PO No / Ref No.: </b>
+					</div>
+					<div class="col-xs-3 text-right nopadding">
+						<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Enter Customer, Trans No, Reference...">
+					</div>
+
+				</div>
 
       <br><br>
 			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
 						<th class="text-center">PO No</th>
-						<th class="text-center">Customer</th>
-						<th class="text-center">Trans Date</th>
+						<th class="text-center">Reference</th>
+						<th class="text-center">Supplier</th>
 						<th class="text-center">Gross</th>
+						<th class="text-center">PO Date</th>
             <th class="text-center">Status</th>
 						<th class="text-center">Actions</th>
 					</tr>
 				</thead>
-
-				<tbody>
-              	<?php
-				$sql = "select a.*,b.cname from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' order by a.ddate desc";
-				
-				$result=mysqli_query($con,$sql);
-				
-					if (!mysqli_query($con, $sql)) {
-						printf("Errormessage: %s\n", mysqli_error($con));
-					} 
-					
-				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-				{
-				?>
- 					<tr <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?>>
-						<td><a <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?> href="javascript:;" onClick="editfrm('<?php echo $row['cpono'];?>');"><?php echo $row['cpono'];?></a></td>
-						<td><?php echo $row['ccode'];?> - <?php echo $row['cname'];?> </td>
-             <td><?php echo $row['ddate'];?></td>
-						<td align="right"><?php echo $row['ngross'];?></td>
-						<td align="center">
-							<?php
-								if(intval($row['lsent'])==intval(0)){
-									if(intval($row['lcancelled'])==intval(0)){
-										echo "For Sending";
-									}else{
-										echo "<b>Cancelled</b>";
-									}
-								}else{
-									if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
-										echo "For Approval";
-									}else{
-										if(intval($row['lapproved'])==intval(1)){
-											echo "Posted";
-										}elseif(intval($row['lcancelled'])==intval(1)){
-											echo "<b>Cancelled</b>";
-										}else{
-											echo "Pending";
-										}
-									}
-								}
-							?>
-						</td>
-            <td align="center">
-              <div id="msg<?php echo $row['cpono'];?>">
-                <?php 
-									if(intval($row['lsent'])!==intval(1)){
-										if(intval($row['lcancelled'])==intval(0)){
-								?>
-
-									<a href="javascript:;" onClick="trans('SEND','<?php echo $row['cpono'];?>')" class="btn btn-xs btn-default"> 
-										<i class="fa fa-share" style="font-size:20px;color: #ffb533;" title="Send transaction"></i>
-									</a>
-
-									<a href="javascript:;" onClick="trans('CANCEL1','<?php echo $row['cpono'];?>')" class="btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>">
-										<i class="fa fa-thumbs-down" style="font-size:20px;color:Red ;" title="Cancel transaction"></i>
-									</a>
-
-								<?php
-										}else{
-											echo "-";
-										}
-									}else{
-
-									if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0) && intval($row['lsent'])==intval(1)){
-
-								?>
-										<a href="javascript:;" onClick="trans('POST','<?php echo $row['cpono'];?>')" class="btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>">
-											<i class="fa fa-thumbs-up" style="font-size:20px;color:Green ;" title="Approve transaction"></i>
-										</a>
-
-										<a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['cpono'];?>')" class="btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>">
-											<i class="fa fa-thumbs-down" style="font-size:20px;color:Red ;" title="Cancel transaction"></i>
-										</a>
-
-								<?php
-									}				
-								?>
-									
-										<a href="javascript:;" onClick="track('<?php echo $row['cpono'];?>')" class="btn btn-xs btn-default"> 
-											<i class="fa fa-file-text-o" style="font-size:20px;color: #3374ff;" title="Track transaction"></i>
-										</a>
-
-								<?php
-									}							
-								?>
-              </div>
-            </td>
-					</tr>
-        <?php 
-				}				
-				mysqli_close($con);				
-				?>
-               
-				</tbody>
 			</table>
 
 		</section>
@@ -239,8 +160,16 @@ $company = $_SESSION['companyid'];
 		});
 
 		$(document).ready(function() {
+		
+		
+			fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");	
 
-		$('#example').DataTable( {bSort:false} );
+			$("#searchByName").keyup(function(){
+				var searchByName = $('#searchByName').val();
+
+				$('#example').DataTable().destroy();
+				fill_datatable(searchByName);
+			});
 
 		});
 
@@ -372,6 +301,125 @@ $company = $_SESSION['companyid'];
 						
 										}
 									});
+		}
+
+		function fill_datatable(searchByName = '')
+		{
+				var dataTable = $('#example').DataTable({
+					stateSave: true,
+					"processing" : true,
+					"serverSide" : true,
+					"lengthChange": true,
+					"order" : [],
+					"searching" : false,
+					"ajax" : {
+						url:"th_datatable.php",
+						type:"POST",
+						data:{
+							searchByName: searchByName
+						}
+					},
+					"columns": [
+						{ "data": null,
+							"render": function (data, type, full, row) {
+								var sts = "";
+								if (full[5] == 1 || full[8] == 1) {
+									sts="class='text-danger'";
+								}
+
+										return "<a "+sts+" href=\"javascript:;\" onClick=\"editfrm('"+full[0]+"');\">"+full[0]+"</a>";
+									
+							}
+								
+						},
+						{ "data": 6 },
+						{ "data": null,
+							"render": function (data, type, full, row) {
+
+								return full[1]+" - "+full[2];
+									
+							}
+								
+						},
+						{ "data": 9 },
+						{ "data": 3 },
+						{ "data": null,
+								"render": function (data, type, full, row) {
+		
+									if(full[7] == 0 && full[5]==0){
+										return "For Sending";
+									}else{
+										if (full[4] == 0 && (full[5] == 0)) {
+											return "For Approval";
+										}else{
+											if (full[4] == 1) {		
+												if(full[8] == 1){
+													return '<b>Voided</b>';
+												}else{
+													return 'Posted';
+												}			
+																						
+											}else if (full[5] == 1) { //12 sent 13 void 4 apprve 5 cancel
+												return '<b>Cancelled</b>';
+											}else{
+												return 'Pending';
+											}
+										}
+									}
+									
+								}
+							},
+							{ "data": null,		
+									"render": function (data, type, full, row) {
+
+										$msgx = "";
+										if(full[7] == 0 && full[5]==0){
+
+											$msgx = "<a href=\"javascript:;\" onClick=\"trans('SEND','"+full[0]+"')\" class=\"btn btn-xs btn-default\"> <i class=\"fa fa-share\" style=\"font-size:20px;color: #ffb533;\" title=\"Send transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL1','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a>";
+
+										}else{
+
+											if(full[4] == 0 && full[5]==0){
+												$msgx =	"<a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a>";
+											}
+
+										}
+
+										if(full[7] == 1) {
+											return "<div id=\"msg"+full[0]+"\"> "+ $msgx +" <a href=\"javascript:;\" onClick=\"track('"+full[0]+"')\" class=\"btn btn-xs btn-default\"> <i class=\"fa fa-file-text-o\" style=\"font-size:20px;color: #3374ff;\" title=\"Track transaction\"></i></a> </div>"
+										}else{
+											if($msgx==""){
+												$msgx = "-";
+											}
+											return "<div id=\"msg"+full[0]+"\"> "+ $msgx +" </div>";
+										}
+
+									}
+							},
+			
+					],
+					"columnDefs": [
+						{
+							"targets": [3,4],
+							"className": "text-center"
+						},
+						{
+							"targets": 1,
+							"className": "dt-body-nowrap"
+						},
+						{
+							"targets": [5,6],
+							"className": "text-center dt-body-nowrap"
+						}
+					],
+					"createdRow": function( row, data, dataIndex ) {
+							// Set the data-status attribute, and add a class
+							if(data[5]==1 || data[8] == 1){
+								$(row).addClass('text-danger');
+							}
+							
+					}
+				});
 		}
 	</script>
 

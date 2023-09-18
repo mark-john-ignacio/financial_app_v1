@@ -1,4 +1,4 @@
-////<?php
+<?php
 if(!isset($_SESSION)){
 session_start();
 }
@@ -29,17 +29,19 @@ $ctr = $ctr + 1;
 }
 
 
-$secz = $_POST['chkSections'];
-$ctr = 0;
-mysqli_query($con,"delete from users_sections where userid='$userid'");
-foreach ($secz as $id){
-	$ctr = $ctr + 1;
+if(isset($_POST['chkSections'])){
+	$secz = $_POST['chkSections'];
+	$ctr = 0;
+	mysqli_query($con,"delete from users_sections where userid='$userid'");
+	foreach ($secz as $id){
+		$ctr = $ctr + 1;
 
-	$sql = "insert into users_sections(section_nid,userid) 
-	values('$id','$userid')";
-	
-	if (!mysqli_query($con, $sql)) {
-		printf("Errormessage: %s\n", mysqli_error($con));
+		$sql = "insert into users_sections(section_nid,userid) 
+		values('$id','$userid')";
+		
+		if (!mysqli_query($con, $sql)) {
+			printf("Errormessage: %s\n", mysqli_error($con));
+		}
 	}
 }
 

@@ -75,136 +75,6 @@ function checkrefapv($xid){
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 <script src="../../Bootstrap/js/bootstrap.js"></script>
 
-<script type="text/javascript">
-	$(document).keydown(function(e) {	 
-	  if(e.keyCode == 112) { //F1
-		window.location = "RR_new.php";
-	  }
-	});
-
-function editfrm(x){
-	document.getElementById("txtctranno").value = x;
-	document.getElementById("frmedit").submit();
-}
-
-
-function trans(x,num){
-	
-	$("#typ").val(x);
-	$("#modzx").val(num);
-
-		$("#AlertMsg").html("");
-							
-		$("#AlertMsg").html("Are you sure you want to "+x+" RR No.: "+num);
-		$("#alertbtnOK").hide();
-		$("#OK").show();
-		$("#Cancel").show();
-		$("#AlertModal").modal('show');
-
-}
-
-
-
-$(function() {	
-
-	var itmstat = "";
-	var x = "";
-	var num = "";
-	var msg = "";
-	
-	
-	$(".btnmodz").on("click", function (){
-		if($('#AlertModal').hasClass('in')==true){
-			var idz = $(this).attr('id');
-			
-			if(idz=="OK"){
-				var x = $("#typ").val();
-				var num = $("#modzx").val();
-				
-				if(x=="POST"){
-					var msg = "POSTED";
-				}
-				else if(x=="CANCEL"){
-					var msg = "CANCELLED";
-				}
-
-	var itmstat = "OK";	
-
-	if(itmstat=="OK"){
-	
-		$.ajax ({
-			url: "RR_Tran.php",
-			data: { x: num, typ: x },
-			async: false,
-			dataType: "json",
-			beforeSend: function(){
-				$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
-				$("#alertbtnOK").hide();
-				$("#OK").hide();
-				$("#Cancel").hide();
-				$("#AlertModal").modal('show');
-			},
-			success: function( data ) {
-				console.log(data);
-				$.each(data,function(index,item){
-					
-					itmstat = item.stat;
-					
-					if(itmstat!="False"){
-						$("#msg"+num).html(item.stat);
-						
-							$("#AlertMsg").html("");
-							
-							$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+msg+"...");
-							$("#alertbtnOK").show();
-							$("#OK").hide();
-							$("#Cancel").hide();
-							$("#AlertModal").modal('show');
-	
-					}
-					else{
-						$("#AlertMsg").html("");
-						
-						$("#AlertMsg").html(item.ms);
-						$("#alertbtnOK").show();
-						$("#OK").hide();
-						$("#Cancel").hide();
-						$("#AlertModal").modal('show');
-	
-					}
-				});
-			}
-		});
-		
-	}else{
-						$("#AlertMsg").html("");
-	
-						$("#AlertMsg").html("<b>ERROR: </b>There's a problem with your transaction!<br>"+itmstat);
-						$("#alertbtnOK").show();
-						$("#OK").hide();
-						$("#Cancel").hide();
-						$("#AlertModal").modal('show');
-	}
-
-//----------------------------------------------
-
-
-			}
-			else if(idz=="Cancel"){
-				
-				$("#AlertMsg").html("");
-				$("#AlertModal").modal('hide');
-				
-			}
-
-
-		}
-
-	});
-
-});
-
-</script>
 </head>
 
 <body style="padding:5px">
@@ -213,100 +83,49 @@ $(function() {
 			<font size="+2"><u></u></font>
         <div>
         	<div style="float:left; width:50%">
-				<font size="+2"><u>Supplier's Invoice List</u></font>	
-            </div>
+						<font size="+2"><u>Supplier's Invoice List</u></font>	
+          </div>
         </div>
-			<br><br>
-			<button type="button" class="btn btn-primary btn-sm" onClick="location.href='<?=($varitmenc=="NO") ? "RR_new.php": "RR_new2.php" ?>'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
-			<?php
-						if($unpoststat=="True"){
-					?>
-					<button type="button" class="btn btn-warning btn-sm" onClick="location.href='RR_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
-					<?php
-						}
-					?>
+				<div class="col-xs-12 nopadding">
+					<div class="col-xs-4 nopadding">
+						<button type="button" class="btn btn-primary btn-sm"  onClick="location.href='RR_new2.php'" id="btnNew" name="btnNew"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
-            <br><br>
-			<table id="example" class="display" cellspacing="0" width="100%">
-				<thead>
-					<tr>
-						<th>Trans No</th>
-						<th>Customer</th>
-						<th class="text-center">Trans Date</th>
-            <th class="text-center">Invoice Date</th>
-						<th>Gross</th>
-						<!--<th>Purchase Type</th>-->
-                        <th class="text-center">Status</th>
-					</tr>
-				</thead>
-
-				<tbody>
-              	<?php
-				$sql = "select a.*,b.cname from suppinv a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' order by a.ddate desc";
-				
-				$result=mysqli_query($con,$sql);
-				
-					if (!mysqli_query($con, $sql)) {
-						printf("Errormessage: %s\n", mysqli_error($con));
-					} 
-					
-				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-				{
-				?>
- 					<tr <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?>>
-						<td><a <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?> href="javascript:;" onClick="editfrm('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
-						<td><?php echo $row['ccode'];?> - <?php echo $row['cname'];?> </td>
-                        <td><?php echo $row['ddate'];?></td>
-                         <td><?php echo $row['dreceived'];?></td>
-						<td align="right"><?php echo number_format($row['ngross'],2);?></td>
-                        <td align="center">
-                        <div id="msg<?php echo $row['ctranno'];?>">
-                        	<?php 
-							if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
-							?>
-
-									<a href="javascript:;" onClick="trans('POST','<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>">
-										<i class="fa fa-thumbs-up" style="font-size:20px;color:Green ;" title="Approve transaction"></i>
-									</a>
-
-									<a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>">
-										<i class="fa fa-thumbs-down" style="font-size:20px;color:Red ;" title="Cancel transaction"></i>
-									</a>
-
-							<?php
-                            }
-							else{
-								if(intval($row['lcancelled'])==intval(1)){
-									echo "<b>Cancelled</b>";
-								}
-								if(intval($row['lapproved'])==intval(1)){
-									//if($varamtacc=="NO"){ // if may access to edit price
-										echo "Posted";
-									//}else{
-										//echo checkrefapv($row['ctranno']).": ";
-										//if(checkrefapv($row['ctranno'])=="false"){ //if wla pa reference APV
-										//	echo "Check Amount";
-										//}else{
-										//	echo "Posted";
-									//	}
-									//}
-								}
+						<?php
+							if($unpoststat=="True"){
+						?>
+							<button type="button" class="btn btn-danger btn-sm" onClick="location.href='RR_void.php'"><span class="fa fa-times"></span>&nbsp;Void Transaction</button>
+						<?php
 							}
-							
-							?>
-                            </div>
-                        </td>
-					</tr>
-                <?php 
-				}
-				
-				mysqli_close($con);
-				
-				?>
-               
-				</tbody>
-			</table>
+						?>
+					</div>
+					<div class="col-xs-2 nopadding">
+						<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
+					</div>
+					<div class="col-xs-3 nopadwtop" style="height:30px !important;">
+						<b> Search Customer / AP. No / Ref No.: </b>
+					</div>
+					<div class="col-xs-3 text-right nopadding">
+						<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Enter Customer, Trans No, Reference...">
+					</div>
+
+				</div>
+
+        <br><br>
+				<table id="example" class="display" cellspacing="0" width="100%">
+					<thead>
+						<tr>
+							<th>Trans No</th>
+							<th>SI No</th>
+							<th>RR No</th>
+							<th>Customer</th>
+							<th>Gross</th>
+							<th class="text-center">Invoice Date</th>
+							<th class="text-center">Status</th>
+						</tr>
+					</thead>
+
+				</table>
 
 		</section>
 	</div>		
@@ -341,12 +160,226 @@ $(function() {
     </div>
 </div>
 
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
-	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
-	
-	<script>
-	$('#example').DataTable( {bSort:false} );
-	</script>
-
 </body>
 </html>
+
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
+<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
+
+<script type="text/javascript">
+	$(document).keydown(function(e) {	 
+	  if(e.keyCode == 112) { //F1
+		window.location = "RR_new.php";
+	  }
+	});
+
+	$(document).ready(function() {
+
+		fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");	
+
+		$("#searchByName").keyup(function(){
+			var searchByName = $('#searchByName').val();
+
+			$('#example').DataTable().destroy();
+			fill_datatable(searchByName);
+		});
+
+		var itmstat = "";
+		var x = "";
+		var num = "";
+		var msg = "";
+		
+		
+		$(".btnmodz").on("click", function (){
+			if($('#AlertModal').hasClass('in')==true){
+				var idz = $(this).attr('id');
+				
+				if(idz=="OK"){
+					var x = $("#typ").val();
+					var num = $("#modzx").val();
+					
+					if(x=="POST"){
+						var msg = "POSTED";
+					}
+					else if(x=="CANCEL"){
+						var msg = "CANCELLED";
+					}
+
+					var itmstat = "OK";	
+
+					if(itmstat=="OK"){
+					
+						$.ajax ({
+							url: "RR_Tran.php",
+							data: { x: num, typ: x },
+							async: false,
+							dataType: "json",
+							beforeSend: function(){
+								$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+								$("#alertbtnOK").hide();
+								$("#OK").hide();
+								$("#Cancel").hide();
+								$("#AlertModal").modal('show');
+							},
+							success: function( data ) {
+								console.log(data);
+								$.each(data,function(index,item){
+									
+									itmstat = item.stat;
+									
+									if(itmstat!="False"){
+										$("#msg"+num).html(item.stat);
+										
+											$("#AlertMsg").html("");
+											
+											$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+msg+"...");
+											$("#alertbtnOK").show();
+											$("#OK").hide();
+											$("#Cancel").hide();
+											$("#AlertModal").modal('show');
+					
+									}
+									else{
+										$("#AlertMsg").html("");
+										
+										$("#AlertMsg").html(item.ms);
+										$("#alertbtnOK").show();
+										$("#OK").hide();
+										$("#Cancel").hide();
+										$("#AlertModal").modal('show');
+					
+									}
+								});
+							}
+						});
+						
+					}else{
+										$("#AlertMsg").html("");
+					
+										$("#AlertMsg").html("<b>ERROR: </b>There's a problem with your transaction!<br>"+itmstat);
+										$("#alertbtnOK").show();
+										$("#OK").hide();
+										$("#Cancel").hide();
+										$("#AlertModal").modal('show');
+					}
+
+					//----------------------------------------------
+
+
+				}
+				else if(idz=="Cancel"){
+					
+					$("#AlertMsg").html("");
+					$("#AlertModal").modal('hide');
+					
+				}
+
+
+			}
+
+		});
+
+	});
+
+	function editfrm(x){
+		document.getElementById("txtctranno").value = x;
+		document.getElementById("frmedit").submit();
+	}
+
+
+	function trans(x,num){
+		
+		$("#typ").val(x);
+		$("#modzx").val(num);
+
+			$("#AlertMsg").html("");
+								
+			$("#AlertMsg").html("Are you sure you want to "+x+" RR No.: "+num);
+			$("#alertbtnOK").hide();
+			$("#OK").show();
+			$("#Cancel").show();
+			$("#AlertModal").modal('show');
+
+	}
+
+	function fill_datatable(searchByName){
+		var dataTable = $('#example').DataTable( {
+			stateSave: true,
+			"processing" : true,
+			"serverSide" : true,
+			"lengthChange": true,
+			"order" : [],
+			"searching" : false,
+			"ajax" : {
+				url:"th_datatable.php",
+				type:"POST",
+				data:{
+					searchByName: searchByName
+				}
+			},
+			"columns": [
+				{ "data": null,
+						"render": function (data, type, full, row) {
+							var sts = "";
+								if (full[8] == 1 || full[10] == 1) {
+									sts="class='text-danger'";
+								}
+								return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
+						}								
+				},
+				{ "data": 1 },
+				{ "data": 2 },
+				{ "data": null,
+						"render": function (data, type, full, row) {	
+								return full[3]+" - "+full[4];
+								
+						}
+							
+				},	
+				{ "data": 5 },
+				{ "data": 6 },
+				{ "data": null,
+						"render": function (data, type, full, row) {
+		
+							if (full[7] == 1) {
+								if(full[9] == 1){
+									return '<b>Voided</b>';
+								}else{										
+									return 'Posted';
+								}
+								
+							}
+								
+							else if (full[8] == 1) {
+								
+								return '<b>Cancelled</b>';
+								
+							}
+								
+							else{
+									return 	"<div id=\"msg"+full[0]+"\"> <a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"','Posted','"+full[7]+"',"+full[8]+")\" class=\"btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"','Cancelled')\" class=\"btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a> </div>";
+								}
+						}
+					}
+			],
+			"columnDefs": [ 
+				{
+					"targets": [4],
+					"className": "text-right"
+				},
+				{
+					"targets": [5,6],
+					"className": "text-center dt-body-nowrap"
+				}
+			],
+			"createdRow": function( row, data, dataIndex ) {
+				// Set the data-status attribute, and add a class
+				if(data[8]==1 || data[9] == 1){
+					$(row).addClass('text-danger');
+				}
+						
+			}
+		});
+	}
+
+</script>

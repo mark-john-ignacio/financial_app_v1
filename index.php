@@ -1,3 +1,12 @@
+<?php 
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	include('Connection/connection_string.php');
+    require_once('Model/helper.php');
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -87,7 +96,7 @@
 							<?php
 								while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
 							?>
-								<option value="<?php echo $row['compcode'];?>"><?php echo $row['compname'];?></option>
+								<option value="<?php echo $row['compcode'];?>" selected><?php echo $row['compname'];?> </option>
 							<?php
 								}
 							?>
@@ -123,15 +132,112 @@
 		</div>
 	</div>
 </div>     
+
+<div class="modal fade" id="changeModal" tabindex="-1" role="dialog" aria-labelledby="changeModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-md">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					
+					<h5 class="modal-title" id="myModalLabel"><b>Change Password</b>: <br> <i> 30 days have pass since your last password Change. Insert a new password. </i></h5>
+					
+				</div>
+				<div class="modal-body" style="height: 30vh">
+					<form method="post" name="frmpos" id="frmpos" >
+
+						<div class='form-group'>
+							<label for='uid' >New Password: </label>
+								<input type='password' class='form-control' name='changePass' id='changePass' placeholder="New Password" autocomplete="off"/>
+						</div>
+						<div class='form-group'>
+								<label for='uid' >Confirm Password: </label>
+								<input type='password' class='form-control' name='confirmChange' id='confirmChange' placeholder="Confirm Password" autocomplete="off"/>
+						</div>
+						<div class='form-group'>
+							<div class="col-xs-12 " id="warning" style="display: none">
+								<div id="alphabettxt"><span id="alphabet"></span> Must have a Alphabetical characters! </div>
+								<div id="numerictxt"><span id="numeric"></span> Must have a Numberic characters!</div>
+								<div id="stringlentxt"><span id="stringlen"></span> Minimum of 8 characters! </div>
+							</div>
+						</div>
+					</form>
+				</div>
+				
+				<div class="modal-footer">
+							<input type="hidden" name="hdnmodtype" id="hdnmodtype" value="" />
+							<button type="button" id="update" name="update" class="btn btn-primary">Change Password</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
 
 <script type="text/javascript">
-
+var warnings = { alpha: false, numeric: false, stringlen: false };
+var attempts = 1;
 $(document).ready(function(){
     
+	
 	$("#add_err").css('display', 'none', 'important'); 
 	//$("#userpic").css('display', 'none', 'important'); 
+	$('#view').on('click', function(){
+		$('#changeModal').modal('show');
+	})
+
+	$('#update').on('click', function(){
+
+		var newpass = $('#changePass').val();
+		var confirm = $('#confirmChange').val();
+		
+
+		const validateNew = PasswordValidation(newpass)
+		const validateConfirm = PasswordValidation(newpass)
+		if(validateNew && validateConfirm){
+			$.ajax({
+				url: 'MasterFiles/user_change_pass.php',
+				type:'post',
+				data: {
+					id: $('#employeeid').val(),
+					password: $('#inputPassword').val(),
+					newpassword: newpass,
+					confirmPassword: confirm
+				},
+				dataType: 'json',
+				async: false,
+				success: function(res){
+					if(res.valid){
+						alert('<strong>'+ res.msg +'</strong>')
+						location.replace('index.php')
+					} else {
+						alert("<strong>"+res.errCode+": </strong>" + res.errMsg)
+					}
+				}
+			})
+		} else {
+			$('#warning').css('display', 'block')
+			$('#alphabet').html("<i " + (!warnings.alpha ?  "class='fa fa-exclamation' style='color: #FF0000;'" : "class='fa fa-check' style='color: #008000;' ") + "></i> ");
+			$('#alphabettxt').css('color', ( !warnings.alpha ? '#FF0000' : '#000000' ))
+
+			$('#numeric').html("<i " + ( !warnings.numeric ? "class='fa fa-exclamation' style='color: #FF0000;'" : "class='fa fa-check' style='color: #008000;' ") + "></i> ");
+			$('#numerictxt').css('color', ( !warnings.numeric ? '#FF0000' : '#000000' ))
+
+			$('#stringlen').html("<i " + ( !warnings.stringlen ? "class='fa fa-exclamation' style='color: #FF0000;'" : "class='fa fa-check' style='color: #008000;' ") + "></i>");
+			$('#stringlentxt').css('color', ( !warnings.stringlen ?  '#FF0000' : '#000000' ))
+		}
+	})
+	// $.ajax({
+	// 	url: 'th_checkUser.php',
+	// 	async: false,
+	// 	success: function(data){
+	// 		if(data){
+	// 			location.replace('main.php')
+	// 		}
+	// 	}
+	// })
+
 	
     $("#btnLogin").click(function(){  
 
@@ -144,29 +250,47 @@ $(document).ready(function(){
 			  employeeid=$("#employeeid").val();
 			  password=$("#inputPassword").val();
 			  selcat = $("#selcompany").val();
+			  const login = {
+				id: $("#employeeid").val(),
+				password: $("#inputPassword").val(),
+				company: $("#selcompany").val()
+			  }
 				
 			  $.ajax({
 			   type: "POST",
 			   url: "include/employeelogin.php?",
-			   data: "employeeid="+employeeid+"&password="+password+"&selcompany="+selcat,
-			   success: function(html){   
-			   //alert(html); 
-				if(html==1)    {
-				 
-					 window.location="main.php";
-
-				}
-				else    {
-				 $("#add_err").css('display', 'inline', 'important');
-				 $("#add_err").html("<div class='alert alert-danger' role='alert'>"+html+"</div>");
-				}
+			   data: {
+				employeeid: login.id,
+				password: login.password,
+				selcompany: login.company,
+				attempts: attempts
 			   },
-			   beforeSend:function()
-			   {
-				$("#add_err").css('display', 'inline', 'important');
-				$("#add_err").html("<center><img src='images/loader.gif' width='50' height='50' /></center>")
-			   }
-			  });
+			   dataType: 'json',
+			   beforeSend:function(){
+					attempts += 1;
+					$("#add_err").css('display', 'inline', 'important');
+					$("#add_err").html("<center><img src='images/loader.gif' width='50' height='50' /></center>")
+					console.log(attempts)
+			   },
+			   success: function(res){   
+			   //alert(html); 
+				if(res.valid)    {
+					if(res.proceed){
+						//alert(attempts)
+						window.location="main.php";
+						
+					} else {
+						//alert(attempts)
+						$('#changeModal').modal('show');
+					}
+					 
+				} else {
+					$("#add_err").css('display', 'inline', 'important');
+					$("#add_err").html("<div class='alert alert-danger' role='alert'> "+res.errMsg+"</div>");
+				}
+			}
+			   
+			});
 			return false;
 		
 		}
@@ -181,7 +305,7 @@ $(document).ready(function(){
 			   data: "id="+$(this).val()+"&xpass="+$("#inputPassword").val(),
 			   success: function(html){ 
 
-			   	if(html == 1){
+			   	if(html == 1){ 
 				}
 				else{
 					$("#add_err").css('display', 'inline', 'important');
@@ -194,9 +318,53 @@ $(document).ready(function(){
 			   }
 			});
 		}
-
 	});
 		
 });
+
+function attempts({id, password, company}){
+	$.ajax({
+		url: "include/user_restriction.php",
+		type: "post",
+		data: {
+			id: id, 
+			password: password,
+			company: company
+		},
+		success: function(data){
+			$("#add_err").css('display', 'inline', 'important');
+			$("#add_err").html("<div class='alert alert-danger' role='alert'>"+data+"</div>");
+		},
+		error: function(data){
+			$("#add_err").css('display', 'inline', 'important');
+			$("#add_err").html("<div class='alert alert-danger' role='alert'>"+data+"</div>");
+		}
+	})
+}
+
+/**
+ * Validation For Password
+ */
+function AlphabetFilter(password){
+	var filter = /^(?=.*[a-zA-Z])/;
+	return filter.test(password)
+}
+function NumericFilter(password){
+	var filter = /(?=.*[0-9])/;
+	return filter.test(password);
+	}
+
+function PasswordLimit(inputs){
+	return inputs.length >= 8;
+}
+
+function PasswordValidation(inputs){
+	warnings['alpha'] = AlphabetFilter(inputs)
+	warnings['numeric'] = NumericFilter(inputs)
+	warnings['stringlen'] = PasswordLimit(inputs)
+
+	return warnings['alpha'] && warnings['numeric'] && warnings['stringlen'];
+}	
+
 
 </script>

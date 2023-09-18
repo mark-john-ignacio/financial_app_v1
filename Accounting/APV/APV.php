@@ -1,37 +1,37 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "APV.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "APV.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
-
-
-$company = $_SESSION['companyid'];
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
 
-//POST
-$poststat = "True";
-$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'APV_post'");
-if(mysqli_num_rows($sql) == 0){
-	$poststat = "False";
-}
-
-//CANCEL
-$cancstat = "True";
-$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'APV_cancel'");
-if(mysqli_num_rows($sql) == 0){
-	$cancstat = "False";
-}
+	$company = $_SESSION['companyid'];
 
 
-$unpoststat = "True";
-$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'APV_unpost.php'");
-if(mysqli_num_rows($sql) == 0){
-	$unpoststat = "False";
-}
+	//POST
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'APV_post'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
+	//CANCEL
+	$cancstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'APV_cancel'");
+	if(mysqli_num_rows($sql) == 0){
+		$cancstat = "False";
+	}
+
+
+	$unpoststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'APV_unpost.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$unpoststat = "False";
+	}
 
 ?>
 
@@ -56,92 +56,47 @@ if(mysqli_num_rows($sql) == 0){
 		<section>
         <div>
         	<div style="float:left; width:50%">
-				<font size="+2"><u>AP Voucher</u></font>	
-            </div>
+						<font size="+2"><u>AP Voucher</u></font>	
+          </div>
         </div>
-			<br><br>
-			<button type="button" class="btn btn-primary btn-sm" onClick="location.href='APV_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+			
+				<div class="col-xs-12 nopadding">
+					<div class="col-xs-4 nopadding">
+						<button type="button" class="btn btn-primary btn-sm"  onClick="location.href='APV_new.php'" id="btnNew" name="btnNew"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
-			<?php
-						if($unpoststat=="True"){
-					?>
-					<button type="button" class="btn btn-warning btn-sm" onClick="location.href='APV_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
-					<?php
-						}
-					?>
+						<?php
+							if($unpoststat=="True"){
+						?>
+							<button type="button" class="btn btn-danger btn-sm" onClick="location.href='APV_void.php'"><span class="fa fa-times"></span>&nbsp;Void Transaction</button>
+						<?php
+							}
+						?>
+					</div>
+					<div class="col-xs-2 nopadding">
+						<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
+					</div>
+					<div class="col-xs-3 nopadwtop" style="height:30px !important;">
+						<b> Search Customer / AP. No / Ref No.: </b>
+					</div>
+					<div class="col-xs-3 text-right nopadding">
+						<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Enter Customer, Trans No, Reference...">
+					</div>
+
+				</div>
 
             <br><br>
 			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
 						<th>AP No</th>
+						<th>Reference</th>
             <th>Paid To</th>
-            <th>AP Type</th>
-						<!--<th>Payee</th>-->
-						<!--<th>Trans Date</th>-->
-            <th>AP Date</th>
+            <th>AP Type</th>        
 						<th>Gross</th>
+						<th>AP Date</th>
 						<th>Status</th>
 					</tr>
 				</thead>
-
-				<tbody>
-              	<?php
-				$sql = "select a.*,b.cname from apv a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' order by a.ddate DESC";
-				$result=mysqli_query($con,$sql);
-				
-					if (!mysqli_query($con, $sql)) {
-						printf("Errormessage: %s\n", mysqli_error($con));
-					} 
-					
-				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-				{
-					
-				?>
- 					<tr <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?>>
-						<td><a <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?> href="javascript:;" onClick="editfrm('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
- 						<td><?php echo $row['ccode'];?> - <?php echo $row['cname'];?> </td>
-            <td><?php echo $row['captype'];?></td>
-            <!-- <td><?php// echo $row['ddate'];?></td>-->
-                        <td><?php echo $row['dapvdate'];?></td>
-						<td align="right"><?php echo number_format($row['ngross'],2);?></td>
-						<td align="center">
-                        <div id="msg<?php echo $row['ctranno'];?>">
-                        	<?php 
-							if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
-							?>
-
-									<a href="javascript:;" onClick="trans('POST','<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>">
-										<i class="fa fa-thumbs-up" style="font-size:20px;color:Green ;" title="Approve transaction"></i>
-									</a>
-
-									<a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>">
-										<i class="fa fa-thumbs-down" style="font-size:20px;color:Red ;" title="Cancel transaction"></i>
-									</a>
-
-							<?php
-                            }
-							else{
-								if(intval($row['lcancelled'])==intval(1)){
-									echo "<b>Cancelled</b>";
-								}
-								if(intval($row['lapproved'])==intval(1)){
-									echo "Posted";
-								}
-							}
-							
-							?>
-                            </div>
-                        </td>
-					</tr>
-                <?php 
-				}
-				
-				mysqli_close($con);
-				
-				?>
-               
-				</tbody>
 			</table>
 
 		</section>
@@ -176,16 +131,13 @@ if(mysqli_num_rows($sql) == 0){
         </div>
     </div>
 </div>
-
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
-	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
 	
-	<script>
-	$('#example').DataTable({bSort:false});
-	</script>
 
 </body>
 </html>
+
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
+	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
 
 <script type="text/javascript">
 	$(document).keydown(function(e) {	 
@@ -195,28 +147,17 @@ if(mysqli_num_rows($sql) == 0){
 	  }
 	});
 
-	function editfrm(x){
-		document.getElementById("txtctranno").value = x;
-		document.getElementById("frmedit").submit();
-	}
-
-	function trans(x,num,aptyp){
+	$(document).ready(function() {
 		
-		$("#typ").val(x);
-		$("#aptyp").val(aptyp);
-		$("#modzx").val(num);
+		fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");	
 
-		$("#AlertMsg").html("");
-								
-		$("#AlertMsg").html("Are you sure you want to "+x+" APV No.: "+num);
-		$("#alertbtnOK").hide();
-		$("#OK").show();
-		$("#Cancel").show();
-		$("#AlertModal").modal('show');
+		$("#searchByName").keyup(function(){
+			var searchByName = $('#searchByName').val();
 
-	}
+			$('#example').DataTable().destroy();
+			fill_datatable(searchByName);
+		});
 
-	$(function(){
 		var x = "";
 		var num = "";
 		
@@ -313,5 +254,109 @@ if(mysqli_num_rows($sql) == 0){
 		});
 		
 	});
+
+	function editfrm(x){
+		document.getElementById("txtctranno").value = x;
+		document.getElementById("frmedit").submit();
+	}
+
+	function trans(x,num,aptyp){
+		
+		$("#typ").val(x);
+		$("#aptyp").val(aptyp);
+		$("#modzx").val(num);
+
+		$("#AlertMsg").html("");
+								
+		$("#AlertMsg").html("Are you sure you want to "+x+" APV No.: "+num);
+		$("#alertbtnOK").hide();
+		$("#OK").show();
+		$("#Cancel").show();
+		$("#AlertModal").modal('show');
+
+	}
+
+	function fill_datatable(searchByName = '')
+	{
+		  var dataTable = $('#example').DataTable({
+				stateSave: true,
+		    "processing" : true,
+		    "serverSide" : true,
+		    "lengthChange": true,
+		    "order" : [],
+		    "searching" : false,
+		    "ajax" : {
+					url:"th_datatable.php",
+					type:"POST",
+					data:{
+						searchByName: searchByName
+					}
+		    },
+		    "columns": [
+					{ "data": null,
+						"render": function (data, type, full, row) {
+							var sts = "";
+							if (full[8] == 1 || full[9] == 1) {
+								sts="class='text-danger'";
+							}
+							return "<a "+sts+" href=\"javascript:;\" onClick=\"editfrm('"+full[0]+"');\">"+full[0]+"</a>";							
+						}
+							
+					},
+					{ "data": 1 },
+					{ "data": null,
+						"render": function (data, type, full, row) {
+							return full[2]+" - "+full[3];								
+						}							
+					},
+					{ "data": 4 },
+					{ "data": 5 },
+					{ "data": 6 },
+					{ "data": null,		
+								"render": function (data, type, full, row) {
+
+									if (full[7] == 1) {
+										if(full[9] == 1){
+											return '<b>Voided</b>';
+										}else{										
+											return 'Posted';
+										}
+										
+									}
+										
+									else if (full[8] == 1) {
+										
+										return '<b>Cancelled</b>';
+										
+									}
+										
+									else{
+
+										return 	"<div id=\"msg"+full[0]+"\"> <a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"','"+full[4]+"')\" class=\"btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"','"+full[4]+"')\" class=\"btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a> </div>";
+
+									}
+								}
+					},
+		
+        ],
+				"columnDefs": [
+					{
+						"targets": 4,
+						"className": "text-right"
+					},
+					{
+						"targets": [5,6],
+						"className": "text-center dt-body-nowrap"
+					}
+				],
+				"createdRow": function( row, data, dataIndex ) {
+						// Set the data-status attribute, and add a class
+						if(data[8]==1  || data[9] == 1){
+							$(row).addClass('text-danger');
+						}
+						
+				}
+		  });
+	}
 
 </script>

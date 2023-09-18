@@ -84,7 +84,7 @@
 					<?php
 						if($unpostat=="True"){
 					?>
-						<button type="button" class="btn btn-warning btn-sm" onClick="location.href='PR_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+						<button type="button" class="btn btn-danger btn-sm" onClick="location.href='PR_void.php'"><span class="fa fa-times"></span>&nbsp;Void Transaction</button>
 					<?php
 						}
 					?>
@@ -242,7 +242,7 @@
 						{ "data": null,
 								"render": function (data, type, full, row) {
 										var sts = "";
-										if (full[6] == 1) {
+										if (full[6] == 1 || full[8] == 1) {
 											sts="class='text-danger'";
 										}
 										return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
@@ -262,7 +262,11 @@
 										return "For Approval";
 									}else{
 										if(full[5]==1){
-											return "Posted";
+											if(full[8] == 1){
+												return '<b>Voided</b>';
+											}else{
+												return 'Posted';
+											}
 										}else if(full[6]==1){
 											return '<b>Cancelled</b>';
 										}else{
@@ -325,7 +329,7 @@
 					],
 					"createdRow": function( row, data, dataIndex ) {
 						// Set the data-status attribute, and add a class
-						if(data[6]==1){
+						if(data[6]==1 || data[8] == 1){
 							$(row).addClass('text-danger');
 						}
 						

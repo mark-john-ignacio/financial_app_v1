@@ -2,7 +2,7 @@
 
 include('../Connection/connection_string.php');
 
-$sqlhead = mysqli_query($con,"select * from sales where ctranno not in (Select ctranno from glactivity) and lapproved=1 order by ctranno");
+$sqlhead = mysqli_query($con,"select * from sales where lapproved=1 order by ctranno");
 if (mysqli_num_rows($sqlhead)!=0) {
 	$row = mysqli_fetch_assoc($sqlhead);
 	

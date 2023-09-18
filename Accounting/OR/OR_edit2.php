@@ -92,7 +92,7 @@ if (mysqli_num_rows($getewtcd)!=0) {
 
 <?php
 
-    	$sqlchk = mysqli_query($con,"Select a.cacctcode, a.ccode, a.namount, a.cpaymethod, a.cpaytype, DATE_FORMAT(a.dcutdate,'%m/%d/%Y') as dcutdate, a.namount, a.napplied, a.lapproved, a.lcancelled, a.lprintposted, a.cornumber, a.cremarks, a.cpaydesc, a.cpayrefno, b.cname, c.cacctdesc, c.nbalance From receipt a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join accounts c on a.compcode=c.compcode and a.cacctcode=c.cacctid where a.compcode='$company' and a.ctranno='$corno'");
+    	$sqlchk = mysqli_query($con,"Select a.cacctcode, a.ccode, a.namount, a.cpaymethod, a.cpaytype, DATE_FORMAT(a.dcutdate,'%m/%d/%Y') as dcutdate, a.namount, a.napplied, a.lapproved, a.lcancelled, a.lvoid, a.lprintposted, a.cornumber, a.cremarks, a.cpaydesc, a.cpayrefno, b.cname, c.cacctdesc, c.nbalance From receipt a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join accounts c on a.compcode=c.compcode and a.cacctcode=c.cacctid where a.compcode='$company' and a.ctranno='$corno'");
 if (mysqli_num_rows($sqlchk)!=0) {
 		while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
 			$nDebitDef = $row['cacctcode'];
@@ -118,6 +118,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
 			$lPosted = $row['lapproved'];
 			$lCancelled = $row['lcancelled'];
 			$lPrintPost = $row['lprintposted'];
+			$lVoid = $row['lvoid'];
 		}
 
 ?>
@@ -131,7 +132,11 @@ if (mysqli_num_rows($sqlchk)!=0) {
 						}
 						
 						if($lPosted==1){
-							echo "<font color='#FF0000'><b>POSTED</b></font>";
+							if($lVoid==1){
+								echo "<font color='#FF0000'><b>VOIDED</b></font>";
+							}else{
+								echo "<font color='#FF0000'><b>POSTED</b></font>";
+							}
 						}
 					?>
    			</div>
@@ -148,18 +153,27 @@ if (mysqli_num_rows($sqlchk)!=0) {
 						<table width="100%" border="0">
 							<tr>
 								<tH>Trans. No.:</tH>
-								<td colspan="3" style="padding:2px;">
+								<td style="padding:2px;">
 									<div class="col-xs-12 nopadding">
-										<div class="col-xs-2 nopadding"><input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?=$corno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmOR');"></div>
+										<div class="col-xs-5 nopadding">
+											<input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?=$corno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmOR');">
+										</div>
 									
 										<input type="hidden" name="hdnorigNo" id="hdnorigNo" value="<?=$corno;?>">
 									
 										<input type="hidden" name="hdnposted" id="hdnposted" value="<?=$lPosted;?>">
 										<input type="hidden" name="hdncancel" id="hdncancel" value="<?=$lCancelled;?>">
 										<input type="hidden" name="hdnprintpost" id="hdnprintpost" value="<?=$lPrintPost;?>">
-											&nbsp;&nbsp;
-										<div id="statmsgz" style="display:inline"></div>
-										</div>						
+										<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?=$lVoid;?>">
+											&nbsp;
+									
+									<button type="button" class="btn btn-entry btn-sm" id="btnentry">
+										<i class="fa fa-bar-chart" aria-hidden="true"></i>
+									</button>
+								</td>
+								<td colspan="2" style="padding:2px;">
+									<div id="statmsgz" style="display:inline"></div>
+									</div>						
 								</td>
 							</tr>
 							<tr>
@@ -441,7 +455,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
 															}
 														});
 
-														$("#txtcSalesAcctTitle"+lastRow).on("click focus", function(event) {
+														$("#txtcSalesAcctTitle<?=$cntr;?>").on("click focus", function(event) {
 															$(this).select();
 														});
 						 						 </script>
@@ -892,6 +906,46 @@ if (mysqli_num_rows($sqlchk)!=0) {
 				</div>
 			<!-- /.modal -->
 
+			<!--modal entry view-->
+			<div class="modal fade" id="modGLEntry" role="dialog">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" id="btn-closemod" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h3 class="modal-title">GL Entry</h3>
+						</div>
+						<div class="modal-body">
+								
+							<table width="100%" border="0" class="table table-condensed table-bordered atble-hover" id="TblGLEntry">
+								<thead>
+									<tr>
+										<td>Account Code</td>
+										<td>Account Title</td>
+										<td>Account Debit</td>
+										<td>Account Credit</td>  
+									</tr>		
+									<?php
+										$getewtcd = mysqli_query($con,"SELECT * FROM glactivity where compcode='$company' and ctranno='$corno'"); 
+										if (mysqli_num_rows($getewtcd)!=0) {
+											while($row = mysqli_fetch_array($getewtcd, MYSQLI_ASSOC)){
+									?>					
+										<tr>
+											<td><?=$row['acctno']?></td>
+											<td><?=$row['ctitle']?></td>
+											<td align="right"><?=(floatval($row['ndebit']) != 0) ? number_format($row['ndebit'],2) : ""?></td>
+											<td align="right"><?=(floatval($row['ncredit']) != 0) ? number_format($row['ncredit'],2) : ""?></td>  
+										</tr>	
+									<?php
+											}
+										}
+									?>
+							</table>
+								
+						</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+			</div>
+
 </form>
 
 <?php
@@ -1304,6 +1358,11 @@ else{
 		AddRefAdj(xadjtype,xsino,"","","","");
 		
 	});
+
+	$("#btnentry").on("click", function(){		
+		$("#modGLEntry").modal("show");
+	});
+	
 	
 	disabled();
 
@@ -2018,7 +2077,14 @@ function disabled(){
 	$("#btnMain").attr("disabled", false);
 	$("#btnNew").attr("disabled", false);
 	$("#btnPrint").attr("disabled", false);
-	$("#btnEdit").attr("disabled", false);
+	$("#btnEdit").attr("disabled", false); 
+
+	if(document.getElementById("hdnposted").value==1 && document.getElementById("hdnvoid").value==0){
+		$("#btnentry").attr("disabled", false);
+	}
+
+	$("#btn-closemod").attr("disabled", false); 
+	
 
 }
 
@@ -2026,12 +2092,18 @@ function enabled(){
 
 
 	 if(document.getElementById("hdnposted").value==1 || document.getElementById("hdncancel").value==1){
-		if(document.getElementById("hdnposted").value==1){
-			var msgsx = "POSTED"
+		
+		if(document.getElementById("hdnposted").value==1){ 
+			if(document.getElementById("hdnvoid").value==1){
+				var msgsx = "VOIDED";
+			}else{
+				var msgsx = "POSTED";
+			}
+			
 		}
 		
 		if(document.getElementById("hdncancel").value==1){
-			var msgsx = "CANCELLED"
+			var msgsx = "CANCELLED";
 		}
 		
 		document.getElementById("statmsgz").innerHTML = "<font style=\"font-size: x-small\">TRANSACTION IS ALREADY "+msgsx+", EDITING IS NOT ALLOWED!</font>";
@@ -2051,6 +2123,7 @@ function enabled(){
 		$("#btnNew").attr("disabled", true);
 		$("#btnPrint").attr("disabled", true);
 		$("#btnEdit").attr("disabled", true);
+		$("#btnentry").attr("disabled", true);
 	
 	}
 
@@ -2062,6 +2135,7 @@ function chkSIEnter(keyCode,frm){
 		document.getElementById(frm).action = "OR_edit2.php";
 		document.getElementById(frm).submit();
 	}
+	
 }
 
 

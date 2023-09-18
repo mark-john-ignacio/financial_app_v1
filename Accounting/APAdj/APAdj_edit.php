@@ -30,6 +30,8 @@
 			
 			$lCancelled = $row['lcancelled'];
 			$lPosted = $row['lapproved'];
+
+			$lVoid = $row['lvoid'];
 		}
 	}
 
@@ -93,7 +95,23 @@
 <input type="hidden" value='<?=json_encode(@$arrname)?>' id="hdnfileconfig"> 
 	<form action="APAdj_editsave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
 		<fieldset>
-    	<legend>AP Adjustment Details</legend>	
+    	<legend>
+				<div class="col-xs-6 nopadding"> AP Adjustment Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
+					<?php
+						if($lCancelled==1){
+							echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+						}
+						
+						if($lPosted==1){
+							if($lVoid==1){
+								echo "<font color='#FF0000'><b>VOIDED</b></font>";
+							}else{
+								echo "<font color='#FF0000'><b>POSTED</b></font>";
+							}
+						}
+					?>
+   			</div>
+			</legend>	
 
 				<ul class="nav nav-tabs">
 					<li class="active"><a href="#items" data-toggle="tab">AP Adjustment Details</a></li>
@@ -106,7 +124,7 @@
 						<table width="100%" border="0">
 							<tr>
 								<tH width="150">&nbsp;Transaction No.:</tH>
-								<td colspan="2" style="padding:2px;">
+								<td style="padding:2px;">
 						
 									<div class="col-xs-3 nopadding">
 										<input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" placeholder="Enter Journal No..." required autocomplete="off" value="<?php echo $cjeno;?>"  onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
@@ -116,22 +134,12 @@
 
 									<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
 									<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
-							
-									<div id="statmsgz" style="color:#F00"></div> 
+									<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?php echo $lVoid;?>">
+									 
 								</td>    
-								<td style="padding:2px;" align="left">
+								<td colspan="2" style="padding:2px;" align="right">
 					
-									<div class="col-xs-5 nopadding" style="text-align:right">
-											<?php
-										if($lCancelled==1){
-												echo "<font color='#FF0000'><b>CANCELLED</b></font>";
-										}
-										
-										if($lPosted==1){
-												echo "<font color='#FF0000'><b>POSTED</b></font>";
-										}
-										?>    	
-									</div>
+									<div id="statmsgz" class="small" style="color:#F00"></div>
 						
 								</td>
 							</tr>
@@ -1078,7 +1086,11 @@ function disabled(){
 function enabled(){
 	if(document.getElementById("hdnposted").value==1 || document.getElementById("hdncancel").value==1){
 		if(document.getElementById("hdnposted").value==1){
-			var msgsx = "POSTED"
+				if(document.getElementById("hdnvoid").value==1){
+					var msgsx = "VOIDED";
+				}else{
+					var msgsx = "POSTED";
+				}
 		}
 		
 		if(document.getElementById("hdncancel").value==1){

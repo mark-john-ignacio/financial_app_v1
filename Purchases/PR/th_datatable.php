@@ -5,9 +5,9 @@
 
 	include('../../Connection/connection_string.php');
 
-	$column = array('A.ctranno', 'A.csiprintno', 'B.ctradename', 'A.dneeded', 'A.ddate', 'A.lapproved');
+	$column = array('A.ctranno', 'CONCAT(B.Lname,", ",B.Fname)', 'C.cdesc', 'A.dneeded', 'A.ddate', 'CASE WHEN a.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN a.lcancelled=1 THEN "Cancelled" ELSE CASE WHEN a.lsent=0 THEN "For Sending" ELSE "For Approval" END END');
 
-	$query = "SELECT A.ctranno, B.Lname, B.Fname, C.cdesc, A.dneeded, A.ddate, A.lapproved, A.lcancelled, A.lsent FROM `purchrequest` A LEFT JOIN `users` B ON A.`cpreparedby` = B.`Userid` LEFT JOIN `locations` C ON A.`locations_id` = C.`nid` where A.compcode='".$_SESSION['companyid']."' ";
+	$query = "SELECT A.ctranno, B.Lname, B.Fname, C.cdesc, A.dneeded, A.ddate, A.lapproved, A.lcancelled, A.lsent, A.lvoid FROM `purchrequest` A LEFT JOIN `users` B ON A.`cpreparedby` = B.`Userid` LEFT JOIN `locations` C ON A.`locations_id` = C.`nid` where A.compcode='".$_SESSION['companyid']."' ";
 
 	if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
 	{
@@ -63,6 +63,7 @@
 		$sub_array[] = $row['lapproved'];
 		$sub_array[] = $row['lcancelled'];
 		$sub_array[] = $row['lsent'];
+		$sub_array[] = $row['lvoid'];
 		$data[] = $sub_array;
 	}
 

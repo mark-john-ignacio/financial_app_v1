@@ -47,7 +47,102 @@ $company = $_SESSION['companyid'];
   <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
   <script src="../../Bootstrap/js/bootstrap.js"></script>
 
+	
+</head>
+
+<body style="padding:5px">
+	<div>
+		<section>
+        <div>
+        	<div style="float:left; width:50%">
+				<font size="+2"><u>AR Adjustment</u></font>	
+            </div>
+        </div>
+			
+				<div class="col-xs-12 nopadding">
+					<div class="col-xs-4 nopadding">
+						<button type="button" class="btn btn-primary btn-sm"  onClick="location.href='ARAdj_new.php'" id="btnNew" name="btnNew"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+
+						<?php
+							if($unpststat=="True"){
+						?>
+							<button type="button" class="btn btn-danger btn-sm" onClick="location.href='ARAdj_void.php'"><span class="fa fa-times"></span>&nbsp;Void Transaction</button>
+						<?php
+							}
+						?>
+					</div>
+					<div class="col-xs-2 nopadding">
+						<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
+					</div>
+					<div class="col-xs-3 nopadwtop" style="height:30px !important;">
+						<b> Search Customer / Trans. No / Ref No.: </b>
+					</div>
+					<div class="col-xs-3 text-right nopadding">
+						<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Enter Customer, Trans No, Reference...">
+					</div>
+
+				</div>
+
+      <br><br>
+			<table id="example" class="display" cellspacing="0" width="100%">
+				<thead>
+					<tr>
+						<th>Transaction No</th>
+						<th>Ref Return</th>
+						<th>Ref SI</th>
+						<th>Type</th>
+						<th>Customer</th>
+						<th>Amount</th>
+						<th>Date</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+
+			</table>
+
+		</section>
+	</div>		
+    
+<form name="frmedit" id="frmedit" method="post" action="ARAdj_edit.php">
+	<input type="hidden" name="txtctranno" id="txtctranno" />
+</form>		
+
+
+<!-- 1) Alert Modal -->
+<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-top">
+            <div class="modal-content">
+               <div class="alert-modal-danger">
+                  <p id="AlertMsg"></p>
+                <p>
+                    <center>
+                        <button type="button" class="btnmodz btn btn-primary btn-sm" id="OK">Ok</button>
+                        <button type="button" class="btnmodz btn btn-danger btn-sm" id="Cancel">Cancel</button>
+                        
+                        
+                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+                        
+                        <input type="hidden" id="typ" name="typ" value = "">
+                        <input type="hidden" id="modzx" name="modzx" value = "">
+												<input type="hidden" id="isret" name="isret" value = "">
+                    </center>
+                </p>
+               </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+
+
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
+<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
+
 	<script type="text/javascript">
+
 		$(document).keydown(function(e) {	 
 			if(e.keyCode == 112) { //F1
 				e.preventDefault();
@@ -55,34 +150,23 @@ $company = $_SESSION['companyid'];
 			}
 		});
 
-		function editfrm(x){
-			document.getElementById("txtctranno").value = x;
-			document.getElementById("frmedit").submit();
-		}
 
-		function trans(x,num){
+		$(document).ready(function() {
+
+			fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");	
+
+			$("#searchByName").keyup(function(){
+				var searchByName = $('#searchByName').val();
+
+				$('#example').DataTable().destroy();
+				fill_datatable(searchByName);
+			});
 			
-			$("#typ").val(x);
-			$("#modzx").val(num); 
-
-
-				$("#AlertMsg").html("");
-									
-				$("#AlertMsg").html("Are you sure you want to "+x+" Adjustment No.: "+num);
-				$("#alertbtnOK").hide();
-				$("#OK").show();
-				$("#Cancel").show();
-				$("#AlertModal").modal('show');
-			
-
-		}
-
-		$(function(){
 			var x = "";
 			var num = "";
 			
 			$(".btnmodz").on("click", function (){
-			var itmstat = "";	
+				var itmstat = "";	
 				
 				if($('#AlertModal').hasClass('in')==true){
 					var idz = $(this).attr('id');
@@ -151,139 +235,111 @@ $company = $_SESSION['companyid'];
 			
 		});
 
-	</script>
-</head>
 
-<body style="padding:5px">
-	<div>
-		<section>
-        <div>
-        	<div style="float:left; width:50%">
-				<font size="+2"><u>AR Adjustment</u></font>	
-            </div>
-        </div>
-			<br><br>
-			<button type="button" class="btn btn-primary btn-sm" onClick="location.href='ARAdj_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+		function editfrm(x){
+			document.getElementById("txtctranno").value = x;
+			document.getElementById("frmedit").submit();
+		}
 
-			<?php
-				if($unpststat=="True"){
-			?>
-				<button type="button" class="btn btn-warning btn-sm" onClick="location.href='ARAdj_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
-			<?php
-				}
-			?>
+		function trans(x,num){
+			
+			$("#typ").val(x);
+			$("#modzx").val(num); 
 
-      <br><br>
-			<table id="example" class="display" cellspacing="0" width="100%">
-				<thead>
-					<tr>
-						<th>Transaction No</th>
-						<th>Type</th>
-            <th>Date</th>
-						<th>Customer</th>
-						<th>Remarks</th>
-						<th>Amount</th>
-						<th>Status</th>
-					</tr>
-				</thead>
 
-				<tbody>
-					<?php
-					$company = $_SESSION['companyid'];
-					
-					$sql = "select A.*, B.cname from aradjustment A left join customers B on A.compcode=B.compcode and A.ccode=B.cempid where A.compcode='$company' order by A.ddate DESC";
-					$result=mysqli_query($con,$sql);
-					
-						if (!mysqli_query($con, $sql)) {
-							printf("Errormessage: %s\n", mysqli_error($con));
-						} 
-						
-						while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-						{
-					?>
-						<tr>
-							<td nowrap><a href="javascript:;" onClick="editfrm('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
-							<td nowrap><?php echo $row['ctype'];?></td>
-							<td nowrap><?php echo $row['dcutdate'];?></td>
-							<td nowrap><?php echo $row['cname'];?></td>
-							<td><?php echo $row['cremarks'];?></td>
-							<td style="text-align: right" nowrap><?php echo number_format($row['ngross'],2);?></td>
-							<td align="center" nowrap>
-								<div id="msg<?php echo $row['ctranno'];?>">
-								<?php 
-									if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
-								?>
+				$("#AlertMsg").html("");
+									
+				$("#AlertMsg").html("Are you sure you want to "+x+" Adjustment No.: "+num);
+				$("#alertbtnOK").hide();
+				$("#OK").show();
+				$("#Cancel").show();
+				$("#AlertModal").modal('show');
+			
 
-									<a href="javascript:;" onClick="trans('POST','<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>">
-										<i class="fa fa-thumbs-up" style="font-size:20px;color:Green ;" title="Approve transaction"></i>
-									</a>
+		}
 
-									<a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>">
-										<i class="fa fa-thumbs-down" style="font-size:20px;color:Red ;" title="Cancel transaction"></i>
-									</a>
+		function fill_datatable(searchByName){
+			var dataTable = $('#example').DataTable( {
+				stateSave: true,
+				"processing" : true,
+				"serverSide" : true,
+				"lengthChange": true,
+				"order" : [],
+				"searching" : false,
+				"ajax" : {
+					url:"th_datatable.php",
+					type:"POST",
+					data:{
+						searchByName: searchByName
+					}
+				},
+				"columns": [
+					{ "data": null,
+							"render": function (data, type, full, row) {
+									var sts = "";
+									if (full[8] == 1 || full[10] == 1) {
+										sts="class='text-danger'";
+									}
+									return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
+							}								
+					},
+					{ "data": 1 },
+					{ "data": 2 },
+					{ "data": 3 },
+					{ "data": null,
+							"render": function (data, type, full, row) {
 
-								<?php
-									}else{
-										if(intval($row['lcancelled'])==intval(1)){
-											echo "Cancelled";
-										}
-										if(intval($row['lapproved'])==intval(1)){
-											echo "Posted";
-										}
-									}							
-								?>
-								</div>
-							</td>
-						</tr>
-					<?php 
+								return full[4]+" - "+full[5];
+									
+							}
+								
+					},	
+					{ "data": 9 },
+					{ "data": 6 },
+					{ "data": null,
+							"render": function (data, type, full, row) {
+			
+								if (full[7] == 1) {
+									if(full[10] == 1){
+										return '<b>Voided</b>';
+									}else{										
+										return 'Posted';
+									}
+									
+								}
+									
+								else if (full[8] == 1) {
+									
+									return '<b>Cancelled</b>';
+									
+								}
+									
+								else{
+
+									return 	"<div id=\"msg"+full[0]+"\"> <a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"','Posted','"+full[7]+"',"+full[8]+")\" class=\"btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"','Cancelled')\" class=\"btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a> </div>";
+
+								}
+							}
 						}
-					
-						mysqli_close($con);				
-					?>               
-				</tbody>
-			</table>
-
-		</section>
-	</div>		
-    
-<form name="frmedit" id="frmedit" method="post" action="ARAdj_edit.php">
-	<input type="hidden" name="txtctranno" id="txtctranno" />
-</form>		
-
-
-<!-- 1) Alert Modal -->
-<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-    <div class="vertical-alignment-helper">
-        <div class="modal-dialog vertical-align-top">
-            <div class="modal-content">
-               <div class="alert-modal-danger">
-                  <p id="AlertMsg"></p>
-                <p>
-                    <center>
-                        <button type="button" class="btnmodz btn btn-primary btn-sm" id="OK">Ok</button>
-                        <button type="button" class="btnmodz btn btn-danger btn-sm" id="Cancel">Cancel</button>
-                        
-                        
-                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-                        
-                        <input type="hidden" id="typ" name="typ" value = "">
-                        <input type="hidden" id="modzx" name="modzx" value = "">
-												<input type="hidden" id="isret" name="isret" value = "">
-                    </center>
-                </p>
-               </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
-	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
-	
-	<script>
-	$('#example').DataTable({bSort:false});
+				],
+				"columnDefs": [ 
+					{
+						"targets": [5],
+						"className": "text-right"
+					},
+					{
+						"targets": [6,7],
+						"className": "text-center dt-body-nowrap"
+					}
+				],
+				"createdRow": function( row, data, dataIndex ) {
+					// Set the data-status attribute, and add a class
+					if(data[8]==1 || data[10] == 1){
+						$(row).addClass('text-danger');
+					}
+							
+				}
+			});
+		}
 
 	</script>
-
-</body>
-</html>
