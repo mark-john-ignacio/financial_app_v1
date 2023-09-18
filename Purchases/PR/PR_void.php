@@ -45,7 +45,7 @@
 				<table id="example" class="table table-hover " cellspacing="1" width="100%">
 					<thead>
 						<tr>
-							<td align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></td>
+							<td align="center"> <input id="allbox" type="checkbox" value="Check All" /></td>
 							<th class="text-center">PR No</th>
 							<th class="text-center">Requested By</th>
 							<th class="text-center">Section</th>
@@ -132,6 +132,10 @@
 					$("#frmunpost").submit();
 				}
 
+			});
+
+			$("#allbox").click(function(){
+				$('input:checkbox').not(this).prop('checked', this.checked);
 			});
 	});
 

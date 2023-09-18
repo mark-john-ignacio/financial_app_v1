@@ -99,6 +99,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
+		$lVoid = $row['lvoid'];
 	}
 	
 	
@@ -121,7 +122,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						}
 						
 						if($lPosted==1){
-							echo "<font color='#FF0000'><b>POSTED</b></font>";
+							if($lVoid==1){
+								echo "<font color='#FF0000'><b>VOIDED</b></font>";
+							}else{
+								echo "<font color='#FF0000'><b>POSTED</b></font>";
+							}
 						}
 					?>
 				</div>        
@@ -147,6 +152,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</div>
 										<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
 										<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
+										<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?php echo $lVoid;?>">
 									&nbsp;&nbsp;
 										<div id="statmsgz" style="display:inline"></div>
 								</td>
@@ -2094,7 +2100,11 @@ function disabled(){
 function enabled(){
 	if(document.getElementById("hdnposted").value==1 || document.getElementById("hdncancel").value==1){
 		if(document.getElementById("hdnposted").value==1){
-			var msgsx = "POSTED"
+				if(document.getElementById("hdnvoid").value==1){
+					var msgsx = "VOIDED";
+				}else{
+					var msgsx = "POSTED";
+				}
 		}
 		
 		if(document.getElementById("hdncancel").value==1){

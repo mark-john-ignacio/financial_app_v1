@@ -1698,7 +1698,7 @@ else{
 		if(document.getElementById("hdnposted").value==1 || document.getElementById("hdncancel").value==1){
 			if(document.getElementById("hdnposted").value==1){
 				if(document.getElementById("hdnvoid").value==1){
-				var msgsx = "VOIDED";
+					var msgsx = "VOIDED";
 				}else{
 					var msgsx = "POSTED";
 				}

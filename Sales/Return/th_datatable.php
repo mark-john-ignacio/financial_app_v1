@@ -5,13 +5,13 @@ if(!isset($_SESSION)){
 
 include('../../Connection/connection_string.php');
 
-$column = array('A.ctranno', 'B.ctradename', 'A.ddate', 'A.dreceived', 'A.lapproved', 'A.lcancelled', 'A.ccode', 'B.nlimit', 'B.cname');
+$column = array('A.ctranno', 'D.cref', 'B.ctradename', 'A.ddate', 'A.dreceived', 'CASE WHEN A.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN A.lcancelled=1 THEN "Cancelled" ELSE "" END');
 
-$query = "SELECT A.*, B.cname, B.ctradename, B.nlimit FROM `salesreturn` A LEFT JOIN `customers` B ON A.`compcode` = B.`compcode` and A.`ccode` = B.`cempid` where A.compcode='".$_SESSION['companyid']."' ";
+$query = "SELECT A.*, B.cname, B.ctradename, B.nlimit, D.cref FROM `salesreturn` A LEFT JOIN `customers` B ON A.`compcode` = B.`compcode` and A.`ccode` = B.`cempid` LEFT JOIN (Select x.ctranno, GROUP_CONCAT(DISTINCT x.creference) as cref from `salesreturn_t` x where x.compcode='".$_SESSION['companyid']."' group by x.ctranno) D on A.ctranno=D.ctranno where A.compcode='".$_SESSION['companyid']."' ";
 
 if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
 {
- $query .= "and B.ctradename like '%".$_POST['searchByName']."%' OR B.cname like '%".$_POST['searchByName']."%' OR A.ctranno like '%".$_POST['searchByName']."%'";
+ $query .= "and (LOWER(B.ctradename) like LOWER('%".$_POST['searchByName']."%') OR LOWER(b.cname) like LOWER('%".$_POST['searchByName']."%') OR LOWER(a.ctranno) like LOWER('%".$_POST['searchByName']."%') OR LOWER(d.cref) like LOWER('%".$_POST['searchByName']."%'))";
 }
 
 if(isset($_POST['order']))
@@ -52,11 +52,13 @@ foreach($result as $row)
  $sub_array[] = $row['ctranno'];
  $sub_array[] = ($row['ctradename']=="" || $row['ctradename']==null) ? $row['cname'] : $row['ctradename'];
  $sub_array[] = $row['ddate'];
- $sub_array[] = $row['dreceived'];
+ $sub_array[] = date_format(date_create($row['dreceived']), "m/d/Y");
  $sub_array[] = $row['lapproved'];
  $sub_array[] = $row['lcancelled'];
  $sub_array[] = $row['ccode'];
  $sub_array[] = $row['nlimit'];
+ $sub_array[] = str_replace(",","<br>",$row['cref']);
+ $sub_array[] = $row['lvoid'];
  $data[] = $sub_array;
 }
 

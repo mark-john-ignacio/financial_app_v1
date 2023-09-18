@@ -65,7 +65,6 @@
 				<font size="+2"><u>Delivery Receipt List</u></font>	
             </div>
         </div>
-			<br><br>
 
 			<div class="col-xs-12 nopadding">
 				<div class="col-xs-4 nopadding">
@@ -74,30 +73,31 @@
 					<?php
 						if($unpoststat=="True"){
 					?>
-					<button type="button" class="btn btn-warning btn-sm" onClick="location.href='DR_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+					<button type="button" class="btn btn-danger btn-sm" onClick="location.href='DR_void.php'"><span class="fa fa-times"></span>&nbsp;Void Transaction</button>
 					<?php
 						}
 					?>
 				</div>
-        <div class="col-xs-3 nopadding">
+        <div class="col-xs-2 nopadding">
 					<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
 				</div>
-        <div class="col-xs-2 nopadwtop" style="height:30px !important;">
-          <b> Search Customer/DR No: </b>
+        <div class="col-xs-3 nopadwtop" style="height:30px !important;">
+          <b> Search Customer / DR No / Reference: </b>
         </div>
 				<div class="col-xs-3 text-right nopadding">
-					<input type="text" name="searchByName" id="searchByName" value="" class="form-control input-sm" placeholder="Enter Trans No or Customer...">
+				<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Enter Supplier, DR No, Reference...">
 				</div>
 
 			</div>
 
-            <br><br><br>
+            <br><br>
 			<table id="MyTable" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
 						<th>DR No</th>
 						<th>DR Series No</th>
-						<th>Customer</th>
+						<th>Reference</th>
+						<th>Delivered To</th>
 						<th>Delivery Date</th>
             <th>Status</th>
 					</tr>
@@ -373,6 +373,7 @@
 		function fill_datatable(searchByName = '')
 		{
 		  var dataTable = $('#MyTable').DataTable({
+				stateSave: true,
 		    "processing" : true,
 		    "serverSide" : true,
 		    "lengthChange": true,
@@ -389,7 +390,7 @@
 					{ "data": null,
 						"render": function (data, type, full, row) {
 							var sts = "";
-							if (full[5] == 1) {
+							if (full[5] == 1 || full[9] == 1) {
 								sts="class='text-danger'";
 							}
 
@@ -399,14 +400,26 @@
 							
 					},
 					{ "data": 1 },
-					{ "data": 2 },
-					{ "data": 3 },
+					{ "data": 8 },
 					{ "data": null,
+							"render": function (data, type, full, row) {
+
+								return full[6]+" - "+full[2];
+									
+							}
+								
+						},
+						{ "data": 3 },
+						{ "data": null,
 							"render": function (data, type, full, row) {
 	
 								if (full[4] == 1) {
 									
-									return 'Posted';
+									if(full[9] == 1){
+										return '<b>Voided</b>';
+									}else{										
+										return 'Posted';
+									}
 								
 								}
 								
@@ -426,17 +439,13 @@
         	],
 					"columnDefs": [
 						{
-							"targets": 3,
-							"className": "text-right"
-						},
-						{
-							"targets": 4,
+							"targets": [4,5],
 							"className": "text-center dt-body-nowrap"
 						}
 					],
 					"createdRow": function( row, data, dataIndex ) {
 						// Set the data-status attribute, and add a class
-						if(data[5]==1){
+						if(data[5]==1 || data[9] == 1){
 							$(row).addClass('text-danger');
 						}
 						
