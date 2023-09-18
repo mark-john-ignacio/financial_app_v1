@@ -88,7 +88,6 @@
 				<form action="index.php" method="post">
 					<div class="form-group">
 						<?php
-							include('Connection/connection_string.php');
 							$sqlhead = mysqli_query($con,"select * From company");
 
 						?>
