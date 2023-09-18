@@ -18,11 +18,13 @@ function better_crypt($input, $rounds = 12) {
 	$cDesig = $_POST['cdesig'];
 
 	$password_hash = better_crypt($cPass);
+
+	$datePass = date('Y-m-d');
 	
 	$chkID = mysqli_query($con,"select * from users where UserID = '$cUserID'");
 	 
 	 
-	if (!mysqli_query($con, "insert into users(Userid,Fname,LName,Minit,password,cemailadd,cstatus,cdepartment,cdesignation) values('$cUserID','$cFName','$cLName','$cMI','$password_hash','$cEmail','Active','$cDept','$cDesig')")) {
+	if (!mysqli_query($con, "insert into users(Userid,Fname,LName,Minit,password,cemailadd,cstatus,cdepartment,cdesignation,modify) values('$cUserID','$cFName','$cLName','$cMI','$password_hash','$cEmail','Active','$cDept','$cDesig','$datePass')")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	}
 	else{

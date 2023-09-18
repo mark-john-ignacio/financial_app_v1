@@ -280,7 +280,7 @@ if(@$lvlcompute==1){
 					<form method="post" name="frmAdd" id="frmAdd" enctype="multipart/form-data" action = "">
 
 
-						<input type="hidden" name="passT" id="passT" value="Password">
+						<input type="hidden" name="passT" id="passT" value="Password123">
 					
 						<table width="100%" border="0" cellspacing="0" cellpadding="0">
 							<tr>
