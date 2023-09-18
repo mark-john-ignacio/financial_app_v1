@@ -51,7 +51,7 @@
 			text-align: center;
 		}	
 		.modal-login.modal-dialog {
-			margin-top: 80px;
+			margin-top: 60px;
 		}
 		.modal-login .btn {
 					color: #fff;
@@ -84,10 +84,11 @@
 					<img src="images/LogoNew.png" width="90" height="120">	
         </div></center>
 			</div>
-			<div class="modal-body" style="height: 40vh">
+			<div class="modal-body" style="height: 50vh">
 				<form action="index.php" method="post">
 					<div class="form-group">
 						<?php
+							include('Connection/connection_string.php');
 							$sqlhead = mysqli_query($con,"select * From company");
 
 						?>
@@ -275,11 +276,9 @@ $(document).ready(function(){
 			   //alert(html); 
 				if(res.valid)    {
 					if(res.proceed){
-						//alert(attempts)
 						window.location="main.php";
 						
 					} else {
-						//alert(attempts)
 						$('#changeModal').modal('show');
 					}
 					 
