@@ -7,10 +7,10 @@
     require_once('../Model/helper.php');
 
 
-    $id = mysqli_real_escape_string($con, $_POST['id']);
-    $password = mysqli_real_escape_string($con, $_POST['password']);
-    $new = mysqli_real_escape_string($con, $_POST['newpassword']);
-    $confirm = mysqli_real_escape_string($con, $_POST['confirmPassword']);
+    $id = $_POST['id'];
+    $password = $_POST['password'];
+    $new = $_POST['newpassword'];
+    $confirm = $_POST['confirmPassword'];
 
     $sql = "SELECT * FROM `users` WHERE Userid = '$id'";
 
@@ -21,10 +21,17 @@
 
     if(match_password($new, $confirm)){
         if(password_verify($password, $current)){
-            $haspassword = better_crypt($password);
+            
+            $hashpassword = better_crypt($new);
             $date = date('Y-m-d');
-            $sql = "UPDATE `users` SET `password` = '$haspassword', `modify` = '$date'  WHERE Userid = '$id'";
-            if(!mysqli_query($con, $sql)){
+            $sql = "update `users` set `password`='$hashpassword', `modify`='$date' where Userid = '$id'";
+    
+            if(mysqli_query($con, $sql)){
+                echo json_encode([
+                    'valid' => true,
+                    'msg' => 'Update has been successful!'
+                ]);
+            } else {
                 echo json_encode([
                     'valid' => false,
                     'errCode' => 'ERR_MSG',
@@ -32,10 +39,7 @@
                 ]);
             }
     
-            echo json_encode([
-                'valid' => true,
-                'msg' => 'Update has been successful!'
-            ]);
+           
         } else {
             echo json_encode([
                 'valid' => false,
