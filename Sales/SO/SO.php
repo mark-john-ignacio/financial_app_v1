@@ -63,7 +63,7 @@
 					<?php
 						if($unpoststat=="True"){
 					?>
-					<button type="button" class="btn btn-danger btn-sm" onClick="location.href='SO_void.php'"><span class="fa fa-times"></span>&nbsp;Un-Post Transaction</button>
+					<button type="button" class="btn btn-danger btn-sm" onClick="location.href='SO_void.php'"><span class="fa fa-times"></span>&nbsp;Void Transaction</button>
 					<?php
 						}
 					?>

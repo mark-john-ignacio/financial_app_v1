@@ -160,6 +160,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
+		$lVoid = $row['lvoid'];
 	}
 	
 	
@@ -173,7 +174,24 @@ if (mysqli_num_rows($sqlhead)!=0) {
 ?>
 <form action="Quote_edit.php" name="frmpos" id="frmpos" method="post">
 	<fieldset>
-    	<legend>Quotation Details</legend>	
+    	<legend>
+				<div class="col-xs-6 nopadding"> Quotation Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
+					<?php
+						if($lCancelled==1){
+							echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+						}
+						
+						if($lPosted==1){
+							if($lVoid==1){
+								echo "<font color='#FF0000'><b>VOIDED</b></font>";
+							}else{
+								echo "<font color='#FF0000'><b>POSTED</b></font>";
+							}
+						}
+					?>
+				</div>
+
+			</legend>	
 
 				<ul class="nav nav-tabs">
 					<li class="active"><a href="#home">Quotation Details</a></li>
@@ -189,22 +207,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									<input type="text" class="form-control input-sm" id="txtcsalesno" name="txtcsalesno" width="20px" tabindex="1" value="<?php echo $txtctranno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
 									<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
 									<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
+									<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?php echo $lVoid;?>">
 								</div>
 								<div class="col-xs-2 nopadwleft">
-									<div id="statmsgz" style="display:inline"></div>
+									
 								</div>
 								<div class="col-xs-5" style="text-align: right;">
-									<div id="salesstat">
-											<?php
-												if($lCancelled==1){
-													echo "<font color='#FF0000'><b>CANCELLED</b></font>";
-												}
-												
-												if($lPosted==1){
-													echo "<font color='#FF0000'><b>POSTED</b></font>";
-												}
-											?>
-									</div>
+									<div id="statmsgz" class="small" style="display:inline"></div>
 								</div>
 								
 							</div>
