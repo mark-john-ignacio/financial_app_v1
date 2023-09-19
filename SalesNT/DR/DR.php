@@ -10,6 +10,7 @@
 
 	$company = $_SESSION['companyid'];
 
+
 	//POST
 	$poststat = "True";
 	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'DR_post'");
@@ -23,6 +24,7 @@
 	if(mysqli_num_rows($sql) == 0){
 		$cancstat = "False";
 	}
+
 
 	$unpoststat = "True";
 	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'DR_unpost.php'");
@@ -42,13 +44,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
 	<title>Myx Financials</title>
 
-	<link rel="stylesheet" type="text/css" href="../../global/plugins/font-awesome/css/font-awesome.min.css"/> 
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>">  
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
@@ -57,142 +58,96 @@
 </head>
 
 <body style="padding:5px">
-		<div>
-			<section>
+	<div>
+		<section>
         <div>
         	<div style="float:left; width:50%">
-						<font size="+2"><u>DR Non-Trade List</u></font>	
-          </div>
+				<font size="+2"><u>DR Non-Trade List</u></font>	
+            </div>
         </div>
-
-				<br><br>
-				
 
 			<div class="col-xs-12 nopadding">
 				<div class="col-xs-4 nopadding">
-					<button type="button" class="btn btn-primary btn-sm" onClick="location.href='DR_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+					<button type="button" class="btn btn-primary btn-sm"  onClick="location.href='DR_new.php'" id="btnNew" name="btnNew"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
 					<?php
 						if($unpoststat=="True"){
 					?>
-						<button type="button" class="btn btn-warning btn-sm" onClick="location.href='DR_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+					<button type="button" class="btn btn-danger btn-sm" onClick="location.href='DR_void.php'"><span class="fa fa-times"></span>&nbsp;Void Transaction</button>
 					<?php
 						}
 					?>
 				</div>
-        <div class="col-xs-3 nopadding">
+        <div class="col-xs-2 nopadding">
 					<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
 				</div>
-        <div class="col-xs-2 nopadwtop" style="height:30px !important;">
-          <b> Search Customer/DR No: </b>
+        <div class="col-xs-3 nopadwtop" style="height:30px !important;">
+          <b> Search Customer / DR No / Reference: </b>
         </div>
 				<div class="col-xs-3 text-right nopadding">
-					<input type="text" name="searchByName" id="searchByName" value="" class="form-control input-sm" placeholder="Enter Trans No or Customer...">
+				<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Enter Supplier, DR No, Reference...">
 				</div>
 
 			</div>
 
-
-        <br><br><br>
-
-				<table id="MyTable" class="display" cellspacing="0" width="100%">
-					<thead>
+            <br><br>
+			<table id="MyTable" class="display" cellspacing="0" width="100%">
+				<thead>
 					<tr>
 						<th>DR No</th>
 						<th>DR Series No</th>
-						<th>Customer</th>
+						<th>Reference</th>
+						<th>Delivered To</th>
 						<th>Delivery Date</th>
             <th>Status</th>
 					</tr>
-					</thead>
+				</thead>
 
-					<tbody>
-						<?php
-							$sql = "select a.*,b.cname, b.nlimit from ntdr a left join customers b on a.ccode=b.cempid and a.compcode=b.compcode where a.compcode='$company' order by a.ddate DESC";
-							$result=mysqli_query($con,$sql);
-							
-								if (!mysqli_query($con, $sql)) {
-									printf("Errormessage: %s\n", mysqli_error($con));
-								} 
-								
-							while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-							{
-						?>
-						<tr>
-							<td><a href="javascript:;" onClick="editfrm('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
-							<td><?php echo $row['ccode'];?> - <?php echo utf8_encode($row['cname']);?> </td>
-							<td><?php echo $row['ddate'];?></td>
-							<td><?php echo $row['dcutdate'];?></td>
-							<td align="center">
-								<div id="msg<?php echo $row['ctranno'];?>">
-									<?php 
-										if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
-									?>
-										<a href="javascript:;" onClick="trans('POST','<?php echo $row['ctranno'];?>','Posted','<?php echo $row['ccode'];?>',<?php echo $row['nlimit'];?>)">POST</a> | <a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['ctranno'];?>','Cancelled','','')">CANCEL</a>
-									<?php
-										}
-										else{
-											if(intval($row['lcancelled'])==intval(1)){
-												echo "Cancelled";
-											}
-											if(intval($row['lapproved'])==intval(1)){
-												echo "Posted";
-											}
-										}									
-									?>
-								</div>
-							</td>
-						</tr>
-						<?php 
-							}
-						
-							mysqli_close($con);				
-						?>
-								
-					</tbody>
-				</table>
+				
+			</table>
 
-			</section>
-		</div>		
+		</section>
+	</div>		
     
-		<form name="frmedit" id="frmedit" method="post" action="DR_edit.php">
-			<input type="hidden" name="txtctranno" id="txtctranno" />
-		</form>		
+<form name="frmedit" id="frmedit" method="post" action="DR_edit.php">
+	<input type="hidden" name="txtctranno" id="txtctranno" />
+</form>		
 
 
-		<!-- 1) Alert Modal -->
-		<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-				<div class="vertical-alignment-helper">
-						<div class="modal-dialog vertical-align-top">
-								<div class="modal-content">
-									<div class="alert-modal-danger">
-											<p id="AlertMsg"></p>
-										<p>
-												<center>
-														<button type="button" class="btnmodz btn btn-primary btn-sm" id="OK">Ok</button>
-														<button type="button" class="btnmodz btn btn-danger btn-sm" id="Cancel">Cancel</button>
-														
-														
-														<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-														
-														<input type="hidden" id="typ" name="typ" value = "">
-														<input type="hidden" id="modzx" name="modzx" value = "">
-														<input type="hidden" id="modzid" name="modzid" value = "">
-														<input type="hidden" id="modzxcred" name="modzxcred" value = "">
-												</center>
-										</p>
-									</div> 
-								</div>
-						</div>
-				</div>
-		</div>	
+<!-- 1) Alert Modal -->
+<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-top">
+            <div class="modal-content">
+               <div class="alert-modal-danger">
+                  <p id="AlertMsg"></p>
+                <p>
+                    <center>
+                        <button type="button" class="btnmodz btn btn-primary btn-sm" id="OK">Ok</button>
+                        <button type="button" class="btnmodz btn btn-danger btn-sm" id="Cancel">Cancel</button>
+                        
+                        
+                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+                        
+                        <input type="hidden" id="typ" name="typ" value = "">
+                        <input type="hidden" id="modzx" name="modzx" value = "">
+                        <input type="hidden" id="modzid" name="modzid" value = "">
+                        <input type="hidden" id="modzxcred" name="modzxcred" value = "">
+                    </center>
+                </p>
+               </div> 
+            </div>
+        </div>
+    </div>
+</div>
+
 
 </body>
 </html>
 
-	<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
-	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
-
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
+<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
+	
 	<script>
 		var xChkLimitWarn = "";
 		var balance = "";
@@ -418,6 +373,7 @@
 		function fill_datatable(searchByName = '')
 		{
 		  var dataTable = $('#MyTable').DataTable({
+				stateSave: true,
 		    "processing" : true,
 		    "serverSide" : true,
 		    "lengthChange": true,
@@ -434,7 +390,7 @@
 					{ "data": null,
 						"render": function (data, type, full, row) {
 							var sts = "";
-							if (full[5] == 1) {
+							if (full[5] == 1 || full[9] == 1) {
 								sts="class='text-danger'";
 							}
 
@@ -444,14 +400,26 @@
 							
 					},
 					{ "data": 1 },
-					{ "data": 2 },
-					{ "data": 3 },
+					{ "data": 8 },
 					{ "data": null,
+							"render": function (data, type, full, row) {
+
+								return full[6]+" - "+full[2];
+									
+							}
+								
+						},
+						{ "data": 3 },
+						{ "data": null,
 							"render": function (data, type, full, row) {
 	
 								if (full[4] == 1) {
 									
-									return 'Posted';
+									if(full[9] == 1){
+										return '<b>Voided</b>';
+									}else{										
+										return 'Posted';
+									}
 								
 								}
 								
@@ -471,17 +439,13 @@
         	],
 					"columnDefs": [
 						{
-							"targets": 3,
-							"className": "text-right"
-						},
-						{
-							"targets": 4,
+							"targets": [4,5],
 							"className": "text-center dt-body-nowrap"
 						}
 					],
 					"createdRow": function( row, data, dataIndex ) {
 						// Set the data-status attribute, and add a class
-						if(data[5]==1){
+						if(data[5]==1 || data[9] == 1){
 							$(row).addClass('text-danger');
 						}
 						

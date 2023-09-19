@@ -1,13 +1,13 @@
 <?php
-if(!isset($_SESSION)){
-	session_start();
-}
-$_SESSION['pageid'] = "SO_unpost.php";
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "SO_unpost.php";
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
-$company = $_SESSION['companyid'];
+	$company = $_SESSION['companyid'];
 
 ?>
 
@@ -25,7 +25,7 @@ $company = $_SESSION['companyid'];
 </head>
 
 <body style="padding:5px">
-	<form action="SO_unpost_tran.php" name="frmunpost" id="frmunpost" method="POST">
+	<form action="SO_void_tran.php" name="frmunpost" id="frmunpost" method="POST">
 	
 		<div>
 			<section>
@@ -36,7 +36,7 @@ $company = $_SESSION['companyid'];
 					</div>
 				<br><br>
 
-				<button type="button" class="btn btn-warning" id="btnsubmit" name="btnsubmit"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+				<button type="button" class="btn btn-danger btn-sm" id="btnsubmit" name="btnsubmit"><span class="fa fa-times"></span>&nbsp;Void Transaction</button>
 
 				<br><br>
 
@@ -44,23 +44,25 @@ $company = $_SESSION['companyid'];
 					<thead>
 						<tr>
 							<td align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></td>
-							<th class="text-center">SI No</th>
+							<th class="text-center">SO No</th>
+							<th class="text-center">PO No</th>
+							<th class="text-center">Reference</th>
 							<th class="text-center">Customer</th>
-							<th class="text-center">Trans Date</th>
 							<th class="text-center">Gross</th>
+							<th class="text-center">Delivery Date</th>
 						</tr>
 					</thead>
 
 					<tbody>
 					<?php
 					//select * SI reference in Receive Payment
-					$alrr = mysqli_query($con,"Select a.creference from ntdr_t a left join ntdr b on a.compcode=b.compcode and a.ctranno=b.ctranno where a.compcode='$company' and b.lcancelled=0");
+					$alrr = mysqli_query($con,"Select a.creference from ntdr_t a left join ntdr b on a.compcode=b.compcode and a.ctranno=b.ctranno where a.compcode='$company' and b.lcancelled=0 and b.lvoid=0");
 					$refpos[] = "";
 					while($rowxcv=mysqli_fetch_array($alrr, MYSQLI_ASSOC)){
 						$refpos[] = $rowxcv['creference'];
 					}
 					
-					$result=mysqli_query($con,"select a.*,IFNULL(b.ctradename,b.cname) as cname from ntso a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.compcode='$company' and a.ctranno not in ('".implode("','",$refpos)."') and (a.lapproved=1 or a.lcancelled=1) order by a.ddate desc");
+					$result=mysqli_query($con,"select a.*,IFNULL(b.ctradename,b.cname) as cname, D.cref from ntso a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid LEFT JOIN (Select x.ctranno, GROUP_CONCAT(DISTINCT x.creference) as cref from `ntso_t` x where x.compcode='".$_SESSION['companyid']."' group by x.ctranno) D on a.ctranno=D.ctranno where a.compcode='$company' and a.ctranno not in ('".implode("','",$refpos)."') and (a.lapproved=1 and a.lvoid=0) order by a.ddate desc");
 					
 						if (!$result) {
 							printf("Errormessage: %s\n", mysqli_error($con));
@@ -72,9 +74,12 @@ $company = $_SESSION['companyid'];
 						<tr>
 							<td align="center"> <input name="allbox[]" id="chk<?php echo $row['ctranno'];?>" type="checkbox" value="<?php echo $row['ctranno'];?>" /></td>
 							<td><a href="javascript:;" onClick="printchk('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
+							<td><?php echo $row['cpono'];?></td>
+							<td><?php echo $row['cref'];?></td>
 							<td><?php echo $row['ccode'];?> - <?php echo $row['cname'];?> </td>
-							<td><?php echo $row['ddate'];?></td>
+							
 							<td align="right"><?php echo number_format($row['ngross'],2);?></td>
+							<td align="center"><?php echo $row['dcutdate'];?></td>
 						</tr>
 					<?php 
 					}				
@@ -126,6 +131,10 @@ $company = $_SESSION['companyid'];
 					$("#frmunpost").submit();
 				}
 
+			});
+
+			$("#allbox").click(function(){
+				$('input:checkbox').not(this).prop('checked', this.checked);
 			});
 	});
 
