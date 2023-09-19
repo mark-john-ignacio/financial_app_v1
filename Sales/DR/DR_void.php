@@ -33,7 +33,7 @@
 			<section>
 					<div>
 						<div style="float:left; width:50%">
-							<font size="+2"><u>Delivery Receipt List</u></font>	
+							<font size="+2"><u>DR Non-Trade List</u></font>	
 						</div>
 					</div>
 				<br><br>

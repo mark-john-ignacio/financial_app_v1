@@ -341,7 +341,6 @@ function getSetAcct($id){
 		}else{
 			$qrySI = "INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','IN','$tran',A.dcutdate,B.cacctid,B.cacctdesc,A.ngross,0,0,NOW() From ntsales A left join accounts B on A.compcode=B.compcode and A.cacctcode=B.cacctno where A.compcode='$company' and A.ctranno='$tran'";
 		}
-		
 			
 		if (!mysqli_query($con,$qrySI)){
 			

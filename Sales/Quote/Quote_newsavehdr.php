@@ -86,13 +86,14 @@ else {
 
 	}
 	
+	
 	if(count($_FILES) != 0){
 		$directory = "../../Components/assets/QO/";
 		if(!is_dir($directory)){
-		mkdir($directory, 0777);
+			mkdir($directory, 0777);
 		}
 		$directory .= "{$company}_{$cSINo}/";
-		upload_image($_FILES, $directory, count($_FILES)-1);
+		upload_image($_FILES, $directory);
 	}
 
 

@@ -1721,6 +1721,8 @@ function chkform(){
 	var isDone = "True";
 	
 		$("#currdesc").val($("#selbasecurr option:selected").text());
+		$("#txtremarks").summernote('destroy');
+		
 		var formdata = new FormData($("#frmpos")[0]);
 		/**
 		 * @property JQuery formulate every file to compose to formdata 

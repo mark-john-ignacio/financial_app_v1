@@ -2354,8 +2354,8 @@ function disabled(){
 	$("#btnEdit").attr("disabled", false);
 
 	if(document.getElementById("hdnposted").value==1 && document.getElementById("hdnvoid").value==0){
-			$("#btnentry").attr("disabled", false);
-		}
+		$("#btnentry").attr("disabled", false);
+	}
 
 		$("#btn-closemod").attr("disabled", false); 
 

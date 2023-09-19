@@ -55,7 +55,7 @@ $company = $_SESSION['companyid'];
 
 					<tbody>
 					<?php
-					$alrr = mysqli_query($con,"Select a.csalesno from receipt_sales_t a left join receipt b on a.compcode=b.compcode and a.ctranno=b.ctranno where a.compcode='$company' and b.lcancelled=0 and b.lvoid=0");
+					$alrr = mysqli_query($con,"Select a.csalesno from receipt_sales_t a left join receipt b on a.compcode=b.compcode and a.ctranno=b.ctranno where a.compcode='$company' and b.lcancelled=0 and b.lvoid=0 UNION ALL Select a.crefsi from aradjustment a where a.compcode='$company' and a.lcancelled=0 and a.lvoid=0");
 					$refpos[] = "";
 					while($rowxcv=mysqli_fetch_array($alrr, MYSQLI_ASSOC)){
 						$refpos[] = $rowxcv['csalesno'];

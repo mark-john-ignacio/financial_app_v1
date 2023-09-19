@@ -3,7 +3,7 @@
 		session_start();
 	}
 
-	$_SESSION['pageid'] = "DR_unpost.php";
+	$_SESSION['pageid'] = "SalesRet_unpost.php";
 
 	require_once "../../Connection/connection_string.php";
 
@@ -17,7 +17,7 @@
 
 	$status = "True";
 
-			if (!mysqli_query($con,"Update ntdr set lapproved=0,lcancelled=0 where compcode='$company' and ctranno in ('".implode("','",$_POST["allbox"])."')")){
+			if (!mysqli_query($con,"Update ntsalesreturn set lvoid=1 where compcode='$company' and ctranno in ('".implode("','",$_POST["allbox"])."')")){
 				$status = "False";	
 			}else{
 
@@ -25,11 +25,12 @@
 
 				foreach($_POST["allbox"] as $rz){
 					mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-					values('$rz','$preparedby',NOW(),'UNPOST','DR NON-TRADE','$compname','UnPost Record')");
+					values('$rz','$preparedby',NOW(),'VOID','SALES RETURN','$compname','Void Record')");
 
 					mysqli_query($con,"DELETE FROM `tblinventory` where `ctranno` = '$rz'");
 					mysqli_query($con,"DELETE FROM `tblinvin` where `ctranno` = '$rz'");
 					mysqli_query($con,"DELETE FROM `tblinvout` where `ctranno` = '$rz'");
+
 				}
 
 			}
@@ -38,15 +39,15 @@
 ?>
 
 				<script>
-					alert('Records Succesfully Un-Posted');
-					window.location.href="DR_unpost.php";
+					alert('Records Succesfully Voided');
+					window.location.href="SR_void.php";
 				</script>
 <?php
 			}else{
 ?>
 				<script>
-					alert('Error Un-Posting transactions!');
-					window.location.href="DR_unpost.php";
+					alert('Error Voiding transactions!');
+					window.location.href="SR_void.php";
 				</script>
 <?php
 			}
