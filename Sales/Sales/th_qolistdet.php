@@ -102,7 +102,7 @@ require_once "../../Connection/connection_string.php";
 						//$json['namount'] = $rowx['namount'];
 						$json['namount'] = $xnamt;
 						$json['nbaseamount'] = number_format($xnamt * floatval($row['nexchangerate']),2);
-						$json['ctaxcode'] = $rowx['cvattype'];
+						$json['ctaxcode'] = $row['cvattype'];
 						$json['cpono'] = $rowx['cpono'];
 					}
 				}
