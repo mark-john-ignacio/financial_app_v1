@@ -27,6 +27,13 @@
 		
 	}
 
+	$nvalue = "";
+	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='ALLOW_REF_APV'"); 										
+	if (mysqli_num_rows($result)!=0) {
+		$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
+		$nvalue = $all_course_data['cvalue']; 												
+	}
+
 	$_SESSION['myxtoken'] = gen_token();		
 ?>
 
@@ -126,8 +133,17 @@
 													<option value="debit card">Debit Card</option>
 												</select>
 											</div>
-											<div class="col-xs-3" style="padding:2px !important">
-												&nbsp;&nbsp;&nbsp;<!--<b>Payment Type</b>-->
+											<div class="col-xs-3" style="padding:2px !important; padding-left: 10px !important">
+											<?php
+												if($nvalue==0){
+											?>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="1" id="isNoRef" name="isNoRef"/>
+													<label class="form-check-label" for="flexCheckChecked">No Reference</label>
+												</div>
+												<?php
+												}
+												?>
 											</div>
 											<!--
 												<div class="col-xs-4 nopadding">
@@ -495,8 +511,15 @@
 
 
 	$(document).ready(function() {
-		$('.datepick').datetimepicker({
-			format: 'MM/DD/YYYY',
+
+		$('body').on('focus',".datepick", function(){
+			$(this).datetimepicker({
+				format: 'MM/DD/YYYY',
+				widgetPositioning:{
+          horizontal: 'auto',
+          vertical: 'bottom'
+        }
+			});
 		});
 
 		$("#file-0").fileinput({
@@ -579,7 +602,13 @@
 				$("#txtcustid").val(item.id);
 				$("#txtpayee").val(item.value);
 					
-				showapvmod(item.id);
+				isnoref = '<?=$nvalue?>';
+				//if(isnoref=='1'){
+				//alert($("#isNoRef").prop('checked'));
+					if($("#isNoRef").prop('checked') == false || $("#isNoRef").prop('checked') == undefined){
+						showapvmod(item.id);
+					}
+			//	}
 
 			}
 		});
@@ -894,6 +923,7 @@
 										
 						$('#txtcust').val("").change(); 
 						$("#txtcustid").val("");
+						$("#txtpayee").val("");
 
 					}
 					else{
@@ -977,11 +1007,24 @@
 			
 			var u = "<td>"+ctranno+"<input type=\"hidden\" name=\"cTranNo"+lastRow+"\" id=\"cTranNo"+lastRow+"\" value=\""+ctranno+"\" /> <input type=\"hidden\" name=\"napvewt"+lastRow+"\" id=\"napvewt"+lastRow+"\" value=\""+ewtamt+"\" /></td>";
 
-			var u2 = "<td>"+refno+"<input type=\"hidden\" name=\"cRefRRNo"+lastRow+"\" id=\"cRefRRNo"+lastRow+"\" value=\""+refno+"\" /> </td>";
+			if(ctranno==""){
+				var u2 = "<td style=\"padding:2px\" align=\"center\"><input type=\"text\" class=\"form-control input-sm\" name=\"cRefRRNo"+lastRow+"\" id=\"cRefRRNo"+lastRow+"\" value=\""+refno+"\" /> </td>";
 			
-			var v = "<td>"+ddate+"<input type=\"hidden\" name=\"dApvDate"+lastRow+"\" id=\"dApvDate"+lastRow+"\" value=\""+ddate+"\" /></td>";
+				var v = "<td style=\"padding:2px\" align=\"center\"><div class=\"controls\" style=\"position: relative\"><input type=\"text\" class=\"datepick form-control input-sm\" name=\"dApvDate"+lastRow+"\" id=\"dApvDate"+lastRow+"\" value=\""+ddate+"\" /></div></td>";
+
+				var w = "<td style=\"padding:2px\" align=\"center\"><input type=\"text\" class=\"numeric form-control input-sm\" name=\"nAmount"+lastRow+"\" id=\"nAmount"+lastRow+"\" value=\""+numcom(namount)+"\" style=\"text-align:right\"/></td>";
+
+			}else{
+				var u2 = "<td>"+refno+"<input type=\"hidden\" name=\"cRefRRNo"+lastRow+"\" id=\"cRefRRNo"+lastRow+"\" value=\""+refno+"\" /> </td>";
 			
-			var w = "<td align='right'>"+numcom(namount)+"<input type=\"hidden\" name=\"nAmount"+lastRow+"\" id=\"nAmount"+lastRow+"\" value=\""+namount+"\" /></td>";
+				var v = "<td>"+ddate+"<input type=\"hidden\" name=\"dApvDate"+lastRow+"\" id=\"dApvDate"+lastRow+"\" value=\""+ddate+"\" /></td>";
+
+				var w = "<td align='right'>"+numcom(namount)+"<input type=\"hidden\" name=\"nAmount"+lastRow+"\" id=\"nAmount"+lastRow+"\" value=\""+namount+"\" /></td>";
+
+				
+			}
+			
+			
 			
 			var x = "<td align='right'>"+numcom(npayed)+"<input type=\"hidden\" name=\"cTotPayed"+lastRow+"\" id=\"cTotPayed"+lastRow+"\"  value=\""+npayed+"\" style=\"text-align:right\" readonly=\"readonly\">&nbsp;&nbsp;&nbsp;</td>";
 			
@@ -1005,6 +1048,11 @@
 									$("input.numeric").on("keyup", function (e) {
 											setPosi($(this).attr('name'),e.keyCode);
 											GoToComp();
+									});
+
+									$("#nAmount"+lastRow).on("keyup", function (e) {
+										$("#nApplied"+lastRow).val($(this).val());
+										GoToCompAmt();
 									});
 
 									$("#cacctdesc"+lastRow).typeahead({
@@ -1070,6 +1118,18 @@
 				
 			}
 
+			if(namez=="nAmount"){
+				if(keyCode==38 && r!=1){//Up
+					var z = parseInt(r) - parseInt(1);
+					document.getElementById("nAmount"+z).focus();
+				}
+				
+				if((keyCode==40 || keyCode==13) && r!=lastRow){//Down or ENTER
+					var z = parseInt(r) + parseInt(1);
+					document.getElementById("nAmount"+z).focus();
+				}
+			}
+
 	}
 
 	function chkform(){
@@ -1130,6 +1190,22 @@
 			$("#txttotpaid").autoNumeric('destroy');
 			$("#txttotpaid").autoNumeric('init',{mDec:2});
 
+	}
+
+	function GoToCompAmt(){
+		var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
+			var lastRow = tbl.length-1;
+			var z;
+			var gross = 0;
+			
+			for (z=1; z<=lastRow; z++){
+				gross = parseFloat(gross) + parseFloat($("#nAmount"+z).val().replace(/,/g,''));
+			}
+			
+			//document.getElementById("txtnGross").value = gross.toFixed(2);
+			$("#txtnGross").val(gross);
+			$("#txtnGross").autoNumeric('destroy');
+			$("#txtnGross").autoNumeric('init',{mDec:2});
 	}
 
 </script>

@@ -2948,8 +2948,33 @@ if (mysqli_num_rows($sqlhead)!=0) {
 												
 								<div class="collapse" id="blpcollapse">
 
-										<div class="col-xs-12" style="margin-bottom: 15px !important; margin-left: 15px !important">
-											<div class="col-xs-3 nopadwtop2x">
+											<div class="col-xs-12" class="border" style="margin-bottom: 1px !important; margin-left: 15px !important">
+												<div class="col-xs-3 nopadwtop2x">
+													<b>Reference APV</b>
+													<div id="divPaybillRef" style="display:inline; padding-left:5px"></div>
+												</div>                   
+												<div class="col-xs-3 nopadwtop2x">
+													<?php
+														$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='ALLOW_REF_APV'"); 										
+														if (mysqli_num_rows($result)!=0) {
+															$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
+															$nvalue = $all_course_data['cvalue']; 												
+														}
+														else{
+															$nvalue = "";
+														}
+													?>
+													<select class="form-control input-sm selectpicker" name="selrrallowref" id="selrrallowref" onChange="setparamval('ALLOW_REF_APV',this.value,'apvallowmsg')">
+														<option value="0" <?php if ($nvalue==0) { echo "selected"; } ?>> Allow No Reference </option>
+														<option value="1" <?php if ($nvalue==1) { echo "selected"; } ?>> Required Reference </option>
+													</select>
+												</div>
+												<div class="col-xs-1 nopadwtop2x" id="apvallowmsg">
+												</div>
+											</div>
+
+										<div class="col-xs-12" class="border" style="margin-bottom: 15px !important; margin-left: 15px !important">
+											<div class="col-xs-3 nopadwtop">
 												<b>Send Approval Email Notif.</b>
 												<div id="divRFPEmailprint" style="display:inline; padding-left:5px"></div>
 											</div>                    

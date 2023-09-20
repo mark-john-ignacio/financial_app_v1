@@ -79,9 +79,14 @@ else {
 
 		$cPayRefNo = mysqli_real_escape_string($con, $_POST['txtPayRefrnce']);
 	}
+
+	$dret = 0;
+	if(isset($_REQUEST['isNoRef'])){
+		$dret = 1;
+	}
 	
 
-	if (!mysqli_query($con, "INSERT INTO `paybill`(`compcode`, `ctranno`, `ccode`, `cpayee`, `cpaymethod`, `cbankcode`, `ccheckno`, `ccheckbook`, `cacctno`, `cpayrefno`, `ddate`, `dcheckdate`, `ngross`, `npaid`, `cpreparedby`, `cparticulars`, `cpaytype`) values('$company', '$cSINo', '$cCustID', '$cPayee', '$paymeth', '$cBankCode', '$cCheckNo', '$cCheckBK', '$cAcctNo', '$cPayRefNo', STR_TO_DATE('$dDate', '%m/%d/%Y'), STR_TO_DATE('$dTranDate', '%m/%d/%Y'), $nGross, $npaid, '$preparedby', '$particulars', '$paytype')")) {
+	if (!mysqli_query($con, "INSERT INTO `paybill`(`compcode`, `ctranno`, `ccode`, `cpayee`, `cpaymethod`, `cbankcode`, `ccheckno`, `ccheckbook`, `cacctno`, `cpayrefno`, `ddate`, `dcheckdate`, `ngross`, `npaid`, `cpreparedby`, `cparticulars`, `cpaytype`, `lnoapvref`) values('$company', '$cSINo', '$cCustID', '$cPayee', '$paymeth', '$cBankCode', '$cCheckNo', '$cCheckBK', '$cAcctNo', '$cPayRefNo', STR_TO_DATE('$dDate', '%m/%d/%Y'), STR_TO_DATE('$dTranDate', '%m/%d/%Y'), $nGross, $npaid, '$preparedby', '$particulars', '$paytype', $dret)")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 
