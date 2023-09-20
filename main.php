@@ -542,6 +542,9 @@
 					<span class="arrow "></span>
 					</a>
 					<ul class="sub-menu">
+						<?php
+							if($lallowMRP==1){
+						?>
 						<li>
 							<a href="javascript:;" onClick="setpage('MRP/BOM/items_list.php');">
 							<i class="fa fa-cubes"> </i> Material BOM</a>
@@ -554,6 +557,9 @@
                 <a href="javascript:;" onClick="setpage('MRP/JO/JO.php');"> 
 								<i class="fa fa-file-text-o"></i> Job Orders </a>
             </li>
+						<?php
+							}
+						?>
 						<li>
 							<a href="javascript:;" onClick="setpage('Inventory/Count/Inv.php');">
 							 <i class="fa fa-barcode"> </i> Inventory Count
