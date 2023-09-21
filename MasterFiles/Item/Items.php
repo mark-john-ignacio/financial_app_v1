@@ -18,6 +18,7 @@ $company = $_SESSION['companyid'];
 <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">
 <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css">    
 <link rel="stylesheet" type="text/css" href="../../global/plugins/font-awesome/css/font-awesome.min.css"/> 
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css"> 
 
 <script type="text/javascript">
 function editfrm(x,y){
@@ -132,6 +133,31 @@ function editfrm(x,y){
   </div>
 </div>
 
+<!-- 1) Alert Modal -->
+<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-top">
+            <div class="modal-content">
+               <div class="alert-modal-danger">
+                  <p id="AlertMsg"></p>
+                <p>
+                    <center>
+                        <button type="button" class="btn btn-primary btn-sm" id="OK" onclick="setStat('OK')">Ok</button>
+                        <button type="button" class="btn btn-danger btn-sm" id="Cancel" onclick="setStat('Cancel')">Cancel</button>
+                        
+                        
+                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+                        
+                        <input type="hidden" id="typ" name="typ" value = "">
+                        <input type="hidden" id="modzx" name="modzx" value = "">
+                    </center>
+                </p>
+               </div> 
+            </div>
+        </div>
+    </div>
+</div>
+
 <form name="frmedit" id="frmedit" method="post" action="Items_edit.php">
 	<input type="hidden" name="txtcitemno" id="txtcitemno" />
 </form>		
@@ -193,7 +219,28 @@ function editfrm(x,y){
 
 	});
 	
-	function setStat(code, stat){
+
+	function trans(code,stat,msg){
+
+		$("#typ").val(stat);
+		$("#modzx").val(code);
+
+		$("#AlertMsg").html("");
+									
+		$("#AlertMsg").html("Are you sure you want to "+msg+" Item Code: "+code);
+		$("#alertbtnOK").hide();
+		$("#OK").show();
+		$("#Cancel").show();
+		$("#AlertModal").modal('show');
+
+	}
+
+	function setStat(dstat){
+
+		if(dstat=="OK"){
+			code = $("#modzx").val();
+			stat = $("#typ").val();
+
 			$.ajax ({
 				url: "th_itmsetstat.php",
 				data: { code: code,  stat: stat },
@@ -224,6 +271,10 @@ function editfrm(x,y){
 				}
 			
 			});
+		}
+		
+		$("#AlertModal").modal('hide');
+		
 
 	}
 
@@ -267,10 +318,10 @@ function editfrm(x,y){
 
 						
 						if(full[3]=="ACTIVE"){
-						 	return "<div id=\"itmstat"+full[0]+"\"><span class='label label-success'>&nbsp;Active&nbsp;</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+full[0]+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a></div>";
+						 	return "<div id=\"itmstat"+full[0]+"\"><span class='label label-success'>&nbsp;Active&nbsp;</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"trans('"+full[0]+"','INACTIVE', 'Inactivate')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a></div>";
 						}
 						else{
-							return "<div id=\"itmstat"+full[0]+"\"><span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+full[0]+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a></div>";
+							return "<div id=\"itmstat"+full[0]+"\"><span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"trans('"+full[0]+"','ACTIVE','Activate')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a></div>";
 						}
 
 					}
