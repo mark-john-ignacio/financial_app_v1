@@ -260,7 +260,7 @@ function editfrm(x,y){
 							
 								return "<div class=\"col-sm-12 nopadding\"><div class=\"col-sm-6 nopadding\"><a href=\"javascript:;\" data-toggle=\"modal\" data-target=\"#myPurchModal\" data-id=\""+full[0]+"\" data-label=\"Purchase Cost\" data-val=\"Purch\" class=\"viewCost\"><span class='label label-primary'>Purchase</span></a></div><div class=\"col-sm-6 nopadwleft\"><a href=\"javascript:;\" data-toggle=\"modal\" data-target=\"#myPurchModal\" data-id=\""+full[0]+"\" data-label=\"Sales Price\" data-val=\"Sales\" class=\"viewCost\"><span class='label label-info'>&nbsp;&nbsp;&nbsp;Sales&nbsp;&nbsp;&nbsp;</span></a>";
 							
-					}
+					},
 				},
 				{ "data": null,
 					"render": function (data, type, full, row){
@@ -285,6 +285,12 @@ function editfrm(x,y){
 				//}
 				
         	],
+					"columnDefs": [ 
+						{
+							"targets": 3,
+							"orderable": false
+						} 
+					]
 		   });
 		  }
 		  

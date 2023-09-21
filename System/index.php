@@ -3371,13 +3371,16 @@ if (mysqli_num_rows($sqlhead)!=0) {
 											$arrallsec[] = array('nid' => $row0['nid'], 'cdesc' => $row0['cdesc']);
 										}
 
-										$sqlparams = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='".$_SESSION['companyid']."' and ccode in ('DEF_WHOUT','DEF_WHIN','DEF_PROUT','DEF_SRIN')");
+										$sqlparams = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='".$_SESSION['companyid']."' and ccode in ('DEF_WHOUT','DEF_WHIN','DEF_PROUT','DEF_SRIN','MES_REQ_FROM','MES_REQ_TO')");
 										$rowdetprms = $sqlparams->fetch_all(MYSQLI_ASSOC);
 
 										$def_whout = "";
 										$def_whin = "";
 										$def_prout = "";
 										$def_srin = "";
+
+										$def_matreqfrm = "";
+										$def_matreqtop = "";
 										foreach($rowdetprms as $rowx){
 
 											if($rowx['ccode']=="DEF_WHOUT"){
@@ -3394,6 +3397,14 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 											if($rowx['ccode']=="DEF_SRIN"){
 												$def_srin = $rowx['cvalue'];
+											}
+
+											if($rowx['ccode']=="MES_REQ_FROM"){
+												$def_matreqfrm = $rowx['cvalue'];
+											}
+
+											if($rowx['ccode']=="MES_REQ_TO"){
+												$def_matreqtop = $rowx['cvalue'];
 											}
 										
 										}
@@ -3487,6 +3498,53 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										</div>
 										<div class="col-xs-1 nopadwtop" id="invdefsrin">
 										</div>
+									</div>
+									
+
+									<p data-toggle="collapse" data-target="#mescollapse" style="margin-top:10px"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>MES Settings</b></u> <i></i></p>
+
+									<div class="collapse" id="mescollapse">
+											
+										<div class="col-xs-12">
+											<div class="col-xs-2 nopadwtop">
+												<b>Material Request (From)</b>												
+											</div> 
+											<div class="col-xs-3 nopadwtop">
+												<select class="form-control input-sm" name="selfgout" id="selfgout" onChange="setparamval('MES_REQ_FROM',this.value,'matreqfrom')">
+													<?php
+															foreach($arrallsec as $localocs){
+														?>
+															<option value="<?php echo $localocs['nid'];?>" <?=($def_matreqfrm==$localocs['nid']) ? "selected" : ""?>><?php echo $localocs['cdesc'];?></option>										
+														<?php	
+															}						
+														?>
+												</select>
+											</div>
+											<div class="col-xs-1 nopadwtop" id="matreqfrom">
+											</div> 
+										</div>
+
+										<div class="col-xs-12">
+											<div class="col-xs-2 nopadwtop">
+												<b>Material Request (To)</b>												
+											</div>
+											<div class="col-xs-3 nopadwtop">
+												<select class="form-control input-sm" name="selwhiin" id="selwhiin" onChange="setparamval('MES_REQ_TO',this.value,'matreqto')">
+													<?php
+														$issel = 0;
+															foreach($arrallsec as $localocs){
+																$issel++;
+														?>
+															<option value="<?php echo $localocs['nid'];?>" <?=($def_matreqtop==$localocs['nid']) ? "selected" : ""?>><?php echo $localocs['cdesc'];?></option>										
+														<?php	
+															}						
+														?>
+												</select>
+											</div>
+											<div class="col-xs-1 nopadwtop" id="matreqto">
+											</div>
+										</div>
+
 									</div>
 
 							</div>						
