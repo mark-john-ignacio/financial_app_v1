@@ -8,9 +8,9 @@ require_once "../Connection/connection_string.php";
 
 	$company = '001';
 	
-	$result = mysqli_query ($con, "SELECT cacctid, cacctno, cacctdesc, IFNULL(nbalance,0) as nbalance FROM accounts WHERE compcode='$company' and (cacctdesc like '%".$_GET['query']."%' OR cacctno like '%".$_GET['query']."%') and ctype='Details'"); 
+	$result = mysqli_query ($con, "SELECT cacctid, cacctno, cacctdesc, IFNULL(nbalance,0) as nbalance FROM accounts WHERE compcode='$company' and (cacctdesc like '%".$_GET['query']."%' OR cacctid like '%".$_GET['query']."%') and ctype='Details'"); 
 
-	// "SELECT cacctno, cacctdesc, IFNULL(nbalance,0) as nbalance FROM accounts WHERE cacctdesc like '%".$_GET['query']."%' OR cacctno like '%".$_GET['query']."%'";
+	 echo "SELECT cacctid, cacctno, cacctdesc, IFNULL(nbalance,0) as nbalance FROM accounts WHERE compcode='$company' and (cacctdesc like '%".$_GET['query']."%' OR cacctid like '%".$_GET['query']."%') and ctype='Details'";
 	
 	//$json2 = array();
 	//$json = [];
