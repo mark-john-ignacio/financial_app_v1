@@ -184,7 +184,7 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 <script type="text/javascript">
 	$(document).ready(function(){
 
-		$(document).on('click', '#tableContent``', function(){
+		$(document).on('click', '#tableContent', function(){
 			let modules = $(this).closest('#tableContent').find('td:eq(0)').text();
 			let ctranno = $(this).closest('#tableContent').find('td:eq(1)').text();
 			console.log(modules)
