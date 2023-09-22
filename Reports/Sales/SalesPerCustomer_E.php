@@ -147,7 +147,7 @@ $result=mysqli_query($con,$sql);
 </div>
 
 <?php
-	}
+	// }
 ?>
 </body>
 </html>
