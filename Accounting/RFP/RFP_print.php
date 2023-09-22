@@ -403,7 +403,13 @@ function numberTowords($num)
 
 				<tr>
 					<td align="center" class="tdpadx"><?=$cremakrs;?></td> 
-					<td align="right" class="tdpadx tdright" nowrap><?php echo number_format((floatval($totamt) + floatval($totsAPEWT[$rowdtls['capvno']])),2);?></td>					
+					<td align="right" class="tdpadx tdright" nowrap>
+						<?php
+							if(isset($totsAPEWT[$rowdtls['capvno']])){
+								echo number_format((floatval($totamt) + floatval($totsAPEWT[$rowdtls['capvno']])),2);
+							}
+						?>
+					</td>					
 					<td align="right" class="tdpadx tdright" nowrap>
 						<?php
 							if(isset($totsAPVAT[$rowdtls['capvno']])){
