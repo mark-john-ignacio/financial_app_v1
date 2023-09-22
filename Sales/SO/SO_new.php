@@ -2068,6 +2068,8 @@ function chkform(){
 			formdata.append('file-'+i, file);
 		});
 
+		console.log(formdata);
+
 		$.ajax ({
 			url: "SO_newsavehdr.php",
 			data: formdata,
@@ -2088,10 +2090,12 @@ function chkform(){
 					trancode = data.trim();
 				}
 			},
-			error: function(err){
-				console.log("error")
-			}
+			error: function (request, error) {
+        console.log(arguments);
+        alert(" Can't do because: " + error);
+    	}
 		});
+		
 		
 		if(trancode!=""){
 			//Save Details

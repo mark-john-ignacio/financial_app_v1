@@ -25,7 +25,7 @@ $company = $_SESSION['companyid'];
 	}
 
 	$unpoststat = "True";	
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Quote_unpost.php'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Quote_unpost'");
 	if(mysqli_num_rows($sql) == 0){
 		$unpoststat = "False";
 	}
@@ -50,33 +50,34 @@ $company = $_SESSION['companyid'];
 		<section>
         <div>
         	<div style="float:left; width:50%">
-				<font size="+2"><u>Quotation List</u></font>	
-            </div>
+						<font size="+2"><u>Quotation List</u></font>	
+          </div>
         </div>
-			<br><br>
 
-			<div class="col-xs-12 nopadding">
-				<div class="col-xs-4 nopadding">
-					<button type="button" class="btn btn-primary btn-sm" onClick="location.href='Quote_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+				<div class="col-xs-12 nopadding">
+					<div class="col-xs-4 nopadding">
+						<button type="button" class="btn btn-primary btn-sm" onClick="location.href='Quote_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
-					<?php
-						if($unpoststat=="True"){
-					?>
-						<button type="button" class="btn btn-warning btn-sm" onClick="location.href='Quote_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
-					<?php
-						}
-					?>
-
+						<?php
+							if($unpoststat=="True"){
+						?>
+						<button type="button" class="btn btn-danger btn-sm" onClick="location.href='Quote_void.php'"><span class="fa fa-times"></span>&nbsp;Void Transaction</button>
+						<?php
+							}
+						?>
+					</div>
+					<div class="col-xs-2 nopadding">
+						<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
+					</div>
+					<div class="col-xs-3 nopadwtop" style="height:30px !important;">
+						<b> Search Customer / Trans. No:  </b>
+					</div>
+					<div class="col-xs-3 text-right nopadding">
+						<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Enter Supplier, Trans. No...">
+					</div>
 				</div>
-				<div class="col-xs-5 nopadding">
-				</div>
-				<div class="col-xs-3 text-right nopadding">
-					<input type="text" name="searchByName" id="searchByName" value="" class="form-control input-sm" placeholder="Enter Code or Desc...">
-				</div>
-			</div>
 
-
-    	<br><br><br>
+    	<br><br>
 			<table id="MyTable" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
@@ -87,9 +88,7 @@ $company = $_SESSION['companyid'];
             <th class="text-center">Status</th>
 						<th class="text-center">Actions</th>
 					</tr>
-				</thead>
-
-				
+				</thead>			
 			</table>
 
 		</section>
@@ -293,10 +292,10 @@ function track(xno){
 
 function fill_datatable(searchByName = ''){
 	var dataTable = $('#MyTable').DataTable({
-		    "processing" : true,
-		    "serverSide" : true,
-		    "order" : [],
-		    "searching" : false,
+			stateSave: true,
+			"searching": false,
+			"paging": true,
+			"serverSide": true,
 		    "ajax" : {
 		     url:"th_datatable.php",
 		     type:"POST",
@@ -310,7 +309,7 @@ function fill_datatable(searchByName = ''){
 					"render": function (data, type, full, row) {
 
 							var sts = "";
-							if (full[6] == 1) {
+							if (full[6] == 1 || full[11] == 1) {
 								sts="class='text-danger'";
 							}
  							
@@ -334,10 +333,14 @@ function fill_datatable(searchByName = ''){
 							return "For Sending";
 						}else{
 							if(full[5]==0 && full[6]==0){
-								return "For Approval";
+								return "Pending";
 							}else{
 								if(full[5]==1){
-									return "Posted";
+									if(full[11] == 1){
+										return '<b>Voided</b>';
+									}else{										
+										return 'Posted';
+									}
 								}else if(full[6]==1){
 									return '<b>Cancelled</b>';
 								}else{
@@ -384,13 +387,12 @@ function fill_datatable(searchByName = ''){
         	"columnDefs": [
 					{
 						targets: [4,5],
-						className: 'text-center', 					
-						orderable: false
+						className: 'text-center'
 					}
 			  ],
 				"createdRow": function( row, data, dataIndex ) {
 					// Set the data-status attribute, and add a class
-					if(data[6]==1){
+					if(data[6]==1 || data[11] == 1){
 						$(row).addClass('text-danger');
 					}
 						

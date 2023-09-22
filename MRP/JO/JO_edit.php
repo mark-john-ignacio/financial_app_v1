@@ -2,10 +2,10 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "JobOrders_edit";
+	//$_SESSION['pageid'] = "JobOrders_edit";
 
 	include('../../Connection/connection_string.php');
-	include('../../include/denied.php');
+	//include('../../include/denied.php');
 	include('../../include/access2.php');
 	require_once('../../Model/helper.php');
 
@@ -13,6 +13,21 @@
 	$tranno = $_REQUEST['txtctranno'];
 
 	$_SESSION['myxtoken'] = gen_token();
+
+	//EDIT ACCESS
+	$editstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'JobOrders_edit'");
+	if(mysqli_num_rows($sql) == 0){
+		$editstat = "False";
+	}
+
+	//New ACCESS
+	$newstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'JobOrders_new'");
+	if(mysqli_num_rows($sql) == 0){
+		$newstat = "False";
+	}
+
 
 	$arrallsec = array();
 	$sqlempsec = mysqli_query($con,"select A.nid, A.cdesc From locations A Where A.compcode='$company' and A.cstatus='ACTIVE' Order By A.cdesc");
@@ -86,10 +101,34 @@
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
 
-	<form action="JO_newsave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
+	<form action="JO_updatesave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
+
+		<input type="hidden" name="hdnposted" id="hdnposted" value="<?=$arrmrpjo[0]['lapproved'];?>">
+		<input type="hidden" name="hdncancel" id="hdncancel" value="<?=$arrmrpjo[0]['lcancelled'];?>">
+		<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?=$arrmrpjo[0]['lvoid'];?>">
+
 		<fieldset>
-				<legend>Job Order No.: <?=$tranno?></legend>
-				
+				<legend>			
+					<div class="col-xs-6 nopadding"> Job Order Details </div>  
+					
+					<div class= "col-xs-6 text-right nopadding" id="salesstat">
+						<?php
+							if($arrmrpjo[0]['lcancelled']==1){
+								echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+							}
+									
+							if($arrmrpjo[0]['lapproved']==1){
+								if($arrmrpjo[0]['lvoid']==1){
+									echo "<font color='#FF0000'><b>VOIDED</b></font>";
+								}else{
+									echo "<font color='#FF0000'><b>POSTED</b></font>";
+								}
+							}
+						?>
+					</div>
+
+				</legend>
+
 					<ul class="nav nav-tabs">
 						<li class="active"><a href="#apv">JO Details</a></li>
 						<li><a href="#attc">Attachments</a></li>
@@ -102,6 +141,24 @@
 						<div id="apv" class="tab-pane fade in active" style="padding-left:5px; padding-top:10px; padding-right:5px; overflow: inherit !important">
 
 							<table width="100%" border="0" cellspacing="0" cellpadding="2"  style="margin-bottom: 25px">
+								<tr>
+									<td><span style="padding:2px"><b>Job Order No.:</b></span></td>
+									<td> 
+
+										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
+											<div class="col-xs-4 nopadding ">
+													<input type="text" id="hdnctranno" name="hdnctranno" class="form-control input-sm required" required readonly value="<?=$tranno?>">
+											</div>
+										</div>
+
+									</td>
+
+									<td colspan="2" style="padding:2px" align="right">
+										<div id="statmsgz" class="small" style="display:inline"></div>
+									</td>
+
+								</tr>
+							
 								<tr>
 									<td><span style="padding:2px"><b>Customer:</b></span></td>
 									<td>
@@ -321,10 +378,34 @@
 							<td width="60%" rowspan="2"><input type="hidden" name="hdnrowcnt" id="hdnrowcnt" value="0">																
 								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='RFP.php';" id="btnMain" name="btnMain">
 									Back to Main<br>(ESC)
-								</button>																																		
+								</button>		
+								<?php
+									if($newstat == "True"){
+								?>
+									<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='Purch_new.php';" id="btnNew" name="btnNew">
+										New<br>(F1)
+									</button>	
+								<?php
+									}
+								?>
+								<?php
+									if($editstat=="True"){
+								?>									
+								<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
+									Undo Edit<br>(CTRL+Z)
+								</button>				
+								<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $tranno;?>','Print');" id="btnPrint" name="btnPrint">
+									Print<br>(CTRL+P)
+								</button>
+								<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
+									Edit<br>(CTRL+E)    
+								</button>																										
 								<button type="submit" class="btn btn-success btn-sm" tabindex="6">
-									Generate JO<br> (CTRL+S)
-								</button>														
+									Update JO<br> (CTRL+S)
+								</button>		
+								<?php
+									}
+								?>												
 							</td>
 						</tr>									
 					</table>
@@ -403,6 +484,10 @@
 					</div>
 				</div>
 			<!-- End Alert modal -->
+
+	<form action="" method="post" name="frmQPrint" id="frmQprint" target="_blank">
+		<input type="hidden" name="hdntransid" id="hdntransid" value="<?php echo $tranno; ?>">
+	</form>
 
 </body>
 </html>
@@ -604,6 +689,8 @@
 			fileActionSettings: { showUpload: false, showDrag: false,}
 		});
 
+		disabled();
+
 	});
 
 	function getSO(){
@@ -791,6 +878,69 @@
 
 			}
 		}); 
+	}
+
+	function disabled(){
+		$("#frmpos :input").attr("disabled", true);
+		
+		
+		$("#hdnctranno").attr("disabled", false);
+		$("#btnMain").attr("disabled", false);
+		$("#btnNew").attr("disabled", false);
+		$("#btnPrint").attr("disabled", false);
+		$("#btnEdit").attr("disabled", false);
+	}
+
+	function enabled(){
+		if(document.getElementById("hdnposted").value==1 || document.getElementById("hdncancel").value==1){
+			if(document.getElementById("hdnposted").value==1){
+				if(document.getElementById("hdnvoid").value==1){
+					var msgsx = "VOIDED";
+				}else{
+					var msgsx = "POSTED";
+				}
+			}
+			
+			if(document.getElementById("hdncancel").value==1){
+				var msgsx = "CANCELLED"
+			}
+			
+			document.getElementById("statmsgz").innerHTML = "TRANSACTION IS ALREADY "+msgsx+", EDITING IS NOT ALLOWED!";
+			document.getElementById("statmsgz").style.color = "#FF0000";
+			
+		}
+		else{
+			
+			$("#frmpos :input").attr("disabled", false);
+			
+				$("#hdnctranno").attr("readonly", true);
+				$("#btnMain").attr("disabled", true);
+				$("#btnNew").attr("disabled", true);
+				$("#btnPrint").attr("disabled", true);
+				$("#btnEdit").attr("disabled", true);			
+		
+		}
+	}
+
+	function printchk(x,typx){
+		if(document.getElementById("hdncancel").value==1){	
+			document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
+			document.getElementById("statmsgz").style.color = "#FF0000";
+		}
+		else{
+
+				if(typx=="Print"){
+					$("#hdntransid").val(x);
+					$("#frmQprint").attr("action","JOPrint.php");
+				}
+				
+				$("#frmQprint").submit();
+
+
+
+			
+
+		}
 	}
 
 </script>

@@ -40,7 +40,7 @@ require_once "../../Connection/connection_string.php";
 			 $json['cacctdesc'] = $row['cacctdesc'];
 			 $json['capvno'] = $row['capvno'];
 			 $json['crefrr'] = $row['crefrr'];
-			 $json['dapvdate'] = $row['dapvdate'];
+			 $json['dapvdate'] = date_format(date_create($row['dapvdate']), "m/d/Y");
 			 $json['namount'] = $row['namount'];
 			 $json['nowed'] = $row['nowed'];
 			 $json['napplied'] = $row['napplied'];

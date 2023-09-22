@@ -26,7 +26,7 @@
 </head>
 
 <body style="padding:5px">
-	<form action="PurchRet_unpost_tran.php" name="frmunpost" id="frmunpost" method="POST">
+	<form action="PurchRet_void_tran.php" name="frmunpost" id="frmunpost" method="POST">
 	
 		<div>
 			<section>
@@ -37,29 +37,30 @@
 					</div>
 				<br><br>
 
-				<button type="button" class="btn btn-warning" id="btnsubmit" name="btnsubmit"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+				<button type="button" class="btn btn-danger btn-sm" id="btnsubmit" name="btnsubmit"><span class="fa fa-times"></span>&nbsp;Void Transaction</button>
 
 				<br><br>
 
 				<table id="example" class="table table-hover " cellspacing="1" width="100%">
 					<thead>
 						<tr>
-							<td align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></td>
-							<th class="text-center">Return No</th>
-							<th class="text-center">Customer</th>
+							<td align="center"> <input id="allbox" type="checkbox" value="Check All" /></td>
+							<th class="text-center">Tran. No</th>
+							<th class="text-center">Reference</th>
+							<th class="text-center">Supplier</th>
 							<th class="text-center">Return Date</th>
 						</tr>
 					</thead>
 
 					<tbody>
 					<?php
-					$alrr = mysqli_query($con,"Select a.crefsr from apadjustment a where a.compcode='$company' and a.lcancelled=0");
+					$alrr = mysqli_query($con,"Select a.crefsr from apadjustment a where a.compcode='$company' and a.lcancelled=0 and a.lvoid=0");
 					$refpos[] = "";
 					while($rowxcv=mysqli_fetch_array($alrr, MYSQLI_ASSOC)){
 						$refpos[] = $rowxcv['crefsr'];
 					}
 					
-					$result=mysqli_query($con,"select a.*,IFNULL(b.ctradename,b.cname) as cname from purchreturn a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.ctranno not in ('".implode("','",$refpos)."') and (a.lapproved=1 or a.lcancelled=1) order by a.ddate desc");
+					$result=mysqli_query($con,"select a.*,IFNULL(b.ctradename,b.cname) as cname, d.cref from purchreturn a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode LEFT JOIN (Select x.ctranno, GROUP_CONCAT(DISTINCT x.creference) as cref from purchreturn_t x where x.compcode='".$_SESSION['companyid']."' group by x.ctranno) d on a.ctranno=d.ctranno where a.compcode='$company' and a.ctranno not in ('".implode("','",$refpos)."') and (a.lapproved=1 and a.lvoid=0) order by a.ddate desc");
 					
 						if (!$result) {
 							printf("Errormessage: %s\n", mysqli_error($con));
@@ -70,9 +71,10 @@
 					?>
 						<tr>
 							<td align="center"> <input name="allbox[]" id="chk<?php echo $row['ctranno'];?>" type="checkbox" value="<?php echo $row['ctranno'];?>" /></td>
-							<td><a href="javascript:;" onClick="printchk('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
+							<td><!--<a href="javascript:;" onClick="printchk('<?//php echo $row['ctranno'];?>');">--><?php echo $row['ctranno'];?><!--</a>--></td>
+							<td><?php echo $row['cref'];?></td>
 							<td><?php echo $row['ccode'];?> - <?php echo $row['cname'];?> </td>
-							<td><?php echo $row['dreturned'];?></td>
+							<td align="center"><?php echo $row['dreturned'];?></td>
 						</tr>
 					<?php 
 					}				

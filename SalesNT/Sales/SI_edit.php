@@ -126,13 +126,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$ccurrdesc = $row['ccurrencydesc']; 
 		$ccurrrate = $row['nexchangerate']; 
 
-		if($_SESSION['employeeid']=='CoopAdmin'){
-			$lCancelled = 0;
-			$lPosted = 0;
-		}else{
-			$lCancelled = $row['lcancelled'];
-			$lPosted = $row['lapproved'];
-		}
+		$lCancelled = $row['lcancelled'];
+		$lPosted = $row['lapproved'];
+		$lVoid = $row['lvoid'];
 	}
 	
 	
@@ -156,10 +152,14 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					}
 					
 					if($lPosted==1){
+						if($lVoid==1){
+							echo "<font color='#FF0000'><b>VOIDED</b></font>";
+						}else{
 							echo "<font color='#FF0000'><b>POSTED</b></font>";
+						}
 					}
 					?>
-        </div>
+				</div>
       </legend>	
 		<ul class="nav nav-tabs">
 			<li class="active"><a href="#home" data-toggle="tab">Details</a></li>
@@ -179,8 +179,12 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									<input type="hidden" name="hdnposted" id="hdnposted" value="<?=$lPosted;?>">
 									<input type="hidden" name="hdncancel" id="hdncancel" value="<?=$lCancelled;?>">
 									<input type="hidden" name="hdncsalesno" id="hdncsalesno" value="<?=$txtctranno;?>">
-									&nbsp;&nbsp;
-									<div id="statmsgz" style="display:inline"></div>
+									<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?php echo $lVoid;?>">
+									&nbsp;
+
+									<button type="button" class="btn btn-entry btn-sm" id="btnentry">
+										<i class="fa fa-bar-chart" aria-hidden="true"></i>
+									</button>
 								</td>
 								<tH width="150">Invoice Date:</tH>
 								<td style="padding:2px;">
@@ -196,6 +200,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									<div class="col-xs-4 nopadding">
 										<input type='text' class="form-control input-sm" id="csiprintno" name="csiprintno" value="<?=$selsiseries;?>" autocomplete="off"/>
 									</div>
+									&nbsp;
+									<div id="statmsgz" style="display:inline"></div>
 								</td>
 								<td><b>Sales Type:</b></td>
 								<td style="padding:2px">
@@ -738,6 +744,47 @@ else{
     </div>
 </div>
 
+
+				<!--modal entry view-->
+				<div class="modal fade" id="modGLEntry" role="dialog">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" id="btn-closemod" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+								<h3 class="modal-title">GL Entry</h3>
+							</div>
+							<div class="modal-body">
+									
+								<table width="100%" border="0" class="table table-condensed table-bordered atble-hover" id="TblGLEntry">
+									<thead>
+										<tr>
+											<td>Account Code</td>
+											<td>Account Title</td>
+											<td>Account Debit</td>
+											<td>Account Credit</td>  
+										</tr>		
+										<?php
+											$getewtcd = mysqli_query($con,"SELECT * FROM glactivity where compcode='$company' and ctranno='$txtctranno'"); 
+											if (mysqli_num_rows($getewtcd)!=0) {
+												while($row = mysqli_fetch_array($getewtcd, MYSQLI_ASSOC)){
+										?>					
+											<tr>
+												<td><?=$row['acctno']?></td>
+												<td><?=$row['ctitle']?></td>
+												<td align="right"><?=(floatval($row['ndebit']) != 0) ? number_format($row['ndebit'],2) : ""?></td>
+												<td align="right"><?=(floatval($row['ncredit']) != 0) ? number_format($row['ncredit'],2) : ""?></td>  
+											</tr>	
+										<?php
+												}
+											}
+										?>
+								</table>
+									
+							</div>
+						</div><!-- /.modal-content -->
+					</div><!-- /.modal-dialog -->
+				</div>
+
 <!-- PRINT OUT MODAL-->
 <div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-lg">
@@ -1211,6 +1258,10 @@ if(file_name.length != 0){
 				}
 
 			}
+		});
+
+		$("#btnentry").on("click", function(){		
+			$("#modGLEntry").modal("show");
 		});
 		
 
@@ -2055,13 +2106,22 @@ function disabled(){
 	$("#btnNew").attr("disabled", false);
 	$("#btnPrint").attr("disabled", false);
 	$("#btnEdit").attr("disabled", false);
+	
+	if(document.getElementById("hdnposted").value==1 && document.getElementById("hdnvoid").value==0){
+		$("#btnentry").attr("disabled", false);
+	}
 
+	$("#btn-closemod").attr("disabled", false); 
 }
 
 function enabled(){
 	if(document.getElementById("hdnposted").value==1 || document.getElementById("hdncancel").value==1){
 		if(document.getElementById("hdnposted").value==1){
-			var msgsx = "POSTED"
+			if(document.getElementById("hdnvoid").value==1){
+					var msgsx = "VOIDED";
+				}else{
+					var msgsx = "POSTED";
+				}
 		}
 		
 		if(document.getElementById("hdncancel").value==1){

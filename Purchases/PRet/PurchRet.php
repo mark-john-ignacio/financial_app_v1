@@ -44,6 +44,95 @@
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
 
+
+</head>
+
+<body style="padding:5px">
+	<div>
+		<section>
+			<font size="+2"><u></u></font>
+        <div>
+        	<div style="float:left; width:50%">
+				<font size="+2"><u>Purchase Return List</u></font>	
+            </div>
+        </div>
+			
+				<div class="col-xs-12 nopadding">
+					<div class="col-xs-4 nopadding">
+						<button type="button" class="btn btn-primary btn-sm" onClick="location.href='PurchRet_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+						<?php
+							if($unpostat=="True"){
+						?>
+							<button type="button" class="btn btn-danger btn-sm" onClick="location.href='PurchRet_void.php'"><span class="fa fa-times"></span>&nbsp;Void Transaction</button>
+						<?php
+							}
+						?>
+					</div>
+					<div class="col-xs-2 nopadding">
+						<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
+					</div>
+					<div class="col-xs-3 nopadwtop" style="height:30px !important;">
+						<b> Search Supplier / Trans No / Reference: </b>
+					</div>
+					<div class="col-xs-3 text-right nopadding">
+						<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>" class="form-control input-sm" placeholder="Search Supplier / Trans No / Reference...">
+					</div>
+					
+				</div>
+
+      <br><br>
+			<table id="example" class="display" cellspacing="0" width="100%">
+				<thead>
+					<tr>
+						<th>Trans. No</th>
+						<th>Reference</th>
+						<th>Supplier</th>
+						<th>Return Date</th>
+            <th>Status</th>
+					</tr>
+				</thead>
+			</table>
+
+		</section>
+	</div>		
+    
+<form name="frmedit" id="frmedit" method="post" action="PurchRet_edit.php">
+	<input type="hidden" name="txtctranno" id="txtctranno" />
+</form>		
+
+
+<!-- 1) Alert Modal -->
+<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-top">
+            <div class="modal-content">
+               <div class="alert-modal-danger">
+                  <p id="AlertMsg"></p>
+                <p>
+                    <center>
+                        <button type="button" class="btnmodz btn btn-primary btn-sm" id="OK">Ok</button>
+                        <button type="button" class="btnmodz btn btn-danger btn-sm" id="Cancel">Cancel</button>
+                        
+                        
+                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+                        
+                        <input type="hidden" id="typ" name="typ" value = "">
+                        <input type="hidden" id="modzx" name="modzx" value = "">
+                    </center>
+                </p>
+               </div> 
+            </div>
+        </div>
+    </div>
+	</div>
+
+</body>
+</html>
+
+
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
+<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
+
 	<script type="text/javascript">
 		$(document).keypress(function(e) {	 
 			if(e.keyCode == 112) { //F1
@@ -51,29 +140,18 @@
 			}
 		});
 
-		function editfrm(x){
-			document.getElementById("txtctranno").value = x;
-			document.getElementById("frmedit").submit();
-		}
+		$(document).ready(function() {
 
+			fill_datatable("","");	
 
-		function trans(x,num){
+			$("#searchByName").keyup(function(){
+					var searchByName = $('#searchByName').val();
+					var searchBySec = $('#selwhfrom').val();
 
-			$("#typ").val(x);
-			$("#modzx").val(num);
+					$('#example').DataTable().destroy();
+					fill_datatable(searchByName, searchBySec);
 
-				$("#AlertMsg").html("");
-									
-				$("#AlertMsg").html("Are you sure you want to "+x+" PR No.: "+num);
-				$("#alertbtnOK").hide();
-				$("#OK").show();
-				$("#Cancel").show();
-				$("#AlertModal").modal('show');
-
-		}
-
-
-		$(function() {	
+			});
 
 			var itmstat = "";
 			var x = "";
@@ -212,140 +290,102 @@
 			});
 		});
 
-	</script>
-</head>
-
-<body style="padding:5px">
-	<div>
-		<section>
-			<font size="+2"><u></u></font>
-        <div>
-        	<div style="float:left; width:50%">
-				<font size="+2"><u>Purchase Return List</u></font>	
-            </div>
-        </div>
-			<br><br>
-			<button type="button" class="btn btn-primary btn-sm" onClick="location.href='PurchRet_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
-
-			<?php
-				if($unpostat=="True"){
-			?>
-				<button type="button" class="btn btn-warning btn-sm" onClick="location.href='PurchRet_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
-			<?php
-				}
-			?>
+		function editfrm(x){
+			document.getElementById("txtctranno").value = x;
+			document.getElementById("frmedit").submit();
+		}
 
 
+		function trans(x,num){
 
-      <br><br>
-			<table id="example" class="display" cellspacing="0" width="100%">
-				<thead>
-					<tr>
-						<th>RR No</th>
-						<th>Customer</th>
-						<th>Trans Date</th>
-						<th>Return Date</th>
-						<!--<th>Purchase Type</th>-->
-            <th>Status</th>
-					</tr>
-				</thead>
+			$("#typ").val(x);
+			$("#modzx").val(num);
 
-				<tbody>
-          <?php
-				$sql = "select a.*,b.cname from purchreturn a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' order by a.ddate desc";
-				
-				$result=mysqli_query($con,$sql);
-				
-					if (!mysqli_query($con, $sql)) {
-						printf("Errormessage: %s\n", mysqli_error($con));
-					} 
-					
-				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-				{
-				?>
- 					<tr <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?>>
-						<td><a <?=(intval($row['lcancelled'])==intval(1)) ? "class='text-danger'" : "";?> href="javascript:;" onClick="editfrm('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
-						<td><?php echo $row['ccode'];?> - <?php echo $row['cname'];?> </td>
-                        <td><?php echo $row['ddate'];?></td>
-						<td align="right"><?php echo $row['dreturned'];?></td>
-                        <td align="center">
-                        <div id="msg<?php echo $row['ctranno'];?>">
-                        	<?php 
-							if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
-							?>
+				$("#AlertMsg").html("");
+									
+				$("#AlertMsg").html("Are you sure you want to "+x+" PR No.: "+num);
+				$("#alertbtnOK").hide();
+				$("#OK").show();
+				$("#Cancel").show();
+				$("#AlertModal").modal('show');
 
-								<a href="javascript:;" onClick="trans('POST','<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>">
-									<i class="fa fa-thumbs-up" style="font-size:20px;color:Green ;" title="Approve transaction"></i>
-								</a>
+		}
 
-								<a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['ctranno'];?>')" class="btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>">
-									<i class="fa fa-thumbs-down" style="font-size:20px;color:Red ;" title="Cancel transaction"></i>
-								</a>
+		function fill_datatable(searchByName){
+			var dataTable = $('#example').DataTable( {
+				stateSave: true,
+				"processing" : true,
+				"serverSide" : true,
+				"lengthChange": true,
+				"order" : [],
+				"searching" : false,
+				"ajax" : {
+					url:"th_datatable.php",
+					type:"POST",
+					data:{
+						searchByName: searchByName
+					}
+				},
+				"columns": [
+					{ "data": null,
+							"render": function (data, type, full, row) {
+									var sts = "";
+									if (full[6] == 1 || full[7] == 1) {
+										sts="class='text-danger'";
+									}
+									return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
+							}								
+					},
+					{ "data": 1 },
+					{ "data": null,
+							"render": function (data, type, full, row) {
 
-							<?php
-                            }
-							else{
-								if(intval($row['lcancelled'])==intval(1)){
-									echo "<b>Cancelled</b>";
+								return full[2]+" - "+full[3];
+									
+							}
+								
+					},	
+					{ "data": 4 },
+					{ "data": null,
+							"render": function (data, type, full, row) {
+			
+								if (full[5] == 1) {
+									if(full[7] == 1){
+										return '<b>Voided</b>';
+									}else{										
+										return 'Posted';
+									}
+									
 								}
-								if(intval($row['lapproved'])==intval(1)){
-									echo "Posted";
+									
+								else if (full[6] == 1) {
+									
+									return '<b>Cancelled</b>';
+									
+								}
+									
+								else{
+
+									return 	"<div id=\"msg"+full[0]+"\"> <a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a> </div>";
+
 								}
 							}
+						}
+				],
+				"columnDefs": [ 
+					{
+						"targets": [3,4],
+						"className": "text-center dt-body-nowrap"
+					}
+				],
+				"createdRow": function( row, data, dataIndex ) {
+					// Set the data-status attribute, and add a class
+					if(data[6]==1 || data[7] == 1){
+						$(row).addClass('text-danger');
+					}
 							
-							?>
-                            </div>
-                        </td>
-					</tr>
-                <?php 
 				}
-				
-				mysqli_close($con);
-				
-				?>
-               
-				</tbody>
-			</table>
+			});
+		}
 
-		</section>
-	</div>		
-    
-<form name="frmedit" id="frmedit" method="post" action="PurchRet_edit.php">
-	<input type="hidden" name="txtctranno" id="txtctranno" />
-</form>		
-
-
-<!-- 1) Alert Modal -->
-<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-    <div class="vertical-alignment-helper">
-        <div class="modal-dialog vertical-align-top">
-            <div class="modal-content">
-               <div class="alert-modal-danger">
-                  <p id="AlertMsg"></p>
-                <p>
-                    <center>
-                        <button type="button" class="btnmodz btn btn-primary btn-sm" id="OK">Ok</button>
-                        <button type="button" class="btnmodz btn btn-danger btn-sm" id="Cancel">Cancel</button>
-                        
-                        
-                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-                        
-                        <input type="hidden" id="typ" name="typ" value = "">
-                        <input type="hidden" id="modzx" name="modzx" value = "">
-                    </center>
-                </p>
-               </div> 
-            </div>
-        </div>
-    </div>
-</div>
-
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
-	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
-	
-	<script>
-	$('#example').DataTable( {bSort:false} );
 	</script>
-
-</body>
-</html>

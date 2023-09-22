@@ -20,7 +20,7 @@ else{
 $sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dreturned,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.lcancelled, a.lapproved, a.lprintposted, a.ccustacctcode, b.cname from purchreturn a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.ctranno = '$cpono'");
 
 
-$sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dreturned,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.lcancelled, a.lapproved, a.lprintposted, a.ccustacctcode, b.cname from purchreturn a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.ctranno = '$cpono'");
+$sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dreturned,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.lcancelled, a.lapproved, a.lvoid, a.lprintposted, a.ccustacctcode, b.cname from purchreturn a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.ctranno = '$cpono'");
 
 
 	@$arrname = array();
@@ -28,7 +28,7 @@ $sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.cremarks, DATE_FORMAT
 	if(file_exists($directory)){
 		@$arrname = file_checker($directory);
 	} else {
-		echo "No Files!";
+		//echo "No Files!";
 	}
 
 ?>
@@ -81,11 +81,28 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
+		$lVoid = $row['lvoid'];
 	}
 ?>
 <form action="PurchRet_editsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
 	<fieldset>
-    	<legend>Purchase Return Details</legend>	
+    	<legend>
+				<div class="col-xs-6 nopadding"> Purchase Return Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
+					<?php
+						if($lCancelled==1){
+							echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+						}
+								
+						if($lPosted==1){
+							if($lVoid==1){
+								echo "<font color='#FF0000'><b>VOIDED</b></font>";
+							}else{
+								echo "<font color='#FF0000'><b>POSTED</b></font>";
+							}
+						}
+					?>
+				</div>
+			</legend>	
 
 			<ul class="nav nav-tabs">
 				<li class="active"><a href="#home">Purchase Return Details</a></li>
@@ -98,27 +115,19 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					<table width="100%" border="0">
 						<tr>
 							<tH>Transaction No.:</tH>
-							<td colspan="2" style="padding:2px"><div class="col-xs-3 nopadding"><input type="text" class="form-control input-sm" id="txtcpono" name="txtcpono" width="20px" tabindex="1" value="<?php echo $cpono;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');"></div>
+							<td style="padding:2px"><div class="col-xs-3 nopadding"><input type="text" class="form-control input-sm" id="txtcpono" name="txtcpono" width="20px" tabindex="1" value="<?php echo $cpono;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');"></div>
 								
 								
 								<input type="hidden" name="hdntranno" id="hdntranno" value="<?php echo $cpono;?>">
 								<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
 								<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
+								<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?php echo $lVoid;?>">
+
 								&nbsp;&nbsp;
-								<div id="statmsgz" style="display:inline"></div>
+								
 							</td>
-							<td style="padding:2px" align="center">
-								<div id="salesstat">
-									<?php
-										if($lCancelled==1){
-											echo "<font color='#FF0000'><b>CANCELLED</b></font>";
-										}
-										
-										if($lPosted==1){
-											echo "<font color='#FF0000'><b>POSTED</b></font>";
-										}
-									?>
-								</div>
+							<td colspan="2" style="padding:2px" align="right">
+								<div id="statmsgz" class="small" style="display:inline"></div>
 							</td>
 						</tr>
 						<tr>
@@ -1411,7 +1420,11 @@ function disabled(){
 function enabled(){
 	if(document.getElementById("hdnposted").value==1 || document.getElementById("hdncancel").value==1){
 		if(document.getElementById("hdnposted").value==1){
-			var msgsx = "POSTED"
+				if(document.getElementById("hdnvoid").value==1){
+					var msgsx = "VOIDED";
+				}else{
+					var msgsx = "POSTED";
+				}
 		}
 		
 		if(document.getElementById("hdncancel").value==1){

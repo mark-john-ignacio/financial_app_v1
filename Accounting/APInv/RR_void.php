@@ -43,7 +43,7 @@ $company = $_SESSION['companyid'];
 				<table id="example" class="table table-hover " cellspacing="1" width="100%">
 					<thead>
 						<tr>
-							<td align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></td>
+							<td align="center"> <input id="allbox" type="checkbox" value="Check All" /></td>
 							<th>Trans No</th>
 							<th>Ref SI</th>
 							<th>RefRR</th>
@@ -129,6 +129,10 @@ $company = $_SESSION['companyid'];
 					$("#frmunpost").submit();
 				}
 
+			});
+
+			$("#allbox").click(function(){
+				$('input:checkbox').not(this).prop('checked', this.checked);
 			});
 	});
 

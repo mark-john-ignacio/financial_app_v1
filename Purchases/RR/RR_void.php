@@ -2,13 +2,14 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-
-	$_SESSION['pageid'] = "SalesRet_unpost.php";
+	$_SESSION['pageid'] = "DR_unpost.php";
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../include/access2.php');
 
+
 	$company = $_SESSION['companyid'];
+
 
 ?>
 
@@ -26,18 +27,18 @@
 </head>
 
 <body style="padding:5px">
-	<form action="SR_unpost_tran.php" name="frmunpost" id="frmunpost" method="POST">
+	<form action="RR_void_tran.php" name="frmunpost" id="frmunpost" method="POST">
 	
 		<div>
 			<section>
 					<div>
 						<div style="float:left; width:50%">
-							<font size="+2"><u>SR Non-Trade List</u></font>	
+							<font size="+2"><u>Receiving List</u></font>	
 						</div>
 					</div>
 				<br><br>
 
-				<button type="button" class="btn btn-warning" id="btnsubmit" name="btnsubmit"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+				<button type="button" class="btn btn-danger btn-sm" id="btnsubmit" name="btnsubmit"><span class="fa fa-times"></span>&nbsp;Void Transaction</button>
 
 				<br><br>
 
@@ -45,22 +46,23 @@
 					<thead>
 						<tr>
 							<td align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></td>
-							<th class="text-center">Return No</th>
-							<th class="text-center">Customer</th>
-							<th class="text-center">Return Date</th>
-							<th class="text-center">Gross</th>
+							<th class="text-center">RR No</th>
+							<th class="text-center">Supplier</th>
+							<th class="text-center">Transaction Date</th>
+							<th style="text-align: center">Received Date</th>
 						</tr>
 					</thead>
 
 					<tbody>
 					<?php
-					$alrr = mysqli_query($con,"Select a.crefsr from aradjustment a where a.compcode='$company' and a.lcancelled=0");
+
+					$alrr = mysqli_query($con,"Select a.creference from purchreturn_t a left join purchreturn b on a.compcode=b.compcode and a.ctranno=b.ctranno where a.compcode='$company' and b.lcancelled=0 and b.lvoid=0 UNION ALL Select a.creference from suppinv_t a left join suppinv b on a.compcode=b.compcode and a.ctranno=b.ctranno where a.compcode='$company' and b.lcancelled=0 and b.lvoid=0");
 					$refpos[] = "";
 					while($rowxcv=mysqli_fetch_array($alrr, MYSQLI_ASSOC)){
-						$refpos[] = $rowxcv['crefsr'];
+						$refpos[] = $rowxcv['creference'];
 					}
 					
-					$result=mysqli_query($con,"select a.*,IFNULL(b.ctradename,b.cname) as cname from ntsalesreturn a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.compcode='$company' and a.ctranno not in ('".implode("','",$refpos)."') and (a.lapproved=1 or a.lcancelled=1) order by a.ddate desc");
+					$result=mysqli_query($con,"select a.*,IFNULL(b.ctradename,b.cname) as cname from receive a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.ctranno not in ('".implode("','",$refpos)."') and (a.lapproved=1 and a.lvoid=0) order by a.ddate desc");
 					
 						if (!$result) {
 							printf("Errormessage: %s\n", mysqli_error($con));
@@ -73,8 +75,8 @@
 							<td align="center"> <input name="allbox[]" id="chk<?php echo $row['ctranno'];?>" type="checkbox" value="<?php echo $row['ctranno'];?>" /></td>
 							<td><a href="javascript:;" onClick="printchk('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
 							<td><?php echo $row['ccode'];?> - <?php echo $row['cname'];?> </td>
-							<td><?php echo $row['dreceived'];?></td>
-							<td align="right"><?php echo number_format($row['ngross'],2);?></td>
+							<td align="center"><?php echo $row['ddate'];?></td>
+							<td align="center"><?php echo $row['dreceived'];?></td>
 						</tr>
 					<?php 
 					}				
@@ -127,10 +129,14 @@
 				}
 
 			});
+
+			$("#allbox").click(function(){
+				$('input:checkbox').not(this).prop('checked', this.checked);
+			});
 	});
 
 	function printchk(x){
-		$("#myprintframe").attr("src","SR_confirmprint.php?x="+x);
+		$("#myprintframe").attr("src","RR_confirmprint.php?x="+x);
 		$("#PrintModal").modal('show');
 	}
 

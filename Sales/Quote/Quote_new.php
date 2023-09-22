@@ -545,8 +545,7 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 	    $(this).tab('show');
 	  });
 
-			$("#file-0").fileinput({
-				theme: 'fa5',
+		/*$("#file-0").fileinput({
 				showUpload: false,
 				showClose: false,
 				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
@@ -555,7 +554,7 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 				maxFileCount: 5,
 				browseOnZoneClick: true,
 				fileActionSettings: { showUpload: false, showDrag: false,}
-			});
+			});*/
 
 
 		$("#txtnBaseGross").autoNumeric('init',{mDec:2});
@@ -1298,10 +1297,10 @@ function chkform(){
 	
 	if(document.getElementById("txtcust").value=="" && document.getElementById("txtcustid").value==""){
 		alert("Customer Required!");
-		document.getElementById("txtcust").focus();
-		return false;
-		
+		document.getElementById("txtcust").focus();	
 		ISOK = "NO";
+
+		return false;
 	}
 
 	$(".required").each( function() {
@@ -1331,8 +1330,8 @@ function chkform(){
 
 	if(lastRow == 0){
 		alert("No details found!");
-		return false;
 		ISOK = "NO";
+		return false;
 	}
 	else{
 		var msgz = "";
@@ -1349,8 +1348,8 @@ function chkform(){
 		
 		if(msgz!=""){
 			alert("Details Error: "+msgz);
-			return false;
 			ISOK = "NO";
+			return false;
 		}
 	}
 
@@ -1362,7 +1361,11 @@ function chkform(){
 	
 		//Saving the header
 		$("#currdesc").val($("#selbasecurr option:selected").text());
+		$("#txtremarks").summernote('destroy');
+
 		var formdata = new FormData($("#frmpos")[0]);
+		
+
 		/**
 		 * @property JQuery formulate every file to compose to formdata 
 		 * @property formdata.delete('#upload') delete an upload key without values
@@ -1371,6 +1374,7 @@ function chkform(){
 		jQuery.each(jQuery('#file-0')[0].files, function(i, file) {
 			formdata.append('file-'+i, file);
 		});
+		
 		$.ajax ({
 			url: "Quote_newsavehdr.php",
 			data: formdata,
@@ -1390,10 +1394,20 @@ function chkform(){
 					trancode = data.trim();
 				}
 				else{
-					$("#AlertMsg").html(trancode);
+					$("#AlertMsg").html(data.trim());
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
 				}
-			}
+			},
+			error: function (request, error) {
+        console.log(arguments);
+        alert(" Can't do because: " + error);
+    	}
 		});
+
+	//	alert(trancode);
+		
+
 		
 		if(trancode!=""){
 			//Save Details
@@ -1476,6 +1490,7 @@ function chkform(){
 				$("#alertbtnOK").show();
 				$("#AlertModal").modal('show');
 		}
+		
 
 
 	}

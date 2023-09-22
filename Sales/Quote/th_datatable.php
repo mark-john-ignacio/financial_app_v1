@@ -7,7 +7,7 @@ include('../../Connection/connection_string.php');
 $company = $_SESSION['companyid'];
 
 
-$column = array('ctranno', 'ccode', 'cname', 'ddate', 'ngross', 'lcancelled', 'lapproved');
+$column = array('a.ctranno', 'a.quotetype', 'CONCAT(a.ccode,"-",COALESCE(b.ctradename, b.cname))', 'ddate', 'CASE WHEN a.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN a.lcancelled=1 THEN "Cancelled" ELSE "" END');
 
 $query = "select a.*,b.cname from quote a left join customers b on a.`compcode` = b.`compcode` and a.ccode=b.cempid and a.compcode=b.compcode where a.compcode='$company'";
 
@@ -69,6 +69,7 @@ foreach($result as $row)
  $sub_array[] = ucfirst($row['quotetype']);
  $sub_array[] = $row['lsent'];
  $sub_array[] = $row['quotetype'];
+ $sub_array[] = $row['lvoid'];
  $data[] = $sub_array;
 }
 

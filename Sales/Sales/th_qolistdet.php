@@ -102,7 +102,7 @@ require_once "../../Connection/connection_string.php";
 						//$json['namount'] = $rowx['namount'];
 						$json['namount'] = $xnamt;
 						$json['nbaseamount'] = number_format($xnamt * floatval($row['nexchangerate']),2);
-						$json['ctaxcode'] = $rowx['ctaxcode'];
+						$json['ctaxcode'] = $row['cvattype'];
 						$json['cpono'] = $rowx['cpono'];
 					}
 				}
@@ -117,7 +117,7 @@ require_once "../../Connection/connection_string.php";
 				$json['cpono'] = "";
 			}else{
 				$json['cpono'] = $row['cpono'];
-				$json['ctaxcode'] = $row['ctaxcode'];
+				$json['ctaxcode'] = $row['cvattype'];
 			}
 
 			 $json['creference'] = $row['creference'];

@@ -10,8 +10,6 @@
 
 	$company = $_SESSION['companyid'];
 
-	$company = $_SESSION['companyid'];
-
 
 	//POST
 	$poststat = "True";
@@ -27,12 +25,12 @@
 		$cancstat = "False";
 	}
 
-
 	$unpoststat = "True";
 	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SI_unpost.php'");
 	if(mysqli_num_rows($sql) == 0){
 		$unpoststat = "False";
 	}
+
 
 ?>
 
@@ -41,14 +39,15 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
+	<META NAME="robots" CONTENT="noindex,nofollow">
 
 	<title>Myx Financials</title>
 
-<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>">    
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>">    
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
 
 
 </head>
@@ -58,10 +57,9 @@
 		<section>
         <div>
         	<div style="float:left; width:50%">
-				<font size="+2"><u>SI Non-Trade List</u></font>	
-            </div>
+						<font size="+2"><u>SI Non-Trade List</u></font>	
+          </div>
         </div>
-			<br><br>
 
 			<div class="col-xs-12 nopadding">
 				<div class="col-xs-4 nopadding">
@@ -69,32 +67,32 @@
 					<?php
 						if($unpoststat=="True"){
 					?>
-						<button type="button" class="btn btn-warning btn-sm" onClick="location.href='SI_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+						<button type="button" class="btn btn-danger btn-sm" onClick="location.href='SI_void.php'"><span class="fa fa-times"></span>&nbsp;Void Transaction</button>
 					<?php
 						}
 					?>
 				</div>
-        <div class="col-xs-3 nopadding">
+        <div class="col-xs-2 nopadding">
 					<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
 				</div>
-        <div class="col-xs-2 nopadwtop" style="height:30px !important;">
-          <b> Search Customer/SI No: </b>
+        <div class="col-xs-3 nopadwtop" style="height:30px !important;">
+          <b> Search Customer / SI No / Reference: </b>
         </div>
 				<div class="col-xs-3 text-right nopadding">
-					<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Enter Trans No or Customer...">
+					<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Enter Supplier, SI No, Reference...">
 				</div>
 			</div>
-			
-			
+
       <br><br>
 			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
 						<th>Invoice No</th>
 						<th>SI Series No</th>
+						<th>Reference</th>
 						<th>Customer</th>
-						<th>Delivery Date</th>
 						<th>Gross</th>
+						<th>Delivery Date</th>
             <th width="100">Status</th>
 					</tr>
 				</thead>
@@ -103,29 +101,24 @@
 		</section>
 	</div>		
     
-<form name="frmedit" id="frmedit" method="post" action="SI_edit.php">
-	<input type="hidden" name="txtctranno" id="txtctranno" />
-	<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
-</form>		
+	<form name="frmedit" id="frmedit" method="post" action="SI_edit.php">
+		<input type="hidden" name="txtctranno" id="txtctranno" />
+		<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
+	</form>		
 
-
-<!-- 1) Alert Modal -->
-<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-    <div class="vertical-alignment-helper">
-        <div class="modal-dialog vertical-align-top">
-            <div class="modal-content">
-               <div class="alert-modal-danger">
-                  <p id="AlertMsg"></p>
-                <p>
-                    <center>
-                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-                    </center>
-                </p>
-               </div>
-            </div>
-        </div>
-    </div>
-</div>
+	<!-- 1) Alert Modal -->
+	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+					<div class="alert-modal-danger">
+						<p id="AlertMsg"></p>
+						<p><center><button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button></center></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 </body>
 </html>
@@ -134,9 +127,9 @@
 	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
 	
 	<script>
-	$(document).ready(function() {
-			
-		fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>");	
+		$(document).ready(function() {
+
+			fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");	
 
 			$("#searchByName").keyup(function(){
 					var searchByName = $('#searchByName').val();
@@ -145,114 +138,115 @@
 					fill_datatable(searchByName);
 
 			});
-	
-	} );
+
+		});
 
 		
-	$(document).keydown(function(e) {		 
-			if(e.keyCode == 112) { //F2
-				e.preventDefault();
-				window.location = "SI_new.php";
-			}
-	});
-
-	function editfrm(x){
-		$('#txtctranno').val(x); 
-		$('#hdnsrchval').val($('#searchByName').val()); 
-		document.getElementById("frmedit").submit();
-	}
-
-	function trans(x,num,msg,id,xcred){
-		var itmstat = "";
-
-		if(x=="POST"){
-			//generate GL ENtry muna
-			$.ajax ({
-				dataType: "text",
-				url: "../../include/th_toAcc.php",
-				data: { tran: num, type: "IN" },
-				async: false,
-				success: function( data ) {
-					//alert(data.trim());
-					if(data.trim()=="True"){
-						itmstat = "OK";
-					}
-					else{
-						itmstat = data.trim();	
-					}
+		$(document).keydown(function(e) {		 
+				if(e.keyCode == 112) { //F2
+					e.preventDefault();
+					window.location = "SI_new.php";
 				}
-			});
-			//alert(itmstat);
-			
-			//Send SMS lng
-			
-			//$.ajax ({
-			//	dataType: "text",
-			//	url: "SI_SMS.php",
-			//	data: { x: num },
-			//	async: false,
-			//	success: function( data ) {
-					//WALA GAGAWIN
-			//	}
-			//});
+		});
 
 
-		}
-		else{
-			var itmstat = "OK";	
+		function editfrm(x){
+			$('#txtctranno').val(x); 
+			$('#hdnsrchval').val($('#searchByName').val()); 
+			document.getElementById("frmedit").submit();
 		}
 
+		function trans(x,num,msg,id,xcred){
+			var itmstat = "";
 
-		if(itmstat=="OK"){
-			$.ajax ({
-				url: "SI_Tran.php",
-				data: { x: num, typ: x },
-				async: false,
-				dataType: "json",
-				beforeSend: function(){
-					$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
-					$("#alertbtnOK").hide();
-					$("#AlertModal").modal('show');
-				},
-				success: function( data ) {
+			if(x=="POST"){
+					//generate GL ENtry muna
+					$.ajax ({
+						dataType: "text",
+						url: "../../include/th_toAcc.php",
+						data: { tran: num, type: "IN" },
+						async: false,
+						success: function( data ) {
+							//alert(data.trim());
+							if(data.trim()=="True"){
+								itmstat = "OK";
+							}
+							else{
+								itmstat = data.trim();	
+							}
+						}
+					});
+					//alert(itmstat);
 					
-					console.log(data);
-					$.each(data,function(index,item){
+					//Send SMS lng
+					
+					//$.ajax ({
+					//	dataType: "text",
+					//	url: "SI_SMS.php",
+					//	data: { x: num },
+					//	async: false,
+					//	success: function( data ) {
+							//WALA GAGAWIN
+					//	}
+					//});
+
+
+			}
+			else{
+				var itmstat = "OK";	
+			}
+
+			if(itmstat=="OK"){
+				$.ajax ({
+					url: "SI_Tran.php",
+					data: { x: num, typ: x },
+					async: false,
+					dataType: "json",
+					beforeSend: function(){
+						$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+						$("#alertbtnOK").hide();
+						$("#AlertModal").modal('show');
+					},
+					success: function( data ) {
 						
-						itmstat = item.stat;
-						
-						if(itmstat!="False"){
-							varx0 = item.stat;
-							$("#msg"+num).html(varx0.toUpperCase());
+						console.log(data);
+						$.each(data,function(index,item){
 							
+							itmstat = item.stat;
+							
+							if(itmstat!="False"){
+								varx0 = item.stat;
+								$("#msg"+num).html(varx0.toUpperCase());
+								
+									$("#AlertMsg").html("");
+									
+									$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+msg+"...");
+									$("#alertbtnOK").show();
+									$("#AlertModal").modal('show');
+
+							}
+							else{
 								$("#AlertMsg").html("");
 								
-								$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+msg+"...");
+								$("#AlertMsg").html(item.ms);
 								$("#alertbtnOK").show();
 								$("#AlertModal").modal('show');
 
-						}
-						else{
-							$("#AlertMsg").html("");
-							
-							$("#AlertMsg").html(item.ms);
-							$("#alertbtnOK").show();
-							$("#AlertModal").modal('show');
+							}
+						});
+					}
+				});
+			}else{				$("#AlertMsg").html("");
 
-						}
-					});
-				}
-			});
-		}else{				$("#AlertMsg").html("");
+								$("#AlertMsg").html("<b>ERROR: </b>There's a problem with your transaction!<br>"+itmstat);
+								$("#alertbtnOK").show();
+								$("#AlertModal").modal('show');
 
-							$("#AlertMsg").html("<b>ERROR: </b>There's a problem with your transaction!<br>"+itmstat);
-							$("#alertbtnOK").show();
-							$("#AlertModal").modal('show');
-
+			}
 		}
-	}
 
-	function fill_datatable(searchByName){
+		
+		function fill_datatable(searchByName){
 			var dataTable = $('#example').DataTable( {
 				stateSave: true,
 		    "processing" : true,
@@ -271,22 +265,34 @@
 						{ "data": null,
 								"render": function (data, type, full, row) {
 										var sts = "";
-										if (full[6] == 1) {
+										if (full[6] == 1 || full[11] == 1) {
 											sts="class='text-danger'";
 										}
 										return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
 								}								
 						},
 						{ "data": 1 },
-						{ "data": 2 },
-						{ "data": 4 },
-						{ "data": 9 },	
+						{ "data": 10 },
+						{ "data": null,
+							"render": function (data, type, full, row) {
+
+								return full[7]+" - "+full[2];
+									
+							}
+								
+						},
+						{ "data": 9 },
+						{ "data": 4 },	
 						{ "data": null,
 							"render": function (data, type, full, row) {
 		
 								if (full[5] == 1) {
 									
-									return 'Posted';
+									if(full[11] == 1){
+										return '<b>Voided</b>';
+									}else{										
+										return 'Posted';
+									}
 								
 								}
 								
@@ -306,22 +312,21 @@
 					],
 					"columnDefs": [ 
 						{
-							"targets": [3,4],
+							"targets": 4,
 							"className": "text-right"
 						},
 						{
-							"targets": 5,
+							"targets": [5,6],
 							"className": "text-center dt-body-nowrap"
 						}
 					],
 					"createdRow": function( row, data, dataIndex ) {
 						// Set the data-status attribute, and add a class
-						if(data[6]==1){
+						if(data[6]==1 || data[11]==1){
 							$(row).addClass('text-danger');
 						}
 						
 					}
 				});
-	}
-
-</script>
+		}
+	</script>

@@ -347,4 +347,28 @@ function getcostfromin($getcitmno, $getnqty){
 		}
 	}
 
+	if($typ=="NTSRet"){
+
+		$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_SRIN' and compcode='$company'"); 
+				
+		$csecin = 0;
+		if (mysqli_num_rows($result)!=0) {
+			$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
+			$csecin = $all_course_data['cvalue']; 							
+		}
+
+		$amtcost = 0;
+		$amtretial = 0;
+
+		if (!mysqli_query($con,"INSERT INTO `tblinventory`(`compcode`, `ctranno`, `ddatetime`, `dcutdate`, `ctype`, `citemno`, `cunit`, `nqty`, `cmainunit`, `nfactor`, `nsection_id`, `nqtyin`, `ncostin`, `nretailin`, `nqtyout`, `ncostout`, `nretailout`) Select '$company', '$tran', NOW(),B.dreceived,'$typ', A.citemno, A.cunit, A.nqty, A.cmainunit, A.nfactor, ".$csecin.", A.nqty*A.nfactor,".$amtcost.", 0, 0, 0, 0 From ntsalesreturn_t A left join ntsalesreturn b on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and A.ctranno='$tran'")){
+			echo "False";
+			echo mysqli_error($con);
+		}
+		else{
+			echo "True";
+			
+			mysqli_query($con,"INSERT INTO `tblinvin`(`compcode`, `ctranno`, `citemno`, `cunit`, `nqty`, `cmainunit`, `nfactor`, `ntotqty`, `ncost`, `cserial`, `cbarcode`, `nlocation`, `ddate`, `dcutdate`) Select '$company', '$tran', A.citemno, A.cunit, A.nqty, A.cmainunit, A.nfactor, A.nqty*A.nfactor, ".$amtcost.", null, null, null, NOW(), null From salesreturn_t A where A.ctranno='$tran'");	
+		}
+	}
+
 ?>

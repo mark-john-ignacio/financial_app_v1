@@ -5,13 +5,13 @@
 
 	include('../../Connection/connection_string.php');
 
-	$column = array('A.ctranno', 'A.csiprintno', 'B.ctradename', 'A.dcutdate', 'A.ngross');
+	$column = array('A.ctranno', 'A.csiprintno', 'D.cref', 'CONCAT(a.ccode,"-",COALESCE(B.ctradename, B.cname))', 'A.ngross', 'A.dcutdate', 'CASE WHEN A.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN A.lcancelled=1 THEN "Cancelled" ELSE "" END');
 
-	$query = "SELECT * FROM `sales` A LEFT JOIN `customers` B ON A.`compcode` = B.`compcode` and A.`ccode` = B.`cempid` where A.compcode='".$_SESSION['companyid']."' ";
+	$query = "SELECT A.*, COALESCE(B.ctradename, B.cname) as cname, D.cref, B.nlimit FROM `sales` A LEFT JOIN `customers` B ON A.`compcode` = B.`compcode` and A.`ccode` = B.`cempid` LEFT JOIN (Select x.ctranno, GROUP_CONCAT(DISTINCT x.creference) as cref from `sales_t` x where x.compcode='".$_SESSION['companyid']."' group by x.ctranno) D on A.ctranno=D.ctranno where A.compcode='".$_SESSION['companyid']."' ";
 
 	if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
 	{
-		$query .= "and (LOWER(B.ctradename) like LOWER('%".$_POST['searchByName']."%') OR LOWER(B.cname) like LOWER('%".$_POST['searchByName']."%') OR LOWER(A.ctranno) like LOWER('%".$_POST['searchByName']."%'))";
+		$query .= "and (LOWER(B.ctradename) like LOWER('%".$_POST['searchByName']."%') OR LOWER(B.cname) like LOWER('%".$_POST['searchByName']."%') OR LOWER(A.ctranno) like LOWER('%".$_POST['searchByName']."%') OR LOWER(D.cref) like LOWER('%".$_POST['searchByName']."%') OR LOWER(A.csiprintno) like LOWER('%".$_POST['searchByName']."%'))";
 	}
 
 	if(isset($_POST['order']))
@@ -32,7 +32,6 @@
 	}
 	
 
-
 	$statement = $connect->prepare($query);
 
 	$statement->execute();
@@ -52,14 +51,16 @@
 		$sub_array = array();
 		$sub_array[] = $row['ctranno'];
 		$sub_array[] = $row['csiprintno'];
-		$sub_array[] = $row['ctradename'];
+		$sub_array[] = $row['cname'];
 		$sub_array[] = $row['ddate'];
-		$sub_array[] = $row['dcutdate'];
+		$sub_array[] = date_format(date_create($row['dcutdate']), "m/d/Y");
 		$sub_array[] = $row['lapproved'];
 		$sub_array[] = $row['lcancelled'];
 		$sub_array[] = $row['ccode'];
 		$sub_array[] = $row['nlimit'];
 		$sub_array[] = number_format($row['ngross'],2);
+		$sub_array[] = str_replace(",","<br>",$row['cref']);
+		$sub_array[] = $row['lvoid'];
 		$data[] = $sub_array;
 	}
 

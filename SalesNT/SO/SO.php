@@ -1,34 +1,35 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "SO.php";
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "SO.php";
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
-$company = $_SESSION['companyid'];
+	$company = $_SESSION['companyid'];
 
 
-//POST
-$poststat = "True";
-$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SO_post'");
-if(mysqli_num_rows($sql) == 0){
-	$poststat = "False";
-}
+	//POST
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SO_post'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
 
-//CANCEL
-$cancstat = "True";
-$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SO_cancel'");
-if(mysqli_num_rows($sql) == 0){
-	$cancstat = "False";
-}
+	//CANCEL
+	$cancstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SO_cancel'");
+	if(mysqli_num_rows($sql) == 0){
+		$cancstat = "False";
+	}
 
-$unpoststat = "True";
-$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SO_unpost.php'");
-if(mysqli_num_rows($sql) == 0){
-	$unpoststat = "False";
-}
+	$unpoststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SO_unpost.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$unpoststat = "False";
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -40,10 +41,10 @@ if(mysqli_num_rows($sql) == 0){
 	<title>Myx Financials</title>
 
 	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>">  
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>">  
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
 </head>
 
 <body style="padding:5px">
@@ -54,42 +55,40 @@ if(mysqli_num_rows($sql) == 0){
 				<font size="+2"><u>SO Non-Trade List</u></font>	
             </div>
         </div>
-			<br><br>
 
 			<div class="col-xs-12 nopadding">
 				<div class="col-xs-4 nopadding">
 					<button type="button" class="btn btn-primary btn-sm" onClick="location.href='SO_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
 					<?php
-						if($poststat=="True"){
+						if($unpoststat=="True"){
 					?>
-					<button type="button" class="btn btn-warning btn-sm" onClick="location.href='SO_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+					<button type="button" class="btn btn-danger btn-sm" onClick="location.href='SO_void.php'"><span class="fa fa-times"></span>&nbsp;Void Transaction</button>
 					<?php
 						}
 					?>
 				</div>
-        <div class="col-xs-3 nopadding">
+        <div class="col-xs-2 nopadding">
 					<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
 				</div>
-        <div class="col-xs-2 nopadwtop" style="height:30px !important;">
-          <b> Search Customer/SO No: </b>
+        <div class="col-xs-3 nopadwtop" style="height:30px !important;">
+          <b> Search Customer / SO No / Reference:  </b>
         </div>
 				<div class="col-xs-3 text-right nopadding">
-					<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>" class="form-control input-sm" placeholder="Enter Trans No or Customer...">
+					<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Enter Supplier, SO No, Reference...">
 				</div>
 			</div>
 
-			
-
-      <br><br><br>
-			<table id="MyTable" class="display" cellspacing="0" width="100%">
+      <br><br>
+			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
 						<th>SO No</th>
+						<th>PO No</th>
+						<th>Reference</th>
 						<th>Customer</th>
-            <th>Order Date</th>
-						<th>Delivery Date</th>
 						<th>Gross</th>
+						<th>Delivery Date</th>
             <th>Status</th>
 					</tr>
 				</thead>
@@ -102,6 +101,7 @@ if(mysqli_num_rows($sql) == 0){
     
 <form name="frmedit" id="frmedit" method="post" action="SO_edit.php">
 	<input type="hidden" name="txtctranno" id="txtctranno" />
+	<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
 </form>		
 
 
@@ -146,15 +146,15 @@ if(mysqli_num_rows($sql) == 0){
 
 	$(document).ready(function(e) {
 
-		fill_datatable();	
-			$("#searchByName").keyup(function(){
+		fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");	
+
+		$("#searchByName").keyup(function(){
 				var searchByName = $('#searchByName').val();
-			//	if(searchByName != '')
-			//	{
-					$('#MyTable').DataTable().destroy();
-					fill_datatable(searchByName);
-			//	}
-			});
+
+				$('#example').DataTable().destroy();
+				fill_datatable(searchByName);
+
+		});
 
 		var itmstat = "";
 		var x = "";
@@ -177,9 +177,14 @@ if(mysqli_num_rows($sql) == 0){
 					else if(x=="CANCEL"){
 						var msg = "CANCELLED";
 					}
+
+					urlx = "SO_Tran.php";
+					if(x=="SEND"){
+						urlx = "SO_GenJO.php";
+					}
 					
 						$.ajax ({
-							url: "SO_Tran.php",
+							url: urlx,
 							data: { x: num, typ: x },
 							async: false,
 							dataType: "json",
@@ -235,83 +240,93 @@ if(mysqli_num_rows($sql) == 0){
 
 	});
 
-	function fill_datatable(searchByName = '')
-	{
-		  var dataTable = $('#MyTable').DataTable({
-		    "processing" : true,
-		    "serverSide" : true,
-		    "lengthChange": true,
-		    "order" : [],
-		    "searching" : false,
-		    "ajax" : {
-					url:"SI_serverside.php",
-					type:"POST",
-					data:{
-						searchByName:searchByName
-					}
-		    },
-		    "columns": [
-					{ "data": null,
-						"render": function (data, type, full, row) {
-								
+	function fill_datatable(searchByName){
+
+		var table = $('#example').DataTable({
+			stateSave: true,
+			"searching": false,
+			"paging": true,
+			"serverSide": true,
+			"ajax": {
+				url: "th_datatable.php",
+				type: "POST",
+				data:{
+					searchByName: searchByName
+				}
+			},
+			"columns": [
+				{ "data": null,
+						"render": function (data, type, full, row) {	
+							
 							var sts = "";
-							if (full[6] == 1) {
+							if (full[6] == 1 || full[11] == 1) {
 								sts="class='text-danger'";
 							}
+							return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
+						}						
+				},
+				{ "data": 1 },
+				{ "data": 12 },
+				{ "data": null,
+			
+					"render": function (data, type, full, row) {
 
-									return "<a "+sts+" href=\"javascript:;\" onClick=\"editfrm('"+full[0]+"');\">"+full[0]+"</a>";
-								
-						}
-							
-					},
-					{ "data": 1 },
-					{ "data": 2 },
-					{ "data": 3 },
-					{ "data": 4 },
-					{ "data": null,
-							"render": function (data, type, full, row) {
-	
-								if (full[5] == 1) {
-									
-									return 'Posted';
-								
-								}
-								
-								else if (full[6] == 1) {
-						 
-						 return '<b>Cancelled</b>';
-						
-					 }
-								
-								else{
-
-									return 	"<div id=\"msg"+full[0]+"\"> <a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a> </div>";
-
-								}
-							}
-						}				
-        	],
-					"columnDefs": [
-						{
-							"targets": [3,4],
-							"className": "text-right"
-						},
-						{
-							"targets": 5,
-							"className": "text-center dt-body-nowrap"
-						}
-					],
-					"createdRow": function( row, data, dataIndex ) {
-						// Set the data-status attribute, and add a class
-						if(data[6]==1){
-							$(row).addClass('text-danger');
-						}
-							
+						return full[7]+" - "+full[2];
 					}
-		  });
+				},
+				{ "data": 9 },
+				{ "data": 4 },
+				{ "data": null,
+					"render": function (data, type, full, row) {
+
+						if (full[5] == 1) {
+							
+							if(full[11] == 1){
+								return '<b>Voided</b>';
+							}else{										
+								return 'Posted';
+							}
+						
+						}
+						
+						else if (full[6] == 1) {
+						
+							return '<b>Cancelled</b>';
+						
+						}
+						
+						else{
+
+							return 	"<div id=\"msg"+full[0]+"\"> <a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a> </div>";
+
+						}
+					}
+				}
+			],
+			"columnDefs": [
+				{
+					"targets": 4,
+					"className": "text-right"
+				},
+				{
+					"targets": [5,6],
+					"className": "text-center dt-body-nowrap"
+				}
+			],
+			"createdRow": function( row, data, dataIndex ) {
+        // Set the data-status attribute, and add a class
+				if(data[6]==1 || data[11] == 1){
+					$(row).addClass('text-danger');
+				}
+        
+    	}
+		});
+
 	}
+
 	function editfrm(x){
-		document.getElementById("txtctranno").value = x;
+		$('#txtctranno').val(x); 
+		$('#hdnsrchval').val($('#searchByName').val()); 
 		document.getElementById("frmedit").submit();
 	}
 

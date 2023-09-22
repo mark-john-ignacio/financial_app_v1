@@ -60,7 +60,6 @@
 						<font size="+2"><u>Sales Invoice List</u></font>	
           </div>
         </div>
-			<br><br>
 
 			<div class="col-xs-12 nopadding">
 				<div class="col-xs-4 nopadding">
@@ -68,31 +67,32 @@
 					<?php
 						if($unpoststat=="True"){
 					?>
-						<button type="button" class="btn btn-warning btn-sm" onClick="location.href='SI_unpost.php'"><span class="fa fa-refresh"></span>&nbsp;Un-Post Transaction</button>
+						<button type="button" class="btn btn-danger btn-sm" onClick="location.href='SI_void.php'"><span class="fa fa-times"></span>&nbsp;Void Transaction</button>
 					<?php
 						}
 					?>
 				</div>
-        <div class="col-xs-3 nopadding">
+        <div class="col-xs-2 nopadding">
 					<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
 				</div>
-        <div class="col-xs-2 nopadwtop" style="height:30px !important;">
-          <b> Search Customer/SI No: </b>
+        <div class="col-xs-3 nopadwtop" style="height:30px !important;">
+          <b> Search Customer / SI No / Reference: </b>
         </div>
 				<div class="col-xs-3 text-right nopadding">
-					<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>" class="form-control input-sm" placeholder="Enter Trans No or Customer...">
+					<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Enter Supplier, SI No, Reference...">
 				</div>
 			</div>
 
-      <br><br><br>
+      <br><br>
 			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
 						<th>Invoice No</th>
 						<th>SI Series No</th>
+						<th>Reference</th>
 						<th>Customer</th>
-						<th>Delivery Date</th>
 						<th>Gross</th>
+						<th>Delivery Date</th>
             <th width="100">Status</th>
 					</tr>
 				</thead>
@@ -265,22 +265,34 @@
 						{ "data": null,
 								"render": function (data, type, full, row) {
 										var sts = "";
-										if (full[6] == 1) {
+										if (full[6] == 1 || full[11] == 1) {
 											sts="class='text-danger'";
 										}
 										return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
 								}								
 						},
 						{ "data": 1 },
-						{ "data": 2 },
-						{ "data": 4 },
-						{ "data": 9 },	
+						{ "data": 10 },
+						{ "data": null,
+							"render": function (data, type, full, row) {
+
+								return full[7]+" - "+full[2];
+									
+							}
+								
+						},
+						{ "data": 9 },
+						{ "data": 4 },	
 						{ "data": null,
 							"render": function (data, type, full, row) {
 		
 								if (full[5] == 1) {
 									
-									return 'Posted';
+									if(full[11] == 1){
+										return '<b>Voided</b>';
+									}else{										
+										return 'Posted';
+									}
 								
 								}
 								
@@ -300,17 +312,17 @@
 					],
 					"columnDefs": [ 
 						{
-							"targets": [3,4],
+							"targets": 4,
 							"className": "text-right"
 						},
 						{
-							"targets": 5,
+							"targets": [5,6],
 							"className": "text-center dt-body-nowrap"
 						}
 					],
 					"createdRow": function( row, data, dataIndex ) {
 						// Set the data-status attribute, and add a class
-						if(data[6]==1){
+						if(data[6]==1 || data[11]==1){
 							$(row).addClass('text-danger');
 						}
 						
