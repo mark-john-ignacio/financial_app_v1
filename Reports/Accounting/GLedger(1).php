@@ -7,7 +7,6 @@ $_SESSION['pageid'] = "GLedger.php";
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 include('../../include/access2.php');
-require_once "../../Model/helper.php";
 
 $company = $_SESSION['companyid'];
 				$sql = "select * From company where compcode='$company'";
@@ -20,8 +19,6 @@ $company = $_SESSION['companyid'];
 				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 				{
 					$compname =  $row['compname'];
-					$compadd = $row['compadd'];
-					$comptin = $row['comptin'];
 				}
 
 
@@ -43,17 +40,15 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
-	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
 	<title>General Ledger</title>
 </head>
 
 <body style="padding:10px">
-<h3><b>Company: <?=strtoupper($compname);  ?></b></h3>
-<h3><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h3>
-<h3><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h3>
-<h3><b>Kind of Book: General Ledger</b></h3>
-<h3><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h3>
-
+<center>
+<h2><?php echo strtoupper($compname);  ?></h2>
+<h2>General Ledger</h2>
+<h3>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h3>
+</center>
 
 <br><br>
 
@@ -85,7 +80,7 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 		$dcurrentacct = $rowxz['cacctno'];
 ?>
 
-<table class='table' width="100%" border="0"  cellpadding = "3" class="tbl-serate">
+<table width="55%" border="0" align="center" cellpadding = "3" class="tbl-serate">
 	<tr>
 		<th colspan="5">
 			<table width="100%" border="0" align="center" cellpadding = "3">
@@ -98,16 +93,10 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 		</th>
 	</tr>
   <tr>
-  	<th style="text-align:left" width="100px">Date</th>
-	<th style="text-align:left" width="100px">Reference</th>
-	<th style="text-align:left" width="150px">Customer Name</th>
-	<th style="text-align:left" width="150px">Account Title</th>
-	<th style="text-align:right" width="150px">Debit</th>
-	<th style="text-align:right" width="150px">Credit</th>
-		<!-- <th>Reference</th>
+		<th>Reference</th>
 		<th width="100px">Date</th>
     <th style="text-align:right" width="150px">Debit</th>
-    <th style="text-align:right" width="150px">Credit</th> -->
+    <th style="text-align:right" width="150px">Credit</th>
   </tr>
 
  <?php
@@ -125,21 +114,10 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 	?>
    <tr id="tableContent" name="tableContent">
    		<td style="display: none;"><?= $drow['cmodule'] ?></td>
+		<td><?=$drow['ctranno']?></td>
 		<td><?=date_format(date_create($drow['ddate']), "d-M-y")?></td>
-		<td><a href='javascript:;'><?=$drow['ctranno']?></a></td>
-
-			<?php 
-				$ctranno = $drow['ctranno'];
-				$controller = CustomerNames($drow['cmodule'], $ctranno, $company);
-				$result = mysqli_query($con, $controller);
-				$namerow = mysqli_fetch_array($result, MYSQLI_ASSOC);
-			?>
-
-
-		<td><?=(@$namerow['cname'] != null ? @$namerow['cname'] : '-')?></td>
-		<td><?=(@$drow['cacctdesc'] != null ? @$drow['cacctdesc'] : '-')?></td>
-  		<td style="text-align:right;"><?=(floatval($drow['ndebit'])<>0) ? number_format(floatval($drow['ndebit']), 2) : ""?></td>
-    	<td style="text-align:right"><?=(floatval($drow['ncredit'])<>0) ? number_format(floatval($drow['ncredit']), 2) : ""?></td>
+  	<td style="text-align:right;"><?=(floatval($drow['ndebit'])<>0) ? number_format(floatval($drow['ndebit']), 2) : ""?></td>
+    <td style="text-align:right"><?=(floatval($drow['ncredit'])<>0) ? number_format(floatval($drow['ncredit']), 2) : ""?></td>
 		<!--<td style="text-align:right">
 			<?php
 					//$xv = getbalance($cntr, $xv, $drow['ndebit'], $drow['ncredit']);
@@ -153,7 +131,7 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 	?>
 
 	<tr>
-		<td style="text-align:right;" colspan="4"><b>Total <?=$dcurrentacct?></b></td>
+		<td style="text-align:right;" colspan="2"><b>Total <?=$dcurrentacct?></b></td>
   	<td style="text-align:right; border-bottom-style: double; border-top: 1px solid"><b><?=(floatval($totdebit)<>0) ? number_format(floatval($totdebit), 2) : ""?></b></td>
     <td style="text-align:right; border-bottom-style: double; border-top: 1px solid"><b><?=(floatval($totcredit)<>0) ? number_format(floatval($totcredit), 2) : ""?></b></td>
 		<!--<td>
@@ -204,12 +182,14 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 
 		$(document).on('click', '#tableContent', function(){
 			let modules = $(this).closest('#tableContent').find('td:eq(0)').text();
-			let ctranno = $(this).closest('#tableContent').find('td:eq(2)').text();
+			let ctranno = $(this).closest('#tableContent').find('td:eq(1)').text();
 			console.log(modules)
 
 			clearTable("#HeadDetail")
 			clearTable('#detailTable')
 			clearTable('#subdetailTable')
+
+			$('#detailModal').modal('show')
 			
 			$.ajax({
 				url: 'Controller/TBal_Controller.php',
@@ -220,7 +200,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 					ctranno: ctranno
 				},
 				success: function(res){
-					$('#detailModal').modal('show')
 					console.log(modules)
 					var sample = res.data;
 					sample.map((item, index) => {
@@ -302,7 +281,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Supplier: '),
 				$('<tH>').text('Credit Account'),
 				$('<tH>').text('Date:'),
-				$('<tH>').text('Tin:'),
 				$('<tH>').text('Remarks:'),
 
 			).appendTo('#HeadDetail > thead')
@@ -312,7 +290,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<td>').text(data.cname),
 				$('<td>').text(data.cacctdesc),
 				$('<td>').text(data.ddate),
-				$('<td>').text(data.ctin),
 				$('<td>').text((data.cremarks != null ? data.cremarks : '-')),
 				
 			).appendTo('#HeadDetail > tbody')
@@ -387,7 +364,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Customer: '),
 				$('<tH>').text('Type'),
 				$('<tH>').text('Date:'),
-				$('<tH>').text('Tin:'),
 				$('<tH>').text('Remarks'),
 
 			).appendTo('#HeadDetail > thead')
@@ -398,7 +374,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<td>').text(data.cname),
 				$('<td>').text(data.csalestype),
 				$('<td>').text(data.ddate),
-				$('<td>').text(data.ctin),
 				$('<td>').text((data.cremarks != null ? data.cremarks : '-')),
 			).appendTo('#HeadDetail > tbody')
 
@@ -459,7 +434,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Transaction No.'),
 				$('<tH>').text('Customer: '),
 				$('<tH>').text('Type'),
-				$('<tH>').text('Tin:'),
 				$('<tH>').text('Date:')
 
 			).appendTo('#HeadDetail > thead')
@@ -468,7 +442,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<td>').text(data.ctranno),
 				$('<td>').text(data.cname),
 				$('<td>').text(data.csalestype),
-				$('<td>').text(data.ctin),
 				$('<td>').text(data.ddate)
 			).appendTo('#HeadDetail > tbody')
 
@@ -525,7 +498,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Transaction No.: '),
 				$('<tH>').text('Supplier: '),
 				$('<tH>').text('Date:'),
-				$('<tH>').text('Tin:'),
 				$('<tH>').text('Remarks')
 
 			).appendTo('#HeadDetail > thead')
@@ -533,7 +505,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<td>').text(data.ctranno),
 				$('<td>').text(data.cpayee),
 				$('<td>').text(data.ddate),
-				$('<tH>').text(data.ctin),
 				$('<td>').text(data.cremarks)
 			).appendTo('#HeadDetail > tbody')
 
@@ -658,7 +629,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Customer '),
 				$('<tH>').text('SR Referrence '),
 				$('<tH>').text('SI Referrence '),
-				$('<tH>').text('Tin:'),
 				$('<tH>').text('Date:')
 
 			).appendTo('#HeadDetail > thead')
@@ -668,7 +638,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<td>').text(data.cname),
 				$('<td>').text(data.crefsr),
 				$('<td>').text(data.crefsi),
-				$('<tH>').text(data.ctin),
 				$('<td>').text(data.ddate)
 			).appendTo('#HeadDetail > tbody')
 
@@ -700,7 +669,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Paid to '),
 				$('<tH>').text('Referrence No.:'),
 				$('<tH>').text('Bank:'),
-				$('<tH>').text('Tin:'),
 				$('<tH>').text('Date:')
 
 			).appendTo('#HeadDetail > thead')
@@ -710,7 +678,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<td>').text(data.cname),
 				$('<td>').text(data.cpayrefno),
 				$('<td>').text(data.bankname),
-				$('<tH>').text(data.ctin),
 				$('<td>').text(data.ddate)
 			).appendTo('#HeadDetail > tbody')
 
@@ -836,7 +803,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Customer '),
 				$('<tH>').text('Salesman '),
 				$('<tH>').text('Date:'),
-				$('<tH>').text('Tin:'),
 				$('<tH>').text('Remarks'),
 			).appendTo('#HeadDetail > thead')
 			// const fulldate = ddate.getMonth() + '-' + ddate.getDate() + '-' + ddate.getFullYear()
@@ -845,7 +811,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<td>').text(data.cname),
 				$('<td>').text(data.csalesman),
 				$('<td>').text(data.ddate),
-				$('<tH>').text(data.ctin),
 				$('<td>').text(data.cremarks)
 			).appendTo('#HeadDetail > tbody')
 
@@ -874,7 +839,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Transaction No. '),
 				$('<tH>').text('Supplier '),
 				$('<tH>').text('Date '),
-				$('<tH>').text('Tin:'),
 				$('<tH>').text('Remarks:')
 
 			).appendTo('#HeadDetail > thead')
@@ -883,7 +847,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<td>').text(data.ctranno),
 				$('<td>').text(data.cname),
 				$('<td>').text(data.ddate),
-				$('<tH>').text(data.ctin),
 				$('<td>').text(data.cremarks)
 			).appendTo('#HeadDetail > tbody')
 

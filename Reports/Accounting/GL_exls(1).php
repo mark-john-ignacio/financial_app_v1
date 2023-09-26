@@ -1,33 +1,33 @@
-<?php
-	if(!isset($_SESSION)){
-		session_start();
-	}
-	require_once  "../../vendor2/autoload.php";
-	require_once "../../Connection/connection_string.php";
+<?php 
+if(!isset($_SESSION)){
+    session_start();
+}
+require_once  "../../vendor2/autoload.php";
+require_once "../../Connection/connection_string.php";
 
-	//use PhpOffice\PhpSpreadsheet\Helper\Sample;
-	use PhpOffice\PhpSpreadsheet\IOFactory;
-	use PhpOffice\PhpSpreadsheet\Spreadsheet;
-	use \PhpOffice\PhpSpreadsheet\Cell\DataType;
+//use PhpOffice\PhpSpreadsheet\Helper\Sample;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use \PhpOffice\PhpSpreadsheet\Cell\DataType;
 
-	// Create new Spreadsheet object
-	$spreadsheet = new Spreadsheet();
+// Create new Spreadsheet object
+$spreadsheet = new Spreadsheet();
 
-	// Set document properties
-	$spreadsheet->getProperties()->setCreator('Myx Financials')
-		->setLastModifiedBy('Myx Financials')
-		->setTitle('Trial Balance Report')
-		->setSubject('Trial Balance Report')
-		->setDescription('Trial Balance Report, generated using Myx Financials.')
-		->setKeywords('myx_financials trial_balance')
-		->setCategory('Myx Financials Report');
+// Set document properties
+$spreadsheet->getProperties()->setCreator('Myx Financials')
+    ->setLastModifiedBy('Myx Financials')
+    ->setTitle('General Ledger Report')
+    ->setSubject('General Ledger Report')
+    ->setDescription('General Ledger Report, generated using Myx Financials.')
+    ->setKeywords('myx_financials general_ledger')
+    ->setCategory('Myx Financials Report');
 
-	$spreadsheet->setActiveSheetIndex(0)
-    ->setCellValue('A1', 'Account No.')
-    ->setCellValue('B1', 'Account Title')
-		->setCellValue('C1', 'Debit')
-		->setCellValue('D1', 'Credit')
-		->setCellValue('E1', 'Balance');
+    $spreadsheet->setActiveSheetIndex(0)
+    ->setCellValue('A1', 'ACCOUNT NO.')
+    ->setCellValue('B1', 'ACCOUNT TITLE')
+		->setCellValue('C1', 'DEBIT')
+		->setCellValue('D1', 'CREDIT')
+		->setCellValue('E1', 'BALANCE');
 
 	$spreadsheet->getActiveSheet()->getStyle('A1:E1')->getFont()->setBold(true);
 
@@ -79,14 +79,15 @@
 			$spreadsheet->setActiveSheetIndex(0)->getStyle('D'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 
 	}
-	$cnt += 2;
-    $spreadsheet->setActiveSheetIndex(0)
+    $cnt += 2;
+
+	$spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('C'.$cnt, 'Total')
-            ->setCellValue('D'.$cnt, floatval($ntotdebit))
-            ->setCellValue('E'.$cnt, floatval($ntotcredit));
+            ->setCellValue('D'.$cnt, $ntotdebit)
+            ->setCellValue('E'.$cnt, $ntotcredit);
 
 	// Rename worksheet
-	$spreadsheet->getActiveSheet()->setTitle('Trial_Balance');
+	$spreadsheet->getActiveSheet()->setTitle('General Ledger');
 
 	// Set active sheet index to the first sheet, so Excel opens this as the first sheet
 	$spreadsheet->setActiveSheetIndex(0);
@@ -95,7 +96,7 @@
 
 	// Redirect output to a client’s web browser (Xlsx)
 	header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-	header('Content-Disposition: attachment;filename="Trial_Balance.xlsx"');
+	header('Content-Disposition: attachment;filename="General_Ledger.xlsx"');
 	header('Cache-Control: max-age=0');
 	// If you're serving to IE 9, then the following may be needed
 	header('Cache-Control: max-age=1');

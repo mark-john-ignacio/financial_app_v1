@@ -1,172 +1,226 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "GLedger.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "CashBook.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
-require_once "../../Model/helper.php";
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
-$company = $_SESSION['companyid'];
-				$sql = "select * From company where compcode='$company'";
-				$result=mysqli_query($con,$sql);
-				
-					if (!mysqli_query($con, $sql)) {
-						printf("Errormessage: %s\n", mysqli_error($con));
-					} 
+	$company = $_SESSION['companyid'];
+	$sql = "select * From company where compcode='$company'";
+	$result=mysqli_query($con,$sql);
+
+	$arrallaccts = array();
+	$arrtotaccts = array();
 					
-				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-				{
-					$compname =  $row['compname'];
-					$compadd = $row['compadd'];
-					$comptin = $row['comptin'];
-				}
+	if (!mysqli_query($con, $sql)) {
+		printf("Errormessage: %s\n", mysqli_error($con));
+	} 
+						
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
+		$compname =  $row['compname'];
+		$compadd = $row['compadd'];
+		$comptin = $row['comptin'];
+	}
 
 
-$date1 = $_POST["date1"];
-$date2 = $_POST["date2"];
+	$date1 = $_POST["date1"];
+	$date2 = $_POST["date2"];
+	$qry = "";
+	$varmsg = "";
 
-function getbalance($cnt, $bal, $ndebit, $ncredit){
+	$cntrCredz = 0;
+	
+	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit, D.cname, D.ctin , C.cremarks
+			From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
+			left join receipt C on A.compcode=C.compcode and A.ctranno=C.ctranno
+			left join customers D on C.compcode=D.compcode and C.ccode=D.cempid
+			Where A.compcode='$company' and A.cmodule='OR' and A.ddate between STR_TO_DATE('".$_REQUEST['date1']."', '%m/%d/%Y') and STR_TO_DATE('".$_REQUEST['date2']."', '%m/%d/%Y') Order By A.ddate, A.ctranno, A.ndebit desc, A.ncredit desc";
 
-}
+			//echo $sql;
+
+	$result = mysqli_query($con, $sql);
+		
+	$arrdebits = array();
+	$arrcredits = array();
+	$arrallqry = array();
+	$arralltrans = array();
+		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+		{
+			if(floatval($row['ndebit'])!=0){
+
+				//echo "Debs: ".$row['acctno']." - ".floatval($row['ndebit'])."<br>";
+
+				$arrdebits[] = array('cacctno' => $row['acctno'], 'cacctdesc' => $row['cacctdesc']);
+			}
+
+			if(floatval($row['ncredit'])!=0){
+				$arrcredits[] = array('cacctno' => $row['acctno'], 'cacctdesc' => $row['cacctdesc']);
+			}
+
+			$arralltrans[] = array('cmodule' => $row['cmodule'], 'ctranno' => $row['ctranno'], 'ddate' => $row['ddate'], 'ctin' => $row['ctin'], 'cname' => $row['cname'], 'cremarks' => $row['cremarks']);
+
+			$arrallqry[$row['ctranno']][] = $row;
+		}
+
 ?>
 
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css?x=<?=time()?>">
+	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-	<link href="../../Bootstrap/css/NFont.css" rel="stylesheet">
 	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
-	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">	
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
-	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
-	<title>General Ledger</title>
+	<title>Cash Receipts Book</title>
 </head>
 
-<body style="padding:10px">
-<h3><b>Company: <?=strtoupper($compname);  ?></b></h3>
-<h3><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h3>
-<h3><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h3>
-<h3><b>Kind of Book: General Ledger</b></h3>
-<h3><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h3>
-
+<body style="padding:20px">
+<center>
+	
+<h1 class="nopadding">Cash Receipts Book</h1>
+<h2 class="nopadding">Company: <?=strtoupper($compname);  ?></h2>
+<h3>Company Address: <?php echo strtoupper($compadd);  ?></h3>
+<h3>Vat Registered Tin: <?php echo $comptin;  ?></h3>
+<h3 class="nopadding">For the Period <?=date_format(date_create($_POST["date1"]),"F d, Y");?> to <?=date_format(date_create($_POST["date2"]),"F d, Y");?></h3>
+</center>
 
 <br><br>
-
-<?php
-	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit
-	From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
-	Where A.compcode='$company' and A.ddate between STR_TO_DATE('".$_REQUEST['date1']."', '%m/%d/%Y') and STR_TO_DATE('".$_REQUEST['date2']."', '%m/%d/%Y')
-	Order By A.acctno, A.dpostdate, A.ctranno, CASE WHEN (A.ndebit <> 0) THEN 1 ELSE 0 END desc, A.acctno";
-
-	$arracctnos = array();
-	$arrallqry = array();
-	$result=mysqli_query($con,$sql);			
-	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-	{
-	$arrallqry[] = $row;
-	$arracctnos[] = array('cacctno' => $row['acctno'], 'cacctdesc' => $row['cacctdesc']);
-	}
-
-	$arrundrs = array_intersect_key( $arracctnos , array_unique( array_map('serialize' , $arracctnos ) ) );
-
-	$cntr = 0;
-	$dcurrentacct = "";
-	foreach($arrundrs as $rowxz){
-		$cntr++;
-		if($cntr>1){
-			echo "<br><br>";
-		}
-
-		$dcurrentacct = $rowxz['cacctno'];
-?>
-
-<table class='table' width="100%" border="0"  cellpadding = "3" class="tbl-serate">
-	<tr>
-		<th colspan="5">
-			<table width="100%" border="0" align="center" cellpadding = "3">
-				<tr>
-					<td width="30%"><b>Acct ID:</b> <?=$rowxz['cacctno']?></td>
-					<td><b>Description:</b> <?=$rowxz['cacctdesc']; ?></td>
-					<td width="30%" style="text-align:right"><!--<b>Balance:</b> <?//=$rowxz['cacctdesc']; ?>--></td>
-				</tr>
-			</table>
-		</th>
-	</tr>
+<table class='table-bordered' border="1" align="center" cellpadding = "5" width='100%'>
   <tr>
-  	<th style="text-align:left" width="100px">Date</th>
-	<th style="text-align:left" width="100px">Reference</th>
-	<th style="text-align:left" width="150px">Customer Name</th>
-	<th style="text-align:left" width="150px">Account Title</th>
-	<th style="text-align:right" width="150px">Debit</th>
-	<th style="text-align:right" width="150px">Credit</th>
-		<!-- <th>Reference</th>
-		<th width="100px">Date</th>
-    <th style="text-align:right" width="150px">Debit</th>
-    <th style="text-align:right" width="150px">Credit</th> -->
-  </tr>
+	<th style='display: none;'>module</th>
+    <th width="100" style="vertical-align:middle">Date</th>
+    <th width="100" style="vertical-align:middle">Trans No.</th>
+    <th style="vertical-align:middle">Account Credited</th>
+    <th style="vertical-align:middle">Tin</th>
+    <!-- <th style="vertical-align:middle">Account Title</th> -->
+    <th style="vertical-align:middle">Description</th>
+      
+   <?php
 
- <?php
-	$totdebit = 0;
-	$totcredit = 0;
-	$cntr = 0;
-	$xv = 0;
-	foreach($arrallqry as $drow)
-	{
-		if($drow['acctno']==$rowxz['cacctno']){
-			$cntr++;
+		$arrundrs = array_intersect_key( $arrdebits , array_unique( array_map('serialize' , $arrdebits ) ) );
 
-			$totdebit = $totdebit + floatval($drow['ndebit']);
-			$totcredit = $totcredit + floatval($drow['ncredit']);
-	?>
-   <tr id="tableContent" name="tableContent">
-   		<td style="display: none;"><?= $drow['cmodule'] ?></td>
-		<td><?=date_format(date_create($drow['ddate']), "d-M-y")?></td>
-		<td><a href='javascript:;'><?=$drow['ctranno']?></a></td>
-
-			<?php 
-				$ctranno = $drow['ctranno'];
-				$controller = CustomerNames($drow['cmodule'], $ctranno, $company);
-				$result = mysqli_query($con, $controller);
-				$namerow = mysqli_fetch_array($result, MYSQLI_ASSOC);
-			?>
-
-
-		<td><?=(@$namerow['cname'] != null ? @$namerow['cname'] : '-')?></td>
-		<td><?=(@$drow['cacctdesc'] != null ? @$drow['cacctdesc'] : '-')?></td>
-  		<td style="text-align:right;"><?=(floatval($drow['ndebit'])<>0) ? number_format(floatval($drow['ndebit']), 2) : ""?></td>
-    	<td style="text-align:right"><?=(floatval($drow['ncredit'])<>0) ? number_format(floatval($drow['ncredit']), 2) : ""?></td>
-		<!--<td style="text-align:right">
-			<?php
-					//$xv = getbalance($cntr, $xv, $drow['ndebit'], $drow['ncredit']);
-					//echo number_format(floatval($xv), 2);
-			?>
-		</td>-->
-  </tr>
-	<?php
+   	foreach($arrundrs as $rsdr) {
+			$sumtot[$rsdr['cacctno']] = 0;
+   ?>
+   	<th style="vertical-align:bottom; text-align: center !important" width="150">
+    	<?=$rsdr['cacctno'];?><br><?=$rsdr['cacctdesc'];?><br>Dr.      
+    </th>
+   <?php
 		}
-	}
+   ?>
+
+	<?php
+		$arruncrs = array_intersect_key( $arrcredits , array_unique( array_map('serialize' , $arrcredits ) ) );
+   	foreach($arruncrs as $rscr) {
+			$sumtot[$rscr['cacctno']] = 0;
+   ?>
+   	<th align="center" style="vertical-align:bottom; text-align: center !important" width="150">
+    	<?=$rscr['cacctno'];?><br><?=$rscr['cacctdesc'];?><br>Cr.      
+    </th>
+   <?php
+		}
+   ?>
+
+  </tr>
+  
+	<?php
+
+	if(count($arralltrans) > 0){
+
+		$arruntransno = array_intersect_key( $arralltrans , array_unique( array_map('serialize' , $arralltrans ) ) );
+		foreach($arruntransno as $rsnoxc){
+
 	?>
 
-	<tr>
-		<td style="text-align:right;" colspan="4"><b>Total <?=$dcurrentacct?></b></td>
-  	<td style="text-align:right; border-bottom-style: double; border-top: 1px solid"><b><?=(floatval($totdebit)<>0) ? number_format(floatval($totdebit), 2) : ""?></b></td>
-    <td style="text-align:right; border-bottom-style: double; border-top: 1px solid"><b><?=(floatval($totcredit)<>0) ? number_format(floatval($totcredit), 2) : ""?></b></td>
-		<!--<td>
-			&nbsp;
-		</td>-->
-  </tr>
+	<tr id='tableContent' name='tableContent'>
+    <td style='display: none;' nowrap><?=$rsnoxc['cmodule']?></td>
+    <td nowrap><?=$rsnoxc['ddate']?></td>
+    <td nowrap><?=$rsnoxc['ctranno']?></td>
+    <td nowrap><?=$rsnoxc['cname']?></td>
+	<td nowrap align="right"><?=$rsnoxc['ctin']?></td>
+    <td nowrap><?=$rsnoxc['cremarks']?></td>
+	
+		<?php
+			$arrundrs = array_intersect_key( $arrdebits , array_unique( array_map('serialize' , $arrdebits ) ) );
+			foreach($arrundrs as $rsdr) {				
+				$drval = 0;
+				foreach($arrallqry[$rsnoxc['ctranno']] as $rx2lo){
+					if($rx2lo['acctno']==$rsdr['cacctno']){
+						$drval = $rx2lo['ndebit'];
+						break;
+					}
+				}
+		?>
+			<td style="text-align: right !important">
+			<?=($drval!=0) ? number_format($drval,2) : "";?>     
+			</td>
+		<?php
+			$sumtot[$rsdr['cacctno']] = $sumtot[$rsdr['cacctno']] + floatval($drval);
+			$drval = 0;
+			}
+		?>
 
- 
-</table>
+		<?php
+			$arrundrs = array_intersect_key( $arrcredits , array_unique( array_map('serialize' , $arrcredits ) ) );
+			foreach($arrundrs as $rsdr) {				
+				$drval = 0;
+				foreach($arrallqry[$rsnoxc['ctranno']] as $rx2lo){
+					if($rx2lo['acctno']==$rsdr['cacctno']){
+						$drval = $rx2lo['ncredit'];
+						break;
+					}
+				}
+		?>
+			<td style="text-align: right !important">
+				<?=($drval!=0) ? number_format($drval,2) : "";?>      
+			</td>
+		<?php
+			$sumtot[$rsdr['cacctno']] = $sumtot[$rsdr['cacctno']] + floatval($drval);
+			$drval = 0;
+			}
+		?>
 
-<?php
+
+
+	<?php
 	}
-?>
+
+}
+	?>
+
+	<!-- TOTAL -->
+	<tr>
+    <td colspan="5" style="text-align: right"><b>TOTAL: </b></td>
+
+		<?php
+			$arrundrs = array_intersect_key( $arrdebits , array_unique( array_map('serialize' , $arrdebits ) ) );
+			foreach($arrundrs as $rsdr) {				
+		?>
+			<td style="text-align: right !important">
+				<b><?=($sumtot[$rsdr['cacctno']]!=0) ? number_format($sumtot[$rsdr['cacctno']],2) : "";?></b>
+			</td>
+		<?php
+			}
+		?>
+
+		<?php
+			$arrundrs = array_intersect_key( $arrcredits , array_unique( array_map('serialize' , $arrcredits ) ) );
+			foreach($arrundrs as $rsdr) {				
+		?>
+			<td style="text-align: right !important">
+				<b><?=($sumtot[$rsdr['cacctno']]!=0) ? number_format($sumtot[$rsdr['cacctno']],2) : "";?></b>  
+			</td>
+		<?php
+			}
+		?>
+
+
+</table>
 	<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModal" aria-hidden="true">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
@@ -201,6 +255,7 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 
 <script type="text/javascript">
 	$(document).ready(function(){
+
 
 		$(document).on('click', '#tableContent', function(){
 			let modules = $(this).closest('#tableContent').find('td:eq(0)').text();
@@ -302,7 +357,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Supplier: '),
 				$('<tH>').text('Credit Account'),
 				$('<tH>').text('Date:'),
-				$('<tH>').text('Tin:'),
 				$('<tH>').text('Remarks:'),
 
 			).appendTo('#HeadDetail > thead')
@@ -312,7 +366,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<td>').text(data.cname),
 				$('<td>').text(data.cacctdesc),
 				$('<td>').text(data.ddate),
-				$('<td>').text(data.ctin),
 				$('<td>').text((data.cremarks != null ? data.cremarks : '-')),
 				
 			).appendTo('#HeadDetail > tbody')
@@ -387,7 +440,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Customer: '),
 				$('<tH>').text('Type'),
 				$('<tH>').text('Date:'),
-				$('<tH>').text('Tin:'),
 				$('<tH>').text('Remarks'),
 
 			).appendTo('#HeadDetail > thead')
@@ -398,7 +450,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<td>').text(data.cname),
 				$('<td>').text(data.csalestype),
 				$('<td>').text(data.ddate),
-				$('<td>').text(data.ctin),
 				$('<td>').text((data.cremarks != null ? data.cremarks : '-')),
 			).appendTo('#HeadDetail > tbody')
 
@@ -459,7 +510,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Transaction No.'),
 				$('<tH>').text('Customer: '),
 				$('<tH>').text('Type'),
-				$('<tH>').text('Tin:'),
 				$('<tH>').text('Date:')
 
 			).appendTo('#HeadDetail > thead')
@@ -468,7 +518,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<td>').text(data.ctranno),
 				$('<td>').text(data.cname),
 				$('<td>').text(data.csalestype),
-				$('<td>').text(data.ctin),
 				$('<td>').text(data.ddate)
 			).appendTo('#HeadDetail > tbody')
 
@@ -525,7 +574,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Transaction No.: '),
 				$('<tH>').text('Supplier: '),
 				$('<tH>').text('Date:'),
-				$('<tH>').text('Tin:'),
 				$('<tH>').text('Remarks')
 
 			).appendTo('#HeadDetail > thead')
@@ -533,7 +581,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<td>').text(data.ctranno),
 				$('<td>').text(data.cpayee),
 				$('<td>').text(data.ddate),
-				$('<tH>').text(data.ctin),
 				$('<td>').text(data.cremarks)
 			).appendTo('#HeadDetail > tbody')
 
@@ -658,7 +705,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Customer '),
 				$('<tH>').text('SR Referrence '),
 				$('<tH>').text('SI Referrence '),
-				$('<tH>').text('Tin:'),
 				$('<tH>').text('Date:')
 
 			).appendTo('#HeadDetail > thead')
@@ -668,7 +714,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<td>').text(data.cname),
 				$('<td>').text(data.crefsr),
 				$('<td>').text(data.crefsi),
-				$('<tH>').text(data.ctin),
 				$('<td>').text(data.ddate)
 			).appendTo('#HeadDetail > tbody')
 
@@ -700,7 +745,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Paid to '),
 				$('<tH>').text('Referrence No.:'),
 				$('<tH>').text('Bank:'),
-				$('<tH>').text('Tin:'),
 				$('<tH>').text('Date:')
 
 			).appendTo('#HeadDetail > thead')
@@ -710,7 +754,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<td>').text(data.cname),
 				$('<td>').text(data.cpayrefno),
 				$('<td>').text(data.bankname),
-				$('<tH>').text(data.ctin),
 				$('<td>').text(data.ddate)
 			).appendTo('#HeadDetail > tbody')
 
@@ -836,7 +879,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Customer '),
 				$('<tH>').text('Salesman '),
 				$('<tH>').text('Date:'),
-				$('<tH>').text('Tin:'),
 				$('<tH>').text('Remarks'),
 			).appendTo('#HeadDetail > thead')
 			// const fulldate = ddate.getMonth() + '-' + ddate.getDate() + '-' + ddate.getFullYear()
@@ -845,7 +887,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<td>').text(data.cname),
 				$('<td>').text(data.csalesman),
 				$('<td>').text(data.ddate),
-				$('<tH>').text(data.ctin),
 				$('<td>').text(data.cremarks)
 			).appendTo('#HeadDetail > tbody')
 
@@ -874,7 +915,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Transaction No. '),
 				$('<tH>').text('Supplier '),
 				$('<tH>').text('Date '),
-				$('<tH>').text('Tin:'),
 				$('<tH>').text('Remarks:')
 
 			).appendTo('#HeadDetail > thead')
@@ -883,7 +923,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<td>').text(data.ctranno),
 				$('<td>').text(data.cname),
 				$('<td>').text(data.ddate),
-				$('<tH>').text(data.ctin),
 				$('<td>').text(data.cremarks)
 			).appendTo('#HeadDetail > tbody')
 

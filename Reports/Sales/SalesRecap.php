@@ -18,6 +18,8 @@ $company = $_SESSION['companyid'];
 				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 				{
 					$compname =  $row['compname'];
+					$compadd = $row['compadd'];
+					$comptin = $row['comptin'];
 				}
 ?>
 
@@ -29,11 +31,12 @@ $company = $_SESSION['companyid'];
 </head>
 
 <body style="padding:10px">
-<center>
-<h2><?php echo strtoupper($compname);  ?></h2>
-<h2>Recapitulation: Sales Register</h2>
-<h3>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h3>
-</center>
+
+<h2><b>Company: <?=strtoupper($compname);  ?></b></h2>
+<h4><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h4>
+<h4><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h4>
+<h4><b>Recapitulation: Sales Register</b></h4>
+<h4>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h4>
 
 <br><br>
 <table width="70%" border="0" align="center">
@@ -50,28 +53,28 @@ $date1 = $_POST["date1"];
 $date2 = $_POST["date2"];
 
 $sql = "Select A.* From
-(
-SELECT 1 as orderd, A.`acctno`, A.`ctitle`, Sum(A.`ndebit`) as ndebit, Sum(A.`ncredit`) as ncredit
-From `glactivity` A left join `sales` B on A.`ctranno`=B.`ctranno` and A.`compcode`=B.`compcode`
-Where A.compcode='$company' and B.`dcutdate` between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.`lcancelled`=0 and B.`lapproved`=1 and A.`ndebit` <> 0
- group by A.`acctno`, A.`ctitle`
- 
- UNION ALL
- 
-SELECT 2 as orderd, B.`ccode`, C.`cname`, Sum(A.`ndebit`) as ndebit, Sum(A.`ncredit`) as ncredit
-From `glactivity` A left join `sales` B on A.`ctranno`=B.`ctranno` and A.`compcode`=B.`compcode`
-left join `customers` C on B.`ccode`=C.`cempid` and B.`compcode`=C.`compcode`
-Where A.compcode='$company' and B.`dcutdate` between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.`lcancelled`=0 and B.`lapproved`=1 and A.`ncredit` <> 0
- group by  B.`ccode`, C.`cname`
- 
- UNION ALL
- 
-SELECT 3 as orderd, A.`acctno`, A.`ctitle`, Sum(A.`ndebit`) as ndebit, Sum(A.`ncredit`) as ncredit
-From `glactivity` A left join `sales` B on A.`ctranno`=B.`ctranno` and A.`compcode`=B.`compcode`
-Where A.compcode='$company' and B.`dcutdate` between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.`lcancelled`=0 and B.`lapproved`=1 and A.`ncredit` <> 0
- group by  A.`acctno`, A.`ctitle`
- ) A
-order by A.orderd, A.`acctno`";
+		(
+		SELECT 1 as orderd, A.`acctno`, A.`ctitle`, Sum(A.`ndebit`) as ndebit, Sum(A.`ncredit`) as ncredit
+		From `glactivity` A left join `sales` B on A.`ctranno`=B.`ctranno` and A.`compcode`=B.`compcode`
+		Where A.compcode='$company' and B.`dcutdate` between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.`lcancelled`=0 and B.`lapproved`=1 and A.`ndebit` <> 0
+		group by A.`acctno`, A.`ctitle`
+		
+		UNION ALL
+		
+		SELECT 2 as orderd, B.`ccode`, C.`cname`, Sum(A.`ndebit`) as ndebit, Sum(A.`ncredit`) as ncredit
+		From `glactivity` A left join `sales` B on A.`ctranno`=B.`ctranno` and A.`compcode`=B.`compcode`
+		left join `customers` C on B.`ccode`=C.`cempid` and B.`compcode`=C.`compcode`
+		Where A.compcode='$company' and B.`dcutdate` between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.`lcancelled`=0 and B.`lapproved`=1 and A.`ncredit` <> 0
+		group by  B.`ccode`, C.`cname`
+		
+		UNION ALL
+		
+		SELECT 3 as orderd, A.`acctno`, A.`ctitle`, Sum(A.`ndebit`) as ndebit, Sum(A.`ncredit`) as ncredit
+		From `glactivity` A left join `sales` B on A.`ctranno`=B.`ctranno` and A.`compcode`=B.`compcode`
+		Where A.compcode='$company' and B.`dcutdate` between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.`lcancelled`=0 and B.`lapproved`=1 and A.`ncredit` <> 0
+		group by  A.`acctno`, A.`ctitle`
+		) A
+		order by A.orderd, A.`acctno`";
 
 //echo $sql;
 $result=mysqli_query($con,$sql);

@@ -19,8 +19,6 @@ $company = $_SESSION['companyid'];
 				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 				{
 					$compname =  $row['compname'];
-					$compadd = $row['compadd'];
-					$comptin = $row['comptin'];
 				}
 
 
@@ -33,44 +31,34 @@ $varmsg = "";
 
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">			
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
-<title>Accounts Payable</title>
-
-<style>
-	@media print {
-		.my-table {
-    	width: 100% !important;
-		}
-	}
-</style>
+<title>Cash Disbursement</title>
 </head>
 
-<body style="padding:10px">
-<h3><b>Company: <?=strtoupper($compname);  ?></b></h3>
-<h3><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h3>
-<h3><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h3>
-<h3><b>Kind of Book: Accounts Payable Journal</b></h3>
-<h3><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h3>
-
+<body style="padding:20px">
+<center>
+<h2 class="nopadding"><?php echo strtoupper($compname);  ?></h2>
+<h3 class="nopadding">Cash Disbursement Journal</h3>
+<h4 class="nopadding">For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h4>
+</center>
 
 <hr>
-<table width="100%" border="0" align="center" cellpadding="2px" class="my-table">
+<table width="100%" border="0" align="center" cellpadding="2px">
   <tr>
-    <th width="80">Acct Code</th>
+    <th width="100">Acct Code</th>
     <th>Account Title</th>
-    <th class="text-right" width="100">Debit</th>
-    <th class="text-right" width="100">Credit</th>
+    <th class="text-right" width="150">Debit</th>
+    <th class="text-right" width="150">Credit</th>
   </tr>
   
 <?php
 
-	$sql = "Select b.ctranno, b.ccode, b.cpayee, b.cpaymentfor, a.cacctno, a.ctitle, a.ndebit, a.ncredit, b.dapvdate, b.lapproved
-	From apv_t a 
-	left join apv b on a.compcode=b.compcode and a.ctranno=b.ctranno
-	where a.compcode='$company' and b.dapvdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled = 0 and (a.ncredit<>0 or a.ndebit<>0)
-	order by b.ctranno";
+	$sql = "Select b.ctranno, b.ccode, b.cpayee, b.ccheckno, a.acctno, a.ctitle, a.ndebit, a.ncredit, b.dcheckdate, b.cpayrefno, b.cpaymethod
+	From glactivity a
+	left join paybill b on a.compcode=b.compcode and a.ctranno=b.ctranno
+	where a.compcode='$company' and a.cmodule='PV' and b.dcheckdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
+	order by b.ctranno, a.ndebit DESC";
 
 	$result=mysqli_query($con,$sql);
 				
@@ -84,8 +72,7 @@ $varmsg = "";
 			$ddate = "";
 			$ccode = "";
 			$cpayee = "";
-			$cpaymentfor = "";
-			$lapproved = "";
+			$cchecko = "";
 	
 	$ntotdebit = 0;
 	$ntotcredit = 0;
@@ -96,11 +83,11 @@ $varmsg = "";
 		if($ctran!=$row['ctranno']){
 			$cntr++;		
 			$ctran = $row['ctranno'];
-			$ddate = $row['dapvdate'];
+			$ddate = $row['dcheckdate'];
 			$ccode = $row['ccode'];
 			$cpayee = $row['cpayee'];
-			$cpaymentfor = $row['cpaymentfor'];
-			$lapproved = $row['lapproved'];
+			$cpaymeth = $row['cpaymethod'];
+			$cchecko = ($cpaymeth=="cheque") ? $row['ccheckno'] : $row['cpayrefno'];
 			
 			//if($cntr>1){
 				echo "<tr><td colspan='4'>&nbsp;</td></tr>";
@@ -110,29 +97,23 @@ $varmsg = "";
 		  <tr>
 			<td colspan="4">
 			
-						<div class="col-xs-12">
+			<div class="col-xs-12">
             
-            	<div class="col-xs-4">
-                	<b><?php echo $ctran;?>
-									<?php
-										if(intval($lapproved)==0){
-											echo "(Unposted)";
-										}
-									?>
-									</b>
+            	<div class="col-xs-2">
+                	<b><?php echo $ctran;?></b>
                 </div>
-                <div class="col-xs-4">
+                <div class="col-xs-2">
                 	<b><?php echo $ddate;?></b>
                 </div>
                 <div class="col-xs-4">
                 	<b><?php echo $cpayee;?></b>
                 </div>
-                
+                <div class="col-xs-4">
+                	<b><?php echo "Reference: ".$cpaymeth." / ".$cchecko;?></b>
+                </div>
                 
             </div>
-            <div class="col-xs-12">
-              <b><?php echo $cpaymentfor;?></b>
-						</div>
+            
             
 			</td>
 		  </tr>
@@ -142,7 +123,7 @@ $varmsg = "";
 		?>
 
     <tr>
-    	<td><?php echo $row['cacctno'];?></td>
+    	<td><?php echo $row['acctno'];?></td>
     	<td><?php echo $row['ctitle'];?></td>
         <td align="right"><?php if($row['ndebit'] <> 0) 
 		{ 

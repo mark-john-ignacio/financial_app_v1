@@ -175,7 +175,7 @@
 							</li>
 							<li>
 								<a href="" onClick="setI('A','CashBook.php')" data-toggle="tab">
-								<i class="fa fa-book"></i> Cash Receipts Journal</a>
+								<i class="fa fa-book"></i> Cash Receipts Book</a>
 							</li>
 							<li>
             		<a href="" onClick="setI('A','PurchJourn.php')" data-toggle="tab">
@@ -187,7 +187,7 @@
   						</li>
   						<li>
   							<a href="" onClick="setI('A','CDJ.php')" data-toggle="tab">
-  							<i class="fa fa-book"></i> Cash Disbursement Journal </a>
+  							<i class="fa fa-book"></i> Cash Disbursement Book </a>
   						</li>   
 							<li>
           				<a href="" onClick="setI('A','GJournal.php')" data-toggle="tab">
