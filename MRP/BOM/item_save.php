@@ -14,7 +14,8 @@
 
 	//Insert Default if not exist
 	$getitems = mysqli_query($con,"SELECT * FROM `mrp_bom_label` where compcode='$company' and citemno='$cMainItemNo' and nversion=1"); 
-	if (mysqli_num_rows($getitems)!=0) {
+
+	if (mysqli_num_rows($getitems)==0) {
 		mysqli_query($con,"insert into mrp_bom_label(compcode,citemno,nversion,cdesc,ldefault) values('".$_SESSION['companyid']."','$cMainItemNo',1,'Default',1)");
 	}
 

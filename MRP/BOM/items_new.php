@@ -94,7 +94,7 @@
 
 
 	<form id="frmBOM" name="frmBOM" method="post" action="item_save.php">
-		<input type="hidden" id="hdncount" name="hdncount" value='<?=$totdcount?>'>
+		<input type="hidden" id="hdncount" name="hdncount" value='1'>
 
 		<fieldset>
 			<legend>Bill of Materials</legend>
@@ -471,7 +471,7 @@
 
 			$tdrows = "<td><input type='text' class=\"form-control input-xs text-center\" value='"+sornum+"' name=\"txtsortnum\" id=\"txtsortnum"+sornum+"\" readonly></td><td><input type='hidden' value='"+itmid+"' name=\"txtitmcode\" id=\"txtitmcode"+sornum+"\">"+itmid+"</td><td><input type='hidden' value='"+itmdesc+"' name=\"txtitmdesc\" id=\"txtitmdesc"+sornum+"\"><div style='text-indent:"+GENxyz0+"px'>"+itmdesc+"</div></td><td><input type='hidden' value='"+itmunit+"' name=\"txtcunit\" id=\"txtcunit"+sornum+"\">"+itmunit+"</td><td><input type=\"text\" class=\"form-control input-xs text-center\" name=\"txtlvl\" id=\"txtlvl"+sornum+"\" value=\""+lvl+"\" readonly></td>";
 
-			$tdrows = $tdrows + "<td><input type='text' class=\"form-control input-xs text-center\" value='1' name=\"txtnqty\" id=\"txtnqty"+sornum+"\"></td>";
+			$tdrows = $tdrows + "<td><input type='text' class=\"form-control input-xs text-center\" value='1' name=\"txtnqty\" id=\"txtnqty1"+sornum+"\"></td>";
 
 			$tdrows = $tdrows + "<td class=\"text-center\"><button type='button' class=\"btn btn-danger btn-xs\" name=\"btnDel\" id=\"btnDel"+sornum+"\"><i class=\"fa fa-times\"></i></button></td>";
 
@@ -638,7 +638,7 @@
 				getcnt = parseInt($("#hdncount").val());
 				for (i = 1; i <= getcnt; i++) {
 
-					$(this).find('input[name="txtnqty'+i+'"]').attr("name","txtnqty"+i+$tx);
+					$(this).find('input[name="txtnqty"]').attr("name","txtnqty"+i+$tx);
 
 				}
 

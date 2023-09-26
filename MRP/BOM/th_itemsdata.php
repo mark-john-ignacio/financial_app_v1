@@ -48,9 +48,15 @@
 
 	foreach($result as $row)
 	{
+		$cdesc = $row['citemdesc'];
+		$cdesc = str_replace("'","",str_replace('"', '', $cdesc));
+		$cdesc = trim(preg_replace('/\s+/', ' ', $cdesc));
+
+
+
 		$sub_array = array();
 		$sub_array[] = $row['cpartno'];
-		$sub_array[] = $row['citemdesc'];
+		$sub_array[] = $cdesc;
 		$sub_array[] = $row['cunit'];
 		$sub_array[] = $row['cstatus'];
 		$data[] = $sub_array;

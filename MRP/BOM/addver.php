@@ -21,12 +21,6 @@
 
 	$cver = intval($cver) + 1;
 
-	if($cver==1){
-		mysqli_query($con, "insert into mrp_bom_label(compcode,citemno,nversion,cdesc,ldefault) values('".$_SESSION['companyid']."','$citemno',1,'Default',1)");
-	}
-
-	$cver = intval($cver) + 1;
-
 	if (!mysqli_query($con, "insert into mrp_bom_label(compcode,citemno,nversion,cdesc) values('".$_SESSION['companyid']."','$citemno',$cver,'$cdesc')")) {
 		
 		echo "False";
