@@ -106,7 +106,8 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
             ->setCellValue('D'.$cnt, $row['cacctno'])
             ->setCellValue('E'.$cnt, $row['ctitle'])
             ->setCellValue('F'.$cnt, $row['ndebit'])
-            ->setCellValue('G'.$cnt, $row['ncredit']);
+            ->setCellValue('G'.$cnt, $row['ncredit'])
+            ->setCellValue('H'.$cnt, ($row['lapproved'] == 0 ? 'Unposted' : ''));
 
             $spreadsheet->setActiveSheetIndex(0)->getStyle('F'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
             $spreadsheet->setActiveSheetIndex(0)->getStyle('G'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");

@@ -21,7 +21,7 @@ include('../include/access.php');
 <script src="../Bootstrap/js/bootstrap3-typeahead.js"></script>
 
 <script src="../Bootstrap/js/moment.js"></script>
-<script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+<script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script> 
 
 </head>
 

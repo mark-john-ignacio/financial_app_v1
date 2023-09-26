@@ -87,7 +87,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         // ->setFillType(Fill::FILL_SOLID)
         // ->getStartColor()->setARGB('fcb103');
 		// $cnt++;
-       
+        $cnt++;
         $ntotdebit = $ntotdebit + floatval($row['ndebit']);
         $ntotcredit = $ntotcredit + floatval($row['ncredit']);
 
@@ -99,7 +99,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
             ->setCellValue('A'.$cnt, $row['dcheckdate'])
             ->setCellValue('B'.$cnt, $row['ctranno'])
             ->setCellValue('C'.$cnt, $row['cpayrefno'])
-            ->setCellValue('D'.$cnt, ($row['cpayee'] != null ? $row['cpayee'] : ''))
+            ->setCellValue('D'.$cnt, $row['cpayee'])
             ->setCellValue('E'.$cnt, $row['acctno'])
             ->setCellValue('F'.$cnt, $row['ctitle'])
             ->setCellValue('G'.$cnt, $row['ndebit'])
@@ -112,8 +112,8 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
     $cnt += 2;
     $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('F'.$cnt, 'Total')
-            ->setCellValue('G'.$cnt, $ntotdebit)
-            ->setCellValue('H'.$cnt, $ntotcredit);
+            ->setCellValue('G'.$cnt, floatval($ntotdebit))
+            ->setCellValue('H'.$cnt, floatval($ntotcredit));
 
 	// Rename worksheet
 	$spreadsheet->getActiveSheet()->setTitle('Cash Disbursement Book');

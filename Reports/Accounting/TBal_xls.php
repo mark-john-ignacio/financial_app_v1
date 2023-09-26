@@ -79,6 +79,11 @@
 			$spreadsheet->setActiveSheetIndex(0)->getStyle('D'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 
 	}
+	$cnt += 2;
+    $spreadsheet->setActiveSheetIndex(0)
+            ->setCellValue('C'.$cnt, 'Total')
+            ->setCellValue('D'.$cnt, floatval($ntotdebit))
+            ->setCellValue('E'.$cnt, floatval($ntotcredit));
 
 	// Rename worksheet
 	$spreadsheet->getActiveSheet()->setTitle('Trial_Balance');

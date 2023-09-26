@@ -109,8 +109,8 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
     $cnt += 2;
     $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('E'.$cnt, 'Total')
-            ->setCellValue('F'.$cnt, $ntotdebit)
-            ->setCellValue('G'.$cnt, $ntotcredit);
+            ->setCellValue('F'.$cnt, floatval($ntotdebit))
+            ->setCellValue('G'.$cnt, floatval($ntotcredit));
 
 	// Rename worksheet
 	$spreadsheet->getActiveSheet()->setTitle('Cash Receipts Book');
