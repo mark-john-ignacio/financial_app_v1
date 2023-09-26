@@ -45,12 +45,11 @@
 </head>
 
 <body style="padding:20px">
-
-<h3 class="nopadding"><b>Company: <?=strtoupper($compname);  ?></b></h3>
-<h5><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h5>
-<h5><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h5>
-<h5><b>Kind of Book: Cash Receipts Book</b></h5>
-<h5><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h5>
+<h3><b>Company: <?=strtoupper($compname);  ?></b></h3>
+<h3><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h3>
+<h3><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h3>
+<h3><b>Kind of Book: Cash Receipts Book</b></h3>
+<h3><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h3>
 
 
 <br><br>

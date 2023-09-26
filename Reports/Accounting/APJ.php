@@ -19,6 +19,8 @@ $company = $_SESSION['companyid'];
 				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 				{
 					$compname =  $row['compname'];
+					$compadd = $row['compadd'];
+					$comptin = $row['comptin'];
 				}
 
 
@@ -31,8 +33,9 @@ $varmsg = "";
 
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">			
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
 <title>Accounts Payable</title>
 
 <style>
@@ -45,14 +48,15 @@ $varmsg = "";
 </head>
 
 <body style="padding:10px">
-<center>
-<h2 class="nopadding"><?php echo strtoupper($compname);  ?></h2>
-<h3 class="nopadding">Accounts Payable Journal</h3>
-<h4 class="nopadding">For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h4>
-</center>
+<h3><b>Company: <?=strtoupper($compname);  ?></b></h3>
+<h3><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h3>
+<h3><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h3>
+<h3><b>Kind of Book: Accounts Payable Journal</b></h3>
+<h3><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h3>
+
 
 <hr>
-<table width="60%" border="0" align="center" cellpadding="2px" class="my-table">
+<table width="100%" border="0" align="center" cellpadding="2px" class="my-table">
   <tr>
     <th width="80">Acct Code</th>
     <th>Account Title</th>

@@ -20,6 +20,8 @@
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 	{
 		$compname =  $row['compname'];
+		$compadd = $row['compadd'];
+		$comptin = $row['comptin'];
 	}
 
 	$date1 = $_POST["date1"];
@@ -190,18 +192,19 @@
 </head>
 
 <body style="padding:10px">
-<center>
-<h2><?php echo strtoupper($compname);  ?></h2>
-<h2>Profit &amp; Lost Statement</h2>
+<h3><b>Company: <?=strtoupper($compname);  ?></b></h3>
+<h3><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h3>
+<h3><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h3>
+<h3><b>Profit &amp; Lost Statement</b></h3>
 <h3>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h3>
-</center>
+
 
 <?php
 	if(count($mainarray) > 0){
 
 ?>
 <br><br>
-<table width="50%" border="0" align="center" cellpadding="3" class="my-table">
+<table width="100%" border="0" align="center" cellpadding="3" class="my-table">
   <tr>
 
     <th style="text-align:center" width="100px">Account No. </th>

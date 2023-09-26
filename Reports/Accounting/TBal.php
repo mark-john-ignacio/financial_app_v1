@@ -19,6 +19,8 @@ $company = $_SESSION['companyid'];
 				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 				{
 					$compname =  $row['compname'];
+					$compadd = $row['compadd'];
+					$comptin = $row['comptin'];
 				}
 
 
@@ -45,14 +47,15 @@ $date2 = $_POST["date2"];
 </head>
 
 <body style="padding:10px">
-<center>
-<h2><?php echo strtoupper($compname);  ?></h2>
-<h2>Trial Balance</h2>
+<h3><b>Company: <?=strtoupper($compname);  ?></b></h3>
+<h3><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h3>
+<h3><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h3>
+<h3><b>Trial Balance</b></h3>
 <h3>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h3>
-</center>
+
 
 <br><br>
-<table width="70%" border="0" align="center" class="my-table">
+<table width="100%" border="0" align="center" class="my-table">
   <tr>
     <th rowspan="2" width="50px">&nbsp;</th>
     <th rowspan="2" style="text-align:center" width="100px">Account No. </th>

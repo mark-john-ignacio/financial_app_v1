@@ -29,10 +29,10 @@ $comp = mysqli_fetch_array($result, MYSQLI_ASSOC);
 // Set document properties
 $spreadsheet->getProperties()->setCreator('Myx Financials')
     ->setLastModifiedBy('Myx Financials')
-    ->setTitle('Sales Recap Report')
-    ->setSubject('Sales Recap Report')
-    ->setDescription('Sales Recap Report, generated using Myx Financials.')
-    ->setKeywords('myx_financials sales_recap')
+    ->setTitle('Sales Register Report')
+    ->setSubject('Sales Register Report')
+    ->setDescription('Sales Register Report, generated using Myx Financials.')
+    ->setKeywords('myx_financials sales_register')
     ->setCategory('Myx Financials Report');
 
 
@@ -72,7 +72,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('A1', 'Name of Tax Payer: ' . $comp['compdesc'])
         ->setCellValue('A2', 'Address: ' . $comp['compadd'])
         ->setCellValue('A3', 'Vat Registered Tin: ' . $comp['comptin'])
-        ->setCellValue('A4', 'Kind of Book: Sales Recap Reports ')
+        ->setCellValue('A4', 'Kind of Book: Sales Register ')
         ->setCellValue('A5', "For the Month of $date1 to $date2");
 
 	$ntotdebit = 0;
@@ -157,7 +157,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
     $spreadsheet->getActiveSheet()->getStyle("A$cnt:F$cnt")->getFont()->setBold(true);
 
 	// Rename worksheet
-	$spreadsheet->getActiveSheet()->setTitle('Sales Recap');
+	$spreadsheet->getActiveSheet()->setTitle('Sales Register');
 
 	// Set active sheet index to the first sheet, so Excel opens this as the first sheet
 	$spreadsheet->setActiveSheetIndex(0);
@@ -166,7 +166,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
 	// Redirect output to a client’s web browser (Xlsx)
 	header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-	header('Content-Disposition: attachment;filename="Sales_Recap.xlsx"');
+	header('Content-Disposition: attachment;filename="Sales_Register.xlsx"');
 	header('Cache-Control: max-age=0');
 	// If you're serving to IE 9, then the following may be needed
 	header('Cache-Control: max-age=1');
