@@ -25,15 +25,15 @@ include('../include/access.php');
 
 <body style="padding-left:50px;">
 <center>
-<b><u><font size="+1">Cash Receipts Journal</font></u></b>
+<b><u><font size="+1">Cash Receipts Book</font></u></b>
 
 </center>
 <br>
-<form action="Accounting/CRJ.php" method="post" name="frmrep" id="frmrep" target="_blank">
+<form action="Accounting/CRJ.php" method="post" name="frmrep" id="frmrep" onClick='return false;' target="_blank">
 <table width="100%" border="0" cellpadding="2">
   <tr>
       <td valign="top" width="50" style="padding:2px">
-    <button type="submit" class="btn btn-danger navbar-btn" id="btnsales">
+    <button type="button" class="btn btn-danger navbar-btn" id="btnsales">
     <span class="glyphicon glyphicon-search"></span> View Report
     </button>
     </td>
@@ -60,17 +60,33 @@ include('../include/access.php');
      </div>   
     </td>
   </tr>
+  <tr>
+    <td> 
+      <button type="button" class="btn btn-success btn-block" id="btnxls">
+            <i class="fa fa-file-excel-o"></i> To Excel
+      </button></td>
+  </tr>
 </table>
 </form>
 </body>
 </html>
 
 <script type="text/javascript">
-$(function() {              
+$(document).ready(function() {              
            // Bootstrap DateTimePicker v4
 	        $('.datepick').datetimepicker({
                  format: 'MM/DD/YYYY'
            });
+           $('#btnxls').on('click', function(){
+              $('#frmrep').attr("action", "Accounting/CRB_xls.php");
+              $('#frmrep').submit();
+           })
+
+           
+          $('#btnsales').on('click', function(){
+            $('#frmrep').attr("action", "Accounting/CRJ.php");
+            $('#frmrep').submit();
+          })
 	   
 });
 </script>

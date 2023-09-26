@@ -1,170 +1,226 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "GJournal.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "CashBook.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
-require_once('../../Model/helper.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
-$company = $_SESSION['companyid'];
-				$sql = "select * From company where compcode='$company'";
-				$result=mysqli_query($con,$sql);
-				
-					if (!mysqli_query($con, $sql)) {
-						printf("Errormessage: %s\n", mysqli_error($con));
-					} 
+	$company = $_SESSION['companyid'];
+	$sql = "select * From company where compcode='$company'";
+	$result=mysqli_query($con,$sql);
+
+	$arrallaccts = array();
+	$arrtotaccts = array();
 					
-				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-				{
-					$compname =  $row['compname'];
-					$compadd = $row['compadd'];
-					$comptin = $row['comptin'];
-				}
+	if (!mysqli_query($con, $sql)) {
+		printf("Errormessage: %s\n", mysqli_error($con));
+	} 
+						
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
+		$compname =  $row['compname'];
+		$compadd = $row['compadd'];
+		$comptin = $row['comptin'];
+	}
 
 
-$date1 = $_POST["date1"];
-$date2 = $_POST["date2"];
+	$date1 = $_POST["date1"];
+	$date2 = $_POST["date2"];
+	$qry = "";
+	$varmsg = "";
+
+	$cntrCredz = 0;
+	
+	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit, D.cname, D.ctin , C.cremarks
+			From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
+			left join receipt C on A.compcode=C.compcode and A.ctranno=C.ctranno
+			left join customers D on C.compcode=D.compcode and C.ccode=D.cempid
+			Where A.compcode='$company' and A.cmodule='OR' and A.ddate between STR_TO_DATE('".$_REQUEST['date1']."', '%m/%d/%Y') and STR_TO_DATE('".$_REQUEST['date2']."', '%m/%d/%Y') Order By A.ddate, A.ctranno, A.ndebit desc, A.ncredit desc";
+
+			//echo $sql;
+
+	$result = mysqli_query($con, $sql);
+		
+	$arrdebits = array();
+	$arrcredits = array();
+	$arrallqry = array();
+	$arralltrans = array();
+		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+		{
+			if(floatval($row['ndebit'])!=0){
+
+				//echo "Debs: ".$row['acctno']." - ".floatval($row['ndebit'])."<br>";
+
+				$arrdebits[] = array('cacctno' => $row['acctno'], 'cacctdesc' => $row['cacctdesc']);
+			}
+
+			if(floatval($row['ncredit'])!=0){
+				$arrcredits[] = array('cacctno' => $row['acctno'], 'cacctdesc' => $row['cacctdesc']);
+			}
+
+			$arralltrans[] = array('cmodule' => $row['cmodule'], 'ctranno' => $row['ctranno'], 'ddate' => $row['ddate'], 'ctin' => $row['ctin'], 'cname' => $row['cname'], 'cremarks' => $row['cremarks']);
+
+			$arrallqry[$row['ctranno']][] = $row;
+		}
+
 ?>
 
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css?x=<?=time()?>">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-<link href="../../Bootstrap/css/NFont.css" rel="stylesheet">
-<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../Bootstrap/js/bootstrap.js"></script>
-<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
-<title>General Journal</title>
+	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">	
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<title>Cash Receipts Book</title>
 </head>
 
-<body style="padding:10px">
-	<h3><b>Company: <?=strtoupper($compname);  ?></b></h3>
-	<h5><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h5>
-	<h5><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h5>
-	<h5><b>Kind of Book: General Journal</b></h5>
-	<h5><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h5>
-
+<body style="padding:20px">
+<center>
+	
+<h1 class="nopadding">Cash Receipts Book</h1>
+<h2 class="nopadding">Company: <?=strtoupper($compname);  ?></h2>
+<h3>Company Address: <?php echo strtoupper($compadd);  ?></h3>
+<h3>Vat Registered Tin: <?php echo $comptin;  ?></h3>
+<h3 class="nopadding">For the Period <?=date_format(date_create($_POST["date1"]),"F d, Y");?> to <?=date_format(date_create($_POST["date2"]),"F d, Y");?></h3>
+</center>
 
 <br><br>
-<table class='table' width="100%" border="0" align="center" cellpadding = "3">
-	<tr>
-		<th rowspan="2" width="50px" style='display:none;'>Module</th>
-		<th rowspan='2' width='50px'>Date</th>
-		<th rowspan="2" width="50px">Transaction No.</th>
-		<th rowspan='2' width='100px'>Account Name</th>
-		<th rowspan='2' width='50px'>Account No.</th>
-		<th rowspan='2' width='50px'>Account Title</th>
-	</tr>
+<table class='table-bordered' border="1" align="center" cellpadding = "5" width='100%'>
   <tr>
-  	<th style="text-align:center"  width="50px">Debit</th>
-    <th style="text-align:center"  width="50px">Credit</th>
+	<th style='display: none;'>module</th>
+    <th width="100" style="vertical-align:middle">Date</th>
+    <th width="100" style="vertical-align:middle">Trans No.</th>
+    <th style="vertical-align:middle">Account Credited</th>
+    <th style="vertical-align:middle">Tin</th>
+    <!-- <th style="vertical-align:middle">Account Title</th> -->
+    <th style="vertical-align:middle">Description</th>
+      
+   <?php
+
+		$arrundrs = array_intersect_key( $arrdebits , array_unique( array_map('serialize' , $arrdebits ) ) );
+
+   	foreach($arrundrs as $rsdr) {
+			$sumtot[$rsdr['cacctno']] = 0;
+   ?>
+   	<th style="vertical-align:bottom; text-align: center !important" width="150">
+    	<?=$rsdr['cacctno'];?><br><?=$rsdr['cacctdesc'];?><br>Dr.      
+    </th>
+   <?php
+		}
+   ?>
+
+	<?php
+		$arruncrs = array_intersect_key( $arrcredits , array_unique( array_map('serialize' , $arrcredits ) ) );
+   	foreach($arruncrs as $rscr) {
+			$sumtot[$rscr['cacctno']] = 0;
+   ?>
+   	<th align="center" style="vertical-align:bottom; text-align: center !important" width="150">
+    	<?=$rscr['cacctno'];?><br><?=$rscr['cacctdesc'];?><br>Cr.      
+    </th>
+   <?php
+		}
+   ?>
+
   </tr>
- 
- <?php
+  
+	<?php
 
-	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit, A.ddate
-			From glactivity A 
-			left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
-			Where A.compcode='$company' and A.ddate between STR_TO_DATE('".$_REQUEST['date1']."', '%m/%d/%Y') and STR_TO_DATE('".$_REQUEST['date2']."', '%m/%d/%Y')
-			Order By A.dpostdate, A.ctranno, CASE WHEN (A.ndebit <> 0) THEN 1 ELSE 0 END desc, A.acctno";
+	if(count($arralltrans) > 0){
 
+		$arruntransno = array_intersect_key( $arralltrans , array_unique( array_map('serialize' , $arralltrans ) ) );
+		foreach($arruntransno as $rsnoxc){
+
+	?>
+
+	<tr id='tableContent' name='tableContent'>
+    <td style='display: none;' nowrap><?=$rsnoxc['cmodule']?></td>
+    <td nowrap><?=$rsnoxc['ddate']?></td>
+    <td nowrap><?=$rsnoxc['ctranno']?></td>
+    <td nowrap><?=$rsnoxc['cname']?></td>
+	<td nowrap align="right"><?=$rsnoxc['ctin']?></td>
+    <td nowrap><?=$rsnoxc['cremarks']?></td>
 	
-			
-	$dresult=mysqli_query($con,$sql);
-	$data = [];
-	while($drow = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-		array_push($data, $drow);
-	}
-				
-	if (!mysqli_query($con, $sql)) {
-		printf("Errormessage: %s\n", mysqli_error($con));
-	} 
-
-	$result=mysqli_query($con,$sql);
-	$ntotdebit = 0;
-	$ntotcredit = 0;
-	$cntr=0;
-	$tranno = "";
-	$ecode = "";
-	$cmod = "";
-
-	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-	{
-		$cntr++;
-
-			if($tranno!==$row['ctranno']){
-				$ddate = date_format(date_create($row['ddate']), "d-M-y"); 
-				$cmod = $row['cmodule'];
-				$ecode = $row['ctranno'];
-
-				if($cntr>1){
-					echo "<tr>
-						<td colspan ='5' align='right'>&nbsp;</td>
-						<td style='text-align:right; border-top: 2px solid !important'><b>".number_format($ntotdebit,2)."</b></td>
-						<td style='text-align:right; border-top: 2px solid !important'><b>".number_format($ntotcredit,2)."</b></td>
-					<tr>";
-
-					$ntotdebit = 0;
-					$ntotcredit = 0;
+		<?php
+			$arrundrs = array_intersect_key( $arrdebits , array_unique( array_map('serialize' , $arrdebits ) ) );
+			foreach($arrundrs as $rsdr) {				
+				$drval = 0;
+				foreach($arrallqry[$rsnoxc['ctranno']] as $rx2lo){
+					if($rx2lo['acctno']==$rsdr['cacctno']){
+						$drval = $rx2lo['ndebit'];
+						break;
+					}
 				}
+		?>
+			<td style="text-align: right !important">
+			<?=($drval!=0) ? number_format($drval,2) : "";?>     
+			</td>
+		<?php
+			$sumtot[$rsdr['cacctno']] = $sumtot[$rsdr['cacctno']] + floatval($drval);
+			$drval = 0;
 			}
+		?>
 
-?>
-	<tr id="tableContent" name="tableContent">
-		
-		<td style='display: none;'><?=$cmod;?></td>
-		<td <?=($cntr>1 && $ecode !== "") ? "style='border-top: 2px solid !important'" : ""?>><?=$ddate;?></td>
-		<td <?=($cntr>1 && $ecode !== "") ? "style='border-top: 2px solid !important'" : ""?>><a href="javascript:;"><?=$ecode;?></a></td>
-
-			<?php
-				if($ecode != ''){
-					$ctranno = $ecode;
-				
-					$controller = CustomerNames($row['cmodule'], $ctranno, $company);
-					$dresult = mysqli_query($con, $controller);
-					$namerow = mysqli_fetch_array($dresult, MYSQLI_ASSOC);
-					
-					$name = @$namerow['cname'];
+		<?php
+			$arrundrs = array_intersect_key( $arrcredits , array_unique( array_map('serialize' , $arrcredits ) ) );
+			foreach($arrundrs as $rsdr) {				
+				$drval = 0;
+				foreach($arrallqry[$rsnoxc['ctranno']] as $rx2lo){
+					if($rx2lo['acctno']==$rsdr['cacctno']){
+						$drval = $rx2lo['ncredit'];
+						break;
+					}
 				}
-				?>
-		
-		<td <?=($cntr>1 && $ecode !== "") ? "style='border-top: 2px solid !important'" : ""?>><?=(@$namerow['cname'] != null ? $name : '-' )?></td>
-		<td <?=($cntr>1 && $ecode !== "") ? "style='border-top: 2px solid !important'" : ""?>><?php echo $row['acctno'];?></td>
-		<td <?=($cntr>1 && $ecode !== "") ? "style='border-top: 2px solid !important'" : ""?>><?php echo $row['cacctdesc'];?></td>
-		<td style="text-align:right <?=($cntr>1 && $ecode !== "") ? "; border-top: 2px solid !important" : ""?>"><?=(floatval($row['ndebit'])<>0) ? number_format(floatval($row['ndebit']), 2) : ""?></td>
-		<td style="text-align:right <?=($cntr>1 && $ecode !== "") ? "; border-top: 2px solid !important" : ""?>"><?=(floatval($row['ncredit'])<>0) ? number_format(floatval($row['ncredit']), 2) : ""?></td>
-	</tr>
-<?php
-		$cmod = "";
-		$ddate ="";
-		$name = "";
-		$ecode = "";
-		$tranno = $row['ctranno'];
-
-		$ntotdebit = $ntotdebit + floatval($row['ndebit']);
-		$ntotcredit = $ntotcredit + floatval($row['ncredit']);
+		?>
+			<td style="text-align: right !important">
+				<?=($drval!=0) ? number_format($drval,2) : "";?>      
+			</td>
+		<?php
+			$sumtot[$rsdr['cacctno']] = $sumtot[$rsdr['cacctno']] + floatval($drval);
+			$drval = 0;
+			}
+		?>
 
 
+
+	<?php
 	}
 
+}
+	?>
 
-	echo "<tr>
-			<td colspan ='5' align='right'>&nbsp;</td>
-			<td style='text-align:right; border-top: 2px solid !important'><b>".number_format($ntotdebit,2)."</b></td>
-			<td style='text-align:right; border-top: 2px solid !important'><b>".number_format($ntotcredit,2)."</b></td>
-		<tr>";
-?>
+	<!-- TOTAL -->
+	<tr>
+    <td colspan="5" style="text-align: right"><b>TOTAL: </b></td>
 
- 
+		<?php
+			$arrundrs = array_intersect_key( $arrdebits , array_unique( array_map('serialize' , $arrdebits ) ) );
+			foreach($arrundrs as $rsdr) {				
+		?>
+			<td style="text-align: right !important">
+				<b><?=($sumtot[$rsdr['cacctno']]!=0) ? number_format($sumtot[$rsdr['cacctno']],2) : "";?></b>
+			</td>
+		<?php
+			}
+		?>
+
+		<?php
+			$arrundrs = array_intersect_key( $arrcredits , array_unique( array_map('serialize' , $arrcredits ) ) );
+			foreach($arrundrs as $rsdr) {				
+		?>
+			<td style="text-align: right !important">
+				<b><?=($sumtot[$rsdr['cacctno']]!=0) ? number_format($sumtot[$rsdr['cacctno']],2) : "";?></b>  
+			</td>
+		<?php
+			}
+		?>
+
+
 </table>
-
-
 	<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModal" aria-hidden="true">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
@@ -200,18 +256,10 @@ $date2 = $_POST["date2"];
 <script type="text/javascript">
 	$(document).ready(function(){
 
-		$.ajax({
-			url: '',
-			type:'post',
-			dataType: 'json',
-			success: function(res){
-
-			}
-		})
 
 		$(document).on('click', '#tableContent', function(){
-			let modules = $(this).closest('#tableContent').find('td:eq(0)').text().trim();
-			let ctranno = $(this).closest('#tableContent').find('td:eq(2)').text().trim();
+			let modules = $(this).closest('#tableContent').find('td:eq(0)').text();
+			let ctranno = $(this).closest('#tableContent').find('td:eq(2)').text();
 			console.log(modules)
 
 			clearTable("#HeadDetail")

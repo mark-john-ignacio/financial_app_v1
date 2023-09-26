@@ -26,7 +26,7 @@ include('../include/access.php');
 <body style="padding-left:50px;">
 <center><font size="+1"><b><u>Sales Register</u></b></font></center>
 <br>
-<form action="Sales/SalesJournal.php" method="post" name="frmrep" id="frmrep" target="_blank">
+<form action="Sales/SalesJournal.php" method="post" name="frmrep" id="frmrep" onclick='return false;' target="_blank">
 <table width="100%" border="0" cellpadding="2">
   <tr>
     <td rowspan="2" valign="top" width="50" style="padding:2px">
@@ -65,8 +65,14 @@ include('../include/access.php');
 
 		</div>
 
-     </div>   
+     </div>    
     </td>
+  </tr>
+  <tr>
+    <td> 
+      <button type="button" class="btn btn-success btn-block" id="btnxls">
+            <i class="fa fa-file-excel-o"></i> To Excel
+      </button></td>
   </tr>
 </table>
 </form>
@@ -79,6 +85,34 @@ $(function() {
 	        $('.datepick').datetimepicker({
                  format: 'MM/DD/YYYY'
            });
+          $('#btnsales').click(function() {
+             
+            var selected = $('#seltype').find(":selected").val();
+            $('#frmrep').attr('action', selected)
+            $('#frmrep').submit()
+          })
+
+
+          $('#btnxls').click(function(){
+
+            var selected = $('#seltype').find(":selected").text();
+            var link = null
+            switch (selected) {
+              case 'Journal':
+                link = 'Sales/SalesJournal_xls.php'
+                break
+              case 'Recap':
+                link = 'Sales/SalesRecap_xls.php'
+                break
+              case 'Recap Per Customer':
+                link = 'Sales/SalesRecapCust_xls.php'
+                break
+              default:
+                break
+            }
+            $('#frmrep').attr('action', link)
+            $('#frmrep').submit()
+          })
 	   
 });
 

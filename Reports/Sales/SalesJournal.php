@@ -18,6 +18,8 @@ $company = $_SESSION['companyid'];
 				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 				{
 					$compname =  $row['compname'];
+					$compadd = $row['compadd'];
+					$comptin = $row['comptin'];
 				}
 ?>
 
@@ -29,11 +31,12 @@ $company = $_SESSION['companyid'];
 </head>
 
 <body style="padding:10px">
-<center>
-<h2><?php echo strtoupper($compname);  ?></h2>
-<h2>Journal: Sales Register</h2>
-<h3>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h3>
-</center>
+<h3><b>Company: <?=strtoupper($compname);  ?></b></h3>
+<h5><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h5>
+<h5><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h5>
+<h5>Kind of Book: Sales Register</h5>
+<h5>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h5>
+
 
 <br><br>
 <table width="100%" border="0" align="center">

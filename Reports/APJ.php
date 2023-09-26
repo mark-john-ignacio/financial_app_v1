@@ -31,10 +31,10 @@ include('../include/access.php');
 </center>
 <br>
 
-<form action="Accounting/APJ.php" method="post" name="frmrep" id="frmrep" target="_blank">
+<form action="Accounting/APJ.php" method="post" name="frmrep" id="frmrep" onclick='return false;' target="_blank">
 <table width="100%" border="0" cellpadding="2">
   <tr>
-    <td valign="top" width="50" style="padding:2px"><button type="submit" class="btn btn-danger navbar-btn" id="btnsales">
+    <td valign="top" width="50" style="padding:2px"><button type="button" class="btn btn-danger navbar-btn" id="btnsales">
       <span class="glyphicon glyphicon-search"></span> View Report
       </button></td>
     <td width="150" style="padding-left:10px"><b>Date Range: </b></td>
@@ -56,8 +56,14 @@ include('../include/access.php');
           
           </div>
         
-        </div>   
+        </div>    
       </td>
+  </tr>
+  <tr>
+    <td> 
+      <button type="button" class="btn btn-success btn-block" id="btnxls">
+            <i class="fa fa-file-excel-o"></i> To Excel
+      </button></td>
   </tr>
 </table>
 </form>
@@ -69,6 +75,15 @@ $(function(){
 	        $('.datepick').datetimepicker({
                  format: 'MM/DD/YYYY'
            });
+
+          $('#btnxls').click( function(){
+            $('#frmrep').attr('action', 'Accounting/APJ_xls.php')
+            $('#frmrep').submit()
+          })
+          $('#btnsales').click(function(){
+            $('#frmrep').attr('action', 'Accounting/APJ.php')
+            $('#frmrep').submit()
+          })
 	
 });
 

@@ -2,12 +2,11 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "GJournal.php";
+$_SESSION['pageid'] = "GLedger.php";
 
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 include('../../include/access2.php');
-require_once('../../Model/helper.php');
 
 $company = $_SESSION['companyid'];
 				$sql = "select * From company where compcode='$company'";
@@ -20,151 +19,132 @@ $company = $_SESSION['companyid'];
 				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 				{
 					$compname =  $row['compname'];
-					$compadd = $row['compadd'];
-					$comptin = $row['comptin'];
 				}
 
 
 $date1 = $_POST["date1"];
 $date2 = $_POST["date2"];
+
+function getbalance($cnt, $bal, $ndebit, $ncredit){
+
+}
 ?>
 
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css?x=<?=time()?>">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-<link href="../../Bootstrap/css/NFont.css" rel="stylesheet">
-<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../Bootstrap/js/bootstrap.js"></script>
-<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
-<title>General Journal</title>
+	<link href="../../Bootstrap/css/NFont.css" rel="stylesheet">
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<title>General Ledger</title>
 </head>
 
 <body style="padding:10px">
-	<h3><b>Company: <?=strtoupper($compname);  ?></b></h3>
-	<h5><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h5>
-	<h5><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h5>
-	<h5><b>Kind of Book: General Journal</b></h5>
-	<h5><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h5>
-
+<center>
+<h2><?php echo strtoupper($compname);  ?></h2>
+<h2>General Ledger</h2>
+<h3>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h3>
+</center>
 
 <br><br>
-<table class='table' width="100%" border="0" align="center" cellpadding = "3">
-	<tr>
-		<th rowspan="2" width="50px" style='display:none;'>Module</th>
-		<th rowspan='2' width='50px'>Date</th>
-		<th rowspan="2" width="50px">Transaction No.</th>
-		<th rowspan='2' width='100px'>Account Name</th>
-		<th rowspan='2' width='50px'>Account No.</th>
-		<th rowspan='2' width='50px'>Account Title</th>
-	</tr>
-  <tr>
-  	<th style="text-align:center"  width="50px">Debit</th>
-    <th style="text-align:center"  width="50px">Credit</th>
-  </tr>
- 
- <?php
 
-	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit, A.ddate
-			From glactivity A 
-			left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
-			Where A.compcode='$company' and A.ddate between STR_TO_DATE('".$_REQUEST['date1']."', '%m/%d/%Y') and STR_TO_DATE('".$_REQUEST['date2']."', '%m/%d/%Y')
-			Order By A.dpostdate, A.ctranno, CASE WHEN (A.ndebit <> 0) THEN 1 ELSE 0 END desc, A.acctno";
+<?php
+	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit
+	From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
+	Where A.compcode='$company' and A.ddate between STR_TO_DATE('".$_REQUEST['date1']."', '%m/%d/%Y') and STR_TO_DATE('".$_REQUEST['date2']."', '%m/%d/%Y')
+	Order By A.acctno, A.dpostdate, A.ctranno, CASE WHEN (A.ndebit <> 0) THEN 1 ELSE 0 END desc, A.acctno";
 
-	
-			
-	$dresult=mysqli_query($con,$sql);
-	$data = [];
-	while($drow = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-		array_push($data, $drow);
-	}
-				
-	if (!mysqli_query($con, $sql)) {
-		printf("Errormessage: %s\n", mysqli_error($con));
-	} 
-
-	$result=mysqli_query($con,$sql);
-	$ntotdebit = 0;
-	$ntotcredit = 0;
-	$cntr=0;
-	$tranno = "";
-	$ecode = "";
-	$cmod = "";
-
+	$arracctnos = array();
+	$arrallqry = array();
+	$result=mysqli_query($con,$sql);			
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 	{
-		$cntr++;
-
-			if($tranno!==$row['ctranno']){
-				$ddate = date_format(date_create($row['ddate']), "d-M-y"); 
-				$cmod = $row['cmodule'];
-				$ecode = $row['ctranno'];
-
-				if($cntr>1){
-					echo "<tr>
-						<td colspan ='5' align='right'>&nbsp;</td>
-						<td style='text-align:right; border-top: 2px solid !important'><b>".number_format($ntotdebit,2)."</b></td>
-						<td style='text-align:right; border-top: 2px solid !important'><b>".number_format($ntotcredit,2)."</b></td>
-					<tr>";
-
-					$ntotdebit = 0;
-					$ntotcredit = 0;
-				}
-			}
-
-?>
-	<tr id="tableContent" name="tableContent">
-		
-		<td style='display: none;'><?=$cmod;?></td>
-		<td <?=($cntr>1 && $ecode !== "") ? "style='border-top: 2px solid !important'" : ""?>><?=$ddate;?></td>
-		<td <?=($cntr>1 && $ecode !== "") ? "style='border-top: 2px solid !important'" : ""?>><a href="javascript:;"><?=$ecode;?></a></td>
-
-			<?php
-				if($ecode != ''){
-					$ctranno = $ecode;
-				
-					$controller = CustomerNames($row['cmodule'], $ctranno, $company);
-					$dresult = mysqli_query($con, $controller);
-					$namerow = mysqli_fetch_array($dresult, MYSQLI_ASSOC);
-					
-					$name = @$namerow['cname'];
-				}
-				?>
-		
-		<td <?=($cntr>1 && $ecode !== "") ? "style='border-top: 2px solid !important'" : ""?>><?=(@$namerow['cname'] != null ? $name : '-' )?></td>
-		<td <?=($cntr>1 && $ecode !== "") ? "style='border-top: 2px solid !important'" : ""?>><?php echo $row['acctno'];?></td>
-		<td <?=($cntr>1 && $ecode !== "") ? "style='border-top: 2px solid !important'" : ""?>><?php echo $row['cacctdesc'];?></td>
-		<td style="text-align:right <?=($cntr>1 && $ecode !== "") ? "; border-top: 2px solid !important" : ""?>"><?=(floatval($row['ndebit'])<>0) ? number_format(floatval($row['ndebit']), 2) : ""?></td>
-		<td style="text-align:right <?=($cntr>1 && $ecode !== "") ? "; border-top: 2px solid !important" : ""?>"><?=(floatval($row['ncredit'])<>0) ? number_format(floatval($row['ncredit']), 2) : ""?></td>
-	</tr>
-<?php
-		$cmod = "";
-		$ddate ="";
-		$name = "";
-		$ecode = "";
-		$tranno = $row['ctranno'];
-
-		$ntotdebit = $ntotdebit + floatval($row['ndebit']);
-		$ntotcredit = $ntotcredit + floatval($row['ncredit']);
-
-
+	$arrallqry[] = $row;
+	$arracctnos[] = array('cacctno' => $row['acctno'], 'cacctdesc' => $row['cacctdesc']);
 	}
 
+	$arrundrs = array_intersect_key( $arracctnos , array_unique( array_map('serialize' , $arracctnos ) ) );
 
-	echo "<tr>
-			<td colspan ='5' align='right'>&nbsp;</td>
-			<td style='text-align:right; border-top: 2px solid !important'><b>".number_format($ntotdebit,2)."</b></td>
-			<td style='text-align:right; border-top: 2px solid !important'><b>".number_format($ntotcredit,2)."</b></td>
-		<tr>";
+	$cntr = 0;
+	$dcurrentacct = "";
+	foreach($arrundrs as $rowxz){
+		$cntr++;
+		if($cntr>1){
+			echo "<br><br>";
+		}
+
+		$dcurrentacct = $rowxz['cacctno'];
 ?>
+
+<table width="55%" border="0" align="center" cellpadding = "3" class="tbl-serate">
+	<tr>
+		<th colspan="5">
+			<table width="100%" border="0" align="center" cellpadding = "3">
+				<tr>
+					<td width="30%"><b>Acct ID:</b> <?=$rowxz['cacctno']?></td>
+					<td><b>Description:</b> <?=$rowxz['cacctdesc']; ?></td>
+					<td width="30%" style="text-align:right"><!--<b>Balance:</b> <?//=$rowxz['cacctdesc']; ?>--></td>
+				</tr>
+			</table>
+		</th>
+	</tr>
+  <tr>
+		<th>Reference</th>
+		<th width="100px">Date</th>
+    <th style="text-align:right" width="150px">Debit</th>
+    <th style="text-align:right" width="150px">Credit</th>
+  </tr>
+
+ <?php
+	$totdebit = 0;
+	$totcredit = 0;
+	$cntr = 0;
+	$xv = 0;
+	foreach($arrallqry as $drow)
+	{
+		if($drow['acctno']==$rowxz['cacctno']){
+			$cntr++;
+
+			$totdebit = $totdebit + floatval($drow['ndebit']);
+			$totcredit = $totcredit + floatval($drow['ncredit']);
+	?>
+   <tr id="tableContent" name="tableContent">
+   		<td style="display: none;"><?= $drow['cmodule'] ?></td>
+		<td><?=$drow['ctranno']?></td>
+		<td><?=date_format(date_create($drow['ddate']), "d-M-y")?></td>
+  	<td style="text-align:right;"><?=(floatval($drow['ndebit'])<>0) ? number_format(floatval($drow['ndebit']), 2) : ""?></td>
+    <td style="text-align:right"><?=(floatval($drow['ncredit'])<>0) ? number_format(floatval($drow['ncredit']), 2) : ""?></td>
+		<!--<td style="text-align:right">
+			<?php
+					//$xv = getbalance($cntr, $xv, $drow['ndebit'], $drow['ncredit']);
+					//echo number_format(floatval($xv), 2);
+			?>
+		</td>-->
+  </tr>
+	<?php
+		}
+	}
+	?>
+
+	<tr>
+		<td style="text-align:right;" colspan="2"><b>Total <?=$dcurrentacct?></b></td>
+  	<td style="text-align:right; border-bottom-style: double; border-top: 1px solid"><b><?=(floatval($totdebit)<>0) ? number_format(floatval($totdebit), 2) : ""?></b></td>
+    <td style="text-align:right; border-bottom-style: double; border-top: 1px solid"><b><?=(floatval($totcredit)<>0) ? number_format(floatval($totcredit), 2) : ""?></b></td>
+		<!--<td>
+			&nbsp;
+		</td>-->
+  </tr>
 
  
 </table>
 
-
+<?php
+	}
+?>
 	<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModal" aria-hidden="true">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
@@ -200,23 +180,16 @@ $date2 = $_POST["date2"];
 <script type="text/javascript">
 	$(document).ready(function(){
 
-		$.ajax({
-			url: '',
-			type:'post',
-			dataType: 'json',
-			success: function(res){
-
-			}
-		})
-
 		$(document).on('click', '#tableContent', function(){
-			let modules = $(this).closest('#tableContent').find('td:eq(0)').text().trim();
-			let ctranno = $(this).closest('#tableContent').find('td:eq(2)').text().trim();
+			let modules = $(this).closest('#tableContent').find('td:eq(0)').text();
+			let ctranno = $(this).closest('#tableContent').find('td:eq(1)').text();
 			console.log(modules)
 
 			clearTable("#HeadDetail")
 			clearTable('#detailTable')
 			clearTable('#subdetailTable')
+
+			$('#detailModal').modal('show')
 			
 			$.ajax({
 				url: 'Controller/TBal_Controller.php',
@@ -227,7 +200,6 @@ $date2 = $_POST["date2"];
 					ctranno: ctranno
 				},
 				success: function(res){
-					$('#detailModal').modal('show')
 					console.log(modules)
 					var sample = res.data;
 					sample.map((item, index) => {
