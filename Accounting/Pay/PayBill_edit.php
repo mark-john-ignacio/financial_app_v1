@@ -895,7 +895,7 @@ else{
 			var $input = $(".napvewt");
 			var id = $(document.activeElement).attr('id');
 
-			$("#napvewt"+tx).typeahead({
+			$("#"+id).typeahead({
 				items: 10,
 				source: function(request, response) {
 					$.ajax({
@@ -913,7 +913,7 @@ else{
 				},
 				highlighter: Object,
 				afterSelect: function(item, event) { 		
-					alert(item.ctaxcode);				
+					//alert(item.ctaxcode);				
 					$("#"+id).val(item.ctaxcode).change(); 																	
 				}
 			});

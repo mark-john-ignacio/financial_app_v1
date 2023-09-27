@@ -597,8 +597,9 @@
 		$('body').on('focus',".napvewt", function(){
 			var $input = $(".napvewt");
 			var id = $(document.activeElement).attr('id');
+			var tx = id.replace("napvewt","");
 
-			$("#napvewt"+tx).typeahead({
+			$("#"+id).typeahead({
 				items: 10,
 				source: function(request, response) {
 					$.ajax({
@@ -616,7 +617,7 @@
 				},
 				highlighter: Object,
 				afterSelect: function(item, event) { 		
-					alert(item.ctaxcode);				
+					//alert(item.ctaxcode);				
 					$("#"+id).val(item.ctaxcode).change(); 																	
 				}
 			});
