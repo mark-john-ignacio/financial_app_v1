@@ -34,6 +34,15 @@
 		$nvalue = $all_course_data['cvalue']; 												
 	}
 
+	//get default EWT acct code
+	@$ewtpaydef = "";
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `accounts_default` where compcode='$company' and ccode='EWTPAY'"); 
+	if (mysqli_num_rows($gettaxcd)!=0) {
+		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+			@$ewtpaydef = $row['cacctno']; 
+		}
+	}
+
 	$_SESSION['myxtoken'] = gen_token();		
 ?>
 
@@ -78,6 +87,7 @@
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
 
 	<input type="hidden" id="existingnos" value='<?=json_encode($arrnoslist)?>'>
+	<input type="hidden" value='<?=@$ewtpaydef?>' id="hdnewtpay">
 
 	<form action="PayBill_newsave.php" name="frmpos" id="frmpos" method="post" onsubmit="return chkform();" enctype="multipart/form-data">
 		<fieldset>
@@ -91,16 +101,38 @@
 					<div class="tab-content nopadwtop2x">
 						<div class="tab-pane active" id="1Det">
 
-							<table width="100%" border="0 " cellspacing="0" cellpadding="0">
+							<table width="100%" border="0" cellspacing="0" cellpadding="0">
+								<?php
+									if($nvalue==0){
+								?>
+									
+								<tr>
+									<td><span style="padding:2px"><b>Reference:</b></span></td>
+									<td colspan="3"> 
+										<div class="col-xs-12"  style="padding-left:2px">
+											<div class="col-xs-3 nopadding">
+
+												<select id="isNoRef" name="isNoRef" class="form-control input-sm selectpicker" onchange="changeDet();">
+													<option value="0">With AP Voucher</option>
+													<option value="1">No AP Voucher Reference</option>
+												</select> 
+											</div>
+										</div>
+									</td>
+								</tr>
+								<?php
+									}
+								?>
 								<tr>
 									<td><span style="padding:2px"><b>Paid To:</b></span></td>
-									<td>
+									<td class="nopadwtop2x">
 									<div class="col-xs-12"  style="padding-left:2px">
-										<div class="col-xs-6 nopadding">
-												<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" placeholder="Search Supplier Name..." required autocomplete="off" tabindex="4">
+										<div class="col-xs-2 nopadding">
+												<input type="text" class="form-control input-sm"  id="txtcustid" name="txtcustid" readonly>
+												<input type="hidden" value=""  id="hdncustewt">
 										</div>
-										<div class="col-xs-6 nopadwleft">
-												<input type="text" id="txtcustid" name="txtcustid" style="border:none; height:30px;" readonly>
+										<div class="col-xs-10 nopadwleft">
+												<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" placeholder="Search Supplier Name..." required autocomplete="off" tabindex="4">
 										</div>
 									</div>
 									</td>
@@ -133,32 +165,12 @@
 													<option value="debit card">Debit Card</option>
 												</select>
 											</div>
-											<div class="col-xs-3" style="padding:2px !important; padding-left: 10px !important">
-											<?php
-												if($nvalue==0){
-											?>
-												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="1" id="isNoRef" name="isNoRef"/>
-													<label class="form-check-label" for="flexCheckChecked">No Reference</label>
-												</div>
-												<?php
-												}
-												?>
-											</div>
-											<!--
-												<div class="col-xs-4 nopadding">
-													<select id="selpaytype" name="selpaytype" class="form-control input-sm selectpicker">
-														<option value="apv">AP Voucher</option>
-														<option value="po">PO Pre-Payment</option>
-													</select>
-												</div>
-											-->
 									</td>
-									<td><span style="padding:2px"><b>Particulars:</b></span></td>
-									<td rowspan="2">
-										<div class="col-xs-12"  style="padding-bottom:2px">
-											<div class='col-xs-12 nopadding'>
-												<textarea class="form-control" rows="2" id="txtparticulars" name="txtparticulars"></textarea>
+									<td width="120"><span style="padding:2px"><b>Payment Date:</b></span></td>
+									<td>
+										<div class='col-xs-12' style="padding-bottom:2px">
+											<div class="col-xs-7 nopadding">
+												<input type='text' class="datepick form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date("m/d/Y"); ?>" tabindex="3"  />
 											</div>
 										</div>
 									</td>
@@ -180,37 +192,19 @@
 											
 										</div>
 
-									</td>
-
-
-									
-									
-								</tr>
-								<tr>  
-									<td><span style="padding:2px"><b>Payment Acct (Cr): </b></span></td>
-										<td>
-										<div class="col-xs-12"  style="padding-left:2px">
-											<div class="col-xs-3 nopadding">                              
-												<input type="text" id="txtcacctid" class="form-control input-sm" name="txtcacctid" value="" placeholder="Account Code" required>
-											</div>
-											<div class="col-xs-9 nopadwleft">
-												<input type="text" class="form-control input-sm" id="txtcacct" name="txtcacct" width="20px" tabindex="1" placeholder="Search Account Description..." required value="" autocomplete="off">
-											</div>
-											
-										</div>
-									</td>
-									<td width="120"><span style="padding:2px"><b>Payment Date:</b></span></td>
+									</td>	
+									<td><span style="padding:2px" id="chkdate"><b>Check Date:</b></span></td>
 									<td>
-									<div class='col-xs-12' style="padding-bottom:2px">
-											<div class="col-xs-6 nopadding">
-												<input type='text' class="datepick form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date("m/d/Y"); ?>" tabindex="3"  />
+									<div class="col-xs-12"  style="padding-bottom:2px">
+											<div class='col-xs-7 nopadding'>
+													<input type='text' class="datepick form-control input-sm" placeholder="Pick a Date" name="txtChekDate" id="txtChekDate" value="<?php echo date("m/d/Y"); ?>" />
 											</div>
 									</div>
-									</td>
+									</td>								
 								</tr>
-								<tr>
+								<tr>  
 									<td><span style="padding:2px" id="paymntrefr"><b>Check No.</b></span></td>
-										<td>
+									<td>
 											
 											<div class="col-xs-12"  style="padding-left:2px">
 
@@ -239,15 +233,52 @@
 											</div>
 
 									</td>
-									<td><span style="padding:2px" id="chkdate"><b>Check Date:</b></span></td>
+									<td><span style="padding:2px" id="chkdate"><b>Amount Paid:</b></span></td>
 									<td>
-									<div class="col-xs-12"  style="padding-bottom:2px">
-											<div class='col-xs-6 nopadding'>
-													<input type='text' class="datepick form-control input-sm" placeholder="Pick a Date" name="txtChekDate" id="txtChekDate" value="<?php echo date("m/d/Y"); ?>" />
+										<div class='col-xs-12' style="padding-bottom:2px">
+											<div class="col-xs-7 nopadding"> 
+												<input type="text" id="txttotpaid" name="txttotpaid" class="numericchkamt form-control input-sm" value="0.00" style="font-size:16px; font-weight:bold; text-align:right" > 
+
+												
 											</div>
-									</div>
+										</div>
 									</td>
 								</tr>
+								<tr>
+									<td><span style="padding:2px"><b>Payment Acct (Cr): </b></span></td>
+									<td>
+										<div class="col-xs-12"  style="padding-left:2px">
+											<div class="col-xs-3 nopadding">                              
+												<input type="text" id="txtcacctid" class="form-control input-sm" name="txtcacctid" value="" placeholder="Account Code" required>
+											</div>
+											<div class="col-xs-9 nopadwleft">
+												<input type="text" class="form-control input-sm" id="txtcacct" name="txtcacct" width="20px" tabindex="1" placeholder="Search Account Description..." required value="" autocomplete="off">
+											</div>
+											
+										</div>
+									</td>
+									<td><span style="padding:2px" id="chkdate"><b>Amount Payable:</b></span></td>
+									<td>
+										<div class='col-xs-12' style="padding-bottom:2px">
+											<div class="col-xs-7 nopadding">  
+												<input type="text" id="txtnGross" name="txtnGross" class="numericchkamt form-control input-sm" value="0.00" style="font-size:16px; font-weight:bold; text-align:right" readonly> 
+											</div>
+										</div>
+									</td>
+								</tr>
+
+								<tr>
+									<td><span style="padding:2px"><b>Particulars:</b></span></td>
+									<td> 
+										<div class="col-xs-12"  style="padding-left:2px">
+											<div class='col-xs-12 nopadding'>
+												<textarea class="form-control" rows="2" id="txtparticulars" name="txtparticulars"></textarea>
+											</div>
+										</div>
+									</td>
+									<td colspan="2"> &nbsp; </td>
+								</tr>
+
 							</table>
 
 						</div>	
@@ -276,27 +307,28 @@
 								width: 100%;
 								height: 250px;
 								text-align: left;
-								overflow: auto">
-								<table width="100%" border="0" cellpadding="0" id="MyTable">
+								overflow: scroll">
+								<table width="110%" border="0" cellpadding="0" id="MyTable">
 									<thead>
 										<tr>
-											<th scope="col" id="hdnRefTitle">APV No</th>
+											<th scope="col" id="hdnRefTitle" nowrap>APV No&nbsp;&nbsp;&nbsp;</th>
 											<th scope="col">Ref No</th>
-											<th scope="col">Date</th>
+											<th scope="col" width="100px">Date</th>
 											<th scope="col" class="text-right" width="120px">Amount</th>
 											<th scope="col" class="text-right" width="120px">Payed&nbsp;&nbsp;&nbsp;</th>
 											<th scope="col" width="120px" class="text-right">Total Owed&nbsp;&nbsp;&nbsp;</th>
 											<th scope="col" width="120px" class="text-center">Amount Applied</th>
-											<th scope="col" colspan="2">Dr Account</th>
+											<th scope="col">Account Code</th>
+											<th scope="col">Account Title</th>
+											<th scope="col" id="tblewt" style="display: none">EWT Code</th>
+											<th scope="col" id="tbldrcr" style="display: none">Type</th>
+											<th scope="col">&nbsp;</th>
 										</tr>
 									</thead>
 									<tbody>
 									</tbody>
 								</table>
-							</div>
-
-					
-											
+							</div>											
 					<br>
 
 					<table width="100%" border="0" cellpadding="3">
@@ -316,19 +348,13 @@
 											
 							</td>
 							<td align="right">
-								<div class="col-xs-12">
-									<div class="col-xs-5 text-right"> <b>Total Amount : </span> </div>
-									<div class="col-xs-7"> <input type="text" id="txtnGross" name="txtnGross" class="numericchkamt form-control input-sm" value="0.00" style="font-size:16px; font-weight:bold; text-align:right" readonly> </div>
-								</div>
+							&nbsp;
 
 							</td>
 						</tr>
 						<tr>
 							<td align="right">
-								<div class="col-xs-12" style="padding-top: 3px !important">
-									<div class="col-xs-5 text-right"> <b>Total Applied : </span> </div>
-									<div class="col-xs-7"> <input type="text" id="txttotpaid" name="txttotpaid" class="numericchkamt form-control input-sm" value="0.00" style="font-size:16px; font-weight:bold; text-align:right" readonly> </div>
-								</div>
+								&nbsp;
 							</td>
 						</tr>
 					</table>
@@ -509,8 +535,14 @@
 	  }
 	});
 
-
 	$(document).ready(function() {
+
+		$("#txttotpaid").autoNumeric('init',{mDec:2});
+		$("#txtnGross").autoNumeric('init',{mDec:2});
+
+		$("#txtnGross,#txttotpaid").on("focus", function () {
+			$(this).select();
+		});
 
 		$('body').on('focus',".datepick", function(){
 			$(this).datetimepicker({
@@ -519,6 +551,74 @@
           horizontal: 'auto',
           vertical: 'bottom'
         }
+			});
+		});
+
+		$('body').on('focus',".cacctdesc", function(){
+			var $input = $(".cacctdesc");
+
+			var id = $(document.activeElement).attr('id');	
+			var numid = id.replace("cacctdesc","");
+
+			$("#"+id).typeahead({
+				items: 10,
+				source: function(request, response) {
+					$.ajax({
+						url: "../th_accounts.php",
+						dataType: "json",
+						data: {
+							query: $("#"+id).val()
+						},
+						success: function (data) {
+							console.log(data);
+							response(data);
+						}
+					});
+				},
+				autoSelect: true,
+				displayText: function (item) {
+					return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.name + '</small></div>';
+				},
+				highlighter: Object,
+				afterSelect: function(item) { 
+
+					$('#'+id).val(item.name).change(); 
+					$("#cacctno"+numid).val(item.id);
+
+					if(item.id==$("#hdnewtpay").val()){
+						$("#napvewt"+numid).val($("#hdncustewt").val());
+					}
+
+				}
+			});
+
+		});
+
+		$('body').on('focus',".napvewt", function(){
+			var $input = $(".napvewt");
+			var id = $(document.activeElement).attr('id');
+
+			$("#napvewt"+tx).typeahead({
+				items: 10,
+				source: function(request, response) {
+					$.ajax({
+						url: "../th_ewtcodes.php",
+						dataType: "json",
+						data: { query: $("#"+id).val() },
+						success: function (data) {
+							response(data);														
+						}
+					});
+				},
+				autoSelect: true,
+				displayText: function (item) {
+					return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.ctaxcode + '</span><br><small>' + item.cdesc + "</small></div>";
+				},
+				highlighter: Object,
+				afterSelect: function(item, event) { 		
+					alert(item.ctaxcode);				
+					$("#"+id).val(item.ctaxcode).change(); 																	
+				}
 			});
 		});
 
@@ -582,7 +682,7 @@
 			items: 10,
 			source: function(request, response) {
 				$.ajax({
-					url: "../th_csall.php",
+					url: "../th_supplier.php",
 					dataType: "json",
 					data: {
 						query: $("#txtcust").val(), x: $("#selaptyp").val()
@@ -594,22 +694,18 @@
 			},
 			autoSelect: true,
 			displayText: function (item) {
-				return '<div style="border-top:1px solid gray; width: 300px"><span><b>' + item.typ + ": </b>"+ item.id + '</span><br><small>' + item.value + "</small></div>";
+				return '<div style="border-top:1px solid gray; width: 300px"><span><b>' + item.id + '</span><br><small>' + item.value + "</small></div>";
 			},
 			highlighter: Object,
 			afterSelect: function(item) { 
 				$('#txtcust').val(item.value).change(); 
 				$("#txtcustid").val(item.id);
-				$("#txtpayee").val(item.value);
-					
-				isnoref = '<?=$nvalue?>';
-				//if(isnoref=='1'){
-				//alert($("#isNoRef").prop('checked'));
-					if($("#isNoRef").prop('checked') == false || $("#isNoRef").prop('checked') == undefined){
-						showapvmod(item.id);
-					}
-			//	}
+				$("#txtpayee").val(item.value); 
+				$("#hdncustewt").val(item.cewtcode); 
 
+				if($('#isNoRef').find(":selected").val() == 0){
+					showapvmod(item.id);
+				}
 			}
 		});
 		
@@ -810,13 +906,14 @@
 
 
 			if($(this).val()=="cash"){       //paymntdesc paymntdescdet
-				$("#paymntdesc").html(" ");
-				$("#paymntrefr").html(" ");		
+				//$("#paymntdesc").html(" ");
+				//$("#paymntrefr").html(" ");		
 				
-				$("#paymntdescdet").hide();
-				$("#paymntrefrdet").hide();
-				$("#payrefothrsdet").hide(); 
+				//$("#paymntdescdet").hide();
+				//$("#paymntrefrdet").hide();
+				//$("#payrefothrsdet").hide(); 
 
+				$("#btnsearchbank").attr("disabled", true);
 				$("#chkdate").html("<b>Check Date</b>");
 				$("#txtChekDate").attr("disabled", true);    
 
@@ -899,6 +996,18 @@
 				
 				addrrdet("","",0,0,0,"","","",0);
 
+		});
+
+		$("#isNoRef").change(function() {
+			if($(this).find(":selected").val()==1) {
+				$("#btnAPVIns").attr("disabled", true);  
+				$("#tblewt").show(); 
+				$("#tbldrcr").show(); 
+			}else{
+				$("#btnAPVIns").attr("disabled", false);
+				$("#tblewt").hide(); 
+				$("#tbldrcr").hide(); 
+			}
 		});
 
 	});
@@ -1005,82 +1114,85 @@
 			var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 			var lastRow = tbl.length;
 			
-			var u = "<td>"+ctranno+"<input type=\"hidden\" name=\"cTranNo"+lastRow+"\" id=\"cTranNo"+lastRow+"\" value=\""+ctranno+"\" /> <input type=\"hidden\" name=\"napvewt"+lastRow+"\" id=\"napvewt"+lastRow+"\" value=\""+ewtamt+"\" /></td>";
+			var u = "<td>"+ctranno+"<input type=\"hidden\" name=\"cTranNo\" id=\"cTranNo"+lastRow+"\" value=\""+ctranno+"\" /></td>";
 
-			if(ctranno==""){
-				var u2 = "<td style=\"padding:2px\" align=\"center\"><input type=\"text\" class=\"form-control input-sm\" name=\"cRefRRNo"+lastRow+"\" id=\"cRefRRNo"+lastRow+"\" value=\""+refno+"\" /> </td>";
+			if ($('#isNoRef').find(":selected").val()==1) {
+
+				var u2 = "<td style=\"padding:2px\" align=\"center\"><input type=\"text\" class=\"form-control input-sm\" name=\"cRefRRNo\" id=\"cRefRRNo"+lastRow+"\" value=\""+refno+"\" /> </td>";
 			
-				var v = "<td style=\"padding:2px\" align=\"center\"><div class=\"controls\" style=\"position: relative\"><input type=\"text\" class=\"datepick form-control input-sm\" name=\"dApvDate"+lastRow+"\" id=\"dApvDate"+lastRow+"\" value=\""+ddate+"\" /></div></td>";
+				var v = "<td style=\"padding:2px\" align=\"center\"><div class=\"controls\" style=\"position: relative\"><input type=\"text\" class=\"datepick form-control input-sm\" name=\"dApvDate\" id=\"dApvDate"+lastRow+"\" value=\""+$("#date_delivery").val()+"\" /></div></td>";
 
-				var w = "<td style=\"padding:2px\" align=\"center\"><input type=\"text\" class=\"numeric form-control input-sm\" name=\"nAmount"+lastRow+"\" id=\"nAmount"+lastRow+"\" value=\""+numcom(namount)+"\" style=\"text-align:right\"/></td>";
+				var w = "<td style=\"padding:2px\" align=\"center\"><input type=\"text\" class=\"form-control input-sm\" name=\"nAmount\" id=\"nAmount"+lastRow+"\" value=\""+numcom(namount)+"\" style=\"text-align:right\"/></td>";
 
 			}else{
-				var u2 = "<td>"+refno+"<input type=\"hidden\" name=\"cRefRRNo"+lastRow+"\" id=\"cRefRRNo"+lastRow+"\" value=\""+refno+"\" /> </td>";
+				var u2 = "<td>"+refno+"<input type=\"hidden\" name=\"cRefRRNo\" id=\"cRefRRNo"+lastRow+"\" value=\""+refno+"\" /> </td>";
 			
-				var v = "<td>"+ddate+"<input type=\"hidden\" name=\"dApvDate"+lastRow+"\" id=\"dApvDate"+lastRow+"\" value=\""+ddate+"\" /></td>";
+				var v = "<td>"+ddate+"<input type=\"hidden\" name=\"dApvDate\" id=\"dApvDate"+lastRow+"\" value=\""+ddate+"\" /></td>";
 
-				var w = "<td align='right'>"+numcom(namount)+"<input type=\"hidden\" name=\"nAmount"+lastRow+"\" id=\"nAmount"+lastRow+"\" value=\""+namount+"\" /></td>";
+				var w = "<td align='right'>"+numcom(namount)+"<input type=\"hidden\" name=\"nAmount\" id=\"nAmount"+lastRow+"\" value=\""+namount+"\" /></td>";
 
 				
 			}
+					
+			var x = "<td align='right'>"+numcom(npayed)+"<input type=\"hidden\" name=\"cTotPayed\" id=\"cTotPayed"+lastRow+"\"  value=\""+npayed+"\" style=\"text-align:right\" readonly=\"readonly\">&nbsp;&nbsp;&nbsp;</td>";
 			
-			
-			
-			var x = "<td align='right'>"+numcom(npayed)+"<input type=\"hidden\" name=\"cTotPayed"+lastRow+"\" id=\"cTotPayed"+lastRow+"\"  value=\""+npayed+"\" style=\"text-align:right\" readonly=\"readonly\">&nbsp;&nbsp;&nbsp;</td>";
-			
-			var y = "<td style=\"padding:2px\" align=\"right\">"+numcom(ntotowed)+"<input type=\"hidden\" name=\"cTotOwed"+lastRow+"\" id=\"cTotOwed"+lastRow+"\"  value=\""+ntotowed+"\">&nbsp;&nbsp;&nbsp;</td>";
+			var y = "<td style=\"padding:2px\" align=\"right\">"+numcom(ntotowed)+"<input type=\"hidden\" name=\"cTotOwed\" id=\"cTotOwed"+lastRow+"\"  value=\""+ntotowed+"\">&nbsp;&nbsp;&nbsp;</td>";
 				
-			var z = "<td style=\"padding:2px\" align=\"center\"><input type=\"text\" class=\"numeric form-control input-sm\" name=\"nApplied"+lastRow+"\" id=\"nApplied"+lastRow+"\"  value=\""+ntotowed+"\" style=\"text-align:right\" /></td>";
+			if ($('#isNoRef').find(":selected").val()==1) {
+				var z = "<td style=\"padding:2px\" align=\"center\"><input type=\"text\" class=\"numeric form-control input-sm\" name=\"nApplied\" id=\"nApplied"+lastRow+"\" value=\""+ntotowed+"\" style=\"text-align:right\" readonly/></td>";
+			}else{
+				var z = "<td style=\"padding:2px\" align=\"center\"><input type=\"text\" class=\"numeric form-control input-sm\" name=\"nApplied\" id=\"nApplied"+lastRow+"\"  value=\""+ntotowed+"\" style=\"text-align:right\" /></td>";
+			}
 
-			var t = "<td style=\"padding:2px\" align=\"center\"><input type=\"text\" class=\"form-control input-sm\" name=\"cacctdesc"+lastRow+"\" id=\"cacctdesc"+lastRow+"\"  value=\""+cacctdesc+"\" "+ctyprefval+"/></td>";	
+			var t = "<td style=\"padding:2px\" align=\"center\"><input type=\"text\" class=\"cacctdesc form-control input-sm\" name=\"cacctdesc\" id=\"cacctdesc"+lastRow+"\"  value=\""+cacctdesc+"\" "+ctyprefval+" placeholder=\"Account Title\"/></td>";	
 
-			var t2 = "<td style=\"padding:2px\" align=\"center\" width=\"80px\"> <input type=\"text\" class=\"form-control input-sm\" name=\"cacctno"+lastRow+"\" id=\"cacctno"+lastRow+"\" value=\""+cacctno+"\" readonly/></td>";	
+			var t2 = "<td style=\"padding:2px\" align=\"center\" width=\"90px\" nowrap> <input type=\"text\" class=\"form-control input-sm\" name=\"cacctno\" id=\"cacctno"+lastRow+"\" value=\""+cacctno+"\" readonly placeholder=\"Account Code\"/></td>";	
+
+
+			if ($('#isNoRef').find(":selected").val()==1) {
+				var t4 = "<td style=\"padding:2px\" align=\"center\" width=\"100px\" nowrap> <input type=\"text\" class=\"napvewt form-control input-sm\" name=\"napvewt\" id=\"napvewt"+lastRow+"\" value=\""+cacctno+"\" placeholder=\"EWT Code\"/></td>";
+				var t5 = "<td style=\"padding:2px\" align=\"center\" width=\"80px\" nowrap> <select name=\"selentrytyp\" id=\"selentrytyp"+lastRow+"\" class=\" form-control input-sm\" onchange=\"GoToCompOthers();\"><option value=\"Debit\">Debit</option><option value=\"Credit\">Credit</option></select></td>";	
+			}else{
+				var t4 = "<input type=\"hidden\" name=\"napvewt\" id=\"napvewt"+lastRow+"\" value=\"\" />";
+				var t5 = "<input type=\"hidden\" name=\"selentrytyp\" id=\"selentrytyp"+lastRow+"\" value=\"Debit\" />";	
+			}
+
+			var t3 = "<td style=\"padding:2px\" align=\"center\" width=\"10px\" nowrap> <button class=\"btn btn-xs btn-danger\" name=\"delRow\" id=\"delRow"+lastRow+"\"><i class='fa fa-times'></i></button></td>";	
 			
-			$('#MyTable > tbody:last-child').append('<tr>'+ u + u2 + v + w + x + y + z + t + t2 + '</tr>');
+			$('#MyTable > tbody:last-child').append('<tr>'+ u + u2 + v + w + x + y + z + t2 + t + t4 + t5 + t3 + '</tr>');
+
+									$("#delRow"+lastRow).on("click", function(){
+										$(this).closest('tr').remove();
+										Reindx();
+
+										GoToCompAmt();
+										GoToComp();
+									});
 			
 									$("input.numeric").autoNumeric('init',{mDec:2});
-			
-									//$("input.numeric").numeric({decimalPlaces: 4});
 									$("input.numeric").on("focus", function () {
 										$(this).select();
 									});
 									
 									$("input.numeric").on("keyup", function (e) {
-											setPosi($(this).attr('name'),e.keyCode);
 											GoToComp();
+											setPosi($(this).attr('name'),e.keyCode);
+									});
+
+									$("#nAmount"+lastRow).autoNumeric('init',{mDec:2});
+									$("#nAmount"+lastRow).on("focus", function () {
+										$(this).select();
 									});
 
 									$("#nAmount"+lastRow).on("keyup", function (e) {
 										$("#nApplied"+lastRow).val($(this).val());
-										GoToCompAmt();
+										
+										GoToCompOthers();
+
+										setPosi($(this).attr('name'),e.keyCode);
 									});
 
-									$("#cacctdesc"+lastRow).typeahead({
-										items: 10,
-										source: function(request, response) {
-											$.ajax({
-												url: "../th_accounts.php",
-												dataType: "json",
-												data: {
-													query: $("#cacctdesc"+lastRow).val()
-												},
-												success: function (data) {
-													response(data);
-												}
-											});
-										},
-										autoSelect: true,
-										displayText: function (item) {
-											return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.name + '</small></div>';
-										},
-										highlighter: Object,
-										afterSelect: function(item) { 
-											$("#cacctdesc"+lastRow).val(item.name).change(); 
-											$("#cacctno"+lastRow).val(item.id);
-										}
-									});
-
-
+							
 									GoToComp();
 									
 						
@@ -1088,6 +1200,57 @@
 		else{
 			alert("Paid To Required!");
 		}
+	}
+
+	function Reindx(){
+		$("#MyTable > tbody > tr").each(function(index) {  
+			tx = index + 1;
+
+			$(this).find('input[type=hidden][name="cTranNo"]').attr("id","cTranNo"+tx);
+			getapv = $(this).find('input[type=hidden][name="cTranNo"]').val();
+			if(getapv==""){
+				$(this).find('input[name="cRefRRNo"]').attr("id","cRefRRNo" + tx);
+				$(this).find('input[name="dApvDate"]').attr("id","dApvDate" + tx);
+				$(this).find('input[name="nAmount"]').attr("id","nAmount" + tx);
+			}else{
+				$(this).find('input[type=hidden][name="cRefRRNo"]').attr("id","cRefRRNo" + tx);
+				$(this).find('input[type=hidden][name="dApvDate"]').attr("id","dApvDate" + tx);
+				$(this).find('input[type=hidden][name="nAmount"]').attr("id","nAmount" + tx);
+			}
+
+			$(this).find('input[type=hidden][name="cTotPayed"]').attr("id","cTotPayed" + tx);
+			$(this).find('input[type=hidden][name="cTotOwed"]').attr("id","cTotOwed" + tx);
+
+			$(this).find('input[name="nApplied"]').attr("id","nApplied" + tx);
+			$(this).find('input[name="cacctdesc"]').attr("id","cacctdesc" + tx);
+			$(this).find('input[name="cacctno"]').attr("id","cacctno" + tx);
+
+			if ($('#isNoRef').find(":selected").val()==1) {
+				$(this).find('input[name="napvewt"]').attr("id","napvewt" + tx);
+				$(this).find('select[name="selentrytyp"]').attr("id","selentrytyp" + tx);
+			}else{
+				$(this).find('input[type=hidden][name="napvewt"]').attr("id","napvewt" + tx); 
+				$(this).find('input[type=hidden][name="selentrytyp"]').attr("id","selentrytyp" + tx);
+			}
+
+			$(this).find('button[name="delRow"]').attr("id","delRow" + tx);
+
+
+									$("#nAmount"+tx).autoNumeric('init',{mDec:2});
+									$("#nAmount"+tx).on("focus", function () {
+										$(this).select();
+									});
+									$("#nAmount"+tx).on("keyup", function (e) {
+										$("#nApplied"+tx).val($(this).val());
+										GoToCompAmt();
+										GoToComp();
+
+										setPosi($(this).attr('name'),e.keyCode);
+									});
+
+									
+
+		});
 	}
 
 	function numcom(x) {
@@ -1168,7 +1331,40 @@
 			
 			if(isOK == "True"){
 				document.getElementById("hdnrowcnt").value = lastRow;
-			//	$("#frmpos").submit();
+
+
+				$("#MyTable > tbody > tr").each(function(index) {  
+					tx = index + 1;
+
+					$(this).find('input[type=hidden][name="cTranNo"]').attr("name","cTranNo"+tx);
+					if ($('#isNoRef').find(":selected").val()==1) {
+						$(this).find('input[name="cRefRRNo"]').attr("name","cRefRRNo" + tx);
+						$(this).find('input[name="dApvDate"]').attr("name","dApvDate" + tx);
+						$(this).find('input[name="nAmount"]').attr("name","nAmount" + tx);
+					}else{
+						$(this).find('input[type=hidden][name="cRefRRNo"]').attr("name","cRefRRNo" + tx);
+						$(this).find('input[type=hidden][name="dApvDate"]').attr("name","dApvDate" + tx);
+						$(this).find('input[type=hidden][name="nAmount"]').attr("name","nAmount" + tx);
+					}
+
+					$(this).find('input[type=hidden][name="cTotPayed"]').attr("name","cTotPayed" + tx);
+					$(this).find('input[type=hidden][name="cTotOwed"]').attr("name","cTotOwed" + tx);
+
+					$(this).find('input[name="nApplied"]').attr("name","nApplied" + tx);
+					$(this).find('input[name="cacctdesc"]').attr("name","cacctdesc" + tx);
+					$(this).find('input[name="cacctno"]').attr("name","cacctno" + tx);
+
+					if ($('#isNoRef').find(":selected").val()==1) {
+						$(this).find('input[name="napvewt"]').attr("name","napvewt" + tx);
+						$(this).find('select[name="selentrytyp"]').attr("name","selentrytyp" + tx);
+					}else{
+						$(this).find('input[type=hidden][name="napvewt"]').attr("name","napvewt" + tx); 
+						$(this).find('input[type=hidden][name="selentrytyp"]').attr("name","selentrytyp" + tx);
+					}
+				});
+
+
+				$("#frmpos").submit();
 
 			return true;
 			}
@@ -1206,6 +1402,35 @@
 			$("#txtnGross").val(gross);
 			$("#txtnGross").autoNumeric('destroy');
 			$("#txtnGross").autoNumeric('init',{mDec:2});
+	}
+
+	function GoToCompOthers(){
+		var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
+			var lastRow = tbl.length-1;
+			var z;
+			var gross = 0;
+			var totdebit = 0;
+			var totcredit = 0;
+
+			for (z=1; z<=lastRow; z++){
+				getentrytp = $("#selentrytyp"+z).val();
+				if(getentrytp=="Debit"){
+					totdebit = totdebit + parseFloat($("#nAmount"+z).val().replace(/,/g,''));
+				}
+
+				if(getentrytp=="Credit"){
+					totcredit = totcredit + parseFloat($("#nAmount"+z).val().replace(/,/g,''));
+				}
+			}
+
+			gross = parseFloat(totdebit) - parseFloat(totcredit);
+			$("#txtnGross").val(gross);
+			$("#txtnGross").autoNumeric('destroy');
+			$("#txtnGross").autoNumeric('init',{mDec:2});
+	}
+
+	function changeDet(){
+		$('#MyTable tbody').empty(); 
 	}
 
 </script>

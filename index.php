@@ -3,7 +3,11 @@
 		session_start();
 	}
 	include('Connection/connection_string.php');
-    require_once('Model/helper.php');
+  require_once('Model/helper.php');
+
+	if(isset($_SESSION['employeeid'])){
+		header("Location: //".$_SERVER['HTTP_HOST']."/main.php");
+	}
 
 ?>
 

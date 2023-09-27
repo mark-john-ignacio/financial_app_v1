@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 	session_start();
 }
-$_SESSION['pageid'] = "OR_new.php";
+$_SESSION['pageid'] = "OR_edit.php";
 
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
@@ -82,6 +82,12 @@ if (mysqli_num_rows($getewtcd)!=0) {
 	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
 	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
 
+	<style>
+		.tblnorm th, td{
+			padding: 2px !important;
+		}
+	</style>
+
 </head>
 
 <body style="padding:5px; height:700px" onLoad="document.getElementById('txtctranno').focus();">
@@ -92,7 +98,7 @@ if (mysqli_num_rows($getewtcd)!=0) {
 
 <?php
 
-    	$sqlchk = mysqli_query($con,"Select a.cacctcode, a.ccode, a.namount, a.cpaymethod, a.cpaytype, DATE_FORMAT(a.dcutdate,'%m/%d/%Y') as dcutdate, a.namount, a.napplied, a.lapproved, a.lcancelled, a.lvoid, a.lprintposted, a.cornumber, a.cremarks, a.cpaydesc, a.cpayrefno, b.cname, c.cacctdesc, c.nbalance From receipt a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join accounts c on a.compcode=c.compcode and a.cacctcode=c.cacctid where a.compcode='$company' and a.ctranno='$corno'");
+    	$sqlchk = mysqli_query($con,"Select a.cacctcode, a.ccode, a.namount, a.cpaymethod, a.cpaytype, DATE_FORMAT(a.dcutdate,'%m/%d/%Y') as dcutdate, a.namount, a.napplied, a.lapproved, a.lcancelled, a.lvoid, a.lprintposted, a.lnosiref, a.cornumber, a.cremarks, a.cpaydesc, a.cpayrefno, b.cname, c.cacctdesc, c.nbalance From receipt a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join accounts c on a.compcode=c.compcode and a.cacctcode=c.cacctid where a.compcode='$company' and a.ctranno='$corno'");
 if (mysqli_num_rows($sqlchk)!=0) {
 		while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
 			$nDebitDef = $row['cacctcode'];
@@ -119,189 +125,211 @@ if (mysqli_num_rows($sqlchk)!=0) {
 			$lCancelled = $row['lcancelled'];
 			$lPrintPost = $row['lprintposted'];
 			$lVoid = $row['lvoid'];
+
+			$lNoSIRef = $row['lnosiref'];
 		}
 
 ?>
-	<form action="OR_editsave2.php" name="frmOR" id="frmOR" method="post" enctype="multipart/form-data">
-		<fieldset>
-    	<legend>
-        <div class="col-xs-6 nopadding"> Receive Payment </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
-					<?php
-						if($lCancelled==1){
-							echo "<font color='#FF0000'><b>CANCELLED</b></font>";
-						}
-						
-						if($lPosted==1){
-							if($lVoid==1){
-								echo "<font color='#FF0000'><b>VOIDED</b></font>";
-							}else{
-								echo "<font color='#FF0000'><b>POSTED</b></font>";
+		<form action="OR_editsave2.php" name="frmOR" id="frmOR" method="post" enctype="multipart/form-data">
+			<fieldset>
+				<legend>
+					<div class="col-xs-6 nopadding"> Receive Payment </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
+						<?php
+							if($lCancelled==1){
+								echo "<font color='#FF0000'><b>CANCELLED</b></font>";
 							}
-						}
-					?>
-   			</div>
-  		</legend>	
+							
+							if($lPosted==1){
+								if($lVoid==1){
+									echo "<font color='#FF0000'><b>VOIDED</b></font>";
+								}else{
+									echo "<font color='#FF0000'><b>POSTED</b></font>";
+								}
+							}
+						?>
+					</div>
+				</legend>	
+
+					<ul class="nav nav-tabs">
+						<li class="active"><a href="#items" data-toggle="tab">Receive Payment Details</a></li>
+						<li><a href="#attc" data-toggle="tab">Attachments</a></li>
+					</ul>
+					
+					<div class="tab-content">
+						<div id="items" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
+
+							<table width="100%" border="0">
+								<tr>
+									<tH width="150px">Trans. No.:</tH>
+									<td style="padding:2px;">
+										<div class="col-xs-12 nopadding">
+											<div class="col-xs-5 nopadding">
+												<input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?=$corno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmOR');">
+											</div>
+										
+											<input type="hidden" name="hdnorigNo" id="hdnorigNo" value="<?=$corno;?>">
+										
+											<input type="hidden" name="hdnposted" id="hdnposted" value="<?=$lPosted;?>">
+											<input type="hidden" name="hdncancel" id="hdncancel" value="<?=$lCancelled;?>">
+											<input type="hidden" name="hdnprintpost" id="hdnprintpost" value="<?=$lPrintPost;?>">
+											<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?=$lVoid;?>">
+												&nbsp;
+										
+										<button type="button" class="btn btn-entry btn-sm" id="btnentry">
+											<i class="fa fa-bar-chart" aria-hidden="true"></i>
+										</button>
+									</td>
+									<td colspan="2" style="padding:2px;">
+										<div id="statmsgz" style="display:inline"></div>
+										</div>						
+									</td>
+								</tr>
+								<tr>
+									<tH width="150">Reference:</tH>
+									<td style="padding:2px;">
+										<div class="col-xs-12 nopadding">
+												<div class="col-xs-5 nopadding">
+
+													<select id="isNoRef" name="isNoRef" class="form-control input-sm selectpicker" onchange="changeDet();">
+														<option value="0" <?=($lNoSIRef==0) ? "selected" : ""?>>With Sales Invoice</option>
+														<option value="1" <?=($lNoSIRef==1) ? "selected" : ""?>>No Sales Invoice Reference</option>
+													</select> 
+												</div>
+											</div>
+									</td>
+									<tH>&nbsp;</tH>
+									<td style="padding:2px;">&nbsp;</td>
+								</tr>
+								<tr>
+									<tH width="150px">Payor:</tH>
+									<td valign="top" style="padding:2px">
+										<div class="col-xs-12 nopadding">
+											<div class="col-xs-3 nopadding">
+												<input type="text" class="typeahead form-control input-sm" id="txtcustid" name="txtcustid" readonly value="<?=$cCode ;?>">
+											</div>  
+											<div class="col-xs-7 nopadwleft">
+												<input type="text" class="typeahead form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="2" placeholder="Search Customer Name..." required autocomplete="off" value="<?=$cName ;?>"  />
+										</div> 
+									</div>    
+									</td>
+									<th style="padding:2px">Receipt No.:</th>
+									<td valign="top" style="padding:2px"><div class="col-xs-12 nopadding">
+										<div class="col-xs-8 nopadding">
+										<input type="text" class="form-control input-sm" id="txtORNo" name="txtORNo" width="20px" required value="<?=$cORNo;?>">
+									</div>
+								</tr>
+								<tr>
+									<tH width="150px">Payment Method:</tH>
+									<td style="padding:2px">
+										<div class="col-xs-12 nopadding">
+											<div class="col-xs-6 nopadding">
+												<select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
+													<option value="cash" <?php if($cPayMeth=="cash") { echo "selected"; } ?>>Cash</option>
+													<option value="cheque" <?php if($cPayMeth=="cheque") { echo "selected"; } ?>>Cheque</option>
+													<option value="bank transfer" <?php if($cPayMeth=="bank transfer") { echo "selected"; } ?>>Bank Transfer</option>
+													<option value="mobile payment" <?php if($cPayMeth=="mobile payment") { echo "selected"; } ?>>Mobile Payment</option>
+													<option value="credit card" <?php if($cPayMeth=="credit card") { echo "selected"; } ?>>Credit Card</option>
+													<option value="debit card" <?php if($cPayMeth=="debit card") { echo "selected"; } ?>>Debit Card</option>
+												</select>
+											</div>								
+											<div class="col-xs-4 nopadwleft">
+												<button type="button" class="btn btn-primary btn-sm" tabindex="6" style="width:100%" name="btnDet" id="btnDet">Details</button>
+											</div>
+										</div>															
+									</td>
+									<tH width="150">Date:</tH>
+									<td style="padding:2px;">
+										<div class="col-xs-8 nopadding">
+											<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?=date_format(date_create($dDate),'m/d/Y'); ?>" />
+										</div>
+									</td>								
+								</tr>
+								<tr>
+									<tH width="150px">
+										Deposit To Account    
+									</tH>
+									<td style="padding:2px;" width="500">
+										<div class="col-xs-12 nopadding">
+											<div class="col-xs-3 nopadding">
+												<input type="text" class="form-control input-sm" id="txtcacctid" name="txtcacctid" readonly  value="<?=$nDebitDef;?>">
+											</div>
+											<div class="col-xs-7 nopadwleft">
+												<input type="text" class="form-control input-sm" id="txtcacct" name="txtcacct" width="20px" tabindex="1" placeholder="Search Account Description..." required value="<?=$nDebitDesc;?>">
+											</div> 
+											
+										</div>     
+									</td>
+									<tH style="padding:2px">Amount Received:</tH>
+									<td valign="top" style="padding:2px">
+										<?php 
+											if($cPayMeth=="Cheque") 
+											{ 
+												$vargrossstat = "readonly"; 
+											} else{
+												$vargrossstat = "";
+											}
+										?>
+										<div class="col-xs-8 nopadding">
+											<input type="text" id="txtnGross" name="txtnGross" class="numericchkamt form-control text-right" value="<?=$nAmount;?>" <?=$vargrossstat; ?> autocomplete="off" onKeyUp="computeGross();" required>
+										</div></td>
+								</tr>								
+								<tr>
+									<tH width="150px" rowspan="2">Memo:</tH>
+									<td rowspan="2" valign="top" style="padding:2px">
+										<div class="col-xs-12 nopadding">
+											<div class="col-xs-10 nopadding">
+												<textarea class="form-control" rows="2" id="txtremarks" name="txtremarks"><?=$cRemarks;?></textarea>
+											</div>
+										</div>
+									</td>
+									<th style="padding:2px">Amount Applied:</th>
+									<td style="padding:2px">
+										<div class="col-xs-8 nopadding">
+											<input type="text" id="txtnApplied" name="txtnApplied" class="numericchkamt form-control" value="<?=$nApplied;?>" style="text-align:right" readonly>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th style="padding:2px">Out of Balance:</th>
+									<td style="padding:2px">
+										<div class="col-xs-8 nopadding">
+											<input type="text" id="txtnOutBal" name="txtnOutBal" class="numericchkamt form-control input-sm" value="0.00" style="text-align:right;" autocomplete="off" readonly>
+										</div>
+									</td>
+								</tr>
+							</table>
+
+						</div>	
+
+						<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
+
+							<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+							<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+							<input type="file" name="upload[]" id="file-0" multiple />
+
+						</div>
+					</div>
+
+					<hr>
+					<div class="col-xs-12 nopadwdown"><b>Details</b></div>
 
 				<ul class="nav nav-tabs">
-					<li class="active"><a href="#items" data-toggle="tab">Receive Payment Details</a></li>
-					<li><a href="#attc" data-toggle="tab">Attachments</a></li>
+					<li <?=($lNoSIRef==0) ? "class='active'" : ""?> id="liSales"><a href="#divSales">Sales Invoice</a></li>
+					<li <?=($lNoSIRef==1) ? "class='active'" : ""?> id="liOthers"><a href="#divOthers">Others</a></li>
 				</ul>
-				
-				<div class="tab-content">
-					<div id="items" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
 
-						<table width="100%" border="0">
-							<tr>
-								<tH>Trans. No.:</tH>
-								<td style="padding:2px;">
-									<div class="col-xs-12 nopadding">
-										<div class="col-xs-5 nopadding">
-											<input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?=$corno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmOR');">
-										</div>
-									
-										<input type="hidden" name="hdnorigNo" id="hdnorigNo" value="<?=$corno;?>">
-									
-										<input type="hidden" name="hdnposted" id="hdnposted" value="<?=$lPosted;?>">
-										<input type="hidden" name="hdncancel" id="hdncancel" value="<?=$lCancelled;?>">
-										<input type="hidden" name="hdnprintpost" id="hdnprintpost" value="<?=$lPrintPost;?>">
-										<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?=$lVoid;?>">
-											&nbsp;
-									
-									<button type="button" class="btn btn-entry btn-sm" id="btnentry">
-										<i class="fa fa-bar-chart" aria-hidden="true"></i>
-									</button>
-								</td>
-								<td colspan="2" style="padding:2px;">
-									<div id="statmsgz" style="display:inline"></div>
-									</div>						
-								</td>
-							</tr>
-							<tr>
-								<tH width="210">
-									Deposit To Account    
-								</tH>
-								<td style="padding:2px;" width="500">
-									<div class="col-xs-12 nopadding">
-										<div class="col-xs-6 nopadding">
-											<input type="text" class="form-control input-sm" id="txtcacct" name="txtcacct" width="20px" tabindex="1" placeholder="Search Account Description..." required value="<?=$nDebitDesc;?>">
-										</div> 
-										<div class="col-xs-6 nopadding">
-											<input type="text" id="txtcacctid" name="txtcacctid" style="border:none; height:30px;" readonly  value="<?=$nDebitDef;?>">
-										</div>
-									</div>     
-								</td>
-								<tH width="150">Date:</tH>
-								<td style="padding:2px;">
-									<div class="col-xs-8 nopadding">
-									<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?=date_format(date_create($dDate),'m/d/Y'); ?>" />
-								</div>
-								</td>
-							</tr>
-							<tr>
-								<tH>&nbsp;</tH>
-								<td style="padding:2px;">&nbsp;</td>
-								<tH>&nbsp;</tH>
-								<td style="padding:2px;">&nbsp;</td>
-							</tr>
-							<tr>
-								<tH width="210" valign="top">Payor:</tH>
-								<td valign="top" style="padding:2px">
-								<div class="col-xs-12 nopadding">
-										<div class="col-xs-6 nopadding">
-											<input type="text" class="typeahead form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="2" placeholder="Search Customer Name..." required autocomplete="off" value="<?=$cName ;?>"  />
-								</div> 
-								<div class="col-xs-3 nopadwleft">
-											<input type="text" id="txtcustid" name="txtcustid" style="border:none; height:30px;" readonly value="<?=$cCode ;?>">
-										</div>
-								</div>        
-								</td>
-								<th valign="top" style="padding:2px">Receipt No.:</th>
-								<td valign="top" style="padding:2px"><div class="col-xs-12 nopadding">
-									<div class="col-xs-8 nopadding">
-									<input type="text" class="form-control input-sm" id="txtORNo" name="txtORNo" width="20px" required value="<?=$cORNo;?>">
-								</div>
-							</tr>
-							<tr>
-								<tH width="210" valign="top">Payment Method:</tH>
-								<td valign="top" style="padding:2px">
-								<div class="col-xs-12 nopadding">
-								<div class="col-xs-6 nopadding">
-									<select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
-											<option value="cash" <?php if($cPayMeth=="cash") { echo "selected"; } ?>>Cash</option>
-											<option value="cheque" <?php if($cPayMeth=="cheque") { echo "selected"; } ?>>Cheque</option>
-											<option value="bank transfer" <?php if($cPayMeth=="bank transfer") { echo "selected"; } ?>>Bank Transfer</option>
-											<option value="mobile payment" <?php if($cPayMeth=="mobile payment") { echo "selected"; } ?>>Mobile Payment</option>
-											<option value="credit card" <?php if($cPayMeth=="credit card") { echo "selected"; } ?>>Credit Card</option>
-											<option value="debit card" <?php if($cPayMeth=="debit card") { echo "selected"; } ?>>Debit Card</option>
-										</select>
-								</div>
-								
-								<div class="col-xs-4 nopadwleft">
-									<button type="button" class="btn btn-primary btn-sm" tabindex="6" style="width:100%" name="btnDet" id="btnDet">Details</button>
-								</div>
-								</div>
-								
-								
-								</td>
-								<tH style="padding:2px">Amount Received:</tH>
-								<td valign="top" style="padding:2px">
-									<?php 
-										if($cPayMeth=="Cheque") 
-										{ 
-											$vargrossstat = "readonly"; 
-										} else{
-											$vargrossstat = "";
-										}
-									?>
-									<div class="col-xs-8 nopadding">
-										<input type="text" id="txtnGross" name="txtnGross" class="numericchkamt form-control text-right" value="<?=$nAmount;?>" <?=$vargrossstat; ?> autocomplete="off" onKeyUp="computeGross();" required>
-									</div></td>
-							</tr>
-							<tr>
-								<tH width="210" rowspan="2" valign="top">Memo:</tH>
+				<div class="tab-content">    
 
-								<td rowspan="2" valign="top" style="padding:2px">
-								<div class="col-xs-12 nopadding">
-									<div class="col-xs-10 nopadding">
-										<textarea class="form-control" rows="1" id="txtremarks" name="txtremarks"><?=$cRemarks;?></textarea>
-									</div>
-								</div>
-								</td>
-								<th valign="top" style="padding:2px">Amount Applied:</th>
-								<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
-									<input type="text" id="txtnApplied" name="txtnApplied" class="numericchkamt form-control" value="<?=$nApplied;?>" style="text-align:right" readonly>
-								</div></td>
-							</tr>
-							<tr>
-								<th valign="top" style="padding:2px">Out of Balance:</th>
-								<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
-									<input type="text" id="txtnOutBal" name="txtnOutBal" class="numericchkamt form-control input-sm" value="0.00" style="text-align:right;" autocomplete="off" readonly>
-								</div></td>
-							</tr>
-						</table>
+        	<div id="divSales" class="tab-pane fade <?=($lNoSIRef==0) ? "in active" : ""?>" style="padding-top: 5px !important; padding-bottom: 5px">
+						
+						<div id="tableContainer" class="alt2" dir="ltr" style="
+							margin: 0px;
+							padding: 3px;
+							border: 1px solid #919b9c;
+							height: 400px;
+							text-align: left; overflow: auto">
 
-					</div>	
-
-					<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
-
-						<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-						<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
-						<input type="file" name="upload[]" id="file-0" multiple />
-
-					</div>
-				</div>
-
-				<hr>
-				<div class="col-xs-12 nopadwdown"><b>Details</b></div>
-
-						<div style="border: 1px solid #919b9c; height: 40vh; overflow: auto">
-							<div id="tableContainer" class="alt2" dir="ltr" style="
-								margin: 0px;
-								padding: 3px;
-								width: 2200px;
-								height: 300px;
-								text-align: left;">
-                <table id="MyTable" border="1" bordercolor="#CCCCCC" class="table table-sm">
+								<table id="MyTable" border="1" bordercolor="#CCCCCC" width="2350px" class="tblnorm">
 									<thead>
 										<tr>
 											<th scope="col" width="100px" nowrap>Invoice No</th>
@@ -318,7 +346,8 @@ if (mysqli_num_rows($sqlchk)!=0) {
 											<th scope="col" width="100px" class="text-center" nowrap>Total EWT</th>
 											<th scope="col" width="150px" class="text-center" nowrap>Total Due</th>
 											<th scope="col" width="150px" class="text-center" nowrap>Amt Applied</th>
-											<th scope="col" width="250px" nowrap>&nbsp;Credit Acct</th>
+											<th scope="col" width="80px" nowrap>&nbsp;Credit Acct Code</th>
+											<th scope="col" width="250px" nowrap>&nbsp;Credit Acct Title</th>
 											<th scope="col">&nbsp;</th>
 										</tr>
 									</thead>
@@ -404,7 +433,9 @@ if (mysqli_num_rows($sqlchk)!=0) {
                             
                             <td><input type='text' class='numericchkamt form-control input-xs' name='txtApplied' id='txtApplied<?=$cntr;?>' value="<?=$rowbody['napplied'];?>" style="text-align:right" autocomplete="off" /></div></td>
                              
-                            <td><div class='col-xs-12 nopadding'><input type='text' name='txtcSalesAcctTitle' id='txtcSalesAcctTitle<?=$cntr;?>' value='<?=$rowbody['cacctdesc'];?>' class='form-control input-xs' /> <input type='hidden' name='txtcSalesAcctNo' id='txtcSalesAcctNo<?=$cntr;?>' value='<?=$rowbody['cacctno'];?>' /></td>
+														<td><div class='col-xs-12 nopadding'><input type='text' name='txtcSalesAcctNo' id='txtcSalesAcctNo<?=$cntr;?>' value='<?=$rowbody['cacctno'];?>' class='form-control input-xs' readonly/></td>
+
+                            <td><div class='col-xs-12 nopadding'><input type='text' name='txtcSalesAcctTitle' id='txtcSalesAcctTitle<?=$cntr;?>' value='<?=$rowbody['cacctdesc'];?>' class='form-control input-xs' /></td>
 
                             <td><div class='col-xs-12 nopadwleft'><input class='btn btn-danger btn-xs' type='button' name='row_delete' id='row_<?=$cntr;?>_delete' value='delete'/></div></td>
                           </tr>
@@ -424,37 +455,6 @@ if (mysqli_num_rows($sqlchk)!=0) {
 															computeGross();
 														});
 
-
-														$("#txtcSalesAcctTitle<?=$cntr;?>").typeahead({
-													
-															items: 10,
-															source: function(request, response) {
-																$.ajax({
-																	url: "../th_accounts.php",
-																	dataType: "json",
-																	data: {
-																		query: $("#txtcSalesAcctTitle<?=$cntr;?>").val()
-																	},
-																	success: function (data) {
-																		response(data);
-																		
-																	}
-																});
-															},
-															autoSelect: true,
-															displayText: function (item) {
-																return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.name + "</small></div>";
-															},
-															highlighter: Object,
-															afterSelect: function(item, event) { 
-																$("#txtcSalesAcctTitle<?=$cntr;?>").val(item.name).change(); 
-																$("#txtcSalesAcctNo<?=$cntr;?>").val(item.id);
-																
-																setPosi("txtcSalesAcctTitle<?=$cntr;?>",13,'MyTable');
-																
-															}
-														});
-
 														$("#txtcSalesAcctTitle<?=$cntr;?>").on("click focus", function(event) {
 															$(this).select();
 														});
@@ -466,58 +466,131 @@ if (mysqli_num_rows($sqlchk)!=0) {
 												?>
            				</tbody>
             		</table>
-            		<input type="hidden" name="hdnrowcnt" id="hdnrowcnt" value="0">
-								<input type="hidden" name="hdnrowcntcmdm" id="hdnrowcntcmdm" value="0">
-							</div>
+
+            	<input type="hidden" name="hdnrowcnt" id="hdnrowcnt" value="0">
+							<input type="hidden" name="hdnrowcntcmdm" id="hdnrowcntcmdm" value="0">
 						</div>
-
-
-
-<!--
-		</div>
-
-	</div>
-</div>
-																	-->
-
-																	<br>
-<table width="100%" border="0" cellpadding="3">
-  <tr>
-    <td width="50%">
-			<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='OR.php';" id="btnMain" name="btnMain">
-			Back to Main<br>(ESC)</button>
-				
-					<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='OR_new2.php';" id="btnNew" name="btnNew">
-			New<br>(F1)</button>
-
-						<div class="dropdown" style="display:inline-block !important;">
-							<button type="button" data-toggle="dropdown" class="btn btn-info btn-sm dropdown-toggle">
-								SI <br>(Insert) <span class="caret"></span>
+					</div>
+        
+					<div id="divOthers" class="tab-pane fade <?=($lNoSIRef==1) ? "in active" : ""?>">
+						<div class="col-xs-12" style="padding-top: 5px !important; padding-bottom: 5px !important; padding-left: 0px !important;">
+							<button type="button" class="btn btn-xs btn-info" id="btnaddOthers" onClick="addacct();">
+								<i class="fa fa-plus"></i>&nbsp; Add New Line
 							</button>
-							<ul class="dropdown-menu">
-								<li><a href="javascript:;" onClick="getInvs('Trade');">Trade</a></li>
-								<li><a href="javascript:;" onClick="getInvs('Non-Trade');">Non-Trade</a></li>
-							</ul>
 						</div>
 
-					<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmOR');" id="btnUndo" name="btnUndo">
-						Undo Edit<br>(CTRL+Z)
-					</button>
+						<div id="tblOtContainer" class="alt2" dir="ltr" style="
+							margin: 0px;
+							padding: 3px;
+							border: 1px solid #919b9c;
+							width: 100%;
+							height: 400px;
+							text-align: left;
+							overflow: auto">
 
-					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?=$corno;?>');" id="btnPrint" name="btnPrint">
-			Print<br>(CTRL+P)
-					</button>
-					
-					<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
-			Edit<br>(CTRL+E)    </button>
-					
-					<button type="button" class="btn btn-success btn-sm" tabindex="6" id="btnSave" name="btnSave" onclick="chkform();">
-			Save<br>(CTRL+S)    </button>
+							<table width="100%" border="0" cellpadding="3" id="MyTblOthers">
+								<thead>
+									<tr>
+										<th scope="col">Account No.</th>
+										<th scope="col">Account Title</th>
+										<th scope="col">Debit</th>
+										<th scope="col">Credit</th>
+										<th scope="col">&nbsp;</th>
+									</tr>
+								</thead>
+								<tbody>           
+                	<?php
 
-		</td>
-    <td align="right">&nbsp;</td>
-  </tr>
-</table>
+                    $sqlbody = mysqli_query($con,"select a.* from receipt_others_t a where a.compcode='$company' and a.ctranno = '$corno' order by a.nidentity");
+            
+                    if (mysqli_num_rows($sqlbody)!=0) {
+                      $cntr = 0;
+                       while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
+                        $cntr = $cntr + 1;
+                	?>
+										<tr>
+											<td width="150px"> 
+												<input type='text' name="txtacctitleID<?=$cntr?>" id="txtacctitleID<?=$cntr?>" class="form-control input-xs" placeholder="Enter Acct Code..." readonly value="<?=$rowbody['cacctno'];?>"> 										
+											</td>
+											<td> 
+												<input type='text' name="txtacctitle<?=$cntr?>" id="txtacctitle<?=$cntr?>" class="accountsname form-control input-xs" placeholder="Search Acct Desc..." autocomplete="off" data-nme="txtacctitle" value="<?=$rowbody['ctitle'];?>">
+											</td>
+											<td width="100px"> 
+												<input type='text' name="txtnotDR<?=$cntr?>" id="txtnotDR<?=$cntr?>" class="numericNO form-control input-xs" style="text-align:right" required autocomplete="off" value="<?=$rowbody['ndebit'];?>">
+											</td>
+											<td width="100px"> 
+												<input type='text' name="txtnotCR<?=$cntr?>" id="txtnotCR<?=$cntr?>" class="numericNO form-control input-xs" style="text-align:right" required autocomplete="off" value="<?=$rowbody['ncredit'];?>">
+											</td>
+											<td width="50px">
+												<input class='btn btn-danger btn-xs' type='button' id='row3_<?=$cntr?>_delete' value='delete' onClick="deleteRow3(this);"/>
+											</td>
+										</tr>
+
+										<script>
+											$("input.numericNO").autoNumeric('init',{mDec:2});
+											$("input.numericNO").on("click focus", function () {
+												$(this).select();
+											});
+																					
+											$("input.numericNO").on("keyup", function (e) {
+												setPosi($(this).attr('name'),e.keyCode,'MyTblOthers');
+												computeGrossOthers();
+											});
+																		
+											$("#txtacctitleID<?=$cntr?>, #txtacctitle<?=$cntr?>").on("click focus", function(event) {
+												$(this).select();
+											});
+										</script>
+									<?php
+											 }
+										}
+									?>
+								</tbody>			
+							</table>
+							<input type="hidden" name="hdnOthcnt" id="hdnOthcnt" value="0">
+						</div>
+					</div>
+			 </div>
+
+
+			<br>
+			<table width="100%" border="0" cellpadding="3">
+				<tr>
+					<td width="50%">
+						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='OR.php';" id="btnMain" name="btnMain">
+						Back to Main<br>(ESC)</button>
+							
+								<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='OR_new2.php';" id="btnNew" name="btnNew">
+						New<br>(F1)</button>
+
+									<div class="dropdown" style="display:inline-block !important;">
+										<button type="button" data-toggle="dropdown" class="btn btn-info btn-sm dropdown-toggle">
+											SI <br>(Insert) <span class="caret"></span>
+										</button>
+										<ul class="dropdown-menu">
+											<li><a href="javascript:;" onClick="getInvs('Trade');">Trade</a></li>
+											<li><a href="javascript:;" onClick="getInvs('Non-Trade');">Non-Trade</a></li>
+										</ul>
+									</div>
+
+								<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmOR');" id="btnUndo" name="btnUndo">
+									Undo Edit<br>(CTRL+Z)
+								</button>
+
+								<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?=$corno;?>');" id="btnPrint" name="btnPrint">
+						Print<br>(CTRL+P)
+								</button>
+								
+								<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
+						Edit<br>(CTRL+E)    </button>
+								
+								<button type="button" class="btn btn-success btn-sm" tabindex="6" id="btnSave" name="btnSave" onclick="chkform();">
+						Save<br>(CTRL+S)    </button>
+
+					</td>
+					<td align="right">&nbsp;</td>
+				</tr>
+			</table>
 
     </fieldset>
 
@@ -1130,22 +1203,19 @@ else{
 			computeGross();
 		});
 		
-		
-
-	$('#frmOR').on('keyup keypress', function(e) {
-	  var keyCode = e.keyCode || e.which;
-	  if (keyCode === 13) { 
-		e.preventDefault();
-		return false;
-	  }
-	});           
+		$('#frmOR').on('keyup keypress', function(e) {
+			var keyCode = e.keyCode || e.which;
+			if (keyCode === 13) { 
+			e.preventDefault();
+			return false;
+			}
+		});           
            // Bootstrap DateTimePicker v4
-           $('#datetimepicker4, #txtChekDate, #date_delivery').datetimepicker({
-                 format: 'MM/DD/YYYY'
-           });
-
+    $('#datetimepicker4, #txtChekDate, #date_delivery').datetimepicker({
+      format: 'MM/DD/YYYY'
+    });
 											
-	$('.numericint').keydown(function (e) {
+		$('.numericint').keydown(function (e) {
 		
         if (e.which == 39) { // right arrow
           $(this).closest('td').next().find('input').focus();
@@ -1159,892 +1229,971 @@ else{
         } else if (e.which == 38) { // up arrow
           $(this).closest('tr').prev().find('td:eq(' + $(this).closest('td').index() + ')').find('input').focus();
         }
-	});
+		});
 	
-	$('.numericint').keyup(function (e) {
-		
-			var str = $(this).attr('name');
-			var res = str.substring(0, 8);
-			var valz = str.substring(8);
+		$('.numericint').keyup(function (e) {
 			
-			if(valz=="025"){
-				var val2=0.25;
-			}
-			else if(valz=="010"){
-				var val2=0.10;
-			}
-			else if(valz=="005"){
-				var val2=0.05;
-			}
-			else{
-				var val2 = valz;
-			}
-			
-			var value = $(this).val();
-			if(res=="txtDenom"){
+				var str = $(this).attr('name');
+				var res = str.substring(0, 8);
+				var valz = str.substring(8);
 				
-				var x = parseFloat(val2) * parseFloat(value);	
-				//alert("#txtAmt"+valz+" = "+x);	
-				if(value!=""){		
-					$("#txtAmt"+valz).val(x.toFixed(2));
+				if(valz=="025"){
+					var val2=0.25;
+				}
+				else if(valz=="010"){
+					var val2=0.10;
+				}
+				else if(valz=="005"){
+					var val2=0.05;
 				}
 				else{
-					$("#txtAmt"+valz).val("");
+					var val2 = valz;
 				}
 				
-			}
-
-	});
-	
-	$("#txtCheckAmt").on('keyup', function() {
-		if($("#selpaytype").val() == "None"){
-			$('#txtnGross').val($(this).val());
-		}
-	});
-
-	
-	$('#txtcacct').typeahead({
-	
-		source: function (query, process) {
-			return $.getJSON(
-				'../th_accounts.php',
-				{ query: query },
-				function (data) {
-					newData = [];
-					map = {};
+				var value = $(this).val();
+				if(res=="txtDenom"){
 					
-					$.each(data, function(i, object) {
-						map[object.name] = object;
-						newData.push(object.name);
-					});
+					var x = parseFloat(val2) * parseFloat(value);	
+					//alert("#txtAmt"+valz+" = "+x);	
+					if(value!=""){		
+						$("#txtAmt"+valz).val(x.toFixed(2));
+					}
+					else{
+						$("#txtAmt"+valz).val("");
+					}
 					
-					process(newData);
-				});
-		},
-		updater: function (item) {	
-				
-				$('#txtcacctid').val(map[item].id);
-				$('#txtacctbal').val(map[item].balance);
-				return item;
-		}
-	
-	});
-		
-	$('#txtcust').typeahead({
-	
-		items: 10,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_customer.php",
-				dataType: "json",
-				data: {
-					query: $("#txtcust").val()
-				},
-				success: function (data) {
-					response(data);
 				}
-			});
-		},
-		autoSelect: true,
-		displayText: function (item) {
-			 return '<div style="border-top:1px solid gray; width: 300px"><span>'+ item.id + '</span><br><small>' + item.value + "</small></div>";
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 
-			$('#txtcust').val(item.value).change(); 
-			$("#txtcustid").val(item.id);
-		}
-	});
-	
-	$("#txtcust").on('blur', function() {
-		if($('#txtcustid').val() != "" && $('#txtcustid').val() != ""){
-			$('#txtcust').attr('readonly', true);
-		}
-	}); 
-	
-	$("#selpayment").on("change", function(){
-		$('#txtnGross').val('0.00');
-		
-		 if ($(this).val() == "Cheque"){
-			$('#txtnGross').attr('readonly', true);
-		 }
-		 else{
-			$('#txtnGross').attr('readonly', false);
-		 }
 
-
-		var valz = $(this).val();
-		var codez = "";
+		});
 		
-		if(valz=="Cash"){
-			codez = "ORDEBCASH";
-		}
-		else if(valz=="Cheque"){
-			codez = "ORDEBCHK";
-		}
-		//alert(valz);
-		
-		 $.ajax ({
-			url: "../th_parameter.php",
-			data: { id: codez },
-			async: false,
-			dataType: "json",
-			success: function( data ) {
-											
-				console.log(data);
-				$.each(data,function(index,item){
-
-					$('#txtcacct').val(item.name);
-					$('#txtcacctid').val(item.id);
-					$('#txtacctbal').val(item.balance);
-				});
-						
-											 
+		$("#txtCheckAmt").on('keyup', function() {
+			if($("#selpaytype").val() == "None"){
+				$('#txtnGross').val($(this).val());
 			}
 		});
 
-	});
-	
-	$("#btnDet").on('click', function() {
-		if($('#selpayment').val() == "cash"){
-			$('#CashModal').modal('show');
-		}else if($('#selpayment').val() == "cheque"){
-			$('#ChequeModal').modal('show');
-		}else{
-			$('#OthersModal').modal('show');
-		}
-	});
-
-  $("#allbox").click(function () {
-        if ($("#allbox").is(':checked')) {
-            $("input[name='chkSales[]']").each(function () {
-                $(this).prop("checked", true);
-            });
-
-        } else {
-            $("input[name='chkSales[]']").each(function () {
-                $(this).prop("checked", false);
-            });
-        }
-  });
-
-	$("#btnVoid").on("click", function(){
-		var rems = prompt("Please enter your reason...", "");
-		if (rems == null || rems == "") {
-			alert("No remarks entered!\nCheque cannot be void!");
-		}
-		else{
-			//alert( "id="+ $("#txtBankName").val()+"&chkno="+ $("#txtCheckNo").val()+"&rem="+ rems);
-					$.ajax ({
-					url: "OR_voidorno.php",
-					data: { orno: $("#txtORNo").val(), rem: rems },
-					async: false,
-					success: function( data ) {
-						if(data.trim()!="False"){
-							$("#txtORNo").val(data.trim());
-							$("#btnVoid").attr("disabled", false);
-						}
-					}
-					});
-
-		}
-	});
-
-	$("#btnaddcm").on("click", function(){			
-
-		var xsino = $("#txtdetsinoinfo").val();
-		var xadjtype = $("#txthdnTYPAdj").val();
-
-		AddRefAdj(xadjtype,xsino,"","","","");
+		$('#txtcacct').typeahead({
 		
-	});
-
-	$("#btnentry").on("click", function(){		
-		$("#modGLEntry").modal("show");
-	});
-	
-	
-	disabled();
-
-});
-
-function chkform(){
-
-	var subz = "YES";
-
-	if($('#txtcustid').val() == "" || $('#txtcustid').val() == ""){
-		alert("You Need a Valid Customer.");
-		subz = "NO";
-	}
-
-
-	if($('#txtnGross').val() == "" || $('#txtnGross').val() == 0){
-		alert("Zero or Blank AMOUNT RECEIVED is not allowed!");
-		subz = "NO";
-	}
-
-
-	if($('#txtORNo').val() == ""){
-		alert("Please input your OR NUMBER!");
-		subz = "NO";
-	}
-		
-	if($('#selpayment').val() !== "cheque" && $('#selpayment').val() !== "cash"){
-		if($('#txtOTRefNo').val() == ""){
-			alert("Reference number required for this payment method!");
-			subz = "NO";
-		}
-	}
-
-	if($('#selpayment').val() == "cheque"){
-		if($('#txtBankName').val() == "" || $('#txtChekDate').val() == "" || $('#txtCheckNo').val() == "" || $('#txtCheckAmt').val() == ""){
-			alert("Please complete your cheque details!");
-			subz = "NO";
-		}
-	}
-
-	var lastRow1 = 0; 
-	var lastRow2 = 0;
-	
-	var tbl1 = document.getElementById('MyTable').getElementsByTagName('tr');
-	lastRow1 = tbl1.length-1;
-
-	var tbl2 = document.getElementById('MyTableCMx').getElementsByTagName('tr');
-	lastRow2 = tbl2.length-1;
-	$("#hdnrowcntcmdm").val(lastRow2);
-			
-	if(lastRow1!=0){
-		$("#hdnrowcnt").val(lastRow1);				
-	}
-			
-
-	if(lastRow1==0){
-		alert("Details Required!");
-		subz = "NO";
-	}
-
-	//if( parseFloat($('#txtnOutBal').val()) != parseFloat($('#txtnApplied').val()) ){
-	if( parseFloat($('#txtnGross').val().replace(/,/g,'')) != parseFloat($('#txtnApplied').val().replace(/,/g,'')) ){
-		alert("Unbalanced Transaction!");
-		subz = "NO";
-	}
-
-	if(subz=="NO"){
-		return false;
-	}
-	else{
-		if($('#selpayment').val() == "Cheque"){
-			//$('#txtCheckAmt').val($('#txtCheckAmt').maskMoney('unmasked')[0]);
-		}
-
-			var tx2 = 0;
-			$("#MyTableCMx > tbody > tr").each(function(index) {   
-				tx2 = index+1;
-				$(this).find('input[name="hdnctypeadj"]').attr("name","hdnctypeadj"+tx2);
-				$(this).find('input[type=hidden][name="hdndetsino"]').attr("name","hdndetsino"+tx2);					
-				$(this).find('input[type=hidden][name="hdnisgiven"]').attr("name","hdnisgiven"+tx2);
-				$(this).find('input[name="txtapcmdm"]').attr("name","txtapcmdm" + tx2);
-				$(this).find('input[name="txtapdte"]').attr("name","txtapdte" + tx2);
-				$(this).find('input[name="txtapamt"]').attr("name","txtapamt" + tx2);
-				$(this).find('input[name="txtremz"]').attr("name","txtremz" + tx2);
-			});
-		
-				tx2 = 0;
-				$("#MyTable > tbody > tr").each(function(index) {   
-					tx2 = index+1;
-
-					$(this).find('input[type=hidden][name="txtcSalesNo"]').attr("name","txtcSalesNo"+tx2);
-					$(this).find('input[type=hidden][name="txtcSalesNo"]').attr("id","txtcSalesNo"+tx2);
-
-					$(this).find('input[name="txtSIGross"]').attr("name","txtSIGross"+tx2);
-					$(this).find('input[name="txtSIGross"]').attr("id","txtSIGross"+tx2);
-
-					$(this).find('input[name="txtndebit"]').attr("name","txtndebit"+tx2);
-					$(this).find('input[name="txtndebit"]').attr("id","txtndebit"+tx2);
-
-					$(this).find('input[name="txtncredit"]').attr("name","txtncredit"+tx2);
-					$(this).find('input[name="txtncredit"]').attr("id","txtncredit"+tx2);
-
-					$(this).find('input[name="txtnpayments"]').attr("name","txtnpayments"+tx2);
-					$(this).find('input[name="txtnpayments"]').attr("id","txtnpayments"+tx2);
-
-					$(this).find('input[name="txtnvatcode"]').attr("name","txtnvatcode"+tx2);
-					$(this).find('input[name="txtnvatcode"]').attr("id","txtnvatcode"+tx2);
-
-					$(this).find('input[type=hidden][name="txtnvatrate"]').attr("name","txtnvatrate"+tx2);					
-					$(this).find('input[type=hidden][name="txtnvatrate"]').attr("id","txtnvatrate"+tx2);
-
-					$(this).find('input[type=hidden][name="txtnvatcodeorig"]').attr("name","txtnvatcodeorig" + tx2);
-					$(this).find('input[type=hidden][name="txtnvatcodeorig"]').attr("id","txtnvatcodeorig" + tx2);
-
-					$(this).find('input[name="txtvatamt"]').attr("name","txtvatamt" + tx2);
-					$(this).find('input[name="txtvatamt"]').attr("id","txtvatamt" + tx2);
-
-					$(this).find('input[name="txtvatamt"]').attr("name","txtvatamt" + tx2);
-					$(this).find('input[name="txtvatamt"]').attr("id","txtvatamt" + tx2);
-
-					$(this).find('input[name="txtnetvat"]').attr("name","txtnetvat" + tx2);
-					$(this).find('input[name="txtnetvat"]').attr("id","txtnetvat" + tx2);
-
-					$(this).find('select[name="txtnetvat"]').attr("name","txtnetvat" + tx2);
-					$(this).find('select[name="txtnetvat"]').attr("id","txtnetvat" + tx2);
-
-					$(this).find('select[name="txtnEWT[]"]').attr("name","txtnEWT" + tx2 + "[]");
-					$(this).find('select[name="txtnEWT"]').attr("id","txtnEWT" + tx2);
-
-						//getrate of selected
-						var xcb = "";
-						var cnt = 0;
-						$("#txtnEWT"+ tx2 + " > option:selected").each(function() {
-							//	alert($(this).data("rate"));
-							cnt++;
-							if(cnt>1){
-								xcb = xcb + ";" + $(this).data("rate");
-							}else{
-								xcb = xcb + $(this).data("rate");
-							}
+			source: function (query, process) {
+				return $.getJSON(
+					'../th_accounts.php',
+					{ query: query },
+					function (data) {
+						newData = [];
+						map = {};
+						
+						$.each(data, function(i, object) {
+							map[object.name] = object;
+							newData.push(object.name);
 						});
-
-					$(this).find('input[type=hidden][name="hdnewtgiven"]').attr("name","hdnewtgiven" + tx2);
-					$(this).find('input[type=hidden][name="hdnewtgiven"]').attr("id","hdnewtgiven" + tx2);
-
-					$(this).find('input[type=hidden][name="txtnEWTorig"]').attr("name","txtnEWTorig" + tx2);
-					$(this).find('input[type=hidden][name="txtnEWTorig"]').attr("id","txtnEWTorig" + tx2);
-
-					$(this).find('input[type=hidden][name="txtnEWTRate"]').val(xcb);
-					$(this).find('input[type=hidden][name="txtnEWTRate"]').attr("name","txtnEWTRate" + tx2);
-					$(this).find('input[type=hidden][name="txtnEWTRate"]').attr("id","txtnEWTRate" + tx2);
-
-					$(this).find('input[name="txtnEWTAmt"]').attr("name","txtnEWTAmt" + tx2);
-					$(this).find('input[name="txtnEWTAmt"]').attr("id","txtnEWTAmt" + tx2);
-
-					$(this).find('input[name="txtDue"]').attr("name","txtDue" + tx2);
-					$(this).find('input[name="txtDue"]').attr("id","txtDue" + tx2);
-
-					$(this).find('input[name="txtApplied"]').attr("name","txtApplied" + tx2);
-					$(this).find('input[name="txtApplied"]').attr("id","txtApplied" + tx2);
-
-					$(this).find('input[name="txtcSalesAcctTitle"]').attr("name","txtcSalesAcctTitle" + tx2);
-					$(this).find('input[name="txtcSalesAcctTitle"]').attr("id","txtcSalesAcctTitle" + tx2);
-
-					$(this).find('input[type=hidden][name="txtcSalesAcctNo"]').attr("name","txtcSalesAcctNo" + tx2);
-					$(this).find('input[type=hidden][name="txtcSalesAcctNo"]').attr("id","txtcSalesAcctNo" + tx2);
-
-					$(this).find('input[name="row_delete"]').attr("name","row_"+tx2+"_delete");
-					$(this).find('input[name="row_delete"]').attr("id","row_"+tx2+"_delete");
-
-				});
-
-			$("#frmOR").submit();
-		
-	}
-
-}
-
-function getInvs(typ){
-	
-	if($('#txtcustid').val() == ""){
-		alert("Please pick a valid customer!");
-	}
-	else{
-		
-		//clear table body if may laman
-		$('#MyORTbl tbody').empty();
-		$('#invtyp').val(typ);
-		
-		//get salesno na selected na
-		var y;
-		var salesnos = "";
-		var rc = $('#MyTable tr').length;
-		for(y=1;y<=rc-1;y++){ 
-			if(y>1){
-				salesnos = salesnos + ",";
+						
+						process(newData);
+					});
+			},
+			updater: function (item) {	
+					
+					$('#txtcacctid').val(map[item].id);
+					$('#txtacctbal').val(map[item].balance);
+					return item;
 			}
-			salesnos = salesnos + $('#txtcSalesNo'+y).val();
-		}
-
-		//ajax lagay table details sa modal body
-		var x = $('#txtcustid').val();
-		$('#invheader').html("Invoice List: " + $('#txtcust').val())
 		
-		//alert("th_orlist.php?x="+x+"&y="+salesnos+"&typ="+typ);
-		$.ajax({
-			url: 'th_orlist.php',
-			data: { x:x, y:salesnos, typ:typ },
-			dataType: 'json',
-			method: 'post',
-			success: function (data) {
-				// var classRoomsTable = $('#mytable tbody');
-				console.log(data);
-				$.each(data,function(index,item){
-					$("<tr>").append(
-						$("<td>").html("<input type='checkbox' value='"+item.csalesno+"' name='chkSales[]' data-cm='"+item.ccm+"' data-payment='"+item.npayment+"' data-vatcode='"+item.ctaxcode+"' data-vat='"+item.cvatamt+"' data-vatrate='"+item.vatrate+"' data-netvat='"+item.cnetamt+"' data-ewtcode='"+item.cewtcode+"' data-ewtrate='"+item.newtrate+"' data-amt='"+item.ngross+"' data-acctid='"+item.cacctno+"' data-acctdesc='"+item.ctitle+"' data-cutdate='"+item.dcutdate+"'>"),
-						$("<td>").text(item.csalesno),
-						$("<td>").text(item.dcutdate),
-						$("<td>").text(item.ngross),
-						$("<td>").text(item.cewtcode),
-						$("<td>").text(item.ctaxcode)
-					).appendTo("#MyORTbl tbody");
-
+		});
+			
+		$('#txtcust').typeahead({
+		
+			items: 10,
+			source: function(request, response) {
+				$.ajax({
+					url: "../th_customer.php",
+					dataType: "json",
+					data: {
+						query: $("#txtcust").val()
+					},
+					success: function (data) {
+						response(data);
+					}
 				});
 			},
-			error: function (jqXHR, textStatus, errorThrown)
-			{
-				if(errorThrown!="Unexpected end of JSON input"){
+			autoSelect: true,
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span>'+ item.id + '</span><br><small>' + item.value + "</small></div>";
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 
+				$('#txtcust').val(item.value).change(); 
+				$("#txtcustid").val(item.id);
+			}
+		});
+		
+		$("#txtcust").on('blur', function() {
+			if($('#txtcustid').val() != "" && $('#txtcustid').val() != ""){
+				$('#txtcust').attr('readonly', true);
+			}
+		}); 
+		
+		$("#selpayment").on("change", function(){
+			$('#txtnGross').val('0.00');
+			
+			if ($(this).val() == "Cheque"){
+				$('#txtnGross').attr('readonly', true);
+			}
+			else{
+				$('#txtnGross').attr('readonly', false);
+			}
+
+
+			var valz = $(this).val();
+			var codez = "";
+			
+			if(valz=="Cash"){
+				codez = "ORDEBCASH";
+			}
+			else if(valz=="Cheque"){
+				codez = "ORDEBCHK";
+			}
+			//alert(valz);
+			
+			$.ajax ({
+				url: "../th_parameter.php",
+				data: { id: codez },
+				async: false,
+				dataType: "json",
+				success: function( data ) {
+												
+					console.log(data);
+					$.each(data,function(index,item){
+
+						$('#txtcacct').val(item.name);
+						$('#txtcacctid').val(item.id);
+						$('#txtacctbal').val(item.balance);
+					});
+							
+												
 				}
-			}
+			});
+
 		});
 		
-		$('#myModal').modal('show');
-		
-	}
-
-
-}
-
-function save(){
-
-	var i = 0;
-	var rcnt = 0;
-
-	$("input[name='chkSales[]']:checked").each( function () {
-		i++;
-		var tranno = $(this).val();
-		var dcutdate = $(this).data("cutdate");
-		var ngross = $(this).data("amt");
-		var ncm = $(this).data("cm");
-		var npayments = $(this).data("payment");
-		var nvat = $(this).data("vat");
-		var vatcode = $(this).data("vatcode"); 
-		var vatrate = $(this).data("vatrate");
-		var nnetvat = $(this).data("netvat");
-		var newtcode = $(this).data("ewtcode");
-		var newtrate = $(this).data("ewtrate");
-		var newtamt = 0; 
-
-		var acctcode = $(this).data("acctid");
-		var acctdesc = $(this).data("acctdesc");
-
-		var ntotdue = parseFloat(ngross) - parseFloat(ncm) - parseFloat(npayments) - parseFloat(newtamt);
-								
-		var tbl = document.getElementById('MyTable').getElementsByTagName('tbody')[0];
-		var lastRow = tbl.rows.length + 1;
-		//alert(lastRow);
-		var z=tbl.insertRow(-1);
-
-		var a=z.insertCell(-1);
-		a.innerHTML ="<div class='col-xs-12 nopadding'><input type='hidden' name='txtcSalesNo' id='txtcSalesNo"+lastRow+"' value='"+tranno+"' />"+tranno+"</div>";
-								
-		var b=z.insertCell(-1);
-		b.align = "center";
-		b.innerHTML = dcutdate;
-									
-		var c=z.insertCell(-1);
-		c.align = "right";
-		c.innerHTML = "<div class='col-xs-12 nopadwleft'><input type='text' class='numeric form-control input-xs text-right' name='txtSIGross' id='txtSIGross"+lastRow+"' value='"+ngross+"' readonly /></div>";
-
-		var d=z.insertCell(-1);
-		d.align = "right";
-		d.innerHTML = "<div class=\"input-group\"><input type='text' name='txtndebit' id='txtndebit"+lastRow+"' class=\"numeric form-control input-xs\" value=\"0.00\" style=\"text-align:right\" readonly><span class=\"input-group-btn\"><button class=\"btn btn-primary btn-xs\" name=\"btnaddcm\" id=\"btnaddcm"+lastRow+"\" type=\"button\" onclick=\"addCM('DM','"+tranno+"','txtndebit"+lastRow+"')\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span></button></span></div>";
-									
-		var e=z.insertCell(-1);
-		e.align = "right";
-		e.innerHTML = " <div class=\"input-group\"><input type='text' name='txtncredit' id='txtncredit"+lastRow+"' class=\"numeric form-control input-xs\" value=\""+ncm+"\" style=\"text-align:right\" readonly><span class=\"input-group-btn\"><button class=\"btn btn-primary btn-xs\" name=\"btnaddcm\" id=\"btnaddcm"+lastRow+"\" type=\"button\" onclick=\"addCM('CM','"+tranno+"','txtncredit"+lastRow+"')\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span></button></span></div>";
-									
-		var f=z.insertCell(-1);
-		f.align = "right";
-		f.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtnpayments' id='txtnpayments"+lastRow+"' value='"+npayments+"' readonly=\"true\" />";
-
-		/*
-		var xz = $("#hdntaxcodes").val();
-		taxoptions = "";
-		$.each(jQuery.parseJSON(xz), function() { 
-
-			if(vatcode==this['ctaxcode']){
-				isselctd = "selected";
+		$("#btnDet").on('click', function() {
+			if($('#selpayment').val() == "cash"){
+				$('#CashModal').modal('show');
+			}else if($('#selpayment').val() == "cheque"){
+				$('#ChequeModal').modal('show');
 			}else{
-				isselctd = "";
+				$('#OthersModal').modal('show');
 			}
-			taxoptions = taxoptions + "<option value='"+this['ctaxcode']+"' data-id='"+this['nrate']+"' "+isselctd+">"+this['ctaxdesc']+"</option>";
 		});
 
-		var c1=z.insertCell(-1);
-		c1.align = "right";
-		c1.innerHTML = "<select class='form-control input-xs' name=\"txtnvatcode\" id=\"txtnvatcode"+lastRow+"\" readonly> " + taxoptions + " </select>";
-		*/
+		$("#allbox").click(function () {
+					if ($("#allbox").is(':checked')) {
+							$("input[name='chkSales[]']").each(function () {
+									$(this).prop("checked", true);
+							});
 
-		var c1=z.insertCell(-1);
-		c1.align = "right";
-		c1.innerHTML = "<input type='text' class='form-control input-xs text-right' name=\"txtnvatcode\" id=\"txtnvatcode"+lastRow+"\" readonly value='"+vatcode+"' readonly /> <input type='hidden' name=\"txtnvatrate\" id=\"txtnvatrate"+lastRow+"\" value='"+vatrate+"' /> <input type='hidden' name=\"txtnvatcodeorig\" id=\"txtnvatcodeorig"+lastRow+"\" value='"+vatcode+"' />";
+					} else {
+							$("input[name='chkSales[]']").each(function () {
+									$(this).prop("checked", false);
+							});
+					}
+		});
 
-		var c2=z.insertCell(-1);
-		c2.align = "right";
-		c2.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtvatamt' id='txtvatamt"+lastRow+"' value='"+nvat+"' readonly />";
-									
-		var c3=z.insertCell(-1);
-		c3.align = "right";
-		c3.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtnetvat' id='txtnetvat"+lastRow+"' value='"+nnetvat+"' readonly />"; 
+		$("#btnVoid").on("click", function(){
+			var rems = prompt("Please enter your reason...", "");
+			if (rems == null || rems == "") {
+				alert("No remarks entered!\nCheque cannot be void!");
+			}
+			else{
+				//alert( "id="+ $("#txtBankName").val()+"&chkno="+ $("#txtCheckNo").val()+"&rem="+ rems);
+						$.ajax ({
+						url: "OR_voidorno.php",
+						data: { orno: $("#txtORNo").val(), rem: rems },
+						async: false,
+						success: function( data ) {
+							if(data.trim()!="False"){
+								$("#txtORNo").val(data.trim());
+								$("#btnVoid").attr("disabled", false);
+							}
+						}
+						});
+
+			}
+		});
+
+		$("#btnaddcm").on("click", function(){			
+
+			var xsino = $("#txtdetsinoinfo").val();
+			var xadjtype = $("#txthdnTYPAdj").val();
+
+			AddRefAdj(xadjtype,xsino,"","","","");
+			
+		});
+
+		$("#btnentry").on("click", function(){		
+			$("#modGLEntry").modal("show");
+		});
 		
-		$ifrdonly = "";
-		if(newtcode!=="none" && newtcode!==""){
-			$ifrdonly = "readonly";
+		$("#isNoRef").change(function() {
+			if($(this).find(":selected").val()==1) { 
+				$("#btnaddSI").attr("disabled", true);  
+				$("#btnaddOthers").attr("disabled", false); 
+
+				$("#liSales").attr("class", "");
+				$("#liOthers").attr("class", "active");
+				
+				$("#divSales").attr("class", "tab-pane fade");
+				$("#divOthers").attr("class", "tab-pane fade in active");
+			}else{
+				$("#btnaddSI").attr("disabled", false);
+				$("#btnaddOthers").attr("disabled", true); 
+
+				$("#liSales").attr("class", "active");
+				$("#liOthers").attr("class", "");
+				
+				$("#divSales").attr("class", "tab-pane fade in active");
+				$("#divOthers").attr("class", "tab-pane fade");
+			}
+		});
+
+		$('body').on('focus',".accountsname", function(){
+			var $input = $(".accountsname");
+
+			var id = $(document.activeElement).attr('id');
+			var xname = $(document.activeElement).data('nme');	
+
+			var numid = id.replace(xname,"");
+
+			//alert(xname +" : "+ numid);
+
+			$("#"+id).typeahead({
+				items: 10,
+				source: function(request, response) {
+					$.ajax({
+						url: "../th_accounts.php",
+						dataType: "json",
+						data: {
+							query: $("#"+id).val()
+						},
+						success: function (data) {
+							console.log(data);
+							response(data);
+						}
+					});
+				},
+				autoSelect: true,
+				displayText: function (item) {
+					return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.name + '</small></div>';
+				},
+				highlighter: Object,
+				afterSelect: function(item) { 
+
+					$('#'+xname+numid).val(item.name).change(); 
+					$("#"+xname+"ID"+numid).val(item.id);
+
+				}
+			});
+
+		});
+	
+		$("#txtnGross").on("keyup", function(){
+			if($("#isNoRef").find(":selected").val()==0) { 
+				computeGross();
+			}else{
+				computeGrossOthers();
+			}
+		});
+
+		disabled();
+
+	});
+
+	function chkform(){
+
+		var subz = "YES";
+
+		if($('#txtcustid').val() == "" || $('#txtcustid').val() == ""){
+			alert("You Need a Valid Customer.");
+			subz = "NO";
 		}
 
-		/*var l=z.insertCell(-1);
-		l.innerHTML = "<input type='text' class='ewtcode form-control input-xs' placeholder='EWT Code' name='txtnEWT"+lastRow+"' id='txtnEWT"+lastRow+"' autocomplete=\"off\" value='"+newtcode+"' "+$ifrdonly+"/> <input type='hidden' name='txtnEWTorig"+lastRow+"' id='txtnEWTorig"+lastRow+"' value='"+newtcode+"' />";*/
+
+		if($('#txtnGross').val() == "" || $('#txtnGross').val() == 0){
+			alert("Zero or Blank AMOUNT RECEIVED is not allowed!");
+			subz = "NO";
+		}
 
 
-		$ifrdonly = "";
-			$ifrdonlyint = 0;
-			if(newtcode!=="none" && newtcode!==""){
-				$ifrdonly = "readonly";
-				$ifrdonlyint = 1;
+		if($('#txtORNo').val() == ""){
+			alert("Please input your OR NUMBER!");
+			subz = "NO";
+		}
+			
+		if($('#selpayment').val() !== "cheque" && $('#selpayment').val() !== "cash"){
+			if($('#txtOTRefNo').val() == ""){
+				alert("Reference number required for this payment method!");
+				subz = "NO";
+			}
+		}
+
+		if($('#selpayment').val() == "cheque"){
+			if($('#txtBankName').val() == "" || $('#txtChekDate').val() == "" || $('#txtCheckNo').val() == "" || $('#txtCheckAmt').val() == ""){
+				alert("Please complete your cheque details!");
+				subz = "NO";
+			}
+		}
+
+		var lastRow1 = 0; 
+		var lastRow2 = 0;
+		
+		var tbl1 = document.getElementById('MyTable').getElementsByTagName('tr');
+		lastRow1 = tbl1.length-1;
+		$("#hdnrowcnt").val(lastRow1);
+
+		var tbl2 = document.getElementById('MyTableCMx').getElementsByTagName('tr');
+		lastRow2 = tbl2.length-1;
+		$("#hdnrowcntcmdm").val(lastRow2);
+
+		var tbl3 = document.getElementById('MyTblOthers').getElementsByTagName('tr');
+		lastRow3 = tbl3.length-1;
+		$("#hdnOthcnt").val(lastRow3); 
+							
+		if(lastRow1==0 && $("#isNoRef").find(":selected").val()==0){
+			alert("Details Required!");
+			subz = "NO";
+		}
+
+		if(lastRow3==0 && $("#isNoRef").find(":selected").val()==1){
+			alert("Details Required!");
+			subz = "NO";
+		}
+
+		//if( parseFloat($('#txtnOutBal').val()) != parseFloat($('#txtnApplied').val()) ){
+		if( parseFloat($('#txtnGross').val().replace(/,/g,'')) != parseFloat($('#txtnApplied').val().replace(/,/g,'')) ){
+			alert("Unbalanced Transaction!");
+			subz = "NO";
+		}
+
+		if(subz=="NO"){
+			return false;
+		}
+		else{
+			if($('#selpayment').val() == "Cheque"){
+				//$('#txtCheckAmt').val($('#txtCheckAmt').maskMoney('unmasked')[0]);
 			}
 
+				var tx2 = 0;
+				$("#MyTableCMx > tbody > tr").each(function(index) {   
+					tx2 = index+1;
+					$(this).find('input[name="hdnctypeadj"]').attr("name","hdnctypeadj"+tx2);
+					$(this).find('input[type=hidden][name="hdndetsino"]').attr("name","hdndetsino"+tx2);					
+					$(this).find('input[type=hidden][name="hdnisgiven"]').attr("name","hdnisgiven"+tx2);
+					$(this).find('input[name="txtapcmdm"]').attr("name","txtapcmdm" + tx2);
+					$(this).find('input[name="txtapdte"]').attr("name","txtapdte" + tx2);
+					$(this).find('input[name="txtapamt"]').attr("name","txtapamt" + tx2);
+					$(this).find('input[name="txtremz"]').attr("name","txtremz" + tx2);
+				});
+			
+					tx2 = 0;
+					$("#MyTable > tbody > tr").each(function(index) {   
+						tx2 = index+1;
 
-		var xz = $("#hdnewtcodes").val();
+						$(this).find('input[type=hidden][name="txtcSalesNo"]').attr("name","txtcSalesNo"+tx2);
+						$(this).find('input[type=hidden][name="txtcSalesNo"]').attr("id","txtcSalesNo"+tx2);
+
+						$(this).find('input[name="txtSIGross"]').attr("name","txtSIGross"+tx2);
+						$(this).find('input[name="txtSIGross"]').attr("id","txtSIGross"+tx2);
+
+						$(this).find('input[name="txtndebit"]').attr("name","txtndebit"+tx2);
+						$(this).find('input[name="txtndebit"]').attr("id","txtndebit"+tx2);
+
+						$(this).find('input[name="txtncredit"]').attr("name","txtncredit"+tx2);
+						$(this).find('input[name="txtncredit"]').attr("id","txtncredit"+tx2);
+
+						$(this).find('input[name="txtnpayments"]').attr("name","txtnpayments"+tx2);
+						$(this).find('input[name="txtnpayments"]').attr("id","txtnpayments"+tx2);
+
+						$(this).find('input[name="txtnvatcode"]').attr("name","txtnvatcode"+tx2);
+						$(this).find('input[name="txtnvatcode"]').attr("id","txtnvatcode"+tx2);
+
+						$(this).find('input[type=hidden][name="txtnvatrate"]').attr("name","txtnvatrate"+tx2);					
+						$(this).find('input[type=hidden][name="txtnvatrate"]').attr("id","txtnvatrate"+tx2);
+
+						$(this).find('input[type=hidden][name="txtnvatcodeorig"]').attr("name","txtnvatcodeorig" + tx2);
+						$(this).find('input[type=hidden][name="txtnvatcodeorig"]').attr("id","txtnvatcodeorig" + tx2);
+
+						$(this).find('input[name="txtvatamt"]').attr("name","txtvatamt" + tx2);
+						$(this).find('input[name="txtvatamt"]').attr("id","txtvatamt" + tx2);
+
+						$(this).find('input[name="txtvatamt"]').attr("name","txtvatamt" + tx2);
+						$(this).find('input[name="txtvatamt"]').attr("id","txtvatamt" + tx2);
+
+						$(this).find('input[name="txtnetvat"]').attr("name","txtnetvat" + tx2);
+						$(this).find('input[name="txtnetvat"]').attr("id","txtnetvat" + tx2);
+
+						$(this).find('select[name="txtnetvat"]').attr("name","txtnetvat" + tx2);
+						$(this).find('select[name="txtnetvat"]').attr("id","txtnetvat" + tx2);
+
+						$(this).find('select[name="txtnEWT[]"]').attr("name","txtnEWT" + tx2 + "[]");
+						$(this).find('select[name="txtnEWT"]').attr("id","txtnEWT" + tx2);
+
+							//getrate of selected
+							var xcb = "";
+							var cnt = 0;
+							$("#txtnEWT"+ tx2 + " > option:selected").each(function() {
+								//	alert($(this).data("rate"));
+								cnt++;
+								if(cnt>1){
+									xcb = xcb + ";" + $(this).data("rate");
+								}else{
+									xcb = xcb + $(this).data("rate");
+								}
+							});
+
+						$(this).find('input[type=hidden][name="hdnewtgiven"]').attr("name","hdnewtgiven" + tx2);
+						$(this).find('input[type=hidden][name="hdnewtgiven"]').attr("id","hdnewtgiven" + tx2);
+
+						$(this).find('input[type=hidden][name="txtnEWTorig"]').attr("name","txtnEWTorig" + tx2);
+						$(this).find('input[type=hidden][name="txtnEWTorig"]').attr("id","txtnEWTorig" + tx2);
+
+						$(this).find('input[type=hidden][name="txtnEWTRate"]').val(xcb);
+						$(this).find('input[type=hidden][name="txtnEWTRate"]').attr("name","txtnEWTRate" + tx2);
+						$(this).find('input[type=hidden][name="txtnEWTRate"]').attr("id","txtnEWTRate" + tx2);
+
+						$(this).find('input[name="txtnEWTAmt"]').attr("name","txtnEWTAmt" + tx2);
+						$(this).find('input[name="txtnEWTAmt"]').attr("id","txtnEWTAmt" + tx2);
+
+						$(this).find('input[name="txtDue"]').attr("name","txtDue" + tx2);
+						$(this).find('input[name="txtDue"]').attr("id","txtDue" + tx2);
+
+						$(this).find('input[name="txtApplied"]').attr("name","txtApplied" + tx2);
+						$(this).find('input[name="txtApplied"]').attr("id","txtApplied" + tx2);
+
+						$(this).find('input[name="txtcSalesAcctTitle"]').attr("name","txtcSalesAcctTitle" + tx2);
+						$(this).find('input[name="txtcSalesAcctTitle"]').attr("id","txtcSalesAcctTitle" + tx2);
+
+						$(this).find('input[type=hidden][name="txtcSalesAcctNo"]').attr("name","txtcSalesAcctNo" + tx2);
+						$(this).find('input[type=hidden][name="txtcSalesAcctNo"]').attr("id","txtcSalesAcctNo" + tx2);
+
+						$(this).find('input[name="row_delete"]').attr("name","row_"+tx2+"_delete");
+						$(this).find('input[name="row_delete"]').attr("id","row_"+tx2+"_delete");
+
+					});
+
+				$("#frmOR").submit();
+			
+		}
+
+	}
+
+	function getInvs(typ){
+		
+		if($('#txtcustid').val() == ""){
+			alert("Please pick a valid customer!");
+		}
+		else{
+			
+			//clear table body if may laman
+			$('#MyORTbl tbody').empty();
+			$('#invtyp').val(typ);
+			
+			//get salesno na selected na
+			var y;
+			var salesnos = "";
+			var rc = $('#MyTable tr').length;
+			for(y=1;y<=rc-1;y++){ 
+				if(y>1){
+					salesnos = salesnos + ",";
+				}
+				salesnos = salesnos + $('#txtcSalesNo'+y).val();
+			}
+
+			//ajax lagay table details sa modal body
+			var x = $('#txtcustid').val();
+			$('#invheader').html("Invoice List: " + $('#txtcust').val())
+			
+			//alert("th_orlist.php?x="+x+"&y="+salesnos+"&typ="+typ);
+			$.ajax({
+				url: 'th_orlist.php',
+				data: { x:x, y:salesnos, typ:typ },
+				dataType: 'json',
+				method: 'post',
+				success: function (data) {
+					// var classRoomsTable = $('#mytable tbody');
+					console.log(data);
+					$.each(data,function(index,item){
+						$("<tr>").append(
+							$("<td>").html("<input type='checkbox' value='"+item.csalesno+"' name='chkSales[]' data-cm='"+item.ccm+"' data-payment='"+item.npayment+"' data-vatcode='"+item.ctaxcode+"' data-vat='"+item.cvatamt+"' data-vatrate='"+item.vatrate+"' data-netvat='"+item.cnetamt+"' data-ewtcode='"+item.cewtcode+"' data-ewtrate='"+item.newtrate+"' data-amt='"+item.ngross+"' data-acctid='"+item.cacctno+"' data-acctdesc='"+item.ctitle+"' data-cutdate='"+item.dcutdate+"'>"),
+							$("<td>").text(item.csalesno),
+							$("<td>").text(item.dcutdate),
+							$("<td>").text(item.ngross),
+							$("<td>").text(item.cewtcode),
+							$("<td>").text(item.ctaxcode)
+						).appendTo("#MyORTbl tbody");
+
+					});
+				},
+				error: function (jqXHR, textStatus, errorThrown)
+				{
+					if(errorThrown!="Unexpected end of JSON input"){
+					}
+				}
+			});
+			
+			$('#myModal').modal('show');
+			
+		}
+
+
+	}
+
+	function save(){
+
+		var i = 0;
+		var rcnt = 0;
+
+		$("input[name='chkSales[]']:checked").each( function () {
+			i++;
+			var tranno = $(this).val();
+			var dcutdate = $(this).data("cutdate");
+			var ngross = $(this).data("amt");
+			var ncm = $(this).data("cm");
+			var npayments = $(this).data("payment");
+			var nvat = $(this).data("vat");
+			var vatcode = $(this).data("vatcode"); 
+			var vatrate = $(this).data("vatrate");
+			var nnetvat = $(this).data("netvat");
+			var newtcode = $(this).data("ewtcode");
+			var newtrate = $(this).data("ewtrate");
+			var newtamt = 0; 
+
+			var acctcode = $(this).data("acctid");
+			var acctdesc = $(this).data("acctdesc");
+
+			var ntotdue = parseFloat(ngross) - parseFloat(ncm) - parseFloat(npayments) - parseFloat(newtamt);
+									
+			var tbl = document.getElementById('MyTable').getElementsByTagName('tbody')[0];
+			var lastRow = tbl.rows.length + 1;
+			//alert(lastRow);
+			var z=tbl.insertRow(-1);
+
+			var a=z.insertCell(-1);
+			a.innerHTML ="<div class='col-xs-12 nopadding'><input type='hidden' name='txtcSalesNo' id='txtcSalesNo"+lastRow+"' value='"+tranno+"' />"+tranno+"</div>";
+									
+			var b=z.insertCell(-1);
+			b.align = "center";
+			b.innerHTML = dcutdate;
+										
+			var c=z.insertCell(-1);
+			c.align = "right";
+			c.innerHTML = "<div class='col-xs-12 nopadwleft'><input type='text' class='numeric form-control input-xs text-right' name='txtSIGross' id='txtSIGross"+lastRow+"' value='"+ngross+"' readonly /></div>";
+
+			var d=z.insertCell(-1);
+			d.align = "right";
+			d.innerHTML = "<div class=\"input-group\"><input type='text' name='txtndebit' id='txtndebit"+lastRow+"' class=\"numeric form-control input-xs\" value=\"0.00\" style=\"text-align:right\" readonly><span class=\"input-group-btn\"><button class=\"btn btn-primary btn-xs\" name=\"btnaddcm\" id=\"btnaddcm"+lastRow+"\" type=\"button\" onclick=\"addCM('DM','"+tranno+"','txtndebit"+lastRow+"')\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span></button></span></div>";
+										
+			var e=z.insertCell(-1);
+			e.align = "right";
+			e.innerHTML = " <div class=\"input-group\"><input type='text' name='txtncredit' id='txtncredit"+lastRow+"' class=\"numeric form-control input-xs\" value=\""+ncm+"\" style=\"text-align:right\" readonly><span class=\"input-group-btn\"><button class=\"btn btn-primary btn-xs\" name=\"btnaddcm\" id=\"btnaddcm"+lastRow+"\" type=\"button\" onclick=\"addCM('CM','"+tranno+"','txtncredit"+lastRow+"')\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span></button></span></div>";
+										
+			var f=z.insertCell(-1);
+			f.align = "right";
+			f.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtnpayments' id='txtnpayments"+lastRow+"' value='"+npayments+"' readonly=\"true\" />";
+
+			/*
+			var xz = $("#hdntaxcodes").val();
 			taxoptions = "";
 			$.each(jQuery.parseJSON(xz), function() { 
 
-					var splitString = newtcode.split(',');
-					var ewtFound;
-					for (var i = 0; i < splitString.length; i++) {
-						var stringPart = splitString[i];
-						if (stringPart != this['ctaxcode']) continue;
-
-						ewtFound = true;
-						break;
-					}
-
-				if(ewtFound){
+				if(vatcode==this['ctaxcode']){
 					isselctd = "selected";
 				}else{
 					isselctd = "";
 				}
-				taxoptions = taxoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' data-base='"+this['cbase']+"' "+isselctd+">"+this['ctaxcode']+ "("+this['nrate']+"%)" + "</option>";
+				taxoptions = taxoptions + "<option value='"+this['ctaxcode']+"' data-id='"+this['nrate']+"' "+isselctd+">"+this['ctaxdesc']+"</option>";
 			});
+
+			var c1=z.insertCell(-1);
+			c1.align = "right";
+			c1.innerHTML = "<select class='form-control input-xs' name=\"txtnvatcode\" id=\"txtnvatcode"+lastRow+"\" readonly> " + taxoptions + " </select>";
+			*/
+
+			var c1=z.insertCell(-1);
+			c1.align = "right";
+			c1.innerHTML = "<input type='text' class='form-control input-xs text-right' name=\"txtnvatcode\" id=\"txtnvatcode"+lastRow+"\" readonly value='"+vatcode+"' readonly /> <input type='hidden' name=\"txtnvatrate\" id=\"txtnvatrate"+lastRow+"\" value='"+vatrate+"' /> <input type='hidden' name=\"txtnvatcodeorig\" id=\"txtnvatcodeorig"+lastRow+"\" value='"+vatcode+"' />";
+
+			var c2=z.insertCell(-1);
+			c2.align = "right";
+			c2.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtvatamt' id='txtvatamt"+lastRow+"' value='"+nvat+"' readonly />";
+										
+			var c3=z.insertCell(-1);
+			c3.align = "right";
+			c3.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtnetvat' id='txtnetvat"+lastRow+"' value='"+nnetvat+"' readonly />"; 
 			
-			var l=z.insertCell(-1); 
-			l.innerHTML = "<select name='txtnEWT[]' id='txtnEWT"+lastRow+"' class='select2' multiple='multiple' style='width: 100%'> "+ taxoptions +" </select> <input type='hidden' name='hdnewtgiven' id='hdnewtgiven"+lastRow+"' value='"+$ifrdonlyint+"' /> <input type='hidden' name='txtnEWTorig' id='txtnEWTorig"+lastRow+"' value='"+newtcode+"' /> <input type='hidden' name='txtnEWTRate' value=\""+newtrate+"\" id='txtnEWTRate"+lastRow+"' />";
+			$ifrdonly = "";
+			if(newtcode!=="none" && newtcode!==""){
+				$ifrdonly = "readonly";
+			}
+
+			/*var l=z.insertCell(-1);
+			l.innerHTML = "<input type='text' class='ewtcode form-control input-xs' placeholder='EWT Code' name='txtnEWT"+lastRow+"' id='txtnEWT"+lastRow+"' autocomplete=\"off\" value='"+newtcode+"' "+$ifrdonly+"/> <input type='hidden' name='txtnEWTorig"+lastRow+"' id='txtnEWTorig"+lastRow+"' value='"+newtcode+"' />";*/
 
 
-			newtrateStr = newtrate.toString();
+			$ifrdonly = "";
+				$ifrdonlyint = 0;
+				if(newtcode!=="none" && newtcode!==""){
+					$ifrdonly = "readonly";
+					$ifrdonlyint = 1;
+				}
 
-			var splitString = newtrateStr.split(';');
-			for (var i = 0; i < splitString.length; i++) {
-				var stringPart = splitString[i];
-				if (stringPart != 0 && stringPart != ""){
-					if(i > 0){
-						ewtdesc = ewtdesc + ";";
+
+			var xz = $("#hdnewtcodes").val();
+				taxoptions = "";
+				$.each(jQuery.parseJSON(xz), function() { 
+
+						var splitString = newtcode.split(',');
+						var ewtFound;
+						for (var i = 0; i < splitString.length; i++) {
+							var stringPart = splitString[i];
+							if (stringPart != this['ctaxcode']) continue;
+
+							ewtFound = true;
+							break;
+						}
+
+					if(ewtFound){
+						isselctd = "selected";
+					}else{
+						isselctd = "";
 					}
-					$jx = parseFloat(nnetvat)*(parseFloat(stringPart)/100);
-					newtamt = newtamt + $jx;
-					ewtdesc = ewtdesc + stringPart + "% - " + $jx.toFixed(2);
+					taxoptions = taxoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' data-base='"+this['cbase']+"' "+isselctd+">"+this['ctaxcode']+ "("+this['nrate']+"%)" + "</option>";
+				});
+				
+				var l=z.insertCell(-1); 
+				l.innerHTML = "<select name='txtnEWT[]' id='txtnEWT"+lastRow+"' class='select2' multiple='multiple' style='width: 100%'> "+ taxoptions +" </select> <input type='hidden' name='hdnewtgiven' id='hdnewtgiven"+lastRow+"' value='"+$ifrdonlyint+"' /> <input type='hidden' name='txtnEWTorig' id='txtnEWTorig"+lastRow+"' value='"+newtcode+"' /> <input type='hidden' name='txtnEWTRate' value=\""+newtrate+"\" id='txtnEWTRate"+lastRow+"' />";
+
+
+				newtrateStr = newtrate.toString();
+
+				var splitString = newtrateStr.split(';');
+				for (var i = 0; i < splitString.length; i++) {
+					var stringPart = splitString[i];
+					if (stringPart != 0 && stringPart != ""){
+						if(i > 0){
+							ewtdesc = ewtdesc + ";";
+						}
+						$jx = parseFloat(nnetvat)*(parseFloat(stringPart)/100);
+						newtamt = newtamt + $jx;
+						ewtdesc = ewtdesc + stringPart + "% - " + $jx.toFixed(2);
+					}
+				}
+
+			var l2=z.insertCell(-1);
+			l2.innerHTML = "<div id='txtnEWTPer"+lastRow+"' class='text-right'> "+ewtdesc.replace(";","<br>")+" </div>";
+										
+			var l3=z.insertCell(-1);
+			l3.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' placeholder='EWT Amt' name='txtnEWTAmt'  value=\""+newtamt+"\" id='txtnEWTAmt"+lastRow+"' readonly=\"true\" />";
+										
+			var g=z.insertCell(-1);
+			g.align = "right";
+			g.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtDue' id='txtDue"+lastRow+"' value='"+ntotdue+"' readonly=\"true\" />";
+										
+			var h=z.insertCell(-1);
+			h.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtApplied' id='txtApplied"+lastRow+"' value='"+ntotdue+"' style='text-align:right' autocomplete=\"off\" />";
+									
+			var j=z.insertCell(-1);
+			j.innerHTML = "<div class='col-xs-12 nopadding'><input type='text' class='accountscode form-control input-xs' name='txtcSalesAcctTitleID' id='txtcSalesAcctTitleID"+lastRow+"' value='"+acctcode+"' readonly/></div>";
+
+			var j2=z.insertCell(-1);
+			j2.innerHTML = "<div class='col-xs-12 nopadding'><input type='text' class='accountsname form-control input-xs' name='txtcSalesAcctTitle' id='txtcSalesAcctTitle"+lastRow+"' value='"+acctdesc+"' autocomplete=\"off\" data-nme=\"txtcSalesAcctTitle\" /></div>";
+										
+			var k=z.insertCell(-1);
+			k.innerHTML = "<div class='col-xs-12 nopadwleft'><input class='btn btn-danger btn-xs' type='button' name='row_delete' id='row_"+lastRow+"_delete' value='delete'/></div>";
+
+			$("#row_"+lastRow+"_delete").on("click", function(){
+				$(this).closest('tr').remove(); 
+				ReIndexMyTable(tranno);
+			});
+
+			$("#txtnEWT"+lastRow).select2();
+			$("#txtnEWT"+lastRow).on("change", function(){
+				computeDue(this);
+				computeGross();
+			});
+												
+			$("input.numeric").autoNumeric('init',{mDec:2});
+			$("input.numeric").on("click focus", function () {
+				$(this).select();
+			});
+											
+			$("input.numeric").on("keyup", function (e) {
+				setPosi($(this).attr('name'),e.keyCode,'MyTable');
+				computeGross();
+			});								
+
+			computeGross(); 
+
+			if(parseFloat(ncm)!==0){
+				getrefreturn(tranno);
+			}
+			
+		});
+	
+		if(i==0){
+			alert("No Invoice is selected!")
+		}
+		
+		$('#myModal').modal('hide');
+	
+	}
+
+	function computeDue(selewt){
+
+		lastRow = selewt.attributes["id"].value;
+		lastRow = lastRow.replace("txtnEWT","");
+		lastRow = lastRow.replace("[]","");
+
+		///	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
+		//	var lastRow = tbl.length-1;
+		//	if(lastRow!=0){
+		//		var x = 0;
+				
+		//		for (z=1; z<=lastRow; z++){
+		//			var varngrs = $("#txtvatamt"+lastRow).val().replace(/,/g,'');
+		//			var varngrs = $("#txtSIGross"+lastRow).val().replace(/,/g,'');
+					var varngrs = $("#txtSIGross"+lastRow).val().replace(/,/g,'');
+		//		}
+
+		//	}
+
+		varnnet =  $("#txtnetvat"+lastRow).val().replace(/,/g,'');
+		ndue = $("#txtDue"+lastRow).val().replace(/,/g,'');
+
+		xcb = 0;
+		var len = selewt.options.length;
+		for (var i = 0; i < len; i++) {
+			opt = selewt.options[i];
+
+			if (opt.selected) {
+				//alert(opt.value+ " : " + opt.dataset.rate + " : " + opt.dataset.base);
+
+				if(opt.dataset.base=="NET"){
+					xcb = xcb + parseFloat(varnnet)*(opt.dataset.rate/100);
+				}else{
+					xcb = xcb + parseFloat(varngrs)*(opt.dataset.rate/100);
+				}
+
+			}
+		}
+
+												
+		$("#txtnEWTAmt"+lastRow).val(xcb);
+		xcbdue = varngrs - xcb;
+												
+		$("#txtDue"+lastRow).val(xcbdue);
+		$("#txtApplied"+lastRow).val(xcbdue);
+
+		$("#txtnEWTAmt"+lastRow).autoNumeric('destroy');
+		$("#txtnEWTAmt"+lastRow).autoNumeric('init',{mDec:2});
+
+		$("#txtDue"+lastRow).autoNumeric('destroy');
+		$("#txtDue"+lastRow).autoNumeric('init',{mDec:2});
+												
+		$("#txtApplied"+lastRow).autoNumeric('destroy');
+		$("#txtApplied"+lastRow).autoNumeric('init',{mDec:2});
+
+	}
+
+	function ReIndexMyTable(tranno){
+		$("#MyTable > tbody > tr").each(function(index) {   
+			tx2 = index+1;
+			//$(this).find('input[type=hidden][name="txtcSalesNo"]').attr("name","txtcSalesNo"+tx2);
+			$(this).find('input[type=hidden][name="txtcSalesNo"]').attr("id","txtcSalesNo"+tx2);
+
+			//$(this).find('input[name="txtSIGross"]').attr("name","txtSIGross"+tx2);
+			$(this).find('input[name="txtSIGross"]').attr("id","txtSIGross"+tx2);
+
+			//$(this).find('input[name="txtndebit"]').attr("name","txtndebit"+tx2);
+			$(this).find('input[name="txtndebit"]').attr("id","txtndebit"+tx2);
+			$(this).find('button[name="btnadddm"]').attr("id","btnadddm"+tx2);
+			$(this).find('input[name="txtndebit"]').attr("onclick","addCM('DM','"+tranno+"','txtndebit"+tx2+"')");
+
+			//$(this).find('input[name="txtncredit"]').attr("name","txtncredit"+tx2);
+			$(this).find('input[name="txtncredit"]').attr("id","txtncredit"+tx2);
+			$(this).find('button[name="btnaddcm"]').attr("id","btnaddcm"+tx2);
+			$(this).find('input[name="txtncredit"]').attr("onclick","addCM('CM','"+tranno+"','txtncredit"+tx2+"')");
+
+			//$(this).find('input[name="txtnpayments"]').attr("name","txtnpayments"+tx2);
+			$(this).find('input[name="txtnpayments"]').attr("id","txtnpayments"+tx2);
+
+			//$(this).find('input[name="txtnvatcode"]').attr("name","txtnvatcode"+tx2);
+			$(this).find('input[name="txtnvatcode"]').attr("id","txtnvatcode"+tx2);
+
+			//$(this).find('input[type=hidden][name="txtnvatrate"]').attr("name","txtnvatrate"+tx2);					
+			$(this).find('input[type=hidden][name="txtnvatrate"]').attr("id","txtnvatrate"+tx2);
+
+			//$(this).find('input[type=hidden][name="txtnvatcodeorig"]').attr("name","txtnvatcodeorig" + tx2);
+			$(this).find('input[type=hidden][name="txtnvatcodeorig"]').attr("id","txtnvatcodeorig" + tx2);
+
+			//$(this).find('input[name="txtvatamt"]').attr("name","txtvatamt" + tx2);
+			$(this).find('input[name="txtvatamt"]').attr("id","txtvatamt" + tx2);
+
+			//$(this).find('input[name="txtvatamt"]').attr("name","txtvatamt" + tx2);
+			$(this).find('input[name="txtvatamt"]').attr("id","txtvatamt" + tx2);
+
+			//$(this).find('input[name="txtnetvat"]').attr("name","txtnetvat" + tx2);
+			$(this).find('input[name="txtnetvat"]').attr("id","txtnetvat" + tx2);
+
+			//$(this).find('select[name="txtnetvat"]').attr("name","txtnetvat" + tx2);
+			$(this).find('select[name="txtnetvat"]').attr("id","txtnetvat" + tx2);
+
+			//$(this).find('select[name="txtnEWT"]').attr("name","txtnEWT" + tx2);
+			$(this).find('select[name="txtnEWT[]"]').attr("id","txtnEWT" + tx2);
+
+			//$(this).find('input[type=hidden][name="hdnewtgiven"]').attr("name","hdnewtgiven" + tx2);
+			$(this).find('input[type=hidden][name="hdnewtgiven"]').attr("id","hdnewtgiven" + tx2);
+
+			//$(this).find('input[type=hidden][name="txtnEWTorig"]').attr("name","txtnEWTorig" + tx2);
+			$(this).find('input[type=hidden][name="txtnEWTorig"]').attr("id","txtnEWTorig" + tx2);
+
+			//$(this).find('input[type=hidden][name="txtnEWTRate"]').attr("name","txtnEWTRate" + tx2);
+			$(this).find('input[type=hidden][name="txtnEWTRate"]').attr("id","txtnEWTRate" + tx2);
+
+			//$(this).find('input[name="txtnEWTAmt"]').attr("name","txtnEWTAmt" + tx2);
+			$(this).find('input[name="txtnEWTAmt"]').attr("id","txtnEWTAmt" + tx2);
+
+			//$(this).find('input[name="txtDue"]').attr("name","txtDue" + tx2);
+			$(this).find('input[name="txtDue"]').attr("id","txtDue" + tx2);
+
+			//$(this).find('input[name="txtApplied"]').attr("name","txtApplied" + tx2);
+			$(this).find('input[name="txtApplied"]').attr("id","txtApplied" + tx2);
+
+			//$(this).find('input[name="txtcSalesAcctTitle"]').attr("name","txtcSalesAcctTitle" + tx2);
+			$(this).find('input[name="txtcSalesAcctTitle"]').attr("id","txtcSalesAcctTitle" + tx2);
+
+			//$(this).find('input[type=hidden][name="txtcSalesAcctNo"]').attr("name","txtcSalesAcctNo" + tx2);
+			$(this).find('input[type=hidden][name="txtcSalesAcctNo"]').attr("id","txtcSalesAcctNo" + tx2);
+
+			//$(this).find('input[name="row_delete"]').attr("name","row_"+tx2+"_delete");
+			$(this).find('input[name="row_delete"]').attr("id","row_"+tx2+"_delete");
+
+		});
+	}
+
+	function computeGross(){
+		//alert("Hello";)
+		var tot = 0;
+		var tot2 = 0;
+		var tot3 = 0;
+
+		var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
+		var lastRow = tbl.length-1;
+		if(lastRow!=0){
+			var x = 0;
+			
+			for (z=1; z<=lastRow; z++){
+				x = $("#txtApplied" + z).val().replace(/,/g,'');
+				
+				x = x.replace(",","");
+				if(x!=0 && x!=""){
+					tot = parseFloat(x) + parseFloat(tot);	
+				}
+
+				// xEWT = document.getElementById('txtnEWT' + z).value;
+					
+				//  xEWT = xEWT.replace(",","");
+				//  if(xEWT!=0 && xEWT!=""){
+				//	totEWT = parseFloat(xEWT) + parseFloat(totEWT);  
+				//  }
+			}
+		}
+
+
+		//alert(parseFloat(tot2));
+		/*
+		var tbl3 = document.getElementById('MyTblOthers').getElementsByTagName('tr');
+		var lastRow3 = tbl3.length-1;
+		var totDR = 0;
+		var totCR = 0;
+		var tot3 = 0;
+
+		if(lastRow3!=0){
+			var x3DR = 0;
+			var x3CR = 0;
+			
+			for (z3=1; z3<=lastRow3; z3++){
+				x3DR = document.getElementById('txtnotDR' + z3).value;
+				x3CR = document.getElementById('txtnotCR' + z3).value;
+				
+				x3DR = x3DR.replace(",","");
+				if(x3DR!=0 && x3DR!=""){
+					totDR = parseFloat(x3DR) + parseFloat(totDR);	
+				}
+				
+				x3CR = x3CR.replace(",","");
+				if(x3CR!=0 && x3CR!=""){
+					totCR = parseFloat(x3CR) + parseFloat(totCR);	
 				}
 			}
-
-		var l2=z.insertCell(-1);
-		l2.innerHTML = "<div id='txtnEWTPer"+lastRow+"' class='text-right'> "+ewtdesc.replace(";","<br>")+" </div>";
-									
-		var l3=z.insertCell(-1);
-		l3.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' placeholder='EWT Amt' name='txtnEWTAmt'  value=\""+newtamt+"\" id='txtnEWTAmt"+lastRow+"' readonly=\"true\" />";
-									
-		var g=z.insertCell(-1);
-		g.align = "right";
-		g.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtDue' id='txtDue"+lastRow+"' value='"+ntotdue+"' readonly=\"true\" />";
-									
-		var h=z.insertCell(-1);
-		h.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtApplied' id='txtApplied"+lastRow+"' value='"+ntotdue+"' style='text-align:right' autocomplete=\"off\" />";
-								
-		var j=z.insertCell(-1);
-		j.innerHTML = "<div class='col-xs-12 nopadding'><input type='text' class='form-control input-xs' name='txtcSalesAcctTitle' id='txtcSalesAcctTitle"+lastRow+"' value='"+acctdesc+"' autocomplete=\"off\" /> <input type='hidden' name='txtcSalesAcctNo' id='txtcSalesAcctNo"+lastRow+"' value='"+acctcode+"' /></div>";
-									
-		var k=z.insertCell(-1);
-		k.innerHTML = "<div class='col-xs-12 nopadwleft'><input class='btn btn-danger btn-xs' type='button' name='row_delete' id='row_"+lastRow+"_delete' value='delete'/></div>";
-
-		$("#row_"+lastRow+"_delete").on("click", function(){
-			$(this).closest('tr').remove(); 
-			ReIndexMyTable(tranno);
-		});
-
-		$("#txtnEWT"+lastRow).select2();
-		$("#txtnEWT"+lastRow).on("change", function(){
-			computeDue(this);
-			computeGross();
-		});
-											
-		$("input.numeric").autoNumeric('init',{mDec:2});
-		$("input.numeric").on("click focus", function () {
-			$(this).select();
-		});
-										
-		$("input.numeric").on("keyup", function (e) {
-			setPosi($(this).attr('name'),e.keyCode,'MyTable');
-			computeGross();
-		});								
-								
-								$("#txtcSalesAcctTitle"+lastRow).on("click focus", function(event) {
-									$(this).select();
-								});
-								
-								$("#txtcSalesAcctTitle"+lastRow).typeahead({
-							
-									items: 10,
-									source: function(request, response) {
-										$.ajax({
-											url: "../th_accounts.php",
-											dataType: "json",
-											data: {
-												query: $("#txtcSalesAcctTitle"+lastRow).val()
-											},
-											success: function (data) {
-												response(data);
-												
-											}
-										});
-									},
-									autoSelect: true,
-									displayText: function (item) {
-										return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.name + "</small></div>";
-									},
-									highlighter: Object,
-									afterSelect: function(item, event) { 
-										$("#txtcSalesAcctTitle"+lastRow).val(item.name).change(); 
-										$("#txtcSalesAcctNo"+lastRow).val(item.id);
-										
-										setPosi("txtcSalesAcctTitle"+lastRow,13,'MyTable');
-										
-									}
-								});
-												 
-
-
-					computeGross(); 
-
-					if(parseFloat(ncm)!==0){
-						getrefreturn(tranno);
-					}
-	 
-	 
- 	});
- 
-	if(i==0){
-		alert("No Invoice is selected!")
-	}
-	
-	$('#myModal').modal('hide');
- 
-}
-
-function computeDue(selewt){
-
-	lastRow = selewt.attributes["id"].value;
-	lastRow = lastRow.replace("txtnEWT","");
-	lastRow = lastRow.replace("[]","");
-
-	///	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
-	//	var lastRow = tbl.length-1;
-	//	if(lastRow!=0){
-	//		var x = 0;
 			
-	//		for (z=1; z<=lastRow; z++){
-	//			var varngrs = $("#txtvatamt"+lastRow).val().replace(/,/g,'');
-	//			var varngrs = $("#txtSIGross"+lastRow).val().replace(/,/g,'');
-				var varngrs = $("#txtSIGross"+lastRow).val().replace(/,/g,'');
-	//		}
-
-	//	}
-
-	varnnet =  $("#txtnetvat"+lastRow).val().replace(/,/g,'');
-	ndue = $("#txtDue"+lastRow).val().replace(/,/g,'');
-
-	xcb = 0;
-	var len = selewt.options.length;
-	for (var i = 0; i < len; i++) {
-		opt = selewt.options[i];
-
-		if (opt.selected) {
-			//alert(opt.value+ " : " + opt.dataset.rate + " : " + opt.dataset.base);
-
-			if(opt.dataset.base=="NET"){
-				xcb = xcb + parseFloat(varnnet)*(opt.dataset.rate/100);
-			}else{
-				xcb = xcb + parseFloat(varngrs)*(opt.dataset.rate/100);
-			}
-
+			tot3 = parseFloat(totCR) - parseFloat(totDR);	
 		}
+		*/
+
+
+		$("#txtnApplied").val(tot);
+		$("#txtnApplied").autoNumeric('destroy');
+		$("#txtnApplied").autoNumeric('init',{mDec:2});
+
+		var outbalyy = parseFloat($("#txtnGross").val().replace(/,/g,'')) - parseFloat(tot);
+		$("#txtnOutBal").val(outbalyy);
+
+		$("#txtnOutBal").autoNumeric('destroy');
+		$("#txtnOutBal").autoNumeric('init',{mDec:2, vMin:-99999999999999999.99});
+
 	}
 
-											
-	$("#txtnEWTAmt"+lastRow).val(xcb);
-	xcbdue = varngrs - xcb;
-											
-	$("#txtDue"+lastRow).val(xcbdue);
-	$("#txtApplied"+lastRow).val(xcbdue);
-
-	$("#txtnEWTAmt"+lastRow).autoNumeric('destroy');
-	$("#txtnEWTAmt"+lastRow).autoNumeric('init',{mDec:2});
-
-	$("#txtDue"+lastRow).autoNumeric('destroy');
-	$("#txtDue"+lastRow).autoNumeric('init',{mDec:2});
-											
-	$("#txtApplied"+lastRow).autoNumeric('destroy');
-	$("#txtApplied"+lastRow).autoNumeric('init',{mDec:2});
-
-}
-
-function ReIndexMyTable(tranno){
-	$("#MyTable > tbody > tr").each(function(index) {   
-		tx2 = index+1;
-		//$(this).find('input[type=hidden][name="txtcSalesNo"]').attr("name","txtcSalesNo"+tx2);
-		$(this).find('input[type=hidden][name="txtcSalesNo"]').attr("id","txtcSalesNo"+tx2);
-
-		//$(this).find('input[name="txtSIGross"]').attr("name","txtSIGross"+tx2);
-		$(this).find('input[name="txtSIGross"]').attr("id","txtSIGross"+tx2);
-
-		//$(this).find('input[name="txtndebit"]').attr("name","txtndebit"+tx2);
-		$(this).find('input[name="txtndebit"]').attr("id","txtndebit"+tx2);
-		$(this).find('button[name="btnadddm"]').attr("id","btnadddm"+tx2);
-		$(this).find('input[name="txtndebit"]').attr("onclick","addCM('DM','"+tranno+"','txtndebit"+tx2+"')");
-
-		//$(this).find('input[name="txtncredit"]').attr("name","txtncredit"+tx2);
-		$(this).find('input[name="txtncredit"]').attr("id","txtncredit"+tx2);
-		$(this).find('button[name="btnaddcm"]').attr("id","btnaddcm"+tx2);
-		$(this).find('input[name="txtncredit"]').attr("onclick","addCM('CM','"+tranno+"','txtncredit"+tx2+"')");
-
-		//$(this).find('input[name="txtnpayments"]').attr("name","txtnpayments"+tx2);
-		$(this).find('input[name="txtnpayments"]').attr("id","txtnpayments"+tx2);
-
-		//$(this).find('input[name="txtnvatcode"]').attr("name","txtnvatcode"+tx2);
-		$(this).find('input[name="txtnvatcode"]').attr("id","txtnvatcode"+tx2);
-
-		//$(this).find('input[type=hidden][name="txtnvatrate"]').attr("name","txtnvatrate"+tx2);					
-		$(this).find('input[type=hidden][name="txtnvatrate"]').attr("id","txtnvatrate"+tx2);
-
-		//$(this).find('input[type=hidden][name="txtnvatcodeorig"]').attr("name","txtnvatcodeorig" + tx2);
-		$(this).find('input[type=hidden][name="txtnvatcodeorig"]').attr("id","txtnvatcodeorig" + tx2);
-
-		//$(this).find('input[name="txtvatamt"]').attr("name","txtvatamt" + tx2);
-		$(this).find('input[name="txtvatamt"]').attr("id","txtvatamt" + tx2);
-
-		//$(this).find('input[name="txtvatamt"]').attr("name","txtvatamt" + tx2);
-		$(this).find('input[name="txtvatamt"]').attr("id","txtvatamt" + tx2);
-
-		//$(this).find('input[name="txtnetvat"]').attr("name","txtnetvat" + tx2);
-		$(this).find('input[name="txtnetvat"]').attr("id","txtnetvat" + tx2);
-
-		//$(this).find('select[name="txtnetvat"]').attr("name","txtnetvat" + tx2);
-		$(this).find('select[name="txtnetvat"]').attr("id","txtnetvat" + tx2);
-
-		//$(this).find('select[name="txtnEWT"]').attr("name","txtnEWT" + tx2);
-		$(this).find('select[name="txtnEWT[]"]').attr("id","txtnEWT" + tx2);
-
-		//$(this).find('input[type=hidden][name="hdnewtgiven"]').attr("name","hdnewtgiven" + tx2);
-		$(this).find('input[type=hidden][name="hdnewtgiven"]').attr("id","hdnewtgiven" + tx2);
-
-		//$(this).find('input[type=hidden][name="txtnEWTorig"]').attr("name","txtnEWTorig" + tx2);
-		$(this).find('input[type=hidden][name="txtnEWTorig"]').attr("id","txtnEWTorig" + tx2);
-
-		//$(this).find('input[type=hidden][name="txtnEWTRate"]').attr("name","txtnEWTRate" + tx2);
-		$(this).find('input[type=hidden][name="txtnEWTRate"]').attr("id","txtnEWTRate" + tx2);
-
-		//$(this).find('input[name="txtnEWTAmt"]').attr("name","txtnEWTAmt" + tx2);
-		$(this).find('input[name="txtnEWTAmt"]').attr("id","txtnEWTAmt" + tx2);
-
-		//$(this).find('input[name="txtDue"]').attr("name","txtDue" + tx2);
-		$(this).find('input[name="txtDue"]').attr("id","txtDue" + tx2);
-
-		//$(this).find('input[name="txtApplied"]').attr("name","txtApplied" + tx2);
-		$(this).find('input[name="txtApplied"]').attr("id","txtApplied" + tx2);
-
-		//$(this).find('input[name="txtcSalesAcctTitle"]').attr("name","txtcSalesAcctTitle" + tx2);
-		$(this).find('input[name="txtcSalesAcctTitle"]').attr("id","txtcSalesAcctTitle" + tx2);
-
-		//$(this).find('input[type=hidden][name="txtcSalesAcctNo"]').attr("name","txtcSalesAcctNo" + tx2);
-		$(this).find('input[type=hidden][name="txtcSalesAcctNo"]').attr("id","txtcSalesAcctNo" + tx2);
-
-		//$(this).find('input[name="row_delete"]').attr("name","row_"+tx2+"_delete");
-		$(this).find('input[name="row_delete"]').attr("id","row_"+tx2+"_delete");
-
-	});
-}
-
-function computeGross(){
-	//alert("Hello";)
-	var tot = 0;
-	var tot2 = 0;
-	var tot3 = 0;
-
-	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
-	var lastRow = tbl.length-1;
-	if(lastRow!=0){
-		var x = 0;
+	function computeGrossOthers(){
+		//alert("Hello";)
+		var tbl3 = document.getElementById('MyTblOthers').getElementsByTagName('tr');
+		var lastRow3 = tbl3.length-1;
+		var totDR = 0;
+		var totCR = 0;
+		var tot = 0;
 		
-		for (z=1; z<=lastRow; z++){
-			x = $("#txtApplied" + z).val().replace(/,/g,'');
+		if(lastRow3!=0){
+			var x3DR = 0;
+			var x3CR = 0;
 			
-			x = x.replace(",","");
-			if(x!=0 && x!=""){
-				tot = parseFloat(x) + parseFloat(tot);	
-			}
-
-			// xEWT = document.getElementById('txtnEWT' + z).value;
+			for (z3=1; z3<=lastRow3; z3++){
+				x3DR = $('#txtnotDR' + z3).val().replace(/,/g,'');
+				x3CR = $('#txtnotCR' + z3).val().replace(/,/g,'');
 				
-			//  xEWT = xEWT.replace(",","");
-			//  if(xEWT!=0 && xEWT!=""){
-			//	totEWT = parseFloat(xEWT) + parseFloat(totEWT);  
-			//  }
-		}
-	}
-
-
-	//alert(parseFloat(tot2));
-	/*
-	var tbl3 = document.getElementById('MyTblOthers').getElementsByTagName('tr');
-	var lastRow3 = tbl3.length-1;
-	var totDR = 0;
-	var totCR = 0;
-	var tot3 = 0;
-
-	if(lastRow3!=0){
-		var x3DR = 0;
-		var x3CR = 0;
-		
-		for (z3=1; z3<=lastRow3; z3++){
-			x3DR = document.getElementById('txtnotDR' + z3).value;
-			x3CR = document.getElementById('txtnotCR' + z3).value;
-			
-			x3DR = x3DR.replace(",","");
-			if(x3DR!=0 && x3DR!=""){
-				totDR = parseFloat(x3DR) + parseFloat(totDR);	
+				x3DR = x3DR.replace(",","");
+				if(x3DR!=0 && x3DR!=""){
+					totDR = parseFloat(x3DR) + parseFloat(totDR);	
+				}
+				
+				x3CR = x3CR.replace(",","");
+				if(x3CR!=0 && x3CR!=""){
+					totCR = parseFloat(x3CR) + parseFloat(totCR);	
+				}
 			}
 			
-			x3CR = x3CR.replace(",","");
-			if(x3CR!=0 && x3CR!=""){
-				totCR = parseFloat(x3CR) + parseFloat(totCR);	
-			}
+			tot = parseFloat(totCR) - parseFloat(totDR);	
 		}
 		
-		tot3 = parseFloat(totCR) - parseFloat(totDR);	
+		$("#txtnApplied").val(tot);
+		$("#txtnApplied").autoNumeric('destroy');
+		$("#txtnApplied").autoNumeric('init',{mDec:2});
+
+		var outbalyy = parseFloat($("#txtnGross").val().replace(/,/g,'')) - parseFloat(tot);
+		$("#txtnOutBal").val(outbalyy);
+
+		$("#txtnOutBal").autoNumeric('destroy');
+		$("#txtnOutBal").autoNumeric('init',{mDec:2, vMin:-99999999999999999.99});
+
 	}
-	*/
 
-
-	$("#txtnApplied").val(tot);
-	$("#txtnApplied").autoNumeric('destroy');
-	$("#txtnApplied").autoNumeric('init',{mDec:2});
-
-	var outbalyy = parseFloat($("#txtnGross").val().replace(/,/g,'')) - parseFloat(tot);
-	$("#txtnOutBal").val(outbalyy);
-
-	$("#txtnOutBal").autoNumeric('destroy');
-	$("#txtnOutBal").autoNumeric('init',{mDec:2, vMin:-99999999999999999.99});
-
-}
-
-
-
-function setPosi(nme,keyCode,tbl){
+	function setPosi(nme,keyCode,tbl){
 		var r = nme.replace(/\D/g,'');
 		var namez = nme.replace(/[0-9]/g, '');
 		
@@ -2066,80 +2215,164 @@ function setPosi(nme,keyCode,tbl){
 			
 		//}
 
-}
-
-function disabled(){
-
-	$("#frmOR :input").attr("disabled", true);
-	
-	
-	$("#txtctranno").attr("disabled", false);
-	$("#btnMain").attr("disabled", false);
-	$("#btnNew").attr("disabled", false);
-	$("#btnPrint").attr("disabled", false);
-	$("#btnEdit").attr("disabled", false); 
-
-	if(document.getElementById("hdnposted").value==1 && document.getElementById("hdnvoid").value==0){
-		$("#btnentry").attr("disabled", false);
 	}
 
-	$("#btn-closemod").attr("disabled", false); 
-	
+	function addacct(){
 
-}
+		var tbl = document.getElementById('MyTblOthers').getElementsByTagName('tr');
+		var lastRow = tbl.length;
 
-function enabled(){
+		var a=document.getElementById('MyTblOthers').insertRow(-1);
 
+		var v=a.insertCell(0);
+			v.style.width = "150px";
+			v.style.padding = "1px";
+		var w=a.insertCell(1);
+			w.style.padding = "1px";
+		var xDR=a.insertCell(2);
+			xDR.style.width = "100px";
+			xDR.style.padding = "1px";
+		var xCR=a.insertCell(3);
+			xCR.style.width = "100px";
+			xCR.style.padding = "1px";
+		var y=a.insertCell(4);
+			y.style.width = "50px";
+			y.style.padding = "1px";
 
-	 if(document.getElementById("hdnposted").value==1 || document.getElementById("hdncancel").value==1){
+		v.innerHTML = "<input type='text' name=\"txtacctitleID"+lastRow+"\" id=\"txtacctitleID"+lastRow+"\" class=\"form-control input-xs\" placeholder=\"Enter Acct Code...\" readonly>";
+		w.innerHTML = "<input type='text' name=\"txtacctitle"+lastRow+"\" id=\"txtacctitle"+lastRow+"\" class=\"accountsname form-control input-xs\" placeholder=\"Search Acct Desc...\" autocomplete=\"off\" data-nme=\"txtacctitle\">";
+		xDR.innerHTML = "<input type='text' name=\"txtnotDR"+lastRow+"\" id=\"txtnotDR"+lastRow+"\" class=\"numericNO form-control input-xs\" style=\"text-align:right\" value=\"0.00\" required autocomplete=\"off\">";
+		xCR.innerHTML = "<input type='text' name=\"txtnotCR"+lastRow+"\" id=\"txtnotCR"+lastRow+"\" class=\"numericNO form-control input-xs\" style=\"text-align:right\" value=\"0.00\" required autocomplete=\"off\">";
+		y.innerHTML = "<input class='btn btn-danger btn-xs' type='button' id='row3_"+lastRow+"_delete' value='delete' onClick=\"deleteRow3(this);\"/>";
+
+		//alert(lastRow);
+		$("#txtacctitle"+lastRow).focus();
+
+		$("input.numericNO").autoNumeric('init',{mDec:2});
+		$("input.numericNO").on("click focus", function () {
+			$(this).select();
+		});
+												
+		$("input.numericNO").on("keyup", function (e) {
+			setPosi($(this).attr('name'),e.keyCode,'MyTblOthers');
+			computeGrossOthers();
+		});
+									
+		$("#txtacctitleID"+lastRow+", #txtacctitle"+lastRow).on("click focus", function(event) {
+			$(this).select();
+		});
+
+	}
+
+	function deleteRow3(r) {
+		var tbl = document.getElementById('MyTblOthers').getElementsByTagName('tr');
+		var lastRow = tbl.length;
+		var i=r.parentNode.parentNode.rowIndex;
+		document.getElementById('MyTblOthers').deleteRow(i);
+		var lastRow = tbl.length;
+		var z; //for loop counter changing textboxes ID;
+
+		for (z=i+1; z<=lastRow; z++){
+			var tempOacctno = document.getElementById('txtacctitleID' + z);
+			var tempOctitle = document.getElementById('txtacctitle' + z);
+			var tempODR = document.getElementById('txtnotDR' + z);
+			var tempOCR = document.getElementById('txtnotCR' + z);
+			var tempOdelbtn = document.getElementById('row3_'+z+'_delete');
+				
+			var x = z-1;
+			tempOacctno.id = "txtacctitleID" + x;
+			tempOacctno.name = "txtacctitleID" + x;
+			tempOctitle.id = "txtacctitle" + x;
+			tempOctitle.name = "txtacctitle" + x;
+			tempODR.id = "txtnotDR" + x;
+			tempODR.name = "txtnotDR" + x;
+			tempOCR.id = "txtnotCR" + x;
+			tempOCR.name = "txtnotCR" + x;
+			tempOdelbtn.id = "row3_"+x+"_delete";
+			tempOdelbtn.name = "row3_"+x+"_delete";
+				
+		}
+
+		computeGross();
+	}
+
+	function disabled(){
+
+		$("#frmOR :input").attr("disabled", true);
 		
-		if(document.getElementById("hdnposted").value==1){ 
-			if(document.getElementById("hdnvoid").value==1){
-				var msgsx = "VOIDED";
-			}else{
-				var msgsx = "POSTED";
+		
+		$("#txtctranno").attr("disabled", false);
+		$("#btnMain").attr("disabled", false);
+		$("#btnNew").attr("disabled", false);
+		$("#btnPrint").attr("disabled", false);
+		$("#btnEdit").attr("disabled", false); 
+
+		if(document.getElementById("hdnposted").value==1 && document.getElementById("hdnvoid").value==0){
+			$("#btnentry").attr("disabled", false);
+		}
+
+		$("#btn-closemod").attr("disabled", false); 
+		
+
+	}
+
+	function enabled(){
+
+
+		if(document.getElementById("hdnposted").value==1 || document.getElementById("hdncancel").value==1){
+			
+			if(document.getElementById("hdnposted").value==1){ 
+				if(document.getElementById("hdnvoid").value==1){
+					var msgsx = "VOIDED";
+				}else{
+					var msgsx = "POSTED";
+				}
+				
 			}
 			
+			if(document.getElementById("hdncancel").value==1){
+				var msgsx = "CANCELLED";
+			}
+			
+			document.getElementById("statmsgz").innerHTML = "<font style=\"font-size: x-small\">TRANSACTION IS ALREADY "+msgsx+", EDITING IS NOT ALLOWED!</font>";
+			document.getElementById("statmsgz").style.color = "#FF0000";
+			
+		}
+		else{
+			
+			if($("#selpayment").val()=="Cheque" || $("#selpaytype").val()=="Sales"){
+				$("#txtnGross").attr("readonly", true);
+			}
+			
+			$("#frmOR :input").attr("disabled", false);
+			
+			$("#txtctranno").attr("readonly", true);
+			$("#btnMain").attr("disabled", true);
+			$("#btnNew").attr("disabled", true);
+			$("#btnPrint").attr("disabled", true);
+			$("#btnEdit").attr("disabled", true);
+			$("#btnentry").attr("disabled", true); 
+
+			if($("#isNoRef").find(":selected").val()==1){
+				$("#btnaddOthers").attr("disabled", false);
+			}else{
+				$("#btnaddOthers").attr("disabled", true);
+			}
+		
+		}
+
+	}
+
+	function chkSIEnter(keyCode,frm){
+
+		if(keyCode==13){			
+			document.getElementById(frm).action = "OR_edit2.php";
+			document.getElementById(frm).submit();
 		}
 		
-		if(document.getElementById("hdncancel").value==1){
-			var msgsx = "CANCELLED";
-		}
-		
-		document.getElementById("statmsgz").innerHTML = "<font style=\"font-size: x-small\">TRANSACTION IS ALREADY "+msgsx+", EDITING IS NOT ALLOWED!</font>";
-		document.getElementById("statmsgz").style.color = "#FF0000";
-		
-	}
-	else{
-		
-		if($("#selpayment").val()=="Cheque" || $("#selpaytype").val()=="Sales"){
-			$("#txtnGross").attr("readonly", true);
-		}
-		
-		$("#frmOR :input").attr("disabled", false);
-		
-		$("#txtctranno").attr("readonly", true);
-		$("#btnMain").attr("disabled", true);
-		$("#btnNew").attr("disabled", true);
-		$("#btnPrint").attr("disabled", true);
-		$("#btnEdit").attr("disabled", true);
-		$("#btnentry").attr("disabled", true);
-	
 	}
 
-}
-
-function chkSIEnter(keyCode,frm){
-
-	if(keyCode==13){			
-		document.getElementById(frm).action = "OR_edit2.php";
-		document.getElementById(frm).submit();
-	}
-	
-}
-
-
-function addCM(xyadjtype,xytran,txtbx){
+	function addCM(xyadjtype,xytran,txtbx){
 		var tbl = document.getElementById('MyTableCMx').getElementsByTagName('tr');
 		var lastRow2 = tbl.length-1;
 
@@ -2328,6 +2561,10 @@ function addCM(xyadjtype,xytran,txtbx){
 					}
 				});
 			}
+	}
+
+	function changeDet(){
+		$('#MyTable tbody').empty(); 
 	}
 
 </script>

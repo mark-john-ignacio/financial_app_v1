@@ -1,44 +1,47 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
 
-$dmonth = date("m");
-$dyear = date("y");
-$company = $_SESSION['companyid'];
-
-
-$chkSales = mysqli_query($con,"select * from paybill where compcode='$company' and YEAR(dtrandate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");
-if (mysqli_num_rows($chkSales)==0) {
-	$cSINo = "PV".$dmonth.$dyear."00001";
-}
-else {
-	while($row = mysqli_fetch_array($chkSales, MYSQLI_ASSOC)){
-		$lastSI = $row['ctranno'];
+	if(!isset($_SESSION)){
+		session_start();
 	}
-	
-	
-	if(substr($lastSI,2,2) <> $dmonth){
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+
+	$dmonth = date("m");
+	$dyear = date("y");
+	$company = $_SESSION['companyid'];
+
+	$chkSales = mysqli_query($con,"select * from paybill where compcode='$company' and YEAR(dtrandate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");
+	if (mysqli_num_rows($chkSales)==0) {
 		$cSINo = "PV".$dmonth.$dyear."00001";
 	}
-	else{
-		$baseno = intval(substr($lastSI,6,5)) + 1;
-		$zeros = 5 - strlen($baseno);
-		$zeroadd = "";
-		
-		for($x = 1; $x <= $zeros; $x++){
-			$zeroadd = $zeroadd."0";
+	else {
+		while($row = mysqli_fetch_array($chkSales, MYSQLI_ASSOC)){
+			$lastSI = $row['ctranno'];
 		}
 		
-		$baseno = $zeroadd.$baseno;
-		$cSINo = "PV".$dmonth.$dyear.$baseno;
+		
+		if(substr($lastSI,2,2) <> $dmonth){
+			$cSINo = "PV".$dmonth.$dyear."00001";
+		}
+		else{
+			$baseno = intval(substr($lastSI,6,5)) + 1;
+			$zeros = 5 - strlen($baseno);
+			$zeroadd = "";
+			
+			for($x = 1; $x <= $zeros; $x++){
+				$zeroadd = $zeroadd."0";
+			}
+			
+			$baseno = $zeroadd.$baseno;
+			$cSINo = "PV".$dmonth.$dyear.$baseno;
+		}
 	}
-}
 
-	
-	
+	//echo "<pre>";
+	//print_r($_POST);
+	//echo "</pre>";
+
+		
 	$cCustID = mysqli_real_escape_string($con, $_POST['txtcustid']);
 	$cPayee = mysqli_real_escape_string($con, $_POST['txtpayee']);
 	$cAcctNo = mysqli_real_escape_string($con, $_POST['txtcacctid']);
@@ -82,7 +85,7 @@ else {
 
 	$dret = 0;
 	if(isset($_REQUEST['isNoRef'])){
-		$dret = 1;
+		$dret = $_REQUEST['isNoRef'];
 	}
 	
 
@@ -113,7 +116,17 @@ else {
 		$napplied = str_replace( ',', '', $napplied );
 
 		$caccno = mysqli_real_escape_string($con, $_POST['cacctno'.$z]); 
-		$hdnewt = mysqli_real_escape_string($con, $_POST['napvewt'.$z]); 
+
+		if($_POST['isNoRef']==1){
+			$hdnewt =$namnt; 
+			$hdnewtcode = mysqli_real_escape_string($con, $_POST['napvewt'.$z]);
+		}else{
+			$hdnewt = mysqli_real_escape_string($con, $_POST['napvewt'.$z]); 
+			$hdnewtcode = "";
+		}
+		 
+
+		$hdnentrtyp = mysqli_real_escape_string($con, $_POST['selentrytyp'.$z]);
 
 		if($napplied<>0){
 			
@@ -124,8 +137,8 @@ else {
 			if($dapvdate==""){
 				$dapvdate = date("m/d/Y");
 			}
-			
-			if (!mysqli_query($con, "INSERT INTO `paybill_t`(`compcode`, `cidentity`, `nident`, `ctranno`, `crefrr`, `capvno`, `dapvdate`, `namount`, `ndiscount`, `nowed`, `napplied`, `cacctno`, `newtamt`) values('$company', '$refcidenttran', '$cnt', '$cSINo', '$crefrr', '$capvno', STR_TO_DATE('$dapvdate', '%m/%d/%Y'), $namnt, $ndiscount, $nowed, $napplied, '$caccno', $hdnewt)")) {
+
+			if (!mysqli_query($con, "INSERT INTO `paybill_t`(`compcode`, `cidentity`, `nident`, `ctranno`, `crefrr`, `capvno`, `dapvdate`, `namount`, `ndiscount`, `nowed`, `napplied`, `cacctno`, `newtamt`, `cewtcode`, `entrytyp`) values('$company', '$refcidenttran', '$cnt', '$cSINo', '$crefrr', '$capvno', STR_TO_DATE('$dapvdate', '%m/%d/%Y'), $namnt, $ndiscount, $nowed, $napplied, '$caccno', '$hdnewt', '$hdnewtcode', '$hdnentrtyp')")) {
 			printf("Errormessage: %s\n", mysqli_error($con));
 			} 
 

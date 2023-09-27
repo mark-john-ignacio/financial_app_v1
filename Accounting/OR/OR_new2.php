@@ -73,6 +73,12 @@
 	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
 	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
 
+	<style>
+		.tblnorm th, td{
+			padding: 2px !important;
+		}
+	</style>
+
 </head>
 
 <body style="padding:5px; height:700px" onLoad="document.getElementById('txtcust').focus();"> 
@@ -94,71 +100,34 @@
 
 						<table width="100%" border="0">
 							<tr>
-								<tH width="210">
-									Deposit To Account					
-								</tH>
-								<td style="padding:2px;" width="500">
-									<?php
-										$sqlchk = mysqli_query($con,"Select a.cacctno, b.cacctdesc, IFNULL(b.nbalance,0) as nbalance From accounts_default a left join accounts b on a.compcode=b.compcode and a.cacctno=b.cacctid where a.compcode='$company' and a.ccode='ORDEBCASH'");
-										if (mysqli_num_rows($sqlchk)!=0) {
-											while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
-												$nDebitDef = $row['cacctno'];
-												$nDebitDesc = $row['cacctdesc'];
-												//$nBalance = $row['nbalance'];
-											}
-										}else{
-											$nDebitDef = "";
-											$nDebitDesc =  "";
-											//$nBalance = 0.000;
-										}
-									?>
-									<div class="col-xs-12 nopadding">
-										<div class="col-xs-6 nopadding">
-											<input type="text" class="form-control input-sm" id="txtcacct" name="txtcacct" width="20px" tabindex="1" placeholder="Search Account Description..." required value="<?php echo $nDebitDesc;?>"  autocomplete="off">
-										</div> 
-										<div class="col-xs-6 nopadwleft">
-											<input type="text" id="txtcacctid" name="txtcacctid" style="border:none; height:30px;" readonly  value="<?php echo $nDebitDef;?>">
-										</div>
-									</div>     
-								</td>
-								<tH width="150"><span style="padding:2px">Date:</span></tH>
+								<tH width="150">Reference:</tH>
 								<td style="padding:2px;">
-									<div class="col-xs-8 nopadding">
-										<?php
-											//get last date
-											$ornostat = "";
-													$sqlchk = mysqli_query($con,"select * from receipt where compcode='$company' Order By ddate desc LIMIT 1");
-											if (mysqli_num_rows($sqlchk)!=0) {
-												while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
-													$dORLastDate = date("m/d/Y", strtotime($row['dcutdate']));
-												}
-											}else{
-													$dORLastDate = date("m/d/Y");
-											}
-										?>
-										<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $dORLastDate; ?>"/>
-									</div>   
-								</td>
-							</tr>
-							<tr>
-								<tH>&nbsp;</tH>
-								<td style="padding:2px;">&nbsp;</td>
-								<tH>&nbsp;</tH>
-								<td style="padding:2px;">&nbsp;</td>
-							</tr>
-							<tr>
-								<tH width="100" valign="top">Payor:</tH>
-								<td valign="top" style="padding:2px">
-								<div class="col-xs-12 nopadding">
-										<div class="col-xs-6 nopadding">
-											<input type="text" class="typeahead form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="2" placeholder="Search Customer Name..." required autocomplete="off">
-								</div> 
-								<div class="col-xs-3 nopadwleft">
-											<input type="text" id="txtcustid" name="txtcustid" style="border:none; height:30px;" readonly>
+									<div class="col-xs-12 nopadding">
+											<div class="col-xs-5 nopadding">
+
+												<select id="isNoRef" name="isNoRef" class="form-control input-sm selectpicker" onchange="changeDet();">
+													<option value="0">With Sales Invoice</option>
+													<option value="1">No Sales Invoice Reference</option>
+												</select> 
+											</div>
 										</div>
-								</div>        
 								</td>
-								<tH width="150" style="padding:2px">Receipt No.:</tH>
+								<tH width="150">&nbsp;</tH>
+								<td style="padding:2px;">&nbsp;</td>
+							</tr>
+							<tr>
+								<tH width="150">Payor:</tH>
+								<td valign="top" style="padding:2px">
+									<div class="col-xs-12 nopadding">
+										<div class="col-xs-3 nopadding">
+											<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" readonly>
+										</div>
+										<div class="col-xs-7 nopadwleft">
+											<input type="text" class="typeahead form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="2" placeholder="Search Customer Name..." required autocomplete="off">
+										</div> 
+									</div>        
+								</td>
+								<tH style="padding:2px">Receipt No.:</tH>
 								<td style="padding:2px"><div class="col-xs-12 nopadding">
 									<div class="col-xs-8 nopadding">
 										<?php
@@ -196,36 +165,83 @@
 								</div></td>
 							</tr>
 							<tr>
-								<tH width="100" valign="top">Payment Method:</tH>
+								<tH width="150">Payment Method:</tH>
 								<td valign="top" style="padding:2px">
-								
-								
-								<div class="col-xs-12 nopadding">
-								<div class="col-xs-6 nopadding">
-									<select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
-											<option value="cash">Cash</option>
-											<option value="cheque">Cheque</option>
-											<option value="bank transfer">Bank Transfer</option>
-											<option value="mobile payment">Mobile Payment</option>
-											<option value="credit card">Credit Card</option>
-											<option value="debit card">Debit Card</option>
-										</select>
-								</div>
-								
-								<div class="col-xs-4 nopadwleft">
-									<button type="button" class="btn btn-primary btn-sm" tabindex="6" style="width:100%" name="btnDet" id="btnDet">Details</button>
-							</div>
-								</div>
-								
+																
+									<div class="col-xs-12 nopadding">
+										<div class="col-xs-6 nopadding">
+											<select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
+													<option value="cash">Cash</option>
+													<option value="cheque">Cheque</option>
+													<option value="bank transfer">Bank Transfer</option>
+													<option value="mobile payment">Mobile Payment</option>
+													<option value="credit card">Credit Card</option>
+													<option value="debit card">Debit Card</option>
+												</select>
+										</div>								
+										<div class="col-xs-4 nopadwleft">
+											<button type="button" class="btn btn-primary btn-sm" tabindex="6" style="width:100%" name="btnDet" id="btnDet">Details</button>
+										</div>
+									</div>
 								
 								</td>
-								<th valign="top" style="padding:2px">Amount Received:</th>
-								<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
-									<input type="text" id="txtnGross" name="txtnGross" class="numericchkamt form-control input-sm  text-right numeric" value="0.00" style="text-align:right;" autocomplete="off" required onKeyUp="computeGross();">
-								</div></td>
+								<tH><span style="padding:2px">Receipt Date:</span></tH>
+								<td style="padding:2px;">
+									<div class="col-xs-8 nopadding">
+										<?php
+											//get last date
+											$ornostat = "";
+													$sqlchk = mysqli_query($con,"select * from receipt where compcode='$company' Order By ddate desc LIMIT 1");
+											if (mysqli_num_rows($sqlchk)!=0) {
+												while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
+													$dORLastDate = date("m/d/Y", strtotime($row['dcutdate']));
+												}
+											}else{
+													$dORLastDate = date("m/d/Y");
+											}
+										?>
+										<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $dORLastDate; ?>"/>
+									</div>   
+								</td>
+								
 							</tr>
 							<tr>
-								<tH width="100" rowspan="2" valign="top">Memo:</tH>
+								<tH width="150">
+									Deposit To Account (Dr):				
+								</tH>
+								<td style="padding:2px;" width="500">
+									<?php
+										$sqlchk = mysqli_query($con,"Select a.cacctno, b.cacctdesc, IFNULL(b.nbalance,0) as nbalance From accounts_default a left join accounts b on a.compcode=b.compcode and a.cacctno=b.cacctid where a.compcode='$company' and a.ccode='ORDEBCASH'");
+										if (mysqli_num_rows($sqlchk)!=0) {
+											while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
+												$nDebitDef = $row['cacctno'];
+												$nDebitDesc = $row['cacctdesc'];
+												//$nBalance = $row['nbalance'];
+											}
+										}else{
+											$nDebitDef = "";
+											$nDebitDesc =  "";
+											//$nBalance = 0.000;
+										}
+									?>
+									<div class="col-xs-12 nopadding">
+										<div class="col-xs-3 nopadding">
+											<input type="text" id="txtcacctid" name="txtcacctid" class="form-control input-sm" readonly  value="<?php echo $nDebitDef;?>">
+										</div>
+										<div class="col-xs-7 nopadwleft">
+											<input type="text" class="form-control input-sm" id="txtcacct" name="txtcacct" width="20px" tabindex="1" placeholder="Search Account Description..." required value="<?php echo $nDebitDesc;?>"  autocomplete="off">
+										</div> 
+									</div>     
+								</td>
+								<th style="padding:2px">Amount Received:</th>
+								<td valign="top" style="padding:2px">
+									<div class="col-xs-8 nopadding">
+										<input type="text" id="txtnGross" name="txtnGross" class="numericchkamt form-control input-sm text-right numeric" value="0.00" style="text-align:right;" autocomplete="off" required>
+									</div>
+								</td>
+							</tr>													
+							<tr>
+								<tH width="150" rowspan="2">Memo:</tH>
 								<td rowspan="2" valign="top" style="padding:2px">
 								<div class="col-xs-12 nopadding">
 									<div class="col-xs-10 nopadding">
@@ -233,13 +249,13 @@
 									</div>
 								</div>
 								</td>
-								<th valign="top" style="padding:2px">Amount Applied:</th>
+								<th style="padding:2px">Amount Applied:</th>
 								<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
 									<input type="text" id="txtnApplied" name="txtnApplied" class="numericchkamt form-control input-sm" value="0.00" style="text-align:right;" autocomplete="off" readonly>
 								</div></td>
 							</tr>
 							<tr>
-								<th valign="top" style="padding:2px">Out of Balance:</th>
+								<th style="padding:2px">Out of Balance:</th>
 								<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
 									<input type="text" id="txtnOutBal" name="txtnOutBal" class="numericchkamt form-control input-sm" value="0.00" style="text-align:right;" autocomplete="off" readonly>
 								</div></td>
@@ -260,36 +276,23 @@
 				<hr>
 				<div class="col-xs-12 nopadwdown"><b>Details</b></div>
 
-			<!--
-			<ul class="nav nav-tabs">
-				<li class="active"><a href="#divSales">Sales Invoice</a></li>
-				<li><a href="#divLoans">Loans</a></li>
-				<li><a href="#divOthers">Others</a></li>
-			</ul>
+				<ul class="nav nav-tabs">
+					<li class="active" id="liSales"><a href="#divSales">Sales Invoice</a></li>
+					<li id="liOthers"><a href="#divOthers">Others</a></li>
+				</ul>
 			
-			<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;height: 40vh;text-align: left;overflow: auto">
     		<div class="tab-content">    
-        	<div id="divSales" class="tab-pane fade in active">
-							
-						<div class="col-xs-12 nopadwdown">
-							<button type="button" class="btn btn-xs btn-info" onClick="getInvs();">
-								<i class="fa fa-search"></i>&nbsp; Find Invoice
-							</button>
-        		</div>
-			-->
 
-
-			
-
-						<div style="border: 1px solid #919b9c; height: 40vh; overflow: auto">
+        	<div id="divSales" class="tab-pane fade in active" style="padding-top: 5px !important; padding-bottom: 5px">
+								
 							<div id="tableContainer" class="alt2" dir="ltr" style="
 								margin: 0px;
 								padding: 3px;
-								width: 2300px;
-								height: 300px;
-								text-align: left;">
+								border: 1px solid #919b9c;
+								height: 400px;
+								text-align: left; overflow: auto">
 
-								<table id="MyTable" border="1" bordercolor="#CCCCCC" class="table table-sm">
+								<table id="MyTable" border="1" bordercolor="#CCCCCC" width="2350px" class="tblnorm">
 									<thead>
 										<tr>
 											<th scope="col" width="100px" nowrap>Invoice No</th>
@@ -306,7 +309,8 @@
 											<th scope="col" width="100px" class="text-center" nowrap>Total EWT</th>
 											<th scope="col" width="150px" class="text-center" nowrap>Total Due</th>
 											<th scope="col" width="150px" class="text-center" nowrap>Amt Applied</th>
-											<th scope="col" width="250px" nowrap>&nbsp;Credit Acct</th>
+											<th scope="col" width="80px" nowrap>&nbsp;Credit Acct Code</th>
+											<th scope="col" width="250px" nowrap>&nbsp;Credit Acct Title</th>
 											<th scope="col">&nbsp;</th>
 										</tr>
 									</thead>
@@ -317,15 +321,12 @@
 								<input type="hidden" name="hdnrowcnt" id="hdnrowcnt" value="0">
 								<input type="hidden" name="hdnrowcntcmdm" id="hdnrowcntcmdm" value="0">
 							</div>
-						</div>
 
-			
-					<!--
 					</div>
         
 					<div id="divOthers" class="tab-pane fade">
-						<div class="col-xs-12 nopadwdown">
-							<button type="button" class="btn btn-xs btn-info" onClick="addacct();">
+						<div class="col-xs-12" style="padding-top: 5px !important; padding-bottom: 5px !important; padding-left: 0px !important;">
+							<button type="button" class="btn btn-xs btn-info" id="btnaddOthers" onClick="addacct();" disabled>
 								<i class="fa fa-plus"></i>&nbsp; Add New Line
 							</button>
 						</div>
@@ -335,7 +336,7 @@
               padding: 3px;
               border: 1px solid #919b9c;
               width: 100%;
-              height: 200px;
+              height: 400px;
               text-align: left;
               overflow: auto">
 
@@ -354,9 +355,7 @@
             </div>
        	 	</div>
  				</div>
-			</div>
-			-->
-			
+
 			<br>
 			<table width="100%" border="0" cellpadding="3">
 				<tr>
@@ -370,7 +369,7 @@
 						?>
 
 						<div class="dropdown" style="display:inline-block !important;">
-							<button type="button" data-toggle="dropdown" class="btn btn-info btn-sm dropdown-toggle">
+							<button type="button" data-toggle="dropdown" id="btnaddSI" class="btn btn-info btn-sm dropdown-toggle">
 								SI <br>(Insert) <span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu">
@@ -381,7 +380,7 @@
 						<?php
 							}else{
 						?>
-							<button type="button" class="btn btn-info btn-sm" onClick="getInvs('Trade');">
+							<button type="button" class="btn btn-info btn-sm" id="btnaddSI" onClick="getInvs('Trade');">
 								SI <br>(Insert)
 							</button>
 						<?php
@@ -398,208 +397,208 @@
 
   </fieldset>
 
-	<!--CASH DETAILS DENOMINATIONS -->
-	<div class="modal fade" id="CashModal" role="dialog">
-			<div class="modal-dialog">
-					<div class="modal-content">
-							<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-									<h3 class="modal-title" id="cashheader">CASH DENOMINATION</h3>
-							</div>
-							<div class="modal-body" style="height:40vh">
-							
-								<div class="form-group">
-											<div class="col-xs-12 nopadding pre-scrollable" style="height:37vh">
-
-										<table width="100%" border="0" class="table table-scroll table-condensed">
-										<thead>
-												<tr>
-													<td align="center"><b>Denomination</b></td>
-													<td align="center"><b>Pieces</b></td>
-													<td align="center"><b>Amount</b></td>
-												</tr>
-										</thead>
-										<tbody>
-												<tr>
-													<td align="center">1000</td>
-													<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom1000' id='txtDenom1000' /></div></td>
-													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt1000' id='txtAmt1000' readonly/></div></td>
-												</tr>
-												<tr>
-													<td align="center">500</td>
-													<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom500' id='txtDenom500'/></div></td>
-													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt500' id='txtAmt500' readonly/></div></td>
-												</tr>
-												<tr>
-													<td align="center">200</td>
-													<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom200' id='txtDenom200'/></div></td>
-													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt200' id='txtAmt200' readonly/></div></td>
-												</tr>
-												<tr>
-													<td align="center">100</td>
-													<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom100' id='txtDenom100'/></div></td>
-													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt100' id='txtAmt100' readonly/></div></td>
-												</tr>
-												<tr>
-													<td align="center">50</td>
-													<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom50' id='txtDenom50'/></div></td>
-													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt50' id='txtAmt50' readonly/></div></td>
-												</tr>
-												<tr>
-													<td align="center">20</td>
-													<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom20' id='txtDenom20'/></div></td>
-													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt20' id='txtAmt20' readonly/></div></td>
-												</tr>
-												<tr>
-													<td align="center">10</td>
-													<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom10' id='txtDenom10'/></div></td>
-													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt10' id='txtAmt10' readonly/></div></td>
-												</tr>
-												<tr>
-													<td align="center">5</td>
-													<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom5' id='txtDenom5'/></div></td>
-													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt5' id='txtAmt5' readonly/></div></td>
-												</tr>
-												<tr>
-													<td align="center">1</td>
-													<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom1' id='txtDenom1'/></div></td>
-													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt1' id='txtAmt1' readonly/></div></td>
-												</tr>
-												<tr>
-													<td align="center">0.25</td>
-													<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom025' id='txtDenom025'/></div></td>
-													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt025' id='txtAmt025' readonly/></div></td>
-												</tr>
-												<tr>
-													<td align="center">0.10</td>
-													<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom010' id='txtDenom010'/></div></td>
-													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt010' id='txtAmt010' readonly/></div></td>
-												</tr>
-												<tr>
-													<td align="center">0.05</td>
-													<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom005' id='txtDenom005'/></div></td>
-													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt005' id='txtAmt005' readonly/></div></td>
-												</tr>
-											</tbody>
-											</table>
-									</div>
+		<!--CASH DETAILS DENOMINATIONS -->
+		<div class="modal fade" id="CashModal" role="dialog">
+				<div class="modal-dialog">
+						<div class="modal-content">
+								<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h3 class="modal-title" id="cashheader">CASH DENOMINATION</h3>
 								</div>
-							
-							</div>
-							<div class="modal-footer">
-									
-							</div>
-					</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->
-	<!-- End Bootstrap modal -->
+								<div class="modal-body" style="height:40vh">
+								
+									<div class="form-group">
+												<div class="col-xs-12 nopadding pre-scrollable" style="height:37vh">
 
-	<div class="modal fade" id="ChequeModal" role="dialog">
-			<div class="modal-dialog">
-					<div class="modal-content">
-							<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-									<h3 class="modal-title" id="chequeheader">CHEQUE DETAILS</h3>
-							</div>
-							<div class="modal-body">
-							
-										<table width="100%" border="0" class="table table-condensed">
-												<tr>
-													<td><b>Bank Name</b></td>
-													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtBankName' id='txtBankName' placeholder="Input Bank Name"/></div></td>
-												</tr>
-												<tr>
-													<td><b>Cheque Date</b></td>
-													<td>
-													<div class='col-sm-12'>
-															<input type='text' class="form-control input-sm" placeholder="Pick a Date" name="txtChekDate" id="txtChekDate"/>
+											<table width="100%" border="0" class="table table-scroll table-condensed">
+											<thead>
+													<tr>
+														<td align="center"><b>Denomination</b></td>
+														<td align="center"><b>Pieces</b></td>
+														<td align="center"><b>Amount</b></td>
+													</tr>
+											</thead>
+											<tbody>
+													<tr>
+														<td align="center">1000</td>
+														<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom1000' id='txtDenom1000' /></div></td>
+														<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt1000' id='txtAmt1000' readonly/></div></td>
+													</tr>
+													<tr>
+														<td align="center">500</td>
+														<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom500' id='txtDenom500'/></div></td>
+														<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt500' id='txtAmt500' readonly/></div></td>
+													</tr>
+													<tr>
+														<td align="center">200</td>
+														<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom200' id='txtDenom200'/></div></td>
+														<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt200' id='txtAmt200' readonly/></div></td>
+													</tr>
+													<tr>
+														<td align="center">100</td>
+														<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom100' id='txtDenom100'/></div></td>
+														<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt100' id='txtAmt100' readonly/></div></td>
+													</tr>
+													<tr>
+														<td align="center">50</td>
+														<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom50' id='txtDenom50'/></div></td>
+														<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt50' id='txtAmt50' readonly/></div></td>
+													</tr>
+													<tr>
+														<td align="center">20</td>
+														<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom20' id='txtDenom20'/></div></td>
+														<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt20' id='txtAmt20' readonly/></div></td>
+													</tr>
+													<tr>
+														<td align="center">10</td>
+														<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom10' id='txtDenom10'/></div></td>
+														<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt10' id='txtAmt10' readonly/></div></td>
+													</tr>
+													<tr>
+														<td align="center">5</td>
+														<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom5' id='txtDenom5'/></div></td>
+														<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt5' id='txtAmt5' readonly/></div></td>
+													</tr>
+													<tr>
+														<td align="center">1</td>
+														<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom1' id='txtDenom1'/></div></td>
+														<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt1' id='txtAmt1' readonly/></div></td>
+													</tr>
+													<tr>
+														<td align="center">0.25</td>
+														<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom025' id='txtDenom025'/></div></td>
+														<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt025' id='txtAmt025' readonly/></div></td>
+													</tr>
+													<tr>
+														<td align="center">0.10</td>
+														<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom010' id='txtDenom010'/></div></td>
+														<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt010' id='txtAmt010' readonly/></div></td>
+													</tr>
+													<tr>
+														<td align="center">0.05</td>
+														<td><div class='col-xs-12'><input type='text' class='numericint form-control input-sm' name='txtDenom005' id='txtDenom005'/></div></td>
+														<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtAmt005' id='txtAmt005' readonly/></div></td>
+													</tr>
+												</tbody>
+												</table>
+										</div>
+									</div>
+								
+								</div>
+								<div class="modal-footer">
+										
+								</div>
+						</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+		<!-- End Bootstrap modal -->
 
-													</div>
-													</td>
-												</tr>
-												<tr>
-													<td><b>Cheque Number</b></td>
-													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtCheckNo' id='txtCheckNo' placeholder="Input Cheque Number" /></div></td>
-												</tr>
-												<tr>
-													<td><b>Cheque Amount</b></td>
-													<td><div class='col-xs-12'><input type='text' class='numericchkamt form-control input-sm' name='txtCheckAmt' id='txtCheckAmt' placeholder="Input Cheque Amount" /></div></td>
-												</tr>
-										</table>
-							
-							</div>
-							<div class="modal-footer">
-									
-							</div>
-					</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->
+		<div class="modal fade" id="ChequeModal" role="dialog">
+				<div class="modal-dialog">
+						<div class="modal-content">
+								<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h3 class="modal-title" id="chequeheader">CHEQUE DETAILS</h3>
+								</div>
+								<div class="modal-body">
+								
+											<table width="100%" border="0" class="table table-condensed">
+													<tr>
+														<td><b>Bank Name</b></td>
+														<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtBankName' id='txtBankName' placeholder="Input Bank Name"/></div></td>
+													</tr>
+													<tr>
+														<td><b>Cheque Date</b></td>
+														<td>
+														<div class='col-sm-12'>
+																<input type='text' class="form-control input-sm" placeholder="Pick a Date" name="txtChekDate" id="txtChekDate"/>
+
+														</div>
+														</td>
+													</tr>
+													<tr>
+														<td><b>Cheque Number</b></td>
+														<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtCheckNo' id='txtCheckNo' placeholder="Input Cheque Number" /></div></td>
+													</tr>
+													<tr>
+														<td><b>Cheque Amount</b></td>
+														<td><div class='col-xs-12'><input type='text' class='numericchkamt form-control input-sm' name='txtCheckAmt' id='txtCheckAmt' placeholder="Input Cheque Amount" /></div></td>
+													</tr>
+											</table>
+								
+								</div>
+								<div class="modal-footer">
+										
+								</div>
+						</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
 
 
-	<div class="modal fade" id="OthersModal" role="dialog">
-			<div class="modal-dialog">
-					<div class="modal-content">
-							<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-									<h3 class="modal-title" id="chequeheader">TRANSACTION DETAILS</h3>
-							</div>
-							<div class="modal-body">
-							
-										<table width="100%" border="0" class="table table-condensed">
-												<tr>
-													<td><b>Payment Description</b></td>
-													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtOTBankName' id='txtOTBankName' placeholder="Input Description"/></div></td>
-												</tr>
-												<tr>
-													<td><b>Reference No.</b></td>
-													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtOTRefNo' id='txtOTRefNo' placeholder="Input Reference No."/></div></td>
-												</tr>
-										</table>
-							
-							</div>
-							<div class="modal-footer">
-									
-							</div>
-					</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
-	</div>
-	<!-- End Bootstrap modal -->
+		<div class="modal fade" id="OthersModal" role="dialog">
+				<div class="modal-dialog">
+						<div class="modal-content">
+								<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h3 class="modal-title" id="chequeheader">TRANSACTION DETAILS</h3>
+								</div>
+								<div class="modal-body">
+								
+											<table width="100%" border="0" class="table table-condensed">
+													<tr>
+														<td><b>Payment Description</b></td>
+														<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtOTBankName' id='txtOTBankName' placeholder="Input Description"/></div></td>
+													</tr>
+													<tr>
+														<td><b>Reference No.</b></td>
+														<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtOTRefNo' id='txtOTRefNo' placeholder="Input Reference No."/></div></td>
+													</tr>
+											</table>
+								
+								</div>
+								<div class="modal-footer">
+										
+								</div>
+						</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+		</div>
+		<!-- End Bootstrap modal -->
 
-	<!-- add CM Module -->
-				<div class="modal fade" id="MyAdjustmentModal" role="dialog">
-   				<div class="modal-dialog modal-lg">
-        		<div class="modal-content">
-            	<div class="modal-header">
-                <button type="button" class="close"  aria-label="Close"  onclick="chkCloseInfo();"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="invadjheader"> Additional AR Adjustment <button class="btn btn-sm btn-primary" name="btnaddcm" id="btnaddcm" type="button">Add</button></h4>           
-							</div>
-    
-            	<div class="modal-body">
-                <input type="hidden" name="hdnrowcnt2" id="hdnrowcnt2"> 
-								<input type="hidden" name="txtdetsinoinfo" id="txtdetsinoinfo">  
-								<input type="hidden" name="txthdnTYPAdj" id="txthdnTYPAdj"> 
-								<input type="hidden" name="txthdnCMtxtbx" id="txthdnCMtxtbx"> 
-				
-                <table id="MyTableCMx" class="MyTable table table-sm" width="100%">
-									<thead>
-										<tr>
-											<th style="border-bottom:1px solid #999" width="50px">Adj Type</th>
-											<th style="border-bottom:1px solid #999">AP CM No.</th>
-											<th style="border-bottom:1px solid #999">Date</th>
-											<th style="border-bottom:1px solid #999">Amount</th>
-											<th style="border-bottom:1px solid #999" width="200px">Remarks</th>
-											<th style="border-bottom:1px solid #999">&nbsp;</th>
-										</tr>
-									</thead>
-									<tbody class="tbody">						
-                  </tbody>
-                </table>
-    
-							</div>
-        		</div><!-- /.modal-content -->
-    			</div><!-- /.modal-dialog -->
-				</div>
-	<!-- /.modal -->
+		<!-- add CM Module -->
+					<div class="modal fade" id="MyAdjustmentModal" role="dialog">
+						<div class="modal-dialog modal-lg">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close"  aria-label="Close"  onclick="chkCloseInfo();"><span aria-hidden="true">&times;</span></button>
+									<h4 class="modal-title" id="invadjheader"> Additional AR Adjustment <button class="btn btn-sm btn-primary" name="btnaddcm" id="btnaddcm" type="button">Add</button></h4>           
+								</div>
+			
+								<div class="modal-body">
+									<input type="hidden" name="hdnrowcnt2" id="hdnrowcnt2"> 
+									<input type="hidden" name="txtdetsinoinfo" id="txtdetsinoinfo">  
+									<input type="hidden" name="txthdnTYPAdj" id="txthdnTYPAdj"> 
+									<input type="hidden" name="txthdnCMtxtbx" id="txthdnCMtxtbx"> 
+					
+									<table id="MyTableCMx" class="MyTable table table-sm" width="100%">
+										<thead>
+											<tr>
+												<th style="border-bottom:1px solid #999" width="50px">Adj Type</th>
+												<th style="border-bottom:1px solid #999">AP CM No.</th>
+												<th style="border-bottom:1px solid #999">Date</th>
+												<th style="border-bottom:1px solid #999">Amount</th>
+												<th style="border-bottom:1px solid #999" width="200px">Remarks</th>
+												<th style="border-bottom:1px solid #999">&nbsp;</th>
+											</tr>
+										</thead>
+										<tbody class="tbody">						
+										</tbody>
+									</table>
+			
+								</div>
+							</div><!-- /.modal-content -->
+						</div><!-- /.modal-dialog -->
+					</div>
+		<!-- /.modal -->
 
 </form>
 
@@ -644,7 +643,7 @@
 							</div>
 					</div><!-- /.modal-content -->
 			</div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->
+		</div><!-- /.modal -->
 	<!-- End Bootstrap modal -->
 
 
@@ -687,7 +686,7 @@
 			$(this).select();
 		});
 		
-		 $('#datetimepicker4, #txtChekDate, #date_delivery').datetimepicker({
+		$('#datetimepicker4, #txtChekDate, #date_delivery').datetimepicker({
 		  format: 'MM/DD/YYYY'
 		});
 
@@ -756,7 +755,6 @@
 			//}
 		});
 
-	
 		$('#txtcacct').typeahead({
 		
 			source: function (query, process) {
@@ -912,93 +910,162 @@
 			AddRefAdj(xadjtype,xsino,"","","","");
 		
 		});
+
+		$("#isNoRef").change(function() {
+			if($(this).find(":selected").val()==1) { 
+				$("#btnaddSI").attr("disabled", true);  
+				$("#btnaddOthers").attr("disabled", false); 
+
+				$("#liSales").attr("class", "");
+				$("#liOthers").attr("class", "active");
+				
+				$("#divSales").attr("class", "tab-pane fade");
+				$("#divOthers").attr("class", "tab-pane fade in active");
+			}else{
+				$("#btnaddSI").attr("disabled", false);
+				$("#btnaddOthers").attr("disabled", true); 
+
+				$("#liSales").attr("class", "active");
+				$("#liOthers").attr("class", "");
+				
+				$("#divSales").attr("class", "tab-pane fade in active");
+				$("#divOthers").attr("class", "tab-pane fade");
+			}
+		});
+
+		$('body').on('focus',".accountsname", function(){
+			var $input = $(".accountsname");
+
+			var id = $(document.activeElement).attr('id');
+			var xname = $(document.activeElement).data('nme');	
+
+			var numid = id.replace(xname,"");
+
+			//alert(xname +" : "+ numid);
+
+			$("#"+id).typeahead({
+				items: 10,
+				source: function(request, response) {
+					$.ajax({
+						url: "../th_accounts.php",
+						dataType: "json",
+						data: {
+							query: $("#"+id).val()
+						},
+						success: function (data) {
+							console.log(data);
+							response(data);
+						}
+					});
+				},
+				autoSelect: true,
+				displayText: function (item) {
+					return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.name + '</small></div>';
+				},
+				highlighter: Object,
+				afterSelect: function(item) { 
+
+					$('#'+xname+numid).val(item.name).change(); 
+					$("#"+xname+"ID"+numid).val(item.id);
+
+				}
+			});
+
+		});
 	
+		$("#txtnGross").on("keyup", function(){
+			if($("#isNoRef").find(":selected").val()==0) { 
+				computeGross();
+			}else{
+				computeGrossOthers();
+			}
+		});
 
 	});
 
-/*
-function deleteRow(r) {
-	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
-	var lastRow = tbl.length;
-	var i=r.parentNode.rowIndex;
+	/*
+	function deleteRow(r) {
+		var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
+		var lastRow = tbl.length;
+		var i=r.parentNode.rowIndex;
 
-	 document.getElementById('MyTable').deleteRow(i);
-	 var lastRow = tbl.length;
-	 var z; //for loop counter changing textboxes ID;
-	 
-		for (z=i+1; z<=lastRow; z++){
-			var tempsalesno = document.getElementById('txtcSalesNo' + z);
-			            
-			var tempgross = document.getElementById('txtSIGross' + z);
-			var tempdebit = document.getElementById('txtndebit' + z);
-			var tempcredit = document.getElementById('txtncredit' + z);
-			var temppaymnts = document.getElementById('txtnpayments' + z);
+		document.getElementById('MyTable').deleteRow(i);
+		var lastRow = tbl.length;
+		var z; //for loop counter changing textboxes ID;
+		
+			for (z=i+1; z<=lastRow; z++){
+				var tempsalesno = document.getElementById('txtcSalesNo' + z);
+										
+				var tempgross = document.getElementById('txtSIGross' + z);
+				var tempdebit = document.getElementById('txtndebit' + z);
+				var tempcredit = document.getElementById('txtncredit' + z);
+				var temppaymnts = document.getElementById('txtnpayments' + z);
 
-			var tempvcode = document.getElementById('txtnvatcode' + z);
-			var tempvrate = document.getElementById('txtnvatrate' + z);
-			var tempvamt = document.getElementById('txtvatamt' + z);
-			var tempvnetamt = document.getElementById('txtnetvat' + z);
-			var tempvcodeorig = document.getElementById('txtnvatcodeorig' + z);
+				var tempvcode = document.getElementById('txtnvatcode' + z);
+				var tempvrate = document.getElementById('txtnvatrate' + z);
+				var tempvamt = document.getElementById('txtvatamt' + z);
+				var tempvnetamt = document.getElementById('txtnetvat' + z);
+				var tempvcodeorig = document.getElementById('txtnvatcodeorig' + z);
 
-			var tempewtcode= document.getElementById('txtnEWT' + z);
-			var tempewtrate = document.getElementById('txtnEWTRate' + z);
-			var tempewtamt = document.getElementById('txtnEWTAmt' + z);
-			var tempewtcodeorig= document.getElementById('txtnEWTorig' + z);
+				var tempewtcode= document.getElementById('txtnEWT' + z);
+				var tempewtrate = document.getElementById('txtnEWTRate' + z);
+				var tempewtamt = document.getElementById('txtnEWTAmt' + z);
+				var tempewtcodeorig= document.getElementById('txtnEWTorig' + z);
 
-			var tempdue= document.getElementById('txtDue' + z);
-			var tempapplies = document.getElementById('txtApplied' + z);
-			var tempsalesacctno = document.getElementById('txtcSalesAcctNo' + z); 
+				var tempdue= document.getElementById('txtDue' + z);
+				var tempapplies = document.getElementById('txtApplied' + z);
+				var tempsalesacctno = document.getElementById('txtcSalesAcctNo' + z); 
 
-			var x = z-1;
-			tempsalesno.id = "txtcSalesNo" + x;
-			tempsalesno.name = "txtcSalesNo" + x;	
+				var x = z-1;
+				tempsalesno.id = "txtcSalesNo" + x;
+				tempsalesno.name = "txtcSalesNo" + x;	
 
-			tempgross.id = "txtSIGross" + x;
-			tempgross.name = "txtSIGross" + x;
+				tempgross.id = "txtSIGross" + x;
+				tempgross.name = "txtSIGross" + x;
 
-			tempdebit.id = "txtndebit" + x;
-			tempdebit.name = "txtndebit" + x;
-			tempcredit.id = "txtncredit" + x;
-			tempcredit.name = "txtncredit" + x;
-			temppaymnts.id = "txtnpayments" + x;
-			temppaymnts.name = "txtnpayments" + x;
+				tempdebit.id = "txtndebit" + x;
+				tempdebit.name = "txtndebit" + x;
+				tempcredit.id = "txtncredit" + x;
+				tempcredit.name = "txtncredit" + x;
+				temppaymnts.id = "txtnpayments" + x;
+				temppaymnts.name = "txtnpayments" + x;
 
-			tempvcode.id = "txtnvatcode" + x;
-			tempvcode.name = "txtnvatcode" + x;
-			tempvrate.id = "txtnvatrate" + x;
-			tempvrate.name = "txtnvatrate" + x;
-			tempvamt.id = "txtvatamt" + x;
-			tempvamt.name = "txtvatamt" + x;
-			tempvnetamt.id = "txtnetvat" + x;
-			tempvnetamt.name = "txtnetvat" + x;
-			tempvcodeorig.id = "txtnvatcodeorig" + x;
-			tempvcodeorig.name = "txtnvatcodeorig" + x;
+				tempvcode.id = "txtnvatcode" + x;
+				tempvcode.name = "txtnvatcode" + x;
+				tempvrate.id = "txtnvatrate" + x;
+				tempvrate.name = "txtnvatrate" + x;
+				tempvamt.id = "txtvatamt" + x;
+				tempvamt.name = "txtvatamt" + x;
+				tempvnetamt.id = "txtnetvat" + x;
+				tempvnetamt.name = "txtnetvat" + x;
+				tempvcodeorig.id = "txtnvatcodeorig" + x;
+				tempvcodeorig.name = "txtnvatcodeorig" + x;
 
-			tempewtcode.id = "txtnEWT" + x;
-			tempewtcode.name = "txtnEWT" + x + "[]";
-			tempewtrate.id = "txtnEWTRate" + x;
-			tempewtrate.name = "txtnEWTRate" + x;
-			tempewtamt.id = "txtnEWTAmt" + x;
-			tempewtamt.name = "txtnEWTAmt" + x;
-			tempewtcodeorig.id = "txtnEWTorig" + x;
-			tempewtcodeorig.name = "txtnEWTorig" + x;
+				tempewtcode.id = "txtnEWT" + x;
+				tempewtcode.name = "txtnEWT" + x + "[]";
+				tempewtrate.id = "txtnEWTRate" + x;
+				tempewtrate.name = "txtnEWTRate" + x;
+				tempewtamt.id = "txtnEWTAmt" + x;
+				tempewtamt.name = "txtnEWTAmt" + x;
+				tempewtcodeorig.id = "txtnEWTorig" + x;
+				tempewtcodeorig.name = "txtnEWTorig" + x;
 
-			tempdue.id = "txtDue" + x;
-			tempdue.name = "txtDue" + x;
-			tempapplies.id = "txtApplied" + x;
-			tempapplies.name = "txtApplied" + x;
-			tempsalesacctno.id = "txtcSalesAcctNo" + x;
-			tempsalesacctno.name = "txtcSalesAcctNo" + x;
-			
-			//tempnqty.onkeyup = function(){ computeamt(this.value,x,event.keyCode); };
+				tempdue.id = "txtDue" + x;
+				tempdue.name = "txtDue" + x;
+				tempapplies.id = "txtApplied" + x;
+				tempapplies.name = "txtApplied" + x;
+				tempsalesacctno.id = "txtcSalesAcctNo" + x;
+				tempsalesacctno.name = "txtcSalesAcctNo" + x;
+				
+				//tempnqty.onkeyup = function(){ computeamt(this.value,x,event.keyCode); };
 
-		}
+			}
 
-	computeGross();
-}
-*/
+		computeGross();
+	}
+	*/
 
-function getInvs(typ){
+	function getInvs(typ){
 	
 		if($('#txtcustid').val() == ""){
 			alert("Please pick a valid customer!");
@@ -1055,459 +1122,461 @@ function getInvs(typ){
 			$('#myModal').modal('show');
 			
 		}
+	}
 
+	function save(){
 
-}
-
-function save(){
-
-	var icount = 0;
-	var rcnt = 0;
-	
-  $("input[name='chkSales[]']:checked").each( function () {
-		icount++;
-			var tbl = document.getElementById('MyTable').getElementsByTagName('tbody')[0];
-
-			var tranno = $(this).val();
-			var dcutdate = $(this).data("cutdate");
-			var ngross = $(this).data("amt");
-			var ndm = $(this).data("dm");
-			var ncm = $(this).data("cm");
-			var npayments = $(this).data("payment");
-			var nvat = $(this).data("vat");
-			var vatcode = $(this).data("vatcode"); 
-			var vatrate = $(this).data("vatrate");
-			var nnetvat = $(this).data("netvat");
-			var newtcode = $(this).data("ewtcode");
-			var newtrate = $(this).data("ewtrate");
-			var newtamt = 0; 
-
-			var acctcode = $(this).data("acctid");
-			var acctdesc = $(this).data("acctdesc");
-			var ewtdesc = "";
+		var icount = 0;
+		var rcnt = 0;
 		
-			var lastRow = tbl.rows.length + 1;							
-			var z=tbl.insertRow(-1);
+		$("input[name='chkSales[]']:checked").each( function () {
+			icount++;
+				var tbl = document.getElementById('MyTable').getElementsByTagName('tbody')[0];
 
-			var a=z.insertCell(-1);
-			a.innerHTML ="<div class='col-xs-12 nopadding'><input type='hidden' name='txtcSalesNo' id='txtcSalesNo"+lastRow+"' value='"+tranno+"' />"+tranno+"</div>";
-									
-			var b=z.insertCell(-1);
-			b.align = "center";
-			b.innerHTML = dcutdate;
+				var tranno = $(this).val();
+				var dcutdate = $(this).data("cutdate");
+				var ngross = $(this).data("amt");
+				var ndm = $(this).data("dm");
+				var ncm = $(this).data("cm");
+				var npayments = $(this).data("payment");
+				var nvat = $(this).data("vat");
+				var vatcode = $(this).data("vatcode"); 
+				var vatrate = $(this).data("vatrate");
+				var nnetvat = $(this).data("netvat");
+				var newtcode = $(this).data("ewtcode");
+				var newtrate = $(this).data("ewtrate");
+				var newtamt = 0; 
+
+				var acctcode = $(this).data("acctid");
+				var acctdesc = $(this).data("acctdesc");
+				var ewtdesc = "";
+			
+				var lastRow = tbl.rows.length + 1;							
+				var z=tbl.insertRow(-1);
+
+				var a=z.insertCell(-1);
+				a.innerHTML ="<div class='col-xs-12 nopadding'><input type='hidden' name='txtcSalesNo' id='txtcSalesNo"+lastRow+"' value='"+tranno+"' />"+tranno+"</div>";
 										
-			var c=z.insertCell(-1);
-			c.align = "right";
-			c.innerHTML = "<div class='col-xs-12 nopadwleft'><input type='text' class='numeric form-control input-xs text-right' name='txtSIGross' id='txtSIGross"+lastRow+"' value='"+ngross+"' readonly /></div>";
+				var b=z.insertCell(-1);
+				b.align = "center";
+				b.innerHTML = dcutdate;
+											
+				var c=z.insertCell(-1);
+				c.align = "right";
+				c.innerHTML = "<div class='col-xs-12 nopadwleft'><input type='text' class='numeric form-control input-xs text-right' name='txtSIGross' id='txtSIGross"+lastRow+"' value='"+ngross+"' readonly /></div>";
 
-			var d=z.insertCell(-1); 
-			d.align = "right";
-			d.innerHTML = "<div class=\"input-group\"><input type='text' name='txtndebit' id='txtndebit"+lastRow+"' class=\"numeric form-control input-xs\" value=\""+ndm+"\" style=\"text-align:right\" readonly><span class=\"input-group-btn\"><button class=\"btn btn-primary btn-xs\" name=\"btnadddm\" id=\"btnadddm"+lastRow+"\" type=\"button\" onclick=\"addCM('DM','"+tranno+"','txtndebit"+lastRow+"')\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span></button></span></div>";
-										
-			var e=z.insertCell(-1);
-			e.align = "right";
-			e.innerHTML = " <div class=\"input-group\"><input type='text' name='txtncredit' id='txtncredit"+lastRow+"' class=\"numeric form-control input-xs\" value=\""+ncm+"\" style=\"text-align:right\" readonly><span class=\"input-group-btn\"><button class=\"btn btn-primary btn-xs\" name=\"btnaddcm\" id=\"btnaddcm"+lastRow+"\" type=\"button\" onclick=\"addCM('CM','"+tranno+"','txtncredit"+lastRow+"')\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span></button></span></div>";
-										
-			var f=z.insertCell(-1); 
-			f.align = "right";
-			f.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtnpayments' id='txtnpayments"+lastRow+"' value='"+npayments+"' readonly=\"true\" />";
+				var d=z.insertCell(-1); 
+				d.align = "right";
+				d.innerHTML = "<div class=\"input-group\"><input type='text' name='txtndebit' id='txtndebit"+lastRow+"' class=\"numeric form-control input-xs\" value=\""+ndm+"\" style=\"text-align:right\" readonly><span class=\"input-group-btn\"><button class=\"btn btn-primary btn-xs\" name=\"btnadddm\" id=\"btnadddm"+lastRow+"\" type=\"button\" onclick=\"addCM('DM','"+tranno+"','txtndebit"+lastRow+"')\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span></button></span></div>";
+											
+				var e=z.insertCell(-1);
+				e.align = "right";
+				e.innerHTML = " <div class=\"input-group\"><input type='text' name='txtncredit' id='txtncredit"+lastRow+"' class=\"numeric form-control input-xs\" value=\""+ncm+"\" style=\"text-align:right\" readonly><span class=\"input-group-btn\"><button class=\"btn btn-primary btn-xs\" name=\"btnaddcm\" id=\"btnaddcm"+lastRow+"\" type=\"button\" onclick=\"addCM('CM','"+tranno+"','txtncredit"+lastRow+"')\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span></button></span></div>";
+											
+				var f=z.insertCell(-1); 
+				f.align = "right";
+				f.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtnpayments' id='txtnpayments"+lastRow+"' value='"+npayments+"' readonly=\"true\" />";
 
-			/*
-			var xz = $("#hdntaxcodes").val();
-			taxoptions = "";
-			$.each(jQuery.parseJSON(xz), function() { 
+				/*
+				var xz = $("#hdntaxcodes").val();
+				taxoptions = "";
+				$.each(jQuery.parseJSON(xz), function() { 
 
-				if(vatcode==this['ctaxcode']){
-					isselctd = "selected";
-				}else{
-					isselctd = "";
+					if(vatcode==this['ctaxcode']){
+						isselctd = "selected";
+					}else{
+						isselctd = "";
+					}
+					taxoptions = taxoptions + "<option value='"+this['ctaxcode']+"' data-id='"+this['nrate']+"' "+isselctd+">"+this['ctaxdesc']+"</option>";
+				});
+
+				var c1=z.insertCell(-1);
+				c1.align = "right";
+				c1.innerHTML = "<select class='form-control input-xs' name=\"txtnvatcode\" id=\"txtnvatcode"+lastRow+"\" readonly> " + taxoptions + " </select>";
+				*/
+
+				var c1=z.insertCell(-1);
+				c1.align = "right";
+				c1.innerHTML = "<input type='text' class='form-control input-xs text-right' name=\"txtnvatcode\" id=\"txtnvatcode"+lastRow+"\" value='"+vatcode+"' readonly /> <input type='hidden' name=\"txtnvatrate\" id=\"txtnvatrate"+lastRow+"\" value='"+vatrate+"' /> <input type='hidden' name=\"txtnvatcodeorig\" id=\"txtnvatcodeorig"+lastRow+"\" value='"+vatcode+"' />";
+
+				var c2=z.insertCell(-1);
+				c2.align = "right";
+				c2.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtvatamt' id='txtvatamt"+lastRow+"' value='"+nvat+"' readonly />";
+											
+				var c3=z.insertCell(-1);
+				c3.align = "right";
+				c3.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtnetvat' id='txtnetvat"+lastRow+"' value='"+nnetvat+"' readonly />"; 
+				
+				$ifrdonly = "";
+				$ifrdonlyint = 0;
+				if(newtcode!=="none" && newtcode!==""){
+					$ifrdonly = "readonly";
+					$ifrdonlyint = 1;
 				}
-				taxoptions = taxoptions + "<option value='"+this['ctaxcode']+"' data-id='"+this['nrate']+"' "+isselctd+">"+this['ctaxdesc']+"</option>";
-			});
 
-			var c1=z.insertCell(-1);
-			c1.align = "right";
-			c1.innerHTML = "<select class='form-control input-xs' name=\"txtnvatcode\" id=\"txtnvatcode"+lastRow+"\" readonly> " + taxoptions + " </select>";
-			*/
+				
+				//l.innerHTML = "<input type='text' class='ewtcode form-control input-xs' placeholder='EWT Code' name='txtnEWT"+lastRow+"' id='txtnEWT"+lastRow+"' autocomplete=\"off\" value='"+newtcode+"' "+$ifrdonly+"/>";
 
-			var c1=z.insertCell(-1);
-			c1.align = "right";
-			c1.innerHTML = "<input type='text' class='form-control input-xs text-right' name=\"txtnvatcode\" id=\"txtnvatcode"+lastRow+"\" value='"+vatcode+"' readonly /> <input type='hidden' name=\"txtnvatrate\" id=\"txtnvatrate"+lastRow+"\" value='"+vatrate+"' /> <input type='hidden' name=\"txtnvatcodeorig\" id=\"txtnvatcodeorig"+lastRow+"\" value='"+vatcode+"' />";
+				var xz = $("#hdnewtcodes").val();
+				taxoptions = "";
+				$.each(jQuery.parseJSON(xz), function() { 
 
-			var c2=z.insertCell(-1);
-			c2.align = "right";
-			c2.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtvatamt' id='txtvatamt"+lastRow+"' value='"+nvat+"' readonly />";
-										
-			var c3=z.insertCell(-1);
-			c3.align = "right";
-			c3.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtnetvat' id='txtnetvat"+lastRow+"' value='"+nnetvat+"' readonly />"; 
-			
-			$ifrdonly = "";
-			$ifrdonlyint = 0;
-			if(newtcode!=="none" && newtcode!==""){
-				$ifrdonly = "readonly";
-				$ifrdonlyint = 1;
-			}
+						var splitString = newtcode.split(',');
+						var ewtFound;
+						for (var i = 0; i < splitString.length; i++) {
+							var stringPart = splitString[i];
+							if (stringPart != this['ctaxcode']) continue;
 
-			
-			//l.innerHTML = "<input type='text' class='ewtcode form-control input-xs' placeholder='EWT Code' name='txtnEWT"+lastRow+"' id='txtnEWT"+lastRow+"' autocomplete=\"off\" value='"+newtcode+"' "+$ifrdonly+"/>";
+							ewtFound = true;
+							break;
+						}
 
-			var xz = $("#hdnewtcodes").val();
-			taxoptions = "";
-			$.each(jQuery.parseJSON(xz), function() { 
-
-					var splitString = newtcode.split(',');
-					var ewtFound;
-					for (var i = 0; i < splitString.length; i++) {
-						var stringPart = splitString[i];
-						if (stringPart != this['ctaxcode']) continue;
-
-						ewtFound = true;
-						break;
+					if(ewtFound){
+						isselctd = "selected";
+					}else{
+						isselctd = "";
 					}
 
-				if(ewtFound){
-					isselctd = "selected";
-				}else{
-					isselctd = "";
-				}
+					taxoptions = taxoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' data-base='"+this['cbase']+"' "+isselctd+">"+this['ctaxcode']+ "("+this['nrate']+"%)" + "</option>";
+				});
+				
+				var l=z.insertCell(-1); 
+				l.innerHTML = "<select name='txtnEWT[]' id='txtnEWT"+lastRow+"' class='select2' multiple='multiple' style='width: 100%'> "+ taxoptions +" </select> <input type='hidden' name='hdnewtgiven' id='hdnewtgiven"+lastRow+"' value='"+$ifrdonlyint+"' /> <input type='hidden' name='txtnEWTorig' id='txtnEWTorig"+lastRow+"' value='"+newtcode+"' /> <input type='hidden' name='txtnEWTRate' value=\""+newtrate+"\" id='txtnEWTRate"+lastRow+"' />";
 
-				taxoptions = taxoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' data-base='"+this['cbase']+"' "+isselctd+">"+this['ctaxcode']+ "("+this['nrate']+"%)" + "</option>";
-			});
-			
-			var l=z.insertCell(-1); 
-			l.innerHTML = "<select name='txtnEWT[]' id='txtnEWT"+lastRow+"' class='select2' multiple='multiple' style='width: 100%'> "+ taxoptions +" </select> <input type='hidden' name='hdnewtgiven' id='hdnewtgiven"+lastRow+"' value='"+$ifrdonlyint+"' /> <input type='hidden' name='txtnEWTorig' id='txtnEWTorig"+lastRow+"' value='"+newtcode+"' /> <input type='hidden' name='txtnEWTRate' value=\""+newtrate+"\" id='txtnEWTRate"+lastRow+"' />";
+					newtrateStr = newtrate.toString();
 
-			  newtrateStr = newtrate.toString();
-
-					var splitString = newtrateStr.split(';');
-					for (var i = 0; i < splitString.length; i++) {
-						var stringPart = splitString[i];
-						if (stringPart != 0 && stringPart != ""){
-							if(i > 0){
-								ewtdesc = ewtdesc + ";";
+						var splitString = newtrateStr.split(';');
+						for (var i = 0; i < splitString.length; i++) {
+							var stringPart = splitString[i];
+							if (stringPart != 0 && stringPart != ""){
+								if(i > 0){
+									ewtdesc = ewtdesc + ";";
+								}
+								$jx = parseFloat(nnetvat)*(parseFloat(stringPart)/100);
+								newtamt = newtamt + $jx;
+								ewtdesc = ewtdesc + stringPart + "% - " + $jx.toFixed(2);
 							}
-							$jx = parseFloat(nnetvat)*(parseFloat(stringPart)/100);
-							newtamt = newtamt + $jx;
-							ewtdesc = ewtdesc + stringPart + "% - " + $jx.toFixed(2);
 						}
+
+
+				var l2=z.insertCell(-1);
+				l2.innerHTML = "<div id='txtnEWTPer"+lastRow+"' class='text-right'> "+ewtdesc.replace(";","<br>")+" </div>";
+											
+				var l3=z.insertCell(-1);
+				l3.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' placeholder='EWT Amt' name='txtnEWTAmt'  value=\""+newtamt+"\" id='txtnEWTAmt"+lastRow+"' readonly=\"true\" />";
+
+					if(parseFloat(npayments)!==0){
+						var ntotdue = (parseFloat(nnetvat) + parseFloat(nvat)) - parseFloat(ncm) - parseFloat(newtamt);
+					}else{
+						var ntotdue = parseFloat(ngross) - parseFloat(ncm) - parseFloat(npayments) - parseFloat(newtamt);
 					}
-
-
-			var l2=z.insertCell(-1);
-			l2.innerHTML = "<div id='txtnEWTPer"+lastRow+"' class='text-right'> "+ewtdesc.replace(";","<br>")+" </div>";
+												
+				var g=z.insertCell(-1);
+				g.align = "right";
+				g.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtDue' id='txtDue"+lastRow+"' value='"+ntotdue+"' readonly=\"true\" />";
+											
+				var h=z.insertCell(-1);
+				h.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtApplied' id='txtApplied"+lastRow+"' value='"+ntotdue+"' style='text-align:right' autocomplete=\"off\" />";
 										
-			var l3=z.insertCell(-1);
-			l3.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' placeholder='EWT Amt' name='txtnEWTAmt'  value=\""+newtamt+"\" id='txtnEWTAmt"+lastRow+"' readonly=\"true\" />";
+				var j=z.insertCell(-1);
+				j.innerHTML = "<div class='col-xs-12 nopadding'><input type='text' class='accountscode form-control input-xs' name='txtcSalesAcctTitleID' id='txtcSalesAcctTitleID"+lastRow+"' value='"+acctcode+"' readonly/></div>";
 
-				if(parseFloat(npayments)!==0){
-					var ntotdue = (parseFloat(nnetvat) + parseFloat(nvat)) - parseFloat(ncm) - parseFloat(newtamt);
-				}else{
-					var ntotdue = parseFloat(ngross) - parseFloat(ncm) - parseFloat(npayments) - parseFloat(newtamt);
+				var j2=z.insertCell(-1);
+				j2.innerHTML = "<div class='col-xs-12 nopadding'><input type='text' class='accountsname form-control input-xs' name='txtcSalesAcctTitle' id='txtcSalesAcctTitle"+lastRow+"' value='"+acctdesc+"' autocomplete=\"off\" data-nme=\"txtcSalesAcctTitle\" /></div>";
+											
+				var k=z.insertCell(-1);
+				k.innerHTML = "<div class='col-xs-12 nopadwleft'><input class='btn btn-danger btn-xs' type='button' name='row_delete' id='row_"+lastRow+"_delete' value='delete'/></div>";
+
+				$("#row_"+lastRow+"_delete").on("click", function(){
+					$(this).closest('tr').remove(); 
+					ReIndexMyTable(tranno);
+				});
+				
+										
+				//var varnnet = item.nnet;
+				//var varngrs = item.ngross;	
+				$("#txtnEWT"+lastRow).select2();
+				$("#txtnEWT"+lastRow).on("change", function(){
+					computeDue(this);
+					computeGross();
+				});
+
+				$("input.numeric").autoNumeric('init',{mDec:2});
+				$("input.numeric").on("click focus", function () {
+					$(this).select();
+				});
+												
+				$("input.numeric").on("keyup", function (e) {
+					setPosi($(this).attr('name'),e.keyCode,'MyTable');
+					computeGross();
+				});
+										
+				computeGross(); 
+
+				if(parseFloat(ncm)!==0){
+					getrefreturn(tranno);
 				}
-											
-			var g=z.insertCell(-1);
-			g.align = "right";
-			g.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtDue' id='txtDue"+lastRow+"' value='"+ntotdue+"' readonly=\"true\" />";
-										
-			var h=z.insertCell(-1);
-			h.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtApplied' id='txtApplied"+lastRow+"' value='"+ntotdue+"' style='text-align:right' autocomplete=\"off\" />";
-									
-			var j=z.insertCell(-1);
-			j.innerHTML = "<div class='col-xs-12 nopadding'><input type='text' class='form-control input-xs' name='txtcSalesAcctTitle' id='txtcSalesAcctTitle"+lastRow+"' value='"+acctdesc+"' autocomplete=\"off\" /> <input type='hidden' name='txtcSalesAcctNo' id='txtcSalesAcctNo"+lastRow+"' value='"+acctcode+"' /></div>";
-										
-			var k=z.insertCell(-1);
-			k.innerHTML = "<div class='col-xs-12 nopadwleft'><input class='btn btn-danger btn-xs' type='button' name='row_delete' id='row_"+lastRow+"_delete' value='delete'/></div>";
-
-			$("#row_"+lastRow+"_delete").on("click", function(){
-				$(this).closest('tr').remove(); 
-				ReIndexMyTable(tranno);
-			});
 			
-									
-			//var varnnet = item.nnet;
-			//var varngrs = item.ngross;	
-			$("#txtnEWT"+lastRow).select2();
-			$("#txtnEWT"+lastRow).on("change", function(){
-				computeDue(this);
-				computeGross();
-			});
-
-			$("input.numeric").autoNumeric('init',{mDec:2});
-			$("input.numeric").on("click focus", function () {
-				$(this).select();
-			});
-											
-			$("input.numeric").on("keyup", function (e) {
-				setPosi($(this).attr('name'),e.keyCode,'MyTable');
-				computeGross();
-			});
-									
-									
-									
-									
-									$("#txtcSalesAcctTitle"+lastRow).on("click focus", function(event) {
-										$(this).select();
-									});
-									
-									$("#txtcSalesAcctTitle"+lastRow).typeahead({
-								
-										items: 10,
-										source: function(request, response) {
-											$.ajax({
-												url: "../th_accounts.php",
-												dataType: "json",
-												data: {
-													query: $("#txtcSalesAcctTitle"+lastRow).val()
-												},
-												success: function (data) {
-													response(data);
-													
-												}
-											});
-										},
-										autoSelect: true,
-										displayText: function (item) {
-											return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.name + "</small></div>";
-										},
-										highlighter: Object,
-										afterSelect: function(item, event) { 
-											$("#txtcSalesAcctTitle"+lastRow).val(item.name).change(); 
-											$("#txtcSalesAcctNo"+lastRow).val(item.id);
-											
-											setPosi("txtcSalesAcctTitle"+lastRow,13,'MyTable');
-											
-										}
-									});
-											   	
-
-
-						computeGross(); 
-
-						if(parseFloat(ncm)!==0){
-							getrefreturn(tranno);
-						}
-	   
-	   
-   });
-   
-   if(icount==0){
-	   alert("No Invoice is selected!")
-   }
-   
-   $('#myModal').modal('hide');
-   
-}
-
-function computeDue(selewt){
-
-	lastRow = selewt.attributes["id"].value;
-	lastRow = lastRow.replace("txtnEWT","");
-	lastRow = lastRow.replace("[]","");
-
-	///	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
-	//	var lastRow = tbl.length-1;
-	//	if(lastRow!=0){
-	//		var x = 0;
 			
-	//		for (z=1; z<=lastRow; z++){
-	//			var varngrs = $("#txtvatamt"+lastRow).val().replace(/,/g,'');
-	//			var varngrs = $("#txtSIGross"+lastRow).val().replace(/,/g,'');
-				var varngrs = $("#txtSIGross"+lastRow).val().replace(/,/g,'');
-	//		}
-
-	//	}
-
-	varnnet =  $("#txtnetvat"+lastRow).val().replace(/,/g,'');
-	ndue = $("#txtDue"+lastRow).val().replace(/,/g,'');
-
-	xcb = 0;
-	var len = selewt.options.length;
-  for (var i = 0; i < len; i++) {
-    opt = selewt.options[i];
-
-    if (opt.selected) {
-      //alert(opt.value+ " : " + opt.dataset.rate + " : " + opt.dataset.base);
-
-			if(opt.dataset.base=="NET"){
-				xcb = xcb + parseFloat(varnnet)*(opt.dataset.rate/100);
-			}else{
-				xcb = xcb + parseFloat(varngrs)*(opt.dataset.rate/100);
-			}
-
-    }
-  }
-
-											
-	$("#txtnEWTAmt"+lastRow).val(xcb);
-	xcbdue = varngrs - xcb;
-											
-	$("#txtDue"+lastRow).val(xcbdue);
-	$("#txtApplied"+lastRow).val(xcbdue);
-
-	$("#txtnEWTAmt"+lastRow).autoNumeric('destroy');
-	$("#txtnEWTAmt"+lastRow).autoNumeric('init',{mDec:2});
-
-	$("#txtDue"+lastRow).autoNumeric('destroy');
-	$("#txtDue"+lastRow).autoNumeric('init',{mDec:2});
-											
-	$("#txtApplied"+lastRow).autoNumeric('destroy');
-	$("#txtApplied"+lastRow).autoNumeric('init',{mDec:2});
-
-}
-
-
-function ReIndexMyTable(tranno){
-	$("#MyTable > tbody > tr").each(function(index) {   
-		tx2 = index+1;
-		//$(this).find('input[type=hidden][name="txtcSalesNo"]').attr("name","txtcSalesNo"+tx2);
-		$(this).find('input[type=hidden][name="txtcSalesNo"]').attr("id","txtcSalesNo"+tx2);
-
-		//$(this).find('input[name="txtSIGross"]').attr("name","txtSIGross"+tx2);
-		$(this).find('input[name="txtSIGross"]').attr("id","txtSIGross"+tx2);
-
-		//$(this).find('input[name="txtndebit"]').attr("name","txtndebit"+tx2);
-		$(this).find('input[name="txtndebit"]').attr("id","txtndebit"+tx2);
-		$(this).find('button[name="btnadddm"]').attr("id","btnadddm"+tx2);
-		$(this).find('input[name="txtndebit"]').attr("onclick","addCM('DM','"+tranno+"','txtndebit"+tx2+"')");
-
-		//$(this).find('input[name="txtncredit"]').attr("name","txtncredit"+tx2);
-		$(this).find('input[name="txtncredit"]').attr("id","txtncredit"+tx2);
-		$(this).find('button[name="btnaddcm"]').attr("id","btnaddcm"+tx2);
-		$(this).find('input[name="txtncredit"]').attr("onclick","addCM('CM','"+tranno+"','txtncredit"+tx2+"')");
-
-		//$(this).find('input[name="txtnpayments"]').attr("name","txtnpayments"+tx2);
-		$(this).find('input[name="txtnpayments"]').attr("id","txtnpayments"+tx2);
-
-		//$(this).find('input[name="txtnvatcode"]').attr("name","txtnvatcode"+tx2);
-		$(this).find('input[name="txtnvatcode"]').attr("id","txtnvatcode"+tx2);
-
-		//$(this).find('input[type=hidden][name="txtnvatrate"]').attr("name","txtnvatrate"+tx2);					
-		$(this).find('input[type=hidden][name="txtnvatrate"]').attr("id","txtnvatrate"+tx2);
-
-		//$(this).find('input[type=hidden][name="txtnvatcodeorig"]').attr("name","txtnvatcodeorig" + tx2);
-		$(this).find('input[type=hidden][name="txtnvatcodeorig"]').attr("id","txtnvatcodeorig" + tx2);
-
-		//$(this).find('input[name="txtvatamt"]').attr("name","txtvatamt" + tx2);
-		$(this).find('input[name="txtvatamt"]').attr("id","txtvatamt" + tx2);
-
-		//$(this).find('input[name="txtvatamt"]').attr("name","txtvatamt" + tx2);
-		$(this).find('input[name="txtvatamt"]').attr("id","txtvatamt" + tx2);
-
-		//$(this).find('input[name="txtnetvat"]').attr("name","txtnetvat" + tx2);
-		$(this).find('input[name="txtnetvat"]').attr("id","txtnetvat" + tx2);
-
-		//$(this).find('select[name="txtnetvat"]').attr("name","txtnetvat" + tx2);
-		$(this).find('select[name="txtnetvat"]').attr("id","txtnetvat" + tx2);
-
-		//$(this).find('select[name="txtnEWT"]').attr("name","txtnEWT" + tx2);
-		$(this).find('select[name="txtnEWT[]"]').attr("id","txtnEWT" + tx2);
-
-		//$(this).find('input[type=hidden][name="hdnewtgiven"]').attr("name","hdnewtgiven" + tx2);
-		$(this).find('input[type=hidden][name="hdnewtgiven"]').attr("id","hdnewtgiven" + tx2);
-
-		//$(this).find('input[type=hidden][name="txtnEWTorig"]').attr("name","txtnEWTorig" + tx2);
-		$(this).find('input[type=hidden][name="txtnEWTorig"]').attr("id","txtnEWTorig" + tx2);
-
-		//$(this).find('input[type=hidden][name="txtnEWTRate"]').attr("name","txtnEWTRate" + tx2);
-		$(this).find('input[type=hidden][name="txtnEWTRate"]').attr("id","txtnEWTRate" + tx2);
-
-		//$(this).find('input[name="txtnEWTAmt"]').attr("name","txtnEWTAmt" + tx2);
-		$(this).find('input[name="txtnEWTAmt"]').attr("id","txtnEWTAmt" + tx2);
-
-		//$(this).find('input[name="txtDue"]').attr("name","txtDue" + tx2);
-		$(this).find('input[name="txtDue"]').attr("id","txtDue" + tx2);
-
-		//$(this).find('input[name="txtApplied"]').attr("name","txtApplied" + tx2);
-		$(this).find('input[name="txtApplied"]').attr("id","txtApplied" + tx2);
-
-		//$(this).find('input[name="txtcSalesAcctTitle"]').attr("name","txtcSalesAcctTitle" + tx2);
-		$(this).find('input[name="txtcSalesAcctTitle"]').attr("id","txtcSalesAcctTitle" + tx2);
-
-		//$(this).find('input[type=hidden][name="txtcSalesAcctNo"]').attr("name","txtcSalesAcctNo" + tx2);
-		$(this).find('input[type=hidden][name="txtcSalesAcctNo"]').attr("id","txtcSalesAcctNo" + tx2);
-
-		//$(this).find('input[name="row_delete"]').attr("name","row_"+tx2+"_delete");
-		$(this).find('input[name="row_delete"]').attr("id","row_"+tx2+"_delete");
-
-	});
-}
-
-function computeGross(){
-	//alert("Hello";)
-	var tot = 0;
-	var tot2 = 0;
-	var tot3 = 0;
-	
-	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
-	var lastRow = tbl.length-1;
-	if(lastRow!=0){
-		var x = 0;
+		});
 		
-		for (z=1; z<=lastRow; z++){
-			x = $("#txtApplied" + z).val().replace(/,/g,'');
-			
-			x = x.replace(",","");
-			if(x!=0 && x!=""){
-				tot = parseFloat(x) + parseFloat(tot);	
-			}
-
-			 // xEWT = document.getElementById('txtnEWT' + z).value;
-			  
-			//  xEWT = xEWT.replace(",","");
-			//  if(xEWT!=0 && xEWT!=""){
-			//	totEWT = parseFloat(xEWT) + parseFloat(totEWT);  
-			//  }
+		if(icount==0){
+			alert("No Invoice is selected!")
 		}
-	}
-	
-	
-	//alert(parseFloat(tot2));
-	/*
-	var tbl3 = document.getElementById('MyTblOthers').getElementsByTagName('tr');
-	var lastRow3 = tbl3.length-1;
-	var totDR = 0;
-	var totCR = 0;
-	var tot3 = 0;
-	
-	if(lastRow3!=0){
-		var x3DR = 0;
-		var x3CR = 0;
 		
-		for (z3=1; z3<=lastRow3; z3++){
-			x3DR = document.getElementById('txtnotDR' + z3).value;
-			x3CR = document.getElementById('txtnotCR' + z3).value;
-			
-			x3DR = x3DR.replace(",","");
-			if(x3DR!=0 && x3DR!=""){
-				totDR = parseFloat(x3DR) + parseFloat(totDR);	
+		$('#myModal').modal('hide');
+		
+	}
+
+	function computeDue(selewt){
+
+		lastRow = selewt.attributes["id"].value;
+		lastRow = lastRow.replace("txtnEWT","");
+		lastRow = lastRow.replace("[]","");
+
+		///	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
+		//	var lastRow = tbl.length-1;
+		//	if(lastRow!=0){
+		//		var x = 0;
+				
+		//		for (z=1; z<=lastRow; z++){
+		//			var varngrs = $("#txtvatamt"+lastRow).val().replace(/,/g,'');
+		//			var varngrs = $("#txtSIGross"+lastRow).val().replace(/,/g,'');
+					var varngrs = $("#txtSIGross"+lastRow).val().replace(/,/g,'');
+		//		}
+
+		//	}
+
+		varnnet =  $("#txtnetvat"+lastRow).val().replace(/,/g,'');
+		ndue = $("#txtDue"+lastRow).val().replace(/,/g,'');
+
+		xcb = 0;
+		var len = selewt.options.length;
+		for (var i = 0; i < len; i++) {
+			opt = selewt.options[i];
+
+			if (opt.selected) {
+				//alert(opt.value+ " : " + opt.dataset.rate + " : " + opt.dataset.base);
+
+				if(opt.dataset.base=="NET"){
+					xcb = xcb + parseFloat(varnnet)*(opt.dataset.rate/100);
+				}else{
+					xcb = xcb + parseFloat(varngrs)*(opt.dataset.rate/100);
+				}
+
 			}
+		}
+
+												
+		$("#txtnEWTAmt"+lastRow).val(xcb);
+		xcbdue = varngrs - xcb;
+												
+		$("#txtDue"+lastRow).val(xcbdue);
+		$("#txtApplied"+lastRow).val(xcbdue);
+
+		$("#txtnEWTAmt"+lastRow).autoNumeric('destroy');
+		$("#txtnEWTAmt"+lastRow).autoNumeric('init',{mDec:2});
+
+		$("#txtDue"+lastRow).autoNumeric('destroy');
+		$("#txtDue"+lastRow).autoNumeric('init',{mDec:2});
+												
+		$("#txtApplied"+lastRow).autoNumeric('destroy');
+		$("#txtApplied"+lastRow).autoNumeric('init',{mDec:2});
+
+	}
+
+	function ReIndexMyTable(tranno){
+		$("#MyTable > tbody > tr").each(function(index) {   
+			tx2 = index+1;
+			//$(this).find('input[type=hidden][name="txtcSalesNo"]').attr("name","txtcSalesNo"+tx2);
+			$(this).find('input[type=hidden][name="txtcSalesNo"]').attr("id","txtcSalesNo"+tx2);
+
+			//$(this).find('input[name="txtSIGross"]').attr("name","txtSIGross"+tx2);
+			$(this).find('input[name="txtSIGross"]').attr("id","txtSIGross"+tx2);
+
+			//$(this).find('input[name="txtndebit"]').attr("name","txtndebit"+tx2);
+			$(this).find('input[name="txtndebit"]').attr("id","txtndebit"+tx2);
+			$(this).find('button[name="btnadddm"]').attr("id","btnadddm"+tx2);
+			$(this).find('input[name="txtndebit"]').attr("onclick","addCM('DM','"+tranno+"','txtndebit"+tx2+"')");
+
+			//$(this).find('input[name="txtncredit"]').attr("name","txtncredit"+tx2);
+			$(this).find('input[name="txtncredit"]').attr("id","txtncredit"+tx2);
+			$(this).find('button[name="btnaddcm"]').attr("id","btnaddcm"+tx2);
+			$(this).find('input[name="txtncredit"]').attr("onclick","addCM('CM','"+tranno+"','txtncredit"+tx2+"')");
+
+			//$(this).find('input[name="txtnpayments"]').attr("name","txtnpayments"+tx2);
+			$(this).find('input[name="txtnpayments"]').attr("id","txtnpayments"+tx2);
+
+			//$(this).find('input[name="txtnvatcode"]').attr("name","txtnvatcode"+tx2);
+			$(this).find('input[name="txtnvatcode"]').attr("id","txtnvatcode"+tx2);
+
+			//$(this).find('input[type=hidden][name="txtnvatrate"]').attr("name","txtnvatrate"+tx2);					
+			$(this).find('input[type=hidden][name="txtnvatrate"]').attr("id","txtnvatrate"+tx2);
+
+			//$(this).find('input[type=hidden][name="txtnvatcodeorig"]').attr("name","txtnvatcodeorig" + tx2);
+			$(this).find('input[type=hidden][name="txtnvatcodeorig"]').attr("id","txtnvatcodeorig" + tx2);
+
+			//$(this).find('input[name="txtvatamt"]').attr("name","txtvatamt" + tx2);
+			$(this).find('input[name="txtvatamt"]').attr("id","txtvatamt" + tx2);
+
+			//$(this).find('input[name="txtvatamt"]').attr("name","txtvatamt" + tx2);
+			$(this).find('input[name="txtvatamt"]').attr("id","txtvatamt" + tx2);
+
+			//$(this).find('input[name="txtnetvat"]').attr("name","txtnetvat" + tx2);
+			$(this).find('input[name="txtnetvat"]').attr("id","txtnetvat" + tx2);
+
+			//$(this).find('select[name="txtnetvat"]').attr("name","txtnetvat" + tx2);
+			$(this).find('select[name="txtnetvat"]').attr("id","txtnetvat" + tx2);
+
+			//$(this).find('select[name="txtnEWT"]').attr("name","txtnEWT" + tx2);
+			$(this).find('select[name="txtnEWT[]"]').attr("id","txtnEWT" + tx2);
+
+			//$(this).find('input[type=hidden][name="hdnewtgiven"]').attr("name","hdnewtgiven" + tx2);
+			$(this).find('input[type=hidden][name="hdnewtgiven"]').attr("id","hdnewtgiven" + tx2);
+
+			//$(this).find('input[type=hidden][name="txtnEWTorig"]').attr("name","txtnEWTorig" + tx2);
+			$(this).find('input[type=hidden][name="txtnEWTorig"]').attr("id","txtnEWTorig" + tx2);
+
+			//$(this).find('input[type=hidden][name="txtnEWTRate"]').attr("name","txtnEWTRate" + tx2);
+			$(this).find('input[type=hidden][name="txtnEWTRate"]').attr("id","txtnEWTRate" + tx2);
+
+			//$(this).find('input[name="txtnEWTAmt"]').attr("name","txtnEWTAmt" + tx2);
+			$(this).find('input[name="txtnEWTAmt"]').attr("id","txtnEWTAmt" + tx2);
+
+			//$(this).find('input[name="txtDue"]').attr("name","txtDue" + tx2);
+			$(this).find('input[name="txtDue"]').attr("id","txtDue" + tx2);
+
+			//$(this).find('input[name="txtApplied"]').attr("name","txtApplied" + tx2);
+			$(this).find('input[name="txtApplied"]').attr("id","txtApplied" + tx2);
+
+			//$(this).find('input[name="txtcSalesAcctTitle"]').attr("name","txtcSalesAcctTitle" + tx2);
+			$(this).find('input[name="txtcSalesAcctTitle"]').attr("id","txtcSalesAcctTitle" + tx2);
+
+			//$(this).find('input[type=hidden][name="txtcSalesAcctNo"]').attr("name","txtcSalesAcctNo" + tx2);
+			$(this).find('input[type=hidden][name="txtcSalesAcctNo"]').attr("id","txtcSalesAcctNo" + tx2);
+
+			//$(this).find('input[name="row_delete"]').attr("name","row_"+tx2+"_delete");
+			$(this).find('input[name="row_delete"]').attr("id","row_"+tx2+"_delete");
+
+		});
+	}
+
+	function computeGross(){
+		//alert("Hello";)
+		var tot = 0;
+		var tot2 = 0;
+		var tot3 = 0;
+		
+		var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
+		var lastRow = tbl.length-1;
+		if(lastRow!=0){
+			var x = 0;
 			
-			x3CR = x3CR.replace(",","");
-			if(x3CR!=0 && x3CR!=""){
-				totCR = parseFloat(x3CR) + parseFloat(totCR);	
+			for (z=1; z<=lastRow; z++){
+				x = $("#txtApplied" + z).val().replace(/,/g,'');
+				
+				x = x.replace(",","");
+				if(x!=0 && x!=""){
+					tot = parseFloat(x) + parseFloat(tot);	
+				}
+
+				// xEWT = document.getElementById('txtnEWT' + z).value;
+					
+				//  xEWT = xEWT.replace(",","");
+				//  if(xEWT!=0 && xEWT!=""){
+				//	totEWT = parseFloat(xEWT) + parseFloat(totEWT);  
+				//  }
 			}
 		}
 		
-		tot3 = parseFloat(totCR) - parseFloat(totDR);	
+		
+		//alert(parseFloat(tot2));
+		/*
+		var tbl3 = document.getElementById('MyTblOthers').getElementsByTagName('tr');
+		var lastRow3 = tbl3.length-1;
+		var totDR = 0;
+		var totCR = 0;
+		var tot3 = 0;
+		
+		if(lastRow3!=0){
+			var x3DR = 0;
+			var x3CR = 0;
+			
+			for (z3=1; z3<=lastRow3; z3++){
+				x3DR = document.getElementById('txtnotDR' + z3).value;
+				x3CR = document.getElementById('txtnotCR' + z3).value;
+				
+				x3DR = x3DR.replace(",","");
+				if(x3DR!=0 && x3DR!=""){
+					totDR = parseFloat(x3DR) + parseFloat(totDR);	
+				}
+				
+				x3CR = x3CR.replace(",","");
+				if(x3CR!=0 && x3CR!=""){
+					totCR = parseFloat(x3CR) + parseFloat(totCR);	
+				}
+			}
+			
+			tot3 = parseFloat(totCR) - parseFloat(totDR);	
+		}
+		*/
+		
+		
+		$("#txtnApplied").val(tot);
+		$("#txtnApplied").autoNumeric('destroy');
+		$("#txtnApplied").autoNumeric('init',{mDec:2});
+
+		var outbalyy = parseFloat($("#txtnGross").val().replace(/,/g,'')) - parseFloat(tot);
+		$("#txtnOutBal").val(outbalyy);
+
+		$("#txtnOutBal").autoNumeric('destroy');
+		$("#txtnOutBal").autoNumeric('init',{mDec:2, vMin:-99999999999999999.99});
+
 	}
-	*/
-	
-	
-	$("#txtnApplied").val(tot);
-	$("#txtnApplied").autoNumeric('destroy');
-	$("#txtnApplied").autoNumeric('init',{mDec:2});
 
-  var outbalyy = parseFloat($("#txtnGross").val().replace(/,/g,'')) - parseFloat(tot);
-  $("#txtnOutBal").val(outbalyy);
+	function computeGrossOthers(){
+		//alert("Hello";)
+		var tbl3 = document.getElementById('MyTblOthers').getElementsByTagName('tr');
+		var lastRow3 = tbl3.length-1;
+		var totDR = 0;
+		var totCR = 0;
+		var tot = 0;
+		
+		if(lastRow3!=0){
+			var x3DR = 0;
+			var x3CR = 0;
+			
+			for (z3=1; z3<=lastRow3; z3++){
+				x3DR = $('#txtnotDR' + z3).val().replace(/,/g,'');
+				x3CR = $('#txtnotCR' + z3).val().replace(/,/g,'');
+				
+				x3DR = x3DR.replace(",","");
+				if(x3DR!=0 && x3DR!=""){
+					totDR = parseFloat(x3DR) + parseFloat(totDR);	
+				}
+				
+				x3CR = x3CR.replace(",","");
+				if(x3CR!=0 && x3CR!=""){
+					totCR = parseFloat(x3CR) + parseFloat(totCR);	
+				}
+			}
+			
+			tot = parseFloat(totCR) - parseFloat(totDR);	
+		}
+		
+		$("#txtnApplied").val(tot);
+		$("#txtnApplied").autoNumeric('destroy');
+		$("#txtnApplied").autoNumeric('init',{mDec:2});
 
-	$("#txtnOutBal").autoNumeric('destroy');
-	$("#txtnOutBal").autoNumeric('init',{mDec:2, vMin:-99999999999999999.99});
+		var outbalyy = parseFloat($("#txtnGross").val().replace(/,/g,'')) - parseFloat(tot);
+		$("#txtnOutBal").val(outbalyy);
 
-}
+		$("#txtnOutBal").autoNumeric('destroy');
+		$("#txtnOutBal").autoNumeric('init',{mDec:2, vMin:-99999999999999999.99});
 
+	}
 
-function setPosi(nme,keyCode,tbl){
+	function setPosi(nme,keyCode,tbl){
 		var r = nme.replace(/\D/g,'');
 		var namez = nme.replace(/[0-9]/g, '');
 		
@@ -1515,7 +1584,7 @@ function setPosi(nme,keyCode,tbl){
 		var tbl = document.getElementById(tbl).getElementsByTagName('tr');
 		var lastRow = tbl.length-1;
 		
-	//
+		//
 		//if(namez=="txtApplied"){
 			//alert(keyCode);
 			if(keyCode==38 && r!=1){//Up
@@ -1530,128 +1599,74 @@ function setPosi(nme,keyCode,tbl){
 			
 		//}
 
-}
+	}
 
-/*
-function addacct(){
 
-	var tbl = document.getElementById('MyTblOthers').getElementsByTagName('tr');
-	var lastRow = tbl.length;
+	function addacct(){
 
-	var a=document.getElementById('MyTblOthers').insertRow(-1);
-	
-	var v=a.insertCell(0);
-		v.style.width = "150px";
-		v.style.padding = "1px";
-	var w=a.insertCell(1);
-		w.style.padding = "1px";
-	var xDR=a.insertCell(2);
-		xDR.style.width = "100px";
-		xDR.style.padding = "1px";
-	var xCR=a.insertCell(3);
-		xCR.style.width = "100px";
-		xCR.style.padding = "1px";
-	var y=a.insertCell(4);
-		y.style.width = "50px";
-		y.style.padding = "1px";
+		var tbl = document.getElementById('MyTblOthers').getElementsByTagName('tr');
+		var lastRow = tbl.length;
 
-	v.innerHTML = "<input type='text' name=\"txtacctno"+lastRow+"\" id=\"txtacctno"+lastRow+"\" class=\"form-control input-sm\" placeholder=\"Enter Acct Code...\" style=\"text-transform:uppercase\" autocomplete=\"off\">";
-	w.innerHTML = "<input type='text' name=\"txtacctitle"+lastRow+"\" id=\"txtacctitle"+lastRow+"\" class=\"form-control input-sm\" placeholder=\"Search Acct Desc...\" style=\"text-transform:uppercase\" autocomplete=\"off\">";
-	xDR.innerHTML = "<input type='text' name=\"txtnotDR"+lastRow+"\" id=\"txtnotDR"+lastRow+"\" class=\"numeric form-control input-sm\" style=\"text-align:right\" value=\"0.0000\" required autocomplete=\"off\">";
-	xCR.innerHTML = "<input type='text' name=\"txtnotCR"+lastRow+"\" id=\"txtnotCR"+lastRow+"\" class=\"numeric form-control input-sm\" style=\"text-align:right\" value=\"0.0000\" required autocomplete=\"off\">";
-	y.innerHTML = "<input class='btn btn-danger btn-xs' type='button' id='row3_"+lastRow+"_delete' value='delete' onClick=\"deleteRow3(this);\"/>";
+		var a=document.getElementById('MyTblOthers').insertRow(-1);
+		
+		var v=a.insertCell(0);
+			v.style.width = "150px";
+			v.style.padding = "1px";
+		var w=a.insertCell(1);
+			w.style.padding = "1px";
+		var xDR=a.insertCell(2);
+			xDR.style.width = "100px";
+			xDR.style.padding = "1px";
+		var xCR=a.insertCell(3);
+			xCR.style.width = "100px";
+			xCR.style.padding = "1px";
+		var y=a.insertCell(4);
+			y.style.width = "50px";
+			y.style.padding = "1px";
 
-	//alert(lastRow);
+		v.innerHTML = "<input type='text' name=\"txtacctitleID"+lastRow+"\" id=\"txtacctitleID"+lastRow+"\" class=\"form-control input-xs\" placeholder=\"Enter Acct Code...\" readonly>";
+		w.innerHTML = "<input type='text' name=\"txtacctitle"+lastRow+"\" id=\"txtacctitle"+lastRow+"\" class=\"accountsname form-control input-xs\" placeholder=\"Search Acct Desc...\" autocomplete=\"off\" data-nme=\"txtacctitle\">";
+		xDR.innerHTML = "<input type='text' name=\"txtnotDR"+lastRow+"\" id=\"txtnotDR"+lastRow+"\" class=\"numericNO form-control input-xs\" style=\"text-align:right\" value=\"0.00\" required autocomplete=\"off\">";
+		xCR.innerHTML = "<input type='text' name=\"txtnotCR"+lastRow+"\" id=\"txtnotCR"+lastRow+"\" class=\"numericNO form-control input-xs\" style=\"text-align:right\" value=\"0.00\" required autocomplete=\"off\">";
+		y.innerHTML = "<input class='btn btn-danger btn-xs' type='button' id='row3_"+lastRow+"_delete' value='delete' onClick=\"deleteRow3(this);\"/>";
+
+		//alert(lastRow);
 		$("#txtacctitle"+lastRow).focus();
 
-									$("input.numeric").numeric({decimalPlaces: 4});
-									$("input.numeric").on("click focus", function () {
-									   $(this).select();
-									});
+		$("input.numericNO").autoNumeric('init',{mDec:2});
+		$("input.numericNO").on("click focus", function () {
+			$(this).select();
+		});
+												
+		$("input.numericNO").on("keyup", function (e) {
+			setPosi($(this).attr('name'),e.keyCode,'MyTblOthers');
+			computeGrossOthers();
+		});
 									
-									$("input.numeric").on("keyup", function (e) {
-										setPosi($(this).attr('name'),e.keyCode,'MyTbl');
-										computeGross();
-									});
-								
-									$("#txtacctno"+lastRow+", #txtacctitle"+lastRow).on("click focus", function(event) {
-										$(this).select();
-									});
+		$("#txtacctitleID"+lastRow+", #txtacctitle"+lastRow).on("click focus", function(event) {
+			$(this).select();
+		});
 
-									$("#txtacctno"+lastRow).on("keyup", function(event) {
-										
-										if(event.keyCode == 13 || event.keyCode== 38 || event.keyCode==40){
-										
-											if(event.keyCode==13 ){	
-												var dInput = this.value;
-										
-												$.ajax({
-													type:'post',
-													url:'../getaccountid.php',
-													data: 'c_id='+ $(this).val(),                 
-													success: function(value){
-														//alert(value);
-														if(value.trim()!=""){
-															$("#txtacctitle"+lastRow).val(value.trim());
-														}
-													}
-												});
-											}
-											
-											setPosi("txtacctno"+lastRow,event.keyCode,'MyTblOthers');
-										}
-											
-									});
-									
-									$("#txtacctitle"+lastRow).typeahead({
-									
-										items: 10,
-										source: function(request, response) {
-											$.ajax({
-												url: "../th_accounts.php",
-												dataType: "json",
-												data: {
-													query: $("#txtacctitle"+lastRow).val()
-												},
-												success: function (data) {
-													response(data);
-												}
-											});
-										},
-										autoSelect: true,
-										displayText: function (item) {
-											 return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.name + "</small></div>";
-										},
-										highlighter: Object,
-										afterSelect: function(item) { 
-											$("#txtacctitle"+lastRow).val(item.name).change(); 
-											$("#txtacctno"+lastRow).val(item.id);
-																						
-											setPosi("txtacctitle"+lastRow,13,'MyTblOthers');
-										}
-									});
+	}
 
-
-}
-
-function deleteRow3(r) {
-	var tbl = document.getElementById('MyTblOthers').getElementsByTagName('tr');
-	var lastRow = tbl.length;
-	var i=r.parentNode.parentNode.rowIndex;
-	 document.getElementById('MyTblOthers').deleteRow(i);
-	 var lastRow = tbl.length;
-	 var z; //for loop counter changing textboxes ID;
-	 
+	function deleteRow3(r) {
+		var tbl = document.getElementById('MyTblOthers').getElementsByTagName('tr');
+		var lastRow = tbl.length;
+		var i=r.parentNode.parentNode.rowIndex;
+		document.getElementById('MyTblOthers').deleteRow(i);
+		var lastRow = tbl.length;
+		var z; //for loop counter changing textboxes ID;
+		
 		for (z=i+1; z<=lastRow; z++){
-			var tempOacctno = document.getElementById('txtacctno' + z);
+			var tempOacctno = document.getElementById('txtacctitleID' + z);
 			var tempOctitle = document.getElementById('txtacctitle' + z);
 			var tempODR = document.getElementById('txtnotDR' + z);
 			var tempOCR = document.getElementById('txtnotCR' + z);
 			var tempOdelbtn = document.getElementById('row3_'+z+'_delete');
-			
+				
 			var x = z-1;
-			tempOacctno.id = "txtacctno" + x;
-			tempOacctno.name = "txtacctno" + x;
+			tempOacctno.id = "txtacctitleID" + x;
+			tempOacctno.name = "txtacctitleID" + x;
 			tempOctitle.id = "txtacctitle" + x;
 			tempOctitle.name = "txtacctitle" + x;
 			tempODR.id = "txtnotDR" + x;
@@ -1660,12 +1675,12 @@ function deleteRow3(r) {
 			tempOCR.name = "txtnotCR" + x;
 			tempOdelbtn.id = "row3_"+x+"_delete";
 			tempOdelbtn.name = "row3_"+x+"_delete";
-			
+				
 		}
 
-computeGross();
-}
-*/
+		computeGross();
+	}
+
 
 	function addCM(xyadjtype,xytran,txtbx){
 		var tbl = document.getElementById('MyTableCMx').getElementsByTagName('tr');
@@ -1898,17 +1913,22 @@ computeGross();
 			
 			var tbl1 = document.getElementById('MyTable').getElementsByTagName('tr');
 			lastRow1 = tbl1.length-1;
+			$("#hdnrowcnt").val(lastRow1);
 
 			var tbl2 = document.getElementById('MyTableCMx').getElementsByTagName('tr');
 			lastRow2 = tbl2.length-1;
-			$("#hdnrowcntcmdm").val(lastRow2);
-					
-		if(lastRow1!=0){
-			$("#hdnrowcnt").val(lastRow1);				
-		}
-				
+			$("#hdnrowcntcmdm").val(lastRow2); 
 
-		if(lastRow1==0){
+			var tbl3 = document.getElementById('MyTblOthers').getElementsByTagName('tr');
+			lastRow3 = tbl3.length-1;
+			$("#hdnOthcnt").val(lastRow3); 
+				
+		if(lastRow1==0 && $("#isNoRef").find(":selected").val()==0){
+			alert("Details Required!");
+			subz = "NO";
+		}
+
+		if(lastRow3==0 && $("#isNoRef").find(":selected").val()==1){
 			alert("Details Required!");
 			subz = "NO";
 		}
@@ -2033,6 +2053,9 @@ computeGross();
 
 	}
 
+	function changeDet(){
+		$('#MyTable tbody').empty(); 
+	}
 </script>
 
 

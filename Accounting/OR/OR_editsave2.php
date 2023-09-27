@@ -3,40 +3,48 @@ session_start();
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 
+	//echo "<pre>";
+	//print_r($_POST);
+	//echo "</pre>";
 
-print_r($_REQUEST);
+	$company = $_SESSION['companyid'];
 
-$company = $_SESSION['companyid'];
-
-	$cSINo = mysqli_real_escape_string($con, $_REQUEST['txtctranno']);
-	$cAcctNo =  mysqli_real_escape_string($con, $_REQUEST['txtcacctid']);
-	$cCustID =  mysqli_real_escape_string($con, $_REQUEST['txtcustid']);
-	$dTranDate = $_REQUEST['date_delivery'];
-	$cRemarks =  mysqli_real_escape_string($con, $_REQUEST['txtremarks']); 
-	//$cPayType =  mysqli_real_escape_string($con, $_REQUEST['selpaytype']);
+	$cSINo = mysqli_real_escape_string($con, $_POST['txtctranno']);
+	$cAcctNo =  mysqli_real_escape_string($con, $_POST['txtcacctid']);
+	$cCustID =  mysqli_real_escape_string($con, $_POST['txtcustid']);
+	$dTranDate = $_POST['date_delivery'];
+	$cRemarks =  mysqli_real_escape_string($con, $_POST['txtremarks']); 
+	//$cPayType =  mysqli_real_escape_string($con, $_POST['selpaytype']);
 	$cPayType = "";
-	$cPayMethod =  mysqli_real_escape_string($con, $_REQUEST['selpayment']);
-	$cORNo =  mysqli_real_escape_string($con, $_REQUEST['txtORNo']); 
-	$nGross =  mysqli_real_escape_string($con, $_REQUEST['txtnGross']);
+	$cPayMethod =  mysqli_real_escape_string($con, $_POST['selpayment']);
+	$cORNo =  mysqli_real_escape_string($con, $_POST['txtORNo']); 
+	$nGross =  mysqli_real_escape_string($con, $_POST['txtnGross']);
 	$nGross = str_replace(",","",$nGross);
 
-	$nApplied =  mysqli_real_escape_string($con, $_REQUEST['txtnApplied']);
+	$nApplied =  mysqli_real_escape_string($con, $_POST['txtnApplied']);
 	$nApplied = str_replace(",","",$nApplied);
 
 	$cOTDesc = "";
 	$cOTRef = "";
 	if ($cPayMethod!=="Cash" && $cPayMethod!=="Cheque"){
-		$cOTDesc = mysqli_real_escape_string($con, $_REQUEST['txtOTBankName']);
-		$cOTRef = mysqli_real_escape_string($con, $_REQUEST['txtOTRefNo']);	
+		$cOTDesc = mysqli_real_escape_string($con, $_POST['txtOTBankName']);
+		$cOTRef = mysqli_real_escape_string($con, $_POST['txtOTRefNo']);	
+	}
+
+	$dret = 0;
+	if(isset($_POST['isNoRef'])){
+		$dret = $_POST['isNoRef'];
 	}
 	
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 
 	
-	if (!mysqli_query($con, "UPDATE `receipt` set `ccode` = '$cCustID', `dcutdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `cpaymethod` = '$cPayMethod', `cpaytype` = '$cPayType', `cremarks` = '$cRemarks', `namount` = $nGross, `napplied` = $nApplied, `cacctcode` = '$cAcctNo', `cpaydesc` = '$cOTDesc', `cpayrefno` = '$cOTRef' where `compcode`='$company' and `ctranno`= '$cSINo'")) {
+	if (!mysqli_query($con, "UPDATE `receipt` set `ccode` = '$cCustID', `dcutdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `cpaymethod` = '$cPayMethod', `cpaytype` = '$cPayType', `cremarks` = '$cRemarks', `namount` = $nGross, `napplied` = $nApplied, `cacctcode` = '$cAcctNo', `cpaydesc` = '$cOTDesc', `cpayrefno` = '$cOTRef', `lnosiref` = $dret where `compcode`='$company' and `ctranno`= '$cSINo'")) {
 				
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
+
+
 	
 
 //DELETE CASH AND CHEQUE TABLE...
@@ -48,9 +56,13 @@ if (!mysqli_query($con, "DELETE FROM `receipt_check_t` where `compcode`='$compan
 					printf("Errormessage: %s\n", mysqli_error($con));
 }
 
+if (!mysqli_query($con, "DELETE FROM `receipt_others_t` where `compcode`='$company' and `ctranno`= '$cSINo'")) {
+	printf("Errormessage: %s\n", mysqli_error($con));
+}
+
 
 if ($cPayMethod=="Cash") { //INSERT CASH DETAILS
-	$cvar1000 = mysqli_real_escape_string($con, $_REQUEST['txtDenom1000']);
+	$cvar1000 = mysqli_real_escape_string($con, $_POST['txtDenom1000']);
 	if(is_numeric($cvar1000)){
 				$namt = 1000*$cvar1000;
 				if (!mysqli_query($con, "INSERT INTO `receipt_cash_t`(`compcode`, `ctranno`, `ndenomination`, `npieces`, `namount`) values('$company', '$cSINo', '1000', $cvar1000, $namt)")) {
@@ -59,7 +71,7 @@ if ($cPayMethod=="Cash") { //INSERT CASH DETAILS
 	
 	}
 	
-	$cvar500 = mysqli_real_escape_string($con, $_REQUEST['txtDenom500']);
+	$cvar500 = mysqli_real_escape_string($con, $_POST['txtDenom500']);
 	if(is_numeric($cvar500)){
 				$namt = 500*$cvar500;
 				if (!mysqli_query($con, "INSERT INTO `receipt_cash_t`(`compcode`, `ctranno`, `ndenomination`, `npieces`, `namount`) values('$company', '$cSINo', '500', $cvar500, $namt)")) {
@@ -68,7 +80,7 @@ if ($cPayMethod=="Cash") { //INSERT CASH DETAILS
 	
 	}
 	
-	$cvar200 = mysqli_real_escape_string($con, $_REQUEST['txtDenom200']);
+	$cvar200 = mysqli_real_escape_string($con, $_POST['txtDenom200']);
 	if(is_numeric($cvar200)){
 				$namt = 200*$cvar200;
 				if (!mysqli_query($con, "INSERT INTO `receipt_cash_t`(`compcode`, `ctranno`, `ndenomination`, `npieces`, `namount`) values('$company', '$cSINo', '200', $cvar200, $namt)")) {
@@ -77,7 +89,7 @@ if ($cPayMethod=="Cash") { //INSERT CASH DETAILS
 	
 	}
 	
-	$cvar100 = mysqli_real_escape_string($con, $_REQUEST['txtDenom100']);
+	$cvar100 = mysqli_real_escape_string($con, $_POST['txtDenom100']);
 	if(is_numeric($cvar100)){
 				$namt = 100*$cvar100;
 				if (!mysqli_query($con, "INSERT INTO `receipt_cash_t`(`compcode`, `ctranno`, `ndenomination`, `npieces`, `namount`) values('$company', '$cSINo', '100', $cvar100, $namt)")) {
@@ -86,7 +98,7 @@ if ($cPayMethod=="Cash") { //INSERT CASH DETAILS
 	
 	}
 	
-	$cvar50 = mysqli_real_escape_string($con, $_REQUEST['txtDenom50']);
+	$cvar50 = mysqli_real_escape_string($con, $_POST['txtDenom50']);
 	if(is_numeric($cvar50)){
 				$namt = 50*$cvar50;
 				if (!mysqli_query($con, "INSERT INTO `receipt_cash_t`(`compcode`, `ctranno`, `ndenomination`, `npieces`, `namount`) values('$company', '$cSINo', '50', $cvar50, $namt)")) {
@@ -95,7 +107,7 @@ if ($cPayMethod=="Cash") { //INSERT CASH DETAILS
 	
 	}
 	
-	$cvar20 = mysqli_real_escape_string($con, $_REQUEST['txtDenom20']);
+	$cvar20 = mysqli_real_escape_string($con, $_POST['txtDenom20']);
 	if(is_numeric($cvar20)){
 				$namt = 20*$cvar20;
 				if (!mysqli_query($con, "INSERT INTO `receipt_cash_t`(`compcode`, `ctranno`, `ndenomination`, `npieces`, `namount`) values('$company', '$cSINo', '20', $cvar20, $namt)")) {
@@ -104,7 +116,7 @@ if ($cPayMethod=="Cash") { //INSERT CASH DETAILS
 	
 	}
 	
-	$cvar10 = mysqli_real_escape_string($con, $_REQUEST['txtDenom10']);
+	$cvar10 = mysqli_real_escape_string($con, $_POST['txtDenom10']);
 	if(is_numeric($cvar10)){
 				$namt = 10*$cvar10;
 				if (!mysqli_query($con, "INSERT INTO `receipt_cash_t`(`compcode`, `ctranno`, `ndenomination`, `npieces`, `namount`) values('$company', '$cSINo', '10', $cvar10, $namt)")) {
@@ -113,7 +125,7 @@ if ($cPayMethod=="Cash") { //INSERT CASH DETAILS
 	
 	}
 	
-	$cvar5 = mysqli_real_escape_string($con, $_REQUEST['txtDenom5']);
+	$cvar5 = mysqli_real_escape_string($con, $_POST['txtDenom5']);
 	if(is_numeric($cvar5)){
 				$namt = 5*$cvar5;
 				if (!mysqli_query($con, "INSERT INTO `receipt_cash_t`(`compcode`, `ctranno`, `ndenomination`, `npieces`, `namount`) values('$company', '$cSINo', '5', $cvar5, $namt)")) {
@@ -122,7 +134,7 @@ if ($cPayMethod=="Cash") { //INSERT CASH DETAILS
 	
 	}
 	
-	$cvar1 = mysqli_real_escape_string($con, $_REQUEST['txtDenom1']);
+	$cvar1 = mysqli_real_escape_string($con, $_POST['txtDenom1']);
 	if(is_numeric($cvar1)){
 				$namt = 5*$cvar1;
 				if (!mysqli_query($con, "INSERT INTO `receipt_cash_t`(`compcode`, `ctranno`, `ndenomination`, `npieces`, `namount`) values('$company', '$cSINo', '1', $cvar1, $namt)")) {
@@ -131,7 +143,7 @@ if ($cPayMethod=="Cash") { //INSERT CASH DETAILS
 	
 	}
 	
-	$cvar025 = mysqli_real_escape_string($con, $_REQUEST['txtDenom025']);
+	$cvar025 = mysqli_real_escape_string($con, $_POST['txtDenom025']);
 	if(is_numeric($cvar025)){
 				$namt = 0.25*$cvar025;
 				if (!mysqli_query($con, "INSERT INTO `receipt_cash_t`(`compcode`, `ctranno`, `ndenomination`, `npieces`, `namount`) values('$company', '$cSINo', '0.25', $cvar025, $namt)")) {
@@ -140,7 +152,7 @@ if ($cPayMethod=="Cash") { //INSERT CASH DETAILS
 	
 	}
 	
-	$cvar010 = mysqli_real_escape_string($con, $_REQUEST['txtDenom010']);
+	$cvar010 = mysqli_real_escape_string($con, $_POST['txtDenom010']);
 	if(is_numeric($cvar010)){
 				$namt = 0.10*$cvar010;
 				if (!mysqli_query($con, "INSERT INTO `receipt_cash_t`(`compcode`, `ctranno`, `ndenomination`, `npieces`, `namount`) values('$company', '$cSINo', '0.10', $cvar010, $namt)")) {
@@ -149,7 +161,7 @@ if ($cPayMethod=="Cash") { //INSERT CASH DETAILS
 	
 	}
 	
-	$cvar005 = mysqli_real_escape_string($con, $_REQUEST['txtDenom005']);
+	$cvar005 = mysqli_real_escape_string($con, $_POST['txtDenom005']);
 	if(is_numeric($cvar005)){
 				$namt = 0.05*$cvar005;
 				if (!mysqli_query($con, "INSERT INTO `receipt_cash_t`(`compcode`, `ctranno`, `ndenomination`, `npieces`, `namount`) values('$company', '$cSINo', '0.05', $cvar005, $namt)")) {
@@ -159,10 +171,10 @@ if ($cPayMethod=="Cash") { //INSERT CASH DETAILS
 	}
 }
 elseif ($cPayMethod=="Cheque"){ //INSERT CHEQUE DETAILS
-	$CHKbank = mysqli_real_escape_string($con, $_REQUEST['txtBankName']);
-	$CHKdate = mysqli_real_escape_string($con, $_REQUEST['txtChekDate']);
-	$CHKchkno = mysqli_real_escape_string($con, $_REQUEST['txtCheckNo']); 
-	$CHKchkamt = mysqli_real_escape_string($con, $_REQUEST['txtCheckAmt']);
+	$CHKbank = mysqli_real_escape_string($con, $_POST['txtBankName']);
+	$CHKdate = mysqli_real_escape_string($con, $_POST['txtChekDate']);
+	$CHKchkno = mysqli_real_escape_string($con, $_POST['txtCheckNo']); 
+	$CHKchkamt = mysqli_real_escape_string($con, $_POST['txtCheckAmt']);
 	$CHKchkamt = str_replace(",","",$CHKchkamt);
 	
 				if (!mysqli_query($con, "INSERT INTO `receipt_check_t`(`compcode`, `ctranno`, `cbank`, `ccheckno`, `ddate`, nchkamt) values('$company', '$cSINo', '$CHKbank', '$CHKchkno', STR_TO_DATE('$CHKdate', '%m/%d/%Y'), $CHKchkamt)")) {
@@ -176,7 +188,7 @@ elseif ($cPayMethod=="Cheque"){ //INSERT CHEQUE DETAILS
 
 
 //INSERT SALES DETAILS if Sales and Sales Type
-$rowcntS = $_REQUEST['hdnrowcnt'];
+$rowcntS = $_POST['hdnrowcnt'];
 if($rowcntS!=0){	
 
 	if (!mysqli_query($con, "DELETE FROM `receipt_sales_t` where `compcode`='$company' and `ctranno`= '$cSINo'")) {
@@ -186,26 +198,26 @@ if($rowcntS!=0){
 	$cnt = 0;	 
 	for($z=1; $z<=$rowcntS; $z++){
 		
-		$csalesno = $_REQUEST['txtcSalesNo'.$z];
+		$csalesno = $_POST['txtcSalesNo'.$z];
 				
-		$namount = str_replace(",","",$_REQUEST['txtSIGross'.$z]);
-		$ndm = str_replace(",","",$_REQUEST['txtndebit'.$z]);
-		$ncm = str_replace(",","",$_REQUEST['txtncredit'.$z]);
-		$npayments = str_replace(",","",$_REQUEST['txtnpayments'.$z]);
+		$namount = str_replace(",","",$_POST['txtSIGross'.$z]);
+		$ndm = str_replace(",","",$_POST['txtndebit'.$z]);
+		$ncm = str_replace(",","",$_POST['txtncredit'.$z]);
+		$npayments = str_replace(",","",$_POST['txtnpayments'.$z]);
 
-		$cvatcode = str_replace(",","",$_REQUEST['txtnvatcode'.$z]);
-		$nvatrate = str_replace(",","",$_REQUEST['txtnvatrate'.$z]);
-		$nvat = str_replace(",","",$_REQUEST['txtvatamt'.$z]);
-		$nnetamt = str_replace(",","",$_REQUEST['txtnetvat'.$z]);
-		$cvatcode1 = str_replace(",","",$_REQUEST['txtnvatcodeorig'.$z]);
+		$cvatcode = str_replace(",","",$_POST['txtnvatcode'.$z]);
+		$nvatrate = str_replace(",","",$_POST['txtnvatrate'.$z]);
+		$nvat = str_replace(",","",$_POST['txtvatamt'.$z]);
+		$nnetamt = str_replace(",","",$_POST['txtnetvat'.$z]);
+		$cvatcode1 = str_replace(",","",$_POST['txtnvatcodeorig'.$z]);
 
-		if(isset($_REQUEST['txtnEWT'.$z])){
-			$ewtcode = implode(",",$_REQUEST['txtnEWT'.$z]);
+		if(isset($_POST['txtnEWT'.$z])){
+			$ewtcode = implode(",",$_POST['txtnEWT'.$z]);
 		}else{
 			$ewtcode = "";
 		}
 
-		$ewtrate = str_replace(",","",$_REQUEST['txtnEWTRate'.$z]);
+		$ewtrate = str_replace(",","",$_POST['txtnEWTRate'.$z]);
 
 		if($ewtrate==""){
 			$ewtrate = 0;
@@ -213,13 +225,13 @@ if($rowcntS!=0){
 			$ewtrate = str_replace(";",",",$ewtrate);
 		}
 
-		$ewtamt = str_replace(",","", $_REQUEST['txtnEWTAmt'.$z]);
-		$ewtcode1 = $_REQUEST['txtnEWTorig'.$z];
+		$ewtamt = str_replace(",","", $_POST['txtnEWTAmt'.$z]);
+		$ewtcode1 = $_POST['txtnEWTorig'.$z];
 				
-		$ndue = str_replace(",","",$_REQUEST['txtDue'.$z]);
-		$napplied = str_replace(",","",$_REQUEST['txtApplied'.$z]);
+		$ndue = str_replace(",","",$_POST['txtDue'.$z]);
+		$napplied = str_replace(",","",$_POST['txtApplied'.$z]);
 		
-		$cacctno = $_REQUEST['txtcSalesAcctNo'.$z];
+		$cacctno = $_POST['txtcSalesAcctNo'.$z];
 					
 		$cnt = $cnt + 1;
 
@@ -235,7 +247,7 @@ if($rowcntS!=0){
 }
 
 //INSERT CM/DM REFERENCES
-$rowcntcmdm = $_REQUEST['hdnrowcntcmdm'];
+$rowcntcmdm = $_POST['hdnrowcntcmdm'];
 if($rowcntcmdm!=0){
 
 	if (!mysqli_query($con, "DELETE FROM `receipt_deds` where `compcode`='$company' and `ctranno`= '$cSINo'")) {
@@ -247,17 +259,40 @@ if($rowcntcmdm!=0){
 
 		$cnt++;
 
-		$adjtype = $_REQUEST['hdnctypeadj'.$z];
-		$adjrefsi = $_REQUEST['hdndetsino'.$z];
-		$adjtrano = $_REQUEST['txtapcmdm'.$z];
-		$adjdte = $_REQUEST['txtapdte'.$z];
-		$adjgrss = str_replace(",","",$_REQUEST['txtapamt'.$z]);
-		$adjremz = $_REQUEST['txtremz'.$z]; 
-		$adjisgiven = $_REQUEST['hdnisgiven'.$z];
+		$adjtype = $_POST['hdnctypeadj'.$z];
+		$adjrefsi = $_POST['hdndetsino'.$z];
+		$adjtrano = $_POST['txtapcmdm'.$z];
+		$adjdte = $_POST['txtapdte'.$z];
+		$adjgrss = str_replace(",","",$_POST['txtapamt'.$z]);
+		$adjremz = $_POST['txtremz'.$z]; 
+		$adjisgiven = $_POST['hdnisgiven'.$z];
 
 		$refcidenttran = $cSINo."P".$cnt;
 
 		if (!mysqli_query($con, "INSERT INTO `receipt_deds`(`compcode`,`cidentity`,`nidentity`,`ctranno`,`aradjustment_ctype`,`aradjustment_ctranno`,`aradjustment_crefsi`,`aradjustment_dcutdate`,`aradjustment_ngross`,`cremarks`,`isgiven`) values('$company', '$refcidenttran', '$cnt', '$cSINo','$adjtype','$adjtrano','$adjrefsi', '$adjdte', $adjgrss, '$adjremz', '$adjisgiven')")){
+			printf("Errormessage: %s\n", mysqli_error($con));
+		}
+
+	}
+
+}
+
+//INSERT OTHERS
+$rowcntothers = $_POST['hdnOthcnt'];
+if($rowcntothers!=0){
+	$cnt = 0;	 
+	for($z=1; $z<=$rowcntothers; $z++){
+
+		$cnt++;
+
+		$othracctID = $_POST['txtacctitleID'.$z];
+		$othracctTITLE = $_POST['txtacctitle'.$z];
+		$othrdbt = str_replace(",","",$_POST['txtnotDR'.$z]);
+		$othrcrd = str_replace(",","",$_POST['txtnotCR'.$z]);
+
+		$refcidenttran = $cSINo."P".$cnt;
+
+		if (!mysqli_query($con, "INSERT INTO `receipt_others_t`(`compcode`,`cidentity`,`nidentity`,`ctranno`,`cacctno`,`ctitle`,`ncredit`,`ndebit`) values('$company', '$refcidenttran', '$cnt', '$cSINo','$othracctID','$othracctTITLE','$othrcrd', '$othrdbt')")){
 			printf("Errormessage: %s\n", mysqli_error($con));
 		}
 

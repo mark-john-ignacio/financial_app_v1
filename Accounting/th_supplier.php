@@ -6,7 +6,7 @@
 
 	$company = $_SESSION['companyid'];
 	
-	$result = mysqli_query ($con, "select A.*, B.nrate from suppliers A left join wtaxcodes B on A.compcode=B.compcode and A.newtcode=B.ctaxcode WHERE A.compcode='$company' and A.cname like '%".$_GET['query']."%'"); 
+	$result = mysqli_query ($con, "select A.*, B.nrate from suppliers A left join wtaxcodes B on A.compcode=B.compcode and A.newtcode=B.ctaxcode WHERE A.compcode='$company' and (A.cname like '%".$_GET['query']."%' OR A.ccode like '%".$_GET['query']."%')"); 
 
 	//$json2 = array();
 	//$json = [];

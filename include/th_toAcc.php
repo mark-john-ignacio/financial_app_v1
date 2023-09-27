@@ -648,7 +648,7 @@ function getSetAcct($id){
 	}//if($typ=="DM")
 
 	
-//Iupdate ang Balance ng COA
+	//Iupdate ang Balance ng COA
 
 
 	//$sqlacctup = mysqli_query($con,"Select A.cacctno, A.ndebit, A.ncredit from glactivity A where A.compcode='$company' and A.ctranno='$tran'");
