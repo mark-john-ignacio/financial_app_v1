@@ -1601,7 +1601,6 @@
 
 	}
 
-
 	function addacct(){
 
 		var tbl = document.getElementById('MyTblOthers').getElementsByTagName('tr');
