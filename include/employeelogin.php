@@ -71,7 +71,8 @@ if(mysqli_num_rows($sql) == 0){
 				$_SESSION['loggedid'] = $row['logid'] ;
 			}
 
-			if(validStatus($status) && validIP($machine)){
+
+			if(validStatus($status)){
 
 				$sql = "INSERT INTO `users_log` (`Userid`, `status`, `machine`, `logged_date`) VALUES ('".$employee['id']."', 'Online', '$ipaddress', '$dateNow')";
 				$result = mysqli_query($con, $sql);
@@ -79,7 +80,7 @@ if(mysqli_num_rows($sql) == 0){
 
 			} else {
 
-				if(!validStatus($status) && validIP($machine)){
+				if(validIP($machine)){
 					echo json_encode(valid30Days($employee['modify']));
 				} else {
 
