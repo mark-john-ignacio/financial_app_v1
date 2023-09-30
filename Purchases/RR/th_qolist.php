@@ -16,7 +16,7 @@ require_once "../../Connection/connection_string.php";
 
 	//get all existing RR
 	@$arrinv = array();
-	$resq = mysqli_query ($con, "Select creference, nrefidentity,citemno,sum(nqty*nfactor) as nqty From receive_t a left join receive b on a.compcode=b.compcode and a.ctranno=b.ctranno where a.compcode='$company' and b.lcancelled=0 group by creference, nrefidentity, citemno");
+	$resq = mysqli_query ($con, "Select creference, nrefidentity,citemno,sum(nqty*nfactor) as nqty From receive_t a left join receive b on a.compcode=b.compcode and a.ctranno=b.ctranno where a.compcode='$company' and b.lcancelled=0 and b.lvoid=0 group by creference, nrefidentity, citemno");
 	if (mysqli_num_rows($resq)!=0){
 		while($row = mysqli_fetch_array($resq, MYSQLI_ASSOC)){
 			@$arrinv[]=$row;
@@ -25,7 +25,7 @@ require_once "../../Connection/connection_string.php";
 
 	//$qry = "select B.cpono as ctranno, B.ddate, B.ngross, sum(A.nqty*A.nfactor), ifnull(sum(C.nqty*C.nfactor),0) from purchase_t A left join purchase B on A.compcode=B.compcode and A.cpono=B.cpono left join receive_t C on A.compcode=C.compcode and A.cpono=C.creference and A.citemno=C.citemno and A.nident = C.nrefidentity where A.compcode='$company' and B.lapproved=1 and B.ccode='".$_REQUEST['x']."' Group by B.cpono, B.ddate, B.ngross HAVING (sum(A.nqty*A.nfactor) - ifnull(sum(C.nqty*C.nfactor),0)) > 0 order by B.ddate desc, A.cpono desc ";
 	
-	$qry = "select * from purchase where compcode='$company' and lapproved=1 and ccode='".$_REQUEST['x']."' order by ddate desc, cpono desc"; 
+	$qry = "select * from purchase where compcode='$company' and lapproved=1 and lvoid=0 and ccode='".$_REQUEST['x']."' order by ddate desc, cpono desc"; 
 	$result = mysqli_query ($con, $qry); 
 
 	$json = array();
