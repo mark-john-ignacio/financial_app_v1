@@ -126,7 +126,8 @@
 		}
 		 
 
-		$hdnentrtyp = mysqli_real_escape_string($con, $_POST['selentrytyp'.$z]);
+		$hdnentrtyp = mysqli_real_escape_string($con, $_POST['selentrytyp'.$z]); 
+		$selcostctr = mysqli_real_escape_string($con, $_POST['selcostcentr'.$z]); 
 
 		if($napplied<>0){
 			
@@ -138,7 +139,7 @@
 				$dapvdate = date("m/d/Y");
 			}
 
-			if (!mysqli_query($con, "INSERT INTO `paybill_t`(`compcode`, `cidentity`, `nident`, `ctranno`, `crefrr`, `capvno`, `dapvdate`, `namount`, `ndiscount`, `nowed`, `napplied`, `cacctno`, `newtamt`, `cewtcode`, `entrytyp`) values('$company', '$refcidenttran', '$cnt', '$cSINo', '$crefrr', '$capvno', STR_TO_DATE('$dapvdate', '%m/%d/%Y'), $namnt, $ndiscount, $nowed, $napplied, '$caccno', '$hdnewt', '$hdnewtcode', '$hdnentrtyp')")) {
+			if (!mysqli_query($con, "INSERT INTO `paybill_t`(`compcode`, `cidentity`, `nident`, `ctranno`, `crefrr`, `capvno`, `dapvdate`, `namount`, `ndiscount`, `nowed`, `napplied`, `cacctno`, `newtamt`, `cewtcode`, `entrytyp`, `ncostcenter`) values('$company', '$refcidenttran', '$cnt', '$cSINo', '$crefrr', '$capvno', STR_TO_DATE('$dapvdate', '%m/%d/%Y'), $namnt, $ndiscount, $nowed, $napplied, '$caccno', '$hdnewt', '$hdnewtcode', '$hdnentrtyp', '$selcostctr')")) {
 			printf("Errormessage: %s\n", mysqli_error($con));
 			} 
 

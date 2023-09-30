@@ -43,6 +43,15 @@
 		}
 	}
 
+	//get locations of cost center
+	@$clocs = array();
+	$gettaxcd = mysqli_query($con,"SELECT nid, cdesc FROM `locations` where compcode='$company' and cstatus='ACTIVE'"); 
+	if (mysqli_num_rows($gettaxcd)!=0) {
+		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+			@$clocs[] = $row; 
+		}
+	}
+
 	$_SESSION['myxtoken'] = gen_token();		
 ?>
 
@@ -87,6 +96,7 @@
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
 
 	<input type="hidden" id="existingnos" value='<?=json_encode($arrnoslist)?>'>
+	<input type="hidden" id="costcenters" value='<?=json_encode($clocs)?>'>
 	<input type="hidden" value='<?=@$ewtpaydef?>' id="hdnewtpay">
 
 	<form action="PayBill_newsave.php" name="frmpos" id="frmpos" method="post" onsubmit="return chkform();" enctype="multipart/form-data">
@@ -308,7 +318,7 @@
 								height: 250px;
 								text-align: left;
 								overflow: scroll">
-								<table width="110%" border="0" cellpadding="0" id="MyTable">
+								<table width="150%" border="0" cellpadding="0" id="MyTable">
 									<thead>
 										<tr>
 											<th scope="col" id="hdnRefTitle" nowrap>APV No&nbsp;&nbsp;&nbsp;</th>
@@ -319,9 +329,10 @@
 											<th scope="col" width="120px" class="text-right">Total Owed&nbsp;&nbsp;&nbsp;</th>
 											<th scope="col" width="120px" class="text-center">Amount Applied</th>
 											<th scope="col">Account Code</th>
-											<th scope="col">Account Title</th>
+											<th scope="col">Account Title</th>											
 											<th scope="col" id="tblewt" style="display: none">EWT Code</th>
 											<th scope="col" id="tbldrcr" style="display: none">Type</th>
+											<th scope="col">Cost Center</th>
 											<th scope="col">&nbsp;</th>
 										</tr>
 									</thead>
@@ -1159,8 +1170,17 @@
 			}
 
 			var t3 = "<td style=\"padding:2px\" align=\"center\" width=\"10px\" nowrap> <button class=\"btn btn-xs btn-danger\" name=\"delRow\" id=\"delRow"+lastRow+"\"><i class='fa fa-times'></i></button></td>";	
+
 			
-			$('#MyTable > tbody:last-child').append('<tr>'+ u + u2 + v + w + x + y + z + t2 + t + t4 + t5 + t3 + '</tr>');
+			var xz = $("#costcenters").val();
+				taxoptions = "";
+				$.each(jQuery.parseJSON(xz), function() { 
+					taxoptions = taxoptions + "<option value='"+this['nid']+"' data-cdesc='"+this['cdesc']+"'>"+this['cdesc']+"</option>";
+				});
+
+			var costcntr = "<td  width=\"100px\" style=\"padding:1px\"><select class='form-control input-sm' name=\"selcostcentr\" id=\"selcostcentr"+lastRow+"\">  <option value='' data-cdesc=''>NONE</option> " + taxoptions + " </select> </td>"; 
+			
+			$('#MyTable > tbody:last-child').append('<tr>'+ u + u2 + v + w + x + y + z + t2 + t + t4 + t5 + costcntr + t3 + '</tr>');
 
 									$("#delRow"+lastRow).on("click", function(){
 										$(this).closest('tr').remove();
@@ -1234,6 +1254,8 @@
 				$(this).find('input[type=hidden][name="selentrytyp"]').attr("id","selentrytyp" + tx);
 			}
 
+			$(this).find('select[name="selcostcentr"]').attr("id","selcostcentr" + tx);
+			
 			$(this).find('button[name="delRow"]').attr("id","delRow" + tx);
 
 
@@ -1362,6 +1384,9 @@
 						$(this).find('input[type=hidden][name="napvewt"]').attr("name","napvewt" + tx); 
 						$(this).find('input[type=hidden][name="selentrytyp"]').attr("name","selentrytyp" + tx);
 					}
+
+					$(this).find('select[name="selcostcentr"]').attr("name","selcostcentr" + tx);
+					
 				});
 
 

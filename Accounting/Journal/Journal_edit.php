@@ -46,6 +46,15 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		//echo "NO FILES";
 	}
 
+	//get locations of cost center
+	@$clocs = array();
+	$gettaxcd = mysqli_query($con,"SELECT nid, cdesc FROM `locations` where compcode='$company' and cstatus='ACTIVE'"); 
+	if (mysqli_num_rows($gettaxcd)!=0) {
+		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+			@$clocs[] = $row; 
+		}
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -84,6 +93,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtctranno').focus(); disabled();">
+<input type="hidden" id="costcenters" value='<?=json_encode($clocs)?>'>
 <input type="hidden" value='<?=json_encode(@$arrname)?>' id="hdnfileconfig"> 
 
 <?php
@@ -239,7 +249,25 @@ if (mysqli_num_rows($sqlhead)!=0) {
                    <td><input type="text" class="form-control input-xs" name="txtcAcctDesc<?php echo $cntr; ?>" id="txtcAcctDesc<?php echo $cntr; ?>"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();" value="<?php echo $rowbody['ctitle'];?>"></td>
                    <td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit<?php echo $cntr; ?>" id="txtnDebit<?php echo $cntr; ?>" value="<?php echo $rowbody['ndebit'];?>" autocomplete="off"></td>
                    <td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit<?php echo $cntr; ?>" id="txtnCredit<?php echo $cntr; ?>" value="<?php echo $rowbody['ncredit'];?>" autocomplete="off"></td>
-                   <td width="100px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtnSub<?php echo $cntr; ?>" id="txtnSub<?php echo $cntr; ?>" placeholder="Subsidiary..." autocomplete="off" onFocus="this.select();" value="<?php echo $rowbody['csub'];?>"></td>
+                   <td width="100px" style="padding:1px">
+
+										<?php
+											$costoption = "";
+											foreach(@$clocs as $xr){
+												if($rowbody['csub']==$xr['nid']){
+													$isselected = "selected";
+												}else{
+													$isselected = "";
+												}
+												$costoption = $costoption."<option value='".$xr['nid']."' data-cdesc='".$xr['cdesc']."' ".$isselected.">".$xr['cdesc']."</option>";
+											}
+										?>
+										<select class='form-control input-xs' name="txtnSub<?php echo $cntr; ?>" id="txtnSub<?php echo $cntr; ?>">  
+											<option value='' data-cdesc=''>NONE</option>
+											<?=$costoption?>
+										</select>
+									
+										</td>
                    <td width="200px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtcRem<?php echo $cntr; ?>" id="txtcRem<?php echo $cntr; ?>" placeholder="Remarks..." autocomplete="off" onFocus="this.select();" value="<?php echo $rowbody['cremarks'];?>"></td>
                    <td width="40px" align="right">
                    <?php
@@ -636,15 +664,23 @@ else{
 
 	function InsertRows(thisKey,thisNme,rowCount){
 
+		var xz = $("#costcenters").val();
+		taxoptions = "";
+		$.each(jQuery.parseJSON(xz), function() { 
+			taxoptions = taxoptions + "<option value='"+this['nid']+"' data-cdesc='"+this['cdesc']+"'>"+this['cdesc']+"</option>";
+		});
+
+		var costcntr = "<select class='form-control input-xs' name='txtnSub"+rowCount+"' id='txtnSub"+rowCount+"'>  <option value='' data-cdesc=''>NONE</option> " + taxoptions + " </select>"; 
+
 		//alert(thisKey +" and "+ thisNme);
 			if(thisKey==9){
 			$('#MyTable > tbody:last-child').append(
-							'<tr>'// need to change closing tag to an opening `<tr>` tag.
-							+'<td width="100px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtcAcctNo'+rowCount+'" id="txtcAcctNo'+rowCount+'"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();"></td>'
-							+'<td><input type="text" class="form-control input-xs" name="txtcAcctDesc'+rowCount+'" id="txtcAcctDesc'+rowCount+'"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();"></td>'
-							+'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit'+rowCount+'" id="txtnDebit'+rowCount+'" value="0.00" autocomplete="off"></td>'
-							+'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit'+rowCount+'" id="txtnCredit'+rowCount+'" value="0.00" autocomplete="off"></td>'
-				+'<td width="100px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtnSub'+rowCount+'" id="txtnSub'+rowCount+'" placeholder="Subsidiary..." autocomplete="off" onFocus="this.select();"></td>'
+				'<tr>'// need to change closing tag to an opening `<tr>` tag.
+				+'<td width="100px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtcAcctNo'+rowCount+'" id="txtcAcctNo'+rowCount+'"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();"></td>'
+				+'<td><input type="text" class="form-control input-xs" name="txtcAcctDesc'+rowCount+'" id="txtcAcctDesc'+rowCount+'"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();"></td>'
+				+'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit'+rowCount+'" id="txtnDebit'+rowCount+'" value="0.00" autocomplete="off"></td>'
+				+'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit'+rowCount+'" id="txtnCredit'+rowCount+'" value="0.00" autocomplete="off"></td>'
+				+'<td width="100px" style="padding:1px">'+costcntr+'</td>'
 				+'<td width="200px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtcRem'+rowCount+'" id="txtcRem'+rowCount+'" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"></td>'
 				+'<td width="40px" align="right"><input class="btn btn-danger btn-xs" type="button" id="row_'+rowCount+'_delete" value="delete" onClick="deleteRow(this);"/></td>'
 							+'</tr>');

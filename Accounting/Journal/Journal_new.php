@@ -1,12 +1,23 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "Journal_new.php";
+	if(!isset($_SESSION)){
+	session_start();
+	}
+	$_SESSION['pageid'] = "Journal_new.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access.php');
+
+	$company = $_SESSION['companyid'];
+
+	//get locations of cost center
+	@$clocs = array();
+	$gettaxcd = mysqli_query($con,"SELECT nid, cdesc FROM `locations` where compcode='$company' and cstatus='ACTIVE'"); 
+	if (mysqli_num_rows($gettaxcd)!=0) {
+		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+			@$clocs[] = $row; 
+		}
+	}
 ?>
 
 <!DOCTYPE html>
@@ -44,6 +55,8 @@ include('../../include/access.php');
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtctranno').focus();">
+<input type="hidden" id="costcenters" value='<?=json_encode($clocs)?>'>
+
 <form action="Journal_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return chkform();"  enctype="multipart/form-data">
 	<fieldset>
     	<legend>New Journal Entry </legend>	
@@ -144,7 +157,7 @@ include('../../include/access.php');
                             <th style="border-bottom:1px solid #999">Account Title</th>
                             <th style="border-bottom:1px solid #999">Debit</th>
                             <th style="border-bottom:1px solid #999">Credit</th>
-                            <th style="border-bottom:1px solid #999">Subsidiary</th>
+                            <th style="border-bottom:1px solid #999">Cost Center</th>
                             <th style="border-bottom:1px solid #999">Remarks</th>
                             <th style="border-bottom:1px solid #999">&nbsp;</th>
                         </tr>
@@ -154,7 +167,20 @@ include('../../include/access.php');
                    <td><input type="text" class="form-control input-xs" name="txtcAcctDesc1" id="txtcAcctDesc1"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();"></td>
                    <td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit1" id="txtnDebit1" value="0.00" autocomplete="off"></td>
                    <td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit1" id="txtnCredit1" value="0.00" autocomplete="off"></td>
-                   <td width="100px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtnSub1" id="txtnSub1" placeholder="Subsidiary..." autocomplete="off" onFocus="this.select();"></td>
+                   <td width="100px" style="padding:1px">
+
+									 	<?php
+										$costoption = "";
+											foreach(@$clocs as $xr){
+												$costoption = $costoption."<option value='".$xr['nid']."' data-cdesc='".$xr['cdesc']."'>".$xr['cdesc']."</option>";
+											}
+										?>
+										<select class='form-control input-xs' name="txtnSub1" id="txtnSub1">  
+											<option value='' data-cdesc=''>NONE</option>
+											<?=$costoption?>
+										</select>
+									
+									</td>
                    <td width="200px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtcRem1" id="txtcRem1" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"></td>
                    <td width="40px" align="right">&nbsp;</td>
                   </tr>
@@ -166,7 +192,7 @@ include('../../include/access.php');
 												autoSelect: true,
 												source: function(request, response) {
 													$.ajax({
-														url: "th_accounts.php",
+														url: "../th_accounts.php",
 														dataType: "json",
 														data: {
 															query: $("#txtcAcctNo1").val()
@@ -194,7 +220,7 @@ include('../../include/access.php');
 												autoSelect: true,
 												source: function(request, response) {
 													$.ajax({
-														url: "th_accounts.php",
+														url: "../th_accounts.php",
 														dataType: "json",
 														data: {
 															query: $("#txtcAcctDesc1").val()
@@ -448,13 +474,22 @@ Back to Main<br>(ESC)</button>
 	function InsertRows(thisKey,thisNme,rowCount){
 
 			if(thisKey==9){
+
+				var xz = $("#costcenters").val();
+				taxoptions = "";
+				$.each(jQuery.parseJSON(xz), function() { 
+					taxoptions = taxoptions + "<option value='"+this['nid']+"' data-cdesc='"+this['cdesc']+"'>"+this['cdesc']+"</option>";
+				});
+
+				var costcntr = "<select class='form-control input-xs' name='txtnSub"+rowCount+"' id='txtnSub"+rowCount+"'>  <option value='' data-cdesc=''>NONE</option> " + taxoptions + " </select>"; 
+
 				$('#MyTable > tbody:last-child').append(
 					'<tr>'
 						+'<td width="100px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtcAcctNo'+rowCount+'" id="txtcAcctNo'+rowCount+'"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();"></td>'
 						+'<td><input type="text" class="form-control input-xs" name="txtcAcctDesc'+rowCount+'" id="txtcAcctDesc'+rowCount+'"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();"></td>'
 						+'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit'+rowCount+'" id="txtnDebit'+rowCount+'" value="0.00" autocomplete="off"></td>'
 						+'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit'+rowCount+'" id="txtnCredit'+rowCount+'" value="0.00" autocomplete="off"></td>'
-						+'<td width="100px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtnSub'+rowCount+'" id="txtnSub'+rowCount+'" placeholder="Subsidiary..." autocomplete="off" onFocus="this.select();"></td>'
+						+'<td width="100px" style="padding:1px">'+costcntr+'</td>'
 						+'<td width="200px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtcRem'+rowCount+'" id="txtcRem'+rowCount+'" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"></td>'
 						+'<td width="40px" align="right"><input class="btn btn-danger btn-xs" type="button" id="row_'+rowCount+'_delete" value="delete" onClick="deleteRow(this);"/></td>'
 					+'</tr>');
@@ -463,7 +498,7 @@ Back to Main<br>(ESC)</button>
 								autoSelect: true,
 								source: function(request, response) {
 									$.ajax({
-										url: "th_accounts.php",
+										url: "../th_accounts.php",
 										dataType: "json",
 										data: {
 											query: $("#txtcAcctNo"+rowCount).val()
@@ -491,7 +526,7 @@ Back to Main<br>(ESC)</button>
 								autoSelect: true,
 								source: function(request, response) {
 									$.ajax({
-										url: "th_accounts.php",
+										url: "../th_accounts.php",
 										dataType: "json",
 										data: {
 											query: $("#txtcAcctDesc"+rowCount).val()
