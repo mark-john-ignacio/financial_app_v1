@@ -13,7 +13,7 @@ require_once "../../Connection/connection_string.php";
 		from sales_t a 
 		left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
 		left join sales d on a.compcode=d.compcode and a.ctranno=d.ctranno
-		WHERE a.compcode='$company' and d.ccode='".$_REQUEST['x']."' and d.lapproved=1 and d.csalestype='Goods' Order By d.ddate desc, d.ctranno desc";
+		WHERE a.compcode='$company' and d.ccode='".$_REQUEST['x']."' and d.lapproved=1 and d.lvoid=0 and d.csalestype='Goods' Order By d.ddate desc, d.ctranno desc";
 		
 	$result = mysqli_query ($con, $sql); 
 	if (mysqli_num_rows($result)!=0){

@@ -79,7 +79,7 @@ require_once "../../Connection/connection_string.php";
 
 	//get all existing dr
 	@$arrinv = array();
-	$resq = mysqli_query ($con, "Select creference, crefident, citemno, sum(nqty) as nqty From dr_t a left join dr b on a.compcode=b.compcode and a.ctranno=b.ctranno where a.compcode='$company' and b.lcancelled=0 group by creference, crefident,citemno");
+	$resq = mysqli_query ($con, "Select creference, crefident, citemno, sum(nqty) as nqty From dr_t a left join dr b on a.compcode=b.compcode and a.ctranno=b.ctranno where a.compcode='$company' and b.lcancelled=0 and b.lvoid=0 group by creference, crefident,citemno");
 	if (mysqli_num_rows($resq)!=0){
 		while($row = mysqli_fetch_array($resq, MYSQLI_ASSOC)){
 			@$arrinv[]=$row;

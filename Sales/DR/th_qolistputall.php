@@ -32,7 +32,7 @@ require_once "../../Connection/connection_string.php";
 				(Select x.creference,x.citemno,sum(x.nqty) as nqty
 				 From dr_t x
 				 left join dr y on x.compcode=y.compcode and x.ctranno=y.ctranno
-				 Where x.creference='".$_REQUEST['id']."' and y.lcancelled=0
+				 Where x.creference='".$_REQUEST['id']."' and y.lcancelled=0 and y.lvoid=0
 				 group by x.creference,x.citemno
 				 ) c on a.ctranno=c.creference and a.citemno=c.citemno
 			left join 

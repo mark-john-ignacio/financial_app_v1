@@ -6,7 +6,7 @@ require_once "../../Connection/connection_string.php";
 
 	$company = $_SESSION['companyid'];
 	
-	$result = mysqli_query ($con, "Select A.*, B.cpricever, B.cname, C.cname as cdelname, D.cname as csmaname From SO A left join customers B on A.compcode=B.compcode and A.ccode=B.cempid left join customers C on A.compcode=C.compcode and A.cdelcode=C.cempid left join salesman D on A.compcode=D.compcode and A.csalesman=D.ccode where A.compcode='".$company."' and A.ctranno='".$_REQUEST['id']."'"); 
+	$result = mysqli_query ($con, "Select A.*, B.cpricever, B.cname, C.cname as cdelname, D.cname as csmaname From SO A left join customers B on A.compcode=B.compcode and A.ccode=B.cempid left join customers C on A.compcode=C.compcode and A.cdelcode=C.cempid left join salesman D on A.compcode=D.compcode and A.csalesman=D.ccode where A.compcode='".$company."' and A.ctranno='".$_REQUEST['id']."' and A.lvoid=0"); 
 
 	$f1 = 0;
 

@@ -15,7 +15,7 @@ require_once "../../Connection/connection_string.php";
 			}
 		}
 
-		$result = mysqli_query ($con, "select * from dr where compcode='$company' and lapproved=1 and ccode='".$_REQUEST['x']."' order by ddate desc, ctranno desc"); 
+		$result = mysqli_query ($con, "select * from dr where compcode='$company' and lapproved=1 and lvoid=0 and ccode='".$_REQUEST['x']."' order by ddate desc, ctranno desc"); 
 
 	}elseif($_REQUEST['typ']=="QO"){ // BILLING QUOTE REFEERENCE
 
@@ -36,7 +36,7 @@ require_once "../../Connection/connection_string.php";
 			}
 		}
 
-		$result = mysqli_query ($con, "select * from quote where compcode='$company' and lapproved=1 and ccode='".$_REQUEST['x']."' and quotetype='billing' and csalestype='".$_REQUEST['styp']."' and ctranno not in ('".implode("','", @$arrefquotes)."') order by ddate desc, ctranno desc"); 
+		$result = mysqli_query ($con, "select * from quote where compcode='$company' and lapproved=1 and lvoid=0 and ccode='".$_REQUEST['x']."' and quotetype='billing' and csalestype='".$_REQUEST['styp']."' and ctranno not in ('".implode("','", @$arrefquotes)."') order by ddate desc, ctranno desc"); 
 
 	}elseif($_REQUEST['typ']=="SO"){// SALES ORDER REFEERENCE
 
@@ -48,13 +48,13 @@ require_once "../../Connection/connection_string.php";
 			}
 		}
 
-		$result = mysqli_query ($con, "select * from so where compcode='$company' and lapproved=1 and ccode='".$_REQUEST['x']."' and csalestype='Services' order by ddate desc, ctranno desc"); 
+		$result = mysqli_query ($con, "select * from so where compcode='$company' and lapproved=1 and lvoid=0 and ccode='".$_REQUEST['x']."' and csalestype='Services' order by ddate desc, ctranno desc"); 
 	}
 
 
 	//get all existing SI
 	@$arrinv = array();
-	$resq = mysqli_query ($con, "Select creference, nrefident,citemno,sum(nqty) as nqty From sales_t a left join sales b on a.compcode=b.compcode and a.ctranno=b.ctranno where a.compcode='$company' and b.lcancelled=0 group by creference, nrefident,citemno");
+	$resq = mysqli_query ($con, "Select creference, nrefident,citemno,sum(nqty) as nqty From sales_t a left join sales b on a.compcode=b.compcode and a.ctranno=b.ctranno where a.compcode='$company' and b.lcancelled=0 and b.lvoid=0 group by creference, nrefident,citemno");
 	if (mysqli_num_rows($resq)!=0){
 		while($row = mysqli_fetch_array($resq, MYSQLI_ASSOC)){
 			@$arrinv[]=$row;
