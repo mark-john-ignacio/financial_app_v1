@@ -71,7 +71,6 @@ if(mysqli_num_rows($sql) == 0){
 				$_SESSION['loggedid'] = $row['logid'] ;
 			}
 
-
 			if(validStatus($status) && validIP($machine)){
 
 				$sql = "INSERT INTO `users_log` (`Userid`, `status`, `machine`, `logged_date`) VALUES ('".$employee['id']."', 'Online', '$ipaddress', '$dateNow')";

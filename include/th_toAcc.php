@@ -375,6 +375,15 @@ function getSetAcct($id){
 	}
 	
 	else if($typ=="PV"){
+
+		$result = mysqli_query($con,"SELECT * FROM `paybill` WHERE compcode='$company' and ctranno='$tran'"); 
+								
+		if (mysqli_num_rows($result)!=0) {
+			$all = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
+			$varlnoapvref= $all['lnoapvref']; 							
+		}
+
+		if($varlnoapvref==0){
 				
 			//Accounts Payable -> supplier account -> Debit
 			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'PV', '$tran', C.dcheckdate, A.cacctno, B.cacctdesc, A.napplied, 0, 0, NOW() From paybill_t A left join paybill C on A.compcode=C.compcode and A.ctranno=C.ctranno left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ctranno='$tran' ")){
@@ -391,6 +400,38 @@ function getSetAcct($id){
 					}
 				
 			}
+
+		}else{
+
+			$witherr = 0;
+
+			$sqlchk = mysqli_query($con,"Select A.*, C.dcheckdate, B.cacctdesc From paybill_t A left join paybill C on A.compcode=C.compcode and A.ctranno=C.ctranno left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ctranno='$tran' Order By A.nident");
+			while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
+
+				if($row['entrytyp']=="Debit"){
+					if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Values('$company','PV', '$tran', '".$row['dcheckdate']."', '".$row['cacctno']."', '".$row['cacctdesc']."', '".$row['napplied']."', 0, 0, NOW()) ")){
+						$witherr = 1;
+					}
+				}else{
+					if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Values('$company','PV', '$tran', '".$row['dcheckdate']."', '".$row['cacctno']."', '".$row['cacctdesc']."', 0, '".$row['napplied']."', 0, NOW()) ")){
+						$witherr = 1;
+					}
+				}
+
+			}
+
+			//Credit Account BASE
+			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'PV', '$tran', A.dcheckdate, A.cacctno, B.cacctdesc, 0, A.npaid, 0, NOW() From paybill A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ctranno='$tran'")){
+				$witherr = 1;
+			}
+
+			if($witherr == 1){
+				echo "False";
+			}else{
+				echo "True";
+			}
+
+		}
 
 	}
 
@@ -409,6 +450,15 @@ function getSetAcct($id){
 
 	else if($typ=="OR"){
 				
+		$witherr = 0;
+		$result = mysqli_query($con,"SELECT * FROM `receipt` WHERE compcode='$company' and ctranno='$tran'"); 
+								
+		if (mysqli_num_rows($result)!=0) {
+			$all = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
+			$varlnosiref= $all['lnosiref']; 							
+		}
+
+		if($varlnosiref==0){
 		
 			//OR -> Deposit account -> Debit
 			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'OR', '$tran', A.dcutdate, A.cacctcode, B.cacctdesc, A.namount, 0, 0, NOW() From receipt A left join accounts B on A.compcode=B.compcode and A.cacctcode=B.cacctid where A.compcode='$company' and A.ctranno='$tran'")){
@@ -425,6 +475,35 @@ function getSetAcct($id){
 					}
 				
 			}
+
+		}else{
+
+			//BASE DEBIT
+			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'OR', '$tran', A.dcutdate, A.cacctcode, B.cacctdesc, A.namount, 0, 0, NOW() From receipt A left join accounts B on A.compcode=B.compcode and A.cacctcode=B.cacctid where A.compcode='$company' and A.ctranno='$tran'")){
+				echo "False";
+			}
+			else{
+
+				$sqlchk = mysqli_query($con,"Select A.*, C.dcutdate, B.cacctdesc From receipt_others_t A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid join receipt C on A.compcode=C.compcode and A.ctranno=C.ctranno where A.compcode='$company' and A.ctranno='$tran' Order By A.nidentity");
+				while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
+
+					if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Values('$company','OR', '$tran', '".$row['dcutdate']."', '".$row['cacctno']."', '".$row['cacctdesc']."', '".$row['ndebit']."', '".$row['ncredit']."', 0, NOW()) ")){
+						$witherr = 1;
+					}
+
+
+				}
+
+				if($witherr == 1){
+					echo "False";
+				}else{
+					echo "True";
+				}
+
+			}
+
+
+		}
 
 	}
 

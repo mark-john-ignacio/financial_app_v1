@@ -25,7 +25,7 @@ require_once "../../Connection/connection_string.php";
 
 	//alldebitlist
 	@$arradjlist = array();
-	$sqlardj = "select X.ctranno,X.crefsi, X.ngross, X.ctype from aradjustment X where X.compcode='$company' and X.ccode='".$_REQUEST['x']."' and IFNULL(crefsi,'') <> '' and isreturn = 0 and X.lapproved = 1 and X.ctranno not in (Select A.aradjustment_ctranno from receipt_deds A left join receipt B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lcancelled=0)";
+	$sqlardj = "select X.ctranno,X.crefsi, X.ngross, X.ctype from aradjustment X where X.compcode='$company' and X.ccode='".$_REQUEST['x']."' and IFNULL(crefsi,'') <> '' and isreturn = 0 and X.lapproved = 1 and X.ctranno not in (Select A.aradjustment_ctranno from receipt_deds A left join receipt B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lcancelled=0 and B.lvoid=0)";
 	$resardj = mysqli_query ($con, $sqlardj);
 	while($rowardj = mysqli_fetch_array($resardj, MYSQLI_ASSOC)){
 		@$arradjlist[] = $rowardj;		
@@ -33,7 +33,7 @@ require_once "../../Connection/connection_string.php";
 
 	//allpayemnts
 	@$arrpaymnts = array();
-	$sqlpay = "select X.* from receipt_sales_t X left join receipt B on X.compcode=B.compcode and X.ctranno=B.ctranno where X.compcode='$company' and B.lcancelled = 0 order By X.csalesno, B.ddate";
+	$sqlpay = "select X.* from receipt_sales_t X left join receipt B on X.compcode=B.compcode and X.ctranno=B.ctranno where X.compcode='$company' and B.lcancelled = 0 and B.lvoid=0 order By X.csalesno, B.ddate";
 	$respay = mysqli_query ($con, $sqlpay);
 	while($rowardj = mysqli_fetch_array($respay, MYSQLI_ASSOC)){
 		@$arrpaymnts[] = $rowardj;
@@ -54,7 +54,7 @@ require_once "../../Connection/connection_string.php";
 	left join customers C on B.compcode=C.compcode and B.ccode=C.cempid 
 	left join accounts D on C.compcode=D.compcode and C.cacctcodesales=D.cacctno 
 	left join wtaxcodes E on A.compcode=E.compcode and A.cewtcode=E.ctaxcode 
-	where A.compcode='$company' and B.lapproved=1 and B.ccode='".$_REQUEST['x']."') A
+	where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 and B.ccode='".$_REQUEST['x']."') A
 	Group By A.ctranno, A.cacctid, A.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, A.dcutdate
 	order by A.dcutdate, A.ctranno";
 

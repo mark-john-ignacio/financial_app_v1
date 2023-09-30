@@ -7,7 +7,7 @@ require_once "../../Connection/connection_string.php";
 
 	$company = $_SESSION['companyid'];
 	
-	$result = mysqli_query ($con, "SELECT 'trade' as typx, A.ctranno, A.dcutdate, A.ccode, B.cname From sales A left join customers B on A.compcode=B.compcode and A.ccode=B.cempid Where A.compcode='$company' and A.ccode='".$_REQUEST['ccode']."' and ctranno like '%".$_REQUEST['query']."%' and A.lapproved=1 UNION ALL SELECT 'non_trade' as typx, A.ctranno, A.dcutdate, A.ccode, B.cname From ntsales A left join customers B on A.compcode=B.compcode and A.ccode=B.cempid Where A.compcode='$company' and A.ccode='".$_REQUEST['ccode']."' and ctranno like '%".$_REQUEST['query']."%' and A.lapproved=1"); 
+	$result = mysqli_query ($con, "SELECT 'trade' as typx, A.ctranno, A.dcutdate, A.ccode, B.cname From sales A left join customers B on A.compcode=B.compcode and A.ccode=B.cempid Where A.compcode='$company' and A.ccode='".$_REQUEST['ccode']."' and ctranno like '%".$_REQUEST['query']."%' and A.lapproved=1 and A.lvoid=0 UNION ALL SELECT 'non_trade' as typx, A.ctranno, A.dcutdate, A.ccode, B.cname From ntsales A left join customers B on A.compcode=B.compcode and A.ccode=B.cempid Where A.compcode='$company' and A.ccode='".$_REQUEST['ccode']."' and ctranno like '%".$_REQUEST['query']."%' and A.lapproved=1 and A.lvoid=0"); 
 
 	// "SELECT cacctno, cacctdesc, IFNULL(nbalance,0) as nbalance FROM accounts WHERE cacctdesc like '%".$_GET['query']."%' OR cacctno like '%".$_GET['query']."%'";
 	

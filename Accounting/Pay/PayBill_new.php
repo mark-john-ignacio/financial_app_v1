@@ -1154,7 +1154,7 @@
 				var t4 = "<td style=\"padding:2px\" align=\"center\" width=\"100px\" nowrap> <input type=\"text\" class=\"napvewt form-control input-sm\" name=\"napvewt\" id=\"napvewt"+lastRow+"\" value=\""+cacctno+"\" placeholder=\"EWT Code\"/></td>";
 				var t5 = "<td style=\"padding:2px\" align=\"center\" width=\"80px\" nowrap> <select name=\"selentrytyp\" id=\"selentrytyp"+lastRow+"\" class=\" form-control input-sm\" onchange=\"GoToCompOthers();\"><option value=\"Debit\">Debit</option><option value=\"Credit\">Credit</option></select></td>";	
 			}else{
-				var t4 = "<input type=\"hidden\" name=\"napvewt\" id=\"napvewt"+lastRow+"\" value=\"\" />";
+				var t4 = "<input type=\"hidden\" name=\"napvewt\" id=\"napvewt"+lastRow+"\" value=\""+ewtamt+"\" />";
 				var t5 = "<input type=\"hidden\" name=\"selentrytyp\" id=\"selentrytyp"+lastRow+"\" value=\"Debit\" />";	
 			}
 

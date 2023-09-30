@@ -50,9 +50,9 @@ $myerror = "True";
 	$cGrp10 = chkgrp($_REQUEST['txtcGroup10D']);
 	
 	$SelSITyp = $_REQUEST['selsityp']; 
-	$InvMin = $_REQUEST['txtInvMin'];
-	$InvMax = $_REQUEST['txtInvMax'];
-	$InvRoPt = $_REQUEST['txtInvRO'];
+	//$InvMin = $_REQUEST['txtInvMin'];
+	//$InvMax = $_REQUEST['txtInvMax'];
+	//$InvRoPt = $_REQUEST['txtInvRO'];
 	
 	$preparedby = $_SESSION['employeeid'];
 	
@@ -70,14 +70,16 @@ $myerror = "True";
 		$chkBCode = 0;
 	}
 
-	if(isset($_REQUEST['chkPack'])){
-		$chkPckd = 1;
+	if(isset($_REQUEST['chkInventoriable'])){
+		$chkInvChk= 1;
 	}
 	else{
-		$chkPckd = 0;
+		$chkInvChk = 0;
 	}
-	//INSERT NEW ITEM , `cpricetype`='$PriceTyp'
-	if (!mysqli_query($con, "UPDATE `items` set `cskucode` = '$SKUCode', `citemdesc` = '$cItemDesc', `cunit` = '$cUnit', `cclass` = '$cClass', `ctype` = '$cType', `ctaxcode` = '$Seltax', `cpricetype`='$PriceTyp', `nmarkup`='$nMarkUp', `cacctcodesales` = '$SalesCode', `cacctcodewrr` = '$WRRCode', `cacctcodedr` = '$DRCode', `cacctcoderet` = '$SRetCode', `cacctcodecog` = '$COGCode', `cGroup1` = $cGrp1, `cGroup2` = $cGrp2, `cGroup3` = $cGrp3, `cGroup4` = $cGrp4, `cGroup5` = $cGrp5, `cGroup6` = $cGrp6, `cGroup7` = $cGrp7, `cGroup8` = $cGrp8, `cGroup9` = $cGrp9, `cGroup10` = $cGrp10, `cnotes` = $cNotes, `lSerial` = $chkSer, `lbarcode` = $chkBCode, `lpack` = $chkPckd, `ninvmin` = $InvMin , `ninvmax` = $InvMax , `ninvordpt` = $InvRoPt , `csalestype` = '$SelSITyp', `ctradetype` = '$cTradeType' where `compcode` = '$company' and `cpartno` = '$cItemNo'"));	
+
+	//INSERT NEW ITEM , `cpricetype`='$PriceTyp' , `ninvmin` = $InvMin , `ninvmax` = $InvMax , `ninvordpt` = $InvRoPt 
+
+	if (!mysqli_query($con, "UPDATE `items` set `cskucode` = '$SKUCode', `citemdesc` = '$cItemDesc', `cunit` = '$cUnit', `cclass` = '$cClass', `ctype` = '$cType', `ctaxcode` = '$Seltax', `cpricetype`='$PriceTyp', `nmarkup`='$nMarkUp', `cacctcodesales` = '$SalesCode', `cacctcodewrr` = '$WRRCode', `cacctcodedr` = '$DRCode', `cacctcoderet` = '$SRetCode', `cacctcodecog` = '$COGCode', `cGroup1` = $cGrp1, `cGroup2` = $cGrp2, `cGroup3` = $cGrp3, `cGroup4` = $cGrp4, `cGroup5` = $cGrp5, `cGroup6` = $cGrp6, `cGroup7` = $cGrp7, `cGroup8` = $cGrp8, `cGroup9` = $cGrp9, `cGroup10` = $cGrp10, `cnotes` = $cNotes, `lSerial` = $chkSer, `lbarcode` = $chkBCode, `linventoriable` = $chkInvChk, `csalestype` = '$SelSITyp', `ctradetype` = '$cTradeType' where `compcode` = '$company' and `cpartno` = '$cItemNo'"));	
 	{
 		if(mysqli_error($con)!=""){
 			$myerror =  "Error Main: ".mysqli_error($con);
@@ -93,15 +95,29 @@ $myerror = "True";
 	$UnitRowCnt = $_REQUEST['hdnunitrowcnt'];
 	//INSERT FACTOR IF MERON
 	if($UnitRowCnt>=1){
-
+		//echo $UnitRowCnt;
 		for($z=1; $z<=$UnitRowCnt; $z++){
 			$cItemUnit = $_REQUEST['selunit'.$z];
+			$cItemRule = $_REQUEST['selrule'.$z];
 			$cItemFactor = $_REQUEST['txtfactor'.$z];
-						
-			if (!mysqli_query($con, "INSERT INTO `items_factor`(`compcode`, `cpartno`, `nfactor`, `cunit`) VALUES ('$company','$cItemNo',$cItemFactor,'$cItemUnit')")) {
-					if(mysqli_error($con)!=""){
-						$myerror =  "Error UOM: ".mysqli_error($con);
-					}
+			if(isset($_REQUEST['txtchkPO'.$z])){
+				$cPO = 1;
+			}else{
+				$cPO = 0;
+			}
+
+			if(isset($_REQUEST['txtchkSI'.$z])){
+				$cSI = 1;
+			}else{
+				$cSI = 0;
+			}
+					
+			//mysqli_query($con,"INSERT INTO `items_factor`(`compcode`, `cpartno`, `nfactor`, `cunit`, `npurchcost`, `nretailcost`) VALUES ('$company','$cItemNo',$cItemFactor,'$cItemUnit',$cItemPurch,$cItemRetail)");
+			
+			if (!mysqli_query($con, "INSERT INTO `items_factor`(`compcode`, `cpartno`, `nfactor`, `cunit`, `lpounit`, `lsiunit`, `crule`) VALUES ('$company','$cItemNo',$cItemFactor,'$cItemUnit',$cPO,$cSI,'$cItemRule')")) {
+				if(mysqli_error($con)!=""){
+					echo "Error UOM: ".mysqli_error($con);
+				}
 			} 
 
 			$cItemUnit = "";
@@ -109,6 +125,32 @@ $myerror = "True";
 
 		}
 	}
+
+	if (!mysqli_query($con, "DELETE from `items_invlvl` where `compcode` = '$company' and `cpartno` = '$cItemNo'")) {
+		if(mysqli_error($con)!=""){
+			$myerror =  "Error LEVEL DEL: ".mysqli_error($con);
+		}
+	} 
+
+	$MMRRowCnt = $_REQUEST['hdnseclvlrowcnt'];
+	//INSERT MinMaxPerWhse
+	if($MMRRowCnt>=1){
+		//echo $UnitRowCnt;
+		for($z=1; $z<=$MMRRowCnt; $z++){
+			$cWhse = $_REQUEST['selitmsec'.$z];
+			$cMin = $_REQUEST['txtwhmin'.$z];
+			$cMax = $_REQUEST['txtwhmax'.$z]; 
+			$cReOrPt = $_REQUEST['txtwhreor'.$z];
+
+			if (!mysqli_query($con, "INSERT INTO `items_invlvl`(`compcode`, `cpartno`, `section_nid`, `nmin`, `nmax`, `nreorderpt`) VALUES ('$company','$cItemNo','$cWhse','$cMin','$cMax','$cReOrPt')")) {
+				if(mysqli_error($con)!=""){
+					echo "Error UOM: ".mysqli_error($con);
+				}
+			} 
+
+		}
+	}
+
 
 
 	//INSERT LOGFILE
