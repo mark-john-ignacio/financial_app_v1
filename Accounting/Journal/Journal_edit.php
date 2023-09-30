@@ -228,7 +228,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
                             <th style="border-bottom:1px solid #999">Account Title</th>
                             <th style="border-bottom:1px solid #999">Debit</th>
                             <th style="border-bottom:1px solid #999">Credit</th>
-                            <th style="border-bottom:1px solid #999">Subsidiary</th>
+                            <th style="border-bottom:1px solid #999">Cost Center</th>
                             <th style="border-bottom:1px solid #999">Remarks</th>
                             <th style="border-bottom:1px solid #999">&nbsp;</th>
                         </tr>
