@@ -16,7 +16,7 @@ require_once "../../Connection/connection_string.php";
 
 	//get all existing PO
 	@$arrinv = array();
-	$resq = mysqli_query ($con, "Select a.creference, a.nrefident, a.citemno, sum(a.nqty*a.nfactor) as nqty, b.lcancelled From purchase_t a left join purchase b on a.compcode=b.compcode and a.cpono=b.cpono where a.compcode='$company' and b.lcancelled=0 group by creference, nrefident, citemno");
+	$resq = mysqli_query ($con, "Select a.creference, a.nrefident, a.citemno, sum(a.nqty*a.nfactor) as nqty, b.lcancelled From purchase_t a left join purchase b on a.compcode=b.compcode and a.cpono=b.cpono where a.compcode='$company' and b.lcancelled=0 and b.lvoid=0 group by creference, nrefident, citemno");
 	if (mysqli_num_rows($resq)!=0){
 		while($row = mysqli_fetch_array($resq, MYSQLI_ASSOC)){
 			@$arrinv[]=$row;
