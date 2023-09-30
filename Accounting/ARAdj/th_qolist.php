@@ -13,7 +13,7 @@ require_once "../../Connection/connection_string.php";
 	}
 
 
-	$result = mysqli_query ($con, "Select A.typx, A.ctranno, A.creference, A.dreceived From (select DISTINCT 'trade' as typx, A.ctranno, A.creference, B.dreceived from salesreturn_t A left join salesreturn B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 and B.ccode='".$_REQUEST['x']."' UNION ALL select DISTINCT 'non-trade' as typx, A.ctranno, A.creference, B.dreceived from ntsalesreturn_t A left join ntsalesreturn B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 and B.ccode='".$_REQUEST['x']."') A order by A.dreceived desc, A.ctranno desc"); 
+	$result = mysqli_query ($con, "Select A.typx, A.ctranno, A.creference, A.dreceived From (select DISTINCT 'trade' as typx, A.ctranno, A.creference, B.dreceived from salesreturn_t A left join salesreturn B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 and B.ccode='".$_REQUEST['x']."' UNION ALL select DISTINCT 'non-trade' as typx, A.ctranno, A.creference, B.dreceived from ntsalesreturn_t A left join ntsalesreturn B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 and B.ccode='".$_REQUEST['x']."') A order by A.dreceived desc, A.ctranno desc"); 
 
 	$f1 = 0;
 

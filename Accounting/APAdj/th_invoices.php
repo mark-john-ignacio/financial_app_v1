@@ -7,7 +7,7 @@ require_once "../../Connection/connection_string.php";
 
 	$company = $_SESSION['companyid'];
 	
-	$result = mysqli_query ($con, "SELECT A.ctranno, A.dreceived, A.ccode, B.cname, A.ngross From suppinv A left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode Where A.compcode='$company' and A.ccode='".$_REQUEST['ccode']."' and ctranno like '%".$_REQUEST['query']."%' and A.lapproved=1 Order By A.dreceived DESC"); 
+	$result = mysqli_query ($con, "SELECT A.ctranno, A.dreceived, A.ccode, B.cname, A.ngross From suppinv A left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode Where A.compcode='$company' and A.ccode='".$_REQUEST['ccode']."' and ctranno like '%".$_REQUEST['query']."%' and A.lapproved=1 and A.lvoid=0 Order By A.dreceived DESC"); 
 
 	// "SELECT cacctno, cacctdesc, IFNULL(nbalance,0) as nbalance FROM accounts WHERE cacctdesc like '%".$_GET['query']."%' OR cacctno like '%".$_GET['query']."%'";
 	

@@ -11,7 +11,7 @@ require_once "../../Connection/connection_string.php";
 		$qrytrd = $qrytrd . " and ctranno not in ('". str_replace(",","','",$_GET['lst'])."')";
 	}
 	
-	$result = mysqli_query ($con, "SELECT * FROM aradjustment WHERE compcode='$company' and ccode='".$_GET['code']."' and ctranno like '%".$_GET['query']."%' and lapproved=1 and IFNULL(crefsi,'') = '' ".$qrytrd); 
+	$result = mysqli_query ($con, "SELECT * FROM aradjustment WHERE compcode='$company' and ccode='".$_GET['code']."' and ctranno like '%".$_GET['query']."%' and lapproved=1 and lvoid=0 and IFNULL(crefsi,'') = '' ".$qrytrd); 
 	
 	//echo "SELECT * FROM apcm WHERE compcode='$company' and ccode='".$_GET['code']."' and ctranno like '%".$_GET['query']."%' and lapproved=1 and cwithref = 0".$qrytrd;
 	

@@ -7,7 +7,7 @@ require_once "../Connection/connection_string.php";
 
 	$company = $_SESSION['companyid'];
 	
-	$result = mysqli_query ($con, "SELECT cacctno, cacctid, cacctdesc, IFNULL(nbalance,0) as nbalance FROM accounts WHERE compcode='$company' and cacctdesc like '%".$_REQUEST['query']."%' OR cacctno like '%".$_REQUEST['query']."%'"); 
+	$result = mysqli_query ($con, "SELECT cacctno, cacctid, cacctdesc, IFNULL(nbalance,0) as nbalance FROM accounts WHERE compcode='$company' and cacctdesc like '%".$_REQUEST['query']."%' OR cacctid like '%".$_REQUEST['query']."%'"); 
 
 	// "SELECT cacctno, cacctdesc, IFNULL(nbalance,0) as nbalance FROM accounts WHERE cacctdesc like '%".$_GET['query']."%' OR cacctno like '%".$_GET['query']."%'";
 	

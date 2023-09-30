@@ -35,7 +35,7 @@ require_once "../../Connection/connection_string.php";
 				Where A.compcode='$company' and B.lcancelled=0
 			) C on B.compcode=C.compcode and A.ctranno=C.capvno and A.cacctno=C.cacctno
 		left join accounts D on A.compcode=D.compcode and A.cacctno=D.cacctid 
-		where A.compcode='$company' and B.lapproved=1 and B.ccode='$code'
+		where A.compcode='$company' and B.lapproved=1  and B.lvoid=0 and B.ccode='$code'
 		and D.ccategory='LIABILITIES' and A.ncredit > 0 and A.cacctno not in ('".implode("','",$EWTVATS)."')
 		group by A.ctranno, B.dapvdate, A.cacctno, D.cacctdesc, A.ncredit, B.cpaymentfor
 		order by B.dapvdate DESC";

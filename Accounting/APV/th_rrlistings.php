@@ -33,7 +33,7 @@ require_once "../../Connection/connection_string.php";
 
 	//get CMs
 	$nCM = array();
-	$resultcm = mysqli_query ($con, "Select crefsi, IFNULL(sum(A.ngross),0) as ncm from apadjustment A Where A.compcode='$company' and A.lapproved=1 Group By crefsi");
+	$resultcm = mysqli_query ($con, "Select crefsi, IFNULL(sum(A.ngross),0) as ncm from apadjustment A Where A.compcode='$company' and A.lapproved=1  and lvoid=0 Group By crefsi");
 	if(mysqli_num_rows($resultcm)!=0){
 		while($rowpayref = mysqli_fetch_array($resultcm, MYSQLI_ASSOC)){
 			$nCM[] = $rowpayref; 
@@ -47,7 +47,7 @@ require_once "../../Connection/connection_string.php";
 	left join accounts C on B.compcode=C.compcode and B.ccustacctcode=C.cacctno 
 	left join suppliers D on B.compcode=D.compcode and B.ccode=D.ccode 
 	left join purchase E on A.compcode=E.compcode and A.crefPO=E.cpono 
-	where A.compcode='$company' and B.lapproved=1 and B.ccode='".$_REQUEST['cust']."'". $qry ." 
+	where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 and B.ccode='".$_REQUEST['cust']."'". $qry ." 
 	Group By A.ctranno, C.cacctid, C.cacctdesc, IFNULL(A.cewtcode,0), A.cvatcode, 
 	A.nrate, ifnull(B.crefsi,''), B.dreceived";
 

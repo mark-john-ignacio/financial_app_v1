@@ -6,7 +6,7 @@ require_once "../Connection/connection_string.php";
 
 	$company = $_SESSION['companyid'];
 	
-	$result = mysqli_query ($con, "select * from suppinv where compcode='$company' and ctranno like '%".$_GET['query']."%' and lapproved=1 and ctranno not in (Select crefno from apv_d) and ccode='".$_GET['code']."'"); 
+	$result = mysqli_query ($con, "select * from suppinv where compcode='$company' and ctranno like '%".$_GET['query']."%' and lapproved=1  and lvoid=0 and ctranno not in (Select crefno from apv_d) and ccode='".$_GET['code']."'"); 
 
 	//$json2 = array();
 	//$json = [];

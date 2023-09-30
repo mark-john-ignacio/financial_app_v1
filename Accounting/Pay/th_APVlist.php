@@ -29,7 +29,7 @@ require_once "../../Connection/connection_string.php";
 
 		$rfplist = array();
 		$rfplistamt = array();
-		$sql = "Select A.ctranno, A.capvno, A.cacctno, A.npayable from rfp_t A left join rfp B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved = 1";
+		$sql = "Select A.ctranno, A.capvno, A.cacctno, A.npayable from rfp_t A left join rfp B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved = 1 and B.lvoid=0";
 		$result = mysqli_query ($con, $sql); 
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 			$rfplist[] = $row;
@@ -82,7 +82,7 @@ require_once "../../Connection/connection_string.php";
 				where (b.lcancelled=0 and b.lvoid=0)
 				group by a.capvno, a.cacctno
 			) D on  A.ctranno=D.capvno and B.cacctno=D.cacctno
-		where A.compcode='$company' and A.lapproved=1 and B.ncredit <> 0 and C.ccategory='LIABILITIES' and A.ccode='$code'
+		where A.compcode='$company' and A.lapproved=1 and A.lvoid=0 and B.ncredit <> 0 and C.ccategory='LIABILITIES' and A.ccode='$code'
 		group by B.cacctno,B.crefno,A.ctranno,A.dapvdate order by A.dapvdate";
 
 	//echo $sql;

@@ -23,7 +23,7 @@ require_once "../../Connection/connection_string.php";
 		$json['currdesc'] = $porow['ccurrencydesc']; 
 	}
 	
-	$result = mysqli_query ($con, "Select A.*, B.cname From receive A left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode where A.compcode='".$company."' and A.ctranno='".$_REQUEST['id']."'"); 
+	$result = mysqli_query ($con, "Select A.*, B.cname From receive A left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode where A.compcode='".$company."' and A.ctranno='".$_REQUEST['id']."' and A.lvoid=0"); 
 
 	$f1 = 0;
 

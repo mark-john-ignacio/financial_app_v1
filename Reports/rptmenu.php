@@ -177,10 +177,10 @@
 								<a href="" onClick="setI('A','CashBook.php')" data-toggle="tab">
 								<i class="fa fa-book"></i> Cash Receipts Book</a>
 							</li>
-							<li>
+							<!--<li>
             		<a href="" onClick="setI('A','PurchJourn.php')" data-toggle="tab">
                 <i class="fa fa-book"></i> Purchase Journal </a>
-              </li>
+              </li>-->
   						<li>
   							<a href="" onClick="setI('A','APJ.php')" data-toggle="tab">
   							<i class="fa fa-book"></i> Accounts Payable Ledger </a>

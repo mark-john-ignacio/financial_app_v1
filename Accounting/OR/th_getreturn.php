@@ -5,7 +5,7 @@ require_once "../../Connection/connection_string.php";
 
 	$company = $_SESSION['companyid'];
 	
-	$sql = "Select * From aradjustment where compcode='$company' and lapproved=1 and crefsi='".$_REQUEST["x"]."' order by dcutdate, ctranno";
+	$sql = "Select * From aradjustment where compcode='$company' and lapproved=1 and lvoid=0 and crefsi='".$_REQUEST["x"]."' order by dcutdate, ctranno";
 
 	$result = mysqli_query ($con, $sql);
 	

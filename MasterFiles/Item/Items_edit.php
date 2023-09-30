@@ -83,7 +83,8 @@
 						//$PRetCodeDesc = $row['pretcode'];
 						$ChkSer = $row['lSerial'];
                         $Chkbcode = $row['lbarcode'];
-                        $Chkpkgs = $row['lpack'];
+                        $Chkpkgs = $row['linventoriable'];
+                        //$Chkpkgs = $row['lpack'];
 
                         $InvMin = $row['ninvmin'];
                         $InvMax = $row['ninvmax'];
@@ -102,6 +103,28 @@
 					}
 				}
 
+    $arritmlvl = array();
+    $sqlhead=mysqli_query($con,"Select * From items_invlvl where compcode='$company' and cpartno='$citemno'");			
+	if (mysqli_num_rows($sqlhead)!=0) {
+        while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+            $arritmlvl[] = $row;
+        }
+    }
+
+    @$arrsecslist = array();
+    $getfctrs = mysqli_query($con,"SELECT * FROM `locations` where compcode='$company' and cstatus='ACTIVE' order By nid"); 
+	if (mysqli_num_rows($getfctrs)!=0) {
+		while($row = mysqli_fetch_array($getfctrs, MYSQLI_ASSOC)){
+			@$arrsecslist[] = array('nid' => $row['nid'], 'cdesc' => $row['cdesc']); 
+		}
+	}
+
+    $arruoms = array();
+    $resuom = mysqli_query($con,"SELECT * FROM `groupings` WHERE compcode='$company' and cstatus='ACTIVE' and ctype='ITMUNIT'"); 					
+	$rowdetsecs = $resuom->fetch_all(MYSQLI_ASSOC);
+	foreach($rowdetsecs as $row0){
+		$arruoms[] = array('ccode' => $row0['ccode'], 'cdesc' => $row0['cdesc']);
+	}
 ?>
 <!DOCTYPE html>
 <html>
@@ -129,6 +152,8 @@
 </head>
 
 <body style="padding:5px; height:700px">
+    <input type="hidden" value='<?=json_encode(@$arrsecslist)?>' id="hdnsecslist"> 
+    <input type="hidden" id="hdnuomlist" value='<?=json_encode($arruoms)?>'>
 
 <form name="frmITEM" id="frmITEM"  method="post" enctype="multipart/form-data">
 	<fieldset>
@@ -498,79 +523,112 @@
                 <div id="menu2" class="tab-pane fade" style="padding-left:10px">
                     <p style="padding-top:10px">
 
-                    <div class="col-xs-12">
-                        <div class="col-xs-1 nopadwtop">
-                            <b>Serial No.:</b>
+                        <div class="col-xs-12">
+                            <div class="col-xs-1 nopadwtop">
+                                <b>Serial No.:</b>
+                            </div>
+                            <div class="col-xs-1 nopadwtop">
+                                <input type="checkbox" value="" name="chkSer" id="chkSer"  <?php if($ChkSer==1) { echo "checked"; } ?>>
+                            </div>
+                            <div class="col-xs-1 nopadwtop">
+                            
+                            </div>
+                            <div class="col-xs-1 nopadwtop">
+                                <b>Barcoded.:</b>
+                            </div>
+                            <div class="col-xs-1 nopadwtop">
+                                <input type="checkbox" value="" name="chkbarcoded" id="chkbarcoded"  <?php if($Chkbcode==1) { echo "checked"; } ?>>
+                            </div>
+                            <div class="col-xs-1 nopadwtop">
+                            
+                            </div>
+                            <div class="col-xs-2 nopadwtop">
+                                <b>Non-Inventoriable</b>
+                            </div>
+                            <div class="col-xs-2 nopadwtop">
+                                <!--<input type="checkbox" value="" name="chkPack" id="chkPack"  <?//php if($Chkpkgs==1) { echo "checked"; } ?>>-->
+                                <input type="checkbox" value="1" name="chkInventoriable" id="chkInventoriable" <?php if($Chkpkgs==1) { echo "checked"; } ?>>
+                            </div>
                         </div>
-                        <div class="col-xs-1 nopadwtop">
-                            <input type="checkbox" value="" name="chkSer" id="chkSer"  <?php if($ChkSer==1) { echo "checked"; } ?>>
-                        </div>
-                        <div class="col-xs-1 nopadwtop">
-                        
-                        </div>
-                        <div class="col-xs-1 nopadwtop">
-                            <b>Barcoded.:</b>
-                        </div>
-                        <div class="col-xs-1 nopadwtop">
-                            <input type="checkbox" value="" name="chkbarcoded" id="chkbarcoded"  <?php if($Chkbcode==1) { echo "checked"; } ?>>
-                        </div>
-                        <div class="col-xs-1 nopadwtop">
-                        
-                        </div>
-                        <div class="col-xs-1 nopadwtop">
-                            <b>Packed</b>
-                        </div>
-                        <div class="col-xs-1 nopadwtop">
-                            <input type="checkbox" value="" name="chkPack" id="chkPack"  <?php if($Chkpkgs==1) { echo "checked"; } ?>>
-                        </div>
-                    </div>
 
-                    <div class="col-xs-12" style="padding-top: 10px !important">
+                        <div class="col-xs-12 nopadding" style="padding-top: 10px !important">
                             <b><u>INVENTORY LEVEL</u></b>
-                    </div>
-
-                    <div class="col-xs-12">
-                        <div class="col-xs-1 nopadwtop">
-                            <b>Minimum:</b>
-                        </div>
-                        <div class="col-xs-1 nopadwtop">
-                            <input type="text" class="form-control input-sm text-right" id="txtInvMin" name="txtInvMin" value="<?php echo $InvMin; ?>">
-                        </div>
-                        <div class="col-xs-1 nopadwtop">
                         </div>
 
+                            <div class="col-xs-10">
+                                <input type="button" value="Add Section" name="btnaddunit" id="btnaddunit" class="btn btn-primary btn-xs" onClick="addseclevel();">
+                            
+                                <input name="hdnseclvlrowcnt" id="hdnseclvlrowcnt" type="hidden" value="0">
+                                <br>
+                                    <table width="80%" class="table table-sm table-bordered" id="mySecLevelTbl" style="margin-top:5px !important"> 
+                                        <tr>
+                                            <th scope="col">Section</th>
+                                            <th scope="col" width="120">Minimum</th>
+                                            <th scope="col" width="120">Maximum</th>
+                                            <th scope="col" width="120">Reorder Pt.</th>
+                                            <th scope="col" width="80">&nbsp;</th>
+                                        </tr>
 
-                        <div class="col-xs-1 nopadwtop">
-                        <b>Maximum:</b>
-                        </div>
-                        <div class="col-xs-1 nopadwtop">
-                            <input type="text" class="form-control input-sm text-right" id="txtInvMax" name="txtInvMax" value="<?php echo $InvMax; ?>" >
-                        </div>
-                        <div class="col-xs-1 nopadwtop">
-                        </div>
-                        <div class="col-xs-1 nopadwtop">
-                            <b>ReOrder Pt.:</b>
-                        </div>
-                        <div class="col-xs-1 nopadwtop">
-                            <input type="text" class="form-control input-sm text-right" id="txtInvRO" name="txtInvRO" value="<?php echo $InvRePt; ?>" >
-                        </div>
-                    </div>
-                    
-                    <div class="col-xs-12" style="padding-top: 10px !important">
-                            <b><u>CONVERTION FACTOR</u></b>
-                    </div>
+                                        <?php
+                                            $cntr = 0;
+                                            $secxoptions = "";
+                                            foreach($arritmlvl as $rolvl){
+                                                $cntr++;
 
-                    <input type="button" value="Add Convertion" name="btnaddunit" id="btnaddunit" class="btn btn-primary btn-xs" onClick="addunitconv();">
-                    
-                    <input name="hdnunitrowcnt" id="hdnunitrowcnt" type="hidden" value="0">
-                    <br>
-                        <table width="50%" border="0" cellpadding="2" id="myUnitTable">
-                        <tr>
-                            <th scope="col" width="120">UNIT</th>
-                            <th scope="col">FACTOR<br><i>(qty/smallest unit)</i></th>
-                            <th scope="col" width="80">STATUS</th>
-                        </tr>
-                        </table>
+                                                foreach(@$arrsecslist as $rssec){
+                                                    if($rssec['nid']==$rolvl['section_nid']){
+                                                        $isslctd = "selected";
+                                                    }else{
+                                                        $isslctd = "";
+                                                    }
+                                                    $secxoptions = $secxoptions."<option value='".$rssec['nid']."' ".$isslctd.">".$rssec['cdesc']."</option>";
+                                                }
+                                        ?>
+                                        <tr>
+                                            <td>
+                                                <div class="col-xs-12 nopadwright"><select class='form-control input-xs' name="selitmsec<?=$cntr;?>" id="selitmsec<?=$cntr;?>"><?=$secxoptions?></select></div>
+                                            </td>
+                                            <td>
+                                                <div class="col-xs-12 nopadwleft" ><input type='text' class='numeric form-control input-sm' id='txtwhmin<?=$cntr;?>' name='txtwhmin<?=$cntr;?>' value='<?=$rolvl['nmin']?>' required style="text-align: right"> </div>
+                                            </td>
+                                            <td>
+                                                <div class="col-xs-12 nopadwleft" ><input type='text' class='numeric form-control input-sm' id='txtwhmax<?=$cntr;?>' name='txtwhmax<?=$cntr;?>' value='<?=$rolvl['nmax']?>' required style="text-align: right"> </div>
+                                            </td>
+                                            <td>
+                                                <div class="col-xs-12 nopadwleft" ><input type='text' class='numeric form-control input-sm' id='txtwhreor<?=$cntr;?>' name='txtwhreor<?=$cntr;?>' value='<?=$rolvl['nreorderpt']?>' required style="text-align: right"> </div>
+                                            </td>
+                                            <td>
+                                                <div class="col-xs-12 nopadwleft" ><input class='btn btn-danger btn-xs' type='button' id='row_<?=$cntr;?>_delete' class='delete' value='Delete' onClick="deleteSeclevl(this);"/></div>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                                $secxoptions = "";
+                                            }
+                                        ?>
+                                    </table>
+                             </div>
+                            
+                            <div class="col-xs-12 nopadding" style="padding-top: 10px !important;  padding-bottom: 5px !important">
+                                <b><u>CONVERTION FACTOR</u></b>
+                            </div>
+
+                            <div class="col-xs-6">
+
+                                <input type="button" value="Add Convertion" name="btnaddunit" id="btnaddunit" class="btn btn-primary btn-xs" onClick="addunitconv();">            
+                                <input name="hdnunitrowcnt" id="hdnunitrowcnt" type="hidden" value="0">
+                                <br>
+                                <table width="50%" class="table table-sm table-bordered" id="myUnitTable" style="margin-top:5px !important">
+                                    <tr>
+                                        <th scope="col" width="120">UNIT</th>
+                                        <th scope="col" width="80">RULE<br></th>
+                                        <th scope="col">FACTOR<br></th>
+                                        <th scope="col" class="text-center">PO UOM<br></th>
+                                        <th scope="col" class="text-center">SALES UOM<br></th>
+                                        <th scope="col" class="text-center" width="80">STATUS</th>
+                                    </tr>
+                                </table>
+
+                            </div>
                     </p>        
                 </div>
                     
@@ -1027,6 +1085,11 @@ $(function(){
 											
 						    document.getElementById('hdnunitrowcnt').value = lastRow;
 
+                            var tbl = document.getElementById('mySecLevelTbl').getElementsByTagName('tr');
+                            var lastRow = tbl.length-1;
+                                                        
+                            document.getElementById('hdnseclvlrowcnt').value = lastRow;
+
 							e.preventDefault();							
 							//submit form objects to ajax:
 							
@@ -1175,58 +1238,54 @@ function setgrpvals(code,desc,r){
 }
 
 function addunitconv(){
-	var tbl = document.getElementById('myUnitTable').getElementsByTagName('tr');
-	var lastRow = tbl.length;
+        var tbl = document.getElementById('myUnitTable').getElementsByTagName('tr');
+        var lastRow = tbl.length;
 
-	var a=document.getElementById('myUnitTable').insertRow(-1);
-	var u=a.insertCell(0);
-	var v=a.insertCell(1);
-	v.align = "left";
-	v.style.padding = "1px";
-	var y=a.insertCell(2);
-	
-	u.innerHTML = "<div id='divselunit"+lastRow+"' class=\"col-xs-12 nopadwright\"></div>";
-	v.innerHTML = "<div class=\"col-xs-10 nopadwleft\" ><input type='text' class='form-control input-sm' id='txtfactor"+lastRow+"' name='txtfactor"+lastRow+"' value='1' required style=\"text-align: right\"> </div>";
-	y.innerHTML = "<input class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRow(this);\"/>";
-	
-	addselect(lastRow);
-									$("input.numeric").numeric({decimalPlaces: 2});
-									$("input.numeric").on("click", function () {
-									   $(this).select();
-									});
+        var a=document.getElementById('myUnitTable').insertRow(-1);
+        var u=a.insertCell(0);
+        var v=a.insertCell(1);
+            v.style.padding = "1px";
+        var w=a.insertCell(2);
+            w.style.padding = "1px";
+        var x=a.insertCell(3);
+            x.style.padding = "1px"; 
+            x.align = "center"; 
+            x.style.verticalAlign = "middle";       
+        var y=a.insertCell(4);
+            y.style.padding = "1px"; 
+            y.align = "center";  
+            y.style.verticalAlign = "middle";     
+        var z=a.insertCell(5);
+            z.align = "center";
+            z.style.padding = "1px";        
+        
+            var xz = $("#hdnuomlist").val();
+            secxoptions = "";
+            $.each(jQuery.parseJSON(xz), function() { 
+                secxoptions = secxoptions + "<option value='"+this['ccode']+"'>"+this['cdesc']+"</option>";
+            });
+        
+        u.innerHTML = "<div class=\"col-xs-12 nopadwright\"><select class='form-control input-xs' name=\"selunit"+lastRow+"\" id=\"selunit"+lastRow+"\">" + secxoptions + "</select></div>";
+        v.innerHTML = "<div class=\"nopadwright\" ><select id='selrule"+lastRow+"' name='selrule"+lastRow+"' class='form-control input-xs'> <option value='div'>&lt;</option> <option value='mul'>&gt;</option> </select></div>";
+        w.innerHTML = "<div class=\"nopadwright\" ><input type='text' class='form-control input-xs' id='txtfactor"+lastRow+"' name='txtfactor"+lastRow+"' value='1' required style=\"text-align: right\"> </div>";
+        x.innerHTML = "<div class=\"nopadwright\" ><input type='checkbox' id='txtchkPO"+lastRow+"' name='txtchkPO"+lastRow+"' value='1'> </div>";
+        y.innerHTML = "<div class=\"nopadwright\" ><input type='checkbox' id='txtchkSI"+lastRow+"' name='txtchkSI"+lastRow+"' value='1'> </div>";
+        z.innerHTML = "<input class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRow(this);\"/>";
+        
+        $("#txtfactor"+lastRow).autoNumeric('init',{mDec:2});
+		$("#txtfactor"+lastRow).on("focus", function () {
+			$(this).select();
+		});
 
-}
-
-function addselect(nme){
-        var xmlhttp;
-        if (window.XMLHttpRequest)
-          {// code for IE7+, Firefox, Chrome, Opera, Safari
-          xmlhttp=new XMLHttpRequest();
-          }
-        else
-          {// code for IE6, IE5
-          xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-          }
-        xmlhttp.onreadystatechange=function()
-        {
-          if (xmlhttp.readyState==4 && xmlhttp.status==200)
-            {
-            var res=xmlhttp.responseText;
-            document.getElementById("divselunit"+nme).innerHTML=res;
-            }
-          }
-        xmlhttp.open("GET","get_uom.php?x="+nme,true);
-        xmlhttp.send();
-        }
+    }		
 		
-		
-function deleteRow(r) {
-	var tbl = document.getElementById('myUnitTable').getElementsByTagName('tr');
-	var lastRow = tbl.length;
-	var i=r.parentNode.parentNode.rowIndex;
-	 document.getElementById('myUnitTable').deleteRow(i);
-	 var lastRow = tbl.length;
-	 var z; //for loop counter changing textboxes ID;
+    function deleteRow(r) {
+        var tbl = document.getElementById('myUnitTable').getElementsByTagName('tr');
+        var lastRow = tbl.length;
+        var i=r.parentNode.parentNode.rowIndex;
+        document.getElementById('myUnitTable').deleteRow(i);
+        var lastRow = tbl.length;
+        var z; //for loop counter changing textboxes ID;
 	 
 		for (z=i+1; z<=lastRow; z++){
 			var tempcitemno = document.getElementById('selunit' + z);
@@ -1245,7 +1304,77 @@ function deleteRow(r) {
 			tempcunit.name = "txtretail" + x;
 
 		}
-}
+    }
+
+    
+    function addseclevel(){
+        var tbl = document.getElementById('mySecLevelTbl').getElementsByTagName('tr');
+        var lastRow = tbl.length;
+
+        var a=document.getElementById('mySecLevelTbl').insertRow(-1);
+        var b=a.insertCell(0);
+        var c=a.insertCell(1);
+        c.align = "left";
+        c.style.padding = "1px";
+        var d=a.insertCell(2);
+        d.align = "left";
+        d.style.padding = "1px";
+        var e=a.insertCell(3);
+        e.align = "left";
+        e.style.padding = "1px";
+        var g=a.insertCell(4);
+
+        var xz = $("#hdnsecslist").val();
+        secxoptions = "";
+        $.each(jQuery.parseJSON(xz), function() { 
+            secxoptions = secxoptions + "<option value='"+this['nid']+"'>"+this['cdesc']+"</option>";
+        });
+        
+        b.innerHTML = "<div class=\"col-xs-12 nopadwright\"><select class='form-control input-xs' name=\"selitmsec"+lastRow+"\" id=\"selitmsec"+lastRow+"\">" + secxoptions + "</select></div>";
+        c.innerHTML = "<div class=\"col-xs-12 nopadwleft\" ><input type='text' class='numeric form-control input-sm' id='txtwhmin"+lastRow+"' name='txtwhmin"+lastRow+"' value='0' required style=\"text-align: right\"> </div>";
+        d.innerHTML = "<div class=\"col-xs-12 nopadwleft\" ><input type='text' class='numeric form-control input-sm' id='txtwhmax"+lastRow+"' name='txtwhmax"+lastRow+"' value='0' required style=\"text-align: right\"> </div>";
+        e.innerHTML = "<div class=\"col-xs-12 nopadwleft\" ><input type='text' class='numeric form-control input-sm' id='txtwhreor"+lastRow+"' name='txtwhreor"+lastRow+"' value='0' required style=\"text-align: right\"> </div>";
+
+        g.innerHTML = "<div class=\"col-xs-12 nopadwleft\" ><input class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteSeclevl(this);\"/></div>";
+        
+        $("input.numeric").numeric({decimalPlaces: 2});
+        $("input.numeric").on("click", function () {
+            $(this).select();
+        });
+
+    }
+
+    		
+    function deleteSeclevl(r) {
+        var tbl = document.getElementById('mySecLevelTbl').getElementsByTagName('tr');
+        var lastRow = tbl.length;
+        var i=r.parentNode.parentNode.rowIndex;
+        document.getElementById('mySecLevelTbl').deleteRow(i);
+        var lastRow = tbl.length;
+        var z; //for loop counter changing textboxes ID;
+        
+            for (z=i+1; z<=lastRow; z++){
+                var tempcitemno = document.getElementById('selitmsec' + z);
+                var tempcdesc = document.getElementById('txtwhmin' + z);
+                var tempnqty= document.getElementById('txtwhmax' + z);
+                var tempcunit= document.getElementById('txtwhreor' + z);
+
+                var tempddel= document.getElementById('row_' + z + '_delete');
+                
+                var x = z-1;
+                tempcitemno.id = "selitmsec" + x;
+                tempcitemno.name = "selitmsec" + x;
+                tempcdesc.id = "txtwhmin" + x;
+                tempcdesc.name = "txtwhmin" + x;
+                tempnqty.id = "txtwhmax" + x;
+                tempnqty.name = "txtwhmax" + x;
+                tempcunit.id = "txtwhreor" + x;
+                tempcunit.name = "txtwhreor" + x;
+
+                tempcunit.id = "row_" + x + "_delete";
+
+            }
+    }
 
 function loadgroupnmes(){
 
@@ -1326,7 +1455,7 @@ function loadgroupvalues(){
 }
 
 function loaditmfactor(){
-	var itmno = $("#txtcpartno").val();
+	    var itmno = $("#txtcpartno").val();
 	
 			$.ajax ({
             url: "th_loaditemfactor.php",
@@ -1344,26 +1473,63 @@ function loaditmfactor(){
 						 var varstat = "<input class='btn btn-warning btn-xs' type='button' value='Inactive' id=\"setStat"+item.cunit+"\" name= \"setStat"+item.cunit+"\" />";
 					  }
 
+                        var tbl = document.getElementById('myUnitTable').getElementsByTagName('tr');
+                        var lastRow = tbl.length;
 
-						var tbl = document.getElementById('myUnitTable').getElementsByTagName('tr');
-						var lastRow = tbl.length;
-					
-						var a=document.getElementById('myUnitTable').insertRow(-1);
-						var u=a.insertCell(0);
-						var v=a.insertCell(1);
-						v.align = "left";
-						v.style.padding = "1px";
-						var y=a.insertCell(2);
-						var z=a.insertCell(3);
-						
-						u.innerHTML = "<div class=\"col-xs-12 nopadwright\" ><input type=\"text\" class='form-control input-sm' name=\"selunit"+lastRow+"\" id=\"selunit"+lastRow+"\" value=\""+item.cunit+"\" readonly></div>";
-						v.innerHTML = "<div class=\"col-xs-10 nopadwleft\" > <input type='text' class='form-control input-sm' id='txtfactor"+lastRow+"' name='txtfactor"+lastRow+"' value='"+item.nfactor+"' required style=\"text-align: right\"> </div>";
-						
-						y.innerHTML = varstat;
-						z.innerHTML = "<div class=\"alert alert-danger nopadding\" id=\"itmunitmsg"+item.cunit+"\" style=\"display: inline\"></div>";
-						
-						//addselect(lastRow, item.cunit);
-						
+                        var a=document.getElementById('myUnitTable').insertRow(-1);
+                        var u=a.insertCell(0);
+                        var v=a.insertCell(1);
+                            v.style.padding = "1px";
+                        var w=a.insertCell(2);
+                            w.style.padding = "1px";
+                        var x=a.insertCell(3);
+                            x.style.padding = "1px"; 
+                            x.align = "center"; 
+                            x.style.verticalAlign = "middle";       
+                        var y=a.insertCell(4);
+                            y.style.padding = "1px"; 
+                            y.align = "center";  
+                            y.style.verticalAlign = "middle";     
+                        var z=a.insertCell(5);
+                            z.align = "center";
+                            z.style.padding = "1px";
+                        var zy=a.insertCell(6);
+                            zy.align = "center";
+                            zy.style.padding = "1px";
+                            
+                        var gretr = "";
+                        var lessr = "";
+                        if(item.crule=="div"){
+                            gretr = "selected";
+                            lessr = "";
+                        }else if(item.crule=="mul"){
+                            gretr = "";
+                            lessr = "selected";
+                        }
+
+                        var isPO = "";
+                        if(item.lpounit==1){
+                            isPO = "checked";
+                        }
+
+                        var isSI = "";
+                        if(item.lsiunit==1){
+                            isSI = "checked";
+                        }
+                        
+                        u.innerHTML = "<div class=\"col-xs-12 nopadwright\" ><input type=\"text\" class='form-control input-xs' name=\"selunit"+lastRow+"\" id=\"selunit"+lastRow+"\" value=\""+item.cunit+"\" readonly></div>";
+                        v.innerHTML = "<div class=\"nopadwright\" ><select id='selrule"+lastRow+"' name='selrule"+lastRow+"' class='form-control input-xs'> <option value='div' "+gretr+">&lt;</option> <option value='mul' "+lessr+">&gt;</option> </select></div>";
+                        w.innerHTML = "<div class=\"nopadwright\" ><input type='text' class='form-control input-xs' id='txtfactor"+lastRow+"' name='txtfactor"+lastRow+"' value='"+item.nfactor+"' required style=\"text-align: right\"> </div>";
+                        x.innerHTML = "<div class=\"nopadwright\" ><input type='checkbox' id='txtchkPO"+lastRow+"' name='txtchkPO"+lastRow+"' value='1' "+isPO+"> </div>";
+                        y.innerHTML = "<div class=\"nopadwright\" ><input type='checkbox' id='txtchkSI"+lastRow+"' name='txtchkSI"+lastRow+"' value='1' "+isSI+"> </div>";
+                        z.innerHTML = varstat;
+                        zy.innerHTML = "<div class=\"alert alert-danger nopadding\" id=\"itmunitmsg"+item.cunit+"\" style=\"display: inline\"></div>";
+
+                        $("#txtfactor"+lastRow).autoNumeric('init',{mDec:2});
+                        $("#txtfactor"+lastRow).on("focus", function () {
+                            $(this).select();
+                        });
+												
 						$("#itmunitmsg"+item.cunit).hide();
 						
 						$("#setStat"+item.cunit).on("click", function() {
@@ -1412,7 +1578,7 @@ function loaditmfactor(){
             }
     		});
 	
-}
+    }
 
 function chkSIEnter(keyCode,frm){
 	if(keyCode==13){
