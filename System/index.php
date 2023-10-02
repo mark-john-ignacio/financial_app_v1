@@ -129,7 +129,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										<div class="col-xs-12 nopadwtop">
 											<table width="100%" border="0" cellpadding="0">
 												<tr>
-													<td width="180" rowspan="4" align="center">
+													<td width="180" rowspan="5" align="center">
 														<?php 
 															$imgsrc = "../images/COMPLOGO.png";
 														?>
@@ -171,11 +171,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 													</td>
 												</tr>
 												<tr>
-													<td align="center">
-														<label class="btn btn-warning btn-xs">
-															Browse Image&hellip; <input type="file" name="file" id="filecpmnid" style="display: none;">
-														</label>
-													</td>
+													
 													<td><b>Business Type / TIN:</b></td>
 													<td style="padding:2px" colspan="3">
 
@@ -185,6 +181,24 @@ if (mysqli_num_rows($sqlhead)!=0) {
 														</div>
 														<div class="col-xs-5 nopadding">
 															<input type="text" name="txtcompanytin" id="txtcompanytin" class="form-control input-sm" placeholder="TIN..." maxlength="50">
+														</div>
+
+													</td>
+												</tr>
+												<tr>
+													<td align="center">
+														<label class="btn btn-warning btn-xs">
+															Browse Image&hellip; <input type="file" name="file" id="filecpmnid" style="display: none;">
+														</label>
+													</td>
+													<td><b>Permit To Use Details:</b></td>
+													<td style="padding:2px" colspan="3">
+
+														<div class="col-xs-5 nopadwright">
+														<input type="text" name="ptucode" id="ptucode" class="form-control input-sm" placeholder="PTU Code..." maxlength="100">
+														</div>
+														<div class="col-xs-5 nopadding">
+															<input type="text" name="ptudate" id="ptudate" class="form-control input-sm" placeholder="PTU Date YYYY/MM/DD" maxlength="">
 														</div>
 
 													</td>
@@ -237,7 +251,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 											//		foreach($objrows['results'] as $rows){
 											?>
-												<!--		<option value="<?//=$rows['id']?>" <?php// if ($nvalue==$rows['id']) { echo "selected='true'"; } ?>><?//=$rows['currencyName']?></option>-->
+												<!--		<option value="< ?//=$rows['id']?>" < ?php// if ($nvalue==$rows['id']) { echo "selected='true'"; } ?>>< ?//=$rows['currencyName']?></option>-->
 											<?php
 											//		}
 											//	}
@@ -1567,7 +1581,31 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								<p data-toggle="collapse" data-target="#itmdr"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Delivery Receipt</b></u></p>
 									
 									<div class="collapse" id="itmdr">
-									
+										<div class='col-xs-12'>
+											<div class='col-xs-2 nopadwtop2x'>
+												<b>Print Version</b>
+												<div id="divversprint" style="display:inline; padding-left:5px">
+												</div>
+											</div>
+											<div class='col-xs-3 nopadwtop2x'>
+													<?php 
+														$result = mysqli_query($con, "SELECT * FROM `parameters` WHERE compcode='$company' and ccode = 'PRINT_VERSION_DR'");
+														if(mysqli_num_rows($result) != 0){
+															$verrow = mysqli_fetch_array($result, MYSQLI_ASSOC);
+															$version = $verrow['cvalue'];
+														} else {
+															$version ='';
+														}
+													?>
+													<select class='form-control input-sm selectpicker' id='printverDR' name='printverDR' onChange="setparamval('PRINT_VERSION_DR',this.value,'verdronmsg')">
+														<option value='0' <?php if($version == 0 ) { echo "selected"; } ?>> Default </option>
+														<option value='1' <?php if($version == 1) { echo "selected"; } ?>> Customize </option>
+													</select>
+											</div>
+											<div class="col-xs-1 nopadwtop2x" id="verdronmsg">
+											</div>    
+										</div>
+
 										<div class="col-xs-12">
 											<div class="col-xs-2 nopadwtop2x">
 												<b>Auto post upon printing</b>
@@ -1603,7 +1641,33 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								<div class="col-xs-12  nopadwtop">&nbsp;</div>
 								<p data-toggle="collapse" data-target="#itmsi"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Sales Invoice</b></u></p>
 									
-									<div class="collapse" id="itmsi">             
+									<div class="collapse" id="itmsi">  
+										<div class='col-xs-12'>
+											<div class='col-xs-2 nopadwtop2x'>
+												<b>Print Version</b>
+												<div id="divversprint" style="display:inline; padding-left:5px">
+												</div>
+											</div>
+											<div class='col-xs-3 nopadwtop2x'>
+													<?php 
+														$result = mysqli_query($con, "SELECT * FROM `parameters` WHERE compcode='$company' and ccode = 'PRINT_VERSION_SI'");
+														if(mysqli_num_rows($result) != 0){
+															$verrow = mysqli_fetch_array($result, MYSQLI_ASSOC);
+															$version = $verrow['cvalue'];
+														} else {
+															$version ='';
+														}
+													?>
+													<select class='form-control input-sm selectpicker' id='printverSI' name='printverSI' onChange="setparamval('PRINT_VERSION_SI',this.value,'versionmsg')">
+														<option value='0' <?php if($version == 0 ) { echo "selected"; } ?>> Default </option>
+														<option value='1' <?php if($version == 1) { echo "selected"; } ?>> Customize </option>
+													</select>
+											</div>
+											<div class="col-xs-1 nopadwtop2x" id="versionmsg">
+											</div>    
+										</div>
+									
+
 										<div class="col-xs-12">
 											<div class="col-xs-2 nopadwtop2x">
 												<b>Auto post upon printing</b>
@@ -1621,6 +1685,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 													else{
 														$nvalue = "";
 													}
+													
 												?>
 
 												<select class="form-control input-sm selectpicker" name="seldrautopost" id="seldrautopost" onChange="setparamval('AUTO_POST_POS',this.value,'sipostmsg')">
@@ -2607,7 +2672,36 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										</table>                    
 									</div>				
 								</div>
+								<!-- RECEIVE PAYMENT SETUP -->
+								<p data-toggle="collapse" data-target="#ARPcollapse"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Receive Payment</b></u> <i></i></p>
 
+								<div class='collapse' id='ARPcollapse'>
+									<div class='col-xs-12'>
+											<div class='col-xs-2 nopadwtop2x'>
+												<b>Print Version</b>
+												<div id="divversprint" style="display:inline; padding-left:5px">
+												</div>
+											</div>
+											<div class='col-xs-3 nopadwtop2x'>
+													<?php 
+														$result = mysqli_query($con, "SELECT * FROM `parameters` WHERE compcode='$company' and ccode = 'PRINT_VERSION_RP'");
+														if(mysqli_num_rows($result) != 0){
+															$verrow = mysqli_fetch_array($result, MYSQLI_ASSOC);
+															$version = $verrow['cvalue'];
+														} else {
+															$version ='';
+														}
+													?>
+													<select class='form-control input-sm selectpicker' id='printverSI' name='printverSI' onChange="setparamval('PRINT_VERSION_RP',this.value,'verrponmsg')">
+														<option value='0' <?php if($version == 0 ) { echo "selected"; } ?>> Default </option>
+														<option value='1' <?php if($version == 1) { echo "selected"; } ?>> Customize </option>
+													</select>
+											</div>
+											<div class="col-xs-1 nopadwtop2x" id="verrponmsg">
+											</div>    
+										</div>				
+								</div>			
+								<!-- RECEIVE PAYMENT SETUP END -->
 
 								<p data-toggle="collapse" data-target="#rfpcollapse"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Request For Payment</b></u> <i></i></p>
 												
@@ -3275,6 +3369,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										</form>
 
 								</div>
+								
 
 								<div class="col-xs-12">
 									<div class="col-xs-2 nopadwtop">
@@ -3733,7 +3828,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				$('.datepick').datetimepicker({
 					format: 'MM/DD/YYYY'
 				});
-				
+
+				$('#ptuissue').datetimepicker({
+					format: 'YYYY/MM/DD'
+				});
+
 				$('#popoverData1, #popoverData2').popover({ trigger: "hover" });
 				$("#EWTAlertMsg").hide();
 				$("#EWTAlertDone").hide();			
@@ -4207,11 +4306,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			var vatz = $("#selcompanyvat").val();
 			var email = $("#txtcompanyemail").val();
 			var cpnum = $("#txtcompanycpnum").val();
+			var ptucode = $('#ptucode').val();
+			var ptudate = $('#ptudate').val();
 			//var texthdr = $("#texthdr").val();
 			
 				$.ajax ({
 					url: "th_savecompany.php",
-					data: { nme: nme,  desc: desc, add: add, tin: tin, vatz: vatz, zip: zip, email: email, cpnum: cpnum },
+					data: { nme: nme,  desc: desc, add: add, tin: tin, vatz: vatz, zip: zip, email: email, cpnum: cpnum ,ptucode: ptucode, ptudate: ptudate},
 					async: false,
 					success: function( data ) {
 						if(data.trim()!="True"){
@@ -5084,6 +5185,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						$("#txtcompanytin").val(item.ctin);
 						$("#txtcompanyemail").val(item.emailadd);
 						$("#txtcompanycpnum").val(item.ccpnum);
+						$('#ptucode').val(item.ptucode);
+						$('#ptudate').val(item.ptudate);
 
 						$("#previewing").attr('src',item.clogoname);
 

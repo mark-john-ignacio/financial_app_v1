@@ -52,6 +52,14 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$lPosted = $row['lapproved'];
 	}
 }
+
+$result = mysqli_query($con, "SELECT * FROM `parameters` WHERE compcode='$company' and ccode = 'PRINT_VERSION_DR'");
+if(mysqli_num_rows($result) != 0){
+  $verrow = mysqli_fetch_array($result, MYSQLI_ASSOC);
+  $version = $verrow['cvalue'];
+} else {
+  $version =''; 
+}
 ?>
 
 <!DOCTYPE html>
@@ -101,8 +109,13 @@ function Print(tranno,id,lmt){
 
 }
 
-function PrintRed(x){
-	location.href = "DR_print.php?x="+x;
+function PrintRed(x, version){
+	// 
+  if(version == 1){
+  location.href = "DR_printv1.php?tranno=" +x;
+  } else {
+    location.href = "DR_print.php?x="+x;
+  }
 }
 
 </script>
@@ -198,7 +211,7 @@ if($lPosted==0 && $autopost==1){
 	$valsub = "PRINT AND POST DR";
 }
 else{
-	$strqry = "PrintRed('".$csalesno."')";
+	$strqry = "PrintRed('$csalesno', '$version')";
 	$valsub = "PRINT DR";
 }
 

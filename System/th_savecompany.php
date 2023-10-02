@@ -16,12 +16,14 @@ require_once "../Connection/connection_string.php";
 	$email = $_REQUEST['email'];
 	$cpnum = $_REQUEST['cpnum'];
 	$czip = $_REQUEST['zip'];
+	$ptucode = $_REQUEST['ptucode'];
+	$ptudate = $_REQUEST['ptudate'];
 	//$txthdr = $_REQUEST['txthdr']; 
 
 	//, `txtheader` = '$txthdr'
 
 
-			if (!mysqli_query($con,"UPDATE company set `compname` = '$name', `compdesc` = '$desc', `compadd` = '$add', `comptin` = '$tin', `compvat` = '$vat', `compzip` = '$czip', `email` = '$email', `cpnum` = '$cpnum' where `compcode` = '$company'")) {
+			if (!mysqli_query($con,"UPDATE company set `compname` = '$name', `compdesc` = '$desc', `compadd` = '$add', `comptin` = '$tin', `compvat` = '$vat', `compzip` = '$czip', `email` = '$email', `cpnum` = '$cpnum', `ptucode` = '$ptucode', `ptudate` = '$ptudate' where `compcode` = '$company'")) {
 				printf("Errormessage: %s\n", mysqli_error($con));
 			} 
 			else{										
