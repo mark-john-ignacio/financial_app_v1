@@ -1044,6 +1044,18 @@ else{
 }
 ?>
 
+<div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-contnorad">   
+            <div class="modal-bodylong">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
+        
+               <iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:98%; display:block; margin:0px; padding:0px; border:0px"></iframe>
+			</div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 </body>
 </html>
 
@@ -2565,6 +2577,19 @@ else{
 
 	function changeDet(){
 		$('#MyTable tbody').empty(); 
+	}
+
+	function printchk(tranno){
+		if($('#hdncancel').val() === 1){
+			$('#statmsgz').text("CANCELLED TRANSACTION CANNOT BE PRINTED!")
+			$('#statmsgz').css('color', '#FF0000')
+			return;
+		}
+
+		var url = "OR_print.php?tranno="+tranno;
+		// var url = "OR_printv1.php?tranno="+tranno;
+		$("#myprintframe").attr('src',url);
+		$("#PrintModal").modal('show');
 	}
 
 </script>

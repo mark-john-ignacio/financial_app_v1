@@ -25,6 +25,8 @@
         $compphone = $row['cpnum'];
         $ptucode = $row['ptucode'];
         $ptudate = $row['ptudate'];
+        $compemail = $row['email'];
+        
 	}
 
     $sql = "select a.*,b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, b.ctin,b.cpricever,(TRIM(TRAILING '.' FROM(CAST(TRIM(TRAILING '0' FROM B.nlimit)AS char)))) as nlimit 
@@ -55,20 +57,20 @@
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
 </head>
-<body>
+<body style="padding-top:0" id='body'>
     <div id='header' class='container' style='width: 100%;'>
         <div class='row' style='display: flex;'>
             <div class='col-sm' style='width: 100%; '>
                 <img src='../../images/SLogo.png' alt='Sert technology Logo' width='100%' height="100%">
             </div>
             <div class='col-sm' style='width: 100%; text-align: justify; text-justify: inter-word;'>
-                    <h5 class='nopadding'>Block 2 lot 15 tierra Grande Royale, Brgy. Manggahan Gen. Trias Cavite 4107</h5>
-                    <h5 class='nopadding'>Tel/Fax: (046) 402-1596</h5>
-                    <h5 class='nopadding'>Mobile No.: (0917) 551-3200</h5>
-                    <h5 class='nopadding'>Manila Line: (02) 8831-4115 </h5>
-                    <h5 class='nopadding'>Email: sales@serttech.com</h5>
-                    <h5 class='nopadding'>Website: www.serttech.com</h5>
-                    <h5 class='nopadding'>VAT Reg. TIN: 008-586-750-00000</h5>
+                    <h5 class='nopadding'><?= $compadd ?></h5>
+                    <!-- <h5 class='nopadding'>Tel/Fax: </h5> -->
+                    <h5 class='nopadding'>Mobile No.: <?= $compphone ?></h5>
+                    <!-- <h5 class='nopadding'>Manila Line: </h5> -->
+                    <h5 class='nopadding'>Email: <?= $compemail ?></h5>
+                    <!-- <h5 class='nopadding'>Website: www.serttech.com</h5> -->
+                    <h5 class='nopadding'>VAT Reg. TIN: <?= $comptin ?></h5>
             </div>
             <div class='col-sm' style='width: 100%; margin: 5%; text-align: center;'>
                 <h1>Sales Invoice</h1>
@@ -104,7 +106,7 @@
     </div>
 
 
-    <div class='container' id='item' style='width: 100%; '>
+    <div class='container' id='item' style='width: 100%; top: 0;'>
         <div class='row'  style='display: flex;'>
             <table class='table' border='2' id='salestable'  style=' border: .5 solid black;border-radius: 20%;'>
                 <thead>
@@ -117,54 +119,122 @@
                         <th>AMOUNT</th>
                     </tr>
                 </thead>
-                <tbody height='400px'>
+                <tbody height='350px'>
                     
                 </tbody>
             </table>
         </div>
         <div class='row' style='display: flex;'>
-            <table border='1' style='width: 100%; '>
+            <table style='width: 100%; '>
+
+                <tr>
+                    <td>
+                        <div style='display: flex'>
+                            <div style='width: 50%'> VATABLE SALES: </div>
+                            <div id='vatsales' style='width: 50%; text-align: center'> </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div style='display: flex'>
+                            <div style='width: 50%;'>Total Sales(VAT INCLUSIVE): </div>
+                            <div id='totalsales' style='width: 50%; text-align: center'> </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div style='display: flex'>
+                            <div style='width: 100%;'>VAT-EXEMPT SALES: 
+                            <div id='vatexmptsale' style='width: 100%; text-align: center'> </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div style='display: flex'>
+                            <div style='width: 50%;'>LESS 12% VAT: </div>
+                            <div id='less12' style='width: 50%; text-align: center'> </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div style='display: flex'>
+                            <div style='width: 50%;'>ZERO RATED SALES: </div>
+                            <div id='zerorated' style='width: 50%; text-align: center'> </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div style='display: flex'>
+                            <div style='width: 50%;'>AMOUNT NET OF VAT: </div>
+                            <div id='amtnet' style='width: 50%; text-align: center'> </div>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div style='display: flex'>
+                            <div style='width: 50%;'> AMOUNT:</div>
+                            <div id='vatamt' style='width: 50%; text-align: center'> </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div style='display: flex'>
+                            <div style='width: 50%;'>LESS: WITHHOLDING TAX: </div>
+                            <div id='lesswtax' style='width: 50%; text-align: center'> </div>
+                        </div>
+                    </td>
+                </tr>
                 <tr>
                     <td>&nbsp;</td>
-                    <td>Total Sales</td>
-                </tr>
-                <tr>
-                    <td>VATABLE SALES</td>
-                    <td>(VAT INCLUSIVE)</td>
-                </tr>
-                <tr>
-                    <td>VAT-EXEMPT SALES</td>
-                    <td>LESS 12% VAT</td>
-                </tr><tr>
-                    <td>ZERO RATED SALES</td>
-                    <td>AMOUNT NET OF VAT</td>
-                </tr>
-                <tr>
-                    <td>VAT AMOUNT</td>
-                    <td>LESS: WITHHOLDING TAX</td>
+                    <td>
+                        <div style='display: flex'>
+                            <div style='width: 50%;'>AMOUNT DUE: </div>
+                            <div id='amtdue' style='width: 50%; text-align: center'> </div>
+                        </div>
+                    </td>
                 </tr>
                 <tr>
                     <td>&nbsp;</td>
-                    <td>AMOUNT DUE</td>
+                    <td>
+                        <div style='display: flex'>
+                            <div style='width: 50%;'>ADD: VAT: </div>
+                            <div id='addvat' style='width: 50%; text-align: center'> </div>
+                        </div>
+                    </td>
                 </tr>
                 <tr>
                     <td>&nbsp;</td>
-                    <td>ADD: VAT</td>
-                </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td>Total AMOUNT DUE</td>
+                    <td>
+                        <div style='display: flex'>
+                            <div style='width: 50%;'>Total AMOUNT DUE: </div>
+                            <div id='totaldue' style='width: 50%; text-align: center'> </div>
+                        </div>
+                    </td>
                 </tr>
             </table>
         </div>
     </div>
 
-    <div id='footer' class='container' style='width: 100%;'>
+    <div id='footer' class='container' style='width: 100%; margin-top: 2px;'>
         <div class='row' style='display: flex;'>
-            <div class='col-sm' style='width: 10%'> logo</div>
-            <div class='col-sm' style='width: 25%; border: 1 solid black'>asdasd</div>
-            <div class='col-sm' style='width: 25%; border: 1 solid black'></div>
-            <div class='col-sm' style='width: 25%; border: 1 solid black'></div>
+            <div class='col-sm' style='width: 30%; margin-top: 50%; font-size: 9px; font-weight: bold;'>
+                PTU No.: <?= $ptucode ?><br>
+                Date Issued: <?= $ptudate ?><br>
+                Inclusive Serial No.: <?= $tranno ?><br><br>
+
+                Timestamp: <?= date('m-d-Y') ?>
+            </div>
+            <div class='col-sm' style='width: 35%; '>
+                <div style='font-size: 10px; margin-left: 5px; font-weight: bold; width: 100%;'>Issued By:</div>
+                <div style='width: 85%; margin-left:10%; margin-top: 24%; border: 1px solid black;'></div>
+                <div style='font-size: 14px; width: 100%; text-align: center;'>Signature over printed name</div>
+            </div>
+            <div class='col-sm' style='width: 35%; border: 1 solid black '>
+                <div style='font-size: 10px; margin-left: 5px; font-weight: bold; width: 100%; text-align: center;'>Received the merchandise in good order and condition:</div>
+                <div style='width: 85%; margin-left:10%; margin-top: 20%; border: 1px solid black;'></div>
+                <div style='font-size: 14px; width: 100%; text-align: center;'>Signature over printed name</div>
+                <div style='font-size: 14px; font-weight: bold; width: 100%; text-align: center;'>THIS DOCUMENT IS NOT VALID FOR CLAIM OF INPUT TAXES</div>
+            </div>
         </div>
     </div>
     
@@ -176,108 +246,84 @@
     var totnetvat = 0, totlessvat = 0, totvatable = 0, totvatxmpt= 0;
     var vatcode = '', vatgross ='';
     $(document).ready(function(){
+
         $.ajax({
-            url: 'th_loaddetails.php',
-            data: {id: '<?= $tranno ?>' },
+            // url: 'th_loaddetails.php',
+            url: 'th_loadtransaction.php',
+            data: {tranno: '<?= $tranno ?>' },
+            dataType: "json",
             async: false,
-		    dataType: "json",
+		    
             success: function(res){
-                console.log(res);
-                res.map((item, index)=> {
+                console.log(res.data);
+                if(res.valid){
+                    res['data'].map((item, index)=> {
 
-                    if(item.namount != 0){
-                        totnetvat = parseFloat(totnetvat) + parseFloat(item.nnetvat)
-                        totlessvat = parseFloat(totlessvat) + parseFloat(item.nlessvat)
-                        totvatable = parseFloat(totvatable) + parseFloat(item.namount)
-                    } else {
-                        totvatxmpt = parseFloat(totvatxmpt) + parseFloat(item.namount)
-                    }
-                    $('<tr>').append(
-                        $("<td>").text(item.id),
-                        $("<td>").text(item.desc),
-                        $("<td>").text(parseFloat(item.totqty).toFixed(0)),
-                        $("<td>").text(parseFloat(item.nprice).toFixed(2)), 
-                        $("<td>").text(parseFloat("no tax yet").toFixed(2)),
-                        $("<td>").text(parseFloat(item.namount).toFixed(2)),
-                    ).appendTo('#salestable > tbody')
-                })
-                var printgross =0;
-                switch(item.cvatcode){
-                    case 'VT':
-                        printgross = parseFloat(gross).toFixed(2)
-                        if(parseFloat(totvatxmpt) == 0){
-                             printVEGross = '';
+                        if(item.namount != 0){
+                            totnetvat = totnetvat + parseFloat(item.nnetvat);
+                            totlessvat = totlessvat + parseFloat(item.nlessvat);
+                            totvatable = totvatable + parseFloat(item.namount);
                         } else {
-                            printVEGross = parseFloat(totvatxmpt).toFixed(2)
+                            totvatxmpt = totvatxmpt + parseFloat(item.namount);
                         }
-                        printZRGross = "";
-                        totnetvat = number_format($totnetvat,2);
-                        totlessvat = number_format($totlessvat,2);
-                        totvatable = number_format($totvatable,2);
-                        break;
-                    case 'NV':
-                        printgross = parseFloat(gross).toFixed(2)
-                        if(parseFloat(totvatxmpt) == 0){
-                             printVEGross = '';
-                        } else {
-                            printVEGross = parseFloat(totvatxmpt).toFixed(2)
+                        $("<tr class='spacer'>").append(
+                            $("<td>").text(item.citemno),
+                            $("<td>").text(item.citemdesc),
+                            $("<td>").text(parseFloat(item.nqty).toFixed(0)),
+                            $("<td>").text(item.cunit),
+                            $("<td>").text(toNumber(item.nprice)), 
+                            $("<td>").text(toNumber(item.namount)),
+                        ).appendTo('#salestable > tbody')
+
+                        var printgross =0;
+                        var printVATGross = '', printVEGross='', printZRGross='';
+                        var gross = parseFloat(item.ngross);
+                        if(item.ctaxcode === 'VT' || item.ctaxcode === 'NV'){
+                            printgross = parseFloat(item.ngross)
+                            if(parseFloat(totvatxmpt) != 0){
+                                printVEGross = parseFloat(totvatxmpt)
+                            }
+
+                            totnetvat = parseFloat(totnetvat);
+                            totlessvat = parseFloat(totlessvat);
+                            totvatable = parseFloat(totvatable);
+                        } else if(item.ctaxcode === 'VE') {
+                            $printVEGross = parseFloat(item.ngross);
+                                
+                            $totnetvat = "";
+                            $totlessvat = "";
+                            $totvatable = "";
+                        } else if(item.ctaxcode === 'ZR'){
+                            printZRGross = parseFloat(item.ngross);
+                            $totnetvat = "";
+                            $totlessvat = "";
+                            $totvatable = "";
                         }
-                        printZRGross = "";
-                        totnetvat = number_format($totnetvat,2);
-                        totlessvat = number_format($totlessvat,2);
-                        totvatable = number_format($totvatable,2);
-                        break;
-                    case 'VE': 
-                        $printVATGross = "";
-                        $printVEGross = number_format($Gross,2);
-                        $printZRGross = "";
-                        
-                        $totnetvat = "";
-                        $totlessvat = "";
-                        $totvatable = "";
+
+                        $('#vatsales').text((totvatable !=="" ? toNumber(totvatable) : ""))
+                        $('#vatexmptsale').text((printVEGross !=="" ? toNumber(printVEGross) : ""));
+                        $('#zerorated').text((printZRGross !=="" ? toNumber(printZRGross) : ""));
+                        $('#vatamt').text((totnetvat !=="" ? toNumber(totnetvat) : ""));
+
+                        $('#totalsales').text((totvatable !== ""  ? toNumber(totvatable) : ""))
+                        $('#less12').text((totlessvat != "" ? toNumber(totlessvat): ''))
+                        $('#amtnet').text((totnetvat !== "" ? toNumber(totnetvat) : ''))
+                        $('#lesswtax').text()
+                        $('#amtdue').text((totnetvat !== "" ? toNumber(totnetvat) : ''))
+                        $('#addvat').text((totlessvat !== "" ? toNumber(totlessvat) : ''))
+                        $('#totaldue').text((gross !== '' ? toNumber(gross) : ''))
+                    })
+
+                    $('#body').attr('onload', "window.print()")
                 }
-
+            },
+            error: function(res){
+                console.log(res)
             }
         })
+
     })
-
-
+    function toNumber(number){
+        return parseFloat(number).toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
+    }
 </script>
-
-<!-- if($cvatcode=='VT' || $cvatcode=='NV'){
-			$printVATGross = number_format($Gross,2);
-			
-				if((float)$totvatxmpt==0){
-					//echo "A";
-					$printVEGross = "";
-				}else{
-					//echo "AB";
-					$printVEGross =  number_format($totvatxmpt,2);
-				}
-
-			$printZRGross = "";
-
-
-				$totnetvat = number_format($totnetvat,2);
-				$totlessvat = number_format($totlessvat,2);
-				$totvatable = number_format($totvatable,2);
-			
-		}elseif($cvatcode=='VE'){
-			$printVATGross = "";
-			$printVEGross = number_format($Gross,2);
-			$printZRGross = "";
-			
-				$totnetvat = "";
-				$totlessvat = "";
-				$totvatable = "";
-			
-		}elseif($cvatcode=='ZR'){
-			$printVATGross = "";
-			$printVEGross = "";
-			$printZRGross = number_format($Gross,2);
-
-				$totnetvat = "";
-				$totlessvat = "";
-				$totvatable = "";
-			
-		} -->

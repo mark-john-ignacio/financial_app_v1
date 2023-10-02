@@ -53,6 +53,14 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$lPosted = $row['lapproved'];
 	}
 }
+
+$result = mysqli_query($con, "SELECT * FROM `parameters` WHERE compcode='$company' and ccode = 'PRINT_VERSION_SI'");
+if(mysqli_num_rows($result) != 0){
+  $verrow = mysqli_fetch_array($result, MYSQLI_ASSOC);
+  $version = $verrow['cvalue'];
+} else {
+  $version =''; 
+}
 ?>
 
 <!DOCTYPE html>
@@ -97,8 +105,15 @@ function Print(tranno,id,lmt){
 
 }
 
-function PrintRed(x){
-	location.href = "SI_print.php?x="+x;
+function PrintRed(x, version){
+  
+
+  if(version == 1){
+    location.href = "SI_printv1.php?tranno=" +x;
+  } else {
+    location.href = "SI_print.php?x="+x;
+  }
+  
 }
 
 </script>
@@ -301,7 +316,7 @@ function PrintRed(x){
           $valsub = "PRINT AND POST INVOICE";
         }
         else{
-          $strqry = "PrintRed('".$csalesno."')";
+          $strqry = "PrintRed('$csalesno', '$version')";
           $valsub = "PRINT INVOICE";
         }
 

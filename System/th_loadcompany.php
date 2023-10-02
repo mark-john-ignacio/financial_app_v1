@@ -22,6 +22,8 @@ require_once "../Connection/connection_string.php";
         $json['clogoname'] = $comprow['clogoname'];
         $json['ccpnum'] = $comprow['cpnum'];
         $json['emailadd'] = $comprow['email'];
+        $json['ptucode'] =$comprow['ptucode'];
+        $json['ptudate'] = $comprow['ptudate'];
 		$json2[] = $json;
                     
      }

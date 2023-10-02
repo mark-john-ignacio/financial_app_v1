@@ -890,7 +890,7 @@ else{
             <div class="modal-bodylong">
 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
         
-               <iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:8.5in; display:block; margin:0px; padding:0px; border:0px"></iframe>
+               <iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height: 99%; display:block; margin:0px; padding:0px; border:0px"></iframe>
     
             	
 			</div>
@@ -2434,6 +2434,7 @@ function printchk(x){
 	else{
 
 		  var url = "SI_confirmprint.php?x="+x;
+		//   var url = "SI_printv1.php?tranno="+x;
 		  
 		  $("#myprintframe").attr('src',url);
 
