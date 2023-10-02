@@ -107,7 +107,7 @@
         }
     </style>
 </head>
-<body>
+<body id='body'>
     <div class="form-containers" >
 
         <div id='date'>asda</div>
@@ -202,7 +202,7 @@ var total = 0;
                     
                 })
                 
-                
+                $('#body').attr('onload', "window.print()")
             }
         },
         error: function(res){
