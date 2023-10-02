@@ -10,6 +10,13 @@
 	require_once('../../Model/helper.php');
 
 	$company = $_SESSION['companyid'];
+
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Purch_edit.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
 	if(isset($_REQUEST['txtctranno'])){
 		$cpono = $_REQUEST['txtctranno'];
 	}
@@ -41,13 +48,6 @@
 		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
 			@$arrtaxlist[] = array('ctaxcode' => $row['ctaxcode'], 'ctaxdesc' => $row['ctaxdesc'], 'nrate' => $row['nrate']); 
 		}
-	}
-
-
-	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Purch_edit.php'");
-	if(mysqli_num_rows($sql) == 0){
-		$poststat = "False";
 	}
 
 	$sqlhead = mysqli_query($con,"select a.cpono, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dneeded,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.nbasegross, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.lcancelled, a.lapproved, a.lprintposted, a.lvoid, a.ccustacctcode, b.cname, a.ccontact, a.ccontactemail, a.ladvancepay, a.cterms, a.cdelto, a.ddeladd, a.ddelinfo, a.cbillto, a.cewtcode from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
@@ -190,7 +190,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								<td style="padding:2px">
 									<div class="col-xs-12 nopadding">
 										<div class="col-xs-3 nopadding">
-											<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" value="<?php echo $CustCode;?>">
+											<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" value="<?php echo $CustCode;?>" readonly>
 										</div>
 
 										<div class="col-xs-8 nopadwleft">
@@ -463,14 +463,15 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 				<br>
 
-				<?php
-					if($poststat=="True"){
-				?>
 				<table width="100%" border="0" cellpadding="3">
 					<tr>
 						<td rowspan="2" width="70%">
 							<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
 					
+							<?php
+								if($poststat=="True"){
+							?>
+
 							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Purch.php';" id="btnMain" name="btnMain">
 								Back to Main<br>(ESC)
 							</button>
@@ -522,6 +523,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								Save<br>(CTRL+S)
 							</button>
 						
+							<?php
+								}
+							?>
+
 						</td>
 						<td width="110px" align="right"><b>Gross Amount </b>&nbsp;&nbsp;</td>
 							<td width="150px"> <input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="<?php echo number_format($nbasegross,4); ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10">
@@ -532,9 +537,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						<td width="150px"> <input type="text" id="txtnGross" name="txtnGross" readonly value="<?php echo number_format($Gross,4); ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10"></td>
 					</tr>
 				</table>
-				<?php
-					}
-				?>
+				
 
     </fieldset>
 	</form>
@@ -743,6 +746,9 @@ else{
 		})
 	}
 
+	<?php
+		if($poststat=="True"){
+	?>
 	$(document).keydown(function(e) {	 
 	
 	 if(e.keyCode == 112) { //F1
@@ -787,6 +793,9 @@ else{
       }
 
 	});
+	<?php
+		}
+	?>
 
 	$(document).on("click", "tr.bdydeigid" , function() {
     var $row = $(this).closest("tr"),       // Finds the closest row <tr> 
@@ -896,6 +905,11 @@ else{
 			afterSelect: function(item) { 
 				$('#txtcust').val(item.value).change(); 
 				$("#txtcustid").val(item.id);
+
+				$("#selbasecurr").val(item.cdefaultcurrency).change(); //val
+				$("#basecurrvalmain").val($("#selbasecurr").data("val"));
+
+				$("#selterms").val(item.cterms).change();
 			}
 		});
 	

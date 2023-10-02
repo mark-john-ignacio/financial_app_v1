@@ -53,6 +53,8 @@ include('../../include/access2.php');
 			
             $Tin = $row['ctin'];
 
+            $SelCurr = $row['cdefaultcurrency'];
+
 						$HouseNo = $row['chouseno'];
 						$City = $row['ccity'];
 						$State = $row['cstate'];
@@ -703,6 +705,31 @@ include('../../include/access2.php');
                                 <input type="hidden" id="txtsalesacctDID" name="txtsalesacctDID" value="<?php echo $GroceryID;?>">
                               </div>  
 
+                            </div>
+                          </div>
+
+                          <div class="col-xs-7 nopadwtop">
+                            <div class="col-xs-3 nopadding">
+                              <b>Default Currency</b>
+                            </div>
+                                      
+                            <div class="col-xs-9 nopadwleft">
+
+                              <div class="col-xs-7 nopadding">
+                                <select id="selcurrncy" name="selcurrncy" class="form-control input-sm selectpicker"  tabindex="27">
+                                  <?php
+                                    $sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+                                    if (mysqli_num_rows($sqlhead)!=0) {
+                                      while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+                                  ?>
+                                    <option value="<?=$rows['id']?>"  <?php if ($SelCurr==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
+                                  <?php
+                                      }
+                                    }
+                                  ?>
+                                </select>
+                              </div>
+                      
                             </div>
                           </div>
                     </p>

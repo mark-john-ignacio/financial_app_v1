@@ -1,24 +1,28 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "POS_new.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "POS.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
-require_once('../../Model/helper.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
+	require_once('../../Model/helper.php');
 
-$company = $_SESSION['companyid'];
+	$company = $_SESSION['companyid'];
 
-if(isset($_REQUEST['txtctranno'])){
-		$txtctranno = $_REQUEST['txtctranno'];
-}
-else{
+	if(isset($_REQUEST['txtctranno'])){
+			$txtctranno = $_REQUEST['txtctranno'];
+	}
+	else{
 		$txtctranno = $_REQUEST['txtcsalesno'];
 	}
 	
-$company = $_SESSION['companyid'];
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'POS_edit.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
 
 
 $sqlhead = mysqli_query($con,"select a.*,b.cname,b.cpricever,(TRIM(TRAILING '.' FROM(CAST(TRIM(TRAILING '0' FROM B.nlimit)AS char)))) as nlimit from ntsales a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.ctranno = '$txtctranno' and a.compcode='$company'");	
@@ -399,9 +403,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 			<table width="100%" border="0" cellpadding="3">
 				<tr>
-					<td valign="top">
+					<td valign="top" width= "70%">
 						<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
 				
+						<?php
+							if($poststat == "True"){
+						?>
+
 						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SI.php';" id="btnMain" name="btnMain">
 							Back to Main<br>(ESC)
 						</button>
@@ -451,7 +459,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
 							Save<br>(CTRL+S)
 						</button>
-						
+
+						<?php
+							}
+						?>
 					</td>    
 					<td align="right" valign="top">
 						<table width="90%" border="0" cellspacing="0" cellpadding="0">
@@ -861,51 +872,57 @@ if(file_name.length != 0){
 		});
 	})
 }
-	$(document).keydown(function(e) {	 
-	  if(e.keyCode == 112) { //F1
-		if($("#btnNew").is(":disabled")==false){
-			e.preventDefault();
-			window.location.href='SI_new.php';
-		}
-	  }
-	  else if(e.keyCode == 83 && e.ctrlKey){//CTRL S
-		if($("#btnSave").is(":disabled")==false){
-			e.preventDefault();
-			return chkform();
-		}
-	  }
-	  else if(e.keyCode == 69 && e.ctrlKey){//CTRL E
-		if($("#btnEdit").is(":disabled")==false){
-			e.preventDefault();
-			enabled();
-		}
-	  }
-	  else if(e.keyCode == 80 && e.ctrlKey){//CTRL P
-		if($("#btnPrint").is(":disabled")==false){
-			e.preventDefault();
-			printchk('<?=$txtctranno;?>');
-		}
-	  }
-	  else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
-		if($("#btnUndo").is(":disabled")==false){
-			e.preventDefault();
-			chkSIEnter(13,'frmpos');
-		}
-	  }
-	  else if(e.keyCode == 27){//ESC
-		if($("#btnMain").is(":disabled")==false){
-			e.preventDefault();
-			window.location.href='SI.php';
-		}
-	  }
-	  else if(e.keyCode == 45) { //Insert
-	  	if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false && $("#btnIns").is(":disabled")==false){
-			openinv();
-		}
-	  }
 
-	});
+	<?php
+		if($poststat == "True"){
+	?>
+		$(document).keydown(function(e) {	 
+			if(e.keyCode == 112) { //F1
+			if($("#btnNew").is(":disabled")==false){
+				e.preventDefault();
+				window.location.href='SI_new.php';
+			}
+			}
+			else if(e.keyCode == 83 && e.ctrlKey){//CTRL S
+			if($("#btnSave").is(":disabled")==false){
+				e.preventDefault();
+				return chkform();
+			}
+			}
+			else if(e.keyCode == 69 && e.ctrlKey){//CTRL E
+			if($("#btnEdit").is(":disabled")==false){
+				e.preventDefault();
+				enabled();
+			}
+			}
+			else if(e.keyCode == 80 && e.ctrlKey){//CTRL P
+			if($("#btnPrint").is(":disabled")==false){
+				e.preventDefault();
+				printchk('<?=$txtctranno;?>');
+			}
+			}
+			else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
+			if($("#btnUndo").is(":disabled")==false){
+				e.preventDefault();
+				chkSIEnter(13,'frmpos');
+			}
+			}
+			else if(e.keyCode == 27){//ESC
+			if($("#btnMain").is(":disabled")==false){
+				e.preventDefault();
+				window.location.href='SI.php';
+			}
+			}
+			else if(e.keyCode == 45) { //Insert
+				if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false && $("#btnIns").is(":disabled")==false){
+				openinv();
+			}
+			}
 
+		});
+	<?php
+		}
+	?>
 
 	$(document).ready(function(e) {	
 			   			$.ajax({

@@ -26,10 +26,14 @@
 
 	$cremarks = mysqli_real_escape_string($con, $_POST['txtcremarks']);
 
+	$CurrCode = $_REQUEST['selbasecurr']; 
+	$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
+	$CurrRate= $_REQUEST['basecurrval']; 
+
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 
 
-	if (!mysqli_query($con, "UPDATE `rfp` set `ccode` = '$cCustID', `cpaymethod` = '$paymeth', `cbankcode` = '$cBankCode', `dtransdate` = STR_TO_DATE('$dDate', '%m/%d/%Y'), `ngross` = $npaid, `cremarks` = '$cremarks' where`compcode` = '$company' and `ctranno` = '$cSINo'")) {
+	if (!mysqli_query($con, "UPDATE `rfp` set `ccode` = '$cCustID', `cpaymethod` = '$paymeth', `cbankcode` = '$cBankCode', `dtransdate` = STR_TO_DATE('$dDate', '%m/%d/%Y'), `ngross` = $npaid, `cremarks` = '$cremarks', `ccurrencycode` = '$CurrCode', `ccurrencydesc` = '$CurrDesc', `nexchangerate` = '$CurrRate' where`compcode` = '$company' and `ctranno` = '$cSINo'")) {
 		$mggx = "Errormessage: ". mysqli_error($con);
 	} else{
 

@@ -17,6 +17,7 @@
      	$json['value'] = $row['cname'];
 		 	$json['cewtcode'] = $row['newtcode'];
 			$json['newtrate'] = $row['nrate'];
+			$json['cdefaultcurrency'] = $row['cdefaultcurrency'];
 		 	$json2[] = $json;
 
 	}

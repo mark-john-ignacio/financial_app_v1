@@ -55,10 +55,12 @@
 	$cGrp8 = chkgrp($_REQUEST['txtCustGroup8D']);
 	$cGrp9 = chkgrp($_REQUEST['txtCustGroup9D']);
 	$cGrp10 = chkgrp($_REQUEST['txtCustGroup10D']);
+
+	$SelCurr = $_REQUEST['selcurrncy'];
 	
 	$preparedby = $_SESSION['employeeid'];
 	
-	if (!mysqli_query($con,"UPDATE `suppliers` set `cname`='$cCustName', `ctradename`='$cTradeName', `cacctcode` = '$SalesCodeID', `cterms` = '$Terms',`csuppliertype` = '$Type', `csupplierclass` = '$Class', `chouseno` = $HouseNo, `ccity` = $City, `cstate` = $State, `ccountry` = $Country, `czip` = $ZIP, `cGroup1` = $cGrp1, `cGroup2` = $cGrp2, `cGroup3` = $cGrp3, `cGroup4` = $cGrp4, `cGroup5` = $cGrp5, `cGroup6` = $cGrp6, `cGroup7` = $cGrp7, `cGroup8` = $cGrp8, `cGroup9` = $cGrp9, `cGroup10` = $cGrp10, `cvattype` = '$VatType', `ctin` = '$Tin', `nvatrate` = $VatTypeRate, `newtcode` = $VatEWTCode Where compcode='$company' and `ccode`='$cCustCode'")){
+	if (!mysqli_query($con,"UPDATE `suppliers` set `cname`='$cCustName', `ctradename`='$cTradeName', `cacctcode` = '$SalesCodeID', `cterms` = '$Terms',`csuppliertype` = '$Type', `csupplierclass` = '$Class', `chouseno` = $HouseNo, `ccity` = $City, `cstate` = $State, `ccountry` = $Country, `czip` = $ZIP, `cGroup1` = $cGrp1, `cGroup2` = $cGrp2, `cGroup3` = $cGrp3, `cGroup4` = $cGrp4, `cGroup5` = $cGrp5, `cGroup6` = $cGrp6, `cGroup7` = $cGrp7, `cGroup8` = $cGrp8, `cGroup9` = $cGrp9, `cGroup10` = $cGrp10, `cvattype` = '$VatType', `ctin` = '$Tin', `nvatrate` = $VatTypeRate, `newtcode` = $VatEWTCode, `cdefaultcurrency` = '$SelCurr' Where compcode='$company' and `ccode`='$cCustCode'")){
 					if(mysqli_error($con)!=""){  
 						$myerror = "Update Error: ". mysqli_error($con)."<br/><br/>";
 					}

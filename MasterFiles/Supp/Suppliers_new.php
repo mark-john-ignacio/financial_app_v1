@@ -1,12 +1,24 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "Suppliers_new.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "Suppliers_new.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
+
+	$nvaluecurrbase = "";	
+	$nvaluecurrbasedesc = "";	
+	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+																		
+	if (mysqli_num_rows($result)!=0) {
+		$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);																				
+		$nvaluecurrbase = $all_course_data['cvalue']; 																					
+	}
+	else{
+		$nvaluecurrbase = "";
+	}
 ?>
 <!DOCTYPE html>
 <html>
@@ -280,9 +292,9 @@ include('../../include/access2.php');
                     <button class="btncgroup btn btn-sm btn-danger" type="button"  id="btnCustGroup6"><i class="fa fa-search"></i></button>
                 </div>
         
-          </div>
+         			</div>
         
-            <div class="col-xs-12">
+            	<div class="col-xs-12">
                 <div class="cgroup col-xs-2 nopadwtop" id="SuppGroup2">
                     <b>Cost of Goods</b>
                 </div>
@@ -568,6 +580,31 @@ include('../../include/access2.php');
                             </div>	
 
                     	</div>
+				</div>
+
+				<div class="col-xs-7 nopadwtop">
+          <div class="col-xs-3 nopadding">
+            <b>Default Currency</b>
+          </div>
+                    
+          <div class="col-xs-9 nopadwleft">
+
+            <div class="col-xs-7 nopadding">
+							<select id="selcurrncy" name="selcurrncy" class="form-control input-sm selectpicker"  tabindex="27">
+                <?php
+                  $sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+                  if (mysqli_num_rows($sqlhead)!=0) {
+                    while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+                ?>
+                  <option value="<?=$rows['id']?>" <?php if ($nvaluecurrbase==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
+                <?php
+                    }
+                  }
+                ?>
+              </select>
+            </div>
+                      
+          </div>
 				</div>
 			</p>	
          </div>

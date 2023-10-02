@@ -1,40 +1,43 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "SalesRet_edit.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "SalesRet.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
-require('../../Model/helper.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
+	require('../../Model/helper.php');
 
-$company = $_SESSION['companyid'];
+	$company = $_SESSION['companyid'];
 
-if(isset($_REQUEST['txtctranno'])){
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SalesRet_edit.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
+	if(isset($_REQUEST['txtctranno'])){
 		$txtctranno = $_REQUEST['txtctranno'];
-}
-else{
+	}
+	else{
 		$txtctranno = $_REQUEST['txtcsalesno'];
 	}
-	
-$company = $_SESSION['companyid'];
 
+	$sqlhead = mysqli_query($con,"select a.*,b.cname from salesreturn a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.ctranno = '$txtctranno' and a.compcode='$company'");
 
-$sqlhead = mysqli_query($con,"select a.*,b.cname from salesreturn a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.ctranno = '$txtctranno' and a.compcode='$company'");
+	/*
+	function listcurrencies(){ //API for currency list
+		$apikey = $_SESSION['currapikey'];
+		
+		//$json = file_get_contents("https://free.currconv.com/api/v7/currencies?&apiKey={$apikey}");
+		//$obj = json_decode($json, true);
 
-/*
-function listcurrencies(){ //API for currency list
-	$apikey = $_SESSION['currapikey'];
-  
-	//$json = file_get_contents("https://free.currconv.com/api/v7/currencies?&apiKey={$apikey}");
-	//$obj = json_decode($json, true);
-
-	$json = file_get_contents("https://api.currencyfreaks.com/supported-currencies");
-  
-	return $json;
-}
-*/
+		$json = file_get_contents("https://api.currencyfreaks.com/supported-currencies");
+		
+		return $json;
+	}
+	*/
 	@$arrname = array();
 	$directory = "../../Components/assets/SR/{$company}_{$txtctranno}/";
 	if(file_exists($directory)){
@@ -242,8 +245,11 @@ function listcurrencies(){ //API for currency list
 
 				</div>
 
-				<br>
+				<?php
+					if($poststat == "True"){
+				?>
 
+				<br>
 				<table width="100%" border="0" cellpadding="3">
 					<tr>
 						<td rowspan="2">
@@ -304,7 +310,10 @@ function listcurrencies(){ //API for currency list
 					</tr>
 					-->
 				</table>
-
+				<?php
+					}
+				?>
+				
     </fieldset>
 	</form>
 
@@ -468,49 +477,54 @@ if(file_name.length != 0){
 	})
 }
 
-	$(document).keydown(function(e) {	 
-	  if(e.keyCode == 112) { //F1
-		if($("#btnNew").is(":disabled")==false){
-			e.preventDefault();
-			window.location.href='SR_new.php';
-		}
-	  }
-	  else if(e.keyCode == 113){//F2
-		if($("#btnSave").is(":disabled")==false){
-			return chkform();
-		}
-	  }
-	  else if(e.keyCode == 119){//F8
-		if($("#btnEdit").is(":disabled")==false){
-			enabled();
-		}
-	  }
-	  else if(e.keyCode == 115){//F4
-		if($("#btnPrint").is(":disabled")==false){
-			e.preventDefault();
-			printchk('<?php echo $txtctranno;?>');
-		}
-	  }
-	  else if(e.keyCode == 114){//F3
-		if($("#btnUndo").is(":disabled")==false){
-			e.preventDefault();
-			chkSIEnter(13,'frmpos');
-		}
-	  }
-	  else if(e.keyCode == 27){//ESC
-		if($("#btnMain").is(":disabled")==false){
-			e.preventDefault();
-			window.location.href='SR.php';
-		}
-	  }
-	  else if(e.keyCode == 45) { //Insert
-	  	if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false && $("#btnIns").is(":disabled")==false){
-			openinv();
-		}
-	  }
+	<?php
+		if($poststat == "True"){
+	?>
+		$(document).keydown(function(e) {	 
+			if(e.keyCode == 112) { //F1
+			if($("#btnNew").is(":disabled")==false){
+				e.preventDefault();
+				window.location.href='SR_new.php';
+			}
+			}
+			else if(e.keyCode == 113){//F2
+			if($("#btnSave").is(":disabled")==false){
+				return chkform();
+			}
+			}
+			else if(e.keyCode == 119){//F8
+			if($("#btnEdit").is(":disabled")==false){
+				enabled();
+			}
+			}
+			else if(e.keyCode == 115){//F4
+			if($("#btnPrint").is(":disabled")==false){
+				e.preventDefault();
+				printchk('<?php echo $txtctranno;?>');
+			}
+			}
+			else if(e.keyCode == 114){//F3
+			if($("#btnUndo").is(":disabled")==false){
+				e.preventDefault();
+				chkSIEnter(13,'frmpos');
+			}
+			}
+			else if(e.keyCode == 27){//ESC
+			if($("#btnMain").is(":disabled")==false){
+				e.preventDefault();
+				window.location.href='SR.php';
+			}
+			}
+			else if(e.keyCode == 45) { //Insert
+				if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false && $("#btnIns").is(":disabled")==false){
+				openinv();
+			}
+			}
 
-	});
-
+		});
+	<?php
+		}
+	?>
 	
 	$(document).ready(function(e) {
 		

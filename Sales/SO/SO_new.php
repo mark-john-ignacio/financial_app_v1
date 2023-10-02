@@ -332,7 +332,7 @@ function listcurrencies(){ //API for currency list
 		</div>         
             
 
-		<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 1px solid #919b9c;width: 100%;height: 30vh;text-align: left;overflow: auto">
+							<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 1px solid #919b9c;width: 100%;height: 40vh;text-align: left;overflow: auto">
 			
 								<table id="MyTable" class="MyTable table table-condensed" width="100%">
 									<thead>
@@ -346,7 +346,7 @@ function listcurrencies(){ //API for currency list
 											<th style="border-bottom:1px solid #999">Qty</th>
 											<th style="border-bottom:1px solid #999">Price</th>
 											<th style="border-bottom:1px solid #999">Amount</th>
-											<th style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
+											<!--<th style="border-bottom:1px solid #999">Total Amt in <?//php echo $nvaluecurrbase; ?></th>-->
 											<th style="border-bottom:1px solid #999">&nbsp;</th>
 										</tr>	
 										</thead>														
@@ -354,7 +354,7 @@ function listcurrencies(){ //API for currency list
 									</tbody>															
 								</table>
 
-		</div>
+							</div>
 
 		<table width="100%" border="0" cellpadding="3" style="margin-top: 5px">
 			<tr>
@@ -399,18 +399,17 @@ function listcurrencies(){ //API for currency list
 			</tr>
 		</table>
 
-
   </fieldset>
    
-<div class="modal fade" id="MyDetModal" role="dialog">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
+				<div class="modal fade" id="MyDetModal" role="dialog">
+    			<div class="modal-dialog modal-lg">
+        		<div class="modal-content">
+            	<div class="modal-header">
                 <button type="button" class="close"  aria-label="Close"  onclick="chkCloseInfo();"><span aria-hidden="true">&times;</span></button>
                 <h3 class="modal-title" id="invheader"> Additional Details Info</h3>           
-			</div>
+							</div>
     
-            <div class="modal-body">
+            	<div class="modal-body">
                 <input type="hidden" name="hdnrowcnt2" id="hdnrowcnt2">
                 <table id="MyTable2" class="MyTable table table-condensed" width="100%">
 									<thead>
@@ -426,106 +425,103 @@ function listcurrencies(){ //API for currency list
                   </tbody>
                 </table>
     
-			</div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+							</div>
+        		</div><!-- /.modal-content -->
+    			</div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->
 
 
-<!-- FULL PO LIST REFERENCES-->
-
-<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
+				<!-- FULL PO LIST REFERENCES-->
+				<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
+    			<div class="modal-dialog modal-lg">
+        		<div class="modal-content">
+            	<div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h3 class="modal-title" id="InvListHdr">PO List</h3>
-            </div>
+            	</div>
             
-            <div class="modal-body" style="height:40vh">
+            	<div class="modal-body" style="height:40vh">
             
-       <div class="col-xs-12 nopadding">
+       					<div class="col-xs-12 nopadding">
 
-                <div class="form-group">
+                	<div class="form-group">
                     <div class="col-xs-4 nopadding pre-scrollable" style="height:37vh">
-                          <table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight">
-                           <thead>
-                            <tr>
-                              <th>Quote No</th>
-                              <th>Amount</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                          </table>
+                      <table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight">
+                        <thead>
+                          <tr>
+                            <th>Quote No</th>
+                            <th>Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                      </table>
                     </div>
 
                     <div class="col-xs-8 nopadwleft pre-scrollable" style="height:37vh">
-                          <table name='MyInvDetList' id='MyInvDetList' class="table table-small">
-                           <thead>
-                            <tr>
-                              <th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
-                              <th>Item No</th>
-                              <th>Description</th>
-                              <th>UOM</th>
-                              <th>Qty</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            	
-                            </tbody>
-                          </table>
+                      <table name='MyInvDetList' id='MyInvDetList' class="table table-small">
+                        <thead>
+                        	<tr>
+                            <th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
+                            <th>Item No</th>
+                            <th>Description</th>
+                            <th>UOM</th>
+                            <th>Qty</th>
+                          </tr>
+                        </thead>
+                        <tbody>                            	
+                        </tbody>
+                      </table>
                     </div>
-               </div>
+               		</div>
 
-        </div>
+        				</div>
          	            
-			</div>
+							</div>
 			
-            <div class="modal-footer">
+            	<div class="modal-footer">
                 <button type="button" id="btnInsDet" onClick="InsertSI()" class="btn btn-primary">Insert</button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
 
 								<input type="hidden" name="hdncurr" id="hdncurr">
 								<input type="hidden" name="hdncurrate" id="hdncurrate">
 
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<!-- End FULL INVOICE LIST -->
+            	</div>
+        		</div><!-- /.modal-content -->
+    			</div><!-- /.modal-dialog -->
+				</div>
+				<!-- End FULL INVOICE LIST -->
 
-<!-- Address List -->
-<div class="modal fade" id="MyAddModal" role="dialog">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
+				<!-- Address List -->
+				<div class="modal fade" id="MyAddModal" role="dialog">
+    			<div class="modal-dialog modal-lg">
+        		<div class="modal-content">
+            	<div class="modal-header">
                 <button type="button" class="close"  data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
                 <h3 class="modal-title" id="invheader"> Address Lists </h3>           
-			</div>
+							</div>
     
-            <div class="modal-body">
+            	<div class="modal-body">
                 <table id="MyAddTble" class="table table-condensed" width="100%">
                 	<thead>
-    				<tr>
+    								<tr>
                     	<th style="border-bottom:1px solid #999">&nbsp;</th>
-						<th style="border-bottom:1px solid #999">House No.</th>
-						<th style="border-bottom:1px solid #999">City</th>
-                        <th style="border-bottom:1px solid #999">State</th>
-						<th style="border-bottom:1px solid #999">Country</th>
-                        <th style="border-bottom:1px solid #999">Zip</th>
-                        <th style="border-bottom:1px solid #999">&nbsp;</th>
-					</tr>
-                    </thead>
-					<tbody class="tbody">
-                    </tbody>
+											<th style="border-bottom:1px solid #999">House No.</th>
+											<th style="border-bottom:1px solid #999">City</th>
+                      <th style="border-bottom:1px solid #999">State</th>
+											<th style="border-bottom:1px solid #999">Country</th>
+                      <th style="border-bottom:1px solid #999">Zip</th>
+                      <th style="border-bottom:1px solid #999">&nbsp;</th>
+										</tr>
+                  </thead>
+									<tbody class="tbody">
+                  </tbody>
                 </table>
     
-			</div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
+							</div>
+        		</div><!-- /.modal-content -->
+    			</div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->
 
 </form>
 
@@ -559,85 +555,16 @@ function listcurrencies(){ //API for currency list
 </html>
 
 <script type="text/javascript">
-var xChkBal = "";
-var xChkLimit = "";
-var xChkLimitWarn = "";
+	var xChkBal = "";
+	var xChkLimit = "";
+	var xChkLimitWarn = "";
 
-var xtoday = new Date();
-var xdd = xtoday.getDate();
-var xmm = xtoday.getMonth()+1; //January is 0!
-var xyyyy = xtoday.getFullYear();
+	var xtoday = new Date();
+	var xdd = xtoday.getDate();
+	var xmm = xtoday.getMonth()+1; //January is 0!
+	var xyyyy = xtoday.getFullYear();
 
-xtoday = xmm + '/' + xdd + '/' + xyyyy;
-
-
-
-	$(document).ready(function(e) {
-
-			$(".nav-tabs a").click(function(){
-    			$(this).tab('show');
-			});
-			
-			$("#file-0").fileinput({
-				showUpload: false,
-				showClose: false,
-				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
-				overwriteInitial: false,
-				maxFileSize:100000,
-				maxFileCount: 5,
-				browseOnZoneClick: true,
-				fileActionSettings: { showUpload: false, showDrag: false,}
-			});
-
-			$("#txtnBaseGross").autoNumeric('init',{mDec:2});
-			$("#txtnGross").autoNumeric('init',{mDec:2});
-	
-
-	   			$.ajax({
-					url : "../../include/th_xtrasessions.php",
-					type: "Post",
-					async:false,
-					dataType: "json",
-					success: function(data)
-					{	
-					  console.log(data);
-            $.each(data,function(index,item){
-						  xChkBal = item.chkinv; //0 = Check ; 1 = Dont Check
-						  xChkLimit = item.chkcustlmt; //0 = Disable ; 1 = Enable
-						  xChkLimitWarn = item.chklmtwarn; //0 = Accept Warninf ; 1 = Accept Block ; 2 = Refuse Order
-							xChkVatableStatus = item.chkcompvat;
-					  });
-					}
-				});
-
-		if(xChkVatableStatus==1){
-			$(".chkVATClass").show();	
-		}
-		else{
-			$(".chkVATClass").hide();
-		}
-	
-		if(xChkBal==1){
-			$("#tblAvailable").hide();
-		}
-		else{
-			$("#tblAvailable").show();
-		}
-
-
-		if(xChkLimit==0){
-			$(".chklimit").hide();
-		}
-		else{
-			$(".chklimit").show();
-		}
-		
-
-	  $('#txtprodnme').attr("disabled", true);
-	  $('#txtprodid').attr("disabled", true);
-
-    });
-
+	xtoday = xmm + '/' + xdd + '/' + xyyyy;
 
 	$(document).keydown(function(e) {	
 	
@@ -670,240 +597,87 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 	
 	});
 
-$(function(){
-	    $('#date_delivery').datetimepicker({
-                 format: 'MM/DD/YYYY',
-				 //minDate: new Date(),
-        });
+	$(document).ready(function(e) {
+
+		$(window).keydown(function(event){
+			if(event.keyCode == 13) {
+				event.preventDefault();
+				return false;
+			}
+		});
+
+		$(".nav-tabs a").click(function(){
+				$(this).tab('show');
+		});
+
+		$("#file-0").fileinput({
+			showUpload: false,
+			showClose: false,
+			allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+			overwriteInitial: false,
+			maxFileSize:100000,
+			maxFileCount: 5,
+			browseOnZoneClick: true,
+			fileActionSettings: { showUpload: false, showDrag: false,}
+		});
+
+		$("#txtnBaseGross").autoNumeric('init',{mDec:2});
+		$("#txtnGross").autoNumeric('init',{mDec:2});
+
+		$.ajax({
+			url : "../../include/th_xtrasessions.php",
+			type: "Post",
+			async:false,
+			dataType: "json",
+			success: function(data)
+			{	
+				console.log(data);
+				$.each(data,function(index,item){
+					xChkBal = item.chkinv; //0 = Check ; 1 = Dont Check
+					xChkLimit = item.chkcustlmt; //0 = Disable ; 1 = Enable
+					xChkLimitWarn = item.chklmtwarn; //0 = Accept Warninf ; 1 = Accept Block ; 2 = Refuse Order
+					xChkVatableStatus = item.chkcompvat;
+				});
+			}
+		});
+
+		if(xChkVatableStatus==1){
+			$(".chkVATClass").show();	
+		}
+		else{
+			$(".chkVATClass").hide();
+		}
+
+		if(xChkBal==1){
+			$("#tblAvailable").hide();
+		}
+		else{
+			$("#tblAvailable").show();
+		}
+
+
+		if(xChkLimit==0){
+			$(".chklimit").hide();
+		}
+		else{
+			$(".chklimit").show();
+		}
+
+		$('#txtprodnme').attr("disabled", true);
+		$('#txtprodid').attr("disabled", true);
+
+		$('#date_delivery').datetimepicker({
+				format: 'MM/DD/YYYY',
+				//minDate: new Date(),
+		});
 
 		$("#allbox").click(function(){
 			$('input:checkbox').not(this).prop('checked', this.checked);
 		});
 
-		$("#txtcustid").keydown(function(event){
-		if(event.keyCode == 13){
-		
-		var dInput = this.value;
-		
-		$.ajax({
-        type:'post',
-        url:'../get_customerid.php',
-        data: 'c_id='+ $(this).val(),                 
-        success: function(value){
-
-			if(value!=""){
-				var data = value.split(":");
-				 
-				$('#txtcust').val(data[0]);
-				//$('#imgemp').attr("src",data[2]);
-				$('#hdnpricever').val(data[1]);
-				//deliveredto   
-				$('#txtdelcustid').val(dInput);
-				$('#txtdelcust').val(data[0]); 
-				 
-				$('#txtsalesmanid').val(data[10]);
-				$('#txtsalesman').val(data[11]);
-				
-				$('#txtchouseno').val(data[5]);
-				$('#txtcCity').val(data[6]);
-				$('#txtcState').val(data[7]);
-				$('#txtcCountry').val(data[8]);
-				$('#txtcZip').val(data[9]);
-							
-				$('#hdnvalid').val("YES");
-				
-				$('#txtremarks').focus();
-				
-				if(xChkLimit==1){
-
-					var limit = data[3];
-					if(limit % 1 == 0){
-						limit = parseInt(limit);
-					}
-					//alert(limit)
-					limit = Number(limit).toLocaleString('en', { minimumFractionDigits: 4 });
-					$('#ncustbalance2').html("");
-					$('#ncustlimit').html("<b><font size='+1'>"+limit+"</font></b>");
-					$('#hdncustlimit').val(data[3]);
-					
-					checkcustlimit($(this).val(), data[3]);
-				}
-				
-			}
-			else{
-				$('#txtcustid').val("");
-				$('#txtcust').val("");
-				//$('#imgemp').attr("src","../../images/blueX.png");
-				$('#hdnpricever').val("");
-				
-				$('#txtdelcustid').val("");
-				$('#txtdelcust').val(""); 
-				 
-				$('#txtsalesmanid').val("");
-				$('#txtsalesman').val("");
-				
-				$('#txtchouseno').val("");
-				$('#txtcCity').val("");
-				$('#txtcState').val("");
-				$('#txtcCountry').val("");
-				$('#txtcZip').val("");
-				
-				$('#hdnvalid').val("NO");
-			}
-		},
-		error: function(){
-			$('#txtcustid').val("");
-			$('#txtcust').val("");
-			//$('#imgemp').attr("src","../../images/blueX.png");
-			$('#hdnpricever').val("");
-
-				$('#txtdelcustid').val("");
-				$('#txtdelcust').val(""); 
-				 
-				$('#txtsalesmanid').val("");
-				$('#txtsalesman').val("");
-				
-				$('#txtchouseno').val("");
-				$('#txtcCity').val("");
-				$('#txtcState').val("");
-				$('#txtcCountry').val("");
-				$('#txtcZip').val("");
-							
-			$('#hdnvalid').val("NO");
-		}
-		});
-
-		}
-		
-	});
-
-	$('#txtcust, #txtcustid').on("blur", function(){
-		if($('#hdnvalid').val()=="NO"){
-		  $('#txtcust').attr("placeholder", "ENTER A VALID CUSTOMER FIRST...");
-		  
-		  $('#txtprodnme').attr("disabled", true);
-		  $('#txtprodid').attr("disabled", true);
-		}else{
+		$("#txtcustid").keyup(function(event){
+			if(event.keyCode == 13){
 			
-		  $('#txtprodnme').attr("disabled", false);
-		  $('#txtprodid').attr("disabled", false);
-		  
-		  $('#txtremarks').focus();
-	
-		}
-	});
-	//Search Cust name
-	$('#txtcust').typeahead({
-		autoSelect: true,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_customer.php",
-				dataType: "json",
-				data: {
-					query: $("#txtcust").val()
-				},
-				success: function (data) {
-					response(data);
-				}
-			});
-		},
-		displayText: function (item) {
-			return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 					
-						
-			$('#txtcust').val(item.value).change(); 
-			$("#txtcustid").val(item.id);
-			//$("#imgemp").attr("src",item.imgsrc);
-			$("#hdnpricever").val(item.cver);
-
-				$('#txtdelcustid').val(item.id);
-				$('#txtdelcust').val(item.value); 
-				 
-				$('#txtsalesmanid').val(item.csman);
-				$('#txtsalesman').val(item.smaname);
-				
-				$('#txtchouseno').val(item.chouseno);
-				$('#txtcCity').val(item.ccity);
-				$('#txtcState').val(item.cstate);
-				$('#txtcCountry').val(item.ccountry);
-				$('#txtcZip').val(item.czip);
-							
-			$('#hdnvalid').val("YES");
-			
-			$('#txtremarks').focus();
-			
-				if(xChkLimit==1){
-					
-					var limit = item.nlimit;
-					if(limit % 1 == 0){
-						limit = parseInt(limit);
-					}
-
-					limit = Number(limit).toLocaleString('en', { minimumFractionDigits: 4 });
-					$('#ncustbalance2').html("");				
-					$('#ncustlimit').html("<b><font size='+1'>"+limit+"</font></b>");
-					$('#hdncustlimit').val(item.nlimit);
-					
-					checkcustlimit(item.id, item.nlimit);
-
-				}
-			
-			
-		}
-	
-	});
-	
-	$("#txtsalesmanid").keydown(function(event){
-		if(event.keyCode == 13){
-		
-			var dInput = this.value;
-			
-			$.ajax({
-				type:'post',
-				url:'../get_salesmanid.php',
-				data: 'c_id='+ $(this).val(),                 
-				success: function(value){
-					if(value!=""){				 
-						$('#txtsalesman').val(value);
-					}
-				}
-			});
-		}
-	});
-	
-	$('#txtsalesman').typeahead({
-		autoSelect: true,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_salesman.php",
-				dataType: "json",
-				data: {
-					query: $("#txtsalesman").val()
-				},
-				success: function (data) {
-					response(data);
-				}
-			});
-		},
-		displayText: function (item) {
-			return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 					
-						
-			$('#txtsalesman').val(item.value).change(); 
-			$("#txtsalesmanid").val(item.id);
-			
-			
-		}
-	
-	});
-	
-	$("#txtdelcustid").keydown(function(event){
-		if(event.keyCode == 13){
-		
 			var dInput = this.value;
 			
 			$.ajax({
@@ -911,230 +685,457 @@ $(function(){
 				url:'../get_customerid.php',
 				data: 'c_id='+ $(this).val(),                 
 				success: function(value){
-					if(value!=""){				 
+					if(value!=""){
 						var data = value.split(":");
-
+						
+						$('#txtcust').val(data[0]);
+						//$('#imgemp').attr("src",data[2]);
+						$('#hdnpricever').val(data[1]);
+						//deliveredto   
+						$('#txtdelcustid').val(dInput);
 						$('#txtdelcust').val(data[0]); 
+						
+						$('#txtsalesmanid').val(data[10]);
+						$('#txtsalesman').val(data[11]);
 						
 						$('#txtchouseno').val(data[5]);
 						$('#txtcCity').val(data[6]);
 						$('#txtcState').val(data[7]);
 						$('#txtcCountry').val(data[8]);
 						$('#txtcZip').val(data[9]);
-					}
-				}
-			});
-		}
-	});
 
-	//Search Cust name
-	$('#txtdelcust').typeahead({
-		items: "all",
-		autoSelect: true,
-		fitToElement: true,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_customer.php",
-				dataType: "json",
-				data: {
-					query: request
-				},
-				success: function (data) {
-					response(data);
-				}
-			});
-		},
-		displayText: function (item) {
-			//if(item.cname != item.value){
-			//	return '<div style="border-top:1px solid gray;"><span>' + item.id + '</span><br><small>' + item.value + " / " + item.cname + "</small></div>";
-			//}else{
-				return '<div style="border-top:1px solid gray;"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
-		//	}
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 					
+						$("#selbasecurr").val(data[13]).change(); //val
+						$("#basecurrvalmain").val($("#selbasecurr").data("val"));
+									
+						$('#hdnvalid').val("YES");
 						
-			$('#txtdelcust').val(item.value).change(); 
-			$("#txtdelcustid").val(item.id);
-				
-				$('#txtchouseno').val(item.chouseno);
-				$('#txtcCity').val(item.ccity);
-				$('#txtcState').val(item.cstate);
-				$('#txtcCountry').val(item.ccountry);
-				$('#txtcZip').val(item.czip);
+						$('#txtremarks').focus();
+						
+						if(xChkLimit==1){
+
+							var limit = data[3];
+							if(limit % 1 == 0){
+								limit = parseInt(limit);
+							}
+							//alert(limit)
+							limit = Number(limit).toLocaleString('en', { minimumFractionDigits: 4 });
+							$('#ncustbalance2').html("");
+							$('#ncustlimit').html("<b><font size='+1'>"+limit+"</font></b>");
+							$('#hdncustlimit').val(data[3]);
 							
-			$('#hdnvalid').val("YES");
-			
-		}
-	
-	});
-	
-	$('#txtprodnme').typeahead({
-		autoSelect: true,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_product.php",
-				dataType: "json",
-				data: { query: $("#txtprodnme").val(), itmbal: xChkBal, styp: $("#selsityp").val() },
-				success: function (data) {
-					response(data);
-				}
-			});
-		},
-		displayText: function (item) {
-			return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.desc+'</span</div>';
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 					
+							checkcustlimit($(this).val(), data[3]);
+						}
 						
-			$('#txtprodnme').val(item.desc).change(); 
-			$('#txtprodid').val(item.id); 
-			$("#hdnunit").val(item.cunit); 
-			$("#hdnqty").val(item.nqty);
-			$("#hdnqtyunit").val(item.cqtyunit);
-			$("#hdnvat").val(item.ctaxcode);
-			
-			addItemName("","","","","","","");
-			
-			
-		}
-	
-	});
-
-
-	$("#txtprodid").keypress(function(event){
-		if(event.keyCode == 13){
-
-		$.ajax({
-        url:'../get_productid.php',
-        data: 'c_id='+ $(this).val() + "&itmbal="+xChkBal+"&styp="+ $("#selsityp").val(),                 
-        success: function(value){
-          var data = value.split(",");
-          $('#txtprodid').val(data[0]);
-          $('#txtprodnme').val(data[1]);
-					$('#hdnunit').val(data[2]);
-					$("#hdnqty").val(data[3]);
-					$("#hdnqtyunit").val(data[4]);
-					$("#hdnvat").val(data[6]);
-
-
-		if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
-			var isItem = "NO";
-			var disID = "";
-			
-			$("#MyTable > tbody > tr").each(function() {	
-				disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-
-				if($("#txtprodid").val()==disID){
-					
-					isItem = "YES";
-
-				}
-			});	
-
-		//if value is not blank
-		 }
-		 
-		//if(isItem=="NO"){		
-
-			addItemName("","","","","","","");
-			ComputeGross();	
-			
-	 //   }
-	  //  else{
-			
-		//	addqty();
-		//}
-		
-		$("#txtprodid").val("");
-		$("#txtprodnme").val("");
-		$("#hdnunit").val("");
-		$("#hdnqty").val("");
-		$("#hdnqtyunit").val("");
- 
-	    //closing for success: function(value){
-	    }
-        }); 
-
-	
-		 
-		//if enter is clicked
-		}
-		
-	});
-
-	$("#selsityp").on("change", function(){
-
-    	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
-		var lastRow = tbl.length-1;
-
-		if(lastRow > 0){
-			var x = confirm("Changing this will erase all details!");
-			if (x == true) {
-			  $("#MyTable").find("tr:gt(0)").remove();
-			}
-		}
-		else{
-			$("#MyTable").find("tr:gt(0)").remove();
-		}
-    });
-	
-	$("#btnNewAdd").on("click", function(){
-		if($("#txtdelcustid").val()=="" || $("#txtdelcust").val()==""){
-			alert("Select Delivery To Customer!");
-		}else{
-			$('#MyAddTble tbody').empty();
-			//get addressses...
-			$.ajax({
-				url : "th_addresslist.php?id=" + $("#txtdelcustid").val() ,
-				type: "GET",
-				dataType: "JSON",
-				success: function(data)
-				{	
-					console.log(data);
-                    $.each(data,function(index,item){
+					}
+					else{
+						$('#txtcustid').val("");
+						$('#txtcust').val("");
+						//$('#imgemp').attr("src","../../images/blueX.png");
+						$('#hdnpricever').val("");
 						
-						$("<tr>").append(
-						$("<td>").html("<a onclick=\"trclickable('"+item.chouseno+"','"+item.ccity+"','"+item.cstate+"','"+item.ccountry+"','"+item.czip+"')\" style=\"cursor: pointer;\">Select</a>"),
-						$("<td>").html(item.chouseno),
-						$("<td>").html(item.ccity),
-						$("<td>").html(item.cstate),
-						$("<td>").html(item.ccountry),
-						$("<td>").html(item.czip)
-						).appendTo("#MyAddTble tbody");
-											   
-					});
+						$('#txtdelcustid').val("");
+						$('#txtdelcust').val(""); 
 						
+						$('#txtsalesmanid').val("");
+						$('#txtsalesman').val("");
+						
+						$('#txtchouseno').val("");
+						$('#txtcCity').val("");
+						$('#txtcState').val("");
+						$('#txtcCountry').val("");
+						$('#txtcZip').val("");
+						
+						$('#hdnvalid').val("NO");
+					}
 				},
-				error: function (jqXHR, textStatus, errorThrown)
-				{
-					alert(jqXHR.responseText);
-				}					
+				error: function(){
+					$('#txtcustid').val("");
+					$('#txtcust').val("");
+					//$('#imgemp').attr("src","../../images/blueX.png");
+					$('#hdnpricever').val("");
+
+						$('#txtdelcustid').val("");
+						$('#txtdelcust').val(""); 
+						
+						$('#txtsalesmanid').val("");
+						$('#txtsalesman').val("");
+						
+						$('#txtchouseno').val("");
+						$('#txtcCity').val("");
+						$('#txtcState').val("");
+						$('#txtcCountry').val("");
+						$('#txtcZip').val("");
+									
+					$('#hdnvalid').val("NO");
+				}
 			});
+
+			}
 			
+		});
+
+		$('#txtcust, #txtcustid').on("blur", function(){
+			if($('#hdnvalid').val()=="NO"){
+				$('#txtcust').attr("placeholder", "ENTER A VALID CUSTOMER FIRST...");
+				
+				$('#txtprodnme').attr("disabled", true);
+				$('#txtprodid').attr("disabled", true);
+			}else{
+				
+				$('#txtprodnme').attr("disabled", false);
+				$('#txtprodid').attr("disabled", false);
+				
+				$('#txtremarks').focus();
 		
-			 $("#MyAddModal").modal("show");// 
-		}
-	});
+			}
+		});
 
-	$("#selbasecurr").on("change", function (){
+		//Search Cust name
+		$('#txtcust').typeahead({
+			autoSelect: true,
+			source: function(request, response) {
+				$.ajax({
+					url: "../th_customer.php",
+					dataType: "json",
+					data: {
+						query: $("#txtcust").val()
+					},
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 					
+							
+				$('#txtcust').val(item.value).change(); 
+				$("#txtcustid").val(item.id);
+				//$("#imgemp").attr("src",item.imgsrc);
+				$("#hdnpricever").val(item.cver);
+
+					$('#txtdelcustid').val(item.id);
+					$('#txtdelcust').val(item.value); 
+					
+					$('#txtsalesmanid').val(item.csman);
+					$('#txtsalesman').val(item.smaname);
+					
+					$('#txtchouseno').val(item.chouseno);
+					$('#txtcCity').val(item.ccity);
+					$('#txtcState').val(item.cstate);
+					$('#txtcCountry').val(item.ccountry);
+					$('#txtcZip').val(item.czip);
+
+					$("#selbasecurr").val(item.cdefaultcurrency).change(); //val
+					$("#basecurrvalmain").val($("#selbasecurr").data("val"));
+								
+				$('#hdnvalid').val("YES");
+				
+				$('#txtremarks').focus();
+				
+					if(xChkLimit==1){
+						
+						var limit = item.nlimit;
+						if(limit % 1 == 0){
+							limit = parseInt(limit);
+						}
+
+						limit = Number(limit).toLocaleString('en', { minimumFractionDigits: 4 });
+						$('#ncustbalance2').html("");				
+						$('#ncustlimit').html("<b><font size='+1'>"+limit+"</font></b>");
+						$('#hdncustlimit').val(item.nlimit);
+						
+						checkcustlimit(item.id, item.nlimit);
+
+					}
+				
+				
+			}
+		
+		});
+		
+		$("#txtsalesmanid").keydown(function(event){
+			if(event.keyCode == 13){
 			
-		//convertCurrency($(this).val());
+				var dInput = this.value;
+				
+				$.ajax({
+					type:'post',
+					url:'../get_salesmanid.php',
+					data: 'c_id='+ $(this).val(),                 
+					success: function(value){
+						if(value!=""){				 
+							$('#txtsalesman').val(value);
+						}
+					}
+				});
+			}
+		});
+		
+		$('#txtsalesman').typeahead({
+			autoSelect: true,
+			source: function(request, response) {
+				$.ajax({
+					url: "../th_salesman.php",
+					dataType: "json",
+					data: {
+						query: $("#txtsalesman").val()
+					},
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 					
+							
+				$('#txtsalesman').val(item.value).change(); 
+				$("#txtsalesmanid").val(item.id);
+				
+				
+			}
+		
+		});
+		
+		$("#txtdelcustid").keydown(function(event){
+			if(event.keyCode == 13){
+			
+				var dInput = this.value;
+				
+				$.ajax({
+					type:'post',
+					url:'../get_customerid.php',
+					data: 'c_id='+ $(this).val(),                 
+					success: function(value){
+						if(value!=""){				 
+							var data = value.split(":");
 
-		var dval = $(this).find(':selected').attr('data-val');
+							$('#txtdelcust').val(data[0]); 
+							
+							$('#txtchouseno').val(data[5]);
+							$('#txtcCity').val(data[6]);
+							$('#txtcState').val(data[7]);
+							$('#txtcCountry').val(data[8]);
+							$('#txtcZip').val(data[9]);
+						}
+					}
+				});
+			}
+		});
 
-		$("#basecurrval").val(dval);
-		$("#statgetrate").html("");
-		recomputeCurr();
+		//Search Cust name
+		$('#txtdelcust').typeahead({
+			items: "all",
+			autoSelect: true,
+			fitToElement: true,
+			source: function(request, response) {
+				$.ajax({
+					url: "../th_customer.php",
+					dataType: "json",
+					data: {
+						query: request
+					},
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			displayText: function (item) {
+				//if(item.cname != item.value){
+				//	return '<div style="border-top:1px solid gray;"><span>' + item.id + '</span><br><small>' + item.value + " / " + item.cname + "</small></div>";
+				//}else{
+					return '<div style="border-top:1px solid gray;"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+			//	}
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 					
+							
+				$('#txtdelcust').val(item.value).change(); 
+				$("#txtdelcustid").val(item.id);
+					
+					$('#txtchouseno').val(item.chouseno);
+					$('#txtcCity').val(item.ccity);
+					$('#txtcState').val(item.cstate);
+					$('#txtcCountry').val(item.ccountry);
+					$('#txtcZip').val(item.czip);
+								
+				$('#hdnvalid').val("YES");
+				
+			}
+		
+		});
+		
+		$('#txtprodnme').typeahead({
+			autoSelect: true,
+			source: function(request, response) {
+				$.ajax({
+					url: "../th_product.php",
+					dataType: "json",
+					data: { query: $("#txtprodnme").val(), itmbal: xChkBal, styp: $("#selsityp").val() },
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.desc+'</span</div>';
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 					
+							
+				$('#txtprodnme').val(item.desc).change(); 
+				$('#txtprodid').val(item.id); 
+				$("#hdnunit").val(item.cunit); 
+				$("#hdnqty").val(item.nqty);
+				$("#hdnqtyunit").val(item.cqtyunit);
+				$("#hdnvat").val(item.ctaxcode);
+				
+				addItemName("","","","","","","");
+				
+				
+			}
+		
+		});
+
+
+		$("#txtprodid").keypress(function(event){
+			if(event.keyCode == 13){
+
+			$.ajax({
+					url:'../get_productid.php',
+					data: 'c_id='+ $(this).val() + "&itmbal="+xChkBal+"&styp="+ $("#selsityp").val(),                 
+					success: function(value){
+						var data = value.split(",");
+						$('#txtprodid').val(data[0]);
+						$('#txtprodnme').val(data[1]);
+						$('#hdnunit').val(data[2]);
+						$("#hdnqty").val(data[3]);
+						$("#hdnqtyunit").val(data[4]);
+						$("#hdnvat").val(data[6]);
+
+
+			if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
+				var isItem = "NO";
+				var disID = "";
+				
+				$("#MyTable > tbody > tr").each(function() {	
+					disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+
+					if($("#txtprodid").val()==disID){
+						
+						isItem = "YES";
+
+					}
+				});	
+
+			//if value is not blank
+			}
+			
+			//if(isItem=="NO"){		
+
+				addItemName("","","","","","","");
+				ComputeGross();	
+				
+			//   }
+			//  else{
+				
+			//	addqty();
+			//}
+			
+			$("#txtprodid").val("");
+			$("#txtprodnme").val("");
+			$("#hdnunit").val("");
+			$("#hdnqty").val("");
+			$("#hdnqtyunit").val("");
 	
+				//closing for success: function(value){
+				}
+					}); 
+
+		
+			
+			//if enter is clicked
+			}
+			
+		});
+
+		$("#selsityp").on("change", function(){
+
+				var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
+			var lastRow = tbl.length-1;
+
+			if(lastRow > 0){
+				var x = confirm("Changing this will erase all details!");
+				if (x == true) {
+					$("#MyTable").find("tr:gt(0)").remove();
+				}
+			}
+			else{
+				$("#MyTable").find("tr:gt(0)").remove();
+			}
+		});
+		
+		$("#btnNewAdd").on("click", function(){
+			if($("#txtdelcustid").val()=="" || $("#txtdelcust").val()==""){
+				alert("Select Delivery To Customer!");
+			}else{
+				$('#MyAddTble tbody').empty();
+				//get addressses...
+				$.ajax({
+					url : "th_addresslist.php?id=" + $("#txtdelcustid").val() ,
+					type: "GET",
+					dataType: "JSON",
+					success: function(data)
+					{	
+						console.log(data);
+											$.each(data,function(index,item){
+							
+							$("<tr>").append(
+							$("<td>").html("<a onclick=\"trclickable('"+item.chouseno+"','"+item.ccity+"','"+item.cstate+"','"+item.ccountry+"','"+item.czip+"')\" style=\"cursor: pointer;\">Select</a>"),
+							$("<td>").html(item.chouseno),
+							$("<td>").html(item.ccity),
+							$("<td>").html(item.cstate),
+							$("<td>").html(item.ccountry),
+							$("<td>").html(item.czip)
+							).appendTo("#MyAddTble tbody");
+													
+						});
+							
+					},
+					error: function (jqXHR, textStatus, errorThrown)
+					{
+						alert(jqXHR.responseText);
+					}					
+				});
+				
+			
+				$("#MyAddModal").modal("show");// 
+			}
+		});
+
+		$("#selbasecurr").on("change", function (){
+				
+			//convertCurrency($(this).val());
+
+			var dval = $(this).find(':selected').attr('data-val');
+
+			$("#basecurrval").val(dval);
+			$("#statgetrate").html("");
+			recomputeCurr();
+		
+		});
+		
+		$("#basecurrval").on("keyup", function () {
+			recomputeCurr();
+		});
+		
+
 	});
-	
-	$("#basecurrval").on("keyup", function () {
-		recomputeCurr();
-	});
-	
-
-});
 
 function checkcustlimit(id,xcred){
 	//Check Credit Limit BALNCE here
@@ -1378,14 +1379,14 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 		
 	var tditmprice = "<td width=\"100\" nowrap> <input type='text' value='"+price+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnprice\" id='txtnprice"+lastRow+"' \"  "+qtystat+" > </td>";
 
-	var tditmbaseamount = "<td width=\"100\" nowrap> <input type='text' value='"+curramtz+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtntranamount\" id='txtntranamount"+lastRow+"' readonly> </td>";
+	var tditmbaseamount = "<td width=\"100\" nowrap> <input type='text' value='"+curramtz+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtntranamount\" id='txtntranamount"+lastRow+"' readonly> <input type='hidden' value='"+baseprice.toFixed(4)+"' name=\"txtnamount\" id='txtnamount"+lastRow+"'  readonly> </td>";
 			
-	var tditmamount = "<td width=\"100\" nowrap> <input type='text' value='"+baseprice.toFixed(4)+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnamount\" id='txtnamount"+lastRow+"'  readonly> </td>";
+	//var tditmamount = "<td width=\"100\" nowrap>  </td>"; tditmamount
 	
 	var tditmdel = "<td width=\90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' onClick=\"deleteRow(this);\"/> &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> </td>";
 
 
-	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmavail + tditmvats + tditmunit + tditmfactor + tditmqty + tditmprice + tditmbaseamount + tditmamount + tditmdel + '</tr>');
+	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmavail + tditmvats + tditmunit + tditmfactor + tditmqty + tditmprice + tditmbaseamount + tditmdel + '</tr>');
 
 									$("#del"+itmcode).on('click', function() {
 										$(this).closest('tr').remove();

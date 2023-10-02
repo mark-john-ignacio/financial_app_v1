@@ -69,126 +69,106 @@ include('../../Connection/connection_string.php');
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
 
 
-<form action="RR_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
-	<fieldset>
+	<form action="RR_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
+		<fieldset>
     	<legend>Supplier's Invoice</legend>	
         <input type="hidden" value="<?php echo $nCHKREFvalue;?>" name="hdnCHECKREFval" id="hdnCHECKREFval">
-        <table width="100%" border="0">
-  <tr>
-    <tH width="100">Supplier:</tH>
-    <td style="padding:2px">
-			<div class="col-xs-12 nopadding">
-				<div class="col-xs-3 nopadding">
-					<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" value="" readonly>
-				</div>
 
-				<div class="col-xs-8 nopadwleft">
-					<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" value="">
-				</div> 
-			</div>
-    </td>
-		<tH width="150" style="padding:2px">Date Received:</tH>
-    <td style="padding:2px"><div class="col-xs-11 nopadding">
-      <input type='text' class="datepick form-control input-sm" id="date_received" name="date_received" />
-    </div>
-   
-  </tr>
-  <tr>
-    <tH width="100">Remarks:</tH>
-    <td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div></td>
-		<tH width="150">Supplier SI</tH>
-    <td style="padding:2px;"><div class="col-xs-11 nopadding">
-      <input type='text' class="form-control input-sm" id="txtSuppSI" name="txtSuppSI" required/>
-    </div></td>
-	
-	</td>
-	
-  <tr>
-    <tH width="100"><b>Currency:</b></tH>
-    <td style="padding:2px">
-			<div class="col-xs-12 nopadding">
-							<div class="col-xs-8 nopadding">
-								<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">					
-									<?php
-									
+				<table width="100%" border="0">
+					<tr>
+						<tH width="100">Supplier:</tH>
+						<td style="padding:2px">
+							<div class="col-xs-12 nopadding">
+								<div class="col-xs-3 nopadding">
+									<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" value="" readonly>
+								</div>
+
+								<div class="col-xs-8 nopadwleft">
+									<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" value="">
+								</div> 
+							</div>
+						</td>
+						<tH width="150" style="padding:2px">Date Received:</tH>
+						<td style="padding:2px"><div class="col-xs-11 nopadding">
+							<input type='text' class="datepick form-control input-sm" id="date_received" name="date_received" />
+						</div>
+					
+					</tr>
+					<tr>
+						<tH width="100">Remarks:</tH>
+						<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div></td>
+						<tH width="150">Supplier SI</tH>
+						<td style="padding:2px;">
+							<div class="col-xs-11 nopadding">
+								<input type='text' class="form-control input-sm" id="txtSuppSI" name="txtSuppSI" required/>
+							</div>
+						</td>	
+					</tr>
+					
+					<tr>
+						<tH width="100"><b>Currency:</b></tH>
+						<td style="padding:2px">
+							<div class="col-xs-12 nopadding">
+								<div class="col-xs-8 nopadding">
+									<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">					
+										<?php									
 											$nvaluecurrbase = "";	
 											$nvaluecurrbasedesc = "";	
 											$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
-											
-												if (mysqli_num_rows($result)!=0) {
-													$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
-													
-													$nvaluecurrbase = $all_course_data['cvalue']; 
-														
-												}
-												else{
-													$nvaluecurrbase = "";
-												}
-						
-												//	$objcurrs = listcurrencies();
-												//	$objrows = json_decode($objcurrs,true);
-														
-											//foreach($objrows as $rows){
-											//	if ($nvaluecurrbase==$rows['currencyCode']) {
-											//		$nvaluecurrbasedesc = $rows['currencyName'];
-											//	}
+															
+											if (mysqli_num_rows($result)!=0) {
+												$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);													
+												$nvaluecurrbase = $all_course_data['cvalue']; 														
+											}
+											else{
+												$nvaluecurrbase = "";
+											}
+										
+																//	$objcurrs = listcurrencies();
+																//	$objrows = json_decode($objcurrs,true);
+																		
+															//foreach($objrows as $rows){
+															//	if ($nvaluecurrbase==$rows['currencyCode']) {
+															//		$nvaluecurrbasedesc = $rows['currencyName'];
+															//	}
 											$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
 											if (mysqli_num_rows($sqlhead)!=0) {
 												while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-							?>
-										<option value="<?=$rows['id']?>" <?php if ($nvaluecurrbase==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
-									<?php
+										?>
+												<option value="<?=$rows['id']?>" <?php if ($nvaluecurrbase==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
+										<?php
 												}
 											}
-									?>
-								</select>
+										?>
+									</select>
 									<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?php echo $nvaluecurrbase; ?>"> 	
 									<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?php echo $nvaluecurrbasedesc; ?>"> 
+								</div>
+								<div class="col-xs-2 nopadwleft">
+									<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
+								</div>
+								<div class="col-xs-5" id="statgetrate" style="padding: 4px !important"> 										
+								</div>
 							</div>
-							<div class="col-xs-2 nopadwleft">
-								<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
+						</td>
+						<tH width="100">Ref RR:</tH>
+						<td style="padding:2px">
+							<div class="col-xs-11 nopadding">
+								<input type="text" class="form-control input-sm" id="txtrefrr" name="txtrefrr" width="20px" tabindex="2">
 							</div>
+						</td>
+					</tr>
 
-							<div class="col-xs-5" id="statgetrate" style="padding: 4px !important"> 
-										
-							</div>
-		</div>
-		<tH width="100">Ref RR:</tH>
-    <td style="padding:2px">
-			<div class="col-xs-11 nopadding">
-				<input type="text" class="form-control input-sm" id="txtrefrr" name="txtrefrr" width="20px" tabindex="2">
-			</div>
-		</td>
-	</td>
-    
-  </tr>
-
-  <tr>
-    <td colspan="2">&nbsp;</td>
-    <th style="padding:2px"><!--<span style="padding:2px">PURCHASE TYPE:</span>-->&nbsp;</th>
-    <td>&nbsp;
-    <!--
-    <div class="col-xs-5">
-        <select id="seltype" name="seltype" class="form-control input-sm selectpicker"  tabindex="3">
-          <option value="Grocery">Grocery</option>
-          <option value="Cripples">Cripples</option>
-        </select>
-   </div>
-   --></td>
-    </tr>
-<tr>
-    <td colspan="2">
-
-      <input type="hidden" id="txtprodid" name="txtprodid">
-      <input type="hidden" id="txtprodnme" name="txtprodnme">
-
-        <input type="hidden" name="hdnunit" id="hdnunit">
-    </td>
-    <td></td>
-    <td></td>
-
-</tr>
-</table>
+					<tr>
+						<td colspan="2">
+							<input type="hidden" id="txtprodid" name="txtprodid">
+							<input type="hidden" id="txtprodnme" name="txtprodnme">
+							<input type="hidden" name="hdnunit" id="hdnunit">
+						</td>
+						<td></td>
+						<td></td>
+					</tr>
+				</table>
 
 
         <div class="alt2" dir="ltr" style="
@@ -221,34 +201,34 @@ include('../../Connection/connection_string.php');
 						</table>
 				</div>
 
-<br>
-<table width="100%" border="0" cellpadding="3">
-  <tr>
-    <td rowspan="2"><input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
+				<br>
+				<table width="100%" border="0" cellpadding="3">
+					<tr>
+						<td rowspan="2"><input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
+							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='RR.php';" id="btnMain" name="btnMain">
+								Back to Main<br>(ESC)
+							</button>
 
-    <button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='RR.php';" id="btnMain" name="btnMain">
-Back to Main<br>(ESC)</button>
+							<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();">
+								Save<br> (CTRL+S)
+							</button>
+						</td>
 
-     <button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();">Save<br> (CTRL+S)</button>
-    </td>
+						<td width="180px" align="right"><b>Gross Amount </b>&nbsp;&nbsp;</td>
+						<td width="180px"> 
+							<input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="0.00" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="15">
+						</td>
+					</tr>
 
-  <td width="180px" align="right"><b>Gross Amount </b>&nbsp;&nbsp;</td>
-    <td width="180px"> 
-			<input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="0.00" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="15">
-		</td>
-  </tr>
+					<tr>
+						<td width="180px" align="right"><b>Gross Amount in <?=$nvaluecurrbase; ?></b>&nbsp;&nbsp;</td>
+							<td width="180px"> <input type="text" id="txtnGross" name="txtnGross" readonly value="0.00" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="15">
+						</td>
+					</tr>
+				</table>
 
-  <tr>
- 	 <td width="180px" align="right"><b>Gross Amount in <?=$nvaluecurrbase; ?></b>&nbsp;&nbsp;</td>
-      <td width="180px"> <input type="text" id="txtnGross" name="txtnGross" readonly value="0.00" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="15">
-		</td>
-	</tr>
-</table>
-
-    </fieldset>
-    
-
-</form>
+  	</fieldset>
+	</form>
 
 <!-- 1) Alert Modal -->
 <div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
@@ -313,7 +293,7 @@ Back to Main<br>(ESC)</button>
 
 	$(document).keydown(function(e) {	 
 	  if(e.keyCode == 83 && e.ctrlKey) { //Ctrl S
-	  	  e.preventDefault();
+	  	e.preventDefault();
 		  return chkform();
 	  }
 	  else if(e.keyCode == 27){ //ESC
@@ -322,171 +302,173 @@ Back to Main<br>(ESC)</button>
 	  } 
 	});
 
+	$(document).ready(function() {
+		$('.datepick').datetimepicker({
+			format: 'MM/DD/YYYY',
+			useCurrent: false,
+			minDate: moment(),
+			defaultDate: moment(),
+		});	
 
-$(document).ready(function() {
-    $('.datepick').datetimepicker({
-        format: 'MM/DD/YYYY',
-		useCurrent: false,
-		minDate: moment(),
-		defaultDate: moment(),
-    });	
-
-	$("#selbasecurr").on("change", function (){
-			
-		//convertCurrency($(this).val());
+		$("#selbasecurr").on("change", function (){
 				
-		var dval = $(this).find(':selected').attr('data-val');
-
-		$("#basecurrval").val(dval);
-		$("#statgetrate").html("");
-		recomputeCurr();
-
-
-	});
-				
-	$("#basecurrval").on("keyup", function () {
-		recomputeCurr();
-	});
-});
-	
-$(function(){	
-	$("#allbox").click(function(){
-			$('input:checkbox').not(this).prop('checked', this.checked);
-	});
-	
-	$('#txtcust').typeahead({
-	
-		items: 10,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_supplier.php",
-				dataType: "json",
-				data: {
-					query: $("#txtcust").val()
-				},
-				success: function (data) {
-					response(data);
-				}
-			});
-		},
-		autoSelect: true,
-		displayText: function (item) {
-			 return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 
-			$('#txtcust').val(item.value).change(); 
-			$("#txtcustid").val(item.id);
-		}
-	});
-
-	$("#txtrefrr").keydown(function(event){
-		
-		var issokso = "YES";
-		var msgs = "";
-		
-		if(event.keyCode == 13){
-
-			//SO Header
-			$.ajax({
-				url : "th_getrr.php?id=" + $(this).val() ,
-				type: "GET",
-				dataType: "JSON",
-				async: false,
-				success: function(data)
-				{	
-					console.log(data);
-                    $.each(data,function(index,item){
-
-						if(item.lapproved==0 && item.lcancelled==0){
-						   msgs = "Transaction is still pending";
-						   issokso = "NO";
-						}
-						
-						if(item.lapproved==0 && item.lcancelled==1){
-						   msgs = "Transaction is already cancelled";
-						   issokso = "NO";
-						}
+			//convertCurrency($(this).val());
 					
-					if(issokso=="YES"){
-						$('#txtcust').val(item.cname); 
-						$("#txtcustid").val(item.ccode);
+			var dval = $(this).find(':selected').attr('data-val');
 
-						$('#date_received').val(item.dcutdate);
+			$("#basecurrval").val(dval);
+			$("#statgetrate").html("");
+			recomputeCurr();
 
-						$("#basecurrval").val(item.currate);
-						$("#hidcurrvaldesc").val(item.currdesc); 
-						$("#selbasecurr").val(item.currcode).change();   
-						   
-					}
-						
-					});
-						
-				},
-				error: function (jqXHR, textStatus, errorThrown)
-				{
-					alert(jqXHR.responseText);
-				}					
-			});
-			
-			if(issokso=="YES"){
 
-				
-				$("#MyyTbltbody").empty();
-			//add details
-			//alert("th_qolistputall.php?id=" + $(this).val() + "&itmbal=" + xChkBal);
+		});
+					
+		$("#basecurrval").on("keyup", function () {
+			recomputeCurr();
+		});
+
+		$("#allbox").click(function(){
+				$('input:checkbox').not(this).prop('checked', this.checked);
+		});
+		
+		$('#txtcust').typeahead({
+		
+			items: 10,
+			source: function(request, response) {
 				$.ajax({
-					url : "th_qolistputall.php?id=" + $(this).val(),
+					url: "../th_supplier.php",
+					dataType: "json",
+					data: {
+						query: $("#txtcust").val()
+					},
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			autoSelect: true,
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 
+				$('#txtcust').val(item.value).change(); 
+				$("#txtcustid").val(item.id);
+
+				$("#selbasecurr").val(item.cdefaultcurrency).change(); //val
+				$("#basecurrvalmain").val($("#selbasecurr").data("val"));
+
+				$("#selterms").val(item.cterms).change();
+			}
+		});
+
+		$("#txtrefrr").keydown(function(event){
+			
+			var issokso = "YES";
+			var msgs = "";
+			
+			if(event.keyCode == 13){
+
+				//SO Header
+				$.ajax({
+					url : "th_getrr.php?id=" + $(this).val() ,
 					type: "GET",
 					dataType: "JSON",
 					async: false,
 					success: function(data)
 					{	
+						console.log(data);
+											$.each(data,function(index,item){
 
-						if(data.length==0){
-							$("#AlertMsg").html("");
-			
-							$("#AlertMsg").html("&nbsp;&nbsp;No details to add!");
-							$("#alertbtnOK").show();
-							$("#AlertModal").modal('show');
-						}else{
-							console.log(data);
-							$.each(data,function(index,item){
+							if(item.lapproved==0 && item.lcancelled==0){
+								msgs = "Transaction is still pending";
+								issokso = "NO";
+							}
+							
+							if(item.lapproved==0 && item.lcancelled==1){
+								msgs = "Transaction is already cancelled";
+								issokso = "NO";
+							}
+						
+						if(issokso=="YES"){
+							$('#txtcust').val(item.cname); 
+							$("#txtcustid").val(item.ccode);
 
-								$('#txtprodnme').val(item.desc); 
-								$('#txtprodid').val(item.id); 
-								$("#hdnunit").val(item.cunit); 
-								//$("#hdnqty").val(item.nqty);
-							//	$("#hdnqtyunit").val(item.cqtyunit);
-								//alert(item.cqtyunit + ":" + item.cunit);
-								//addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident);
+							$('#date_received').val(item.dcutdate);
 
-								//nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident
-								myFunctionadd(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.cmainunit,item.xref,item.xrefident);
-
-								$('#txtprodnme').val("").change(); 
-								$('#txtprodid').val(""); 
-								$("#hdnunit").val(""); 
-
-							});
+							$("#basecurrval").val(item.currate);
+							$("#hidcurrvaldesc").val(item.currdesc); 
+							$("#selbasecurr").val(item.currcode).change();   
+								
 						}
-
+							
+						});
+							
 					},
 					error: function (jqXHR, textStatus, errorThrown)
 					{
 						alert(jqXHR.responseText);
-					}
-
+					}					
 				});
-			}
-			
-			if(issokso=="NO"){
-				alert(msgs);
-			}
-		}
-	});
+				
+				if(issokso=="YES"){
 
-});
+					
+					$("#MyyTbltbody").empty();
+				//add details
+				//alert("th_qolistputall.php?id=" + $(this).val() + "&itmbal=" + xChkBal);
+					$.ajax({
+						url : "th_qolistputall.php?id=" + $(this).val(),
+						type: "GET",
+						dataType: "JSON",
+						async: false,
+						success: function(data)
+						{	
+
+							if(data.length==0){
+								$("#AlertMsg").html("");
+				
+								$("#AlertMsg").html("&nbsp;&nbsp;No details to add!");
+								$("#alertbtnOK").show();
+								$("#AlertModal").modal('show');
+							}else{
+								console.log(data);
+								$.each(data,function(index,item){
+
+									$('#txtprodnme').val(item.desc); 
+									$('#txtprodid').val(item.id); 
+									$("#hdnunit").val(item.cunit); 
+									//$("#hdnqty").val(item.nqty);
+								//	$("#hdnqtyunit").val(item.cqtyunit);
+									//alert(item.cqtyunit + ":" + item.cunit);
+									//addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident);
+
+									//nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident
+									myFunctionadd(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.cmainunit,item.xref,item.xrefident);
+
+									$('#txtprodnme').val("").change(); 
+									$('#txtprodid').val(""); 
+									$("#hdnunit").val(""); 
+
+								});
+							}
+
+						},
+						error: function (jqXHR, textStatus, errorThrown)
+						{
+							alert(jqXHR.responseText);
+						}
+
+					});
+				}
+				
+				if(issokso=="NO"){
+					alert(msgs);
+				}
+			}
+		});
+
+	});
 
 
 function myFunctionadd(nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident){

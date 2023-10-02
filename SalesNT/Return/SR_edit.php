@@ -1,25 +1,29 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "SalesRet_edit.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "SalesRet.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
-require_once('../../Model/helper.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
+	require_once('../../Model/helper.php');
 
 
-$company = $_SESSION['companyid'];
+	$company = $_SESSION['companyid'];
 
-if(isset($_REQUEST['txtctranno'])){
-		$txtctranno = $_REQUEST['txtctranno'];
-}
-else{
+	if(isset($_REQUEST['txtctranno'])){
+			$txtctranno = $_REQUEST['txtctranno'];
+	}
+	else{
 		$txtctranno = $_REQUEST['txtcsalesno'];
 	}
 	
-$company = $_SESSION['companyid'];
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SalesRet_edit.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
 
 
 $sqlhead = mysqli_query($con,"select a.*,b.cname from ntsalesreturn a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.ctranno = '$txtctranno' and a.compcode='$company'");
@@ -222,7 +226,7 @@ function listcurrencies(){ //API for currency list
 					padding: 3px;
 					border: 1px solid #919b9c;
 					width: 100%;
-					height: 250px;
+					height: 300px;
 					text-align: left;
 					overflow: auto">
 	
@@ -243,8 +247,10 @@ function listcurrencies(){ //API for currency list
 
 				</div>
 
+				<?php
+					if($poststat == "True"){
+				?>
 				<br>
-
 				<table width="100%" border="0" cellpadding="3">
 					<tr>
 						<td rowspan="2">
@@ -305,6 +311,9 @@ function listcurrencies(){ //API for currency list
 					</tr>
 					-->
 				</table>
+				<?php
+					}
+				?>
 
     </fieldset>
 	</form>

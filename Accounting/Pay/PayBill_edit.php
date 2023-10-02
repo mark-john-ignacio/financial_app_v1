@@ -1,15 +1,21 @@
 <?php
-if(!isset($_SESSION)){
-	session_start();
-}
-$_SESSION['pageid'] = "PayBill_edit.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "PayBill.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
-$ccvno = $_REQUEST['txtctranno'];
-$company = $_SESSION['companyid'];
+	$ccvno = $_REQUEST['txtctranno'];
+	$company = $_SESSION['companyid'];
+
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PayBill_edit.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
 		
 $arrnoslist = array();
 $sqlempsec = mysqli_query($con,"select ifnull(ccheckno,'') as ccheckno, ifnull(cpayrefno,'') as cpayrefno,ctranno from paybill where compcode='$company' and lcancelled=0 and ctranno <> '$ccvno'");
@@ -104,7 +110,7 @@ $_SESSION['myxtoken'] = gen_token();
 <input type="hidden" value='<?=json_encode(@$arrname)?>' id="hdnfileconfig"> 
 
 <?php
-    	$sqlchk = mysqli_query($con,"Select a.cacctno, c.cacctdesc, a.ccode, a.cpaymethod, a.cbankcode, a.ccheckno, a.ccheckbook, a.cpaydesc, a.cpayrefno, e.cname as cbankname, a.cpayee, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dcheckdate,'%m/%d/%Y') as dcheckdate, a.ngross, a.npaid, a.lapproved, a.lcancelled, a.lvoid, a.lprintposted, a.lnoapvref, b.cname, d.cname as custname, c.cacctdesc, a.cparticulars, a.cpaytype
+    $sqlchk = mysqli_query($con,"Select a.cacctno, c.cacctdesc, a.ccode, a.cpaymethod, a.cbankcode, a.ccheckno, a.ccheckbook, a.cpaydesc, a.cpayrefno, e.cname as cbankname, a.cpayee, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dcheckdate,'%m/%d/%Y') as dcheckdate, a.ngross, a.npaid, a.lapproved, a.lcancelled, a.lvoid, a.lprintposted, a.lnoapvref, b.cname, d.cname as custname, c.cacctdesc, a.cparticulars, a.cpaytype, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate
 		From paybill a 
 		left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode 
 		left join accounts c on a.cacctno=c.cacctid 
@@ -144,6 +150,10 @@ if (mysqli_num_rows($sqlchk)!=0) {
 			$dCheckDate = $row['dcheckdate'];
 			$nAmount = $row['ngross'];
 			$nPaid = $row['npaid'];
+
+			$ccurrcode = $row['ccurrencycode'];  
+			$ccurrdesc = $row['ccurrencydesc']; 
+			$ccurrrate = $row['nexchangerate'];
 			
 			$lPosted = $row['lapproved'];
 			$lCancelled = $row['lcancelled'];
@@ -269,8 +279,8 @@ if (mysqli_num_rows($sqlchk)!=0) {
 									
 								<td width="150"><span style="padding:2px"><b>Payment Method</b></span></td>
 								<td>
-									<div class="col-xs-12" style="padding-left:2px">
-										<div class="col-xs-4 nopadding">
+									<div class="row nopadwleft" style="padding-left:2px">
+										<div class="col-xs-3 nopadding">
 											<select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
 												<option value="cheque" <?=($cpaymeth=="cheque") ? "selected" : ""?>>Cheque</option>
 												<option value="cash" <?=($cpaymeth=="cash") ? "selected" : ""?>>Cash</option>
@@ -279,6 +289,32 @@ if (mysqli_num_rows($sqlchk)!=0) {
 												<option value="credit card" <?=($cpaymeth=="credit card") ? "selected" : ""?>>Credit Card</option>
 												<option value="debit card" <?=($cpaymeth=="debit card") ? "selected" : ""?>>Debit Card</option>
 											</select>
+										</div>
+										<div class="col-xs-9 nopadwleft">
+
+													<div class="col-xs-7 nopadding" id="paymntrefrdet" style="<?=($cpaymeth!=="cheque") ? "; display: none" : ""?>">
+
+														<div class="col-xs-7 nopadding">
+															<input type='text' class='noref form-control input-sm' name='txtCheckNo' id='txtCheckNo' value="<?php echo $cCheckNo; ?>" readonly required placeholder="Check No."/>
+															<input type='hidden' name='txtChkBkNo' id='txtChkBkNo' value="" />
+														</div>	
+														<div class="col-xs-5 nopadwleft">
+															<button type="button" class="btn btn-danger btn-sm disabled" name="btnVoid" id="btnVoid" data-toggle="popover" data-content="Void Check" data-trigger="hover" data-placement="top" disabled><i class="fa fa-ban" aria-hidden="true"></i></button> 
+															
+															<button type="button" class="btn btn-warning btn-sm disabled" name="btnreserve" id="btnreserve" data-toggle="popover" data-content="Reserve Check" data-trigger="hover" data-placement="top" disabled><i class="fa fa-calendar-plus-o" aria-hidden="true"></i></button> 	
+														</div>
+													</div>
+
+													<div class="col-xs-7 nopadding" style="<?=($cpaymeth=="cheque" || $cpaymeth=="cash") ? "; display: none" : ""?>" id="payrefothrsdet">
+														<input type="text" id="txtPayRefrnce" class="noref form-control input-sm" name="txtPayRefrnce"  value="<?php echo $cPayRefr; ?>" placeholder="Reference No.">
+													</div>
+
+													<div class="col-xs-5 nopadding">
+														<div class="input-sm no-border" style="color: red" id="chknochek">
+														
+														</div>
+													</div>
+
 										</div>																												
 									</td>
 									<td width="120"><span style="padding:2px"><b>Payment Date:</b></span></td>
@@ -295,12 +331,12 @@ if (mysqli_num_rows($sqlchk)!=0) {
 										<span style="padding:2px" id="paymntdesc"><b>Bank Name</b></span> 
 									</td>
 									<td>
-										<div class="col-xs-12"  style="padding-left:2px <?=($cpaymeth=="cash") ? "; display: none" : ""?>" id="paymntdescdet">
+										<div class="col-xs-12"  style="padding-left:2px" id="paymntdescdet">
 											<div class="col-xs-3 nopadding">
 												<input type="text" id="txtBank" class="form-control input-sm" name="txtBank" placeholder="Bank Code" readonly value="<?php echo $cBank;?>">
 											</div>
 											<div class="col-xs-1 nopadwleft">
-												<button type="button" class="btn btn-block btn-primary btn-sm" name="btnsearchbank" id="btnsearchbank"><i class="fa fa-search"></i></button>
+												<button type="button" class="btn btn-block btn-primary btn-sm" name="btnsearchbank" id="btnsearchbank"><i class="fa fa-search"></i></button> 
 											</div>
 											<div class="col-xs-8 nopadwleft">
 												<input type="text" class="form-control input-sm" id="txtBankName" name="txtBankName" width="20px" tabindex="1" placeholder="Bank Name..." required value="<?php echo $cBankName;?>" autocomplete="off" readonly>   
@@ -343,61 +379,44 @@ if (mysqli_num_rows($sqlchk)!=0) {
 									</td>
 								</tr>
 								<tr>
+									<td><span style="padding:2px" id="paymntrefr"><b>Currency</b></span></td>
 									<td>
-										<span style="padding:2px" id="paymntrefr">
-											<?php
-												if($cpaymeth=="cash"){
-													echo "";
-												}elseif($cpaymeth=="cheque"){
-													echo "<b>Check No.</b>";
-												}else{
-													echo "<b>Reference No.</b>";
-												}
-											?>
-										</span>
-									</td>
-									<td>
-
-										<div class="col-xs-12"  style="padding-left:2px">
-
-											<div class="col-xs-7 nopadding" style="<?=($cpaymeth!=="cheque") ? "; display: none" : ""?>" id="paymntrefrdet">
-
-												<div class="col-xs-7 nopadding"><!-- noref -->
-													<input type='text' class='form-control input-sm' name='txtCheckNo' id='txtCheckNo' value="<?php echo $cCheckNo; ?>" readonly required placeholder="Check No."/>
-													<input type='hidden' name='txtChkBkNo' id='txtChkBkNo' value="<?=$cCheckBK?>" />
-												</div>	
-												<div class="col-xs-5 nopadwleft">
+										<div class="row nopadwleft">
+											<div class="col-xs-7 nopadding">
+												<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">					
 													<?php
-														if($cCheckNo==""){
-															$xstst = "disabled";
-														}else{
-															$xstst = "";
+																		
+														$nvaluecurrbase = "";	
+														$nvaluecurrbasedesc = "";	
+														$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+																				
+														if (mysqli_num_rows($result)!=0) {
+															$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);																				
+															$nvaluecurrbase = $all_course_data['cvalue']; 																					
+														}
+														else{
+															$nvaluecurrbase = "";
+														}
+
+														$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+														if (mysqli_num_rows($sqlhead)!=0) {
+															while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+													?>
+														<option value="<?=$rows['id']?>" <?php if ($ccurrcode==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>" data-desc="<?=$rows['currencyName']?>"><?=$rows['currencyName']?></option>
+													<?php
+															}
 														}
 													?>
-													<button type="button" class="btn btn-danger btn-sm <?=$xstst?>" name="btnVoid" id="btnVoid" data-toggle="popover" data-content="Void Check" data-trigger="hover" data-placement="top" <?=$xstst?>><i class="fa fa-ban" aria-hidden="true"></i></button> 
-															
-													<button type="button" class="btn btn-warning btn-sm <?=$xstst?>" name="btnreserve" id="btnreserve" data-toggle="popover" data-content="Reserve Check" data-trigger="hover" data-placement="top" <?=$xstst?>><i class="fa fa-calendar-plus-o" aria-hidden="true"></i></button> 	
-												</div>
+												</select>
+												<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?=$nvaluecurrbase; ?>"> 	
+												<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?=$ccurrdesc; ?>"> 
 											</div>
-
-
-											<div class="col-xs-7 nopadding" style="<?=($cpaymeth=="cheque" || $cpaymeth=="cash") ? "; display: none" : ""?>" id="payrefothrsdet">
-												<input type="text" id="txtPayRefrnce" class="noref form-control input-sm" name="txtPayRefrnce" value="<?php echo $cPayRefr; ?>" placeholder="Reference No.">
+											<div class="col-xs-2 nopadwleft">
+												<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="<?=$ccurrrate; ?>">	 
 											</div>
-
-											<div class="col-xs-5 nopadding">
-												<div class="form-control input-sm no-border" style="color: red" id="chknochek">
-												
-												</div>
+											<div class="col-xs-3" id="statgetrate" style="padding: 4px !important"> 																	
 											</div>
-
-											<!--
-											<div class="col-xs-6 nopadwleft">
-												<button type="button" class="btn btn-danger btn-sm" name="btnVoid" id="btnVoid">VOID CHECK NO. </button>
-											</div>
-											-->
 										</div>
-
 									</td>
 									<td><span style="padding:2px" id="chkdate"><b>Amount Payable:</b></span></td>
 									<td>
@@ -472,7 +491,9 @@ if (mysqli_num_rows($sqlchk)!=0) {
 									</table>
 							</div>
 
-					
+						<?php
+							if($poststat=="True"){
+						?>
             <br>
 						<table width="100%" border="0" cellpadding="3">
 							<tr>
@@ -513,6 +534,9 @@ if (mysqli_num_rows($sqlchk)!=0) {
 								<td align="right">&nbsp;</td>
 							</tr>
 						</table>
+						<?php
+						}
+					?>
 
     </fieldset>
 
@@ -796,6 +820,9 @@ else{
 	}
 
 
+	<?php
+		if($poststat=="True"){
+	?>						
 	$(document).keydown(function(e) {	 
 	
 	 if(e.keyCode == 112) { //F1
@@ -841,6 +868,9 @@ else{
 		}
 	  }
 	});
+	<?php
+		}
+	?>
 
 
 	$(document).ready(function() {
@@ -1207,8 +1237,8 @@ else{
 				//$("#paymntrefr").html(" ");		
 				
 				//$("#paymntdescdet").hide();
-				//$("#paymntrefrdet").hide();
-				//$("#payrefothrsdet").hide(); 
+				$("#paymntrefrdet").hide();
+				$("#payrefothrsdet").hide(); 
 
 				$("#btnsearchbank").attr("disabled", true);
 				$("#chkdate").html("<b>Check Date</b>");
@@ -1220,14 +1250,16 @@ else{
 				$("#txtPayRefrnce").prop("required", false); 
 
 			}else if($(this).val()=="cheque"){	
-				$("#paymntdesc").html("<b>Bank Name</b>");	
-				$("#paymntrefr").html("<b>Check No.</b>");
+			//	$("#paymntdesc").html("<b>Bank Name</b>");	
+			//	$("#paymntrefr").html("<b>Check No.</b>");
 
 				$("#paymntdescdet").show();
 				$("#paymntrefrdet").show();
 
 				$("#paymntothrsdet").hide();
 				$("#payrefothrsdet").hide();
+
+				$("#btnsearchbank").attr("disabled", false);
 				$("#chkdate").html("<b>Transfer Date</b>"); 
 				$("#txtChekDate").attr("disabled", false); 
 
@@ -1237,14 +1269,17 @@ else{
 				$("#txtPayRefrnce").prop("required", false);
 
 			}else if($(this).val()=="bank transfer"){
-				$("#paymntdesc").html("<b>Bank Name</b>");
-				$("#paymntrefr").html("<b>Reference No.</b>");
+				//$("#paymntdesc").html("<b>Bank Name</b>");
+				//$("#paymntrefr").html("<b>Reference No.</b>");
 
 				$("#paymntdescdet").show();
 				$("#paymntrefrdet").hide();
 
 				$("#paymntothrsdet").hide();
 				$("#payrefothrsdet").show();
+
+				$("#btnsearchbank").attr("disabled", false);
+				$("#chkdate").html("<b>Transfer Date</b>"); 
 				$("#chkdate").html("<b>Transfer Date</b>"); 
 				$("#txtChekDate").attr("disabled", false); 
 
@@ -1253,8 +1288,8 @@ else{
 				$("#txtCheckNo").prop("required", false); 
 				$("#txtPayRefrnce").prop("required", true);
 			}else{
-				$("#paymntdesc").html("<b>Bank Name</b>");
-				$("#paymntrefr").html("<b>Reference No.</b>");
+				//$("#paymntdesc").html("<b>Bank Name</b>");
+				//$("#paymntrefr").html("<b>Reference No.</b>");
 
 				$("#paymntdescdet").show();
 				$("#paymntrefrdet").hide();
@@ -1262,6 +1297,7 @@ else{
 				$("#paymntothrsdet").show();
 				$("#payrefothrsdet").show();
 
+				$("#btnsearchbank").attr("disabled", false);
 				$("#chkdate").html("<b>Transfer Date</b>"); 
 				$("#txtChekDate").attr("disabled", false); 
 
@@ -1310,6 +1346,19 @@ else{
 				$("#tblewt").hide(); 
 				$("#tbldrcr").hide(); 
 			}
+		});
+
+		$("#selbasecurr").on("change", function (){
+	
+			var dval = $(this).find(':selected').attr('data-val');
+			var ddesc = $(this).find(':selected').attr('data-desc');
+
+			$("#basecurrval").val(dval);
+			$("#hidcurrvaldesc").val(ddesc);
+			$("#statgetrate").html("");
+
+			$('#MyTable tbody').empty();
+				
 		});
 
 	});
@@ -1807,7 +1856,11 @@ else{
 				$("#btnMain").attr("disabled", true);
 				$("#btnNew").attr("disabled", true);
 				$("#btnPrint").attr("disabled", true);
-				$("#btnEdit").attr("disabled", true);		
+				$("#btnEdit").attr("disabled", true);		  
+
+				if($("#selpayment").val()=="cash"){
+					$("#btnsearchbank").attr("disabled", true);	
+				}
 		}
 
 	}

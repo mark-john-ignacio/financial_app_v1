@@ -1,27 +1,30 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "PurchRet_edit.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "PurchRet.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
-require_once('../../Model/helper.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
+	require_once('../../Model/helper.php');
 
-$company = $_SESSION['companyid'];
-if(isset($_REQUEST['txtctranno'])){
+	$company = $_SESSION['companyid'];
+
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PurchRet_edit.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
+	if(isset($_REQUEST['txtctranno'])){
 		$cpono = $_REQUEST['txtctranno'];
-}
-else{
+	}
+	else{
 		$cpono = $_REQUEST['txtcpono'];
 	}
 
-$sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dreturned,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.lcancelled, a.lapproved, a.lprintposted, a.ccustacctcode, b.cname from purchreturn a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.ctranno = '$cpono'");
-
-
-$sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dreturned,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.lcancelled, a.lapproved, a.lvoid, a.lprintposted, a.ccustacctcode, b.cname from purchreturn a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.ctranno = '$cpono'");
-
+	$sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dreturned,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.lcancelled, a.lapproved, a.lvoid, a.lprintposted, a.ccustacctcode, b.cname from purchreturn a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.ctranno = '$cpono'");
 
 	@$arrname = array();
 	$directory = "../../Components/assets/PR/{$company}_{$cpono}/";
@@ -253,6 +256,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 				</div>
 
+				<?php
+					if($poststat=="True"){
+				?>
 				<br>
 				<table width="100%" border="0" cellpadding="3">
 					<tr>
@@ -303,6 +309,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						</td>
 					</tr>
 				</table>
+				<?php
+					}
+				?>
 
     </fieldset>
 </form>
@@ -530,6 +539,9 @@ else{
 		})
 	}
 
+	<?php
+		if($poststat=="True"){
+	?>
 	$(document).keydown(function(e) {	 
 	
 	 if(e.keyCode == 112) { //F1
@@ -583,6 +595,9 @@ else{
 			}
 	  } 
 	});
+	<?php
+		}
+	?>
 
 	$(document).keypress(function(e) {
 	  if ($("#SerialMod").hasClass('in') && (e.keycode == 13 || e.which == 13)) {

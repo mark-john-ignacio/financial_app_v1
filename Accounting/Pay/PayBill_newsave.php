@@ -83,13 +83,17 @@
 		$cPayRefNo = mysqli_real_escape_string($con, $_POST['txtPayRefrnce']);
 	}
 
+	$CurrCode = $_REQUEST['selbasecurr']; 
+	$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
+	$CurrRate= $_REQUEST['basecurrval'];
+
 	$dret = 0;
 	if(isset($_REQUEST['isNoRef'])){
 		$dret = $_REQUEST['isNoRef'];
 	}
 	
 
-	if (!mysqli_query($con, "INSERT INTO `paybill`(`compcode`, `ctranno`, `ccode`, `cpayee`, `cpaymethod`, `cbankcode`, `ccheckno`, `ccheckbook`, `cacctno`, `cpayrefno`, `ddate`, `dcheckdate`, `ngross`, `npaid`, `cpreparedby`, `cparticulars`, `cpaytype`, `lnoapvref`) values('$company', '$cSINo', '$cCustID', '$cPayee', '$paymeth', '$cBankCode', '$cCheckNo', '$cCheckBK', '$cAcctNo', '$cPayRefNo', STR_TO_DATE('$dDate', '%m/%d/%Y'), STR_TO_DATE('$dTranDate', '%m/%d/%Y'), $nGross, $npaid, '$preparedby', '$particulars', '$paytype', $dret)")) {
+	if (!mysqli_query($con, "INSERT INTO `paybill`(`compcode`, `ctranno`, `ccode`, `cpayee`, `cpaymethod`, `cbankcode`, `ccheckno`, `ccheckbook`, `cacctno`, `cpayrefno`, `ddate`, `dcheckdate`, `ngross`, `npaid`, `cpreparedby`, `cparticulars`, `cpaytype`, `lnoapvref`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`) values('$company', '$cSINo', '$cCustID', '$cPayee', '$paymeth', '$cBankCode', '$cCheckNo', '$cCheckBK', '$cAcctNo', '$cPayRefNo', STR_TO_DATE('$dDate', '%m/%d/%Y'), STR_TO_DATE('$dTranDate', '%m/%d/%Y'), $nGross, $npaid, '$preparedby', '$particulars', '$paytype', $dret, '$CurrCode', '$CurrDesc', '$CurrRate')")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 

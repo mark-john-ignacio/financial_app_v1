@@ -40,8 +40,9 @@ else {
 	$cCustID =  mysqli_real_escape_string($con, $_REQUEST['txtcustid']);
 	$cRemarks =  mysqli_real_escape_string($con, $_REQUEST['txtremarks']);
 	$cSelType =  mysqli_real_escape_string($con, $_REQUEST['seltype']);   
-	$cSRRef =  mysqli_real_escape_string($con, $_REQUEST['txtSIRef']);
+	$cSRRef =  mysqli_real_escape_string($con, $_REQUEST['txtSIRef']); 
 	$cSIRef =  mysqli_real_escape_string($con, $_REQUEST['txtInvoiceRef']);
+	$cCurrCode =  mysqli_real_escape_string($con, $_REQUEST['txtcurr']); 
 	$ngross =  mysqli_real_escape_string($con, str_replace( ',', '', $_REQUEST['txtnGross']));
 
 	$dret = 0;
@@ -52,7 +53,7 @@ else {
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 	
 
-	if (!mysqli_query($con, "INSERT INTO `apadjustment`(`compcode`, `ctranno`, `ccode`, `ddate`, `dcutdate`, `ctype`, `cremarks`, `ngross`, `crefsr`, `crefsi`, `isreturn`,`cpreparedby`) values('$company', '$cSINo', '$cCustID', NOW(), STR_TO_DATE('$dTranDate', '%m/%d/%Y'), '$cSelType', '$cRemarks', '$ngross', '$cSRRef', '$cSIRef', $dret, '$preparedby')")) {
+	if (!mysqli_query($con, "INSERT INTO `apadjustment`(`compcode`, `ctranno`, `ccode`, `ddate`, `dcutdate`, `ctype`, `cremarks`, `ngross`, `crefsr`, `crefsi`, `isreturn`,`cpreparedby`, `ccurrencycode`) values('$company', '$cSINo', '$cCustID', NOW(), STR_TO_DATE('$dTranDate', '%m/%d/%Y'), '$cSelType', '$cRemarks', '$ngross', '$cSRRef', '$cSIRef', $dret, '$preparedby', '$cCurrCode')")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 	

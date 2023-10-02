@@ -67,6 +67,94 @@ require_once "../../Connection/connection_string.php";
 		$cSIsalescodetype = $row["cacctcodetype"];
 	}
 
+
+	//ITEMS ENTRY - SALES AND VATS - DEBIT
+	if($xcomp==1){ // Pag ung mismo may ari system ay Vatable
+
+			$sql0 = "Select A.cacctcode,A.cacctdesc, ROUND(sum(A.ngross),2) as ngross
+			From (Select B.dcutdate, A.citemno, C.cacctid as cacctcode, C.cacctdesc, CASE WHEN E.lcompute=1 OR D.nrate<>0 Then ROUND(SUM(F.nqty*A.nprice)/(1 + (A.nrate/100)) ,2) Else SUM(F.nqty*A.nprice) END as ngross
+			From ".$tbldtl." A 
+			left join ".$tblhdr." B on A.compcode=B.compcode and A.ctranno=B.ctranno 
+			left join accounts C on A.compcode=C.compcode and A.cacctcode=C.cacctno 
+			left join taxcode D on A.compcode=D.compcode and A.ctaxcode=D.ctaxcode 
+			left join vatcode E on B.compcode=E.compcode and B.cvatcode=E.cvatcode 
+			left join ".$tbldtlsr." F on A.compcode=F.compcode and A.citemno=F.citemno and A.nident=F.nrefident and F.ctranno='$SRtran'
+			where A.compcode='$company' and A.ctranno='$SItran' 
+			group by B.dcutdate,C.cacctid,C.cacctdesc,A.citemno) A Where IFNULL(A.ngross,0) <> 0";
+
+			$result = mysqli_query ($con,$sql0);
+			while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+				$json['cacctid'] = $row['cacctcode'];
+				$json['cacctdesc'] = $row['cacctdesc'];
+				$json['ndebit'] = $row['ngross'];
+				$json['ncredit'] = 0;
+				$json2[] = $json;
+			}
+
+			//VAT Entry
+
+			if($_REQUEST['styp']=="trade"){
+				//get Default SALES_VAT Code
+				$Sales_Vat = getDefAcct("SALES_VAT");
+
+				$SID = $Sales_Vat["id"];
+				$SNM = $Sales_Vat["name"];
+				
+				$sqlvat = "Select IFNULL(Sum(A.nVat),0) as nVat
+				From (
+					Select B.dcutdate, A.citemno, ROUND((SUM(F.nqty*A.nprice)/(1 + (D.nrate/100))) * ((D.nrate/100)), 2) AS nVat
+					From sales_t A 
+					left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno 
+					left join accounts C on A.compcode=C.compcode and A.cacctcode=C.cacctno 
+					left join taxcode D on A.compcode=D.compcode and A.ctaxcode=D.ctaxcode 
+					left join vatcode E on B.compcode=E.compcode and B.cvatcode=E.cvatcode
+					left join salesreturn_t F on A.compcode=F.compcode and A.citemno=F.citemno and A.nident=F.nrefident and F.ctranno='$SRtran'
+					where A.compcode='$company' and A.ctranno='$SItran'
+					group by B.dcutdate, A.citemno
+				) A Where IFNULL(A.nVat,0) <> 0";
+				
+				$resvat = mysqli_query($con,$sqlvat);
+				$isok = "True";
+				if (mysqli_num_rows($resvat)!=0) {
+					while($rowvat = mysqli_fetch_array($resvat, MYSQLI_ASSOC)){
+
+						if(floatval($rowvat['nVat'])>0){
+							$json['cacctid'] = $SID;
+							$json['cacctdesc'] = $SNM;
+							$json['ndebit'] = $rowvat['nVat'];
+							$json['ncredit'] = 0;
+							$json2[] = $json;
+						}
+					
+					}
+
+				}
+			}
+
+
+	}else{ // pag nde vatable no VAT dapat
+
+		$sql0 = "Select A.cacctcode,A.cacctdesc, sum(A.ngross) as ngross
+		From (Select C.cacctid as cacctcode,C.cacctdesc,SUM(F.nqty*A.nprice) as ngross
+		From  ".$tbldtl." A 
+		left join ".$tblhdr." B on A.compcode=B.compcode and A.ctranno=B.ctranno 
+		left join accounts C on A.compcode=C.compcode and A.cacctcode=C.cacctno 
+		left join salesreturn_t F on A.compcode=F.compcode and A.citemno=F.citemno and A.nident=F.nrefident and F.ctranno='$SRtran'
+		where A.compcode='$company' and A.ctranno='$SItran' group by B.dcutdate,C.cacctid,C.cacctdesc) A Where IFNULL(A.ngross,0) <> 0";
+
+		$result = mysqli_query ($con,$sql0);
+		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+			$json['cacctid'] = $row['cacctcode'];
+			$json['cacctdesc'] = $row['cacctdesc'];
+			$json['ndebit'] = $row['ngross'];
+			$json['ncredit'] = 0;
+			$json2[] = $json;
+		}
+
+
+	}
+
+
 	//CUSTOMERS ENTRY - RECEIVABLES CREDIT
 	if($cSIsalescodetype=="multiple"){
 
@@ -158,91 +246,6 @@ require_once "../../Connection/connection_string.php";
 		$json['ndebit'] = 0;
 		$json['ncredit'] = $totewtamt;
 		$json2[] = $json;
-
-
-	}
-
-
-	//ITEMS ENTRY - SALES AND VATS - DEBIT
-	if($xcomp==1){ // Pag ung mismo may ari system ay Vatable
-
-			$sql0 = "Select A.cacctcode,A.cacctdesc, ROUND(sum(A.ngross),2) as ngross
-			From (Select B.dcutdate, A.citemno, C.cacctid as cacctcode, C.cacctdesc, CASE WHEN E.lcompute=1 OR D.nrate<>0 Then ROUND(SUM(F.nqty*A.nprice)/(1 + (A.nrate/100)) ,2) Else SUM(F.nqty*A.nprice) END as ngross
-			From ".$tbldtl." A 
-			left join ".$tblhdr." B on A.compcode=B.compcode and A.ctranno=B.ctranno 
-			left join accounts C on A.compcode=C.compcode and A.cacctcode=C.cacctno 
-			left join taxcode D on A.compcode=D.compcode and A.ctaxcode=D.ctaxcode 
-			left join vatcode E on B.compcode=E.compcode and B.cvatcode=E.cvatcode 
-			left join ".$tbldtlsr." F on A.compcode=F.compcode and A.citemno=F.citemno and A.nident=F.nrefident and F.ctranno='$SRtran'
-			where A.compcode='$company' and A.ctranno='$SItran' 
-			group by B.dcutdate,C.cacctid,C.cacctdesc,A.citemno) A Where IFNULL(A.ngross,0) <> 0";
-
-			$result = mysqli_query ($con,$sql0);
-			while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-				$json['cacctid'] = $row['cacctcode'];
-				$json['cacctdesc'] = $row['cacctdesc'];
-				$json['ndebit'] = $row['ngross'];
-				$json['ncredit'] = 0;
-				$json2[] = $json;
-			}
-
-			//VAT Entry
-
-			if($_REQUEST['styp']=="trade"){
-				//get Default SALES_VAT Code
-				$Sales_Vat = getDefAcct("SALES_VAT");
-
-				$SID = $Sales_Vat["id"];
-				$SNM = $Sales_Vat["name"];
-				
-				$sqlvat = "Select Sum(A.nVat) as nVat
-				From (
-					Select B.dcutdate, A.citemno, ROUND((SUM(F.nqty*A.nprice)/(1 + (D.nrate/100))) * ((D.nrate/100)), 2) AS nVat
-					From sales_t A 
-					left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno 
-					left join accounts C on A.compcode=C.compcode and A.cacctcode=C.cacctno 
-					left join taxcode D on A.compcode=D.compcode and A.ctaxcode=D.ctaxcode 
-					left join vatcode E on B.compcode=E.compcode and B.cvatcode=E.cvatcode
-					left join salesreturn_t F on A.compcode=F.compcode and A.citemno=F.citemno and A.nident=F.nrefident and F.ctranno='$SRtran'
-					where A.compcode='$company' and A.ctranno='$SItran'
-					group by B.dcutdate, A.citemno
-				) A Where IFNULL(A.nVat,0) <> 0";
-				
-				$resvat = mysqli_query($con,$sqlvat);
-				$isok = "True";
-				if (mysqli_num_rows($resvat)!=0) {
-					while($rowvat = mysqli_fetch_array($resvat, MYSQLI_ASSOC)){
-
-						$json['cacctid'] = $SID;
-						$json['cacctdesc'] = $SNM;
-						$json['ndebit'] = $rowvat['nVat'];
-						$json['ncredit'] = 0;
-						$json2[] = $json;
-					
-					}
-
-				}
-			}
-
-
-	}else{ // pag nde vatable no VAT dapat
-
-		$sql0 = "Select A.cacctcode,A.cacctdesc, sum(A.ngross) as ngross
-		From (Select C.cacctid as cacctcode,C.cacctdesc,SUM(F.nqty*A.nprice) as ngross
-		From  ".$tbldtl." A 
-		left join ".$tblhdr." B on A.compcode=B.compcode and A.ctranno=B.ctranno 
-		left join accounts C on A.compcode=C.compcode and A.cacctcode=C.cacctno 
-		left join salesreturn_t F on A.compcode=F.compcode and A.citemno=F.citemno and A.nident=F.nrefident and F.ctranno='$SRtran'
-		where A.compcode='$company' and A.ctranno='$SItran' group by B.dcutdate,C.cacctid,C.cacctdesc) A Where IFNULL(A.ngross,0) <> 0";
-
-		$result = mysqli_query ($con,$sql0);
-		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-			$json['cacctid'] = $row['cacctcode'];
-			$json['cacctdesc'] = $row['cacctdesc'];
-			$json['ndebit'] = $row['ngross'];
-			$json['ncredit'] = 0;
-			$json2[] = $json;
-		}
 
 
 	}

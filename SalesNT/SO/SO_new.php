@@ -336,7 +336,7 @@ function listcurrencies(){ //API for currency list
 											<th style="border-bottom:1px solid #999">Qty</th>
 											<th style="border-bottom:1px solid #999">Price</th>
 											<th style="border-bottom:1px solid #999">Amount</th>
-											<th style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
+											<!--<th style="border-bottom:1px solid #999">Total Amt in <?//php echo $nvaluecurrbase; ?></th>-->
 											<th style="border-bottom:1px solid #999">&nbsp;</th>
 										</tr>	
 										</thead>														
@@ -694,6 +694,9 @@ $(function(){
 				$('#hdnvalid').val("YES");
 				
 				$('#txtremarks').focus();
+
+				$("#selbasecurr").val(data[13]).change(); //val
+				$("#basecurrvalmain").val($("#selbasecurr").data("val"));
 				
 				if(xChkLimit==1){
 
@@ -799,19 +802,22 @@ $(function(){
 			//$("#imgemp").attr("src",item.imgsrc);
 			$("#hdnpricever").val(item.cver);
 
-				$('#txtdelcustid').val(item.id);
-				$('#txtdelcust').val(item.value); 
+			$('#txtdelcustid').val(item.id);
+			$('#txtdelcust').val(item.value); 
 				 
-				$('#txtsalesmanid').val(item.csman);
-				$('#txtsalesman').val(item.smaname);
+			$('#txtsalesmanid').val(item.csman);
+			$('#txtsalesman').val(item.smaname);
 				
-				$('#txtchouseno').val(item.chouseno);
-				$('#txtcCity').val(item.ccity);
-				$('#txtcState').val(item.cstate);
-				$('#txtcCountry').val(item.ccountry);
-				$('#txtcZip').val(item.czip);
+			$('#txtchouseno').val(item.chouseno);
+			$('#txtcCity').val(item.ccity);
+			$('#txtcState').val(item.cstate);
+			$('#txtcCountry').val(item.ccountry);
+			$('#txtcZip').val(item.czip);
 							
 			$('#hdnvalid').val("YES");
+
+			$("#selbasecurr").val(item.cdefaultcurrency).change(); //val
+			$("#basecurrvalmain").val($("#selbasecurr").data("val"));
 			
 			$('#txtremarks').focus();
 			
@@ -1297,14 +1303,14 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 		
 	var tditmprice = "<td width=\"100\" nowrap> <input type='text' value='"+price+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnprice\" id='txtnprice"+lastRow+"' \"  "+qtystat+" > </td>";
 
-	var tditmbaseamount = "<td width=\"100\" nowrap> <input type='text' value='"+curramtz+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtntranamount\" id='txtntranamount"+lastRow+"' readonly> </td>";
+	var tditmbaseamount = "<td width=\"100\" nowrap> <input type='text' value='"+curramtz+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtntranamount\" id='txtntranamount"+lastRow+"' readonly> <input type='hidden' value='"+baseprice.toFixed(4)+"' name=\"txtnamount\" id='txtnamount"+lastRow+"'> </td>";
 			
-	var tditmamount = "<td width=\"100\" nowrap> <input type='text' value='"+baseprice.toFixed(4)+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnamount\" id='txtnamount"+lastRow+"'  readonly> </td>";
+	//var tditmamount = "<td width=\"100\" nowrap>  </td>"; tditmamount
 	
 	var tditmdel = "<td width=\90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' onClick=\"deleteRow(this);\"/> &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> </td>";
 
 
-	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmavail + tditmunit + tditmfactor + tditmqty + tditmprice + tditmbaseamount + tditmamount + tditmdel + '</tr>');
+	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmavail + tditmunit + tditmfactor + tditmqty + tditmprice + tditmbaseamount + tditmdel + '</tr>');
 
 									$("#del"+itmcode).on('click', function() {
 										$(this).closest('tr').remove();

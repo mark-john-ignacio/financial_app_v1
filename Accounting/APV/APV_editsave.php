@@ -15,12 +15,17 @@ $company = $_SESSION['companyid'];
 	$cAPtype =  mysqli_real_escape_string($con, $_REQUEST['selaptyp']); 
 	//$cPayee =  mysqli_real_escape_string($con, $_REQUEST['txtpayee']);
 	//$cChkNo =  mysqli_real_escape_string($con, $_REQUEST['txtchkNo']);
+
+	$CurrCode = $_REQUEST['selbasecurr']; 
+	$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
+	$CurrRate= $_REQUEST['basecurrval']; 
+
 	$nGross =  mysqli_real_escape_string($con, str_replace( ',', '', $_REQUEST['txtnGross']));
 	
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 		
 
-	if (!mysqli_query($con, "UPDATE `apv` set `dapvdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `ccode` = '$cCustID', `cpaymentfor` = '$cRemarks', `ngross` = '$nGross', `captype` = '$cAPtype' Where `compcode` = '$company' and `ctranno` = '$cPVNo'")) {
+	if (!mysqli_query($con, "UPDATE `apv` set `dapvdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `ccode` = '$cCustID', `cpaymentfor` = '$cRemarks', `ngross` = '$nGross', `captype` = '$cAPtype', `ccurrencycode` = '$CurrCode', `ccurrencydesc` = '$CurrDesc', `nexchangerate` = '$CurrRate' Where `compcode` = '$company' and `ctranno` = '$cPVNo'")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 		
 		//echo "<br> UPDATE `apv` set `dapvdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `ccode` = '$cCustID', `cpaymentfor` = '$cRemarks', `ngross` = '$nGross', `captype` = '$cAPtype' Where `compcode` = '$company' and `ctranno` = '$cPVNo'";

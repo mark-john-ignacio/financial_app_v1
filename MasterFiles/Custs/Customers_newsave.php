@@ -50,8 +50,8 @@ $company = $_SESSION['companyid'];
 	$cGrp9 = chkgrp($_REQUEST['txtCustGroup9D']);
 	$cGrp10 = chkgrp($_REQUEST['txtCustGroup10D']);
 
-	$cparent = chkgrp($_REQUEST['txtcparentD']);  
-	$csman = chkgrp($_REQUEST['txtsmanD']); 
+	//$cparent = chkgrp($_REQUEST['txtcparentD']);  
+	$csman = chkgrp($_REQUEST['txtsmanD']);  
 	
 	$preparedby = $_SESSION['employeeid'];
 	
@@ -61,10 +61,12 @@ $company = $_SESSION['companyid'];
 		$SalesCode = "";
 	}
 
-	//$SalesCodeCR = $_REQUEST['txtsalesacctDIDCR']; , `cacctcodesalescr` , '$SalesCodeCR'
+	$SelCurr = $_REQUEST['selcurrncy'];
+
+	//$SalesCodeCR = $_REQUEST['txtsalesacctDIDCR']; , `cacctcodesalescr` , '$SalesCodeCR' , `cparentcode` , $cparent
 	
 	//INSERT NEW ITEM
-	if(!mysqli_query($con,"INSERT INTO `customers`(`compcode`, `cempid`, `cname`, `ctradename`, `cacctcodesales`, `cacctcodetype`,`ccustomertype`, `ccustomerclass`, `cpricever`, `cvattype`, `cterms`, `ctin`, `chouseno`, `ccity`, `cstate`, `ccountry`, `czip`, `cstatus`, `nlimit`, `cparentcode`, `csman`, `cGroup1`, `cGroup2`, `cGroup3`, `cGroup4`, `cGroup5`, `cGroup6`, `cGroup7`, `cGroup8`, `cGroup9`, `cGroup10`) VALUES ('$company', '$cCustCode', '$cCustName', '$cTradeName', '$SalesCode', '$SalesCodeType','$CustTyp', '$CustCls', '$PriceVer', '$VatType', '$Terms', '$Tin', $HouseNo, $City, $State, $Country, $ZIP, 'ACTIVE', '$CreditLimit', $cparent, $csman, $cGrp1, $cGrp2, $cGrp3, $cGrp4, $cGrp5, $cGrp6, $cGrp7, $cGrp8, $cGrp9, $cGrp10)")){
+	if(!mysqli_query($con,"INSERT INTO `customers`(`compcode`, `cempid`, `cname`, `ctradename`, `cacctcodesales`, `cacctcodetype`,`ccustomertype`, `ccustomerclass`, `cpricever`, `cvattype`, `cterms`, `ctin`, `chouseno`, `ccity`, `cstate`, `ccountry`, `czip`, `cstatus`, `nlimit`, `csman`, `cGroup1`, `cGroup2`, `cGroup3`, `cGroup4`, `cGroup5`, `cGroup6`, `cGroup7`, `cGroup8`, `cGroup9`, `cGroup10`, `cdefaultcurrency`) VALUES ('$company', '$cCustCode', '$cCustName', '$cTradeName', '$SalesCode', '$SalesCodeType','$CustTyp', '$CustCls', '$PriceVer', '$VatType', '$Terms', '$Tin', $HouseNo, $City, $State, $Country, $ZIP, 'ACTIVE', '$CreditLimit', $csman, $cGrp1, $cGrp2, $cGrp3, $cGrp4, $cGrp5, $cGrp6, $cGrp7, $cGrp8, $cGrp9, $cGrp10, '$SelCurr')")){
 		if(mysqli_error($con)!=""){
 			printf("Errormessage: %s\n", mysqli_error($con));	
 		}

@@ -102,17 +102,18 @@
 							</tr>
 							-->
 							<tr>
-								<tH width="150">PAID TO:</tH>
+								<tH width="150">Paid To:</tH>
 								<td style="padding:2px;" width="500">
-									<div class="col-xs-12 nopadding">
-										<div class="col-xs-6 nopadding">
-											<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..." required autocomplete="off">
-										</div> 
-										<div class="col-xs-6 nopadwleft">
-											<input type="text" id="txtcustid" name="txtcustid" style="border:none; height:30px;" readonly>
+									<div class="row nopadding">
+										<div class="col-xs-3 nopadding">
+											<input type="text" class="form-control input-sm" id="txtcustid" name="txtcustid" readonly placeholder="Supplier Code...">
 											<input type="hidden" id="hdncustewt" name="hdncustewt" value="">
 											<input type="hidden" id="hdncustewtrate" name="hdncustewtrate" value="">
 										</div>
+										<div class="col-xs-7 nopadwleft">
+											<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..." required autocomplete="off">
+										</div> 
+										
 									</div>
 												
 									<input type="hidden" id="txtcustchkr" name="txtcustchkr">
@@ -132,23 +133,69 @@
 								</td>
 							</tr>
 							<tr>
-								<tH width="150" rowspan="2" valign="top">REMARKS:</tH>
-								<td rowspan="2" valign="top" style="padding:2px"><div class="col-xs-10 nopadding">
-									<textarea class="form-control" rows="2" id="txtremarks" name="txtremarks"></textarea>
-								</div></td>
-								<tH width="150" style="padding:2px">AP DATE:</tH>
-								<td style="padding:2px"><div class="col-xs-8">
-									<input type='text' class="datepick form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date("m/d/Y"); ?>" />
-							</div></td>
+								<tH width="150" rowspan="2" valign="top">Remarks:</tH>
+								<td rowspan="2" valign="top" style="padding:2px">
+									<div class="col-xs-10 nopadding">
+										<textarea class="form-control" rows="2" id="txtremarks" name="txtremarks"></textarea>
+									</div>
+								</td>
+								<tH width="150" style="padding:2px">AP Date:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-8">
+										<input type='text' class="datepick form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date("m/d/Y"); ?>" />
+									</div>
+								</td>
 							</tr>
 							<tr>
-								<tH style="padding:2px">TOTAL AMOUNT :</tH>
+								<tH style="padding:2px">Total Amount :</tH>
 								<td style="padding:2px">
-								<div class="col-xs-8">
-									<input type="text" class="form-control input-sm" id="txtnGross" name="txtnGross" tabindex="1" required value="0.00" style="font-weight:bold; color:#F00; text-align:right" readonly>
-								</div>
-								
-							</td>
+									<div class="col-xs-8">
+										<input type="text" class="form-control input-sm" id="txtnGross" name="txtnGross" tabindex="1" required value="0.00" style="font-weight:bold; color:#F00; text-align:right" readonly>
+									</div>									
+								</td>
+							</tr>
+							<tr>
+								<tH width="150" rowspan="2" valign="top">Currency:</tH>
+								<td rowspan="2" valign="top" style="padding:2px">
+									<div class="row nopadding">
+										<div class="col-xs-7 nopadding">
+											<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">					
+												<?php
+																	
+													$nvaluecurrbase = "";	
+													$nvaluecurrbasedesc = "";	
+													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+																			
+													if (mysqli_num_rows($result)!=0) {
+														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);																				
+														$nvaluecurrbase = $all_course_data['cvalue']; 																					
+													}
+													else{
+														$nvaluecurrbase = "";
+													}
+
+													$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+													if (mysqli_num_rows($sqlhead)!=0) {
+														while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+												?>
+													<option value="<?=$rows['id']?>" <?php if ($nvaluecurrbase==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>" data-desc="<?=$rows['currencyName']?>"><?=$rows['currencyName']?></option>
+												<?php
+														}
+													}
+												?>
+											</select>
+											<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?=$nvaluecurrbase; ?>"> 	
+											<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?=$nvaluecurrbasedesc; ?>"> 
+										</div>
+										<div class="col-xs-2 nopadwleft">
+											<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
+										</div>
+										<div class="col-xs-3" id="statgetrate" style="padding: 4px !important"> 																	
+										</div>
+									</div>
+								</td>
+								<tH style="padding:2px">&nbsp;</tH>
+								<td style="padding:2px">&nbsp;</td>
 							</tr>
 						</table>
 
@@ -461,7 +508,7 @@
 			items: 10,
 			source: function(request, response) {
 				$.ajax({
-					url: "../th_suppcust.php",
+					url: "../th_supplier.php",
 					dataType: "json",
 					data: {
 						query: $("#txtcust").val(), x: $("#selaptyp").val()
@@ -482,6 +529,10 @@
 				$("#txtpayee").val(item.value);
 				$("#hdncustewt").val(item.cewtcode);
 				$("#hdncustewtrate").val(item.newtrate);
+
+				$("#selbasecurr").val(item.cdefaultcurrency).change();
+				$("#basecurrval").val($("#selbasecurr").find(':selected').data('val'));
+				$("#hidcurrvaldesc").val($("#selbasecurr").find(':selected').data('desc'));
 			}
 		});
 
@@ -748,6 +799,16 @@
 		
 		});
 		
+		$("#selbasecurr").on("change", function (){
+	
+			var dval = $(this).find(':selected').attr('data-val');
+			var ddesc = $(this).find(':selected').attr('data-desc');
+	
+			$("#basecurrval").val(dval);
+			$("#hidcurrvaldesc").val(ddesc);
+			$("#statgetrate").html("");
+				
+		});
 		
 	});
 
@@ -1038,7 +1099,7 @@
 
 					$.ajax({
 						url: ''+url+'.php',
-						data: { x:x, cust:modcust, y:salesnos, typ:$('#selaptyp').val() },
+						data: { x:x, cust:modcust, y:salesnos, typ:$('#selaptyp').val(), curr:$('#selbasecurr').val() },
 						dataType: 'json',
 						async:false,
 						method: 'post',

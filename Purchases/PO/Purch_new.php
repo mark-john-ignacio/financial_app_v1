@@ -678,6 +678,12 @@ $(document).ready(function() {
 			$('#txtcust').val(item.value).change(); 
 			$("#txtcustid").val(item.id);
 
+			$("#selbasecurr").val(item.cdefaultcurrency).change(); //val
+			$("#basecurrvalmain").val($("#selbasecurr").data("val"));
+
+			$("#selterms").val(item.cterms).change();
+			
+
 			getcontact(item.id);
 		}
 	});

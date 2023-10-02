@@ -1,24 +1,28 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "SO_edit.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "SO.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
-require_once('../../Model/helper.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
+	require_once('../../Model/helper.php');
 
-$company = $_SESSION['companyid'];
+	$company = $_SESSION['companyid'];
 
-if(isset($_REQUEST['txtctranno'])){
+	if(isset($_REQUEST['txtctranno'])){
 		$txtctranno = $_REQUEST['txtctranno'];
-}
-else{
+	}
+	else{
 		$txtctranno = $_REQUEST['txtcsalesno'];
 	}
-	
-$company = $_SESSION['companyid'];
+
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'SO_edit.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
 
 //echo $ddeldate;
 
@@ -408,7 +412,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
     <div class="col-xs-5 nopadwleft"><input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL + F) Search Product Name..." size="80" tabindex="5"></div>
 </div>
 
-<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 1px solid #919b9c;width: 100%;height: 30vh;text-align: left;overflow: auto">
+<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 1px solid #919b9c;width: 100%;height: 40vh;text-align: left;overflow: auto">
 	
             <table id="MyTable" class="MyTable table table-condensed" width="100%">
 							<thead>
@@ -432,12 +436,15 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 </div>
 
-<table width="100%" border="0" cellpadding="3" style="margin-top: 5px">
+		
+		<table width="100%" border="0" cellpadding="3" style="margin-top: 5px">
 			<tr>
-				<td valign="top">
+				<td valign="top" width="70%">
 
 					<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
-		
+					<?php
+						if($poststat == "True"){
+					?>
 					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SO.php';" id="btnMain" name="btnMain">Back to Main<br>(ESC)</button>
 
 					<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='SO_new.php';" id="btnNew" name="btnNew">New<br>(F1)</button>
@@ -465,6 +472,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">Edit<br>(CTRL+E)    </button>
 					
 					<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">Save<br>(CTRL+S)    </button>
+
+					<?php
+						}
+					?>
 				</td>	
 
 				<td align="right" valign="top">
@@ -491,7 +502,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				</td>
 			</tr>
 		</table>
-
+		
 </fieldset>
     
    
@@ -732,7 +743,9 @@ file_name.map(({name, ext}, i) => {
 	});
 })
 
-
+	<?php
+		if($poststat == "True"){
+	?>
 	$(document).keydown(function(e) {	
 			
 	  if(e.keyCode == 112) { //F1
@@ -785,7 +798,9 @@ file_name.map(({name, ext}, i) => {
 	   	}
 		}
 	});
-
+	<?php
+		}
+	?>
 	
 	$(document).ready(function(e) {
 			$(".nav-tabs a").click(function(){

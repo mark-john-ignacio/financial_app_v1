@@ -34,7 +34,7 @@ include('../../include/denied.php');
 	}
 	
 	$cpono = $_REQUEST['x'];
-	$sqlhead = mysqli_query($con,"select a.*,b.cname from receive a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.ctranno = '$cpono'");
+	$sqlhead = mysqli_query($con,"select a.*,b.cname from suppinv a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.ctranno = '$cpono'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -101,7 +101,7 @@ function PrintRed(x){
 <table width="100%" border="0" cellpadding="3" style="border-collapse:collapse;" id="tblMain">
   <tr>
     <td><font size="3"><b><?php echo $companyname;?></b></font></td>
-    <td colspan="2" align="center"><font size="3"><b>Receiving</b></font></td>
+    <td colspan="2" align="center"><font size="3"><b>Supplier's Invoice</b></font></td>
   </tr>
   <tr>
    <!-- <td><font size="2"><b><?php //echo $companydesc;?></b></font></td> -->
@@ -116,7 +116,7 @@ function PrintRed(x){
   </tr>
   <tr>
     <td>&nbsp;</td>
-    <td width="100">Date Received:</td>
+    <td width="100">SI Date:</td>
     <td width="150"><?php echo date_format(date_create($DateNeeded), "m/d/Y"); ?></td>
   </tr>
   <tr>
@@ -149,7 +149,7 @@ function PrintRed(x){
         <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Total Php.</th>
       </tr>
       <?php 
-		$sqlbody = mysqli_query($con,"select a.*,b.citemdesc from receive_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$cpono' order by a.nident");
+		$sqlbody = mysqli_query($con,"select a.*,b.citemdesc from suppinv_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$cpono' order by a.nident");
 
 		if (mysqli_num_rows($sqlbody)!=0) {
 		$cntr = 0;

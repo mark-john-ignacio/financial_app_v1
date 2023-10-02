@@ -16,6 +16,7 @@ require_once "../Connection/connection_string.php";
 	  $json['id'] = $row['ccode'];
     $json['value'] = utf8_encode($row['cname']);
 		$json['cterms'] = $row['cterms'];
+		$json['cdefaultcurrency'] = $row['cdefaultcurrency'];
 		$json2[] = $json;
 
 	}

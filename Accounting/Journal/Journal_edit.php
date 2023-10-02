@@ -2,13 +2,20 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "Journal_edit.php";
+$_SESSION['pageid'] = "Journal.php";
 
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 include('../../include/access.php');
 
 $company = $_SESSION['companyid'];
+
+$poststat = "True";
+$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Journal_edit.php'");
+if(mysqli_num_rows($sql) == 0){
+	$poststat = "False";
+}
+
 $cjeno = $_REQUEST['txtctranno'];
 
 $sqlhead = mysqli_query($con,"select a.* from journal a where a.compcode='$company' and a.ctranno = '$cjeno'");
@@ -351,6 +358,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
             <input type="hidden" name="hdnACCCnt" id="hdnACCCnt">
 			</div>
 
+			<?php
+				if($poststat=="True"){
+			?>
 			<br>
 			<table width="100%" border="0" cellpadding="3">
 				<tr>
@@ -384,7 +394,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					<td align="right">&nbsp;</td>
 				</tr>
 			</table>
-
+			<?php
+				}
+			?>
     </fieldset>
 </form>
 
@@ -479,6 +491,9 @@ else{
 		});
 	}
 
+	<?php
+		if($poststat=="True"){
+	?>
 	$(document).keydown(function(e) {	 
 	
 	 if(e.keyCode == 112) { //F1
@@ -513,6 +528,9 @@ else{
 	  }
 
 	});
+	<?php
+		}
+	?>
 
 	$(function(){
 
