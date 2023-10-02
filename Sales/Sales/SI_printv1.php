@@ -217,7 +217,7 @@
 
     <div id='footer' class='container' style='width: 100%; margin-top: 2px;'>
         <div class='row' style='display: flex;'>
-            <div class='col-sm' style='width: 30%; margin-top: 50%; font-size: 9px; font-weight: bold;'>
+            <div class='col-sm' style='width: 30%; font-size: 9px; font-weight: bold;'>
                 PTU No.: <?= $ptucode ?><br>
                 Date Issued: <?= $ptudate ?><br>
                 Inclusive Serial No.: <?= $tranno ?><br><br>
