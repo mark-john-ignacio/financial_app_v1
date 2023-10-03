@@ -34,7 +34,9 @@ include('../../include/denied.php');
 	}
 	
 	$csalesno = $_REQUEST['x'];
-	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.chouseno,b.ccity,b.cstate,b.ctin from sales a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.compcode='$company' and a.ctranno = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.chouseno,b.ccity,b.cstate,b.ctin from sales a 
+  left join customers b on a.compcode=b.compcode and a.ccode=b.cempid 
+  where a.compcode='$company' and a.ctranno = '$csalesno'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -66,7 +68,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <head>
 </head>
 
-<body style="padding-top:0.7in" onLoad="window.print()">
+<body style="padding-top:0.8in" onLoad="window.print()">
 
 <table width="100%" border="0" cellpadding="1" style="border-collapse:collapse;" id="tblMain">
   <tr>
@@ -85,7 +87,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     </td>
     <td style="width: 2.7in" VALIGN="TOP"> 
-      <table width="100%" border="0">
+      <table width="100%" border="0" >
         <tr><td style="padding-right: 0.1in;" align="right"> <?=($PayType=="Credit") ? date_format(date_create($Date), "M d, Y") : "&nbsp;";?> </td></tr>
         <tr><td style="padding-right: 0.1in; padding-top: 5px" align="right"> <?=($PayType=="Cash") ? date_format(date_create($Date), "M d, Y") : "&nbsp;";?> </td></tr>
         <tr><td style="padding-right: 0.1in; padding-top: 10px" align="right"> <?=($PayType=="Credit") ? $cTerms : "&nbsp;";?> <??> </td></tr>
@@ -123,7 +125,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
       
             <tr> 
               <td style="width: 0.4in"  align="center"><?=$cntr;?></td>
-              <td style="text-overflow: ellipsis; width: 0.8in">&nbsp;&nbsp;<?php echo $rowbody['citemno'];?></td>
+              <td style="text-overflow: ellipsis; width: 0.6in">&nbsp;&nbsp;<?php echo $rowbody['citemno'];?></td>
               <td style="text-overflow: ellipsis; width: 3.25in"><?php echo $rowbody['citemdesc'];?></td>
               <td style="width: 0.5in" align="center"><?php echo number_format($rowbody['nqty']);?></td> 
               <td style="width: 0.5in" align="center"><?php echo $rowbody['cunit'];?></td>

@@ -103,7 +103,7 @@
         #totalamount {
             position: absolute; 
             top: 415px; 
-            left: 220px;
+            left: 175px;
         }
     </style>
 </head>
