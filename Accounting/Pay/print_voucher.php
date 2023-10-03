@@ -281,13 +281,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</tr>
 							
 							<?php
-								$sql2 = mysqli_query($con,"Select A.cacctno, B.cacctdesc, sum(A.napplied) as napplied From paybill_t A left join paybill C on A.compcode=C.compcode and A.ctranno=C.ctranno left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ctranno='$csalesno' group by A.cacctno, B.cacctdesc");
+								$sql2 = mysqli_query($con,"Select A.cacctno, B.cacctdesc, A.entrytyp, sum(A.napplied) as napplied From paybill_t A left join paybill C on A.compcode=C.compcode and A.ctranno=C.ctranno left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ctranno='$csalesno' group by A.cacctno, B.cacctdesc, A.entrytyp");
 								while($row = mysqli_fetch_array($sql2, MYSQLI_ASSOC)){
 							?>
 							<tr>
 								<td><?=$row['cacctdesc']?></td>
-								<td align="right"><?=number_format($row['napplied'],2)?></td>
-								<td align="right">&nbsp;</td>
+								<td align="right"><?=($row['entrytyp']=="Debit") ? number_format($row['napplied'],2) : ""?></td>
+								<td align="right"><?=($row['entrytyp']=="Credit") ? "" : number_format($row['napplied'],2)?></td>
 							</tr>
 							<?php
 								}

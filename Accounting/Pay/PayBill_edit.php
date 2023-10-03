@@ -1935,8 +1935,11 @@ else{
 				$.each(data,function(index,item){
 
 					//addrrdet(ctranno,ddate,namount,npayed,ntotowed,cacctno,cacctdesc,refno,ewtamt,ewtcode="",entrytyp=""){
-
-					addrrdet(item.capvno,item.dapvdate,item.namount,item.npayed,item.nowed,item.cacctno,item.napplied,item.cacctdesc,item.crefrr,item.newtamt,item.cewtcode,item.entrytyp,item.ncostcenter);
+					var xpayed = 0;
+					if ($('#isNoRef').find(":selected").val()==0) {
+						xpayed = item.npayed;
+					}
+					addrrdet(item.capvno,item.dapvdate,item.namount,xpayed,item.nowed,item.cacctno,item.napplied,item.cacctdesc,item.crefrr,item.newtamt,item.cewtcode,item.entrytyp,item.ncostcenter);
 				});
 
 				GoToCompAmt();
