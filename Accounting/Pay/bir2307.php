@@ -37,15 +37,16 @@
 		//$comptin = $row['comptin'];
 	}
 
-
 	//PAYEE INFO
 	$ccodesxz = "";
+	$dwithnorefz = 0;
 	$sqlrfp = "select * From paybill where compcode='$company' and ctranno='".$_POST["id"]."'";
 	$result=mysqli_query($con,$sqlrfp);
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 	{
 		$ccodesxz = $row['ccode'];
 		$dpaydate = $row['ddate'];
+		$dwithnorefz = $row['lnoapvref'];
 	}
 
 	//PAYEE INFO
@@ -355,6 +356,20 @@
 
 
 		<?php
+		$NOREFGAmt = 0;
+		if($dwithnorefz==1){
+
+			
+			$sqlrfp = "Select SUM(A.namount) as namount from paybill_t A where A.compcode='$company' and A.ctranno='".$_POST["id"]."' and A.cacctno not in ('".implode("','",$disreg)."') and A.entrytyp = 'Debit'";
+			$result=mysqli_query($con,$sqlrfp);
+			while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) 
+			{
+				$NOREFGAmt = $row['namount'];
+			}
+
+			$sqlrfp = "Select A.cewtcode, A.namount, A.newtamt, B.cdesc as ewtdesc, B.nrate from paybill_t A left join wtaxcodes B on A.compcode=B.compcode and A.cewtcode=B.ctaxcode where A.compcode='$company' and A.ctranno='".$_POST["id"]."' and A.cacctno='".$disregEWT."'";
+
+		}else{
 			$sqlrfp = "select B.compcode, B.ctranno, GROUP_CONCAT(B.cewtcode,'') as cewtcode, sum(B.namount) as namount, sum(B.ndue) as ndue, sum(B.newtamt) as newtamt, C.cdesc as ewtdesc, C.nrate
 			From paybill_t A 
 			left join
@@ -377,6 +392,7 @@
 			left join wtaxcodes C on B.compcode=C.compcode and B.cewtcode=C.ctaxcode
 			where A.compcode='$company' and A.ctranno='".$_POST["id"]."'
 			Group By B.compcode, B.ctranno";
+		}
 
 			//echo $sqlrfp;
 
@@ -412,12 +428,17 @@
 							$classcode = "dltri";
 						}
 					?>
-					<div class="detewtmonth <?=$classcode?>" style="top: <?=$deftop?>px !important"><?=number_format($row['namount'],2)?></div>
+					<div class="detewtmonth <?=$classcode?>" style="top: <?=$deftop?>px !important"><?=($dwithnorefz==1) ? number_format($NOREFGAmt,2) : number_format($row['namount'],2)?></div>
 
-					<div class="detewttotal" style="top: <?=$deftop?>px !important"><?=number_format($row['namount'],2)?></div>
+					<div class="detewttotal" style="top: <?=$deftop?>px !important"><?=($dwithnorefz==1) ? number_format($NOREFGAmt,2) : number_format($row['namount'],2)?></div>
 					<div class="detewtamt" style="top: <?=$deftop?>px !important"><?=number_format($row['newtamt'],2)?></div>
 		<?php
+			if($dwithnorefz==1) {
+				$totdues = $totdues + floatval($NOREFGAmt);
+			}else{
 				$totdues = $totdues + floatval($row['namount']);
+			}
+				
 				$totewts = $totewts + floatval($row['newtamt']);;
 			}
 		

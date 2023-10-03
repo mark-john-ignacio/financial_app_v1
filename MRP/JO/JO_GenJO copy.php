@@ -130,9 +130,8 @@
 		}
 	}
 
-	foreach($getboms as $rs){
-		getsubs($dmainitms,$dmainaryy['ctranno'],$dmainaryy['crefSO'],1,$dmainaryy['nqty']);
-	}
+	
+	getsubs($dmainitms,$dmainaryy['ctranno'],$dmainaryy['crefSO'],1,$dmainaryy['nqty']);
 
 	//mysqli_query($con,"Update so set lsent=1 where compcode='$company' and ctranno='$tranno'");
 
