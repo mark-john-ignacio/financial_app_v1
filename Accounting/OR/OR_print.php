@@ -46,29 +46,29 @@
 
         #receive_by {
             position: absolute; 
-            top: 205px; 
+            top: 200px; 
             left: 415px;
         }
         #receive_address {
             position: absolute; 
-            top: 230px; 
+            top: 225px; 
             left: 400px;
         }
 
         #receive_tin {
             position: absolute; 
-            top: 255px; 
+            top: 250px; 
             left: 650px;
         }
         #businessstyle {
             position: absolute; 
-            top: 255px; 
+            top: 250px; 
             left: 420px;
         }
 
         #sumInWords {
             position: absolute; 
-            top: 280px; 
+            top: 270    px; 
             width: 550px;
             left: 305px;
             text-indent: 24%;
@@ -78,7 +78,7 @@
 
         #sumInText {
             position: absolute; 
-            top: 315px; 
+            top: 310px; 
             left: 680px;
         }
         #invoiceTable {
