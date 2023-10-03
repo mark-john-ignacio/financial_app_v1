@@ -1464,9 +1464,22 @@
 			var z;
 			var gross = 0;
 			
+			//for (z=1; z<=lastRow; z++){
+				//gross = parseFloat(gross) + parseFloat($("#nApplied"+z).val().replace(/,/g,''));
+			//}
+
+			var totndebit = 0;
+			var totncredit = 0;
+
 			for (z=1; z<=lastRow; z++){
-				gross = parseFloat(gross) + parseFloat($("#nApplied"+z).val().replace(/,/g,''));
+				if($("#selentrytyp"+z).val()=="Debit"){
+					totndebit = parseFloat(totndebit) + parseFloat($("#nApplied"+z).val().replace(/,/g,''));
+				}else if($("#selentrytyp"+z).val()=="Credit"){
+					totncredit = parseFloat(totncredit) + parseFloat($("#nApplied"+z).val().replace(/,/g,''));
+				}
 			}
+
+			gross = parseFloat(totndebit) - parseFloat(totncredit);
 			
 			//document.getElementById("txtnGross").value = gross.toFixed(2);
 			$("#txttotpaid").val(gross);
@@ -1481,9 +1494,22 @@
 			var z;
 			var gross = 0;
 			
+			//for (z=1; z<=lastRow; z++){
+				//gross = parseFloat(gross) + parseFloat($("#nAmount"+z).val().replace(/,/g,''));
+		//	}
+
+			var totndebit = 0;
+			var totncredit = 0;
+
 			for (z=1; z<=lastRow; z++){
-				gross = parseFloat(gross) + parseFloat($("#nAmount"+z).val().replace(/,/g,''));
+				if($("#selentrytyp"+z).val()=="Debit"){
+					totndebit = parseFloat(totndebit) + parseFloat($("#nAmount"+z).val().replace(/,/g,''));
+				}else if($("#selentrytyp"+z).val()=="Credit"){
+					totncredit = parseFloat(totncredit) + parseFloat($("#nAmount"+z).val().replace(/,/g,''));
+				}
 			}
+
+			gross = parseFloat(totndebit) - parseFloat(totncredit);
 			
 			//document.getElementById("txtnGross").value = gross.toFixed(2);
 			$("#txtnGross").val(gross);
