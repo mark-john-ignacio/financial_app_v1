@@ -44,13 +44,17 @@ else {
 	$cPayee =  mysqli_real_escape_string($con, $_REQUEST['txtpayee']);
 	$nGross =  mysqli_real_escape_string($con, $_REQUEST['txtnGross']);
 	$cAPtype =  mysqli_real_escape_string($con, $_REQUEST['selaptyp']);
+
+	$CurrCode = $_REQUEST['selbasecurr']; 
+	$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
+	$CurrRate= $_REQUEST['basecurrval']; 
 	
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 
 	$nGross = str_replace( ',', '', $nGross );
 
 
-	if (!mysqli_query($con, "INSERT INTO `apv`(`compcode`, `ctranno`, `ddate`, `dapvdate`, `ccode`, `cpayee`, `cpaymentfor`, `ngross`, `cpreparedby`, `captype`) values('$company', '$cSINo', NOW(), STR_TO_DATE('$dTranDate', '%m/%d/%Y'), '$cCustID', '$cPayee','$cRemarks', $nGross, '$preparedby', '$cAPtype')")) {
+	if (!mysqli_query($con, "INSERT INTO `apv`(`compcode`, `ctranno`, `ddate`, `dapvdate`, `ccode`, `cpayee`, `cpaymentfor`, `ngross`, `cpreparedby`, `captype`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`) values('$company', '$cSINo', NOW(), STR_TO_DATE('$dTranDate', '%m/%d/%Y'), '$cCustID', '$cPayee','$cRemarks', $nGross, '$preparedby', '$cAPtype', '$CurrCode', '$CurrDesc', '$CurrRate')")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 	

@@ -19,12 +19,13 @@ require_once "../Connection/connection_string.php";
 			$imgsrc = "../../imgcust/".$row['cempid'] .".jpg";
 		}
 
-	     $json['id'] = $row['cempid'];
-     	 $json['value'] = utf8_encode($row['cname']);
-		 $json['nlimit'] = $row['nlimit'];
-		 $json['cver'] = $row['cpricever'];
-		 $json['imgsrc'] = $imgsrc;
-		 $json2[] = $json;
+	  $json['id'] = $row['cempid'];
+    $json['value'] = utf8_encode($row['cname']);
+		$json['nlimit'] = $row['nlimit'];
+		$json['cver'] = $row['cpricever'];
+		$json['imgsrc'] = $imgsrc;
+		$json['cdefaultcurrency'] = $row['cdefaultcurrency'];
+		$json2[] = $json;
 
 	}
 

@@ -118,6 +118,10 @@
 											<input type="text" class="form-control input-sm" id="txtInvoiceRef" name="txtInvoiceRef" width="20px" tabindex="2" placeholder="Search Supplier's Inv No..." readonly>      
 											<input type="hidden" id="invtyp" name="invtyp" value="">      
 										</div>
+
+										<div class="col-xs-2 nopadwleft">
+											<input type="text" class="form-control input-sm" id="txtcurr" name="txtcurr" width="20px" tabindex="2" placeholder="Currency..." readonly>
+										</div>
 								</div>
 							</td>
 							<tH width="150">&nbsp;</tH>
@@ -171,7 +175,7 @@
 						text-align: left;
 						overflow: auto">
 		
-						<table id="MyTable" class="MyTable table table-condensed" width="100%">
+						<table id="MyTable" class="MyTable table table-xs" width="100%">
 							<thead>
 								<tr>
 									<th style="border-bottom:1px solid #999">Account No.</th>
@@ -223,14 +227,14 @@
 </form>
 
 
-<!-- 1) Alert Modal -->
-<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-    <div class="vertical-alignment-helper">
-        <div class="modal-dialog vertical-align-top">
-            <div class="modal-content">
-               <div class="alert-modal-danger">
+			<!-- 1) Alert Modal -->
+				<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+    			<div class="vertical-alignment-helper">
+        		<div class="modal-dialog vertical-align-top">
+            	<div class="modal-content">
+               	<div class="alert-modal-danger">
                   <p id="AlertMsg"></p>
-                <p>
+                	<p>
                     <center>
                         <button type="button" class="btnmodz btn btn-primary btn-sm" id="OK">Ok</button>
                         <button type="button" class="btnmodz btn btn-danger btn-sm" id="Cancel">Cancel</button>
@@ -241,50 +245,85 @@
                         <input type="hidden" id="typ" name="typ" value = "">
                         <input type="hidden" id="modzx" name="modzx" value = "">
                     </center>
-                </p>
-               </div>
-            </div>
-        </div>
-    </div>
-</div>
+                	</p>
+               	</div>
+            	</div>
+        		</div>
+    			</div>
+				</div>
+			<!-- End Alert Modal -->
 
-<!-- FULL PO LIST REFERENCES-->
-
-<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog modal-md">
-        <div class="modal-content">
-            <div class="modal-header">
+			<!-- FULL PO LIST REFERENCES-->
+				<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
+    			<div class="modal-dialog modal-md">
+        		<div class="modal-content">
+            	<div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h3 class="modal-title" id="InvListHdr">Purchase Return List</h3>
-            </div>
+            	</div>
             
-            <div class="modal-body" style="height:40vh">
+            	<div class="modal-body" style="height:40vh">
             
-                    <div class="col-xs-12 nopadding pre-scrollable" style="height:37vh">
-                          <table name='MyInvTbl' id='MyInvTbl' class="table table-condensed">
-                           <thead>
-                            <tr>
-                              <th>PR No.</th>
-															<th>Receiving.</th>
-															<th>Supp. Inv.</th>
-                              <th>Date</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                          </table>
-                    </div>
+                <div class="col-xs-12 nopadding pre-scrollable" style="height:37vh">
+                  <table name='MyInvTbl' id='MyInvTbl' class="table table-condensed">
+                    <thead>
+                      <tr>
+                        <th>PR No.</th>
+												<th>Receiving.</th>
+												<th>Supp. Inv.</th>
+                        <th>Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                </div>
          	            
-			</div>
+							</div>
 			
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            	<div class="modal-footer">
+              	<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            	</div>
+        		</div><!-- /.modal-content -->
+    			</div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->
+			<!-- End FULL INVOICE LIST -->
 
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<!-- End FULL INVOICE LIST -->
+			<!-- FULL SUPPLIERS INVOICE LIST REFERENCES-->
+				<div class="modal fade" id="myInvoiceRef" role="dialog" data-keyboard="false" data-backdrop="static">
+    			<div class="modal-dialog modal-lg">
+        		<div class="modal-content">
+            	<div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title" id="InvListHdr">Suppliers Invoice List</h3>
+            	</div>
+            
+            	<div class="modal-body" style="height:40vh">
+            
+                <div class="col-xs-12 nopadding pre-scrollable" style="height:37vh">
+                  <table name='MyInvoiceTbl' id='MyInvoiceTbl' class="table table-condensed">
+                    <thead>
+                      <tr>
+												<th>Supp Invoice No.</th>
+												<th>SI No.</th>
+												<th>Remarks</th>
+												<th>Date</th>
+											</tr>
+										</thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                </div>
+         	            
+							</div>
+			
+            	<div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            	</div>
+        		</div><!-- /.modal-content -->
+    			</div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->
+			<!-- End FULL INVOICE LIST -->
 
 </body>
 </html>
@@ -533,7 +572,7 @@
 		});	
 
 		$('body').on('keyup', '#txtInvoiceRef', function() {
-			$("#txtInvoiceRef").typeahead({
+			/*$("#txtInvoiceRef").typeahead({
 				autoSelect: true,
 				source: function(request, response) {
 					$.ajax({
@@ -555,7 +594,7 @@
 					$('#txtInvoiceRef').val(item.no).change(); 	
 					$('#invtyp').val(item.typx).change();							
 				}
-			});
+			});*/
 		});
 
 		$('body').on('keypress', '.cRem', function(e) {
@@ -582,7 +621,7 @@
 			$("#txtInvoiceRef").val("");
 
 			$('#MyTable > tbody > tr').not(':first').empty();		
-
+			/*
       if(this.checked) {				
 				$("#btnSISearch").attr("disabled", false);
 				$("#txtInvoiceRef").attr("readonly", true);
@@ -590,6 +629,7 @@
 				$("#btnSISearch").attr("disabled", true);
 				$("#txtInvoiceRef").attr("readonly", false);
 			}
+			*/
 		});
 
 	});
@@ -626,6 +666,13 @@
 	}
 
 	function InsertDet(){
+		var varcheck = "";
+		if ($('#isReturn').is(':checked')) {
+			varcheck = "sr";
+		}else{
+			varcheck = "si";
+		}
+
 		if($("#txtcust").val()!="" || $("#txtcustid").val()!=""){
 
 			$('#MyInvTbl tbody').empty();
@@ -635,68 +682,123 @@
 				var ccode = $("#txtcustid").val();						
 				var xstat = "YES";
 						
-				$.ajax({
-					url: 'th_qolist.php',
-					data: 'x='+ccode,
-					dataType: 'json',
-					method: 'post',
-					success: function (data) {
+				if(varcheck=="sr"){
 
-						console.log(data);
-						$.each(data,function(index,item){
-									
-							if(item.cpono=="NONE"){
-								$("#AlertMsg").html("No Sales Return Available");
-								$("#alertbtnOK").show();
-								$("#OK").hide();
-								$("#Cancel").hide();
-								$("#AlertModal").modal('show');
+					$.ajax({
+						url: 'th_qolist.php',
+						data: 'x='+ccode,
+						dataType: 'json',
+						method: 'post',
+						success: function (data) {
 
-								xstat = "NO";
-									
-								$("#txtcustid").attr("readonly", false);
-								$("#txtcust").attr("readonly", false);
+							console.log(data);
+							$.each(data,function(index,item){
+										
+								if(item.cpono=="NONE"){
+									$("#AlertMsg").html("No Sales Return Available");
+									$("#alertbtnOK").show();
+									$("#OK").hide();
+									$("#Cancel").hide();
+									$("#AlertModal").modal('show');
+
+									xstat = "NO";
+										
+									$("#txtcustid").attr("readonly", false);
+									$("#txtcust").attr("readonly", false);
+								}
+								else{
+
+									if(item.crefinv!==""){
+										
+										$("<tr>").append(
+											$("<td id='td"+item.cpono+"'>").html("<a href=\"javascript:;\" data-dismiss=\"modal\" onclick=\"setinvref('"+item.cpono+"', '"+item.crefinv+"', '"+varcheck+"','"+item.ccurrencycode+"')\">"+item.cpono+"</a>"),
+											$("<td>").text(item.cref),
+											$("<td>").text(item.crefinv),
+											$("<td>").text(item.dcutdate)
+										).appendTo("#MyInvTbl tbody");
+																	
+										$("#td"+item.cpono).on("mouseover", function(){
+											$(this).css('cursor','pointer');
+										});
+
+									}else{
+										$("<tr>").append(
+											$("<td id='td"+item.cpono+"'>").html(item.cpono),
+											$("<td>").text(item.cref),
+											$("<td>").text("No Inv."),
+											$("<td>").text(item.dcutdate)
+										).appendTo("#MyInvTbl tbody");
+									}
+
+								}
+							});
+								
+							if(xstat=="YES"){
+								$('#mySIRef').modal("show");
 							}
-							else{
+						},
+						error: function (req, status, err) {
+							console.log('Something went wrong', status, err);
+							$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+							$("#alertbtnOK").show();
+							$("#OK").hide();
+							$("#Cancel").hide();
+							$("#AlertModal").modal('show');
+						}
+					});
+				}else{
+					$.ajax({
+						url: 'th_invoices.php',
+						data: 'ccode='+ccode,
+						dataType: 'json',
+						method: 'post',
+						success: function (data) {
 
-								if(item.crefinv!==""){
-									
+							console.log(data);
+							$.each(data,function(index,item){
+										
+								if(item.cpono=="NONE"){
+									$("#AlertMsg").html("No Sales Invoice Available");
+									$("#alertbtnOK").show();
+									$("#OK").hide();
+									$("#Cancel").hide();
+									$("#AlertModal").modal('show');
+
+									xstat = "NO";
+										
+									$("#txtcustid").attr("readonly", false);
+									$("#txtcust").attr("readonly", false);
+								}
+								else{
+
 									$("<tr>").append(
-										$("<td id='td"+item.cpono+"'>").html("<a href=\"javascript:;\" data-dismiss=\"modal\" onclick=\"setinvref('"+item.cpono+"', '"+item.crefinv+"')\">"+item.cpono+"</a>"),
-										$("<td>").text(item.cref),
-										$("<td>").text(item.crefinv),
-										$("<td>").text(item.dcutdate)
-									).appendTo("#MyInvTbl tbody");
+										$("<td id='td"+item.cpono+"'>").html("<a href=\"javascript:;\" data-dismiss=\"modal\" onclick=\"setinvref('', '"+item.no+"','"+varcheck+"','"+item.ccurrencycode+"')\">"+item.no+"</a>"),
+										$("<td>").text(item.crefsi),
+										$("<td>").text(item.cremarks),
+										$("<td>").text(item.cutdate)
+									).appendTo("#MyInvoiceTbl tbody");
 																
 									$("#td"+item.cpono).on("mouseover", function(){
 										$(this).css('cursor','pointer');
 									});
-
-								}else{
-									$("<tr>").append(
-										$("<td id='td"+item.cpono+"'>").html(item.cpono),
-										$("<td>").text(item.cref),
-										$("<td>").text("No Inv."),
-										$("<td>").text(item.dcutdate)
-									).appendTo("#MyInvTbl tbody");
 								}
-
+							});
+								
+							if(xstat=="YES"){
+								$('#myInvoiceRef').modal("show");
 							}
-						});
-							
-						if(xstat=="YES"){
-							$('#mySIRef').modal("show");
+						},
+						error: function (req, status, err) {
+							console.log('Something went wrong', status, err);
+							$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+							$("#alertbtnOK").show();
+							$("#OK").hide();
+							$("#Cancel").hide();
+							$("#AlertModal").modal('show');
 						}
-					},
-					error: function (req, status, err) {
-						console.log('Something went wrong', status, err);
-						$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
-						$("#alertbtnOK").show();
-						$("#OK").hide();
-						$("#Cancel").hide();
-						$("#AlertModal").modal('show');
-					}
-				});
+					});
+				}
+
 		}else{
 			$("#AlertMsg").html("&nbsp;&nbsp;Enter a valid customer first...");
 			$("#alertbtnOK").show();
@@ -708,46 +810,48 @@
 		}
 	}
 
-	function setinvref(srno,invno){
+	function setinvref(srno,invno,chkx,currcode){
 		$('#txtSIRef').val(srno);
 		$('#txtInvoiceRef').val(invno);
+		$('#txtcurr').val(currcode).change();
 		
-		//default entry from invoice... reverese
-		$('#MyTable > tbody').empty();	
+		if(chkx=="sr"){
+			//default entry from invoice... reverese
+			$('#MyTable > tbody').empty();	
+			$.ajax({
+				url: 'th_getsientry.php',
+				data: 'srno='+srno+'&invno='+invno,
+				dataType: 'json',
+				method: 'post',
+				success: function (data) {
 
-		$.ajax({
-			url: 'th_getsientry.php',
-			data: 'srno='+srno+'&invno='+invno,
-			dataType: 'json',
-			method: 'post',
-			success: function (data) {
+					console.log(data);
+					$.each(data,function(index,item){
 
-				console.log(data);
-				$.each(data,function(index,item){
+						rowCount = index + 1;
 
-					rowCount = index + 1;
+						$('#MyTable > tbody:last-child').append(
+							'<tr>'// need to change closing tag to an opening `<tr>` tag.
+							+'<td width="100px" style="padding:1px"><input type="text" class="typeno form-control input-xs" name="txtcAcctNo'+rowCount+'" id="txtcAcctNo'+rowCount+'"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctDesc'+rowCount+'" data-debit="txtnDebit'+rowCount+'" value="'+item.cacctid+'"></td>'
+							+'<td style="padding:1px"><input type="text" class="typedesc form-control input-xs" name="txtcAcctDesc'+rowCount+'" id="txtcAcctDesc'+rowCount+'"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctNo'+rowCount+'" data-debit="txtnDebit'+rowCount+'" value="'+item.cacctdesc+'"> </td>'
+							+'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit'+rowCount+'" id="txtnDebit'+rowCount+'" autocomplete="off" value="'+item.ndebit+'"</td>'
+							+'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit'+rowCount+'" id="txtnCredit'+rowCount+'" autocomplete="off" value="'+item.ncredit+'"></td>'
+							+'<td width="200px" style="padding:1px"><input type="text" class="cRem form-control input-xs" name="txtcRem'+rowCount+'" id="txtcRem'+rowCount+'" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"></td>'
+							+'<td width="40px" align="right"><input class="btn btn-danger btn-xs" type="button" id="row_'+rowCount+'_delete" value="delete" onClick="deleteRow(this);"/></td>'+'</tr>'
+						);
 
-					$('#MyTable > tbody:last-child').append(
-						'<tr>'// need to change closing tag to an opening `<tr>` tag.
-						+'<td width="100px" style="padding:1px"><input type="text" class="typeno form-control input-xs" name="txtcAcctNo'+rowCount+'" id="txtcAcctNo'+rowCount+'"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctDesc'+rowCount+'" data-debit="txtnDebit'+rowCount+'" value="'+item.cacctid+'"></td>'
-						+'<td style="padding:1px"><input type="text" class="typedesc form-control input-xs" name="txtcAcctDesc'+rowCount+'" id="txtcAcctDesc'+rowCount+'"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctNo'+rowCount+'" data-debit="txtnDebit'+rowCount+'" value="'+item.cacctdesc+'"> </td>'
-						+'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit'+rowCount+'" id="txtnDebit'+rowCount+'" autocomplete="off" value="'+item.ndebit+'"</td>'
-						+'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit'+rowCount+'" id="txtnCredit'+rowCount+'" autocomplete="off" value="'+item.ncredit+'"></td>'
-						+'<td width="200px" style="padding:1px"><input type="text" class="cRem form-control input-xs" name="txtcRem'+rowCount+'" id="txtcRem'+rowCount+'" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"></td>'
-						+'<td width="40px" align="right"><input class="btn btn-danger btn-xs" type="button" id="row_'+rowCount+'_delete" value="delete" onClick="deleteRow(this);"/></td>'+'</tr>'
-					);
+					});
 
-				});
+					$("input.numeric").autoNumeric('init',{mDec:2});
+					$("input.numeric").on("focus click", function () {
+						$(this).select();
+					});
 
-				$("input.numeric").autoNumeric('init',{mDec:2});
-				$("input.numeric").on("focus click", function () {
-					$(this).select();
-				});
+					computegross()
 
-				computegross()
-
-			}
-		});
+				}
+			});
+		}
 	}
 
 	function InsertRows(thisNme,rowCount){

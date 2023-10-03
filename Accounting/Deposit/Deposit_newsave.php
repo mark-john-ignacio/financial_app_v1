@@ -51,10 +51,13 @@ else {
 	$nGross =  mysqli_real_escape_string($con, $_REQUEST['txtnGross']);
 	$nGross = str_replace(",","",$nGross);
 	
-	
+	$CurrCode = $_REQUEST['selbasecurr']; 
+	$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
+	$CurrRate= $_REQUEST['basecurrval'];
+
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 	
-	if (!mysqli_query($con, "INSERT INTO `deposit`(`compcode`, `ctranno`, `cortype`, `ddate`, `dcutdate`, `cremarks`, `cacctcode`, `cpreparedby`, `namount`) values('$company', '$cSINo', '$cPayMethod', NOW(), STR_TO_DATE('$dTranDate', '%m/%d/%Y'), '$cRemarks', '$cAcctNo', '$preparedby', $nGross)")) {
+	if (!mysqli_query($con, "INSERT INTO `deposit`(`compcode`, `ctranno`, `cortype`, `ddate`, `dcutdate`, `cremarks`, `cacctcode`, `cpreparedby`, `namount`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`) values('$company', '$cSINo', '$cPayMethod', NOW(), STR_TO_DATE('$dTranDate', '%m/%d/%Y'), '$cRemarks', '$cAcctNo', '$preparedby', $nGross, '$CurrCode', '$CurrDesc', '$CurrRate')")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 	

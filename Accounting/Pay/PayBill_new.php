@@ -135,7 +135,7 @@
 								?>
 								<tr>
 									<td><span style="padding:2px"><b>Paid To:</b></span></td>
-									<td class="nopadwtop2x">
+									<td>
 									<div class="col-xs-12"  style="padding-left:2px">
 										<div class="col-xs-2 nopadding">
 												<input type="text" class="form-control input-sm"  id="txtcustid" name="txtcustid" readonly>
@@ -164,8 +164,8 @@
 								<tr>
 									<td width="150"><span style="padding:2px"><b>Payment Method</b></span></td>
 									<td>
-										<div class="col-xs-12" style="padding-left:2px">
-											<div class="col-xs-4 nopadding">
+										<div class="row nopadwleft" style="padding-left:2px">
+											<div class="col-xs-3 nopadding">
 												<select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
 													<option value="cheque">Cheque</option>
 													<option value="cash">Cash</option>
@@ -174,6 +174,32 @@
 													<option value="credit card">Credit Card</option>
 													<option value="debit card">Debit Card</option>
 												</select>
+											</div>
+											<div class="col-xs-9 nopadwleft">
+
+													<div class="col-xs-7 nopadding" id="paymntrefrdet">
+
+														<div class="col-xs-7 nopadding">
+															<input type='text' class='noref form-control input-sm' name='txtCheckNo' id='txtCheckNo' value="" readonly required placeholder="Check No."/>
+															<input type='hidden' name='txtChkBkNo' id='txtChkBkNo' value="" />
+														</div>	
+														<div class="col-xs-5 nopadwleft">
+															<button type="button" class="btn btn-danger btn-sm disabled" name="btnVoid" id="btnVoid" data-toggle="popover" data-content="Void Check" data-trigger="hover" data-placement="top" disabled><i class="fa fa-ban" aria-hidden="true"></i></button> 
+															
+															<button type="button" class="btn btn-warning btn-sm disabled" name="btnreserve" id="btnreserve" data-toggle="popover" data-content="Reserve Check" data-trigger="hover" data-placement="top" disabled><i class="fa fa-calendar-plus-o" aria-hidden="true"></i></button> 	
+														</div>
+													</div>
+
+													<div class="col-xs-7 nopadding" style="display: none" id="payrefothrsdet">
+														<input type="text" id="txtPayRefrnce" class="noref form-control input-sm" name="txtPayRefrnce" value="" placeholder="Reference No.">
+													</div>
+
+													<div class="col-xs-5 nopadding">
+														<div class="input-sm no-border" style="color: red" id="chknochek">
+														
+														</div>
+													</div>
+
 											</div>
 									</td>
 									<td width="120"><span style="padding:2px"><b>Payment Date:</b></span></td>
@@ -189,14 +215,14 @@
 
 								<td width="150"><span style="padding:2px" id="paymntdesc"><b>Bank Name</b></span></td>
 									<td>
-										<div class="col-xs-12"  style="padding-left:2px" id="paymntdescdet">
+										<div class="row nopadwleft" id="paymntdescdet">
 											<div class="col-xs-3 nopadding">
 												<input type="text" id="txtBank" class="form-control input-sm" name="txtBank" value="" placeholder="Bank Code" readonly required>
 											</div>
 											<div class="col-xs-1 nopadwleft">
 												<button type="button" class="btn btn-block btn-primary btn-sm" name="btnsearchbank" id="btnsearchbank"><i class="fa fa-search"></i></button>
 											</div>
-											<div class="col-xs-8 nopadwleft">
+											<div class="col-xs-8 nopadwleft" style="padding-right:15px !important">
 												<input type="text" class="form-control input-sm" id="txtBankName" name="txtBankName" width="20px" tabindex="1" placeholder="Bank Name..." required value="" autocomplete="off" readonly>
 											</div>
 											
@@ -213,35 +239,44 @@
 									</td>								
 								</tr>
 								<tr>  
-									<td><span style="padding:2px" id="paymntrefr"><b>Check No.</b></span></td>
+									<td><span style="padding:2px" id="paymntrefr"><b>Currency</b></span></td>
 									<td>
-											
-											<div class="col-xs-12"  style="padding-left:2px">
+										<div class="row nopadwleft">
+											<div class="col-xs-7 nopadding">
+												<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">					
+													<?php
+																		
+														$nvaluecurrbase = "";	
+														$nvaluecurrbasedesc = "";	
+														$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+																				
+														if (mysqli_num_rows($result)!=0) {
+															$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);																				
+															$nvaluecurrbase = $all_course_data['cvalue']; 																					
+														}
+														else{
+															$nvaluecurrbase = "";
+														}
 
-												<div class="col-xs-7 nopadding" id="paymntrefrdet">
-
-													<div class="col-xs-7 nopadding">
-														<input type='text' class='noref form-control input-sm' name='txtCheckNo' id='txtCheckNo' value="" readonly required placeholder="Check No."/>
-														<input type='hidden' name='txtChkBkNo' id='txtChkBkNo' value="" />
-													</div>	
-													<div class="col-xs-5 nopadwleft">
-														<button type="button" class="btn btn-danger btn-sm disabled" name="btnVoid" id="btnVoid" data-toggle="popover" data-content="Void Check" data-trigger="hover" data-placement="top" disabled><i class="fa fa-ban" aria-hidden="true"></i></button> 
-														
-														<button type="button" class="btn btn-warning btn-sm disabled" name="btnreserve" id="btnreserve" data-toggle="popover" data-content="Reserve Check" data-trigger="hover" data-placement="top" disabled><i class="fa fa-calendar-plus-o" aria-hidden="true"></i></button> 	
-													</div>
-												</div>
-
-												<div class="col-xs-7 nopadding" style="display: none" id="payrefothrsdet">
-													<input type="text" id="txtPayRefrnce" class="noref form-control input-sm" name="txtPayRefrnce" value="" placeholder="Reference No.">
-												</div>
-
-												<div class="col-xs-5 nopadding">
-													<div class="input-sm no-border" style="color: red" id="chknochek">
-													
-													</div>
-												</div>
+														$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+														if (mysqli_num_rows($sqlhead)!=0) {
+															while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+													?>
+														<option value="<?=$rows['id']?>" <?php if ($nvaluecurrbase==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>" data-desc="<?=$rows['currencyName']?>"><?=$rows['currencyName']?></option>
+													<?php
+															}
+														}
+													?>
+												</select>
+												<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?=$nvaluecurrbase; ?>"> 	
+												<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?=$nvaluecurrbasedesc; ?>"> 
 											</div>
-
+											<div class="col-xs-2 nopadwleft">
+												<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
+											</div>
+											<div class="col-xs-3" id="statgetrate" style="padding: 4px !important"> 																	
+											</div>
+										</div>											
 									</td>
 									<td><span style="padding:2px" id="chkdate"><b>Amount Paid:</b></span></td>
 									<td>
@@ -713,7 +748,11 @@
 				$('#txtcust').val(item.value).change(); 
 				$("#txtcustid").val(item.id);
 				$("#txtpayee").val(item.value); 
-				$("#hdncustewt").val(item.cewtcode); 
+				$("#hdncustewt").val(item.cewtcode);
+				
+				$("#selbasecurr").val(item.cdefaultcurrency).change();
+				$("#basecurrval").val($("#selbasecurr").find(':selected').data('val'));
+				$("#hidcurrvaldesc").val($("#selbasecurr").find(':selected').data('desc'));
 
 				if($('#isNoRef').find(":selected").val() == 0){
 					showapvmod(item.id);
@@ -922,8 +961,8 @@
 				//$("#paymntrefr").html(" ");		
 				
 				//$("#paymntdescdet").hide();
-				//$("#paymntrefrdet").hide();
-				//$("#payrefothrsdet").hide(); 
+				$("#paymntrefrdet").hide();
+				$("#payrefothrsdet").hide(); 
 
 				$("#btnsearchbank").attr("disabled", true);
 				$("#chkdate").html("<b>Check Date</b>");
@@ -935,8 +974,8 @@
 				$("#txtPayRefrnce").prop("required", false); 
 
 			}else if($(this).val()=="cheque"){	
-				$("#paymntdesc").html("<b>Bank Name</b>");	
-				$("#paymntrefr").html("<b>Check No.</b>");
+				//$("#paymntdesc").html("<b>Bank Name</b>");	
+				//$("#paymntrefr").html("<b>Check No.</b>");
 
 				$("#paymntdescdet").show();
 				$("#paymntrefrdet").show();
@@ -952,8 +991,8 @@
 				$("#txtPayRefrnce").prop("required", false);
 
 			}else if($(this).val()=="bank transfer"){
-				$("#paymntdesc").html("<b>Bank Name</b>");
-				$("#paymntrefr").html("<b>Reference No.</b>");
+				//$("#paymntdesc").html("<b>Bank Name</b>");
+				//$("#paymntrefr").html("<b>Reference No.</b>");
 
 				$("#paymntdescdet").show();
 				$("#paymntrefrdet").hide();
@@ -968,8 +1007,8 @@
 				$("#txtCheckNo").prop("required", false); 
 				$("#txtPayRefrnce").prop("required", true);
 			}else{
-				$("#paymntdesc").html("<b>Bank Name</b>");
-				$("#paymntrefr").html("<b>Reference No.</b>");
+				//$("#paymntdesc").html("<b>Bank Name</b>");
+				//$("#paymntrefr").html("<b>Reference No.</b>");
 
 				$("#paymntdescdet").show();
 				$("#paymntrefrdet").hide();
@@ -1022,9 +1061,24 @@
 			}
 		});
 
+		$("#selbasecurr").on("change", function (){
+	
+			var dval = $(this).find(':selected').attr('data-val');
+			var ddesc = $(this).find(':selected').attr('data-desc');
+
+			$("#basecurrval").val(dval);
+			$("#hidcurrvaldesc").val(ddesc);
+			$("#statgetrate").html("");
+
+			$('#MyTable tbody').empty();
+				
+		});
+
 	});
 		
 	function showapvmod(custid){
+
+		$('#APListHeader').html("AP List: "+$('#txtcust').val()+" ("+$('#selbasecurr').val()+")");
 
 		$('#MyAPVList tbody').empty(); /* , typ: $("#selpaytype").val()  */
 
@@ -1049,14 +1103,21 @@
 					}
 					else{
 				
+						var chkbox = "";
+						if(item.ccurrencycode!=$('#selbasecurr').val()){
+							chkbox = "";
+						}else{
+							chkbox = "<input type='checkbox' value='"+index+"' name='chkSales[]'>";
+						}
+
 						$("<tr id=\"APV"+index+"\">").append(
-							$("<td>").html("<input type='checkbox' value='"+index+"' name='chkSales[]'>"), 
+							$("<td>").html(chkbox), 
 							$("<td>").html(item.ctranno+"<input type='hidden' id='APVtxtno"+index+"' name='APVtxtno"+index+"' value='"+item.ctranno+"'> <input type='hidden' id='hdnAPVewt"+index+"' name='hdnAPVewt"+index+"' value='"+item.newtamt+"'>"),
 							$("<td>").html(item.crefno+"<input type='hidden' id='APVrrno"+index+"' name='APVrrno"+index+"' value='"+item.crefno+"'>"),
 							$("<td>").html(item.dapvdate+"<input type='hidden' id='APVdte"+index+"' name='APVdte"+index+"' value='"+item.dapvdate+"'>"),
 							$("<td>").html(item.cacctno+"<input type='hidden' id='APVacctno"+index+"' name='APVacctno"+index+"' value='"+item.cacctno+"'>"),
 							$("<td>").html(item.cacctdesc+"<input type='hidden' id='APVacctdesc"+index+"' name='APVacctdesc"+index+"' value='"+item.cacctdesc+"'>"),
-							$("<td>").html(item.namount+"<input type='hidden' id='APVamt"+index+"' name='APVamt"+index+"' value='"+item.namount+"'> <input type='hidden' id='APVpayed"+index+"' name='APVpayed"+index+"' value='"+item.napplied+"'>")
+							$("<td>").html(item.namount+" " +item.ccurrencycode+"<input type='hidden' id='APVamt"+index+"' name='APVamt"+index+"' value='"+item.namount+"'> <input type='hidden' id='APVpayed"+index+"' name='APVpayed"+index+"' value='"+item.napplied+"'>")
 						).appendTo("#MyAPVList tbody");
 										
 						$("#myAPModal").modal("show");

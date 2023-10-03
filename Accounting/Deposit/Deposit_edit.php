@@ -1,18 +1,25 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "Deposit_edit.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "Deposit.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access.php');
 
-$company = $_SESSION['companyid'];
-$corno = $_REQUEST['txtctranno'];
+	$company = $_SESSION['companyid'];
+
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Deposit_edit.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
+	$corno = $_REQUEST['txtctranno'];
 
 
-@$arrfiles = array();
+	@$arrfiles = array();
 	@$arrname = array();
 
 	if (file_exists('../../Components/assets/Deposit/'.$company.'_'.$corno.'/')) {
@@ -77,7 +84,7 @@ $corno = $_REQUEST['txtctranno'];
 
 <?php
 
-    	$sqlchk = mysqli_query($con,"Select a.cacctcode, a.namount, a.cortype, DATE_FORMAT(a.dcutdate,'%m/%d/%Y') as dcutdate, a.namount, a.lapproved, a.lcancelled, a.lprintposted, a.lvoid, a.cremarks, c.cacctdesc, c.nbalance From deposit a left join accounts c on a.compcode=c.compcode and a.cacctcode=c.cacctid where a.compcode='$company' and a.ctranno='$corno'");
+    	$sqlchk = mysqli_query($con,"Select a.cacctcode, a.namount, a.cortype, DATE_FORMAT(a.dcutdate,'%m/%d/%Y') as dcutdate, a.namount, a.lapproved, a.lcancelled, a.lprintposted, a.lvoid, a.cremarks, c.cacctdesc, c.nbalance, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate From deposit a left join accounts c on a.compcode=c.compcode and a.cacctcode=c.cacctid where a.compcode='$company' and a.ctranno='$corno'");
 if (mysqli_num_rows($sqlchk)!=0) {
 		while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
 			$nDebitDef = $row['cacctcode'];
@@ -87,11 +94,16 @@ if (mysqli_num_rows($sqlchk)!=0) {
 			$dDate = $row['dcutdate'];
 			$nAmount = $row['namount'];
 			$cRemarks = $row['cremarks'];
+
+			$ccurrcode = $row['ccurrencycode'];  
+			$ccurrdesc = $row['ccurrencydesc']; 
+			$ccurrrate = $row['nexchangerate'];
 			
 			$lPosted = $row['lapproved'];
 			$lCancelled = $row['lcancelled'];
 			$lPrintPost = $row['lprintposted'];
 			$lVoid = $row['lvoid'];
+			
 		}
 
 ?>
@@ -174,8 +186,45 @@ if (mysqli_num_rows($sqlchk)!=0) {
 								</td>
 							</tr>
 							<tr>
-								<tH>&nbsp;</tH>
-								<td style="padding:2px;">&nbsp;</td>
+							<tH width="150">Currency:</tH>
+								<td style="padding:2px;">
+									<div class="row nopadding">
+										<div class="col-xs-8 nopadding">
+											<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">					
+												<?php
+																	
+													$nvaluecurrbase = "";	
+													$nvaluecurrbasedesc = "";	
+													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+																			
+													if (mysqli_num_rows($result)!=0) {
+														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);																				
+														$nvaluecurrbase = $all_course_data['cvalue']; 																					
+													}
+													else{
+														$nvaluecurrbase = "";
+													}
+
+													$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+													if (mysqli_num_rows($sqlhead)!=0) {
+														while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+												?>
+													<option value="<?=$rows['id']?>" <?php if ($ccurrcode==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>" data-desc="<?=$rows['currencyName']?>"><?=$rows['currencyName']?></option>
+												<?php
+														}
+													}
+												?>
+											</select>
+											<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?=$nvaluecurrbase; ?>"> 	
+											<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?=$ccurrdesc; ?>"> 
+										</div>
+										<div class="col-xs-2 nopadwleft">
+											<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="<?=$ccurrrate; ?>">	 
+										</div>
+										<div class="col-xs-2" id="statgetrate" style="padding: 4px !important"> 																	
+										</div>
+									</div>
+								</td>	
 								<tH>&nbsp;</tH>
 								<td style="padding:2px;">&nbsp;</td>
 							</tr>
@@ -293,35 +342,44 @@ if (mysqli_num_rows($sqlchk)!=0) {
 								<input type="hidden" name="hdnrowcnt" id="hdnrowcnt" value="0">
 						</div>
 
-				
+				<?php
+					if($poststat=="True"){
+				?>
 				<br>
 				<table width="100%" border="0" cellpadding="3">
 					<tr>
 						<td width="50%">
-				<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Deposit.php';" id="btnMain" name="btnMain">
-				Back to Main<br>(ESC)</button>
+							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Deposit.php';" id="btnMain" name="btnMain">
+								Back to Main<br>(ESC)
+							</button>
 					
-						<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='Deposit_new.php';" id="btnNew" name="btnNew">
-				New<br>(F1)</button>
+							<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='Deposit_new.php';" id="btnNew" name="btnNew">
+								New<br>(F1)
+							</button>
 
-						<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmOR');" id="btnUndo" name="btnUndo">
-				Undo Edit<br>(CTRL+Z)
-						</button>
+							<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmOR');" id="btnUndo" name="btnUndo">
+								Undo Edit<br>(CTRL+Z)
+							</button>
 
-						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $corno;?>');" id="btnPrint" name="btnPrint">
-				Print<br>(CTRL+P)
-						</button>
+							<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $corno;?>');" id="btnPrint" name="btnPrint">
+								Print<br>(CTRL+P)
+							</button>
 						
-						<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
-				Edit<br>(CTRL+E)    </button>
+							<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
+								Edit<br>(CTRL+E)    
+							</button>
 						
-						<button type="submit" class="btn btn-success btn-sm" tabindex="6" id="btnSave" name="btnSave">
-				Save<br>(CTRL+S)    </button>
+							<button type="submit" class="btn btn-success btn-sm" tabindex="6" id="btnSave" name="btnSave">
+								Save<br>(CTRL+S)    
+							</button>
 
-				</td>
+						<td>
 						<td align="right">&nbsp;</td>
 					</tr>
 				</table>
+				<?php
+					}
+				?>
 
     </fieldset>
 

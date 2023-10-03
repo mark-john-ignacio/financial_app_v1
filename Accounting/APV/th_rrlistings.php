@@ -47,7 +47,7 @@ require_once "../../Connection/connection_string.php";
 	left join accounts C on B.compcode=C.compcode and B.ccustacctcode=C.cacctno 
 	left join suppliers D on B.compcode=D.compcode and B.ccode=D.ccode 
 	left join purchase E on A.compcode=E.compcode and A.crefPO=E.cpono 
-	where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 and B.ccode='".$_REQUEST['cust']."'". $qry ." 
+	where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 and B.ccode='".$_REQUEST['cust']."' and B.ccurrencycode='".$_REQUEST['curr']."'". $qry ." 
 	Group By A.ctranno, C.cacctid, C.cacctdesc, IFNULL(A.cewtcode,0), A.cvatcode, 
 	A.nrate, ifnull(B.crefsi,''), B.dreceived";
 

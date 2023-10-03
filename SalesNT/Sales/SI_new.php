@@ -193,7 +193,7 @@ $company = $_SESSION['companyid'];
 																	if (mysqli_num_rows($sqlhead)!=0) {
 																		while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
 													?>
-																<option value="<?=$rows['id']?>" <?php if ($nvaluecurrbase==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
+																<option value="<?=$rows['id']?>" <?php if ($nvaluecurrbase==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>" data-desc="<?=$rows['currencyName']?>"><?=$rows['currencyName']?></option>
 													<?php
 
 																}
@@ -717,6 +717,9 @@ $company = $_SESSION['companyid'];
 					$('#hdnpricever').val(data[1]);
 				//	$('#imgemp').attr("src",data[2]);
 					
+					$("#selbasecurr").val(data[13]).change(); //val
+					$("#basecurrvalmain").val($("#selbasecurr").data("val"));
+					$("#hidcurrvaldesc").val($("#selbasecurr").data("desc"));
 									
 					$('#hdnvalid').val("YES");
 					
@@ -811,6 +814,10 @@ $company = $_SESSION['companyid'];
 				$("#hdnpricever").val(item.cver);
 				
 				$('#hdnvalid').val("YES"); 
+
+				$("#selbasecurr").val(item.cdefaultcurrency).change(); //val
+				$("#basecurrvalmain").val($("#selbasecurr").data("val"));
+				$("#hidcurrvaldesc").val($("#selbasecurr").data("desc"));
 				
 				$('#txtremarks').focus();
 				
@@ -950,15 +957,17 @@ $company = $_SESSION['companyid'];
 			}else{
 				$(".chkitmsadd").show();
 			}
-			});
+		});
 
 		$("#selbasecurr").on("change", function (){
 				
 			//convertCurrency($(this).val());
 
 			var dval = $(this).find(':selected').attr('data-val');
+			var ddesc = $(this).find(':selected').attr('data-desc');
 
 			$("#basecurrval").val(dval);
+			$("#hidcurrvaldesc").val(ddesc);
 			$("#statgetrate").html("");
 			recomputeCurr();
 			

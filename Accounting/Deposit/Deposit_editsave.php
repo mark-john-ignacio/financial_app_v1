@@ -18,11 +18,14 @@ $company = $_SESSION['companyid'];
 	$nGross =  mysqli_real_escape_string($con, $_REQUEST['txtnGross']);
 	$nGross = str_replace(",","",$nGross);
 	
+	$CurrCode = $_REQUEST['selbasecurr']; 
+	$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
+	$CurrRate = $_REQUEST['basecurrval'];
 	
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 	
 	
-	if (!mysqli_query($con, "UPDATE `deposit` set `cortype` = '$cPayMethod', `dcutdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `cremarks` = '$cRemarks', `cacctcode` = '$cAcctNo', `namount` = $nGross where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
+	if (!mysqli_query($con, "UPDATE `deposit` set `cortype` = '$cPayMethod', `dcutdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `cremarks` = '$cRemarks', `cacctcode` = '$cAcctNo', `namount` = $nGross, `ccurrencycode` = '$CurrCode', `ccurrencydesc` = '$CurrDesc', `nexchangerate` = '$CurrRate' where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 	

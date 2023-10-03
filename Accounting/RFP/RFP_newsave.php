@@ -18,7 +18,6 @@
 			$lastSI = $row['ctranno'];
 		}
 		
-		
 		if(substr($lastSI,2,2) <> $dmonth){
 			$cSINo = "RP".$dmonth.$dyear."00001";
 		}
@@ -51,12 +50,15 @@
 	//$nbalance = mysqli_real_escape_string($con, $_POST['txtnamountbal']);	
 //	$nbalance = str_replace( ',', '', $nbalance );
 
-	$cremarks = mysqli_real_escape_string($con, $_POST['txtcremarks']);
+	$CurrCode = $_REQUEST['selbasecurr']; 
+	$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
+	$CurrRate= $_REQUEST['basecurrval']; 
 
+	$cremarks = mysqli_real_escape_string($con, $_POST['txtcremarks']);
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 
 
-	if (!mysqli_query($con, "INSERT INTO `rfp`(`compcode`, `ctranno`, `ccode`, `cpaymethod`, `cbankcode`, `ngross`, `dtransdate`, `cpreparedby`, `cremarks`) values('$company', '$cSINo', '$cCustID', '$paymeth', '$cBankCode', $npaid, STR_TO_DATE('$dDate', '%m/%d/%Y'), '$preparedby', '$cremarks')")) {
+	if (!mysqli_query($con, "INSERT INTO `rfp`(`compcode`, `ctranno`, `ccode`, `cpaymethod`, `cbankcode`, `ngross`, `dtransdate`, `cpreparedby`, `cremarks`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`) values('$company', '$cSINo', '$cCustID', '$paymeth', '$cBankCode', $npaid, STR_TO_DATE('$dDate', '%m/%d/%Y'), '$preparedby', '$cremarks', '$CurrCode', '$CurrDesc', '$CurrRate')")) {
 		$mggx = "Errormessage: ". mysqli_error($con);
 	} else{
 

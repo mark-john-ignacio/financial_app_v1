@@ -1,24 +1,30 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "Receive_edit.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "Receive.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
-require_once('../../Model/helper.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
+	require_once('../../Model/helper.php');
 
-$employeeid = $_SESSION['employeeid'];
-$company = $_SESSION['companyid'];
-if(isset($_REQUEST['txtctranno'])){
-		$cpono = $_REQUEST['txtctranno'];
-}
-else{
+	$company = $_SESSION['companyid'];
+
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Receive_edit.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
+	if(isset($_REQUEST['txtctranno'])){
+			$cpono = $_REQUEST['txtctranno'];
+	}
+	else{
 		$cpono = $_REQUEST['txtcpono'];
 	}
 
-$sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dreceived,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.lcancelled, a.lapproved, a.lvoid, a.lprintposted, a.ccustacctcode, b.cname, a.crefsi from receive a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.ctranno = '$cpono'");
+	$sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dreceived,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.lcancelled, a.lapproved, a.lvoid, a.lprintposted, a.ccustacctcode, b.cname, a.crefsi from receive a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.ctranno = '$cpono'");
 
 
 						 $result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='ALLOW_REF_RR'"); 
@@ -392,8 +398,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 					</div>
 
+					<?php
+						if($poststat=="True"){
+					?>
 					<br>
-
 					<table width="100%" border="0" cellpadding="3">
 						<tr>
 							<td>
@@ -447,6 +455,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</td>
 						</tr>
 					</table>
+					<?php
+						}
+					?>
 
     </fieldset>
     
@@ -663,6 +674,9 @@ else{
 		})
 	}
 
+	<?php
+		if($poststat=="True"){
+	?>
 	$(document).keydown(function(e) {	 
 		
 		if(e.keyCode == 112) { //F1
@@ -717,6 +731,9 @@ else{
 		}
 
 	});
+	<?php
+		}
+	?>
 
 	$(document).keypress(function(e) {
 	  if ($("#SerialMod").hasClass('in') && (e.keycode == 13 || e.which == 13)) {

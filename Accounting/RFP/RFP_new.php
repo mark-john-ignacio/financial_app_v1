@@ -134,6 +134,51 @@ include('../../include/access2.php');
 									</td>											
 								</tr>
 
+								<tr>
+									<td width="150"><span style="padding:2px" id="paymntdesc"><b>Currency</b></span></td>
+									<td>
+										<div class="row nopadding">
+											<div class="col-xs-7 nopadwleft">
+												<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">					
+													<?php
+																		
+														$nvaluecurrbase = "";	
+														$nvaluecurrbasedesc = "";	
+														$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+																				
+														if (mysqli_num_rows($result)!=0) {
+															$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);																				
+															$nvaluecurrbase = $all_course_data['cvalue']; 																					
+														}
+														else{
+															$nvaluecurrbase = "";
+														}
+
+														$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+														if (mysqli_num_rows($sqlhead)!=0) {
+															while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+													?>
+														<option value="<?=$rows['id']?>" <?php if ($nvaluecurrbase==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>" data-desc="<?=$rows['currencyName']?>"><?=$rows['currencyName']?></option>
+													<?php
+															}
+														}
+													?>
+												</select>
+												<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?=$nvaluecurrbase; ?>"> 	
+												<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?=$nvaluecurrbasedesc; ?>"> 
+											</div>
+											<div class="col-xs-2 nopadwleft">
+												<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
+											</div>
+											<div class="col-xs-3" id="statgetrate" style="padding: 4px !important"> 																	
+											</div>
+										</div>
+									</td>
+									<td width="150">&nbsp;</td>
+									<td>&nbsp;</td>		
+														
+								</tr>
+
 							</table>
 						</div>	
 
@@ -213,6 +258,7 @@ include('../../include/access2.php');
 											<th>Account</th>
 											<th>Total Payable</th>
 											<th>Payable Balance</th>
+											<th>Currency</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -351,6 +397,10 @@ include('../../include/access2.php');
 
 				$('#txtcust').val(item.value).change(); 
 				$("#txtcustid").val(item.id);
+
+				$("#selbasecurr").val(item.cdefaultcurrency).change();
+				$("#basecurrval").val($("#selbasecurr").find(':selected').data('val'));
+				$("#hidcurrvaldesc").val($("#selbasecurr").find(':selected').data('desc'));
 					
 				showapvmod(item.id);
 
@@ -417,6 +467,19 @@ include('../../include/access2.php');
 			$('td input:checkbox',table).not(this).prop('checked', this.checked);
 		});
 
+		$("#selbasecurr").on("change", function (){
+	
+			var dval = $(this).find(':selected').attr('data-val');
+			var ddesc = $(this).find(':selected').attr('data-desc');
+
+			$("#basecurrval").val(dval);
+			$("#hidcurrvaldesc").val(ddesc);
+			$("#statgetrate").html("");
+
+			$('#MyTable tbody').empty();
+				
+		});
+
 	});
 
 	function showapvmod(custid){
@@ -425,11 +488,14 @@ include('../../include/access2.php');
 			$('#MyAPVList').DataTable().destroy();
 		}
 
+		$('#APListHeader').html("AP List: "+$('#txtcust').val()+" ("+$('#selbasecurr').val()+")");
+
 		$('#MyAPVList tbody').empty();
 
+		//alert('th_APVlist.php?code='+custid+'&curr='+$('#selbasecurr').val());
 		$.ajax({
 			url: 'th_APVlist.php',
-			data: { code: custid },
+			data: { code: custid, curr:$('#selbasecurr').val() },
 			dataType: 'json',
 			async:false,
 			method: 'post',
@@ -444,16 +510,28 @@ include('../../include/access2.php');
 						$('#txtcust').val("").change(); 
 						$("#txtcustid").val("");
 
+						$("#selbasecurr").val('<?=$nvaluecurrbase?>').change();
+						$("#basecurrval").val(1);
+						$("#hidcurrvaldesc").val('<?=$nvaluecurrbasedesc; ?>');
+
 					}
 					else{
+
+						var chkbox = "";
+						if(item.ccurrencycode!=$('#selbasecurr').val()){
+							chkbox = "";
+						}else{
+							chkbox = "<input type='checkbox' value='"+index+"' name='chkSales[]'>";
+						}
 				
 						$("<tr id=\"APV"+index+"\">").append(
-							$("<td>").html("<input type='checkbox' value='"+index+"' name='chkSales[]'>"), 
+							$("<td>").html(chkbox), 
 							$("<td>").html(item.ctranno+"<input type='hidden' id='APVtxtno"+index+"' name='APVtxtno' value='"+item.ctranno+"'>"),
 							$("<td>").html(item.dapvdate+"<input type='hidden' id='APVdte"+index+"' name='APVdte' value='"+item.dapvdate+"'>"),
 							$("<td>").html(item.cacctno+" - "+item.cacctdesc+"<input type='hidden' id='APVAcctPay"+index+"' name='APVAcctPay' value='"+item.cacctno+"'><input type='hidden' id='APVAcctPayDesc"+index+"' name='APVAcctPayDesc' value='"+item.cacctdesc+"'>"),
 							$("<td align='right'>").html(item.namount+"<input type='hidden' id='APVamt"+index+"' name='APVamt' value='"+item.namount+"'>"),
-							$("<td align='right'>").html(item.nbalance+"<input type='hidden' id='APVBal"+index+"' name='APVBal' value='"+item.nbalance+"'>")
+							$("<td align='right'>").html(item.nbalance+"<input type='hidden' id='APVBal"+index+"' name='APVBal' value='"+item.nbalance+"'>"),
+							$("<td align='center'>").html(item.ccurrencycode)
 							
 						).appendTo("#MyAPVList tbody");
 										

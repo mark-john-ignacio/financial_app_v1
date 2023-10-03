@@ -21,7 +21,7 @@ require_once "../../Connection/connection_string.php";
 		$qry = "";
 	}
 
-	$qrycust = "and E.ccode='".$_REQUEST['cust']."'";
+	$qrycust = "and E.ccode='".$_REQUEST['cust']."' and E.ccurrencycode='".$_REQUEST['curr']."'";
 	
 	$arrRRLISTING = array();
 	$qryres = "select A.cpono as ctranno, SUM(A.namount) as ngross, E.dneeded as dreceived, A.ctaxcode as cvatcode, 

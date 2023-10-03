@@ -16,73 +16,70 @@
 		$poststat = "False";
 	}
 
-
-
-			if(isset($_REQUEST["txtcitemno"])){
-				$citemno = $_REQUEST['txtcitemno'];
-			}else{
-				$citemno = $_REQUEST['txtccode'];
-			}
+	if(isset($_REQUEST["txtcitemno"])){
+		$citemno = $_REQUEST['txtcitemno'];
+	}else{
+		$citemno = $_REQUEST['txtccode'];
+	}
+								
+	if($citemno <> ""){					
+		$sql = "select A.*, A1.cacctdesc as salescode, B.cname as cparentname, C.cname as csmaname, A1.cacctid from customers A LEFT JOIN accounts A1 ON A.compcode=A1.compcode and (A.cacctcodesales = A1.cacctno) LEFT JOIN customers B ON (A.cparentcode = B.cempid)  LEFT JOIN salesman C ON (A.csman = C.ccode) where A.compcode='$company' and A.cempid='$citemno'";
+	}else{
+		header('Customers.php');
+		die();
+	}
 				
-				
-				if($citemno <> ""){
+	$sqlhead=mysqli_query($con,$sql);				
+	if (!mysqli_query($con, $sql)) {
+		printf("Errormessage: %s\n", mysqli_error($con));
+	} 
 					
-					$sql = "select A.*, A1.cacctdesc as salescode, B.cname as cparentname, C.cname as csmaname, A1.cacctid from customers A LEFT JOIN accounts A1 ON A.compcode=A1.compcode and (A.cacctcodesales = A1.cacctno) LEFT JOIN customers B ON (A.cparentcode = B.cempid)  LEFT JOIN salesman C ON (A.csman = C.ccode) where A.compcode='$company' and A.cempid='$citemno'";
-				}else{
-					header('Customers.php');
-					die();
-				}
-				
-				$sqlhead=mysqli_query($con,$sql);
-				
-					if (!mysqli_query($con, $sql)) {
-						printf("Errormessage: %s\n", mysqli_error($con));
-					} 
-					
-				if (mysqli_num_rows($sqlhead)!=0) {
-					while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+	if (mysqli_num_rows($sqlhead)!=0) {
+		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
 
-						$cCustCode = $row['cempid'];
-						$cCustName = $row['cname']; 
-						$cTradeName = $row['ctradename'];
-						$cCustTyp = $row['ccustomertype'];
-						$cCustCls = $row['ccustomerclass'];
-						$Status = $row['cstatus'];
-						$CreditLimit = $row['nlimit'];
-						//$CreditLimitCR = $row['ncrlimit'];
-						$Priceversion = $row['cpricever'];
-						$VatType = $row['cvattype'];
-						$Terms = $row['cterms'];
-						$Tin = $row['ctin'];
+			$cCustCode = $row['cempid'];
+			$cCustName = $row['cname']; 
+			$cTradeName = $row['ctradename'];
+			$cCustTyp = $row['ccustomertype'];
+			$cCustCls = $row['ccustomerclass'];
+			$Status = $row['cstatus'];
+			$CreditLimit = $row['nlimit'];
+			//$CreditLimitCR = $row['ncrlimit'];
+			$Priceversion = $row['cpricever'];
+			$VatType = $row['cvattype'];
+			$Terms = $row['cterms'];
+			$Tin = $row['ctin'];
 
-						$HouseNo = $row['chouseno']; 
-						$City = $row['ccity']; 
-						$State = $row['cstate'];
-						$Country = $row['ccountry'];
-						$ZIP = $row['czip'];
+			$HouseNo = $row['chouseno']; 
+			$City = $row['ccity']; 
+			$State = $row['cstate'];
+			$Country = $row['ccountry'];
+			$ZIP = $row['czip'];
 						
-						$cParentCode = $row['cparentcode'];
-						$cParentName = $row['cparentname'];
+			$cParentCode = $row['cparentcode'];
+			$cParentName = $row['cparentname'];
 
-						$cSalesmanCode = $row['csman'];
-						$cSalesmanName = $row['csmaname'];
+			$cSalesmanCode = $row['csman'];
+			$cSalesmanName = $row['csmaname'];
 												
-						$AcctCodeType = $row['cacctcodetype'];
-						$GroceryID = $row['cacctcodesales']; 
-						$GroceryIDCode = $row['cacctid'];
-						$GroceryDesc = $row['salescode'];
-						
-							if($AcctCodeType=="single"){
-								$singlestat = "required";
-								$multistat = "";
-							}else{
-								$singlestat = "";
-								$multistat = "required";
-							}
+			$AcctCodeType = $row['cacctcodetype'];
+			$GroceryID = $row['cacctcodesales']; 
+			$GroceryIDCode = $row['cacctid'];
+			$GroceryDesc = $row['salescode'];
 
-					}
-				}
-				?>
+			$SelCurr = $row['cdefaultcurrency'];
+				
+			if($AcctCodeType=="single"){
+				$singlestat = "required";
+				$multistat = "";
+			}else{
+				$singlestat = "";
+				$multistat = "required";
+			}
+
+		}
+	}
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -102,13 +99,12 @@
     
   <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/modal-center.css?v=<?php echo time();?>"> 
 
-
 </head>
 
 <body style="padding:5px; height:700px">
 
-<form name="frmCust" id="frmCust" method="post" enctype="multipart/form-data">
-	<fieldset>
+	<form name="frmCust" id="frmCust" method="post" enctype="multipart/form-data">
+		<fieldset>
     	<legend>Customer Details  (<b>Status: <?php echo $Status; ?></b>)</legend>
 				<table width="100%" border="0">
 					<tr>
@@ -202,598 +198,563 @@
 					<li><a href="#menu2">Groupings</a></li>
 					<li><a href="#menu3">Accounting</a></li>
 				</ul>
-
-				<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;height: 30vh;text-align: left;overflow: auto">
 					
-					<div class="tab-content">
+				<div class="tab-content">
 						
-						<div id="home" class="tab-pane fade in active" style="padding-left:30px">
-							<p>
-								<div class="col-xs-7 nopadwtop">
-									<div class="col-xs-3 nopadding">
-										<b>Type</b>
-									</div>
-														
-									<div class="col-xs-9 nopadwleft">
-										<div class="col-xs-7 nopadding">
-											<select id="seltyp" name="seltyp" class="form-control input-sm selectpicker"  tabindex="3">
-												<?php
-													$company = $_SESSION['companyid'];
-																								
-													$sql = "select * from groupings where compcode='$company' and ctype='CUSTYP' and cstatus='ACTIVE' order by cdesc";
-													$result=mysqli_query($con,$sql);
-													if (!mysqli_query($con, $sql)) {
-														printf("Errormessage: %s\n", mysqli_error($con));
-													}			
-																		
-													while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-												?>   
-												<option value="<?php echo $row['ccode'];?>" <?php if($row['ccode']==$cCustTyp){ echo "selected"; } ?>><?php echo $row['cdesc']?></option>
-												<?php
-													}
-												?>     
-											</select>
-										</div>
-									</div>
-								</div>
+					<div id="home" class="tab-pane fade in active" style="padding-left:10px; padding-top:15px">
 
-								<div class="col-xs-7 nopadwtop">
-									<div class="col-xs-3 nopadding">
-										<b>Classification</b>
-									</div>
-														
-									<div class="col-xs-9 nopadwleft">
-										<div class="col-xs-7 nopadding">
-											<select id="selcls" name="selcls" class="form-control input-sm selectpicker"  tabindex="3">
-												<?php
-													$sql = $sql = "select * from groupings where compcode='$company' and ctype='CUSTCLS' and cstatus='ACTIVE'  order by cdesc";
-													$result=mysqli_query($con,$sql);
-													if (!mysqli_query($con, $sql)) {
-														printf("Errormessage: %s\n", mysqli_error($con));
-													}			
-																		
-													while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-												?>
-													<option value="<?php echo $row['ccode'];?>" <?php if($row['ccode']==$cCustCls){ echo "selected"; } ?>><?php echo $row['cdesc']?></option>
-												<?php
-													}
-												?>
-											</select>
-										</div>
-									</div>
-								</div>
-
-								<div class="col-xs-7 nopadwtop">
-									<div class="col-xs-3 nopadding">
-										<b>Credit Limit</b>
-									</div>
-														
-									<div class="col-xs-9 nopadwleft">
-										<div class="col-xs-4 nopadding">
-											<input type="text" class="numeric form-control input-sm" id="txtclimit" name="txtclimit" tabindex="11" placeholder="Enter Credit Limit..." required autocomplete="off" value="<?php echo $CreditLimit;?>" />
-										</div>
-										<div class="col-xs-8 nopadwleft">
-											<small>&nbsp;&nbsp; <i>Zero (0) for Unlimited Credit Limit</i></small>
-										</div>
-									</div>
-								</div>
-
-								<div class="col-xs-7 nopadwtop">
-									<div class="col-xs-3 nopadding">
-										<b>Parent Company</b>
-									</div>
-														
-									<div class="col-xs-9 nopadwleft">
-										<div class="col-xs-7 nopadding">
-											<input type="text" class="form-control input-sm" id="txtcparent" name="txtcparent" tabindex="11" placeholder="Search Customer Name.." autocomplete="off" value="<?php echo $cParentName; ?>" />
-										</div>                            
-										<div class="col-xs-2 nopadwleft">
-											<input type="text" id="txtcparentD" name="txtcparentD" class="form-control input-sm" readonly value="<?php echo $cParentCode; ?>">
-										</div>	
-									</div>
-								</div>
-
-								<div class="col-xs-7 nopadwtop">
-									<div class="col-xs-3 nopadding">
-										<b>Salesman</b>
-									</div>
-														
-									<div class="col-xs-9 nopadwleft">
-										<div class="col-xs-7 nopadding">
-											<input type="text" class="form-control input-sm" id="txtsman" name="txtsman" tabindex="11" placeholder="Search Salesman Name.." autocomplete="off" value="<?php echo $cSalesmanName; ?>" />
-										</div>
-																		
-										<div class="col-xs-2 nopadwleft">
-											<input type="text" id="txtsmanD" name="txtsmanD" class="form-control input-sm" readonly value="<?php echo $cSalesmanCode; ?>">
-										</div>	
-
-									</div>
-								</div>
-
-										
-							</p>
+						<div class="row nopadwtop">
+							<div class="col-xs-1 nopadding">
+								<b>Type</b>
+							</div>                    
+							<div class="col-xs-3 nopadwleft">
+								<select id="seltyp" name="seltyp" class="form-control input-sm selectpicker"  tabindex="8">
+									<?php
+										$company = $_SESSION['companyid'];
+																				
+										$sql = "select * from groupings where compcode='$company' and ctype='CUSTYP' and cstatus='ACTIVE' order by cdesc";
+										$result=mysqli_query($con,$sql);
+										if (!mysqli_query($con, $sql)) {
+											printf("Errormessage: %s\n", mysqli_error($con));
+										}			                            
+										while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+										{
+									?>   
+									<option value="<?php echo $row['ccode'];?>" <?php if($row['ccode']==$cCustTyp){ echo "selected"; } ?>><?php echo $row['cdesc']?></option>
+									<?php
+										}
+									?>     
+								</select>
+							</div>
 						</div>
 
-						<div id="menu1" class="tab-pane fade" style="padding-left:10px">
-							<p>
-								<input type="button" value="Add Contact" name="btnNewCont" id="btnNewCont" class="btn btn-primary btn-xs" onClick="addcontlist();">
-								<input name="hdncontlistcnt" id="hdncontlistcnt" type="hidden" value="0">
-								<br>
-								<table width="150%" border="0" cellpadding="2" id="myUnitTable">
-									<tr>
-										<th scope="col" width="200">Name</th>
-                    <th scope="col" width="180">Designation</th>
-                    <th scope="col" width="180">Department</th>
-											<?php
-                          $arrcontctsdet = array();
-                          $sql = "Select * From contacts_types where compcode='$company'";
-                          $result=mysqli_query($con,$sql);
-                          if (!mysqli_query($con, $sql)) {
-                            printf("Errormessage: %s\n", mysqli_error($con));
-                          }			
-                                      
-                          while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-                          {
-                            $arrcontctsdet[] = array('cid' => $row['cid'], 'cdesc' => $row['cdesc']);
-                        ?>
-                            <th scope="col" width="180"><?=$row['cdesc']?></th>
-                        <?php
-                          }
-                      ?>
-										<th scope="col" width="80"><input type='hidden' id='conctsadddet' value='<?=json_encode($arrcontctsdet)?>'></th>
-									</tr>
+						<div class="row nopadwtop">
+							<div class="col-xs-1 nopadding">
+								<b>Classification</b>
+							</div>                   
+							<div class="col-xs-3 nopadwleft">
+								<select id="selcls" name="selcls" class="form-control input-sm selectpicker"  tabindex="9">
 									<?php
-										$darrcntcts = array();
-										$qrydcntcts = "Select * From customers_contacts_nos where compcode = '$company'";
-										$rowdcntcts = mysqli_query($con, $qrydcntcts) or die(mysqli_error($con));
-										while($row = mysqli_fetch_array($rowdcntcts, MYSQLI_ASSOC))
+										$sql = $sql = "select * from groupings where compcode='$company' and ctype='CUSTCLS' and cstatus='ACTIVE'  order by cdesc";
+										$result=mysqli_query($con,$sql);
+										if (!mysqli_query($con, $sql)) {
+											printf("Errormessage: %s\n", mysqli_error($con));
+										}			
+										while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 										{
-											$darrcntcts[] = array('cid' => $row['cid'], 'contct_id' => $row['customers_contacts_cid'], 'contact_type' => $row['contact_type'], 'cnumber' => $row['cnumber']);
-										}
-										
-										
-
-										$cntrstrx = 0;
-										$qrycontx = "Select * From customers_contacts where ccode = '$citemno' Order by cid";
-										$rowcontx = mysqli_query($con, $qrycontx) or die(mysqli_error($con));
-										while($row = mysqli_fetch_array($rowcontx, MYSQLI_ASSOC))
-										{
-											$cntrstrx = $cntrstrx + 1;
 									?>
-											<tr>
-												<td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConNme<?php echo $cntrstrx;?>' name='txtConNme<?php echo $cntrstrx;?>' value='<?php echo $row['cname'];?>' required></div></td>
-												<td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConDes<?php echo $cntrstrx;?>' name='txtConDes<?php echo $cntrstrx;?>' value='<?php echo $row['cdesignation'];?>'> </div></td>
-												<td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConDept<?php echo $cntrstrx;?>' name='txtConDept<?php echo $cntrstrx;?>' value='<?php echo $row['cdept'];?>'> </div></td>
-												
-												<?php
-													foreach($arrcontctsdet as $ckdh){
-														$dval = "";
-														foreach($darrcntcts as $zxc){
-															if($ckdh['cid']==$zxc['contact_type'] && $row['cid']==$zxc['contct_id']){
-																$dval = $zxc['cnumber'];
-															}
-														}
-												?>
-												<td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConAdd<?=$ckdh['cid'].$cntrstrx;?>' name='txtConAdd<?=$ckdh['cid'].$cntrstrx;?>' value='<?=$dval?>'> </div></td>
-												<?php
-													}
-												?>
-												<td><div class="col-xs-12 nopadtopleft"><input class='btn btn-danger btn-xs' type='button' id='row_<?php echo $cntrstrx;?>_delete' class='delete' value='Delete' onClick="deleteRowconts(this);"/></div></td>
-											</tr>
+										<option value="<?php echo $row['ccode'];?>" <?php if($row['ccode']==$cCustCls){ echo "selected"; } ?>><?php echo $row['cdesc']?></option>
 									<?php
 										}
 									?>
-								</table>
-							</p>
-						</div>
-								
-						<div id="menu2" class="tab-pane fade" style="padding-left:30px">
-							<p>
-										<div class="col-xs-12">
-												<div class="cgroup col-xs-2 nopadwtop" id="CustGroup1">
-														<b>Cost of Goods</b>
-												</div>
-												
-												<div class="col-xs-3 nopadwtop">
-												<div class="btn-group btn-group-justified nopadding">
-													<input type="text" class="txtCustGroup form-control input-sm" id="txtCustGroup1" name="txtCustGroup1" tabindex="11" placeholder="Search Group 1.." autocomplete="off">
-													<span class="searchclear glyphicon glyphicon-remove-circle"></span>
-												</div>
-														
-														<input type="hidden" id="txtCustGroup1D" name="txtCustGroup1D">
-												</div>
-								
-												<div class="col-xs-1 nopadwtop">
-														&nbsp;
-														<button class="btncgroup btn btn-sm btn-danger" type="button" id="btnCustGroup1"><i class="fa fa-search"></i></button>
-												</div>
-												
-												<div class="cgroup col-xs-2 nopadwtop" id="CustGroup6">
-														<b>Cost of Goods</b>
-												</div>
-								
-								
-												<div class="col-xs-3 nopadwtop">
-												<div class="btn-group btn-group-justified nopadding">
-													<input type="text" class="txtCustGroup form-control input-sm" id="txtCustGroup6" name="txtCustGroup6" tabindex="11" placeholder="Search Group 6.." autocomplete="off">
-													<span class="searchclear glyphicon glyphicon-remove-circle"></span>
-												</div>
-
-														<input type="hidden" id="txtCustGroup6D" name="txtCustGroup6D">
-												</div>
-								
-												<div class="col-xs-1 nopadwtop">
-														&nbsp;
-														<button class="btncgroup btn btn-sm btn-danger" type="button"  id="btnCustGroup6"><i class="fa fa-search"></i></button>
-												</div>
-								
-										</div>
-								
-										<div class="col-xs-12">
-												<div class="cgroup col-xs-2 nopadwtop" id="CustGroup2">
-														<b>Cost of Goods</b>
-												</div>
-												
-												<div class="col-xs-3 nopadwtop">
-												<div class="btn-group btn-group-justified nopadding">
-														<input type="text" class="txtCustGroup form-control input-sm" id="txtCustGroup2" name="txtCustGroup2" tabindex="11" placeholder="Search Group 2.." autocomplete="off">
-													<span class="searchclear glyphicon glyphicon-remove-circle"></span>
-												</div>
-													
-														<input type="hidden" id="txtCustGroup2D" name="txtCustGroup2D">
-												</div>
-								
-								
-												<div class="col-xs-1 nopadwtop">
-														&nbsp;
-														<button class="btncgroup btn btn-sm btn-danger" type="button"  id="btnCustGroup2"><i class="fa fa-search"></i></button>
-												</div>
-												
-												<div class="cgroup col-xs-2 nopadwtop" id="CustGroup7">
-														<b>Cost of Goods</b>
-												</div>
-								
-								
-												<div class="col-xs-3 nopadwtop">
-												<div class="btn-group btn-group-justified nopadding">
-														<input type="text" class="txtCustGroup form-control input-sm" id="txtCustGroup7" name="txtCustGroup7" tabindex="11" placeholder="Search Group 7.." autocomplete="off">
-													<span class="searchclear glyphicon glyphicon-remove-circle"></span>
-												</div>
-														
-														<input type="hidden" id="txtCustGroup7D" name="txtCustGroup7D">
-												</div>
-								
-												<div class="col-xs-1 nopadwtop">
-														&nbsp;
-														<button class="btncgroup btn btn-sm btn-danger" type="button" id="btnCustGroup7"><i class="fa fa-search"></i></button>
-												</div>
-								
-										</div>
-								
-										<div class="col-xs-12">
-												<div class="cgroup col-xs-2 nopadwtop" id="CustGroup3">
-														<b>Cost of Goods</b>
-												</div>
-												
-												<div class="col-xs-3 nopadwtop">
-												<div class="btn-group btn-group-justified nopadding">
-														<input type="text" class="txtCustGroup form-control input-sm" id="txtCustGroup3" name="txtCustGroup3" tabindex="11" placeholder="Search Group 3.." autocomplete="off">
-													<span class="searchclear glyphicon glyphicon-remove-circle"></span>
-												</div>
-														
-														<input type="hidden" id="txtCustGroup3D" name="txtCustGroup3D">
-												</div>
-								
-								
-												<div class="col-xs-1 nopadwtop">
-														&nbsp;
-														<button class="btncgroup btn btn-sm btn-danger" type="button" id="btnCustGroup3"><i class="fa fa-search"></i></button>
-												</div>
-												
-												<div class="cgroup col-xs-2 nopadwtop" id="CustGroup8">
-														<b>Cost of Goods</b>
-												</div>
-								
-								
-												<div class="col-xs-3 nopadwtop">
-													<div class="btn-group btn-group-justified nopadding">
-														<input type="text" class="txtCustGroup form-control input-sm" id="txtCustGroup8" name="txtCustGroup8" tabindex="11" placeholder="Search Group 8.." autocomplete="off">
-													<span class="searchclear glyphicon glyphicon-remove-circle"></span>
-												</div>
-													
-														<input type="hidden" id="txtCustGroup8D" name="txtCustGroup8D">
-												</div>
-								
-												<div class="col-xs-1 nopadwtop">
-														&nbsp;
-														<button class="btncgroup btn btn-sm btn-danger" type="button" id="btnCustGroup8"><i class="fa fa-search"></i></button>
-												</div>
-								
-										</div>
-								
-										<div class="col-xs-12">
-												<div class="cgroup col-xs-2 nopadwtop" id="CustGroup4">
-														<b>Cost of Goods</b>
-												</div>
-												
-												<div class="col-xs-3 nopadwtop">
-												<div class="btn-group btn-group-justified nopadding">
-														<input type="text" class="txtCustGroup form-control input-sm" id="txtCustGroup4" name="txtCustGroup4" tabindex="11" placeholder="Search Group 4.." autocomplete="off">
-													<span class="searchclear glyphicon glyphicon-remove-circle"></span>
-												</div>
-														
-														<input type="hidden" id="txtCustGroup4D" name="txtCustGroup4D">
-												</div>
-								
-								
-												<div class="col-xs-1 nopadwtop">
-														&nbsp;
-														<button class="btncgroup btn btn-sm btn-danger" type="button" id="btnCustGroup4"><i class="fa fa-search"></i></button>
-												</div>
-												
-												<div class="cgroup col-xs-2 nopadwtop" id="CustGroup9">
-														<b>Cost of Goods</b>
-												</div>
-								
-								
-												<div class="col-xs-3 nopadwtop">
-													<div class="btn-group btn-group-justified nopadding">
-														<input type="text" class="txtCustGroup form-control input-sm" id="txtCustGroup9" name="txtCustGroup9" tabindex="11" placeholder="Search Group 9.." autocomplete="off">
-													<span class="searchclear glyphicon glyphicon-remove-circle"></span>
-												</div>
-													
-														<input type="hidden" id="txtCustGroup9D" name="txtCustGroup9D">
-												</div>
-								
-												<div class="col-xs-1 nopadwtop">
-														&nbsp;
-														<button class="btncgroup btn btn-sm btn-danger" type="button" id="btnCustGroup9"><i class="fa fa-search"></i></button>
-												</div>
-								
-										</div>
-								
-										<div class="col-xs-12">
-												<div class="cgroup col-xs-2 nopadwtop" id="CustGroup5">
-														<b>Cost of Goods</b>
-												</div>
-												
-												<div class="col-xs-3 nopadwtop">
-												<div class="btn-group btn-group-justified nopadding">
-													<input type="text" class="txtCustGroup form-control input-sm" id="txtCustGroup5" name="txtCustGroup5" tabindex="11" placeholder="Search Group 5.." autocomplete="off">
-													<span class="searchclear glyphicon glyphicon-remove-circle"></span>
-												</div>
-														
-														<input type="hidden" id="txtCustGroup5D" name="txtCustGroup5D">
-												</div>
-								
-								
-												<div class="col-xs-1 nopadwtop">
-														&nbsp;
-														<button class="btncgroup btn btn-sm btn-danger" type="button" id="btnCustGroup5"><i class="fa fa-search"></i></button>
-												</div>
-												
-												<div class="cgroup col-xs-2 nopadwtop" id="CustGroup10">
-														<b>Cost of Goods</b>
-												</div>
-								
-								
-												<div class="col-xs-3 nopadwtop">
-												<div class="btn-group btn-group-justified nopadding">
-													<input type="text" class="txtCustGroup form-control input-sm" id="txtCustGroup10" name="txtCustGroup10" tabindex="11" placeholder="Search Group 10..." autocomplete="off">
-													<span class="searchclear glyphicon glyphicon-remove-circle"></span>
-												</div>
-														
-														<input type="hidden" id="txtCustGroup10D" name="txtCustGroup10D">
-												</div>
-								
-												<div class="col-xs-1 nopadwtop">
-														&nbsp;
-														<button class="btncgroup btn btn-sm btn-danger" type="button" id="btnCustGroup10"><i class="fa fa-search"></i></button>
-												</div>
-								
-										</div>                       
-							</p>
+								</select>
+							</div>
 						</div>
 
-						<div id="menu3" class="tab-pane fade" style="padding-left:30px">
-							<p>
-
-									<div class="col-xs-10 nopadwtop">
-
-										<div class="col-xs-2 nopadding">
-											<b>AR Code</b>
-										</div>
-														
-										<div class="col-xs-3 nopadwleft">                    
-											<select name="selaccttyp" id="selaccttyp" class="form-control input-sm">
-												<option value="single" <?php if ($AcctCodeType=="single") { echo "selected"; } ?>>Single Account</option>
-												<option value="multiple" <?php if ($AcctCodeType=="multiple") { echo "selected"; } ?>>Per Item Type</option>
-											</select>
-										</div>  
-
-									</div>
-
-									<div class="col-xs-10 nopadwtop">
-
-										<div class="col-xs-2 nopadding">&nbsp;</div>
-
-										<div class="col-xs-8 nopadwleft" id="accttypsingle" <?php if ($AcctCodeType=="multiple") { echo "style='display:none'"; } ?>>						
-											<div class="col-xs-7 nopadding">
-												<input type="text" class="form-control input-sm" id="txtsalesacct" name="txtsalesacct" tabindex="11" placeholder="Search Acct Title.." <?php echo $singlestat; ?> autocomplete="off" value="<?php echo $GroceryDesc;?>" />
-											</div>
-																		
-											<div class="col-xs-2 nopadwleft">
-												<input type="text" id="txtsalesacctD" name="txtsalesacctD" class="form-control input-sm" readonly value="<?php echo $GroceryIDCode;?>" />
-												<input type="hidden" id="txtsalesacctDID" name="txtsalesacctDID" value="<?php echo $GroceryID;?>">
-											</div>	
-
-										</div>
-					
-										<div class="col-xs-7 nopadwleft" id="accttypmulti" <?php if ($AcctCodeType=="single") { echo "style='display:none'"; } ?>>
-											<table class="table table-condensed table-hover">
-												<tr>
-													<th width="200">Item Type</th>
-													<th>Account</th>
-												</tr>
-																
-												<?php
-													$sql = "select A.ccode, A.cdesc, ifnull(B.ccode,'') as custcode, B.cacctno, C.cacctdesc, C.cacctid from groupings A left join customers_accts B on A.compcode=B.compcode and A.ccode=B.citemtype and B.ccode='$cCustCode' left join accounts C on B.compcode=C.compcode and B.cacctno=C.cacctid where A.compcode='$company' and A.ctype='ITEMTYP' and A.cstatus='ACTIVE' order by A.cdesc";
-													$result=mysqli_query($con,$sql);
-													if (!mysqli_query($con, $sql)) {
-														printf("Errormessage: %s\n", mysqli_error($con));
-													}			
-																			
-													while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-												?>
-
-												<tr>
-													<td><?php echo $row['cdesc'];?></td>
-													<td>                                            
-														<div class="col-xs-9 nopadding">
-															<input type="text" class="selsalesacctz form-control input-sm" id="txtsalesacct<?php echo $row['ccode'];?>" name="txtsalesacct<?php echo $row['ccode'];?>" data-id="<?php echo $row['ccode'];?>" tabindex="11" placeholder="Search Acct Title.." autocomplete="off" <?php echo $multistat; ?> value="<?php echo $row['cacctdesc'];?>"/>
-														</div>                            
-														<div class="col-xs-3 nopadwleft">
-															<input type="text" id="txtsalesacctD<?php echo $row['ccode'];?>" name="txtsalesacctD<?php echo $row['ccode'];?>" class="form-control input-sm" readonly value="<?php echo $row['cacctid'];?>">
-															<input type="hidden" id="txtsalesacctDID<?php echo $row['ccode'];?>" name="txtsalesacctDID<?php echo $row['ccode'];?>" value="<?php echo $row['cacctno'];?>">
-														</div>                                            
-													</td>
-												</tr>
-
-												<?php
-													}
-												?>     
-											</table>
-										</div>
-												
-									</div>
-
-									<div class="col-xs-10 nopadwtop">
-										<div class="col-xs-2 nopadding">
-											<b>Price Version</b>
-										</div>
-														
-										<div class="col-xs-9 nopadwleft">
-											<div class="col-xs-7 nopadding">
-												<select id="selpricever" name="selpricever" class="form-control input-sm selectpicker"  tabindex="3">
-													<option value="NONE"  <?php if($Priceversion=="NONE"){ echo "selected"; }?>>Base from item markup</option>
-													<?php
-														$sql = $sql = "select * from groupings where compcode='$company' and ctype='ITMPMVER' and cstatus='ACTIVE' order by cdesc";
-														$result=mysqli_query($con,$sql);
-														if (!mysqli_query($con, $sql)) {
-															printf("Errormessage: %s\n", mysqli_error($con));
-														}			                            
-														while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-													?>
-													<option value="<?php echo $row['ccode'];?>" <?php if($row['ccode']==$Priceversion){ echo "selected"; }?>><?php echo $row['ccode'] ." - ". $row['cdesc']?></option>
-													<?php
-														}
-													?>
-												</select>
-											</div>
-										</div>
-									</div>
-
-									<div class="col-xs-10 nopadwtop">
-										<div class="col-xs-2 nopadding">
-											<b>Business Type</b>
-										</div>
-														
-										<div class="col-xs-9 nopadwleft">
-											<div class="col-xs-7 nopadding">
-												<select id="selvattype" name="selvattype" class="form-control input-sm selectpicker"  tabindex="3">
-													<?php
-														$sql = "Select * From vatcode where compcode='$company'";
-														$result=mysqli_query($con,$sql);
-														if (!mysqli_query($con, $sql)) {
-															printf("Errormessage: %s\n", mysqli_error($con));
-														}			
-																			
-														while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-													?>
-													<option value="<?php echo $row['cvatcode'];?>" <?php if($VatType==$row['cvatcode']){ echo "selected"; }?>><?php echo $row['cvatdesc']?></option>
-													<?php
-														}
-													?>
-												</select>
-											</div>
-										</div>
-									</div>
-					
-									<div class="col-xs-10 nopadwtop">
-										<div class="col-xs-2 nopadding">
-											<b>Terms</b>
-										</div>
-														
-										<div class="col-xs-9 nopadwleft">
-											<div class="col-xs-7 nopadding">
-												<select id="selcterms" name="selcterms" class="form-control input-sm selectpicker"  tabindex="3">
-													<?php
-														$sql = "Select * From groupings where compcode='$company' and ctype='TERMS'";
-														$result=mysqli_query($con,$sql);
-														if (!mysqli_query($con, $sql)) {
-															printf("Errormessage: %s\n", mysqli_error($con));
-														}			                           
-														while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-													?>
-													<option value="<?php echo $row['ccode'];?>" <?php if($Terms==$row['ccode']){ echo "selected"; }?>><?php echo $row['cdesc']?></option>
-													<?php
-														}
-													?>
-												</select>
-											</div>
-										</div>
-									</div>
-
-							</p>
+						<div class="row nopadwtop">
+							<div class="col-xs-1 nopadding">
+								<b>Credit Limit</b>
+							</div>                    
+							<div class="col-xs-3 nopadwleft">
+								<input type="text" class="numeric form-control input-sm text-right" id="txtclimit" name="txtclimit" tabindex="10" placeholder="Enter Credit Limit..." required autocomplete="off" value="<?php echo $CreditLimit;?>"/> 
+							</div>
+							<div class="col-xs-2 nopadwleft">
+								<small>&nbsp;&nbsp; <i>Zero (0) for Unlimited Credit Limit</i></small>
+							</div>
 						</div>
 
-						<div id="menu4" class="tab-pane fade" style="padding-left:30px">
-							<p>
-								<input type="button" value="Add Address" name="btnNewAddDel" id="btnNewAddDel" class="btn btn-primary btn-xs" onClick="adddeladdlist();">
-								<input name="hdnaddresscnt" id="hdnaddresscnt" type="hidden" value="0">
-								<br>
-								<table width="100%" border="0" cellpadding="2" id="myDelAddTable"> 
-									<tr>
-										<th scope="col">House No./Bldg./Street/Subd.</th>
-										<th scope="col" width="180">City</th>
-										<th scope="col" width="180">State</th>
-										<th scope="col" width="180">Country</th>
-										<th scope="col" width="100">Zip Code.</th>
-										<th scope="col" width="50">&nbsp;</th>
-									</tr>
-									<?php
-										$cntrstrdl = 0;
-										$qrycontdl = "Select * From customers_address where ccode = '$citemno' Order by nidentity";
-										$rowcontdl = mysqli_query($con, $qrycontdl) or die(mysqli_error($con));
-										while($rowdl = mysqli_fetch_array($rowcontdl, MYSQLI_ASSOC))
-										{
-											$cntrstrdl = $cntrstrdl + 1;
-									?>
-										<tr>
-											<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtdeladdno<?php echo $cntrstrdl;?>' name='txtdeladdno<?php echo $cntrstrdl;?>' value='<?php echo $rowdl['chouseno'];?>' required></div></td>
-											<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtdeladdcity<?php echo $cntrstrdl;?>' name='txtdeladdcity<?php echo $cntrstrdl;?>' value='<?php echo $rowdl['ccity'];?>'> </div></td>
-											<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtdeladdstt<?php echo $cntrstrdl;?>' name='txtdeladdstt<?php echo $cntrstrdl;?>' value='<?php echo $rowdl['cstate'];?>'> </div></td>
-											<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtdeladdcntr<?php echo $cntrstrdl;?>' name='txtdeladdcntr<?php echo $cntrstrdl;?>' value='<?php echo $rowdl['ccountry'];?>'> </div></td>
-											<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtdeladdzip<?php echo $cntrstrdl;?>' name='txtdeladdzip<?php echo $cntrstrdl;?>' value='<?php echo $rowdl['czip'];?>'> </div></td>
-											<td><div class="col-xs-12 nopadtopleft" ><input class='btn btn-danger btn-xs' type='button' id='row_<?php echo $cntrstrdl;?>_delete' class='delete' value='Delete' onClick="deleteRowAddresss(this);"/></div></td>
-										</tr>
-									<?php
-										}
-									?>
-								</table>
-							</p>
+						<!--<div class="row nopadwtop">
+							<div class="col-xs-2 nopadding">
+								<b>Parent Company</b>
+							</div>                    
+							<div class="col-xs-2 nopadwleft">
+								<input type="text" class="form-control input-sm" id="txtcparent" name="txtcparent" tabindex="11" placeholder="Search Customer Name.." autocomplete="off" />
+							</div>
+							<div class="col-xs-2 nopadwleft">
+								<input type="text" id="txtcparentD" name="txtcparentD" class="form-control input-sm" readonly>                  	
+							</div>
+						</div>-->
+
+						<div class="row nopadwtop">
+							<div class="col-xs-1 nopadding">
+								<b>Salesman</b>
+							</div>                    
+							<div class="col-xs-3 nopadwleft">
+								<input type="text" class="form-control input-sm" id="txtsman" name="txtsman" tabindex="11" placeholder="Search Salesman Name.." autocomplete="off" value="<?php echo $cSalesmanName; ?>"/>
+							</div>
+							<div class="col-xs-1 nopadwleft">
+									<input type="text" id="txtsmanD" name="txtsmanD" class="form-control input-sm" readonly value="<?php echo $cSalesmanCode; ?>">
+							</div>	
 						</div>
-						
+
 					</div>
+
+					<div id="menu1" class="tab-pane fade" style="padding-left:10px; padding-top:15px;">                    
+						<input type="button" value="Add Contact" name="btnNewCont" id="btnNewCont" class="btn btn-primary btn-xs" onClick="addcontlist();">
+						<input name="hdncontlistcnt" id="hdncontlistcnt" type="hidden" value="0">
+						<br><br>
+						<table width="150%" border="0" cellpadding="2" id="myContactDetTable">
+							<tr>
+								<th scope="col" width="200">Name</th>
+								<th scope="col" width="180">Designation</th>
+								<th scope="col" width="180">Department</th>
+									<?php
+										$arrcontctsdet = array();
+										$sql = "Select * From contacts_types where compcode='$company'";
+										$result=mysqli_query($con,$sql);
+										if (!mysqli_query($con, $sql)) {
+											printf("Errormessage: %s\n", mysqli_error($con));
+										}			
+											
+										while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+										{
+										$arrcontctsdet[] = array('cid' => $row['cid'], 'cdesc' => $row['cdesc']);
+									?>
+										<th scope="col" width="180"><?=$row['cdesc']?></th>
+									<?php
+										}
+									?>
+								<th scope="col" width="80"><input type='hidden' id='conctsadddet' value='<?=json_encode($arrcontctsdet)?>'></th>
+							</tr>
+							<?php
+								$darrcntcts = array();
+								$qrydcntcts = "Select * From customers_contacts_nos where compcode = '$company'";
+								$rowdcntcts = mysqli_query($con, $qrydcntcts) or die(mysqli_error($con));
+								while($row = mysqli_fetch_array($rowdcntcts, MYSQLI_ASSOC))
+								{
+									$darrcntcts[] = array('cid' => $row['cid'], 'contct_id' => $row['customers_contacts_cid'], 'contact_type' => $row['contact_type'], 'cnumber' => $row['cnumber']);
+								}
+								
+								$cntrstrx = 0;
+								$qrycontx = "Select * From customers_contacts where ccode = '$citemno' Order by cid";
+								$rowcontx = mysqli_query($con, $qrycontx) or die(mysqli_error($con));
+								while($row = mysqli_fetch_array($rowcontx, MYSQLI_ASSOC))
+								{
+									$cntrstrx = $cntrstrx + 1;
+							?>
+								<tr>
+									<td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConNme<?php echo $cntrstrx;?>' name='txtConNme<?php echo $cntrstrx;?>' value='<?php echo $row['cname'];?>' required></div></td>
+									<td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConDes<?php echo $cntrstrx;?>' name='txtConDes<?php echo $cntrstrx;?>' value='<?php echo $row['cdesignation'];?>'> </div></td>
+									<td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConDept<?php echo $cntrstrx;?>' name='txtConDept<?php echo $cntrstrx;?>' value='<?php echo $row['cdept'];?>'> </div></td>
+									
+									<?php
+										foreach($arrcontctsdet as $ckdh){
+											$dval = "";
+											foreach($darrcntcts as $zxc){
+												if($ckdh['cid']==$zxc['contact_type'] && $row['cid']==$zxc['contct_id']){
+													$dval = $zxc['cnumber'];
+												}
+											}
+									?>
+									<td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConAdd<?=$ckdh['cid'].$cntrstrx;?>' name='txtConAdd<?=$ckdh['cid'].$cntrstrx;?>' value='<?=$dval?>'> </div></td>
+									<?php
+										}
+									?>
+									<td><div class="col-xs-12 nopadtopleft"><input class='btn btn-danger btn-xs' type='button' id='row_<?php echo $cntrstrx;?>_delete' class='delete' value='Delete' onClick="deleteRowconts(this);"/></div></td>
+								</tr>
+							<?php
+								}
+							?>						
+						</table>              
+					</div>		
+									
+					<div id="menu2" class="tab-pane fade" style="padding-left:10px; padding-top:15px"> 
+
+						<div class="row nopadding">
+							<div class="cgroup col-xs-2 nopadwtop" id="CustGroup1">
+								<b>Cost of Goods</b>
+							</div>                    
+							<div class="col-xs-3 nopadwtop">
+								<div class="btn-group btn-group-justified nopadding">
+									<input type="text" class="txtCustGroup form-control input-sm" id="txtCustGroup1" name="txtCustGroup1" tabindex="12" placeholder="Search Group 1.." autocomplete="off">
+									<span class="searchclear glyphicon glyphicon-remove-circle"></span>
+								</div>                        
+								<input type="hidden" id="txtCustGroup1D" name="txtCustGroup1D">
+							</div>            
+							<div class="col-xs-1 nopadwtop">
+								&nbsp;<button class="btncgroup btn btn-sm btn-danger" type="button" id="btnCustGroup1"><i class="fa fa-search"></i></button>
+							</div>                    
+							<div class="cgroup col-xs-2 nopadwtop" id="CustGroup6">
+								<b>Cost of Goods</b>
+							</div>                      
+							<div class="col-xs-3 nopadwtop">
+								<div class="btn-group btn-group-justified nopadding">
+									<input type="text" class="txtCustGroup form-control input-sm" id="txtCustGroup6" name="txtCustGroup6" tabindex="13" placeholder="Search Group 6.." autocomplete="off">
+									<span class="searchclear glyphicon glyphicon-remove-circle"></span>
+								</div>
+								<input type="hidden" id="txtCustGroup6D" name="txtCustGroup6D">
+							</div>           
+							<div class="col-xs-1 nopadwtop">
+								&nbsp;<button class="btncgroup btn btn-sm btn-danger" type="button"  id="btnCustGroup6"><i class="fa fa-search"></i></button>
+							</div>            
+						</div>
+
+						<div class="row nopadding">
+							<div class="cgroup col-xs-2 nopadwtop" id="CustGroup2">
+									<b>Cost of Goods</b>
+							</div>
+							
+							<div class="col-xs-3 nopadwtop">
+							<div class="btn-group btn-group-justified nopadding">
+									<input type="text" class="txtCustGroup form-control input-sm" id="txtCustGroup2" name="txtCustGroup2" tabindex="14" placeholder="Search Group 2.." autocomplete="off">
+								<span class="searchclear glyphicon glyphicon-remove-circle"></span>
+							</div>
+								
+									<input type="hidden" id="txtCustGroup2D" name="txtCustGroup2D">
+							</div>
+
+
+							<div class="col-xs-1 nopadwtop">
+									&nbsp;
+									<button class="btncgroup btn btn-sm btn-danger" type="button"  id="btnCustGroup2"><i class="fa fa-search"></i></button>
+							</div>
+							
+							<div class="cgroup col-xs-2 nopadwtop" id="CustGroup7">
+									<b>Cost of Goods</b>
+							</div>
+
+
+							<div class="col-xs-3 nopadwtop">
+							<div class="btn-group btn-group-justified nopadding">
+									<input type="text" class="txtCustGroup form-control input-sm" id="txtCustGroup7" name="txtCustGroup7" tabindex="15" placeholder="Search Group 7.." autocomplete="off">
+								<span class="searchclear glyphicon glyphicon-remove-circle"></span>
+							</div>
+									
+									<input type="hidden" id="txtCustGroup7D" name="txtCustGroup7D">
+							</div>
+
+							<div class="col-xs-1 nopadwtop">
+									&nbsp;
+									<button class="btncgroup btn btn-sm btn-danger" type="button" id="btnCustGroup7"><i class="fa fa-search"></i></button>
+							</div>
+
+						</div>
+
+						<div class="row nopadding">
+							<div class="cgroup col-xs-2 nopadwtop" id="CustGroup3">
+									<b>Cost of Goods</b>
+							</div>
+							
+							<div class="col-xs-3 nopadwtop">
+							<div class="btn-group btn-group-justified nopadding">
+									<input type="text" class="txtCustGroup form-control input-sm" id="txtCustGroup3" name="txtCustGroup3" tabindex="16" placeholder="Search Group 3.." autocomplete="off">
+								<span class="searchclear glyphicon glyphicon-remove-circle"></span>
+							</div>
+									
+									<input type="hidden" id="txtCustGroup3D" name="txtCustGroup3D">
+							</div>
+
+
+							<div class="col-xs-1 nopadwtop">
+									&nbsp;
+									<button class="btncgroup btn btn-sm btn-danger" type="button" id="btnCustGroup3"><i class="fa fa-search"></i></button>
+							</div>
+							
+							<div class="cgroup col-xs-2 nopadwtop" id="CustGroup8">
+									<b>Cost of Goods</b>
+							</div>
+
+
+							<div class="col-xs-3 nopadwtop">
+								<div class="btn-group btn-group-justified nopadding">
+									<input type="text" class="txtCustGroup form-control input-sm" id="txtCustGroup8" name="txtCustGroup8" tabindex="17" placeholder="Search Group 8.." autocomplete="off">
+								<span class="searchclear glyphicon glyphicon-remove-circle"></span>
+							</div>
+								
+									<input type="hidden" id="txtCustGroup8D" name="txtCustGroup8D">
+							</div>
+
+							<div class="col-xs-1 nopadwtop">
+									&nbsp;
+									<button class="btncgroup btn btn-sm btn-danger" type="button" id="btnCustGroup8"><i class="fa fa-search"></i></button>
+							</div>
+
+						</div>
+
+						<div class="row nopadding">
+							<div class="cgroup col-xs-2 nopadwtop" id="CustGroup4">
+									<b>Cost of Goods</b>
+							</div>
+							
+							<div class="col-xs-3 nopadwtop">
+							<div class="btn-group btn-group-justified nopadding">
+									<input type="text" class="txtCustGroup form-control input-sm" id="txtCustGroup4" name="txtCustGroup4" tabindex="18" placeholder="Search Group 4.." autocomplete="off">
+								<span class="searchclear glyphicon glyphicon-remove-circle"></span>
+							</div>
+									
+									<input type="hidden" id="txtCustGroup4D" name="txtCustGroup4D">
+							</div>
+
+
+							<div class="col-xs-1 nopadwtop">
+									&nbsp;
+									<button class="btncgroup btn btn-sm btn-danger" type="button" id="btnCustGroup4"><i class="fa fa-search"></i></button>
+							</div>
+							
+							<div class="cgroup col-xs-2 nopadwtop" id="CustGroup9">
+									<b>Cost of Goods</b>
+							</div>
+
+
+							<div class="col-xs-3 nopadwtop">
+								<div class="btn-group btn-group-justified nopadding">
+									<input type="text" class="txtCustGroup form-control input-sm" id="txtCustGroup9" name="txtCustGroup9" tabindex="19" placeholder="Search Group 9.." autocomplete="off">
+								<span class="searchclear glyphicon glyphicon-remove-circle"></span>
+							</div>
+								
+									<input type="hidden" id="txtCustGroup9D" name="txtCustGroup9D">
+							</div>
+
+							<div class="col-xs-1 nopadwtop">
+									&nbsp;
+									<button class="btncgroup btn btn-sm btn-danger" type="button" id="btnCustGroup9"><i class="fa fa-search"></i></button>
+							</div>
+
+						</div>
+
+						<div class="row nopadding">
+							<div class="cgroup col-xs-2 nopadwtop" id="CustGroup5">
+									<b>Cost of Goods</b>
+							</div>
+							
+							<div class="col-xs-3 nopadwtop">
+							<div class="btn-group btn-group-justified nopadding">
+								<input type="text" class="txtCustGroup form-control input-sm" id="txtCustGroup5" name="txtCustGroup5" tabindex="20" placeholder="Search Group 5.." autocomplete="off">
+								<span class="searchclear glyphicon glyphicon-remove-circle"></span>
+							</div>
+									
+									<input type="hidden" id="txtCustGroup5D" name="txtCustGroup5D">
+							</div>
+
+
+							<div class="col-xs-1 nopadwtop">
+									&nbsp;
+									<button class="btncgroup btn btn-sm btn-danger" type="button" id="btnCustGroup5"><i class="fa fa-search"></i></button>
+							</div>
+							
+							<div class="cgroup col-xs-2 nopadwtop" id="CustGroup10">
+									<b>Cost of Goods</b>
+							</div>
+
+
+							<div class="col-xs-3 nopadwtop">
+							<div class="btn-group btn-group-justified nopadding">
+								<input type="text" class="txtCustGroup form-control input-sm" id="txtCustGroup10" name="txtCustGroup10" tabindex="21" placeholder="Search Group 10..." autocomplete="off">
+								<span class="searchclear glyphicon glyphicon-remove-circle"></span>
+							</div>
+									
+									<input type="hidden" id="txtCustGroup10D" name="txtCustGroup10D">
+							</div>
+
+							<div class="col-xs-1 nopadwtop">
+									&nbsp;
+									<button class="btncgroup btn btn-sm btn-danger" type="button" id="btnCustGroup10"><i class="fa fa-search"></i></button>
+							</div>
+
+						</div>                        
+
+					</div>
+
+					<div id="menu3" class="tab-pane fade" style="padding-left:10px; padding-top:15px">
+
+						<div class="row nopadwtop">
+							<div class="col-xs-2 nopadding">
+								<b>AR Code</b>
+							</div>      
+							<div class="col-xs-3 nopadwleft">      
+								<select name="selaccttyp" id="selaccttyp" class="form-control input-sm" tabindex="22">
+									<option value="single" <?php if ($AcctCodeType=="single") { echo "selected"; } ?>>Single Account</option>
+									<option value="multiple" <?php if ($AcctCodeType=="multiple") { echo "selected"; } ?>>Per Item Type</option>
+								</select>      
+							</div>     
+						</div>
+
+						<div class="row nopadwtop">
+							<div class="col-xs-2 nopadding">&nbsp; </div>  
+							<div class="col-xs-10 nopadwleft" id="accttypsingle" <?php if ($AcctCodeType=="multiple") { echo "style='display:none'"; } ?>>
+								<div class="row nopadding">
+									<div class="col-xs-3 nopadding">
+										<input type="text" class="form-control input-sm" id="txtsalesacct" name="txtsalesacct" tabindex="23" placeholder="Search Acct Title.." autocomplete="off" required  value="<?php echo $GroceryDesc;?>"/>
+									</div>          
+									<div class="col-xs-2 nopadwleft">
+										<input type="text" id="txtsalesacctD" name="txtsalesacctD" class="form-control input-sm" readonly value="<?php echo $GroceryIDCode;?>">
+										<input type="hidden" id="txtsalesacctDID" name="txtsalesacctDID" value="<?php echo $GroceryID;?>">
+									</div>	
+								</div>
+							</div>   
+							<div class="col-xs-7 nopadwleft" id="accttypmulti" <?php if ($AcctCodeType=="single") { echo "style='display:none'"; } ?>>
+								<table class="table table-condensed table-hover">
+									<tr>
+										<th width="200">Item Type</th>
+										<th>Account</th>
+									</tr>
+									<?php
+										$sql = "select A.ccode, A.cdesc, ifnull(B.ccode,'') as custcode, B.cacctno, C.cacctdesc, C.cacctid from groupings A left join customers_accts B on A.compcode=B.compcode and A.ccode=B.citemtype and B.ccode='$cCustCode' left join accounts C on B.compcode=C.compcode and B.cacctno=C.cacctid where A.compcode='$company' and A.ctype='ITEMTYP' and A.cstatus='ACTIVE' order by A.cdesc";
+										$result=mysqli_query($con,$sql);
+										if (!mysqli_query($con, $sql)) {
+											printf("Errormessage: %s\n", mysqli_error($con));
+										}			
+																
+										while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+									?>
+
+									<tr>
+										<td><?php echo $row['cdesc'];?></td>
+										<td>                                            
+											<div class="col-xs-9 nopadding">
+												<input type="text" class="selsalesacctz form-control input-sm" id="txtsalesacct<?php echo $row['ccode'];?>" name="txtsalesacct<?php echo $row['ccode'];?>" data-id="<?php echo $row['ccode'];?>" tabindex="11" placeholder="Search Acct Title.." autocomplete="off" <?php echo $multistat; ?> value="<?php echo $row['cacctdesc'];?>"/>
+											</div>                            
+											<div class="col-xs-3 nopadwleft">
+												<input type="text" id="txtsalesacctD<?php echo $row['ccode'];?>" name="txtsalesacctD<?php echo $row['ccode'];?>" class="form-control input-sm" readonly value="<?php echo $row['cacctid'];?>">
+												<input type="hidden" id="txtsalesacctDID<?php echo $row['ccode'];?>" name="txtsalesacctDID<?php echo $row['ccode'];?>" value="<?php echo $row['cacctno'];?>">
+											</div>                                            
+										</td>
+									</tr>
+
+									<?php
+										}
+									?> 								   
+								</table>
+							</div>   
+						</div>
+											
+						<div class="row nopadwtop">
+							<div class="col-xs-2 nopadding">
+								<b>Price Version</b>
+							</div>  
+							<div class="col-xs-3 nopadwleft">
+								<select id="selpricever" name="selpricever" class="form-control input-sm selectpicker"  tabindex="25">
+									<option value="NONE">Base from item markup</option>
+									<?php
+										$sql = "select * from groupings where compcode='$company' and ctype='ITMPMVER' and cstatus='ACTIVE' order by cdesc";
+										$result=mysqli_query($con,$sql);
+										if (!mysqli_query($con, $sql)) {
+											printf("Errormessage: %s\n", mysqli_error($con));
+										}			
+										while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+										{
+									?>
+										<option value="<?php echo $row['ccode'];?>" <?php if($row['ccode']==$Priceversion){ echo "selected"; }?>><?php echo $row['ccode'] . " - " . $row['cdesc']?></option>
+									<?php
+										}
+									?>
+								</select>
+							</div>
+						</div>
+
+						<div class="row nopadwtop">
+							<div class="col-xs-2 nopadding">
+								<b>Business Type</b>
+							</div>  
+							<div class="col-xs-3 nopadwleft">
+								<select id="selvattype" name="selvattype" class="form-control input-sm selectpicker"  tabindex="26">
+									<?php
+										$sql = "Select * From vatcode where compcode='$company'";
+										$result=mysqli_query($con,$sql);
+										if (!mysqli_query($con, $sql)) {
+											printf("Errormessage: %s\n", mysqli_error($con));
+										}			          
+										while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+										{
+									?>
+										<option value="<?php echo $row['cvatcode'];?>" <?php if($VatType==$row['cvatcode']){ echo "selected"; }?>><?php echo $row['cvatdesc']?></option>
+									<?php
+										}
+									?>
+								</select>
+							</div>
+						</div>    
+										
+						<div class="row nopadwtop">
+							<div class="col-xs-2 nopadding">
+								<b>Terms</b>
+							</div>
+							<div class="col-xs-3 nopadwleft">
+								<select id="selcterms" name="selcterms" class="form-control input-sm selectpicker"  tabindex="27">
+									<?php
+										$sql = "Select * From groupings where compcode='$company' and ctype='TERMS'";
+										$result=mysqli_query($con,$sql);
+										if (!mysqli_query($con, $sql)) {
+											printf("Errormessage: %s\n", mysqli_error($con));
+										}			       
+										while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+										{
+									?>
+										<option value="<?php echo $row['ccode'];?>" <?php if($Terms==$row['ccode']){ echo "selected"; }?>><?php echo $row['cdesc']?></option>
+									<?php
+										}
+									?>
+								</select>
+							</div>
+						</div>
+
+						<div class="row nopadwtop">
+							<div class="col-xs-2 nopadding">
+								<b>Default Currency</b>
+							</div>
+							<div class="col-xs-3 nopadwleft">
+								<select id="selcurrncy" name="selcurrncy" class="form-control input-sm selectpicker"  tabindex="27">
+									<?php
+										$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+										if (mysqli_num_rows($sqlhead)!=0) {
+											while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+									?>
+										<option value="<?=$rows['id']?>" <?php if ($SelCurr==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
+									<?php
+											}
+										}
+									?>
+								</select>
+							</div>
+						</div>
+
+					</div>				
+							
+					<div id="menu4" class="tab-pane fade" style="padding-left:10px; padding-top:15px">
+
+						<input type="button" value="Add Address" name="btnNewAddDel" id="btnNewAddDel" class="btn btn-primary btn-xs" onClick="adddeladdlist();">
+						<input name="hdnaddresscnt" id="hdnaddresscnt" type="hidden" value="0">
+						<br><br>
+						<table width="100%" border="0" cellpadding="2" id="myDelAddTable"> 
+							<tr>
+								<th scope="col">House No./Bldg./Street/Subd.</th>
+								<th scope="col" width="180">City</th>
+								<th scope="col" width="180">State</th>
+								<th scope="col" width="180">Country</th>
+								<th scope="col" width="100">Zip Code.</th>
+								<th scope="col" width="50">&nbsp;</th>
+							</tr>
+							<?php
+								$cntrstrdl = 0;
+								$qrycontdl = "Select * From customers_address where ccode = '$citemno' Order by nidentity";
+								$rowcontdl = mysqli_query($con, $qrycontdl) or die(mysqli_error($con));
+								while($rowdl = mysqli_fetch_array($rowcontdl, MYSQLI_ASSOC))
+								{
+									$cntrstrdl = $cntrstrdl + 1;
+							?>
+								<tr>
+									<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtdeladdno<?php echo $cntrstrdl;?>' name='txtdeladdno<?php echo $cntrstrdl;?>' value='<?php echo $rowdl['chouseno'];?>' required></div></td>
+									<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtdeladdcity<?php echo $cntrstrdl;?>' name='txtdeladdcity<?php echo $cntrstrdl;?>' value='<?php echo $rowdl['ccity'];?>'> </div></td>
+									<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtdeladdstt<?php echo $cntrstrdl;?>' name='txtdeladdstt<?php echo $cntrstrdl;?>' value='<?php echo $rowdl['cstate'];?>'> </div></td>
+									<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtdeladdcntr<?php echo $cntrstrdl;?>' name='txtdeladdcntr<?php echo $cntrstrdl;?>' value='<?php echo $rowdl['ccountry'];?>'> </div></td>
+									<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtdeladdzip<?php echo $cntrstrdl;?>' name='txtdeladdzip<?php echo $cntrstrdl;?>' value='<?php echo $rowdl['czip'];?>'> </div></td>
+									<td><div class="col-xs-12 nopadtopleft" ><input class='btn btn-danger btn-xs' type='button' id='row_<?php echo $cntrstrdl;?>_delete' class='delete' value='Delete' onClick="deleteRowAddresss(this);"/></div></td>
+								</tr>
+							<?php
+								}
+							?>
+						</table>
+
+					</div>						
+
 				</div>
 
-				<br>
 				<?php
 					if($poststat == "True"){
 				?>
-				<table width="100%" border="0" cellpadding="3">
-					<tr>
-						<td>
+				 	<div class="row nopadwtop2x">
+            <div class="col-xs-12 nopadwtop2x">
+
 							<button type="button" class="btn btn-primary btn-sm" onClick="window.location.href='Customers.php';" id="btnMain" name="btnMain">Back to Main<br>(ESC)</button>
 
 							<button type="button" class="btn btn-default btn-sm" onClick="window.location.href='Customers_new.php';" id="btnNew" name="btnNew">New<br>(F1)</button>
@@ -819,10 +780,9 @@
 							<?php
 								}
 							?>
-						
-						</td>
-					</tr>
-				</table>
+
+						</div>
+					</div>
 			 <?php
 					}
 			 ?>
@@ -1136,7 +1096,7 @@
 
 						$("#frmCust").on('submit', function (e) {
 								e.preventDefault();
-								var tbl = document.getElementById('myUnitTable').getElementsByTagName('tr');
+								var tbl = document.getElementById('myContactDetTable').getElementsByTagName('tr');
 								var lastRow = tbl.length-1;
 								document.getElementById('hdncontlistcnt').value = lastRow;
 								//alert(lastRow);

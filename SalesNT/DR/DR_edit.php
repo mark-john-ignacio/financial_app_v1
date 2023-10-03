@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "DR_edit.php";
+	$_SESSION['pageid'] = "DR.php";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -18,7 +18,11 @@
 		$txtctranno = $_REQUEST['txtcsalesno'];
 	}
 		
-	$company = $_SESSION['companyid'];
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'DR_edit.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
 
 	$getfctrs = mysqli_query($con,"SELECT * FROM `items_factor` where compcode='$company' and cstatus='ACTIVE' order By nidentity"); 
 	if (mysqli_num_rows($getfctrs)!=0) {
@@ -316,30 +320,30 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	</div>
 </div>
 
-		<hr>
-<div class="col-xs-12 nopadwdown"><b>Details</b></div>
+	<hr>
+	<div class="col-xs-12 nopadwdown"><b>Details</b></div>
 
-<ul class="nav nav-tabs">
-  <li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Items List</a></li>
-  <li id="liacct"><a href="#2Acct" data-toggle="tab">Items Inventory</a></li>
-</ul>
+	<ul class="nav nav-tabs">
+		<li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Items List</a></li>
+		<li id="liacct"><a href="#2Acct" data-toggle="tab">Items Inventory</a></li>
+	</ul>
 
   <div class="tab-content nopadwtop2x">
     <div class="tab-pane active" id="1Det">
 
-         <div class="alt2" dir="ltr" style="
-					margin: 0px;
-					padding: 3px;
-					border: 1px solid #919b9c;
-					width: 100%;
-					height: 250px;
-					text-align: left;
-					overflow: auto">
-	  <input type="hidden" name="hdnqty" id="hdnqty">
-      <input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
-      <input type="hidden" name="hdnunit" id="hdnunit">
-      <input type="hidden" id="txtprodid" name="txtprodid">
-      <input type="hidden" id="txtprodnme" name="txtprodnme">
+      <div class="alt2" dir="ltr" style="
+				margin: 0px;
+				padding: 3px;
+				border: 1px solid #919b9c;
+				width: 100%;
+				height: 300px;
+				text-align: left;
+				overflow: auto">
+					<input type="hidden" name="hdnqty" id="hdnqty">
+					<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
+					<input type="hidden" name="hdnunit" id="hdnunit">
+					<input type="hidden" id="txtprodid" name="txtprodid">
+					<input type="hidden" id="txtprodnme" name="txtprodnme">
       
             <table id="MyTable" class="MyTable table table-condensed" width="100%">
 							<thead>
@@ -359,94 +363,100 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							<tbody class="tbody">
 							</tbody>                    
 						</table>
-					</div>
-			</div>
+				</div>
 
-			<div class="tab-pane" id="2Acct">
+		</div>
 
-             <div class="alt2" dir="ltr" style="
-                        margin: 0px;
-                        padding: 3px;
-                        border: 1px solid #919b9c;
-                        width: 100%;
-                        height: 250px;
-                        text-align: left;
-                        overflow: auto">
+		<div class="tab-pane" id="2Acct">
+
+      <div class="alt2" dir="ltr" style="
+        margin: 0px;
+        padding: 3px;
+        border: 1px solid #919b9c;
+        width: 100%;
+        height: 300px;
+        text-align: left;
+        overflow: auto">
         
-                <table id="MyTableInvSer" cellpadding="3px" width="100%" border="0">
-    							<thead>
-                        <tr>
-                        	
-                            <th style="border-bottom:1px solid #999">Item Code</th>
-                            <th style="border-bottom:1px solid #999">Serial No.</th>
-                            <th style="border-bottom:1px solid #999">UOM</th>
-                            <th style="border-bottom:1px solid #999">Qty</th>
-                            <th style="border-bottom:1px solid #999">Location</th>
-                            <th style="border-bottom:1px solid #999">Expiration Date</th>
+				<table id="MyTableInvSer" cellpadding="3px" width="100%" border="0">
+					<thead>
+						<tr>                        	
+							<th style="border-bottom:1px solid #999">Item Code</th>
+							<th style="border-bottom:1px solid #999">Serial No.</th>
+							<th style="border-bottom:1px solid #999">UOM</th>
+							<th style="border-bottom:1px solid #999">Qty</th>
+							<th style="border-bottom:1px solid #999">Location</th>
+							<th style="border-bottom:1px solid #999">Expiration Date</th>
 							<th style="border-bottom:1px solid #999">Remarks</th>
-                            <th style="border-bottom:1px solid #999">&nbsp;</th>
-                        </tr>
-                   </thead>
-                   <tbody>
-                   </tbody>
-                        
-                </table>
-            			<input type="hidden" name="hdnserialscnt" id="hdnserialscnt">
-							</div>
+							<th style="border-bottom:1px solid #999">&nbsp;</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>                        
+				</table>
+				<input type="hidden" name="hdnserialscnt" id="hdnserialscnt">
 			</div>
+		</div>
 	</div>
-<br>
-<table width="100%" border="0" cellpadding="3">
-  <tr>
-    <td>
-    <input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
- 
-<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='DR.php';" id="btnMain" name="btnMain">
-Back to Main<br>(ESC)</button>
-   
-    <button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='DR_new.php';" id="btnNew" name="btnNew">
-New<br>(F1)</button>
 
-    <button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
-SO<br>(Insert)</button>
+			<?php
+				if($poststat == "True"){
+			?>
+			<br>
+			<table width="100%" border="0" cellpadding="3">
+				<tr>
+					<td>
+						<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
+			
+						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='DR.php';" id="btnMain" name="btnMain">
+							Back to Main<br>(ESC)
+						</button>
+				
+						<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='DR_new.php';" id="btnNew" name="btnNew">
+							New<br>(F1)
+						</button>
 
-    <button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
-Undo Edit<br>(CTRL+Z)
-    </button>
+						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
+							SO<br>(Insert)
+						</button>
 
-<?php
-	$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'DR_print'");
+						<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
+							Undo Edit<br>(CTRL+Z)
+						</button>
 
-	if(mysqli_num_rows($sql) == 1){
-	
-?>
-    <button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $txtctranno;?>');" id="btnPrint" name="btnPrint">
-Print<br>(CTRL+P)
-    </button>
+						<?php
+							$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'DR_print'");
 
-<?php		
-	}
+							if(mysqli_num_rows($sql) == 1){
+						?>
+						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $txtctranno;?>');" id="btnPrint" name="btnPrint">
+							Print<br>(CTRL+P)
+						</button>
 
-?>
-    
-    <button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
-Edit<br>(CTRL+E)    </button>
-    
-    <button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
-Save<br>(CTRL+S)    </button>
-    
-    
-    
-    </td>
-    <td align="right"><!--<b>TOTAL AMOUNT : 
-      <input type="text" id="txtnGross" name="txtnGross" readonly value="<?php //echo $Gross; ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10">
-    </b>-->
-    <input type="hidden" id="txtnGross" name="txtnGross" value="<?php echo $Gross; ?>">
-    </td>
+						<?php		
+							}
+						?>
+					
+						<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
+							Edit<br>(CTRL+E)    
+						</button>
+						
+						<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
+							Save<br>(CTRL+S)    
+						</button>   
+					
+					</td>
+					<td align="right"><!--<b>TOTAL AMOUNT : 
+						<input type="text" id="txtnGross" name="txtnGross" readonly value="<?php //echo $Gross; ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10">
+					</b>-->
+					<input type="hidden" id="txtnGross" name="txtnGross" value="<?php echo $Gross; ?>">
+					</td>
 
-  </tr>
-</table>
-
+				</tr>
+			</table>
+			<?php
+				}
+			?>
     </fieldset>
     
    
@@ -731,7 +741,9 @@ if(file_name.length != 0){
 	})
 }
 
-
+	<?php
+		if($poststat == "True"){
+	?>
 	$(document).keydown(function(e) {	 
 	  if(e.keyCode == 112) { //F1
 		if($("#btnNew").is(":disabled")==false){
@@ -780,6 +792,9 @@ if(file_name.length != 0){
 			}
 	  } 
 	});
+	<?php
+		}
+	?>
 
 	$(document).keypress(function(e) {
 	  if ($("#SerialMod").hasClass('in') && (e.keycode == 13 || e.which == 13)) {

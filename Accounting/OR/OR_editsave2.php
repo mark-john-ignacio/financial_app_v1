@@ -36,10 +36,14 @@ include('../../include/denied.php');
 		$dret = $_POST['isNoRef'];
 	}
 	
+	$CurrCode = $_REQUEST['selbasecurr']; 
+	$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
+	$CurrRate = $_REQUEST['basecurrval'];
+
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 
 	
-	if (!mysqli_query($con, "UPDATE `receipt` set `ccode` = '$cCustID', `dcutdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `cpaymethod` = '$cPayMethod', `cpaytype` = '$cPayType', `cremarks` = '$cRemarks', `namount` = $nGross, `napplied` = $nApplied, `cacctcode` = '$cAcctNo', `cpaydesc` = '$cOTDesc', `cpayrefno` = '$cOTRef', `lnosiref` = $dret where `compcode`='$company' and `ctranno`= '$cSINo'")) {
+	if (!mysqli_query($con, "UPDATE `receipt` set `ccode` = '$cCustID', `dcutdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `cpaymethod` = '$cPayMethod', `cpaytype` = '$cPayType', `cremarks` = '$cRemarks', `namount` = $nGross, `napplied` = $nApplied, `cacctcode` = '$cAcctNo', `cpaydesc` = '$cOTDesc', `cpayrefno` = '$cOTRef', `lnosiref` = $dret, `ccurrencycode` = '$CurrCode', `ccurrencydesc` = '$CurrDesc', `nexchangerate` = '$CurrRate' where `compcode`='$company' and `ctranno`= '$cSINo'")) {
 				
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 

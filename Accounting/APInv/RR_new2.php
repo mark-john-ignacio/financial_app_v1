@@ -410,7 +410,7 @@ var xChkVatableStatus = "";
 	});
 
 
-$(document).ready(function() {
+	$(document).ready(function() {
 
 			$(".nav-tabs a").click(function(){
     		$(this).tab('show');
@@ -457,237 +457,237 @@ $(document).ready(function() {
 			defaultDate: moment(),
     });	
 
-	$("#selbasecurr").on("change", function (){
-			
-		//convertCurrency($(this).val());
+		$("#selbasecurr").on("change", function (){
 				
-		var dval = $(this).find(':selected').attr('data-val');
-
-		$("#basecurrval").val(dval);
-		$("#statgetrate").html("");
-		recomputeCurr();
-
-
-	});
-				
-	$("#basecurrval").on("keyup", function () {
-		recomputeCurr();
-	});
-
-
-	$("#allbox").click(function(){
-			$('input:checkbox').not(this).prop('checked', this.checked);
-	});
-	
-	$('#txtcust').typeahead({
-	
-		items: 10,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_supplier.php",
-				dataType: "json",
-				data: {
-					query: $("#txtcust").val()
-				},
-				success: function (data) {
-					response(data);
-				}
-			});
-		},
-		autoSelect: true,
-		displayText: function (item) {
-			 return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 
-			$('#txtcust').val(item.value).change(); 
-			$("#txtcustid").val(item.id);
-		}
-	});
-
-	$("#txtrefrr").keydown(function(event){
-		
-		var issokso = "YES";
-		var msgs = "";
-		
-		if(event.keyCode == 13){
-
-			//SO Header
-			$.ajax({
-				url : "th_getrr.php?id=" + $(this).val() ,
-				type: "GET",
-				dataType: "JSON",
-				async: false,
-				success: function(data)
-				{	
-					console.log(data);
-                    $.each(data,function(index,item){
-
-						if(item.lapproved==0 && item.lcancelled==0){
-						   msgs = "Transaction is still pending";
-						   issokso = "NO";
-						}
-						
-						if(item.lapproved==0 && item.lcancelled==1){
-						   msgs = "Transaction is already cancelled";
-						   issokso = "NO";
-						}
+			//convertCurrency($(this).val());
 					
-					if(issokso=="YES"){
-						$('#txtcust').val(item.cname); 
-						$("#txtcustid").val(item.ccode);
+			var dval = $(this).find(':selected').attr('data-val');
 
-						$('#date_received').val(item.dcutdate);
+			$("#basecurrval").val(dval);
+			$("#statgetrate").html("");
+			recomputeCurr();
 
-						$("#basecurrval").val(item.currate);
-						$("#hidcurrvaldesc").val(item.currdesc); 
-						$("#selbasecurr").val(item.currcode).change();   
-						   
-					}
-						
-					});
-						
-				},
-				error: function (jqXHR, textStatus, errorThrown)
-				{
-					alert(jqXHR.responseText);
-				}					
-			});
-			
-			if(issokso=="YES"){
 
+		});
 				
-				$("#MyyTbltbody").empty();
-			//add details
-			//alert("th_qolistputall.php?id=" + $(this).val() + "&itmbal=" + xChkBal);
+		$("#basecurrval").on("keyup", function () {
+			recomputeCurr();
+		});
+
+		$("#allbox").click(function(){
+				$('input:checkbox').not(this).prop('checked', this.checked);
+		});
+	
+		$('#txtcust').typeahead({
+			
+			items: 10,
+			source: function(request, response) {
 				$.ajax({
-					url : "th_qolistputall.php?id=" + $(this).val(),
+					url: "../th_supplier.php",
+					dataType: "json",
+					data: {
+						query: $("#txtcust").val()
+					},
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			autoSelect: true,
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 
+				$('#txtcust').val(item.value).change(); 
+				$("#txtcustid").val(item.id);
+
+				$("#selbasecurr").val(item.cdefaultcurrency).change(); //val
+
+				$("#selterms").val(item.cterms).change();
+			}
+		});
+
+		$("#txtrefrr").keydown(function(event){
+			
+			var issokso = "YES";
+			var msgs = "";
+			
+			if(event.keyCode == 13){
+
+				//SO Header
+				$.ajax({
+					url : "th_getrr.php?id=" + $(this).val() ,
 					type: "GET",
 					dataType: "JSON",
 					async: false,
 					success: function(data)
 					{	
+						console.log(data);
+						$.each(data,function(index,item){
 
-						if(data.length==0){
-							$("#AlertMsg").html("");
-			
-							$("#AlertMsg").html("&nbsp;&nbsp;No details to add!");
-							$("#alertbtnOK").show();
-							$("#AlertModal").modal('show');
-						}else{
-							console.log(data);
-							$.each(data,function(index,item){
+							if(item.lapproved==0 && item.lcancelled==0){
+								msgs = "Transaction is still pending";
+								issokso = "NO";
+							}
+							
+							if(item.lapproved==0 && item.lcancelled==1){
+								msgs = "Transaction is already cancelled";
+								issokso = "NO";
+							}
+						
+						if(issokso=="YES"){
+							$('#txtcust').val(item.cname); 
+							$("#txtcustid").val(item.ccode);
 
-								$('#txtprodnme').val(item.desc); 
-								$('#txtprodid').val(item.id); 
-								$("#hdnunit").val(item.cunit); 
-								//$("#hdnqty").val(item.nqty);
-							//	$("#hdnqtyunit").val(item.cqtyunit);
-								//alert(item.cqtyunit + ":" + item.cunit);
-								//addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident);
+							$('#date_received').val(item.dcutdate);
 
-								//nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident
-								myFunctionadd(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.cmainunit,item.xref,item.xrefident,item.ctaxcode,item.cewtcode,item.xrefPO,item.xrefidentPO,item.ladvancepay);
-
-								$('#txtprodnme').val("").change(); 
-								$('#txtprodid').val(""); 
-								$("#hdnunit").val(""); 
-
-							});
+							$("#basecurrval").val(item.currate);
+							$("#hidcurrvaldesc").val(item.currdesc); 
+							$("#selbasecurr").val(item.currcode).change();   
+								
 						}
-
+							
+						});
+							
 					},
 					error: function (jqXHR, textStatus, errorThrown)
 					{
 						alert(jqXHR.responseText);
-					}
-
+					}					
 				});
-			}
-			
-			if(issokso=="NO"){
-				alert(msgs);
-			}
-		}
-	});
-
-
-
-
-	$('#txtprodnme').typeahead({
-		autoSelect: true,
-		source: function(request, response) {
-			$.ajax({
-				url: "../../Purchases/th_product.php",
-				dataType: "json",
-				data: {
-					query: $("#txtprodnme").val()
-				},
-				success: function (data) {
-					response(data);
-				}
-			});
-		},
-		displayText: function (item) {
-			return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.cname+'</span><br><small><span class="dropdown-item-extra">' + item.cunit + '</span></small></div>';
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 					
-
-			//$('.datepick').each(function(){
-			//	$(this).data('DateTimePicker').destroy();
-			//});
-		
-				$('#txtprodnme').val(item.cname).change(); 
-				$('#txtprodid').val(item.id); 
-				$("#hdnunit").val(item.cunit);
-				$("#hdncvat").val(item.ctaxcode);
 				
-				myFunctionadd(1,0,0,0,1,item.cunit,"","","","","","");
+				if(issokso=="YES"){
 
-				$('#txtprodnme').val("").change(); 
-				$('#txtprodid').val(""); 
-				$("#hdnunit").val("");
-				$("#hdncvat").val("");
-		}
-	
-	});
+					
+					$("#MyyTbltbody").empty();
+				//add details
+				//alert("th_qolistputall.php?id=" + $(this).val() + "&itmbal=" + xChkBal);
+					$.ajax({
+						url : "th_qolistputall.php?id=" + $(this).val(),
+						type: "GET",
+						dataType: "JSON",
+						async: false,
+						success: function(data)
+						{	
 
+							if(data.length==0){
+								$("#AlertMsg").html("");
+				
+								$("#AlertMsg").html("&nbsp;&nbsp;No details to add!");
+								$("#alertbtnOK").show();
+								$("#AlertModal").modal('show');
+							}else{
+								console.log(data);
+								$.each(data,function(index,item){
 
-	$("#txtprodid").keydown(function(e){
-		if(e.keyCode == 13){
+									$('#txtprodnme').val(item.desc); 
+									$('#txtprodid').val(item.id); 
+									$("#hdnunit").val(item.cunit); 
+									//$("#hdnqty").val(item.nqty);
+								//	$("#hdnqtyunit").val(item.cqtyunit);
+									//alert(item.cqtyunit + ":" + item.cunit);
+									//addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident);
 
-		$.ajax({
-        url:'../../Purchases/get_productid.php',
-        data: 'c_id='+ $(this).val(),                 
-        success: function(value){
+									//nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident
+									myFunctionadd(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.cmainunit,item.xref,item.xrefident,item.ctaxcode,item.cewtcode,item.xrefPO,item.xrefidentPO,item.ladvancepay);
+
+									$('#txtprodnme').val("").change(); 
+									$('#txtprodid').val(""); 
+									$("#hdnunit").val(""); 
+
+								});
+							}
+
+						},
+						error: function (jqXHR, textStatus, errorThrown)
+						{
+							alert(jqXHR.responseText);
+						}
+
+					});
+				}
+				
+				if(issokso=="NO"){
+					alert(msgs);
+				}
+			}
+		});
+
+		$('#txtprodnme').typeahead({
+			autoSelect: true,
+			source: function(request, response) {
+				$.ajax({
+					url: "../../Purchases/th_product.php",
+					dataType: "json",
+					data: {
+						query: $("#txtprodnme").val()
+					},
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.cname+'</span><br><small><span class="dropdown-item-extra">' + item.cunit + '</span></small></div>';
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 					
+
+				//$('.datepick').each(function(){
+				//	$(this).data('DateTimePicker').destroy();
+				//});
 			
-            var data = value.split(",");
-            $('#txtprodid').val(data[0]);
-            $('#txtprodnme').val(data[1]);
-			$('#hdnunit').val(data[2]);
-			$('#hdncvat').val(data[3]);
-		
+					$('#txtprodnme').val(item.cname).change(); 
+					$('#txtprodid').val(item.id); 
+					$("#hdnunit").val(item.cunit);
+					$("#hdncvat").val(item.ctaxcode);
+					
+					myFunctionadd(1,0,0,0,1,item.cunit,"","","","","","");
 
-			myFunctionadd(1,0,0,0,1,item.cunit,"","","","","","");
+					$('#txtprodnme').val("").change(); 
+					$('#txtprodid').val(""); 
+					$("#hdnunit").val("");
+					$("#hdncvat").val("");
+			}
 		
-		$("#txtprodid").val("");
-		$("#txtprodnme").val("");
-		$("#hdnunit").val("");
-		$("#hdncvat").val("")
- 
-	    //closing for success: function(value){
-	    }
-        }); 
+		});
 
+
+		$("#txtprodid").keydown(function(e){
+			if(e.keyCode == 13){
+
+			$.ajax({
+					url:'../../Purchases/get_productid.php',
+					data: 'c_id='+ $(this).val(),                 
+					success: function(value){
+				
+							var data = value.split(",");
+							$('#txtprodid').val(data[0]);
+							$('#txtprodnme').val(data[1]);
+				$('#hdnunit').val(data[2]);
+				$('#hdncvat').val(data[3]);
+			
+
+				myFunctionadd(1,0,0,0,1,item.cunit,"","","","","","");
+			
+			$("#txtprodid").val("");
+			$("#txtprodnme").val("");
+			$("#hdnunit").val("");
+			$("#hdncvat").val("")
 	
-		 
-		//if ebter is clicked
-		}
-		
-	});
+				//closing for success: function(value){
+				}
+					}); 
 
-});
+		
+			
+			//if ebter is clicked
+			}
+			
+		});
+
+	});
 
 
 function myFunctionadd(nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident,ctaxcode,cewtcode,itmxrefPO,itmidentPO,itemladvpay){

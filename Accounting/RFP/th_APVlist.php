@@ -25,7 +25,7 @@ require_once "../../Connection/connection_string.php";
 		}
 	
 
-		$sql="SELECT A.ctranno, B.dapvdate, A.cacctno, D.cacctdesc, A.ncredit, sum(IFNULL(C.ngross,0)) as npaid, B.cpaymentfor
+		$sql="SELECT A.ctranno, B.dapvdate, A.cacctno, D.cacctdesc, A.ncredit, B.ccurrencycode, sum(IFNULL(C.ngross,0)) as npaid, B.cpaymentfor
 		FROM `apv_t` A
 		left join apv B on A.compcode=B.compcode and A.ctranno=B.ctranno
 		left join 
@@ -36,8 +36,8 @@ require_once "../../Connection/connection_string.php";
 			) C on B.compcode=C.compcode and A.ctranno=C.capvno and A.cacctno=C.cacctno
 		left join accounts D on A.compcode=D.compcode and A.cacctno=D.cacctid 
 		where A.compcode='$company' and B.lapproved=1  and B.lvoid=0 and B.ccode='$code'
-		and D.ccategory='LIABILITIES' and A.ncredit > 0 and A.cacctno not in ('".implode("','",$EWTVATS)."')
-		group by A.ctranno, B.dapvdate, A.cacctno, D.cacctdesc, A.ncredit, B.cpaymentfor
+		and D.ccategory='LIABILITIES' and A.ncredit > 0 and A.cacctno not in ('".implode("','",$EWTVATS)."') 
+		group by A.ctranno, B.dapvdate, A.cacctno, D.cacctdesc, A.ncredit, B.cpaymentfor, B.ccurrencycode
 		order by B.dapvdate DESC";
 
 		//echo $sql;
@@ -59,8 +59,9 @@ require_once "../../Connection/connection_string.php";
 			 $json['dapvdate'] = $row['dapvdate'];
 			 $json['namount'] = number_format($row['ncredit'],2);
 			 $json['nbalance'] = number_format($nbalx,2);
-			 $json['cpaymentfor'] = $row['cpaymentfor'];
-			 
+			 $json['cpaymentfor'] = $row['cpaymentfor']; 
+			 $json['ccurrencycode'] = $row['ccurrencycode']; 
+
 			 $json2[] = $json;
 
 			}

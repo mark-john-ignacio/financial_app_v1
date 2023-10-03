@@ -41,6 +41,7 @@ require_once "../../Connection/connection_string.php";
 		$json['dcutdate'] = $row['dcutdate'];
 		$json['cpaymethod'] = ucwords($row['cpaymethod']);
 		$json['namount'] = number_format($row['namount'],2);
+		$json['ccurrencycode'] = $row['ccurrencycode'];
 		$json2[] = $json;
 
 	}

@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "RFP_edit.php";
+	$_SESSION['pageid'] = "RFP.php";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -10,6 +10,12 @@
 
 	$company = $_SESSION['companyid'];
 	$ccvno = $_REQUEST['txtctranno'];
+
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'RFP_edit.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
 
 	//echo $_SERVER['SERVER_NAME'];
 
@@ -93,6 +99,10 @@
 			$cnBalamt = $row['nbalance'];
 
 			$cdRemarks = $row['cremarks'];
+
+			$ccurrcode = $row['ccurrencycode'];  
+			$ccurrdesc = $row['ccurrencydesc']; 
+			$ccurrrate = $row['nexchangerate'];
 		
 			$lPosted = $row['lapproved'];
 			$lCancelled = $row['lcancelled'];
@@ -172,7 +182,7 @@
 								</tr>
 							
 								<tr>
-								<td width="150"><span style="padding:2px" id="paymntdesc"><b>Bank Name</b></span></td>
+									<td width="150"><span style="padding:2px" id="paymntdesc"><b>Bank Name</b></span></td>
 									<td>
 										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px" id="paymntdescdet">
 											<div class="col-xs-3 nopadding">
@@ -223,6 +233,50 @@
 									</td>						
 								</tr>
 
+								<tr>
+									<td width="150"><span style="padding:2px" id="paymntdesc"><b>Currency</b></span></td>
+									<td>
+										<div class="row nopadding">
+											<div class="col-xs-7 nopadwleft">
+												<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">					
+													<?php
+																		
+														$nvaluecurrbase = "";	
+														$nvaluecurrbasedesc = "";	
+														$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+																				
+														if (mysqli_num_rows($result)!=0) {
+															$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);																				
+															$nvaluecurrbase = $all_course_data['cvalue']; 																					
+														}
+														else{
+															$nvaluecurrbase = "";
+														}
+
+														$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+														if (mysqli_num_rows($sqlhead)!=0) {
+															while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+													?>
+														<option value="<?=$rows['id']?>" <?php if ($ccurrcode==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>" data-desc="<?=$rows['currencyName']?>"><?=$rows['currencyName']?></option>
+													<?php
+															}
+														}
+													?>
+												</select>
+												<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?=$nvaluecurrbase; ?>"> 	
+												<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?=$ccurrdesc; ?>"> 
+											</div>
+											<div class="col-xs-2 nopadwleft">
+												<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="<?=$ccurrrate; ?>">	 
+											</div>
+											<div class="col-xs-3" id="statgetrate" style="padding: 4px !important"> 																	
+											</div>
+										</div>
+									</td>
+									<td width="150">&nbsp;</td>
+									<td>&nbsp;</td>		
+														
+								</tr>
 							</table>
 
 						</div>	
@@ -286,6 +340,9 @@
 
 								</div>
 				
+					<?php
+						if($poststat=="True"){
+					?>
 					<br>
 					<table width="100%" border="0" cellpadding="3">
 						<tr>
@@ -323,7 +380,9 @@
 						</tr>
 						
 					</table>
-
+					<?php
+						}
+					?>
 			</fieldset>
 
 	</form>
@@ -367,6 +426,7 @@
 											<th>Date</th>
 											<th>Payment For</th>
 											<th>Payable Amount</th>
+											<th>Currency</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -492,51 +552,57 @@
 		});
 	}
 
-	$(document).keydown(function(e) {	 
-		
-		if(e.keyCode == 112) { //F1
-			if($("#btnNew").is(":disabled")==false){
-				e.preventDefault();
-				window.location.href='RFP_new.php';
+	<?php
+		if($poststat=="True"){
+	?>
+		$(document).keydown(function(e) {	 
+			
+			if(e.keyCode == 112) { //F1
+				if($("#btnNew").is(":disabled")==false){
+					e.preventDefault();
+					window.location.href='RFP_new.php';
+				}
 			}
-		}
-		else if(e.keyCode == 83 && e.ctrlKey){//CTRL S
-			if($("#btnSave").is(":disabled")==false){ 
-				e.preventDefault();
-				return chkform();
+			else if(e.keyCode == 83 && e.ctrlKey){//CTRL S
+				if($("#btnSave").is(":disabled")==false){ 
+					e.preventDefault();
+					return chkform();
+				}
 			}
-		}
-		else if(e.keyCode == 69 && e.ctrlKey){//CTRL E
-			if($("#btnEdit").is(":disabled")==false){
-				e.preventDefault();
-				enabled();
+			else if(e.keyCode == 69 && e.ctrlKey){//CTRL E
+				if($("#btnEdit").is(":disabled")==false){
+					e.preventDefault();
+					enabled();
+				}
 			}
-		}
-		else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
-			if($("#btnPrint").is(":disabled")==false){
-				e.preventDefault();
-				printchk('<?=$ccvno?>');
+			else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
+				if($("#btnPrint").is(":disabled")==false){
+					e.preventDefault();
+					printchk('<?=$ccvno?>');
+				}
 			}
-		}
-		else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
-			if($("#btnUndo").is(":disabled")==false){
-				e.preventDefault();
-				chkSIEnter(13,'frmpos');
+			else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
+				if($("#btnUndo").is(":disabled")==false){
+					e.preventDefault();
+					chkSIEnter(13,'frmpos');
+				}
 			}
-		}
-		else if(e.keyCode == 45) { //Insert
-	  	if($('#myAPModal').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
-				var custid = $("#txtcustid").val();
-				showapvmod(custid);
+			else if(e.keyCode == 45) { //Insert
+				if($('#myAPModal').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
+					var custid = $("#txtcustid").val();
+					showapvmod(custid);
+				}
 			}
-		}
-		else if(e.keyCode == 27){//ESC
-			if($("#btnMain").is(":disabled")==false){
-				e.preventDefault();
-				$("#btnMain").click();
+			else if(e.keyCode == 27){//ESC
+				if($("#btnMain").is(":disabled")==false){
+					e.preventDefault();
+					$("#btnMain").click();
+				}
 			}
+		});
+	<?php
 		}
-	});
+	?>
 
 	$(document).ready(function() {
 
@@ -620,8 +686,12 @@
 
 				$('#txtcust').val(item.value).change(); 
 				$("#txtcustid").val(item.id);
+
+				$("#selbasecurr").val(item.cdefaultcurrency).change();
+				$("#basecurrval").val($("#selbasecurr").find(':selected').data('val'));
+				$("#hidcurrvaldesc").val($("#selbasecurr").find(':selected').data('desc'));
 					
-			//	showapvmod(item.id);
+				showapvmod(item.id);
 
 			}
 		});
@@ -686,6 +756,19 @@
 			$('td input:checkbox',table).not(this).prop('checked', this.checked);
 		});
 
+		$("#selbasecurr").on("change", function (){
+	
+			var dval = $(this).find(':selected').attr('data-val');
+			var ddesc = $(this).find(':selected').attr('data-desc');
+
+			$("#basecurrval").val(dval);
+			$("#hidcurrvaldesc").val(ddesc);
+			$("#statgetrate").html("");
+
+			$('#MyTable tbody').empty();
+				
+		});
+
 		disabled();
 
 	});
@@ -696,11 +779,13 @@
 			$('#MyAPVList').DataTable().destroy();
 		}
 
+		$('#APListHeader').html("AP List: "+$('#txtcust').val()+" ("+$('#selbasecurr').val()+")");
+
 		$('#MyAPVList tbody').empty();
 
 		$.ajax({
 			url: 'th_APVlist.php',
-			data: { code: custid },
+			data: { code: custid, curr:$('#selbasecurr').val() },
 			dataType: 'json',
 			async:false,
 			method: 'post',
@@ -724,7 +809,8 @@
 							$("<td>").html(item.dapvdate+"<input type='hidden' id='APVdte"+index+"' name='APVdte' value='"+item.dapvdate+"'>"),
 							$("<td>").html(item.cacctno+" - "+item.cacctdesc+"<input type='hidden' id='APVAcctPay"+index+"' name='APVAcctPay' value='"+item.cacctno+"'><input type='hidden' id='APVAcctPayDesc"+index+"' name='APVAcctPayDesc' value='"+item.cacctdesc+"'>"),
 							$("<td align='right'>").html(item.namount+"<input type='hidden' id='APVamt"+index+"' name='APVamt' value='"+item.namount+"'>"),
-							$("<td align='right'>").html(item.nbalance+"<input type='hidden' id='APVBal"+index+"' name='APVBal' value='"+item.nbalance+"'>")
+							$("<td align='right'>").html(item.nbalance+"<input type='hidden' id='APVBal"+index+"' name='APVBal' value='"+item.nbalance+"'>"),
+							$("<td align='center'>").html(item.ccurrencycode)
 							
 						).appendTo("#MyAPVList tbody");
 										

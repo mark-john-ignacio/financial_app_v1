@@ -1,40 +1,45 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "POS_new.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "POS.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
-require_once('../../Model/helper.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
+	require_once('../../Model/helper.php');
 
-$company = $_SESSION['companyid'];
+	$company = $_SESSION['companyid'];
 
-if(isset($_REQUEST['txtctranno'])){
+	if(isset($_REQUEST['txtctranno'])){
 		$txtctranno = $_REQUEST['txtctranno'];
-}
-else{
+	}
+	else{
 		$txtctranno = $_REQUEST['txtcsalesno'];
 	}
-	
-$company = $_SESSION['companyid'];
+		
+	$company = $_SESSION['companyid'];
 
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'POS_edit.php'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
 
-$sqlhead = mysqli_query($con,"select a.*,b.cname,b.cpricever,(TRIM(TRAILING '.' FROM(CAST(TRIM(TRAILING '0' FROM B.nlimit)AS char)))) as nlimit from sales a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.ctranno = '$txtctranno' and a.compcode='$company'");	
+	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.cpricever,(TRIM(TRAILING '.' FROM(CAST(TRIM(TRAILING '0' FROM B.nlimit)AS char)))) as nlimit from sales a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.ctranno = '$txtctranno' and a.compcode='$company'");	
 
-/*
-function listcurrencies(){ //API for currency list
-	$apikey = $_SESSION['currapikey'];
-  
-	//$json = file_get_contents("https://free.currconv.com/api/v7/currencies?&apiKey={$apikey}");
-	//$obj = json_decode($json, true);
+	/*
+	function listcurrencies(){ //API for currency list
+		$apikey = $_SESSION['currapikey'];
+		
+		//$json = file_get_contents("https://free.currconv.com/api/v7/currencies?&apiKey={$apikey}");
+		//$obj = json_decode($json, true);
 
-	$json = file_get_contents("https://api.currencyfreaks.com/supported-currencies");
-  
-	return $json;
-}
-*/
+		$json = file_get_contents("https://api.currencyfreaks.com/supported-currencies");
+		
+		return $json;
+	}
+	*/
 
 $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$company' order By nident"); 
 	if (mysqli_num_rows($getdcnts)!=0) {
@@ -490,9 +495,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 			<table width="100%" border="0" cellpadding="3">
 				<tr>
-					<td valign="top">
+					<td valign="top" width= "70%">
 						<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
 				
+						<?php
+							if($poststat == "True"){
+						?>
+
 						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SI.php';" id="btnMain" name="btnMain">
 							Back to Main<br>(ESC)
 						</button>
@@ -543,6 +552,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							Save<br>(CTRL+S)
 						</button>
 						
+						<?php
+							}
+						?>
 					</td>    
 					<td align="right" valign="top">
 						<table width="90%" border="0" cellspacing="0" cellpadding="0">
@@ -963,7 +975,9 @@ if(file_name.length != 0){
 	})
 }
 
-
+	<?php
+		if($poststat == "True"){
+	?>
 	$(document).keydown(function(e) {	 
 	  if(e.keyCode == 112) { //F1
 		if($("#btnNew").is(":disabled")==false){
@@ -1008,7 +1022,9 @@ if(file_name.length != 0){
 	  }
 
 	});
-
+	<?php
+		}
+	?>
 
 	$(document).ready(function(e) {	
 			   			$.ajax({

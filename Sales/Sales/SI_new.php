@@ -848,8 +848,10 @@ $company = $_SESSION['companyid'];
 					$('#hdnpricever').val(data[1]);
 				//	$('#imgemp').attr("src",data[2]);
 					$('#selcterms').val(data[12]).change();
-					
-									
+
+					$("#selbasecurr").val(data[13]).change(); //val
+					$("#basecurrvalmain").val($("#selbasecurr").data("val"));
+														
 					$('#hdnvalid').val("YES");
 					
 					$('#txtremarks').focus();
@@ -946,6 +948,9 @@ $company = $_SESSION['companyid'];
 				$('#hdnvalid').val("YES"); 
 				
 				$('#txtremarks').focus();
+
+				$("#selbasecurr").val(item.cdefaultcurrency).change(); //val
+				$("#basecurrvalmain").val($("#selbasecurr").data("val"));
 				
 					if(xChkLimit==1){
 						

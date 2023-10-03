@@ -16,8 +16,6 @@
 		$cprno = $_REQUEST['txtcprno'];
 	}
 
-	$id = $_SESSION['employeeid'];
-
 	$arrseclist = array();
 	$sqlempsec = mysqli_query($con,"select A.section_nid as nid, B.cdesc from users_sections A left join locations B on A.section_nid=B.nid where A.UserID='$employeeid' and B.cstatus='ACTIVE' Order By B.cdesc");
 	$rowdetloc = $sqlempsec->fetch_all(MYSQLI_ASSOC);

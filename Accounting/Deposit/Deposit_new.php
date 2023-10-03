@@ -101,8 +101,45 @@
 								</td>
 							</tr>
 							<tr>
-								<tH>&nbsp;</tH>
-								<td style="padding:2px;">&nbsp;</td>
+								<tH width="150">Currency:</tH>
+								<td style="padding:2px;">
+									<div class="row nopadding">
+										<div class="col-xs-8 nopadding">
+											<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">					
+												<?php
+																	
+													$nvaluecurrbase = "";	
+													$nvaluecurrbasedesc = "";	
+													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+																			
+													if (mysqli_num_rows($result)!=0) {
+														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);																				
+														$nvaluecurrbase = $all_course_data['cvalue']; 																					
+													}
+													else{
+														$nvaluecurrbase = "";
+													}
+
+													$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+													if (mysqli_num_rows($sqlhead)!=0) {
+														while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+												?>
+													<option value="<?=$rows['id']?>" <?php if ($nvaluecurrbase==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>" data-desc="<?=$rows['currencyName']?>"><?=$rows['currencyName']?></option>
+												<?php
+														}
+													}
+												?>
+											</select>
+											<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?=$nvaluecurrbase; ?>"> 	
+											<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?=$nvaluecurrbasedesc; ?>"> 
+										</div>
+										<div class="col-xs-2 nopadwleft">
+											<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
+										</div>
+										<div class="col-xs-2" id="statgetrate" style="padding: 4px !important"> 																	
+										</div>
+									</div>
+								</td>	
 								<tH>&nbsp;</tH>
 								<td style="padding:2px;">&nbsp;</td>
 							</tr>
@@ -370,6 +407,17 @@
 			}
 		});
 
+		$("#selbasecurr").on("change", function (){
+	
+			var dval = $(this).find(':selected').attr('data-val');
+			var ddesc = $(this).find(':selected').attr('data-desc');
+
+			$("#basecurrval").val(dval);
+			$("#hidcurrvaldesc").val(ddesc);
+			$("#statgetrate").html("");
+				
+		});
+
 		$('#frmOR').submit(function() {
 			var subz = "YES";
 
@@ -492,13 +540,21 @@
 
         console.log(data);
         $.each(data,function(index,item){
+
+					var chkbox = "";
+					if(item.ccurrencycode!=$('#selbasecurr').val()){
+						chkbox = "";
+					}else{
+						chkbox = "<input type='checkbox' value='"+item.ctranno+"' name='chkSales[]'>";
+					}
+
           $("<tr>").append(
-						$("<td>").html("<input type='checkbox' value='"+item.ctranno+"' name='chkSales[]'>"),
+						$("<td>").html(chkbox),
 						$("<td>").text(item.ctranno),
 						$("<td>").text(item.cpaymethod),
 						$("<td>").text(item.corno),
 						$("<td>").text(item.dcutdate),
-						$("<td>").text(item.namount)
+						$("<td>").text(item.namount + " " + item.ccurrencycode)
         	).appendTo("#MyORTbl tbody");
         });
 					   

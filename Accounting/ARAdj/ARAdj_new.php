@@ -118,6 +118,10 @@
 												<input type="text" class="form-control input-sm" id="txtInvoiceRef" name="txtInvoiceRef" width="20px" tabindex="2" placeholder="Search Sales Invoice No..." readonly>      
 												<input type="hidden" id="invtyp" name="invtyp" value="">      
 											</div>
+
+											<div class="col-xs-2 nopadwleft">
+												<input type="text" class="form-control input-sm" id="txtcurr" name="txtcurr" width="20px" tabindex="2" placeholder="Currency..." readonly>
+											</div>
 									</div>
 								</td>
 								<tH width="150">&nbsp;</tH>
@@ -169,7 +173,7 @@
 							text-align: left;
 							overflow: auto">
 			
-							<table id="MyTable" class="MyTable table table-condensed" width="100%">
+							<table id="MyTable" class="MyTable table table-xs" width="100%">
 								<thead>
 									<tr>
 										<th style="border-bottom:1px solid #999">Account No.</th>
@@ -279,6 +283,42 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <!-- End FULL INVOICE LIST -->
+
+			<!-- FULL SALES INVOICE LIST REFERENCES-->
+				<div class="modal fade" id="myInvoiceRef" role="dialog" data-keyboard="false" data-backdrop="static">
+    			<div class="modal-dialog modal-lg">
+        		<div class="modal-content">
+            	<div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title" id="InvListHdr">Sales Invoice List</h3>
+            	</div>
+            
+            	<div class="modal-body" style="height:40vh">
+            
+                <div class="col-xs-12 nopadding pre-scrollable" style="height:37vh">
+                  <table name='MyInvoiceTbl' id='MyInvoiceTbl' class="table table-condensed">
+                    <thead>
+                      <tr>
+												<th>Invoice No.</th>
+												<th>Print No.</th>
+												<th>Remarks</th>
+												<th>Date</th>
+											</tr>
+										</thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                </div>
+         	            
+							</div>
+			
+            	<div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            	</div>
+        		</div><!-- /.modal-content -->
+    			</div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->
+			<!-- End FULL INVOICE LIST -->
 
 </body>
 </html>
@@ -527,7 +567,7 @@
 		});	
 
 		$('body').on('keyup', '#txtInvoiceRef', function() {
-			$("#txtInvoiceRef").typeahead({
+			/*$("#txtInvoiceRef").typeahead({
 				autoSelect: true,
 				source: function(request, response) {
 					$.ajax({
@@ -549,7 +589,7 @@
 					$('#txtInvoiceRef').val(item.no).change(); 	
 					$('#invtyp').val(item.typx).change();							
 				}
-			});
+			});*/
 		});
 
 		$('body').on('keypress', '.cRem', function(e) {
@@ -576,7 +616,7 @@
 			$("#txtInvoiceRef").val("");
 
 			$('#MyTable > tbody > tr').not(':first').empty();		
-
+			/*
       if(this.checked) {				
 				$("#btnSISearch").attr("disabled", false);
 				$("#txtInvoiceRef").attr("readonly", true);
@@ -584,6 +624,7 @@
 				$("#btnSISearch").attr("disabled", true);
 				$("#txtInvoiceRef").attr("readonly", false);
 			}
+			*/
 		});
 
 		$('#btnaddline').on('click', function(e) {
@@ -627,6 +668,14 @@
 	}
 
 	function InsertDet(){
+
+		var varcheck = "";
+		if ($('#isReturn').is(':checked')) {
+			varcheck = "sr";
+		}else{
+			varcheck = "si";
+		}
+
 		if($("#txtcust").val()!="" || $("#txtcustid").val()!=""){
 
 			$('#MyInvTbl tbody').empty();
@@ -636,55 +685,108 @@
 				var ccode = $("#txtcustid").val();						
 				var xstat = "YES";
 						
-				$.ajax({
-					url: 'th_qolist.php',
-					data: 'x='+ccode,
-					dataType: 'json',
-					method: 'post',
-					success: function (data) {
+				if(varcheck=="sr"){
+					$.ajax({
+						url: 'th_qolist.php',
+						data: 'x='+ccode,
+						dataType: 'json',
+						method: 'post',
+						success: function (data) {
 
-						console.log(data);
-						$.each(data,function(index,item){
-									
-							if(item.cpono=="NONE"){
-								$("#AlertMsg").html("No Sales Return Available");
-								$("#alertbtnOK").show();
-								$("#OK").hide();
-								$("#Cancel").hide();
-								$("#AlertModal").modal('show');
+							console.log(data);
+							$.each(data,function(index,item){
+										
+								if(item.cpono=="NONE"){
+									$("#AlertMsg").html("No Sales Return Available");
+									$("#alertbtnOK").show();
+									$("#OK").hide();
+									$("#Cancel").hide();
+									$("#AlertModal").modal('show');
 
-								xstat = "NO";
-									
-								$("#txtcustid").attr("readonly", false);
-								$("#txtcust").attr("readonly", false);
+									xstat = "NO";
+										
+									$("#txtcustid").attr("readonly", false);
+									$("#txtcust").attr("readonly", false);
+								}
+								else{
+
+									$("<tr>").append(
+										$("<td id='td"+item.cpono+"'>").html("<a href=\"javascript:;\" data-dismiss=\"modal\" onclick=\"setinvref('"+item.cpono+"', '"+item.cref+"', '"+item.typx+"','"+varcheck+"','"+item.ccurrencycode+"')\">"+item.cpono+"</a>"),
+										$("<td>").text(item.cref),
+										$("<td>").text(item.dcutdate)
+									).appendTo("#MyInvTbl tbody");
+																
+									$("#td"+item.cpono).on("mouseover", function(){
+										$(this).css('cursor','pointer');
+									});
+								}
+							});
+								
+							if(xstat=="YES"){
+								$('#mySIRef').modal("show");
 							}
-							else{
-
-								$("<tr>").append(
-									$("<td id='td"+item.cpono+"'>").html("<a href=\"javascript:;\" data-dismiss=\"modal\" onclick=\"setinvref('"+item.cpono+"', '"+item.cref+"', '"+item.typx+"')\">"+item.cpono+"</a>"),
-									$("<td>").text(item.cref),
-									$("<td>").text(item.dcutdate)
-								).appendTo("#MyInvTbl tbody");
-															
-								$("#td"+item.cpono).on("mouseover", function(){
-									$(this).css('cursor','pointer');
-								});
-							}
-						});
-							
-						if(xstat=="YES"){
-							$('#mySIRef').modal("show");
+						},
+						error: function (req, status, err) {
+							console.log('Something went wrong', status, err);
+							$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+							$("#alertbtnOK").show();
+							$("#OK").hide();
+							$("#Cancel").hide();
+							$("#AlertModal").modal('show');
 						}
-					},
-					error: function (req, status, err) {
-						console.log('Something went wrong', status, err);
-						$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
-						$("#alertbtnOK").show();
-						$("#OK").hide();
-						$("#Cancel").hide();
-						$("#AlertModal").modal('show');
-					}
-				});
+					});
+				}else{
+					$.ajax({
+						url: 'th_invoices.php',
+						data: 'x='+ccode,
+						dataType: 'json',
+						method: 'post',
+						success: function (data) {
+
+							console.log(data);
+							$.each(data,function(index,item){
+										
+								if(item.cpono=="NONE"){
+									$("#AlertMsg").html("No Sales Invoice Available");
+									$("#alertbtnOK").show();
+									$("#OK").hide();
+									$("#Cancel").hide();
+									$("#AlertModal").modal('show');
+
+									xstat = "NO";
+										
+									$("#txtcustid").attr("readonly", false);
+									$("#txtcust").attr("readonly", false);
+								}
+								else{
+
+									$("<tr>").append(
+										$("<td id='td"+item.cpono+"'>").html("<a href=\"javascript:;\" data-dismiss=\"modal\" onclick=\"setinvref('', '"+item.cpono+"', '"+item.typx+"','"+varcheck+"','"+item.ccurrencycode+"')\">"+item.cpono+"</a>"),
+										$("<td>").text(item.csiprintno),
+										$("<td>").text(item.cremarks),
+										$("<td>").text(item.cutdate)
+									).appendTo("#MyInvoiceTbl tbody");
+																
+									$("#td"+item.cpono).on("mouseover", function(){
+										$(this).css('cursor','pointer');
+									});
+								}
+							});
+								
+							if(xstat=="YES"){
+								$('#myInvoiceRef').modal("show");
+							}
+						},
+						error: function (req, status, err) {
+							console.log('Something went wrong', status, err);
+							$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+							$("#alertbtnOK").show();
+							$("#OK").hide();
+							$("#Cancel").hide();
+							$("#AlertModal").modal('show');
+						}
+					});
+				}
 		}else{
 			$("#AlertMsg").html("&nbsp;&nbsp;Enter a valid customer first...");
 			$("#alertbtnOK").show();
@@ -696,51 +798,53 @@
 		}
 	}
 
-	function setinvref(srno,invno,typx){
+	function setinvref(srno,invno,typx,chkx,currcode){
 
 		$('#txtSIRef').val(srno);
 		$('#txtInvoiceRef').val(invno);
 		$('#invtyp').val(typx);		
+		$('#txtcurr').val(currcode);	
 
 		//alert(srno+","+invno+","+typx);
 
 		//default entry from invoice... reverese
 		$('#MyTable > tbody').empty();	
 
-		//alert('srno='+srno+'&invno='+invno+'&styp='+$('#invtyp').val());
-		$.ajax({
-			url: 'th_getsientry.php',
-			data: 'srno='+srno+'&invno='+invno+'&styp='+$('#invtyp').val(),
-			dataType: 'json',
-			method: 'post',
-			success: function (data) {
+		if(chkx=="sr"){
+			$.ajax({
+				url: 'th_getsientry.php',
+				data: 'srno='+srno+'&invno='+invno+'&styp='+$('#invtyp').val(),
+				dataType: 'json',
+				method: 'post',
+				success: function (data) {
 
-				console.log(data);
-				$.each(data,function(index,item){
+					console.log(data);
+					$.each(data,function(index,item){
 
-					rowCount = index + 1;
+						rowCount = index + 1;
 
-					$('#MyTable > tbody:last-child').append(
-						'<tr>'// need to change closing tag to an opening `<tr>` tag.
-						+'<td width="100px" style="padding:1px"><input type="text" class="typeno form-control input-xs" name="txtcAcctNo'+rowCount+'" id="txtcAcctNo'+rowCount+'"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctDesc'+rowCount+'" data-debit="txtnDebit'+rowCount+'" value="'+item.cacctid+'"></td>'
-						+'<td style="padding:1px"><input type="text" class="typedesc form-control input-xs" name="txtcAcctDesc'+rowCount+'" id="txtcAcctDesc'+rowCount+'"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctNo'+rowCount+'" data-debit="txtnDebit'+rowCount+'" value="'+item.cacctdesc+'"> </td>'
-						+'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit'+rowCount+'" id="txtnDebit'+rowCount+'" autocomplete="off" value="'+item.ndebit+'"</td>'
-						+'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit'+rowCount+'" id="txtnCredit'+rowCount+'" autocomplete="off" value="'+item.ncredit+'"></td>'
-						+'<td width="200px" style="padding:1px"><input type="text" class="cRem form-control input-xs" name="txtcRem'+rowCount+'" id="txtcRem'+rowCount+'" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"></td>'
-						+'<td width="40px" align="right"><input class="btn btn-danger btn-xs" type="button" id="row_'+rowCount+'_delete" value="delete" onClick="deleteRow(this);"/></td>'+'</tr>'
-					);
+						$('#MyTable > tbody:last-child').append(
+							'<tr>'// need to change closing tag to an opening `<tr>` tag.
+							+'<td width="100px"><input type="text" class="typeno form-control input-xs" name="txtcAcctNo'+rowCount+'" id="txtcAcctNo'+rowCount+'"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctDesc'+rowCount+'" data-debit="txtnDebit'+rowCount+'" value="'+item.cacctid+'"></td>'
+							+'<td><input type="text" class="typedesc form-control input-xs" name="txtcAcctDesc'+rowCount+'" id="txtcAcctDesc'+rowCount+'"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctNo'+rowCount+'" data-debit="txtnDebit'+rowCount+'" value="'+item.cacctdesc+'"> </td>'
+							+'<td width="100px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit'+rowCount+'" id="txtnDebit'+rowCount+'" autocomplete="off" value="'+item.ndebit+'"</td>'
+							+'<td width="100px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit'+rowCount+'" id="txtnCredit'+rowCount+'" autocomplete="off" value="'+item.ncredit+'"></td>'
+							+'<td width="200px"><input type="text" class="cRem form-control input-xs" name="txtcRem'+rowCount+'" id="txtcRem'+rowCount+'" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"></td>'
+							+'<td width="40px" align="right"><input class="btn btn-danger btn-xs" type="button" id="row_'+rowCount+'_delete" value="delete" onClick="deleteRow(this);"/></td>'+'</tr>'
+						);
 
-				});
+					});
 
-				$("input.numeric").autoNumeric('init',{mDec:2});
-				$("input.numeric").on("focus click", function () {
-					$(this).select();
-				});
+					$("input.numeric").autoNumeric('init',{mDec:2});
+					$("input.numeric").on("focus click", function () {
+						$(this).select();
+					});
 
-				computegross()
+					computegross()
 
-			}
-		});
+				}
+			});
+		}
 	}
 
 	function InsertRows(thisNme,rowCount){

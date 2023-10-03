@@ -602,8 +602,11 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 							if(value!=""){
 								var data = value.split(":");
 								$('#txtcust').val(data[0]);
-								$('#imgemp').attr("src",data[3]);
+								//$('#imgemp').attr("src",data[3]);
 								$('#hdnpricever').val(data[2]);
+
+								$("#selbasecurr").val(data[13]).change(); //val
+								$("#basecurrvalmain").val($("#selbasecurr").data("val"));
 												
 								$('#hdnvalid').val("YES");
 
@@ -613,7 +616,7 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 							else{
 								$('#txtcustid').val("");
 								$('#txtcust').val("");
-								$('#imgemp').attr("src","../../images/blueX.png");
+								//$('#imgemp').attr("src","../../images/blueX.png");
 								$('#hdnpricever').val("");
 								
 								$('#hdnvalid').val("NO");
@@ -622,7 +625,7 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 						error: function(){
 							$('#txtcustid').val("");
 							$('#txtcust').val("");
-							$('#imgemp').attr("src","../../images/blueX.png");
+							//$('#imgemp').attr("src","../../images/blueX.png");
 							$('#hdnpricever').val("");
 							
 							$('#hdnvalid').val("NO");
@@ -631,7 +634,7 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 
 			}
 			
-	});
+		});
 
 	$('#txtcust, #txtcustid').on("blur", function(){
 		if($('#hdnvalid').val()=="NO"){
@@ -672,8 +675,11 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 						
 			$('#txtcust').val(item.value).change(); 
 			$("#txtcustid").val(item.id);
-			$("#imgemp").attr("src",item.imgsrc);
+			//$("#imgemp").attr("src",item.imgsrc);
 			$("#hdnpricever").val(item.cver);
+
+			$("#selbasecurr").val(item.cdefaultcurrency).change(); //val
+			$("#basecurrvalmain").val($("#selbasecurr").data("val"));
 			
 			$('#hdnvalid').val("YES");
 			

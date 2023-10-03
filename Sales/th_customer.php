@@ -35,6 +35,7 @@ require_once "../Connection/connection_string.php";
 		$json['csman'] = $row['csman'];
 		$json['smaname'] = $row['smaname'];
 		$json['cterms'] = $row['cterms'];
+		$json['cdefaultcurrency'] = $row['cdefaultcurrency'];
 		$json2[] = $json;
 
 	}

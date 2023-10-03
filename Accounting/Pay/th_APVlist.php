@@ -35,7 +35,7 @@ require_once "../../Connection/connection_string.php";
 			$rfplist[] = $row;
 		}
 
-		$sql="SELECT A.ctranno, B.crefno, DATE_FORMAT(A.dapvdate,'%m/%d/%Y') as dapvdate, sum(B.ncredit) as namount, IFNULL(sum(D.napplied),0) as napplied, IFNULL(sum(B.newtamt),0) as newtamt, B.cacctno, C.cacctdesc
+		$sql="SELECT A.ctranno, B.crefno, DATE_FORMAT(A.dapvdate,'%m/%d/%Y') as dapvdate, sum(B.ncredit) as namount, IFNULL(sum(D.napplied),0) as napplied, IFNULL(sum(B.newtamt),0) as newtamt, B.cacctno, C.cacctdesc, A.ccurrencycode
 		FROM `apv` A
 		left join 
 			(
@@ -132,7 +132,8 @@ require_once "../../Connection/connection_string.php";
 					$json['napplied'] = $row['napplied'];
 					$json['cacctno'] = $row['cacctno'];
 					$json['cacctdesc'] = $row['cacctdesc']; 
-					$json['newtamt'] = $row['newtamt'];		
+					$json['newtamt'] = $row['newtamt'];		 
+					$json['ccurrencycode'] = $row['ccurrencycode'];
 					$json2[] = $json;
 
 				}
