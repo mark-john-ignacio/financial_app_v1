@@ -2,13 +2,20 @@
 if(!isset($_SESSION)){
 	session_start();
 }
-$_SESSION['pageid'] = "OR_edit.php";
+$_SESSION['pageid'] = "OR.php";
 
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 include('../../include/access2.php');
 
 $company = $_SESSION['companyid'];
+
+$poststat = "True";
+$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'OR_edit.php'");
+if(mysqli_num_rows($sql) == 0){
+	$poststat = "False";
+}
+
 $corno = $_REQUEST['txtctranno'];
 
 
@@ -158,10 +165,10 @@ if (mysqli_num_rows($sqlchk)!=0) {
 					<div class="tab-content">
 						<div id="items" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
 
-							<table width="100%" border="0">
+							<table width="100%" border="0" cellpadding="0">
 								<tr>
 									<tH width="150px">Trans. No.:</tH>
-									<td style="padding:2px;">
+									<td>
 										<div class="col-xs-12 nopadding">
 											<div class="col-xs-5 nopadding">
 												<input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?=$corno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmOR');">
@@ -179,14 +186,14 @@ if (mysqli_num_rows($sqlchk)!=0) {
 											<i class="fa fa-bar-chart" aria-hidden="true"></i>
 										</button>
 									</td>
-									<td colspan="2" style="padding:2px;">
+									<td colspan="2">
 										<div id="statmsgz" style="display:inline"></div>
 										</div>						
 									</td>
 								</tr>
 								<tr>
 									<tH width="150">Reference:</tH>
-									<td style="padding:2px;">
+									<td>
 										<div class="col-xs-12 nopadding">
 												<div class="col-xs-5 nopadding">
 
@@ -198,11 +205,11 @@ if (mysqli_num_rows($sqlchk)!=0) {
 											</div>
 									</td>
 									<tH>&nbsp;</tH>
-									<td style="padding:2px;">&nbsp;</td>
+									<td>&nbsp;</td>
 								</tr>
 								<tr>
 									<tH width="150px">Payor:</tH>
-									<td valign="top" style="padding:2px">
+									<td valign="top">
 										<div class="col-xs-12 nopadding">
 											<div class="col-xs-3 nopadding">
 												<input type="text" class="typeahead form-control input-sm" id="txtcustid" name="txtcustid" readonly value="<?=$cCode ;?>">
@@ -212,15 +219,15 @@ if (mysqli_num_rows($sqlchk)!=0) {
 										</div> 
 									</div>    
 									</td>
-									<th style="padding:2px">Receipt No.:</th>
-									<td valign="top" style="padding:2px"><div class="col-xs-12 nopadding">
+									<th>Receipt No.:</th>
+									<td valign="top"><div class="col-xs-12 nopadding">
 										<div class="col-xs-8 nopadding">
 										<input type="text" class="form-control input-sm" id="txtORNo" name="txtORNo" width="20px" required value="<?=$cORNo;?>">
 									</div>
 								</tr>
 								<tr>
 									<tH width="150px">Payment Method:</tH>
-									<td style="padding:2px">
+									<td>
 										<div class="col-xs-12 nopadding">
 											<div class="col-xs-6 nopadding">
 												<select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
@@ -259,8 +266,8 @@ if (mysqli_num_rows($sqlchk)!=0) {
 											
 										</div>     
 									</td>
-									<tH style="padding:2px">Amount Received:</tH>
-									<td valign="top" style="padding:2px">
+									<tH>Amount Received:</tH>
+									<td valign="top">
 										<?php 
 											if($cPayMeth=="Cheque") 
 											{ 
@@ -275,23 +282,23 @@ if (mysqli_num_rows($sqlchk)!=0) {
 								</tr>								
 								<tr>
 									<tH width="150px" rowspan="2">Memo:</tH>
-									<td rowspan="2" valign="top" style="padding:2px">
+									<td rowspan="2" valign="top">
 										<div class="col-xs-12 nopadding">
 											<div class="col-xs-10 nopadding">
 												<textarea class="form-control" rows="2" id="txtremarks" name="txtremarks"><?=$cRemarks;?></textarea>
 											</div>
 										</div>
 									</td>
-									<th style="padding:2px">Amount Applied:</th>
-									<td style="padding:2px">
+									<th>Amount Applied:</th>
+									<td>
 										<div class="col-xs-8 nopadding">
 											<input type="text" id="txtnApplied" name="txtnApplied" class="numericchkamt form-control" value="<?=$nApplied;?>" style="text-align:right" readonly>
 										</div>
 									</td>
 								</tr>
 								<tr>
-									<th style="padding:2px">Out of Balance:</th>
-									<td style="padding:2px">
+									<th>Out of Balance:</th>
+									<td>
 										<div class="col-xs-8 nopadding">
 											<input type="text" id="txtnOutBal" name="txtnOutBal" class="numericchkamt form-control input-sm" value="0.00" style="text-align:right;" autocomplete="off" readonly>
 										</div>
@@ -553,6 +560,9 @@ if (mysqli_num_rows($sqlchk)!=0) {
 			 </div>
 
 
+			<?php
+				if($poststat=="True"){
+			?>
 			<br>
 			<table width="100%" border="0" cellpadding="3">
 				<tr>
@@ -591,7 +601,9 @@ if (mysqli_num_rows($sqlchk)!=0) {
 					<td align="right">&nbsp;</td>
 				</tr>
 			</table>
-
+			<?php
+				}
+			?>
     </fieldset>
 
 
@@ -1103,7 +1115,9 @@ else{
 		});
 	}
 
-
+	<?php
+		if($poststat=="True"){
+	?>
 	$(document).keydown(function(e) {	 
 	
 	 if(e.keyCode == 112) { //F1
@@ -1143,6 +1157,9 @@ else{
 		}
 	  }
 	});
+	<?php
+		}
+	?>
 	
 	$(document).ready(function(){
 
