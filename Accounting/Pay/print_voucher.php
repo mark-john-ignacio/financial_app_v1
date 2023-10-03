@@ -286,7 +286,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								while($row = mysqli_fetch_array($sql2, MYSQLI_ASSOC)){
 							?>
 							<tr>
-								<td><?=$row['cacctdesc'].":".$row['entrytyp']?></td>
+								<td><?=$row['cacctdesc']?></td>
 								<td align="right"><?=($row['entrytyp']=="Debit") ? number_format($row['napplied'],2) : ""?></td>
 								<td align="right"><?=($row['entrytyp']=="Credit") ? number_format($row['napplied'],2) : ""?></td>
 							</tr>
