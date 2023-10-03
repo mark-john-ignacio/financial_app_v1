@@ -95,7 +95,7 @@
                 <h5 class='nopadding'><span style="font-weight: bold;">TIN: </span> <?= $data['ctin'] ?></h5>
             </div>
             <div class='col-sm' style='width: 75%'>
-                <h5 class='nopadding'><span style="font-weight: bold;">P.O. Terms: </span> </h5>
+                <h5 class='nopadding'><span style="font-weight: bold;">P.O. Terms: </span> <?= $data['cremarks'] ?> </h5>
             </div>
         </div>
         <div class='row' style="display: flex;">
@@ -103,56 +103,160 @@
                 <h5><span style="font-weight: bold;">Address: </span> <?= $address ?> </h5>
             </div>
             <div class='col-sm' style='width: 75%'>
-                <h5><span style="font-weight: bold;"> Business Style: </span>sample</h5>
+                <h5><span style="font-weight: bold;"> Business Style: </span> <?= $data['cname'] ?></h5>
             </div>
         </div>
     </div>
 
-    <div class='container' id='detail' style='width: 100%'>
-        <div class='row' style='display: flex'>
-            <table class='table' border='1' id='list' style='width: 100%;'>
-                <thead>
+    <div class='container' id='detail' style='width: 100%; height: 350px'>
+        <div class='row'>
+            <table class='table' id='list' style='width: 100%;'>
+                <thead style=' border: .5 solid black;border-radius: 20%;'>
                     <tr>
-                        <th>No.</th>
-                        <th>ITEM DESCRIPTION</th>
-                        <th>QTY</th>
-                        <th>UNIT</th>
-                        <th>UNIT PRICE</th>
-                        <th>PRICE</th>
+                        <th style='width: 60%'>INVOICE No.</th>
+                        <th>&nbsp;</th>
+                        <th>VAT</th>
+                        <th>EWT</th>
+                        <th>AMOUNT</th>
                     </tr>
                 </thead>
                 <tbody>
-                    
                 </tbody>
             </table>
         </div>
     </div>
 
-
+    <div class='container' id='amountdetail' style='width: 100%;'>
+        <div class='row' >
+            <table class='table' id='amounts' style='width: 100%;'>
+                <tbody style='border-top: .5 solid black; border-radius: 20%;'>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
     
 </body>
 </html>
 
 <script type='text/javascript'>
+    var vat = 0, ewt = 0, amt = 0;
     $(document).ready(function(){
         $.ajax({
             url: 'th_transaction.php',
             data: {
-                tranno: <?= $tranno ?>
+                tranno: '<?= $tranno ?>'
             },
             async: false,
             dataType: 'json',
             success: function(res){
                 if(res.valid){
                     res['data2'].map((item, key) => {
+                        vat += parseFloat(item.nvat);
+                        ewt += parseFloat(item.newtamt);
+                        amt += parseFloat(item.nnet);
+
                         $('<tr>').append(
-                        $('<td>').text(),
-                    ).appendTo('#list > tbody')
+                            $('<td>').text(item.csalesno),
+                            $('<td>').text(''),
+                            $('<td>').text(toNumber(item.nvat)),
+                            $('<td>').text(toNumber(item.newtamt)),
+                            $('<td>').text(toNumber(item.nnet)),
+                        ).appendTo('#list > tbody');
+
                     })
+                    $('<tr>').append(
+                        $("<td colspan='2' style='text-align: right'>").text('Total:'),
+                        $("<td style='text-align: right'>").text(toNumber(vat)),
+                        $("<td style='text-align: right'>").text(toNumber(ewt)),
+                        $("<td style='text-align: right'>").text(toNumber(amt)),
+                    ).appendTo('#amounts > tbody')
+
                     
+                    const totalamt = parseFloat(amt+ewt+vat).toFixed(2)
+                    console.log(totalamt)
+                    $('<tr>').append(
+                        $("<td style='width: 60%'>").text(number_to_text(totalamt)),
+                        $("<td colspan='3' style='text-align: right'>").text('Total:'),
+                        $("<td style='text-align: right'>").text(totalamt),
+                    ).appendTo('#amounts > tbody');
+                    // $('<td>').text(number_to_text(item.nnet)),
                 }
             }
         })
     })
+
+    function number_to_text (number){
+        const units = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+        const teens = ["", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
+        const tens = ["", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+        const thousands = ["", "thousand", "million", "billion", "trillion"]; // You can extend this array as needed
+        
+        // Function to convert a three-digit number to words
+        function convertThreeDigitNumberToWords(num) {
+            let result = "";
+            const hundredsDigit = Math.floor(num / 100);
+            const tensDigit = Math.floor((num % 100) / 10);
+            const onesDigit = num % 10;
+
+            if (hundredsDigit > 0) {
+            result += units[hundredsDigit] + " hundred ";
+            }
+
+            if (tensDigit === 1 && onesDigit > 0) {
+            result += teens[onesDigit] + " ";
+            } else {
+            if (tensDigit > 0) {
+                result += tens[tensDigit] + " ";
+            }
+
+            if (onesDigit > 0) {
+                result += units[onesDigit] + " ";
+            }
+            }
+
+            return result;
+        }
+
+        // Split the number into integer and decimal parts
+        var integerPart = Math.floor(number);
+        var decimalPart = Math.round((number - integerPart) * 100); // Convert decimal part to two digits
+        // Convert the integer part to words
+        let result = "";
+        let index = 0;
+        while (integerPart > 0) {
+            const threeDigitChunk = integerPart % 1000;
+            if (threeDigitChunk > 0) {
+            result = convertThreeDigitNumberToWords(threeDigitChunk) + thousands[index] + " " + result;
+            }
+            integerPart = Math.floor(integerPart / 1000)
+            index++;
+        }
+
+        // Convert the decimal part to words
+
+        let decimal ="";
+        let decval = decimalPart
+        let i = 0;
+        
+        while(decval > 0){
+            console.log(Math.floor(decimalPart % 100 / 100))
+            if (decimalPart > 0) {
+                decimal = convertThreeDigitNumberToWords(decimalPart) +  " " + decimal;
+            }
+            decval = Math.floor(decimalPart % 100 / 100)
+            i++;
+        }
+        if(decimalPart != 0){
+            result += "Pesos and " + decimal + "Cents Only.";
+            return result.trim();
+        }
+        result += "Pesos Only.";
+        return result.trim(); // Trim any leading/trailing whitespace
+    }
+
+
+    function toNumber(number){
+        return parseFloat(number).toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
+    }
 </script>

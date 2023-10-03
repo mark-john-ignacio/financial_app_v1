@@ -45,6 +45,14 @@ if (mysqli_num_rows($getewtcd)!=0) {
 		//echo "NO FILES";
 	}
 
+
+$result = mysqli_query($con, "SELECT * FROM `parameters` WHERE compcode='$company' and ccode = 'PRINT_VERSION_RP'");
+if(mysqli_num_rows($result) != 0){
+  $verrow = mysqli_fetch_array($result, MYSQLI_ASSOC);
+  $version = $verrow['cvalue'];
+} else {
+  $version =''; 
+}
 ?>
 
 <!DOCTYPE html>
@@ -2585,9 +2593,11 @@ else{
 			$('#statmsgz').css('color', '#FF0000')
 			return;
 		}
-
-		var url = "OR_print.php?tranno="+tranno;
-		// var url = "OR_printv1.php?tranno="+tranno;
+		if(<?= $version ?> != 0){
+			var url = "OR_printv1.php?tranno="+tranno;
+		} else {
+			var url = "OR_print.php?tranno="+tranno;
+		}
 		$("#myprintframe").attr('src',url);
 		$("#PrintModal").modal('show');
 	}

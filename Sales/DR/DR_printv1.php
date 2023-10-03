@@ -95,7 +95,7 @@
                 <h5 class='nopadding'><span style="font-weight: bold;">TIN: </span> <?= $data['ctin'] ?></h5>
             </div>
             <div class='col-sm' style='width: 75%'>
-                <h5 class='nopadding'><span style="font-weight: bold;">P.O. Terms: </span> </h5>
+                <h5 class='nopadding'><span style="font-weight: bold;">P.O. Terms: </span> <?= $data['cremarks'] ?> </h5>
             </div>
         </div>
         <div class='row' style="display: flex;">
@@ -103,21 +103,21 @@
                 <h5><span style="font-weight: bold;">Address: </span> <?= $address ?> </h5>
             </div>
             <div class='col-sm' style='width: 75%'>
-                <h5><span style="font-weight: bold;"> Business Style: </span>sample</h5>
+                <h5><span style="font-weight: bold;"> Business Style: </span> <?= $data['cname'] ?></h5>
             </div>
         </div>
     </div>
 
 
-    <div class='container' id='item' style='width: 100%; top: 0;'>
-        <div class='row'  style='height: 415px; border: 2px solid black;'>
-            <table class='table' border='1' id='salestable' style='height: 100%' >
-                <thead>
-                    <tr class='spacer'>
+    <div class='container' id='item' style='width: 100%; height: 415px; top: 0;'>
+        <div class='row'>
+            <table class='table' id='salestable' > 
+                <thead style='border: .5 solid black;'>
+                    <tr>
                         <th>QTY.</th>
                         <th>UNIT</th>
                         <th>ITEM No.</th>
-                        <th style='width: 75%'>ITEM DESCRIPTION</th>
+                        <th style='width: 60%'>ITEM DESCRIPTION</th>
                     </tr>
                     
                 </thead>
@@ -128,27 +128,28 @@
         </div>
     </div>
 
-    <div id='footer' class='container' style='width: 100%; margin-top: 2px;'>
+    <div id='footer' class='container' style='width: 100%; margin-top: 2px; '>
         <div class='row' style='display: flex;'>
-            <div class='col-sm' style='width: 30%; font-size: 9px; font-weight: bold;'>
+            <div class='col-sm' style='width: 20%; font-size: 9px; font-weight: bold;'>
                 PTU No.: <?= $ptucode ?><br>
                 Date Issued: <?= $ptudate ?><br>
                 Inclusive Serial No.: <?= $tranno ?><br><br>
 
                 Timestamp: <?= date('m-d-Y') ?>
             </div>
-            <div class='col-sm' style='width: 35%; '>
+            <div class='col-sm' style='width: 40%; '>
                 <div style='font-size: 10px; margin-left: 5px; font-weight: bold; width: 100%;'>Issued By:</div>
-                <div style='width: 85%; margin-left:10%; margin-top: 24%; border: 1px solid black;'></div>
+                <div style='width: 85%; margin-left:10%; margin-top: 20%; border: 1px solid black;'></div>
                 <div style='font-size: 14px; width: 100%; text-align: center;'>Signature over printed name</div>
             </div>
-            <div class='col-sm' style='width: 35%; border: 1 solid black '>
+            <div class='col-sm' style='width: 40%; border: 1 solid black '>
                 <div style='font-size: 10px; margin-left: 5px; font-weight: bold; width: 100%; text-align: center;'>Received the merchandise in good order and condition:</div>
                 <div style='width: 85%; margin-left:10%; margin-top: 20%; border: 1px solid black;'></div>
                 <div style='font-size: 14px; width: 100%; text-align: center;'>Signature over printed name</div>
-                <div style='font-size: 14px; font-weight: bold; width: 100%; text-align: center;'>THIS DOCUMENT IS NOT VALID FOR CLAIM OF INPUT TAXES</div>
+                
             </div>
         </div>
+        <div style='font-size: 12px; font-weight: bold; width: 100%; text-align: right;'>THIS DOCUMENT IS NOT VALID FOR CLAIM OF INPUT TAXES</div>
     </div>
     
 </body>
@@ -172,7 +173,7 @@
                 if(res.valid){
                     res['data'].map((item, index)=> {
                         $("<tr class='spacer'>").append(
-                            $("<td>").text(item.nqty),
+                            $("<td>").text(parseFloat(item.nqty).toFixed(0)),
                             $("<td>").text(item.cunit),
                             $("<td>").text(item.citemno),
                             $("<td>").text(item.citemdesc),

@@ -210,38 +210,73 @@ var total = 0;
         }
     })
 
-    function number_to_text(number){
-        if(number < 0) return false;
-
-        single = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine']
-        double = ['Ten', 'Eleven', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen']
-        below = ['Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety']
-
-        if(number === 0 ) return 'Zero';
-
-        function translate(number){
-            var word = '';
-            if(number < 10){
-                word = single[number] + ' '
-            } else if (number < 20) {
-                word = double[number - 10] + ' '
-            } else if(number < 100){
-                word = below[(number - number % 10) / 10 - 2] + ' ' + translate(number % 10)
-            } else if (number < 1000) {
-                word = single[Math.trunc(number / 100)] + ' Hundred ' + translate(number % 100)
-            } else if(number < 1000000){
-                word = translate(parseInt(number / 1000)).trim() + ' Thousand ' + translate(number % 1000)
-            } else if (number < 1000000000) {
-                word = translate(parseInt(number / 1000000)).trim() + ' Million ' + translate(number % 1000000)
-            } else {
-                word = translate(parseInt(number / 1000000000)).trim() + ' Billion ' + translate(number % 1000000000)
-            }
-            return word;
-        }
+    function number_to_text (number){
+        const units = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+        const teens = ["", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
+        const tens = ["", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+        const thousands = ["", "thousand", "million", "billion", "trillion"]; // You can extend this array as needed
         
+        // Function to convert a three-digit number to words
+        function convertThreeDigitNumberToWords(num) {
+            let result = "";
+            const hundredsDigit = Math.floor(num / 100);
+            const tensDigit = Math.floor((num % 100) / 10);
+            const onesDigit = num % 10;
 
-        result = translate(number) 
-	    return result.trim()+' Only.'
+            if (hundredsDigit > 0) {
+            result += units[hundredsDigit] + " hundred ";
+            }
+
+            if (tensDigit === 1 && onesDigit > 0) {
+            result += teens[onesDigit] + " ";
+            } else {
+            if (tensDigit > 0) {
+                result += tens[tensDigit] + " ";
+            }
+
+            if (onesDigit > 0) {
+                result += units[onesDigit] + " ";
+            }
+            }
+
+            return result;
+        }
+
+        // Split the number into integer and decimal parts
+        var integerPart = Math.floor(number);
+        var decimalPart = Math.round((number - integerPart) * 100); // Convert decimal part to two digits
+        // Convert the integer part to words
+        let result = "";
+        let index = 0;
+        while (integerPart > 0) {
+            const threeDigitChunk = integerPart % 1000;
+            if (threeDigitChunk > 0) {
+            result = convertThreeDigitNumberToWords(threeDigitChunk) + thousands[index] + " " + result;
+            }
+            integerPart = Math.floor(integerPart / 1000)
+            index++;
+        }
+
+        // Convert the decimal part to words
+
+        let decimal ="";
+        let decval = decimalPart
+        let i = 0;
+        
+        while(decval > 0){
+            console.log(Math.floor(decimalPart % 100 / 100))
+            if (decimalPart > 0) {
+                decimal = convertThreeDigitNumberToWords(decimalPart) + tens[i] +  " " + decimal;
+            }
+            decval = Math.floor(decimalPart % 100 / 100)
+            i++;
+        }
+        if(decimalPart != 0){
+            result += "Pesos and " + decimal + "Cents Only.";
+            return result.trim();
+        }
+        result += "Pesos Only.";
+        return result.trim(); // Trim any leading/trailing whitespace
     }
 
     function toNumber(number){
