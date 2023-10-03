@@ -317,7 +317,7 @@
                         $('#totaldue').text((gross !== '' ? toNumber(gross) : ''))
                     })
 
-                    $('#body').attr('onload', "window.print()")
+                    window.print();
                 }
             },
             error: function(res){

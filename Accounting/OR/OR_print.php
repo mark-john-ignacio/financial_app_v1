@@ -202,7 +202,7 @@ var total = 0;
                     
                 })
                 
-                $('#body').attr('onload', "window.print()")
+                window.print();
             }
         },
         error: function(res){

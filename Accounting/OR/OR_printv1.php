@@ -43,7 +43,6 @@
     }
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -59,8 +58,7 @@
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
 </head>
 
-
-<body style="padding-top:0" id='body'>
+<body id="body">
     <div id='header' class='container' style='width: 100%;'>
         <div class='row' style='display: flex;'>
             <div class='col-sm' style='width: 100%; '>
@@ -134,7 +132,29 @@
             </table>
         </div>
     </div>
+    <div id='footer' class='container' style='width: 100%; margin-top: 2px; '>
+        <div class='row' style='display: flex;'>
+            <div class='col-sm' style='width: 20%; font-size: 9px; font-weight: bold;'>
+                PTU No.: <?= $ptucode ?><br>
+                Date Issued: <?= $ptudate ?><br>
+                Inclusive Serial No.: <?= $tranno ?><br><br>
 
+                Timestamp: <?= date('m-d-Y') ?>
+            </div>
+            <div class='col-sm' style='width: 40%; '>
+                <div style='font-size: 10px; margin-left: 5px; font-weight: bold; width: 100%;'>Issued By:</div>
+                <div style='width: 85%; margin-left:10%; margin-top: 20%; border: 1px solid black;'></div>
+                <div style='font-size: 14px; width: 100%; text-align: center;'>Signature over printed name</div>
+            </div>
+            <div class='col-sm' style='width: 40%; border: 1 solid black '>
+                <div style='font-size: 10px; margin-left: 5px; font-weight: bold; width: 100%; text-align: center;'>Received the merchandise in good order and condition:</div>
+                <div style='width: 85%; margin-left:10%; margin-top: 20%; border: 1px solid black;'></div>
+                <div style='font-size: 14px; width: 100%; text-align: center;'>Signature over printed name</div>
+                
+            </div>
+        </div>
+        <div style='font-size: 12px; font-weight: bold; width: 100%; text-align: right;'>THIS DOCUMENT IS NOT VALID FOR CLAIM OF INPUT TAXES</div>
+    </div>
     
 </body>
 </html>
@@ -142,6 +162,7 @@
 <script type='text/javascript'>
     var vat = 0, ewt = 0, amt = 0;
     $(document).ready(function(){
+
         $.ajax({
             url: 'th_transaction.php',
             data: {
@@ -180,10 +201,15 @@
                         $("<td colspan='3' style='text-align: right'>").text('Total:'),
                         $("<td style='text-align: right'>").text(totalamt),
                     ).appendTo('#amounts > tbody');
-                    // $('<td>').text(number_to_text(item.nnet)),
+                    window.print();
                 }
+
+                
             }
+            
         })
+
+        
     })
 
     function number_to_text (number){
@@ -260,3 +286,4 @@
         return parseFloat(number).toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
     }
 </script>
+
