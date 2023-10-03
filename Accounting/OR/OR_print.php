@@ -33,16 +33,16 @@
         #date{
             position: absolute;
             top: 170px;
-            left: 700px;
+            left: 720px;
 
         }
-        #box {
+        /* #box {
             position: absolute; 
             top: 395px; 
             border: 6px solid black;
             width: 10px; 
             height: 2px
-        }
+        } */
 
         #receive_by {
             position: absolute; 
@@ -57,39 +57,39 @@
 
         #receive_tin {
             position: absolute; 
-            top: 250px; 
+            top: 255px; 
             left: 650px;
         }
         #businessstyle {
             position: absolute; 
-            top: 250px; 
+            top: 255px; 
             left: 420px;
         }
 
         #sumInWords {
             position: absolute; 
-            top: 275px; 
+            top: 280px; 
             width: 550px;
             left: 305px;
             text-indent: 24%;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
             line-height: 2;
         }
 
         #sumInText {
             position: absolute; 
-            top: 300px; 
+            top: 315px; 
             left: 680px;
         }
         #invoiceTable {
             position: absolute;
             top: 130px;
-            left: 45px;
+            left: 30px;
             width: 255px;
-            height: 250px;
+            height: 270px;
         }
         #list{
-            text-align: center; 
+            text-align: left; 
             width: 100%; 
         }
 
@@ -102,7 +102,7 @@
         
         #totalamount {
             position: absolute; 
-            top: 395px; 
+            top: 415px; 
             left: 220px;
         }
     </style>
@@ -129,7 +129,7 @@
             </table>
         </div>
         
-        <div id='box'></div>
+        <!-- <div id='box'></div> -->
         <div id='totalamount'></div>
     </div>
 </body>

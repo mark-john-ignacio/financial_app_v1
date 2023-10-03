@@ -92,7 +92,7 @@
                 <h5 class='nopadding'><span style="font-weight: bold;">TIN: </span> <?= $data['ctin'] ?></h5>
             </div>
             <div class='col-sm' style='width: 75%'>
-                <h5 class='nopadding'><span style="font-weight: bold;">P.O. Terms: </span><?= $data['cremarks'] ?> </h5>
+                <h5 class='nopadding'><span style="font-weight: bold;">P.O. Terms: </span><?= $data['ctranno'] ?> </h5>
             </div>
         </div>
         <div class='row' style="display: flex;">
@@ -220,11 +220,11 @@
     <div id='footer' class='container' style='width: 100%; margin-top: 2px;'>
         <div class='row' style='display: flex;'>
             <div class='col-sm' style='width: 20%; font-size: 9px; font-weight: bold;'>
-                PTU No.: <?= $ptucode ?><br>
-                Date Issued: <?= $ptudate ?><br>
-                Inclusive Serial No.: <?= $tranno ?><br><br>
+                <h4>PTU No.: <?= $ptucode ?></h4><br>
+                <h4>Date Issued: <?= $ptudate ?></h4><br>
+                <h4>Inclusive Serial No.: <?= $tranno ?></h4><br><br>
 
-                Timestamp: <?= date('m-d-Y') ?>
+                <h4>Timestamp: <?= date('m-d-Y') ?></h4>
             </div>
             <div class='col-sm' style='width: 40%; '>
                 <div style='font-size: 10px; margin-left: 5px; font-weight: bold; width: 100%;'>Issued By:</div>
