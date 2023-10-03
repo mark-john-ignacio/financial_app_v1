@@ -80,7 +80,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
       <table width="100%" border="0" cellpadding="2" style=" margin-top: 0.18in !important">
         <tr><td style="padding-left: 1.0in;"> <?=$CustName?> </td></tr>
-        <tr><td style="padding-left: 1.0in; padding-top: 5px"><?=$cTin?></td></tr>
+        <tr><td style="padding-left: 1.0in; padding-top: px"><?=$cTin?></td></tr>
         <tr><td style="padding-left: 1.0in; padding-top: 5px"><?=$Adds?> </td></tr>       
         </tr>
       </table>

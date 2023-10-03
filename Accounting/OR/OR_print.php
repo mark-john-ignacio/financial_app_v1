@@ -68,7 +68,7 @@
 
         #sumInWords {
             position: absolute; 
-            top: 270    px; 
+            top: 270px; 
             width: 550px;
             left: 305px;
             text-indent: 24%;
