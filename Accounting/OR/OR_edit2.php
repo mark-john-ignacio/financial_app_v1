@@ -105,7 +105,7 @@ if (mysqli_num_rows($getewtcd)!=0) {
 
 <?php
 
-    	$sqlchk = mysqli_query($con,"Select a.cacctcode, a.ccode, a.namount, a.cpaymethod, a.cpaytype, DATE_FORMAT(a.dcutdate,'%m/%d/%Y') as dcutdate, a.namount, a.napplied, a.lapproved, a.lcancelled, a.lvoid, a.lprintposted, a.lnosiref, a.cornumber, a.cremarks, a.cpaydesc, a.cpayrefno, b.cname, c.cacctdesc, c.nbalance From receipt a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join accounts c on a.compcode=c.compcode and a.cacctcode=c.cacctid where a.compcode='$company' and a.ctranno='$corno'");
+    	$sqlchk = mysqli_query($con,"Select a.cacctcode, a.ccode, a.namount, a.cpaymethod, a.cpaytype, DATE_FORMAT(a.dcutdate,'%m/%d/%Y') as dcutdate, a.namount, a.napplied, a.lapproved, a.lcancelled, a.lvoid, a.lprintposted, a.lnosiref, a.cornumber, a.cremarks, a.cpaydesc, a.cpayrefno, b.cname, c.cacctdesc, c.nbalance, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate From receipt a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join accounts c on a.compcode=c.compcode and a.cacctcode=c.cacctid where a.compcode='$company' and a.ctranno='$corno'");
 if (mysqli_num_rows($sqlchk)!=0) {
 		while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
 			$nDebitDef = $row['cacctcode'];
@@ -127,6 +127,10 @@ if (mysqli_num_rows($sqlchk)!=0) {
 			$cPayOTRefNo = $row['cpayrefno'];
 			
 			$cRemarks = $row['cremarks'];
+
+			$ccurrcode = $row['ccurrencycode'];  
+			$ccurrdesc = $row['ccurrencydesc']; 
+			$ccurrrate = $row['nexchangerate'];
 			
 			$lPosted = $row['lapproved'];
 			$lCancelled = $row['lcancelled'];
@@ -252,6 +256,53 @@ if (mysqli_num_rows($sqlchk)!=0) {
 									</td>								
 								</tr>
 								<tr>
+									<tH width="150">Currency:</tH>
+									<td style="padding:2px;">
+										<div class="row nopadding">
+											<div class="col-xs-8 nopadding">
+												<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">					
+													<?php
+																		
+														$nvaluecurrbase = "";	
+														$nvaluecurrbasedesc = "";	
+														$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+																				
+														if (mysqli_num_rows($result)!=0) {
+															$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);																				
+															$nvaluecurrbase = $all_course_data['cvalue']; 																					
+														}
+														else{
+															$nvaluecurrbase = "";
+														}
+
+														$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+														if (mysqli_num_rows($sqlhead)!=0) {
+															while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+													?>
+														<option value="<?=$rows['id']?>" <?php if ($ccurrcode==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>" data-desc="<?=$rows['currencyName']?>"><?=$rows['currencyName']?></option>
+													<?php
+															}
+														}
+													?>
+												</select>
+												<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?=$nvaluecurrbase; ?>"> 	
+												<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?=$ccurrdesc; ?>"> 
+											</div>
+											<div class="col-xs-2 nopadwleft">
+												<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="<?=$ccurrrate; ?>">	 
+											</div>
+											<div class="col-xs-2" id="statgetrate" style="padding: 4px !important"> 																	
+											</div>
+										</div>
+									</td>							
+									<th style="padding:2px">Amount Received:</th>
+									<td valign="top" style="padding:2px">
+										<div class="col-xs-8 nopadding">
+											<input type="text" id="txtnGross" name="txtnGross" class="numericchkamt form-control input-sm text-right numeric" value="0.00" style="text-align:right;" autocomplete="off" required>
+										</div>
+									</td>
+								<tr>
+								<tr>
 									<tH width="150px">
 										Deposit To Account    
 									</tH>
@@ -266,44 +317,34 @@ if (mysqli_num_rows($sqlchk)!=0) {
 											
 										</div>     
 									</td>
-									<tH>Amount Received:</tH>
-									<td valign="top">
-										<?php 
-											if($cPayMeth=="Cheque") 
-											{ 
-												$vargrossstat = "readonly"; 
-											} else{
-												$vargrossstat = "";
-											}
-										?>
-										<div class="col-xs-8 nopadding">
-											<input type="text" id="txtnGross" name="txtnGross" class="numericchkamt form-control text-right" value="<?=$nAmount;?>" <?=$vargrossstat; ?> autocomplete="off" onKeyUp="computeGross();" required>
-										</div></td>
-								</tr>								
-								<tr>
-									<tH width="150px" rowspan="2">Memo:</tH>
-									<td rowspan="2" valign="top">
-										<div class="col-xs-12 nopadding">
-											<div class="col-xs-10 nopadding">
-												<textarea class="form-control" rows="2" id="txtremarks" name="txtremarks"><?=$cRemarks;?></textarea>
-											</div>
-										</div>
-									</td>
 									<th>Amount Applied:</th>
 									<td>
 										<div class="col-xs-8 nopadding">
-											<input type="text" id="txtnApplied" name="txtnApplied" class="numericchkamt form-control" value="<?=$nApplied;?>" style="text-align:right" readonly>
+											<input type="text" id="txtnApplied" name="txtnApplied" class="numericchkamt form-control input-sm" value="<?=$nApplied;?>" style="text-align:right" readonly>
 										</div>
 									</td>
-								</tr>
+								</tr>								
 								<tr>
+									<tH width="150px">Memo:</tH>
+									<td rowspan="2" valign="top">
+										<div class="col-xs-12 nopadding">
+											<div class="col-xs-10 nopadding">
+												<textarea class="form-control" rows="1" id="txtremarks" name="txtremarks"><?=$cRemarks;?></textarea>
+											</div>
+										</div>
+									</td>	
 									<th>Out of Balance:</th>
 									<td>
 										<div class="col-xs-8 nopadding">
 											<input type="text" id="txtnOutBal" name="txtnOutBal" class="numericchkamt form-control input-sm" value="0.00" style="text-align:right;" autocomplete="off" readonly>
 										</div>
-									</td>
+									</td>								
 								</tr>
+								<tr>
+								<tH width="150">&nbsp;</tH>
+								<th style="padding:2px">&nbsp;</th>
+								<td valign="top" style="padding:2px">&nbsp;</td>
+							</tr>
 							</table>
 
 						</div>	
@@ -1351,6 +1392,10 @@ else{
 			afterSelect: function(item) { 
 				$('#txtcust').val(item.value).change(); 
 				$("#txtcustid").val(item.id);
+
+				$("#selbasecurr").val(item.cdefaultcurrency).change();
+				$("#basecurrval").val($("#selbasecurr").find(':selected').data('val'));
+				$("#hidcurrvaldesc").val($("#selbasecurr").find(':selected').data('desc'));
 			}
 		});
 		
@@ -1529,6 +1574,17 @@ else{
 			}else{
 				computeGrossOthers();
 			}
+		});
+
+		$("#selbasecurr").on("change", function (){
+	
+			var dval = $(this).find(':selected').attr('data-val');
+			var ddesc = $(this).find(':selected').attr('data-desc');
+
+			$("#basecurrval").val(dval);
+			$("#hidcurrvaldesc").val(ddesc);
+			$("#statgetrate").html("");
+				
 		});
 
 		disabled();

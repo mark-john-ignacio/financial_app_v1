@@ -206,6 +206,52 @@
 								
 							</tr>
 							<tr>
+								<tH width="150">Currency:</tH>
+								<td style="padding:2px;">
+									<div class="row nopadding">
+										<div class="col-xs-8 nopadding">
+											<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">					
+												<?php
+																	
+													$nvaluecurrbase = "";	
+													$nvaluecurrbasedesc = "";	
+													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+																			
+													if (mysqli_num_rows($result)!=0) {
+														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);																				
+														$nvaluecurrbase = $all_course_data['cvalue']; 																					
+													}
+													else{
+														$nvaluecurrbase = "";
+													}
+
+													$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+													if (mysqli_num_rows($sqlhead)!=0) {
+														while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+												?>
+													<option value="<?=$rows['id']?>" <?php if ($nvaluecurrbase==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>" data-desc="<?=$rows['currencyName']?>"><?=$rows['currencyName']?></option>
+												<?php
+														}
+													}
+												?>
+											</select>
+											<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?=$nvaluecurrbase; ?>"> 	
+											<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?=$nvaluecurrbasedesc; ?>"> 
+										</div>
+										<div class="col-xs-2 nopadwleft">
+											<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
+										</div>
+										<div class="col-xs-2" id="statgetrate" style="padding: 4px !important"> 																	
+										</div>
+									</div>
+								</td>							
+								<th style="padding:2px">Amount Received:</th>
+								<td valign="top" style="padding:2px">
+									<div class="col-xs-8 nopadding">
+										<input type="text" id="txtnGross" name="txtnGross" class="numericchkamt form-control input-sm text-right numeric" value="0.00" style="text-align:right;" autocomplete="off" required>
+									</div>
+								</td>
+							<tr>
 								<tH width="150">
 									Deposit To Account (Dr):				
 								</tH>
@@ -233,32 +279,33 @@
 										</div> 
 									</div>     
 								</td>
-								<th style="padding:2px">Amount Received:</th>
+								<th style="padding:2px">Amount Applied:</th>
 								<td valign="top" style="padding:2px">
 									<div class="col-xs-8 nopadding">
-										<input type="text" id="txtnGross" name="txtnGross" class="numericchkamt form-control input-sm text-right numeric" value="0.00" style="text-align:right;" autocomplete="off" required>
+										<input type="text" id="txtnApplied" name="txtnApplied" class="numericchkamt form-control input-sm" value="0.00" style="text-align:right;" autocomplete="off" readonly>
 									</div>
 								</td>
 							</tr>													
 							<tr>
-								<tH width="150" rowspan="2">Memo:</tH>
+								<tH width="150">Memo:</tH>
 								<td rowspan="2" valign="top" style="padding:2px">
-								<div class="col-xs-12 nopadding">
-									<div class="col-xs-10 nopadding">
-										<textarea class="form-control" rows="2" id="txtremarks" name="txtremarks"></textarea>
+									<div class="col-xs-12 nopadding">
+										<div class="col-xs-10 nopadding">
+											<textarea class="form-control" rows="1" id="txtremarks" name="txtremarks"></textarea>
+										</div>
 									</div>
-								</div>
 								</td>
-								<th style="padding:2px">Amount Applied:</th>
-								<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
-									<input type="text" id="txtnApplied" name="txtnApplied" class="numericchkamt form-control input-sm" value="0.00" style="text-align:right;" autocomplete="off" readonly>
-								</div></td>
+								<th style="padding:2px">Out of Balance:</th>
+								<td valign="top" style="padding:2px">
+									<div class="col-xs-8 nopadding">
+										<input type="text" id="txtnOutBal" name="txtnOutBal" class="numericchkamt form-control input-sm" value="0.00" style="text-align:right;" autocomplete="off" readonly>
+									</div>
+								</td>
 							</tr>
 							<tr>
-								<th style="padding:2px">Out of Balance:</th>
-								<td valign="top" style="padding:2px"><div class="col-xs-8 nopadding">
-									<input type="text" id="txtnOutBal" name="txtnOutBal" class="numericchkamt form-control input-sm" value="0.00" style="text-align:right;" autocomplete="off" readonly>
-								</div></td>
+								<tH width="150">&nbsp;</tH>
+								<th style="padding:2px">&nbsp;</th>
+								<td valign="top" style="padding:2px">&nbsp;</td>
 							</tr>
 						</table>
 					
@@ -535,14 +582,14 @@
 		</div><!-- /.modal -->
 
 
-		<div class="modal fade" id="OthersModal" role="dialog">
-				<div class="modal-dialog">
-						<div class="modal-content">
-								<div class="modal-header">
+						<div class="modal fade" id="OthersModal" role="dialog">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
 										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 										<h3 class="modal-title" id="chequeheader">TRANSACTION DETAILS</h3>
-								</div>
-								<div class="modal-body">
+									</div>
+									<div class="modal-body">
 								
 											<table width="100%" border="0" class="table table-condensed">
 													<tr>
@@ -555,14 +602,13 @@
 													</tr>
 											</table>
 								
-								</div>
-								<div class="modal-footer">
-										
-								</div>
-						</div><!-- /.modal-content -->
-				</div><!-- /.modal-dialog -->
-		</div>
-		<!-- End Bootstrap modal -->
+									</div>
+									<div class="modal-footer">
+											
+									</div>
+								</div><!-- /.modal-content -->
+							</div><!-- /.modal-dialog -->
+						</div>
 
 		<!-- add CM Module -->
 					<div class="modal fade" id="MyAdjustmentModal" role="dialog">
@@ -618,7 +664,7 @@
 										<table name='MyORTbl' id='MyORTbl' class="table table-scroll table-striped">
 										<thead>
 											<tr>
-												<th align="center">
+												<th style="text-align: center !important">
 												<input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
 												<th>Invoice No</th>
 												<th>Sales Date</th>
@@ -644,7 +690,7 @@
 					</div><!-- /.modal-content -->
 			</div><!-- /.modal-dialog -->
 		</div><!-- /.modal -->
-	<!-- End Bootstrap modal -->
+		<!-- End Bootstrap modal -->
 
 
 <script type="text/javascript">
@@ -805,6 +851,10 @@
 			afterSelect: function(item) { 
 				$('#txtcust').val(item.value).change(); 
 				$("#txtcustid").val(item.id);
+
+				$("#selbasecurr").val(item.cdefaultcurrency).change();
+				$("#basecurrval").val($("#selbasecurr").find(':selected').data('val'));
+				$("#hidcurrvaldesc").val($("#selbasecurr").find(':selected').data('desc'));
 			}
 		});
 		
@@ -981,6 +1031,17 @@
 			}
 		});
 
+		$("#selbasecurr").on("change", function (){
+	
+			var dval = $(this).find(':selected').attr('data-val');
+			var ddesc = $(this).find(':selected').attr('data-desc');
+	
+			$("#basecurrval").val(dval);
+			$("#hidcurrvaldesc").val(ddesc);
+			$("#statgetrate").html("");
+				
+		});
+
 	});
 
 	/*
@@ -1089,23 +1150,31 @@
 
 			//ajax lagay table details sa modal body
 			var x = $('#txtcustid').val();
-			$('#invheader').html("Invoice List: " + $('#txtcust').val())
+			$('#invheader').html("Invoice List: " + $('#txtcust').val() + " (" + $('#selbasecurr').val() + ")")
 			
-			//alert("th_orlist.php?x="+x+"&y="+salesnos+"&typ="+typ);
+			//alert("th_orlist.php?x="+x+"&y="+salesnos+"&typ="+typ+"&curr="+$('#selbasecurr').val());
 			$.ajax({
         url: 'th_orlist.php',
-				data: { x:x, y:salesnos, typ:typ },
+				data: { x:x, y:salesnos, typ:typ, curr:$('#selbasecurr').val() },
         dataType: 'json',
         method: 'post',
         success: function (data) {
           // var classRoomsTable = $('#mytable tbody');
           console.log(data);
           $.each(data,function(index,item){
+
+						var chkbox = "";
+						if(item.ccurrencycode!=$('#selbasecurr').val()){
+							chkbox = "";
+						}else{
+							chkbox = "<input type='checkbox' value='"+item.csalesno+"' name='chkSales[]' data-dm='"+item.cdm+"' data-cm='"+item.ccm+"' data-payment='"+item.npayment+"' data-vatcode='"+item.ctaxcode+"' data-vatrate='"+item.vatrate+"' data-vat='"+item.cvatamt+"' data-netvat='"+item.cnetamt+"' data-ewtcode='"+item.cewtcode+"' data-ewtrate='"+item.newtrate+"' data-amt='"+item.ngross+"' data-acctid='"+item.cacctno+"' data-acctdesc='"+item.ctitle+"' data-cutdate='"+item.dcutdate+"'>";
+						}
+
             $("<tr>").append(
-							$("<td>").html("<input type='checkbox' value='"+item.csalesno+"' name='chkSales[]' data-dm='"+item.cdm+"' data-cm='"+item.ccm+"' data-payment='"+item.npayment+"' data-vatcode='"+item.ctaxcode+"' data-vatrate='"+item.vatrate+"' data-vat='"+item.cvatamt+"' data-netvat='"+item.cnetamt+"' data-ewtcode='"+item.cewtcode+"' data-ewtrate='"+item.newtrate+"' data-amt='"+item.ngross+"' data-acctid='"+item.cacctno+"' data-acctdesc='"+item.ctitle+"' data-cutdate='"+item.dcutdate+"'>"),
+							$("<td align='center'>").html(chkbox),
               $("<td>").text(item.csalesno),
               $("<td>").text(item.dcutdate),
-							$("<td>").text(item.ngross),
+							$("<td>").text(item.ngross + " " + item.ccurrencycode),
 							$("<td>").text(item.cewtcode),
 							$("<td>").text(item.ctaxcode)
             ).appendTo("#MyORTbl tbody");
@@ -1679,7 +1748,6 @@
 
 		computeGross();
 	}
-
 
 	function addCM(xyadjtype,xytran,txtbx){
 		var tbl = document.getElementById('MyTableCMx').getElementsByTagName('tr');

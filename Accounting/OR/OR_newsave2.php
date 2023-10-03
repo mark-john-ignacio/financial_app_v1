@@ -71,8 +71,12 @@ else {
 	if(isset($_REQUEST['isNoRef'])){
 		$dret = $_REQUEST['isNoRef'];
 	}
+
+	$CurrCode = $_REQUEST['selbasecurr']; 
+	$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
+	$CurrRate= $_REQUEST['basecurrval'];
 	
-	if (!mysqli_query($con, "INSERT INTO `receipt`(`compcode`, `ctranno`, `ccode`, `ddate`, `dcutdate`, `cpaymethod`, `cpaytype`, `cremarks`, `namount`, `napplied`, `cacctcode`, `ccustacctcode`, `cornumber`, `cpaydesc`, `cpayrefno`,  `cpreparedby`, `lnosiref`) values('$company', '$cSINo', '$cCustID', NOW(), STR_TO_DATE('$dTranDate', '%m/%d/%Y'), '$cPayMethod', '$cPayType', '$cRemarks', $nGross, $nApplied, '$cAcctNo', NULL, '$cORNo', '$cOTDesc', '$cOTRef', '$preparedby', $dret)")) {
+	if (!mysqli_query($con, "INSERT INTO `receipt`(`compcode`, `ctranno`, `ccode`, `ddate`, `dcutdate`, `cpaymethod`, `cpaytype`, `cremarks`, `namount`, `napplied`, `cacctcode`, `ccustacctcode`, `cornumber`, `cpaydesc`, `cpayrefno`,  `cpreparedby`, `lnosiref`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`) values('$company', '$cSINo', '$cCustID', NOW(), STR_TO_DATE('$dTranDate', '%m/%d/%Y'), '$cPayMethod', '$cPayType', '$cRemarks', $nGross, $nApplied, '$cAcctNo', NULL, '$cORNo', '$cOTDesc', '$cOTRef', '$preparedby', $dret, '$CurrCode', '$CurrDesc', '$CurrRate')")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 	

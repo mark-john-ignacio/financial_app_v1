@@ -17,20 +17,20 @@
 		$poststat = "False";
 	}
 		
-$arrnoslist = array();
-$sqlempsec = mysqli_query($con,"select ifnull(ccheckno,'') as ccheckno, ifnull(cpayrefno,'') as cpayrefno,ctranno from paybill where compcode='$company' and lcancelled=0 and ctranno <> '$ccvno'");
-$rowdetloc = $sqlempsec->fetch_all(MYSQLI_ASSOC);
-foreach($rowdetloc as $row0){
+	$arrnoslist = array();
+	$sqlempsec = mysqli_query($con,"select ifnull(ccheckno,'') as ccheckno, ifnull(cpayrefno,'') as cpayrefno,ctranno from paybill where compcode='$company' and lcancelled=0 and ctranno <> '$ccvno'");
+	$rowdetloc = $sqlempsec->fetch_all(MYSQLI_ASSOC);
+	foreach($rowdetloc as $row0){
 
-	if($row0['ccheckno']!==""){
-		$arrnoslist[] = array('noid' => $row0['ccheckno'], 'ctranno' => $row0['ctranno']);
-	}
+		if($row0['ccheckno']!==""){
+			$arrnoslist[] = array('noid' => $row0['ccheckno'], 'ctranno' => $row0['ctranno']);
+		}
 
-	if($row0['cpayrefno']!==""){
-		$arrnoslist[] = array('noid' => $row0['cpayrefno'], 'ctranno' => $row0['ctranno']);
+		if($row0['cpayrefno']!==""){
+			$arrnoslist[] = array('noid' => $row0['cpayrefno'], 'ctranno' => $row0['ctranno']);
+		}
+		
 	}
-	
-}
 
 	@$arrfiles = array();
 	@$arrname = array();

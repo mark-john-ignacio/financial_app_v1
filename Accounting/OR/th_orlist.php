@@ -39,9 +39,9 @@ require_once "../../Connection/connection_string.php";
 		@$arrpaymnts[] = $rowardj;
 	}
 
-	$sql = "Select A.ctranno, A.cacctid, A.cacctdesc, IFNULL(A.ctaxcode,'') as ctaxcode, A.nrate, IFNULL(A.cewtcode,'') as cewtcode, A.newtrate, A.dcutdate, SUM(ROUND(A.namountfull,2)) as ngross, SUM(ROUND(A.namount,2)) as cm, SUM(nvatgross) as nvatgross, (SUM(ROUND(A.namountfull,2)) - SUM(ROUND(A.namount,2)) - SUM(nvatgross)) as vatamt
+	$sql = "Select A.ctranno, A.cacctid, A.cacctdesc, IFNULL(A.ctaxcode,'') as ctaxcode, A.nrate, A.ccurrencycode, IFNULL(A.cewtcode,'') as cewtcode, A.newtrate, A.dcutdate, SUM(ROUND(A.namountfull,2)) as ngross, SUM(ROUND(A.namount,2)) as cm, SUM(nvatgross) as nvatgross, (SUM(ROUND(A.namountfull,2)) - SUM(ROUND(A.namount,2)) - SUM(nvatgross)) as vatamt
 	From (
-		Select A.ctranno, A.citemno, ((A.nqtyreturned) * (A.nprice-A.ndiscount)) as namount, (A.nqty * (A.nprice-A.ndiscount)) as namountfull, B.dcutdate, D.cacctid, D.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, 
+		Select A.ctranno, A.citemno, ((A.nqtyreturned) * (A.nprice-A.ndiscount)) as namount, (A.nqty * (A.nprice-A.ndiscount)) as namountfull, B.dcutdate, D.cacctid, D.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, B.ccurrencycode, 
 					CASE 
 						WHEN IFNULL(A.nrate,0) <> 0 
 						THEN 
@@ -55,7 +55,7 @@ require_once "../../Connection/connection_string.php";
 	left join accounts D on C.compcode=D.compcode and C.cacctcodesales=D.cacctno 
 	left join wtaxcodes E on A.compcode=E.compcode and A.cewtcode=E.ctaxcode 
 	where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 and B.ccode='".$_REQUEST['x']."') A
-	Group By A.ctranno, A.cacctid, A.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, A.dcutdate
+	Group By A.ctranno, A.cacctid, A.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, A.dcutdate, A.ccurrencycode
 	order by A.dcutdate, A.ctranno";
 
 	//echo $sql;
@@ -130,7 +130,8 @@ require_once "../../Connection/connection_string.php";
 			$json['npayment'] = $npay;
 			$json['cacctno'] = $row['cacctid'];
 			$json['ctitle'] = $row['cacctdesc'];
-			
+			$json['ccurrencycode'] = $row['ccurrencycode'];
+
 			$json2[] = $json;
 		 
 		}

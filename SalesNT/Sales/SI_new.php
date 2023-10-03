@@ -957,7 +957,7 @@ $company = $_SESSION['companyid'];
 			}else{
 				$(".chkitmsadd").show();
 			}
-			});
+		});
 
 		$("#selbasecurr").on("change", function (){
 				
