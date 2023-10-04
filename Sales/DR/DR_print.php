@@ -97,7 +97,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
     <td colspan="3">&nbsp;</td>
   </tr>
   <tr>
-    <td colspan="3" style="padding-left: 0.7in; padding-top: 30px;">
+    <td colspan="3" style="padding-left: 0.3in; padding-top: 30px;">
     
     <table width="100%" border="0" cellpadding="2">
       <?php 
@@ -112,7 +112,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	?>
       
       <tr>
-        <td style="width: 1.65in"><?php echo number_format($rowbody['nqty']);?></td> 
+        <td style="width: 0.7in"><?php echo number_format($rowbody['nqty']);?></td> 
         <td style="width: 0.8in"><?php echo $rowbody['cunit'];?></td> 
         <td><?php echo $rowbody['citemno'];?></td>
         <td style="text-overflow: ellipsis; width: 5in"><?php echo $rowbody['citemdesc'];?></td>
