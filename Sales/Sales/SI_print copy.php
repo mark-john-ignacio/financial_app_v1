@@ -68,7 +68,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <head>
 </head>
 
-<body style="padding-top:.73in" onLoad="window.print()">
+<body style="padding-top:.7in" onLoad="window.print()">
 
 <table width="100%" border="0" cellpadding="1" style="border-collapse:collapse;" id="tblMain">
   <tr>
@@ -101,7 +101,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
     <td colspan="2">&nbsp;</td>
   </tr>
   <tr>
-    <td colspan="3" style="height: 5.3in; padding-top: 16px;" VALIGN="TOP">
+    <td colspan="3" style="height: 5.3in; padding-left: 0.25in; padding-top: 13px;" VALIGN="TOP">
     
     <table width="100%" border="0" cellpadding="3">
       <?php 
@@ -124,13 +124,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
       ?>
       
             <tr> 
-              <td style="width: 0.4in"  align="center"><?=$cntr;?></td>
-              <td style="text-overflow: ellipsis; width: 0.8in">&nbsp;&nbsp;<?php echo $rowbody['citemno'];?></td>
-              <td style="text-overflow: ellipsis; width: 13.25in"><?php echo $rowbody['citemdesc'];?></td>
-              <td style="width: 0.75in" align="center"><?php echo number_format($rowbody['nqty']);?></td> 
-              <td style="width: 0.75in" align="center"><?php echo $rowbody['cunit'];?></td>
-              <td style="text-overflow: ellipsis; width: 2.25in" align="right"><?php echo number_format($nnetprice,2);?></td>
-              <td style="padding-right: 0.3in; width: 2.25in;" align="right"><?php echo number_format($rowbody['namount'],2);?></td>
+              <td align="center"><?=$cntr;?></td>
+              <td style="text-overflow: ellipsis; width: 0.10in">&nbsp;&nbsp;<?php echo $rowbody['citemno'];?></td>
+              <td style="text-overflow: ellipsis; width: 9.5in"><?php echo $rowbody['citemdesc'];?></td>
+              <td style="width: .7in" align="center"><?php echo number_format($rowbody['nqty']);?></td> 
+              <td style="width: .7in" align="center"><?php echo $rowbody['cunit'];?></td>
+              <td style="text-overflow: ellipsis; width: 1.3in" align="right"><?php echo number_format($nnetprice,2);?></td>
+              <td style="padding-right: 0.3in; width: 1.3in" align="right"><?php echo number_format($rowbody['namount'],2);?></td>
                     
             </tr>
       <?php
@@ -245,11 +245,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
     }else{
 ?>
 <tr>
-    <td colspan="2" valign="top" style="padding-top: 20px !important">
+    <td colspan="2" valign="top" style="padding-top: 0.43in !important">
       <table width="100%" border="0" cellpadding="1px">
 
         <tr>
-          <td rowspan="7" valign="top" align="right" style="width: 4in; padding-top: 13px !important">
+          <td rowspan="7" valign="top" align="right" style="width: 4in; padding-top: 5px !important">
 
             <table width="100%" border="0" cellpadding="1px">
               <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($totvatable!==0) ? number_format($totvatable,2) : ""?> </b></td></tr>
@@ -259,12 +259,12 @@ if (mysqli_num_rows($sqlhead)!=0) {
             </table>
 
           </td>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in; height: 0.22in"><b><?=($totvatable!==0) ? number_format($totvatable,2) : ""?>&nbsp;</b></td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in; height: 0.15in"><b><?=($totvatable!==0) ? number_format($totvatable,2) : ""?>&nbsp;</b></td>
         </tr>
         <tr>
           <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=($totlessvat!==0) ? number_format($totlessvat,2) : ""?></b>&nbsp;</td>
         </tr>
-        <tr>
+        <tr> 
           <td  valign="bottom" align="right" style="padding-right: 0.3in; padding-top: 3px !important"><b><?=($totnetvat!==0) ? number_format($totnetvat,2) : ""?></b>&nbsp;</td>
         </tr>
         <tr>
