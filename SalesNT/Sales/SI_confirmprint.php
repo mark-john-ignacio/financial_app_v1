@@ -98,7 +98,8 @@ function Print(tranno,id,lmt){
 }
 
 function PrintRed(x){
-	location.href = "SI_print.php?x="+x;
+	// location.href = "SI_print.php?x="+x;
+  location.href = "SI_printv1.php?x="+x;
 }
 
 </script>

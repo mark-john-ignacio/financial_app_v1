@@ -124,7 +124,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
       ?>
       
             <tr> 
-              <td style="width: 0.4in"  align="center"><?=$cntr;?></td>
+              <td style="width: 1.65in"  align="center"><?=$cntr;?></td>
               <td style="text-overflow: ellipsis; width: 0.8in">&nbsp;&nbsp;<?php echo $rowbody['citemno'];?></td>
               <td style="text-overflow: ellipsis; width: 13.25in"><?php echo $rowbody['citemdesc'];?></td>
               <td style="width: 0.75in" align="center"><?php echo number_format($rowbody['nqty']);?></td> 

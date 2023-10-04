@@ -66,7 +66,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <head>
 </head>
 
-<body style="padding-top:0.82in" onLoad="window.print()">
+<body style="padding-top:.79in" onLoad="window.print()">
 
 <table width="100%" border="0" cellpadding="1" style="border-collapse:collapse;" id="tblMain">
   <tr>
@@ -76,7 +76,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
   <tr>
     <td VALIGN="TOP">
 
-      <table width="100%" border="0" cellpadding="2" style=" margin-top: 0.14in !important">
+      <table width="100%" border="0" cellpadding="2" style=" margin-top: .14in !important">
         <tr><td style="padding-left: 1.2in;"> <?=$CustName?> </td></tr>
         <tr><td style="padding-left: 1.2in"><?=$cTin?></td></tr>
         <tr><td style="padding-left: 1.2in"><?=$Adds?> </td></tr>       
@@ -97,7 +97,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
     <td colspan="3">&nbsp;</td>
   </tr>
   <tr>
-    <td colspan="3" style="padding-left: 0.3in; padding-top: 30px;">
+    <td colspan="3" style="padding-left: 0.7in; padding-top: 30px;">
     
     <table width="100%" border="0" cellpadding="2">
       <?php 
@@ -112,7 +112,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	?>
       
       <tr>
-        <td style="width: 0.7in"><?php echo number_format($rowbody['nqty']);?></td> 
+        <td style="width: 1.65in"><?php echo number_format($rowbody['nqty']);?></td> 
         <td style="width: 0.8in"><?php echo $rowbody['cunit'];?></td> 
         <td><?php echo $rowbody['citemno'];?></td>
         <td style="text-overflow: ellipsis; width: 5in"><?php echo $rowbody['citemdesc'];?></td>
