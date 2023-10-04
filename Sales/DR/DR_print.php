@@ -76,7 +76,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
   <tr>
     <td VALIGN="TOP">
 
-      <table width="100%" border="0" cellpadding="2" style=" margin-top: .14in !important">
+      <table width="100%" border="0" cellpadding="2" style=" margin-top: .16in !important">
         <tr><td style="padding-left: 1.2in;"> <?=$CustName?> </td></tr>
         <tr><td style="padding-left: 1.2in"><?=$cTin?></td></tr>
         <tr><td style="padding-left: 1.2in"><?=$Adds?> </td></tr>       

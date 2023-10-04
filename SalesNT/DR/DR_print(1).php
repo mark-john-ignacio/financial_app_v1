@@ -34,8 +34,7 @@ include('../../include/denied.php');
 	}
 	
 	$csalesno = $_REQUEST['x'];
-	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.chouseno,b.ccity,b.cstate,b.ctin,c.cname as cdelname from ntdr a 
-          left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join customers c on a.compcode=c.compcode and a.cdelcode=c.cempid where a.compcode='$company' and a.ctranno = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.chouseno,b.ccity,b.cstate,b.ctin,c.cname as cdelname from dr a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join customers c on a.compcode=c.compcode and a.cdelcode=c.cempid where a.compcode='$company' and a.ctranno = '$csalesno'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -66,7 +65,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <head>
 </head>
 
-<body style="padding-top:.79in" onLoad="window.print()">
+<body style="padding-top:0.97in" onLoad="window.print()">
 
 <table width="100%" border="0" cellpadding="1" style="border-collapse:collapse;" id="tblMain">
   <tr>
@@ -76,7 +75,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
   <tr>
     <td VALIGN="TOP">
 
-      <table width="100%" border="0" cellpadding="2" style=" margin-top: .16in !important">
+      <table width="100%" border="0" cellpadding="2" style=" margin-top: 0.18in !important">
         <tr><td style="padding-left: 1.2in;"> <?=$CustName?> </td></tr>
         <tr><td style="padding-left: 1.2in"><?=$cTin?></td></tr>
         <tr><td style="padding-left: 1.2in"><?=$Adds?> </td></tr>       
@@ -85,7 +84,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
     </td>
     <td style="width: 2.7in" VALIGN="TOP"> 
-      <table width="100%" border="0" >
+      <table width="100%" border="0">
         <tr><td style="padding-right: 0.3in;" align="right"> <?=date_format(date_create($Date), "M d, Y")?> </td></tr>
         <tr><td style="padding-right: 0.3in;" align="right"> &nbsp; </td></tr>
         <tr><td style="padding-right: 0.3in;" align="right"> <?=$cTerms?> </td></tr>
@@ -97,13 +96,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
     <td colspan="3">&nbsp;</td>
   </tr>
   <tr>
-    <td colspan="3" style="padding-left: 0.3in; padding-top: 30px;">
+    <td colspan="3" style="padding-left: 0.7in; padding-top: 13px;">
     
     <table width="100%" border="0" cellpadding="2">
       <?php 
-		$sqlbody = mysqli_query($con,"select a.*,b.citemdesc from ntdr_t a left join items b on a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$csalesno'");
+		$sqlbody = mysqli_query($con,"select a.*,b.citemdesc from dr_t a left join items b on a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$csalesno'");
 
-		if (mysqli_num_rows($sqlbody)!=0) { 
+		if (mysqli_num_rows($sqlbody)!=0) {
 		$cntr = 0;
 		$totnqty = 0;
 		while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
