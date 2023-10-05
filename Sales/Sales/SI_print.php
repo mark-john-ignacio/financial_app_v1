@@ -101,7 +101,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
     <td colspan="2">&nbsp;</td>
   </tr>
   <tr>
-    <td colspan="3" style="height: 5.3in; padding-top: 13px;" VALIGN="TOP">
+    <td colspan="3" style="height: 5.35in; padding-top: 13px;" VALIGN="TOP">
     
     <table width="100%" border="0" cellpadding="3">
       <?php 
@@ -124,14 +124,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
       ?>
       
             <tr> 
-              <td style="width: .1in"  align="center"><?=$cntr;?></td>
-              <td style="text-overflow: ellipsis; width: 0.8in">&nbsp;&nbsp;<?php echo $rowbody['citemno'];?></td>
-              <td style="text-overflow: ellipsis; width: 13.5in"><?php echo $rowbody['citemdesc'];?></td>
-              <td style="width: 1.25in" align="center"><?php echo number_format($rowbody['nqty']);?></td> 
-              <td style="width: 1.25in" align="center"><?php echo $rowbody['cunit'];?></td>
+              <td style="width: 1.25in"  align="center"><?=$cntr;?></td>
+              <td style="text-overflow: ellipsis; width: .55in">&nbsp;&nbsp;<?php echo $rowbody['citemno'];?></td>
+              <td style="text-overflow: ellipsis; width: 12.5in"><?php echo $rowbody['citemdesc'];?></td>
+              <td style="width: 1.15in" align="center"><?php echo number_format($rowbody['nqty']);?>&nbsp;</td> 
+              <td style="width: 1.15in" align="center"><?php echo $rowbody['cunit'];?></td>
               <td style="text-overflow: ellipsis; width: 2.25in" align="right"><?php echo number_format($nnetprice,2);?></td>
               <td style="width: 2.25in;" align="right"><?php echo number_format($rowbody['namount'],2);?></td>
-                    
             </tr>
       <?php
             if((int)$rowbody['nrate']!=0){
@@ -200,7 +199,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
       <table width="100%" border="0">
 
         <tr>
-          <td colspan="4" align="right"  valign="bottom"><!--<b>Total Sales (VAT INCLUSIVE) </b>-->&nbsp;</td>
+          <td colspan="4" align="right"  valign="bottom" ><!--<b>Total Sales (VAT INCLUSIVE) </b>-->&nbsp;</td>
           <td  valign="top" align="right"><b><?//=$totvatable?>&nbsp;</b></td>
         </tr>
         <tr>

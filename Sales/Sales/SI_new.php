@@ -2420,10 +2420,6 @@ $company = $_SESSION['companyid'];
 				formdata.append("file-"+i, file);
 			})
 
-			for(var check of formdata.entries()){
-				console.log(check);
-			}
-
 			$.ajax ({
 				url: "SI_newsavehdr.php",
 				//data: { ccode: ccode, crem: crem, ddate: ddate, ngross: ngross, selreinv:selreinv, selsityp:selsitypz, siprintno:siprintno, nnetvat:nnetvat, nvat:nvat },
@@ -2469,6 +2465,7 @@ $company = $_SESSION['companyid'];
 						var crefident = $(this).find('input[type="hidden"][name="txtcrefident"]').val();
 						var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val(); 
 						var ewtcode = $(this).find('select[name="selitmewtyp"]').val();
+						console.log(crefident)
 
 						//getrate of selected
 						var ewtrate = "";
