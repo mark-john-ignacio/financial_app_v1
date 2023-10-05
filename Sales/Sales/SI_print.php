@@ -68,7 +68,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <head>
 </head>
 
-<body style="padding-top:.70in" onLoad="window.print()">
+<body style="position:fixed; padding-top:.70in" onLoad="window.print()">
 
 <table width="100%" border="0" cellpadding="1" style="border-collapse:collapse;" id="tblMain">
   <tr>
@@ -126,11 +126,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
             <tr> 
               <td style="width: .1in"  align="center"><?=$cntr;?></td>
               <td style="text-overflow: ellipsis; width: 0.8in">&nbsp;&nbsp;<?php echo $rowbody['citemno'];?></td>
-              <td style="text-overflow: ellipsis; width: 13.25in"><?php echo $rowbody['citemdesc'];?></td>
-              <td style="width: 0.75in" align="center"><?php echo number_format($rowbody['nqty']);?></td> 
-              <td style="width: 0.75in" align="center"><?php echo $rowbody['cunit'];?></td>
+              <td style="text-overflow: ellipsis; width: 13.5in"><?php echo $rowbody['citemdesc'];?></td>
+              <td style="width: 1.25in" align="center"><?php echo number_format($rowbody['nqty']);?></td> 
+              <td style="width: 1.25in" align="center"><?php echo $rowbody['cunit'];?></td>
               <td style="text-overflow: ellipsis; width: 2.25in" align="right"><?php echo number_format($nnetprice,2);?></td>
-              <td style="padding-right: 0.3in; width: 2.25in;" align="right"><?php echo number_format($rowbody['namount'],2);?></td>
+              <td style="width: 2.25in;" align="right"><?php echo number_format($rowbody['namount'],2);?></td>
                     
             </tr>
       <?php
