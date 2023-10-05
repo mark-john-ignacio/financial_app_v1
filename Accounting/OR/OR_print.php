@@ -32,7 +32,7 @@
         }
         #date{
             position: absolute;
-            top: 170px;
+            top: 155px;
             left: 720px;
 
         }
@@ -46,29 +46,29 @@
 
         #receive_by {
             position: absolute; 
-            top: 200px; 
+            top: 185px; 
             left: 415px;
         }
         #receive_address {
             position: absolute; 
-            top: 225px; 
+            top: 220px; 
             left: 400px;
         }
 
         #receive_tin {
             position: absolute; 
-            top: 250px; 
+            top: 240px; 
             left: 650px;
         }
         #businessstyle {
             position: absolute; 
-            top: 250px; 
+            top: 240px; 
             left: 420px;
         }
 
         #sumInWords {
             position: absolute; 
-            top: 270px; 
+            top: 265px; 
             width: 550px;
             left: 305px;
             text-indent: 24%;
@@ -78,12 +78,12 @@
 
         #sumInText {
             position: absolute; 
-            top: 310px; 
+            top: 300px; 
             left: 680px;
         }
         #invoiceTable {
             position: absolute;
-            top: 130px;
+            top: 110px;
             left: 30px;
             width: 255px;
             height: 270px;
@@ -102,7 +102,7 @@
         
         #totalamount {
             position: absolute; 
-            top: 415px; 
+            top: 405px; 
             left: 175px;
         }
     </style>

@@ -68,7 +68,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <head>
 </head>
 
-<body style="padding-top:.73in" onLoad="window.print()">
+<body style="padding-top:.70in" onLoad="window.print()">
 
 <table width="100%" border="0" cellpadding="1" style="border-collapse:collapse;" id="tblMain">
   <tr>
@@ -90,7 +90,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
       <table width="100%" border="0" >
         <tr><td style="padding-right: 0.1in;" align="right"> <?=($PayType=="Credit") ? date_format(date_create($Date), "M d, Y") : "&nbsp;";?> </td></tr>
         <tr><td style="padding-right: 0.1in; padding-top: 5px" align="right"> <?=($PayType=="Cash") ? date_format(date_create($Date), "M d, Y") : "&nbsp;";?> </td></tr>
-        <tr><td style="padding-right: 0.1in; padding-top: 10px" align="right"> <?=($PayType=="Credit") ? $cTerms : "&nbsp;";?> <??> </td></tr>
+        <tr><td style="padding-right: 0.1in; padding-top: 5px" align="right"> <?=($PayType=="Credit") ? $cTerms : "&nbsp;";?> <??> </td></tr>
         <tr><td style="padding-right: 0.1in; padding-top: 5px" align="right"> &nbsp; </td></tr>
       </table>
     </td>
@@ -124,7 +124,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
       ?>
       
             <tr> 
-              <td style="width: 1.65in"  align="center"><?=$cntr;?></td>
+              <td style="width: .1in"  align="center"><?=$cntr;?></td>
               <td style="text-overflow: ellipsis; width: 0.8in">&nbsp;&nbsp;<?php echo $rowbody['citemno'];?></td>
               <td style="text-overflow: ellipsis; width: 13.25in"><?php echo $rowbody['citemdesc'];?></td>
               <td style="width: 0.75in" align="center"><?php echo number_format($rowbody['nqty']);?></td> 
@@ -196,7 +196,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
     if($SalesType=="Services"){
   ?>
   <tr>
-    <td colspan="2" valign="top" style="padding-top: 5px !important">
+    <td colspan="2" valign="top" style="padding-top: 33px !important">
       <table width="100%" border="0">
 
         <tr>
@@ -245,27 +245,27 @@ if (mysqli_num_rows($sqlhead)!=0) {
     }else{
 ?>
 <tr>
-    <td colspan="2" valign="top" style="padding-top: 20px !important">
+    <td colspan="2" valign="top" style="padding-top: 33px !important">
       <table width="100%" border="0" cellpadding="1px">
 
         <tr>
           <td rowspan="7" valign="top" align="right" style="width: 4in; padding-top: 13px !important">
 
             <table width="100%" border="0" cellpadding="1px">
-              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($totvatable!==0) ? number_format($totvatable,2) : ""?> </b></td></tr>
-              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($printVEGross!==0) ? number_format($printVEGross,2) : ""?> </b> </td></tr>
-              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($printZRGross!==0) ? number_format($printZRGross,2) : ""?> </b> </td></tr>
-              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($totlessvat!==0) ? number_format($totlessvat,2) : ""?></b> </td></tr>
+              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($totvatable!==0) ? number_format($totvatable,2) : " "?> </b></td></tr>
+              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($printVEGross!==0) ? number_format($printVEGross,2) : " "?> </b> </td></tr>
+              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($printZRGross!==0) ? number_format($printZRGross,2) : " "?> </b> </td></tr>
+              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($totlessvat!==0) ? number_format($totlessvat,2) : " "?></b> </td></tr>
             </table>
 
           </td>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in; height: 0.22in"><b><?=($totvatable!==0) ? number_format($totvatable,2) : ""?>&nbsp;</b></td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in; height: 0.22in"><b><?=($totvatable!==0) ? number_format($totvatable,2) : " "?>&nbsp;</b></td>
         </tr>
         <tr>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=($totlessvat!==0) ? number_format($totlessvat,2) : ""?></b>&nbsp;</td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=($totlessvat!==0) ? number_format($totlessvat,2) : " "?></b>&nbsp;</td>
         </tr>
         <tr>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in; padding-top: 3px !important"><b><?=($totnetvat!==0) ? number_format($totnetvat,2) : ""?></b>&nbsp;</td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in; padding-top: 3px !important"><b><?=($totnetvat!==0) ? number_format($totnetvat,2) : " "?></b>&nbsp;</td>
         </tr>
         <tr>
 
@@ -273,11 +273,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
         </tr>
         <tr>
 
-          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=($totvatable!==0) ? number_format($totvatable,2) : ""?></b></td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=($totvatable!==0) ? number_format($totvatable,2) : " "?></b></td>
         </tr>
         <tr>
 
-          <td valign="bottom" align="right" style="padding-right: 0.3in"><b><?=($totlessvat!==0) ? number_format($totlessvat,2) : ""?></b></td>
+          <td valign="bottom" align="right" style="padding-right: 0.3in"><b><?=($totlessvat!==0) ? number_format($totlessvat,2) : " "?></b></td>
         </tr>
         <tr>
          
