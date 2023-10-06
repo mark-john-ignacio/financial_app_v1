@@ -28,6 +28,7 @@
 				width: 9.5in;
 				height: 13in;
                 font-size: 0.9em;
+                font-weight: bold;
         }
         #date{
             position: absolute;
@@ -84,9 +85,8 @@
             position: absolute;
             top: 110px;
             left: 30px;
-            width: 200px;
+            width: 255px;
             height: 280px;
-            
             /* border: 1px solid black; */
         }
         #list{
@@ -94,23 +94,12 @@
             width: 100%; 
         }
 
-        #total {
+        #vatlist {
             position: absolute;
-            text-align: right;   
+            text-align: center; 
             width: 100%; 
             bottom: 0px;
-            padding-right: 20px;
-            /* border: 1px solid black; */
             
-        }
-
-        #amounts {
-            width: 100%;
-            bottom: .87in;
-            position: absolute;
-            text-align: right; 
-            margin-right: 30px;
-            /* border: 1px solid black; */
         }
         
         #totalamount {
@@ -137,10 +126,8 @@
                 <tbody>
                 </tbody>
             </table>
-
-            <table id='amounts'></table>
-
-            <table id='total'></table>
+            <table id='vatlist'>
+            </table>
         </div>
         
         <!-- <div id='box'></div> -->
@@ -150,8 +137,9 @@
 </html>
 
 <script type='text/javascript'>
-var totnetvat = 0, totlessvat = 0, totvatable = 0, totvatxmpt= 0, gross=0;
-var vatcode = '', vatgross ='', printVATGross = '', printVEGross='', printZRGross='';
+    var totnetvat = 0, totlessvat = 0, totvatable = 0, totvatxmpt= 0;
+    var vatcode = '', vatgross ='';
+
    
     $.ajax({
         url: 'th_transaction.php',
@@ -177,41 +165,43 @@ var vatcode = '', vatgross ='', printVATGross = '', printVEGross='', printZRGros
                 $('#sumInWords').text(number_to_text(res.data.namount))
                 $('#sumInText').text(toNumber(res.data.namount))
 
+                if(res.data.cpaymethod == 'cash'){
+                    $('#box').css('left', '55px')
+                } else {
+                    $('#box').css('left', '130px')
+                }
+
                 res['data2'].map((item, key) => {
                     console.log(item)
-                    if(item.csalestype === 'Goods'){
-                        if(item.namount != 0){
-                            totnetvat = totnetvat + parseFloat(item.nnetvat);
-                            totlessvat = totlessvat + parseFloat(item.nlessvat);
-                            totvatable = totvatable + parseFloat(item.namount);
-                        } else {
-                            totvatxmpt = totvatxmpt + parseFloat(item.namount);
-                        }
+                        if(res.data.csalestype === 'Services'){
+                            var printgross =0;
+                            var printVATGross = '', printVEGross='', printZRGross='';
+                            var gross = parseFloat(item.ngross);
+                            if(item.ctaxcode === 'VT' || item.ctaxcode === 'NV'){
+                                printgross = parseFloat(item.ngross)
+                                if(parseFloat(totvatxmpt) != 0){
+                                    printVEGross = parseFloat(totvatxmpt)
+                                }
 
-                        var printgross =0;
-                        gross = parseFloat(item.ngross);
-                        if(item.ctaxcode === 'VT' || item.ctaxcode === 'NV'){
-                            printgross = parseFloat(item.ngross)
-                            if(parseFloat(totvatxmpt) != 0){
-                                printVEGross = parseFloat(totvatxmpt)
+                                totnetvat = parseFloat(totnetvat);
+                                totlessvat = parseFloat(totlessvat);
+                                totvatable = parseFloat(totvatable);
+                            } else if(item.ctaxcode === 'VE') {
+                                $printVEGross = parseFloat(item.ngross);
+                                    
+                                $totnetvat = "";
+                                $totlessvat = "";
+                                $totvatable = "";
+                            } else if(item.ctaxcode === 'ZR'){
+                                printZRGross = parseFloat(item.ngross);
+                                $totnetvat = "";
+                                $totlessvat = "";
+                                $totvatable = "";
                             }
-
-                            totnetvat = parseFloat(totnetvat);
-                            totlessvat = parseFloat(totlessvat);
-                            totvatable = parseFloat(totvatable);
-                        } else if(item.ctaxcode === 'VE') {
-                            printVEGross = parseFloat(item.ngross);
-                                
-                            totnetvat = "";
-                            totlessvat = "";
-                            totvatable = "";
-                        } else if(item.ctaxcode === 'ZR'){
-                            printZRGross = parseFloat(item.ngross);
-                            totnetvat = "";
-                            totlessvat = "";
-                            totvatable = "";
                         }
-
+                        vat += parseFloat(item.nvat);
+                        ewt += parseFloat(item.newtamt);
+                        total += parseFloat(item.namount)
 
                         $('<tr>').append(
                             $('<td>').text(item.csalesno),
@@ -219,37 +209,39 @@ var vatcode = '', vatgross ='', printVATGross = '', printVEGross='', printZRGros
                         ).appendTo('#list > tbody')
                         console.log(res.data2.length)
                         
-                    } else {
-                        console.log("No Official Receipt Reference");
-                    }
-                        
+                        if(res.data2.length -1 == key){
+
+                            if(item.namount != 0){
+                                totnetvat = totnetvat + parseFloat(item.nnetvat);
+                                totlessvat = totlessvat + parseFloat(item.nlessvat);
+                                totvatable = totvatable + parseFloat(item.namount);
+                            } else {
+                                totvatxmpt = totvatxmpt + parseFloat(item.namount);
+                            }
+
+
+
+
+
+
+                            $("<tr>").append(
+                                $('<td>').text(''),
+                                $('<td>').text(toNumber(vat))
+                            ).appendTo('#vatlist')
+
+                            $("<tr>").append(
+                                $('<td>').text(''),
+                                $('<td>').text(toNumber(ewt))
+                            ).appendTo('#vatlist')
+
+                            $("<tr>").append(
+                                $('<td>').text(''),
+                                $("<td style='width: 100%' align='right'>").text(toNumber(total))
+                            ).appendTo('#vatlist')
+
+                            $('#totalamount').text(toNumber(total))
+                        }
                 })
-
-                $('<tr>').append(
-                    $("<td>").html("&nbsp;"),
-                    $("<td>").html(
-                        "<div>"+(totvatable !== ""  ? toNumber(totvatable) : "")+"</div>" +
-                        "<div>" + (totlessvat != "" ? toNumber(totlessvat): '') + "</div>" +
-                        "<div>" +(totnetvat !== "" ? toNumber(totnetvat) : '') + "</div>" +
-                        "<div> &nbsp; </div>" +
-                        "<div>" + (totnetvat !== "" ? toNumber(totnetvat) : '') + "</div>" +
-                        "<div>" + (totlessvat !== "" ? toNumber(totlessvat) : '')+ "</div>" +
-                        "<div>" + (gross !== '' ? toNumber(gross) : '') + "</div>"
-                    ),
-                ).appendTo('#amounts')
-
-
-                $("<tr>").append(
-                    $("<td>").html("&nbsp;"),
-                    $("<td>").html(
-                        "<div>" + (totvatable !=="" ? toNumber(totvatable) : "") + "</div>" +
-                        "<div>" + (printVEGross !=="" ? toNumber(printVEGross) : "") + "</div>" +
-                        "<div>" + (printZRGross !=="" ? toNumber(printZRGross) : "") + "</div>" +
-                        "<div>" + (totnetvat !=="" ? toNumber(totnetvat) : "") + "</div>" 
-                    )
-                ).appendTo('#total')
-                
-                $('#totalamount').text(toNumber(totvatable))
                 
                 window.print();
             }
