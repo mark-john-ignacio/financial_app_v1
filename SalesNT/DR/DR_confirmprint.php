@@ -101,8 +101,12 @@ function Print(tranno,id,lmt){
 
 }
 
-function PrintRed(x){
-	location.href = "DR_print.php?x="+x;
+function PrintRed(x, trigger){
+  if(trigger != 0){
+    return location.href = "DR_printv1.php?x="+x;
+  } 
+	return location.href = "DR_print.php?x="+x;
+  
 }
 
 </script>
@@ -193,12 +197,17 @@ function PrintRed(x){
 $strqry = "";
 $valsub = "";
 
+$sql = "SELECT * FROM parameters WHERE compcode = '$company' and ccode = 'PRINT_VERSION_DR'";
+$query = mysqli_query($con, $sql);
+$row = mysqli_fetch_array($query, MYSQLI_ASSOC);
+
 if($lPosted==0 && $autopost==1){
 	$strqry = "Print('".$csalesno."','".$CustCode."','".$nLimit."')";
 	$valsub = "PRINT AND POST DR";
 }
 else{
-	$strqry = "PrintRed('".$csalesno."')";
+  $trigger = $row['cvalue'];
+	$strqry = "PrintRed('$csalesno', '$trigger')";
 	$valsub = "PRINT DR";
 }
 

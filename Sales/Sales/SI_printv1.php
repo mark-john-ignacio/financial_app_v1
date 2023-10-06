@@ -220,11 +220,10 @@
     <div id='footer' class='container' style='width: 100%; margin-top: 2px;'>
         <div class='row' style='display: flex;'>
             <div class='col-sm' style='width: 20%; font-size: 9px; font-weight: bold;'>
-                <h4>PTU No.: <?= $ptucode ?></h4><br>
-                <h4>Date Issued: <?= $ptudate ?></h4><br>
-                <h4>Inclusive Serial No.: <?= $tranno ?></h4><br><br>
-
-                <h4>Timestamp: <?= date('m-d-Y') ?></h4>
+                <h5>PTU No.: <?= $ptucode ?></h5>
+                <h5>Date Issued: <?= $ptudate ?></h5>
+                <h5>Inclusive Serial No.: <?= $csalesno ?></h5>
+                <h5>Timestamp: <?= date('m-d-Y') ?></h5>
             </div>
             <div class='col-sm' style='width: 40%; '>
                 <div style='font-size: 10px; margin-left: 5px; font-weight: bold; width: 100%;'>Issued By:</div>
