@@ -100,7 +100,7 @@ include('../../include/denied.php');
 <table border="0" width="100%" cellpadding="1px"  id="tblMain">
 	<tr>
 		<td width="100px"><b>Date Release: </b></td>
-		<td> </td>
+		<td> <?=date_format(date_create($arrmrpjo[0]['dreleasedate']), "M d, Y")?> </td>
 		<td width="100px"><b>SO No.: </b></td>
 		<td> <?=$arrmrpjo[0]['crefSO']?> </td>
 	</tr>
@@ -117,7 +117,7 @@ include('../../include/denied.php');
 			<table border="0" width="100%">
 				<td> <b>Department: </b> <?=($arrmrpjo[0]['secdesc'])?></td> 
 				<td> <b>Priority: </b> <?=($arrmrpjo[0]['cpriority'])?></td>
-				<td> <b>Target Date (Finished): </b> <?=date_format(date_create($arrmrpjo[0]['dtargetdate']),"d-m-Y")?></td>
+				<td> <b>Target Date (Finished): </b> <?=date_format(date_create($arrmrpjo[0]['dtargetdate']),"M d, Y")?></td>
 			</table>
 		</td>
 	</tr>

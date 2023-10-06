@@ -5,6 +5,10 @@
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 
+	//echo "<pre>";
+	//print_r( $_POST);
+	//echo "</pre>";
+	
 	$dmonth = date("m");
 	$dyear = date("y");
 	$company = $_SESSION['companyid'];

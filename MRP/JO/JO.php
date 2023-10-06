@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "SO.php";
+	$_SESSION['pageid'] = "JobOrders";
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../include/access2.php');
@@ -173,14 +173,9 @@
 					else if(x=="CANCEL"){
 						var msg = "CANCELLED";
 					}
-
-					urlx = "SO_Tran.php";
-					if(x=="SEND"){
-						urlx = "SO_GenJO.php";
-					}
 					
 						$.ajax ({
-							url: urlx,
+							url: "JO_Tran.php",
 							data: { x: num, typ: x },
 							async: false,
 							dataType: "json",
@@ -317,7 +312,7 @@
 
 		$("#AlertMsg").html("");
 								
-		$("#AlertMsg").html("Are you sure you want to "+x+" SO No.: "+num);
+		$("#AlertMsg").html("Are you sure you want to "+x+" Job Order No.: "+num);
 		$("#alertbtnOK").hide();
 		$("#OK").show();
 		$("#Cancel").show();

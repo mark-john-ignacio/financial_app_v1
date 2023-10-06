@@ -37,23 +37,30 @@
 		$totdcount[] = array('citemno' => $row2['citemno'], 'ldefault' => $row2['nversion']);
 	}
 
-	$getboms = array();
-	$chbom = mysqli_query($con,"select * from mrp_bom where compcode='$company' and cmainitemno = '".$dmainitms."' Order By cmainitemno,nitemsort");
-	while($row2 = mysqli_fetch_array($chbom, MYSQLI_ASSOC)){
-		$getboms[] = $row2;
-	}
-
 	$getbomshrs = array();
 	$chbom = mysqli_query($con,"select * from mrp_items_parameters where compcode='$company'");
 	while($row2 = mysqli_fetch_array($chbom, MYSQLI_ASSOC)){
 		$getbomshrs[$row2['citemno']] = $row2;
 	}
 
-	mysqli_query($con,"DELETE FROM mrp_jo_process where compcode='$company' and mrp_jo_ctranno ='$tranno'");
+	$getallboms = array();
+	$chbom = mysqli_query($con,"select * from mrp_bom where compcode='$company' Order By cmainitemno,nitemsort");
+	while($row2 = mysqli_fetch_array($chbom, MYSQLI_ASSOC)){
+		$getallboms[] = $row2;
+	}
 
-	function getsubs($itm,$maintran,$soref,$lvl,$qty){
+	//echo "<pre>";
+	//print_r($getallboms);
+	//echo "<br>";
+
+	mysqli_query($con,"DELETE FROM mrp_jo_process where compcode='$company' and mrp_jo_ctranno ='$tranno'");
+	mysqli_query($con,"DELETE FROM mrp_jo_process_m where compcode='$company' and mrp_jo_ctranno ='$tranno'");
+	
+	getsubs($dmainitms,$dmainaryy['ctranno'],$dmainaryy['crefSO'],1,$dmainaryy['nqty'],$dmainaryy['ctranno']);
+
+	function getsubs($itm,$maintran,$soref,$lvl,$qty,$sicurr){
 		global $totdcount;
-		global $getboms;
+		global $getallboms;
 		global $getbomshrs;
 		global $con;
 		global $company;
@@ -68,21 +75,21 @@
 		}
 
 		$nxtlvl = 0;
-		foreach($getboms as $rs2){
+		foreach($getallboms as $rs2){
 			$nxtlvl = intval($lvl)+1;
 			
-			if($itm==$rs2['cmainitemno'] && intval($rs2['nlevel'])==$nxtlvl){
+		
+			$totqty = floatval($qty)*floatval($rs2['nqty'.$xcver]);
 
-				//echo "<br><br>".$rs2['citemno']."-";
-				$getwsort = chkwithsub($itm,$rs2['nitemsort'],$rs2['nlevel']);
-				//echo $getwsort;
-				if($getwsort=="True"){
+			if($itm==$rs2['cmainitemno']){
+
+				//echo $rs2['cmainitemno'] ." : " . $rs2['citemno'] .": ".$rs2['ctype']." <br><br>";				
+				
+				if($rs2['ctype']=="MAKE"){
 					$cnt++;
-					$SINo = $maintran."-L".$rs2['nlevel']."-".$cnt;
+					$SINo = $sicurr."-".$cnt;
 
 					//echo $rs2['citemno']."-".$SINo."<br>";
-
-					$totqty = floatval($qty)*floatval($rs2['nqty'.$xcver]);
 
 					if(isset($getbomshrs[$rs2['citemno']])){
 						$nwork = $getbomshrs[$rs2['citemno']]['nworkhrs'];
@@ -97,44 +104,29 @@
 						$nxtot = 0;
 					}
 
-					mysqli_query($con, "INSERT INTO mrp_jo_process(`compcode`, `mrp_jo_ctranno`, `ctranno`, `nrefident`, `citemno`, `cunit`, `nqty`, `nworkhrs`, `nsetuptime`, `ncycletime`, `ntottime`) values('$company', '$maintran', '$SINo', '".$rs2['nid']."', '".$rs2['citemno']."', '".$rs2['cunit']."', '".$totqty."', $nwork, $nsetup, $ncycle, $nxtot)");
+					if (!mysqli_query($con, "INSERT INTO mrp_jo_process(`compcode`, `mrp_jo_ctranno`, `ctranno`, `nrefident`, `citemno`, `cunit`, `nqty`, `nworkhrs`, `nsetuptime`, `ncycletime`, `ntottime`) values('$company', '$maintran', '$SINo', '".$rs2['nid']."', '".$rs2['citemno']."', '".$rs2['cunit']."', '".$totqty."', $nwork, $nsetup, $ncycle, $nxtot)")){
+						echo "Errormessage: ". mysqli_error($con);
+					}
+
+					getsubs($rs2['citemno'],$maintran,$soref,$nxtlvl,$totqty,$SINo);
+
+				}elseif($rs2['ctype']=="BUY"){
+
+					if (!mysqli_query($con, "INSERT INTO mrp_jo_process_m(`compcode`, `mrp_jo_ctranno`, `nrefident`, `citemno`, `cunit`, `nqty`) values('$company', '".$maintran."', '".$rs2['nid']."', '".$rs2['citemno']."', '".$rs2['cunit']."','".$totqty."')")) {
+					
+						$status = "False";
+						$msgz = $msgz . "<b>ERROR ON ".$rs2['citemno'].": </b>There's a problem generating your material!";
+		
+					}
 
 				}
+
 			}
 		}
 
-		if($nxtlvl<=5){
-			getsubs($itm,$maintran,$soref,$nxtlvl,$qty);
-		}
-
 	}
 
-	function chkwithsub($citmno,$subsort,$sublvl){
-		global $getboms;
-		$cnt = 0;
-		foreach($getboms as $rs2){
 
-			//echo "<br>".$citmno."==".$rs2['cmainitemno']." && ".intval($subsort).">".intval($rs2['nitemsort'])." && ".intval($rs2['nlevel']).">".intval($sublvl);
-			if($citmno==$rs2['cmainitemno'] && intval($rs2['nitemsort'])>intval($subsort) && intval($rs2['nlevel'])>intval($sublvl)){
-				$cnt++;
-				break;
-			}else if($citmno==$rs2['cmainitemno'] && intval($rs2['nitemsort'])>intval($subsort) && intval($rs2['nlevel'])==intval($sublvl)){
-				break;
-			}
-		}
-
-		if($cnt>0){
-			return "True";
-		}else{
-			return "False";
-		}
-	}
-
-	foreach($getboms as $rs){
-		getsubs($dmainitms,$dmainaryy['ctranno'],$dmainaryy['crefSO'],1,$dmainaryy['nqty']);
-	}
-
-	//mysqli_query($con,"Update so set lsent=1 where compcode='$company' and ctranno='$tranno'");
 
 	$json['ms'] = $msgz;
 	$json['stat'] = $status;

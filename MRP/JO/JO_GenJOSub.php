@@ -71,30 +71,6 @@
 
 		}
 
-		//generate materials needed  $JOQty
-
-		mysqli_query($con,"DELETE FROM mrp_jo_process_m where compcode='$company' and mrp_jo_ctranno = '".$tranno."'");
-
-		$lvldef = 1;
-		$sqllabelnme = mysqli_query($con,"select * from mrp_bom_label where compcode='$company' and citemno = '".$JOItem."' and ldefault = 1");
-		while($row2 = mysqli_fetch_array($sqllabelnme, MYSQLI_ASSOC)){
-			$lvldef = $row2['nversion'];
-		}
-
-		$getboms = array();
-		$chbom = mysqli_query($con,"select * from mrp_bom where compcode='$company' and cmainitemno = '".$JOItem."' and nid not in (".implode(",", $xitmslit).") Order By cmainitemno,nitemsort");
-		while($row2 = mysqli_fetch_array($chbom, MYSQLI_ASSOC)){
-			
-			$nqty = floatval($row2['nqty'.$lvldef])*floatval($JOQty);
-			if (!mysqli_query($con, "INSERT INTO mrp_jo_process_m(`compcode`, `mrp_jo_ctranno`, `nrefident`, `citemno`, `cunit`, `nqty`) values('$company', '".$tranno."', '".$row2['nid']."', '".$row2['citemno']."', '".$row2['cunit']."','".$nqty."')")) {
-					
-				$status = "False";
-				$msgz = $msgz . "<b>ERROR ON ".$row2['citemno'].": </b>There's a problem generating your material!";
-
-			}
-
-		}
-
 
 	//mysqli_query($con,"Update so set lsent=1 where compcode='$company' and ctranno='$tranno'");
 
@@ -121,7 +97,7 @@
 
 <body style="padding-top:20px">
 
-<h3><center>GENERATING PROCESS AND MATERIALS REQUIREMNTS...</center><h3>
+<h3><center>GENERATING PROCESS LIST...</center><h3>
 <h1><center><span id="counter"> 0 </span></center><h1>
 
 <form action="JO_edit.php" name="frmpos" id="frmpos" method="post">

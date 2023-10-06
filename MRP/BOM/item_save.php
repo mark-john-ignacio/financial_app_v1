@@ -30,6 +30,7 @@
 		$citemno = mysqli_real_escape_string($con,$_REQUEST['txtitmcode'.$z]);
 		$cunitz = mysqli_real_escape_string($con,$_REQUEST['txtcunit'.$z]);
 		$clevel = mysqli_real_escape_string($con,$_REQUEST['txtlvl'.$z]);
+		$ctype = mysqli_real_escape_string($con,$_REQUEST['selType'.$z]);
 
 				$qty1 = 0;
 				$qty2 = 0;
@@ -61,7 +62,7 @@
 					}
 				}
 
-				if(!mysqli_query($con,"INSERT INTO `mrp_bom`(`compcode`, `cmainitemno`, `citemno`, `cunit`, `nqty1`, `nqty2`, `nqty3`, `nqty4`, `nqty5`, `nlevel`, `nitemsort`) values('$company', '$cMainItemNo', '$citemno', '$cunitz', '$qty1', '$qty2', '$qty3', '$qty4', '$qty5', '$clevel', '$csort')")){
+				if(!mysqli_query($con,"INSERT INTO `mrp_bom`(`compcode`, `cmainitemno`, `citemno`, `cunit`, `nqty1`, `nqty2`, `nqty3`, `nqty4`, `nqty5`, `nlevel`, `nitemsort`, `ctype`) values('$company', '$cMainItemNo', '$citemno', '$cunitz', '$qty1', '$qty2', '$qty3', '$qty4', '$qty5', '$clevel', '$csort', '$ctype')")){
 			
 					printf("Errormessage: %s\n", mysqli_error($con));
 					$xmsg = "False";

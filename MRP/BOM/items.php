@@ -213,8 +213,8 @@
 								<?php
 									}
 								?>
+								<th width="80" class="text-center"><b>Type</b></td>
 								<th width="50" class="text-center"><b>Del</b></td>
-								<th width="50" class="text-center"><b>Sub</b></td>
 							</tr>
 						</thead>
 						<tbody>											
@@ -344,7 +344,7 @@
 			</div>
 	</div>
 
-				<!-- 1) Add Sub Item Modal -->
+				<!-- 1) Add Sub Item Modal
 					<div class="modal fade" id="modaddsub" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
 						<div class="modal-dialog  modal-lg">
 							<div class="modal-content">
@@ -366,7 +366,7 @@
 
 							</div>
 						</div>
-					</div>
+					</div> -->
 
 					<!-- Upload Excel -->
 
@@ -534,7 +534,7 @@
 		
 		});
 
-		$('#txtscan2').typeahead({
+		/*$('#txtscan2').typeahead({
 			autoSelect: true,
 			source: function(request, response) {
 				$.ajax({
@@ -564,7 +564,7 @@
 																		
 			}
 		
-		});
+		});*/
 
 		$("input[name='radversion']").click(function(){
       var radioValue = $("input[name='radversion']:checked").val();
@@ -599,6 +599,7 @@
 				itmdesc = this['citemdesc'];
 				itmunit = this['cunit'];
 				sornum = this['nitemsort'];
+				ctype = this['ctype'];
 
 				var $tdrows = "";
 
@@ -619,9 +620,19 @@
 
 				}
 
+				if(ctype=="MAKE"){
+					var xmake = " selected";
+					var xbuys = "";
+				}else{
+					var xmake = "";
+					var xbuys = " selected";
+				}
+				
+				$tdrows = $tdrows + "<td class=\"text-center\"><select class=\"form-control input-xs text-center\" name=\"selType\" id=\"selType"+sornum+"\"><option value='MAKE'"+xmake+">MAKE</option><option value='BUY'"+xbuys+">BUY</option></select></td>";
+
 				$tdrows = $tdrows + "<td class=\"text-center\"><button class=\"btn btn-danger btn-xs\" id=\"btnDel"+sornum+"\"><i class=\"fa fa-times\"></i></button></td>";
 
-				$tdrows = $tdrows + "<td class=\"text-center\"><button type='button' class=\"btn btn-success btn-xs\" name=\"btnAdd\" id=\"btnAdd"+sornum+"\"><i class=\"fa fa-arrow-circle-down\"></i></button></td>";
+			//	$tdrows = $tdrows + "<td class=\"text-center\"><button type='button' class=\"btn btn-success btn-xs\" name=\"btnAdd\" id=\"btnAdd"+sornum+"\"><i class=\"fa fa-arrow-circle-down\"></i></button></td>";
 				
 				$row = "<tr id='tr"+sornum+"' class=\"bg-level"+this['nlevel']+"\">"+$tdrows+"</tr>";
 				$("#MyTbl tbody").append($row);
@@ -663,9 +674,11 @@
 
 			}
 
+			$tdrows = $tdrows + "<td class=\"text-center\"><select class=\"form-control input-xs text-center\" name=\"selType\" id=\"selType"+sornum+"\"><option value='MAKE'>MAKE</option><option value='BUY'>BUY</option></select></td>";
+
 			$tdrows = $tdrows + "<td class=\"text-center\"><button type='button' class=\"btn btn-danger btn-xs\" name=\"btnDel\" id=\"btnDel"+sornum+"\"><i class=\"fa fa-times\"></i></button></td>";
 
-			$tdrows = $tdrows + "<td class=\"text-center\"><button type='button' class=\"btn btn-success btn-xs\" name=\"btnAdd\" id=\"btnAdd"+sornum+"\"><i class=\"fa fa-arrow-circle-down\"></i></button></td>";
+		//	$tdrows = $tdrows + "<td class=\"text-center\"><button type='button' class=\"btn btn-success btn-xs\" name=\"btnAdd\" id=\"btnAdd"+sornum+"\"><i class=\"fa fa-arrow-circle-down\"></i></button></td>";
 			
 			$row = "<tr id='tr"+sornum+"' class=\"bg-level"+lvl+"\">"+$tdrows+"</tr>";
 			//$("#MyTbl tbody").append($row);
@@ -683,13 +696,13 @@
 				reindextbl();
 			});
 
-			$("#btnAdd"+sornum).on('click', function() { 
-				addsub(this);
-			});
+			//$("#btnAdd"+sornum).on('click', function() { 
+				//addsub(this);
+			//});
 
 	}
 
-	function addsub(xc){
+	/*function addsub(xc){
 		getid = xc.id;
 
 		rowindx = xc.parentNode.parentNode.rowIndex;
@@ -704,7 +717,7 @@
 		$("#levelindex").val(rowindx);
 
 		$("#modaddsub").modal("show");
-	}
+	}*/
 
 	function reindextbl(){
 		var tx = 0;
@@ -720,6 +733,7 @@
 			$(this).find('input[type=hidden][name="txtitmdesc"]').attr("id","txtitmdesc"+tx);
 			$(this).find('input[type=hidden][name="txtcunit"]').attr("id","txtcunit"+tx);
 			$(this).find('input[name="txtlvl"]').attr("id","txtlvl"+tx);
+			$(this).find('select[name="selType"]').attr("name","selType"+tx);
 
 			getcnt = parseInt($("#hdncount").val());
 			for (i = 1; i <= getcnt; i++) {
@@ -824,6 +838,7 @@
 				$(this).find('input[type=hidden][name="txtitmdesc"]').attr("name","txtitmdesc"+$tx);
 				$(this).find('input[type=hidden][name="txtcunit"]').attr("name","txtcunit"+$tx);
 				$(this).find('input[name="txtlvl"]').attr("name","txtlvl"+$tx);
+				$(this).find('select[name="selType"]').attr("name","selType"+$tx);
 
 				getcnt = parseInt($("#hdncount").val());
 				for (i = 1; i <= getcnt; i++) {
