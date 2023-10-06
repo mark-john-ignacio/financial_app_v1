@@ -101,7 +101,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
     <td colspan="2">&nbsp;</td>
   </tr>
   <tr>
-    <td colspan="3" style="height: 5.35in; padding-top: 13px;" VALIGN="TOP">
+    <td colspan="3" style="height: 5.5in; padding-top: 13px;" VALIGN="TOP">
     
     <table width="100%" border="0" cellpadding="3">
       <?php 
@@ -124,7 +124,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
       ?>
       
             <tr> 
-              <td style="width: 1.25in"  align="center"><?=$cntr;?></td>
+              <td style="width: 1.4in"  align="center"><?=$cntr;?></td>
               <td style="text-overflow: ellipsis; width: .55in">&nbsp;&nbsp;<?php echo $rowbody['citemno'];?></td>
               <td style="text-overflow: ellipsis; width: 12.5in"><?php echo $rowbody['citemdesc'];?></td>
               <td style="width: 1.15in" align="center"><?php echo number_format($rowbody['nqty']);?>&nbsp;</td> 
@@ -195,7 +195,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
     if($SalesType=="Services"){
   ?>
   <tr>
-    <td colspan="2" valign="top" style="padding-top: 33px !important">
+    <td colspan="2" valign="top" style="padding-top: 30px !important">
       <table width="100%" border="0">
 
         <tr>
@@ -244,7 +244,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
     }else{
 ?>
 <tr>
-    <td colspan="2" valign="top" style="padding-top: 33px !important">
+    <td colspan="2" valign="top" style="padding-top: 30px !important">
       <table width="100%" border="0" cellpadding="1px">
 
         <tr>
