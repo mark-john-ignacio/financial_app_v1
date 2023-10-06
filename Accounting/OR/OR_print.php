@@ -181,9 +181,9 @@ var vatcode = '', vatgross ='', printVATGross = '', printVEGross='', printZRGros
                     console.log(item)
                     if(item.csalestype === 'Goods'){
                         if(item.namount != 0){
-                            totnetvat = totnetvat + parseFloat(item.nnetvat);
-                            totlessvat = totlessvat + parseFloat(item.nlessvat);
-                            totvatable = totvatable + parseFloat(item.namount);
+                            totnetvat += parseFloat(item.nnetvat);
+                            totlessvat += parseFloat(item.nlessvat);
+                            totvatable += parseFloat(item.namount);
                         } else {
                             totvatxmpt = totvatxmpt + parseFloat(item.namount);
                         }
