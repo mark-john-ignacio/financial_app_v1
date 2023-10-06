@@ -53,7 +53,7 @@
             <td width="310" colspan="2" style="padding:2px">
               <div class="col-xs-7 nopadding">   
                 <div class="col-xs-4 nopadding">
-                  <input type="text" class="form-control input-sm" id="txtccode" name="txtccode" tabindex="1" placeholder="Customer Code.." required autocomplete="off" />
+                  <input type="text" class="required form-control input-sm" id="txtccode" name="txtccode" tabindex="1" placeholder="Customer Code.." required autocomplete="off" />
                 </div>   
                 <div class="col-xs-5 nopadwleft">		
                   <div id="itmcode_err" style="padding: 5px 10px;"></div>
@@ -63,15 +63,15 @@
           </tr>
           <tr>
             <td><b>Registered Name: </b></td>
-            <td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="form-control input-sm text-uppercase" id="txtcdesc" name="txtcdesc" tabindex="2" placeholder="Customer Registered Name.." required autocomplete="off" /></div></td>
+            <td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="required form-control input-sm text-uppercase" id="txtcdesc" name="txtcdesc" tabindex="2" placeholder="Customer Registered Name.." required autocomplete="off" /></div></td>
           </tr>
           <tr>
             <td><b>Business/Trade Name</b></td>
-            <td style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="form-control input-sm text-uppercase" id="txttradename" name="txttradename" tabindex="2" placeholder="Customer Business/Trade Name.." required  value="" autocomplete="off" /></div></td>
+            <td style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="required form-control input-sm text-uppercase" id="txttradename" name="txttradename" tabindex="2" placeholder="Customer Business/Trade Name.." required  value="" autocomplete="off" /></div></td>
           </tr>
           <tr>
             <td><b>Tin No.: </b></td>
-            <td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="form-control input-sm" id="txtTinNo" name="txtTinNo" tabindex="2" placeholder="Tin No.." required autocomplete="off" /></div></td>
+            <td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="required form-control input-sm" id="txtTinNo" name="txtTinNo" tabindex="2" placeholder="Tin No.." required autocomplete="off" /></div></td>
           </tr>
           <tr>
             <td><b>Address</b></td>
@@ -169,7 +169,7 @@
                   <b>Credit Limit</b>
                 </div>                    
                 <div class="col-xs-3 nopadwleft">
-                  <input type="text" class="numeric form-control input-sm text-right" id="txtclimit" name="txtclimit" tabindex="10" placeholder="Enter Credit Limit..." required autocomplete="off" value="0"/> 
+                  <input type="text" class="numeric required form-control input-sm text-right" id="txtclimit" name="txtclimit" tabindex="10" placeholder="Enter Credit Limit..." required autocomplete="off" value="0"/> 
                 </div>
                 <div class="col-xs-2 nopadwleft">
                   <small>&nbsp;&nbsp; <i>Zero (0) for Unlimited Credit Limit</i></small>
@@ -464,7 +464,7 @@
                 <div class="col-xs-10 nopadwleft" id="accttypsingle">
                   <div class="row nopadding">
                     <div class="col-xs-3 nopadding">
-                      <input type="text" class="form-control input-sm" id="txtsalesacct" name="txtsalesacct" tabindex="23" placeholder="Search Acct Title.." autocomplete="off" required/>
+                      <input type="text" class="required form-control input-sm" id="txtsalesacct" name="txtsalesacct" tabindex="23" placeholder="Search Acct Title.." autocomplete="off" required/>
                     </div>          
                     <div class="col-xs-2 nopadwleft">
                       <input type="text" id="txtsalesacctD" name="txtsalesacctD" class="form-control input-sm" readonly>

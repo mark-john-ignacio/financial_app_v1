@@ -557,6 +557,10 @@
                 <a href="javascript:;" onClick="setpage('MRP/JO/JO.php');"> 
 								<i class="fa fa-file-text-o"></i> Job Orders </a>
             </li>
+						<li>
+                <a href="javascript:;" onClick="setpage('MRP/Prod_run/ProdRun.php');"> 
+								<i class="fa fa-tasks"></i> Production Run </a>
+            </li>
 						<?php
 							}
 						?>

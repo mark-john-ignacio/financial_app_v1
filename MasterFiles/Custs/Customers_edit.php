@@ -132,19 +132,19 @@
 						<img src="<?php echo $imgsrc;?>" width="145" height="145" id="previewing">
 						</td>
 						<td width="200">&nbsp;<b>Customer Code</b></td>
-						<td style="padding:2px"><div class="col-xs-4 nopadding"><input type="text" class="form-control input-sm" id="txtccode" name="txtccode" tabindex="1" placeholder="Input Customer Code.." required value="<?php echo $cCustCode;?>" autocomplete="off" onKeyUp="chkSIEnter(event.keyCode,'frmCust');" /></div><span id="user-result"></span></td>
+						<td style="padding:2px"><div class="col-xs-4 nopadding"><input type="text" class="required form-control input-sm" id="txtccode" name="txtccode" tabindex="1" placeholder="Input Customer Code.." required value="<?php echo $cCustCode;?>" autocomplete="off" onKeyUp="chkSIEnter(event.keyCode,'frmCust');" /></div><span id="user-result"></span></td>
 					</tr>
 					<tr>
 						<td>&nbsp;<b>Registered Name</b></td>
-						<td style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="form-control input-sm" id="txtcdesc" name="txtcdesc" tabindex="2" placeholder="Input Customer Registered Name.." required  value="<?php echo $cCustName;?>" autocomplete="off" /></div></td>
+						<td style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="required form-control input-sm" id="txtcdesc" name="txtcdesc" tabindex="2" placeholder="Input Customer Registered Name.." required  value="<?php echo $cCustName;?>" autocomplete="off" /></div></td>
 					</tr>
 					<tr>
 						<td>&nbsp;<b>Business/Trade Name</b></td>
-						<td style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="form-control input-sm" id="txttradename" name="txttradename" tabindex="2" placeholder="Input Customer Business/Trade Name.." required  value="<?php echo $cTradeName;?>" autocomplete="off" /></div></td>
+						<td style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="required form-control input-sm" id="txttradename" name="txttradename" tabindex="2" placeholder="Input Customer Business/Trade Name.." required  value="<?php echo $cTradeName;?>" autocomplete="off" /></div></td>
 					</tr>
 					<tr>
 					<td>&nbsp;<b>Tin No.</b></td>
-					<td style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="form-control input-sm" id="txtTinNo" name="txtTinNo" tabindex="2" placeholder="Input Tin No.." required autocomplete="off" value="<?php echo $Tin; ?>"/></div></td>
+					<td style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="required form-control input-sm" id="txtTinNo" name="txtTinNo" tabindex="2" placeholder="Input Tin No.." required autocomplete="off" value="<?php echo $Tin; ?>"/></div></td>
 					</tr>    
 
 					<tr>
@@ -256,7 +256,7 @@
 								<b>Credit Limit</b>
 							</div>                    
 							<div class="col-xs-3 nopadwleft">
-								<input type="text" class="numeric form-control input-sm text-right" id="txtclimit" name="txtclimit" tabindex="10" placeholder="Enter Credit Limit..." required autocomplete="off" value="<?php echo $CreditLimit;?>"/> 
+								<input type="text" class="numeric required form-control input-sm text-right" id="txtclimit" name="txtclimit" tabindex="10" placeholder="Enter Credit Limit..." required autocomplete="off" value="<?php echo $CreditLimit;?>"/> 
 							</div>
 							<div class="col-xs-2 nopadwleft">
 								<small>&nbsp;&nbsp; <i>Zero (0) for Unlimited Credit Limit</i></small>
@@ -333,7 +333,7 @@
 									$cntrstrx = $cntrstrx + 1;
 							?>
 								<tr>
-									<td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConNme<?php echo $cntrstrx;?>' name='txtConNme<?php echo $cntrstrx;?>' value='<?php echo $row['cname'];?>' required></div></td>
+									<td><div class="col-xs-12 nopadtopleft"><input type='text' class='required form-control input-sm' id='txtConNme<?php echo $cntrstrx;?>' name='txtConNme<?php echo $cntrstrx;?>' value='<?php echo $row['cname'];?>' required></div></td>
 									<td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConDes<?php echo $cntrstrx;?>' name='txtConDes<?php echo $cntrstrx;?>' value='<?php echo $row['cdesignation'];?>'> </div></td>
 									<td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConDept<?php echo $cntrstrx;?>' name='txtConDept<?php echo $cntrstrx;?>' value='<?php echo $row['cdept'];?>'> </div></td>
 									
@@ -574,7 +574,7 @@
 							<div class="col-xs-10 nopadwleft" id="accttypsingle" <?php if ($AcctCodeType=="multiple") { echo "style='display:none'"; } ?>>
 								<div class="row nopadding">
 									<div class="col-xs-3 nopadding">
-										<input type="text" class="form-control input-sm" id="txtsalesacct" name="txtsalesacct" tabindex="23" placeholder="Search Acct Title.." autocomplete="off" required  value="<?php echo $GroceryDesc;?>"/>
+										<input type="text" class="required form-control input-sm" id="txtsalesacct" name="txtsalesacct" tabindex="23" placeholder="Search Acct Title.." autocomplete="off" required  value="<?php echo $GroceryDesc;?>"/>
 									</div>          
 									<div class="col-xs-2 nopadwleft">
 										<input type="text" id="txtsalesacctD" name="txtsalesacctD" class="form-control input-sm" readonly value="<?php echo $GroceryIDCode;?>">
@@ -733,7 +733,7 @@
 									$cntrstrdl = $cntrstrdl + 1;
 							?>
 								<tr>
-									<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtdeladdno<?php echo $cntrstrdl;?>' name='txtdeladdno<?php echo $cntrstrdl;?>' value='<?php echo $rowdl['chouseno'];?>' required></div></td>
+									<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='required form-control input-sm' id='txtdeladdno<?php echo $cntrstrdl;?>' name='txtdeladdno<?php echo $cntrstrdl;?>' value='<?php echo $rowdl['chouseno'];?>' required></div></td>
 									<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtdeladdcity<?php echo $cntrstrdl;?>' name='txtdeladdcity<?php echo $cntrstrdl;?>' value='<?php echo $rowdl['ccity'];?>'> </div></td>
 									<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtdeladdstt<?php echo $cntrstrdl;?>' name='txtdeladdstt<?php echo $cntrstrdl;?>' value='<?php echo $rowdl['cstate'];?>'> </div></td>
 									<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtdeladdcntr<?php echo $cntrstrdl;?>' name='txtdeladdcntr<?php echo $cntrstrdl;?>' value='<?php echo $rowdl['ccountry'];?>'> </div></td>
