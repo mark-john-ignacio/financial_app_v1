@@ -1377,7 +1377,7 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 
 	var tditmqty = "<td width=\"100\" nowrap> <input type='text' value='"+itmtotqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' "+qtystat+" data-v-min=\"1\"> <input type='hidden' value='"+itmqtyunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> </td>";
 		
-	var tditmprice = "<td width=\"100\" nowrap> <input type='text' value='"+price+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnprice\" id='txtnprice"+lastRow+"' \"  "+qtystat+" > </td>";
+	var tditmprice = "<td width=\"100\" nowrap> <input type='text' value='"+price+"' class='numeric2 form-control input-xs' style='text-align:right' name=\"txtnprice\" id='txtnprice"+lastRow+"' \"  "+qtystat+" > </td>";
 
 	var tditmbaseamount = "<td width=\"100\" nowrap> <input type='text' value='"+curramtz+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtntranamount\" id='txtntranamount"+lastRow+"' readonly> <input type='hidden' value='"+baseprice.toFixed(4)+"' name=\"txtnamount\" id='txtnamount"+lastRow+"'  readonly> </td>";
 			
@@ -1394,6 +1394,7 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 										ComputeGross();
 									});
 
+									$("input.numeric2").autoNumeric('init',{mDec:4});
 									$("input.numeric").autoNumeric('init',{mDec:2});
 
 									$("#selitmvatyp"+lastRow).on("change", function() {

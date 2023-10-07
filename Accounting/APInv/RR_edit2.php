@@ -951,7 +951,7 @@ function myFunctionadd(nqty,nqtyorig,nprice,curramt,namount,nfactor,cmainunit,xr
 	
 	tditmqty = "<td width=\"100\"> <input type='text' value='"+itmqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' /> <input type='hidden' value='"+nqtyorig+"' name=\"txtnqtyORIG\" id=\"txtnqtyORIG"+lastRow+"\"> </td>";
 
-	tditmprice = "<td width=\"100\" style=\"padding:1px\"> <input type='text' value='"+itmprice+"' class='numeric form-control input-xs' style='text-align:right'name=\"txtnprice\" id='txtnprice"+lastRow+"' autocomplete='off' onFocus='this.select();'> <input type='hidden' value='"+itmmainunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+itmfactor+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
+	tditmprice = "<td width=\"100\" style=\"padding:1px\"> <input type='text' value='"+itmprice+"' class='numeric2 form-control input-xs' style='text-align:right'name=\"txtnprice\" id='txtnprice"+lastRow+"' autocomplete='off' onFocus='this.select();'> <input type='hidden' value='"+itmmainunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+itmfactor+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
 	
 	tditmbaseamount = "<td width=\"100\" style=\"padding:1px\"> <input type='text' value='"+itmbaseamt+"' class='numeric form-control input-xs' style='text-align:right' name='txtntranamount' id='txtntranamount"+lastRow+"' readonly> </td>";
 
@@ -965,7 +965,7 @@ function myFunctionadd(nqty,nqtyorig,nprice,curramt,namount,nfactor,cmainunit,xr
 									//	$(this).closest('tr').remove();
 									//	ComputeGross();
 									//});
-
+									$("input.numeric2").autoNumeric('init',{mDec:4});
 									$("input.numeric").autoNumeric('init',{mDec:2});
 
 									//$("input.numeric").numeric();

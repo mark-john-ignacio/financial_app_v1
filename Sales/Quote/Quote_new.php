@@ -1023,7 +1023,7 @@ function myFunctionadd(){
 	var tditmfactor = "<td width=\"100\" nowrap> <input type='text' value='1' class='numeric form-control input-xs' style='text-align:right' name='hdnfactor' id='hdnfactor"+lastRow+"' readonly> </td>";
 	var tditmqty = "<td width=\"100\" nowrap> <input type='text' value='1' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();'> <input type='hidden' value='"+itmunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'>  </td>";
 		
-	var tditmprice = "<td width=\"100\" nowrap> <input type='text' value='"+price.trim()+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnprice\" id='txtnprice"+lastRow+"' \"> </td>";
+	var tditmprice = "<td width=\"100\" nowrap> <input type='text' value='"+price.trim()+"' class='numeric2 form-control input-xs' style='text-align:right' name=\"txtnprice\" id='txtnprice"+lastRow+"' \"> </td>";
 			
 	var tditmbaseamount = "<td width=\"100\" nowrap> <input type='text' value='"+price.trim()+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtntranamount\" id='txtntranamount"+lastRow+"' readonly> </td>";
 
@@ -1038,8 +1038,8 @@ function myFunctionadd(){
 										$(this).closest('tr').remove();
 									});
 
+									$("input.numeric2").autoNumeric('init',{mDec:4});
 									$("input.numeric").autoNumeric('init',{mDec:2});
-
 
 									//$("input.numeric").numeric();
 									$("input.numeric").on("click", function () {

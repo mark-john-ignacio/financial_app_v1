@@ -1455,7 +1455,7 @@ $company = $_SESSION['companyid'];
 		
 		var tditmqty = "<td nowrap> <input type='text' value='"+itmtotqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' "+qtystat+"> <input type='hidden' value='"+itmqtyunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+factz+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
 
-		var tditmprice = "asd<td nowrap> <input type='text' value='"+price+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnprice\" id='txtnprice"+lastRow+"' > </td>";
+		var tditmprice = "asd<td nowrap> <input type='text' value='"+price+"' class='numeric2 form-control input-xs' style='text-align:right' name=\"txtnprice\" id='txtnprice"+lastRow+"' > </td>";
 		
 		var tditmdisc = "<td nowrap> <input type='text' value='0' class='numeric form-control input-xs' style='text-align:right; cursor: pointer' name=\"txtndisc\" id='txtndisc"+lastRow+"'  readonly onclick=\"getdiscount('"+itmcode+"', "+lastRow+")\"> </td>";
 
@@ -1488,13 +1488,14 @@ $company = $_SESSION['companyid'];
 											ComputeGross();
 										});
 
-											$("input.numeric").autoNumeric('init',{mDec:2});
+										$("input.numeric2").autoNumeric('init',{mDec:4});
+										$("input.numeric").autoNumeric('init',{mDec:2});
 
-											$("#selitmvatyp"+lastRow).on("change", function() {
-												ComputeGross();
-											});
+										$("#selitmvatyp"+lastRow).on("change", function() {
+											ComputeGross();
+										});
 
-											$("#selitmewtyp"+lastRow).select2();
+										$("#selitmewtyp"+lastRow).select2();
 											
 
 

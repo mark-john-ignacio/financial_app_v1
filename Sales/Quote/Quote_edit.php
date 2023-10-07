@@ -1229,7 +1229,7 @@ function myFunctionadd(qty,pricex,amtx,factr,nident){
 
 	var tditmqty = "<td width=\"100\" nowrap> <input type='text' value='"+itmtotqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();'> <input type='hidden' value='"+itmunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> </td>";
 		
-	var tditmprice = "<td width=\"100\" nowrap> <input type='text' value='"+price+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnprice\" id='txtnprice"+lastRow+"' \"> </td>";
+	var tditmprice = "<td width=\"100\" nowrap> <input type='text' value='"+price+"' class='numeric2 form-control input-xs' style='text-align:right' name=\"txtnprice\" id='txtnprice"+lastRow+"' \"> </td>";
 
 	var tditmbaseamount = "<td width=\"100\" nowrap> <input type='text' value='"+amtz+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtntranamount\" id='txtntranamount"+lastRow+"'> </td>";
 			
@@ -1246,6 +1246,7 @@ function myFunctionadd(qty,pricex,amtx,factr,nident){
 									});
 
 
+									$("input.numeric2").autoNumeric('init',{mDec:4});
 									$("input.numeric").autoNumeric('init',{mDec:2});
 
 									//$("input.numeric").numeric();
