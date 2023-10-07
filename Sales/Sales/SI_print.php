@@ -126,7 +126,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
             <tr> 
               <td style="width: 1.4in"  align="center"><?=$cntr;?></td>
               <td style="text-overflow: ellipsis; width: .55in">&nbsp;&nbsp;<?php echo $rowbody['citemno'];?></td>
-              <td style="text-overflow: ellipsis; width: 12.5in"><?php echo $rowbody['citemdesc'];?></td>
+              <td style="text-overflow: ellipsis; width: 14.5in"><?php echo $rowbody['citemdesc'];?></td>
               <td style="width: 1.15in" align="center"><?php echo number_format($rowbody['nqty']);?>&nbsp;</td> 
               <td style="width: 1.15in" align="center"><?php echo $rowbody['cunit'];?></td>
               <td style="text-overflow: ellipsis; width: 2.25in" align="right"><?php echo number_format($nnetprice,2);?></td>
@@ -215,13 +215,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
         </tr>
         <tr>
           <td align="right" valign="bottom"><!--<b><b>Vat-Exempt Sales</b>-->&nbsp;</td>
-          <td valign="bottom"><div style="text-align:right; width:50%"><b><?//=$printVEGross?></b>&nbsp;</div></td>
+          <td valign="bottom"><div style="text-align:right; width:50%"><b><?=($printVEGross !== 0) ? $printVEGross : '' ?></b>&nbsp;</div></td>
           <td colspan="2" valign="bottom" align="right"><!--<b><b>LESS: SC/PWD DISC.</b>-->&nbsp;</td>
           <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?//=number_format($Gross,2)?>&nbsp;</b></td>
         </tr>
         <tr>
           <td align="right" valign="bottom"><!--<b><b>Zero-Rated Sales</b>-->&nbsp;</td>
-          <td valign="bottom"><div style="text-align:right; width:50%"><b><?//=$printZRGross?></b>&nbsp;</div></td>
+          <td valign="bottom"><div style="text-align:right; width:50%"><b><?=($printZRGross !== 0) ? $printZRGross : '' ?></b>&nbsp;</div></td>
           <td colspan="2" valign="bottom" align="right"><!--<b><b>Amt. Due</b>-->&nbsp;</td>
           <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=number_format($totvatable,2)?></b></td>
         </tr>
