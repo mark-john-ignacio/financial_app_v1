@@ -2462,7 +2462,7 @@ else{
 			$("#btnPrint").attr("disabled", true);
 			$("#btnEdit").attr("disabled", true);
 			$("#btnentry").attr("disabled", true); 
-			$('#receipt').attr('disabled', false);
+			$('#receipt').attr('disabled', true);
 
 			if($("#isNoRef").find(":selected").val()==1){
 				$("#btnaddOthers").attr("disabled", false);

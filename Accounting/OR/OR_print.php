@@ -71,7 +71,7 @@
             width: 550px;
             left: 305px;
             text-indent: 24%;
-            letter-spacing: 4px;
+            letter-spacing: 1px;
             line-height: 2em;
         }
 

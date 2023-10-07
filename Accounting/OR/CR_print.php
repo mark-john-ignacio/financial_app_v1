@@ -72,7 +72,7 @@
             width: 550px;
             left: 305px;
             text-indent: 24%;
-            letter-spacing: 4px;
+            letter-spacing: 1px;
             line-height: 3em;
         }
 
@@ -185,7 +185,7 @@ var total = 0;
                         if(res.data.csalestype === 'Services')
                         vat += parseFloat(item.nvat);
                         ewt += parseFloat(item.newtamt);
-                        total += parseFloat(item.namount)
+                        total += parseFloat(item.napplied)
 
                         $('<tr>').append(
                             $('<td>').text(item.csalesno),
