@@ -163,7 +163,7 @@
 <script type='text/javascript'>
 var totnetvat = 0, totlessvat = 0, totvatable = 0, totvatxmpt= 0, gross=0;
 var vatcode = '', vatgross ='', printVATGross = '', printVEGross='', printZRGross='';
-   
+   var netofvat = 0, ndue=0;
     $.ajax({
         url: 'th_transaction.php',
         data: {
@@ -191,18 +191,20 @@ var vatcode = '', vatgross ='', printVATGross = '', printVEGross='', printZRGros
                 res['data2'].map((item, key) => {
                     console.log(item)
                     if(item.csalestype === 'Goods'){
-                        if(item.namount != 0){
-                            totnetvat += parseFloat(item.nnetvat);
-                            totlessvat += parseFloat(item.nlessvat);
-                            totvatable += parseFloat(item.namount);
-                        } else {
-                            totvatxmpt = totvatxmpt + parseFloat(item.namount);
-                        }
+                        totvatable += parseFloat(item.napplied);
+                        totlessvat += parseFloat(item.nnet);
+                        totnetvat += parseFloat(item.nvat);
+                        ndue += parseFloat(item.ndue);
+
+                        console.log(item.napplied)
+                        console.log(item.nnet)
+                        console.log(item.ncm)
+                        console.log(item.ndue)
 
                         var printgross =0;
-                        gross = parseFloat(item.ngross);
+                        gross += parseFloat(item.napplied);
                         if(item.ctaxcode === 'VT' || item.ctaxcode === 'NV'){
-                            printgross = parseFloat(item.ngross)
+                            printgross = parseFloat(item.napplied)
                             if(parseFloat(totvatxmpt) != 0){
                                 printVEGross = parseFloat(totvatxmpt)
                             }
@@ -210,17 +212,20 @@ var vatcode = '', vatgross ='', printVATGross = '', printVEGross='', printZRGros
                             totnetvat = parseFloat(totnetvat);
                             totlessvat = parseFloat(totlessvat);
                             totvatable = parseFloat(totvatable);
+                            ndue = parseFloat(ndue);
                         } else if(item.ctaxcode === 'VE') {
-                            printVEGross = parseFloat(item.ngross);
+                            printVEGross = parseFloat(item.napplied);
                                 
                             totnetvat = "";
                             totlessvat = "";
                             totvatable = "";
+                            ndue ="";
                         } else if(item.ctaxcode === 'ZR'){
-                            printZRGross = parseFloat(item.ngross);
+                            printZRGross = parseFloat(item.napplied);
                             totnetvat = "";
                             totlessvat = "";
                             totvatable = "";
+                            ndue ="";
                         }
 
 
@@ -241,10 +246,10 @@ var vatcode = '', vatgross ='', printVATGross = '', printVEGross='', printZRGros
                     $("<td>").html(
                         "<div>"+(totvatable !== ""  ? toNumber(totvatable) : "")+"</div>" +
                         "<div>" + (totlessvat != "" ? toNumber(totlessvat): '') + "</div>" +
-                        "<div>" +(totnetvat !== "" ? toNumber(totnetvat) : '') + "</div>" +
+                        "<div>" +(totnetvat !== "" ? toNumber(netofvat) : '') + "</div>" +
                         "<div> &nbsp; </div>" +
-                        "<div>" + (totnetvat !== "" ? toNumber(totnetvat) : '') + "</div>" +
-                        "<div>" + (totlessvat !== "" ? toNumber(totlessvat) : '')+ "</div>" +
+                        "<div>" + (totlessvat !== "" ? toNumber(totlessvat) : '') + "</div>" +
+                        "<div>" + (totnetvat !== "" ? toNumber(totnetvat) : '')+ "</div>" +
                         "<div>" + (gross !== '' ? toNumber(gross) : '') + "</div>"
                     ),
                 ).appendTo('#amounts')
@@ -256,7 +261,7 @@ var vatcode = '', vatgross ='', printVATGross = '', printVEGross='', printZRGros
                         "<div>" + (totvatable !=="" ? toNumber(totvatable) : "") + "</div>" +
                         "<div>" + (printVEGross !=="" ? toNumber(printVEGross) : "") + "</div>" +
                         "<div>" + (printZRGross !=="" ? toNumber(printZRGross) : "") + "</div>" +
-                        "<div>" + (totnetvat !=="" ? toNumber(totnetvat) : "") + "</div>" 
+                        "<div>" + (totnetvat !=="" ? "": "") + "</div>" 
                     )
                 ).appendTo('#total')
                 

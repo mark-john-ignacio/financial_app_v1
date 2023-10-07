@@ -26,14 +26,12 @@
     $data2 = [];
 
     $sql = match($checksalesno){
-        'SI' => "SELECT a.*, b.ngross, b.csalestype, c.* FROM receipt_sales_t a
+        'SI' => "SELECT a.*, b.ngross, b.csalestype FROM receipt_sales_t a
                 left join sales b on a.compcode = b.compcode and a.csalesno = b.ctranno
-                left join sales_t c on a.compcode = c.compcode and a.csalesno = c.ctranno
                 WHERE a.compcode = '$company' and a.ctranno = '$tranno'",
 
-        "IN" => "SELECT a.*, b.ngross, b.csalestype, c.* FROM receipt_sales_t a
+        "IN" => "SELECT a.*, b.ngross, b.csalestype FROM receipt_sales_t a
                 left join ntsales b on a.compcode = b.compcode and a.csalesno = b.ctranno
-                left join ntsales_t c on a.compcode = c.compcode and a.csalesno = c.ctranno
                 WHERE a.compcode = '$company' and a.ctranno = '$tranno'",
         
         default => null
