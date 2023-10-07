@@ -58,7 +58,7 @@
         #receive_tin {
             position: absolute; 
             top: 240px; 
-            left: 650px;
+            left: 680px;
         }
         #businessstyle {
             position: absolute; 
@@ -73,7 +73,7 @@
             left: 305px;
             text-indent: 24%;
             letter-spacing: 4px;
-            line-height: 2em;
+            line-height: 3em;
         }
 
         #sumInText {
@@ -85,7 +85,7 @@
             position: absolute;
             top: 110px;
             left: 30px;
-            width: 255px;
+            width: 200px;
             height: 280px;
             /* border: 1px solid black; */
         }
@@ -96,10 +96,10 @@
 
         #vatlist {
             position: absolute;
-            text-align: center; 
+            text-align: right; 
             width: 100%; 
             bottom: 0px;
-            
+            margin-right: 30px;
         }
         
         #totalamount {
@@ -137,9 +137,10 @@
 </html>
 
 <script type='text/javascript'>
-    var totnetvat = 0, totlessvat = 0, totvatable = 0, totvatxmpt= 0;
-    var vatcode = '', vatgross ='';
-
+    
+var vat = 0;
+var ewt = 0;
+var total = 0;
    
     $.ajax({
         url: 'th_transaction.php',
@@ -173,32 +174,7 @@
 
                 res['data2'].map((item, key) => {
                     console.log(item)
-                        if(res.data.csalestype === 'Services'){
-                            var printgross =0;
-                            var printVATGross = '', printVEGross='', printZRGross='';
-                            var gross = parseFloat(item.ngross);
-                            if(item.ctaxcode === 'VT' || item.ctaxcode === 'NV'){
-                                printgross = parseFloat(item.ngross)
-                                if(parseFloat(totvatxmpt) != 0){
-                                    printVEGross = parseFloat(totvatxmpt)
-                                }
-
-                                totnetvat = parseFloat(totnetvat);
-                                totlessvat = parseFloat(totlessvat);
-                                totvatable = parseFloat(totvatable);
-                            } else if(item.ctaxcode === 'VE') {
-                                $printVEGross = parseFloat(item.ngross);
-                                    
-                                $totnetvat = "";
-                                $totlessvat = "";
-                                $totvatable = "";
-                            } else if(item.ctaxcode === 'ZR'){
-                                printZRGross = parseFloat(item.ngross);
-                                $totnetvat = "";
-                                $totlessvat = "";
-                                $totvatable = "";
-                            }
-                        }
+                        if(res.data.csalestype === 'Services')
                         vat += parseFloat(item.nvat);
                         ewt += parseFloat(item.newtamt);
                         total += parseFloat(item.namount)
@@ -210,32 +186,18 @@
                         console.log(res.data2.length)
                         
                         if(res.data2.length -1 == key){
-
-                            if(item.namount != 0){
-                                totnetvat = totnetvat + parseFloat(item.nnetvat);
-                                totlessvat = totlessvat + parseFloat(item.nlessvat);
-                                totvatable = totvatable + parseFloat(item.namount);
-                            } else {
-                                totvatxmpt = totvatxmpt + parseFloat(item.namount);
-                            }
-
-
-
-
-
-
                             $("<tr>").append(
-                                $('<td>').text(''),
+                                $("<td style='center'>").text('VAT'),
                                 $('<td>').text(toNumber(vat))
                             ).appendTo('#vatlist')
 
                             $("<tr>").append(
-                                $('<td>').text(''),
-                                $('<td>').text(toNumber(ewt))
+                                $("<td style='center'>").text('EWT'),
+                                $('<td >').text(toNumber(ewt))
                             ).appendTo('#vatlist')
 
                             $("<tr>").append(
-                                $('<td>').text(''),
+                                $("<td align='center'>").text(''),
                                 $("<td style='width: 100%' align='right'>").text(toNumber(total))
                             ).appendTo('#vatlist')
 

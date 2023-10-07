@@ -287,8 +287,8 @@
 								</td>
 							</tr>													
 							<tr>
-								<tH width="150">Memo:</tH>
-								<td rowspan="2" valign="top" style="padding:2px">
+								<tH rowspan='2' width="150">Memo:</tH>
+								<td rowspan="3" valign="top" style="padding:2px">
 									<div class="col-xs-12 nopadding">
 										<div class="col-xs-10 nopadding">
 											<textarea class="form-control" rows="1" id="txtremarks" name="txtremarks"></textarea>
@@ -300,6 +300,17 @@
 									<div class="col-xs-8 nopadding">
 										<input type="text" id="txtnOutBal" name="txtnOutBal" class="numericchkamt form-control input-sm" value="0.00" style="text-align:right;" autocomplete="off" readonly>
 									</div>
+								</td>
+							</tr>
+							<tr>
+								<th style="padding:2px">Receipt Type: </th>
+								<td valign="top" style="padding:2px">
+										<div class='col-xs-8 nopadding'>
+											<select class='form-control input-sm' name="receipt" id="receipt">
+												<option value="OR">Official Receipt</option>
+												<option value="CR">Collection Receipt</option>
+											</select>
+										</div>
 								</td>
 							</tr>
 							<tr>
@@ -1155,7 +1166,7 @@
 			//alert("th_orlist.php?x="+x+"&y="+salesnos+"&typ="+typ+"&curr="+$('#selbasecurr').val());
 			$.ajax({
         url: 'th_orlist.php',
-				data: { x:x, y:salesnos, typ:typ, curr:$('#selbasecurr').val() },
+				data: { x:x, y:salesnos, typ:typ, curr:$('#selbasecurr').val(), type: $('#receipt').val() },
         dataType: 'json',
         method: 'post',
         success: function (data) {
@@ -1181,10 +1192,11 @@
 
           });
         },
-        error: function (jqXHR, textStatus, errorThrown)
+        error: function (textStatus)
 				{
-					if(errorThrown!="Unexpected end of JSON input"){
-					}
+					// if(errorThrown!="Unexpected end of JSON input"){
+					// }
+					console.log(textStatus)
 				}
       });
 			

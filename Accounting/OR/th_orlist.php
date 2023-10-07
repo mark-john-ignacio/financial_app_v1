@@ -22,6 +22,13 @@ require_once "../../Connection/connection_string.php";
 		$tbl = "ntsales";
 		$tbl2 = "ntsales_t";
 	}
+	$receipt = $_REQUEST['type'];
+
+	if($receipt === 'OR'){
+		$receipttype = "Goods";
+	} else{
+		$receipttype = 'Services';
+	}
 
 	//alldebitlist
 	@$arradjlist = array();
@@ -54,7 +61,7 @@ require_once "../../Connection/connection_string.php";
 	left join customers C on B.compcode=C.compcode and B.ccode=C.cempid 
 	left join accounts D on C.compcode=D.compcode and C.cacctcodesales=D.cacctno 
 	left join wtaxcodes E on A.compcode=E.compcode and A.cewtcode=E.ctaxcode 
-	where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 and B.ccode='".$_REQUEST['x']."') A
+	where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 and B.csalestype = '$receipttype' and B.ccode='".$_REQUEST['x']."') A
 	Group By A.ctranno, A.cacctid, A.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, A.dcutdate, A.ccurrencycode
 	order by A.dcutdate, A.ctranno";
 
