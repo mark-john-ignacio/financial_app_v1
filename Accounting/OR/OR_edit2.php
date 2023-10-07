@@ -352,9 +352,9 @@ if (mysqli_num_rows($sqlchk)!=0) {
 									<th style="padding:2px">Receipt Type: </th>
 									<td valign="top" style="padding:2px">
 										<div class='col-xs-8 nopadding'>
-											<select class='form-control input-sm' name="receipt" id="receipt" disabled>
-												<option <?= ($receipt === 'OR') ? "selected" : '' ?> value="OR">Official Receipt</option>
-												<option <?= ($receipt === 'CR') ? "selected" : '' ?> value="CR">Collection Receipt</option>
+											<select class='form-control input-sm' name="receipt" id="receipt" >
+												<option <?= ($receipt ==='OR') ? "selected" : '' ?> value="OR">Official Receipt</option>
+												<option <?= ($receipt === 'CR') ? "selected" : '' ?>  value="CR">Collection Receipt</option>
 											</select>
 										</div>
 								</td>
@@ -2462,7 +2462,7 @@ else{
 			$("#btnPrint").attr("disabled", true);
 			$("#btnEdit").attr("disabled", true);
 			$("#btnentry").attr("disabled", true); 
-			$('#receipt').attr('disabled', true);
+			$('#receipt').attr('disabled', false);
 
 			if($("#isNoRef").find(":selected").val()==1){
 				$("#btnaddOthers").attr("disabled", false);

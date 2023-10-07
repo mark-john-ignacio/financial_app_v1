@@ -118,6 +118,12 @@
             top: 405px; 
             left: 175px;
         }
+
+        #bankdetails {
+            position: absolute;
+            top: 430px;
+            left: 125px;
+        }
     </style>
 </head>
 <body id='body'>
@@ -144,7 +150,12 @@
         </div>
         
         <!-- <div id='box'></div> -->
-        <div id='totalamount'></div>
+        <div id='totalamount'> </div>
+        <div id='bankdetails'>
+            <div id='bank'></div>
+            <div id='chkno'></div>
+            <div id='chkdate'></div>
+        </div>
     </div>
 </body>
 </html>
@@ -250,6 +261,9 @@ var vatcode = '', vatgross ='', printVATGross = '', printVEGross='', printZRGros
                 ).appendTo('#total')
                 
                 $('#totalamount').text(toNumber(totvatable))
+                $('#bank').text((res.data.cpaymethod === 'cheque' ? res.data.cbank : ''))
+                $('#chkno').text((res.data.cpaymethod === 'cheque' ? res.data.ccheckno : ''))
+                $('#chkdate').text((res.data.cpaymethod === 'cheque' ? res.data.ddate : ''))
                 
                 window.print();
             }

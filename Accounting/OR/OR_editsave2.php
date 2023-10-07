@@ -14,6 +14,7 @@ include('../../include/denied.php');
 	$cCustID =  mysqli_real_escape_string($con, $_POST['txtcustid']);
 	$dTranDate = $_POST['date_delivery'];
 	$cRemarks =  mysqli_real_escape_string($con, $_POST['txtremarks']); 
+	$receipt = mysqli_real_escape_string($con, $_POST['receipt']);
 	//$cPayType =  mysqli_real_escape_string($con, $_POST['selpaytype']);
 	$cPayType = "";
 	$cPayMethod =  mysqli_real_escape_string($con, $_POST['selpayment']);
@@ -43,7 +44,7 @@ include('../../include/denied.php');
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 
 	
-	if (!mysqli_query($con, "UPDATE `receipt` set `ccode` = '$cCustID', `dcutdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `cpaymethod` = '$cPayMethod', `cpaytype` = '$cPayType', `cremarks` = '$cRemarks', `namount` = $nGross, `napplied` = $nApplied, `cacctcode` = '$cAcctNo', `cpaydesc` = '$cOTDesc', `cpayrefno` = '$cOTRef', `lnosiref` = $dret, `ccurrencycode` = '$CurrCode', `ccurrencydesc` = '$CurrDesc', `nexchangerate` = '$CurrRate' where `compcode`='$company' and `ctranno`= '$cSINo'")) {
+	if (!mysqli_query($con, "UPDATE `receipt` set `ccode` = '$cCustID', `dcutdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `cpaymethod` = '$cPayMethod', `cpaytype` = '$cPayType', `cremarks` = '$cRemarks', `namount` = $nGross, `napplied` = $nApplied, `cacctcode` = '$cAcctNo', `cpaydesc` = '$cOTDesc', `cpayrefno` = '$cOTRef', `lnosiref` = $dret, `ccurrencycode` = '$CurrCode', `ccurrencydesc` = '$CurrDesc', `nexchangerate` = '$CurrRate', `receipt_code` = '$receipt' where `compcode`='$company' and `ctranno`= '$cSINo'")) {
 				
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
