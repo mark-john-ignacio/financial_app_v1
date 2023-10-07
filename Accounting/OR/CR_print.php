@@ -68,7 +68,7 @@
 
         #sumInWords {
             position: absolute; 
-            top: 265px; 
+            top: 268px; 
             width: 550px;
             left: 305px;
             text-indent: 24%;
@@ -84,7 +84,7 @@
         #invoiceTable {
             position: absolute;
             top: 110px;
-            left: 30px;
+            left: 25px;
             width: 200px;
             height: 280px;
             /* border: 1px solid black; */
@@ -165,8 +165,6 @@ var total = 0;
                 var state = (res?.data?.cstate ? res.data.cstate : '')
                 var city = (res?.data?.ccity ? res.data.ccity : '')
                 var address = house + ' ' + state + ' ' + city;
-
-                
 
                 $('#date').text(datenow(new Date()))
                 $('#receive_by').text(res.data.cname)
