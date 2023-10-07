@@ -261,7 +261,7 @@ var vatcode = '', vatgross ='', printVATGross = '', printVEGross='', printZRGros
                         "<div>" + (totvatable !=="" ? toNumber(totvatable) : "") + "&nbsp;</div>" +
                         "<div>" + (printVEGross !=="" ? toNumber(printVEGross) : "") + "&nbsp;</div>" +
                         "<div>" + (printZRGross !=="" ? toNumber(printZRGross) : "") + "&nbsp;</div>" +
-                        "<div>" + (totnetvat !=="" ?  "": "") + "&nbsp;</div>" 
+                        "<div>" + (totnetvat !=="" ? "": "") + "&nbsp;</div>" 
                     )
                 ).appendTo('#total')
                 

@@ -648,7 +648,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
 								</button>
 
 								
-								<button type="button" class="btn btn-info btn-sm " data-toggle='dropdown' onclick="printchk('<?= $corno ?>', '<?= $receipt ?>')"  tabindex="6"  id="btnPrint" name="btnPrint">
+								<button type="button" class="btn btn-info btn-sm " data-toggle='dropdown' onclick="printchk('<?= $corno ?>')"  tabindex="6"  id="btnPrint" name="btnPrint">
 						Print<br>(CTRL+P)
 								</button>
 
@@ -1204,7 +1204,7 @@ else{
 	  else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
 		if($("#btnPrint").is(":disabled")==false){
 			e.preventDefault();
-			printchk('<?=$corno;?>', '<?= $receipt ?>');
+			printchk('<?=$corno;?>');
 		}
 	  }
 	  else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
@@ -2678,20 +2678,20 @@ else{
 		$('#MyTable tbody').empty(); 
 	}
 
-	function printchk(tranno, receipt){
+	function printchk(tranno){
 		if($('#hdncancel').val() === 1){
 			$('#statmsgz').text("CANCELLED TRANSACTION CANNOT BE PRINTED!")
 			$('#statmsgz').css('color', '#FF0000')
 			return;
 		}
 		var url ="";
-		if(receipt === 'OR'){
+		if($('#receipt').val() === 'OR'){
 			if(<?= $version ?> != 0){
 				url = "OR_printv1.php?tranno="+tranno;
 			} else {
 				url = "OR_print.php?tranno="+tranno;
 			}
-		} else if(receipt === 'CR'){
+		} else if($('#receipt').val() === 'CR'){
 			url = "CR_print.php?tranno="+tranno;
 		}
 		
