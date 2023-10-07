@@ -9,6 +9,7 @@ $dyear = date("y");
 //$dmonth = "06";
 //$dyear = "16";
 $company = $_SESSION['companyid'];
+$receipt = mysqli_real_escape_string($con, $_POST['receipt']);
 
 //echo "<pre>";
 //print_r($_POST);
@@ -16,7 +17,7 @@ $company = $_SESSION['companyid'];
 
 $chkSales = mysqli_query($con,"select * from receipt where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");
 if (mysqli_num_rows($chkSales)==0) {
-	$cSINo = "OR".$dmonth.$dyear."00000";
+	$cSINo = $receipt.$dmonth.$dyear."00000";
 }
 else {
 	while($row = mysqli_fetch_array($chkSales, MYSQLI_ASSOC)){
@@ -26,7 +27,7 @@ else {
 	//echo $lastSI."<br>"; 2016-01-0001;
 	//echo substr($lastSI,5,2)." <> ".$dmonth."<br>";
 	if(substr($lastSI,2,2) <> $dmonth){
-		$cSINo = "OR".$dmonth.$dyear."00000";
+		$cSINo = $receipt.$dmonth.$dyear."00000";
 	}
 	else{
 		$baseno = intval(substr($lastSI,6,5)) + 1;
@@ -38,10 +39,9 @@ else {
 		}
 		
 		$baseno = $zeroadd.$baseno;
-		$cSINo = "OR".$dmonth.$dyear.$baseno;
+		$cSINo = $receipt.$dmonth.$dyear.$baseno;
 	}
 }
-
 	
 	$cAcctNo =  mysqli_real_escape_string($con, $_POST['txtcacctid']);
 	$cCustID =  mysqli_real_escape_string($con, $_POST['txtcustid']);
@@ -50,7 +50,7 @@ else {
 	//$cPayType =  mysqli_real_escape_string($con, $_POST['selpaytype']);
 	$cPayType = "";
 	$cPayMethod =  mysqli_real_escape_string($con, $_POST['selpayment']);
-	$cORNo =  mysqli_real_escape_string($con, $_POST['txtORNo']); 
+	$cORNo =  mysqli_real_escape_string($con, $_POST['txtORNo']);
 	
 	$nGross =  mysqli_real_escape_string($con, $_POST['txtnGross']);
 	$nGross = str_replace(",","",$nGross);
@@ -76,7 +76,7 @@ else {
 	$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
 	$CurrRate= $_REQUEST['basecurrval'];
 	
-	if (!mysqli_query($con, "INSERT INTO `receipt`(`compcode`, `ctranno`, `ccode`, `ddate`, `dcutdate`, `cpaymethod`, `cpaytype`, `cremarks`, `namount`, `napplied`, `cacctcode`, `ccustacctcode`, `cornumber`, `cpaydesc`, `cpayrefno`,  `cpreparedby`, `lnosiref`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`) values('$company', '$cSINo', '$cCustID', NOW(), STR_TO_DATE('$dTranDate', '%m/%d/%Y'), '$cPayMethod', '$cPayType', '$cRemarks', $nGross, $nApplied, '$cAcctNo', NULL, '$cORNo', '$cOTDesc', '$cOTRef', '$preparedby', $dret, '$CurrCode', '$CurrDesc', '$CurrRate')")) {
+	if (!mysqli_query($con, "INSERT INTO `receipt`(`compcode`, `ctranno`, `ccode`, `ddate`, `dcutdate`, `cpaymethod`, `cpaytype`, `cremarks`, `namount`, `napplied`, `cacctcode`, `ccustacctcode`, `cornumber`, `cpaydesc`, `cpayrefno`,  `cpreparedby`, `lnosiref`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `receipt_code`) values('$company', '$cSINo', '$cCustID', NOW(), STR_TO_DATE('$dTranDate', '%m/%d/%Y'), '$cPayMethod', '$cPayType', '$cRemarks', $nGross, $nApplied, '$cAcctNo', NULL, '$cORNo', '$cOTDesc', '$cOTRef', '$preparedby', $dret, '$CurrCode', '$CurrDesc', '$CurrRate', '$receipt')")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 	

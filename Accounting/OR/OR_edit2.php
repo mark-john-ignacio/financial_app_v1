@@ -113,14 +113,14 @@ if(mysqli_num_rows($result) != 0){
 
 <?php
 
-    	$sqlchk = mysqli_query($con,"Select a.cacctcode, a.ccode, a.namount, a.cpaymethod, a.cpaytype, DATE_FORMAT(a.dcutdate,'%m/%d/%Y') as dcutdate, a.namount, a.napplied, a.lapproved, a.lcancelled, a.lvoid, a.lprintposted, a.lnosiref, a.cornumber, a.cremarks, a.cpaydesc, a.cpayrefno, b.cname, c.cacctdesc, c.nbalance, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate From receipt a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join accounts c on a.compcode=c.compcode and a.cacctcode=c.cacctid where a.compcode='$company' and a.ctranno='$corno'");
+    	$sqlchk = mysqli_query($con,"Select a.cacctcode, a.ccode, a.namount, a.cpaymethod, a.cpaytype, DATE_FORMAT(a.dcutdate,'%m/%d/%Y') as dcutdate, a.namount, a.napplied, a.lapproved, a.lcancelled, a.lvoid, a.lprintposted, a.lnosiref, a.cornumber, a.cremarks, a.cpaydesc, a.cpayrefno, b.cname, c.cacctdesc, c.nbalance, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.receipt_code From receipt a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join accounts c on a.compcode=c.compcode and a.cacctcode=c.cacctid where a.compcode='$company' and a.ctranno='$corno'");
 if (mysqli_num_rows($sqlchk)!=0) {
 		while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
 			$nDebitDef = $row['cacctcode'];
 			$nDebitDesc = $row['cacctdesc'];
 			$nBalance = $row['nbalance'];
 			
-			
+			$receipt = $row['receipt_code'];
 			$cCode = $row['ccode'];
 			$cName = $row['cname'];
 
@@ -333,8 +333,8 @@ if (mysqli_num_rows($sqlchk)!=0) {
 									</td>
 								</tr>								
 								<tr>
-									<tH width="150px">Memo:</tH>
-									<td rowspan="2" valign="top">
+									<tH rowspan='2' width="150px">Memo:</tH>
+									<td rowspan="3" valign="top">
 										<div class="col-xs-12 nopadding">
 											<div class="col-xs-10 nopadding">
 												<textarea class="form-control" rows="1" id="txtremarks" name="txtremarks"><?=$cRemarks;?></textarea>
@@ -349,10 +349,21 @@ if (mysqli_num_rows($sqlchk)!=0) {
 									</td>								
 								</tr>
 								<tr>
-								<tH width="150">&nbsp;</tH>
-								<th style="padding:2px">&nbsp;</th>
-								<td valign="top" style="padding:2px">&nbsp;</td>
-							</tr>
+									<th style="padding:2px">Receipt Type: </th>
+									<td valign="top" style="padding:2px">
+										<div class='col-xs-8 nopadding'>
+											<select class='form-control input-sm' name="receipt" id="receipt" >
+												<option <?= ($receipt ==='OR') ? "selected" : '' ?> value="OR">Official Receipt</option>
+												<option <?= ($receipt === 'CR') ? "selected" : '' ?>  value="CR">Collection Receipt</option>
+											</select>
+										</div>
+								</td>
+								</tr>
+								<tr>
+									<tH width="150">&nbsp;</tH>
+									<th style="padding:2px"></th>
+									<td valign="top" style="padding:2px">&nbsp;</td>
+								</tr>
 							</table>
 
 						</div>	
@@ -637,15 +648,10 @@ if (mysqli_num_rows($sqlchk)!=0) {
 								</button>
 
 								
-								<div class='dropdown' style='display: inline-block !important'>
-								<button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle='dropdown' tabindex="6"  id="btnPrint" name="btnPrint">
+								<button type="button" class="btn btn-info btn-sm " data-toggle='dropdown' onclick="printchk('<?= $corno ?>', '<?= $receipt ?>')"  tabindex="6"  id="btnPrint" name="btnPrint">
 						Print<br>(CTRL+P)
 								</button>
-									<ul class='dropdown-menu' aria-labelledby="btnPrint">
-										<li><a href="javascript:;" onClick="printchk('<?=$corno;?>', 'CR');">Collection Receipt</a></li>
-										<li><a href="javascript:;" onClick="printchk('<?=$corno;?>', 'OR');">Official Receipt</a></div>
-									</ul>
-								</div>
+
 								
 								
 								<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
@@ -1198,7 +1204,7 @@ else{
 	  else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
 		if($("#btnPrint").is(":disabled")==false){
 			e.preventDefault();
-			printchk('<?=$corno;?>');
+			printchk('<?=$corno;?>', '<?= $receipt ?>');
 		}
 	  }
 	  else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
@@ -1776,6 +1782,8 @@ else{
 
 						$(this).find('input[name="row_delete"]').attr("name","row_"+tx2+"_delete");
 						$(this).find('input[name="row_delete"]').attr("id","row_"+tx2+"_delete");
+
+						
 
 					});
 
@@ -2407,6 +2415,7 @@ else{
 		$("#btnNew").attr("disabled", false);
 		$("#btnPrint").attr("disabled", false);
 		$("#btnEdit").attr("disabled", false); 
+		$('#receipt').attr('disabled', true);
 
 		if(document.getElementById("hdnposted").value==1 && document.getElementById("hdnvoid").value==0){
 			$("#btnentry").attr("disabled", false);
@@ -2453,6 +2462,7 @@ else{
 			$("#btnPrint").attr("disabled", true);
 			$("#btnEdit").attr("disabled", true);
 			$("#btnentry").attr("disabled", true); 
+			$('#receipt').attr('disabled', false);
 
 			if($("#isNoRef").find(":selected").val()==1){
 				$("#btnaddOthers").attr("disabled", false);
