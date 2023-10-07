@@ -307,6 +307,10 @@
 						Undo Edit<br>(CTRL+Z)
 					</button>
 
+					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $itm;?>');" id="btnPrint" name="btnPrint">
+						Print<br>(CTRL+P)
+					</button>
+
 					<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
 						Edit<br> (CTRL+E)
 					</button>
@@ -415,6 +419,9 @@
 						</div>
 					</div>
 
+					<form action="" method="post" name="frmQPrint" id="frmQprint" target="_blank">
+						<input type="hidden" name="hdntransid" id="hdntransid" value="<?php echo $tranno; ?>">
+					</form>
 </body>
 
 </html>
@@ -867,6 +874,7 @@
 		$("#btn_New").attr("disabled", false);
 		$("#btnaddversion").attr("disabled", false);
 		$("#btnuploadexcel").attr("disabled", false); 
+		$("#btnPrint").attr("disabled", false);
 		$("#btnEdit").attr("disabled", false);
 		$("#btndltemplate").attr("disabled", false);
 
@@ -882,6 +890,7 @@
 		$("#btn_New").attr("disabled", true);
 		$("#btnaddversion").attr("disabled", true);
 		$("#btnuploadexcel").attr("disabled", true); 
+		$("#btnPrint").attr("disabled", true);
 		$("#btnEdit").attr("disabled", true);
 		$("#btndltemplate").attr("disabled", true);
 
@@ -889,5 +898,13 @@
 
 	}
 
+	function printchk(x){
+
+		$("#hdntransid").val(x);
+		$("#frmQprint").attr("action","BOMPrint.php");
+
+		$("#frmQprint").submit();
+
+	}
 
 </script>

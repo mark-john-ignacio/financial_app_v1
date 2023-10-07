@@ -379,6 +379,9 @@
 								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='JO.php';" id="btnMain" name="btnMain">
 									Back to Main<br>(ESC)
 								</button>		
+								<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $txtctranno;?>');" id="btnPrint" name="btnPrint">
+									Print<br>(CTRL+P)
+								</button>	
 								<?php
 									if($newstat == "True"){
 								?>

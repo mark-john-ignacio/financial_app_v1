@@ -32,9 +32,9 @@
 	}
 
 	$totdcount = array();
-	$sqllabelnme = mysqli_query($con,"select * from mrp_bom_label where compcode='$company' and citemno = '".$dmainitms."' and ldefault = 1");
+	$sqllabelnme = mysqli_query($con,"select * from mrp_bom_label where compcode='$company' and ldefault = 1");
 	while($row2 = mysqli_fetch_array($sqllabelnme, MYSQLI_ASSOC)){
-		$totdcount[] = array('citemno' => $row2['citemno'], 'ldefault' => $row2['nversion']);
+		$totdcount[$row2['citemno']] = $row2['nversion'];
 	}
 
 	$getbomshrs = array();
@@ -68,10 +68,11 @@
 		//get version
 		$xcver = 1;
 		$cnt = 0;
-		foreach($totdcount as $rs1){
-			if($itm==$rs1['citemno']){
-				$xcver = $rs1['ldefault'];
-			}
+
+		if(isset($totdcount[$rs1['citemno']])){
+			$xcver = $totdcount[$rs1['citemno']];
+		}else{
+			$xcver = 1;
 		}
 
 		$nxtlvl = 0;
