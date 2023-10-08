@@ -72,7 +72,7 @@
             width: 550px;
             left: 305px;
             text-indent: 24%;
-            letter-spacing: 4px;
+            letter-spacing: 1px;
             line-height: 3em;
         }
 
@@ -148,7 +148,7 @@
 
 <script type='text/javascript'>
     
-var vat = 0;
+var nvat = 0;
 var ewt = 0;
 var total = 0;
    
@@ -182,38 +182,37 @@ var total = 0;
 
                 res['data2'].map((item, key) => {
                     console.log(item)
-                        if(res.data.csalestype === 'Services')
-                        vat += parseFloat(item.nvat);
-                        ewt += parseFloat(item.newtamt);
-                        total += parseFloat(item.namount)
+                    nvat += parseFloat(item.nvat);
+                    ewt += parseFloat(item.newtamt);
+                    total += parseFloat(item.napplied)
 
-                        $('<tr>').append(
-                            $('<td>').text(item.csalesno),
-                            $('<td>').text(toNumber(item.nnet))
-                        ).appendTo('#list > tbody')
-                        console.log(res.data2.length)
-                        
-                        if(res.data2.length -1 == key){
-                            $("<tr>").append(
-                                $("<td style='center'>").text('VAT'),
-                                $('<td>').text(toNumber(vat))
-                            ).appendTo('#vatlist')
+                    $('<tr>').append(
+                        $('<td>').text(item.csalesno),
+                        $('<td>').text(toNumber(item.nnet))
+                    ).appendTo('#list > tbody')
+                    console.log(res.data2.length)
+                    
+                    if(res.data2.length -1 == key){
+                        $("<tr>").append(
+                            $("<td style='center'>").text('VAT'),
+                            $('<td>').text(toNumber(nvat))
+                        ).appendTo('#vatlist')
 
-                            $("<tr>").append(
-                                $("<td style='center'>").text('EWT'),
-                                $('<td >').text(toNumber(ewt))
-                            ).appendTo('#vatlist')
+                        $("<tr>").append(
+                            $("<td style='center'>").text('EWT'),
+                            $('<td >').text(toNumber(ewt))
+                        ).appendTo('#vatlist')
 
-                            $("<tr>").append(
-                                $("<td align='center'>").text(''),
-                                $("<td style='width: 100%' align='right'>").text(toNumber(total))
-                            ).appendTo('#vatlist')
+                        $("<tr>").append(
+                            $("<td align='center'>").text(''),
+                            $("<td style='width: 100%' align='right'>").text(toNumber(total))
+                        ).appendTo('#vatlist')
 
-                            $('#totalamount').text(toNumber(total))
-                            $('#bank').text((res.data.cpaymethod === 'cheque' ? res.data.cbank : ''))
-                            $('#chkno').text((res.data.cpaymethod === 'cheque' ? res.data.ccheckno : ''))
-                            $('#chkdate').text((res.data.cpaymethod === 'cheque' ? res.data.ddate : ''))
-                        }
+                        $('#totalamount').text(toNumber(total))
+                        $('#bank').text((res.data.cpaymethod === 'cheque' ? res.data.cbank : ''))
+                        $('#chkno').text((res.data.cpaymethod === 'cheque' ? res.data.ccheckno : ''))
+                        $('#chkdate').text((res.data.cpaymethod === 'cheque' ? res.data.ddate : ''))
+                    }
                 })
                 
                 window.print();

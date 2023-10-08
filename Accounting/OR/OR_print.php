@@ -71,7 +71,7 @@
             width: 550px;
             left: 305px;
             text-indent: 24%;
-            letter-spacing: 4px;
+            letter-spacing: 1px;
             line-height: 2em;
         }
 
@@ -258,10 +258,10 @@ var vatcode = '', vatgross ='', printVATGross = '', printVEGross='', printZRGros
                 $("<tr>").append(
                     $("<td>").html("&nbsp;"),
                     $("<td>").html(
-                        "<div>" + (totvatable !=="" ? toNumber(totvatable) : "") + "</div>" +
-                        "<div>" + (printVEGross !=="" ? toNumber(printVEGross) : "") + "</div>" +
-                        "<div>" + (printZRGross !=="" ? toNumber(printZRGross) : "") + "</div>" +
-                        "<div>" + (totnetvat !=="" ? "": "") + "</div>" 
+                        "<div>" + (totvatable !=="" ? toNumber(totvatable) : "") + "&nbsp;</div>" +
+                        "<div>" + (printVEGross !=="" ? toNumber(printVEGross) : "") + "&nbsp;</div>" +
+                        "<div>" + (printZRGross !=="" ? toNumber(printZRGross) : "") + "&nbsp;</div>" +
+                        "<div>" + (totnetvat !=="" ? "": "") + "&nbsp;</div>" 
                     )
                 ).appendTo('#total')
                 
