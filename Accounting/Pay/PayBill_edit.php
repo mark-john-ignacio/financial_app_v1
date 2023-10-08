@@ -166,7 +166,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
 <input type="hidden" id="existingnos" value='<?=json_encode($arrnoslist)?>'>
 
 
-<form action="PayBill_editsave.php" name="frmpos" id="frmpos" method="post" onsubmit="return chkform();"enctype="multipart/form-data">
+<form action="PayBill_editsave.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" method="post" onsubmit="return chkform();"enctype="multipart/form-data">
 	<fieldset>
    	  <legend>
 			 <div class="col-xs-6 nopadding"> Bills Payment Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
@@ -499,7 +499,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
 							<tr>
 								<td width="60%" rowspan="2">
 										<input type="hidden" name="hdnrowcnt" id="hdnrowcnt" value="0">
-											<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PayBill.php';" id="btnMain" name="btnMain">
+											<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PayBill.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
 												Back to Main<br>(ESC)
 											</button>
 										

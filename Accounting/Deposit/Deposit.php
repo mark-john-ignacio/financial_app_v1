@@ -86,16 +86,21 @@ $sqlchk = mysqli_query($con,"Select a.cvalue,b.cacctdesc From parameters a left 
 							}
 						?>
 					</div>
-					<div class="col-xs-3 nopadding">
-						<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
-					</div>
-					<div class="col-xs-2 nopadwtop" style="height:30px !important;">
+					<div class="col-xs-3 nopadwtop text-right" style="height:30px !important; padding-right: 10px !important">
 						<b> Search Transaction No </b>
 					</div>
 					<div class="col-xs-3 text-right nopadding">
 						<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Enter Transaction No...">
 					</div>
-
+					<div class="col-xs-2 text-right nopadwleft">
+						<select  class="form-control input-sm" name="selstats" id="selstats">
+							<option value=""> All Transactions</option>
+							<option value="post"> Posted </option>
+							<option value="cancel"> Cancelled </option>
+							<option value="void"> Voided </option>
+							<option value="pending"> Pending </option>
+						</select>
+					</div>
 				</div>
                  
       <br><br>
@@ -118,6 +123,7 @@ $sqlchk = mysqli_query($con,"Select a.cvalue,b.cacctdesc From parameters a left 
     
 <form name="frmedit" id="frmedit" method="post" action="Deposit_edit.php">
 	<input type="hidden" name="txtctranno" id="txtctranno" />
+	<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
 </form>		
 
 
@@ -164,9 +170,18 @@ $sqlchk = mysqli_query($con,"Select a.cvalue,b.cacctdesc From parameters a left 
 
 		$("#searchByName").keyup(function(){
 			var searchByName = $('#searchByName').val();
+			var searchBystat = $('#selstats').val();
 
 			$('#example').DataTable().destroy();
-			fill_datatable(searchByName);
+			fill_datatable(searchByName, searchBystat);
+		});
+
+		$("#selstats").change(function(){
+			var searchByName = $('#searchByName').val(); 
+			var searchBystat = $('#selstats').val(); 
+
+			$('#example').DataTable().destroy();
+			fill_datatable(searchByName, searchBystat);
 		});
 		
 		var x = "";
@@ -274,7 +289,8 @@ $sqlchk = mysqli_query($con,"Select a.cvalue,b.cacctdesc From parameters a left 
 
 
 	function editfrm(x){
-		document.getElementById("txtctranno").value = x;
+		$('#txtctranno').val(x); 
+		$('#hdnsrchval').val($('#searchByName').val()); 
 		document.getElementById("frmedit").submit();
 	}
 
@@ -295,7 +311,7 @@ $sqlchk = mysqli_query($con,"Select a.cvalue,b.cacctdesc From parameters a left 
 
 	}
 
-	function fill_datatable(searchByName){
+	function fill_datatable(searchByName = '', searchBystat = ''){
 		var dataTable = $('#example').DataTable( {
 			stateSave: true,
 		  "processing" : true,
@@ -307,7 +323,7 @@ $sqlchk = mysqli_query($con,"Select a.cvalue,b.cacctdesc From parameters a left 
 				url:"th_datatable.php",
 				type:"POST",
 				data:{
-					searchByName: searchByName
+					searchByName: searchByName, searchBystat: searchBystat
 				}
 		  },
 			"columns": [

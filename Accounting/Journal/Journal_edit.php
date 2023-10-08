@@ -107,7 +107,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 if (mysqli_num_rows($sqlhead)!=0) {
 ?>
 
-<form action="Journal_editsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return chkform();" enctype="multipart/form-data">
+<form action="Journal_editsave.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" method="post" onSubmit="return chkform();" enctype="multipart/form-data">
 	<fieldset>
     	<legend>
 				<div class="col-xs-6 nopadding"> Journal Entry Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
@@ -366,7 +366,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				<tr>
 					<td width="50%">
 
-						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Journal.php';" id="btnMain" name="btnMain">
+						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Journal.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
 							Back to Main<br>(ESC)
 						</button>
 				

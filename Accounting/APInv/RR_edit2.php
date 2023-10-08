@@ -149,7 +149,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$lVoid = $row['lvoid'];
 	}
 ?>
-<form action="RR_editsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
+<form action="RR_editsave.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
 	<fieldset>
     	<legend>
         <div class="col-xs-6 nopadding"> Supplier's Invoice Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
@@ -362,11 +362,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
     		<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
  
  
- 				<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='RR.php';" id="btnMain" name="btnMain">
+ 				<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='RR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
 					Back to Main<br>(ESC)
 				</button>
    
-    		<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='<?=($varitmenc=="NO") ? "RR_new.php": "RR_new2.php" ?>';" id="btnNew" name="btnNew">
+    		<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='RR_new2.php';" id="btnNew" name="btnNew">
 					New<br>(F1)
 				</button>
 

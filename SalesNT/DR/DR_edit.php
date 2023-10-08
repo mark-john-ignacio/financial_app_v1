@@ -116,7 +116,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	//}
 
 ?>
-<form action="DR_edit.php" name="frmpos" id="frmpos" method="post">
+<form action="DR_edit.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" method="post">
 	<fieldset>
     	<legend>
 				<div class="col-xs-6 nopadding">Delivery Receipt Details</div><div class= "col-xs-6 text-right nopadding" id="salesstat">
@@ -408,7 +408,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					<td>
 						<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
 			
-						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='DR.php';" id="btnMain" name="btnMain">
+						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='DR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
 							Back to Main<br>(ESC)
 						</button>
 				

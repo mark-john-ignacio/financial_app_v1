@@ -95,7 +95,7 @@
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
 <input type="hidden" value='<?=json_encode(@$arrname)?>' id="hdnfileconfig"> 
-	<form action="APAdj_editsave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
+	<form action="APAdj_editsave.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
 		<fieldset>
     	<legend>
 				<div class="col-xs-6 nopadding"> AP Adjustment Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
@@ -291,7 +291,7 @@
 				<table width="100%" border="0" cellpadding="3">
 					<tr>
 						<td>
-							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='APAdj.php';" id="btnMain" name="btnMain">
+							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='APAdj.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
 								Back to Main<br>(ESC)
 							</button>
 

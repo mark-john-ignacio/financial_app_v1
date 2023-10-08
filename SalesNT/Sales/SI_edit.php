@@ -145,7 +145,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 ?>
 
-<form action="SI_edit.php" name="frmpos" id="frmpos" method="post">
+<form action="SI_edit.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" method="post">
 		<fieldset>
     	<legend>
         <div class="col-xs-6 nopadding">SI Non-Trade Details</div>
@@ -410,7 +410,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							if($poststat == "True"){
 						?>
 
-						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SI.php';" id="btnMain" name="btnMain">
+						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SI.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
 							Back to Main<br>(ESC)
 						</button>
 					

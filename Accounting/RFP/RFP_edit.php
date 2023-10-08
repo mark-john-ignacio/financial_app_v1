@@ -109,7 +109,7 @@
 			$lVoid = $row['lvoid'];
 		}
 ?>
-	<form action="RFP_editsave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data" onsubmit="return chkform()">
+	<form action="RFP_editsave.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data" onsubmit="return chkform()">
 		<fieldset>
 				<legend>
 					<div class="col-xs-6 nopadding"> Request For Payment Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
@@ -348,7 +348,7 @@
 						<tr>
 							<td width="60%" rowspan="2"><input type="hidden" name="hdnrowcnt" id="hdnrowcnt" value="0">
 													
-											<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='RFP.php';" id="btnMain" name="btnMain">
+											<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='RFP.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
 												Back to Main<br>(ESC)
 											</button>
 										

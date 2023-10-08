@@ -8,11 +8,31 @@
 
 	$column = array('a.ctranno', 'c.cref', 'CONCAT(a.ccode,"-",b.cname)', 'a.ngross', 'a.dtransdate', 'CASE WHEN a.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN a.lcancelled=1 THEN "Cancelled" ELSE CASE WHEN a.lsent=0 THEN "For Sending" ELSE "For Approval" END END','');
 
-	$query = "select a.*,b.cname, c.cref from apv a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join (Select ctranno, GROUP_CONCAT(crefrr) as cref from apv_t where compcode='".$_SESSION['companyid']."' Group By ctranno) c on a.ctranno=c.ctranno where a.compcode='".$_SESSION['companyid']."' ";
+	$query = "select a.*,b.cname, c.cref from apv a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join (Select ctranno, GROUP_CONCAT(if(crefrr='', null, crefrr)) as cref from apv_t where compcode='".$_SESSION['companyid']."' Group By ctranno) c on a.ctranno=c.ctranno where a.compcode='".$_SESSION['companyid']."' ";
 
 	if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
 	{
 		$query .= "and (LOWER(b.cname) like LOWER('%".$_POST['searchByName']."%') OR LOWER(a.ctranno) like LOWER('%".$_POST['searchByName']."%') OR LOWER(c.cref) like LOWER('%".$_POST['searchByName']."%'))";
+	}
+
+	if(isset($_POST['searchBystat']) && $_POST['searchBystat'] != '')
+	{
+		if($_POST['searchBystat']=="post"){
+			$query .= " and (a.lapproved=1 and a.lvoid=0)";
+		}
+
+		if($_POST['searchBystat']=="void"){
+			$query .= " and a.lvoid=1";
+		}
+
+		if($_POST['searchBystat']=="cancel"){
+			$query .= " and a.lcancelled=1";
+		}
+
+		if($_POST['searchBystat']=="pending"){
+			$query .= " and (a.lapproved=0 and a.lcancelled=0)";
+		}
+				
 	}
 
 	if(isset($_POST['order']))

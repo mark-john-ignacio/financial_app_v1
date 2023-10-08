@@ -110,7 +110,7 @@
 
 	?>
 
-	<form action="SR_edit.php" name="frmpos" id="frmpos" onSubmit="return false;" method="post">
+	<form action="SR_edit.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" onSubmit="return false;" method="post">
 		<fieldset>
 			<legend>
 				<div class="col-xs-6 nopadding"> Sales Return Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
@@ -255,7 +255,7 @@
 						<td rowspan="2">
 							<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
 				
-							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SR.php';" id="btnMain" name="btnMain">
+							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
 								Back to Main<br>(ESC)
 							</button>
 					

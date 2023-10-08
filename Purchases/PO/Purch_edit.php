@@ -136,7 +136,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$lVoid = $row['lvoid'];
 	}
 ?>
-	<form action="Purch_editsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
+	<form action="Purch_editsave.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
 		<fieldset>
     	<legend>
 				<div class="col-xs-6 nopadding"> Purchase Order Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
@@ -472,7 +472,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								if($poststat=="True"){
 							?>
 
-							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Purch.php';" id="btnMain" name="btnMain">
+							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Purch.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
 								Back to Main<br>(ESC)
 							</button>
 						

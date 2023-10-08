@@ -73,8 +73,6 @@
 			@$arrname[] = array("name" => $file, "ext" => $ext);
 		}
 	
-	}else{
-		echo "NO FILES";
 	}
 
 ?>
@@ -131,7 +129,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$lVoid = $row['lvoid'];
 	}
 ?>
-	<form action="PR_editsave.php" name="frmpos" id="frmpos" method="post"  enctype="multipart/form-data">
+	<form action="PR_editsave.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" method="post"  enctype="multipart/form-data">
 		<fieldset>
     	<legend>
 
@@ -346,7 +344,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						<td rowspan="2" width="70%">
 							<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
 					
-							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PR.php';" id="btnMain" name="btnMain">
+							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
 								Back to Main<br>(ESC)
 							</button>
 						
