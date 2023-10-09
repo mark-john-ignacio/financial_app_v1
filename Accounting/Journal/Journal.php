@@ -57,7 +57,7 @@
           </div>
         </div>
 
-				<div class="col-xs-12 nopadding">
+				<div class="col-xs-12 nopadwdown">
 					<div class="col-xs-4 nopadding">
 						<button type="button" class="btn btn-primary btn-sm"  onClick="location.href='Journal_new.php'" id="btnNew" name="btnNew"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
@@ -69,16 +69,21 @@
 							}
 						?>
 					</div>
-					<div class="col-xs-2 nopadding">
-						<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
-					</div>
-					<div class="col-xs-3 nopadwtop" style="height:30px !important;">
+					<div class="col-xs-3 nopadwtop text-right" style="height:30px !important; padding-right: 10px !important">
 						<b> Search Trans. No / Remarks: </b>
 					</div>
 					<div class="col-xs-3 text-right nopadding">
-						<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Enter Trans. No, Remarks...">
+						<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Search Trans. No, Remarks...">
 					</div>
-
+					<div class="col-xs-2 text-right nopadwleft">
+						<select  class="form-control input-sm" name="selstats" id="selstats">
+							<option value=""> All Transactions</option>
+							<option value="post"> Posted </option>
+							<option value="cancel"> Cancelled </option>
+							<option value="void"> Voided </option>
+							<option value="pending"> Pending </option>
+						</select>
+					</div>
 				</div>
 
       	<br><br>
@@ -101,6 +106,7 @@
     
 		<form name="frmedit" id="frmedit" method="post" action="Journal_edit.php">
 			<input type="hidden" name="txtctranno" id="txtctranno" />
+			<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
 		</form>		
 
 
@@ -143,37 +149,24 @@
 			}
 		});
 
-		function editfrm(x){
-			document.getElementById("txtctranno").value = x;
-			document.getElementById("frmedit").submit();
-		}
-
-		function trans(x,num){
-			
-			$("#typ").val(x);
-			$("#modzx").val(num);
-
-
-				$("#AlertMsg").html("");
-									
-				$("#AlertMsg").html("Are you sure you want to "+x+" Journal No.: "+num);
-				$("#alertbtnOK").hide();
-				$("#OK").show();
-				$("#Cancel").show();
-				$("#AlertModal").modal('show');
-			
-
-		}
-
 		$(document).ready(function() {
 
 			fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");	
 
 			$("#searchByName").keyup(function(){
 				var searchByName = $('#searchByName').val();
+				var searchBystat = $('#selstats').val(); 
 
 				$('#example').DataTable().destroy();
-				fill_datatable(searchByName);
+				fill_datatable(searchByName, searchBystat);
+			});
+
+			$("#selstats").change(function(){
+				var searchByName = $('#searchByName').val(); 
+				var searchBystat = $('#selstats').val(); 
+
+				$('#example').DataTable().destroy();
+				fill_datatable(searchByName, searchBystat);
 			});
 
 			var x = "";
@@ -279,7 +272,29 @@
 			
 		});
 
-		function fill_datatable(searchByName){
+		function editfrm(x){
+			$('#txtctranno').val(x); 
+			$('#hdnsrchval').val($('#searchByName').val()); 
+			document.getElementById("frmedit").submit();
+		}
+
+		function trans(x,num){
+			
+			$("#typ").val(x);
+			$("#modzx").val(num);
+
+
+			$("#AlertMsg").html("");
+									
+			$("#AlertMsg").html("Are you sure you want to "+x+" Journal No.: "+num);
+			$("#alertbtnOK").hide();
+			$("#OK").show();
+			$("#Cancel").show();
+			$("#AlertModal").modal('show');
+			
+		}
+
+		function fill_datatable(searchByName = '', searchBystat = ''){
 			var dataTable = $('#example').DataTable( {
 			stateSave: true,
 		  "processing" : true,
@@ -291,7 +306,7 @@
 				url:"th_datatable.php",
 				type:"POST",
 				data:{
-					searchByName: searchByName
+					searchByName: searchByName, searchBystat: searchBystat
 				}
 		  },
 			"columns": [

@@ -55,7 +55,7 @@
             </div>
         </div>
 			
-				<div class="col-xs-12 nopadding">
+				<div class="col-xs-12 nopadwdown">
 					<div class="col-xs-4 nopadding">
 						<button type="button" class="btn btn-primary btn-sm"  onClick="location.href='RR_new.php'" id="btnNew" name="btnNew"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
@@ -67,16 +67,21 @@
 							}
 						?>
 					</div>
-					<div class="col-xs-2 nopadding">
-						<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
-					</div>
-					<div class="col-xs-3 nopadwtop" style="height:30px !important;">
+					<div class="col-xs-3 nopadwtop text-right" style="height:30px !important; padding-right: 10px !important">
 						<b> Search Supplier / RR No / Ref No.: </b>
 					</div>
 					<div class="col-xs-3 text-right nopadding">
-						<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Enter Supplier, RR No, Reference...">
+						<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Search Supplier, RR No, Reference...">
 					</div>
-
+					<div class="col-xs-2 text-right nopadwleft">
+						<select  class="form-control input-sm" name="selstats" id="selstats">
+							<option value=""> All Transactions</option>
+							<option value="post"> Posted </option>
+							<option value="cancel"> Cancelled </option>
+							<option value="void"> Voided </option>
+							<option value="pending"> Pending </option>
+						</select>
+					</div>
 				</div>
 
 			
@@ -99,6 +104,7 @@
     
 <form name="frmedit" id="frmedit" method="post" action="RR_edit.php">
 	<input type="hidden" name="txtctranno" id="txtctranno" />
+	<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
 </form>		
 
 
@@ -140,8 +146,153 @@
 	  }
 	});
 
+	$(document).ready(function() {
+
+		fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");	
+
+		$("#searchByName").keyup(function(){
+			var searchByName = $('#searchByName').val();
+			var searchBystat = $('#selstats').val(); 
+
+			$('#example').DataTable().destroy();
+			fill_datatable(searchByName, searchBystat);
+		});
+
+		$("#selstats").change(function(){
+			var searchByName = $('#searchByName').val(); 
+			var searchBystat = $('#selstats').val(); 
+
+			$('#example').DataTable().destroy();
+			fill_datatable(searchByName, searchBystat);
+
+		});
+
+		var itmstat = "";
+		var x = "";
+		var num = "";
+		var msg = "";
+
+
+		$(".btnmodz").on("click", function (){
+
+			if($('#AlertModal').hasClass('in')==true){
+				var idz = $(this).attr('id');
+				
+				if(idz=="OK"){
+					var x = $("#typ").val();
+					var num = $("#modzx").val();
+					
+					if(x=="POST"){
+						var msg = "POSTED";
+					}
+					else if(x=="CANCEL"){
+						var msg = "CANCELLED";
+					}
+
+
+					if(x=="POST"){
+							///insert o inventory
+							$.ajax ({
+								dataType: "text",
+								url: "../../include/th_toInv.php",
+								data: { tran: num, type: "RR" },
+								async: false,
+								success: function( data ) {
+								//	alert(data.trim());
+								if(data.trim()=="True"){
+										itmstat = "OK";							
+									}
+									else{
+										itmstat = data.trim();	
+									}
+								}
+							});
+							//alert(itmstat);
+								
+					}
+					else{
+						var itmstat = "OK";	
+					}
+
+
+					if(itmstat=="OK"){
+
+						$.ajax ({
+							url: "RR_Tran.php",
+							data: { x: num, typ: x },
+							async: false,
+							dataType: "json",
+							beforeSend: function(){
+								$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+								$("#alertbtnOK").hide();
+								$("#OK").hide();
+								$("#Cancel").hide();
+								$("#AlertModal").modal('show');
+							},
+							success: function( data ) {
+								console.log(data);
+								$.each(data,function(index,item){
+									
+									itmstat = item.stat;
+									
+									if(itmstat!="False"){
+										$("#msg"+num).html(item.stat);
+										
+											$("#AlertMsg").html("");
+											
+											$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+msg+"...");
+											$("#alertbtnOK").show();
+											$("#OK").hide();
+											$("#Cancel").hide();
+											$("#AlertModal").modal('show');
+
+									}
+									else{
+										$("#AlertMsg").html("");
+										
+										$("#AlertMsg").html(item.ms);
+										$("#alertbtnOK").show();
+										$("#OK").hide();
+										$("#Cancel").hide();
+										$("#AlertModal").modal('show');
+
+									}
+								});
+							}
+						});
+						
+					}else{
+										$("#AlertMsg").html("");
+
+										$("#AlertMsg").html("<b>ERROR: </b>There's a problem with your transaction!<br>"+itmstat);
+										$("#alertbtnOK").show();
+										$("#OK").hide();
+										$("#Cancel").hide();
+										$("#AlertModal").modal('show');
+					}
+
+					//----------------------------------------------
+
+
+				}
+				else if(idz=="Cancel"){
+					
+					$("#AlertMsg").html("");
+					$("#AlertModal").modal('hide');
+					
+				}
+
+
+			}
+			
+		});
+
+	});
+
+
 	function editfrm(x){
-		document.getElementById("txtctranno").value = x;
+		$('#txtctranno').val(x); 
+		$('#hdnsrchval').val($('#searchByName').val()); 
 		document.getElementById("frmedit").submit();
 	}
 
@@ -161,141 +312,7 @@
 
 	}
 
-
-
-	$(document).ready(function() {
-
-		fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");	
-
-		$("#searchByName").keyup(function(){
-			var searchByName = $('#searchByName').val();
-
-			$('#example').DataTable().destroy();
-			fill_datatable(searchByName);
-		});
-
-		var itmstat = "";
-		var x = "";
-		var num = "";
-		var msg = "";
-		
-		
-		$(".btnmodz").on("click", function (){
-			if($('#AlertModal').hasClass('in')==true){
-				var idz = $(this).attr('id');
-				
-				if(idz=="OK"){
-					var x = $("#typ").val();
-					var num = $("#modzx").val();
-					
-					if(x=="POST"){
-						var msg = "POSTED";
-					}
-					else if(x=="CANCEL"){
-						var msg = "CANCELLED";
-					}
-
-
-			if(x=="POST"){
-					///insert o inventory
-					$.ajax ({
-						dataType: "text",
-						url: "../../include/th_toInv.php",
-						data: { tran: num, type: "RR" },
-						async: false,
-						success: function( data ) {
-						//	alert(data.trim());
-						if(data.trim()=="True"){
-								itmstat = "OK";							
-							}
-							else{
-								itmstat = data.trim();	
-							}
-						}
-					});
-					//alert(itmstat);
-						
-			}
-			else{
-				var itmstat = "OK";	
-			}
-
-
-			if(itmstat=="OK"){
-			
-				$.ajax ({
-					url: "RR_Tran.php",
-					data: { x: num, typ: x },
-					async: false,
-					dataType: "json",
-					beforeSend: function(){
-						$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
-						$("#alertbtnOK").hide();
-						$("#OK").hide();
-						$("#Cancel").hide();
-						$("#AlertModal").modal('show');
-					},
-					success: function( data ) {
-						console.log(data);
-						$.each(data,function(index,item){
-							
-							itmstat = item.stat;
-							
-							if(itmstat!="False"){
-								$("#msg"+num).html(item.stat);
-								
-									$("#AlertMsg").html("");
-									
-									$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+msg+"...");
-									$("#alertbtnOK").show();
-									$("#OK").hide();
-									$("#Cancel").hide();
-									$("#AlertModal").modal('show');
-			
-							}
-							else{
-								$("#AlertMsg").html("");
-								
-								$("#AlertMsg").html(item.ms);
-								$("#alertbtnOK").show();
-								$("#OK").hide();
-								$("#Cancel").hide();
-								$("#AlertModal").modal('show');
-			
-							}
-						});
-					}
-				});
-				
-			}else{
-								$("#AlertMsg").html("");
-			
-								$("#AlertMsg").html("<b>ERROR: </b>There's a problem with your transaction!<br>"+itmstat);
-								$("#alertbtnOK").show();
-								$("#OK").hide();
-								$("#Cancel").hide();
-								$("#AlertModal").modal('show');
-			}
-
-			//----------------------------------------------
-
-
-				}
-				else if(idz=="Cancel"){
-					
-					$("#AlertMsg").html("");
-					$("#AlertModal").modal('hide');
-					
-				}
-
-
-			}
-
-		});
-
-	});
-
-		function fill_datatable(searchByName){
+		function fill_datatable(searchByName = '', searchBystat = ''){
 			var dataTable = $('#example').DataTable( {
 				stateSave: true,
 				"processing" : true,
@@ -307,7 +324,7 @@
 					url:"th_datatable.php",
 					type:"POST",
 					data:{
-						searchByName: searchByName
+						searchByName: searchByName, searchBystat: searchBystat
 					}
 				},
 				"columns": [

@@ -55,7 +55,7 @@ $company = $_SESSION['companyid'];
           </div>
         </div>
 
-				<div class="col-xs-12 nopadding">
+				<div class="col-xs-12 nopadwdown">
 					<div class="col-xs-4 nopadding">
 						<button type="button" class="btn btn-primary btn-sm"  onClick="location.href='Purch_new.php'" id="btnNew" name="btnNew"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
@@ -67,16 +67,21 @@ $company = $_SESSION['companyid'];
 							}
 						?>
 					</div>
-					<div class="col-xs-2 nopadding">
-						<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
-					</div>
-					<div class="col-xs-3 nopadwtop" style="height:30px !important;">
+					<div class="col-xs-3 nopadwtop text-right" style="height:30px !important; padding-right: 10px !important">
 						<b> Search Supplier / PO No / Ref No.: </b>
 					</div>
 					<div class="col-xs-3 text-right nopadding">
-						<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Enter Supplier, PO No, Reference...">
+						<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Search Supplier, PO No, Reference...">
 					</div>
-
+					<div class="col-xs-2 text-right nopadwleft">
+						<select  class="form-control input-sm" name="selstats" id="selstats">
+							<option value=""> All Transactions</option>
+							<option value="post"> Posted </option>
+							<option value="cancel"> Cancelled </option>
+							<option value="void"> Voided </option>
+							<option value="pending"> Pending </option>
+						</select>
+					</div>
 				</div>
 
       <br><br>
@@ -99,6 +104,7 @@ $company = $_SESSION['companyid'];
     
 <form name="frmedit" id="frmedit" method="post" action="Purch_edit.php">
 	<input type="hidden" name="txtctranno" id="txtctranno" />
+	<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
 </form>		
 
 
@@ -160,21 +166,31 @@ $company = $_SESSION['companyid'];
 		});
 
 		$(document).ready(function() {
-		
-		
+				
 			fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");	
 
 			$("#searchByName").keyup(function(){
 				var searchByName = $('#searchByName').val();
+				var searchBystat = $('#selstats').val(); 
 
 				$('#example').DataTable().destroy();
-				fill_datatable(searchByName);
+				fill_datatable(searchByName, searchBystat);
+			});
+
+			$("#selstats").change(function(){
+				var searchByName = $('#searchByName').val(); 
+				var searchBystat = $('#selstats').val(); 
+
+				$('#example').DataTable().destroy();
+				fill_datatable(searchByName, searchBystat);
+
 			});
 
 		});
 
 		function editfrm(x){
-			document.getElementById("txtctranno").value = x;
+			$('#txtctranno').val(x); 
+			$('#hdnsrchval').val($('#searchByName').val()); 
 			document.getElementById("frmedit").submit();
 		}
 
@@ -303,7 +319,7 @@ $company = $_SESSION['companyid'];
 									});
 		}
 
-		function fill_datatable(searchByName = '')
+		function fill_datatable(searchByName = '', searchBystat = '')
 		{
 				var dataTable = $('#example').DataTable({
 					stateSave: true,
@@ -316,7 +332,7 @@ $company = $_SESSION['companyid'];
 						url:"th_datatable.php",
 						type:"POST",
 						data:{
-							searchByName: searchByName
+							searchByName: searchByName, searchBystat: searchBystat
 						}
 					},
 					"columns": [

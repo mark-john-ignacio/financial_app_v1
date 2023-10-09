@@ -78,7 +78,7 @@
         </div>
 			<br><br>
 
-			<div class="col-xs-12 nopadding">
+			<div class="col-xs-12 nopadwdown">
 				<div class="col-xs-4 nopadding">
 					<button type="button" class="btn btn-primary btn-sm" onClick="location.href='PR_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 					<?php
@@ -89,18 +89,15 @@
 						}
 					?>
 				</div>
-        <div class="col-xs-2 nopadding">
-					<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
-				</div>
-        <div class="col-xs-1 nopadwtop" style="height:30px !important;">
-          <b> Searc PR No: </b>
+        <div class="col-xs-1 nopadwtop text-right" style="height:30px !important; padding-right: 10px !important">
+          <b> Search PR No: </b>
         </div>
 				<div class="col-xs-2 text-right nopadding">
-					<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>" class="form-control input-sm" placeholder="Enter PR No...">
+					<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>" class="form-control input-sm" placeholder="Search PR No...">
 				</div>
 				<div class="col-xs-3 text-right nopadwleft">
 					<select class="form-control input-sm" name="selwhfrom" id="selwhfrom"> 
-						<option value="">ALL</option>	
+						<option value="">All Sections</option>	
 						<?php
 								foreach($rowdetloc as $localocs){									
 						?>
@@ -110,9 +107,18 @@
 						?>
 					</select>
 				</div>
+				<div class="col-xs-2 text-right nopadwleft">
+					<select  class="form-control input-sm" name="selstats" id="selstats">
+						<option value=""> All Transactions</option>
+						<option value="post"> Posted </option>
+						<option value="cancel"> Cancelled </option>
+						<option value="void"> Voided </option>
+						<option value="pending"> Pending </option>
+					</select>
+				</div>
 			</div>
 
-      <br><br><br>
+      <br><br>
 			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
@@ -188,23 +194,35 @@
 	<script>
 		$(document).ready(function() {
 
-			fill_datatable("","");	
+			fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");
 
 			$("#searchByName").keyup(function(){
 					var searchByName = $('#searchByName').val();
 					var searchBySec = $('#selwhfrom').val();
+					var searchBystat = $('#selstats').val();
 
 					$('#example').DataTable().destroy();
-					fill_datatable(searchByName, searchBySec);
+					fill_datatable(searchByName, searchBySec, searchBystat);
 
 			});
 
 			$("#selwhfrom").on("change", function() {
 				var searchByName = $('#searchByName').val();
 				var searchBySec = $('#selwhfrom').val();
+				var searchBystat = $('#selstats').val();
 
 				$('#example').DataTable().destroy();
-				fill_datatable(searchByName, searchBySec);
+				fill_datatable(searchByName, searchBySec, searchBystat);
+			});
+
+			$("#selstats").change(function(){
+				var searchByName = $('#searchByName').val(); 
+				var searchBySec = $('#selwhfrom').val();
+				var searchBystat = $('#selstats').val(); 
+
+				$('#example').DataTable().destroy();
+				fill_datatable(searchByName, searchBySec, searchBystat);
+
 			});
 
 		});
@@ -225,7 +243,7 @@
 			document.getElementById("frmedit").submit();
 		}
 		
-		function fill_datatable(searchByName,searchBySec){
+		function fill_datatable(searchByName = '', searchBySec = '', searchBystat = ''){
 			var dataTable = $('#example').DataTable( {
 				stateSave: true,
 		    "processing" : true,
@@ -236,7 +254,7 @@
 		    "ajax" : {
 					url:"th_datatable.php",
 					type:"POST",
-					data:{ searchByName: searchByName, searchBySec: searchBySec }
+					data:{ searchByName: searchByName, searchBySec: searchBySec, searchBystat: searchBystat }
 		    },
 					"columns": [
 						{ "data": null,

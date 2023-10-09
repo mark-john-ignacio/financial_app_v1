@@ -15,6 +15,26 @@
 		$query .= "and (LOWER(b.cname) like LOWER('%".$_POST['searchByName']."%') OR LOWER(a.ctranno) like LOWER('%".$_POST['searchByName']."%') OR LOWER(a.crefsi) like LOWER('%".$_POST['searchByName']."%') OR LOWER(a.crefrr) like LOWER('%".$_POST['searchByName']."%'))";
 	}
 
+	if(isset($_POST['searchBystat']) && $_POST['searchBystat'] != '')
+	{
+		if($_POST['searchBystat']=="post"){
+			$query .= " and (a.lapproved=1 and a.lvoid=0)";
+		}
+
+		if($_POST['searchBystat']=="void"){
+			$query .= " and a.lvoid=1";
+		}
+
+		if($_POST['searchBystat']=="cancel"){
+			$query .= " and a.lcancelled=1";
+		}
+
+		if($_POST['searchBystat']=="pending"){
+			$query .= " and (a.lapproved=0 and a.lcancelled=0)";
+		}
+				
+	}
+
 	if(isset($_POST['order']))
 	{
 		$query .= ' ORDER BY '.$column[$_POST['order']['0']['column']].' '.$_POST['order']['0']['dir'].' ';

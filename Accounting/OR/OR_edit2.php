@@ -149,7 +149,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
 		}
 
 ?>
-		<form action="OR_editsave2.php" name="frmOR" id="frmOR" method="post" enctype="multipart/form-data">
+		<form action="OR_editsave2.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmOR" id="frmOR" method="post" enctype="multipart/form-data">
 			<fieldset>
 				<legend>
 					<div class="col-xs-6 nopadding"> Receive Payment </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
@@ -627,7 +627,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
 			<table width="100%" border="0" cellpadding="3">
 				<tr>
 					<td width="50%">
-						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='OR.php';" id="btnMain" name="btnMain">
+						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='OR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
 						Back to Main<br>(ESC)</button>
 							
 								<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='OR_new2.php';" id="btnNew" name="btnNew">

@@ -75,16 +75,21 @@
 							}
 						?>
 					</div>
-					<div class="col-xs-2 nopadding">
-						<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
-					</div>
-					<div class="col-xs-3 nopadwtop" style="height:30px !important;">
-						<b> Search Customer / Trans. No / Ref No.: </b>
+					<div class="col-xs-3 nopadwtop text-right" style="height:30px !important; padding-right: 10px !important">
+						<b> Search Supplier / Trans. No / Ref No.: </b>
 					</div>
 					<div class="col-xs-3 text-right nopadding">
-						<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Enter Customer, Trans No, Reference...">
+						<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : ""?>" class="form-control input-sm" placeholder="Search Supplier, Trans No, Reference...">
 					</div>
-
+					<div class="col-xs-2 text-right nopadwleft">
+						<select  class="form-control input-sm" name="selstats" id="selstats">
+							<option value=""> All Transactions</option>
+							<option value="post"> Posted </option>
+							<option value="cancel"> Cancelled </option>
+							<option value="void"> Voided </option>
+							<option value="pending"> Pending </option>
+						</select>
+					</div>
 				</div>
 
       <br><br>
@@ -108,6 +113,7 @@
     
 <form name="frmedit" id="frmedit" method="post" action="RFP_edit.php">
 	<input type="hidden" name="txtctranno" id="txtctranno" />
+	<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
 </form>		
 
 <!-- 1) Alert Modal -->
@@ -172,9 +178,18 @@ mysqli_close($con);
 
 		$("#searchByName").keyup(function(){
 			var searchByName = $('#searchByName').val();
+			var searchBystat = $('#selstats').val(); 
 
 			$('#example').DataTable().destroy();
-			fill_datatable(searchByName);
+			fill_datatable(searchByName, searchBystat);
+		});
+
+		$("#selstats").change(function(){
+			var searchByName = $('#searchByName').val(); 
+			var searchBystat = $('#selstats').val(); 
+
+			$('#example').DataTable().destroy();
+			fill_datatable(searchByName, searchBystat);
 		});
 
 	});
@@ -187,10 +202,11 @@ mysqli_close($con);
 	});
 
 
-		function editfrm(x){
-			document.getElementById("txtctranno").value = x;
-			document.getElementById("frmedit").submit();
-		}
+	function editfrm(x){
+		$('#txtctranno').val(x); 
+		$('#hdnsrchval').val($('#searchByName').val()); 
+		document.getElementById("frmedit").submit();
+	}
 
 		function trans(x,num){
 			
@@ -308,7 +324,7 @@ mysqli_close($con);
 		});
 	}
 
-	function fill_datatable(searchByName = '')
+	function fill_datatable(searchByName = '', searchBystat = '')
 	{
 		  var dataTable = $('#example').DataTable({
 				stateSave: true,
@@ -321,7 +337,7 @@ mysqli_close($con);
 					url:"th_datatable.php",
 					type:"POST",
 					data:{
-						searchByName: searchByName
+						searchByName: searchByName, searchBystat: searchBystat
 					}
 		    },
 		    "columns": [
@@ -349,7 +365,7 @@ mysqli_close($con);
 								if(full[9] == 0 && full[8]==0){
 									return "For Sending";
 								}else{
-									if (full[7] == 0 && (full[7] == 0)) {
+									if (full[7] == 0 && (full[8] == 0)) {
 										return "For Approval";
 									}else{
 										if (full[7] == 1) {		

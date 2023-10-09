@@ -172,7 +172,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	}
 
 ?>
-<form action="Quote_edit.php" name="frmpos" id="frmpos" method="post">
+<form action="Quote_edit.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" method="post">
 	<fieldset>
     	<legend>
 				<div class="col-xs-6 nopadding"> Quotation Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
@@ -370,55 +370,55 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										</div>
 									</div>
 
-								<div class='col-xs-12 nopadwtop'>
-										<div class="col-xs-1"><b>Currency</b></div>
-										<div class="col-xs-3 nopadwleft">
-										<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">							
-										<?php
-											$nvaluecurrbase = "";	
-											$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
-											
-												if (mysqli_num_rows($result)!=0) {
-													$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
-													
-													$nvaluecurrbase = $all_course_data['cvalue']; 
+									<div class='col-xs-12 nopadwtop'>
+											<div class="col-xs-1"><b>Currency</b></div>
+											<div class="col-xs-3 nopadwleft">
+											<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">							
+											<?php
+												$nvaluecurrbase = "";	
+												$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+												
+													if (mysqli_num_rows($result)!=0) {
+														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
 														
-												}
-												else{
-													$nvaluecurrbase = "";
-												}
-						
-												//	$objcurrs = listcurrencies();
-											//		$objrows = json_decode($objcurrs, true);
-														
-										///	foreach($objrows['results'] as $rows){
-												$showcurrname = "";
-												$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
-												if (mysqli_num_rows($sqlhead)!=0) {
-													while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-
-														if($CurrCode==$rows['id']){
-															$showcurrname = $rows['currencyName'];
-														}
-										?>
-												<option value="<?=$rows['id']?>" <?php if ($CurrCode==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
-										<?php
+														$nvaluecurrbase = $all_course_data['cvalue']; 
+															
 													}
-												}
-										?>
-										</select>
-										<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?php echo $nvaluecurrbase; ?>">	
-										<input type='hidden' id="currdesc" name="currdesc" value="<?=$showcurrname?>">	
+													else{
+														$nvaluecurrbase = "";
+													}
+							
+													//	$objcurrs = listcurrencies();
+												//		$objrows = json_decode($objcurrs, true);
+															
+											///	foreach($objrows['results'] as $rows){
+													$showcurrname = "";
+													$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+													if (mysqli_num_rows($sqlhead)!=0) {
+														while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
 
-								</div>  
+															if($CurrCode==$rows['id']){
+																$showcurrname = $rows['currencyName'];
+															}
+											?>
+													<option value="<?=$rows['id']?>" <?php if ($CurrCode==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
+											<?php
+														}
+													}
+											?>
+											</select>
+											<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?php echo $nvaluecurrbase; ?>">	
+											<input type='hidden' id="currdesc" name="currdesc" value="<?=$showcurrname?>">	
 
-								<div class="col-xs-1 nopadwleft">
-										<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="<?php echo $CurrRate; ?>">	 
+									</div>  
+
+									<div class="col-xs-1 nopadwleft">
+											<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="<?php echo $CurrRate; ?>">	 
+										</div>
+
+										<div class="col-xs-5" id="statgetrate" style="padding: 4px !important"> 
+												
 									</div>
-
-									<div class="col-xs-5" id="statgetrate" style="padding: 4px !important"> 
-											
-								</div>
 							</fieldset>
 
 						</div>
@@ -433,132 +433,132 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 					</div>
 
-
-
-					<hr>
+			<hr>
 			<div class="col-xs-12 nopadwdown"><b>Details</b></div>
 
-	<div class="col-xs-12 nopadwtop2x">
-        <div class="col-xs-3 nopadwdown">
-            <input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4">
+			<div class="col-xs-12 nopadwtop2x">
+						<div class="col-xs-3 nopadwdown">
+								<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4">
 
-      		<input type="hidden" name="hdnqty" id="hdnqty">
-      		<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
-      		<input type="hidden" name="hdnunit" id="hdnunit">
+							<input type="hidden" name="hdnqty" id="hdnqty">
+							<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
+							<input type="hidden" name="hdnunit" id="hdnunit">
 
-        </div>
-        <div class="col-xs-5 nopadwleft">
-                <input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="Search Product Name..." size="80" tabindex="5">
-        </div>
-	</div>
+						</div>
+						<div class="col-xs-5 nopadwleft">
+										<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="Search Product Name..." size="80" tabindex="5">
+						</div>
+			</div>
 
-	<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 1px solid #919b9c;width: 100%;height: 300px;text-align: left;overflow: auto">
-	
-      <table id="MyTable" class="MyTable table table-condensed" width="100%">
-				<thead>
-					<tr id="0">
-						<th style="border-bottom:1px solid #999">Code</th>
-						<th style="border-bottom:1px solid #999">Description</th>
-            <th style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
-           	<th style="border-bottom:1px solid #999">UOM</th>
-						<th style="border-bottom:1px solid #999">Factor</th>
-            <th style="border-bottom:1px solid #999">Qty</th>
-						<th style="border-bottom:1px solid #999">Price</th>
-            <th style="border-bottom:1px solid #999">Amount</th>
-						<th style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
-            <th style="border-bottom:1px solid #999">&nbsp;</th>
-					</tr>
-				</thead>            
-				<tbody class="tbody">
-				</tbody>                    
-			</table>
-	</div>
+			<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 1px solid #919b9c;width: 100%;height: 300px;text-align: left;overflow: auto">
+			
+					<table id="MyTable" class="MyTable table table-condensed" width="100%">
+						<thead>
+							<tr id="0">
+								<th style="border-bottom:1px solid #999">Code</th>
+								<th style="border-bottom:1px solid #999">Description</th>
+								<th style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
+								<th style="border-bottom:1px solid #999">UOM</th>
+								<th style="border-bottom:1px solid #999">Factor</th>
+								<th style="border-bottom:1px solid #999">Qty</th>
+								<th style="border-bottom:1px solid #999">Price</th>
+								<th style="border-bottom:1px solid #999">Amount</th>
+								<th style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
+								<th style="border-bottom:1px solid #999">&nbsp;</th>
+							</tr>
+						</thead>            
+						<tbody class="tbody">
+						</tbody>                    
+					</table>
+			</div>
 
-	<div class="col-xs-12 nopadwtop2x">
-			<div class="col-xs-7">
-				<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Quote.php';" id="btnMain" name="btnMain">
-Back to Main<br>(ESC)</button>
+			<div class="col-xs-12 nopadwtop2x">
+					<div class="col-xs-7">
+						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Quote.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
+							Back to Main<br>(ESC)
+						</button>
+			
+						<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='Quote_new.php';" id="btnNew" name="btnNew">
+							New<br>(F1)
+						</button>
+
+						<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
+							Undo Edit<br>(F3)
+						</button>
+
+						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $txtctranno;?>','Print');" id="btnPrint" name="btnPrint">
+							Print<br>(F4)
+						</button>
+
+						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $txtctranno;?>','PDF');" id="btnPDF" name="btnPDF">
+							View PDF<br>(F4)
+						</button>
+
+						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $txtctranno;?>','Email');" id="btnEmail" name="btnEmail">
+							Send Email<br>(F4)
+						</button>
+				
+						<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
+							Edit<br>(F8)    
+						</button>
+				
+						<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
+							Save<br>(F2)    
+						</button>
+
+					</div>	
+
+					<div class="col-xs-2"  style="padding-top: 14px !important;">
+							<b>TOTAL AMOUNT </b>
+					</div>
+					<div class="col-xs-3"  style="padding-top: 14px !important;">
+						<input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="<?php echo  number_format($BaseGross,4); ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10">
+					</div>
+
+					<div class="col-xs-12 nopadding">
+						<div class="col-xs-7">
+								
+						</div>	
+
+					<div class="col-xs-2">
+								<b>TOTAL AMOUNT IN <?php echo $nvaluecurrbase; ?></b>
+						</div>
+						<div class="col-xs-3" >
+						<input type="text" id="txtnGross" name="txtnGross" readonly value="<?php echo  number_format($Gross,4); ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10">
+						</div>
+					</div>
+			</div>  
+     
+  </fieldset>
+    
    
-    			<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='Quote_new.php';" id="btnNew" name="btnNew">
-New<br>(F1)</button>
-
-    			<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
-Undo Edit<br>(F3)
-    </button>
-
-    			<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $txtctranno;?>','Print');" id="btnPrint" name="btnPrint">
-Print<br>(F4)
-    </button>
-
-    			<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $txtctranno;?>','PDF');" id="btnPDF" name="btnPDF">
-View PDF<br>(F4)
-    </button>
-
-    			<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $txtctranno;?>','Email');" id="btnEmail" name="btnEmail">
-Send Email<br>(F4)
-    </button>
-    
-   			 	<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
-Edit<br>(F8)    </button>
-    
-    			<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
-Save<br>(F2)    </button>
-
-			</div>	
-
-			<div class="col-xs-2"  style="padding-top: 14px !important;">
-					<b>TOTAL AMOUNT </b>
-			</div>
-			<div class="col-xs-3"  style="padding-top: 14px !important;">
-				<input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="<?php echo  number_format($BaseGross,4); ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10">
-			</div>
-
-			<div class="col-xs-12 nopadding">
-				<div class="col-xs-7">
-						
-				</div>	
-
-			<div class="col-xs-2">
-						<b>TOTAL AMOUNT IN <?php echo $nvaluecurrbase; ?></b>
-				</div>
-				<div class="col-xs-3" >
-				<input type="text" id="txtnGross" name="txtnGross" readonly value="<?php echo  number_format($Gross,4); ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10">
-				</div>
-			</div>
-	</div>  
-
-        
-    </fieldset>
-    
-   
-    <div class="modal fade" id="MyDetModal" role="dialog">
+  <div class="modal fade" id="MyDetModal" role="dialog">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close"  aria-label="Close"  onclick="chkCloseInfo();"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="invheader"> Additional Details Info</h3>           
-			</div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close"  aria-label="Close"  onclick="chkCloseInfo();"><span aria-hidden="true">&times;</span></button>
+          <h3 class="modal-title" id="invheader"> Additional Details Info</h3>           
+				</div>
     
-            <div class="modal-body">
-              <input type="hidden" name="hdnrowcnt2" id="hdnrowcnt2">
-              <table id="MyTable2" class="MyTable table table-condensed" width="100%">
-								<thead>
-									<tr>
-										<th style="border-bottom:1px solid #999">Code</th>
-										<th style="border-bottom:1px solid #999">Description</th>
-										<th style="border-bottom:1px solid #999">Field Name</th>
-										<th style="border-bottom:1px solid #999">Value</th>
-										<th style="border-bottom:1px solid #999">&nbsp;</th>
-									</tr>
-								</thead>
-								<tbody class="tbody">
-								</tbody>
-							</table>
-    
-			</div>
-        </div><!-- /.modal-content -->
+        <div class="modal-body">
+          <input type="hidden" name="hdnrowcnt2" id="hdnrowcnt2">
+          <table id="MyTable2" class="MyTable table table-condensed" width="100%">
+						<thead>
+							<tr>
+								<th style="border-bottom:1px solid #999">Code</th>
+								<th style="border-bottom:1px solid #999">Description</th>
+								<th style="border-bottom:1px solid #999">Field Name</th>
+								<th style="border-bottom:1px solid #999">Value</th>
+								<th style="border-bottom:1px solid #999">&nbsp;</th>
+							</tr>
+						</thead>
+						<tbody class="tbody">
+						</tbody>
+					</table>    
+				</div>
+      </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+	</div><!-- /.modal -->
 
 </form>
 
@@ -566,20 +566,20 @@ Save<br>(F2)    </button>
 }
 else{
 ?>
-<form action="Quote_edit.php" name="frmpos2" id="frmpos2">
-  <fieldset>
-   	<legend>Quotation</legend>	
-<table width="100%" border="0">
-  <tr>
-    <tH width="100">TRANS NO.:</tH>
-    <td colspan="3" style="padding:2px" align="left"><div class="col-xs-2"><input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?php echo $txtctranno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos2');"></div></td>
-    </tr>
-  <tr>
-    <tH colspan="4" align="center" style="padding:10px"><font color="#FF0000"><b>Quotation No. DID NOT EXIST!</b></font></tH>
-    </tr>
-</table>
-</fieldset>
-</form>
+	<form action="Quote_edit.php" name="frmpos2" id="frmpos2">
+		<fieldset>
+			<legend>Quotation</legend>	
+				<table width="100%" border="0">
+					<tr>
+						<tH width="100">TRANS NO.:</tH>
+						<td colspan="3" style="padding:2px" align="left"><div class="col-xs-2"><input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?php echo $txtctranno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos2');"></div></td>
+					</tr>
+					<tr>
+						<tH colspan="4" align="center" style="padding:10px"><font color="#FF0000"><b>Quotation No. DID NOT EXIST!</b></font></tH>
+					</tr>
+				</table>
+		</fieldset>
+	</form>
 <?php
 }
 ?>

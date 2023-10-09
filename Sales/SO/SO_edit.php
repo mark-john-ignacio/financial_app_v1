@@ -445,7 +445,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					<?php
 						if($poststat == "True"){
 					?>
-					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SO.php';" id="btnMain" name="btnMain">Back to Main<br>(ESC)</button>
+					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SO.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">Back to Main<br>(ESC)</button>
 
 					<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='SO_new.php';" id="btnNew" name="btnNew">New<br>(F1)</button>
 
