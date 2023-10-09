@@ -109,10 +109,10 @@ include('../../include/denied.php');
 				}
 
 				$ntotqty = $nqty * floatval($row3['nqty'.$lv]);
-
-				if(floatval($ntotqty) < 1 ){
-					$ntotqty = float2rat($ntotqty);
-				}
+				$ntotqty = (floor($ntotqty) == $ntotqty) ? number_format($ntotqty) : number_format($ntotqty,4);
+				//if(floatval($ntotqty) < 1 ){
+					//$ntotqty = float2rat($ntotqty);
+				//}
 				$isval = $isval . "<td align='center'>". $row3['citemno'] . "</td>";
 				$isval = $isval . "<td align='center'>&nbsp;</td>";
 				$isval = $isval . "<td align='center'>". $row3['citemdesc'] ."</td>";
@@ -197,7 +197,7 @@ include('../../include/denied.php');
 			<td align="center"> <?=$mainitmdsc[0]['cpartno'];?> </td>
 			<td> &nbsp; </td>
 			<td align="center"> <?=$mainitmdsc[0]['citemdesc'];?> </td>
-			<td align="center"> 1.00 </td>
+			<td align="center"> 1 </td>
 			<td align="center"> <?=$mainitmdsc[0]['cunit'];?> </td>
 			<td align="center"> MAKE </td>
 		</tr>
@@ -226,7 +226,7 @@ include('../../include/denied.php');
 				<td align="center"> <?=$rs1['citemno']?> </td>
 				<td align="center"> &nbsp; </td>
 				<td align="center"> <?=$rs1['citemdesc']?> </td>
-				<td align="center"> <?=number_format($rs1['nqty'.$lv]);?> </td>
+				<td align="center"> <?=(floor($rs1['nqty'.$lv]) == $rs1['nqty'.$lv]) ? number_format($rs1['nqty'.$lv]) : number_format($rs1['nqty'.$lv],4);?> </td>
 				<td align="center"> <?=$rs1['cunit']?> </td>
 				<td align="center"> <?=$rs1['ctype']?> </td>
 			</tr>
