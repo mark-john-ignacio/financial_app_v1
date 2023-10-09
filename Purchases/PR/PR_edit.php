@@ -838,7 +838,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 				if(typx=="Print"){
 					//alert("PrintPO.php?hdntransid="+x);
-					$("#myprintframe").attr("src","PrintPR.php?hdntransid="+x);
+					var url = "PrintPR.php?hdntransid="+x;
+					// var url = "PR_printv1.php?tranno=" + x;
+					$("#myprintframe").attr("src", url);
 
 					$("#PrintModal").modal('show');
 				}

@@ -1073,7 +1073,8 @@ function printchk(x){
 		document.getElementById("statmsgz").style.color = "#FF0000";
 	}
 	else{
-		  var url =  "RR_confirmprint.php?x="+x;
+		//   var url =  "RR_confirmprint.php?x="+x;
+		var url = "RR_printv1.php?tranno="+x;
 		  
 		  $("#myprintframe").attr('src',url);
 

@@ -306,6 +306,9 @@
 							<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
 								Edit<br>(CTRL+E)
 							</button>
+							<button type='button' class='btn btn-info btn-sm' tabindex='6' onclick="printchk('<?= $cjeno ?>')" id='btnPrint' name='btnPrint'>
+								Print<br>(CTRL+P)
+							</button>
 														
 							<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
 							<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
@@ -385,6 +388,21 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <!-- End FULL INVOICE LIST -->
+
+<div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
+	<div class="modal-dialog modal-lg">
+        <div class="modal-contnorad">   
+            <div class="modal-bodylong">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
+			
+				<iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:8.5in; display:block; margin:0px; padding:0px; border:0px"></iframe>
+		
+					
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	<!-- End Bootstrap modal -->
 </body>
 </html>
 
@@ -1145,7 +1163,7 @@ function disabled(){
 	$("#btnMain").attr("disabled", false);
 	$("#btnNew").attr("disabled", false);
 	$("#btnEdit").attr("disabled", false);
-
+	$("#btnPrint").attr("disabled", false);
 }
 
 function enabled(){
@@ -1171,9 +1189,24 @@ function enabled(){
 			$("#btnMain").attr("disabled", true);
 			$("#btnNew").attr("disabled", true);
 			$("#btnEdit").attr("disabled", true);
-				
+			$("#btnPrint").attr("disabled", true);
 	}
 
 }
+function printchk(tranno){
+	if(document.getElementById("hdncancel").value==1){	
+		document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
+		document.getElementById("statmsgz").style.color = "#FF0000";
+	}
+	else{
+		//   var url =  "RR_confirmprint.php?x="+x;
+		var url = "ARAdj_printv1.php?tranno="+tranno;
+		  
+		  $("#myprintframe").attr('src',url);
 
+
+		$("#PrintModal").modal('show');
+
+	}
+}
 </script>

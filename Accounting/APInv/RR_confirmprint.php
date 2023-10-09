@@ -91,7 +91,8 @@ function Print(tranno){
 	location.href = "RR_postprint.php?tranno="+tranno;
 }
 function PrintRed(x){
-	location.href = "RR_print.php?x="+x;
+	// location.href = "RR_print.php?x="+x;
+  location.href = "RR_printv1.php?tranno="+x;
 }
 </script>
 </head>

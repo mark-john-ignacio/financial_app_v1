@@ -381,7 +381,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					
 				?>
 
-   				<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?= $cpono;?>');" id="btnPrint" name="btnPrint">
+   				<button type="button" class="btn btn-info btn-sm" tabindex="6" onclick="printchk('<?= $cpono;?>');" id="btnPrint" name="btnPrint">
 						Print<br>(CTRL+P)
     			</button>
 
@@ -1408,7 +1408,8 @@ function printchk(x){
 	else{
 		  var url =  "RR_confirmprint.php?x="+x;
 		  
-		  $("#myprintframe").attr('src',url);
+		// var url = "RR_printv1.php?tranno"=x;
+		$("#myprintframe").attr('src',url);
 
 
 		$("#PrintModal").modal('show');

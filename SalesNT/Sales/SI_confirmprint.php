@@ -34,7 +34,7 @@ include('../../include/denied.php');
 	}
 	
 	$csalesno = $_REQUEST['x'];
-	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.nlimit from sales a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.compcode='$company' and a.ctranno = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.nlimit from ntsales a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.compcode='$company' and a.ctranno = '$csalesno'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -109,7 +109,7 @@ function PrintRed(x, version){
   
 
   if(version == 1){
-    location.href = "SI_printv1.php?tranno=" +x;
+    location.href = "SI_printv1.php?x=" +x;
   } else {
     location.href = "SI_print.php?x="+x;
   }
@@ -172,7 +172,7 @@ function PrintRed(x, version){
         <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Total Amount</th>
       </tr>
       <?php 
-		$sqlbody = mysqli_query($con,"select a.*, b.citemdesc, c.nrate from sales_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno left join taxcode c on a.compcode=c.compcode and a.ctaxcode=c.ctaxcode where a.compcode='$company' and a.ctranno = '$csalesno'");
+		$sqlbody = mysqli_query($con,"select a.*, b.citemdesc, c.nrate from ntsales_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno left join taxcode c on a.compcode=c.compcode and a.ctaxcode=c.ctaxcode where a.compcode='$company' and a.ctranno = '$csalesno'");
 
 		if (mysqli_num_rows($sqlbody)!=0) {
 		$cntr = 0;
@@ -181,6 +181,10 @@ function PrintRed(x, version){
 		$totvatxmpt = 0;
 		$totvatable = 0;
 		
+      $printVEGross= '';
+      $printVATGross = '';
+      $printZRGross ='';
+
 		while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
 		  $cntr = $cntr + 1;
 						

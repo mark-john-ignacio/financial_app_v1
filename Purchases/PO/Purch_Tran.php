@@ -402,7 +402,7 @@ if($_REQUEST['typ']=="SEND"){
 				if (mysqli_num_rows($resemailapps)!=0) {
 					while($row = mysqli_fetch_array($resemailapps, MYSQLI_ASSOC)){
 
-						sendEmail($row['cemailadd'],$row['Fname'],$tranno);
+						sendEmail($row['cemailadd'], $row['Fname'], $tranno, $logonamz);
 
 					}
 				}

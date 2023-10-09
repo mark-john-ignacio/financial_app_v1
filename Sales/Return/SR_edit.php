@@ -1087,7 +1087,8 @@ function printchk(x){
 	}
 	else{
 
-		  var url = "SR_confirmprint.php?x="+x;
+		//   var url = "SR_confirmprint.php?x="+x;
+		var url = "SR_printv1.php?tranno="+x;
 		  
 		  $("#myprintframe").attr('src',url);
 

@@ -625,6 +625,18 @@ else{
 <form method="post" name="frmedit" id="frmedit" action="RR_edit.php">
 	<input type="hidden" name="txtctranno" id="txtctranno" value="">
 </form>
+		<div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
+    	<div class="modal-dialog modal-lg">
+        <div class="modal-contnorad">   
+          <div class="modal-bodylong">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
+        
+            <iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:8.5in; display:block; margin:0px; padding:0px; border:0px"></iframe>
+              	
+					</div>
+        </div>
+   		</div>
+		</div>
 
 </body>
 </html>
@@ -1936,7 +1948,8 @@ function printchk(x){
 		document.getElementById("statmsgz").style.color = "#FF0000";
 	}
 	else{
-		  var url =  "RR_confirmprint.php?x="+x;
+		//   var url =  "RR_confirmprint.php?x="+x;
+		var url = "RR_printv1.php?tranno="+x;
 		  
 		  $("#myprintframe").attr('src',url);
 

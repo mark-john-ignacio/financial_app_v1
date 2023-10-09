@@ -1470,8 +1470,8 @@ function printchk(x){
 		document.getElementById("statmsgz").style.color = "#FF0000";
 	}
 	else{
-		  var url =  "PurchRet_confirmprint.php?x="+x;
-		  
+		//   var url =  "PurchRet_confirmprint.php?x="+x;
+			var url = "PurchRet_printv1.php?tranno="+x;
 		  $("#myprintframe").attr('src',url);
 
 

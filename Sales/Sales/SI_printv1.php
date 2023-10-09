@@ -222,7 +222,7 @@
             <div class='col-sm' style='width: 20%; font-size: 9px; font-weight: bold;'>
                 <h5>PTU No.: <?= $ptucode ?></h5>
                 <h5>Date Issued: <?= $ptudate ?></h5>
-                <h5>Inclusive Serial No.: <?= $csalesno ?></h5>
+                <h5>Inclusive Serial No.: <?= $tranno ?></h5>
                 <h5>Timestamp: <?= date('m-d-Y') ?></h5>
             </div>
             <div class='col-sm' style='width: 40%; '>

@@ -83,6 +83,7 @@ html, body {
 <script type="text/javascript">
 function Print(x){
 	window.location.href = "SI_print.php?x="+x;
+  window.location.href = "SR_printv1.php?tranno="+x;
 }
 </script>
 </head>
