@@ -188,9 +188,7 @@
                     <tr>
                         <th style="border: 1px solid" class="tdpadx">Qty</th>
                         <th style="border: 1px solid" class="tdpadx">Unit</th>
-                        <th style="border: 1px solid" class="tdpadx">Product Description/s</th>
-                        <th style="border: 1px solid" class="tdpadx"><b>Unit Price</b></th>
-                        <th style="border: 1px solid" class="tdpadx"><b>Amount</b></th>
+                        <th style="border: 1px solid; width: 80%;" class="tdpadx">Product Description/s</th>
                     </tr>
 
                     <?php 
@@ -217,8 +215,6 @@
                         <td align="center" class="tdpadx tddetz"><?php echo intval($row['nqty']);?></td>
                         <td align="center" class="tdpadx tddetz"><?php echo $row['cunit'];?></td>					
                         <td align="center" class="tdpadx tddetz"><?php echo $row['citemdesc'];?></td>
-                        <td align="right" class="tdpadx tddetz tdright"><?php echo number_format($row['nprice'],2);?></td>
-                        <td align="right" class="tdpadx tddetz tdright"><?php echo number_format($row['namount'],2);?></td>					
                     </tr>
 
                     <?php 
@@ -228,14 +224,11 @@
                     ?>
 
                     <tr>
-                        <td colspan="3" class="tdpadx" style="border-top: 1px solid; border-left: 1px solid; border-bottom: 1px solid; padding-right: 10px">
+                        <td colspan='3' class="tdpadx" style="border: 1px solid; padding-right: 10px">
                             <?php
                                 echo "<b><i>Note: Price exclusive of VAT</i></b>";
                             ?>
                         </td>
-                        <td align="right" class="tdpadx" style="border-top: 1px solid; border-right: 1px solid; border-bottom: 1px solid; padding-right: 10px"><b>TOTAL</b></td>
-                        <td align="right"  class="tdpadx" style="border: 1px solid;padding-right: 10px"><?php echo number_format($Gross,2);?></td>
-                        
                     </tr>
 
                 </table>
