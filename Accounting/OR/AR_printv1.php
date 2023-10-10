@@ -177,7 +177,7 @@
 
         $.ajax({
             // url: 'th_loaddetails.php',
-            url: 'th_loadtransaction.php',
+            url: 'th_transaction.php',
             data: {tranno: '<?= $tranno ?>' },
             dataType: "json",
             async: false,
@@ -185,7 +185,7 @@
             success: function(res){
                 console.log(res.data);
                 if(res.valid){
-                    res['data'].map((item, index)=> {
+                    res['data2'].map((item, index)=> {
 
                         if(item.namount != 0){
                             totnetvat = totnetvat + parseFloat(item.nnetvat);

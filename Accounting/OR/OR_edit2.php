@@ -355,6 +355,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
 											<select class='form-control input-sm' name="receipt" id="receipt" >
 												<option <?= ($receipt ==='OR') ? "selected" : '' ?> value="OR">Official Receipt</option>
 												<option <?= ($receipt === 'CR') ? "selected" : '' ?>  value="CR">Collection Receipt</option>
+												<option <?= ($receipt === 'AR') ? "selected" : ''  ?> value="AR">Acknowledgement Receipt</option>
 											</select>
 										</div>
 								</td>
@@ -2684,16 +2685,29 @@ else{
 			$('#statmsgz').css('color', '#FF0000')
 			return;
 		}
-		var url ="";
-		if($('#receipt').val() === 'OR'){
-			if(<?= $version ?> != 0){
-				url = "OR_printv1.php?tranno="+tranno;
-			} else {
-				url = "OR_print.php?tranno="+tranno;
-			}
-		} else if($('#receipt').val() === 'CR'){
-			url = "CR_print.php?tranno="+tranno;
-		}
+		var receipt = $('#receipt').val().toUpperCase();
+		var url = "";
+
+		switch(receipt){
+			case "OR":
+				if(<?= $version ?> != 0){
+					url = "OR_printv1.php?tranno="+tranno;
+				} else {
+					url = "OR_print.php?tranno="+tranno;
+				}
+				
+				break;
+			case "CR": 
+				url = "CR_print.php?tranno="+tranno;
+				break;
+			case "AR":
+				if(<?= $version ?> != 0){
+					url = "AR_printv1.php?tranno="+tranno;
+				} else {
+					url = "AR_print.php?tranno="+tranno;
+				}
+				break;
+		};
 		
 		$("#myprintframe").attr('src',url);
 		$("#PrintModal").modal('show');

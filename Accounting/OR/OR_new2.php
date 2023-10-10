@@ -309,6 +309,7 @@
 											<select class='form-control input-sm' name="receipt" id="receipt">
 												<option value="OR">Official Receipt</option>
 												<option value="CR">Collection Receipt</option>
+												<option value="AR">Acknowledgement Receipt</option>
 											</select>
 										</div>
 								</td>
