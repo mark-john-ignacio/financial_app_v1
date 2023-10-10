@@ -2698,7 +2698,12 @@ else{
 				
 				break;
 			case "CR": 
-				url = "CR_print.php?tranno="+tranno;
+				if(<?= $version ?> != 0){
+					url = "CR_printv1.php?tranno="+tranno;
+				} else {
+					url = "CR_print.php?tranno="+tranno;
+				}
+				// url = "CR_print.php?tranno="+tranno;
 				break;
 			case "AR":
 				if(<?= $version ?> != 0){

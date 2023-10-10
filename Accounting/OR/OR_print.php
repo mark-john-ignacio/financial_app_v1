@@ -178,8 +178,6 @@ var vatcode = '', vatgross ='', printVATGross = '', printVEGross='', printZRGros
                 var city = (res?.data?.ccity ? res.data.ccity : '')
                 var address = house + ' ' + state + ' ' + city;
 
-                
-
                 $('#date').text(datenow(new Date()))
                 $('#receive_by').text(res.data.cname)
                 $('#receive_address').text(address)
@@ -195,11 +193,6 @@ var vatcode = '', vatgross ='', printVATGross = '', printVEGross='', printZRGros
                         totlessvat += parseFloat(item.nnet);
                         totnetvat += parseFloat(item.nvat);
                         ndue += parseFloat(item.ndue);
-
-                        console.log(item.napplied)
-                        console.log(item.nnet)
-                        console.log(item.ncm)
-                        console.log(item.ndue)
 
                         var printgross =0;
                         gross += parseFloat(item.napplied);
@@ -233,7 +226,6 @@ var vatcode = '', vatgross ='', printVATGross = '', printVEGross='', printZRGros
                             $('<td>').text(item.csalesno),
                             $('<td>').text(toNumber(item.nnet))
                         ).appendTo('#list > tbody')
-                        console.log(res.data2.length)
                         
                     } else {
                         console.log("No Official Receipt Reference");
