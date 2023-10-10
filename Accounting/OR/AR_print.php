@@ -22,7 +22,7 @@
 
 	}
 
-    $csalesno = $_REQUEST['x'];
+    $csalesno = $_REQUEST['tranno'];
 	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.chouseno,b.ccity,b.cstate,b.ctin from ntsales a 
         left join customers b on a.compcode=b.compcode and a.ccode=b.cempid 
         where a.compcode='$company' and a.ctranno = '$csalesno'");

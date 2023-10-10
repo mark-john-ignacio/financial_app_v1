@@ -15,7 +15,7 @@ $receipt = mysqli_real_escape_string($con, $_POST['receipt']);
 //print_r($_POST);
 //echo "</pre>";
 
-$chkSales = mysqli_query($con,"select * from receipt where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");
+$chkSales = mysqli_query($con,"select * from receipt where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) and receipt_code='$receipt' Order By ctranno desc LIMIT 1");
 if (mysqli_num_rows($chkSales)==0) {
 	$cSINo = $receipt.$dmonth.$dyear."00000";
 }
