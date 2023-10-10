@@ -183,8 +183,9 @@
 
             <table width="50%" border="0" cellpadding="2" id="myProcessTable" style="margin-top: 10px;">
               <tr>
+								<th scope="col" width="50px">&nbsp;</th>
                 <th scope="col">PROCESS</th>
-                <th scope="col" width="80">STATUS</th>
+                <th scope="col" width="80">&nbsp;</th>
               </tr>
             </table>
 				</div>
@@ -579,19 +580,23 @@
     var lastRow = tbl.length;
 
     var a=document.getElementById('myProcessTable').insertRow(-1);
+
     var u=a.insertCell(0);
 		u.style.paddingTop = "1px"; 
     var y=a.insertCell(1);
 		y.style.paddingTop = "1px"; 
+		var z=a.insertCell(2);
+		z.style.paddingTop = "1px";
 
     var xz = $("#hdnprocess").val();
 		prooptions = "";
 		$.each(jQuery.parseJSON(xz), function() { 
 			prooptions = prooptions + "<option value='"+this['nid']+"'>"+this['cdesc']+"</option>";
 		});
-        
-    u.innerHTML = "<div id='divselproc"+lastRow+"' class=\"col-xs-12 nopadwright\"><select name='selproc"+lastRow+"' id='selproc"+lastRow+"' class='form-control input-sm selectpicker'>"+prooptions+"</select></div>";
-    y.innerHTML = "<input class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"delProcRow(this);\"/>";
+
+		u.innerHTML = "<div class=\"nopadwright\"><input type=\"text\" readonly class=\"form-control input-sm text-center\" id=\"nitemsort"+lastRow+"\" value=\""+lastRow+"\"></div>";
+    y.innerHTML = "<div id='divselproc"+lastRow+"' class=\"col-xs-12 nopadwright\"><select name='selproc"+lastRow+"' id='selproc"+lastRow+"' class='form-control input-sm selectpicker'>"+prooptions+"</select></div>";
+    z.innerHTML = "<button class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' onClick=\"delProcRow(this);\"/> <i class=\"fa fa-trash\"></i></button>";
 
   }
 
@@ -604,11 +609,15 @@
     var z; //for loop counter changing textboxes ID;
         
     for (z=i+1; z<=lastRow; z++){
+			var tempcitemnosort = document.getElementById('nitemsort' + z);
       var tempcitemno = document.getElementById('selproc' + z);
                 
       var x = z-1;
+			tempcitemnosort.id = "nitemsort" + x;
       tempcitemno.id = "selproc" + x;
       tempcitemno.name = "selproc" + x;
+
+			$("#nitemsort" + x).val(x);
 
     }
   }
