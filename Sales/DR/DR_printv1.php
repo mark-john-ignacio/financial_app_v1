@@ -22,7 +22,7 @@
 		$compname =  $row['compname'];
 		$compadd = $row['compadd'];
 		$comptin = $row['comptin'];
-        $compphone = $row['cpnum'];
+        $compphone = explode(" ; ", $row['cpnum']);
         $ptucode = $row['ptucode'];
         $ptudate = $row['ptudate'];
         $compemail = $row['email'];
@@ -68,9 +68,9 @@
             </div>
             <div class='col-sm' style='width: 100%; text-align: justify; text-justify: inter-word;'>
                     <h5 class='nopadding'><?= $compadd ?></h5>
-                    <!-- <h5 class='nopadding'>Tel/Fax: </h5> -->
-                    <h5 class='nopadding'>Mobile No.: <?= $compphone ?></h5>
-                    <!-- <h5 class='nopadding'>Manila Line: </h5> -->
+                    <h5 class='nopadding'>Tel/Fax: <?= $compphone[0] ?> </h5>
+                    <h5 class='nopadding'>Mobile No.: <?= $compphone[1] ?></h5>
+                    <h5 class='nopadding'>Manila Line: <?= $compphone[2] ?> </h5>
                     <h5 class='nopadding'>Email: <?= $compemail ?></h5>
                     <!-- <h5 class='nopadding'>Website: www.serttech.com</h5> -->
                     <h5 class='nopadding'>VAT Reg. TIN: <?= $comptin ?></h5>

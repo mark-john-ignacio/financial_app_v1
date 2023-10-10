@@ -22,12 +22,14 @@
 		$compname =  $row['compname'];
 		$compadd = $row['compadd'];
 		$comptin = $row['comptin'];
-        $compphone = $row['cpnum'];
+        $compphone = explode(" ; ", $row['cpnum']);
         $ptucode = $row['ptucode'];
         $ptudate = $row['ptudate'];
         $compemail = $row['email'];
         
 	}
+
+    
 
     $sql = "select a.*,b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, b.ctin,b.cpricever,(TRIM(TRAILING '.' FROM(CAST(TRIM(TRAILING '0' FROM B.nlimit)AS char)))) as nlimit 
     from ntsales a 
@@ -65,35 +67,33 @@
             </div>
             <div class='col-sm' style='width: 100%; text-align: justify; text-justify: inter-word;'>
                     <h5 class='nopadding'><?= $compadd ?></h5>
-                    <!-- <h5 class='nopadding'>Tel/Fax: </h5> -->
-                    <h5 class='nopadding'>Mobile No.: <?= $compphone ?></h5>
-                    <!-- <h5 class='nopadding'>Manila Line: </h5> -->
+                    <h5 class='nopadding'>Tel/Fax: <?= $compphone[0] ?> </h5>
+                    <h5 class='nopadding'>Mobile No.: <?= $compphone[1] ?></h5>
+                    <h5 class='nopadding'>Manila Line: <?= $compphone[2] ?> </h5>
                     <h5 class='nopadding'>Email: <?= $compemail ?></h5>
                     <!-- <h5 class='nopadding'>Website: www.serttech.com</h5> -->
                     <h5 class='nopadding'>VAT Reg. TIN: <?= $comptin ?></h5>
             </div>
             <div class='col-sm' style='width: 100%; margin: 5%; text-align: center;'>
-                <h1>Sales Invoice</h1>
-                <h2>No. 00001</h2>
+                <h4 style='text-decoration: underline'>ACKNOWLEDGEMENT RECEIPT</h4>
+                <h2>No. <?= $data['cornumber'] ?></h2>
             </div>
         </div>
     </div>
-    <div id='body' class='container' style='width: 100%;'>
+    <div class='container' style='width: 100%;'>
         <div class='row' style="display: flex;">
             <div class='col-sm' style='width: 100%'>
-                <h5><span style="font-weight: bold;">Sold To: </span> <?= $data['cname'] ?> </h5>
+                <h5 ><span style="font-weight: bold;">Sold To: </span> <?= $data['cname'] ?> </h5>
             </div>
-            <div class='col-sm' style='width: 75%'>
-                <h5><span style="font-weight: bold;">Date: </span> <?= $data['dcutdate'] ?> </h5>
-            </div>
+            
         </div>
         <div class='row' style="display: flex;">
             <div class='col-sm' style='width: 100%'>
                 <h5 class='nopadding'><span style="font-weight: bold;">TIN: </span> <?= $data['ctin'] ?></h5>
             </div>
             <div class='col-sm' style='width: 75%'>
-                <h5 class='nopadding'><span style="font-weight: bold;">P.O. Terms: </span><?= $data['ctranno'] ?> </h5>
-            </div>
+                <h5 class='nopadding'><span style="font-weight: bold;">Date: </span> <?= $data['dcutdate'] ?> </h5>
+            </div>  
         </div>
         <div class='row' style="display: flex;">
             <div class='col-sm' style='width: 100%'>
