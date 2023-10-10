@@ -102,7 +102,7 @@
                 <table border="0" width="100%" style="border-collapse:collapse">
                     <tr>
                         <td colspan="2" align="center" style="padding-bottom: 20px">
-                                <font style="font-size: 24px;">Receive </font>
+                                <font style="font-size: 24px;">Receiving  </font>
                         </td>
                     </tr>
 
