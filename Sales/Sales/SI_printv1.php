@@ -246,7 +246,7 @@
 <script type='text/javascript'>
 
     var totnetvat = 0, totlessvat = 0, totvatable = 0, totvatxmpt= 0;
-    var vatcode = '', vatgross ='';
+    var vatcode = '', vatgross ='', printVATGross = '', printVEGross='', printZRGross='';
     $(document).ready(function(){
 
         $.ajax({
