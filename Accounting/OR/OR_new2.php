@@ -426,20 +426,13 @@
 						<?php
 							if($lallowNT==1){
 						?>
-
-						<div class="dropdown" style="display:inline-block !important;">
-							<button type="button" data-toggle="dropdown" id="btnaddSI" class="btn btn-info btn-sm dropdown-toggle">
+							<button type="button" onclick="getInvs();" id="btnaddSI" class="btn btn-info btn-sm">
 								SI <br>(Insert) <span class="caret"></span>
 							</button>
-							<ul class="dropdown-menu">
-								<li><a href="javascript:;" onClick="getInvs('Trade');">Trade</a></li>
-								<li><a href="javascript:;" onClick="getInvs('Non-Trade');">Non-Trade</a></li>
-							</ul>
-						</div>
 						<?php
 							}else{
 						?>
-							<button type="button" class="btn btn-info btn-sm" id="btnaddSI" onClick="getInvs('Trade');">
+							<button type="button" class="btn btn-info btn-sm" id="btnaddSI" onclick="getInvs();">
 								SI <br>(Insert)
 							</button>
 						<?php
@@ -1138,7 +1131,7 @@
 	}
 	*/
 
-	function getInvs(typ){
+	function getInvs(){
 	
 		if($('#txtcustid').val() == ""){
 			alert("Please pick a valid customer!");
@@ -1147,7 +1140,7 @@
 			
 			//clear table body if may laman
 			$('#MyORTbl tbody').empty();
-			$('#invtyp').val(typ);
+			$('#invtyp').val();
 			
 			//get salesno na selected na
 			var y;
@@ -1167,7 +1160,7 @@
 			//alert("th_orlist.php?x="+x+"&y="+salesnos+"&typ="+typ+"&curr="+$('#selbasecurr').val());
 			$.ajax({
         url: 'th_orlist.php',
-				data: { x:x, y:salesnos, typ:typ, curr:$('#selbasecurr').val(), type: $('#receipt').val() },
+				data: { x:x, y:salesnos, curr:$('#selbasecurr').val(), type: $('#receipt').val() },
         dataType: 'json',
         method: 'post',
         success: function (data) {

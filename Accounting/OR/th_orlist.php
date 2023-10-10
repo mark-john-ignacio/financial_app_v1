@@ -14,21 +14,37 @@ require_once "../../Connection/connection_string.php";
 		$qry = " ";
 	}
 
-	$tbl = "";
-	if($_REQUEST['typ']=="Trade"){
-		$tbl = "sales";
-		$tbl2 = "sales_t";
-	}elseif($_REQUEST['typ']=="Non-Trade"){
-		$tbl = "ntsales";
-		$tbl2 = "ntsales_t";
-	}
+	$tbl = "sales";
+	$tbl2 = "sales_t";
+	// if($_REQUEST['typ']=="Trade"){
+	// 	$tbl = "sales";
+	// 	$tbl2 = "sales_t";
+	// }elseif($_REQUEST['typ']=="Non-Trade"){
+	// 	$tbl = "ntsales";
+	// 	$tbl2 = "ntsales_t";
+	// }
+
 	$receipt = $_REQUEST['type'];
 
-	if($receipt === 'OR'){
-		$receipttype = "Goods";
-	} else{
-		$receipttype = 'Services';
+	$receipttype = '';
+	switch($receipt){
+		case 'OR':
+			$receipttype = "and B.csalestype = 'Goods'";
+			break;
+		case 'CR':
+			$receipttype = "and B.csalestype = 'Services'";
+			break;
+		case 'AR':
+			$tbl = "ntsales";
+			$tbl2 = "ntsales_t";
+			break;
 	}
+
+	// match($receipt){
+	// 	"OR" => "and B.csalestype = 'Goods'",
+	// 	"CR" => "and B.csalestype = 'Services'",
+	// 	"AR" => ""
+	// };
 
 	//alldebitlist
 	@$arradjlist = array();
@@ -61,7 +77,7 @@ require_once "../../Connection/connection_string.php";
 	left join customers C on B.compcode=C.compcode and B.ccode=C.cempid 
 	left join accounts D on C.compcode=D.compcode and C.cacctcodesales=D.cacctno 
 	left join wtaxcodes E on A.compcode=E.compcode and A.cewtcode=E.ctaxcode 
-	where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 and B.csalestype = '$receipttype' and B.ccode='".$_REQUEST['x']."') A
+	where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 $receipttype and B.ccode='".$_REQUEST['x']."') A
 	Group By A.ctranno, A.cacctid, A.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, A.dcutdate, A.ccurrencycode
 	order by A.dcutdate, A.ctranno";
 

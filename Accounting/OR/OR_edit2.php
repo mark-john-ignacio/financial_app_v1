@@ -634,15 +634,9 @@ if (mysqli_num_rows($sqlchk)!=0) {
 								<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='OR_new2.php';" id="btnNew" name="btnNew">
 						New<br>(F1)</button>
 
-									<div class="dropdown" style="display:inline-block !important;">
-										<button type="button" data-toggle="dropdown" class="btn btn-info btn-sm dropdown-toggle">
-											SI <br>(Insert) <span class="caret"></span>
-										</button>
-										<ul class="dropdown-menu">
-											<li><a href="javascript:;" onClick="getInvs('Trade');">Trade</a></li>
-											<li><a href="javascript:;" onClick="getInvs('Non-Trade');">Non-Trade</a></li>
-										</ul>
-									</div>
+								<button type="button" onclick='getInvs();' class="btn btn-info btn-sm">
+									SI <br>(Insert) <span class="caret"></span>
+								</button>
 
 								<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmOR');" id="btnUndo" name="btnUndo">
 									Undo Edit<br>(CTRL+Z)
@@ -1794,7 +1788,7 @@ else{
 
 	}
 
-	function getInvs(typ){
+	function getInvs(){
 		
 		if($('#txtcustid').val() == ""){
 			alert("Please pick a valid customer!");
@@ -1803,7 +1797,7 @@ else{
 			
 			//clear table body if may laman
 			$('#MyORTbl tbody').empty();
-			$('#invtyp').val(typ);
+			$('#invtyp').val();
 			
 			//get salesno na selected na
 			var y;
@@ -1823,7 +1817,7 @@ else{
 			//alert("th_orlist.php?x="+x+"&y="+salesnos+"&typ="+typ);
 			$.ajax({
 				url: 'th_orlist.php',
-				data: { x:x, y:salesnos, typ:typ },
+				data: { x:x, y:salesnos, type: $('#receipt').val() },
 				dataType: 'json',
 				method: 'post',
 				success: function (data) {
