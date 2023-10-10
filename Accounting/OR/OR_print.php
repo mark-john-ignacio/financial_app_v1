@@ -188,7 +188,6 @@ var vatcode = '', vatgross ='', printVATGross = '', printVEGross='', printZRGros
 
                 res['data2'].map((item, key) => {
                     console.log(item)
-                    if(item.csalestype === 'Goods'){
                         totvatable += parseFloat(item.napplied);
                         totlessvat += parseFloat(item.nnet);
                         totnetvat += parseFloat(item.nvat);
@@ -226,11 +225,6 @@ var vatcode = '', vatgross ='', printVATGross = '', printVEGross='', printZRGros
                             $('<td>').text(item.csalesno),
                             $('<td>').text(toNumber(item.nnet))
                         ).appendTo('#list > tbody')
-                        
-                    } else {
-                        console.log("No Official Receipt Reference");
-                    }
-                        
                 })
 
                 $('<tr>').append(

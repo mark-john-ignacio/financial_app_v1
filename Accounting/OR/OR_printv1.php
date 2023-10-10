@@ -254,7 +254,6 @@
                 if(res.valid){
                     res['data2'].map((item, key) => {
                         console.log(item)
-                        if(item.csalestype === 'Goods'){
                             totvatable += parseFloat(item.napplied);
                             totlessvat += parseFloat(item.nnet);
                             totnetvat += parseFloat(item.nvat);
@@ -288,10 +287,6 @@
                                 $('<td>').text(item.csalesno),
                                 $('<td>').text(toNumber(item.nnet))
                             ).appendTo('#list > tbody')
-                            
-                        } else {
-                            console.log("No Official Receipt Reference");
-                        }
                     })
 
 
