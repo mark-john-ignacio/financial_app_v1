@@ -126,12 +126,6 @@
 									<td style="padding: 10px;">
 											<?=$CustName?>
 									</td>
-									<td width="100px" style="padding: 10px;" align="right">
-											<b>TERMS</b>
-									</td>
-									<td width="100px" style="padding: 10px;" align="right">
-											<?=$Terms?>
-									</td>
 								</tr>
 							</table>
 					</td>

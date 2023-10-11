@@ -213,7 +213,7 @@
 
                     <tr>
                         <td align="center" class="tdpadx tddetz"><?php echo intval($row['nqty']);?></td>
-                        <td align="center" class="tdpadx tddetz"><?php echo $row['cunit'];?></td>					
+                        <td align="center" class="tdpadx tddetz"><?php echo $row['cunit'];?></td>
                         <td align="center" class="tdpadx tddetz"><?php echo $row['citemdesc'];?></td>
                     </tr>
 
