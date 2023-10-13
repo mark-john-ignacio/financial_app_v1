@@ -10,6 +10,7 @@ include('../include/access.php');
 
 $company = $_SESSION['companyid'];
 
+echo " CLYDE ";
 //get user details
 $arrcompz = array();
 $cntzcompany = 0;
