@@ -21,13 +21,9 @@ $company = $_SESSION['companyid'];
 					$compname =  $row['compname'];
 				}
 
+$dateFrom = $_REQUEST['date1'];
+$dateTo = (@$_REQUEST['date2']) ? @$_REQUEST['date2'] : "";
 
-$date1 = $_POST["date1"];
-$date2 = $_POST["date2"];
-
-function getbalance($cnt, $bal, $ndebit, $ncredit){
-
-}
 ?>
 
 <html>
@@ -47,15 +43,30 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 <center>
 <h2><?php echo strtoupper($compname);  ?></h2>
 <h2>Account Ledger</h2>
-<h3>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h3>
+<h3>For the Period of <?= 
+		($dateTo !== "") ? 
+				date_format(date_create($dateFrom),"F d, Y") . ' to '. date_format(date_create($dateTo),"F d, Y")  : 
+				date_format(date_create($dateFrom),"Y") ?>
+</h3>
 </center>
 
 <br><br>
 
 <?php
+
+
+	
+
+	
+	if($dateTo !== ""){
+		$dateManagement = "between STR_TO_DATE('$dateFrom', '%m/%d/%Y') and STR_TO_DATE('$dateTo', '%m/%d/%Y')";
+	}else {
+		$dateManagement =  "and YEAR(A.ddate) = '$dateFrom'";
+	}
+
 	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit
 	From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
-	Where A.compcode='$company' and A.ddate between STR_TO_DATE('".$_REQUEST['date1']."', '%m/%d/%Y') and STR_TO_DATE('".$_REQUEST['date2']."', '%m/%d/%Y')
+	Where A.compcode='$company' and A.ddate $dateManagement
 	and A.acctno = '".$_REQUEST['ccode']."'
 	Order By A.acctno, A.dpostdate, A.ctranno, A.ndebit desc, A.ncredit desc";
 
