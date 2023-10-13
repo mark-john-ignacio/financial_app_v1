@@ -1393,7 +1393,7 @@ $company = $_SESSION['companyid'];
 		var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmdesc+"</td>";
 
 		var tditmewts = "";
-		//if(xChkVatableStatus==1){ 
+		if(xChkVatableStatus==1){ 
 			
 				var gvnewt = $("#selewt").val();
 				var xz = $("#hdnewtlist").val();
@@ -1429,7 +1429,7 @@ $company = $_SESSION['companyid'];
 
 				tditmewts = "<td width=\"150\" nowrap> <select class='form-control input-xs' name=\"selitmewtyp\" id=\"selitmewtyp"+lastRow+"\" "+isdisabled+" multiple> <option value=\"none\">None</option>" + ewtoptions + "</select> </td>";
 
-	//	}
+		}
 
 
 		var tditmvats = "";

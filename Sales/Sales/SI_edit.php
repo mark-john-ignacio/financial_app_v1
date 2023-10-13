@@ -1602,7 +1602,7 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 	var tditmunit = "<td width=\"100\" nowrap>"+uomoptions+"</td>";
 
 		var tditmewts = "";
-		//if(xChkVatableStatus==1){ 
+		if(xChkVatableStatus==1){ 
 			
 			var gvnewt = $("#selewt").val();
 				var xz = $("#hdnewtlist").val();
@@ -1637,7 +1637,7 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 
 				tditmewts = "<td width=\"150\" nowrap> <select class='form-control input-xs' name=\"selitmewtyp\" id=\"selitmewtyp"+lastRow+"\" "+isdisabled+" multiple> <option value=\"none\">None</option>" + ewtoptions + "</select> </td>";
 
-		//}
+		}
 
   var tditmvats = "";
   var itsvats = "";
