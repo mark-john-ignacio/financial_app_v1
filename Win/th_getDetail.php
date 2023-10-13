@@ -8,16 +8,16 @@ require_once "../Connection/connection_string.php";
 	$company = $_SESSION['companyid'];
 	$date1 = date("Y-m-d");
 		
-		$sql = "select a.cpartno, a.cscancode, a.citemdesc, a.nretailcost, a.npurchcost, a.cunit, a.cstatus, a.ltaxinc, ifnull(c.nqty,0) as nqty
+	$sql = "select a.cpartno, a.cpartno as cscancode, a.citemdesc, a.cunit, a.cstatus, ifnull(c.nqty,0) as nqty, a.linventoriable
 		from items a 
 		left join
 			(
 				select a.citemno, COALESCE((Sum(nqtyin)-sum(nqtyout)),0) as nqty
 				From tblinventory a
 				right join items d on a.citemno=d.cpartno and a.compcode=d.compcode
-				where a.compcode='$company' and  a.dcutdate <= '$date1' and d.cscancode = '".$_REQUEST['x']."'
+				where a.compcode='$company' and  a.dcutdate <= '$date1' and d.cpartno = '".$_REQUEST['x']."'
 			 ) c on a.cpartno=c.citemno
-		WHERE a.compcode='$company' and a.cscancode = '".$_REQUEST['x']."'";
+		WHERE a.compcode='$company' and a.cpartno = '".$_REQUEST['x']."'";
 
 //	echo $sql;
 	
@@ -27,33 +27,43 @@ require_once "../Connection/connection_string.php";
 
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 
-
-			$json['citemno'] = $row['cpartno'];
-			$json['cscancode'] = $row['cscancode'];
-			$json['cdesc'] = $row['citemdesc'];
-			$json['cunit'] = $row['cunit'];
-			$json['ncost'] = $row['npurchcost'];
-			$json['nprice'] = $row['nretailcost'];
-			$json['nqty'] = $row['nqty'];
-
-			if((float)$row['nqty']<=0){
-				 $json['citemno'] = "";
-				 $json['cscancode'] = "";
-				 $json['cdesc'] = "No more stock available!";
-				 $json['cunit'] = "";
-				 $json['ncost'] = "";
-				 $json['nprice'] = "";
-				 $json['nqty'] = "";
+			if($row['linventoriable']==0){
+				if((float)$row['nqty']<=0){
+					$json['citemno'] = "";
+					$json['cscancode'] = "";
+					$json['cdesc'] = "No more stock available!";
+					$json['cunit'] = "";
+					$json['ncost'] = "";
+					$json['nprice'] = "";
+					$json['nqty'] = "";
+			 }else{
+					$json['citemno'] = $row['cpartno'];
+					$json['cscancode'] = $row['cpartno'];
+					$json['cdesc'] = $row['citemdesc'];
+					$json['cunit'] = $row['cunit'];
+					$json['ncost'] = 1;
+					$json['nprice'] = 1;
+					$json['nqty'] = $row['nqty'];
+			 }
+			}else{
+				$json['citemno'] = $row['cpartno'];
+				$json['cscancode'] = $row['cpartno'];
+				$json['cdesc'] = $row['citemdesc'];
+				$json['cunit'] = $row['cunit'];
+				$json['ncost'] = 1;
+				$json['nprice'] = 1;
+				$json['nqty'] = 1;
 			}
+			
 
 			if($row['cstatus']=="INACTIVE"){
-				 $json['citemno'] = "";
-				  $json['cscancode'] = "";
-				 $json['cdesc'] = "Item is currently inactive!";
-				 $json['cunit'] = "";
-				 $json['ncost'] = "";
-				 $json['nprice'] = "";
-				 $json['nqty'] = "";
+				$json['citemno'] = "";
+				$json['cscancode'] = "";
+				$json['cdesc'] = "Item is currently inactive!";
+				$json['cunit'] = "";
+				$json['ncost'] = "";
+				$json['nprice'] = "";
+				$json['nqty'] = "";
 			}
 			
 			 $json2[] = $json;
