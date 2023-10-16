@@ -1,40 +1,43 @@
 <?php
-	if(!isset($_SESSION)){
-		session_start();
-	}
-	$_SESSION['pageid'] = "SalesReg.php";
+if(!isset($_SESSION)){
+session_start();
+}
+$_SESSION['pageid'] = "SalesReg.php";
 
-	include('../../Connection/connection_string.php');
-	include('../../include/denied.php');
-	include('../../include/access2.php');
-
-	$company = $_SESSION['companyid'];
-	$sql = "select * From company where compcode='$company'";
-	$result=mysqli_query($con,$sql);
+include('../../Connection/connection_string.php');
+include('../../include/denied.php');
+include('../../include/access2.php');
+$company = $_SESSION['companyid'];
+				$sql = "select * From company where compcode='$company'";
+				$result=mysqli_query($con,$sql);
 				
-	if (!mysqli_query($con, $sql)) {
-		printf("Errormessage: %s\n", mysqli_error($con));
-	} 
+					if (!mysqli_query($con, $sql)) {
+						printf("Errormessage: %s\n", mysqli_error($con));
+					} 
 					
-	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-	{
-		$compname =  $row['compname'];
-	}
+				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+				{
+					$compname =  $row['compname'];
+					$compadd = $row['compadd'];
+					$comptin = $row['comptin'];
+				}
 ?>
 
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Sales Register</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Sales Register</title>
 </head>
 
 <body style="padding:10px">
-<center>
-<h2><?php echo strtoupper($compname);  ?></h2>
-<h2>Journal: Sales Register</h2>
-<h3>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h3>
-</center>
+<h3><b>Company: <?=strtoupper($compname);  ?></b></h3>
+<h3><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h3>
+<h3><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h3>
+<h3><b>Kind of Book: Sales Register</b></h3>
+<h3><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h3>
+
+
 
 <br><br>
 <table width="100%" border="0" align="center">
@@ -56,16 +59,8 @@ $date2 = $_POST["date2"];
 $sql = "
 select A.dcutdate, A.csalesno, A.ccode, A.cname, A.acctno, A.ctitle, A.ncredit, A.ndebit, A.lcancelled, A.lapproved
 FROM(
-select a.dcutdate, a.ctranno as csalesno, a.ccode, IFNULL(c.ctradename,c.cname) as cname, b.acctno, b.ctitle, b.ncredit, b.ndebit, a.lcancelled, a.lapproved
+select a.dcutdate, a.ctranno as csalesno, a.ccode, c.cname, b.acctno, b.ctitle, b.ncredit, b.ndebit, a.lcancelled, a.lapproved
 From sales a
-left join glactivity b on a.ctranno=b.ctranno and a.compcode=b.compcode
-left join customers c on a.ccode=c.cempid and a.compcode=c.compcode
-where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
-
-UNION ALL
-
-select a.dcutdate, a.ctranno as csalesno, a.ccode, IFNULL(c.ctradename,c.cname) as cname, b.acctno, b.ctitle, b.ncredit, b.ndebit, a.lcancelled, a.lapproved
-From ntsales a
 left join glactivity b on a.ctranno=b.ctranno and a.compcode=b.compcode
 left join customers c on a.ccode=c.cempid and a.compcode=c.compcode
 where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')

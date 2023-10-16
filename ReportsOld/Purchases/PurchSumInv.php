@@ -20,6 +20,8 @@ $company = $_SESSION['companyid'];
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Purchase Summary</title>
 </head>
@@ -32,32 +34,32 @@ $company = $_SESSION['companyid'];
 </center>
 
 <br><br>
-<table width="100%" border="0" align="center">
+<table width="100%" border="0" align="center" id="MyTable">
   <tr>
   	<th>Transaction No.</th>
   	<th>Date</th>
     <th colspan="2">Supplier</th>
-    <th>Total Amount</th>
+    <th style="text-align: right">Total Amount</th>
   </tr>
   
 <?php
 
 $date1 = $_POST["date1"];
 $date2 = $_POST["date2"];
-//$rpt = $_POST["seltype"];
 
-//if($rpt==""){
-//	$qrytyp = "";
-//}else{
-//	$qrytyp = " and d.ctype='$rpt'";
-//}
+$postz = $_POST["sleposted"];
 
+if($postz!==""){
+	$qry = "and a.lapproved=".$postz;
+}
+else{
+	$qry = "";
+}
 
 $sql = "select a.ccode, b.cname, a.ngross as namnt, a.ctranno as csalesno, a.dreceived as dcutdate
-From receive a
+From suppinv a
 left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode
-where a.compcode='001' and a.dreceived between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and a.lcancelled=0 and a.lapproved=1
-order by b.cname, a.dreceived";
+where a.compcode='001' and a.dreceived between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and a.lcancelled=0  ".$qry." order by a.ctranno";
 
 //echo $sql;
 
@@ -77,7 +79,7 @@ $result=mysqli_query($con,$sql);
     <td><?php echo $row['dcutdate'];?></td>
     <td><?php echo $row['ccode'];?></td>
     <td><?php echo utf8_encode($row['cname']);?></td>
-    <td align="right"><?php echo $row['namnt'];?></td>
+    <td align="right"><?php echo number_format($row['namnt'],2);?></td>
   </tr>
 <?php 
 
@@ -87,9 +89,16 @@ $result=mysqli_query($con,$sql);
 
     <tr class='rptGrand'>
     	<td colspan="4" align="right"><b>G R A N D&nbsp;&nbsp;T O T A L:</b></td>
-    	<td align="right"><b><?php echo $totPrice;?></b></td>
+    	<td align="right"><b><?php echo number_format($totPrice,2);?></b></td>
     </tr>
 </table>
 
 </body>
 </html>
+
+<script type="text/javascript">
+$( document ).ready(function() {
+
+	$('#MyTable tbody tr:last').clone().insertBefore('#MyTable tbody tr:first');
+});
+</script>

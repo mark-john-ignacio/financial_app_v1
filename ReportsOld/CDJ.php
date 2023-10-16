@@ -21,7 +21,7 @@ include('../include/access.php');
 <script src="../Bootstrap/js/bootstrap3-typeahead.js"></script>
 
 <script src="../Bootstrap/js/moment.js"></script>
-<script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+<script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script> 
 
 </head>
 
@@ -29,10 +29,10 @@ include('../include/access.php');
 <center><font size="+1"><b><u>Cash Disbursement Journal</u></b></font></center>
 <br>
 
-<form action="Accounting/CDJ.php" method="post" name="frmrep" id="frmrep" target="_blank">
+<form action="Accounting/CDJ.php" method="post" name="frmrep" id="frmrep" onclick='return false;' target="_blank">
 <table width="100%" border="0" cellpadding="2">
   <tr>
-    <td valign="top" width="50" style="padding:2px"><button type="submit" class="btn btn-danger navbar-btn" id="btnsales">
+    <td valign="top" width="50" style="padding:2px"><button type="button" class="btn btn-danger navbar-btn" id="btnsales">
       <span class="glyphicon glyphicon-search"></span> View Report
       </button></td>
     <td width="150" style="padding-left:10px"><b>Date Range: </b></td>
@@ -57,6 +57,12 @@ include('../include/access.php');
         </div>   
       </td>
   </tr>
+  <tr>
+    <td> 
+      <button type="button" class="btn btn-success btn-block" id="btnxls">
+            <i class="fa fa-file-excel-o"></i> To Excel
+      </button></td>
+  </tr>
 </table>
 </form>
 </body>
@@ -67,7 +73,14 @@ $(function(){
 	        $('.datepick').datetimepicker({
                  format: 'MM/DD/YYYY'
            });
-	
+           $('#btnxls').on('click', function(){
+              $('#frmrep').attr("action", "Accounting/CDB_xls.php");
+              $('#frmrep').submit();
+           })
+           $('#btnsales').on('click', function(){
+            $('#frmrep').attr('action', 'Accounting/CDJ.php')
+            $('#frmrep').submit();
+           })
 });
 
 function setact(x){

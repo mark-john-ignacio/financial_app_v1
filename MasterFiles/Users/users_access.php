@@ -752,24 +752,6 @@ xmlhttp.send();
             </div>
 		</div>
 		</div>
-  <!--
-  	   <br>
-       <b><u><i>Receiving (AMOUNT)</i></u></b>
-        <div style="padding-left:10px;"> 
-        <div class="col-xs-12 nopadwleft">
-            <div class="col-xs-2 nopadding">
-            	<label><input type="checkbox" name="chkAcc[]" value="Receive_amt_edit.php" id="chkBox160">&nbsp;Edit</label>
-                <input type="hidden" name="chkAcc[]" value="" id="chkBox161">
-                <input type="hidden" name="chkAcc[]" value="" id="chkBox162">
-            </div>
-            <div class="col-xs-2 nopadding">
-            	<label><input type="checkbox" name="chkAcc[]" value="Receive_amt_post" id="chkBox161">&nbsp;Post</label>
-            </div>
-            <div class="col-xs-2 nopadding">
-            	<label><input type="checkbox" name="chkAcc[]" value="Receive_amt_cancel" id="chkBox162">&nbsp;Cancel</label>
-            </div>
-</div>
-		</div>>-->
      
         <br>
         <b><u><i>Purchase Return</i></u></b>
@@ -803,11 +785,27 @@ xmlhttp.send();
     
      <div id="menu3" class="tab-pane fade">
 		
-       <br>
-       <b><u><i>Journal Entry</i></u></b>
-       <div style="padding-left:10px;"> 
-        <div class="col-xs-12 nopadwleft">
-         	<div class="col-xs-2 nopadding">
+        <br>
+        <b><u><i>Currency List</i></u></b>
+        <div style="padding-left:10px;"> 
+          <div class="col-xs-12 nopadwleft">
+         	  <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="Currency.php" <?=(in_array("Currency.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;View List</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="Currency_new.php" <?=(in_array("Currency_new.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Add New</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="Currency_edit.php" <?=(in_array("Currency_edit.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
+            </div>
+		      </div>
+		    </div>
+
+        <br><br><br>
+        <b><u><i>Journal Entry</i></u></b>
+        <div style="padding-left:10px;"> 
+          <div class="col-xs-12 nopadwleft">
+         	  <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="Journal.php" id="chkBox77" <?=(in_array("Journal.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;View List</label>
             </div>
             <div class="col-xs-2 nopadding">
@@ -826,10 +824,10 @@ xmlhttp.send();
             <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="Journal_unpost.php" id="chkBox111" <?=(in_array("Journal_unpost.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Void</label>
             </div>
-		</div>
-		</div>
+		      </div>
+		    </div>
 
-    <br><br><br>
+        <br><br><br>
        <b><u><i>AP Suppliers Invoice</i></u></b>
         <div style="padding-left:10px;"> 
         <div class="col-xs-12 nopadwleft">

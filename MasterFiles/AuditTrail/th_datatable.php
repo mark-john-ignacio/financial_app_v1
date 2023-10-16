@@ -12,6 +12,11 @@
 	if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
 	{
 		$query .= "and LOWER(A.ctranno) like LOWER('%".$_POST['searchByName']."%')";
+	} 
+
+	if(isset($_POST['seltype']) && $_POST['seltype'] != '')
+	{
+		$query .= "and module = '".$_POST['seltype']."'";
 	}
 
 	if(isset($_POST['order']))

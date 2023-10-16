@@ -59,6 +59,12 @@ include('../include/access.php');
         </div>   
       </td>
   </tr>
+  <tr>
+    <td> 
+      <button type="submit" class="btn btn-success btn-block" id="btnxls">
+            <i class="fa fa-file-excel-o"></i> To Excel
+      </button></td>
+  </tr>
 </table>
 </form>
 </body>
@@ -69,8 +75,17 @@ $(function(){
 	        $('.datepick').datetimepicker({
                  format: 'MM/DD/YYYY'
            });
-	
+           $('#btnxls').on('click', function(){
+              $('#frmrep').attr("action", "Accounting/GL_exls.php");
+              $('#frmrep').submit();
+           })
+
+           $('#btnsales').on('click', function(){
+            $('#frmrep').attr('action', 'Accounting/GLedger.php')
+            $('#frmrep').submit();
+           })
 });
+
 
 function setact(x){
 	document.getElementById("frmrep").action = x;

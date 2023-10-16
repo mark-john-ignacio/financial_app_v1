@@ -145,7 +145,8 @@ $company = $_SESSION['companyid'];
 <input type="hidden" value='<?=json_encode(@$arrdisclist)?>' id="hdndiscs"> 
 <input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes">  
 <input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors"> 
-<input type="hidden" value='<?=json_encode(@$arrewtlist)?>' id="hdnewtlist"> 
+<input type="hidden" value='<?=json_encode(@$arrewtlist)?>' id="hdnewtlist">  
+<input type="hidden" value='<?=$nicomeaccount?>' id="incmracct">
 
 <form action="SI_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
 	<fieldset>
@@ -380,6 +381,10 @@ $company = $_SESSION['companyid'];
 												<input type="hidden" name="hdnunit" id="hdnunit"> 
 												<input type="hidden" name="hdnctype" id="hdnctype"> 
 												<input type="hidden" name="hdncvat" id="hdncvat"> 
+
+												<input type="hidden" name="hdnacctno" id="hdnacctno">  
+												<input type="hidden" name="hdnacctid" id="hdnacctid"> 
+												<input type="hidden" name="hdnacctdesc" id="hdnacctdesc"> 
 											</td>
 											<td>&nbsp;</td>
 											<td style="padding:2px;"  align="right">
@@ -416,7 +421,7 @@ $company = $_SESSION['companyid'];
 					<div id="tableContainer" class="alt2" dir="ltr" style="
 								margin: 0px;
 								padding: 3px;
-								width: 1250px;
+								width: 1500px;
 								height: 300px;
 								text-align: left;">
 		
@@ -433,6 +438,8 @@ $company = $_SESSION['companyid'];
 									<th width="100px" style="border-bottom:1px solid #999">Discount</th>
 									<th width="100px" style="border-bottom:1px solid #999">Amount</th>
 									<th width="100px" style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
+									<th width="80px" style="border-bottom:1px solid #999" class="chkinctype">Acct Code</th>
+									<th width="200px" style="border-bottom:1px solid #999" class="chkinctype">Acct Title</th>
 									<th style="border-bottom:1px solid #999">&nbsp;</th>
 								</tr>
 							</thead>
@@ -729,23 +736,22 @@ $company = $_SESSION['companyid'];
 
 	$(document).ready(function(e) {	
 	
-		   		$.ajax({
-					url : "../../include/th_xtrasessions.php",
-					type: "Post",
-					async:false,
-					dataType: "json",
-					success: function(data)
-					{	
-					  console.log(data);
-            $.each(data,function(index,item){
-						   xChkBal = item.chkinv; //0 = Check ; 1 = Dont Check
-						   xChkLimit = item.chkcustlmt; //0 = Disable ; 1 = Enable
-						   xChkLimitWarn = item.chklmtwarn; //0 = Accept Warninf ; 1 = Accept Block ; 2 = Refuse Order
-						   xChkVatableStatus = item.chkcompvat;
-						   
-					  });
-					}
+		$.ajax({
+			url : "../../include/th_xtrasessions.php",
+			type: "Post",
+			async:false,
+			dataType: "json",
+			success: function(data)
+			{	
+				console.log(data);
+				$.each(data,function(index,item){
+					xChkBal = item.chkinv; //0 = Check ; 1 = Dont Check
+					xChkLimit = item.chkcustlmt; //0 = Disable ; 1 = Enable
+					xChkLimitWarn = item.chklmtwarn; //0 = Accept Warninf ; 1 = Accept Block ; 2 = Refuse Order
+					xChkVatableStatus = item.chkcompvat;						   
 				});
+			}
+		});
 		//if(xChkBal==1){
 			//$("#tblAvailable").hide();
 		//}
@@ -767,6 +773,13 @@ $company = $_SESSION['companyid'];
 		else{
 			$(".chklimit").show();
 		}
+
+		if($("#incmracct").val()=="item"){
+			$(".chkinctype").show();
+		}else{
+			$(".chkinctype").hide();
+		}
+		
 	
 
 	  $('#txtprodnme').attr("disabled", true);
@@ -784,6 +797,43 @@ $company = $_SESSION['companyid'];
 			maxFileCount: 5,
 			browseOnZoneClick: true,
 			fileActionSettings: { showUpload: false, showDrag: false,}
+		});
+
+		$('body').on('focus',".cacctdesc", function(){
+			var $input = $(".cacctdesc");
+
+			var id = $(document.activeElement).attr('id');	
+			var numid = id.replace("txtacctname","");
+
+			$("#"+id).typeahead({
+				items: 10,
+				source: function(request, response) {
+					$.ajax({
+						url: "../th_accounts.php",
+						dataType: "json",
+						data: {
+							query: $("#"+id).val()
+						},
+						success: function (data) {
+							console.log(data);
+							response(data);
+						}
+					});
+				},
+				autoSelect: true,
+				displayText: function (item) {
+					return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.name + '</small></div>';
+				},
+				highlighter: Object,
+				afterSelect: function(item) { 
+
+					$('#'+id).val(item.name).change(); 
+					$("#txtacctno"+numid).val(item.id); 
+					$("#txtacctcode"+numid).val(item.acct);
+
+				}
+			});
+
 		});
 
   });
@@ -994,6 +1044,9 @@ $company = $_SESSION['companyid'];
 				$("#hdnqty").val(item.nqty);
 				$("#hdnqtyunit").val(item.cqtyunit); 
 				$("#hdncvat").val(item.ctaxcode); 
+				$("#hdnacctno").val(item.cacctno); 
+				$("#hdnacctid").val(item.cacctid); 
+				$("#hdnacctdesc").val(item.cacctdesc); 
 
 				addItemName("","","","","","","","");
 				
@@ -1324,6 +1377,9 @@ $company = $_SESSION['companyid'];
 			$("#hdnqtyunit").val("");
 			$("#hdnctype").val("");
 			$("#hdncvat").val("");
+			$("#hdnacctno").val(""); 
+			$("#hdnacctid").val(""); 
+			$("#hdnacctdesc").val("");
 			
 		}
 
@@ -1337,6 +1393,9 @@ $company = $_SESSION['companyid'];
 		var itmqty = $("#hdnqty").val();
 		var itmunit = $("#hdnunit").val();
 		var itmccode = $("#hdnpricever").val(); 
+		var itmacctno = $("#hdnacctno").val(); 
+		var itmacctid = $("#hdnacctid").val(); 
+		var itmacctnm = $("#hdnacctdesc").val();
 		
 		if(qty=="" && pricex=="" && amtx=="" && factr==""){
 			var itmtotqty = 1;
@@ -1463,11 +1522,22 @@ $company = $_SESSION['companyid'];
 
 		var tditmamount = "<td nowrap> <input type='text' value='"+baseprice+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnamount\" id='txtnamount"+lastRow+"' readonly> </td>";
 
-		var tditmdel = "<td nowrap> <input class='btn btn-danger btn-xs btn-block' type='button' id='del"+ itmcode +"' value='delete' data-var='"+lastRow+"'/></td>";
+		if($("#incmracct").val()=="item"){
+			var tdglaccount = "<td nowrap><input type='text' value='"+itmacctid+"' class='form-control input-xs' name=\"txtacctcode\" id='txtacctcode"+lastRow+"' readonly> <input type='hidden' value='"+itmacctno+"' name=\"txtacctno\" id='txtacctno"+lastRow+"'> </td>";
+
+			var tdgltitle = "<td nowrap><input type='text' value='"+itmacctnm+"' class='cacctdesc form-control input-xs' name=\"txtacctname\" id='txtacctname"+lastRow+"'></td>";
+
+			var tditmdel = "<td nowrap> <input class='btn btn-danger btn-xs btn-block' type='button' id='del"+ itmcode +"' value='delete' data-var='"+lastRow+"'/></td>";
+		}else{
+			var tdglaccount = "";
+			var tdgltitle = "";
+			var tditmdel = "<td nowrap> <input type='hidden' value='"+itmacctnm+"' name=\"txtacctcode\" id='txtacctcode"+lastRow+"'> <input type='hidden' value='"+itmacctnm+"' name=\"txtacctname\" id='txtacctname"+lastRow+"'> <input class='btn btn-danger btn-xs btn-block' type='button' id='del"+ itmcode +"' value='delete' data-var='"+lastRow+"'/></td>";
+
+		}
 
 		//<input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/>
 
-		$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmewts + tditmvats + tditmunit + tditmqty + tditmprice + tditmdisc + tditmbaseamount+ tditmamount + tditmdel + '</tr>');
+		$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmewts + tditmvats + tditmunit + tditmqty + tditmprice + tditmdisc + tditmbaseamount+ tditmamount + tdglaccount + tdgltitle + tditmdel + '</tr>');
 
 										$("#del"+itmcode).on('click', function() { 
 											var xy = $(this).data('var');

@@ -129,10 +129,10 @@ function resizeIframe(obj) {
                             </span>&nbsp;&nbsp;Sales Per Customer</a></td>
           </tr>
           
-          <tr>
+          <!--<tr>
             <td height="50px" style="border-bottom:solid #999 1px"><a href="javascript:;" onClick="setI('SalesPerSupp.php')"><span class="glyphicon glyphicon-chevron-right">
                             </span>&nbsp;&nbsp;Sales Per Suppliers</a></td>
-          </tr>
+          </tr>-->
 
              <tr>
             <td height="50px" style="border-bottom:solid #999 1px"><a href="javascript:;" onClick="setI('SalesSummary.php')"><span class="glyphicon glyphicon-chevron-right">

@@ -36,7 +36,7 @@
 	}
 
 	if($trantype!==""){
-		$xsql = "select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.namount
+		$xsql = "select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.namount
 		From ".$tbldtl." a	
 		left join ".$tblhdr." b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
@@ -50,7 +50,7 @@
 	}else{
 		$xsql = "Select A.nident, A.dcutdate, A.ctranno, A.ctype, A.typdesc, A.ccode, A.cname, A.lapproved, A.citemno, A.citemdesc, A.cunit, A.nqty, A.nprice, A.namount
 		From (
-			select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.namount
+			select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.namount
 			From so_t a	
 			left join so b on a.ctranno=b.ctranno and a.compcode=b.compcode
 			left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
@@ -61,7 +61,7 @@
 
 			UNION ALL
 
-			select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.namount
+			select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.namount
 			From ntso_t a	
 			left join ntso b on a.ctranno=b.ctranno and a.compcode=b.compcode
 			left join items c on a.citemno=c.cpartno and a.compcode=c.compcode

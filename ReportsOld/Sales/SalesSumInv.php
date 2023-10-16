@@ -25,6 +25,8 @@ $company = $_SESSION['companyid'];
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>Sales Summary</title>
 </head>
@@ -37,7 +39,7 @@ $company = $_SESSION['companyid'];
 </center>
 
 <br><br>
-<table width="100%" border="0" align="center">
+<table width="100%" border="0" align="center" id="MyTable">
   <tr>
   	<th>Transaction Type</th>
 		<th>Transaction No.</th>
@@ -75,14 +77,14 @@ if($postedtran!==""){
 
 if($trantype=="Trade"){
 
-	$result=mysqli_query($con,"select a.compcode, a.ctranno, b.dcutdate, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, 'Trade' as ctype, sum(A.nprice*a.nqty) as nprice
+	$result=mysqli_query($con,"select a.compcode, a.ctranno, b.dcutdate, b.ccode, d.ctradename as cname, b.lapproved, 'Trade' as ctype, sum(A.namount) as nprice
 	From sales_t a	
 	left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 	left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 	left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 	where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
 	".$qryitm.$qrycust.$qryposted."
-	Group By a.compcode, a.ctranno, b.dcutdate, b.ccode, IFNULL(d.ctradename,d.cname), b.lapproved
+	Group By a.compcode, a.ctranno, b.dcutdate, b.ccode, d.ctradename, b.lapproved
 	order by a.ctranno");
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 		$finarray[] = $row;
@@ -90,14 +92,14 @@ if($trantype=="Trade"){
 
 }elseif($trantype=="Non-Trade"){
 
-	$result=mysqli_query($con,"select a.compcode, a.ctranno, b.dcutdate, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, 'Non-Trade' as ctype, sum(A.nprice*a.nqty) as nprice
+	$result=mysqli_query($con,"select a.compcode, a.ctranno, b.dcutdate, b.ccode, d.ctradename as cname, b.lapproved, 'Non-Trade' as ctype, sum(A.namount) as nprice
 	From ntsales_t a	
 	left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 	left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 	left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 	where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
 	".$qryitm.$qrycust.$qryposted."
-	Group By a.compcode, a.ctranno, b.dcutdate, b.ccode, IFNULL(d.ctradename,d.cname), b.lapproved
+	Group By a.compcode, a.ctranno, b.dcutdate, b.ccode, d.ctradename, b.lapproved
 	order by a.ctranno");
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 		$finarray[] = $row;
@@ -106,23 +108,23 @@ if($trantype=="Trade"){
 }else{
 	$result=mysqli_query($con,"Select A.compcode, A.ctranno, A.dcutdate, A.ccode, A.cname, A.lapproved, A.ctype, sum(A.nprice) as nprice
 	From (
-		select a.compcode, a.ctranno, b.dcutdate, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, 'Trade' as ctype, sum(A.nprice*a.nqty) as nprice
+		select a.compcode, a.ctranno, b.dcutdate, b.ccode, d.ctradename as cname, b.lapproved, 'Trade' as ctype, sum(A.namount) as nprice
 		From sales_t a	
 		left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 		left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
 		".$qryitm.$qrycust.$qryposted."
-		Group By a.compcode, a.ctranno, b.dcutdate, b.ccode, IFNULL(d.ctradename,d.cname), b.lapproved
+		Group By a.compcode, a.ctranno, b.dcutdate, b.ccode, d.ctradename, b.lapproved
 		UNION ALL
-		select a.compcode, a.ctranno, b.dcutdate, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, 'Non-Trade' as ctype, sum(A.nprice*a.nqty) as nprice
+		select a.compcode, a.ctranno, b.dcutdate, b.ccode, d.ctradename as cname, b.lapproved, 'Non-Trade' as ctype, sum(A.namount) as nprice
 		From ntsales_t a	
 		left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 		left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
 		".$qryitm.$qrycust.$qryposted."
-		Group By a.compcode, a.ctranno, b.dcutdate, b.ccode, IFNULL(d.ctradename,d.cname), b.lapproved
+		Group By a.compcode, a.ctranno, b.dcutdate, b.ccode, d.ctradename, b.lapproved
 	) A 
 	Group By A.compcode, A.ctranno, A.dcutdate, A.ccode, A.cname, A.lapproved, A.ctype order by A.ctype, A.ctranno");
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
@@ -168,3 +170,10 @@ $classcode="";
 </table>
 </body>
 </html>
+
+<script type="text/javascript">
+$( document ).ready(function() {
+
+	$('#MyTable tbody tr:last').clone().insertBefore('#MyTable tbody tr:first');
+});
+</script>

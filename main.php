@@ -459,6 +459,11 @@
 					</a>
 					<ul class="sub-menu">
 						<li>
+							<a href="javascript:;" onClick="setpage('Accounting/Currency/currency.php?ix=');">
+                <i class="fa fa-money"> </i> Currency List
+							</a>
+						</li>
+						<li>
 							<a href="javascript:;" onClick="setpage('Accounting/Journal/Journal.php?ix=');">
                 <i class="fa fa-book"> </i>Journal Entry
 							</a>
@@ -485,9 +490,18 @@
                 </li>
 
 								<?php
-									$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='RFPMODULE'"); 
 									
-									if (mysqli_num_rows($result)!=0) {
+									$sql = "SELECT * FROM `parameters` WHERE compcode='$company' and ccode='RFPMODULE'";
+									$result=mysqli_query($con,$sql);
+																														
+									$crfpx = 0;                                       
+														
+									while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+									{
+										$crfpx = $row['cvalue'];
+									}
+
+									if ($crfpx==1) {
 								?>
 									<li>
 										<a href="javascript:;" onClick="setpage('Accounting/RFP/RFP.php?ix=');"> <i class="fa fa-angle-double-right"></i> Request For Payment </a>

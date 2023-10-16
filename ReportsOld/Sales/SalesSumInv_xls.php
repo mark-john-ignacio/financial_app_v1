@@ -24,15 +24,15 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
 // Add some data
 $spreadsheet->setActiveSheetIndex(0)
-    ->setCellValue('A1', 'Transaction Type')
-    ->setCellValue('B1', 'Transaction No.')
-		->setCellValue('C1', 'Date')
-		->setCellValue('D1', 'Customer')
-    ->setCellValue('E1', '')    
-		->setCellValue('F1', 'Total Amount');
+    ->setCellValue('A2', 'Transaction Type')
+    ->setCellValue('B2', 'Transaction No.')
+		->setCellValue('C2', 'Date')
+		->setCellValue('D2', 'Customer')
+    ->setCellValue('E2', '')    
+		->setCellValue('F2', 'Total Amount');
 
-$spreadsheet->getActiveSheet()->mergeCells("D1:E1");
-$spreadsheet->getActiveSheet()->getStyle('A1:F1')->getFont()->setBold(true);
+$spreadsheet->getActiveSheet()->mergeCells("D2:E2");
+$spreadsheet->getActiveSheet()->getStyle('A2:F2')->getFont()->setBold(true);
 
 //start ng details//
 $company = $_SESSION['companyid'];
@@ -64,14 +64,14 @@ if($postedtran!==""){
 
 if($trantype=="Trade"){
 
-	$result=mysqli_query($con,"select a.compcode, a.ctranno, b.dcutdate, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, 'Trade' as ctype, sum(A.nprice*a.nqty) as nprice
+	$result=mysqli_query($con,"select a.compcode, a.ctranno, b.dcutdate, b.ccode, d.ctradename as cname, b.lapproved, 'Trade' as ctype, sum(A.namount) as nprice
 	From sales_t a	
 	left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 	left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 	left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 	where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
 	".$qryitm.$qrycust.$qryposted."
-	Group By a.compcode, a.ctranno, b.dcutdate, b.ccode, IFNULL(d.ctradename,d.cname), b.lapproved
+	Group By a.compcode, a.ctranno, b.dcutdate, b.ccode, d.ctradename, b.lapproved
 	order by a.ctranno");
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 		$finarray[] = $row;
@@ -79,14 +79,14 @@ if($trantype=="Trade"){
 
 }elseif($trantype=="Non-Trade"){
 
-	$result=mysqli_query($con,"select a.compcode, a.ctranno, b.dcutdate, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, 'Non-Trade' as ctype, sum(A.nprice*a.nqty) as nprice
+	$result=mysqli_query($con,"select a.compcode, a.ctranno, b.dcutdate, b.ccode, d.ctradename as cname, b.lapproved, 'Non-Trade' as ctype, sum(A.namount) as nprice
 	From ntsales_t a	
 	left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 	left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 	left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 	where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
 	".$qryitm.$qrycust.$qryposted."
-	Group By a.compcode, a.ctranno, b.dcutdate, b.ccode, IFNULL(d.ctradename,d.cname), b.lapproved
+	Group By a.compcode, a.ctranno, b.dcutdate, b.ccode, d.ctradename, b.lapproved
 	order by a.ctranno");
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 		$finarray[] = $row;
@@ -95,23 +95,23 @@ if($trantype=="Trade"){
 }else{
 	$result=mysqli_query($con,"Select A.compcode, A.ctranno, A.dcutdate, A.ccode, A.cname, A.lapproved, A.ctype, sum(A.nprice) as nprice
 	From (
-		select a.compcode, a.ctranno, b.dcutdate, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, 'Trade' as ctype, sum(A.nprice*a.nqty) as nprice
+		select a.compcode, a.ctranno, b.dcutdate, b.ccode, d.ctradename as cname, b.lapproved, 'Trade' as ctype, sum(A.namount) as nprice
 		From sales_t a	
 		left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 		left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
 		".$qryitm.$qrycust.$qryposted."
-		Group By a.compcode, a.ctranno, b.dcutdate, b.ccode, IFNULL(d.ctradename,d.cname), b.lapproved
+		Group By a.compcode, a.ctranno, b.dcutdate, b.ccode, d.ctradename, b.lapproved
 		UNION ALL
-		select a.compcode, a.ctranno, b.dcutdate, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, 'Non-Trade' as ctype, sum(A.nprice*a.nqty) as nprice
+		select a.compcode, a.ctranno, b.dcutdate, b.ccode, d.ctradename as cname, b.lapproved, 'Non-Trade' as ctype, sum(A.namount) as nprice
 		From ntsales_t a	
 		left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 		left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
 		".$qryitm.$qrycust.$qryposted."
-		Group By a.compcode, a.ctranno, b.dcutdate, b.ccode, IFNULL(d.ctradename,d.cname), b.lapproved
+		Group By a.compcode, a.ctranno, b.dcutdate, b.ccode, d.ctradename, b.lapproved
 	) A 
 	Group By A.compcode, A.ctranno, A.dcutdate, A.ccode, A.cname, A.lapproved, A.ctype order by A.ctype, A.ctranno");
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
@@ -120,7 +120,7 @@ if($trantype=="Trade"){
 }
 	
 	$totPrice=0;	
-	$cnt = 1;
+	$cnt = 2;
 	foreach($finarray as $row)
 	{
 		$cnt++;
@@ -148,6 +148,17 @@ if($trantype=="Trade"){
 	$spreadsheet->setActiveSheetIndex(0)->getStyle('F'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 	$spreadsheet->setActiveSheetIndex(0)->getStyle("A".$cnt)->getAlignment()->setHorizontal('right');
 	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":F".$cnt)->getFont()->setBold(true);
+
+
+
+	//TOP
+	$spreadsheet->getActiveSheet()->mergeCells("A1".":E1");
+	$spreadsheet->setActiveSheetIndex(0)
+    ->setCellValue('A1', "GRAND TOTAL:")
+    ->setCellValue('F1', $totPrice);
+	$spreadsheet->setActiveSheetIndex(0)->getStyle('F1')->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
+	$spreadsheet->setActiveSheetIndex(0)->getStyle("A1")->getAlignment()->setHorizontal('right');
+	$spreadsheet->getActiveSheet()->getStyle("A1:F1")->getFont()->setBold(true);
 //End Details
 
 

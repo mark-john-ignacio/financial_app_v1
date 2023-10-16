@@ -1,8 +1,13 @@
 <?php
+if(!isset($_SESSION)){
+	session_start();
+}
+
 require_once "../Connection/connection_string.php";
 
+$company = $_SESSION['companyid'];
 
-	$result = mysqli_query ($con, "select * from suppliers WHERE cname like '%".$_GET['query']."%'"); 
+	$result = mysqli_query ($con, "select * from suppliers WHERE compcode='$company' and cname like '%".$_GET['query']."%'"); 
 
 	//$json2 = array();
 	//$json = [];

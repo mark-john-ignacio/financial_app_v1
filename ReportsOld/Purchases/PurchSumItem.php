@@ -24,6 +24,8 @@ $company = $_SESSION['companyid'];
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Purchase Summary</title>
 </head>
@@ -36,14 +38,14 @@ $company = $_SESSION['companyid'];
 </center>
 
 <br><br>
-<table width="100%" border="0" align="center">
+<table width="100%" border="0" align="center" id="MyTable">
   <tr>
   	<th>Classification</th>
     <th colspan="2">Product</th>
     <th>UOM</th>
-    <th>Ave. Purchase / Month</th>
-    <th>Qty</th>
-    <th>Total Amount</th>
+    <th style="text-align: right" nowrap>Ave. Purchase / Month</th>
+    <th style="text-align: right">Qty</th>
+    <th style="text-align: right">Total Amount</th>
   </tr>
   
 <?php
@@ -80,8 +82,8 @@ $sql = "select A.cclass, A.cdesc, A.citemno, A.citemdesc, A.cunit, sum(A.nqty) a
 FROM
 (
 select d.cclass, c.cdesc, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice, 0 as ncost
-From receive_t a
-left join receive b on a.ctranno=b.ctranno and a.compcode=b.compcode
+From suppinv_t a
+left join suppinv b on a.ctranno=b.ctranno and a.compcode=b.compcode
 left join items d on a.citemno=d.cpartno and a.compcode=d.compcode
 left join groupings c on d.cclass=c.ccode and a.compcode=c.compcode and c.ctype='ITEMCLS'
 where a.compcode='$company' and b.dreceived between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0".$qry."
@@ -112,10 +114,10 @@ $result=mysqli_query($con,$sql);
     <td><b><?php echo $classval;?></b></td>
     <td><?php echo $row['citemno'];?></td>
     <td><?php echo $row['citemdesc'];?></td>
-    <td><?php echo $row['cunit'];?></td>
-    <td align="right"><?php echo floatval($row['nqty']) / $mnths;?></td>
-    <td align="right"><?php echo $row['nqty'];?></td>
-    <td align="right"><?php echo number_format($row['nprice'],2);?></td>
+    <td nowrap><?php echo $row['cunit'];?></td>
+    <td align="right" style="padding-right: 10px"><?php echo number_format(floatval($row['nqty']) / $mnths,2);?></td>
+    <td align="right" style="padding-right: 10px"><?php echo number_format($row['nqty']);?></td>
+    <td align="right" style="padding-right: 10px"><?php echo number_format($row['nprice'],2);?></td>
   </tr>
 <?php 
 $class=$row['cclass'];
@@ -131,8 +133,15 @@ $classcode="";
     	<td colspan="4" align="right"><b>G R A N D&nbsp;&nbsp;T O T A L:</b></td>
     	<td align="right">&nbsp;</td>
     	<td align="right">&nbsp;</td>
-    	<td align="right"><b><?php echo $totPrice;?></b></td>
+    	<td align="right"><b><?php echo number_format($totPrice,2);?></b></td>
     </tr>
 </table>
 </body>
 </html>
+
+<script type="text/javascript">
+$( document ).ready(function() {
+
+	$('#MyTable tbody tr:last').clone().insertBefore('#MyTable tbody tr:first');
+});
+</script>

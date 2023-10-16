@@ -35,19 +35,6 @@ $arrsupplist = array();
 $arrsupps = array();
 
 
-//get all RR and PO combo
-$arrporefs = array();
-$sqlsuppinv = "Select DISTINCT A.ctranno, A.creference, B.ladvancepay
-from receive_t A left join purchase B on A.compcode=B.compcode and A.creference=B.cpono
-Where A.compcode='$company'";
-$result=mysqli_query($con,$sqlsuppinv);
-
-while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-{
-	$arrporefs[] = $row;
-}
-
-
 	//suppliers
 	$arrsuppx = "";
 	$arrterms = "";
@@ -101,9 +88,8 @@ while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 	<?php
 		//select all Suppliers Invoice
 		$gtot = 0;
-		
 
-		$sqlsuppinv = "Select A.ctranno, A.ngross, A.ndue, A.npaidamount, A.ccode, A.dreceived, A.crefrr
+		$sqlsuppinv = "Select A.ctranno, A.ngross, A.ndue, A.npaidamount, A.ccode, A.dreceived
 		from suppinv A Where compcode='$company' and dreceived <= STR_TO_DATE('$date1', '%m/%d/%Y') and lapproved=1 and A.ccode='$ccodex'
 		Order by A.ctranno";
 
@@ -112,14 +98,7 @@ while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 		while($row999 = mysqli_fetch_array($result, MYSQLI_ASSOC))
 		{
 
-			$isok = "True";
-			foreach($arrporefs as $rspox){
-				if($row999['crefrr']==$rspox['ctranno'] && $rspox['ladvancepay']==1){
-					$isok = "False";
-				}
-			}
-
-			if((floatval($row999['ndue']) > floatval($row999['npaidamount']) || floatval($row999['ndue']) == 0) && $isok == "True"){
+			if(floatval($row999['ndue']) > floatval($row999['npaidamount']) || floatval($row999['ndue']) == 0){
 
 				$dategvn = $row999['dreceived'];
 				$cterms = $arrterms;

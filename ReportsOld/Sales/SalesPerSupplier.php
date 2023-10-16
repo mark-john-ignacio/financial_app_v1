@@ -24,16 +24,17 @@ $company = $_SESSION['companyid'];
 <title>Sales Per Supplier</title>
 
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
 
 </head>
 
 <body style="padding:10px">
-<center>
-<h2><?php echo strtoupper($compname);  ?></h2>
-<h2>Sales Per Supplier</h2>
-<h3>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h3><br>
-<h3><?php echo $_POST["txtCust"];?></h3>
-</center>
+<h3><?php echo strtoupper($compname);  ?></h3>
+<h5>Sales Per Supplier</h5>
+<h5>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h5><br>
+<h5><?php echo $_POST["txtCust"];?></h5>
+
+
 <br><br>
 <table width="100%" border="0" align="center" id="MyTable">
   <thead>

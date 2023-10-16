@@ -7,8 +7,6 @@ include('../Connection/connection_string.php');
 include('../include/denied.php');
 include('../include/access.php');
 
-$company = $_SESSION['companyid'];
-
 ?><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -65,7 +63,7 @@ $company = $_SESSION['companyid'];
                 <select id="seltype" name="seltype" class="form-control input-sm selectpicker"  tabindex="4">
                     <option value="">All Items</option>
                             <?php
-                        $sql = "select * from groupings where compcode='$company' and ctype='ITEMTYP' order by cdesc";
+                        $sql = "select * from groupings where ctype='ITEMTYP' order by cdesc";
                         $result=mysqli_query($con,$sql);
                             if (!mysqli_query($con, $sql)) {
                                 printf("Errormessage: %s\n", mysqli_error($con));

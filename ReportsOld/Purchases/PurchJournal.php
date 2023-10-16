@@ -18,6 +18,8 @@ $company = $_SESSION['companyid'];
 				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 				{
 					$compname =  $row['compname'];
+					$compadd = $row['compadd'];
+					$comptin = $row['comptin'];
 				}
 ?>
 
@@ -25,15 +27,16 @@ $company = $_SESSION['companyid'];
 <head>
 	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Purchase Journal</title>
+<title>Purchase Register</title>
 </head>
 
 <body style="padding:10px">
-<center>
-<h2><?php echo strtoupper($compname);  ?></h2>
-<h2>Purchase Journal</h2>
-<h3>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h3>
-</center>
+<h3><b>Company: <?=strtoupper($compname);  ?></b></h3>
+<h3><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h3>
+<h3><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h3>
+<h3><b>Kind of Book: Purchase Journal</b></h3>
+<h3><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h3>
+
 
 <br><br>
 <table width="100%" border="0" align="center">

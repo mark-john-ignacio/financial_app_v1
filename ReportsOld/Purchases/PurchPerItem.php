@@ -24,6 +24,8 @@ $company = $_SESSION['companyid'];
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Purchases Per Item</title>
 </head>
@@ -37,29 +39,34 @@ $company = $_SESSION['companyid'];
 </center>
 
 <br><br>
-<table width="100%" border="0" align="center">
+<table width="100%" border="0" align="center" id="MyTable">
   <tr>
     <th>Date</th>
-    <th>WRR No.</th>
+    <th>Invoice No.</th>
     <th colspan="2">Supplier</th>
-    <th>Qty</th>
-    <th>Price</th>
-    <th>Amount</th>
+    <th style="text-align: right">Qty</th>
+    <th style="text-align: right">Price</th>
+    <th style="text-align: right">Amount</th>
   </tr>
   
 <?php
 
 $date1 = $_POST["date1"];
 $date2 = $_POST["date2"];
-$custid = $_POST["txtCustID"];
+$custid = $_POST["txtCustID"]; 
+$postedtran = $_POST["sleposted"];
+
+$qryposted = "";
+if($postedtran!==""){
+	$qryposted = "and b.lapproved=".$postedtran."";
+}
 
 $sql = "select b.dreceived, a.ctranno as csalesno, b.ccode, c.cname, a.citemno, d.citemdesc, a.cunit, a.nqty, a.nprice, a.namount, b.lapproved
-From receive_t a
-left join receive b on a.ctranno=b.ctranno and a.compcode=b.compcode
+From suppinv_t a
+left join suppinv b on a.ctranno=b.ctranno and a.compcode=b.compcode
 left join suppliers c on b.ccode=c.ccode and a.compcode=c.compcode
 left join items d on a.citemno=d.cpartno and a.compcode=d.compcode
-where a.compcode='$company' and a.citemno='$custid' and b.dreceived between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
-order by b.dreceived, a.ctranno";
+where a.compcode='$company' and a.citemno='$custid' and b.dreceived between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0 ".$qryposted." order by b.dreceived, a.ctranno";
 
 $result=mysqli_query($con,$sql);
 				
@@ -97,9 +104,9 @@ $result=mysqli_query($con,$sql);
 	?></td>
     <td><?php echo $row['ccode'];?></td>
     <td><?php echo $row['cname'];?></td>
-    <td align="right"><?php echo $row['nqty'];?></td>
-    <td align="right"><?php echo $row['nprice'];?></td>
-    <td align="right"><?php echo $row['namount'];?></td>
+    <td align="right"><?php echo number_format($row['nqty']);?></td>
+    <td align="right"><?php echo number_format($row['nprice'],2);?></td>
+    <td align="right"><?php echo number_format($row['namount'],2);?></td>
   </tr>
 <?php 
 		$dateval="";		
@@ -112,11 +119,18 @@ $result=mysqli_query($con,$sql);
 
     <tr class='rptGrand'>
     	<td colspan="4" align="right"><b>G R A N D&nbsp;&nbsp;T O T A L:</b></td>
-         <td align="right"><b><?php echo $totQty;?></b></td>
+         <td align="right"><b><?php echo number_format($totQty);?></b></td>
           <td align="right">&nbsp;</td>
-        <td align="right"><b><?php echo $totAmount;?></b></td>
+        <td align="right"><b><?php echo number_format($totAmount,2);?></b></td>
     </tr>
 </table>
 
 </body>
 </html>
+
+<script type="text/javascript">
+$( document ).ready(function() {
+
+	$('#MyTable tbody tr:last').clone().insertBefore('#MyTable tbody tr:first');
+});
+</script>

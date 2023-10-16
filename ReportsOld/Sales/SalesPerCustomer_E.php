@@ -30,64 +30,6 @@ $company = $_SESSION['companyid'];
 
 <body style="padding:10px">
 
-<?php
-
-$sql0 = "Select A.ccode, C.cname from sales A left join customers C on A.ccode=C.cempid and A.compcode=C.compcode where A.ccode in ('12566',
-'12151',
-'30029',
-'30092',
-'12309',
-'11012',
-'12646',
-'30065',
-'12155',
-'12641',
-'12554',
-'30211',
-'12791',
-'12569',
-'30009',
-'12133',
-'12255',
-'12731',
-'12603',
-'12632',
-'12173',
-'12031',
-'12094',
-'12548',
-'12541',
-'50110',
-'42135',
-'12705',
-'33046',
-'12621',
-'12760',
-'12339',
-'12803',
-'30053',
-'12202',
-'30136',
-'70076',
-'12253',
-'12754',
-'50092',
-'12764',
-'12219',
-'12668',
-'12805',
-'70040')";
-
-$resultMAIN=mysqli_query($con,$sql0);
-
-while($rowx = mysqli_fetch_array($resultMAIN, MYSQLI_ASSOC))
-	{
-?>
-
-
-
-<div style="page-break-before:always">
-
 <center>
 <h2><?php echo strtoupper($compname);  ?></h2>
 <h2>Sales Per Customer</h2>
@@ -205,7 +147,7 @@ $result=mysqli_query($con,$sql);
 </div>
 
 <?php
-	}
+	// }
 ?>
 </body>
 </html>

@@ -20,6 +20,8 @@ $company = $_SESSION['companyid'];
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Purchased Detailed</title>
 
@@ -38,7 +40,7 @@ $company = $_SESSION['companyid'];
 </center>
 
 <br><br>
-<table width="100%" border="0" align="center" cellpadding="5px">
+<table width="100%" border="0" align="center" cellpadding="5px" id="MyTable">
   <tr>
     <th>Date</th>
     <th>WRR No.</th>
@@ -194,3 +196,10 @@ $result=mysqli_query($con,$sql);
 
 </body>
 </html>
+
+<script type="text/javascript">
+$( document ).ready(function() {
+
+	$('#MyTable tbody tr:last').clone().insertBefore('#MyTable tbody tr:first');
+});
+</script>

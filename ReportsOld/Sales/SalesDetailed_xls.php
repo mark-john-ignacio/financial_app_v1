@@ -24,22 +24,22 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
 // Add some data
 $spreadsheet->setActiveSheetIndex(0)
-    ->setCellValue('A1', 'Date')
-    ->setCellValue('B1', 'Invoice No.')
-		->setCellValue('C1', 'Customer Type')
-		->setCellValue('D1', 'Customer Code')
-		->setCellValue('E1', 'Customer Name')
-		->setCellValue('F1', 'Product')
-		->setCellValue('G1', '')
-		->setCellValue('H1', 'UOM')
-		->setCellValue('I1', 'QTY')
-		->setCellValue('J1', 'Price')
-		->setCellValue('K1', 'Discount')
-		->setCellValue('L1', 'Net Price')
-		->setCellValue('M1', 'Amount');
+    ->setCellValue('A2', 'Date')
+    ->setCellValue('B2', 'Invoice No.')
+		->setCellValue('C2', 'Customer Type')
+		->setCellValue('D2', 'Customer Code')
+		->setCellValue('E2', 'Customer Name')
+		->setCellValue('F2', 'Product')
+		->setCellValue('G2', '')
+		->setCellValue('H2', 'UOM')
+		->setCellValue('I2', 'QTY')
+		->setCellValue('J2', 'Price')
+		->setCellValue('K2', 'Discount')
+		->setCellValue('L2', 'Net Price')
+		->setCellValue('M2', 'Amount');
 
-$spreadsheet->getActiveSheet()->mergeCells("F1:G1");
-$spreadsheet->getActiveSheet()->getStyle('A1:M1')->getFont()->setBold(true);
+$spreadsheet->getActiveSheet()->mergeCells("F2:G2");
+$spreadsheet->getActiveSheet()->getStyle('A2:M2')->getFont()->setBold(true);
 
 //start ng details//
 $company = $_SESSION['companyid'];
@@ -71,7 +71,7 @@ if($postedtran!==""){
 
 if($trantype=="Trade"){
 
-	$result=mysqli_query($con,"select b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
+	$result=mysqli_query($con,"select b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
 	From sales_t a	
 	left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 	left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
@@ -86,7 +86,7 @@ if($trantype=="Trade"){
 
 }elseif($trantype=="Non-Trade"){
 
-	$result=mysqli_query($con,"select b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
+	$result=mysqli_query($con,"select b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
 	From ntsales_t a	
 	left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 	left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
@@ -102,7 +102,7 @@ if($trantype=="Trade"){
 }else{
 	$result=mysqli_query($con,"Select A.dcutdate, A.ctranno, A.ctype, A.typdesc, A.ccode, A.cname, A.lapproved, A.citemno, A.citemdesc, A.cunit, A.nqty, A.nprice, A.ndiscount, A.namount
 	From (
-		select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
+		select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
 		From sales_t a	
 		left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
@@ -113,7 +113,7 @@ if($trantype=="Trade"){
 
 		UNION ALL
 
-		select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, IFNULL(d.ctradename,d.cname) as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
+		select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
 		From ntsales_t a	
 		left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
@@ -137,7 +137,7 @@ $dateval="";
 $classcode="";
 $totAmount=0;	
 $ngross = 0;
-$cnt = 1;
+$cnt = 2;
 foreach($finarray as $row)
 {
 	//if($salesno==""){
@@ -165,7 +165,7 @@ foreach($finarray as $row)
 		->setCellValue('D'.$cnt, $ccode)
 		->setCellValue('E'.$cnt, $remarks)
 		->setCellValue('F'.$cnt, $row['citemno'])
-		->setCellValue('G'.$cnt, $row['citemdesc'])
+		->setCellValue('G'.$cnt, strtoupper($row['citemdesc']))
 		->setCellValue('H'.$cnt, $row['cunit'])
 		->setCellValue('I'.$cnt, $row['nqty'])
 		->setCellValue('J'.$cnt, $row['nprice'])
@@ -193,6 +193,15 @@ foreach($finarray as $row)
 	$spreadsheet->setActiveSheetIndex(0)->getStyle("A".$cnt)->getAlignment()->setHorizontal('right');
 	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":M".$cnt)->getFont()->setBold(true);
 //End Details
+
+//top
+	$spreadsheet->getActiveSheet()->mergeCells("A1:L1");
+	$spreadsheet->setActiveSheetIndex(0)
+    ->setCellValue('A1', "GRAND TOTAL:")
+    ->setCellValue('M1', $totPrice);
+	$spreadsheet->setActiveSheetIndex(0)->getStyle('M1')->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
+	$spreadsheet->setActiveSheetIndex(0)->getStyle("A1")->getAlignment()->setHorizontal('right');
+	$spreadsheet->getActiveSheet()->getStyle("A1:M1")->getFont()->setBold(true);
 
 
 // Rename worksheet

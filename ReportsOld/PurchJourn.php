@@ -32,19 +32,19 @@ include('../include/access.php');
 <form action="Purchases/PurchJournal.php" method="post" name="frmrep" id="frmrep" target="_blank">
 <table width="100%" border="0" cellpadding="2">
   <tr>
-    <td rowspan="2" valign="top" width="50" style="padding:2px">
-    <button type="submit" class="btn btn-danger navbar-btn" id="btnsales">
-    <span class="glyphicon glyphicon-search"></span> View Report
-    </button>
+    <td rowspan="1" valign="top" width="50" style="padding:2px">
+      <button type="button" class="btn btn-danger navbar-btn" id="btnsales">
+      <span class="glyphicon glyphicon-search"></span> View Report
+      </button>
     </td>
     <td width="150" style="padding-left:10px"><b>Date Range: </b></td>
     <td style="padding:2px">
-    <div class="col-xs-12 nopadding">
-        <div class="col-xs-3 nopadding">
+      <div class="col-xs-12 nopadding">
+          <div class="col-xs-3 nopadding">
 
-		<input type='text' class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/d/Y"); ?>" />
+      <input type='text' class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/d/Y"); ?>" />
 
-		</div>
+      </div>
         
         <div class="col-xs-2 nopadding" style="vertical-align:bottom;" align="center">
         	<label style="padding:1px;">TO</label>
@@ -52,12 +52,18 @@ include('../include/access.php');
  
          <div class="col-xs-3 nopadding">
 
-		<input type='text' class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>" />
+      <input type='text' class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>" />
 
-		</div>
+      </div>
 
-     </div>   
+      </div>   
    </td>
+  </tr>
+  <tr>
+    <td > 
+      <button type="button" class="btn btn-success btn-block" id="btnxls">
+            <i class="fa fa-file-excel-o"></i> To Excel
+      </button></td>
   </tr>
 </table>
 </form>
@@ -69,6 +75,15 @@ $(function(){
 	        $('.datepick').datetimepicker({
                  format: 'MM/DD/YYYY'
            });
+           $('#btnxls').on('click', function(){
+              $('#frmrep').attr("action", "Accounting/PJ_xls.php");
+              $('#frmrep').submit();
+           })
+
+           $('#btnsales').on('click', function(){
+            $('#frmrep').attr('action', 'Purchases/PurchJournal.php')
+            $('#frmrep').submit();
+           })
 	
 });
 

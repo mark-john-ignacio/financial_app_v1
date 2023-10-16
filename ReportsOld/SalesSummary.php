@@ -8,8 +8,6 @@ include('../Connection/connection_string.php');
 include('../include/denied.php');
 include('../include/access.php');
 
-$company = $_SESSION['companyid'];
-
 ?><html>
 <head>
     <link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
@@ -48,7 +46,9 @@ $company = $_SESSION['companyid'];
             	<option value="Sales/SalesSumItem">Per Item</option>
                 <option value="Sales/SalesSumCust">Per Customer</option>
                 <option value="Sales/SalesSumInv">Per Transaction</option>
-                <option value="Sales/SalesSumMonth">Per Month</option>
+                <option value="Sales/SalesSumCustItem">Per Customer/Item</option>
+                <option value="Sales/SalesSumMonth">Per Item Monthly</option>
+                <option value="Sales/SalesSumCustMonthly">Per Customer Monthly</option>
                <!-- <option value="Sales/SalesSumCutOff.php">Per Customer/CutOFf</option>-->
                 
             </SELECT>
@@ -67,7 +67,7 @@ $company = $_SESSION['companyid'];
     			<select id="seltype" name="seltype" class="form-control input-sm selectpicker"  tabindex="4">
                 <option value="">All Items</option> 
                     <?php
-                $sql = "select * from groupings where compcode='$company' and ctype='ITEMTYP' order by cdesc";
+                $sql = "select * from groupings where ctype='ITEMTYP' order by cdesc";
                 $result=mysqli_query($con,$sql);
                     if (!mysqli_query($con, $sql)) {
                         printf("Errormessage: %s\n", mysqli_error($con));
@@ -95,7 +95,7 @@ $company = $_SESSION['companyid'];
     			<select id="selcustype" name="selcustype" class="form-control input-sm selectpicker"  tabindex="4">
                 <option value="">All Customers</option> 
                     <?php
-                $sql = "select * from groupings where compcode='$company' and ctype='CUSTYP' order by cdesc";
+                $sql = "select * from groupings where ctype='CUSTYP' order by cdesc";
                 $result=mysqli_query($con,$sql);
                     if (!mysqli_query($con, $sql)) {
                         printf("Errormessage: %s\n", mysqli_error($con));
@@ -165,7 +165,7 @@ $company = $_SESSION['companyid'];
 					$now = date("Y");
 					//$varyr = $now - 2014;
 					
-					for ($x=2022; $x<=$now; $x++){
+					for ($x=2015; $x<=$now; $x++){
 				?>
                 	<option value="<?php echo $x;?>" <?php if($x==$now){echo "selected";}?>><?php echo $x;?></option>
                 <?php } ?>

@@ -443,7 +443,6 @@ function getSetAcct($id){
 			}
 			else{
 				echo "True";
-				
 			}
 
 	}

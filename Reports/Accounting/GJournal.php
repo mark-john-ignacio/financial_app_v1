@@ -75,7 +75,6 @@ $date2 = $_POST["date2"];
 			Order By A.dpostdate, A.ctranno, CASE WHEN (A.ndebit <> 0) THEN 1 ELSE 0 END desc, A.acctno";
 
 	
-			
 	$dresult=mysqli_query($con,$sql);
 	$data = [];
 	while($drow = mysqli_fetch_array($result, MYSQLI_ASSOC)){

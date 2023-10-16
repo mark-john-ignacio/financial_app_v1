@@ -102,24 +102,35 @@
 
 			$("#searchByName").keyup(function(){
 				var searchByName = $('#searchByName').val();
+				var seltype = $('#seltype').val();
 
 				$('#MyTable').DataTable().destroy();
-				filltable(searchByName);
+				filltable(searchByName,seltype);
+
+			});
+
+			$("#seltype").change(function(){
+				var searchByName = $('#searchByName').val();
+				var seltype = $('#seltype').val();
+
+				$('#MyTable').DataTable().destroy();
+				filltable(searchByName,seltype);
 
 			});
 		});
 
-		function filltable(searchByName){
+		function filltable(searchByName,seltype){
 			$('#MyTable').DataTable( {
 				lengthMenu: [ [50, 75, 100, 150, -1], [50, 75, 100, 150, "All"] ],
 				"searching": false,
 				"paging": true,
+				"order" : [],
 				"serverSide": true,
 				"ajax": {
 					url: "th_datatable.php",
 					type: "POST",
 					data:{
-						searchByName: searchByName
+						searchByName: searchByName, seltype: seltype
 					}
 				},
 				"columns": [

@@ -45,22 +45,22 @@ $varmsg = "";
 			left join receipt B on A.compcode=B.compcode and A.ctranno=B.ctranno
 			Where A.compcode='$company' and B.lcancelled=0 and B.dcutdate  between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and A.ncredit <> 0
                 
-      UNION ALL
+            UNION ALL
                 
-      Select 1 as ctyp, A.ctranno, A.cacctno
+            Select 1 as ctyp, A.ctranno, A.cacctno
 			FROM `receipt_others_t` A
 			left join receipt B on A.compcode=B.compcode and A.ctranno=B.ctranno
 			Where A.compcode='$company' and B.lcancelled=0 and B.dcutdate  between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and A.ndebit <> 0
                 
-      UNION ALL
+            UNION ALL
                 
-      Select 0 as ctyp, A.ctranno, A.cacctcode as cacctno
+            Select 0 as ctyp, A.ctranno, A.cacctcode as cacctno
 			FROM `receipt` A
 			Where A.compcode='$company' and A.lcancelled=0 and A.dcutdate  between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
                 
                 
 			) A 
-	left JOIN accounts B on A.cacctno=B.cacctid
+	left JOIN accounts B on A.cacctno=B.cacctno
 	where A.cacctno IS NOT NULL
 	Order By A.ctyp, A.cacctno";
 	
@@ -246,7 +246,7 @@ $varmsg = "";
                 <td class="text-right">
                     <?php 
 					if($RowvalArr[$y]!=0){
-						echo number_format($RowvalArr[$y],2);
+						echo $RowvalArr[$y];
 						$RowvalArrTOTAL[$y] = $RowvalArrTOTAL[$y] + $RowvalArr[$y];
 						
 					}
@@ -301,7 +301,7 @@ $varmsg = "";
                 <td class="text-right">
                     <?php 
 					if($RowvalArr[$y]!=0){
-						echo number_format($RowvalArr[$y],2);
+						echo $RowvalArr[$y];
 						$RowvalArrTOTAL[$y] = $RowvalArrTOTAL[$y] + $RowvalArr[$y];
 					}
 					?>
@@ -321,7 +321,7 @@ $varmsg = "";
                 <td class="text-right">
                     <?php 
 					if($RowvalArrTOTAL[$y]!=0){
-						echo "<b>".number_format($RowvalArrTOTAL[$y],2)."</b>";
+						echo "<b>".$RowvalArrTOTAL[$y]."</b>";
 					}
 					?>
                 </td>
