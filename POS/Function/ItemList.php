@@ -14,7 +14,7 @@ $date = date("Y-m-d");
 $data = [];
 
 
-$sql = "select a.cpartno, a.citemdesc, a.cunit, ifnull(c.nqty,0) as nqty
+$sql = "select a.cpartno, a.cpartno as cscancode, a.citemdesc, a.cunit, a.cstatus, ifnull(c.nqty,0) as nqty, a.linventoriable
 			from items a 
 			left join
 				(
@@ -29,13 +29,48 @@ $sql = "select a.cpartno, a.citemdesc, a.cunit, ifnull(c.nqty,0) as nqty
 $query = mysqli_query($con, $sql);
 if(mysqli_num_rows($query) != 0){
     while($row = $query -> fetch_assoc()){
-        $json['partno'] = $row['cpartno'];
-        $json['name'] = $row['citemdesc'];
-        $json['unit'] = $row['cunit'];
-        $json['quantity'] = $row['nqty'];
 
-        array_push($data, $json);
+
+        if($row['linventoriable']==0){
+            if((float)$row['nqty']<=0){
+                echo json_encode([
+                    'valid' => false,
+                    'msg' => "No more stock available!"
+                ]);
+         }else{
+            $json['partno'] = $row['cpartno'];
+            $json['name'] = $row['citemdesc'];
+            $json['unit'] = $row['cunit'];
+            $json['quantity'] = $row['nqty'];
+            array_push($data, $json);
+            echo json_encode([
+                'valid' => true,
+                'data' => $data
+            ]);
+         }
+        }else{
+            $json['partno'] = $row['cpartno'];
+            $json['name'] = $row['citemdesc'];
+            $json['unit'] = $row['cunit'];
+            $json['quantity'] = $row['nqty'];
+            array_push($data, $json);
+            echo json_encode([
+                'valid' => true,
+                'data' => $data
+            ]);
+        }
+        
+
+        if($row['cstatus']=="INACTIVE"){
+            echo json_encode([
+                'valid' => false,
+                'msg' => "Item is currently inactive!"
+            ]);
+        }
+
+        
     }
+        
 } else {
     echo json_encode([
         'valid' => false,
@@ -44,7 +79,3 @@ if(mysqli_num_rows($query) != 0){
 }
 
 
-echo json_encode([
-    'valid' => true,
-    'data' => $data
-]);

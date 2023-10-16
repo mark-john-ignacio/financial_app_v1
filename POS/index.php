@@ -22,6 +22,37 @@
         }
     }
 
+    $month = date('m');
+    $year = date('y');
+
+    $sql = "SELECT * FROM pos_hold  where compcode='$company' and YEAR(trandate) = YEAR(CURDATE()) Order By `transaction` desc LIMIT 1";
+    $query = mysqli_query($con, $sql);
+    if (mysqli_num_rows($query)==0) {
+        $cSINo = "POS".$month.$year."00000";
+    }
+    else {
+        while($row = $query -> fetch_assoc()){
+            $last = $row['transaction'];
+        }
+        
+        
+        if(substr($last,3,2) <> $month){
+            $cSINo = "POS".$month.$year."00000";
+        }
+        else{
+            $baseno = intval(substr($last,7,6)) + 1;
+            $zeros = 5 - strlen($baseno);
+            $zeroadd = "";
+            
+            for($x = 1; $x <= $zeros; $x++){
+                $zeroadd = $zeroadd."0";
+            }
+            
+            $baseno = $zeroadd.$baseno;
+            $cSINo = "POS".$month.$year.$baseno;
+        }
+    }
+
 
     $sql =  "SELECT * FROM groupings WHERE ctype='ITEMCLS' AND ccode in (select cclass From items where compcode='$company' and cstatus = 'ACTIVE' and ctradetype='Trade') order by cdesc";
     $query = mysqli_query($con, $sql);
@@ -165,6 +196,24 @@
                                 </div>
                             </td>
                         </tr>
+                        <tr>
+                            <td colspan='2'>
+                                <table class='table' id='amountlist' style='width: 100%'>
+                                    <tr>
+                                        <td>Discount</td>
+                                        <td align="right">00.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>VAT</td>
+                                        <td align="right">00.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>NET</td>
+                                        <td align="right">00.00</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
                     </table>
                 </div>
 
@@ -175,7 +224,7 @@
                             <td>
                                 <div id='filter'>
                                     <div class='input-group'>
-                                        <span class='input-group-addon'><i class='fa fa-user'></i></span><input class='form-control input-sm' type="text" name='types' id='types' autocomplete="off">
+                                        <span class='input-group-addon'><i class='fa fa-user'></i></span><input class='form-control input-sm' type="text" name='customer' id='customer' autocomplete="off">
                                     </div>
                                     <div class='input-group'>
                                         <select name="orderType" id="orderType" class='form-control input-sm'>
@@ -195,11 +244,11 @@
                         </tr>
                         <tr>
                             <td>
-                                <div style='height: 300px; overflow: auto;'>
+                                <div style='height: 350px; overflow: auto;'>
                                     <div id='item-wrapper'>
                                         <?php foreach($items as $list):?>
                                         
-                                            <div id='items' name="<?= $list['cscancode'] ?>" style='height: 50px'><font size='-2'><?php echo $list["citemdesc"]; ?></font></div>
+                                            <div id='items' name="<?= $list['cscancode'] ?>" class='items' data-itemlist="<?= $list['cclass'] ?>" style='height: 50px'><font size='-2'><?php echo $list["citemdesc"]; ?></font></div>
                                         
                                         <?php endforeach ?>
                                     </div>
@@ -208,9 +257,9 @@
                         </tr>
                     </table>
                     <div class='col-lg-12 '>          
-                        <section style='width: 90%; padding: 10px' class="regular slider">
+                        <section style='width: 90%; padding: 10px' class="regular slider btn">
                             <?php foreach($category as $list):?>
-                                <div style="height:63px; 
+                                <div style="height:100%; 
                                     word-wrap:break-word;
                                     background-color:#019aca; 
                                     border:solid 1px #036;
@@ -231,7 +280,7 @@
                             <button class="form-control btn btn-sm btn-primary" name="btnHold" id="btnHold" type="button">
                                <i class="fa fa-sign-out fa-fw fa-lg" aria-hidden="true"></i>&nbsp; HOLD (INS)
                             </button>
-                            <button class="form-control btn btn-sm btn-warning" name="btnRetrieve" id="btnRetrieve1" type="button">
+                            <button class="form-control btn btn-sm btn-warning" name="btnRetrieve" id="btnRetrieve" type="button">
                                <i class="fa fa-bar-chart fa-fw fa-lg" aria-hidden="true"></i>&nbsp; RETRIEVE (F4)
                             </button>
                             <button class="form-control btn btn-sm btn-danger" name="btnVoid" id="btnVoid" type="button">
@@ -249,7 +298,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h3 class="modal-title" id="invheader">Void Item</h3>
                 </div>
-                <div class='modal-body' style='height: 4in;'>
+                <div class='modal-body' id='void' style='height: 4in;'>
                     <table class='table' id='VoidList' style="width: 100%; ">
                         <thead style='background-color: #019aca'>
                             <tr>
@@ -263,9 +312,24 @@
                         <tbody></tbody>
                     </table>
                 </div>
+                <div class='modal-body' id='retrieve' style="height: 4in; display: none">
+                    <table class='table' id='RetrieveList' style='width: 100%'>
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th style="width: 30%;">transaction</th>
+                                <th style="text-align: center;">Remarks</th>
+                                <th style="text-align: center;">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
                 <div class='modal-footer' style='display: Relative; width: 100%;'>
-                    <div style='right: 0px'>
+                    <div id='footer' style='right: 0px'>
                         <button class='btn btn-danger' id='VoidSubmit' style='padding: 5px; width: 1in;'>Void</button>
+                        <button class='btn btn-warning' id='RetrieveSubmit' style='padding: 5px; width: 1in; display:none;'>Retrieve</button>
+                        <button class='btn btn-success' id='PaySubmit' style='padding: 5px; width: 1in; display:none;'></button>
                     </div>
                 </div>
             </div>     
@@ -283,15 +347,51 @@
         $(".regular").slick({
             dots: false,
             infinite: true,
-            slidesToShow: 6,
-            slidesToScroll: 5
+            slidesToShow: 4,
+            slidesToScroll: 4
+        });
+
+
+        $('#customer').typeadhead({
+            autoSelect: true,
+            source: function(request, response) {
+                $.ajax({
+                    url: "th_customer.php",
+                    dataType: "json",
+                    data: {
+                        query: $("#ccustname").val()
+                    },
+                    success: function (data) {
+                        response(data);
+                    }
+                });
+            },
+            displayText: function (item) {
+                return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+            },
+            highlighter: Object,
+            afterSelect: function(item) { 				
+                            
+                // $('#ccustname').val(item.value).change(); 
+                // $("#ccustid").val(item.id);
+                // $("#ccustcredit").val(item.nlimit); 
+                // $("#divCreditLim").text(item.nlimit);
+                // chkbalance(item.id);
+                // $("#citemno").focus();			
+                
+            }
+        })
+
+
+        $('.items, .itmclass').hover(function() {
+            $(this).css('cursor','pointer');
         });
 
         $(".itmclass").on("click", function() {
             const ClassID = $(this).attr("data-clscode");
             
-            $('.itmslist').each(function(i, obj) {
-                itmcls = $(this).attr("data-itemcls");
+            $('.items').each(function(i, obj) {
+                itmcls = $(this).attr("data-itemlist");
                 
                 if(itmcls==ClassID){
                     $(this).show();
@@ -302,20 +402,11 @@
         });
 
 
-        
-
         $('#item-wrapper').on('click', '#items',function(){
             const name = $(this).attr("name");
             insert_item(name)
         })
 
-        // $('#listItem').click('#delete',function(){
-        //         const named = $(this).attr("name")
-        //         itemStored.splice(named, 1);
-
-        //         table_store(itemStored);
-            
-        // })
 
         $('#VoidSubmit').click(function(){
             $("input:checkbox[name=itemcheck]:checked").each(function(){
@@ -326,19 +417,15 @@
         })
 
         $('#btnVoid').click(function(){
-            if($('#orderType').find(":selected").val() == ""){
-                return alert("Please Fillup Order Type to procceed!");
-            }
-
             if(itemStored.length === 0) {
                 return alert('Transaction is empty!')
             }
 
-            $('#mymodal').modal("show");
+            modalshow("Void");
             table_store(itemStored)
         })
 
-
+        //button for holding items
         $('#btnHold').on('click', function(){
             //storing input values in array
             if($('#orderType').find(":selected").val() == ""){
@@ -348,36 +435,148 @@
             if(itemStored.length === 0){
                 return alert('Transaction is empty! cannot hold transaction');
             }
-
             const quantity = [];
 
             $('input[name*="qty"]').each((index, item) => {
                 quantity.push($(item).val())
             })
-                
-            itemStored.map((item, index) => {
-                
-                $.ajax({
-                    url: 'Function/th_holdtransaction.php',
-                    data: {
-                        name: item.name,
-                        unit: item.unit,
-                        table: ($('#table') ? $('#table').val() : null),
-                        type: $('#orderType').val(),
-                        quantity: item.quantity,
-                    },
-                    dataType: 'json',
-                    async: false,
-                    success: function(res){
-                        console.log(res.data)
-                    },
-                    error: function(res){
-                        console.log(res)
+            var isHold = false;
+            $.ajax({
+                url: 'Function/th_hold.php',
+                data: {
+                    code: '<?= $cSINo ?>',
+                    remarks: '',
+                },
+                dataType: 'json',
+                async: false,
+                success: function(res){
+                    if(res.valid){
+                        isHold = true;
+                        console.log(res.msg)
                     }
-                })
+                }
             })
+            if(isHold == true){
+                console.log('hi')
+                itemStored.map((item, index) => {
+                    $.ajax({
+                        url: 'Function/th_holdtransaction.php',
+                        data: {
+                            code: '<?= $cSINo ?>',
+                            partno: item.partno,
+                            name: item.name,
+                            unit: item.unit,
+                            quantity: item.quantity,
+                            cost: item.price,
+                            table: ($('#table') ? $('#table').val() : null),
+                            type: $('#orderType').val(),
+                        },
+                        dataType: 'json',
+                        async: false,
+                        success: function(res){
+                            if(res.valid){
+                                console.log(res.data)
+                            } else {
+                                console.log(res.msg)
+                            }
+                        },
+                        error: function(res){
+                            console.log(res)
+                        }
+                    })
+                })
+            }
+            
         });
+
+
+
+        /**
+         * Retrive Hold transaction
+         */
+
+        $('#btnRetrieve').click(function(){
+            $.ajax({
+                url: 'Function/th_gethold.php',
+                dataType: 'json',
+                async: false,
+                success: function(res){
+                    if(res.valid){
+                        $('#RetrieveList > tbody').empty();
+                        res.data.map((item, index) => {
+                            console.log(item)
+                            $("<tr>").append( 
+                                $("<td>").html("<input type='checkbox' id='chkretrieve' name='chkretrieve' value='"+item.transaction+"' />"),
+                                $("<td  >").text(item.transaction),
+                                $("<td align='center'>").text((item.remarks != null ? item.remarks : ' ' )),
+                                $("<td align='center'>").text(item.trandate),
+                            ).appendTo('#RetrieveList > tbody')
+                        })
+                    } else{
+                        alert(res.msg)
+                    }
+                },
+                error: function(res){
+                    console.log(res)
+                }
+            })
+
+            modalshow("Retrieve")
+        })
+
+        $('#RetrieveSubmit').click(function(){
+            const itemRetrieve = [];
+            $("input:checkbox[name=chkretrieve]:checked").each(function(){
+                itemRetrieve.push($(this).val());
+            });
+
+            $.ajax({
+                url: 'Function/th_getholdtransaction.php',
+                data: {
+                    items: itemRetrieve
+                },
+                dataType: 'json',
+                async: false,
+                success: function(res){
+                    if(res.valid){
+                        res.data.map((item, index) => {
+                            duplicate(item, parseInt(item.quantity))
+                        })
+                        table_store(itemStored);
+                    } else {
+                        console.log(res.msg)
+                    }
+                },
+                error: function(res){
+                    console.log(res)
+                }
+            })
+        })
     })
+
+    function modalshow(id){
+        $('.modal-body').css('display', 'none');
+        $('#footer button').css('display', 'none');
+
+        switch(id){
+            case "Pay": 
+                $('#invheader').text("Payments");
+                $('#PaySubmit').css('display', 'inline-block')
+                $('#pay').css('display', 'block');
+                break;
+            case "Retrieve": 
+                $('#invheader').text("Retrieve");
+                $('#RetrieveSubmit').css('display', 'inline-block')
+                $('#retrieve').css('display', 'block');
+                break;
+            case "Void":
+                $('#invheader').text("Void");
+                $('#VoidSubmit').css('display', 'inline-block')
+                $('#void').css('display', 'block');
+                break;
+        }
+        $('#mymodal').modal("show");
+    }
 
     function insert_item(partno){
         $.ajax({
@@ -391,14 +590,12 @@
                 if(res.valid){
                     var quantity = 1;
                     res.data.map((item, index) => {
-                        
                         duplicate(item)
-                        
                     })
-                    console.log(itemStored)
+                    // console.log(itemStored)
                     table_store(itemStored);
                 } else {
-                    console.log('Item has no quantity')
+                    alert(res.msg);
                 }
                 
             },
@@ -408,47 +605,64 @@
         })
     }
 
-    function duplicate(data){
-        const partno = data.partno
-        console.log(partno)
-        if(itemStored.length === 0){
-            return itemStored.push({
-                name: data.name,
-                unit: data.unit,
-                quantity: 1
-            })
+    /**
+     * @param {data} get all data of items
+     * for duplication item
+     */
+
+
+     function duplicate(data, qty = 1) {
+        if (!Array.isArray(itemStored)) {
+            itemStored = [];
         }
-        if(itemStored.some(item => item.partno === data.partno)){
+
+        let found = false;
+        for (let i = 0; i < itemStored.length; i++) {
+            if (itemStored[i].partno === data.partno) {
+                itemStored[i].quantity += qty;
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+
             itemStored.push({
-                name: data.name,
+                partno: data.partno,
+                name: (data.name ? data.name : data.item),
                 unit: data.unit,
-                quantity: 1
-            })
-        } 
-       
+                quantity: qty,
+                price: chkprice(data.partno, data.unit, "PM1", <?= date('Y-m-d') ?>)
+            });
+        }
+
     }
 
-    // function duplicate(data){
-    //     const quantity = 1;
-    //     itemStored.map((item, index) => {
-    //         if(item.name === data){
-    //             quantity += 1;
-    //         }
-    //     });
-    //     if(itemStored['name'].includes(item.name)){
-    //         itemStored[] +1;
-    //     }
-    // }
+
+    //price checking
+    function chkprice(partno,unit,code,date){
+        var value;
+		$.ajax ({ 
+			url: "../Sales/th_checkitmprice.php",
+			data: { itm: partno, cust: code, cunit: code, dte: date },
+			async: false,
+			success: function( data ) {
+                value = data;
+			}
+		});
+        return value
+	}
 
     function table_store(items){
         $('#listItem > tbody').empty();
         $('#VoidList > tbody').empty();
+
         items.map((item, index) => {
             $("<tr>").append(
                 $("<td>").text(item.name),
                 $("<td>").text(item.unit),
                 $("<td align='center'>").html("<input type='number' id='qty' name='qty[]' class='form-control input-sm' style='width:60px' value='"+item.quantity+"'/>"),
-                $("<td>").text('s')
+                $("<td>").text(item.price)
             ).appendTo("#listItem > tbody")
 
 
@@ -457,7 +671,7 @@
                 $("<td>").text(item.name),
                 $("<td>").text(item.unit),
                 $("<td align='center'>").html("<input type='number' id='qty' name='qty[]' class='form-control input-sm' style='width:60px' value='"+item.quantity+"'/>"),
-                $("<td>").text('s')
+                $("<td>").text(item.price)
             ).appendTo("#VoidList > tbody")
         })
     }
