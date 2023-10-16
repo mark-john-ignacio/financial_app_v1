@@ -11,6 +11,7 @@
 
     $category = [];
     $items = [];
+    $table = [];
     $date = date('Y-m-d');
 
     $query = mysqli_query($con,"select * from company where compcode='$company'");
@@ -79,6 +80,11 @@
         }
     }
 
+    $sql = "SELECT * FROM pos_table where `compcode` = '$company'";
+    $query = mysqli_query($con, $sql);
+    while($row = $query -> fetch_assoc()){
+        array_push($table, $row);
+    }
 ?>
 
 
@@ -109,7 +115,7 @@
     <style>
         #filter {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
         }
         #filter > div{
             padding: 5px;
@@ -141,6 +147,13 @@
             grid-template-rows: 1fr;
             max-width: 4fr;
             overflow: hidden;
+        }
+
+        #right-side {
+            display: absolute;
+        }
+        #wrapper {
+            bottom: 0;
         }
     </style>
 </head>
@@ -181,7 +194,7 @@
                         </tr>
                         <tr>
                             <td colspan="2" style='padding-top: 20px'>
-                                <div style='height: 3.5in; max-height: 3.5in; overflow: auto;'>
+                                <div style='height: 3.6in; max-height: 3.6in; overflow: auto;'>
                                     <table class='table' id='listItem' style="width: 100%; ">
                                         <thead style='background-color: #019aca'>
                                             <tr>
@@ -199,18 +212,24 @@
                         <tr>
                             <td colspan='2'>
                                 <table class='table' id='amountlist' style='width: 100%'>
-                                    <tr>
-                                        <td>Discount</td>
-                                        <td align="right">00.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td>VAT</td>
-                                        <td align="right">00.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td>NET</td>
-                                        <td align="right">00.00</td>
-                                    </tr>
+                                    <tbody>
+                                        <!-- <tr>
+                                            <td>Discount</td>
+                                            <td align="right">P <span id="discount">0.00</span></td>
+                                        </tr> -->
+                                        <tr>
+                                            <td>Net of VAT</td>
+                                            <td align="right">P <span id="net">0.00</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>VAT</td>
+                                            <td align="right">P <span id="vat">0.00</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Gross Amount</td>
+                                            <td align="right">P <span id="gross">0.00</span></td>
+                                        </tr>
+                                    </tbody>
                                 </table>
                             </td>
                         </tr>
@@ -218,13 +237,13 @@
                 </div>
 
 
-                <div class='col' style='width: 50%; padding: 10px;'>
+                <div class='col' id='right-side' style='width: 50%; padding: 10px;'>
                     <table class='table' style="width: 100%;">
                         <tr>
                             <td>
                                 <div id='filter'>
                                     <div class='input-group'>
-                                        <span class='input-group-addon'><i class='fa fa-user'></i></span><input class='form-control input-sm' type="text" name='customer' id='customer' autocomplete="off">
+                                        <span class='input-group-addon'><i class='fa fa-user'></i></span><input class='form-control input-sm' type="text" name='customer' id='customer' placeholder="Walkin Customer (Default)" autocomplete="off">
                                     </div>
                                     <div class='input-group'>
                                         <select name="orderType" id="orderType" class='form-control input-sm'>
@@ -234,11 +253,16 @@
                                             <option value="Delivery">Delivery</option>
                                         </select>
                                     </div>
-                                    <div class='input-group'>
-                                        <select name="table" id="table"  class='form-control input-sm'>
-                                            <option value="" selected disabled>--- Select Table ---</option>
-                                        </select>
-                                    </div>
+                                    <?php if(sizeof($table) > 0): ?>
+                                        <div class='input-group'>
+                                            <select name="table" id="table"  class='form-control input-sm'>
+                                                <option value="" selected disabled>--- Select Table ---</option>
+                                                <?php foreach($table as $list): ?>
+                                                    <option value="<?= $list['tableno'] ?>"><?= $list['description'] ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                    <?php endif;?>
                                 </div>
                             </td>
                         </tr>
@@ -264,7 +288,7 @@
                                     background-color:#019aca; 
                                     border:solid 1px #036;
                                     padding:3px;
-                                    text-align:center;" class="itmclass" data-clscode="<?= $list['ccode'] ?>">
+                                    text-align:center;" class="itmclass btn btn-info" data-clscode="<?= $list['ccode'] ?>">
                                         <font size="-2"><?= $list['cdesc'] ?></font>
                                 </div>
 
@@ -272,8 +296,8 @@
                         </section>
                     </div>
 
-
-                    <div id='button-wrapper' class='col-lg-12 nopadwtop'>
+                    <div id='wrapper'>
+                        <div id='button-wrapper' class='col-lg-12 nopadwtop'>
                             <button class="form-control btn btn-sm btn-success" name="btnPay" id="btnPay" type="button">
                                 <i class="fa fa-money fa-fw fa-lg" aria-hidden="true"></i>&nbsp; PAYMENT (F2)
                             </button>
@@ -287,6 +311,8 @@
                                 <i class="fa fa-plus fa-fw fa-lg" aria-hidden="true"></i>&nbsp;VOID (DEL)
                             </button>
                         </div>
+                    </div>
+                    
                 </div>
             </div>
     </div>
@@ -312,7 +338,7 @@
                         <tbody></tbody>
                     </table>
                 </div>
-                <div class='modal-body' id='retrieve' style="height: 4in; display: none">
+                <div class='modal-body' id='retrieve' style="height: 4in; display: none;">
                     <table class='table' id='RetrieveList' style='width: 100%'>
                         <thead>
                             <tr>
@@ -329,10 +355,96 @@
                     <div id='footer' style='right: 0px'>
                         <button class='btn btn-danger' id='VoidSubmit' style='padding: 5px; width: 1in;'>Void</button>
                         <button class='btn btn-warning' id='RetrieveSubmit' style='padding: 5px; width: 1in; display:none;'>Retrieve</button>
-                        <button class='btn btn-success' id='PaySubmit' style='padding: 5px; width: 1in; display:none;'></button>
                     </div>
                 </div>
             </div>     
+        </div>
+    </div>
+
+    <div class='modal fade' id='payModal' role='dialog'>
+        <div class='modal-lg modal-dialog' role="document">
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="invheader">Payment Terms</h3>
+                </div>
+                <div class='modal-body' style='height: 100%'>
+                    <table class='table' style='width: 100%;'>
+                        <tr>
+                            <td>
+                                <div style='height: 4in;'>
+                                    <table class='table' id='paymentList' style='width: 100%'>
+                                        <thead style='background-color: #019aca'>
+                                            <tr>
+                                                <th style='text-align: center'>Item</th>
+                                                <th style='text-align: center'>UOM</th>
+                                                <th style='text-align: center'>Quantity</th>
+                                                <th style='text-align: center'>Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </td>
+                            <td style='width: 35%'>
+                                <div id='payment-details'>
+                                    <div style='width: 100%'>
+                                        <label for="totalAmt">Total Amount</label>
+                                        <input type='text' id='totalAmt' class='form-control' readonly/>
+                                        <label for="amtTendered">Amount Tendered</label>
+                                        <input type="text" id='amtTendered' class='form-control' />
+                                        <label for='discountAmt'>Discount Amount</label>
+                                        <input type="text" id='discountAmt' class='form-control' />
+                                        <label for="ExchangeAmt">Exchange Amount</label>
+                                        <input type="text" id='ExchangeAmt' class='form-control' readonly/>
+                                    </div>
+
+                                    <div class='jqbtk-container' style='padding-top: 5px'>
+                                        <div class='jqbtk-row'>
+                                            <button type='button' class="btnpad btn btn-default" data-val='1'>1</button>
+                                            <button type='button' class="btnpad btn btn-default" data-val='2'>2</button>
+                                            <button type='button' class="btnpad btn btn-default" data-val='3'>3</button>
+                                            <button type='button' class="btnpad btn btn-info jqbtk-shift"  data-val='100'>100</button>
+                                        </div>
+                                        <div class='jqbtk-row' style='padding-top: 2px;'>
+                                            <button type='button' class="btnpad btn btn-default" data-val='4'>4</button>
+                                            <button type='button' class="btnpad btn btn-default" data-val='5'>5</button>
+                                            <button type='button' class="btnpad btn btn-default" data-val='6'>6</button>
+                                            <button type='button' class="btnpad btn btn-info jqbtk-shift"  data-val='200'>200</button>
+                                        </div>
+                                        <div class='jqbtk-row' style='padding-top: 2px;'>
+                                            <button type='button' class="btnpad btn btn-default" data-val='7'>7</button>
+                                            <button type='button' class="btnpad btn btn-default" data-val='8'>8</button>
+                                            <button type='button' class="btnpad btn btn-default" data-val='9'>9</button>
+                                            <button type='button' class="btnpad btn btn-info jqbtk-shift"  data-val='500'>500</button>
+                                        </div>
+                                        <div class='jqbtk-row' style='padding-top: 2px;'>
+                                            <button type='button' class="btnpad btn btn-default" data-val='.'>.</button>
+                                            <button type='button' class="btnpad btn btn-default" data-val='0'>0</button>
+                                            <button type='button' class="btnpad btn btn-default" data-val='DEL' style="padding-right: 10px !important; padding-left: 10px !important">
+                                                <i class='fa fa-arrow-left' aria-hidden="true"></i>
+                                            </button>
+                                            <button type='button' class="btnpad btn btn-info jqbtk-shift"  data-val='1000'>1000</button>
+                                        </div>
+                                    </div>
+
+                                    <div style='display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-gap:4px; padding-top: 10px;'>
+                                        <button type='button' class='btn btn-info'>Exact</button>
+                                        <button type='button' class='btn btn-warning'>Clear</button>
+                                        <button type='button' class='btn btn-danger'>Close</button>
+                                        <button type='button' id='PaySubmit' class='btn btn-success'>Submit</button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!-- <div class='modal-footer'>
+                    <div id='footer' style='right: 0px'>
+                        <button class='btn btn-success'  style='padding: 5px; width: 1in; '>Submit</button>
+                    </div>
+                </div> -->
+            </div>
         </div>
     </div>
 </body>
@@ -340,6 +452,7 @@
 
 <script type='text/javascript'>
     var itemStored = [];
+    
     
     $(document).ready(function(){
         clockUpdate();
@@ -350,18 +463,46 @@
             slidesToShow: 4,
             slidesToScroll: 4
         });
-
-
-        $('#customer').typeadhead({
+        
+        $('#barcode').typeahead({
             autoSelect: true,
             source: function(request, response) {
                 $.ajax({
-                    url: "th_customer.php",
+                    url: "Function/th_listBarcode.php",
                     dataType: "json",
                     data: {
-                        query: $("#ccustname").val()
+                        query: $("#barcode").val()
+                    },
+                    success: function (res) {
+                        if(res.valid)
+                            response(res.data);
+                    }
+                });
+            },
+            displayText: function (item) {
+                return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.partno + '</span><br><small>' + item.name + "</small></div>";
+            },
+            highlighter: Object,
+            afterSelect: function(items) { 
+                duplicate(items)
+                table_store(itemStored)
+                $('#barcode').val("").change()
+            }
+        })
+
+
+
+        $('#customer').typeahead({
+            autoSelect: true,
+            source: function(request, response) {
+                $.ajax({
+                    url: "Function/th_customer.php",
+                    dataType: "json",
+                    data: {
+                        query: $("#customer").val()
                     },
                     success: function (data) {
+                        console.log(data)
                         response(data);
                     }
                 });
@@ -371,13 +512,15 @@
             },
             highlighter: Object,
             afterSelect: function(item) { 				
-                            
+                console.log(item)  
+                $('#customer').val(item.value).change()
                 // $('#ccustname').val(item.value).change(); 
                 // $("#ccustid").val(item.id);
                 // $("#ccustcredit").val(item.nlimit); 
                 // $("#divCreditLim").text(item.nlimit);
                 // chkbalance(item.id);
-                // $("#citemno").focus();			
+                // $("#citemno").focus();	
+                
                 
             }
         })
@@ -489,6 +632,14 @@
             
         });
 
+        /**
+         * Payment Transaction
+         */
+
+        $('#btnPay').click(function(){
+            
+            $('#payModal').modal('show')
+        })
 
 
         /**
@@ -554,16 +705,11 @@
         })
     })
 
-    function modalshow(id){
+    function modalshow(modal){
         $('.modal-body').css('display', 'none');
         $('#footer button').css('display', 'none');
 
-        switch(id){
-            case "Pay": 
-                $('#invheader').text("Payments");
-                $('#PaySubmit').css('display', 'inline-block')
-                $('#pay').css('display', 'block');
-                break;
+        switch(modal){
             case "Retrieve": 
                 $('#invheader').text("Retrieve");
                 $('#RetrieveSubmit').css('display', 'inline-block')
@@ -616,23 +762,25 @@
             itemStored = [];
         }
 
+        const price = chkprice(data.partno, data.unit, "PM1", <?= date('Y-m-d') ?>)
         let found = false;
         for (let i = 0; i < itemStored.length; i++) {
             if (itemStored[i].partno === data.partno) {
                 itemStored[i].quantity += qty;
+                itemStored[i].price = parseFloat(itemStored[i].price) + parseFloat(price);
                 found = true;
                 break;
             }
         }
 
         if (!found) {
-
+            
             itemStored.push({
                 partno: data.partno,
                 name: (data.name ? data.name : data.item),
                 unit: data.unit,
                 quantity: qty,
-                price: chkprice(data.partno, data.unit, "PM1", <?= date('Y-m-d') ?>)
+                price: parseFloat(price).toFixed(2)
             });
         }
 
@@ -644,7 +792,7 @@
         var value;
 		$.ajax ({ 
 			url: "../Sales/th_checkitmprice.php",
-			data: { itm: partno, cust: code, cunit: code, dte: date },
+			data: { itm: partno, cust: code, cunit: unit, dte: date },
 			async: false,
 			success: function( data ) {
                 value = data;
@@ -656,13 +804,14 @@
     function table_store(items){
         $('#listItem > tbody').empty();
         $('#VoidList > tbody').empty();
+        $('#paymentList > tbody').empty();
 
         items.map((item, index) => {
             $("<tr>").append(
                 $("<td>").text(item.name),
                 $("<td>").text(item.unit),
                 $("<td align='center'>").html("<input type='number' id='qty' name='qty[]' class='form-control input-sm' style='width:60px' value='"+item.quantity+"'/>"),
-                $("<td>").text(item.price)
+                $("<td>").text(parseFloat(item.price).toFixed(2))
             ).appendTo("#listItem > tbody")
 
 
@@ -671,9 +820,36 @@
                 $("<td>").text(item.name),
                 $("<td>").text(item.unit),
                 $("<td align='center'>").html("<input type='number' id='qty' name='qty[]' class='form-control input-sm' style='width:60px' value='"+item.quantity+"'/>"),
-                $("<td>").text(item.price)
+                $("<td>").text(parseFloat(item.price).toFixed(2))
             ).appendTo("#VoidList > tbody")
+
+            $("<tr>").append(
+                $("<td>").text(item.name),
+                $("<td align='center'>").text(item.unit),
+                $("<td align='center'>").text(item.quantity),
+                $("<td align='center'>").text(parseFloat(item.price).toFixed(2))
+            ).appendTo("#paymentList > tbody")
         })
+        computation(items);
+    }
+    
+    function computation(data){
+        const itemAmounts = {discount: 0, net: 0, vat: 0, gross: 0}
+
+        data.map((item, index) =>{
+            price = parseFloat(item.price);
+            net = price / parseFloat(1 + (12/100));
+            itemAmounts['net'] += price / parseFloat(1 + (12/100));
+            itemAmounts['vat'] = (itemAmounts.net * 0.12);
+            itemAmounts['discount'] += 0;
+            itemAmounts['gross'] += price;
+        })
+
+        $('#discount').text(parseFloat(itemAmounts.discount).toFixed(2));
+        $('#vat').text(parseFloat(itemAmounts.vat).toFixed(2));
+        $('#net').text(parseFloat(itemAmounts.net).toFixed(2));
+        $('#gross').text(parseFloat(itemAmounts.gross).toFixed(2));
+        $('#totalAmt').val(parseFloat(itemAmounts.gross).toFixed(2))
     }
 
     function clockUpdate() {
