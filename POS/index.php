@@ -391,10 +391,10 @@
                                     <div style='width: 100%'>
                                         <label for="totalAmt">Total Amount</label>
                                         <input type='text' id='totalAmt' class='form-control' readonly/>
-                                        <label for="amtTendered">Amount Tendered</label>
-                                        <input type="text" id='amtTendered' class='form-control' />
                                         <label for='discountAmt'>Discount Amount</label>
                                         <input type="text" id='discountAmt' class='form-control' />
+                                        <label for="tendered">Amount Tendered</label>
+                                        <input type="text" id='tendered' class='form-control' />
                                         <label for="ExchangeAmt">Exchange Amount</label>
                                         <input type="text" id='ExchangeAmt' class='form-control' readonly/>
                                     </div>
@@ -429,8 +429,8 @@
                                     </div>
 
                                     <div style='display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-gap:4px; padding-top: 10px;'>
-                                        <button type='button' class='btn btn-info'>Exact</button>
-                                        <button type='button' class='btn btn-warning'>Clear</button>
+                                        <button type='button' class='btnpad btn btn-info' data-val='EXACT'>Exact</button>
+                                        <button type='button' class='btnpad btn btn-warning' data-val='CLEAR'>Clear</button>
                                         <button type='button' class='btn btn-danger'>Close</button>
                                         <button type='button' id='PaySubmit' class='btn btn-success'>Submit</button>
                                     </div>
@@ -452,6 +452,8 @@
 
 <script type='text/javascript'>
     var itemStored = [];
+    var matrix = 'PM1';
+    var amtTotal = 0;
     
     
     $(document).ready(function(){
@@ -463,6 +465,8 @@
             slidesToShow: 4,
             slidesToScroll: 4
         });
+
+
         
         $('#barcode').typeahead({
             autoSelect: true,
@@ -502,7 +506,6 @@
                         query: $("#customer").val()
                     },
                     success: function (data) {
-                        console.log(data)
                         response(data);
                     }
                 });
@@ -513,6 +516,7 @@
             highlighter: Object,
             afterSelect: function(item) { 				
                 console.log(item)  
+                matrix = item.matrix;
                 $('#customer').val(item.value).change()
                 // $('#ccustname').val(item.value).change(); 
                 // $("#ccustid").val(item.id);
@@ -556,6 +560,7 @@
                 itemStored.splice($(this).val(), 1);
 
                 table_store(itemStored);
+                $('#mymodal').modal('hide')
             });
         })
 
@@ -637,8 +642,14 @@
          */
 
         $('#btnPay').click(function(){
+            $('#tendered').val(0)
+            $('#tendered').focus()
+            $('#tendered').select()
+            $('#discountAmt').val(0)
+            $('#ExchangeAmt').val(0)
             
             $('#payModal').modal('show')
+            PaymentCompute()
         })
 
 
@@ -702,6 +713,81 @@
                     console.log(res)
                 }
             })
+
+            $('#mymodal').modal('hide')
+        })
+
+
+        $('#tendered').on('keyup', function(){
+            let tender = $(this).val();
+
+            if(tender != ""){
+                return PaymentCompute()
+            }
+            $('#ExchangeAmt').val('0.00')
+        })
+        
+        $('#discountAmt').on('keyup', function(){
+            var disc = $(this).val()
+            let total = parseFloat(amtTotal)
+            let dif = parseFloat(total) - parseFloat(disc);
+            if(disc != ""){
+                return $('#totalAmt').val(dif.toFixed(2))
+            }
+            $('#ExchangeAmt').val('0.00')
+        })
+
+        $('.btnpad').click(function(){
+            let tender = $('#tendered').val();
+            let total = $('#totalAmt').val();
+            let btn = $(this).attr("data-val");
+            let number = 0;
+            console.log(total)
+
+            if(tender == "0.00"){
+                $('#tendered').val("");
+                tender = "";
+            }
+
+            switch(btn){
+                case ".":
+                    if(tender.indexOf(".") != -1) number = ""
+                    break;
+                case "DEL": 
+                    if(tender.length == 1){
+                        number = "0.00";
+                    } else {
+                        btn = tender.slice(0, 1);
+                        number = btn;
+                    }
+                    break;
+                case "CLEAR": 
+                    number = "0.00"
+                    break;
+                case "EXACT":
+                    number = total;
+                    break;
+                case '1000': 
+                    number = parseInt(btn) + parseInt(tender);
+                    break;
+                case '500':
+                    number = parseInt(btn) + parseInt(tender);
+                    break;
+                case '200':
+                    number = parseInt(btn) + parseInt(tender);
+                    break;
+                case '100': 
+                    number = parseInt(btn) + parseInt(tender);
+                    break;
+                default: 
+                    number = parseInt(btn) + parseInt(tender);
+              
+            }
+
+            $('#tendered').val(number);
+            $("#tendered").autoNumeric('destroy');
+		    $("#tendered").autoNumeric('init',{mDec:2});
+            PaymentCompute();
         })
     })
 
@@ -756,13 +842,12 @@
      * for duplication item
      */
 
-
      function duplicate(data, qty = 1) {
         if (!Array.isArray(itemStored)) {
             itemStored = [];
         }
 
-        const price = chkprice(data.partno, data.unit, "PM1", <?= date('Y-m-d') ?>)
+        const price = chkprice(data.partno, data.unit, matrix, <?= date('Y-m-d') ?>)
         let found = false;
         for (let i = 0; i < itemStored.length; i++) {
             if (itemStored[i].partno === data.partno) {
@@ -774,7 +859,6 @@
         }
 
         if (!found) {
-            
             itemStored.push({
                 partno: data.partno,
                 name: (data.name ? data.name : data.item),
@@ -786,6 +870,23 @@
 
     }
 
+
+    /**
+     * Computation for payments
+     */
+
+    function PaymentCompute(){
+        
+        let amt = $('#totalAmt').val().replace(/,/g,'');
+        let tender = $('#tendered').val().replace(/,/g,'');
+        let disc = $('#discountAmt').val().replace(/,/g,'');
+        let exchange =$('#ExchangeAmt').val().replace(/,/g,'');
+
+        let subtotal = parseFloat(amt) - parseFloat(tender);
+        $('#ExchangeAmt').val(subtotal)
+        $('#ExchangeAmt').autoNumeric('destroy');
+        $('#ExchangeAmt').autoNumeric('init',{mDec:2});
+    }
 
     //price checking
     function chkprice(partno,unit,code,date){
@@ -840,7 +941,7 @@
             price = parseFloat(item.price);
             net = price / parseFloat(1 + (12/100));
             itemAmounts['net'] += price / parseFloat(1 + (12/100));
-            itemAmounts['vat'] = (itemAmounts.net * 0.12);
+            itemAmounts['vat'] = (itemAmounts.net * (12/100));
             itemAmounts['discount'] += 0;
             itemAmounts['gross'] += price;
         })
@@ -849,7 +950,8 @@
         $('#vat').text(parseFloat(itemAmounts.vat).toFixed(2));
         $('#net').text(parseFloat(itemAmounts.net).toFixed(2));
         $('#gross').text(parseFloat(itemAmounts.gross).toFixed(2));
-        $('#totalAmt').val(parseFloat(itemAmounts.gross).toFixed(2))
+        $('#totalAmt').val(parseFloat(itemAmounts.gross).toFixed(2));
+        amtTotal = parseFloat(itemAmounts['gross']);
     }
 
     function clockUpdate() {
