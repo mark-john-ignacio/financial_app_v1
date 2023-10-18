@@ -56,14 +56,14 @@ $varmsg = "";
 <table width="100%" class='table' border="0" align="center" cellpadding="2px">
   <tr >
 	<th style='display: none;'>module</th>
-    <th width="100">Date</th>
-    <th width="100">Transaction No.</th>
+  <th width="100">Date</th>
+  <!--<th width="100">Transaction No.</th>-->
 	<th width="200">Referrence</th>
 	<th width="100">Name</th>
 	<th width='100'>Account No.</th>
 	<th width="100">Account Title</th>
-    <th class="text-right" width="120">Debit</th>
-    <th class="text-right" width="120">Credit</th>
+  <th class="text-right" width="120">Debit</th>
+  <th class="text-right" width="120">Credit</th>
   </tr>
   
 <?php
@@ -133,7 +133,7 @@ $varmsg = "";
 			</td> -->
 			<td style="display: none;"><?php echo $cmodule;?></td>
 			<td><b><?php echo $ddate;?></b></td>
-			<td><b><?php echo $ctran;?></b></td>
+			<!--<td><b><?//php echo $ctran;?></b></td>-->
 			<td><b><?php echo "Reference: ".$cpaymeth." / ".$cchecko;?></b></td>
 			<td><b><?php echo $cpayee;?></b></td>
 			<td><b><?php echo $acctno;?></b></td>
