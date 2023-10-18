@@ -12,7 +12,7 @@
 
     for($i = 0; $i < sizeof($table); $i++){
         if($table[$i] != ""){
-            $sql = "SELECT * FROM pos_grouping WHERE compcode = '$company' and code = '".$table[$i]."'";
+            $sql = "SELECT * FROM pos_grouping WHERE `compcode` = '$company' and `type` = 'TABLE' and `code` = '".$table[$i]."'";
             $query = mysqli_query($con, $sql);
             if(mysqli_num_rows($query) != 0) {
                 $sql = "UPDATE pos_grouping `code` = '".$table[$i]."', `remarks` ='".$remarks[$i]."' ";
@@ -23,7 +23,7 @@
                 ]);
     
             } else {
-                $sql = "INSERT INTO pos_grouping (`compcode`, `code`, `remarks`, `status`) VALUES('$company', '".$table[$i]."', '".$remarks[$i]."', '0')";
+                $sql = "INSERT INTO pos_grouping (`compcode`, `code`, `remarks`, `type`, `status`) VALUES('$company', '".$table[$i]."', '".$remarks[$i]."', 'TABLE', '0')";
                 
                 if(mysqli_query($con, $sql)){
                     echo json_encode([

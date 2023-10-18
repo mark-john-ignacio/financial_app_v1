@@ -3729,7 +3729,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</div>
 								<div class="col-xs-12 nopadwtop" >
 									<div class='col-sm-12' style=' padding-bottom: 10px;'><button type='button' class='btn btn-xs btn-primary' id='addTable' onclick="insert_table()"><span><i class='fa fa-plus'></i></span>&nbsp; Add a Table</button></div>
-									<form action="th_setTable.php" method='post' id='tableform' name='tableform' onclick='return false' enctype="multipart/form-data">
+									<form action="th_setTable.php" method='post' id='tableform' name='tableform' onsubmit='return false' enctype="multipart/form-data">
 											<div class='col-sm-12' style='padding-bottom: 10px;'><button type='submit' id='tableSave' name='tableSave' onclick="table_save()" class='btn btn-xs btn-success'>Save</div>
 											<div class='col-sm-6 nopadwtop' style='border: 1px solid grey; height: 2in;overflow: auto;'>
 												<table class='table' id='dataTable'>
@@ -3742,7 +3742,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 													</thead>
 													<tbody style='overflow: auto;'>
 														<?php
-															$sql = "SELECT * FROM pos_grouping WHERE compcode = '$company'";
+															$sql = "SELECT * FROM pos_grouping WHERE `compcode` = '$company' and `type` = 'TABLE'";
 															$query = mysqli_query($con, $sql);
 															while($row = $query -> fetch_assoc()):
 														?>
@@ -3768,6 +3768,24 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										<div id="divInvChecking" style="display:inline; padding-left:5px">
 										</div>
 									</div>     
+								</div>
+								<div class="col-xs-12 nopadwtop" >
+									<div class='col-sm-12' style=' padding-bottom: 10px;'><button type='button' class='btn btn-xs btn-primary' id='addTable' onclick="insert_table()"><span><i class='fa fa-plus'></i></span>&nbsp; Add a Table</button></div>
+
+									<form action="" method="post" id="orderfrm" name="orderfrm" onsubmit="return false;" enctype="multipart/form-data">
+											<div class='col-sm-12' style='padding-bottom: 10px;'><button type='submit' id='tableSave' name='tableSave' onclick="table_save()" class='btn btn-xs btn-success'>Save</div>
+											<div class='col-sm-6 nopadwtop' style='border: 1px solid grey; height: 2in;overflow: auto;'>
+												<table class='table' id='ordertable'>
+													<thead>
+														<tr>
+															<th>Order Type</th>
+															<th>Remarks</th>
+															<th>&nbsp;</th>
+														</tr>
+													</thead>
+												</table>
+											</div>
+									</form>
 								</div>
 							</div>
 						</div>
