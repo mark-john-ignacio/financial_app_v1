@@ -75,6 +75,8 @@ $varmsg = "";
 	where a.compcode='$company' and a.cmodule='PV' and b.dcheckdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
 	order by b.ctranno, a.ndebit DESC";
 
+	//echo $sql;
+
 	$result=mysqli_query($con,$sql);
 				
 	if (!mysqli_query($con, $sql)) {
@@ -95,7 +97,7 @@ $varmsg = "";
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 	{
 		
-		if($ctran!=$row['ctranno']){
+		//if($ctran!=$row['ctranno']){
 			$cntr++;		
 			$ctran = $row['ctranno'];
 			$ddate = $row['dcheckdate'];
@@ -111,7 +113,7 @@ $varmsg = "";
 			//}
 
 		?>  
-		  <tr id='tableContent' name='tableContent'>
+		  <tr id='tableContent' name='tableContent' style="cursor: pointer";>
 			<!-- <td colspan="4">
 			
 			<div class="col-xs-12">
@@ -132,12 +134,12 @@ $varmsg = "";
             </div>
 			</td> -->
 			<td style="display: none;"><?php echo $cmodule;?></td>
-			<td><b><?php echo $ddate;?></b></td>
-			<td><b><?php echo $ctran;?></b></td>
-			<td><b><?php echo "Reference: ".$cpaymeth." / ".$cchecko;?></b></td>
-			<td><b><?php echo $cpayee;?></b></td>
-			<td><b><?php echo $acctno;?></b></td>
-			<td><b><?php echo $row['ctitle'];?></b></td>
+			<td><?php echo $ddate;?></td>
+			<td><?php echo $ctran;?></td>
+			<td><?=$cchecko;?></td>
+			<td nowrap><?php echo $cpayee;?></td>
+			<td><?php echo $acctno;?></td>
+			<td nowrap><?php echo $row['ctitle'];?></td>
 
 			<td align="right"><?php if($row['ndebit'] <> 0) 
 		{ 
@@ -160,7 +162,7 @@ $varmsg = "";
 		
 		?>
     <?php
-		}
+		//}
 	?>
     <tr>
       <td colspan="6" align="right" ><b>TOTAL</b></td>

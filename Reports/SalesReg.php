@@ -10,6 +10,8 @@ include('../include/access.php');
 
 ?><html>
 <head>
+
+<link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
 
@@ -20,7 +22,7 @@ include('../include/access.php');
 <script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Coop Financials</title>
+<title>Myx Financials</title>
 </head>
 
 <body style="padding-left:50px;">
