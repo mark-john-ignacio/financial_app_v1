@@ -12,6 +12,7 @@
     $category = [];
     $items = [];
     $table = [];
+    $order = [];
     $date = date('Y-m-d');
 
     $query = mysqli_query($con,"select * from company where compcode='$company'");
@@ -80,10 +81,16 @@
         }
     }
 
-    $sql = "SELECT * FROM pos_table where `compcode` = '$company'";
+    $sql = "SELECT * FROM pos_grouping where `compcode` = '$company' and `type` = 'TABLE' ";
     $query = mysqli_query($con, $sql);
     while($row = $query -> fetch_assoc()){
         array_push($table, $row);
+    }
+
+    $sql = "SELECT * FROM pos_grouping where `compcode` = '$company' and `type` = 'ORDER' ";
+    $query = mysqli_query($con, $sql);
+    while($row = $query -> fetch_assoc()){
+        array_push($order, $row);
     }
 ?>
 
@@ -186,7 +193,7 @@
                         <tr>
                             <td colspan="2">
                                 <div class='input-group margin-bottom-sm'>
-                                    <input type="text" name='barcode' id='barcode' class='form-control input-sm' autocomplete="off">
+                                    <input type="text" name='barcode' id='barcode' class='form-control input-sm' placeholder="|||||||||||||||||||||||||||||||||||||||| Barcode " autocomplete="off">
                                     <span class='input-group-addon'><i class='fa fa-barcode fa-fw'></i></span>
                                 </div>
                                 
@@ -211,23 +218,23 @@
                         </tr>
                         <tr>
                             <td colspan='2'>
-                                <table class='table' id='amountlist' style='width: 100%'>
+                                <table   id='amountlist' style='width: 100%'>
                                     <tbody>
                                         <!-- <tr>
                                             <td>Discount</td>
                                             <td align="right">P <span id="discount">0.00</span></td>
                                         </tr> -->
                                         <tr>
-                                            <td>Net of VAT</td>
-                                            <td align="right">P <span id="net">0.00</span></td>
+                                            <td nowrap align='right' style='font-weight: bold; padding-right: 10px;'>Net of VAT</td>
+                                            <td class='form-control input-lg' align="right" style='border: 0px solid; color: #F00; font-weight: bold;'>P <span id="net">0.00</span></td>
                                         </tr>
                                         <tr>
-                                            <td>VAT</td>
-                                            <td align="right">P <span id="vat">0.00</span></td>
+                                            <td nowrap align='right' style='font-weight: bold; padding-right: 10px;'>VAT</td>
+                                            <td class='form-control input-lg' align="right" style='border: 0px solid; color: #F00; font-weight: bold;'>P <span id="vat">0.00</span></td>
                                         </tr>
                                         <tr>
-                                            <td>Gross Amount</td>
-                                            <td align="right">P <span id="gross">0.00</span></td>
+                                            <td nowrap align='right' style='font-weight: bold; padding-right: 10px;'>Gross Amount</td>
+                                            <td class='form-control input-lg' align="right" style='border: 0px solid; color: #F00; font-weight: bold;'>P <span id="gross">0.00</span></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -245,20 +252,21 @@
                                     <div class='input-group'>
                                         <span class='input-group-addon'><i class='fa fa-user'></i></span><input class='form-control input-sm' type="text" name='customer' id='customer' placeholder="Walkin Customer (Default)" autocomplete="off">
                                     </div>
-                                    <div class='input-group'>
-                                        <select name="orderType" id="orderType" class='form-control input-sm'>
-                                            <option value="" selected disabled>--- Select Order Type  ---</option>
-                                            <option value="Dine">Dine-In</option>
-                                            <option value="Out">Take-Out</option>
-                                            <option value="Delivery">Delivery</option>
-                                        </select>
-                                    </div>
-                                    <?php if(sizeof($table) > 0): ?>
+                                    <?php if(sizeof($order) != 0 ): ?>
+                                        <div class='input-group'>
+                                            <select name="orderType" id="orderType" class='form-control input-sm'>
+                                                <option value="" selected disabled>--- Select Order Type  ---</option>
+                                                <?php foreach($order as $list): ?>
+                                                    <option value="<?= $list['code'] ?>"><?= $list['code'] ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                    <?php endif; if(sizeof($table) != 0): ?>
                                         <div class='input-group'>
                                             <select name="table" id="table"  class='form-control input-sm'>
                                                 <option value="" selected disabled>--- Select Table ---</option>
                                                 <?php foreach($table as $list): ?>
-                                                    <option value="<?= $list['tableno'] ?>"><?= $list['description'] ?></option>
+                                                    <option value="<?= $list['code'] ?>"><?= $list['code'] ?></option>
                                                 <?php endforeach; ?>
                                             </select>
                                         </div>
@@ -576,9 +584,9 @@
         //button for holding items
         $('#btnHold').on('click', function(){
             //storing input values in array
-            if($('#orderType').find(":selected").val() == ""){
-                return alert("Please Fillup Order Type to procceed!");
-            }
+            // if($('#orderType').find(":selected").val() == ""){
+            //     return alert("Please Fillup Order Type to procceed!");
+            // }
 
             if(itemStored.length === 0){
                 return alert('Transaction is empty! cannot hold transaction');
@@ -605,7 +613,6 @@
                 }
             })
             if(isHold == true){
-                console.log('hi')
                 itemStored.map((item, index) => {
                     $.ajax({
                         url: 'Function/th_holdtransaction.php',

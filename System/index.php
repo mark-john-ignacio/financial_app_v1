@@ -3747,6 +3747,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 															while($row = $query -> fetch_assoc()):
 														?>
 															<tr>
+																<td class='input-sm' style='display: none'><input type='text' id='tableID' name='tableID[]' placeholder='Name of Table' class='input-sm' value="<?= $row['id'] ?>"/></td>
 																<td class='input-sm'><input type='text' id='tableName' name='tableName[]' placeholder='Name of Table' class='input-sm' value="<?= $row['code'] ?>"/></td>
 																<td class='input-sm'><input type='text' id='tableRemarks' name='tableRemarks[]' placeholder='Remarks' class='input-sm' value="<?= $row['remarks'] ?>" /></td>
 																<td class='input-sm'><button type='button' class='btn btn-xs btn-danger'><i class='fa fa-trash'></i>&nbsp; delete</button></td>
@@ -3770,10 +3771,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</div>     
 								</div>
 								<div class="col-xs-12 nopadwtop" >
-									<div class='col-sm-12' style=' padding-bottom: 10px;'><button type='button' class='btn btn-xs btn-primary' id='addTable' onclick="insert_table()"><span><i class='fa fa-plus'></i></span>&nbsp; Add a Table</button></div>
+									<div class='col-sm-12' style=' padding-bottom: 10px;'><button type='button' class='btn btn-xs btn-primary' id='addTable' onclick="order_table()"><span><i class='fa fa-plus'></i></span>&nbsp; Add a Table</button></div>
 
 									<form action="" method="post" id="orderfrm" name="orderfrm" onsubmit="return false;" enctype="multipart/form-data">
-											<div class='col-sm-12' style='padding-bottom: 10px;'><button type='submit' id='tableSave' name='tableSave' onclick="table_save()" class='btn btn-xs btn-success'>Save</div>
+											<div class='col-sm-12' style='padding-bottom: 10px;'><button type='submit' id='tableSave' name='tableSave' onclick="save_order()" class='btn btn-xs btn-success'>Save</div>
 											<div class='col-sm-6 nopadwtop' style='border: 1px solid grey; height: 2in;overflow: auto;'>
 												<table class='table' id='ordertable'>
 													<thead>
@@ -3783,6 +3784,21 @@ if (mysqli_num_rows($sqlhead)!=0) {
 															<th>&nbsp;</th>
 														</tr>
 													</thead>
+													<tbody>
+														<?php 
+															$sql = "SELECT * FROM pos_grouping WHERE `compcode` = '$company' and `type` = 'ORDER'";
+															$query = mysqli_query($con, $sql);
+															if(mysqli_num_rows($query) != 0):
+																while($row = $query -> fetch_assoc()):
+														?>
+															<tr>
+																<td class='input-sm' style='display: none'><input type='text' id='orderID' name='orderID[]' placeholder='Name of Table' class='input-sm' value="<?= $row['id'] ?>"/></td>
+																<td class='input-sm'><input type='text' id='orderName' name='orderName[]' placeholder='Name of Order' class='input-sm' value="<?= $row['code'] ?>"/></td>
+																<td class='input-sm'><input type='text' id='orderRemarks' name='orderRemarks[]' placeholder='Remarks' class='input-sm' value="<?= $row['remarks'] ?>" /></td>
+																<td class='input-sm'><button type='button' class='btn btn-xs btn-danger'><i class='fa fa-trash'></i>&nbsp; delete</button></td>
+															</tr>
+														<?php endwhile; endif;?>
+													</tbody>
 												</table>
 											</div>
 									</form>
@@ -6128,6 +6144,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		let forms = new FormData($("#tableform")[0]);
 		const remarkList = []
 		const tableList = []
+		const idlist = []
 
 		document.querySelectorAll('[id="tableName"]').forEach(element => {
 			tableList.push(element.value)
@@ -6137,8 +6154,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			remarkList.push(element.value)
 		})
 
+		document.querySelectorAll('[id="tableID"]').forEach(element => {
+			idlist.push(element.value)
+		})
+
 		forms.append('tables', JSON.stringify(tableList))
 		forms.append('remarks', JSON.stringify(remarkList))
+		forms.append('id', JSON.stringify(idlist))
 		
 		$.ajax({
 			url: "th_setTable.php",
@@ -6151,7 +6173,6 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			type: 'post',
 			async: false,
 			success: function(res){
-				console.log('hello world')
 				if(res.valid){
 					console.log(res.msg)
 				} else {
@@ -6164,6 +6185,56 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			}
 		})
 		console.log(forms)
+	}
+
+	function order_table(){
+		$("<tr>").append(
+			$("<td>").html("<input type='text' id='orderName' name='orderName[]' placeholder='Name of Order' class='input-sm' />"),
+			$("<td>").html("<input type='text' id='orderRemarks' name='orderRemarks[]' placeholder='Remarks' class='input-sm' />"),
+			$("<td>").html("<button type='button' class='btn btn-xs btn-danger'><i class='fa fa-trash'></i>&nbsp; delete</button>")
+		).appendTo("#ordertable > tbody")
+	}
+
+	function save_order(){
+		let forms = new FormData($("#orderfrm")[0]);
+		const remarkList = []
+		const orderList = []
+		const orderIDs =[]
+
+		document.querySelectorAll('[id="orderName"]').forEach(element => {
+			orderList.push(element.value)
+		})
+
+		document.querySelectorAll('[id="orderRemarks"]').forEach(element => {
+			remarkList.push(element.value)
+		})
+
+		document.querySelectorAll('[id="orderID"]').forEach(element => {
+			orderIDs.push(element.value)
+		})
+
+		forms.append('order', JSON.stringify(orderList))
+		forms.append('remarks', JSON.stringify(remarkList))
+		forms.append('id', JSON.stringify(orderIDs))
+		
+		$.ajax({
+			url: "th_setOrderType.php",
+			data: forms,
+			dataType: 'json',
+			cache: false,
+			processData: false,
+			contentType: false,
+			method: 'post',
+			type: 'post',
+			async: false,
+			success: function(res){
+				if(res.valid){
+					console.log(res.msg)
+				} else {
+					console.log(res.msg)
+				}
+			}
+		})
 	}
 
 	//preview of image
