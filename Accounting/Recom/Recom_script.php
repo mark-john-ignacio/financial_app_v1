@@ -39,7 +39,11 @@ var GenStat = "NO";
 		}else if($("#txttyp").val()  == "RR"){
 			//alert("B");
 			forRR();
+		}else if($("#txttyp").val()  == "PV"){
+			//alert("B");
+			forPV();
 		}
+		
        
     });
 //}
@@ -47,8 +51,8 @@ var GenStat = "NO";
 
 function forSI(){
 	//alert("A");
-var itmstat = "";
-var itm = $("#txtctranno").val();
+	var itmstat = "";
+	var itm = $("#txtctranno").val();
 
 			//generate GL ENtry muna
 			$.ajax ({
@@ -87,12 +91,12 @@ var itm = $("#txtctranno").val();
 				}
 			});
 
-	}
+}
 
 function forRR(){
 	//alert("B");
-var itmstat = "";
-var itm = $("#txtctranno").val();
+	var itmstat = "";
+	var itm = $("#txtctranno").val();
 
 				$.ajax ({
 					dataType: "text",

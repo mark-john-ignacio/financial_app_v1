@@ -9,7 +9,10 @@ include('../../include/denied.php');
 	$cCVNo = $_REQUEST['txtctranno'];
 	$company = $_SESSION['companyid'];
 
-	
+	//echo "<pre>";
+	//print_r($_REQUEST);
+	//echo "</pre>";
+
 	$cCustID = mysqli_real_escape_string($con, $_REQUEST['txtcustid']);
 	$cPayee = mysqli_real_escape_string($con, $_REQUEST['txtpayee']);
 	$cAcctNo = mysqli_real_escape_string($con, $_REQUEST['txtcacctid']);

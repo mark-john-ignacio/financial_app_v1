@@ -1726,9 +1726,10 @@ else{
 						$(this).find('input[type=hidden][name="napvewt"]').attr("name","napvewt" + tx); 
 						$(this).find('input[type=hidden][name="selentrytyp"]').attr("name","selentrytyp" + tx);
 					}
-				});
 
-				$(this).find('select[name="selcostcentr"]').attr("name","selcostcentr" + tx);
+					$(this).find('select[name="selcostcentr"]').attr("name","selcostcentr" + tx);
+
+				});
 
 				$("#frmpos").submit();
 
