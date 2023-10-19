@@ -91,10 +91,10 @@ $company = $_SESSION['companyid'];
 	}
 
 	@$incactsarr = array();
-	$getinct = mysqli_query($con,"SELECT * FROM `accounts_default` WHERE compcode='$company' and ccode='INCOME_ACCOUNT'"); 
+	$getinct = mysqli_query($con,"SELECT A.cdescription, B.cacctno FROM `accounts_default` A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid WHERE A.compcode='$company' and A.ccode='INCOME_ACCOUNT'"); 
 	if (mysqli_num_rows($getinct)!=0) {
 		while($rows = mysqli_fetch_array($getinct, MYSQLI_ASSOC)){
-			@$incactsarr[] = array('ccode' => $rows['cdescription'], 'cdesc' => $rows['cdescription']); 
+			@$incactsarr[] = array('acctno' => $rows['cacctno'], 'ccode' => $rows['cdescription'], 'cdesc' => $rows['cdescription']); 
 		}
 	}
 
@@ -189,6 +189,7 @@ $company = $_SESSION['companyid'];
 												<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
 												<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
 												<input type="hidden" id="hdnpricever" name="hdnpricever" value="">
+												<input type="hidden" id="hdncacctcodesalescr" name="hdncacctcodesalescr" value="">
 
 
 												</div>
@@ -275,7 +276,7 @@ $company = $_SESSION['companyid'];
 													
 														foreach(@$incactsarr as $xr){
 													?>
-														<option value="<?=$xr['ccode']?>"><?=$xr['cdesc']?></option>
+														<option value="<?=$xr['ccode']?>" data-id="<?=$xr['acctno']?>"><?=$xr['cdesc']?></option>
 													<?php
 														}
 													?>
@@ -297,22 +298,17 @@ $company = $_SESSION['companyid'];
 										</td>
 
 										<tH width="100">Terms</tH>
-											<td style="padding:2px">
-												<div class="col-xs-11 nopadding">
-													<select id="selcterms" name="selcterms" class="form-control input-sm selectpicker"  tabindex="3">
-															<?php
-																foreach(@$arrcterms as $rows){
-																	echo "<option value=\"".$rows['ccode']."\">".$rows['cdesc']."</option>";
-																}
-															?>
-															
-													</select>
-												</div>
-											</td>
-
-
-											
-											
+										<td style="padding:2px">
+											<div class="col-xs-11 nopadding">
+												<select id="selcterms" name="selcterms" class="form-control input-sm selectpicker"  tabindex="3">
+													<?php
+														foreach(@$arrcterms as $rows){
+															echo "<option value=\"".$rows['ccode']."\">".$rows['cdesc']."</option>";
+														}
+													?>															
+												</select>
+											</div>
+										</td>																		
 									</tr>
 									<tr>
 											<tH width="100">Reference:</tH>
@@ -353,7 +349,6 @@ $company = $_SESSION['companyid'];
 												<input type="hidden" id="hdncustlimit" name="hdncustlimit" value="">
 											</td>
 									</tr>
-
 
 									<tr>
 											<td style="padding:2px" colspan="2">&nbsp;</td>
@@ -822,7 +817,7 @@ $company = $_SESSION['companyid'];
 				},
 				autoSelect: true,
 				displayText: function (item) {
-					return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.name + '</small></div>';
+					return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.acct + '</span><br><small>' + item.name + '</small></div>';
 				},
 				highlighter: Object,
 				afterSelect: function(item) { 
@@ -836,50 +831,23 @@ $company = $_SESSION['companyid'];
 
 		});
 
-  });
-
-	$(document).keydown(function(e) {	
-	
-	 if(e.keyCode == 83 && e.ctrlKey) { //CTRL S
-	  	  e.preventDefault();
-		 if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
-		  return chkform();
-		 }
-	  }
-	  else if(e.keyCode == 27){ //ESC
-		  e.preventDefault();
-		if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
-		 window.location.replace("SO.php");
-	    }
-
-	  }
-	  else if(e.keyCode == 45) { //Insert
-	  	if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
-			openinv("DR");
-		}
-	  }
-
-	
-	});
-
-	$(function(){
-				$('#date_delivery').datetimepicker({
-									format: 'MM/DD/YYYY',
-					// onChangeDateTime:changelimits,
-					//minDate: new Date(),
-					});
+		$('#date_delivery').datetimepicker({
+			format: 'MM/DD/YYYY',
+			// onChangeDateTime:changelimits,
+			//minDate: new Date(),
+		});
 			
-			//$('#date_delivery').on('dp.change', function(e){ alert("changed"); });
+		//$('#date_delivery').on('dp.change', function(e){ alert("changed"); });
 
-			$("#allbox").click(function(e){
-				var table= $(e.target).closest('table');
-				$('td input:checkbox',table).not(this).prop('checked', this.checked);
-			});
+		$("#allbox").click(function(e){
+			var table= $(e.target).closest('table');
+			$('td input:checkbox',table).not(this).prop('checked', this.checked);
+		});
 
-			$("#allboxqo").click(function(e){
-				var table= $(e.target).closest('table');
-				$('td input:checkbox',table).not(this).prop('checked', this.checked);
-			});
+		$("#allboxqo").click(function(e){
+			var table= $(e.target).closest('table');
+			$('td input:checkbox',table).not(this).prop('checked', this.checked);
+		});
 
 		$("#txtcustid").keyup(function(event){
 			if(event.keyCode == 13){
@@ -896,6 +864,7 @@ $company = $_SESSION['companyid'];
 					var data = value.split(":");
 					$('#txtcust').val(data[0]);
 					$('#hdnpricever').val(data[1]);
+					$('#hdncacctcodesalescr').val(data[14]);
 				//	$('#imgemp').attr("src",data[2]);
 					$('#selcterms').val(data[12]).change();
 
@@ -926,7 +895,7 @@ $company = $_SESSION['companyid'];
 					$('#txtcust').val("");
 				//	$('#imgemp').attr("src","../../images/blueX.png");
 					$('#hdnpricever').val("");
-					
+					$('#hdncacctcodesalescr').val("");
 					$('#hdnvalid').val("NO");
 				}
 			},
@@ -968,6 +937,7 @@ $company = $_SESSION['companyid'];
 		
 			}
 		});
+
 		//Search Cust name
 		$('#txtcust').typeahead({
 			autoSelect: true,
@@ -994,6 +964,7 @@ $company = $_SESSION['companyid'];
 				//$("#imgemp").attr("src",item.imgsrc); 
 				$("#hdnpricever").val(item.cver);
 				$("#selcterms").val(item.cterms);
+				$('#hdncacctcodesalescr').val(item.acctcodecr);
 
 				$('#hdnvalid').val("YES"); 
 				
@@ -1063,14 +1034,18 @@ $company = $_SESSION['companyid'];
 					url:'../get_productid.php',
 					data: 'c_id='+ $(this).val() + "&itmbal="+xChkBal+"&styp="+ $("#selsityp").val(),                 
 					success: function(value){
-							var data = value.split(",");
-							$('#txtprodid').val(data[0]);
-							$('#txtprodnme').val(data[1]);
-				$('#hdnunit').val(data[2]);
-				$("#hdnqty").val(data[3]);
-				$("#hdnqtyunit").val(data[4]);
-				$("#hdnctype").val(data[5]);
-				$("#hdncvat").val(data[6]);
+						var data = value.split(",");
+						$('#txtprodid').val(data[0]);
+						$('#txtprodnme').val(data[1]);
+						$('#hdnunit').val(data[2]);
+						$("#hdnqty").val(data[3]);
+						$("#hdnqtyunit").val(data[4]);
+						$("#hdnctype").val(data[5]);
+						$("#hdncvat").val(data[6]);	
+
+						$("#hdnacctno").val(data[7]); 
+						$("#hdnacctid").val(data[8]); 
+						$("#hdnacctdesc").val(data[9]); 
 
 			if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
 				var isItem = "NO";
@@ -1143,7 +1118,7 @@ $company = $_SESSION['companyid'];
 			}else{
 				$(".chkitmsadd").show();
 			}
-			});
+		});
 
 		$("#selbasecurr").on("change", function (){
 				
@@ -1277,6 +1252,30 @@ $company = $_SESSION['companyid'];
 		});
 		
 
+	});
+
+	$(document).keydown(function(e) {	
+	
+		if(e.keyCode == 83 && e.ctrlKey) { //CTRL S
+				e.preventDefault();
+			if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
+			return chkform();
+			}
+		}
+		else if(e.keyCode == 27){ //ESC
+			e.preventDefault();
+		if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
+			window.location.replace("SO.php");
+			}
+
+		}
+		else if(e.keyCode == 45) { //Insert
+			if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
+			openinv("DR");
+		}
+		}
+
+	
 	});
 
 	function checkcustlimit(id,xcred){
@@ -1531,13 +1530,13 @@ $company = $_SESSION['companyid'];
 		}else{
 			var tdglaccount = "";
 			var tdgltitle = "";
-			var tditmdel = "<td nowrap> <input type='hidden' value='"+itmacctnm+"' name=\"txtacctcode\" id='txtacctcode"+lastRow+"'> <input type='hidden' value='"+itmacctnm+"' name=\"txtacctname\" id='txtacctname"+lastRow+"'> <input class='btn btn-danger btn-xs btn-block' type='button' id='del"+ itmcode +"' value='delete' data-var='"+lastRow+"'/></td>";
+			var tditmdel = "<td nowrap> <input type='hidden' value='' name=\"txtacctcode\" id='txtacctcode"+lastRow+"'> <input type='hidden' value='"+itmacctno+"' name=\"txtacctno\" id='txtacctno"+lastRow+"'>  <input type='hidden' value='' name=\"txtacctname\" id='txtacctname"+lastRow+"'> <input class='btn btn-danger btn-xs btn-block' type='button' id='del"+ itmcode +"' value='delete' data-var='"+lastRow+"'/></td>";
 
 		}
 
 		//<input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/>
 
-		$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmewts + tditmvats + tditmunit + tditmqty + tditmprice + tditmdisc + tditmbaseamount+ tditmamount + tdglaccount + tdgltitle + tditmdel + '</tr>');
+		$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmewts + tditmvats + tditmunit + tditmqty + tditmprice + tditmdisc + tditmbaseamount+ tditmamount + tdglaccount + tdgltitle + tditmdel + '</tr>'); 
 
 										$("#del"+itmcode).on('click', function() { 
 											var xy = $(this).data('var');
@@ -1580,11 +1579,11 @@ $company = $_SESSION['companyid'];
 									//		}
 									//	);
 
-										$("input.numeric").on("click", function () {
+										$("input.numeric, input.numeric2").on("click", function () {
 											$(this).select();
 										});
 										
-										$("input.numeric").on("keyup", function () {
+										$("input.numeric, input.numeric2").on("keyup", function () {
 											ComputeAmt($(this).attr('id'));
 											ComputeGross();
 										});
@@ -1716,6 +1715,11 @@ $company = $_SESSION['companyid'];
 					var nDisc = document.getElementById('txtndisc' + i); 
 					var nTranAmount = document.getElementById('txtntranamount' + i);
 					var nAmount = document.getElementById('txtnamount' + i);
+
+					var cacctcode = document.getElementById('txtacctcode' + i); 
+					var cacctno = document.getElementById('txtacctno' + i);
+					var cacctnm = document.getElementById('txtacctname' + i);
+
 					var RowInfo = document.getElementById('row_' + i + '_info');					
 					
 					var za = i - 1;
@@ -1732,6 +1736,9 @@ $company = $_SESSION['companyid'];
 					nDisc.id = "txtndisc" + za;
 					nTranAmount.id = "txtntranamount" + za;
 					nAmount.id = "txtnamount" + za;
+					cacctcode.id = "txtacctcode" + za;
+					cacctno.id = "txtacctno" + za;
+					cacctnm.id = "txtacctname" + za;
 					RowInfo.id = "row_" + za + "_info";
 
 
@@ -2258,7 +2265,6 @@ $company = $_SESSION['companyid'];
 
 	}
 
-
 	function getdiscount(xyz,idnum){ //txtndisc txtnprice
 
 		var xnprice = $("#txtnprice"+idnum).val().replace(/,/g,'');
@@ -2567,6 +2573,20 @@ $company = $_SESSION['companyid'];
 						var namt = $(this).find('input[name="txtnamount"]').val();
 						var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
 						var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
+
+						if($("#incmracct").val()=="item"){
+							var acctcode = $(this).find('input[name="txtacctcode"]').val();
+							var acctid = $(this).find('input[name="txtacctno"]').val();
+							var acctname = $(this).find('input[name="txtacctname"]').val();
+						}else if($("#incmracct").val()=="si"){
+							var acctcode = "";
+							var acctid = $('select[name="selpaytyp"] option:selected').data('id');
+							var acctname = "";
+						}else if($("#incmracct").val()=="customer"){ 
+							var acctcode = "";
+							var acctid = $("#hdncacctcodesalescr").val();
+							var acctname = "";
+						}
 						
 						if(nqty!==undefined){
 							nqty = nqty.replace(/,/g,'');
@@ -2576,11 +2596,11 @@ $company = $_SESSION['companyid'];
 							ntranamt = ntranamt.replace(/,/g,'');
 						}
 
-						//alert("SI_newsavedet.php?trancode="+trancode+"&crefno="+crefno+"&crefident="+crefident+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+ nprice+"&ndiscount="+ndiscount+"&ntranamt="+ntranamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&ccode="+ccode+"&vatcode="+vatcode+"&nrate="+nrate+"&ewtcode="+ewtcode+"&ewtrate="+ewtrate);
+						//alert("SI_newsavedet.php?trancode="+trancode+"&crefno="+crefno+"&crefident="+crefident+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+ nprice+"&ndiscount="+ndiscount+"&ntranamt="+ntranamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&ccode="+ccode+"&vatcode="+vatcode+"&nrate="+nrate+"&ewtcode="+ewtcode+"&ewtrate="+ewtrate+"&acctid="+acctid);
 
 						$.ajax ({
 							url: "SI_newsavedet.php",
-							data: { trancode: trancode, crefno: crefno, crefident:crefident, indx: parseInt(index) + 1, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, ndiscount:ndiscount, ntranamt:ntranamt, namt:namt, mainunit:mainunit, nfactor:nfactor, ccode:ccode, vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate },
+							data: { trancode: trancode, crefno: crefno, crefident:crefident, indx: parseInt(index) + 1, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, ndiscount:ndiscount, ntranamt:ntranamt, namt:namt, mainunit:mainunit, nfactor:nfactor, ccode:ccode, vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate, acctid: acctid },
 							async: false,
 							success: function( data ) {
 								if(data.trim()=="False"){

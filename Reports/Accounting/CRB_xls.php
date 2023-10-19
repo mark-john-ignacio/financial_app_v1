@@ -42,8 +42,6 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         left join customers D on C.compcode=D.compcode and C.ccode=D.cempid
         Where A.compcode='$company' and A.cmodule='OR' and A.ddate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') Order By A.ddate, A.ctranno";
 
-        
-		//	echo $sql;
 	$result=mysqli_query($con,$sql);
 				
 	if (!mysqli_query($con, $sql)) {

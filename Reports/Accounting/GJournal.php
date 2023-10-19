@@ -43,36 +43,33 @@ $date2 = $_POST["date2"];
 <title>General Journal</title>
 </head>
 
-<body style="padding:10px">
-<h3><b>Company: <?=strtoupper($compname);  ?></b></h3>
-<h3><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h3>
-<h3><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h3>
-<h3><b>Kind of Book: General Journal</b></h3>
-<h3><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h3>
+<body style="padding:20px">
+<h4><b>Company: <?=strtoupper($compname);  ?></b></h4>
+<h4><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h4>
+<h4><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h4>
+<h4><b>Kind of Book: GENERAL JOURNAL BOOK</b></h4>
+<h4><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h4>
 
 
-<br><br>
-<table class='table' width="100%" border="0" align="center" cellpadding = "3">
+<br>
+<table class='table table-condensed' width="100%" border="0" align="center" cellpadding = "1">
 	<tr>
-		<th rowspan="2" width="50px" style='display:none;'>Module</th>
-		<th rowspan='2' width='50px'>Date</th>
-		<th rowspan="2" width="50px">Transaction No.</th>
-		<th rowspan='2' width='100px'>Account Name</th>
-		<th rowspan='2' width='50px'>Account No.</th>
-		<th rowspan='2' width='50px'>Account Title</th>
-	</tr>
-  <tr>
+		<th width="50px" style='display:none;'>Module</th>
+		<th width='50px'>Date</th>
+		<th width="50px">Reference</th>
+		<th width='50px'>Account Code</th>
+		<th width='50px'>Account Title</th>
   	<th style="text-align:center"  width="50px">Debit</th>
     <th style="text-align:center"  width="50px">Credit</th>
   </tr>
  
  <?php
-
+//Order By A.dpostdate, A.ctranno, CASE WHEN (A.ndebit <> 0) THEN 1 ELSE 0 END desc, A.acctno
 	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit, A.ddate
 			From glactivity A 
 			left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
-			Where A.compcode='$company' and A.ddate between STR_TO_DATE('".$_REQUEST['date1']."', '%m/%d/%Y') and STR_TO_DATE('".$_REQUEST['date2']."', '%m/%d/%Y')
-			Order By A.dpostdate, A.ctranno, CASE WHEN (A.ndebit <> 0) THEN 1 ELSE 0 END desc, A.acctno";
+			Where A.compcode='$company' and A.cmodule='JE' and A.ddate between STR_TO_DATE('".$_REQUEST['date1']."', '%m/%d/%Y') and STR_TO_DATE('".$_REQUEST['date2']."', '%m/%d/%Y')
+			Order By A.ctranno, A.nidentity";
 
 	
 	$dresult=mysqli_query($con,$sql);
@@ -97,12 +94,13 @@ $date2 = $_POST["date2"];
 	{
 		$cntr++;
 
-			if($tranno!==$row['ctranno']){
-				$ddate = date_format(date_create($row['ddate']), "d-M-y"); 
+			
+		//if($tranno!==$row['ctranno']){
+				//$ddate = date_format(date_create($row['ddate']), "d-M-y"); 
 				$cmod = $row['cmodule'];
 				$ecode = $row['ctranno'];
 
-				if($cntr>1){
+				/*if($cntr>1){
 					echo "<tr>
 						<td colspan ='5' align='right'>&nbsp;</td>
 						<td style='text-align:right; border-top: 2px solid !important'><b>".number_format($ntotdebit,2)."</b></td>
@@ -111,15 +109,16 @@ $date2 = $_POST["date2"];
 
 					$ntotdebit = 0;
 					$ntotcredit = 0;
-				}
-			}
+				}*/
+			//}
+			
 
 ?>
-	<tr id="tableContent" name="tableContent">
+	<tr id="tableContent" name="tableContent" style="cursor: pointer">
 		
 		<td style='display: none;'><?=$cmod;?></td>
-		<td <?=($cntr>1 && $ecode !== "") ? "style='border-top: 2px solid !important'" : ""?>><?=$ddate;?></td>
-		<td <?=($cntr>1 && $ecode !== "") ? "style='border-top: 2px solid !important'" : ""?>><a href="javascript:;"><?=$ecode;?></a></td>
+		<td><?=$row['ddate'];?></td>
+		<td><?=$ecode;?></td>
 
 			<?php
 				if($ecode != ''){
@@ -133,11 +132,11 @@ $date2 = $_POST["date2"];
 				}
 				?>
 		
-		<td <?=($cntr>1 && $ecode !== "") ? "style='border-top: 2px solid !important'" : ""?>><?=(@$namerow['cname'] != null ? $name : '-' )?></td>
-		<td <?=($cntr>1 && $ecode !== "") ? "style='border-top: 2px solid !important'" : ""?>><?php echo $row['acctno'];?></td>
-		<td <?=($cntr>1 && $ecode !== "") ? "style='border-top: 2px solid !important'" : ""?>><?php echo $row['cacctdesc'];?></td>
-		<td style="text-align:right <?=($cntr>1 && $ecode !== "") ? "; border-top: 2px solid !important" : ""?>"><?=(floatval($row['ndebit'])<>0) ? number_format(floatval($row['ndebit']), 2) : ""?></td>
-		<td style="text-align:right <?=($cntr>1 && $ecode !== "") ? "; border-top: 2px solid !important" : ""?>"><?=(floatval($row['ncredit'])<>0) ? number_format(floatval($row['ncredit']), 2) : ""?></td>
+		<!--<td <?//=($cntr>1 && $ecode !== "") ? "style='border-top: 2px solid !important'" : ""?>><?//=(@$namerow['cname'] != null ? $name : '-' )?></td>-->
+		<td><?php echo $row['acctno'];?></td>
+		<td><?php echo $row['cacctdesc'];?></td>
+		<td style="text-align:right"><?=(floatval($row['ndebit'])<>0) ? number_format(floatval($row['ndebit']), 2) : ""?></td>
+		<td style="text-align:right"><?=(floatval($row['ncredit'])<>0) ? number_format(floatval($row['ncredit']), 2) : ""?></td>
 	</tr>
 <?php
 		$cmod = "";
@@ -154,7 +153,7 @@ $date2 = $_POST["date2"];
 
 
 	echo "<tr>
-			<td colspan ='5' align='right'>&nbsp;</td>
+			<td colspan ='4' align='right'>&nbsp;</td>
 			<td style='text-align:right; border-top: 2px solid !important'><b>".number_format($ntotdebit,2)."</b></td>
 			<td style='text-align:right; border-top: 2px solid !important'><b>".number_format($ntotcredit,2)."</b></td>
 		<tr>";

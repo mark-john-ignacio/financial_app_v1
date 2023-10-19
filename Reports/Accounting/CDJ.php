@@ -45,25 +45,23 @@ $varmsg = "";
 </head>
 
 <body style="padding:20px">
-<h3><b>Company: <?=strtoupper($compname);  ?></b></h3>
-<h3><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h3>
-<h3><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h3>
-<h3><b>Kind of Book: Cash Disbursement Book</b></h3>
-<h3><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h3>
-
-
-<hr>
-<table width="100%" class='table' border="0" align="center" cellpadding="2px">
+<h4><b>Company: <?=strtoupper($compname);  ?></b></h4>
+<h4><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h4>
+<h4><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h4>
+<h4><b>Kind of Book: CASH DISBURSEMENT BOOK</b></h4>
+<h4><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h4>
+<br>
+<table width="100%" class='table table-condensed' border="0" align="center" cellpadding="2px">
   <tr >
 	<th style='display: none;'>module</th>
-    <th width="100">Date</th>
-    <th width="100">Transaction No.</th>
+  <th width="100">Date</th>
+  <!--<th width="100">Transaction No.</th>-->
 	<th width="200">Referrence</th>
 	<th width="100">Name</th>
 	<th width='100'>Account No.</th>
 	<th width="100">Account Title</th>
-    <th class="text-right" width="120">Debit</th>
-    <th class="text-right" width="120">Credit</th>
+  <th class="text-right" width="120">Debit</th>
+  <th class="text-right" width="120">Credit</th>
   </tr>
   
 <?php
@@ -113,7 +111,11 @@ $varmsg = "";
 			//}
 
 		?>  
+<<<<<<< HEAD
 		  <tr id='tableContent' name='tableContent' style="cursor: pointer";>
+=======
+		  <tr id='tableContent' name='tableContent' style="cursor: pointer">
+>>>>>>> production
 			<!-- <td colspan="4">
 			
 			<div class="col-xs-12">
@@ -135,10 +137,17 @@ $varmsg = "";
 			</td> -->
 			<td style="display: none;"><?php echo $cmodule;?></td>
 			<td><?php echo $ddate;?></td>
+<<<<<<< HEAD
 			<td><?php echo $ctran;?></td>
 			<td><?=$cchecko;?></td>
 			<td nowrap><?php echo $cpayee;?></td>
 			<td><?php echo $acctno;?></td>
+=======
+			<!--<td><b><?//php echo $ctran;?></b></td>-->
+			<td><?=$cchecko;?></td>
+			<td nowrap><?php echo $cpayee;?></td>
+			<td nowrap><?php echo $acctno;?></td>
+>>>>>>> production
 			<td nowrap><?php echo $row['ctitle'];?></td>
 
 			<td align="right"><?php if($row['ndebit'] <> 0) 
@@ -162,11 +171,15 @@ $varmsg = "";
 		
 		?>
     <?php
+<<<<<<< HEAD
 		//}
+=======
+	//	}
+>>>>>>> production
 	?>
     <tr>
-      <td colspan="6" align="right" ><b>TOTAL</b></td>
-      <td align="right" style="border-top:5px double; border-bottom:8px double; padding-top:6px; padding-bottom:6px"><b>
+      <td colspan="5" align="right" ><b>TOTAL</b></td>
+      <td align="right" style='text-align:right; border-top: 2px solid !important'><b>
       <?php if($ntotdebit <> 0) 
 		{ 
 			echo number_format($ntotdebit,2) ;
@@ -175,7 +188,7 @@ $varmsg = "";
 		
 		?></b>
       </td>
-      <td align="right" style="border-top:5px double; border-bottom:8px double; padding:5px; padding-top:6px; padding-bottom:6px"><b>
+      <td align="right" style='text-align:right; border-top: 2px solid !important'><b>
       <?php if($ntotcredit <> 0) 
 		{ 
 			echo number_format($ntotcredit,2) ;
