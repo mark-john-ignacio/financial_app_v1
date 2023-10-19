@@ -12,12 +12,11 @@
 	$sql = "select A.cvalue, B.symbol, B.unit, B.country, B.id from parameters A left join currency_rate B on A.compcode=B.compcode and A.cvalue=B.symbol where A.compcode='$company' and A.ccode='DEF_CURRENCY'";
 				
 	$result=mysqli_query($con,$sql);
-	$resdefcurr = mysqli_fetch_all($result, MYSQLI_ASSOC);
-						
+	$resdefcurr = mysqli_fetch_all($result, MYSQLI_ASSOC);						
 ?>
-	<!DOCTYPE html>
-	<html>
-	<head>
+<!DOCTYPE html>
+<html>
+<head>
 
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css"> 
 	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
