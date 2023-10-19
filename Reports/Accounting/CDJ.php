@@ -111,11 +111,7 @@ $varmsg = "";
 			//}
 
 		?>  
-<<<<<<< HEAD
-		  <tr id='tableContent' name='tableContent' style="cursor: pointer";>
-=======
 		  <tr id='tableContent' name='tableContent' style="cursor: pointer">
->>>>>>> production
 			<!-- <td colspan="4">
 			
 			<div class="col-xs-12">
@@ -137,17 +133,10 @@ $varmsg = "";
 			</td> -->
 			<td style="display: none;"><?php echo $cmodule;?></td>
 			<td><?php echo $ddate;?></td>
-<<<<<<< HEAD
-			<td><?php echo $ctran;?></td>
-			<td><?=$cchecko;?></td>
-			<td nowrap><?php echo $cpayee;?></td>
-			<td><?php echo $acctno;?></td>
-=======
 			<!--<td><b><?//php echo $ctran;?></b></td>-->
 			<td><?=$cchecko;?></td>
 			<td nowrap><?php echo $cpayee;?></td>
 			<td nowrap><?php echo $acctno;?></td>
->>>>>>> production
 			<td nowrap><?php echo $row['ctitle'];?></td>
 
 			<td align="right"><?php if($row['ndebit'] <> 0) 
@@ -171,11 +160,7 @@ $varmsg = "";
 		
 		?>
     <?php
-<<<<<<< HEAD
-		//}
-=======
 	//	}
->>>>>>> production
 	?>
     <tr>
       <td colspan="5" align="right" ><b>TOTAL</b></td>
