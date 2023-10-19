@@ -105,6 +105,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						<li><a data-toggle="tab" href="#acct">Accounting</a></li>
 						<li><a data-toggle="tab" href="#invntry">Inventory</a></li>
 						<!--<li><a data-toggle="tab" href="#rpts">Reports</a></li>-->
+						<li><a data-toggle="tab" href="#POS">Point of Sale</a></li>
 					</ul>
 							
 					<div class="tab-content col-lg-12 nopadwtop2x">   
@@ -3716,6 +3717,94 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</div>
 						</div> 
 						-->	
+						<div id="POS" class="tab-pane fade in">
+							<p data-toggle="collapse" data-target="#pos_table"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Table Sits</b></u></p>
+							<div class="collapse" id='pos_table' style='padding-bottom: 20px'>
+								<div class="col-sm-12">
+									<div class="col-lg-2 nopadwtop">
+										<b><i>/* Insert a Table if restaurant based business */</i></b>
+										<div id="divInvChecking" style="display:inline; padding-left:5px">
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 nopadwtop" >
+									<div class='col-sm-12' style=' padding-bottom: 10px;'><button type='button' class='btn btn-xs btn-primary' id='addTable' onclick="insert_table()"><span><i class='fa fa-plus'></i></span>&nbsp; Add a Table</button></div>
+									<form action="th_setTable.php" method='post' id='tableform' name='tableform' onsubmit='return false' enctype="multipart/form-data">
+											<div class='col-sm-12' style='padding-bottom: 10px;'><button type='submit' id='tableSave' name='tableSave' onclick="table_save()" class='btn btn-xs btn-success' >Save</div>
+											<div class='col-sm-6 nopadwtop' style='border: 1px solid grey; height: 2in;overflow: auto; '>
+												<table class='table' id='dataTable'>
+													<thead>
+														<tr>
+															<th>Tables</th>
+															<th>Remarks</th>
+															<th>&nbsp;</th>
+														</tr>
+													</thead>
+													<tbody style='overflow: auto;'>
+														<?php
+															$sql = "SELECT * FROM pos_grouping WHERE `compcode` = '$company' and `type` = 'TABLE'";
+															$query = mysqli_query($con, $sql);
+															while($row = $query -> fetch_assoc()):
+														?>
+															<tr>
+																<td class='input-sm' style='display: none'><input type='text' id='tableID' name='tableID[]' placeholder='Name of Table' class='input-sm' value="<?= $row['id'] ?>"/></td>
+																<td class='input-sm'><input type='text' id='tableName' name='tableName[]' placeholder='Name of Table' class='input-sm' value="<?= $row['code'] ?>"/></td>
+																<td class='input-sm'><input type='text' id='tableRemarks' name='tableRemarks[]' placeholder='Remarks' class='input-sm' value="<?= $row['remarks'] ?>" /></td>
+																<td class='input-sm'><button type='button' id='delTbl' name='delTbl' class='btn btn-xs btn-danger' value='<?= $row['id'] ?>'><i class='fa fa-trash'></i>&nbsp; delete</button></td>
+															</tr>
+														<?php endwhile; ?>
+													</tbody>
+												</table>
+											</div>
+									</form>
+								</div>
+							</div>
+
+
+							<p data-toggle="collapse" data-target="#pos_order" ><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Order Type</b></u></p>
+							<div class="collapse" id='pos_order'>
+								<div class="col-lg-12">
+									<div class="col-lg-2 nopadwtop">
+										<b><i>/* Insert a Order Type if restaurant based business */</i></b>
+										<div id="divInvChecking" style="display:inline; padding-left:5px">
+										</div>
+									</div>     
+								</div>
+								<div class="col-xs-12 nopadwtop" >
+									<div class='col-sm-12' style=' padding-bottom: 10px;'><button type='button' class='btn btn-xs btn-primary' id='addTable' onclick="order_table()"><span><i class='fa fa-plus'></i></span>&nbsp; Add a Table</button></div>
+
+									<form action="" method="post" id="orderfrm" name="orderfrm" onsubmit="return false;" enctype="multipart/form-data">
+											<div class='col-sm-12' style='padding-bottom: 10px;'><button type='submit' id='tableSave' name='tableSave' onclick="save_order()" class='btn btn-xs btn-success'>Save</div>
+											<div class='col-sm-6 nopadwtop' style='border: 1px solid grey; height: 2in; overflow: auto;'>
+												<table class='table' id='ordertable' >
+													<thead>
+														<tr>
+															<th>Order Type</th>
+															<th>Remarks</th>
+															<th>&nbsp;</th>
+														</tr>
+													</thead>
+													<tbody >
+														<?php 
+															$sql = "SELECT * FROM pos_grouping WHERE `compcode` = '$company' and `type` = 'ORDER'";
+															$query = mysqli_query($con, $sql);
+															if(mysqli_num_rows($query) != 0):
+																while($row = $query -> fetch_assoc()):
+														?>
+															<tr>	
+																<td class='input-sm' style='display: none'><input type='text' id='orderID' name='orderID[]' placeholder='Name of Table' class='input-sm' value="<?= $row['id'] ?>"/></td>
+																<td class='input-sm'><input type='text' id='orderName' name='orderName[]' placeholder='Name of Order' class='input-sm' value="<?= $row['code'] ?>"/></td>
+																<td class='input-sm'><input type='text' id='orderRemarks' name='orderRemarks[]' placeholder='Remarks' class='input-sm' value="<?= $row['remarks'] ?>" /></td>
+																<td class='input-sm'><button type='button' id='delTbl' name='delTbl' class='btn btn-xs btn-danger'><i class='fa fa-trash'></i>&nbsp; delete</button></td>
+															</tr>
+														<?php endwhile; endif;?>
+													</tbody>
+												</table>
+											</div>
+									</form>
+								</div>
+							</div>
+						</div>
 					</div>
 							
 			</fieldset>
@@ -4720,6 +4809,38 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 				}
 		});
+
+		$("[id='delTbl']").click(function(){
+			console.log($(this).val())
+			let id = $(this).val();
+			let row = $(this).closest("tr");
+
+			
+				return row.remove();
+			
+			
+			$.ajax({
+				url: "th_deletegroup.php",
+				data: {
+					id: id
+				},
+				type: 'post',
+				dataType: 'json',
+				async: false,
+				success: function(res){
+					if(res.valid){
+						console.log(res.msg)
+						row.remove();
+					} else {
+						console.log(res.msg)
+						row.remove();
+					}
+				},
+				error: function(res){
+					console.log(res)
+				}
+			})
+		})
 
 		$("#btnadddisc").on("click", function(){
 
@@ -6042,6 +6163,115 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		});
 	}
 
+	function insert_table(){
+		// tableform
+		$('<tr>').append(
+			$("<td>").html("<input type='text' id='tableName' name='tableName' placeholder='Name of Table' class='input-sm'>"),
+			$("<td>").html("<input type='text' id='tableRemarks' name='tableRemarks' placeholder='Remarks' class='input-sm' />"),
+			$('<td>').html("<button type='button' id='delTbl' name='delTbl' onclick='removeRow.call(this)' class='btn btn-sm btn-danger'><i class='fa fa-trash'></i>&nbsp;delete</button>")
+		).appendTo("#dataTable > tbody")
+	}
+
+	function removeRow(){
+		$(this).parent().closest('tr').remove();
+	}
+
+	function table_save(){
+		let forms = new FormData($("#tableform")[0]);
+		const remarkList = []
+		const tableList = []
+		const idlist = []
+
+		document.querySelectorAll('[id="tableName"]').forEach(element => {
+			tableList.push(element.value)
+		})
+
+		document.querySelectorAll('[id="tableRemarks"]').forEach(element => {
+			remarkList.push(element.value)
+		})
+
+		document.querySelectorAll('[id="tableID"]').forEach(element => {
+			idlist.push(element.value)
+		})
+
+		forms.append('tables', JSON.stringify(tableList))
+		forms.append('remarks', JSON.stringify(remarkList))
+		forms.append('id', JSON.stringify(idlist))
+		
+		$.ajax({
+			url: "th_setTable.php",
+			data: forms,
+			dataType: 'json',
+			cache: false,
+			processData: false,
+			contentType: false,
+			method: 'post',
+			type: 'post',
+			async: false,
+			success: function(res){
+				if(res.valid){
+					console.log(res.msg)
+				} else {
+					console.log(res.msg)
+				}
+				
+			},
+			error: function(res){
+				console.log(res)
+			}
+		})
+		console.log(forms)
+	}
+
+	function order_table(){
+		$("<tr>").append(
+			$("<td>").html("<input type='text' id='orderName' name='orderName[]' placeholder='Name of Order' class='input-sm' />"),
+			$("<td>").html("<input type='text' id='orderRemarks' name='orderRemarks[]' placeholder='Remarks' class='input-sm' />"),
+			$("<td>").html("<button type='button' onclick='removeRow.call(this)' class='btn btn-xs btn-danger'><i class='fa fa-trash'></i>&nbsp; delete</button>")
+		).appendTo("#ordertable > tbody")
+	}
+
+	function save_order(){
+		let forms = new FormData($("#orderfrm")[0]);
+		const remarkList = []
+		const orderList = []
+		const orderIDs =[]
+
+		document.querySelectorAll('[id="orderName"]').forEach(element => {
+			orderList.push(element.value)
+		})
+
+		document.querySelectorAll('[id="orderRemarks"]').forEach(element => {
+			remarkList.push(element.value)
+		})
+
+		document.querySelectorAll('[id="orderID"]').forEach(element => {
+			orderIDs.push(element.value)
+		})
+
+		forms.append('order', JSON.stringify(orderList))
+		forms.append('remarks', JSON.stringify(remarkList))
+		forms.append('id', JSON.stringify(orderIDs))
+		
+		$.ajax({
+			url: "th_setOrderType.php",
+			data: forms,
+			dataType: 'json',
+			cache: false,
+			processData: false,
+			contentType: false,
+			method: 'post',
+			type: 'post',
+			async: false,
+			success: function(res){
+				if(res.valid){
+					console.log(res.msg)
+				} else {
+					console.log(res.msg)
+				}
+			}
+		})
+	}
 
 	//preview of image
   function imageIsLoaded(e) {
