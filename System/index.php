@@ -3728,7 +3728,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</div>
 								</div>
 								<div class="col-xs-12 nopadwtop" >
-									<div class='col-sm-12' style=' padding-bottom: 10px;'><button type='button' class='btn btn-xs btn-primary' id='addTable' onclick="insert_table()"><span><i class='fa fa-plus'></i></span>&nbsp; Add a Table</button></div>
+									<div class='col-sm-12' style=' padding-bottom: 10px;'><button type='button' class='btn btn-xs btn-primary' id='addTable' onclick="insert_table()"><span><i class='fa fa-plus'></i></span>&nbsp; Add Table</button></div>
 									<form action="th_setTable.php" method='post' id='tableform' name='tableform' onsubmit='return false' enctype="multipart/form-data">
 											<div class='col-sm-12' style='padding-bottom: 10px;'><button type='submit' id='tableSave' name='tableSave' onclick="table_save()" class='btn btn-xs btn-success' >Save</div>
 											<div class='col-sm-6 nopadwtop' style='border: 1px solid grey; height: 2in;overflow: auto; '>
@@ -3771,7 +3771,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</div>     
 								</div>
 								<div class="col-xs-12 nopadwtop" >
-									<div class='col-sm-12' style=' padding-bottom: 10px;'><button type='button' class='btn btn-xs btn-primary' id='addTable' onclick="order_table()"><span><i class='fa fa-plus'></i></span>&nbsp; Add a Table</button></div>
+									<div class='col-sm-12' style=' padding-bottom: 10px;'><button type='button' class='btn btn-xs btn-primary' id='addTable' onclick="order_table()"><span><i class='fa fa-plus'></i></span>&nbsp; Add Order Type</button></div>
 
 									<form action="" method="post" id="orderfrm" name="orderfrm" onsubmit="return false;" enctype="multipart/form-data">
 											<div class='col-sm-12' style='padding-bottom: 10px;'><button type='submit' id='tableSave' name='tableSave' onclick="save_order()" class='btn btn-xs btn-success'>Save</div>

@@ -255,7 +255,6 @@
                                     <?php if(sizeof($order) != 0 ): ?>
                                         <div class='input-group'>
                                             <select name="orderType" id="orderType" class='form-control input-sm'>
-                                                <option value="" selected disabled>--- Select Order Type  ---</option>
                                                 <?php foreach($order as $list): ?>
                                                     <option value="<?= $list['code'] ?>"><?= $list['code'] ?></option>
                                                 <?php endforeach; ?>
@@ -264,7 +263,6 @@
                                     <?php endif; if(sizeof($table) != 0): ?>
                                         <div class='input-group'>
                                             <select name="table" id="table"  class='form-control input-sm'>
-                                                <option value="" selected disabled>--- Select Table ---</option>
                                                 <?php foreach($table as $list): ?>
                                                     <option value="<?= $list['code'] ?>"><?= $list['code'] ?></option>
                                                 <?php endforeach; ?>
@@ -279,8 +277,7 @@
                                 <div style='height: 350px; overflow: auto;'>
                                     <div id='item-wrapper'>
                                         <?php foreach($items as $list):?>
-                                            <div class='item-wrap'>
-                                                <div style="height:100px;                     
+                                                <div class='itmslist' style="height:100px;                     
                                                     background-color:#019aca; 
                                                     background-image:url('<?=$list["cuserpic"];?>');
                                                     background-repeat:no-repeat;
@@ -288,11 +285,9 @@
                                                     background-size: contain;
                                                     border:solid 1px #036;
                                                     text-align:center;
-                                                    position: relative">
+                                                    position: relative" data-itemlist="<?= $list['cclass'] ?>">
                                                     <div id='items' name="<?= $list['cscancode'] ?>" class='items' data-itemlist="<?= $list['cclass'] ?>" style='position: absolute; bottom: 0; width: 100%; background-color: rgba(0,0,0,.5); color: #fff; min-height: 20px;'><font size='-2'><?php echo $list["citemdesc"]; ?></font></div>
                                                 </div>
-                                            </div>
-                                            
                                         <?php endforeach ?>
                                     </div>
                                 </div>
@@ -556,7 +551,7 @@
         $(".itmclass").on("click", function() {
             const ClassID = $(this).attr("data-clscode");
             
-            $('.items').each(function(i, obj) {
+            $('.itmslist').each(function(i, obj) {
                 itmcls = $(this).attr("data-itemlist");
                 
                 if(itmcls==ClassID){
