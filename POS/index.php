@@ -810,11 +810,12 @@
 
         $('#PaySubmit').click(function(){
             let exchange = $('#ExchangeAmt').val();
-            let total = $('#totalAmt').val();
+            let total = $('#totalAmt').val().replace(/,/g,'');
             let tender = $('#tendered').val();
             let proceed = false;
             let tranno = '';
-            if(parseFloat(total) <= parseFloat(tender)){
+            
+            if(parseFloat(total) >= parseFloat(tender)){
                 $.ajax({
                     url: 'Function/pos_save.php',
                     type: 'post',
@@ -865,6 +866,7 @@
                         success: function(res){
                             if(res.valid){
                                 console.log(res.msg)
+                                location.reload();
                             } else {
                                 console.log(res.msg)
                             }
