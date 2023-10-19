@@ -5,7 +5,7 @@
 
 	include('../../Connection/connection_string.php');
 
-	$column = array('ctranno', 'cmemo', 'djdate','CASE WHEN ntotdebit <> ntotcredit THEN "Unbalanced" ELSE ntotdebit END', 'CASE WHEN a.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN a.lcancelled=1 THEN "Cancelled" ELSE "" END');
+	$column = array('ctranno', 'cmemo', 'CASE WHEN ntotdebit <> ntotcredit THEN "Unbalanced" ELSE ntotdebit END', 'djdate', 'CASE WHEN a.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN a.lcancelled=1 THEN "Cancelled" ELSE "" END');
 
 	$query = "select * from journal where compcode='".$_SESSION['companyid']."' ";
 

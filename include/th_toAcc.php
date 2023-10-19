@@ -438,7 +438,7 @@ function getSetAcct($id){
 	else if($typ=="JE"){
 				
 		//Accounts Payable -> supplier account -> Debit
-			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'JE', '$tran', B.djdate, A.cacctno, A.ctitle, A.ndebit, A.ncredit, 0, NOW() From journal_t A left join journal B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and A.ctranno='$tran' ")){
+			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'JE', '$tran', B.djdate, A.cacctno, A.ctitle, A.ndebit, A.ncredit, 0, NOW() From journal_t A left join journal B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and A.ctranno='$tran' Order by A.nident")){
 				echo "False";
 			}
 			else{

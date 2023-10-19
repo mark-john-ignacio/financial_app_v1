@@ -12,6 +12,7 @@ include('../include/access.php');
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Myx Financials</title>
 
+<link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
 
