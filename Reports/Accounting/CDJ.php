@@ -73,6 +73,8 @@ $varmsg = "";
 	where a.compcode='$company' and a.cmodule='PV' and b.dcheckdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
 	order by b.ctranno, a.ndebit DESC";
 
+	//echo $sql;
+
 	$result=mysqli_query($con,$sql);
 				
 	if (!mysqli_query($con, $sql)) {
@@ -109,7 +111,7 @@ $varmsg = "";
 			//}
 
 		?>  
-		  <tr id='tableContent' name='tableContent' style="cursor: pointer">
+		  <tr id='tableContent' name='tableContent' style="cursor: pointer";>
 			<!-- <td colspan="4">
 			
 			<div class="col-xs-12">
