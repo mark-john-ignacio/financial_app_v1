@@ -3730,7 +3730,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								<div class="col-xs-12 nopadwtop" >
 									<div class='col-sm-12' style=' padding-bottom: 10px;'><button type='button' class='btn btn-xs btn-primary' id='addTable' onclick="insert_table()"><span><i class='fa fa-plus'></i></span>&nbsp; Add Table</button></div>
 									<form action="th_setTable.php" method='post' id='tableform' name='tableform' onsubmit='return false' enctype="multipart/form-data">
-											<div class='col-sm-12' style='padding-bottom: 10px;'><button type='submit' id='tableSave' name='tableSave' onclick="table_save()" class='btn btn-xs btn-success' >Save</div>
+											<div class='col-sm-12' style='padding-bottom: 10px;'><button type='submit' id='tableSave' name='tableSave' onclick="table_save()" class='btn btn-xs btn-success' >Save </button><span id="save_table"></span></div> 
 											<div class='col-sm-6 nopadwtop' style='border: 1px solid grey; height: 2in;overflow: auto; '>
 												<table class='table' id='dataTable'>
 													<thead>
@@ -3774,7 +3774,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									<div class='col-sm-12' style=' padding-bottom: 10px;'><button type='button' class='btn btn-xs btn-primary' id='addTable' onclick="order_table()"><span><i class='fa fa-plus'></i></span>&nbsp; Add Order Type</button></div>
 
 									<form action="" method="post" id="orderfrm" name="orderfrm" onsubmit="return false;" enctype="multipart/form-data">
-											<div class='col-sm-12' style='padding-bottom: 10px;'><button type='submit' id='tableSave' name='tableSave' onclick="save_order()" class='btn btn-xs btn-success'>Save</div>
+											<div class='col-sm-12' style='padding-bottom: 10px;'><button type='submit' id='tableSave' name='tableSave' onclick="save_order()" class='btn btn-xs btn-success'>Save</button> <span id="save_order"></span></div>
 											<div class='col-sm-6 nopadwtop' style='border: 1px solid grey; height: 2in; overflow: auto;'>
 												<table class='table' id='ordertable' >
 													<thead>
@@ -3795,7 +3795,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 																<td class='input-sm' style='display: none'><input type='text' id='orderID' name='orderID[]' placeholder='Name of Table' class='input-sm' value="<?= $row['id'] ?>"/></td>
 																<td class='input-sm'><input type='text' id='orderName' name='orderName[]' placeholder='Name of Order' class='input-sm' value="<?= $row['code'] ?>"/></td>
 																<td class='input-sm'><input type='text' id='orderRemarks' name='orderRemarks[]' placeholder='Remarks' class='input-sm' value="<?= $row['remarks'] ?>" /></td>
-																<td class='input-sm'><button type='button' id='delTbl' name='delTbl' class='btn btn-xs btn-danger'><i class='fa fa-trash'></i>&nbsp; delete</button></td>
+																<td class='input-sm'><button type='button' id='delTbl' name='delTbl' value='<?= $row['id'] ?>' class='btn btn-xs btn-danger'><i class='fa fa-trash'></i>&nbsp; delete</button></td>
 															</tr>
 														<?php endwhile; endif;?>
 													</tbody>
@@ -4815,12 +4815,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			let id = $(this).val();
 			let row = $(this).closest("tr");
 
-			
-				return row.remove();
-			
-			
 			$.ajax({
-				url: "th_deletegroup.php",
+				url: "th_deletegroup.php", 
 				data: {
 					id: id
 				},
@@ -5929,6 +5925,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		
 	}
 
+	function showalert(id, msg){
+		$('#' +id).html("&nbsp;&nbsp;<i class=\"fa fa-check\" style=\"color:green;\">"+msg+"</i>")
+	}
+
 	function loadcusgrps(){
 		$('.ccustgroup').each(function(i, obj) {
 				var y = $(this).attr("data-content"); 
@@ -6211,6 +6211,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			success: function(res){
 				if(res.valid){
 					console.log(res.msg)
+					showalert('save_table', res.msg)
 				} else {
 					console.log(res.msg)
 				}
@@ -6266,6 +6267,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			success: function(res){
 				if(res.valid){
 					console.log(res.msg)
+					showalert('save_order', res.msg)
 				} else {
 					console.log(res.msg)
 				}
