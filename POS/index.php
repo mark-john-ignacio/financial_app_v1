@@ -279,9 +279,20 @@
                                 <div style='height: 350px; overflow: auto;'>
                                     <div id='item-wrapper'>
                                         <?php foreach($items as $list):?>
-                                        
-                                            <div id='items' name="<?= $list['cscancode'] ?>" class='items' data-itemlist="<?= $list['cclass'] ?>" style='height: 50px'><font size='-2'><?php echo $list["citemdesc"]; ?></font></div>
-                                        
+                                            <div class='item-wrap'>
+                                                <div style="height:100px;                     
+                                                    background-color:#019aca; 
+                                                    background-image:url('<?=$list["cuserpic"];?>');
+                                                    background-repeat:no-repeat;
+                                                    background-position: center center;
+                                                    background-size: contain;
+                                                    border:solid 1px #036;
+                                                    text-align:center;
+                                                    position: relative">
+                                                    <div id='items' name="<?= $list['cscancode'] ?>" class='items' data-itemlist="<?= $list['cclass'] ?>" style='position: absolute; bottom: 0; width: 100%; background-color: rgba(0,0,0,.5); color: #fff; min-height: 20px;'><font size='-2'><?php echo $list["citemdesc"]; ?></font></div>
+                                                </div>
+                                            </div>
+                                            
                                         <?php endforeach ?>
                                     </div>
                                 </div>
@@ -351,7 +362,7 @@
                         <thead>
                             <tr>
                                 <th>&nbsp;</th>
-                                <th style="width: 30%;">transaction</th>
+                                <th style="width: 30%;">Transaction</th>
                                 <th style="text-align: center;">Remarks</th>
                                 <th style="text-align: center;">Date</th>
                             </tr>
@@ -649,6 +660,10 @@
          */
 
         $('#btnPay').click(function(){
+            if(itemStored.length === 0){
+                return alert('Transaction is empty! cannot proceed transaction');
+            }
+
             $('#tendered').val(0)
             $('#tendered').focus()
             $('#tendered').select()
@@ -796,6 +811,77 @@
 		    $("#tendered").autoNumeric('init',{mDec:2});
             PaymentCompute();
         })
+
+
+        $('#PaySubmit').click(function(){
+            let exchange = $('#ExchangeAmt').val();
+            let total = $('#totalAmt').val();
+            let tender = $('#tendered').val();
+            let proceed = false;
+            let tranno = '';
+            if(parseFloat(total) <= parseFloat(tender)){
+                $.ajax({
+                    url: 'Function/pos_save.php',
+                    type: 'post',
+                    data: {
+                        prepared: '<?= $_SESSION['employeename'];?>',
+                        amount: $('#gross').text(),
+                        net: $('#net').text(),
+                        vat: $('#vat').text(),
+                        gross: total,
+                        discount: $('#discountAmt').val(),
+                        tendered: tender,
+                        exchange: exchange,
+                        customer: $('#customer').val(),
+                        order: $('#orderType').find(":selected").val(),
+                        table: $('#table').find(":selected").val()
+                    },
+                    dataType: 'json',
+                    async: false,
+                    success: function(res){
+                        if(res.valid){
+                            proceed = res.valid;
+                            tranno = res.tranno
+                            console.log(res.msg)
+                        }
+                    },
+                    error: function(res){
+                        console.log(res)
+                    }
+                })
+            } else {
+                alert("Amount tender is less than the amount")
+            }
+
+            if(proceed){
+                itemStored.map((item, index) => {
+                    $.ajax({
+                        url: 'Function/pos_savedet.php',
+                        type: 'post',
+                        data: {
+                            tranno: tranno,
+                            itm: item.partno,
+                            unit: item.unit,
+                            quantity: item.quantity,
+                            amount: item.price,
+                        },
+                        dataType: 'json',
+                        async: false,
+                        success: function(res){
+                            if(res.valid){
+                                console.log(res.msg)
+                            } else {
+                                console.log(res.msg)
+                            }
+                        },
+                        error: function(res){
+                            console.log(res)
+                        }
+                    })
+                })
+            }
+            
+        })
     })
 
     function modalshow(modal){
@@ -890,7 +976,10 @@
         let exchange =$('#ExchangeAmt').val().replace(/,/g,'');
 
         let subtotal = parseFloat(amt) - parseFloat(tender);
-        $('#ExchangeAmt').val(subtotal)
+        if(subtotal > 0){
+            return $('#ExchangeAmt').val("0.00")
+        }
+        $('#ExchangeAmt').val(Math.abs(subtotal))
         $('#ExchangeAmt').autoNumeric('destroy');
         $('#ExchangeAmt').autoNumeric('init',{mDec:2});
     }
