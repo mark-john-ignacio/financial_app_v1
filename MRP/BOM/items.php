@@ -334,10 +334,10 @@
 	</form>
 
 
-	<!-- 1) Alert Modal -->
-	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-			<div class="vertical-alignment-helper">
-					<div class="modal-dialog vertical-align-top">
+				<!-- 1) Alert Modal -->
+				<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+					<div class="vertical-alignment-helper">
+						<div class="modal-dialog vertical-align-top">
 							<div class="modal-content">
 								<div class="alert-modal-danger">
 										<p id="AlertMsg"></p>
@@ -348,9 +348,9 @@
 									</p>
 								</div>
 							</div>
+						</div>
 					</div>
-			</div>
-	</div>
+				</div>
 
 				<!-- 1) Add Sub Item Modal
 					<div class="modal fade" id="modaddsub" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
@@ -424,7 +424,7 @@
 					</div>
 
 					<form action="" method="post" name="frmQPrint" id="frmQprint" target="_blank">
-						<input type="hidden" name="hdntransid" id="hdntransid" value="<?php echo $tranno; ?>">
+						<input type="hidden" name="hdntransid" id="hdntransid" value="">
 					</form>
 </body>
 
