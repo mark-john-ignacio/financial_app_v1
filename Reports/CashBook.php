@@ -34,7 +34,7 @@ include('../include/access.php');
 <table width="100%" border="0" cellpadding="2">
   <tr>
       <td valign="top" width="50" style="padding:2px">
-    <button type="button" class="btn btn-danger navbar-btn" id="btnsales">
+    <button type="button" class="btn btn-danger btn-block" id="btnsales">
     <span class="glyphicon glyphicon-search"></span> View Report
     </button>
     </td>
@@ -62,7 +62,7 @@ include('../include/access.php');
     </td>
   </tr>
   <tr>
-    <td> 
+  <td valign="top" width="50" style="padding:2px">
       <button type="button" class="btn btn-success btn-block" id="btnxls">
             <i class="fa fa-file-excel-o"></i> To Excel
       </button></td>

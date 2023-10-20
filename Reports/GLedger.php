@@ -35,7 +35,7 @@ include('../include/access.php');
 <form action="Accounting/GLedger.php" method="post" name="frmrep" id="frmrep" target="_blank">
 <table width="100%" border="0" cellpadding="2">
   <tr>
-    <td valign="top" width="50" style="padding:2px"><button type="submit" class="btn btn-danger navbar-btn" id="btnsales">
+    <td valign="top" width="50" style="padding:2px"><button type="submit" class="btn btn-danger brn-block" id="btnsales">
       <span class="glyphicon glyphicon-search"></span> View Report
       </button></td>
     <td width="150" style="padding-left:10px"><b>Date Range: </b></td>
@@ -61,7 +61,7 @@ include('../include/access.php');
       </td>
   </tr>
   <tr>
-    <td> 
+  <td valign="top" width="50" style="padding:2px"> 
       <button type="submit" class="btn btn-success btn-block" id="btnxls">
             <i class="fa fa-file-excel-o"></i> To Excel
       </button></td>

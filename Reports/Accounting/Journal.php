@@ -126,9 +126,9 @@ $ddateposted = "";
 ?>
 
     <tr class='rptGrand'>
-    	<td colspan="6" align="right"><b>G R A N D&nbsp;&nbsp;T O T A L:</b></td>
-        <td align="right"><b><?php echo number_format($ntotdebit,4);?></b></td>
-        <td align="right"><b><?php echo number_format($ntotcredit,4);?></b></td>
+    	<td colspan="6" align="right"><b>TOTAL</b></td>
+        <td style='text-align:right; border-top: 2px solid !important'><b><?php echo number_format($ntotdebit,4);?></b></td>
+        <td style='text-align:right; border-top: 2px solid !important'><b><?php echo number_format($ntotcredit,4);?></b></td>
     </tr>
 </table>
 

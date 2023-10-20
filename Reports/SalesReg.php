@@ -31,10 +31,10 @@ include('../include/access.php');
 <form action="Sales/SalesJournal.php" method="post" name="frmrep" id="frmrep" onclick='return false;' target="_blank">
 <table width="100%" border="0" cellpadding="2">
   <tr>
-    <td rowspan="2" valign="top" width="50" style="padding:2px">
-    <button type="submit" class="btn btn-danger navbar-btn" id="btnsales">
-    <span class="glyphicon glyphicon-search"></span> View Report
-    </button>
+    <td valign="top" width="50" style="padding:2px">
+      <button type="submit" class="btn btn-danger btn-block" id="btnsales">
+      <span class="glyphicon glyphicon-search"></span> View Report
+      </button>
     </td>
     <td width="150" style="padding-left:10px"><b>Report Type: </b></td>
     <td style="padding:2px">
@@ -48,6 +48,10 @@ include('../include/access.php');
    </td>
   </tr>
   <tr>
+  <td valign="top" width="50" style="padding:2px"> 
+      <button type="button" class="btn btn-success btn-block" id="btnxls">
+            <i class="fa fa-file-excel-o"></i> To Excel
+      </button></td>
     <td style="padding-left:10px"><b>Date Range: </b></td>
     <td style="padding:2px">
     <div class="col-xs-12 nopadding">
@@ -70,12 +74,7 @@ include('../include/access.php');
      </div>    
     </td>
   </tr>
-  <tr>
-    <td> 
-      <button type="button" class="btn btn-success btn-block" id="btnxls">
-            <i class="fa fa-file-excel-o"></i> To Excel
-      </button></td>
-  </tr>
+
 </table>
 </form>
 </body>

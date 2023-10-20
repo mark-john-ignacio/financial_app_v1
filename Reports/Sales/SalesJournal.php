@@ -26,25 +26,27 @@ $company = $_SESSION['companyid'];
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Sales Register</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">	
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
+	<title>Sales Journal</title>
 </head>
 
 <body style="padding:10px">
-<h3><b>Company: <?=strtoupper($compname);  ?></b></h3>
-<h3><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h3>
-<h3><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h3>
-<h3><b>Kind of Book: Sales Register</b></h3>
-<h3><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h3>
-
-
-
-<br><br>
-<table width="100%" border="0" align="center">
+<h4><b>Company: <?=strtoupper($compname);  ?></b></h4>
+<h4><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h4>
+<h4><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h4>
+<h4><b>Kind of Book: SALES JOURNAL</b></h4>
+<h4><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h4>
+<br>
+<table class='table table-condensed' id='crjTable' border="0" align="center">
   <tr>
     <th>Date</th>
     <th>Invoice No.</th>
-    <th colspan="2">Customer</th>
+    <th>Name</th>
     <th>Account No.</th>
     <th>Account Title</th>
     <th>Debit</th>
@@ -63,7 +65,7 @@ select a.dcutdate, a.ctranno as csalesno, a.ccode, c.cname, b.acctno, b.ctitle, 
 From sales a
 left join glactivity b on a.ctranno=b.ctranno and a.compcode=b.compcode
 left join customers c on a.ccode=c.cempid and a.compcode=c.compcode
-where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
+where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and a.lapproved=1 and a.lvoid=0
 ) A
 order by A.dcutdate, A.csalesno, A.ndebit desc";
 
@@ -87,13 +89,13 @@ $result=mysqli_query($con,$sql);
 			//$salesno = $row['csalesno'];
 		//}
 		
-		if($salesno!=$row['csalesno']){
+		//if($salesno!=$row['csalesno']){
 			$code = $row['ccode'];
 			$name= $row['cname'];
 			$invval = $row['csalesno'];
 			$dateval= date_format(date_create($row['dcutdate']),"m/d/Y");
 			$classcode="class='rpthead'";
-		}
+		//}
 		
 		if($row['lcancelled']==1){
 			?>
@@ -122,7 +124,7 @@ $result=mysqli_query($con,$sql);
   <tr <?php echo $classcode;?>>
     <td><?php echo $dateval;?></td>
     <td><?php echo $invval;?></td>
-    <td><?php echo $code;?></td>
+    <!--<td><?//php echo $code;?></td>-->
     <td><?php echo $name;?></td>
     <td><?php echo $row['acctno'];?></td>
     <td><?php echo $row['ctitle'];?></td>
@@ -142,10 +144,10 @@ $result=mysqli_query($con,$sql);
 	}
 ?>
 
-    <tr class='rptGrand'>
-    	<td colspan="6" align="right"><b>G R A N D&nbsp;&nbsp;T O T A L:</b></td>
-        <td align="right"><b><?php echo number_format($totDebit,2);?></b></td>
-        <td align="right"><b><?php echo number_format($totCredit,2);?></b></td>
+    <tr>
+    	<td colspan="5" align="right"><b>TOTAL</b></td>
+        <td style='text-align:right; border-top: 2px solid !important'><b><?php echo number_format($totDebit,2);?></b></td>
+        <td style='text-align:right; border-top: 2px solid !important'><b><?php echo number_format($totCredit,2);?></b></td>
     </tr>
 </table>
 
