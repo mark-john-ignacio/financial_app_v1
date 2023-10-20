@@ -358,7 +358,8 @@
                             <tr>
                                 <th>&nbsp;</th>
                                 <th style="width: 30%;">Transaction</th>
-                                <th style="text-align: center;">Remarks</th>
+                                <th style="text-align: center;">Table</th>
+                                <th style="text-align: center;">Order Type</th>
                                 <th style="text-align: center;">Date</th>
                             </tr>
                         </thead>
@@ -468,6 +469,7 @@
     var itemStored = [];
     var matrix = 'PM1';
     var amtTotal = 0;
+    var count = 0;
     
     
     $(document).ready(function(){
@@ -480,7 +482,14 @@
             slidesToScroll: 4
         });
 
-
+        $.ajax({
+            url: "../System/th_loadbasecustomer.php",
+            dataType: "json",
+            success: function (res) {
+                $('#customer').attr("placeholder",res.data);
+                matrix = res.pm
+            }
+        });
         
         $('#barcode').typeahead({
             autoSelect: true,
@@ -513,14 +522,18 @@
         $('#customer').typeahead({
             autoSelect: true,
             source: function(request, response) {
+                let flag = false;
                 $.ajax({
                     url: "Function/th_customer.php",
                     dataType: "json",
                     data: {
                         query: $("#customer").val()
                     },
-                    success: function (data) {
-                        response(data);
+                    success: function (res) {
+                        if(res.valid){
+                            response(res.data);
+                            flag = true;
+                        }
                     }
                 });
             },
@@ -607,7 +620,8 @@
                 url: 'Function/th_hold.php',
                 data: {
                     code: '<?= $cSINo ?>',
-                    remarks: '',
+                    table: ($('#table') ? $('#table').find(':selected').val() : null),
+                    type: ($('#orderType') ? $('#orderType').find(':selected').val() : null),
                 },
                 dataType: 'json',
                 async: false,
@@ -629,14 +643,13 @@
                             unit: item.unit,
                             quantity: item.quantity,
                             cost: item.price,
-                            table: ($('#table') ? $('#table').val() : null),
-                            type: $('#orderType').val(),
                         },
                         dataType: 'json',
                         async: false,
                         success: function(res){
                             if(res.valid){
                                 console.log(res.data)
+                                location.reload();
                             } else {
                                 console.log(res.msg)
                             }
@@ -687,7 +700,8 @@
                             $("<tr>").append( 
                                 $("<td>").html("<input type='checkbox' id='chkretrieve' name='chkretrieve' value='"+item.transaction+"' />"),
                                 $("<td  >").text(item.transaction),
-                                $("<td align='center'>").text((item.remarks != null ? item.remarks : ' ' )),
+                                $("<td align='center'>").text(item.table),
+                                $("<td align='center'>").text(item.ordertype),
                                 $("<td align='center'>").text(item.trandate),
                             ).appendTo('#RetrieveList > tbody')
                         })
@@ -720,7 +734,20 @@
                     if(res.valid){
                         res.data.map((item, index) => {
                             duplicate(item, parseInt(item.quantity))
+                            $("#orderType").each(function(){
+                                $(this).children('option').each(function(){
+                                    if(item.ordertype == $(this).val()) $(this).prop('selected', true)
+                                })
+                            })
+                            $("#table").each(function(){
+                                $(this).children('option').each(function(){
+                                    if(item.table == $(this).val()) $(this).prop('selected', true)
+                                })
+                            })
+                            // $('#orderType').find(':selected').val(res.data.orderType)
+                            // $('#table').find(':selected').val(res.data.table)
                         })
+                        alert("Item Retrieved")
                         table_store(itemStored);
                     } else {
                         console.log(res.msg)
