@@ -2865,7 +2865,7 @@ function chkform(){
 							var acctname = "";
 						}
 
-					if(nqty!==undefined){
+						if(nqty!==undefined){
 							nqty = nqty.replace(/,/g,'');
 							ndiscount = ndiscount.replace(/,/g,'');
 							nprice = nprice.replace(/,/g,'');
@@ -2873,18 +2873,20 @@ function chkform(){
 							ntranamt = ntranamt.replace(/,/g,'');
 						}
 
-						alert("SI_newsavedet.php?trancode="+trancode+"&crefno="+crefno+"&crefident="+crefident+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+ nprice+"&ndiscount="+ndiscount+"&ntranamt="+ntranamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&ccode="+ccode+"&vatcode="+vatcode+"&nrate="+nrate+"&ewtcode="+ewtcode+"&ewtrate="+ewtrate+"&acctid="+acctid);
+						$xinx = parseInt(index) + 1;
+						//alert("SI_newsavedet.php?trancode="+trancode+"&crefno="+crefno+"&crefident="+crefident+"&indx="+$xinx+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+ nprice+"&ndiscount="+ndiscount+"&ntranamt="+ntranamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&ccode="+ccode+"&vatcode="+vatcode+"&nrate="+nrate+"&ewtcode="+ewtcode+"&ewtrate="+ewtrate+"&acctid="+acctid);
 
-					$.ajax ({
-						url: "SI_newsavedet.php",
-						data: { trancode: trancode, crefno: crefno, crefident:crefident, indx: parseInt(index) + 1, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, ndiscount:ndiscount, ntranamt:ntranamt, namt:namt, mainunit:mainunit, nfactor:nfactor, ccode:ccode, vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate, acctid: acctid },
-						async: false,
-						success: function( data ) {
-							if(data.trim()=="False"){
-								isDone = "False";
+						$.ajax ({
+							url: "SI_newsavedet.php",
+							data: { trancode: trancode, crefno: crefno, crefident:crefident, indx:$xinx, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, ndiscount:ndiscount, ntranamt:ntranamt, namt:namt, mainunit:mainunit, nfactor:nfactor, ccode:ccode, vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate, acctid: acctid },
+							async: false,
+							success: function( data ) {
+
+								if(data.trim()=="False"){
+									isDone = "False";
+								}
 							}
-						}
-					});
+						});
 				//}
 				
 			});
@@ -2918,7 +2920,7 @@ function chkform(){
 			});	
 
 			//Save Discounts
-			$("#MyTable3 > tbody > tr").each(function(index) {	
+				$("#MyTable3 > tbody > tr").each(function(index) {	
 					
 					var discnme = $(this).find('input[type="hidden"][name="txtdiscscode"]').val();
 					var seldisctyp = $(this).find('select[name="secdiscstyp"]').val();
