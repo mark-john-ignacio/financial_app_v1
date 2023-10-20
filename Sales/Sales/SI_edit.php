@@ -2436,6 +2436,9 @@ function openinv(typ){
 									$("#hdnqtyunit").val(item.cqtyunit);
 									$("#hdncvat").val(item.ctaxcode);
 									$("#hdncewt").val("");
+									$("#hdnacctno").val(item.cacctno); 
+									$("#hdnacctid").val(item.cacctid); 
+									$("#hdnacctdesc").val(item.cacctdesc); 
 									
 									if(index==0){
 										$("#selbasecurr").val(item.ccurrencycode).change();
@@ -2869,7 +2872,7 @@ function chkform(){
 							ntranamt = ntranamt.replace(/,/g,'');
 						}
 
-						//alert("SI_newsavedet.php?trancode="+trancode+"&crefno="+crefno+"&crefident="+crefident+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+ nprice+"&ndiscount="+ndiscount+"&ntranamt="+ntranamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&ccode="+ccode+"&vatcode="+vatcode+"&nrate="+nrate+"&ewtcode="+ewtcode+"&ewtrate="+ewtrate);
+						alert("SI_newsavedet.php?trancode="+trancode+"&crefno="+crefno+"&crefident="+crefident+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+ nprice+"&ndiscount="+ndiscount+"&ntranamt="+ntranamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&ccode="+ccode+"&vatcode="+vatcode+"&nrate="+nrate+"&ewtcode="+ewtcode+"&ewtrate="+ewtrate+"&acctid="+acctid);
 
 					$.ajax ({
 						url: "SI_newsavedet.php",

@@ -12,7 +12,7 @@ require_once "../../Connection/connection_string.php";
 		$date1 = date("Y-m-d");
 		
 		if($_REQUEST['typ']=="DR"){
-			$sql = "select a.ctranno, a.crefident, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, 0 as ndiscount, a.nbaseamount, a.namount, a.cmainunit as qtyunit, a.nfactor, ifnull(c.nqty,0) as totqty2, b.ctype, b.ctaxcode, d.ccurrencycode, d.ccurrencydesc, d.nexchangerate, a.creference
+			$sql = "select a.ctranno, a.crefident, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, 0 as ndiscount, a.nbaseamount, a.namount, a.cmainunit as qtyunit, a.nfactor, ifnull(c.nqty,0) as totqty2, b.ctype, b.ctaxcode, d.ccurrencycode, d.ccurrencydesc, d.nexchangerate, a.creference, e.cacctno, e.cacctid, e.cacctdesc
 			from dr_t a 
 			left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
 			left join so d on a.compcode=d.compcode and a.creference=d.ctranno
@@ -24,6 +24,7 @@ require_once "../../Connection/connection_string.php";
 					Where x.compcode='$company' and x.creference='".$_REQUEST['id']."' and y.lcancelled=0
 				 	group by x.creference,x.nrefident,x.citemno
 				 ) c on a.ctranno=c.creference and a.citemno=c.citemno and a.nident=c.nrefident
+			left join accounts e on b.compcode=e.compcode and b.cacctcodesales=e.cacctno
 			WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."' and a.nident = '".$_REQUEST['itm']."'";
 
 			//kunin ang SO details for the price and taxcode
@@ -42,7 +43,7 @@ require_once "../../Connection/connection_string.php";
 				$itmvar = " and a.nidentity = '".$_REQUEST['itm']."'";
 			}
 
-			$sql = "select a.ctranno, a.nident as crefident, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, 0 as ndiscount, a.nbaseamount, a.namount, a.cmainunit as qtyunit, a.nfactor, ifnull(c.nqty,0) as totqty2, b.ctype, b.ctaxcode, d.ccurrencycode, d.ccurrencydesc, d.cvattype, e.nrate, d.nexchangerate, d.cterms
+			$sql = "select a.ctranno, a.nident as crefident, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, 0 as ndiscount, a.nbaseamount, a.namount, a.cmainunit as qtyunit, a.nfactor, ifnull(c.nqty,0) as totqty2, b.ctype, b.ctaxcode, d.ccurrencycode, d.ccurrencydesc, d.cvattype, e.nrate, d.nexchangerate, d.cterms, f.cacctno, f.cacctid, f.cacctdesc
 			from quote_t a 
 			left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
 			left join quote d on a.compcode=d.compcode and a.ctranno=d.ctranno
@@ -55,6 +56,7 @@ require_once "../../Connection/connection_string.php";
 					Where x.compcode='$company' and x.creference='".$_REQUEST['id']."' and y.lcancelled=0
 				 	group by x.creference,x.nrefident,x.citemno
 				 ) c on a.ctranno=c.creference and a.citemno=c.citemno and a.nident=c.nrefident
+			left join accounts f on b.compcode=f.compcode and b.cacctcodesales=f.cacctno
 			WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."' and a.nident = '".$_REQUEST['itm']."'";
 		}elseif($_REQUEST['typ']=="SO"){
 			if($_REQUEST['itm']=="ALL"){
@@ -63,7 +65,7 @@ require_once "../../Connection/connection_string.php";
 				$itmvar = " and a.nident = '".$_REQUEST['itm']."'";
 			}
 
-			$sql = "select a.ctranno, a.creference, a.nident as crefident, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, 0 as ndiscount, a.nbaseamount, a.namount, a.cmainunit as qtyunit, a.nfactor, ifnull(c.nqty,0) as totqty2, b.ctype, d.ccurrencycode, d.ccurrencydesc, a.nrate, d.nexchangerate, a.ctaxcode
+			$sql = "select a.ctranno, a.creference, a.nident as crefident, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, 0 as ndiscount, a.nbaseamount, a.namount, a.cmainunit as qtyunit, a.nfactor, ifnull(c.nqty,0) as totqty2, b.ctype, d.ccurrencycode, d.ccurrencydesc, a.nrate, d.nexchangerate, a.ctaxcode, e.cacctno, e.cacctid, e.cacctdesc
 			from so_t a 
 			left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
 			left join so d on a.compcode=d.compcode and a.ctranno=d.ctranno
@@ -75,6 +77,7 @@ require_once "../../Connection/connection_string.php";
 					Where x.compcode='$company' and x.creference='".$_REQUEST['id']."' and y.lcancelled=0
 				 	group by x.creference,x.nrefident,x.citemno
 				 ) c on a.ctranno=c.creference and a.citemno=c.citemno and a.nident=c.nrefident
+			left join accounts e on b.compcode=e.compcode and b.cacctcodesales=e.cacctno
 			WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."' and a.nident = '".$_REQUEST['itm']."'";
 		}
 		
@@ -151,6 +154,9 @@ require_once "../../Connection/connection_string.php";
 		 $json['ccurrencydesc'] = $row['ccurrencydesc']; 
 		 $json['nexchangerate'] = $row['nexchangerate'];
 		 $json['crefident'] = $row['crefident'];
+		 $json['cacctno'] = $rs['cacctno'];
+		$json['cacctid'] = $rs['cacctid'];
+		$json['cacctdesc'] = $rs['cacctdesc'];
 		 $json2[] = $json;
 	
 	}
