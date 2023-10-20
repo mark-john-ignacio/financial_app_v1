@@ -1204,6 +1204,43 @@ if(file_name.length != 0){
 		
 		});
 
+		$('body').on('focus',".cacctdesc", function(){
+			var $input = $(".cacctdesc");
+
+			var id = $(document.activeElement).attr('id');	
+			var numid = id.replace("txtacctname","");
+
+			$("#"+id).typeahead({
+				items: 10,
+				source: function(request, response) {
+					$.ajax({
+						url: "../th_accounts.php",
+						dataType: "json",
+						data: {
+							query: $("#"+id).val()
+						},
+						success: function (data) {
+							console.log(data);
+							response(data);
+						}
+					});
+				},
+				autoSelect: true,
+				displayText: function (item) {
+					return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.acct + '</span><br><small>' + item.name + '</small></div>';
+				},
+				highlighter: Object,
+				afterSelect: function(item) { 
+
+					$('#'+id).val(item.name).change(); 
+					$("#txtacctno"+numid).val(item.id); 
+					$("#txtacctcode"+numid).val(item.acct);
+
+				}
+			});
+
+		});
+
 		$("#allbox").click(function(e){
 				var table= $(e.target).closest('table');
 				$('td input:checkbox',table).not(this).prop('checked', this.checked);

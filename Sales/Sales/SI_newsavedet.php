@@ -29,8 +29,10 @@ function chkgrp($valz) {
 		$nAmount = $_REQUEST['namt'];
 		$nTranAmount = $_REQUEST['ntranamt'];
 
+		$xewt = explode(",",$_REQUEST['ewtcode']);
+
 		if(isset($_REQUEST['ewtcode']) && $_REQUEST['ewtcode']!=""){
-			$cewtcode = implode(",",$_REQUEST['ewtcode']);
+			$cewtcode = implode(",",$xewt);
 		}else{
 			$cewtcode = "";
 		}
