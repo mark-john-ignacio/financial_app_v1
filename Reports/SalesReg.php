@@ -28,7 +28,7 @@ include('../include/access.php');
 <body style="padding-left:50px;">
 <center><font size="+1"><b><u>Sales Register</u></b></font></center>
 <br>
-<form action="Sales/SalesJournal.php" method="post" name="frmrep" id="frmrep" onclick='return false;' target="_blank">
+<form action="Accounting/SalesJournal.php" method="post" name="frmrep" id="frmrep" onclick='return false;' target="_blank">
 <table width="100%" border="0" cellpadding="2">
   <tr>
     <td valign="top" width="50" style="padding:2px">
@@ -40,9 +40,9 @@ include('../include/access.php');
     <td style="padding:2px">
     <div class="col-xs-5 nopadding">
         <select id="seltype" name="seltype" class="form-control input-sm" onChange="setact(this.value);">
-          <option value="Sales/SalesJournal.php">Journal</option>
-          <option value="Sales/SalesRecap.php">Recap</option>
-          <option value="Sales/SalesRecapCust.php">Recap Per Customer</option>
+          <option value="Accounting/SalesJournal.php">Journal</option>
+          <option value="Accounting/SalesRecap.php">Recap</option>
+          <option value="Accounting/SalesRecapCust.php">Recap Per Customer</option>
         </select>
    </div>
    </td>

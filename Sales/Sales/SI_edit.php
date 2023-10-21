@@ -361,7 +361,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?=$ccurrdesc; ?>"> 
 									</div>
 									<div class="col-xs-2 nopadwleft">
-										<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="<?=$ccurrrate; ?>">	 
+										<input type='text' class="required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="<?=$ccurrrate; ?>">	 
 									</div>
 									<div class="col-xs-4" id="statgetrate" style="padding: 4px !important"> 										
 									</div>
@@ -395,9 +395,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value="<?=$Remarks; ?>"></div>
 								</td>	
 								
-								<tH width="100">EWT Code</tH>
+								<tH width="100"><div id="isewt">EWT Code</div></tH>
 								<td style="padding:2px">
-									<div class="col-xs-11 nopadding">
+									<div class="col-xs-11 nopadding" id="isewt2">
 										<select id="selewt" name="selewt[]" class="form-control input-sm selectpicker"  tabindex="3" multiple>
 												<?php
 													$isselctd = "";
@@ -1129,12 +1129,16 @@ if(file_name.length != 0){
 	//		$("#tblAvailable").show();
 	//	}
 
-    if(xChkVatableStatus==1){
-      $(".chkVATClass").show(); 
-    }
-    else{
-      $(".chkVATClass").hide();
-    }
+	if(xChkVatableStatus==1){
+			$(".chkVATClass").show();	
+			$("#isewt").show();
+			$("#isewt2").show();
+		}
+		else{
+			$(".chkVATClass").hide();
+			$("#isewt").hide();
+			$("#isewt2").hide();
+		}
 
 		if(xChkLimit==0){
 			$(".chklimit").hide();
@@ -1149,7 +1153,7 @@ if(file_name.length != 0){
 			$(".chkinctype").hide();
 		}
 
-
+		$("#basecurrval").autoNumeric('init',{mDec:4});
 		$("#selewt").select2();
 
 		loaddetails();

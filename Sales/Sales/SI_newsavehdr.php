@@ -69,12 +69,6 @@ else {
 	}else{
 		$cewtcode = "";
 	}
-
-	if(isset($_REQUEST['selewt'])){
-		$cewtcode = implode(",",$_REQUEST['selewt']);
-	}else{
-		$cewtcode = "";
-	}
 	
 	$RefMods= $_REQUEST['txtrefmod']; 
 	$RefModsNo= $_REQUEST['txtrefmodnos']; 

@@ -200,7 +200,7 @@ if(mysqli_num_rows($sql) == 0){
 																<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?php echo $nvaluecurrbasedesc; ?>"> 
 														</div>
 														<div class="col-xs-2 nopadwleft">
-															<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
+															<input type='text' class="required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
 														</div>
 
 														<div class="col-xs-5" id="statgetrate" style="padding: 4px !important"> 
@@ -457,6 +457,7 @@ var xChkVatableStatus = "";
 			defaultDate: moment(),
     });	
 
+		$("#basecurrval").autoNumeric('init',{mDec:4});
 		$("#selbasecurr").on("change", function (){
 				
 			//convertCurrency($(this).val());
@@ -819,11 +820,11 @@ function myFunctionadd(nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident
 								$("input.numeric2").autoNumeric('init',{mDec:4});
 								$("input.numeric").autoNumeric('init',{mDec:2});
 
-								$("input.numeric").on("click", function () {
+								$("input.numeric, input.numeric2").on("click", function () {
 									   $(this).select();
 									});
 
-									$("input.numeric").on("keyup", function (e) {
+									$("input.numeric, input.numeric2").on("keyup", function (e) {
 									  ComputeAmt($(this).attr('id'));
 									  ComputeGross();
 									  // tblnav(e.keyCode,$(this).attr('id'));

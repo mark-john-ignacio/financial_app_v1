@@ -66,8 +66,20 @@
 
 	$data = array();
 
+	$nvaluecurrbase = "";
+	$rexxx = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 																
+	if (mysqli_num_rows($rexxx)!=0) {
+		$all_course_data = mysqli_fetch_array($rexxx, MYSQLI_ASSOC);																		
+		$nvaluecurrbase = $all_course_data['cvalue']; 																			
+	}
+	else{
+		$nvaluecurrbase = "";
+	}
+
 	foreach($result as $row)
 	{
+		$xcurr = ($nvaluecurrbase!=$row['ccurrencycode']) ? " ".$row['ccurrencycode'] : "";
+
 		$sub_array = array();
 		$sub_array[] = $row['ctranno'];
 		$sub_array[] = $row['csiprintno'];
@@ -78,7 +90,7 @@
 		$sub_array[] = $row['lcancelled'];
 		$sub_array[] = $row['ccode'];
 		$sub_array[] = $row['nlimit'];
-		$sub_array[] = number_format($row['ngross'],2);
+		$sub_array[] = number_format($row['ngross'],2).$xcurr;
 		$sub_array[] = str_replace(",","<br>",$row['cref']);
 		$sub_array[] = $row['lvoid'];
 		$data[] = $sub_array;

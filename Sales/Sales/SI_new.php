@@ -257,7 +257,7 @@ $company = $_SESSION['companyid'];
 														<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?php echo $nvaluecurrbasedesc; ?>"> 
 												</div>
 												<div class="col-xs-2 nopadwleft">
-													<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
+													<input type='text' class="form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
 												</div>
 
 												<div class="col-xs-4" id="statgetrate" style="padding: 4px !important"> 
@@ -321,9 +321,9 @@ $company = $_SESSION['companyid'];
 												</div>
 											</td>
 
-											<tH width="100">EWT Code</tH>
+											<tH width="100"><div id="isewt">EWT Code</div></tH>
 											<td style="padding:2px">
-												<div class="col-xs-11 nopadding">
+												<div class="col-xs-11 nopadding" id="isewt2">
 													<select id="selewt" name="selewt[]" class="form-control input-sm selectpicker"  tabindex="3" multiple required>
 															<!--<option value="none">None</option>-->
 															<option value="multi">Multiple</option>
@@ -756,9 +756,13 @@ $company = $_SESSION['companyid'];
 
 		if(xChkVatableStatus==1){
 			$(".chkVATClass").show();	
+			$("#isewt").show();
+			$("#isewt2").show();
 		}
 		else{
 			$(".chkVATClass").hide();
+			$("#isewt").hide();
+			$("#isewt2").hide();
 		}
 
 
@@ -780,6 +784,7 @@ $company = $_SESSION['companyid'];
 	  $('#txtprodnme').attr("disabled", true);
 	  $('#txtprodid').attr("disabled", true);
 	  $(".chkitmsadd").hide();
+		$("#basecurrval").autoNumeric('init',{mDec:4});
 
 		$("#selewt").select2();
 

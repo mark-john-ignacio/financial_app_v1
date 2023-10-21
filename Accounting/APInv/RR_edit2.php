@@ -270,7 +270,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</div>
 									<div class="col-xs-2 nopadwleft"> 
 										<!--  -->
-										<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="<?=$ccurrrate?>">	 
+										<input type='text' class="required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="<?=number_format($ccurrrate,4)?>">	 
 									</div>
 
 									<div class="col-xs-5" id="statgetrate" style="padding: 4px !important"> 
@@ -642,6 +642,7 @@ $(document).ready(function() {
 			$(".chkVATClass").hide();
 		}
 
+		
     $('.datepick').datetimepicker({
         format: 'MM/DD/YYYY'
     });
@@ -656,7 +657,7 @@ $(document).ready(function() {
 
 			disabled();
 
-
+		$("#basecurrval").autoNumeric('init',{mDec:4});
 		$("#selbasecurr").on("change", function (){
 			
 			//convertCurrency($(this).val());

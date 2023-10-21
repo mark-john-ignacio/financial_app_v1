@@ -39,7 +39,7 @@ $company = $_SESSION['companyid'];
 <h4><b>Company: <?=strtoupper($compname);  ?></b></h4>
 <h4><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h4>
 <h4><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h4>
-<h4><b>Kind of Book: SALES JOURNAL</b></h4>
+<h4><b>Kind of Book: SALES BOOK</b></h4>
 <h4><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h4>
 <br>
 <table class='table table-condensed' id='crjTable' border="0" align="center">
