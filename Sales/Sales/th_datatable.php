@@ -66,19 +66,10 @@
 
 	$data = array();
 
-	$nvaluecurrbase = "";
-	$rexxx = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 																
-	if (mysqli_num_rows($rexxx)!=0) {
-		$all_course_data = mysqli_fetch_array($rexxx, MYSQLI_ASSOC);																		
-		$nvaluecurrbase = $all_course_data['cvalue']; 																			
-	}
-	else{
-		$nvaluecurrbase = "";
-	}
 
 	foreach($result as $row)
 	{
-		$xcurr = ($nvaluecurrbase!=$row['ccurrencycode']) ? " ".$row['ccurrencycode'] : "";
+		$xcurr = " ".$row['ccurrencycode'];
 
 		$sub_array = array();
 		$sub_array[] = $row['ctranno'];
