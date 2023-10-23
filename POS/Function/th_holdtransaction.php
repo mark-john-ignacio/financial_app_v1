@@ -15,10 +15,8 @@
     $unit = $_REQUEST['unit'];
     $quantity =$_REQUEST['quantity'];
     $cost = $_REQUEST['cost'];
-
-    $type = $_REQUEST['type'];
     // $table = $_REQUEST['table'];
-    $table = "sample table 1";
+
     
 
     
@@ -27,8 +25,8 @@
     if(mysqli_num_rows($query) !== 0){
 
         $sql = "INSERT INTO pos_hold_t 
-        (`compcode`, `transaction`, `partno`, `item`, `quantity`, `unit`, `type`, `table`, `discount`, `cost`) 
-        VALUES ('$company', '$transaction', '$partno', '$item', '$quantity', '$unit', '$type', '$table', '0', '$cost')";
+        (`compcode`, `transaction`, `partno`, `item`, `quantity`, `unit`, `discount`, `cost`) 
+        VALUES ('$company', '$transaction', '$partno', '$item', '$quantity', '$unit',  '0', '$cost')";
         $query = mysqli_query($con, $sql);
 
         echo json_encode([

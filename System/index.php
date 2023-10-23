@@ -3718,6 +3718,17 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						</div> 
 						-->	
 						<div id="POS" class="tab-pane fade in">
+							<div class='col-sm-12'>
+								<div class='col-xs-2 nopadwtop'>
+									<b>Base Customer: </b>
+								</div>
+								<span>
+									<input type='text' class='input-sm' name="basecustomer" id="basecustomer" autocomplete="false" />
+									<div class="col-xs-1 nopadwtop" id="basecustmsg"></div>
+								</span>
+								
+							</div>			
+															
 							<p data-toggle="collapse" data-target="#pos_table"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Table Sits</b></u></p>
 							<div class="collapse" id='pos_table' style='padding-bottom: 20px'>
 								<div class="col-sm-12">
@@ -3878,6 +3889,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 		loaddiscs();
 
+		loadbasecustomer();
+
 		loadConDets();
 		
 		loadtax();
@@ -3909,6 +3922,47 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		if($("#selcrdlmt").val()==0){
 			$("#selcrdlmtwarn").attr("disabled", true);
 		}
+
+		$("#basecustomer").typeahead({
+			autoSelect: true,
+			source: function(request, response){
+				$.ajax({
+					url: "../POS/Function/th_customer.php",
+					data: { query: $("#basecustomer").val() },
+					dataType: 'json',
+					async: false,
+					success: function(res){
+						response(res);
+					},
+					error: function(res){
+						console.log(res)
+					}
+				})
+			},
+			displayText: function (item) {
+                return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+            },
+            highlighter: Object,
+            afterSelect: function(items) { 
+				
+				$.ajax({
+					url: "../POS/Function/th_setdefaultcust.php",
+					data: { customer: items.id },
+					dataType: 'json',
+					async: false,
+					success: function(res){
+						if(res.valid){
+							console.log(res.msg)
+							$('#basecustmsg').html("&nbsp;&nbsp;<i class=\"fa fa-check\" style=\"color:green;\"></i>");
+							$('#basecustomer').val(items.value)
+						}
+					},
+					error: function(res){
+						console.log(res)
+					}
+				})
+			}
+		})
 
 	});
 
@@ -6069,6 +6123,24 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							}
 			});
 		
+	}
+
+	function loadbasecustomer(){
+		$.ajax({
+			url: 'th_loadbasecustomer.php',
+			dataType: 'json',
+			async: false,
+			success: function(res){
+				if(res.valid){
+					$('#basecustomer').val(res.data)
+				} else {
+					console.log(res.msg)
+				}
+			},
+			error: function(res){
+				console.log(res)
+			}
+		})
 	}
 
 	function loaddiscs(){

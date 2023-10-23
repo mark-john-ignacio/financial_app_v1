@@ -10,11 +10,17 @@ include('../../include/accessinner.php');
 <!DOCTYPE html>
 <html>
 <head>
-
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?v=<?php echo time();?>"> 
-<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>   
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
+<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+    
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+<script src="../../Bootstrap/js/jquery.numeric.js"></script>
+
 <script src="../../Bootstrap/js/bootstrap.js"></script>
+<script src="../../Bootstrap/js/moment.js"></script>
+<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
@@ -164,6 +170,10 @@ include('../../include/accessinner.php');
             
             <div class="col-xs-9 nopadwtop">
                 <input type="text" class="numeric form-control input-sm" id="txtvalue" name="txtvalue"  placeholder="Enter Decimal Value.." required>
+				<input type="radio" id='percentage' name='valuetype' />
+				<label for="percentage">%</label>
+				<input type="radio" id='price' name='valuetype' />
+				<label for="price">P</label>
             </div>
         </div>   
         

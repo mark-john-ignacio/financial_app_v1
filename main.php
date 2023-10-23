@@ -255,10 +255,20 @@
 									</a>
                 </li>
                 <li>
-                  <a href="javascript:;" onClick="setpage('MasterFiles/Items/PP.php');"> 
+                  <a href="javascript:;" onclick="setpage('MasterFiles/Items/PP.php');"> 
 										<i class="fa fa-angle-double-right"></i> Purchase Pricelist 
 									</a>
 								</li>
+			  	<li>
+					<a href="javascript:;" onclick="setpage('MasterFiles/Items/discmatrix.php')">
+			  			<i class="fa fa-angle-double-right"></i> Discount Matrix
+					</a>
+				</li>
+				<li>
+					<a href="javascript:;" onClick="setpage('MasterFiles/Items/DISC.php')">
+						<i class='fa fa-angle-double-right'></i> Special Discount
+					</a>
+				</li>
 							</ul>
             </li>
 						<li>
