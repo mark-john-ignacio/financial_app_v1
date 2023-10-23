@@ -7,10 +7,12 @@
     $company = $_SESSION['companyid'];
     $item = implode("','",$_REQUEST['items']);
 
-    $sql = "SELECT * FROM pos_hold_t WHERE `compcode` = '$company' AND `transaction` IN ('". $item ."')";
+    $sql = "SELECT a.*, b.table, b.ordertype FROM pos_hold_t a
+    LEFT JOIN pos_hold b ON a.compcode = b.compcode AND a.transaction = b.transaction
+    WHERE a.compcode = '$company' AND a.transaction IN ('". $item ."')";
     $query = mysqli_query($con, $sql);
     $data = [];
-    if(mysqli_num_rows($query) != 0){
+    if(mysqli_num_rows($query) != 0){ 
         while($row = $query -> fetch_assoc()){
             array_push($data, $row);
         }

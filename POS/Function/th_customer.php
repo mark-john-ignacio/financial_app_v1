@@ -29,7 +29,18 @@ require_once "../../Connection/connection_string.php";
 	}
 
 
-	echo json_encode($json2);
+	if(mysqli_num_rows($result) != 0){
+		echo json_encode([
+			'valid' => true,
+			'data' =>$json2
+		]);
+	} else {
+		echo json_encode([
+			'valid' => false,
+			'data'=> ""
+		]);
+	}
+	
 
 
 ?>

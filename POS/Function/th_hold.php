@@ -10,14 +10,14 @@
     $company = $_SESSION['companyid'];
 
     $transaction = $_REQUEST['code'];
-    $remarks = $_REQUEST['remarks'];
+    $table = $_REQUEST['table'];
+    $orderType = $_REQUEST['order'];
     $dates = date('Y-m-d h:i:s');
     
 
 
-    $sql = "INSERT INTO pos_hold 
-    (`compcode`, `transaction`, `remarks`, `trandate`) 
-    VALUES ('$company', '$transaction', '$remarks', '$dates')";
+    $sql = "INSERT INTO pos_hold (`compcode`, `transaction`, `table`, `ordertype` , `trandate`) 
+    VALUES ('$company', '$transaction', '$table', '$orderType', '$dates')";
 
     if(mysqli_query($con, $sql)){
         echo json_encode([
