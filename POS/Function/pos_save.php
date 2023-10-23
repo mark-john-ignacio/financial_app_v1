@@ -9,13 +9,13 @@
     $month = date('m');
     $year = date('y');
 
-    $sql = "SELECT * FROM pos_hold  where compcode='$company' and YEAR(trandate) = YEAR(CURDATE()) Order By `transaction` desc LIMIT 1";
+    $sql = "SELECT * FROM pos  where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By `tranno` desc LIMIT 1";
     $query = mysqli_query($con, $sql);
     if (mysqli_num_rows($query)==0) {
         $code = "POS".$month.$year."00000";
     } else {
         while($row = $query -> fetch_assoc()){
-            $last = $row['transaction'];
+            $last = $row['tranno'];
         }
         
         
@@ -48,6 +48,7 @@
     $discount = mysqli_real_escape_string($con, $_POST['discount']);
     $tendered = mysqli_real_escape_string($con, $_POST['tendered']);
     $exchange = mysqli_real_escape_string($con, $_POST['exchange']);
+    $discountcode = mysqli_real_escape_string($con, $_POST['discountcode']);
 
     $customer = mysqli_real_escape_string($con, ($_REQUEST['customer'] != "") ? $_REQUEST['customer'] : "WALK-IN");
     $type = mysqli_real_escape_string($con, $_POST['order']);
@@ -56,8 +57,8 @@
     /**
      * Query for Inserting into database
      */
-    $sql = "INSERT INTO pos (`compcode`, `tranno`, `preparedby`, `ddate`, `amount`, `net`, `vat`, `gross`, `discount`, `tendered`, `exchange`, `customer`, `orderType`, `table`)
-            VALUES ('$company', '$code', '$prepared', '$date', '$amount', '$net', '$vat', '$gross', '$discount', '$tendered', '$exchange', '$customer', '$type', '$table')";
+    $sql = "INSERT INTO pos (`compcode`, `tranno`, `preparedby`, `ddate`, `amount`, `net`, `vat`, `gross`, `discount`, `tendered`, `exchange`, `customer`, `orderType`, `table`, `discountcode`)
+            VALUES ('$company', '$code', '$prepared', '$date', '$amount', '$net', '$vat', '$gross', '$discount', '$tendered', '$exchange', '$customer', '$type', '$table', '$discountcode')";
 
     if(mysqli_query($con, $sql)){
         echo json_encode([

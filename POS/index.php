@@ -13,6 +13,7 @@
     $items = [];
     $table = [];
     $order = [];
+    $discount = [];
     $date = date('Y-m-d');
 
     $query = mysqli_query($con,"select * from company where compcode='$company'");
@@ -91,6 +92,12 @@
     $query = mysqli_query($con, $sql);
     while($row = $query -> fetch_assoc()){
         array_push($order, $row);
+    }
+
+    $sql = "SELECT * FROM discounts WHERE compcode = '$company' AND lapproved = '1'";
+    $query = mysqli_query($con, $sql);
+    while($row = $query -> fetch_assoc()){
+        array_push($discount, $row);
     }
 ?>
 
@@ -208,6 +215,8 @@
                                                 <th style="width: 60%;">Item</th>
                                                 <th style="text-align: center;">UOM</th>
                                                 <th style="text-align: center;">Quantity</th>
+                                                <th style="text-align: center;">Price</th>
+                                                <th style="text-align: center;">Discount</th>         
                                                 <th style="text-align: center;">Amount</th>
                                             </tr>
                                         </thead>
@@ -346,7 +355,9 @@
                                 <th style="width: 60%;">Item</th>
                                 <th style="text-align: center;">UOM</th>
                                 <th style="text-align: center;">Quantity</th>
-                                <th style="text-align: center;">Amount</th>
+                                <th style="text-align: center;">Price</th>
+                                <th style="text-align: center;">Discount</th>
+						        <th>Amount</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -394,7 +405,9 @@
                                                 <th style='text-align: center'>Item</th>
                                                 <th style='text-align: center'>UOM</th>
                                                 <th style='text-align: center'>Quantity</th>
-                                                <th style='text-align: center'>Amount</th>
+                                                <th style="text-align: center;">Price</th>
+                                                <th style="text-align: center;">Discount</th>
+						                        <th>Amount</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -406,10 +419,25 @@
                                     <div style='width: 100%'>
                                         <label for="totalAmt">Total Amount</label>
                                         <input type='text' id='totalAmt' class='form-control' readonly/>
-                                        <label for='discountAmt'>Discount Amount</label>
-                                        <input type="text" id='discountAmt' class='form-control' />
+
+                                        <?php if(sizeof($discount) != 0): ?>
+                                            <label for='discountAmt'>Discount Amount</label>
+                                            <select name="discountAmt" id="discountAmt" class='form-control'>
+                                                <option value="0">No Discount</option>
+                                                <?php foreach($discount as $list): ?>
+                                                    <option value="<?= $list["nvalue"] ?>"><?= $list['cdescription'] ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        <?php endif;?>
+
+                                        <div id='dc' style='display: none'>
+                                            <label for='discountAmt'>Discount Code</label>
+                                            <input type="text" id="discountcode" name="discountcode" class="form-control">
+                                        </div>
+
                                         <label for="tendered">Amount Tendered</label>
                                         <input type="text" id='tendered' class='form-control' />
+
                                         <label for="ExchangeAmt">Exchange Amount</label>
                                         <input type="text" id='ExchangeAmt' class='form-control' readonly/>
                                     </div>
@@ -511,6 +539,7 @@
             },
             highlighter: Object,
             afterSelect: function(items) { 
+                console.log(items)
                 duplicate(items)
                 table_store(itemStored)
                 $('#barcode').val("").change()
@@ -551,8 +580,13 @@
                 // $("#divCreditLim").text(item.nlimit);
                 // chkbalance(item.id);
                 // $("#citemno").focus();	
-                
-                
+                $("#paymentList > tbody").empty()
+                $("#VoidList > tbody").empty()
+                $("#listItem > tbody").empty()
+                $("#gross").text(parseFloat(0).toFixed(2))
+                $("#vat").text(parseFloat(0).toFixed(2))
+                $("#net").text(parseFloat(0).toFixed(2))
+                itemStored = [];
             }
         })
 
@@ -680,6 +714,19 @@
             
             $('#payModal').modal('show')
             PaymentCompute()
+        })
+
+        $('#discountAmt').change(function(){
+            let disc = $(this).val();
+            computation(itemStored);
+            $("#discountcode").val("");
+            if(disc != 0) {
+                let total = $("#totalAmt").val()
+                let dif = total - disc;
+                $('#totalAmt').val(dif)
+                return $("#dc").show();
+            } 
+            return $("#dc").hide();
         })
 
 
@@ -842,7 +889,7 @@
             let proceed = false;
             let tranno = '';
             
-            if(parseFloat(total) >= parseFloat(tender)){
+            if(parseFloat(total) <= parseFloat(tender)){
                 $.ajax({
                     url: 'Function/pos_save.php',
                     type: 'post',
@@ -857,7 +904,8 @@
                         exchange: exchange,
                         customer: $('#customer').val(),
                         order: $('#orderType').find(":selected").val(),
-                        table: $('#table').find(":selected").val()
+                        table: $('#table').find(":selected").val(),
+                        discountcode: $("#discountcode").val()
                     },
                     dataType: 'json',
                     async: false,
@@ -965,11 +1013,26 @@
         }
 
         const price = chkprice(data.partno, data.unit, matrix, <?= date('Y-m-d') ?>)
+        const disc = discountprice(data.partno, data.unit, matrix, <?= date('Y-m-d') ?>)
+        var discvalue = 0;
         let found = false;
+
+        switch(disc.type){
+            case "PRICE":
+                discvalue = parseFloat(disc.value);
+                break;
+            case "PERCENT":
+                discvalue = parseInt(disc.value) / 100;
+                break;
+        }
+        console.log(parseFloat(discvalue))
+        
         for (let i = 0; i < itemStored.length; i++) {
             if (itemStored[i].partno === data.partno) {
                 itemStored[i].quantity += qty;
                 itemStored[i].price = parseFloat(itemStored[i].price) + parseFloat(price);
+                itemStored[i].discount = parseFloat(itemStored[i].price)* parseFloat(discvalue);
+                itemStored[i].amount = parseFloat(itemStored[i].price) - parseFloat(itemStored[i].discount);
                 found = true;
                 break;
             }
@@ -981,7 +1044,9 @@
                 name: (data.name ? data.name : data.item),
                 unit: data.unit,
                 quantity: qty,
-                price: parseFloat(price).toFixed(2)
+                price: parseFloat(price).toFixed(2),
+                discount: parseFloat(price * discvalue).toFixed(2),
+                amount: parseFloat(price) - (parseFloat(price * discvalue))
             });
         }
 
@@ -1022,6 +1087,29 @@
         return value
 	}
 
+    function discountprice(item, unit, code, date, price){
+        var value;
+
+        $.ajax({
+            url: "Function/th_discount.php",
+            data: { item: item, unit: unit, code: code, date: date},
+            dataType: "json",
+            async: false,
+            success: function(res){
+                let discount = parseFloat(res.data)
+                value = discount;
+                type = res.type;
+            }, 
+            error: function(res){
+                console.log(res)
+            }
+        })
+        return {
+            value: value,
+            type: type
+        };
+    }
+
     function table_store(items){
         $('#listItem > tbody').empty();
         $('#VoidList > tbody').empty();
@@ -1032,7 +1120,9 @@
                 $("<td>").text(item.name),
                 $("<td>").text(item.unit),
                 $("<td align='center'>").html("<input type='number' id='qty' name='qty[]' class='form-control input-sm' style='width:60px' value='"+item.quantity+"'/>"),
-                $("<td>").text(parseFloat(item.price).toFixed(2))
+                $("<td>").text(parseFloat(item.price).toFixed(2)),
+                $("<td>").text(parseFloat(item.discount).toFixed(2)),
+                $("<td>").text(parseFloat(item.amount).toFixed(2)),
             ).appendTo("#listItem > tbody")
 
 
@@ -1041,14 +1131,18 @@
                 $("<td>").text(item.name),
                 $("<td>").text(item.unit),
                 $("<td align='center'>").html("<input type='number' id='qty' name='qty[]' class='form-control input-sm' style='width:60px' value='"+item.quantity+"'/>"),
-                $("<td>").text(parseFloat(item.price).toFixed(2))
+                $("<td>").text(parseFloat(item.price).toFixed(2)),
+                $("<td>").text(parseFloat(item.discount).toFixed(2)),
+                $("<td>").text(parseFloat(item.amount).toFixed(2)),
             ).appendTo("#VoidList > tbody")
 
             $("<tr>").append(
                 $("<td>").text(item.name),
                 $("<td align='center'>").text(item.unit),
                 $("<td align='center'>").text(item.quantity),
-                $("<td align='center'>").text(parseFloat(item.price).toFixed(2))
+                $("<td align='center'>").text(parseFloat(item.price).toFixed(2)),
+                $("<td align='center'>").text(parseFloat(item.discount).toFixed(2)),
+                $("<td>").text(parseFloat(item.amount).toFixed(2)),
             ).appendTo("#paymentList > tbody")
         })
         computation(items);
@@ -1058,7 +1152,7 @@
         const itemAmounts = {discount: 0, net: 0, vat: 0, gross: 0}
 
         data.map((item, index) =>{
-            price = parseFloat(item.price);
+            price = parseFloat(item.amount);
             net = price / parseFloat(1 + (12/100));
             itemAmounts['net'] += price / parseFloat(1 + (12/100));
             itemAmounts['vat'] = (itemAmounts.net * (12/100));
@@ -1066,7 +1160,6 @@
             itemAmounts['gross'] += price;
         })
 
-        $('#discount').text(parseFloat(itemAmounts.discount).toFixed(2));
         $('#vat').text(parseFloat(itemAmounts.vat).toFixed(2));
         $('#net').text(parseFloat(itemAmounts.net).toFixed(2));
         $('#gross').text(parseFloat(itemAmounts.gross).toFixed(2));
