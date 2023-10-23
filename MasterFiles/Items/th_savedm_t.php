@@ -9,13 +9,13 @@
     $items = json_decode($_REQUEST['item']);
     $unit = json_decode($_REQUEST['unit']);
     $discount = json_decode($_REQUEST['discount']);
-    $type = 'PERCENTAGE';
+    $type = json_encode($_REQUEST['type']);
 
     $flag = false;
 
     for($i = 0; $i < sizeof($discount); $i++){
         // $sql = "INSERT INTO discountmatrix_t (`compcode`, `tranno`, `itemno`, `unit`, `discount`, `type`) VALUES ('$company', '$tranno' '".$items[$i]."', '".$unit[$i]."', ".$discount[$i].", 'PERCENTAGE')";
-        $sql = "INSERT INTO discountmatrix_t (compcode, tranno, itemno, unit, discount, type) VALUES ('$company', '$tranno', '{$items[$i]}', '{$unit[$i]}', '{$discount[$i]}', 'Percentage')";
+        $sql = "INSERT INTO discountmatrix_t (`compcode`, `tranno`, `itemno`, `unit`, `discount`, `type`) VALUES ('$company', '$tranno', '{$items[$i]}', '{$unit[$i]}', '{$discount[$i]}', '{$type[$i]}')";
        if (mysqli_query($con, $sql)) {
             $flag = true;
         } else {

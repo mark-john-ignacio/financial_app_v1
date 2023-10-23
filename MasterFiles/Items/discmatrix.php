@@ -84,7 +84,7 @@
               	<?php foreach($discount as $row):?>
 					<!-- "editgrp('< ?php echo $row['ctranno'];?>','< ?php echo $row['cdescription'];?>','< ?php echo $row['clabel'];?>','< ?php echo $row['nvalue'];?>','< ?php echo date_format(date_create($row['deffectdate']),"m/d/Y");?>')" -->
  					<tr>
-						<td width="100"><a href="javascript:;" onclick='update(<?= json_encode($row) ?>)'><?= $row['tranno'] ?></a></td>
+						<td width="100"><a href="javascript:;" onclick="update('<?= $row['tranno'] ?>')"><?= $row['tranno'] ?></a></td>
                         <td><?php echo $row['remarks'];?>
                         	<div class="itmalert alert alert-danger nopadding" id="itm<?php echo $row['tranno'];?>" style="display: inline"></div>
                         </td>
@@ -134,13 +134,13 @@
 
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-md">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="myModalLabel"><b>Add New Discount</b></h5>        
       </div>
 
-	  <div class="modal-body" style="height: 60vh;">
+	  <div class="modal-body" style="height: 70vh;">
 
 	  	<div class="col-xs-12">
             <div class="cgroup col-xs-3 nopadwtop">
@@ -164,6 +164,7 @@
             
             <div class="col-xs-9 nopadwtop">
                 <input type="text" class="form-control input-sm" id="txtlabel" name="txtlabel"  placeholder="Enter Label.." required>
+				<input type="text" class="form-control input-sm" id="tranno" name="tranno" style="display: none;"  placeholder="transaction Number">
             </div>
         </div>   
 
@@ -182,20 +183,19 @@
                 <b>Effectivity Date</b>
             </div>
             
-            <div class="col-xs-9 nopadwtop">
+            <div class="col-xs-3 nopadwtop">
                 <input type="text" class="datepicker form-control input-sm" id="effect_date" name="effect_date" value='<?php echo date("m/d/Y");?>'>
             </div>
-        </div> 
-
-		<div class="col-xs-12">
-            <div class="cgroup col-xs-3 nopadwtop">
+			
+			<div class="col-xs-2" style='padding-top: 3px !important; padding-bottom: 0 !important; margin: 0 !important;'>
                 <b>Due Date: </b>
             </div>
             
-            <div class="col-xs-9 nopadwtop">
-                <input type="text" class="datepicker form-control input-sm" id="duedate" name="duedate" value='<?php echo date("m/d/Y");?>' autocomplete="FALSE"/>
+            <div class="col-xs-3 "  style='padding-top: 3px !important; padding-bottom: 0 !important; margin: 0 !important;'>
+                <input type="text" class="datepicker form-control input-sm" id="duedate" name="duedate" value='<?php echo date("m/d/Y");?>'>
             </div>
         </div> 
+
 		<div class="col-xs-12">
             <div class="cgroup col-xs-3 nopadwtop">
                 <b>Search Item: </b>
@@ -206,14 +206,15 @@
             </div>
         </div> 
 
-		<div class='col-xs-12' id='itemlist' style='height: 25vh; overflow: auto; border: 1px solid grey; margin-top: 10px'>
+		<div class='col-xs-12' id='itemlist' style='height: 40vh; overflow: auto; border: 1px solid grey; margin-top: 10px'>
 			<table class='table' style='width: 100%;'>
 				<thead>
 					<tr>
 						<th style='width: 15%'>Item No.</th>
 						<th style='width: 70%'>Item</th>
 						<th>Unit</th>
-						<th>Amount</th>
+						<th>Type</th>
+						<th>Discount</th>
 						<th>&nbsp;</th>
 					</tr>
 				</thead>
@@ -308,8 +309,9 @@ mysqli_close($con);
 					$("<td>").text(items.cpartno),
 					$("<td>").text(items.citemdesc),
 					$("<td>").text(items.cunit),
+					$("<td>").html("<select id='type' name='type'> <option value='PERCENTAGE'>PERCENT</option> <option value='PRICE'>PRICE</option> </select>"),
 					$("<td>").html("<input type='text' id='discountAmt' name='discountAmt' autocomplete='false'/> "),
-					$("<td>").html("<button type='button' id='deleteItem' name='deleteitem'>delete</buton>")
+					$("<td>").html("<button type='button' class='btn btn-xs btn-danger' id='deleteItem' name='deleteitem'>delete</buton>")
 				).appendTo("#itemlist tbody")
 			}
 		})
@@ -332,10 +334,13 @@ mysqli_close($con);
 
 			if(access.trim() == "True"){
 				$("#btnSave").show();
+				$("#searchitem").show();
                 $("#btnUpdate").hide();
+				$("#itemlist tbody").empty();
 
 				$('.modal-body input').val("");
 				$('#effect_date').val(inDay);
+				$('#duedate').val(inDay);
 				$('#myModalLabel').html("<b>Add New Discount</b>");
                 $('#myModal').modal('show');
 			} else {
@@ -343,6 +348,8 @@ mysqli_close($con);
                 $("#AlertModal").modal('show');
 			}
 		})
+
+		
 				
 		// $("#btnSave, #btnUpdate").on("click", function() {
 		// 	let label = $('#txtlabel').val();
@@ -371,12 +378,13 @@ mysqli_close($con);
 		// });
 
 		$("#btnSave").click(function(){
-			let itemno = [], discounts = [], unit = []
+			let itemno = [], discounts = [], unit = [], type = []
 			let isProcceed = false;
-			let pricematrix = $('#pricematrix').val();
+			let pricematrix = $('#pricematrix').find(":selected").val();
 			let label = $('#txtlabel').val();
 			let desc = $('#txtdesc').val();
 			let due = $('#duedate').val();
+			let discount = $("#discount").val();
 			let effect = $('#effect_date').val();
 			let tranno = '';
 
@@ -386,9 +394,12 @@ mysqli_close($con);
 				console.log(item.cunit)
 			})
 
+			$("select[id='type']").find(":selected").each(function() {
+				type.push($(this).val());
+			});
+
 			$("input[id='discountAmt").each(function(){
 				discounts.push($(this).val())
-	
 			})
 
 			$.ajax({
@@ -422,6 +433,7 @@ mysqli_close($con);
 						item: JSON.stringify(itemno),
 						unit: JSON.stringify(unit),
 						discount: JSON.stringify(discounts),
+						type: JSON.stringify(type),
 						tranno: tranno
 					},
 					dataType: 'json',
@@ -436,23 +448,115 @@ mysqli_close($con);
 			}
 		})
 		
+		$('#btnUpdate').click(function(){
+			let itemno = [], discounts = [], type = []
+			let transaction = $('#tranno').val();
+			let pricematrix = $('#pricematrix').find(":selected").val();
+			let label = $('#txtlabel').val();
+			let desc = $('#txtdesc').val();
+			let due = $('#duedate').val();
+			let effect = $('#effect_date').val();
+			let tranno = $('#tranno').val();
+
+			itemStored.map((item, index) => {
+				itemno.push(item.itemno);
+			})
+
+			$("select[id='type']").find(":selected").each(function() {
+				type.push($(this).val());
+			});
+
+			$("input[id='discountAmt']").each(function(){
+				discounts.push($(this).val())
+			})
+
+			$.ajax({
+				url: "th_updatedm.php",
+				data: {
+					tranno: transaction,
+					remarks : desc,
+					label: label,
+					pricematrix: pricematrix,
+					effective: effect,
+					due: due,
+
+					items: JSON.stringify(itemno),
+					discount: JSON.stringify(discounts),
+					type: JSON.stringify(type)
+				},
+				dataType: 'json',
+				async: false,
+				success: function(res){
+					if(res.valid){
+						console.log(res.msg)
+					} else{
+						console.log(res.msg)
+					}
+					location.reload()
+				},
+				error: function(res){
+					console.log(res)
+				}
+			})
+		})
 	});
 
 
 	function update(data){
 		var access = chkAccess('DISC_Edit');
 		if(access.trim() == "True"){
-			$("#btnSave").hide();
-			$("#btnUpdate").show();
+			console.log(data)
+			$.ajax({
+				url: "th_discmatrixlist.php",
+				data: {tranno : data},
+				dataType: "json",
+				async: false,
+				success: function(res){
+					if(res.valid){
+						$("#itemlist tbody").empty();
+						res.data.map((item, index)=>{
+							$("#btnSave").hide();
+							$("#searchitem").hide();
+							$("#btnUpdate").show();
+							console.log(item)
 
-			$("#txtcode").val(data.compcode);
-			$('#txtdesc').val(data.cdescription);	
-			$('#txtlabel').val(data.clabel);
-			$('#txtvalue').val(data.nvalue);
-			$('#effect_date').val(data.deffectdate);
+							itemStored.push(item)
 
-			$('#myModalLabel').html("<b>Update Discounts Detail</b>");
-			$('#myModal').modal('show');
+							$("#pricematrix").each(function(){
+                                $(this).children('option').each(function(){
+                                    if(item.matrix == $(this).val()) $(this).prop('selected', true)
+                                })
+                            })
+
+							$("#tranno").val(data)
+							$("#txtcode").val(item.compcode);
+							$('#txtdesc').val(item.remarks);	
+							$('#txtlabel').val(item.label);
+							$('#duedate').val(item.ddue);
+							$('#effect_date').val(item.deffective);
+
+							$("<tr>").append(
+								$("<td>").text(item.itemno),
+								$("<td>").text(item.citemdesc),
+								$("<td>").text(item.unit),
+								$("<td>").html("<select id='type' name='type'> <option "+(item.type == "PERCENT" ? "selected" : null)+" value='PERCENT'>PERCENT</option> <option "+(item.type == "PRICE" ? "selected" : null)+" value='PRICE'>PRICE</option> </select>"),
+								$("<td>").html("<input type='text' id='discountAmt' name='discountAmt' value='"+item.discount+"' autocomplete='false'/> "),
+								$("<td>").html("<button type='button' class='btn btn-xs btn-danger' id='deleteItem' name='deleteitem' value='"+item.id+"' onclick='deleteList.call(this)'>delete</buton>")
+							).appendTo("#itemlist tbody")
+
+							$('#myModalLabel').html("<b>Update Discounts Detail</b>");
+							$('#myModal').modal('show');
+							})
+						
+					} else {
+						console.log(res.msg)
+					}
+				},
+				error: function(res){
+					console.log(res)
+				}
+			})
+
 		} else {
 			$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
 			$("#AlertModal").modal('show');
@@ -487,6 +591,35 @@ mysqli_close($con);
 			
 			});
 
+	}
+
+	function deleteList(){
+		console.log($(this).val())
+		let id = $(this).val();
+		let row = $(this).closest("tr");
+
+
+		$.ajax({
+			url: "th_deletedm.php", 
+			data: {
+				id: id
+			},
+			type: 'post',
+			dataType: 'json',
+			async: false,
+			success: function(res){
+				if(res.valid){
+					console.log(res.msg)
+					row.remove();
+				} else {
+					console.log(res.msg)
+					row.remove();
+				}
+			},
+			error: function(res){
+				console.log(res)
+			}
+		})
 	}
 
 	function trans(x,num,msg){

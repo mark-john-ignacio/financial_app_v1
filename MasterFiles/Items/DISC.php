@@ -159,20 +159,12 @@ include('../../include/accessinner.php');
  
         <div class="col-xs-12">
             <div class="cgroup col-xs-3 nopadwtop">
-                <b>Value</b>
+                <b>Discount Amount</b>
             </div>
             
-            <div class="col-xs-4 nopadwtop" style='padding-right: 20px'>
+            <div class="col-xs-9 nopadwtop" style='padding-right: 20px'>
                 <input type="text" class="numeric form-control input-sm" id="txtvalue" name="txtvalue"  placeholder="Enter Decimal Value.." required>
 			</div>
-			<div class="col-xs-2 nopadwtop">
-				<input class="btn-check" type="radio" id='percentage' name='valuetype' />
-				<label class="form-check-label" for="percentage">Percentage</label>
-			</div>
-			<div class="col-xs-2 nopadwtop">
-				<input class="btn-check" type="radio" id='price' name='valuetype' />
-				<label class="form-check-label" for="price">Price</label>
-            </div>
         </div>   
         
         <div class="col-xs-12">
