@@ -882,8 +882,8 @@
                         tendered: tender,
                         exchange: exchange,
                         customer: $('#customer').val(),
-                        order: $('#orderType').find(":selected").val(),
-                        table: $('#table').find(":selected").val(),
+                        order: $('#orderType').val(),
+                        table: $('#table').val(),
                         discountcode: $("#discountcode").val()
                     },
                     dataType: 'json',
