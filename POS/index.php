@@ -2,7 +2,7 @@
     if(!isset($_SESSION)){
         session_start();
     }
-
+    $_SESSION['pageid'] = "POS_void.php";
     $company = $_SESSION['companyid'];
 
     include('../Connection/connection_string.php');
@@ -396,7 +396,7 @@
                                             </select>
 
                                         <div id='dc' style='display: none'>
-                                            <label for='discountAmt'>Discount Code</label>
+                                            <label for='discountAmt'>Valid ID</label>
                                             <input type="text" id="discountcode" name="discountcode" class="form-control">
                                         </div>
 
@@ -456,15 +456,27 @@
         </div>
     </div>
 
-    <div class='modal fade' id='payModal' role='dialog'>
-        <div class='modal-lg modal-dialog' role="document">
+    <div class='modal fade' id='voidlogin' role='dialog'>
+        <div class='modal-sm modal-dialog' role="document">
             <div class='modal-content'>
                 <div class='modal-header'>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title" id="invheader">Login</h3>
+                    <h3 class="modal-title" id="invheader">Void Authentication</h3>
                 </div>
+
                 <div class='modal-body' id='modal-body' style='height: 100%'>
+                    <div>
+                        <label for="loginid" class='nopadwtop'>Username:</label>
+                        <input type="text" class='form-control input-sm' id='loginid' name='loginid' placeholder="Enter Username..." autocomplete='false' />
+                        
+                        <label for="loginpass" class='nopadwtop'>Password:</label>
+                        <input type="password" class='form-control input-sm' id='loginpass' name='loginpass' placeholder="Enter Password..." autocomplete='false' />
+                        
+                        <button type='button' class='btn btn-success form-control input-sm' id='login' name='login' data-dismiss="modal" aria-label="Close" style='margin-top: 30px;'>Login </button>
+                        <button type='button' class='btn btn-danger form-control input-sm' data-dismiss="modal" aria-label="Close" style='margin-top: 10px;'> Cancel </button>
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -492,7 +504,7 @@
             url: "../System/th_loadbasecustomer.php",
             dataType: "json",
             success: function (res) {
-                $('#customer').value(res.data).change();
+                $('#customer').val(res.data).change();
                 matrix = res.pm
             }
         });
@@ -568,6 +580,32 @@
             }
         })
 
+        $("#login").click(function(){
+            let user = $("#loginid").val();
+            let password = $("#loginpass").val();
+
+            $.ajax({
+                url: "Function/th_void.php",
+                data: { 
+                    user: user, 
+                    password: password 
+                },
+                dataType: 'json',
+                async: false,
+                success: function(res){
+                    if(res.valid) {
+                        alert(res.msg)
+                        modalshow("Void");
+                    } else {
+                        alert(res.msg)
+                    }
+                },
+                error: function(res){
+                    console.log(res)
+                }
+            })
+        })
+
 
         $('.items, .itmclass').hover(function() {
             $(this).css('cursor','pointer');
@@ -608,7 +646,7 @@
                 return alert('Transaction is empty!')
             }
 
-            modalshow("Void");
+            $('#voidlogin').modal('show')
             table_store(itemStored)
         })
 
@@ -1021,7 +1059,6 @@
                 discvalue = parseInt(disc.value) / 100;
                 break;
         }
-        console.log(parseFloat(discvalue))
         
         for (let i = 0; i < itemStored.length; i++) {
             if (itemStored[i].partno === data.partno) {
@@ -1088,7 +1125,7 @@
 
         $.ajax({
             url: "Function/th_discount.php",
-            data: { item: item, unit: unit, code: code, date: date},
+            data: { item: item, unit: unit, date: date},
             dataType: "json",
             async: false,
             success: function(res){
