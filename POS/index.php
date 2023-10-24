@@ -388,7 +388,6 @@
                                         <label for="totalAmt">Total Amount</label>
                                         <input type='text' id='totalAmt' class='form-control' readonly/>
 
-                                        <?php if(sizeof($discount) != 0): ?>
                                             <label for='discountAmt'>Discount Amount</label>
                                             <select name="discountAmt" id="discountAmt" class='form-control'>
                                                 <option value="0">No Discount</option>
@@ -396,7 +395,6 @@
                                                     <option value="<?= $list["nvalue"] ?>"><?= $list['cdescription'] ?></option>
                                                 <?php endforeach; ?>
                                             </select>
-                                        <?php endif;?>
 
                                         <div id='dc' style='display: none'>
                                             <label for='discountAmt'>Discount Code</label>
