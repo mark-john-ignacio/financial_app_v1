@@ -455,6 +455,19 @@
             </div>
         </div>
     </div>
+
+    <div class='modal fade' id='payModal' role='dialog'>
+        <div class='modal-lg modal-dialog' role="document">
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="invheader">Login</h3>
+                </div>
+                <div class='modal-body' id='modal-body' style='height: 100%'>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
 
@@ -996,7 +1009,7 @@
         }
 
         const price = chkprice(data.partno, data.unit, matrix, <?= date('Y-m-d') ?>)
-        const disc = discountprice(data.partno, data.unit, matrix, <?= date('Y-m-d') ?>)
+        const disc = discountprice(data.partno, data.unit, <?= date('Y-m-d') ?>)
         var discvalue = 0;
         let found = false;
 
@@ -1070,7 +1083,7 @@
         return value
 	}
 
-    function discountprice(item, unit, code, date, price){
+    function discountprice(item, unit, date, price){
         var value;
 
         $.ajax({

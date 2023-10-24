@@ -46,8 +46,8 @@
         $code = "DM".$month.$year."00000";
     }
 
-    $sql = "INSERT INTO discountmatrix (`compcode`, `tranno`, `remarks`, `label`, `matrix`, `deffective`, `ddue`, `approved`, `cancelled`, `status`) 
-            VALUES ('$company', '$code', '$remarks', '$label', '$matrix', '$effect', '$due', 0, 0 ,'ACTIVE')";
+    $sql = "INSERT INTO discountmatrix (`compcode`, `tranno`, `remarks`, `label`, `deffective`, `ddue`, `approved`, `cancelled`, `status`) 
+            VALUES ('$company', '$code', '$remarks', '$label', '$effect', '$due', 0, 0 ,'ACTIVE')";
     if(!mysqli_query($con, $sql)){
         printf("Errormessage: %s\n", mysqli_error($con));
     } else {
