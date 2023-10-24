@@ -23,7 +23,7 @@
 	}
 
 	$arrdefitems = array();
-	$sqllabelnme = mysqli_query($con,"select A.*, B.citemdesc from mrp_bom A left join items B on A.compcode=B.compcode and A.citemno=B.cpartno where A.compcode='$company' and A.cmainitemno='".$itm ."' order by A.nitemsort");
+	$sqllabelnme = mysqli_query($con,"select A.*, B.citemdesc from mrp_bom A left join items B on A.compcode=B.compcode and A.citemno=B.cpartno where A.compcode='$company' and A.cmainitemno='".$itm ."' order by A.nversion, A.nitemsort");
 	$rowlabelname = $sqllabelnme->fetch_all(MYSQLI_ASSOC);
 	foreach($rowlabelname as $rs3){
 		$arrdefitems[] = $rs3;
@@ -146,6 +146,18 @@
 			<legend>Bill of Materials</legend>
 		</fieldset>	
 
+		<div class="col-xs-12 nopadding">	 
+				<div class="col-xs-2 nopadwleft">	
+					<button type="button" class="btn btn-sm btn-warning btn-block" name="btnaddversion" id="btnaddversion"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Add Version</button>
+				</div>
+
+				<div class="col-xs-2 nopadwleft">	
+					<button type="button" class="btn btn-sm btn-success btn-block" name="btnuploadexcel" id="btnuploadexcel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;Upload Excel</button> 
+				</div>
+		</div>
+
+		<div class="col-xs-12 nopadwtop2x">&nbsp;</div>
+
 		<div class="col-xs-12 nopadwtop">
 			<div class="col-xs-2 nopadding"> <b>Product No.: </b> </div>
 			<div class="col-xs-2 nopadding"> <input type="text" class="form-control input-xs" name="cmainitemno"  id="cmainitemno" value="<?=$itm?>" readonly> </div>
@@ -161,65 +173,97 @@
 
 		<div class="col-xs-12 nopadwtop2x">&nbsp;</div>
 
-			<ul class="nav nav-tabs">
-				<li class="active"><a href="#comp">Components</a></li>
-				<li><a href="#para">Parameters</a></li>
+			<ul class="nav nav-pills">
+				<li class="active"><a data-toggle="pill" href="#comp">Components</a></li>
+				<li><a data-toggle="pill" href="#para">Parameters</a></li>
 			</ul>
 
 			<div class="tab-content">  
 
 				<div id="comp" class="tab-pane fade in active" style="padding-left:5px;">
 
-					<div class="col-xs-12 nopadwtop2x">	 
-						<div class="col-xs-8 nopadwdown">	
-							<input type="text" class="form-control input-sm" id="txtscan" value="" placeholder="Level 2 - Search Item Name...">
-						</div>
-						<div class="col-xs-2 nopadwleft">	
-							<button type="button" class="btn btn-sm btn-warning btn-block" name="btnaddversion" id="btnaddversion"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Add Version</button>
-						</div>
+					<ul class="nav nav-tabs" style="margin-top: 5px">
+						<?php
+							if($totdcount>1){
+								$xc=0;
+								$xcstat = "";
+								foreach($rowlabelname as $rowx){
+									$xc++;
+									if($xc==1){
+										$xcstat = "class='active'";
+									}else{
+										$xcstat = "";
+									}
+						?>
+						<li <?=$xcstat?>><a href="#V<?=$rowx['nversion']?>" class="bg-danger"><?=$rowx['cdesc']?></a></li>
+						<?php
+								}
+							}else{
+						?>
+						<li class="active"><a href="#V1">Default</a></li>
+						<?php
+							}
+						?>
+					</ul>
 
-						<div class="col-xs-2 nopadwleft">	
-							<button type="button" class="btn btn-sm btn-success btn-block" name="btnuploadexcel" id="btnuploadexcel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;Upload Excel</button> 
-						</div>
-						<input type="hidden" name="rowcnt" id="rowcnt" value=""> 
+					<div class="tab-content">
+						<?php
+							$xc=0;
+							$xcstat = "";
+							foreach($rowlabelname as $rowx){
+								$xc++;
+								if($xc==1){
+									$xcstat = "active";
+								}else{
+									$xcstat = "";
+								}
+						?>
+							<div id="V<?=$rowx['nversion']?>" class="tab-pane fade in <?=$xcstat?>" style="padding-left:5px;">
+									
+								<div class="col-xs-12 nopadwtop2x">	 
+									<div class="col-xs-10 nopadwdown">	
+										<input type="text" class="txtscan form-control input-sm" id="txtscan<?=$rowx['nversion']?>" value="" placeholder="Level 2 - Search Item Name..." data-id="<?=$rowx['nversion']?>">
+									</div>
+									<?php
+										if($rowx['ldefault']==0){
+									?>
+										<div class="col-xs-2 nopadwleft">	
+											<button type="button" class="btnact btn btn-sm btn-info btn-block" name="btnact<?=$rowx['nversion']?>" id="btnact<?=$rowx['nversion']?>" data-id="<?=$rowx['nversion']?>"><i class="fa fa-check-circle-o" aria-hidden="true"></i>&nbsp;Set as Active</button>
+										</div>
+									<?php
+										}
+									?>
+
+									
+									<input type="hidden" name="rowcnt<?=$rowx['nversion']?>" id="rowcnt<?=$rowx['nversion']?>" value=""> 
+								</div>
+
+								<hr class="here">
+																	
+								<table name='MyTbl<?=$rowx['nversion']?>' id='MyTbl<?=$rowx['nversion']?>' class="table table-scroll table-condensed">
+									<thead>
+										<tr>
+											<th width="50">&nbsp;</th>
+											<th width="150">Item Code</th>
+											<th>Item Description</th>
+											<th width="70" class="text-center">Unit</th>
+											<th width="70" class="text-center">Level</th>
+											<th width="70" class="text-center">Qty</th>											
+											<th width="80" class="text-center"><b>Type</b></td>
+											<th width="50" class="text-center"><b>Del</b></td>
+										</tr>
+									</thead>
+									<tbody>											
+									</tbody>
+								</table>
+
+							</div>
+						<?php
+							}
+						?>
 					</div>
 
-					<hr class="here">
-														
-					<table name='MyTbl' id='MyTbl' class="table table-scroll table-condensed">
-						<thead>
-							<tr>
-								<th width="50">&nbsp;</th>
-								<th width="150">Item Code</th>
-								<th>Item Description</th>
-								<th width="70" class="text-center">Unit</th>
-								<th width="70" class="text-center">Level</th>
-								<?php
-									if($totdcount>1){
-										foreach($rowlabelname as $rowx){
-								?>
-								<th width="70" class="text-center"><?=$rowx['cdesc']?>
-									<br>
-									<input type="radio" name='radversion' value='<?=$rowx['nversion']?>' <?=($rowx['ldefault']==1) ? "checked" : ""?>>
-								</th>
-								<?php
-										}
-									}else{
-								?>
-								<th width="70" class="text-center">Default
-									<br>
-									<input type="radio" name='radversion' checked>
-								</th>
-								<?php
-									}
-								?>
-								<th width="80" class="text-center"><b>Type</b></td>
-								<th width="50" class="text-center"><b>Del</b></td>
-							</tr>
-						</thead>
-						<tbody>											
-						</tbody>
-					</table>
+				
 				</div>
 				<div id="para" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
 					<div class="col-xs-12 nopadwtop">
@@ -513,13 +557,13 @@
 			$("#moduploadexcel").modal("show");
 		});
 	
-		$('#txtscan').typeahead({
+		$('.txtscan').typeahead({
 			autoSelect: true,
 			source: function(request, response) {
 				$.ajax({
 					url: "th_product.php",
 					dataType: "json",
-					data: { query: $("#txtscan").val() },
+					data: { query: request },
 					success: function (data) {
 						response(data);
 					}
@@ -531,13 +575,17 @@
 			highlighter: Object,
 			afterSelect: function(item) { 	
 
-				var rowCount = $('#MyTbl tbody > tr').length;
+				$id = this.$element.data("id");
+			
+				console.log('#MyTbl'+$id);
+
+				var rowCount = $('#MyTbl'+$id+' tbody > tr').length;
 
 				rowC = rowCount + 1;
 
-				InsTotable(item.id,item.desc,item.cunit,rowC,2,rowCount);
+				InsTotable(item.id,item.desc,item.cunit,rowC,2,rowCount,$id);
 					
-				$('#txtscan').val("").change();
+				this.$element.val("").change();
 
 				//$("#MyTbl:not(thead)").tableDnDUpdate();
 																		
@@ -577,8 +625,8 @@
 		
 		});*/
 
-		$("input[name='radversion']").click(function(){
-      var radioValue = $("input[name='radversion']:checked").val();
+		$(".btnact").on("click", function(){
+      var radioValue = $(this).data("id");
 
       if(radioValue){
 				$.ajax({
@@ -601,70 +649,72 @@
 		var selctdoption = $("#selwhfrom").val(); 
 		var selctdtempid = $("#seltempname").val();
 
-		var xz = $("#hdndefbom").val();
+		
+		var totvalver = $("#hdncount").val();
 
-		$.each(jQuery.parseJSON(xz), function() {  
+		for (let i = 1; i <= totvalver; i++){
 
-
-				itmid = this['citemno'];
-				itmdesc = this['citemdesc'];
-				itmunit = this['cunit'];
-				sornum = this['nitemsort'];
-				ctype = this['ctype'];
-
-				var $tdrows = "";
-
-				var GENxyz = parseInt(this['nlevel'])-1;
-						
-				var GENxyz0 = 0;
-				if(GENxyz>1){
-					GENxyz0 = (5 * GENxyz) + (GENxyz * 2);
-				}
-
-				$tdrows = "<td><input type='text' class=\"form-control input-xs text-center\" value='"+sornum+"' name=\"txtsortnum\" id=\"txtsortnum"+sornum+"\" readonly></td><td><input type='hidden' value='"+itmid+"' name=\"txtitmcode\" id=\"txtitmcode"+sornum+"\">"+itmid+"</td><td><input type='hidden' value='"+itmdesc+"' name=\"txtitmdesc\" id=\"txtitmdesc"+sornum+"\"><div style='text-indent:"+GENxyz0+"px'>"+itmdesc+"</div></td><td><input type='hidden' value='"+itmunit+"' name=\"txtcunit\" id=\"txtcunit"+sornum+"\">"+itmunit+"</td><td><input type=\"text\" class=\"form-control input-xs text-center\" name=\"txtlvl\" id=\"txtlvl"+sornum+"\" value=\""+this['nlevel']+"\" readonly></td>";
-
-
-				getcnt = parseInt($("#hdncount").val());
-				for (i = 1; i <= getcnt; i++) {
-
-					$tdrows = $tdrows + "<td><input type='text' class=\"form-control input-xs text-center\" value='"+this['nqty'+i]+"' name=\"txtnqty"+i+"\" id=\"txtnqty"+sornum+"\"></td>";
-
-				}
-
-				if(ctype=="MAKE"){
-					var xmake = " selected";
-					var xbuys = "";
-				}else{
-					var xmake = "";
-					var xbuys = " selected";
-				}
+			var xz = $("#hdndefbom").val();
+			$.each(jQuery.parseJSON(xz), function() {  
 				
-				$tdrows = $tdrows + "<td class=\"text-center\"><select class=\"form-control input-xs text-center\" name=\"selType\" id=\"selType"+sornum+"\"><option value='MAKE'"+xmake+">MAKE</option><option value='BUY'"+xbuys+">BUY</option></select></td>";
+				console.log(this);
+				if(this['nversion']==i){
+					
+					itmid = this['citemno'];
+					itmdesc = this['citemdesc'];
+					itmunit = this['cunit'];
+					sornum = this['nitemsort'];
+					ctype = this['ctype'];
 
-				$tdrows = $tdrows + "<td class=\"text-center\"><button class=\"btn btn-danger btn-xs\" id=\"btnDel"+sornum+"\"><i class=\"fa fa-times\"></i></button></td>";
+					var $tdrows = "";
 
-			//	$tdrows = $tdrows + "<td class=\"text-center\"><button type='button' class=\"btn btn-success btn-xs\" name=\"btnAdd\" id=\"btnAdd"+sornum+"\"><i class=\"fa fa-arrow-circle-down\"></i></button></td>";
-				
-				$row = "<tr id='tr"+sornum+"' class=\"bg-level"+this['nlevel']+"\">"+$tdrows+"</tr>";
-				$("#MyTbl tbody").append($row);
+					var GENxyz = parseInt(this['nlevel'])-1;
+							
+					var GENxyz0 = 0;
+					if(GENxyz>1){
+						GENxyz0 = (5 * GENxyz) + (GENxyz * 2);
+					}
 
-				$("#btnDel"+sornum).on('click', function() { 
-					$(this).closest('tr').remove();
-					recomdel();
-				});
+					$tdrows = "<td><input type='text' class=\"form-control input-xs text-center\" value='"+sornum+"' name=\"txtsortnum"+i+"\" id=\"txtsortnum"+i+""+sornum+"\" readonly></td><td><input type='hidden' value='"+itmid+"' name=\"txtitmcode"+i+"\" id=\"txtitmcode"+i+""+sornum+"\">"+itmid+"</td><td><input type='hidden' value='"+itmdesc+"' name=\"txtitmdesc"+i+"\" id=\"txtitmdesc"+i+""+sornum+"\"><div style='text-indent:"+GENxyz0+"px'>"+itmdesc+"</div></td><td><input type='hidden' value='"+itmunit+"' name=\"txtcunit"+i+"\" id=\"txtcunit"+i+""+sornum+"\">"+itmunit+"</td><td><input type=\"text\" class=\"form-control input-xs text-center\" name=\"txtlvl"+i+"\" id=\"txtlvl"+i+""+sornum+"\" value=\""+this['nlevel']+"\" readonly></td>";
 
-				$("#btnAdd"+sornum).on('click', function() { 
-					addsub(this);
-				});
+					$tdrows = $tdrows + "<td><input type='text' class=\"form-control input-xs text-center\" value='"+this['nqty1']+"' name=\"txtnqty"+i+"\" id=\"txtnqty"+i+""+sornum+"\"></td>";
 
+					if(ctype=="MAKE"){
+						var xmake = " selected";
+						var xbuys = "";
+					}else{
+						var xmake = "";
+						var xbuys = " selected";
+					}
+					
+					$tdrows = $tdrows + "<td class=\"text-center\"><select class=\"form-control input-xs text-center\" name=\"selType"+i+"\" id=\"selType"+i+""+sornum+"\"><option value='MAKE'"+xmake+">MAKE</option><option value='BUY'"+xbuys+">BUY</option></select></td>";
 
-		});
+					$tdrows = $tdrows + "<td class=\"text-center\"><button class=\"btn btn-danger btn-xs\" id=\"btnDel"+i+""+sornum+"\"><i class=\"fa fa-times\"></i></button></td>";
+
+					//	$tdrows = $tdrows + "<td class=\"text-center\"><button type='button' class=\"btn btn-success btn-xs\" name=\"btnAdd\" id=\"btnAdd"+sornum+"\"><i class=\"fa fa-arrow-circle-down\"></i></button></td>";
+					
+					$row = "<tr id='tr"+i+""+sornum+"' class=\"bg-level"+this['nlevel']+"\">"+$tdrows+"</tr>";
+					$("#MyTbl"+i+" tbody").append($row);
+
+					$("#btnDel"+i+sornum).on('click', function() { 
+						$(this).closest('tr').remove();
+						reindextbl(i);
+					});
+
+					//$("#btnAdd"+sornum).on('click', function() { 
+					//	addsub(this);
+					//});
+
+				}
+			});
+			
+
+		}
 	} 
 
-	function InsTotable(itmid,itmdesc,itmunit,sornum,lvl,indx){
+	function InsTotable(itmid,itmdesc,itmunit,sornum,lvl,indx,$xid){
 
 		//loop check if item exist
-
 
 				var GENxyz = parseInt(lvl)-1;
 						
@@ -675,36 +725,33 @@
 
 			var $tdrows = "";
 
-			$tdrows = "<td><input type='text' class=\"form-control input-xs text-center\" value='"+sornum+"' name=\"txtsortnum\" id=\"txtsortnum"+sornum+"\" readonly></td><td><input type='hidden' value='"+itmid+"' name=\"txtitmcode\" id=\"txtitmcode"+sornum+"\">"+itmid+"</td><td><input type='hidden' value='"+itmdesc+"' name=\"txtitmdesc\" id=\"txtitmdesc"+sornum+"\"><div style='text-indent:"+GENxyz0+"px'>"+itmdesc+"</div></td><td><input type='hidden' value='"+itmunit+"' name=\"txtcunit\" id=\"txtcunit"+sornum+"\">"+itmunit+"</td><td><input type=\"text\" class=\"form-control input-xs text-center\" name=\"txtlvl\" id=\"txtlvl"+sornum+"\" value=\""+lvl+"\" readonly></td>";
+			$tdrows = "<td><input type='text' class=\"form-control input-xs text-center\" value='"+sornum+"' name=\"txtsortnum"+$xid+"\" id=\"txtsortnum"+$xid+""+sornum+"\" readonly></td><td><input type='hidden' value='"+itmid+"' name=\"txtitmcode"+$xid+"\" id=\"txtitmcode"+$xid+""+sornum+"\">"+itmid+"</td><td><input type='hidden' value='"+itmdesc+"' name=\"txtitmdesc"+$xid+"\" id=\"txtitmdesc"+$xid+""+sornum+"\"><div style='text-indent:"+GENxyz0+"px'>"+itmdesc+"</div></td><td><input type='hidden' value='"+itmunit+"' name=\"txtcunit"+$xid+"\" id=\"txtcunit"+$xid+""+sornum+"\">"+itmunit+"</td><td><input type=\"text\" class=\"form-control input-xs text-center\" name=\"txtlvl"+$xid+"\" id=\"txtlvl"+$xid+""+sornum+"\" value=\""+lvl+"\" readonly></td>";
 
 
-			getcnt = parseInt($("#hdncount").val());
-			for (i = 1; i <= getcnt; i++) {
+			$tdrows = $tdrows + "<td><input type='text' class=\"form-control input-xs text-center\" value='1' name=\"txtnqty"+$xid+"\" id=\"txtnqty"+$xid+""+sornum+"\"></td>";
 
-				$tdrows = $tdrows + "<td><input type='text' class=\"form-control input-xs text-center\" value='1' name=\"txtnqty"+i+"\" id=\"txtnqty"+i+sornum+"\"></td>";
+			$tdrows = $tdrows + "<td class=\"text-center\"><select class=\"form-control input-xs text-center\" name=\"selType"+$xid+"\" id=\"selType"+$xid+""+sornum+"\"><option value='MAKE'>MAKE</option><option value='BUY'>BUY</option></select></td>";
 
-			}
-
-			$tdrows = $tdrows + "<td class=\"text-center\"><select class=\"form-control input-xs text-center\" name=\"selType\" id=\"selType"+sornum+"\"><option value='MAKE'>MAKE</option><option value='BUY'>BUY</option></select></td>";
-
-			$tdrows = $tdrows + "<td class=\"text-center\"><button type='button' class=\"btn btn-danger btn-xs\" name=\"btnDel\" id=\"btnDel"+sornum+"\"><i class=\"fa fa-times\"></i></button></td>";
+			$tdrows = $tdrows + "<td class=\"text-center\"><button type='button' class=\"btn btn-danger btn-xs\" name=\"btnDel"+$xid+"\" id=\"btnDel"+$xid+""+sornum+"\"><i class=\"fa fa-times\"></i></button></td>";
 
 		//	$tdrows = $tdrows + "<td class=\"text-center\"><button type='button' class=\"btn btn-success btn-xs\" name=\"btnAdd\" id=\"btnAdd"+sornum+"\"><i class=\"fa fa-arrow-circle-down\"></i></button></td>";
 			
-			$row = "<tr id='tr"+sornum+"' class=\"bg-level"+lvl+"\">"+$tdrows+"</tr>";
+			$row = "<tr id='tr"+$xid+sornum+"' class=\"bg-level"+lvl+"\">"+$tdrows+"</tr>";
 			//$("#MyTbl tbody").append($row);
+
+			//console.log("#MyTbl"+$xid);
 			if(indx==0){
-				$("#MyTbl tbody").append($row);
+				$("#MyTbl"+$xid+" tbody").append($row);
 			}else{
-				$('#tr'+indx).after($row);
+				$('#tr'+$xid+indx).after($row);
 				reindextbl();
 			}	
 
-			$("#btnDel"+sornum).on('click', function() { 
-				recomdel(this);
+			$("#btnDel"+$xid+sornum).on('click', function() { 
+				//recomdel(this);
 
 				$(this).closest('tr').remove();
-				reindextbl();
+				reindextbl($xid);
 			});
 
 			//$("#btnAdd"+sornum).on('click', function() { 
@@ -730,38 +777,33 @@
 		$("#modaddsub").modal("show");
 	}*/
 
-	function reindextbl(){
+	function reindextbl($xid){
 		var tx = 0;
-		$("#MyTbl > tbody > tr").each(function(index) {
+		$("#MyTbl"+$xid+" > tbody > tr").each(function(index) {
 			tx = index + 1;
 
 			//alert(tx);
-			$(this).attr("id", "tr"+tx);
-			$(this).find('input[name="txtsortnum"]').val(tx);
-			$(this).find('input[name="txtsortnum"]').attr("id","txtsortnum"+tx);
+			$(this).attr("id", "tr"+$xid+tx);
+			$(this).find('input[name="txtsortnum"'+$xid+']').val(tx);
+			$(this).find('input[name="txtsortnum"'+$xid+']').attr("id","txtsortnum"+tx);
 
-			$(this).find('input[type=hidden][name="txtitmcode"]').attr("id","txtitmcode"+tx);
-			$(this).find('input[type=hidden][name="txtitmdesc"]').attr("id","txtitmdesc"+tx);
-			$(this).find('input[type=hidden][name="txtcunit"]').attr("id","txtcunit"+tx);
-			$(this).find('input[name="txtlvl"]').attr("id","txtlvl"+tx);
-			$(this).find('select[name="selType"]').attr("name","selType"+tx);
+			$(this).find('input[type=hidden][name="txtitmcode"'+$xid+']').attr("id","txtitmcode"+tx);
+			$(this).find('input[type=hidden][name="txtitmdesc"'+$xid+']').attr("id","txtitmdesc"+tx);
+			$(this).find('input[type=hidden][name="txtcunit"'+$xid+']').attr("id","txtcunit"+tx);
+			$(this).find('input[name="txtlvl"'+$xid+']').attr("id","txtlvl"+tx);
+			$(this).find('select[name="selType"'+$xid+']').attr("name","selType"+tx);
 
-			getcnt = parseInt($("#hdncount").val());
-			for (i = 1; i <= getcnt; i++) {
+			$(this).find('input[name="txtnqty'+$xid+'"]').attr("id","txtnqty"+$xid+tx);
 
-				$(this).find('input[name="txtnqty'+i+'"]').attr("id","txtnqty"+i+tx);
+			$(this).find('button[name="btnDel"'+$xid+']').attr("id","btnDel"+tx);
+			$(this).find('button[name="btnAdd"'+$xid+']').attr("id","btnAdd"+tx);
 
-			}
-
-			$(this).find('button[name="btnDel"]').attr("id","btnDel"+tx);
-			$(this).find('button[name="btnAdd"]').attr("id","btnAdd"+tx);
-
-			$("#btnAdd"+tx).attr("onclick","addsub(this)");
+			//$("#btnAdd"+tx).attr("onclick","addsub(this)");
 
 		});
 	}
 
-	function recomdel(xc){
+	/*function recomdel(xc){
 		rowindx = xc.parentNode.parentNode.rowIndex;
 		getid = xc.id;
 		getid = getid.replace("btnDel","");
@@ -784,7 +826,7 @@
 			}
 
 		});
-	}
+	}*/
 
 	function addprocess(){
 		var tbl = document.getElementById('myProcessTable').getElementsByTagName('tr');
@@ -837,36 +879,36 @@
 	function chkform(){
 		var qty = "False";
 
-		var tbl1 = document.getElementById('MyTbl').getElementsByTagName('tr');
-		var lastRow1 = tbl1.length-1;
-		$("#rowcnt").val(lastRow1);
-
 		var tbl = document.getElementById('myProcessTable').getElementsByTagName('tr');
     var lastRow = tbl.length-1;                                               
     $("#hdnprocesslist").val(lastRow);
 
 		if(lastRow1!=0){
 			//re intialize
+			var totvalver = $("#hdncount").val();
 
-			$("#MyTbl > tbody > tr").each(function(index) {
-				$tx = index+1;
+			for (let iX = 1; iX <= totvalver; iX++){
 
-				$(this).find('input[name="txtsortnum"]').val($tx);
-				$(this).find('input[name="txtsortnum"]').attr('name','txtsortnum'+$tx);
-				$(this).find('input[type=hidden][name="txtitmcode"]').attr("name","txtitmcode"+$tx);
-				$(this).find('input[type=hidden][name="txtitmdesc"]').attr("name","txtitmdesc"+$tx);
-				$(this).find('input[type=hidden][name="txtcunit"]').attr("name","txtcunit"+$tx);
-				$(this).find('input[name="txtlvl"]').attr("name","txtlvl"+$tx);
-				$(this).find('select[name="selType"]').attr("name","selType"+$tx);
+				var tbl1 = document.getElementById('MyTbl'+iX).getElementsByTagName('tr');
+				var lastRow1 = tbl1.length-1;
+				$("#rowcnt"+iX).val(lastRow1);
 
-				getcnt = parseInt($("#hdncount").val());
-				for (i = 1; i <= getcnt; i++) {
 
-					$(this).find('input[name="txtnqty'+i+'"]').attr("name","txtnqty"+i+$tx);
+				$("#MyTbl"+iX+" > tbody > tr").each(function(index) {
+					$tx = index+1;
 
-				}
+					$(this).find('input[name="txtsortnum'+iX+'"]').val($tx);
+					$(this).find('input[name="txtsortnum'+iX+'"]').attr('name','txtsortnum'+iX+$tx);
+					$(this).find('input[type=hidden][name="txtitmcode'+iX+'"]').attr("name","txtitmcode"+iX+$tx);
+					$(this).find('input[type=hidden][name="txtitmdesc'+iX+'"]').attr("name","txtitmdesc"+iX+$tx);
+					$(this).find('input[type=hidden][name="txtcunit'+iX+'"]').attr("name","txtcunit"+iX+$tx);
+					$(this).find('input[name="txtlvl'+iX+'"]').attr("name","txtlvl"+iX+$tx);
+					$(this).find('select[name="selType'+iX+'"]').attr("name","selType"+iX+$tx);
 
-			});
+					$(this).find('input[name="txtnqty'+iX+'"]').attr("name","txtnqty"+iX+$tx);
+
+				});
+			}
 		
 			$("#frmBOM").submit();
 
@@ -886,6 +928,7 @@
 		$("#btn_New").attr("disabled", false);
 		$("#btnaddversion").attr("disabled", false);
 		$("#btnuploadexcel").attr("disabled", false); 
+		$(".btnact").attr("disabled", false);
 		$("#btnPrint").attr("disabled", false);
 		$("#btnEdit").attr("disabled", false);
 		$("#btndltemplate").attr("disabled", false);
@@ -901,7 +944,8 @@
 		$("#btnMain").attr("disabled", true); 
 		$("#btn_New").attr("disabled", true);
 		$("#btnaddversion").attr("disabled", true);
-		$("#btnuploadexcel").attr("disabled", true); 
+		$("#btnuploadexcel").attr("disabled", true);
+		$(".btnact").attr("disabled", true); 
 		$("#btnPrint").attr("disabled", true);
 		$("#btnEdit").attr("disabled", true);
 		$("#btndltemplate").attr("disabled", true);
