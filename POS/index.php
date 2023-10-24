@@ -479,7 +479,7 @@
             url: "../System/th_loadbasecustomer.php",
             dataType: "json",
             success: function (res) {
-                $('#customer').attr("placeholder",res.data);
+                $('#customer').value(res.data).change();
                 matrix = res.pm
             }
         });
