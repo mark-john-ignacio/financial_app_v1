@@ -51,12 +51,12 @@
     if(mysqli_query($con, $sql)){
         echo json_encode([
             'valid' => true,
-            'msg' => "Success",
+            'msg' => "Transaction has been hold",
             'tranno' => $transaction
         ]);
     } else {
         echo json_encode([
             'valid' => false,
-            'msg' => "Failed"
+            'msg' => "Transaction has been unsuccessfuly hold"
         ]);
     }

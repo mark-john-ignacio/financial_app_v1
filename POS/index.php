@@ -229,23 +229,22 @@
                                     <div class='input-group'>
                                         <span class='input-group-addon'><i class='fa fa-user'></i></span><input class='form-control input-sm' type="text" name='customer' id='customer' placeholder="Walkin Customer (Default)" autocomplete="off">
                                     </div>
-                                    <?php if(sizeof($order) != 0 ): ?>
+
                                         <div class='input-group'>
-                                            <select name="orderType" id="orderType" class='form-control input-sm'>
+                                            <select name="orderType" id="orderType" class='form-control input-sm' style="<?= sizeof($order) != 0 ? null : "display:none" ?>">
                                                 <?php foreach($order as $list): ?>
                                                     <option value="<?= $list['code'] ?>"><?= $list['code'] ?></option>
                                                 <?php endforeach; ?>
                                             </select>
                                         </div>
-                                    <?php endif; if(sizeof($table) != 0): ?>
+
                                         <div class='input-group'>
-                                            <select name="table" id="table"  class='form-control input-sm'>
+                                            <select name="table" id="table"  class='form-control input-sm' style="<?= sizeof($table) != 0 ? null : "display:none" ?>">
                                                 <?php foreach($table as $list): ?>
                                                     <option value="<?= $list['code'] ?>"><?= $list['code'] ?></option>
                                                 <?php endforeach; ?>
                                             </select>
                                         </div>
-                                    <?php endif;?>
                                 </div>
                             </td>
                         </tr>
@@ -623,8 +622,8 @@
             $.ajax({
                 url: 'Function/th_hold.php',
                 data: {
-                    table: $('#table').find(':selected').val(),
-                    type:  $('#orderType').find(':selected').val(),
+                    table: $('#table').val(),
+                    type:  $('#orderType').val(),
                 },
                 dataType: 'json',
                 async: false,
