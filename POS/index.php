@@ -315,7 +315,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h3 class="modal-title" id="invheader">Void Item</h3>
                 </div>
-                <div class='modal-body' id='void' style='height: 4in;'>
+                <div class='modal-body' id='void' style='height: 4in; overflow: auto;'>
                     <table class='table' id='VoidList' style="width: 100%; ">
                         <thead style='background-color: #019aca'>
                             <tr>
@@ -331,7 +331,7 @@
                         <tbody></tbody>
                     </table>
                 </div>
-                <div class='modal-body' id='retrieve' style="height: 4in; display: none;">
+                <div class='modal-body' id='retrieve' style="height: 4in; display: none; overflow: auto;">
                     <table class='table' id='RetrieveList' style='width: 100%'>
                         <thead>
                             <tr>
@@ -610,6 +610,7 @@
             let tranno, msg;
             var isSuccess = false;
             var isHold = false;
+
             if(itemStored.length === 0){
                 return alert('Transaction is empty! cannot hold transaction');
             }
@@ -629,11 +630,12 @@
                 async: false,
                 success: function(res){
                     if(res.valid){
-                        isHold = true;
                         tranno = res.tranno
-                        console.log(res.msg)
+                        console.log(res.tranno)
+                        isHold = true;
                     } else {
                         alert(res.msg)
+                        console.log(res.msg)
                     }
                 }
             })
