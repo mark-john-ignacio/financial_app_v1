@@ -162,8 +162,15 @@ include('../../include/accessinner.php');
                 <b>Discount Amount</b>
             </div>
             
-            <div class="col-xs-9 nopadwtop" style='padding-right: 20px'>
+            <div class="col-xs-5 nopadwtop" style='padding-right: 20px'>
                 <input type="text" class="numeric form-control input-sm" id="txtvalue" name="txtvalue"  placeholder="Enter Decimal Value.." required>
+			</div>
+
+			<div class="cgroup col-xs-5 nopadwtop">
+				<label for="discount">PERCENT</label>
+				<input type="radio" name='discount[]' id='discount' value="PERCENT" />
+				<label for="price">PRICE</label>
+				<input type="radio" name='discount[]' id='price' value="PRICE" />
 			</div>
         </div>   
         
@@ -278,10 +285,11 @@ mysqli_close($con);
 			var varvalz = $('#txtvalue').val();
 			var vareffect = $('#effect_date').val();
 			var varcode = $('#txtcode').val();
+			var type = $("input[type='radio']:checked").val();
 						
 			$.ajax ({
 				url: "th_savedisc.php",
-				data: { code:varcode, effdte: vareffect, desc: vardesc, lbl: varlabel, val: varvalz },
+				data: { code:varcode, effdte: vareffect, desc: vardesc, lbl: varlabel, val: varvalz, type: type},
 				async: false,
 				success: function( data ) {
 					if(data.trim()=="True"){

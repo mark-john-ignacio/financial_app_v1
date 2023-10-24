@@ -358,7 +358,7 @@
         <div class='modal-lg modal-dialog' role="document">
             <div class='modal-content'>
                 <div class='modal-header'>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    
                     <h3 class="modal-title" id="invheader">Payment Terms</h3>
                 </div>
                 <div class='modal-body' id='modal-body' style='height: 100%'>
@@ -369,6 +369,7 @@
                                     <table class='table' id='paymentList' style='width: 100%'>
                                         <thead style='background-color: #019aca'>
                                             <tr>
+                                                <th>&nbsp;</th>
                                                 <th style='text-align: center'>Item</th>
                                                 <th style='text-align: center'>UOM</th>
                                                 <th style='text-align: center'>Quantity</th>
@@ -391,7 +392,7 @@
                                             <select name="discountAmt" id="discountAmt" class='form-control'>
                                                 <option value="0">No Discount</option>
                                                 <?php foreach($discount as $list): ?>
-                                                    <option value="<?= $list["nvalue"] ?>"><?= $list['cdescription'] ?></option>
+                                                    <option dataval="<?= $list['type'] ?>" value="<?= $list["nvalue"] ?>"><?= $list['cdescription'] ?></option>
                                                 <?php endforeach; ?>
                                             </select>
 
@@ -747,13 +748,36 @@
         })
 
         $('#discountAmt').change(function(){
-            let disc = $(this).val();
-            computation(itemStored);
+            var disc = $(this).val();
+            var type = $(this).find(":selected").attr("dataval");
+            console.log(type)
             $("#discountcode").val("");
+
+            // $("#paymentList tbody").each()
+            $("input:checkbox[id='discounted']:checked").each(function(){
+                let amounts = $(this).val();
+                let itemno = $(this).attr("dataval");
+                
+                itemStored.map((item, index) =>{
+                    console.log(item)
+                    if(item.partno === itemno){
+                        switch(type){
+                            case "PERCENT":
+                                item['price'] -= (item.price * (disc/100));
+                                item['amount'] -= (item.amount * (disc/100));
+                                break;
+                            case "PRICE":
+                                item['price'] -= disc;
+                                item['amount'] -= disc;
+                        }
+                    }
+                })
+                table_store(itemStored);
+            })
             if(disc != 0) {
-                let total = $("#totalAmt").val()
-                let dif = total - disc;
-                $('#totalAmt').val(dif)
+                // let total = $("#totalAmt").val()
+                // let dif = total - disc;
+                // $('#totalAmt').val(dif)
                 return $("#dc").show();
             } 
             return $("#dc").hide();
@@ -1170,6 +1194,7 @@
             ).appendTo("#VoidList > tbody")
 
             $("<tr>").append(
+                $("<td>").html("<input type='checkbox' name='discounted[]' id='discounted' dataval='"+item.partno+"' value='"+parseFloat(item.amount)+"'/>"),
                 $("<td>").text(item.name),
                 $("<td align='center'>").text(item.unit),
                 $("<td align='center'>").text(item.quantity),
