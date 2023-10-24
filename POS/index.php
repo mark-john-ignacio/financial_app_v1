@@ -361,7 +361,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h3 class="modal-title" id="invheader">Payment Terms</h3>
                 </div>
-                <div class='modal-body' style='height: 100%'>
+                <div class='modal-body' id='modal-body' style='height: 100%'>
                     <table class='table' style='width: 100%;'>
                         <tr>
                             <td>
@@ -691,6 +691,7 @@
             $('#ExchangeAmt').val(0)
             
             $('#payModal').modal('show')
+            $('#modal-body').modal('show')
             PaymentCompute()
         })
 
@@ -892,8 +893,11 @@
                         if(res.valid){
                             proceed = res.valid;
                             tranno = res.tranno
-                            console.log(res.msg)
+                            alert(res.msg)
+                        } else {
+                            alert(res.msg)
                         }
+                        location.reload()
                     },
                     error: function(res){
                         console.log(res)
