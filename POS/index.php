@@ -25,38 +25,6 @@
         }
     }
 
-    $month = date('m');
-    $year = date('y');
-
-    $sql = "SELECT * FROM pos_hold  where compcode='$company' and YEAR(trandate) = YEAR(CURDATE()) Order By `transaction` desc LIMIT 1";
-    $query = mysqli_query($con, $sql);
-    if (mysqli_num_rows($query)==0) {
-        $cSINo = "POS".$month.$year."00000";
-    }
-    else {
-        while($row = $query -> fetch_assoc()){
-            $last = $row['transaction'];
-        }
-        
-        
-        if(substr($last,3,2) <> $month){
-            $cSINo = "POS".$month.$year."00000";
-        }
-        else{
-            $baseno = intval(substr($last,7,6)) + 1;
-            $zeros = 5 - strlen($baseno);
-            $zeroadd = "";
-            
-            for($x = 1; $x <= $zeros; $x++){
-                $zeroadd = $zeroadd."0";
-            }
-            
-            $baseno = $zeroadd.$baseno;
-            $cSINo = "POS".$month.$year.$baseno;
-        }
-    }
-
-
     $sql =  "SELECT * FROM groupings WHERE ctype='ITEMCLS' AND ccode in (select cclass From items where compcode='$company' and cstatus = 'ACTIVE' and ctradetype='Trade') order by cdesc";
     $query = mysqli_query($con, $sql);
     while($row = $query -> fetch_assoc()){
@@ -420,7 +388,6 @@
                                         <label for="totalAmt">Total Amount</label>
                                         <input type='text' id='totalAmt' class='form-control' readonly/>
 
-                                        <?php if(sizeof($discount) != 0): ?>
                                             <label for='discountAmt'>Discount Amount</label>
                                             <select name="discountAmt" id="discountAmt" class='form-control'>
                                                 <option value="0">No Discount</option>
@@ -428,7 +395,6 @@
                                                     <option value="<?= $list["nvalue"] ?>"><?= $list['cdescription'] ?></option>
                                                 <?php endforeach; ?>
                                             </select>
-                                        <?php endif;?>
 
                                         <div id='dc' style='display: none'>
                                             <label for='discountAmt'>Discount Code</label>
@@ -474,7 +440,7 @@
                                     <div style='display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-gap:4px; padding-top: 10px;'>
                                         <button type='button' class='btnpad btn btn-info' data-val='EXACT'>Exact</button>
                                         <button type='button' class='btnpad btn btn-warning' data-val='CLEAR'>Clear</button>
-                                        <button type='button' class='btn btn-danger'>Close</button>
+                                        <button type='button' class='btn btn-danger' data-dismiss="modal" aria-label="Close">Close</button>
                                         <button type='button' id='PaySubmit' class='btn btn-success'>Submit</button>
                                     </div>
                                 </div>
@@ -641,6 +607,9 @@
             //     return alert("Please Fillup Order Type to procceed!");
             // }
 
+            let tranno, msg;
+            var isSuccess = false;
+            var isHold = false;
             if(itemStored.length === 0){
                 return alert('Transaction is empty! cannot hold transaction');
             }
@@ -649,20 +618,22 @@
             $('input[name*="qty"]').each((index, item) => {
                 quantity.push($(item).val())
             })
-            var isHold = false;
+            
             $.ajax({
                 url: 'Function/th_hold.php',
                 data: {
-                    code: '<?= $cSINo ?>',
-                    table: ($('#table') ? $('#table').find(':selected').val() : null),
-                    type: ($('#orderType') ? $('#orderType').find(':selected').val() : null),
+                    table: $('#table').find(':selected').val(),
+                    type:  $('#orderType').find(':selected').val(),
                 },
                 dataType: 'json',
                 async: false,
                 success: function(res){
                     if(res.valid){
                         isHold = true;
+                        tranno = res.tranno
                         console.log(res.msg)
+                    } else {
+                        alert(res.msg)
                     }
                 }
             })
@@ -671,7 +642,7 @@
                     $.ajax({
                         url: 'Function/th_holdtransaction.php',
                         data: {
-                            code: '<?= $cSINo ?>',
+                            code: tranno,
                             partno: item.partno,
                             name: item.name,
                             unit: item.unit,
@@ -682,10 +653,10 @@
                         async: false,
                         success: function(res){
                             if(res.valid){
-                                console.log(res.data)
-                                location.reload();
+                                isSuccess = true;
+                                msg = res.data;
                             } else {
-                                console.log(res.msg)
+                                msg = res.msg
                             }
                         },
                         error: function(res){
@@ -693,6 +664,12 @@
                         }
                     })
                 })
+            }
+            if(isSuccess){
+                alert(msg);
+                location.reload();
+            } else {
+                alert(msg);
             }
             
         });
@@ -795,6 +772,7 @@
                             // $('#table').find(':selected').val(res.data.table)
                         })
                         alert("Item Retrieved")
+                        console.log(res )
                         table_store(itemStored);
                     } else {
                         console.log(res.msg)
