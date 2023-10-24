@@ -6,7 +6,7 @@
 	require_once "../../Connection/connection_string.php";
 
 	//echo "<pre>";
-//	print_r($_REQUEST);
+	//print_r($_REQUEST);
 	//echo "</pre>";
 
 	$company = $_SESSION['companyid'];
@@ -54,6 +54,18 @@
 			}
 		}
 
+		//eco saving
+		$cecosn = mysqli_real_escape_string($con,$_REQUEST['bomecosn'.$xz]);
+		$cecorev = mysqli_real_escape_string($con,$_REQUEST['bomecorev'.$xz]);
+		$cecoprep = mysqli_real_escape_string($con,$_REQUEST['bomecoprep'.$xz]);
+		$cecodte = mysqli_real_escape_string($con,$_REQUEST['bomecodate'.$xz]);
+		$cecodesc = mysqli_real_escape_string($con,$_REQUEST['bomecodesc'.$xz]);
+
+		if(!mysqli_query($con,"UPDATE `mrp_bom_label` set `ecoSN` = '$cecosn', `ecoRev` = '$cecorev', `ecoPrepared` = '$cecoprep', `ecoDate` = '$cecodte', `ecoDesc` = '$cecodesc' where `compcode` = '$company' and `citemno` = '".$cMainItemNo ."' and nversion=".$xz)){				
+			printf("Errormessage: %s\n", mysqli_error($con));
+			$xmsg = "False";
+		}
+
 	}
 
 	if($xmsg=="True"){
@@ -93,13 +105,17 @@
 	$getsetup = mysqli_real_escape_string($con, str_replace( ',', '', $_REQUEST['nsetuptime']));
 	$getcycle = mysqli_real_escape_string($con, str_replace( ',', '', $_REQUEST['ncycletime']));
 
+	$getcustomer = mysqli_real_escape_string($con, $_REQUEST['citemcustomer']);
+	$getproject = mysqli_real_escape_string($con, $_REQUEST['citemproj']);
+	$gettitle = mysqli_real_escape_string($con, $_REQUEST['citemtitl']);
+
 	$getitems = mysqli_query($con,"SELECT * FROM `mrp_items_parameters` where compcode='$company' and citemno='$cMainItemNo'"); 
 	if (mysqli_num_rows($getitems)!=0) {
-		if (!mysqli_query($con, "UPDATE `mrp_items_parameters` set `nworkhrs` = '$getworkhrs', `nsetuptime` = '$getsetup', `ncycletime` = '$getcycle' Where `compcode` = '$company' and `citemno` = '$cMainItemNo'")) {
+		if (!mysqli_query($con, "UPDATE `mrp_items_parameters` set `nworkhrs` = '$getworkhrs', `nsetuptime` = '$getsetup', `ncycletime` = '$getcycle', `ccustomer` = '$getcustomer', `cproject` = '$getproject', `ctitle` = '$gettitle' Where `compcode` = '$company' and `citemno` = '$cMainItemNo'")) {
 			printf("Errormessage: %s\n", mysqli_error($con));
 		} 
 	}else{
-		if (!mysqli_query($con, "INSERT INTO `mrp_items_parameters`(`compcode`, `citemno`, `nworkhrs`, `nsetuptime`, `ncycletime`) VALUES ('$company','$cMainItemNo','$getworkhrs','$getsetup','$getcycle')")) {
+		if (!mysqli_query($con, "INSERT INTO `mrp_items_parameters`(`compcode`, `citemno`, `nworkhrs`, `nsetuptime`, `ncycletime`, `ccustomer`, `cproject`, `ctitle`) VALUES ('$company','$cMainItemNo','$getworkhrs','$getsetup','$getcycle', '$getcustomer', '$getproject', '$gettitle')")) {
 			printf("Errormessage: %s\n", mysqli_error($con));
 		}
 	}

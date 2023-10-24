@@ -100,18 +100,34 @@
 			<legend>Bill of Materials</legend>
 		</fieldset>	
 
-		<div class="col-xs-12 nopadwtop"> 
-			<div class="col-xs-1 nopadding"> <b>Product: </b> </div> 
-			<div class="col-xs-1 nopadding"> <input type="text" class="form-control input-xs" name="cmainitemno"  id="cmainitemno" value="" readonly placeholder="Code"> </div>
-			<div class="col-xs-1 nopadwleft"> <button type="button" id="btnsrchprod" class="btn btn-xs btn-success" data-toggle="modal" data-target="#moditm"><i class="fa fa-search" aria-hidden="true"></i></button> </div>
-			<div class="col-xs-6 nopadwleft"> <input type="text" class="form-control input-xs" name="citemdesc"  id="citemdesc" value="" readonly placeholder="Description"> </div>
-			<div class="col-xs-1 nopadwleft"> <input type="text" class="form-control input-xs" name="cunit"  id="cunit" value="" readonly placeholder="UOM"> </div>
+		<div class="col-xs-12 nopadwtop">
+			<div class="col-xs-1" style="padding-top: 6px !important; padding-left: 0 !important"> <b>Customer: </b> </div>
+			<div class="col-xs-3 nopadding"> <input type="text" class="form-control input-sm" name="citemcustomer"  id="citemcustomer" value="" placeholder="Customer Name"> </div>
+
+			<div class="col-xs-1 text-right" style="padding-top: 6px !important; padding-left: 0 !important"> <b>Project: </b> </div>
+			<div class="col-xs-3 nopadwleft"> <input type="text" class="form-control input-sm" name="citemproj"  id="citemproj" value="" placeholder="Project"> </div>
+
+			<div class="col-xs-1 text-right" style="padding-top: 6px !important; padding-left: 0 !important"> <b>Title: </b> </div>
+			<div class="col-xs-3 nopadwleft"> <input type="text" class="form-control input-sm" name="citemtitl"  id="citemtitl" value="" placeholder="Title"> </div>
 		</div>
 
-		<div class="col-xs-12 nopadwtop">
-			<div class="col-xs-2 nopadding"> <b>Product Description: </b> </div>
+		<div class="col-xs-12 nopadwtop"> 
+			<div class="col-xs-1" style="padding-top: 6px !important; padding-left: 0 !important"> <b>Product: </b> </div> 
+			<div class="col-xs-2 nopadding">
+				<div class="input-group">
+					
+					<span class="input-group-btn">
+						<button class="btn btn-primary btn-sm" id="btnsrchprod" type="button" data-toggle="modal" data-target="#moditm"><span class="glyphicon glyphicon-search" aria-hidden="true">
+						</span> Search!</button>
+					</span>
+					<input type="text" class="form-control input-sm" name="cmainitemno"  id="cmainitemno" value="" readonly placeholder="Code">
+				</div>
+			</div>
 			
+			<div class="col-xs-6 nopadwleft"> <input type="text" class="form-control input-sm" name="citemdesc"  id="citemdesc" value="" readonly placeholder="Description"> </div>
+			<div class="col-xs-1 nopadwleft"> <input type="text" class="form-control input-sm" name="cunit"  id="cunit" value="" readonly placeholder="UOM"> </div>
 		</div>
+
 
 		<div class="col-xs-12 nopadwtop2x">&nbsp;</div>
 

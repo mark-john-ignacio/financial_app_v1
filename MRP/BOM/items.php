@@ -130,6 +130,10 @@
 			margin-bottom: 3px !important;
 			width: 100% !important;
 		}
+
+		.reset {
+    	all: revert;
+		}
 	</style>
 
 </head>
@@ -142,12 +146,13 @@
 	<form id="frmBOM" name="frmBOM" method="post" action="item_save.php">
 		<input type="hidden" id="hdncount" name="hdncount" value='<?=$totdcount?>'>
 
-		<fieldset>
-			<legend>Bill of Materials</legend>
-		</fieldset>	
 
-		<div class="col-xs-12 nopadding">	 
-				<div class="col-xs-2 nopadwleft">	
+		<div class="col-xs-12 nopadding" style="border-bottom: 2px solid #cce">	 
+				<div class="col-xs-8 nopadding" >	
+					<font size="+1"><b>Bill of Materials</b></font>
+				</div>
+
+				<div class="col-xs-2 nopadwdown">	
 					<button type="button" class="btn btn-sm btn-warning btn-block" name="btnaddversion" id="btnaddversion"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Add Version</button>
 				</div>
 
@@ -156,19 +161,34 @@
 				</div>
 		</div>
 
-		<div class="col-xs-12 nopadwtop2x">&nbsp;</div>
+		<div class="col-xs-12 nopadwtop">&nbsp;</div>
 
 		<div class="col-xs-12 nopadwtop">
-			<div class="col-xs-2 nopadding"> <b>Product No.: </b> </div>
-			<div class="col-xs-2 nopadding"> <input type="text" class="form-control input-xs" name="cmainitemno"  id="cmainitemno" value="<?=$itm?>" readonly> </div>
-			<div class="col-xs-1 nopadding"> &nbsp; </div>
-			<div class="col-xs-1 nopadding"> <b>Unit: </b> </div>
-			<div class="col-xs-2 nopadding"> <input type="text" class="form-control input-xs" name="cunit"  id="cunit" value="<?=$itmuom?>" readonly> </div>
+			<div class="col-xs-1" style="padding-top: 6px !important; padding-left: 0 !important"> <b>Customer: </b> </div>
+			<div class="col-xs-3 nopadding"> <input type="text" class="form-control input-sm" name="citemcustomer"  id="citemcustomer" value="<?=$arrparams[0]['ccustomer']?>" placeholder="Customer Name"> </div>
+
+			<div class="col-xs-1 text-right" style="padding-top: 6px !important; padding-left: 0 !important"> <b>Project: </b> </div>
+			<div class="col-xs-3 nopadwleft"> <input type="text" class="form-control input-sm" name="citemproj"  id="citemproj" value="<?=$arrparams[0]['cproject']?>" placeholder="Project"> </div>
+
+			<div class="col-xs-1 text-right" style="padding-top: 6px !important; padding-left: 0 !important"> <b>Title: </b> </div>
+			<div class="col-xs-3 nopadwleft"> <input type="text" class="form-control input-sm" name="citemtitl"  id="citemtitl" value="<?=$arrparams[0]['ctitle']?>" placeholder="Title"> </div>
 		</div>
 
-		<div class="col-xs-12 nopadwtop">
-			<div class="col-xs-2 nopadding"> <b>Product Description: </b> </div>
-			<div class="col-xs-6 nopadding"> <input type="text" class="form-control input-xs" name="citemdesc"  id="citemdesc" value="<?=$itmname?>" readonly> </div>
+		<div class="col-xs-12 nopadwtop"> 
+			<div class="col-xs-1" style="padding-top: 6px !important; padding-left: 0 !important"> <b>Product: </b> </div> 
+			<div class="col-xs-2 nopadding">
+				<div class="input-group">
+					
+					<span class="input-group-btn">
+						<button class="btn btn-primary btn-sm" id="btnsrchprod" type="button" data-toggle="modal" data-target="#moditm"><span class="glyphicon glyphicon-search" aria-hidden="true">
+						</span> Search!</button>
+					</span>
+					<input type="text" class="form-control input-sm" name="cmainitemno"  id="cmainitemno" value="<?=$itm?>" readonly placeholder="Code">
+				</div>
+			</div>
+			
+			<div class="col-xs-6 nopadwleft"> <input type="text" class="form-control input-sm" name="citemdesc"  id="citemdesc" value="<?=$itmname?>" readonly placeholder="Description"> </div>
+			<div class="col-xs-1 nopadwleft"> <input type="text" class="form-control input-sm" name="cunit"  id="cunit" value="<?=$itmuom?>" readonly placeholder="UOM"> </div>
 		</div>
 
 		<div class="col-xs-12 nopadwtop2x">&nbsp;</div>
@@ -239,7 +259,33 @@
 								</div>
 
 								<hr class="here">
-																	
+
+								<fieldset class="">
+									<legend class=""><b>ECO List Details</b></legend>
+
+									<div class="col-xs-12 nopadwtop">
+										<div class="col-xs-1" style="padding-top: 6px !important; padding-left: 0 !important"> <b>S/N: </b> </div>
+										<div class="col-xs-1 nopadding"> <input type="text" class="form-control input-sm" name="bomecosn<?=$rowx['nversion']?>" id="bomecosn<?=$rowx['nversion']?>" value="<?=$rowx['ecoSN']?>" placeholder="S/N"> </div>
+
+										<div class="col-xs-1 text-right" style="padding-top: 6px !important; padding-left: 0 !important"> <b>Revision: </b> </div>
+										<div class="col-xs-1 nopadwleft"> <input type="text" class="form-control input-sm" name="bomecorev<?=$rowx['nversion']?>" id="bomecorev<?=$rowx['nversion']?>" value="<?=$rowx['ecoRev']?>" placeholder="Rev."> </div>
+
+										<div class="col-xs-2 text-right" style="padding-top: 6px !important; padding-left: 0 !important"> <b>Prepared By: </b> </div>
+										<div class="col-xs-3 nopadwleft"> <input type="text" class="form-control input-sm" name="bomecoprep<?=$rowx['nversion']?>" id="bomecoprep<?=$rowx['nversion']?>" value="<?=$rowx['ecoPrepared']?>" placeholder="Prepared By"> </div>
+
+										<div class="col-xs-1 text-right" style="padding-top: 6px !important; padding-left: 0 !important"> <b>Date: </b> </div>
+										<div class="col-xs-2 nopadwleft"> <input type="text" class="form-control input-sm" name="bomecodate<?=$rowx['nversion']?>" id="bomecodate<?=$rowx['nversion']?>" value="<?=$rowx['ecoDate']?>" placeholder="Date"> </div>
+
+									</div>
+
+									<div class="col-xs-12 nopadwtop">
+										<div class="col-xs-1" style="padding-top: 6px !important; padding-left: 0 !important"> <b>Description: </b> </div>
+										<div class="col-xs-11 nopadding"> <textarea class="form-control input-sm" name="bomecodesc<?=$rowx['nversion']?>"><?=$rowx['ecoDesc']?></textarea> </div>
+									</div>
+								</fieldset>
+										
+								<hr>
+
 								<table name='MyTbl<?=$rowx['nversion']?>' id='MyTbl<?=$rowx['nversion']?>' class="table table-scroll table-condensed">
 									<thead>
 										<tr>
