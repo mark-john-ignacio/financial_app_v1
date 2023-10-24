@@ -2,12 +2,12 @@
 if(!isset($_SESSION)){
 session_start();
 }
-require_once "../Connection/connection_string.php";
+require_once "../../Connection/connection_string.php";
 
 	
 	$company = $_SESSION['companyid'];
 	
-	$sql = "select A.*, B.cacctno, B.cacctid, B.cacctdesc from items A left join accounts B on A.compcode=B.compcode and A.cacctcodewrr=B.cacctno where A.compcode='$company' and A.citemdesc LIKE '%".$_REQUEST['query']."%' and A.cstatus='ACTIVE'";
+	$sql = "select A.*, B.cacctno, B.cacctid, B.cacctdesc from items A left join accounts B on A.compcode=B.compcode and A.cacctcodewrr=B.cacctno where A.compcode='$company' and A.citemdesc LIKE '%".$_REQUEST['query']."%' and A.cstatus='ACTIVE' and A.csalestype='Services'";
 
 	$rsd = mysqli_query($con,$sql);
 	while($rs = mysqli_fetch_array($rsd, MYSQLI_ASSOC)) {
