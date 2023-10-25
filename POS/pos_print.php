@@ -20,7 +20,7 @@ use PhpOffice\PhpSpreadsheet\Reader\Xml\Style\NumberFormat;
     $phone = explode(";",$detail['cpnum']);
 
 
-    $sql = "SELECT a.quantity, a.gross, a.uom, b.ddate, b.customer, b.exchange, b.tendered, b.gross as total, b.net, b.vat, b.preparedby, c.citemdesc FROM pos_t a
+    $sql = "SELECT a.quantity, a.gross, a.uom, b.ddate, b.orderType, b.customer, b.exchange, b.tendered, b.gross as total, b.net, b.vat, b.preparedby, c.citemdesc FROM pos_t a
         LEFT JOIN pos b on a.compcode = b.compcode AND a.tranno = b.tranno
         LEFT JOIN items c on a.compcode = c.compcode AND a.item = c.cpartno
         WHERE a.compcode = '$company' and a.tranno = '$tranno'";
@@ -34,6 +34,7 @@ use PhpOffice\PhpSpreadsheet\Reader\Xml\Style\NumberFormat;
         $tender = $row['tendered'];
         $prepared = $row['preparedby'];
         $customer = $row['customer'];
+        $ordertype=$row['orderType'];
         $date = $row['ddate'];
     }
 ?>
@@ -119,6 +120,9 @@ use PhpOffice\PhpSpreadsheet\Reader\Xml\Style\NumberFormat;
                 <br><?= $detail['comptin'] ?>
 
             __________________________
+            <br>
+
+            <b><?= $ordertype != null ? "----- ". $ordertype ." -----" : null ?></b>
             <div style='display: flex; width: 100%'>
                     <div><?= date("h:i:s A", strtotime($date)) ?></div>&nbsp;
                     <div><?= date("D d M Y", strtotime($date)) ?></div> 
