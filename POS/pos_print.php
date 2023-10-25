@@ -120,18 +120,18 @@ use PhpOffice\PhpSpreadsheet\Reader\Xml\Style\NumberFormat;
                     <?php endforeach; ?>
                     <tr>
                         <td class="quantity"></td>
-                        <td class="description">NET</td>
-                        <td class="price"><?= number_format($net, 2) ?></td>
+                        <td class="description" style='font-weight: bold'>NET</td>
+                        <td class="price" style='font-weight: bold'><?= number_format($net, 2) ?></td>
                     </tr>
                     <tr>
                         <td class="quantity"></td>
-                        <td class="description">VAT</td>
-                        <td class="price"><?= number_format($vat, 2) ?></td>
+                        <td class="description" style='font-weight: bold'>VAT</td>
+                        <td class="price" style='font-weight: bold'><?= number_format($vat, 2) ?></td>
                     </tr>
                     <tr>
                         <td class="quantity"></td>
-                        <td class="description">TOTAL</td>
-                        <td class="price"><?= number_format($total, 2) ?></td>
+                        <td class="description" style='font-weight: bold'>TOTAL</td>
+                        <td class="price" style='font-weight: bold'><?= number_format($total, 2) ?></td>
                     </tr>
                 </tbody>
             </table>
