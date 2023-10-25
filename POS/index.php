@@ -481,6 +481,17 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-contnorad">   
+                <div class="modal-bodylong">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:8.5in; display:block; margin:0px; padding:0px; border:0px"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
 
@@ -941,7 +952,7 @@
             let exchange = $('#ExchangeAmt').val();
             let total = $('#totalAmt').val().replace(/,/g,'');
             let tender = $('#tendered').val();
-            let proceed = false;
+            let proceed = false, isFinished = false;
             let tranno = '';
             
             if(parseFloat(total) <= parseFloat(tender)){
@@ -972,7 +983,7 @@
                         } else {
                             alert(res.msg)
                         }
-                        location.reload()
+                        
                     },
                     error: function(res){
                         console.log(res)
@@ -999,16 +1010,28 @@
                         success: function(res){
                             if(res.valid){
                                 console.log(res.msg)
-                                location.reload();
+                                isFinished = true
                             } else {
                                 console.log(res.msg)
+                                isFinished = false
                             }
+                            
                         },
                         error: function(res){
                             console.log(res)
                         }
                     })
                 })
+            }
+
+            if(isFinished){
+                $("#myprintframe").attr("src", "pos_print.php?tranno="+ tranno)
+                // $("#PrintModal").modal('show');
+
+                setInterval(() => {
+                    location.reload()
+                }, 10000);
+
             }
             
         })
@@ -1108,7 +1131,6 @@
         }
 
     }
-
 
     /**
      * Computation for payments
