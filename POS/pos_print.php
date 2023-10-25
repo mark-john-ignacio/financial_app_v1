@@ -17,7 +17,10 @@ use PhpOffice\PhpSpreadsheet\Reader\Xml\Style\NumberFormat;
     $row = $query -> fetch_assoc();
     $detail =$row;
 
-    $sql = "SELECT a.quantity, a.gross, b.gross as total, b.net, b.vat, b.preparedby, c.citemdesc FROM pos_t a
+    $phone = explode(";",$detail['cpnum']);
+
+
+    $sql = "SELECT a.quantity, a.gross, a.uom, b.ddate, b.customer, b.exchange, b.tendered, b.gross as total, b.net, b.vat, b.preparedby, c.citemdesc FROM pos_t a
         LEFT JOIN pos b on a.compcode = b.compcode AND a.tranno = b.tranno
         LEFT JOIN items c on a.compcode = c.compcode AND a.item = c.cpartno
         WHERE a.compcode = '$company' and a.tranno = '$tranno'";
@@ -27,7 +30,11 @@ use PhpOffice\PhpSpreadsheet\Reader\Xml\Style\NumberFormat;
         $total = $row['total'];
         $vat = $row['vat'];
         $net = $row['net'];
+        $exchange = $row['exchange'];
+        $tender = $row['tendered'];
         $prepared = $row['preparedby'];
+        $customer = $row['customer'];
+        $date = $row['ddate'];
     }
 ?>
 
@@ -45,28 +52,33 @@ use PhpOffice\PhpSpreadsheet\Reader\Xml\Style\NumberFormat;
             }
 
             td,th, tr,table {
-                border-top: 1px solid black;
                 border-collapse: collapse;
             }
 
             td.description,
             th.description {
-                width: 75px;
-                max-width: 75px;
+                width: 100%;
+                max-width: 100%;
+                font-weight: bold;
+            }
+
+            #receipt {
+                border-bottom: 1px solid;
             }
 
             td.quantity,
             th.quantity {
-                width: 40px;
-                max-width: 40px;
+                width: 50%;
+                max-width: 50%;
                 word-break: break-all;
             }
 
             td.price,
             th.price {
-                width: 40px;
-                max-width: 40px;
+                width: 50%;
+                max-width: 50%;
                 word-break: break-all;
+                text-align: right;
             }
 
             .centered {
@@ -95,52 +107,84 @@ use PhpOffice\PhpSpreadsheet\Reader\Xml\Style\NumberFormat;
     </head>
     <body onload='window.print()'>
         <div class="ticket">
-            <img src="<?= $detail['clogoname'] ?>" alt="Logo">
+            <!-- <img src="< ?= $detail['clogoname'] ?>" alt="Logo"> -->
             <p class="centered"><?= $detail['compname']?>
                 <br><?= $detail['compadd'] ?>
+                <?php foreach($phone as $list ): ?>
+                    <br><?= $list?>
+                <?php endforeach; ?>
+                <br>MIN: 
+                <br>S/N: 
+                <br><b>VAT REGISTERED TIN</b>
+                <br><?= $detail['comptin'] ?>
 
-            **************************
-
-            <table>
-                <thead>
-                    <tr>
-                        <th class="quantity">Q.</th>
-                        <th class="description">Description</th>
-                        <th class="price">Price</th>
-                    </tr>
-                </thead>
+            __________________________
+            <div style='display: flex; width: 100%'>
+                    <div><?= date("h:i:s A", strtotime($date)) ?></div>&nbsp;
+                    <div><?= date("D d M Y", strtotime($date)) ?></div> 
+                    
+            </div>
+            <div>Customer: <?= $customer ?></div>
+            <div>Prepared By: <?= $prepared ?></div>
+            
+            
+            <br><div style='text-align: center; font-weight: bold'>OFFICIAL RECEIPT</div>
+            <br>
+            <table >
                 <tbody>
                     <?php foreach($items as $list):  ?>
-
                         <tr>
-                            <td class="quantity"><?= $list['quantity'] ?></td>
-                            <td class="description"><?= $list['citemdesc'] ?></td>
-                            <td class="price"><?= number_format($list['gross'], 2) ?></td>
+                            <td colspan="2" class="description"><?= $list['citemdesc'] ?></td>
+                        </tr>
+                        <tr>
+                            <td class="quantity"><center>@<?php echo $list['quantity'] . " " . $list['uom'] ?></center></td>
+                            <td class="price"><?= number_format($list['gross'], 2) ?> </td>
                         </tr>
                     <?php endforeach; ?>
                     <tr>
-                        <td class="quantity"></td>
-                        <td class="description" style='font-weight: bold'>NET</td>
+                        <td colspan='2'>__________________________</td>
+                    </tr>
+                    <tr>
+                        <td class="quantity" style='font-weight: bold'>NET:</td>
                         <td class="price" style='font-weight: bold'><?= number_format($net, 2) ?></td>
                     </tr>
                     <tr>
-                        <td class="quantity"></td>
-                        <td class="description" style='font-weight: bold'>VAT</td>
+                        <td class="quantity" style='font-weight: bold'>VAT:</td>
                         <td class="price" style='font-weight: bold'><?= number_format($vat, 2) ?></td>
                     </tr>
                     <tr>
-                        <td class="quantity"></td>
-                        <td class="description" style='font-weight: bold'>TOTAL</td>
+                        <td class="description" style='font-weight: bold'>TOTAL:</td>
                         <td class="price" style='font-weight: bold'><?= number_format($total, 2) ?></td>
                     </tr>
+                    <tr>
+                        <td colspan='2'>__________________________</td>
+                    </tr>
+                    <tr>
+                        <td class="quantity" style='font-weight: bold;'>Cash:</td>
+                        <td class="price" style='font-weight: bold'><?= number_format($tender, 2) ?></td>
+                    </tr>
+                    <tr>
+                        <td class="quantity" style='font-weight: bold'>Change:</td>
+                        <td class="price" style='font-weight: bold'><?= number_format($exchange, 2) ?></td>
+                    </tr>
+
                 </tbody>
             </table>
-            <br>
-            <br>**************************
-            <br>Prepared By: <?= $prepared ?>
-            <br>Email: <?= $detail['email'] ?>
-            <br>
-            <p class="centered">Thanks for your purchase!
+            <br>__________________________
+            <center>
+                <br><div style='font-weight: bold'>THIS SERVES AS AN OFFICIAL RECEIPT</div>
+                <br>
+                <br>Powered By MyxFinancials
+                <br>Sert Technology Inc. | HRWeb
+                <br>Blk 2 Lot 15 Tierra Grande Mangahan General Trias
+                <br>VAT REG TIN: 
+                <br>Accred No.: 
+                <br>Date Issued: 
+                <br>PTU No.: 
+                <br>Date Issued: 
+            </center>
+            <br>__________________________
+            <p class="centered">Thanks for your purchase!</p>
                 </p>
         </div>
     </body>
