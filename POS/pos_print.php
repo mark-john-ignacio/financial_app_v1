@@ -121,8 +121,9 @@ use PhpOffice\PhpSpreadsheet\Reader\Xml\Style\NumberFormat;
 
             __________________________
             <br>
-
-            <b><?= $ordertype != null ? "----- ". $ordertype ." -----" : null ?></b>
+            <b><br>Official Receipt No. 
+            <br>----- <?= $tranno ?> -----
+            <br><?= $ordertype != null ? "----- ". $ordertype ." -----" : null ?></b>
             <div style='display: flex; width: 100%'>
                     <div><?= date("h:i:s A", strtotime($date)) ?></div>&nbsp;
                     <div><?= date("D d M Y", strtotime($date)) ?></div> 
@@ -130,6 +131,7 @@ use PhpOffice\PhpSpreadsheet\Reader\Xml\Style\NumberFormat;
             </div>
             <div>Customer: <?= $customer ?></div>
             <div>Prepared By: <?= $prepared ?></div>
+            
             
             
             <br><div style='text-align: center; font-weight: bold'>OFFICIAL RECEIPT</div>

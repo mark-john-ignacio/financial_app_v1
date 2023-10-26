@@ -353,7 +353,7 @@
             </div>     
         </div>
     </div>
-
+    <!-- Retrieve and Hold Modal -->
     <div class='modal fade' id='payModal' role='dialog'>
         <div class='modal-lg modal-dialog' role="document">
             <div class='modal-content'>
@@ -456,7 +456,7 @@
             </div>
         </div>
     </div>
-
+    <!-- Payment Modal -->
     <div class='modal fade' id='voidlogin' role='dialog'>
         <div class='modal-sm modal-dialog' role="document">
             <div class='modal-content'>
@@ -481,7 +481,7 @@
             </div>
         </div>
     </div>
-
+    <!-- Print Modal -->
     <div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog modal-lg">
             <div class="modal-contnorad">   
