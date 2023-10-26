@@ -8,7 +8,6 @@ require_once "../../Connection/connection_string.php";
 		 
 	$item = $_REQUEST['item'];
 	$unit = $_REQUEST['unit'];
-	$vers = $_REQUEST['code'];
 	$date = $_REQUEST['date'];
 	
 
@@ -16,7 +15,7 @@ require_once "../../Connection/connection_string.php";
 	$sql = "SELECT A.discount, A.type
     from discountmatrix_t A 
     left join discountmatrix B on A.compcode=B.compcode and A.tranno=B.tranno
-	where A.compcode='$company' and B.matrix='$vers' and A.itemno='$item' and A.unit='$unit' and B.approved = 1 
+	where A.compcode='$company' and A.itemno='$item' and A.unit='$unit' and B.approved = 1 
     ORDER BY B.deffective DESC";
 	
 	//echo $sql;
