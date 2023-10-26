@@ -361,7 +361,7 @@
                     
                     <h3 class="modal-title" id="invheader">Payment Terms</h3>
                 </div>
-                <div class='modal-body' id='modal-body' style='height: 100%'>
+                <div class='modal-body' id='modal-body' style='height: 100%; overflow: auto;'>
                     <table class='table' style='width: 100%;'>
                         <tr>
                             <td>
@@ -397,11 +397,11 @@
                                             </select>
 
                                         <div id='dc' style='display: none'>
-                                            <label for='discountAmt'>Customer Name</label>
+                                            <label for='discountCust'>Customer Name</label>
                                             <input type="text" id="discountCust" name="discountCust" placeholder="Customer Name..." class="form-control">
 
-                                            <label for='discountAmt'>Customer Valid ID</label>
-                                            <input type="text" id="discountcode" name="discountcode" placeholder="Customer Valid ID..." class="form-control">
+                                            <label for='discountID'>Customer Valid ID</label>
+                                            <input type="text" id="discountID" name="discountID" placeholder="Customer Valid ID..." class="form-control">
                                         </div>
 
                                         <label for="tendered">Amount Tendered</label>
@@ -452,16 +452,11 @@
                         </tr>
                     </table>
                 </div>
-                <!-- <div class='modal-footer'>
-                    <div id='footer' style='right: 0px'>
-                        <button class='btn btn-success'  style='padding: 5px; width: 1in; '>Submit</button>
-                    </div>
-                </div> -->
             </div>
         </div>
     </div>
     <!-- Payment Modal -->
-    <div class='modal fade' id='voidlogin' role='dialog'>
+    <div class='modal fade' id='voidlogin' role='dialog' data-backdrop="static">
         <div class='modal-sm modal-dialog' role="document">
             <div class='modal-content'>
                 <div class='modal-header'>
@@ -503,14 +498,14 @@
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" onclick="closeModal('CouponModal')"><span aria-hidden="true">&times;</span></button>
                     <h3 class="modal-title" id="invheader">Coupon</h3>
                 </div>
                 <div class="modal-body">
                     <div>
                         <label for="coupontxt">Enter your coupon</label>
                         <input type="text" class="form-control input-sm" id='coupontxt' name='coupontxt' placeholder="Enter Coupon..." autocomplete="false">
-                        
+                        <div class='input-sm' id='couponmsg'></div>
                     </div>
                 </div>
                 <div class='modal-footer' style='display: Relative; width: 100%;'>
@@ -591,13 +586,19 @@
                 async: false,
                 success: function(res){
                     if(res.valid){
-                        console.log(res.msg)
+                        if(coupon.includes(coupons)){
+                            $("#couponmsg").css("color", "RED")
+                            return $("#couponmsg").text("Coupon already been entered!")
+                        }
+                        $("#couponmsg").css("color", "GREEN")
+                        $("#couponmsg").text(res.msg)
+                        coupon.push(coupons)
                     } else {
-                        console.log(res.msg)
+                        $("#couponmsg").text(res.msg)
+                        $("#couponmsg").css("color", "RED")
                     }
                 }
             })
-            console.log("This is your sample Coupon")
         })
 
 
@@ -715,10 +716,6 @@
 
         //button for holding items
         $('#btnHold').on('click', function(){
-            //storing input values in array
-            // if($('#orderType').find(":selected").val() == ""){
-            //     return alert("Please Fillup Order Type to procceed!");
-            // }
 
             let tranno, msg;
             var isSuccess = false;
@@ -934,16 +931,6 @@
             }
             $('#ExchangeAmt').val('0.00')
         })
-        
-        $('#discountAmt').on('keyup', function(){
-            var disc = $(this).val()
-            let total = parseFloat(amtTotal)
-            let dif = parseFloat(total) - parseFloat(disc);
-            if(disc != ""){
-                return $('#totalAmt').val(dif.toFixed(2))
-            }
-            $('#ExchangeAmt').val('0.00')
-        })
 
         $('.btnpad').click(function(){
             let tender = $('#tendered').val();
@@ -1011,18 +998,22 @@
                     url: 'Function/pos_save.php',
                     type: 'post',
                     data: {
-                        prepared: '<?= $_SESSION['employeename'];?>',
                         amount: $('#gross').text(),
                         net: $('#net').text(),
                         vat: $('#vat').text(),
                         gross: total,
-                        discount: $('#discountAmt').val(),
+                        
                         tendered: tender,
                         exchange: exchange,
+                        
                         customer: $('#customer').val(),
                         order: $('#orderType').val(),
                         table: $('#table').val(),
-                        discountcode: $("#discountcode").val()
+
+                        discount: getSpecialDisc(itemStored),
+                        discountID: $("#discountID").val(),
+                        discountName: $("#discountCust").val(),
+                        coupon: getCoupon(coupon),
                     },
                     dataType: 'json',
                     async: false,
@@ -1178,7 +1169,6 @@
                 price: parseFloat(price).toFixed(2),
                 discount: parseFloat(price * discvalue).toFixed(2),
                 specialDisc: 0,
-                addDisc: 0,
                 amount: parseFloat(price) - (parseFloat(price * discvalue))
             });
         }
@@ -1332,4 +1322,40 @@
             let disc = $(this).val()
             console.log(disc)
         }
+
+    function getCoupon(coupon){
+        if(coupon.length == 0){
+            return 0;
+        }
+        let amount = 0;
+
+        coupon.map((item, index) => {
+            $.ajax({
+                url: "../MasterFiles/Items/th_couponlist.php",
+                data: { coupon: item },
+                dataType: 'json',
+                async: false,
+                success: function(res){
+                    if(res.valid){
+                        res.data.map((item, index) => {
+                            amount += parseFloat(item.price)
+                        })
+                    } else {
+                        console.log(res.msg)
+                    }
+                    console.log(amount)
+                },
+                error: function(res){
+                    console.log(res)
+                }
+            })
+        })
+    }
+
+    function getSpecialDisc(specialDisc){
+        return specialDisc[0].specialDisc
+    }
+    function closeModal(modal){
+        $("#"+modal).modal("hide");
+    }
 </script>

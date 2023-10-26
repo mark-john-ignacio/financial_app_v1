@@ -39,7 +39,7 @@
     /**
      * Initiate all variables
      */
-    $prepared = mysqli_real_escape_string($con, $_POST['prepared']);
+    $prepared = mysqli_real_escape_string($con, $_SESSION['employeename']);
     $date = date('Y-m-d h:i:s');
     $amount = mysqli_real_escape_string($con, $_POST['amount']);
     $net = mysqli_real_escape_string($con, $_POST['net']);

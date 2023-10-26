@@ -12,7 +12,7 @@
     if(mysqli_num_rows($query) != 0) {
         echo json_encode([
             'valid' => true,
-            'msg' => "Retrieved"
+            'msg' => "Coupon has been Successfully Added"
         ]);
     } else {
         $sql = "SELECT * FROM coupon WHERE `compcode` = '$company' AND `CouponNo` = '$coupon' AND `status` = 'INACTIVE'";
