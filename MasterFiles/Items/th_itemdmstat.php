@@ -9,7 +9,7 @@ require_once "../../Connection/connection_string.php";
 	$code = $_REQUEST['code'];
 	$stat = $_REQUEST['stat'];
 		
-			if (!mysqli_query($con,"UPDATE discounts set `cstatus` = '$stat' where `compcode` = '$company' and `ctranno` = '$code'")) {
+			if (!mysqli_query($con,"UPDATE discountmatrix set `status` = '$stat' where `compcode` = '$company' and `tranno` = '$code'")) {
 				printf("Errormessage: %s\n", mysqli_error($con));
 			} 
 			else{
@@ -18,7 +18,7 @@ require_once "../../Connection/connection_string.php";
 					$preparedby = $_SESSION['employeeid'];
 					
 					mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-					values('$company','$code','$preparedby',NOW(),'UPDATED','DISCOUNTS','$compname','Updated Record')");
+					values('$company','$code','$preparedby',NOW(),'UPDATED','DISCOUNT_MATRIX','$compname','Updated Record')");
 					
 					
 					echo "True";

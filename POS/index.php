@@ -2,7 +2,7 @@
     if(!isset($_SESSION)){
         session_start();
     }
-
+    $_SESSION['pageid'] = "POS_void.php";
     $company = $_SESSION['companyid'];
 
     include('../Connection/connection_string.php');
@@ -13,6 +13,7 @@
     $items = [];
     $table = [];
     $order = [];
+    $discount = [];
     $date = date('Y-m-d');
 
     $query = mysqli_query($con,"select * from company where compcode='$company'");
@@ -23,38 +24,6 @@
             $companyTin = $row['comptin'];
         }
     }
-
-    $month = date('m');
-    $year = date('y');
-
-    $sql = "SELECT * FROM pos_hold  where compcode='$company' and YEAR(trandate) = YEAR(CURDATE()) Order By `transaction` desc LIMIT 1";
-    $query = mysqli_query($con, $sql);
-    if (mysqli_num_rows($query)==0) {
-        $cSINo = "POS".$month.$year."00000";
-    }
-    else {
-        while($row = $query -> fetch_assoc()){
-            $last = $row['transaction'];
-        }
-        
-        
-        if(substr($last,3,2) <> $month){
-            $cSINo = "POS".$month.$year."00000";
-        }
-        else{
-            $baseno = intval(substr($last,7,6)) + 1;
-            $zeros = 5 - strlen($baseno);
-            $zeroadd = "";
-            
-            for($x = 1; $x <= $zeros; $x++){
-                $zeroadd = $zeroadd."0";
-            }
-            
-            $baseno = $zeroadd.$baseno;
-            $cSINo = "POS".$month.$year.$baseno;
-        }
-    }
-
 
     $sql =  "SELECT * FROM groupings WHERE ctype='ITEMCLS' AND ccode in (select cclass From items where compcode='$company' and cstatus = 'ACTIVE' and ctradetype='Trade') order by cdesc";
     $query = mysqli_query($con, $sql);
@@ -91,6 +60,12 @@
     $query = mysqli_query($con, $sql);
     while($row = $query -> fetch_assoc()){
         array_push($order, $row);
+    }
+
+    $sql = "SELECT * FROM discounts WHERE compcode = '$company' AND lapproved = '1'";
+    $query = mysqli_query($con, $sql);
+    while($row = $query -> fetch_assoc()){
+        array_push($discount, $row);
     }
 ?>
 
@@ -208,6 +183,8 @@
                                                 <th style="width: 60%;">Item</th>
                                                 <th style="text-align: center;">UOM</th>
                                                 <th style="text-align: center;">Quantity</th>
+                                                <th style="text-align: center;">Price</th>
+                                                <th style="text-align: center;">Discount</th>         
                                                 <th style="text-align: center;">Amount</th>
                                             </tr>
                                         </thead>
@@ -252,23 +229,22 @@
                                     <div class='input-group'>
                                         <span class='input-group-addon'><i class='fa fa-user'></i></span><input class='form-control input-sm' type="text" name='customer' id='customer' placeholder="Walkin Customer (Default)" autocomplete="off">
                                     </div>
-                                    <?php if(sizeof($order) != 0 ): ?>
+
                                         <div class='input-group'>
-                                            <select name="orderType" id="orderType" class='form-control input-sm'>
+                                            <select name="orderType" id="orderType" class='form-control input-sm' style="<?= sizeof($order) != 0 ? null : "display:none" ?>">
                                                 <?php foreach($order as $list): ?>
                                                     <option value="<?= $list['code'] ?>"><?= $list['code'] ?></option>
                                                 <?php endforeach; ?>
                                             </select>
                                         </div>
-                                    <?php endif; if(sizeof($table) != 0): ?>
+
                                         <div class='input-group'>
-                                            <select name="table" id="table"  class='form-control input-sm'>
+                                            <select name="table" id="table"  class='form-control input-sm' style="<?= sizeof($table) != 0 ? null : "display:none" ?>">
                                                 <?php foreach($table as $list): ?>
                                                     <option value="<?= $list['code'] ?>"><?= $list['code'] ?></option>
                                                 <?php endforeach; ?>
                                             </select>
                                         </div>
-                                    <?php endif;?>
                                 </div>
                             </td>
                         </tr>
@@ -338,7 +314,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h3 class="modal-title" id="invheader">Void Item</h3>
                 </div>
-                <div class='modal-body' id='void' style='height: 4in;'>
+                <div class='modal-body' id='void' style='height: 4in; overflow: auto;'>
                     <table class='table' id='VoidList' style="width: 100%; ">
                         <thead style='background-color: #019aca'>
                             <tr>
@@ -346,19 +322,22 @@
                                 <th style="width: 60%;">Item</th>
                                 <th style="text-align: center;">UOM</th>
                                 <th style="text-align: center;">Quantity</th>
-                                <th style="text-align: center;">Amount</th>
+                                <th style="text-align: center;">Price</th>
+                                <th style="text-align: center;">Discount</th>
+						        <th>Amount</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
                 </div>
-                <div class='modal-body' id='retrieve' style="height: 4in; display: none;">
+                <div class='modal-body' id='retrieve' style="height: 4in; display: none; overflow: auto;">
                     <table class='table' id='RetrieveList' style='width: 100%'>
                         <thead>
                             <tr>
                                 <th>&nbsp;</th>
                                 <th style="width: 30%;">Transaction</th>
-                                <th style="text-align: center;">Remarks</th>
+                                <th style="text-align: center;">Table</th>
+                                <th style="text-align: center;">Order Type</th>
                                 <th style="text-align: center;">Date</th>
                             </tr>
                         </thead>
@@ -379,10 +358,10 @@
         <div class='modal-lg modal-dialog' role="document">
             <div class='modal-content'>
                 <div class='modal-header'>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    
                     <h3 class="modal-title" id="invheader">Payment Terms</h3>
                 </div>
-                <div class='modal-body' style='height: 100%'>
+                <div class='modal-body' id='modal-body' style='height: 100%'>
                     <table class='table' style='width: 100%;'>
                         <tr>
                             <td>
@@ -390,10 +369,13 @@
                                     <table class='table' id='paymentList' style='width: 100%'>
                                         <thead style='background-color: #019aca'>
                                             <tr>
+                                                <th>&nbsp;</th>
                                                 <th style='text-align: center'>Item</th>
                                                 <th style='text-align: center'>UOM</th>
                                                 <th style='text-align: center'>Quantity</th>
-                                                <th style='text-align: center'>Amount</th>
+                                                <th style="text-align: center;">Price</th>
+                                                <th style="text-align: center;">Discount</th>
+						                        <th>Amount</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -405,10 +387,23 @@
                                     <div style='width: 100%'>
                                         <label for="totalAmt">Total Amount</label>
                                         <input type='text' id='totalAmt' class='form-control' readonly/>
-                                        <label for='discountAmt'>Discount Amount</label>
-                                        <input type="text" id='discountAmt' class='form-control' />
+
+                                            <label for='discountAmt'>Discount Amount</label>
+                                            <select name="discountAmt" id="discountAmt" class='form-control'>
+                                                <option value="0">No Discount</option>
+                                                <?php foreach($discount as $list): ?>
+                                                    <option dataval="<?= $list['type'] ?>" value="<?= $list["nvalue"] ?>"><?= $list['cdescription'] ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+
+                                        <div id='dc' style='display: none'>
+                                            <label for='discountAmt'>Valid ID</label>
+                                            <input type="text" id="discountcode" name="discountcode" class="form-control">
+                                        </div>
+
                                         <label for="tendered">Amount Tendered</label>
                                         <input type="text" id='tendered' class='form-control' />
+
                                         <label for="ExchangeAmt">Exchange Amount</label>
                                         <input type="text" id='ExchangeAmt' class='form-control' readonly/>
                                     </div>
@@ -445,7 +440,7 @@
                                     <div style='display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-gap:4px; padding-top: 10px;'>
                                         <button type='button' class='btnpad btn btn-info' data-val='EXACT'>Exact</button>
                                         <button type='button' class='btnpad btn btn-warning' data-val='CLEAR'>Clear</button>
-                                        <button type='button' class='btn btn-danger'>Close</button>
+                                        <button type='button' class='btn btn-danger' data-dismiss="modal" aria-label="Close">Close</button>
                                         <button type='button' id='PaySubmit' class='btn btn-success'>Submit</button>
                                     </div>
                                 </div>
@@ -461,6 +456,42 @@
             </div>
         </div>
     </div>
+
+    <div class='modal fade' id='voidlogin' role='dialog'>
+        <div class='modal-sm modal-dialog' role="document">
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="invheader">Void Authentication</h3>
+                </div>
+
+                <div class='modal-body' id='modal-body' style='height: 100%'>
+                    <div>
+                        <label for="loginid" class='nopadwtop'>Username:</label>
+                        <input type="text" class='form-control input-sm' id='loginid' name='loginid' placeholder="Enter Username..." autocomplete='false' />
+                        
+                        <label for="loginpass" class='nopadwtop'>Password:</label>
+                        <input type="password" class='form-control input-sm' id='loginpass' name='loginpass' placeholder="Enter Password..." autocomplete='false' />
+                        
+                        <button type='button' class='btn btn-success form-control input-sm' id='login' name='login' data-dismiss="modal" aria-label="Close" style='margin-top: 30px;'>Login </button>
+                        <button type='button' class='btn btn-danger form-control input-sm' data-dismiss="modal" aria-label="Close" style='margin-top: 10px;'> Cancel </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-contnorad">   
+                <div class="modal-bodylong">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:8.5in; display:block; margin:0px; padding:0px; border:0px"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
 
@@ -468,6 +499,7 @@
     var itemStored = [];
     var matrix = 'PM1';
     var amtTotal = 0;
+    var count = 0;
     
     
     $(document).ready(function(){
@@ -480,7 +512,14 @@
             slidesToScroll: 4
         });
 
-
+        $.ajax({
+            url: "../System/th_loadbasecustomer.php",
+            dataType: "json",
+            success: function (res) {
+                $('#customer').val(res.data).change();
+                matrix = res.pm
+            }
+        });
         
         $('#barcode').typeahead({
             autoSelect: true,
@@ -502,6 +541,7 @@
             },
             highlighter: Object,
             afterSelect: function(items) { 
+                console.log(items)
                 duplicate(items)
                 table_store(itemStored)
                 $('#barcode').val("").change()
@@ -513,14 +553,18 @@
         $('#customer').typeahead({
             autoSelect: true,
             source: function(request, response) {
+                let flag = false;
                 $.ajax({
                     url: "Function/th_customer.php",
                     dataType: "json",
                     data: {
                         query: $("#customer").val()
                     },
-                    success: function (data) {
-                        response(data);
+                    success: function (res) {
+                        if(res.valid){
+                            response(res.data);
+                            flag = true;
+                        }
                     }
                 });
             },
@@ -538,9 +582,40 @@
                 // $("#divCreditLim").text(item.nlimit);
                 // chkbalance(item.id);
                 // $("#citemno").focus();	
-                
-                
+                $("#paymentList > tbody").empty()
+                $("#VoidList > tbody").empty()
+                $("#listItem > tbody").empty()
+                $("#gross").text(parseFloat(0).toFixed(2))
+                $("#vat").text(parseFloat(0).toFixed(2))
+                $("#net").text(parseFloat(0).toFixed(2))
+                itemStored = [];
             }
+        })
+
+        $("#login").click(function(){
+            let user = $("#loginid").val();
+            let password = $("#loginpass").val();
+
+            $.ajax({
+                url: "Function/th_void.php",
+                data: { 
+                    user: user, 
+                    password: password 
+                },
+                dataType: 'json',
+                async: false,
+                success: function(res){
+                    if(res.valid) {
+                        alert(res.msg)
+                        modalshow("Void");
+                    } else {
+                        alert(res.msg)
+                    }
+                },
+                error: function(res){
+                    console.log(res)
+                }
+            })
         })
 
 
@@ -583,7 +658,7 @@
                 return alert('Transaction is empty!')
             }
 
-            modalshow("Void");
+            $('#voidlogin').modal('show')
             table_store(itemStored)
         })
 
@@ -594,6 +669,10 @@
             //     return alert("Please Fillup Order Type to procceed!");
             // }
 
+            let tranno, msg;
+            var isSuccess = false;
+            var isHold = false;
+
             if(itemStored.length === 0){
                 return alert('Transaction is empty! cannot hold transaction');
             }
@@ -602,18 +681,22 @@
             $('input[name*="qty"]').each((index, item) => {
                 quantity.push($(item).val())
             })
-            var isHold = false;
+            
             $.ajax({
                 url: 'Function/th_hold.php',
                 data: {
-                    code: '<?= $cSINo ?>',
-                    remarks: '',
+                    table: $('#table').val(),
+                    type:  $('#orderType').val(),
                 },
                 dataType: 'json',
                 async: false,
                 success: function(res){
                     if(res.valid){
+                        tranno = res.tranno
+                        console.log(res.tranno)
                         isHold = true;
+                    } else {
+                        alert(res.msg)
                         console.log(res.msg)
                     }
                 }
@@ -623,22 +706,21 @@
                     $.ajax({
                         url: 'Function/th_holdtransaction.php',
                         data: {
-                            code: '<?= $cSINo ?>',
+                            code: tranno,
                             partno: item.partno,
                             name: item.name,
                             unit: item.unit,
                             quantity: item.quantity,
                             cost: item.price,
-                            table: ($('#table') ? $('#table').val() : null),
-                            type: $('#orderType').val(),
                         },
                         dataType: 'json',
                         async: false,
                         success: function(res){
                             if(res.valid){
-                                console.log(res.data)
+                                isSuccess = true;
+                                msg = res.data;
                             } else {
-                                console.log(res.msg)
+                                msg = res.msg
                             }
                         },
                         error: function(res){
@@ -646,6 +728,12 @@
                         }
                     })
                 })
+            }
+            if(isSuccess){
+                alert(msg);
+                location.reload();
+            } else {
+                alert(msg);
             }
             
         });
@@ -666,7 +754,44 @@
             $('#ExchangeAmt').val(0)
             
             $('#payModal').modal('show')
+            $('#modal-body').modal('show')
             PaymentCompute()
+        })
+
+        $('#discountAmt').change(function(){
+            var disc = $(this).val();
+            var type = $(this).find(":selected").attr("dataval");
+            console.log(type)
+            $("#discountcode").val("");
+
+            // $("#paymentList tbody").each()
+            $("input:checkbox[id='discounted']:checked").each(function(){
+                let amounts = $(this).val();
+                let itemno = $(this).attr("dataval");
+                
+                itemStored.map((item, index) =>{
+                    console.log(item)
+                    if(item.partno === itemno){
+                        switch(type){
+                            case "PERCENT":
+                                item['price'] -= (item.price * (disc/100));
+                                item['amount'] -= (item.amount * (disc/100));
+                                break;
+                            case "PRICE":
+                                item['price'] -= disc;
+                                item['amount'] -= disc;
+                        }
+                    }
+                })
+                table_store(itemStored);
+            })
+            if(disc != 0) {
+                // let total = $("#totalAmt").val()
+                // let dif = total - disc;
+                // $('#totalAmt').val(dif)
+                return $("#dc").show();
+            } 
+            return $("#dc").hide();
         })
 
 
@@ -687,7 +812,8 @@
                             $("<tr>").append( 
                                 $("<td>").html("<input type='checkbox' id='chkretrieve' name='chkretrieve' value='"+item.transaction+"' />"),
                                 $("<td  >").text(item.transaction),
-                                $("<td align='center'>").text((item.remarks != null ? item.remarks : ' ' )),
+                                $("<td align='center'>").text(item.table),
+                                $("<td align='center'>").text(item.ordertype),
                                 $("<td align='center'>").text(item.trandate),
                             ).appendTo('#RetrieveList > tbody')
                         })
@@ -720,7 +846,21 @@
                     if(res.valid){
                         res.data.map((item, index) => {
                             duplicate(item, parseInt(item.quantity))
+                            $("#orderType").each(function(){
+                                $(this).children('option').each(function(){
+                                    if(item.ordertype == $(this).val()) $(this).prop('selected', true)
+                                })
+                            })
+                            $("#table").each(function(){
+                                $(this).children('option').each(function(){
+                                    if(item.table == $(this).val()) $(this).prop('selected', true)
+                                })
+                            })
+                            // $('#orderType').find(':selected').val(res.data.orderType)
+                            // $('#table').find(':selected').val(res.data.table)
                         })
+                        alert("Item Retrieved")
+                        console.log(res )
                         table_store(itemStored);
                     } else {
                         console.log(res.msg)
@@ -812,10 +952,10 @@
             let exchange = $('#ExchangeAmt').val();
             let total = $('#totalAmt').val().replace(/,/g,'');
             let tender = $('#tendered').val();
-            let proceed = false;
+            let proceed = false, isFinished = false;
             let tranno = '';
             
-            if(parseFloat(total) >= parseFloat(tender)){
+            if(parseFloat(total) <= parseFloat(tender)){
                 $.ajax({
                     url: 'Function/pos_save.php',
                     type: 'post',
@@ -829,8 +969,9 @@
                         tendered: tender,
                         exchange: exchange,
                         customer: $('#customer').val(),
-                        order: $('#orderType').find(":selected").val(),
-                        table: $('#table').find(":selected").val()
+                        order: $('#orderType').val(),
+                        table: $('#table').val(),
+                        discountcode: $("#discountcode").val()
                     },
                     dataType: 'json',
                     async: false,
@@ -838,8 +979,11 @@
                         if(res.valid){
                             proceed = res.valid;
                             tranno = res.tranno
-                            console.log(res.msg)
+                            alert(res.msg)
+                        } else {
+                            alert(res.msg)
                         }
+                        
                     },
                     error: function(res){
                         console.log(res)
@@ -866,16 +1010,28 @@
                         success: function(res){
                             if(res.valid){
                                 console.log(res.msg)
-                                location.reload();
+                                isFinished = true
                             } else {
                                 console.log(res.msg)
+                                isFinished = false
                             }
+                            
                         },
                         error: function(res){
                             console.log(res)
                         }
                     })
                 })
+            }
+
+            if(isFinished){
+                $("#myprintframe").attr("src", "pos_print.php?tranno="+ tranno)
+                // $("#PrintModal").modal('show');
+
+                setInterval(() => {
+                    location.reload()
+                }, 10000);
+
             }
             
         })
@@ -938,11 +1094,25 @@
         }
 
         const price = chkprice(data.partno, data.unit, matrix, <?= date('Y-m-d') ?>)
+        const disc = discountprice(data.partno, data.unit, <?= date('Y-m-d') ?>)
+        var discvalue = 0;
         let found = false;
+
+        switch(disc.type){
+            case "PRICE":
+                discvalue = parseFloat(disc.value);
+                break;
+            case "PERCENT":
+                discvalue = parseInt(disc.value) / 100;
+                break;
+        }
+        
         for (let i = 0; i < itemStored.length; i++) {
             if (itemStored[i].partno === data.partno) {
                 itemStored[i].quantity += qty;
                 itemStored[i].price = parseFloat(itemStored[i].price) + parseFloat(price);
+                itemStored[i].discount = parseFloat(itemStored[i].price)* parseFloat(discvalue);
+                itemStored[i].amount = parseFloat(itemStored[i].price) - parseFloat(itemStored[i].discount);
                 found = true;
                 break;
             }
@@ -954,12 +1124,13 @@
                 name: (data.name ? data.name : data.item),
                 unit: data.unit,
                 quantity: qty,
-                price: parseFloat(price).toFixed(2)
+                price: parseFloat(price).toFixed(2),
+                discount: parseFloat(price * discvalue).toFixed(2),
+                amount: parseFloat(price) - (parseFloat(price * discvalue))
             });
         }
 
     }
-
 
     /**
      * Computation for payments
@@ -995,6 +1166,29 @@
         return value
 	}
 
+    function discountprice(item, unit, date, price){
+        var value;
+
+        $.ajax({
+            url: "Function/th_discount.php",
+            data: { item: item, unit: unit, date: date},
+            dataType: "json",
+            async: false,
+            success: function(res){
+                let discount = parseFloat(res.data)
+                value = discount;
+                type = res.type;
+            }, 
+            error: function(res){
+                console.log(res)
+            }
+        })
+        return {
+            value: value,
+            type: type
+        };
+    }
+
     function table_store(items){
         $('#listItem > tbody').empty();
         $('#VoidList > tbody').empty();
@@ -1005,7 +1199,9 @@
                 $("<td>").text(item.name),
                 $("<td>").text(item.unit),
                 $("<td align='center'>").html("<input type='number' id='qty' name='qty[]' class='form-control input-sm' style='width:60px' value='"+item.quantity+"'/>"),
-                $("<td>").text(parseFloat(item.price).toFixed(2))
+                $("<td>").text(parseFloat(item.price).toFixed(2)),
+                $("<td>").text(parseFloat(item.discount).toFixed(2)),
+                $("<td>").text(parseFloat(item.amount).toFixed(2)),
             ).appendTo("#listItem > tbody")
 
 
@@ -1014,14 +1210,19 @@
                 $("<td>").text(item.name),
                 $("<td>").text(item.unit),
                 $("<td align='center'>").html("<input type='number' id='qty' name='qty[]' class='form-control input-sm' style='width:60px' value='"+item.quantity+"'/>"),
-                $("<td>").text(parseFloat(item.price).toFixed(2))
+                $("<td>").text(parseFloat(item.price).toFixed(2)),
+                $("<td>").text(parseFloat(item.discount).toFixed(2)),
+                $("<td>").text(parseFloat(item.amount).toFixed(2)),
             ).appendTo("#VoidList > tbody")
 
             $("<tr>").append(
+                $("<td>").html("<input type='checkbox' name='discounted[]' id='discounted' dataval='"+item.partno+"' value='"+parseFloat(item.amount)+"'/>"),
                 $("<td>").text(item.name),
                 $("<td align='center'>").text(item.unit),
                 $("<td align='center'>").text(item.quantity),
-                $("<td align='center'>").text(parseFloat(item.price).toFixed(2))
+                $("<td align='center'>").text(parseFloat(item.price).toFixed(2)),
+                $("<td align='center'>").text(parseFloat(item.discount).toFixed(2)),
+                $("<td>").text(parseFloat(item.amount).toFixed(2)),
             ).appendTo("#paymentList > tbody")
         })
         computation(items);
@@ -1031,7 +1232,7 @@
         const itemAmounts = {discount: 0, net: 0, vat: 0, gross: 0}
 
         data.map((item, index) =>{
-            price = parseFloat(item.price);
+            price = parseFloat(item.amount);
             net = price / parseFloat(1 + (12/100));
             itemAmounts['net'] += price / parseFloat(1 + (12/100));
             itemAmounts['vat'] = (itemAmounts.net * (12/100));
@@ -1039,7 +1240,6 @@
             itemAmounts['gross'] += price;
         })
 
-        $('#discount').text(parseFloat(itemAmounts.discount).toFixed(2));
         $('#vat').text(parseFloat(itemAmounts.vat).toFixed(2));
         $('#net').text(parseFloat(itemAmounts.net).toFixed(2));
         $('#gross').text(parseFloat(itemAmounts.gross).toFixed(2));

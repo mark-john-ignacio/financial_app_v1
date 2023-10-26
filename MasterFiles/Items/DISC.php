@@ -35,7 +35,7 @@ include('../../include/accessinner.php');
 		<section>
         <div>
         	<div style="float:left; width:50%">
-				<font size="+2"><u>Discounts List</u></font>	
+				<font size="+2"><u>Special Discounts List</u></font>	
             </div>
             
         </div>
@@ -74,44 +74,43 @@ include('../../include/accessinner.php');
  					<tr>
 
 						<td width="100"><a href="javascript:;" onClick="editgrp('<?php echo $row['ctranno'];?>','<?php echo $row['cdescription'];?>','<?php echo $row['clabel'];?>','<?php echo $row['nvalue'];?>','<?php echo date_format(date_create($row['deffectdate']),"m/d/Y");?>')"><?php echo $row['ctranno'];?></a></td>
-                        <td>
-                        <?php echo $row['cdescription'];?>
-                        <div class="itmalert alert alert-danger nopadding" id="itm<?php echo $row['ctranno'];?>" style="display: inline"></div>
+                        <td><?php echo $row['cdescription'];?>
+                        	<div class="itmalert alert alert-danger nopadding" id="itm<?php echo $row['ctranno'];?>" style="display: inline"></div>
                         </td>
                         <td><?php echo $row['clabel'];?></td>
                         
                         <td><?php echo $row['nvalue'];?></td>
 						<td><?php echo $row['deffectdate'];?></td>
-                        						<td>
-                        <div id="msg<?php echo $row['ctranno'];?>">
-                        	<?php 
-							if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
-							?>
-								<a href="javascript:;" onClick="trans('POST','<?php echo $row['ctranno'];?>', 'Posted')">POST</a> | <a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['ctranno'];?>','Cancelled')">CANCEL</a>
-							<?php
-                            }
-							else{
-								if(intval($row['lapproved'])==intval(1)){
-						?>			
-						<div id="itmstat<?php echo $row['ctranno'];?>">
-						<?php 
-						if($row['cstatus']=="ACTIVE"){
-						 	echo "<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('". $row['ctranno'] ."','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>";
-						}
-						else{
-							echo "<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('". $row['ctranno'] ."','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>";
-						}
-						?>
-                        </div>
-						<?php			
+						<td>
+							<div id="msg<?php echo $row['ctranno'];?>">
+								<?php 
+									if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
+									?>
+										<a href="javascript:;" onClick="trans('POST','<?php echo $row['ctranno'];?>', 'Posted')">POST</a> | <a href="javascript:;" onClick="trans('CANCEL','<?php echo $row['ctranno'];?>','Cancelled')">CANCEL</a>
+									<?php
+									}
+									else{
+										if(intval($row['lapproved'])==intval(1)){
+								?>			
+								<div id="itmstat<?php echo $row['ctranno'];?>">
+								<?php 
+									if($row['cstatus']=="ACTIVE"){
+										echo "<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('". $row['ctranno'] ."','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>";
+									}
+									else{
+										echo "<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('". $row['ctranno'] ."','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>";
+									}
+								?>
+								</div>
+								<?php			
+									}
+									if(intval($row['lcancelled'])==intval(1)){
+										echo "Cancelled";
+									}
 								}
-								if(intval($row['lcancelled'])==intval(1)){
-									echo "Cancelled";
-								}
-							}
-							
-							?>
-                        </div>
+								
+								?>
+							</div>
                         </td>
 
 					</tr>
@@ -136,7 +135,7 @@ include('../../include/accessinner.php');
         <h5 class="modal-title" id="myModalLabel"><b>Add New Discount</b></h5>        
       </div>
 
-	  <div class="modal-body" style="height: 20vh">
+	  <div class="modal-body" style="height: 30vh">
     
         <div class="col-xs-12">
             <div class="cgroup col-xs-3 nopadwtop">
@@ -160,12 +159,19 @@ include('../../include/accessinner.php');
  
         <div class="col-xs-12">
             <div class="cgroup col-xs-3 nopadwtop">
-                <b>Value</b>
+                <b>Discount Amount</b>
             </div>
             
-            <div class="col-xs-9 nopadwtop">
+            <div class="col-xs-5 nopadwtop" style='padding-right: 20px'>
                 <input type="text" class="numeric form-control input-sm" id="txtvalue" name="txtvalue"  placeholder="Enter Decimal Value.." required>
-            </div>
+			</div>
+
+			<div class="cgroup col-xs-5 nopadwtop">
+				<label for="discount">PERCENT</label>
+				<input type="radio" name='discount[]' id='discount' value="PERCENT" />
+				<label for="price">PRICE</label>
+				<input type="radio" name='discount[]' id='price' value="PRICE" />
+			</div>
         </div>   
         
         <div class="col-xs-12">
@@ -279,10 +285,11 @@ mysqli_close($con);
 			var varvalz = $('#txtvalue').val();
 			var vareffect = $('#effect_date').val();
 			var varcode = $('#txtcode').val();
+			var type = $("input[type='radio']:checked").val();
 						
 			$.ajax ({
 				url: "th_savedisc.php",
-				data: { code:varcode, effdte: vareffect, desc: vardesc, lbl: varlabel, val: varvalz },
+				data: { code:varcode, effdte: vareffect, desc: vardesc, lbl: varlabel, val: varvalz, type: type},
 				async: false,
 				success: function( data ) {
 					if(data.trim()=="True"){

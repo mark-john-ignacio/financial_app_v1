@@ -15,6 +15,7 @@ require_once "../../Connection/connection_string.php";
 	$val = $_REQUEST['val'];
 	$cSINo = $_REQUEST['code'];
 	$dDate = $_REQUEST['effdte'];
+	$type = $_REQUEST['type'];
 		
 	
 if($cSINo==""){
@@ -47,7 +48,7 @@ if($cSINo==""){
 		}
 	}
 		
-	if (!mysqli_query($con,"INSERT INTO discounts (`compcode`,`ctranno`,`cdescription`,`clabel`,`nvalue`, `ddate`,`deffectdate`) values ('$company','$cSINo','$desc','$label',$val, NOW(), STR_TO_DATE('$dDate', '%m/%d/%Y'))")) {
+	if (!mysqli_query($con,"INSERT INTO discounts (`compcode`,`ctranno`,`cdescription`,`clabel`,`nvalue`, `ddate`,`deffectdate`, `type`) values ('$company','$cSINo','$desc','$label',$val, NOW(), STR_TO_DATE('$dDate', '%m/%d/%Y'), '$type')")) {
 				printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 	else{
@@ -70,7 +71,7 @@ else {
 			}
 
 		
-			if (!mysqli_query($con,"UPDATE discounts set `cdescription` = '$desc', clabel = '$label', `nvalue` = $val, `deffectdate` = STR_TO_DATE('$dDate', '%m/%d/%Y' where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
+			if (!mysqli_query($con,"UPDATE discounts set `cdescription` = '$desc', clabel = '$label', `nvalue` = $val, `deffectdate` = STR_TO_DATE('$dDate', '%m/%d/%Y)', `type` = '$type' where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
 				printf("Errormessage: %s\n", mysqli_error($con));
 			} 
 			else{

@@ -661,7 +661,15 @@ xmlhttp.send();
             </div>
 		</div>
 		</div>
-
+      <br>
+        <b><u><i>Point of Sales</i></u></b>
+        <div style="padding-left:10px;"> 
+        <div class="col-xs-12 nopadwleft">
+         	<div class="col-xs-2 nopadding">
+            <label><input type="checkbox" name="chkAcc[]" value="POS_void.php" <?=(in_array("POS_void.php",@$arrpgist)) ? "checked" : "";?>> Void </label>
+          </div>
+        </div>
+        </div>
     </div>
     
      <div id="menu2" class="tab-pane fade">
