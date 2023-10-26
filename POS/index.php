@@ -248,7 +248,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>basecustomer
+                        <tr>    
                             <td>
                                 <div style='height: 350px; overflow: auto;'>
                                     <div id='item-wrapper'>
@@ -388,7 +388,7 @@
                                         <label for="totalAmt">Total Amount</label>
                                         <input type='text' id='totalAmt' class='form-control' readonly/>
 
-                                            <label for='discountAmt'>Discount Amount</label>
+                                            <label for='discountAmt'>Discount Type</label>
                                             <select name="discountAmt" id="discountAmt" class='form-control'>
                                                 <option value="0">No Discount</option>
                                                 <?php foreach($discount as $list): ?>
@@ -397,15 +397,19 @@
                                             </select>
 
                                         <div id='dc' style='display: none'>
-                                            <label for='discountAmt'>Valid ID</label>
-                                            <input type="text" id="discountcode" name="discountcode" class="form-control">
+                                            <label for='discountAmt'>Customer Name</label>
+                                            <input type="text" id="discountCust" name="discountCust" placeholder="Customer Name..." class="form-control">
+
+                                            <label for='discountAmt'>Customer Valid ID</label>
+                                            <input type="text" id="discountcode" name="discountcode" placeholder="Customer Valid ID..." class="form-control">
                                         </div>
 
                                         <label for="tendered">Amount Tendered</label>
                                         <input type="text" id='tendered' class='form-control' />
 
                                         <label for="ExchangeAmt">Exchange Amount</label>
-                                        <input type="text" id='ExchangeAmt' class='form-control' readonly/>
+                                        <input type="text" id='ExchangeAmt' class='form-control' readonly/><br>
+                                        <button type="button" class="btn btn-sm btn-info form-control" id='couponBtn' name='couponBtn'>Insert Coupon</button>
                                     </div>
 
                                     <div class='jqbtk-container' style='padding-top: 5px'>
@@ -492,11 +496,37 @@
             </div>
         </div>
     </div>
+
+    <!-- Coupon Modal -->
+
+    <div class="modal fade" id="CouponModal" role="dialog" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="invheader">Coupon</h3>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <label for="coupontxt">Enter your coupon</label>
+                        <input type="text" class="form-control input-sm" id='coupontxt' name='coupontxt' placeholder="Enter Coupon..." autocomplete="false">
+                        
+                    </div>
+                </div>
+                <div class='modal-footer' style='display: Relative; width: 100%;'>
+                    <div id='footer' style='right: 0px'>
+                        <button class='btn btn-success' id='CouponSubmit' style='padding: 5px; width: 1in;'>Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
 
 <script type='text/javascript'>
-    var itemStored = [];
+    const itemStored = [];
+    const coupon = [];
     var matrix = 'PM1';
     var amtTotal = 0;
     var count = 0;
@@ -548,6 +578,27 @@
             }
         })
 
+        $("#couponBtn").click(function(){
+            $("#CouponModal").modal("show")
+        })
+
+        $("#CouponSubmit").click(function(){
+            let coupons = $("#coupontxt").val()
+            $.ajax({
+                url: "Function/th_coupon.php",
+                data: { coupon: coupons },
+                dataType: 'json',
+                async: false,
+                success: function(res){
+                    if(res.valid){
+                        console.log(res.msg)
+                    } else {
+                        console.log(res.msg)
+                    }
+                }
+            })
+            console.log("This is your sample Coupon")
+        })
 
 
         $('#customer').typeahead({
@@ -774,11 +825,11 @@
                     if(item.partno === itemno){
                         switch(type){
                             case "PERCENT":
-                                item['price'] -= (item.price * (disc/100));
+                                item['specialDisc'] = (item.amount * (disc/100))
                                 item['amount'] -= (item.amount * (disc/100));
                                 break;
                             case "PRICE":
-                                item['price'] -= disc;
+                                item['specialDisc'] = disc;
                                 item['amount'] -= disc;
                         }
                     }
@@ -1126,6 +1177,8 @@
                 quantity: qty,
                 price: parseFloat(price).toFixed(2),
                 discount: parseFloat(price * discvalue).toFixed(2),
+                specialDisc: 0,
+                addDisc: 0,
                 amount: parseFloat(price) - (parseFloat(price * discvalue))
             });
         }
@@ -1274,4 +1327,9 @@
 
         $('.digital-clock').text(h + ':' + m + ':' + s)
     }
+    
+    function discountChange(){
+            let disc = $(this).val()
+            console.log(disc)
+        }
 </script>

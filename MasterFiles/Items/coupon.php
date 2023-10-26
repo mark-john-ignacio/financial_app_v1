@@ -388,7 +388,7 @@ mysqli_close($con);
 	
 	function setStat(code, stat){
 			$.ajax ({
-				url: "th_itemdmstat.php",
+				url: "th_couponstat.php",
 				data: { code: code,  stat: stat },
 				async: false,
 				success: function( data ) {
