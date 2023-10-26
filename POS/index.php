@@ -2,7 +2,7 @@
     if(!isset($_SESSION)){
         session_start();
     }
-
+    $_SESSION['pageid'] = "POS_void.php";
     $company = $_SESSION['companyid'];
 
     include('../Connection/connection_string.php');
@@ -358,7 +358,7 @@
         <div class='modal-lg modal-dialog' role="document">
             <div class='modal-content'>
                 <div class='modal-header'>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    
                     <h3 class="modal-title" id="invheader">Payment Terms</h3>
                 </div>
                 <div class='modal-body' id='modal-body' style='height: 100%'>
@@ -369,6 +369,7 @@
                                     <table class='table' id='paymentList' style='width: 100%'>
                                         <thead style='background-color: #019aca'>
                                             <tr>
+                                                <th>&nbsp;</th>
                                                 <th style='text-align: center'>Item</th>
                                                 <th style='text-align: center'>UOM</th>
                                                 <th style='text-align: center'>Quantity</th>
@@ -391,12 +392,12 @@
                                             <select name="discountAmt" id="discountAmt" class='form-control'>
                                                 <option value="0">No Discount</option>
                                                 <?php foreach($discount as $list): ?>
-                                                    <option value="<?= $list["nvalue"] ?>"><?= $list['cdescription'] ?></option>
+                                                    <option dataval="<?= $list['type'] ?>" value="<?= $list["nvalue"] ?>"><?= $list['cdescription'] ?></option>
                                                 <?php endforeach; ?>
                                             </select>
 
                                         <div id='dc' style='display: none'>
-                                            <label for='discountAmt'>Discount Code</label>
+                                            <label for='discountAmt'>Valid ID</label>
                                             <input type="text" id="discountcode" name="discountcode" class="form-control">
                                         </div>
 
@@ -455,6 +456,42 @@
             </div>
         </div>
     </div>
+
+    <div class='modal fade' id='voidlogin' role='dialog'>
+        <div class='modal-sm modal-dialog' role="document">
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="invheader">Void Authentication</h3>
+                </div>
+
+                <div class='modal-body' id='modal-body' style='height: 100%'>
+                    <div>
+                        <label for="loginid" class='nopadwtop'>Username:</label>
+                        <input type="text" class='form-control input-sm' id='loginid' name='loginid' placeholder="Enter Username..." autocomplete='false' />
+                        
+                        <label for="loginpass" class='nopadwtop'>Password:</label>
+                        <input type="password" class='form-control input-sm' id='loginpass' name='loginpass' placeholder="Enter Password..." autocomplete='false' />
+                        
+                        <button type='button' class='btn btn-success form-control input-sm' id='login' name='login' data-dismiss="modal" aria-label="Close" style='margin-top: 30px;'>Login </button>
+                        <button type='button' class='btn btn-danger form-control input-sm' data-dismiss="modal" aria-label="Close" style='margin-top: 10px;'> Cancel </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-contnorad">   
+                <div class="modal-bodylong">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:8.5in; display:block; margin:0px; padding:0px; border:0px"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
 
@@ -479,7 +516,7 @@
             url: "../System/th_loadbasecustomer.php",
             dataType: "json",
             success: function (res) {
-                $('#customer').value(res.data).change();
+                $('#customer').val(res.data).change();
                 matrix = res.pm
             }
         });
@@ -555,6 +592,32 @@
             }
         })
 
+        $("#login").click(function(){
+            let user = $("#loginid").val();
+            let password = $("#loginpass").val();
+
+            $.ajax({
+                url: "Function/th_void.php",
+                data: { 
+                    user: user, 
+                    password: password 
+                },
+                dataType: 'json',
+                async: false,
+                success: function(res){
+                    if(res.valid) {
+                        alert(res.msg)
+                        modalshow("Void");
+                    } else {
+                        alert(res.msg)
+                    }
+                },
+                error: function(res){
+                    console.log(res)
+                }
+            })
+        })
+
 
         $('.items, .itmclass').hover(function() {
             $(this).css('cursor','pointer');
@@ -595,7 +658,7 @@
                 return alert('Transaction is empty!')
             }
 
-            modalshow("Void");
+            $('#voidlogin').modal('show')
             table_store(itemStored)
         })
 
@@ -696,13 +759,36 @@
         })
 
         $('#discountAmt').change(function(){
-            let disc = $(this).val();
-            computation(itemStored);
+            var disc = $(this).val();
+            var type = $(this).find(":selected").attr("dataval");
+            console.log(type)
             $("#discountcode").val("");
+
+            // $("#paymentList tbody").each()
+            $("input:checkbox[id='discounted']:checked").each(function(){
+                let amounts = $(this).val();
+                let itemno = $(this).attr("dataval");
+                
+                itemStored.map((item, index) =>{
+                    console.log(item)
+                    if(item.partno === itemno){
+                        switch(type){
+                            case "PERCENT":
+                                item['price'] -= (item.price * (disc/100));
+                                item['amount'] -= (item.amount * (disc/100));
+                                break;
+                            case "PRICE":
+                                item['price'] -= disc;
+                                item['amount'] -= disc;
+                        }
+                    }
+                })
+                table_store(itemStored);
+            })
             if(disc != 0) {
-                let total = $("#totalAmt").val()
-                let dif = total - disc;
-                $('#totalAmt').val(dif)
+                // let total = $("#totalAmt").val()
+                // let dif = total - disc;
+                // $('#totalAmt').val(dif)
                 return $("#dc").show();
             } 
             return $("#dc").hide();
@@ -866,7 +952,7 @@
             let exchange = $('#ExchangeAmt').val();
             let total = $('#totalAmt').val().replace(/,/g,'');
             let tender = $('#tendered').val();
-            let proceed = false;
+            let proceed = false, isFinished = false;
             let tranno = '';
             
             if(parseFloat(total) <= parseFloat(tender)){
@@ -897,7 +983,7 @@
                         } else {
                             alert(res.msg)
                         }
-                        location.reload()
+                        
                     },
                     error: function(res){
                         console.log(res)
@@ -924,16 +1010,28 @@
                         success: function(res){
                             if(res.valid){
                                 console.log(res.msg)
-                                location.reload();
+                                isFinished = true
                             } else {
                                 console.log(res.msg)
+                                isFinished = false
                             }
+                            
                         },
                         error: function(res){
                             console.log(res)
                         }
                     })
                 })
+            }
+
+            if(isFinished){
+                $("#myprintframe").attr("src", "pos_print.php?tranno="+ tranno)
+                // $("#PrintModal").modal('show');
+
+                setInterval(() => {
+                    location.reload()
+                }, 10000);
+
             }
             
         })
@@ -996,7 +1094,7 @@
         }
 
         const price = chkprice(data.partno, data.unit, matrix, <?= date('Y-m-d') ?>)
-        const disc = discountprice(data.partno, data.unit, matrix, <?= date('Y-m-d') ?>)
+        const disc = discountprice(data.partno, data.unit, <?= date('Y-m-d') ?>)
         var discvalue = 0;
         let found = false;
 
@@ -1008,7 +1106,6 @@
                 discvalue = parseInt(disc.value) / 100;
                 break;
         }
-        console.log(parseFloat(discvalue))
         
         for (let i = 0; i < itemStored.length; i++) {
             if (itemStored[i].partno === data.partno) {
@@ -1034,7 +1131,6 @@
         }
 
     }
-
 
     /**
      * Computation for payments
@@ -1070,12 +1166,12 @@
         return value
 	}
 
-    function discountprice(item, unit, code, date, price){
+    function discountprice(item, unit, date, price){
         var value;
 
         $.ajax({
             url: "Function/th_discount.php",
-            data: { item: item, unit: unit, code: code, date: date},
+            data: { item: item, unit: unit, date: date},
             dataType: "json",
             async: false,
             success: function(res){
@@ -1120,6 +1216,7 @@
             ).appendTo("#VoidList > tbody")
 
             $("<tr>").append(
+                $("<td>").html("<input type='checkbox' name='discounted[]' id='discounted' dataval='"+item.partno+"' value='"+parseFloat(item.amount)+"'/>"),
                 $("<td>").text(item.name),
                 $("<td align='center'>").text(item.unit),
                 $("<td align='center'>").text(item.quantity),

@@ -22,11 +22,11 @@
         array_push($discount, $row);
     }
 
-	$sql = "select * from groupings where compcode='$company' and ctype='ITMPMVER' and cstatus='ACTIVE' order by cdesc";	
-	$query = mysqli_query($con, $sql);
-	while($row = $query -> fetch_assoc()){
-		array_push($pm, $row);
-	}
+	// $sql = "select * from groupings where compcode='$company' and ctype='ITMPMVER' and cstatus='ACTIVE' order by cdesc";	
+	// $query = mysqli_query($con, $sql);
+	// while($row = $query -> fetch_assoc()){
+	// 	array_push($pm, $row);
+	// }
 ?>
 <!DOCTYPE html>
 <html>
@@ -140,22 +140,7 @@
         <h5 class="modal-title" id="myModalLabel"><b>Add New Discount</b></h5>        
       </div>
 
-	  <div class="modal-body" style="height: 70vh;">
-
-	  	<div class="col-xs-12">
-            <div class="cgroup col-xs-3 nopadwtop">
-                <b>Price Matrix</b>
-            </div>
-            
-            <div class="col-xs-9 nopadwtop">
-				<select class="form-control input-sm" name="pricematrix" id="pricematrix" required>
-					<option disable selected>--- SELECT Price Matrix ---</option>
-					<?php foreach($pm as $list): ?>
-						<option value="<?= $list['ccode']?>"><?= $list['cdesc'] ?></option>
-					<?php endforeach; ?>
-				</select>
-            </div>
-        </div>  
+	  <div class="modal-body" style="height: 70vh;"> 
 
         <div class="col-xs-12">
             <div class="cgroup col-xs-3 nopadwtop">
@@ -311,7 +296,7 @@ mysqli_close($con);
 					$("<td>").text(items.cunit),
 					$("<td>").html("<select id='type' name='type'> <option value='PERCENTAGE'>PERCENT</option> <option value='PRICE'>PRICE</option> </select>"),
 					$("<td>").html("<input type='text' id='discountAmt' name='discountAmt' autocomplete='false'/> "),
-					$("<td>").html("<button type='button' class='btn btn-xs btn-danger' id='deleteItem' name='deleteitem'>delete</buton>")
+					$("<td>").html("<button type='button' class='btn btn-xs btn-danger' id='deleteItem' name='deleteitem' onclick='deleteList.call(this)'>delete</buton>")
 				).appendTo("#itemlist tbody")
 			}
 		})
@@ -380,7 +365,6 @@ mysqli_close($con);
 		$("#btnSave").click(function(){
 			let itemno = [], discounts = [], unit = [], type = []
 			let isProcceed = false;
-			let pricematrix = $('#pricematrix').find(":selected").val();
 			let label = $('#txtlabel').val();
 			let desc = $('#txtdesc').val();
 			let due = $('#duedate').val();
@@ -405,7 +389,6 @@ mysqli_close($con);
 			$.ajax({
 				url: "th_savedm.php",
 				data: {
-					pm: pricematrix,
 					label: label,
 					remarks: desc,
 					due: due,
@@ -451,7 +434,6 @@ mysqli_close($con);
 		$('#btnUpdate').click(function(){
 			let itemno = [], discounts = [], type = []
 			let transaction = $('#tranno').val();
-			let pricematrix = $('#pricematrix').find(":selected").val();
 			let label = $('#txtlabel').val();
 			let desc = $('#txtdesc').val();
 			let due = $('#duedate').val();
@@ -476,7 +458,6 @@ mysqli_close($con);
 					tranno: transaction,
 					remarks : desc,
 					label: label,
-					pricematrix: pricematrix,
 					effective: effect,
 					due: due,
 
@@ -522,11 +503,11 @@ mysqli_close($con);
 
 							itemStored.push(item)
 
-							$("#pricematrix").each(function(){
-                                $(this).children('option').each(function(){
-                                    if(item.matrix == $(this).val()) $(this).prop('selected', true)
-                                })
-                            })
+							// $("#pricematrix").each(function(){
+                            //     $(this).children('option').each(function(){
+                            //         if(item.matrix == $(this).val()) $(this).prop('selected', true)
+                            //     })
+                            // })
 
 							$("#tranno").val(data)
 							$("#txtcode").val(item.compcode);
