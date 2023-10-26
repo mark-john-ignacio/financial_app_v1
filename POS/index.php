@@ -248,7 +248,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr>basecustomer
                             <td>
                                 <div style='height: 350px; overflow: auto;'>
                                     <div id='item-wrapper'>
@@ -1093,8 +1093,8 @@
             itemStored = [];
         }
 
-        const price = chkprice(data.partno, data.unit, matrix, <?= date('Y-m-d') ?>)
-        const disc = discountprice(data.partno, data.unit, <?= date('Y-m-d') ?>)
+        const price = chkprice(data.partno, data.unit, matrix, "<?= date('m/d/Y') ?>")
+        const disc = discountprice(data.partno, data.unit, "<?= date('m/d/Y') ?>")
         var discvalue = 0;
         let found = false;
 
@@ -1166,7 +1166,7 @@
         return value
 	}
 
-    function discountprice(item, unit, date, price){
+    function discountprice(item, unit, date){
         var value;
 
         $.ajax({
