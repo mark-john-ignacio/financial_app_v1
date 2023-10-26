@@ -71,17 +71,16 @@ require_once "../../Connection/connection_string.php";
 				GROUP BY X.compcode, X.ctranno, X.crefno
 				HAVING SUM(newtamt) > 0
 
-
 			) B on A.compcode=B.compcode and A.ctranno=B.ctranno
 		left join `accounts` C on B.compcode=C.compcode and B.cacctno=C.cacctid
 		left join 
 			(	
-				select sum(a.napplied) as napplied, a.capvno, a.cacctno
+				select sum(a.napplied) as napplied, a.capvno, a.cacctno, a.crefrr
 				from paybill_t a
 				left join paybill b on a.ctranno=b.ctranno
 				where (b.lcancelled=0 and b.lvoid=0)
-				group by a.capvno, a.cacctno
-			) D on  A.ctranno=D.capvno and B.cacctno=D.cacctno
+				group by a.capvno, a.cacctno, a.crefrr
+			) D on  A.ctranno=D.capvno and B.cacctno=D.cacctno and B.crefno=D.crefrr
 		where A.compcode='$company' and A.lapproved=1 and A.lvoid=0 and B.ncredit <> 0 and C.ccategory='LIABILITIES' and A.ccode='$code'
 		group by B.cacctno,B.crefno,A.ctranno,A.dapvdate order by A.dapvdate";
 
