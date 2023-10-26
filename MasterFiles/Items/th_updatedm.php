@@ -56,7 +56,6 @@
 
         echo json_encode([
             'valid' => false,
-            // 'msg' => "Discount has not been update!"
-            'msg' => $item
+            'msg' => "Discount has not been update!"
         ]); 
     }
