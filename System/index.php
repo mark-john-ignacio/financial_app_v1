@@ -3932,7 +3932,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					dataType: 'json',
 					async: false,
 					success: function(res){
-						response(res);
+						if(res.valid){
+							console.log(res.data)
+							response(res.data);
+						} else {
+							console.log(res)
+						}
+						
 					},
 					error: function(res){
 						console.log(res)
