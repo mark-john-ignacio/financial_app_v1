@@ -522,8 +522,7 @@
         </div>
     </div>
 
-    <!-- Coupon Modal -->
-
+    <!-- Alert Message Modal -->
 
 </body>
 </html>
@@ -676,6 +675,8 @@
                 $("#vat").text(parseFloat(0).toFixed(2))
                 $("#net").text(parseFloat(0).toFixed(2))
                 itemStored = [];
+                coupon = [];
+                specialDisc = []
             }
         })
 
@@ -1246,16 +1247,16 @@
      * for duplication item
      */
 
-     function duplicate(data, qty = 1) {
+    function duplicate(data, qty = 1) {
         if (!Array.isArray(itemStored)) {
             itemStored = [];
         }
+        
 
         const price = chkprice(data.partno, data.unit, matrix, "<?= date('m/d/Y') ?>")
         const disc = discountprice(data.partno, data.unit, "<?= date('m/d/Y') ?>")
         var discvalue = 0;
         let found = false;
-       
         
         for (let i = 0; i < itemStored.length; i++) {
             if (itemStored[i].partno === data.partno) {
@@ -1280,7 +1281,7 @@
 
         switch(disc.type){
             case "PRICE":
-                discvalue += parseFloat(disc.value);
+                discvalue = discvalue + parseFloat(disc.value);
                 break;
             case "PERCENT":
                 discvalue = parseFloat(price) * (parseInt(disc.value) / 100);
@@ -1343,7 +1344,8 @@
      */
 
     function discountprice(item, unit, date){
-        var value;
+        var value = 0;
+        var type = "";
 
         $.ajax({
             url: "Function/th_discount.php",
@@ -1354,6 +1356,7 @@
                 let discount = parseFloat(res.data)
                 value = discount;
                 type = res.type;
+                console.log(res)
             }, 
             error: function(res){
                 console.log(res)

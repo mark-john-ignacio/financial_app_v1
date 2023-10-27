@@ -15,39 +15,38 @@
     $label = $_REQUEST['label'];
     $effect = $_REQUEST['effect'];
     $due = date("Y-m-d", strtotime($_REQUEST['due']));
-    $matrix = $_REQUEST['pm'];
+    $date = date("Y-m-d H:i:s");
 
-
-    $sql = "SELECT * FROM discountmatrix WHERE compcode = '$company' AND YEAR(deffective) = YEAR(CURDATE()) ORDER BY tranno DESC";
+    $sql = "SELECT * FROM discountmatrix where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By `tranno` desc LIMIT 1";
     $query = mysqli_query($con, $sql);
-
-    if(mysqli_num_rows($query) != 0){
-        while($row = $query -> fetch_assoc()){
-			$last = $row['tranno'];
-		}
-		
-		
-		if(substr($last,2,2) <> $month){
-			$code = "DM".$month.$year."00000";
-		}
-		else{
-			$baseno = intval(substr($last,6,5)) + 1;
-			$zeros = 5 - strlen($baseno);
-			$zeroadd = "";
-			
-			for($x = 1; $x <= $zeros; $x++){
-				$zeroadd = $zeroadd."0";
-			}
-			
-			$baseno = $zeroadd.$baseno;
-			$code = "DM".$month.$year.$baseno;
-		}
-    } else {
+    if (mysqli_num_rows($query)==0) {
         $code = "DM".$month.$year."00000";
+    } else {
+        while($row = $query -> fetch_assoc()){
+            $last = $row['tranno'];
+        }
+        
+        
+        if(substr($last,2,2) <> $month){
+            $code = "DM".$month.$year."00000";
+        }
+        else{
+            $baseno = intval(substr($last,6,5)) + 1;
+            $zeros = 5 - strlen($baseno);
+            $zeroadd = "";
+            
+            for($x = 1; $x <= $zeros; $x++){
+                $zeroadd = $zeroadd."0";
+            }
+            
+            $baseno = $zeroadd.$baseno;
+            $code = "DM".$month.$year.$baseno;
+        }
     }
 
-    $sql = "INSERT INTO discountmatrix (`compcode`, `tranno`, `remarks`, `label`, `deffective`, `ddue`, `approved`, `cancelled`, `status`) 
-            VALUES ('$company', '$code', '$remarks', '$label', '$effect', '$due', 0, 0 ,'ACTIVE')";
+
+    $sql = "INSERT INTO discountmatrix (`compcode`, `tranno`, `remarks`, `label`, `deffective`, `ddue`, `approved`, `cancelled`, `status`, `ddate`) 
+            VALUES ('$company', '$code', '$remarks', '$label', '$effect', '$due', 0, 0 ,'ACTIVE', '$date')";
     if(!mysqli_query($con, $sql)){
         printf("Errormessage: %s\n", mysqli_error($con));
     } else {
