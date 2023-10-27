@@ -19,7 +19,7 @@ $date = mysqli_real_escape_string($con, $date);
 //         LEFT JOIN discountmatrix B ON A.compcode = B.compcode AND A.tranno = B.tranno
 //         WHERE A.compcode = '$company' AND A.itemno = '$item' AND A.unit = '$unit' AND B.approved = 1 
 //         AND B.deffective <= STR_TO_DATE('$date', '%m/%d/%Y') AND B.ddue >= STR_TO_DATE('$date', '%m/%d/%Y')
-//         ORDER BY B.deffective DESC LIMIT 1";
+//         ORDER BY B.ddate DESC LIMIT 1";
 
 $sql = "SELECT A.discount, A.type
 		FROM discountmatrix_t A

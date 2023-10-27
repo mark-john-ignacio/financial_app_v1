@@ -449,7 +449,7 @@
                                             <select name="discountAmt" id="discountAmt" class='form-control'>
                                                 <option value="0">No Discount</option>
                                                 <?php foreach($discount as $list): ?>
-                                                    <option dataval="<?= $list['type'] ?>" value="<?= $list["nvalue"] ?>"><?= $list['cdescription'] ?></option>
+                                                    <option value="<?= $list["nvalue"] ?>" dataval="<?= $list['type'] ?>"><?= $list['cdescription'] ?></option>
                                                 <?php endforeach; ?>
                                             </select>
 
