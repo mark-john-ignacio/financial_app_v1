@@ -748,6 +748,12 @@
             var name = $("#discountAmt").find(":selected").text();
             var person = $("#discountCust").val()
             var id = $("#discountID").val()
+            var totalAmt = $("#totalAmt").val()
+            var subtotal = $("#subtotal").val();
+
+            if(parseFloat(totalAmt) < parseFloat(subtotal)){
+                return alert("Coupon reached the total Amount. Cannot enter another Coupon")
+            }
 
             // $("#paymentList tbody").each()
             $("input:checkbox[id='discounted']:checked").each(function(){
