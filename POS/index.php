@@ -388,13 +388,13 @@
                                         <label for="totalAmt">Total Amount</label>
                                         <input type='text' id='totalAmt' class='form-control' readonly/>
 
-                                        <label for="tendered">Amount Tendered</label>
+                                        <label for="tendered">Tendered</label>
                                         <input type="text" id='tendered' class='form-control' />
 
                                         <label for="couponinput">Coupon Amount</label>
                                         <input type="text" name="couponinput" id="couponinput" class='form-control' readonly>
 
-                                        <label for="subtotal">Subtotal</label>
+                                        <label for="subtotal">Total Tendered Amount</label>
                                         <input type="text" name="subtotal" id="subtotal" class='form-control'>
 
                                         <label for="ExchangeAmt">Exchange Amount</label>
@@ -605,6 +605,13 @@
 
         $("#CouponSubmit").click(function(){
             let coupons = $("#coupontxt").val()
+            var totalAmt = $("#totalAmt").val()
+            var subtotal = $("#subtotal").val();
+
+            if(parseFloat(totalAmt) < parseFloat(subtotal)){
+                return alert("Coupon reached the total Amount. Cannot enter another Coupon")
+            }
+
             $.ajax({
                 url: "Function/th_coupon.php",
                 data: { coupon: coupons },
@@ -749,11 +756,11 @@
             var person = $("#discountCust").val()
             var id = $("#discountID").val()
             var totalAmt = $("#totalAmt").val()
-            var subtotal = $("#subtotal").val();
 
-            if(parseFloat(totalAmt) < parseFloat(subtotal)){
-                return alert("Coupon reached the total Amount. Cannot enter another Coupon")
+            if(parseFloat(totalAmt) <= 0){
+                return alert("Discount has gone to 0! Discount cannot be apply")
             }
+            
 
             // $("#paymentList tbody").each()
             $("input:checkbox[id='discounted']:checked").each(function(){
