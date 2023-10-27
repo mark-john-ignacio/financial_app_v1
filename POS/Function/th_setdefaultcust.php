@@ -11,7 +11,7 @@
     $sql = "SELECT * FROM parameters WHERE compcode = '$company' AND ccode = 'BASE_CUSTOMER_POS'";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
-        $sql = "UPDATE parameters SET `cvalue` = '$customer' WHERE compcode = '$company' AND ccode = 'BASE_CUSTOMER_POS' and cstatus = 'ACTIVE'";
+        $sql = "UPDATE parameters SET `cvalue` = '$customer', `cstatus` = 'ACTIVE' WHERE compcode = '$company' AND ccode = 'BASE_CUSTOMER_POS'";
 
         if(mysqli_query($con, $sql))
             echo json_encode([
