@@ -394,6 +394,9 @@
                                         <label for="couponinput">Coupon Amount</label>
                                         <input type="text" name="couponinput" id="couponinput" class='form-control' readonly>
 
+                                        <label for="subtotal">Subtotal</label>
+                                        <input type="text" name="subtotal" id="subtotal" class='form-control'>
+
                                         <label for="ExchangeAmt">Exchange Amount</label>
                                         <input type="text" id='ExchangeAmt' class='form-control' readonly/><br>
                                         <button type="button" class="btn btn-sm btn-warning form-control " id='spcdBtn' name='spcdBtn'>Insert Special discountChange</button>
@@ -617,6 +620,7 @@
                         $("#couponmsg").text(res.msg)
                         coupon.push(coupons)
                         $("#couponinput").val(getCoupon(coupon))
+                        PaymentCompute()
                     } else {
                         $("#couponmsg").text(res.msg)
                         $("#couponmsg").css("color", "RED")
@@ -765,9 +769,12 @@
                        specialDisc.push({item: item.partno, type: type, name: name, person: person, id: id, amount: item.amount * (disc/100)})
                     }
                 })
-                console.log(specialDisc)
                 table_store(itemStored);
             })
+        })
+
+        $("#discountAmt").change(function(){
+            var disc = $(this).val();
             if(disc != 0) {
                 return $("#dc").show();
             } 
@@ -858,6 +865,8 @@
             $('#tendered').val(0)
             $('#tendered').focus()
             $('#tendered').select()
+            $("#couponinput").val(getCoupon(coupon))
+            $("#subtotal").val(0)
             $('#discountAmt').val(0)
             $('#ExchangeAmt').val(0)
             
@@ -994,8 +1003,8 @@
 
         $('#tendered').on('keyup', function(){
             let tender = $(this).val();
-
             if(tender != ""){
+                $("#couponinput").val(getCoupon(coupon))
                 return PaymentCompute()
             }
             $('#ExchangeAmt').val('0.00')
@@ -1064,6 +1073,7 @@
         $('#PaySubmit').click(function(){
             let exchange = $('#ExchangeAmt').val();
             let total = $('#totalAmt').val().replace(/,/g,'');
+            let subtotal = $('#subtotal').val().replace(/,/g,'');
             let tender = $('#tendered').val();
             let proceed = false, isFinished = false;
             let gross = $('#gross').text()
@@ -1071,7 +1081,7 @@
             let vat = $("#vat").text()
             let tranno = '';
             
-            if(parseFloat(total) <= parseFloat(tender)){
+            if(parseFloat(total) <= parseFloat(subtotal)){
                 $.ajax({
                     url: 'Function/pos_save.php',
                     type: 'post',
@@ -1080,18 +1090,14 @@
                         net: net,
                         vat: vat,
                         gross: total,
-                        
-                        tendered: tender,
-                        exchange: exchange,
-                        
+
                         customer: $('#customer').val(),
                         order: $('#orderType').val(),
                         table: $('#table').val(),
 
+                        tendered: tender,
+                        exchange: exchange,
                         discount: getSpecialDisc(itemStored),
-                        
-                        discountID: $("#discountID").val(),
-                        discountName: $("#discountCust").val(),
                         coupon: getCoupon(coupon),
                     },
                     dataType: 'json',
@@ -1125,7 +1131,13 @@
                             unit: item.unit,
                             quantity: item.quantity,
                             amount: item.price,
-                            discount: item.discount
+                            
+                            discount: item.discount,
+                            discountID: $("#discountID").val(),
+                            discountName: $("#discountCust").val(),
+
+                            coupon: JSON.stringify(coupon),
+                            specialdisc: JSON.stringify(specialDisc),
                         },
                         dataType: 'json',
                         async: false,
@@ -1258,7 +1270,7 @@
                 discvalue += parseFloat(disc.value);
                 break;
             case "PERCENT":
-                discvalue = (parseFloat(price)) * (parseInt(disc.value) / 100);
+                discvalue = parseFloat(price) * (parseInt(disc.value) / 100);
                 break;
         }
 
@@ -1271,7 +1283,7 @@
                 price: parseFloat(price).toFixed(2),
                 discount: parseFloat(discvalue).toFixed(2),
                 specialDisc: 0,
-                amount: parseFloat(price) - (parseFloat(price * discvalue))
+                amount: parseFloat(price) - parseFloat(discvalue)
             });
         }
 
@@ -1285,12 +1297,15 @@
         
         let amt = $('#totalAmt').val().replace(/,/g,'');
         let tender = $('#tendered').val().replace(/,/g,'');
+        let coupon = $("#couponinput").val().replace(/,/g,'');
         let exchange =$('#ExchangeAmt').val().replace(/,/g,'');
 
-        let subtotal = parseFloat(amt) - parseFloat(tender);
+        let totaltender = parseFloat(tender) + parseFloat(coupon)
+        let subtotal = parseFloat(amt) - totaltender;
         if(subtotal > 0){
             return $('#ExchangeAmt').val("0.00")
         }
+        $("#subtotal").val(totaltender)
         $('#ExchangeAmt').val(Math.abs(subtotal))
         $('#ExchangeAmt').autoNumeric('destroy');
         $('#ExchangeAmt').autoNumeric('init',{mDec:2});
@@ -1447,6 +1462,7 @@
         if(coupon.length == 0){
             return 0;
         }
+
         let amount = 0;
 
         coupon.map((item, index) => {

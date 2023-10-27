@@ -5,6 +5,7 @@
 
     include("../../Connection/connection_string.php");
     $company = $_SESSION['companyid'];
+    $prepared = mysqli_real_escape_string($con, $_SESSION['employeename']);
 
     /**
      * Initiate Variables
@@ -14,9 +15,14 @@
     $unit = mysqli_real_escape_string($con, $_POST['unit']);
     $quantity = mysqli_real_escape_string($con, $_POST['quantity']);
     $amount = mysqli_real_escape_string($con, $_POST['amount']);
-    // $net = mysqli_real_escape_string($con, $_POST['net']);
-    // $vat = mysqli_real_escape_string($con, $_POST['vat']);
-    // $gross = mysqli_real_escape_string($con, $_POST['gross']);
+
+    $discount = mysqli_real_escape_string($con, $_POST['discount']);
+    $validID = mysqli_real_escape_string($con, $_POST['discountID']);
+    $person = mysqli_real_escape_string($con, $_POST['discountName']);
+
+    $coupon = json_decode($_POST['coupon']);
+    $specialdisc = json_decode($_POST['specialdisc']);
+    $date = date("Y-m-d");
 
     $net =  number_format($amount, 2) / number_format(1 + (12/100),2);
     $vat = $net * (12/100);
@@ -26,6 +32,28 @@
         VALUES('$company', '$tranno', '$item', '$unit', '$quantity', '$price', '$net', '$vat', '$amount')";
     
     if(mysqli_query($con, $sql)){
+        /**
+         * @var {array} $coupon is a 1 dimensional array
+         * @var {int} $i incremental count per index in an array
+         */
+
+        if(sizeof($coupon) != 0){
+            for($i = 0; $i < sizeof($coupon); $i++){
+                $sql = "INSERT INTO coupon_t (`compcode`, `tranno`, `CouponNo`, `ddate`, `preparedby`) 
+                    VALUES ('$company', '$tranno', '{$coupon[$i]}', '$date', '$prepared')";
+                mysqli_query($con, $sql);
+
+                mysqli_query($con, "UPDATE coupon SET `status` = 'CLAIMED' WHERE compcode = '$company' AND CouponNo = '{$coupon[$i]}'");
+            }
+        }
+
+        if(sizeof($specialdisc) != 0){
+            foreach($specialdisc as $list){
+                $sql = "INSERT INTO specialdiscount_t (`compcode`, `tranno`, `itemno`, `type`, `person`, `personID`, `amount`) 
+                VALUES ('$company', '$tranno', '{$list["item"]}', '{$list["type"]}', '{$list["person"]}', '{$list["id"]}', '{$list["amount"]}')";
+            }
+        }
+
         echo json_encode([
             'valid' => true,
             'msg' => "Successfully Inserted"
