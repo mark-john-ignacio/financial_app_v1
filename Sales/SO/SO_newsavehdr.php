@@ -47,7 +47,8 @@ else {
 }
 
 	$cCustID = $_REQUEST['txtcustid'];
-	$dDelDate = $_REQUEST['date_delivery'];
+	$dDelDate = $_REQUEST['date_delivery']; 
+	$dPODate = $_REQUEST['date_PO']; 
 	$cRemarks = chkgrp($_REQUEST['txtremarks']); 
 	$nGross = str_replace(",","",$_REQUEST['txtnGross']);
 	$cSITyp = $_REQUEST['selsityp'];
@@ -69,8 +70,8 @@ else {
 	$preparedby = $_SESSION['employeeid'];
 	//INSERT HEADER
 
-	if (!mysqli_query($con, "INSERT INTO so(`compcode`, `ctranno`, `ccode`, `cremarks`, `cspecins`, `ddate`, `dcutdate`, `ngross`, `nbasegross`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `cpreparedby`, `csalestype`, `cpono`, `csalesman`, `cdelcode`, `cdeladdno`, `cdeladdcity`, `cdeladdstate`, `cdeladdcountry`, `cdeladdzip`) 
-	values('$company', '$cSINo', '$cCustID', $cRemarks, $specins, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby', '$cSITyp', '$cCPONO', '$salesman', '$delcodes', $delhousno, $delcity, $delstate, $delcountry, '$delzip')")) {
+	if (!mysqli_query($con, "INSERT INTO so(`compcode`, `ctranno`, `ccode`, `cremarks`, `cspecins`, `ddate`, `dcutdate`, `dpodate`, `ngross`, `nbasegross`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `cpreparedby`, `csalestype`, `cpono`, `csalesman`, `cdelcode`, `cdeladdno`, `cdeladdcity`, `cdeladdstate`, `cdeladdcountry`, `cdeladdzip`) 
+	values('$company', '$cSINo', '$cCustID', $cRemarks, $specins, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), STR_TO_DATE('$dPODate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby', '$cSITyp', '$cCPONO', '$salesman', '$delcodes', $delhousno, $delcity, $delstate, $delcountry, '$delzip')")) {
 		
 		echo "False";
 		//echo mysqli_error($con);

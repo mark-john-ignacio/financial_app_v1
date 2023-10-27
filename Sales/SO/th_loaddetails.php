@@ -11,13 +11,13 @@ require_once "../../Connection/connection_string.php";
 	$date1 = date("Y-m-d");
 	
 	if($avail==1){
-		$sql = "select X.nrefident, X.creference as ctranno, X.citemno as cpartno, A.citemdesc, X.cunit, X.nqty as totqty, 1 as nqty, X.nprice, X.nbaseamount, X.namount, A.cunit as qtyunit, X.nfactor, X.ctaxcode
+		$sql = "select X.nrefident, X.creference as ctranno, X.citemno as cpartno, A.citemdesc, X.cunit, X.nqty as totqty, 1 as nqty, X.nprice, X.nbaseamount, X.namount, A.cunit as qtyunit, X.nfactor, X.ctaxcode, X.citemremarks
 		from so_t X
 		left join items A on X.compcode=A.compcode and X.citemno=A.cpartno
 		where X.compcode='$company' and X.ctranno = '$csalesno'";
 	}
 	else{
-		$sql = "select X.nrefident, X.creference as ctranno, X.citemno as cpartno, A.citemdesc, X.cunit, X.nqty as totqty, X.nprice, X.nbaseamount, X.namount, A.cunit as qtyunit, X.nfactor,(TRIM(TRAILING '.' FROM(CAST(TRIM(TRAILING '0' FROM B.nqty)AS char)))) AS nqty, X.ctaxcode
+		$sql = "select X.nrefident, X.creference as ctranno, X.citemno as cpartno, A.citemdesc, X.cunit, X.nqty as totqty, X.nprice, X.nbaseamount, X.namount, A.cunit as qtyunit, X.nfactor,(TRIM(TRAILING '.' FROM(CAST(TRIM(TRAILING '0' FROM B.nqty)AS char)))) AS nqty, X.ctaxcode, X.citemremarks
 		from so_t X
 		left join items A on X.compcode=A.compcode and X.citemno=A.cpartno 
 		left join 
@@ -48,8 +48,8 @@ require_once "../../Connection/connection_string.php";
 		$json['nfactor'] = $row2['nfactor'];
 		$json['xref'] = $row2['ctranno'];
 		$json['nident'] = $row2['nrefident'];
-		$json['ctaxcode'] = $row2['ctaxcode'];
-		
+		$json['ctaxcode'] = $row2['ctaxcode']; 
+		$json['cremarks'] = $row2['citemremarks'];
 		$json2[] = $json;
 
 	}

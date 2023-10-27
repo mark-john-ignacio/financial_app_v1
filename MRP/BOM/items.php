@@ -238,7 +238,7 @@
 									$xcstat = "";
 								}
 						?>
-							<div id="V<?=$rowx['nversion']?>" class="tab-pane fade in <?=$xcstat?>" style="padding-left:5px;">
+							<div id="V<?=$rowx['nversion']?>" class="tab-pane fade in <?=$xcstat?>" >
 									
 								<div class="col-xs-12 nopadwtop2x">	 
 									<div class="col-xs-10 nopadwdown">	
