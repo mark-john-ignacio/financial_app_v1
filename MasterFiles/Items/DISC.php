@@ -166,7 +166,7 @@ include('../../include/accessinner.php');
                 <input type="text" class="numeric form-control input-sm" id="txtvalue" name="txtvalue"  placeholder="Enter Decimal Value.." required>
 			</div>
 
-			<div class="cgroup col-xs-5 nopadwtop">
+			<div class="cgroup col-xs-3 nopadwtop">
 				<label for="discount">PERCENT</label>
 				<input type="radio" name='discount[]' id='discount' value="PERCENT" />
 				<label for="price">PRICE</label>
