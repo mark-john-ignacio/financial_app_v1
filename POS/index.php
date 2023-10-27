@@ -382,34 +382,22 @@
                                     </table>
                                 </div>
                             </td>
-                            <td style='width: 35%'>
+                            <td style='width: 35%' id='paymentcol'>
                                 <div id='payment-details'>
                                     <div style='width: 100%'>
                                         <label for="totalAmt">Total Amount</label>
                                         <input type='text' id='totalAmt' class='form-control' readonly/>
 
-                                            <label for='discountAmt'>Discount Type</label>
-                                            <select name="discountAmt" id="discountAmt" class='form-control'>
-                                                <option value="0">No Discount</option>
-                                                <?php foreach($discount as $list): ?>
-                                                    <option dataval="<?= $list['type'] ?>" value="<?= $list["nvalue"] ?>"><?= $list['cdescription'] ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
-
-                                        <div id='dc' style='display: none'>
-                                            <label for='discountCust'>Customer Name</label>
-                                            <input type="text" id="discountCust" name="discountCust" placeholder="Customer Name..." class="form-control">
-
-                                            <label for='discountID'>Customer Valid ID</label>
-                                            <input type="text" id="discountID" name="discountID" placeholder="Customer Valid ID..." class="form-control">
-                                        </div>
-
                                         <label for="tendered">Amount Tendered</label>
                                         <input type="text" id='tendered' class='form-control' />
 
+                                        <label for="couponinput">Coupon Amount</label>
+                                        <input type="text" name="couponinput" id="couponinput" class='form-control' readonly>
+
                                         <label for="ExchangeAmt">Exchange Amount</label>
                                         <input type="text" id='ExchangeAmt' class='form-control' readonly/><br>
-                                        <button type="button" class="btn btn-sm btn-info form-control" id='couponBtn' name='couponBtn'>Insert Coupon</button>
+                                        <button type="button" class="btn btn-sm btn-warning form-control " id='spcdBtn' name='spcdBtn'>Insert Special discountChange</button>
+                                        <button type="button" class="btn btn-sm btn-info form-control " id='couponBtn' name='couponBtn'>Insert Coupon</button>
                                     </div>
 
                                     <div class='jqbtk-container' style='padding-top: 5px'>
@@ -449,8 +437,47 @@
                                     </div>
                                 </div>
                             </td>
+
+                            <td id='specialdiscountcol' style='width: 35%; height: 100%; overflow: auto;' >
+                                <div><a href="javascript:;" id='spcBack'><i class='fa fa-arrow-left'></i></a></div>
+                                <div>
+                                    <div style='width: 100%'>
+                                            <label for='discountAmt'>Discount Type</label>
+                                            <select name="discountAmt" id="discountAmt" class='form-control'>
+                                                <option value="0">No Discount</option>
+                                                <?php foreach($discount as $list): ?>
+                                                    <option dataval="<?= $list['type'] ?>" value="<?= $list["nvalue"] ?>"><?= $list['cdescription'] ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+
+                                        <div id='dc' style='display: none'>
+                                            <label for='discountCust'>Customer Name</label>
+                                            <input type="text" id="discountCust" name="discountCust" placeholder="Customer Name..." class="form-control">
+
+                                            <label for='discountID'>Customer Valid ID</label>
+                                            <input type="text" id="discountID" name="discountID" placeholder="Customer Valid ID..." class="form-control">
+                                        </div>
+
+                                    </div>
+                                    <br>
+                                    <center>
+                                        <button type='button' id='SpecialDiscountBtn' class='btn btn-success'>Submit</button>
+                                    </center>
+                                </div>
+                            </td>
                         </tr>
                     </table>
+                </div>
+                <div class="modal-body" id='couponmodal'>
+                    <div><a href="javascript:;" id='couponback'><i class='fa fa-arrow-left'></i></a></div>
+                    <div>
+                        <label for="coupontxt">Enter your coupon</label>
+                        <input type="text" class="form-control input-sm" id='coupontxt' name='coupontxt' placeholder="Enter Coupon..." autocomplete="false">
+                        <div class='input-sm' id='couponmsg'></div>
+                        <center>
+                            <button class='btn btn-success' id='CouponSubmit' style='padding: 5px; width: 1in;'>Submit</button>
+                        </center>
+                    </div>
                 </div>
             </div>
         </div>
@@ -460,7 +487,7 @@
         <div class='modal-sm modal-dialog' role="document">
             <div class='modal-content'>
                 <div class='modal-header'>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidde    
                     <h3 class="modal-title" id="invheader">Void Authentication</h3>
                 </div>
 
@@ -494,34 +521,14 @@
 
     <!-- Coupon Modal -->
 
-    <div class="modal fade" id="CouponModal" role="dialog" data-keyboard="false" data-backdrop="static">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" onclick="closeModal('CouponModal')"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title" id="invheader">Coupon</h3>
-                </div>
-                <div class="modal-body">
-                    <div>
-                        <label for="coupontxt">Enter your coupon</label>
-                        <input type="text" class="form-control input-sm" id='coupontxt' name='coupontxt' placeholder="Enter Coupon..." autocomplete="false">
-                        <div class='input-sm' id='couponmsg'></div>
-                    </div>
-                </div>
-                <div class='modal-footer' style='display: Relative; width: 100%;'>
-                    <div id='footer' style='right: 0px'>
-                        <button class='btn btn-success' id='CouponSubmit' style='padding: 5px; width: 1in;'>Submit</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
 </body>
 </html>
 
 <script type='text/javascript'>
     const itemStored = [];
     const coupon = [];
+    const specialDisc = []
     var matrix = 'PM1';
     var amtTotal = 0;
     var count = 0;
@@ -573,8 +580,24 @@
             }
         })
 
+        $("#spcdBtn").click(function(){
+            $("#paymentcol").hide();
+            $("#specialdiscountcol").show()
+        })
+
+        $("#spcBack").click(function(){
+            $("#paymentcol").show();
+            $("#specialdiscountcol").hide()
+        })
+
         $("#couponBtn").click(function(){
-            $("#CouponModal").modal("show")
+            $("#couponmodal").show()
+            $("#modal-body").hide()
+        })
+        
+        $("#couponback").click(function(){
+            $("#couponmodal").hide()
+            $("#modal-body").show()
         })
 
         $("#CouponSubmit").click(function(){
@@ -593,6 +616,7 @@
                         $("#couponmsg").css("color", "GREEN")
                         $("#couponmsg").text(res.msg)
                         coupon.push(coupons)
+                        $("#couponinput").val(getCoupon(coupon))
                     } else {
                         $("#couponmsg").text(res.msg)
                         $("#couponmsg").css("color", "RED")
@@ -714,6 +738,42 @@
             table_store(itemStored)
         })
 
+        $('#SpecialDiscountBtn').click(function(){
+            var disc = $("#discountAmt").val();
+            var type = $("#discountAmt").find(":selected").attr("dataval");
+            var name = $("#discountAmt").find(":selected").text();
+            var person = $("#discountCust").val()
+            var id = $("#discountID").val()
+
+            // $("#paymentList tbody").each()
+            $("input:checkbox[id='discounted']:checked").each(function(){
+                let amounts = $(this).val();
+                let itemno = $(this).attr("dataval");
+                
+                itemStored.map((item, index) =>{
+                    console.log(item)
+                    if(item.partno === itemno){
+                        switch(type){
+                            case "PERCENT":
+                                item['specialDisc'] = (item.amount * (disc/100))
+                                item['amount'] -= (item.amount * (disc/100));
+                                break;
+                            case "PRICE":
+                                item['specialDisc'] = disc;
+                                item['amount'] -= disc;
+                        }
+                       specialDisc.push({item: item.partno, type: type, name: name, person: person, id: id, amount: item.amount * (disc/100)})
+                    }
+                })
+                console.log(specialDisc)
+                table_store(itemStored);
+            })
+            if(disc != 0) {
+                return $("#dc").show();
+            } 
+            return $("#dc").hide();
+        })
+
         //button for holding items
         $('#btnHold').on('click', function(){
 
@@ -724,7 +784,7 @@
             if(itemStored.length === 0){
                 return alert('Transaction is empty! cannot hold transaction');
             }
-            const quantity = [];
+            const quantity   = [];
 
             $('input[name*="qty"]').each((index, item) => {
                 quantity.push($(item).val())
@@ -802,45 +862,50 @@
             $('#ExchangeAmt').val(0)
             
             $('#payModal').modal('show')
+            $("#couponmodal").hide();
+            $("#specialdiscountcol").hide()
             $('#modal-body').modal('show')
             PaymentCompute()
         })
 
-        $('#discountAmt').change(function(){
-            var disc = $(this).val();
-            var type = $(this).find(":selected").attr("dataval");
-            console.log(type)
-            $("#discountcode").val("");
+        // $('#discountAmt').change(function(){
+        //     var disc = $(this).val();
+        //     var type = $(this).find(":selected").attr("dataval");
+        //     var name = $(this).find(":selected").text();
 
-            // $("#paymentList tbody").each()
-            $("input:checkbox[id='discounted']:checked").each(function(){
-                let amounts = $(this).val();
-                let itemno = $(this).attr("dataval");
+        //     $("#discountcode").val("");
+
+        //     // $("#paymentList tbody").each()
+        //     $("input:checkbox[id='discounted']:checked").each(function(){
+        //         let amounts = $(this).val();
+        //         let itemno = $(this).attr("dataval");
                 
-                itemStored.map((item, index) =>{
-                    console.log(item)
-                    if(item.partno === itemno){
-                        switch(type){
-                            case "PERCENT":
-                                item['specialDisc'] = (item.amount * (disc/100))
-                                item['amount'] -= (item.amount * (disc/100));
-                                break;
-                            case "PRICE":
-                                item['specialDisc'] = disc;
-                                item['amount'] -= disc;
-                        }
-                    }
-                })
-                table_store(itemStored);
-            })
-            if(disc != 0) {
-                // let total = $("#totalAmt").val()
-                // let dif = total - disc;
-                // $('#totalAmt').val(dif)
-                return $("#dc").show();
-            } 
-            return $("#dc").hide();
-        })
+        //         itemStored.map((item, index) =>{
+        //             console.log(item)
+        //             if(item.partno === itemno){
+        //                 switch(type){
+        //                     case "PERCENT":
+        //                         item['specialDisc'] = (item.amount * (disc/100))
+        //                         item['amount'] -= (item.amount * (disc/100));
+        //                         break;
+        //                     case "PRICE":
+        //                         item['specialDisc'] = disc;
+        //                         item['amount'] -= disc;
+        //                 }
+        //                specialDisc.push({item: item.partno, type: type, name: name, person: null, id: null, amount: item.amount * (disc/100)})
+        //             }
+        //         })
+        //         console.log(specialDisc)
+        //         table_store(itemStored);
+        //     })
+        //     if(disc != 0) {
+        //         // let total = $("#totalAmt").val()
+        //         // let dif = total - disc;
+        //         // $('#totalAmt').val(dif)
+        //         return $("#dc").show();
+        //     } 
+        //     return $("#dc").hide();
+        // })
 
 
         /**
@@ -876,6 +941,10 @@
 
             modalshow("Retrieve")
         })
+
+        /**
+         * Retrive Hold transaction Function
+         */
 
         $('#RetrieveSubmit').click(function(){
             const itemRetrieve = [];
@@ -932,6 +1001,10 @@
             $('#ExchangeAmt').val('0.00')
         })
 
+        /**
+         * Number Pad in user perspective
+         */
+
         $('.btnpad').click(function(){
             let tender = $('#tendered').val();
             let total = $('#totalAmt').val();
@@ -985,12 +1058,17 @@
             PaymentCompute();
         })
 
-
+        /**
+         * Pay Submit Function where storing of Payments
+         */
         $('#PaySubmit').click(function(){
             let exchange = $('#ExchangeAmt').val();
             let total = $('#totalAmt').val().replace(/,/g,'');
             let tender = $('#tendered').val();
             let proceed = false, isFinished = false;
+            let gross = $('#gross').text()
+            let net = $("#net").text()
+            let vat = $("#vat").text()
             let tranno = '';
             
             if(parseFloat(total) <= parseFloat(tender)){
@@ -998,9 +1076,9 @@
                     url: 'Function/pos_save.php',
                     type: 'post',
                     data: {
-                        amount: $('#gross').text(),
-                        net: $('#net').text(),
-                        vat: $('#vat').text(),
+                        amount: gross,
+                        net: net,
+                        vat: vat,
                         gross: total,
                         
                         tendered: tender,
@@ -1011,6 +1089,7 @@
                         table: $('#table').val(),
 
                         discount: getSpecialDisc(itemStored),
+                        
                         discountID: $("#discountID").val(),
                         discountName: $("#discountCust").val(),
                         coupon: getCoupon(coupon),
@@ -1046,6 +1125,7 @@
                             unit: item.unit,
                             quantity: item.quantity,
                             amount: item.price,
+                            discount: item.discount
                         },
                         dataType: 'json',
                         async: false,
@@ -1079,6 +1159,12 @@
         })
     })
 
+
+    /**
+     * Modal Show Different Modules
+     * @param string {modal} to trigger where modal will show
+     */
+
     function modalshow(modal){
         $('.modal-body').css('display', 'none');
         $('#footer button').css('display', 'none');
@@ -1097,6 +1183,10 @@
         }
         $('#mymodal').modal("show");
     }
+
+    /**
+     * Item List to insert in the table
+     */
 
     function insert_item(partno){
         $.ajax({
@@ -1127,6 +1217,7 @@
 
     /**
      * @param {data} get all data of items
+     * @param decimal {qty} can be manipulated based on the quantity show
      * for duplication item
      */
 
@@ -1139,25 +1230,36 @@
         const disc = discountprice(data.partno, data.unit, "<?= date('m/d/Y') ?>")
         var discvalue = 0;
         let found = false;
-
-        switch(disc.type){
-            case "PRICE":
-                discvalue = parseFloat(disc.value);
-                break;
-            case "PERCENT":
-                discvalue = parseInt(disc.value) / 100;
-                break;
-        }
+       
         
         for (let i = 0; i < itemStored.length; i++) {
             if (itemStored[i].partno === data.partno) {
                 itemStored[i].quantity += qty;
                 itemStored[i].price = parseFloat(itemStored[i].price) + parseFloat(price);
-                itemStored[i].discount = parseFloat(itemStored[i].price)* parseFloat(discvalue);
+
+                switch(disc.type){
+                    case "PRICE":
+                        discvalue = parseFloat(itemStored[i].discount) + parseFloat(disc.value);
+                        break;
+                    case "PERCENT":
+                        discvalue = (parseFloat(itemStored[i].price)) * (parseInt(disc.value) / 100);
+                        break;
+                }
+
+                itemStored[i].discount = parseFloat(discvalue);
                 itemStored[i].amount = parseFloat(itemStored[i].price) - parseFloat(itemStored[i].discount);
                 found = true;
                 break;
             }
+        }
+
+        switch(disc.type){
+            case "PRICE":
+                discvalue += parseFloat(disc.value);
+                break;
+            case "PERCENT":
+                discvalue = (parseFloat(price)) * (parseInt(disc.value) / 100);
+                break;
         }
 
         if (!found) {
@@ -1167,7 +1269,7 @@
                 unit: data.unit,
                 quantity: qty,
                 price: parseFloat(price).toFixed(2),
-                discount: parseFloat(price * discvalue).toFixed(2),
+                discount: parseFloat(discvalue).toFixed(2),
                 specialDisc: 0,
                 amount: parseFloat(price) - (parseFloat(price * discvalue))
             });
@@ -1183,7 +1285,6 @@
         
         let amt = $('#totalAmt').val().replace(/,/g,'');
         let tender = $('#tendered').val().replace(/,/g,'');
-        let disc = $('#discountAmt').val().replace(/,/g,'');
         let exchange =$('#ExchangeAmt').val().replace(/,/g,'');
 
         let subtotal = parseFloat(amt) - parseFloat(tender);
@@ -1209,6 +1310,10 @@
         return value
 	}
 
+    /**
+     * Return a discount Price
+     */
+
     function discountprice(item, unit, date){
         var value;
 
@@ -1232,10 +1337,15 @@
         };
     }
 
+
+    /**
+     * Table tbody Listing an items
+     */
     function table_store(items){
         $('#listItem > tbody').empty();
         $('#VoidList > tbody').empty();
         $('#paymentList > tbody').empty();
+        console.log(items)
 
         items.map((item, index) => {
             $("<tr>").append(
@@ -1270,6 +1380,10 @@
         })
         computation(items);
     }
+
+    /**
+     * Computation for net, vat, discount and gross
+     */
     
     function computation(data){
         const itemAmounts = {discount: 0, net: 0, vat: 0, gross: 0}
@@ -1279,7 +1393,7 @@
             net = price / parseFloat(1 + (12/100));
             itemAmounts['net'] += price / parseFloat(1 + (12/100));
             itemAmounts['vat'] = (itemAmounts.net * (12/100));
-            itemAmounts['discount'] += 0;
+            itemAmounts['discount'] += discountprice(item.partno, item.unit, "<?= date('m/d/Y') ?>");
             itemAmounts['gross'] += price;
         })
 
@@ -1318,11 +1432,17 @@
         $('.digital-clock').text(h + ':' + m + ':' + s)
     }
     
+
+
     function discountChange(){
             let disc = $(this).val()
             console.log(disc)
         }
+    
 
+        /**
+         * Return Coupons total price
+         */
     function getCoupon(coupon){
         if(coupon.length == 0){
             return 0;
@@ -1350,10 +1470,15 @@
                 }
             })
         })
+        return amount;
     }
 
-    function getSpecialDisc(specialDisc){
-        return specialDisc[0].specialDisc
+    function getSpecialDisc(data){
+        let discount = 0;
+        data.map((item, index) => {
+            discount += parseFloat(item.specialDisc)
+        })
+        return discount;
     }
     function closeModal(modal){
         $("#"+modal).modal("hide");
