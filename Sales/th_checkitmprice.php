@@ -91,7 +91,7 @@ elseif($varpricing=="PM"){
 	$sql = "Select A.nprice from
 	items_pm_t A left join items_pm B on A.compcode=B.compcode and A.ctranno=B.ctranno
 	where A.compcode='$company' and B.cversion='".$custver."' and B.deffectdate <=  STR_TO_DATE('$dte', '%m/%d/%Y') and A.citemno='$itm' and A.cunit='$itmunit' and B.lapproved = 1
-	order by B.deffectdate DESC LIMIT 1";
+	order by B.ddate DESC LIMIT 1";
 	
 	//echo $sql;
 	

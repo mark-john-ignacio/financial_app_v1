@@ -17,7 +17,7 @@
     $tranno = $_REQUEST['tranno'];
 
     $item = json_decode($_REQUEST['items']);
-    $type = json_decode($_REQUEST['type']);
+    $type = json_decode($_REQUEST['types']);
     $discount = json_decode($_REQUEST['discount']);
     
     $isSuccess = false;

@@ -290,14 +290,18 @@ mysqli_close($con);
 				$('#searchitem').val("").change()
 				itemStored.push(items)
 
-				$("<tr>").append(
-					$("<td>").text(items.cpartno),
-					$("<td>").text(items.citemdesc),
-					$("<td>").text(items.cunit),
-					$("<td>").html("<select id='type' name='type'> <option value='PERCENTAGE'>PERCENT</option> <option value='PRICE'>PRICE</option> </select>"),
-					$("<td>").html("<input type='text' id='discountAmt' name='discountAmt' autocomplete='false'/> "),
-					$("<td>").html("<button type='button' class='btn btn-xs btn-danger' id='deleteItem' name='deleteitem' onclick='deleteList.call(this)'>delete</buton>")
-				).appendTo("#itemlist tbody")
+				$("#itemlist tbody").empty()
+				itemStored.map((item, index) => {
+					$("<tr>").append(
+						$("<td>").text(item.cpartno),
+						$("<td>").text(item.citemdesc),
+						$("<td>").text(item.cunit),
+						$("<td>").html("<select id='type' name='type'> <option value='PERCENT'>PERCENT</option> <option value='PRICE'>PRICE</option> </select>"),
+						$("<td>").html("<input type='text' id='discountAmt' name='discountAmt' autocomplete='false'/> "),
+						$("<td>").html("<button type='button' class='btn btn-xs btn-danger' id='deleteItem' name='deleteitem' onclick='deleteList.call(this)'>delete</buton>")
+					).appendTo("#itemlist tbody")
+				})
+				
 			}
 		})
 
@@ -363,7 +367,7 @@ mysqli_close($con);
 		// });
 
 		$("#btnSave").click(function(){
-			let itemno = [], discounts = [], unit = [], type = []
+			let itemno = [], discounts = [], unit = [], types = []
 			let isProcceed = false;
 			let label = $('#txtlabel').val();
 			let desc = $('#txtdesc').val();
@@ -378,8 +382,8 @@ mysqli_close($con);
 				console.log(item.cunit)
 			})
 
-			$("select[id='type']").find(":selected").each(function() {
-				type.push($(this).val());
+			$("select[id='type']").each(function() {
+				types.push($(this).find(":selected").val());
 			});
 
 			$("input[id='discountAmt").each(function(){
@@ -416,12 +420,17 @@ mysqli_close($con);
 						item: JSON.stringify(itemno),
 						unit: JSON.stringify(unit),
 						discount: JSON.stringify(discounts),
-						type: JSON.stringify(type),
+						types: JSON.stringify(types),
 						tranno: tranno
 					},
 					dataType: 'json',
 					async: false,
 					success: function(res){
+						if(res.valid){
+							console.log(res.msg)
+						}else {
+							console.log(res.msg)
+						}
 						location.reload();
 					},
 					error: function(res){
@@ -432,7 +441,7 @@ mysqli_close($con);
 		})
 		
 		$('#btnUpdate').click(function(){
-			let itemno = [], discounts = [], type = []
+			let itemno = [], discounts = [], types = []
 			let transaction = $('#tranno').val();
 			let label = $('#txtlabel').val();
 			let desc = $('#txtdesc').val();
@@ -444,8 +453,8 @@ mysqli_close($con);
 				itemno.push(item.itemno);
 			})
 
-			$("select[id='type']").find(":selected").each(function() {
-				type.push($(this).val());
+			$("select[id='type']").each(function() {
+				types.push($(this).find(":selected").val());
 			});
 
 			$("input[id='discountAmt']").each(function(){
@@ -463,7 +472,7 @@ mysqli_close($con);
 
 					items: JSON.stringify(itemno),
 					discount: JSON.stringify(discounts),
-					type: JSON.stringify(type)
+					types: JSON.stringify(types)
 				},
 				dataType: 'json',
 				async: false,
