@@ -1412,22 +1412,23 @@ function checkcustlimit(id,xcred){
 	}
 	else{
 		
-		
-		if(xChkLimitWarn==0) { //0 = Accept Warninf ; 1 = Accept Block ; 2 = Refuse Order
-			$("#ncustbalance").html("<b><i><font color='red'>Max Limit Reached</font></i></b>");
-		}
-		else if(xChkLimitWarn==1) {
-			$("#ncustbalance").html("<b><i><font color='red' size='-1'>Max Limit Reached</font></i></b>");
-			$("#ncustbalance2").html("<b><i><font color='red' size='-1'>Delivery is blocked</font></i></b>");
-		}
-		else if(xChkLimitWarn==2) {
-			$("#ncustbalance").html("<b><i><font color='red' size='-1'>Max Limit Reached</font></i></b>");
-			$("#ncustbalance").html("<b><i><font color='red' size='-1'>ORDERS BLOCKED</font></i></b>");
-			$("#btnSave").attr("disabled", true);
-			$("#btnIns").attr("disabled", true);
-			$('#txtprodnme').attr("disabled", true);
-	  		$('#txtprodid').attr("disabled", true);
+		if(parseFloat(xcred) > 0){
+			if(xChkLimitWarn==0) { //0 = Accept Warninf ; 1 = Accept Block ; 2 = Refuse Order
+				$("#ncustbalance").html("<b><i><font color='red'>Max Limit Reached</font></i></b>");
+			}
+			else if(xChkLimitWarn==1) {
+				$("#ncustbalance").html("<b><i><font color='red' size='-1'>Max Limit Reached</font></i></b>");
+				$("#ncustbalance2").html("<b><i><font color='red' size='-1'>Delivery is blocked</font></i></b>");
+			}
+			else if(xChkLimitWarn==2) {
+				$("#ncustbalance").html("<b><i><font color='red' size='-1'>Max Limit Reached</font></i></b>");
+				$("#ncustbalance").html("<b><i><font color='red' size='-1'>ORDERS BLOCKED</font></i></b>");
+				$("#btnSave").attr("disabled", true);
+				$("#btnIns").attr("disabled", true);
+				$('#txtprodnme').attr("disabled", true);
+					$('#txtprodid').attr("disabled", true);
 
+			}
 		}
 	}
 
@@ -2354,7 +2355,7 @@ function chkform(){
 
 
 	// Check if Credit Limit activated (kung sobra)
-	if(xChkLimit==1){
+	if(xChkLimit==1 && parseFloat($('#hdncustlimit').val()) > 0){
 		if(parseFloat($("#txtnGross").val())>parseFloat($("#hdncustbalance").val())){
 				$("#AlertMsg").html("&nbsp;&nbsp;<b>ERROR: </b> Available Credit Limit is not enough!");
 				$("#alertbtnOK").show();
@@ -2445,8 +2446,13 @@ function chkform(){
 				var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
 				var nfactor = $(this).find('input[name="hdnfactor"]').val(); 
 
-				var vatcode = $(this).find('select[name="selitmvatyp"]').val(); 
-				var nrate = $(this).find('select[name="selitmvatyp"] option:selected').data('id');
+				if(xChkVatableStatus==1){ 
+					var vatcode = $(this).find('select[name="selitmvatyp"]').val(); 
+					var nrate = $(this).find('select[name="selitmvatyp"] option:selected').data('id');
+				}else{
+					var vatcode = "";
+					var nrate = 0;
+				}
 
 				var citmremx = $(this).find('input[name="txtcitmremx"]').val();
 
@@ -2457,7 +2463,7 @@ function chkform(){
 					nbaseamt = nbaseamt.replace(/,/g,'');
 				}
 			
-				//alert("SO_newsavedet.php?nrefident="+nrefident+"&trancode="+trancode+"&crefno="+crefno+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+nprice+"&namt="+namt+"&nbaseamt="+nbaseamt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&vatcode="+vatcode+"&nrate="+nrate);
+				alert("SO_newsavedet.php?nrefident="+nrefident+"&trancode="+trancode+"&crefno="+crefno+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+nprice+"&namt="+namt+"&nbaseamt="+nbaseamt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&vatcode="+vatcode+"&nrate="+nrate+"&citmremx="+citmremx);
 
 				$.ajax ({
 					url: "SO_newsavedet.php",

@@ -2053,6 +2053,7 @@ function chkform(){
 	}
 
 	// Check if Credit Limit activated (kung sobra)
+	//alert(xChkLimit +" : "+ parseFloat($('#hdncustlimit').val()));
 	if(xChkLimit==1 && parseFloat($('#hdncustlimit').val()) > 0){
 		if(parseFloat($("#txtnGross").val())>parseFloat($("#hdncustbalance").val())){
 				$("#AlertMsg").html("&nbsp;&nbsp;<b>ERROR: </b> Available Credit Limit is not enough!");
@@ -2151,8 +2152,13 @@ function chkform(){
 				var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
 				var nfactor = $(this).find('input[name="hdnfactor"]').val();
 
-				var vatcode = $(this).find('select[name="selitmvatyp"]').val(); 
-				var nrate = $(this).find('select[name="selitmvatyp"] option:selected').data('id');
+				if(xChkVatableStatus==1){ 
+					var vatcode = $(this).find('select[name="selitmvatyp"]').val(); 
+					var nrate = $(this).find('select[name="selitmvatyp"] option:selected').data('id');
+				}else{
+					var vatcode = "";
+					var nrate = 0;
+				}
 
 				var citmremx = $(this).find('input[name="txtcitmremx"]').val();
 				
