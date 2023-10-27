@@ -53,7 +53,6 @@ else {
 	$nGross = str_replace(",","",$_REQUEST['txtnGross']);
 	$cSITyp = $_REQUEST['selsityp'];
 	$cCPONO = $_REQUEST['txtcPONo'];
-	$salesman = $_REQUEST['txtsalesmanid'];
 	$delcodes = $_REQUEST['txtdelcustid'];
 	$delhousno = chkgrp($_REQUEST['txtchouseno']);
 	$delcity = chkgrp($_REQUEST['txtcCity']);
@@ -67,6 +66,12 @@ else {
 	$CurrRate= $_REQUEST['basecurrval']; 
 	$BaseGross= str_replace(",","",$_REQUEST['txtnBaseGross']);
 
+	if(isset($_REQUEST['txtsalesmanid'])){
+		$salesman = $_REQUEST['txtsalesmanid'];
+	}else{
+		$salesman = "";
+	}
+	
 	$preparedby = $_SESSION['employeeid'];
 	//INSERT HEADER
 
