@@ -269,6 +269,11 @@
 						<i class='fa fa-angle-double-right'></i> Special Discount
 					</a>
 				</li>
+				<li>
+					<a href="javascript:;" onclick="setpage('MasterFiles/Items/coupon.php')">
+			  			<i class="fa fa-angle-double-right"></i> Coupons
+					</a>
+				</li>
 							</ul>
             </li>
 						<li>

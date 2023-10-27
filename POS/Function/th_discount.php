@@ -15,7 +15,7 @@ require_once "../../Connection/connection_string.php";
 	$sql = "SELECT A.discount, A.type
     from discountmatrix_t A 
     left join discountmatrix B on A.compcode=B.compcode and A.tranno=B.tranno
-	where A.compcode='$company' and A.itemno='$item' and A.unit='$unit' and B.approved = 1 
+	where A.compcode='$company' and A.itemno='$item' and A.unit='$unit' and B.approved = 1 and B.deffective <=  STR_TO_DATE('$date', '%m/%d/%Y') AND B.ddue >=  STR_TO_DATE('$date', '%m/%d/%Y')
     ORDER BY B.deffective DESC";
 	
 	//echo $sql;
