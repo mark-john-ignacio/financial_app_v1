@@ -20,6 +20,7 @@ function chkgrp($valz) {
 	$cSINo = $_REQUEST['txtcsalesno'];
 	$cCustID = $_REQUEST['txtcustid'];
 	$dDelDate = $_REQUEST['date_delivery'];
+	$dPODate = $_REQUEST['date_PO']; 
 	$cRemarks = chkgrp($_REQUEST['txtremarks']); 
 	$nGross = str_replace(",","",$_REQUEST['txtnGross']);
 	$cSITyp = $_REQUEST['selsityp'];
@@ -30,7 +31,6 @@ function chkgrp($valz) {
 	$CurrRate= $_REQUEST['basecurrval']; 
 	$BaseGross= str_replace(",","",$_REQUEST['txtnBaseGross']);
 
-	$salesman = $_REQUEST['txtsalesmanid'];
 	$delcodes = $_REQUEST['txtdelcustid'];
 	$delhousno = chkgrp($_REQUEST['txtchouseno']);
 	$delcity = chkgrp($_REQUEST['txtcCity']);
@@ -39,11 +39,17 @@ function chkgrp($valz) {
 	$delzip = $_REQUEST['txtcZip'];
 	$specins = chkgrp($_REQUEST['txtSpecIns']);
 	
+	if(isset($_REQUEST['txtsalesmanid'])){
+		$salesman = $_REQUEST['txtsalesmanid'];
+	}else{
+		$salesman = "";
+	}
+
 	$preparedby = $_SESSION['employeeid']; 
 	
 	//INSERT HEADER
 
-	if (!mysqli_query($con, "UPDATE so set `ccode` = '$cCustID', `cremarks` = $cRemarks, `cspecins` = $specins, `dcutdate` = STR_TO_DATE('$dDelDate', '%m/%d/%Y'), `ngross` = '$nGross',  `nbasegross` = '$BaseGross', `ccurrencycode` = '$CurrCode', `ccurrencydesc` = '$CurrDesc', `nexchangerate` = '$CurrRate', `csalestype` = '$cSITyp', `cpono` = '$cCPONo', `csalesman` = '$salesman', `cdelcode` = '$delcodes', `cdeladdno` = $delhousno, `cdeladdcity` = $delcity, `cdeladdstate` = $delstate, `cdeladdcountry` = $delcountry, `cdeladdzip` = '$delzip'  where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
+	if (!mysqli_query($con, "UPDATE so set `ccode` = '$cCustID', `cremarks` = $cRemarks, `cspecins` = $specins, `dcutdate` = STR_TO_DATE('$dDelDate', '%m/%d/%Y'), `dpodate` = STR_TO_DATE('$dPODate', '%m/%d/%Y'), `ngross` = '$nGross',  `nbasegross` = '$BaseGross', `ccurrencycode` = '$CurrCode', `ccurrencydesc` = '$CurrDesc', `nexchangerate` = '$CurrRate', `csalestype` = '$cSITyp', `cpono` = '$cCPONo', `csalesman` = '$salesman', `cdelcode` = '$delcodes', `cdeladdno` = $delhousno, `cdeladdcity` = $delcity, `cdeladdstate` = $delstate, `cdeladdcountry` = $delcountry, `cdeladdzip` = '$delzip'  where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
 		//print_r( mysqli_error($con));
 		echo "False";
 	} 

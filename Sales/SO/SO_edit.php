@@ -2463,7 +2463,7 @@ function chkform(){
 					nbaseamt = nbaseamt.replace(/,/g,'');
 				}
 			
-				alert("SO_newsavedet.php?nrefident="+nrefident+"&trancode="+trancode+"&crefno="+crefno+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+nprice+"&namt="+namt+"&nbaseamt="+nbaseamt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&vatcode="+vatcode+"&nrate="+nrate+"&citmremx="+citmremx);
+				//alert("SO_newsavedet.php?nrefident="+nrefident+"&trancode="+trancode+"&crefno="+crefno+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+nprice+"&namt="+namt+"&nbaseamt="+nbaseamt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&vatcode="+vatcode+"&nrate="+nrate+"&citmremx="+citmremx);
 
 				$.ajax ({
 					url: "SO_newsavedet.php",
