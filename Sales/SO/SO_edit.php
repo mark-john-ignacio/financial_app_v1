@@ -1597,13 +1597,14 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident,crmx){
 
 	var tditmremx = "<td><input type='text' value='"+crmx+"' class='form-control input-xs' name=\"txtcitmremx\" id='txtcitmremx"+lastRow+"'></td>";
 
-	var tditmdel = "<td width=\90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' onClick=\"deleteRow(this);\"/></td>"; // &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> 
+	var tditmdel = "<td width=\90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + lastRow + "' value='delete'/></td>"; // &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> 
 
 	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmavail + tditmvats + tditmunit + tditmfactor + tditmqty + tditmprice + tditmbaseamount + tditmremx + tditmdel + '</tr>');
 
-									$("#del"+itmcode).on('click', function() {
+									$("#del"+lastRow).on('click', function() {
 										$(this).closest('tr').remove();
 
+										Reindex();
 										ComputeGross();
 									});
 
@@ -1665,8 +1666,29 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident,crmx){
 									
 }
 
+function Reindex(){
+			$("#MyTable > tbody > tr").each(function(index) {	
+				tx = index + 1;
+
+				$(this).find('select[name="seluom"]').attr("id","seluom"+tx);
+				$(this).find('input[name="txtnqty"]').attr("id","txtnqty"+tx);
+				$(this).find('input[name="txtnprice"]').attr("id","txtnprice"+tx);
+				$(this).find('input[type="hidden"][name="txtnamount"]').attr("id","txtnamount"+tx);
+				$(this).find('input[name="txtntranamount"]').attr("id","txtntranamount"+tx);
+				$(this).find('input[type="hidden"][name="hdnmainuom"]').attr("id","hdnmainuom"+tx);
+				$(this).find('input[name="hdnfactor"]').attr("id","hdnfactor"+tx); 
+
+				if(xChkVatableStatus==1){ 
+					$(this).find('select[name="selitmvatyp"]').attr("id","selitmvatyp"+tx); 
+				}
+
+				$(this).find('input[name="txtcitmremx"]').attr("id","txtcitmremx"+tx);
+
+			});
+}
+
 			
-function ComputeAmt(nme){
+		function ComputeAmt(nme){
 			var r = nme.replace( /^\D+/g, '');
 			var nnet = 0;
 			var nqty = 0;
@@ -2283,7 +2305,7 @@ function chkform(){
 	}
 	// ACTIVATE MUNA LAHAT NG INFO
 	
-	$("#MyTable2 > tbody > tr").each(function() {				
+	/*$("#MyTable2 > tbody > tr").each(function() {				
 
 		var itmcde = $(this).find('input[type="hidden"][name="txtinfocode"]').val();
 		
@@ -2291,7 +2313,7 @@ function chkform(){
 		$(this).find('input[name="txtinfoval"]').attr("disabled", false);
 		$(this).find('input[type="button"][id="delinfo'+itmcde+'"]').attr("class", "btn btn-danger btn-xs");
 
-	});
+	});*/
 	
 	//alert(ISOK);
 
