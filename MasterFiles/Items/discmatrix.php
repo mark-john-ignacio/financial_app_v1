@@ -215,7 +215,7 @@
     			<input type="hidden" id="txtcode" name="txtcode" value=''>
                 <button type="button" id="btnSave" name="Save" class="btn btn-primary btn-sm">Add Detail</button>
                 <button type="button" id="btnUpdate" name="Update" class="btn btn-success btn-sm">Update Detail</button>
-                <button type="button" class="btn btn-danger  btn-sm" data-dismiss="modal">Cancel</button>
+                <button type="button" id='btnCancel' class="btn btn-danger  btn-sm" data-dismiss="modal">Cancel</button>
 	</div>
     
     </div>
@@ -303,6 +303,10 @@ mysqli_close($con);
 				})
 				
 			}
+		})
+
+		$("#btnCancel").click(function(){
+			itemStored = [];
 		})
 
 		$("#btnadd").click(function(){
