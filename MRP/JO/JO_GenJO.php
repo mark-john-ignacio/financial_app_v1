@@ -69,8 +69,8 @@
 		$xcver = 1;
 		$cnt = 0;
 
-		if(isset($totdcount[$rs1['citemno']])){
-			$xcver = $totdcount[$rs1['citemno']];
+		if(isset($totdcount[$itm])){
+			$xcver = $totdcount[$itm];
 		}else{
 			$xcver = 1;
 		}
@@ -80,9 +80,9 @@
 			$nxtlvl = intval($lvl)+1;
 			
 		
-			$totqty = floatval($qty)*floatval($rs2['nqty'.$xcver]);
+			$totqty = floatval($qty)*floatval($rs2['nqty1']);
 
-			if($itm==$rs2['cmainitemno']){
+			if($itm==$rs2['cmainitemno'] && $rs2['nversion']==$xcver){
 
 				//echo $rs2['cmainitemno'] ." : " . $rs2['citemno'] .": ".$rs2['ctype']." <br><br>";				
 				
