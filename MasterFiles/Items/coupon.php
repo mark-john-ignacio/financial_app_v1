@@ -359,6 +359,14 @@ mysqli_close($con);
 							$("#btnUpdate").show();
 							console.log(item)
 
+							if(item.approved != 0){
+								return alert("Discount has been approved")
+							}
+
+							if(item.cancelled != 0){
+								return alert("Discount has been cancelled")
+							}
+
 							$("#tranno").val(item.CouponNo)
 							$('#remarks').val(item.remarks);	
 							$('#txtlabel').val(item.label);
