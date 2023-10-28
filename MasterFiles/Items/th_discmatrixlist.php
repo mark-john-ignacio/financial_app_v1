@@ -7,7 +7,7 @@
     $company = $_SESSION['companyid'];
     $tranno = $_REQUEST['tranno'];
 
-    $sql = "SELECT a.*, b.remarks, b.label, b.deffective, b.ddue, b.matrix, c.citemdesc 
+    $sql = "SELECT a.*, b.remarks, b.label, b.deffective, b.ddue, b.matrix, c.citemdesc, b.approved, b.cancelled
     FROM discountmatrix_t a
     LEFT JOIN discountmatrix b ON a.compcode = b.compcode AND a.tranno = b.tranno
     LEFT JOIN items c ON a.compcode = c.compcode AND a.itemno = c.cpartno

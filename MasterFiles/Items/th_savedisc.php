@@ -61,13 +61,9 @@ if($cSINo==""){
 	}
 }
 else {
-
-
 			// while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-				
 			// 				$olddesc = $row['cgroupdesc'];
-			// 				$oldgrp = $row['cgroupno'];
-								
+			// 				$oldgrp = $row['cgroupno'];		
 			// }
 
 		
@@ -76,11 +72,9 @@ else {
 			} 
 			else{
 				
-				// if($olddesc!=$desc || $oldgrp!=$grp){
-										
+				// if($olddesc!=$desc || $oldgrp!=$grp){			
 					mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
 					values('$company','$cSINo','$preparedby',NOW(),'UPDATED','DICOUNTS','$compname','Update Record')");
-	
 				// }
 				
 				echo "True";
