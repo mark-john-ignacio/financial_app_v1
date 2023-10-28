@@ -40,8 +40,7 @@ if (mysqli_num_rows($result) != 0) {
     echo json_encode([
         'valid' => false,
         'data' => 0,
-        // 'type' => "PRICE"
-		'type' => $data
+        'type' => "PRICE"
     ]);
 }
 ?>
