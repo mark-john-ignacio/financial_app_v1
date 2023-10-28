@@ -56,20 +56,23 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <body style="padding:5px" onLoad="window.print();">
 <table width="100%" border="0" cellpadding="3" style="border-collapse:collapse;">
   <tr>
-    <td colspan="3" align="center"><font size="2"><b>SALES ORDER</b></font></td>
+    <td colspan="4" align="center"><font size="2"><b>SALES ORDER</b></font></td>
   </tr>
   <tr>
     <td width="100"><b>Customer: </b></td>
     <td><?php echo $CustName;?></td>
-		<td rowspan="2" align="center"><b>PO Date</b> <br> <?php echo date_format(date_create($PODate),"M d, Y");?></td>
+		<td width="100"><b>SO No.:</b></td>
+    <td><?=$csalesno?></td>
   </tr>
   <tr>
     <td width="100"><b>Control No.: </b></td>
     <td><?=$PONos;?></td>
+		<td width="100"><b>PO Date</b></td>
+    <td><?php echo date_format(date_create($PODate),"M d, Y");?></td>
   </tr>
 
   <tr>
-    <td colspan="3">
+    <td colspan="4">
     
       <table width="100%" border="1" cellpadding="3">
         <tr>
@@ -110,7 +113,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
   </tr>
 
   <tr>
-    <td colspan="3" align="center" style="padding-top: 20px">
+    <td colspan="4" align="center" style="padding-top: 20px">
       <table width="100%" border="1" cellpadding="3">
         <tr>
           <td height="50px" valign="top">Prepared By: </td>

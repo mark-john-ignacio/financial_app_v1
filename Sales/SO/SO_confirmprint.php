@@ -135,16 +135,19 @@ function PrintRed(x){
   <tr>
     <td width="100"><b>Customer: </b></td>
     <td><?php echo $CustName;?></td>
-		<td rowspan="2" align="center"><b>PO Date</b> <br><br> <?php echo date_format(date_create($PODate),"M d, Y");?></td>
+		<td width="100"><b>SO No.:</b></td>
+    <td><?=$csalesno?></td>
   </tr>
   <tr>
     <td width="100"><b>Control No.: </b></td>
     <td><?=$PONos;?></td>
+		<td width="100"><b>PO Date</b></td>
+    <td><?php echo date_format(date_create($PODate),"M d, Y");?></td>
   </tr>
 
  
   <tr>
-    <td colspan="3">
+    <td colspan="4">
     
     <table width="100%" border="1" cellpadding="3">
 				<tr>
