@@ -84,7 +84,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
           <th style="text-align: center" scope="col">Unit</th>
         </tr>
         <?php 
-          $sqlbody = mysqli_query($con,"select a.*,b.citemdesc from so_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$csalesno'");
+          $sqlbody = mysqli_query($con,"select a.*,b.citemdesc from so_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$csalesno' Order By a.nident");
 
           if (mysqli_num_rows($sqlbody)!=0) {
           $cntr = 0;
