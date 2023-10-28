@@ -1004,6 +1004,17 @@
         /**
          * Retrive Hold transaction Function
          */
+
+         $("#RetrieveList tbody").on("mouseenter", "tr", function() {
+            $(this).css("background-color", "#019aca");
+            $(this).css("color", "white");
+            $(this).css("cursor", "hand");
+        }).on("mouseleave", "tr", function() {
+            $(this).css("background-color", "");
+            $(this).css("color", "");
+            $(this).css("cursor", "pointer");
+        });
+
         $("#RetrieveList tbody").on("click", "tr", function() {
             let row = $(this).find('td:eq(0)').text()
 
