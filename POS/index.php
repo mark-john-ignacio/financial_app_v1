@@ -2,7 +2,7 @@
     if(!isset($_SESSION)){
         session_start();
     }
-    $_SESSION['pageid'] = "POS_void.php";
+    $_SESSION['pageid'] = "POS_View.php";
     $company = $_SESSION['companyid'];
 
     include('../Connection/connection_string.php');
@@ -169,6 +169,7 @@
                             <td colspan="2">
                                 <div class='input-group margin-bottom-sm'>
                                     <input type="text" name='barcode' id='barcode' class='form-control input-sm' placeholder="|||||||||||||||||||||||||||||||||||||||| Barcode " autocomplete="off">
+                                    <input type="text" name="tranno" id="tranno" class='form-control input-sm' style='display: none;'/>
                                     <span class='input-group-addon'><i class='fa fa-barcode fa-fw'></i></span>
                                 </div>
                                 
@@ -334,7 +335,7 @@
                     <table class='table' id='RetrieveList' style='width: 100%'>
                         <thead>
                             <tr>
-                                <th>&nbsp;</th>
+                                <!-- <th>&nbsp;</th> -->
                                 <th style="width: 30%;">Transaction</th>
                                 <th style="text-align: center;">Table</th>
                                 <th style="text-align: center;">Order Type</th>
@@ -347,7 +348,7 @@
                 <div class='modal-footer' style='display: Relative; width: 100%;'>
                     <div id='footer' style='right: 0px'>
                         <button class='btn btn-danger' id='VoidSubmit' style='padding: 5px; width: 1in;'>Void</button>
-                        <button class='btn btn-warning' id='RetrieveSubmit' style='padding: 5px; width: 1in; display:none;'>Retrieve</button>
+                        <!-- <button class='btn btn-warning' id='RetrieveSubmit' style='padding: 5px; width: 1in; display:none;'>Retrieve</button> -->
                     </div>
                 </div>
             </div>     
@@ -395,12 +396,12 @@
                                         <input type="text" name="couponinput" id="couponinput" class='form-control' readonly>
 
                                         <label for="subtotal">Total Tendered Amount</label>
-                                        <input type="text" name="subtotal" id="subtotal" class='form-control'>
+                                        <input type="text" name="subtotal" id="subtotal" class='form-control' readonly>
 
                                         <label for="ExchangeAmt">Exchange Amount</label>
-                                        <input type="text" id='ExchangeAmt' class='form-control' readonly/><br>
-                                        <button type="button" class="btn btn-sm btn-warning form-control " id='spcdBtn' name='spcdBtn'>Insert Special discountChange</button>
-                                        <button type="button" class="btn btn-sm btn-info form-control " id='couponBtn' name='couponBtn'>Insert Coupon</button>
+                                        <input type="text" id='ExchangeAmt' class='form-control' readonly/><br> 
+                                            <button type="button" class="btn btn-sm btn-warning form-control " id='spcdBtn' name='spcdBtn'>Insert Special discountChange</button>
+                                            <button type="button" class="btn btn-sm btn-info form-control " id='couponBtn' name='couponBtn'>Insert Coupon</button>
                                     </div>
 
                                     <div class='jqbtk-container' style='padding-top: 5px'>
@@ -742,6 +743,9 @@
         })
 
         $('#btnVoid').click(function(){
+            if(!checkAccess("POS_Void.php")){
+                return;
+            }
             if(itemStored.length === 0) {
                 return alert('Transaction is empty!')
             }
@@ -783,6 +787,7 @@
                        specialDisc.push({item: item.partno, type: type, name: name, person: person, id: id, amount: item.amount * (disc/100)})
                     }
                 })
+                alert("Special discount has been added!")
                 table_store(itemStored);
             })
         })
@@ -797,6 +802,10 @@
 
         //button for holding items
         $('#btnHold').on('click', function(){
+
+            if(!checkAccess("POS_Hold.php")){
+                return;
+            }
 
             let tranno, msg;
             var isSuccess = false;
@@ -814,6 +823,7 @@
             $.ajax({
                 url: 'Function/th_hold.php',
                 data: {
+                    tranno: $("#tranno").val(),
                     table: $('#table').val(),
                     type:  $('#orderType').val(),
                 },
@@ -872,6 +882,10 @@
          */
 
         $('#btnPay').click(function(){
+
+            if(!checkAccess("POS_Payment.php")){
+                return;
+            }
             if(itemStored.length === 0){
                 return alert('Transaction is empty! cannot proceed transaction');
             }
@@ -890,6 +904,7 @@
             $('#modal-body').modal('show')
             PaymentCompute()
         })
+
 
         // $('#discountAmt').change(function(){
         //     var disc = $(this).val();
@@ -936,6 +951,10 @@
          */
 
         $('#btnRetrieve').click(function(){
+            if(!checkAccess("POS_Retrieve.php")){
+                return;
+            }
+
             $.ajax({
                 url: 'Function/th_gethold.php',
                 dataType: 'json',
@@ -945,8 +964,9 @@
                         $('#RetrieveList > tbody').empty();
                         res.data.map((item, index) => {
                             console.log(item)
+                            $("#tranno").val(item.transaction)
                             $("<tr>").append( 
-                                $("<td>").html("<input type='checkbox' id='chkretrieve' name='chkretrieve' value='"+item.transaction+"' />"),
+                                // $("<td>").html("<input type='checkbox' id='chkretrieve' name='chkretrieve' value='"+item.transaction+"' />"),
                                 $("<td  >").text(item.transaction),
                                 $("<td align='center'>").text(item.table),
                                 $("<td align='center'>").text(item.ordertype),
@@ -968,17 +988,13 @@
         /**
          * Retrive Hold transaction Function
          */
-
-        $('#RetrieveSubmit').click(function(){
-            const itemRetrieve = [];
-            $("input:checkbox[name=chkretrieve]:checked").each(function(){
-                itemRetrieve.push($(this).val());
-            });
+        $("#RetrieveList tbody").on("click", "tr", function() {
+            let row = $(this).find('td:eq(0)').text()
 
             $.ajax({
                 url: 'Function/th_getholdtransaction.php',
                 data: {
-                    items: itemRetrieve
+                    items: row
                 },
                 dataType: 'json',
                 async: false,
@@ -1012,7 +1028,55 @@
             })
 
             $('#mymodal').modal('hide')
-        })
+        });
+
+        /**
+         * Retrieve Submit via checkbox
+         */
+        // $('#RetrieveSubmit').click(function(){
+        //     const itemRetrieve = [];
+        //     $("input:checkbox[name=chkretrieve]:checked").each(function(){
+        //         itemRetrieve.push($(this).val());
+        //     });
+
+        //     $.ajax({
+        //         url: 'Function/th_getholdtransaction.php',
+        //         data: {
+        //             items: itemRetrieve
+        //         },
+        //         dataType: 'json',
+        //         async: false,
+        //         success: function(res){
+        //             if(res.valid){
+        //                 res.data.map((item, index) => {
+        //                     duplicate(item, parseInt(item.quantity))
+        //                     $("#orderType").each(function(){
+        //                         $(this).children('option').each(function(){
+        //                             if(item.ordertype == $(this).val()) $(this).prop('selected', true)
+        //                         })
+        //                     })
+        //                     $("#table").each(function(){
+        //                         $(this).children('option').each(function(){
+        //                             if(item.table == $(this).val()) $(this).prop('selected', true)
+        //                         })
+        //                     })
+        //                     // $('#orderType').find(':selected').val(res.data.orderType)
+        //                     // $('#table').find(':selected').val(res.data.table)
+        //                 })
+        //                 alert("Item Retrieved")
+        //                 console.log(res )
+        //                 table_store(itemStored);
+        //             } else {
+        //                 console.log(res.msg)
+        //             }
+        //         },
+        //         error: function(res){
+        //             console.log(res)
+        //         }
+        //     })
+
+        //     $('#mymodal').modal('hide')
+        // })
 
 
         $('#tendered').on('keyup', function(){
@@ -1093,6 +1157,7 @@
             let gross = $('#gross').text()
             let net = $("#net").text()
             let vat = $("#vat").text()
+            let transaction = $("#tranno").val()
             let tranno = '';
             
             if(parseFloat(total) <= parseFloat(subtotal)){
@@ -1100,6 +1165,7 @@
                     url: 'Function/pos_save.php',
                     type: 'post',
                     data: {
+                        tranno: transaction ,
                         amount: gross,
                         net: net,
                         vat: vat,
@@ -1515,4 +1581,22 @@
     function closeModal(modal){
         $("#"+modal).modal("hide");
     }
+
+    function checkAccess(id){
+			var flag;
+			$.ajax ({
+				url: "Function/th_useraccess.php",
+				data: { id: id },
+                dataType: 'json',
+				async: false,
+				success: function(res) {
+                    flag = res.valid
+                    if(!res.valid){
+                        console.log(res.msg)
+                    }
+				}
+			});
+			
+			return flag ;
+		}
 </script>
