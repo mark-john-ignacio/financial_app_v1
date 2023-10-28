@@ -73,7 +73,7 @@ include('../../include/accessinner.php');
 				?>
  					<tr>
 
-						<td width="100"><a href="javascript:;" onClick="editgrp('<?php echo $row['ctranno'];?>','<?php echo $row['cdescription'];?>','<?php echo $row['clabel'];?>','<?php echo $row['nvalue'];?>','<?php echo date_format(date_create($row['deffectdate']),"m/d/Y");?>')"><?php echo $row['ctranno'];?></a></td>
+						<td width="100"><a href="javascript:;" onClick="editgrp('<?php echo $row['ctranno'];?>','<?php echo $row['cdescription'];?>','<?php echo $row['clabel'];?>','<?php echo $row['nvalue'];?>','<?php echo date_format(date_create($row['deffectdate']),"m/d/Y");?>', '<?= $row['type']?>', <?= $row['lapproved'] ?>, <?= $row['lcancelled'] ?>)"><?php echo $row['ctranno'];?></a></td>
                         <td><?php echo $row['cdescription'];?>
                         	<div class="itmalert alert alert-danger nopadding" id="itm<?php echo $row['ctranno'];?>" style="display: inline"></div>
                         </td>
@@ -168,9 +168,9 @@ include('../../include/accessinner.php');
 
 			<div class="cgroup col-xs-3 nopadwtop">
 				<label for="discount">PERCENT</label>
-				<input type="radio" name='discount[]' id='discount' value="PERCENT" />
+				<input type="radio" name='discount[]' class='rad' id='discount' value="PERCENT" />
 				<label for="price">PRICE</label>
-				<input type="radio" name='discount[]' id='price' value="PRICE" />
+				<input type="radio" name='discount[]' class='rad' id='price' value="PRICE" />
 			</div>
         </div>   
         
@@ -286,7 +286,7 @@ mysqli_close($con);
 			var vareffect = $('#effect_date').val();
 			var varcode = $('#txtcode').val();
 			var type = $("input[type='radio']:checked").val();
-						
+						 
 			$.ajax ({
 				url: "th_savedisc.php",
 				data: { code:varcode, effdte: vareffect, desc: vardesc, lbl: varlabel, val: varvalz, type: type},
@@ -310,8 +310,16 @@ mysqli_close($con);
 		
 	});
 	
-	function editgrp(code,desc,lbl,val,effdte){
+	function editgrp(code,desc,lbl,val,effdte, types, approve, cancel){
 		 var x = chkAccess('DISC_Edit');
+
+		 if(cancel === 1){
+			return alert("Discount has been Cancelled. cannot update");
+		 }
+
+		if(approve === 1){
+			return alert("Discount has been Approved. cannot update");
+		}
 		 
 		 if(x.trim()=="True"){
 			$("#btnSave").hide();
@@ -322,6 +330,9 @@ mysqli_close($con);
 			$('#txtlabel').val(lbl);
 			$('#txtvalue').val(val);
 			$('#effect_date').val(effdte);
+			$(".rad").each(function(){
+				if($(this).val() === types) return $(this).prop("checked",true) 
+			})
 								
 			$('#myModalLabel').html("<b>Update Discounts Detail</b>");
 			$('#myModal').modal('show');
@@ -354,6 +365,7 @@ mysqli_close($con);
 						$("#itm"+code).html("<b>SUCCESS: </b> Status changed to "+stat);
 						$("#itm"+code).attr("class", "itmalert alert alert-success nopadding")
 						$("#itm"+code).show();
+						location.reload()
 
 					}
 				}
@@ -373,6 +385,7 @@ mysqli_close($con);
 					$("#AlertModal").modal('show');
 					
 					$("#msg"+num).html(msg);
+					location.reload()
 			}
 		});
 	

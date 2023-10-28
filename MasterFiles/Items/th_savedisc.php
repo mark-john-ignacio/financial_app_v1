@@ -63,25 +63,25 @@ if($cSINo==""){
 else {
 
 
-			while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+			// while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 				
-							$olddesc = $row['cgroupdesc'];
-							$oldgrp = $row['cgroupno'];
+			// 				$olddesc = $row['cgroupdesc'];
+			// 				$oldgrp = $row['cgroupno'];
 								
-			}
+			// }
 
 		
-			if (!mysqli_query($con,"UPDATE discounts set `cdescription` = '$desc', clabel = '$label', `nvalue` = $val, `deffectdate` = STR_TO_DATE('$dDate', '%m/%d/%Y)', `type` = '$type' where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
+			if (!mysqli_query($con,"UPDATE discounts set `cdescription` = '$desc', `clabel` = '$label', `nvalue` = '$val', `deffectdate` = STR_TO_DATE('$dDate', '%m/%d/%Y'), `type`='$type' where compcode = '$company' and ctranno = '$cSINo'")) {
 				printf("Errormessage: %s\n", mysqli_error($con));
 			} 
 			else{
 				
-				if($olddesc!=$desc || $oldgrp!=$grp){
+				// if($olddesc!=$desc || $oldgrp!=$grp){
 										
 					mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-					values('$company','$code','$preparedby',NOW(),'UPDATED','DICOUNTS','$compname','Update Record')");
+					values('$company','$cSINo','$preparedby',NOW(),'UPDATED','DICOUNTS','$compname','Update Record')");
 	
-				}
+				// }
 				
 				echo "True";
 			}
