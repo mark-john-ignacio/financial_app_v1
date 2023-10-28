@@ -524,7 +524,22 @@
     </div>
 
     <!-- Alert Message Modal -->
-
+    <div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+        <div class="vertical-alignment-helper">
+            <div class="modal-dialog vertical-align-top">
+                <div class="modal-content">
+                <div class="alert-modal-danger">
+                    <p id="AlertMsg"></p>
+                    <p>
+                        <center>
+                            <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+                        </center>
+                    </p>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
 
@@ -787,6 +802,7 @@
                        specialDisc.push({item: item.partno, type: type, name: name, person: person, id: id, amount: item.amount * (disc/100)})
                     }
                 })
+                PaymentCompute()
                 alert("Special discount has been added!")
                 table_store(itemStored);
             })
@@ -1593,10 +1609,19 @@
                     flag = res.valid
                     if(!res.valid){
                         console.log(res.msg)
+                        AlertMsg(res.msg, "RED")
                     }
 				}
 			});
-			
 			return flag ;
 		}
+
+    function AlertMsg(msg, color = "#008000"){
+        $("#AlertModal").modal("show")
+        // $(".alert-modal-danger").css("background-color", color)
+        $("#AlertMsg").html(msg)
+        setTimeout(function() {
+            location.reload()
+        }, 5000)
+    }
 </script>

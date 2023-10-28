@@ -10,7 +10,7 @@
     $user = mysqli_real_escape_string($con, $_REQUEST['user']);
     $password = mysqli_real_escape_string($con, $_REQUEST['password']);
 
-    $sql = "SELECT a.*, b.pageid FROM users a LEFT JOIN users_access b on a.Userid = b.userid WHERE a.Userid = '$user' AND b.pageid = 'POS_void.php' ORDER BY a.Userid ASC LIMIT 1";
+    $sql = "SELECT a.*, b.pageid FROM users a LEFT JOIN users_access b on a.Userid = b.userid WHERE a.Userid = '$user' AND b.pageid = 'POS_Void.php' ORDER BY a.Userid ASC LIMIT 1";
     // $sql = "SELECT a.* FROM users a WHERE a.Userid = '$user' ORDER BY a.Userid ASC LIMIT 1";
     $query = mysqli_query($con, $sql);
     
