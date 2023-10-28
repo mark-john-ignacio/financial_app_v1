@@ -512,10 +512,16 @@ mysqli_close($con);
 							$("#btnSave").hide();
 							$("#searchitem").hide();
 							$("#btnUpdate").show();
-							console.log(item)
+
+							if(item.approved != 0){
+								return alert("Discount has been approved")
+							}
+
+							if(item.cancelled != 0){
+								return alert("Discount has been cancelled")
+							}	
 
 							itemStored.push(item)
-
 							// $("#pricematrix").each(function(){
                             //     $(this).children('option').each(function(){
                             //         if(item.matrix == $(this).val()) $(this).prop('selected', true)
