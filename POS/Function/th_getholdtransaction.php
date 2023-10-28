@@ -5,11 +5,12 @@
 
     include('../../Connection/connection_string.php');
     $company = $_SESSION['companyid'];
-    $item = implode("','",$_REQUEST['items']);
+    // $item = implode("','",$_REQUEST['items']);
+    $item = $_REQUEST['items'];
 
     $sql = "SELECT a.*, b.table, b.ordertype FROM pos_hold_t a
     LEFT JOIN pos_hold b ON a.compcode = b.compcode AND a.transaction = b.transaction
-    WHERE a.compcode = '$company' AND a.transaction IN ('". $item ."')";
+    WHERE a.compcode = '$company' AND a.transaction = '$item'" ;
     $query = mysqli_query($con, $sql);
 
     $data = [];
