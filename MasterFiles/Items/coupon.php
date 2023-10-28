@@ -422,6 +422,11 @@ mysqli_close($con);
 
 	}
 
+	function showAlert(msg){
+		$("#AlertModal").modal("show")
+		$("#AlertModal").html(msg)
+		
+	}
 
 	function trans(x,num,msg){
 	
