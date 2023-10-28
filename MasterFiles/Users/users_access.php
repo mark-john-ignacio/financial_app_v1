@@ -666,7 +666,19 @@ xmlhttp.send();
         <div style="padding-left:10px;"> 
         <div class="col-xs-12 nopadwleft">
          	<div class="col-xs-2 nopadding">
-            <label><input type="checkbox" name="chkAcc[]" value="POS_void.php" <?=(in_array("POS_void.php",@$arrpgist)) ? "checked" : "";?>> Void </label>
+            <label><input type="checkbox" name="chkAcc[]" value="POS_View.php" <?=(in_array("POS_View.php",@$arrpgist)) ? "checked" : "";?>> View </label>
+          </div>
+          <div class="col-xs-2 nopadding">
+            <label><input type="checkbox" name="chkAcc[]" value="POS_Payment.php" <?=(in_array("POS_Payment.php",@$arrpgist)) ? "checked" : "";?>> POS Payment </label>
+          </div>
+          <div class="col-xs-2 nopadding">
+            <label><input type="checkbox" name="chkAcc[]" value="POS_Hold.php" <?=(in_array("POS_Hold.php",@$arrpgist)) ? "checked" : "";?>> POS Hold </label>
+          </div>
+          <div class="col-xs-2 nopadding">
+            <label><input type="checkbox" name="chkAcc[]" value="POS_Retrieve.php" <?=(in_array("POS_Retrieve.php",@$arrpgist)) ? "checked" : "";?>> POS Retrieve </label>
+          </div>
+          <div class="col-xs-2 nopadding">
+            <label><input type="checkbox" name="chkAcc[]" value="POS_Void.php" <?=(in_array("POS_Void.php",@$arrpgist)) ? "checked" : "";?>> POS Void </label>
           </div>
         </div>
         </div>

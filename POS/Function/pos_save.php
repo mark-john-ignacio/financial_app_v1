@@ -53,7 +53,14 @@
     $type = mysqli_real_escape_string($con, $_POST['order']);
     $table = mysqli_real_escape_string($con, $_POST['table']);
     $coupon = mysqli_real_escape_string($con, $_POST['coupon']);
+    $tranno = mysqli_real_escape_string($con, $_POST['tranno']);
 
+    if($tranno != ""){
+        mysqli_query($con, "DELETE FROM pos_hold WHERE `compcode` = '$company' AND `transaction` = '$tranno'");
+        mysqli_query($con, "DELETE FROM pos_hold_t WHERE `compcode` = '$company' AND `transaction` = '$tranno'");
+    }
+
+    
     /**
      * Query for Inserting into database
      */

@@ -91,7 +91,7 @@
 									echo match($row['status']){
 										"ACTIVE" => "<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('". $row['CouponNo'] ."','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>",
 										"INACTIVE" => "<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('". $row['CouponNo'] ."','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>",
-										"CLAIMED" =>"<span class='label label-warning'>Claimed</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>"
+										"CLAIMED" =>"<span class='label label-danger'>Claimed</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>"
 									}
 								?>
 								</div>

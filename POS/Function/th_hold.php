@@ -11,6 +11,7 @@
 
     $table = $_REQUEST['table'] != null ? $_REQUEST['table'] : null;
     $orderType = $_REQUEST['type'] != null ? $_REQUEST['type'] : null;
+    $tranno = $_REQUEST['tranno'];
     $dates = date('Y-m-d h:i:s');
     
     $month = date('m');
@@ -45,8 +46,17 @@
         }
     }
 
+    $sql = "SELECT * FROM pos_hold WHERE `compcode` = '$company' AND  `transaction` = '$tranno'";
+    $query = mysqli_query($con, $sql);
+    if(mysqli_num_rows($query) != 0){
+        $row = $query -> fetch_assoc();
+        $transaction = $row['transaction'];
+        mysqli_query($con, "DELETE FROM pos_hold WHERE `compcode` = '$company' AND `transaction` = '$tranno'");
+        mysqli_query($con, "DELETE FROM pos_hold_t WHERE `compcode` = '$company' AND `transaction` = '$tranno'");
+    }
+
     $sql = "INSERT INTO pos_hold (`compcode`, `transaction`, `table`, `ordertype` , `trandate`) 
-    VALUES ('$company', '$transaction', '$table', '$orderType', '$dates')";
+            VALUES ('$company', '$transaction', '$table', '$orderType', '$dates')";
 
     if(mysqli_query($con, $sql)){
         echo json_encode([
