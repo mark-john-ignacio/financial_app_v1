@@ -211,7 +211,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										&nbsp;&nbsp;
 									<div id="statmsgz" style="display:inline"></div>
 								</td>
-								<tH>PO No.:</tH>
+								<tH>Control No.:</tH>
 								<td style="padding:2px;">
 									<div class="col-xs-11 nopadding">
 										<input type='text' class="form-control input-sm" id="txtcPONo" name="txtcPONo" autocomplete="off" value="<?php echo $cCPONo; ?>" /> 

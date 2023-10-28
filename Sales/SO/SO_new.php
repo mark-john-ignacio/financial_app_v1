@@ -135,7 +135,7 @@ function listcurrencies(){ //API for currency list
 													</div> 
 										</div>
 									</td>
-									<tH width="150">PO No.:</tH>
+									<tH width="150">Control No.:</tH>
 									<td style="padding:2px;">
 									<div class="col-xs-11 nopadding">
 										<input type='text' class="form-control input-sm" id="txtcPONo" name="txtcPONo" value="" autocomplete="off" />

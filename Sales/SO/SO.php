@@ -90,7 +90,7 @@
 				<thead>
 					<tr>
 						<th>SO No</th>
-						<th>PO No</th>
+						<th>Control No</th>
 						<th>Reference</th>
 						<th>Customer</th>
 						<th>Gross</th>
