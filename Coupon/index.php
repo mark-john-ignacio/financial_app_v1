@@ -32,7 +32,11 @@
         
         <div style="padding: 20%">
             <p class='input-sm' style="color: #098; font-weight: bold">Coupon Activation</p>
-            <input type="text" id="coupon" name="coupon" placeholder="Enter your coupon code ..." class="form-control input-sm" />
+            <div class='input-group margin-bottom-sm' >
+                <input type="text" id="coupon" name="coupon" placeholder="Enter your coupon code ..." class='form-control input-sm' />
+                <span class='input-group-addon nopadding'><button class="btn btn-info btn-xs " id='activateBtn'>Activate</button></span>
+            </div>
+            <p id='msg'></p>
         </div>
     </div>
 </body>
@@ -40,15 +44,22 @@
 
 <script type='text/javascript'>
     $(document).ready(function(){
-        $('#coupon').on('keyup', function(){
-            let coupon = $(this).val();
+        $('#activateBtn').on('click', function(){
+            let coupon = $("#coupon").val();
             $.ajax({
                 url: "th_coupon.php",
-                data: {coupon: coupon},
+                data: {coupon: coupon.trim()},
                 dataType: 'json',
                 async: false,
                 success: function(res){
-                    console.log(res.msg)
+                    if(res.valid){
+                        $('#msg').text(res.msg)
+                        $('#msg').css('color', 'Green')
+                    } else {
+                        $('#msg').text(res.msg)
+                        $('#msg').css('color', 'RED')
+                    }
+                    location.reload()
                 },
                 error: function(res){
                     console.log(res)

@@ -178,11 +178,11 @@
 
         <div class="col-xs-12">
 			<div class="col-xs-3 nopadwtop" style='padding-top: 3px !important; padding-bottom: 0 !important; margin: 0 !important;'>
-                <b>Expired Date: </b>
+                <b>Coupon Days: <br><i>/* after activation of the coupon expiration should be applied</i></b>
             </div>
             
             <div class="col-xs-9 nopadwtop"  style='padding-top: 3px !important; padding-bottom: 0 !important; margin: 0 !important;'>
-                <input type="text" class="datepicker form-control input-sm" id="expired" name="expired" value='<?php echo date("m/d/Y");?>'>
+                <input type="number" class="form-control input-sm" id="days" name="days" placeholder="Enter Days after expire...">
             </div>
         </div> 
          
@@ -277,7 +277,7 @@ mysqli_close($con);
 			let remarks = $('#remarks').val();
 			let barcode = $('#barcode').val();
 			let price = $("#Price").val();
-			let expired = $('#expired').val();
+			let days = $('#days').val();
 
 			$.ajax({
 				url: "th_couponsave.php",
@@ -286,7 +286,7 @@ mysqli_close($con);
 					remarks: remarks,
 					barcode: barcode,
 					priced: price,
-                    expired: expired
+                    days: days
 				},
 				dataType: 'json',
 				async: false,
@@ -311,7 +311,7 @@ mysqli_close($con);
 			let remarks = $('#remarks').val();
             let barcode = $('#barcode').val();
             let price = $('#Price').val();
-			let expired = $('#expired').val();
+			let days = $('#days').val();
 			
 
 			$.ajax({
@@ -322,7 +322,7 @@ mysqli_close($con);
 					label: label,
 					barcode: barcode,
 					priced: price,
-                    expired: expired
+                    days: days
 				},
 				dataType: 'json',
 				async: false,
@@ -371,7 +371,7 @@ mysqli_close($con);
 							$('#remarks').val(item.remarks);	
 							$('#txtlabel').val(item.label);
 							$('#Price').val(item.price);
-							$("#expired").val(item.expired);
+							$("#days ").val(item.days);
 							$('#barcode').val(item.barcode);
 
 							$('#myModalLabel').html("<b>Update Coupon Detail</b>");
@@ -397,25 +397,28 @@ mysqli_close($con);
 			$.ajax ({
 				url: "th_couponstat.php",
 				data: { code: code,  stat: stat },
+				dataType: 'json',
 				async: false,
 				success: function( data ) {
-					if(data.trim()!="True"){
-						$("#itm"+code).html("<b>Error: </b>"+ data);
-						$("#itm"+code).attr("class", "itmalert alert alert-danger nopadding")
-						$("#itm"+code).show();
-					}
-					else{
-					  if(stat=="ACTIVE"){
-						$("#itmstat"+code).html("<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>");
-					  }else{
-						 $("#itmstat"+code).html("<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>");
-					  }
+					if(data.valid){
+						if(stat=="ACTIVE"){
+							$("#itmstat"+code).html("<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>");
+						}else{
+							$("#itmstat"+code).html("<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>");
+						}
 						
 						$("#itm"+code).html("<b>SUCCESS: </b> Status changed to "+stat);
 						$("#itm"+code).attr("class", "itmalert alert alert-success nopadding")
 						$("#itm"+code).show();
-
 					}
+					else{
+						$("#itm"+code).html("<b>Error: </b>"+ data.msg);
+						$("#itm"+code).attr("class", "itmalert alert alert-danger nopadding")
+						$("#itm"+code).show();
+					}
+					
+				}, error: function(res){
+					console.log(res)
 				}
 			
 			});
@@ -424,8 +427,7 @@ mysqli_close($con);
 
 	function showAlert(msg){
 		$("#AlertModal").modal("show")
-		$("#AlertModal").html(msg)
-		
+		$("#AlertMsg").html(msg) 
 	}
 
 	function trans(x,num,msg){
