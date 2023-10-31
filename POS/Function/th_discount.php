@@ -25,7 +25,7 @@ $sql = "SELECT A.discount, A.type
 		FROM discountmatrix_t A
 		LEFT JOIN discountmatrix B ON A.compcode = B.compcode AND A.tranno = B.tranno
 		WHERE A.compcode = '$company' AND A.itemno = '$item' AND A.unit = '$unit' AND B.approved = 1 
-		ORDER BY B.deffective DESC LIMIT 1";
+		ORDER BY B.ddate DESC LIMIT 1";
 
 $result = mysqli_query($con, $sql);
 
