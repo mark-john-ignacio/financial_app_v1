@@ -152,7 +152,7 @@ $company = $_SESSION['companyid'];
 		$(document).keydown(function(e) {	 
 			if(e.keyCode == 112) { //F1
 				e.preventDefault();
-			window.location = "Journal_new.php";
+			window.location = "ARAdj_new.php";
 			}
 		});
 

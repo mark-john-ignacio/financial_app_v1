@@ -48,7 +48,7 @@
 
 			<div class="col-xs-12 nopadding">
 				<div class="col-xs-5 nopadding">
-					<button type="button" data-toggle="modal" class="btn btn-primary btn-sm" id="btnadd" name="btnadd"><i class="fa fa-file-text-o" aria-hidden="true"></i> &nbsp; Create New </button>
+					<button type="button" data-toggle="modal" class="btn btn-primary btn-sm" id="btnadd" name="btnadd"><i class="fa fa-file-text-o" aria-hidden="true"></i> &nbsp; Create New (F1)</button>
 					<a href="currency_xls.php" class="btn btn-success btn-sm"><i class="fa fa-file-excel-o"></i> &nbsp; Export To Excel</a>
 				</div>
 
@@ -324,6 +324,14 @@
 		})
 		
 	});
+
+	$(document).keydown(function(e) {	
+		 
+		 if(e.keyCode == 112) { //F1
+			 e.preventDefault();
+			 $("#btnadd").click();
+		 }
+	 });
 
 	function editgrp(id,unit,symbol,cntry,nrate){
 		 var x = chkAccess('Currency_Edit.php');

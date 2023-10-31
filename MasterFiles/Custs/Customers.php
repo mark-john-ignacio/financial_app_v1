@@ -110,7 +110,7 @@ include('../../include/access2.php');
 
 	$(document).keydown(function(e) {
 		if(e.keyCode == 112){//F1
-				if(document.getElementById("btnNew").className=="btn btn-primary btn-md"){
+				if(document.getElementById("btnNew").className=="btn btn-primary btn-sm"){
 					e.preventDefault();
 					window.location.href='Customers_new.php';
 				}

@@ -200,105 +200,112 @@ mysqli_close($con);
 </body>
 </html>
 
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
+  <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
 	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
 	
 	<script>
-	$(function(){
-		$('#example').DataTable();
-		$("#add_err").hide();
-		$(".itmalert").hide();
+		$(function(){
+			$('#example').DataTable();
+			$("#add_err").hide();
+			$(".itmalert").hide();
 
-		// Adding new user
-		$("#btnadd").on("click", function() {
-		 var x = chkAccess('CUSGROUPS_New.php');
-		 
-		 if(x.trim()=="True"){
-			$("#btnSave").show();
-			$("#btnUpdate").hide();
-
-			$("#txtccode").attr('readonly',false);
-						
-			$("#txtccode").val("");
-			$("#txtcdesc").val("");			
-			
-			$('#myModalLabel').html("<b>Add New Group Detail</b>");
-			$('#myModal').modal('show');
-		 } else {
-			 $("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
-			 $("#AlertModal").modal('show');
-
-		 }
-		 
-		});
-		
-		$("#txtccode").on("keyup", function() {
-			// Check if Code exist
-			$.ajax ({
-				url: "th_chkgrpcode.php",
-				data: { code: $(this).val(), grp: $("#selgrpno").val() },
-				async: false,
-				success: function( data ) {
-					if(data.trim()!="False"){
-						$("#add_err").html("<b>ERROR: </b>"+data);
-						$("#add_err").show();
-					}
-					else{
-						$("#add_err").html("");
-						$("#add_err").hide();
-					}
-				}
-			
-			});
-		});
-
-		$("#txtccode").on("blur", function() {
-			// Check if Code exist
-			$.ajax ({
-				url: "th_chkgrpcode.php",
-				data: { code: $(this).val(), grp: $("#selgrpno").val() },
-				async: false,
-				success: function( data ) {
-					if(data.trim()!="False"){
-						$("#txtccode").val("").change();
-						$("#txtccode").focus();
-					}
-					else{
-						$("#add_err").html("");
-						$("#add_err").hide();
-					}
-				}
-			
-			});
-		});
-		
-		$("#btnSave, #btnUpdate").on("click", function() {
-			var vargrp = $('#selgrpno').val();
-			var varcode = $('#txtccode').val();
-			var vardesc = $('#txtcdesc').val();
-			
-			$.ajax ({
-				url: "th_savegrp.php",
-				data: { grp: vargrp,  code: varcode, desc: vardesc },
-				async: false,
-				success: function( data ) {
-					if(data.trim()=="True"){
-						
-						$('#myModal').modal('hide');
-						location.reload();
+			// Adding new user
+			$("#btnadd").on("click", function() {
+				var x = chkAccess('CUSGROUPS_New.php');
 				
-					}
-					else {
-						$("#add_err").html("<b>ERROR: </b>"+data);
-						$("#add_err").show();
-					}
+				if(x.trim()=="True"){
+					$("#btnSave").show();
+					$("#btnUpdate").hide();
+
+					$("#txtccode").attr('readonly',false);
+								
+					$("#txtccode").val("");
+					$("#txtcdesc").val("");			
+					
+					$('#myModalLabel').html("<b>Add New Group Detail</b>");
+					$('#myModal').modal('show');
+				} else {
+					$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+					$("#AlertModal").modal('show');
+
 				}
 			
 			});
+			
+			$("#txtccode").on("keyup", function() {
+				// Check if Code exist
+				$.ajax ({
+					url: "th_chkgrpcode.php",
+					data: { code: $(this).val(), grp: $("#selgrpno").val() },
+					async: false,
+					success: function( data ) {
+						if(data.trim()!="False"){
+							$("#add_err").html("<b>ERROR: </b>"+data);
+							$("#add_err").show();
+						}
+						else{
+							$("#add_err").html("");
+							$("#add_err").hide();
+						}
+					}
+				
+				});
+			});
 
-		})
-		
-	});
+			$("#txtccode").on("blur", function() {
+				// Check if Code exist
+				$.ajax ({
+					url: "th_chkgrpcode.php",
+					data: { code: $(this).val(), grp: $("#selgrpno").val() },
+					async: false,
+					success: function( data ) {
+						if(data.trim()!="False"){
+							$("#txtccode").val("").change();
+							$("#txtccode").focus();
+						}
+						else{
+							$("#add_err").html("");
+							$("#add_err").hide();
+						}
+					}
+				
+				});
+			});
+			
+			$("#btnSave, #btnUpdate").on("click", function() {
+				var vargrp = $('#selgrpno').val();
+				var varcode = $('#txtccode').val();
+				var vardesc = $('#txtcdesc').val();
+				
+				$.ajax ({
+					url: "th_savegrp.php",
+					data: { grp: vargrp,  code: varcode, desc: vardesc },
+					async: false,
+					success: function( data ) {
+						if(data.trim()=="True"){
+							
+							$('#myModal').modal('hide');
+							location.reload();
+					
+						}
+						else {
+							$("#add_err").html("<b>ERROR: </b>"+data);
+							$("#add_err").show();
+						}
+					}
+				
+				});
+
+			})
+			
+		});
+
+		$(document).keydown(function(e) {	
+		 if(e.keyCode == 112) { //F1
+			 e.preventDefault();
+			 $("#btnadd").click();
+		 }
+	 });
 	
 	function editgrp(grp,code,desc){
 		var x = chkAccess('CUSGROUPS_Edit.php');

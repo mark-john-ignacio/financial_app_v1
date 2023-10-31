@@ -305,6 +305,14 @@ mysqli_close($con);
 		})
 		
 	});
+
+	$(document).keydown(function(e) {	
+		 
+		 if(e.keyCode == 112) { //F1
+			 e.preventDefault();
+			 $("#btnadd").click();
+		 }
+	 });
 	
 	function editgrp(grp,code,desc){
 		var x = chkAccess('Groupings_Edit.php');
