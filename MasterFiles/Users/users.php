@@ -604,6 +604,14 @@ if(@$lvlcompute==1){
 			
 	});
 	
+	$(document).keydown(function(e) {	
+		 
+		 if(e.keyCode == 112) { //F1
+			 e.preventDefault();
+			 $("#btnadd").click();
+		 }
+	 });
+	 
 	//preview of image
 	function imageIsLoaded(e) {
 		$("#file").css("color","green");

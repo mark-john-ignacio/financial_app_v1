@@ -193,10 +193,10 @@ function editfrm(x,y){
 
 	$(document).keydown(function(e) {
 		if(e.keyCode == 112){//F1
-				if(document.getElementById("btnNew").className=="btn btn-primary btn-md"){
-					e.preventDefault();
-					window.location.href='Items_new.php';
-				}
+			if(document.getElementById("btnNew").className=="btn btn-primary btn-sm"){
+				e.preventDefault();
+				window.location.href='Items_new.php';
+			}
 		}
 	});
 	

@@ -5,9 +5,9 @@
 
 	include('../../Connection/connection_string.php');
 
-	$column = array('A.cacctno', 'A.cacctid', 'A.cacctdesc', 'A.ctype', 'A.ccategory', 'A.mainacct', 'A.cFinGroup', 'A.lcontra', 'A.nlevel');
+	$column = array('A.cacctid', 'A.cacctdesc', 'A.ccategory', 'A.ctype', 'A.nbalance');
 
-	$query = "SELECT (CASE WHEN A.mainacct='0' OR ctype='General' THEN A.cacctid ELSE A.mainacct END) as 'main', A.cacctno, A.cacctid, A.cacctdesc, A.ctype, A.ccategory, A.mainacct, A.cFinGroup, A.lcontra, A.nlevel FROM `accounts` A where A.compcode='".$_SESSION['companyid']."' ";
+	$query = "SELECT (CASE WHEN A.mainacct='0' OR ctype='General' THEN A.cacctid ELSE A.mainacct END) as 'main', A.cacctno, A.cacctid, A.cacctdesc, A.ctype, A.ccategory, A.mainacct, A.cFinGroup, A.lcontra, A.nlevel, A.nbalance FROM `accounts` A where A.compcode='".$_SESSION['companyid']."' ";
 
 	if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
 	{
@@ -63,6 +63,7 @@
 				$sub_array[] = $rsz['cFinGroup']; //6
 				$sub_array[] = $rsz['lcontra']; //7
 				$sub_array[] = $rsz['nlevel']; //8
+				$sub_array[] = $rsz['nbalance']; //9
 				$data[] = $sub_array;
 
 				if($rsz['ctype']=="General"){
@@ -85,6 +86,7 @@
 			$sub_array[] = $row['cFinGroup']; //6
 			$sub_array[] = $row['lcontra']; //7
 			$sub_array[] = $row['nlevel']; //8
+			$sub_array[] = $row['nbalance']; //9
 			$data[] = $sub_array;
 
 			if($row['ctype']=="General"){

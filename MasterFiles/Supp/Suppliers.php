@@ -47,7 +47,7 @@ function editfrm(x){
 
 			<div class="col-xs-12 nopadding">
 				<div class="col-xs-7 nopadding">
-					<button type="button" class="btn btn-primary btn-sm" onClick="location.href='Suppliers_new.php'"><i class="fa fa-file-text-o" aria-hidden="true"></i> &nbsp; Create New (F1)</button>
+					<button type="button" class="btn btn-primary btn-sm" onClick="location.href='Suppliers_new.php'" name="btnNew" id="btnNew"><i class="fa fa-file-text-o" aria-hidden="true"></i> &nbsp; Create New (F1)</button>
 
 					<a href="Suppliers_xls.php" class="btn btn-success btn-sm"><i class="fa fa-file-excel-o"></i> &nbsp; Export To Excel</a>
 				</div>
@@ -108,10 +108,10 @@ function editfrm(x){
 
 	$(document).keydown(function(e) {
 		if(e.keyCode == 112){//F1
-				if(document.getElementById("btnNew").className=="btn btn-primary btn-md"){
-					e.preventDefault();
-					window.location.href='Suppliers_new.php';
-				}
+			if(document.getElementById("btnNew").className=="btn btn-primary btn-sm"){
+				e.preventDefault();
+				window.location.href='Suppliers_new.php';
+			}
 		}
 	});
 

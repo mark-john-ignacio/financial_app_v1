@@ -310,6 +310,14 @@ a.info:hover span{ /*the span will display just on :hover state*/
 		})
 		
 	});
+
+	$(document).keydown(function(e) {	
+		 
+		 if(e.keyCode == 112) { //F1
+			 e.preventDefault();
+			 $("#btnadd").click();
+		 }
+	 });
 	
 	function editgrp(code,desc){
 		 var x = chkAccess('UOM_Edit.php');

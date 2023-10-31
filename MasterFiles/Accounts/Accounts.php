@@ -60,7 +60,7 @@ include('../../include/access2.php');
            			 
 
 				<div class="col-xs-12 nopadding">
-					<div class="col-xs-5 nopadding">
+					<div class="col-xs-6 nopadding">
 						<button type="button" data-toggle="modal" class="btn btn-primary btn-sm" id="btnadd" name="btnadd"><i class="fa fa-file-text-o" aria-hidden="true"></i> &nbsp; Create New (F1)</button>
 						<a href="Accounts_xls.php" class="btn btn-success btn-sm"><i class="fa fa-file-excel-o"></i> &nbsp; Export To Excel</a>
 					</div>
@@ -72,13 +72,14 @@ include('../../include/access2.php');
 						<input type="text" name="searchByName" id="searchByName" value="" class="form-control input-sm" placeholder="Enter Code or Desc...">
 					</div>
 
-					<div class="col-xs-3 text-right nopadwleft">
+					<div class="col-xs-2 text-right nopadwleft">
 						<select id="seltypesearch" name="seltypesearch" class="form-control input-sm selectpicker"  tabindex="4">
 								<option value="">ALL</option>
 								<option value="ASSETS">ASSETS</option>
 								<option value="LIABILITIES">LIABILITIES</option>
 								<option value="EQUITY">EQUITY</option>
 								<option value="REVENUE">REVENUE</option>
+								<option value="COST OF SALES">COST OF SALES</option>
 								<option value="EXPENSES">EXPENSES</option>											   
 							</select>
 					</div>
@@ -93,6 +94,7 @@ include('../../include/access2.php');
 						<th>Description</th>
 						<th>Category</th>
 						<th>Type</th>
+						<th>Beg Balance</th>
 					</tr>
 				</thead>
 			</table>
@@ -487,7 +489,14 @@ mysqli_close($con);
 		});
 
 
+	});
 
+	$(document).keydown(function(e) {	
+		 
+		if(e.keyCode == 112) { //F1
+			e.preventDefault();
+			$("#btnadd").click();
+		}
 	});
 
 
@@ -554,10 +563,12 @@ mysqli_close($con);
 					}
 				},
 				{ "data": 4 },
-				{ "data": 3 }		
+				{ "data": 3 },
+				{ "data": 9 }		
       ],
 			"columnDefs": [
-				{ "targets": 3, "className": "text-center" } 
+				{ "targets": 3, "className": "text-center" } ,
+				{ "targets": 4, "className": "text-right" } 
 			],
 		} );
 			
