@@ -135,7 +135,8 @@
             display: absolute;
         }
         #wrapper {
-            bottom: 0;
+            display: absolute;
+            bottom: 0px;
         }
     </style>
 </head>
@@ -222,7 +223,7 @@
                 </div>
 
 
-                <div class='col' id='right-side' style='width: 50%; padding: 10px;'>
+                <div class='col' id='right-side' style='width: 50%; height: 100vh; padding: 10px;'>
                     <table class='table' style="width: 100%;">
                         <tr>
                             <td>
@@ -354,6 +355,7 @@
             </div>     
         </div>
     </div>
+
     <!-- Retrieve and Hold Modal -->
     <div class='modal fade' id='payModal' role='dialog'>
         <div class='modal-lg modal-dialog' role="document">
@@ -397,6 +399,9 @@
 
                                         <label for="subtotal">Total Tendered Amount</label>
                                         <input type="text" name="subtotal" id="subtotal" class='form-control' readonly>
+
+                                        <label for="discountInput">Special Discount</label>
+                                        <input type="text" name="discountInput" id="discountInput" class='form-control' readonly>
 
                                         <label for="ExchangeAmt">Exchange Amount</label>
                                         <input type="text" id='ExchangeAmt' class='form-control' readonly/><br> 
@@ -802,10 +807,14 @@
                        specialDisc.push({item: item.partno, type: type, name: name, person: person, id: id, amount: item.amount * (disc/100)})
                     }
                 })
-                PaymentCompute()
-                alert("Special discount has been added!")
-                table_store(itemStored);
             })
+            $("#discountInput").val(getSpecialDisc(specialDisc))
+            PaymentCompute()
+
+            alert("Special discount has been added!")
+            table_store(itemStored);
+            $("#paymentcol").show();
+            $("#specialdiscountcol").hide()
         })
 
         $("#discountAmt").change(function(){
@@ -910,6 +919,7 @@
             $('#tendered').focus()
             $('#tendered').select()
             $("#couponinput").val(getCoupon(coupon))
+            $("#discountInput").val(0)
             $("#subtotal").val(0)
             $('#discountAmt').val(0)
             $('#ExchangeAmt').val(0)
@@ -1004,6 +1014,17 @@
         /**
          * Retrive Hold transaction Function
          */
+
+         $("#RetrieveList tbody").on("mouseenter", "tr", function() {
+            $(this).css("background-color", "#019aca");
+            $(this).css("color", "white");
+            $(this).css("cursor", "hand");
+        }).on("mouseleave", "tr", function() {
+            $(this).css("background-color", "");
+            $(this).css("color", "");
+            $(this).css("cursor", "pointer");
+        });
+
         $("#RetrieveList tbody").on("click", "tr", function() {
             let row = $(this).find('td:eq(0)').text()
 
@@ -1032,7 +1053,7 @@
                             // $('#table').find(':selected').val(res.data.table)
                         })
                         alert("Item Retrieved")
-                        console.log(res )
+                        console.log(res)
                         table_store(itemStored);
                     } else {
                         console.log(res.msg)
@@ -1193,7 +1214,7 @@
 
                         tendered: tender,
                         exchange: exchange,
-                        discount: getSpecialDisc(itemStored),
+                        discount: getDiscount(itemStored),
                         coupon: getCoupon(coupon),
                     },
                     dataType: 'json',
@@ -1350,7 +1371,7 @@
                         discvalue = parseFloat(itemStored[i].discount) + parseFloat(disc.value);
                         break;
                     case "PERCENT":
-                        discvalue = (parseFloat(itemStored[i].price)) * (parseInt(disc.value) / 100);
+                        discvalue = parseFloat(itemStored[i].price) * (parseInt(disc.value) / 100);
                         break;
                 }
 
@@ -1401,6 +1422,7 @@
         if(subtotal > 0){
             return $('#ExchangeAmt').val("0.00")
         }
+        $("#discountInput").val(getSpecialDisc(specialDisc)).change()
         $("#subtotal").val(totaltender)
         $('#ExchangeAmt').val(Math.abs(subtotal))
         $('#ExchangeAmt').autoNumeric('destroy');
@@ -1544,14 +1566,6 @@
 
         $('.digital-clock').text(h + ':' + m + ':' + s)
     }
-    
-
-
-    function discountChange(){
-            let disc = $(this).val()
-            console.log(disc)
-        }
-    
 
         /**
          * Return Coupons total price
@@ -1590,10 +1604,21 @@
     function getSpecialDisc(data){
         let discount = 0;
         data.map((item, index) => {
-            discount += parseFloat(item.specialDisc)
+            discount += parseFloat(item.amount)
         })
+        console.log(data)
         return discount;
     }
+
+    function getDiscount(data){
+        let discount = 0;
+        data.map((item, index)=> {
+            discount += parseFloat(item.specialDisc)
+        })
+        console.log(data)
+        return discount;
+    }
+
     function closeModal(modal){
         $("#"+modal).modal("hide");
     }
@@ -1624,4 +1649,5 @@
             location.reload()
         }, 5000)
     }
+
 </script>

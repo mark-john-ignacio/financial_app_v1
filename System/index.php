@@ -3729,7 +3729,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								
 							</div>			
 															
-							<p data-toggle="collapse" data-target="#pos_table"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Table Sits</b></u></p>
+							<p data-toggle="collapse" data-target="#pos_table"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Table Seats</b></u></p>
 							<div class="collapse" id='pos_table' style='padding-bottom: 20px'>
 								<div class="col-sm-12">
 									<div class="col-lg-2 nopadwtop">
