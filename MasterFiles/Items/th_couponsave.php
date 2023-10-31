@@ -6,34 +6,34 @@
     include("../../Connection/connection_string.php");
     $company = $_SESSION['companyid'];
     $month = date("m");
-    $year = date("Y");
+    $year = date("y");
 
-    $sql = "SELECT * FROM coupon WHERE compcode = '$company' AND YEAR(ddate) = YEAR(CURDATE()) ORDER BY CouponNo DESC";
+    $sql = "SELECT * FROM coupon WHERE compcode = '$company' AND YEAR(ddate) = YEAR(CURDATE()) ORDER BY CouponNo DESC LIMIT 1";
     $query = mysqli_query($con, $sql);
 
-    if(mysqli_num_rows($query) != 0){
-        while($row = $query -> fetch_assoc()){
-			$last = $row['CouponNo'];
-		}
-		
-		
-		if(substr($last,2,2) <> $month){
-			$code = "CP".$month.$year."00000";
-		}
-		else{
-			$baseno = intval(substr($last,6,5)) + 1;
-			$zeros = 5 - strlen($baseno);
-			$zeroadd = "";
-			
-			for($x = 1; $x <= $zeros; $x++){
-				$zeroadd = $zeroadd."0";
-			}
-			
-			$baseno = $zeroadd.$baseno;
-			$code = "CP".$month.$year.$baseno;
-		}
-    } else {
+    if (mysqli_num_rows($query)==0) {
         $code = "CP".$month.$year."00000";
+    } else {
+        while($row = $query -> fetch_assoc()){
+            $last = $row['CouponNo'];
+        }
+        
+        
+        if(substr($last,2,2) <> $month){
+            $code = "CP".$month.$year."00000";
+        }
+        else{
+            $baseno = intval(substr($last,6,5)) + 1;
+            $zeros = 5 - strlen($baseno);
+            $zeroadd = "";
+            
+            for($x = 1; $x <= $zeros; $x++){
+                $zeroadd = $zeroadd."0";
+            }
+            
+            $baseno = $zeroadd.$baseno;
+            $code = "CP".$month.$year.$baseno;
+        }
     }
 
     /**
@@ -44,11 +44,10 @@
     $remarks = mysqli_real_escape_string($con, $_REQUEST['remarks']);
     $price = mysqli_real_escape_string($con, $_REQUEST['priced']);
     $barcode = mysqli_real_escape_string($con, $_REQUEST['barcode']);
-    $expired = mysqli_real_escape_string($con, $_REQUEST['expired']);
-    $date = date("Y-m-d");
+    $days = mysqli_real_escape_string($con, $_REQUEST['days']);
 
-    $sql = "INSERT INTO coupon (`compcode`, `label`, `remarks`, `CouponNo`, `barcode`, `expired`, `price`, `status`, `approved`, `cancelled`, `ddate`)
-                        VALUES('$company', '$label', '$remarks', '$code', '$barcode', '$expired', '$price', 'INACTIVE', 0, 0, '$date')";
+    $sql = "INSERT INTO coupon (`compcode`, `label`, `remarks`, `CouponNo`, `barcode`, `days`, `price`, `status`, `approved`, `cancelled`, `ddate`)
+                        VALUES('$company', '$label', '$remarks', '$code', '$barcode', '$days', '$price', 'INACTIVE', 0, 0, NOW())";
     if(mysqli_query($con, $sql)){
         echo json_encode([
             'valid' => true,

@@ -6,7 +6,7 @@
     $company = $_SESSION['companyid'];
     $coupon = mysqli_real_escape_string($con, $_REQUEST['coupon']);
 
-    $sql = "SELECT * FROM coupon WHERE `compcode` = '$company' AND `CouponNo` = '$coupon'";
+    $sql = "SELECT * FROM coupon WHERE `compcode` = '$company' AND `CouponNo` = '$coupon' ORDER BY ddate ASC";
 
     $data = [];
     $query = mysqli_query($con, $sql);
