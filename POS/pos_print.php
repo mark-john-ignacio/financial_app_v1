@@ -20,7 +20,7 @@
     $phone = explode(";",$detail['cpnum']);
 
 
-    $sql = "SELECT a.quantity, a.gross, a.uom, b.ddate, b.orderType, b.customer, b.exchange, b.tendered, b.gross as total, b.net, b.vat, b.preparedby, c.citemdesc FROM pos_t a
+    $sql = "SELECT a.quantity, a.gross, a.uom, b.ddate, b.orderType, b.customer, b.exchange, b.tendered, b.coupon, b.gross as total, b.net, b.vat, b.preparedby, c.citemdesc FROM pos_t a
         LEFT JOIN pos b on a.compcode = b.compcode AND a.tranno = b.tranno
         LEFT JOIN items c on a.compcode = c.compcode AND a.item = c.cpartno
         WHERE a.compcode = '$company' and a.tranno = '$tranno'";
@@ -31,12 +31,14 @@
         $vat = $row['vat'];
         $net = $row['net'];
         $exchange = $row['exchange'];
-        $tender = $row['tendered'];
+        $coupon = floatval($row['coupon']);
+        $tender = floatval($row['tendered']);
         $prepared = $row['preparedby'];
         $customer = $row['customer'];
         $ordertype=$row['orderType'];
         $date = $row['ddate'];
     }
+    $cash = $tender + $coupon;
 ?>
 
 <!DOCTYPE html>
@@ -167,7 +169,7 @@
                     </tr>
                     <tr>
                         <td class="quantity" style='font-weight: bold;'>Cash:</td>
-                        <td class="price" style='font-weight: bold'><?= number_format($tender, 2) ?></td>
+                        <td class="price" style='font-weight: bold'><?= number_format($cash, 2) ?></td>
                     </tr>
                     <tr>
                         <td class="quantity" style='font-weight: bold'>Change:</td>
