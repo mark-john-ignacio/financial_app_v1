@@ -54,6 +54,7 @@
     $table = mysqli_real_escape_string($con, $_POST['table']);
     $coupon = mysqli_real_escape_string($con, $_POST['coupon']);
     $tranno = mysqli_real_escape_string($con, $_POST['tranno']);
+    $service = mysqli_real_escape_string($con, $_POST['service']);
 
     if($tranno != ""){
         mysqli_query($con, "DELETE FROM pos_hold WHERE `compcode` = '$company' AND `transaction` = '$tranno'");
@@ -64,8 +65,8 @@
     /**
      * Query for Inserting into database
      */
-    $sql = "INSERT INTO pos (`compcode`, `tranno`, `preparedby`, `ddate`, `amount`, `net`, `vat`, `gross`, `discount`, `tendered`, `exchange`, `customer`, `orderType`, `table`, `coupon`)
-            VALUES ('$company', '$code', '$prepared', '$date', '$amount', '$net', '$vat', '$gross', '$discount', '$tendered', '$exchange', '$customer', '$type', '$table', '$coupon')";
+    $sql = "INSERT INTO pos (`compcode`, `tranno`, `preparedby`, `ddate`, `amount`, `net`, `vat`, `gross`, `discount`, `tendered`, `exchange`, `customer`, `orderType`, `table`, `coupon`, `serviceFee`)
+            VALUES ('$company', '$code', '$prepared', '$date', '$amount', '$net', '$vat', '$gross', '$discount', '$tendered', '$exchange', '$customer', '$type', '$table', '$coupon', '$service')";
 
     if(mysqli_query($con, $sql)){
         echo json_encode([
