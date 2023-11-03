@@ -19,10 +19,6 @@
 		}
 	}
 
-<<<<<<< HEAD
-
-=======
->>>>>>> production
 	$chkSales = mysqli_query($con,"select * from paybill where compcode='$company' and YEAR(dtrandate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");
 	if (mysqli_num_rows($chkSales)==0) {
 		$cSINo = "PV".$dmonth.$dyear."00001";
@@ -136,17 +132,10 @@
 
 		if($_POST['isNoRef']==1){
 			if($caccno==@$ewtpaydef){
-<<<<<<< HEAD
-				$hdnewt = $namnt; 
-				$hdnewtcode = mysqli_real_escape_string($con, $_POST['napvewt'.$z]);
-			}else{
-				$hdnewt = 0;
-=======
 				$hdnewt =$namnt; 
 				$hdnewtcode = mysqli_real_escape_string($con, $_POST['napvewt'.$z]);
 			}else{
 				$hdnewt = 0; 
->>>>>>> production
 				$hdnewtcode = "";
 			}
 		}else{

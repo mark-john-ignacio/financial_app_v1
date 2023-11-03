@@ -1,14 +1,8 @@
 <?php
-<<<<<<< HEAD
-if(!isset($_SESSION)){
-	session_start();
-}
-=======
 
 	if(!isset($_SESSION)){
 		session_start();
 	}
->>>>>>> production
 
 	require_once "../Connection/connection_string.php";
 
