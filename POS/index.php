@@ -67,6 +67,15 @@
     while($row = $query -> fetch_assoc()){
         array_push($discount, $row);
     }
+
+    $sql = "SELECT * FROM parameters WHERE compcode = '$company' AND ccode = 'SERVICE_FEE'";
+    $query = mysqli_query($con, $sql);
+    if(mysqli_num_rows($query) != 0){
+        while($row = $query -> fetch_assoc()){
+            $serviceFee = $row['cvalue'];
+            $isCheck = $row['nallow'];
+        }
+    }
 ?>
 
 
@@ -387,12 +396,17 @@
                             </td>
                             <td style='width: 35%' id='paymentcol'>
                                 <div id='payment-details'>
+                                    <div style='display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-gap: 10px;'>
+                                            <button type="button" class="btn btn-sm btn-warning form-control " id='spcdBtn' name='spcdBtn'>Discount</button>
+                                            <button type="button" class="btn btn-sm btn-info form-control " id='couponBtn' name='couponBtn'>Coupon</button>
+                                            <button type="button" class="btn btn-sm btn-success form-control " id='serviceBtn' name='serviceBtn'>Service Fee</button>
+                                    </div>
                                     <div style='width: 100%'>
                                         <label for="totalAmt">Total Amount</label>
                                         <input type='text' id='totalAmt' class='form-control' readonly/>
 
                                         <label for="tendered">Tendered</label>
-                                        <input type="text" id='tendered' class='form-control' />
+                                        <input type="number" id='tendered' class='form-control' />
 
                                         <label for="couponinput">Coupon Amount</label>
                                         <input type="text" name="couponinput" id="couponinput" class='form-control' readonly>
@@ -402,14 +416,16 @@
 
                                         <label for="discountInput">Special Discount</label>
                                         <input type="text" name="discountInput" id="discountInput" class='form-control' readonly>
-
+                                        <?php if($isCheck != 0): ?>
+                                            <label for="discountInput">Service Fee</label>
+                                            <input type="text" name="ServiceInput" id="ServiceInput" class='form-control' readonly>
+                                        <?php endif; ?>
                                         <label for="ExchangeAmt">Exchange Amount</label>
-                                        <input type="text" id='ExchangeAmt' class='form-control' readonly/><br> 
-                                            <button type="button" class="btn btn-sm btn-warning form-control " id='spcdBtn' name='spcdBtn'>Insert Special discountChange</button>
-                                            <button type="button" class="btn btn-sm btn-info form-control " id='couponBtn' name='couponBtn'>Insert Coupon</button>
+                                        <input type="text" id='ExchangeAmt' class='form-control' readonly/><br>
+                                        
                                     </div>
 
-                                    <div class='jqbtk-container' style='padding-top: 5px'>
+                                    <div class='jqbtk-container' style='padding-top: 5px; display:none;'>
                                         <div class='jqbtk-row'>
                                             <button type='button' class="btnpad btn btn-default" data-val='1'>1</button>
                                             <button type='button' class="btnpad btn btn-default" data-val='2'>2</button>
@@ -474,24 +490,37 @@
                                     </center>
                                 </div>
                             </td>
+
+                            <td id='couponmodal'>
+                                    <div><a href="javascript:;" id='couponback'><i class='fa fa-arrow-left'></i></a></div>
+                                    <div>
+                                        <label for="coupontxt">Enter your coupon</label>
+                                        <input type="text" class="form-control input-sm" id='coupontxt' name='coupontxt' placeholder="Enter Coupon..." autocomplete="false">
+                                        <div class='input-sm' id='couponmsg'></div>
+                                        <center>
+                                            <button class='btn btn-success' id='CouponSubmit' style='padding: 5px; width: 1in;'>Submit</button>
+                                        </center>
+                                    </div>
+                            </td>
+                            <td id='servicefee'>
+                                <div><a href="javascript:;" id='serviceBack'><i class='fa fa-arrow-left'></i></a></div>
+                                <div>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="ServiceSwitch" <?= $isCheck != 0 ? "Checked": null ?>>
+                                        <label class="form-check-label" for="ServiceSwitch">Check if you need to enable Service Fee</label>
+                                    </div>
+                                </div>
+                            </td>
                         </tr>
                     </table>
                 </div>
-                <div class="modal-body" id='couponmodal'>
-                    <div><a href="javascript:;" id='couponback'><i class='fa fa-arrow-left'></i></a></div>
-                    <div>
-                        <label for="coupontxt">Enter your coupon</label>
-                        <input type="text" class="form-control input-sm" id='coupontxt' name='coupontxt' placeholder="Enter Coupon..." autocomplete="false">
-                        <div class='input-sm' id='couponmsg'></div>
-                        <center>
-                            <button class='btn btn-success' id='CouponSubmit' style='padding: 5px; width: 1in;'>Submit</button>
-                        </center>
-                    </div>
-                </div>
+                <!-- <div class="modal-body" >
+                    
+                </div> -->
             </div>
         </div>
     </div>
-    <!-- Payment Modal -->
+    <!-- Void Login User Modal -->
     <div class='modal fade' id='voidlogin' role='dialog' data-backdrop="static">
         <div class='modal-sm modal-dialog' role="document">
             <div class='modal-content'>
@@ -616,14 +645,24 @@
             $("#specialdiscountcol").hide()
         })
 
+        $("#serviceBtn").click(function(){
+            $("#paymentcol").hide();
+            $("#servicefee").show()
+        })
+
+        $("#serviceBack").click(function(){
+            $("#paymentcol").show();
+            $("#servicefee").hide()
+        })
+
         $("#couponBtn").click(function(){
             $("#couponmodal").show()
-            $("#modal-body").hide()
+            $("#paymentcol").hide()
         })
         
         $("#couponback").click(function(){
             $("#couponmodal").hide()
-            $("#modal-body").show()
+            $("#paymentcol").show()
         })
 
         $("#CouponSubmit").click(function(){
@@ -906,6 +945,33 @@
         });
 
         /**
+         * Service Fee Switch Check if enable
+         */
+
+        $("#ServiceSwitch").change(function(){
+            let isCheck = 0;
+            if($(this).prop("checked")){
+                isCheck = 1;
+            }
+
+            $.ajax({
+                url: "Function/th_updateService.php",
+                data: { isCheck: isCheck },
+                dataType: 'json',
+                async: false,
+                success: function(res){
+                    if(res.valid){
+                        console.log(res.msg)
+                    } else {
+                        console.log(res.msg)
+                    }
+                },
+                error: function(res){
+                    console.log(res)
+                }
+            })
+        })
+        /**
          * Payment Transaction
          */
 
@@ -918,16 +984,25 @@
                 return alert('Transaction is empty! cannot proceed transaction');
             }
 
+            let amt = $('#totalAmt').val().replace(/,/g,'');
+            let ServiceFee = <?= $serviceFee ?>
+
+            let service = parseFloat(amt) * (parseFloat(ServiceFee) / 100)
+
+
+
             $('#tendered').val(0)
             $('#tendered').focus()
             $('#tendered').select()
             $("#couponinput").val(getCoupon(coupon))
+            $("#ServiceInput").val(service)
             $("#discountInput").val(0)
             $("#subtotal").val(0)
             $('#discountAmt').val(0)
             $('#ExchangeAmt').val(0)
             
             $('#payModal').modal('show')
+            $("#servicefee").hide()
             $("#couponmodal").hide();
             $("#specialdiscountcol").hide()
             $('#modal-body').modal('show')
@@ -1125,6 +1200,7 @@
                 $("#couponinput").val(getCoupon(coupon))
                 return PaymentCompute()
             }
+            
             $('#ExchangeAmt').val('0.00')
         })
 
@@ -1158,6 +1234,7 @@
                     break;
                 case "CLEAR": 
                     number = "0.00"
+                    
                     break;
                 case "EXACT":
                     number = total;
@@ -1198,6 +1275,7 @@
             let net = $("#net").text()
             let vat = $("#vat").text()
             let transaction = $("#tranno").val()
+            let servicefee = $("#ServiceInput").val().replace(/,/g,'')
             let tranno = '';
             
             if(parseFloat(total) <= parseFloat(subtotal)){
@@ -1219,6 +1297,7 @@
                         exchange: parseFloat(exchange),
                         discount: getDiscount(itemStored),
                         coupon: getCoupon(coupon),
+                        service: service
                     },
                     dataType: 'json',
                     async: false,
@@ -1426,17 +1505,22 @@
 
     function PaymentCompute(){
         
-        let amt = $('#totalAmt').val().replace(/,/g,'');
+        
         let tender = $('#tendered').val().replace(/,/g,'');
         let coupon = $("#couponinput").val().replace(/,/g,'');
         let exchange =$('#ExchangeAmt').val().replace(/,/g,'');
+        let amt = $('#totalAmt').val().replace(/,/g,'');
+        let ServiceFee = <?= $serviceFee ?>
 
+        let service = parseFloat(amt) * (parseFloat(ServiceFee) / 100)
         let totaltender = parseFloat(tender) + parseFloat(coupon)
         let subtotal = parseFloat(amt) - totaltender;
+
         if(subtotal > 0){
             return $('#ExchangeAmt').val("0.00")
         }
         $("#discountInput").val(getSpecialDisc(specialDisc)).change()
+        $("#ServiceInput").val(service)
         $("#subtotal").val(totaltender)
         $('#ExchangeAmt').val(Math.abs(subtotal))
         $('#ExchangeAmt').autoNumeric('destroy');
