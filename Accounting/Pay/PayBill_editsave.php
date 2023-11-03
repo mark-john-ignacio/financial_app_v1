@@ -9,6 +9,15 @@ include('../../include/denied.php');
 	$cCVNo = $_REQUEST['txtctranno'];
 	$company = $_SESSION['companyid'];
 
+	//get default EWT acct code
+	@$ewtpaydef = "";
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `accounts_default` where compcode='$company' and ccode='EWTPAY'"); 
+	if (mysqli_num_rows($gettaxcd)!=0) {
+		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+			@$ewtpaydef = $row['cacctno']; 
+		}
+	}
+
 	//echo "<pre>";
 	//print_r($_REQUEST);
 	//echo "</pre>";
@@ -93,8 +102,13 @@ include('../../include/denied.php');
 		$caccno = mysqli_real_escape_string($con, $_REQUEST['cacctno'.$z]); 
 		
 		if($_POST['isNoRef']==1){
-			$hdnewt =$namnt; 
-			$hdnewtcode = mysqli_real_escape_string($con, $_POST['napvewt'.$z]);
+			if($caccno==@$ewtpaydef){
+				$hdnewt = $namnt; 
+				$hdnewtcode = mysqli_real_escape_string($con, $_POST['napvewt'.$z]);
+			}else{
+				$hdnewt = 0;
+				$hdnewtcode = "";
+			}
 		}else{
 			$hdnewt = mysqli_real_escape_string($con, $_POST['napvewt'.$z]); 
 			$hdnewtcode = "";

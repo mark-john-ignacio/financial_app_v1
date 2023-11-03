@@ -618,7 +618,7 @@
 						</button>
 
 						<!--
-						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $ctranno;?>');" id="btnPrint" name="btnPrint">
+						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?//php echo $ctranno;?>');" id="btnPrint" name="btnPrint">
 							Print<br>(CTRL+P)
 						</button>
 						-->   
