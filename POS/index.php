@@ -140,8 +140,8 @@
         }
     </style>
 </head>
-<body>
-    <div stlye="display: fixed">
+<body style='display: fixed'>
+    <div stlye="height: 100vh; display: fixed">
             <div class='row nopadwtop2x' id='header' style="background-color: #2d5f8b; height:65px; margin-bottom: 5px !important">
                 <div  style="float: left;display: block;width: 235px;height: 57px;padding-left: 20px;padding-right: 20px;">
                     <img src="../images/LOGOTOP.png" width="150" height="50"/>
@@ -549,6 +549,9 @@
 </html>
 
 <script type='text/javascript'>
+    /**
+     * Initiate a variables
+     */
     const itemStored = [];
     const coupon = [];
     const specialDisc = []
@@ -1186,7 +1189,7 @@
          * Pay Submit Function where storing of Payments
          */
         $('#PaySubmit').click(function(){
-            let exchange = $('#ExchangeAmt').val();
+            let exchange = $('#ExchangeAmt').val().replace(/,/g,'');
             let total = $('#totalAmt').val().replace(/,/g,'');
             let subtotal = $('#subtotal').val().replace(/,/g,'');
             let tender = $('#tendered').val();
@@ -1206,14 +1209,14 @@
                         amount: gross,
                         net: net,
                         vat: vat,
-                        gross: total,
+                        gross: parseFloat(total),
 
                         customer: $('#customer').val(),
                         order: $('#orderType').val(),
                         table: $('#table').val(),
 
                         tendered: tender,
-                        exchange: exchange,
+                        exchange: parseFloat(exchange),
                         discount: getDiscount(itemStored),
                         coupon: getCoupon(coupon),
                     },
@@ -1276,12 +1279,23 @@
             }
 
             if(isFinished){
-                $("#myprintframe").attr("src", "pos_print.php?tranno="+ tranno)
-                // $("#PrintModal").modal('show');
+                $.ajax({
+                    url: "../include/th_toInv.php",
+                    data:{ tran: tranno, type: "POS"},
+                    async: false,
+                    success: function(res){
+                        console.log(res)
+                    },
+                    error: function(res){
+                        console.log(res)
+                    }
+                })
 
-                setInterval(() => {
-                    location.reload()
-                }, 10000);
+                $("#myprintframe").attr("src", "pos_print.php?tranno="+ tranno)
+                $("#PrintModal").modal('show');
+                // setInterval(() => {
+                //     location.reload()
+                // }, 10000);
 
             }
             
