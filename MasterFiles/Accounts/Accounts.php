@@ -37,6 +37,7 @@ include('../../include/access2.php');
 	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">    
 	<link href="../../Bootstrap/css/jquery.bootstrap.treeselect.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 
 
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
@@ -62,7 +63,10 @@ include('../../include/access2.php');
 				<div class="col-xs-12 nopadding">
 					<div class="col-xs-6 nopadding">
 						<button type="button" data-toggle="modal" class="btn btn-primary btn-sm" id="btnadd" name="btnadd"><i class="fa fa-file-text-o" aria-hidden="true"></i> &nbsp; Create New (F1)</button>
+
 						<a href="Accounts_xls.php" class="btn btn-success btn-sm"><i class="fa fa-file-excel-o"></i> &nbsp; Export To Excel</a>
+
+						<button type="button" class="btn btn-warning btn-sm" id="btnedt" name="btnedt"><i class="fa fa-pencil" aria-hidden="true"></i> &nbsp; Beg Balance</button>
 					</div>
 
 					<div class="col-xs-1 nopadwtop" style="height:30px !important;">
@@ -321,6 +325,25 @@ include('../../include/access2.php');
 		</div>
 	<!-- MODAL -->
 
+	<!-- 1) Alert Modal -->
+	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-center">
+            <div class="modal-content">
+               <div class="alert-modal-danger">
+                  <p id="AlertMsg"></p>
+                <p>
+                    <center>
+                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">Ok</button>
+                    </center>
+                </p>
+               </div>
+            </div>
+        </div>
+    </div>
+	</div>
+
+
 
 <?php
 
@@ -351,8 +374,8 @@ mysqli_close($con);
 			var searchByName = $('#searchByName').val();
 			var searchByType = $(this).val();
 
-		    $('#MyTable').DataTable().destroy();
-		    fill_datatable(searchByName,searchByType);
+		  $('#MyTable').DataTable().destroy();
+		  fill_datatable(searchByName,searchByType);
 		});
 
 		//Check new user id
@@ -381,12 +404,36 @@ mysqli_close($con);
 
 		// Adding new account
 		$("#btnadd").on("click", function() {
-			$("#divmainacc").html("");
 
-			$('#frmnew').trigger("reset");
+			var x = chkAccess('Accounts_New.php');
+		 
+		 	if(x.trim()=="True"){
+
+				$("#divmainacc").html("");
+
+				$('#frmnew').trigger("reset");
 
 
-			$('#myModal').modal('show');
+				$('#myModal').modal('show');
+
+		 	}else {
+			 $("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+			 $("#AlertModal").modal('show');
+
+		 }
+		});
+
+		$("#btnedt").on("click", function() { 
+			var x = chkAccess('Accounts_Edit.php');
+		 
+			if(x.trim()=="True"){
+
+				location.href="Accounts_Balance.php";
+
+			}else {
+				$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+				$("#AlertModal").modal('show');
+			}
 		});
 
 		$("#selvl").on("change", function() {
@@ -498,6 +545,21 @@ mysqli_close($con);
 			$("#btnadd").click();
 		}
 	});
+
+	function chkAccess(id){
+		var result;
+			
+		$.ajax ({
+			url: "chkAccess.php",
+			data: { id: id },
+			async: false,
+			success: function( data ) {
+				result = data;
+			}
+		});
+			
+		return result;
+	}
 
 
 	function fill_datatable(searchByName = '', searchByType = '')
