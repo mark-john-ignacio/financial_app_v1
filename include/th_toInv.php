@@ -40,10 +40,8 @@ function getcostfromin($getcitmno, $getnqty){
 		$array["id"] = $rowcostinvin["ctranno"];
 		$array["cost"] = $rowcostinvin["ncost"];
 		$array["qty"] = $qtyleft;
-		
-		return $array;
 	}
-
+	return $array;
 }
 
 	
@@ -393,9 +391,9 @@ function getcostfromin($getcitmno, $getnqty){
 			$section = $data['cvalue'];
 		}
 
-		$sql = "SELECT a.* FROM pos_t a
+		$sql = "SELECT a.*, b.ddate FROM pos_t a
 		left join pos b on a.compcode = b.compcode AND a.tranno = b.tranno
-		WHERE a.compcode = '$company' AND tranno = '$tran'";
+		WHERE a.compcode = '$company' AND a.tranno = '$tran'";
 		$query = mysqli_query($con, $sql);
 
 		while($row = $query -> fetch_assoc()){
@@ -418,10 +416,8 @@ function getcostfromin($getcitmno, $getnqty){
 			$quantity = $row['quantity'];
 			$price = $row['amount'];
 
-			$sql = "INSERT INTO `tblinventory`
-			(`compcode`, `ctranno`, `ddatetime`, `dcutdate`, `ctype`, `citemno`, `cunit`, `nqty`, `cmainunit`, `nfactor`, `nsection_id`, `nqtyin`, `ncostin`, `nretailin`, `nqtyout`, `ncostout`, `nretailout`)
-			VALUES
-			('$company', '$tran', NOW(), '$date', '$typ', '$item', '$unit', '$quantity', '$unit', '$factor', '$section', 0, 0, 0, '$totalQty', '$cost', '$price')";
+			$sql = "INSERT INTO `tblinventory` (`compcode`, `ctranno`, `ddatetime`, `dcutdate`, `ctype`, `citemno`, `cunit`, `nqty`, `cmainunit`, `nfactor`, `nsection_id`, `nqtyin`, `ncostin`, `nretailin`, `nqtyout`, `ncostout`, `nretailout`) VALUES ('$company', '$tran', NOW(), '$date', '$typ', '$item', '$unit', '$quantity', '$unit', '$factor', '$section', 0, 0, 0, '$totalQty', '$cost', '$price')";
+			mysqli_query($con, $sql);	
 		}
 
 		if($wither == 1){
@@ -430,9 +426,11 @@ function getcostfromin($getcitmno, $getnqty){
 			echo "True";
 
 
+			//Issue no Item found for inventory transfer
+
 			$sql = "SELECT a.*, b.nfactor, a.quantity * b.nfactor as totalQty FROM pos_t a
-			LEFT JOIN items_factor b on a.compcode = b.compcode AND a.item = b.cpartno
-			WHERE compcode = '$company' AND tranno = '$tran'";
+			LEFT JOIN items_factor b on a.compcode = b.compcode AND a.item = b.cpartno	
+			WHERE a.compcode = '$company' AND a.tranno = '$tran'";
 			$query = mysqli_query($con, $sql);
 
 			while($row = $query -> fetch_assoc()){
@@ -448,11 +446,10 @@ function getcostfromin($getcitmno, $getnqty){
 				$quantityTotal = 0;
 				$insertQty = 0;
 				$itemId = "";
+				$getitem = getcostfromin($itemno, $totalQty);
 
 				do{
-					$getitem = getcostfromin($itemno, $totalQty);
-
-					if(count($getItem) > 0){
+					if(count($getitem) > 0){
 						$itemId = $getItem['id'];
 						$itemCost = $getItem['cost'];
 						$getItemQty = $getItem['qty'];
@@ -470,10 +467,7 @@ function getcostfromin($getcitmno, $getnqty){
 					}
 					$quantityTotal = $quantityTotal + $insertQty;
 
-					$sql = "INSERT INTO `tblinvout` 
-					(`compcode`, `ctranno`, `citemno`, `cunit`, `nqty`, `cmainunit`, `cserial`, `cbarcode`, `nlocation`, `nfactor`, `ntotqty`, `ncost`, `ddate`, `dcutdate`, `crefin`)
-					VALUES 
-					('$company', '$tran', '$itemno', '$unit', '$quantity', '$unit', '', '','', '$factor', '$insertQty', '$itemCost', NOW(), '$date', '$itemId')";
+					$sql = "INSERT INTO `tblinvout` (`compcode`, `ctranno`, `citemno`, `cunit`, `nqty`, `cmainunit`, `cserial`, `cbarcode`, `nlocation`, `nfactor`, `ntotqty`, `ncost`, `ddate`, `dcutdate`, `crefin`) VALUES ('$company', '$tran', '$itemno', '$unit', '$quantity', '$unit', '', '','', '$factor', '$insertQty', '$itemCost', NOW(), '$date', '$itemId')";
 					mysqli_query($con, $sql);
 				} while($quantityTotal < $totalQty);
 			}
