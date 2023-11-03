@@ -40,6 +40,15 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	}
 }
 
+@$service = [];
+$sql = mysqli_query($con, "SELECT * FROM parameters WHERE compcode = '$company' AND ccode = 'SERVICE_FEE'");
+if(mysqli_num_rows($sql) != 0){
+	while($row = $sql -> fetch_assoc()){
+		$isCheck = $row['nallow'];
+		$service = $row['cvalue'];
+	}
+}
+
 ////function listcurrencies(){ //API for currency list
 //	global $con;
 //	$apikey = $_SESSION['currapikey'];
@@ -3723,11 +3732,21 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									<b>Base Customer: </b>
 								</div>
 								<span>
-									<input type='text' class='input-sm' name="basecustomer" id="basecustomer" autocomplete="false" />
 									<div class="col-xs-1 nopadwtop" id="basecustmsg"></div>
+									<input type='text' class='input-sm' name="basecustomer" id="basecustomer" autocomplete="false" />
 								</span>
-								
-							</div>			
+							</div>		
+							<div class='col-sm-12'>
+								<div class='col-xs-2 nopadwtop'><b>Service Fee: </b></div>
+								<span>
+										<input type="number" class=' input-sm' name='servicefee' id='servicefee' placeholder='Service Fee Percentage...' value='<?= $service ?>' autocomplete='false'>
+										<span style="padding-left:10px">%</span>
+										<span style='padding-left: 10px;'><input type="checkbox" id='serviceCheck' <?= $isCheck != 0 ? "Checked": null ?>>
+										<label for="serviceCheck"> Check if you want service fee to be able!</label></span>
+										<span><button class='btn btn-sm btn-success' id='serviceSave'>Save</button></span>
+								</span> 
+								<div class='col-xs-1 nopadwtop' id='servicefeemsg'></div>
+							</div>	
 															
 							<p data-toggle="collapse" data-target="#pos_table"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Table Seats</b></u></p>
 							<div class="collapse" id='pos_table' style='padding-bottom: 20px'>
@@ -3880,6 +3899,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 
 <script type="text/javascript">
+	var isCheck = 0;
 	$(document).ready(function(e) {
 		loadcompany();
 		
@@ -3922,6 +3942,40 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		if($("#selcrdlmt").val()==0){
 			$("#selcrdlmtwarn").attr("disabled", true);
 		}
+
+		$('#serviceCheck').on('change', function () {
+			if ($(this).prop("checked")) {
+				isCheck = 1;
+			} else {
+				isCheck = 0;
+			}
+		});
+
+		$("#serviceSave").click(function(){
+			let servicefee = $("#servicefee").val()
+			$.ajax({
+				url: "th_servicefee.php",
+				data: {
+					service: servicefee,
+					isCheck: isCheck
+				},
+				dataType: 'json',
+				async: false,
+				success: function(res){
+					if(res.valid){
+						console.log(res.msg)
+						alert(res.msg)
+					} else {
+						console.log(res.msg)
+						alert(res.msg)
+					}
+					location.reload()
+				},
+				error: function(res){
+					console.log(res)
+				}
+			})
+		})
 
 		$("#basecustomer").typeahead({
 			autoSelect: true,
