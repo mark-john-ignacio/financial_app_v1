@@ -10,6 +10,15 @@
 	$dyear = date("y");
 	$company = $_SESSION['companyid'];
 
+	//get default EWT acct code
+	@$ewtpaydef = "";
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `accounts_default` where compcode='$company' and ccode='EWTPAY'"); 
+	if (mysqli_num_rows($gettaxcd)!=0) {
+		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+			@$ewtpaydef = $row['cacctno']; 
+		}
+	}
+
 	$chkSales = mysqli_query($con,"select * from paybill where compcode='$company' and YEAR(dtrandate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");
 	if (mysqli_num_rows($chkSales)==0) {
 		$cSINo = "PV".$dmonth.$dyear."00001";
@@ -122,8 +131,13 @@
 		$caccno = mysqli_real_escape_string($con, $_POST['cacctno'.$z]); 
 
 		if($_POST['isNoRef']==1){
-			$hdnewt =$namnt; 
-			$hdnewtcode = mysqli_real_escape_string($con, $_POST['napvewt'.$z]);
+			if($caccno==@$ewtpaydef){
+				$hdnewt =$namnt; 
+				$hdnewtcode = mysqli_real_escape_string($con, $_POST['napvewt'.$z]);
+			}else{
+				$hdnewt = 0; 
+				$hdnewtcode = "";
+			}
 		}else{
 			$hdnewt = mysqli_real_escape_string($con, $_POST['napvewt'.$z]); 
 			$hdnewtcode = "";
