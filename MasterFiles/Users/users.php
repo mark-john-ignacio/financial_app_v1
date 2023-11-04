@@ -657,9 +657,11 @@ if(@$lvlcompute==1){
 						$("#emailadd").val(item.emailadd);
 						$("#cdept").val(item.cdepartment);
 						$("#cdesig").val(item.cdesignation);
-						$("#usertype").each(function(){
-							
-						})
+						$("#usertype option").each(function(){	
+							if ($(this).val() === item.usertype) {
+								return $(this).attr("selected", "selected"); 
+							} 
+						});
 						
 						$('#previewing').attr('src',item.imgsrc);
 

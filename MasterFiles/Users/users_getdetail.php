@@ -16,6 +16,7 @@ include('../../Connection/connection_string.php');
 		$json['cdesignation'] = $row['cdesignation'];
 		$json['imgsrc'] = $row['cuserpic'];
 		$json['signsrc'] = $row['cusersign'];
+		$json['usertype'] = $row['usertype'];
 		$json2[] = $json;
 
 	}
