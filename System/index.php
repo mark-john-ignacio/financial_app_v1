@@ -3740,7 +3740,7 @@ if(mysqli_num_rows($sql) != 0){
 							<div class='col-sm-12'>
 								<div class='col-xs-2 nopadwtop'><b>Service Fee: </b></div>
 								<span>
-										<input type="number" class=' input-sm' name='servicefee' id='servicefee' placeholder='Service Fee Percentage...' value='<?= $service ?>' autocomplete='false'>
+										<input type="number" class=' input-sm' name='servicefee' id='servicefee' placeholder='Service Fee Percentage...' value='<?= $service ? $service : 0 ?>' autocomplete='false'>
 										<span style="padding-left:10px">%</span>
 										<span style='padding-left: 10px;'><input type="checkbox" id='serviceCheck' <?= $isCheck != 0 ? "Checked": null ?>>
 										<label for="serviceCheck"> Check if you want service fee to be able!</label></span>
