@@ -280,7 +280,14 @@ $(document).ready(function(){
 			   //alert(html); 
 				if(res.valid)    {
 					if(res.proceed){
-						window.location="main.php";
+						switch(res.userType){
+							case "ADMIN":
+								window.location="main.php";
+								break;
+							case "CASHIER":
+								window.location="POS/index.php";
+								break;
+						}
 						
 					} else {
 						$('#changeModal').modal('show');
