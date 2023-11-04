@@ -378,7 +378,7 @@
                         <tr>
                             <td>
                                 <div style='height: 4in;'>
-                                    <table class='table' id='paymentList' style='width: 100%'>
+                                    <table class='table' id='paymentList' style='width: 100%;'>
                                         <thead style='background-color: #019aca'>
                                             <tr>
                                                 <th>&nbsp;</th>
@@ -402,24 +402,29 @@
                                             <button type="button" class="btn btn-sm btn-success form-control " id='serviceBtn' name='serviceBtn'>Service Fee</button>
                                     </div>
                                     <div style='width: 100%'>
-                                        <label for="totalAmt">Total Amount</label>
-                                        <input type='text' id='totalAmt' class='form-control' readonly/>
-
                                         <label for="tendered">Tendered</label>
                                         <input type="number" id='tendered' class='form-control' />
 
                                         <label for="couponinput">Coupon Amount</label>
                                         <input type="text" name="couponinput" id="couponinput" class='form-control' readonly>
 
-                                        <label for="subtotal">Total Tendered Amount</label>
-                                        <input type="text" name="subtotal" id="subtotal" class='form-control' readonly>
-
                                         <label for="discountInput">Special Discount</label>
                                         <input type="text" name="discountInput" id="discountInput" class='form-control' readonly>
+
                                         <?php if($isCheck != 0): ?>
                                             <label for="discountInput">Service Fee</label>
                                             <input type="text" name="ServiceInput" id="ServiceInput" class='form-control' readonly>
                                         <?php endif; ?>
+
+                                        <label for="totalTender">Total Tendered Amount</label>
+                                        <input type="text" name="totalTender" id="totalTender" class='form-control' readonly>
+
+                                        <label for="subtotal">Sub-Total</label>
+                                        <input type='text' id='subtotal' class='form-control' readonly/>
+                                        
+                                        <label for="totalAmt">Total Amount</label>
+                                        <input type='text' id='totalAmt' class='form-control' readonly/>
+
                                         <label for="ExchangeAmt">Exchange Amount</label>
                                         <input type="text" id='ExchangeAmt' class='form-control' readonly/><br>
                                         
@@ -667,10 +672,10 @@
 
         $("#CouponSubmit").click(function(){
             let coupons = $("#coupontxt").val()
-            var totalAmt = $("#totalAmt").val()
-            var subtotal = $("#subtotal").val();
+            var subtotal = $("#subtotal").val()
+            var totalTender = $("#totalTender").val();
 
-            if(parseFloat(totalAmt) < parseFloat(subtotal)){
+            if(parseFloat(subtotal) < parseFloat(totalTender)){
                 return alert("Coupon reached the total Amount. Cannot enter another Coupon")
             }
 
@@ -822,9 +827,9 @@
             var name = $("#discountAmt").find(":selected").text();
             var person = $("#discountCust").val()
             var id = $("#discountID").val()
-            var totalAmt = $("#totalAmt").val()
+            var subtotal = $("#subtotal").val()
 
-            if(parseFloat(totalAmt) <= 0){
+            if(parseFloat(subtotal) <= 0){
                 return alert("Discount has gone to 0! Discount cannot be apply")
             }
             
@@ -965,6 +970,7 @@
                     } else {
                         console.log(res.msg)
                     }
+                    location.reload()
                 },
                 error: function(res){
                     console.log(res)
@@ -984,10 +990,11 @@
                 return alert('Transaction is empty! cannot proceed transaction');
             }
 
-            let amt = $('#totalAmt').val().replace(/,/g,'');
-            let ServiceFee = <?= $serviceFee ?>
+            let amt = $('#subtotal').val().replace(/,/g,'');
+            let ServiceFee = <?= $isCheck != 0 ? $serviceFee / 100 : 0 ?>
 
-            let service = parseFloat(amt) * (parseFloat(ServiceFee) / 100)
+            let service = parseFloat(amt) * parseFloat(ServiceFee)
+            let total = parseFloat(amt) + service
 
 
 
@@ -996,8 +1003,9 @@
             $('#tendered').select()
             $("#couponinput").val(getCoupon(coupon))
             $("#ServiceInput").val(service)
+            $("#totalAmt").val(total)
             $("#discountInput").val(0)
-            $("#subtotal").val(0)
+            $("#totalTender").val(0)
             $('#discountAmt').val(0)
             $('#ExchangeAmt').val(0)
             
@@ -1008,47 +1016,6 @@
             $('#modal-body').modal('show')
             PaymentCompute()
         })
-
-
-        // $('#discountAmt').change(function(){
-        //     var disc = $(this).val();
-        //     var type = $(this).find(":selected").attr("dataval");
-        //     var name = $(this).find(":selected").text();
-
-        //     $("#discountcode").val("");
-
-        //     // $("#paymentList tbody").each()
-        //     $("input:checkbox[id='discounted']:checked").each(function(){
-        //         let amounts = $(this).val();
-        //         let itemno = $(this).attr("dataval");
-                
-        //         itemStored.map((item, index) =>{
-        //             console.log(item)
-        //             if(item.partno === itemno){
-        //                 switch(type){
-        //                     case "PERCENT":
-        //                         item['specialDisc'] = (item.amount * (disc/100))
-        //                         item['amount'] -= (item.amount * (disc/100));
-        //                         break;
-        //                     case "PRICE":
-        //                         item['specialDisc'] = disc;
-        //                         item['amount'] -= disc;
-        //                 }
-        //                specialDisc.push({item: item.partno, type: type, name: name, person: null, id: null, amount: item.amount * (disc/100)})
-        //             }
-        //         })
-        //         console.log(specialDisc)
-        //         table_store(itemStored);
-        //     })
-        //     if(disc != 0) {
-        //         // let total = $("#totalAmt").val()
-        //         // let dif = total - disc;
-        //         // $('#totalAmt').val(dif)
-        //         return $("#dc").show();
-        //     } 
-        //     return $("#dc").hide();
-        // })
-
 
         /**
          * Retrive Hold transaction
@@ -1210,7 +1177,7 @@
 
         $('.btnpad').click(function(){
             let tender = $('#tendered').val();
-            let total = $('#totalAmt').val();
+            let total = $('#subtotal').val();
             let btn = $(this).attr("data-val");
             let number = 0;
             console.log(total)
@@ -1234,7 +1201,7 @@
                     break;
                 case "CLEAR": 
                     number = "0.00"
-                    
+                    $("#totalTender").val("0.00")
                     break;
                 case "EXACT":
                     number = total;
@@ -1267,8 +1234,8 @@
          */
         $('#PaySubmit').click(function(){
             let exchange = $('#ExchangeAmt').val().replace(/,/g,'');
-            let total = $('#totalAmt').val().replace(/,/g,'');
-            let subtotal = $('#subtotal').val().replace(/,/g,'');
+            let total = $('#subtotal').val().replace(/,/g,'');
+            let totalTender = $('#totalTender').val().replace(/,/g,'');
             let tender = $('#tendered').val();
             let proceed = false, isFinished = false;
             let gross = $('#gross').text()
@@ -1276,9 +1243,10 @@
             let vat = $("#vat").text()
             let transaction = $("#tranno").val()
             let servicefee = $("#ServiceInput").val().replace(/,/g,'')
+            let totalAmt = $("#totalAmt").val().replace(/./g,'');
             let tranno = '';
             
-            if(parseFloat(total) <= parseFloat(subtotal)){
+            if(parseFloat(total) <= parseFloat(totalTender)){
                 $.ajax({
                     url: 'Function/pos_save.php',
                     type: 'post',
@@ -1288,6 +1256,7 @@
                         net: net,
                         vat: vat,
                         gross: parseFloat(total),
+                        totalAmt: parseFloat(totalAmt),
 
                         customer: $('#customer').val(),
                         order: $('#orderType').val(),
@@ -1504,25 +1473,27 @@
      */
 
     function PaymentCompute(){
-        
-        
         let tender = $('#tendered').val().replace(/,/g,'');
         let coupon = $("#couponinput").val().replace(/,/g,'');
         let exchange =$('#ExchangeAmt').val().replace(/,/g,'');
-        let amt = $('#totalAmt').val().replace(/,/g,'');
-        let ServiceFee = <?= $serviceFee ?>
+        let amt = $('#subtotal').val().replace(/,/g,'');
+        let ServiceFee = <?= $isCheck != 0 ? $serviceFee / 100 : 0 ?>
 
-        let service = parseFloat(amt) * (parseFloat(ServiceFee) / 100)
+        let service = parseFloat(amt) * parseFloat(ServiceFee)
         let totaltender = parseFloat(tender) + parseFloat(coupon)
-        let subtotal = parseFloat(amt) - totaltender;
 
-        if(subtotal > 0){
+        let total = parseFloat(amt) + service
+
+        let change = parseFloat(total) - totaltender;
+
+        if(change > 0){
             return $('#ExchangeAmt').val("0.00")
         }
         $("#discountInput").val(getSpecialDisc(specialDisc)).change()
         $("#ServiceInput").val(service)
-        $("#subtotal").val(totaltender)
-        $('#ExchangeAmt').val(Math.abs(subtotal))
+        $("#totalTender").val(totaltender)
+        $("#totalAmt").val(total)
+        $('#ExchangeAmt').val(Math.abs(change))
         $('#ExchangeAmt').autoNumeric('destroy');
         $('#ExchangeAmt').autoNumeric('init',{mDec:2});
     }
@@ -1633,7 +1604,7 @@
         $('#vat').text(parseFloat(itemAmounts.vat).toFixed(2));
         $('#net').text(parseFloat(itemAmounts.net).toFixed(2));
         $('#gross').text(parseFloat(itemAmounts.gross).toFixed(2));
-        $('#totalAmt').val(parseFloat(itemAmounts.gross).toFixed(2));
+        $('#subtotal').val(parseFloat(itemAmounts.gross).toFixed(2));
         amtTotal = parseFloat(itemAmounts['gross']);
     }
 

@@ -48,6 +48,7 @@
     $discount = mysqli_real_escape_string($con, $_POST['discount']);
     $tendered = mysqli_real_escape_string($con, $_POST['tendered']);
     $exchange = mysqli_real_escape_string($con, $_POST['exchange']);
+    $totalAmt = mysqli_real_escape_string($con, $_POST['totalAmt']);
 
     $customer = mysqli_real_escape_string($con, ($_REQUEST['customer'] != "") ? $_REQUEST['customer'] : "WALK-IN");
     $type = mysqli_real_escape_string($con, $_POST['order']);
@@ -65,8 +66,8 @@
     /**
      * Query for Inserting into database
      */
-    $sql = "INSERT INTO pos (`compcode`, `tranno`, `preparedby`, `ddate`, `amount`, `net`, `vat`, `gross`, `discount`, `tendered`, `exchange`, `customer`, `orderType`, `table`, `coupon`, `serviceFee`)
-            VALUES ('$company', '$code', '$prepared', '$date', '$amount', '$net', '$vat', '$gross', '$discount', '$tendered', '$exchange', '$customer', '$type', '$table', '$coupon', '$service')";
+    $sql = "INSERT INTO pos (`compcode`, `tranno`, `preparedby`, `ddate`, `amount`, `net`, `vat`, `gross`, `discount`, `tendered`, `exchange`, `customer`, `orderType`, `table`, `coupon`, `serviceFee`, `totalAmt`)
+            VALUES ('$company', '$code', '$prepared', '$date', '$amount', '$net', '$vat', '$gross', '$discount', '$tendered', '$exchange', '$customer', '$type', '$table', '$coupon', '$service', '$totalAmt')";
 
     if(mysqli_query($con, $sql)){
         echo json_encode([
