@@ -177,7 +177,7 @@
                         <td align='right'>
                             <div>
                                 <span class="date"><?=date("F d, Y");?></span>
-                                <span class="digital-clock time"></span>
+                                <span class="digital-clock"></span>
                             </div>
                         </td>
                     </tr>
