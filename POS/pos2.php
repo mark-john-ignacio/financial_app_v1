@@ -67,7 +67,17 @@
     while($row = $query -> fetch_assoc()){
         array_push($discount, $row);
     }
+
+    $sql = "SELECT * FROM parameters WHERE compcode = '$company' AND ccode = 'SERVICE_FEE'";
+    $query = mysqli_query($con, $sql);
+    if(mysqli_num_rows($query) != 0){
+        while($row = $query -> fetch_assoc()){
+            $serviceFee = $row['cvalue'];
+            $isCheck = $row['nallow'];
+        }
+    }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -90,175 +100,477 @@
     <script src="../Bootstrap/js/bootstrap.js"></script>
     <script src="../Bootstrap/js/moment.js"></script>
     <script src="../Bootstrap/slick/slick.js" type="text/javascript" charset="utf-8"></script>
+    <title>Document</title>
 
-    <title>POS Template</title>
-    
     <style>
-            .regular {
-                width: 90%; 
-                padding: 10px;
-            }
+        #filter {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+        }
+        #filter > div{
+            padding: 5px;
+        }
 
-            .itmclass {
-                height:100%; 
-                word-wrap:break-word;
-                background-color:#019aca; 
-                border:solid 1px #036;
-                padding:3px;
-                text-align:center;
-            }
-            #item-wrapper {
-                display: grid;
-                grid-template-columns: repeat(6, minmax(0, 1fr));
-                overflow: auto;
-                text-align: center;
-            }
-            #itemGrid {
-                height: 70vh
-            }
-            #button-wrapper {
-                display: grid;
-                padding-top: 10px;
-                height: 100%;
-                text-align: center;
-                grid-gap: 4px;
-                grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-                grid-template-rows: 1fr;
-                max-width: 4fr;
-                overflow: hidden;
-            }
-            #filter {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-            }
-            #filter > div{
-                padding: 5px;
-            }
+        #item-wrapper {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            overflow: auto;
+            text-align: center;
+        }
+        
+        #category-wrapper {
+            display: grid;
+            padding-top: 10px;
+            text-align: center;
+            grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+            grid-template-rows: 1fr;
+            max-width: 5fr;
+            overflow: hidden; 
+        }
+        
+        #button-wrapper {
+            display: grid;
+            padding-top: 10px;
+            text-align: center;
+            grid-gap: 4px;
+            grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+            grid-template-rows: 1fr;
+            max-width: 4fr;
+            overflow: hidden;
+        }
 
-
+        #right-side {
+            display: absolute;
+        }
+        #wrapper {
+            display: absolute;
+            bottom: 0px;
+        }
     </style>
 </head>
-<body>
-    <div class='row nopadwtop2x' id='header' style="background-color: #2d5f8b; height:65px; margin-bottom: 5px !important">
-        <div  style="float: left;display: block;width: 235px;height: 57px;padding-left: 20px;padding-right: 20px;">
-            <img src="../images/LOGOTOP.png" width="150" height="50"/>
-        </div>
+<body style='min-height: 100vh; display: fixed'> 
+    <div stlye="height: 100vh; display: fixed">
+            <div class='row nopadwtop' id='header' style="background-color: #2d5f8b; height:55px; margin-bottom: 5px !important">
+                <div  style="float: left;display: block;width: 235px;height: 57px;padding-left: 20px;padding-right: 20px;">
+                <img src="../images/LOGOTOP.png" alt="logo" class="logo-default" width="150" height="48" />
+                </div>
+            </div>
     </div>
-        
 
-    <div class="col-sm-12 nopadwtop" style="display: flex; ">
-        <div class="col-sm-7 nopadwtop">
-            <div class='col-sm-12' id='categorySlick'>
-                <!-- Slick Category Item for Item List -->
-                        <section class="regular slider btn">
+    <div style="display: flex; min-width: 100%; ">
+            <div class="col" style="width: 50%; padding: 5px;">
+                <table style="width: 100%;">
+                    <tr>
+                        <td>
+                            <div class="digi col-lg-6 nopadding text-left">
+                                <span class="date">
+                                    Cashier: <?php echo $_SESSION['employeename']; ?>
+                                </span>    
+                            </div>
+                        </td>
+                        <td align='right'>
+                            <div>
+                                <span class="date"><?=date("F d, Y");?></span>
+                                <span class="digital-clock time"></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div class='input-group margin-bottom-sm'>
+                                <input type="text" name='barcode' id='barcode' class='form-control input-sm' placeholder="|||||||||||||||||||||||||||||||||||||||| Barcode " autocomplete="off">
+                                <input type="text" name="tranno" id="tranno" class='form-control input-sm' style='display: none;'/>
+                                <span class='input-group-addon'><i class='fa fa-barcode fa-fw'></i></span>
+                            </div>
+                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style='padding-top: 20px'>
+                            <div style='height: 3.3in; max-height: 3.6in; overflow: auto;'>
+                                <table class='table' id='listItem' style="width: 100%; ">
+                                    <thead style='background-color: #019aca'>
+                                        <tr>
+                                            <th style="width: 60%;">Item</th>
+                                            <th style="text-align: center;">UOM</th>
+                                            <th style="text-align: center;">Quantity</th>
+                                            <th style="text-align: center;">Price</th>
+                                            <th style="text-align: center;">Discount</th>         
+                                            <th style="text-align: center;">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan='2' class="nopadding">
+                            <table id='amountlist' class="nopadding" style='width: 100%'>
+                                <tbody>
+                                    <!-- <tr>
+                                        <td>Discount</td>
+                                        <td align="right">P <span id="discount">0.00</span></td>
+                                    </tr> -->
+                                    <tr>
+                                        <td nowrap align='right' style='font-weight: bold; padding-right: 10px;'>Net of VAT</td>
+                                        <td class='form-control input-lg' align="right" style='border: 0px solid; color: #F00; font-weight: bold;'>P <span id="net">0.00</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td nowrap align='right' style='font-weight: bold; padding-right: 10px;'>VAT</td>
+                                        <td class='form-control input-lg' align="right" style='border: 0px solid; color: #F00; font-weight: bold;'>P <span id="vat">0.00</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td nowrap align='right' style='font-weight: bold; padding-right: 10px;'>Gross Amount</td>
+                                        <td class='form-control input-lg' align="right" style='border: 0px solid; color: #F00; font-weight: bold;'>P <span id="gross">0.00</span></td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class='col' id='right-side' style='width: 50%; height: 100%; padding: 10px;'>
+                    <div id='filter'>
+                        <div class='input-group'>
+                            <span class='input-group-addon'><i class='fa fa-user'></i></span><input class='form-control input-sm' type="text" name='customer' id='customer' placeholder="Walkin Customer (Default)" autocomplete="off">
+                        </div>
+
+                            <div class='input-group'>
+                                <select name="orderType" id="orderType" class='form-control input-sm' style="<?= sizeof($order) != 0 ? null : "display:none" ?>">
+                                    <?php foreach($order as $list): ?>
+                                        <option value="<?= $list['code'] ?>"><?= $list['code'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div class='input-group'>
+                                <select name="table" id="table"  class='form-control input-sm' style="<?= sizeof($table) != 0 ? null : "display:none" ?>">
+                                    <?php foreach($table as $list): ?>
+                                        <option value="<?= $list['code'] ?>"><?= $list['code'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                    </div>
+
+                    <div>
+                        <section style='width: 90%; padding: 10px' class="regular slider btn">
                             <?php foreach($category as $list):?>
-                                <div class="itmclass btn btn-info" data-clscode="<?= $list['ccode'] ?>">
+                                <div style="height:100%; 
+                                    word-wrap:break-word;
+                                    background-color:#019aca; 
+                                    border:solid 1px #036;
+                                    padding:3px;
+                                    text-align:center;" class="itmclass btn btn-info" data-clscode="<?= $list['ccode'] ?>">
                                         <font size="-2"><?= $list['cdesc'] ?></font>
                                 </div>
                             <?php endforeach; ?>
                         </section>
-            </div>
-            <div class='col-sm-12' id='itemGrid '>
-                <div id='item-wrapper'>
-                    <?php foreach($items as $list):?>
-                            <div class='itmslist' style="height:100px;                     
-                                background-color:#019aca; 
-                                background-image:url('<?=$list["cuserpic"];?>');
-                                background-repeat:no-repeat;
-                                background-position: center center;
-                                background-size: contain;
-                                border:solid 1px #036;
-                                text-align:center;
-                                position: relative" data-itemlist="<?= $list['cclass'] ?>">
-                                <div id='items' name="<?= $list['cscancode'] ?>" class='items' data-itemlist="<?= $list['cclass'] ?>" style='position: absolute; bottom: 0; width: 100%; background-color: rgba(0,0,0,.5); color: #fff; min-height: 20px;'><font size='-2'><?php echo $list["citemdesc"]; ?></font></div>
-                            </div>
-                    <?php endforeach ?>
-                </div>
-            </div>
-
-        </div>
-        <div class="container col-sm-12 nopadwtop" >
-                <div id='filter'>
-                    <div class='input-group'>
-                        <span class='input-group-addon'><i class='fa fa-user'></i></span><input class='form-control input-sm' type="text" name='customer' id='customer' placeholder="Walkin Customer (Default)" autocomplete="off">
                     </div>
+                    
 
-                        <div class='input-group'>
-                            <select name="orderType" id="orderType" class='form-control input-sm' style="<?= sizeof($order) != 0 ? null : "display:none" ?>">
-                                <?php foreach($order as $list): ?>
-                                    <option value="<?= $list['code'] ?>"><?= $list['code'] ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                    <div style='height: 350px; overflow: auto;'>
+                        <div id='item-wrapper'>
+                            <?php foreach($items as $list):?>
+                                    <div class='itmslist' id="itemlist" style="height:100px;                     
+                                        background-color:#019aca; 
+                                        background-image:url('<?=$list["cuserpic"];?>');
+                                        background-repeat:no-repeat;
+                                        background-position: center center;
+                                        background-size: contain;
+                                        border:solid 1px #036;
+                                        text-align:center;
+                                        position: relative" data-itemlist="<?= $list['cclass'] ?>" name="<?= $list['cscancode'] ?>">
+                                        <div id='items' name="<?= $list['cscancode'] ?>" class='items' data-itemlist="<?= $list['cclass'] ?>" style='position: absolute; bottom: 0; width: 100%; background-color: rgba(0,0,0,.5); color: #fff; min-height: 20px;'><font size='-2'><?php echo $list["citemdesc"]; ?></font></div>
+                                    </div>
+                            <?php endforeach ?>
                         </div>
-
-                        <div class='input-group'>
-                            <select name="table" id="table"  class='form-control input-sm' style="<?= sizeof($table) != 0 ? null : "display:none" ?>">
-                                <?php foreach($table as $list): ?>
-                                    <option value="<?= $list['code'] ?>"><?= $list['code'] ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
+                    </div>
+   
+                    
                 </div>
+            </div>
 
-                <div style='height: 3.6in; max-height: 3.6in; overflow: auto;'>
-                    <table class='table' id='listItem' style="width: 100%; ">
+    </div>
+    <footer style="min-width: 100%">
+                <div id='wrapper'>
+                    <div id='button-wrapper' class='col-lg-12 nopadwtop'>
+                        <button class="form-control btn btn-sm btn-danger" name="btnVoid" id="btnVoid" type="button">
+                            <i class="fa fa-plus fa-fw fa-lg" aria-hidden="true"></i>&nbsp;VOID (DEL)
+                        </button>
+                        <button class="form-control btn btn-sm btn-warning" name="btnRetrieve" id="btnRetrieve" type="button">
+                            <i class="fa fa-bar-chart fa-fw fa-lg" aria-hidden="true"></i>&nbsp; RETRIEVE (F4)
+                        </button>
+                        <button class="form-control btn btn-sm btn-primary" name="btnHold" id="btnHold" type="button">
+                            <i class="fa fa-sign-out fa-fw fa-lg" aria-hidden="true"></i>&nbsp; HOLD (INS)
+                        </button>
+                        <button class="form-control btn btn-sm btn-success" name="btnPay" id="btnPay" type="button">
+                            <i class="fa fa-money fa-fw fa-lg" aria-hidden="true"></i>&nbsp; PAYMENT (F2)
+                        </button>
+                    </div>
+                </div>
+    </footer>
+    <div class='modal fade' id='mymodal' role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="invheader">Void Item</h3>
+                </div>
+                <div class='modal-body' id='void' style='height: 4in; overflow: auto;'>
+                    <table class='table' id='VoidList' style="width: 100%; ">
                         <thead style='background-color: #019aca'>
                             <tr>
+                                <th>&nbsp;</th>
                                 <th style="width: 60%;">Item</th>
                                 <th style="text-align: center;">UOM</th>
                                 <th style="text-align: center;">Quantity</th>
                                 <th style="text-align: center;">Price</th>
-                                <th style="text-align: center;">Discount</th>         
-                                <th style="text-align: center;">Amount</th>
+                                <th style="text-align: center;">Discount</th>
+						        <th>Amount</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
                 </div>
-                <div>
-                    <table id='amountlist' style='width: 100%'>
-                        <tbody>
-                            <!-- <tr>
-                                <td>Discount</td>
-                                <td align="right">P <span id="discount">0.00</span></td>
-                            </tr> -->
+                <div class='modal-body' id='retrieve' style="height: 4in; display: none; overflow: auto;">
+                    <table class='table' id='RetrieveList' style='width: 100%'>
+                        <thead>
                             <tr>
-                                <td nowrap align='right' style='font-weight: bold; padding-right: 10px;'>Net of VAT</td>
-                                <td class='form-control input-lg' align="right" style='border: 0px solid; color: #F00; font-weight: bold;'>P <span id="net">0.00</span></td>
+                                <!-- <th>&nbsp;</th> -->
+                                <th style="width: 30%;">Transaction</th>
+                                <th style="text-align: center;">Table</th>
+                                <th style="text-align: center;">Order Type</th>
+                                <th style="text-align: center;">Date</th>
                             </tr>
-                            <tr>
-                                <td nowrap align='right' style='font-weight: bold; padding-right: 10px;'>VAT</td>
-                                <td class='form-control input-lg' align="right" style='border: 0px solid; color: #F00; font-weight: bold;'>P <span id="vat">0.00</span></td>
-                            </tr>
-                            <tr>
-                                <td nowrap align='right' style='font-weight: bold; padding-right: 10px;'>Gross Amount</td>
-                                <td class='form-control input-lg' align="right" style='border: 0px solid; color: #F00; font-weight: bold;'>P <span id="gross">0.00</span></td>
-                            </tr>
-                        </tbody>
+                        </thead>
+                        <tbody></tbody>
                     </table>
                 </div>
+                <div class='modal-footer' style='display: Relative; width: 100%;'>
+                    <div id='footer' style='right: 0px'>
+                        <button class='btn btn-danger' id='VoidSubmit' style='padding: 5px; width: 1in;'>Void</button>
+                        <!-- <button class='btn btn-warning' id='RetrieveSubmit' style='padding: 5px; width: 1in; display:none;'>Retrieve</button> -->
+                    </div>
+                </div>
+            </div>     
         </div>
     </div>
-    <div class='col-sm-12 nopadwtop' id='buttons'>
-            <div id='button-wrapper' class='col-lg-12 nopadwtop'>
-                <button class="form-control btn btn-sm btn-danger" name="btnVoid" id="btnVoid" type="button">
-                    <i class="fa fa-plus fa-fw fa-lg" aria-hidden="true"></i>&nbsp;VOID (DEL)
-                </button>
-                <button class="form-control btn btn-sm btn-warning" name="btnRetrieve" id="btnRetrieve" type="button">
-                    <i class="fa fa-bar-chart fa-fw fa-lg" aria-hidden="true"></i>&nbsp; RETRIEVE (F4)
-                </button>
-                <button class="form-control btn btn-sm btn-primary" name="btnHold" id="btnHold" type="button">
-                    <i class="fa fa-sign-out fa-fw fa-lg" aria-hidden="true"></i>&nbsp; HOLD (INS)
-                </button>
-                <button class="form-control btn btn-sm btn-success" name="btnPay" id="btnPay" type="button">
-                    <i class="fa fa-money fa-fw fa-lg" aria-hidden="true"></i>&nbsp; PAYMENT (F2)
-                </button>
+
+    <!-- Retrieve and Hold Modal -->
+    <div class='modal fade' id='payModal' role='dialog'>
+        <div class='modal-lg modal-dialog' role="document">
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    
+                    <h3 class="modal-title" id="invheader">Payment Terms</h3>
+                </div>
+                <div class='modal-body' id='modal-body' style='height: 100%; overflow: auto;'>
+                    <table class='table' style='width: 100%;'>
+                        <tr>
+                            <td>
+                                <div style='height: 4in;'>
+                                    <table class='table' id='paymentList' style='width: 100%;'>
+                                        <thead style='background-color: #019aca'>
+                                            <tr>
+                                                <th>&nbsp;</th>
+                                                <th style='text-align: center'>Item</th>
+                                                <th style='text-align: center'>UOM</th>
+                                                <th style='text-align: center'>Quantity</th>
+                                                <th style="text-align: center;">Price</th>
+                                                <th style="text-align: center;">Discount</th>
+						                        <th>Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </td>
+                            <td style='width: 35%' id='paymentcol'>
+                                <div id='payment-details'>
+                                    <div style='display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-gap: 10px;'>
+                                            <button type="button" class="btn btn-sm btn-warning form-control " id='spcdBtn' name='spcdBtn'>Discount</button>
+                                            <button type="button" class="btn btn-sm btn-info form-control " id='couponBtn' name='couponBtn'>Coupon</button>
+                                            <button type="button" class="btn btn-sm btn-success form-control " id='serviceBtn' name='serviceBtn'>Service Fee</button>
+                                    </div>
+                                    <div style='width: 100%'>
+                                        <label for="tendered">Tendered</label>
+                                        <input type="number" id='tendered' class='form-control' />
+
+                                        <label for="couponinput">Coupon Amount</label>
+                                        <input type="text" name="couponinput" id="couponinput" class='form-control' readonly>
+
+                                        <label for="discountInput">Special Discount</label>
+                                        <input type="text" name="discountInput" id="discountInput" class='form-control' readonly>
+
+                                        <label for="discountInput">Service Fee</label>
+                                        <input type="text" name="ServiceInput" id="ServiceInput" class='form-control' readonly>
+
+                                        <label for="totalTender">Total Tendered Amount</label>
+                                        <input type="text" name="totalTender" id="totalTender" class='form-control' readonly>
+
+                                        <label for="subtotal">Sub-Total</label>
+                                        <input type='text' id='subtotal' class='form-control' readonly/>
+                                        
+                                        <label for="totalAmt">Total Amount</label>
+                                        <input type='text' id='totalAmt' class='form-control' readonly/>
+
+                                        <label for="ExchangeAmt">Exchange Amount</label>
+                                        <input type="text" id='ExchangeAmt' class='form-control' readonly/><br>
+                                        
+                                    </div>
+
+                                    <div class='jqbtk-container' style='padding-top: 5px; display:none;'>
+                                        <div class='jqbtk-row'>
+                                            <button type='button' class="btnpad btn btn-default" data-val='1'>1</button>
+                                            <button type='button' class="btnpad btn btn-default" data-val='2'>2</button>
+                                            <button type='button' class="btnpad btn btn-default" data-val='3'>3</button>
+                                            <button type='button' class="btnpad btn btn-info jqbtk-shift"  data-val='100'>100</button>
+                                        </div>
+                                        <div class='jqbtk-row' style='padding-top: 2px;'>
+                                            <button type='button' class="btnpad btn btn-default" data-val='4'>4</button>
+                                            <button type='button' class="btnpad btn btn-default" data-val='5'>5</button>
+                                            <button type='button' class="btnpad btn btn-default" data-val='6'>6</button>
+                                            <button type='button' class="btnpad btn btn-info jqbtk-shift"  data-val='200'>200</button>
+                                        </div>
+                                        <div class='jqbtk-row' style='padding-top: 2px;'>
+                                            <button type='button' class="btnpad btn btn-default" data-val='7'>7</button>
+                                            <button type='button' class="btnpad btn btn-default" data-val='8'>8</button>
+                                            <button type='button' class="btnpad btn btn-default" data-val='9'>9</button>
+                                            <button type='button' class="btnpad btn btn-info jqbtk-shift"  data-val='500'>500</button>
+                                        </div>
+                                        <div class='jqbtk-row' style='padding-top: 2px;'>
+                                            <button type='button' class="btnpad btn btn-default" data-val='.'>.</button>
+                                            <button type='button' class="btnpad btn btn-default" data-val='0'>0</button>
+                                            <button type='button' class="btnpad btn btn-default" data-val='DEL' style="padding-right: 10px !important; padding-left: 10px !important">
+                                                <i class='fa fa-arrow-left' aria-hidden="true"></i>
+                                            </button>
+                                            <button type='button' class="btnpad btn btn-info jqbtk-shift"  data-val='1000'>1000</button>
+                                        </div>
+                                    </div>
+
+                                    <div style='display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-gap:4px; padding-top: 10px;'>
+                                        <button type='button' class='btnpad btn btn-info' data-val='EXACT'>Exact</button>
+                                        <button type='button' class='btnpad btn btn-warning' data-val='CLEAR'>Clear</button>
+                                        <button type='button' class='btn btn-danger' data-dismiss="modal" aria-label="Close">Close</button>
+                                        <button type='button' id='PaySubmit' class='btn btn-success'>Submit</button>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td id='specialdiscountcol' style='width: 35%; height: 100%; overflow: auto;' >
+                                <div><a href="javascript:;" id='spcBack'><i class='fa fa-arrow-left'></i></a></div>
+                                <div>
+                                    <div style='width: 100%'>
+                                            <label for='discountAmt'>Discount Type</label>
+                                            <select name="discountAmt" id="discountAmt" class='form-control'>
+                                                <option value="0">No Discount</option>
+                                                <?php foreach($discount as $list): ?>
+                                                    <option value='<?= $list["nvalue"] ?>' dataval='<?= $list["type"] ?>'><?= $list['cdescription'] ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+
+                                        <div id='dc' style='display: none'>
+                                            <label for='discountCust'>Customer Name</label>
+                                            <input type="text" id="discountCust" name="discountCust" placeholder="Customer Name..." class="form-control">
+
+                                            <label for='discountID'>Customer Valid ID</label>
+                                            <input type="text" id="discountID" name="discountID" placeholder="Customer Valid ID..." class="form-control">
+                                        </div>
+
+                                    </div>
+                                    <br>
+                                    <center>
+                                        <button type='button' id='SpecialDiscountBtn' class='btn btn-success'>Submit</button>
+                                    </center>
+                                </div>
+                            </td>
+
+                            <td id='couponmodal'>
+                                    <div><a href="javascript:;" id='couponback'><i class='fa fa-arrow-left'></i></a></div>
+                                    <div>
+                                        <label for="coupontxt">Enter your coupon</label>
+                                        <input type="text" class="form-control input-sm" id='coupontxt' name='coupontxt' placeholder="Enter Coupon..." autocomplete="false">
+                                        <div class='input-sm' id='couponmsg'></div>
+                                        <center>
+                                            <button class='btn btn-success' id='CouponSubmit' style='padding: 5px; width: 1in;'>Submit</button>
+                                        </center>
+                                    </div>
+                            </td>
+                            <td id='servicefee'>
+                                <div><a href="javascript:;" id='serviceBack'><i class='fa fa-arrow-left'></i></a></div>
+                                <div>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="ServiceSwitch" <?= $isCheck != 0 ? "Checked": null ?>>
+                                        <label class="form-check-label" for="ServiceSwitch">Check if you need to enable Service Fee</label>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!-- <div class="modal-body" >
+                    
+                </div> -->
             </div>
+        </div>
+    </div>
+    <!-- Void Login User Modal -->
+    <div class='modal fade' id='voidlogin' role='dialog' data-backdrop="static">
+        <div class='modal-sm modal-dialog' role="document">
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidde    
+                    <h3 class="modal-title" id="invheader">Void Authentication</h3>
+                </div>
+
+                <div class='modal-body' id='modal-body' style='height: 100%'>
+                    <div>
+                        <label for="loginid" class='nopadwtop'>Username:</label>
+                        <input type="text" class='form-control input-sm' id='loginid' name='loginid' placeholder="Enter Username..." autocomplete='false' />
+                        
+                        <label for="loginpass" class='nopadwtop'>Password:</label>
+                        <input type="password" class='form-control input-sm' id='loginpass' name='loginpass' placeholder="Enter Password..." autocomplete='false' />
+                        
+                        <button type='button' class='btn btn-success form-control input-sm' id='login' name='login' data-dismiss="modal" aria-label="Close" style='margin-top: 30px;'>Login </button>
+                        <button type='button' class='btn btn-danger form-control input-sm' data-dismiss="modal" aria-label="Close" style='margin-top: 10px;'> Cancel </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Print Modal -->
+    <div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-contnorad">   
+                <div class="modal-bodylong">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:8.5in; display:block; margin:0px; padding:0px; border:0px"></iframe>
+                </div>
+            </div>
+        </div>
     </div>
 
-    
-
-    
+    <!-- Alert Message Modal -->
+    <div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+        <div class="vertical-alignment-helper">
+            <div class="modal-dialog vertical-align-top">
+                <div class="modal-content">
+                <div class="alert-modal-danger">
+                    <p id="AlertMsg"></p>
+                    <p>
+                        <center>
+                            <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+                        </center>
+                    </p>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
 
@@ -330,22 +642,32 @@
             $("#specialdiscountcol").hide()
         })
 
+        $("#serviceBtn").click(function(){
+            $("#paymentcol").hide();
+            $("#servicefee").show()
+        })
+
+        $("#serviceBack").click(function(){
+            $("#paymentcol").show();
+            $("#servicefee").hide()
+        })
+
         $("#couponBtn").click(function(){
             $("#couponmodal").show()
-            $("#modal-body").hide()
+            $("#paymentcol").hide()
         })
         
         $("#couponback").click(function(){
             $("#couponmodal").hide()
-            $("#modal-body").show()
+            $("#paymentcol").show()
         })
 
         $("#CouponSubmit").click(function(){
             let coupons = $("#coupontxt").val()
-            var totalAmt = $("#totalAmt").val()
-            var subtotal = $("#subtotal").val();
+            var subtotal = $("#subtotal").val()
+            var totalTender = $("#totalTender").val();
 
-            if(parseFloat(totalAmt) < parseFloat(subtotal)){
+            if(parseFloat(subtotal) < parseFloat(totalTender)){
                 return alert("Coupon reached the total Amount. Cannot enter another Coupon")
             }
 
@@ -445,7 +767,7 @@
         })
 
 
-        $('.items, .itmclass').hover(function() {
+        $('.itmslist, .itmclass').hover(function() {
             $(this).css('cursor','pointer');
         });
 
@@ -464,7 +786,7 @@
         });
 
 
-        $('#item-wrapper').on('click', '#items',function(){
+        $('#item-wrapper').on('click', '#itemlist',function(){
             const name = $(this).attr("name");
             insert_item(name)
         })
@@ -497,9 +819,9 @@
             var name = $("#discountAmt").find(":selected").text();
             var person = $("#discountCust").val()
             var id = $("#discountID").val()
-            var totalAmt = $("#totalAmt").val()
+            var subtotal = $("#subtotal").val()
 
-            if(parseFloat(totalAmt) <= 0){
+            if(parseFloat(subtotal) <= 0){
                 return alert("Discount has gone to 0! Discount cannot be apply")
             }
             
@@ -620,6 +942,34 @@
         });
 
         /**
+         * Service Fee Switch Check if enable
+         */
+
+        $("#ServiceSwitch").change(function(){
+            let isCheck = 0;
+            if($(this).prop("checked")){
+                isCheck = 1;
+            }
+
+            $.ajax({
+                url: "Function/th_updateService.php",
+                data: { isCheck: isCheck },
+                dataType: 'json',
+                async: false,
+                success: function(res){
+                    if(res.valid){
+                        console.log(res.msg)
+                    } else {
+                        console.log(res.msg)
+                    }
+                    location.reload()
+                },
+                error: function(res){
+                    console.log(res)
+                }
+            })
+        })
+        /**
          * Payment Transaction
          */
 
@@ -632,62 +982,32 @@
                 return alert('Transaction is empty! cannot proceed transaction');
             }
 
+            let amt = $('#subtotal').val().replace(/,/g,'');
+            let ServiceFee = <?= $isCheck != 0 ? $serviceFee / 100 : 0 ?>
+
+            let service = parseFloat(amt) * parseFloat(ServiceFee)
+            let total = parseFloat(amt) + service
+
+
+
             $('#tendered').val(0)
             $('#tendered').focus()
             $('#tendered').select()
             $("#couponinput").val(getCoupon(coupon))
+            $("#ServiceInput").val(service)
+            $("#totalAmt").val(total)
             $("#discountInput").val(0)
-            $("#subtotal").val(0)
+            $("#totalTender").val(0)
             $('#discountAmt').val(0)
             $('#ExchangeAmt').val(0)
             
             $('#payModal').modal('show')
+            $("#servicefee").hide()
             $("#couponmodal").hide();
             $("#specialdiscountcol").hide()
             $('#modal-body').modal('show')
             PaymentCompute()
         })
-
-
-        // $('#discountAmt').change(function(){
-        //     var disc = $(this).val();
-        //     var type = $(this).find(":selected").attr("dataval");
-        //     var name = $(this).find(":selected").text();
-
-        //     $("#discountcode").val("");
-
-        //     // $("#paymentList tbody").each()
-        //     $("input:checkbox[id='discounted']:checked").each(function(){
-        //         let amounts = $(this).val();
-        //         let itemno = $(this).attr("dataval");
-                
-        //         itemStored.map((item, index) =>{
-        //             console.log(item)
-        //             if(item.partno === itemno){
-        //                 switch(type){
-        //                     case "PERCENT":
-        //                         item['specialDisc'] = (item.amount * (disc/100))
-        //                         item['amount'] -= (item.amount * (disc/100));
-        //                         break;
-        //                     case "PRICE":
-        //                         item['specialDisc'] = disc;
-        //                         item['amount'] -= disc;
-        //                 }
-        //                specialDisc.push({item: item.partno, type: type, name: name, person: null, id: null, amount: item.amount * (disc/100)})
-        //             }
-        //         })
-        //         console.log(specialDisc)
-        //         table_store(itemStored);
-        //     })
-        //     if(disc != 0) {
-        //         // let total = $("#totalAmt").val()
-        //         // let dif = total - disc;
-        //         // $('#totalAmt').val(dif)
-        //         return $("#dc").show();
-        //     } 
-        //     return $("#dc").hide();
-        // })
-
 
         /**
          * Retrive Hold transaction
@@ -839,6 +1159,7 @@
                 $("#couponinput").val(getCoupon(coupon))
                 return PaymentCompute()
             }
+            
             $('#ExchangeAmt').val('0.00')
         })
 
@@ -848,7 +1169,7 @@
 
         $('.btnpad').click(function(){
             let tender = $('#tendered').val();
-            let total = $('#totalAmt').val();
+            let total = $('#subtotal').val();
             let btn = $(this).attr("data-val");
             let number = 0;
             console.log(total)
@@ -872,6 +1193,7 @@
                     break;
                 case "CLEAR": 
                     number = "0.00"
+                    $("#totalTender").val("0.00")
                     break;
                 case "EXACT":
                     number = total;
@@ -904,17 +1226,19 @@
          */
         $('#PaySubmit').click(function(){
             let exchange = $('#ExchangeAmt').val().replace(/,/g,'');
-            let total = $('#totalAmt').val().replace(/,/g,'');
-            let subtotal = $('#subtotal').val().replace(/,/g,'');
+            let total = $('#subtotal').val().replace(/,/g,'');
+            let totalTender = $('#totalTender').val().replace(/,/g,'');
             let tender = $('#tendered').val();
             let proceed = false, isFinished = false;
-            let gross = $('#gross').text()
+            let gross = $('#totalAmt').val().replace(/,/g,'')
             let net = $("#net").text()
             let vat = $("#vat").text()
             let transaction = $("#tranno").val()
+            let servicefee = $("#ServiceInput").val().replace(/,/g,'')
+            let totalAmt = $("#totalAmt").val().replace(/./g,'');
             let tranno = '';
             
-            if(parseFloat(total) <= parseFloat(subtotal)){
+            if(parseFloat(total) <= parseFloat(totalTender)){
                 $.ajax({
                     url: 'Function/pos_save.php',
                     type: 'post',
@@ -924,6 +1248,7 @@
                         net: net,
                         vat: vat,
                         gross: parseFloat(total),
+                        totalAmt: parseFloat(totalAmt),
 
                         customer: $('#customer').val(),
                         order: $('#orderType').val(),
@@ -933,6 +1258,7 @@
                         exchange: parseFloat(exchange),
                         discount: getDiscount(itemStored),
                         coupon: getCoupon(coupon),
+                        service: parseFloat(servicefee)
                     },
                     dataType: 'json',
                     async: false,
@@ -1139,20 +1465,27 @@
      */
 
     function PaymentCompute(){
-        
-        let amt = $('#totalAmt').val().replace(/,/g,'');
         let tender = $('#tendered').val().replace(/,/g,'');
         let coupon = $("#couponinput").val().replace(/,/g,'');
         let exchange =$('#ExchangeAmt').val().replace(/,/g,'');
+        let amt = $('#subtotal').val().replace(/,/g,'');
+        let ServiceFee = <?= $isCheck != 0 ? $serviceFee / 100 : 0 ?>
 
+        let service = parseFloat(amt) * parseFloat(ServiceFee)
         let totaltender = parseFloat(tender) + parseFloat(coupon)
-        let subtotal = parseFloat(amt) - totaltender;
-        if(subtotal > 0){
+
+        let total = parseFloat(amt) + service
+
+        let change = parseFloat(total) - totaltender;
+
+        if(change > 0){
             return $('#ExchangeAmt').val("0.00")
         }
         $("#discountInput").val(getSpecialDisc(specialDisc)).change()
-        $("#subtotal").val(totaltender)
-        $('#ExchangeAmt').val(Math.abs(subtotal))
+        $("#ServiceInput").val(service)
+        $("#totalTender").val(totaltender)
+        $("#totalAmt").val(total)
+        $('#ExchangeAmt').val(Math.abs(change))
         $('#ExchangeAmt').autoNumeric('destroy');
         $('#ExchangeAmt').autoNumeric('init',{mDec:2});
     }
@@ -1263,7 +1596,7 @@
         $('#vat').text(parseFloat(itemAmounts.vat).toFixed(2));
         $('#net').text(parseFloat(itemAmounts.net).toFixed(2));
         $('#gross').text(parseFloat(itemAmounts.gross).toFixed(2));
-        $('#totalAmt').val(parseFloat(itemAmounts.gross).toFixed(2));
+        $('#subtotal').val(parseFloat(itemAmounts.gross).toFixed(2));
         amtTotal = parseFloat(itemAmounts['gross']);
     }
 
