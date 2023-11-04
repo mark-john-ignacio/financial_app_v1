@@ -287,6 +287,9 @@ $(document).ready(function(){
 							case "CASHIER":
 								window.location="POS/index.php";
 								break;
+							default: 
+								window.location="main.php";
+								break;
 						}
 						
 					} else {
