@@ -263,7 +263,11 @@ mysqli_close($con);
 				computehdr($(this).data("hdr"), $(this).attr("id"));
 			});
 
-			
+			$('#date_delivery').datetimepicker({
+				format: 'MM/DD/YYYY',
+				// onChangeDateTime:changelimits,
+				//minDate: new Date(),
+			});
 
 			$("#frmnew").on('submit', function (e) {
 				e.preventDefault();
