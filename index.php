@@ -4,7 +4,7 @@
 		session_start();
 	}
 	include('Connection/connection_string.php');
-  require_once('Model/helper.php');
+  	require_once('Model/helper.php');
 
 	if(isset($_SESSION['employeeid'])){
 		header("Location: //".$_SERVER['HTTP_HOST']."/myxfin_st/main.php");
@@ -299,6 +299,7 @@ $(document).ready(function(){
 				} else {
 					$("#add_err").css('display', 'inline', 'important');
 					$("#add_err").html("<div class='alert alert-danger' role='alert'> "+res.errMsg+"</div>");
+					window.location="logout.php"
 				}
 			}
 			   
