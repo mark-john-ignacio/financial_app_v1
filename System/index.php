@@ -40,7 +40,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	}
 }
 
-@$service = [];
+$isCheck = 0;
+$service = "";
 $sql = mysqli_query($con, "SELECT * FROM parameters WHERE compcode = '$company' AND ccode = 'SERVICE_FEE'");
 if(mysqli_num_rows($sql) != 0){
 	while($row = $sql -> fetch_assoc()){
