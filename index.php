@@ -206,7 +206,7 @@ $(document).ready(function(){
 				data: {
 					id: $('#employeeid').val(),
 					password: $('#inputPassword').val(),
-					newpassword: newpass,
+					newpassword: newpass, 
 					confirmPassword: confirm
 				},
 				dataType: 'json',
@@ -214,7 +214,17 @@ $(document).ready(function(){
 				success: function(res){
 					if(res.valid){
 						alert('<strong>'+ res.msg +'</strong>')
-						location.replace('index.php')
+						switch(res.userType){
+							case "ADMIN":
+								window.location="main.php";
+								break;
+							case "CASHIER":
+								window.location="POS/index.php";
+								break;
+							default: 
+								window.location="main.php";
+								break;
+						}
 					} else {
 						alert("<strong>"+res.errCode+": </strong>" + res.errMsg)
 					}
