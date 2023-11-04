@@ -150,10 +150,16 @@
 </head>
 <body style='min-height: 100vh; display: fixed'> 
     <div stlye="height: 100vh; display: fixed">
-            <div class='row nopadwtop' id='header' style="background-color: #2d5f8b; height:55px; margin-bottom: 5px !important">
+            <div class='row nopadwtop' id='header' style="background-color: #2d5f8b; width:100%; height:55px; margin-bottom: 5px !important">
                 <div  style="float: left;display: block;width: 235px;height: 57px;padding-left: 20px;padding-right: 20px;">
                 <img src="../images/LOGOTOP.png" alt="logo" class="logo-default" width="150" height="48" />
                 </div>
+                <div style='position: fixed; top: 10px; right: 30px; font-size: 20px; '>
+                    <a href="../logout.php" id="logout" style="color: white;">
+                        <i class='fa fa-sign-out fa-fw fa-lg'></i>logout
+                    </a>
+                </div>
+                
             </div>
     </div>
 
@@ -1701,6 +1707,7 @@
 			});
 			return flag ;
 		}
+        
 
     function AlertMsg(msg, color = "#008000"){
         $("#AlertModal").modal("show")
@@ -1711,4 +1718,5 @@
         }, 5000)
     }
 
+    
 </script>
