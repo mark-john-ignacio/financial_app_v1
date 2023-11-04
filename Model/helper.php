@@ -119,7 +119,7 @@
     }
     
     function validIP($IP){
-        return $IP == getHostByName(getHostName()) || $IP == null;
+        return $IP == gethostbyaddr($_SERVER['REMOTE_ADDR']) || $IP == null;
     }
     
     function valid30Days($date, $user){
