@@ -167,6 +167,10 @@
                         <td class="price" style='font-weight: bold'><?= number_format($serviceFee, 2) ?></td>
                     </tr>
                     <tr>
+                        <td class="description" style='font-weight: bold'>COUPON:</td>
+                        <td class="price" style='font-weight: bold'><?= number_format($coupon, 2) ?></td>
+                    </tr>
+                    <tr>
                         <td colspan='2'>__________________________</td>
                     </tr>
                     <tr>

@@ -411,10 +411,8 @@
                                         <label for="discountInput">Special Discount</label>
                                         <input type="text" name="discountInput" id="discountInput" class='form-control' readonly>
 
-                                        <?php if($isCheck != 0): ?>
-                                            <label for="discountInput">Service Fee</label>
-                                            <input type="text" name="ServiceInput" id="ServiceInput" class='form-control' readonly>
-                                        <?php endif; ?>
+                                        <label for="discountInput">Service Fee</label>
+                                        <input type="text" name="ServiceInput" id="ServiceInput" class='form-control' readonly>
 
                                         <label for="totalTender">Total Tendered Amount</label>
                                         <input type="text" name="totalTender" id="totalTender" class='form-control' readonly>
@@ -1238,7 +1236,7 @@
             let totalTender = $('#totalTender').val().replace(/,/g,'');
             let tender = $('#tendered').val();
             let proceed = false, isFinished = false;
-            let gross = $('#gross').text()
+            let gross = $('#totalAmt').val().replace(/,/g,'')
             let net = $("#net").text()
             let vat = $("#vat").text()
             let transaction = $("#tranno").val()
@@ -1266,7 +1264,7 @@
                         exchange: parseFloat(exchange),
                         discount: getDiscount(itemStored),
                         coupon: getCoupon(coupon),
-                        service: service
+                        service: parseFloat(servicefee)
                     },
                     dataType: 'json',
                     async: false,
