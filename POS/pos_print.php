@@ -20,23 +20,29 @@
     $phone = explode(";",$detail['cpnum']);
 
 
-    $sql = "SELECT a.quantity, a.gross, a.uom, b.ddate, b.orderType, b.customer, b.exchange, b.tendered, b.coupon, b.gross as total, b.net, b.vat, b.preparedby, c.citemdesc FROM pos_t a
+    $sql = "SELECT a.quantity, a.gross, a.uom, b.ddate, b.orderType, b.customer, b.exchange, b.tendered, b.coupon, b.gross as total, b.net, b.vat, b.preparedby, b.subtotal, b.serviceFee, b.discount, c.citemdesc FROM pos_t a
         LEFT JOIN pos b on a.compcode = b.compcode AND a.tranno = b.tranno
         LEFT JOIN items c on a.compcode = c.compcode AND a.item = c.cpartno
         WHERE a.compcode = '$company' and a.tranno = '$tranno'";
     $query = mysqli_query($con, $sql);
     while($row = $query -> fetch_assoc()){
         array_push($items, $row);
-        $total = $row['total'];
-        $vat = $row['vat'];
-        $net = $row['net'];
         $exchange = $row['exchange'];
         $coupon = floatval($row['coupon']);
         $tender = floatval($row['tendered']);
+
         $prepared = $row['preparedby'];
         $customer = $row['customer'];
         $ordertype=$row['orderType'];
         $date = $row['ddate'];
+
+        $discount = $row['discount'];
+        $serviceFee = $row['serviceFee'];
+        $vat = $row['vat'];
+        $net = $row['net'];
+        $subtotal = $row['subtotal'];
+        $total = $row['total'];
+        
     }
     $cash = $tender + $coupon;
 ?>
@@ -153,12 +159,27 @@
                         <td colspan='2'>__________________________</td>
                     </tr>
                     <tr>
+                        <td class="description" style='font-weight: bold'>DISCOUNT:</td>
+                        <td class="price" style='font-weight: bold'><?= number_format($discount, 2) ?></td>
+                    </tr>
+                    <tr>
+                        <td class="description" style='font-weight: bold'>SERVICE FEE:</td>
+                        <td class="price" style='font-weight: bold'><?= number_format($serviceFee, 2) ?></td>
+                    </tr>
+                    <tr>
+                        <td colspan='2'>__________________________</td>
+                    </tr>
+                    <tr>
                         <td class="quantity" style='font-weight: bold'>NET:</td>
                         <td class="price" style='font-weight: bold'><?= number_format($net, 2) ?></td>
                     </tr>
                     <tr>
                         <td class="quantity" style='font-weight: bold'>VAT:</td>
                         <td class="price" style='font-weight: bold'><?= number_format($vat, 2) ?></td>
+                    </tr>
+                    <tr>
+                        <td class="description" style='font-weight: bold'>SUB-TOTAL:</td>
+                        <td class="price" style='font-weight: bold'><?= number_format($subtotal, 2) ?></td>
                     </tr>
                     <tr>
                         <td class="description" style='font-weight: bold'>TOTAL:</td>

@@ -66,8 +66,8 @@
     /**
      * Query for Inserting into database
      */
-    $sql = "INSERT INTO pos (`compcode`, `tranno`, `preparedby`, `ddate`, `amount`, `net`, `vat`, `gross`, `discount`, `tendered`, `exchange`, `customer`, `orderType`, `table`, `coupon`, `serviceFee`, `totalAmt`)
-            VALUES ('$company', '$code', '$prepared', '$date', '$amount', '$net', '$vat', '$gross', '$discount', '$tendered', '$exchange', '$customer', '$type', '$table', '$coupon', '$service', '$totalAmt')";
+    $sql = "INSERT INTO pos (`compcode`, `tranno`, `preparedby`, `ddate`, `amount`, `net`, `vat`, `gross`, `discount`, `tendered`, `exchange`, `customer`, `orderType`, `table`, `coupon`, `serviceFee`, `subtotal`)
+            VALUES ('$company', '$code', '$prepared', '$date', '$amount', '$net', '$vat', '$totalAmt', '$discount', '$tendered', '$exchange', '$customer', '$type', '$table', '$coupon', '$service', '$gross')";
 
     if(mysqli_query($con, $sql)){
         echo json_encode([
