@@ -24,7 +24,7 @@
             
             $hashpassword = better_crypt($new);
             $date = date('Y-m-d');
-            $sql = "update `users` set `password`='$hashpassword', `modify`='$date' where Userid = '$id'";
+            $sql = "update `users` set `password`='$hashpassword', `modify`='$date', `cstatus` = 'Active' where Userid = '$id'";
     
             if(mysqli_query($con, $sql)){
                 echo json_encode([
