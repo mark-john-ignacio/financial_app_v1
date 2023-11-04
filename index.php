@@ -6,9 +6,9 @@
 	include('Connection/connection_string.php');
   	require_once('Model/helper.php');
 
-	// if(isset($_SESSION['employeeid'])){
-	// 	header("Location: //".$_SERVER['HTTP_HOST']."/myxfin_st/main.php");
-	// }
+	if(isset($_SESSION['login'])){
+		header("Location: //".$_SERVER['HTTP_HOST']."/myxfin_st/main.php");
+	}
 
 ?>
 

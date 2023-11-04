@@ -132,6 +132,7 @@
                 'userType' => $user
             ];
         } else {
+            $_SESSION['login'] = true;
             return [
                 'valid' => true,
                 'msg' => 'Login Successful',

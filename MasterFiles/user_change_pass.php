@@ -27,6 +27,7 @@
             $sql = "update `users` set `password`='$hashpassword', `modify`='$date', `cstatus` = 'Active' where Userid = '$id'";
     
             if(mysqli_query($con, $sql)){
+                $_SESSION['login'] = true;
                 echo json_encode([
                     'valid' => true,
                     'msg' => 'Update has been successful!'
