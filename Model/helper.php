@@ -119,27 +119,29 @@
     }
     
     function validIP($IP){
-        return $IP == getHostByName(getHostName()) || $IP == null;
+        return $IP == gethostbyaddr($_SERVER['REMOTE_ADDR']) || $IP == null;
     }
     
-    function valid30Days($date){
+    function valid30Days($date, $user){
         $dateNow = date('Y-m-d');
         if($dateNow > date('Y-m-d', strtotime($date.'+30days' ) )){
             return [
                 'valid' => true,
                 'msg' => 'Need To Change Password',
-                'proceed' => false
+                'proceed' => false,
+                'userType' => $user
             ];
         } else {
+            $_SESSION['login'] = true;
             return [
                 'valid' => true,
                 'msg' => 'Login Successful',
-                'proceed' => true
+                'proceed' => true,
+                'userType' => $user
             ];
         }
-        return $date > date('Y-m-d', strtotime($date.'+30days'));
     }
-    
+     
 
     function CustomerNames($module, $ctranno, $company){
         return match($module){

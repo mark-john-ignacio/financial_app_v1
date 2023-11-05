@@ -16,7 +16,7 @@ $password = mysqli_real_escape_string($con,$_REQUEST['password']);
 $selcompany = mysqli_real_escape_string($con,$_REQUEST['selcompany']); 
 $attempts = mysqli_real_escape_string($con, $_REQUEST['attempts']);
 
-$sql = mysqli_query($con,"select * from users where userid = '$employeeid'");
+$sql = mysqli_query($con,"select * from users where userid = '$employeeid' LIMIT 1");
 //echo "select * from users where userid = '$employeeid' and password='$password'";
 if(mysqli_num_rows($sql) == 0){
 	
@@ -32,7 +32,8 @@ if(mysqli_num_rows($sql) == 0){
 				'fullname' => strtoupper($row['Fname']." ".$row['Lname']),
 				'password' => $row['password'],
 				'status' => $row['cstatus'],
-				'modify' => $row['modify']
+				'modify' => $row['modify'],
+				'usertype' => $row['usertype']
 			);
 
 			$_SESSION['currapikey'] = '4c151e86299e4588939cdbb45a606021'; 
@@ -55,13 +56,13 @@ if(mysqli_num_rows($sql) == 0){
 			$_SESSION['companyid'] = $selcompany;
 			$_SESSION['timestamp']=time();
 			$dateNow = date('Y-m-d h:i:s');
-			$ipaddress = getHostByName(getHostName());
+			$ipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 
-			$sql = "SELECT b.logid, b.status, b.machine FROM `users` a
-			left join `users_log` b on a.Userid = b.Userid
-			WHERE a.Userid = '".$employee['id']."'
-			ORDER BY b.logid ASC	";
+			// $sql = "SELECT b.logid, b.status, b.machine FROM `users_log`
+			// WHERE Userid = '".$employee['id']."'
+			// ORDER BY logid DESC LIMIT 1";
 
+			$sql = "SELECT * FROM users_log WHERE Userid = '{$employee['id']}' ORDER BY logid DESC LIMIT 1";
 
 			$result = mysqli_query($con, $sql);
 
@@ -72,22 +73,20 @@ if(mysqli_num_rows($sql) == 0){
 			}
 
 
-			if(validStatus($status)){
-
+			if(validStatus($status)){	
 				$sql = "INSERT INTO `users_log` (`Userid`, `status`, `machine`, `logged_date`) VALUES ('".$employee['id']."', 'Online', '$ipaddress', '$dateNow')";
 				$result = mysqli_query($con, $sql);
-				echo json_encode(valid30Days($employee['modify']));
+				echo json_encode(valid30Days($employee['modify'], $employee['usertype']));
 
 			} else {
-
 				if(validIP($machine)){
-					echo json_encode(valid30Days($employee['modify']));
+					echo json_encode(valid30Days($employee['modify'], $employee['usertype']));
 				} else {
 
 					echo json_encode([
 						'valid' => false,
 						'errCode' => 'ERR_LOG',
-						'errMsg' => "Your account was still logged in"
+						'errMsg' => "Your account was still logged in. on " . $machine
 					]);
 				}
 			}
@@ -117,7 +116,7 @@ if(mysqli_num_rows($sql) == 0){
 		echo json_encode([
 				'valid' => false,
 				'errCode' => 'ACC_DIS',
-				'errMsg' => "Your account has been disabled!"
+				'errMsg' => "Your account has been disabled! Contact your organization to reactivate your account"
 			]);
 	}
 }

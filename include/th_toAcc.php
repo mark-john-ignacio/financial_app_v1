@@ -148,6 +148,10 @@ function getSetAcct($id){
 		}
 		
 	}
+
+	// else if($typ == "POS" && $invsystem == "perpetual"){
+	// 	if(!mysqli_query($con, "INSERT INTO `glactivity` (`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle, `ndebit`, `ncredit`, `lposted`, `dpostdate`) SELECT '$company', 'POS', '$tran', 'b.ddate, "))
+	// }	
 	
 	else if($typ=="SI"){
 
