@@ -84,7 +84,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Myx Financials</title>
     <link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap2.css?v=<?php echo time();?>">
 	<link href="../global/css/googleapis.css" rel="stylesheet" type="text/css"/>
 	<link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
@@ -101,7 +100,7 @@
     <script src="../Bootstrap/js/bootstrap.js"></script>
     <script src="../Bootstrap/js/moment.js"></script>
     <script src="../Bootstrap/slick/slick.js" type="text/javascript" charset="utf-8"></script>
-
+    <title>Document</title>
 
     <style>
         #filter {
@@ -149,139 +148,120 @@
         }
     </style>
 </head>
-<body style='display: fixed'>
+<body style='min-height: 100vh; display: fixed'> 
     <div stlye="height: 100vh; display: fixed">
-            <div class='row nopadwtop2x' id='header' style="background-color: #2d5f8b; height:65px; margin-bottom: 5px !important">
+            <div class='row nopadwtop' id='header' style="background-color: #2d5f8b; width:100%; height:55px; margin-bottom: 5px !important">
                 <div  style="float: left;display: block;width: 235px;height: 57px;padding-left: 20px;padding-right: 20px;">
-                    <img src="../images/LOGOTOP.png" width="150" height="50"/>
+                <img src="../images/LOGOTOP.png" alt="logo" class="logo-default" width="150" height="48" />
                 </div>
+                <div style='position: fixed; top: 10px; right: 30px; font-size: 20px; '>
+                    <a href="../logout.php" id="logout" style="color: white;">
+                        <i class='fa fa-sign-out fa-fw fa-lg'></i>logout
+                    </a>
+                </div>
+                
+            </div>
+    </div>
+
+    <div style="display: flex; min-width: 100%; ">
+            <div class="col" style="width: 50%; padding: 5px;">
+                <table style="width: 100%;">
+                    <tr>
+                        <td>
+                            <div class="digi col-lg-6 nopadding text-left">
+                                <span class="date">
+                                    Cashier: <?php echo $_SESSION['employeename']; ?>
+                                </span>    
+                            </div>
+                        </td>
+                        <td align='right'>
+                            <div>
+                                <span class="date"><?=date("F d, Y");?></span>
+                                <span class="digital-clock"></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div class='input-group margin-bottom-sm'>
+                                <input type="text" name='barcode' id='barcode' class='form-control input-sm' placeholder="|||||||||||||||||||||||||||||||||||||||| Barcode " autocomplete="off">
+                                <input type="text" name="tranno" id="tranno" class='form-control input-sm' style='display: none;'/>
+                                <span class='input-group-addon'><i class='fa fa-barcode fa-fw'></i></span>
+                            </div>
+                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style='padding-top: 20px'>
+                            <div style='height: 3.3in; max-height: 3.6in; overflow: auto;'>
+                                <table class='table' id='listItem' style="width: 100%; ">
+                                    <thead style='background-color: #019aca'>
+                                        <tr>
+                                            <th style="width: 60%;">Item</th>
+                                            <th style="text-align: center;">UOM</th>
+                                            <th style="text-align: center;">Quantity</th>
+                                            <th style="text-align: center;">Price</th>
+                                            <th style="text-align: center;">Discount</th>         
+                                            <th style="text-align: center;">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan='2' class="nopadding">
+                            <table id='amountlist' class="nopadding" style='width: 100%'>
+                                <tbody>
+                                    <!-- <tr>
+                                        <td>Discount</td>
+                                        <td align="right">P <span id="discount">0.00</span></td>
+                                    </tr> -->
+                                    <tr>
+                                        <td nowrap align='right' style='font-weight: bold; padding-right: 10px;'>Net of VAT</td>
+                                        <td class='form-control input-lg' align="right" style='border: 0px solid; color: #F00; font-weight: bold;'>P <span id="net">0.00</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td nowrap align='right' style='font-weight: bold; padding-right: 10px;'>VAT</td>
+                                        <td class='form-control input-lg' align="right" style='border: 0px solid; color: #F00; font-weight: bold;'>P <span id="vat">0.00</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td nowrap align='right' style='font-weight: bold; padding-right: 10px;'>Gross Amount</td>
+                                        <td class='form-control input-lg' align="right" style='border: 0px solid; color: #F00; font-weight: bold;'>P <span id="gross">0.00</span></td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
             </div>
 
-            <div class='container nopadding' id='POSBody' style='display: flex; width: 100%;'>
-                <div class="col" style="width: 50%; padding: 5px;">
-                    <table style="width: 100%;">
-                        <tr>
-                            <td>
-                                <div class="digi col-lg-6 nopadding text-left">
-                                    <span class="date">
-                                        Cashier: <?php echo $_SESSION['employeename']; ?>
-                                    </span>    
-                                </div>
-                            </td>
-                            <td align='right'>
-                                <div>
-                                    <span class="date"><?=date("F d, Y");?></span>
-                                    <span class="digital-clock time"></span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">
-                                <div class='input-group margin-bottom-sm'>
-                                    <input type="text" name='barcode' id='barcode' class='form-control input-sm' placeholder="|||||||||||||||||||||||||||||||||||||||| Barcode " autocomplete="off">
-                                    <input type="text" name="tranno" id="tranno" class='form-control input-sm' style='display: none;'/>
-                                    <span class='input-group-addon'><i class='fa fa-barcode fa-fw'></i></span>
-                                </div>
-                                
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style='padding-top: 20px'>
-                                <div style='height: 3.6in; max-height: 3.6in; overflow: auto;'>
-                                    <table class='table' id='listItem' style="width: 100%; ">
-                                        <thead style='background-color: #019aca'>
-                                            <tr>
-                                                <th style="width: 60%;">Item</th>
-                                                <th style="text-align: center;">UOM</th>
-                                                <th style="text-align: center;">Quantity</th>
-                                                <th style="text-align: center;">Price</th>
-                                                <th style="text-align: center;">Discount</th>         
-                                                <th style="text-align: center;">Amount</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan='2'>
-                                <table   id='amountlist' style='width: 100%'>
-                                    <tbody>
-                                        <!-- <tr>
-                                            <td>Discount</td>
-                                            <td align="right">P <span id="discount">0.00</span></td>
-                                        </tr> -->
-                                        <tr>
-                                            <td nowrap align='right' style='font-weight: bold; padding-right: 10px;'>Net of VAT</td>
-                                            <td class='form-control input-lg' align="right" style='border: 0px solid; color: #F00; font-weight: bold;'>P <span id="net">0.00</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td nowrap align='right' style='font-weight: bold; padding-right: 10px;'>VAT</td>
-                                            <td class='form-control input-lg' align="right" style='border: 0px solid; color: #F00; font-weight: bold;'>P <span id="vat">0.00</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td nowrap align='right' style='font-weight: bold; padding-right: 10px;'>Gross Amount</td>
-                                            <td class='form-control input-lg' align="right" style='border: 0px solid; color: #F00; font-weight: bold;'>P <span id="gross">0.00</span></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+            <div class='col' id='right-side' style='width: 50%; height: 100%; padding: 10px;'>
+                    <div id='filter'>
+                        <div class='input-group'>
+                            <span class='input-group-addon'><i class='fa fa-user'></i></span><input class='form-control input-sm' type="text" name='customer' id='customer' placeholder="Walkin Customer (Default)" autocomplete="off">
+                        </div>
 
+                            <div class='input-group'>
+                                <select name="orderType" id="orderType" class='form-control input-sm' style="<?= sizeof($order) != 0 ? null : "display:none" ?>">
+                                    <?php foreach($order as $list): ?>
+                                        <option value="<?= $list['code'] ?>"><?= $list['code'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
 
-                <div class='col' id='right-side' style='width: 50%; height: 100vh; padding: 10px;'>
-                    <table class='table' style="width: 100%;">
-                        <tr>
-                            <td>
-                                <div id='filter'>
-                                    <div class='input-group'>
-                                        <span class='input-group-addon'><i class='fa fa-user'></i></span><input class='form-control input-sm' type="text" name='customer' id='customer' placeholder="Walkin Customer (Default)" autocomplete="off">
-                                    </div>
+                            <div class='input-group'>
+                                <select name="table" id="table"  class='form-control input-sm' style="<?= sizeof($table) != 0 ? null : "display:none" ?>">
+                                    <?php foreach($table as $list): ?>
+                                        <option value="<?= $list['code'] ?>"><?= $list['code'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                    </div>
 
-                                        <div class='input-group'>
-                                            <select name="orderType" id="orderType" class='form-control input-sm' style="<?= sizeof($order) != 0 ? null : "display:none" ?>">
-                                                <?php foreach($order as $list): ?>
-                                                    <option value="<?= $list['code'] ?>"><?= $list['code'] ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </div>
-
-                                        <div class='input-group'>
-                                            <select name="table" id="table"  class='form-control input-sm' style="<?= sizeof($table) != 0 ? null : "display:none" ?>">
-                                                <?php foreach($table as $list): ?>
-                                                    <option value="<?= $list['code'] ?>"><?= $list['code'] ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>    
-                            <td>
-                                <div style='height: 350px; overflow: auto;'>
-                                    <div id='item-wrapper'>
-                                        <?php foreach($items as $list):?>
-                                                <div class='itmslist' style="height:100px;                     
-                                                    background-color:#019aca; 
-                                                    background-image:url('<?=$list["cuserpic"];?>');
-                                                    background-repeat:no-repeat;
-                                                    background-position: center center;
-                                                    background-size: contain;
-                                                    border:solid 1px #036;
-                                                    text-align:center;
-                                                    position: relative" data-itemlist="<?= $list['cclass'] ?>">
-                                                    <div id='items' name="<?= $list['cscancode'] ?>" class='items' data-itemlist="<?= $list['cclass'] ?>" style='position: absolute; bottom: 0; width: 100%; background-color: rgba(0,0,0,.5); color: #fff; min-height: 20px;'><font size='-2'><?php echo $list["citemdesc"]; ?></font></div>
-                                                </div>
-                                        <?php endforeach ?>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                    <div class='col-lg-12 '>          
+                    <div>
                         <section style='width: 90%; padding: 10px' class="regular slider btn">
                             <?php foreach($category as $list):?>
                                 <div style="height:100%; 
@@ -292,32 +272,52 @@
                                     text-align:center;" class="itmclass btn btn-info" data-clscode="<?= $list['ccode'] ?>">
                                         <font size="-2"><?= $list['cdesc'] ?></font>
                                 </div>
-
                             <?php endforeach; ?>
                         </section>
                     </div>
+                    
 
-                    <div id='wrapper'>
-                        <div id='button-wrapper' class='col-lg-12 nopadwtop'>
-                            <button class="form-control btn btn-sm btn-success" name="btnPay" id="btnPay" type="button">
-                                <i class="fa fa-money fa-fw fa-lg" aria-hidden="true"></i>&nbsp; PAYMENT (F2)
-                            </button>
-                            <button class="form-control btn btn-sm btn-primary" name="btnHold" id="btnHold" type="button">
-                               <i class="fa fa-sign-out fa-fw fa-lg" aria-hidden="true"></i>&nbsp; HOLD (INS)
-                            </button>
-                            <button class="form-control btn btn-sm btn-warning" name="btnRetrieve" id="btnRetrieve" type="button">
-                               <i class="fa fa-bar-chart fa-fw fa-lg" aria-hidden="true"></i>&nbsp; RETRIEVE (F4)
-                            </button>
-                            <button class="form-control btn btn-sm btn-danger" name="btnVoid" id="btnVoid" type="button">
-                                <i class="fa fa-plus fa-fw fa-lg" aria-hidden="true"></i>&nbsp;VOID (DEL)
-                            </button>
+                    <div style='height: 350px; overflow: auto;'>
+                        <div id='item-wrapper'>
+                            <?php foreach($items as $list):?>
+                                    <div class='itmslist' id="itemlist" style="height:100px;                     
+                                        background-color:#019aca; 
+                                        background-image:url('<?=$list["cuserpic"];?>');
+                                        background-repeat:no-repeat;
+                                        background-position: center center;
+                                        background-size: contain;
+                                        border:solid 1px #036;
+                                        text-align:center;
+                                        position: relative" data-itemlist="<?= $list['cclass'] ?>" name="<?= $list['cscancode'] ?>">
+                                        <div id='items' name="<?= $list['cscancode'] ?>" class='items' data-itemlist="<?= $list['cclass'] ?>" style='position: absolute; bottom: 0; width: 100%; background-color: rgba(0,0,0,.5); color: #fff; min-height: 20px;'><font size='-2'><?php echo $list["citemdesc"]; ?></font></div>
+                                    </div>
+                            <?php endforeach ?>
                         </div>
                     </div>
+   
                     
                 </div>
             </div>
-    </div>
 
+    </div>
+    <footer style="min-width: 100%">
+                <div id='wrapper'>
+                    <div id='button-wrapper' class='col-lg-12 nopadwtop'>
+                        <button class="form-control btn btn-sm btn-danger" name="btnVoid" id="btnVoid" type="button">
+                            <i class="fa fa-plus fa-fw fa-lg" aria-hidden="true"></i>&nbsp;VOID (DEL)
+                        </button>
+                        <button class="form-control btn btn-sm btn-warning" name="btnRetrieve" id="btnRetrieve" type="button">
+                            <i class="fa fa-bar-chart fa-fw fa-lg" aria-hidden="true"></i>&nbsp; RETRIEVE (F4)
+                        </button>
+                        <button class="form-control btn btn-sm btn-primary" name="btnHold" id="btnHold" type="button">
+                            <i class="fa fa-sign-out fa-fw fa-lg" aria-hidden="true"></i>&nbsp; HOLD (INS)
+                        </button>
+                        <button class="form-control btn btn-sm btn-success" name="btnPay" id="btnPay" type="button">
+                            <i class="fa fa-money fa-fw fa-lg" aria-hidden="true"></i>&nbsp; PAYMENT (F2)
+                        </button>
+                    </div>
+                </div>
+    </footer>
     <div class='modal fade' id='mymodal' role="dialog">
         <div class="modal-dialog" role="document">
             <div class='modal-content'>
@@ -528,7 +528,7 @@
         <div class='modal-sm modal-dialog' role="document">
             <div class='modal-content'>
                 <div class='modal-header'>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidde    
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>  
                     <h3 class="modal-title" id="invheader">Void Authentication</h3>
                 </div>
 
@@ -773,7 +773,7 @@
         })
 
 
-        $('.items, .itmclass').hover(function() {
+        $('.itmslist, .itmclass').hover(function() {
             $(this).css('cursor','pointer');
         });
 
@@ -792,7 +792,7 @@
         });
 
 
-        $('#item-wrapper').on('click', '#items',function(){
+        $('#item-wrapper').on('click', '#itemlist',function(){
             const name = $(this).attr("name");
             insert_item(name)
         })
@@ -1707,6 +1707,7 @@
 			});
 			return flag ;
 		}
+        
 
     function AlertMsg(msg, color = "#008000"){
         $("#AlertModal").modal("show")
@@ -1717,4 +1718,5 @@
         }, 5000)
     }
 
+    
 </script>

@@ -4,10 +4,10 @@
 		session_start();
 	}
 	include('Connection/connection_string.php');
-  require_once('Model/helper.php');
+  	require_once('Model/helper.php');
 
-	if(isset($_SESSION['employeeid'])){
-		header("Location: //".$_SERVER['HTTP_HOST']."/main.php");
+	if(isset($_SESSION['login'])){
+		header("Location: //".$_SERVER['HTTP_HOST']."/myxfin_st/main.php");
 	}
 
 ?>
@@ -206,7 +206,7 @@ $(document).ready(function(){
 				data: {
 					id: $('#employeeid').val(),
 					password: $('#inputPassword').val(),
-					newpassword: newpass,
+					newpassword: newpass, 
 					confirmPassword: confirm
 				},
 				dataType: 'json',
@@ -214,7 +214,17 @@ $(document).ready(function(){
 				success: function(res){
 					if(res.valid){
 						alert('<strong>'+ res.msg +'</strong>')
-						location.replace('index.php')
+						switch(res.userType){
+							case "ADMIN":
+								window.location="main.php";
+								break;
+							case "CASHIER":
+								window.location="POS/index.php";
+								break;
+							default: 
+								window.location="main.php";
+								break;
+						}
 					} else {
 						alert("<strong>"+res.errCode+": </strong>" + res.errMsg)
 					}
@@ -280,7 +290,17 @@ $(document).ready(function(){
 			   //alert(html); 
 				if(res.valid)    {
 					if(res.proceed){
-						window.location="main.php";
+						switch(res.userType){
+							case "ADMIN":
+								window.location="main.php";
+								break;
+							case "CASHIER":
+								window.location="POS/index.php";
+								break;
+							default: 
+								window.location="main.php";
+								break;
+						}
 						
 					} else {
 						$('#changeModal').modal('show');

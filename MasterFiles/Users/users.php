@@ -359,7 +359,17 @@ if(@$lvlcompute==1){
 
 								</td>
 							</tr>
-
+							<tr>
+								<td><b>User Type: </b></td>
+								<td style="padding:2px">
+								<div class="col-xs-12">
+									<select name="usertype" id="usertype">
+										<option value="ADMIN">ADMIN</option>
+										<option value="CASHIER">CASHIER</option>
+									</select>
+								</div>
+								</td>
+							</tr>
 							<tr>
 								<td><b>Signature: </b></td>
 								<td style="padding:2px">
@@ -655,6 +665,11 @@ if(@$lvlcompute==1){
 						$("#emailadd").val(item.emailadd);
 						$("#cdept").val(item.cdepartment);
 						$("#cdesig").val(item.cdesignation);
+						$("#usertype option").each(function(){	
+							if ($(this).val() === item.usertype) {
+								return $(this).attr("selected", "selected"); 
+							} 
+						});
 						
 						$('#previewing').attr('src',item.imgsrc);
 
