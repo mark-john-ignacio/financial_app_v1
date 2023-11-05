@@ -24,7 +24,7 @@
 	$getbegbaldet = mysqli_query($con,"SELECT * FROM `accounts_beg` WHERE compcode='$company'"); 
 	if (mysqli_num_rows($getbegbaldet)!=0) {
 		while($rows = mysqli_fetch_array($getbegbaldet, MYSQLI_ASSOC)){
-			@$begbaldate = $rows['begbaldate'];
+			@$begbaldate = date_format(date_create($rows['begbaldate']), "m/d/Y");
 			@$begbalrems = $rows['cremarks'];
 		}
 	}
@@ -108,7 +108,7 @@
 </head>
 
 <body style="padding:5px">
-
+	<form action="Accounts_Balance_Save.php" name="frmacct" id="frmacct" method="post">
 		<fieldset>
     	<legend>Chart of Accounts Beginning Balance</legend>	
 
@@ -133,84 +133,99 @@
 					</tr>
 				</table>
 
-				<br>
-				<ul class="nav nav-tabs">
-					<?php
-						$cnt = 0;
-						foreach($cats as $rs){
-							$cnt++;
 
-							if($cnt==1){
-								$setact = "active";
-							}else{
-								$setact = "";
-							}
-					?>
-          <li class="<?=$setact?>" id="li<?=$rs?>"><a href="#<?=$rs?>"><?=$rs?></a></li>
-					<?php
-						}
-						?>
-          <!--<li id="licos"><a href="#cos">COST OF SALES</a></li>-->
-          
-        </ul>
+					<br>
+					<ul class="nav nav-tabs">
+						<?php
+							$cnt = 0;
+							foreach($cats as $rs){
+								$cnt++;
 
-			<br><br>
-			<div class="tab-content">
-
-				<?php
-					$cnt = 0;
-					foreach($cats as $rs){
-						$cnt++;
-
-						if($cnt==1){
-							$setact = " active";
-						}else{
-							$setact = "";
-						}
-				?>
-
-        <div id="<?=$rs?>" class="tab-pane fade in<?=$setact?>" style="padding-left:10px">
-			
-					<table class="table table-hover table-sm" role="grid" id="MyTable<?=$rs?>">
-						<thead>
-							<tr>
-								<th width="150px">Acct No</th>
-								<th>Description</th>
-								<th width="150px">Type</th>
-								<th width="200px" style="text-align: right">Beg Balance</th>
-							</tr>
-						</thead>
-						<tbody>
-							<?php
-								foreach($resallaccts as $row)
-								{
-									if(intval($row['nlevel'])==1 && $row['ccategory']==$rs){
-										$xcgen = setTabsLevel($row['nlevel']);
-							?>
-									<tr>
-										<td style="padding-left:<?=$xcgen;?>px" valign="middle"><?=$row['cacctid']?></td>
-										<td style="padding-left:<?=$xcgen;?>px" valign="middle"><?=setIcons($xcgen). " ". $row['cacctdesc']?></td>
-										<td valign="middle"><?=$row['ctype']?></td>
-										<td><input type="text" class="numeric form-control input-xs text-right" id="txt<?=$row['cacctid']?>" name="txt<?=$row['cacctid']?>" tabindex="1" placeholder="0.0000" value="<?=$row['nbalance']?>" autocomplete="off" maxlength="18" data-hdr="<?=$row['mainacct']?>" <?=($row['ctype']=="General") ? "readonly" : "";?>/></td>
-									</tr>
-							<?php
-										if($row['ctype']=="General"){
-											getchild($row['cacctid'], $row['nlevel']);
-										}
-										
-									}
+								if($cnt==1){
+									$setact = "active";
+								}else{
+									$setact = "";
 								}
+						?>
+						<li class="<?=$setact?>" id="li<?=$rs?>"><a href="#<?=$rs?>"><?=$rs?></a></li>
+						<?php
+							}
 							?>
-						</tbody>
-					</table>
+						<!--<li id="licos"><a href="#cos">COST OF SALES</a></li>-->
+						
+					</ul>
 
-				</div> 
-				<?php
-					}
-				?>
-			</div>
+					<br>
+					<div class="tab-content" style="margin: 0px;padding: 3px;width: 100%;height: 300px;text-align: left;overflow: auto">
+
+						<?php
+							$cnt = 0;
+							foreach($cats as $rs){
+								$cnt++;
+
+								if($cnt==1){
+									$setact = " active";
+								}else{
+									$setact = "";
+								}
+						?>
+
+						<div id="<?=$rs?>" class="tab-pane fade in<?=$setact?>" style="padding-left:10px">
+					
+							<table class="table table-hover table-sm" role="grid" id="MyTable<?=$rs?>">
+								<thead>
+									<tr>
+										<th width="150px">Acct No</th>
+										<th>Description</th>
+										<th width="150px">Type</th>
+										<th width="200px" style="text-align: right">Beg Balance</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php
+										foreach($resallaccts as $row)
+										{
+											if(intval($row['nlevel'])==1 && $row['ccategory']==$rs){
+												$xcgen = setTabsLevel($row['nlevel']);
+									?>
+											<tr>
+												<td style="padding-left:<?=$xcgen;?>px" valign="middle"><?=$row['cacctid']?></td>
+												<td style="padding-left:<?=$xcgen;?>px" valign="middle"><?=setIcons($xcgen). " ". $row['cacctdesc']?></td>
+												<td valign="middle"><?=$row['ctype']?></td>
+												<td><input type="text" class="numeric form-control input-xs text-right" id="txt<?=$row['cacctid']?>" name="txt<?=$row['cacctid']?>" tabindex="1" placeholder="0.0000" value="<?=$row['nbalance']?>" autocomplete="off" maxlength="18" data-hdr="<?=$row['mainacct']?>" <?=($row['ctype']=="General") ? "readonly" : "";?>/></td>
+											</tr>
+									<?php
+												if($row['ctype']=="General"){
+													getchild($row['cacctid'], $row['nlevel']);
+												}
+												
+											}
+										}
+									?>
+								</tbody>
+							</table>
+
+						</div> 
+						<?php
+							}
+						?>
+					</div>
+
+
+					<div class="row nopadwtop2x">
+						<div class="col-xs-7">
+								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Accounts.php?f=';" id="btnMain" name="btnMain">
+						Back to Main<br>(ESC)</button>
+
+								
+						<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> <button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();">SAVE<br> (F2)</button>
+						</div>	
+
+					</div>  
+			
 
 		</fieldset>
+	</form>
 
 	<!-- 1) Alert Modal -->
 	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
@@ -257,40 +272,26 @@ mysqli_close($con);
 
 			$("input.numeric").on("keyup", function (e) {
 				if (e.which === 13) {
+					console.log(e.which);
 					$(this).closest("tr").next().find("input.numeric").focus();
 				}
 				
 				computehdr($(this).data("hdr"), $(this).attr("id"));
 			});
 
+			$("input.numeric").on("blur", function () {
+				if($(this).val()==""){
+					$(this).val(0);
+					$(this).autoNumeric('destroy');
+					$(this).autoNumeric('init',{mDec:4});
+
+				}
+			});
+
 			$('#date_delivery').datetimepicker({
 				format: 'MM/DD/YYYY',
 				// onChangeDateTime:changelimits,
 				//minDate: new Date(),
-			});
-
-			$("#frmnew").on('submit', function (e) {
-				e.preventDefault();
-
-				var form = $("#frmnew");
-				var formdata = form.serialize();
-					$.ajax({
-					url: 'Accounts_add.php',
-					type: 'POST',
-					async: false,
-					data: formdata,
-					success: function(data) {
-						if(data.trim()!="False"){
-							$('#myModal').modal('hide');
-
-							alert(data);
-							location.reload();
-						}else{
-							alert("Error saving new account!");	
-						}
-					}
-				});							
-
 			});
 
 
@@ -322,6 +323,24 @@ mysqli_close($con);
 				$("#txt"+$dhdr).val($xtot);
 				$("#txt"+$dhdr).autoNumeric('destroy');
 				$("#txt"+$dhdr).autoNumeric('init',{mDec:4});
+			}
+		}
+
+		function chkform(){
+			$iswuth = 0;
+			jQuery('.numeric').each(function() {
+
+				if(parseFloat($(this).val().replace(/,/g,''))>=1){
+					$iswuth++;
+				}
+
+			});
+
+			if($iswuth == 0){
+				$("#AlertMsg").html("<center><b>NO VALUE TO BE SAVED!</b></center>");
+			 	$("#AlertModal").modal('show');
+			}else{
+				$("#frmacct").submit();
 			}
 		}
 

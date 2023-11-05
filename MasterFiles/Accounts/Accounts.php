@@ -164,6 +164,7 @@ include('../../include/access2.php');
 										<option value="LIABILITIES">LIABILITIES</option>
 										<option value="EQUITY">EQUITY</option>
 										<option value="REVENUE">REVENUE</option>
+										<option value="COST OF SALES">COST OF SALES</option> 
 										<option value="EXPENSES">EXPENSES</option>
 									</select>
 								</div>
@@ -273,7 +274,8 @@ include('../../include/access2.php');
 										<option value="ASSETS">ASSETS</option>
 										<option value="LIABILITIES">LIABILITIES</option>
 										<option value="EQUITY">EQUITY</option>
-										<option value="REVENUE">REVENUE</option>
+										<option value="REVENUE">REVENUE</option> 
+										<option value="COST OF SALES">COST OF SALES</option> 
 										<option value="EXPENSES">EXPENSES</option>
 									</select>
 								</div>
@@ -595,8 +597,8 @@ mysqli_close($con);
 							if(full[4]==null){
 								return full[9];
 							}else{
-								//editacct(id,codeno,name,typ,cat,mId,nlvl,lcon,conid)
-								return "<div style='text-indent:"+GENxyz0+"px'> <a href=\"javascript:;\" onClick=\"editacct('"+full[1]+"','"+full[0]+"','"+full[2]+"','"+full[3]+"','"+full[4]+"','"+full[5]+"','"+full[8]+"')\">"+full[1]+"</a> </div>";
+								//editacct(id,codeno,name,typ,cat,mId,nlvl,lcon)
+								return "<div style='text-indent:"+GENxyz0+"px'> <a href=\"javascript:;\" onClick=\"editacct('"+full[1]+"','"+full[0]+"','"+full[2]+"','"+full[3]+"','"+full[4]+"','"+full[5]+"','"+full[8]+"','"+full[7]+"')\">"+full[1]+"</a> </div>";
 							}
 					}
 						
@@ -621,7 +623,12 @@ mysqli_close($con);
 							symxcol = "&#10148; ";
 						}
 						
-						return "<div style='text-indent:"+GENxyz0+"px'>  "+symxcol+full[2]+"</div>";
+						if(full[7]==0){
+							return "<div style='text-indent:"+GENxyz0+"px'>  "+symxcol+full[2]+"</div>";
+						}else{
+							return "<div style='text-indent:"+GENxyz0+"px'>  "+symxcol+full[2]+ " - <b><i>(CONTRA)</i></b></div>";
+						}
+						
 					}
 				},
 				{ "data": 4 },
@@ -639,7 +646,7 @@ mysqli_close($con);
 	
 	
 	
-	function editacct(id,codeno,name,typ,cat,mId,nlvl,lcon,conid){
+	function editacct(id,codeno,name,typ,cat,mId,nlvl,lcon){
 			$("#divmainacc2").html("");
 			
 			$("#acctidcode").val(codeno);
@@ -648,7 +655,7 @@ mysqli_close($con);
 			$("#selcat2").val(cat);
 			var $radios = $('input:radio[name=radtype2]');
 			$radios.filter('[value='+typ+']').prop('checked', true);
-			
+
 				if(parseInt(lcon)==1){
 					$('#chkcontra2').prop('checked', true);
 				}
