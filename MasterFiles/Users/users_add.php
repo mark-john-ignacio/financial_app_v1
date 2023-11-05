@@ -16,6 +16,7 @@ function better_crypt($input, $rounds = 12) {
 	$cEmail = $_POST['emailadd'];
 	$cDept = $_POST['cdept'];
 	$cDesig = $_POST['cdesig'];
+	$userType = $_POST['usertype'];
 
 	$password_hash = better_crypt($cPass);
 
@@ -24,7 +25,7 @@ function better_crypt($input, $rounds = 12) {
 	$chkID = mysqli_query($con,"select * from users where UserID = '$cUserID'");
 	 
 	 
-	if (!mysqli_query($con, "insert into users(Userid,Fname,LName,Minit,password,cemailadd,cstatus,cdepartment,cdesignation,modify) values('$cUserID','$cFName','$cLName','$cMI','$password_hash','$cEmail','Active','$cDept','$cDesig','$datePass')")) {
+	if (!mysqli_query($con, "insert into users(Userid,Fname,LName,Minit,password,cemailadd,cstatus,cdepartment,cdesignation,modify,usertype) values('$cUserID','$cFName','$cLName','$cMI','$password_hash','$cEmail','Active','$cDept','$cDesig','$datePass', '$userType')")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	}
 	else{

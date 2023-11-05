@@ -7,7 +7,7 @@ require_once "../../Connection/connection_string.php";
 $company = $_SESSION['companyid'];
 $item = $_REQUEST['item'];
 $unit = $_REQUEST['unit'];
-$date = date("m/d/Y", strtotime($_REQUEST['date']));
+$date = $_REQUEST['date'];
 
 // Escape user inputs to prevent SQL injection
 $item = mysqli_real_escape_string($con, $item);
@@ -25,6 +25,7 @@ $sql = "SELECT A.discount, A.type
 		FROM discountmatrix_t A
 		LEFT JOIN discountmatrix B ON A.compcode = B.compcode AND A.tranno = B.tranno
 		WHERE A.compcode = '$company' AND A.itemno = '$item' AND A.unit = '$unit' AND B.approved = 1 
+        AND B.deffective <= STR_TO_DATE('$date', '%m/%d/%Y') AND B.ddue >= STR_TO_DATE('$date', '%m/%d/%Y')
 		ORDER BY B.ddate DESC LIMIT 1";
 
 $result = mysqli_query($con, $sql);
