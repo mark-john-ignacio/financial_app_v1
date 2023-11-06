@@ -214,7 +214,7 @@ $(document).ready(function(){
 				success: function(res){
 					if(res.valid){
 						alert('<strong>'+ res.msg +'</strong>')
-						switch(res.userType){
+						switch(res.usertype){
 							case "ADMIN":
 								window.location="main.php";
 								break;
@@ -290,7 +290,7 @@ $(document).ready(function(){
 			   //alert(html); 
 				if(res.valid)    {
 					if(res.proceed){
-						switch(res.userType){
+						switch(res.usertype){
 							case "ADMIN":
 								window.location="main.php";
 								break;
