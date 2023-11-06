@@ -100,7 +100,7 @@
     <script src="../Bootstrap/js/bootstrap.js"></script>
     <script src="../Bootstrap/js/moment.js"></script>
     <script src="../Bootstrap/slick/slick.js" type="text/javascript" charset="utf-8"></script>
-    <title>Document</title>
+    <title>MyxFinancials</title>
 
     <style>
         #filter {
