@@ -79,7 +79,7 @@ if(mysqli_num_rows($sql) == 0){
 				echo json_encode(valid30Days($employee['modify'], $employee['usertype']));
 
 			} else {
-				if(validIP($machine)){
+				if(!validIP($machine)){
 					echo json_encode(valid30Days($employee['modify'], $employee['usertype']));
 				} else {
 
