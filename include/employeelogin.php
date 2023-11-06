@@ -56,7 +56,8 @@ if(mysqli_num_rows($sql) == 0){
 			$_SESSION['companyid'] = $selcompany;
 			$_SESSION['timestamp']=time();
 			$dateNow = date('Y-m-d h:i:s');
-			$ipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+			$ipaddress = getHostByName(getHostName());
+			// $ipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 
 			// $sql = "SELECT b.logid, b.status, b.machine FROM `users_log`
 			// WHERE Userid = '".$employee['id']."'
