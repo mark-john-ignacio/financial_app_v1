@@ -124,7 +124,7 @@
     //     return $IP == gethostbyaddr($_SERVER['REMOTE_ADDR']) || $IP === null || $IP === '';
     // }
     function validIP($IP){
-        return password_verify($IP, gethostbyaddr($_SERVER['REMOTE_ADDR']) || $IP == null);
+        return password_verify($IP, gethostbyaddr($_SERVER['REMOTE_ADDR']) || empty($IP));
     }
     
     function valid30Days($date, $user){
