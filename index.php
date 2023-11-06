@@ -7,7 +7,7 @@
   	require_once('Model/helper.php');
 
 	if(isset($_SESSION['login'])){
-		header("Location: //".$_SERVER['HTTP_HOST']."/myxfin_st/main.php");
+		header("Location: //".$_SERVER['HTTP_HOST']."/main.php");
 	}
 
 ?>
