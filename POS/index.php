@@ -418,14 +418,14 @@
                                         <label for="couponinput">Coupon Amount</label>
                                         <input type="text" name="couponinput" id="couponinput" class='form-control' readonly>
 
+                                        <label for="totalTender">Total Tendered Amount</label>
+                                        <input type="text" name="totalTender" id="totalTender" class='form-control' readonly>
+
                                         <label for="discountInput">Special Discount</label>
                                         <input type="text" name="discountInput" id="discountInput" class='form-control' readonly>
 
                                         <label for="discountInput">Service Fee</label>
                                         <input type="text" name="ServiceInput" id="ServiceInput" class='form-control' readonly>
-
-                                        <label for="totalTender">Total Tendered Amount</label>
-                                        <input type="text" name="totalTender" id="totalTender" class='form-control' readonly>
 
                                         <label for="subtotal">Sub-Total</label>
                                         <input type='text' id='subtotal' class='form-control' readonly/>

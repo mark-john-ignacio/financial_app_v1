@@ -73,7 +73,7 @@
         echo json_encode([
             'valid' => true,
             'tranno' => $code,
-            'msg' => "Successful Inserted"
+            'msg' => "Payment Successfully added"
         ]);
     } else {
         $compname = gethostbyaddr($_SERVER['REMOTE_ADDR']);
