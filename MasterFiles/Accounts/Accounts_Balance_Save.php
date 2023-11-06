@@ -40,6 +40,7 @@
 	}
 
 
+	/*
 	mysqli_query($con,"DELETE FROM glactivity where compcode='".$_SESSION['companyid']."' and cmodule='BEGBAL'");
 	//insert/update into glactivity as begbal
 	$query = mysqli_query($con,"Select * from accounts where compcode='".$_SESSION['companyid']."'");
@@ -50,7 +51,7 @@
 			mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) VALUES ('".$_SESSION['companyid']."','BEGBAL','BEGBAL',STR_TO_DATE('$dDelDate', '%m/%d/%Y'),'".$rsz['cacctid']."','".$rsz['cacctdesc']."',,,0,NOW())");
 		}
 	}
-
+	*/
 
 	//INSERT LOGFILE
 	$compname = gethostbyaddr($_SERVER['REMOTE_ADDR']);

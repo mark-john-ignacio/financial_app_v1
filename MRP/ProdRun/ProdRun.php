@@ -54,14 +54,14 @@
 		<section>
         <div>
         	<div style="float:left; width:50%">
-				<font size="+2"><u>Job Order List</u></font>	
+				<font size="+2"><u>Production Run (JO List)</u></font>	
             </div>
         </div>
 			<br><br>
 
 			<div class="col-xs-12 nopadding">
 				<div class="col-xs-4 nopadding">
-					<button type="button" class="btn btn-primary btn-sm" onClick="location.href='JO_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+					<!--<button type="button" class="btn btn-primary btn-sm" onClick="location.href='JO_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>-->
 
 					
 				</div>
@@ -95,7 +95,7 @@
 		</section>
 	</div>		
     
-<form name="frmedit" id="frmedit" method="post" action="JO_edit.php">
+<form name="frmedit" id="frmedit" method="post" action="ProdRun_edit.php">
 	<input type="hidden" name="txtctranno" id="txtctranno" />
 	<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
 </form>		
@@ -262,39 +262,30 @@
 				{ "data": null,
 					"render": function (data, type, full, row) {
 
-						if (full[5] == 1) {
+						if (full[5] >= 1) {
+							if(full[6] == 0){
+								return "<span class='label label-success' style='padding: 5px !important; font-size: 10px;'>Completed</span>"; 
+							}else{
 							
-							return 'Posted';
+								return "<span class='label label-warning' style='padding: 5px !important; font-size: 10px;'>In Progress</span>"; 
+							}
 						
-						}
-						
-						else if (full[6] == 1) {
-						
-							return '<b>Cancelled</b>';
-						
-						}
-						
-						else{
+						}else{
 
-							return 	"<div id=\"msg"+full[0]+"\"> <a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a> </div>";
+							return "<span class='label label-danger' style='padding: 5px !important; font-size: 10px;'>Pending</span>";
 
 						}
+						
+						
 					}
 				}
 			],
 			"columnDefs": [
 				{
-					"targets": [3,5],
+					"targets": [3,4,5],
 					"className": "text-center dt-body-nowrap"
 				}
-			],
-			"createdRow": function( row, data, dataIndex ) {
-        // Set the data-status attribute, and add a class
-				if(data[6]==1){
-					$(row).addClass('text-danger');
-				}
-        
-    	}
+			]
 		});
 
 	}
