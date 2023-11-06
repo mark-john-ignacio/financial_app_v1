@@ -2,8 +2,16 @@
     if(!isset($_SESSION)){
         session_start();
     }
+    include ('../Connection/connection_string.php');
 
     $company = $_SESSION['companyid'];
+    $company = [];
+    $query = mysqli_query($con,"SELECT * FROM company");
+    if(mysqli_num_rows($query) != 0){
+        while($row = $query -> fetch_assoc()){
+            array_push($company, $row);
+        }
+    }
     // $_SESSION['pageid'] = "Coupon.php";
 ?>
 <!DOCTYPE html>
@@ -32,7 +40,12 @@
         
         <div style="padding: 20%">
             <p class='input-sm' style="color: #098; font-weight: bold">Coupon Activation</p>
-            <div class='input-group margin-bottom-sm' >
+            <select name="company" id="company" class="form-control input-sm">
+                <?php foreach($company as $list):?>
+                    <option value="<?= $list['compcode'] ?>"><?= $list['compname'] ?></option>
+                <?php endforeach; ?>
+            </select>
+            <div class='input-group margin-bottom-sm nopadwtop' >
                 <input type="text" id="coupon" name="coupon" placeholder="Enter your coupon code ..." class='form-control input-sm' />
                 <span class='input-group-addon nopadding'><button class="btn btn-info btn-xs " id='activateBtn'>Activate</button></span>
             </div>
