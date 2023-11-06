@@ -15,14 +15,13 @@
     // $sql = "SELECT * FROM coupon WHERE `compcode` = '$company' AND `CouponNo` = '$coupon' AND `status` = 'INACTIVE' ORDER BY `ddate` LIMIT 1";
     $query = mysqli_query($con, $sql);
     $row = $query -> fetch_assoc();
-    $days = $row['days'];
-    $status = $row['status'];
-    $approved = $row['approved'];
+    @$days = $row['days'];
+    @$status = $row['status'];
+    @$approved = $row['approved'];
             
     if(mysqli_num_rows($query) != 0){
         $expired = strtotime($now);
         $expired = date("Y-m-d", strtotime("+$days day", $expired));
-
         
         if($approved == 0){
             echo json_encode([
