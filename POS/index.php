@@ -31,11 +31,11 @@
         array_push($category, $row);
     }
 
-    $sql = "select a.cpartno, a.cpartno as cscancode, a.citemdesc, 0 as nretailcost, 0 as npurchcost, a.cunit, a.cstatus, 0 as ltaxinc, a.cclass, 1 as nqty, a.cuserpic
+    $sql = "select a.cpartno, a.cpartno as cscancode, a.citemdesc, 0 as nretailcost, 0 as npurchcost, a.cunit, a.cstatus, 0 as ltaxinc, a.cclass, 1 as nqty, a.cuserpic, c.nqty as quantity
             from items a 
             left join
                 (
-                    select a.citemno, COALESCE((Sum(nqtyin)-sum(nqtyout)),0) as nqty
+                    select a.citemno, COALESCE((SUM(nqtyin) - SUM(nqtyout)), 0) as nqty
                     From tblinventory a
                     right join items d on a.citemno=d.cpartno and a.compcode=d.compcode
                     where a.compcode='$company' and  a.dcutdate <= '$date' and d.cstatus = 'ACTIVE'
@@ -295,9 +295,11 @@
                                         background-position: center center;
                                         background-size: contain;
                                         border:solid 1px #036;
-                                        text-align:center;
                                         position: relative" data-itemlist="<?= $list['cclass'] ?>" name="<?= $list['cscancode'] ?>">
-                                        <div id='items' name="<?= $list['cscancode'] ?>" class='items' data-itemlist="<?= $list['cclass'] ?>" style='position: absolute; bottom: 0; width: 100%; background-color: rgba(0,0,0,.5); color: #fff; min-height: 20px;'><font size='-2'><?php echo $list["citemdesc"]; ?></font></div>
+                                        <div style='position: absolute; text-align: right; width: 100%; color: #fff; min-height: 20px;'>
+                                            <?= !empty($list['quantity']) && $list['quantity'] >= 0? "Remaining: <span id='remain'>" . number_format($list['quantity']) ."</span>" : "Sold Out" ?>
+                                        </div>
+                                        <div id='items' name="<?= $list['cscancode'] ?>" class='items' data-itemlist="<?= $list['cclass'] ?>" style='position: absolute; bottom: 0; width: 100%; background-color: rgba(0,0,0,.5); color: #fff; min-height: 20px; text-align:center;'><font size='-2'><?php echo $list["citemdesc"]; ?></font></div>
                                     </div>
                             <?php endforeach ?>
                         </div>
@@ -864,6 +866,7 @@
                         }
                        specialDisc.push({item: item.partno, type: type, name: name, person: person, id: id, amount: item.amount * (disc/100)})
                     }
+                    console.log(specialDisc)
                 })
             })
             $("#discountInput").val(getSpecialDisc(specialDisc))
@@ -1187,11 +1190,10 @@
          */
 
         $('.btnpad').click(function(){
-            let tender = $('#tendered').val();
-            let total = $('#subtotal').val();
-            let btn = $(this).attr("data-val");
+            let tender = $('#tendered').val().replace(/,/g,'');
+            let total = $('#totalAmt').val().replace(/,/g,'');
+            let btn = $(this).attr("data-val").replace(/,/g,'');
             let number = 0;
-            console.log(total)
 
             if(tender == "0.00"){
                 $('#tendered').val("");
@@ -1577,7 +1579,7 @@
                 $("<td align='center'>").html("<input type='checkbox' name='itemcheck' value='"+item.name+"'/>"),
                 $("<td>").text(item.name),
                 $("<td>").text(item.unit),
-                $("<td align='center'>").html("<input type='number' id='qty' name='qty[]' class='form-control input-sm' style='width:60px' value='"+item.quantity+"'/>"),
+                $("<td align='center'>").text(item.quantity),
                 $("<td>").text(parseFloat(item.price).toFixed(2)),
                 $("<td>").text(parseFloat(item.discount).toFixed(2)),
                 $("<td>").text(parseFloat(item.amount).toFixed(2)),

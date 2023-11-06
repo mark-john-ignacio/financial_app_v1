@@ -59,7 +59,9 @@
                         $('#msg').text(res.msg)
                         $('#msg').css('color', 'RED')
                     }
-                    location.reload()
+                    setTimeout(function() {
+                        location.reload()
+                    }, 3000)
                 },
                 error: function(res){
                     console.log(res)
