@@ -20,11 +20,11 @@
     $validID = mysqli_real_escape_string($con, $_POST['discountID']);
     $person = mysqli_real_escape_string($con, $_POST['discountName']);
 
-    $coupon = json_decode($_POST['coupon']);
-    $specialdisc = json_decode($_POST['specialdisc']);
+    $coupon = json_decode($_POST['coupon'], true);
+    $specialdisc = json_decode($_POST['specialdisc'], true);
     $date = date("Y-m-d");
 
-    $net =  number_format($amount, 2) / number_format(1 + (12/100),2);
+    $net =  floatval($amount) / floatval(1 + (12/100));
     $vat = $net * (12/100);
     $price = $amount / $quantity;
 
@@ -37,7 +37,7 @@
          * @var {int} $i incremental count per index in an array
          */
 
-        if(sizeof($coupon) != 0){
+        if(!empty($coupon)){
             for($i = 0; $i < sizeof($coupon); $i++){
                 $sql = "INSERT INTO coupon_t (`compcode`, `tranno`, `CouponNo`, `ddate`, `preparedby`) 
                     VALUES ('$company', '$tranno', '{$coupon[$i]}', '$date', '$prepared')";
@@ -47,11 +47,19 @@
             }
         }
 
-        if(sizeof($specialdisc) != 0){
+        if(!empty($specialdisc)){
             foreach($specialdisc as $list){
+                $items = mysqli_real_escape_string($con, $list['item']);
+                $types = mysqli_real_escape_string($con, $list['type']);
+                $persons = mysqli_real_escape_string($con, $list['person']);
+                $ids = mysqli_real_escape_string($con, $list['id']);
+                $amounts = number_format($list['amount'], 2);
+                
                 $sql = "INSERT INTO specialdiscount_t (`compcode`, `tranno`, `itemno`, `type`, `person`, `personID`, `amount`) 
-                VALUES ('$company', '$tranno', '{$list["item"]}', '{$list["type"]}', '{$list["person"]}', '{$list["id"]}', '{$list["amount"]}')";
+                VALUES ('$company', '$tranno', '$items', '$types', '$persons', '$ids', '$amounts')";
+                mysqli_query($con, $sql);
             }
+            
         }
 
         echo json_encode([
