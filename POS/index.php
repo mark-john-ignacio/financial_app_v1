@@ -100,7 +100,7 @@
     <script src="../Bootstrap/js/bootstrap.js"></script>
     <script src="../Bootstrap/js/moment.js"></script>
     <script src="../Bootstrap/slick/slick.js" type="text/javascript" charset="utf-8"></script>
-    <title>Document</title>
+    <title>MyxFinancials</title>
 
     <style>
         #filter {
@@ -263,6 +263,14 @@
 
                     <div>
                         <section style='width: 90%; padding: 10px' class="regular slider btn">
+                            <div style="height:100%; 
+                                    word-wrap:break-word;
+                                    background-color:#019aca; 
+                                    border:solid 1px #036;
+                                    padding:3px;
+                                    text-align:center;" class="itmclass btn btn-info" data-clscode="ALL">
+                                        <font size="-2">ALL</font>
+                                </div>
                             <?php foreach($category as $list):?>
                                 <div style="height:100%; 
                                     word-wrap:break-word;
@@ -782,7 +790,12 @@
             
             $('.itmslist').each(function(i, obj) {
                 itmcls = $(this).attr("data-itemlist");
-                
+                //Show all items
+                if(ClassID === "ALL"){
+                    return $(this).show();;
+                }
+
+                //Show all items per category
                 if(itmcls==ClassID){
                     $(this).show();
                 }else if(itmcls!=ClassID){
