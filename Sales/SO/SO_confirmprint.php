@@ -144,6 +144,12 @@ function PrintRed(x){
 		<td width="100"><b>PO Date</b></td>
     <td><?php echo date_format(date_create($PODate),"M d, Y");?></td>
   </tr>
+	<tr>
+    <td width="100">&nbsp;</td>
+    <td>&nbsp;</td>
+		<td width="100"><b>Delivery Date</b></td>
+    <td><?php echo date_format(date_create($Date),"M d, Y");?></td>
+  </tr>
 
  
   <tr>
