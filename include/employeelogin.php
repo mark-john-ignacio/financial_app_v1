@@ -75,7 +75,7 @@ if(mysqli_num_rows($sql) == 0){
 			}
 
 
-			if(validStatus($status)){	
+			if(validStatus(@$status) || empty($status)){	
 				$sql = "INSERT INTO `users_log` (`Userid`, `status`, `machine`, `logged_date`) VALUES ('".$employee['id']."', 'Online', '$hashedIP', '$dateNow')";
 				$result = mysqli_query($con, $sql);
 				echo json_encode(valid30Days($employee['modify'], $employee['usertype']));
