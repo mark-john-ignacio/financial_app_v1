@@ -56,7 +56,9 @@ if(mysqli_num_rows($sql) == 0){
 			$_SESSION['companyid'] = $selcompany;
 			$_SESSION['timestamp']=time();
 			$dateNow = date('Y-m-d h:i:s');
-			$ipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+			$ipaddress = getHostByName(getHostName());
+			$hashedIP = better_crypt($ipaddress);
+			// $ipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 
 			// $sql = "SELECT b.logid, b.status, b.machine FROM `users_log`
 			// WHERE Userid = '".$employee['id']."'
@@ -73,8 +75,8 @@ if(mysqli_num_rows($sql) == 0){
 			}
 
 
-			if(validStatus($status)){	
-				$sql = "INSERT INTO `users_log` (`Userid`, `status`, `machine`, `logged_date`) VALUES ('".$employee['id']."', 'Online', '$ipaddress', '$dateNow')";
+			if(validStatus(@$status) || empty($status)){	
+				$sql = "INSERT INTO `users_log` (`Userid`, `status`, `machine`, `logged_date`) VALUES ('".$employee['id']."', 'Online', '$hashedIP', '$dateNow')";
 				$result = mysqli_query($con, $sql);
 				echo json_encode(valid30Days($employee['modify'], $employee['usertype']));
 
@@ -86,7 +88,7 @@ if(mysqli_num_rows($sql) == 0){
 					echo json_encode([
 						'valid' => false,
 						'errCode' => 'ERR_LOG',
-						'errMsg' => "Your account was still logged in. on " . $machine
+						'errMsg' => "Your account was still logged in"
 					]);
 				}
 			}

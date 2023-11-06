@@ -64,7 +64,7 @@
 
         echo json_encode([
             'valid' => true,
-            'msg' => "Successfully Inserted"
+            'msg' => "Payment Successfully added"
         ]);
     } else {
         echo json_encode([
