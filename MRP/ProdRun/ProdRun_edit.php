@@ -21,14 +21,6 @@
 		$editstat = "False";
 	}
 
-	//New ACCESS
-	$newstat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'JobOrders_new'");
-	if(mysqli_num_rows($sql) == 0){
-		$newstat = "False";
-	}
-
-
 	$arrallsec = array();
 	$sqlempsec = mysqli_query($con,"select A.nid, A.cdesc From locations A Where A.compcode='$company' and A.cstatus='ACTIVE' Order By A.cdesc");
 
@@ -36,15 +28,6 @@
 	foreach($rowdetloc as $row0){
 		$arrallsec[] = array('nid' => $row0['nid'], 'cdesc' => $row0['cdesc']);				
 	}
-
-
-	$arrmrpjo = array();
-	$sql = "select X.*, A.citemdesc, C.cname from mrp_jo X left join items A on X.compcode=A.compcode and X.citemno=A.cpartno left join customers C on X.compcode=C.compcode and X.ccode=C.cempid  where X.compcode='$company' and X.ctranno = '$tranno'";
-	$resultmain = mysqli_query ($con, $sql); 
-	while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
-		$arrmrpjo[] = $row2;				
-	}
-
 
 	$arrmrpjo_pt = array();
 	$sql = "select * from mrp_jo_process_t X where X.compcode='$company' and X.ctranno in (Select ctranno from mrp_jo_process where compcode='$company' and mrp_jo_ctranno  = '$tranno')";
@@ -102,181 +85,19 @@
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
 
 	<form action="JO_updatesave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
-
-		<input type="hidden" name="hdnposted" id="hdnposted" value="<?=$arrmrpjo[0]['lapproved'];?>">
-		<input type="hidden" name="hdncancel" id="hdncancel" value="<?=$arrmrpjo[0]['lcancelled'];?>">
-		<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?=$arrmrpjo[0]['lvoid'];?>">
-
 		<fieldset>
 				<legend>			
 					<div class="col-xs-6 nopadding"> Job Order Details </div>  
-					
-					<div class= "col-xs-6 text-right nopadding" id="salesstat">
-						<?php
-							if($arrmrpjo[0]['lcancelled']==1){
-								echo "<font color='#FF0000'><b>CANCELLED</b></font>";
-							}
-									
-							if($arrmrpjo[0]['lapproved']==1){
-								if($arrmrpjo[0]['lvoid']==1){
-									echo "<font color='#FF0000'><b>VOIDED</b></font>";
-								}else{
-									echo "<font color='#FF0000'><b>POSTED</b></font>";
-								}
-							}
-						?>
-					</div>
-
 				</legend>
 
 					<ul class="nav nav-tabs">
-						<li class="active"><a href="#apv">JO Details</a></li>
+						<li class="active"><a href="#subjo">Sub-Job Details</a></li>
 						<li><a href="#attc">Attachments</a></li>
-						<li><a href="#subjo">Sub-Job Orders</a></li>
-						<li><a href="#mats">Materials Request</a></li>
 					</ul>
 
 					<div class="tab-content" style="overflow: inherit !important">  
 
-						<div id="apv" class="tab-pane fade in active" style="padding-left:5px; padding-top:10px; padding-right:5px; overflow: inherit !important">
-
-							<table width="100%" border="0" cellspacing="0" cellpadding="2"  style="margin-bottom: 25px">
-								<tr>
-									<td><span style="padding:2px"><b>Job Order No.:</b></span></td>
-									<td> 
-
-										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
-											<div class="col-xs-4 nopadding ">
-													<input type="text" id="hdnctranno" name="hdnctranno" class="form-control input-sm required" required readonly value="<?=$tranno?>">
-											</div>
-										</div>
-
-									</td>
-
-									<td colspan="2" style="padding:2px" align="right">
-										<div id="statmsgz" class="small" style="display:inline"></div>
-									</td>
-
-								</tr>
-							
-								<tr>
-									<td><span style="padding:2px"><b>Customer:</b></span></td>
-									<td>
-										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
-											<div class="col-xs-4 nopadding ">
-													<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm required" required placeholder="Supplier Code..." readonly value="<?=$arrmrpjo[0]['ccode']?>">
-											</div>
-											<div class="col-xs-8 nopadwleft">
-													<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" placeholder="Search Supplier Name..." required autocomplete="off" tabindex="4" value="<?=$arrmrpjo[0]['cname']?>">
-											</div>
-										</div>
-									</td>
-									<td><span style="padding:2px" id="chkdate"><b>Target Date:</b></span></td>
-									<td>
-										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
-											<div class='col-xs-8 nopadding'>
-													<input type='text' class="datepick form-control input-sm" placeholder="Pick a Date" name="txtTargetDate" id="txtTargetDate" value="<?=date_format(date_create($arrmrpjo[0]['dtargetdate']),"m/d/Y")?>" />
-											</div>
-										</div>
-									</td>
-								</tr>
-							
-								<tr>
-									<td width="150"><span style="padding:2px" id="paymntdesc"><b>Reference SO</b></span></td>
-									<td>
-										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
-											<div class="col-xs-3 nopadding">
-												<input type="text" class="form-control input-sm required" id="crefSO" name="crefSO" value="<?=$arrmrpjo[0]['crefSO']?>" placeholder="Reference SO No." readonly required>
-											</div>
-											<div class="col-xs-1 nopadwleft">
-												<button type="button" class="btn btn-block btn-primary btn-sm" name="btnsearchSO" id="btnsearchSO"><i class="fa fa-search"></i></button>
-											</div>		
-											
-											<div class="col-xs-8 nopadwright">
-												<div class="form-check" style="padding-top: 3px; padding-left: 10px">
-													<input class="form-check-input" type="checkbox" value="1" id="isWRef" name="isWRef" <?=($arrmrpjo[0]['lnoref']==1) ? "checked" : "" ?>/>
-													<label class="form-check-label" for="isWRef">No Reference</label>
-												</div>
-											</div>
-										</div>
-
-									</td>
-
-									<td width="150"><span style="padding:2px"><b>Priority</b></span></td>
-									<td>
-										<div class="col-xs-12" style="padding-left:2px; padding-bottom:2px">
-											<div class="col-xs-8 nopadding">
-												<select id="selpriority" name="selpriority" class="form-control input-sm selectpicker">
-													<option value="Low" <?=($arrmrpjo[0]['cpriority']=="Low") ? "selected" : "" ?>>Low</option>
-													<option value="Normal" <?=($arrmrpjo[0]['cpriority']=="Normal") ? "selected" : ""?>>Normal</option>
-													<option value="High" <?=($arrmrpjo[0]['cpriority']=="High") ? "selected" : ""?>>High</option>
-												</select>
-											</div>
-									</td>		
-														
-								</tr>
-
-								<tr>									
-									<td valign="top" style="padding-top:8px;"><span style="padding:2px;"><b>Remarks</b></span></td>
-									<td>
-										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
-											<textarea class="form-control input-sm" id="txtcremarks" name="txtcremarks" rows="3"><?=$arrmrpjo[0]['cremarks']?></textarea>
-										</div>
-									</td>
-									<td valign="top" style="padding-top:8px;"><span style="padding:2px"><b>Department:</b></span></td>
-									<td valign="top">
-										<div class="col-xs-12" style="padding-left:2px; padding-bottom:2px">
-											<div class="col-xs-8 nopadding">
-												<select id="seldept" name="seldept" class="form-control input-sm selectpicker">
-													<?php
-														foreach($arrallsec as $localocs){
-													?>
-														<option value="<?php echo $localocs['nid'];?>" <?=($arrmrpjo[0]['location_id']==$localocs['nid']) ? "selected" : "" ?>><?php echo $localocs['cdesc'];?></option>										
-													<?php	
-														}						
-													?>
-												</select>
-											</div>
-									</td>											
-								</tr>
-
-							</table>
-
-							<hr>
-							<div class="col-xs-12 nopadwdown"><b>Item Details</b></div>
-
-							<div class="col-xs-12 nopadwtop">
-								<div class="col-xs-6 nopadwleft"><b>Item</b></div>
-								<div class="col-xs-1 nopadwleft"><b>UOM</b></div>
-								<div class="col-xs-1 nopadwleft"><b>JO Qty</b></div>
-								<div class="col-xs-1 nopadwleft"><b>Working Hours</b></div>
-								<div class="col-xs-1 nopadwleft"><b>Setup Time</b></div>
-								<div class="col-xs-1 nopadwleft"><b>Cycle Time</b></div>
-								<div class="col-xs-1 nopadwleft"><b>Total Time</b></div>
-							</div>
-
-							<div class="col-xs-12  nopadwtop">
-								<div class="col-xs-6 nopadwleft"><input type="text" id="citemdesc" name="citemdesc" class="form-control input-sm required" required placeholder="Item Description..." readonly value="<?=$arrmrpjo[0]['citemdesc']?>"> <input type="hidden" id="citemno" name="citemno" value="<?=$arrmrpjo[0]['citemno']?>"> <input type="hidden" id="nrefident" name="nrefident" value="<?=$arrmrpjo[0]['nrefident']?>"></div>
-								<div class="col-xs-1 nopadwleft"><input type="text" id="txtcunit" name="txtcunit" class="form-control input-sm required" required placeholder="UOM..." readonly  value="<?=$arrmrpjo[0]['cunit']?>"></div>
-								<div class="col-xs-1 nopadwleft"><input type="text" id="txtjoqty" name="txtjoqty" class="form-control input-sm required text-right numeric" required placeholder="0.00"  value="<?=$arrmrpjo[0]['nqty']?>"></div>
-								<div class="col-xs-1 nopadwleft"><input type="text" id="txtworkinghrs" name="txtworkinghrs" class="form-control input-sm required text-right numeric" required placeholder="0.00"  value="<?=$arrmrpjo[0]['nworkhrs']?>"></div>
-								<div class="col-xs-1 nopadwleft"><input type="text" id="txtsetuptime" name="txtsetuptime" class="form-control input-sm required text-right numeric" required placeholder="0.00"  value="<?=$arrmrpjo[0]['nsetuptime']?>"></div>
-								<div class="col-xs-1 nopadwleft"><input type="text" id="txtcycletime" name="txtcycletime" class="form-control input-sm required text-right numeric" required placeholder="0.00"  value="<?=$arrmrpjo[0]['ncycletime']?>"></div>
-								<div class="col-xs-1 nopadwleft"><input type="text" id="txtntotal" name="txtntotal" class="form-control input-sm required text-right numeric" required placeholder="0.00" readonly  value="<?=$arrmrpjo[0]['ntottime']?>"></div>
-							</div>
-						
-							
-						</div>	
-
-						<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
-
-							<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-							<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
-							<input type="file" name="upload[]" id="file-0" multiple />
-
-						</div>
-
-						<div id="subjo" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
+						<div id="subjo" class="tab-pane fade in active" style="padding-left:5px; padding-top:10px;">
 							<table id="TblJO" class="MyTable table table-condensed" width="100%">
 								<thead>
 									<tr>
@@ -336,38 +157,17 @@
 							</table>
 
 
-						</div>
+						</div>	
 
-						<div id="mats" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
+						<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
 
-							<table id="MyMaterials" class="MyTable table table-condensed" width="100%">
-								<thead>
-									<tr>
-										<th style="border-bottom:1px solid #999">Material Code</th>
-										<th style="border-bottom:1px solid #999">Material Description</th>
-										<th style="border-bottom:1px solid #999">UOM</th>
-										<th style="border-bottom:1px solid #999; text-align: right">Qty</th>
-									</tr>
-								</thead>
-								<tbody class="tbody">
-									<?php
-										$sql = "select X.*, A.citemdesc from mrp_jo_process_m X left join items A on X.compcode=A.compcode and X.citemno=A.cpartno where X.compcode='$company' and X.mrp_jo_ctranno = '$tranno' Order By X.nid";
-										$resultmain = mysqli_query ($con, $sql); 
-										while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
-									?>
-										<tr>
-											<td><?=$row2['citemno']?></td>
-											<td><?=$row2['citemdesc']?></td>
-											<td><?=$row2['cunit']?></td>
-											<td style="text-align: right"><?=number_format($row2['nqty'])?></td>
-										</tr>
-									<?php
-										}
-									?>
-								</tbody>                    
-							</table>
+							<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+							<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+							<input type="file" name="upload[]" id="file-0" multiple />
 
 						</div>
+
+						
 
 					</div>
 						
@@ -382,15 +182,7 @@
 								<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?=$tranno;?>','Print');" id="btnPrint" name="btnPrint">
 									Print<br>(CTRL+P)
 								</button>	
-								<?php
-									if($newstat == "True"){
-								?>
-									<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='JO_new.php';" id="btnNew" name="btnNew">
-										New<br>(F1)
-									</button>	
-								<?php
-									}
-								?>
+								
 								<?php
 									if($editstat=="True"){
 								?>									

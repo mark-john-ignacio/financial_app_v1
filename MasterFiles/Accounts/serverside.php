@@ -63,7 +63,7 @@
 				$sub_array[] = $rsz['cFinGroup']; //6
 				$sub_array[] = $rsz['lcontra']; //7
 				$sub_array[] = $rsz['nlevel']; //8
-				$sub_array[] = $rsz['nbalance']; //9
+				$sub_array[] = number_format($rsz['nbalance'],4); //9
 				$data[] = $sub_array;
 
 				if($rsz['ctype']=="General"){
@@ -86,7 +86,7 @@
 			$sub_array[] = $row['cFinGroup']; //6
 			$sub_array[] = $row['lcontra']; //7
 			$sub_array[] = $row['nlevel']; //8
-			$sub_array[] = $row['nbalance']; //9
+			$sub_array[] = number_format($row['nbalance'],4); //9
 			$data[] = $sub_array;
 
 			if($row['ctype']=="General"){

@@ -830,19 +830,19 @@
 
 			//alert(tx);
 			$(this).attr("id", "tr"+$xid+tx);
-			$(this).find('input[name="txtsortnum"'+$xid+']').val(tx);
-			$(this).find('input[name="txtsortnum"'+$xid+']').attr("id","txtsortnum"+tx);
+			$(this).find('input[name="txtsortnum'+$xid+'"]').val(tx);
+			$(this).find('input[name="txtsortnum'+$xid+'"]').attr("id","txtsortnum"+tx);
 
-			$(this).find('input[type=hidden][name="txtitmcode"'+$xid+']').attr("id","txtitmcode"+tx);
-			$(this).find('input[type=hidden][name="txtitmdesc"'+$xid+']').attr("id","txtitmdesc"+tx);
-			$(this).find('input[type=hidden][name="txtcunit"'+$xid+']').attr("id","txtcunit"+tx);
-			$(this).find('input[name="txtlvl"'+$xid+']').attr("id","txtlvl"+tx);
-			$(this).find('select[name="selType"'+$xid+']').attr("name","selType"+tx);
+			$(this).find('input[type=hidden][name="txtitmcode'+$xid+'"]').attr("id","txtitmcode"+tx);
+			$(this).find('input[type=hidden][name="txtitmdesc'+$xid+'"]').attr("id","txtitmdesc"+tx);
+			$(this).find('input[type=hidden][name="txtcunit'+$xid+'"]').attr("id","txtcunit"+tx);
+			$(this).find('input[name="txtlvl'+$xid+'"]').attr("id","txtlvl"+tx);
+			$(this).find('select[name="selType'+$xid+'"]').attr("name","selType"+tx);
 
 			$(this).find('input[name="txtnqty'+$xid+'"]').attr("id","txtnqty"+$xid+tx);
 
-			$(this).find('button[name="btnDel"'+$xid+']').attr("id","btnDel"+tx);
-			$(this).find('button[name="btnAdd"'+$xid+']').attr("id","btnAdd"+tx);
+			$(this).find('button[name="btnDel'+$xid+'"]').attr("id","btnDel"+tx);
+			$(this).find('button[name="btnAdd'+$xid+'"]').attr("id","btnAdd"+tx);
 
 			//$("#btnAdd"+tx).attr("onclick","addsub(this)");
 
