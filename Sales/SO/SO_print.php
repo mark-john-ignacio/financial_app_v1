@@ -72,6 +72,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
   </tr>
 
   <tr>
+    <td width="100">&nbsp;</td>
+    <td>&nbsp;</td>
+		<td width="100"><b>Delivery Date</b></td>
+    <td><?php echo date_format(date_create($Date),"M d, Y");?></td>
+  </tr>
+
+  <tr>
     <td colspan="4">
     
       <table width="100%" border="1" cellpadding="3">
