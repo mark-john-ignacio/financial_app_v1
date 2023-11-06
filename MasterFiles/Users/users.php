@@ -284,10 +284,10 @@ if(@$lvlcompute==1){
 					
 						<table width="100%" border="0" cellspacing="0" cellpadding="0">
 							<tr>
-								<td rowspan="8" width="150px" valign="top" style="padding-top:10px; padding-left:5px">
+								<td rowspan="9" width="150px" valign="top" style="padding-top:10px; padding-left:5px">
 															
 								<div id="image_preview">
-									<img id="previewing" src="../../imgusers/preview.jpg" width="100px" height="100px"/>
+									<img id="previewing" src="../../imgusers/preview.jpg" width="100px" height="100px" style="border-radius: 50%; border: 1px solid black"/>
 								</div>
 								
 								<div class="col-xs-6 nopadwtop2x">
@@ -363,7 +363,7 @@ if(@$lvlcompute==1){
 								<td><b>User Type: </b></td>
 								<td style="padding:2px">
 								<div class="col-xs-12">
-									<select name="usertype" id="usertype">
+									<select name="usertype" id="usertype" class="form-control input-sm">
 										<option value="ADMIN">ADMIN</option>
 										<option value="CASHIER">CASHIER</option>
 									</select>
