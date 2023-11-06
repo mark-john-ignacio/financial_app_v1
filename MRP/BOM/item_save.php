@@ -55,6 +55,7 @@
 		}
 
 		//eco saving
+		/*
 		$cecosn = mysqli_real_escape_string($con,$_REQUEST['bomecosn'.$xz]);
 		$cecorev = mysqli_real_escape_string($con,$_REQUEST['bomecorev'.$xz]);
 		$cecoprep = mysqli_real_escape_string($con,$_REQUEST['bomecoprep'.$xz]);
@@ -65,6 +66,7 @@
 			printf("Errormessage: %s\n", mysqli_error($con));
 			$xmsg = "False";
 		}
+		*/
 
 	}
 

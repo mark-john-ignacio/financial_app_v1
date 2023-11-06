@@ -82,7 +82,7 @@
     //     }
     // }
 
-    function better_crypt($input, $rounds = 10) { 
+    function better_crypt($input, $rounds = 12) { 
 
         $crypt_options = array( 'cost' => $rounds ); 
         return password_hash($input, PASSWORD_BCRYPT, $crypt_options); 
@@ -121,6 +121,9 @@
     function validIP($IP){
         return $IP == gethostbyaddr($_SERVER['REMOTE_ADDR']) || $IP == null;
     }
+    // function validIP($IP){
+    //     return password_verify($IP, gethostbyaddr($_SERVER['REMOTE_ADDR']) || $IP == null);
+    // }
     
     function valid30Days($date, $user){
         $dateNow = date('Y-m-d');
@@ -129,7 +132,7 @@
                 'valid' => true,
                 'msg' => 'Need To Change Password',
                 'proceed' => false,
-                'userType' => $user
+                'usertype' => $user
             ];
         } else {
             $_SESSION['login'] = true;
@@ -137,7 +140,7 @@
                 'valid' => true,
                 'msg' => 'Login Successful',
                 'proceed' => true,
-                'userType' => $user
+                'usertype' => $user
             ];
         }
     }

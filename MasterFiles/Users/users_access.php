@@ -1158,6 +1158,31 @@ xmlhttp.send();
 		      </div>
 		    </div>
 
+        <br>
+        <b><u><i>Production Run</i></u></b>
+        <div style="padding-left:10px;"> 
+          <div class="col-xs-12 nopadwleft">
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="ProdRun" <?=(in_array("ProdRun",@$arrpgist)) ? "checked" : "";?>>&nbsp;View List</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="ProdRun_new" <?=(in_array("ProdRun_new",@$arrpgist)) ? "checked" : "";?>>&nbsp;Add New</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="ProdRun_edit" <?=(in_array("ProdRun_edit",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="ProdRun_post" <?=(in_array("ProdRun_post",@$arrpgist)) ? "checked" : "";?>>&nbsp;Post</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="ProdRun_cancel" <?=(in_array("ProdRun_cancel",@$arrpgist)) ? "checked" : "";?>>&nbsp;Cancel</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="ProdRun_print" <?=(in_array("ProdRun_print",@$arrpgist)) ? "checked" : "";?>>&nbsp;Print</label>
+            </div>
+		      </div>
+		    </div>
+
 
         <?php
           }
