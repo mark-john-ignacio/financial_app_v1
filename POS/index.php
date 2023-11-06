@@ -295,10 +295,9 @@
                                         background-position: center center;
                                         background-size: contain;
                                         border:solid 1px #036;
-                                        text-align:center;
                                         position: relative" data-itemlist="<?= $list['cclass'] ?>" name="<?= $list['cscancode'] ?>">
-                                        <div><?= $list['quantity'] ?></div>
-                                        <div id='items' name="<?= $list['cscancode'] ?>" class='items' data-itemlist="<?= $list['cclass'] ?>" style='position: absolute; bottom: 0; width: 100%; background-color: rgba(0,0,0,.5); color: #fff; min-height: 20px;'><font size='-2'><?php echo $list["citemdesc"]; ?></font></div>
+                                        <div style='position: absolute; text-align: right; width: 100%; color: #fff; min-height: 20px;'>Remaining: <span id='remain'><?= $list['quantity'] ?></span></div>
+                                        <div id='items' name="<?= $list['cscancode'] ?>" class='items' data-itemlist="<?= $list['cclass'] ?>" style='position: absolute; bottom: 0; width: 100%; background-color: rgba(0,0,0,.5); color: #fff; min-height: 20px; text-align:center;'><font size='-2'><?php echo $list["citemdesc"]; ?></font></div>
                                     </div>
                             <?php endforeach ?>
                         </div>
@@ -865,6 +864,7 @@
                         }
                        specialDisc.push({item: item.partno, type: type, name: name, person: person, id: id, amount: item.amount * (disc/100)})
                     }
+                    console.log(specialDisc)
                 })
             })
             $("#discountInput").val(getSpecialDisc(specialDisc))
