@@ -21,7 +21,7 @@
             
     if(mysqli_num_rows($query) != 0){
         $expired = strtotime($now);
-        $expired = strtotime("+$days day", $expired);
+        $expired = date("Y-m-d", strtotime("+$days day", $expired));
 
         
         if($approved == 0){
