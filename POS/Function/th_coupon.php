@@ -14,6 +14,7 @@
 
         $status = $row['status'];
         $approve = $row['approved'];
+        $expired = $row['expired'];
         if($approve != 1){
             json_encode([
                 'valid' => false,
@@ -21,20 +22,27 @@
             ]);
 
         } else {
-            echo match ($status) {
-                "ACTIVE" => json_encode([
-                        'valid' => true,
-                        'msg' => "Coupon has been Successfully Added"
+            if($expired < date("Y-m-d")){
+                echo json_encode([
+                    'valid' => false,
+                    'msg' => "Coupon has been Expired"
+                ]);
+            } else {
+                echo match ($status) {
+                    "ACTIVE" => json_encode([
+                            'valid' => true,
+                            'msg' => "Coupon has been Successfully Added"
+                        ]),
+                    "INACTIVE" => json_encode([
+                        'valid' => false,
+                        'msg' => "Coupon was not Activated!"
                     ]),
-                "INACTIVE" => json_encode([
-                    'valid' => false,
-                    'msg' => "Coupon was not Activated!"
-                ]),
-                "CLAIMED" => json_encode([
-                    'valid' => false,
-                    'msg' => "Coupon was CLAIMED!"
-                ])
-            };
+                    "CLAIMED" => json_encode([
+                        'valid' => false,
+                        'msg' => "Coupon was CLAIMED!"
+                    ])
+                };
+            }
         }
     } else {
         echo json_encode([
