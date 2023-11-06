@@ -3,9 +3,9 @@
         session_start();
     }
     include ("../Connection/connection_string.php");
-    $company = $_SESSION['companyid'];
 
     $coupon = mysqli_real_escape_string($con, $_REQUEST['coupon']);
+    $company = mysqli_real_escape_string($con, $_REQUEST['company']);
     $now = date("Y-m-d");
     $days = 0;
     $status = "";
