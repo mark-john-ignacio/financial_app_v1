@@ -101,6 +101,7 @@
         return match($status){
             'Offline' => true,
             'Online' => false,
+            null => true,
             default => true
         };
     }
@@ -109,6 +110,7 @@
         return match($status){
             'Active' => true,
             'Deactivate' => false,
+            null => true,
             default => false
         };
     
@@ -118,12 +120,12 @@
         return $attempt == 5;
     }
     
-    function validIP($IP){
-        return $IP == gethostbyaddr($_SERVER['REMOTE_ADDR']) || $IP == null;
-    }
     // function validIP($IP){
-    //     return password_verify($IP, gethostbyaddr($_SERVER['REMOTE_ADDR']) || $IP == null);
+    //     return $IP == gethostbyaddr($_SERVER['REMOTE_ADDR']) || $IP === null || $IP === '';
     // }
+    function validIP($IP){
+        return password_verify($IP, gethostbyaddr($_SERVER['REMOTE_ADDR']) || $IP == null);
+    }
     
     function valid30Days($date, $user){
         $dateNow = date('Y-m-d');
