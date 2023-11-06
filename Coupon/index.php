@@ -59,12 +59,14 @@
     $(document).ready(function(){
         $('#activateBtn').on('click', function(){
             let coupon = $("#coupon").val();
+            let company = $("#company").find(":selected").val();
             $.ajax({
                 url: "th_coupon.php",
-                data: {coupon: coupon.trim()},
+                data: {coupon: coupon.trim(), company: company.trim()},
                 dataType: 'json',
                 async: false,
                 success: function(res){
+                    console.log(res)
                     if(res.valid){
                         $('#msg').text(res.msg)
                         $('#msg').css('color', 'Green')
