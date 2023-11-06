@@ -31,7 +31,7 @@
         array_push($category, $row);
     }
 
-    $sql = "select a.cpartno, a.cpartno as cscancode, a.citemdesc, 0 as nretailcost, 0 as npurchcost, a.cunit, a.cstatus, 0 as ltaxinc, a.cclass, 1 as nqty, a.cuserpic
+    $sql = "select a.cpartno, a.cpartno as cscancode, a.citemdesc, 0 as nretailcost, 0 as npurchcost, a.cunit, a.cstatus, 0 as ltaxinc, a.cclass, 1 as nqty, a.cuserpic, c.nqty as quantity
             from items a 
             left join
                 (
@@ -297,6 +297,7 @@
                                         border:solid 1px #036;
                                         text-align:center;
                                         position: relative" data-itemlist="<?= $list['cclass'] ?>" name="<?= $list['cscancode'] ?>">
+                                        <div><?= $list['quantity'] ?></div>
                                         <div id='items' name="<?= $list['cscancode'] ?>" class='items' data-itemlist="<?= $list['cclass'] ?>" style='position: absolute; bottom: 0; width: 100%; background-color: rgba(0,0,0,.5); color: #fff; min-height: 20px;'><font size='-2'><?php echo $list["citemdesc"]; ?></font></div>
                                     </div>
                             <?php endforeach ?>
@@ -1187,11 +1188,10 @@
          */
 
         $('.btnpad').click(function(){
-            let tender = $('#tendered').val();
-            let total = $('#subtotal').val();
-            let btn = $(this).attr("data-val");
+            let tender = $('#tendered').val().replace(/,/g,'');
+            let total = $('#totalAmt').val().replace(/,/g,'');
+            let btn = $(this).attr("data-val").replace(/,/g,'');
             let number = 0;
-            console.log(total)
 
             if(tender == "0.00"){
                 $('#tendered').val("");
@@ -1577,7 +1577,7 @@
                 $("<td align='center'>").html("<input type='checkbox' name='itemcheck' value='"+item.name+"'/>"),
                 $("<td>").text(item.name),
                 $("<td>").text(item.unit),
-                $("<td align='center'>").html("<input type='number' id='qty' name='qty[]' class='form-control input-sm' style='width:60px' value='"+item.quantity+"'/>"),
+                $("<td align='center'>").text(item.quantity),
                 $("<td>").text(parseFloat(item.price).toFixed(2)),
                 $("<td>").text(parseFloat(item.discount).toFixed(2)),
                 $("<td>").text(parseFloat(item.amount).toFixed(2)),
