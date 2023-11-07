@@ -69,8 +69,8 @@ if(mysqli_num_rows($sql) == 0){
 			$result = mysqli_query($con, $sql);
 
 			while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-				$status = $row['status'];
-				$machine = $row['machine'];
+				@$status = $row['status'];
+				@$machine = $row['machine'];
 				$_SESSION['loggedid'] = $row['logid'] ;
 			}
 
