@@ -48,7 +48,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 <!DOCTYPE html>
 <html>
-<link rel="stylesheet" type="text/css" href="../../css/cssmed.css">
+<link rel="stylesheet" type="text/css" href="../../css/cssbig.css">
 
 <head>
 </head>
