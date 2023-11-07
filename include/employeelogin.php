@@ -67,15 +67,16 @@ if(mysqli_num_rows($sql) == 0){
 			$sql = "SELECT * FROM users_log WHERE Userid = '{$employee['id']}' ORDER BY logid DESC LIMIT 1";
 
 			$result = mysqli_query($con, $sql);
-
+			$status = true;
+			$machine = $hashedIP;
 			while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-				@$status = $row['status'];
-				@$machine = $row['machine'];
+				$status = $row['status'];
+				$machine = $row['machine'];
 				$_SESSION['loggedid'] = $row['logid'] ;
 			}
 
 
-			if(validStatus(@$status) || empty($status)){	
+			if(validStatus($status) || empty($status)){	
 				$sql = "INSERT INTO `users_log` (`Userid`, `status`, `machine`, `logged_date`) VALUES ('".$employee['id']."', 'Online', '$hashedIP', '$dateNow')";
 				$result = mysqli_query($con, $sql);
 				echo json_encode(valid30Days($employee['modify'], $employee['usertype']));
