@@ -56,7 +56,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 <!DOCTYPE html>
 <html>
-<link rel="stylesheet" type="text/css" href="../../css/cssmed.css">
+<link rel="stylesheet" type="text/css" href="../../css/cssbig.css">
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 <style type="text/css">
 #tblMain {

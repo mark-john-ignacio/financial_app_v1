@@ -1908,7 +1908,6 @@ else{
 					$ewtamt = 1;
 				}
 				
-
 			});
 
 			if($ewtamt > 0){
