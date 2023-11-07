@@ -88,7 +88,7 @@ if(mysqli_num_rows($sql) == 0){
 					echo json_encode([
 						'valid' => false,
 						'errCode' => 'ERR_LOG',
-						'errMsg' => "Your account was still logged in"
+						'errMsg' => "Your account was still " . $status
 					]);
 				}
 			}
