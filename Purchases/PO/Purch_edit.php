@@ -1177,7 +1177,7 @@ else{
 				var itmfactor = nfactor;
 				var mainuom = cmainunit;
 				var itmnqty = nqty;
-				var dneeded = moment(dneed).format('MM/DD/YYYY');;
+				var dneeded = moment(dneed).format('MM/DD/YYYY');
 				
 					if(itmprice == null){
 						var itmnqty = 1;
