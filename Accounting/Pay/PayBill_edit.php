@@ -1902,8 +1902,8 @@ else{
 			$("#MyTable > tbody > tr").each(function(index) {	
 				$xintval = index + 1;
 				
-				if ($('#isNoRef').find(":selected").val()==0) {
-					$ewtamt = $("#napvewt"+$xintval).val();
+				if ($('#isNoRef').val()==1) {
+					$ewtamt = ($("#napvewt"+$xintval).val()=="") ? 0 : $("#napvewt"+$xintval).val();
 				}else{
 					$ewtamt = 1;
 				}
