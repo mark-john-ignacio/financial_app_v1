@@ -481,7 +481,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
 												<th scope="col">Account Code</th>
 												<th scope="col">Account Title</th>
 												<th scope="col" id="tblewt" <?=($lnoAPVRef==0) ? "style='display: none'" : ""?>>EWT Code</th>
-												<th scope="col" id="tbldrcr" <?=($lnoAPVRef==0) ? "style='display: none'" : ""?>>Type</th>												
+												<th scope="col">Type</th>												
 												<th scope="col">Cost Center</th>
 												<th scope="col">&nbsp;</th>
 											</tr>
@@ -1340,11 +1340,9 @@ else{
 			if($(this).find(":selected").val()==1) {
 				$("#btnAPVIns").attr("disabled", true);  
 				$("#tblewt").show(); 
-				$("#tbldrcr").show(); 
 			}else{
 				$("#btnAPVIns").attr("disabled", false);
 				$("#tblewt").hide(); 
-				$("#tbldrcr").hide(); 
 			}
 		});
 
@@ -1506,11 +1504,12 @@ else{
 					debtsel = "";
 					crdtsel = "selected";
 				}
-				var t5 = "<td style=\"padding:2px\" align=\"center\" width=\"80px\" nowrap> <select name=\"selentrytyp\" id=\"selentrytyp"+lastRow+"\" class=\" form-control input-sm\" onchange=\"GoToCompOthers();\"><option value=\"Debit\" "+debtsel+">Debit</option><option value=\"Credit\" "+crdtsel+">Credit</option></select></td>";	
+				
 			}else{
 				var t4 = "<input type=\"hidden\" name=\"napvewt\" id=\"napvewt"+lastRow+"\" value=\""+ewtamt+"\" />";
-				var t5 = "<input type=\"hidden\" name=\"selentrytyp\" id=\"selentrytyp"+lastRow+"\" value=\"Debit\" />";	
 			}
+
+			var t5 = "<td style=\"padding:2px\" align=\"center\" width=\"80px\" nowrap> <select name=\"selentrytyp\" id=\"selentrytyp"+lastRow+"\" class=\" form-control input-sm\" onchange=\"GoToCompOthers();\"><option value=\"Debit\" "+debtsel+">Debit</option><option value=\"Credit\" "+crdtsel+">Credit</option></select></td>";	
 
 			var t3 = "<td style=\"padding:2px\" align=\"center\" width=\"10px\" nowrap> <button class=\"btn btn-xs btn-danger\" name=\"delRow\" id=\"delRow"+lastRow+"\"><i class='fa fa-times'></i></button></td>";	
 
@@ -1601,13 +1600,12 @@ else{
 			$(this).find('input[name="cacctno"]').attr("id","cacctno" + tx);
 
 			if ($('#isNoRef').find(":selected").val()==1) {
-				$(this).find('input[name="napvewt"]').attr("id","napvewt" + tx);
-				$(this).find('select[name="selentrytyp"]').attr("id","selentrytyp" + tx);
+				$(this).find('input[name="napvewt"]').attr("id","napvewt" + tx);				
 			}else{
 				$(this).find('input[type=hidden][name="napvewt"]').attr("id","napvewt" + tx); 
-				$(this).find('input[type=hidden][name="selentrytyp"]').attr("id","selentrytyp" + tx);
 			}
 
+			$(this).find('select[name="selentrytyp"]').attr("id","selentrytyp" + tx);
 			$(this).find('select[name="selcostcentr"]').attr("id","selcostcentr" + tx);
 
 			$(this).find('button[name="delRow"]').attr("id","delRow" + tx);
@@ -1720,13 +1718,12 @@ else{
 					$(this).find('input[name="cacctno"]').attr("name","cacctno" + tx);
 
 					if ($('#isNoRef').find(":selected").val()==1) {
-						$(this).find('input[name="napvewt"]').attr("name","napvewt" + tx);
-						$(this).find('select[name="selentrytyp"]').attr("name","selentrytyp" + tx);
+						$(this).find('input[name="napvewt"]').attr("name","napvewt" + tx);						
 					}else{
 						$(this).find('input[type=hidden][name="napvewt"]').attr("name","napvewt" + tx); 
-						$(this).find('input[type=hidden][name="selentrytyp"]').attr("name","selentrytyp" + tx);
 					}
 
+					$(this).find('select[name="selentrytyp"]').attr("name","selentrytyp" + tx);
 					$(this).find('select[name="selcostcentr"]').attr("name","selcostcentr" + tx);
 
 				});
