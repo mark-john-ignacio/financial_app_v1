@@ -1362,7 +1362,7 @@
             
         })
 
-        $("#listItem tbody").on('keyup', '#qty', function(){
+        $("#listItem tbody").on('change', '#qty', function(){
             let qty = $(this).val();
             let partno = $(this).attr("data-val");
             $.ajax({
