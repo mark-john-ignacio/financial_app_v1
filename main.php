@@ -40,6 +40,7 @@
 <!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
 <body class="page-header-fixed page-quick-sidebar-over-content" onLoad="setpage('MAIN/index.html');">
 	<?php
+
 		if(!isset($_SESSION)){
 			session_start();
 		}
@@ -51,7 +52,9 @@
 		//get user details
 		$arrcompz = array();
 		$cntzcompany = 0;
-		$result=mysqli_query($con,"select * From company");								
+		
+		$result=mysqli_query($con,"select compcode, compname, clogoname, lallownontrade, lmrpmodules, IFNULL(csubcode,'') as csubcode From company");		
+
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 		{
 			$cntzcompany++;
@@ -60,7 +63,8 @@
 				$compname =  $row['compname'];
 				$logoname =  str_replace("../","",$row['clogoname']);
 				$lallowNT =  $row['lallownontrade'];
-				$lallowMRP =  $row['lmrpmodules'];
+				$lallowMRP = $row['lmrpmodules'];
+				$durlSUB = $row['csubcode'];
 			}
 		}   
 	?>
@@ -381,7 +385,15 @@
 						?> 
 
 						<li>
-							<a href="javascript:;" onClick="setpage('Sales/SO/SO.php?ix=');">
+							<?php
+								//check if SO_subdomain exist
+								if ( file_exists( "Sales/SO_".$durlSUB ) || is_dir( "Sales/SO_".$durlSUB) ) {   
+									$SOLink = "Sales/SO_".$durlSUB."/SO.php?ix=";
+								}else{
+									$SOLink = "Sales/SO/SO.php?ix=";
+								}
+							?>
+							<a href="javascript:;" onClick="setpage('<?=$SOLink?>');">
                 <i class="fgly-sm flaticon-003-shopping-list"></i> Sales Order
 							</a>
 						</li>
