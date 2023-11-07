@@ -287,7 +287,8 @@ $(document).ready(function(){
 					console.log(attempts)
 			   },
 			   success: function(res){   
-			   //alert(html); 
+			   //alert(html);
+			   console.log(res) 
 				if(res.valid)    {
 					if(res.proceed){
 						switch(res.usertype){
