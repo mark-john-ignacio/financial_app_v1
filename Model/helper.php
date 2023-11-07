@@ -125,7 +125,7 @@
     // }
     function validIP($hashedIP){
         $ip = getHostByName(getHostName());
-        return password_verify($ip, $hashedIP || empty($IP));
+        return password_verify($ip, $hashedIP) || empty($IP);
     }
     
     function valid30Days($date, $user){
