@@ -1902,15 +1902,15 @@ else{
 			$("#MyTable > tbody > tr").each(function(index) {	
 				$xintval = index + 1;
 				
-				if ($('#isNoRef').val()==1) {
+			//	if ($('#isNoRef').val()==1) {
 					$ewtamt = ($("#napvewt"+$xintval).val()=="") ? 0 : $("#napvewt"+$xintval).val();
-				}else{
-					$ewtamt = 1;
-				}
+				//}else{
+					//$ewtamt = $("#napvewt"+$xintval).val();
+				//}
 				
 			});
 
-			if($ewtamt > 0){
+			if($ewtamt != 0){
 				$("#btn2307").click();
 			}
 
