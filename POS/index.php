@@ -1361,6 +1361,58 @@
             }
             
         })
+
+        $("#listItem tbody").on('change', '#qty', function(){
+            let qty = $(this).val();
+            let partno = $(this).attr("data-val");
+            $.ajax({
+                url: "Function/ItemList.php",
+                data: {code : partno},
+                dataType: 'json',
+                async: false,
+                success: function(res){
+                    if(res.valid){
+                        res.data.map((item, index) => {
+                            if (!Array.isArray(itemStored)) {
+                                itemStored = [];
+                            }
+                            
+
+                            const price = chkprice(item.partno, item.unit, matrix, "<?= date('m/d/Y') ?>")
+                            const disc = discountprice(item.partno, item.unit, "<?= date('m/d/Y') ?>")
+                            var discvalue = 0;
+                            let found = false;
+                            
+                            for (let i = 0; i < itemStored.length; i++) {
+                                if (itemStored[i].partno === item.partno) {
+                                    itemStored[i].quantity = parseFloat(qty);
+                                    itemStored[i].price = parseFloat(itemStored[i].quantity) * parseFloat(price);
+
+                                    switch(disc.type){
+                                        case "PRICE":
+                                            discvalue = parseFloat(itemStored[i].discount) + parseFloat(disc.value);
+                                            break;
+                                        case "PERCENT":
+                                            discvalue = parseFloat(itemStored[i].price) * (parseInt(disc.value) / 100);
+                                            break;
+                                    }
+
+                                    itemStored[i].discount = parseFloat(discvalue);
+                                    itemStored[i].amount = parseFloat(itemStored[i].price) - parseFloat(itemStored[i].discount);
+                                    break;
+                                }
+                            }
+                        })  
+                        table_store(itemStored);
+                    } else {
+                        console.log(res.msg)
+                    }
+                },
+                error: function(res){
+                    console.log(res)
+                }
+            })
+        })
     })
 
 
@@ -1438,8 +1490,8 @@
         
         for (let i = 0; i < itemStored.length; i++) {
             if (itemStored[i].partno === data.partno) {
-                itemStored[i].quantity += qty;
-                itemStored[i].price = parseFloat(itemStored[i].price) + parseFloat(price);
+                itemStored[i].quantity += parseFloat(qty);
+                itemStored[i].price = parseFloat(itemStored[i].quantity) * parseFloat(price);
 
                 switch(disc.type){
                     case "PRICE":
@@ -1568,7 +1620,7 @@
             $("<tr>").append(
                 $("<td>").text(item.name),
                 $("<td>").text(item.unit),
-                $("<td align='center'>").html("<input type='number' id='qty' name='qty[]' class='form-control input-sm' style='width:60px' value='"+item.quantity+"'/>"),
+                $("<td align='center'>").html("<input type='number' id='qty' name='qty[]' class='form-control input-sm' style='width:60px' value='"+item.quantity+"' data-val='"+ item.partno +"'/>"),
                 $("<td>").text(parseFloat(item.price).toFixed(2)),
                 $("<td>").text(parseFloat(item.discount).toFixed(2)),
                 $("<td>").text(parseFloat(item.amount).toFixed(2)),
