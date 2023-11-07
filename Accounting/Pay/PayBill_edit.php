@@ -1493,6 +1493,10 @@ else{
 
 			if ($('#isNoRef').find(":selected").val()==1) {
 				var t4 = "<td style=\"padding:2px\" align=\"center\" width=\"100px\" nowrap> <input type=\"text\" class=\"napvewt form-control input-sm\" name=\"napvewt\" id=\"napvewt"+lastRow+"\" value=\""+ewtcode+"\" placeholder=\"EWT Code\"/></td>";
+				
+			}else{
+				var t4 = "<input type=\"hidden\" name=\"napvewt\" id=\"napvewt"+lastRow+"\" value=\""+ewtamt+"\" />";
+			}
 
 				var debtsel = "";
 				var crdtsel = "";
@@ -1504,10 +1508,6 @@ else{
 					debtsel = "";
 					crdtsel = "selected";
 				}
-				
-			}else{
-				var t4 = "<input type=\"hidden\" name=\"napvewt\" id=\"napvewt"+lastRow+"\" value=\""+ewtamt+"\" />";
-			}
 
 			var t5 = "<td style=\"padding:2px\" align=\"center\" width=\"80px\" nowrap> <select name=\"selentrytyp\" id=\"selentrytyp"+lastRow+"\" class=\" form-control input-sm\" onchange=\"GoToCompOthers();\"><option value=\"Debit\" "+debtsel+">Debit</option><option value=\"Credit\" "+crdtsel+">Credit</option></select></td>";	
 
