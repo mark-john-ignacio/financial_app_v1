@@ -299,7 +299,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							<tr>
 								<td><?=$row['cacctdesc']?></td>
 								<td align="right">&nbsp;</td>
-								<td align="right"><?=number_format($row['ngross'],2)?></td>
+								<td align="right"><?=number_format($row['npaid'],2)?></td>
 							</tr>
 							<?php
 								}
