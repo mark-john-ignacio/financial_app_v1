@@ -293,7 +293,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							<?php
 								}
 
-								$sql1 = mysqli_query($con,"Select A.cacctno, B.cacctdesc, A.ngross From paybill A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ctranno='$csalesno'");
+								$sql1 = mysqli_query($con,"Select A.cacctno, B.cacctdesc, A.npaid From paybill A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ctranno='$csalesno'");
 								while($row = mysqli_fetch_array($sql1, MYSQLI_ASSOC)){
 							?>
 							<tr>
