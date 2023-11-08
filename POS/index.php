@@ -1371,6 +1371,8 @@
                 dataType: 'json',
                 async: false,
                 success: function(res){
+                    // if()
+
                     if(res.valid){
                         res.data.map((item, index) => {
                             if (!Array.isArray(itemStored)) {
@@ -1405,7 +1407,7 @@
                         })  
                         table_store(itemStored);
                     } else {
-                        console.log(res.msg)
+                        alert(res.msg)
                     }
                 },
                 error: function(res){
@@ -1481,7 +1483,6 @@
         if (!Array.isArray(itemStored)) {
             itemStored = [];
         }
-        
 
         const price = chkprice(data.partno, data.unit, matrix, "<?= date('m/d/Y') ?>")
         const disc = discountprice(data.partno, data.unit, "<?= date('m/d/Y') ?>")
@@ -1489,6 +1490,13 @@
         let found = false;
         
         for (let i = 0; i < itemStored.length; i++) {
+            let remain = parseFloat(data.quantity)
+            let quantity = itemStored[i].quantity; 
+
+            if(quantity >= remain){
+                return alert("No more stock available")
+            }
+
             if (itemStored[i].partno === data.partno) {
                 itemStored[i].quantity += parseFloat(qty);
                 itemStored[i].price = parseFloat(itemStored[i].quantity) * parseFloat(price);
