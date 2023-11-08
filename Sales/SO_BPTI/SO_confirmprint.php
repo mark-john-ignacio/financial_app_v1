@@ -56,7 +56,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 <!DOCTYPE html>
 <html>
-<link rel="stylesheet" type="text/css" href="../../css/cssbig.css">
+<link rel="stylesheet" type="text/css" href="../../css/cssbig.css?x=<?=time()?>">
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 <style type="text/css">
 #tblMain {
@@ -130,7 +130,7 @@ function PrintRed(x){
 <br><br>
 <table width="100%" border="0" cellpadding="3" style="border-collapse:collapse;" id="tblMain">
   <tr>
-    <td colspan="3" align="center"><font size="2"><b>SALES ORDER</b></font></td>
+    <td colspan="3" align="center"><font size="4"><b>SALES ORDER</b></font></td>
   </tr>
   <tr>
     <td width="100"><b>Customer: </b></td>

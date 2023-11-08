@@ -48,7 +48,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 <!DOCTYPE html>
 <html>
-<link rel="stylesheet" type="text/css" href="../../css/cssbig.css">
+<link rel="stylesheet" type="text/css" href="../../css/cssbig.css?x=<?=time()?>">
 
 <head>
 </head>
@@ -56,7 +56,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <body style="padding:5px" onLoad="window.print();">
 <table width="100%" border="0" cellpadding="3" style="border-collapse:collapse;">
   <tr>
-    <td colspan="4" align="center"><font size="2"><b>SALES ORDER</b></font></td>
+    <td colspan="4" align="center"><font size="4"><b>SALES ORDER</b></font></td>
   </tr>
   <tr>
     <td width="100"><b>Customer: </b></td>
