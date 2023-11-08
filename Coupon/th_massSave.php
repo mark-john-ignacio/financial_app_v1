@@ -4,7 +4,6 @@
     }
 
     include("../Connection/connection_string.php");
-    $type = $_POST['type'];
     $company = $_SESSION['companyid'];
     $proceed = true;
     $duplicate = false;
@@ -16,10 +15,6 @@
 
         if ($file['error'] === 0) {
             $fileExt = pathinfo($file['name'], PATHINFO_EXTENSION);
-
-            if($file['name'] != "Coupon-Template-Mass-Uploading.xlsx"){
-                $proceed = false;
-            }
 
             if (in_array($fileExt, ['xlsx', 'xls'])) {
                 $uploadDir = './';
@@ -57,6 +52,7 @@
                 unlink($uploadedFile);
             } else {
                 echo "Please upload a valid Excel file (XLSX or XLS format).";
+                $proceed = false;
             }
         } else {
             echo "Error uploading the file. Please try again.";
