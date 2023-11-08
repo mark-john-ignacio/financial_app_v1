@@ -148,8 +148,8 @@
         }
     </style>
 </head>
-<body style='min-height: 100vh; display: fixed'> 
-    <div stlye="height: 100vh; position: absolute; top: 0">
+<body style='margin: 0; padding: 0;'> 
+    <div stlye="min-height: 100vh; position: relative; ">
             <div class='row nopadwtop' id='header' style="background-color: #2d5f8b; width:100%; height:55px; margin-bottom: 5px !important">
                 <div  style="float: left;display: block;width: 235px;height: 57px;padding-left: 20px;padding-right: 20px;">
                 <img src="../images/LOGOTOP.png" alt="logo" class="logo-default" width="150" height="48" />
@@ -311,8 +311,8 @@
 
         </div>
     </div>
-    <footer style="position: absolute; bottom: 0; min-width: 100%;">
-                <div id='wrapper'>
+    <footer style="position: absolute; bottom: 0px; padding: 10px; min-width: 100%;">
+                <div id='wrapper' >
                     <div id='button-wrapper' class='col-lg-12 nopadwtop'>
                         <button class="form-control btn btn-sm btn-danger" name="btnVoid" id="btnVoid" type="button">
                             <i class="fa fa-plus fa-fw fa-lg" aria-hidden="true"></i>&nbsp;VOID (DEL)
@@ -434,7 +434,7 @@
                                         <label for="totalAmt">Total Amount</label>
                                         <input type='text' id='totalAmt' class='form-control' readonly/>
 
-                                        <label for="ExchangeAmt">Exchange Amount</label>
+                                        <label for="ExchangeAmt">Change Amount</label>
                                         <input type="text" id='ExchangeAmt' class='form-control' readonly/><br>
                                         
                                     </div>
@@ -1257,7 +1257,7 @@
             let vat = $("#vat").text()
             let transaction = $("#tranno").val()
             let servicefee = $("#ServiceInput").val().replace(/,/g,'')
-            let totalAmt = $("#totalAmt").val().replace(/./g,'');
+            // let totalAmt = $("#totalAmt").val().replace(/./g,'');
             let tranno = '';
             
             if(parseFloat(total) <= parseFloat(totalTender)){
@@ -1269,8 +1269,8 @@
                         amount: gross,
                         net: net,
                         vat: vat,
-                        gross: parseFloat(total),
-                        totalAmt: parseFloat(totalAmt),
+                        gross: parseFloat(gross),
+                        subtotal: parseFloat(total),
 
                         customer: $('#customer').val(),
                         order: $('#orderType').val(),
