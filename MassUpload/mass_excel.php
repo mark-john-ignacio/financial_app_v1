@@ -7,10 +7,6 @@ if (isset($_FILES['excel_file']) || !empty($_FILES['excel_file'])) {
     if ($file['error'] === 0) {
         $fileExt = pathinfo($file['name'], PATHINFO_EXTENSION);
 
-        if($file['name'] != "Coupon-Template-Mass-Uploading.xlsx"){
-            $proceed = false;
-        }
-
         if (in_array($fileExt, ['xlsx', 'xls'])) {
             $uploadDir = './';
             $uploadedFile = $uploadDir . $file['name'];
