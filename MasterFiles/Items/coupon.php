@@ -58,6 +58,7 @@
             </div>
 			<br><br>
             <button type="button" class="btn btn-primary btn-md" id="btnadd" name="btnadd"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+			<button type="button" class="btn btn-warning btn-md" id="btnmass" name="btnmass"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Mass Upload</button>
             
             <br><br>
 			
@@ -240,6 +241,10 @@ mysqli_close($con);
                  format: 'MM/DD/YYYY',
 				 minDate: new Date(),
         });
+
+		$('#btnmass').click(function(){
+			window.location="../../Coupon/mass_upload.php"
+		})
 
 		$("#btnadd").click(function(){
 			let today = new Date();
