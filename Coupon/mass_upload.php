@@ -1,3 +1,12 @@
+<?php 
+    if(!isset($_SESSION)){
+        session_start();
+    }
+
+    include("../Connection/connection_string.php");
+    $company = $_SESSION['companyid'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -71,7 +80,7 @@
             if(type === "Preview"){
                 $("#mymodal").modal('show')
                 $.ajax({
-                    url: 'mass_excel.php',
+                    url: '../MassUpload/mass_excel.php',
                     type: 'POST',
                     data: formdata,
                     dataType: 'json',
