@@ -1,10 +1,15 @@
 <?php
 
-if (isset($_FILES['excel_file'])) {
+$excel_data = [];
+if (isset($_FILES['excel_file']) || !empty($_FILES['excel_file'])) {
     $file = $_FILES['excel_file'];
 
     if ($file['error'] === 0) {
         $fileExt = pathinfo($file['name'], PATHINFO_EXTENSION);
+
+        if($file['name'] != "Coupon-Template-Mass-Uploading.xlsx"){
+            $proceed = false;
+        }
 
         if (in_array($fileExt, ['xlsx', 'xls'])) {
             $uploadDir = './';
@@ -15,28 +20,28 @@ if (isset($_FILES['excel_file'])) {
             
             $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($uploadedFile);
             $worksheet = $spreadsheet->getActiveSheet();
-
+            $i = 0;
             foreach ($worksheet->getRowIterator() as $row) {
                 $cellIterator = $row->getCellIterator();
                 $rowdata = [];
             
                 $hasNonNullValue = false;
-            
-                foreach ($cellIterator as $cell) {
-                    $cellValue = $cell->getValue();
-            
-                    if (!is_null($cellValue)) {
-                        $hasNonNullValue = true;
+                $i++;
+                // if($i > 1){
+                    foreach ($cellIterator as $cell) {
+                        $cellValue = $cell->getValue();
+                
+                        if (!is_null($cellValue)) {
+                            $hasNonNullValue = true;
+                        }
+    
+                        $rowdata[] = trim($cellValue);
                     }
-
-                    $rowdata[] = trim($cellValue);
-                }
-                if ($hasNonNullValue) {
-                    echo json_encode($rowdata);
-                    // echo json_encode(array_filter($rowdata, function ($value) {
-                    //     return $value;
-                    // }));
-                }
+                    if ($hasNonNullValue) {
+                        // echo json_encode($rowdata);
+                        array_push($excel_data, $rowdata);
+                    }
+                // }
             }
 
             unlink($uploadedFile);
@@ -46,5 +51,9 @@ if (isset($_FILES['excel_file'])) {
     } else {
         echo "Error uploading the file. Please try again.";
     }
-}
-?>
+} 
+
+echo json_encode([
+    'valid' => true,
+    'data' => $excel_data
+]);

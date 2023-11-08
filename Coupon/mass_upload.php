@@ -14,7 +14,7 @@
 <body>
     <div style='float: center; padding-top: 10%;'>
         <center>
-        <form action="table_excel.php" id="frm" method="POST"  enctype="multipart/form-data">
+        <form  id="frm" method="POST" enctype="multipart/form-data">
             <div style='width: 50%; border: 1px solid black;'>
                 <div style='background-color: #2d5f8b; padding: 10px; color: white; text-align: left; font-weight: bold;'> Mass Uploading</div>
                 <div style='width: 70%; padding-top: 30px'>
@@ -32,7 +32,7 @@
                     </div>
                     
                     <div style='padding-top: 30px; padding-bottom: 30px'>
-                        <input type="submit" id='submit' value="Upload Excel File" class='btn btn-success btn-sm' >
+                        <input type="button" id='submit' value="Upload Excel File" class='btn btn-success btn-sm' >
                     </div>
                 </div>
             </div>
@@ -40,10 +40,90 @@
         </center>
     </div>
     
+    <div class='modal fade' id='mymodal' role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="invheader">Preview Excel</h3>
+                </div>
+                <div class='modal-body' style='height: 4in; overflow: auto;'>
+                    <table class='table' id='ExcelList' style="width: 100%; ">
+                        <thead style='background-color: #019aca'></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>     
+        </div>
+    </div>
 </body>
 </html>
 
 <script type='text/javascript'>
+    $(document).ready(function(){
+        $("#submit").click(function(){
+            $("#ExcelList tbody").empty();
+            $("#ExcelList thead").empty();
+
+            let formdata = new FormData($("form")[0]);
+            let type = $("#type").val();
+
+            if(type === "Preview"){
+                $("#mymodal").modal('show')
+                $.ajax({
+                    url: 'mass_excel.php',
+                    type: 'POST',
+                    data: formdata,
+                    dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    success: function (res) {
+                        console.log(res)
+                        for (let i = 0; i < res.data.length; i++) {
+                            let data = res.data[i];
+                            let row = $("<tr>");
+
+                            for (let j = 0; j < data.length; j++) {
+                                let cell;
+                                if (i === 0) {
+                                    cell = $("<th>").text(data[j]);
+                                } else {
+                                    cell = $("<td>").text(data[j]);
+                                }
+                                row.append(cell);
+                            }
+
+                            if (i === 0) {
+                                row.appendTo("#ExcelList > thead");
+                            } else {
+                                row.appendTo("#ExcelList > tbody");
+                            }
+                        }
+                    },
+                    error: function(res){
+                        console.log(res)
+                    }
+                })
+            } else if (type === "Save"){
+                $.ajax({
+                    url: "th_massSave.php",
+                    type: 'POST',
+                    data: formdata,
+                    dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    success: function (res) {
+                        if(res.valid){
+                            alert(res.msg)
+                        } else [
+                            alert(res.msg)
+                        ]
+                    }
+                })
+            }
+            
+        })
+    })
     // $(document).ready(function(){
     //     $("#submit").click(function(e){
     //         e.preventDefault();
