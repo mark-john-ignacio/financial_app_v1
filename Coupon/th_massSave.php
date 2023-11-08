@@ -88,9 +88,10 @@
                 "msg" => "Successfully inserted"
             ]);
         } else { 
+            deleteInserted($excel_data);
             echo json_encode([
                 "valid" => false,
-                "msg" => "Unsuccesfully inserted"
+                "msg" => "Inserting Transaction Failed"
             ]);
         }
     } else { 
@@ -99,3 +100,14 @@
             "msg" => "File not found! or File did not match the recommended File Template"
         ]);
     } 
+
+    function deleteInserted($coupon){
+        global $con;
+        global $company;
+        $month = date('m');
+        
+        for($i = 1; $i < sizeof($coupon); $i++){
+            $sql = "DELETE FROM coupon WHERE compcode = '$company' AND CouponNo = '{$coupon[$i][0]}' AND MONTH(ddate) = '$month'";
+            mysqli_query($con, $sql);
+        }
+    }

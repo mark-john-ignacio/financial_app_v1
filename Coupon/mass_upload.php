@@ -115,9 +115,12 @@
                     success: function (res) {
                         if(res.valid){
                             alert(res.msg)
-                        } else [
+                        } else {
                             alert(res.msg)
-                        ]
+                        }
+                    },
+                    error: function(res){
+                        console.log(res)
                     }
                 })
             }
