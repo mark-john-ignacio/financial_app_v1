@@ -141,8 +141,11 @@
     
     <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
     <script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
+    <script src="../../include/autoNumeric.js"></script>
+	<!--
     <script src="../../Bootstrap/js/jquery.numeric.js"></script>
     <script src="../../Bootstrap/js/bootstrap.js"></script>
+    -->
     
     <script src="../../Bootstrap/js/moment.js"></script>
     <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
