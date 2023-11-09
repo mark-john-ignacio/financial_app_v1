@@ -31,7 +31,7 @@
         array_push($category, $row);
     }
 
-    $sql = "select a.cpartno, a.cpartno as cscancode, a.citemdesc, 0 as nretailcost, 0 as npurchcost, a.cunit, a.cstatus, 0 as ltaxinc, a.cclass, 1 as nqty, a.cuserpic, c.nqty as quantity
+    $sql = "select a.cpartno, a.cpartno as cscancode, a.citemdesc, 0 as nretailcost, 0 as npurchcost, a.cunit, a.cstatus, 0 as ltaxinc, a.cclass, 1 as nqty, a.cuserpic, c.nqty as quantity, linventoriable as isInvetory
             from items a 
             left join
                 (
@@ -287,7 +287,9 @@
 
                         <div style='height: 350px; overflow: auto;'>
                             <div id='item-wrapper'>
-                                <?php foreach($items as $list):?>
+                                <?php foreach($items as $list):
+                                    if($list['isInvetory'] != 1) {?>
+                                    
                                         <div class='itmslist' id="itemlist" style="height:100px;                     
                                             background-color:#019aca; 
                                             background-image:url('<?=$list["cuserpic"];?>');
@@ -301,7 +303,18 @@
                                             </div>
                                             <div id='items' name="<?= $list['cscancode'] ?>" class='items' data-itemlist="<?= $list['cclass'] ?>" style='position: absolute; bottom: 0; width: 100%; background-color: rgba(0,0,0,.5); color: #fff; min-height: 20px; text-align:center;'><font size='-2'><?php echo $list["citemdesc"]; ?></font></div>
                                         </div>
-                                <?php endforeach ?>
+                                <?php } else { ?>
+                                    <div class='itmslist' id="itemlist" style="height:100px;                     
+                                            background-color:#019aca; 
+                                            background-image:url('<?=$list["cuserpic"];?>');
+                                            background-repeat:no-repeat;
+                                            background-position: center center;
+                                            background-size: contain;
+                                            border:solid 1px #036;
+                                            position: relative" data-itemlist="<?= $list['cclass'] ?>" name="<?= $list['cscancode'] ?>">   
+                                            <div id='items' name="<?= $list['cscancode'] ?>" class='items' data-itemlist="<?= $list['cclass'] ?>" style='position: absolute; bottom: 0; width: 100%; background-color: rgba(0,0,0,.5); color: #fff; min-height: 20px; text-align:center;'><font size='-2'><?php echo $list["citemdesc"]; ?></font></div>
+                                        </div>
+                                <?php } endforeach ?>
                             </div>
                         </div>
     
@@ -1479,7 +1492,7 @@
      * for duplication item
      */
 
-    function duplicate(data, qty = 1) {
+    function duplicate(data, qty = 1,) {
         if (!Array.isArray(itemStored)) {
             itemStored = [];
         }
@@ -1493,9 +1506,11 @@
             let remain = parseFloat(data.quantity)
             let quantity = itemStored[i].quantity; 
 
-            if(quantity >= remain){
+            if(quantity >= remain && data.isInventory != 1){
                 return alert("No more stock available")
-            }
+            }   
+            
+            
 
             if (itemStored[i].partno === data.partno) {
                 itemStored[i].quantity += parseFloat(qty);
