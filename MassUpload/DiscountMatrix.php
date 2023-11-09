@@ -7,15 +7,23 @@
     $company = $_SESSION['companyid'];
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
+    <link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="../Bootstrap/css/alert-modal.css">
+    <link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
+        
     <script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
+
     <script src="../Bootstrap/js/bootstrap.js"></script>
+    <script src="../Bootstrap/js/moment.js"></script>
+    <script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+	<script type="text/javascript" language="javascript" src="../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
+	
+	<meta charset="utf-8">
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
     <title>MyxFinancials</title>
 </head>
 <body>
@@ -24,8 +32,29 @@
         <form id="frm" method="POST" enctype="multipart/form-data">
             <div style='width: 50%; border: 1px solid black;'>
                 <div style='background-color: #2d5f8b; padding: 10px; color: white; text-align: left; font-weight: bold;'>Discount Mass Uploading</div>
-                <div style='width: 70%; padding-top: 30px'>
-                    <div style='padding-bottom: 30px;'>
+                <div style='width: 80%; padding-top: 30px'>
+                    <div id='inputs' style='padding-bottom: 30px;'>
+                        <div style='padding-bottom: 10px;'>
+                            <label for="label">Enter Label</label>
+                            <input type="text" name="label" id="label" placeholder="Enter Label..." class="form-control input-sm" require>
+                        </div>
+                        
+                        <div style='padding-bottom: 10px;'>
+                            <label for="description">Enter Description</label>
+                            <input type="text" name="description" id="description" placeholder="Enter Description..." class="form-control input-sm" require>
+                        </div>
+
+                        <div style='display: flex;' class="col-sm-6 nopadding">
+                            <label for="effectdate" style='width: 100px; padding-top:2%'>Effect Date</label>
+                            <input type="text" class="datepicker form-control input-sm" id="effectdate" name="effectdate" value='<?= date("m/d/Y");?>' require>
+                        </div>
+
+                        <div style='display: flex;' class="col-sm-6 nopadding">
+                            <label for="duedate" style='width: 80px; padding-top:2%'>Due Date</label>
+                            <input type="text" class="datepicker form-control input-sm" id="duedate" name="duedate" value='<?= date("m/d/Y");?>' require>
+                        </div>
+                    </div>
+                    <div style='padding-top: 10px; padding-bottom: 30px;'>
                         <select class='form-control input-sm' name="type" id="type">
                             <option value="Preview">Preview</option>
                             <option value="Save">Save</option>
@@ -67,7 +96,14 @@
 </html>
 
 <script type='text/javascript'>
+    $(function(){
+        $('.datepicker').datetimepicker({
+            format: 'MM/DD/YYYY',
+            minDate: new Date(),
+        })
+    })
     $(document).ready(function(){
+        
 
         $("#submit").click(function(){
             $("#ExcelList tbody").empty();
@@ -114,7 +150,7 @@
                 })
             } else if (type === "Save"){
                 $.ajax({
-                    url: "th_saveSD.php",
+                    url: "th_saveDM.php",
                     type: 'POST',
                     data: formdata,
                     dataType: 'json',

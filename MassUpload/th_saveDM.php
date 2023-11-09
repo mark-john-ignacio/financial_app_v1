@@ -1,16 +1,52 @@
-<?php 
-
+<?php
     if(!isset($_SESSION)){
         session_start();
     }
+
     include("../Connection/connection_string.php");
     $company = $_SESSION['companyid'];
     $proceed = true;
     $duplicate = false;
     $isFinished = false;
 
-    $dmonth = date('m');
-    $dyear = date('y');
+
+    /**
+     * Initiate Variable
+     */
+    $label = $_POST['label'];
+    $description = $_POST['description'];
+    $effect = date("Y-m-d", strtotime($_POST['effectdate']));
+    $due = date("Y-m-d", strtotime($_POST['duedate']));
+
+    $month = date('m');
+    $year = date('y');
+
+    $sql = "SELECT * FROM discountmatrix where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By `tranno` desc LIMIT 1";
+    $query = mysqli_query($con, $sql);
+    if (mysqli_num_rows($query)==0) {
+        $code = "DM".$month.$year."00000";
+    } else {
+        while($row = $query -> fetch_assoc()){
+            $last = $row['tranno'];
+        }
+        
+        
+        if(substr($last,2,2) <> $month){
+            $code = "DM".$month.$year."00000";
+        }
+        else{
+            $baseno = intval(substr($last,6,5)) + 1;
+            $zeros = 5 - strlen($baseno);
+            $zeroadd = "";
+            
+            for($x = 1; $x <= $zeros; $x++){
+                $zeroadd = $zeroadd."0";
+            }
+            
+            $baseno = $zeroadd.$baseno;
+            $code = "DM".$month.$year.$baseno;
+        }
+    }
 
     $excel_data = [];
     if (isset($_FILES['excel_file']) && !empty($_FILES['excel_file'])) {
@@ -38,14 +74,14 @@
                     foreach ($cellIterator as $cell) {
                         $cellValue = $cell->getValue();
 
-                        if (!is_null($cellValue) and !empty($cellValue)) {
+                        if (!is_null($cellValue)) {
                             $hasNonNullValue = true;
                         }
 
                         // Check if the cell can be converted to a date
                         if (\PhpOffice\PhpSpreadsheet\Shared\Date::isDateTime($cell)) {
                             $date = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cellValue);
-                            $formattedDate = $date->format('Y-m-d'); // Adjust the format as needed
+                            $formattedDate = $date->format('Y-m-d');    
                             $rowdata[] = $formattedDate;
                         } else {
                             $rowdata[] = trim($cellValue);
@@ -68,52 +104,26 @@
     }
 
     if($proceed){
-
         for($i = 1; $i < sizeof($excel_data); $i++){
-            $chkSales = mysqli_query($con,"select * from discounts where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");
-            if (mysqli_num_rows($chkSales)==0) {
-                $cSINo = "DC".$dmonth.$dyear."00000";
-            }
-            else {
-                while($row = mysqli_fetch_array($chkSales, MYSQLI_ASSOC)){
-                    $lastSI = $row['ctranno'];
-                }
-                
-                
-                if(substr($lastSI,2,2) <> $dmonth){
-                    $cSINo = "DC".$dmonth.$dyear."00000";
-                }
-                else{
-                    $baseno = intval(substr($lastSI,6,5)) + 1;
-                    $zeros = 5 - strlen($baseno);
-                    $zeroadd = "";
-                    
-                    for($x = 1; $x <= $zeros; $x++){
-                        $zeroadd = $zeroadd."0";
-                    }
-                    
-                    $baseno = $zeroadd.$baseno;
-                    $cSINo = "DC".$dmonth.$dyear.$baseno;
-                }
-            }
-
             $data = $excel_data[$i];
-            $sql = "SELECT * FROM `discounts` WHERE `compcode` = '$company' AND `ctranno` = '$cSINo'";
-            $query = mysqli_query($con, $sql);
-            if(mysqli_num_rows($query) != 0){
-                $isFinished = false;
-            } else {
-                $sql = "INSERT INTO discounts (`compcode`, `ctranno`, `clabel`, `cdescription`, `nvalue`, `type`, `ddate`, `deffectdate`, `cstatus`)
-                                        VALUES('$company', '$cSINo', '{$data[0]}', '{$data[1]}', '{$data[2]}', '{$data[3]}', NOW(), '{$data[4]}', 'ACTIVE')";
 
-                if(mysqli_query($con, $sql)){
-                    $isFinished = true;
-                } else {
-                    $isFinished = false;
-                }
-            }   
+            if($i === 1){
+                $sql = "INSERT INTO discountmatrix (`compcode`, `tranno`, `remarks`, `label`, `deffective`, `ddue`, `status`, `ddate`, `approved`, `cancelled`) 
+                                        VALUES('$company', '$code', '$description', '$label', '$effect', '$due', 'ACTIVE', NOW(), 0, 0)";
+                $query = mysqli_query($con, $sql);
+            }
             
-        }    
+            $sql = "INSERT INTO discountmatrix_t (`compcode`, `tranno`, `itemno`, `unit`, `discount`, `type`)
+                                        VALUES('$company', '$code', '{$data[0]}', '{$data[1]}', '{$data[2]}', '{$data[3]}')";
+            if(mysqli_query($con, $sql)){
+                $isFinished = true;
+            } else {
+                $isFinished = false;
+            }
+                
+            
+        }
+
         if($isFinished) { 
             echo json_encode([
                 "valid" => true,
@@ -136,11 +146,11 @@
     function deleteInserted($tranno){
         global $con;
         global $company;
-        global $cSINo;
+        global $code;
         $month = date('m');
         
-        for($i = 1; $i < sizeof($tranno); $i++) {
-            $sql = "DELETE FROM discounts WHERE compcode = '$company' AND ctranno = '$cSINo' AND MONTH(ddate) = '$month'";
-            mysqli_query($con, $sql);
-        }
+        $sql = "DELETE FROM discountmatrix WHERE compcode = '$company' AND tranno = '$code' AND MONTH(ddate) = '$month'";
+        mysqli_query($con, $sql);
+        $sql = "DELETE FROM discountmatrix_t WHERE compcode = '$company' AND tranno = '$code'";
+        mysqli_query($con, $sql);
     }
