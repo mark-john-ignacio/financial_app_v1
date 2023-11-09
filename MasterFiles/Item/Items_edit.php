@@ -1500,11 +1500,11 @@ function loaditmfactor(){
                         var gretr = "";
                         var lessr = "";
                         if(item.crule=="div"){
-                            gretr = "selected";
-                            lessr = "";
-                        }else if(item.crule=="mul"){
                             gretr = "";
                             lessr = "selected";
+                        }else if(item.crule=="mul"){
+                            gretr = "selected";
+                            lessr = "";
                         }
 
                         var isPO = "";
@@ -1518,7 +1518,7 @@ function loaditmfactor(){
                         }
                         
                         u.innerHTML = "<div class=\"col-xs-12 nopadwright\" ><input type=\"text\" class='form-control input-xs' name=\"selunit"+lastRow+"\" id=\"selunit"+lastRow+"\" value=\""+item.cunit+"\" readonly></div>";
-                        v.innerHTML = "<div class=\"nopadwright\" ><select id='selrule"+lastRow+"' name='selrule"+lastRow+"' class='form-control input-xs'> <option value='div' "+gretr+">&lt;</option> <option value='mul' "+lessr+">&gt;</option> </select></div>";
+                        v.innerHTML = "<div class=\"nopadwright\" ><select id='selrule"+lastRow+"' name='selrule"+lastRow+"' class='form-control input-xs'> <option value='div' "+lessr+">&lt;</option> <option value='mul' "+gretr+">&gt;</option> </select></div>";
                         w.innerHTML = "<div class=\"nopadwright\" ><input type='text' class='form-control input-xs' id='txtfactor"+lastRow+"' name='txtfactor"+lastRow+"' value='"+item.nfactor+"' required style=\"text-align: right\"> </div>";
                         x.innerHTML = "<div class=\"nopadwright\" ><input type='checkbox' id='txtchkPO"+lastRow+"' name='txtchkPO"+lastRow+"' value='1' "+isPO+"> </div>";
                         y.innerHTML = "<div class=\"nopadwright\" ><input type='checkbox' id='txtchkSI"+lastRow+"' name='txtchkSI"+lastRow+"' value='1' "+isSI+"> </div>";
