@@ -6,7 +6,7 @@ require_once "../../Connection/connection_string.php";
 
 	$company = $_SESSION['companyid'];
 	
-	$sql = "select * from items where compcode='$company' and cpartno = '".$_REQUEST['query']."' and cstatus='ACTIVE'";
+	$sql = "select * from items where compcode='$company' and cpartno = '".$_REQUEST['query']."' and cstatus='ACTIVE' and ctradetype='Trade'";
 
 	$rsd = mysqli_query($con,$sql);
 	while($rs = mysqli_fetch_array($rsd, MYSQLI_ASSOC)) {
