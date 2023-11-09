@@ -80,7 +80,7 @@ include('../../include/accessinner.php');
                         </td>
                         <td><?php echo $row['clabel'];?></td>
                         
-                        <td><?php echo $row['nvalue'];?></td>
+                        <td><?php echo ($row["type"]) != "PERCENT" ? number_format($row['nvalue'],2) : number_format($row['nvalue'],0) . "%";?></td>
 						<td><?php echo $row['deffectdate'];?></td>
 						<td>
 							<div id="msg<?php echo $row['ctranno'];?>">
