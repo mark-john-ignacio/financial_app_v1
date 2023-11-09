@@ -158,13 +158,13 @@ a.info:hover span{ /*the span will display just on :hover state*/
             </div>
         </div>   
 
-        <div class="col-xs-12">
+        <!--<div class="col-xs-12">
                 <b>
                 <label class="checkbox-inline">
                     <input type="checkbox" value="1" name="chkSIAllow" id="chkSIAllow">Allow Open Invoice
                 </label>
                 </b>
-         </div>
+         </div>-->
         
         <div class="alert alert-danger nopadding" id="add_err"></div>         
 
@@ -295,11 +295,11 @@ mysqli_close($con);
 			var varcode = $('#txtccode').val();
 			var vardesc = $('#txtcdesc').val();
 
-			if ($('#chkSIAllow').is(':checked')) {
-				var varSIAllow = 1;
-			}else{
+			//if ($('#chkSIAllow').is(':checked')) {
+			//	var varSIAllow = 1;
+			//}else{
 				var varSIAllow = 0;
-			}
+			//}
 
 			var ctype = "ITEMTYP";
 
