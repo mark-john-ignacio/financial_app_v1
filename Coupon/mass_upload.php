@@ -21,7 +21,7 @@
 
 </head>
 <body>
-    <div style='float: center; padding-top: 10%;'>
+    <div style='float: center; padding-top: 3%;'>
         <center>
         <form  id="frm" method="POST" enctype="multipart/form-data">
             <div style='width: 50%; border: 1px solid black;'>
