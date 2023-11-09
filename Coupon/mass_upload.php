@@ -42,6 +42,7 @@
                     
                     <div style='padding-top: 30px; padding-bottom: 30px'>
                         <input type="button" id='submit' value="Upload Excel File" class='btn btn-success btn-sm' >
+                        <a href="../MassUpload/Coupon-Template-Mass-Uploading.xlsx" download="Coupon-Template-Mass-Uploading.xlsx" class="btn btn-info btn-sm" id="download" >Download Template</a>
                     </div>
                 </div>
             </div>
