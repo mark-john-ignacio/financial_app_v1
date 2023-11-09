@@ -41,6 +41,7 @@ include('../../include/accessinner.php');
         </div>
 			<br><br>
             <button type="button" class="btn btn-primary btn-md" id="btnadd" name="btnadd"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+			<button type="button" class="btn btn-warning btn-md" id="btnmass" name="btnmass"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Mass Upload</button>
             
             <br><br>
 			
@@ -79,7 +80,7 @@ include('../../include/accessinner.php');
                         </td>
                         <td><?php echo $row['clabel'];?></td>
                         
-                        <td><?php echo $row['nvalue'];?></td>
+                        <td><?php echo ($row["type"]) != "PERCENT" ? number_format($row['nvalue'],2) : number_format($row['nvalue'],0) . "%";?></td>
 						<td><?php echo $row['deffectdate'];?></td>
 						<td>
 							<div id="msg<?php echo $row['ctranno'];?>">
@@ -241,6 +242,10 @@ mysqli_close($con);
                  format: 'MM/DD/YYYY',
 				 minDate: new Date(),
         });
+
+		$('#btnmass').click(function(){
+			window.location="../../MassUpload/specialDiscount.php"
+		})
 
 		// Adding new user
 		$("#btnadd").on("click", function() {
