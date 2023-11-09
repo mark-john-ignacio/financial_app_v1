@@ -5,29 +5,56 @@
 
     include("../Connection/connection_string.php");
     $company = $_SESSION['companyid'];
-?>
 
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
-
-	<title>Myx Financials</title>
-    
-	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
+    <link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
+    <link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="../Bootstrap/css/alert-modal.css">
+    <link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
+        
     <script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
-    <script src="../Bootstrap/js/bootstrap.js"></script>
 
+    <script src="../Bootstrap/js/bootstrap.js"></script>
+    <script src="../Bootstrap/js/moment.js"></script>
+    <script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+	<script type="text/javascript" language="javascript" src="../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
+	
+	<meta charset="utf-8">
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
+    <title>MyxFinancials</title>
 </head>
 <body>
     <div style='float: center; padding-top: 3%;'>
         <center>
-        <form  id="frm" method="POST" enctype="multipart/form-data">
+        <form id="frm" method="POST" enctype="multipart/form-data">
             <div style='width: 50%; border: 1px solid black;'>
-                <div style='background-color: #2d5f8b; padding: 10px; color: white; text-align: left; font-weight: bold;'>Coupon Mass Uploading</div>
-                <div style='width: 70%; padding-top: 30px'>
-                    <div style='padding-bottom: 30px;'>
+                <div style='background-color: #2d5f8b; padding: 10px; color: white; text-align: left; font-weight: bold;'>Discount Matrix Mass Uploading</div>
+                <div style='width: 80%; padding-top: 30px'>
+                    <div id='inputs' style='padding-bottom: 30px;'>
+                        <div style='padding-bottom: 10px;'>
+                            <label for="label">Enter Label</label>
+                            <input type="text" name="label" id="label" placeholder="Enter Label..." class="form-control input-sm" require>
+                        </div>
+                        
+                        <div style='padding-bottom: 10px;'>
+                            <label for="description">Enter Description</label>
+                            <input type="text" name="description" id="description" placeholder="Enter Description..." class="form-control input-sm" require>
+                        </div>
+
+                        <div style='display: flex;' class="col-sm-6 nopadding">
+                            <label for="effectdate" style='width: 100px; padding-top:2%'>Effect Date</label>
+                            <input type="text" class="datepicker form-control input-sm" id="effectdate" name="effectdate" value='<?= date("m/d/Y");?>' require>
+                        </div>
+
+                        <div style='display: flex;' class="col-sm-6 nopadding">
+                            <label for="duedate" style='width: 80px; padding-top:2%'>Due Date</label>
+                            <input type="text" class="datepicker form-control input-sm" id="duedate" name="duedate" value='<?= date("m/d/Y");?>' require>
+                        </div>
+                    </div>
+                    <div style='padding-top: 10px; padding-bottom: 30px;'>
                         <select class='form-control input-sm' name="type" id="type">
                             <option value="Preview">Preview</option>
                             <option value="Save">Save</option>
@@ -42,17 +69,17 @@
                     
                     <div style='padding-top: 30px; padding-bottom: 30px'>
                         <input type="button" id='submit' value="Upload Excel File" class='btn btn-success btn-sm' >
-                        <a href="../MassUpload/Coupon-Template-Mass-Uploading.xlsx" download="Coupon-Template-Mass-Uploading.xlsx" class="btn btn-info btn-sm" id="download" >Download Template</a>
+                        <a href="templates/Discount-Matrix-Template.xlsx" download="Discount-Matrix-Template.xlsx" class="btn btn-info btn-sm" id="download" >Download Template</a>
                     </div>
                 </div>
             </div>
         </form>
         </center>
     </div>
-    
+
     <div class='modal fade' id='mymodal' role="dialog">
         <div class="modal-dialog" role="document" style='width: 100%; padding-left: 0;'>
-            <div class='modal-content'>
+            <div class='modal-content' >
                 <div class='modal-header'>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h3 class="modal-title" id="invheader">Preview Excel</h3>
@@ -70,7 +97,15 @@
 </html>
 
 <script type='text/javascript'>
+    $(function(){
+        $('.datepicker').datetimepicker({
+            format: 'MM/DD/YYYY',
+            minDate: new Date(),
+        })
+    })
     $(document).ready(function(){
+        
+
         $("#submit").click(function(){
             $("#ExcelList tbody").empty();
             $("#ExcelList thead").empty();
@@ -78,10 +113,10 @@
             let formdata = new FormData($("form")[0]);
             let type = $("#type").val();
 
-            if(type === "Preview"){
-                $("#mymodal").modal('show')
+            if(type == "Preview"){
+                $("#mymodal").modal("show")
                 $.ajax({
-                    url: '../MassUpload/mass_excel.php',
+                    url: "mass_excel.php",
                     type: 'POST',
                     data: formdata,
                     dataType: 'json',
@@ -116,7 +151,7 @@
                 })
             } else if (type === "Save"){
                 $.ajax({
-                    url: "th_massSave.php",
+                    url: "th_saveDM.php",
                     type: 'POST',
                     data: formdata,
                     dataType: 'json',
@@ -134,78 +169,6 @@
                     }
                 })
             }
-            
         })
     })
-    // $(document).ready(function(){
-    //     $("#submit").click(function(e){
-    //         e.preventDefault();
-    //         let formdata = new FormData($("form")[0]);
-            
-    //         for (var pair of formdata.entries()) {
-    //             console.log(pair[0] + ': ' + pair[1]);
-    //         }
-
-
-    //         // $.ajax({
-    //         //     url: 'mass_excel.php',
-    //         //     type: 'POST',
-    //         //     data: formdata,
-    //         //     dataType: 'json',
-    //         //     processData: false,
-    //         //     contentType: false,
-    //         //     success: function (res) {
-    //         //         var responseData = JSON.parse(res);
-
-    //         //         for (let i = 0; i < responseData.length; i++) {
-    //         //             var rowData = responseData[i];
-    //         //             var newRow = $("<tr>");
-
-    //         //             for (let j = 0; j < rowData.length; j++) {
-    //         //                 var newCell = $("<td>").text(rowData[j]);
-    //         //                 newRow.append(newCell);
-    //         //             }
-
-    //         //             $("table > tbody").append(newRow);
-    //         //         }
-    //         //     },
-    //         //     error: function (xhr, status, error) {
-    //         //         console.log(error);
-    //         //     }
-    //         // });
-
-    //         $.ajax({
-    //             url: 'mass_excel.php',
-    //             type: 'POST',
-    //             data: formdata,
-    //             processData: false,
-    //             contentType: false,
-    //             dataType: 'json',
-    //             success: function (res) {
-    //                 if (Array.isArray(res)) {
-    //                     // Assuming res is an array of arrays
-    //                     var tableBody = $("table > tbody");
-
-    //                     res.forEach(function (rowData, i) {
-    //                         if (i !== 0) {
-    //                             var newRow = $("<tr>");
-
-    //                             rowData.forEach(function (cellData) {
-    //                                 var newCell = $("<td>").text(cellData);
-    //                                 newRow.append(newCell);
-    //                             });
-
-    //                             tableBody.append(newRow);
-    //                         }
-    //                     });
-    //                 } else {
-    //                     console.error("Invalid data format received from the server");
-    //                 }
-    //             },
-    //             error: function (jqXHR, textStatus, errorThrown) {
-    //                 console.log("AJAX request failed:", textStatus, errorThrown);
-    //             }
-    //         });
-    //     })
-    // })
 </script>

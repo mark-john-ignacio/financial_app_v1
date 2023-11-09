@@ -65,7 +65,7 @@
             </div>
 			<br><br>
             <button type="button" class="btn btn-primary btn-md" id="btnadd" name="btnadd"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
-            
+            <button type="button" class="btn btn-warning btn-md" id="btnmass" name="btnmass"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Mass Upload</button>
             <br><br>
 			
 			<table id="example" class="display" cellspacing="0" width="100%">
@@ -303,6 +303,10 @@ mysqli_close($con);
 				})
 				
 			}
+		})
+
+		$('#btnmass').click(function(){
+			window.location="../../MassUpload/DiscountMatrix.php"
 		})
 
 		$("#btnCancel").click(function(){
