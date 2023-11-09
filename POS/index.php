@@ -1492,7 +1492,7 @@
      * for duplication item
      */
 
-    function duplicate(data, qty = 1) {
+    function duplicate(data, qty = 1,) {
         if (!Array.isArray(itemStored)) {
             itemStored = [];
         }
@@ -1506,9 +1506,11 @@
             let remain = parseFloat(data.quantity)
             let quantity = itemStored[i].quantity; 
 
-            if(quantity >= remain){
+            if(quantity >= remain && data.isInventory != 1){
                 return alert("No more stock available")
-            }
+            }   
+            
+            
 
             if (itemStored[i].partno === data.partno) {
                 itemStored[i].quantity += parseFloat(qty);
