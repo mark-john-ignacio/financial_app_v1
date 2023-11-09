@@ -311,7 +311,7 @@
 
         </div>
     </div>
-    <footer style="position: absolute; bottom: 0px; padding: 10px; min-width: 100%;">
+    <footer style="position: fixed; bottom: 0px; padding: 10px; min-width: 100%;">
                 <div id='wrapper' >
                     <div id='button-wrapper' class='col-lg-12 nopadwtop'>
                         <button class="form-control btn btn-sm btn-danger" name="btnVoid" id="btnVoid" type="button">

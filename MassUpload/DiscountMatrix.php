@@ -68,7 +68,7 @@
                     </div>
                     
                     <div style='padding-top: 30px; padding-bottom: 30px'>
-                        <input type="button" id='submit' value="Upload Excel File" class='btn btn-success btn-sm' >
+                        <input type="button" id='submit' value="Submit" class='btn btn-success btn-sm' >
                         <a href="templates/Discount-Matrix-Template.xlsx" download="Discount-Matrix-Template.xlsx" class="btn btn-info btn-sm" id="download" >Download Template</a>
                     </div>
                 </div>
