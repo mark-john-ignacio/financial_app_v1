@@ -7,12 +7,12 @@ require_once "../../Connection/connection_string.php";
    
    $ecount=mysqli_num_rows($echk);
 
-  if($ecount!=0)
-   {
-      echo "User ID already exist!";
-   }
-  else{
-	  echo "";
-  }
+   if($ecount!=0)
+      {
+         echo "User ID already exist!";
+      }
+   else{
+         echo "YES";
+      }
 
 ?>
