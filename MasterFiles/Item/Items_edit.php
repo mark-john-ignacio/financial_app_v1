@@ -144,8 +144,9 @@
     <script src="../../include/autoNumeric.js"></script>
 	<!--
     <script src="../../Bootstrap/js/jquery.numeric.js"></script>
+       -->
     <script src="../../Bootstrap/js/bootstrap.js"></script>
-    -->
+ 
     
     <script src="../../Bootstrap/js/moment.js"></script>
     <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
@@ -946,7 +947,7 @@ $(document).ready(function(){
         $(this).tab('show');
     });
 	
-	$("input.numeric").numeric({decimalPlaces: 2});
+	$("input.numeric").autoNumeric('init',{mDec:2});
 	$("input.numeric").on("click", function () {
 		$(this).select();
 	});
@@ -1340,7 +1341,7 @@ function addunitconv(){
 
         g.innerHTML = "<div class=\"col-xs-12 nopadwleft\" ><input class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteSeclevl(this);\"/></div>";
         
-        $("input.numeric").numeric({decimalPlaces: 2});
+        $("input.numeric").autoNumeric('init',{mDec:2});
         $("input.numeric").on("click", function () {
             $(this).select();
         });
