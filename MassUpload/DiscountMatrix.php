@@ -31,7 +31,7 @@
         <center>
         <form id="frm" method="POST" enctype="multipart/form-data">
             <div style='width: 50%; border: 1px solid black;'>
-                <div style='background-color: #2d5f8b; padding: 10px; color: white; text-align: left; font-weight: bold;'>Discount Mass Uploading</div>
+                <div style='background-color: #2d5f8b; padding: 10px; color: white; text-align: left; font-weight: bold;'>Discount Matrix Mass Uploading</div>
                 <div style='width: 80%; padding-top: 30px'>
                     <div id='inputs' style='padding-bottom: 30px;'>
                         <div style='padding-bottom: 10px;'>
