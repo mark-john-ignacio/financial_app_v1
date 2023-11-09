@@ -14,7 +14,7 @@ $date = date("Y-m-d");
 $data = [];
 
 
-$sql = "select a.cpartno, a.cpartno as cscancode, a.citemdesc, a.cunit, a.cstatus, ifnull(c.nqty,0) as nqty, a.linventoriable
+$sql = "select a.cpartno, a.cpartno as cscancode, a.citemdesc, a.cunit, a.cstatus, ifnull(c.nqty,0) as nqty, a.linventoriable as isInventory
 			from items a 
 			left join
 				(
@@ -37,22 +37,24 @@ if(mysqli_num_rows($query) != 0){
                     'valid' => false,
                     'msg' => "No more stock available!"
                 ]);
-         }else{
-            $json['partno'] = $row['cpartno'];
-            $json['name'] = $row['citemdesc'];
-            $json['unit'] = $row['cunit'];
-            $json['quantity'] = $row['nqty'];
-            array_push($data, $json);
-            echo json_encode([
-                'valid' => true,
-                'data' => $data
-            ]);
-         }
+            }else{
+                $json['partno'] = $row['cpartno'];
+                $json['name'] = $row['citemdesc'];
+                $json['unit'] = $row['cunit'];
+                $json['quantity'] = $row['nqty'];
+                $json['isInventory'] = $row['isInventory'];
+                array_push($data, $json);
+                echo json_encode([
+                    'valid' => true,
+                    'data' => $data
+                ]);
+            }
         }else{
             $json['partno'] = $row['cpartno'];
             $json['name'] = $row['citemdesc'];
             $json['unit'] = $row['cunit'];
             $json['quantity'] = $row['nqty'];
+            $json['isInventory'] = $row['isInventory'];
             array_push($data, $json);
             echo json_encode([
                 'valid' => true,
