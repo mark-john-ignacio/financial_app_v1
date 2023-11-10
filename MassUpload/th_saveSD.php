@@ -36,7 +36,7 @@
                     $hasNonNullValue = false;
 
                     foreach ($cellIterator as $cell) {
-                        $cellValue = $cell->getValue();
+                        $cellValue = trim($cell->getValue());
 
                         if (!is_null($cellValue) and !empty($cellValue)) {
                             $hasNonNullValue = true;

@@ -21,9 +21,9 @@
     <link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="../Bootstrap/css/alert-modal.css">
     <link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
-        
+    
     <script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
-
+    <script src="../Bootstrap/js/bootstrap3-typeahead.js"></script>
     <script src="../Bootstrap/js/bootstrap.js"></script>
     <script src="../Bootstrap/js/moment.js"></script>
     <script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
@@ -38,17 +38,13 @@
         <center>
         <form id="frm" method="POST" enctype="multipart/form-data">
             <div style='width: 50%; border: 1px solid black;'>
-                <div style='background-color: #2d5f8b; padding: 10px; color: white; text-align: left; font-weight: bold;'>Sales Price Mass Uploading</div>
+                <div style='background-color: #2d5f8b; padding: 10px; color: white; text-align: left; font-weight: bold;'>Purchase Price Mass Uploading</div>
                 <div style='width: 70%; padding-top: 30px'>
                     <div style='padding-bottom: 30px;'>
 
                         <div class='nopadwtop'>
-                            <label for="matrix">Select a Price Matrix</label>
-                            <select name="matrix" id="matrix" class='form-control input-sm'>
-                                <?php foreach($pms as $list): ?>
-                                    <option value="<?= $list['ccode'] ?>"><?= $list['cdesc'] ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                            <label for="supplier">Supplier</label>
+                            <input type="text" id="supplier" name="supplier" class="form-control input-sm" autocomplete="false">
                         </div>
                         <div class='col-sm-12' style='padding-left: 0; padding-top: 10px; display: flex;'>
                             <label for="effectdate" class='col-xs-6'>Effectivity Date</label>
@@ -76,7 +72,7 @@
                     
                     <div style='padding-top: 30px; padding-bottom: 30px'>
                         <input type="button" id='submit' value="Submit" class='btn btn-success btn-sm' >
-                        <a href="templates/Sales-Price-List-Template-Mass.xlsx" download="Sales-Price-List-Template-Mass.xlsx" class="btn btn-info btn-sm" id="download" >Download Template</a>
+                        <a href="templates/Purchase-Price-List-Template-Mass.xlsx" download="Purchase-Price-List-Template-Mass.xlsx" class="btn btn-info btn-sm" id="download" >Download Template</a>
                     </div>
                 </div>
             </div>
@@ -112,6 +108,29 @@
     })
     $(document).ready(function(){
         
+        $('#supplier').typeahead({
+            items: 10,
+            source: function(request, response) {
+                $.ajax({
+                    url: "../MasterFiles/Items/th_supplier.php",
+                    dataType: "json",
+                    data: {
+                        query: $("#supplier").val()
+                    },
+                    success: function (data) {
+                        response(data);
+                    }
+                });
+            },
+            autoSelect: true,
+            displayText: function (item) {
+                return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+            },
+            highlighter: Object,
+            afterSelect: function(item) { 
+                $('#supplier').val(item.value).change(); 
+            }
+        });
 
         $("#submit").click(function(){
             $("#ExcelList tbody").empty();
@@ -158,7 +177,7 @@
                 })
             } else if (type === "Save"){
                 $.ajax({
-                    url: "th_savePM.php",
+                    url: "th_savePP.php",
                     type: 'POST',
                     data: formdata,
                     dataType: 'json',

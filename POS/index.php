@@ -633,6 +633,7 @@
             dataType: "json",
             success: function (res) {
                 $('#customer').val(res.data).change();
+                $('#customer').attr("data-val", res.code).change();
                 matrix = res.pm
             }
         });
@@ -741,6 +742,9 @@
                     success: function (res) {
                         if(res.valid){
                             response(res.data);
+                            itemStored.length = 0;
+                            coupon.length = 0;
+                            specialDisc.length = 0;
                             flag = true;
                         }
                     }
@@ -754,21 +758,15 @@
                 console.log(item)  
                 matrix = item.matrix;
                 $('#customer').val(item.value).change()
-                // $('#ccustname').val(item.value).change(); 
-                // $("#ccustid").val(item.id);
-                // $("#ccustcredit").val(item.nlimit); 
-                // $("#divCreditLim").text(item.nlimit);
-                // chkbalance(item.id);
-                // $("#citemno").focus();	
+                $('#customer').attr("data-val", item.id).change();
+                
                 $("#paymentList > tbody").empty()
                 $("#VoidList > tbody").empty()
                 $("#listItem > tbody").empty()
-                $("#gross").text(parseFloat(0).toFixed(2))
-                $("#vat").text(parseFloat(0).toFixed(2))
-                $("#net").text(parseFloat(0).toFixed(2))
-                itemStored = [];
-                coupon = [];
-                specialDisc = []
+                $("#gross").text(parseFloat(0).toFixed(2));
+                $("#vat").text(parseFloat(0).toFixed(2));
+                $("#net").text(parseFloat(0).toFixed(2));
+                
             }
         })
 
@@ -1287,7 +1285,7 @@
                         gross: parseFloat(gross),
                         subtotal: parseFloat(total),
 
-                        customer: $('#customer').val(),
+                        customer: $('#customer').attr('data-val'),
                         order: $('#orderType').val(),
                         table: $('#table').val(),
 
