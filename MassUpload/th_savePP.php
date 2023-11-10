@@ -1,4 +1,4 @@
-<?php
+<?php 
     if(!isset($_SESSION)){
         session_start();
     }
@@ -8,30 +8,54 @@
     $duplicate = false;
     $isFinished = false;
 
-    $matrix = $_POST['matrix'];
+    $supplier = $_POST['supplier'];
     $remarks = $_POST['description'];
     $effectivityDate = $_POST['effectdate'];
 
     $today = date("mdy");
-    $code = $matrix . $today;
-    $result = mysqli_query ($con, "SELECT ctranno, IF(LOCATE('_', ctranno), SUBSTRING_INDEX(ctranno,'_',-1), '1') as prefx FROM items_pm where compcode='$company' and ctranno like '$code%' order by ctranno DESC LIMIT 1"); 
-	
-	
-	//echo $row['prefx'];
-	
-	if(mysqli_num_rows($result)==0){
-		$code = $code."_1";
+
+    $result = mysqli_query ($con, "SELECT * FROM items_purch_cost where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1"); 
+    if(mysqli_num_rows($result)==0){
+		$code = "PP".$dmonth.$dyear."00000";
 	}
 	else {
-		$row = mysqli_fetch_assoc($result);
-		$yz = $row['prefx'];
+		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+			$lastSI = $row['ctranno'];
+		}
 		
-		$prfx = (int)$yz+1;
 		
-		$code = $code."_".$prfx;
-		
-		//echo $code;
+		if(substr($lastSI,2,2) <> $dmonth){
+			$code = "PP".$dmonth.$dyear."00000";
+		}
+		else{
+			$baseno = intval(substr($lastSI,6,5)) + 1;
+			$zeros = 5 - strlen($baseno);
+			$zeroadd = "";
+			
+			for($x = 1; $x <= $zeros; $x++){
+				$zeroadd = $zeroadd."0";
+			}
+			
+			$baseno = $zeroadd.$baseno;
+			$code = "PP".$dmonth.$dyear.$baseno;
+		}
 	}
+
+    //echo $row['prefx'];
+
+    if(mysqli_num_rows($result)==0){
+        $code = $code."_1";
+    }
+    else {
+        $row = mysqli_fetch_assoc($result);
+        $yz = $row['prefx'];
+        
+        $prfx = (int)$yz+1;
+        
+        $code = $code."_".$prfx;
+        
+        //echo $code;
+    }
 
     $excel_data = [];
     if (isset($_FILES['excel_file']) && !empty($_FILES['excel_file'])) {
@@ -87,47 +111,51 @@
             $proceed = false;
         }
     }
-
+    
     if($proceed){
         for($i = 0; $i < sizeof($excel_data); $i++){
             $data = $excel_data[$i];
             if($i === 0){
-                $sql = "INSERT INTO items_pm (compcode, ctranno, cbatchno, cversion, cremarks, ddate, deffectdate, lapproved, lcancelled, lprintposted)
-                                    VALUES('$company', '$code', '$code', '$matrix', '$remarks', NOW(), '$effectivityDate', 0, 0, 0)";
+                $sql = "INSERT INTO items_purch_cost (compcode, ctranno, ccode, ddate, deffectdate, cremarks, lapproved, lcancelled, lposted)
+                                            VALUES('$company', '$code', '$supplier', NOW(), '$effectivityDate', '$remarks', 0,0,0)";
                 if(!mysqli_query($con, $sql)){
                     $isFinished = false;
                     break;
-                }
+                } 
             } else {
                 $identity = $code. "P".$i;
-                $sql = "SELECT * FROM items WHERE compcode = '$company' AND cpartno = '{$data[0]}' AND cunit = '{$data[1]}'";
+                $item = $data[0];
+                $unit = $data[1];
+                $price = $data[2];
+                $sql = "SELECT * FROM items WHERE comcode = '$company' AND cpartno = '$item' AND cunit = '$unit'";
                 $query = mysqli_query($con, $sql);
                 if(mysqli_num_rows($query) != 0){
-                    $sql = "INSERT INTO items_pm_t (compcode, cidentity, nident, ctranno, citemno, cunit, nprice)
-                                            VALUES('$company', '$identity', '$i', '$code', '{$data[0]}', '{$data[1]}', '{$data[2]}')";
+                    $sql = "INSERT INTO items_purch_cost_t (compcode, cidentity, nident, ctranno, citemno, cunit, nprice, cremarks)
+                            VALUES('$company', '$identity', '$i', '$code', '$item', '$unit', '$price')";
                     if(mysqli_query($con, $sql)){
                         $isFinished = true;
                     } else {
                         $isFinished = false;
                         break;
-                    }   
-                } else {
+                    }
+                }else {
                     $isFinished = false;
+                    break;
                 }
+                
             }
         }
 
         if($isFinished){
             echo json_encode([
                 'valid' => true,
-                'msg' => "Successfully Inserted"
+                'msg' => "Mass Upload Complete"
             ]);
         } else {
             deleteInserted($code);
-
             echo json_encode([
-                'valiid' => false,
-                'msg' => "Data has been failed to insert!"
+                'valid' => true,
+                'msg' => "Mass Upload Failed"
             ]);
         }
     } else { 
@@ -142,9 +170,9 @@
         $month = date('m');
         
         for($i = 1; $i < sizeof($tranno); $i++) {
-            $sql = "DELETE FROM items_pm WHERE compcode = '$company' AND ctranno = '$tranno' AND MONTH(ddate) = '$month'";
+            $sql = "DELETE FROM items_purch_cost WHERE compcode = '$company' AND ctranno = '$tranno' AND MONTH(ddate) = '$month'";
             mysqli_query($con, $sql);
-            $sql = "DELETE FROM items_pm_t WHERE compcode = '$company' AND ctranno = '$tranno'";
+            $sql = "DELETE FROM items_purch_cost_t WHERE compcode = '$company' AND ctranno = '$tranno'";
             mysqli_query($con, $sql);
         }
     }
