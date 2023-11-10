@@ -35,7 +35,7 @@ include('../../include/accessinner.php');
         </div>
 			<br><br>
             <button type="button" class="btn btn-primary btn-sm" id="btnadd" name="btnadd"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
-                        
+			<button type="button" class="btn btn-warning btn-sm" id="btnmass" name="btnmass"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Mass Upload</button>
 <br><br>    
                 
                 <table id="example" class="display" cellspacing="0" width="100%">
@@ -163,6 +163,10 @@ mysqli_close($con);
 		});
 		$("#add_err").hide();
 		$("#add_errpick").hide();
+
+		$('#btnmass').click(function(){
+			window.location="../../MassUpload/PurchasePrice.php"
+		})
 
 		$("#btnadd").on("click", function() {
 			 var x = chkAccess('PP_New.php');
