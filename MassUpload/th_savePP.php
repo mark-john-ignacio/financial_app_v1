@@ -10,7 +10,7 @@
 
     $supplier = $_POST['supplier'];
     $remarks = $_POST['description'];
-    $effectivityDate = $_POST['effectdate'];
+    $effectivityDate = date("Y-m-d", strtotime($_POST['effectdate']));
 
     $dmonth = date('m');
     $dyear = date('y');
@@ -66,7 +66,7 @@
                     $hasNonNullValue = false;
 
                     foreach ($cellIterator as $cell) {
-                        $cellValue = $cell->getValue();
+                        $cellValue = trim($cell->getValue());
 
                         if (!is_null($cellValue) and !empty($cellValue)) {
                             $hasNonNullValue = true;

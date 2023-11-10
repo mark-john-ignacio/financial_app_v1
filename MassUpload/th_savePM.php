@@ -10,7 +10,7 @@
 
     $matrix = $_POST['matrix'];
     $remarks = $_POST['description'];
-    $effectivityDate = $_POST['effectdate'];
+    $effectivityDate = date("Y-m-d", strtotime($_POST['effectdate']));
 
     $today = date("mdy");
     $code = $matrix . $today;
@@ -57,7 +57,7 @@
                     $hasNonNullValue = false;
 
                     foreach ($cellIterator as $cell) {
-                        $cellValue = $cell->getValue();
+                        $cellValue = trim($cell->getValue());
 
                         if (!is_null($cellValue) and !empty($cellValue)) {
                             $hasNonNullValue = true;

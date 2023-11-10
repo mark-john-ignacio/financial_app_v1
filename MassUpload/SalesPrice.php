@@ -52,7 +52,7 @@
                         </div>
                         <div class='col-sm-12' style='padding-left: 0; padding-top: 10px; display: flex;'>
                             <label for="effectdate" class='col-xs-6'>Effectivity Date</label>
-                            <input type="text" id='effectdate' name='effectdate' class='datepicker form-control input-sm' style='padding-left: 20px;' value="<?= date("m/d/Y") ?>">  
+                            <input type="text" id='effectdate' name='effectdate' class='datepicker form-control input-sm' style='padding-left: 20px;' value="<?= date("Y-m-d") ?>">  
                         </div>
                         <br>
                         
