@@ -21,9 +21,9 @@ require_once "../../Connection/connection_string.php";
 			(
 				select x.capvno, sum(x.napplied) as npayed
 				from paybill_t x left join paybill y on x.compcode=y.compcode and x.ctranno=y.ctranno
-				where x.compcode = '$company' and y.lcancelled=0 and x.ctranno <> '$ccvno' and y.dtrandate <= '$dtrandate'
+				where x.compcode = '$company' and y.lcancelled=0 and x.ctranno <> '$ccvno' and y.dtrandate <= '$dtrandate' and IFNULL(x.capvno,'') <> ''
 				group by x.capvno
-			) b on a.capvno=b.capvno
+			) b on a.capvno=b.capvno 
 		left join accounts c on a.compcode=c.compcode and a.cacctno=c.cacctid 
 		where a.compcode='$company' and a.ctranno='$ccvno'
 		order by a.nident";

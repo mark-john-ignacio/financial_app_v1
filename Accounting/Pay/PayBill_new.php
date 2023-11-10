@@ -1258,6 +1258,7 @@
 									
 									$("input.numeric").on("keyup", function (e) {
 											GoToComp();
+											GoToCompAmt();
 											setPosi($(this).attr('name'),e.keyCode);
 									});
 
@@ -1503,9 +1504,18 @@
 
 			for (z=1; z<=lastRow; z++){
 				if($("#selentrytyp"+z).val()=="Debit"){
-					totndebit = parseFloat(totndebit) + parseFloat($("#nAmount"+z).val().replace(/,/g,''));
+					if($("#cRefRRNo"+z).val()==""){ 
+						totndebit = parseFloat(totndebit) + parseFloat($("#nApplied"+z).val().replace(/,/g,''));
+					}else{
+						totndebit = parseFloat(totndebit) + parseFloat($("#nAmount"+z).val().replace(/,/g,''));
+					}
+					
 				}else if($("#selentrytyp"+z).val()=="Credit"){
-					totncredit = parseFloat(totncredit) + parseFloat($("#nAmount"+z).val().replace(/,/g,''));
+					if($("#cRefRRNo"+z).val()==""){ 
+						totncredit = parseFloat(totncredit) + parseFloat($("#nApplied"+z).val().replace(/,/g,''));
+					}else{
+						totncredit = parseFloat(totncredit) + parseFloat($("#nAmount"+z).val().replace(/,/g,''));
+					}
 				}
 			}
 
