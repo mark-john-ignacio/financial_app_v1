@@ -12,7 +12,8 @@
     $remarks = $_POST['description'];
     $effectivityDate = $_POST['effectdate'];
 
-    $today = date("mdy");
+    $dmonth = date('m');
+    $dyear = date('y');
 
     $result = mysqli_query ($con, "SELECT * FROM items_purch_cost where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1"); 
     if(mysqli_num_rows($result)==0){
@@ -40,22 +41,6 @@
 			$code = "PP".$dmonth.$dyear.$baseno;
 		}
 	}
-
-    //echo $row['prefx'];
-
-    if(mysqli_num_rows($result)==0){
-        $code = $code."_1";
-    }
-    else {
-        $row = mysqli_fetch_assoc($result);
-        $yz = $row['prefx'];
-        
-        $prfx = (int)$yz+1;
-        
-        $code = $code."_".$prfx;
-        
-        //echo $code;
-    }
 
     $excel_data = [];
     if (isset($_FILES['excel_file']) && !empty($_FILES['excel_file'])) {
@@ -127,11 +112,11 @@
                 $item = $data[0];
                 $unit = $data[1];
                 $price = $data[2];
-                $sql = "SELECT * FROM items WHERE comcode = '$company' AND cpartno = '$item' AND cunit = '$unit'";
+                $sql = "SELECT * FROM items WHERE compcode = '$company' AND cpartno = '$item' AND cunit = '$unit'";
                 $query = mysqli_query($con, $sql);
                 if(mysqli_num_rows($query) != 0){
-                    $sql = "INSERT INTO items_purch_cost_t (compcode, cidentity, nident, ctranno, citemno, cunit, nprice, cremarks)
-                            VALUES('$company', '$identity', '$i', '$code', '$item', '$unit', '$price')";
+                    $sql = "INSERT INTO items_purch_cost_t (compcode, cidentity, nident, ctranno, citemno, cunit, nprice)
+                                                VALUES('$company', '$identity', '$i', '$code', '$item', '$unit', '$price' )";
                     if(mysqli_query($con, $sql)){
                         $isFinished = true;
                     } else {
