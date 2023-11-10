@@ -422,10 +422,9 @@
                             </td>
                             <td style='width: 35%' id='paymentcol'>
                                 <div id='payment-details'>
-                                    <div style='display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-gap: 10px;'>
+                                    <div style='display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-gap: 10px;'>
                                             <button type="button" class="btn btn-sm btn-warning form-control " id='spcdBtn' name='spcdBtn'>Discount</button>
                                             <button type="button" class="btn btn-sm btn-info form-control " id='couponBtn' name='couponBtn'>Coupon</button>
-                                            <button type="button" class="btn btn-sm btn-success form-control " id='serviceBtn' name='serviceBtn'>Service Fee</button>
                                     </div>
                                     <div style='width: 100%'>
                                         <label for="tendered">Tendered</label>
@@ -530,15 +529,6 @@
                                             <button class='btn btn-success' id='CouponSubmit' style='padding: 5px; width: 1in;'>Submit</button>
                                         </center>
                                     </div>
-                            </td>
-                            <td id='servicefee'>
-                                <div><a href="javascript:;" id='serviceBack'><i class='fa fa-arrow-left'></i></a></div>
-                                <div>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" role="switch" id="ServiceSwitch" <?= $isCheck != 0 ? "Checked": null ?>>
-                                        <label class="form-check-label" for="ServiceSwitch">Check if you need to enable Service Fee</label>
-                                    </div>
-                                </div>
                             </td>
                         </tr>
                     </table>
@@ -675,16 +665,6 @@
             $("#specialdiscountcol").hide()
         })
 
-        $("#serviceBtn").click(function(){
-            $("#paymentcol").hide();
-            $("#servicefee").show()
-        })
-
-        $("#serviceBack").click(function(){
-            $("#paymentcol").show();
-            $("#servicefee").hide()
-        })
-
         $("#couponBtn").click(function(){
             $("#couponmodal").show()
             $("#paymentcol").hide()
@@ -759,7 +739,7 @@
                 matrix = item.matrix;
                 $('#customer').val(item.value).change()
                 $('#customer').attr("data-val", item.id).change();
-                
+
                 $("#paymentList > tbody").empty()
                 $("#VoidList > tbody").empty()
                 $("#listItem > tbody").empty()
@@ -978,34 +958,6 @@
         });
 
         /**
-         * Service Fee Switch Check if enable
-         */
-
-        $("#ServiceSwitch").change(function(){
-            let isCheck = 0;
-            if($(this).prop("checked")){
-                isCheck = 1;
-            }
-
-            $.ajax({
-                url: "Function/th_updateService.php",
-                data: { isCheck: isCheck },
-                dataType: 'json',
-                async: false,
-                success: function(res){
-                    if(res.valid){
-                        console.log(res.msg)
-                    } else {
-                        console.log(res.msg)
-                    }
-                    location.reload()
-                },
-                error: function(res){
-                    console.log(res)
-                }
-            })
-        })
-        /**
          * Payment Transaction
          */
 
@@ -1038,7 +990,6 @@
             $('#ExchangeAmt').val(0)
             
             $('#payModal').modal('show')
-            $("#servicefee").hide()
             $("#couponmodal").hide();
             $("#specialdiscountcol").hide()
             $('#modal-body').modal('show')
