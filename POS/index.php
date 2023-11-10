@@ -31,7 +31,7 @@
         array_push($category, $row);
     }
 
-    $sql = "select a.cpartno, a.cpartno as cscancode, a.citemdesc, 0 as nretailcost, 0 as npurchcost, a.cunit, a.cstatus, 0 as ltaxinc, a.cclass, 1 as nqty, a.cuserpic, c.nqty as quantity
+    $sql = "select a.cpartno, a.cpartno as cscancode, a.citemdesc, 0 as nretailcost, 0 as npurchcost, a.cunit, a.cstatus, 0 as ltaxinc, a.cclass, 1 as nqty, a.cuserpic, c.nqty as quantity, linventoriable as isInvetory
             from items a 
             left join
                 (
@@ -148,8 +148,8 @@
         }
     </style>
 </head>
-<body style='min-height: 100vh; display: fixed'> 
-    <div stlye="height: 100vh; display: fixed">
+<body style='margin: 0; padding: 0;'> 
+    <div stlye="min-height: 100vh; position: relative; ">
             <div class='row nopadwtop' id='header' style="background-color: #2d5f8b; width:100%; height:55px; margin-bottom: 5px !important">
                 <div  style="float: left;display: block;width: 235px;height: 57px;padding-left: 20px;padding-right: 20px;">
                 <img src="../images/LOGOTOP.png" alt="logo" class="logo-default" width="150" height="48" />
@@ -161,157 +161,171 @@
                 </div>
                 
             </div>
-    </div>
+    
 
-    <div style="display: flex; min-width: 100%; ">
-            <div class="col" style="width: 50%; padding: 5px;">
-                <table style="width: 100%;">
-                    <tr>
-                        <td>
-                            <div class="digi col-lg-6 nopadding text-left">
-                                <span class="date">
-                                    Cashier: <?php echo $_SESSION['employeename']; ?>
-                                </span>    
-                            </div>
-                        </td>
-                        <td align='right'>
-                            <div>
-                                <span class="date"><?=date("F d, Y");?></span>
-                                <span class="digital-clock"></span>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <div class='input-group margin-bottom-sm'>
-                                <input type="text" name='barcode' id='barcode' class='form-control input-sm' placeholder="|||||||||||||||||||||||||||||||||||||||| Barcode " autocomplete="off">
-                                <input type="text" name="tranno" id="tranno" class='form-control input-sm' style='display: none;'/>
-                                <span class='input-group-addon'><i class='fa fa-barcode fa-fw'></i></span>
-                            </div>
-                            
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" style='padding-top: 20px'>
-                            <div style='height: 3.3in; max-height: 3.6in; overflow: auto;'>
-                                <table class='table' id='listItem' style="width: 100%; ">
-                                    <thead style='background-color: #019aca'>
+        <div style="display: flex; min-width: 100%; ">
+                <div class="col" style="width: 50%; padding: 5px;">
+                    <table style="width: 100%;">
+                        <tr>
+                            <td>
+                                <div class="digi col-lg-6 nopadding text-left">
+                                    <span class="date">
+                                        Cashier: <?php echo $_SESSION['employeename']; ?>
+                                    </span>    
+                                </div>
+                            </td>
+                            <td align='right'>
+                                <div>
+                                    <span class="date"><?=date("F d, Y");?></span>
+                                    <span class="digital-clock"></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <div class='input-group margin-bottom-sm'>
+                                    <input type="text" name='barcode' id='barcode' class='form-control input-sm' placeholder="|||||||||||||||||||||||||||||||||||||||| Barcode " autocomplete="off">
+                                    <input type="text" name="tranno" id="tranno" class='form-control input-sm' style='display: none;'/>
+                                    <span class='input-group-addon'><i class='fa fa-barcode fa-fw'></i></span>
+                                </div>
+                                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style='padding-top: 20px'>
+                                <div style='height: 3.3in; max-height: 3.6in; overflow: auto;'>
+                                    <table class='table' id='listItem' style="width: 100%; ">
+                                        <thead style='background-color: #019aca'>
+                                            <tr>
+                                                <th style="width: 60%;">Item</th>
+                                                <th style="text-align: center;">UOM</th>
+                                                <th style="text-align: center;">Quantity</th>
+                                                <th style="text-align: center;">Price</th>
+                                                <th style="text-align: center;">Discount</th>         
+                                                <th style="text-align: center;">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan='2' class="nopadding">
+                                <table id='amountlist' class="nopadding" style='width: 100%'>
+                                    <tbody>
+                                        <!-- <tr>
+                                            <td>Discount</td>
+                                            <td align="right">P <span id="discount">0.00</span></td>
+                                        </tr> -->
                                         <tr>
-                                            <th style="width: 60%;">Item</th>
-                                            <th style="text-align: center;">UOM</th>
-                                            <th style="text-align: center;">Quantity</th>
-                                            <th style="text-align: center;">Price</th>
-                                            <th style="text-align: center;">Discount</th>         
-                                            <th style="text-align: center;">Amount</th>
+                                            <td nowrap align='right' style='font-weight: bold; padding-right: 10px;'>Net of VAT</td>
+                                            <td class='form-control input-lg' align="right" style='border: 0px solid; color: #F00; font-weight: bold;'>P <span id="net">0.00</span></td>
                                         </tr>
-                                    </thead>
-                                    <tbody></tbody>
+                                        <tr>
+                                            <td nowrap align='right' style='font-weight: bold; padding-right: 10px;'>VAT</td>
+                                            <td class='form-control input-lg' align="right" style='border: 0px solid; color: #F00; font-weight: bold;'>P <span id="vat">0.00</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td nowrap align='right' style='font-weight: bold; padding-right: 10px;'>Gross Amount</td>
+                                            <td class='form-control input-lg' align="right" style='border: 0px solid; color: #F00; font-weight: bold;'>P <span id="gross">0.00</span></td>
+                                        </tr>
+                                        
+                                    </tbody>
                                 </table>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan='2' class="nopadding">
-                            <table id='amountlist' class="nopadding" style='width: 100%'>
-                                <tbody>
-                                    <!-- <tr>
-                                        <td>Discount</td>
-                                        <td align="right">P <span id="discount">0.00</span></td>
-                                    </tr> -->
-                                    <tr>
-                                        <td nowrap align='right' style='font-weight: bold; padding-right: 10px;'>Net of VAT</td>
-                                        <td class='form-control input-lg' align="right" style='border: 0px solid; color: #F00; font-weight: bold;'>P <span id="net">0.00</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td nowrap align='right' style='font-weight: bold; padding-right: 10px;'>VAT</td>
-                                        <td class='form-control input-lg' align="right" style='border: 0px solid; color: #F00; font-weight: bold;'>P <span id="vat">0.00</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td nowrap align='right' style='font-weight: bold; padding-right: 10px;'>Gross Amount</td>
-                                        <td class='form-control input-lg' align="right" style='border: 0px solid; color: #F00; font-weight: bold;'>P <span id="gross">0.00</span></td>
-                                    </tr>
-                                    
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class='col' id='right-side' style='width: 50%; height: 100%; padding: 10px;'>
-                    <div id='filter'>
-                        <div class='input-group'>
-                            <span class='input-group-addon'><i class='fa fa-user'></i></span><input class='form-control input-sm' type="text" name='customer' id='customer' placeholder="Walkin Customer (Default)" autocomplete="off">
-                        </div>
-
-                            <div class='input-group'>
-                                <select name="orderType" id="orderType" class='form-control input-sm' style="<?= sizeof($order) != 0 ? null : "display:none" ?>">
-                                    <?php foreach($order as $list): ?>
-                                        <option value="<?= $list['code'] ?>"><?= $list['code'] ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-
-                            <div class='input-group'>
-                                <select name="table" id="table"  class='form-control input-sm' style="<?= sizeof($table) != 0 ? null : "display:none" ?>">
-                                    <?php foreach($table as $list): ?>
-                                        <option value="<?= $list['code'] ?>"><?= $list['code'] ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                    </div>
-
-                    <div>
-                        <section style='width: 90%; padding: 10px' class="regular slider btn">
-                            <div style="height:100%; 
-                                    word-wrap:break-word;
-                                    background-color:#019aca; 
-                                    border:solid 1px #036;
-                                    padding:3px;
-                                    text-align:center;" class="itmclass btn btn-info" data-clscode="ALL">
-                                        <font size="-2">ALL</font>
-                                </div>
-                            <?php foreach($category as $list):?>
-                                <div style="height:100%; 
-                                    word-wrap:break-word;
-                                    background-color:#019aca; 
-                                    border:solid 1px #036;
-                                    padding:3px;
-                                    text-align:center;" class="itmclass btn btn-info" data-clscode="<?= $list['ccode'] ?>">
-                                        <font size="-2"><?= $list['cdesc'] ?></font>
-                                </div>
-                            <?php endforeach; ?>
-                        </section>
-                    </div>
-                    
-
-                    <div style='height: 350px; overflow: auto;'>
-                        <div id='item-wrapper'>
-                            <?php foreach($items as $list):?>
-                                    <div class='itmslist' id="itemlist" style="height:100px;                     
-                                        background-color:#019aca; 
-                                        background-image:url('<?=$list["cuserpic"];?>');
-                                        background-repeat:no-repeat;
-                                        background-position: center center;
-                                        background-size: contain;
-                                        border:solid 1px #036;
-                                        position: relative" data-itemlist="<?= $list['cclass'] ?>" name="<?= $list['cscancode'] ?>">
-                                        <div style='position: absolute; text-align: right; width: 100%; color: #fff; min-height: 20px;'>
-                                            <?= !empty($list['quantity']) && $list['quantity'] >= 0? "Remaining: <span id='remain'>" . number_format($list['quantity']) ."</span>" : "Sold Out" ?>
-                                        </div>
-                                        <div id='items' name="<?= $list['cscancode'] ?>" class='items' data-itemlist="<?= $list['cclass'] ?>" style='position: absolute; bottom: 0; width: 100%; background-color: rgba(0,0,0,.5); color: #fff; min-height: 20px; text-align:center;'><font size='-2'><?php echo $list["citemdesc"]; ?></font></div>
-                                    </div>
-                            <?php endforeach ?>
-                        </div>
-                    </div>
-   
-                    
+                            </td>
+                        </tr>
+                    </table>
                 </div>
-            </div>
 
+                <div class='col' id='right-side' style='width: 50%; height: 100%; padding: 10px;'>
+                        <div id='filter'>
+                            <div class='input-group'>
+                                <span class='input-group-addon'><i class='fa fa-user'></i></span><input class='form-control input-sm' type="text" name='customer' id='customer' placeholder="Walkin Customer (Default)" autocomplete="off">
+                            </div>
+
+                                <div class='input-group'>
+                                    <select name="orderType" id="orderType" class='form-control input-sm' style="<?= sizeof($order) != 0 ? null : "display:none" ?>">
+                                        <?php foreach($order as $list): ?>
+                                            <option value="<?= $list['code'] ?>"><?= $list['code'] ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+
+                                <div class='input-group'>
+                                    <select name="table" id="table"  class='form-control input-sm' style="<?= sizeof($table) != 0 ? null : "display:none" ?>">
+                                        <?php foreach($table as $list): ?>
+                                            <option value="<?= $list['code'] ?>"><?= $list['code'] ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                        </div>
+
+                        <div>
+                            <section style='width: 90%; padding: 10px' class="regular slider btn">
+                                <div style="height:100%; 
+                                        word-wrap:break-word;
+                                        background-color:#019aca; 
+                                        border:solid 1px #036;
+                                        padding:3px;
+                                        text-align:center;" class="itmclass btn btn-info" data-clscode="ALL">
+                                            <font size="-2">ALL</font>
+                                    </div>
+                                <?php foreach($category as $list):?>
+                                    <div style="height:100%; 
+                                        word-wrap:break-word;
+                                        background-color:#019aca; 
+                                        border:solid 1px #036;
+                                        padding:3px;
+                                        text-align:center;" class="itmclass btn btn-info" data-clscode="<?= $list['ccode'] ?>">
+                                            <font size="-2"><?= $list['cdesc'] ?></font>
+                                    </div>
+                                <?php endforeach; ?>
+                            </section>
+                        </div>
+                        
+
+                        <div style='height: 350px; overflow: auto;'>
+                            <div id='item-wrapper'>
+                                <?php foreach($items as $list):
+                                    if($list['isInvetory'] != 1) {?>
+                                    
+                                        <div class='itmslist' id="itemlist" style="height:100px;                     
+                                            background-color:#019aca; 
+                                            background-image:url('<?=$list["cuserpic"];?>');
+                                            background-repeat:no-repeat;
+                                            background-position: center center;
+                                            background-size: contain;
+                                            border:solid 1px #036;
+                                            position: relative" data-itemlist="<?= $list['cclass'] ?>" name="<?= $list['cscancode'] ?>">
+                                            <div style='position: absolute; text-align: right; width: 100%; color: #fff; min-height: 20px;'>
+                                                <?= !empty($list['quantity']) && $list['quantity'] >= 0? "Remaining: <span id='remain'>" . number_format($list['quantity']) ."</span>" : "Sold Out" ?>
+                                            </div>
+                                            <div id='items' name="<?= $list['cscancode'] ?>" class='items' data-itemlist="<?= $list['cclass'] ?>" style='position: absolute; bottom: 0; width: 100%; background-color: rgba(0,0,0,.5); color: #fff; min-height: 20px; text-align:center;'><font size='-2'><?php echo $list["citemdesc"]; ?></font></div>
+                                        </div>
+                                <?php } else { ?>
+                                    <div class='itmslist' id="itemlist" style="height:100px;                     
+                                            background-color:#019aca; 
+                                            background-image:url('<?=$list["cuserpic"];?>');
+                                            background-repeat:no-repeat;
+                                            background-position: center center;
+                                            background-size: contain;
+                                            border:solid 1px #036;
+                                            position: relative" data-itemlist="<?= $list['cclass'] ?>" name="<?= $list['cscancode'] ?>">   
+                                            <div id='items' name="<?= $list['cscancode'] ?>" class='items' data-itemlist="<?= $list['cclass'] ?>" style='position: absolute; bottom: 0; width: 100%; background-color: rgba(0,0,0,.5); color: #fff; min-height: 20px; text-align:center;'><font size='-2'><?php echo $list["citemdesc"]; ?></font></div>
+                                        </div>
+                                <?php } endforeach ?>
+                            </div>
+                        </div>
+    
+                        
+                    </div>
+                </div>
+
+        </div>
     </div>
-    <footer style="min-width: 100%">
-                <div id='wrapper'>
+    <footer style="position: fixed; bottom: 0px; padding: 10px; min-width: 100%;">
+                <div id='wrapper' >
                     <div id='button-wrapper' class='col-lg-12 nopadwtop'>
                         <button class="form-control btn btn-sm btn-danger" name="btnVoid" id="btnVoid" type="button">
                             <i class="fa fa-plus fa-fw fa-lg" aria-hidden="true"></i>&nbsp;VOID (DEL)
@@ -433,7 +447,7 @@
                                         <label for="totalAmt">Total Amount</label>
                                         <input type='text' id='totalAmt' class='form-control' readonly/>
 
-                                        <label for="ExchangeAmt">Exchange Amount</label>
+                                        <label for="ExchangeAmt">Change Amount</label>
                                         <input type="text" id='ExchangeAmt' class='form-control' readonly/><br>
                                         
                                     </div>
@@ -1256,7 +1270,7 @@
             let vat = $("#vat").text()
             let transaction = $("#tranno").val()
             let servicefee = $("#ServiceInput").val().replace(/,/g,'')
-            let totalAmt = $("#totalAmt").val().replace(/./g,'');
+            // let totalAmt = $("#totalAmt").val().replace(/./g,'');
             let tranno = '';
             
             if(parseFloat(total) <= parseFloat(totalTender)){
@@ -1268,8 +1282,8 @@
                         amount: gross,
                         net: net,
                         vat: vat,
-                        gross: parseFloat(total),
-                        totalAmt: parseFloat(totalAmt),
+                        gross: parseFloat(gross),
+                        subtotal: parseFloat(total),
 
                         customer: $('#customer').val(),
                         order: $('#orderType').val(),
@@ -1291,7 +1305,6 @@
                         } else {
                             alert(res.msg)
                         }
-                        
                     },
                     error: function(res){
                         console.log(res)
@@ -1371,6 +1384,8 @@
                 dataType: 'json',
                 async: false,
                 success: function(res){
+                    // if()
+
                     if(res.valid){
                         res.data.map((item, index) => {
                             if (!Array.isArray(itemStored)) {
@@ -1405,7 +1420,7 @@
                         })  
                         table_store(itemStored);
                     } else {
-                        console.log(res.msg)
+                        alert(res.msg)
                     }
                 },
                 error: function(res){
@@ -1477,11 +1492,10 @@
      * for duplication item
      */
 
-    function duplicate(data, qty = 1) {
+    function duplicate(data, qty = 1,) {
         if (!Array.isArray(itemStored)) {
             itemStored = [];
         }
-        
 
         const price = chkprice(data.partno, data.unit, matrix, "<?= date('m/d/Y') ?>")
         const disc = discountprice(data.partno, data.unit, "<?= date('m/d/Y') ?>")
@@ -1489,6 +1503,15 @@
         let found = false;
         
         for (let i = 0; i < itemStored.length; i++) {
+            let remain = parseFloat(data.quantity)
+            let quantity = itemStored[i].quantity; 
+
+            if(quantity >= remain && data.isInventory != 1){
+                return alert("No more stock available")
+            }   
+            
+            
+
             if (itemStored[i].partno === data.partno) {
                 itemStored[i].quantity += parseFloat(qty);
                 itemStored[i].price = parseFloat(itemStored[i].quantity) * parseFloat(price);
