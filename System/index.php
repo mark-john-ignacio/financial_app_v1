@@ -50,6 +50,14 @@ if(mysqli_num_rows($sql) != 0){
 	}
 }
 
+$account = "";
+$sql = mysqli_query($con, "SELECT * FROM parameters WHERE compcode = '$company' AND ccode = 'ACCOUNT_ENTRY'");
+if(mysqli_num_rows($sql) != 0){
+	while($row = $sql -> fetch_assoc()){
+		$account = $row['cvalue'];
+	}
+}
+
 ////function listcurrencies(){ //API for currency list
 //	global $con;
 //	$apikey = $_SESSION['currapikey'];
@@ -3733,19 +3741,36 @@ if(mysqli_num_rows($sql) != 0){
 									<b>Base Customer: </b>
 								</div>
 								<span>
-									<div class="col-xs-1 nopadwtop" id="basecustmsg"></div>
 									<input type='text' class='input-sm' name="basecustomer" id="basecustomer" autocomplete="false" />
+									<div class='input-sm' id="basecustmsg"></div>
 								</span>
+								
 							</div>		
-							<div class='col-sm-12'>
-								<div class='col-xs-2 nopadwtop'><b>Service Fee: </b></div>
-								<span>
-										<input type="number" class=' input-sm' name='servicefee' id='servicefee' placeholder='Service Fee Percentage...' value='<?= $service ? $service : 0 ?>' autocomplete='false'>
-										<span style="padding-left:10px">%</span>
-										<span style='padding-left: 10px;'><input type="checkbox" id='serviceCheck' <?= $isCheck != 0 ? "Checked": null ?>>
-										<label for="serviceCheck"> Check if you want service fee to be able!</label></span>
-										<span><button class='btn btn-sm btn-success' id='serviceSave'>Save</button></span>
-								</span> 
+							<div class='col-sm-12 '>
+								<div class='nopadwtop' >
+									<div class='col-xs-2 nopadwtop'><b>Enable Service Fee: </b></div>
+									<span>
+										<input type="checkbox" class='form-check-input' id='serviceCheck' <?= $isCheck != 0 ? "Checked": null ?> style='padding-left: 10px'><span>
+									</span>
+								</div>
+								
+								<div class='col-sm-12 nopadwtop'>
+									<div class='col-xs-2 nopadwtop'><b>Service Fee: </b></div>
+									<span>
+											<input type="number" class='input-sm' name='servicefee' id='servicefee' placeholder='Service Fee Percentage...' value='<?= $service ? $service : 0 ?>' autocomplete='false'>
+											<span style="padding-left:10px">%</span>
+									</span> 
+								</div>
+								<div class='col-sm-12 nopadwtop'>
+									<div class='col-xs-2 nopadwtop'><b>Account Entry: </b></div>
+									<span>
+											<input type="text" class='input-sm' name='AccountEntry' id='AccountEntry' placeholder='Enter Account Entry...' value="<?= $account ?>" autocomplete='false'>
+									</span> 
+								</div>
+								<div class='col-sm-6' style='text-align: center; padding-top: 10px'>
+									<button class='btn btn-sm btn-success' id='serviceSave' style='margin-left: 0px;'>Save</button>
+								</div>
+								
 								<div class='col-xs-1 nopadwtop' id='servicefeemsg'></div>
 							</div>	
 															
@@ -3921,6 +3946,7 @@ if(mysqli_num_rows($sql) != 0){
 		loadsemi();
 		
 		loadterms();
+		loadAccountEntry();
 		
 		//loadloantyp();
 		
@@ -3954,10 +3980,12 @@ if(mysqli_num_rows($sql) != 0){
 
 		$("#serviceSave").click(function(){
 			let servicefee = $("#servicefee").val()
+			let accountEntry = $("#AccountEntry").attr("data-val")
 			$.ajax({
 				url: "th_servicefee.php",
 				data: {
 					service: servicefee,
+					account: accountEntry,
 					isCheck: isCheck
 				},
 				dataType: 'json',
@@ -6847,5 +6875,39 @@ if(mysqli_num_rows($sql) != 0){
 
 			}
 		});
+	}
+
+	function loadAccountEntry(){
+		$("#AccountEntry").typeahead({
+			autoSelect: true,
+			source: function(request, response){
+				$.ajax({
+					url: "th_AccountEntry.php",
+					dataType: 'json',
+					async: false,
+					data: { account: $("#AccountEntry").val() },
+					success: function(res){
+						if(res.valid){
+							response(res.data)
+						} else {
+							alert(res.msg)
+						}
+						
+					},
+					error: function(res){
+						console.log(res)
+					}
+				})
+			},
+			displayText: function (item) {
+                return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.cacctno + '</span><br><small>' + item.cacctdesc + "</small></div>";
+            },
+            highlighter: Object,
+            afterSelect: function(items) { 
+				$("#AccountEntry").val(items.cacctdesc).change()
+				$("#AccountEntry").attr('data-val', items.cacctdesc).change()
+				
+			}
+		})
 	}
 </script>
