@@ -70,6 +70,8 @@
 
     $sql = "SELECT * FROM parameters WHERE compcode = '$company' AND ccode = 'SERVICE_FEE'";
     $query = mysqli_query($con, $sql);
+    $serviceFee = 0;
+    $isCheck = 0;
     if(mysqli_num_rows($query) != 0){
         while($row = $query -> fetch_assoc()){
             $serviceFee = $row['cvalue'];
