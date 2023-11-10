@@ -35,7 +35,7 @@ include('../../include/accessinner.php');
         </div>
 			<br><br>
             <button type="button" class="btn btn-primary btn-sm" id="btnadd" name="btnadd"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
-            
+            <button type="button" class="btn btn-sm" id="btnmass" name="btnmass" style='background-color: #B4C0B7'><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
             <button type="button" class="btn btn-warning btn-sm" id="btnver" name="btnver"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;PM Versions</button>
             
 <br><br>    
@@ -264,6 +264,10 @@ mysqli_close($con);
 		});
 		$("#add_err").hide();
 		$("#add_errpick").hide();
+
+		$('#btnmass').click(function(){
+			window.location="../../MassUpload/SalesPrice.php"
+		})
 
 		$("#btnadd").on("click", function() {
 			
