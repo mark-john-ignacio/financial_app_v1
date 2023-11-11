@@ -586,14 +586,29 @@
 						<?php
 							if($lallowMRP==1){
 						?>
+							<li>
+								<a href="javascript:;" class="nav-link nav-toggle">
+									<i class="fa fa-file-archive-o"></i> Master Files <span class="arrow"></span> 
+								</a> <!-- Maintenance/Items.php -->
+															
+								<ul class="sub-menu">
+									<li> 
+										<a href="javascript:;" onClick="setpage('MRP/MasterFiles/PROCESS.php');"> <i class="fa fa-angle-double-right"></i> Production Processes </a>
+									</li>
+									<li>
+										<a href="javascript:;" onClick="setpage('MRP/MasterFiles/MACHINES.php');"> <i class="fa fa-angle-double-right"></i> Machines </a>
+									</li>
+									<li>
+										<a href="javascript:;" onClick="setpage('MRP/MasterFiles/OPERATORS.php');"> <i class="fa fa-angle-double-right"></i> Operators </a>
+									</li>							
+								</ul>
+							</li>
+
 						<li>
 							<a href="javascript:;" onClick="setpage('MRP/BOM/items_list.php');">
 							<i class="fa fa-cubes"> </i> Material BOM</a>
 						</li>
-						<li>
-                <a href="javascript:;" onClick="setpage('MRP/BOM/PROCESS.php');"> 
-								<i class="fa fa-recycle"></i> Production Processes </a>
-            </li>
+						
 						<li>
                 <a href="javascript:;" onClick="setpage('MRP/JO/JO.php');"> 
 								<i class="fa fa-file-text-o"></i> Job Orders </a>

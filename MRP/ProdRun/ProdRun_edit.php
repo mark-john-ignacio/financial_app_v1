@@ -138,9 +138,9 @@
 
 							<table id="MyJOSubs" class="MyTable table table-condensed" width="100%">
 								<thead>
-									<tr>
-										<th style="border-bottom:1px solid #999">Machine</th>
+									<tr>										
 										<th style="border-bottom:1px solid #999">Process</th>
+										<th style="border-bottom:1px solid #999">Machine</th>
 										<th style="border-bottom:1px solid #999">Date Started</th>
 										<th style="border-bottom:1px solid #999">Date Ended</th>
 										<th style="border-bottom:1px solid #999">Actual Output</th>
@@ -410,10 +410,9 @@
 		var obj = jQuery.parseJSON(file_name);
 		$.each(obj, function(key,value) {
 			if(value.ctranno == $xtran){
-				//alert(value.mrp_process_desc);
 
-				var tdmachine = "<td>&nbsp;</td>";
 				var tdprocess = "<td>"+value.mrp_process_desc+"</td>";
+				var tdmachine = "<td>&nbsp;</td>";
 				var tddatest = "<td>&nbsp;</td>";
 				var tddateen = "<td>&nbsp;</td>";
 				var tdactual = "<td>&nbsp;</td>";
@@ -425,7 +424,7 @@
 
 				//alert(tdinfocode + "\n" + tdinfodesc + "\n" + tdinfofld + "\n" + tdinfoval + "\n" + tdinfodel);
 				
-				$('#MyJOSubs > tbody:last-child').append('<tr>'+tdmachine + tdprocess + tddatest + tddateen + tdactual + tdoperator + tdreject + tdscrap + tdqc + tdrems + '</tr>');
+				$('#MyJOSubs > tbody:last-child').append('<tr>'+tdprocess + tdmachine + tddatest + tddateen + tdactual + tdoperator + tdreject + tdscrap + tdqc + tdrems + '</tr>');
 
 			}
 		}); 

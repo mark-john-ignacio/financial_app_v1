@@ -199,9 +199,11 @@ mysqli_close($con);
 	<script>
 	
 		$(function(){
-			$('#example').DataTable();
+			
 			$("#add_err").hide();
 			$(".itmalert").hide();
+
+			$('#example').DataTable();
 
 			// Adding new user
 			$("#btnadd").on("click", function() {
@@ -215,7 +217,7 @@ mysqli_close($con);
 					$("#txtcdesc").val("");	
 					$("#add_err").html("");		
 					
-					$('#myModalLabel').html("<b>Add New Section</b>");
+					$('#myModalLabel').html("<b>Add New Process</b>");
 					$('#myModal').modal('show');
 				} else {
 					$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
@@ -263,7 +265,7 @@ mysqli_close($con);
 					
 						});
 					}else{
-						$("#add_err").html("<center><b>Section Name Already Exist!</b></center>");
+						$("#add_err").html("<center><b>Process Name Already Exist!</b></center>");
 						$("#add_err").show();
 					}
 					
@@ -285,7 +287,7 @@ mysqli_close($con);
 				$("#txtcdesc").val(desc);	
 				$("#add_err").html("");		
 				
-				$('#myModalLabel').html("<b>Update Section Details</b>");
+				$('#myModalLabel').html("<b>Update Process Details</b>");
 				$('#myModal').modal('show');
 			} else {
 				$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
