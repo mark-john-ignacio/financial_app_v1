@@ -61,7 +61,7 @@
 
 </head>
 
-<body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
+<body style="padding:5px">
 <input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
 
 	<form action="SO_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;" enctype="multipart/form-data">
@@ -832,6 +832,8 @@ $(function(){
 		}
 	
 	});
+
+	document.getElementById('txtcust').focus();
 	
 	$("#txtsalesmanid").keydown(function(event){
 		if(event.keyCode == 13){
