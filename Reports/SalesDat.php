@@ -53,7 +53,7 @@
                     </th>
                 </tr>
                 <tr valign="top">
-                    <th><button class="btn btn-success btn-block" id="btnDat"><i class="fa fa-file-excel-o"></i>To Excel</button></th>
+                    <th><button class="btn btn-success btn-block" id="btnDat"><i class="fa fa-file"></i>To DAT</button></th>
                     <th colspan='2'>&nbsp;</th>
                 </tr>
             </table>
