@@ -436,15 +436,12 @@
 		$("#subjodets").html("<h5>"+$xtran+": "+$xitms+"<h5>");
 		$("#MyJOSubs tbody").empty(); 
 
-		var tbl = document.getElementById('MyJOSubs').getElementsByTagName('tr');
-		var lastRow = tbl.length-1;
-
 		var lqcnext = 1;
 		var obj = jQuery.parseJSON(file_name);
 		$.each(obj, function(key,value) {
 			if(value.ctranno == $xtran){
 
-				lastRow = lastRow + 1;
+				lastRow = value.nid;
 
 				var dreject ="";
 				var dscrap = "";
@@ -462,7 +459,7 @@
 						machoptions = machoptions + "<option value='"+this['nid']+"'>"+this['cdesc']+"</option>";
 					});
 
-					tdmach = "<select class='form-control input-xs' name=\"selmachine\" id=\"selmachine"+lastRow+"\"><option></option>" + machoptions + "</select>";
+					tdmach = "<select class='form-control input-xs' name=\"selmachine\" id=\"selmachine"+lastRow+"\" data-val=\""+lastRow+"\" ><option></option>" + machoptions + "</select>";
 					
 					var x = value.ddatestart;
 					if (x!="null" && x!=null && x!="") {
@@ -527,19 +524,20 @@
 				$("#selmachine"+lastRow).select2({
 					placeholder: "Please select the machine"
 				}); 
-			
-			$("#selmachine"+lastRow).on("change", function(){
-				alert("#selmachine"+lastRow);
-				if($(this).val()!=""){
-					alert("#btnStart"+lastRow);
-					$("#btnStart"+lastRow).removeAttr("disabled"); 
-					$("#btnStart"+lastRow).removeClass("disabled");
-				}
-			});
 
-			$("#seloperator"+lastRow).select2({
-					placeholder: "Please select the operator"
-			});
+				$("#selmachine"+lastRow).on("change", function(){
+					let yx = $(this).data("val");
+					if($(this).val()!=""){
+						$("#btnStart"+yx).removeAttr("disabled"); 
+						$("#btnStart"+yx).removeClass("disabled");
+
+						setVals(yx,"nmachineid",$(this).val());
+					}
+				});
+
+				$("#seloperator"+lastRow).select2({
+						placeholder: "Please select the operator"
+				});
 
 				machoptions = "";
 				lqcnext = value.lqcposted;
@@ -548,67 +546,17 @@
 		}); 
 	}
 
-	function disabled(){
-		$("#frmpos :input").attr("disabled", true);
-		
-		
-		$("#hdnctranno").attr("disabled", false);
-		$("#btnMain").attr("disabled", false);
-		$("#btnNew").attr("disabled", false);
-		$("#btnPrint").attr("disabled", false);
-		$("#btnEdit").attr("disabled", false);
-	}
+	function setVals(processid, colnme, colval){
 
-	function enabled(){
-		if(document.getElementById("hdnposted").value==1 || document.getElementById("hdncancel").value==1){
-			if(document.getElementById("hdnposted").value==1){
-				if(document.getElementById("hdnvoid").value==1){
-					var msgsx = "VOIDED";
-				}else{
-					var msgsx = "POSTED";
-				}
-			}
-			
-			if(document.getElementById("hdncancel").value==1){
-				var msgsx = "CANCELLED"
-			}
-			
-			document.getElementById("statmsgz").innerHTML = "TRANSACTION IS ALREADY "+msgsx+", EDITING IS NOT ALLOWED!";
-			document.getElementById("statmsgz").style.color = "#FF0000";
-			
-		}
-		else{
-			
-			$("#frmpos :input").attr("disabled", false);
-			
-				$("#hdnctranno").attr("readonly", true);
-				$("#btnMain").attr("disabled", true);
-				$("#btnNew").attr("disabled", true);
-				$("#btnPrint").attr("disabled", true);
-				$("#btnEdit").attr("disabled", true);			
-		
-		}
-	}
+		$.ajax ({
+			url: "th_setstat.php",
+			data: { processid: processid,  colnme: colnme, colval: colval },
+			async: false,
+			dataType: "text",
+			success: function( data ) {
 
-	function printchk(x,typx){
-		if(document.getElementById("hdncancel").value==1){	
-			document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
-			document.getElementById("statmsgz").style.color = "#FF0000";
-		}
-		else{
-
-				if(typx=="Print"){
-					$("#hdntransid").val(x);
-					$("#frmQprint").attr("action","JOPrint.php");
-				}
-				
-				$("#frmQprint").submit();
-
-
-
-			
-
-		}
+			}			
+		});
 	}
 
 </script>
