@@ -88,7 +88,7 @@
 
 </head>
 
-<body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
+<body style="padding:5px">
 
 	<input type="hidden" value='<?=json_encode(@$arrewtlist)?>' id="hdnewtlist"> 
 	<input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes"> 
@@ -687,6 +687,8 @@ $(document).ready(function() {
 			getcontact(item.id);
 		}
 	});
+
+	document.getElementById('txtcust').focus();
 	
 	$('#txtprodnme').typeahead({
 		autoSelect: true,

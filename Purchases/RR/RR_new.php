@@ -86,7 +86,7 @@ $company = $_SESSION['companyid'];
 
 </head>
 
-<body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
+<body style="padding:5px">
 <input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
 
 <form action="RR_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
@@ -569,171 +569,171 @@ PO<br>(Insert)</button>
 		$("#basecurrval").on("keyup", function () {
 			recomputeCurr();
 		});
-	});
-	
-$(function(){	
-	$("#allbox").click(function(){
-			$('input:checkbox').not(this).prop('checked', this.checked);
-	});
-	
-	$('#txtcust').typeahead({
-	
-		items: 10,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_supplier.php",
-				dataType: "json",
-				data: {
-					query: $("#txtcust").val()
-				},
-				success: function (data) {
-					response(data);
-				}
-			});
-		},
-		autoSelect: true,
-		displayText: function (item) {
-			 return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 
-			$('#txtcust').val(item.value).change(); 
-			$("#txtcustid").val(item.id);
-		}
-	});
-	
-	$('#txtprodnme').typeahead({
-		autoSelect: true,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_product.php",
-				dataType: "json",
-				data: {
-					query: $("#txtprodnme").val()
-				},
-				success: function (data) {
-					response(data);
-				}
-			});
-		},
-		displayText: function (item) {
-			return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.cname+'</span><br><small><span class="dropdown-item-extra">' + item.cunit + '</span></small></div>';
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 					
 
-								
-				$('#txtprodnme').val(item.cname).change(); 
-				$('#txtprodid').val(item.id); 
-				$("#hdnunit").val(item.cunit);
-				$("#txtcskuid").val(item.cskucode);
-				
-				addItemName();	
-				
-			
-		}
-	
-	});
-
-
-	$("#txtprodid").keydown(function(e){
-		if(e.keyCode == 13){
-
-			$.ajax({
-				url:'../get_productid.php',
-				data: 'c_id='+ $(this).val(),                 
-				success: function(value){
-				
-					var data = value.split(",");
-					$('#txtprodid').val(data[0]);
-					$('#txtprodnme').val(data[1]);
-					$('#hdnunit').val(data[2]);
-					$('#txtcskuid').val(data[3]);
-			
-
-					if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
-						var rowCount = $('#MyTable tr').length;
-						var isItem = "NO";
-						var itemindex = 1;
-					
-						if(rowCount > 1){
-						var cntr = rowCount-1;
-						
-						for (var counter = 1; counter <= cntr; counter++) {
-							// alert(counter);
-							if($("#txtprodid").val()==$("#txtitemcode"+counter).val()){
-								isItem = "YES";
-								itemindex = counter;
-								//alert($("#txtitemcode"+counter).val());
-								//alert(isItem);
-							//if prd id exist
-							}
-						//for loop
-						}
-						//if rowcount >1
-						}
-					//if value is not blank
-					}
-			
-					if(isItem=="NO"){		
-
-				
-							myFunctionadd("","","","","","","");
-							//ComputeGross();	
-												
-						}
-						else{
-						//alert("ITEM NOT IN THE MASTERLIST!");
-						addqty();
-					}
-					
-					$("#txtprodid").val("");
-					$("#txtprodnme").val("");
-					$("#hdnunit").val("");
-					$("#txtcskuid").val("");
-	
-				//closing for success: function(value){
-				}
-			}); 
-	 	
-		}//if ebter is clicked
+		$("#allbox").click(function(){
+				$('input:checkbox').not(this).prop('checked', this.checked);
+		});
 		
-	});
-	
-	$('#SerialMod').on('shown.bs.modal', function () {
-	    $('#serdis').focus();
-	});
+		$('#txtcust').typeahead({
+		
+			items: 10,
+			source: function(request, response) {
+				$.ajax({
+					url: "../th_supplier.php",
+					dataType: "json",
+					data: {
+						query: $("#txtcust").val()
+					},
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			autoSelect: true,
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 
+				$('#txtcust').val(item.value).change(); 
+				$("#txtcustid").val(item.id);
+			}
+		});
 
-	$("#btnInsSer").on("click", function(){
-			var itmcode = $("#serdisitmcode").val();
-			var itmcoderefident = $("#serdisrefident").val();
-			var serials = $("#serdis").val();
-			var barcodes = $("#serdisbarc").val();
-			var uoms = $("#serdisuom").val();
-			var qtys = $("#serdisqty").val();
-			var locas = $("#selserloc").val();
-			var locasdesc = $("#selserloc").find(':selected').attr('data-id');
-			var expz = $("#dexpate").val();      
-			var refnox = $("#serdisrefno").val(); 
-			InsertToSerials(itmcode,serials,uoms,qtys,locas,locasdesc,expz,itmcoderefident,refnox,barcodes);
-			//AddtoQtyTot(itmcode,qtys,itmcoderefident);
+		document.getElementById('txtcust').focus();
+		
+		$('#txtprodnme').typeahead({
+			autoSelect: true,
+			source: function(request, response) {
+				$.ajax({
+					url: "../th_product.php",
+					dataType: "json",
+					data: {
+						query: $("#txtprodnme").val()
+					},
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.cname+'</span><br><small><span class="dropdown-item-extra">' + item.cunit + '</span></small></div>';
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 					
 
-			//var existqty = document.getElementById("txtnqty"+itmcode+itmcoderefident).value;
-			//var qtynow = parseFloat(existqty)+parseFloat(qtys);
+									
+					$('#txtprodnme').val(item.cname).change(); 
+					$('#txtprodid').val(item.id); 
+					$("#hdnunit").val(item.cunit);
+					$("#txtcskuid").val(item.cskucode);
+					
+					addItemName();	
+					
+				
+			}
+		
+		});
 
-			//document.getElementById("txtnqty"+itmcode+itmcoderefident).value = qtynow;
+
+		$("#txtprodid").keydown(function(e){
+			if(e.keyCode == 13){
+
+				$.ajax({
+					url:'../get_productid.php',
+					data: 'c_id='+ $(this).val(),                 
+					success: function(value){
+					
+						var data = value.split(",");
+						$('#txtprodid').val(data[0]);
+						$('#txtprodnme').val(data[1]);
+						$('#hdnunit').val(data[2]);
+						$('#txtcskuid').val(data[3]);
+				
+
+						if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
+							var rowCount = $('#MyTable tr').length;
+							var isItem = "NO";
+							var itemindex = 1;
+						
+							if(rowCount > 1){
+							var cntr = rowCount-1;
+							
+							for (var counter = 1; counter <= cntr; counter++) {
+								// alert(counter);
+								if($("#txtprodid").val()==$("#txtitemcode"+counter).val()){
+									isItem = "YES";
+									itemindex = counter;
+									//alert($("#txtitemcode"+counter).val());
+									//alert(isItem);
+								//if prd id exist
+								}
+							//for loop
+							}
+							//if rowcount >1
+							}
+						//if value is not blank
+						}
+				
+						if(isItem=="NO"){		
+
+					
+								myFunctionadd("","","","","","","");
+								//ComputeGross();	
+													
+							}
+							else{
+							//alert("ITEM NOT IN THE MASTERLIST!");
+							addqty();
+						}
+						
+						$("#txtprodid").val("");
+						$("#txtprodnme").val("");
+						$("#hdnunit").val("");
+						$("#txtcskuid").val("");
+		
+					//closing for success: function(value){
+					}
+				}); 
 			
-			//reset form
-			$("#serdis").val("");
-			$("#serdisbarc").val("");
-			$("#serdisqty").val("1");
+			}//if ebter is clicked
 			
-			$("#TheSerialStat").text(serials + " Inserted...");
+		});
+		
+		$('#SerialMod').on('shown.bs.modal', function () {
+				$('#serdis').focus();
+		});
+
+		$("#btnInsSer").on("click", function(){
+				var itmcode = $("#serdisitmcode").val();
+				var itmcoderefident = $("#serdisrefident").val();
+				var serials = $("#serdis").val();
+				var barcodes = $("#serdisbarc").val();
+				var uoms = $("#serdisuom").val();
+				var qtys = $("#serdisqty").val();
+				var locas = $("#selserloc").val();
+				var locasdesc = $("#selserloc").find(':selected').attr('data-id');
+				var expz = $("#dexpate").val();      
+				var refnox = $("#serdisrefno").val(); 
+				InsertToSerials(itmcode,serials,uoms,qtys,locas,locasdesc,expz,itmcoderefident,refnox,barcodes);
+				//AddtoQtyTot(itmcode,qtys,itmcoderefident);
+
+				//var existqty = document.getElementById("txtnqty"+itmcode+itmcoderefident).value;
+				//var qtynow = parseFloat(existqty)+parseFloat(qtys);
+
+				//document.getElementById("txtnqty"+itmcode+itmcoderefident).value = qtynow;
+				
+				//reset form
+				$("#serdis").val("");
+				$("#serdisbarc").val("");
+				$("#serdisqty").val("1");
+				
+				$("#TheSerialStat").text(serials + " Inserted...");
 
 
-			$("#serdis").focus();
-  
-	});
+				$("#serdis").focus();
+		
+		});
 
 });
 
