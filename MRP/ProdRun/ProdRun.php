@@ -76,7 +76,6 @@
 				</div>
 			</div>
 
-      <br><br><br>
 			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>

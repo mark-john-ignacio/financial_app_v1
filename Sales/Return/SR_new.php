@@ -66,7 +66,7 @@ function listcurrencies(){ //API for currency list
 	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
 </head>
 
-<body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
+<body style="padding:5px">
 
 		<form method="post" action="SR_newsave.php" name="attc_form" id="attc_form" enctype="multipart/form-data">
 			
@@ -476,6 +476,7 @@ function listcurrencies(){ //API for currency list
 			}
 		
 		});
+		document.getElementById('txtcust').focus();
 
 	});
 

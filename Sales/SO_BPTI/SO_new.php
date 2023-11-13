@@ -89,7 +89,7 @@ function listcurrencies(){ //API for currency list
 
 </head>
 
-<body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
+<body style="padding:5px">
 	<input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes">  
 	<input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
 
@@ -882,6 +882,8 @@ function listcurrencies(){ //API for currency list
 			}
 		
 		});
+
+		document.getElementById('txtcust').focus();
 		
 		$("#txtsalesmanid").keydown(function(event){
 			if(event.keyCode == 13){

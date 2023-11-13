@@ -4,63 +4,16 @@
     }
 
     include("../Connection/connection_string.php");
+    require_once("../Model/helper.php");
     $company = $_SESSION['companyid'];
     $proceed = true;
     $duplicate = false;
     $isFinished = false;
 
-    $excel_data = [];
-    if (isset($_FILES['excel_file']) || !empty($_FILES['excel_file'])) {
-        $file = $_FILES['excel_file'];
+    $excel_data = ExcelRead($_FILES);
 
-        if ($file['error'] === 0) {
-            $fileExt = pathinfo($file['name'], PATHINFO_EXTENSION);
+    if(!empty($excel_data)){
 
-            if (in_array($fileExt, ['xlsx', 'xls'])) {
-                $uploadDir = './';
-                $uploadedFile = $uploadDir . $file['name'];
-                move_uploaded_file($file['tmp_name'], $uploadedFile);
-
-                require '../vendor2/autoload.php';
-                
-                $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($uploadedFile);
-                $worksheet = $spreadsheet->getActiveSheet();
-                $i = 0;
-                foreach ($worksheet->getRowIterator() as $row) {
-                    $cellIterator = $row->getCellIterator();
-                    $rowdata = [];
-                
-                    $hasNonNullValue = false;
-                    $i++;
-                    // if($i > 1){
-                        foreach ($cellIterator as $cell) {
-                            $cellValue = $cell->getValue();
-                    
-                            if (!is_null($cellValue)) {
-                                $hasNonNullValue = true;
-                            }
-        
-                            $rowdata[] = trim($cellValue);
-                        }
-                        if ($hasNonNullValue) {
-                            // echo json_encode($rowdata);
-                            array_push($excel_data, $rowdata);
-                        }
-                    // }
-                }
-
-                unlink($uploadedFile);
-            } else {
-                echo "Please upload a valid Excel file (XLSX or XLS format).";
-                $proceed = false;
-            }
-        } else {
-            echo "Error uploading the file. Please try again.";
-            $proceed = false;
-        }
-    } 
-
-    if($proceed){
         for($i = 1; $i < sizeof($excel_data); $i++){
             $data = $excel_data[$i];
             $sql = "SELECT * FROM `coupon` WHERE `compcode` = '$company' AND `CouponNo` = '{$data[0]}'";

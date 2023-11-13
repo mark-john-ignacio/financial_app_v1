@@ -10,7 +10,7 @@
     $isCheck = $_REQUEST['isCheck'];
     $account = $_REQUEST['account'];
 
-    $sql = "SELECT * FROM parameters WHERE compcode = '$company' AND ccode = 'SERVICE_FEE' AND ccode = 'ACCOUNT_ENTRY'";
+    $sql = "SELECT * FROM parameters WHERE compcode = '$company' AND (ccode = 'SERVICE_FEE' OR ccode = 'ACCOUNT_ENTRY')";
     $query = mysqli_query($con, $sql);
 
     if(mysqli_num_rows($query) != 0){

@@ -19,7 +19,7 @@
 			else{
 				$last_row = mysqli_insert_id($con);
 
-				mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) values('$company','$last_row','$preparedby',NOW(),'INSERTED','ITEM (PROCESS)','$compname','Inserted New Record')");
+				mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) values('$company','$last_row','$preparedby',NOW(),'INSERTED','MES (PROCESS)','$compname','Inserted New Record')");
 
 				echo "True";
 			}

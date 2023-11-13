@@ -141,7 +141,7 @@ $company = $_SESSION['companyid'];
 
 </head>
 
-<body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
+<body style="padding:5px">
 <input type="hidden" value='<?=json_encode(@$arrdisclist)?>' id="hdndiscs"> 
 <input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes">  
 <input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors"> 
@@ -918,7 +918,7 @@ $company = $_SESSION['companyid'];
 			
 		});
 
-		$('#txtcust, #txtcustid').on("blur", function(){
+		/*$('#txtcust, #txtcustid').on("blur", function(){
 			//alert($('#hdnvalid').val());
 			if($('#hdnvalid').val()=="NO"){
 				$('#txtcust').attr("placeholder", "ENTER A VALID CUSTOMER FIRST...");
@@ -941,7 +941,7 @@ $company = $_SESSION['companyid'];
 				$('#txtremarks').focus();
 		
 			}
-		});
+		});*/
 
 		//Search Cust name
 		$('#txtcust').typeahead({
@@ -994,6 +994,8 @@ $company = $_SESSION['companyid'];
 			}
 		
 		});
+
+		document.getElementById('txtcust').focus();
 		
 		$('#txtprodnme').typeahead({
 			autoSelect: true,

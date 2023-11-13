@@ -51,10 +51,12 @@ if(mysqli_num_rows($sql) != 0){
 }
 
 $account = "";
-$sql = mysqli_query($con, "SELECT * FROM parameters WHERE compcode = '$company' AND ccode = 'ACCOUNT_ENTRY'");
+$accountDesc = "";
+$sql = mysqli_query($con, "SELECT A.cvalue, B.cacctdesc FROM parameters A left join accounts B on A.compcode=B.compcode and A.cvalue=B.cacctid WHERE A.compcode = '$company' AND A.ccode = 'ACCOUNT_ENTRY'");
 if(mysqli_num_rows($sql) != 0){
 	while($row = $sql -> fetch_assoc()){
 		$account = $row['cvalue'];
+		$accountDesc = $row['cacctdesc'];
 	}
 }
 
@@ -3740,39 +3742,43 @@ if(mysqli_num_rows($sql) != 0){
 								<div class='col-xs-2 nopadwtop'>
 									<b>Base Customer: </b>
 								</div>
-								<span>
-									<input type='text' class='input-sm' name="basecustomer" id="basecustomer" autocomplete="false" />
-									<div class='input-sm' id="basecustmsg"></div>
-								</span>
-								
+								<div class='col-xs-5 nopadwtop'>
+									<input type='text' class='form-control input-sm' name="basecustomer" id="basecustomer" autocomplete="false" />
+								</div>		
+								<div class='col-xs-1 nopadwtop'>
+									<div class='input-sm' id="basecustmsg"> </div>
+								</div>					
 							</div>		
-							<div class='col-sm-12 '>
-								<div class='nopadwtop' >
-									<div class='col-xs-2 nopadwtop'><b>Enable Service Fee: </b></div>
-									<span>
-										<input type="checkbox" class='form-check-input' id='serviceCheck' <?= $isCheck != 0 ? "Checked": null ?> style='padding-left: 10px'><span>
-									</span>
+
+							<p data-toggle="collapse" data-target="#service_table"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Service Fee</b></u></p>
+							<div class="collapse" id='service_table' style='padding-bottom: 20px'>
+
+								<div class='col-sm-12 '>
+									<div class='nopadwtop' >
+										<div class='col-xs-2 nopadwtop'><b>Enable Service Fee: </b></div>
+										<span>
+											<input type="checkbox" class='form-check-input' id='serviceCheck' <?= $isCheck != 0 ? "Checked": null ?> style='padding-left: 10px'><span>
+										</span>
+									</div>
+									<div class='col-sm-12 nopadwtop'>
+										<div class='col-xs-2 nopadwtop'><b>Service Fee: </b></div>
+										<span>
+												<input type="number" class='input-sm' name='servicefee' id='servicefee' placeholder='Service Fee Percentage...' value='<?= $service ? $service : 0 ?>' autocomplete='false'>
+												<span style="padding-left:10px">%</span>
+										</span> 
+									</div>
+									<div class='col-sm-12 nopadwtop'>
+										<div class='col-xs-2 nopadwtop'><b>Account Entry: </b></div>
+										<span> 
+												<input type="text" class='input-sm' name='AccountEntry' id='AccountEntry' placeholder='Enter Account Entry...' value="<?=$accountDesc?>" autocomplete='false' data-val='<?=$account?>'>
+										</span> 
+									</div>
+									<div class='col-sm-6' style='text-align: center; padding-top: 10px'>
+										<button class='btn btn-sm btn-success' id='serviceSave' style='margin-left: 0px;'>Save</button>
+									</div>
+									<div class='col-xs-1 nopadwtop' id='servicefeemsg'></div>
 								</div>
-								
-								<div class='col-sm-12 nopadwtop'>
-									<div class='col-xs-2 nopadwtop'><b>Service Fee: </b></div>
-									<span>
-											<input type="number" class='input-sm' name='servicefee' id='servicefee' placeholder='Service Fee Percentage...' value='<?= $service ? $service : 0 ?>' autocomplete='false'>
-											<span style="padding-left:10px">%</span>
-									</span> 
-								</div>
-								<div class='col-sm-12 nopadwtop'>
-									<div class='col-xs-2 nopadwtop'><b>Account Entry: </b></div>
-									<span>
-											<input type="text" class='input-sm' name='AccountEntry' id='AccountEntry' placeholder='Enter Account Entry...' value="<?= $account ?>" autocomplete='false'>
-									</span> 
-								</div>
-								<div class='col-sm-6' style='text-align: center; padding-top: 10px'>
-									<button class='btn btn-sm btn-success' id='serviceSave' style='margin-left: 0px;'>Save</button>
-								</div>
-								
-								<div class='col-xs-1 nopadwtop' id='servicefeemsg'></div>
-							</div>	
+							</div>
 															
 							<p data-toggle="collapse" data-target="#pos_table"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Table Seats</b></u></p>
 							<div class="collapse" id='pos_table' style='padding-bottom: 20px'>
@@ -6900,12 +6906,12 @@ if(mysqli_num_rows($sql) != 0){
 				})
 			},
 			displayText: function (item) {
-                return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.cacctno + '</span><br><small>' + item.cacctdesc + "</small></div>";
+                return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.cacctid + '</span><br><small>' + item.cacctdesc + "</small></div>";
             },
             highlighter: Object,
             afterSelect: function(items) { 
 				$("#AccountEntry").val(items.cacctdesc).change()
-				$("#AccountEntry").attr('data-val', items.cacctdesc).change()
+				$("#AccountEntry").attr('data-val', items.cacctid).change()
 				
 			}
 		})

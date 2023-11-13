@@ -30,10 +30,26 @@
 	}
 
 	$arrmrpjo_pt = array();
-	$sql = "select * from mrp_jo_process_t X where X.compcode='$company' and X.ctranno in (Select ctranno from mrp_jo_process where compcode='$company' and mrp_jo_ctranno  = '$tranno')";
+	$sql = "select nid,ctranno,mrp_process_id,mrp_process_desc,nmachineid,DATE_FORMAT(ddatestart, \"%m/%d/%Y %h:%i:%s %p\") as ddatestart,DATE_FORMAT(ddateend, \"%m/%d/%Y %h:%i:%s %p\") as ddateend,nactualoutput,operator_id,nrejectqty,nscrapqty,lqcposted,cqcpostedby,dqcdateposted from mrp_jo_process_t X where X.compcode='$company' and X.ctranno in (Select ctranno from mrp_jo_process where compcode='$company' and mrp_jo_ctranno  = '$tranno')";
 	$resultmain = mysqli_query ($con, $sql); 
 	while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
 		$arrmrpjo_pt[] = $row2;				
+	}
+
+	$arrmachines = array();
+	$sqlmrpmach = mysqli_query($con,"select A.nid, A.cdesc From mrp_machines A Where A.compcode='$company' and A.cstatus='ACTIVE' Order By A.cdesc");
+
+	$rowdetmach = $sqlmrpmach->fetch_all(MYSQLI_ASSOC);
+	foreach($rowdetmach as $row0){
+		$arrmachines[] = array('nid' => $row0['nid'], 'cdesc' => $row0['cdesc']);				
+	}
+
+	$arroperators = array();
+	$sqlmrpoprts = mysqli_query($con,"select A.nid, A.cdesc From mrp_operators A Where A.compcode='$company' and A.cstatus='ACTIVE' Order By A.cdesc");
+
+	$rowdetoprt = $sqlmrpoprts->fetch_all(MYSQLI_ASSOC);
+	foreach($rowdetoprt as $row0){
+		$arroperators[] = array('nid' => $row0['nid'], 'cdesc' => $row0['cdesc']);		 
 	}
 
 	@$arrname = array();
@@ -57,6 +73,7 @@
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
   <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/select2/css/select2.css?h=<?php echo time();?>">
 
 	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
 
@@ -64,6 +81,7 @@
 	<script src="../../js/bootstrap3-typeahead.min.js"></script>
 	<script src="../../include/autoNumeric.js"></script>
 
+	<script src="../../Bootstrap/select2/js/select2.full.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
@@ -82,7 +100,7 @@
 
 </head>
 
-<body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
+<body style="padding:5px">
 
 	<form action="JO_updatesave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
 		<fieldset>
@@ -136,26 +154,35 @@
 							<hr>
 							<div class="col-xs-12 nopadwdown" id="subjodets"><h5>Sub-JO Details</h5></div>
 
-							<table id="MyJOSubs" class="MyTable table table-condensed" width="100%">
-								<thead>
-									<tr>
-										<th style="border-bottom:1px solid #999">Machine</th>
-										<th style="border-bottom:1px solid #999">Process</th>
-										<th style="border-bottom:1px solid #999">Date Started</th>
-										<th style="border-bottom:1px solid #999">Date Ended</th>
-										<th style="border-bottom:1px solid #999">Actual Output</th>
-										<th style="border-bottom:1px solid #999">Operator</th>
-										<th style="border-bottom:1px solid #999; text-align: right">Reject Qty</th>
-										<th style="border-bottom:1px solid #999; text-align: right">Scrap Qty</th>
-										<th style="border-bottom:1px solid #999">QC</th>
-										<th style="border-bottom:1px solid #999">Remarks</th>
-									</tr>
-								</thead>
-								<tbody class="tbody">
+							<div style="border: 1px solid #919b9c; height: 40vh; overflow: auto">
+								<div id="tableContainer" class="alt2" dir="ltr" style="
+									margin: 0px;
+									padding: 3px;
+									width: 1570px;
+									height: 300px;
+									text-align: left;">
 
-								</tbody>
-							</table>
+										<table id="MyJOSubs" class="MyTable table-sm table-bordered" border="1">
+											<thead>
+												<tr>										
+													<th width='200px' style="text-align: center; padding:1px">Process</th>
+													<th width='200px' style="background-color: #c5def7; text-align: center; padding:1px"> Machine</th>
+													<th width='158px' style="background-color: #dbfdb2; text-align: center; padding:1px"> Date Started</th>
+													<th width='158px' style="background-color: #fdb2b2; text-align: center; padding:1px"> Date Ended</th>
+													<th width='100px' style="background-color: #e5b2fd; text-align: center; padding:1px"> Actual Output</th>
+													<th width='200px' style="background-color: #e5b2fd; text-align: center; padding:1px">Operator</th>
+													<th width='100px' style="text-align: center; padding:1px">Reject Qty</th>
+													<th width='100px' style="text-align: center; padding:1px">Scrap Qty</th>
+													<th width='158px' style="background-color: #f6fdb2; text-align: center; padding:1px">QC</th>
+													<th width='200px' style="background-color: #f6fdb2; text-align: center; padding:1px">Remarks</th>
+												</tr>
+											</thead>
+											<tbody class="tbody">
 
+											</tbody>
+										</table>
+								</div>
+							</div>
 
 						</div>	
 
@@ -361,7 +388,7 @@
 									
 		$("input.numeric").on("keyup", function () {
 			computeTot();
-		}); 
+		});
 
 
 			if(file_name.length > 0){
@@ -399,6 +426,8 @@
 
 	function getprocess($xtran,$xitms,$trid){
 		var file_name = '<?= json_encode($arrmrpjo_pt) ?>';
+		var file_machines = '<?= json_encode($arrmachines) ?>';
+		var file_operators = '<?= json_encode($arroperators) ?>';		   
 
 		$('tr').removeClass("selectedJO");
 
@@ -407,27 +436,115 @@
 		$("#subjodets").html("<h5>"+$xtran+": "+$xitms+"<h5>");
 		$("#MyJOSubs tbody").empty(); 
 
+		var tbl = document.getElementById('MyJOSubs').getElementsByTagName('tr');
+		var lastRow = tbl.length-1;
+
+		var lqcnext = 1;
 		var obj = jQuery.parseJSON(file_name);
 		$.each(obj, function(key,value) {
 			if(value.ctranno == $xtran){
-				//alert(value.mrp_process_desc);
 
-				var tdmachine = "<td>&nbsp;</td>";
-				var tdprocess = "<td>"+value.mrp_process_desc+"</td>";
-				var tddatest = "<td>&nbsp;</td>";
-				var tddateen = "<td>&nbsp;</td>";
-				var tdactual = "<td>&nbsp;</td>";
-				var tdoperator = "<td>&nbsp;</td>";
-				var tdreject = "<td>&nbsp;</td>";
-				var tdscrap = "<td>&nbsp;</td>";
-				var tdqc = "<td>&nbsp;</td>";
-				var tdrems = "<td>&nbsp;</td>";
+				lastRow = lastRow + 1;
 
-				//alert(tdinfocode + "\n" + tdinfodesc + "\n" + tdinfofld + "\n" + tdinfoval + "\n" + tdinfodel);
+				var dreject ="";
+				var dscrap = "";
+				var dactual = "";
+				var tdmach = "";
+				var tdoper = "";
+				var dstart = "";
+				var deend = "";
+
+				if(lqcnext==1){
+
+					//machine Select
+					machoptions = "";
+					$.each(jQuery.parseJSON(file_machines), function() { 
+						machoptions = machoptions + "<option value='"+this['nid']+"'>"+this['cdesc']+"</option>";
+					});
+
+					tdmach = "<select class='form-control input-xs' name=\"selmachine\" id=\"selmachine"+lastRow+"\"><option></option>" + machoptions + "</select>";
+					
+					var x = value.ddatestart;
+					if (x!="null" && x!=null && x!="") {
+						dstart = "<input type=\"text\" class=\"form-control input-sm text-center\" value=\""+value.ddatestart+"\" readonly>";
+					}else{
+						let stat = "disabled";
+						if(value.nmachineid !=0){
+							stat = "";
+						}
+						dstart = "<button type=\"button\" class=\"btn btn-success btn-sm btn-block "+stat+"\" id=\"btnStart"+lastRow+"\" "+stat+">Start</button>";
+					}
+					
+					var x = value.ddateend;
+					if (x!="null" && x!=null && x!="") {
+						deend = "<input type=\"text\" class=\"form-control input-sm text-center\" value=\""+value.ddateend+"\" readonly>";
+					}else{
+						let stat = "disabled";
+						let y = value.ddatestart;
+						if(y!="null" && y!=null && y!=""){
+							stat = "";
+						}
+						deend = "<button type=\"button\" class=\"btn btn-danger btn-sm btn-block "+stat+"\" id=\"btnEnd"+lastRow+"\" "+stat+">End</button>";
+					}
+					
+
+					let stat = "disabled";
+					let yxz = value.ddateend;
+					if(yxz!="null" && yxz!=null && yxz!=""){
+						stat = "";
+					}
+
+					//operators Select
+					opeoptions = "";
+					$.each(jQuery.parseJSON(file_operators), function() { 
+						opeoptions = opeoptions + "<option value='"+this['nid']+"'>"+this['cdesc']+"</option>";
+					});
+
+					tdoper = "<select class='form-control input-xs' name=\"seloperator\" id=\"seloperator"+lastRow+"\" "+stat+"><option></option>" + opeoptions + "</select>";
+
+					dactual = "<input type=\"text\" class=\"form-control input-sm text-right\" value=\"0\" "+stat+">";
+					dreject = "<input type=\"text\" class=\"form-control input-sm text-right\" value=\"0\" "+stat+">";
+					dscrap = "<input type=\"text\" class=\"form-control input-sm text-right\" value=\"0\" "+stat+">";
+
+				}
+
+				var tdprocess = "<td style='padding:1px'>"+value.mrp_process_desc+"</td>";
+				var tdmachine = "<td style='padding:1px'>"+tdmach+"</td>";
+				var tddatest = "<td style='padding:1px'>"+dstart+"</td>";
+				var tddateen = "<td style='padding:1px'>"+deend+"</td>";
+				var tdactual = "<td style='padding:1px'>"+dactual+"</td>";
+				var tdoperator = "<td style='padding:1px'>"+tdoper+"</td>";
+				var tdreject = "<td style='padding:1px'>"+dreject+"</td>";
+				var tdscrap = "<td style='padding:1px'>"+dscrap+"</td>";
+				var tdqc = "<td style='padding:1px'>&nbsp;</td>";
+				var tdrems = "<td style='padding:1px'>&nbsp;</td>";
+
+				//alert(tdinfocode + "\n" + tdinfodesc + "\n" + tdinfofld + "\n" + tdinfoval + "\n" + tdinfodel); nsel2
 				
-				$('#MyJOSubs > tbody:last-child').append('<tr>'+tdmachine + tdprocess + tddatest + tddateen + tdactual + tdoperator + tdreject + tdscrap + tdqc + tdrems + '</tr>');
+				$('#MyJOSubs > tbody:last-child').append('<tr>'+tdprocess + tdmachine + tddatest + tddateen + tdactual + tdoperator + tdreject + tdscrap + tdqc + tdrems + '</tr>');
 
+
+				$("#selmachine"+lastRow).select2({
+					placeholder: "Please select the machine"
+				}); 
+			
+			$("#selmachine"+lastRow).on("change", function(){
+				alert("#selmachine"+lastRow);
+				if($(this).val()!=""){
+					alert("#btnStart"+lastRow);
+					$("#btnStart"+lastRow).removeAttr("disabled"); 
+					$("#btnStart"+lastRow).removeClass("disabled");
+				}
+			});
+
+			$("#seloperator"+lastRow).select2({
+					placeholder: "Please select the operator"
+			});
+
+				machoptions = "";
+				lqcnext = value.lqcposted;
 			}
+
 		}); 
 	}
 

@@ -7,7 +7,7 @@
     $company = $_SESSION['companyid'];
 
     $account = $_REQUEST["account"];
-    $sql = "SELECT * FROM accounts WHERE compcode = '$company' AND ccategory = 'Liabilities' AND ctype = 'Details'";
+    $sql = "SELECT * FROM accounts WHERE compcode = '$company' AND ccategory = 'LIABILITIES' AND ctype = 'Details'";
     $query = mysqli_query($con, $sql);
     $liabilities = [];
     if(mysqli_num_rows($query) != 0) {  
