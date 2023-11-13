@@ -6,7 +6,7 @@
 	require_once "../../Connection/connection_string.php";
 
 	//echo "<pre>";
-//	print_r($_REQUEST);
+	//print_r($_REQUEST);
 	//echo "</pre>";
 
 	$company = $_SESSION['companyid'];
@@ -23,50 +23,51 @@
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 
-	$rowcnt = $_REQUEST['rowcnt'];
-	$xmsg = "True";
-	for($z=1; $z<=$rowcnt; $z++){
-		$csort = mysqli_real_escape_string($con,$_REQUEST['txtsortnum'.$z]);
-		$citemno = mysqli_real_escape_string($con,$_REQUEST['txtitmcode'.$z]);
-		$cunitz = mysqli_real_escape_string($con,$_REQUEST['txtcunit'.$z]);
-		$clevel = mysqli_real_escape_string($con,$_REQUEST['txtlvl'.$z]);
-		$ctype = mysqli_real_escape_string($con,$_REQUEST['selType'.$z]);
 
-				$qty1 = 0;
-				$qty2 = 0;
-				$qty3 = 0;
-				$qty4 = 0;
-				$qty5 = 0;
+	$sqllabelnme = mysqli_query($con,"select * from mrp_bom_label where compcode='$company' and citemno='".$cMainItemNo ."'");
 
-				$getcnt = intval($_REQUEST['hdncount']);
-				for ($i = 1; $i <= $getcnt; $i++) {
+	$rowcount=mysqli_num_rows($sqllabelnme);
+	$rowlabelname = $sqllabelnme->fetch_all(MYSQLI_ASSOC);
 
-					if($i==1){
-						$qty1 = mysqli_real_escape_string($con,str_replace( ',', '', $_REQUEST['txtnqty'.$i.$z]));
-					}
+	$totdcount = 1;
+	if($rowcount>1){
+		$totdcount = $rowcount;
+	}
 
-					if($i==2){
-						$qty2 = mysqli_real_escape_string($con,str_replace( ',', '', $_REQUEST['txtnqty'.$i.$z]));
-					}
+	for ($xz = 1; $xz <= $totdcount; $xz++) {
 
-					if($i==3){
-						$qty3 = mysqli_real_escape_string($con,str_replace( ',', '', $_REQUEST['txtnqty'.$i.$z]));
-					}
+		$rowcnt = $_REQUEST['rowcnt'.$xz];
+		$xmsg = "True";
+		for($z=1; $z<=$rowcnt; $z++){
+			$csort = mysqli_real_escape_string($con,$_REQUEST['txtsortnum'.$xz.$z]);
+			$citemno = mysqli_real_escape_string($con,$_REQUEST['txtitmcode'.$xz.$z]);
+			$cunitz = mysqli_real_escape_string($con,$_REQUEST['txtcunit'.$xz.$z]);
+			$clevel = mysqli_real_escape_string($con,$_REQUEST['txtlvl'.$xz.$z]);
+			$ctype = mysqli_real_escape_string($con,$_REQUEST['selType'.$xz.$z]);
+			$qty = mysqli_real_escape_string($con,str_replace( ',', '', $_REQUEST['txtnqty'.$xz.$z]));
+					
 
-					if($i==4){
-						$qty4 = mysqli_real_escape_string($con,str_replace( ',', '', $_REQUEST['txtnqty'.$i.$z]));
-					}
+			if(!mysqli_query($con,"INSERT INTO `mrp_bom`(`compcode`, `cmainitemno`, `citemno`, `cunit`, `nqty1`, `nlevel`, `nitemsort`, `ctype`, `nversion`) values('$company', '$cMainItemNo', '$citemno', '$cunitz', '$qty', '$clevel', '$csort', '$ctype', '$xz')")){
+				
+				printf("Errormessage: %s\n", mysqli_error($con));
+				$xmsg = "False";
+			}
+		}
 
-					if($i==5){
-						$qty5 = mysqli_real_escape_string($con,str_replace( ',', '', $_REQUEST['txtnqty'.$i.$z]));
-					}
-				}
+		//eco saving
+		/*
+		$cecosn = mysqli_real_escape_string($con,$_REQUEST['bomecosn'.$xz]);
+		$cecorev = mysqli_real_escape_string($con,$_REQUEST['bomecorev'.$xz]);
+		$cecoprep = mysqli_real_escape_string($con,$_REQUEST['bomecoprep'.$xz]);
+		$cecodte = mysqli_real_escape_string($con,$_REQUEST['bomecodate'.$xz]);
+		$cecodesc = mysqli_real_escape_string($con,$_REQUEST['bomecodesc'.$xz]);
 
-				if(!mysqli_query($con,"INSERT INTO `mrp_bom`(`compcode`, `cmainitemno`, `citemno`, `cunit`, `nqty1`, `nqty2`, `nqty3`, `nqty4`, `nqty5`, `nlevel`, `nitemsort`, `ctype`) values('$company', '$cMainItemNo', '$citemno', '$cunitz', '$qty1', '$qty2', '$qty3', '$qty4', '$qty5', '$clevel', '$csort', '$ctype')")){
-			
-					printf("Errormessage: %s\n", mysqli_error($con));
-					$xmsg = "False";
-				}
+		if(!mysqli_query($con,"UPDATE `mrp_bom_label` set `ecoSN` = '$cecosn', `ecoRev` = '$cecorev', `ecoPrepared` = '$cecoprep', `ecoDate` = '$cecodte', `ecoDesc` = '$cecodesc' where `compcode` = '$company' and `citemno` = '".$cMainItemNo ."' and nversion=".$xz)){				
+			printf("Errormessage: %s\n", mysqli_error($con));
+			$xmsg = "False";
+		}
+		*/
+
 	}
 
 	if($xmsg=="True"){
@@ -106,13 +107,17 @@
 	$getsetup = mysqli_real_escape_string($con, str_replace( ',', '', $_REQUEST['nsetuptime']));
 	$getcycle = mysqli_real_escape_string($con, str_replace( ',', '', $_REQUEST['ncycletime']));
 
+	$getcustomer = mysqli_real_escape_string($con, $_REQUEST['citemcustomer']);
+	$getproject = mysqli_real_escape_string($con, $_REQUEST['citemproj']);
+	$gettitle = mysqli_real_escape_string($con, $_REQUEST['citemtitl']);
+
 	$getitems = mysqli_query($con,"SELECT * FROM `mrp_items_parameters` where compcode='$company' and citemno='$cMainItemNo'"); 
 	if (mysqli_num_rows($getitems)!=0) {
-		if (!mysqli_query($con, "UPDATE `mrp_items_parameters` set `nworkhrs` = '$getworkhrs', `nsetuptime` = '$getsetup', `ncycletime` = '$getcycle' Where `compcode` = '$company' and `citemno` = '$cMainItemNo'")) {
+		if (!mysqli_query($con, "UPDATE `mrp_items_parameters` set `nworkhrs` = '$getworkhrs', `nsetuptime` = '$getsetup', `ncycletime` = '$getcycle', `ccustomer` = '$getcustomer', `cproject` = '$getproject', `ctitle` = '$gettitle' Where `compcode` = '$company' and `citemno` = '$cMainItemNo'")) {
 			printf("Errormessage: %s\n", mysqli_error($con));
 		} 
 	}else{
-		if (!mysqli_query($con, "INSERT INTO `mrp_items_parameters`(`compcode`, `citemno`, `nworkhrs`, `nsetuptime`, `ncycletime`) VALUES ('$company','$cMainItemNo','$getworkhrs','$getsetup','$getcycle')")) {
+		if (!mysqli_query($con, "INSERT INTO `mrp_items_parameters`(`compcode`, `citemno`, `nworkhrs`, `nsetuptime`, `ncycletime`, `ccustomer`, `cproject`, `ctitle`) VALUES ('$company','$cMainItemNo','$getworkhrs','$getsetup','$getcycle', '$getcustomer', '$getproject', '$gettitle')")) {
 			printf("Errormessage: %s\n", mysqli_error($con));
 		}
 	}

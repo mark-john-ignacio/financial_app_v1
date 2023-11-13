@@ -68,19 +68,19 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 	{
         foreach($row as $key => $value){
-            echo $key;
+            //echo $key;
         }
         $ctranno = $row['ctranno'];
 
         $spreadsheet->setActiveSheetIndex(0)
         ->setCellValue('A7', 'DATE')
-        ->setCellValue('B7', 'TRANSACTION NO.')
-        ->setCellValue('C7', 'REFERENCE NO.')
-        ->setCellValue('D7', 'Customer NAME')
-        ->setCellValue('E7', 'ACCOUNT NO.')
-        ->setCellValue('F7', 'ACCOUNT TITLE')
-        ->setCellValue('G7', 'DEBIT')
-        ->setCellValue('H7', 'CREDIT');
+        //->setCellValue('B7', 'TRANSACTION NO.')
+        ->setCellValue('B7', 'REFERENCE NO.')
+        ->setCellValue('C7', 'Customer NAME')
+        ->setCellValue('D7', 'ACCOUNT NO.')
+        ->setCellValue('E7', 'ACCOUNT TITLE')
+        ->setCellValue('F7', 'DEBIT')
+        ->setCellValue('G7', 'CREDIT');
 
         // $spreadsheet->getActiveSheet()
         // ->getStyle("A7:H7")->getFill()
@@ -97,13 +97,13 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A'.$cnt, $row['dcheckdate'])
-            ->setCellValue('B'.$cnt, $row['ctranno'])
-            ->setCellValue('C'.$cnt, $row['cpayrefno'])
-            ->setCellValue('D'.$cnt, $row['cpayee'])
-            ->setCellValue('E'.$cnt, $row['acctno'])
-            ->setCellValue('F'.$cnt, $row['ctitle'])
-            ->setCellValue('G'.$cnt, $row['ndebit'])
-            ->setCellValue('H'.$cnt, $row['ncredit']);
+           // ->setCellValue('B'.$cnt, $row['ctranno'])
+            ->setCellValue('B'.$cnt, $row['cpayrefno'])
+            ->setCellValue('C'.$cnt, $row['cpayee'])
+            ->setCellValue('D'.$cnt, $row['acctno'])
+            ->setCellValue('E'.$cnt, $row['ctitle'])
+            ->setCellValue('F'.$cnt, $row['ndebit'])
+            ->setCellValue('G'.$cnt, $row['ncredit']);
 
             $spreadsheet->setActiveSheetIndex(0)->getStyle('F'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
             $spreadsheet->setActiveSheetIndex(0)->getStyle('G'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
@@ -111,9 +111,9 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 	}
     $cnt += 2;
     $spreadsheet->setActiveSheetIndex(0)
-            ->setCellValue('F'.$cnt, 'Total')
-            ->setCellValue('G'.$cnt, floatval($ntotdebit))
-            ->setCellValue('H'.$cnt, floatval($ntotcredit));
+            ->setCellValue('E'.$cnt, 'Total')
+            ->setCellValue('F'.$cnt, floatval($ntotdebit))
+            ->setCellValue('G'.$cnt, floatval($ntotcredit));
 
 	// Rename worksheet
 	$spreadsheet->getActiveSheet()->setTitle('Cash Disbursement Book');

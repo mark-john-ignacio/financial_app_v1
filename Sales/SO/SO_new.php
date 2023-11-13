@@ -45,6 +45,19 @@ function listcurrencies(){ //API for currency list
 		}
 	}
 
+	$setSman = "True";
+	$getSmans = mysqli_query($con,"SELECT * FROM `salesman` where compcode='$company' and cstatus='ACTIVE'"); 
+	if (mysqli_num_rows($getSmans)==0) {
+		$setSman = "False";
+	} 
+
+	$xdetremlabel = "";
+	$getremlabel = mysqli_query($con,"SELECT * FROM `parameters` where compcode='$company' and ccode='SO_DET_REM_LABEL'"); 
+	if (mysqli_num_rows($getremlabel)!=0) {
+		while($row = mysqli_fetch_array($getremlabel, MYSQLI_ASSOC)){
+			$xdetremlabel = $row['cvalue']; 
+		}
+	}
 ?>
 
 <!DOCTYPE html>
@@ -83,7 +96,7 @@ function listcurrencies(){ //API for currency list
 
 </head>
 
-<body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
+<body style="padding:5px">
 	<input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes">  
 	<input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
 
@@ -122,7 +135,7 @@ function listcurrencies(){ //API for currency list
 													</div> 
 										</div>
 									</td>
-									<tH width="150">PO No.:</tH>
+									<tH width="150">Control No.:</tH>
 									<td style="padding:2px;">
 									<div class="col-xs-11 nopadding">
 										<input type='text' class="form-control input-sm" id="txtcPONo" name="txtcPONo" value="" autocomplete="off" />
@@ -130,74 +143,9 @@ function listcurrencies(){ //API for currency list
 									</td>
 								</tr>
 								<tr>
-									<tH width="150">&nbsp;Salesman:</tH>
-									<td style="padding:2px">
-										<div class="col-xs-12 nopadding">
-											<div class="col-xs-3 nopadding">
-												<input type="text" id="txtsalesmanid" name="txtsalesmanid" class="form-control input-sm" placeholder="Salesman Code..." tabindex="1">
-											</div>
-
-											<div class="col-xs-8 nopadwleft">
-												<input type="text" class="form-control input-sm" id="txtsalesman" name="txtsalesman" width="20px" tabindex="1" placeholder="Search Salesman Name..."  size="60" autocomplete="off">
-											</div> 
-										</div>
-									</td>
-									<tH width="150">Delivery Date:</tH>
-									<td style="padding:2px;">
-										<div class="col-xs-11 nopadding">
-											<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $ddeldate; ?>" />
-										</div>
-									</td>
-								</tr>
-								<tr>
-										<tH width="150">&nbsp;Remarks:</tH>
-										<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div>
-										</td>
-										<tH width="150">Sales Type:</th>
-										<td style="padding:2px">
-											<div class="col-xs-11 nopadding">
-												<select id="selsityp" name="selsityp" class="form-control input-sm selectpicker"  tabindex="1">
-																	<option value="Goods">Goods</option>
-																	<option value="Services">Services</option>
-															</select>
-											</div>
-										</td>
-										
-								</tr>
-								<tr>
-									<tH width="150">&nbsp;Special Instructions:</tH>
-									<td rowspan="3" style="padding:2px"><div class="col-xs-11 nopadding">
-										<textarea rows="3"  class="form-control input-sm" name="txtSpecIns"  id="txtSpecIns"></textarea>
-											</div>
-									</td>
-									<td style="padding:2px">
-									<div class="chklimit"><b>Credit Limit:</b></div>
-									</td>
-									<td style="padding:2px"  align="right">
-										<div class="chklimit col-xs-10 nopadding" id="ncustlimit"></div>
-											<input type="hidden" id="hdncustlimit" name="hdncustlimit" value="">
-									</td>
-								</tr>
-								<tr>
-									<td>&nbsp;</td>
-									<td style="padding:2px">
-										<div class="chklimit"><b>Balance:</b></div>
-									</td>
-									<td style="padding:2px"  align="right">
-										<div class="chklimit col-xs-10 nopadding" id="ncustbalance"></div>
-											<input type="hidden" id="hdncustbalance" name="hdncustbalance" value="">
-									</td>
-								</tr>
-								<tr>
-									<td>&nbsp;</td>
-									<td style="padding:2px"  align="right" colspan="2">
-										<div class="chklimit col-xs-11 nopadwright" id="ncustbalance2"></div>
-									</td>							
-								</tr>
-								<tr>
 									<tH width="150">&nbsp;Currency:</tH>
-									<td rowspan="7" style="padding:2px">
-										<div class="col-xs-4 nopadding">
+									<td style="padding:2px">
+										<div class="col-xs-6 nopadding">
 											<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">							
 												<?php
 														$nvaluecurrbase = "";	
@@ -248,6 +196,81 @@ function listcurrencies(){ //API for currency list
 													
 										</div>
 									</td>
+
+									<tH width="150">PO Date:</tH>
+									<td style="padding:2px;">
+										<div class="col-xs-11 nopadding">
+											<input type='text' class="form-control input-sm" id="date_PO" name="date_PO" value="<?php echo $ddeldate; ?>" />
+										</div>
+									</td>
+								</tr>
+								<tr>
+										<tH width="150">&nbsp;Remarks:</tH>
+										<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div>
+										</td>
+										<tH width="150">Delivery Date:</tH>
+									<td style="padding:2px;">
+										<div class="col-xs-11 nopadding">
+											<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $ddeldate; ?>" />
+										</div>
+									</td>	
+										
+								</tr>
+								<tr>
+									<tH rowspan="3" width="150">&nbsp;Special Instructions:</tH>
+									<td rowspan="3" style="padding:2px"><div class="col-xs-11 nopadding">
+										<textarea rows="3"  class="form-control input-sm" name="txtSpecIns"  id="txtSpecIns"></textarea>
+											</div>
+									</td>
+									<tH width="150">Sales Type:</th>
+										<td style="padding:2px">
+											<div class="col-xs-11 nopadding">
+												<select id="selsityp" name="selsityp" class="form-control input-sm selectpicker"  tabindex="1">
+																	<option value="Goods">Goods</option>
+																	<option value="Services">Services</option>
+															</select>
+											</div>
+										</td>
+								</tr>
+								<tr>
+									<td style="padding:2px">
+										<div class="chklimit"><b>Credit Limit:</b></div>
+									</td>
+									<td style="padding:2px"  align="right">
+										<div class="chklimit col-xs-10 nopadding" id="ncustlimit"></div>
+											<input type="hidden" id="hdncustlimit" name="hdncustlimit" value="">
+									</td>
+								</tr>
+								<tr>
+									<td style="padding:2px">
+										<div class="chklimit"><b>Balance:</b></div>
+									</td>
+									<td style="padding:2px"  align="right">
+										<div class="chklimit col-xs-10 nopadding" id="ncustbalance"></div>
+											<input type="hidden" id="hdncustbalance" name="hdncustbalance" value="">
+									</td>				
+								</tr>
+								<tr>
+									<tH width="150"><?=($setSman=="True") ? " Salesman:" : ""?></tH>
+									<td style="padding:2px">
+										<?php if($setSman=="True"){ ?>
+											<div class="col-xs-12 nopadding">
+												<div class="col-xs-3 nopadding">
+													<input type="text" id="txtsalesmanid" name="txtsalesmanid" class="form-control input-sm" placeholder="Salesman Code..." tabindex="1">
+												</div>
+
+												<div class="col-xs-8 nopadwleft">
+													<input type="text" class="form-control input-sm" id="txtsalesman" name="txtsalesman" width="20px" tabindex="1" placeholder="Search Salesman Name..."  size="60" autocomplete="off">
+												</div> 
+											</div>
+										<?php
+											}
+										?>
+									</td>
+									<td>&nbsp;</td>
+									<td style="padding:2px"  align="right" colspan="2">
+										<div class="chklimit col-xs-11 nopadwright" id="ncustbalance2"></div>
+									</td>		
 								</tr>
 							</table>		
 							
@@ -332,20 +355,27 @@ function listcurrencies(){ //API for currency list
 		</div>         
             
 
-							<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 1px solid #919b9c;width: 100%;height: 40vh;text-align: left;overflow: auto">
-			
-								<table id="MyTable" class="MyTable table table-condensed" width="100%">
+						<div style="border: 1px solid #919b9c; height: 40vh; overflow: auto">
+							<div id="tableContainer" class="alt2" dir="ltr" style="
+								margin: 0px;
+								padding: 3px;
+								width: 1300px;
+								height: 300px;
+								text-align: left;">
+		
+								<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
 									<thead>
 										<tr>
-											<th style="border-bottom:1px solid #999">Code</th>
-											<th style="border-bottom:1px solid #999">Description</th>
-											<th style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
-											<th style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
-											<th style="border-bottom:1px solid #999">UOM</th>
-											<th style="border-bottom:1px solid #999">Factor</th>
-											<th style="border-bottom:1px solid #999">Qty</th>
-											<th style="border-bottom:1px solid #999">Price</th>
-											<th style="border-bottom:1px solid #999">Amount</th>
+											<th width="100px" style="border-bottom:1px solid #999">Code</th>
+											<th width="300px" style="border-bottom:1px solid #999">Description</th>
+											<th width="100px" style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
+											<th width="80px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
+											<th width="80px" style="border-bottom:1px solid #999">UOM</th>
+											<th width="80px" style="border-bottom:1px solid #999">Factor</th>
+											<th width="80px" style="border-bottom:1px solid #999">Qty</th>
+											<th width="100px" style="border-bottom:1px solid #999">Price</th>
+											<th width="100px" style="border-bottom:1px solid #999">Amount</th>
+											<th width="200px" style="border-bottom:1px solid #999"><?=$xdetremlabel?></th>
 											<!--<th style="border-bottom:1px solid #999">Total Amt in <?//php echo $nvaluecurrbase; ?></th>-->
 											<th style="border-bottom:1px solid #999">&nbsp;</th>
 										</tr>	
@@ -355,6 +385,7 @@ function listcurrencies(){ //API for currency list
 								</table>
 
 							</div>
+						</div>
 
 		<table width="100%" border="0" cellpadding="3" style="margin-top: 5px">
 			<tr>
@@ -401,6 +432,7 @@ function listcurrencies(){ //API for currency list
 
   </fieldset>
    
+				<!-- Add Info -->
 				<div class="modal fade" id="MyDetModal" role="dialog">
     			<div class="modal-dialog modal-lg">
         		<div class="modal-content">
@@ -666,7 +698,7 @@ function listcurrencies(){ //API for currency list
 		$('#txtprodnme').attr("disabled", true);
 		$('#txtprodid').attr("disabled", true);
 
-		$('#date_delivery').datetimepicker({
+		$('#date_delivery, #date_PO').datetimepicker({
 				format: 'MM/DD/YYYY',
 				//minDate: new Date(),
 		});
@@ -855,6 +887,8 @@ function listcurrencies(){ //API for currency list
 			}
 		
 		});
+
+		document.getElementById('txtcust').focus();
 		
 		$("#txtsalesmanid").keydown(function(event){
 			if(event.keyCode == 13){
@@ -1176,23 +1210,27 @@ function checkcustlimit(id,xcred){
 		$("#ncustbalance").html("<b><font size='+1'>"+xBalance+"</font></b>");
 	}
 	else{
+		if(parseFloat(xcred) > 0){
 		
-		
-		if(xChkLimitWarn==0) { //0 = Accept Warninf ; 1 = Accept Block ; 2 = Refuse Order
-			$("#ncustbalance").html("<b><i><font color='red'>Max Limit Reached</font></i></b>");
-		}
-		else if(xChkLimitWarn==1) {
-			$("#ncustbalance").html("<b><i><font color='red' size='-1'>Max Limit Reached</font></i></b>");
-			$("#ncustbalance2").html("<b><i><font color='red' size='-1'>Delivery is blocked</font></i></b>");
-		}
-		else if(xChkLimitWarn==2) {
-			$("#ncustbalance").html("<b><i><font color='red' size='-1'>Max Limit Reached</font></i></b>");
-			$("#ncustbalance").html("<b><i><font color='red' size='-1'>ORDERS BLOCKED</font></i></b>");
-			$("#btnSave").attr("disabled", true);
-			$("#btnIns").attr("disabled", true);
-			$('#txtprodnme').attr("disabled", true);
-	  		$('#txtprodid').attr("disabled", true);
+			if(xChkLimitWarn==0) { //0 = Accept Warninf ; 1 = Accept Block ; 2 = Refuse Order
+				$("#ncustbalance").html("<b><i><font color='red'>Max Limit Reached</font></i></b>");
+			}
+			else if(xChkLimitWarn==1) {
+				$("#ncustbalance").html("<b><i><font color='red' size='-1'>Max Limit Reached</font></i></b>");
+				$("#ncustbalance2").html("<b><i><font color='red' size='-1'>Delivery is blocked</font></i></b>");
+			}
+			else if(xChkLimitWarn==2) {
+				$("#ncustbalance").html("<b><i><font color='red' size='-1'>Max Limit Reached</font></i></b>");
+				$("#ncustbalance").html("<b><i><font color='red' size='-1'>ORDERS BLOCKED</font></i></b>");
+				$("#btnSave").attr("disabled", true);
+				$("#btnIns").attr("disabled", true);
+				$('#txtprodnme').attr("disabled", true);
+					$('#txtprodid').attr("disabled", true);
 
+			}
+
+		}else{
+			$("#ncustbalance").html("<b><i><font color='red'>Unlimited Credit Limit</font></i></b>");
 		}
 	}
 
@@ -1379,18 +1417,22 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 		
 	var tditmprice = "<td width=\"100\" nowrap> <input type='text' value='"+price+"' class='numeric2 form-control input-xs' style='text-align:right' name=\"txtnprice\" id='txtnprice"+lastRow+"' \"  "+qtystat+" > </td>";
 
-	var tditmbaseamount = "<td width=\"100\" nowrap> <input type='text' value='"+curramtz+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtntranamount\" id='txtntranamount"+lastRow+"' readonly> <input type='hidden' value='"+baseprice.toFixed(4)+"' name=\"txtnamount\" id='txtnamount"+lastRow+"'  readonly> </td>";
+	var tditmbaseamount = "<td width=\"100\" nowrap> <input type='text' value='"+curramtz+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtntranamount\" id='txtntranamount"+lastRow+"' readonly> <input type='hidden' value='"+baseprice.toFixed(4)+"' name=\"txtnamount\" id='txtnamount"+lastRow+"'> </td>";
 			
 	//var tditmamount = "<td width=\"100\" nowrap>  </td>"; tditmamount
 	
-	var tditmdel = "<td width=\90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' onClick=\"deleteRow(this);\"/> &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> </td>";
+	// &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> 
+	var tditmremx = "<td><input type='text' value='' class='form-control input-xs' name=\"txtcitmremx\" id='txtcitmremx"+lastRow+"'></td>";
+
+	var tditmdel = "<td width=\90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + lastRow + "' value='delete' /></td>";
 
 
-	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmavail + tditmvats + tditmunit + tditmfactor + tditmqty + tditmprice + tditmbaseamount + tditmdel + '</tr>');
+	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmavail + tditmvats + tditmunit + tditmfactor + tditmqty + tditmprice + tditmbaseamount + tditmremx + tditmdel + '</tr>');
 
-									$("#del"+itmcode).on('click', function() {
+									$("#del"+lastRow).on('click', function() {
 										$(this).closest('tr').remove();
 
+										Reindex();
 										ComputeGross();
 									});
 
@@ -1449,7 +1491,26 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 																		
 }
 
-			
+function Reindex(){
+			$("#MyTable > tbody > tr").each(function(index) {	
+				tx = index + 1;
+
+				$(this).find('select[name="seluom"]').attr("id","seluom"+tx);
+				$(this).find('input[name="txtnqty"]').attr("id","txtnqty"+tx);
+				$(this).find('input[name="txtnprice"]').attr("id","txtnprice"+tx);
+				$(this).find('input[type="hidden"][name="txtnamount"]').attr("id","txtnamount"+tx);
+				$(this).find('input[name="txtntranamount"]').attr("id","txtntranamount"+tx);
+				$(this).find('input[type="hidden"][name="hdnmainuom"]').attr("id","hdnmainuom"+tx);
+				$(this).find('input[name="hdnfactor"]').attr("id","hdnfactor"+tx); 
+
+				if(xChkVatableStatus==1){ 
+					$(this).find('select[name="selitmvatyp"]').attr("id","selitmvatyp"+tx); 
+				}
+
+				$(this).find('input[name="txtcitmremx"]').attr("id","txtcitmremx"+tx);
+
+			});
+}
 		function ComputeAmt(nme){
 			var r = nme.replace( /^\D+/g, '');
 			var nnet = 0;
@@ -1472,10 +1533,10 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 			$("#txtnamount"+r).val(namt2);
 
 			$("#txtntranamount"+r).autoNumeric('destroy');
-			$("#txtnamount"+r).autoNumeric('destroy');
+			//$("#txtnamount"+r).autoNumeric('destroy');
 
 			$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
-			$("#txtnamount"+r).autoNumeric('init',{mDec:2});
+			//$("#txtnamount"+r).autoNumeric('init',{mDec:2});
 
 
 		}
@@ -1539,7 +1600,7 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 
 
 
-function addqty(){
+/*function addqty(){
 
 	var itmcode = document.getElementById("txtprodid").value;
 
@@ -1578,10 +1639,10 @@ function addqty(){
 	
 	ComputeGross();
 
-}
+}*/
 
 
-function viewhidden(itmcde,itmnme){
+/*function viewhidden(itmcde,itmnme){
 	var tbl = document.getElementById('MyTable2').getElementsByTagName('tr');
 	var lastRow2 = tbl.length-1;
 	
@@ -1653,7 +1714,7 @@ function chkCloseInfo(){
 	else{
 		alert("Incomplete info values!");
 	}
-}
+}*/
 
 
 function chkprice(itmcode,itmunit,ccode,datez){
@@ -1943,9 +2004,8 @@ function chkform(){
 		
 		ISOK = "NO";
 	}
-	// ACTIVATE MUNA LAHAT NG INFO
-	
-	$("#MyTable2 > tbody > tr").each(function() {				
+	// ACTIVATE MUNA LAHAT NG INFO	
+	/*$("#MyTable2 > tbody > tr").each(function() {				
 
 		var itmcde = $(this).find('input[type="hidden"][name="txtinfocode"]').val();
 		
@@ -1953,7 +2013,7 @@ function chkform(){
 		$(this).find('input[name="txtinfoval"]').attr("disabled", false);
 		$(this).find('input[type="button"][id="delinfo'+itmcde+'"]').attr("class", "btn btn-danger btn-xs");
 
-	});
+	});*/
 
 	// Check pag meron wla Qty na Order
 	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
@@ -1982,7 +2042,7 @@ function chkform(){
 			myav = $(this).find('input[type="hidden"][name="hdnavailqty"]').val();
 			myfacx = $(this).find('input[name="hdnfactor"]').val();
 			
-			myprice = $(this).find('input[name="txtnamount"]').val();
+			myprice = $(this).find('input[type="hidden"][name="txtnamount"]').val();
 			
 			if(myqty == 0 || myqty == ""){
 				msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero or blank qty is not allowed: row " + index;	
@@ -2015,7 +2075,8 @@ function chkform(){
 	}
 
 	// Check if Credit Limit activated (kung sobra)
-	if(xChkLimit==1){
+	//alert(xChkLimit +" : "+ parseFloat($('#hdncustlimit').val()));
+	if(xChkLimit==1 && parseFloat($('#hdncustlimit').val()) > 0){
 		if(parseFloat($("#txtnGross").val())>parseFloat($("#hdncustbalance").val())){
 				$("#AlertMsg").html("&nbsp;&nbsp;<b>ERROR: </b> Available Credit Limit is not enough!");
 				$("#alertbtnOK").show();
@@ -2023,8 +2084,6 @@ function chkform(){
 				
 				return false;
 				ISOK = "NO";
-
-
 		}
 	}
 		
@@ -2036,6 +2095,7 @@ function chkform(){
 		var ccode = $("#txtcustid").val();
 		var crem = $("#txtremarks").val();
 		var ddate = $("#date_delivery").val();
+		var dpodate = $("#date_PO").val();
 		var ngross = $("#txtnGross").val().replace(/,/g,'');
 		var csitype = $("#selsityp").val(); 
 		var custpono = $("#txtcPONo").val();
@@ -2109,14 +2169,21 @@ function chkform(){
 				var cuom = $(this).find('select[name="seluom"]').val();
 				var nqty = $(this).find('input[name="txtnqty"]').val();
 				var nprice = $(this).find('input[name="txtnprice"]').val();
-				var namt = $(this).find('input[name="txtnamount"]').val();
+				var namt = $(this).find('input[type="hidden"][name="txtnamount"]').val();
 				var nbaseamt = $(this).find('input[name="txtntranamount"]').val();
 				var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
 				var nfactor = $(this).find('input[name="hdnfactor"]').val();
 
-				var vatcode = $(this).find('select[name="selitmvatyp"]').val(); 
-				var nrate = $(this).find('select[name="selitmvatyp"] option:selected').data('id');
+				if(xChkVatableStatus==1){ 
+					var vatcode = $(this).find('select[name="selitmvatyp"]').val(); 
+					var nrate = $(this).find('select[name="selitmvatyp"] option:selected').data('id');
+				}else{
+					var vatcode = "";
+					var nrate = 0;
+				}
 
+				var citmremx = $(this).find('input[name="txtcitmremx"]').val();
+				
 				if(nqty!==undefined){
 					nqty = nqty.replace(/,/g,'');
 					nprice = nprice.replace(/,/g,'');
@@ -2126,7 +2193,7 @@ function chkform(){
 			
 				$.ajax ({
 					url: "SO_newsavedet.php",
-					data: { nrefident: nrefident, trancode: trancode, crefno: crefno, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, nbaseamt:nbaseamt, mainunit:mainunit, nfactor:nfactor, vatcode:vatcode, nrate:nrate },
+					data: { nrefident: nrefident, trancode: trancode, crefno: crefno, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, nbaseamt:nbaseamt, mainunit:mainunit, nfactor:nfactor, vatcode:vatcode, nrate:nrate, citmremx:citmremx },
 					async: false,
 					success: function( data ) {
 						if(data.trim()=="False"){

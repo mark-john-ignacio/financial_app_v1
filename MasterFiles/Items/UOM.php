@@ -13,6 +13,7 @@ include('../../include/accessinner.php');
 
 <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">
 <link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>      
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 <script src="../../Bootstrap/js/bootstrap.js"></script>
 
@@ -310,6 +311,14 @@ a.info:hover span{ /*the span will display just on :hover state*/
 		})
 		
 	});
+
+	$(document).keydown(function(e) {	
+		 
+		 if(e.keyCode == 112) { //F1
+			 e.preventDefault();
+			 $("#btnadd").click();
+		 }
+	 });
 	
 	function editgrp(code,desc){
 		 var x = chkAccess('UOM_Edit.php');

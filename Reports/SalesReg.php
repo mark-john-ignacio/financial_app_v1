@@ -10,6 +10,8 @@ include('../include/access.php');
 
 ?><html>
 <head>
+
+<link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
 
@@ -20,32 +22,36 @@ include('../include/access.php');
 <script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Coop Financials</title>
+<title>Myx Financials</title>
 </head>
 
 <body style="padding-left:50px;">
 <center><font size="+1"><b><u>Sales Register</u></b></font></center>
 <br>
-<form action="Sales/SalesJournal.php" method="post" name="frmrep" id="frmrep" onclick='return false;' target="_blank">
+<form action="Accounting/SalesJournal.php" method="post" name="frmrep" id="frmrep" onclick='return false;' target="_blank">
 <table width="100%" border="0" cellpadding="2">
   <tr>
-    <td rowspan="2" valign="top" width="50" style="padding:2px">
-    <button type="submit" class="btn btn-danger navbar-btn" id="btnsales">
-    <span class="glyphicon glyphicon-search"></span> View Report
-    </button>
+    <td valign="top" width="50" style="padding:2px">
+      <button type="submit" class="btn btn-danger btn-block" id="btnsales">
+      <span class="glyphicon glyphicon-search"></span> View Report
+      </button>
     </td>
     <td width="150" style="padding-left:10px"><b>Report Type: </b></td>
     <td style="padding:2px">
     <div class="col-xs-5 nopadding">
         <select id="seltype" name="seltype" class="form-control input-sm" onChange="setact(this.value);">
-          <option value="Sales/SalesJournal.php">Journal</option>
-          <option value="Sales/SalesRecap.php">Recap</option>
-          <option value="Sales/SalesRecapCust.php">Recap Per Customer</option>
+          <option value="Accounting/SalesJournal.php">Journal</option>
+          <option value="Accounting/SalesRecap.php">Recap</option>
+          <option value="Accounting/SalesRecapCust.php">Recap Per Customer</option>
         </select>
    </div>
    </td>
   </tr>
   <tr>
+  <td valign="top" width="50" style="padding:2px"> 
+      <button type="button" class="btn btn-success btn-block" id="btnxls">
+            <i class="fa fa-file-excel-o"></i> To Excel
+      </button></td>
     <td style="padding-left:10px"><b>Date Range: </b></td>
     <td style="padding:2px">
     <div class="col-xs-12 nopadding">
@@ -68,12 +74,7 @@ include('../include/access.php');
      </div>    
     </td>
   </tr>
-  <tr>
-    <td> 
-      <button type="button" class="btn btn-success btn-block" id="btnxls">
-            <i class="fa fa-file-excel-o"></i> To Excel
-      </button></td>
-  </tr>
+
 </table>
 </form>
 </body>

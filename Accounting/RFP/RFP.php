@@ -197,7 +197,7 @@ mysqli_close($con);
 	$(document).keydown(function(e) {	 
 		if(e.keyCode == 112) { //F2
 			e.preventDefault();
-			window.location = "PayBill_new.php";
+			window.location = "RFP_new.php";
 		}
 	});
 

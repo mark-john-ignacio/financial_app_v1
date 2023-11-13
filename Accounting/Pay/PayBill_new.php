@@ -366,7 +366,7 @@
 											<th scope="col">Account Code</th>
 											<th scope="col">Account Title</th>											
 											<th scope="col" id="tblewt" style="display: none">EWT Code</th>
-											<th scope="col" id="tbldrcr" style="display: none">Type</th>
+											<th scope="col">Type</th>
 											<th scope="col">Cost Center</th>
 											<th scope="col">&nbsp;</th>
 										</tr>
@@ -1053,11 +1053,9 @@
 			if($(this).find(":selected").val()==1) {
 				$("#btnAPVIns").attr("disabled", true);  
 				$("#tblewt").show(); 
-				$("#tbldrcr").show(); 
 			}else{
 				$("#btnAPVIns").attr("disabled", false);
 				$("#tblewt").hide(); 
-				$("#tbldrcr").hide(); 
 			}
 		});
 
@@ -1224,11 +1222,13 @@
 
 			if ($('#isNoRef').find(":selected").val()==1) {
 				var t4 = "<td style=\"padding:2px\" align=\"center\" width=\"100px\" nowrap> <input type=\"text\" class=\"napvewt form-control input-sm\" name=\"napvewt\" id=\"napvewt"+lastRow+"\" value=\""+cacctno+"\" placeholder=\"EWT Code\"/></td>";
-				var t5 = "<td style=\"padding:2px\" align=\"center\" width=\"80px\" nowrap> <select name=\"selentrytyp\" id=\"selentrytyp"+lastRow+"\" class=\" form-control input-sm\" onchange=\"GoToCompOthers();\"><option value=\"Debit\">Debit</option><option value=\"Credit\">Credit</option></select></td>";	
+					
 			}else{
 				var t4 = "<input type=\"hidden\" name=\"napvewt\" id=\"napvewt"+lastRow+"\" value=\""+ewtamt+"\" />";
-				var t5 = "<input type=\"hidden\" name=\"selentrytyp\" id=\"selentrytyp"+lastRow+"\" value=\"Debit\" />";	
+
 			}
+
+			var t5 = "<td style=\"padding:2px\" align=\"center\" width=\"80px\" nowrap> <select name=\"selentrytyp\" id=\"selentrytyp"+lastRow+"\" class=\" form-control input-sm\" onchange=\"GoToCompOthers();\"><option value=\"Debit\">Debit</option><option value=\"Credit\">Credit</option></select></td>";
 
 			var t3 = "<td style=\"padding:2px\" align=\"center\" width=\"10px\" nowrap> <button class=\"btn btn-xs btn-danger\" name=\"delRow\" id=\"delRow"+lastRow+"\"><i class='fa fa-times'></i></button></td>";	
 
@@ -1258,6 +1258,7 @@
 									
 									$("input.numeric").on("keyup", function (e) {
 											GoToComp();
+											GoToCompAmt();
 											setPosi($(this).attr('name'),e.keyCode);
 									});
 
@@ -1309,12 +1310,13 @@
 
 			if ($('#isNoRef').find(":selected").val()==1) {
 				$(this).find('input[name="napvewt"]').attr("id","napvewt" + tx);
-				$(this).find('select[name="selentrytyp"]').attr("id","selentrytyp" + tx);
+				
 			}else{
 				$(this).find('input[type=hidden][name="napvewt"]').attr("id","napvewt" + tx); 
-				$(this).find('input[type=hidden][name="selentrytyp"]').attr("id","selentrytyp" + tx);
+
 			}
 
+			$(this).find('select[name="selentrytyp"]').attr("id","selentrytyp" + tx);
 			$(this).find('select[name="selcostcentr"]').attr("id","selcostcentr" + tx);
 			
 			$(this).find('button[name="delRow"]').attr("id","delRow" + tx);
@@ -1439,13 +1441,12 @@
 					$(this).find('input[name="cacctno"]').attr("name","cacctno" + tx);
 
 					if ($('#isNoRef').find(":selected").val()==1) {
-						$(this).find('input[name="napvewt"]').attr("name","napvewt" + tx);
-						$(this).find('select[name="selentrytyp"]').attr("name","selentrytyp" + tx);
+						$(this).find('input[name="napvewt"]').attr("name","napvewt" + tx);						
 					}else{
 						$(this).find('input[type=hidden][name="napvewt"]').attr("name","napvewt" + tx); 
-						$(this).find('input[type=hidden][name="selentrytyp"]').attr("name","selentrytyp" + tx);
 					}
 
+					$(this).find('select[name="selentrytyp"]').attr("name","selentrytyp" + tx);
 					$(this).find('select[name="selcostcentr"]').attr("name","selcostcentr" + tx);
 					
 				});
@@ -1503,9 +1504,18 @@
 
 			for (z=1; z<=lastRow; z++){
 				if($("#selentrytyp"+z).val()=="Debit"){
-					totndebit = parseFloat(totndebit) + parseFloat($("#nAmount"+z).val().replace(/,/g,''));
+					if($("#cRefRRNo"+z).val()==""){ 
+						totndebit = parseFloat(totndebit) + parseFloat($("#nApplied"+z).val().replace(/,/g,''));
+					}else{
+						totndebit = parseFloat(totndebit) + parseFloat($("#nAmount"+z).val().replace(/,/g,''));
+					}
+					
 				}else if($("#selentrytyp"+z).val()=="Credit"){
-					totncredit = parseFloat(totncredit) + parseFloat($("#nAmount"+z).val().replace(/,/g,''));
+					if($("#cRefRRNo"+z).val()==""){ 
+						totncredit = parseFloat(totncredit) + parseFloat($("#nApplied"+z).val().replace(/,/g,''));
+					}else{
+						totncredit = parseFloat(totncredit) + parseFloat($("#nAmount"+z).val().replace(/,/g,''));
+					}
 				}
 			}
 

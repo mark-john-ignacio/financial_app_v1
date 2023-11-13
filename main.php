@@ -40,6 +40,7 @@
 <!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
 <body class="page-header-fixed page-quick-sidebar-over-content" onLoad="setpage('MAIN/index.html');">
 	<?php
+
 		if(!isset($_SESSION)){
 			session_start();
 		}
@@ -51,7 +52,9 @@
 		//get user details
 		$arrcompz = array();
 		$cntzcompany = 0;
-		$result=mysqli_query($con,"select * From company");								
+		
+		$result=mysqli_query($con,"select compcode, compname, clogoname, lallownontrade, lmrpmodules, IFNULL(csubcode,'') as csubcode From company");		
+
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 		{
 			$cntzcompany++;
@@ -60,7 +63,8 @@
 				$compname =  $row['compname'];
 				$logoname =  str_replace("../","",$row['clogoname']);
 				$lallowNT =  $row['lallownontrade'];
-				$lallowMRP =  $row['lmrpmodules'];
+				$lallowMRP = $row['lmrpmodules'];
+				$durlSUB = $row['csubcode'];
 			}
 		}   
 	?>
@@ -381,7 +385,15 @@
 						?> 
 
 						<li>
-							<a href="javascript:;" onClick="setpage('Sales/SO/SO.php?ix=');">
+							<?php
+								//check if SO_subdomain exist
+								if ( file_exists( "Sales/SO_".$durlSUB ) || is_dir( "Sales/SO_".$durlSUB) ) {   
+									$SOLink = "Sales/SO_".$durlSUB."/SO.php?ix=";
+								}else{
+									$SOLink = "Sales/SO/SO.php?ix=";
+								}
+							?>
+							<a href="javascript:;" onClick="setpage('<?=$SOLink?>');">
                 <i class="fgly-sm flaticon-003-shopping-list"></i> Sales Order
 							</a>
 						</li>
@@ -474,6 +486,11 @@
 					</a>
 					<ul class="sub-menu">
 						<li>
+							<a href="javascript:;" onClick="setpage('Accounting/Currency/currency.php?ix=');">
+                <i class="fa fa-money"> </i> Currency List
+							</a>
+						</li>
+						<li>
 							<a href="javascript:;" onClick="setpage('Accounting/Journal/Journal.php?ix=');">
                 <i class="fa fa-book"> </i>Journal Entry
 							</a>
@@ -500,9 +517,18 @@
                 </li>
 
 								<?php
-									$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='RFPMODULE'"); 
 									
-									if (mysqli_num_rows($result)!=0) {
+									$sql = "SELECT * FROM `parameters` WHERE compcode='$company' and ccode='RFPMODULE'";
+									$result=mysqli_query($con,$sql);
+																														
+									$crfpx = 0;                                       
+														
+									while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+									{
+										$crfpx = $row['cvalue'];
+									}
+
+									if ($crfpx==1) {
 								?>
 									<li>
 										<a href="javascript:;" onClick="setpage('Accounting/RFP/RFP.php?ix=');"> <i class="fa fa-angle-double-right"></i> Request For Payment </a>
@@ -560,20 +586,35 @@
 						<?php
 							if($lallowMRP==1){
 						?>
+							<li>
+								<a href="javascript:;" class="nav-link nav-toggle">
+									<i class="fa fa-file-archive-o"></i> Master Files <span class="arrow"></span> 
+								</a> <!-- Maintenance/Items.php -->
+															
+								<ul class="sub-menu">
+									<li> 
+										<a href="javascript:;" onClick="setpage('MRP/MasterFiles/PROCESS.php');"> <i class="fa fa-angle-double-right"></i> Production Processes </a>
+									</li>
+									<li>
+										<a href="javascript:;" onClick="setpage('MRP/MasterFiles/MACHINES.php');"> <i class="fa fa-angle-double-right"></i> Machines </a>
+									</li>
+									<li>
+										<a href="javascript:;" onClick="setpage('MRP/MasterFiles/OPERATORS.php');"> <i class="fa fa-angle-double-right"></i> Operators </a>
+									</li>							
+								</ul>
+							</li>
+
 						<li>
 							<a href="javascript:;" onClick="setpage('MRP/BOM/items_list.php');">
 							<i class="fa fa-cubes"> </i> Material BOM</a>
 						</li>
-						<li>
-                <a href="javascript:;" onClick="setpage('MRP/BOM/PROCESS.php');"> 
-								<i class="fa fa-recycle"></i> Production Processes </a>
-            </li>
+						
 						<li>
                 <a href="javascript:;" onClick="setpage('MRP/JO/JO.php');"> 
 								<i class="fa fa-file-text-o"></i> Job Orders </a>
             </li>
 						<li>
-                <a href="javascript:;" onClick="setpage('MRP/Prod_run/ProdRun.php');"> 
+                <a href="javascript:;" onClick="setpage('MRP/ProdRun/ProdRun.php');"> 
 								<i class="fa fa-tasks"></i> Production Run </a>
             </li>
 						<?php

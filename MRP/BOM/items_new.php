@@ -100,18 +100,34 @@
 			<legend>Bill of Materials</legend>
 		</fieldset>	
 
-		<div class="col-xs-12 nopadwtop"> 
-			<div class="col-xs-2 nopadding"> <b>Product No.: </b> </div> 
-			<div class="col-xs-2 nopadding"> <input type="text" class="form-control input-xs" name="cmainitemno"  id="cmainitemno" value="" readonly> </div>
-			<div class="col-xs-1 nopadwleft"> <button type="button" id="btnsrchprod" class="btn btn-xs btn-success" data-toggle="modal" data-target="#moditm"><i class="fa fa-search" aria-hidden="true"></i></button> </div>
-			<div class="col-xs-1 nopadding"> <b>Unit: </b> </div>
-			<div class="col-xs-2 nopadding"> <input type="text" class="form-control input-xs" name="cunit"  id="cunit" value="" readonly> </div>
+		<div class="col-xs-12 nopadwtop">
+			<div class="col-xs-1" style="padding-top: 6px !important; padding-left: 0 !important"> <b>Customer: </b> </div>
+			<div class="col-xs-3 nopadding"> <input type="text" class="form-control input-sm" name="citemcustomer"  id="citemcustomer" value="" placeholder="Customer Name"> </div>
+
+			<div class="col-xs-1 text-right" style="padding-top: 6px !important; padding-left: 0 !important"> <b>Project: </b> </div>
+			<div class="col-xs-3 nopadwleft"> <input type="text" class="form-control input-sm" name="citemproj"  id="citemproj" value="" placeholder="Project"> </div>
+
+			<div class="col-xs-1 text-right" style="padding-top: 6px !important; padding-left: 0 !important"> <b>Title: </b> </div>
+			<div class="col-xs-3 nopadwleft"> <input type="text" class="form-control input-sm" name="citemtitl"  id="citemtitl" value="" placeholder="Title"> </div>
 		</div>
 
-		<div class="col-xs-12 nopadwtop">
-			<div class="col-xs-2 nopadding"> <b>Product Description: </b> </div>
-			<div class="col-xs-6 nopadding"> <input type="text" class="form-control input-xs" name="citemdesc"  id="citemdesc" value="" readonly> </div>
+		<div class="col-xs-12 nopadwtop"> 
+			<div class="col-xs-1" style="padding-top: 6px !important; padding-left: 0 !important"> <b>Product: </b> </div> 
+			<div class="col-xs-2 nopadding">
+				<div class="input-group">
+					
+					<span class="input-group-btn">
+						<button class="btn btn-primary btn-sm" id="btnsrchprod" type="button" data-toggle="modal" data-target="#moditm"><span class="glyphicon glyphicon-search" aria-hidden="true">
+						</span> Search!</button>
+					</span>
+					<input type="text" class="form-control input-sm" name="cmainitemno"  id="cmainitemno" value="" readonly placeholder="Code">
+				</div>
+			</div>
+			
+			<div class="col-xs-6 nopadwleft"> <input type="text" class="form-control input-sm" name="citemdesc"  id="citemdesc" value="" readonly placeholder="Description"> </div>
+			<div class="col-xs-1 nopadwleft"> <input type="text" class="form-control input-sm" name="cunit"  id="cunit" value="" readonly placeholder="UOM"> </div>
 		</div>
+
 
 		<div class="col-xs-12 nopadwtop2x">&nbsp;</div>
 
@@ -135,7 +151,7 @@
 						<div class="col-xs-2 nopadwleft">	
 							<button type="button" class="btn btn-sm btn-success btn-block" name="btnuploadexcel" id="btnuploadexcel" disabled><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;Upload Excel</button> 
 						</div>
-						<input type="hidden" name="rowcnt" id="rowcnt" value=""> 
+						<input type="hidden" name="rowcnt1" id="rowcnt1" value=""> 
 					</div>
 
 					<hr class="here">
@@ -470,13 +486,13 @@
 
 			var $tdrows = "";
 
-			$tdrows = "<td><input type='text' class=\"form-control input-xs text-center\" value='"+sornum+"' name=\"txtsortnum\" id=\"txtsortnum"+sornum+"\" readonly></td><td><input type='hidden' value='"+itmid+"' name=\"txtitmcode\" id=\"txtitmcode"+sornum+"\">"+itmid+"</td><td><input type='hidden' value='"+itmdesc+"' name=\"txtitmdesc\" id=\"txtitmdesc"+sornum+"\"><div style='text-indent:"+GENxyz0+"px'>"+itmdesc+"</div></td><td><input type='hidden' value='"+itmunit+"' name=\"txtcunit\" id=\"txtcunit"+sornum+"\">"+itmunit+"</td><td><input type=\"text\" class=\"form-control input-xs text-center\" name=\"txtlvl\" id=\"txtlvl"+sornum+"\" value=\""+lvl+"\" readonly></td>";
+			$tdrows = "<td><input type='text' class=\"form-control input-xs text-center\" value='"+sornum+"' name=\"txtsortnum1\" id=\"txtsortnum1"+sornum+"\" readonly></td><td><input type='hidden' value='"+itmid+"' name=\"txtitmcode1\" id=\"txtitmcode1"+sornum+"\">"+itmid+"</td><td><input type='hidden' value='"+itmdesc+"' name=\"txtitmdesc1\" id=\"txtitmdesc1"+sornum+"\"><div style='text-indent:"+GENxyz0+"px'>"+itmdesc+"</div></td><td><input type='hidden' value='"+itmunit+"' name=\"txtcunit1\" id=\"txtcunit1"+sornum+"\">"+itmunit+"</td><td><input type=\"text\" class=\"form-control input-xs text-center\" name=\"txtlvl1\" id=\"txtlvl1"+sornum+"\" value=\""+lvl+"\" readonly></td>";
 
-			$tdrows = $tdrows + "<td><input type='text' class=\"form-control input-xs text-center\" value='1' name=\"txtnqty\" id=\"txtnqty1"+sornum+"\"></td>";
+			$tdrows = $tdrows + "<td><input type='text' class=\"form-control input-xs text-center\" value='1' name=\"txtnqty1\" id=\"txtnqty1"+sornum+"\"></td>";
 
-			$tdrows = $tdrows + "<td class=\"text-center\"><select class=\"form-control input-xs text-center\" name=\"selType\" id=\"selType"+sornum+"\"><option value='MAKE'>MAKE</option><option value='BUY'>BUY</option></select></td>";
+			$tdrows = $tdrows + "<td class=\"text-center\"><select class=\"form-control input-xs text-center\" name=\"selType1\" id=\"selType1"+sornum+"\"><option value='MAKE'>MAKE</option><option value='BUY'>BUY</option></select></td>";
 
-			$tdrows = $tdrows + "<td class=\"text-center\"><button type='button' class=\"btn btn-danger btn-xs\" name=\"btnDel\" id=\"btnDel"+sornum+"\"><i class=\"fa fa-times\"></i></button></td>";
+			$tdrows = $tdrows + "<td class=\"text-center\"><button type='button' class=\"btn btn-danger btn-xs\" name=\"btnDel1\" id=\"btnDel1"+sornum+"\"><i class=\"fa fa-times\"></i></button></td>";
 
 			//$tdrows = $tdrows + "<td class=\"text-center\"><button type='button' class=\"btn btn-success btn-xs\" name=\"btnAdd\" id=\"btnAdd"+sornum+"\"><i class=\"fa fa-arrow-circle-down\"></i></button></td>";
 			
@@ -490,7 +506,7 @@
 			}	
 
 			$("#btnDel"+sornum).on('click', function() { 
-				recomdel(this);
+				//recomdel(this);
 
 				$(this).closest('tr').remove();
 				reindextbl();
@@ -526,23 +542,17 @@
 
 			//alert(tx);
 			$(this).attr("id", "tr"+tx);
-			$(this).find('input[name="txtsortnum"]').val(tx);
-			$(this).find('input[name="txtsortnum"]').attr("id","txtsortnum"+tx);
+			$(this).find('input[name="txtsortnum1"]').val(tx);
+			$(this).find('input[name="txtsortnum1"]').attr("id","txtsortnum1"+tx);
 
-			$(this).find('input[type=hidden][name="txtitmcode"]').attr("id","txtitmcode"+tx);
-			$(this).find('input[type=hidden][name="txtitmdesc"]').attr("id","txtitmdesc"+tx);
-			$(this).find('input[type=hidden][name="txtcunit"]').attr("id","txtcunit"+tx);
-			$(this).find('input[name="txtlvl"]').attr("id","txtlvl"+tx);
+			$(this).find('input[type=hidden][name="txtitmcode1"]').attr("id","txtitmcode1"+tx);
+			$(this).find('input[type=hidden][name="txtitmdesc1"]').attr("id","txtitmdesc1"+tx);
+			$(this).find('input[type=hidden][name="txtcunit1"]').attr("id","txtcunit1"+tx);
+			$(this).find('input[name="txtlvl1"]').attr("id","txtlvl"+tx);
+			$(this).find('input[name="txtnqty1"]').attr("id","txtnqty1"+tx);
 
-			getcnt = parseInt($("#hdncount").val());
-			for (i = 1; i <= getcnt; i++) {
-
-				$(this).find('input[name="txtnqty'+i+'"]').attr("id","txtnqty"+i+tx);
-
-			}
-
-			$(this).find('select[name="selType"]').attr("id","selType"+tx);
-			$(this).find('button[name="btnDel"]').attr("id","btnDel"+tx);
+			$(this).find('select[name="selType1"]').attr("id","selType1"+tx);
+			$(this).find('button[name="btnDel1"]').attr("id","btnDel1"+tx);
 			//$(this).find('button[name="btnAdd"]').attr("id","btnAdd"+tx);
 
 			//$("#btnAdd"+tx).attr("onclick","addsub(this)");
@@ -550,7 +560,7 @@
 		});
 	}
 
-	function recomdel(xc){
+	/*function recomdel(xc){
 		rowindx = xc.parentNode.parentNode.rowIndex;
 		getid = xc.id;
 		getid = getid.replace("btnDel","");
@@ -573,7 +583,7 @@
 			}
 
 		});
-	}
+	}*/
 
 	function addprocess(){
     var tbl = document.getElementById('myProcessTable').getElementsByTagName('tr');
@@ -628,7 +638,7 @@
 
 		var tbl1 = document.getElementById('MyTbl').getElementsByTagName('tr');
 		var lastRow1 = tbl1.length-1;
-		$("#rowcnt").val(lastRow1);
+		$("#rowcnt1").val(lastRow1);
 
 		var tbl = document.getElementById('myProcessTable').getElementsByTagName('tr');
     var lastRow = tbl.length-1;                                               
@@ -640,18 +650,16 @@
 			$("#MyTbl > tbody > tr").each(function(index) {
 				$tx = index+1;
 
-				$(this).find('input[name="txtsortnum"]').val($tx);
-				$(this).find('input[name="txtsortnum"]').attr('name','txtsortnum'+$tx);
-				$(this).find('input[type=hidden][name="txtitmcode"]').attr("name","txtitmcode"+$tx);
-				$(this).find('input[type=hidden][name="txtitmdesc"]').attr("name","txtitmdesc"+$tx);
-				$(this).find('input[type=hidden][name="txtcunit"]').attr("name","txtcunit"+$tx);
-				$(this).find('input[name="txtlvl"]').attr("name","txtlvl"+$tx);
-				$(this).find('select[name="selType"]').attr("name","selType"+$tx);
+				$(this).find('input[name="txtsortnum1"]').val($tx);
+				$(this).find('input[name="txtsortnum1"]').attr('name','txtsortnum1'+$tx);
+				$(this).find('input[type=hidden][name="txtitmcode1"]').attr("name","txtitmcode1"+$tx);
+				$(this).find('input[type=hidden][name="txtitmdesc1"]').attr("name","txtitmdesc1"+$tx);
+				$(this).find('input[type=hidden][name="txtcunit1"]').attr("name","txtcunit1"+$tx);
+				$(this).find('input[name="txtlvl1"]').attr("name","txtlvl1"+$tx);
+				$(this).find('select[name="selType1"]').attr("name","selType1"+$tx);
 
-				getcnt = parseInt($("#hdncount").val());
-				for (i = 1; i <= getcnt; i++) {
-					$(this).find('input[name="txtnqty"]').attr("name","txtnqty"+i+$tx);
-				}			
+				$(this).find('input[name="txtnqty1"]').attr("name","txtnqty1"+$tx);
+	
 
 			});
 		

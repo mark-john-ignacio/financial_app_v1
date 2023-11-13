@@ -457,7 +457,8 @@ if(@$lvlcompute==1){
 					url:'users_chkID.php',// put your real file name 
 					data:{id: x},
 					success:function(msg){
-						if(msg !=""){
+
+						if(msg.trim() != "YES"){
 							$("#add_err").css('display', 'inline', 'important');
 							$("#add_err").html("<div class='alert alert-danger' role='alert'>&nbsp;&nbsp;" + msg + "</div>");
 						}
@@ -614,6 +615,14 @@ if(@$lvlcompute==1){
 			
 	});
 	
+	$(document).keydown(function(e) {	
+		 
+		 if(e.keyCode == 112) { //F1
+			 e.preventDefault();
+			 $("#btnadd").click();
+		 }
+	 });
+	 
 	//preview of image
 	function imageIsLoaded(e) {
 		$("#file").css("color","green");

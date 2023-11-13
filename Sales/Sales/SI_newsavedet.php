@@ -29,8 +29,13 @@ function chkgrp($valz) {
 		$nAmount = $_REQUEST['namt'];
 		$nTranAmount = $_REQUEST['ntranamt'];
 
+
 		if(isset($_REQUEST['ewtcode']) && $_REQUEST['ewtcode']!=""){
-			$cewtcode = implode(",",$_REQUEST['ewtcode']);
+			if(is_array($_REQUEST['ewtcode'])){
+				$cewtcode = implode(",",$_REQUEST['ewtcode']);
+			}else{
+				$cewtcode = $_REQUEST['ewtcode'];
+			}
 		}else{
 			$cewtcode = "";
 		}
@@ -41,17 +46,9 @@ function chkgrp($valz) {
 
 		$cMainUOM = $_REQUEST['mainunit'];
 		$nFactor = $_REQUEST['nfactor'];
-		$cacctcode = "NULL";
-	
-		
-				$sqlhead = mysqli_query($con,"Select A.cacctcodesales, A.ctaxcode, B.nrate from items A left join taxcode B on A.compcode=B.compcode and A.ctaxcode=B.ctaxcode where A.compcode='$company' and A.cpartno='$cItemNo'");
-				
-				if (mysqli_num_rows($sqlhead)!=0) {
-					$row = mysqli_fetch_assoc($sqlhead);
-					$cacctcode = "'".$row["cacctcodesales"]."'";
-				}
+		$cacctcode = $_REQUEST['acctid']; 
 
-	$refcidenttran = $cSINo."P".$indexz;
+		$refcidenttran = $cSINo."P".$indexz;
 
 	//echo "INSERT INTO sales_t(`compcode`, `cidentity`, `ctranno`, `creference`, `nrefident`, `nident`, `citemno`, `nqty`, `cunit`, `nprice`, `ndiscount`, `nbaseamount`, `namount`, `cmainunit`,`nfactor`,`cacctcode`,`ctaxcode`, `nrate`, `cewtcode`, `newtrate`) values('$company', '$refcidenttran', '$cSINo', $crefno, $crefident, '$indexz', '$cItemNo', '$nQty', '$cUnit', '$nPrice', '$nDiscount', '$nTranAmount', '$nAmount', '$cMainUOM', '$nFactor', $cacctcode, '$ctaxcode', '$nrate', '$cewtcode', '$cewtrate')";
 

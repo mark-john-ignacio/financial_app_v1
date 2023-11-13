@@ -37,6 +37,7 @@ include('../../include/access2.php');
 	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">    
 	<link href="../../Bootstrap/css/jquery.bootstrap.treeselect.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 
 
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
@@ -60,9 +61,12 @@ include('../../include/access2.php');
            			 
 
 				<div class="col-xs-12 nopadding">
-					<div class="col-xs-5 nopadding">
+					<div class="col-xs-6 nopadding">
 						<button type="button" data-toggle="modal" class="btn btn-primary btn-sm" id="btnadd" name="btnadd"><i class="fa fa-file-text-o" aria-hidden="true"></i> &nbsp; Create New (F1)</button>
+
 						<a href="Accounts_xls.php" class="btn btn-success btn-sm"><i class="fa fa-file-excel-o"></i> &nbsp; Export To Excel</a>
+
+						<button type="button" class="btn btn-warning btn-sm" id="btnedt" name="btnedt"><i class="fa fa-pencil" aria-hidden="true"></i> &nbsp; Beg Balance</button>
 					</div>
 
 					<div class="col-xs-1 nopadwtop" style="height:30px !important;">
@@ -72,13 +76,14 @@ include('../../include/access2.php');
 						<input type="text" name="searchByName" id="searchByName" value="" class="form-control input-sm" placeholder="Enter Code or Desc...">
 					</div>
 
-					<div class="col-xs-3 text-right nopadwleft">
+					<div class="col-xs-2 text-right nopadwleft">
 						<select id="seltypesearch" name="seltypesearch" class="form-control input-sm selectpicker"  tabindex="4">
 								<option value="">ALL</option>
 								<option value="ASSETS">ASSETS</option>
 								<option value="LIABILITIES">LIABILITIES</option>
 								<option value="EQUITY">EQUITY</option>
 								<option value="REVENUE">REVENUE</option>
+								<option value="COST OF SALES">COST OF SALES</option>
 								<option value="EXPENSES">EXPENSES</option>											   
 							</select>
 					</div>
@@ -93,6 +98,7 @@ include('../../include/access2.php');
 						<th>Description</th>
 						<th>Category</th>
 						<th>Type</th>
+						<th>Beg Balance</th>
 					</tr>
 				</thead>
 			</table>
@@ -158,6 +164,7 @@ include('../../include/access2.php');
 										<option value="LIABILITIES">LIABILITIES</option>
 										<option value="EQUITY">EQUITY</option>
 										<option value="REVENUE">REVENUE</option>
+										<option value="COST OF SALES">COST OF SALES</option> 
 										<option value="EXPENSES">EXPENSES</option>
 									</select>
 								</div>
@@ -267,7 +274,8 @@ include('../../include/access2.php');
 										<option value="ASSETS">ASSETS</option>
 										<option value="LIABILITIES">LIABILITIES</option>
 										<option value="EQUITY">EQUITY</option>
-										<option value="REVENUE">REVENUE</option>
+										<option value="REVENUE">REVENUE</option> 
+										<option value="COST OF SALES">COST OF SALES</option> 
 										<option value="EXPENSES">EXPENSES</option>
 									</select>
 								</div>
@@ -319,6 +327,25 @@ include('../../include/access2.php');
 		</div>
 	<!-- MODAL -->
 
+	<!-- 1) Alert Modal -->
+	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-center">
+            <div class="modal-content">
+               <div class="alert-modal-danger">
+                  <p id="AlertMsg"></p>
+                <p>
+                    <center>
+                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">Ok</button>
+                    </center>
+                </p>
+               </div>
+            </div>
+        </div>
+    </div>
+	</div>
+
+
 
 <?php
 
@@ -349,8 +376,8 @@ mysqli_close($con);
 			var searchByName = $('#searchByName').val();
 			var searchByType = $(this).val();
 
-		    $('#MyTable').DataTable().destroy();
-		    fill_datatable(searchByName,searchByType);
+		  $('#MyTable').DataTable().destroy();
+		  fill_datatable(searchByName,searchByType);
 		});
 
 		//Check new user id
@@ -379,12 +406,36 @@ mysqli_close($con);
 
 		// Adding new account
 		$("#btnadd").on("click", function() {
-			$("#divmainacc").html("");
 
-			$('#frmnew').trigger("reset");
+			var x = chkAccess('Accounts_New.php');
+		 
+		 	if(x.trim()=="True"){
+
+				$("#divmainacc").html("");
+
+				$('#frmnew').trigger("reset");
 
 
-			$('#myModal').modal('show');
+				$('#myModal').modal('show');
+
+		 	}else {
+			 $("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+			 $("#AlertModal").modal('show');
+
+		 }
+		});
+
+		$("#btnedt").on("click", function() { 
+			var x = chkAccess('Accounts_Edit.php');
+		 
+			if(x.trim()=="True"){
+
+				location.href="Accounts_Balance.php";
+
+			}else {
+				$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+				$("#AlertModal").modal('show');
+			}
 		});
 
 		$("#selvl").on("change", function() {
@@ -487,8 +538,30 @@ mysqli_close($con);
 		});
 
 
-
 	});
+
+	$(document).keydown(function(e) {	
+		 
+		if(e.keyCode == 112) { //F1
+			e.preventDefault();
+			$("#btnadd").click();
+		}
+	});
+
+	function chkAccess(id){
+		var result;
+			
+		$.ajax ({
+			url: "chkAccess.php",
+			data: { id: id },
+			async: false,
+			success: function( data ) {
+				result = data;
+			}
+		});
+			
+		return result;
+	}
 
 
 	function fill_datatable(searchByName = '', searchByType = '')
@@ -524,8 +597,8 @@ mysqli_close($con);
 							if(full[4]==null){
 								return full[9];
 							}else{
-								//editacct(id,codeno,name,typ,cat,mId,nlvl,lcon,conid)
-								return "<div style='text-indent:"+GENxyz0+"px'> <a href=\"javascript:;\" onClick=\"editacct('"+full[1]+"','"+full[0]+"','"+full[2]+"','"+full[3]+"','"+full[4]+"','"+full[5]+"','"+full[8]+"')\">"+full[1]+"</a> </div>";
+								//editacct(id,codeno,name,typ,cat,mId,nlvl,lcon)
+								return "<div style='text-indent:"+GENxyz0+"px'> <a href=\"javascript:;\" onClick=\"editacct('"+full[1]+"','"+full[0]+"','"+full[2]+"','"+full[3]+"','"+full[4]+"','"+full[5]+"','"+full[8]+"','"+full[7]+"')\">"+full[1]+"</a> </div>";
 							}
 					}
 						
@@ -550,14 +623,21 @@ mysqli_close($con);
 							symxcol = "&#10148; ";
 						}
 						
-						return "<div style='text-indent:"+GENxyz0+"px'>  "+symxcol+full[2]+"</div>";
+						if(full[7]==0){
+							return "<div style='text-indent:"+GENxyz0+"px'>  "+symxcol+full[2]+"</div>";
+						}else{
+							return "<div style='text-indent:"+GENxyz0+"px'>  "+symxcol+full[2]+ " - <b><i>(CONTRA)</i></b></div>";
+						}
+						
 					}
 				},
 				{ "data": 4 },
-				{ "data": 3 }		
+				{ "data": 3 },
+				{ "data": 9 }		
       ],
 			"columnDefs": [
-				{ "targets": 3, "className": "text-center" } 
+				{ "targets": 3, "className": "text-center" } ,
+				{ "targets": 4, "className": "text-right" } 
 			],
 		} );
 			
@@ -566,7 +646,7 @@ mysqli_close($con);
 	
 	
 	
-	function editacct(id,codeno,name,typ,cat,mId,nlvl,lcon,conid){
+	function editacct(id,codeno,name,typ,cat,mId,nlvl,lcon){
 			$("#divmainacc2").html("");
 			
 			$("#acctidcode").val(codeno);
@@ -575,7 +655,7 @@ mysqli_close($con);
 			$("#selcat2").val(cat);
 			var $radios = $('input:radio[name=radtype2]');
 			$radios.filter('[value='+typ+']').prop('checked', true);
-			
+
 				if(parseInt(lcon)==1){
 					$('#chkcontra2').prop('checked', true);
 				}

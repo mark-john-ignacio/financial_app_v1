@@ -16,12 +16,6 @@ include('../../include/accessinner.php');
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 <script src="../../Bootstrap/js/bootstrap.js"></script>
 
-<script type="text/javascript">
-function editfrm(x){
-	document.getElementById("txtcitemno").value = x;
-	document.getElementById("frmedit").submit();
-}
-</script>
 <style>
 	a.info{
     position:relative; /*this is the key*/
@@ -316,7 +310,20 @@ mysqli_close($con);
 		})
 		
 	});
-	
+
+	$(document).keydown(function(e) {	
+		 
+		 if(e.keyCode == 112) { //F1
+			 e.preventDefault();
+			 $("#btnadd").click();
+		 }
+	 });
+
+	function editfrm(x){
+		document.getElementById("txtcitemno").value = x;
+		document.getElementById("frmedit").submit();
+	}
+		
 	function editgrp(code,desc){
 		 var x = chkAccess('SUPTYPE_Edit.php');
 		 

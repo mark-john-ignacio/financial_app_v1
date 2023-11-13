@@ -45,27 +45,23 @@
 </head>
 
 <body style="padding:20px">
-<h3><b>Company: <?=strtoupper($compname);  ?></b></h3>
-<h3><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h3>
-<h3><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h3>
-<h3><b>Kind of Book: Cash Receipts Book</b></h3>
-<h3><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h3>
-
-
-<br><br>
-<table class='table' id='crjTable' border="1" align="center" cellpadding = "5" width='100%'>
+<h4><b>Company: <?=strtoupper($compname);  ?></b></h4>
+<h4><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h4>
+<h4><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h4>
+<h4><b>Kind of Book: CASH RECEIPTS BOOK</b></h4>
+<h4><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h4>
+<br>
+<table class='table table-condensed' id='crjTable' border="0" align="center">
   <tr>
-	<th style=''>module</th>
+		<!--<th style=''>module</th>-->
     <th width="100" style="vertical-align:middle">Date</th>
     <th width="100" style="vertical-align:middle">Trans No.</th>
     <th style="vertical-align:middle">Account Credited</th>
     <th style="vertical-align:middle">Account No.</th>
     <th style="vertical-align:middle">Account Title</th>
-    <th style="vertical-align:middle">Description</th>
-   	<th align="center" style="vertical-align:bottom; text-align: center !important" width="150"> Debit
-    </th>
-	<th align="center" style="vertical-align:bottom; text-align: center !important" width="150"> Credit
-    </th>
+    <!--<th style="vertical-align:middle">Description</th>-->
+   	<th align="center" style="vertical-align:bottom; text-align: center !important" width="150"> Debit </th>
+		<th align="center" style="vertical-align:bottom; text-align: center !important" width="150"> Credit </th>
   </tr>
 	
   <tbody>
@@ -111,6 +107,11 @@
 	var totalDebit = 0.00;
 
 	$(document).ready(function(){
+		$.fn.digits = function(){ 
+			return this.each(function(){ 
+					$(this).text( $(this).text().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") ); 
+			})
+		}
 		$.ajax({
 			url: 'Controller/th_CDR_List.php',
 			type: 'post',
@@ -126,17 +127,20 @@
 				if(res.valid){
 					res['data'].map((item, key)=>{
 
+						$dxkey = item.ndebit != 0.00 ? parseFloat(item.ndebit).toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 }) : '' ;
+						$cxkey = item.ncredit != 0.00 ? parseFloat(item.ncredit).toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 }) : '' ;
+
 						$("<tr id='tableContent' name='tableContent'>").append(
-							$("<td display:none; nowrap>").text(item.cmodule),
+							//$("<td display:none; nowrap>").text(item.cmodule),
 							$("<td nowrap>").text(item.ddate),
 							$("<td nowrap>").text(item.ctranno),
 							$("<td nowrap>").text(item.cname),
 							$("<td nowrap>").text(item.acctno),
 							$("<td nowrap>").text(item.cacctdesc),
-							$("<td nowrap>").text(),
-							$("<td nowrap>").text(item.cdesc),
-							$("<td style='text-align: right; !important' nowrap>").text((item.ndebit != 0.00 ? parseFloat(item.ndebit).toFixed(2) : '' )),
-							$("<td style='text-align: right; !important' nowrap>").text((item.ncredit != 0.00 ? parseFloat(item.ncredit).toFixed(2) : '')),
+						//	$("<td nowrap>").text(),
+						//	$("<td nowrap>").text(item.cdesc),
+							$("<td style='text-align: right; !important' nowrap>").text($dxkey),
+							$("<td style='text-align: right; !important' nowrap>").text($cxkey),
 						).appendTo('#crjTable');
 
 						totalCredit += parseFloat(item.ncredit);
@@ -144,9 +148,9 @@
 					})
 
 					$("<tr id='tableContent' name='tableContent'>").append(
-						$("<td colspan='7' style='text-align=right; font-weight: bold; !important' nowrap>").text("Total:  "),
-						$("<td style='text-align: right; font-weight: bold; !important' nowrap>").text(parseFloat(totalDebit).toFixed(2)),
-						$("<td style='text-align: right; font-weight: bold; !important' nowrap>").text(parseFloat(totalCredit).toFixed(2)),
+						$("<td colspan='5' align='right' nowrap>").html(" <b>TOTAL</b> "),
+						$("<td style='text-align: right; border-top: 2px solid; font-weight: bold; !important' nowrap>").text(parseFloat(totalDebit).toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })),
+						$("<td style='text-align: right; border-top: 2px solid; font-weight: bold; !important' nowrap>").text(parseFloat(totalCredit).toLocaleString(undefined, { maximumFractionDigits: 2, minimumFractionDigits: 2 })),
 					).appendTo('#crjTable')
 
 

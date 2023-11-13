@@ -140,9 +140,10 @@
 <script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
 
 	<script type="text/javascript">
-		$(document).keypress(function(e) {	 
+
+		$(document).on("keyup",function(e){ 
 			if(e.keyCode == 112) { //F1
-			window.location = "PurchRet_new.php";
+				window.location = "PurchRet_new.php";
 			}
 		});
 

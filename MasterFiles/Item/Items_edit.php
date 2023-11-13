@@ -141,8 +141,12 @@
     
     <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
     <script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
+    <script src="../../include/autoNumeric.js"></script>
+	<!--
     <script src="../../Bootstrap/js/jquery.numeric.js"></script>
+       -->
     <script src="../../Bootstrap/js/bootstrap.js"></script>
+ 
     
     <script src="../../Bootstrap/js/moment.js"></script>
     <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
@@ -943,7 +947,7 @@ $(document).ready(function(){
         $(this).tab('show');
     });
 	
-	$("input.numeric").numeric({decimalPlaces: 2});
+	$("input.numeric").autoNumeric('init',{mDec:2});
 	$("input.numeric").on("click", function () {
 		$(this).select();
 	});
@@ -1337,7 +1341,7 @@ function addunitconv(){
 
         g.innerHTML = "<div class=\"col-xs-12 nopadwleft\" ><input class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteSeclevl(this);\"/></div>";
         
-        $("input.numeric").numeric({decimalPlaces: 2});
+        $("input.numeric").autoNumeric('init',{mDec:2});
         $("input.numeric").on("click", function () {
             $(this).select();
         });
@@ -1500,11 +1504,11 @@ function loaditmfactor(){
                         var gretr = "";
                         var lessr = "";
                         if(item.crule=="div"){
-                            gretr = "selected";
-                            lessr = "";
-                        }else if(item.crule=="mul"){
                             gretr = "";
                             lessr = "selected";
+                        }else if(item.crule=="mul"){
+                            gretr = "selected";
+                            lessr = "";
                         }
 
                         var isPO = "";
@@ -1518,7 +1522,7 @@ function loaditmfactor(){
                         }
                         
                         u.innerHTML = "<div class=\"col-xs-12 nopadwright\" ><input type=\"text\" class='form-control input-xs' name=\"selunit"+lastRow+"\" id=\"selunit"+lastRow+"\" value=\""+item.cunit+"\" readonly></div>";
-                        v.innerHTML = "<div class=\"nopadwright\" ><select id='selrule"+lastRow+"' name='selrule"+lastRow+"' class='form-control input-xs'> <option value='div' "+gretr+">&lt;</option> <option value='mul' "+lessr+">&gt;</option> </select></div>";
+                        v.innerHTML = "<div class=\"nopadwright\" ><select id='selrule"+lastRow+"' name='selrule"+lastRow+"' class='form-control input-xs'> <option value='div' "+lessr+">&lt;</option> <option value='mul' "+gretr+">&gt;</option> </select></div>";
                         w.innerHTML = "<div class=\"nopadwright\" ><input type='text' class='form-control input-xs' id='txtfactor"+lastRow+"' name='txtfactor"+lastRow+"' value='"+item.nfactor+"' required style=\"text-align: right\"> </div>";
                         x.innerHTML = "<div class=\"nopadwright\" ><input type='checkbox' id='txtchkPO"+lastRow+"' name='txtchkPO"+lastRow+"' value='1' "+isPO+"> </div>";
                         y.innerHTML = "<div class=\"nopadwright\" ><input type='checkbox' id='txtchkSI"+lastRow+"' name='txtchkSI"+lastRow+"' value='1' "+isSI+"> </div>";

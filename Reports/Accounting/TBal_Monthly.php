@@ -141,8 +141,8 @@
 ?>
    <tr>
     <td>&nbsp;</td>
-    <td onclick="funcset('<?=$rx?>')" style="cursor: pointer; padding-right: 20px" nowrap><?php echo $rx;?></td>
-    <td onclick="funcset('<?=$rx?>')" style="cursor: pointer; padding-right: 20px" nowrap><?php echo $qry_acctsnames[$rx];?></td>
+    <td onclick="funcset('<?=$rx?>', '<?= $dteyr ?>')" style="cursor: pointer; padding-right: 20px" nowrap><?php echo $rx;?></td>
+    <td onclick="funcset('<?=$rx?>', '<?= $dteyr ?>')" style="cursor: pointer; padding-right: 20px" nowrap><?php echo $qry_acctsnames[$rx];?></td>
 
 		<?php
 				$cnts = 0;
@@ -217,18 +217,15 @@
 <form action="TBal_Det.php" name="frmdet" id="frmdet" target="_blank" method="POST">
 	<input type="hidden" name="ccode" id="ccode" value="">
 	<input type="hidden" name="date1" id="date1" value="">
-	<input type="hidden" name="date2" id="date2" value="">
 </form>
 
 </body>
 </html>
 
 <script>
-	function funcset(xcode, xdte1, xdte2){
-
+	function funcset(xcode, xdte1){
 		document.getElementById("ccode").value = xcode;
 		document.getElementById("date1").value = xdte1;
-		document.getElementById("date2").value = xdte2;
 	
 		document.getElementById("frmdet").submit(); 
 	}

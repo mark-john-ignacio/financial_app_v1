@@ -6,7 +6,7 @@
 	include('../../Connection/connection_string.php');
 
 
-	$column = array('a.ctranno', 'a.crefsi', 'a.crefrr', 'CONCAT(a.ccode,"-",b.cname)', 'a.ngross', 'a.dreceived', 'CASE WHEN a.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN a.lcancelled=1 THEN "Cancelled" ELSE CASE WHEN a.lsent=0 THEN "For Sending" ELSE "For Approval" END END','');
+	$column = array('a.ctranno', 'a.crefsi', 'a.crefrr', 'CONCAT(a.ccode,"-",b.cname)', 'a.nbasegross', 'a.dreceived', 'CASE WHEN a.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN a.lcancelled=1 THEN "Cancelled" ELSE CASE WHEN a.lsent=0 THEN "For Sending" ELSE "For Approval" END END','');
 
 	$query = "select a.*,b.cname from suppinv a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='".$_SESSION['companyid']."' ";
 
@@ -69,13 +69,15 @@
 
 	foreach($result as $row)
 	{
+		$xcurr = " ".$row['ccurrencycode'];
+
 		$sub_array = array();
 		$sub_array[] = $row['ctranno'];
 		$sub_array[] = $row['crefsi'];
 		$sub_array[] = $row['crefrr'];
 		$sub_array[] = $row['ccode'];
 		$sub_array[] = $row['cname'];
-		$sub_array[] = number_format($row['ngross'],2);
+		$sub_array[] = number_format($row['nbasegross'],2).$xcurr;
 		$sub_array[] = date_format(date_create($row['dreceived']), "m/d/Y");
 		$sub_array[] = $row['lapproved']; //7
 		$sub_array[] = $row['lcancelled']; //8

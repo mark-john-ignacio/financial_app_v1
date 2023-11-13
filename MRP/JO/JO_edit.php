@@ -379,7 +379,7 @@
 								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='JO.php';" id="btnMain" name="btnMain">
 									Back to Main<br>(ESC)
 								</button>		
-								<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $txtctranno;?>');" id="btnPrint" name="btnPrint">
+								<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?=$tranno;?>','Print');" id="btnPrint" name="btnPrint">
 									Print<br>(CTRL+P)
 								</button>	
 								<?php
@@ -397,7 +397,7 @@
 								<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
 									Undo Edit<br>(CTRL+Z)
 								</button>				
-								<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $tranno;?>','Print');" id="btnPrint" name="btnPrint">
+								<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?=$tranno?>','Print');" id="btnPrint" name="btnPrint">
 									Print<br>(CTRL+P)
 								</button>
 								<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
@@ -548,7 +548,7 @@
 	  }
 	  else if(e.keyCode == 27){ //ESC
 		 e.preventDefault();
-		 window.location.replace("RFP.php");
+		 window.location.replace("JO.php");
 	  }
 	});
 

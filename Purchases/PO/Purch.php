@@ -157,10 +157,8 @@ $company = $_SESSION['companyid'];
 	<script>
 		
 
-		$(document).on("keyup",function(){ 
-			var keycode = (event.keyCode ? event.keyCode : event.which);
-
-			if(keyCode == 112) { //F1
+		$(document).on("keyup",function(e){ 
+			if(e.keyCode == 112) { //F2
 				window.location = "Purch_new.php";
 			}
 		});

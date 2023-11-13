@@ -200,7 +200,7 @@ if(mysqli_num_rows($sql) == 0){
 																<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?php echo $nvaluecurrbasedesc; ?>"> 
 														</div>
 														<div class="col-xs-2 nopadwleft">
-															<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
+															<input type='text' class="required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
 														</div>
 
 														<div class="col-xs-5" id="statgetrate" style="padding: 4px !important"> 
@@ -256,6 +256,9 @@ if(mysqli_num_rows($sql) == 0){
 						</div>
 						<input type="hidden" name="hdnunit" id="hdnunit">
 						<input type="hidden" name="hdncvat" id="hdncvat">
+						<input type="hidden" name="hdnacctno" id="hdnacctno">  
+						<input type="hidden" name="hdnacctid" id="hdnacctid"> 
+						<input type="hidden" name="hdnacctdesc" id="hdnacctdesc">
 					</div>
 
 											
@@ -273,7 +276,7 @@ if(mysqli_num_rows($sql) == 0){
 										<tr>
 											<!--<th style="border-bottom:1px solid #999">&nbsp;</th>-->
 											<th style="border-bottom:1px solid #999">Code</th>
-											<th style="border-bottom:1px solid #999">Description</th>
+											<th width="250px" style="border-bottom:1px solid #999">Description</th>
 											<th style="border-bottom:1px solid #999">EWTCode</th>
 											<th style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
 											<th style="border-bottom:1px solid #999">UOM</th>
@@ -281,6 +284,8 @@ if(mysqli_num_rows($sql) == 0){
 											<th style="border-bottom:1px solid #999">Price</th>
 											<th style="border-bottom:1px solid #999">Amount</th>
 											<th style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
+											<th width="80px" style="border-bottom:1px solid #999" class="chkinctype">Acct Code</th>
+											<th width="200px" style="border-bottom:1px solid #999" class="chkinctype">Acct Title</th>
 											<!--<th style="border-bottom:1px solid #999">Date Expired</th>-->
 											<!--<th style="border-bottom:1px solid #999">&nbsp;</th>-->
 										</tr>
@@ -428,6 +433,43 @@ var xChkVatableStatus = "";
 				fileActionSettings: { showUpload: false, showDrag: false,}
 			});
 
+			$('body').on('focus',".cacctdesc", function(){
+				var $input = $(".cacctdesc");
+
+				var id = $(document.activeElement).attr('id');	
+				var numid = id.replace("txtacctname","");
+
+				$("#"+id).typeahead({
+					items: 10,
+					source: function(request, response) {
+						$.ajax({
+							url: "../../Sales/th_accounts.php",
+							dataType: "json",
+							data: {
+								query: $("#"+id).val()
+							},
+							success: function (data) {
+								console.log(data);
+								response(data);
+							}
+						});
+					},
+					autoSelect: true,
+					displayText: function (item) {
+						return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.acct + '</span><br><small>' + item.name + '</small></div>';
+					},
+					highlighter: Object,
+					afterSelect: function(item) { 
+
+						$('#'+id).val(item.name).change(); 
+						$("#txtacctno"+numid).val(item.id); 
+						$("#txtacctcode"+numid).val(item.acct);
+
+					}
+				});
+
+			});
+
 
 				$.ajax({
 					url : "../../include/th_xtrasessions.php",
@@ -457,6 +499,7 @@ var xChkVatableStatus = "";
 			defaultDate: moment(),
     });	
 
+		$("#basecurrval").autoNumeric('init',{mDec:4});
 		$("#selbasecurr").on("change", function (){
 				
 			//convertCurrency($(this).val());
@@ -618,7 +661,7 @@ var xChkVatableStatus = "";
 			autoSelect: true,
 			source: function(request, response) {
 				$.ajax({
-					url: "../../Purchases/th_product.php",
+					url: "th_product.php",
 					dataType: "json",
 					data: {
 						query: $("#txtprodnme").val()
@@ -642,13 +685,20 @@ var xChkVatableStatus = "";
 					$('#txtprodid').val(item.id); 
 					$("#hdnunit").val(item.cunit);
 					$("#hdncvat").val(item.ctaxcode);
-					
+
+					$("#hdnacctno").val(item.cacctno); 
+					$("#hdnacctid").val(item.cacctid); 
+					$("#hdnacctdesc").val(item.cacctdesc); 
+
 					myFunctionadd(1,0,0,0,1,item.cunit,"","","","","","");
 
 					$('#txtprodnme').val("").change(); 
 					$('#txtprodid').val(""); 
 					$("#hdnunit").val("");
 					$("#hdncvat").val("");
+					$("#hdnacctno").val(""); 
+					$("#hdnacctid").val(""); 
+					$("#hdnacctdesc").val(""); 
 			}
 		
 		});
@@ -657,28 +707,34 @@ var xChkVatableStatus = "";
 		$("#txtprodid").keydown(function(e){
 			if(e.keyCode == 13){
 
-			$.ajax({
-					url:'../../Purchases/get_productid.php',
+				$.ajax({
+					url:'get_productid.php',
 					data: 'c_id='+ $(this).val(),                 
 					success: function(value){
 				
-							var data = value.split(",");
-							$('#txtprodid').val(data[0]);
-							$('#txtprodnme').val(data[1]);
-				$('#hdnunit').val(data[2]);
-				$('#hdncvat').val(data[3]);
+						var data = value.split(",");
+						$('#txtprodid').val(data[0]);
+						$('#txtprodnme').val(data[1]);
+						$('#hdnunit').val(data[2]);
+						$('#hdncvat').val(data[3]);
 			
+						$("#hdnacctno").val(data[4]); 
+						$("#hdnacctid").val(data[5]); 
+						$("#hdnacctdesc").val(data[6]); 
 
-				myFunctionadd(1,0,0,0,1,item.cunit,"","","","","","");
-			
-			$("#txtprodid").val("");
-			$("#txtprodnme").val("");
-			$("#hdnunit").val("");
-			$("#hdncvat").val("")
-	
-				//closing for success: function(value){
-				}
-					}); 
+						myFunctionadd(1,0,0,0,1,data[2],"","","","","","");
+						
+						$("#txtprodid").val("");
+						$("#txtprodnme").val("");
+						$("#hdnunit").val("");
+						$("#hdncvat").val("")
+						$("#hdnacctno").val(""); 
+						$("#hdnacctid").val(""); 
+						$("#hdnacctdesc").val("");
+
+						//closing for success: function(value){
+					}
+				}); 
 
 		
 			
@@ -696,6 +752,10 @@ function myFunctionadd(nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident
 	var itmdesc = document.getElementById("txtprodnme").value;
 	var itmunit = document.getElementById("hdnunit").value;
 	//var dneeded = document.getElementById("date_received").value;
+
+	var itmacctno = $("#hdnacctno").val(); 
+	var itmacctid = $("#hdnacctid").val(); 
+	var itmacctnm = $("#hdnacctdesc").val();
 
 		var itmprice = nprice;
 		var itmamnt = namount;
@@ -799,10 +859,15 @@ function myFunctionadd(nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident
 	tditmbaseamount = "<td width=\"100\" style=\"padding:1px\"> <input type='text' value='"+curramtz+"' class='numeric form-control input-xs' style='text-align:right' name='txtntranamount' id='txtntranamount"+lastRow+"' readonly> </td>";
 	
 	tditmamount = "<td width=\"100\" style=\"padding:1px\"> <input type='text' value='"+baseprice.toFixed(4)+"' class='numeric form-control input-xs' style='text-align:right' name='txtnamount' id='txtnamount"+lastRow+"' readonly> </td>";
+
+	var tdglaccount = "<td nowrap><input type='text' value='"+itmacctid+"' class='form-control input-xs' name=\"txtacctcode\" id='txtacctcode"+lastRow+"' readonly> <input type='hidden' value='"+itmacctno+"' name=\"txtacctno\" id='txtacctno"+lastRow+"'> </td>";
+
+	var tdgltitle = "<td nowrap style=\"padding-left:2px\"><input type='text' value='"+itmacctnm+"' class='cacctdesc form-control input-xs' name=\"txtacctname\" id='txtacctname"+lastRow+"'></td>";
+
 	
 	tditmdel = "<td width=\"80\" style=\"padding:1px\"> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' /> </td>";
 
-	$('#MyTable > tbody:last-child').append('<tr style=\"padding-top:1px\">'+tditmcode + tditmdesc + ewttd + tditmvats + tditmunit + tditmqty + tditmprice + tditmbaseamount+ tditmamount  + '</tr>'); //tditmdel tditmbtn
+	$('#MyTable > tbody:last-child').append('<tr style=\"padding-top:1px\">'+tditmcode + tditmdesc + ewttd + tditmvats + tditmunit + tditmqty + tditmprice + tditmbaseamount+ tditmamount  + tdglaccount + tdgltitle +'</tr>'); //tditmdel tditmbtn
 
 
 								//	$("#del"+itmcode).on('click', function() {
@@ -819,11 +884,11 @@ function myFunctionadd(nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident
 								$("input.numeric2").autoNumeric('init',{mDec:4});
 								$("input.numeric").autoNumeric('init',{mDec:2});
 
-								$("input.numeric").on("click", function () {
+								$("input.numeric, input.numeric2").on("click", function () {
 									   $(this).select();
 									});
 
-									$("input.numeric").on("keyup", function (e) {
+									$("input.numeric, input.numeric2").on("keyup", function (e) {
 									  ComputeAmt($(this).attr('id'));
 									  ComputeGross();
 									  // tblnav(e.keyCode,$(this).attr('id'));

@@ -66,8 +66,11 @@
 
 	$data = array();
 
+
 	foreach($result as $row)
 	{
+		$xcurr = " ".$row['ccurrencycode'];
+
 		$sub_array = array();
 		$sub_array[] = $row['ctranno'];
 		$sub_array[] = $row['csiprintno'];
@@ -78,7 +81,7 @@
 		$sub_array[] = $row['lcancelled'];
 		$sub_array[] = $row['ccode'];
 		$sub_array[] = $row['nlimit'];
-		$sub_array[] = number_format($row['ngross'],2);
+		$sub_array[] = number_format($row['nbasegross'],2).$xcurr;
 		$sub_array[] = str_replace(",","<br>",$row['cref']);
 		$sub_array[] = $row['lvoid'];
 		$data[] = $sub_array;

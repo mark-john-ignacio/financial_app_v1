@@ -11,7 +11,7 @@
 
 	if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
 	{
-		$query .= "and (LOWER(b.ctradename) like LOWER('%".$_POST['searchByName']."%') OR LOWER(b.cname) like LOWER('%".$_POST['searchByName']."%') OR LOWER(a.ctranno) like LOWER('%".$_POST['searchByName']."%'))";
+		$query .= "and (LOWER(b.ctradename) like LOWER('%".$_POST['searchByName']."%') OR LOWER(b.cname) like LOWER('%".$_POST['searchByName']."%') OR LOWER(a.ctranno) like LOWER('%".$_POST['searchByName']."%') OR LOWER(d.cref) like LOWER('%".$_POST['searchByName']."%'))";
 	}
 
 	if(isset($_POST['searchBystat']) && $_POST['searchBystat'] != '')
@@ -45,7 +45,7 @@
 	$query1 = '';
 
 	
-	if($_POST["length"] != -1)
+	if(isset($_POST['length']) && $_POST["length"] != -1)
 	{
 		$query1 = 'LIMIT ' . $_POST['start'] . ', ' . $_POST['length'];
 	}
@@ -65,12 +65,13 @@
 
 	$data = array();
 
+
 	foreach($result as $row)
 	{
 		$sub_array = array();
 		$sub_array[] = $row['ctranno'];
 		$sub_array[] = $row['cornumber'];
-		$sub_array[] = str_replace(",","<br>",$row['cref']);
+		$sub_array[] = ($row['cref']!="") ? str_replace(",","<br>",$row['cref']) : "";
 		$sub_array[] = $row['ccode'];
 		$sub_array[] = $row['cname'];
 		$sub_array[] = date_format(date_create($row['dcutdate']), "m/d/Y");
@@ -79,6 +80,7 @@
 		$sub_array[] = number_format($row['namount'],2);
 		$sub_array[] = $row['lvoid'];
 		$data[] = $sub_array;
+
 	}
 
 	function count_all_data($connect)
@@ -96,6 +98,8 @@
 		"data"       =>  $data
 	);
 
+	//echo "<pre>";
 	echo json_encode($output);
+	//echo "</pre>";
 
 ?>

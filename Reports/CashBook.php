@@ -10,6 +10,7 @@ include('../include/access.php');
 
 ?><html>
 <head>
+<link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
 
@@ -20,7 +21,7 @@ include('../include/access.php');
 <script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Coop Financials</title>
+<title>Myx Financials</title>
 </head>
 
 <body style="padding-left:50px;">
@@ -33,7 +34,7 @@ include('../include/access.php');
 <table width="100%" border="0" cellpadding="2">
   <tr>
       <td valign="top" width="50" style="padding:2px">
-    <button type="button" class="btn btn-danger navbar-btn" id="btnsales">
+    <button type="button" class="btn btn-danger btn-block" id="btnsales">
     <span class="glyphicon glyphicon-search"></span> View Report
     </button>
     </td>
@@ -61,7 +62,7 @@ include('../include/access.php');
     </td>
   </tr>
   <tr>
-    <td> 
+  <td valign="top" width="50" style="padding:2px">
       <button type="button" class="btn btn-success btn-block" id="btnxls">
             <i class="fa fa-file-excel-o"></i> To Excel
       </button></td>

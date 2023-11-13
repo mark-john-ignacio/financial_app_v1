@@ -42,9 +42,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$CustName = $row['cname'];
 		$Remarks = $row['cremarks'];
 		$TranDate = $row['ddate'];
-		$Date = $row['dcutdate'];
+		$Date = $row['dcutdate']; 
+		$PODate = $row['dpodate']; 
 		//$SalesType = $row['csalestype'];
 		$Gross = $row['ngross'];
+		$PONos = $row['cpono'];
 		
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
@@ -128,53 +130,57 @@ function PrintRed(x){
 <br><br>
 <table width="100%" border="0" cellpadding="3" style="border-collapse:collapse;" id="tblMain">
   <tr>
-    <td colspan="2"><font size="2"><b>JOB ORDER SLIP - <?php echo $csalesno;?></b></font></td>
+    <td colspan="3" align="center"><font size="2"><b>SALES ORDER</b></font></td>
   </tr>
   <tr>
-    <td width="100">Customer:</td>
-    <td><?php echo $CustCode;?> - <?php echo $CustName;?></td>
+    <td width="100"><b>Customer: </b></td>
+    <td><?php echo $CustName;?></td>
+		<td width="100"><b>SO No.:</b></td>
+    <td><?=$csalesno?></td>
   </tr>
   <tr>
-    <td width="100">JO Date:</td>
-    <td><?php echo date_format(date_create($TranDate),"M d, Y H:i:s");?></td>
+    <td width="100"><b>Control No.: </b></td>
+    <td><?=$PONos;?></td>
+		<td width="100"><b>PO Date</b></td>
+    <td><?php echo date_format(date_create($PODate),"M d, Y");?></td>
   </tr>
+	 
   <tr>
-    <td width="100">Delivery Date:</td>
-    <td><?php echo date_format(date_create($Date),"M d, Y");?></td>
-  </tr>
- 
-  <tr>
-    <td colspan="3">
+    <td colspan="4">
     
-    <table width="100%" border="0" cellpadding="3" style="border-style:dashed;">
-      <tr>
-        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Item Description</th>
-        <th scope="col" height="30" style="border-top: 1px dashed; border-bottom: 1px dashed;">Qty</th>
-        <th scope="col" style="border-top: 1px dashed; border-bottom: 1px dashed;">Unit</th>
-      </tr>
+    <table width="100%" border="1" cellpadding="3">
+				<tr>
+          <th scope="col" height="30" width="20px">No.</th>
+          <th scope="col" height="30" width="150px">PO No.</th>
+          <th scope="col" height="30" width="150px">Part No.</th>
+          <th scope="col" height="30">Item Description</th>
+          <th style="text-align: center" scope="col" height="30">Qty</th>
+          <th style="text-align: center" scope="col">Unit</th>
+        </tr>
       <?php 
-		$sqlbody = mysqli_query($con,"select a.*,b.citemdesc from so_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$csalesno'");
+				$sqlbody = mysqli_query($con,"select a.*,b.citemdesc from so_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$csalesno'  Order By a.nident");
 
-		if (mysqli_num_rows($sqlbody)!=0) {
-		$cntr = 0;
-		while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
-		 $cntr = $cntr + 1;
-						
-	?>
+				if (mysqli_num_rows($sqlbody)!=0) {
+				$cntr = 0;
+				while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
+				$cntr = $cntr + 1;
+								
+			?>
       
-      <tr>
-        <td style="border-right:1px dashed;"><?php echo strtoupper($rowbody['citemdesc']);?></td>
-        <td style="border-right:1px dashed;" align="right"><?php echo $rowbody['nqty'];?></td>
-        <td style="border-right:1px dashed;" align="right"><?php echo $rowbody['cunit'];?></td>
-        
-      </tr>
+			<tr>
+          <td><?=$cntr?></td>
+          <td><?php echo strtoupper($rowbody['citemremarks']);?></td>
+          <td><?php echo strtoupper($rowbody['citemno']);?></td>
+          <td><?php echo strtoupper($rowbody['citemdesc']);?></td>
+          <td style="text-align: center"><?=number_format($rowbody['nqty']);?></td>
+          <td style="text-align: center"><?php echo $rowbody['cunit'];?></td>
+          
+        </tr>
       <?php 
 		}
 		}
 	  ?>
-        <tr>
-        <td height="30" colspan="3" style="border-top:1px dashed;" valign="bottom">Prepared By: <?php echo $_SESSION['employeefull'];?></td>
-        </tr>
+       
 
     </table></td>
   </tr>

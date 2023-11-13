@@ -12,12 +12,13 @@ require_once "../Connection/connection_string.php";
 	$c_id = $_REQUEST['c_id'];
 	
 	if($avail==1){
-		$sql = "select  A.cpartno, A.citemdesc, A.cunit, 1 as nqty, A.cunit as qtyunit, A.ctype, A.ctaxcode
+		$sql = "select  A.cpartno, A.citemdesc, A.cunit, 1 as nqty, A.cunit as qtyunit, A.ctype, A.ctaxcode, B.cacctno, B.cacctid, B.cacctdesc
 		from items A 
+		left join accounts B on A.compcode=B.compcode and A.cacctcodesales=B.cacctno
 		where A.compcode='$company' and A.ctradetype='Trade' and A.cpartno = '".$c_id."' and A.cstatus='ACTIVE' and A.csalestype='".$styp."'";
 	}
 	else{
-		$sql = "select A.cpartno, A.citemdesc, A.cunit, B.cunit as qtyunit, A.ctype, A.ctaxcode
+		$sql = "select A.cpartno, A.citemdesc, A.cunit, B.cunit as qtyunit, A.ctype, A.ctaxcode, C.cacctno, C.cacctid, C.cacctdesc
 		, (TRIM(TRAILING '.' FROM(CAST(TRIM(TRAILING '0' FROM B.nqty)AS char)))) AS nqty
 		from items A 
 		left join 
@@ -27,6 +28,7 @@ require_once "../Connection/connection_string.php";
 					where X.compcode='$company' and X.dcutdate <= '$date1'
 					Group by X.cunit, X.citemno
 			) B on A.cpartno=B.citemno
+		left join accounts C on A.compcode=C.compcode and A.cacctcodesales=C.cacctno
 		where A.compcode='$company' and A.ctradetype='Trade' and A.cpartno = '".$c_id."' and A.cstatus='ACTIVE' and A.csalestype='".$styp."'";
 	}
 
@@ -35,16 +37,19 @@ require_once "../Connection/connection_string.php";
 	if(mysqli_num_rows($rsd)>=1){
 		while($rs = mysqli_fetch_array($rsd, MYSQLI_ASSOC)) {
 		 
-		 $c_prodid = $rs['cpartno'];
-		 $c_prodnme = $rs['citemdesc']; 
-		 $c_unit = $rs['cunit']; 
-		 $c_nqty = $rs['nqty'];
-		 $c_qtyunit = strtoupper($rs['qtyunit']);
-		 $c_typ = strtoupper($rs['ctype']);
-		 $c_taxcode = strtoupper($rs['ctaxcode']);		 
+		 	$c_prodid = $rs['cpartno'];
+		 	$c_prodnme = $rs['citemdesc']; 
+		 	$c_unit = $rs['cunit']; 
+		 	$c_nqty = $rs['nqty'];
+		 	$c_qtyunit = strtoupper($rs['qtyunit']);
+		 	$c_typ = strtoupper($rs['ctype']);
+		 	$c_taxcode = strtoupper($rs['ctaxcode']);	
+		 	$cacctno = $rs['cacctno'];
+			$cacctid = $rs['cacctid'];
+			$cacctdesc = $rs['cacctdesc'];	 
 		}
 		
-		echo $c_prodid.",".$c_prodnme.",".$c_unit.",".$c_nqty.",".$c_qtyunit.",".$c_typ.",".$c_taxcode;
+		echo $c_prodid.",".$c_prodnme.",".$c_unit.",".$c_nqty.",".$c_qtyunit.",".$c_typ.",".$c_taxcode.",".$cacctno.",".$cacctid.",".$cacctdesc;
 	} 
 	
 	else {

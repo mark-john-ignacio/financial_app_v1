@@ -1093,7 +1093,7 @@
             });
         
         u.innerHTML = "<div class=\"col-xs-12 nopadwright\"><select class='form-control input-xs' name=\"selunit"+lastRow+"\" id=\"selunit"+lastRow+"\">" + secxoptions + "</select></div>";
-        v.innerHTML = "<div class=\"nopadwright\" ><select id='selrule"+lastRow+"' name='selrule"+lastRow+"' class='form-control input-xs'> <option value='div'>&gt;</option> <option value='mul'>&lt;</option> </select></div>";
+        v.innerHTML = "<div class=\"nopadwright\" ><select id='selrule"+lastRow+"' name='selrule"+lastRow+"' class='form-control input-xs'> <option value='mul'>&gt;</option> <option value='div'>&lt;</option> </select></div>";
         w.innerHTML = "<div class=\"nopadwright\" ><input type='text' class='form-control input-xs' id='txtfactor"+lastRow+"' name='txtfactor"+lastRow+"' value='1' required style=\"text-align: right\"> </div>";
         x.innerHTML = "<div class=\"nopadwright\" ><input type='checkbox' id='txtchkPO"+lastRow+"' name='txtchkPO"+lastRow+"' value='1'> </div>";
         y.innerHTML = "<div class=\"nopadwright\" ><input type='checkbox' id='txtchkSI"+lastRow+"' name='txtchkSI"+lastRow+"' value='1'> </div>";
