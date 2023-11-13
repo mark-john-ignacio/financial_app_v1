@@ -9,6 +9,15 @@ include('../../include/denied.php');
 	$cCVNo = $_REQUEST['txtctranno'];
 	$company = $_SESSION['companyid'];
 
+	//get default EWT acct code
+	@$ewtpaydef = "";
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `accounts_default` where compcode='$company' and ccode='EWTPAY'"); 
+	if (mysqli_num_rows($gettaxcd)!=0) {
+		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+			@$ewtpaydef = $row['cacctno']; 
+		}
+	}
+
 	//echo "<pre>";
 	//print_r($_REQUEST);
 	//echo "</pre>";
