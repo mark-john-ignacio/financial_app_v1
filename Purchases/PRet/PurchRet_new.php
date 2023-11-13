@@ -44,7 +44,7 @@ include('../../include/access2.php');
 
 </head>
 
-<body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
+<body style="padding:5px">
 	<form action="PurchRet_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
 		<fieldset>
     	<legend>Purchase Return</legend>	
@@ -396,10 +396,6 @@ include('../../include/access2.php');
 			fileActionSettings: { showUpload: false, showDrag: false,}
 		});
 		
-	});
-	
-	$(function(){	
-		
 		$('#txtcust').typeahead({
 		
 			items: 10,
@@ -425,6 +421,8 @@ include('../../include/access2.php');
 				$("#txtcustid").val(item.id);
 			}
 		});
+
+		document.getElementById('txtcust').focus();
 
 		$("#btnInsSer").on("click", function(){
 		

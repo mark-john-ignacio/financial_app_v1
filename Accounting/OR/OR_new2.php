@@ -81,7 +81,7 @@
 
 </head>
 
-<body style="padding:5px; height:700px" onLoad="document.getElementById('txtcust').focus();"> 
+<body style="padding:5px; height:700px"> 
 <input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes">
 <input type="hidden" value='<?=json_encode(@$arrewtlist)?>' id="hdnewtcodes"> 
 
@@ -862,6 +862,8 @@
 				$("#hidcurrvaldesc").val($("#selbasecurr").find(':selected').data('desc'));
 			}
 		});
+
+		document.getElementById('txtcust').focus();
 		
 		$("#txtcust").on('blur', function() {
 			if($('#txtcustid').val() != "" && $('#txtcustid').val() != ""){

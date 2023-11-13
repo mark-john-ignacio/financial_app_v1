@@ -44,7 +44,7 @@ include('../../include/access2.php');
 
 </head>
 
-<body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
+<body style="padding:5px">
 
 	<form action="RFP_newsave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
 		<fieldset>
@@ -406,6 +406,8 @@ include('../../include/access2.php');
 
 			}
 		});
+
+		document.getElementById('txtcust').focus();
 
 		$("#btnsearchbank").on("click", function() {
 
