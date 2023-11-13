@@ -131,26 +131,31 @@
                     contentType: false,
                     success: function (res) {
                         console.log(res)
-                        for (let i = 0; i < res.data.length; i++) {
-                            let data = res.data[i];
-                            let row = $("<tr>");
+                        if(res.valid){
+                            for (let i = 0; i < res.data.length; i++) {
+                                let data = res.data[i];
+                                let row = $("<tr>");
 
-                            for (let j = 0; j < data.length; j++) {
-                                let cell;
-                                if (i === 0) {
-                                    cell = $("<th>").text(data[j]);
-                                } else {
-                                    cell = $("<td>").text(data[j]);
+                                for (let j = 0; j < data.length; j++) {
+                                    let cell;
+                                    if (i === 0) {
+                                        cell = $("<th>").text(data[j]);
+                                    } else {
+                                        cell = $("<td>").text(data[j]);
+                                    }
+                                    row.append(cell);
                                 }
-                                row.append(cell);
-                            }
 
-                            if (i === 0) {
-                                row.appendTo("#ExcelList > thead");
-                            } else {
-                                row.appendTo("#ExcelList > tbody");
+                                if (i === 0) {
+                                    row.appendTo("#ExcelList > thead");
+                                } else {
+                                    row.appendTo("#ExcelList > tbody");
+                                }
                             }
+                        } else {
+                            alert(res.msg)
                         }
+                        
                     },
                     error: function(res){
                         console.log(res)
