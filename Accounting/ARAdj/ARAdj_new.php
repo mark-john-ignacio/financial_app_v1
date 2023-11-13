@@ -52,7 +52,7 @@
 
 </head>
 
-<body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
+<body style="padding:5px">
 <form action="ARAdj_newsave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
 	<fieldset>
     	<legend>AR Adjustment</legend>	
@@ -461,6 +461,8 @@
 			}
 		
 		});
+
+		document.getElementById('txtcust').focus();
 	
 		var sltypprev_val;
 			

@@ -108,7 +108,7 @@ if(mysqli_num_rows($sql) == 0){
 
 </head>
 
-<body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
+<body style="padding:5px">
 <input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes">  
 <input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
 <input type="hidden" value='<?=json_encode(@$arrewtlist)?>' id="hdnewtlist">
@@ -550,6 +550,8 @@ var xChkVatableStatus = "";
 				$("#selterms").val(item.cterms).change();
 			}
 		});
+
+		document.getElementById('txtcust').focus();
 
 		$("#txtrefrr").keydown(function(event){
 			

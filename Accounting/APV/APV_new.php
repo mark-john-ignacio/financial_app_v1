@@ -73,7 +73,7 @@
 
 </head>
 
-<body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
+<body style="padding:5px">
 	<input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes">  
 	<input type="hidden" value='<?=json_encode(@$arrwtxlist)?>' id="hdnxtax"> 
 	<input type="hidden" value='<?=@$ewtpaydef?>' id="hdnewtpay"> 
@@ -536,6 +536,8 @@
 			}
 		});
 
+		document.getElementById('txtcust').focus();
+		
 		$("#allbox").click(function () {
 			if ($("#allbox").is(':checked')) {
 				$("input[name='chkSales[]']").each(function () {
