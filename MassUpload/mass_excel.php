@@ -4,7 +4,7 @@ require_once("../Model/helper.php");
 
 $excel_data = ExcelRead($_FILES);
 
-if(!empty($excel_data)){
+if(count($excel_data) != 0){
     echo json_encode([
         'valid' => true,
         'data' => $excel_data

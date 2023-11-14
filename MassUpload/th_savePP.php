@@ -45,7 +45,7 @@
     $excel_data = ExcelRead($_FILES);
 
     
-    if(!empty($excel_data)){
+    if(count($excel_data) != 0){
         for($i = 0; $i < sizeof($excel_data); $i++){
             $data = $excel_data[$i];
             if($i === 0){
