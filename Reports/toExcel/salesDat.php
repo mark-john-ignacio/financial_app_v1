@@ -128,11 +128,11 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
             ->setCellValue("K$index", number_format($computation['gross_vat']));
 
             $TOTAL_GROSS += floatval($row['ngross']); 
-            $TOTAL_EXEMPT += floatval($computation['exempt'],2); 
-            $TOTAL_ZERO_RATED += floatval($computation['zero'],2); 
-            $TOTAL_TAXABLE += floatval($computation['taxable'],2); 
-            $TOTAL_VAT += floatval($computation['output'],2);
-            $TOTAl_TAX_GROSS += floatval($computation['gross_vat'],2);
+            $TOTAL_EXEMPT += floatval($computation['exempt']); 
+            $TOTAL_ZERO_RATED += floatval($computation['zero']); 
+            $TOTAL_TAXABLE += floatval($computation['taxable']); 
+            $TOTAL_VAT += floatval($computation['output']);
+            $TOTAl_TAX_GROSS += floatval($computation['gross_vat']);
         }
         $index += 2;
 
