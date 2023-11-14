@@ -127,7 +127,7 @@
                         <td align='right'><?= number_format($compute['zero'], 2) ?></td>
                         <td align='right'><?= number_format($compute['taxable'], 2) ?></td>
                         <td align='right'><?= number_format($compute['output'], 2) ?></td>
-                        <td align='right'><?= number_format($list['ngross'],2) ?></td>
+                        <td align='right'><?= number_format($compute['gross_vat'],2) ?></td>
                     </tr>
                 <?php endforeach;?>
             </table>
