@@ -14,7 +14,7 @@
 
     $excel_data = ExcelRead($_FILES);
 
-    if(!empty($excel_data)){
+    if(count($excel_data) != 0){
 
         for($i = 1; $i < sizeof($excel_data); $i++){
             $chkSales = mysqli_query($con,"select * from discounts where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");

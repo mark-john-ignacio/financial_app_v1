@@ -5,7 +5,8 @@
     require_once  "../../vendor2/autoload.php";
     include ("../../Connection/connection_string.php");
     $company_code = $_SESSION['companyid'];
-    $datecut = date("m", strtotime($_REQUEST["daterange"]));
+    $monthcut = $_REQUEST["viewmonth"];
+    $yearcut = $_REQUEST['viewyear'];
     $sales = [];
 
     $sql =  "SELECT * FROM company WHERE compcode = '$company_code'";
@@ -14,7 +15,7 @@
     
     $sql = "SELECT a.*, b.ctradename, b.ctin, b.chouseno, b.cstate, b.ccity, b.ccountry FROM sales a 
     LEFT JOIN customers b on a.compcode = b.compcode AND a.ccode = b.cempid
-    WHERE a.compcode = '$company_code' AND MONTH(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $datecut";
+    WHERE a.compcode = '$company_code' AND MONTH(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $monthcut AND YEAR(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $yearcut  AND a.lapproved = 1 AND a.lvoid = 0 AND a.lcancelled = 0";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         while($row = $query -> fetch_assoc()){
@@ -25,23 +26,23 @@
     function Computation($transaction){
         global $con;
         global $company_code;
+        $taxcode='';
 
         $exempt = 0; $zero = 0;  $gross = 0; $net = 0; $less = 0; $amount = 0;
-        $sql = "SELECT a.*, b.ngross, c.nrate FROM sales_t a
-                LEFT JOIN sales b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-                LEFT JOIN taxcode c on a.compcode=c.compcode and a.ctaxcode=c.ctaxcode 
-                WHERE a.compcode = '$company_code' AND a.ctranno = '$transaction'";
+        $sql = "SELECT  b.cvatcode,b.nnet, nvat, b.ngross, c.nrate FROM sales b 
+                LEFT JOIN taxcode c on b.compcode=c.compcode and b.cvatcode=c.ctaxcode 
+                WHERE b.compcode = '$company_code' AND b.ctranno = '$transaction'  AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled =0";
         $query = mysqli_query($con, $sql);
         while($row = $query -> fetch_assoc()){
-            $taxcode = $row['ctaxcode'];
+            $taxcode = $row['cvatcode'];
             $gross = floatval($row['ngross']);
 
             if(floatval($row['nrate']) != 0 ){
-                $net += floatval($row['nnetvat']);
-                $less += floatval($row['nlessvat']);
-                $amount += floatval($row['namount']); 
+                $net += floatval($row['nnet']);
+                $less += floatval($row['nvat']);
+                $amount += floatval($row['ngross']); 
             } else {
-                $exempt += floatval($row['namount']);
+                $exempt += floatval($row['ngross']);
             }
 
         }
