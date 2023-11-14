@@ -6,7 +6,8 @@
     include ("../../Connection/connection_string.php");
 
     $company_code = $_SESSION['companyid'];
-    $datecut = date("m", strtotime($_REQUEST["exportrange"]));
+    $monthcut = date("m", strtotime($_REQUEST["exportrange"]));
+    $yearcut = date("Y", strtotime($_REQUEST['exportrange']));
     $sales = [];
 
     $sql = "SELECT * FROM company WHERE compcode = '$company_code'";
@@ -15,7 +16,7 @@
 
     $sql = "SELECT a.*, b.cname, b.ctradename, b.ctin, b.chouseno, b.cstate, b.ccity, b.ccountry, b.czip FROM sales a 
     LEFT JOIN customers b on a.compcode = b.compcode AND a.ccode = b.cempid
-    WHERE a.compcode = '$company_code' AND MONTH(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $datecut";
+    WHERE a.compcode = '$company_code' AND MONTH(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $monthcut AND YEAR(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $yearcut";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         while($row = $query -> fetch_assoc()){
@@ -83,25 +84,34 @@
     header("Content-type: text/plain");
     header("Content-Disposition: attachment; filename=\"Sales-$date.dat\"");
 
-    $data = "H,S,\"{$company['comptin']}\",\"{$company['compname']}\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"{$company['compadd']}\",\"{$company['compzip']}\"\n";
+    if(count($sales) != 0){
 
-    foreach($sales as $list){
-        $compute = Computation($list['ctranno']);
-        $fullAddress = str_replace(",", "", $list['chouseno']);
-        if(trim($list['ccity']) != ""){
-            $fullAddress .= " ". str_replace(",", "", $list['ccity']);
-        }
-        if(trim($list['ccountry']) != ""){
-            $fullAddress .= " ". str_replace(",", "", $list['ccountry']);
+        //Generate DAT File
+        $data = "H,S,\"{$company['comptin']}\",\"{$company['compname']}\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"{$company['compadd']}\",\"{$company['compzip']}\"\n";
+
+        foreach($sales as $list){
+            $compute = Computation($list['ctranno']);
+            $fullAddress = str_replace(",", "", $list['chouseno']);
+            if(trim($list['ccity']) != ""){
+                $fullAddress .= " ". str_replace(",", "", $list['ccity']);
+            }
+            if(trim($list['ccountry']) != ""){
+                $fullAddress .= " ". str_replace(",", "", $list['ccountry']);
+            }
+
+            $zip = $fullAddress = str_replace(",", "", $list['cstate']);
+            if(trim($list['czip']) != ""){
+                $zip .= " ". str_replace(",", "", $list['czip']);
+            }
+            $getDate = date("m/d/Y", strtotime($list['dcutdate']));
+            $data .= "D,S,\"{$list['ctin']}\",\"{$list['cname']}\",,,,\"{$list['ctradename']}\",\"$fullAddress\",\"$zip\",{$compute['gross']},{$compute['exempt']},{$compute['zero']},{$compute['taxable']},{$compute['output']},{$list['ngross']},$getDate\n";
         }
 
-        $zip = $fullAddress = str_replace(",", "", $list['cstate']);
-        if(trim($list['czip']) != ""){
-            $zip .= " ". str_replace(",", "", $list['czip']);
-        }
-        $getDate = date("m/d/Y", strtotime($list['dcutdate']));
-        $data .= "D,S,\"{$list['ctin']}\",\"{$list['cname']}\",,,,\"{$list['ctradename']}\",\"$fullAddress\",\"$zip\",{$compute['gross']},{$compute['exempt']},{$compute['zero']},{$compute['taxable']},{$compute['output']},{$list['ngross']},$getDate\n";
+        // Output the data
+        echo $data;
+    } else {
+        ?>
+        <script>alert("No record has been found on month of <?= $datecut ?>")</script>
+        <?php
     }
-
-    // Output the data
-    echo $data;
+    

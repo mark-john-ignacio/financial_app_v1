@@ -71,8 +71,8 @@
 <script>
     $(document).ready(function(){
         $(".datepicker").datetimepicker({
-                 format: 'MMMM'
-           });
+            format: 'YYYY,MMMM'
+        });
         $("#btnView").click(function(){
             let range = $('#datefrom').val();
             $.ajax({
