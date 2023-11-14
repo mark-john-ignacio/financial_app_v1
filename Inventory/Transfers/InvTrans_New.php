@@ -76,7 +76,7 @@
 	<input type="hidden" id="hdntemplist" value='<?=json_encode($arrtemplates)?>'>
 	<input type="hidden" id="hdntempsname" value='<?=json_encode($arrtempsname)?>'>
 
-	<form id="frmCount" name="frmCount" method="post" action="<?="https://".$_SERVER['SERVER_NAME']?>/Inventory/Transfers/InvTrans_NewSave.php">
+	<form id="frmCount" name="frmCount" method="post" action="InvTrans_NewSave.php">
 
 		<input type="hidden" name="hdnmyxfin" value="<?= $_SESSION['myxtoken'] ?? '' ?>">
 

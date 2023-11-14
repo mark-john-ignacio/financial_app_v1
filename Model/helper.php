@@ -242,3 +242,58 @@
             ]
         };
     }
+
+    function ExcelRead($files){
+        $excel_data = [];
+        if (isset($files['excel_file']) && !empty($files['excel_file'])) {
+            $file = $files['excel_file'];
+    
+            if ($file['error'] === 0) {
+                $fileExt = pathinfo($file['name'], PATHINFO_EXTENSION);
+    
+                if (in_array($fileExt, ['xlsx', 'xls'])) {
+                    $uploadDir = './';
+                    $uploadedFile = $uploadDir . $file['name'];
+                    move_uploaded_file($file['tmp_name'], $uploadedFile);
+    
+                    require '../vendor2/autoload.php';
+    
+                    $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($uploadedFile);
+                    $worksheet = $spreadsheet->getActiveSheet();
+    
+                    foreach ($worksheet->getRowIterator() as $row) {
+                        $cellIterator = $row->getCellIterator();
+                        $rowdata = [];
+    
+                        $hasNonNullValue = false;
+    
+                        foreach ($cellIterator as $cell) {
+                            $cellValue = trim($cell->getValue());
+    
+                            if (!is_null($cellValue) and !empty($cellValue)) {
+                                $hasNonNullValue = true;
+                            }
+    
+                            // Check if the cell can be converted to a date
+                            if (\PhpOffice\PhpSpreadsheet\Shared\Date::isDateTime($cell)) {
+                                $date = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cellValue);
+                                $formattedDate = $date->format('Y-m-d'); // Adjust the format as needed
+                                $rowdata[] = $formattedDate;
+                            } else {
+                                $rowdata[] = trim($cellValue);
+                            }
+                        }
+    
+                        if ($hasNonNullValue) {
+                            // echo json_encode($rowdata);
+                            array_push($excel_data, $rowdata);
+                        }
+                    }
+    
+                    unlink($uploadedFile);
+                } 
+            } 
+        }
+
+        return $excel_data;
+    }

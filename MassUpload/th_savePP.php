@@ -3,8 +3,8 @@
         session_start();
     }
     include("../Connection/connection_string.php");
+    require_once("../Model/helper.php");
     $company = $_SESSION['companyid'];
-    $proceed = true;
     $duplicate = false;
     $isFinished = false;
 
@@ -42,62 +42,10 @@
 		}
 	}
 
-    $excel_data = [];
-    if (isset($_FILES['excel_file']) && !empty($_FILES['excel_file'])) {
-        $file = $_FILES['excel_file'];
+    $excel_data = ExcelRead($_FILES);
 
-        if ($file['error'] === 0) {
-            $fileExt = pathinfo($file['name'], PATHINFO_EXTENSION);
-
-            if (in_array($fileExt, ['xlsx', 'xls'])) {
-                $uploadDir = './';
-                $uploadedFile = $uploadDir . $file['name'];
-                move_uploaded_file($file['tmp_name'], $uploadedFile);
-
-                require '../vendor2/autoload.php';
-
-                $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($uploadedFile);
-                $worksheet = $spreadsheet->getActiveSheet();
-
-                foreach ($worksheet->getRowIterator() as $row) {
-                    $cellIterator = $row->getCellIterator();
-                    $rowdata = [];
-
-                    $hasNonNullValue = false;
-
-                    foreach ($cellIterator as $cell) {
-                        $cellValue = trim($cell->getValue());
-
-                        if (!is_null($cellValue) and !empty($cellValue)) {
-                            $hasNonNullValue = true;
-                        }
-
-                        // Check if the cell can be converted to a date
-                        if (\PhpOffice\PhpSpreadsheet\Shared\Date::isDateTime($cell)) {
-                            $date = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($cellValue);
-                            $formattedDate = $date->format('Y-m-d'); // Adjust the format as needed
-                            $rowdata[] = $formattedDate;
-                        } else {
-                            $rowdata[] = trim($cellValue);
-                        }
-                    }
-
-                    if ($hasNonNullValue) {
-                        // echo json_encode($rowdata);
-                        array_push($excel_data, $rowdata);
-                    }
-                }
-
-                unlink($uploadedFile);
-            } else {
-                $proceed = false;
-            }
-        } else {
-            $proceed = false;
-        }
-    }
     
-    if($proceed){
+    if(count($excel_data) != 0){
         for($i = 0; $i < sizeof($excel_data); $i++){
             $data = $excel_data[$i];
             if($i === 0){
@@ -149,6 +97,7 @@
             "msg" => "File not found! or File did not match the recommended File Template"
         ]);
     } 
+
     function deleteInserted($tranno){
         global $con;
         global $company;
