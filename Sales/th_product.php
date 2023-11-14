@@ -26,7 +26,7 @@ require_once "../Connection/connection_string.php";
 					Group by X.cmainunit, X.citemno
 			) B on A.cpartno=B.citemno
 		left join accounts C on A.compcode=C.compcode and A.cacctcodesales=C.cacctno
-		where A.compcode='$company' and A.ctradetype='Trade' and A.citemdesc LIKE '%".$_GET['query']."%' and A.cstatus='ACTIVE' and A.csalestype='".$styp."'";
+		where A.compcode='$company' and A.ctradetype='Trade' and (LOWER(A.citemdesc) LIKE '%".strtolower($_GET['query'])."%' OR LOWER(A.cpartno) LIKE '%".strtolower($_GET['query'])."%') and A.cstatus='ACTIVE' and A.csalestype='".$styp."'";
 	}
 	
 	$rsd = mysqli_query($con,$sql);

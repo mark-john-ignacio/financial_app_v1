@@ -1238,7 +1238,7 @@ file_name.map(({name, ext}, i) => {
 	});
 
 
-	$("#txtprodid").keypress(function(event){
+	$("#txtprodid").keyup(function(event){
 		if(event.keyCode == 13){
 
 		$.ajax({
@@ -1677,6 +1677,7 @@ function Reindex(){
 				$(this).find('input[name="txtntranamount"]').attr("id","txtntranamount"+tx);
 				$(this).find('input[type="hidden"][name="hdnmainuom"]').attr("id","hdnmainuom"+tx);
 				$(this).find('input[name="hdnfactor"]').attr("id","hdnfactor"+tx); 
+				$(this).find('input[name="del"]').attr("id","del"+tx);
 
 				if(xChkVatableStatus==1){ 
 					$(this).find('select[name="selitmvatyp"]').attr("id","selitmvatyp"+tx); 
