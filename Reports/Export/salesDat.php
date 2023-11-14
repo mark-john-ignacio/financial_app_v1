@@ -80,12 +80,12 @@
         
 
         return [
-            'gross' => $amount,
+            'gross' => $gross,
             'exempt' => $exempt,
             'zero' => $zero,
             'taxable' => $net,
             'output' => $less,
-            'gross_vat' => $gross
+            'gross_vat' => $amount
         ];
 
     }
