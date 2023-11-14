@@ -217,7 +217,15 @@
 							<h4 class="nopadwtop2x">BIR Reports</h4>
 							<hr class="alert-danger nopadding">
 								<div style="padding-left:10px; padding-top:3px">
-									<ul class="ver-inline-menu tabbable margin-bottom-25">          
+									<ul class="ver-inline-menu tabbable margin-bottom-25"> 
+										<li>
+											<a href="" onclick="setI('A', 'SalesDat.php')"  data-toggle="tab">
+											<i class="fa fa-book"></i>Monthly Output Sales</a>
+										</li>
+										<li>
+											<a href="" onclick="setI('A', 'PurchaseDat.php')" data-toggle="tab">
+												<i class="fa fa-book"></i>Monthly Output Purchase</a>
+										</li>         
 										<li>
 											<a href="" onClick="setI('A','MonthlyVAT.php')" data-toggle="tab">
 											<i class="fa fa-book"></i> Monthly Output VAT</a>
@@ -242,24 +250,6 @@
 										-->
 									</ul>
 								</div>
-
-			<div>
-				<h4 class="nopadwtop2x">Generate DAT Files</h4>
-				<hr class="alert-danger nopadding">
-				<div style="padding-left:10px; padding-top:3px">
-					<ul class="ver-inline-menu tabbable margin-bottom-25">   
-						<li>
-							<a href="" onclick="setI('A', 'SalesDat.php')"  data-toggle="tab">
-							<i class="fa fa-book"></i>Sales</a>
-						</li>
-						<li>
-							<a href="" onclick="setI('A', 'PurchaseDat.php')" data-toggle="tab">
-								<i class="fa fa-book"></i>Purchase</a>
-						</li>
-					</ul>
-				</div>
-			</div>
-
         
         </div>
         
