@@ -44,7 +44,7 @@
 
                 break;
             case "ZR":
-                $zero += floatval($row['ngross']);
+                $zerorated += floatval($row['ngross']);
                 break;
             default: 
             break;
@@ -117,7 +117,6 @@
         //Generate DAT File
         header("Content-type: text/plain");
         header("Content-Disposition: attachment; filename=\"Sales-$date.dat\"");
-
 
         $data = "H,S,\"{$company['comptin']}\",\"{$company['compname']}\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"{$company['compadd']}\",\"{$company['compzip']}\",$exempt,$zerorated,$net,$vat,$date,12\n";
 

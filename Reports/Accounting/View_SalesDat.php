@@ -89,7 +89,7 @@
         }
 ?>
             <table class='table'>
-                <tr class='btn-info ' style='text-align: center'>
+                <tr class='btn-primary ' style='text-align: center'>
                     <th>Tax Payer <br>Month</th>
                     <th>Tax Payer <br>Indentification Number</th>
                     <th>Registered Name</th>
@@ -127,7 +127,7 @@
                         <td align='right'><?= number_format($compute['zero'], 2) ?></td>
                         <td align='right'><?= number_format($compute['taxable'], 2) ?></td>
                         <td align='right'><?= number_format($compute['output'], 2) ?></td>
-                        <td align='right'><?= number_format($list['ngross'],2) ?></td>
+                        <td align='right'><?= number_format($compute['gross_vat'],2) ?></td>
                     </tr>
                 <?php endforeach;?>
             </table>
