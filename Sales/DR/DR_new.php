@@ -1345,8 +1345,8 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,crefident){
 		cref = ""
 	}
 	
-	var insbtn = "<td width=\"50\"> <input class='btn btn-info btn-xs' type='button' id='ins" + itmcode + "' value='insert' /></td>";
-	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+" <input type='hidden' value='"+cref+"' name=\"txtcreference\" id=\"txtcreference\"><input type='hidden' value='"+crefident+"' name=\"txtcrefident\" id=\"txtcrefident\"></td>";
+	var insbtn = "<td width=\"50\"> <input class='btn btn-info btn-xs' name='ins' type='button' id='ins" + lastRow + "' value='insert' /></td>";
+	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode" + lastRow + "\">"+itmcode+" <input type='hidden' value='"+cref+"' name=\"txtcreference\" id=\"txtcreference" + lastRow + "\"><input type='hidden' value='"+crefident+"' name=\"txtcrefident\" id=\"txtcrefident" + lastRow + "\"></td>";
 	var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmdesc+"</td>";
 	var tditmavail = avail;
 	var tditmunit = "<td width=\"100\" nowrap> <select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\" data-main='"+itmqtyunit+"'>"+uomoptions+"</select> </td>";
@@ -1364,17 +1364,20 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,crefident){
 	//var tditmprice = "<td width=\"100\" nowrap> <input type='text' value='"+price+"' class='form-control input-xs' style='text-align:right' name=\"txtnprice\" id='txtnprice"+lastRow+"' readonly=\"true\" \"> </td>";
 			
 	//var tditmamount = "<td width=\"100\" nowrap> <input type='text' value='"+amtz+"' class='form-control input-xs' style='text-align:right' name=\"txtnamount\" id='txtnamount"+lastRow+"' readonly=\"true\" \> </td>";
+
+	// &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> 
 	
-	var tditmdel = "<td width=\90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' onClick=\"deleteRow(this);\"/> &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> </td>";
+	var tditmdel = "<td width=\90\" nowrap> <input class='btn btn-danger btn-xs' type='button' name='del' id='del" + lastRow + "' value='delete'/></td>";
 
 //tditmprice + tditmamount +
 	$('#MyTable > tbody:last-child').append('<tr>'+insbtn+tditmcode + tditmdesc + tditmavail + tditmunit + tditmfactor + tditmqty +  tditmdel + '</tr>');
 
-									$("#del"+itmcode).on('click', function() {
+									$("#del"+lastRow).on('click', function() {
 										$(this).closest('tr').remove();
+										Reindex();
 									});
 
-									$("#ins"+itmcode).on('click', function() {
+									$("#ins"+lastRow).on('click', function() {
 										 var xcsd = $(this).closest("tr").find("input[name=txtnqty]").val();
 										 InsertDetSerial(itmcode, itmdesc, itmunit, crefident, xcsd, factz, itmqtyunit, cref)
 									});
@@ -1415,6 +1418,27 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,crefident){
 									ComputeGross();
 									
 									
+}
+
+function Reindex(){
+			$("#MyTable > tbody > tr").each(function(index) {	
+				tx = index + 1;
+	
+				$(this).find('input[name="ins"]').attr("id","ins"+tx);
+				$(this).find('input[name="txtitemcode"]').attr("id","txtitemcode"+tx);
+				$(this).find('input[type="hidden"][name="txtcreference"]').attr("id","txtcreference"+tx);
+				$(this).find('input[type="hidden"][name="txtcrefident"]').attr("id","txtcrefident"+tx);
+				$(this).find('select[name="seluom"]').attr("id","seluom"+tx);
+				$(this).find('input[name="hdnfactor"]').attr("id","hdnfactor"+tx); 
+				$(this).find('input[name="txtnqty"]').attr("id","txtnqty"+tx);
+				$(this).find('input[type="hidden"][name="hdnmainuom"]').attr("id","hdnmainuom"+tx);
+				$(this).find('input[type="hidden"][name="hdnqtyorig"]').attr("id","hdnqtyorig"+tx);
+				$(this).find('input[type="hidden"][name="txtnprice"]').attr("id","txtnprice"+tx);
+				$(this).find('input[type="hidden"][name="txtnamount"]').attr("id","txtnamount"+tx);
+				$(this).find('input[type="hidden"][name="txtntranamount"]').attr("id","txtntranamount"+tx);
+				$(this).find('input[name="del"]').attr("id","del"+tx);
+
+			});
 }
 
 function InsertDetSerial(itmcode, itmname, itmunit, itemrrident, itemqty, itmfctr, itemcunit, itmxref){

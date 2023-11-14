@@ -1037,10 +1037,10 @@ function listcurrencies(){ //API for currency list
 		});
 
 
-		$("#txtprodid").keypress(function(event){
+		$("#txtprodid").keyup(function(event){
 			if(event.keyCode == 13){
-
-			$.ajax({
+				
+				$.ajax({
 					url:'../get_productid.php',
 					data: 'c_id='+ $(this).val() + "&itmbal="+xChkBal+"&styp="+ $("#selsityp").val(),                 
 					success: function(value){
@@ -1053,47 +1053,47 @@ function listcurrencies(){ //API for currency list
 						$("#hdnvat").val(data[6]);
 
 
-			if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
-				var isItem = "NO";
-				var disID = "";
-				
-				$("#MyTable > tbody > tr").each(function() {	
-					disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+						if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
+							var isItem = "NO";
+							var disID = "";
+							
+							$("#MyTable > tbody > tr").each(function() {	
+								disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
 
-					if($("#txtprodid").val()==disID){
+								if($("#txtprodid").val()==disID){
+									
+									isItem = "YES";
+
+								}
+							});	
+
+						//if value is not blank
+						}
+			
+						//if(isItem=="NO"){		
+
+						addItemName("","","","","","","");
+						ComputeGross();	
+							
+						//   }
+						//  else{
+							
+						//	addqty();
+						//}
 						
-						isItem = "YES";
-
-					}
-				});	
-
-			//if value is not blank
-			}
-			
-			//if(isItem=="NO"){		
-
-				addItemName("","","","","","","");
-				ComputeGross();	
+						$("#txtprodid").val("");
+						$("#txtprodnme").val("");
+						$("#hdnunit").val("");
+						$("#hdnqty").val("");
+						$("#hdnqtyunit").val("");
 				
-			//   }
-			//  else{
-				
-			//	addqty();
-			//}
-			
-			$("#txtprodid").val("");
-			$("#txtprodnme").val("");
-			$("#hdnunit").val("");
-			$("#hdnqty").val("");
-			$("#hdnqtyunit").val("");
-	
-				//closing for success: function(value){
-				}
-					}); 
+							//closing for success: function(value){
+						}
+				}); 
 
 		
 			
-			//if enter is clicked
+					//if enter is clicked
 			}
 			
 		});
@@ -1424,7 +1424,7 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 	// &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> 
 	var tditmremx = "<td><input type='text' value='' class='form-control input-xs' name=\"txtcitmremx\" id='txtcitmremx"+lastRow+"'></td>";
 
-	var tditmdel = "<td width=\90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + lastRow + "' value='delete' /></td>";
+	var tditmdel = "<td width=\90\" nowrap> <input class='btn btn-danger btn-xs' type='button' name='del' id='del" + lastRow + "' value='delete' /></td>";
 
 
 	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmavail + tditmvats + tditmunit + tditmfactor + tditmqty + tditmprice + tditmbaseamount + tditmremx + tditmdel + '</tr>');
@@ -1501,7 +1501,8 @@ function Reindex(){
 				$(this).find('input[type="hidden"][name="txtnamount"]').attr("id","txtnamount"+tx);
 				$(this).find('input[name="txtntranamount"]').attr("id","txtntranamount"+tx);
 				$(this).find('input[type="hidden"][name="hdnmainuom"]').attr("id","hdnmainuom"+tx);
-				$(this).find('input[name="hdnfactor"]').attr("id","hdnfactor"+tx); 
+				$(this).find('input[name="hdnfactor"]').attr("id","hdnfactor"+tx);  
+				$(this).find('input[name="del"]').attr("id","del"+tx);
 
 				if(xChkVatableStatus==1){ 
 					$(this).find('select[name="selitmvatyp"]').attr("id","selitmvatyp"+tx); 

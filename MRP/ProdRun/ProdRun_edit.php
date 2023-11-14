@@ -390,7 +390,6 @@
 			computeTot();
 		});
 
-
 			if(file_name.length > 0){
 				$('#file-0').fileinput({
 					showUpload: false,
@@ -420,7 +419,46 @@
 				});
 			}
 
-		disabled();
+	});
+
+	$(document).on('change', 'select.ncmachine', function(e) {
+		let yx = $(this).data("val");
+
+		if($(this).val()!=""){
+			$("#btnStart"+yx).removeAttr("disabled"); 
+			$("#btnStart"+yx).removeClass("disabled");
+
+			setVals(yx,"nmachineid",$(this).val());
+		}
+	});
+
+	$(document).on('click', 'button.nbtnstart', function(e) {
+		let yx = $(this).data("val");
+		let yxval = moment().format('YYYY-MM-DD HH:mm:ss');
+
+		setVals(yx,"ddatestart",yxval);
+
+		yxval = moment().format('MM/DD/YYYY hh:mm:ss A');
+		$("#tdS"+yx).html("<input type=\"text\" class=\"form-control input-sm text-center\" value=\""+yxval+"\" readonly>");
+		$("#btnEnd"+yx).removeAttr("disabled"); 
+		$("#btnEnd"+yx).removeClass("disabled");
+
+	});
+
+	$(document).on('click', 'button.nbtnend', function(e) {
+		let yx = $(this).data("val");
+		let yxval = moment().format('YYYY-MM-DD HH:mm:ss');
+
+		setVals(yx,"ddateend",yxval);
+
+		yxval = moment().format('MM/DD/YYYY hh:mm:ss A');
+		$("#tdE"+yx).html("<input type=\"text\" class=\"form-control input-sm text-center\" value=\""+yxval+"\" readonly>");
+
+		$("#txtnscrap"+yx).removeAttr("disabled"); 
+		$("#txtnreject"+yx).removeAttr("disabled"); 
+		$("#txtnactual"+yx).removeAttr("disabled");
+
+		$("#seloperator"+yx).removeAttr("disabled");
 
 	});
 
@@ -436,15 +474,12 @@
 		$("#subjodets").html("<h5>"+$xtran+": "+$xitms+"<h5>");
 		$("#MyJOSubs tbody").empty(); 
 
-		var tbl = document.getElementById('MyJOSubs').getElementsByTagName('tr');
-		var lastRow = tbl.length-1;
-
 		var lqcnext = 1;
 		var obj = jQuery.parseJSON(file_name);
 		$.each(obj, function(key,value) {
 			if(value.ctranno == $xtran){
 
-				lastRow = lastRow + 1;
+				lastRow = value.nid;
 
 				var dreject ="";
 				var dscrap = "";
@@ -458,11 +493,16 @@
 
 					//machine Select
 					machoptions = "";
+					var xmachine = value.nmachineid;
 					$.each(jQuery.parseJSON(file_machines), function() { 
-						machoptions = machoptions + "<option value='"+this['nid']+"'>"+this['cdesc']+"</option>";
+						let xstat = "";
+						if(xmachine==this['nid']){
+							xstat = "selected";
+						}
+						machoptions = machoptions + "<option value='"+this['nid']+"' "+xstat+">"+this['cdesc']+"</option>";
 					});
 
-					tdmach = "<select class='form-control input-xs' name=\"selmachine\" id=\"selmachine"+lastRow+"\"><option></option>" + machoptions + "</select>";
+					tdmach = "<select class='ncmachine form-control input-xs' name=\"selmachine\" id=\"selmachine"+lastRow+"\" data-val=\""+lastRow+"\" ><option></option>" + machoptions + "</select>";
 					
 					var x = value.ddatestart;
 					if (x!="null" && x!=null && x!="") {
@@ -472,7 +512,7 @@
 						if(value.nmachineid !=0){
 							stat = "";
 						}
-						dstart = "<button type=\"button\" class=\"btn btn-success btn-sm btn-block "+stat+"\" id=\"btnStart"+lastRow+"\" "+stat+">Start</button>";
+						dstart = "<button type=\"button\" class=\"nbtnstart btn btn-success btn-sm btn-block "+stat+"\" id=\"btnStart"+lastRow+"\" data-val=\""+lastRow+"\" "+stat+">Start</button>";
 					}
 					
 					var x = value.ddateend;
@@ -484,7 +524,7 @@
 						if(y!="null" && y!=null && y!=""){
 							stat = "";
 						}
-						deend = "<button type=\"button\" class=\"btn btn-danger btn-sm btn-block "+stat+"\" id=\"btnEnd"+lastRow+"\" "+stat+">End</button>";
+						deend = "<button type=\"button\" class=\"nbtnend btn btn-danger btn-sm btn-block "+stat+"\" id=\"btnEnd"+lastRow+"\" data-val=\""+lastRow+"\" "+stat+">End</button>";
 					}
 					
 
@@ -500,18 +540,18 @@
 						opeoptions = opeoptions + "<option value='"+this['nid']+"'>"+this['cdesc']+"</option>";
 					});
 
-					tdoper = "<select class='form-control input-xs' name=\"seloperator\" id=\"seloperator"+lastRow+"\" "+stat+"><option></option>" + opeoptions + "</select>";
+					tdoper = "<select class='form-control input-xs' id=\"seloperator"+lastRow+"\" data-val=\""+lastRow+"\" "+stat+"><option></option>" + opeoptions + "</select>";  
 
-					dactual = "<input type=\"text\" class=\"form-control input-sm text-right\" value=\"0\" "+stat+">";
-					dreject = "<input type=\"text\" class=\"form-control input-sm text-right\" value=\"0\" "+stat+">";
-					dscrap = "<input type=\"text\" class=\"form-control input-sm text-right\" value=\"0\" "+stat+">";
+					dactual = "<input type=\"text\" class=\"form-control input-sm text-right\" id=\"txtnactual"+lastRow+"\" data-val=\""+lastRow+"\" value=\"0\" "+stat+">";
+					dreject = "<input type=\"text\" class=\"form-control input-sm text-right\" id=\"txtnreject"+lastRow+"\" data-val=\""+lastRow+"\" value=\"0\" "+stat+">";
+					dscrap = "<input type=\"text\" class=\"form-control input-sm text-right\" id=\"txtnscrap"+lastRow+"\" data-val=\""+lastRow+"\" value=\"0\" "+stat+">";
 
 				}
 
 				var tdprocess = "<td style='padding:1px'>"+value.mrp_process_desc+"</td>";
 				var tdmachine = "<td style='padding:1px'>"+tdmach+"</td>";
-				var tddatest = "<td style='padding:1px'>"+dstart+"</td>";
-				var tddateen = "<td style='padding:1px'>"+deend+"</td>";
+				var tddatest = "<td style='padding:1px' id=\"tdS"+lastRow+"\">"+dstart+"</td>";
+				var tddateen = "<td style='padding:1px' id=\"tdE"+lastRow+"\">"+deend+"</td>";
 				var tdactual = "<td style='padding:1px'>"+dactual+"</td>";
 				var tdoperator = "<td style='padding:1px'>"+tdoper+"</td>";
 				var tdreject = "<td style='padding:1px'>"+dreject+"</td>";
@@ -526,20 +566,11 @@
 
 				$("#selmachine"+lastRow).select2({
 					placeholder: "Please select the machine"
-				}); 
-			
-			$("#selmachine"+lastRow).on("change", function(){
-				alert("#selmachine"+lastRow);
-				if($(this).val()!=""){
-					alert("#btnStart"+lastRow);
-					$("#btnStart"+lastRow).removeAttr("disabled"); 
-					$("#btnStart"+lastRow).removeClass("disabled");
-				}
-			});
+				});
 
-			$("#seloperator"+lastRow).select2({
-					placeholder: "Please select the operator"
-			});
+				$("#seloperator"+lastRow).select2({
+						placeholder: "Please select the operator"
+				});
 
 				machoptions = "";
 				lqcnext = value.lqcposted;
@@ -548,67 +579,17 @@
 		}); 
 	}
 
-	function disabled(){
-		$("#frmpos :input").attr("disabled", true);
-		
-		
-		$("#hdnctranno").attr("disabled", false);
-		$("#btnMain").attr("disabled", false);
-		$("#btnNew").attr("disabled", false);
-		$("#btnPrint").attr("disabled", false);
-		$("#btnEdit").attr("disabled", false);
-	}
+	function setVals(processid, colnme, colval){
 
-	function enabled(){
-		if(document.getElementById("hdnposted").value==1 || document.getElementById("hdncancel").value==1){
-			if(document.getElementById("hdnposted").value==1){
-				if(document.getElementById("hdnvoid").value==1){
-					var msgsx = "VOIDED";
-				}else{
-					var msgsx = "POSTED";
-				}
-			}
-			
-			if(document.getElementById("hdncancel").value==1){
-				var msgsx = "CANCELLED"
-			}
-			
-			document.getElementById("statmsgz").innerHTML = "TRANSACTION IS ALREADY "+msgsx+", EDITING IS NOT ALLOWED!";
-			document.getElementById("statmsgz").style.color = "#FF0000";
-			
-		}
-		else{
-			
-			$("#frmpos :input").attr("disabled", false);
-			
-				$("#hdnctranno").attr("readonly", true);
-				$("#btnMain").attr("disabled", true);
-				$("#btnNew").attr("disabled", true);
-				$("#btnPrint").attr("disabled", true);
-				$("#btnEdit").attr("disabled", true);			
-		
-		}
-	}
+		$.ajax ({
+			url: "th_setstat.php",
+			data: { processid: processid,  colnme: colnme, colval: colval },
+			async: false,
+			dataType: "text",
+			success: function( data ) {
 
-	function printchk(x,typx){
-		if(document.getElementById("hdncancel").value==1){	
-			document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
-			document.getElementById("statmsgz").style.color = "#FF0000";
-		}
-		else{
-
-				if(typx=="Print"){
-					$("#hdntransid").val(x);
-					$("#frmQprint").attr("action","JOPrint.php");
-				}
-				
-				$("#frmQprint").submit();
-
-
-
-			
-
-		}
+			}			
+		});
 	}
 
 </script>
