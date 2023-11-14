@@ -55,16 +55,21 @@
         }
         switch($taxcode){
             case "VT":
-                $gross += floatval($gross);
-                
+                $gross = floatval($gross);
+                $exempt = 0;
+                $zero = 0;
+
                 break;
             case "VE":
+                $exempt = floatval($gross);
+                $zero = 0;
                 $gross = 0;
                 $net = 0;
                 $less = 0;
                 break;
             case "ZR":
-                $zero += floatval($gross);
+                $zero = floatval($gross);
+                $exempt = 0;
                 $gross = 0;
                 $net = 0;
                 $less = 0;
