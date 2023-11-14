@@ -131,7 +131,7 @@
                 $fullAddress .= " ". str_replace(",", "", $list['ccountry']);
             }
 
-            $zip = $fullAddress = str_replace(",", "", $list['cstate']);
+            $zip = str_replace(",", "", $list['cstate']);
             if(trim($list['czip']) != ""){
                 $zip .= " ". str_replace(",", "", $list['czip']);
             }
@@ -146,4 +146,5 @@
         <script type="text/javascript">alert("No record has been found on month of <?= $monthcut ?>/<?= $yearcut?>")</script>
         <?php
     }
+    exit;
     
