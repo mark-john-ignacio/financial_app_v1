@@ -1825,7 +1825,7 @@ function opengetdet(valz){
 						  
 							if (item.nqty>=1){
 								$("<tr>").append(
-								$("<td>").html("<input type='checkbox' value='"+item.xrefident+"' name='chkSales[]' data-id=\""+drno+"\">"),
+								$("<td>").html("<input type='checkbox' value='"+item.id+"' name='chkSales[]' data-id=\""+drno+"\">"),
 								$("<td>").text(item.citemno),
 								$("<td>").text(item.cdesc),
 								$("<td>").text(item.cunit),
