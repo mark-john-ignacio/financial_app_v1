@@ -121,11 +121,11 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
             ->setCellValue("C$index", $row['cname'])
             ->setCellValue("E$index", $fullAddress)
             ->setCellValue("F$index", number_format($row['ngross'],2))
-            ->setCellValue("G$index", number_format($computation['exempt']))
-            ->setCellValue("H$index", number_format($computation['zero']))
-            ->setCellValue("I$index", number_format($computation['taxable']))
-            ->setCellValue("J$index", number_format($computation['output']))
-            ->setCellValue("K$index", number_format($computation['gross_vat']));
+            ->setCellValue("G$index", number_format($computation['exempt'],2))
+            ->setCellValue("H$index", number_format($computation['zero'],2))
+            ->setCellValue("I$index", number_format($computation['taxable'],2))
+            ->setCellValue("J$index", number_format($computation['output'],2))
+            ->setCellValue("K$index", number_format($computation['gross_vat'],2));
 
             $TOTAL_GROSS += floatval($row['ngross']); 
             $TOTAL_EXEMPT += floatval($computation['exempt']); 
