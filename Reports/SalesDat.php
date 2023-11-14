@@ -45,10 +45,16 @@
             <table>
                 <tr valign="top">
                     <th><button class='btn btn-danger btn-block' id="btnView"><i class='fa fa-search'></i>View Report</button></th>
-                    <th>Generate Date From:</th>
+                    <th width='100px'>Month of:</th>
                     <th>
                         <div class="col-xs-8 nopadding">
-                            <input type="text" id='datefrom' name='datefrom' class='datepicker form-control input-sm' value="<?= date("M/d/Y"); ?>">
+                            <input type="text" id='datemonth' name='datemonth' class='form-control input-sm' value="<?= date("m"); ?>">
+                        </div>
+                    </th>
+                    <th>Year:</th>
+                    <th>
+                        <div class="col-xs-8 nopadding">
+                            <input type="text" id='dateyear' name='dateyear' class='form-control input-sm' value="<?= date("Y"); ?>">
                         </div>
                     </th>
                 </tr>
@@ -61,32 +67,43 @@
     </div>
 
     <form action="Accounting/View_SalesDat.php" id='viewfrm' name='viewfrm' target="_blank" style='display: none'>
-        <input type="text" id='daterange' name='daterange'>
+        <input type="text" id='viewmonth' name='viewmonth'>
+        <input type="text" id='viewyear' name='viewyear'>
     </form>
     <form action="Export/salesDat.php" id='exportFrm' name='exportFrm' target="_blank" style='display: none'>
-        <input type="text" id='exportrange' name='exportrange'>
+        <input type="text" id='exportmonth' name='exportmonth'>
+        <input type="text" id='exportyear' name='exportyear'>
     </form>
 </body>
 </html>
 <script>
+
     $(document).ready(function(){
-        $(".datepicker").datetimepicker({
-            format: 'YYYY,MMMM'
+
+        $("#datemonth").datetimepicker({
+            format: "MM",
+        });
+        $("#dateyear").datetimepicker({
+            format: "YYYY",
         });
         $("#btnView").click(function(){
-            let range = $('#datefrom').val();
+            let month = $("#datemonth").val();
+            let year = $("#dateyear").val();
+            
             $.ajax({
                 url: "th_salesDat.php",
-                data: { date: range},
+                data: { month: month, year: year},
                 dataType: 'json',
                 async: false,
                 success: function(res){
                     if(res.valid){
-                        $("#daterange").val(range)
+                        $("#viewmonth").val(month)
+                        $("#viewyear").val(year)
                         $("#viewfrm").submit()
                     } else {
                         alert(res.msg)
                     }
+                    console.log(res)
                 },
                 error: function(res){
                     console.log(res)
@@ -95,10 +112,14 @@
         })
 
         $("#btnDat").click(function(){
-            let range = $('#datefrom').val();
-            $("#exportrange").val(range);
+            let month = $("#datemonth").val();
+            let year = $("#dateyear").val();
+
+            $("#exportmonth").val(month).change();
+            $("#exportyear").val(year).change();
             $("#exportFrm").submit();
         })
+        
     })
 
     
