@@ -9,6 +9,10 @@
     $yearcut = $_REQUEST['exportyear'];
     $monthcut = $_REQUEST['exportmonth'];
     $sales = [];
+    $exempt = 0;
+    $zerorated= 0;
+    $net = 0;
+    $vat = 0;
 
     $sql = "SELECT * FROM company WHERE compcode = '$company_code'";
     $query = mysqli_query($con, $sql);
@@ -26,8 +30,27 @@
     $query = mysqli_query($con, $sql);
     while($row = $query -> fetch_assoc()){
         array_push($sales, $row);
+        switch($row['cvatcode']){
+            case "VT":
+                $net += floatval($row['nnet']);
+                $vat += floatval($row['nvat']);
+                break;
+            case "NV":
+                $net += floatval($row['nnet']);
+                $vat += floatval($row['nvat']);
+                break;
+            case "VE":
+                $exempt += floatval($row['ngross']);
+
+                break;
+            case "ZR":
+                $zero += floatval($row['ngross']);
+                break;
+            default: 
+            break;
+        }
+        
     }
-    
     
 
     function Computation($transaction){
@@ -35,21 +58,20 @@
         global $company_code;
 
         $exempt = 0; $zero = 0;  $gross = 0; $net = 0; $less = 0; $amount = 0;
-        $sql = "SELECT a.*, b.cvatcode, b.ngross, c.nrate FROM sales_t a
-                LEFT JOIN sales b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-                LEFT JOIN taxcode c on a.compcode=c.compcode AND a.ctaxcode=c.ctaxcode
-                WHERE a.compcode = '$company_code' AND a.ctranno = '$transaction' AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled =0";
+        $sql = "SELECT b.*, c.nrate FROM sales b 
+                LEFT JOIN taxcode c on b.compcode=c.compcode AND b.cvatcode=c.ctaxcode
+                WHERE b.compcode = '$company_code' AND b.ctranno = '$transaction' AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled =0";
         $query = mysqli_query($con, $sql);
         while($row = $query -> fetch_assoc()){
             $taxcode = $row['cvatcode'];
             $gross = floatval($row['ngross']);
 
             if(floatval($row['nrate']) != 0 ){
-                $net += floatval($row['nnetvat']);
-                $less += floatval($row['nlessvat']);
-                $amount += floatval($row['namount']); 
+                $net += floatval($row['nnet']);
+                $less += floatval($row['nvat']);
+                $amount += floatval($row['ngross']); 
             } else {
-                $exempt += floatval($row['namount']);
+                $exempt += floatval($row['ngross']);
             }
 
         }
@@ -63,16 +85,16 @@
             case "VE":
                 $exempt = floatval($gross);
                 $zero = 0;
-                $gross = 0;
                 $net = 0;
                 $less = 0;
+                $amount = 0;
                 break;
             case "ZR":
                 $zero = floatval($gross);
                 $exempt = 0;
-                $gross = 0;
                 $net = 0;
                 $less = 0;
+                $amount= 0;
                 break;
             default: 
             break;
@@ -89,14 +111,15 @@
         ];
 
     }
-    $date = date("Y-m-d");
+    $date = date("m/d/Y");
 
     if(count($sales) > 0){
         //Generate DAT File
         header("Content-type: text/plain");
         header("Content-Disposition: attachment; filename=\"Sales-$date.dat\"");
-        
-        $data = "H,S,\"{$company['comptin']}\",\"{$company['compname']}\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"{$company['compadd']}\",\"{$company['compzip']}\"\n";
+
+
+        $data = "H,S,\"{$company['comptin']}\",\"{$company['compname']}\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"{$company['compadd']}\",\"{$company['compzip']}\",$exempt,$zerorated,$net,$vat,$date,12\n";
 
         foreach($sales as $list){
             $compute = Computation($list['ctranno']);
@@ -113,7 +136,7 @@
                 $zip .= " ". str_replace(",", "", $list['czip']);
             }
             $getDate = date("m/d/Y", strtotime($list['dcutdate']));
-            $data .= "D,S,\"{$list['ctin']}\",\"{$list['cname']}\",,,,\"{$list['ctradename']}\",\"$fullAddress\",\"$zip\",{$compute['gross']},{$compute['exempt']},{$compute['zero']},{$compute['taxable']},{$compute['output']},{$list['ngross']},$getDate\n";
+            $data .= "D,S,\"{$list['ctin']}\",\"{$list['cname']}\",,,,\"{$list['ctradename']}\",\"$fullAddress\",\"$zip\",{$compute['exempt']},{$compute['zero']},{$compute['taxable']},{$compute['output']},\"{$company['comptin']}\",$getDate\n";
         }
 
         // Output the data
