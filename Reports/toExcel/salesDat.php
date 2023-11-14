@@ -120,12 +120,12 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
             ->setCellValue("B$index", $row['ctin'])
             ->setCellValue("C$index", $row['cname'])
             ->setCellValue("E$index", $fullAddress)
-            ->setCellValue("F$index", number_format($row['ngross'],2))
-            ->setCellValue("G$index", number_format($computation['exempt'],2))
-            ->setCellValue("H$index", number_format($computation['zero'],2))
-            ->setCellValue("I$index", number_format($computation['taxable'],2))
-            ->setCellValue("J$index", number_format($computation['output'],2))
-            ->setCellValue("K$index", number_format($computation['gross_vat'],2));
+            ->setCellValue("F$index", $row['ngross'])
+            ->setCellValue("G$index", $computation['exempt'],2)
+            ->setCellValue("H$index", $computation['zero'],2)
+            ->setCellValue("I$index", $computation['taxable'],2)
+            ->setCellValue("J$index", $computation['output'],2)
+            ->setCellValue("K$index", $computation['gross_vat'],2);
 
             $TOTAL_GROSS += floatval($row['ngross']); 
             $TOTAL_EXEMPT += floatval($computation['exempt']); 
@@ -139,12 +139,12 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         $spreadsheet->getActiveSheet()->getStyle("A$index:K$index")->getFont()->setBold(true);
         $spreadsheet->setActiveSheetIndex(0)
         ->setCellValue("A$index","GRAND TOTAL")
-        ->setCellValue("F$index", number_format($TOTAL_GROSS,2))
-        ->setCellValue("G$index", number_format($TOTAL_EXEMPT,2))
-        ->setCellValue("H$index", number_format($TOTAL_ZERO_RATED,2))
-        ->setCellValue("I$index", number_format($TOTAL_TAXABLE,2))
-        ->setCellValue("J$index", number_format($TOTAL_VAT,2))
-        ->setCellValue("K$index", number_format($TOTAl_TAX_GROSS,2));
+        ->setCellValue("F$index", $TOTAL_GROSS)
+        ->setCellValue("G$index", $TOTAL_EXEMPT)
+        ->setCellValue("H$index", $TOTAL_ZERO_RATED)
+        ->setCellValue("I$index", $TOTAL_TAXABLE)
+        ->setCellValue("J$index", $TOTAL_VAT)
+        ->setCellValue("K$index", $TOTAl_TAX_GROSS);
 
         $index += 2;
         $spreadsheet->setActiveSheetIndex(0)
