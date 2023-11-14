@@ -1240,7 +1240,7 @@ file_name.map(({name, ext}, i) => {
 	});
 
 
-	$("#txtprodid").keypress(function(event){
+	$("#txtprodid").keyup(function(event){
 		if(event.keyCode == 13){
 
 		$.ajax({
