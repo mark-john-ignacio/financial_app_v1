@@ -44,7 +44,7 @@
         <div class='container' style='padding-top: 50px'>
             <table>
                 <tr valign="top">
-                    <th><button class='btn btn-danger btn-block' id="btnView"><i class='fa fa-search'></i>View Report</button></th>
+                    <th><button class='btn btn-danger btn-block' id="btnView"><i class='fa fa-search'></i>&nbsp;&nbsp;View Report</button></th>
                     <th width='100px'>Month of:</th>
                     <th>
                         <div class="col-xs-8 nopadding">
@@ -59,8 +59,12 @@
                     </th>
                 </tr>
                 <tr valign="top">
-                    <th><button class="btn btn-success btn-block" id="btnDat"><i class="fa fa-file"></i>To DAT</button></th>
-                    <th colspan='2'>&nbsp;</th>
+                    <th><button class="btn btn-success btn-block" id="btnExcel"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;To Excel</button></th>
+                    <th colspan='4'>&nbsp;</th>
+                </tr>
+                <tr>
+                    <th><button class="btn btn-info btn-block" id="btnDat"><i class="fa fa-file"></i>&nbsp;&nbsp;To DAT</button></th>
+                    <th colspan='4'>&nbsp;</th>
                 </tr>
             </table>
         </div>
@@ -73,6 +77,10 @@
     <form action="Export/salesDat.php" id='exportFrm' name='exportFrm' target="_blank" style='display: none'>
         <input type="text" id='exportmonth' name='exportmonth'>
         <input type="text" id='exportyear' name='exportyear'>
+    </form>
+    <form action="toExcel/salesDat.php" id='xlsfrm' name='xlsfrm' target="_blank" style='display: none'>
+        <input type="text" id='xlsmonth' name='xlsmonth'>
+        <input type="text" id='xlsyear' name='xlsyear'>
     </form>
 </body>
 </html>
@@ -118,6 +126,31 @@
             $("#exportmonth").val(month).change();
             $("#exportyear").val(year).change();
             $("#exportFrm").submit();
+        })
+
+        $("#btnExcel").click(function(){
+            let month = $("#datemonth").val();
+            let year = $("#dateyear").val();
+            
+            $.ajax({
+                url: "th_salesDat.php",
+                data: { month: month, year: year},
+                dataType: 'json',
+                async: false,
+                success: function(res){
+                    if(res.valid){
+                        $("#xlsmonth").val(month)
+                        $("#xlsyear").val(year)
+                        $("#xlsfrm").submit()
+                    } else {
+                        alert(res.msg)
+                    }
+                    console.log(res)
+                },
+                error: function(res){
+                    console.log(res)
+                }
+            })
         })
         
     })

@@ -56,16 +56,16 @@
             case "VE":
                 $exempt = floatval($gross);
                 $zero = 0;
-                $gross = 0;
                 $net = 0;
                 $less = 0;
+                $amount = 0;
                 break;
             case "ZR":
                 $zero = floatval($gross);
                 $exempt = 0;
-                $gross = 0;
                 $net = 0;
                 $less = 0;
+                $amount= 0;
                 break;
             default: 
             break;
@@ -73,12 +73,12 @@
         
 
         return [
-            'gross' => $amount,
+            'gross' => $gross,
             'exempt' => $exempt,
             'zero' => $zero,
             'taxable' => $net,
             'output' => $less,
-            'gross_vat' => $gross
+            'gross_vat' => $amount
         ];
 
     }
