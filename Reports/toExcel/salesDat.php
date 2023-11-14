@@ -97,6 +97,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         $index = 14;
+        $TOTAL_GROSS =0; $TOTAL_EXEMPT = 0; $TOTAL_ZERO_RATED = 0; $TOTAL_TAXABLE = 0; $TOTAL_VAT = 0; $TOTAl_TAX_GROSS = 0;
         while($row = $query -> fetch_array(MYSQLI_ASSOC)){
             $computation = Computation($row['ctranno']);
             $index++;
@@ -119,13 +120,35 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
             ->setCellValue("B$index", $row['ctin'])
             ->setCellValue("C$index", $row['cname'])
             ->setCellValue("E$index", $fullAddress)
-            ->setCellValue("F$index", $row['ngross'])
+            ->setCellValue("F$index", number_format($row['ngross'],2))
             ->setCellValue("G$index", number_format($computation['exempt']))
             ->setCellValue("H$index", number_format($computation['zero']))
             ->setCellValue("I$index", number_format($computation['taxable']))
             ->setCellValue("J$index", number_format($computation['output']))
             ->setCellValue("K$index", number_format($computation['gross_vat']));
+
+            $TOTAL_GROSS += floatval($row['ngross']); 
+            $TOTAL_EXEMPT += floatval($computation['exempt'],2); 
+            $TOTAL_ZERO_RATED += floatval($computation['zero'],2); 
+            $TOTAL_TAXABLE += floatval($computation['taxable'],2); 
+            $TOTAL_VAT += floatval($computation['output'],2);
+            $TOTAl_TAX_GROSS += floatval($computation['gross_vat'],2);
         }
+        $index += 2;
+
+        $spreadsheet->getActiveSheet()->getStyle("A$index:K$index")->getFont()->setBold(true);
+        $spreadsheet->setActiveSheetIndex(0)
+        ->setCellValue("A$index","GRAND TOTAL")
+        ->setCellValue("F$index", number_format($TOTAL_GROSS,2))
+        ->setCellValue("G$index", number_format($TOTAL_EXEMPT,2))
+        ->setCellValue("H$index", number_format($TOTAL_ZERO_RATED,2))
+        ->setCellValue("I$index", number_format($TOTAL_TAXABLE,2))
+        ->setCellValue("J$index", number_format($TOTAL_VAT,2))
+        ->setCellValue("K$index", number_format($TOTAl_TAX_GROSS,2));
+
+        $index += 2;
+        $spreadsheet->setActiveSheetIndex(0)
+        ->setCellValue("A$index","END OF REPORT");
     } else {
         $spreadsheet->setActiveSheetIndex(0)
         -> setCellValue("A15", "NO RECORD");
