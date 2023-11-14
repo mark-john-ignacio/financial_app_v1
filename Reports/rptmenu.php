@@ -253,7 +253,7 @@
 							<i class="fa fa-book"></i>Sales</a>
 						</li>
 						<li>
-							<a href="" data-toggle="tab">
+							<a href="" onclick="setI('A', 'PurchaseDat.php')" data-toggle="tab">
 								<i class="fa fa-book"></i>Purchase</a>
 						</li>
 					</ul>
