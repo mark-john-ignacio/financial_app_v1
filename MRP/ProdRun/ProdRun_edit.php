@@ -14,6 +14,21 @@
 
 	$_SESSION['myxtoken'] = gen_token();
 
+	//EDITING
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'JobOrders_post'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
+	//QC POSTING
+	$cancstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'JobOrders_cancel'");
+	if(mysqli_num_rows($sql) == 0){
+		$cancstat = "False";
+	}
+
+
 	//EDIT ACCESS
 	$editstat = "True";
 	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'JobOrders_edit'");

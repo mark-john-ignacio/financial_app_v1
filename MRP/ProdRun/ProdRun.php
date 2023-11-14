@@ -2,27 +2,12 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "JobOrders";
+	$_SESSION['pageid'] = "ProdRun";
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../include/access2.php');
 
 	$company = $_SESSION['companyid'];
-
-
-	//POST
-	$poststat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'JobOrders_post'");
-	if(mysqli_num_rows($sql) == 0){
-		$poststat = "False";
-	}
-
-	//CANCEL
-	$cancstat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'JobOrders_cancel'");
-	if(mysqli_num_rows($sql) == 0){
-		$cancstat = "False";
-	}
 
 	/*
 	$unpoststat = "True";
