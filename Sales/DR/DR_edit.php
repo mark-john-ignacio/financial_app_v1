@@ -2041,7 +2041,7 @@ function opengetdet(valz){
 						  
 							if (item.nqty>=1){
 								if(item.navail>=1){
-									var xxmsg = "<input type='checkbox' value='"+item.xrefident+"' name='chkSales[]' data-id=\""+drno+"\">";
+									var xxmsg = "<input type='checkbox' value='"+item.id+"' name='chkSales[]' data-id=\""+drno+"\">";
 								}
 								else{
 									var xxmsg = "<font color='red'><b>X</b></font>";
