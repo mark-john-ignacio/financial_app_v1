@@ -357,7 +357,7 @@
                     $TOTAL_EXEMPT += floatval($exempt);
                     break;
                 case "ZR":
-                    $TOTAL_ZERO_RATED += floatval($gross);
+                    $TOTAL_ZERO_RATED += floatval($row['namount']);
                     break;
                 default:
                     break;
