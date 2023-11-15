@@ -15,14 +15,19 @@
     $company = $query -> fetch_array(MYSQLI_ASSOC);
     
     $sql = "SELECT a.*, b.ctradename, b.ctin, b.chouseno, b.cstate, b.ccity, b.ccountry FROM sales a 
-        LEFT JOIN customers b on a.compcode = b.compcode AND a.ccode = b.cempid
-        WHERE a.compcode = '$company_code' 
-        AND MONTH(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $monthcut 
-        AND YEAR(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $yearcut  
-        AND a.lapproved = 1 AND a.lvoid = 0 AND a.lcancelled = 0
-        AND a.ctranno in (
-            SELECT csalesno FROM receipt_sales_t WHERE compcode = '$company_code'
-        )";
+    LEFT JOIN customers b on a.compcode = b.compcode AND a.ccode = b.cempid
+    WHERE a.compcode = '$company_code' 
+    AND MONTH(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $monthcut 
+    AND YEAR(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $yearcut  
+    AND a.lapproved = 1 AND a.lvoid = 0 AND a.lcancelled = 0
+    AND a.ctranno in (
+        SELECT b.csalesno FROM receipt a 
+        left join receipt_sales_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
+                    WHERE a.compcode = '$company_code' 
+                    AND a.lapproved = 1 
+                    AND a.lvoid = 0 
+                    AND a.lcancelled = 0
+    )";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         while($row = $query -> fetch_assoc()){
