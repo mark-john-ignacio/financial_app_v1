@@ -24,6 +24,7 @@
         SELECT b.csalesno FROM receipt a 
         left join receipt_sales_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
                     WHERE a.compcode = '$company_code' 
+                    AND b.ctaxcode <> 'NT'
                     AND a.lapproved = 1 
                     AND a.lvoid = 0 
                     AND a.lcancelled = 0
