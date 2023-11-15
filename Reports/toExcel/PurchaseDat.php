@@ -25,7 +25,7 @@ $comp = mysqli_fetch_array($result, MYSQLI_ASSOC);
 // Set document properties
 $spreadsheet->getProperties()->setCreator('Myx Financials')
     ->setLastModifiedBy('Myx Financials')
-    ->setTitle('Sales Transaction')
+    ->setTitle('Purchase Transaction')
     ->setSubject('Reconcilation of listing for Enforcement')
     ->setDescription('Reconcilation of listing for enforcement, generated using Myx Financials.')
     ->setKeywords('myx_financials Reconcilation of listing for enforcement')
@@ -42,7 +42,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
     $spreadsheet->getActiveSheet()->getStyle('A11:K13')->getFont()->setBold(true);
     $spreadsheet->setActiveSheetIndex(0)
-        ->setCellValue('A1', 'SALES TRANSACTION')
+        ->setCellValue('A1', 'PURCHASE TRANSACTION')
         ->setCellValue('A2', 'RECONCILIATION OF LISTING FOR ENFORCEMENT')
         ->setCellValue('A6', 'Vat Registered Tin: ' . $comp['comptin'])
         ->setCellValue('A7', "OWNER'S NAME: " . $comp['compname'])
@@ -69,9 +69,15 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('I11', "AMOUNT OF")
         ->setCellValue('I12', "TAXABLE SALES")
         ->setCellValue('J11', "AMOUNT OF")
-        ->setCellValue('J12', "OUTPUT TAX")
+        ->setCellValue('J12', "PURCHASE SERVICE")
         ->setCellValue('K11', "AMOUNT OF")
-        ->setCellValue('K12', "GROSS TAXABLE SALES");
+        ->setCellValue('K12', "PURCHAHSE OF CAPITAL GOODS")
+        ->setCellValue('L11', "AMOUNT OF")
+        ->setCellValue('L12', "PURCHASE GOODS OTHER THAN CAPIAL GOODS")
+        ->setCellValue('M11', "AMOUNT OF")
+        ->setCellValue('M12', "OUTPUT TAX")
+        ->setCellValue('N11', "AMOUNT OF")
+        ->setCellValue('N12', "GROSS TAXABLE SALES");
 
     $spreadsheet->setActiveSheetIndex(0)
         ->setCellValue('A14', "'(1)")
@@ -88,27 +94,35 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
     
 
-    $sql = "SELECT a.*, b.ctradename, b.ctin, b.chouseno, b.cstate, b.ccity, b.ccountry FROM sales a 
-    LEFT JOIN customers b on a.compcode = b.compcode AND a.ccode = b.cempid
-    WHERE a.compcode = '$company' 
-    AND MONTH(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $monthcut 
-    AND YEAR(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $yearcut  
-    AND a.lapproved = 1 AND a.lvoid = 0 AND a.lcancelled = 0
-    AND a.ctranno in (
-        SELECT b.csalesno FROM receipt a 
-        left join receipt_sales_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-                    WHERE a.compcode = '$company' 
-                    AND b.ctaxcode <> 'NT'
-                    AND a.lapproved = 1 
-                    AND a.lvoid = 0 
-                    AND a.lcancelled = 0
-    )";
+    $sql = "SELECT a.*, b.ctradename, b.ctin, b.chouseno, b.cstate, b.ccity, b.ccountry FROM apv a 
+        LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
+        LEFT JOIN (
+            SELECT DISTINCT(a.ctranno), a.cvatcode, a.compcode from apv_d a
+                LEFT JOIN apv b on a.compcode = b.compcode AND a.ctranno = b.ctranno
+                WHERE a.compcode ='$company' 
+                AND MONTH(STR_TO_DATE(b.dapvdate, '%Y-%m-%d')) = $monthcut 
+                AND YEAR(STR_TO_DATE(b.dapvdate, '%Y-%m-%d')) = $yearcut 
+                AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled =0 
+                AND a.ctranno in (
+                    SELECT capvno FROM paybill a 
+                    LEFT JOIN paybill_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
+                )
+            ) c on a.compcode = c.compcode AND a.ctranno = c.ctranno
+        WHERE a.compcode ='$company' 
+        AND MONTH(STR_TO_DATE(a.dapvdate, '%Y-%m-%d')) = $monthcut 
+        AND YEAR(STR_TO_DATE(a.dapvdate, '%Y-%m-%d')) = $yearcut 
+        AND a.lapproved = 1 AND a.lvoid = 0 AND a.lcancelled =0 
+        AND c.cvatcode <> 'NT'
+        AND a.ctranno in (
+            SELECT capvno FROM paybill a 
+            LEFT JOIN paybill_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
+        )";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         $index = 14;
         $TOTAL_GROSS =0; $TOTAL_EXEMPT = 0; $TOTAL_ZERO_RATED = 0; $TOTAL_TAXABLE = 0; $TOTAL_VAT = 0; $TOTAl_TAX_GROSS = 0;
         while($row = $query -> fetch_array(MYSQLI_ASSOC)){
-            $computation = ComputeRST($row['ctranno']);
+            $computation = ComputePST($row['ctranno']);
             $index++;
             $fullAddress = str_replace(",", "", $row['chouseno']);
             if(trim($row['ccity']) != ""){
@@ -134,8 +148,11 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
             ->setCellValue("G$index", $computation['exempt'],2)
             ->setCellValue("H$index", $computation['zero'],2)
             ->setCellValue("I$index", $computation['net'],2)
-            ->setCellValue("J$index", $computation['vat'],2)
-            ->setCellValue("K$index", $computation['gross_vat'],2);
+            ->setCellValue("J$index", $computation['service'],2)
+            ->setCellValue("K$index", $computation['capital'],2)
+            ->setCellValue("L$index", $computation['goods'],2)
+            ->setCellValue("M$index", $computation['vat'],2)
+            ->setCellValue("N$index", $computation['gross_vat'],2);
 
             $TOTAL_GROSS += floatval($computation['gross']); 
             $TOTAL_EXEMPT += floatval($computation['exempt']); 
@@ -147,16 +164,19 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         $lastindex = $index;
         $index += 2;
 
-        $spreadsheet->getActiveSheet()->getStyle("A$index:K$index")->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
+        $spreadsheet->getActiveSheet()->getStyle("A$index:N$index")->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle("F$index:N$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
         $spreadsheet->setActiveSheetIndex(0)
-        ->setCellValue("A$index","GRAND TOTAL")
+        ->setCellValue("A$index", "GRAND TOTAL")
         ->setCellValue("F$index", "=SUM(F15:F$lastindex)")
         ->setCellValue("G$index", "=SUM(G15:G$lastindex)")
         ->setCellValue("H$index", "=SUM(H15:H$lastindex)")
         ->setCellValue("I$index", "=SUM(I15:I$lastindex)")
         ->setCellValue("J$index", "=SUM(J15:J$lastindex)")
-        ->setCellValue("K$index", "=SUM(K15:K$lastindex)");
+        ->setCellValue("K$index", "=SUM(K15:K$lastindex)")
+        ->setCellValue("L$index", "=SUM(L15:L$lastindex)")
+        ->setCellValue("M$index", "=SUM(M15:M$lastindex)")
+        ->setCellValue("N$index", "=SUM(N15:N$lastindex)");
 
         $index += 2;
         $spreadsheet->setActiveSheetIndex(0)
@@ -168,7 +188,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
 
 	// Rename worksheet
-	$spreadsheet->getActiveSheet()->setTitle('Sales Transaction');
+	$spreadsheet->getActiveSheet()->setTitle('Purchase Transaction');
 
 	// Set active sheet index to the first sheet, so Excel opens this as the first sheet
 	$spreadsheet->setActiveSheetIndex(0);
