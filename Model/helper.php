@@ -324,7 +324,7 @@
 
         $sql = "SELECT a.*, b.nrate, c.cvatcode FROM receipt_sales_t a
         LEFT JOIN taxcode b on a.compcode=b.compcode AND a.ctaxcode=b.ctaxcode
-        LEFT JOIN sales_t c on a.compcode = c.compcode AND a.csalesno = b.ctranno
+        LEFT JOIN sales c on a.compcode = c.compcode AND a.csalesno = c.ctranno
         WHERE a.compcode = '$company' AND a.csalesno = '$transaction'";
         $query = mysqli_query($con, $sql);
         while($row = $query -> fetch_assoc()){
