@@ -4,6 +4,7 @@ if(!isset($_SESSION)){
 }
 require_once  "../../vendor2/autoload.php";
 require_once "../../Connection/connection_string.php";
+require_once "../../Model/helper.php";
 
 //use PhpOffice\PhpSpreadsheet\Helper\Sample;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -87,19 +88,21 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
     
 
-        $sql = "SELECT a.*, b.cname, b.ctradename, b.ctin, b.chouseno, b.cstate, b.ccity, b.ccountry, b.czip 
-        FROM sales a 
-        LEFT JOIN customers b ON a.compcode = b.compcode AND a.ccode = b.cempid
-        WHERE a.compcode = '$company' 
-        AND MONTH(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = '$monthcut'
-        AND YEAR(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = '$yearcut'
-        AND a.lapproved = 1 AND a.lvoid = 0 AND a.lcancelled =0";
+    $sql = "SELECT a.*, b.ctradename, b.ctin, b.chouseno, b.cstate, b.ccity, b.ccountry FROM sales a 
+    LEFT JOIN customers b on a.compcode = b.compcode AND a.ccode = b.cempid
+    WHERE a.compcode = '$company' 
+    AND MONTH(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $monthcut 
+    AND YEAR(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $yearcut  
+    AND a.lapproved = 1 AND a.lvoid = 0 AND a.lcancelled = 0
+    AND a.ctranno in (
+        SELECT csalesno FROM receipt_sales_t WHERE compcode = '$company'
+    )";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         $index = 14;
         $TOTAL_GROSS =0; $TOTAL_EXEMPT = 0; $TOTAL_ZERO_RATED = 0; $TOTAL_TAXABLE = 0; $TOTAL_VAT = 0; $TOTAl_TAX_GROSS = 0;
         while($row = $query -> fetch_array(MYSQLI_ASSOC)){
-            $computation = Computation($row['ctranno']);
+            $computation = ComputeRST($row['ctranno']);
             $index++;
             $fullAddress = str_replace(",", "", $row['chouseno']);
             if(trim($row['ccity']) != ""){
@@ -115,28 +118,30 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
             if(trim($row['czip']) != ""){
                 $fullAddress .= " ". str_replace(",", "", $row['czip']);
             }
+            $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
             $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue("A$index", $row['dcutdate'])
-            ->setCellValue("B$index", $row['ctin'])
+            ->setCellValue("B$index", strval($row['ctin']))
             ->setCellValue("C$index", $row['cname'])
             ->setCellValue("E$index", $fullAddress)
-            ->setCellValue("F$index", $row['ngross'])
+            ->setCellValue("F$index", $computation['gross'])
             ->setCellValue("G$index", $computation['exempt'],2)
             ->setCellValue("H$index", $computation['zero'],2)
-            ->setCellValue("I$index", $computation['taxable'],2)
-            ->setCellValue("J$index", $computation['output'],2)
+            ->setCellValue("I$index", $computation['net'],2)
+            ->setCellValue("J$index", $computation['vat'],2)
             ->setCellValue("K$index", $computation['gross_vat'],2);
 
-            $TOTAL_GROSS += floatval($row['ngross']); 
+            $TOTAL_GROSS += floatval($computation['gross']); 
             $TOTAL_EXEMPT += floatval($computation['exempt']); 
             $TOTAL_ZERO_RATED += floatval($computation['zero']); 
-            $TOTAL_TAXABLE += floatval($computation['taxable']); 
-            $TOTAL_VAT += floatval($computation['output']);
+            $TOTAL_TAXABLE += floatval($computation['net']); 
+            $TOTAL_VAT += floatval($computation['vat']);
             $TOTAl_TAX_GROSS += floatval($computation['gross_vat']);
         }
         $index += 2;
 
         $spreadsheet->getActiveSheet()->getStyle("A$index:K$index")->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
         $spreadsheet->setActiveSheetIndex(0)
         ->setCellValue("A$index","GRAND TOTAL")
         ->setCellValue("F$index", $TOTAL_GROSS)
@@ -179,65 +184,3 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 	$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
 	$writer->save('php://output');
 	exit;
-
-
-    function Computation($transaction){
-        global $con;
-        global $company;
-        $taxcode='';
-
-        $exempt = 0; $zero = 0;  $gross = 0; $net = 0; $less = 0; $amount = 0;
-        $sql = "SELECT  b.cvatcode,b.nnet, nvat, b.ngross, c.nrate FROM sales b 
-                LEFT JOIN taxcode c on b.compcode=c.compcode and b.cvatcode=c.ctaxcode 
-                WHERE b.compcode = '$company' AND b.ctranno = '$transaction'  AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled =0";
-        $query = mysqli_query($con, $sql);
-        while($row = $query -> fetch_assoc()){
-            $taxcode = $row['cvatcode'];
-            $gross = floatval($row['ngross']);
-
-            if(floatval($row['nrate']) != 0 ){
-                $net += floatval($row['nnet']);
-                $less += floatval($row['nvat']);
-                $amount += floatval($row['ngross']); 
-            } else {
-                $exempt += floatval($row['ngross']);
-            }
-
-        }
-        switch($taxcode){
-            case "VT":
-                $gross = floatval($gross);
-                $exempt = 0;
-                $zero = 0;
-
-                break;
-            case "VE":
-                $exempt = floatval($gross);
-                $zero = 0;
-                $net = 0;
-                $less = 0;
-                $amount = 0;
-                break;
-            case "ZR":
-                $zero = floatval($gross);
-                $exempt = 0;
-                $net = 0;
-                $less = 0;
-                $amount= 0;
-                break;
-            default: 
-            break;
-        }
-        
-
-        return [
-            'gross' => $gross,
-            'exempt' => $exempt,
-            'zero' => $zero,
-            'taxable' => $net,
-            'output' => $less,
-            'gross_vat' => $amount
-        ];
-
-    }
-?>
