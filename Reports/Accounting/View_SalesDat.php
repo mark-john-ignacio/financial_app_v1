@@ -4,6 +4,7 @@
     }
     require_once  "../../vendor2/autoload.php";
     include ("../../Connection/connection_string.php");
+    require_once("../../Model/helper.php");
     $company_code = $_SESSION['companyid'];
     $monthcut = $_REQUEST["viewmonth"];
     $yearcut = $_REQUEST['viewyear'];
@@ -14,73 +15,19 @@
     $company = $query -> fetch_array(MYSQLI_ASSOC);
     
     $sql = "SELECT a.*, b.ctradename, b.ctin, b.chouseno, b.cstate, b.ccity, b.ccountry FROM sales a 
-    LEFT JOIN customers b on a.compcode = b.compcode AND a.ccode = b.cempid
-    WHERE a.compcode = '$company_code' AND MONTH(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $monthcut AND YEAR(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $yearcut  AND a.lapproved = 1 AND a.lvoid = 0 AND a.lcancelled = 0";
+        LEFT JOIN customers b on a.compcode = b.compcode AND a.ccode = b.cempid
+        WHERE a.compcode = '$company_code' 
+        AND MONTH(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $monthcut 
+        AND YEAR(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $yearcut  
+        AND a.lapproved = 1 AND a.lvoid = 0 AND a.lcancelled = 0
+        AND a.ctranno in (
+            SELECT csalesno FROM receipt_sales_t WHERE compcode = '$company_code'
+        )";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         while($row = $query -> fetch_assoc()){
             array_push($sales, $row);
         }
-    }
-
-    function Computation($transaction){
-        global $con;
-        global $company_code;
-        $taxcode='';
-
-        $exempt = 0; $zero = 0;  $gross = 0; $net = 0; $less = 0; $amount = 0;
-        $sql = "SELECT  b.cvatcode,b.nnet, nvat, b.ngross, c.nrate FROM sales b 
-                LEFT JOIN taxcode c on b.compcode=c.compcode and b.cvatcode=c.ctaxcode 
-                WHERE b.compcode = '$company_code' AND b.ctranno = '$transaction'  AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled =0";
-        $query = mysqli_query($con, $sql);
-        while($row = $query -> fetch_assoc()){
-            $taxcode = $row['cvatcode'];
-            $gross = floatval($row['ngross']);
-
-            if(floatval($row['nrate']) != 0 ){
-                $net += floatval($row['nnet']);
-                $less += floatval($row['nvat']);
-                $amount += floatval($row['ngross']); 
-            } else {
-                $exempt += floatval($row['ngross']);
-            }
-
-        }
-        switch($taxcode){
-            case "VT":
-                $gross = floatval($gross);
-                $exempt = 0;
-                $zero = 0;
-
-                break;
-            case "VE":
-                $exempt = floatval($gross);
-                $zero = 0;
-                $net = 0;
-                $less = 0;
-                $amount = 0;
-                break;
-            case "ZR":
-                $zero = floatval($gross);
-                $exempt = 0;
-                $net = 0;
-                $less = 0;
-                $amount= 0;
-                break;
-            default: 
-            break;
-        }
-        
-
-        return [
-            'gross' => $gross,
-            'exempt' => $exempt,
-            'zero' => $zero,
-            'taxable' => $net,
-            'output' => $less,
-            'gross_vat' => $amount
-        ];
-
     }
 
     function isEmpty($sales){
@@ -104,7 +51,7 @@
                 </tr>
                 <?php 
                     foreach($sales as $list):
-                        $compute = Computation($list['ctranno']);
+                        $compute = ComputeRST($list['ctranno']);
                         $fullAddress = str_replace(",", "", $list['chouseno']);
                         if(trim($list['ccity']) != ""){
                             $fullAddress .= " ". str_replace(",", "", $list['ccity']);
@@ -125,8 +72,8 @@
                         <td align='right'><?= number_format($compute['gross'], 2) ?></td>
                         <td align='right'><?= number_format($compute['exempt'],2) ?></td>
                         <td align='right'><?= number_format($compute['zero'], 2) ?></td>
-                        <td align='right'><?= number_format($compute['taxable'], 2) ?></td>
-                        <td align='right'><?= number_format($compute['output'], 2) ?></td>
+                        <td align='right'><?= number_format($compute['net'], 2) ?></td>
+                        <td align='right'><?= number_format($compute['vat'], 2) ?></td>
                         <td align='right'><?= number_format($compute['gross_vat'],2) ?></td>
                     </tr>
                 <?php endforeach;?>
