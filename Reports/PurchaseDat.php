@@ -69,7 +69,7 @@
         </div>
     </div>
 
-    <form action="Accounting/View_SalesDat.php" id='viewfrm' name='viewfrm' target="_blank" style='display: none'>
+    <form action="Accounting/View_PurchaseDat.php" id='viewfrm' name='viewfrm' target="_blank" style='display: none'>
         <input type="text" id='viewmonth' name='viewmonth'>
         <input type="text" id='viewyear' name='viewyear'>
     </form>
@@ -77,7 +77,7 @@
         <input type="text" id='exportmonth' name='exportmonth'>
         <input type="text" id='exportyear' name='exportyear'>
     </form>
-    <form action="toExcel/salesDat.php" id='xlsfrm' name='xlsfrm' target="_blank" style='display: none'>
+    <form action="toExcel/PurchaseDat.php" id='xlsfrm' name='xlsfrm' target="_blank" style='display: none'>
         <input type="text" id='xlsmonth' name='xlsmonth'>
         <input type="text" id='xlsyear' name='xlsyear'>
     </form>
@@ -91,5 +91,52 @@
         $("#dateyear").datetimepicker({
             format: "YYYY",
         });
+
+        $("#btnView").click(function(){
+            let month = $("#datemonth").val();
+            let year = $("#dateyear").val();
+
+            $.ajax({
+                url: "th_PurchaseDat.php",
+                data: { month: month, year: year },
+                dataType: 'json',
+                async: false,
+                success: function(res){
+                    if(res.valid){
+                        $("#viewmonth").val(month)
+                        $("#viewyear").val(year)
+                        $("#viewfrm").submit()
+                    } else {
+                        alert(res.msg)
+                    }
+                    console.log(res)
+                }
+            })
+        })
+
+        $("#btnExcel").click(function(){
+            let month = $("#datemonth").val();
+            let year = $("#dateyear").val();
+            
+            $.ajax({
+                url: "th_PurchaseDat.php",
+                data: { month: month, year: year},
+                dataType: 'json',
+                async: false,
+                success: function(res){
+                    if(res.valid){
+                        $("#xlsmonth").val(month)
+                        $("#xlsyear").val(year)
+                        $("#xlsfrm").submit()
+                    } else {
+                        alert(res.msg)
+                    }
+                    console.log(res)
+                },
+                error: function(res){
+                    console.log(res)
+                }
+            })
+        })
     })
 </script>
