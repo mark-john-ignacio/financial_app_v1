@@ -95,7 +95,12 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
     AND YEAR(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $yearcut  
     AND a.lapproved = 1 AND a.lvoid = 0 AND a.lcancelled = 0
     AND a.ctranno in (
-        SELECT csalesno FROM receipt_sales_t WHERE compcode = '$company'
+        SELECT b.csalesno FROM receipt a 
+        left join receipt_sales_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
+                    WHERE a.compcode = '$company' 
+                    AND a.lapproved = 1 
+                    AND a.lvoid = 0 
+                    AND a.lcancelled = 0
     )";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
