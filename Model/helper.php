@@ -1,4 +1,7 @@
 <?php 
+    if(!isset($_SESSION)){
+        session_start();
+    }
 
     /**
      * @param Array $file name of the File input type {$_FILES['upload']}
@@ -296,4 +299,77 @@
         }
 
         return $excel_data;
+    }
+
+    /**
+     * Compute of Receipt Sales Transaction
+     */
+    function ComputeRST($transaction){
+        /**
+         * Initiate Variables
+         */
+        global $con;
+        $company = $_SESSION['companyid'];
+        $TOTAL_GROSS = 0;
+        $TOTAL_EXEMPT = 0;
+        $TOTAL_ZERO_RATED = 0;
+        $TOTAL_NET = 0;
+        $TOTAL_VAT = 0;
+        $TOTAL_TAX_GROSS = 0;
+
+        $net = 0;
+        $vat = 0;
+        $gross = 0;
+        $exempt = 0;
+
+        $sql = "SELECT a.*, b.nrate FROM receipt_sales_t a
+        LEFT JOIN taxcode b on a.compcode=b.compcode AND a.ctaxcode=b.ctaxcode
+        WHERE a.compcode = '$company' AND a.csalesno = '$transaction'";
+        $query = mysqli_query($con, $sql);
+        while($row = $query -> fetch_assoc()){
+            $vatcode = $row['ctaxcode'];
+            $TOTAL_GROSS += $row['namount'];
+
+            if(floatval($row['nrate']) != 0){
+                $net = floatval($row['nnet']);
+                $vat = floatval($row['nvat']);
+                $gross = floatval($row['namount']);
+            } else {
+                $exempt = floatval($row['namount']);
+            }
+
+            /**
+             * Vat Code Validation
+             */
+            switch($vatcode){
+                case "VT":
+                    $TOTAL_NET += floatval($net);
+                    $TOTAL_VAT += floatval($vat);
+                    $TOTAL_TAX_GROSS += floatval($gross);
+
+                    break;
+                case "NV":
+                    $TOTAL_NET += floatval($net);
+                    $TOTAL_VAT += floatval($vat);
+                    $TOTAL_TAX_GROSS += floatval($gross);
+                    break;
+                case "VE":
+                    $TOTAL_EXEMPT += floatval($exempt);
+                    break;
+                case "ZR":
+                    $TOTAL_ZERO_RATED += floatval($gross);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return [
+            'gross' => $TOTAL_GROSS,
+            'net' => $TOTAL_NET,
+            'vat' => $TOTAL_VAT,
+            'exempt' => $TOTAL_EXEMPT,
+            'zero' => $TOTAL_ZERO_RATED,
+            'gross_vat' => $TOTAL_TAX_GROSS
+        ];
     }
