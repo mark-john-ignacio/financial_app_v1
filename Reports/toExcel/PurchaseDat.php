@@ -25,7 +25,7 @@ $comp = mysqli_fetch_array($result, MYSQLI_ASSOC);
 // Set document properties
 $spreadsheet->getProperties()->setCreator('Myx Financials')
     ->setLastModifiedBy('Myx Financials')
-    ->setTitle('Sales Transaction')
+    ->setTitle('Purchase Transaction')
     ->setSubject('Reconcilation of listing for Enforcement')
     ->setDescription('Reconcilation of listing for enforcement, generated using Myx Financials.')
     ->setKeywords('myx_financials Reconcilation of listing for enforcement')
@@ -42,7 +42,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
     $spreadsheet->getActiveSheet()->getStyle('A11:K13')->getFont()->setBold(true);
     $spreadsheet->setActiveSheetIndex(0)
-        ->setCellValue('A1', 'SALES TRANSACTION')
+        ->setCellValue('A1', 'PURCHASE TRANSACTION')
         ->setCellValue('A2', 'RECONCILIATION OF LISTING FOR ENFORCEMENT')
         ->setCellValue('A6', 'Vat Registered Tin: ' . $comp['comptin'])
         ->setCellValue('A7', "OWNER'S NAME: " . $comp['compname'])
@@ -164,19 +164,19 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         $lastindex = $index;
         $index += 2;
 
-        $spreadsheet->getActiveSheet()->getStyle("A$index:K$index")->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
+        $spreadsheet->getActiveSheet()->getStyle("A$index:N$index")->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle("F$index:N$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
         $spreadsheet->setActiveSheetIndex(0)
         ->setCellValue("A$index", "GRAND TOTAL")
-        ->setCellValue("F$index", $TOTAL_GROSS)
-        ->setCellValue("G$index", $TOTAL_EXEMPT)
-        ->setCellValue("H$index", $TOTAL_ZERO_RATED)
-        ->setCellValue("I$index", $TOTAL_TAXABLE)
-        ->setCellValue("J$index", "=SUM(J14:J$lastindex)")
-        ->setCellValue("K$index", "=SUM(K14:K$lastindex)")
-        ->setCellValue("L$index", "=SUM(L14:L$lastindex)")
-        ->setCellValue("M$index", $TOTAL_VAT)
-        ->setCellValue("N$index", $TOTAL_TAX_GROSS);
+        ->setCellValue("F$index", "=SUM(F15:F$lastindex)")
+        ->setCellValue("G$index", "=SUM(G15:G$lastindex)")
+        ->setCellValue("H$index", "=SUM(H15:H$lastindex)")
+        ->setCellValue("I$index", "=SUM(I15:I$lastindex)")
+        ->setCellValue("J$index", "=SUM(J15:J$lastindex)")
+        ->setCellValue("K$index", "=SUM(K15:K$lastindex)")
+        ->setCellValue("L$index", "=SUM(L15:L$lastindex)")
+        ->setCellValue("M$index", "=SUM(M15:M$lastindex)")
+        ->setCellValue("N$index", "=SUM(N15:N$lastindex)");
 
         $index += 2;
         $spreadsheet->setActiveSheetIndex(0)
@@ -188,7 +188,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
 
 	// Rename worksheet
-	$spreadsheet->getActiveSheet()->setTitle('Sales Transaction');
+	$spreadsheet->getActiveSheet()->setTitle('Purchase Transaction');
 
 	// Set active sheet index to the first sheet, so Excel opens this as the first sheet
 	$spreadsheet->setActiveSheetIndex(0);

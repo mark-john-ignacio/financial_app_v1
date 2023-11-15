@@ -144,18 +144,19 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
             $TOTAL_VAT += floatval($computation['vat']);
             $TOTAl_TAX_GROSS += floatval($computation['gross_vat']);
         }
+        $lastindex = $index;
         $index += 2;
 
         $spreadsheet->getActiveSheet()->getStyle("A$index:K$index")->getFont()->setBold(true);
         $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
         $spreadsheet->setActiveSheetIndex(0)
         ->setCellValue("A$index","GRAND TOTAL")
-        ->setCellValue("F$index", $TOTAL_GROSS)
-        ->setCellValue("G$index", $TOTAL_EXEMPT)
-        ->setCellValue("H$index", $TOTAL_ZERO_RATED)
-        ->setCellValue("I$index", $TOTAL_TAXABLE)
-        ->setCellValue("J$index", $TOTAL_VAT)
-        ->setCellValue("K$index", $TOTAl_TAX_GROSS);
+        ->setCellValue("F$index", "=SUM(F15:F$lastindex)")
+        ->setCellValue("G$index", "=SUM(G15:G$lastindex)")
+        ->setCellValue("H$index", "=SUM(H15:H$lastindex)")
+        ->setCellValue("I$index", "=SUM(I15:I$lastindex)")
+        ->setCellValue("J$index", "=SUM(J15:J$lastindex)")
+        ->setCellValue("K$index", "=SUM(K15:K$lastindex)");
 
         $index += 2;
         $spreadsheet->setActiveSheetIndex(0)
