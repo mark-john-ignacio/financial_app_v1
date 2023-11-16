@@ -399,7 +399,7 @@
         $sql = "SELECT a.*, b.nrate, c.csalestype FROM suppinv_t a
         LEFT JOIN taxcode b on a.compcode=b.compcode AND a.cvatcode=b.ctaxcode
         LEFT JOIN items c on a.compcode = c.compcode AND a.citemno = c.cpartno
-        WHERE a.compcode = '$company' AND ctranno in (
+        WHERE a.compcode = '$company' AND a.ctranno in (
             SELECT crefno FROM apv_d WHERE compcode = '$company' AND ctranno = '$transaction'
         )";
         $query = mysqli_query($con, $sql);
