@@ -90,7 +90,10 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('H14', "'(8)")
         ->setCellValue('I14', "'(9)")
         ->setCellValue('J14', "'(10)")
-        ->setCellValue('K14', "'(11)");
+        ->setCellValue('K14', "'(11)")
+        ->setCellValue('L14', "'(12)")
+        ->setCellValue('M14', "'(13)")
+        ->setCellValue('N14', "'(14)");
 
     $sql = "SELECT a.*, b.ctradename, b.ctin, b.chouseno, b.cstate, b.ccity, b.ccountry FROM apv a 
         LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
