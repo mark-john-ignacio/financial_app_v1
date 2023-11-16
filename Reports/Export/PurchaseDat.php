@@ -72,7 +72,7 @@
         $data = "H,P,\"{$company['comptin']}\",\"{$company['compname']}\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"{$company['compadd']}\",\"{$company['compzip']}\",$exempt,$service,$capital,$goods,$vat,$date,12\n";
 
         foreach($sales as $list){
-            $compute = ComputePST($list['ctranno']);
+            $compute = ComputePaybills($list);
             $fullAddress = str_replace(",", "", $list['chouseno']);
             if(trim($list['ccity']) != ""){
                 $fullAddress .= " ". str_replace(",", "", $list['ccity']);

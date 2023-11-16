@@ -38,19 +38,17 @@
     //     LEFT JOIN paybill_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
     // )";
 
-    $sql = "SELECT a.*, b.ctradename, b.ctin, b.chouseno, b.cstate, b.ccity, b.ccountry FROM apv a 
-                LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
-                WHERE a.compcode ='$company_code' 
-                AND MONTH(STR_TO_DATE(a.dapvdate, '%Y-%m-%d')) = $monthcut 
-                AND YEAR(STR_TO_DATE(a.dapvdate, '%Y-%m-%d')) = $yearcut
-                AND a.lapproved = 1 AND a.lvoid = 0 AND a.lcancelled =0 
-                -- AND c.cvatcode <> 'NT'
-                AND a.ctranno in (
-                        SELECT b.capvno FROM paybill a 
-                        LEFT JOIN paybill_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-                        LEFT JOIN suppinv c on a.compcode = c.compcode AND c.ctranno = b.capvno
-                        WHERE a.compcode = '$company_code' AND c.npaidamount > 0
-                )";
+    $sql = "SELECT a.*, b.* FROM paybill a
+        LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
+        WHERE a.compcode = '$company_code'
+        AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
+        AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
+        AND ctranno in (
+            SELECT a.ctranno FROM paybill_t a
+            LEFT JOIN apv b on a.compcode = b.compcode AND a.capvno = b.ctranno
+            LEFT JOIN suppinv_t c on a.compcode = c.compcode AND a.crefrr = c.ctranno
+            WHERE a.compcode = '$company_code'
+        )";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         while($row = $query -> fetch_assoc()){
@@ -81,7 +79,7 @@
                 </tr>
                 <?php 
                     foreach($sales as $list):
-                        $compute = ComputePST($list['ctranno']);
+                        $compute = ComputePaybills($list);
                         $fullAddress = str_replace(",", "", $list['chouseno']);
                         if(trim($list['ccity']) != ""){
                             $fullAddress .= " ". str_replace(",", "", $list['ccity']);
@@ -92,9 +90,10 @@
                         if(trim($list['ccountry']) != ""){
                             $fullAddress .= " ". str_replace(",", "", $list['ccountry']);
                         }
+                        
                 ?>
                     <tr>
-                        <td width='100px'><?= $list['dapvdate'] ?></td>
+                        <td width='100px'><?= $list['dcheckdate'] ?></td>
                         <td><?= $list['ctin'] ?></td>
                         <td><?= $list['ctradename'] ?></td>
                         <td>&nbsp;</td>
