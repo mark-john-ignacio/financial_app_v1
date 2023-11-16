@@ -38,7 +38,7 @@
     //     LEFT JOIN paybill_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
     // )";
 
-    $sql = "SELECT a.* FROM paybill a
+    $sql = "SELECT a.*, b.* FROM paybill a
             LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
             WHERE a.compcode = '$company_code'
             AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut

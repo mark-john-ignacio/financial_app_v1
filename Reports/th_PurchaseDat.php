@@ -28,7 +28,7 @@
     //                     WHERE a.compcode = '$company_code' AND (c.npaidamount > 0 OR c.npaidamount <> null)
     //             )";
 
-    $sql = "SELECT a.* FROM paybill a
+    $sql = "SELECT a.*, b.* FROM paybill a
 	LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
 	WHERE a.compcode = '$company_code'
 	AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
