@@ -489,13 +489,13 @@
         while($row = $query -> fetch_assoc()){
             switch($row['csalestype']){
                 case "Goods":
-                    $TOTAL_GOODS += floatval($amount);
+                    $TOTAL_GOODS += $TOTAL_NET;
                     break;
                 case "Services":
-                    $TOTAL_SERVICE += floatval($amount);
+                    $TOTAL_SERVICE += $TOTAL_NET;
                     break;
                 case "Capital":
-                    $TOTAL_CAPITAL += floatval($amount);
+                    $TOTAL_CAPITAL += $TOTAL_NET;
                     break;
                 default: 
                 break;
