@@ -92,30 +92,18 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('J14', "'(10)")
         ->setCellValue('K14', "'(11)");
 
-    
-
     $sql = "SELECT a.*, b.ctradename, b.ctin, b.chouseno, b.cstate, b.ccity, b.ccountry FROM apv a 
         LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
-        LEFT JOIN (
-            SELECT DISTINCT(a.ctranno), a.cvatcode, a.compcode from apv_d a
-                LEFT JOIN apv b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-                WHERE a.compcode ='$company' 
-                AND MONTH(STR_TO_DATE(b.dapvdate, '%Y-%m-%d')) = $monthcut 
-                AND YEAR(STR_TO_DATE(b.dapvdate, '%Y-%m-%d')) = $yearcut 
-                AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled =0 
-                AND a.ctranno in (
-                    SELECT capvno FROM paybill a 
-                    LEFT JOIN paybill_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-                )
-            ) c on a.compcode = c.compcode AND a.ctranno = c.ctranno
         WHERE a.compcode ='$company' 
-        AND MONTH(STR_TO_DATE(a.dapvdate, '%Y-%m-%d')) = $monthcut 
-        AND YEAR(STR_TO_DATE(a.dapvdate, '%Y-%m-%d')) = $yearcut 
+        AND MONTH(STR_TO_DATE(a.dapvdate, '%Y-%m-%d')) = $monthcut
+        AND YEAR(STR_TO_DATE(a.dapvdate, '%Y-%m-%d')) = $yearcut
         AND a.lapproved = 1 AND a.lvoid = 0 AND a.lcancelled =0 
-        AND c.cvatcode <> 'NT'
+        -- AND c.cvatcode <> 'NT'
         AND a.ctranno in (
-            SELECT capvno FROM paybill a 
-            LEFT JOIN paybill_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
+                SELECT b.capvno FROM paybill a 
+                LEFT JOIN paybill_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
+                LEFT JOIN suppinv c on a.compcode = c.compcode AND c.ctranno = b.capvno
+                WHERE a.compcode = '$company' AND c.npaidamount > 0
         )";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
