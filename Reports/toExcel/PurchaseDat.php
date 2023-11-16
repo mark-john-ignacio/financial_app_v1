@@ -143,12 +143,12 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
             ->setCellValue("M$index", $computation['vat'],2)
             ->setCellValue("N$index", $computation['gross_vat'],2);
 
-            $TOTAL_GROSS += floatval($computation['gross']); 
-            $TOTAL_EXEMPT += floatval($computation['exempt']); 
-            $TOTAL_ZERO_RATED += floatval($computation['zero']); 
-            $TOTAL_TAXABLE += floatval($computation['net']); 
-            $TOTAL_VAT += floatval($computation['vat']);
-            $TOTAl_TAX_GROSS += floatval($computation['gross_vat']);
+            // $TOTAL_GROSS += floatval($computation['gross']); 
+            // $TOTAL_EXEMPT += floatval($computation['exempt']); 
+            // $TOTAL_ZERO_RATED += floatval($computation['zero']); 
+            // $TOTAL_TAXABLE += floatval($computation['net']); 
+            // $TOTAL_VAT += floatval($computation['vat']);
+            // $TOTAl_TAX_GROSS += floatval($computation['gross_vat']);
         }
         $lastindex = $index;
         $index += 2;

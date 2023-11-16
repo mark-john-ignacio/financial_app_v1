@@ -36,14 +36,12 @@
     $query = mysqli_query($con, $sql);
     while($row = $query -> fetch_assoc()){
         array_push($sales, $row);
-        switch($row['cvatcode']){
-            case "VT":
-                $net += floatval($row['nnet']);
-                $vat += floatval($row['nvat']);
-                break;
-            default: 
-            break;
-        }
+
+        $amount = $row['ngross'];
+
+        $net += floatval($amount) / 1.12;
+        $vat += floatval($net) * 0.12;
+
 
         switch($row['csalestype']){
             case "Goods":
