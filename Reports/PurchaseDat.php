@@ -155,6 +155,9 @@
                     } else {
                         alert(res.msg)
                     }
+                },
+                error: function(res){
+                    console.log(res)
                 }
             })
         })
