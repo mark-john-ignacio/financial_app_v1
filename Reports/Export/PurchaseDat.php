@@ -22,29 +22,19 @@
     $query = mysqli_query($con, $sql);
     $company = $query -> fetch_array(MYSQLI_ASSOC);
 
-    $sql = "SELECT a.*, b.ctradename, b.ctin, b.chouseno, b.cstate, b.ccity, b.ccountry, c.csalestype FROM apv a 
-        LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
-        LEFT JOIN (
-            SELECT DISTINCT(a.ctranno), a.cvatcode, a.compcode, a.csalestype from apv_d a
-                LEFT JOIN apv b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-                WHERE a.compcode ='$company' 
-                AND MONTH(STR_TO_DATE(b.dapvdate, '%Y-%m-%d')) = $monthcut 
-                AND YEAR(STR_TO_DATE(b.dapvdate, '%Y-%m-%d')) = $yearcut 
-                AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled =0 
+    $sql = "SELECT a.*, b.ctradename, b.ctin, b.chouseno, b.cstate, b.ccity, b.ccountry FROM apv a 
+                LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
+                WHERE a.compcode ='$company_code' 
+                AND MONTH(STR_TO_DATE(a.dapvdate, '%Y-%m-%d')) = $monthcut 
+                AND YEAR(STR_TO_DATE(a.dapvdate, '%Y-%m-%d')) = $yearcut
+                AND a.lapproved = 1 AND a.lvoid = 0 AND a.lcancelled =0 
+                -- AND c.cvatcode <> 'NT'
                 AND a.ctranno in (
-                    SELECT capvno FROM paybill a 
-                    LEFT JOIN paybill_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-                )
-            ) c on a.compcode = c.compcode AND a.ctranno = c.ctranno
-        WHERE a.compcode ='$company' 
-        AND MONTH(STR_TO_DATE(a.dapvdate, '%Y-%m-%d')) = $monthcut 
-        AND YEAR(STR_TO_DATE(a.dapvdate, '%Y-%m-%d')) = $yearcut 
-        AND a.lapproved = 1 AND a.lvoid = 0 AND a.lcancelled =0 
-        AND c.cvatcode <> 'NT'
-        AND a.ctranno in (
-            SELECT capvno FROM paybill a 
-            LEFT JOIN paybill_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-        )";
+                        SELECT b.capvno FROM paybill a 
+                        LEFT JOIN paybill_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
+                        LEFT JOIN suppinv c on a.compcode = c.compcode AND c.ctranno = b.capvno
+                        WHERE a.compcode = '$company_code' AND c.npaidamount > 0
+                )";
     $query = mysqli_query($con, $sql);
     while($row = $query -> fetch_assoc()){
         array_push($sales, $row);
@@ -79,7 +69,7 @@
         header("Content-type: text/plain");
         header("Content-Disposition: attachment; filename=\"Sales-$date.dat\"");
 
-        $data = "H,S,\"{$company['comptin']}\",\"{$company['compname']}\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"{$company['compadd']}\",\"{$company['compzip']}\",$exempt,$service,$capital,$goods,$vat,$date,12\n";
+        $data = "H,P,\"{$company['comptin']}\",\"{$company['compname']}\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"{$company['compadd']}\",\"{$company['compzip']}\",$exempt,$service,$capital,$goods,$vat,$date,12\n";
 
         foreach($sales as $list){
             $compute = ComputePST($list['ctranno']);
@@ -96,7 +86,7 @@
                 $zip .= " ". str_replace(",", "", $list['czip']);
             }
             $getDate = date("m/d/Y", strtotime($list['dcutdate']));
-            $data .= "D,S,\"{$list['ctin']}\",\"{$list['cname']}\",,,,\"{$list['ctradename']}\",\"$fullAddress\",\"$zip\",{$compute['exempt']},{$compute['zero']},{$compute['service']},{$compute['capital']},{$compute['goods']},{$compute['vat']},\"{$company['comptin']}\",$getDate\n";
+            $data .= "D,P,\"{$list['ctin']}\",\"{$list['cname']}\",,,,\"{$list['ctradename']}\",\"$fullAddress\",\"$zip\",{$compute['exempt']},{$compute['zero']},{$compute['service']},{$compute['capital']},{$compute['goods']},{$compute['vat']},\"{$company['comptin']}\",$getDate\n";
         }
 
         // Output the data
