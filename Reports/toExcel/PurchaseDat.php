@@ -104,7 +104,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
             SELECT a.ctranno FROM paybill_t a
             LEFT JOIN apv b on a.compcode = b.compcode AND a.capvno = b.ctranno
             LEFT JOIN suppinv_t c on a.compcode = c.compcode AND a.crefrr = c.ctranno
-            WHERE a.compcode = '$company'
+            WHERE a.compcode = '$company' AND (c.npaidamount > 0 OR c.npaidamount <> 0)
         )";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){

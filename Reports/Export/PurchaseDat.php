@@ -33,7 +33,7 @@
                         SELECT b.capvno FROM paybill a 
                         LEFT JOIN paybill_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
                         LEFT JOIN suppinv c on a.compcode = c.compcode AND c.ctranno = b.capvno
-                        WHERE a.compcode = '$company_code' AND c.npaidamount > 0
+                        WHERE a.compcode = '$company_code' AND (c.npaidamount > 0 OR c.npaidamount <> 0)
                 )";
     $query = mysqli_query($con, $sql);
     while($row = $query -> fetch_assoc()){

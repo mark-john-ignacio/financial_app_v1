@@ -1,4 +1,7 @@
 <?php 
+    /**
+     * Folder should be renamed to Controller
+     */
     if(!isset($_SESSION)){
         session_start();
     }
