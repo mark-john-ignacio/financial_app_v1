@@ -110,6 +110,9 @@
                         alert(res.msg)
                     }
                     console.log(res)
+                },
+                error: function(res){
+                    console.log(res)
                 }
             })
         })
@@ -133,7 +136,7 @@
                     }
                 },
                 error: function(res){
-                    console.log(res)
+                    console.log(res)    
                 }
             })
         })

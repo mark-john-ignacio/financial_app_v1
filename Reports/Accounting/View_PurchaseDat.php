@@ -38,17 +38,18 @@
     //     LEFT JOIN paybill_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
     // )";
 
-    $sql = "SELECT a.*, b.* FROM paybill a
-        LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
-        WHERE a.compcode = '$company_code'
-        AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
-        AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
-        AND ctranno in (
-            SELECT a.ctranno FROM paybill_t a
-            LEFT JOIN apv b on a.compcode = b.compcode AND a.capvno = b.ctranno
-            LEFT JOIN suppinv_t c on a.compcode = c.compcode AND a.crefrr = c.ctranno
-            WHERE a.compcode = '$company_code' AND (c.npaidamount > 0 OR c.npaidamount <> 0)
-        )";
+    $sql = "SELECT a.* FROM paybill a
+            LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
+            WHERE a.compcode = '$company_code'
+            AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
+            AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
+            AND ctranno in (
+                SELECT a.ctranno FROM paybill_t a
+                LEFT JOIN apv b on a.compcode = b.compcode AND a.capvno = b.ctranno
+                LEFT JOIN suppinv_t c on a.compcode = c.compcode AND a.crefrr = c.ctranno
+                LEFT JOIN suppinv d on a.compcode = d.compcode AND a.crefrr = b.ctranno
+                WHERE a.compcode = '$company_code' AND (d.npaidamount > 0 OR d.npaidamount <> 0)
+            )";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         while($row = $query -> fetch_assoc()){
