@@ -473,7 +473,7 @@
         $TOTAL_SERVICE = 0;
         $TOTAL_CAPITAL = 0;
 
-        $amount = $data['ngross'];
+        $amount = $data['npaid'];
 
         $net = floatval($amount) / 1.12;
         $vat = floatval($net) * 0.12;

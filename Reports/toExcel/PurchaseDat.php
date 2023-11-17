@@ -99,14 +99,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
             LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
             WHERE a.compcode = '$company'
             AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
-            AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
-            AND ctranno in (
-                SELECT a.ctranno FROM paybill_t a
-                LEFT JOIN apv_d b on a.compcode = b.compcode AND a.capvno = b.ctranno
-                    LEFT JOIN suppinv c on a.compcode = c.compcode AND b.crefno = c.ctranno
-                    LEFT JOIN suppinv_t d on a.compcode = c.compcode AND b.crefno = c.ctranno
-                    WHERE a.compcode = '$company' AND (c.npaidamount > 0 OR c.npaidamount != null) AND d.cvatcode != 'NT'
-            )";
+            AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         $index = 14;
