@@ -29,7 +29,8 @@
             AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
             AND ctranno in (
                 SELECT a.ctranno FROM paybill_t a WHERE a.compcode = '$company_code'
-            )";
+            )
+            AND a.lapproved = 1 AND (a.lcancelled != 1 OR a.lvoid != 1)";
     $query = mysqli_query($con, $sql);
     while($row = $query -> fetch_assoc()){
         array_push($sales, $row);
