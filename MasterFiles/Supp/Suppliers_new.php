@@ -492,6 +492,21 @@
                                 </div>
                    		</div>
                 </div>
+
+				<div class="col-xs-7 nopadwtop">
+					<div class="col-xs-3 nopadding">
+						<b>Procurement Type</b>
+					</div>
+					<div class="col-xs-9 nopadwleft">
+						<div class="col-xs-9 nopadding">
+						<select name="procurement" id="procurement" class="form-control input-sm selectpicker" tabindex="3">
+							<option value="Services">PURCHASE OF SERVICES</option>
+							<option value="Capital">PURCHASE OF CAPITAL GOODS</option>
+							<option value="Goods">PURCHASE OF GOODS OTHER THAN CAPITAL GOODS</option>
+						</select>
+						</div>
+					</div>
+				</div>
                 
 
              	<div class="col-xs-7 nopadwtop">

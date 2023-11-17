@@ -462,6 +462,7 @@
         global $con;
         $company = $_SESSION['companyid'];
         $transaction = $data['ctranno'];
+        $PROCUREMENT = $data['procurement'];
         $TOTAL_GROSS = 0;
         $TOTAL_EXEMPT = 0;
         $TOTAL_ZERO_RATED = 0;
@@ -482,27 +483,19 @@
         $TOTAL_VAT += $vat;
         $TOTAL_TAX_GROSS += floatval($amount);
 
-        $sql = "SELECT d.csalestype FROM paybill_t a
-            LEFT JOIN apv_d b on a.compcode = b.compcode AND a.capvno = b.ctranno
-            LEFT JOIN suppinv_t c on a.compcode = c.compcode AND b.crefno = c.ctranno
-            LEFT JOIN items d on a.compcode = d.compcode AND c.citemno = d.cpartno
-            WHERE a.compcode = '$company' AND a.ctranno = '$transaction' ";
 
-        $query = mysqli_query($con, $sql);
-        while($row = $query -> fetch_assoc()){
-            switch($row['csalestype']){
-                case "Goods":
-                    $TOTAL_GOODS += $TOTAL_NET;
-                    break;
-                case "Services":
-                    $TOTAL_SERVICE += $TOTAL_NET;
-                    break;
-                case "Capital":
-                    $TOTAL_CAPITAL += $TOTAL_NET;
-                    break;
-                default: 
+        switch($PROCUREMENT){
+            case "Goods":
+                $TOTAL_GOODS += $TOTAL_NET;
                 break;
-            }
+            case "Services":
+                $TOTAL_SERVICE += $TOTAL_NET;
+                break;
+            case "Capital":
+                $TOTAL_CAPITAL += $TOTAL_NET;
+                break;
+            default: 
+            break;
         }
         
         return [

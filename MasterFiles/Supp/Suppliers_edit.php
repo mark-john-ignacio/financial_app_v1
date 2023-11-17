@@ -44,6 +44,7 @@ include('../../include/access2.php');
 						$Type = $row['csuppliertype'];
 						$Class = $row['csupplierclass'];
 						$Terms = $row['cterms'];
+            $PROCUREMENT = $row['procurement'];
 						
             $VatType = $row['cvattype'];
             $VatRate = $row['nvatrate'];
@@ -620,7 +621,22 @@ include('../../include/access2.php');
                               </div>
                           </div>
                           </div>
-                          
+
+                      <div class="col-xs-7 nopadwtop">
+                        <div class="col-xs-3 nopadding">
+                          <b>Procurement Type</b>
+                        </div>
+                        <div class="col-xs-9 nopadwleft">
+                          <div class="col-xs-9 nopadding">
+                            <select name="procurement" id="procurement" class="form-control input-sm selectpicker" tabindex="3">
+                              <option value="Services" <?= $PROCUREMENT == "Services" ? "selected" : null ?>>PURCHASE OF SERVICES</option>
+                              <option value="Capital" <?= $PROCUREMENT == "Capital" ? "selected" : null ?>>PURCHASE OF CAPITAL GOODS</option>
+                              <option value="Goods" <?= $PROCUREMENT == "Goods" ? "selected" : null ?>>PURCHASE OF GOODS OTHER THAN CAPITAL GOODS</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
                       <div class="col-xs-7 nopadwtop">
                             <div class="col-xs-3 nopadding">
                               <b>Business Type</b>
