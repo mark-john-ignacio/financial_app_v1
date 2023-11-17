@@ -22,44 +22,30 @@
     $query = mysqli_query($con, $sql);
     $company = $query -> fetch_array(MYSQLI_ASSOC);
 
-    $sql = "SELECT a.*, b.ctradename, b.ctin, b.chouseno, b.cstate, b.ccity, b.ccountry FROM apv a 
-                LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
-                WHERE a.compcode ='$company_code' 
-                AND MONTH(STR_TO_DATE(a.dapvdate, '%Y-%m-%d')) = $monthcut 
-                AND YEAR(STR_TO_DATE(a.dapvdate, '%Y-%m-%d')) = $yearcut
-                AND a.lapproved = 1 AND a.lvoid = 0 AND a.lcancelled =0 
-                -- AND c.cvatcode <> 'NT'
-                AND a.ctranno in (
-                        SELECT b.capvno FROM paybill a 
-                        LEFT JOIN paybill_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-                        LEFT JOIN suppinv c on a.compcode = c.compcode AND c.ctranno = b.capvno
-                        WHERE a.compcode = '$company_code' AND c.npaidamount > 0
-                )";
+    $sql = "SELECT a.*, b.cname, b.ctradename, b.czip, b.chouseno, b.ccity, b.ccountry, b.cstate, b.ctin FROM paybill a
+            LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
+            WHERE a.compcode = '$company_code'
+            AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
+            AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
+            AND ctranno in (
+                SELECT a.ctranno FROM paybill_t a
+                LEFT JOIN apv_d b on a.compcode = b.compcode AND a.capvno = b.ctranno
+                    LEFT JOIN suppinv c on a.compcode = c.compcode AND b.crefno = c.ctranno
+                    LEFT JOIN suppinv_t d on a.compcode = c.compcode AND b.crefno = c.ctranno
+                    WHERE a.compcode = '$company_code' AND (c.npaidamount > 0 OR c.npaidamount != null) AND d.cvatcode != 'NT'
+            )";
     $query = mysqli_query($con, $sql);
     while($row = $query -> fetch_assoc()){
         array_push($sales, $row);
-        switch($row['cvatcode']){
-            case "VT":
-                $net += floatval($row['nnet']);
-                $vat += floatval($row['nvat']);
-                break;
-            default: 
-            break;
-        }
+        $compute = ComputePaybills($row);
 
-        switch($row['csalestype']){
-            case "Goods":
-                $goods += floatval($row['ngross']);
-                break;
-            case "Services":
-                $service += floatval($row['ngross']);
-                break;
-            case "Capital":
-                $capital += floatval($row['ngross']);
-                break;
-            default:
-                break;
-        }
+        $exempt += floatval($compute['exempt']);
+        $zerorated += floatval($compute['zero']);
+        $net += floatval($compute['net']);
+        $vat += floatval($compute['vat']);
+        $goods += floatval($compute['goods']);
+        $service += floatval($compute['service']);
+        $capital += floatval($compute['capital']);
     }
     
     $date = date("m/d/Y");
@@ -69,32 +55,34 @@
         header("Content-type: text/plain");
         header("Content-Disposition: attachment; filename=\"Sales-$date.dat\"");
 
-        $data = "H,P,\"{$company['comptin']}\",\"{$company['compname']}\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"{$company['compadd']}\",\"{$company['compzip']}\",$exempt,$service,$capital,$goods,$vat,$date,12\n";
+        $data = "H,P,\"{$company['comptin']}\",\"{$company['compname']}\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"{$company['compadd']}\",\"{$company['compzip']}\",$exempt,$zerorated,$service,$capital,$goods,$vat,$date,12\n";
 
         foreach($sales as $list){
-            $compute = ComputePST($list['ctranno']);
+            $compute = ComputePaybills($list);
             $fullAddress = str_replace(",", "", $list['chouseno']);
-            if(trim($list['ccity']) != ""){
+            if(trim($list['ccity']) != "" && $list['ccity'] != null){
                 $fullAddress .= " ". str_replace(",", "", $list['ccity']);
             }
-            if(trim($list['ccountry']) != ""){
+            if(trim($list['ccountry']) != "" && $list['ccountry'] != null){
                 $fullAddress .= " ". str_replace(",", "", $list['ccountry']);
             }
 
             $zip = str_replace(",", "", $list['cstate']);
-            if(trim($list['czip']) != ""){
+            if(trim($list['czip']) != "" && $list['czip'] != null){
                 $zip .= " ". str_replace(",", "", $list['czip']);
             }
-            $getDate = date("m/d/Y", strtotime($list['dcutdate']));
-            $data .= "D,P,\"{$list['ctin']}\",\"{$list['cname']}\",,,,\"{$list['ctradename']}\",\"$fullAddress\",\"$zip\",{$compute['exempt']},{$compute['zero']},{$compute['service']},{$compute['capital']},{$compute['goods']},{$compute['vat']},\"{$company['comptin']}\",$getDate\n";
+            $getDate = date("m/d/Y", strtotime($list['dcheckdate']));
+            $tin = $list['ctin'];
+            $name = $list['cname'];
+            $trade_name = $list['ctradename'];
+            $data .= "D,P,\"$tin\",\"$name\",,,,\"$trade_name\",\"$fullAddress\",\"$zip\",{$compute['exempt']},{$compute['zero']},{$compute['service']},{$compute['capital']},{$compute['goods']},{$compute['vat']},\"{$company['comptin']}\",$getDate\n";
         }
 
         // Output the data
-        echo $data;
+        echo trim($data);
     } else {
         ?>
         <script type="text/javascript">alert("No record has been found on month of <?= $monthcut ?>/<?= $yearcut?>")</script>
         <?php
     }
     exit;
-    

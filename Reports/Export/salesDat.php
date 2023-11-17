@@ -19,7 +19,7 @@
     $query = mysqli_query($con, $sql);
     $company = $query -> fetch_array(MYSQLI_ASSOC);
 
-    $sql = "SELECT a.*, b.ctradename, b.ctin, b.chouseno, b.cstate, b.ccity, b.ccountry FROM sales a 
+    $sql = "SELECT a.*,b.cname, b.ctradename, b.czip, b.chouseno, b.ccity, b.ccountry, b.cstate, b.ctin FROM sales a 
     LEFT JOIN customers b on a.compcode = b.compcode AND a.ccode = b.cempid
     WHERE a.compcode = '$company_code' 
     AND MONTH(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $monthcut 

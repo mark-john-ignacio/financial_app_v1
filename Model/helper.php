@@ -1,4 +1,7 @@
 <?php 
+    /**
+     * Folder should be renamed to Controller
+     */
     if(!isset($_SESSION)){
         session_start();
     }
@@ -399,7 +402,7 @@
         $sql = "SELECT a.*, b.nrate, c.csalestype FROM suppinv_t a
         LEFT JOIN taxcode b on a.compcode=b.compcode AND a.cvatcode=b.ctaxcode
         LEFT JOIN items c on a.compcode = c.compcode AND a.citemno = c.cpartno
-        WHERE a.compcode = '$company' AND ctranno in (
+        WHERE a.compcode = '$company' AND a.ctranno in (
             SELECT crefno FROM apv_d WHERE compcode = '$company' AND ctranno = '$transaction'
         )";
         $query = mysqli_query($con, $sql);
@@ -442,6 +445,66 @@
                     break;
             }
         }
+        return [
+            'gross' => $TOTAL_GROSS,
+            'net' => $TOTAL_NET,
+            'vat' => $TOTAL_VAT,
+            'exempt' => $TOTAL_EXEMPT,
+            'zero' => $TOTAL_ZERO_RATED,
+            'gross_vat' => $TOTAL_TAX_GROSS,
+            'goods' => $TOTAL_GOODS,
+            'service' => $TOTAL_SERVICE,
+            'capital' => $TOTAL_CAPITAL
+        ];
+    }
+
+    function ComputePaybills($data){
+        global $con;
+        $company = $_SESSION['companyid'];
+        $transaction = $data['ctranno'];
+        $TOTAL_GROSS = 0;
+        $TOTAL_EXEMPT = 0;
+        $TOTAL_ZERO_RATED = 0;
+        $TOTAL_NET = 0;
+        $TOTAL_VAT = 0;
+        $TOTAL_TAX_GROSS = 0;
+        $TOTAL_GOODS = 0;
+        $TOTAL_SERVICE = 0;
+        $TOTAL_CAPITAL = 0;
+
+        $amount = $data['ngross'];
+
+        $net = floatval($amount) / 1.12;
+        $vat = floatval($net) * 0.12;
+
+        $TOTAL_GROSS += floatval($amount);
+        $TOTAL_NET += $net;
+        $TOTAL_VAT += $vat;
+        $TOTAL_TAX_GROSS += floatval($amount);
+
+        $sql = "SELECT d.csalestype FROM paybill_t a
+            LEFT JOIN apv_d b on a.compcode = b.compcode AND a.capvno = b.ctranno
+            LEFT JOIN suppinv_t c on a.compcode = c.compcode AND b.crefno = c.ctranno
+            LEFT JOIN items d on a.compcode = d.compcode AND c.citemno = d.cpartno
+            WHERE a.compcode = '$company' AND a.ctranno = '$transaction' ";
+
+        $query = mysqli_query($con, $sql);
+        while($row = $query -> fetch_assoc()){
+            switch($row['csalestype']){
+                case "Goods":
+                    $TOTAL_GOODS += $TOTAL_NET;
+                    break;
+                case "Services":
+                    $TOTAL_SERVICE += $TOTAL_NET;
+                    break;
+                case "Capital":
+                    $TOTAL_CAPITAL += $TOTAL_NET;
+                    break;
+                default: 
+                break;
+            }
+        }
+        
         return [
             'gross' => $TOTAL_GROSS,
             'net' => $TOTAL_NET,

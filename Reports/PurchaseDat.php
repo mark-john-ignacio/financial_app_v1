@@ -73,7 +73,7 @@
         <input type="text" id='viewmonth' name='viewmonth'>
         <input type="text" id='viewyear' name='viewyear'>
     </form>
-    <form action="Export/salesDat.php" id='exportFrm' name='exportFrm' target="_blank" style='display: none'>
+    <form action="Export/PurchaseDat.php" id='exportFrm' name='exportFrm' target="_blank" style='display: none'>
         <input type="text" id='exportmonth' name='exportmonth'>
         <input type="text" id='exportyear' name='exportyear'>
     </form>
@@ -110,6 +110,9 @@
                         alert(res.msg)
                     }
                     console.log(res)
+                },
+                error: function(res){
+                    console.log(res)
                 }
             })
         })
@@ -131,7 +134,30 @@
                     } else {
                         alert(res.msg)
                     }
-                    console.log(res)
+                },
+                error: function(res){
+                    console.log(res)    
+                }
+            })
+        })
+
+        $("#btnDat").click(function(){
+            let month = $("#datemonth").val();
+            let year = $("#dateyear").val();
+
+            $.ajax({
+                url: "th_PurchaseDat.php",
+                data: { month: month, year: year },
+                dataType: 'json',
+                async: false,
+                success: function(res){
+                    if(res.valid){
+                        $("#exportmonth").val(month);
+                        $("#exportyear").val(year)
+                        $("#exportFrm").submit()
+                    } else {
+                        alert(res.msg)
+                    }
                 },
                 error: function(res){
                     console.log(res)
