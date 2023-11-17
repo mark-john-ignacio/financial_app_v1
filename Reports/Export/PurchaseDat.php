@@ -39,23 +39,17 @@
 
         $amount = $row['ngross'];
 
-        $net += floatval($amount) / 1.12;
-        $vat += floatval($net) * 0.12;
+       
 
+        $compute = ComputePaybills($row);
 
-        switch($row['csalestype']){
-            case "Goods":
-                $goods += floatval($row['ngross']);
-                break;
-            case "Services":
-                $service += floatval($row['ngross']);
-                break;
-            case "Capital":
-                $capital += floatval($row['ngross']);
-                break;
-            default:
-                break;
-        }
+        $exempt += floatval($compute['exempt']);
+        $zerorated += floatval($compute['zero']);
+        $net += floatval($compute['net']);
+        $vat += floatval($compute['vat']);
+        $goods += floatval($compute['goods']);
+        $service += floatval($compute['service']);
+        $capital += floatval($compute['capital']);
     }
     
     $date = date("m/d/Y");
@@ -65,7 +59,7 @@
         header("Content-type: text/plain");
         header("Content-Disposition: attachment; filename=\"Sales-$date.dat\"");
 
-        $data = "H,P,\"{$company['comptin']}\",\"{$company['compname']}\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"{$company['compadd']}\",\"{$company['compzip']}\",$exempt,$service,$capital,$goods,$vat,$date,12\n";
+        $data = "H,P,\"{$company['comptin']}\",\"{$company['compname']}\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"{$company['compadd']}\",\"{$company['compzip']}\",$exempt,$zerorated,$service,$capital,$goods,$vat,$date,12\n";
 
         foreach($sales as $list){
             $compute = ComputePaybills($list);
@@ -81,7 +75,7 @@
             if(trim($list['czip']) != ""){
                 $zip .= " ". str_replace(",", "", $list['czip']);
             }
-            $getDate = date("m/d/Y", strtotime($list['dcutdate']));
+            $getDate = date("m/d/Y", strtotime($list['dcheckdate']));
             $data .= "D,P,\"{$list['ctin']}\",\"{$list['cname']}\",,,,\"{$list['ctradename']}\",\"$fullAddress\",\"$zip\",{$compute['exempt']},{$compute['zero']},{$compute['service']},{$compute['capital']},{$compute['goods']},{$compute['vat']},\"{$company['comptin']}\",$getDate\n";
         }
 
