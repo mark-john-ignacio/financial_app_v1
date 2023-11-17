@@ -25,6 +25,12 @@
 <link href="../admin/layout/css/custom.css" rel="stylesheet" type="text/css"/>
 <!-- END THEME STYLES -->
 <link rel="shortcut icon" href="favicon.ico"/>
+
+<style type="text/css">
+		.othfont {
+			font-family: 'Aquawax', sans-serif;
+		}
+</style>
 </head>
 <!-- END HEAD -->
 <!-- BEGIN BODY -->
@@ -76,7 +82,7 @@
 		<!-- BEGIN LOGO -->
 		<div class="page-logo" style="border: 1px solid">
 			<a href="main.php">
-				<img src="../images/LOGOTOP.png" alt="logo" class="logo-default" width="150" height="48" />
+			<font size="+2" class="othfont" style="font-weight: 400"><font color="Red">M</font><font color="SpringGreen">Y</font><font color="orange">X</font></font><font size="+2" style="font-family: Helvetica Light, Helvetica, Arial, sans-serif; font-weight: lighter !important" color="white">Financials</font>
 			</a>
 		</div>
 		<!-- END LOGO -->
