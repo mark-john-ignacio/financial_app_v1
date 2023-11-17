@@ -3,8 +3,9 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
+	
 	include('Connection/connection_string.php');
-  	require_once('Model/helper.php');
+  require_once('Model/helper.php');
 
 	if(isset($_SESSION['login'])){
 		header("Location: ./main.php");

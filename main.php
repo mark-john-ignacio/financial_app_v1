@@ -74,7 +74,7 @@
 	<div class="page-header-inner">
 		<!-- BEGIN LOGO -->
 		<div class="page-logo">
-			<a href="index.html">
+			<a href="main.php">
 				<img src="images/LOGOTOP.png" alt="logo" class="logo-default" width="150" height="48" />
 			</a>
 			<div class="menu-toggler sidebar-toggler hide">
@@ -397,8 +397,18 @@
                 <i class="fgly-sm flaticon-003-shopping-list"></i> Sales Order
 							</a>
 						</li>
+
+						<?php
+								//check if SO_subdomain exist
+								if ( file_exists( "Sales/DR_".$durlSUB ) || is_dir( "Sales/DR_".$durlSUB) ) {   
+									$DRLink = "Sales/DR_".$durlSUB."/DR.php?ix=";
+								}else{
+									$DRLink = "Sales/DR/DR.php?ix=";
+								}
+							?>
+
 						<li>
-							<a href="javascript:;" onClick="setpage('Sales/DR/DR.php?ix=');">
+							<a href="javascript:;" onClick="setpage('<?=$DRLink?>');">
                 <i class="fgly-sm flaticon-035-invoice"></i> Delivery Receipt
 							</a>
 						</li>
@@ -693,6 +703,16 @@
 	<!-- END CONTENT -->
 </div>
 <!-- END CONTAINER -->
+<!-- BEGIN FOOTER -->
+<div class="page-footer">
+	<div class="page-footer-inner">
+		 2022 &copy; MYXFinancials by Sert Technology Inc. / HRWeb PH
+	</div>
+	<div class="scroll-to-top">
+		<i class="icon-arrow-up"></i>
+	</div>
+</div>
+<!-- END FOOTER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) --><!-- BEGIN CORE PLUGINS -->
 <!--[if lt IE 9]>
 <script src="global/plugins/respond.min.js"></script>
