@@ -57,6 +57,15 @@
         if(empty($sales)){
             return ;
         }
+        $TOTAL_GROSS = 0;
+        $TOTAL_NET = 0;
+        $TOTAL_VAT = 0;
+        $TOTAL_EXEMPT = 0;
+        $TOTAL_ZERO_RATED = 0;
+        $TOTAL_GOODS = 0;
+        $TOTAL_SERVICE = 0;
+        $TOTAL_CAPITAL = 0;
+        $TOTAL_TAX_GROSS = 0;
 ?>
             <table class='table'>
                 <tr class='btn-primary ' style='text-align: center'>
@@ -76,6 +85,7 @@
                     <th>AMOUNT of Gross Taxable Purchase</th>
                 </tr>
                 <?php 
+
                     foreach($sales as $list):
                         $compute = ComputePaybills($list);
                         $fullAddress = str_replace(",", "", $list['chouseno']);
@@ -89,6 +99,15 @@
                             $fullAddress .= " ". str_replace(",", "", $list['ccountry']);
                         }
                         
+                        $TOTAL_GROSS += $compute['gross'];
+                        $TOTAL_NET += $compute['net'];
+                        $TOTAL_VAT += $compute['vat'];
+                        $TOTAL_EXEMPT += $compute['exempt'];
+                        $TOTAL_ZERO_RATED += $compute['zero'];
+                        $TOTAL_GOODS += $compute['goods'];
+                        $TOTAL_SERVICE += $compute['service'];
+                        $TOTAL_CAPITAL += $compute['capital'];
+                        $TOTAL_TAX_GROSS += $compute['gross_vat'];
                 ?>
                     <tr>
                         <td width='100px'><?= $list['dcheckdate'] ?></td>
@@ -109,6 +128,18 @@
                         <td align='right'><?= number_format($compute['gross_vat'],2) ?></td>
                     </tr>
                 <?php endforeach;?>
+                <tr>
+                    <td colspan='5' style='font-weight: bold'>GRAND TOTAL</td>
+                    <td align='right'><?= number_format($TOTAL_GROSS,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_EXEMPT,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_ZERO_RATED,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_NET,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_SERVICE,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_CAPITAL,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_GOODS,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_VAT,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_TAX_GROSS,2) ?></td>
+                </tr>
             </table>
         <?php
     }?>
