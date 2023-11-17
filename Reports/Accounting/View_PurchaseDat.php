@@ -99,15 +99,15 @@
                             $fullAddress .= " ". str_replace(",", "", $list['ccountry']);
                         }
                         
-                        $TOTAL_GROSS += $compute['gross'];
-                        $TOTAL_NET += $compute['net'];
-                        $TOTAL_VAT += $compute['vat'];
-                        $TOTAL_EXEMPT += $compute['exempt'];
-                        $TOTAL_ZERO_RATED += $compute['zero'];
-                        $TOTAL_GOODS += $compute['goods'];
-                        $TOTAL_SERVICE += $compute['service'];
-                        $TOTAL_CAPITAL += $compute['capital'];
-                        $TOTAL_TAX_GROSS += $compute['gross_vat'];
+                        $TOTAL_GROSS += floatval($compute['gross']);
+                        $TOTAL_NET += floatval($compute['net']);
+                        $TOTAL_VAT += floatval($compute['vat']);
+                        $TOTAL_EXEMPT += floatval($compute['exempt']);
+                        $TOTAL_ZERO_RATED += floatval($compute['zero']);
+                        $TOTAL_GOODS += floatval($compute['goods']);
+                        $TOTAL_SERVICE += floatval($compute['service']);
+                        $TOTAL_CAPITAL += floatval($compute['capital']);
+                        $TOTAL_TAX_GROSS += floatval($compute['gross_vat']);
                 ?>
                     <tr>
                         <td width='100px'><?= $list['dcheckdate'] ?></td>

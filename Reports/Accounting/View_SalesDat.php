@@ -40,6 +40,13 @@
         if(empty($sales)){
             return ;
         }
+
+        $TOTAL_GROSS = 0;
+        $TOTAL_NET = 0;
+        $TOTAL_VAT = 0;
+        $TOTAL_EXEMPT = 0;
+        $TOTAL_ZERO_RATED = 0;
+        $TOTAL_TAX_GROSS = 0;
 ?>
             <table class='table'>
                 <tr class='btn-primary ' style='text-align: center'>
@@ -68,6 +75,12 @@
                         if(trim($list['ccountry']) != ""){
                             $fullAddress .= " ". str_replace(",", "", $list['ccountry']);
                         }
+                        $TOTAL_GROSS += floatval($compute['gross']);
+                        $TOTAL_NET += floatval($compute['net']);
+                        $TOTAL_VAT += floatval($compute['vat']);
+                        $TOTAL_EXEMPT += floatval($compute['exempt']);
+                        $TOTAL_ZERO_RATED += floatval($compute['zero']);
+                        $TOTAL_TAX_GROSS += floatval($compute['gross_vat']);
                 ?>
                     <tr>
                         <td width='100px'><?= $list['dcutdate'] ?></td>
@@ -83,6 +96,15 @@
                         <td align='right'><?= number_format($compute['gross_vat'],2) ?></td>
                     </tr>
                 <?php endforeach;?>
+                <tr>
+                    <td colspan='5' style='font-weight: bold'>GRAND TOTAL</td>
+                    <td align='right'><?= number_format($TOTAL_GROSS,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_EXEMPT,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_ZERO_RATED,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_NET,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_VAT,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_TAX_GROSS,2) ?></td>
+                </tr>
             </table>
         <?php
     }?>
