@@ -26,6 +26,7 @@ $company = $_SESSION['companyid'];
 	$Type = $_REQUEST['seltyp'];
 	$Class = $_REQUEST['selcls'];
 	$Terms = $_REQUEST['selterms'];
+	$PROCUREMENT = $_REQUEST['procurement'];
 	$VatType = $_REQUEST['selvattype'];   
 	$VatTypeRate = $_REQUEST['txttaxrate'];
 	$VatEWTCode = $_REQUEST['txtewtD']; 
@@ -59,7 +60,7 @@ $company = $_SESSION['companyid'];
 	$SelCurr = $_REQUEST['selcurrncy'];
 	
 	//INSERT NEW ITEM
-	$sql = "INSERT INTO `suppliers`(`compcode`, `ccode`, `cname`, `ctradename`, `cacctcode`, `cterms`, `csuppliertype`, `csupplierclass`, `chouseno`, `ccity`, `cstate`, `ccountry`, `czip`, `cGroup1`, `cGroup2`, `cGroup3`, `cGroup4`, `cGroup5`, `cGroup6`, `cGroup7`, `cGroup8`, `cGroup9`, `cGroup10`, `cvattype`, `ctin`, `nvatrate`, `newtcode`, `cdefaultcurrency`) VALUES ('$company', '$cCustCode', '$cCustName', '$cTradeName', '$SalesCodeID', '$Terms', '$Type', '$Class', $HouseNo, $City, $State, $Country, $ZIP, $cGrp1, $cGrp2, $cGrp3, $cGrp4, $cGrp5, $cGrp6, $cGrp7, $cGrp8, $cGrp9, $cGrp10, '$VatType', '$Tin', '$VatTypeRate', '$VatEWTCode', '$SelCurr')";	  
+	$sql = "INSERT INTO `suppliers`(`compcode`, `ccode`, `cname`, `ctradename`, `cacctcode`, `cterms`, `csuppliertype`, `csupplierclass`, `chouseno`, `ccity`, `cstate`, `ccountry`, `czip`, `cGroup1`, `cGroup2`, `cGroup3`, `cGroup4`, `cGroup5`, `cGroup6`, `cGroup7`, `cGroup8`, `cGroup9`, `cGroup10`, `cvattype`, `ctin`, `nvatrate`, `newtcode`, `cdefaultcurrency`, `procurement`) VALUES ('$company', '$cCustCode', '$cCustName', '$cTradeName', '$SalesCodeID', '$Terms', '$Type', '$Class', $HouseNo, $City, $State, $Country, $ZIP, $cGrp1, $cGrp2, $cGrp3, $cGrp4, $cGrp5, $cGrp6, $cGrp7, $cGrp8, $cGrp9, $cGrp10, '$VatType', '$Tin', '$VatTypeRate', '$VatEWTCode', '$SelCurr', '$PROCUREMENT')";	  
 
 
 	if (!mysqli_query($con, $sql)) {
