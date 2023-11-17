@@ -1,4 +1,4 @@
-<?php 
+<?php
     if(!isset($_SESSION)){
         session_start();
     }
@@ -13,29 +13,49 @@
     $sql =  "SELECT * FROM company WHERE compcode = '$company_code'";
     $query = mysqli_query($con, $sql);
     $company = $query -> fetch_array(MYSQLI_ASSOC);
-    
-    $sql = "SELECT a.*, b.ctradename, b.ctin, b.chouseno, b.cstate, b.ccity, b.ccountry FROM sales a 
-    LEFT JOIN customers b on a.compcode = b.compcode AND a.ccode = b.cempid
-    WHERE a.compcode = '$company_code' 
-    AND MONTH(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $monthcut 
-    AND YEAR(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $yearcut  
-    AND a.lapproved = 1 AND a.lvoid = 0 AND a.lcancelled = 0
-    AND a.ctranno in (
-        SELECT b.csalesno FROM receipt a 
-        left join receipt_sales_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-                    WHERE a.compcode = '$company_code' 
-                    AND b.ctaxcode <> 'NT'
-                    AND a.lapproved = 1 
-                    AND a.lvoid = 0 
-                    AND a.lcancelled = 0
-    )";
+
+    // $sql = "SELECT a.*, b.ctradename, b.ctin, b.chouseno, b.cstate, b.ccity, b.ccountry FROM apv a 
+    // LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
+    // LEFT JOIN (
+    //     SELECT DISTINCT(a.ctranno), a.cvatcode, a.compcode from apv_d a
+    //         LEFT JOIN apv b on a.compcode = b.compcode AND a.ctranno = b.ctranno
+    //         WHERE a.compcode ='$company_code' 
+    //         AND MONTH(STR_TO_DATE(b.dapvdate, '%Y-%m-%d')) = $monthcut 
+    //         AND YEAR(STR_TO_DATE(b.dapvdate, '%Y-%m-%d')) = $yearcut 
+    //         AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled =0 
+    //         AND a.ctranno in (
+    //             SELECT capvno FROM paybill a 
+    //             LEFT JOIN paybill_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
+    //         )
+    //     ) c on a.compcode = c.compcode AND a.ctranno = c.ctranno
+    // WHERE a.compcode ='$company_code' 
+    // AND MONTH(STR_TO_DATE(a.dapvdate, '%Y-%m-%d')) = $monthcut 
+    // AND YEAR(STR_TO_DATE(a.dapvdate, '%Y-%m-%d')) = $yearcut 
+    // AND a.lapproved = 1 AND a.lvoid = 0 AND a.lcancelled =0 
+    // -- AND c.cvatcode <> 'NT'
+    // AND a.ctranno in (
+    //     SELECT capvno FROM paybill a 
+    //     LEFT JOIN paybill_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
+    // )";
+
+    $sql = "SELECT a.*, b.* FROM paybill a
+            LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
+            WHERE a.compcode = '$company_code'
+            AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
+            AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
+            AND ctranno in (
+                SELECT a.ctranno FROM paybill_t a
+                    LEFT JOIN apv_d b on a.compcode = b.compcode AND a.capvno = b.ctranno
+                    LEFT JOIN suppinv c on a.compcode = c.compcode AND b.crefno = c.ctranno
+                    LEFT JOIN suppinv_t d on a.compcode = c.compcode AND b.crefno = c.ctranno
+                    WHERE a.compcode = '$company_code' AND (c.npaidamount > 0 OR c.npaidamount != null) AND d.cvatcode != 'NT'
+            )";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         while($row = $query -> fetch_assoc()){
             array_push($sales, $row);
         }
     }
-
     function isEmpty($sales){
         if(empty($sales)){
             return ;
@@ -48,16 +68,19 @@
                     <th>Registered Name</th>
                     <th>Name of Customer <br>(Last Name, First Name, Middle Name)</th>
                     <th>Customer Address</th>
-                    <th>Amount of Gross Sales</th>
-                    <th>Amount of Excempt Sales</th>
-                    <th>Amount of Zero Rated Sales</th>
-                    <th>Amount of Taxable Sales</th>
-                    <th>Amount of Output Tax</th>
-                    <th>Amount of Gross Taxable Sales</th>
+                    <th>AMOUNT of Gross Purchase</th>
+                    <th>AMOUNT of Excempt Purchase</th>
+                    <th>AMOUNT of Zero Rated Purchase</th>
+                    <th>AMOUNT of Taxable Purchase</th>
+                    <th>AMOUNT of PURCHASE SERIVICES</th>
+                    <th>AMOUNT OF PURCHASE CAPITAL GOODS</th>
+                    <th>AMOUNT OF PURCHASE GOODS OTHER THAN CAPITAL GOODS</th>
+                    <th>AMOUNT of Input Tax</th>
+                    <th>AMOUNT of Gross Taxable Purchase</th>
                 </tr>
                 <?php 
                     foreach($sales as $list):
-                        $compute = ComputeRST($list['ctranno']);
+                        $compute = ComputePaybills($list);
                         $fullAddress = str_replace(",", "", $list['chouseno']);
                         if(trim($list['ccity']) != ""){
                             $fullAddress .= " ". str_replace(",", "", $list['ccity']);
@@ -68,9 +91,10 @@
                         if(trim($list['ccountry']) != ""){
                             $fullAddress .= " ". str_replace(",", "", $list['ccountry']);
                         }
+                        
                 ?>
                     <tr>
-                        <td width='100px'><?= $list['dcutdate'] ?></td>
+                        <td width='100px'><?= $list['dcheckdate'] ?></td>
                         <td><?= $list['ctin'] ?></td>
                         <td><?= $list['ctradename'] ?></td>
                         <td>&nbsp;</td>
@@ -79,6 +103,11 @@
                         <td align='right'><?= number_format($compute['exempt'],2) ?></td>
                         <td align='right'><?= number_format($compute['zero'], 2) ?></td>
                         <td align='right'><?= number_format($compute['net'], 2) ?></td>
+
+                        <td align='right'><?= number_format($compute['service'], 2) ?></td>
+                        <td align='right'><?= number_format($compute['capital'],2) ?></td>
+                        <td align='right'><?= number_format($compute['goods'], 2) ?></td>
+
                         <td align='right'><?= number_format($compute['vat'], 2) ?></td>
                         <td align='right'><?= number_format($compute['gross_vat'],2) ?></td>
                     </tr>
