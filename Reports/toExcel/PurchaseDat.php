@@ -96,10 +96,13 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('N14', trim("'(14)"));
 
     $sql = "SELECT a.*, b.* FROM paybill a
-            LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
-            WHERE a.compcode = '$company'
-            AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
-            AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut";
+        LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
+        WHERE a.compcode = '$company'
+        AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
+        AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
+        AND ctranno in (
+            SELECT a.ctranno FROM paybill_t a WHERE a.compcode = '$company'
+        )";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         $index = 14;

@@ -26,7 +26,10 @@
             LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
             WHERE a.compcode = '$company_code'
             AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
-            AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut";
+            AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
+            AND ctranno in (
+                SELECT a.ctranno FROM paybill_t a WHERE a.compcode = '$company_code'
+            )";
     $query = mysqli_query($con, $sql);
     while($row = $query -> fetch_assoc()){
         array_push($sales, $row);
