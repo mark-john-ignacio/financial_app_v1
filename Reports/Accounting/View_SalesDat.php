@@ -101,7 +101,7 @@
         <script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
         <script src="../../Bootstrap/js/moment.js"></script>
         <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script> 
-        <title>Document</title>
+        <title>MyxFinancials</title>
     </head>
     <body>
         <div class='container-fluid'>

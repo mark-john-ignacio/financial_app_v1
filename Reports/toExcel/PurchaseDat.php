@@ -32,7 +32,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
     ->setCategory('Myx Financials Report');
 
 
-	$spreadsheet->getActiveSheet()->getStyle('A1:E1')->getFont()->setBold(true);
+	$spreadsheet->getActiveSheet()->getStyle('A1:A9')->getFont()->setBold(true);
 
 	$result=mysqli_query($con,$sql);
 				
@@ -40,7 +40,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 
-    $spreadsheet->getActiveSheet()->getStyle('A11:K13')->getFont()->setBold(true);
+    $spreadsheet->getActiveSheet()->getStyle('A11:N13')->getFont()->setBold(true);
     $spreadsheet->setActiveSheetIndex(0)
         ->setCellValue('A1', 'PURCHASE TRANSACTION')
         ->setCellValue('A2', 'RECONCILIATION OF LISTING FOR ENFORCEMENT')
@@ -80,37 +80,39 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('N12', "GROSS TAXABLE SALES");
 
     $spreadsheet->setActiveSheetIndex(0)
-        ->setCellValue('A14', "'(1)")
-        ->setCellValue('B14', "'(2)")
-        ->setCellValue('C14', "'(3)")
-        ->setCellValue('D14', "'(4)")
-        ->setCellValue('E14', "'(5)")
-        ->setCellValue('F14', "'(6)")
-        ->setCellValue('G14', "'(7)")
-        ->setCellValue('H14', "'(8)")
-        ->setCellValue('I14', "'(9)")
-        ->setCellValue('J14', "'(10)")
-        ->setCellValue('K14', "'(11)");
+        ->setCellValue('A14', trim("'(1)"))
+        ->setCellValue('B14', trim("'(2)"))
+        ->setCellValue('C14', trim("'(3)"))
+        ->setCellValue('D14', trim("'(4)"))
+        ->setCellValue('E14', trim("'(5)"))
+        ->setCellValue('F14', trim("'(6)"))
+        ->setCellValue('G14', trim("'(7)"))
+        ->setCellValue('H14', trim("'(8)"))
+        ->setCellValue('I14', trim("'(9)"))
+        ->setCellValue('J14', trim("'(10)"))
+        ->setCellValue('K14', trim("'(11)"))
+        ->setCellValue('L14', trim("'(12)"))
+        ->setCellValue('M14', trim("'(13)"))
+        ->setCellValue('N14', trim("'(14)"));
 
-    $sql = "SELECT a.*, b.ctradename, b.ctin, b.chouseno, b.cstate, b.ccity, b.ccountry FROM apv a 
-        LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
-        WHERE a.compcode ='$company' 
-        AND MONTH(STR_TO_DATE(a.dapvdate, '%Y-%m-%d')) = $monthcut
-        AND YEAR(STR_TO_DATE(a.dapvdate, '%Y-%m-%d')) = $yearcut
-        AND a.lapproved = 1 AND a.lvoid = 0 AND a.lcancelled =0 
-        -- AND c.cvatcode <> 'NT'
-        AND a.ctranno in (
-                SELECT b.capvno FROM paybill a 
-                LEFT JOIN paybill_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-                LEFT JOIN suppinv c on a.compcode = c.compcode AND c.ctranno = b.capvno
-                WHERE a.compcode = '$company' AND c.npaidamount > 0
-        )";
+    $sql = "SELECT a.*, b.* FROM paybill a
+            LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
+            WHERE a.compcode = '$company'
+            AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
+            AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
+            AND ctranno in (
+                SELECT a.ctranno FROM paybill_t a
+                LEFT JOIN apv_d b on a.compcode = b.compcode AND a.capvno = b.ctranno
+                    LEFT JOIN suppinv c on a.compcode = c.compcode AND b.crefno = c.ctranno
+                    LEFT JOIN suppinv_t d on a.compcode = c.compcode AND b.crefno = c.ctranno
+                    WHERE a.compcode = '$company' AND (c.npaidamount > 0 OR c.npaidamount != null) AND d.cvatcode != 'NT'
+            )";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         $index = 14;
         $TOTAL_GROSS =0; $TOTAL_EXEMPT = 0; $TOTAL_ZERO_RATED = 0; $TOTAL_TAXABLE = 0; $TOTAL_VAT = 0; $TOTAl_TAX_GROSS = 0;
         while($row = $query -> fetch_array(MYSQLI_ASSOC)){
-            $computation = ComputePST($row['ctranno']);
+            $computation = ComputePaybills($row);
             $index++;
             $fullAddress = str_replace(",", "", $row['chouseno']);
             if(trim($row['ccity']) != ""){
@@ -128,7 +130,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
             }
             $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
             $spreadsheet->setActiveSheetIndex(0)
-            ->setCellValue("A$index", $row['dcutdate'])
+            ->setCellValue("A$index", $row['dcheckdate'])
             ->setCellValue("B$index", strval($row['ctin']))
             ->setCellValue("C$index", $row['cname'])
             ->setCellValue("E$index", $fullAddress)
@@ -142,12 +144,12 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
             ->setCellValue("M$index", $computation['vat'],2)
             ->setCellValue("N$index", $computation['gross_vat'],2);
 
-            $TOTAL_GROSS += floatval($computation['gross']); 
-            $TOTAL_EXEMPT += floatval($computation['exempt']); 
-            $TOTAL_ZERO_RATED += floatval($computation['zero']); 
-            $TOTAL_TAXABLE += floatval($computation['net']); 
-            $TOTAL_VAT += floatval($computation['vat']);
-            $TOTAl_TAX_GROSS += floatval($computation['gross_vat']);
+            // $TOTAL_GROSS += floatval($computation['gross']); 
+            // $TOTAL_EXEMPT += floatval($computation['exempt']); 
+            // $TOTAL_ZERO_RATED += floatval($computation['zero']); 
+            // $TOTAL_TAXABLE += floatval($computation['net']); 
+            // $TOTAL_VAT += floatval($computation['vat']);
+            // $TOTAl_TAX_GROSS += floatval($computation['gross_vat']);
         }
         $lastindex = $index;
         $index += 2;
@@ -177,10 +179,13 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
 	// Rename worksheet
 	$spreadsheet->getActiveSheet()->setTitle('Purchase Transaction');
-
+    for ($column = 'A'; $column <= 'N'; $column++) {
+        $spreadsheet->getActiveSheet()->getColumnDimension($column)->setWidth(150/7);
+    }
+   
 	// Set active sheet index to the first sheet, so Excel opens this as the first sheet
 	$spreadsheet->setActiveSheetIndex(0);
-
+    
 	ob_end_clean();
 
 	// Redirect output to a client’s web browser (Xlsx)
