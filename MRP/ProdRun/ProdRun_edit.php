@@ -184,7 +184,7 @@
 													<?php
 														if($qcost=="True"){
 													?>
-													<th width='158px' style="background-color: #f6fdb2; text-align: center; padding:1px">QC</th>
+													<th width='158px' style="background-color: #f6fdb2; text-align: center; padding:1px">Actions</th>
 													<th width='200px' style="background-color: #f6fdb2; text-align: center; padding:1px">Remarks</th>
 													<?php
 														}

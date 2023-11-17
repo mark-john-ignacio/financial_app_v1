@@ -397,8 +397,18 @@
                 <i class="fgly-sm flaticon-003-shopping-list"></i> Sales Order
 							</a>
 						</li>
+
+						<?php
+								//check if SO_subdomain exist
+								if ( file_exists( "Sales/DR_".$durlSUB ) || is_dir( "Sales/DR_".$durlSUB) ) {   
+									$DRLink = "Sales/DR_".$durlSUB."/DR.php?ix=";
+								}else{
+									$DRLink = "Sales/DR/DR.php?ix=";
+								}
+							?>
+
 						<li>
-							<a href="javascript:;" onClick="setpage('Sales/DR/DR.php?ix=');">
+							<a href="javascript:;" onClick="setpage('<?=$DRLink?>');">
                 <i class="fgly-sm flaticon-035-invoice"></i> Delivery Receipt
 							</a>
 						</li>
