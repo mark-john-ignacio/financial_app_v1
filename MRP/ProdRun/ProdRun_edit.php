@@ -14,11 +14,18 @@
 
 	$_SESSION['myxtoken'] = gen_token();
 
-	//EDIT ACCESS
-	$editstat = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'JobOrders_edit'");
+	//EDITING
+	$postedt = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'ProdRun_edit'");
 	if(mysqli_num_rows($sql) == 0){
-		$editstat = "False";
+		$postedt = "False";
+	}
+
+	//QC POSTING
+	$qcost = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'ProdRun_post'");
+	if(mysqli_num_rows($sql) == 0){
+		$qcost = "False";
 	}
 
 	$arrallsec = array();
@@ -173,8 +180,15 @@
 													<th width='200px' style="background-color: #e5b2fd; text-align: center; padding:1px">Operator</th>
 													<th width='100px' style="text-align: center; padding:1px">Reject Qty</th>
 													<th width='100px' style="text-align: center; padding:1px">Scrap Qty</th>
-													<th width='158px' style="background-color: #f6fdb2; text-align: center; padding:1px">QC</th>
+
+													<?php
+														if($qcost=="True"){
+													?>
+													<th width='158px' style="background-color: #f6fdb2; text-align: center; padding:1px">Actions</th>
 													<th width='200px' style="background-color: #f6fdb2; text-align: center; padding:1px">Remarks</th>
+													<?php
+														}
+													?>
 												</tr>
 											</thead>
 											<tbody class="tbody">
@@ -206,17 +220,17 @@
 								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='JO.php';" id="btnMain" name="btnMain">
 									Back to Main<br>(ESC)
 								</button>		
-								<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?=$tranno;?>','Print');" id="btnPrint" name="btnPrint">
+								<!--<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?//=$tranno;?>','Print');" id="btnPrint" name="btnPrint">
 									Print<br>(CTRL+P)
-								</button>	
+								</button>	-->
 								
 								<?php
-									if($editstat=="True"){
-								?>									
+									//if($editstat=="True"){
+								?><!--							
 								<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
 									Undo Edit<br>(CTRL+Z)
 								</button>				
-								<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?=$tranno?>','Print');" id="btnPrint" name="btnPrint">
+								<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?//=$tranno?>','Print');" id="btnPrint" name="btnPrint">
 									Print<br>(CTRL+P)
 								</button>
 								<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
@@ -224,9 +238,9 @@
 								</button>																										
 								<button type="submit" class="btn btn-success btn-sm" tabindex="6">
 									Update JO<br> (CTRL+S)
-								</button>		
+								</button>	-->	
 								<?php
-									}
+									//}
 								?>												
 							</td>
 						</tr>									
