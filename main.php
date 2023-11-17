@@ -74,7 +74,7 @@
 	<div class="page-header-inner">
 		<!-- BEGIN LOGO -->
 		<div class="page-logo">
-			<a href="index.html">
+			<a href="main.php">
 				<img src="images/LOGOTOP.png" alt="logo" class="logo-default" width="150" height="48" />
 			</a>
 			<div class="menu-toggler sidebar-toggler hide">
@@ -693,6 +693,16 @@
 	<!-- END CONTENT -->
 </div>
 <!-- END CONTAINER -->
+<!-- BEGIN FOOTER -->
+<div class="page-footer">
+	<div class="page-footer-inner">
+		 2022 &copy; MYXFinancials by Sert Technology Inc. / HRWeb PH
+	</div>
+	<div class="scroll-to-top">
+		<i class="icon-arrow-up"></i>
+	</div>
+</div>
+<!-- END FOOTER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) --><!-- BEGIN CORE PLUGINS -->
 <!--[if lt IE 9]>
 <script src="global/plugins/respond.min.js"></script>
