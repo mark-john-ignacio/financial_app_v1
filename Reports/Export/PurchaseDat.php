@@ -22,7 +22,7 @@
     $query = mysqli_query($con, $sql);
     $company = $query -> fetch_array(MYSQLI_ASSOC);
 
-    $sql = "SELECT a.*, b.* FROM paybill a
+    $sql = "SELECT a.*, b.cname, b.ctradename, b.czip, b.chouseno, b.ccity, b.ccountry, b.cstate, b.ctin FROM paybill a
             LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
             WHERE a.compcode = '$company_code'
             AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
@@ -36,11 +36,6 @@
     $query = mysqli_query($con, $sql);
     while($row = $query -> fetch_assoc()){
         array_push($sales, $row);
-
-        $amount = $row['ngross'];
-
-       
-
         $compute = ComputePaybills($row);
 
         $exempt += floatval($compute['exempt']);
@@ -64,27 +59,29 @@
         foreach($sales as $list){
             $compute = ComputePaybills($list);
             $fullAddress = str_replace(",", "", $list['chouseno']);
-            if(trim($list['ccity']) != ""){
+            if(trim($list['ccity']) != "" && $list['ccity'] != null){
                 $fullAddress .= " ". str_replace(",", "", $list['ccity']);
             }
-            if(trim($list['ccountry']) != ""){
+            if(trim($list['ccountry']) != "" && $list['ccountry'] != null){
                 $fullAddress .= " ". str_replace(",", "", $list['ccountry']);
             }
 
             $zip = str_replace(",", "", $list['cstate']);
-            if(trim($list['czip']) != ""){
+            if(trim($list['czip']) != "" && $list['czip'] != null){
                 $zip .= " ". str_replace(",", "", $list['czip']);
             }
             $getDate = date("m/d/Y", strtotime($list['dcheckdate']));
-            $data .= "D,P,\"{$list['ctin']}\",\"{$list['cname']}\",,,,\"{$list['ctradename']}\",\"$fullAddress\",\"$zip\",{$compute['exempt']},{$compute['zero']},{$compute['service']},{$compute['capital']},{$compute['goods']},{$compute['vat']},\"{$company['comptin']}\",$getDate\n";
+            $tin = $list['ctin'];
+            $name = $list['cname'];
+            $trade_name = $list['ctradename'];
+            $data .= "D,P,\"$tin\",\"$name\",,,,\"$trade_name\",\"$fullAddress\",\"$zip\",{$compute['exempt']},{$compute['zero']},{$compute['service']},{$compute['capital']},{$compute['goods']},{$compute['vat']},\"{$company['comptin']}\",$getDate\n";
         }
 
         // Output the data
-        echo $data;
+        echo trim($data);
     } else {
         ?>
         <script type="text/javascript">alert("No record has been found on month of <?= $monthcut ?>/<?= $yearcut?>")</script>
         <?php
     }
     exit;
-    
