@@ -45,7 +45,8 @@
             AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
             AND ctranno in (
                 SELECT a.ctranno FROM paybill_t a WHERE a.compcode = '$company_code'
-            )";
+            )
+            AND a.lapproved = 1 AND (a.lcancelled != 1 OR a.lvoid != 1)";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         while($row = $query -> fetch_assoc()){
@@ -56,6 +57,15 @@
         if(empty($sales)){
             return ;
         }
+        $TOTAL_GROSS = 0;
+        $TOTAL_NET = 0;
+        $TOTAL_VAT = 0;
+        $TOTAL_EXEMPT = 0;
+        $TOTAL_ZERO_RATED = 0;
+        $TOTAL_GOODS = 0;
+        $TOTAL_SERVICE = 0;
+        $TOTAL_CAPITAL = 0;
+        $TOTAL_TAX_GROSS = 0;
 ?>
             <table class='table'>
                 <tr class='btn-primary ' style='text-align: center'>
@@ -75,6 +85,7 @@
                     <th>AMOUNT of Gross Taxable Purchase</th>
                 </tr>
                 <?php 
+
                     foreach($sales as $list):
                         $compute = ComputePaybills($list);
                         $fullAddress = str_replace(",", "", $list['chouseno']);
@@ -88,6 +99,15 @@
                             $fullAddress .= " ". str_replace(",", "", $list['ccountry']);
                         }
                         
+                        $TOTAL_GROSS += floatval($compute['gross']);
+                        $TOTAL_NET += floatval($compute['net']);
+                        $TOTAL_VAT += floatval($compute['vat']);
+                        $TOTAL_EXEMPT += floatval($compute['exempt']);
+                        $TOTAL_ZERO_RATED += floatval($compute['zero']);
+                        $TOTAL_GOODS += floatval($compute['goods']);
+                        $TOTAL_SERVICE += floatval($compute['service']);
+                        $TOTAL_CAPITAL += floatval($compute['capital']);
+                        $TOTAL_TAX_GROSS += floatval($compute['gross_vat']);
                 ?>
                     <tr>
                         <td width='100px'><?= $list['dcheckdate'] ?></td>
@@ -108,6 +128,18 @@
                         <td align='right'><?= number_format($compute['gross_vat'],2) ?></td>
                     </tr>
                 <?php endforeach;?>
+                <tr>
+                    <td colspan='5' style='font-weight: bold'>GRAND TOTAL</td>
+                    <td align='right'><?= number_format($TOTAL_GROSS,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_EXEMPT,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_ZERO_RATED,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_NET,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_SERVICE,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_CAPITAL,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_GOODS,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_VAT,2) ?></td>
+                    <td align='right'><?= number_format($TOTAL_TAX_GROSS,2) ?></td>
+                </tr>
             </table>
         <?php
     }?>
