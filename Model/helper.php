@@ -508,3 +508,10 @@
             'capital' => $TOTAL_CAPITAL
         ];
     }
+
+    function stringValidation($data){
+        $commaStr = str_replace(",", "", $data);
+        $dotStr = str_replace(".", "", $commaStr);
+        $colonStr = str_replace(":", "", $dotStr);
+        return trim($colonStr);
+    }

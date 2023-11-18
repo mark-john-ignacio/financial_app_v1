@@ -71,7 +71,7 @@
                 $FullZip .= " ". stringValidation($list['czip']);
             }
 
-            $tinclient = stringValidation($list['ctin']);
+            $tinclient = str_replace("-", "", $company['ctin']);
             $name = $list['cname'];
             $trade_name = $list['ctradename'];
             $data .= "D,P,\"$tinclient\",\"$name\",,,,\"$trade_name\",\"$fullAddress\",\"$FullZip\",{$compute['exempt']},{$compute['zero']},{$compute['service']},{$compute['capital']},{$compute['goods']},{$compute['vat']},\"$tin\",$lastDay\n";
