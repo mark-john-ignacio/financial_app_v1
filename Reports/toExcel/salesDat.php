@@ -88,18 +88,18 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
     
 
-    $sql = "SELECT a.*, b.ctradename, b.ctin, b.chouseno, b.cstate, b.ccity, b.ccountry FROM sales a 
+    $sql = "SELECT a.*,b.cname, b.ctradename, b.czip, b.chouseno, b.ccity, b.ccountry, b.cstate, b.ctin FROM sales a 
     LEFT JOIN customers b on a.compcode = b.compcode AND a.ccode = b.cempid
-    WHERE a.compcode = '$company' 
+    WHERE a.compcode = '$company_code' 
     AND MONTH(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $monthcut 
     AND YEAR(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $yearcut  
     AND a.lapproved = 1 AND a.lvoid = 0 AND a.lcancelled = 0
     AND a.ctranno in (
         SELECT b.csalesno FROM receipt a 
         left join receipt_sales_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-                    WHERE a.compcode = '$company' 
-                    AND b.ctaxcode <> 'NT'
+                    WHERE a.compcode = '$company_code' 
                     AND a.lapproved = 1 
+                    AND b.ctaxcode <> 'NT'
                     AND a.lvoid = 0 
                     AND a.lcancelled = 0
     )";

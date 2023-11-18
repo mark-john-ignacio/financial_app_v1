@@ -18,9 +18,13 @@
     $service = 0;
     $capital = 0;
 
+    $lastDay = date('m/t/Y', strtotime("$yearcut-$monthcut-01"));
+
     $sql = "SELECT * FROM company WHERE compcode = '$company_code'";
     $query = mysqli_query($con, $sql);
     $company = $query -> fetch_array(MYSQLI_ASSOC);
+    $tin = str_replace("-", "", $company['comptin']);
+    $compaddress = str_replace(",", "", $company['compadd']);
 
     $sql = "SELECT a.*, b.* FROM paybill a
             LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
@@ -29,7 +33,8 @@
             AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
             AND ctranno in (
                 SELECT a.ctranno FROM paybill_t a WHERE a.compcode = '$company_code'
-            )";
+            )
+            AND a.lapproved = 1 AND (a.lcancelled != 1 OR a.lvoid != 1)";
     $query = mysqli_query($con, $sql);
     while($row = $query -> fetch_assoc()){
         array_push($sales, $row);
@@ -43,15 +48,13 @@
         $service += floatval($compute['service']);
         $capital += floatval($compute['capital']);
     }
-    
-    $date = date("m/d/Y");
 
     if(count($sales) > 0){
         //Generate DAT File
         header("Content-type: text/plain");
-        header("Content-Disposition: attachment; filename=\"Sales-$date.dat\"");
+        header("Content-Disposition: attachment; filename=\"".$tin."P".$monthcut . $yearcut . ".dat\"");
 
-        $data = "H,P,\"{$company['comptin']}\",\"{$company['compname']}\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"{$company['compadd']}\",\"{$company['compzip']}\",$exempt,$zerorated,$service,$capital,$goods,$vat,$date,12\n";
+        $data = "H,P,\"$tin\",\"{$company['compname']}\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"$compaddress\",\"{$company['compzip']}\",$exempt,$zerorated,$service,$capital,$goods,$vat,$lastDay,12\n";
 
         foreach($sales as $list){
             $compute = ComputePaybills($list);
@@ -67,11 +70,11 @@
             if(trim($list['czip']) != "" && $list['czip'] != null){
                 $zip .= " ". str_replace(",", "", $list['czip']);
             }
-            $getDate = date("m/d/Y", strtotime($list['dcheckdate']));
-            $tin = $list['ctin'];
+            
+            $tinclient = str_replace(",", "", $list['ctin']);
             $name = $list['cname'];
             $trade_name = $list['ctradename'];
-            $data .= "D,P,\"$tin\",\"$name\",,,,\"$trade_name\",\"$fullAddress\",\"$zip\",{$compute['exempt']},{$compute['zero']},{$compute['service']},{$compute['capital']},{$compute['goods']},{$compute['vat']},\"{$company['comptin']}\",$getDate\n";
+            $data .= "D,P,\"$tinclient\",\"$name\",,,,\"$trade_name\",\"$fullAddress\",\"$zip\",{$compute['exempt']},{$compute['zero']},{$compute['service']},{$compute['capital']},{$compute['goods']},{$compute['vat']},\"{$company['comptin']}\",$lastDay\n";
         }
 
         // Output the data

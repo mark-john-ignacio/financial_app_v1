@@ -459,9 +459,6 @@
     }
 
     function ComputePaybills($data){
-        global $con;
-        $company = $_SESSION['companyid'];
-        $transaction = $data['ctranno'];
         $PROCUREMENT = $data['procurement'];
         $TOTAL_GROSS = 0;
         $TOTAL_EXEMPT = 0;
@@ -474,11 +471,12 @@
         $TOTAL_CAPITAL = 0;
 
         $amount = $data['npaid'];
+        $gross = $data['ngross'];
 
         $net = floatval($amount) / 1.12;
         $vat = floatval($net) * 0.12;
 
-        $TOTAL_GROSS += floatval($amount);
+        $TOTAL_GROSS += floatval($gross);
         $TOTAL_NET += $net;
         $TOTAL_VAT += $vat;
         $TOTAL_TAX_GROSS += floatval($amount);
