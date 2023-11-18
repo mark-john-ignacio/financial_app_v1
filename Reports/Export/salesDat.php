@@ -73,21 +73,21 @@
 
         foreach($sales as $list){
             $compute = ComputeRST($list['ctranno']);
-            $fullAddress = str_replace(",", "", $list['chouseno']);
+            $address = stringValidation($list['chouseno']);
             if(trim($list['ccity']) != ""){
-                $fullAddress .= " ". str_replace(",", "", $list['ccity']);
+                $fullAddress .= " " . stringValidation($list['ccity']);
             }
             if(trim($list['ccountry']) != ""){
-                $fullAddress .= " ". str_replace(",", "", $list['ccountry']);
+                $fullAddress .= " " . stringValidation($list['ccountry']);
             }
-
-            $zip = str_replace(",", "", $list['cstate']);
+            $FullZip = stringValidation($list['cstate']);
+            
             if(trim($list['czip']) != ""){
-                $zip .= " ". str_replace(",", "", $list['czip']);
+                $FullZip .= " ". stringValidation($list['czip']);
             }
 
-            $tinclient = str_replace(",", "", $list['ctin']);
-            $data .= "D,S,\"$tinclient\",\"{$list['cname']}\",,,,\"{$list['ctradename']}\",\"$fullAddress\",\"$zip\",{$compute['exempt']},{$compute['zero']},{$compute['net']},{$compute['vat']},\"{$company['comptin']}\",$lastDay\n";
+            $tinclient = stringValidation($list['ctin']);
+            $data .= "D,S,\"$tinclient\",\"{$list['cname']}\",,,,\"{$list['ctradename']}\",\"$fullAddress\",\"$FullZip\",{$compute['exempt']},{$compute['zero']},{$compute['net']},{$compute['vat']},\"$tin\",$lastDay\n";
         }
 
         // Output the data
@@ -98,4 +98,6 @@
         <?php
     }
     exit;
+    
+
     

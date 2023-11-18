@@ -58,23 +58,23 @@
 
         foreach($sales as $list){
             $compute = ComputePaybills($list);
-            $fullAddress = str_replace(",", "", $list['chouseno']);
-            if(trim($list['ccity']) != "" && $list['ccity'] != null){
-                $fullAddress .= " ". str_replace(",", "", $list['ccity']);
+            $address = stringValidation($list['chouseno']);
+            if(trim($list['ccity']) != ""){
+                $fullAddress .= " " . stringValidation($list['ccity']);
             }
-            if(trim($list['ccountry']) != "" && $list['ccountry'] != null){
-                $fullAddress .= " ". str_replace(",", "", $list['ccountry']);
+            if(trim($list['ccountry']) != ""){
+                $fullAddress .= " " . stringValidation($list['ccountry']);
+            }
+            $FullZip = stringValidation($list['cstate']);
+            
+            if(trim($list['czip']) != ""){
+                $FullZip .= " ". stringValidation($list['czip']);
             }
 
-            $zip = str_replace(",", "", $list['cstate']);
-            if(trim($list['czip']) != "" && $list['czip'] != null){
-                $zip .= " ". str_replace(",", "", $list['czip']);
-            }
-            
-            $tinclient = str_replace(",", "", $list['ctin']);
+            $tinclient = stringValidation($list['ctin']);
             $name = $list['cname'];
             $trade_name = $list['ctradename'];
-            $data .= "D,P,\"$tinclient\",\"$name\",,,,\"$trade_name\",\"$fullAddress\",\"$zip\",{$compute['exempt']},{$compute['zero']},{$compute['service']},{$compute['capital']},{$compute['goods']},{$compute['vat']},\"{$company['comptin']}\",$lastDay\n";
+            $data .= "D,P,\"$tinclient\",\"$name\",,,,\"$trade_name\",\"$fullAddress\",\"$FullZip\",{$compute['exempt']},{$compute['zero']},{$compute['service']},{$compute['capital']},{$compute['goods']},{$compute['vat']},\"$tin\",$lastDay\n";
         }
 
         // Output the data
