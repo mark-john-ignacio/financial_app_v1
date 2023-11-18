@@ -513,5 +513,6 @@
         $commaStr = str_replace(",", "", $data);
         $dotStr = str_replace(".", "", $commaStr);
         $colonStr = str_replace(":", "", $dotStr);
-        return trim($colonStr);
+        $dashStr = str_replace("/", " ", $colonStr);
+        return trim($dashStr);
     }
