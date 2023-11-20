@@ -510,9 +510,11 @@
     }
 
     function stringValidation($data){
-        $commaStr = str_replace(",", "", $data);
-        $dotStr = str_replace(".", "", $commaStr);
-        $colonStr = str_replace(":", "", $dotStr);
-        $dashStr = str_replace("/", " ", $colonStr);
-        return trim($dashStr);
+        $replace = preg_replace('/[^A-Za-z0-9]/', '', $data);
+        return trim($replace);
+    }
+
+    function TinValidation($tin){
+        $replace = preg_replace('/[^A-Za-z0-9]/', '', $tin);
+        echo substr($replace, 0, 9);
     }
