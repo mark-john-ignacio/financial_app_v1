@@ -19,7 +19,7 @@
     $query = mysqli_query($con, $sql);
     $company = $query -> fetch_array(MYSQLI_ASSOC);
 
-    $tin = stringValidation($company['comptin']);
+    $tin = TinValidation($company['comptin']);
     $compaddress = str_replace(",", "", $company['compadd']);
     $lastDay = date('m/t/Y', strtotime("$yearcut-$monthcut-01"));
 
@@ -88,7 +88,7 @@
                 $FullZip .= " ". stringValidation($list['czip']);
             }
 
-            $tinclient = stringValidation($list['ctin']);
+            $tinclient = TinValidation($list['ctin']);
             $data .= "D,S,\"$tinclient\",\"{$list['cname']}\",,,,\"{$list['ctradename']}\",\"$fullAddress\",\"$FullZip\",{$compute['exempt']},{$compute['zero']},{$compute['net']},{$compute['vat']},\"$tin\",$lastDay\n";
         }
 

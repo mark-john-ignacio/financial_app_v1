@@ -23,7 +23,7 @@
     $sql = "SELECT * FROM company WHERE compcode = '$company_code'";
     $query = mysqli_query($con, $sql);
     $company = $query -> fetch_array(MYSQLI_ASSOC);
-    $tin = stringValidation($company['comptin']);
+    $tin = TinValidation($company['comptin']);
     $compaddress = stringValidation($company['compadd']);
 
     $sql = "SELECT a.*, b.* FROM paybill a
@@ -71,7 +71,7 @@
                 $FullZip .= " ". stringValidation($list['czip']);
             }
 
-            $tinclient = stringValidation($company['ctin']);
+            $tinclient = TinValidation($company['ctin']);
             $name = $list['cname'];
             $trade_name = $list['ctradename'];
             $data .= "D,P,\"$tinclient\",\"$name\",,,,\"$trade_name\",\"$fullAddress\",\"$FullZip\",{$compute['exempt']},{$compute['zero']},{$compute['service']},{$compute['capital']},{$compute['goods']},{$compute['vat']},\"$tin\",$lastDay\n";
