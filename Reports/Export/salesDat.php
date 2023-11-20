@@ -19,9 +19,11 @@
     $query = mysqli_query($con, $sql);
     $company = $query -> fetch_array(MYSQLI_ASSOC);
 
-    $tin = str_replace("-", "", $company['comptin']);
+    $tin = TinValidation($company['comptin']);
     $compaddress = str_replace(",", "", $company['compadd']);
     $lastDay = date('m/t/Y', strtotime("$yearcut-$monthcut-01"));
+
+    
 
     $sql = "SELECT a.*,b.cname, b.ctradename, b.czip, b.chouseno, b.ccity, b.ccountry, b.cstate, b.ctin FROM sales a 
     LEFT JOIN customers b on a.compcode = b.compcode AND a.ccode = b.cempid
@@ -73,21 +75,21 @@
 
         foreach($sales as $list){
             $compute = ComputeRST($list['ctranno']);
-            $fullAddress = str_replace(",", "", $list['chouseno']);
+            $address = stringValidation($list['chouseno']);
             if(trim($list['ccity']) != ""){
-                $fullAddress .= " ". str_replace(",", "", $list['ccity']);
+                $fullAddress .= " " . stringValidation($list['ccity']);
             }
             if(trim($list['ccountry']) != ""){
-                $fullAddress .= " ". str_replace(",", "", $list['ccountry']);
+                $fullAddress .= " " . stringValidation($list['ccountry']);
             }
-
-            $zip = str_replace(",", "", $list['cstate']);
+            $FullZip = stringValidation($list['cstate']);
+            
             if(trim($list['czip']) != ""){
-                $zip .= " ". str_replace(",", "", $list['czip']);
+                $FullZip .= " ". stringValidation($list['czip']);
             }
 
-            $tinclient = str_replace(",", "", $list['ctin']);
-            $data .= "D,S,\"$tinclient\",\"{$list['cname']}\",,,,\"{$list['ctradename']}\",\"$fullAddress\",\"$zip\",{$compute['exempt']},{$compute['zero']},{$compute['net']},{$compute['vat']},\"{$company['comptin']}\",$lastDay\n";
+            $tinclient = TinValidation($list['ctin']);
+            $data .= "D,S,\"$tinclient\",\"{$list['cname']}\",,,,\"{$list['ctradename']}\",\"$fullAddress\",\"$FullZip\",{$compute['exempt']},{$compute['zero']},{$compute['net']},{$compute['vat']},\"$tin\",$lastDay\n";
         }
 
         // Output the data
@@ -98,4 +100,6 @@
         <?php
     }
     exit;
+    
+
     

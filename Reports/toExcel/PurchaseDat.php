@@ -44,7 +44,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
     $spreadsheet->setActiveSheetIndex(0)
         ->setCellValue('A1', 'PURCHASE TRANSACTION')
         ->setCellValue('A2', 'RECONCILIATION OF LISTING FOR ENFORCEMENT')
-        ->setCellValue('A6', 'Vat Registered Tin: ' . $comp['comptin'])
+        ->setCellValue('A6', 'Vat Registered Tin: ' . TinValidation($comp['comptin']))
         ->setCellValue('A7', "OWNER'S NAME: " . $comp['compname'])
         ->setCellValue('A8', "OWNER'S TRADE NAME: " . $comp['compdesc'])
         ->setCellValue('A9', "OWNER'S ADDRESS: " . $comp['compadd']);
@@ -111,24 +111,24 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         while($row = $query -> fetch_array(MYSQLI_ASSOC)){
             $computation = ComputePaybills($row);
             $index++;
-            $fullAddress = str_replace(",", "", $row['chouseno']);
+            $fullAddress = stringValidation($row['chouseno']);
             if(trim($row['ccity']) != ""){
-                $fullAddress .= " ". str_replace(",", "", $row['ccity']);
+                $fullAddress .= " ". stringValidation($row['ccity']);
             }
             if(trim($row['ccountry']) != ""){
-                $fullAddress .= " ". str_replace(",", "", $row['ccountry']);
+                $fullAddress .= " ". stringValidation($row['ccountry']);
             }
             if(trim($row['cstate']) != ""){
-                $fullAddress .= " ". str_replace(",", "", $row['cstate']);
+                $fullAddress .= " ". stringValidation($row['cstate']);
             }
             
             if(trim($row['czip']) != ""){
-                $fullAddress .= " ". str_replace(",", "", $row['czip']);
+                $fullAddress .= " ". stringValidation( $row['czip']);
             }
             $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
             $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue("A$index", $row['dcheckdate'])
-            ->setCellValue("B$index", strval($row['ctin']))
+            ->setCellValue("B$index", TinValidation($row['ctin']))
             ->setCellValue("C$index", $row['cname'])
             ->setCellValue("E$index", $fullAddress)
             ->setCellValue("F$index", $computation['gross'])

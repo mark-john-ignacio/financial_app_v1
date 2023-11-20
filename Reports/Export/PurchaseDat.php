@@ -23,8 +23,8 @@
     $sql = "SELECT * FROM company WHERE compcode = '$company_code'";
     $query = mysqli_query($con, $sql);
     $company = $query -> fetch_array(MYSQLI_ASSOC);
-    $tin = str_replace("-", "", $company['comptin']);
-    $compaddress = str_replace(",", "", $company['compadd']);
+    $tin = TinValidation($company['comptin']);
+    $compaddress = stringValidation($company['compadd']);
 
     $sql = "SELECT a.*, b.* FROM paybill a
             LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
@@ -58,23 +58,23 @@
 
         foreach($sales as $list){
             $compute = ComputePaybills($list);
-            $fullAddress = str_replace(",", "", $list['chouseno']);
-            if(trim($list['ccity']) != "" && $list['ccity'] != null){
-                $fullAddress .= " ". str_replace(",", "", $list['ccity']);
+            $address = stringValidation($list['chouseno']);
+            if(trim($list['ccity']) != ""){
+                $fullAddress .= " " . stringValidation($list['ccity']);
             }
-            if(trim($list['ccountry']) != "" && $list['ccountry'] != null){
-                $fullAddress .= " ". str_replace(",", "", $list['ccountry']);
+            if(trim($list['ccountry']) != ""){
+                $fullAddress .= " " . stringValidation($list['ccountry']);
+            }
+            $FullZip = stringValidation($list['cstate']);
+            
+            if(trim($list['czip']) != ""){
+                $FullZip .= " ". stringValidation($list['czip']);
             }
 
-            $zip = str_replace(",", "", $list['cstate']);
-            if(trim($list['czip']) != "" && $list['czip'] != null){
-                $zip .= " ". str_replace(",", "", $list['czip']);
-            }
-            
-            $tinclient = str_replace(",", "", $list['ctin']);
+            $tinclient = TinValidation($company['ctin']);
             $name = $list['cname'];
             $trade_name = $list['ctradename'];
-            $data .= "D,P,\"$tinclient\",\"$name\",,,,\"$trade_name\",\"$fullAddress\",\"$zip\",{$compute['exempt']},{$compute['zero']},{$compute['service']},{$compute['capital']},{$compute['goods']},{$compute['vat']},\"{$company['comptin']}\",$lastDay\n";
+            $data .= "D,P,\"$tinclient\",\"$name\",,,,\"$trade_name\",\"$fullAddress\",\"$FullZip\",{$compute['exempt']},{$compute['zero']},{$compute['service']},{$compute['capital']},{$compute['goods']},{$compute['vat']},\"$tin\",$lastDay\n";
         }
 
         // Output the data
