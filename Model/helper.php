@@ -508,3 +508,13 @@
             'capital' => $TOTAL_CAPITAL
         ];
     }
+
+    function stringValidation($data){
+        $replace = preg_replace('/[^A-Za-z0-9]/', '', $data);
+        return trim($replace);
+    }
+
+    function TinValidation($tin){
+        $replace = preg_replace('/[^0-9]/', '', $tin);
+        echo substr($replace, 0, 9);
+    }
