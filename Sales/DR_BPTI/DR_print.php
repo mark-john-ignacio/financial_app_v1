@@ -195,6 +195,18 @@ if (mysqli_num_rows($sqlhead)!=0) {
       /*border: 1px solid #000; 
 			letter-spacing: 11px;
 			border: 1px solid #000;*/
+		} 
+
+		.xremarks{
+			position: absolute;
+			left: 645px;
+			top: 260px;
+			width: 140px;
+			height:  15px;  
+      text-align: left; 
+      /*border: 1px solid #000; 
+			letter-spacing: 11px;
+			border: 1px solid #000;*/
 		}
 
   </style>
@@ -203,7 +215,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <body onLoad="window.print()">
 
   <div class="form-container">
-    <!--<img src="drform.png" width="100%">-->
+    <img src="drform.png" width="100%">
 
     <div class="delTo"><?=$CustName?></div>
     <div class="date"><?=date_format(date_create($Date), "M d, Y")?></div>
@@ -213,6 +225,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
     <div class="refdr"><?=$cAPCDR?></div>
 
     <div class="reforder"><?=$cAPCORD?></div>
+
+
+		<div class="xremarks"><?=$Remarks?></div>
 
     <?php 
       $sqlbody = mysqli_query($con,"select a.*,b.citemdesc from dr_t a left join items b on a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$csalesno'");
