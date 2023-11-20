@@ -1,4 +1,4 @@
-<?php
+<?php 
     if(!isset($_SESSION)){
         session_start();
     }
@@ -47,6 +47,7 @@
             WHERE a.compcode = '$company_code'
             AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
             AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
+            AND b.cvattype = 'VT'
             AND ctranno in (
                 SELECT a.ctranno FROM paybill_t a 
                 LEFT JOIN apv_t b on a.compcode = b.compcode AND a.capvno = b.ctranno
