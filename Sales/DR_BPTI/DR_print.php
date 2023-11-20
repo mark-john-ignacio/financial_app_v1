@@ -215,7 +215,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <body onLoad="window.print()">
 
   <div class="form-container">
-    <img src="drform.png" width="100%">
+    <!--<img src="drform.png" width="100%">-->
 
     <div class="delTo"><?=$CustName?></div>
     <div class="date"><?=date_format(date_create($Date), "M d, Y")?></div>
