@@ -110,19 +110,19 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         while($row = $query -> fetch_array(MYSQLI_ASSOC)){
             $computation = ComputeRST($row['ctranno']);
             $index++;
-            $fullAddress = str_replace(",", "", $row['chouseno']);
+            $fullAddress = stringValidation($row['chouseno']);
             if(trim($row['ccity']) != ""){
-                $fullAddress .= " ". str_replace(",", "", $row['ccity']);
+                $fullAddress .= " ". stringValidation($row['ccity']);
             }
             if(trim($row['ccountry']) != ""){
-                $fullAddress .= " ". str_replace(",", "", $row['ccountry']);
+                $fullAddress .= " ". stringValidation($row['ccountry']);
             }
             if(trim($row['cstate']) != ""){
-                $fullAddress .= " ". str_replace(",", "", $row['cstate']);
+                $fullAddress .= " ". stringValidation($row['cstate']);
             }
             
             if(trim($row['czip']) != ""){
-                $fullAddress .= " ". str_replace(",", "", $row['czip']);
+                $fullAddress .= " ". stringValidation($row['czip']);
             }
             $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
             $spreadsheet->setActiveSheetIndex(0)

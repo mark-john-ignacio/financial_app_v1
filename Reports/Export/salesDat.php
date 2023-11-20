@@ -19,9 +19,11 @@
     $query = mysqli_query($con, $sql);
     $company = $query -> fetch_array(MYSQLI_ASSOC);
 
-    $tin = str_replace("-", "", $company['comptin']);
+    $tin = stringValidation($company['comptin']);
     $compaddress = str_replace(",", "", $company['compadd']);
     $lastDay = date('m/t/Y', strtotime("$yearcut-$monthcut-01"));
+
+    
 
     $sql = "SELECT a.*,b.cname, b.ctradename, b.czip, b.chouseno, b.ccity, b.ccountry, b.cstate, b.ctin FROM sales a 
     LEFT JOIN customers b on a.compcode = b.compcode AND a.ccode = b.cempid
