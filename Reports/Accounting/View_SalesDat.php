@@ -84,7 +84,7 @@
                 ?>
                     <tr>
                         <td width='100px'><?= $list['dcutdate'] ?></td>
-                        <td><?= $list['ctin'] ?></td>
+                        <td><?= substr($list['ctin'],0,11) ?></td>
                         <td><?= $list['ctradename'] ?></td>
                         <td>&nbsp;</td>
                         <td><?= $fullAddress ?></td>
@@ -130,7 +130,7 @@
             <h5>SALES TRANSACTION</h5>
             <h5>RECONCILIATION OF LISTING FOR ENFORCEMENT</h5>
             <br><br>
-            <h5>TIN: <?= $company['comptin']?></h5>
+            <h5>TIN: <?= substr($company['comptin'],0,11) ?></h5>
             <h5>OWNER'S Name: <?= $company['compname'] ?></h5>
             <h5>OWNER'S TRADE NAME: <?= $company['compdesc'] ?></h5>
             <h5>OWNER'S ADDRESS: <?= $company['compadd'] ?></h5>

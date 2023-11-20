@@ -75,7 +75,7 @@
 
         foreach($sales as $list){
             $compute = ComputeRST($list['ctranno']);
-            $address = stringValidation($list['chouseno']);
+            $fullAddress = stringValidation($list['chouseno']);
             if(trim($list['ccity']) != ""){
                 $fullAddress .= " " . stringValidation($list['ccity']);
             }

@@ -516,5 +516,5 @@
 
     function TinValidation($tin){
         $replace = preg_replace('/[^0-9]/', '', $tin);
-        echo substr($replace, 0, 9);
+        return substr($replace, 0, 9);
     }
