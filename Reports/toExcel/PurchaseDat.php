@@ -26,7 +26,7 @@ $comp = mysqli_fetch_array($result, MYSQLI_ASSOC);
 $sql = "SELECT a.cacctno FROM accounts_default a WHERE a.compcode = '$company_code' AND a.ccode = 'PURCH_VAT' ORDER BY a.cacctno DESC LIMIT 1";
 $query = mysqli_query($con, $sql);
 $account = $query -> fetch_array(MYSQLI_ASSOC);
-$vat_code = $account['cvattype'];
+$vat_code = $account['cacctno'];
 
 // Set document properties
 $spreadsheet->getProperties()->setCreator('Myx Financials')

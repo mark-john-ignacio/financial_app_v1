@@ -18,7 +18,7 @@
     $sql = "SELECT a.cacctno FROM accounts_default a WHERE a.compcode = '$company_code' AND a.ccode = 'PURCH_VAT' ORDER BY a.cacctno DESC LIMIT 1";
     $query = mysqli_query($con, $sql);
     $account = $query -> fetch_array(MYSQLI_ASSOC);
-    $vat_code = $account['cvattype'];
+    $vat_code = $account['cacctno'];
 
     // $sql = "SELECT a.*, b.ctradename, b.ctin, b.chouseno, b.cstate, b.ccity, b.ccountry FROM apv a 
     //             LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
