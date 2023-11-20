@@ -476,7 +476,7 @@
         $net = floatval($amount) / 1.12;
         $vat = floatval($net) * 0.12;
 
-        $TOTAL_GROSS += floatval($gross);
+        $TOTAL_GROSS += floatval($amount);
         $TOTAL_NET += $net;
         $TOTAL_VAT += $vat;
         $TOTAL_TAX_GROSS += floatval($amount);
