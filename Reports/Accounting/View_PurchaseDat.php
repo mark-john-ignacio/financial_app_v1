@@ -8,6 +8,7 @@
     $company_code = $_SESSION['companyid'];
     $monthcut = $_REQUEST["viewmonth"];
     $yearcut = $_REQUEST['viewyear'];
+    $code = $_REQUEST['viewVat'];
     $sales = [];
 
     $sql =  "SELECT * FROM company WHERE compcode = '$company_code'";
@@ -17,6 +18,7 @@
     $sql = "SELECT a.cacctno FROM accounts_default a WHERE a.compcode = '$company_code' AND a.ccode = 'PURCH_VAT' ORDER BY a.cacctno DESC LIMIT 1";
     $query = mysqli_query($con, $sql);
     $account = $query -> fetch_array(MYSQLI_ASSOC);
+    $vat_code = $account['cvattype'];
 
     // $sql = "SELECT a.*, b.ctradename, b.ctin, b.chouseno, b.cstate, b.ccity, b.ccountry FROM apv a 
     // LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
@@ -47,13 +49,13 @@
             WHERE a.compcode = '$company_code'
             AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
             AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
-            AND b.cvattype = 'VT'
+            AND b.cvattype = '$code'
+            AND a.lapproved = 1 AND (a.lcancelled != 1 OR a.lvoid != 1)
             AND ctranno in (
                 SELECT a.ctranno FROM paybill_t a 
                 LEFT JOIN apv_t b on a.compcode = b.compcode AND a.capvno = b.ctranno
-                WHERE a.compcode = '$company_code' AND b.cacctno = {$account['cacctno']}
-            )
-            AND a.lapproved = 1 AND (a.lcancelled != 1 OR a.lvoid != 1)";
+                WHERE a.compcode = '$company_code' AND b.cacctno = '$vat_code'
+            )";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         while($row = $query -> fetch_assoc()){

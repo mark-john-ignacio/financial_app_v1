@@ -17,6 +17,7 @@ $spreadsheet = new Spreadsheet();
 $company = $_SESSION['companyid'];
 $monthcut = $_REQUEST['xlsmonth'];
 $yearcut = $_REQUEST['xlsyear'];
+$code = $_REQUEST['xlsVat'];
 
 $sql = "SELECT * FROM company WHERE compcode='$company'";
 $result = mysqli_query($con, $sql);
@@ -25,6 +26,7 @@ $comp = mysqli_fetch_array($result, MYSQLI_ASSOC);
 $sql = "SELECT a.cacctno FROM accounts_default a WHERE a.compcode = '$company_code' AND a.ccode = 'PURCH_VAT' ORDER BY a.cacctno DESC LIMIT 1";
 $query = mysqli_query($con, $sql);
 $account = $query -> fetch_array(MYSQLI_ASSOC);
+$vat_code = $account['cvattype'];
 
 // Set document properties
 $spreadsheet->getProperties()->setCreator('Myx Financials')
@@ -104,11 +106,11 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         WHERE a.compcode = '$company_code'
         AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
         AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
-        AND b.cvattype = 'VT'
+        AND b.cvattype = '$code'
         AND ctranno in (
             SELECT a.ctranno FROM paybill_t a 
             LEFT JOIN apv_t b on a.compcode = b.compcode AND a.capvno = b.ctranno
-            WHERE a.compcode = '$company_code' AND b.cacctno = {$account['cacctno']}
+            WHERE a.compcode = '$company_code' AND b.cacctno = '$vat_code'
         )
         AND a.lapproved = 1 AND (a.lcancelled != 1 OR a.lvoid != 1)";
     $query = mysqli_query($con, $sql);
