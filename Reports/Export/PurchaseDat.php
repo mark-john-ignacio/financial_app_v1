@@ -81,7 +81,7 @@
         header("Content-type: text/plain");
         header("Content-Disposition: attachment; filename=\"".$tin."P".$monthcut . $yearcut . ".dat\"");
         $company_name = stringValidation($company['compname']);
-        echo "H,P,\"$tin\",\"{$company['compname']}\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"$compaddress\",\"{$company['compzip']}\",$exempt,$zerorated,$service,$capital,$goods,$vat,$vat,0,$rdo,$lastDay,12\n";
+        $data = "H,P,\"$tin\",\"{$company['compname']}\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"$compaddress\",\"{$company['compzip']}\",$exempt,$zerorated,$service,$capital,$goods,$vat,$vat,0,$rdo,$lastDay,12\n";
 
         foreach($sales as $list){
             $compute = ComputePaybills($list);
@@ -102,7 +102,7 @@
             $GOODS =        round((float)$compute['goods'],2);
             $VAT =          round((float)$compute['vat'],2);
             $GROSS_TAX =    round((float)$compute['gross_vat'],2);
-            $data = "D,P,\"$tinclient\",\"$name\",,,,\"$trade_name\",\"$fullAddress\",$EXEMPT,$ZERO,$SERVICE,$CAPITAL,$GOODS,$VAT,$tin,$lastDay\n";
+            $data .= "D,P,\"$tinclient\",\"$name\",,,,\"$trade_name\",\"$fullAddress\",$EXEMPT,$ZERO,$SERVICE,$CAPITAL,$GOODS,$VAT,$tin,$lastDay\n";
         }
 
         // Output the data
