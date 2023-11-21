@@ -9,11 +9,12 @@
     $company_code = $_SESSION['companyid'];
     $yearcut = $_REQUEST['exportyear'];
     $monthcut = $_REQUEST['exportmonth'];
+    $rdo = $_REQUEST['exportRDO'];
     $sales = [];
-    $exempt = 0;
-    $zerorated= 0;
-    $net = 0;
-    $vat = 0;
+    $exempt = round(0,2);
+    $zerorated= round(0,2);
+    $net = round(0,2);
+    $vat = round(0,2);
 
     $sql = "SELECT * FROM company WHERE compcode = '$company_code'";
     $query = mysqli_query($con, $sql);
@@ -44,26 +45,11 @@
     $query = mysqli_query($con, $sql);
     while($row = $query -> fetch_assoc()){
         array_push($sales, $row);
-        switch($row['cvattype']){
-            case "VT":
-                $net += round((float)$nnet,2);
-                $vat += round((float)$nvat,2);
-                break;
-            case "NV":
-                $net += round((float)$nnet,2);
-                $vat += round((float)$nvat,2);
-                break;
-            case "VE":
-                $exempt += round((float)$row['ngross'],2);
-
-                break;
-            case "ZR":
-                $zerorated += round((float)$row['ngross'],2);
-                break;
-            default: 
-            break;
-        }
-        
+        $compute = ComputeRST($row);
+        $exempt += round((float)$compute['exempt'],2);
+        $zerorated += round((float)$compute['zero'],2);
+        $net += round((float)$compute['net']);
+        $vat += round((float)$compute['vat']);
     }
 
     if(count($sales) > 0){
@@ -71,21 +57,13 @@
         header("Content-type: text/plain");
         header("Content-Disposition: attachment; filename=\"".$tin."S".$monthcut . $yearcut . ".dat\"");
 
-        $data = "H,S,\"$tin\",\"{$company['compname']}\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"$compaddress\",\"{$company['compzip']}\",$exempt,$zerorated,$net,$vat,$lastDay,12\n";
+        $data = "H,S,\"$tin\",\"{$company['compname']}\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"$compaddress\",\"{$company['compzip']}\",$exempt,$zerorated,$net,$vat,$rdo,$lastDay,12\n";
 
         foreach($sales as $list){
-            $compute = ComputeRST($list['ctranno']);
+            $compute = ComputeRST($list);
             $fullAddress = stringValidation($list['chouseno']);
             if(trim($list['ccity']) != ""){
                 $fullAddress .= " " . stringValidation($list['ccity']);
-            }
-            if(trim($list['ccountry']) != ""){
-                $fullAddress .= " " . stringValidation($list['ccountry']);
-            }
-            $FullZip = stringValidation($list['cstate']);
-            
-            if(trim($list['czip']) != ""){
-                $FullZip = " ". stringValidation($list['czip']);
             }
 
             $tinclient = TinValidation($list['ctin']);
@@ -93,7 +71,7 @@
             $ZERO =     round((float)$compute['zero'],2);
             $NET =      round((float)$compute['net'],2);
             $VAT =      round((float)$compute['vat'],2);
-            $data .= "D,S,\"$tinclient\",\"{$list['cname']}\",,,,\"{$list['ctradename']}\",\"$fullAddress\",\"$FullZip\",$EXEMPT,$ZERO,$NET,$VAT,\"$tin\",$lastDay\n";
+            $data .= "D,S,\"$tinclient\",\"{$list['cname']}\",,,,\"{$list['ctradename']}\",\"$fullAddress\",$EXEMPT,$ZERO,$NET,$VAT,\"$tin\",$lastDay\n";
         }
 
         // Output the data

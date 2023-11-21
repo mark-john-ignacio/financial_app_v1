@@ -60,6 +60,8 @@
                 </tr>
                 <tr valign="top">
                     <th><button class="btn btn-success btn-block" id="btnExcel"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;To Excel</button></th>
+                    <th>RDO Type: </th>
+                    <th><input type="text" id='rdo' class='form-control input-sm' placeholder="RDO TYPE...." required></th>
                     <th colspan='4'>&nbsp;</th>
                 </tr>
                 <tr>
@@ -75,6 +77,7 @@
         <input type="text" id='viewyear' name='viewyear'>
     </form>
     <form action="Export/salesDat.php" id='exportFrm' name='exportFrm' target="_blank" style='display: none'>
+        <input type="text" id='exportRDO' name='exportRDO'>
         <input type="text" id='exportmonth' name='exportmonth'>
         <input type="text" id='exportyear' name='exportyear'>
     </form>
@@ -97,7 +100,7 @@
         $("#btnView").click(function(){
             let month = $("#datemonth").val();
             let year = $("#dateyear").val();
-            
+
             $.ajax({
                 url: "th_salesDat.php",
                 data: { month: month, year: year},
@@ -122,10 +125,16 @@
         $("#btnDat").click(function(){
             let month = $("#datemonth").val();
             let year = $("#dateyear").val();
-
-            $("#exportmonth").val(month).change();
-            $("#exportyear").val(year).change();
-            $("#exportFrm").submit();
+            let rdo = $("#rdo").val();
+            if(rdo){
+                $("#exportmonth").val(month).change();
+                $("#exportyear").val(year).change();
+                $("#exportRDO").val(rdo).change();
+                $("#exportFrm").submit();
+            } else {
+                alert("RDO is Required")
+            }
+            
         })
 
         $("#btnExcel").click(function(){
