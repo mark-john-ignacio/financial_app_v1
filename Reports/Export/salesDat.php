@@ -1,9 +1,8 @@
 <?php
-
     if(!isset($_SESSION)){
         session_start();
     }
-    include ("../../Connection/connection_string.php");
+    require_once("../../Connection/connection_string.php");
     require_once("../../Model/helper.php");
 
     $company_code = $_SESSION['companyid'];
@@ -23,8 +22,6 @@
     $tin = TinValidation($company['comptin']);
     $compaddress = str_replace(",", "", $company['compadd']);
     $lastDay = date('m/t/Y', strtotime("$yearcut-$monthcut-01"));
-
-    
 
     $sql = "SELECT a.*,b.cname, b.ctradename, b.czip, b.chouseno, b.ccity, b.ccountry, b.cstate, b.ctin, b.cvattype FROM sales a 
     LEFT JOIN customers b on a.compcode = b.compcode AND a.ccode = b.cempid
