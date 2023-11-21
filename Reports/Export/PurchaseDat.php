@@ -3,7 +3,7 @@
     if(!isset($_SESSION)){
         session_start();
     }
-    include ("../../Connection/connection_string.php");
+    require_once ("../../Connection/connection_string.php");
     require_once("../../Model/helper.php");
 
     $company_code = $_SESSION['companyid'];
@@ -80,6 +80,7 @@
         //Generate DAT File
         header("Content-type: text/plain");
         header("Content-Disposition: attachment; filename=\"".$tin."P".$monthcut . $yearcut . ".dat\"");
+        $company_name = stringValidation($company['compname']);
         echo "H,P,\"$tin\",\"{$company['compname']}\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"$compaddress\",\"{$company['compzip']}\",$exempt,$zerorated,$service,$capital,$goods,$vat,$vat,0,$rdo,$lastDay,12\n";
 
         foreach($sales as $list){
@@ -91,8 +92,8 @@
 
 
             $tinclient = TinValidation($list['ctin']);
-            $name = $list['cname'];
-            $trade_name = $list['ctradename'];
+            $name = stringValidation($list['cname']);
+            $trade_name = stringValidation($list['ctradename']);
             $EXEMPT =       round((float)$compute['exempt'],2);
             $NET =          round((float)$compute['net'],2);
             $ZERO =         round((float)$compute['zero'],2);

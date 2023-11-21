@@ -533,7 +533,7 @@
     }
 
     function stringValidation($data){
-        $replace = preg_replace('/[^A-Za-z0-9]/', ' ', $data);
+        $replace = preg_replace('/[a-zA-Z0-9.]/', ' ', $data);
         return trim($replace);
     }
 
