@@ -3,7 +3,7 @@
     if(!isset($_SESSION)){
         session_start();
     }
-    include ("../../Connection/connection_string.php");
+    require_once ("../../Connection/connection_string.php");
     require_once("../../Model/helper.php");
 
     $company_code = $_SESSION['companyid'];
@@ -80,19 +80,20 @@
         //Generate DAT File
         header("Content-type: text/plain");
         header("Content-Disposition: attachment; filename=\"".$tin."P".$monthcut . $yearcut . ".dat\"");
-        echo "H,P,\"$tin\",\"{$company['compname']}\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"$compaddress\",\"{$company['compzip']}\",$exempt,$zerorated,$service,$capital,$goods,$vat,$vat,0,$rdo,$lastDay,12\n";
+        $company_name = stringValidation($company['compname']);
+        $data = "H,P,\"$tin\",\"{$company['compname']}\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"$compaddress\",\"{$company['compzip']}\",$exempt,$zerorated,$service,$capital,$goods,$vat,$vat,0,$rdo,$lastDay,12\n";
 
         foreach($sales as $list){
             $compute = ComputePaybills($list);
             $fullAddress = stringValidation($list['chouseno']);
+            $state = stringValidation($list['cstate']);
             if(trim($list['ccity']) != ""){
-                $fullAddress .= " " . stringValidation($list['ccity']);
+                $state .= " " . stringValidation($list['ccity']);
             }
 
 
             $tinclient = TinValidation($list['ctin']);
-            $name = $list['cname'];
-            $trade_name = $list['ctradename'];
+            $name = stringValidation($list['cname']);
             $EXEMPT =       round((float)$compute['exempt'],2);
             $NET =          round((float)$compute['net'],2);
             $ZERO =         round((float)$compute['zero'],2);
@@ -101,7 +102,7 @@
             $GOODS =        round((float)$compute['goods'],2);
             $VAT =          round((float)$compute['vat'],2);
             $GROSS_TAX =    round((float)$compute['gross_vat'],2);
-            $data = "D,P,\"$tinclient\",\"$name\",,,,\"$trade_name\",\"$fullAddress\",$EXEMPT,$ZERO,$SERVICE,$CAPITAL,$GOODS,$VAT,$tin,$lastDay\n";
+            $data .= "D,P,\"$tinclient\",\"$name\",,,,\"$fullAddress\",\"$state\",$EXEMPT,$ZERO,$SERVICE,$CAPITAL,$GOODS,$VAT,$tin,$lastDay\n";
         }
 
         // Output the data

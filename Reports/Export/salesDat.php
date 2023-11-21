@@ -56,22 +56,25 @@
         //Generate DAT File
         header("Content-type: text/plain");
         header("Content-Disposition: attachment; filename=\"".$tin."S".$monthcut . $yearcut . ".dat\"");
-
-        $data = "H,S,\"$tin\",\"{$company['compname']}\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"$compaddress\",\"{$company['compzip']}\",$exempt,$zerorated,$net,$vat,$rdo,$lastDay,12\n";
+        $company_name = stringValidation($company['compname']);
+        $data = "H,S,\"$tin\",\"$company_name\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"$compaddress\",\"{$company['compzip']}\",$exempt,$zerorated,$net,$vat,$rdo,$lastDay,12\n";
 
         foreach($sales as $list){
             $compute = ComputeRST($list);
             $fullAddress = stringValidation($list['chouseno']);
+            $state = stringValidation($list['cstate']);
             if(trim($list['ccity']) != ""){
-                $fullAddress .= " " . stringValidation($list['ccity']);
+                $state .= " " . stringValidation($list['ccity']);
             }
 
             $tinclient = TinValidation($list['ctin']);
+            $client_name = stringValidation($list['cname']);
+            $trade_name = stringValidation($list['ctradename']);
             $EXEMPT =   round((float)$compute['exempt'],2);
             $ZERO =     round((float)$compute['zero'],2);
             $NET =      round((float)$compute['net'],2);
             $VAT =      round((float)$compute['vat'],2);
-            $data .= "D,S,\"$tinclient\",\"{$list['cname']}\",,,,\"{$list['ctradename']}\",\"$fullAddress\",$EXEMPT,$ZERO,$NET,$VAT,\"$tin\",$lastDay\n";
+            $data .= "D,S,\"$tinclient\",\"$client_name\",,,,\"$fullAddress\",\"$state\",$EXEMPT,$ZERO,$NET,$VAT,\"$tin\",$lastDay\n";
         }
 
         // Output the data
