@@ -46,19 +46,19 @@
         array_push($sales, $row);
         switch($row['cvattype']){
             case "VT":
-                $net += floatval($row['nnet']);
-                $vat += floatval($row['nvat']);
+                $net += round((float)$row['nnet'],2);
+                $vat += round((float)$row['nvat'],2);
                 break;
             case "NV":
-                $net += floatval($row['nnet']);
-                $vat += floatval($row['nvat']);
+                $net += round((float)$row['nnet'],2);
+                $vat += round((float)$row['nvat'],2);
                 break;
             case "VE":
-                $exempt += floatval($row['ngross']);
+                $exempt += round((float)$row['ngross'],2);
 
                 break;
             case "ZR":
-                $zerorated += floatval($row['ngross']);
+                $zerorated += round((float)$row['ngross'],2);
                 break;
             default: 
             break;
@@ -82,14 +82,18 @@
             if(trim($list['ccountry']) != ""){
                 $fullAddress .= " " . stringValidation($list['ccountry']);
             }
-            $FullZip = stringValidation($list['cstate']);
-            
-            if(trim($list['czip']) != ""){
-                $FullZip .= " ". stringValidation($list['czip']);
+            if(trim($list['cstate']) != ""){
+                $fullAddress .= stringValidation($list['cstate']);
             }
+            $FullZip = " ". stringValidation($list['czip']);
+            
 
             $tinclient = TinValidation($list['ctin']);
-            $data .= "D,S,\"$tinclient\",\"{$list['cname']}\",,,,\"{$list['ctradename']}\",\"$fullAddress\",\"$FullZip\",{$compute['exempt']},{$compute['zero']},{$compute['net']},{$compute['vat']},\"$tin\",$lastDay\n";
+            $EXEMPT =   round((float)$compute['exempt'],2);
+            $ZERO =     round((float)$compute['zero'],2);
+            $NET =      round((float)$compute['net'],2);
+            $VAT =      round((float)$compute['vat'],2);
+            $data .= "D,S,\"$tinclient\",\"{$list['cname']}\",,,,\"{$list['ctradename']}\",\"$fullAddress\",\"$FullZip\",$EXEMPT,$ZERO,$NET,$VAT,\"$tin\",$lastDay\n";
         }
 
         // Output the data

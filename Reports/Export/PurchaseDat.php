@@ -64,13 +64,13 @@
         array_push($sales, $row);
         $compute = ComputePaybills($row);
 
-        $exempt += floatval($compute['exempt']);
-        $zerorated += floatval($compute['zero']);
-        $net += floatval($compute['net']);
-        $vat += floatval($compute['vat']);
-        $goods += floatval($compute['goods']);
-        $service += floatval($compute['service']);
-        $capital += floatval($compute['capital']);
+        $exempt +=      round((float)$compute['exempt'],2);
+        $zerorated +=   round((float)$compute['zero'],2);
+        $net +=         round((float)$compute['net'],2);
+        $vat +=         round((float)$compute['vat'],2);
+        $goods +=       round((float)$compute['goods'],2);
+        $service +=     round((float)$compute['service'],2);
+        $capital +=     round((float)$compute['capital'],2);
     }
 
     if(count($sales) > 0){
@@ -89,16 +89,22 @@
             if(trim($list['ccountry']) != ""){
                 $fullAddress .= " " . stringValidation($list['ccountry']);
             }
-            $FullZip = stringValidation($list['cstate']);
-            
-            if(trim($list['czip']) != ""){
-                $FullZip .= " ". stringValidation($list['czip']);
+            if(trim($list['cstate']) != ""){
+                $fullAddress .= stringValidation($list['cstate']);
             }
+            $FullZip = " ". stringValidation($list['czip']);
 
             $tinclient = TinValidation($list['ctin']);
             $name = $list['cname'];
             $trade_name = $list['ctradename'];
-            $data .= "D,P,\"$tinclient\",\"$name\",,,,\"$trade_name\",\"$fullAddress\",\"$FullZip\",{$compute['exempt']},{$compute['zero']},{$compute['service']},{$compute['capital']},{$compute['goods']},{$compute['vat']},\"$tin\",$lastDay\n";
+            $EXEMPT =   round((float)$compute['exempt'],2);
+            $NET =      round((float)$compute['net'],2);
+            $ZERO =     round((float)$compute['zero'],2);
+            $SERVICE =  round((float)$compute['service'],2);
+            $CAPITAL =  round((float)$compute['capital'],2);
+            $GOODS =    round((float)$compute['goods'],2);
+            $VAT =      round((float)$compute['vat'],2);
+            $data .= "D,P,\"$tinclient\",\"$name\",,,,\"$trade_name\",\"$fullAddress\",\"$FullZip\",$EXEMPT,$NET,$ZERO,$SERVICE,$CAPITAL,$GOODS,$VAT,\"$tin\",$lastDay\n";
         }
 
         // Output the data
