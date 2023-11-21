@@ -8,7 +8,8 @@
     // include('../include/access.php');
     $company = $_SESSION['companyid'];
     
-
+    $sql = "SELECT * FROM vatcode WHERE compcode = '$company' AND cstatus = 'ACTIVE'";
+    $query = mysqli_query($con, $sql);
 ?>
 
 <!DOCTYPE html>
@@ -59,7 +60,15 @@
                 </tr>
                 <tr valign="top">
                     <th><button class="btn btn-success btn-block" id="btnExcel"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;To Excel</button></th>
-                    <th colspan='4'>&nbsp;</th>
+                    <th>Business Type: </th>
+                    <th>
+                        <select name="vatcode" id="vatcode" class='form-control input-sm'>
+                            <?php while($row = $query -> fetch_assoc()): ?>
+                                <option value="<?= $row['cvatcode'] ?>"><?= $row['cvatdesc'] ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </th>
+                    <th colspan='2'>&nbsp;</th>
                 </tr>
                 <tr>
                     <th><button class="btn btn-info btn-block" id="btnDat"><i class="fa fa-file"></i>&nbsp;&nbsp;To DAT</button></th>
@@ -70,14 +79,17 @@
     </div>
 
     <form action="Accounting/View_PurchaseDat.php" id='viewfrm' name='viewfrm' target="_blank" style='display: none'>
+        <input type="text" id='viewVat' name='viewVat'>
         <input type="text" id='viewmonth' name='viewmonth'>
         <input type="text" id='viewyear' name='viewyear'>
     </form>
     <form action="Export/PurchaseDat.php" id='exportFrm' name='exportFrm' target="_blank" style='display: none'>
+        <input type="text" id='exportVat' name='exportVat'>
         <input type="text" id='exportmonth' name='exportmonth'>
         <input type="text" id='exportyear' name='exportyear'>
     </form>
     <form action="toExcel/PurchaseDat.php" id='xlsfrm' name='xlsfrm' target="_blank" style='display: none'>
+        <input type="text" id='xlsVat' name='xlsVat'>
         <input type="text" id='xlsmonth' name='xlsmonth'>
         <input type="text" id='xlsyear' name='xlsyear'>
     </form>
@@ -95,16 +107,18 @@
         $("#btnView").click(function(){
             let month = $("#datemonth").val();
             let year = $("#dateyear").val();
+            let vatcode = $("#vatcode").val();
 
             $.ajax({
                 url: "th_PurchaseDat.php",
-                data: { month: month, year: year },
+                data: { month: month, year: year, vatcode: vatcode },
                 dataType: 'json',
                 async: false,
                 success: function(res){
                     if(res.valid){
                         $("#viewmonth").val(month)
                         $("#viewyear").val(year)
+                        $('#viewVat').val(vatcode)
                         $("#viewfrm").submit()
                     } else {
                         alert(res.msg)
@@ -120,16 +134,18 @@
         $("#btnExcel").click(function(){
             let month = $("#datemonth").val();
             let year = $("#dateyear").val();
+            let vatcode = $("#vatcode").val();
             
             $.ajax({
                 url: "th_PurchaseDat.php",
-                data: { month: month, year: year},
+                data: { month: month, year: year, vatcode: vatcode},
                 dataType: 'json',
                 async: false,
                 success: function(res){
                     if(res.valid){
                         $("#xlsmonth").val(month)
                         $("#xlsyear").val(year)
+                        $("#xlsVat").val(vatcode)
                         $("#xlsfrm").submit()
                     } else {
                         alert(res.msg)
@@ -144,16 +160,18 @@
         $("#btnDat").click(function(){
             let month = $("#datemonth").val();
             let year = $("#dateyear").val();
+            let vatcode = $("#vatcode").val();
 
             $.ajax({
                 url: "th_PurchaseDat.php",
-                data: { month: month, year: year },
+                data: { month: month, year: year, vatcode: vatcode },
                 dataType: 'json',
                 async: false,
                 success: function(res){
                     if(res.valid){
                         $("#exportmonth").val(month);
                         $("#exportyear").val(year)
+                        $("#exportVat").val(vatcode)
                         $("#exportFrm").submit()
                     } else {
                         alert(res.msg)
