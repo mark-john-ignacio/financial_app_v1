@@ -72,7 +72,9 @@
                 </tr>
                 <tr>
                     <th><button class="btn btn-info btn-block" id="btnDat"><i class="fa fa-file"></i>&nbsp;&nbsp;To DAT</button></th>
-                    <th colspan='4'>&nbsp;</th>
+                    <th>RDO Type: </th>
+                    <th><input type="text" id='rdo' class='form-control input-sm' required></th>
+                    <th colspan='2'>&nbsp;</th>
                 </tr>
             </table>
         </div>
@@ -84,6 +86,7 @@
         <input type="text" id='viewyear' name='viewyear'>
     </form>
     <form action="Export/PurchaseDat.php" id='exportFrm' name='exportFrm' target="_blank" style='display: none'>
+        <input type="text" id='exportRDO' name='exportRDO'>
         <input type="text" id='exportVat' name='exportVat'>
         <input type="text" id='exportmonth' name='exportmonth'>
         <input type="text" id='exportyear' name='exportyear'>
@@ -135,6 +138,7 @@
             let month = $("#datemonth").val();
             let year = $("#dateyear").val();
             let vatcode = $("#vatcode").val();
+            let rdo = $("#rdo").val();
             
             $.ajax({
                 url: "th_PurchaseDat.php",
@@ -161,6 +165,7 @@
             let month = $("#datemonth").val();
             let year = $("#dateyear").val();
             let vatcode = $("#vatcode").val();
+            let rdo = $("#rdo").val();
 
             $.ajax({
                 url: "th_PurchaseDat.php",
@@ -169,10 +174,16 @@
                 async: false,
                 success: function(res){
                     if(res.valid){
-                        $("#exportmonth").val(month);
-                        $("#exportyear").val(year)
-                        $("#exportVat").val(vatcode)
-                        $("#exportFrm").submit()
+                        if(rdo){
+                            $("#exportmonth").val(month);
+                            $("#exportyear").val(year)
+                            $("#exportVat").val(vatcode)
+                            $("#exportRDO").val(rdo)
+                            $("#exportFrm").submit()
+                        } else {
+                            alert("RDO is required")
+                        }
+                        
                     } else {
                         alert(res.msg)
                     }
