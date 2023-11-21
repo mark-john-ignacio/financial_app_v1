@@ -82,11 +82,11 @@
             if(trim($list['ccountry']) != ""){
                 $fullAddress .= " " . stringValidation($list['ccountry']);
             }
-            if(trim($list['cstate']) != ""){
-                $fullAddress .= stringValidation($list['cstate']);
-            }
-            $FullZip = " ". stringValidation($list['czip']);
+            $FullZip = stringValidation($list['cstate']);
             
+            if(trim($list['czip']) != ""){
+                $FullZip = " ". stringValidation($list['czip']);
+            }
 
             $tinclient = TinValidation($list['ctin']);
             $EXEMPT =   round((float)$compute['exempt'],2);
