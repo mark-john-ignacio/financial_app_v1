@@ -86,14 +86,14 @@
         foreach($sales as $list){
             $compute = ComputePaybills($list);
             $fullAddress = stringValidation($list['chouseno']);
+            $state = stringValidation($list['cstate']);
             if(trim($list['ccity']) != ""){
-                $fullAddress .= " " . stringValidation($list['ccity']);
+                $state .= " " . stringValidation($list['ccity']);
             }
 
 
             $tinclient = TinValidation($list['ctin']);
             $name = stringValidation($list['cname']);
-            $trade_name = stringValidation($list['ctradename']);
             $EXEMPT =       round((float)$compute['exempt'],2);
             $NET =          round((float)$compute['net'],2);
             $ZERO =         round((float)$compute['zero'],2);
@@ -102,7 +102,7 @@
             $GOODS =        round((float)$compute['goods'],2);
             $VAT =          round((float)$compute['vat'],2);
             $GROSS_TAX =    round((float)$compute['gross_vat'],2);
-            $data .= "D,P,\"$tinclient\",\"$name\",,,,\"$trade_name\",\"$fullAddress\",$EXEMPT,$ZERO,$SERVICE,$CAPITAL,$GOODS,$VAT,$tin,$lastDay\n";
+            $data .= "D,P,\"$tinclient\",\"$name\",,,,\"$fullAddress\",\"$state\",$EXEMPT,$ZERO,$SERVICE,$CAPITAL,$GOODS,$VAT,$tin,$lastDay\n";
         }
 
         // Output the data

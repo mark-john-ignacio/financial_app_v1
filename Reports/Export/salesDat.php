@@ -62,8 +62,9 @@
         foreach($sales as $list){
             $compute = ComputeRST($list);
             $fullAddress = stringValidation($list['chouseno']);
+            $state = stringValidation($list['cstate']);
             if(trim($list['ccity']) != ""){
-                $fullAddress .= " " . stringValidation($list['ccity']);
+                $state .= " " . stringValidation($list['ccity']);
             }
 
             $tinclient = TinValidation($list['ctin']);
@@ -73,7 +74,7 @@
             $ZERO =     round((float)$compute['zero'],2);
             $NET =      round((float)$compute['net'],2);
             $VAT =      round((float)$compute['vat'],2);
-            $data .= "D,S,\"$tinclient\",\"$client_name\",,,,\"$trade_name\",\"$fullAddress\",$EXEMPT,$ZERO,$NET,$VAT,\"$tin\",$lastDay\n";
+            $data .= "D,S,\"$tinclient\",\"$client_name\",,,,\"$fullAddress\",\"$state\",$EXEMPT,$ZERO,$NET,$VAT,\"$tin\",$lastDay\n";
         }
 
         // Output the data
