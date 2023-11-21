@@ -101,7 +101,8 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('M14', trim("'(13)"))
         ->setCellValue('N14', trim("'(14)"));
 
-    $sql = "SELECT a.*, b.* FROM paybill a
+    if($code == 'VT'){
+        $sql = "SELECT a.*, b.* FROM paybill a
         LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
         WHERE a.compcode = '$company_code'
         AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
@@ -113,6 +114,21 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
             WHERE a.compcode = '$company_code' AND b.cacctno = '$vat_code'
         )
         AND a.lapproved = 1 AND (a.lcancelled != 1 OR a.lvoid != 1)";
+    } else {
+        $sql = "SELECT a.*, b.* FROM paybill a
+        LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
+        WHERE a.compcode = '$company_code'
+        AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
+        AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
+        AND b.cvattype = '$code'
+        AND ctranno in (
+            SELECT a.ctranno FROM paybill_t a 
+            WHERE a.compcode = '$company_code' 
+        )
+        AND a.lapproved = 1 AND (a.lcancelled != 1 OR a.lvoid != 1)";
+    }
+
+    
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         $index = 14;

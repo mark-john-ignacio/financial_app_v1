@@ -34,18 +34,32 @@
     //                     WHERE a.compcode = '$company_code' AND (c.npaidamount > 0 OR c.npaidamount <> null)
     //             )";
 
-    $sql = "SELECT a.*, b.* FROM paybill a
-            LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
-            WHERE a.compcode = '$company_code'
-            AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
-            AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
-            AND b.cvattype = '$code'
-            AND ctranno in (
-                SELECT a.ctranno FROM paybill_t a 
-                LEFT JOIN apv_t b on a.compcode = b.compcode AND a.capvno = b.ctranno
-                WHERE a.compcode = '$company_code' AND b.cacctno = '$vat_code'
-            )
-            AND a.lapproved = 1 AND (a.lcancelled != 1 OR a.lvoid != 1)";
+    if($code == 'VT'){
+        $sql = "SELECT a.*, b.* FROM paybill a
+        LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
+        WHERE a.compcode = '$company_code'
+        AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
+        AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
+        AND b.cvattype = '$code'
+        AND ctranno in (
+            SELECT a.ctranno FROM paybill_t a 
+            LEFT JOIN apv_t b on a.compcode = b.compcode AND a.capvno = b.ctranno
+            WHERE a.compcode = '$company_code' AND b.cacctno = '$vat_code'
+        )
+        AND a.lapproved = 1 AND (a.lcancelled != 1 OR a.lvoid != 1)";
+    } else {
+        $sql = "SELECT a.*, b.* FROM paybill a
+        LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
+        WHERE a.compcode = '$company_code'
+        AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
+        AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
+        AND b.cvattype = '$code'
+        AND ctranno in (
+            SELECT a.ctranno FROM paybill_t a 
+            WHERE a.compcode = '$company_code' 
+        )
+        AND a.lapproved = 1 AND (a.lcancelled != 1 OR a.lvoid != 1)";
+    }
     $query = mysqli_query($con, $sql);
     while($row = $query -> fetch_assoc()){
         array_push($sales, $row);
