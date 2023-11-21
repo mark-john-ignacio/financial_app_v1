@@ -46,12 +46,12 @@
         array_push($sales, $row);
         switch($row['cvattype']){
             case "VT":
-                $net += round((float)$row['nnet'],2);
-                $vat += round((float)$row['nvat'],2);
+                $net += round((float)$nnet,2);
+                $vat += round((float)$nvat,2);
                 break;
             case "NV":
-                $net += round((float)$row['nnet'],2);
-                $vat += round((float)$row['nvat'],2);
+                $net += round((float)$nnet,2);
+                $vat += round((float)$nvat,2);
                 break;
             case "VE":
                 $exempt += round((float)$row['ngross'],2);
