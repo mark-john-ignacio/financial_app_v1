@@ -542,6 +542,9 @@
                 <li>
                   <a href="javascript:;" onClick="setpage('Accounting/Pay/PayBill.php?ix=');"> <i class="fa fa-angle-double-right"></i> Bills Payment </a>
                 </li>
+				<li>
+					<a href="javascript:;" onclick="setpage('./BankRecon')"><i class="fa fa-angle-double-right"></i>Bank Reconciliation</a>
+				</li>
               </ul>
 						</li>
 
