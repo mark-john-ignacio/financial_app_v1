@@ -11,7 +11,8 @@
     <script src="../Bootstrap/js/bootstrap.js"></script>
     <script src="../Bootstrap/js/bootstrap3-typeahead.js"></script>
     <script src="../Bootstrap/js/moment.js"></script>
-    <script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script> 
+    <script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <title>MyxFinancials</title>
 </head>
 <body>
@@ -72,7 +73,7 @@
                         ₱<span id='gross'>185M+</span>
                     </div>
                     <div style='font-size: 20px;'>
-                        Average Contracts
+                        Total Contracts Value
                     </div>
                 </div>
                 <a href="javascript:;" style='color: white;'>
@@ -81,7 +82,7 @@
                 </a>
             </div>
 
-            <div style='position: relative; min-height: 100%; background-color: #c25834'>
+            <!-- <div style='position: relative; min-height: 100%; background-color: #c25834'>
                 <div style='position: absolute; width: 100%; right:0; color: white; text-align: right;  padding: 5px;'>
                     <div style='font-size: 30px;' id='users'>
                         135K+
@@ -95,24 +96,27 @@
                     <div style='position: absolute; width: 100%; bottom: 0; background-color: #c24217; padding: 3px;'>View More</div>
                     <div style='position: absolute; bottom: 0; right: 0; padding: 3px;'><i class='fa fa-forward'></i></div>
                 </a>
-            </div>
+            </div> -->
         </div>
 
         <!-- Logs -->
-        <div style='margin-top: 10px; padding: 10px; min-width: 5.5in; height: 1.5in; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-gap: 5%;'>
-            <div>
-                <table class='table'>
+        <div style='margin-top: 10px; padding: 10px; min-width: 10.5in; height: 1.5in; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-gap: 5%;'>
+            <div style='display: flex; justify-content: center; justify-items: center; float: center;'>
+                <table class='table' id='transactions' style='border: 1px solid grey; min-height: 200px'>
                     <thead>
                         <tr>
                             <th>&nbsp;</th>
                             <th style="text-align: center; width: 50%">Description</th>
-                            <th style="text-align: center">Transaction</th>
+                            <th style="text-align: center">Date</th>
                         </tr>
                     </thead>
+                    <tbody></tbody>
                 </table>
             </div>
-            <div style='display: flex; justify-content: center; justify-items: center; text-align:center; border: 1px solid'>
-                hello
+            <div style='display: flex; justify-content: center; justify-items: center; text-align:center;'>
+                <div class="display: flex; ">
+                    <canvas id="myChart" style="width:100%;max-width:700px; min-height: 300px;"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -126,6 +130,8 @@
         });
 
         LoadHeader();
+        loadTransaction();
+        loadlinegraph();
 
         $("#dateto").on('change', function(){
             let from = $('#datefrom').val();
@@ -204,4 +210,65 @@
             }
         })
     }
+
+    function loadlinegraph(){
+        $.ajax({
+            url: "th_loadgraphs.php",
+            data: {},
+            dataType: 'json',
+            async: false,
+            success: function(res){
+                loadchart(res.week, res.values)
+            },
+            error: function(res){
+                console.log(res)
+            }
+        });
+    }
+
+    function loadTransaction(){
+        $.ajax({
+            url: 'th_loadtransaction.php',
+            dataType: 'json',
+            async: false,
+            success: function(res){
+                console.log(res);
+                res.map((item, index) => {
+                    if(item.valid){
+                        $("<tr>").append(
+                            $("<td style='text-align: center'>").html(''),
+                            $("<td style='text-align: center'>").html(item.name),
+                            $("<td style='text-align: center'>").html(item.date)
+                        ).appendTo(".table tbody")
+                    }
+                })
+            },
+            error: function(res){
+                console.log(res)
+            }
+        });
+    }
+
+    function loadchart(weeks, value){
+        new Chart("myChart", {
+            type: "line",
+            data: {
+                labels: weeks,
+                datasets: [{
+                fill: false,
+                lineTension: 0,
+                backgroundColor: "rgba(0,0,255,1.0)",
+                borderColor: "rgba(0,0,255,0.1)",
+                data: value
+                }]
+            },
+            options: {
+                legend: {display: false},
+                scales: {
+                yAxes: [{ticks: {min: 0}}],
+                }
+            }
+        });
+    }
+    
 </script>

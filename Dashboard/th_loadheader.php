@@ -8,7 +8,6 @@
     $employee = $_SESSION['employeeid'];
     $datefrom = date("Y-m-d",strtotime($_REQUEST['from']));
     $dateto = date("Y-m-d", strtotime($_REQUEST['to']));
-    $cost = 0;
 
     
 
@@ -16,7 +15,7 @@
         global $company, $datefrom, $dateto, $con;
         $sales = [];
         $sql = "SELECT a.*, b.cname FROM receipt a
-        LEFT JOIN customers b WHERE a.compcode = b.comcode AND a.ccode = b.cempid
+        LEFT JOIN customers b ON a.compcode = b.compcode AND a.ccode = b.cempid
         WHERE a.compcode = '$company' AND a.lapproved = 1 AND a.lcancelled = 0 AND a.lvoid = 0 AND (a.dcutdate BETWEEN '$datefrom' AND '$dateto')";
         $query = mysqli_query($con, $sql);
         $receipt = mysqli_num_rows($query);

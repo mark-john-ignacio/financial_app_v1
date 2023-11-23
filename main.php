@@ -213,6 +213,9 @@
 				</li>
 				<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
 				<li class="start">
+			  		<a href="javascript:;" onclick="setpage('./Dashboard')"><i class='fa fa-bar-chart'></i>Dashboard</a>
+				</li>
+				<li >
 					<a href="javascript:;">
 					<i class="icon-settings"></i>
 					<span class="title">Master Data Files</span>
