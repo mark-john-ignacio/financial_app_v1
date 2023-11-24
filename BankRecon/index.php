@@ -22,7 +22,7 @@
         </div>
         <div style=' width: 100%;'>
             <div class='container' style='padding: 50px; display: flex; justify-content: center; justify-items: center; border: 1px solid;'>
-                <form action="Preview.php" method="POST" enctype="multipart/form-data">
+                <form action="CheckBank.php" method="POST" enctype="multipart/form-data">
                     <table>
                         <tr valign="top">
                             <th style='display: flex; justify-items: center; justify-content: center; padding: 10px;'>Date Range:</th>
