@@ -48,17 +48,28 @@
 
 	<title>Myx Financials</title>
 
-  <link rel="stylesheet" type="text/css" href="../../global/plugins/font-awesome/css/font-awesome.min.css"/>  
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css?h=<?php echo time();?>" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>">
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+	<link href="../../global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css"/>
+	
+	<link rel="stylesheet" type="text/css" href="../../global/plugins/bootstrap-select/bootstrap-select.min.css"/>
+	<link rel="stylesheet" type="text/css" href="../../global/plugins/select2/select2.css"/>
+	<link rel="stylesheet" type="text/css" href="../../global/plugins/jquery-multi-select/css/multi-select.css"/>
+
+	<link href="../../global/css/plugins.css" rel="stylesheet" type="text/css"/>
 
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../js/bootstrap3-typeahead.min.js"></script>
-	<script src="../../../../include/autoNumeric.js"></script>
+	<script src="../../include/autoNumeric.js"></script>
 	<!--
 	<script src="../../Bootstrap/js/jquery.numeric.js"></script>
 	-->
+	<script src="../../global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+	<script type="text/javascript" src="../../global/plugins/bootstrap-select/bootstrap-select.min.js"></script>
+	<script type="text/javascript" src="../../global/plugins/select2/select2.min.js"></script>
+	<script type="text/javascript" src="../../global/plugins/jquery-multi-select/js/jquery.multi-select.js"></script>
 
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
 	<script src="../../Bootstrap/js/moment.js"></script>
@@ -84,8 +95,8 @@
 
 <?php
 
-    	$sqlchk = mysqli_query($con,"Select a.cacctcode, a.namount, a.cortype, DATE_FORMAT(a.dcutdate,'%m/%d/%Y') as dcutdate, a.namount, a.lapproved, a.lcancelled, a.lprintposted, a.lvoid, a.cremarks, c.cacctdesc, c.nbalance, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate From deposit a left join accounts c on a.compcode=c.compcode and a.cacctcode=c.cacctid where a.compcode='$company' and a.ctranno='$corno'");
-if (mysqli_num_rows($sqlchk)!=0) {
+    $sqlchk = mysqli_query($con,"Select a.cacctcode, a.namount, a.cortype, DATE_FORMAT(a.dcutdate,'%m/%d/%Y') as dcutdate, a.namount, a.lapproved, a.lcancelled, a.lprintposted, a.lvoid, a.cremarks, c.cacctdesc, c.nbalance, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.cbankcode, a.creference From deposit a left join accounts c on a.compcode=c.compcode and a.cacctcode=c.cacctid where a.compcode='$company' and a.ctranno='$corno'");
+	if (mysqli_num_rows($sqlchk)!=0) {
 		while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
 			$nDebitDef = $row['cacctcode'];
 			$nDebitDesc = $row['cacctdesc'];	
@@ -94,6 +105,9 @@ if (mysqli_num_rows($sqlchk)!=0) {
 			$dDate = $row['dcutdate'];
 			$nAmount = $row['namount'];
 			$cRemarks = $row['cremarks'];
+
+			$cBankCode = $row['cbankcode'];
+			$cReference = $row['creference'];
 
 			$ccurrcode = $row['ccurrencycode'];  
 			$ccurrdesc = $row['ccurrencydesc']; 
@@ -138,7 +152,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
 
 					<div id="items" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
 
-						<table width="100%" border="0">
+						<table width="100%" border="0">							
 							<tr>
 								<tH>Deposit No.:</tH>
 								<td style="padding:2px;">
@@ -163,19 +177,52 @@ if (mysqli_num_rows($sqlchk)!=0) {
 											
 								</td>
 							</tr>
-
+							<tr>
+								<tH width="200">   	
+									Bank:
+								</tH>
+								<td style="padding:2px;" width="500">
+									<?php																				
+										$sqlbaks = mysqli_query($con,"Select a.ccode, a.cname, a.cacctno, b.cacctdesc From bank a left join accounts b on a.compcode=b.compcode and a.cacctno=b.cacctid where a.compcode='$company' and a.cstatus='ACTIVE' Order By a.cname");											
+									?>
+									<div class="row nopadding">
+										<div class="col-xs-10 nopadding">
+											<select class="form-control select2 input-medium" name="selbanks" id="selbanks">
+												<?php
+													if (mysqli_num_rows($sqlbaks)!=0) {
+														while($rows = mysqli_fetch_array($sqlbaks, MYSQLI_ASSOC)){
+												?>
+													<option value="<?=$rows['ccode']?>" data-cacctcode="<?=$rows['cacctno']?>" data-cacctdesc="<?=$rows['cacctdesc']?>" <?=($cBankCode ==$rows['ccode'] ) ? "selected" : ""?>><?=strtoupper($rows['cname'])?></option> 
+												<?php
+														}
+													}
+												?>
+											</select>
+										</div> 
+										 
+									</div>   
+								</td>
+								<tH width="150">Reference:</tH>
+								<td style="padding:2px;">
+									<div class="col-xs-10 nopadding">
+										<input type="text" id="txtrefno" name="txtrefno" class="form-control input-sm required" required value="<?=$cReference?>">
+									</div>
+								</td>
+							</tr>
 							<tr>
 								<tH width="200">   	
 									Deposit To Account:
 								</tH>
 								<td style="padding:2px;" width="500">
 									<div class="col-xs-12 nopadding">
-										<div class="col-xs-6 nopadding">
-											<input type="text" class="form-control input-sm" id="txtcacct" name="txtcacct" width="20px" tabindex="1" placeholder="Search Account Description..." required value="<?php echo $nDebitDesc;?>">
-										</div> 
-										<div class="col-xs-6 nopadwleft">
-											<input type="text" id="txtcacctid" name="txtcacctid" style="border:none; height:30px;" readonly  value="<?php echo $nDebitDef;?>">
-										</div>
+										<div class="col-xs-12 nopadding">
+											<div class="col-xs-3 nopadding"> 
+												<input type="text" id="txtcacctid" name="txtcacctid" class="form-control input-sm" readonly  value="<?php echo $nDebitDef;?>">
+											</div> 
+											<div class="col-xs-7 nopadwleft">
+												<input type="text" class="form-control input-sm" id="txtcacct" name="txtcacct" tabindex="1" placeholder="Search Account Description..." required value="<?php echo $nDebitDesc;?>" autocomplete="off">
+											</div>  
+										</div> 										
 									</div>     
 								</td>
 								<tH width="150">Balance:</tH>
@@ -254,10 +301,14 @@ if (mysqli_num_rows($sqlchk)!=0) {
 									</div>
 								</td>
 								<tH style="padding:2px">Date:</tH>
-								<td style="padding:2px"><div class="col-xs-8 nopadding">
-									<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $dDate; ?>"/>
-									<!--</a>-->
-								</div></td>
+								<td style="padding:2px">
+									<div class="col-xs-8 nopadding">
+										<div class="input-icon">
+											<i class="fa fa-calendar"></i>
+											<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $dDate; ?>"/>
+										</div>
+									</div>
+								</td>
 							</tr>
 							<tr>
 
@@ -403,9 +454,10 @@ if (mysqli_num_rows($sqlchk)!=0) {
                       <th align="center">
                       <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
                       <th>Trans No</th>
+					  <th>Method</th>
                       <th>OR No</th>
                       <th>OR Date</th>
-                      <th>Gross</th>
+                      <th style='text-align: right'>Gross</th>
                       <th>&nbsp;</th>
                     </tr>
                     </thead>
@@ -643,33 +695,43 @@ var fileslist = [];
 				fileActionSettings: { showUpload: false, showDrag: false, }
 			});
 		}
-			
-$('#txtcacct').typeahead({
 
-    source: function (query, process) {
-        return $.getJSON(
-            'th_accounts.php',
-            { query: query },
-            function (data) {
-				newData = [];
-				map = {};
-				
-				$.each(data, function(i, object) {
-					map[object.name] = object;
-					newData.push(object.name);
+		$("#selbanks").select2({
+            placeholder: "Select a Bank",
+            allowClear: true
+        }); 
+
+		$("#selbanks").on("change", function(){
+			$("#txtcacctid").val($(this).find(':selected').data('cacctcode'));  
+			$("#txtcacct").val($(this).find(':selected').data('cacctdesc')); 
+		});
+			
+	$('#txtcacct').typeahead({
+
+		source: function (query, process) {
+			return $.getJSON(
+				'th_accounts.php',
+				{ query: query },
+				function (data) {
+					newData = [];
+					map = {};
+					
+					$.each(data, function(i, object) {
+						map[object.name] = object;
+						newData.push(object.name);
+					});
+					
+					process(newData);
 				});
-                
-				process(newData);
-            });
-    },
-	updater: function (item) {	
-		  	
+		},
+		updater: function (item) {	
+				
 			$('#txtcacctid').val(map[item].id);
 			$('#txtacctbal').val(map[item].balance);
 			return item;
-	}
+		}
 
-});
+	});
 	
 
  	$("#allbox").click(function () {
@@ -773,7 +835,7 @@ function computeGross(){
 							$("<td>").text(item.cpaymethod),
 							$("<td>").text(item.corno),
 							$("<td>").text(item.dcutdate),
-							$("<td>").text(item.namount)
+							$("<td style='text-align: right'>").text(item.namount + " " + item.ccurrencycode)
 						).appendTo("#MyORTbl tbody");
 					});
 							 
