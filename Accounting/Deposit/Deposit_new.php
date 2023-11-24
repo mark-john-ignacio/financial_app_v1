@@ -273,6 +273,7 @@
 										<tr>
 											<th scope="col" width="15%">Trans No</th>
 											<th scope="col">OR No.</th>
+											<th scope="col">Reference</th>
 											<th scope="col">Date</th>
 											<th scope="col">Remarks</th>
 											<th scope="col">Payment Method</th>
@@ -525,10 +526,12 @@
 		
 			for (z=i+1; z<=lastRow; z++){
 				var tempsalesno =  $('input[name=txtcSalesNo'+z+']');
+				var temprefno =  $('input[name=txtcReference'+z+']');
 				var tempamt =  $('input[name=txtnAmt'+z+']');
 				
 				var x = z-1;
 				tempsalesno.attr("name", "txtcSalesNo" + x);	
+				temprefno.attr("name", "txtcReference" + x);	
 				tempamt.attr("name", "txtnAmt" + x);		
 				//tempnqty.onkeyup = function(){ computeamt(this.value,x,event.keyCode); };
 
@@ -646,12 +649,13 @@
 							console.log(data);
 								$.each(data,function(index,item){
 									$("<tr myAttr='"+item.corno+"'>").append(
-										$("<td>").html("<div class='col-xs-12'><input type='hidden' name='txtcSalesNo"+rowCount+"' id='txttranno' value='"+item.ctranno+"' />"+item.ctranno+"</div>"),
+										$("<td>").html("<input type='hidden' name='txtcSalesNo"+rowCount+"' value='"+item.ctranno+"' />"+item.ctranno),
 										$("<td>").text(item.corno),
+										$("<td>").html("<input type='hidden' name='txtcReference"+rowCount+"' value='"+item.creference+"' />"+item.creference),
 										$("<td>").text(item.dcutdate),
 										$("<td>").text(item.cremarks),
 										$("<td>").text(item.cpaymethod),
-										$("<td align='right'>").html("<div class='col-xs-12'><input type='hidden' name='txtnAmt"+rowCount+"' id='txtAmt' value='"+item.namountorig+"' />"+item.namount+"</div>"),
+										$("<td align='right'>").html("<input type='hidden' name='txtnAmt"+rowCount+"' id='txtAmt' value='"+item.namountorig+"' />"+item.namount),
 										$("<td align='center'>").html("<input class='btn btn-danger btn-xs' type='button' id='row_"+rowCount+"_delete' value='delete' onClick='deleteRow(this);' />")
 									).appendTo("#MyTable tbody");
 														
