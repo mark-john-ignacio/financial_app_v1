@@ -354,11 +354,12 @@
 									<thead>
 										<tr>
 											<th scope="col" width="15%">Trans No</th>
-											<th scope="col">OR No.</th>
+											<th scope="col">OR No.</th> 
+											<th scope="col">Reference</th> 
 											<th scope="col">Date</th>
 											<th scope="col">Remarks</th>
 											<th scope="col">Payment Method</th>
-											<th scope="col">Amount</th>
+											<th scope="col" style="text-align: right">Amount</th>
 											<th scope="col">&nbsp;</th>
 										</tr>
 									</thead>
@@ -373,12 +374,13 @@
 												$cntr = $cntr + 1;
 										?>
 										<tr>
-											<td><div class='col-xs-12'><input type='hidden' name='txtcSalesNo<?php echo $cntr;?>' id='txttranno' value='<?php echo $rowbody['corno'];?>' /><?php echo $rowbody['corno'];?></div></td>
+											<td><input type='hidden' name='txtcSalesNo<?php echo $cntr;?>' value='<?php echo $rowbody['corno'];?>' /><?php echo $rowbody['corno'];?></td>
 											<td><?php echo $rowbody['cornumber'];?></td>
+											<td><input type='hidden' name='txtcReference<?php echo $cntr;?>' value='<?php echo $rowbody['creference'];?>' /><?php echo $rowbody['creference'];?></td>
 											<td><?php echo $rowbody['dcutdate'];?></td>
 											<td><?php echo $rowbody['cremarks'];?></td>
 											<td><?php echo ucwords($rowbody['cpaymethod']);?></td>
-											<td align='right'><div class='col-xs-12'><input type='hidden' name='txtnAmt<?php echo $cntr;?>' id='txtAmt' value='<?php echo $rowbody['namount'];?>' /><?php echo number_format($rowbody['namount'],2);?></div></td>
+											<td align='right'><input type='hidden' name='txtnAmt<?php echo $cntr;?>' id='txtAmt' value='<?php echo $rowbody['namount'];?>' /><?php echo number_format($rowbody['namount'],2);?></td>
 											<td align='center'><input class='btn btn-danger btn-xs' type='button' id='row_<?php echo $cntr;?>_delete' value='delete' onClick='deleteRow(this);' /></td>
 										</tr>
 										<?php
@@ -757,20 +759,22 @@ function deleteRow(r) {
 	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 	var lastRow = tbl.length;
 	var i=r.parentNode.parentNode.rowIndex;
-	 document.getElementById('MyTable').deleteRow(i);
-	 var lastRow = tbl.length;
-	 var z; //for loop counter changing textboxes ID;
+	document.getElementById('MyTable').deleteRow(i);
+	var lastRow = tbl.length;
+	var z; //for loop counter changing textboxes ID;
 	 
-		for (z=i+1; z<=lastRow; z++){
-			var tempsalesno =  $('input[name=txtcSalesNo'+z+']');
-			var tempamt =  $('input[name=txtnAmt'+z+']');
-			
-			var x = z-1;
-			tempsalesno.attr("name", "txtcSalesNo" + x);	
-			tempamt.attr("name", "txtnAmt" + x);		
-			//tempnqty.onkeyup = function(){ computeamt(this.value,x,event.keyCode); };
+	for (z=i+1; z<=lastRow; z++){
+		var tempsalesno =  $('input[name=txtcSalesNo'+z+']');
+		var temprefno =  $('input[name=txtcReference'+z+']');
+		var tempamt =  $('input[name=txtnAmt'+z+']');
+				
+		var x = z-1;
+		tempsalesno.attr("name", "txtcSalesNo" + x);	
+		temprefno.attr("name", "txtcReference" + x);	
+		tempamt.attr("name", "txtnAmt" + x);		
+		//tempnqty.onkeyup = function(){ computeamt(this.value,x,event.keyCode); };
 
-		}
+	}
 
 computeGross();
 
@@ -869,19 +873,19 @@ function save(){
 					async: false,
 					success: function(data)
 					{				
-					
-					   console.log(data);
-                       $.each(data,function(index,item){
-						   $("<tr myAttr='"+item.corno+"'>").append(
-							$("<td>").html("<div class='col-xs-12'><input type='hidden' name='txtcSalesNo"+rowCount+"' id='txttranno' value='"+item.ctranno+"' />"+item.ctranno+"</div>"),
-							$("<td>").text(item.corno),
-							$("<td>").text(item.dcutdate),
-							$("<td>").text(item.cremarks),
-							$("<td>").text(item.cpaymethod),
-							$("<td align='right'>").html("<div class='col-xs-12'><input type='hidden' name='txtnAmt"+rowCount+"' id='txtAmt' value='"+item.namount+"' />"+item.namount+"</div>"),
-							$("<td align='center'>").html("<input class='btn btn-danger btn-xs' type='button' id='row_"+rowCount+"_delete' value='delete' onClick='deleteRow(this);' />")
-						   ).appendTo("#MyTable tbody");
-						   					   
+						console.log(data);
+                       	$.each(data,function(index,item){
+							$("<tr myAttr='"+item.corno+"'>").append(
+								$("<td>").html("<input type='hidden' name='txtcSalesNo"+rowCount+"' value='"+item.ctranno+"' />"+item.ctranno),
+								$("<td>").text(item.corno),
+								$("<td>").html("<input type='hidden' name='txtcReference"+rowCount+"' value='"+item.creference+"' />"+item.creference),
+								$("<td>").text(item.dcutdate),
+								$("<td>").text(item.cremarks),
+								$("<td>").text(item.cpaymethod),
+								$("<td align='right'>").html("<input type='hidden' name='txtnAmt"+rowCount+"' id='txtAmt' value='"+item.namountorig+"' />"+item.namount),
+								$("<td align='center'>").html("<input class='btn btn-danger btn-xs' type='button' id='row_"+rowCount+"_delete' value='delete' onClick='deleteRow(this);' />")
+							).appendTo("#MyTable tbody");
+														
 						});
 					rowCount = rowCount + 1;
 					sortORTbl();
