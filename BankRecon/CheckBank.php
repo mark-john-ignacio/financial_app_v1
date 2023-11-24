@@ -8,23 +8,37 @@
     $bank = $_POST['bank'];
     $range = $_POST['range'];
 
-    $sql = "SELECT * FROM deposit WHERE compcode = '$company' AND cbankcode = '$bank'";
+    $sql = "SELECT a.namount FROM deposit a 
+        LEFT JOIN receipt b on a.compcode = b.compcode 
+        WHERE a.compcode = '$company' AND a.cbankcode = '$bank'";
     $query = mysqli_query($con, $sql);
     $deposit = [];
     $total = 0;
     $bookTotal = 0;
+    $totalTransit = 0;
+    $EXCEL_TOTAL = 0;
+    $UNRECORD_DEPOSIT = 0;
+    $UNRECORD_WITHDRAW = 0;
+    $OUTSTAND_CHEQUE = 0;
+    $ADJUST_BANK = 0;
+    $ADJUST_BOOK = 0;
 
     $excel = ExcelRead($_FILES);
 
-    for($i = 0; $i < count($excel); $i++){
-        $data = $excel[$i];
-        $bookTotal += round($data[4],2);
-    }
-
     while($row = $query -> fetch_assoc()){
         array_push($deposit, $row);
-        $total += round($row['namount'],2);
+        $book += round($row['namount'],2);
     }
+
+
+    for($i = 1; $i < count($excel); $i++){
+        $data = $excel[$i];
+        $EXCEL_TOTAL += round($data[4],2);
+    }
+
+   
+    $totalBank = floatval($EXCEL_TOTAL) + $totalTransit;
+    $totalBook = floatval($bookTotal) + $UNRECORD_DEPOSIT;
 ?>
 
 <!DOCTYPE html>
@@ -64,21 +78,21 @@
                 </div>
                 <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px;">
                     <div style="width: 100%; padding-left: 30px;">Add: Deposit in Transit </div>
-                    <div style="width: 100%; text-align: right;">02318</div>
+                    <div style="width: 100%; text-align: right;"><?= $totalTransit ?></div>
                 </div>
 
                 <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px">
                     <div style="width: 100%">Total: </div>
-                    <div style="width: 100%; text-align: right;">02318</div>
+                    <div style="width: 100%; text-align: right;"><?= $totalBank ?></div>
                 </div>
                 <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px;">
                     <div style="width: 100%; padding-left: 30px;">Less: Outstanding Cheques </div>
-                    <div style="width: 100%; text-align: right;">02318</div>
+                    <div style="width: 100%; text-align: right;"><?= $OUTSTAND_CHEQUE ?></div>
                 </div>
 
                 <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px">
                     <div style="width: 100%">Adjust Bank Balance: </div>
-                    <div style="width: 100%; text-align: right;">02318</div>
+                    <div style="width: 100%; text-align: right;"><?= $ADJUST_BANK ?></div>
                 </div>
             </div>
 
@@ -86,27 +100,27 @@
             <div style="width: 100%; padding: 10px;">
                 <div style="display: flex; width: 100%; padding-top: 45px; padding-right: 10px;">
                     <div style="width: 100%">Balance per Book: </div>
-                    <div style="width: 100%; text-align: right;"><?= $bookTotal ?></div>
+                    <div style="width: 100%; text-align: right;"><?= $EXCEL_TOTAL ?></div>
                 </div>
 
                 <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px;">
                     <div style="width: 100%; padding-left: 30px;">Add: Unrecorded Deposit </div>
-                    <div style="width: 100%; text-align: right;">02318</div>
+                    <div style="width: 100%; text-align: right;"><?= $UNRECORD_DEPOSIT ?></div>
                 </div>
 
                 <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px">
                     <div style="width: 100%">Total: </div>
-                    <div style="width: 100%; text-align: right;">02318</div>
+                    <div style="width: 100%; text-align: right;"><?= $totalBook ?></div>
                 </div>
 
                 <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px;">
                     <div style="width: 100%; padding-left: 30px;">Less: Unrecorded Withdrawal </div>
-                    <div style="width: 100%; text-align: right;">02318</div>
+                    <div style="width: 100%; text-align: right;"><?= $UNRECORD_WITHDRAW ?></div>
                 </div>
 
                 <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px">
                     <div style="width: 100%">Adjust Book Balance: </div>
-                    <div style="width: 100%; text-align: right;">02318</div>
+                    <div style="width: 100%; text-align: right;"><?= $ADJUST_BOOK ?></div>
                 </div>
             </div>
         </div>
