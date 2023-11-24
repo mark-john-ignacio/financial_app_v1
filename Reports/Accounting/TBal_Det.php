@@ -24,6 +24,48 @@ $company = $_SESSION['companyid'];
 $dateFrom = $_REQUEST['date1'];
 $dateTo = (@$_REQUEST['date2']) ? @$_REQUEST['date2'] : "";
 
+function getcustsupp($tranno,$xmodule){
+	global $con;
+	global $company;
+
+	$sql = "";
+	switch ($xmodule) {
+		case "SI":
+			$sql = "select B.cname From sales A left join customers B on A.compcode=B.compcode and A.ccode=B.cempid where A.compcode='$company' and A.ctranno='$tranno' UNION ALL select B.cname From ntsales A left join customers B on A.compcode=B.compcode and A.ccode=B.cempid where A.compcode='$company' and A.ctranno='$tranno'";
+			break;
+		case "DR":
+			$sql = "select B.cname From dr A left join customers B on A.compcode=B.compcode and A.ccode=B.cempid where A.compcode='$company' and A.ctranno='$tranno' UNION ALL select B.cname From ntdr A left join customers B on A.compcode=B.compcode and A.ccode=B.cempid where A.compcode='$company' and A.ctranno='$tranno'";
+			break;
+		case "APV":
+			$sql = "select B.cname From apv A left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode where A.compcode='$company' and A.ctranno='$tranno'";
+			break;
+		case "OR":
+			$sql = "select B.cname From receipt A left join customers B on A.compcode=B.compcode and A.ccode=B.cempid where A.compcode='$company' and A.ctranno='$tranno'";
+			break;
+		case "PV":
+			$sql = "select B.cname From paybill A left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode where A.compcode='$company' and A.ctranno='$tranno'";
+			break;
+		case "ARADJ":
+			$sql = "select B.cname From aradjustment A left join customers B on A.compcode=B.compcode and A.ccode=B.cempid where A.compcode='$company' and A.ctranno='$tranno'";
+			break;
+		case "APADJ":
+			$sql = "select B.cname From apadjustment A left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode where A.compcode='$company' and A.ctranno='$tranno'";
+			break;
+		default:
+			$sql = "";
+	}
+
+	$returname = "";
+	$result=mysqli_query($con,$sql);
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
+		$returname =  $row['cname'];
+	}
+
+	return $returname;
+
+}
+
 ?>
 
 <html>
@@ -92,7 +134,7 @@ $dateTo = (@$_REQUEST['date2']) ? @$_REQUEST['date2'] : "";
 		$dcurrentacct = $rowxz['cacctno'];
 ?>
 
-<table width="55%" border="0" align="center" cellpadding = "3" class="tbl-serate" id="tableTbal" name="tableTbal">
+<table width="70%" border="0" align="center" cellpadding = "3" class="tbl-serate" id="tableTbal" name="tableTbal">
 	<tr>
 		<th colspan="5">
 			<table width="100%" border="0" align="center" cellpadding = "3">
@@ -105,6 +147,7 @@ $dateTo = (@$_REQUEST['date2']) ? @$_REQUEST['date2'] : "";
 		</th>
 	</tr>
   <tr>
+		<th>Customer/Supplier</th>
 		<th>Reference</th>
 		<th width="100px">Date</th>
     <th style="text-align:right" width="150px">Debit</th>
@@ -124,8 +167,9 @@ $dateTo = (@$_REQUEST['date2']) ? @$_REQUEST['date2'] : "";
 				$totdebit = $totdebit + floatval($drow['ndebit']);
 				$totcredit = $totcredit + floatval($drow['ncredit']);
 		?>
-	<tr id="tableContent" name="tableContent">
+	<tr id="tableContent" name="tableContent" style="cursor: pointer">
 			<td style="display: none;"><?= $drow['cmodule'] ?></td>
+			<td><?=getcustsupp($drow['ctranno'],$drow['cmodule'])?></td>
 			<td><?=$drow['ctranno']?></td>
 			<td><?=date_format(date_create($drow['ddate']), "d-M-y")?></td>
 			<td style="text-align:right;"><?=(floatval($drow['ndebit'])<>0) ? number_format(floatval($drow['ndebit']), 2) : ""?></td>
@@ -143,7 +187,7 @@ $dateTo = (@$_REQUEST['date2']) ? @$_REQUEST['date2'] : "";
 	?>
 
 	<tr>
-		<td style="text-align:right;" colspan="2"><b>Total <?=$dcurrentacct?></b></td>
+		<td style="text-align:right;" colspan="3"><b>Total <?=$dcurrentacct?></b></td>
   	<td style="text-align:right; border-bottom-style: double; border-top: 1px solid"><b><?=(floatval($totdebit)<>0) ? number_format(floatval($totdebit), 2) : ""?></b></td>
     <td style="text-align:right; border-bottom-style: double; border-top: 1px solid"><b><?=(floatval($totcredit)<>0) ? number_format(floatval($totcredit), 2) : ""?></b></td>
 		<!--<td>
@@ -197,12 +241,15 @@ $dateTo = (@$_REQUEST['date2']) ? @$_REQUEST['date2'] : "";
 
 		$(document).on('click', '#tableContent', function(){
 			let modules = $(this).closest('#tableContent').find('td:eq(0)').text();
-			let ctranno = $(this).closest('#tableContent').find('td:eq(1)').text();
-			console.log(modules)
+			let ctranno = $(this).closest('#tableContent').find('td:eq(2)').text();
 
 			clearTable("#HeadDetail")
 			clearTable('#detailTable')
 			clearTable('#subdetailTable')
+
+			if(modules=="SI"){
+				modules = ctranno.substring(0,2);
+			}
 			
 			$.ajax({
 				url: 'Controller/TBal_Controller.php',
@@ -213,8 +260,10 @@ $dateTo = (@$_REQUEST['date2']) ? @$_REQUEST['date2'] : "";
 					ctranno: ctranno
 				},
 				success: function(res){
+
+					console.log(res);
 					$('#detailModal').modal('show')
-					console.log(modules)
+
 					var sample = res.data;
 					sample.map((item, index) => {
 						switch(modules){
@@ -231,7 +280,7 @@ $dateTo = (@$_REQUEST['date2']) ? @$_REQUEST['date2'] : "";
 							case 'IN': 
 								$('#modalTitle').text('Non-Trade Sales Invoice')
 								ShowIN(index, item)
-								console.log(item)
+								//console.log(item)
 								break;
 							case 'APV':
 								$('#modalTitle').text('Accounts Payment Voucher')
@@ -409,6 +458,24 @@ $dateTo = (@$_REQUEST['date2']) ? @$_REQUEST['date2'] : "";
 				$('<tH>').text('Amount'),
 				$('<tH>').text('Total Amount in PHP')
 			).appendTo('#subdetailTable > thead')
+
+			$.ajax({
+				url: 'Controller/th_GLactivity_List.php',
+				type: 'post',
+				dataType: 'json',
+				data: {ctranno: data.ctranno},
+				async: false,
+				success: function(res){
+					res['data'].map((item, res) =>{
+						$('<tr>').append(
+							$("<td style='text-align: left'>").text(item.acctno),
+							$("<td style='text-align: left'>").text(item.ctitle),
+								$('<td>').text(parseFloat(item.ndebit).toFixed(2)),
+								$('<td>').text(parseFloat(item.ncredit).toFixed(2)),
+						).appendTo('#detailTable > thead')
+					})
+				}
+			})
 		}
 
 		$('<tr>').append(
@@ -422,24 +489,6 @@ $dateTo = (@$_REQUEST['date2']) ? @$_REQUEST['date2'] : "";
 			$('<td>').text( (data.nbaseamount != null ? parseFloat(data.nbaseamount).toFixed(2) : '-') ),
 			$('<td>').text( (data.namount != null ? parseFloat(data.namount).toFixed(2) : '-') ),
 		).appendTo('#subdetailTable > tbody')
-
-		$.ajax({
-			url: 'Controller/th_GLactivity_List.php',
-			type: 'post',
-			dataType: 'json',
-			data: {ctranno: data.ctranno},
-			async: false,
-			success: function(res){
-				res['data'].map((item, res) =>{
-					$('<tr>').append(
-						$("<td style='text-align: left'>").text(item.acctno),
-						$("<td style='text-align: left'>").text(item.ctitle),
-							$('<td>').text(parseFloat(item.ndebit).toFixed(2)),
-							$('<td>').text(parseFloat(item.ncredit).toFixed(2)),
-					).appendTo('#detailTable > thead')
-				})
-			}
-		})
 	}
 
 	function ShowIN(index, data){
@@ -475,7 +524,28 @@ $dateTo = (@$_REQUEST['date2']) ? @$_REQUEST['date2'] : "";
 				$('<tH>').text('Amount'),
 				$('<tH>').text('Total Amount in PHP')
 			).appendTo('#subdetailTable > thead')
+
+
+			$.ajax({
+				url: 'Controller/th_GLactivity_List.php',
+				type: 'post',
+				dataType: 'json',
+				data: {ctranno: data.ctranno},
+				async: false,
+				success: function(res){
+
+					res['data'].map((item, res) =>{
+						$('<tr>').append(
+							$("<td style='text-align: left'>").text(item.acctno),
+							$("<td style='text-align: left'>").text(item.ctitle),
+								$('<td>').text(parseFloat(item.ndebit).toFixed(2)),
+								$('<td>').text(parseFloat(item.ncredit).toFixed(2)),
+						).appendTo('#detailTable > thead')
+					})
+				}
+			})
 		}
+
 		$('<tr>').append(
 			$("<td style='text-align: left'>").text( (data.citemdesc != null ? data.citemdesc : '-') ),
 			$('<td>').text( (data.cunit != null ? data.cunit : '-') ),
@@ -486,23 +556,7 @@ $dateTo = (@$_REQUEST['date2']) ? @$_REQUEST['date2'] : "";
 			$('<td>').text( (data.namount != null ? parseFloat(data.namount).toFixed(2) : '-') ),
 		).appendTo('#subdetailTable > tbody')
 
-		$.ajax({
-			url: 'Controller/th_GLactivity_List.php',
-			type: 'post',
-			dataType: 'json',
-			data: {ctranno: data.ctranno},
-			async: false,
-			success: function(res){
-				res['data'].map((item, res) =>{
-					$('<tr>').append(
-						$("<td style='text-align: left'>").text(item.acctno),
-						$("<td style='text-align: left'>").text(item.ctitle),
-							$('<td>').text(parseFloat(item.ndebit).toFixed(2)),
-							$('<td>').text(parseFloat(item.ncredit).toFixed(2)),
-					).appendTo('#detailTable > thead')
-				})
-			}
-		})
+		
 	}
 
 

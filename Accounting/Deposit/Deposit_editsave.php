@@ -10,6 +10,9 @@ $company = $_SESSION['companyid'];
 
 
 	$cSINo = mysqli_real_escape_string($con, $_REQUEST['txtctranno']);
+
+	$cBankCode =  mysqli_real_escape_string($con, $_REQUEST['selbanks']);
+	$cReference =  mysqli_real_escape_string($con, $_REQUEST['txtrefno']);
 	$cAcctNo =  mysqli_real_escape_string($con, $_REQUEST['txtcacctid']);
 	$dTranDate = $_REQUEST['date_delivery'];
 	$cRemarks =  mysqli_real_escape_string($con, $_REQUEST['txtremarks']); 
@@ -25,13 +28,13 @@ $company = $_SESSION['companyid'];
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 	
 	
-	if (!mysqli_query($con, "UPDATE `deposit` set `cortype` = '$cPayMethod', `dcutdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `cremarks` = '$cRemarks', `cacctcode` = '$cAcctNo', `namount` = $nGross, `ccurrencycode` = '$CurrCode', `ccurrencydesc` = '$CurrDesc', `nexchangerate` = '$CurrRate' where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
+	if (!mysqli_query($con, "UPDATE `deposit` set `cortype` = '$cPayMethod', `dcutdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `cremarks` = '$cRemarks', `cacctcode` = '$cAcctNo', `namount` = $nGross, `ccurrencycode` = '$CurrCode', `ccurrencydesc` = '$CurrDesc', `nexchangerate` = '$CurrRate', `cbankcode` = '$cBankCode', `creference` = '$cReference' where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 	
 	
 	if (!mysqli_query($con, "DELETE FROM `deposit_t` where `compcode`='$company' and `ctranno`= '$cSINo'")) {
-					printf("Errormessage: %s\n", mysqli_error($con));
+		printf("Errormessage: %s\n", mysqli_error($con));
 	}
 
 

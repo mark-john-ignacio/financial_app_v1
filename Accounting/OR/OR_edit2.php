@@ -2282,7 +2282,11 @@ else{
 				}
 			}
 			
-			tot = parseFloat(totCR) - parseFloat(totDR);	
+			if(parseFloat(totCR) != parseFloat(totDR)){
+				tot = parseFloat(totCR) - parseFloat(totDR);	
+			}else{
+				tot = parseFloat(totDR);
+			}	
 		}
 		
 		$("#txtnApplied").val(tot);

@@ -312,54 +312,64 @@
 						</li>
 						<li>
 							<a href="javascript:;" class="nav-link nav-toggle">
-                <i class="fa fa-truck"></i> Suppliers<span class="arrow"></span>
+                				<i class="fa fa-truck"></i> Suppliers<span class="arrow"></span>
 							</a>
-              <ul class="sub-menu">
-                <li>
-                  <a href="javascript:;" onClick="setpage('MasterFiles/Supp/Suppliers.php?f=');"> 
+							<ul class="sub-menu">
+								<li>
+									<a href="javascript:;" onClick="setpage('MasterFiles/Supp/Suppliers.php?f=');"> 
 										<i class="fa fa-list-ul "></i> Master List 
 									</a>
-                </li>
-                <li>
-                  <a href="javascript:;" onClick="setpage('MasterFiles/Supp/TYPE.php');"> 
+								</li>
+								<li>
+									<a href="javascript:;" onClick="setpage('MasterFiles/Supp/TYPE.php');"> 
 										<i class="fa fa-angle-double-right"></i> Types 
 									</a>
-                </li>
-                <li>
-                  <a href="javascript:;" onClick="setpage('MasterFiles/Supp/CLASS.php');"> 
+								</li>
+								<li>
+									<a href="javascript:;" onClick="setpage('MasterFiles/Supp/CLASS.php');"> 
 										<i class="fa fa-angle-double-right"></i> Classification 
 									</a>
-                </li>
-                <li>
-                  <a href="javascript:;" onClick="setpage('MasterFiles/Supp/Groups/Groupings.php');"> 
+								</li>
+								<li>
+									<a href="javascript:;" onClick="setpage('MasterFiles/Supp/Groups/Groupings.php');"> 
 										<i class="fa fa-angle-double-right"></i> Groupings 
 									</a>
-                </li>
-              </ul>
+								</li>
+							</ul>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('MasterFiles/Salesman/Salesman.php');">
-                <i class="fa fa-user-secret"></i> Salesman
+               					<i class="fa fa-user-secret"></i> Salesman
 							</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('Maintenance/Bank.php');">
-                <i class="fa fa-bank"></i> Banks
+                				<i class="fa fa-bank"></i> Banks
+							</a>
+						</li>
+						<li>
+							<a href="javascript:;" onClick="setpage('MasterFiles/Currency/currency.php?ix=');">
+                				<i class="fa fa-money"> </i> Currency List
+							</a>
+						</li>
+						<li>
+							<a href="javascript:;" onClick="setpage('MasterFiles/Proforma/Proforma.php?ix=');">
+                				<i class="fa fa-file-text-o"> </i> Proforma
 							</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('MasterFiles/Locations/locations.php');">
-              <i class="fa fa-sitemap"></i> Sections
-						</a>
+             					<i class="fa fa-sitemap"></i> Sections
+							</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('MasterFiles/Users/users.php?f=');">
-                <i class="fa fa-users"></i> System Users
+                				<i class="fa fa-users"></i> System Users
 							</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('System/');">
-                <i class="fa fa-gears"></i> System Setup
+                				<i class="fa fa-gears"></i> System Setup
 							</a>
 						</li>
 					</ul>
@@ -498,11 +508,7 @@
 					<span class="arrow "></span>
 					</a>
 					<ul class="sub-menu">
-						<li>
-							<a href="javascript:;" onClick="setpage('Accounting/Currency/currency.php?ix=');">
-                <i class="fa fa-money"> </i> Currency List
-							</a>
-						</li>
+						
 						<li>
 							<a href="javascript:;" onClick="setpage('Accounting/Journal/Journal.php?ix=');">
                 <i class="fa fa-book"> </i>Journal Entry

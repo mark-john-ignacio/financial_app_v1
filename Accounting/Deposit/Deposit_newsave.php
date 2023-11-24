@@ -43,6 +43,8 @@ else {
 }
 
 	
+	$cBankCode =  mysqli_real_escape_string($con, $_REQUEST['selbanks']);
+	$cReference =  mysqli_real_escape_string($con, $_REQUEST['txtrefno']);
 	$cAcctNo =  mysqli_real_escape_string($con, $_REQUEST['txtcacctid']);
 	$dTranDate = $_REQUEST['date_delivery'];
 	$cRemarks =  mysqli_real_escape_string($con, $_REQUEST['txtremarks']); 
@@ -57,7 +59,7 @@ else {
 
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 	
-	if (!mysqli_query($con, "INSERT INTO `deposit`(`compcode`, `ctranno`, `cortype`, `ddate`, `dcutdate`, `cremarks`, `cacctcode`, `cpreparedby`, `namount`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`) values('$company', '$cSINo', '$cPayMethod', NOW(), STR_TO_DATE('$dTranDate', '%m/%d/%Y'), '$cRemarks', '$cAcctNo', '$preparedby', $nGross, '$CurrCode', '$CurrDesc', '$CurrRate')")) {
+	if (!mysqli_query($con, "INSERT INTO `deposit`(`compcode`, `ctranno`, `cbankcode`, `creference`, `cortype`, `ddate`, `dcutdate`, `cremarks`, `cacctcode`, `cpreparedby`, `namount`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`) values('$company', '$cSINo', '$cBankCode', '$cReference', '$cPayMethod', NOW(), STR_TO_DATE('$dTranDate', '%m/%d/%Y'), '$cRemarks', '$cAcctNo', '$preparedby', $nGross, '$CurrCode', '$CurrDesc', '$CurrRate')")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 	
