@@ -213,6 +213,9 @@
 				</li>
 				<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
 				<li class="start">
+			  		<a href="javascript:;" onclick="setpage('./Dashboard')"><i class='fa fa-bar-chart'></i>Dashboard</a>
+				</li>
+				<li >
 					<a href="javascript:;">
 					<i class="icon-settings"></i>
 					<span class="title">Master Data Files</span>
@@ -549,6 +552,9 @@
                 <li>
                   <a href="javascript:;" onClick="setpage('Accounting/Pay/PayBill.php?ix=');"> <i class="fa fa-angle-double-right"></i> Bills Payment </a>
                 </li>
+				<li>
+					<a href="javascript:;" onclick="setpage('./BankRecon')"><i class="fa fa-angle-double-right"></i>Bank Reconciliation</a>
+				</li>
               </ul>
 						</li>
 
