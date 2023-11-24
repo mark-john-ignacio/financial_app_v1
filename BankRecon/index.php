@@ -57,14 +57,14 @@
                                 </div>
                             </th>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                             <th colspan="2" style="padding-top: 10px">
                                 <select name="select" id="select" class='form-control input-sm'>
                                     <option value="Preview">Preview</option>
                                     <option value="Check">Check</option>
                                 </select>
                             </th>
-                        </tr>
+                        </tr> -->
                         <tr >
                             <th colspan="2" style="padding-top: 10px">
                                 <button type="submit" class='btn btn-danger btn-block' id="btnSubmit"><i class='fa fa-search'></i>&nbsp;&nbsp;View Report</button>

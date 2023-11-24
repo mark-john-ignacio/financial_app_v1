@@ -5,15 +5,10 @@
     include "../Connection/connection_string.php";
     include "../Model/helper.php";
     $company = $_SESSION['companyid'];
-    $bank = $_POST['bank'];
-    $range = $_POST['range'];
+    $bankcode = $_POST['bank'];
+    $range = date("Y-m-d", strtotime($_POST['range']));
 
-    $sql = "SELECT a.namount FROM deposit a 
-        LEFT JOIN receipt b on a.compcode = b.compcode 
-        WHERE a.compcode = '$company' AND a.cbankcode = '$bank'";
-    $query = mysqli_query($con, $sql);
     $deposit = [];
-    $total = 0;
     $bookTotal = 0;
     $totalTransit = 0;
     $EXCEL_TOTAL = 0;
@@ -25,11 +20,26 @@
 
     $excel = ExcelRead($_FILES);
 
+    $sql = "SELECT a.namount, b.ngross, b.cname FROM deposit a 
+        LEFT JOIN (
+            SELECT a.compcode, c.cname, SUM(a.aradjustment_ngross) as ngross FROM receipt_deds a 
+            LEFT JOIN apadjustment b on a.compcode = b.compcode AND a.aradjustment_ctranno = b.ctranno
+            LEFT JOIN suppliers c on a.compcode = c.compcode AND b.ccode = c.ccode
+            WHERE a.compcode = '$company' 
+        ) b on a.compcode = b.compcode 
+        WHERE a.compcode = '$company' AND a.cbankcode = '$bankcode' and STR_TO_DATE(a.dcutdate, '%Y-%m-%d') = $range";
+    $query = mysqli_query($con, $sql);
     while($row = $query -> fetch_assoc()){
         array_push($deposit, $row);
         $book += round($row['namount'],2);
+        $ADJUST_BOOK += round($row['ngross'],2);
+        $accountNature = $row['cname'];
     }
 
+    $sql = "SELECT * FROM bank WHERE compcode = '$company' AND ccode = '$bankcode'";
+    $query = mysqli_query($con, $sql);
+    $row = $query -> fetch_array(MYSQLI_ASSOC);
+    $bank = $row['cname'];
 
     for($i = 1; $i < count($excel); $i++){
         $data = $excel[$i];
@@ -67,32 +77,32 @@
             <!-- header summary -->
             <div style="width: 100%; padding: 10px">
                 <div>
-                    Period: March 01, 2023 - March 23, 2023
+                    Period: <?= date("M d, Y",strtotime($range)) ?>
                 </div>
                 <div>
-                    Bank: CIP BANK
+                    Bank: <?= $bank ?>
                 </div>
                 <div style="display: flex; width: 100%; padding-right: 10px;">
                     <div style="width: 100%;">Balance per Bank </div>
-                    <div style="width: 100%; text-align: right;"><?= $total ?></div>
+                    <div style="width: 100%; text-align: right;"><?= number_format($EXCEL_TOTAL,2) ?></div>
                 </div>
                 <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px;">
                     <div style="width: 100%; padding-left: 30px;">Add: Deposit in Transit </div>
-                    <div style="width: 100%; text-align: right;"><?= $totalTransit ?></div>
+                    <div style="width: 100%; text-align: right;"><?= number_format($totalTransit,2) ?></div>
                 </div>
 
                 <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px">
                     <div style="width: 100%">Total: </div>
-                    <div style="width: 100%; text-align: right;"><?= $totalBank ?></div>
+                    <div style="width: 100%; text-align: right;"><?= number_format($totalBank,2) ?></div>
                 </div>
                 <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px;">
                     <div style="width: 100%; padding-left: 30px;">Less: Outstanding Cheques </div>
-                    <div style="width: 100%; text-align: right;"><?= $OUTSTAND_CHEQUE ?></div>
+                    <div style="width: 100%; text-align: right;"><?= number_format($OUTSTAND_CHEQUE,2) ?></div>
                 </div>
 
                 <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px">
                     <div style="width: 100%">Adjust Bank Balance: </div>
-                    <div style="width: 100%; text-align: right;"><?= $ADJUST_BANK ?></div>
+                    <div style="width: 100%; text-align: right;"><?= number_format($ADJUST_BANK,2) ?></div>
                 </div>
             </div>
 
@@ -100,33 +110,33 @@
             <div style="width: 100%; padding: 10px;">
                 <div style="display: flex; width: 100%; padding-top: 45px; padding-right: 10px;">
                     <div style="width: 100%">Balance per Book: </div>
-                    <div style="width: 100%; text-align: right;"><?= $EXCEL_TOTAL ?></div>
+                    <div style="width: 100%; text-align: right;"><?= number_format($bookTotal,2) ?></div>
                 </div>
 
                 <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px;">
                     <div style="width: 100%; padding-left: 30px;">Add: Unrecorded Deposit </div>
-                    <div style="width: 100%; text-align: right;"><?= $UNRECORD_DEPOSIT ?></div>
+                    <div style="width: 100%; text-align: right;"><?= number_format($UNRECORD_DEPOSIT,2) ?></div>
                 </div>
 
                 <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px">
                     <div style="width: 100%">Total: </div>
-                    <div style="width: 100%; text-align: right;"><?= $totalBook ?></div>
+                    <div style="width: 100%; text-align: right;"><?= number_format($totalBook,2) ?></div>
                 </div>
 
                 <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px;">
                     <div style="width: 100%; padding-left: 30px;">Less: Unrecorded Withdrawal </div>
-                    <div style="width: 100%; text-align: right;"><?= $UNRECORD_WITHDRAW ?></div>
+                    <div style="width: 100%; text-align: right;"><?= number_format($UNRECORD_WITHDRAW,2) ?></div>
                 </div>
 
                 <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px">
                     <div style="width: 100%">Adjust Book Balance: </div>
-                    <div style="width: 100%; text-align: right;"><?= $ADJUST_BOOK ?></div>
+                    <div style="width: 100%; text-align: right;"><?= number_format($ADJUST_BOOK,2) ?></div>
                 </div>
             </div>
         </div>
     </div>
     <div style="width: 100%; max-height: 3in; border: 1px solid">
-        <table  class="table" style="display: block; height: 3in; overflow: auto;">
+        <table class="table" style="display: block; width: 100%; height: 3in; overflow: auto;">
             <thead>
                 <tr>
                     <th>Check Date</th>
@@ -149,6 +159,7 @@
                                     "DEBIT" => true,
                                     "CREDIT" => true,
                                     "BALANCE" => true,
+                                    "ChequeName" => true,
                                     default => false
                                 };
                                 
@@ -158,14 +169,15 @@
                             if(!$proceed) break;
                         $data = $excel[$i];
                         $date = $data[0];
-                        $checkno = $data[1];
-                        $balance = $data[4];
+                        $accountNature = $data[1];
+                        $checkno = $data[2];
+                        $balance = $data[5];
                 ?>
                     <tr>
                         <td><?= $date ?></td>
                         <td><?= $accountNature ?></td>
                         <td><?= $checkno ?></td>
-                        <td><?= $balance ?></td>
+                        <td><?= number_format($balance,2) ?></td>
                         <th><button type='button' onclick="LoadMatchCheque.call(this)" value="<?= $checkno ?>">Match</button></th>
                     </tr>
                 <?php }endfor; ?>
@@ -178,18 +190,18 @@
 <script>
     function LoadMatchCheque(){
         let reference = $(this).val();
+        console.log(reference)
+        // $.ajax({
+        //     url: "th_checkref.php",
+        //     data: { refno: reference },
+        //     dataType: "json",
+        //     async: false,
+        //     success: function(res){
+        //         console.log(res)
+        //     }, 
+        //     error: function(res){
 
-        $.ajax({
-            url: "th_checkref.php",
-            data: { refno: reference },
-            dataType: "json",
-            async: false,
-            success: function(res){
-                console.log(res)
-            }, 
-            error: function(res){
-
-            }
-        });
+        //     }
+        // });
     }
 </script>
