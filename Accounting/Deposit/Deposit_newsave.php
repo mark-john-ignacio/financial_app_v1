@@ -69,12 +69,14 @@ else {
 	for($z=1; $z<=$rowcnt; $z++){
 		
 		$csalesno = mysqli_real_escape_string($con, $_REQUEST['txtcSalesNo'.$z]);
+		$crefso = mysqli_real_escape_string($con, $_REQUEST['txtcReference'.$z]);
+		$namount = $_REQUEST['txtnAmt'.$z];
 				
 		$cnt = $cnt + 1;
 		
 		 $refcidenttran = $cSINo."P".$cnt;
 
-			if (!mysqli_query($con, "INSERT INTO `deposit_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `corno`) values('$company', '$refcidenttran', '$cnt', '$cSINo', '$csalesno')")) {
+			if (!mysqli_query($con, "INSERT INTO `deposit_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `corno`, `creference`, `namount`) values('$company', '$refcidenttran', '$cnt', '$cSINo', '$csalesno', '$crefso', $namount)")) {
 				//printf("INSERT INTO `deposit_t`(`compcode`, `ctranno`, `corno`) values('$company', '$cSINo', '$csalesno')\n");
 				printf("Errormessage: %s\n", mysqli_error($con));
 			} 
