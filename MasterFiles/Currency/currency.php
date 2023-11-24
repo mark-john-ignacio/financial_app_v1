@@ -37,12 +37,12 @@
 
 	<div>
 		<section>
-      <div>
-        <div style="float:left; width:50%">
+			<div>
+				<div style="float:left; width:50%">
 					<font size="+2"><u>Currency Exchange Rates</u></font>	
-        </div>    
-				        
-      </div>
+				</div>    
+								
+			</div>	
 
 			<br><br>
 

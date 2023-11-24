@@ -68,13 +68,13 @@ $sqlchk = mysqli_query($con,"Select a.cvalue,b.cacctdesc From parameters a left 
 <body style="padding:5px; height:750px">
 		<div>
 			<section>
-        <div>
-        	<div style="float:left; width:50%">
-						<font size="+2"><u>Bank Deposit</u></font>	
-          </div>
-        </div>
+				<div class="row nopadding">
+					<div style="float:left; width:50%">
+								<font size="+2"><u>Bank Deposit</u></font>	
+					</div>
+				</div>
 			
-				<div class="col-xs-12 nopadding">
+				<div class="col-xs-12 nopadwdown">
 					<div class="col-xs-4 nopadding">
 						<button type="button" class="btn btn-primary btn-sm"  onClick="location.href='Deposit_new.php'" id="btnNew" name="btnNew"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
 
@@ -102,8 +102,7 @@ $sqlchk = mysqli_query($con,"Select a.cvalue,b.cacctdesc From parameters a left 
 						</select>
 					</div>
 				</div>
-                 
-      <br><br>
+			<br><br>				
 			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
