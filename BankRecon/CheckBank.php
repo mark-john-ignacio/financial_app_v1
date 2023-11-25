@@ -9,14 +9,11 @@
     $range = date("Y-m-d", strtotime($_POST['range']));
 
     $deposit = [];
-    $bookTotal = 0;
-    $totalTransit = 0;
     $EXCEL_TOTAL = 0;
+    $totalTransit = 0;
+    
+    $bookTotal = 0;
     $UNRECORD_DEPOSIT = 0;
-    $UNRECORD_WITHDRAW = 0;
-    $OUTSTAND_CHEQUE = 0;
-    $ADJUST_BANK = 0;
-    $ADJUST_BOOK = 0;
 
     $excel = ExcelRead($_FILES);
 
@@ -46,9 +43,13 @@
         $EXCEL_TOTAL += round($data[4],2);
     }
 
-   
     $totalBank = floatval($EXCEL_TOTAL) + $totalTransit;
+    $OUTSTAND_CHEQUE = 0;
+    $ADJUST_BANK = $totalBank + $OUTSTAND_CHEQUE;
+
     $totalBook = floatval($bookTotal) + $UNRECORD_DEPOSIT;
+    $UNRECORD_WITHDRAW = 0;
+    $ADJUST_BOOK = $totalBook + $UNRECORD_WITHDRAW;
 ?>
 
 <!DOCTYPE html>
@@ -110,27 +111,27 @@
             <div style="width: 100%; padding: 10px;">
                 <div style="display: flex; width: 100%; padding-top: 45px; padding-right: 10px;">
                     <div style="width: 100%">Balance per Book: </div>
-                    <div style="width: 100%; text-align: right;"><?= number_format($bookTotal,2) ?></div>
+                    <div style="width: 100%; text-align: right;" id="book"><?= number_format($bookTotal,2) ?></div>
                 </div>
 
                 <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px;">
                     <div style="width: 100%; padding-left: 30px;">Add: Unrecorded Deposit </div>
-                    <div style="width: 100%; text-align: right;"><?= number_format($UNRECORD_DEPOSIT,2) ?></div>
+                    <div style="width: 100%; text-align: right;" id="unrecordedbook"><?= number_format($UNRECORD_DEPOSIT,2) ?></div>
                 </div>
 
                 <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px">
                     <div style="width: 100%">Total: </div>
-                    <div style="width: 100%; text-align: right;"><?= number_format($totalBook,2) ?></div>
+                    <div style="width: 100%; text-align: right;" id="booktotal"><?= number_format($totalBook,2) ?></div>
                 </div>
 
                 <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px;">
                     <div style="width: 100%; padding-left: 30px;">Less: Unrecorded Withdrawal </div>
-                    <div style="width: 100%; text-align: right;"><?= number_format($UNRECORD_WITHDRAW,2) ?></div>
+                    <div style="width: 100%; text-align: right;" id="lesswithdrawal"><?= number_format($UNRECORD_WITHDRAW,2) ?></div>
                 </div>
 
                 <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px">
                     <div style="width: 100%">Adjust Book Balance: </div>
-                    <div style="width: 100%; text-align: right;"><?= number_format($ADJUST_BOOK,2) ?></div>
+                    <div style="width: 100%; text-align: right;" id="adjustment"><?= number_format($ADJUST_BOOK,2) ?></div>
                 </div>
             </div>
         </div>
@@ -167,11 +168,10 @@
                             }
                         } else {
                             if(!$proceed) break;
-                        $data = $excel[$i];
-                        $date = $data[0];
-                        $accountNature = $data[1];
-                        $checkno = $data[2];
-                        $balance = $data[5];
+                                $date = $data[0];
+                                $accountNature = $data[1];
+                                $checkno = $data[2];
+                                $balance = $data[5];
                 ?>
                     <tr>
                         <td><?= $date ?></td>
