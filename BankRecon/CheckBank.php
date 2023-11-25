@@ -23,7 +23,7 @@
     $query = mysqli_query($con, $sql);
     while($row = $query -> fetch_assoc()){
         array_push($deposit, $row);
-        $book += round($row['ngross'],2);
+        $bookTotal += round($row['ngross'],2);
     }
 
     // $sql = "SELECT a.namount, b.ngross, b.cname FROM deposit a 
