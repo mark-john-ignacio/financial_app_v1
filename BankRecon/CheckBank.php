@@ -17,20 +17,34 @@
 
     $excel = ExcelRead($_FILES);
 
-    $sql = "SELECT a.namount, b.ngross, b.cname FROM deposit a 
-        LEFT JOIN (
-            SELECT a.compcode, c.cname, SUM(a.aradjustment_ngross) as ngross FROM receipt_deds a 
-            LEFT JOIN apadjustment b on a.compcode = b.compcode AND a.aradjustment_ctranno = b.ctranno
-            LEFT JOIN suppliers c on a.compcode = c.compcode AND b.ccode = c.ccode
-            WHERE a.compcode = '$company' 
-        ) b on a.compcode = b.compcode 
-        WHERE a.compcode = '$company' AND a.cbankcode = '$bankcode' and STR_TO_DATE(a.dcutdate, '%Y-%m-%d') = $range";
+    $sql = "SELECT * FROM apv WHERE compcode = '$company' AND STR_TO_DATE(dapvdate, '%Y-%m-%d') = $range AND ctranno in (
+        SELECT * FROM paybill_t WHERE compcode = '$company'
+    )";
     $query = mysqli_query($con, $sql);
     while($row = $query -> fetch_assoc()){
         array_push($deposit, $row);
-        $book += round($row['namount'],2);
-        $ADJUST_BOOK += round($row['ngross'],2);
-        $accountNature = $row['cname'];
+        $book += round($row['ngross'],2);
+    }
+
+    // $sql = "SELECT a.namount, b.ngross, b.cname FROM deposit a 
+    //     LEFT JOIN (
+    //         SELECT a.compcode, c.cname, SUM(a.aradjustment_ngross) as ngross FROM receipt_deds a 
+    //         LEFT JOIN apadjustment b on a.compcode = b.compcode AND a.aradjustment_ctranno = b.ctranno
+    //         LEFT JOIN suppliers c on a.compcode = c.compcode AND b.ccode = c.ccode
+    //         WHERE a.compcode = '$company' 
+    //     ) b on a.compcode = b.compcode 
+    //     WHERE a.compcode = '$company' AND a.cbankcode = '$bankcode' and STR_TO_DATE(a.dcutdate, '%Y-%m-%d') = $range";
+
+
+
+    $sql = "SELECT * FROM apadjustment WHERE compcode = '$company' AND ctranno in (
+        SELECT capvno FROM capvno WHERE compcode = '$company' 
+    )";
+    $query = mysqli_query($con, $sql);
+    while($row = $query -> fetch_assoc()){
+        // array_push($deposit, $row);
+        // $book += round($row['namount'],2);
+        $ADJUST_BOOK += round($row['napplied'],2);
     }
 
     $sql = "SELECT * FROM bank WHERE compcode = '$company' AND ccode = '$bankcode'";
