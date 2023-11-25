@@ -6,17 +6,20 @@
 
     $company = $_SESSION['companyid'];
     $employee = $_SESSION['employeeid'];
-    $datefrom = date("Y-m-d",strtotime($_REQUEST['from']));
-    $dateto = date("Y-m-d", strtotime($_REQUEST['to']));
+    // $datefrom = date("Y-m-d",strtotime($_REQUEST['from']));
+    // $dateto = date("Y-m-d", strtotime($_REQUEST['to']));
 
     
 
     function Sales(){
         global $company, $datefrom, $dateto, $con;
         $sales = [];
+        // $sql = "SELECT a.*, b.cname FROM receipt a
+        // LEFT JOIN customers b ON a.compcode = b.compcode AND a.ccode = b.cempid
+        // WHERE a.compcode = '$company' AND a.lapproved = 1 AND a.lcancelled = 0 AND a.lvoid = 0 AND (a.dcutdate BETWEEN '$datefrom' AND '$dateto')";
         $sql = "SELECT a.*, b.cname FROM receipt a
         LEFT JOIN customers b ON a.compcode = b.compcode AND a.ccode = b.cempid
-        WHERE a.compcode = '$company' AND a.lapproved = 1 AND a.lcancelled = 0 AND a.lvoid = 0 AND (a.dcutdate BETWEEN '$datefrom' AND '$dateto')";
+        WHERE a.compcode = '$company' AND a.lapproved = 1 AND a.lcancelled = 0 AND a.lvoid = 0";
         $query = mysqli_query($con, $sql);
         $receipt = mysqli_num_rows($query);
         
@@ -44,7 +47,8 @@
     function Purchase(){
         global $company, $datefrom, $dateto, $con;
         $purchase = [];
-        $sql = "SELECT * FROM paybill WHERE compcode = '$company' AND lapproved = 1 AND lcancelled = 0 AND lvoid = 0 AND (dcheckdate BETWEEN '$datefrom' AND '$dateto')";
+        // $sql = "SELECT * FROM paybill WHERE compcode = '$company' AND lapproved = 1 AND lcancelled = 0 AND lvoid = 0 AND (dcheckdate BETWEEN '$datefrom' AND '$dateto')";
+        $sql = "SELECT * FROM paybill WHERE compcode = '$company' AND lapproved = 1 AND lcancelled = 0 AND lvoid = 0";
         $query = mysqli_query($con, $sql);
         $paybill = mysqli_num_rows($query);
 

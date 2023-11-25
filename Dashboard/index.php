@@ -25,12 +25,12 @@
             </div>
             <div style='position: absolute; width: 350px; right: 0; padding: 8px; font-size: 15px;'>
                 <div style='display: flex'>
-                    <div class='col-xs-8'>
-                        <input type="date" class='form-control input-sm' id='datefrom' value="<?= date('Y-m-d',strtotime(date('m/d/y'))) ?>">
+                    <!-- <div class='col-xs-8'>
+                        <input type="date" class='form-control input-sm' id='datefrom' value="< ?= date('Y-m-d',strtotime(date('m/d/y'))) ?>">
                     </div>
                     <div class='col-xs-8'>
-                        <input type="date" class='form-control input-sm' id='dateto' value="<?= date('Y-m-d',strtotime(date('m/d/y'))) ?>">
-                    </div>
+                        <input type="date" class='form-control input-sm' id='dateto' value="< ?= date('Y-m-d',strtotime(date('m/d/y'))) ?>">
+                    </div> -->
                     
                 </div>
             </div>
