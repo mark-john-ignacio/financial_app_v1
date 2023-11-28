@@ -7,7 +7,7 @@
     include "../Model/helper.php";
 
     function nullstring($data){
-        return $data != "" || empty($data);
+        return $data != "" && $data != null;
     }
 
     $company = $_SESSION['companyid'];
@@ -27,7 +27,7 @@
     
 
     $isReference = (nullstring($refno)) ? "AND a.acctno = '$bank'" : "";
-    $isBillRef = (nullstring($refno)) ? "AND a.cpayrefno = '$refno'" : "";
+    $isBillRef = (nullstring($refno)) ? "AND cpayrefno = '$refno'" : "";
     $isCheck = (nullstring($refno)) ? "AND ccheckno = '$refno'" : "";
 
 
@@ -40,20 +40,22 @@
         $tranno = $row['ctranno'];
         $module = $row['cmodule'];
         $sql = match($row['cmodule']){
-            "PV" => "SELECT SUM(npaid) as paid FROM paybill WHERE compcode = '$company' AND ctranno = '$tranno' " . $isBillRef . " AND cbankcode = '$bankcode' AND STR_TO_DATE(a.dcheckdate, '%Y-%m-%d') = '$date'",
-            "OR" => "SELECT SUM(nchkamt) as paid FROM receipt_check_t WHERE compcode ='$company' AND ctranno = '$tranno' AND cbank ='$bank' " . $isReceiptRef . " AND (a.ddate, '%Y-%m-%d') = '$date'"
+            "PV" => "SELECT npaid credit FROM paybill WHERE compcode = '$company' AND ctranno = '$tranno' " . $isBillRef . " AND cbankcode = '$bankcode' AND STR_TO_DATE(dcheckdate, '%Y-%m-%d') = '$date' AND lapproved = 1 AND lvoid = 0",
+            "OR" => "SELECT Snchkamt credit FROM receipt_check_t WHERE compcode ='$company' AND ctranno = '$tranno' AND cbank ='$bank' " . $isReceiptRef . " AND (ddate, '%Y-%m-%d') = '$date' AND lapproved = 1 AND lvoid = 0",
+            "JE" => "SELECT ncredit credit FROM journal_t WHERE compcode = '$company' AND cacctno = '$bank' and ctranno in (
+                SELECT ctranno FROM journal WHERE compcode = '$company' AND ctranno = '$tranno' AND lapproved = 1 AND lvoid = 0
+            )"
         };
-        $query = mysqli_query($con, $sql);
-        $row = $query -> fetch_assoc();
+        $queries = mysqli_query($con, $sql);
+        $rows = $queries -> fetch_assoc();
         $json = [
-            'paid' => $row['paid'],
+            'paid' => $rows['credit'] ? $row['credit'] : 0,
             'module' => $module,
-            'valid' => true
+            'valid' => true,
+            'tranno' => $tranno
         ];
         array_push($deposit, $json);
-
     }
-
     
 
     if(!empty($deposit)){
@@ -66,6 +68,6 @@
         echo json_encode([
             'valid' => false,
             'msg' => "Cheque Account has no match",
-            'data' => $_POST
+            'data' => $_POST,
         ]);
     }

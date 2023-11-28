@@ -193,6 +193,7 @@
         let date = row.find("td:eq(0)").text();
         let bank = <?= $bankcode ?>
 
+        console.log(bank + " " + reference)
         $.ajax({
             url: "th_checkref.php",
             type: 'post',
@@ -208,7 +209,7 @@
                 console.log(res)
             }, 
             error: function(res){
-
+                console.log(res)
             }
         });
     }
