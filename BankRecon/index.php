@@ -82,27 +82,27 @@
     $(function(){
         loadbank()
 
-        $("#btnSubmit").click(function(){
-            let range = $("#range").val();
-            let bank = $("#bank").val();
-            let type = $("#select").val();
+        // $("#btnSubmit").click(function(){
+        //     let range = $("#range").val();
+        //     let bank = $("#bank").val();
+        //     let type = $("#select").val();
             
-            $.ajax({
-                url: "Preview.php",
-                data: {
-                    range: range,
-                    bank: bank,
-                },
-                dataType: 'json',
-                async: false,
-                success: function(res){
-                    console.log(res)
-                },
-                error: function(res){
-                    console.log(res)
-                }
-            });
-        })
+        //     $.ajax({
+        //         url: "Preview.php",
+        //         data: {
+        //             range: range,
+        //             bank: bank,
+        //         },
+        //         dataType: 'json',
+        //         async: false,
+        //         success: function(res){
+        //             console.log(res)
+        //         },
+        //         error: function(res){
+        //             console.log(res)
+        //         }
+        //     });
+        // })
     })
 
     function loadbank(){
@@ -115,7 +115,7 @@
                     let bank = document.getElementById("bank");
                     let option = document.createElement("option");
                     option.text = item.cname;
-                    option.value = item.ccode;
+                    option.value = item.cacctno;
                     bank.appendChild(option);
                 })
             },

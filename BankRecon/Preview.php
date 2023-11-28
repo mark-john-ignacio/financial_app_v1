@@ -25,6 +25,7 @@
                     "DEBIT" => true,
                     "CREDIT" => true,
                     "BALANCE" => true,
+                    "Name" => true,
                     default => false
                 };
                 
@@ -34,12 +35,12 @@
             if(!$proceed) break;
 
             $date = $data[0];
-            $refno = $data[1];
-            $debit = floatval($data[2]);
-            $credit = floatval($data[3]);
-            $balance = floatval($data[4]);
+            $refno = $data[2];
+            $debit = floatval($data[3]);
+            $credit = floatval($data[4]);
+            $balance = floatval($data[5]);
 
-            $sql = "INSERT INTO paycheck (`compcode`, `refno`, `credit`, `debit`, `balance`, `date`) VALUES ('$company', '$refno', '$credit', '$debit', '$balance', '$date')";
+            $sql = "INSERT INTO paycheck (`compcode`, ``,`refno`, `credit`, `debit`, `balance`, `date`) VALUES ('$company', '$refno', '$credit', '$debit', '$balance', '$date')";
             mysqli_query($con, $sql);
         }
         

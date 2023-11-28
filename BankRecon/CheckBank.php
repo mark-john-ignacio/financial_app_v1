@@ -17,44 +17,23 @@
 
     $excel = ExcelRead($_FILES);
 
-    $sql = "SELECT * FROM apv WHERE compcode = '$company' AND STR_TO_DATE(dapvdate, '%Y-%m-%d') = $range AND ctranno in (
-        SELECT * FROM paybill_t WHERE compcode = '$company'
-    )";
+    $sql = "SELECT a.* FROM glactivity a WHERE a.compcode = '$company' AND a.acctno = '$bankcode' AND STR_TO_DATE(ddate, '%Y-%m-%d') = $range";
+
     $query = mysqli_query($con, $sql);
     while($row = $query -> fetch_assoc()){
         array_push($deposit, $row);
-        $bookTotal += round($row['ngross'],2);
+        $bookTotal += round($row['ncredit'],2);
     }
 
-    // $sql = "SELECT a.namount, b.ngross, b.cname FROM deposit a 
-    //     LEFT JOIN (
-    //         SELECT a.compcode, c.cname, SUM(a.aradjustment_ngross) as ngross FROM receipt_deds a 
-    //         LEFT JOIN apadjustment b on a.compcode = b.compcode AND a.aradjustment_ctranno = b.ctranno
-    //         LEFT JOIN suppliers c on a.compcode = c.compcode AND b.ccode = c.ccode
-    //         WHERE a.compcode = '$company' 
-    //     ) b on a.compcode = b.compcode 
-    //     WHERE a.compcode = '$company' AND a.cbankcode = '$bankcode' and STR_TO_DATE(a.dcutdate, '%Y-%m-%d') = $range";
 
-
-
-    $sql = "SELECT * FROM apadjustment WHERE compcode = '$company' AND ctranno in (
-        SELECT capvno FROM capvno WHERE compcode = '$company' 
-    )";
-    $query = mysqli_query($con, $sql);
-    while($row = $query -> fetch_assoc()){
-        // array_push($deposit, $row);
-        // $book += round($row['namount'],2);
-        $ADJUST_BOOK += round($row['napplied'],2);
-    }
-
-    $sql = "SELECT * FROM bank WHERE compcode = '$company' AND ccode = '$bankcode'";
+    $sql = "SELECT * FROM bank WHERE compcode = '$company' AND cacctno = '$bankcode'";
     $query = mysqli_query($con, $sql);
     $row = $query -> fetch_array(MYSQLI_ASSOC);
     $bank = $row['cname'];
 
     for($i = 1; $i < count($excel); $i++){
         $data = $excel[$i];
-        $EXCEL_TOTAL += round($data[4],2);
+        $EXCEL_TOTAL += floatval($data[4]) + floatval($data[3]);
     }
 
     $totalBank = floatval($EXCEL_TOTAL) + $totalTransit;
@@ -150,8 +129,8 @@
             </div>
         </div>
     </div>
-    <div style="width: 100%; max-height: 3in; border: 1px solid">
-        <table class="table" style="display: block; width: 100%; height: 3in; overflow: auto;">
+    <div style="width: 100%; min-height: 3in; max-height: 3in; border: 1px solid; overflow: auto;">
+        <table class="table" style="min-width: 10in; overflow: auto;">
             <thead>
                 <tr>
                     <th>Check Date</th>
@@ -174,7 +153,7 @@
                                     "DEBIT" => true,
                                     "CREDIT" => true,
                                     "BALANCE" => true,
-                                    "ChequeName" => true,
+                                    "Name" => true,
                                     default => false
                                 };
                                 
@@ -185,16 +164,18 @@
                                 $date = $data[0];
                                 $accountNature = $data[1];
                                 $checkno = $data[2];
-                                $balance = $data[5];
+                                $balance = floatval($data[4]) + floatval($data[3]);
                 ?>
                     <tr>
                         <td><?= $date ?></td>
                         <td><?= $accountNature ?></td>
                         <td><?= $checkno ?></td>
-                        <td><?= number_format($balance,2) ?></td>
-                        <th><button type='button' onclick="LoadMatchCheque.call(this)" value="<?= $checkno ?>">Match</button></th>
+                        <td><?= $balance ?></td>
+                        <th style="display: flex; justify-items: center; justify-content: center;">
+                            <button type='button' onclick="LoadMatchCheque.call(this)" class="btn btn-sm btn-primary">Match</button>
+                        </th>
                     </tr>
-                <?php }endfor; ?>
+                <?php } endfor; ?>
             </tbody>
         </table>
     </div>
@@ -203,19 +184,29 @@
 
 <script>
     function LoadMatchCheque(){
-        let reference = $(this).val();
-        console.log(reference)
-        // $.ajax({
-        //     url: "th_checkref.php",
-        //     data: { refno: reference },
-        //     dataType: "json",
-        //     async: false,
-        //     success: function(res){
-        //         console.log(res)
-        //     }, 
-        //     error: function(res){
+        let row = $(this).closest("tr");
+        let reference = row.find("td:eq(2)").text();
+        let name = row.find("td:eq(1)").text();
+        let date = row.find("td:eq(0)").text();
+        let bank = <?= $bankcode ?>
 
-        //     }
-        // });
+        $.ajax({
+            url: "th_checkref.php",
+            type: 'post',
+            data: { 
+                refno: reference,  
+                name: name, 
+                date: date,
+                bank: bank
+            },
+            dataType: "json",
+            async: false,
+            success: function(res){
+                console.log(res)
+            }, 
+            error: function(res){
+
+            }
+        });
     }
 </script>
