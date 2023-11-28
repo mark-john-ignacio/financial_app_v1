@@ -6,7 +6,8 @@
     include "../Model/helper.php";
     $company = $_SESSION['companyid'];
     $bankcode = $_POST['bank'];
-    $range = date("Y-m-d", strtotime($_POST['range']));
+    $from = date("Y-m-d", strtotime($_POST['rangefrom']));
+    $to = date("Y-m-d", strtotime($_POST['rangeto']));
 
     $deposit = [];
     $EXCEL_TOTAL = 0;
@@ -17,14 +18,14 @@
 
     $excel = ExcelRead($_FILES);
 
-    $sql = "SELECT a.* FROM glactivity a WHERE a.compcode = '$company' AND a.acctno = '$bankcode' AND STR_TO_DATE(ddate, '%Y-%m-%d') = $range";
+    $sql = "SELECT a.* FROM glactivity a WHERE a.compcode = '$company' AND a.acctno = '$bankcode' AND (STR_TO_DATE(ddate, '%Y-%m-%d') BETWEEN '$from' AND '$to')";
 
     $query = mysqli_query($con, $sql);
     while($row = $query -> fetch_assoc()){
         array_push($deposit, $row);
-        $bookTotal += round($row['ncredit'],2);
+        $bookTotal += round($row['ncredit'],2) + round($row['ndebit'],2);
     }
-
+    
 
     $sql = "SELECT * FROM bank WHERE compcode = '$company' AND cacctno = '$bankcode'";
     $query = mysqli_query($con, $sql);
@@ -36,10 +37,12 @@
         $EXCEL_TOTAL += floatval($data[4]) + floatval($data[3]);
     }
 
+    //Excel Transactions
     $totalBank = floatval($EXCEL_TOTAL) + $totalTransit;
     $OUTSTAND_CHEQUE = 0;
     $ADJUST_BANK = $totalBank + $OUTSTAND_CHEQUE;
 
+    //Read Database for Reference Transaction
     $totalBook = floatval($bookTotal) + $UNRECORD_DEPOSIT;
     $UNRECORD_WITHDRAW = 0;
     $ADJUST_BOOK = $totalBook + $UNRECORD_WITHDRAW;
@@ -71,7 +74,7 @@
             <!-- header summary -->
             <div style="width: 100%; padding: 10px">
                 <div>
-                    Period: <?= date("M d, Y",strtotime($range)) ?>
+                    Period: <?= date("M d, Y",strtotime($from)) ?> to <?= date("M d, Y",strtotime($to)) ?>
                 </div>
                 <div>
                     Bank: <?= $bank ?>

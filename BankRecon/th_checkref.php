@@ -7,7 +7,7 @@
     include "../Model/helper.php";
 
     function nullstring($data){
-        return $data != "" || $data === null;
+        return $data != "" || empty($data);
     }
 
     $company = $_SESSION['companyid'];
@@ -39,13 +39,9 @@
         // array_push($deposit, $row); 
         $tranno = $row['ctranno'];
         $module = $row['cmodule'];
-        switch($row['cmodule']){
-            case "PV":
-                $sql = "SELECT SUM(npaid) as paid FROM paybill WHERE compcode = '$company' AND ctranno = '$tranno' " . $isBillRef . " AND cbankcode = '$bankcode' AND STR_TO_DATE(a.dcheckdate, '%Y-%m-%d') = '$date'";
-                break;
-            case "OR":
-                $sql = "SELECT SUM(nchkamt) as paid FROM receipt_check_t WHERE compcode ='$company' AND ctranno = '$tranno' AND cbank ='$bank' " . $isReceiptRef . " AND STR_TO_DATE(a.ddate, '%Y-%m-%d') = '$date'";
-                break;
+        $sql = match($row['cmodule']){
+            "PV" => "SELECT SUM(npaid) as paid FROM paybill WHERE compcode = '$company' AND ctranno = '$tranno' " . $isBillRef . " AND cbankcode = '$bankcode' AND STR_TO_DATE(a.dcheckdate, '%Y-%m-%d') = '$date'",
+            "OR" => "SELECT SUM(nchkamt) as paid FROM receipt_check_t WHERE compcode ='$company' AND ctranno = '$tranno' AND cbank ='$bank' " . $isReceiptRef . " AND (a.ddate, '%Y-%m-%d') = '$date'"
         };
         $query = mysqli_query($con, $sql);
         $row = $query -> fetch_assoc();
@@ -73,4 +69,3 @@
             'data' => $_POST
         ]);
     }
-    

@@ -25,16 +25,22 @@
                 <form action="CheckBank.php" method="POST" enctype="multipart/form-data">
                     <table>
                         <tr valign="top">
-                            <th style='display: flex; justify-items: center; justify-content: center; padding: 10px;'>Date Range:</th>
+                            <th style='display: flex; justify-items: center; justify-content: center; padding: 10px;'>Date Range From:</th>
                             <th style="width: 100px">
                                 <div class="col-xs-13 nopadding">
-                                    <input type="date" id='range' name='range' class='form-control input-sm'>
+                                    <input type="date" id='rangefrom' name='rangefrom' class='form-control input-sm'>
+                                </div>
+                            </th>
+                            <th style='display: flex; justify-items: center; justify-content: center; padding: 10px;'>Date Range To:</th>
+                            <th style="width: 100px">
+                                <div class="col-xs-13 nopadding">
+                                    <input type="date" id='rangeto' name='rangeto' class='form-control input-sm'>
                                 </div>
                             </th>
                         </tr>
                         <tr valign="top" class='nopadwtop'>
                             <th style='display: flex; justify-items: center; justify-content: center; padding: 10px;'>Select Bank:</th>
-                            <th style="width: 300px">
+                            <th colspan="3" style="width: 300px">
                                 <div class="col-xs-13 nopadding">
                                     <select name="bank" id="bank" class="form-control input-sm"></select>
                                 </div>
@@ -42,7 +48,7 @@
                         </tr>
                         <tr valign="top">
                             <th style='display: flex; justify-items: center; justify-content: center; padding: 10px;'>Sample Template:</th>
-                            <th style="width: 300px">
+                            <th colspan="3" style="width: 300px">
                                 <div class="col-xs-13 nopadding">
                                     <a href="template/Bank-Reconciliation-template.xlsx" download="Bank-Reconciliation-template.xlsx" class="btn btn-primary btn-sm"> Download Here </a>
                                 </div>
@@ -50,7 +56,7 @@
                         </tr>
                         <tr>
                             <th style='display: flex; justify-items: center; justify-content: center; padding: 10px;'>Select to import file:</th>
-                            <th style="width: 300px">
+                            <th colspan="3" style="width: 300px">
                                 <div class="col-xs-13 nopadding">
                                     <!-- <label class="btn btn-sm btn-primary" for="excel_file">Browse...</label> -->
                                     <input type="file" name="excel_file" id="excel_file" value="Browse..."  accept=".xlsx, .xls">
@@ -66,6 +72,7 @@
                             </th>
                         </tr> -->
                         <tr >
+                            <th>&nbsp;</th>
                             <th colspan="2" style="padding-top: 10px">
                                 <button type="submit" class='btn btn-danger btn-block' id="btnSubmit"><i class='fa fa-search'></i>&nbsp;&nbsp;View Report</button>
                             </th>
