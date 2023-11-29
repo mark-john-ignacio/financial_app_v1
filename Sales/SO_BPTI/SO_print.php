@@ -78,7 +78,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
         <tr>
           <th scope="col" height="30" width="20px">No.</th>
           <th scope="col" height="30" width="150px">PO No.</th>
-          <th scope="col" height="30" width="150px">Part No.</th>
+          <th scope="col" height="30" width="150px">Item Code</th>
           <th scope="col" height="30">Item Description</th>
           <th style="text-align: center" scope="col" height="30">Qty</th>
           <th style="text-align: center" scope="col">Unit</th>

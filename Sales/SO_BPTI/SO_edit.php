@@ -83,31 +83,35 @@ function listcurrencies(){ //API for currency list
 
 	<title>Myx Financials</title>
     
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
-   <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
-    
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
-<script src="../../include/autoNumeric.js"></script>
-<!--
-<script src="../../Bootstrap/js/jquery.numeric.js"></script>
-<script src="../../Bootstrap/js/jquery.inputlimiter.min.js"></script>-->
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css">
 
-<script src="../../Bootstrap/js/bootstrap.js"></script>
-<script src="../../Bootstrap/js/moment.js"></script>
-<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
-<!--
---
--- FileType Bootstrap Scripts and Link
---
--->
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
-<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
-<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
-<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
-<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
-<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+	<link href="../../global/css/components.css?t=<?php echo time();?>" id="style_components" rel="stylesheet" type="text/css"/>
+    
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
+	<script src="../../include/autoNumeric.js"></script>
+	<script src="../../include/FormatNumber.js"></script>
+	<!--<script src="../../Bootstrap/js/jquery.numeric.js"></script>
+	<script src="../../Bootstrap/js/jquery.inputlimiter.min.js"></script>-->
+
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<script src="../../Bootstrap/js/moment.js"></script>
+	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+	<!--
+	--
+	-- FileType Bootstrap Scripts and Link
+	--
+	-->
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
 
 </head>
 
@@ -168,33 +172,38 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 ?>
 <form action="SO_edit.php" name="frmpos" id="frmpos" method="post">
-	<fieldset>
-    <legend><div class="col-xs-6 nopadding"> Sales Order Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
+
+	<div class="portlet">
+		<div class="portlet-title">
+			<div class="caption">
+				<i class="fa fa-shopping-cart"></i>Sales Order Details
+			</div>
+			<div class="status">
 				<?php
-			if($lCancelled==1){
-				echo "<font color='#FF0000'><b>CANCELLED</b></font>";
-			}
-			
-			if($lPosted==1){
-				if($lVoid==1){
-					echo "<font color='#FF0000'><b>VOIDED</b></font>";
-				}else{
-					echo "<font color='#FF0000'><b>POSTED</b></font>";
-				}
-			}
-			?>
-				</div>
-		</legend>	
-    
-	<div class="col-xs-12 nopadwdown"><b>Sales Order Information</b></div>
-	<ul class="nav nav-tabs">
-			<li class="active"><a href="#home">Order Details</a></li>
-			<li><a href="#menu1">Delivered To</a></li>
-			<li><a href="#attc">Attachment</a></li>
-	</ul>
+					if($lCancelled==1){
+						echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+					}
+					
+					if($lPosted==1){
+						if($lVoid==1){
+							echo "<font color='#FF0000'><b>VOIDED</b></font>";
+						}else{
+							echo "<font color='#FF0000'><b>POSTED</b></font>";
+						}
+					}
+				?>
+			</div>
+		</div>
+		<div class="portlet-body">
+
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#home">Order Details</a></li>
+				<li><a href="#menu1">Delivered To</a></li>
+				<li><a href="#attc">Attachment</a></li>
+			</ul>
  
-	<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left; overflow: inherit !important;">
-			<div class="tab-content">
+			<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;text-align: left; overflow: inherit !important;">
+				<div class="tab-content">
 			
 					<div id="home" class="tab-pane fade in active" style="padding-left:5px; padding-top: 10px;">
 					
@@ -317,10 +326,12 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</td>
 							</tr>
 							<tr>
-								<tH width="150">Special Instructions:</tH>
-								<td rowspan="3" style="padding:2px"><div class="col-xs-11 nopadding">
-									<textarea rows="3"  class="form-control input-sm" name="txtSpecIns"  id="txtSpecIns"><?php echo $specins; ?></textarea>
-										</div>
+								<tH width="150"><!--Special Instructions:--></tH>
+								<td rowspan="3" style="padding:2px">
+								<div class="col-xs-11 nopadding">
+									<!--<textarea rows="3"  class="form-control input-sm" name="txtSpecIns"  id="txtSpecIns"><?//php echo $specins; ?></textarea>-->
+									<input type='hidden' name="txtSpecIns" value="" />
+								</div>
 								</td>
 								<tH><div class="chklimit"><b>Credit Limit:</b></div></th>
 								<td style="padding:2px"><div class="chklimit col-xs-10 nopadding" id="ncustlimit"><b><font size='+1'><?php echo $nlimit;?></font></b></div>
@@ -356,9 +367,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									}
 								?>
 								<td>&nbsp;</td>
-								<td style="padding:2px"><div class="chklimit col-xs-10 nopadding" id="ncustbalance2"></div>
-									<div class="chklimit col-xs-10 nopadding" id="ncustbalance3"></div>
-								</td>
+								<td style="padding:2px">&nbsp;</td>
 							</tr>
 						</table>
 
@@ -422,120 +431,174 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 					</div>
 			</div>
-	</div>
-<hr>
-<div class="col-xs-12 nopadwdown"><b>Details</b></div>
 
-<div class="col-xs-12 nopadwdown">
-	    <input type="hidden" name="hdnqty" id="hdnqty">
-      <input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
-      <input type="hidden" name="hdnunit" id="hdnunit">
-			<input type="hidden" name="hdnvat" id="hdnvat">
-      
-	<div class="col-xs-3 nopadding"><input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4"></div>
-    <div class="col-xs-5 nopadwleft"><input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL + F) Search Product Name..." size="80" tabindex="5"></div>
-</div>
-
-						<div style="border: 1px solid #919b9c; height: 40vh; overflow: auto">
-							<div id="tableContainer" class="alt2" dir="ltr" style="
-								margin: 0px;
-								padding: 3px;
-								width: 1300px;
-								height: 300px;
-								text-align: left;">
+			<div class="portlet light bordered">
+				<div class="portlet-title">
+					<div class="caption">
+						<i class="fa fa-cogs"></i>Details
+					</div>
+					<div class="inputs">
+						<div class="portlet-input input-inline">
+							<div class="col-xs-12 nopadding">
+								<input type="hidden" name="hdnqty" id="hdnqty">
+								<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
+								<input type="hidden" name="hdnunit" id="hdnunit">
+								<input type="hidden" name="hdnvat" id="hdnvat">
+								<input type="hidden" name="hdnmakebuy" id="hdnmakebuy">
+												
+								<div class="col-xs-4 nopadding"><input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4"></div>
+								<div class="col-xs-8 nopadwleft"><input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL + F) Search Product Name..." size="80" tabindex="5"></div>
+							</div> 
+						</div>	  
+					</div>
+				</div>
+				<div class="portlet-body" style="overflow: auto">
+					<div style="min-height: 30vh; width: 1300px;">
 		
-								<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
-									<thead>
-										<tr>
-											<th width="100px" style="border-bottom:1px solid #999">Code</th>
-											<th width="300px" style="border-bottom:1px solid #999">Description</th>
-											<th width="100px" style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
-											<th width="80px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
-											<th width="80px" style="border-bottom:1px solid #999">UOM</th>
-											<th width="80px" style="border-bottom:1px solid #999">Factor</th>
-											<th width="80px" style="border-bottom:1px solid #999">Qty</th>
-											<th width="100px" style="border-bottom:1px solid #999">Price</th>
-											<th width="100px" style="border-bottom:1px solid #999">Amount</th>
-											<th width="200px" style="border-bottom:1px solid #999">PO NO.</th>
-											<th width="100px" style="border-bottom:1px solid #999">Date Needed</th>
-											<th width="200px" style="border-bottom:1px solid #999">Remarks</th>
-											<!--<th style="border-bottom:1px solid #999">Total Amt in <?//php echo $nvaluecurrbase; ?></th>-->
-											<th style="border-bottom:1px solid #999">&nbsp;</th>
-										</tr>	
-										</thead>														
-									<tbody class="tbody">
-									</tbody>															
-								</table>
+						<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
+							<thead>
+								<tr>
+									<th width="100px" style="border-bottom:1px solid #999">Code</th>
+									<th width="300px" style="border-bottom:1px solid #999">Description</th>
+									<th width="100px" style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
+									<th width="80px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
+									<th width="80px" style="border-bottom:1px solid #999">UOM</th>
+									<th width="80px" style="border-bottom:1px solid #999">Factor</th>
+									<th width="80px" style="border-bottom:1px solid #999">Qty</th>
+									<th width="100px" style="border-bottom:1px solid #999">Price</th>
+									<th width="100px" style="border-bottom:1px solid #999">Amount</th>
+									<th width="200px" style="border-bottom:1px solid #999">PO NO.</th>
+									<th width="100px" style="border-bottom:1px solid #999">Date Needed</th>
+									<th width="200px" style="border-bottom:1px solid #999">Remarks</th>
+									<!--<th style="border-bottom:1px solid #999">Total Amt in <?//php echo $nvaluecurrbase; ?></th>-->
+									<th style="border-bottom:1px solid #999">&nbsp;</th>
+								</tr>	
+							</thead>														
+							<tbody class="tbody">
+							</tbody>															
+						</table>
 
+					</div>
+				</div>
+			</div>
+
+			<div class="row nopadwtop2x">
+				<div class="col-xs-7">
+					<?php
+						$xc = check_credit_limit($company);
+						if($xc==1){
+					?>
+					<div class="portlet blue-hoki box" id="creditport">
+						<div class="portlet-title">
+							<div class="caption">
+								<i class="fa fa-cogs"></i>Credit Info
 							</div>
+							<div class="status" id="ncustbalance2">
+									
+							</div>	
 						</div>
-
-		
-		<table width="100%" border="0" cellpadding="3" style="margin-top: 5px">
-			<tr>
-				<td valign="top" width="70%">
-
-					<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
+						<div class="portlet-body">
+							<div class="row static-info">
+								<div class="col-md-3 name">
+									 Credit Limit:
+								</div>
+								<div class="col-md-9 value">
+									<div class="chklimit col-xs-10 nopadding" id="ncustlimit"></div>
+									<input type="hidden" id="hdncustlimit" name="hdncustlimit" value="">
+								</div>
+							</div>
+							<div class="row static-info">
+								<div class="col-md-3 name">
+									Balance:
+								</div>
+								<div class="col-md-9 value">
+									<div class="chklimit col-xs-10 nopadding" id="ncustbalance"></div>
+									<input type="hidden" id="hdncustbalance" name="hdncustbalance" value="">
+								</div>
+							</div>
+													
+						</div>
+					</div>
 					<?php
-						if($poststat == "True"){
+						}
 					?>
-					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SO.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">Back to Main<br>(ESC)</button>
+					<div class="portlet">
+						<div class="portlet-body">
+							<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
+							<?php
+								if($poststat == "True"){
+							?>
+							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SO.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">Back to Main<br>(ESC)</button>
 
-					<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='SO_new.php';" id="btnNew" name="btnNew">New<br>(F1)</button>
+							<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='SO_new.php';" id="btnNew" name="btnNew">New<br>(F1)</button>
 
-					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">Quote<br>(Insert)</button>
+							<button type="button" class="btn purple btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">Quote<br>(Insert)</button>
 
-					<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">Undo Edit<br>(CTRL+Z)
-					</button>
-
-					<?php
-						$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'SO_print'");
-
-						if(mysqli_num_rows($sql) == 1){
-						
-					?>
-							<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $txtctranno;?>');" id="btnPrint" name="btnPrint">
-					Print<br>(CTRL+P)
+							<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">Undo Edit<br>(CTRL+Z)
 							</button>
 
-					<?php		
-						}
+							<?php
+								$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'SO_print'");
 
-					?>
-					
-					<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">Edit<br>(CTRL+E)    </button>
-					
-					<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">Save<br>(CTRL+S)    </button>
+								if(mysqli_num_rows($sql) == 1){
+								
+							?>
+									<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $txtctranno;?>');" id="btnPrint" name="btnPrint">
+							Print<br>(CTRL+P)
+									</button>
 
-					<?php
-						}
-					?>
-				</td>	
+							<?php		
+								}
 
-				<td align="right" valign="top">
-					
-					<table width="90%" border="0" cellspacing="0" cellpadding="0">
-						<tr>
-							<td nowrap align="right"><b>Net of VAT </b>&nbsp;&nbsp;</td>
-							<td> <input type="text" id="txtnNetVAT" name="txtnNetVAT" readonly value="0" style="text-align:right; border:none;  background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20"></td>
-						</tr>
-						<tr>
-							<td nowrap align="right"><b>VAT </b>&nbsp;&nbsp;</td> 
-							<td> <input type="text" id="txtnVAT" name="txtnVAT" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20"></td>
-						</tr>
-						<tr>
-							<td nowrap align="right"><b>Gross Amount </b>&nbsp;&nbsp;</td>
-							<td> <input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20" value="<?=$nbasegross; ?>"></td>
-						</tr>
-						<tr>
-							<td nowrap align="right"><b>Gross Amount in <?php echo $nvaluecurrbase; ?></b>&nbsp;&nbsp;</td>
-							<td> <input type="text" id="txtnGross" name="txtnGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20" value="<?=$Gross; ?>"></td>
-						</tr>
-					</table>
-				
-				</td>
-			</tr>
-		</table>
+							?>
+							
+							<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">Edit<br>(CTRL+E)    </button>
+							
+							<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">Save<br>(CTRL+S)    </button>
+
+							<?php
+								}
+							?>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-5">
+					<div class="well">							
+						<div class="row static-info align-reverse">
+							<div class="col-xs-6 name">
+								Total NET Sales:
+								<input type="hidden" id="txtnNetVAT" name="txtnNetVAT" value="0">
+							</div>
+							<div class="col-xs-4 value" id="divtxtnNetVAT">
+								0.00
+							</div>
+						</div>
+						<div class="row static-info align-reverse">
+							<div class="col-xs-6 name">
+								Add VAT:
+								<input type="hidden" id="txtnVAT" name="txtnVAT" value="0">
+							</div>
+							<div class="col-xs-4 value" id="divtxtnVAT">
+								0.00
+							</div>
+						</div>
+						<div class="row static-info align-reverse">
+							<div class="col-xs-6 name">
+								Total Amount:
+								<input type="hidden" id="txtnGross" name="txtnGross" value="0">
+								<input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="0">
+							</div>
+							<div class="col-xs-4 value" id="divtxtnGross">
+								0.00
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		
+		</div>
+	</div>
+
 		
 </fieldset>
     
@@ -574,41 +637,44 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <!-- FULL PO LIST REFERENCES-->
 
 <div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-full">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h3 class="modal-title" id="InvListHdr">PO List</h3>
             </div>
             
-            <div class="modal-body" style="height:40vh">
+            <div class="modal-body" style="height:45vh">
             
-       <div class="col-xs-12 nopadding">
+       		<div class="col-xs-12 nopadding">
 
                 <div class="form-group">
-                    <div class="col-xs-4 nopadding pre-scrollable" style="height:37vh">
-                          <table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight">
-                           <thead>
-                            <tr>
-                              <th>Quote No</th>
-                              <th>Amount</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                          </table>
+                    <div class="col-xs-4 pre-scrollable" style="height:42vh; border-right: 2px solid #ccc">
+                        <table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight">
+							<thead>
+								<tr>
+									<th nowrap>Quote No</th>
+									<th nowrap>Quote Date</th>
+									<th nowrap style='text-align: right'>Amount</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+                        </table>
                     </div>
 
-                    <div class="col-xs-8 nopadwleft pre-scrollable" style="height:37vh">
-                          <table name='MyInvDetList' id='MyInvDetList' class="table table-small">
+                    <div class="col-xs-8 pre-scrollable" style="height:37==42vh; border-right: 2px solid #ccc">
+                        <table name='MyInvDetList' id='MyInvDetList' class="table table-small">
                            <thead>
-                            <tr>
-                              <th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
-                              <th>Item No</th>
-                              <th>Description</th>
-                              <th>UOM</th>
-                              <th>Qty</th>
-                            </tr>
+								<tr>
+									<th style="text-align: center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
+									<th>Item No</th>
+									<th>Description</th>
+									<th>UOM</th>
+									<th>Qty</th>
+									<th style='text-align: right'>Price</th>
+									<th style='text-align: right'>Amount</th>
+								</tr>
                             </thead>
                             <tbody>
                             	
@@ -727,122 +793,124 @@ else{
 </body>
 </html>
 
+<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
+
 <script type="text/javascript">
-var xChkBal = "";
-var xChkLimit = "";
-var xChkLimitWarn = "";
+	var xChkBal = "";
+	var xChkLimit = "";
+	var xChkLimitWarn = "";
 
-var xtoday = new Date();
-var xdd = xtoday.getDate();
-var xmm = xtoday.getMonth()+1; //January is 0!
-var xyyyy = xtoday.getFullYear();
+	var xtoday = new Date();
+	var xdd = xtoday.getDate();
+	var xmm = xtoday.getMonth()+1; //January is 0!
+	var xyyyy = xtoday.getFullYear();
 
-xtoday = xmm + '/' + xdd + '/' + xyyyy;
+	xtoday = xmm + '/' + xdd + '/' + xyyyy;
 
-var file_name = <?= json_encode(@$arrname) ?>;
-/**
- * Checking of list files
- */
-file_name.map(({name, ext}) => {
-		console.log("Name: " + name + " ext: " + ext)
-})
+	var file_name = <?= json_encode(@$arrname) ?>;
+	/**
+	 * Checking of list files
+	 */
+	file_name.map(({name, ext}) => {
+			console.log("Name: " + name + " ext: " + ext)
+	})
 
-var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
-var arrimg = new Array("jpg","png","gif","jpeg");
+	var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
+	var arrimg = new Array("jpg","png","gif","jpeg");
 
-var list_file = [];
-var file_config = [];
-var extender;
-/**
- * setting up an list of file and config of a file
- */
-file_name.map(({name, ext}, i) => {
-	list_file.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/SO/<?=$company."_".$txtctranno?>/" + name)
-	console.log(ext);
+	var list_file = [];
+	var file_config = [];
+	var extender;
+	/**
+	 * setting up an list of file and config of a file
+	 */
+	file_name.map(({name, ext}, i) => {
+		list_file.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/SO/<?=$company."_".$txtctranno?>/" + name)
+		console.log(ext);
 
-	if(jQuery.inArray(ext, arroffice) !== -1){
-		extender = "office";
-	} else if (jQuery.inArray(ext, arrimg) !== -1){
-		extender = "image";
-	} else if (ext == "txt"){
-		extender = "text";
-	} else {
-		extender =  ext;
-	}
+		if(jQuery.inArray(ext, arroffice) !== -1){
+			extender = "office";
+		} else if (jQuery.inArray(ext, arrimg) !== -1){
+			extender = "image";
+		} else if (ext == "txt"){
+			extender = "text";
+		} else {
+			extender =  ext;
+		}
 
-	console.log(extender)
-	file_config.push({
-		type : extender, 
-		caption : name,
-		width : "120px",
-		url: "th_filedelete.php?id="+name+"&code=<?=$txtctranno?>", 
-		key: i + 1
-	});
-})
+		console.log(extender)
+		file_config.push({
+			type : extender, 
+			caption : name,
+			width : "120px",
+			url: "th_filedelete.php?id="+name+"&code=<?=$txtctranno?>", 
+			key: i + 1
+		});
+	})
 
 	<?php
 		if($poststat == "True"){
 	?>
-	$(document).keydown(function(e) {	
-			
-	  if(e.keyCode == 112) { //F1
-		if($("#btnNew").is(":disabled")==false){
-			e.preventDefault();
-			window.location.href='SO_new.php';
+		$(document).keydown(function(e) {	
+				
+		if(e.keyCode == 112) { //F1
+			if($("#btnNew").is(":disabled")==false){
+				e.preventDefault();
+				window.location.href='SO_new.php';
+			}
 		}
-	  }
-	  else if(e.keyCode == 83 && e.ctrlKey){//CTRL S
-		if($("#btnSave").is(":disabled")==false){
-			e.preventDefault();
-			return chkform();
+		else if(e.keyCode == 83 && e.ctrlKey){//CTRL S
+			if($("#btnSave").is(":disabled")==false){
+				e.preventDefault();
+				return chkform();
+			}
 		}
-	  }
-	  else if(e.keyCode == 69 && e.ctrlKey){//CTRL E
-		if($("#btnEdit").is(":disabled")==false){
-			e.preventDefault();
-			enabled();
+		else if(e.keyCode == 69 && e.ctrlKey){//CTRL E
+			if($("#btnEdit").is(":disabled")==false){
+				e.preventDefault();
+				enabled();
+			}
 		}
-	  }
-	  else if(e.keyCode == 80 && e.ctrlKey){//CTRL P
-		if($("#btnPrint").is(":disabled")==false){
-			e.preventDefault();
-			printchk('<?php echo $txtctranno;?>');
+		else if(e.keyCode == 80 && e.ctrlKey){//CTRL P
+			if($("#btnPrint").is(":disabled")==false){
+				e.preventDefault();
+				printchk('<?php echo $txtctranno;?>');
+			}
 		}
-	  }
-	  else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
-		if($("#btnUndo").is(":disabled")==false){
-			e.preventDefault();
-			chkSIEnter(13,'frmpos');
+		else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
+			if($("#btnUndo").is(":disabled")==false){
+				e.preventDefault();
+				chkSIEnter(13,'frmpos');
+			}
 		}
-	  }
-	  else if(e.keyCode == 27){//ESC
-		if($("#btnMain").is(":disabled")==false){
-			e.preventDefault();
-			window.location.href='SO.php';
+		else if(e.keyCode == 27){//ESC
+			if($("#btnMain").is(":disabled")==false){
+				e.preventDefault();
+				window.location.href='SO.php';
+			}
 		}
-	  }
-	  else if(e.keyCode == 45) { //Insert
-	  	if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false && $("#btnIns").is(":disabled")==false){
-			openinv();
+		else if(e.keyCode == 45) { //Insert
+			if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false && $("#btnIns").is(":disabled")==false){
+				openinv();
+			}
 		}
-	  }
-	  else if(e.keyCode == 70 && e.ctrlKey) { // CTRL + F .. search product code
-		   if($('#hdnvalid').val()!="NO"){
-			e.preventDefault();
-		  	if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
-				$('#txtprodnme').focus();
-				}
-	   	}
-		}
-	});
+		else if(e.keyCode == 70 && e.ctrlKey) { // CTRL + F .. search product code
+			if($('#hdnvalid').val()!="NO"){
+				e.preventDefault();
+				if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
+					$('#txtprodnme').focus();
+					}
+			}
+			}
+		});
 	<?php
 		}
 	?>
 	
 	$(document).ready(function(e) {
-			$(".nav-tabs a").click(function(){
-    			$(this).tab('show');
-			});
+		$(".nav-tabs a").click(function(){
+    		$(this).tab('show');
+		});
 
 			if(file_name.length > 0){
 				$('#file-0').fileinput({
@@ -871,11 +939,7 @@ file_name.map(({name, ext}, i) => {
 					browseOnZoneClick: true,
 					fileActionSettings: { showUpload: false, showDrag: false, }
 				});
-			}
-			
-
-			$("#txtnBaseGross").autoNumeric('init',{mDec:2});
-			$("#txtnGross").autoNumeric('init',{mDec:2});
+			}			
 				
 	   			$.ajax({
 					url : "../../include/th_xtrasessions.php",
@@ -917,445 +981,453 @@ file_name.map(({name, ext}, i) => {
 		}
 
 		loaddetails();
-		loaddetinfo();
-	
-	  $('#txtprodnme').attr("disabled", true);
-	  $('#txtprodid').attr("disabled", true);
-	  
-	disabled();
+		//loaddetinfo();
 		
-	$('#date_delivery, #date_PO').datetimepicker({
-    format: 'MM/DD/YYYY'
-  });
+		$('#txtprodnme').attr("disabled", true);
+		$('#txtprodid').attr("disabled", true);
+		
+		disabled();
+			
+		$('#date_delivery, #date_PO').datetimepicker({
+			format: 'MM/DD/YYYY'
+		});
 
-	$("#txtcustid").keyup(function(event){
-		if(event.keyCode == 13){
-		
-		var dInput = this.value;
-		
-		$.ajax({
-        type:'post',
-        url:'../get_customerid.php',
-        data: 'c_id='+ $(this).val(),                 
-        success: function(value){
-			//alert(value);
-			if(value!=""){
-				var data = value.split(":");
-				$('#txtcust').val(data[0]);
-				//$('#imgemp').attr("src",data[3]);
-				$('#hdnpricever').val(data[2]);
-				//deliveredto   
-				$('#txtdelcustid').val(dInput);
-				$('#txtdelcust').val(data[0]); 
-				 
-				$('#txtsalesmanid').val(data[10]);
-				$('#txtsalesman').val(data[11]);
-				
-				$('#txtchouseno').val(data[5]);
-				$('#txtcCity').val(data[6]);
-				$('#txtcState').val(data[7]);
-				$('#txtcCountry').val(data[8]);
-				$('#txtcZip').val(data[9]);							
-							
+		$("#allbox").click(function(){
+			$('input:checkbox').not(this).prop('checked', this.checked);
+		});
+
+		$("#txtcustid").keyup(function(event){
+			if(event.keyCode == 13){
+			
+			var dInput = this.value;
+			
+			$.ajax({
+			type:'post',
+			url:'../get_customerid.php',
+			data: 'c_id='+ $(this).val(),                 
+			success: function(value){
+				//alert(value);
+				if(value!=""){
+					var data = value.split(":");
+					$('#txtcust').val(data[0]);
+					//$('#imgemp').attr("src",data[3]);
+					$('#hdnpricever').val(data[2]);
+					//deliveredto   
+					$('#txtdelcustid').val(dInput);
+					$('#txtdelcust').val(data[0]); 
+					
+					$('#txtsalesmanid').val(data[10]);
+					$('#txtsalesman').val(data[11]);
+					
+					$('#txtchouseno').val(data[5]);
+					$('#txtcCity').val(data[6]);
+					$('#txtcState').val(data[7]);
+					$('#txtcCountry').val(data[8]);
+					$('#txtcZip').val(data[9]);							
 								
-				$('#hdnvalid').val("YES");
+									
+					$('#hdnvalid').val("YES");
 
-				if(xChkLimit==1){
+					if(xChkLimit==1){
 
-					var limit = data[1];
-					if(limit % 1 == 0){
-						limit = parseInt(limit);
+						var limit = data[1];
+						if(limit % 1 == 0){
+							limit = parseInt(limit);
+						}
+						
+						limit = Number(limit).toLocaleString('en');
+						
+						$('#ncustlimit').html("<b><font size='+1'>"+limit+"</font></b>");
+						$('#hdncustlimit').val(data[1]);
+						
+						checkcustlimit($(this).val(), data[1]);
 					}
 					
-					limit = Number(limit).toLocaleString('en');
-					
-					$('#ncustlimit').html("<b><font size='+1'>"+limit+"</font></b>");
-					$('#hdncustlimit').val(data[1]);
-					
-					checkcustlimit($(this).val(), data[1]);
 				}
-				
-			}
-			else{
+				else{
+					$('#txtcustid').val("");
+					$('#txtcust').val("");
+					//$('#imgemp').attr("src","../../images/blueX.png");
+					$('#hdnpricever').val("");
+					$('#txtdelcustid').val("");
+					$('#txtdelcust').val(""); 
+					
+					$('#txtsalesmanid').val("");
+					$('#txtsalesman').val("");
+					
+					$('#txtchouseno').val("");
+					$('#txtcCity').val("");
+					$('#txtcState').val("");
+					$('#txtcCountry').val("");
+					$('#txtcZip').val("");				
+					$('#hdnvalid').val("NO");
+				}
+			},
+			error: function(){
 				$('#txtcustid').val("");
 				$('#txtcust').val("");
 				//$('#imgemp').attr("src","../../images/blueX.png");
 				$('#hdnpricever').val("");
-				$('#txtdelcustid').val("");
-				$('#txtdelcust').val(""); 
-				 
-				$('#txtsalesmanid').val("");
-				$('#txtsalesman').val("");
-				
-				$('#txtchouseno').val("");
-				$('#txtcCity').val("");
-				$('#txtcState').val("");
-				$('#txtcCountry').val("");
-				$('#txtcZip').val("");				
+					$('#txtdelcustid').val("");
+					$('#txtdelcust').val(""); 
+					
+					$('#txtsalesmanid').val("");
+					$('#txtsalesman').val("");
+					
+					$('#txtchouseno').val("");
+					$('#txtcCity').val("");
+					$('#txtcState').val("");
+					$('#txtcCountry').val("");
+					$('#txtcZip').val("");			
 				$('#hdnvalid').val("NO");
 			}
-		},
-		error: function(){
-			$('#txtcustid').val("");
-			$('#txtcust').val("");
-			//$('#imgemp').attr("src","../../images/blueX.png");
-			$('#hdnpricever').val("");
-				$('#txtdelcustid').val("");
-				$('#txtdelcust').val(""); 
-				 
-				$('#txtsalesmanid').val("");
-				$('#txtsalesman').val("");
-				
-				$('#txtchouseno').val("");
-				$('#txtcCity').val("");
-				$('#txtcState').val("");
-				$('#txtcCountry').val("");
-				$('#txtcZip').val("");			
-			$('#hdnvalid').val("NO");
-		}
+			});
+
+			}
+			
 		});
 
-		}
-		
-	});
-
-	$('#txtcust, #txtcustid').on("blur", function(){
-		if($('#hdnvalid').val()=="NO"){
-		  $('#txtcust').attr("placeholder", "ENTER A VALID CUSTOMER FIRST...");
-		  
-		  $('#txtprodnme').attr("disabled", true);
-		  $('#txtprodid').attr("disabled", true);
-		}else{
+		$('#txtcust, #txtcustid').on("blur", function(){
+			if($('#hdnvalid').val()=="NO"){
+			$('#txtcust').attr("placeholder", "ENTER A VALID CUSTOMER FIRST...");
 			
-		  $('#txtprodnme').attr("disabled", false);
-		  $('#txtprodid').attr("disabled", false);
-		  
-		  $('#txtremarks').focus();
-	
-		}
-	});
-
-	//Search Cust name
-	$('#txtcust').typeahead({
-		autoSelect: true,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_customer.php",
-				dataType: "json",
-				data: {
-					query: $("#txtcust").val()
-				},
-				success: function (data) {
-					response(data);
-				}
-			});
-		},
-		displayText: function (item) {
-			return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 					
-						
-			$('#txtcust').val(item.value).change(); 
-			$("#txtcustid").val(item.id);
-			//$("#imgemp").attr("src",item.imgsrc);
-			$("#hdnpricever").val(item.cver);
-				$('#txtdelcustid').val(item.id);
-				$('#txtdelcust').val(item.value); 
-				 
-				$('#txtsalesmanid').val(item.csman);
-				$('#txtsalesman').val(item.smaname);
+			$('#txtprodnme').attr("disabled", true);
+			$('#txtprodid').attr("disabled", true);
+			}else{
 				
+			$('#txtprodnme').attr("disabled", false);
+			$('#txtprodid').attr("disabled", false);
+			
+			$('#txtremarks').focus();
+		
+			}
+		});
+
+		//Search Cust name
+		$('#txtcust').typeahead({
+			autoSelect: true,
+			source: function(request, response) {
+				$.ajax({
+					url: "../th_customer.php",
+					dataType: "json",
+					data: {
+						query: $("#txtcust").val()
+					},
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 					
+							
+				$('#txtcust').val(item.value).change(); 
+				$("#txtcustid").val(item.id);
+				//$("#imgemp").attr("src",item.imgsrc);
+				$("#hdnpricever").val(item.cver);
+					$('#txtdelcustid').val(item.id);
+					$('#txtdelcust').val(item.value); 
+					
+					$('#txtsalesmanid').val(item.csman);
+					$('#txtsalesman').val(item.smaname);
+					
+					$('#txtchouseno').val(item.chouseno);
+					$('#txtcCity').val(item.ccity);
+					$('#txtcState').val(item.cstate);
+					$('#txtcCountry').val(item.ccountry);
+					$('#txtcZip').val(item.czip);			
+				$('#hdnvalid').val("YES");
+				
+				$('#txtremarks').focus();
+
+					if(xChkLimit==1){
+						
+						var limit = item.nlimit;
+						if(limit % 1 == 0){
+							limit = parseInt(limit);
+						}
+
+						limit = Number(limit).toLocaleString('en');					
+						$('#ncustlimit').html("<b><font size='+1'>"+limit+"</font></b>");
+						$('#hdncustlimit').val(item.nlimit);
+						
+						checkcustlimit(item.id, item.nlimit);
+
+					}
+				
+				
+			}
+		
+		});
+		
+		$("#txtsalesmanid").keydown(function(event){
+			if(event.keyCode == 13){
+			
+				var dInput = this.value;
+				
+				$.ajax({
+					type:'post',
+					url:'../get_salesmanid.php',
+					data: 'c_id='+ $(this).val(),                 
+					success: function(value){
+						if(value!=""){				 
+							$('#txtsalesman').val(value);
+						}
+					}
+				});
+			}
+		});
+		
+		$('#txtsalesman').typeahead({
+			autoSelect: true,
+			source: function(request, response) {
+				$.ajax({
+					url: "../th_salesman.php",
+					dataType: "json",
+					data: {
+						query: $("#txtsalesman").val()
+					},
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 					
+							
+				$('#txtsalesman').val(item.value).change(); 
+				$("#txtsalesmanid").val(item.id);
+				
+				
+			}
+		
+		});
+		
+		$("#txtdelcustid").keydown(function(event){
+			if(event.keyCode == 13){
+			
+				var dInput = this.value;
+				
+				$.ajax({
+					type:'post',
+					url:'../get_customerid.php',
+					data: 'c_id='+ $(this).val(),                 
+					success: function(value){
+						if(value!=""){				 
+							var data = value.split(":");
+
+							$('#txtdelcust').val(data[0]); 
+							
+							$('#txtchouseno').val(data[5]);
+							$('#txtcCity').val(data[6]);
+							$('#txtcState').val(data[7]);
+							$('#txtcCountry').val(data[8]);
+							$('#txtcZip').val(data[9]);
+						}
+					}
+				});
+			}
+		});
+		
+		$('#txtdelcust').typeahead({
+			autoSelect: true,
+			source: function(request, response) {
+				$.ajax({
+					url: "../th_customer.php",
+					dataType: "json",
+					data: {
+						query: $("#txtdelcust").val()
+					},
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 					
+							
+				$('#txtdelcust').val(item.value).change(); 
+				$("#txtdelcustid").val(item.id);			
+
 				$('#txtchouseno').val(item.chouseno);
 				$('#txtcCity').val(item.ccity);
 				$('#txtcState').val(item.cstate);
 				$('#txtcCountry').val(item.ccountry);
-				$('#txtcZip').val(item.czip);			
-			$('#hdnvalid').val("YES");
-			
-			$('#txtremarks').focus();
-
-				if(xChkLimit==1){
-					
-					var limit = item.nlimit;
-					if(limit % 1 == 0){
-						limit = parseInt(limit);
-					}
-
-					limit = Number(limit).toLocaleString('en');					
-					$('#ncustlimit').html("<b><font size='+1'>"+limit+"</font></b>");
-					$('#hdncustlimit').val(item.nlimit);
-					
-					checkcustlimit(item.id, item.nlimit);
-
-				}
-			
-			
-		}
-	
-	});
-	
-	$("#txtsalesmanid").keydown(function(event){
-		if(event.keyCode == 13){
+				$('#txtcZip').val(item.czip);
+								
+			}
 		
-			var dInput = this.value;
-			
-			$.ajax({
-				type:'post',
-				url:'../get_salesmanid.php',
-				data: 'c_id='+ $(this).val(),                 
-				success: function(value){
-					if(value!=""){				 
-						$('#txtsalesman').val(value);
-					}
-				}
-			});
-		}
-	});
-	
-	$('#txtsalesman').typeahead({
-		autoSelect: true,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_salesman.php",
-				dataType: "json",
-				data: {
-					query: $("#txtsalesman").val()
-				},
-				success: function (data) {
-					response(data);
-				}
-			});
-		},
-		displayText: function (item) {
-			return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 					
-						
-			$('#txtsalesman').val(item.value).change(); 
-			$("#txtsalesmanid").val(item.id);
-			
-			
-		}
-	
-	});
-	
-	$("#txtdelcustid").keydown(function(event){
-		if(event.keyCode == 13){
+		});
 		
-			var dInput = this.value;
-			
-			$.ajax({
-				type:'post',
-				url:'../get_customerid.php',
-				data: 'c_id='+ $(this).val(),                 
-				success: function(value){
-					if(value!=""){				 
-						var data = value.split(":");
-
-						$('#txtdelcust').val(data[0]); 
-						
-						$('#txtchouseno').val(data[5]);
-						$('#txtcCity').val(data[6]);
-						$('#txtcState').val(data[7]);
-						$('#txtcCountry').val(data[8]);
-						$('#txtcZip').val(data[9]);
+		$('#txtprodnme').typeahead({
+			autoSelect: true,
+			source: function(request, response) {
+				$.ajax({
+					url: "../th_product.php",
+					dataType: "json",
+					data: { query: $("#txtprodnme").val(), itmbal: xChkBal, styp: $("#selsityp").val() },
+					success: function (data) {
+						response(data);
 					}
-				}
-			});
-		}
-	});
-	
-	$('#txtdelcust').typeahead({
-		autoSelect: true,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_customer.php",
-				dataType: "json",
-				data: {
-					query: $("#txtdelcust").val()
-				},
-				success: function (data) {
-					response(data);
-				}
-			});
-		},
-		displayText: function (item) {
-			return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 					
-						
-			$('#txtdelcust').val(item.value).change(); 
-			$("#txtdelcustid").val(item.id);			
-
-			$('#txtchouseno').val(item.chouseno);
-			$('#txtcCity').val(item.ccity);
-			$('#txtcState').val(item.cstate);
-			$('#txtcCountry').val(item.ccountry);
-			$('#txtcZip').val(item.czip);
+				});
+			},
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.desc+'</span</div>';
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 					
 							
-		}
-	
-	});
-	
-	$('#txtprodnme').typeahead({
-		autoSelect: true,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_product.php",
-				dataType: "json",
-				data: { query: $("#txtprodnme").val(), itmbal: xChkBal, styp: $("#selsityp").val() },
-				success: function (data) {
-					response(data);
-				}
-			});
-		},
-		displayText: function (item) {
-			return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.desc+'</span</div>';
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 					
-						
-			$('#txtprodnme').val(item.desc).change(); 
-			$('#txtprodid').val(item.id); 
-			$("#hdnunit").val(item.cunit); 
-			$("#hdnqty").val(item.nqty);
-			$("#hdnqtyunit").val(item.cqtyunit);
-			$("#hdnvat").val(item.ctaxcode);
-			
-			myFunctionadd("","","","","","","","","","");
-			ComputeGross();	
-
-			$("#txtprodid").val("");
-			$("#txtprodnme").val("");
-			$("#hdnunit").val("");
-			$("#hdnqty").val("");
-			$("#hdnqtyunit").val("");
-			
-			
-		}
-	
-	});
-
-
-	$("#txtprodid").keyup(function(event){
-		if(event.keyCode == 13){
-
-		$.ajax({
-      url:'../get_productid.php',
-      data: 'c_id='+ $(this).val() + "&itmbal=" + xChkBal+"&styp="+ $("#selsityp").val(),                 
-      success: function(value){
-        var data = value.split(",");
-        $('#txtprodid').val(data[0]);
-        $('#txtprodnme').val(data[1]);
-				$('#hdnunit').val(data[2]);
-				$("#hdnqty").val(data[3]);
-				$("#hdnqtyunit").val(data[4]);
-				$("#hdnvat").val(data[6]);
-
-
-				if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
-					var isItem = "NO";
-					var disID = "";
-					
-					$("#MyTable > tbody > tr").each(function() {	
-						disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-
-						if($("#txtprodid").val()==disID){
-							
-							isItem = "YES";
-
-						}
-					});	
-
-				//if value is not blank
-				}
+				$('#txtprodnme').val(item.desc).change(); 
+				$('#txtprodid').val(item.id); 
+				$("#hdnunit").val(item.cunit); 
+				$("#hdnqty").val(item.nqty);
+				$("#hdnqtyunit").val(item.cqtyunit);
+				$("#hdnvat").val(item.ctaxcode);
+				$("#hdnmakebuy").val(item.makebuy);
 				
-				//if(isItem=="NO"){		
+				myFunctionadd("","","","","","","","","","");
+				ComputeGross();	
 
-					myFunctionadd("","","","","","","","","","");
-					ComputeGross();	
-					
-			//   }
-			//   else{
-					
-			//		addqty();
-			//	}
-		
 				$("#txtprodid").val("");
 				$("#txtprodnme").val("");
 				$("#hdnunit").val("");
 				$("#hdnqty").val("");
 				$("#hdnqtyunit").val("");
- 
-	    //closing for success: function(value){
-	    }
-        }); 
-
-	
-		 
-		//if ebter is clicked
-		}
+				$("#hdnvat").val("");
+				$("#hdnmakebuy").val("");
+				
+				
+			}
 		
-	});
+		});
 
-  $("#selsityp").on("change", function(){
+		$("#txtprodid").keyup(function(event){
+			if(event.keyCode == 13){
 
-      var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
-    var lastRow = tbl.length-1;
-
-    if(lastRow > 0){
-      var x = confirm("Changing this will erase all details!");
-      if (x == true) {
-        $("#MyTable").find("tr:gt(0)").remove();
-      }
-    }
-    else{
-      $("#MyTable").find("tr:gt(0)").remove();
-    }
-  });
-  
-  $("#btnNewAdd").on("click", function(){
-		if($("#txtdelcustid").val()=="" || $("#txtdelcust").val()==""){
-			alert("Select Delivery To Customer!");
-		}else{
-			$('#MyAddTble tbody').empty();
-			//get addressses...
 			$.ajax({
-				url : "th_addresslist.php?id=" + $("#txtdelcustid").val() ,
-				type: "GET",
-				dataType: "JSON",
-				success: function(data)
-				{	
-					console.log(data);
-                    $.each(data,function(index,item){
-						
-						$("<tr>").append(
-						$("<td>").html("<a onclick=\"trclickable('"+item.chouseno+"','"+item.ccity+"','"+item.cstate+"','"+item.ccountry+"','"+item.czip+"')\" style=\"cursor: pointer;\">Select</a>"),
-						$("<td>").html(item.chouseno),
-						$("<td>").html(item.ccity),
-						$("<td>").html(item.cstate),
-						$("<td>").html(item.ccountry),
-						$("<td>").html(item.czip)
-						).appendTo("#MyAddTble tbody");
-											   
-					});
-						
-				},
-				error: function (jqXHR, textStatus, errorThrown)
-				{
-					alert(jqXHR.responseText);
-				}					
-			});
-			
-		
-			 $("#MyAddModal").modal("show");// 
-		}
-	});
+				url:'../get_productid.php',
+				data: 'c_id='+ $(this).val() + "&itmbal=" + xChkBal+"&styp="+ $("#selsityp").val(),                 
+				success: function(value){
+					var data = value.split(",");
+					$('#txtprodid').val(data[0]);
+					$('#txtprodnme').val(data[1]);
+					$('#hdnunit').val(data[2]);
+					$("#hdnqty").val(data[3]);
+					$("#hdnqtyunit").val(data[4]);
+					$("#hdnvat").val(data[6]);
+					$("#hdnmakebuy").val(data[10]);
 
-	$("#selbasecurr").on("change", function (){
+					if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
+						var isItem = "NO";
+						var disID = "";
+						
+						$("#MyTable > tbody > tr").each(function() {	
+							disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+
+							if($("#txtprodid").val()==disID){
+								
+								isItem = "YES";
+
+							}
+						});	
+
+					//if value is not blank
+					}
+					
+					//if(isItem=="NO"){		
+
+						myFunctionadd("","","","","","","","","","");
+						ComputeGross();	
+						
+				//   }
+				//   else{
+						
+				//		addqty();
+				//	}
+			
+					$("#txtprodid").val("");
+					$("#txtprodnme").val("");
+					$("#hdnunit").val("");
+					$("#hdnqty").val("");
+					$("#hdnqtyunit").val("");
+					$("#hdnvat").val("");
+					$("#hdnmakebuy").val("");
+	
+			//closing for success: function(value){
+			}
+			}); 
+
+		
+			
+			//if ebter is clicked
+			}
+			
+		});
+
+		$("#selsityp").on("change", function(){
+
+			var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
+			var lastRow = tbl.length-1;
+
+			if(lastRow > 0){
+			var x = confirm("Changing this will erase all details!");
+			if (x == true) {
+				$("#MyTable").find("tr:gt(0)").remove();
+			}
+			}
+			else{
+			$("#MyTable").find("tr:gt(0)").remove();
+			}
+		});
+	
+		$("#btnNewAdd").on("click", function(){
+			if($("#txtdelcustid").val()=="" || $("#txtdelcust").val()==""){
+				alert("Select Delivery To Customer!");
+			}else{
+				$('#MyAddTble tbody').empty();
+				//get addressses...
+				$.ajax({
+					url : "th_addresslist.php?id=" + $("#txtdelcustid").val() ,
+					type: "GET",
+					dataType: "JSON",
+					success: function(data)
+					{	
+						console.log(data);
+						$.each(data,function(index,item){
+							
+							$("<tr>").append(
+							$("<td>").html("<a onclick=\"trclickable('"+item.chouseno+"','"+item.ccity+"','"+item.cstate+"','"+item.ccountry+"','"+item.czip+"')\" style=\"cursor: pointer;\">Select</a>"),
+							$("<td>").html(item.chouseno),
+							$("<td>").html(item.ccity),
+							$("<td>").html(item.cstate),
+							$("<td>").html(item.ccountry),
+							$("<td>").html(item.czip)
+							).appendTo("#MyAddTble tbody");
+												
+						});
+							
+					},
+					error: function (jqXHR, textStatus, errorThrown)
+					{
+						alert(jqXHR.responseText);
+					}					
+				});
+				
+			
+				$("#MyAddModal").modal("show");// 
+			}
+		});
+
+		$("#selbasecurr").on("change", function (){
 			
 		//	convertCurrency($(this).val());
 
@@ -1372,7 +1444,7 @@ file_name.map(({name, ext}, i) => {
 		});
 	
 
-});
+	});
 
 function checkcustlimit(id,xcred){
 	//Check Credit Limit BALNCE here
@@ -1412,25 +1484,27 @@ function checkcustlimit(id,xcred){
 		xBalance = Number(xBalance).toLocaleString('en');
 		$("#ncustbalance").html("<b><font size='+1'>"+xBalance+"</font></b>");
 	}
-	else{
-		
+	else{	
 		if(parseFloat(xcred) > 0){
+
 			if(xChkLimitWarn==0) { //0 = Accept Warninf ; 1 = Accept Block ; 2 = Refuse Order
 				$("#ncustbalance").html("<b><i><font color='red'>Max Limit Reached</font></i></b>");
 			}
 			else if(xChkLimitWarn==1) {
 				$("#ncustbalance").html("<b><i><font color='red' size='-1'>Max Limit Reached</font></i></b>");
-				$("#ncustbalance2").html("<b><i><font color='red' size='-1'>Delivery is blocked</font></i></b>");
+				$("#ncustbalance2").html("<b><i><font color='white' size='+1'>Delivery is blocked</font></i></b>");
 			}
 			else if(xChkLimitWarn==2) {
 				$("#ncustbalance").html("<b><i><font color='red' size='-1'>Max Limit Reached</font></i></b>");
-				$("#ncustbalance").html("<b><i><font color='red' size='-1'>ORDERS BLOCKED</font></i></b>");
+				$("#ncustbalance2").html("<b><i><font color='white' size='+1'>ORDERS BLOCKED</font></i></b>");
 				$("#btnSave").attr("disabled", true);
 				$("#btnIns").attr("disabled", true);
 				$('#txtprodnme').attr("disabled", true);
-					$('#txtprodid').attr("disabled", true);
+				$('#txtprodid').attr("disabled", true);
 
 			}
+		}else{
+			$("#ncustbalance").html("<b><i><font color='red'>Unlimited Credit Limit</font></i></b>");
 		}
 	}
 
@@ -1471,6 +1545,7 @@ function addItemName(qty,price,curramt,amt,factr,cref,nrefident,crmx,ditmneed,ci
 		$("#hdnqty").val("");
 		$("#hdnqtyunit").val("");
 		$("#hdnvat").val("");
+		$("#hdnmakebuy").val("");
 		
 	 }
 
@@ -1483,7 +1558,9 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident,crmx,ditmnee
 	var itmqtyunit = $("#hdnqtyunit").val();
 	var itmqty = $("#hdnqty").val();
 	var itmunit = $("#hdnunit").val();
-	var itmccode = $("#hdnpricever").val();
+	var itmccode = $("#hdnpricever").val(); 
+	var itmakebuy = $("#hdnmakebuy").val(); 
+
 
 	if(qty=="" && pricex=="" && amtx=="" && factr==""){
 		var itmtotqty = 1;
@@ -1501,7 +1578,14 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident,crmx,ditmnee
 	//	var amtz = amtx;	
 		var factz = factr;	
 		var baseprice = amtx;
+
+
 	}
+
+	if(crmx==""){
+		crmx = itmakebuy;
+	}
+	
 
 	
 	
@@ -1599,9 +1683,7 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident,crmx,ditmnee
 
 	var tditmrempo = "<td><input type='text' value='"+citmpono+"' class='form-control input-xs' name=\"txtcitmrempo\" id='txtcitmrempo"+lastRow+"'></td>";
 
-	var dneeded = moment(ditmneed).format('MM/DD/YYYY');
-
-	var tddneed = "<td width=\"100\" style=\"padding: 1px; position:relative;\" nowrap><input type='text' value='"+dneeded+"' class='form-control input-xs' name=\"txtcitmdneed\" id='txtcitmdneed"+lastRow+"'></td>";
+	var tddneed = "<td width=\"100\" style=\"padding: 1px; position:relative;\" nowrap><input type='text' class='form-control input-xs' name=\"txtcitmdneed\" id='txtcitmdneed"+lastRow+"'></td>";
 
 	var tditmremx = "<td><input type='text' value='"+crmx+"' class='form-control input-xs' name=\"txtcitmremx\" id='txtcitmremx"+lastRow+"'></td>";
 
@@ -1670,6 +1752,32 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident,crmx,ditmnee
 									});
 									
 									ComputeGross();
+
+	if(ditmneed!=""){
+		dneeded = moment(ditmneed).format('MM/DD/YYYY');
+		$('#txtcitmdneed'+lastRow).datetimepicker({
+			format: 'MM/DD/YYYY',
+			useCurrent: false,
+			//minDate: moment().format('L'),
+			defaultDate: dneeded,
+			widgetPositioning: {
+				horizontal: 'right',
+				vertical: 'bottom'
+			}
+		});
+	}else{
+	
+		$('#txtcitmdneed'+lastRow).datetimepicker({
+			format: 'MM/DD/YYYY',
+			useCurrent: false,
+			//minDate: moment().format('L'),
+			defaultDate: moment().format('L'),
+			widgetPositioning: {
+				horizontal: 'right',
+				vertical: 'bottom'
+			}
+		});
+	}
 									
 									
 }
@@ -1773,16 +1881,14 @@ function Reindex(){
 			$("#txtnGross").val(gross2);
 			$("#txtnBaseGross").val(gross);
 
-			$("#txtnNetVAT").autoNumeric('destroy');
-			$("#txtnVAT").autoNumeric('destroy');			
-			$("#txtnGross").autoNumeric('destroy');
-			$("#txtnBaseGross").autoNumeric('destroy');
+			$("#divtxtnNetVAT").text(nnetTot.toFixed(2));
+			$("#divtxtnVAT").text(vatzTot.toFixed(2));
+			$("#divtxtnGross").text(gross.toFixed(2));
 
-			$("#txtnNetVAT").autoNumeric('init',{mDec:2});
-			$("#txtnVAT").autoNumeric('init',{mDec:2});
-			$("#txtnGross").autoNumeric('init',{mDec:2});
-			$("#txtnBaseGross").autoNumeric('init',{mDec:2});			
-			
+			$("#divtxtnNetVAT").formatNumber();
+			$("#divtxtnVAT").formatNumber();
+			$("#divtxtnGross").formatNumber();
+
 		}
 
 
@@ -1941,6 +2047,8 @@ function openinv(){
 			alert("Please pick a valid customer!");
 		}
 		else{
+
+			$('#MyInvTbl').DataTable().destroy();
 			
 			$("#txtcustid").attr("readonly", true);
 			$("#txtcust").attr("readonly", true);
@@ -1961,9 +2069,9 @@ function openinv(){
 			
 			//disable escape insert and save button muna
 			
-			$.ajax({
+				$.ajax({
                     url: 'th_qolist.php',
-					data: 'x='+x,
+					data: 'x='+x+ "&selsi=" + $("#selsityp").val(),
                     dataType: 'json',
                     method: 'post',
                     success: function (data) {
@@ -1975,19 +2083,20 @@ function openinv(){
 
 								
 						if(item.cpono=="NONE"){
-						$("#AlertMsg").html("No Quotations Available");
-						$("#alertbtnOK").show();
-						$("#AlertModal").modal('show');
+							$("#AlertMsg").html("No Quotations Available");
+							$("#alertbtnOK").show();
+							$("#AlertModal").modal('show');
 
 							xstat = "NO";
 							
-										$("#txtcustid").attr("readonly", false);
-										$("#txtcust").attr("readonly", false);
+							$("#txtcustid").attr("readonly", false);
+							$("#txtcust").attr("readonly", false);
 
 						}
 						else{
 							$("<tr>").append(
 							$("<td id='td"+item.cpono+"' data-curr='"+item.ccurrencycode+"' data-rate='"+item.nexchangerate+"'>").text(item.cpono),
+							$("<td>").text(item.dcutdate),
 							$("<td>").text(item.ngross)
 							).appendTo("#MyInvTbl tbody");
 							
@@ -2003,6 +2112,24 @@ function openinv(){
 					   	}
 
                        });
+
+					   $('#MyInvTbl').DataTable({
+							"bPaginate": false,
+							"bLengthChange": false,
+							"bFilter": true,
+							"bInfo": false,
+							"bAutoWidth": false,
+							"dom": '<"pull-left"f><"pull-right"l>tip',
+							language: {
+								search: "",
+								searchPlaceholder: "Search Quotation "
+							}
+						});
+
+						$('.dataTables_filter input').addClass('form-control input-sm');
+						$('.dataTables_filter input').css(
+							{'width':'150%','display':'inline-block'}
+						);
 					   
 
 					   if(xstat=="YES"){
@@ -2054,6 +2181,8 @@ function opengetdet(valz){
 
 	$('#InvListHdr').html("Quote List: " + $('#txtcust').val() + " | Quote Details: " + drno + "<div id='loadimg'><center><img src='../../images/cusload.gif' style='show:none;'> </center> </div>");
 	
+	$('#MyInvDetList').DataTable().destroy();
+
 	$('#MyInvDetList tbody').empty();
 	$('#MyDRDetList tbody').empty();
 		
@@ -2077,41 +2206,62 @@ function opengetdet(valz){
 				
 			});
 
-					//alert('th_sinumdet.php?x='+drno+"&y="+salesnos);
-					$.ajax({
+				//alert('th_sinumdet.php?x='+drno+"&y="+salesnos);
+				$.ajax({
                     url: 'th_qolistdet.php',
-					data: 'x='+drno+"&y="+salesnos,
+					data: 'x='+drno+"&y="+salesnos+"&itmbal="+xChkBal,
                     dataType: 'json',
                     method: 'post',
                     success: function (data) {
                        // var classRoomsTable = $('#mytable tbody');
-					  $("#allbox").prop('checked', false); 
+					  	$("#allbox").prop('checked', false); 
 					   
-                      console.log(data);
-					  $.each(data,function(index,item){
-						  if(item.citemno==""){
+                     	console.log(data);
+					  	$.each(data,function(index,item){
+						  	if(item.citemno==""){
 							  alert("NO more items to add!")
-						  }
-						  else{
+						  	}
+						  	else{
 						  
-							if (item.nqty>=1){
-								if(item.navail>=1){
-									var xxmsg = "<input type='checkbox' value='"+item.id+"' name='chkSales[]' data-id=\""+drno+"\">";
+								if (item.nqty>=1){
+									if(item.navail>=1){
+										var xxmsg = "<input type='checkbox' value='"+item.id+"' name='chkSales[]' data-id=\""+drno+"\">";
+									}
+									else{
+										var xxmsg = "<font color='red'><b>X</b></font>";
+									}
+									
+									$("<tr>").append(
+									$("<td align='center'>").html(xxmsg),
+									$("<td>").text(item.citemno),
+									$("<td>").text(item.cdesc),
+									$("<td>").text(item.cunit),
+									$("<td>").text(item.nqty),
+									$("<td align='right'>").text(item.nprice),
+									$("<td align='right'>").text(item.namount)
+									).appendTo("#MyInvDetList tbody");
 								}
-								else{
-									var xxmsg = "<font color='red'><b>X</b></font>";
-								}
-								
-								$("<tr>").append(
-								$("<td>").html(xxmsg),
-								$("<td>").text(item.citemno),
-								$("<td>").text(item.cdesc),
-								$("<td>").text(item.cunit),
-								$("<td>").text(item.nqty)
-								).appendTo("#MyInvDetList tbody");
+					 		}
+					 	});
+
+						$('#MyInvDetList').DataTable({
+							"bPaginate": false,
+							"bLengthChange": false,
+							"bFilter": true,
+							"bInfo": false,
+							"bAutoWidth": false,
+							"dom": '<"pull-left"f><"pull-right"l>tip',
+							language: {
+								search: "",
+								searchPlaceholder: "Search Item "
 							}
-					 	 }
-					 });
+						});
+
+						$('.dataTables_filter input').addClass('form-control input-sm');
+						$('.dataTables_filter input').css(
+							{'width':'150%','display':'inline-block'}
+						);
+
                     },
 					complete: function(){
 						$('#loadimg').hide();
@@ -2153,10 +2303,12 @@ function InsertSI(){
 							$("#hdnunit").val(item.cunit); 
 							$("#hdnqty").val(item.nqty);
 							$("#hdnqtyunit").val(item.cqtyunit);
+							$("#hdnvat").val(item.ctaxcode);
+							$("#hdnmakebuy").val(item.makebuy);
 							//alert(item.cqtyunit);
 
 							// qty,price,curramt,amt,factr,cref,nrefident,crmx,ditmneed,citmpono
-							addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,"","","","");
+							addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.nident,"","","");
 											   
 					   });
 						
@@ -2414,7 +2566,7 @@ function chkform(){
 		var ddate = $("#date_delivery").val();
 		var ngross = $("#txtnGross").val().replace(/,/g,'');
 		var csitype = $("#selsityp").val(); 
-    var ccpono = $("#txtcPONo").val(); 
+    	var ccpono = $("#txtcPONo").val(); 
 
 		var ncurrcode = $("#selbasecurr").val();
 		var ncurrdesc = $("#selbasecurr option:selected").text();
@@ -2423,8 +2575,8 @@ function chkform(){
 
 		$("#hidcurrvaldesc").val($("#selbasecurr option:selected").text());
 
-		var specins = $("#txtSpecIns").val();
-		var salesman = $("#txtsalesmanid").val();
+		var specins = ""; //$("#txtSpecIns").val();
+		var salesman = ""; //$("#txtsalesmanid").val();
 		var delcodes = $("#txtdelcustid").val();
 		var delhousno = $("#txtchouseno").val();
 		var delcity = $("#txtcCity").val();
@@ -2437,6 +2589,7 @@ function chkform(){
 		var myform = $("#frmpos").serialize();
 
 		var formdata = new FormData($('#frmpos')[0]);
+
 		formdata.delete('upload[]');
 		jQuery.each($('#file-0')[0].files, function(i, file){
 			formdata.append('file-'+i, file);
@@ -2517,7 +2670,7 @@ function chkform(){
 
 
 			//Save Info
-			$("#MyTable2 > tbody > tr").each(function(index) {	
+			/*$("#MyTable2 > tbody > tr").each(function(index) {	
 			  
 				var citmno = $(this).find('input[type="hidden"][name="txtinfocode"]').val();
 				var citmfld = $(this).find('input[name="txtinfofld"]').val();
@@ -2534,7 +2687,7 @@ function chkform(){
 					}
 				});
 				
-			});
+			});*/
 			
 			if(isDone=="True"){
 				$("#AlertMsg").html("<b>SUCCESFULLY UPDATED: </b> Please wait a moment...");
@@ -2544,8 +2697,8 @@ function chkform(){
 						$("#AlertMsg").html("");
 						$('#AlertModal').modal('hide');
 			
-							//$("#txtcsalesno").val(trancode);
-							$("#frmpos").submit();
+						$("#txtcsalesno").val(trancode);
+						$("#frmpos").submit();
 			
 					}, 3000); // milliseconds = 3seconds
 

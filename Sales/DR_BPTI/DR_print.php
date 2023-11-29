@@ -1,11 +1,11 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
+	if(!isset($_SESSION)){
+		session_start();
+	}
 
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
 
 	$company = $_SESSION['companyid'];
 
@@ -37,27 +37,27 @@ include('../../include/denied.php');
 	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.chouseno,b.ccity,b.cstate,b.ctin,c.cname as cdelname from dr a 
           left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join customers c on a.compcode=c.compcode and a.cdelcode=c.cempid where a.compcode='$company' and a.ctranno = '$csalesno'");
 
-if (mysqli_num_rows($sqlhead)!=0) {
-	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-		$CustCode = $row['ccode'];
-		$CustName = $row['cdelname'];
-    $CustDelName = $row['cname'];
-		$Remarks = $row['cremarks'];
-		$Date = $row['dcutdate'];
-    $Adds = $row['chouseno']." ". $row['ccity']." ". $row['cstate'];
-    $cTin = $row['ctin'];
+	if (mysqli_num_rows($sqlhead)!=0) {
+		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+			$CustCode = $row['ccode'];
+			$CustName = $row['cdelname'];
+			$CustDelName = $row['cname'];
+			$Remarks = $row['cremarks'];
+			$Date = $row['dcutdate'];
+			$Adds = $row['chouseno']." ". $row['ccity']." ". $row['cstate'];
+			$cTin = $row['ctin'];
 
-		$cAPCDR = $row['crefapcdr'];
-    $cAPCORD = $row['crefapcord'];
+			$cAPCDR = $row['crefapcdr'];
+			$cAPCORD = $row['crefapcord'];
 
-		$Gross = $row['ngross'];
-    $cTerms = $row['cterms'];
-		
-		$lCancelled = $row['lcancelled'];
-		$lPosted = $row['lapproved'];
-		$lPrintPosted = $row['lprintposted'];
+			$Gross = $row['ngross'];
+			$cTerms = $row['cterms'];
+			
+			$lCancelled = $row['lcancelled'];
+			$lPosted = $row['lapproved'];
+			$lPrintPosted = $row['lprintposted'];
+		}
 	}
-}
 ?>
 
 <!DOCTYPE html>
