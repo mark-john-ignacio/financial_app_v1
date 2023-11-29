@@ -422,8 +422,18 @@
                 <i class="fgly-sm flaticon-035-invoice"></i> Delivery Receipt
 							</a>
 						</li>
+
+						<?php
+							//check if SO_subdomain exist
+							if ( file_exists( "Sales/Sales_".$durlSUB ) || is_dir( "Sales/Sales_".$durlSUB) ) {   
+								$SILink = "Sales/Sales_".$durlSUB."/SI.php?ix=";
+							}else{
+								$SILink = "Sales/Sales/SI.php?ix=";
+							}
+						?>
+
 						<li>
-							<a href="javascript:;" onClick="setpage('Sales/Sales/SI.php?ix=');">
+							<a href="javascript:;" onClick="setpage('<?=$SILink?>');">
                 <i class="fgly-sm flaticon-065-bill"></i> Sales Invoice
 							</a>
 						</li>

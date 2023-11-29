@@ -49,7 +49,7 @@ function listcurrencies(){ //API for currency list
 	$getSmans = mysqli_query($con,"SELECT * FROM `salesman` where compcode='$company' and cstatus='ACTIVE'"); 
 	if (mysqli_num_rows($getSmans)==0) {
 		$setSman = "False";
-	} 
+	}
 
 ?>
 
@@ -61,19 +61,25 @@ function listcurrencies(){ //API for currency list
 
 	<title>Myx Financials</title>
     
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
+
+	<link href="../../global/css/components.css?t=<?php echo time();?>" id="style_components" rel="stylesheet" type="text/css"/>
     
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
 	<script src="../../include/autoNumeric.js"></script>
+	<script src="../../include/FormatNumber.js"></script>
 	<!--<script src="../../Bootstrap/js/jquery.numeric.js"></script>
 	<script src="../../Bootstrap/js/jquery.inputlimiter.min.js"></script>-->
 
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+	
 
 	<!--
 	--
@@ -95,21 +101,23 @@ function listcurrencies(){ //API for currency list
 
 
 	<form action="SO_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;" enctype="multipart/form-data">
-		<fieldset>
-    	<legend>New Sales Order</legend>	
-				<div class="col-xs-12 nopadwdown"><b>Sales Order Information</b></div>
+		
+		<div class="portlet">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-shopping-cart"></i>New Sales Order
+				</div>
+			</div>
+			<div class="portlet-body">
+
 				<ul class="nav nav-tabs">
-						<li class="active"><a href="#home">Order Details</a></li>
-						<li><a href="#menu1">Delivered To</a></li>
-						<li><a href="#attc">Attachments</a></li>	
+					<li class="active"><a href="#home">Order Details</a></li>
+					<li><a href="#menu1">Delivered To</a></li>
+					<li><a href="#attc">Attachments</a></li>	
 				</ul>
  
 				<div class="tab-content">  
-					<!--
-					--
-					-- Home Panel
-					--
-					-->
+					<!--Home Panel-->
 						<div id="home" class="tab-pane fade in active" style="padding-left:5px; padding-top: 10px">
 									
 							<table width="100%" border="0">
@@ -117,15 +125,15 @@ function listcurrencies(){ //API for currency list
 									<tH width="150">&nbsp;Customer:</tH>
 									<td style="padding:2px">
 										<div class="col-xs-12 nopadding">
-												<div class="col-xs-3 nopadding">
-													<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
-														<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
-														<input type="hidden" id="hdnpricever" name="hdnpricever" value="">
-												</div>
+											<div class="col-xs-3 nopadding">
+												<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
+												<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
+												<input type="hidden" id="hdnpricever" name="hdnpricever" value="">
+											</div>
 
-												<div class="col-xs-8 nopadwleft">
-														<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
-													</div> 
+											<div class="col-xs-8 nopadwleft">
+												<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
+											</div> 
 										</div>
 									</td>
 									<tH width="150">Control No.:</tH>
@@ -178,8 +186,8 @@ function listcurrencies(){ //API for currency list
 																}
 												?>
 											</select>
-												<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?php echo $nvaluecurrbase; ?>"> 	
-												<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?php echo $nvaluecurrbasedesc; ?>"> 
+											<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?php echo $nvaluecurrbase; ?>"> 	
+											<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?php echo $nvaluecurrbasedesc; ?>"> 
 										</div>
 										<div class="col-xs-2 nopadwleft">
 											<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
@@ -198,10 +206,10 @@ function listcurrencies(){ //API for currency list
 									</td>
 								</tr>
 								<tr>
-										<tH width="150">&nbsp;Remarks:</tH>
-										<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div>
-										</td>
-										<tH width="150">Delivery Date:</tH>
+									<tH width="150">&nbsp;Remarks:</tH>
+									<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div>
+									</td>
+									<tH width="150">Delivery Date:</tH>
 									<td style="padding:2px;">
 										<div class="col-xs-11 nopadding">
 											<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $ddeldate; ?>" />
@@ -210,10 +218,12 @@ function listcurrencies(){ //API for currency list
 										
 								</tr>
 								<tr>
-									<tH rowspan="3" width="150">&nbsp;Special Instructions:</tH>
-									<td rowspan="3" style="padding:2px"><div class="col-xs-11 nopadding">
-										<textarea rows="3"  class="form-control input-sm" name="txtSpecIns"  id="txtSpecIns"></textarea>
-											</div>
+									<tH rowspan="3" width="150">&nbsp;<!--Special Instructions:--></tH>
+									<td rowspan="3" style="padding:2px">
+										<div class="col-xs-11 nopadding">
+											<!--<textarea rows="3"  class="form-control input-sm" name="txtSpecIns"  id="txtSpecIns"></textarea>-->
+											<input type='hidden' name="txtSpecIns" value="" />
+										</div>
 									</td>
 									<tH width="150">Sales Type:</th>
 										<td style="padding:2px">
@@ -225,24 +235,7 @@ function listcurrencies(){ //API for currency list
 											</div>
 										</td>
 								</tr>
-								<tr>
-									<td style="padding:2px">
-										<div class="chklimit"><b>Credit Limit:</b></div>
-									</td>
-									<td style="padding:2px"  align="right">
-										<div class="chklimit col-xs-10 nopadding" id="ncustlimit"></div>
-											<input type="hidden" id="hdncustlimit" name="hdncustlimit" value="">
-									</td>
-								</tr>
-								<tr>
-									<td style="padding:2px">
-										<div class="chklimit"><b>Balance:</b></div>
-									</td>
-									<td style="padding:2px"  align="right">
-										<div class="chklimit col-xs-10 nopadding" id="ncustbalance"></div>
-											<input type="hidden" id="hdncustbalance" name="hdncustbalance" value="">
-									</td>				
-								</tr>
+								
 								<tr>
 									<tH width="150"><?=($setSman=="True") ? " Salesman:" : ""?></tH>
 									<td style="padding:2px">
@@ -261,18 +254,13 @@ function listcurrencies(){ //API for currency list
 										?>
 									</td>
 									<td>&nbsp;</td>
-									<td style="padding:2px"  align="right" colspan="2">
-										<div class="chklimit col-xs-11 nopadwright" id="ncustbalance2"></div>
-									</td>		
+									<td style="padding:2px"  align="right" colspan="2">&nbsp;</td>		
 								</tr>
 							</table>		
 							
 						</div>
-					<!--
-					--
-					-- Delivery To Panel
-					--
-					-->
+					
+					<!--Delivery To Panel-->
 						<div id="menu1" class="tab-pane fade" style="padding-left:5px; padding-left: 10px;">
 									<table width="100%" border="0">
 										<tr>
@@ -320,11 +308,8 @@ function listcurrencies(){ //API for currency list
 										</tr> 
 									</table>
 						</div>
-					<!--
-					--
-					-- Attachment Panel
-					--
-					-->
+					
+					<!-- Attachment Panel -->
 						<div id="attc" class="tab-pane fade" style="padding-left:5px; padding-left: 10px;">
 
 							<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
@@ -335,27 +320,29 @@ function listcurrencies(){ //API for currency list
 
 				</div><!--tab-content-->
 
-		<hr>
-		<div class="col-xs-12 nopadwdown"><b>Details</b></div>
-		<div class="col-xs-12 nopadwdown">
-			<input type="hidden" name="hdnqty" id="hdnqty">
-			<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
-			<input type="hidden" name="hdnunit" id="hdnunit">
-			<input type="hidden" name="hdnvat" id="hdnvat">
-					
-			<div class="col-xs-3 nopadding"><input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4"></div>
-				<div class="col-xs-5 nopadwleft"><input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL + F) Search Product Name..." size="80" tabindex="5"></div>
-		</div>         
-            
 
-						<div style="border: 1px solid #919b9c; height: 40vh; overflow: auto">
-							<div id="tableContainer" class="alt2" dir="ltr" style="
-								margin: 0px;
-								padding: 3px;
-								width: 1300px;
-								height: 300px;
-								text-align: left;">
-		
+					<div class="portlet light bordered">
+						<div class="portlet-title">
+							<div class="caption">
+								<i class="fa fa-cogs"></i>Details
+							</div>
+							<div class="inputs">
+								<div class="portlet-input input-inline">
+									<div class="col-xs-12 nopadding">
+										<input type="hidden" name="hdnqty" id="hdnqty">
+										<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
+										<input type="hidden" name="hdnunit" id="hdnunit">
+										<input type="hidden" name="hdnvat" id="hdnvat">
+										<input type="hidden" name="hdnmakebuy" id="hdnmakebuy">
+												
+										<div class="col-xs-4 nopadding"><input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4"></div>
+										<div class="col-xs-8 nopadwleft"><input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL + F) Search Product Name..." size="80" tabindex="5"></div>
+									</div> 
+								</div>	  
+							</div>
+						</div>
+						<div class="portlet-body" style="overflow: auto">
+							<div style="min-height: 30vh; width: 1300px;">
 								<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
 									<thead>
 										<tr>
@@ -364,222 +351,275 @@ function listcurrencies(){ //API for currency list
 											<th width="100px" style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
 											<th width="80px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
 											<th width="80px" style="border-bottom:1px solid #999">UOM</th>
-											<th width="80px" style="border-bottom:1px solid #999">Factor</th>
+											<th width="60px" style="border-bottom:1px solid #999">Factor</th>
 											<th width="80px" style="border-bottom:1px solid #999">Qty</th>
-											<th width="100px" style="border-bottom:1px solid #999">Price</th>
-											<th width="100px" style="border-bottom:1px solid #999">Amount</th>
+											<th width="150px" style="border-bottom:1px solid #999">Price</th>
+											<th width="150px" style="border-bottom:1px solid #999">Amount</th>
 											<th width="200px" style="border-bottom:1px solid #999">PO NO.</th>
-											<th width="100px" style="border-bottom:1px solid #999">Date Needed</th>
+											<th width="120px" style="border-bottom:1px solid #999">Date Needed</th>
 											<th width="200px" style="border-bottom:1px solid #999">Remarks</th>
 											<!--<th style="border-bottom:1px solid #999">Total Amt in <?//php echo $nvaluecurrbase; ?></th>-->
 											<th style="border-bottom:1px solid #999">&nbsp;</th>
 										</tr>	
-										</thead>														
+									</thead>														
 									<tbody class="tbody">
 									</tbody>															
 								</table>
-
 							</div>
 						</div>
+					</div>
 
-		<table width="100%" border="0" cellpadding="3" style="margin-top: 5px">
-			<tr>
-				<td valign="top">
 
-					<input type="hidden" name="hdnrowcnt" id="hdnrowcnt">
-					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SO.php';" id="btnMain" name="btnMain">
-						Back to Main<br>(ESC)
-					</button>
+				<div class="row nopadwtop2x">
+					<div class="col-xs-6">
+						<?php
+							$xc = check_credit_limit($company);
+							if($xc==1){
+						?>
+						<div class="portlet blue-hoki box" id="creditport">
+							<div class="portlet-title">
+								<div class="caption">
+									<i class="fa fa-cogs"></i>Credit Info
+								</div>
+								<div class="status" id="ncustbalance2">
+									
+								</div>
+							</div>
+							<div class="portlet-body">
+								<div class="row static-info">
+									<div class="col-md-3 name">
+										 Credit Limit:
+									</div>
+									<div class="col-md-9 value">
+										<div class="chklimit col-xs-10 nopadding" id="ncustlimit"></div>
+										<input type="hidden" id="hdncustlimit" name="hdncustlimit" value="">
+									</div>
+								</div>
+								<div class="row static-info">
+									<div class="col-md-3 name">
+										Balance:
+									</div>
+									<div class="col-md-9 value">
+										<div class="chklimit col-xs-10 nopadding" id="ncustbalance"></div>
+										<input type="hidden" id="hdncustbalance" name="hdncustbalance" value="">
+									</div>
+								</div>
+													
+							</div>
+						</div>
+						<?php
+							}
+						?>
+						<div class="portlet">
+							<div class="portlet-body">
+								<input type="hidden" name="hdnrowcnt" id="hdnrowcnt">
+								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SO.php';" id="btnMain" name="btnMain">
+									Back to Main<br>(ESC)
+								</button>
 
-					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
-						Quote<br>(Insert)
-					</button>	
- 
-    			<button type="submit" class="btn btn-success btn-sm" tabindex="6"  id="btnSave" onClick="return chkform();" name="btnSave">
-						SAVE<br> (CTRL+S)
-					</button>
+								<button type="button" class="btn purple btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
+									Quote<br>(Insert)
+								</button>	
+			
+								<button type="submit" class="btn green btn-sm" tabindex="6"  id="btnSave" onClick="return chkform();" name="btnSave">
+									SAVE<br> (CTRL+S)
+								</button>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="well">							
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									Total NET Sales:
+									<input type="hidden" id="txtnNetVAT" name="txtnNetVAT" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnNetVAT">
+									0.00
+								</div>
+							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									Add VAT:
+									<input type="hidden" id="txtnVAT" name="txtnVAT" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnVAT">
+									0.00
+								</div>
+							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									Total Amount:
+									<input type="hidden" id="txtnGross" name="txtnGross" value="0">
+									<input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnGross">
+									0.00
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 
-				</td>
-					<td align="right" valign="top">
-					
-					<table width="90%" border="0" cellspacing="0" cellpadding="0">
-						<tr>
-							<td nowrap align="right"><b>Net of VAT </b>&nbsp;&nbsp;</td>
-							<td> <input type="text" id="txtnNetVAT" name="txtnNetVAT" readonly value="0" style="text-align:right; border:none;  background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20"></td>
-						</tr>
-						<tr>
-							<td nowrap align="right"><b>VAT </b>&nbsp;&nbsp;</td> 
-							<td> <input type="text" id="txtnVAT" name="txtnVAT" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20"></td>
-						</tr>
-						<tr>
-							<td nowrap align="right"><b>Gross Amount </b>&nbsp;&nbsp;</td>
-							<td> <input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20"></td>
-						</tr>
-						<tr>
-							<td nowrap align="right"><b>Gross Amount in <?php echo $nvaluecurrbase; ?></b>&nbsp;&nbsp;</td>
-							<td> <input type="text" id="txtnGross" name="txtnGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20"></td>
-						</tr>
-					</table>
-				
-				</td>
-			</tr>
-		</table>
-
-  </fieldset>
+			</div>
+		</div>
    
-				<!-- Add Info -->
-				<div class="modal fade" id="MyDetModal" role="dialog">
-    			<div class="modal-dialog modal-lg">
+		<!-- Add Info -->
+		<div class="modal fade" id="MyDetModal" role="dialog">
+    		<div class="modal-dialog modal-lg">
         		<div class="modal-content">
-            	<div class="modal-header">
-                <button type="button" class="close"  aria-label="Close"  onclick="chkCloseInfo();"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="invheader"> Additional Details Info</h3>           
-							</div>
+            		<div class="modal-header">
+                		<button type="button" class="close"  aria-label="Close"  onclick="chkCloseInfo();"><span aria-hidden="true">&times;</span></button>
+                		<h3 class="modal-title" id="invheader"> Additional Details Info</h3>           
+					</div>
     
-            	<div class="modal-body">
-                <input type="hidden" name="hdnrowcnt2" id="hdnrowcnt2">
-                <table id="MyTable2" class="MyTable table table-condensed" width="100%">
-									<thead>
-										<tr>
-											<th style="border-bottom:1px solid #999">Code</th>
-											<th style="border-bottom:1px solid #999">Description</th>
-											<th style="border-bottom:1px solid #999">Field Name</th>
-											<th style="border-bottom:1px solid #999">Value</th>
-											<th style="border-bottom:1px solid #999">&nbsp;</th>
-										</tr>
-									</thead>
-									<tbody class="tbody">
-                  </tbody>
-                </table>
-    
-							</div>
+            		<div class="modal-body">
+                		<input type="hidden" name="hdnrowcnt2" id="hdnrowcnt2">
+                		<table id="MyTable2" class="MyTable table table-condensed" width="100%">
+							<thead>
+								<tr>
+									<th style="border-bottom:1px solid #999">Code</th>
+									<th style="border-bottom:1px solid #999">Description</th>
+									<th style="border-bottom:1px solid #999">Field Name</th>
+									<th style="border-bottom:1px solid #999">Value</th>
+									<th style="border-bottom:1px solid #999">&nbsp;</th>
+								</tr>
+							</thead>
+							<tbody class="tbody">
+                  			</tbody>
+                		</table>   
+					</div>
         		</div><!-- /.modal-content -->
-    			</div><!-- /.modal-dialog -->
-				</div><!-- /.modal -->
+    		</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
 
 
-				<!-- FULL PO LIST REFERENCES-->
-				<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
-    			<div class="modal-dialog modal-lg">
+		<!-- FULL PO LIST REFERENCES-->
+		<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
+    		<div class="modal-dialog modal-full">
         		<div class="modal-content">
-            	<div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="InvListHdr">PO List</h3>
-            	</div>
+            		<div class="modal-header">
+                		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+               			<h3 class="modal-title" id="InvListHdr">PO List</h3>
+            		</div>
             
-            	<div class="modal-body" style="height:40vh">
+            		<div class="modal-body" style="height:45vh">
             
        					<div class="col-xs-12 nopadding">
+                			<div class="form-group">
+								<div class="col-xs-4 pre-scrollable" style="height:42vh; border-right: 2px solid #ccc">
+									<table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight">
+										<thead>
+											<tr>
+												<th nowrap>Quote No</th>
+												<th nowrap>Quote Date</th>
+												<th nowrap style='text-align: right'>Amount</th>
+											</tr>
+										</thead>
+										<tbody>
+										</tbody>
+									</table>
+								</div>
 
-                	<div class="form-group">
-                    <div class="col-xs-4 nopadding pre-scrollable" style="height:37vh">
-                      <table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight">
-                        <thead>
-                          <tr>
-                            <th>Quote No</th>
-                            <th>Amount</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                      </table>
-                    </div>
-
-                    <div class="col-xs-8 nopadwleft pre-scrollable" style="height:37vh">
-                      <table name='MyInvDetList' id='MyInvDetList' class="table table-small">
-                        <thead>
-                        	<tr>
-                            <th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
-                            <th>Item No</th>
-                            <th>Description</th>
-                            <th>UOM</th>
-                            <th>Qty</th>
-                          </tr>
-                        </thead>
-                        <tbody>                            	
-                        </tbody>
-                      </table>
-                    </div>
-               		</div>
+								<div class="col-xs-8 pre-scrollable" style="height:42vh; border-right: 2px solid #ccc">
+								<table name='MyInvDetList' id='MyInvDetList' class="table table-small">
+									<thead>
+										<tr>
+										<th style="text-align: center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
+										<th>Item No</th>
+										<th>Description</th>
+										<th>UOM</th>
+										<th>Qty</th>
+										<th style='text-align: right'>Price</th>
+										<th style='text-align: right'>Amount</th>
+									</tr>
+									</thead>
+									<tbody>                            	
+									</tbody>
+								</table>
+								</div>
+               				</div>
 
         				</div>
          	            
-							</div>
+					</div>
 			
-            	<div class="modal-footer">
-                <button type="button" id="btnInsDet" onClick="InsertSI()" class="btn btn-primary">Insert</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            		<div class="modal-footer">
+               			<button type="button" id="btnInsDet" onClick="InsertSI()" class="btn btn-primary">Insert</button>
+                		<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
 
-								<input type="hidden" name="hdncurr" id="hdncurr">
-								<input type="hidden" name="hdncurrate" id="hdncurrate">
+						<input type="hidden" name="hdncurr" id="hdncurr">
+						<input type="hidden" name="hdncurrate" id="hdncurrate">
 
-            	</div>
+            		</div>
         		</div><!-- /.modal-content -->
-    			</div><!-- /.modal-dialog -->
-				</div>
-				<!-- End FULL INVOICE LIST -->
+    		</div><!-- /.modal-dialog -->
+		</div>
+		<!-- End FULL INVOICE LIST -->
 
-				<!-- Address List -->
-				<div class="modal fade" id="MyAddModal" role="dialog">
-    			<div class="modal-dialog modal-lg">
+		<!-- Address List -->
+		<div class="modal fade" id="MyAddModal" role="dialog">
+    		<div class="modal-dialog modal-lg">
         		<div class="modal-content">
-            	<div class="modal-header">
-                <button type="button" class="close"  data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="invheader"> Address Lists </h3>           
-							</div>
+            		<div class="modal-header">
+                		<button type="button" class="close"  data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+                		<h3 class="modal-title" id="invheader"> Address Lists </h3>           
+					</div>
     
-            	<div class="modal-body">
-                <table id="MyAddTble" class="table table-condensed" width="100%">
-                	<thead>
-    								<tr>
-                    	<th style="border-bottom:1px solid #999">&nbsp;</th>
-											<th style="border-bottom:1px solid #999">House No.</th>
-											<th style="border-bottom:1px solid #999">City</th>
-                      <th style="border-bottom:1px solid #999">State</th>
-											<th style="border-bottom:1px solid #999">Country</th>
-                      <th style="border-bottom:1px solid #999">Zip</th>
-                      <th style="border-bottom:1px solid #999">&nbsp;</th>
-										</tr>
-                  </thead>
-									<tbody class="tbody">
-                  </tbody>
-                </table>
+            		<div class="modal-body">
+                		<table id="MyAddTble" class="table table-condensed" width="100%">
+                			<thead>
+    							<tr>
+                    				<th style="border-bottom:1px solid #999">&nbsp;</th>
+									<th style="border-bottom:1px solid #999">House No.</th>
+									<th style="border-bottom:1px solid #999">City</th>
+                      				<th style="border-bottom:1px solid #999">State</th>
+									<th style="border-bottom:1px solid #999">Country</th>
+                      				<th style="border-bottom:1px solid #999">Zip</th>
+                      				<th style="border-bottom:1px solid #999">&nbsp;</th>
+								</tr>
+                  			</thead>
+							<tbody class="tbody">
+                  			</tbody>
+                		</table>
     
-							</div>
+					</div>
         		</div><!-- /.modal-content -->
-    			</div><!-- /.modal-dialog -->
-				</div><!-- /.modal -->
+    		</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
 
-</form>
-
-
-<!-- FULL PO LIST REFERENCES-->
-<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-    <div class="vertical-alignment-helper">
-        <div class="modal-dialog vertical-align-top">
-            <div class="modal-content">
-               <div class="alert-modal-danger">
-                  <p id="AlertMsg"></p>
-                <p>
-                    <center>
-                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-                    </center>
-                </p>
-               </div>
-            </div>
-        </div>
-    </div>
-</div>
+	</form>
 
 
+	<!-- Alert Modal -->
+	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+				<div class="alert-modal-danger">
+					<p id="AlertMsg"></p>
+					<p>
+						<center>
+							<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+						</center>
+					</p>
+				</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
-<form method="post" name="frmedit" id="frmedit" action="SO_edit.php">
-	<input type="hidden" name="txtctranno" id="txtctranno" value="">
-</form>
+
+
+	<form method="post" name="frmedit" id="frmedit" action="SO_edit.php">
+		<input type="hidden" name="txtctranno" id="txtctranno" value="">
+	</form>
 
 
 </body>
 </html>
+
+<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
 
 <script type="text/javascript">
 	var xChkBal = "";
@@ -648,8 +688,8 @@ function listcurrencies(){ //API for currency list
 			fileActionSettings: { showUpload: false, showDrag: false,}
 		});
 
-		$("#txtnBaseGross").autoNumeric('init',{mDec:2});
-		$("#txtnGross").autoNumeric('init',{mDec:2});
+		//$("#txtnBaseGross").autoNumeric('init',{mDec:2});
+		//$("#txtnGross").autoNumeric('init',{mDec:2});
 
 		$.ajax({
 			url : "../../include/th_xtrasessions.php",
@@ -1023,6 +1063,7 @@ function listcurrencies(){ //API for currency list
 				$("#hdnqty").val(item.nqty);
 				$("#hdnqtyunit").val(item.cqtyunit);
 				$("#hdnvat").val(item.ctaxcode);
+				$("#hdnmakebuy").val(item.makebuy);
 				
 				addItemName("","","","","","","");
 				
@@ -1047,6 +1088,7 @@ function listcurrencies(){ //API for currency list
 						$("#hdnqty").val(data[3]);
 						$("#hdnqtyunit").val(data[4]);
 						$("#hdnvat").val(data[6]);
+						$("#hdnmakebuy").val(data[10]);
 
 
 			if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
@@ -1213,15 +1255,15 @@ function checkcustlimit(id,xcred){
 			}
 			else if(xChkLimitWarn==1) {
 				$("#ncustbalance").html("<b><i><font color='red' size='-1'>Max Limit Reached</font></i></b>");
-				$("#ncustbalance2").html("<b><i><font color='red' size='-1'>Delivery is blocked</font></i></b>");
+				$("#ncustbalance2").html("<b><i><font color='white' size='+1'>Delivery is blocked</font></i></b>");
 			}
 			else if(xChkLimitWarn==2) {
 				$("#ncustbalance").html("<b><i><font color='red' size='-1'>Max Limit Reached</font></i></b>");
-				$("#ncustbalance").html("<b><i><font color='red' size='-1'>ORDERS BLOCKED</font></i></b>");
+				$("#ncustbalance2").html("<b><i><font color='white' size='+1'>ORDERS BLOCKED</font></i></b>");
 				$("#btnSave").attr("disabled", true);
 				$("#btnIns").attr("disabled", true);
 				$('#txtprodnme').attr("disabled", true);
-					$('#txtprodid').attr("disabled", true);
+				$('#txtprodid').attr("disabled", true);
 
 			}
 
@@ -1280,6 +1322,8 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 	var itmqty = $("#hdnqty").val();
 	var itmunit = $("#hdnunit").val();
 	var itmccode = $("#hdnpricever").val();
+	var itmakebuy = $("#hdnmakebuy").val(); 
+	
 	//alert(itmqtyunit);
 	if(qty=="" && pricex=="" && amtx=="" && factr==""){
 		var itmtotqty = 1;
@@ -1421,7 +1465,7 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 	var tditmrempo = "<td><input type='text' value='' class='form-control input-xs' name=\"txtcitmrempo\" id='txtcitmrempo"+lastRow+"'></td>";
 
 	var tddneed = "<td width=\"100\" style=\"padding: 1px; position:relative;\" nowrap><input type='text' value='' class='form-control input-xs' name=\"txtcitmdneed\" id='txtcitmdneed"+lastRow+"'></td>";
-	var tditmremx = "<td><input type='text' value='' class='form-control input-xs' name=\"txtcitmremx\" id='txtcitmremx"+lastRow+"'></td>";
+	var tditmremx = "<td><input type='text' value='"+itmakebuy+"' class='form-control input-xs' name=\"txtcitmremx\" id='txtcitmremx"+lastRow+"'></td>";
 
 
 	var tditmdel = "<td width=\90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + lastRow + "' value='delete' /></td>";
@@ -1595,17 +1639,15 @@ function Reindex(){
 			$("#txtnNetVAT").val(nnetTot);
 			$("#txtnVAT").val(vatzTot);
 			$("#txtnGross").val(gross2);
-			$("#txtnBaseGross").val(gross);
+			$("#txtnBaseGross").val(gross);		
 
-			$("#txtnNetVAT").autoNumeric('destroy');
-			$("#txtnVAT").autoNumeric('destroy');			
-			$("#txtnGross").autoNumeric('destroy');
-			$("#txtnBaseGross").autoNumeric('destroy');
+			$("#divtxtnNetVAT").text(nnetTot.toFixed(2));
+			$("#divtxtnVAT").text(vatzTot.toFixed(2));
+			$("#divtxtnGross").text(gross.toFixed(2));
 
-			$("#txtnNetVAT").autoNumeric('init',{mDec:2});
-			$("#txtnVAT").autoNumeric('init',{mDec:2});
-			$("#txtnGross").autoNumeric('init',{mDec:2});
-			$("#txtnBaseGross").autoNumeric('init',{mDec:2});			
+			$("#divtxtnNetVAT").formatNumber();
+			$("#divtxtnVAT").formatNumber();
+			$("#divtxtnGross").formatNumber();
 			
 		}
 
@@ -1766,6 +1808,8 @@ function openinv(){
 			alert("Please pick a valid customer!");
 		}
 		else{
+
+			$('#MyInvTbl').DataTable().destroy();
 			
 			$("#txtcustid").attr("readonly", true);
 			$("#txtcust").attr("readonly", true);
@@ -1786,61 +1830,79 @@ function openinv(){
 			
 			//disable escape insert and save button muna
 			$.ajax({
-          url: 'th_qolist.php',
-					data: 'x='+x+ "&selsi=" + $("#selsityp").val(),
-          dataType: 'json',
-          method: 'post',
-          success: function (data) {
-            // var classRoomsTable = $('#mytable tbody');
-					  $("#allbox").prop('checked', false);
+          		url: 'th_qolist.php',
+				data: 'x='+x+ "&selsi=" + $("#selsityp").val(),
+				dataType: 'json',
+				method: 'post',
+				success: function (data) {
+            		// var classRoomsTable = $('#mytable tbody');
+					$("#allbox").prop('checked', false);
 					   
-            console.log(data);
-          	$.each(data,function(index,item){
+           			console.log(data);
+          			$.each(data,function(index,item){
 
 								
-							if(item.cpono=="NONE"){
-								$("#AlertMsg").html("No Quotations Available");
-								$("#alertbtnOK").show();
-								$("#AlertModal").modal('show');
+						if(item.cpono=="NONE"){
+							$("#AlertMsg").html("No Quotations Available");
+							$("#alertbtnOK").show();
+							$("#AlertModal").modal('show');
 
-								xstat = "NO";
+							xstat = "NO";
 								
-								$("#txtcustid").attr("readonly", false);
-								$("#txtcust").attr("readonly", false);
+							$("#txtcustid").attr("readonly", false);
+							$("#txtcust").attr("readonly", false);
 
-							}
-							else{
-								$("<tr>").append(
+						}
+						else{
+							$("<tr>").append(
 								$("<td id='td"+item.cpono+"' data-curr='"+item.ccurrencycode+"' data-rate='"+item.nexchangerate+"'>").text(item.cpono),
-								$("<td>").text(item.ngross)
-								).appendTo("#MyInvTbl tbody");
+								$("<td>").text(item.dcutdate),
+								$("<td align='right'>").text(item.ngross)
+							).appendTo("#MyInvTbl tbody");
 								
 								
-								$("#td"+item.cpono).on("click", function(){
-									checkcurrency($(this).text(),$(this).data("curr"),$(this).data("rate"));
+							$("#td"+item.cpono).on("click", function(){
+								checkcurrency($(this).text(),$(this).data("curr"),$(this).data("rate"));
 								//	opengetdet($(this).text());
-								});
+							});
 								
-								$("#td"+item.cpono).on("mouseover", function(){
-									$(this).css('cursor','pointer');
-								});
-							}
+							$("#td"+item.cpono).on("mouseover", function(){
+								$(this).css('cursor','pointer');
+							});
+						}
 
-          	});
+          			});
 					   
+					$('#MyInvTbl').DataTable({
+						"bPaginate": false,
+						"bLengthChange": false,
+						"bFilter": true,
+						"bInfo": false,
+						"bAutoWidth": false,
+						"dom": '<"pull-left"f><"pull-right"l>tip',
+						language: {
+							search: "",
+							searchPlaceholder: "Search Quotation "
+						}
+					});
 
-					   if(xstat=="YES"){
-						   $('#mySIRef').modal('show');
-					   }
-                    },
-                    error: function (req, status, err) {
-						//alert();
-						console.log('Something went wrong', status, err);
-						$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
-						$("#alertbtnOK").show();
-						$("#AlertModal").modal('show');
+					$('.dataTables_filter input').addClass('form-control input-sm');
+					$('.dataTables_filter input').css(
+						{'width':'150%','display':'inline-block'}
+					);
+
+					if(xstat=="YES"){
+						$('#mySIRef').modal('show');
 					}
-                });
+                },
+                error: function (req, status, err) {
+					//alert();
+					console.log('Something went wrong', status, err);
+					$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
+				}
+            });
 			
 			
 			
@@ -1878,69 +1940,92 @@ function opengetdet(valz){
 
 	$('#InvListHdr').html("Quote List: " + $('#txtcust').val() + " | Quote Details: " + drno + "<div id='loadimg'><center><img src='../../images/cusload.gif' style='show:none;'> </center> </div>");
 	
+	$('#MyInvDetList').DataTable().destroy();
+
 	$('#MyInvDetList tbody').empty();
 	$('#MyDRDetList tbody').empty();
 		
 	$('#loadimg').show();
 	
-			var salesnos = "";
-			var cnt = 0;
+	var salesnos = "";
+	var cnt = 0;
 			
-			$("#MyTable > tbody > tr").each(function() {
-				myxref = $(this).find('input[type="hidden"][name="txtcreference"]').val();
+	$("#MyTable > tbody > tr").each(function() {
+		myxref = $(this).find('input[type="hidden"][name="txtcreference"]').val();
 				
-				if(myxref == drno){
-					cnt = cnt + 1;
+		if(myxref == drno){
+			cnt = cnt + 1;
 					
-				  if(cnt>1){
-					  salesnos = salesnos + ",";
-				  }
+			if(cnt>1){
+				salesnos = salesnos + ",";
+			}
 							  
-					salesnos = salesnos +  $(this).find('input[type="hidden"][name="hdnrefident"]').val();
-				}
+			salesnos = salesnos +  $(this).find('input[type="hidden"][name="hdnrefident"]').val();
+		}
 				
-			});
+	});
 
-					//alert('th_sinumdet.php?x='+drno+"&y="+salesnos+"&itmbal="+xChkBal);
-					$.ajax({
-              url: 'th_qolistdet.php',
-							data: 'x='+drno+"&y="+salesnos+"&itmbal="+xChkBal,
-              dataType: 'json',
-              method: 'post',
-              success: function (data) {
-                       // var classRoomsTable = $('#mytable tbody');
-								$("#allbox").prop('checked', false); 
+	//alert('th_sinumdet.php?x='+drno+"&y="+salesnos+"&itmbal="+xChkBal);
+	$.ajax({
+        url: 'th_qolistdet.php',
+			data: 'x='+drno+"&y="+salesnos+"&itmbal="+xChkBal,
+            dataType: 'json',
+            method: 'post',
+            success: function (data) {
+            // var classRoomsTable = $('#mytable tbody');
+				$("#allbox").prop('checked', false); 
 								
-									console.log(data);
-									$.each(data,function(index,item){
-										if(item.citemno==""){
-											alert("NO more items to add!")
-										}
-										else{
+				console.log(data);
+				$.each(data,function(index,item){
+					if(item.citemno==""){
+						alert("NO more items to add!")
+					}
+					else{
 										
-											if (item.nqty>=1){
-												$("<tr>").append(
-												$("<td>").html("<input type='checkbox' value='"+item.id+"' name='chkSales[]' data-id=\""+drno+"\">"),
-												$("<td>").text(item.citemno),
-												$("<td>").text(item.cdesc),
-												$("<td>").text(item.cunit),
-												$("<td>").text(item.nqty)
-												).appendTo("#MyInvDetList tbody");
-											}
-										}
-									});
-              },
-							complete: function(){
-								$('#loadimg').hide();
-							},
-              error: function (req, status, err) {
-								//alert('Something went wrong\nStatus: '+status +"\nError: "+err);
-								console.log('Something went wrong', status, err);
-								$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
-								$("#alertbtnOK").show();
-								$("#AlertModal").modal('show');
-              }
-        	});
+						if (item.nqty>=1){
+							$("<tr>").append(
+								$("<td align='center'>").html("<input type='checkbox' value='"+item.id+"' name='chkSales[]' data-id=\""+drno+"\">"),
+								$("<td>").text(item.citemno),
+								$("<td>").text(item.cdesc),
+								$("<td>").text(item.cunit),
+								$("<td>").text(item.nqty),
+								$("<td align='right'>").text(item.nprice),
+								$("<td align='right'>").text(item.namount)
+							).appendTo("#MyInvDetList tbody");
+						}
+					}
+				});
+
+				$('#MyInvDetList').DataTable({
+					"bPaginate": false,
+					"bLengthChange": false,
+					"bFilter": true,
+					"bInfo": false,
+					"bAutoWidth": false,
+					"dom": '<"pull-left"f><"pull-right"l>tip',
+					language: {
+						search: "",
+						searchPlaceholder: "Search Item "
+					}
+				});
+
+				$('.dataTables_filter input').addClass('form-control input-sm');
+				$('.dataTables_filter input').css(
+					{'width':'150%','display':'inline-block'}
+				);
+
+            },
+			complete: function(){
+				$('#loadimg').hide();
+			},
+            error: function (req, status, err) {
+				//alert('Something went wrong\nStatus: '+status +"\nError: "+err);
+				console.log('Something went wrong', status, err);
+				$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
+            }
+        });
 
 }
 
@@ -1948,47 +2033,48 @@ function InsertSI(){
 
 	//checkcurrency muna
 	//$("#selbasecurr").val(currcode).change();
-				//$("#basecurrval").val(currrate);
+	//$("#basecurrval").val(currrate);
 	if($("#hdncurr").val()!=""){
 		$("#selbasecurr").val($("#hdncurr").val()).change();
 		$("#basecurrval").val($("#hdncurrate").val());
 	}
 
 	
-   $("input[name='chkSales[]']:checked").each( function () {	   
+   	$("input[name='chkSales[]']:checked").each( function () {	   
 				
-				  var tranno = $(this).data("id");
-	   			var id = $(this).val();
+		var tranno = $(this).data("id");
+	   	var id = $(this).val();
 
-	   			$.ajax({
-					url : "th_qolistput.php?id=" + tranno + "&itm=" + id + "&itmbal=" + xChkBal ,
-					type: "GET",
-					dataType: "JSON",
-					success: function(data)
-					{	
-					    console.log(data);
-              $.each(data,function(index,item){
+	   	$.ajax({
+			url : "th_qolistput.php?id=" + tranno + "&itm=" + id + "&itmbal=" + xChkBal ,
+			type: "GET",
+			dataType: "JSON",
+			success: function(data)
+			{	
+				console.log(data);
+              	$.each(data,function(index,item){
 						
-							$('#txtprodnme').val(item.desc); 
-							$('#txtprodid').val(item.id); 
-							$("#hdnunit").val(item.cunit); 
-							$("#hdnqty").val(item.nqty);
-							$("#hdnqtyunit").val(item.cqtyunit);
-							$("#hdnvat").val(item.cqtyunit);
+					$('#txtprodnme').val(item.desc); 
+					$('#txtprodid').val(item.id); 
+					$("#hdnunit").val(item.cunit); 
+					$("#hdnqty").val(item.nqty);
+					$("#hdnqtyunit").val(item.cqtyunit);
+					$("#hdnvat").val(item.ctaxcode);
+					$("#hdnmakebuy").val(item.makebuy);
 
-							//alert(item.cqtyunit + ":" + item.cunit);
-							//myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident)
-							addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.nident)
+					//alert(item.cqtyunit + ":" + item.cunit);
+					//myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident)
+					addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.nident)
 											   
-					   });
-						
-					},
-					error: function (jqXHR, textStatus, errorThrown)
-					{
-						alert(jqXHR.responseText);
-					}
-					
 				});
+						
+			},
+			error: function (jqXHR, textStatus, errorThrown)
+			{
+				alert(jqXHR.responseText);
+			}
+					
+		});
 
    });
    //alert($("#hdnQuoteNo").val());
@@ -2107,14 +2193,14 @@ function chkform(){
 		var crem = $("#txtremarks").val();
 		var ddate = $("#date_delivery").val();
 		var dpodate = $("#date_PO").val();
-		var ngross = $("#txtnGross").val().replace(/,/g,'');
+		var ngross = $("#txtnGross").val();
 		var csitype = $("#selsityp").val(); 
 		var custpono = $("#txtcPONo").val();
 
 		var ncurrcode = $("#selbasecurr").val();
 		var ncurrdesc = $("#selbasecurr option:selected").text();
 		var ncurrrate = $("#basecurrval").val();
-		var nbasegross = $("#txtnBaseGross").val().replace(/,/g,'');
+		var nbasegross = $("#txtnBaseGross").val();
 
 		$("#hidcurrvaldesc").val($("#selbasecurr option:selected").text());
 

@@ -85,7 +85,8 @@ require_once "../../Connection/connection_string.php";
 	}
 
 	//get all quotation
-	$resq = mysqli_query ($con, "Select A.*, B.cvattype From quote_t A left join quote B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and A.ctranno = '".$_REQUEST['x']."'".$qry);
+	@$arrresq = array();
+	$resq = mysqli_query ($con, "Select A.*, B.cvattype, B.ccurrencycode From quote_t A left join quote B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and A.ctranno = '".$_REQUEST['x']."'".$qry);
 	if (mysqli_num_rows($resq)!=0){
 		while($row = mysqli_fetch_array($resq, MYSQLI_ASSOC)){
 			@$arrresq[]=$row;
@@ -113,45 +114,51 @@ require_once "../../Connection/connection_string.php";
 	}
 
 	$json2 = array();
-	foreach($arrresq as $row){
+	if(count($arrresq) > 0){
+		foreach($arrresq as $row){
 
-		//Serach item if existing in SO
-		$inarray = "No";
-		$nqty2 = 0;
-		foreach(@$arrinv as $rsibnv){
-			if($row['ctranno']==$rsibnv['creference']){
-				if($row['citemno']==$rsibnv['citemno'] && $row['nident']==$rsibnv['nrefident']){
-					$nqty2 = $rsibnv['nqty']; 
+			//Serach item if existing in SO
+			$inarray = "No";
+			$nqty2 = 0;
+			foreach(@$arrinv as $rsibnv){
+				if($row['ctranno']==$rsibnv['creference']){
+					if($row['citemno']==$rsibnv['citemno'] && $row['nident']==$rsibnv['nrefident']){
+						$nqty2 = $rsibnv['nqty']; 
+					}
 				}
 			}
-		}
 
-		//if for inventory cheking, search sa inventory if exist
-		$availinvtory = 1;
-		if($avail==0){
-			foreach(@$arrinventiry as $rxinv){
-				if($row['citemno']==$rxinv['citemno']){
-					$availinvtory = $rxinv['nqty']; 
+			//if for inventory cheking, search sa inventory if exist
+			$availinvtory = 1;
+			if($avail==0){
+				foreach(@$arrinventiry as $rxinv){
+					if($row['citemno']==$rxinv['citemno']){
+						$availinvtory = $rxinv['nqty']; 
+					}
 				}
 			}
-		}
 
-			$nqty1 = $row['nqty'];
-			$xremain = $nqty1 - $nqty2;
-			if($xremain>0){
+				$nqty1 = $row['nqty'];
+				$xremain = $nqty1 - $nqty2;
+				if($xremain>0){
+			
+					$json['id'] = $row['nident'];
+					$json['citemno'] = $row['citemno'];
+					$json['cdesc'] = @$arritmdesc[$row['citemno']];
+					$json['cunit'] = $row['cunit'];
+					$json['nqty'] = $nqty1 - $nqty2;
+					$json['navail'] = $availinvtory;
+					$json['cunit'] = $row['cunit'];
+					$json['nprice'] = number_format($row['nprice'],4);
+					$json['namount'] = number_format($row['namount'],2); 
+					$json['ccurrencycode'] = $row['ccurrencycode'];
+					$json2[] = $json;
+
+				}
+
+		//}
 		
-				$json['id'] = $row['nident'];
-				$json['citemno'] = $row['citemno'];
-				$json['cdesc'] = @$arritmdesc[$row['citemno']];
-				$json['cunit'] = $row['cunit'];
-				$json['nqty'] = $nqty1 - $nqty2;
-				$json['navail'] = $availinvtory;
-				$json2[] = $json;
-
-			}
-
-	//}
-	
+		}
 	}
 
 

@@ -1,8 +1,8 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-require_once "../Connection/connection_string.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	require_once "../Connection/connection_string.php";
 
 	$company = $_SESSION['companyid'];
 
@@ -18,7 +18,6 @@ require_once "../Connection/connection_string.php";
 			$rowvat = mysqli_fetch_assoc($resvat);
 			
 			 $json['chkcompvat'] = $rowvat['lcompute'];
-
 
 			//Check Customer Credit Limit
 			$rescrdlmt = mysqli_query($con,"select * from parameters where `compcode` = '$company' and `ccode` = 'CRDLIMIT'");
@@ -38,5 +37,3 @@ require_once "../Connection/connection_string.php";
 			 
 			 $json2[] = $json;
 			 echo json_encode($json2);
-
-?>

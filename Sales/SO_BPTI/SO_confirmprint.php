@@ -149,41 +149,40 @@ function PrintRed(x){
     <td colspan="4">
     
     <table width="100%" border="1" cellpadding="3">
-				<tr>
-          <th scope="col" height="30" width="20px">No.</th>
-          <th scope="col" height="30" width="150px">PO No.</th>
-          <th scope="col" height="30" width="150px">Part No.</th>
-          <th scope="col" height="30">Item Description</th>
-          <th style="text-align: center" scope="col" height="30">Qty</th>
-          <th style="text-align: center" scope="col">Unit</th>
-					<th style="text-align: center" scope="col">Need Date</th>
-					<th style="text-align: center" scope="col">Remarks</th>
+		<tr>
+          	<th scope="col" height="30" width="20px">No.</th>
+         	<th scope="col" height="30" width="150px">PO No.</th>
+          	<th scope="col" height="30" width="150px">Item Code</th>
+          	<th scope="col" height="30">Item Description</th>
+          	<th style="text-align: center" scope="col" height="30">Qty</th>
+          	<th style="text-align: center" scope="col">Unit</th>
+			<th style="text-align: center" scope="col">Need Date</th>
+			<th style="text-align: center" scope="col">Remarks</th>
         </tr>
-      <?php 
-				$sqlbody = mysqli_query($con,"select a.*,b.citemdesc from so_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$csalesno'  Order By a.nident");
+     	<?php 
+			$sqlbody = mysqli_query($con,"select a.*,b.citemdesc from so_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$csalesno'  Order By a.nident");
 
-				if (mysqli_num_rows($sqlbody)!=0) {
+			if (mysqli_num_rows($sqlbody)!=0) {
 				$cntr = 0;
 				while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
-				$cntr = $cntr + 1;
+					$cntr = $cntr + 1;
 								
-			?>
+		?>
       
-			<tr>
-          <td><?=$cntr?></td>
-          <td><?php echo strtoupper($rowbody['ditempono']);?></td>
-          <td><?php echo strtoupper($rowbody['citemno']);?></td>
-          <td><?php echo strtoupper($rowbody['citemdesc']);?></td>
-          <td style="text-align: center"><?=number_format($rowbody['nqty']);?></td>
-          <td style="text-align: center"><?php echo $rowbody['cunit'];?></td>
-					<td style="text-align: center"><?php echo $rowbody['ditemneeded'];?></td>
-					<td style="text-align: center"><?php echo $rowbody['citemremarks'];?></td>
-          
+		<tr>
+          	<td><?=$cntr?></td>
+          	<td><?php echo strtoupper($rowbody['ditempono']);?></td>
+          	<td><?php echo strtoupper($rowbody['citemno']);?></td>
+        	<td><?php echo strtoupper($rowbody['citemdesc']);?></td>
+          	<td style="text-align: center"><?=number_format($rowbody['nqty']);?></td>
+          	<td style="text-align: center"><?php echo $rowbody['cunit'];?></td>
+			<td style="text-align: center"><?php echo $rowbody['ditemneeded'];?></td>
+			<td style="text-align: center"><?php echo $rowbody['citemremarks'];?></td>         
         </tr>
-      <?php 
-		}
-		}
-	  ?>
+		<?php 
+			}
+			}
+		?>
        
 
     </table></td>

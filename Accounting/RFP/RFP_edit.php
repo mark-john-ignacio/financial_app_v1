@@ -36,7 +36,7 @@
 		}
 	
 	}else{
-		echo "NO FILES";
+		//echo "NO FILES";
 	}
 
 	//echo json_encode(@$arrname);

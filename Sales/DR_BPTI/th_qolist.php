@@ -59,7 +59,8 @@ require_once "../../Connection/connection_string.php";
 			if($remqty>=1 || count(@$arrinv)==0){
 
 			 $json['cpono'] = $row['ctranno'];
-			 $json['dcutdate'] = $row['ddate'];
+			 $json['dcutdate'] = $row['dcutdate'];
+			 $json['ccontrolno'] = $row['cpono'];
 			 $json['ngross'] = number_format($row['ngross'],2);
 			 $json2[] = $json;
 
