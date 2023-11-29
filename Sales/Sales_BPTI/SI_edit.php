@@ -172,10 +172,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
    	 	$cslstypz = $row['csalestype'];
 		$cpaytypz = $row['cpaytype'];
 		$selsiseries = $row['csiprintno'];
+		$oracleSI = $row['coracleinv'];
 		$nnetvat = $row['nnet'];
 		$nvat = $row['nvat'];
 
 		$cewtcode = $row['cewtcode'];
+
+		$cdoctype = $row['cdoctype'];
 
 		$cterms = $row['cterms'];
 
@@ -279,13 +282,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										</div> 
 									</div>
 								</td>
-								<tH width="150">Invoice Date:</tH>
+								
+								<tH width="100"><b>Oracle Invoice</b></tH>
 								<td style="padding:2px;">
 									<div class="col-xs-11 nopadding">
-											<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?=date_format(date_create($Date),'m/d/Y'); ?>" />
+										<input type='text' class="form-control input-sm" id="coracleinv" name="coracleinv" value="<?=$oracleSI?>" autocomplete="off"/>
 									</div>
 								</td>
-								
 							</tr>
 
 							<tr>
@@ -339,6 +342,19 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</div>
 								</td>   
 								
+								<tH width="150">Invoice Date:</tH>
+								<td style="padding:2px;">
+									<div class="col-xs-11 nopadding">
+											<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?=date_format(date_create($Date),'m/d/Y'); ?>" />
+									</div>
+								</td>
+								
+							</tr>
+
+							<tr>
+								<tH width="100">&nbsp;Remarks:</tH>
+								<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value="<?=$Remarks; ?>"></div>
+								</td>	
 								<td><b>Sales Type:</b></td>
 								<td style="padding:2px">
 													
@@ -352,14 +368,19 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									<div class="col-xs-1 nopadding">
 										&nbsp;
 									</div>
-								</td>
-								
-							</tr>
-
-							<tr>
-								<tH width="100">&nbsp;Remarks:</tH>
-								<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value="<?=$Remarks; ?>"></div>
 								</td>	
+							</tr>
+						
+							<tr>
+								<tH width="100">Reference:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-2 nopadding">
+										<input type="text" class="form-control input-sm" id="txtrefmod" name="txtrefmod" readonly value="<?=$refmods?>">
+									</div> 
+									<div class="col-xs-9 nopadwleft">
+										<input type="text" class="form-control input-sm" id="txtrefmodnos" name="txtrefmodnos" readonly value="<?=$refmodstran?>">
+									</div>
+								</td>		
 								<?php
 									if($nicomeaccount=="si"){
 								?>
@@ -378,22 +399,23 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</div>
 								</td>
 								<?php
-										}else{
-											echo "<th width=\"100\">&nbsp;</th><td style=\"padding:2px\"><input type=\"hidden\" id=\"selpaytyp\" name=\"selpaytyp\" value=\"Credit\"></td>";
-										}
-									?>	
+									}else{
+										echo "<th width=\"100\">&nbsp;</th><td style=\"padding:2px\"><input type=\"hidden\" id=\"selpaytyp\" name=\"selpaytyp\" value=\"Credit\"></td>";
+									}
+								?>
+														
 							</tr>
-						
+
 							<tr>
-								<tH width="100">Reference:</tH>
-								<td style="padding:2px">
-									<div class="col-xs-2 nopadding">
-										<input type="text" class="form-control input-sm" id="txtrefmod" name="txtrefmod" readonly value="<?=$refmods?>">
-									</div> 
-									<div class="col-xs-9 nopadwleft">
-										<input type="text" class="form-control input-sm" id="txtrefmodnos" name="txtrefmodnos" readonly value="<?=$refmodstran?>">
+								<tH>DOC Type:</tH>
+								<td>
+									<div class="col-xs-5 nopadding">
+										<select class="form-control input-sm" name="seldoctype" id="seldoctype">
+											<option value="Doc1" <?=($cdoctype=="Doc1") ? "selected" : ""?>>Regular DR Format</option>	
+											<option value="Doc2" <?=($cdoctype=="Doc2") ? "selected" : ""?>>APC DR Format</option>	
+										</select>
 									</div>
-								</td>		
+								</td>
 								<tH width="100">Terms</tH>
 								<td style="padding:2px">
 									<div class="col-xs-11 nopadding">
@@ -412,10 +434,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 											?>															
 										</select>
 									</div>
-								</td>
-														
+								</td>	
 							</tr>
-
+							
 							<tr>
 								<tH>&nbsp;</tH>
 								<td style="padding:2px;">&nbsp;</td>
@@ -441,7 +462,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</div>
 								</td>	
 							</tr>
-							
+
 						</table>
 
 					</div>
@@ -498,8 +519,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										<th width="100px" style="border-bottom:1px solid #999">Discount</th>
 										<th width="150px" style="border-bottom:1px solid #999">Amount</th>
 										<!--<th width="100px" style="border-bottom:1px solid #999">Total Amt in <?//php echo $nvaluecurrbase; ?></th> -->
-										<th width="80px" style="border-bottom:1px solid #999" class="chkinctype">Acct Code</th>
-										<th width="200px" style="border-bottom:1px solid #999" class="chkinctype">Acct Title</th>
+										<th width="150px" style="border-bottom:1px solid #999">System No.</th>
+										<th width="150px" style="border-bottom:1px solid #999">PO No.</th>
 										<th style="border-bottom:1px solid #999">&nbsp;</th>
 									</tr>
 								</thead>
@@ -1089,7 +1110,7 @@ if(file_name.length != 0){
 	  }
 	  else if(e.keyCode == 45) { //Insert
 	  	if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false && $("#btnIns").is(":disabled")==false){
-			openinv();
+			openinv('DR');
 		}
 	  }
 
@@ -1310,9 +1331,9 @@ if(file_name.length != 0){
       $("#hdncvat").val(item.ctaxcode);
 			$("#hdncewt").val("");
 
-			$("#hdnacctno").val(item.cacctno); 
-			$("#hdnacctid").val(item.cacctid); 
-			$("#hdnacctdesc").val(item.cacctdesc); 
+			$("#hdnacctno").val(""); 
+			$("#hdnacctid").val(""); 
+			$("#hdnacctdesc").val(""); 
 			
 	  		addItemName("","","","","","","","","");
 			
@@ -1339,9 +1360,9 @@ if(file_name.length != 0){
           $("#hdncvat").val(data[6]);
 					$("#hdncewt").val("");
 
-					$("#hdnacctno").val(data[7]); 
-					$("#hdnacctid").val(data[8]); 
-					$("#hdnacctdesc").val(data[9]); 
+					$("#hdnacctno").val(""); 
+					$("#hdnacctid").val(""); 
+					$("#hdnacctdesc").val(""); 
 
 		if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
 			var isItem = "NO";
@@ -1670,7 +1691,7 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 	var itmqty = $("#hdnqty").val();
 	var itmunit = $("#hdnunit").val();
 	var itmccode = $("#hdnpricever").val();
-	var itmacctno = $("#hdnacctno").val(); 
+	//var itmacctno = $("#hdnacctno").val(); 
 	var itmacctid = $("#hdnacctid").val(); 
 	var itmacctnm = $("#hdnacctdesc").val();
 	
@@ -1814,7 +1835,7 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 			
 	//var tditmamount = "<td width=\"100\" nowrap> <input type='text' value='"+baseprice.toFixed(4)+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnamount\" id='txtnamount"+lastRow+"' readonly> </td>";
 
-	if($("#incmracct").val()=="item"){
+	/*if($("#incmracct").val()=="item"){
 		var tdglaccount = "<td nowrap><input type='text' value='"+itmacctid+"' class='form-control input-xs' name=\"txtacctcode\" id='txtacctcode"+lastRow+"' readonly> <input type='hidden' value='"+itmacctno+"' name=\"txtacctno\" id='txtacctno"+lastRow+"'> </td>";
 
 		var tdgltitle = "<td nowrap><input type='text' value='"+itmacctnm+"' class='cacctdesc form-control input-xs' name=\"txtacctname\" id='txtacctname"+lastRow+"'></td>";
@@ -1825,11 +1846,15 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 		var tdgltitle = "";
 		var tditmdel = "<td nowrap> <input type='hidden' value='' name=\"txtacctcode\" id='txtacctcode"+lastRow+"'> <input type='hidden' value='"+itmacctno+"' name=\"txtacctno\" id='txtacctno"+lastRow+"'>  <input type='hidden' value='' name=\"txtacctname\" id='txtacctname"+lastRow+"'> <input class='btn btn-danger btn-xs btn-block' type='button' id='del"+ itmcode +"' value='delete' data-var='"+lastRow+"'/></td>";
 
-	}
+	}*/
+
+	var tdsysno = "<td nowrap><input type='text' value='"+itmacctid+"' class='form-control input-xs' name=\"txtsytemno\" id='txtsytemno"+lastRow+"'> </td>";
+
+	var tdpono = "<td nowrap><input type='text' value='"+itmacctnm+"' class='form-control input-xs' name=\"txtposno\" id='txtposno"+lastRow+"'></td>";
 	
 	var tditmdel = "<td width=\"90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del"+ lastRow +"' value='delete' data-var='"+lastRow+"'/> &nbsp; </td>"; // <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/>
 
-	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmewts + tditmvats + tditmunit + tditmqty + tditmprice + tditmdisc + tditmbaseamount + tdglaccount + tdgltitle + tditmdel + '</tr>');
+	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmewts + tditmvats + tditmunit + tditmqty + tditmprice + tditmdisc + tditmbaseamount + tdsysno + tdpono + tditmdel + '</tr>');
 
 									$("#del"+lastRow).on('click', function() {
 										
@@ -2012,9 +2037,11 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 				var nTranAmount = document.getElementById('txtntranamount' + i);
 				var nAmount = document.getElementById('txtnamount' + i);
 
-				var cacctcode = document.getElementById('txtacctcode' + i); 
+				/*var cacctcode = document.getElementById('txtacctcode' + i); 
 				var cacctno = document.getElementById('txtacctno' + i);
-				var cacctnm = document.getElementById('txtacctname' + i);
+				var cacctnm = document.getElementById('txtacctname' + i);*/
+				var cacctno = document.getElementById('txtsytemno' + i);
+				var cacctnm = document.getElementById('txtposno' + i);
 
 				var RowInfo = document.getElementById('row_' + i + '_info');					
 				
@@ -2032,9 +2059,9 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 				nDisc.id = "txtndisc" + za;
 				nTranAmount.id = "txtntranamount" + za;
 				nAmount.id = "txtnamount" + za;
-				cacctcode.id = "txtacctcode" + za;
-				cacctno.id = "txtacctno" + za;
-				cacctnm.id = "txtacctname" + za;
+				//cacctcode.id = "txtacctcode" + za;
+				cacctno.id = "txtsytemno" + za;
+				cacctnm.id = "txtposno" + za;
 				RowInfo.id = "row_" + za + "_info";
 
 
@@ -2538,9 +2565,9 @@ function openinv(typ){
 									$("#hdncvat").val(item.ctaxcode);
 									$("#hdncewt").val("");
 
-									$("#hdnacctno").val(item.cacctno); 
-									$("#hdnacctid").val(item.cacctid); 
-									$("#hdnacctdesc").val(item.cacctdesc); 
+									$("#hdnacctno").val(""); 
+									$("#hdnacctid").val(item.systemno); 
+									$("#hdnacctdesc").val(item.cpono); 
 									
 									if(index==0){
 										$("#selbasecurr").val(item.ccurrencycode).change();
@@ -2705,11 +2732,11 @@ function loaddetails(){
 				$("#hdnunit").val(item.cunit); 
 				$("#hdnqty").val(item.nqty);
 				$("#hdnqtyunit").val(item.cqtyunit);
-       	$("#hdncvat").val(item.ctaxcode);
+       			$("#hdncvat").val(item.ctaxcode);
 				$("#hdncewt").val(item.cewtcode);
-				$("#hdnacctno").val(item.cacctno); 
-				$("#hdnacctid").val(item.cacctid); 
-				$("#hdnacctdesc").val(item.cacctdesc); 
+				$("#hdnacctno").val(""); 
+				$("#hdnacctid").val(item.citmsysno); 
+				$("#hdnacctdesc").val(item.citmposno); 
 				
 				//alert(item.citmtyp); myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident,citmcls)
 				//alert(item.ndisc);
@@ -2866,7 +2893,7 @@ function chkform(){
 		var ddate = $("#date_delivery").val();
 		var ngross = $("#txtnGross").val();
 		var selreinv = $("#selreinv").val();
-    var selsitypz = $("#selsityp").val();
+    	var selsitypz = $("#selsityp").val();
 		var siprintno = $("#csiprintno").val();
 		var nnetvat = $("#txtnNetVAT").val(); 
 		var nvat = $("#txtnVAT").val();
@@ -2959,7 +2986,7 @@ function chkform(){
 					var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
 					var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val();
 
-						if($("#incmracct").val()=="item"){
+						/*if($("#incmracct").val()=="item"){
 							var acctcode = $(this).find('input[name="txtacctcode"]').val();
 							var acctid = $(this).find('input[name="txtacctno"]').val();
 							var acctname = $(this).find('input[name="txtacctname"]').val();
@@ -2971,7 +2998,10 @@ function chkform(){
 							var acctcode = "";
 							var acctid = $("#hdncacctcodesalescr").val();
 							var acctname = "";
-						}
+						}*/
+
+						var itmsysno = $(this).find('input[name="txtsytemno"]').val();
+						var itmposno = $(this).find('input[name="txtposno"]').val();
 
 						if(nqty!==undefined){
 							nqty = nqty.replace(/,/g,'');
@@ -2987,7 +3017,7 @@ function chkform(){
 
 						$.ajax ({
 							url: "SI_newsavedet.php",
-							data: { trancode: trancode, crefno: crefno, crefident:crefident, indx:$xinx, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, ndiscount:ndiscount, ntranamt:ntranamt, namt:namt, mainunit:mainunit, nfactor:nfactor, ccode:ccode, vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate, acctid: acctid },
+							data: { trancode: trancode, crefno: crefno, crefident:crefident, indx:$xinx, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, ndiscount:ndiscount, ntranamt:ntranamt, namt:namt, mainunit:mainunit, nfactor:nfactor, ccode:ccode, vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate, itmsysno: itmsysno, itmposno: itmposno },
 							async: false,
 							success: function( data ) {
 
