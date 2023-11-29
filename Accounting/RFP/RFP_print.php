@@ -497,7 +497,7 @@ function numberTowords($num)
 
         </table>
 				-->
-      <div style="padding-top: 20px !important"><i>Amount in words: </i> <?=strtoupper(numberTowords($forpay));?></div>
+      <div style="padding-top: 20px !important"><i>Amount in words: </i> <?=strtoupper(numberTowords($tottopay));?></div>
 		</td>
 	</tr>
   <tr>
