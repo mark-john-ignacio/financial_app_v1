@@ -1966,9 +1966,9 @@ function chkform(){
 				}
 			}
 			
-			if(myprice == 0 || myprice == ""){
-				msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero amount is not allowed: row " + index;	
-			}
+			//if(myprice == 0 || myprice == ""){
+				//msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero amount is not allowed: row " + index;	
+			//}
 
 		});
 		

@@ -54,6 +54,7 @@ else {
 	$selsitypz = $_REQUEST['selsityp']; 
 	$selpaytyp = $_REQUEST['selpaytyp']; 
 	$selsiseries = chkgrp($_REQUEST['csiprintno']);  
+	$coraclesi = chkgrp($_REQUEST['coracleinv']);  
 	$nnetvat = str_replace(",","",$_REQUEST['txtnNetVAT']);
 	$nvat = str_replace(",","",$_REQUEST['txtnVAT']);
 
@@ -72,6 +73,8 @@ else {
 	
 	$RefMods= $_REQUEST['txtrefmod']; 
 	$RefModsNo= $_REQUEST['txtrefmodnos']; 
+
+	$cDocType = $_REQUEST['seldoctype']; 
 	
 	$preparedby = $_SESSION['employeeid'];
 	$cacctcode = "NULL";
@@ -87,7 +90,7 @@ else {
 	
 	//INSERT HEADER
 
-	if (!mysqli_query($con, "INSERT INTO sales(`compcode`, `ctranno`, `ccode`, `cterms`, `cremarks`, `ddate`, `dcutdate`, `ngross`, `nbasegross`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `nnet`, `nvat`, `cpreparedby`, `cacctcode`, `cvatcode`, `csalestype`, `cpaytype`, `csiprintno`, `crefmodule`, `crefmoduletran`, `cewtcode`) values('$company', '$cSINo', '$cCustID', '$cterms', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate', '$nnetvat', '$nvat', '$preparedby', $cacctcode, $cvatcode, '$selsitypz', '$selpaytyp', $selsiseries, '$RefMods', '$RefModsNo', '$cewtcode')")) {
+	if (!mysqli_query($con, "INSERT INTO sales(`compcode`, `ctranno`, `ccode`, `cterms`, `cremarks`, `ddate`, `dcutdate`, `ngross`, `nbasegross`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `nnet`, `nvat`, `cpreparedby`, `cacctcode`, `cvatcode`, `csalestype`, `cpaytype`, `csiprintno`, `crefmodule`, `crefmoduletran`, `cewtcode`, `coracleinv`, `cdoctype`) values('$company', '$cSINo', '$cCustID', '$cterms', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate', '$nnetvat', '$nvat', '$preparedby', $cacctcode, $cvatcode, '$selsitypz', '$selpaytyp', $selsiseries, '$RefMods', '$RefModsNo', '$cewtcode', $coraclesi, '$cDocType')")) {
 		echo "False";
 		echo mysqli_error($con);
 	} 
