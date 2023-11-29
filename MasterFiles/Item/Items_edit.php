@@ -1,4 +1,4 @@
-<?php
+ <?php
     if(!isset($_SESSION)){
         session_start();
     }
@@ -1410,6 +1410,7 @@ function chkGroupVal(){
 
 			var nme = "cGroup"+r;
 			
+           // alert("th_checkexistgroup.php?id="+nme);
 			$.ajax ({
             url: "../th_checkexistgroup.php",
 			data: { id: nme },
@@ -1427,6 +1428,7 @@ function chkGroupVal(){
 
 
 function loadgroupvalues(){
+
 		$(".txtcgroup").each(function(i, obj) {
 			
 		   var id = $(this).attr("id");
@@ -1435,6 +1437,8 @@ function loadgroupvalues(){
 		   var nme = "cGroup"+r;
 		   var citmno = $("#txtcpartno").val();
 			
+          // alert("th_loadgroupvalue.php?id="+r+"&grpno="+nme+"&itm="+citmno);
+
 			$.ajax ({
             url: "../th_loadgroupvalue.php",
 			data: { id: r, grpno: nme, itm: citmno },

@@ -6,7 +6,6 @@ Rounded corners reset
 ***/
 /* Reset rounded corners for all elements */
 div,
-input,
 select,
 textarea,
 span,
@@ -25,6 +24,12 @@ li {
   -webkit-border-radius: 0 !important;
   -moz-border-radius: 0 !important;
   border-radius: 0 !important;
+}
+
+input{
+  -webkit-border-radius: 0 !important;
+  -moz-border-radius: 0 !important;
+  border-radius: 3px !important;
 }
 
 /* except below bootstrap elements */
@@ -1822,8 +1827,8 @@ Dropdown Menu
 .dropdown-menu .active > a:hover {
   text-decoration: none;
   background-image: none;
-  background-color: #f6f6f6;
-  color: #555;
+  background-color: #337ab7;
+  color: #151212;
   filter: none;
 }
 .dropdown-menu.bottom-up {
@@ -2371,16 +2376,16 @@ Forms
 .form-control {
   font-size: 14px;
   font-weight: normal;
-  color: #333333;
+  color: #202020;
   background-color: white;
-  border: 1px solid #e5e5e5;
+  border: 1px solid #b3b1b1;
   -webkit-box-shadow: none;
   box-shadow: none;
   -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
   transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }
 .form-control:focus {
-  border-color: #999999;
+  border-color: rgb(143, 223, 247), 153, 153);
   outline: 0;
   -webkit-box-shadow: none;
   box-shadow: none;
@@ -2388,7 +2393,9 @@ Forms
 .form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
   cursor: not-allowed;
   background-color: #eeeeee;
+  color: #202020;
 }
+
 .form-control.height-auto {
   height: auto;
 }
@@ -3612,7 +3619,7 @@ Portlets
 }
 .portlet > .portlet-title > .caption > i {
   float: left;
-  margin-top: 4px;
+  margin-top: 2px;
   display: inline-block;
   font-size: 13px;
   margin-right: 5px;
@@ -3628,6 +3635,13 @@ Portlets
   color: #9eacb4;
   font-size: 13px;
   font-weight: 400;
+}
+.portlet > .portlet-title > .status {
+  float: right;
+  display: inline-block;
+  padding: 6px 20px;
+  font-size: 16px;
+  font-weight: 700;
 }
 .portlet > .portlet-title > .actions {
   float: right;
@@ -3863,7 +3877,7 @@ Portlets
 
 /* Light Portlet */
 .portlet.light {
-  padding: 12px 20px 15px 20px;
+  padding: 12px 10px 15px 10px;
   background-color: #fff;
 }
 .portlet.light.bordered {

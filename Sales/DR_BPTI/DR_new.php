@@ -34,30 +34,37 @@
 
 	<title>Myx Financials</title>
     
-	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
-    <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
-   <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
-    
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
-<script src="../../Bootstrap/js/jquery.numeric.js"></script>
-<script src="../../Bootstrap/js/jquery.inputlimiter.min.js"></script>
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+   	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
+   	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+   	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+   	<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
 
-<script src="../../Bootstrap/js/bootstrap.js"></script>
-<script src="../../Bootstrap/js/moment.js"></script>
-<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+	<link href="../../global/css/components.css?t=<?php echo time();?>" id="style_components" rel="stylesheet" type="text/css"/>
 
-<!--
---
--- FileType Bootstrap Scripts and Link
---
--->
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
-<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
-<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
-<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
-<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
-<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
+	<script src="../../Bootstrap/js/jquery.numeric.js"></script>
+	<script src="../../Bootstrap/js/jquery.inputlimiter.min.js"></script>
+
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<script src="../../Bootstrap/js/moment.js"></script>
+	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+
+	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
+
+	<!--
+	--
+	-- FileType Bootstrap Scripts and Link
+	--
+	-->
+	<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
 
 </head>
 
@@ -65,22 +72,23 @@
 <input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
 
 	<form action="SO_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;" enctype="multipart/form-data">
-		<fieldset>
-    	<legend>New Delivery Receipt</legend>
-		
-				<div class="col-xs-12 nopadwdown"><b>Delivery Information</b></div>
-				<!-- 
-				-- Navigators
-				-->
+		<div class="portlet">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-truck"></i>New Delivery Receipt
+				</div>
+			</div>
+			<div class="portlet-body">
+
 				<ul class="nav nav-tabs">
-						<li class="active"><a href="#home">Order Details</a></li>
-						<li><a href="#menu1">Delivered To</a></li>
+					<li class="active"><a href="#home">Order Details</a></li>
+					<li><a href="#menu1">Delivered To</a></li>
 					<li><a href="#attach_pane">Attachments</a></li>
 				</ul>
 	
-				<div class="tab-content">
+				<div class="tab-content" style="margin-bottom: 10px">
 
-         	<div id="home" class="tab-pane fade in active" style="padding-left:5px; padding-top:10px">
+         			<div id="home" class="tab-pane fade in active" style="padding-left:5px; padding-top:10px">
 			 
 						<table width="100%" border="0">
 							<tr>
@@ -102,45 +110,43 @@
 								</div></td>
 							</tr>
 							<tr>
-								<tH width="100">&nbsp;Salesman:</tH>
-							<td style="padding:2px"><div class="col-xs-12 nopadding">
-								<div class="col-xs-3 nopadding">
-									<input type="text" id="txtsalesmanid" name="txtsalesmanid" class="form-control input-sm" placeholder="Customer Code..." tabindex="3">
-								</div>
-								<div class="col-xs-8 nopadwleft">
-									<input type="text" class="form-control input-sm" id="txtsalesman" name="txtsalesman" width="20px" tabindex="3" placeholder="Search Salesman Name..."  size="60" autocomplete="off">
-								</div>
-								</div></td>
+								<tH width="100">&nbsp;Remarks:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-11 nopadding">
+										<input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="5">
+
+										<input type="hidden" id="txtsalesmanid" name="txtsalesmanid">
+										<input type="hidden" id="txtsalesman" name="txtsalesman">
+									</div>
+								</td>
 								<tH>DR Reference:</tH>
 								<td style="padding:2px;"><div class="col-xs-10 nopadding">
 								<input type='text' class="form-control input-sm" id="cdrapcdr" name="cdrapcdr" value="" autocomplete="off" tabindex="2" />
 								</div></td>
 							</tr>
-								<tr>
-									<tH width="100">&nbsp;Remarks:</tH>
-							<td style="padding:2px"><div class="col-xs-11 nopadding">
-								<input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="5">
-								</div></td>
+							<tr>
+								<td>&nbsp;</td>
+								<td>
+									<div class="col-xs-8 nopadding">
+									</div>
+									<div class="col-xs-3 nopadwright">
+										<input type="text" class="form-control input-sm" id="txtsoref" name="txtsoref" width="20px" tabindex="6" placeholder="Reference SO">
+									</div>
+								</td>
 								<tH>DR Series No.:</tH>
 								<td style="padding:2px;"><div class="col-xs-10 nopadding">
 								<input type='text' class="form-control input-sm" id="cdrprintno" name="cdrprintno" value="" autocomplete="off" tabindex="2" />
 								</div></td>
 							</tr>
-								<tr>
-									<td>&nbsp;</td>
-								<td>
-								<div class="col-xs-8 nopadding">
-								</div>
-								<div class="col-xs-3 nopadwright">
-										<input type="text" class="form-control input-sm" id="txtsoref" name="txtsoref" width="20px" tabindex="6" placeholder="Reference SO">
+							<tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<tH width="150">Delivery Date:</tH>
+								<td style="padding:2px;">
+									<div class="col-xs-10 nopadding">
+										<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $ddeldate; ?>" tabindex="4"  />
 									</div>
-							</td>
-							<tH width="150">Delivery Date:</tH>
-							<td style="padding:2px;">
-							<div class="col-xs-10 nopadding">
-								<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $ddeldate; ?>" tabindex="4"  />
-							</div>
-							</td>
+								</td>
 							</tr>
 							<!--
 							<tr>
@@ -231,31 +237,29 @@
 
 				</div>
 
-				<hr>
-				<div class="col-xs-12 nopadwdown"><b>Details</b></div>
+				<div class="portlet light bordered">
+					<div class="portlet-title">
+						<div class="caption">
+							<i class="fa fa-cogs"></i>Details
+						</div>						
+					</div>
+					<div class="portlet-body" style="overflow: auto">
+						<div style="min-height: 30vh;">
 						
-				<ul class="nav nav-tabs">
-					<li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Items List</a></li>
-					<li id="liacct"><a href="#2Acct" data-toggle="tab">Items Inventory</a></li>
-				</ul>
+							<ul class="nav nav-tabs">
+								<li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Items List</a></li>
+								<li id="liacct"><a href="#2Acct" data-toggle="tab">Items Inventory</a></li>
+							</ul>
 
-				<div class="tab-content nopadwtop2x">
-					<div class="tab-pane active" id="1Det">
+							<div class="tab-content nopadwtop2x">
+								<div class="tab-pane active" id="1Det">
 
-							<div class="alt2" dir="ltr" style="
-								margin: 0px;
-								padding: 3px;
-								border: 1px solid #919b9c;
-								width: 100%;
-								height: 250px;
-								text-align: left;
-								overflow: auto">
 									<input type="hidden" name="hdnqty" id="hdnqty">
-										<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
-										<input type="hidden" name="hdnunit" id="hdnunit">
-												<input type="hidden" id="txtprodid" name="txtprodid">
-												<input type="hidden" id="txtprodnme" name="txtprodnme">
-						
+									<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
+									<input type="hidden" name="hdnunit" id="hdnunit">
+									<input type="hidden" id="txtprodid" name="txtprodid">
+									<input type="hidden" id="txtprodnme" name="txtprodnme">
+									
 									<table id="MyTable" class="MyTable table table-condensed" width="100%">
 										<thead>
 											<tr>
@@ -276,41 +280,35 @@
 									</table>
 
 								</div>
-						</div>
 
-						<div class="tab-pane" id="2Acct">
+								<div class="tab-pane" id="2Acct">
+										
+									<table id="MyTableInvSer" cellpadding="3px" width="100%" border="0">
+										<thead>
+											<tr>
+																			
+												<th style="border-bottom:1px solid #999">Item Code</th>
+												<th style="border-bottom:1px solid #999">Serial No.</th>
+												<th style="border-bottom:1px solid #999">UOM</th>
+												<th style="border-bottom:1px solid #999">Qty</th>
+												<th style="border-bottom:1px solid #999">Location</th>
+												<th style="border-bottom:1px solid #999">Expiration Date</th>
+												<th style="border-bottom:1px solid #999">Remarks</th>
+												<th style="border-bottom:1px solid #999">&nbsp;</th>
+											</tr>
+										</thead>
+										<tbody>
+										</tbody>																		
+									</table>
+									<input type="hidden" name="hdnserialscnt" id="hdnserialscnt">
+								</div>
+							</div>
 
-									<div class="alt2" dir="ltr" style="
-															margin: 0px;
-															padding: 3px;
-															border: 1px solid #919b9c;
-															width: 100%;
-															height: 250px;
-															text-align: left;
-															overflow: auto">
-							
-											<table id="MyTableInvSer" cellpadding="3px" width="100%" border="0">
-												<thead>
-															<tr>
-																
-																	<th style="border-bottom:1px solid #999">Item Code</th>
-																	<th style="border-bottom:1px solid #999">Serial No.</th>
-																	<th style="border-bottom:1px solid #999">UOM</th>
-																	<th style="border-bottom:1px solid #999">Qty</th>
-																	<th style="border-bottom:1px solid #999">Location</th>
-																	<th style="border-bottom:1px solid #999">Expiration Date</th>
-										<th style="border-bottom:1px solid #999">Remarks</th>
-																	<th style="border-bottom:1px solid #999">&nbsp;</th>
-															</tr>
-												</thead>
-												<tbody>
-												</tbody>
-															
-											</table>
-												<input type="hidden" name="hdnserialscnt" id="hdnserialscnt">
-										</div>
 						</div>
+					</div>
+
 				</div>
+
 
 				<br>
 				<table width="100%" border="0" cellpadding="3">
@@ -320,7 +318,7 @@
 							Back to Main<br>(ESC)
 						</button>
 
-						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
+						<button type="button" class="btn purple btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
 							SO<br>(Insert)
 						</button>
 
@@ -335,216 +333,186 @@
 						</tr>
 				</table>
 
-    </fieldset>
-    
-    	<div class="modal fade" id="MyDetModal" role="dialog">
-    		<div class="modal-dialog modal-lg">
-        	<div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close"  aria-label="Close"  onclick="chkCloseInfo();"><span aria-hidden="true">&times;</span></button>
-              <h3 class="modal-title" id="invheader"> Additional Details Info</h3>           
-						</div>
-    
-            <div class="modal-body">
+			</div>
+		</div>
 
-              <input type="hidden" name="hdnrowcnt2" id="hdnrowcnt2">
-              <table id="MyTable2" class="MyTable table table-condensed" width="100%">
+	</form>
+
+	<!-- FULL PO LIST REFERENCES-->
+
+	<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
+		<div class="modal-dialog modal-full">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h3 class="modal-title" id="InvListHdr">PO List</h3>
+				</div>
+									
+				<div class="modal-body" style="height:45vh">
+									
+					<div class="col-xs-12 nopadding">
+						<div class="form-group">
+							<div class="col-xs-4 pre-scrollable" style="height:42vh; border-right: 2px solid #ccc">
+								<table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight">
+									<thead>
+										<tr>
+											<th nowrap>SO No</th>
+											<th nowrap>Control No.</th>
+											<th nowrap>Del Date</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+
+							<div class="col-xs-8 pre-scrollable" style="height:42vh; border-right: 2px solid #ccc">
+								<table name='MyInvDetList' id='MyInvDetList' class="table table-small">
+									<thead>
+										<tr>
+											<th style="text-align: center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
+											<th>Item No</th>
+											<th>Description</th>
+											<th>UOM</th>
+											<th>Qty</th>
+										</tr>
+									</thead>
+									<tbody>
+																			
+									</tbody>
+								</table>
+							</div>
+						</div>
+
+					</div>														
+				</div>
+						
+				<div class="modal-footer">
+					<button type="button" id="btnInsDet" onClick="InsertSI()" class="btn btn-primary">Insert</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	<!-- End FULL INVOICE LIST -->
+
+
+	<!-- 1) Alert Modal -->
+	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+				<div class="alert-modal-danger">
+					<p id="AlertMsg"></p>
+					<p>
+						<center>
+							<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+						</center>
+					</p>
+				</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="SerialMod" role="dialog" data-keyboard="false" data-backdrop="static">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="InvSerDetHdr">Inventory Detail</h4>
+					<input type="hidden" class="form-control input-sm" name="serdisitmcode" id="serdisitmcode"> 
+					<input type="hidden" class="form-control input-sm" name="serdisrefident" id="serdisrefident">
+				</div>
+				
+				<div class="modal-body" style="height:20vh">
+								
+					<div class="row">
+						<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Required Qty:</b></div>
+						<div class="col-xs-1 nopadwtop" id="htmlserqtyneed"><input type="hidden" name="hdnserqtyneed" id="hdnserqtyneed"></div>
+						<div class="col-xs-1 nopadwtop" id="htmlserqtyuom"><input type="hidden" name="hdnserqtyuom" id="hdnserqtyuom"></div>
+					</div>
+									
+					<div class="row nopadwtop2x">
+						<div class="col-xs-12">
+
+							<table id="MyTableSerials" cellpadding="3px" width="100%" border="0">
 								<thead>
 									<tr>
-										<th style="border-bottom:1px solid #999">Code</th>
-										<th style="border-bottom:1px solid #999">Description</th>
-										<th style="border-bottom:1px solid #999">Field Name</th>
-										<th style="border-bottom:1px solid #999">Value</th>
-										<th style="border-bottom:1px solid #999">&nbsp;</th>
+										<th style="border-bottom:1px solid #999">Serial No.</th>	                            
+										<th style="border-bottom:1px solid #999">Location</th>
+										<th style="border-bottom:1px solid #999">Exp. Date</th>
+										<th style="border-bottom:1px solid #999">Qty</th>
+										<th style="border-bottom:1px solid #999">UOM</th>	
+										<th style="border-bottom:1px solid #999">Qty Picked</th>									
 									</tr>
 								</thead>
-								<tbody class="tbody">
-                </tbody>
-              </table>
-    
-						</div>
-        	</div><!-- /.modal-content -->
-    		</div><!-- /.modal-dialog -->
-			</div><!-- /.modal -->
-
-
-			<!-- FULL PO LIST REFERENCES-->
-
-			<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
-					<div class="modal-dialog modal-lg">
-							<div class="modal-content">
-									<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-											<h3 class="modal-title" id="InvListHdr">PO List</h3>
-									</div>
-									
-									<div class="modal-body" style="height:40vh">
-									
-						<div class="col-xs-12 nopadding">
-
-											<div class="form-group">
-													<div class="col-xs-4 nopadding pre-scrollable" style="height:37vh">
-																<table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight">
-																<thead>
-																	<tr>
-																		<th>SO No</th>
-																		<th>Amount</th>
-																	</tr>
-																	</thead>
-																	<tbody>
-																	</tbody>
-																</table>
-													</div>
-
-													<div class="col-xs-8 nopadwleft pre-scrollable" style="height:37vh">
-																<table name='MyInvDetList' id='MyInvDetList' class="table table-small">
-																<thead>
-																	<tr>
-																		<th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
-																		<th>Item No</th>
-																		<th>Description</th>
-																		<th>UOM</th>
-																		<th>Qty</th>
-																	</tr>
-																	</thead>
-																	<tbody>
-																		
-																	</tbody>
-																</table>
-													</div>
-										</div>
-
-							</div>
-														
-						</div>
+								<tbody>
+								</tbody>
 						
-									<div class="modal-footer">
-											<button type="button" id="btnInsDet" onClick="InsertSI()" class="btn btn-primary">Insert</button>
-											<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-
-									</div>
-							</div><!-- /.modal-content -->
-					</div><!-- /.modal-dialog -->
-			</div><!-- /.modal -->
-			<!-- End FULL INVOICE LIST -->
-
-</form>
-
-
-<!-- 1) Alert Modal -->
-<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-    <div class="vertical-alignment-helper">
-        <div class="modal-dialog vertical-align-top">
-            <div class="modal-content">
-               <div class="alert-modal-danger">
-                  <p id="AlertMsg"></p>
-                <p>
-                    <center>
-                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-                    </center>
-                </p>
-               </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="SerialMod" role="dialog" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="InvSerDetHdr">Inventory Detail</h4>
-								<input type="hidden" class="form-control input-sm" name="serdisitmcode" id="serdisitmcode"> 
-								<input type="hidden" class="form-control input-sm" name="serdisrefident" id="serdisrefident">
-            </div>
-            
-            <div class="modal-body" style="height:20vh">
-							
-								<div class="row">
-										<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Required Qty:</b></div>
-										<div class="col-xs-1 nopadwtop" id="htmlserqtyneed"><input type="hidden" name="hdnserqtyneed" id="hdnserqtyneed"></div>
-										<div class="col-xs-1 nopadwtop" id="htmlserqtyuom"><input type="hidden" name="hdnserqtyuom" id="hdnserqtyuom"></div>
-								</div>
-								
-								<div class="row nopadwtop2x"><div class="col-xs-12">
-										<table id="MyTableSerials" cellpadding="3px" width="100%" border="0">
-		    							<thead>
-		                        <tr>
-		                            <th style="border-bottom:1px solid #999">Serial No.</th>	                            
-		                            <th style="border-bottom:1px solid #999">Location</th>
-		                            <th style="border-bottom:1px solid #999">Exp. Date</th>
-		                            <th style="border-bottom:1px solid #999">Qty</th>
-									<th style="border-bottom:1px solid #999">UOM</th>	
-									<th style="border-bottom:1px solid #999">Qty Picked</th>
-									
-		                        </tr>
-		                   </thead>
-                   		 <tbody>
-                   		 </tbody>
-                        
-                </table>
-								</div></div>
-
+							</table>
 						</div>
+					</div>
 
-						<div class="modal-footer">
-								<button class="btn btn-success btn-sm" name="btnInsSer" id="btnInsSer">Insert (Enter)</button>
-								<button class="btn btn-danger btn-sm" name="btnClsSer" id="btnClsSer" data-dismiss="modal" >Close (Ctrl+X)</button>
-						</div>
 				</div>
+
+				<div class="modal-footer">
+					<button class="btn btn-success btn-sm" name="btnInsSer" id="btnInsSer">Insert (Enter)</button>
+					<button class="btn btn-danger btn-sm" name="btnClsSer" id="btnClsSer" data-dismiss="modal" >Close (Ctrl+X)</button>
+				</div>
+			</div>
 		</div>
-</div>
+	</div>
 	
 	<!-- Address List -->
-<div class="modal fade" id="MyAddModal" role="dialog">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close"  data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="invheader"> Address Lists </h3>           
-			</div>
-    
-            <div class="modal-body">
-                <table id="MyAddTble" class="table table-condensed" width="100%">
-                	<thead>
-    				<tr>
-                    	<th style="border-bottom:1px solid #999">&nbsp;</th>
-						<th style="border-bottom:1px solid #999">House No.</th>
-						<th style="border-bottom:1px solid #999">City</th>
-                        <th style="border-bottom:1px solid #999">State</th>
-						<th style="border-bottom:1px solid #999">Country</th>
-                        <th style="border-bottom:1px solid #999">Zip</th>
-                        <th style="border-bottom:1px solid #999">&nbsp;</th>
-					</tr>
-                    </thead>
-					<tbody class="tbody">
-                    </tbody>
-                </table>
-    
-			</div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+	<div class="modal fade" id="MyAddModal" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close"  data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+					<h3 class="modal-title" id="invheader"> Address Lists </h3>           
+				</div>
+		
+				<div class="modal-body">
+					<table id="MyAddTble" class="table table-condensed" width="100%">
+						<thead>
+						<tr>
+							<th style="border-bottom:1px solid #999">&nbsp;</th>
+							<th style="border-bottom:1px solid #999">House No.</th>
+							<th style="border-bottom:1px solid #999">City</th>
+							<th style="border-bottom:1px solid #999">State</th>
+							<th style="border-bottom:1px solid #999">Country</th>
+							<th style="border-bottom:1px solid #999">Zip</th>
+							<th style="border-bottom:1px solid #999">&nbsp;</th>
+						</tr>
+						</thead>
+						<tbody class="tbody">
+						</tbody>
+					</table>
+		
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
 
-<form method="post" name="frmedit" id="frmedit" action="DR_edit.php">
-	<input type="hidden" name="txtctranno" id="txtctranno" value="">
-</form>
+	<form method="post" name="frmedit" id="frmedit" action="DR_edit.php">
+		<input type="hidden" name="txtctranno" id="txtctranno" value="">
+	</form>
 
 
 </body>
 </html>
 
 <script type="text/javascript">
-var xChkBal = "";
-var xChkLimit = "";
-var xChkLimitWarn = "";
+	var xChkBal = "";
+	var xChkLimit = "";
+	var xChkLimitWarn = "";
 
-var xtoday = new Date();
-var xdd = xtoday.getDate();
-var xmm = xtoday.getMonth()+1; //January is 0!
-var xyyyy = xtoday.getFullYear();
+	var xtoday = new Date();
+	var xdd = xtoday.getDate();
+	var xmm = xtoday.getMonth()+1; //January is 0!
+	var xyyyy = xtoday.getFullYear();
 
-xtoday = xmm + '/' + xdd + '/' + xyyyy;
+	xtoday = xmm + '/' + xdd + '/' + xyyyy;
 
 	$(document).ready(function(e) {
 			$(".nav-tabs a").click(function(){
@@ -1680,11 +1648,13 @@ function setfactor(itmunit, itmcode){
 }
 
 
-function openinv(){
+	function openinv(){
 		if($('#txtcustid').val() == ""){
 			alert("Please pick a valid customer!");
 		}
 		else{
+
+			$('#MyInvTbl').DataTable().destroy();
 			
 			$("#txtcustid").attr("readonly", true);
 			$("#txtcust").attr("readonly", true);
@@ -1706,33 +1676,34 @@ function openinv(){
 			//disable escape insert and save button muna
 			
 			$.ajax({
-                    url: 'th_qolist.php',
-					          data: 'x='+x,
-                    dataType: 'json',
-                    method: 'post',
-                    success: function (data) {
-                       // var classRoomsTable = $('#mytable tbody');
-					   $("#allbox").prop('checked', false);
+                url: 'th_qolist.php',
+				data: 'x='+x,
+                dataType: 'json',
+                method: 'post',
+                success: function (data) {
+                    // var classRoomsTable = $('#mytable tbody');
+					$("#allbox").prop('checked', false);
 					   
-                       console.log(data);
-                       $.each(data,function(index,item){
+                    console.log(data);
+                    $.each(data,function(index,item){
 
 								
 						if(item.cpono=="NONE"){
-						$("#AlertMsg").html("No Sales Order Available");
-						$("#alertbtnOK").show();
-						$("#AlertModal").modal('show');
+							$("#AlertMsg").html("No Sales Order Available");
+							$("#alertbtnOK").show();
+							$("#AlertModal").modal('show');
 
 							xstat = "NO";
 							
-										$("#txtcustid").attr("readonly", false);
-										$("#txtcust").attr("readonly", false);
+							$("#txtcustid").attr("readonly", false);
+							$("#txtcust").attr("readonly", false);
 
 						}
 						else{
 							$("<tr>").append(
-							$("<td id='td"+item.cpono+"'>").text(item.cpono),
-							$("<td>").text(item.ngross)
+								$("<td id='td"+item.cpono+"'>").text(item.cpono), 
+								$("<td>").text(item.ccontrolno),
+								$("<td>").text(item.dcutdate)
 							).appendTo("#MyInvTbl tbody");
 							
 							
@@ -1745,100 +1716,138 @@ function openinv(){
 							});
 					   	}
 
-                       });
+                    });
+
+					$('#MyInvTbl').DataTable({
+						"bPaginate": false,
+						"bLengthChange": false,
+						"bFilter": true,
+						"bInfo": false,
+						"bAutoWidth": false,
+						"dom": '<"pull-left"f><"pull-right"l>tip',
+						language: {
+							search: "",
+							searchPlaceholder: "Search SO "
+						}
+					});
+
+					$('.dataTables_filter input').addClass('form-control input-sm');
+					$('.dataTables_filter input').css(
+						{'width':'150%','display':'inline-block'}
+					);
 					   
 
-					   if(xstat=="YES"){
-						   $('#mySIRef').modal('show');
-					   }
-                    },
-                    error: function (req, status, err) {
-						//alert();
-						console.log('Something went wrong', status, err);
-						$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
-						$("#alertbtnOK").show();
-						$("#AlertModal").modal('show');
-					}
-                });
+					if(xstat=="YES"){
+						$('#mySIRef').modal('show');
+					  }
+                },
+                error: function (req, status, err) {
+					//alert();
+					console.log('Something went wrong', status, err);
+					$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
+				}
+            });
 			
 			
 			
 		}
 
-}
+	}
 
-function opengetdet(valz){
-	var drno = valz;
+	function opengetdet(valz){
+		var drno = valz;
 
-	$("#txtrefSI").val(drno);
+		$("#txtrefSI").val(drno);
 
-	$('#InvListHdr').html("SO List: " + $('#txtcust').val() + " | SO Details: " + drno + "<div id='loadimg'><center><img src='../../images/cusload.gif' style='show:none;'> </center> </div>");
-	
-	$('#MyInvDetList tbody').empty();
-	$('#MyDRDetList tbody').empty();
+		$('#InvListHdr').html("SO List: " + $('#txtcust').val() + " | SO Details: " + drno + "<div id='loadimg'><center><img src='../../images/cusload.gif' style='show:none;'> </center> </div>");
 		
-	$('#loadimg').show();
-	
-			var salesnos = "";
-			var cnt = 0;
-			
-			$("#MyTable > tbody > tr").each(function() {
-				myxref = $(this).find('input[type="hidden"][name="txtcreference"]').val();
-				
-				if(myxref == drno){
-					cnt = cnt + 1;
-					
-				  if(cnt>1){
-					  salesnos = salesnos + ",";
-				  }
-							  
-					salesnos = salesnos +  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-				}
-				
-			});
+		$('#MyInvDetList').DataTable().destroy();
 
-					//alert('th_sinumdet.php?x='+drno+"&y="+salesnos);
-					$.ajax({
-                    url: 'th_qolistdet.php',
-					data: 'x='+drno+"&y="+salesnos+"&itmbal="+xChkBal,
-                    dataType: 'json',
-                    method: 'post',
-                    success: function (data) {
-                       // var classRoomsTable = $('#mytable tbody');
-					  $("#allbox").prop('checked', false); 
+		$('#MyInvDetList tbody').empty();
+		$('#MyDRDetList tbody').empty();
+			
+		$('#loadimg').show();
+	
+		var salesnos = "";
+		var cnt = 0;
+			
+		$("#MyTable > tbody > tr").each(function() {
+			myxref = $(this).find('input[type="hidden"][name="txtcreference"]').val();
+				
+			if(myxref == drno){
+				cnt = cnt + 1;
+					
+				if(cnt>1){
+					 salesnos = salesnos + ",";
+				}
+							  
+				salesnos = salesnos +  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+			}
+				
+		});
+
+		//alert('th_sinumdet.php?x='+drno+"&y="+salesnos);
+		$.ajax({
+            url: 'th_qolistdet.php',
+			data: 'x='+drno+"&y="+salesnos+"&itmbal="+xChkBal,
+            dataType: 'json',
+            method: 'post',
+            success: function (data) {
+                // var classRoomsTable = $('#mytable tbody');
+				$("#allbox").prop('checked', false); 
 					   
-                      console.log(data);
-					  $.each(data,function(index,item){
-						  if(item.citemno==""){
-							  alert("NO more items to add!")
-						  }
-						  else{
+                console.log(data);
+				$.each(data,function(index,item){
+					if(item.citemno==""){
+						alert("NO more items to add!")
+					}
+					else{
 						  
-							if (item.nqty>=1){
-								$("<tr>").append(
-								$("<td>").html("<input type='checkbox' value='"+item.id+"' name='chkSales[]' data-id=\""+drno+"\">"),
+						if (item.nqty>=1){
+							$("<tr>").append(
+								$("<td align='center'>").html("<input type='checkbox' value='"+item.id+"' name='chkSales[]' data-id=\""+drno+"\">"),
 								$("<td>").text(item.citemno),
 								$("<td>").text(item.cdesc),
 								$("<td>").text(item.cunit),
 								$("<td>").text(item.nqty)
-								).appendTo("#MyInvDetList tbody");
-							}
-					 	 }
-					 });
-                    },
-					complete: function(){
-						$('#loadimg').hide();
-					},
-                    error: function (req, status, err) {
-						//alert('Something went wrong\nStatus: '+status +"\nError: "+err);
-						console.log('Something went wrong', status, err);
- 						$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
-						$("#alertbtnOK").show();
-						$("#AlertModal").modal('show');
-                   }
-                });
+							).appendTo("#MyInvDetList tbody");
+						}
+					}
+				});
 
-}
+				$('#MyInvDetList').DataTable({
+					"bPaginate": false,
+					"bLengthChange": false,
+					"bFilter": true,
+					"bInfo": false,
+					"bAutoWidth": false,
+					"dom": '<"pull-left"f><"pull-right"l>tip',
+					language: {
+						search: "",
+						searchPlaceholder: "Search Item "
+					}
+				});
+
+				$('.dataTables_filter input').addClass('form-control input-sm');
+				$('.dataTables_filter input').css(
+					{'width':'150%','display':'inline-block'}
+				);
+            },
+			complete: function(){
+				$('#loadimg').hide();
+			},
+            error: function (req, status, err) {
+				//alert('Something went wrong\nStatus: '+status +"\nError: "+err);
+				console.log('Something went wrong', status, err);
+ 				$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
+            }
+        });
+
+	}
 
 function InsertSI(){	
 	

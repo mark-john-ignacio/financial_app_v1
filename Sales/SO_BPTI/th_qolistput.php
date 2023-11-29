@@ -50,10 +50,12 @@ require_once "../../Connection/connection_string.php";
 
 //items list
 	@$arritmdesc = array();
-	$itmlst = mysqli_query ($con, "Select * from items where compcode='$company'");	
+	@$arrgrpdesc = array();
+	$itmlst = mysqli_query ($con, "Select A.*, C.cgroupdesc from items A left join items_groups C on A.compcode=C.compcode and A.cGroup1=C.ccode and C.cgroupno='cGroup1' where A.compcode='$company'");	
 	if (mysqli_num_rows($itmlst)!=0){
 		while($row = mysqli_fetch_array($itmlst, MYSQLI_ASSOC)){
 			@$arritmdesc[$row['cpartno']]=$row['citemdesc'];
+			@$arrgrpdesc[$row['cpartno']]=$row['cgroupdesc'];
 		}
 	}
 
@@ -112,7 +114,7 @@ require_once "../../Connection/connection_string.php";
 		$nqty1 = $row['nqty'];
 		
 		 $json['id'] = $row['citemno'];
-	   $json['desc'] = @$arritmdesc[$row['citemno']]; //$row['citemdesc'];	
+	  	 $json['desc'] = @$arritmdesc[$row['citemno']]; //$row['citemdesc'];	
 		 $json['nqty'] = $availinvtory;
 		 $json['totqty'] = $nqty1 - $nqty2;
 		 $json['cqtyunit'] = $row['cmainunit'];
@@ -120,10 +122,11 @@ require_once "../../Connection/connection_string.php";
 		 $json['nfactor'] = $row['nfactor'];
 		 $json['nprice'] = $row['nprice'];
 		 $json['nbaseamount'] = $row['nbaseamount'];
-		 $json['namount'] = $row['namount'];	
+		 $json['namount'] = $row['namount'];
 		 $json['xref'] = $row['ctranno'];
 		 $json['nident'] = $row['nident'];
 		 $json['ctaxcode'] = ($row['cvattype']=="VatIn") ? "VT" : "NT";
+		 $json['makebuy'] = @$arrgrpdesc[$row['citemno']];
 		 $json2[] = $json;
 
 	//}

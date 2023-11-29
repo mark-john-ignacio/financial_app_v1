@@ -205,14 +205,14 @@ function numberTowords($num)
   //get details
 
   $xsql = "select A.ctranno, B.cacctno, A.cpaymentfor, Sum(B.ncredit) as ntotamt, 
-  CASE WHEN B.cacctno='".$disregVAT."' THEN SUM(B.ndebit) ELSE 0 END as ntotvat, 
-  CASE WHEN B.cacctno='".$disregEWT."' THEN SUM(B.ncredit) ELSE 0 END as ntotewt, 
-  CASE WHEN B.cacctno not in ('".implode("','",$disreg)."') THEN SUM(B.ncredit) ELSE 0 END as ntotdue
-  from apv A left join apv_t B on A.compcode=B.compcode and A.ctranno=B.ctranno
+  	CASE WHEN B.cacctno='".$disregVAT."' THEN SUM(B.ndebit) ELSE 0 END as ntotvat, 
+  	CASE WHEN B.cacctno='".$disregEWT."' THEN SUM(B.ncredit) ELSE 0 END as ntotewt, 
+ 	CASE WHEN B.cacctno not in ('".implode("','",$disreg)."') THEN SUM(B.ncredit) ELSE 0 END as ntotdue
+ 	from apv A left join apv_t B on A.compcode=B.compcode and A.ctranno=B.ctranno
 	left join accounts C on B.compcode=C.compcode and B.cacctno=C.cacctid
-  where A.compcode='$company' 
+  	where A.compcode='$company' 
 	and A.ctranno in (Select capvno from rfp_t where compcode='$company' and ctranno='$csalesno')	
-  Group By A.ctranno, B.cacctno, A.cpaymentfor, A.ngross";
+  	Group By A.ctranno, B.cacctno, A.cpaymentfor, A.ngross";
 
 	//echo $xsql."<br><br>";
 
@@ -308,63 +308,38 @@ function numberTowords($num)
 
 				<tr>
 					<td colspan="2">
-							<table border="0" width="100%" style="border-collapse:collapse" cellpadding="2">
-								<tr>
-									<td width="100px">
-											<b>Payee: </b>
-									</td>
-									<td>
-											<?=$CustName?>
-									</td>
-									<td width="100px">
-											<b>Date</b>
-									</td>
-									<td width="100px" align="right">
-                    <?=date("F d, Y", strtotime($Date))?>
-									</td>
-								</tr>
-                <tr>
-                  <td width="100px">
-											<b>TIN</b>
-									</td>
-									<td>
-											<?=$cTin?>
-									</td>
-									<td width="100px">
-											<b>Due Date</b>
-									</td>
-									<td width="100px" align="right">
-                    <?=date("F d, Y", strtotime($DateNeeded))?>
-									</td>
-								</tr>
-                <tr>
-                  <td width="100px">
-											<b>Address  </b>
-									</td>
-									<td>
-                    <?=$CustAdd?>
-									</td>
-									<td width="100px" colspan="2">
-                    <b>Document Reference:  </b>
-									</td>
-								</tr>
-                <tr>
-                  <td width="100px" colspan="2">
-											&nbsp;
-									</td>
-									
-									<td width="100px" colspan="2" align="right">
-                    <?php
-                      if(count($refinvsx) > 0){
-                        echo "SI#: ";
-                        echo implode("<br>",$refinvsx);
-                      }
-                    ?>
-									</td>
-								</tr>
-							</table>
+						<table border="0" width="100%" style="border-collapse:collapse" cellpadding="2">
+							<tr>
+								<td width="100px"><b>Payee: </b></td>
+								<td><?=$CustName?></td>
+								<td width="100px"><b>Date</b></td>
+								<td width="150px" align="right"><?=date("F d, Y", strtotime($Date))?></td>
+							</tr>
+                			<tr>
+                  				<td width="100px"><b>TIN</b></td>
+								<td><?=$cTin?></td>
+								<td width="100px"><b>Due Date</b></td>
+								<td width="150px" align="right"><?=date("F d, Y", strtotime($DateNeeded))?></td>
+							</tr>
+                			<tr>
+                  				<td width="100px"><b>Address</b></td>
+								<td><?=$CustAdd?></td>
+								<td width="100px" colspan="2"><b>Document Reference:</b></td>
+							</tr>
+                			<tr>
+                  				<td width="100px" colspan="2">&nbsp;</td>									
+								<td width="100px" colspan="2" align="right">
+									<?php
+									if(count($refinvsx) > 0){
+										echo "SI#: ";
+										echo implode("<br>",$refinvsx);
+									}
+									?>
+								</td>
+							</tr>
+						</table>
 					</td>
-        </tr>							
+        		</tr>							
 			</table>
 
 			<table border="0" align="center" width="100%" style="padding-top: 10px">
@@ -377,8 +352,13 @@ function numberTowords($num)
 					<th class="tdpadx" align="right"><b>Total For Payment</b></th>
 				</tr>
 
+				<tr>
+					<td class="tdpadx" colspan='5'><?=$cremakrs;?></td> 
+				</tr>
+
 				<?php 
-          $tottopay = 0;
+         			$tottopay = 0;
+		 			$aprowcnt = 0;
 
 					$xsql = "Select distinct capvno, cacctno, npayable from rfp_t where compcode='$company' and ctranno = '$csalesno' and cacctno not in ('".implode("','",$disreg)."')";
 
@@ -388,8 +368,9 @@ function numberTowords($num)
 					$vatamt = 0;
 					$ewtamt = 0;
 					$dueamt = 0;
-          foreach($sqlhead as $rowdtls){
-						
+          			foreach($sqlhead as $rowdtls){
+						$aprowcnt++;
+
 						foreach($dparticdet as $rssxz){
 							if($rowdtls['capvno']==$rssxz['ctranno'] && $rowdtls['cacctno']==$rssxz['cacctno']){
 								$totamt = $rssxz['ntotamt'];
@@ -398,11 +379,11 @@ function numberTowords($num)
 
 						}
 
-            $tottopay = $rowdtls['npayable'];
+            			$tottopay = $tottopay + $rowdtls['npayable'];
 				?>
 
 				<tr>
-					<td align="center" class="tdpadx"><?=$cremakrs;?></td> 
+					<td align="center" class="tdpadx"><?=$rowdtls['capvno']?></td> 
 					<td align="right" class="tdpadx tdright" nowrap>
 						<?php
 							if(isset($totsAPEWT[$rowdtls['capvno']])){
@@ -438,36 +419,32 @@ function numberTowords($num)
 					</td>
 					<td align="right" class="tdpadx tdright" nowrap>
 					<?php
-						if(floatval($dueamt) == floatval($tottopay)){
+						//if(floatval($dueamt) == floatval($tottopay)){
 
-							echo "<span style=\"border-bottom: 5px solid #000; border-bottom-style: double\"><font size=\"2\">".number_format($dueamt,2)."</font></span>";
+							//echo "<span><font size=\"2\">".number_format($dueamt,2)."</font></span>";
 
-						}else{
+						//}else{
 
-							echo number_format($dueamt,2);
+							echo number_format($rowdtls['npayable'],2);
 
-						}
+						//}
 					?>
 							
 					</td>
 					
 				</tr>
 
+
+
 				<?php 
 					}
-					$xlabel = "";
-					//echo floatval($dueamt)." < ".floatval($tottopay);
-					if(floatval($tottopay) < floatval($dueamt)){
-						
-						if(floatval($dueamt)==floatval($Gross)){
-							$xlabel = "Completion Payment Amount";
-						}else{
-							$xlabel = "Partial Payment Amount";
-						}
+					if($aprowcnt > 1){
 				?>
-					<tr>
-						<td align="right" class="tdpadx tdright" colspan="5" ><b><?=$xlabel?>: &nbsp;&nbsp;&nbsp;<span style="border-bottom: 5px solid #000; border-bottom-style: double"><font size="2"><?php echo number_format($Gross,2);?> </font></span></b></td>						
-					</tr>
+				<tr>
+					<td align="right" class="tdpadx tdright" colspan="5">
+						<b><span ><font size="2"><?php echo number_format($tottopay,2);?> </font></span></b>
+					</td>						
+				</tr>
 				<?php
 					}
 				?>
