@@ -427,7 +427,7 @@
 							if($lallowNT==1){
 						?>
 							<button type="button" onclick="getInvs();" id="btnaddSI" class="btn btn-info btn-sm">
-								SI <br>(Insert) <span class="caret"></span>
+								SI <br>(Insert)</span>
 							</button>
 						<?php
 							}else{
