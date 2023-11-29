@@ -9,7 +9,7 @@ require_once "../../Connection/connection_string.php";
 
 	$date1 = date("Y-m-d");
 	
-		$sql = "select X.creference as ctranno, X.nrefident, X.citemno as cpartno, A.citemdesc, X.cunit, X.nqty as totqty, 1 as nqty, X.nprice,  X.nbaseamount, X.namount, A.cunit as qtyunit, X.nfactor, X.ndiscount, A.ctype, X.ctaxcode, X.cewtcode, C.cacctno, C.cacctid, C.cacctdesc
+		$sql = "select X.creference as ctranno, X.nrefident, X.citemno as cpartno, A.citemdesc, X.cunit, X.nqty as totqty, 1 as nqty, X.nprice,  X.nbaseamount, X.namount, A.cunit as qtyunit, X.nfactor, X.ndiscount, A.ctype, X.ctaxcode, X.cewtcode, C.cacctno, C.cacctid, C.cacctdesc, X.citmsysno, X.citmposno
 		from sales_t X
 		left join items A on X.compcode=A.compcode and X.citemno=A.cpartno
 		left join accounts C on X.compcode=C.compcode and X.cacctcode=C.cacctno
@@ -40,6 +40,8 @@ require_once "../../Connection/connection_string.php";
 		$json['cacctno'] = $row2['cacctno'];
 		$json['cacctid'] = $row2['cacctid'];
 		$json['cacctdesc'] = $row2['cacctdesc'];
+		$json['citmsysno'] = $row2['citmsysno'];
+		$json['citmposno'] = $row2['citmposno'];
 
 		$json2[] = $json;
 

@@ -44,7 +44,10 @@ include('../../include/denied.php');
       $Remarks = $row['cremarks'];
       $Date = $row['dcutdate'];
       $cRefDR = $row['crefmoduletran'];
-      $Gross = $row['ngross'];
+      $Gross = $row['nbasegross'];
+
+	  $cOracleNo = $row['coracleinv'];
+	  $cDocType = $row['cdoctype'];
 
       $Adds = $row['chouseno']." ". $row['ccity']." ". $row['cstate'];
       $cTin = $row['ctin'];
@@ -61,11 +64,13 @@ include('../../include/denied.php');
 
   //get DR details 
   $cRefDRCust = "";
+  $cRefDRAPC = "";
   $sqlDR = mysqli_query($con,"select a.*, b.cname from dr a left join customers b on a.compcode=b.compcode and a.cdelcode=b.cempid where a.compcode='$company' and a.ctranno = '$cRefDR'");
 
   if (mysqli_num_rows($sqlDR)!=0) {
     while($row = mysqli_fetch_array($sqlDR, MYSQLI_ASSOC)){
       $cRefDRCust = $row['cname'];
+	  $cRefDRAPC = $row['crefapcdr'];
     }
   }
 
@@ -75,6 +80,14 @@ include('../../include/denied.php');
     $version = $verrow['cvalue'];
   } else {
     $version =''; 
+  }
+
+  //get terms desc
+  $cTermsDesc = "";
+  $result = mysqli_query($con, "SELECT * FROM `groupings` WHERE compcode='$company' and ctype = 'TERMS' and ccode='$cTerms'");
+  if(mysqli_num_rows($result) != 0){
+    $verrow = mysqli_fetch_array($result, MYSQLI_ASSOC);
+    $cTermsDesc = $verrow['cdesc'];
   }
 ?>
 
@@ -110,7 +123,7 @@ include('../../include/denied.php');
 				text-align: center;
 				color: #000;
 				font-weight: bold;
-				text-transform: uppercase;
+				/*text-transform: uppercase;*/
 				width: 8.5in;
 				height: 7in;
 		}
@@ -169,7 +182,7 @@ include('../../include/denied.php');
 			left: 145px;
 			width: 400px;
 			height:  15px;  
-      text-align: left; 
+      		text-align: left; 
       /*border: 1px solid #000; 
 			letter-spacing: 11px;
 			border: 1px solid #000;*/
@@ -191,10 +204,10 @@ include('../../include/denied.php');
 			position: absolute;
 			top: 190px;
 			left: 680px;
-			width: 135px;
+			width: 160px;
 			height:  15px;  
-      text-align: left; 
-      /*border: 1px solid #000; 
+      		text-align: left; 
+     		/*border: 1px solid #000; 
 			letter-spacing: 11px;
 			border: 1px solid #000;*/
 		}
@@ -209,7 +222,7 @@ include('../../include/denied.php');
      /* border: 1px solid #000; 
 			letter-spacing: 11px;
 			border: 1px solid #000;*/
-		} 
+		}  
 
     .invno{
 			position: absolute;
@@ -222,6 +235,18 @@ include('../../include/denied.php');
 			letter-spacing: 11px;
 			border: 1px solid #000;*/
 		}   
+
+	.TotalFoot{
+		position: absolute;
+		top: 575px;
+		left: 650px;
+		width: 113px;
+		height:  15px;  
+      	text-align: right; 
+     	/* border: 1px solid #000; 
+		letter-spacing: 11px;
+		border: 1px solid #000;*/
+	}
 
     .RowCont{
       position: absolute;
@@ -279,11 +304,11 @@ include('../../include/denied.php');
     <div class="soldTo"><?=$CustName?></div> 
     <div class="shipTo"><?=$cRefDRCust?></div>
     <div class="date"><?=date_format(date_create($Date), "M d, Y")?></div>
-    <div class="terms"><?=$cTerms?></div>
+    <div class="terms"><?=$cTermsDesc?></div>
     <div class="tin"><?=$cTin?></div>
-    <div class="refdr"><?=$cRefDR?></div>
+    <div class="refdr"><?=($cDocType=="Doc2") ? $cRefDRAPC : $cRefDR?></div>
     <div class="busstyle"><?=$CustNameBuss?></div>
-    <div class="invno"><?=$csalesno?></div>
+    <div class="invno"><?=($cDocType=="Doc2") ? $cOracleNo : $csalesno?></div>
 
     <div class="address"><?=$Adds?></div>
    
@@ -306,8 +331,8 @@ include('../../include/denied.php');
 						
 	?>
     <div class="Row">
-      <div class="Column" style="width: 115px">Test</div>
-      <div class="Column" style="width: 119px"><?=$rowbody['citemno'];?></div>
+      <div class="Column" style="width: 115px"><?=$rowbody['citmposno'];?></div>
+      <div class="Column" style="width: 119px"><?=$rowbody['citmsysno'];?></div>
       <div class="Column" style="width: 216px; text-align: left; padding-left: 5px"><?=$rowbody['citemdesc'];?></div>
       <div class="Column" style="width: 88px"><?=number_format($rowbody['nqty']);?> <?=$rowbody['cunit'];?></div>
       <div class="Column" style="width: 100px; text-align: right"><?=number_format($rowbody['nprice'],4);?></div>
@@ -331,46 +356,12 @@ include('../../include/denied.php');
     }
     
 		}
+	?>
+	
+	
+	<div class="TotalFoot"><?=number_format($Gross,2)?></div>
 		
 		
-		if($cvatcode=='VT' || $cvatcode=='NV'){
-			$printVATGross = number_format($Gross,2);
-			
-				if((float)$totvatxmpt==0){
-					//echo "A";
-					$printVEGross = "";
-				}else{
-					//echo "AB";
-					$printVEGross =  number_format($totvatxmpt,2);
-				}
-
-			$printZRGross = "";
-
-
-				$totnetvat = number_format($totnetvat,2);
-				$totlessvat = number_format($totlessvat,2);
-				$totvatable = number_format($totvatable,2);
-			
-		}elseif($cvatcode=='VE'){
-			$printVATGross = "";
-			$printVEGross = number_format($Gross,2);
-			$printZRGross = "";
-			
-				$totnetvat = "";
-				$totlessvat = "";
-				$totvatable = "";
-			
-		}elseif($cvatcode=='ZR'){
-			$printVATGross = "";
-			$printVEGross = "";
-			$printZRGross = number_format($Gross,2);
-
-				$totnetvat = "";
-				$totlessvat = "";
-				$totvatable = "";
-			
-		}
-	  ?>
 
 </div>
 </div>

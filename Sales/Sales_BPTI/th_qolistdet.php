@@ -27,7 +27,7 @@ require_once "../../Connection/connection_string.php";
 			 Where x.compcode='$company' and x.creference='".$_REQUEST['x']."' and y.lcancelled=0 and y.lvoid=0
 			 group by x.creference,x.citemno
 			) c on a.ctranno=c.creference and a.citemno=c.citemno
-		WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['x']."' ".$qry;
+		WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['x']."' ".$qry ." Order By a.nident";
 
 		@$arrefsos = array();
 			$ressos = mysqli_query ($con, "Select A.*, B.cpono From so_t A left join so B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company'");
@@ -51,7 +51,7 @@ require_once "../../Connection/connection_string.php";
 			 Where x.compcode='$company' and x.creference='".$_REQUEST['x']."' and y.lcancelled=0 and y.lvoid=0
 			 group by x.creference,x.citemno
 			) c on a.ctranno=c.creference and a.citemno=c.citemno
-		WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['x']."' ".$qry;
+		WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['x']."' ".$qry ." Order By a.nident";
 	}elseif($_REQUEST['typ']=="SO"){
 		$sql = "select a.nident, a.citemno,a.cunit,a.nqty,'' as creference,ifnull(c.nqty,0) as nqty2,b.citemdesc, 1 as navail, d.ccurrencycode, d.ccurrencydesc, a.namount, a.nprice, a.nbaseamount, b.ctaxcode as cvattype, e.nrate, d.nexchangerate, d.cpono
 		from so_t a 
@@ -66,7 +66,7 @@ require_once "../../Connection/connection_string.php";
 			 Where x.compcode='$company' and x.creference='".$_REQUEST['x']."' and y.lcancelled=0 and y.lvoid=0
 			 group by x.creference,x.citemno
 			) c on a.ctranno=c.creference and a.citemno=c.citemno
-		WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['x']."' ".$qry;
+		WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['x']."' ".$qry ." Order By a.nident";
 	}
 
 		
@@ -86,45 +86,47 @@ require_once "../../Connection/connection_string.php";
 			$nqty1 = $row['nqty'];
 			$nqty2 = $row['nqty2']; 
 		
-			 $json['id'] = $row['nident'];
-			 $json['citemno'] = $row['citemno'];
-			 $json['cdesc'] = $row['citemdesc'];
-			 $json['cunit'] = $row['cunit'];
-			 $json['nqty'] = number_format($nqty1 - $nqty2);
-			 $json['navail'] = $row['navail'];
+			if(floatval(($nqty1 - $nqty2)) > 1){
+				$json['id'] = $row['nident'];
+				$json['citemno'] = $row['citemno'];
+				$json['cdesc'] = $row['citemdesc'];
+				$json['cunit'] = $row['cunit'];
+				$json['nqty'] = number_format($nqty1 - $nqty2);
+				$json['navail'] = $row['navail'];
 
-			 if($_REQUEST['typ']=="DR"){
-				foreach(@$arrefsos as $rowx){
-					if($row['creference'] == $rowx['ctranno'] && $row['crefident'] == $rowx['nident']){
+				if($_REQUEST['typ']=="DR"){
+					foreach(@$arrefsos as $rowx){
+						if($row['creference'] == $rowx['ctranno'] && $row['crefident'] == $rowx['nident']){
 
-						$xnamt = ($nqty1 - $nqty2) * floatval($rowx['nprice']);
-						$json['nprice'] = number_format($rowx['nprice'],2);
-						//$json['namount'] = $rowx['namount'];
-						$json['nbaseamount'] = $xnamt;
-						$json['namount'] = number_format($xnamt * floatval($row['nexchangerate']),2);
-						$json['ctaxcode'] = $row['cvattype'];
-						$json['cpono'] = $rowx['cpono'];
+							$xnamt = ($nqty1 - $nqty2) * floatval($rowx['nprice']);
+							$json['nprice'] = number_format($rowx['nprice'],2);
+							//$json['namount'] = $rowx['namount'];
+							$json['nbaseamount'] = number_format($xnamt,4);
+							$json['namount'] = number_format($xnamt * floatval($row['nexchangerate']),2);
+							$json['ctaxcode'] = $row['cvattype'];
+							$json['cpono'] = $rowx['ditempono'];
+						}
 					}
+				}elseif($_REQUEST['typ']=="QO"){
+					$xnamt = ($nqty1 - $nqty2) * floatval($row['nprice']);
+
+					$json['nprice'] = number_format($row['nprice'],2);
+					//$json['namount'] = $row['namount'];
+					$json['nbaseamount'] = number_format($xnamt,4);
+					$json['namount'] = number_format($xnamt * floatval($row['nexchangerate']),2);
+					$json['ctaxcode'] = ($row['cvattype']=="VatIn") ? "VT" : "NT";
+					$json['cpono'] = "";
+				}else{
+					$json['cpono'] = $row['ditempono'];
+					$json['ctaxcode'] = $row['cvattype'];
 				}
-			}elseif($_REQUEST['typ']=="QO"){
-				$xnamt = ($nqty1 - $nqty2) * floatval($row['nprice']);
 
-				$json['nprice'] = number_format($row['nprice'],2);
-				//$json['namount'] = $row['namount'];
-				$json['nbaseamount'] = $xnamt;
-				$json['namount'] = number_format($xnamt * floatval($row['nexchangerate']),2);
-				$json['ctaxcode'] = ($row['cvattype']=="VatIn") ? "VT" : "NT";
-				$json['cpono'] = "";
-			}else{
-				$json['cpono'] = $row['cpono'];
-				$json['ctaxcode'] = $row['cvattype'];
+				$json['creference'] = $row['creference'];
+				$json['ccurrencycode'] = $row['ccurrencycode']; 
+				$json['ccurrencydesc'] = $row['ccurrencydesc']; 
+				$json['nexchangerate'] = $row['nexchangerate'];
+				$json2[] = $json;
 			}
-
-			$json['creference'] = $row['creference'];
-			$json['ccurrencycode'] = $row['ccurrencycode']; 
-			$json['ccurrencydesc'] = $row['ccurrencydesc']; 
-			$json['nexchangerate'] = $row['nexchangerate'];
-			$json2[] = $json;
 	
 		}
 
