@@ -29,10 +29,10 @@ require_once "../../Connection/connection_string.php";
 	$receipttype = '';
 	switch($receipt){
 		case 'OR':
-			$receipttype = "and B.csalestype = 'Goods'";
+			$receipttype = "and B.csalestype = 'Services'";
 			break;
 		case 'CR':
-			$receipttype = "and B.csalestype = 'Services'";
+			$receipttype = "and B.csalestype = 'Goods'";
 			break;
 		case 'AR':
 			$tbl = "ntsales";
