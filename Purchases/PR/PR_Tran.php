@@ -332,9 +332,6 @@
 					}
 
 
-				}else{
-					$msgz = "<b>ERROR: </b>PR Approvals not set!";
-					$status = "False";
 				}
 
 				if($status !== "False"){
