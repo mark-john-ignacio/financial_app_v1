@@ -17,7 +17,6 @@ include('../../include/denied.php');
 		}
 	}
 
-	
 	$sqlcomp = mysqli_query($con,"select * from company where compcode='$company'");
 
 	if(mysqli_num_rows($sqlcomp) != 0){

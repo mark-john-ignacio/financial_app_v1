@@ -167,7 +167,7 @@
         
 					<h4 class="nopadding">GL Reports</h4>
 					<hr class="alert-danger nopadding">
-          <div style="padding-left:10px; padding-top:3px">
+          			<div style="padding-left:10px; padding-top:3px">
 						<ul class="ver-inline-menu tabbable margin-bottom-25">
 							<li>
 								<a href="" onClick="setI('A','SalesReg.php')" data-toggle="tab">
@@ -178,25 +178,29 @@
 								<i class="fa fa-book"></i> Cash Receipts Book</a>
 							</li>
 							<!--<li>
-            		<a href="" onClick="setI('A','PurchJourn.php')" data-toggle="tab">
-                <i class="fa fa-book"></i> Purchase Journal </a>
-              </li>-->
-  						<li>
-  							<a href="" onClick="setI('A','APJ.php')" data-toggle="tab">
-  							<i class="fa fa-book"></i> Accounts Payable Ledger </a>
-  						</li>
-  						<li>
-  							<a href="" onClick="setI('A','CDJ.php')" data-toggle="tab">
-  							<i class="fa fa-book"></i> Cash Disbursement Book </a>
-  						</li>   
+									<a href="" onClick="setI('A','PurchJourn.php')" data-toggle="tab">
+								<i class="fa fa-book"></i> Purchase Journal </a>
+							</li>-->
 							<li>
-          				<a href="" onClick="setI('A','GJournal.php')" data-toggle="tab">
-                  <i class="fa fa-book"></i> General Journal </a>
-                </li>
-								<li>
-          				<a href="" onClick="setI('A','GLedger.php')" data-toggle="tab">
-                  <i class="fa fa-book"></i> General Ledger </a>
-                </li>
+								<a href="" onClick="setI('A','APJ.php')" data-toggle="tab">
+								<i class="fa fa-book"></i> Accounts Payable Ledger </a>
+							</li>
+							<li>
+								<a href="" onClick="setI('A','CDJ.php')" data-toggle="tab">
+								<i class="fa fa-book"></i> Cash Disbursement Book </a>
+							</li>
+							<li>
+								<a href="" onClick="setI('A','CashPosition.php')" data-toggle="tab">
+								<i class="fa fa-book"></i> Cash Position </a>
+							</li>  
+							<li>
+								<a href="" onClick="setI('A','GJournal.php')" data-toggle="tab">
+								<i class="fa fa-book"></i> General Journal </a>
+							</li>
+							<li>
+								<a href="" onClick="setI('A','GLedger.php')" data-toggle="tab">
+								<i class="fa fa-book"></i> General Ledger </a>
+							</li>
           			<li>
           				<a href="" onClick="setI('A','TBal.php')" data-toggle="tab">
                   <i class="fa fa-book"></i> Trial Balance </a>
@@ -220,11 +224,11 @@
 									<ul class="ver-inline-menu tabbable margin-bottom-25"> 
 										<li>
 											<a href="" onclick="setI('A', 'SalesDat.php')"  data-toggle="tab">
-											<i class="fa fa-book"></i>Monthly Sales</a>
+											<i class="fa fa-book"></i>BIR Sales Relief</a>
 										</li>
 										<li>
 											<a href="" onclick="setI('A', 'PurchaseDat.php')" data-toggle="tab">
-												<i class="fa fa-book"></i>Monthly Purchase</a>
+												<i class="fa fa-book"></i>BIR Purchase Relief</a>
 										</li>         
 										<!-- <li>
 											<a href="" onClick="setI('A','MonthlyVAT.php')" data-toggle="tab">

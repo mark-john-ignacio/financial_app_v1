@@ -1379,6 +1379,9 @@ xmlhttp.send();
           <label><input type="checkbox" name="chkAcc[]" value="CDJ.php" id="chkBox168" <?=(in_array("CDJ.php",@$arrpgist)) ? "checked" : "";?>>
           Cash Disbursement Journal</label>
           <br>         
+          <label><input type="checkbox" name="chkAcc[]" value="CashPosition.php" <?=(in_array("CashPosition.php",@$arrpgist)) ? "checked" : "";?>>
+          Cash Position</label>
+          <br>         
           <label><input type="checkbox" name="chkAcc[]" value="GJournal.php" id="chkBox169" <?=(in_array("GJournal.php",@$arrpgist)) ? "checked" : "";?>>
           General Journal</label>
           <br>

@@ -1169,6 +1169,8 @@
 			
 			var crem = "";
 			modnme = "mySIModal";
+
+			//rrno,amt,netvat,vatval,vatcode,vatrate,ewtamt,ewtcode,ewtrate,acctno,suppsi,nadvpaydue,cmamt
 			addrrdet(rrno,amt,netamt,vtamt,vttp,vtrt,ewtamt,ewttp,ewtrt,acttno,suppsi,advpaydue,cmamt);		 
 			//totGross = parseFloat(totGross) + parseFloat(amt) ;
 

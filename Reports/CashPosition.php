@@ -2,7 +2,7 @@
 if(!isset($_SESSION)){
 session_start();
 }
-$_SESSION['pageid'] = "GJournal.php";
+$_SESSION['pageid'] = "CashPosition.php";
 include('../Connection/connection_string.php');
 include('../include/denied.php');
 include('../include/access.php');
@@ -28,30 +28,31 @@ include('../include/access.php');
 
 <body style="padding-left:50px;">
 <center>
-  <font size="+1"><b><u>General Journal</u></b></font>
+  <font size="+1"><b><u>Cash Position</u></b></font>
 </center>
 <br>
 
-<form action="Accounting/GJournal.php" method="post" name="frmrep" id="frmrep" target="_blank">
+<form action="Accounting/CashPosition.php" method="post" name="frmrep" id="frmrep" target="_blank">
 <table width="100%" border="0" cellpadding="2">
   <tr>
     <td valign="top" width="50" style="padding:2px"><button type="submit" class="btn btn-danger brn-block" id="btnsales">
       <span class="glyphicon glyphicon-search"></span> View Report
       </button></td>
-    <td width="90px" style="padding-left:10px"><b>Date Range: </b></td>
+    <td width="90" style="padding-left:10px"><b>Date Range: </b></td>
     <td style="padding:2px">
 
-      <div class="form-group nopadding">
-        <div class="col-xs-8">
-          <div class="input-group input-large date-picker input-daterange">
-            <input type="text" class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/d/Y"); ?>">
-            <span class="input-group-addon">to </span>
-            <input type="text" class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>">
-          </div>
-        </div>	
-      </div>
 
-    </td>
+        <div class="form-group nopadding">
+			<div class="col-xs-8">
+				<div class="input-group input-large date-picker input-daterange">
+					<input type="text" class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/d/Y"); ?>">
+					<span class="input-group-addon">to </span>
+					<input type="text" class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>">
+				</div>
+		    </div>	
+        </div>
+
+      </td>
   </tr>
   <tr>
   <td valign="top" width="50" style="padding:2px"> 
@@ -70,11 +71,11 @@ $(function(){
                  format: 'MM/DD/YYYY'
            });
            $('#btnxls').on('click', function(){
-              $('#frmrep').attr("action", "Accounting/GJ_xls.php");
+              $('#frmrep').attr("action", "Accounting/CashPosition_xls.php");
               $('#frmrep').submit();
            })
            $('#btnsales').on('click', function(){
-            $('#frmrep').attr("action", "Accounting/GJournal.php");
+            $('#frmrep').attr("action", "Accounting/CashPosition.php");
             $('#frmrep').submit();
            })
 });
