@@ -29,7 +29,7 @@ require_once "../../Connection/connection_string.php";
 	from purchase_t A 
 	left join purchase E on A.compcode=E.compcode and A.cpono=E.cpono
 	left join suppliers C on E.compcode=C.compcode and E.ccode=C.ccode 
-	left join accounts B on C.compcode=B.compcode and C.cacctcode=B.cacctno 
+	left join accounts B on E.compcode=C.compcode and B.cacctno=C.cacctcode 
 	where A.compcode='$company' ".$qrycust." and E.lapproved=1 and E.ladvancepay=1 ".$qry."
 	Group By A.cpono, E.dneeded, A.ctaxcode, 
 	A.nrate, A.cewtcode, A.newtrate, B.cacctid, B.cacctdesc, E.ladvancepay";
