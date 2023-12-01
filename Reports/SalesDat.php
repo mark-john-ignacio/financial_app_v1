@@ -2,10 +2,10 @@
     if(!isset($_SESSION)){
         session_start();
     }
-    // $_SESSION['pageid'] = "SalesDat.php";
+     $_SESSION['pageid'] = "SalesDat.php";
     include("../Connection/connection_string.php");
-    // include('../include/denied.php');
-    // include('../include/access.php');
+    include('../include/denied.php');
+    include('../include/access.php');
     $company = $_SESSION['companyid'];
     
 
