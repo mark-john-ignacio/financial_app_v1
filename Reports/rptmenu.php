@@ -189,10 +189,10 @@
 								<a href="" onClick="setI('A','CDJ.php')" data-toggle="tab">
 								<i class="fa fa-book"></i> Cash Disbursement Book </a>
 							</li>
-							<li>
+							<!--<li>
 								<a href="" onClick="setI('A','CashPosition.php')" data-toggle="tab">
 								<i class="fa fa-book"></i> Cash Position </a>
-							</li>  
+							</li>  -->
 							<li>
 								<a href="" onClick="setI('A','GJournal.php')" data-toggle="tab">
 								<i class="fa fa-book"></i> General Journal </a>
