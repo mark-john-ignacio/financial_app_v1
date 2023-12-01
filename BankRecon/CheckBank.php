@@ -175,12 +175,41 @@
                         <td><?= $checkno ?></td>
                         <td><?= $balance ?></td>
                         <th style="display: flex; justify-items: center; justify-content: center;">
-                            <button type='button' onclick="LoadMatchCheque.call(this)" class="btn btn-sm btn-primary">Match</button>
+                            <button type='button' onclick="LoadMatchCheque.call(this)" class="btn btn-sm btn-primary">Find Match</button>
                         </th>
                     </tr>
                 <?php } endfor; ?>
             </tbody>
         </table>
+    </div>
+
+    <div class="modal fade" id="ReferenceModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="invheader"> Find Match Cheque   </h3>     
+                </div>
+                <div class="modal-body">
+                        <table class="table" id="match" style="padding: 10px;">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Account Name</th>
+                                    <th>Reference Number</th>
+                                    <th>Amount</th>
+                                    <th style="background-color: #397032; color: white;">Account Name</th>
+                                    <th style="background-color: #397032; color: white;">Reference Number</th>
+                                    <th style="background-color: #397032; color: white;">Amount</th>
+                                    <th style="background-color: #397032; color: white;">&nbsp;</th>
+                                </tr>
+                                
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
@@ -191,9 +220,10 @@
         let reference = row.find("td:eq(2)").text();
         let name = row.find("td:eq(1)").text();
         let date = row.find("td:eq(0)").text();
+        let amount = row.find("td:eq(3)").text();
         let bank = <?= $bankcode ?>
 
-        console.log(bank + " " + reference)
+        $("#match > tbody").empty();
         $.ajax({
             url: "th_checkref.php",
             type: 'post',
@@ -206,11 +236,56 @@
             dataType: "json",
             async: false,
             success: function(res){
-                console.log(res)
+                if(res.valid){
+                    $("#ReferenceModal").modal("show")
+                    res.data.map((item, index) => {
+                        $("<tr>").append(
+                            $("<td style='display: none'>").text(item.module),
+                            $("<td>").text(item.date),
+                            $("<td>").text(item.name),
+                            $("<td>").text(item.refno),
+                            $("<td>").text(item.paid),
+                            $("<td>").text(name),
+                            $("<td>").text(reference),
+                            $("<td>").text(amount),
+                            $("<td>").html("<button class='btn btn-sm btn-success' onclick='matchup.call(this)' value='" + item.tranno + "'>Match</button>")
+                        ).appendTo("#match > tbody")
+                    })
+                } else {
+                    alert(res.msg)
+                }
+                
             }, 
             error: function(res){
                 console.log(res)
             }
         });
+    }
+
+    function matchup(){
+        let row = $(this).closest("tr");
+        let modules = row.find("td:eq(0)").text();
+        let gross = row.find("td:eq(4)").text();
+        let pay = row.find("td:eq(7)").text();
+        let reference = row.find("td:eq(6)").text();
+        let tranno = $(this).val();
+
+        $.ajax({
+            url: 'th_checkbank.php',
+            data: {
+                tranno: tranno,
+                module: modules,
+                gross: gross,
+                pay: pay
+            },
+            dataType: 'json',
+            async: false,
+            success: function(res){
+                console.log(res)
+            },
+            error: function(res){
+                console.log(res)
+            }
+        })
     }
 </script>
