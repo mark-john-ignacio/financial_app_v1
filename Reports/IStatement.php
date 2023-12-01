@@ -45,9 +45,9 @@ $last_day_this_month  = date("Y-m-t", strtotime($first_day_this_month));
             <span class="glyphicon glyphicon-search"></span> View Report
           </button>
         </td>
-        <td width="150" style="padding-left:10px"><b>Report Type: </b></td>
+        <td width="90px" style="padding-left:10px"><b>Report Type: </b></td>
         <td style="padding:2px">
-          <div class="col-xs-12 nopadding">
+          <div class="col-xs-12">
             <div class="col-xs-3 nopadding">
               
               <select id="selrpt" name="selrpt" class="form-control input-sm selectpicker"  tabindex="4">
@@ -68,26 +68,22 @@ $last_day_this_month  = date("Y-m-t", strtotime($first_day_this_month));
           </button>
         </td>
         
-        <td width="150" style="padding-left:10px"><div id="dtelabel"><b>Date Range: </b></div></td>
+        <td width="90px" style="padding-left:10px"><div id="dtelabel"><b>Date Range: </b></div></td>
         <td style="padding:2px">
           <div id="dterange">
-            <div class="col-xs-12 nopadding">
-              <div class="col-xs-3 nopadding">             
-                <input type='text' class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/d/Y"); ?>" />              
-              </div>
-              
-              <div class="col-xs-2 nopadding" style="vertical-align:bottom;" align="center">
-                <label style="padding:1px;">TO</label>
-              </div>
-              
-              <div class="col-xs-3 nopadding">              
-                <input type='text' class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>" />              
-              </div>           
+            <div class="form-group nopadding">
+              <div class="col-xs-8">
+                <div class="input-group input-large date-picker input-daterange">
+                  <input type="text" class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/d/Y"); ?>">
+                  <span class="input-group-addon">to </span>
+                  <input type="text" class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>">
+                </div>
+              </div>	
             </div>   
           </div>
 
           <div id="dtemonth" style="display:none">
-              <div class="col-xs-12 nopadding">
+              <div class="col-xs-12">
                 <div class="col-xs-3 nopadding">          
                   <select id="selyr" name="selyr" class="form-control input-sm selectpicker"  tabindex="4">
                     <?php
@@ -110,7 +106,7 @@ $last_day_this_month  = date("Y-m-t", strtotime($first_day_this_month));
         <td valign="top" width="50" style="padding:2px">&nbsp;</td>
         <td width="150" style="padding-left:10px"><b>Provision for IT: </b></td>
         <td style="padding:2px">
-          <div class="col-xs-12 nopadding">
+          <div class="col-xs-12">
             <div class="col-xs-3 nopadding">
               
               <div class="input-group input-group-sm mb-3">
@@ -128,7 +124,7 @@ $last_day_this_month  = date("Y-m-t", strtotime($first_day_this_month));
         <td valign="top" width="50" style="padding:2px">&nbsp;</td>
         <td width="150" style="padding-left:10px"><b>Provision for MCIT: </b></td>
         <td style="padding:2px">
-          <div class="col-xs-12 nopadding">
+          <div class="col-xs-12">
             <div class="col-xs-3 nopadding">
               
               <div class="input-group input-group-sm mb-3">

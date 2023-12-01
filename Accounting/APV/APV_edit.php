@@ -1816,7 +1816,7 @@
 				//alert(''+url+'.php?x='+x+'&cust='+modcust+'&y='+salesnos+'&typ='+$('#selaptyp').val());
 				$.ajax({
           url: ''+url+'.php',
-					data: { x:x, cust:modcust, y:salesnos, typ:$('#selaptyp').val() },
+					data: { x:x, cust:modcust, y:salesnos, typ:$('#selaptyp').val(), curr:$('#selbasecurr').val() },
           dataType: 'json',
 					async:false,
           method: 'post',
