@@ -5,7 +5,8 @@ session_start();
 require_once "../../Connection/connection_string.php";
 
 	$company = $_SESSION['companyid'];
-		
+	$json2 = array();		
+
 		//get purch ret default acct
 		$qrydefacct = "Select A.cacctno, B.cacctdesc From accounts_default A left join accounts B on A.cacctno=B.cacctno where A.compcode='$company' and A.ccode='PURCHRET'";		
 		$resultdefacct = mysqli_query ($con, $qrydefacct);
