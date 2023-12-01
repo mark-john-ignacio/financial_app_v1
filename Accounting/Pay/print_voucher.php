@@ -206,7 +206,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 				<tr>
 					<td colspan="4" align="center" style="padding-bottom: 20px">
-							<font style="font-size: 24px;"> CHECK VOUCHER </font>
+							<font style="font-size: 24px;"> <?=($Paymeth=="cheque") ? "CHECK" : "PAYMENT"; ?> VOUCHER </font>
 					</td>
 				</tr>
 
