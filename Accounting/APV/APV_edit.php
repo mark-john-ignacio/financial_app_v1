@@ -2354,7 +2354,7 @@
 		}
 		
 		function addCMReturn(xytran,txtbx){
-
+			$cnt = 0;
 			$.ajax({
 				url: 'th_getrefreturns.php',
 				data: 'rrid='+xytran,
@@ -2364,7 +2364,7 @@
 
 					console.log(data);
 					$.each(data,function(index,item){
-			
+						$cnt = $cnt + 1;
 						var tbl = document.getElementById('MyTableCMx').getElementsByTagName('tr');
 						var lastRow = tbl.length;
 
@@ -2433,8 +2433,10 @@
 				}
 			});
 			
-			recomlines();
-		}
+			if($cnt>0){
+				recomlines();
+			}
+			}
 		
 		function addDISCS(xrrno,txtbx){  
 			var tbl = document.getElementById('MyTableAdDisc').getElementsByTagName('tr');
