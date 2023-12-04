@@ -29,10 +29,6 @@
     for($i = 1; $i < count($excel); $i++){
         $data_excel = $excel[$i];
 
-        $date = $data_excel[0];
-        $refno = $data_excel[2];
-        $excel_debit = floatval($data_excel[3]);
-        $excel_credit = floatval($data_excel[4]);
         // Fetching Data for GL Activity
         while($row = $query -> fetch_assoc()){
             array_push($deposit, $row);
@@ -46,6 +42,11 @@
             } else {
                 $UNRECORD_DEPOSIT += round($credit,2) + round($debit,2);
             }
+
+            $date = $data_excel[0];
+            $refno = $data_excel[2];
+            $excel_debit = (!empty($data_excel[3]) ) ? floatval($data_excel[3]) : 0;
+            $excel_credit = (!empty($data_excel[4]) ) ? floatval($data_excel[4]) : 0;
         
             // Check if module is PV or OR
             $sql = match($module){
@@ -61,9 +62,9 @@
             $rows = $queries -> fetch_assoc();
             if(mysqli_num_rows($queries) != 0){
                 //Check if Data match in paycheck table
-                $sql = "SELECT * FROM paycheck WHERE compcode = '$company' AND refno = '$refno'  AND debit = $debit AND credit = $credit";
+                $sql = "SELECT * FROM paycheck WHERE compcode = '$company' AND refno = '$refno' AND bank = '$bcode' AND debit = $excel_debit AND credit = $excel_credit";
                 $query = mysqli_query($con, $sql);
-                if(mysqli_num_rows($query) === 0){
+                if(mysqli_num_rows($query) !== 0){
                     // Pay Check Query Insert
                     $sql = "INSERT INTO paycheck(`compcode`, `module`, `tranno`, `refno`, `debit`, `credit`, `bank`, `date`) VALUES ('$company', '$module', '$tranno', '$refno', '$excel_debit', '$excel_credit', '$bcode', NOW())";
                     mysqli_query($con, $sql);
@@ -433,7 +434,7 @@
                 }
             })
         } else {
-            alert("Amount has a balance!    Amount must bezero")
+            alert("Amount has a balance! Amount must bezero")
         }
     }
 
