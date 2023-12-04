@@ -23,16 +23,18 @@
     $bcode = $row['ccode'];
     $bank = $row['cname'];
 
-    $sql = "SELECT a.* FROM glactivity a WHERE a.compcode = '$company' AND a.acctno = '$bankcode' AND (STR_TO_DATE(ddate, '%Y-%m-%d') BETWEEN '$from' AND '$to')";
-    $query = mysqli_query($con, $sql);
+    
     // READ Excel file row
     for($i = 1; $i < count($excel); $i++){
         $data_excel = $excel[$i];
 
         $date = $data_excel[0];
         $refno = $data_excel[2];
-        $excel_debit = floatval($data_excel[3]);
-        $excel_credit = floatval($data_excel[4]);
+        $excel_debit = $data_excel[3];
+        $excel_credit = $data_excel[4];
+
+        $sql = "SELECT * FROM glactivity WHERE compcode = '$company' AND acctno = '$bankcode' AND (STR_TO_DATE(ddate, '%Y-%m-%d') BETWEEN $from AND $to)";
+        $query = mysqli_query($con, $sql);
         // Fetching Data for GL Activity
         while($row = $query -> fetch_assoc()){
             array_push($deposit, $row);
@@ -41,7 +43,7 @@
             $credit = $row['ncredit'];
             $debit = $row['ndebit'];
 
-            if($row['cmodule'] != "JE"){
+            if($module != "JE"){
                 $bookTotal += round($credit,2) + round($debit,2);
             } else {
                 $UNRECORD_DEPOSIT += round($credit,2) + round($debit,2);
@@ -61,7 +63,7 @@
             $rows = $queries -> fetch_assoc();
             if(mysqli_num_rows($queries) != 0){
                 //Check if Data match in paycheck table
-                $sql = "SELECT * FROM paycheck WHERE compcode = '$company' AND refno = '$refno'  AND debit = $debit AND credit = $credit";
+                $sql = "SELECT * FROM paycheck WHERE compcode = '$company' AND refno = '$refno'  AND debit = '$credit' AND credit = '$debit'";
                 $query = mysqli_query($con, $sql);
                 if(mysqli_num_rows($query) === 0){
                     // Pay Check Query Insert
@@ -194,7 +196,7 @@
             </div>
         </div>
     </div>
-    <div style="width: 100%; min-height: 3in; max-height: 3in; border: 1px solid; overflow: auto;">
+    <div style="min-width: 10in; width: 100%; min-height: 3in; max-height: 3in; border: 1px solid; overflow: auto;">
         <table class="table" id="chequeBank" style="min-width: 10in; overflow: auto;">
             <thead>
                 <tr>
