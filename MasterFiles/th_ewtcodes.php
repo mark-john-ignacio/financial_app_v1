@@ -6,7 +6,7 @@ if(!isset($_SESSION)){
 require_once "../Connection/connection_string.php";
 
 
-	$company = '001';
+	$company = $_SESSION['companyid'];
 	
 	$result = mysqli_query ($con, "SELECT ctaxcode, cdesc, nrate FROM wtaxcodes WHERE compcode='$company' and (cdesc like '%".$_GET['query']."%' OR ctaxcode like '%".$_GET['query']."%') and cstatus='ACTIVE'"); 
 
