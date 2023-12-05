@@ -46,7 +46,12 @@ function chkgrp($valz) {
 
 		$cMainUOM = $_REQUEST['mainunit'];
 		$nFactor = $_REQUEST['nfactor'];
-		$cacctcode = $_REQUEST['acctid']; 
+
+		if(isset($_REQUEST['acctid'])){
+			$cacctcode = $_REQUEST['acctid']; 
+		}else{
+			$cacctcode = "''";
+		}
 
 		$refcidenttran = $cSINo."P".$indexz;
 
