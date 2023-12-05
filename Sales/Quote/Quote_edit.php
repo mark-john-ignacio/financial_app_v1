@@ -1734,6 +1734,8 @@ function chkform(){
 			formdata.append('file-'+i, file);
 		});
 
+		//console.log(formdata);
+
 		$.ajax ({
 			url: "Quote_updatehdr.php",
 			data: formdata,
@@ -1825,7 +1827,7 @@ function chkform(){
 						$("#AlertMsg").html("");
 						$('#AlertModal').modal('hide');
 			
-							//$("#txtcsalesno").val(trancode);
+							$("#txtcsalesno").val(trancode);
 							$("#frmpos").submit();
 			
 					}, 3000); // milliseconds = 3seconds

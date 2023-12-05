@@ -19,7 +19,12 @@ $company = $_SESSION['companyid'];
 	$ccontemai = $_REQUEST['txtcontactemail'];
 	$ccontsalt = $_REQUEST['txtcontactsalut'];
 	$cvattyp = $_REQUEST['selvattype'];
-	$cterms = $_REQUEST['selterms'];
+	if(isset($_REQUEST['selterms'])){
+		$cterms = $_REQUEST['selterms'];
+	}else{
+		$cterms = "";
+	}
+	
 	$cdelinfo = $_REQUEST['txtdelinfo'];
 	$cservinfo = $_REQUEST['txtservinfo'];
 
