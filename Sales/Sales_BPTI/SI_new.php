@@ -389,7 +389,7 @@ $company = $_SESSION['companyid'];
 								<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
 								<input type="hidden" name="hdnunit" id="hdnunit"> 
 								<input type="hidden" name="hdnctype" id="hdnctype"> 
-								<input type="hidden" name="hdncvat" id="hdncvat"> 
+								<input type="hidden" name="hdncvat" id="hdncvat">  
 
 								<input type="hidden" name="hdnacctno" id="hdnacctno">  
 								<input type="hidden" name="hdnacctid" id="hdnacctid"> 
@@ -411,6 +411,8 @@ $company = $_SESSION['companyid'];
 							<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
 								<thead>
 									<tr>
+										<th width="150px" style="border-bottom:1px solid #999">PO No.</th>
+										<th width="150px" style="border-bottom:1px solid #999">System No.</th>
 										<th width="100px" style="border-bottom:1px solid #999">Code</th>
 										<th width="250px" style="border-bottom:1px solid #999">Description</th>
 										<th width="150px" style="border-bottom:1px solid #999" class="chkVATClass">EWTCode</th>
@@ -421,8 +423,6 @@ $company = $_SESSION['companyid'];
 										<th width="100px" style="border-bottom:1px solid #999">Discount</th>
 										<th width="150px" style="border-bottom:1px solid #999">Amount</th>
 										<!--<th width="100px" style="border-bottom:1px solid #999">Total Amt in <?//php echo $nvaluecurrbase; ?></th>-->
-										<th width="150px" style="border-bottom:1px solid #999">System No.</th>
-										<th width="150px" style="border-bottom:1px solid #999">PO No.</th>
 										<th style="border-bottom:1px solid #999">&nbsp;</th>
 									</tr>
 								</thead>
@@ -1021,14 +1021,14 @@ $company = $_SESSION['companyid'];
 				$.ajax({
 					url: "../th_product.php",
 					dataType: "json",
-					data: { query: $("#txtprodnme").val(), itmbal: xChkBal, styp: $("#selsityp").val() },
+					data: { query: $("#txtprodnme").val(), itmbal: xChkBal, styp: $("#selsityp").val(), cdoc: $("#seldoctype").val() },
 					success: function (data) {
 						response(data);
 					}
 				});
 			},
 			displayText: function (item) {
-				return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.desc+'</span</div>';
+				return '<div style="border-top:1px solid gray; width: 300px"><span ><small>'+item.id+"</small><br>"+item.desc+'</span</div>';
 			},
 			highlighter: Object,
 			afterSelect: function(item) { 					
@@ -1041,7 +1041,7 @@ $company = $_SESSION['companyid'];
 				$("#hdnqtyunit").val(item.cqtyunit); 
 				$("#hdncvat").val(item.ctaxcode); 
 				$("#hdnacctno").val(""); 
-				$("#hdnacctid").val(""); 
+				$("#hdnacctid").val(item.cskucode); 
 				$("#hdnacctdesc").val(""); 
 
 				addItemName("","","","","","","","");
@@ -1055,9 +1055,9 @@ $company = $_SESSION['companyid'];
 		$("#txtprodid").keypress(function(event){
 			if(event.keyCode == 13){
 
-			$.ajax({
+				$.ajax({
 					url:'../get_productid.php',
-					data: 'c_id='+ $(this).val() + "&itmbal="+xChkBal+"&styp="+ $("#selsityp").val(),                 
+					data: 'c_id='+ $(this).val() + "&itmbal="+xChkBal+"&styp="+ $("#selsityp").val()+"&cdoc="+$("#seldoctype").val(),                 
 					success: function(value){
 						var data = value.split(",");
 						$('#txtprodid').val(data[0]);
@@ -1072,53 +1072,50 @@ $company = $_SESSION['companyid'];
 						$("#hdnacctid").val(""); 
 						$("#hdnacctdesc").val(""); 
 
-			if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
-				var isItem = "NO";
-				var disID = "";
-				
-				$("#MyTable > tbody > tr").each(function() {	
-					disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+						if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
+							var isItem = "NO";
+							var disID = "";
+							
+							$("#MyTable > tbody > tr").each(function() {	
+								disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
 
-					if($("#txtprodid").val()==disID){
+								if($("#txtprodid").val()==disID){
+									
+									isItem = "YES";
+
+								}
+							});	
+
+						//if value is not blank
+						}else{
+							alert("ITEM BARCODE NOT EXISTING!");
+							$('#txtprodnme').focus();
+						}
 						
-						isItem = "YES";
+						if(isItem=="NO"){		
 
-					}
-				});	
-
-			//if value is not blank
-			}else{
-				alert("ITEM BARCODE NOT EXISTING!");
-				$('#txtprodnme').focus();
-			}
-			
-			if(isItem=="NO"){		
-
-				myFunctionadd("","","","","","","","");
-				ComputeGross();	
-				
-				}
-				else{
-				
-				addqty();
-			}
-			
-			$("#txtprodid").val("");
-			$("#txtprodnme").val("");
-			$("#hdnunit").val("");
-			$("#hdnqty").val("");
-			$("#hdnqtyunit").val("");
-			$("#hdnctype").val("");
-	
-				//closing for success: function(value){
-				}
-					}); 
-
+							myFunctionadd("","","","","","","","");
+							ComputeGross();	
+							
+							}
+							else{
+							
+							addqty();
+						}
+						
+						$("#txtprodid").val("");
+						$("#txtprodnme").val("");
+						$("#hdnunit").val("");
+						$("#hdnqty").val("");
+						$("#hdnqtyunit").val("");
+						$("#hdnctype").val("");
 		
+					//closing for success: function(value){
+					}
+				}); 
 			
 			//if enter is clicked
-			}
-			
+			}			
 		});
 
 		$("#selsityp").on("change", function(){
@@ -1369,7 +1366,7 @@ $company = $_SESSION['companyid'];
 
 			
 		var tditmcode = "<td> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode"+lastRow+"\">"+itmcode+" <input type='hidden' value='"+cref+"' name=\"txtcreference\" id=\"txtcreference\"> <input type='hidden' value='"+nrefident+"' name=\"txtcrefident\" id=\"txtcrefident\"> <input type='hidden' value='"+itmctype+"' name=\"hdncitmtype\" id=\"hdncitmtype"+lastRow+"\"> </td>";
-		var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmdesc+"</td>";
+		var tditmdesc = "<td><input type='text' value='"+itmdesc+"' class='form-control input-xs' name=\"txtcitemdesc\" id='txtcitemdesc"+lastRow+"'></td>";
 
 		var tditmewts = "";
 		if(xChkVatableStatus==1){ 
@@ -1500,7 +1497,7 @@ $company = $_SESSION['companyid'];
 
 		//<input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> tditmamount
 
-		$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmewts + tditmvats + tditmunit + tditmqty + tditmprice + tditmdisc + tditmbaseamount + tdsysno + tdpono + tditmdel + '</tr>'); 
+		$('#MyTable > tbody:last-child').append('<tr>'+ tdpono + tdsysno + tditmcode + tditmdesc + tditmewts + tditmvats + tditmunit + tditmqty + tditmprice + tditmdisc + tditmbaseamount +  tditmdel + '</tr>'); 
 
 										$("#del"+itmcode).on('click', function() { 
 											var xy = $(this).data('var');
@@ -1666,7 +1663,8 @@ $company = $_SESSION['companyid'];
 			if(rowCount>1){
 				for (var i = xy+1; i <= rowCount; i++) {
 					//alert(i);
-					var ITMCode = document.getElementById('txtitemcode' + i);
+					var ITMCode = document.getElementById('txtitemcode' + i); 
+					var ITMDesc = document.getElementById('txtcitemdesc' + i); 
 					var SelUOM = document.getElementById('seluom' + i); 
 					var ItmTyp = document.getElementById('hdncitmtype' + i); 
 					var SelVAT = document.getElementById('selitmvatyp' + i);
@@ -1688,6 +1686,7 @@ $company = $_SESSION['companyid'];
 					
 					//alert(za);
 					ITMCode.id = "txtitemcode" + za;
+					ITMDesc.id = "txtcitemdesc" + za;
 					SelUOM.id = "seluom" + za;
 					ItmTyp.id = "hdncitmtype" + za;
 					SelVAT.id = "selitmvatyp" + za;
@@ -2201,7 +2200,7 @@ $company = $_SESSION['companyid'];
 					
 					//alert("th_qolistput.php?id=" + tranno + "&itm=" + id + "&typ=" + typ);
 						$.ajax({
-							url : "th_qolistput.php?id=" + tranno + "&itm=" + id + "&typ=" + typ,
+							url : "th_qolistput.php?id=" + tranno + "&itm=" + id + "&typ=" + typ + "&cdoc=" + $("#seldoctype").val(),
 							type: "GET",
 							dataType: "JSON",
 							async: false,
@@ -2565,23 +2564,27 @@ $company = $_SESSION['companyid'];
 
 						var crefno = $(this).find('input[type="hidden"][name="txtcreference"]').val();
 						var crefident = $(this).find('input[type="hidden"][name="txtcrefident"]').val();
-						var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val(); 
-						var ewtcode = $(this).find('select[name="selitmewtyp"]').val();
-						console.log(crefident)
+						var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();  
+						var citmdesc = $(this).find('input[name="txtcitemdesc"]').val();	
 
-						//getrate of selected
+						var ewtcode = "";
 						var ewtrate = "";
-						var cnt = 0;
-						$(this).find('select[name="selitmewtyp"] > option:selected').each(function() {
-							//	alert($(this).data("rate"));
-							cnt++;
-							if(cnt>1){
-								ewtrate = ewtrate + ";" + $(this).data("rate");
-							}else{
-								ewtrate = ewtrate + $(this).data("rate");
-							}
-						});
+						if(xChkVatableStatus==1){ 
+							ewtcode = $(this).find('select[name="selitmewtyp"]').val();				
+							//console.log(crefident)
 
+							//getrate of selected							
+							var cnt = 0;
+							$(this).find('select[name="selitmewtyp"] > option:selected').each(function() {
+								//	alert($(this).data("rate"));
+								cnt++;
+								if(cnt>1){
+									ewtrate = ewtrate + ";" + $(this).data("rate");
+								}else{
+									ewtrate = ewtrate + $(this).data("rate");
+								}
+							});
+						}
 						if(xChkVatableStatus==1){
 							var vatcode = $(this).find('select[name="selitmvatyp"]').val(); 
 							var nrate = $(this).find('select[name="selitmvatyp"] option:selected').data('id'); 
@@ -2627,11 +2630,11 @@ $company = $_SESSION['companyid'];
 							ntranamt = ntranamt.replace(/,/g,'');
 						}
 
-						//alert("SI_newsavedet.php?trancode="+trancode+"&crefno="+crefno+"&crefident="+crefident+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+ nprice+"&ndiscount="+ndiscount+"&ntranamt="+ntranamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&ccode="+ccode+"&vatcode="+vatcode+"&nrate="+nrate+"&ewtcode="+ewtcode+"&ewtrate="+ewtrate+"&acctid="+acctid);
+						//alert("SI_newsavedet.php?trancode="+trancode+"&crefno="+crefno+"&crefident="+crefident+"&indx="+index+"&citmno="+citmno+"&citmdesc="+citmdesc+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+ nprice+"&ndiscount="+ndiscount+"&ntranamt="+ntranamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&ccode="+ccode+"&vatcode="+vatcode+"&nrate="+nrate+"&ewtcode="+ewtcode+"&ewtrate="+ewtrate+"&itmsysno="+itmsysno+"&itmposno="+itmposno);
 
 						$.ajax ({
 							url: "SI_newsavedet.php",
-							data: { trancode: trancode, crefno: crefno, crefident:crefident, indx: parseInt(index) + 1, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, ndiscount:ndiscount, ntranamt:ntranamt, namt:namt, mainunit:mainunit, nfactor:nfactor, ccode:ccode, vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate, itmsysno: itmsysno, itmposno: itmposno },
+							data: { trancode: trancode, crefno: crefno, crefident:crefident, indx: parseInt(index) + 1, citmno: citmno, citmdesc: citmdesc, cuom: cuom, nqty:nqty, nprice: nprice, ndiscount:ndiscount, ntranamt:ntranamt, namt:namt, mainunit:mainunit, nfactor:nfactor, ccode:ccode, vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate, itmsysno: itmsysno, itmposno: itmposno },
 							async: false,
 							success: function( data ) {
 								if(data.trim()=="False"){
@@ -2644,7 +2647,7 @@ $company = $_SESSION['companyid'];
 
 
 				//Save Info
-				$("#MyTable2 > tbody > tr").each(function(index) {	
+				/*$("#MyTable2 > tbody > tr").each(function(index) {	
 					
 					var citmno = $(this).find('input[type="hidden"][name="txtinfocode"]').val();
 					var citmfld = $(this).find('input[name="txtinfofld"]').val();
@@ -2661,7 +2664,7 @@ $company = $_SESSION['companyid'];
 						}
 					});
 					
-				});
+				});*/
 
 				//show all
 				$("#MyTable3 > tbody > tr").each(function() {	

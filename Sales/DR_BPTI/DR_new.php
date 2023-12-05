@@ -113,7 +113,7 @@
 								<tH width="100">&nbsp;Remarks:</tH>
 								<td style="padding:2px">
 									<div class="col-xs-11 nopadding">
-										<input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="5">
+										<textarea class="form-control input-sm" id="txtremarks" name="txtremarks" rows="3"></textarea>
 
 										<input type="hidden" id="txtsalesmanid" name="txtsalesmanid">
 										<input type="hidden" id="txtsalesman" name="txtsalesman">

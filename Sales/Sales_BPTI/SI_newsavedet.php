@@ -22,6 +22,7 @@ function chkgrp($valz) {
 		$crefident = chkgrp($_REQUEST['crefident']); 
 		$indexz = $_REQUEST['indx'];
 		$cItemNo = $_REQUEST['citmno'];
+		$cItemDesc = $_REQUEST['citmdesc'];
 		$nQty = $_REQUEST['nqty'];
 		$cUnit = $_REQUEST['cuom'];
 		$nPrice = $_REQUEST['nprice']; 
@@ -54,7 +55,7 @@ function chkgrp($valz) {
 
 	//echo "INSERT INTO sales_t(`compcode`, `cidentity`, `ctranno`, `creference`, `nrefident`, `nident`, `citemno`, `nqty`, `cunit`, `nprice`, `ndiscount`, `nbaseamount`, `namount`, `cmainunit`,`nfactor`,`cacctcode`,`ctaxcode`, `nrate`, `cewtcode`, `newtrate`) values('$company', '$refcidenttran', '$cSINo', $crefno, $crefident, '$indexz', '$cItemNo', '$nQty', '$cUnit', '$nPrice', '$nDiscount', '$nTranAmount', '$nAmount', '$cMainUOM', '$nFactor', $cacctcode, '$ctaxcode', '$nrate', '$cewtcode', '$cewtrate')";
 
-	if (!mysqli_query($con,"INSERT INTO sales_t(`compcode`, `cidentity`, `ctranno`, `creference`, `nrefident`, `nident`, `citemno`, `nqty`, `cunit`, `nprice`, `ndiscount`, `nbaseamount`, `namount`, `cmainunit`,`nfactor`,`ctaxcode`, `nrate`, `cewtcode`, `newtrate`, `citmsysno`, `citmposno`) values('$company', '$refcidenttran', '$cSINo', $crefno, $crefident, '$indexz', '$cItemNo', '$nQty', '$cUnit', '$nPrice', '$nDiscount', '$nTranAmount', '$nAmount', '$cMainUOM', '$nFactor', '$ctaxcode', '$nrate', '$cewtcode', '$cewtrate', '$citmsysno', '$citmposno')")){
+	if (!mysqli_query($con,"INSERT INTO sales_t(`compcode`, `cidentity`, `ctranno`, `creference`, `nrefident`, `nident`, `citemno`, `citemdesc`, `nqty`, `cunit`, `nprice`, `ndiscount`, `nbaseamount`, `namount`, `cmainunit`,`nfactor`,`ctaxcode`, `nrate`, `cewtcode`, `newtrate`, `citmsysno`, `citmposno`) values('$company', '$refcidenttran', '$cSINo', $crefno, $crefident, '$indexz', '$cItemNo', '$cItemDesc', '$nQty', '$cUnit', '$nPrice', '$nDiscount', '$nTranAmount', '$nAmount', '$cMainUOM', '$nFactor', '$ctaxcode', '$nrate', '$cewtcode', '$cewtrate', '$citmsysno', '$citmposno')")){
 		//echo "False";
 		
 		echo "Errormessage: %s\n", mysqli_error($con);

@@ -10,7 +10,7 @@ require_once "../../Connection/connection_string.php";
 	$json2 = array();
 
 	if($_REQUEST['typ']=="DR"){
-		$sql = "select a.ctranno, a.nident as crefident, a.crefident as crefSOident, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, 0 as ndiscount, a.nbaseamount, a.namount, a.cmainunit as qtyunit, a.nfactor, ifnull(c.nqty,0) as totqty2, b.ctype, b.ctaxcode, d.ccurrencycode, d.ccurrencydesc, d.nexchangerate, a.creference, e.cacctno, e.cacctid, e.cacctdesc, b.ctaxcode as cvattype, b.cskucode
+		$sql = "select a.ctranno, a.nident as crefident, a.crefident as crefSOident, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, 0 as ndiscount, a.nbaseamount, a.namount, a.cmainunit as qtyunit, a.nfactor, ifnull(c.nqty,0) as totqty2, b.ctype, b.ctaxcode, d.ccurrencycode, d.ccurrencydesc, d.nexchangerate, a.creference, e.cacctno, e.cacctid, e.cacctdesc, b.ctaxcode as cvattype, IFNULL(b.cskucode,'') as cskucode, IFNULL(b.cnotes,'') as cnotes
 		from dr_t a 
 		left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
 		left join so d on a.compcode=d.compcode and a.creference=d.ctranno
@@ -34,7 +34,7 @@ require_once "../../Connection/connection_string.php";
 			}
 
 	}elseif($_REQUEST['typ']=="QO"){
-		$sql = "select a.ctranno, a.nident as crefident, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, 0 as ndiscount, a.nbaseamount, a.namount, a.cmainunit as qtyunit, a.nfactor, ifnull(c.nqty,0) as totqty2, b.ctype, b.ctaxcode, d.ccurrencycode, d.ccurrencydesc, d.cvattype, e.nrate, d.nexchangerate, d.cterms, f.cacctno, f.cacctid, f.cacctdesc, b.cskucode
+		$sql = "select a.ctranno, a.nident as crefident, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, 0 as ndiscount, a.nbaseamount, a.namount, a.cmainunit as qtyunit, a.nfactor, ifnull(c.nqty,0) as totqty2, b.ctype, b.ctaxcode, d.ccurrencycode, d.ccurrencydesc, d.cvattype, e.nrate, d.nexchangerate, d.cterms, f.cacctno, f.cacctid, f.cacctdesc, IFNULL(b.cskucode,'') as cskucode, IFNULL(b.cnotes,'') as cnotes
 		from quote_t a 
 		left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
 		left join quote d on a.compcode=d.compcode and a.ctranno=d.ctranno
@@ -50,7 +50,7 @@ require_once "../../Connection/connection_string.php";
 		left join accounts f on b.compcode=f.compcode and b.cacctcodesales=f.cacctno	
 		WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."' and a.nident = '".$_REQUEST['itm']."'";
 	}elseif($_REQUEST['typ']=="SO"){
-		$sql = "select a.ctranno, a.creference, a.nident as crefident, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, 0 as ndiscount, a.nbaseamount, a.namount, a.cmainunit as qtyunit, a.nfactor, ifnull(c.nqty,0) as totqty2, b.ctype, d.ccurrencycode, d.ccurrencydesc, a.nrate, d.nexchangerate, a.ctaxcode, e.cacctno, e.cacctid, e.cacctdesc, b.ctaxcode as cvattype, b.cskucode
+		$sql = "select a.ctranno, a.creference, a.nident as crefident, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, 0 as ndiscount, a.nbaseamount, a.namount, a.cmainunit as qtyunit, a.nfactor, ifnull(c.nqty,0) as totqty2, b.ctype, d.ccurrencycode, d.ccurrencydesc, a.nrate, d.nexchangerate, a.ctaxcode, e.cacctno, e.cacctid, e.cacctdesc, b.ctaxcode as cvattype, IFNULL(b.cskucode,'') as cskucode, IFNULL(b.cnotes,'') as cnotes
 		from so_t a 
 		left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
 		left join so d on a.compcode=d.compcode and a.ctranno=d.ctranno
@@ -85,7 +85,20 @@ require_once "../../Connection/connection_string.php";
 			$nqty2 = $row['totqty2']; 
 
 			$json['id'] = $row['cpartno'];
-			$json['desc'] = $row['citemdesc'];
+
+			if(isset($_REQUEST['cdoc'])){
+				if($_REQUEST['cdoc']=="Doc2"){
+					$json['systemno'] = "";
+					$json['desc'] = ($row['cskucode']!="") ? $row['cskucode'] : $row['citemdesc'];
+				}else{
+					$json['systemno'] = $row['cskucode'];
+					$json['desc'] = ($row['cnotes']!="") ? $row['cnotes'] : $row['citemdesc'];
+				}
+			}else{				
+				$json['systemno'] = $row['cskucode'];
+				$json['desc'] = $row['citemdesc'];
+			}
+
 			$json['cunit'] = $row['cunit'];
 			$json['cqtyunit'] = $row['qtyunit'];
 			$json['nfactor'] = $row['nfactor'];
@@ -137,7 +150,6 @@ require_once "../../Connection/connection_string.php";
 			$json['cacctid'] = $row['cacctid'];
 			$json['cacctdesc'] = $row['cacctdesc'];
 
-			$json['systemno'] = $row['cskucode'];
 			$json2[] = $json;
 	
 		}

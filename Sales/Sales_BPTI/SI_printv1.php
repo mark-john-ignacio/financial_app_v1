@@ -2,7 +2,6 @@
     if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "CashBook.php";
 
 	include('../../Connection/connection_string.php');
 
