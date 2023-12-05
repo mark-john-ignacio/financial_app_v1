@@ -8,16 +8,15 @@ include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 
 	$company = $_SESSION['companyid'];
-
-//	$sqlauto = mysqli_query($con,"select cvalue from parameters where compcode='$company' and ccode='AUTO_POST_DR'");
-//	if(mysqli_num_rows($sqlauto) != 0){
-//		while($rowauto = mysqli_fetch_array($sqlauto, MYSQLI_ASSOC))
-//		{
-//			$autopost = $rowauto['cvalue'];
-//		}
-//	}
-
 	
+	$sqlauto = mysqli_query($con,"select cvalue from parameters where compcode='$company' and ccode='AUTO_POST_POS'");
+	if(mysqli_num_rows($sqlauto) != 0){
+		while($rowauto = mysqli_fetch_array($sqlauto, MYSQLI_ASSOC))
+		{
+			$autopost = $rowauto['cvalue'];
+		}
+	}
+
 	$sqlcomp = mysqli_query($con,"select * from company where compcode='$company'");
 
 	if(mysqli_num_rows($sqlcomp) != 0){
@@ -34,261 +33,324 @@ include('../../include/denied.php');
 	}
 	
 	$csalesno = $_REQUEST['x'];
-	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.chouseno,b.ccity,b.cstate,b.ctin from sales a 
-  left join customers b on a.compcode=b.compcode and a.ccode=b.cempid 
-  where a.compcode='$company' and a.ctranno = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.nlimit, b.ctradename,b.chouseno,b.ccity,b.cstate,b.ctin from sales a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.compcode='$company' and a.ctranno = '$csalesno'");
 
-if (mysqli_num_rows($sqlhead)!=0) {
-	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-		$CustCode = $row['ccode'];
-		$CustName = $row['cname'];
-		$Remarks = $row['cremarks'];
-		$Date = $row['dcutdate'];
-    $Adds = $row['chouseno']." ". $row['ccity']." ". $row['cstate'];
-    $cTin = $row['ctin'];
-    $cTerms = $row['cterms'];
+  if (mysqli_num_rows($sqlhead)!=0) {
+    while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+      $CustCode = $row['ccode'];
+      $CustName = $row['cname'];
+      $CustNameBuss = $row['ctradename'];
+      $Remarks = $row['cremarks'];
+      $Date = $row['dcutdate'];
+      $cRefDR = $row['crefmoduletran'];
+      $Gross = $row['nbasegross'];
 
-    $cvatcode = $row['cvatcode'];
+	  $cOracleNo = $row['coracleinv'];
+	  $cDocType = $row['cdoctype'];
 
-		$SalesType = $row['csalestype'];
-    $PayType = $row['cpaytype'];
-		$Gross = $row['ngross'];
-		
-		$lCancelled = $row['lcancelled'];
-		$lPosted = $row['lapproved'];
-		$lPrintPosted = $row['lprintposted'];
-	}
-} // onLoad="window.print()"
+      $Adds = $row['chouseno']." ". $row['ccity']." ". $row['cstate'];
+      $cTin = $row['ctin'];
+      $cTerms = $row['cterms'];
+
+      $nLimit = $row['nlimit'];
+      
+      $cvatcode = $row['cvatcode'];
+      
+      $lCancelled = $row['lcancelled'];
+      $lPosted = $row['lapproved'];
+    }
+  }
+
+  //get DR details 
+  $cRefDRCust = "";
+  $cRefDRAPC = "";
+  $sqlDR = mysqli_query($con,"select a.*, b.cname from dr a left join customers b on a.compcode=b.compcode and a.cdelcode=b.cempid where a.compcode='$company' and a.ctranno = '$cRefDR'");
+
+  if (mysqli_num_rows($sqlDR)!=0) {
+    while($row = mysqli_fetch_array($sqlDR, MYSQLI_ASSOC)){
+      $cRefDRCust = $row['cname'];
+	  $cRefDRAPC = $row['crefapcdr'];
+    }
+  }
+
+  $result = mysqli_query($con, "SELECT * FROM `parameters` WHERE compcode='$company' and ccode = 'PRINT_VERSION_SI'");
+  if(mysqli_num_rows($result) != 0){
+    $verrow = mysqli_fetch_array($result, MYSQLI_ASSOC);
+    $version = $verrow['cvalue'];
+  } else {
+    $version =''; 
+  }
+
+  //get terms desc
+  $cTermsDesc = "";
+  $result = mysqli_query($con, "SELECT * FROM `groupings` WHERE compcode='$company' and ctype = 'TERMS' and ccode='$cTerms'");
+  if(mysqli_num_rows($result) != 0){
+    $verrow = mysqli_fetch_array($result, MYSQLI_ASSOC);
+    $cTermsDesc = $verrow['cdesc'];
+  }
+
+  //get vat desc
+  $cVATDesc = "";
+  $result = mysqli_query($con, "Select * From vatcode where compcode='$company' and cvatcode='$cvatcode'");
+  if(mysqli_num_rows($result) != 0){
+    $verrow = mysqli_fetch_array($result, MYSQLI_ASSOC);
+    $cVATDesc = $verrow['cvatdesc'];
+  }
 ?>
 
 <!DOCTYPE html>
 <html>
-<link rel="stylesheet" type="text/css" href="../../css/cssSM.css">
-
 <head>
+<link rel="stylesheet" type="text/css" href="../../css/cssmed.css">
+<style type="text/css">
+
+    body{
+      font-family: Arial;
+      font-size: 14px;
+    }
+
+		.form-container{
+				position: relative;
+				text-align: center;
+				color: #000;
+				font-weight: bold;
+				/*text-transform: uppercase;*/
+				width: 8.5in;
+				height: 7in;
+		}
+
+    .soldTo{ 
+			position: absolute;
+			top: 170px;
+			left: 145px;
+			width: 400px;
+			height:  15px;  
+      text-align: left;  
+     /* border: 1px solid #000; 
+			letter-spacing: 11px;
+			border: 1px solid #000;*/
+		}
+
+		.shipTo{ 
+			position: absolute;
+			top: 190px;
+			left: 145px;
+			width: 400px;
+			height:  15px;  
+      text-align: left;  
+     /* border: 1px solid #000; 
+			letter-spacing: 11px;
+			border: 1px solid #000;*/
+		}
+
+    .tin{
+			position: absolute;
+			top: 215px;
+			left: 145px;
+			width: 400px;
+			height:  15px;  
+      text-align: left; 
+      /*border: 1px solid #000; 
+			letter-spacing: 11px;
+			border: 1px solid #000;*/
+		}
+
+    .busstyle{
+			position: absolute;
+			top: 238px;
+			left: 145px;
+			width: 400px;
+			height:  15px;  
+      text-align: left; 
+      /*border: 1px solid #000; 
+			letter-spacing: 11px;
+			border: 1px solid #000;*/
+		}
+
+    .address{
+			position: absolute;
+			top: 260px;
+			left: 145px;
+			width: 400px;
+			height:  15px;  
+      		text-align: left; 
+      /*border: 1px solid #000; 
+			letter-spacing: 11px;
+			border: 1px solid #000;*/
+		}
+
+    .date{
+			position: absolute;
+			top: 170px;
+			left: 680px;
+			width: 135px;
+			height:  15px;  
+      text-align: left; 
+      /*border: 1px solid #000; 
+			letter-spacing: 11px;
+			border: 1px solid #000;*/
+		}
+
+    .terms{
+			position: absolute;
+			top: 190px;
+			left: 680px;
+			width: 160px;
+			height:  15px;  
+      text-align: left; 
+      font-size: 12px !important;
+     		/*border: 1px solid #000; 
+			letter-spacing: 11px;
+			border: 1px solid #000;*/
+		}
+
+    .refdr{
+			position: absolute;
+			top: 215px;
+			left: 680px;
+			width: 135px;
+			height:  15px;  
+      text-align: left; 
+     /* border: 1px solid #000; 
+			letter-spacing: 11px;
+			border: 1px solid #000;*/
+		}  
+
+    .invno{
+			position: absolute;
+			top: 238px;
+			left: 680px;
+			width: 135px;
+			height:  15px;  
+      text-align: left; 
+     /* border: 1px solid #000; 
+			letter-spacing: 11px;
+			border: 1px solid #000;*/
+		}   
+
+	.TotalFoot{
+		position: absolute;
+		top: 575px;
+		left: 650px;
+		width: 113px;
+		height:  15px;  
+      	text-align: right; 
+     	/* border: 1px solid #000; 
+		letter-spacing: 11px;
+		border: 1px solid #000;*/
+	}
+
+    .RowCont{
+      position: absolute;
+      top: 310px !important;
+      display: table;
+      left: 28px; /*Optional*/
+      table-layout: fixed; /*Optional*/
+      /* border: 1px solid #000; */
+    }
+
+    .Row{    
+			display: block;
+      left: 28px; /*Optional*/  
+      /*border: 1px solid #000; 
+			letter-spacing: 11px;
+			border: 1px solid #000;*/
+		}
+
+    .Column{
+			display: table-cell; 
+			/*border: 1px solid #000;
+			letter-spacing: 11px;*/
+		}
+
+    .TotalVATCode{
+      position: absolute;
+      top: 420px;
+      left: 250px;
+      width: 200px;
+      height:  15px;  
+      text-align: center; 
+      font-size: 18px !important;
+     	/* border: 1px solid #000; 
+		  letter-spacing: 11px;
+		  border: 1px solid #000;*/
+    }
+
+
+  </style>
+
+</style>
 </head>
 
-<body style="position:fixed; padding-top:.70in" onLoad="window.print()">
+<body onLoad="window.print();">
+<div class="form-container">
+    <!--<img src="siform_blank.jpg?x=<?//=time()?>" width="100%">-->
 
-<table width="100%" border="0" cellpadding="1" style="border-collapse:collapse;" id="tblMain">
-  <tr>
-    <td colspan="2" style="padding-right: 0.25in;" align="right">&nbsp;<font size="3"><b><?//php echo $csalesno;?></b></font></td>
-  </tr>
+    <div class="soldTo"><?=$CustName?></div> 
+    <div class="shipTo"><?=$cRefDRCust?></div>
+    <div class="date"><?=date_format(date_create($Date), "M d, Y")?></div>
+    <div class="terms"><?=$cTermsDesc?></div>
+    <div class="tin"><?=$cTin?></div>
+    <div class="refdr"><?=($cDocType=="Doc2") ? $cRefDRAPC : $cRefDR?></div>
+    <div class="busstyle"><?=$CustNameBuss?></div>
+    <div class="invno"><?=($cDocType=="Doc2") ? $cOracleNo : $csalesno?></div>
 
-  <tr>
-    <td VALIGN="TOP">
+    <div class="address"><?=$Adds?></div>
+   
 
-      <table width="100%" border="0" cellpadding="2" style=" margin-top: 0.18in !important">
-        <tr><td style="padding-left: 1.0in;"> <?=$CustName?> </td></tr>
-        <tr><td style="padding-left: 1.0in; padding-top: 5px"><?=$cTin?></td></tr>
-        <tr><td style="padding-left: 1.0in; padding-top: 5px"><?=$Adds?> </td></tr>       
-        </tr>
-      </table>
+  <div class="RowCont">
+    <?php 
+		$sqlbody = mysqli_query($con,"select a.*, c.nrate, b.cnotes from sales_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno left join taxcode c on a.compcode=c.compcode and a.ctaxcode=c.ctaxcode where a.compcode='$company' and a.ctranno = '$csalesno' Order By a.nident");
 
-    </td>
-    <td style="width: 2.7in" VALIGN="TOP"> 
-      <table width="100%" border="0" >
-        <tr><td style="padding-right: 0.1in;" align="right"> <?=($PayType=="Credit") ? date_format(date_create($Date), "M d, Y") : "&nbsp;";?> </td></tr>
-        <tr><td style="padding-right: 0.1in; padding-top: 5px" align="right"> <?=($PayType=="Cash") ? date_format(date_create($Date), "M d, Y") : "&nbsp;";?> </td></tr>
-        <tr><td style="padding-right: 0.1in; padding-top: 5px" align="right"> <?=($PayType=="Credit") ? $cTerms : "&nbsp;";?> <??> </td></tr>
-        <tr><td style="padding-right: 0.1in; padding-top: 5px" align="right"> &nbsp; </td></tr>
-      </table>
-    </td>
-  </tr>
+		if (mysqli_num_rows($sqlbody)!=0) {
+		$cntr = 0;
+		$totnetvat = 0;
+		$totlessvat = 0;
+		$totvatxmpt = 0;
+		$totvatable = 0;
+		
+    $deftop = 275;
+		while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
+		  $cntr = $cntr + 1;
+      $deftop = $deftop + 39;
+						
+	?>
+    <div class="Row">
+      <div class="Column" style="width: 115px"><?=$rowbody['citmposno'];?></div>
+      <div class="Column" style="width: 119px"><?=$rowbody['citmsysno']?> </div>
+      <div class="Column" style="width: 216px; text-align: left; padding-left: 5px"><?=$rowbody['citemdesc']?></div>
+      <div class="Column" style="width: 88px"><?=number_format($rowbody['nqty']);?> <?=$rowbody['cunit'];?></div>
+      <div class="Column" style="width: 100px; text-align: right"><?=number_format($rowbody['nprice'],4);?></div>
+      <div class="Column" style="width: 119px; text-align: right"><?=number_format($rowbody['namount'],2);?></div>
+    </div>
 
-
-  <tr>
-    <td colspan="2">&nbsp;</td>
-  </tr>
-  <tr>
-    <td colspan="3" style="height: 5.5in; padding-top: 13px;" VALIGN="TOP">
-    
-    <table width="100%" border="0" cellpadding="3">
       <?php 
-        $sqlbody = mysqli_query($con,"select a.*, b.citemdesc, c.nrate from sales_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno left join taxcode c on a.compcode=c.compcode and a.ctaxcode=c.ctaxcode where a.compcode='$company' and a.ctranno = '$csalesno'");
+	  
+	  		if(floatval($rowbody['nrate'])!=0){
+				//echo "A";
+				$totnetvat = floatval($totnetvat) + floatval($rowbody['nnetvat']);
+				$totlessvat = floatval($totlessvat) + floatval($rowbody['nlessvat']);
+				
+				$totvatable = floatval($totvatable) + floatval($rowbody['namount']);
 
-        if (mysqli_num_rows($sqlbody)!=0) {
-
-          $cntr = 0;
-          $totnetvat = 0;
-          $totlessvat = 0;
-          $totvatxmpt = 0;
-          $totvatable = 0;
-
-          $nnetprice = 0;
-
-          while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
-          $cntr = $cntr + 1;
-          $nnetprice = floatval($rowbody['nprice']) - floatval($rowbody['ndiscount']);
-                
-      ?>
-      
-            <tr> 
-              <td style="width: 1.4in"  align="center"><?=$cntr;?></td>
-              <td style="text-overflow: ellipsis; width: .55in">&nbsp;&nbsp;<?php echo $rowbody['citemno'];?></td>
-              <td style="text-overflow: ellipsis; width: 14.5in"><?php echo $rowbody['citemdesc'];?></td>
-              <td style="width: 1.15in" align="center"><?php echo number_format($rowbody['nqty']);?>&nbsp;</td> 
-              <td style="width: 1.15in" align="center"><?php echo $rowbody['cunit'];?></td>
-              <td style="text-overflow: ellipsis; width: 2.25in" align="right"><?php echo number_format($nnetprice,2);?></td>
-              <td style="width: 2.25in;" align="right"><?php echo number_format($rowbody['namount'],2);?></td>
-            </tr>
-      <?php
-            if((int)$rowbody['nrate']!=0){
-              //echo "A";
-              $totnetvat = floatval($totnetvat) + floatval($rowbody['nnetvat']);
-              $totlessvat = floatval($totlessvat) + floatval($rowbody['nlessvat']);
-              
-              $totvatable = floatval($totvatable) + floatval($rowbody['namount']);
-            }
-            else{
-              //echo "B";
-              $totvatxmpt = floatval($totvatxmpt) + floatval($rowbody['namount']);
-            }
           }
-        }
-
-          if($cvatcode=='VT' || $cvatcode=='NV'){
-            $printVATGross = number_format($Gross,2);
-            
-              if(floatval($totvatxmpt)==0){
-                //echo "A";
-                $printVEGross = 0;
-              }else{
-                //echo "AB";
-                $printVEGross =  $totvatxmpt;
-              }
-
-            $printZRGross = 0;
-
-
-              $totnetvat = $totnetvat;
-              $totlessvat = $totlessvat;
-              $totvatable = $totvatable;
-            
-          }elseif($cvatcode=='VE'){
-            $printVATGross = 0;
-            $printVEGross = $Gross;
-            $printZRGross = 0;
-            
-              $totnetvat = 0;
-              $totlessvat = 0;
-              $totvatable = 0;
-            
-          }elseif($cvatcode=='ZR'){
-            $printVATGross = 0;
-            $printVEGross = 0;
-            $printZRGross = $Gross;
-
-              $totnetvat = 0;
-              $totlessvat = 0;
-              $totvatable = 0;
-            
+          else{
+            //echo "B";
+            $totvatxmpt = floatVAL($totvatxmpt) + floatval($rowbody['namount']);
           }
-
-      ?>
-
-    </table>
-  </td>
-  </tr>
-
-  <?php
-    if($SalesType=="Services"){
-  ?>
-  <tr>
-    <td colspan="2" valign="top" style="padding-top: 30px !important">
-      <table width="100%" border="0">
-
-        <tr>
-          <td colspan="4" align="right"  valign="bottom" ><!--<b>Total Sales (VAT INCLUSIVE) </b>-->&nbsp;</td>
-          <td  valign="top" align="right"><b><?//=$totvatable?>&nbsp;</b></td>
-        </tr>
-        <tr>
-          <td colspan="2" valign="bottom">&nbsp;</td>
-          <td colspan="2" valign="bottom" align="right"><!--<b><b>LESS: VAT</b>-->&nbsp;</td>
-          <td  valign="bottom" align="right"><b><?//=$totlessvat?></b>&nbsp;</td>
-        </tr>
-        <tr>
-          <td align="right" valign="bottom" style="width: 1.24in"><!--<b><b>Vatable Sales</b>-->&nbsp;</td>
-          <td valign="bottom"><div style="text-align:right; width:50%"><b><?//=$totvatable?></b>&nbsp;</div></td>
-          <td colspan="2" valign="bottom" align="right"><!--<b><b>Amt. Net of VAT</b>-->&nbsp;</td>
-          <td  valign="bottom" align="right"><b><?//=$totnetvat?></b>&nbsp;</td>
-        </tr>
-        <tr>
-          <td align="right" valign="bottom"><!--<b><b>Vat-Exempt Sales</b>-->&nbsp;</td>
-          <td valign="bottom"><div style="text-align:right; width:50%"><b><?=($printVEGross !== 0) ? $printVEGross : '' ?></b>&nbsp;</div></td>
-          <td colspan="2" valign="bottom" align="right"><!--<b><b>LESS: SC/PWD DISC.</b>-->&nbsp;</td>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?//=number_format($Gross,2)?>&nbsp;</b></td>
-        </tr>
-        <tr>
-          <td align="right" valign="bottom"><!--<b><b>Zero-Rated Sales</b>-->&nbsp;</td>
-          <td valign="bottom"><div style="text-align:right; width:50%"><b><?=($printZRGross !== 0) ? $printZRGross : '' ?></b>&nbsp;</div></td>
-          <td colspan="2" valign="bottom" align="right"><!--<b><b>Amt. Due</b>-->&nbsp;</td>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=number_format($totvatable,2)?></b></td>
-        </tr>
-        <tr>
-          <td align="right" valign="bottom"><!--<b><b>Vat Amt</b>-->&nbsp;</td>
-          <td valign="bottom"><div style="text-align:right; width:50%">&nbsp;</div></td>
-          <td colspan="2" valign="bottom" align="right"><!--<b><b>ADD VAT</b>-->&nbsp;</td>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=number_format($totlessvat,2)?></b></td>
-        </tr>
-        <tr>
-          <td colspan="2" valign="bottom">&nbsp;</td>
-          <td colspan="2" valign="bottom" align="right"><!--<b><b>TOTAL AMT. DUE</b>-->&nbsp;</td>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=number_format($Gross,2)?></b></td>
-        </tr>
-
-      </table>
-    </td>
-  </tr>
-  <?php
-    }else{
-?>
-<tr>
-    <td colspan="2" valign="top" style="padding-top: 30px !important">
-      <table width="100%" border="0" cellpadding="1px">
-
-        <tr>
-          <td rowspan="7" valign="top" align="right" style="width: 4in; padding-top: 13px !important">
-
-            <table width="100%" border="0" cellpadding="1px">
-              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($totvatable!==0) ? number_format($totvatable,2) : " "?> </b></td></tr>
-              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($printVEGross!==0) ? number_format($printVEGross,2) : " "?> </b> </td></tr>
-              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($printZRGross!==0) ? number_format($printZRGross,2) : " "?> </b> </td></tr>
-              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($totlessvat!==0) ? number_format($totlessvat,2) : " "?></b> </td></tr>
-            </table>
-
-          </td>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in; height: 0.22in"><b><?=($totvatable!==0) ? number_format($totvatable,2) : " "?>&nbsp;</b></td>
-        </tr>
-        <tr>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=($totlessvat!==0) ? number_format($totlessvat,2) : " "?></b>&nbsp;</td>
-        </tr>
-        <tr>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in; padding-top: 3px !important"><b><?=($totnetvat!==0) ? number_format($totnetvat,2) : " "?></b>&nbsp;</td>
-        </tr>
-        <tr>
-
-          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?//=number_format($Gross,2)?>&nbsp;</b></td>
-        </tr>
-        <tr>
-
-          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=($totvatable!==0) ? number_format($totvatable,2) : " "?></b></td>
-        </tr>
-        <tr>
-
-          <td valign="bottom" align="right" style="padding-right: 0.3in"><b><?=($totlessvat!==0) ? number_format($totlessvat,2) : " "?></b></td>
-        </tr>
-        <tr>
-         
-          <td valign="bottom" align="right" style="padding-right: 0.3in"><b><?=number_format($Gross,2)?></b></td>
-        </tr>
-
-      </table>
-    </td>
-  </tr>
-<?php
     }
-  ?>
-</table>
+    
+		}
+	?>
+	
+	
+	<div class="TotalFoot"><?=number_format($Gross,2)?></div>
+  <div class="TotalVATCode"><?=$cVATDesc?></div>
+		
+
+</div>
+</div>
+
+
 </body>
 </html>

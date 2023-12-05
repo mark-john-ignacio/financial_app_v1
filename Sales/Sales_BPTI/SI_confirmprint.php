@@ -88,6 +88,14 @@ include('../../include/denied.php');
     $verrow = mysqli_fetch_array($result, MYSQLI_ASSOC);
     $cTermsDesc = $verrow['cdesc'];
   }
+
+  //get vat desc
+  $cVATDesc = "";
+  $result = mysqli_query($con, "Select * From vatcode where compcode='$company' and cvatcode='$cvatcode'");
+  if(mysqli_num_rows($result) != 0){
+    $verrow = mysqli_fetch_array($result, MYSQLI_ASSOC);
+    $cVATDesc = $verrow['cvatdesc'];
+  }
 ?>
 
 <!DOCTYPE html>
@@ -205,7 +213,8 @@ include('../../include/denied.php');
 			left: 680px;
 			width: 160px;
 			height:  15px;  
-      		text-align: left; 
+      text-align: left; 
+      font-size: 12px !important;
      		/*border: 1px solid #000; 
 			letter-spacing: 11px;
 			border: 1px solid #000;*/
@@ -270,6 +279,19 @@ include('../../include/denied.php');
 			letter-spacing: 11px;*/
 		}
 
+    .TotalVATCode{
+      position: absolute;
+      top: 420px;
+      left: 250px;
+      width: 200px;
+      height:  15px;  
+      text-align: center; 
+      font-size: 18px !important;
+     	/* border: 1px solid #000; 
+		  letter-spacing: 11px;
+		  border: 1px solid #000;*/
+    }
+
 
   </style>
 
@@ -314,7 +336,7 @@ include('../../include/denied.php');
 
   <div class="RowCont">
     <?php 
-		$sqlbody = mysqli_query($con,"select a.*, b.citemdesc, c.nrate from sales_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno left join taxcode c on a.compcode=c.compcode and a.ctaxcode=c.ctaxcode where a.compcode='$company' and a.ctranno = '$csalesno' Order By a.nident");
+		$sqlbody = mysqli_query($con,"select a.*, c.nrate, b.cnotes from sales_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno left join taxcode c on a.compcode=c.compcode and a.ctaxcode=c.ctaxcode where a.compcode='$company' and a.ctranno = '$csalesno' Order By a.nident");
 
 		if (mysqli_num_rows($sqlbody)!=0) {
 		$cntr = 0;
@@ -331,8 +353,8 @@ include('../../include/denied.php');
 	?>
     <div class="Row">
       <div class="Column" style="width: 115px"><?=$rowbody['citmposno'];?></div>
-      <div class="Column" style="width: 119px"><?=$rowbody['citmsysno'];?></div>
-      <div class="Column" style="width: 216px; text-align: left; padding-left: 5px"><?=$rowbody['citemdesc'];?></div>
+      <div class="Column" style="width: 119px"><?=$rowbody['citmsysno']?> </div>
+      <div class="Column" style="width: 216px; text-align: left; padding-left: 5px"><?=$rowbody['citemdesc']?></div>
       <div class="Column" style="width: 88px"><?=number_format($rowbody['nqty']);?> <?=$rowbody['cunit'];?></div>
       <div class="Column" style="width: 100px; text-align: right"><?=number_format($rowbody['nprice'],4);?></div>
       <div class="Column" style="width: 119px; text-align: right"><?=number_format($rowbody['namount'],2);?></div>
@@ -359,8 +381,8 @@ include('../../include/denied.php');
 	
 	
 	<div class="TotalFoot"><?=number_format($Gross,2)?></div>
-		
-		
+  <div class="TotalVATCode"><?=$cVATDesc?></div>
+
 
 </div>
 </div>

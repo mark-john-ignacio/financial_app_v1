@@ -56,10 +56,12 @@ function getcustsupp($tranno,$xmodule){
 	}
 
 	$returname = "";
-	$result=mysqli_query($con,$sql);
-	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-	{
-		$returname =  $row['cname'];
+	if($sql!=""){
+		$result=mysqli_query($con,$sql);
+		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+		{
+			$returname =  $row['cname'];
+		}
 	}
 
 	return $returname;
