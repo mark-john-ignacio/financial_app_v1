@@ -15,6 +15,7 @@
     $date = date("Y-m-d", strtotime($_POST['date']));
     $name = $_POST['name'];
     $bank = $_POST['bank'];
+    $transactions = json_decode($_POST['tranno'], true);
     $excel = ExcelRead($_FILES);
     
 
@@ -38,13 +39,6 @@
         $module = $row['cmodule'];
         $credit = $row['ncredit'];
         $debit = $row['ndebit'];
-        $transactions = [];
-
-        $sql = "SELECT * FROM paycheck WHERE compcode = '$company'";
-        $queries = mysqli_query($con, $sql);
-        while($list = $queries -> fetch_assoc()){
-            array_push($transactions, $list['tranno']);
-        }
 
         if(!in_array($tranno, $transactions)){
             $sql = match($module){

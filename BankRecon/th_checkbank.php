@@ -23,24 +23,24 @@
         $GROSS_BOOK = floatval($book_credit) + floatval($book_debit);
         $GROSS_IMPORT = floatval($debit) - floatval($credit);
 
-        $balance = $GROSS_BOOK - $GROSS_IMPORT;
 
         // $pay = $list['pay'];
         $month = date('m');
         $year = date('y');
         $code = '';
 
-        $sql = "INSERT INTO paycheck(`compcode`, `module`, `tranno`, `refno`, `debit`, `credit`, `bank`, `date`) VALUES ('$company', '$module', '$tranno', '$refno', '$debit', '$credit', '$bank', NOW())";
-        if(!mysqli_query($con, $sql)){
-            $isProceed = false;
-            break; 
-        } 
+        // $sql = "INSERT INTO paycheck(`compcode`, `module`, `tranno`, `refno`, `debit`, `credit`, `bank`, `date`) VALUES ('$company', '$module', '$tranno', '$refno', '$debit', '$credit', '$bank', NOW())";
+        // if(!mysqli_query($con, $sql)){
+        //     $isProceed = false;
+        //     break; 
+        // } 
     }
 
     if ($isProceed) {
         echo json_encode([
             'valid' => true,
-            'msg' => "Success Fully Matched"
+            'msg' => "Success Fully Matched",
+            'data' => $details
         ]);
     } else {
         echo json_encode([

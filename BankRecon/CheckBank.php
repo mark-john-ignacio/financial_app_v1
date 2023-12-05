@@ -10,6 +10,13 @@
     $to = date("Y-m-d", strtotime($_POST['rangeto']));
 
     $deposit = [];
+    $bankRecon = [
+        'refno' => [],
+        'credit' => [],
+        'debit' => [],
+        'tranno' => [],
+        'module' => [], 
+    ];
     $EXCEL_TOTAL = 0;
     $totalTransit = 0;
     
@@ -66,14 +73,12 @@
             $queries = mysqli_query($con, $sql);
             $rows = $queries -> fetch_assoc();
             if(mysqli_num_rows($queries) != 0){
-                //Check if Data match in paycheck table
-                $sql = "SELECT * FROM paycheck WHERE compcode = '$company' AND refno = '$refno' AND debit = $excel_debit AND credit = $excel_credit;";
-                $query = mysqli_query($con, $sql);
-                if(mysqli_num_rows($query) === 0){
-                    // Pay Check Query Insert
-                    $sql = "INSERT INTO paycheck(`compcode`, `module`, `tranno`, `refno`, `debit`, `credit`, `bank`, `date`) VALUES ('$company', '$module', '$tranno', '$refno', '$excel_debit', '$excel_credit', '$bcode', NOW())";
-                    mysqli_query($con, $sql);
-                }
+
+                array_push($bankRecon['refno'], $refno);
+                array_push($bankRecon['credit'], $excel_credit);
+                array_push($bankRecon['debit'], $excel_debit);
+                array_push($bankRecon['tranno'], $tranno);
+                array_push($bankRecon['module'], $module);
             }
         }        
     }
@@ -87,17 +92,6 @@
     $totalBook = floatval($bookTotal) + $UNRECORD_DEPOSIT;
     $UNRECORD_WITHDRAW = 0; 
     $ADJUST_BOOK = $totalBook + $UNRECORD_WITHDRAW;
-
-    function checkpay($refno, $credit, $debit){
-        global $con, $company, $bcode;
-
-        $sql = "SELECT * FROM paycheck WHERE compcode = '$company' AND refno = '$refno' AND credit = $credit AND debit = $debit AND bank = '$bcode'";
-        $query = mysqli_query($con, $sql);
-        if(mysqli_num_rows($query) != 0){
-            return true;
-        } 
-        return false;
-    }
 ?>
 
 <!DOCTYPE html>
@@ -184,6 +178,10 @@
             </div>
         </div>
     </div>
+    
+    <div style="min-width: 10in; width: 100%; display: flex; justify-content: center; justify-items: items">
+        <button type="button" onclick="Finalized.call(this)" style='display: none'>Finalized</button>
+    </div>
     <div style="min-width: 10in; width: 100%; min-height: 3in; max-height: 3in; border: 1px solid; overflow: auto;">
         <table class="table" id="chequeBank" style="min-width: 10in; overflow: auto;">
             <thead>
@@ -197,48 +195,7 @@
                     <th>&nbsp;</th>
                 </tr>
             </thead>
-            <tbody">
-                <?php 
-                    for($i = 0; $i < count($excel); $i++):
-                        $data = $excel[$i];
-                        if($i == 0){
-                            //Excel Checker Header
-                            for($j = 0; $j < count($data); $j++){
-                                $proceed = match(onlyString($data[$j])){
-                                    "DATE" => true,
-                                    "ReferenceNo" => true,
-                                    "DEBIT" => true,
-                                    "CREDIT" => true,
-                                    "BALANCE" => true,
-                                    "Name" => true,
-                                    default => false
-                                };
-                                
-                                if($proceed == false) break;
-                            }
-                        } else {
-                            if(!$proceed) break;
-                                $date = $data[0];
-                                $accountNature = $data[1];
-                                $checkno = $data[2];
-                                // $balance = floatval($data[4]) + floatval($data[3]);
-                                $debit = $data[3] ? $data[3] : 0;
-                                $credit = $data[4] ? $data[4] : 0;
-
-                            if(!checkpay($checkno, $credit, $debit)): ?>
-                    <tr>
-                        <td><?= $date ?></td>
-                        <td><?= $accountNature ?></td>
-                        <td><?= $checkno ?></td>
-                        <td><?= $debit ?></td>
-                        <td><?= $credit  ?></td>
-                        <!-- <td>< ?= $balance ?></td> -->
-                        <th style="display: flex; justify-items: center; justify-content: center;">
-                                <button type='button' onclick="LoadMatchCheque.call(this)" class="btn btn-sm btn-primary">Find Match</button>
-                        </th>
-                    </tr>
-                <?php endif; } endfor; ?>
-            </tbody>
+            <tbody> </tbody>
         </table>
     </div>
 
@@ -282,6 +239,12 @@
 
 <script>
     var transactions = [];
+    var Reconciliation = <?= json_encode($bankRecon) ?>;
+    var ChequeExcel = <?= json_encode($excel) ?>
+
+    $(document).ready(function(){
+        ViewCheque();
+    })
     function isCheck(){
         let row = $(this).closest("tr");
         let modules = row.find("td:eq(0)").text();
@@ -331,7 +294,8 @@
         let debit = row.find("td:eq(3)").text();
         let credit = row.find("td:eq(4)").text();
         let bank = <?= $bankcode ?>;
-        console.log(debit)
+        let tranno = <?= json_encode($bankRecon['tranno']) ?>;
+        console.log(tranno)
 
         $("#match > tbody").empty();
         $.ajax({
@@ -341,7 +305,8 @@
                 refno: reference,  
                 name: name, 
                 date: date,
-                bank: bank
+                bank: bank,
+                tranno: JSON.stringify(tranno)
             },
             dataType: "json",
             async: false,
@@ -386,9 +351,7 @@
         var book_credit = 0;
         var book_debit = 0;
 
-        console.log(transactions)
         transactions.map((item, index) => {
-            console.log()
             TOTAL_DEBIT = parseFloat(item.debit);
             TOTAL_CREDIT = parseFloat(item.credit);
             book_credit += parseFloat(item.book_credit);
@@ -400,32 +363,105 @@
         var GROSS_CREDIT = parseFloat(book_debit) - parseFloat(TOTAL_CREDIT);
 
         if( isEqualsZero(GROSS_DEBIT) && isEqualsZero(GROSS_CREDIT) ){
-            let bank = "<?= $bcode; ?>";
-            $.ajax({
-                url: 'th_checkbank.php',
-                data: {
-                    details: JSON.stringify(transactions),
-                    bank: bank
-                },
-                dataType: 'json',
-                async: false,
-                success: function(res){
-                    if(res.valid){
-                        alert(res.msg)
-                    } else {
-                        alert(res.msg)
-                    }
-                    location.reload();
-                    transactions = [];
-                    transactions.length = 0;
-                },
-                error: function(res){
-                    console.log(res)
-                }
+            transactions.map((item, index) => {
+                Reconciliation['refno'].push(item.refno);
+                Reconciliation['debit'].push(parseFloat(item.debit));
+                Reconciliation['credit'].push(parseFloat(item.credit));
+                Reconciliation['module'].push(item.module);
+                Reconciliation['tranno'].push(item.tranno);
             })
         } else {
             alert("Amount has a balance!\n Amount must be zero")
         }
+        ViewCheque();
+    }
+
+    function Finalized(){
+        let bank = "<?= $bcode; ?>";
+        $.ajax({
+            url: 'th_checkbank.php',
+            data: {
+                details: JSON.stringify(transactions),
+                bank: bank
+            },
+            dataType: 'json',
+            async: false,
+            success: function(res){
+                if(res.valid){
+                    alert(res.msg)
+                } else {
+                    alert(res.msg)
+                }
+                location.reload();
+                transactions = [];
+                transactions.length = 0;
+            },
+            error: function(res){
+                console.log(res)
+            }
+        })
+    }
+
+    function ViewCheque(){
+        var proceed = false;
+        $("#chequeBank tbody").empty()
+        ChequeExcel.map((item, index) => {
+            if(index == 0){
+                for(let i = 0; i < item.length; i++){
+                    switch(item[i]){
+                        case "DATE *":  
+                            proceed = true;
+                            break;
+                        case "Name *": 
+                            proceed = true;
+                            break;
+                        case "Reference No. *": 
+                            proceed = true;
+                            break;
+                        case "DEBIT":;
+                            proceed = true;
+                            break;
+                        case "CREDIT": 
+                            proceed = true;
+                            break;
+                        case "BALANCE":
+                            proceed = true;
+                            break;
+                        default: break;
+                    }
+                    if(!proceed) break;
+                }
+            } else {
+                if(!proceed) return;
+                
+                let date = item[0];
+                let accountNature = item[1];
+                let checkno = item[2];
+                let debit = item[3] ? parseFloat(item[3]) : 0;
+                let credit = item[4] ? parseFloat(item[4]) : 0;
+
+                console.log(Reconciliation)
+                if( !CheckStore(checkno, debit, credit) ){
+                    $("<tr>").append(
+                        $("<td>").text(date),
+                        $("<td>").text(accountNature),
+                        $("<td>").text(checkno),
+                        $("<td>").text(debit),
+                        $("<td>").text(credit),
+                        $("<td>").html("<button type='button' onclick='LoadMatchCheque.call(this)' class='btn btn-sm btn-primary'>Find Match</button>")
+                    ).appendTo("#chequeBank tbody")
+                }
+            }
+           
+        })
+    }
+
+    function CheckStore(checkno, debit, credit) {
+        return (
+            Reconciliation['refno'].includes(checkno) &&    
+            Reconciliation['debit'].includes(debit) &&
+            Reconciliation['credit'].includes(credit)
+        );
     }
     
     function isEqualsZero(data){
