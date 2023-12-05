@@ -223,14 +223,6 @@
                     }
                     ?>
 
-                    <tr>
-                        <td colspan='3' class="tdpadx" style="border: 1px solid; padding-right: 10px">
-                            <?php
-                                echo "<b><i>Note: Price exclusive of VAT</i></b>";
-                            ?>
-                        </td>
-                    </tr>
-
                 </table>
             </td>
         </tr> 

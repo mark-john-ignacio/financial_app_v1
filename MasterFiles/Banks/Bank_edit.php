@@ -6,7 +6,7 @@ $_SESSION['pageid'] = "Bank_new.php";
 
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
-include('../../include/access2.php');
+include('../../include/access.php');
 
 				$company = $_SESSION['companyid'];
 
@@ -20,7 +20,7 @@ include('../../include/access2.php');
 				
 				if($citemno <> ""){
 					
-					$sql = "select A.*, B. cacctdesc from bank A left join accounts B on A.compcode=B.compcode and A.caccntno=B.cacctno where A.compcode='$company' and A.ccode='$citemno'";
+					$sql = "select A.*, B. cacctdesc from bank A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ccode='$citemno'";
 				}else{
 					header('Bank.php');
 					die();
@@ -37,10 +37,12 @@ include('../../include/access2.php');
 
 						$cCustCode = $row['ccode'];
 						$cCustName = $row['cname'];
-						$cCOANo = $row['caccntno'];
+						$cCOANo = $row['cacctno'];
 						$cCOA = $row['cacctdesc'];
 						$cBankNo = $row['cbankacctno'];
-						$cChkNo = $row['cnxtchkno'];
+						$cBank = $row['caccountname'];
+
+						$cDoctype = $row['cdoctype'];
 												
 						$HouseNo = $row['caddress'];
 						$City = $row['ccity'];
@@ -65,7 +67,7 @@ include('../../include/access2.php');
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Myx Financials</title>
+	<title>Coop Financials</title>
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?v=<?php echo time();?>"> 
     <link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>   
     
@@ -109,25 +111,46 @@ include('../../include/access2.php');
     </div></td>
   </tr>
   <tr>
-    <td><b>Linked Account (COA)</b></td>
+    <td><b>Bank Account Name</b></td>
     <td colspan="2" style="padding:2px"><div class="col-xs-4 nopadding">
-    
-    
-    <input type="hidden" id="txtcoaacct" name="txtcoaacct" value="<?php echo $cCOANo;?>"/>
-      
-      <input type="text" class="form-control input-sm" id="txtcoa" name="txtcoa" tabindex="2" placeholder="Search Account Description.." autocomplete="off" value="<?php echo $cCOANo." - ".$cCOA;?>" />
-      
-      </div>
-    </td>
+      <input type="text" class="form-control input-sm" id="txtbankacctnme" name="txtbankacctnme" tabindex="2" placeholder="Input Bank Acct No.." required autocomplete="off" value="<?php echo $cBank;?>" />
+    </div></td>
   </tr>
   <tr>
-    <td><b>Next Check No.</b></td>
-    <td colspan="2" style="padding:2px"><div class="col-xs-4 nopadding"><input type="text" class="form-control input-sm" id="txtchkno" name="txtchkno" tabindex="2" placeholder="Input Next Check No.." required autocomplete="off" value="<?php echo $cChkNo;?>" /></div></td>
+    <td><b>Linked Account (COA)</b></td>
+    <td colspan="2" style="padding:2px"><div class="col-xs-4 nopadding">
+      <input type="hidden" id="txtcoaacct" name="txtcoaacct" value="<?php echo $cCOANo;?>"/>
+      <input type="text" class="form-control input-sm" id="txtcoa" name="txtcoa" tabindex="2" placeholder="Search Account Description.." autocomplete="off" value="<?php echo $cCOANo." - ".$cCOA;?>" />
+    </div></td>
+  </tr>
+
+	<tr>
+    <td><b>Check Doc Type</b></td>
+    <td colspan="2" style="padding:2px"><div class="col-xs-4 nopadding">
+      <select class="form-control input-sm" name="seldoctype" id="seldoctype">
+				<option value="1" <?=($cDoctype==1) ? "selected" : "" ?>>BDO CHECK FORMAT</option>
+				<option value="2" <?=($cDoctype==2) ? "selected" : "" ?>>MB CHECK FORMAT</option>
+			</select>
+
+    </div></td>
   </tr>
 
 </table>
 
-<div class="col-xs-12 nopadding">
+<p>&nbsp;</p>
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="#home">Information</a></li>
+    <li><a href="#menu1">Checkbook List</a></li>
+  </ul>
+
+<div class="alt2" dir="ltr" style="margin: 0px;padding: 3px;border: 0px;width: 100%;height: 30vh;text-align: left;overflow: auto">
+
+    <div class="tab-content">
+    
+        <div id="home" class="tab-pane fade in active" style="padding-left:30px">
+
+
+		  <div class="col-xs-12 nopadding">
 				<div class="col-xs-7 nopadding">
 					<u><h4>ADDRESS</h4></u>
                 </div>
@@ -186,6 +209,32 @@ include('../../include/access2.php');
                     </div>
                 </div>
 
+		  </div>
+            
+        </div>
+        
+                <div id="menu1" class="tab-pane fade" style="padding-left:30px">
+        	
+            <p style="padding-top:10px">
+            
+            <input type="button" value="Add Checkbook" name="btnaddunit" id="btnaddunit" class="btn btn-primary btn-xs" onClick="addcheckbook();">
+            
+            <input name="hdnchkbkcnt" id="hdnchkbkcnt" type="hidden" value="0">
+            <br>
+                <table width="65%" border="0" cellpadding="2" id="myCheckBook">
+                  <tr>
+                    <th scope="col" width="80">Checkbook No.</th>
+                    <th scope="col" width="80">CheckNo. (From)</th>
+                    <th scope="col" width="80">CheckNo. (To)</th>
+                    <th scope="col" width="80">Current Check No.</th>
+                    <th scope="col" width="30">&nbsp;</th>
+                  </tr>
+            	</table>
+         </p>
+            
+        </div>
+
+    </div>
 </div>
    
 <br>       
@@ -236,6 +285,13 @@ $(document).ready(function() {
 	$("#itmcode_err").hide();
 	$("#txtccode").focus();
 	
+	
+	$(".nav-tabs a").click(function(){
+        $(this).tab('show');
+    });
+
+	
+	loaditmfactor();
 	disabled();
 	
 });
@@ -247,7 +303,7 @@ $(function() {
 	
 		source: function(request, response) {
 			$.ajax({
-				url: "../th_accounts.php",
+				url: "th_accounts.php",
 				dataType: "json",
 				data: {
 					query: request
@@ -272,6 +328,12 @@ $(function() {
 
 		$("#frmITEM").on('submit', function (e) {
 			e.preventDefault();
+
+			var tbl = document.getElementById('myCheckBook').getElementsByTagName('tr');
+			var lastRow = tbl.length-1;
+			$('#hdnchkbkcnt').val(lastRow);
+			
+			
 			var form = $("#frmITEM");
 			var formdata = form.serialize();
 			
@@ -390,5 +452,123 @@ function chkSIEnter(keyCode,frm){
 		document.getElementById(frm).submit();
 	}
 }
+
+function addcheckbook(){
+	var tbl = document.getElementById('myCheckBook').getElementsByTagName('tr');
+	var lastRow = tbl.length;
+
+	var a=document.getElementById('myCheckBook').insertRow(-1);
+	var u=a.insertCell(0);
+	u.align = "left";
+	u.style.padding = "1px";
+	var v=a.insertCell(1);
+	v.align = "left";
+	v.style.padding = "1px";
+	var w=a.insertCell(2);
+	w.align = "left";
+	w.style.padding = "1px";
+	var x=a.insertCell(3);
+	x.align = "left";
+	x.style.padding = "1px";
+	var y=a.insertCell(4);
+	y.align = "center";
+	
+	u.innerHTML = "<div class=\"col-xs-12 nopadwleft\" ><input type='text' class='form-control input-sm' id='txtchkbookno"+lastRow+"' name='txtchkbookno"+lastRow+"' value='' required style=\"text-align: right\"> </div>";
+	v.innerHTML = "<div class=\"col-xs-12 nopadwleft\" ><input type='text' class='form-control input-sm' id='txtchkfrom"+lastRow+"' name='txtchkfrom"+lastRow+"' value='' required style=\"text-align: right\"> </div>";
+	w.innerHTML = "<div class=\"col-xs-12 nopadwleft\" ><input type='text' class='form-control input-sm' id='txtcheckto"+lastRow+"' name='txtcheckto"+lastRow+"' value='' required style=\"text-align: right\"> </div>";
+	x.innerHTML = "<div class=\"col-xs-12 nopadwleft\" ><input type='text' class='form-control input-sm' id='txtcurrentchk"+lastRow+"' name='txtcurrentchk"+lastRow+"' value='' required style=\"text-align: right\" readonly> </div>";
+	y.innerHTML = "<input class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRow(this);\"/>";
+	
+		$("#txtchkfrom"+lastRow).on("keyup", function() {
+			$("#txtcurrentchk"+lastRow).val($(this).val());
+		});
+	
+
+}
+
+function deleteRow(r) {
+	var tbl = document.getElementById('myCheckBook').getElementsByTagName('tr');
+	var lastRow = tbl.length;
+	var i=r.parentNode.parentNode.rowIndex;
+	 document.getElementById('myCheckBook').deleteRow(i);
+	 var lastRow = tbl.length;
+	 var z; //for loop counter changing textboxes ID;
+	 
+		for (z=i+1; z<=lastRow; z++){
+			var tempchkbkno = document.getElementById('txtchkbookno' + z);
+			var tempchkfrom = document.getElementById('txtchkfrom' + z);
+			var tempchkto= document.getElementById('txtcheckto' + z);
+			var tempcurchk= document.getElementById('txtcurrentchk' + z);
+			
+			var x = z-1;
+			tempchkbkno.id = "txtchkbookno" + x;
+			tempchkbkno.name = "txtchkbookno" + x;
+			tempchkfrom.id = "txtchkfrom" + x;
+			tempchkfrom.name = "txtchkfrom" + x;
+			tempchkto.id = "txtcheckto" + x;
+			tempchkto.name = "txtcheckto" + x;
+			tempcurchk.id = "txtcurrentchk" + x;
+			tempcurchk.name = "txtcurrentchk" + x;
+
+		}
+}
+
+
+function loaditmfactor(){
+			var itmno = $("#txtccode").val();
+	
+			$.ajax ({
+            url: "th_bankcheck.php",
+			data: { id: itmno },
+			dataType: 'json',
+			async: false,
+            success: function(data) {
+				
+				console.log(data);
+				$.each(data,function(index,item){
+							//var curstat = "";
+							var delstat = "";
+							var onbtnclk = "deleteRow(this);";
+							
+							if(item.chknocu>item.chknofr){
+								//curstat = "readonly";
+								delstat = "disabled";
+								onbtnclk = "";
+							}
+							
+							var tbl = document.getElementById('myCheckBook').getElementsByTagName('tr');
+							var lastRow = tbl.length;
+						
+							var a=document.getElementById('myCheckBook').insertRow(-1);
+							var u=a.insertCell(0);
+							u.align = "left";
+							u.style.padding = "1px";
+							var v=a.insertCell(1);
+							v.align = "left";
+							v.style.padding = "1px";
+							var w=a.insertCell(2);
+							w.align = "left";
+							w.style.padding = "1px";
+							var x=a.insertCell(3);
+							x.align = "left";
+							x.style.padding = "1px";
+							var y=a.insertCell(4);
+							y.align = "center";
+							
+							u.innerHTML = "<div class=\"col-xs-12 nopadwleft\" ><input type='text' class='form-control input-sm' id='txtchkbookno"+lastRow+"' name='txtchkbookno"+lastRow+"' value='"+item.chkbkno+"' required style=\"text-align: right\"> </div>";
+							v.innerHTML = "<div class=\"col-xs-12 nopadwleft\" ><input type='text' class='form-control input-sm' id='txtchkfrom"+lastRow+"' name='txtchkfrom"+lastRow+"' value='"+item.chknofr+"' required style=\"text-align: right\"> </div>";
+							w.innerHTML = "<div class=\"col-xs-12 nopadwleft\" ><input type='text' class='form-control input-sm' id='txtcheckto"+lastRow+"' name='txtcheckto"+lastRow+"' value='"+item.chknoto+"' required style=\"text-align: right\"> </div>";
+							x.innerHTML = "<div class=\"col-xs-12 nopadwleft\" ><input type='text' class='form-control input-sm' id='txtcurrentchk"+lastRow+"' name='txtcurrentchk"+lastRow+"' value='"+item.chknocu+"' required style=\"text-align: right\" readonly> </div>";
+							y.innerHTML = "<input class='btn btn-danger btn-xs "+delstat+"' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\""+onbtnclk+"\" />";
+						
+							
+				});
+
+            }
+    		});
+	
+}
+
+
 
 </script>
