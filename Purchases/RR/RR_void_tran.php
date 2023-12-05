@@ -3,7 +3,7 @@
 		session_start();
 	}
 
-	$_SESSION['pageid'] = "RR_unpost.php";
+	$_SESSION['pageid'] = "Receive_unpost.php";
 
 	require_once "../../Connection/connection_string.php";
 

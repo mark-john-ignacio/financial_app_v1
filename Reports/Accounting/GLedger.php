@@ -58,9 +58,15 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 <br><br>
 
 <?php
+
+	$jqy = "";
+	if($_POST['selbanks']!=""){
+		$jqy = " and A.acctno = '".$_POST['selbanks']."' ";
+	}
+
 	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit
 	From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
-	Where A.compcode='$company' and A.ddate between STR_TO_DATE('".$_REQUEST['date1']."', '%m/%d/%Y') and STR_TO_DATE('".$_REQUEST['date2']."', '%m/%d/%Y')
+	Where A.compcode='$company' and A.ddate between STR_TO_DATE('".$_POST['date1']."', '%m/%d/%Y') and STR_TO_DATE('".$_POST['date2']."', '%m/%d/%Y')".$jqy."
 	Order By A.acctno, A.dpostdate, A.ctranno, CASE WHEN (A.ndebit <> 0) THEN 1 ELSE 0 END desc, A.acctno";
 
 	$arracctnos = array();
@@ -87,7 +93,7 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 
 <table class='table' width="100%" border="0"  cellpadding = "3" class="tbl-serate">
 	<tr>
-		<th colspan="5">
+		<th colspan="6">
 			<table width="100%" border="0" align="center" cellpadding = "3">
 				<tr>
 					<td width="30%"><b>Acct ID:</b> <?=$rowxz['cacctno']?></td>

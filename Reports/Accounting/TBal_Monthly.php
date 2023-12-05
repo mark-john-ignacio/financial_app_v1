@@ -214,6 +214,59 @@
  
 </table>
 
+
+
+<?php
+
+		$sql = "Select A.cmodule, A.ctranno, sum(A.ndebit) as ndebit, sum(A.ncredit) as ncredit
+		From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
+		where A.compcode='$company' and YEAR(A.ddate) = '$dteyr' and IFNULL(B.cacctdesc,'') <> ''
+		Group By A.cmodule, A.ctranno Order By A.cmodule, A.ctranno";
+
+		$result=mysqli_query($con,$sql);
+		$arrlist = array();
+		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+		{
+			$xsum = floatval($row['ndebit']) - floatval($row['ncredit']);
+			if(abs($xsum) > 1) {
+				$arrlist[] = $row;
+			}
+			
+		}
+
+	if(count($arrlist) >= 1){
+?>
+<br><br>
+<h3>Check for unbalance transactions</h3>
+
+<table width="50%" border="0" align="left" class="my-table">
+	<tr>	
+		<th> Module </th>
+		<th> Transaction No. </th>
+		<th style='text-align: right'> Total Debit </th>
+		<th style='text-align: right'> Total Credit </th>
+		<th style='text-align: right'> Unbalance </th>
+	</tr>
+	<?php
+		foreach($arrlist as $rs){
+			$xsum = floatval($rs['ndebit']) - floatval($rs['ncredit']);
+	?>
+	<tr>	
+		<td> <?=$rs['cmodule']?> </td>
+		<td> <?=$rs['ctranno']?> </td>
+		<td align="right"> <?=number_format($rs['ndebit'],2)?> </td>
+		<td align="right"> <?=number_format($rs['ncredit'],2)?> </td>
+		<td align="right"> <?=number_format(abs($xsum),2)?> </td>
+	</tr>
+	<?php
+		}
+	?>
+</table>
+<br><br>
+<?php
+	}
+?>
+<br><br><br><br>
 <form action="TBal_Det.php" name="frmdet" id="frmdet" target="_blank" method="POST">
 	<input type="hidden" name="ccode" id="ccode" value="">
 	<input type="hidden" name="date1" id="date1" value="">

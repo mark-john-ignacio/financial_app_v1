@@ -34,3 +34,69 @@ else{
 <?php
 }
 ?>
+
+<!--
+
+INSERT INTO transactions (ctype,ctranno,ddate,dcutdate,cremarks)
+Select A.ctype,A.ctranno,A.ddate,A.dcutdate, 'N'
+From (
+Select A.compcode, 'APV' as ctype,A.ctranno,B.ddate,A.dapvdate as dcutdate,'N'
+From apv A left join 
+	(
+		Select ctranno, MAX(ddate) as ddate
+		from logfile where cevent='POSTED' Group by ctranno
+	) B on A.ctranno = B.ctranno
+where lapproved=1 and lvoid=0
+
+UNION ALL
+
+Select A.compcode, 'SI' as ctype,A.ctranno,B.ddate,A.dcutdate,'N'
+From sales A left join 
+	(
+		Select ctranno, MAX(ddate) as ddate
+		from logfile where cevent='POSTED' Group by ctranno
+	) B on A.ctranno = B.ctranno
+where lapproved=1 and lvoid=0
+
+UNION ALL
+
+Select A.compcode, 'IN' as ctype,A.ctranno,B.ddate,A.dcutdate,'N'
+From ntsales A left join 
+	(
+		Select ctranno, MAX(ddate) as ddate
+		from logfile where cevent='POSTED' Group by ctranno
+	) B on A.ctranno = B.ctranno
+where lapproved=1 and lvoid=0
+
+UNION ALL
+
+Select A.compcode, 'PV' as ctype,A.ctranno,B.ddate,A.dcheckdate as dcutdate,'N'
+From paybill A left join 
+	(
+		Select ctranno, MAX(ddate) as ddate
+		from logfile where cevent='POSTED' Group by ctranno
+	) B on A.ctranno = B.ctranno
+where lapproved=1 and lvoid=0
+
+UNION ALL
+
+Select A.compcode, 'JE' as ctype,A.ctranno,B.ddate,A.djdate as dcutdate,'N'
+From journal A left join 
+	(
+		Select ctranno, MAX(ddate) as ddate
+		from logfile where cevent='POSTED' Group by ctranno
+	) B on A.ctranno = B.ctranno
+where lapproved=1 and lvoid=0
+
+UNION ALL
+
+Select A.compcode, 'OR' as ctype,A.ctranno,iFNULL(B.ddate, A.ddate),A.dcutdate,'N'
+From receipt A left join 
+	(
+		Select ctranno, MAX(ddate) as ddate
+		from logfile where cevent='POSTED' Group by ctranno
+	) B on A.ctranno = B.ctranno
+where lapproved=1 and lvoid=0
+) A where A.compcode='002' order by A.ddate
+
+	-->
