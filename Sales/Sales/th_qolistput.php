@@ -155,8 +155,8 @@ require_once "../../Connection/connection_string.php";
 		 $json['nexchangerate'] = $row['nexchangerate'];
 		 $json['crefident'] = $row['crefident'];
 		 $json['cacctno'] = $row['cacctno'];
-		$json['cacctid'] = $row['cacctid'];
-		$json['cacctdesc'] = $row['cacctdesc'];
+		 $json['cacctid'] = $row['cacctid'];
+		 $json['cacctdesc'] = $row['cacctdesc'];
 		 $json2[] = $json;
 	
 	}

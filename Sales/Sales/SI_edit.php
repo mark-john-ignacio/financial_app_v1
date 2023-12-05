@@ -1478,6 +1478,10 @@ if(file_name.length != 0){
 								$("#hdnqtyunit").val(item.cqtyunit);
 								$("#hdncvat").val(item.ctaxcode);
 								$("#hdncewt").val("");
+
+								$("#hdnacctno").val(item.cacctno);
+								$("#hdnacctid").val(item.cacctid); 
+								$("#hdnacctdesc").val(item.cacctdesc);
 										
 								if(index==0){
 									$("#selbasecurr").val(item.ccurrencycode).change();
