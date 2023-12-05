@@ -23,7 +23,7 @@ echo $_REQUEST["typ"];
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Coop Financials</title>
+	<title>Myx Financials</title>
 
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 
@@ -36,9 +36,12 @@ var GenStat = "NO";
 		if($("#txttyp").val() == "SI"){
 			//alert("A");
 			forSI();
-		}else if($("#txttyp").val()  == "RR"){
+		}else if($("#txttyp").val()  == "OR"){
 			//alert("B");
-			forRR();
+			forOR();
+		}else if($("#txttyp").val()  == "APV"){
+			//alert("B");
+			forAPV();
 		}else if($("#txttyp").val()  == "PV"){
 			//alert("B");
 			forPV();
@@ -132,6 +135,93 @@ function forRR(){
 						}
 					}
 				});
+}
+
+function forAPV(){
+	//alert("A");
+	var itmstat = "";
+	var itm = $("#txtctranno").val();
+
+	$.ajax ({
+		url: "APV_Tran.php",
+		data: { x: num, typ: "POST" },
+		async: false,
+		dataType: "json",
+		beforeSend: function(){
+			$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+			$("#alertbtnOK").hide();
+			$("#OK").hide();
+			$("#Cancel").hide();
+			$("#AlertModal").modal('show');
+		},
+		success: function( data ) {
+			console.log(data);
+			$.each(data,function(index,item){
+				
+				itmstat = item.stat;
+				
+				if(itmstat!="False"){
+					$("#msg"+num).html(item.stat);
+					
+					top.window.location="BatchPOSGL.php";
+					document.write("OK");
+
+				}
+				else{
+					document.write("ERROR: "+itm);		
+				}
+			});
+		}
+	});
+
+}
+
+function forOR(){
+	//alert("A");
+	var itmstat = "";
+	var itm = $("#txtctranno").val();
+
+	$.ajax ({
+		dataType: "text",
+		url: "../../include/th_toAcc.php",
+		data: { tran: itm, type: "OR" },
+		async: false,
+		success: function( data ) {
+			//alert(data.trim());
+			if(data.trim()=="True"){
+				top.window.location="BatchPOSGL.php";
+				document.write("OK");						
+			}
+			else{
+				document.write("ERROR: "+itm);
+			}
+		}
+	});
+
+}
+
+function forPV(){
+	//alert("A");
+	var itmstat = "";
+	var itm = $("#txtctranno").val();
+
+	$.ajax ({
+		dataType: "text",
+		url: "../../include/th_toAcc.php",
+		data: { tran: itm, type: "PV" },
+		async: false,
+		success: function( data ) {
+			//alert(data.trim());
+			if(data.trim()=="True"){
+				top.window.location="BatchPOSGL.php";
+				document.write("OK");						
+			}
+			else{
+				document.write("ERROR: "+itm);
+			}
+		}
+	});
+
 }
 </script>
 
