@@ -1406,10 +1406,10 @@ function chkform(){
 				}
 			},
 			error: function (request, error) {
-        console.log(arguments);
-        alert(" Can't do because: " + error);
-    	}
-		});
+			console.log(arguments);
+			alert(" Can't do because: " + error);
+			}
+			});
 
 	//	alert(trancode);
 		

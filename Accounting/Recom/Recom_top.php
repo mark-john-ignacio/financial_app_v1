@@ -10,6 +10,7 @@
 			<?php echo $_REQUEST["typ"]; ?><br />
             <?php echo $_REQUEST["id"]; ?><br />
             <?php echo $_REQUEST["dte"]; ?><br />
+            <?php echo $_REQUEST["cnthdr"]; ?><br />
         </b>
         </font>
     </center>
