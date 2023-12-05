@@ -179,8 +179,8 @@
         </div>
     </div>
     
-    <div style="min-width: 10in; width: 100%; display: flex; justify-content: center; justify-items: items">
-        <button type="button" onclick="Finalized.call(this)" style='display: none'>Finalized</button>
+    <div style="min-width: 10in; width: 100%; padding: 10px;  display: flex; justify-content: center; justify-items: items">
+        <button type="button" class="btn btn-primary" onclick="Finalized.call(this)" id="Finalized" style="display: none">Finalized</button>
     </div>
     <div style="min-width: 10in; width: 100%; min-height: 3in; max-height: 3in; border: 1px solid; overflow: auto;">
         <table class="table" id="chequeBank" style="min-width: 10in; overflow: auto;">
@@ -244,6 +244,7 @@
 
     $(document).ready(function(){
         ViewCheque();
+        ViewFinalized();
     })
     function isCheck(){
         let row = $(this).closest("tr");
@@ -373,15 +374,30 @@
         } else {
             alert("Amount has a balance!\n Amount must be zero")
         }
+        
+        transactions = [];
+        transactions.length = 0;
+        $("#ReferenceModal").modal("hide")
         ViewCheque();
+        ViewFinalized();
     }
 
     function Finalized(){
         let bank = "<?= $bcode; ?>";
+        let tranno = Reconciliation['tranno'];
+        let refno = Reconciliation['refno'];
+        let modules = Reconciliation['module'];
+        let credit = Reconciliation['credit'];
+        let debit = Reconciliation['debit'];
+
         $.ajax({
             url: 'th_checkbank.php',
             data: {
-                details: JSON.stringify(transactions),
+                tranno: JSON.stringify(tranno),
+                refno: JSON.stringify(refno),
+                module: JSON.stringify(modules),
+                credit: JSON.stringify(credit),
+                debit: JSON.stringify(debit),
                 bank: bank
             },
             dataType: 'json',
@@ -393,8 +409,6 @@
                     alert(res.msg)
                 }
                 location.reload();
-                transactions = [];
-                transactions.length = 0;
             },
             error: function(res){
                 console.log(res)
@@ -454,6 +468,15 @@
             }
            
         })
+    }
+
+    function ViewFinalized(){
+        let ExcelLength = ChequeExcel.length -1;
+        let ReconLength = Reconciliation['refno'].length;
+
+        if(ExcelLength === ReconLength){
+            $("#Finalized").css("display", "inline");
+        }
     }
 
     function CheckStore(checkno, debit, credit) {
