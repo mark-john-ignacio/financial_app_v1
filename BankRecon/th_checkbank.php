@@ -6,6 +6,7 @@
     include "../Connection/connection_string.php";
 
     $company = $_SESSION['companyid'];
+    $employee = $_SESSION['employeeid'];
     $tranno = json_decode($_REQUEST["tranno"], true);
     $module = json_decode($_REQUEST["module"], true);
     $refno = json_decode($_REQUEST["refno"], true);
@@ -31,7 +32,7 @@
         }
 
         if(!in_array($TRANNO_VALUE, $paycheck)){
-            $sql = "INSERT INTO paycheck(`compcode`, `module`, `tranno`, `refno`, `debit`, `credit`, `bank`, `date`) VALUES ('$company', '$MODULE_VALUE', '$TRANNO_VALUE', '$REFNO_VALUE', '$DEBIT_VALUE', '$CREDIT_VALUE', '$bank', NOW())";
+            $sql = "INSERT INTO paycheck(`compcode`, `module`, `tranno`, `refno`, `debit`, `credit`, `bank`, `preparedby`, `date`) VALUES ('$company', '$MODULE_VALUE', '$TRANNO_VALUE', '$REFNO_VALUE', '$DEBIT_VALUE', '$CREDIT_VALUE', '$bank', '$employee', NOW())";
             if(!mysqli_query($con, $sql)){
                 $isProceed = false;
                 break; 

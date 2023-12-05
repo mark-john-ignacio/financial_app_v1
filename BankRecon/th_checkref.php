@@ -55,10 +55,9 @@
             $queries = mysqli_query($con, $sql);
             $rows = $queries -> fetch_assoc();
             $json = [
-                // 'paid' => $rows['credit'] ? round($rows['credit'],2) : 0,
                 'credit' => round($credit,2),
                 'debit' => round($debit,2),
-                'name' => $rows['named'],
+                'name' => $rows['named'] ? $rows['named'] : "",
                 'refno' => $rows['refno'] ? $rows['refno'] : "",
                 'date' => $date,
                 'module' => $module,
