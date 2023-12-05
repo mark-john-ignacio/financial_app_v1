@@ -23,25 +23,29 @@
     $bcode = $row['ccode'];
     $bank = $row['cname'];
 
+    $sql = "SELECT * FROM glactivity WHERE compcode = '$company' AND acctno = '$bankcode' AND (STR_TO_DATE(ddate, '%Y-%m-%d') BETWEEN '$from' AND '$to')";
+    $query = mysqli_query($con, $sql);
+    // Fetching Data for GL Activity
+    while($row = $query -> fetch_assoc()){
+        array_push($deposit, $row);
+    }
     
     // READ Excel file row
     for($i = 1; $i < count($excel); $i++){
-        $data_excel = $excel[$i];
+        $data = $excel[$i];
 
-        $date = $data_excel[0];
-        $refno = $data_excel[2];
-        $excel_debit = $data_excel[3];
-        $excel_credit = $data_excel[4];
-
-        $sql = "SELECT * FROM glactivity WHERE compcode = '$company' AND acctno = '$bankcode' AND (STR_TO_DATE(ddate, '%Y-%m-%d') BETWEEN $from AND $to)";
-        $query = mysqli_query($con, $sql);
-        // Fetching Data for GL Activity
-        while($row = $query -> fetch_assoc()){
-            array_push($deposit, $row);
-            $tranno = $row['ctranno'];
-            $module = $row['cmodule'];
-            $credit = $row['ncredit'];
-            $debit = $row['ndebit'];
+        $date = $data[0];
+        $refno = $data[2];
+        $excel_debit = floatval($data[3]);
+        $excel_credit = floatval($data[4]);
+        
+        $EXCEL_TOTAL += floatval($excel_credit) + floatval($excel_debit);
+        
+        foreach($deposit as $list){
+            $tranno = $list['ctranno'];
+            $module = $list['cmodule'];
+            $credit = $list['ncredit'];
+            $debit = $list['ndebit'];
 
             if($module != "JE"){
                 $bookTotal += round($credit,2) + round($debit,2);
@@ -63,7 +67,7 @@
             $rows = $queries -> fetch_assoc();
             if(mysqli_num_rows($queries) != 0){
                 //Check if Data match in paycheck table
-                $sql = "SELECT * FROM paycheck WHERE compcode = '$company' AND refno = '$refno'  AND debit = '$credit' AND credit = '$debit'";
+                $sql = "SELECT * FROM paycheck WHERE compcode = '$company' AND refno = '$refno' AND debit = $excel_debit AND credit = $excel_credit;";
                 $query = mysqli_query($con, $sql);
                 if(mysqli_num_rows($query) === 0){
                     // Pay Check Query Insert
@@ -72,14 +76,6 @@
                 }
             }
         }        
-    }
-    
-
-    
-
-    for($i = 1; $i < count($excel); $i++){
-        $data = $excel[$i];
-        $EXCEL_TOTAL += floatval($data[4]) + floatval($data[3]);
     }
 
     //Excel Transactions
@@ -95,19 +91,11 @@
     function checkpay($refno, $credit, $debit){
         global $con, $company, $bcode;
 
-        $sql = "SELECT * FROM paycheck WHERE compcode = '$company'";
+        $sql = "SELECT * FROM paycheck WHERE compcode = '$company' AND refno = '$refno' AND credit = $credit AND debit = $debit AND bank = '$bcode'";
         $query = mysqli_query($con, $sql);
         if(mysqli_num_rows($query) != 0){
-            while($row = $query -> fetch_assoc()){
-
-                if($row['refno'] == "$refno" && floatval($row["credit"]) == floatval($credit) && floatval($row['debit']) == floatval($debit) && $row['bank'] == $bcode){
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        }   
-
+            return true;
+        } 
         return false;
     }
 ?>
@@ -129,7 +117,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <title>MyxFinancials</title>
 </head>
-<body>
+<body> 
     <div class="container" style="padding: 14px">
         <div style="display: flex; justify-content: center; justify-items: center; width: 100%;">
             <div style="text-decoration: underline; font-weight: bold; font-size: 20px">Summary of Bank Reconciliation</div>
@@ -234,16 +222,16 @@
                                 $accountNature = $data[1];
                                 $checkno = $data[2];
                                 // $balance = floatval($data[4]) + floatval($data[3]);
-                                $debit = $data[3];
-                                $credit = $data[4];
+                                $debit = $data[3] ? $data[3] : 0;
+                                $credit = $data[4] ? $data[4] : 0;
 
                             if(!checkpay($checkno, $credit, $debit)): ?>
                     <tr>
                         <td><?= $date ?></td>
                         <td><?= $accountNature ?></td>
                         <td><?= $checkno ?></td>
-                        <td><?= $debit ? $debit : 0 ?></td>
-                        <td><?= $credit ? $credit : 0 ?></td>
+                        <td><?= $debit ?></td>
+                        <td><?= $credit  ?></td>
                         <!-- <td>< ?= $balance ?></td> -->
                         <th style="display: flex; justify-items: center; justify-content: center;">
                                 <button type='button' onclick="LoadMatchCheque.call(this)" class="btn btn-sm btn-primary">Find Match</button>
@@ -294,9 +282,6 @@
 
 <script>
     var transactions = [];
-    $(document).ready(function(){
-        // LoadCheque();
-    })
     function isCheck(){
         let row = $(this).closest("tr");
         let modules = row.find("td:eq(0)").text();
@@ -411,8 +396,8 @@
         })
         // console.log(transactions)
 
-        var GROSS_DEBIT = book_credit - TOTAL_DEBIT;
-        var GROSS_CREDIT = book_debit - TOTAL_CREDIT;
+        var GROSS_DEBIT = parseFloat(book_credit) - parseFloat(TOTAL_DEBIT);
+        var GROSS_CREDIT = parseFloat(book_debit) - parseFloat(TOTAL_CREDIT);
 
         if( isEqualsZero(GROSS_DEBIT) && isEqualsZero(GROSS_CREDIT) ){
             let bank = "<?= $bcode; ?>";
@@ -425,9 +410,13 @@
                 dataType: 'json',
                 async: false,
                 success: function(res){
-                    console.log(res)
-                    
-                    transactions = []
+                    if(res.valid){
+                        alert(res.msg)
+                    } else {
+                        alert(res.msg)
+                    }
+                    location.reload();
+                    transactions = [];
                     transactions.length = 0;
                 },
                 error: function(res){
@@ -435,19 +424,11 @@
                 }
             })
         } else {
-            alert("Amount has a balance!    Amount must bezero")
+            alert("Amount has a balance!\n Amount must be zero")
         }
     }
-
-    // function LoadCheque(){
-    //     let data = < ?= json_encode($excel) ?>;
-    //     for(let i = 0; i < data.length; i++){
-    //         console.log(data[i])
-    //     }
-       
-    // }
     
     function isEqualsZero(data){
-        return data === 0;
+        return data == 0;
     }
 </script>

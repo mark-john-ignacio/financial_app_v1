@@ -29,30 +29,12 @@
         $month = date('m');
         $year = date('y');
         $code = '';
-        
-        // $sql = "SELECT * FROM ";
-        $sql = "SELECT * FROM paycheck WHERE compcode = '$company' AND YEAR(`date`) = YEAR(CURDATE()) ORDER BY `tranno` DESC LIMIT 1";
-        $query = mysqli_query($con, $sql);
 
-        if (mysqli_num_rows($query) == 0) {
-            $code = "BR" . $month . $year . "00000";
-        } else {
-            $row = $query->fetch_assoc();
-            $last = $row['tranno'];
-
-            if (substr($last, 3, 2) !== $month) {
-                $code = "BR" . $month . $year . "00000";
-            } else {
-                $baseno = intval(substr($last, 6, 5)) + 1;
-                $code = "BR" . $month . $year . $baseno;
-            }
-        }
-
-        // $sql = "INSERT INTO paycheck(`compcode`, `module`, `tranno`, `refno`, `debit`, `credit`, `balance`, `bank`, `date`) VALUES ('$company', '$module', '$code'  , '$refno', '$debit', '$credit', '$balance', `bank`, NOW())",
-        // if(!mysqli_query($con, $sql)){
-        //     $isProceed = false;
-        //     break; 
-        // } 
+        $sql = "INSERT INTO paycheck(`compcode`, `module`, `tranno`, `refno`, `debit`, `credit`, `bank`, `date`) VALUES ('$company', '$module', '$tranno', '$refno', '$debit', '$credit', '$bank', NOW())";
+        if(!mysqli_query($con, $sql)){
+            $isProceed = false;
+            break; 
+        } 
     }
 
     if ($isProceed) {
