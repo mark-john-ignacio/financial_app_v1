@@ -343,7 +343,7 @@
 							</a>
 						</li>
 						<li>
-							<a href="javascript:;" onClick="setpage('Maintenance/Bank.php');">
+							<a href="javascript:;" onClick="setpage('MasterFiles/Banks/Bank.php');">
                 				<i class="fa fa-bank"></i> Banks
 							</a>
 						</li>
