@@ -1,10 +1,10 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-include('../../Connection/connection_string.php');
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	include('../../Connection/connection_string.php');
 
-$company = $_SESSION['companyid'];
+	$company = $_SESSION['companyid'];
 
 	if($_REQUEST["typ"]=="SI"){
 		$varcall = "forSI";
@@ -12,8 +12,7 @@ $company = $_SESSION['companyid'];
 		$varcall = "forRR";	
 	}
 
-
-echo $_REQUEST["typ"];
+	mysqli_query($con,"UPDATE transactions set cremarks='Y' where `ctranno` = '".$_REQUEST["id"]."'");
 
 ?>
 
@@ -36,6 +35,9 @@ var GenStat = "NO";
 		if($("#txttyp").val() == "SI"){
 			//alert("A");
 			forSI();
+		}else if($("#txttyp").val() == "IN"){
+			//alert("A");
+			forIN();
 		}else if($("#txttyp").val()  == "OR"){
 			//alert("B");
 			forOR();
@@ -45,6 +47,9 @@ var GenStat = "NO";
 		}else if($("#txttyp").val()  == "PV"){
 			//alert("B");
 			forPV();
+		}else if($("#txttyp").val()  == "JE"){
+			//alert("B");
+			forJE();
 		}
 		
        
@@ -57,84 +62,85 @@ function forSI(){
 	var itmstat = "";
 	var itm = $("#txtctranno").val();
 
-			//generate GL ENtry muna
-			$.ajax ({
-				dataType: "text",
-				url: "'../../include/th_toAcc.php",
-				data: { tran: itm, type: "SI" },
-				async: false,
-				success: function( data ) {
-					//alert(data.trim());
-					if(data.trim()=="True"){
-						itmstat = "OK";
+	//generate GL ENtry muna
+	$.ajax ({
+		dataType: "text",
+		url: "../../include/th_toAcc.php",
+		data: { tran: itm, type: "SI" },
+		async: false,
+		success: function( data ) {
+			//alert(data.trim());
+			if(data.trim()=="True"){
+				itmstat = "OK";
 
+				//$.ajax ({
+				//	url: "th_toInv.php",
+				//	data: { tran: itm, type: "SI" },
+				//	async: false,
+				//	success: function( data ) {
+						//alert(data.trim());
+				//		if(data.trim()=="True"){
+							GenStat = "OK";
+							//window.top.location.href = "BatchPOSGL.php";
+							top.window.location="BatchPOSGL.php";
+							document.write("OK");
+				//		}
+				//		else{
+				//			document.write("ERROR: "+itm);		
+				//		}
+				//	}
+				//});
 
-							$.ajax ({
-								url: "th_toInv.php",
-								data: { tran: itm, type: "SI" },
-								async: false,
-								success: function( data ) {
-									//alert(data.trim());
-									if(data.trim()=="True"){
-										GenStat = "OK";
-										//window.top.location.href = "BatchPOSGL.php";
-										top.window.location="BatchPOSGL.php";
-										document.write("OK");
-									}
-									else{
-										document.write("ERROR: "+itm);		
-									}
-								}
-							});
-
-					}
-					else{
-						document.write("ERROR: "+itm);	
-					}
-				}
-			});
+			}
+			else{
+				document.write("ERROR: "+itm);	
+			}
+		}
+	});
 
 }
 
-function forRR(){
-	//alert("B");
+function forIN(){
+	//alert("A");
 	var itmstat = "";
 	var itm = $("#txtctranno").val();
 
+	//generate GL ENtry muna
+	$.ajax ({
+		dataType: "text",
+		url: "../../include/th_toAcc.php",
+		data: { tran: itm, type: "IN" },
+		async: false,
+		success: function( data ) {
+			//alert(data.trim());
+			if(data.trim()=="True"){
+				itmstat = "OK";
+
 				$.ajax ({
-					dataType: "text",
-					url: "th_toAcc.php",
-					data: { tran: itm, type: "RR" },
+					url: "th_toInv.php",
+					data: { tran: itm, type: "SI" },
 					async: false,
 					success: function( data ) {
 						//alert(data.trim());
 						if(data.trim()=="True"){
-							//itmstat = "OK";
-							
-							$.ajax ({
-								url: "th_toInv.php",
-								data: { tran: itm , type: "RR" },
-								async: false,
-								success: function( data ) {
-									//alert(data.trim());
-									if(data.trim()=="True"){
-										GenStat = "OK";
-										//window.top.location.href = "BatchPOSGL.php";
-										top.window.location="BatchPOSGL.php";
-										document.write("OK");
-									}
-									else{
-										document.write("ERROR: "+itm)		
-									}
-								}
-							});
-							
+							GenStat = "OK";
+							//window.top.location.href = "BatchPOSGL.php";
+							top.window.location="BatchPOSGL.php";
+							document.write("OK");
 						}
 						else{
-							document.write("ERROR: "+itm)	
+							document.write("ERROR: "+itm);		
 						}
 					}
 				});
+
+			}
+			else{
+				document.write("ERROR: "+itm);	
+			}
+		}
+	});
+
 }
 
 function forAPV(){
@@ -143,25 +149,17 @@ function forAPV(){
 	var itm = $("#txtctranno").val();
 
 	$.ajax ({
-		url: "APV_Tran.php",
-		data: { x: num, typ: "POST" },
+		url: "../../Accounting/APV/APV_Tran.php",
+		data: { x: itm, typ: "POST" },
 		async: false,
 		dataType: "json",
-		beforeSend: function(){
-			$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
-			$("#alertbtnOK").hide();
-			$("#OK").hide();
-			$("#Cancel").hide();
-			$("#AlertModal").modal('show');
-		},
 		success: function( data ) {
 			console.log(data);
 			$.each(data,function(index,item){
 				
 				itmstat = item.stat;
-				
+
 				if(itmstat!="False"){
-					$("#msg"+num).html(item.stat);
 					
 					top.window.location="BatchPOSGL.php";
 					document.write("OK");
@@ -209,6 +207,30 @@ function forPV(){
 		dataType: "text",
 		url: "../../include/th_toAcc.php",
 		data: { tran: itm, type: "PV" },
+		async: false,
+		success: function( data ) {
+			//alert(data.trim());
+			if(data.trim()=="True"){
+				top.window.location="BatchPOSGL.php";
+				document.write("OK");						
+			}
+			else{
+				document.write("ERROR: "+itm);
+			}
+		}
+	});
+
+}
+
+function forJE(){
+	//alert("A");
+	var itmstat = "";
+	var itm = $("#txtctranno").val();
+
+	$.ajax ({
+		dataType: "text",
+		url: "../../include/th_toAcc.php",
+		data: { tran: itm, type: "JE" },
 		async: false,
 		success: function( data ) {
 			//alert(data.trim());

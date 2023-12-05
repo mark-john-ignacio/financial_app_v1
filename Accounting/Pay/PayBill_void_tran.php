@@ -24,7 +24,7 @@
 
 				foreach($_POST["allbox"] as $rz){
 					mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-				values('$rz','$preparedby',NOW(),'VOID','CHECK ISSUANCE','$compname','Void Record')");
+				values('$rz','$preparedby',NOW(),'VOID','BILLS PAYMENT','$compname','Void Record')");
 				}
 
 			}
