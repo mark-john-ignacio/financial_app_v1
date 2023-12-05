@@ -83,7 +83,7 @@ function getSetAcct($id){
 
 	
 	//Delete muna existing if meron pra iwas double;
-	mysqli_query($con,"DELETE FROM `glactivity` where `ctranno` = '$tran'");
+	mysqli_query($con,"DELETE FROM `glactivity` where compcode='$company' and `ctranno` = '$tran'");
 	 
 	if($typ=="RR"){
 		
