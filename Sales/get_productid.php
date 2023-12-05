@@ -41,7 +41,7 @@ require_once "../Connection/connection_string.php";
 		 
 		 	$c_prodid = $rs['cpartno'];
 
-			 if(isset($_REQUEST['cdoc'])){
+			if(isset($_REQUEST['cdoc'])){
 				if($_REQUEST['cdoc']=="Doc2"){
 					$c_skucode = "";
 					$c_prodnme = ($rs['cskucode']!="") ? $rs['cskucode'] : $rs['citemdesc'];

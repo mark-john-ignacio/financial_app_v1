@@ -202,7 +202,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									<th width="100">&nbsp;Remarks:</th>
 									<td style="padding:2px">
 										<div class="col-xs-11 nopadding">
-											<input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value="<?php echo $Remarks; ?>">
+											<textarea class="form-control input-sm" id="txtremarks" name="txtremarks" rows="3"><?php echo $Remarks; ?></textarea>
 
 											<input type="hidden" id="txtsalesmanid" name="txtsalesmanid" value="<?php echo $salesman; ?>">
 											<input type="hidden" id="txtsalesman" name="txtsalesman" value="<?php echo $salesmaname; ?>">
