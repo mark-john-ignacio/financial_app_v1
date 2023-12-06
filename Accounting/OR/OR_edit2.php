@@ -306,7 +306,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
 									<th style="padding:2px">Amount Received:</th>
 									<td valign="top" style="padding:2px">
 										<div class="col-xs-8 nopadding">
-											<input type="text" id="txtnGross" name="txtnGross" class="numericchkamt form-control input-sm text-right numeric" value="0.00" style="text-align:right;" autocomplete="off" required>
+											<input type="text" id="txtnGross" name="txtnGross" class="numericchkamt form-control input-sm text-right numeric" value="<?=number_format($nAmount,2)?>" style="text-align:right;" autocomplete="off" required>
 										</div>
 									</td>
 								<tr>
