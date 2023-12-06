@@ -2004,7 +2004,7 @@ else{
 			h.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtApplied' id='txtApplied"+lastRow+"' value='"+ntotdue+"' style='text-align:right' autocomplete=\"off\" />";
 									
 			var j=z.insertCell(-1);
-			j.innerHTML = "<div class='col-xs-12 nopadding'><input type='text' class='accountscode form-control input-xs' name='txtcSalesAcctTitleID' id='txtcSalesAcctTitleID"+lastRow+"' value='"+acctcode+"' readonly/></div>";
+			j.innerHTML = "<div class='col-xs-12 nopadding'><input type='text' class='accountscode form-control input-xs' name='txtcSalesAcctNo' id='txtcSalesAcctNo"+lastRow+"' value='"+acctcode+"' readonly/></div>";
 
 			var j2=z.insertCell(-1);
 			j2.innerHTML = "<div class='col-xs-12 nopadding'><input type='text' class='accountsname form-control input-xs' name='txtcSalesAcctTitle' id='txtcSalesAcctTitle"+lastRow+"' value='"+acctdesc+"' autocomplete=\"off\" data-nme=\"txtcSalesAcctTitle\" /></div>";
