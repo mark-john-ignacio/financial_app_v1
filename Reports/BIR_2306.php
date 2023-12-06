@@ -3,7 +3,10 @@
         session_start();
     }
 
-    include('../Connection/connection_string.php'); 
+    $_SESSION['pageid'] = "bir2306.php";
+    include("../Connection/connection_string.php");
+    include('../include/denied.php');
+    include('../include/access.php');
 ?>
 
 <html>

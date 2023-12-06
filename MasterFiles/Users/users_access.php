@@ -1414,15 +1414,24 @@ xmlhttp.send();
         <br>
         <b><u><i>BIR Reports</i></u></b><br>
         <div style="padding-left:10px;"> 
-          <label><input type="checkbox" name="chkAcc[]" value="MonthlyVAT.php" id="chkBox163" <?=(in_array("MonthlyVAT.php",@$arrpgist)) ? "checked" : "";?>>
+          <!--<label><input type="checkbox" name="chkAcc[]" value="MonthlyVAT.php" id="chkBox163" <?//=(in_array("MonthlyVAT.php",@$arrpgist)) ? "checked" : "";?>>
           BIR - Monthly Output VAT</label>
           <br>
-          <label><input type="checkbox" name="chkAcc[]" value="Monthly_IVAT.php" id="chkBox168" <?=(in_array("Monthly_IVAT.php",@$arrpgist)) ? "checked" : "";?>>
+          <label><input type="checkbox" name="chkAcc[]" value="Monthly_IVAT.php" id="chkBox168" <?//=(in_array("Monthly_IVAT.php",@$arrpgist)) ? "checked" : "";?>>
           Monthly Input VAT and W/Tax Report</label>
+          <br>-->
+          <label><input type="checkbox" name="chkAcc[]" value="SalesDat.php" <?=(in_array("SalesDat.php",@$arrpgist)) ? "checked" : "";?>>
+          BIR Sales Relief</label>
+          <br>
+          <label><input type="checkbox" name="chkAcc[]" value="PurchaseDat.php" <?=(in_array("PurchaseDat.php",@$arrpgist)) ? "checked" : "";?>>
+          BIR Purchase Relief</label>
           <br>
           <label><input type="checkbox" name="chkAcc[]" value="bir2307.php" id="chkBox168" <?=(in_array("bir2307.php",@$arrpgist)) ? "checked" : "";?>>
           BIR Form - 2307</label>
-         <br>
+          <br>
+          <label><input type="checkbox" name="chkAcc[]" value="bir2306.php" id="chkBox168" <?=(in_array("bir2306.php",@$arrpgist)) ? "checked" : "";?>>
+          BIR Form - 2306</label>
+          <br>
         </div>
         
          <b><u><i>Inventory</i></u></b><br>

@@ -410,8 +410,8 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 								<td>
 									<div class="col-xs-5 nopadding">
 										<select class="form-control input-sm" name="seldoctype" id="seldoctype">
-											<option value="Doc1" <?=($cdoctype=="Doc1") ? "selected" : ""?>>Regular DR Format</option>	
-											<option value="Doc2" <?=($cdoctype=="Doc2") ? "selected" : ""?>>APC DR Format</option>	
+											<option value="Doc1" <?=($cdoctype=="Doc1") ? "selected" : ""?>>Regular SI Format</option>	
+											<option value="Doc2" <?=($cdoctype=="Doc2") ? "selected" : ""?>>APC SI Format</option>	
 										</select>
 									</div>
 								</td>
