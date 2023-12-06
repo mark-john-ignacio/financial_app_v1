@@ -11,12 +11,30 @@
 
     
 
+    function GLActivity(){
+        global $company, $con;
+        $activity = [];
+
+        $sql = "SELECT DISTINCT(ctranno), ctitle, ddate, cmodule FROM glactivity WHERE compcode = '$company' ORDER BY nidentity DESC LIMIT 10";
+        $query = mysqli_query($con, $sql);
+        
+        while($row = $query -> fetch_assoc()){
+            array_push($activity, $row);
+        }
+        return [
+            'valid' => true,
+            'label' => "Sales", 
+            'total' => $activity,
+        ];
+    }
     function Sales(){
         global $company, $datefrom, $dateto, $con;
         $sales = [];
+        // Needed a date Query
         // $sql = "SELECT a.*, b.cname FROM receipt a
         // LEFT JOIN customers b ON a.compcode = b.compcode AND a.ccode = b.cempid
         // WHERE a.compcode = '$company' AND a.lapproved = 1 AND a.lcancelled = 0 AND a.lvoid = 0 AND (a.dcutdate BETWEEN '$datefrom' AND '$dateto')";
+
         $sql = "SELECT a.*, b.cname FROM receipt a
         LEFT JOIN customers b ON a.compcode = b.compcode AND a.ccode = b.cempid
         WHERE a.compcode = '$company' AND a.lapproved = 1 AND a.lcancelled = 0 AND a.lvoid = 0";
@@ -39,7 +57,7 @@
             'valid' => true,
             'label' => "Sales",
             'total' => $receipt,
-            'cost' => number_format($cost,2 ),
+            'cost' => number_format($cost, 2),
             'best_rank' => $payor,
         ];
     }
@@ -94,11 +112,11 @@
         switch($row['pageid']){
              case "DashboardSales.php":
                 echo json_encode(Sales());
+                // echo json_encode(GLActivity());
                 break;
             case "DashboardPurchase.php":
                 echo json_encode(Purchase());
+                // echo json_encode(GLActivity());
                 break;
         }
     }
-
-   

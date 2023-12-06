@@ -1,3 +1,11 @@
+<?php 
+    if(!isset($_SESSION)){
+        session_start();
+    }
+    include "../Connection/connection_string.php";
+    $company = $_SESSION['companyid'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,8 +24,7 @@
     <title>MyxFinancials</title>
 </head>
 <body>
-    <div class='container-fluid' style=' padding-top: 2%;'>
-
+    <div class='container-fluid' style=' padding-top: 5x;'>
     <!-- Header -->
         <div style='position: relative; min-width: 5.5in; height: .5in; background-color: #2d5f8b; '>
             <div style='position: absolute; left:0; padding: 10px; font-size: 20px; color: white;'>
@@ -100,22 +107,48 @@
         </div>
 
         <!-- Logs -->
-        <div style='margin-top: 10px; padding: 10px; min-width: 10.5in; height: 1.5in; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-gap: 5%;'>
-            <div style='display: flex; justify-content: center; justify-items: center; float: center;'>
-                <table class='table' id='transactions' style='border: 1px solid grey; min-height: 200px'>
-                    <thead>
-                        <tr>
-                            <th>&nbsp;</th>
-                            <th style="text-align: center; width: 50%">Description</th>
-                            <th style="text-align: center">Date</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+        <div style=' padding: 10px; min-width: 10.5in; height: 4.5in; display: grid;  grid-template-columns: repeat(2, minmax(0, 1fr)); grid-gap: 5%;'>
+            <div id="TRANSACTION_MODULE" style='display: relative; width: 100%; border: 1px solid;'>     
+                <div style="display: flex; justify-content: center; justify-items: center; padding: 5px; background-color:#2d5f8b; color: white">
+                    <h3>Latest Activity</h3>
+                </div>
+                <div style="display: relative;  max-height: 3.5in; overflow: auto;">
+                    <?php 
+                        $sql = "SELECT DISTINCT(ctranno), cmodule FROM glactivity WHERE compcode = '$company' ORDER BY nidentity DESC LIMIT 10";
+                        $query = mysqli_query($con, $sql);
+                        while($row = $query -> fetch_assoc()):
+                            $transaction = $row['ctranno'];
+                            $sql = match($row['cmodule']){
+                                "APV" => "SELECT cpayee as named, dapvdate as due, cpaymentfor as remarks FROM apv WHERE compcode = '$company' AND ctranno = '$transaction'",
+                                "PV" => "SELECT cpayee as named, dtrandate as due, cpaymethod as remarks FROM paybill WHERE compcode = '$company' AND ctranno = '$transaction'",
+                                "OR" => "SELECT b.cname as named, dcutdate as due, cpaymethod FROM receipt a LEFT JOIN customers b on a.compcode = b.compcode AND a.ccode = b.cempid WHERE a.compcode = '$company' AND a.ctranno = '$transaction' ",
+                                "JE" => "SELECT djdate as due, cmemo as remarks FROM journal WHERE compcode = '$company' AND ctranno = '$transaction'",
+                                "SI" => "SELECT b.cname as named, a.dcutdate as due, cremarks as remarks FROM sales a LEFT JOIN customers b ON a.compcode = b.compcode AND a.ccode = b.cempid WHERE a.compcode = '$company' AND a.ctranno = '$transaction",
+                                "IN" => "SELECT b.cname as named, a.dcutdate as due, cremarks as remarks FROM ntsales a LEFT JOIN customers b ON a.compcode = b.compcode AND a.ccode = b.cempid WHERE a.compcode = '$company' AND a.ctranno = '$transaction'",
+                            };
+                            $queries = mysqli_query($con, $sql);
+                            $list = $queries -> fetch_assoc();
+                    ?>
+                        <div style="display: relative; border: 1px solid; margin: 2px;" onclick="return false">
+                            <div style="display: flex; width: 100%; padding: 5px;">
+                                <div style="font-weight: bold; font-size: 18px">
+                                    <?= $list['named'] ? $list['named'] : $transaction ?>
+                                </div>
+                                <div  style="display: flex; justify-content: right; justify-items: right; width: 100%; color: green; font-size: 14px">
+                                    <?= $list['due'] ?>
+                                </div>
+                            </div>
+                            <div style="width:75%; max-height: 30px; color: grey; font-size: 14px; overflow: hidden; padding: 5px">
+                                <?= $list['remarks'] ?>
+                            </div>
+                        </div>
+                    <?php endwhile; ?>
+                </div>
             </div>
-            <div style='display: flex; justify-content: center; justify-items: center; text-align:center;'>
+            
+            <div style='display: flex; justify-content: center; justify-items: center; text-align:center; width: 100%'>
                 <div class="display: flex; ">
-                    <canvas id="myChart" style="width:100%;max-width:700px; min-height: 300px;"></canvas>
+                    <canvas id="myChart" style="width:500px; max-width:500px; min-height: 200px;"></canvas>
                 </div>
             </div>
         </div>
@@ -144,6 +177,7 @@
                 dataType: 'json',
                 async: false,
                 success: function(res){
+                    console.log(res)
                     if(res.valid){
                         $('#total').text(res.total)
                         $('#totaltxt').text(res.label)
@@ -195,6 +229,7 @@
             dataType: 'json',
             async: false,
             success: function(res){
+                console.log(res)
                 if(res.valid){
                     $('#total').text(res.total)
                     $('#totaltxt').text(res.label)
@@ -203,6 +238,7 @@
                     // $('#purchase').text(res.purchase)
                     // $('#profit').text(res.cost)
                     // $('#users').text(res.user)
+                    
                 } 
             },
             error: function(res){
@@ -235,11 +271,16 @@
                 console.log(res);
                 res.map((item, index) => {
                     if(item.valid){
-                        $("<tr>").append(
-                            $("<td style='text-align: center'>").html(''),
-                            $("<td style='text-align: center'>").html(item.name),
-                            $("<td style='text-align: center'>").html(item.date)
-                        ).appendTo(".table tbody")
+                        $("TRANSACTION_MODULE").append("<div style='display: relative; border: 1px solid; padding: 10px;'>" +
+                        "<div style='display: flex; width: 100%;'>"+
+                            "<div style='font-weight: bold; font-size: 18px'>"+item.name+"</div>"+
+                            "<div  style='display: flex; justify-content: right; justify-items: right; width: 100%; color: green; font-size: 14px'> "+item.date+" </div> </div>" +
+                        "<div style='width:75%; max-height: 30px; color: grey; font-size: 14px; overflow: hidden'> Description </div> </div>")
+                        // $("<tr>").append(
+                        //     $("<td style='text-align: center'>").html(''),
+                        //     $("<td style='text-align: center'>").html(item.name),
+                        //     $("<td style='text-align: center'>").html(item.date)
+                        // ).appendTo(".table tbody")
                     }
                 })
             },
@@ -249,7 +290,7 @@
         });
     }
 
-    function loadchart(weeks, value){
+    function loadchart(weeks, values){
         new Chart("myChart", {
             type: "line",
             data: {
@@ -259,7 +300,7 @@
                 lineTension: 0,
                 backgroundColor: "rgba(0,0,255,1.0)",
                 borderColor: "rgba(0,0,255,0.1)",
-                data: value
+                data: values
                 }]
             },
             options: {
