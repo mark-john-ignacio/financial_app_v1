@@ -2,7 +2,6 @@
     if(!isset($_SESSION)){
         session_start();
     }
-    require_once  "../vendor2/autoload.php";
     include ("../Connection/connection_string.php");
     $company_code = $_SESSION['companyid'];
     $monthcut = $_REQUEST["month"];

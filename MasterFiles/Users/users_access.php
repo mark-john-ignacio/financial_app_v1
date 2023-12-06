@@ -142,6 +142,18 @@ xmlhttp.send();
    
     <div id="home" class="tab-pane fade in active" style="padding-left:10px;">
       
+        <br>
+        <b><u><i>Dashboard</i></u></b>
+        <div style="padding-left: 10px;">
+          <div class="col-xs-12 nopadwleft">
+            <div class="col-xs-2 noppading">
+              <label><input type="radio" name="radioCheck" id="chkBox158" value="DashboardSales.php" <?= (in_array("DashboardSales.php", $arrpgist)) ? "checked" : "" ?> >&nbsp;Dashboard Sales</label>
+            </div>
+            <div class="col-xs-2 noppading">
+              <label><input type="radio" name="radioCheck" id="chkBox159" value="DashboardSales.php" <?= (in_array("DashboardPurchase.php", $arrpgist)) ? "checked" : "" ?> >&nbsp;Dashboard Purchase</label>
+            </div>
+          </div>
+        </div>
        <br>
         <b><u><i>Chart of Accounts</i></u></b>
       	<div style="padding-left:10px;">
