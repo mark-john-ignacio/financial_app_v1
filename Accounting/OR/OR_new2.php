@@ -1529,7 +1529,7 @@
 			$(this).find('input[name="txtcSalesAcctTitle"]').attr("id","txtcSalesAcctTitle" + tx2);
 
 			//$(this).find('input[type=hidden][name="txtcSalesAcctNo"]').attr("name","txtcSalesAcctNo" + tx2);
-			$(this).find('input[type=hidden][name="txtcSalesAcctNo"]').attr("id","txtcSalesAcctNo" + tx2);
+			$(this).find('input[name="txtcSalesAcctNo"]').attr("id","txtcSalesAcctNo" + tx2);
 
 			//$(this).find('input[name="row_delete"]').attr("name","row_"+tx2+"_delete");
 			$(this).find('input[name="row_delete"]').attr("id","row_"+tx2+"_delete");
@@ -2116,8 +2116,8 @@
 					$(this).find('input[name="txtcSalesAcctTitle"]').attr("name","txtcSalesAcctTitle" + tx2);
 					$(this).find('input[name="txtcSalesAcctTitle"]').attr("id","txtcSalesAcctTitle" + tx2);
 
-					$(this).find('input[type=hidden][name="txtcSalesAcctNo"]').attr("name","txtcSalesAcctNo" + tx2);
-					$(this).find('input[type=hidden][name="txtcSalesAcctNo"]').attr("id","txtcSalesAcctNo" + tx2);
+					$(this).find('input[name="txtcSalesAcctNo"]').attr("name","txtcSalesAcctNo" + tx2);
+					$(this).find('input[name="txtcSalesAcctNo"]').attr("id","txtcSalesAcctNo" + tx2);
 
 					$(this).find('input[name="row_delete"]').attr("name","row_"+tx2+"_delete");
 					$(this).find('input[name="row_delete"]').attr("id","row_"+tx2+"_delete");
