@@ -7,8 +7,6 @@
     include('../include/denied.php');
     include('../include/access.php');
     $company = $_SESSION['companyid'];
-    
-
 ?>
 
 <!DOCTYPE html>

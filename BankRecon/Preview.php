@@ -10,7 +10,9 @@
     $bank = $_POST['bank'];
     
     $excel_data = ExcelRead($_FILES);
-
+    
+    $sql = "SELECT * FROM ";
+    
     for($i = 0; $i < count($excel_data); $i++){
         $data = $excel_data[$i];
         
@@ -23,6 +25,7 @@
                     "DEBIT" => true,
                     "CREDIT" => true,
                     "BALANCE" => true,
+                    "Name" => true,
                     default => false
                 };
                 
@@ -32,19 +35,18 @@
             if(!$proceed) break;
 
             $date = $data[0];
-            $refno = $data[1];
-            $debit = $data[2];
-            $credit = $data[3];
-            $balance = $data[4];
+            $refno = $data[2];
+            $debit = floatval($data[3]);
+            $credit = floatval($data[4]);
+            $balance = floatval($data[5]);
 
-            $sql = "INSERT INTO (`compcode`, `refno`, `credit`, `debit`, `balance`, `date`) VALUES ('$company', '$refno', '$credit', '$debit', '$balance', '$date')";
+            $sql = "INSERT INTO paycheck (`compcode`, ``,`refno`, `credit`, `debit`, `balance`, `date`) VALUES ('$company', '$refno', '$credit', '$debit', '$balance', '$date')";
             mysqli_query($con, $sql);
-
         }
         
     }
     if(!$proceed){
-        echo "No Record Found";
+        echo "This template wasn't compatible. ";
     } else {
         ?>
             <script>alert("successfully insert")</script>

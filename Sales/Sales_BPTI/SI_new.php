@@ -301,8 +301,8 @@ $company = $_SESSION['companyid'];
 								<td>
 									<div class="col-xs-5 nopadding">
 										<select class="form-control input-sm" name="seldoctype" id="seldoctype">
-											<option value="Doc1">Regular DR Format</option>	
-											<option value="Doc2">APC DR Format</option>	
+											<option value="Doc1">Regular SI Format</option>	
+											<option value="Doc2">APC SI Format</option>	
 										</select>
 									</div>
 								</td>

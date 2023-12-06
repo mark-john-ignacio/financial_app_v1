@@ -44,8 +44,15 @@ if(isset($_POST['chkSections'])){
 		}
 	}
 }
+if(isset($_POST['radioCheck'])){
+	$radio = $_POST["radioCheck"];
+	mysqli_query($con, "insert into users_access(pageid,userid) 
+	values('$radio','$userid')");
+
+}
 
 
+ 
 echo '<script language="javascript">
 alert("User\'s Access Successfully Updated")
 location.href="users.php?f="

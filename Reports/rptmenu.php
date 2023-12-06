@@ -201,10 +201,10 @@
 								<a href="" onClick="setI('A','GLedger.php')" data-toggle="tab">
 								<i class="fa fa-book"></i> General Ledger </a>
 							</li>
-          			<li>
-          				<a href="" onClick="setI('A','TBal.php')" data-toggle="tab">
-                  <i class="fa fa-book"></i> Trial Balance </a>
-                </li>
+							<li>
+								<a href="" onClick="setI('A','TBal.php')" data-toggle="tab">
+								<i class="fa fa-book"></i> Trial Balance </a>
+							</li>
                 
     						<li>
     							<a href="" onClick="setI('A','BalSheet.php')" data-toggle="tab">
@@ -218,42 +218,42 @@
 						</ul>
 					</div>
 
-							<h4 class="nopadwtop2x">BIR Reports</h4>
-							<hr class="alert-danger nopadding">
-								<div style="padding-left:10px; padding-top:3px">
-									<ul class="ver-inline-menu tabbable margin-bottom-25"> 
-										<li>
-											<a href="" onclick="setI('A', 'SalesDat.php')"  data-toggle="tab">
-											<i class="fa fa-book"></i>BIR Sales Relief</a>
-										</li>
-										<li>
-											<a href="" onclick="setI('A', 'PurchaseDat.php')" data-toggle="tab">
-												<i class="fa fa-book"></i>BIR Purchase Relief</a>
-										</li>         
-										<!-- <li>
-											<a href="" onClick="setI('A','MonthlyVAT.php')" data-toggle="tab">
-											<i class="fa fa-book"></i> Monthly Output VAT</a>
-										</li>
-										<li>
-											<a href="" onClick="setI('A','Monthly_IVat.php')" data-toggle="tab">
-											<i class="fa fa-book"></i> Monthly Input VAT and W/Tax </a>
-										</li> -->
-										<li>
-											<a href="" onClick="setI('A', 'BIR_2307.php')" data-toggle="tab">
-											<i class="fa fa-book"></i>BIR FORM 2307</a>
-										</li>
-										<li>
-											<a href="" onClick="setI('A', 'BIR_2306.php')" data-toggle="tab">
-											<i class="fa fa-book"></i>BIR FORM 2306</a>
-										</li>
-										<!--
-										<li>
-											<a href="" onClick="setI('A', 'BIR_Quartely.php')" data-toggle="tab">
-											<i class="fa fa-book"></i>2550Q Form</a>
-										</li>
-										-->
-									</ul>
-								</div>
+					<h4 class="nopadwtop2x">BIR Reports</h4>
+					<hr class="alert-danger nopadding">
+					<div style="padding-left:10px; padding-top:3px">
+						<ul class="ver-inline-menu tabbable margin-bottom-25"> 
+							<li>
+								<a href="" onclick="setI('A', 'SalesDat.php')"  data-toggle="tab">
+								<i class="fa fa-book"></i>BIR Sales Relief</a>
+							</li>
+							<li>
+								<a href="" onclick="setI('A', 'PurchaseDat.php')" data-toggle="tab">
+									<i class="fa fa-book"></i>BIR Purchase Relief</a>
+							</li>         
+							<!-- <li>
+								<a href="" onClick="setI('A','MonthlyVAT.php')" data-toggle="tab">
+								<i class="fa fa-book"></i> Monthly Output VAT</a>
+							</li>
+							<li>
+								<a href="" onClick="setI('A','Monthly_IVat.php')" data-toggle="tab">
+								<i class="fa fa-book"></i> Monthly Input VAT and W/Tax </a>
+							</li> -->
+							<li>
+								<a href="" onClick="setI('A', 'BIR_2307.php')" data-toggle="tab">
+								<i class="fa fa-book"></i>BIR FORM 2307</a>
+							</li>
+							<li>
+								<a href="" onClick="setI('A', 'BIR_2306.php')" data-toggle="tab">
+								<i class="fa fa-book"></i>BIR FORM 2306</a>
+							</li>
+							<!--
+							<li>
+								<a href="" onClick="setI('A', 'BIR_Quartely.php')" data-toggle="tab">
+								<i class="fa fa-book"></i>2550Q Form</a>
+							</li>
+							-->
+						</ul>
+					</div>
         
         </div>
         

@@ -39,8 +39,10 @@
    	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
    	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
    	<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
+	
 
 	<link href="../../global/css/components.css?t=<?php echo time();?>" id="style_components" rel="stylesheet" type="text/css"/>
+	<link href="../../global/css/plugins.css" rel="stylesheet" type="text/css"/>
 
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
 	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
@@ -83,6 +85,7 @@
 				<ul class="nav nav-tabs">
 					<li class="active"><a href="#home">Order Details</a></li>
 					<li><a href="#menu1">Delivered To</a></li>
+					<li><a href="#menu2">APC DR</a></li>
 					<li><a href="#attach_pane">Attachments</a></li>
 				</ul>
 	
@@ -175,6 +178,38 @@
 
 					<!--
 					-- Deliver To Panel
+					-->
+					<div id="menu2" class="tab-pane fade" style="padding-left:5px; padding-top:10px">
+						<div class="row nopadding">
+							<div class="col-xs-1 nopadwtop">
+								<b> Pull Request # </b>
+							</div>
+
+							<div class="col-xs-7 nopadding">
+
+								<div class="row nopadding">
+									<div class="col-xs-3 nopadding">										
+										<input type="text" id="txtpullrqs" name="txtpullrqs" class="form-control input-sm" placeholder="As Per Advice..." tabindex="1">
+									</div>
+									<div class="col-xs-8 nopadwleft">
+										<input type="text" id="txtpullrmrks" name="txtpullrmrks" class="form-control input-sm" placeholder="Remarks" tabindex="1">										
+									</div>
+								</div>
+
+							</div>
+
+							<div class="col-xs-1 nopadding">
+								<b> Delivery Sched </b>
+							</div>
+
+							<div class="col-xs-3 nopadding">
+								<b> Print APC DR </b>
+							</div>
+						</div>
+					</div>
+
+					<!--
+					-- APC DR Fields
 					-->
 					<div id="menu1" class="tab-pane fade" style="padding-left:5px; padding-top:10px">
 						<table width="100%" border="0">
@@ -515,6 +550,7 @@
 	xtoday = xmm + '/' + xdd + '/' + xyyyy;
 
 	$(document).ready(function(e) {
+
 			$(".nav-tabs a").click(function(){
     			$(this).tab('show');
 			});
