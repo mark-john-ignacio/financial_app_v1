@@ -239,6 +239,7 @@
 
 <script>
     var transactions = [];
+    //PHP Array Converting to JS Array
     var Reconciliation = <?= json_encode($bankRecon) ?>;
     var ChequeExcel = <?= json_encode($excel) ?>
 
