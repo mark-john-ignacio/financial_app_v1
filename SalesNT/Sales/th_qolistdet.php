@@ -111,7 +111,7 @@ require_once "../../Connection/connection_string.php";
 				$json['nprice'] = $row['nprice'];
 				//$json['namount'] = $row['namount'];
 				$json['namount'] = $xnamt;
-				$json['nbaseamount'] = number_format($xnamt * floatval($rowx['nexchangerate']),2);
+				$json['nbaseamount'] = number_format($xnamt * floatval($row['nexchangerate']),2);
 				$json['cpono'] = "";
 			}else{
 				$json['cpono'] = $row['cpono'];
