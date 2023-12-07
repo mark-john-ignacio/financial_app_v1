@@ -40,6 +40,11 @@
 	if(file_exists($directory)){
 		@$arrname = file_checker($directory);
 	} 
+
+	//APCDR
+	$sqlapcdr = mysqli_query($con,"select * from dr_apc_t where compcode='$company' and ctranno = '$txtctranno'");
+	$rowapc = mysqli_fetch_row($sqlapcdr);
+
 ?>
 
 <!DOCTYPE html>
@@ -155,6 +160,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					<ul class="nav nav-tabs">
 						<li class="active"><a href="#home">Order Details</a></li>
 						<li><a href="#menu1">Delivered To</a></li>
+						<li><a href="#menu2">APC DR</a></li>
 						<li><a href="#attc">Attachments</a></li>
 					</ul>
 			
@@ -200,9 +206,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</tr>
 								<tr>
 									<th width="100">&nbsp;Remarks:</th>
-									<td style="padding:2px">
+									<td style="padding:2px" rowspan="3">
 										<div class="col-xs-11 nopadding">
-											<textarea class="form-control input-sm" id="txtremarks" name="txtremarks" rows="3"><?php echo $Remarks; ?></textarea>
+											<textarea class="form-control input-sm" id="txtremarks" name="txtremarks" rows="4"><?php echo $Remarks; ?></textarea>
 
 											<input type="hidden" id="txtsalesmanid" name="txtsalesmanid" value="<?php echo $salesman; ?>">
 											<input type="hidden" id="txtsalesman" name="txtsalesman" value="<?php echo $salesmaname; ?>">
@@ -217,22 +223,14 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</tr>
 								<tr>
 									<td>&nbsp;</td>
-									<td>
-										<div class="col-xs-8 nopadding">
-										</div>
-										<div class="col-xs-3 nopadwright">
-											<input type="text" class="form-control input-sm" id="txtsoref" name="txtsoref" width="20px" tabindex="6" placeholder="Reference SO">
-										</div>			 
-									</td>
 									<th style="padding:2px">DR Series No.:</th>
 									<td style="padding:2px" align="center">
 										<div class="col-xs-10 nopadding"> 
 												<input type='text' class="form-control input-sm" id="cdrprintno" name="cdrprintno" value="<?php echo $cDRPrintNo;?>" autocomplete="off" />
 										</div>
 									</td>
-									</tr>
+								</tr>
 								<tr>
-									<td>&nbsp;</td>
 									<td>&nbsp;</td>
 									<th width="150" style="padding:2px">Delivery Date:</th>
 									<td style="padding:2px;">
@@ -241,28 +239,17 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</div>
 									</td>
 								</tr>
-									<!--
-									<tr>
-										<td colspan="4">
-												<div class="col-xs-12 nopadwtop2x">
-													<div class="col-xs-3 nopadwdown">
-													<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4">
-													</div>
-													<div class="col-xs-5 nopadwleft">
-													<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL + F) Search Product Name..." size="80" tabindex="5">
-													</div>
-												</div>
-
-											<input type="hidden" name="hdnqty" id="hdnqty">
-											<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
-											<input type="hidden" name="hdnunit" id="hdnunit">
-
-										</td>
-
-										<td align="right" style="vertical-align:top">
-										<div class="chklimit col-xs-10 nopadding" id="ncustbalance2"></div>
-										</td>
-									</tr>-->
+								<tr>
+									<td>&nbsp;</td>
+									<td>
+										<div class="col-xs-8 nopadding">
+										</div>
+										<div class="col-xs-3 nopadwright">
+											<input type="text" class="form-control input-sm" id="txtsoref" name="txtsoref" width="20px" tabindex="6" placeholder="Reference SO">
+										</div>			 
+									</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
 							</table>
 							
 						</div>
@@ -270,9 +257,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						<div id="menu1" class="tab-pane fade" style="padding-left:5px">
 							<table width="100%" border="0">
 								<tr>
-								<td width="150"><b>Customer</b></td>
-								<td width="310" colspan="2" style="padding:2px">
-								<div class="col-xs-8 nopadding">
+									<td width="150"><b>Customer</b></td>
+									<td width="310" colspan="2" style="padding:2px">
+										<div class="col-xs-8 nopadding">
 											<div class="col-xs-3 nopadding">
 												<input type="text" id="txtdelcustid" name="txtdelcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1" value="<?php echo $delcode; ?>">
 											</div>
@@ -280,9 +267,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 											<div class="col-xs-9 nopadwleft">
 												<input type="text" class="form-control input-sm" id="txtdelcust" name="txtdelcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off" value="<?php echo $delname; ?>">
 											</div> 
-									</div>
+										</div>
 
-								</td>
+									</td>
 								</tr>
 								<tr>
 								<td><button type="button" class="btn btn-primary btn-sm" tabindex="6" id="btnNewAdd" name="btnNewAdd">
@@ -312,6 +299,54 @@ if (mysqli_num_rows($sqlhead)!=0) {
 												</div></div></td>
 								</tr>
 							</table>
+						</div>
+						<!--
+						-- APC DR Fields
+						-->
+						<div id="menu2" class="tab-pane fade" style="padding-left:10px; padding-top:10px; padding-right:10px;">
+
+							<table width="100%" border="0">
+
+								<tr>
+									<th width="80px"> Pull Req # </th>
+									<td colspan="5"> 
+										<div class="row nopadding">
+											<div class="col-xs-3 nopadding">										
+												<input type="text" maxlength="50" id="txtpullrqs" name="txtpullrqs" class="form-control input-sm" placeholder="As Per Advice..." tabindex="1" value="<?=$rowapc[2]?>">
+											</div>
+											<div class="col-xs-9 nopadwleft">
+												<input type="text" maxlength="100" id="txtpullrmrks" name="txtpullrmrks" class="form-control input-sm" placeholder="Remarks" tabindex="1" value="<?=$rowapc[3]?>">										
+											</div>
+										</div>
+									</td>
+									<th width="80px"> &nbsp;REV #</th>
+									<td> <input type="text" maxlength="50" id="txtRevNo" name="txtRevNo" class="form-control input-sm" placeholder="REV #..." tabindex="1" value="<?=$rowapc[4]?>"> </td>
+								</tr>
+
+								<tr>
+									<th style="padding-top: 5px" width="80px"> Sales Rep </th>
+									<td style="padding-top: 5px"> <input type="text" maxlength="50" id="txtSalesRep" name="txtSalesRep" class="form-control input-sm" placeholder="Sales Rep..." tabindex="1" value="<?=$rowapc[5]?>"> </td>
+									<th style="padding-top: 5px" width="80px">&nbsp;Truck No. </th>
+									<td style="padding-top: 5px"> <input type="text" maxlength="50" id="txtTruckNo" name="txtTruckNo" class="form-control input-sm" placeholder="Truck No..." tabindex="1" value="<?=$rowapc[6]?>"> </td>
+									<th style="padding-top: 5px" width="80px"> &nbsp;Del Sched</th>
+									<td style="padding-top: 5px"> <input type="text" maxlength="50" id="txtDelSch" name="txtDelSch" class="form-control input-sm" placeholder="Delivery Sched..." tabindex="1" value="<?=$rowapc[7]?>"> </td>
+									<th style="padding-top: 5px" width="80px"> &nbsp;Others</th>
+									<td style="padding-top: 5px"> <input type="text" maxlength="50" id="txtRevOthers" name="txtRevOthers" class="form-control input-sm" placeholder="Others..." tabindex="1" value="<?=$rowapc[8]?>"> </td>
+								</tr>
+
+								<tr>
+									<th style="padding-top: 5px" width="80px"> Certified </th>
+									<td style="padding-top: 5px"> <input type="text" maxlength="50" id="DRfootCert" name="DRfootCert" class="form-control input-sm" placeholder="Certified By (QA)..." tabindex="1" value="<?=$rowapc[9]?>"> </td>
+									<th style="padding-top: 5px" width="80px">&nbsp;Issued </th>
+									<td style="padding-top: 5px"> <input type="text" maxlength="50" id="DRfootIssu" name="DRfootIssu" class="form-control input-sm" placeholder="Issued By..." tabindex="1" value="<?=$rowapc[10]?>"> </td>
+									<th style="padding-top: 5px" width="80px"> &nbsp;Checked</th>
+									<td style="padding-top: 5px"> <input type="text" maxlength="50" id="DRfootChec" name="DRfootChec" class="form-control input-sm" placeholder="Checked By..." tabindex="1" value="<?=$rowapc[11]?>"> </td>
+									<th style="padding-top: 5px" width="80px"> &nbsp;Approved</th>
+									<td style="padding-top: 5px"> <input type="text" maxlength="50" id="DRfootAppr" name="DRfootAppr" class="form-control input-sm" placeholder="Approved By..." tabindex="1" value="<?=$rowapc[12]?>"> </td>
+								</tr>
+							</table>
+
+							<br><br><br><br><br>
 						</div>
 						
 						<div id="attc" class="tab-pane fade in" style="padding-left: 5px; padding-top: 10px">
@@ -352,6 +387,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 											<thead>
 												<tr>
 													<th style="border-bottom:1px solid #999">&nbsp;</th>
+													<th style="border-bottom:1px solid #999">APC Item No.</th>
+													<th style="border-bottom:1px solid #999">PO No.</th>
 													<th style="border-bottom:1px solid #999">Code</th>
 													<th style="border-bottom:1px solid #999">Description</th>
 													<th style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
@@ -426,9 +463,16 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										if(mysqli_num_rows($sql) == 1){
 										
 									?>
-										<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $txtctranno;?>');" id="btnPrint" name="btnPrint">
-											Print<br>(CTRL+P)
-										</button>
+
+										<div class="dropdown" style="display:inline-block !important;">
+											<button type="button" data-toggle="dropdown" class="btn btn-info btn-sm dropdown-toggle"  id="btnPrint" name="btnPrint">
+												Print<br>(CTRL+P) <span class="caret"></span>
+											</button>
+											<ul class="dropdown-menu">
+												<li><a href="javascript:;" onClick="printchk('<?php echo $txtctranno;?>','REGDR');">Regular DR</a></li>
+												<li><a href="javascript:;" onClick="printchk('<?php echo $txtctranno;?>','APCDR');">APC DR</a></li>
+											</ul>
+										</div>
 
 									<?php		
 										}
@@ -449,6 +493,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</td>
 							</tr>
 						</table>
+
+						<br><br><br><br><br><br><br>
 					<?php
 						}
 					?>
@@ -767,7 +813,7 @@ if(file_name.length != 0){
 	  else if(e.keyCode == 80 && e.ctrlKey){//CTRL P
 		if($("#btnPrint").is(":disabled")==false){
 			e.preventDefault();
-			printchk('<?php echo $txtctranno;?>');
+			printchk('<?php echo $txtctranno;?>','REGDR');
 		}
 	  }
 	  else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
@@ -1089,7 +1135,7 @@ $(function(){
 			$("#hdnqty").val(item.nqty);
 			$("#hdnqtyunit").val(item.cqtyunit);
 			
-			addItemName("","","","","","","","");
+			addItemName("","","","","","","","","","");
 			
 			
 		}
@@ -1337,7 +1383,7 @@ $(function(){
 						$("#hdnqty").val(item.nqty);
 						$("#hdnqtyunit").val(item.cqtyunit);
 						//alert(item.cqtyunit + ":" + item.cunit);
-						addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident)
+						addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident,item.xcskucode,item.xcpono)
 
 					 });
 
@@ -1457,7 +1503,7 @@ function checkcustlimit(id,xcred){
 
 }
 
-function addItemName(qty,qtyorig,price,curramt,amt,factr,cref,crefident){
+function addItemName(qty,qtyorig,price,curramt,amt,factr,cref,crefident,itmsku,itmpono){
 
 	 if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
 
@@ -1475,7 +1521,7 @@ function addItemName(qty,qtyorig,price,curramt,amt,factr,cref,crefident){
 			});	
 
 	// if(isItem=="NO"){
-	 	myFunctionadd(qty,qtyorig,price,curramt,amt,factr,cref,crefident);
+	 	myFunctionadd(qty,qtyorig,price,curramt,amt,factr,cref,crefident,itmsku,itmpono);
 		
 		ComputeGross();	
 
@@ -1496,7 +1542,7 @@ function addItemName(qty,qtyorig,price,curramt,amt,factr,cref,crefident){
 
 }
 
-function myFunctionadd(qty,nqtyorig,pricex,curramt,amtx,factr,cref,crefident){
+function myFunctionadd(qty,nqtyorig,pricex,curramt,amtx,factr,cref,crefident,itmsku,itmpono){
 	//alert("hello");
 	var itmcode = $("#txtprodid").val();
 	var itmdesc = $("#txtprodnme").val();
@@ -1568,6 +1614,11 @@ function myFunctionadd(qty,nqtyorig,pricex,curramt,amtx,factr,cref,crefident){
 	var lastRow = tbl.length;
 
 	var insbtn = "<td width=\"50\"> <input class='btn btn-info btn-xs' type='button' name='ins' id='ins" + lastRow + "' value='insert' /></td>";	
+
+	var tdapcitmno = "<td width=\"130\" nowrap> <input type='text' value='"+itmsku+"' class='numeric form-control input-xs' name='txtapcitmno' id='txtapcitmno"+lastRow+"'> </td>"; 
+
+	var tditmpono = "<td width=\"130\" nowrap> <input type='text' value='"+itmpono+"' class='numeric form-control input-xs' name='txtapono' id='txtapono"+lastRow+"'> </td>"; 
+
 	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode" + lastRow + "\">"+itmcode+" <input type='hidden' value='"+cref+"' name=\"txtcreference\" id=\"txtcreference" + lastRow + "\"><input type='hidden' value='"+crefident+"' name=\"txtcrefident\" id=\"txtcrefident" + lastRow + "\"></td>";
 	var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmdesc+"</td>";
 	var tditmavail = avail;
@@ -1586,7 +1637,7 @@ function myFunctionadd(qty,nqtyorig,pricex,curramt,amtx,factr,cref,crefident){
 
 	// / &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> 
 
-	$('#MyTable > tbody:last-child').append('<tr>'+insbtn+tditmcode + tditmdesc + tditmavail + tditmunit + tditmfactor + tditmqty + tditmdel + '</tr>');
+	$('#MyTable > tbody:last-child').append('<tr>'+insbtn+ tdapcitmno + tditmpono + tditmcode + tditmdesc + tditmavail + tditmunit + tditmfactor + tditmqty + tditmdel + '</tr>');
 
 									$("#del"+lastRow).on('click', function() {
 										$(this).closest('tr').remove();
@@ -2127,7 +2178,7 @@ function InsertSI(){
 				var tranno = $(this).data("id");
 	   			var id = $(this).val();
 	   			$.ajax({
-					url : "th_qolistput.php?id=" + tranno + "&itm=" + id,
+					url : "th_qolistput.php?id=" + tranno + "&itm=" + id + "&itmbal=" + xChkBal,
 					type: "GET",
 					dataType: "JSON",
 					success: function(data)
@@ -2141,7 +2192,7 @@ function InsertSI(){
 							$("#hdnqty").val(item.nqty);
 							$("#hdnqtyunit").val(item.cqtyunit);
 							//alert(item.cqtyunit);
-							addItemName(item.totqty,item.nqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident)
+							addItemName(item.totqty,item.nqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident,item.xcskucode,item.xcpono)
 											   
 					   });
 						
@@ -2218,20 +2269,22 @@ function enabled(){
 	}
 }
 
-function printchk(x){
+function printchk(x,typ){
 	if(document.getElementById("hdncancel").value==1){	
 		document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
 		document.getElementById("statmsgz").style.color = "#FF0000";
 	}
 	else{
 
-		  var url = "DR_confirmprint.php?x="+x;
-		  
-		  $("#myprintframe").attr('src',url);
+		if(typ=="REGDR"){
+			var url = "DR_confirmprint.php?x="+x;		  
+		}else if(typ=="APCDR"){
+			var url = "DR_confirmprintapc.php?x="+x;		 	
+		}
 
-
-		  $("#PrintModal").modal('show');
-
+		$("#myprintframe").attr('src',url);
+		$("#PrintModal").modal('show');
+		 
 	}
 }
 
@@ -2255,7 +2308,7 @@ function loaddetails(){
 				$("#hdnqty").val(item.nqty);
 				$("#hdnqtyunit").val(item.cqtyunit);
 
-				addItemName(item.totqty,item.nqtyorig,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident)
+				addItemName(item.totqty,item.nqtyorig,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident,item.xcskucode,item.xcpono)
 			});
 
 		}
@@ -2427,7 +2480,18 @@ function chkform(){
 			{	key: 'delcountry', input: $("#txtcCountry").val()	},
 			{	key: 'delzip', input: $("#txtcZip").val()	},
 			{	key: 'cdrapcord', input: $("#cdrapcord").val()	},
-			{	key: 'cdrapcdr', input: $("#cdrapcdr").val()	}
+			{	key: 'cdrapcdr', input: $("#cdrapcdr").val()	},
+			{	key: 'txtpullrqs', input: $("#txtpullrqs").val() },
+			{	key: 'txtpullrmrks', input: $("#txtpullrmrks").val() },
+			{	key: 'txtRevNo', input: $("#txtRevNo").val() },
+			{	key: 'txtSalesRep', input: $("#txtSalesRep").val() },
+			{	key: 'txtTruckNo', input: $("#txtTruckNo").val() },
+			{	key: 'txtDelSch', input: $("#txtDelSch").val() },
+			{	key: 'txtRevOthers', input: $("#txtRevOthers").val() },
+			{	key: 'DRfootCert', input: $("#DRfootCert").val() },
+			{	key: 'DRfootIssu', input: $("#DRfootIssu").val() },
+			{	key: 'DRfootChec', input: $("#DRfootChec").val() },
+			{	key: 'DRfootAppr', input: $("#DRfootAppr").val() }
 		]
 		//alert("DR_newsavehdr.php?ccode=" + ccode + "&crem="+ crem + "&ddate="+ ddate + "&ngross="+ngross+"&cdrprintno="+cdrprintno+"&salesman="+salesman+"&delcodes="+delcodes+"&delhousno="+delhousno+"&delcity="+delcity+"&delstate="+delstate+"&delcountry="+delcountry+"&delzip="+delzip);
 		var formdata = new FormData();
@@ -2483,11 +2547,15 @@ function chkform(){
 				var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
 				var nfactor = $(this).find('input[name="hdnfactor"]').val();
 				var norigqty = $(this).find('input[type="hidden"][name="hdnqtyorig"]').val();
+
+				var nitemsysno = $(this).find('input[name="txtapcitmno"]').val();
+				var nitemposno = $(this).find('input[name="txtapono"]').val(); 
 				
-			//alert("DR_newsavedet.php?trancode="+trancode+"&crefno="+crefno+"&crefnoident="+crefnoident+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+nprice+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&norigqty="+norigqty);			
+				//alert("DR_newsavedet.php?trancode="+trancode+"&crefno="+crefno+"&crefnoident="+crefnoident+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+nprice+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&norigqty="+norigqty);		
+
 				$.ajax ({
 					url: "DR_newsavedet.php",
-					data: { trancode: trancode, crefno: crefno, crefnoident:crefnoident, indx:index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, norigqty:norigqty },
+					data: { trancode: trancode, crefno: crefno, crefnoident:crefnoident, indx:index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, norigqty:norigqty, ntransamt:ntransamt, nitemsysno:nitemsysno, nitemposno:nitemposno },
 					async: false,
 					success: function( data ) {
 						if(data.trim()=="False"){

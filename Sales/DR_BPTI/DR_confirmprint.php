@@ -66,6 +66,14 @@
   } else {
     $version =''; 
   }
+
+  //get terms desc
+  $cTermsDesc = "";
+  $result = mysqli_query($con, "SELECT * FROM `groupings` WHERE compcode='$company' and ctype = 'TERMS' and ccode='$cTerms'");
+  if(mysqli_num_rows($result) != 0){
+    $verrow = mysqli_fetch_array($result, MYSQLI_ASSOC);
+    $cTermsDesc = $verrow['cdesc'];
+  }
 ?>
 
 <!DOCTYPE html>
@@ -94,16 +102,15 @@
     opacity:1.0;
   }
 
-  <style type="text/css">
     body{
       font-family: Arial;
-      font-size: 14px;
     }
 
 		.form-container{
 				position: relative;
 				text-align: center;
 				color: #000;
+         font-size: 15px;
 				font-weight: bold;
 				text-transform: uppercase;
 				width: 8.5in;
@@ -160,11 +167,12 @@
 
     .terms{
 			position: absolute;
-			top: 180px;
-			left: 650px;
-			width: 135px;
+			top: 183px;
+			left: 640px;
+			width: 145px;
 			height:  15px;  
       text-align: left; 
+      font-size: 12px;
       /*border: 1px solid #000; 
 			letter-spacing: 11px;
 			border: 1px solid #000;*/
@@ -194,52 +202,43 @@
 			border: 1px solid #000;*/
 		}   
 
-    .partDesc{
-			position: absolute;
-			left: 195px;
-			width: 195px;
-			height:  15px;  
-      text-align: left; 
-      /*border: 1px solid #000; 
-			letter-spacing: 11px;
-			border: 1px solid #000;*/
-		}
+  .RowCont{
+		position: absolute;
+		top: 260px !important;
+		display: table;
+		left: 190px; /*Optional*/
+		table-layout: fixed; /*Optional*/
+		height:  242px;
+		overflow: hidden;
+		/*border: 1px solid #000; */
+	}
 
-    .partNo{
-			position: absolute;
-			left: 396px;
-			width: 155px;
-			height:  15px;  
-      text-align: left; 
-      /*border: 1px solid #000; 
-			letter-spacing: 11px;
-			border: 1px solid #000;*/
-		}
+	.Row{    
+		display: block;
+		left: 28px; /*Optional*/  
+		height:  16px;  
+		/*border: 1px solid #000; 
+		letter-spacing: 11px;
+		border: 1px solid #000;*/
+	}
 
-    .partQty{
-			position: absolute;
-			left: 560px;
-			width: 80px;
-			height:  15px;  
-      text-align: left; 
-      /*border: 1px solid #000; 
-			letter-spacing: 11px;
-			border: 1px solid #000;*/
-		} 
+	.Column{
+		display: table-cell; 
+		/*border: 1px solid #000;
+		letter-spacing: 11px;*/
+	}
 
-		.xremarks{
-			position: absolute;
-			left: 645px;
-			top: 260px;
-			width: 140px;
-			height:  15px;  
-      text-align: left; 
-      /*border: 1px solid #000; 
-			letter-spacing: 11px;
-			border: 1px solid #000;*/
-		}
-
-  </style>
+	.xremarks{
+    position: absolute;
+    left: 645px;
+    top: 260px;
+    width: 140px;
+    height:  15px;  
+    text-align: right; 
+    /*border: 1px solid #000; 
+    letter-spacing: 11px;
+    border: 1px solid #000;*/
+	}
 
 </style>
 <head>
@@ -272,35 +271,33 @@ function PrintRed(x, version){
     <div class="delTo"><?=$CustName?></div>
     <div class="date"><?=date_format(date_create($Date), "M d, Y")?></div>
     <div class="address"><?=$Adds?></div>
-    <div class="terms"><?=$cTerms?></div>
+    <div class="terms"><?= $cTermsDesc?></div>
     <div class="tin"><?=$cTin?></div>
     <div class="refdr"><?=$cAPCDR?></div>
 
     <div class="reforder"><?=$cAPCORD?></div>
 
 
-		<div class="xremarks"><?=$Remarks?></div>
+		<div class="xremarks"><?=nl2br($Remarks)?></div>
 
+    <div class="RowCont">
     <?php 
       $sqlbody = mysqli_query($con,"select a.*,b.citemdesc from dr_t a left join items b on a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$csalesno'");
 
       if (mysqli_num_rows($sqlbody)!=0) { 
-        $cntr = 0;
-        $totnqty = 0;
-
-        $deftop = 221;
         while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
-          $cntr = $cntr + 1;
-          $deftop = $deftop + 39;
-              
+             
 	  ?>
-          <div class="partDesc" style="top: <?=$deftop?>px !important"><?php echo $rowbody['citemdesc'];?></div> 
-          <div class="partNo" style="top: <?=$deftop?>px !important"><?php echo $rowbody['citemno'];?></div>
-          <div class="partQty" style="top: <?=$deftop?>px !important"><?php echo number_format($rowbody['nqty']);?>&nbsp;<?php echo $rowbody['cunit'];?></div>
-    <?php
+        <div class="Row">
+          <div class="Column" style="width: 200px"><?php echo $rowbody['citemdesc'];?></div> 
+          <div class="Column" style="width: 160px"><?php echo $rowbody['citemno'];?></div>
+          <div class="Column" style="width: 87px"><?php echo number_format($rowbody['nqty']);?>&nbsp;<?php echo $rowbody['cunit'];?></div>
+        </div>
+   <?php
         }
       }
     ?>
+     </div>
   </div>
 
 <div align="center" id="menu" class="noPrint">

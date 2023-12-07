@@ -12,7 +12,7 @@ require_once "../../Connection/connection_string.php";
 		$date1 = date("Y-m-d");
 		
 		if($_REQUEST['typ']=="DR"){
-			$sql = "select a.ctranno, a.nident as crefident, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, 0 as ndiscount, a.nbaseamount, a.namount, a.cmainunit as qtyunit, a.nfactor, ifnull(c.nqty,0) as totqty2, b.ctype, b.ctaxcode, d.ccurrencycode, d.ccurrencydesc, d.nexchangerate, a.creference, e.cacctno, e.cacctid, e.cacctdesc
+			$sql = "select a.ctranno, a.crefident, a.citemno as cpartno, b.citemdesc, a.cunit, a.nqty as totqty, 1 as nqty, a.nprice, 0 as ndiscount, a.nbaseamount, a.namount, a.cmainunit as qtyunit, a.nfactor, ifnull(c.nqty,0) as totqty2, b.ctype, b.ctaxcode, d.ccurrencycode, d.ccurrencydesc, d.nexchangerate, a.creference, e.cacctno, e.cacctid, e.cacctdesc
 			from dr_t a 
 			left join items b on a.compcode=b.compcode and a.citemno=b.cpartno
 			left join so d on a.compcode=d.compcode and a.creference=d.ctranno

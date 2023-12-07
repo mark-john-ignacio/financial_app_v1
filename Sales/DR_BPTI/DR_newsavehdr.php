@@ -65,12 +65,12 @@ else {
 	$preparedby = $_SESSION['employeeid'];
 	$cacctcode = "NULL";
 
-				$sqlhead = mysqli_query($con,"Select cacctcodesales,cterms from customers where compcode='$company' and cempid='$cCustID'");
-				if (mysqli_num_rows($sqlhead)!=0) {
-					$row = mysqli_fetch_assoc($sqlhead);
-					$cacctcode = "'".$row["cacctcodesales"]."'";
-					$cterms = "'".$row["cterms"]."'";
-				}
+	$sqlhead = mysqli_query($con,"Select cacctcodesales,cterms from customers where compcode='$company' and cempid='$cCustID'");
+	if (mysqli_num_rows($sqlhead)!=0) {
+		$row = mysqli_fetch_assoc($sqlhead);
+		$cacctcode = "'".$row["cacctcodesales"]."'";
+		$cterms = "'".$row["cterms"]."'";
+	}
 	
 	//INSERT HEADER
 
@@ -81,6 +81,22 @@ else {
 		echo mysqli_error($con);
 	} 
 	else {
+
+		$txtpullrqs = chkgrp($_REQUEST['txtpullrqs']);
+		$txtpullrmrks = chkgrp($_REQUEST['txtpullrmrks']);
+		$txtRevNo = chkgrp($_REQUEST['txtRevNo']);
+		$txtSalesRep = chkgrp($_REQUEST['txtSalesRep']);
+		$txtTruckNo = chkgrp($_REQUEST['txtTruckNo']);
+		$txtDelSch = chkgrp($_REQUEST['txtDelSch']);
+		$txtRevOthers = chkgrp($_REQUEST['txtRevOthers']);
+		$DRfootCert = chkgrp($_REQUEST['DRfootCert']);
+		$DRfootIssu = chkgrp($_REQUEST['DRfootIssu']);
+		$DRfootChec = chkgrp($_REQUEST['DRfootChec']);
+		$DRfootAppr = chkgrp($_REQUEST['DRfootAppr']);
+
+		//INSERT APCDR DETAILS
+		mysqli_query($con,"INSERT INTO dr_apc_t(`compcode`, `ctranno`, `cpull_advice`, `cpull_remarks`, `crevno`, `csalesrep`, `ctruckno`, `cdelsched`, `cothers`, `ccertified`, `cissued`, `cchecked`, `capproved`) 
+		values('$company','$cSINo',$txtpullrqs,$txtpullrmrks,$txtRevNo,$txtSalesRep,$txtTruckNo,$txtDelSch,$txtRevOthers,$DRfootCert,$DRfootIssu,$DRfootChec,$DRfootAppr)");
 
 		//INSERT LOGFILE
 		$compname = gethostbyaddr($_SERVER['REMOTE_ADDR']);
