@@ -62,7 +62,7 @@ else {
 
 	$cOTDesc = "";
 	$cOTRef = "";
-	if ($cPayMethod!=="Cash" && $cPayMethod!=="Cheque"){
+	if ($cPayMethod!=="cash" && $cPayMethod!=="cheque"){
 		$cOTDesc = mysqli_real_escape_string($con, $_POST['txtOTBankName']);
 		$cOTRef = mysqli_real_escape_string($con, $_POST['txtOTRefNo']);	
 	}
@@ -82,7 +82,7 @@ else {
 	
 
 
-if ($cPayMethod=="Cash") { //INSERT CASH DETAILS
+if ($cPayMethod=="cash") { //INSERT CASH DETAILS
 	$cvar1000 = mysqli_real_escape_string($con, $_POST['txtDenom1000']);
 	if(is_numeric($cvar1000)){
 				$namt = 1000*$cvar1000;
@@ -191,7 +191,7 @@ if ($cPayMethod=="Cash") { //INSERT CASH DETAILS
 	
 	}
 }
-elseif ($cPayMethod=="Cheque"){ //INSERT CHEQUE DETAILS
+elseif ($cPayMethod=="cheque"){ //INSERT CHEQUE DETAILS
 	$CHKbank = mysqli_real_escape_string($con, $_POST['txtBankName']);
 	$CHKdate = mysqli_real_escape_string($con, $_POST['txtChekDate']);
 	$CHKchkno = mysqli_real_escape_string($con, $_POST['txtCheckNo']);
@@ -199,9 +199,9 @@ elseif ($cPayMethod=="Cheque"){ //INSERT CHEQUE DETAILS
 	$CHKchkamt = str_replace(",","",$CHKchkamt);
 	
 	
-				if (!mysqli_query($con, "INSERT INTO `receipt_check_t`(`compcode`, `ctranno`, `cbank`, `ccheckno`, `ddate`, nchkamt) values('$company', '$cSINo', '$CHKbank', '$CHKchkno', STR_TO_DATE('$CHKdate', '%m/%d/%Y'), $CHKchkamt)")) {
-					printf("Errormessage: %s\n", mysqli_error($con));
-				} 
+	if (!mysqli_query($con, "INSERT INTO `receipt_check_t`(`compcode`, `ctranno`, `cbank`, `ccheckno`, `ddate`, nchkamt) values('$company', '$cSINo', '$CHKbank', '$CHKchkno', STR_TO_DATE('$CHKdate', '%m/%d/%Y'), $CHKchkamt)")) {
+		printf("Errormessage: %s\n", mysqli_error($con));
+	} 
 
 }
 

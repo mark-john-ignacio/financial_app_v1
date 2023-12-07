@@ -546,44 +546,42 @@
 	<!-- End Bootstrap modal -->
 
 	<div class="modal fade" id="ChequeModal" role="dialog">
-			<div class="modal-dialog">
-					<div class="modal-content">
-							<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-									<h3 class="modal-title" id="chequeheader">CHEQUE DETAILS</h3>
-							</div>
-							<div class="modal-body">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="modal-title" id="chequeheader">CHEQUE DETAILS</h3>
+				</div>
+				<div class="modal-body">
 							
-										<table width="100%" border="0" class="table table-condensed">
-												<tr>
-													<td><b>Bank Name</b></td>
-													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtBankName' id='txtBankName' placeholder="Input Bank Name"/></div></td>
-												</tr>
-												<tr>
-													<td><b>Cheque Date</b></td>
-													<td>
-													<div class='col-sm-12'>
-															<input type='text' class="form-control input-sm" placeholder="Pick a Date" name="txtChekDate" id="txtChekDate"/>
-
-													</div>
-													</td>
-												</tr>
-												<tr>
-													<td><b>Cheque Number</b></td>
-													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtCheckNo' id='txtCheckNo' placeholder="Input Cheque Number" /></div></td>
-												</tr>
-												<tr>
-													<td><b>Cheque Amount</b></td>
-													<td><div class='col-xs-12'><input type='text' class='numericchkamt form-control input-sm' name='txtCheckAmt' id='txtCheckAmt' placeholder="Input Cheque Amount" /></div></td>
-												</tr>
-										</table>
+					<table width="100%" border="0" class="table table-condensed">
+						<tr>
+							<td><b>Bank Name</b></td>
+							<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtBankName' id='txtBankName' placeholder="Input Bank Name"/></div></td>
+						</tr>
+						<tr>
+							<td><b>Cheque Date</b></td>
+							<td>
+							<div class='col-sm-12'>
+								<input type='text' class="form-control input-sm" placeholder="Pick a Date" name="txtChekDate" id="txtChekDate"/>
+							</div>
+							</td>
+						</tr>
+						<tr>
+							<td><b>Cheque Number</b></td>
+							<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtCheckNo' id='txtCheckNo' placeholder="Input Cheque Number" /></div></td>
+						</tr>
+						<tr>
+							<td><b>Cheque Amount</b></td>
+							<td><div class='col-xs-12'><input type='text' class='numericchkamt form-control input-sm' name='txtCheckAmt' id='txtCheckAmt' placeholder="Input Cheque Amount" /></div></td>
+						</tr>
+					</table>
 							
-							</div>
-							<div class="modal-footer">
-									
-							</div>
-					</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-success btn-sm" data-dismiss="modal" aria-label="Close">Save Check Details</button>	
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
 
 	<div class="modal fade" id="OthersModal" role="dialog">
@@ -921,6 +919,10 @@
 			}else{
 				$('#OthersModal').modal('show');
 			}
+		});
+
+		$("#ChequeModal").on("hidden.bs.modal", function () {
+			$("#txtnGross").val($("#txtCheckAmt").val());
 		});
 
 		$("#allbox").click(function () {
