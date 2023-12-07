@@ -993,7 +993,8 @@
 			var $input = $(".accountsname");
 
 			var id = $(document.activeElement).attr('id');
-			var xname = $(document.activeElement).data('nme');	
+			var xname = $(document.activeElement).data('nme');
+			var xcodebox = $(document.activeElement).data('code');	
 
 			var numid = id.replace(xname,"");
 
@@ -1022,7 +1023,7 @@
 				afterSelect: function(item) { 
 
 					$('#'+xname+numid).val(item.name).change(); 
-					$("#"+xname+"ID"+numid).val(item.id);
+					$("#"+xcodebox+numid).val(item.id);
 
 				}
 			});
@@ -1358,7 +1359,7 @@
 				j.innerHTML = "<div class='col-xs-12 nopadding'><input type='text' class='accountscode form-control input-xs' name='txtcSalesAcctNo' id='txtcSalesAcctNo"+lastRow+"' value='"+acctcode+"' readonly/></div>";
 
 				var j2=z.insertCell(-1);
-				j2.innerHTML = "<div class='col-xs-12 nopadding'><input type='text' class='accountsname form-control input-xs' name='txtcSalesAcctTitle' id='txtcSalesAcctTitle"+lastRow+"' value='"+acctdesc+"' autocomplete=\"off\" data-nme=\"txtcSalesAcctTitle\" /></div>";
+				j2.innerHTML = "<div class='col-xs-12 nopadding'><input type='text' class='accountsname form-control input-xs' name='txtcSalesAcctTitle' id='txtcSalesAcctTitle"+lastRow+"' value='"+acctdesc+"' autocomplete=\"off\" data-nme=\"txtcSalesAcctTitle\" data-code=\"txtcSalesAcctNo\"/></div>";
 											
 				var k=z.insertCell(-1);
 				k.innerHTML = "<div class='col-xs-12 nopadwleft'><input class='btn btn-danger btn-xs' type='button' name='row_delete' id='row_"+lastRow+"_delete' value='delete'/></div>";
@@ -1704,7 +1705,7 @@
 			y.style.padding = "1px";
 
 		v.innerHTML = "<input type='text' name=\"txtacctitleID"+lastRow+"\" id=\"txtacctitleID"+lastRow+"\" class=\"form-control input-xs\" placeholder=\"Enter Acct Code...\" readonly>";
-		w.innerHTML = "<input type='text' name=\"txtacctitle"+lastRow+"\" id=\"txtacctitle"+lastRow+"\" class=\"accountsname form-control input-xs\" placeholder=\"Search Acct Desc...\" autocomplete=\"off\" data-nme=\"txtacctitle\">";
+		w.innerHTML = "<input type='text' name=\"txtacctitle"+lastRow+"\" id=\"txtacctitle"+lastRow+"\" class=\"accountsname form-control input-xs\" placeholder=\"Search Acct Desc...\" autocomplete=\"off\" data-nme=\"txtacctitle\"' data-code=\"txtacctitleID\">";
 		xDR.innerHTML = "<input type='text' name=\"txtnotDR"+lastRow+"\" id=\"txtnotDR"+lastRow+"\" class=\"numericNO form-control input-xs\" style=\"text-align:right\" value=\"0.00\" required autocomplete=\"off\">";
 		xCR.innerHTML = "<input type='text' name=\"txtnotCR"+lastRow+"\" id=\"txtnotCR"+lastRow+"\" class=\"numericNO form-control input-xs\" style=\"text-align:right\" value=\"0.00\" required autocomplete=\"off\">";
 		y.innerHTML = "<input class='btn btn-danger btn-xs' type='button' id='row3_"+lastRow+"_delete' value='delete' onClick=\"deleteRow3(this);\"/>";
