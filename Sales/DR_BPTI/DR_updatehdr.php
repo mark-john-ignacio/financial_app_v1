@@ -37,12 +37,12 @@ function chkgrp($valz) {
 	$preparedby = $_SESSION['employeeid'];
 	$cacctcode = "NULL";
 
-				$sqlhead = mysqli_query($con,"Select cacctcodesales from customers where compcode='$company' and cempid='$cCustID'");
-				if (mysqli_num_rows($sqlhead)!=0) {
-					$row = mysqli_fetch_assoc($sqlhead);
-					$cacctcode = "'".$row["cacctcodesales"]."'";
-				}
-	
+	$sqlhead = mysqli_query($con,"Select cacctcodesales from customers where compcode='$company' and cempid='$cCustID'");
+	if (mysqli_num_rows($sqlhead)!=0) {
+		$row = mysqli_fetch_assoc($sqlhead);
+		$cacctcode = "'".$row["cacctcodesales"]."'";
+	}
+
 	//INSERT HEADER
 
 	if (!mysqli_query($con, "UPDATE dr set `ccode` = '$cCustID', `cremarks` = $cRemarks, `dcutdate` = STR_TO_DATE('$dDelDate', '%m/%d/%Y'), `ngross` = '$nGross', `cacctcode` = $cacctcode, `cdrprintno` = $nDRPrintNo, `csalesman` = '$salesman', `cdelcode` = '$delcodes', `cdeladdno` = $delhousno, `cdeladdcity` = $delcity, `cdeladdstate` = $delstate, `cdeladdcountry` = $delcountry, `cdeladdzip` = '$delzip', `crefapcord` = $cdrapcord, `crefapcdr` = $cdrapcdr where `compcode` = '$company' and `ctranno` = '$cSINo'")) {  
@@ -51,6 +51,22 @@ function chkgrp($valz) {
 	else {
 		echo $cSINo;
 	}
+
+	$txtpullrqs = chkgrp($_REQUEST['txtpullrqs']);
+	$txtpullrmrks = chkgrp($_REQUEST['txtpullrmrks']);
+	$txtRevNo = chkgrp($_REQUEST['txtRevNo']);
+	$txtSalesRep = chkgrp($_REQUEST['txtSalesRep']);
+	$txtTruckNo = chkgrp($_REQUEST['txtTruckNo']);
+	$txtDelSch = chkgrp($_REQUEST['txtDelSch']);
+	$txtRevOthers = chkgrp($_REQUEST['txtRevOthers']);
+	$DRfootCert = chkgrp($_REQUEST['DRfootCert']);
+	$DRfootIssu = chkgrp($_REQUEST['DRfootIssu']);
+	$DRfootChec = chkgrp($_REQUEST['DRfootChec']);
+	$DRfootAppr = chkgrp($_REQUEST['DRfootAppr']);
+
+	//INSERT APCDR DETAILS
+	mysqli_query($con,"UPDATE dr_apc_t set `cpull_advice` = $txtpullrqs, `cpull_remarks` = $txtpullrmrks, `crevno` = $txtRevNo, `csalesrep` = $txtSalesRep, `ctruckno` = $txtTruckNo, `cdelsched` = $txtDelSch, `cothers` = $txtRevOthers, `ccertified` = $DRfootCert, `cissued` = $DRfootIssu, `cchecked` = $DRfootChec, `capproved` = $DRfootAppr where `compcode` = '$company' and `ctranno` = '$cSINo'");
+
 	
 	if(count($_FILES) != 0){
 		$directory = "../../Components/assets/DR/";

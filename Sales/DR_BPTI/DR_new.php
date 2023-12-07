@@ -114,9 +114,9 @@
 							</tr>
 							<tr>
 								<tH width="100">&nbsp;Remarks:</tH>
-								<td style="padding:2px">
+								<td style="padding:2px" rowspan="3">
 									<div class="col-xs-11 nopadding">
-										<textarea class="form-control input-sm" id="txtremarks" name="txtremarks" rows="3"></textarea>
+										<textarea class="form-control input-sm" id="txtremarks" name="txtremarks" rows="4"></textarea>
 
 										<input type="hidden" id="txtsalesmanid" name="txtsalesmanid">
 										<input type="hidden" id="txtsalesman" name="txtsalesman">
@@ -129,20 +129,12 @@
 							</tr>
 							<tr>
 								<td>&nbsp;</td>
-								<td>
-									<div class="col-xs-8 nopadding">
-									</div>
-									<div class="col-xs-3 nopadwright">
-										<input type="text" class="form-control input-sm" id="txtsoref" name="txtsoref" width="20px" tabindex="6" placeholder="Reference SO">
-									</div>
-								</td>
 								<tH>DR Series No.:</tH>
 								<td style="padding:2px;"><div class="col-xs-10 nopadding">
 								<input type='text' class="form-control input-sm" id="cdrprintno" name="cdrprintno" value="" autocomplete="off" tabindex="2" />
 								</div></td>
 							</tr>
 							<tr>
-								<td>&nbsp;</td>
 								<td>&nbsp;</td>
 								<tH width="150">Delivery Date:</tH>
 								<td style="padding:2px;">
@@ -151,6 +143,19 @@
 									</div>
 								</td>
 							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td>
+									<div class="col-xs-8 nopadding">
+									</div>
+									<div class="col-xs-3 nopadwright">
+										<input type="text" class="form-control input-sm" id="txtsoref" name="txtsoref" width="20px" tabindex="6" placeholder="Reference SO">
+									</div>
+								</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+
 							<!--
 							<tr>
 								<td colspan="4">
@@ -179,39 +184,8 @@
 					<!--
 					-- Deliver To Panel
 					-->
-					<div id="menu2" class="tab-pane fade" style="padding-left:5px; padding-top:10px">
-						<div class="row nopadding">
-							<div class="col-xs-1 nopadwtop">
-								<b> Pull Request # </b>
-							</div>
 
-							<div class="col-xs-7 nopadding">
-
-								<div class="row nopadding">
-									<div class="col-xs-3 nopadding">										
-										<input type="text" id="txtpullrqs" name="txtpullrqs" class="form-control input-sm" placeholder="As Per Advice..." tabindex="1">
-									</div>
-									<div class="col-xs-8 nopadwleft">
-										<input type="text" id="txtpullrmrks" name="txtpullrmrks" class="form-control input-sm" placeholder="Remarks" tabindex="1">										
-									</div>
-								</div>
-
-							</div>
-
-							<div class="col-xs-1 nopadding">
-								<b> Delivery Sched </b>
-							</div>
-
-							<div class="col-xs-3 nopadding">
-								<b> Print APC DR </b>
-							</div>
-						</div>
-					</div>
-
-					<!--
-					-- APC DR Fields
-					-->
-					<div id="menu1" class="tab-pane fade" style="padding-left:5px; padding-top:10px">
+					<div id="menu1" class="tab-pane fade" style="padding-left:5px; padding-top:10px;">
 						<table width="100%" border="0">
 							<tr>
 							<td width="150"><b>Customer</b></td>
@@ -256,7 +230,59 @@
 											</div></div></td>
 							</tr>
 						</table>
+
+						<br><br><br>
 					</div>
+					
+					<!--
+					-- APC DR Fields
+					-->
+					<div id="menu2" class="tab-pane fade" style="padding-left:10px; padding-top:10px; padding-right:10px;">
+
+						<table width="100%" border="0">
+
+							<tr>
+								<th width="80px"> Pull Req # </th>
+								<td colspan="5"> 
+									<div class="row nopadding">
+										<div class="col-xs-3 nopadding">										
+											<input type="text" maxlength="50" id="txtpullrqs" name="txtpullrqs" class="form-control input-sm" placeholder="As Per Advice..." tabindex="1">
+										</div>
+										<div class="col-xs-9 nopadwleft">
+											<input type="text" maxlength="100" id="txtpullrmrks" name="txtpullrmrks" class="form-control input-sm" placeholder="Remarks" tabindex="1">										
+										</div>
+									</div>
+								</td>
+								<th width="80px"> &nbsp;REV #</th>
+								<td> <input type="text" maxlength="50" id="txtRevNo" name="txtRevNo" class="form-control input-sm" placeholder="REV #..." tabindex="1"> </td>
+							</tr>
+
+							<tr>
+								<th style="padding-top: 5px" width="80px"> Sales Rep </th>
+								<td style="padding-top: 5px"> <input type="text" maxlength="50" id="txtSalesRep" name="txtSalesRep" class="form-control input-sm" placeholder="Sales Rep..." tabindex="1"> </td>
+								<th style="padding-top: 5px" width="80px">&nbsp;Truck No. </th>
+								<td style="padding-top: 5px"> <input type="text" maxlength="50" id="txtTruckNo" name="txtTruckNo" class="form-control input-sm" placeholder="Truck No..." tabindex="1"> </td>
+								<th style="padding-top: 5px" width="80px"> &nbsp;Del Sched</th>
+								<td style="padding-top: 5px"> <input type="text" maxlength="50" id="txtDelSch" name="txtDelSch" class="form-control input-sm" placeholder="Delivery Sched..." tabindex="1"> </td>
+								<th style="padding-top: 5px" width="80px"> &nbsp;Others</th>
+								<td style="padding-top: 5px"> <input type="text" maxlength="50" id="txtRevOthers" name="txtRevOthers" class="form-control input-sm" placeholder="Others..." tabindex="1"> </td>
+							</tr>
+
+							<tr>
+								<th style="padding-top: 5px" width="80px"> Certified </th>
+								<td style="padding-top: 5px"> <input type="text" maxlength="50" id="DRfootCert" name="DRfootCert" class="form-control input-sm" placeholder="Certified By (QA)..." tabindex="1"> </td>
+								<th style="padding-top: 5px" width="80px">&nbsp;Issued </th>
+								<td style="padding-top: 5px"> <input type="text" maxlength="50" id="DRfootIssu" name="DRfootIssu" class="form-control input-sm" placeholder="Issued By..." tabindex="1"> </td>
+								<th style="padding-top: 5px" width="80px"> &nbsp;Checked</th>
+								<td style="padding-top: 5px"> <input type="text" maxlength="50" id="DRfootChec" name="DRfootChec" class="form-control input-sm" placeholder="Checked By..." tabindex="1"> </td>
+								<th style="padding-top: 5px" width="80px"> &nbsp;Approved</th>
+								<td style="padding-top: 5px"> <input type="text" maxlength="50" id="DRfootAppr" name="DRfootAppr" class="form-control input-sm" placeholder="Approved By..." tabindex="1"> </td>
+							</tr>
+						</table>
+
+						<br><br><br><br><br>
+					</div>
+
 
 					<div id="attach_pane" class="tab-pane fade" style="padding-left:5px; padding-top:10px">
 						<!--
@@ -299,6 +325,8 @@
 										<thead>
 											<tr>
 												<th style="border-bottom:1px solid #999">&nbsp;</th>
+												<th style="border-bottom:1px solid #999">APC Item No.</th>
+												<th style="border-bottom:1px solid #999">PO No.</th>
 												<th style="border-bottom:1px solid #999">Code</th>
 												<th style="border-bottom:1px solid #999">Description</th>
 												<th style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
@@ -349,23 +377,24 @@
 				<table width="100%" border="0" cellpadding="3">
 					<tr>
 						<td>
-						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='DR.php';" id="btnMain" name="btnMain">
-							Back to Main<br>(ESC)
-						</button>
+							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='DR.php';" id="btnMain" name="btnMain">
+								Back to Main<br>(ESC)
+							</button>
 
-						<button type="button" class="btn purple btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
-							SO<br>(Insert)
-						</button>
+							<button type="button" class="btn purple btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
+								SO<br>(Insert)
+							</button>
 
-						
-						<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
-						<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">SAVE<br> (CTRL+S)</button></td>
+							
+							<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
+							<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">SAVE<br> (CTRL+S)</button>
+						</td>
 						<td align="right" valign="top">
 					<!-- <b>TOTAL AMOUNT </b>-->
 						&nbsp;&nbsp;
-						<input type="hidden" id="txtnGross" name="txtnGross" value="0">
-							</td>
-						</tr>
+							<input type="hidden" id="txtnGross" name="txtnGross" value="0">
+						</td>
+					</tr>
 				</table>
 
 			</div>
@@ -902,124 +931,33 @@ $(function(){
 		}
 	});
 	
-	$('#txtprodnme').typeahead({
-		autoSelect: true,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_product.php",
-				dataType: "json",
-				data: { query: $("#txtprodnme").val(), itmbal: xChkBal, styp: "Goods" },
-				success: function (data) {
-					response(data);
-				}
-			});
-		},
-		displayText: function (item) {
-			return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.desc+'</span</div>';
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 					
-						
-			$('#txtprodnme').val(item.desc).change(); 
-			$('#txtprodid').val(item.id); 
-			$("#hdnunit").val(item.cunit); 
-			$("#hdnqty").val(item.nqty);
-			$("#hdnqtyunit").val(item.cqtyunit);
-			
-			addItemName("","","","","","","");
-			
-		}
-	
-	});
-
-
-	$("#txtprodid").keypress(function(event){
-		if(event.keyCode == 13){
-
-		$.ajax({
-        url:'../get_productid.php',
-        data: 'c_id='+ $(this).val() + "&itmbal="+xChkBal+"&styp=Goods",                 
-        success: function(value){
-            var data = value.split(",");
-            $('#txtprodid').val(data[0]);
-            $('#txtprodnme').val(data[1]);
-			$('#hdnunit').val(data[2]);
-			$("#hdnqty").val(data[3]);
-			$("#hdnqtyunit").val(data[4]);
-
-
-		if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
-			var isItem = "NO";
-			var disID = "";
-			
-			$("#MyTable > tbody > tr").each(function() {	
-				disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-
-				if($("#txtprodid").val()==disID){
-					
-					isItem = "YES";
-
-				}
-			});	
-
-		//if value is not blank
-		 }
-		 
-		//if(isItem=="NO"){		
-
-			myFunctionadd("","","","","","","");
-			ComputeGross();	
-			
-	   // }
-	   // else{
-			
-		//	addqty();
-		//}
-		
-		$("#txtprodid").val("");
-		$("#txtprodnme").val("");
-		$("#hdnunit").val("");
-		$("#hdnqty").val("");
-		$("#hdnqtyunit").val("");
- 
-	    //closing for success: function(value){
-	    }
-        }); 
-
-	
-		 
-		//if enter is clicked
-		}
-		
-	});
-	
 	$("#btnInsSer").on("click", function(){
 	
-			var tbl = document.getElementById('MyTableSerials').getElementsByTagName('tr');
-			var lastRow = tbl.length;
+		var tbl = document.getElementById('MyTableSerials').getElementsByTagName('tr');
+		var lastRow = tbl.length;
+
+		if(lastRow>1){
+				$("#MyTableSerials > tbody > tr").each(function(index) {
+					var zxitmcode = $(this).find('input[type="hidden"][name="lagyitmcode"]').val();
+					var zxserial = $(this).find('input[type="hidden"][name="lagyserial"]').val();
+					var zxuom = $(this).find('input[type="hidden"][name="lagycuom"]').val();	
+					var zxqty = $(this).find('input[name="lagyqtyput"]').val();		
+					var zxloca = $(this).find('input[type="hidden"][name="lagylocas"]').val();	
+					var zxlocadesc = $(this).find('input[type="hidden"][name="lagylocadesc"]').val();
+					var zxexpd = $(this).find('input[type="hidden"][name="lagyexpd"]').val();
+					var zxnident = $(this).find('input[type="hidden"][name="lagyrefident"]').val();
+					var zxreference = $(this).find('input[type="hidden"][name="lagyrefno"]').val();
+					var zxmainident = $("#serdisrefident").val();
+
+					if(parseFloat(zxqty) > 0){
+						InsertToSerials(zxitmcode,zxserial,zxuom,zxqty,zxloca,zxlocadesc,zxexpd,zxnident,zxreference,zxmainident);			
+					}
+
+				});
+		}
 	
-			if(lastRow>1){
-					$("#MyTableSerials > tbody > tr").each(function(index) {
-						var zxitmcode = $(this).find('input[type="hidden"][name="lagyitmcode"]').val();
-						var zxserial = $(this).find('input[type="hidden"][name="lagyserial"]').val();
-						var zxuom = $(this).find('input[type="hidden"][name="lagycuom"]').val();	
-						var zxqty = $(this).find('input[name="lagyqtyput"]').val();		
-						var zxloca = $(this).find('input[type="hidden"][name="lagylocas"]').val();	
-						var zxlocadesc = $(this).find('input[type="hidden"][name="lagylocadesc"]').val();
-						var zxexpd = $(this).find('input[type="hidden"][name="lagyexpd"]').val();
-						var zxnident = $(this).find('input[type="hidden"][name="lagyrefident"]').val();
-						var zxreference = $(this).find('input[type="hidden"][name="lagyrefno"]').val();
-						var zxmainident = $("#serdisrefident").val();
-
-						if(parseFloat(zxqty) > 0){
-							InsertToSerials(zxitmcode,zxserial,zxuom,zxqty,zxloca,zxlocadesc,zxexpd,zxnident,zxreference,zxmainident);			
-						}
-
-					});
-			}
-		
-			//close modal
-			$("#SerialMod").modal("hide");
+		//close modal
+		$("#SerialMod").modal("hide");
 	});
 	
 	$("#btnNewAdd").on("click", function(){
@@ -1056,7 +994,7 @@ $(function(){
 			});
 			
 		
-			 $("#MyAddModal").modal("show");// 
+			$("#MyAddModal").modal("show");// 
 		}
 	});
 	
@@ -1071,7 +1009,7 @@ $(function(){
 
 			//SO Header
 			$.ajax({
-				url : "th_getso.php?id=" + $(this).val() ,
+				url : "th_getso.php?id=" + $(this).val() + "&itmbal=" + xChkBal,
 				type: "GET",
 				dataType: "JSON",
 				async: false,
@@ -1139,7 +1077,7 @@ $(function(){
 						$("#hdnqty").val(item.nqty);
 						$("#hdnqtyunit").val(item.cqtyunit);
 						//alert(item.cqtyunit + ":" + item.cunit);
-						addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident)
+						addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident,item.xcskucode,item.xcpono)
 
 					 });
 
@@ -1230,7 +1168,7 @@ function checkcustlimit(id,xcred){
 
 }
 
-function addItemName(qty,price,curramt,amt,factr,cref,crefident){
+function addItemName(qty,price,curramt,amt,factr,cref,crefident,itmsku,itmpono){
 
 	 if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
 
@@ -1249,7 +1187,8 @@ function addItemName(qty,price,curramt,amt,factr,cref,crefident){
 			});	
 
 	// if(isItem=="NO"){	
-	 	myFunctionadd(qty,price,curramt,amt,factr,cref,crefident);
+		// /myFunctionadd(qty,pricex,curramt,amtx,factr,cref,crefident,itmsku,itmpono)
+	 	myFunctionadd(qty,price,curramt,amt,factr,cref,crefident,itmsku,itmpono);
 		
 		ComputeGross();	
 
@@ -1270,7 +1209,7 @@ function addItemName(qty,price,curramt,amt,factr,cref,crefident){
 
 }
 
-function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,crefident){
+function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,crefident,itmsku,itmpono){
 	//alert("hello");
 	var itmcode = $("#txtprodid").val();
 	var itmdesc = $("#txtprodnme").val();
@@ -1341,6 +1280,11 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,crefident){
 	}
 	
 	var insbtn = "<td width=\"50\"> <input class='btn btn-info btn-xs' name='ins' type='button' id='ins" + lastRow + "' value='insert' /></td>";
+
+	var tdapcitmno = "<td width=\"130\" nowrap> <input type='text' value='"+itmsku+"' class='numeric form-control input-xs' name='txtapcitmno' id='txtapcitmno"+lastRow+"'> </td>"; 
+
+	var tditmpono = "<td width=\"130\" nowrap> <input type='text' value='"+itmpono+"' class='numeric form-control input-xs' name='txtapono' id='txtapono"+lastRow+"'> </td>";
+
 	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode" + lastRow + "\">"+itmcode+" <input type='hidden' value='"+cref+"' name=\"txtcreference\" id=\"txtcreference" + lastRow + "\"><input type='hidden' value='"+crefident+"' name=\"txtcrefident\" id=\"txtcrefident" + lastRow + "\"></td>";
 	var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmdesc+"</td>";
 	var tditmavail = avail;
@@ -1365,7 +1309,7 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,crefident){
 	var tditmdel = "<td width=\90\" nowrap> <input class='btn btn-danger btn-xs' type='button' name='del' id='del" + lastRow + "' value='delete'/></td>";
 
 //tditmprice + tditmamount +
-	$('#MyTable > tbody:last-child').append('<tr>'+insbtn+tditmcode + tditmdesc + tditmavail + tditmunit + tditmfactor + tditmqty +  tditmdel + '</tr>');
+	$('#MyTable > tbody:last-child').append('<tr>'+insbtn+ tdapcitmno + tditmpono + tditmcode + tditmdesc + tditmavail + tditmunit + tditmfactor + tditmqty +  tditmdel + '</tr>');
 
 									$("#del"+lastRow).on('click', function() {
 										$(this).closest('tr').remove();
@@ -1885,47 +1829,49 @@ function setfactor(itmunit, itmcode){
 
 	}
 
-function InsertSI(){	
-	
-   $("input[name='chkSales[]']:checked").each( function () {
+	function InsertSI(){	
+			
+		$("input[name='chkSales[]']:checked").each( function () {
 
-				var tranno = $(this).data("id");
-	   			var id = $(this).val();
-				//alert("th_qolistput.php?id=" + tranno + "&itm=" + id + "&itmbal=" + xChkBal);
-	   			$.ajax({
-					url : "th_qolistput.php?id=" + tranno + "&itm=" + id + "&itmbal=" + xChkBal,
-					type: "GET",
-					dataType: "JSON",
-					success: function(data)
-					{	
-					   console.log(data);
-                       $.each(data,function(index,item){
-						
-							$('#txtprodnme').val(item.desc); 
-							$('#txtprodid').val(item.id); 
-							$("#hdnunit").val(item.cunit); 
-							$("#hdnqty").val(item.nqty);
-							$("#hdnqtyunit").val(item.cqtyunit);
-							//alert(item.cqtyunit + ":" + item.cunit);
-							addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident)
-											   
-					   });
-						
-					},
-					error: function (jqXHR, textStatus, errorThrown)
-					{
-						alert(jqXHR.responseText);
-					}
+			var tranno = $(this).data("id");
+			var id = $(this).val();
+			
+			//alert("th_qolistput.php?id=" + tranno + "&itm=" + id + "&itmbal=" + xChkBal);
+			$.ajax({
+				url : "th_qolistput.php?id=" + tranno + "&itm=" + id + "&itmbal=" + xChkBal,
+				type: "GET",
+				dataType: "JSON",
+				success: function(data)
+				{	
+					console.log(data);
+					$.each(data,function(index,item){
 					
-				});
+						$('#txtprodnme').val(item.desc); 
+						$('#txtprodid').val(item.id); 
+						$("#hdnunit").val(item.cunit); 
+						$("#hdnqty").val(item.nqty);
+						$("#hdnqtyunit").val(item.cqtyunit);
+						//alert(item.cqtyunit + ":" + item.cunit);
+						//addItemName(qty,price,curramt,amt,factr,cref,crefident,itmsku,itmpono)
+						addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident,item.xcskucode,item.xcpono)
+											
+					});
+					
+				},
+				error: function (jqXHR, textStatus, errorThrown)
+				{
+					alert(jqXHR.responseText);
+				}
+				
+			});
 
-   });
-   //alert($("#hdnQuoteNo").val());
-   
-   $('#mySIModal').modal('hide');
-   $('#mySIRef').modal('hide');
+		});
+	//alert($("#hdnQuoteNo").val());
+	
+	$('#mySIModal').modal('hide');
+	$('#mySIRef').modal('hide');
 
-}
+	}
 
 
 function chkform(){
@@ -2068,8 +2014,22 @@ function chkform(){
 			{	key: 'delcountry', input: $("#txtcCountry").val()	},
 			{	key: 'delzip', input: $("#txtcZip").val()	},
 			{	key: 'cdrapcord', input: $("#cdrapcord").val()	},
-			{	key: 'cdrapcdr', input: $("#cdrapcdr").val()	}
+			{	key: 'cdrapcdr', input: $("#cdrapcdr").val() },
+			{	key: 'txtpullrqs', input: $("#txtpullrqs").val() },
+			{	key: 'txtpullrmrks', input: $("#txtpullrmrks").val() },
+			{	key: 'txtRevNo', input: $("#txtRevNo").val() },
+			{	key: 'txtSalesRep', input: $("#txtSalesRep").val() },
+			{	key: 'txtTruckNo', input: $("#txtTruckNo").val() },
+			{	key: 'txtDelSch', input: $("#txtDelSch").val() },
+			{	key: 'txtRevOthers', input: $("#txtRevOthers").val() },
+			{	key: 'DRfootCert', input: $("#DRfootCert").val() },
+			{	key: 'DRfootIssu', input: $("#DRfootIssu").val() },
+			{	key: 'DRfootChec', input: $("#DRfootChec").val() },
+			{	key: 'DRfootAppr', input: $("#DRfootAppr").val() }
+			
 		]
+
+
 		//alert("DR_newsavehdr.php?ccode=" + ccode + "&crem="+ crem + "&ddate="+ ddate + "&ngross="+ngross+"&cdrprintno="+cdrprintno+"&salesman="+salesman+"&delcodes="+delcodes+"&delhousno="+delhousno+"&delcity="+delcity+"&delstate="+delstate+"&delcountry="+delcountry+"&delzip="+delzip);
 		var formdata = new FormData();
 		jQuery.each(input_data, function(i, { key, input }){
@@ -2119,10 +2079,13 @@ function chkform(){
 				var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
 				var nfactor = $(this).find('input[name="hdnfactor"]').val();
 				var norigqty = $(this).find('input[type="hidden"][name="hdnqtyorig"]').val(); 
+				 
+				var nitemsysno = $(this).find('input[name="txtapcitmno"]').val();
+				var nitemposno = $(this).find('input[name="txtapono"]').val(); 
 
 				$.ajax ({
 					url: "DR_newsavedet.php",
-					data: { trancode: trancode, crefno: crefno, crefnoident:crefnoident, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, norigqty:norigqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, ntransamt:ntransamt },
+					data: { trancode: trancode, crefno: crefno, crefnoident:crefnoident, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, norigqty:norigqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, ntransamt:ntransamt, nitemsysno:nitemsysno, nitemposno:nitemposno },
 					async: false,
 					success: function( data ) {
 						if(data.trim()=="False"){

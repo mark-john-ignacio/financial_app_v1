@@ -213,81 +213,80 @@
 				</li>
 				<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
 				<li class="start">
-			  		<a href="javascript:;" onclick="setpage('./Dashboard')"><i class='fa fa-bar-chart'></i>Dashboard</a>
+					<a href="javascript:;" onclick="setpage('./Dashboard')">
+						<i class="icon-home"></i><span class="title">Dashboard</span><span class="selected"></span>
+					</a>
 				</li>
-				<li >
+				<li>
 					<a href="javascript:;">
-					<i class="icon-settings"></i>
-					<span class="title">Master Data Files</span>
-					<span class="arrow "></span>
+						<i class="icon-settings"></i><span class="title">Master Data Files</span><span class="arrow "></span>
 					</a>
 					<ul class="sub-menu">
 						<li>
 							<a href="javascript:;" onClick="setpage('MasterFiles/Accounts/Accounts.php?f=');">
-              <i class="fa fa-bars"></i>
-							Chart of Accounts</a>
+             					<i class="fa fa-bars"></i> Chart of Accounts
+							</a>
 						</li>
 						<li>
 							<a href="javascript:;" class="nav-link nav-toggle">
-                <i class="icon-handbag"></i> Items <span class="arrow"></span> 
+                				<i class="icon-handbag"></i> Items <span class="arrow"></span> 
 							</a> <!-- Maintenance/Items.php -->
                              
-              <ul class="sub-menu">
-                <li>
-                  <a href="javascript:;" onClick="setpage('MasterFiles/Item/Items.php');"> <i class="fa fa-list-ul "></i> Master List </a>
-                </li>
-                <li>
-                  <a href="javascript:;" onClick="setpage('MasterFiles/Items/UOM.php');"> <i class="fa fa-angle-double-right"></i> Unit of Measure </a>
-                </li>
-                <li>
-                  <a href="javascript:;" onClick="setpage('MasterFiles/Items/TYPE.php?f=');"> <i class="fa fa-angle-double-right"></i> Types </a>
-                </li>
-                <li>
-                  <a href="javascript:;" onClick="setpage('MasterFiles/Items/CLASS.php?f=');"> <i class="fa fa-angle-double-right"></i> Classification </a>
-                </li>
-                <li>
-                  <a href="javascript:;" onClick="setpage('MasterFiles/Items/Groupings.php');"> <i class="fa fa-angle-double-right"></i> Groupings </a>
-                </li>
-								
-              </ul>
+							<ul class="sub-menu">
+								<li>
+								<a href="javascript:;" onClick="setpage('MasterFiles/Item/Items.php');"> <i class="fa fa-list-ul "></i> Master List </a>
+								</li>
+								<li>
+								<a href="javascript:;" onClick="setpage('MasterFiles/Items/UOM.php');"> <i class="fa fa-angle-double-right"></i> Unit of Measure </a>
+								</li>
+								<li>
+								<a href="javascript:;" onClick="setpage('MasterFiles/Items/TYPE.php?f=');"> <i class="fa fa-angle-double-right"></i> Types </a>
+								</li>
+								<li>
+								<a href="javascript:;" onClick="setpage('MasterFiles/Items/CLASS.php?f=');"> <i class="fa fa-angle-double-right"></i> Classification </a>
+								</li>
+								<li>
+								<a href="javascript:;" onClick="setpage('MasterFiles/Items/Groupings.php');"> <i class="fa fa-angle-double-right"></i> Groupings </a>
+								</li>								
+							</ul>
 						</li>
 						<li>
 							<a href="javascript:;" class="nav-link nav-toggle">
-                <i class="fa fa-rub"></i> Price List <span class="arrow"></span>
+               					<i class="fa fa-rub"></i> Price List <span class="arrow"></span>
 							</a>                            
-              <ul class="sub-menu">
-                <li>
-                  <a href="javascript:;" onClick="setpage('MasterFiles/Items/PM.php');"> 
+							<ul class="sub-menu">
+								<li>
+									<a href="javascript:;" onClick="setpage('MasterFiles/Items/PM.php');"> 
 										<i class="fa fa-angle-double-right"></i> Sale Pricelist 
 									</a>
-                </li>
-                <li>
-                  <a href="javascript:;" onclick="setpage('MasterFiles/Items/PP.php');"> 
+								</li>
+								<li>
+									<a href="javascript:;" onclick="setpage('MasterFiles/Items/PP.php');"> 
 										<i class="fa fa-angle-double-right"></i> Purchase Pricelist 
 									</a>
 								</li>
-			  	<li>
-					<a href="javascript:;" onclick="setpage('MasterFiles/Items/discmatrix.php')">
-			  			<i class="fa fa-angle-double-right"></i> Discount Matrix
-					</a>
-				</li>
-				<li>
-					<a href="javascript:;" onClick="setpage('MasterFiles/Items/DISC.php')">
-						<i class='fa fa-angle-double-right'></i> Special Discount
-					</a>
-				</li>
-				<li>
-					<a href="javascript:;" onclick="setpage('MasterFiles/Items/coupon.php')">
-			  			<i class="fa fa-angle-double-right"></i> Coupons
-					</a>
-				</li>
+								<li>
+									<a href="javascript:;" onclick="setpage('MasterFiles/Items/discmatrix.php')">
+										<i class="fa fa-angle-double-right"></i> Discount Matrix
+									</a>
+								</li>
+								<li>
+									<a href="javascript:;" onClick="setpage('MasterFiles/Items/DISC.php')">
+										<i class='fa fa-angle-double-right'></i> Special Discount
+									</a>
+								</li>
+								<li>
+									<a href="javascript:;" onclick="setpage('MasterFiles/Items/coupon.php')">
+										<i class="fa fa-angle-double-right"></i> Coupons
+									</a>
+								</li>
 							</ul>
-            </li>
+            			</li>
 						<li>
 							<a href="javascript:;" class="nav-link nav-toggle">
-                <i class="icon-basket-loaded"></i> Customers<span class="arrow"></span>
+                				<i class="icon-basket-loaded"></i> Customers<span class="arrow"></span>
 							</a>
-              <ul class="sub-menu">
+             				<ul class="sub-menu">
 								<li>
 									<a href="javascript:;" onClick="setpage('MasterFiles/Custs/Customers.php?f=');"> 
 										<i class="fa fa-list-ul "></i> Master List 
@@ -376,14 +375,12 @@
 				</li>
 				<li>
 					<a href="javascript:;">
-					<i class="fa fa-tags"></i>
-					<span class="title">Sales &amp; Delivery</span>
-					<span class="arrow "></span>
+						<i class="fa fa-tags"></i><span class="title">Sales &amp; Delivery</span><span class="arrow "></span>
 					</a>
 					<ul class="sub-menu"> 
 						<li>
 							<a href="javascript:;" onClick="setpage('Sales/Quote/Quote.php?ix=');">
-                <i class="fgly flaticon-020-receipt"></i> Quotation
+                				<i class="fgly flaticon-020-receipt"></i> Quotation
 							</a>
 						</li>
 
@@ -407,22 +404,22 @@
 								}
 							?>
 							<a href="javascript:;" onClick="setpage('<?=$SOLink?>');">
-                <i class="fgly-sm flaticon-003-shopping-list"></i> Sales Order
+                				<i class="fgly-sm flaticon-003-shopping-list"></i> Sales Order
 							</a>
 						</li>
 
 						<?php
-								//check if SO_subdomain exist
-								if ( file_exists( "Sales/DR_".$durlSUB ) || is_dir( "Sales/DR_".$durlSUB) ) {   
-									$DRLink = "Sales/DR_".$durlSUB."/DR.php?ix=";
-								}else{
-									$DRLink = "Sales/DR/DR.php?ix=";
-								}
-							?>
+							//check if SO_subdomain exist
+							if ( file_exists( "Sales/DR_".$durlSUB ) || is_dir( "Sales/DR_".$durlSUB) ) {   
+								$DRLink = "Sales/DR_".$durlSUB."/DR.php?ix=";
+							}else{
+								$DRLink = "Sales/DR/DR.php?ix=";
+							}
+						?>
 
 						<li>
 							<a href="javascript:;" onClick="setpage('<?=$DRLink?>');">
-                <i class="fgly-sm flaticon-035-invoice"></i> Delivery Receipt
+                				<i class="fgly-sm flaticon-035-invoice"></i> Delivery Receipt
 							</a>
 						</li>
 
@@ -437,44 +434,43 @@
 
 						<li>
 							<a href="javascript:;" onClick="setpage('<?=$SILink?>');">
-                <i class="fgly-sm flaticon-065-bill"></i> Sales Invoice
+                				<i class="fgly-sm flaticon-065-bill"></i> Sales Invoice
 							</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('Sales/Return/SR.php?ix=');">
-                <i class="icon-action-undo"></i> Sales Return 
+                				<i class="icon-action-undo"></i> Sales Return 
 							</a>
 						</li>
-            <!--
-            <li>
+						<!--
+						<li>
 							<a href="javascript:;" onClick="setpage('POS');">
-                <i class="fgly flaticon-060-cash-register"></i> Point of Sale
+                				<i class="fgly flaticon-060-cash-register"></i> Point of Sale
 							</a>
 						</li>
 						-->
-						
 						<?php
 							if($lallowNT==1){
 						?>
 						<li class="side-item-category">Non Trade Transactions</li>						
 						<li>
 							<a href="javascript:;" onClick="setpage('SalesNT/SO/SO.php?ix=');">
-                <i class="fgly-sm flaticon-003-shopping-list"></i> SO Non Trade
+                				<i class="fgly-sm flaticon-003-shopping-list"></i> SO Non Trade
 							</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('SalesNT/DR/DR.php?ix=');">
-                <i class="fgly-sm flaticon-035-invoice"></i> DR Non-Trade
+                				<i class="fgly-sm flaticon-035-invoice"></i> DR Non-Trade
 							</a>
 						</li>						
 						<li>
 							<a href="javascript:;" onClick="setpage('SalesNT/Sales/SI.php?ix=');">
-                <i class="fgly-sm flaticon-065-bill"></i> SI Non-Trade
+                				<i class="fgly-sm flaticon-065-bill"></i> SI Non-Trade
 							</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('SalesNT/Return/SR.php?ix=');">
-                <i class="icon-action-undo"></i> SR Non-Trade
+                				<i class="icon-action-undo"></i> SR Non-Trade
 							</a>
 						</li>
 						<?php
@@ -484,66 +480,61 @@
 				</li>
 				<li>
 					<a href="javascript:;">
-					<i class="fa fa-shopping-cart"></i>
-					<span class="title">Purchases</span>
-					<span class="arrow"></span>
+						<i class="fa fa-shopping-cart"></i><span class="title">Purchases</span><span class="arrow"></span>
 					</a>
 					<ul class="sub-menu">
 						<li>
 							<a href="javascript:;" onClick="setpage('Purchases/PR/PR.php?ix=');">
-							<i class="fa fa-cart-plus" ></i> Purchase Request
+								<i class="fa fa-cart-plus" ></i> Purchase Request
 							</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('Purchases/PO/Purch.php?ix=');">
-                <i class="glyphicon glyphicon-list"> </i> Purchase Order
+                				<i class="glyphicon glyphicon-list"> </i> Purchase Order
 							</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('Purchases/RR/RR.php?ix=');">
-                <i class="fa fa-download"> </i> Receiving
+                				<i class="fa fa-download"> </i> Receiving
 							</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('Purchases/PRet/PurchRet.php?ix=');">
-                <i class="fa fa-upload"> </i> Purchase Return
+                				<i class="fa fa-upload"> </i> Purchase Return
 							</a>
 						</li>
 					</ul>
 				</li>
 				<li>
 					<a href="javascript:;">
-					<i class="icon-book-open "></i>
-					<span class="title">Accounting</span>
-					<span class="arrow "></span>
+						<i class="icon-book-open "></i><span class="title">Accounting</span><span class="arrow "></span>
 					</a>
-					<ul class="sub-menu">
-						
+					<ul class="sub-menu">						
 						<li>
 							<a href="javascript:;" onClick="setpage('Accounting/Journal/Journal.php?ix=');">
-                <i class="fa fa-book"> </i>Journal Entry
+                				<i class="fa fa-book"> </i>Journal Entry
 							</a>
 						</li>
 						<li>
 							<a href="javascript:;" class="nav-link nav-toggle">
-                <i class="fa fa-credit-card"> </i> Accounts Payable<span class="arrow"></span>
+                				<i class="fa fa-credit-card"> </i> Accounts Payable<span class="arrow"></span>
 							</a>
-              <ul class="sub-menu">
+             				<ul class="sub-menu">
 								<li>
-                  <a href="javascript:;" onClick="setpage('Accounting/APInv/RR.php?ix=');"> 
+                  					<a href="javascript:;" onClick="setpage('Accounting/APInv/RR.php?ix=');"> 
 										<i class="fa fa-angle-double-right"></i> Supplier's Invoice 
 									</a>
-                </li>	
-	              <li>
-                  <a href="javascript:;" onClick="setpage('Accounting/APAdj/APAdj.php?ix=');"> 
+                				</li>	
+	              				<li>
+                 					<a href="javascript:;" onClick="setpage('Accounting/APAdj/APAdj.php?ix=');"> 
 										<i class="fa fa-angle-double-right"></i> Adjustments 
 									</a>
-                </li>										
-                <li>
-                  <a href="javascript:;" onClick="setpage('Accounting/APV/APV.php?ix=');"> 
+                				</li>										
+                				<li>
+                  					<a href="javascript:;" onClick="setpage('Accounting/APV/APV.php?ix=');"> 
 										<i class="fa fa-angle-double-right"></i> AP Voucher 
 									</a>
-                </li>
+                				</li>
 
 								<?php
 									
@@ -565,53 +556,44 @@
 								<?php
 									}
 								?>
-                <li>
-                  <a href="javascript:;" onClick="setpage('Accounting/Pay/PayBill.php?ix=');"> <i class="fa fa-angle-double-right"></i> Bills Payment </a>
-                </li>
-              </ul>
+
+								<li>
+									<a href="javascript:;" onClick="setpage('Accounting/Pay/PayBill.php?ix=');"> <i class="fa fa-angle-double-right"></i> Bills Payment </a>
+								</li>
+              				</ul>
 						</li>
 
 						<li>
 							<a href="javascript:;" class="nav-link nav-toggle">
-                <i class="fa fa-money"></i> Accounts Receivable<span class="arrow"></span>
+               					<i class="fa fa-money"></i> Accounts Receivable<span class="arrow"></span>
 							</a>
-                <ul class="sub-menu">
-									<!--
-                  <li>
-                    <a href="javascript:;" onClick="setpage('Accounting/ARCM/ARCM.php');"> <i class="fa fa-angle-double-right"></i> Credit Memo </a>
-                  </li>
-                  <li>
-                    <a href="javascript:;" onClick="setpage('Accounting/ARDM/ARDM.php');"> <i class="fa fa-angle-double-right"></i> Debit Memo </a>
-                  </li>
-									-->
-									<li>
-                    <a href="javascript:;" onClick="setpage('Accounting/ARAdj/ARAdj.php?ix=');"> 
-											<i class="fa fa-angle-double-right"></i> Adjustments 
-										</a>
-                  </li>
-                  <li>
-                    <a href="javascript:;" onClick="setpage('Accounting/OR/OR.php?ix=');"> 
-											<i class="fa fa-angle-double-right"></i> AR Payments 
-										</a>
-                  </li>
-                </ul>
+                			<ul class="sub-menu">
+								<li>
+                   					<a href="javascript:;" onClick="setpage('Accounting/ARAdj/ARAdj.php?ix=');"> 
+										<i class="fa fa-angle-double-right"></i> Adjustments 
+									</a>
+                  				</li>
+								<li>
+									<a href="javascript:;" onClick="setpage('Accounting/OR/OR.php?ix=');"> 
+										<i class="fa fa-angle-double-right"></i> AR Payments 
+									</a>
+								</li>
+                			</ul>
 						</li>
 
 						<li>
 							<a href="javascript:;" onClick="setpage('Accounting/Deposit/Deposit.php?ix=');">
-                <i class="fa fa-bank"> </i> Bank Deposit
+                				<i class="fa fa-bank"> </i> Bank Deposit
 							</a>
 						</li>
 						<li>
-							<a href="javascript:;" onclick="setpage('./BankRecon')"><i class="fa fa-file-text"></i>Bank Reconciliation</a>
+							<a href="javascript:;" onclick="setpage('./BankRecon')"><i class="fa fa-file-text"></i> Bank Reconciliation</a>
 						</li>
 					</ul>
 				</li>
 				<li>
 					<a href="javascript:;">
-					<i class="icon-puzzle"></i>
-					<span class="title"><?=($lallowMRP==1) ? "MES &amp; Inventory" : "Inventory";?></span>
-					<span class="arrow "></span>
+						<i class="icon-puzzle"></i><span class="title"><?=($lallowMRP==1) ? "MES &amp; Inventory" : "Inventory";?></span><span class="arrow "></span>
 					</a>
 					<ul class="sub-menu">
 						<?php
@@ -641,13 +623,15 @@
 						</li>
 						
 						<li>
-                <a href="javascript:;" onClick="setpage('MRP/JO/JO.php');"> 
-								<i class="fa fa-file-text-o"></i> Job Orders </a>
-            </li>
+                			<a href="javascript:;" onClick="setpage('MRP/JO/JO.php');"> 
+								<i class="fa fa-file-text-o"></i> Job Orders 
+							</a>
+            			</li>
 						<li>
-                <a href="javascript:;" onClick="setpage('MRP/ProdRun/ProdRun.php');"> 
-								<i class="fa fa-tasks"></i> Production Run </a>
-            </li>
+                			<a href="javascript:;" onClick="setpage('MRP/ProdRun/ProdRun.php');"> 
+								<i class="fa fa-tasks"></i> Production Run 
+							</a>
+            			</li>
 						<?php
 							}
 						?>
@@ -670,37 +654,34 @@
 				</li>
 				<li>
 					<a href="javascript:;">
-					<i class="fa  fa-bar-chart-o "></i>
-					<span class="title">Reports</span>
-					<span class="arrow "></span>
+						<i class="fa  fa-bar-chart-o "></i><span class="title">Reports</span><span class="arrow "></span>
 					</a>
 					<ul class="sub-menu">
 						<li>
 							<a href="javascript:;" onClick="setpage('Reports/rptmenu.php?id=sales');">
-                <i class="glyphicon glyphicon-file "> </i> Sales
+                				<i class="glyphicon glyphicon-file "> </i> Sales
 							</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('Reports/rptmenu.php?id=purch');">
-                <i class="glyphicon glyphicon-file "> </i> Purchases
+                				<i class="glyphicon glyphicon-file "> </i> Purchases
 							</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('Reports/rptmenu.php?id=acc');">
-                <i class="glyphicon glyphicon-file "> </i> GL & BIR Reports
+                				<i class="glyphicon glyphicon-file "> </i> GL & BIR Reports
 							</a>
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('Reports/rptmenu.php?id=inv');">
-                <i class="glyphicon glyphicon-file "> </i> Inventory
+               					<i class="glyphicon glyphicon-file "> </i> Inventory
 							</a>
 						</li>
 					</ul>
 				</li>
 				<li>
 					<a href="javascript:;" onClick="setpage('MasterFiles/AuditTrail/AuditTrail.php');">
-					<i class="fa fa-search-plus" aria-hidden="true"></i>
-					<span class="title">Audit Trail</span>
+						<i class="fa fa-search-plus" aria-hidden="true"></i><span class="title">Audit Trail</span>
 					</a>
 				</li>
 			</ul>
@@ -715,7 +696,7 @@
 			<!-- BEGIN PAGE CONTENT-->
 			<div class="row"> 
 				<div class="col-xs-12 nopadding">																
-          <iframe id="myframe" name="myframe" scrolling="no" style="width:100%; display:block; margin:0px; padding:0px; border:0px" src=""></iframe>
+         			<iframe id="myframe" name="myframe" scrolling="no" style="width:100%; display:block; margin:0px; padding:0px; border:0px" src=""></iframe>
 				</div>
 			</div>
 			<!-- END PAGE CONTENT-->
@@ -754,67 +735,65 @@
 <script src="global/scripts/metronic.js" type="text/javascript"></script>
 <script src="admin/layout/scripts/layout.js" type="text/javascript"></script>
 <script src="admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
-<script src="admin/layout/scripts/demo.js" type="text/javascript"></script>
+
 <script>
-  $(document).ready(function() {    
-    Metronic.init(); // init metronic core components
+	$(document).ready(function() {    
+		Metronic.init(); // init metronic core components
 		Layout.init(); // init current layout
 		QuickSidebar.init(); // init quick sidebar
-		Demo.init(); // init demo features
-		
-			loadxtrasession();
-		
-  });
-	  
-	function loadxtrasession(){
-		  $.ajax ({
-				url: "include/th_xtrasessions.php",
-				async: false,
-				success: function( data ) {
-					 console.log(data);
-				}
-			});
-
-	  }
-	  
-	  function setpage(valz){
-	
-			if(valz=="POS"){
-				top.location.href="Sales/Win/index.php";
-			}
-			else{
-
-				$("#myframe").attr('src',valz);
-
-				setInterval(function(){
-						document.getElementById("myframe").style.height = document.getElementById("myframe").contentWindow.document.body.scrollHeight + 'px';
-				},1000);
-
-				
-				/*
-				var iframe = $("#myframe")[0];
-				
-				iframe.contentWindow.focus();
-				
-				
-				var iFrameID = document.getElementById('myframe');
-					
-					if(iFrameID) {
 			
-						iFrameID.height = "";
-						x = parseInt(iFrameID.contentWindow.document.body.scrollHeight) + 300;
-						
-						iFrameID.height = x + "px";
-						
-					} 
-
-					*/
-					
+		loadxtrasession();
+			
+	});
+		
+	function loadxtrasession(){
+		$.ajax ({
+			url: "include/th_xtrasessions.php",
+			async: false,
+			success: function( data ) {
+				console.log(data);
 			}
-				
-	  }
+		});
+	}
 	  
-   </script>
+	function setpage(valz){
+
+		if(valz=="POS"){
+			top.location.href="Sales/Win/index.php";
+		}
+		else{
+
+			$("#myframe").attr('src',valz);
+
+			setInterval(function(){
+					document.getElementById("myframe").style.height = document.getElementById("myframe").contentWindow.document.body.scrollHeight + 'px';
+			},1000);
+
+			
+			/*
+			var iframe = $("#myframe")[0];
+			
+			iframe.contentWindow.focus();
+			
+			
+			var iFrameID = document.getElementById('myframe');
+				
+				if(iFrameID) {
+		
+					iFrameID.height = "";
+					x = parseInt(iFrameID.contentWindow.document.body.scrollHeight) + 300;
+					
+					iFrameID.height = x + "px";
+					
+				} 
+
+				*/
+				
+		}
+			
+	}
+	  
+</script>
 <!-- END JAVASCRIPTS -->
 </body>
 <!-- END BODY -->
