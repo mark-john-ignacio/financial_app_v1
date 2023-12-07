@@ -150,7 +150,7 @@ xmlhttp.send();
               <label><input type="radio" name="radioCheck" id="chkBox158" value="DashboardSales.php" <?= (in_array("DashboardSales.php", $arrpgist)) ? "checked" : "" ?> >&nbsp;Dashboard Sales</label>
             </div>
             <div class="col-xs-2 noppading">
-              <label><input type="radio" name="radioCheck" id="chkBox159" value="DashboardSales.php" <?= (in_array("DashboardPurchase.php", $arrpgist)) ? "checked" : "" ?> >&nbsp;Dashboard Purchase</label>
+              <label><input type="radio" name="radioCheck" id="chkBox159" value="DashboardPurchase.php" <?= (in_array("DashboardPurchase.php", $arrpgist)) ? "checked" : "" ?> >&nbsp;Dashboard Purchase</label>
             </div>
           </div>
         </div>

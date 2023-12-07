@@ -26,16 +26,25 @@
         return $week;
     }
 
+    function Months(){
+        for ($i = 1; $i <= 12; $i++) {
+            $month = DateTime::createFromFormat('!m', $i);
+            $months[] = $month->format('F');
+        }
+        return $months;
+    }
+
     function SalesWeekData($date){
         global $company, $con;
-        $now = getWeek($date);
+        // $now = getWeek($date);
+        $month = Months();
         $amounts = [];
-        for($i = 0; $i < count($now); $i++){
-            $today = date("Y-m-d", strtotime($now[$i]));
+        for($i = 0; $i < count($month); $i++){
+            $today = date("Y-m-d", strtotime($month[$i]));
             $cost = 0;
 
             $sql = "SELECT a.napplied FROM receipt a
-                WHERE a.compcode = '$company' AND a.lapproved = 1 AND a.lcancelled = 0 AND a.lvoid = 0 AND a.dcutdate = '$today'";
+                WHERE a.compcode = '$company' AND a.lapproved = 1 AND a.lcancelled = 0 AND a.lvoid = 0 AND MONTH(a.dcutdate) = MONTH('$today') AND YEAR(a.dcutdate) = YEAR(CURDATE())";
             $query = mysqli_query($con, $sql);
             
             while($row = $query -> fetch_assoc()){
@@ -49,18 +58,19 @@
 
     function PurchaseWeekData($date){
         global $company, $con;
-        $now = getWeek($date);
+        // $now = getWeek($date);
+        $month = Months();
         $amounts = [];
 
-        for($i = 0; $i < count($now); $i++){
-            $today = date("Y-m-d", strtotime($now[$i]));
+        for($i = 0; $i < count($month); $i++){
+            $today = date("Y-m-d", strtotime($month[$i]));
             $cost = 0;
 
-            $sql = "SELECT npaid as total FROM paybill WHERE compcode = '$company' AND lapproved = 1 AND lcancelled = 0 AND lvoid = 0 AND dcheckdate = '$today'";
+            $sql = "SELECT npaid as total FROM paybill WHERE compcode = '$company' AND lapproved = 1 AND lcancelled = 0 AND lvoid = 0 AND MONTH(dcheckdate) = MONTH('$today') AND YEAR(dcheckdate) = YEAR(CURDATE())";
             $query = mysqli_query($con, $sql);
 
             while($row = $query -> fetch_assoc()){
-                $cost += floatval($row['npaid']);
+                $cost += floatval($row['total']);
             }
             array_push($amounts, $cost);
         }
@@ -76,13 +86,15 @@
         switch($row['pageid']){
              case "DashboardSales.php":
                 echo json_encode([
-                    'week' => getWeek($now),    
+                    // 'week' => getWeek($now),  
+                    'month' => Months(),  
                     'values' => SalesWeekData($now)
                 ]);
                 break;
             case "DashboardPurchase.php":
                 echo json_encode([
-                    'week' => getWeek($now),    
+                    // 'week' => getWeek($now),
+                    'month' => Months(),      
                     'values' => PurchaseWeekData($now)
                 ]);
                 break;

@@ -10,23 +10,6 @@
     // $dateto = date("Y-m-d", strtotime($_REQUEST['to']));
 
     
-
-    function GLActivity(){
-        global $company, $con;
-        $activity = [];
-
-        $sql = "SELECT DISTINCT(ctranno), ctitle, ddate, cmodule FROM glactivity WHERE compcode = '$company' ORDER BY nidentity DESC LIMIT 10";
-        $query = mysqli_query($con, $sql);
-        
-        while($row = $query -> fetch_assoc()){
-            array_push($activity, $row);
-        }
-        return [
-            'valid' => true,
-            'label' => "Sales", 
-            'total' => $activity,
-        ];
-    }
     function Sales(){
         global $company, $datefrom, $dateto, $con;
         $sales = [];
@@ -37,7 +20,7 @@
 
         $sql = "SELECT a.*, b.cname FROM receipt a
         LEFT JOIN customers b ON a.compcode = b.compcode AND a.ccode = b.cempid
-        WHERE a.compcode = '$company' AND a.lapproved = 1 AND a.lcancelled = 0 AND a.lvoid = 0";
+        WHERE a.compcode = '$company' AND a.lapproved = 1 AND a.lcancelled = 0 AND a.lvoid = 0 AND YEAR(a.ddate) = YEAR(CURDATE())";
         $query = mysqli_query($con, $sql);
         $receipt = mysqli_num_rows($query);
         
@@ -66,7 +49,7 @@
         global $company, $datefrom, $dateto, $con;
         $purchase = [];
         // $sql = "SELECT * FROM paybill WHERE compcode = '$company' AND lapproved = 1 AND lcancelled = 0 AND lvoid = 0 AND (dcheckdate BETWEEN '$datefrom' AND '$dateto')";
-        $sql = "SELECT * FROM paybill WHERE compcode = '$company' AND lapproved = 1 AND lcancelled = 0 AND lvoid = 0";
+        $sql = "SELECT * FROM paybill WHERE compcode = '$company' AND lapproved = 1 AND lcancelled = 0 AND lvoid = 0 AND YEAR(ddate) = YEAR(CURDATE())";
         $query = mysqli_query($con, $sql);
         $paybill = mysqli_num_rows($query);
 
@@ -112,11 +95,9 @@
         switch($row['pageid']){
              case "DashboardSales.php":
                 echo json_encode(Sales());
-                // echo json_encode(GLActivity());
                 break;
             case "DashboardPurchase.php":
                 echo json_encode(Purchase());
-                // echo json_encode(GLActivity());
                 break;
         }
     }

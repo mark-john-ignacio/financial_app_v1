@@ -107,46 +107,16 @@
         </div>
 
         <!-- Logs -->
-        <div style=' padding: 10px; min-width: 10.5in; height: 4.5in; display: grid;  grid-template-columns: repeat(2, minmax(0, 1fr)); grid-gap: 5%;'>
+        <div style=' padding: 10px; min-width: 10.5in; height: 3in; display: grid;  grid-template-columns: repeat(2, minmax(0, 1fr)); grid-gap: 5%;'>
             <div id="TRANSACTION_MODULE" style='display: relative; width: 100%; border: 1px solid;'>     
-                <div style="display: flex; justify-content: center; justify-items: center; padding: 5px; background-color:#2d5f8b; color: white">
-                    <h3>Latest Activity</h3>
+                <div style="display: flex; justify-content: center; justify-items: center; background-color:#2d5f8b; color: white">
+                    <h4>Latest Activity</h4>
                 </div>
-                <div style="display: relative;  max-height: 3.5in; overflow: auto;">
-                    <?php 
-                        $sql = "SELECT DISTINCT(ctranno), cmodule FROM glactivity WHERE compcode = '$company' ORDER BY nidentity DESC LIMIT 10";
-                        $query = mysqli_query($con, $sql);
-                        while($row = $query -> fetch_assoc()):
-                            $transaction = $row['ctranno'];
-                            $sql = match($row['cmodule']){
-                                "APV" => "SELECT cpayee as named, dapvdate as due, cpaymentfor as remarks FROM apv WHERE compcode = '$company' AND ctranno = '$transaction'",
-                                "PV" => "SELECT cpayee as named, dtrandate as due, cpaymethod as remarks FROM paybill WHERE compcode = '$company' AND ctranno = '$transaction'",
-                                "OR" => "SELECT b.cname as named, dcutdate as due, cpaymethod FROM receipt a LEFT JOIN customers b on a.compcode = b.compcode AND a.ccode = b.cempid WHERE a.compcode = '$company' AND a.ctranno = '$transaction' ",
-                                "JE" => "SELECT djdate as due, cmemo as remarks FROM journal WHERE compcode = '$company' AND ctranno = '$transaction'",
-                                "SI" => "SELECT b.cname as named, a.dcutdate as due, cremarks as remarks FROM sales a LEFT JOIN customers b ON a.compcode = b.compcode AND a.ccode = b.cempid WHERE a.compcode = '$company' AND a.ctranno = '$transaction",
-                                "IN" => "SELECT b.cname as named, a.dcutdate as due, cremarks as remarks FROM ntsales a LEFT JOIN customers b ON a.compcode = b.compcode AND a.ccode = b.cempid WHERE a.compcode = '$company' AND a.ctranno = '$transaction'",
-                            };
-                            $queries = mysqli_query($con, $sql);
-                            $list = $queries -> fetch_assoc();
-                    ?>
-                        <div style="display: relative; border: 1px solid; margin: 2px;" onclick="return false">
-                            <div style="display: flex; width: 100%; padding: 5px;">
-                                <div style="font-weight: bold; font-size: 18px">
-                                    <?= $list['named'] ? $list['named'] : $transaction ?>
-                                </div>
-                                <div  style="display: flex; justify-content: right; justify-items: right; width: 100%; color: green; font-size: 14px">
-                                    <?= $list['due'] ?>
-                                </div>
-                            </div>
-                            <div style="width:75%; max-height: 30px; color: grey; font-size: 14px; overflow: hidden; padding: 5px">
-                                <?= $list['remarks'] ?>
-                            </div>
-                        </div>
-                    <?php endwhile; ?>
+                <div style="display: relative;  max-height: 2.5in; overflow: auto;" id="summary">
                 </div>
             </div>
             
-            <div style='display: flex; justify-content: center; justify-items: center; text-align:center; width: 100%'>
+            <div style='display: flex; justify-content: center; justify-items: center; text-align:center; width: 100%;'>
                 <div class="display: flex; ">
                     <canvas id="myChart" style="width:500px; max-width:500px; min-height: 200px;"></canvas>
                 </div>
@@ -163,14 +133,12 @@
         });
 
         LoadHeader();
-        loadTransaction();
         loadlinegraph();
+        loadsummary();
 
         $("#dateto").on('change', function(){
             let from = $('#datefrom').val();
             let to = $("#dateto").val();
-            console.log(from)
-            console.log(to)
             $.ajax({
                 url: 'th_loadheader.php',
                 data: { from: from, to: to },
@@ -194,8 +162,6 @@
         $("#datefrom").on('change',function(){
             let from = $('#datefrom').val();
             let to = $("#dateto").val();
-            console.log(from)
-            console.log(to)
             $.ajax({
                 url: 'th_loadheader.php',
                 data: { from: from, to: to },
@@ -221,8 +187,6 @@
 
         let from = $('#datefrom').val();
         let to = $("#dateto").val();
-        console.log(from)
-        console.log(to)
         $.ajax({
             url: 'th_loadheader.php',
             data: { from: from, to: to },
@@ -254,7 +218,7 @@
             dataType: 'json',
             async: false,
             success: function(res){
-                loadchart(res.week, res.values)
+                loadchart(res.month, res.values)
             },
             error: function(res){
                 console.log(res)
@@ -262,39 +226,39 @@
         });
     }
 
-    function loadTransaction(){
+    function loadsummary() {
         $.ajax({
-            url: 'th_loadtransaction.php',
-            dataType: 'json',
+            url: "th_loadsummary.php",
+            type: "post",
+            dataType: "json",
             async: false,
-            success: function(res){
+            success: function (res) {
                 console.log(res);
-                res.map((item, index) => {
-                    if(item.valid){
-                        $("TRANSACTION_MODULE").append("<div style='display: relative; border: 1px solid; padding: 10px;'>" +
-                        "<div style='display: flex; width: 100%;'>"+
-                            "<div style='font-weight: bold; font-size: 18px'>"+item.name+"</div>"+
-                            "<div  style='display: flex; justify-content: right; justify-items: right; width: 100%; color: green; font-size: 14px'> "+item.date+" </div> </div>" +
-                        "<div style='width:75%; max-height: 30px; color: grey; font-size: 14px; overflow: hidden'> Description </div> </div>")
-                        // $("<tr>").append(
-                        //     $("<td style='text-align: center'>").html(''),
-                        //     $("<td style='text-align: center'>").html(item.name),
-                        //     $("<td style='text-align: center'>").html(item.date)
-                        // ).appendTo(".table tbody")
-                    }
-                })
+                if(res.valid){
+                    res.data.map((item, index) => {
+                        $("<div style='display: relative; border: 1px solid; margin: 2px;' onclick='return false'>").append(
+                            $("<div style='display: flex; width: 100%; padding: 5px;'>").append(
+                                $("<div style='font-weight: bold; font-size: 14px; width: 75%;' id='title'>").text(item.names),
+                                $("<div style='flex-grow: 1; display: flex; justify-content: flex-end; align-items: center; color: green; font-size: 12px' id='date'>").text(item.dates)
+                            ),
+                            $("<div style='width:100%; max-height: 30px; color: grey; font-size: 12px; overflow: hidden; padding: 5px' id='remarks'>").text(item.remarks)
+                        ).appendTo("#summary");
+                    });
+                } else {
+                    console.log(res.msg)
+                }
             },
-            error: function(res){
-                console.log(res)
+            error: function (msg) {
+                console.log(msg);
             }
         });
     }
 
-    function loadchart(weeks, values){
+    function loadchart(months, values){
         new Chart("myChart", {
-            type: "line",
+            type: "bar",
             data: {
-                labels: weeks,
+                labels: months,
                 datasets: [{
                 fill: false,
                 lineTension: 0,
