@@ -36,7 +36,7 @@ require_once "../../Connection/connection_string.php";
 			}
 		}
 
-		$result = mysqli_query ($con, "select * from quote where compcode='$company' and lapproved=1 and ccode='".$_REQUEST['x']."' and quotetype='billing' and csalestype='".$_REQUEST['styp']."' and ctranno not in ('".implode("','", @$arrefquotes)."') order by ddate desc, ctranno desc"); 
+		$result = mysqli_query ($con, "select * from quote where compcode='$company' and lapproved=1 and lvoid=0 and ccode='".$_REQUEST['x']."' and quotetype='billing' and csalestype='".$_REQUEST['styp']."' and ctranno not in ('".implode("','", @$arrefquotes)."') order by ddate desc, ctranno desc"); 
 
 	}elseif($_REQUEST['typ']=="SO"){// SALES ORDER REFEERENCE
 
