@@ -893,20 +893,19 @@ if (mysqli_num_rows($sqlchk)!=0) {
 
 
 	<div class="modal fade" id="ChequeModal" role="dialog">
-			<div class="modal-dialog">
-					<div class="modal-content">
-							<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-									<h3 class="modal-title" id="invheader">CHEQUE DETAILS</h3>
-							</div>
-							<div class="modal-body">
-								<?php
-												$cBank = "";
-												$cCheckNo = "";
-												$dDateCheck = "";
-												$nCheckAmt = "";
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="modal-title" id="invheader">CHEQUE DETAILS</h3>
+				</div>
+				<div class="modal-body">
+					<?php
+						$cBank = "";
+						$cCheckNo = "";
+						$dDateCheck = "";
+						$nCheckAmt = "";
 												
-						if($cPayMeth=="Cheque"){
+						if($cPayMeth=="cheque"){
 							
 							$sqlbody = mysqli_query($con,"select a.* from receipt_check_t a where a.compcode='$company' and a.ctranno = '$corno' order by a.nidentity");
 				
@@ -922,36 +921,36 @@ if (mysqli_num_rows($sqlchk)!=0) {
 						}
 					?>
 
-										<table width="100%" border="0" class="table table-condensed">
-												<tr>
-													<td><b>Bank Name</b></td>
-													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtBankName' id='txtBankName' placeholder="Input Bank Name" value="<?=$cBank; ?>"/></div></td>
-												</tr>
-												<tr>
-													<td><b>Cheque Date</b></td>
-													<td>
-													<div class='col-sm-12'>
-															<input type='text' class="form-control input-sm" placeholder="Pick a Date" name="txtChekDate" id="txtChekDate"  value="<?=date_format(date_create($dDateCheck),'m/d/Y'); ?>"/>
+					<table width="100%" border="0" class="table table-condensed">
+						<tr>
+							<td><b>Bank Name</b></td>
+							<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtBankName' id='txtBankName' placeholder="Input Bank Name" value="<?=$cBank; ?>"/></div></td>
+						</tr>
+						<tr>
+							<td><b>Cheque Date</b></td>
+							<td>
+							<div class='col-sm-12'>
+									<input type='text' class="form-control input-sm" placeholder="Pick a Date" name="txtChekDate" id="txtChekDate"  value="<?=date_format(date_create($dDateCheck),'m/d/Y'); ?>"/>
 
-													</div>
-													</td>
-												</tr>
-												<tr>
-													<td><b>Cheque Number</b></td>
-													<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtCheckNo' id='txtCheckNo' placeholder="Input Cheque Number"  value="<?=$cCheckNo; ?>"/></div></td>
-												</tr>
-												<tr>
-													<td><b>Cheque Amount</b></td>
-													<td><div class='col-xs-12'><input type='text' class='numericchkamt form-control input-sm' name='txtCheckAmt' id='txtCheckAmt' placeholder="Input Cheque Amount"  value="<?=$nCheckAmt; ?>" /></div></td>
-												</tr>
-											</table>
+							</div>
+							</td>
+						</tr>
+						<tr>
+							<td><b>Cheque Number</b></td>
+							<td><div class='col-xs-12'><input type='text' class='form-control input-sm' name='txtCheckNo' id='txtCheckNo' placeholder="Input Cheque Number"  value="<?=$cCheckNo; ?>"/></div></td>
+						</tr>
+						<tr>
+							<td><b>Cheque Amount</b></td>
+							<td><div class='col-xs-12'><input type='text' class='numericchkamt form-control input-sm' name='txtCheckAmt' id='txtCheckAmt' placeholder="Input Cheque Amount"  value="<?=$nCheckAmt; ?>" /></div></td>
+						</tr>
+					</table>
 							
-							</div>
-							<div class="modal-footer">
-									
-							</div>
-					</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-success btn-sm" data-dismiss="modal" aria-label="Close">Save Check Details</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
 	<!-- End Bootstrap modal -->
 
@@ -1474,6 +1473,10 @@ else{
 			}else{
 				$('#OthersModal').modal('show');
 			}
+		});
+
+		$("#ChequeModal").on("hidden.bs.modal", function () {
+			$("#txtnGross").val($("#txtCheckAmt").val());
 		});
 
 		$("#allbox").click(function () {

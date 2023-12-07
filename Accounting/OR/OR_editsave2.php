@@ -27,7 +27,7 @@ include('../../include/denied.php');
 
 	$cOTDesc = "";
 	$cOTRef = "";
-	if ($cPayMethod!=="Cash" && $cPayMethod!=="Cheque"){
+	if ($cPayMethod!=="cash" && $cPayMethod!=="cheque"){
 		$cOTDesc = mysqli_real_escape_string($con, $_POST['txtOTBankName']);
 		$cOTRef = mysqli_real_escape_string($con, $_POST['txtOTRefNo']);	
 	}
@@ -66,7 +66,7 @@ if (!mysqli_query($con, "DELETE FROM `receipt_others_t` where `compcode`='$compa
 }
 
 
-if ($cPayMethod=="Cash") { //INSERT CASH DETAILS
+if ($cPayMethod=="cash") { //INSERT CASH DETAILS
 	$cvar1000 = mysqli_real_escape_string($con, $_POST['txtDenom1000']);
 	if(is_numeric($cvar1000)){
 				$namt = 1000*$cvar1000;
@@ -175,7 +175,7 @@ if ($cPayMethod=="Cash") { //INSERT CASH DETAILS
 	
 	}
 }
-elseif ($cPayMethod=="Cheque"){ //INSERT CHEQUE DETAILS
+elseif ($cPayMethod=="cheque"){ //INSERT CHEQUE DETAILS
 	$CHKbank = mysqli_real_escape_string($con, $_POST['txtBankName']);
 	$CHKdate = mysqli_real_escape_string($con, $_POST['txtChekDate']);
 	$CHKchkno = mysqli_real_escape_string($con, $_POST['txtCheckNo']); 
