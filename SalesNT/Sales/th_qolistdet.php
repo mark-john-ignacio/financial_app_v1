@@ -106,7 +106,7 @@ require_once "../../Connection/connection_string.php";
 					}
 				}
 			}elseif($_REQUEST['typ']=="QO"){
-				$xnamt = ($nqty1 - $nqty2) * floatval($rowx['nprice']);
+				$xnamt = ($nqty1 - $nqty2) * floatval($row['nprice']);
 
 				$json['nprice'] = $row['nprice'];
 				//$json['namount'] = $row['namount'];
