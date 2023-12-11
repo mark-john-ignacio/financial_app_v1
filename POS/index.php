@@ -442,10 +442,10 @@
                                         <label for="discountInput">Service Fee</label>
                                         <input type="text" name="ServiceInput" id="ServiceInput" class='form-control' readonly>
 
-                                        <label for="subtotal">Sub-Total</label>
+                                        <label for="subtotal">Total Amount</label>
                                         <input type='text' id='subtotal' class='form-control' readonly/>
                                         
-                                        <label for="totalAmt">Total Amount</label>
+                                        <label for="totalAmt">Total to Pay</label>
                                         <input type='text' id='totalAmt' class='form-control' readonly/>
 
                                         <label for="ExchangeAmt">Change Amount</label>
@@ -810,6 +810,7 @@
         $('#VoidSubmit').click(function(){
             $("input:checkbox[name=itemcheck]:checked").each(function(){
                 itemStored.splice($(this).val(), 1);
+                specialDisc.splice($(this).val(), 1);
 
                 table_store(itemStored);
                 $('#mymodal').modal('hide')
