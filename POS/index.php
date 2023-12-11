@@ -810,6 +810,7 @@
         $('#VoidSubmit').click(function(){
             $("input:checkbox[name=itemcheck]:checked").each(function(){
                 itemStored.splice($(this).val(), 1);
+                specialDisc.splice($(this).val(), 1);
 
                 table_store(itemStored);
                 $('#mymodal').modal('hide')
