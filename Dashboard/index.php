@@ -67,11 +67,17 @@
         <div class='col-sm-12' style='margin-top: 10px; min-width: 5.5in;  padding: 10px; height: 1.5in; display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); grid-gap: 5%'>
             <div style='position: relative; min-height: 100%; background-color: #d65151;'>
                 <div style='position: absolute; width: 100%; right:0; color: white; text-align: right; padding: 5px;'>
-                    <div style='font-size: 30px;' id='total'>
-                        185M+
+                    <div style='font-size: 30px;'>
+                        ₱ <span id='total'> 185M+</span>
                     </div>
                     <div style='font-size: 20px;'>
-                        Number of <span id='totaltxt'>Sales</span>
+                        <?php 
+                            if(in_array("DashboardSales.php", $page)){
+                                echo "Total Invoice Amount";
+                            } else if(in_array("DashboardPurchase.php", $page)){
+                                // echo "Total Pay Bill Amount";
+                            }
+                        ?>
                     </div>
                 </div>
                 <a href="javascript:;" style='color: white;'>
@@ -98,10 +104,16 @@
             <div style='position: relative; min-height: 100%; background-color: #5dcf72;'>
                 <div style='position: absolute; width: 100%; right:0; color: white; text-align: right;  padding: 5px;'>
                     <div style='font-size: 30px;'>
-                        ₱<span id='gross'>185M+</span>
+                        ₱ <span id='gross'>185M+</span>
                     </div>
                     <div style='font-size: 20px;'>
-                        Total Contracts Value
+                        <?php 
+                            if(in_array("DashboardSales.php", $page)){
+                                echo "Total Collected Amount";
+                            } else if(in_array("DashboardPurchase.php", $page)){
+                                echo "Total Pay Bill Amount";
+                            }
+                        ?>
                     </div>
                 </div>
                 <a href="javascript:;" style='color: white;'>
@@ -211,7 +223,6 @@
             dataType: 'json',
             async: false,
             success: function(res){
-                console.log(res)
                 if(res.valid){
                     let ranker = res.best_rank;
 
@@ -328,7 +339,7 @@
                     res.data.map((item, index) => {
                         $("<div style='display: relative; border: 1px solid #a6a6a6; margin: 2px;'>").append(
                             $("<div style='display: flex; width: 100%; padding: 5px;'>").append(
-                                $("<div style='font-weight: bold; font-size: 14px; width: 75%;' id='title'>").text(item.module),
+                                $("<div style='font-weight: bold; font-size: 14px; width: 75%;' id='title'>").text(item.ctranno),
                                 $("<div style='flex-grow: 1; display: flex; justify-content: flex-end; align-items: center; color: green; font-size: 12px' id='date'>").text(item.ddate)
                             ),
                             $("<div style='width:100%; max-height: 30px; color: grey; font-size: 12px; overflow: hidden; padding: 5px' id='remarks'>").text(item.cremarks)
