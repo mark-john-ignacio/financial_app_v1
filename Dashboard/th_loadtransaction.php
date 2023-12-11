@@ -19,6 +19,7 @@
                     'valid' => true,
                     'name' => $row['cname'],
                     'transaction' => $row['ctranno'],
+                    'remarks' => $row['cparticulars'],
                     'date' => $row['dcutdate']
                 ];
                 array_push($sales, $json);
@@ -41,6 +42,7 @@
                     'valid' => true,
                     'name' => $row['cpayee'],
                     'transaction' => $row['ctranno'],
+                    'remarks' => $row['cremarks'],
                     'date' => $row['dcheckdate']
                 ];
                 array_push($purchase, $json);

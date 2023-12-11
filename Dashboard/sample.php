@@ -25,33 +25,10 @@
 
 <script>
     $(document).ready(function(){
-        loadsummary();
+        
     })
-    function loadsummary() {
-        $.ajax({
-            url: "th_loadsummary.php",
-            type: "post",
-            dataType: "json",
-            async: false,
-            success: function (res) {
-                console.log(res);
-                if(res.valid){
-                    res.data.map((item, index) => {
-                        $("<div style='display: relative; border: 1px solid; margin: 2px;' onclick='return false'>").append(
-                            $("<div style='display: flex; width: 100%; padding: 5px;'>").append(
-                                $("<div style='font-weight: bold; font-size: 14px; width: 75%;' id='title'>").text(item.names),
-                                $("<div style='flex-grow: 1; display: flex; justify-content: flex-end; align-items: center; color: green; font-size: 12px' id='date'>").text(item.dates)
-                            ),
-                            $("<div style='width:100%; max-height: 30px; color: grey; font-size: 12px; overflow: hidden; padding: 5px' id='remarks'>").text(item.remarks)
-                        ).appendTo("#summary");
-                    });
-                } else {
-                    console.log(res.msg)
-                }
-            },
-            error: function (msg) {
-                console.log(msg);
-            }
-        });
+    
+    function BarGraph(){
+        
     }
 </script>

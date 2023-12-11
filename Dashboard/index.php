@@ -22,6 +22,18 @@
     <script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <title>MyxFinancials</title>
+    <style>
+        #DivNavigation {
+            display: relative; 
+            border: 1px solid #a6a6a6; 
+            margin: 2px;
+        }
+        
+        #DivNavigation:hover {
+            box-shadow: 1px 3px #a6a6a6;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <div class='container-fluid' style=' padding-top: 5x;'>
@@ -107,21 +119,46 @@
         </div>
 
         <!-- Logs -->
+        
         <div style=' padding: 10px; min-width: 10.5in; height: 3in; display: grid;  grid-template-columns: repeat(2, minmax(0, 1fr)); grid-gap: 5%;'>
+            <div style='width: 100%;'>
+                <div style="display: flex; justify-content: right; justify-items: right;">
+                    <label for="Periodicals" style="padding: 2%">Periodicals: </label>
+                    <select name="Periodicals" id="Periodicals" style="width: 100px" class="col-xs-1 form-control">
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                    </select>
+                </div>
+                <div style="display: flex; justify-content: center; justify-items: center;">
+                    <canvas id="myChart" style="width:100%; max-width:500px; min-height: 200px;"></canvas>
+                </div>
+            </div>
+            
+        </div>
+        <div style=' padding: 10px; min-width: 10.5in; height: 3in; display: grid;  grid-template-columns: repeat(2, minmax(0, 1fr)); grid-gap: 5%; padding-top: 5%;'>
             <div id="TRANSACTION_MODULE" style='display: relative; width: 100%; border: 1px solid;'>     
                 <div style="display: flex; justify-content: center; justify-items: center; background-color:#2d5f8b; color: white">
-                    <h4>Latest Activity</h4>
+                    <h4>Recent Activities</h4>
+                </div>
+                <div>
+                    
+                    <label for="Approved" class="btn btn-sm btn-success" style="margin: 2px"> Approved </label>
+                    <input type="radio" name="status" id="Approved" value="Approved" style="display: none">
+                    <label for="Pending" class="btn btn-sm btn-warning" style="margin: 2px"> Pending </label>
+                    <input type="radio" name="status" id="Pending" value="Pending" style="display: none">
                 </div>
                 <div style="display: relative;  max-height: 2.5in; overflow: auto;" id="summary">
                 </div>
             </div>
-            
-            <div style='display: flex; justify-content: center; justify-items: center; text-align:center; width: 100%;'>
-                <div class="display: flex; ">
-                    <canvas id="myChart" style="width:500px; max-width:500px; min-height: 200px;"></canvas>
+            <div id="RecentLog" style="display: relative; width: 100%; border: 1px solid;">
+                <div style="display: flex; justify-content: center; justify-items: center; background-color:#2d5f8b; color: white">
+                    <h4>Recent Logs</h4>
+                </div>
+                <div style="display: relative;  max-height: 2.5in; overflow: auto;" id="logs">
                 </div>
             </div>
         </div>
+        
     </div>
 </body>
 </html>
@@ -135,50 +172,16 @@
         LoadHeader();
         loadlinegraph();
         loadsummary();
+        loadlogs();
 
-        $("#dateto").on('change', function(){
-            let from = $('#datefrom').val();
-            let to = $("#dateto").val();
-            $.ajax({
-                url: 'th_loadheader.php',
-                data: { from: from, to: to },
-                dataType: 'json',
-                async: false,
-                success: function(res){
-                    console.log(res)
-                    if(res.valid){
-                        $('#total').text(res.total)
-                        $('#totaltxt').text(res.label)
-                        $('#gross').text(res.cost)
-                        $('#Highest').text(res.best_rank)
-                    } 
-                },
-                error: function(res){
-                    console.log(res)
-                }
-            })
+        $("#Periodicals").change(function(){
+            loadlinegraph($(this).val());
         })
 
-        $("#datefrom").on('change',function(){
-            let from = $('#datefrom').val();
-            let to = $("#dateto").val();
-            $.ajax({
-                url: 'th_loadheader.php',
-                data: { from: from, to: to },
-                dataType: 'json',
-                async: false,
-                success: function(res){
-                    if(res.valid){
-                        $('#total').text(res.total)
-                        $('#totaltxt').text(res.label)
-                        $('#gross').text(res.cost)
-                        $('#Highest').text(res.best_rank)
-                    } 
-                },
-                error: function(res){
-                    console.log(res)
-                }
-            })
+        $("input[name='status']").change(function(){
+            if($(this).is(":checked")){
+                loadsummary($(this).val())
+            }
         })
     });
 
@@ -211,14 +214,17 @@
         })
     }
 
-    function loadlinegraph(){
+    function loadlinegraph(Periodicals = $("#Periodicals").val()){
         $.ajax({
             url: "th_loadgraphs.php",
-            data: {},
+            type: "post",
+            data: {
+                Periodicals: Periodicals
+            },
             dataType: 'json',
             async: false,
             success: function(res){
-                loadchart(res.month, res.values)
+                loadchart(res.Periodicals, res.values)
             },
             error: function(res){
                 console.log(res)
@@ -226,17 +232,27 @@
         });
     }
 
-    function loadsummary() {
+    function navigate(link){
+        location.href = link.toString();
+    }
+
+    function loadsummary(status = "Approved") {
         $.ajax({
             url: "th_loadsummary.php",
             type: "post",
+            data: { status: status },
             dataType: "json",
             async: false,
             success: function (res) {
                 console.log(res);
+                $("#summary").empty();
                 if(res.valid){
                     res.data.map((item, index) => {
-                        $("<div style='display: relative; border: 1px solid; margin: 2px;' onclick='return false'>").append(
+                        let link = res.link.toString() + "?txtctranno=" + item.tranno.toString();
+                        let DivNavigation = $("<div id='DivNavigation'>").click( function(){
+                            navigate(link);
+                        })
+                        $(DivNavigation).append(
                             $("<div style='display: flex; width: 100%; padding: 5px;'>").append(
                                 $("<div style='font-weight: bold; font-size: 14px; width: 75%;' id='title'>").text(item.names),
                                 $("<div style='flex-grow: 1; display: flex; justify-content: flex-end; align-items: center; color: green; font-size: 12px' id='date'>").text(item.dates)
@@ -262,18 +278,48 @@
                 datasets: [{
                 fill: false,
                 lineTension: 0,
-                backgroundColor: "rgba(0,0,255,1.0)",
+                backgroundColor: "rgba(100,65,255,1.0)",
                 borderColor: "rgba(0,0,255,0.1)",
                 data: values
                 }]
             },
             options: {
-                legend: {display: false},
+                legend: { display: false },
                 scales: {
-                yAxes: [{ticks: {min: 0}}],
+                yAxes: [{
+                    ticks: {
+                    beginAtZero: true,
+                    }
+                }]
                 }
             }
         });
+    }
+
+    function loadlogs(){
+        $.ajax({
+            url: "th_loadlogs.php",
+            dataType: "json",
+            async: false,
+            success: function(res) {
+                if(res.valid){
+                    res.data.map((item, index) => {
+                        $("<div style='display: relative; border: 1px solid #a6a6a6; margin: 2px;'>").append(
+                            $("<div style='display: flex; width: 100%; padding: 5px;'>").append(
+                                $("<div style='font-weight: bold; font-size: 14px; width: 75%;' id='title'>").text(item.module),
+                                $("<div style='flex-grow: 1; display: flex; justify-content: flex-end; align-items: center; color: green; font-size: 12px' id='date'>").text(item.ddate)
+                            ),
+                            $("<div style='width:100%; max-height: 30px; color: grey; font-size: 12px; overflow: hidden; padding: 5px' id='remarks'>").text(item.cremarks)
+                        ).appendTo("#logs");
+                    })
+                } else {
+                    console.log(res.msg)
+                }
+            }, 
+            error: function(msg){
+                console.log(msg)
+            }
+        })
     }
     
 </script>
