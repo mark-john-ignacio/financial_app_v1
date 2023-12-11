@@ -2,8 +2,8 @@
     if(!isset($_SESSION)){
         session_start();
     }
-    include "../Connection/connection_string.php";
-    require_once "../Model/helper.php";
+    include "../../Connection/connection_string.php";
+    require_once "../../Model/helper.php";
     $company = $_SESSION['companyid'];
 
     $date_range = $_POST['range'];
