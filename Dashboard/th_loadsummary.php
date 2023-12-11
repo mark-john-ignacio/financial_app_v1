@@ -23,6 +23,7 @@
             $isStatus = match($status) {
                 "Approved" => "AND a.lapproved = 1 AND a.lvoid = 0 AND a.lcancelled = 0",
                 "Pending" => "AND a.lapproved = 0 AND a.lvoid = 0 AND a.lcancelled = 0",
+                "Void" => "AND a.lvoid = 1 ",
             };
     
             $sql = "SELECT b.cname as names, a.ctranno as tranno, a.dcutdate as dates, a.cremarks as remarks FROM sales a
