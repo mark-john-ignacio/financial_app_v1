@@ -88,16 +88,15 @@
     // $cost += floatval($row['cost']);
     
 
-    $sql = "SELECT * FROM users_access WHERE userid = '$employee' ";
-    $user = '';
+    $sql = "SELECT pageid FROM users_access WHERE userid = '$employee' ";
     $query = mysqli_query($con, $sql);
+    $access = [];
     while($row = $query -> fetch_assoc()){
-        switch($row['pageid']){
-             case "DashboardSales.php":
-                echo json_encode(Sales());
-                break;
-            case "DashboardPurchase.php":
-                echo json_encode(Purchase());
-                break;
-        }
+        array_push($access, $row['pageid']);
+    }
+
+    if(in_array("DashboardSales.php", $access)) {
+        echo json_encode(Sales());
+    } else if (in_array("DashboardPurchase.php", $access)) {
+        echo json_encode(Purchase());
     }

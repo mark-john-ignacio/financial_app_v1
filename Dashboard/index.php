@@ -125,8 +125,8 @@
                 <div style="display: flex; justify-content: right; justify-items: right;">
                     <label for="Periodicals" style="padding: 2%">Periodicals: </label>
                     <select name="Periodicals" id="Periodicals" style="width: 100px" class="col-xs-1 form-control">
-                        <option value="weekly">Weekly</option>
                         <option value="monthly">Monthly</option>
+                        <option value="weekly">Weekly</option>
                     </select>
                 </div>
                 <div style="display: flex; justify-content: center; justify-items: center;">
@@ -134,10 +134,10 @@
                 </div>
             </div>
             
-        </div>
-        <div style=' padding: 10px; min-width: 10.5in; height: 3in; display: grid;  grid-template-columns: repeat(2, minmax(0, 1fr)); grid-gap: 5%; padding-top: 5%;'>
-            <div id="TRANSACTION_MODULE" style='display: relative; width: 100%; border: 1px solid;'>     
-                <div style="display: flex; justify-content: center; justify-items: center; background-color:#2d5f8b; color: white">
+            <div>&nbsp;</div>
+    
+            <div id="TRANSACTION_MODULE" style='display: relative; width: 100%; border: 1px solid; border-radius: 20px 20px 0 0;'>     
+                <div style="display: flex; justify-content: center; justify-items: center; background-color:#2d5f8b; color: white; border-radius: 20px 20px 0 0;">
                     <h4>Recent Activities</h4>
                 </div>
                 <div>
@@ -150,8 +150,8 @@
                 <div style="display: relative;  max-height: 2.5in; overflow: auto;" id="summary">
                 </div>
             </div>
-            <div id="RecentLog" style="display: relative; width: 100%; border: 1px solid;">
-                <div style="display: flex; justify-content: center; justify-items: center; background-color:#2d5f8b; color: white">
+            <div id="RecentLog" style="display: relative; width: 100%; border: 1px solid; border-radius: 20px 20px 0 0;">
+                <div style="display: flex; justify-content: center; justify-items: center; background-color:#2d5f8b; color: white; border-radius: 20px 20px 0 0;">
                     <h4>Recent Logs</h4>
                 </div>
                 <div style="display: relative;  max-height: 2.5in; overflow: auto;" id="logs">
