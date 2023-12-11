@@ -213,10 +213,17 @@
             success: function(res){
                 console.log(res)
                 if(res.valid){
+                    let ranker = res.best_rank;
+
+                    if(ranker.trim().length > 30){
+                        ranker = ranker.substr(0,30) + "...";
+                    }
+
                     $('#total').text(res.total)
                     $('#totaltxt').text(res.label)
                     $('#gross').text(res.cost)
-                    $('#Highest').text(res.best_rank)
+                    
+                    $('#Highest').text(ranker)
                     // $('#purchase').text(res.purchase)
                     // $('#profit').text(res.cost)
                     // $('#users').text(res.user)
