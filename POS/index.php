@@ -851,14 +851,14 @@
                     if(item.partno === itemno){
                         switch(type){
                             case "PERCENT":
-                                item['specialDisc'] = (item.amount * (disc/100))
-                                item['amount'] -= (item.amount * (disc/100));
+                                item['specialDisc'] = item.amount * (disc/100);
+                                item['amount'] -= item.amount * (disc/100);
                                 break;
                             case "PRICE":
                                 item['specialDisc'] = disc;
                                 item['amount'] -= disc;
                         }
-                       specialDisc.push({item: item.partno, type: type, name: name, person: person, id: id, amount: item.amount * (disc/100)})
+                       specialDisc.push({item: item.partno, type: type, name: name, person: person, id: id, amount: item.specialDisc})
                     }
                     console.log(specialDisc)
                 })

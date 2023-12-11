@@ -10,16 +10,17 @@
     // $dateto = date("Y-m-d", strtotime($_REQUEST['to']));
 
     
-
     function Sales(){
         global $company, $datefrom, $dateto, $con;
         $sales = [];
+        // Needed a date Query
         // $sql = "SELECT a.*, b.cname FROM receipt a
         // LEFT JOIN customers b ON a.compcode = b.compcode AND a.ccode = b.cempid
         // WHERE a.compcode = '$company' AND a.lapproved = 1 AND a.lcancelled = 0 AND a.lvoid = 0 AND (a.dcutdate BETWEEN '$datefrom' AND '$dateto')";
+
         $sql = "SELECT a.*, b.cname FROM receipt a
         LEFT JOIN customers b ON a.compcode = b.compcode AND a.ccode = b.cempid
-        WHERE a.compcode = '$company' AND a.lapproved = 1 AND a.lcancelled = 0 AND a.lvoid = 0";
+        WHERE a.compcode = '$company' AND a.lapproved = 1 AND a.lcancelled = 0 AND a.lvoid = 0 AND YEAR(a.ddate) = YEAR(CURDATE())";
         $query = mysqli_query($con, $sql);
         $receipt = mysqli_num_rows($query);
         
@@ -39,7 +40,7 @@
             'valid' => true,
             'label' => "Sales",
             'total' => $receipt,
-            'cost' => number_format($cost,2 ),
+            'cost' => number_format($cost, 2),
             'best_rank' => $payor,
         ];
     }
@@ -48,7 +49,7 @@
         global $company, $datefrom, $dateto, $con;
         $purchase = [];
         // $sql = "SELECT * FROM paybill WHERE compcode = '$company' AND lapproved = 1 AND lcancelled = 0 AND lvoid = 0 AND (dcheckdate BETWEEN '$datefrom' AND '$dateto')";
-        $sql = "SELECT * FROM paybill WHERE compcode = '$company' AND lapproved = 1 AND lcancelled = 0 AND lvoid = 0";
+        $sql = "SELECT * FROM paybill WHERE compcode = '$company' AND lapproved = 1 AND lcancelled = 0 AND lvoid = 0 AND YEAR(ddate) = YEAR(CURDATE())";
         $query = mysqli_query($con, $sql);
         $paybill = mysqli_num_rows($query);
 
@@ -87,18 +88,15 @@
     // $cost += floatval($row['cost']);
     
 
-    $sql = "SELECT * FROM users_access WHERE userid = '$employee' ";
-    $user = '';
+    $sql = "SELECT pageid FROM users_access WHERE userid = '$employee' ";
     $query = mysqli_query($con, $sql);
+    $access = [];
     while($row = $query -> fetch_assoc()){
-        switch($row['pageid']){
-             case "DashboardSales.php":
-                echo json_encode(Sales());
-                break;
-            case "DashboardPurchase.php":
-                echo json_encode(Purchase());
-                break;
-        }
+        array_push($access, $row['pageid']);
     }
 
-   
+    if(in_array("DashboardSales.php", $access)) {
+        echo json_encode(Sales());
+    } else if (in_array("DashboardPurchase.php", $access)) {
+        echo json_encode(Purchase());
+    }
