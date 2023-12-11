@@ -4,6 +4,15 @@
     }
     include "../Connection/connection_string.php";
     $company = $_SESSION['companyid'];
+    $employee = $_SESSION['employeeid'];
+
+    $sql = "SELECT pageid FROM users_access WHERE userid = '$employee'";
+    $query = mysqli_query($con, $sql);
+
+    $page = [];
+    while($row = $query -> fetch_assoc()){
+        array_push($page, $row['pageid']);
+    }
 ?>
 
 <!DOCTYPE html>
@@ -138,12 +147,18 @@
     
             <div id="TRANSACTION_MODULE" style='display: relative; width: 100%; border: 1px solid; border-radius: 20px 20px 0 0;'>     
                 <div style="display: flex; justify-content: center; justify-items: center; background-color:#2d5f8b; color: white; border-radius: 20px 20px 0 0;">
-                    <h4>Recent Activities</h4>
+                    <h4><?php 
+                            if(in_array("DashboardSales.php", $page)){
+                                echo "Recent Sales Invoice";
+                            } else if(in_array("DashboardPurchase.php", $page)){
+                                echo "Recent Purchase Order";
+                            }
+                        ?></h4>
                 </div>
                 <div>
                     <label for="Approved" class="btn btn-sm btn-success" style="margin: 2px"> Approved </label>
                     <input type="radio" name="status" id="Approved" value="Approved" style="display: none">
-                    
+
                     <label for="Pending" class="btn btn-sm btn-warning" style="margin: 2px"> Pending </label>
                     <input type="radio" name="status" id="Pending" value="Pending" style="display: none">
                 </div>
