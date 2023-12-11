@@ -141,9 +141,9 @@
                     <h4>Recent Activities</h4>
                 </div>
                 <div>
-                    
                     <label for="Approved" class="btn btn-sm btn-success" style="margin: 2px"> Approved </label>
                     <input type="radio" name="status" id="Approved" value="Approved" style="display: none">
+                    
                     <label for="Pending" class="btn btn-sm btn-warning" style="margin: 2px"> Pending </label>
                     <input type="radio" name="status" id="Pending" value="Pending" style="display: none">
                 </div>
