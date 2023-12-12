@@ -59,6 +59,9 @@ else {
 	$delcountry = chkgrp($_REQUEST['delcountry']);
 	$delzip = $_REQUEST['delzip'];
 
+	$selSign1 = chkgrp($_REQUEST['selSign1']);
+	$selSign2 = chkgrp($_REQUEST['selSign2']);
+
 	$cdrapcord = chkgrp($_REQUEST['cdrapcord']);
 	$cdrapcdr = chkgrp($_REQUEST['cdrapcdr']);
 
@@ -74,8 +77,8 @@ else {
 	
 	//INSERT HEADER
 
-	if (!mysqli_query($con, "INSERT INTO dr(`compcode`, `ctranno`, `ccode`, `cterms`, `cremarks`, `ddate`, `dcutdate`, `ngross`, `cpreparedby`, `cacctcode`, `cdrprintno`, `csalesman`, `cdelcode`, `cdeladdno`, `cdeladdcity`, `cdeladdstate`, `cdeladdcountry`, `cdeladdzip`, `crefapcord`, `crefapcdr`) 
-	values('$company', '$cSINo', '$cCustID', $cterms, $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$preparedby', $cacctcode, $nDRPrintNo, '$salesman', '$delcodes', $delhousno, $delcity, $delstate, $delcountry, '$delzip', $cdrapcord, $cdrapcdr)")) {
+	if (!mysqli_query($con, "INSERT INTO dr(`compcode`, `ctranno`, `ccode`, `cterms`, `cremarks`, `ddate`, `dcutdate`, `ngross`, `cpreparedby`, `cacctcode`, `cdrprintno`, `csalesman`, `cdelcode`, `cdeladdno`, `cdeladdcity`, `cdeladdstate`, `cdeladdcountry`, `cdeladdzip`, `crefapcord`, `crefapcdr`, `csign1`, `csign2`) 
+	values('$company', '$cSINo', '$cCustID', $cterms, $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$preparedby', $cacctcode, $nDRPrintNo, '$salesman', '$delcodes', $delhousno, $delcity, $delstate, $delcountry, '$delzip', $cdrapcord, $cdrapcdr, $selSign1, $selSign2)")) {
 		echo "False";
 
 		echo mysqli_error($con);

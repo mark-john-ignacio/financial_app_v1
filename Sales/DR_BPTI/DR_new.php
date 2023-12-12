@@ -34,7 +34,21 @@
 	}
 
 	//get latest sign1 and 2 - for default
-	
+	@$topsign1 = "";
+	$getempz = mysqli_query($con,"Select csign1 from dr where compcode='$company' and lvoid=0 and lcancelled=0 and IFNULL(csign1,'') <> '' ORDER BY ddate DESC LIMIT 1"); 
+	if (mysqli_num_rows($getempz)!=0) {
+		while($row = mysqli_fetch_array($getempz, MYSQLI_ASSOC)){
+			@$topsign1 = $row['csign1'];
+		}
+	}
+
+	@$topsign2 = "";
+	$getempz = mysqli_query($con,"Select csign2 from dr where compcode='$company' and lvoid=0 and lcancelled=0 and IFNULL(csign2,'') <> '' ORDER BY ddate DESC LIMIT 1"); 
+	if (mysqli_num_rows($getempz)!=0) {
+		while($row = mysqli_fetch_array($getempz, MYSQLI_ASSOC)){
+			@$topsign2 = $row['csign2'];
+		}
+	}
 ?>
 
 <!DOCTYPE html>
@@ -52,7 +66,6 @@
    	<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/select2/css/select2.css?h=<?php echo time();?>">
 	
-
 	<link href="../../global/css/components.css?t=<?php echo time();?>" id="style_components" rel="stylesheet" type="text/css"/>
 	<link href="../../global/css/plugins.css" rel="stylesheet" type="text/css"/>
 
@@ -160,21 +173,23 @@
 								<td>&nbsp;</td>
 								<td>
 									<div class="col-xs-4 nopadwleft">
-										<select class='xsel2 form-control input-xs' id="selSign1" name="selSign1">
-											<option value=""></option>
+										<select class='xsel2 form-control input-sm' id="selSign1" name="selSign1">
+											<option value="" <?=(@$topsign1=="") ? "selected" : ""?>></option>
 											<?php
 												foreach(@$arrempslist as $rsx){
-													echo "<option value='".$rsx['nid']."'> ".$rsx['cdesc']." </option>";
+													$slcted = (@$topsign1==$rsx['nid']) ? "selected" : "";
+													echo "<option value='".$rsx['nid']."' ".$slcted."> ".$rsx['cdesc']." </option>";
 												}
 											?>
 										</select>
 									</div>
-									<div class="col-xs-4 nopadwleft">
-										<select class='xsel2 form-control input-xs' id="selSign2" name="selSign2">
-											<option value=""></option>
+									<div class="col-xs-4 nopadwleft"> 
+										<select class='xsel2 form-control input-sm' id="selSign2" name="selSign2">
+											<option value="" <?=(@$topsign2=="") ? "selected" : ""?>></option>
 											<?php
 												foreach(@$arrempslist as $rsx){
-													echo "<option value='".$rsx['nid']."'> ".$rsx['cdesc']." </option>";
+													$slcted = (@$topsign2==$rsx['nid']) ? "selected" : "";
+													echo "<option value='".$rsx['nid']."' ".$slcted."> ".$rsx['cdesc']." </option>";
 												}
 											?>
 										</select>
@@ -665,8 +680,14 @@
 			$(".chklimit").show();
 		}
 		
-		$(".xsel2").select2({
-			placeholder: "Please Select Employee..."
+		$("#selSign1").select2({
+			placeholder: "Prepared By...",
+			allowClear: true
+		});
+
+		$("#selSign2").select2({
+			placeholder: "Checked By...",
+			allowClear: true
 		});
 
 	 	$('#txtprodnme').attr("disabled", true);
@@ -2059,8 +2080,10 @@ function chkform(){
 			{	key: 'txtRevOthers', input: $("#txtRevOthers").val() },
 			{	key: 'DRfootCert', input: $("#DRfootCert").val() },
 			{	key: 'DRfootIssu', input: $("#DRfootIssu").val() },
-			{	key: 'DRfootChec', input: $("#DRfootChec").val() },
-			{	key: 'DRfootAppr', input: $("#DRfootAppr").val() }
+			{	key: 'DRfootChec', input: $("#DRfootChec").val() },  
+			{	key: 'DRfootAppr', input: $("#DRfootAppr").val() },
+			{	key: 'selSign1', input: $("#selSign1").val() },
+			{	key: 'selSign2', input: $("#selSign2").val() }
 			
 		]
 

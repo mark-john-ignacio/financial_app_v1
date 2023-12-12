@@ -18,7 +18,7 @@ require_once "../../Connection/connection_string.php";
 	//echo $sql;
 	
 	$resultmain = mysqli_query ($con, $sql); 
-
+	$json2 = array();
 	while($row2 = mysqli_fetch_array($resultmain, MYSQLI_ASSOC)){
 
 		$json['id'] = $row2['cpartno'];
