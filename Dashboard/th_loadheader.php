@@ -71,6 +71,12 @@
             $cost += floatval($row['npaid']);
         }
 
+        $sql = "SELECT ngross FROM apv WHERE compcode = '$company' AND lapproved = 1 AND lvoid = 0 AND lcancelled = 0 AND YEAR(dapvdate) = YEAR(CURDATE())";
+        $query = mysqli_query($con, $sql);
+        while($row = $query -> fetch_assoc()){
+            $cost_purchase += floatval($row['ngross']);
+        }
+
         $payee = match(count($purchase)){
             0 => "N/A",
             default => Ranking_System($purchase)

@@ -75,7 +75,7 @@
                             if(in_array("DashboardSales.php", $page)){
                                 echo "Total Invoice Amount";
                             } else if(in_array("DashboardPurchase.php", $page)){
-                                // echo "Total Pay Bill Amount";
+                                echo "Total Payable Amount";
                             }
                         ?>
                     </div>
@@ -111,7 +111,7 @@
                             if(in_array("DashboardSales.php", $page)){
                                 echo "Total Collected Amount";
                             } else if(in_array("DashboardPurchase.php", $page)){
-                                echo "Total Pay Bill Amount";
+                                echo "Total Paid Amount";
                             }
                         ?>
                     </div>
@@ -155,7 +155,27 @@
                 </div>
             </div>
             
-            <div>&nbsp;</div>
+            <div style='width: 100%;'>
+                <div style="display: flex; justify-content: center; justify-items: center; background-color:#2d5f8b; color: white; border-radius: 20px 20px 0 0;">
+                    <!-- <label for="Periodicals" style="padding: 2%">Periodicals: </label>
+                    <select name="Periodicals" id="Periodicals" style="width: 100px" class="col-xs-1 form-control">
+                        <option value="monthly">Monthly</option>
+                        <option value="weekly">Weekly</option>
+                    </select> -->
+                    <h4 style="padding: 3px"><?php 
+                            if(in_array("DashboardSales.php", $page)){
+                                echo "Sales Invoice Classification Chart";
+                            } else if(in_array("DashboardPurchase.php", $page)){
+                                echo "Purchase Order Classification Chart";
+                            }
+                        ?></h4>
+                </div>
+                <div style="display: flex;  border: 1px solid grey; padding: 2%; max-height: 400px; overflow: auto;">
+                    <!-- <div style="display: flex; width:100%; min-height: 200px; overflow: auto;"> -->
+                    <canvas id="PieLegends" style="position: relative; width: 100%;  min-height: 300px; overflow: auto"></canvas>
+                    <!-- </div> -->
+                </div>
+            </div>
     
             <div id="TRANSACTION_MODULE" style='display: relative; width: 100%; border: 1px solid; border-radius: 20px 20px 0 0;'>     
                 <div style="display: flex; justify-content: center; justify-items: center; background-color:#2d5f8b; color: white; border-radius: 20px 20px 0 0;">
@@ -198,6 +218,7 @@
 
         LoadHeader();
         loadlinegraph();
+        loadpiechart();
         loadsummary();
         loadlogs();
 
@@ -304,16 +325,21 @@
     }
 
     function loadchart(months, values){
+        var colors = [];
+        for (var i = 0; i < months.length; i++) {
+            colors.push(getRandomColor());
+        }
         new Chart("myChart", {
             type: "bar",
             data: {
                 labels: months,
                 datasets: [{
-                fill: false,
-                lineTension: 0,
-                backgroundColor: "rgba(100,65,255,1.0)",
-                borderColor: "rgba(0,0,255,0.1)",
-                data: values
+                    fill: false,
+                    lineTension: 0,
+                    // backgroundColor: "rgba(100,65,255,1.0)",
+                    backgroundColor: colors,
+                    borderColor: "rgba(0,0,255,0.1)",
+                    data: values
                 }]
             },
             options: {
@@ -327,6 +353,63 @@
                 }
             }
         });
+    }
+    function PieChart(label, values) {
+        // Sort values and labels based on values
+        console.log(values)
+        const sortedData = values.map((value, index) => ({ value, label: label[index] })).sort((a, b) => b.value - a.value);
+        
+        // Get the top 5 values and labels
+        const top5Values = sortedData.slice(0, 5).map(entry => entry.value);
+        const top5Labels = sortedData.slice(0, 5).map(entry => entry.label);
+
+        // Generate random colors for the top 5 values
+        const colors = top5Labels.map(() => getRandomColor());
+
+        new Chart("PieLegends", {
+            type: "doughnut",
+            data: {
+                labels: top5Labels,
+                datasets: [{
+                    fill: false,
+                    backgroundColor: colors,
+                    lineTension: 0,
+                    borderColor: "rgba(255,255,255,0.8)",
+                    borderWidth: 1,
+                    data: top5Values
+                }]
+            },
+            options: {
+                legend: {
+                    position: 'chartArea',
+                    align: 'end',
+                    labels: {
+                        fontSize: 8,
+                    },
+                    fullWidth: true
+                }
+            },
+        });
+    }
+
+    function loadpiechart() {
+        
+        $.ajax({
+            url: "th_loadpiechart.php",
+            type: "post",
+            dataType: "json",
+            async: false,
+            success: function(res) {
+                if(res.valid) {
+                    PieChart(res.label, res.data);
+                } else {
+                    console.log(res.msg)
+                }
+            },
+            error: function (msg) {
+                console.log(msg)
+            }
+        })
     }
 
     function loadlogs(){
@@ -355,4 +438,13 @@
         })
     }
     
+    function getRandomColor() {
+        var letters = "0123456789ABCDEF";
+        var color = "#";
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
 </script>
