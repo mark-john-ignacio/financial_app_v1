@@ -79,22 +79,26 @@
   }
 
   @$xSign1 = "";
+  @$xNameS1 = "";
   @$xSign2 = "";
+  @$xNameS2 = "";
 
   if($Sign1!=""){
-    $getempz = mysqli_query($con,"Select csign from mrp_operators where compcode='$company' and nid=".$Sign1); 
+    $getempz = mysqli_query($con,"Select cdesc, IFNULL(csign,'') as csign from mrp_operators where compcode='$company' and nid=".$Sign1); 
     if (mysqli_num_rows($getempz)!=0) {
       while($row = mysqli_fetch_array($getempz, MYSQLI_ASSOC)){
         @$xSign1 = $row['csign'];
+        @$xNameS1 = $row['cdesc'];
       }
     }
   }
 
   if($Sign2!=""){
-    $getempz = mysqli_query($con,"Select csign from mrp_operators where compcode='$company' and nid=".$Sign2); 
+    $getempz = mysqli_query($con,"Select cdesc, IFNULL(csign,'') as csign from mrp_operators where compcode='$company' and nid=".$Sign2); 
     if (mysqli_num_rows($getempz)!=0) {
       while($row = mysqli_fetch_array($getempz, MYSQLI_ASSOC)){
         @$xSign2 = $row['csign'];
+        @$xNameS2 = $row['cdesc'];
       }
     }
   }
@@ -330,6 +334,8 @@ function PrintRed(x, version){
       <?php
         if($xSign1!=""){
           echo "<img src = '".$xSign1."?x=".time()."' width='135px' >";
+        }else{
+          echo "<div style='padding-top: 28px !important'>". @$xNameS1 . "</div>";
         }
       ?>
     </div>
@@ -337,6 +343,8 @@ function PrintRed(x, version){
       <?php
         if($xSign2!=""){
           echo "<img src = '".$xSign2."?x=".time()."' width='135px'>";
+        }else{
+          echo "<div style='padding-top: 28px !important'>". @$xNameS2 . "</div>";
         }
       ?>
     </div>
