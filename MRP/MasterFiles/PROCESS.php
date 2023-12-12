@@ -26,8 +26,11 @@
 	<html>
 	<head>
 
-	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css"> 
-	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>   
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">
+	<link href="../../global/css/components.css" id="style_components" rel="stylesheet" type="text/css"/>
+    <link href="../../global/css/plugins.css?x=<?=time()?>" rel="stylesheet" type="text/css"/>
+   
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
 
@@ -59,7 +62,7 @@
 
 </head>
 
-<body style="padding:5px">
+<body style="padding:6px !important">
 	<div>
 		<section>
 
@@ -79,7 +82,7 @@
 				<thead>
 					<tr>
 						<th>Process Description</th>
-						<th width="80">Status</th>
+						<th width="80" style="text-align:center">Status</th>
 					</tr>
 				</thead>
 
@@ -106,7 +109,7 @@
 								</a>
 								<div class="itmalert alert alert-danger nopadding" id="itm<?php echo $row['nid'];?>" style="display: inline";></div>
 							</td>
-							<td>
+							<td align="center">
 									<div id="itmstat<?php echo $row['nid'];?>">
 									<?php 
 										if($row['cstatus']=="ACTIVE"){

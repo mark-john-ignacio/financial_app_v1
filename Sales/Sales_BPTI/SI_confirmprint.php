@@ -212,9 +212,9 @@ include('../../include/denied.php');
 			top: 190px;
 			left: 680px;
 			width: 160px;
-			height:  15px;  
+			height:  17px;  
       text-align: left; 
-      font-size: 12px !important;
+      overflow: hidden;
      		/*border: 1px solid #000; 
 			letter-spacing: 11px;
 			border: 1px solid #000;*/
@@ -352,12 +352,12 @@ include('../../include/denied.php');
 						
 	?>
     <div class="Row">
-      <div class="Column" style="width: 115px"><?=$rowbody['citmposno'];?></div>
-      <div class="Column" style="width: 119px"><?=$rowbody['citmsysno']?> </div>
-      <div class="Column" style="width: 216px; text-align: left; padding-left: 5px"><?=$rowbody['citemdesc']?></div>
-      <div class="Column" style="width: 88px"><?=number_format($rowbody['nqty']);?> <?=$rowbody['cunit'];?></div>
-      <div class="Column" style="width: 100px; text-align: right"><?=number_format($rowbody['nprice'],4);?></div>
-      <div class="Column" style="width: 119px; text-align: right"><?=number_format($rowbody['namount'],2);?></div>
+      <div class="Column" style="width: 119px; text-align: left"><?=$rowbody['citmposno'];?></div>
+      <div class="Column" style="width: 121px; text-align: left"><?=$rowbody['citmsysno']?> </div>
+      <div class="Column" style="width: 219px; text-align: left;"><?=$rowbody['citemdesc']?></div>
+      <div class="Column" style="width: 90px; text-align: left" ><?=number_format($rowbody['nqty']);?> <?=$rowbody['cunit'];?></div>
+      <div class="Column" style="width: 102px; text-align: left"><?=number_format($rowbody['nprice'],4);?></div>
+      <div class="Column" style="width: 119px; text-align: left"><?=number_format($rowbody['namount'],2);?></div>
     </div>
 
       <?php 

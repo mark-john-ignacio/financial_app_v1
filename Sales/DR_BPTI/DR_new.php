@@ -17,11 +17,36 @@
 	$ddeldate = date("m/d/Y", strtotime($ddeldate . "+1 day"));
 
 	//echo $ddeldate;
-
+	@$arruomslist = array();
 	$getfctrs = mysqli_query($con,"SELECT * FROM `items_factor` where compcode='$company' and cstatus='ACTIVE' order By nidentity"); 
 	if (mysqli_num_rows($getfctrs)!=0) {
 		while($row = mysqli_fetch_array($getfctrs, MYSQLI_ASSOC)){
 			@$arruomslist[] = array('cpartno' => $row['cpartno'], 'nfactor' => $row['nfactor'], 'cunit' => $row['cunit']); 
+		}
+	}
+
+	@$arrempslist = array();
+	$getempz = mysqli_query($con,"SELECT nid, cdesc, csign FROM `mrp_operators` where compcode='$company' and cstatus='ACTIVE' order By cdesc"); 
+	if (mysqli_num_rows($getempz)!=0) {
+		while($row = mysqli_fetch_array($getempz, MYSQLI_ASSOC)){
+			@$arrempslist[] = array('nid' => $row['nid'], 'cdesc' => $row['cdesc'], 'csign' => $row['csign']); 
+		}
+	}
+
+	//get latest sign1 and 2 - for default
+	@$topsign1 = "";
+	$getempz = mysqli_query($con,"Select csign1 from dr where compcode='$company' and lvoid=0 and lcancelled=0 and IFNULL(csign1,'') <> '' ORDER BY ddate DESC LIMIT 1"); 
+	if (mysqli_num_rows($getempz)!=0) {
+		while($row = mysqli_fetch_array($getempz, MYSQLI_ASSOC)){
+			@$topsign1 = $row['csign1'];
+		}
+	}
+
+	@$topsign2 = "";
+	$getempz = mysqli_query($con,"Select csign2 from dr where compcode='$company' and lvoid=0 and lcancelled=0 and IFNULL(csign2,'') <> '' ORDER BY ddate DESC LIMIT 1"); 
+	if (mysqli_num_rows($getempz)!=0) {
+		while($row = mysqli_fetch_array($getempz, MYSQLI_ASSOC)){
+			@$topsign2 = $row['csign2'];
 		}
 	}
 ?>
@@ -38,9 +63,9 @@
    	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
    	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
    	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
-   	<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
+   	<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css">
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/select2/css/select2.css?h=<?php echo time();?>">
 	
-
 	<link href="../../global/css/components.css?t=<?php echo time();?>" id="style_components" rel="stylesheet" type="text/css"/>
 	<link href="../../global/css/plugins.css" rel="stylesheet" type="text/css"/>
 
@@ -51,6 +76,7 @@
 	<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
 	<script src="../../Bootstrap/js/jquery.numeric.js"></script>
 	<script src="../../Bootstrap/js/jquery.inputlimiter.min.js"></script>
+	<script src="../../Bootstrap/select2/js/select2.full.min.js"></script>
 
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
 	<script src="../../Bootstrap/js/moment.js"></script>
@@ -146,9 +172,29 @@
 							<tr>
 								<td>&nbsp;</td>
 								<td>
-									<div class="col-xs-8 nopadding">
+									<div class="col-xs-4 nopadwleft">
+										<select class='xsel2 form-control input-sm' id="selSign1" name="selSign1">
+											<option value="" <?=(@$topsign1=="") ? "selected" : ""?>></option>
+											<?php
+												foreach(@$arrempslist as $rsx){
+													$slcted = (@$topsign1==$rsx['nid']) ? "selected" : "";
+													echo "<option value='".$rsx['nid']."' ".$slcted."> ".$rsx['cdesc']." </option>";
+												}
+											?>
+										</select>
 									</div>
-									<div class="col-xs-3 nopadwright">
+									<div class="col-xs-4 nopadwleft"> 
+										<select class='xsel2 form-control input-sm' id="selSign2" name="selSign2">
+											<option value="" <?=(@$topsign2=="") ? "selected" : ""?>></option>
+											<?php
+												foreach(@$arrempslist as $rsx){
+													$slcted = (@$topsign2==$rsx['nid']) ? "selected" : "";
+													echo "<option value='".$rsx['nid']."' ".$slcted."> ".$rsx['cdesc']." </option>";
+												}
+											?>
+										</select>
+									</div>
+									<div class="col-xs-3 nopadwleft">
 										<input type="text" class="form-control input-sm" id="txtsoref" name="txtsoref" width="20px" tabindex="6" placeholder="Reference SO">
 									</div>
 								</td>
@@ -580,43 +626,44 @@
 
 	$(document).ready(function(e) {
 
-			$(".nav-tabs a").click(function(){
-    			$(this).tab('show');
-			});
-	   			$.ajax({
-					url : "../../include/th_xtrasessions.php",
-					type: "Post",
-					async:false,
-					dataType: "json",
-					success: function(data)
-					{	
-					   console.log(data);
-                       $.each(data,function(index,item){
-						   xChkBal = item.chkinv; //0 = Check ; 1 = Dont Check
-						  // xChkLimit = item.chkcustlmt; //0 = Disable ; 1 = Enable
-						  xChkLimit = 0;
-						  // xChkLimitWarn = item.chklmtwarn; //0 = Accept Warninf ; 1 = Accept Block ; 2 = Refuse Order
-						  xChkLimitWarn = 0;
-						   
-					   });
-					}
+		$(".nav-tabs a").click(function(){
+			$(this).tab('show');
+		});
+		
+		$.ajax({
+			url : "../../include/th_xtrasessions.php",
+			type: "Post",
+			async:false,
+			dataType: "json",
+			success: function(data)
+			{	
+				console.log(data);
+				$.each(data,function(index,item){
+					xChkBal = item.chkinv; //0 = Check ; 1 = Dont Check
+					// xChkLimit = item.chkcustlmt; //0 = Disable ; 1 = Enable
+					xChkLimit = 0;
+					// xChkLimitWarn = item.chklmtwarn; //0 = Accept Warninf ; 1 = Accept Block ; 2 = Refuse Order
+					xChkLimitWarn = 0;
+					
 				});
-			/*
-			*
-			* Bootstrap JQueries Fields
-			*
-			*/
+			}
+		});
+		/*
+		*
+		* Bootstrap JQueries Fields
+		*
+		*/
 
-			$("#file-0").fileinput({
-				showUpload: false,
-				showClose: false,
-				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
-				overwriteInitial: false,
-				maxFileSize:100000,
-				maxFileCount: 5,
-				browseOnZoneClick: true,
-				fileActionSettings: { showUpload: false, showDrag: false,}
-			});
+		$("#file-0").fileinput({
+			showUpload: false,
+			showClose: false,
+			allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+			overwriteInitial: false,
+			maxFileSize:100000,
+			maxFileCount: 5,
+			browseOnZoneClick: true,
+			fileActionSettings: { showUpload: false, showDrag: false,}
+		});
 	
 		if(xChkBal==1){
 			$("#tblAvailable").hide();
@@ -633,9 +680,18 @@
 			$(".chklimit").show();
 		}
 		
+		$("#selSign1").select2({
+			placeholder: "Prepared By...",
+			allowClear: true
+		});
 
-	  $('#txtprodnme').attr("disabled", true);
-	  $('#txtprodid').attr("disabled", true);
+		$("#selSign2").select2({
+			placeholder: "Checked By...",
+			allowClear: true
+		});
+
+	 	$('#txtprodnme').attr("disabled", true);
+	  	$('#txtprodid').attr("disabled", true);
 
     });
 
@@ -2024,8 +2080,10 @@ function chkform(){
 			{	key: 'txtRevOthers', input: $("#txtRevOthers").val() },
 			{	key: 'DRfootCert', input: $("#DRfootCert").val() },
 			{	key: 'DRfootIssu', input: $("#DRfootIssu").val() },
-			{	key: 'DRfootChec', input: $("#DRfootChec").val() },
-			{	key: 'DRfootAppr', input: $("#DRfootAppr").val() }
+			{	key: 'DRfootChec', input: $("#DRfootChec").val() },  
+			{	key: 'DRfootAppr', input: $("#DRfootAppr").val() },
+			{	key: 'selSign1', input: $("#selSign1").val() },
+			{	key: 'selSign2', input: $("#selSign2").val() }
 			
 		]
 

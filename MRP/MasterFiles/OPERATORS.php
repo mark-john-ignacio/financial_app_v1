@@ -26,10 +26,16 @@
 	<html>
 	<head>
 
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css"> 
-	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>   
+
+	<link rel="stylesheet" type="text/css" href="../../global/plugins/bootstrap-fileinput/bootstrap-fileinput.css"/>
+    <link href="../../global/css/components.css" id="style_components" rel="stylesheet" type="text/css"/>
+    <link href="../../global/css/plugins.css?x=<?=time()?>" rel="stylesheet" type="text/css"/>
+   
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<script type="text/javascript" src="../../global/plugins/bootstrap-fileinput/bootstrap-fileinput.js"></script>
 
 	<style>
 		a.info{
@@ -59,13 +65,13 @@
 
 </head>
 
-<body style="padding:5px">
+<body style="padding:6px !important">
 	<div>
 		<section>
 
       <div>
         <div style="float:left; width:50%">
-					<font size="+2"><u>Operators List	</u></font>	
+					<font size="+2"><u>Employees List	</u></font>	
         </div>            
       </div>
 
@@ -78,8 +84,8 @@
 			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
-						<th>Operators Names</th>
-						<th width="80">Status</th>
+						<th>Employees Names</th>
+						<th width="80" style="text-align:center">Status</th>
 					</tr>
 				</thead>
 
@@ -101,12 +107,12 @@
 					?>
 						<tr>
 							<td>
-								<a href="javascript:;" onClick="editgrp('<?php echo $row['nid'];?>','<?php echo $row['cdesc'];?>')">
+								<a href="javascript:;" onClick="editgrp('<?php echo $row['nid'];?>','<?php echo $row['cdesc'];?>','<?php echo $row['csign'];?>')">
 									<?php echo $row['cdesc'];?>
 								</a>
 								<div class="itmalert alert alert-danger nopadding" id="itm<?php echo $row['nid'];?>" style="display: inline";></div>
 							</td>
-							<td>
+							<td align="center">
 									<div id="itmstat<?php echo $row['nid'];?>">
 									<?php 
 										if($row['cstatus']=="ACTIVE"){
@@ -138,14 +144,14 @@
 		<div class="modal-dialog modal-md">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="myModalLabel"><b>Add New Process</b></h5>        
+					<h5 class="modal-title" id="myModalLabel"><b>Add New Employee </b></h5>        
 				</div>
 
 				<div class="modal-body" style="height: 20vh">
 				
 						<div class="col-xs-12">
 								<div class="cgroup col-xs-3 nopadwtop">
-										<b>Operator's Name</b>
+										<b>Employee's Name</b>
 								</div>
 								
 								<div class="col-xs-9 nopadwtop">
@@ -153,6 +159,39 @@
 									<input type="hidden" id="hdnid" name="hdnid" value="">
 								</div>
 						</div>   
+						<div class="col-xs-12">
+								<div class="cgroup col-xs-3 nopadwtop">
+										<b>Signature</b>
+								</div>
+								
+								<div class="col-xs-9 nopadwtop">
+									<div class="fileinput fileinput-new" data-provides="fileinput">
+										<div class="input-group input-large">
+											
+											<span class="input-group-addon btn btn-success default btn-file">
+											<span class="fileinput-new">
+											Select file </span>
+											<span class="fileinput-exists">
+											Change </span>
+											<input type="file" type="file" name="file-1" id="picsign" accept=".jpg, .jpeg, .png" required> 
+											</span>
+											<a href="#" class="input-group-addon btn red fileinput-exists" data-dismiss="fileinput">
+											Remove </a>
+											<div class="form-control uneditable-input" data-trigger="fileinput">
+												<i class="fa fa-file fileinput-exists"></i>&nbsp; <span class="fileinput-filename">
+												</span>
+											</div>
+										</div>
+									</div>
+								</div>
+						</div>
+						<div class="col-xs-12 nopadwbottom">
+							<div class="cgroup col-xs-3 nopadwtop">
+								&nbsp;
+							</div>
+								
+							<div class="col-xs-9 nopadwtop" id="imgsignuser"></div>
+						</div>
 						
 						<div class="alert alert-danger" id="add_err"></div>         
 
@@ -217,7 +256,7 @@ mysqli_close($con);
 					$("#txtcdesc").val("");	
 					$("#add_err").html("");		
 					
-					$('#myModalLabel').html("<b>Add New Operator</b>");
+					$('#myModalLabel').html("<b>Add New Employee</b>");
 					$('#myModal').modal('show');
 				} else {
 					$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
@@ -238,17 +277,41 @@ mysqli_close($con);
 					currval = $("#txtcdesc").val();
 					response = $("#hdndescs").val();
 
-					var obj = jQuery.parseJSON(response);
-					$.each(obj, function(key,value) {
-						if(value.toLowerCase()==currval.toLowerCase()){
-							xcstat = "True";
-						}
-					}); 
+					if(varcode=="new"){
+						var obj = jQuery.parseJSON(response);
+						$.each(obj, function(key,value) {
+							if(value.toLowerCase()==currval.toLowerCase()){
+								xcstat = "True";
+							}
+						}); 
+					}
 
 					if(xcstat=="False"){
+
+						var input_data = [
+							{	key: 'code', input: $('#hdnid').val() },
+							{	key: 'desc', input: $('#txtcdesc').val() }
+						]
+
+						var formdata = new FormData();
+						jQuery.each(input_data, function(i, { key, input }){
+							formdata.append(key, input)
+						});
+
+						jQuery.each($('#picsign')[0].files, function(i, file) {
+							formdata.append('file-'+i, file)
+						});
+
+						console.log(formdata)
+
 						$.ajax ({
 							url: "th_saveoperators.php",
-							data: { code:varcode, desc: vardesc },
+							data: formdata,
+							cache: false,
+							processData: false,
+							contentType: false,
+							method: 'post',
+							type: 'post',
 							async: false,
 							success: function( data ) {
 								if(data.trim()=="True"){
@@ -265,7 +328,7 @@ mysqli_close($con);
 					
 						});
 					}else{
-						$("#add_err").html("<center><b>Operator's Name Already Exist!</b></center>");
+						$("#add_err").html("<center><b>Employee's Name Already Exist!</b></center>");
 						$("#add_err").show();
 					}
 					
@@ -273,10 +336,16 @@ mysqli_close($con);
 				
 
 			})
+
+			$('#myModal').on('hidden.bs.modal', function () {
+				location.reload();
+			});
 			
 		});
 	
-		function editgrp(code,desc){
+		function editgrp(code,desc,csign){
+
+			var xsign = csign.replace("/", "\/");
 			var x = $("#posedit").val();
 			
 			if(x.trim()=="True"){
@@ -285,9 +354,14 @@ mysqli_close($con);
 				
 				$("#hdnid").val(code);
 				$("#txtcdesc").val(desc);	
+				if(csign!=="" && csign!==null){
+					$('#imgsignuser').html("<a href='javascript:;' title='Click to remove image' onclick=\"resign('"+code+"','"+csign+"')\"><img src = '"+csign+"' height='50px' alt='Click to remove image'></a>");
+				}else{
+					$('#imgsignuser').html("");
+				}
 				$("#add_err").html("");		
 				
-				$('#myModalLabel').html("<b>Update Operator's Name</b>");
+				$('#myModalLabel').html("<b>Update Employee's Name</b>");
 				$('#myModal').modal('show');
 			} else {
 				$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
@@ -295,6 +369,29 @@ mysqli_close($con);
 
 			}
 
+		}
+
+		function resign(code,csign){
+
+			$.ajax ({
+				url: "th_remempsign.php",
+				data: { code: code,  csign: csign },
+				async: false,
+				success: function( data ) {
+					if(data.trim()!="True"){
+						$("#add_err").html("<b>Error: </b>"+ data);
+						$("#add_err").attr("class", "itmalert alert alert-danger nopadding")
+						$("#add_err").show();
+					}else{
+						$('#imgsignuser').html("");
+
+						$("#add_err").html("<b>SUCCESS: </b> Sign Removed! ");
+						$("#add_err").attr("class", "itmalert alert alert-success nopadding")
+						$("#add_err").show();
+					}
+				}
+			
+			});
 		}
 	
 		function setStat(code, stat){

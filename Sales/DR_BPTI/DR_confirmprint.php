@@ -46,6 +46,9 @@
         $Date = $row['dcutdate'];
         $Adds = $row['chouseno']." ". $row['ccity']." ". $row['cstate'];
         $cTin = $row['ctin'];
+
+        $Sign1 = $row['csign1'];
+			  $Sign2 = $row['csign2'];
   
         $cAPCDR = $row['crefapcdr'];
         $cAPCORD = $row['crefapcord'];
@@ -74,6 +77,28 @@
     $verrow = mysqli_fetch_array($result, MYSQLI_ASSOC);
     $cTermsDesc = $verrow['cdesc'];
   }
+
+  @$xSign1 = "";
+  @$xSign2 = "";
+
+  if($Sign1!=""){
+    $getempz = mysqli_query($con,"Select csign from mrp_operators where compcode='$company' and nid=".$Sign1); 
+    if (mysqli_num_rows($getempz)!=0) {
+      while($row = mysqli_fetch_array($getempz, MYSQLI_ASSOC)){
+        @$xSign1 = $row['csign'];
+      }
+    }
+  }
+
+  if($Sign2!=""){
+    $getempz = mysqli_query($con,"Select csign from mrp_operators where compcode='$company' and nid=".$Sign2); 
+    if (mysqli_num_rows($getempz)!=0) {
+      while($row = mysqli_fetch_array($getempz, MYSQLI_ASSOC)){
+        @$xSign2 = $row['csign'];
+      }
+    }
+  }
+
 ?>
 
 <!DOCTYPE html>
@@ -108,7 +133,7 @@
 
 		.form-container{
 				position: relative;
-				text-align: center;
+				text-align: left;
 				color: #000;
          font-size: 15px;
 				font-weight: bold;
@@ -168,11 +193,11 @@
     .terms{
 			position: absolute;
 			top: 183px;
-			left: 640px;
+			left: 650px;
 			width: 145px;
 			height:  15px;  
       text-align: left; 
-      font-size: 12px;
+      overflow: hidden;
       /*border: 1px solid #000; 
 			letter-spacing: 11px;
 			border: 1px solid #000;*/
@@ -180,7 +205,7 @@
 
     .refdr{
 			position: absolute;
-			top: 200px;
+			top: 204px;
 			left: 650px;
 			width: 135px;
 			height:  15px;  
@@ -200,7 +225,31 @@
      /* border: 1px solid #000; 
 			letter-spacing: 11px;
 			border: 1px solid #000;*/
-		}   
+		}  
+    
+    .csign1{
+      position: absolute;
+      top: 500px;
+      left: 35px;
+      width: 135px;
+      height:  15px;  
+      text-align: left; 
+       /*border: 1px solid #000; 
+      letter-spacing: 11px;
+      border: 1px solid #000;*/
+    }  
+
+    .csign2{
+      position: absolute;
+      top: 500px;
+      left: 220px;
+      width: 135px;
+      height:  15px;  
+      text-align: left; 
+      /* border: 1px solid #000; 
+      letter-spacing: 11px;
+      border: 1px solid #000;*/
+    } 
 
   .RowCont{
 		position: absolute;
@@ -277,6 +326,20 @@ function PrintRed(x, version){
 
     <div class="reforder"><?=$cAPCORD?></div>
 
+    <div class="csign1">
+      <?php
+        if($xSign1!=""){
+          echo "<img src = '".$xSign1."?x=".time()."' width='135px' >";
+        }
+      ?>
+    </div>
+	  <div class="csign2">
+      <?php
+        if($xSign2!=""){
+          echo "<img src = '".$xSign2."?x=".time()."' width='135px'>";
+        }
+      ?>
+    </div>
 
 		<div class="xremarks"><?=nl2br($Remarks)?></div>
 
@@ -289,8 +352,8 @@ function PrintRed(x, version){
              
 	  ?>
         <div class="Row">
-          <div class="Column" style="width: 200px"><?php echo $rowbody['citemdesc'];?></div> 
-          <div class="Column" style="width: 160px"><?php echo $rowbody['citemno'];?></div>
+          <div class="Column" style="width: 205px"><?php echo $rowbody['citemdesc'];?></div> 
+          <div class="Column" style="width: 162px"><?php echo $rowbody['citemno'];?></div>
           <div class="Column" style="width: 87px"><?php echo number_format($rowbody['nqty']);?>&nbsp;<?php echo $rowbody['cunit'];?></div>
         </div>
    <?php
