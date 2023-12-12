@@ -45,6 +45,14 @@
 	$sqlapcdr = mysqli_query($con,"select * from dr_apc_t where compcode='$company' and ctranno = '$txtctranno'");
 	$rowapc = mysqli_fetch_row($sqlapcdr);
 
+	@$arrempslist = array();
+	$getempz = mysqli_query($con,"SELECT nid, cdesc, csign FROM `mrp_operators` where compcode='$company' and cstatus='ACTIVE' order By cdesc"); 
+	if (mysqli_num_rows($getempz)!=0) {
+		while($row = mysqli_fetch_array($getempz, MYSQLI_ASSOC)){
+			@$arrempslist[] = array('nid' => $row['nid'], 'cdesc' => $row['cdesc'], 'csign' => $row['csign']); 
+		}
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -60,8 +68,10 @@
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
    	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/select2/css/select2.css?h=<?php echo time();?>">
 
 	<link href="../../global/css/components.css?t=<?php echo time();?>" id="style_components" rel="stylesheet" type="text/css"/>
+	<link href="../../global/css/plugins.css" rel="stylesheet" type="text/css"/>
 
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
 	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
@@ -70,6 +80,7 @@
 	<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
 	<script src="../../Bootstrap/js/jquery.numeric.js"></script>
 	<script src="../../Bootstrap/js/jquery.inputlimiter.min.js"></script>
+	<script src="../../Bootstrap/select2/js/select2.full.min.js"></script>
 
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
 	<script src="../../Bootstrap/js/moment.js"></script>
@@ -107,6 +118,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 		$cDRAPCOrdNo = $row['crefapcord'];
 		$cDRAPCDRNo = $row['crefapcdr']; 
+
+		$cSign1 = $row['csign1'];
+		$cSign2 = $row['csign2']; 
 		
 		$salesman = $row['csalesman'];
 		$salesmaname = $row['csalesmaname'];
@@ -242,11 +256,31 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								<tr>
 									<td>&nbsp;</td>
 									<td>
-										<div class="col-xs-8 nopadding">
+										<div class="col-xs-4 nopadwleft">
+											<select class='xsel2 form-control input-sm' id="selSign1" name="selSign1">
+												<option value="" <?=($cSign1=="") ? "selected" : ""?>></option>
+												<?php
+													foreach(@$arrempslist as $rsx){
+														$slcted = ($cSign1==$rsx['nid']) ? "selected" : "";
+														echo "<option value='".$rsx['nid']."' ".$slcted."> ".$rsx['cdesc']." </option>";
+													}
+												?>
+											</select>
 										</div>
-										<div class="col-xs-3 nopadwright">
+										<div class="col-xs-4 nopadwleft"> 
+											<select class='xsel2 form-control input-sm' id="selSign2" name="selSign2">
+												<option value="" <?=($cSign2=="") ? "selected" : ""?>></option>
+												<?php
+													foreach(@$arrempslist as $rsx){
+														$slcted = ($cSign2==$rsx['nid']) ? "selected" : "";
+														echo "<option value='".$rsx['nid']."' ".$slcted."> ".$rsx['cdesc']." </option>";
+													}
+												?>
+											</select>
+										</div>
+										<div class="col-xs-3 nopadwleft">
 											<input type="text" class="form-control input-sm" id="txtsoref" name="txtsoref" width="20px" tabindex="6" placeholder="Reference SO">
-										</div>			 
+										</div>		 
 									</td>
 									<td>&nbsp;</td>
 									<td>&nbsp;</td>
@@ -921,6 +955,16 @@ if(file_name.length != 0){
 		else{
 			$(".chklimit").show();
 		}
+
+		$("#selSign1").select2({
+			placeholder: "Prepared By...",
+			allowClear: true
+		});
+
+		$("#selSign2").select2({
+			placeholder: "Checked By...",
+			allowClear: true
+		});
 
 		loaddetails();
 		loaddetinfo();
@@ -2491,7 +2535,9 @@ function chkform(){
 			{	key: 'DRfootCert', input: $("#DRfootCert").val() },
 			{	key: 'DRfootIssu', input: $("#DRfootIssu").val() },
 			{	key: 'DRfootChec', input: $("#DRfootChec").val() },
-			{	key: 'DRfootAppr', input: $("#DRfootAppr").val() }
+			{	key: 'DRfootAppr', input: $("#DRfootAppr").val() },
+			{	key: 'selSign1', input: $("#selSign1").val() },
+			{	key: 'selSign2', input: $("#selSign2").val() }
 		]
 		//alert("DR_newsavehdr.php?ccode=" + ccode + "&crem="+ crem + "&ddate="+ ddate + "&ngross="+ngross+"&cdrprintno="+cdrprintno+"&salesman="+salesman+"&delcodes="+delcodes+"&delhousno="+delhousno+"&delcity="+delcity+"&delstate="+delstate+"&delcountry="+delcountry+"&delzip="+delzip);
 		var formdata = new FormData();

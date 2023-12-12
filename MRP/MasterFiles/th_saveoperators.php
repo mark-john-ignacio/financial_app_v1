@@ -3,9 +3,12 @@
 		session_start();
 	}
 	require_once "../../Connection/connection_string.php";
+	require_once ('../../Model/helper.php');
 
 	$compname = php_uname('n');
 	$preparedby = $_SESSION['employeeid'];
+
+	//print_r($_REQUEST);
 	
 	$company = $_SESSION['companyid'];
 	$code = $_REQUEST['code'];
@@ -19,10 +22,25 @@
 			else{
 				$last_row = mysqli_insert_id($con);
 
-				mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) values('$company','$last_row','$preparedby',NOW(),'INSERTED','MES (OPERATOR)','$compname','Inserted New Record')");
+				mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) values('$company','$last_row','$preparedby',NOW(),'INSERTED','MES (EMPLOYEES)','$compname','Inserted New Record')");
 
 				echo "True";
 			}
+
+			//print_r($_FILES);
+
+			if(count($_FILES) != 0){
+				$directory = "../../Components/assets/Employees_Sign/";
+				if(!is_dir($directory)){
+					mkdir($directory, 0777);
+				}
+				$directory .= "{$last_row}/";
+				upload_image($_FILES, $directory);
+				
+				mysqli_query($con,"UPDATE mrp_operators set csign='".$directory.$_FILES['file-0']['name']."' Where compcode='".$company."' and nid='$last_row'");
+			}
+
+			
 	}
 	else{
 	
@@ -31,9 +49,20 @@
 			} 
 			else{
 										
-				mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) values('$company','$code','$preparedby',NOW(),'UPDATED','MES (OPERATOR)','$compname','Update Record')");
+				mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) values('$company','$code','$preparedby',NOW(),'UPDATED','MES (EMPLOYEES)','$compname','Update Record')");
 				
 				echo "True";
+			}
+
+			if(count($_FILES) != 0){
+				$directory = "../../Components/assets/Employees_Sign/";
+				if(!is_dir($directory)){
+					mkdir($directory, 0777);
+				}
+				$directory .= "{$code}/";
+				upload_image($_FILES, $directory);
+				
+				mysqli_query($con,"UPDATE mrp_operators set csign='".$directory.$_FILES['file-0']['name']."' Where compcode='".$company."' and nid='$code'");
 			}
 		
 	}

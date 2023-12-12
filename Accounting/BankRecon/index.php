@@ -3,15 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
-	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css">
-	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
+    <link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
 
-    <script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
-    <script src="../Bootstrap/js/bootstrap.js"></script>
-    <script src="../Bootstrap/js/bootstrap3-typeahead.js"></script>
-    <script src="../Bootstrap/js/moment.js"></script>
-    <script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../global/plugins/bootstrap-fileinput/bootstrap-fileinput.css"/>
+    <link href="../../global/css/components.css" id="style_components" rel="stylesheet" type="text/css"/>
+    <link href="../../global/css/plugins.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+    <script src="../../Bootstrap/js/bootstrap.js"></script>
+    <script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
+    <script type="text/javascript" src="../../global/plugins/bootstrap-fileinput/bootstrap-fileinput.js"></script>
+    <script src="../../Bootstrap/js/moment.js"></script>
+    <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <title>MyxFinancials</title>
 </head>
@@ -28,13 +33,13 @@
                             <th style='display: flex; justify-items: center; justify-content: center; padding: 10px;'>Date Range From:</th>
                             <th style="width: 100px">
                                 <div class="col-xs-13 nopadding">
-                                    <input type="date" id='rangefrom' name='rangefrom' class='form-control input-sm'>
+                                    <input type="date" id='rangefrom' name='rangefrom' class='form-control input-sm' required>
                                 </div>
                             </th>
                             <th style='display: flex; justify-items: center; justify-content: center; padding: 10px;'>Date Range To:</th>
                             <th style="width: 100px">
                                 <div class="col-xs-13 nopadding">
-                                    <input type="date" id='rangeto' name='rangeto' class='form-control input-sm'>
+                                    <input type="date" id='rangeto' name='rangeto' class='form-control input-sm' required>
                                 </div>
                             </th>
                         </tr>
@@ -42,7 +47,7 @@
                             <th style='display: flex; justify-items: center; justify-content: center; padding: 10px;'>Select Bank:</th>
                             <th colspan="3" style="width: 300px">
                                 <div class="col-xs-13 nopadding">
-                                    <select name="bank" id="bank" class="form-control input-sm"></select>
+                                    <select name="bank" id="bank" class="form-control input-sm" required></select>
                                 </div>
                             </th>
                         </tr>
@@ -57,9 +62,27 @@
                         <tr>
                             <th style='display: flex; justify-items: center; justify-content: center; padding: 10px;'>Select to import file:</th>
                             <th colspan="3" style="width: 300px">
-                                <div class="col-xs-13 nopadding">
-                                    <!-- <label class="btn btn-sm btn-primary" for="excel_file">Browse...</label> -->
-                                    <input type="file" name="excel_file" id="excel_file" value="Browse..."  accept=".xlsx, .xls">
+                                <div class="form-group">
+                                    <div class="col-md-12 nopadding">
+                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                            <div class="input-group input-large">
+                                                
+                                                <span class="input-group-addon btn btn-success default btn-file">
+                                                <span class="fileinput-new">
+                                                Select file </span>
+                                                <span class="fileinput-exists">
+                                                Change </span>
+                                                <input type="file" type="file" name="excel_file" id="excel_file" accept=".xlsx, .xls" required> 
+                                                </span>
+                                                <a href="#" class="input-group-addon btn red fileinput-exists" data-dismiss="fileinput">
+                                                Remove </a>
+                                                <div class="form-control uneditable-input" data-trigger="fileinput">
+                                                    <i class="fa fa-file fileinput-exists"></i>&nbsp; <span class="fileinput-filename">
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </th>
                         </tr>

@@ -3,8 +3,8 @@
     if(!isset($_SESSION)){
         session_start();
     }
-    include "../Connection/connection_string.php";
-    include "../Model/helper.php";
+    include "../../Connection/connection_string.php";
+    include "../../Model/helper.php";
 
     function nullstring($data){
         return $data != "" && $data != null && !empty($data);

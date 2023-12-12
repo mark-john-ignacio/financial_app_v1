@@ -587,7 +587,7 @@
 							</a>
 						</li>
 						<li>
-							<a href="javascript:;" onclick="setpage('./BankRecon')"><i class="fa fa-file-text"></i> Bank Reconciliation</a>
+							<a href="javascript:;" onclick="setpage('Accounting/BankRecon')"><i class="fa fa-file-text"></i> Bank Reconciliation</a>
 						</li>
 					</ul>
 				</li>
@@ -612,7 +612,7 @@
 										<a href="javascript:;" onClick="setpage('MRP/MasterFiles/MACHINES.php');"> <i class="fa fa-angle-double-right"></i> Machines </a>
 									</li>
 									<li>
-										<a href="javascript:;" onClick="setpage('MRP/MasterFiles/OPERATORS.php');"> <i class="fa fa-angle-double-right"></i> Operators </a>
+										<a href="javascript:;" onClick="setpage('MRP/MasterFiles/OPERATORS.php');"> <i class="fa fa-angle-double-right"></i> Employees </a>
 									</li>							
 								</ul>
 							</li>

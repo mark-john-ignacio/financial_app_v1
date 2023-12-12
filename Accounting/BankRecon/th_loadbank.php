@@ -2,7 +2,7 @@
     if(!isset($_SESION)){
         session_start();
     }
-    include "../Connection/connection_string.php";
+    include "../../Connection/connection_string.php";
     $company = $_SESSION['companyid'];
     $bank = [];
 

@@ -3,7 +3,7 @@
         session_start();
     }
 
-    include "../Connection/connection_string.php";
+    include "../../Connection/connection_string.php";
 
     $company = $_SESSION['companyid'];
     $employee = $_SESSION['employeeid'];
