@@ -43,7 +43,7 @@
         return [
             "valid" => true,
             "label" => $label, // Use the $label variable
-            "data" => ToPercentage($list) // Use the $list variable containing totals
+            "data" => $list // Use the $list variable containing totals
         ];
     }
 
@@ -125,7 +125,7 @@
         return [
             "valid" => true,
             "label" => $label,
-            "data" => ToPercentage($list)
+            "data" =>   $list
         ];
     }
 

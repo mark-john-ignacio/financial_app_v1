@@ -30,6 +30,11 @@
     <script src="../Bootstrap/js/moment.js"></script>
     <script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
+
     <title>MyxFinancials</title>
     <style>
         #DivNavigation {
@@ -166,17 +171,21 @@
                                     <option value="weekly">Weekly</option>
                                 </select>
                             </div>
+                            <div style="display: none; padding: 2%;" id="dates">
+                                <label for="Day" style="width: 100%;">Date of:</label>
+                                <input type="text" id="Day" name="Day" style="width: 100%;" class="datepick col-xs-1 form-control" value="<?= date("m-d") ?>">
+                            </div>
                             <div style="display: flex; padding: 2%;">
                                 <label for="Year" style="width: 100%;">Year of: </label>
-                                <input type="text" id="Year" name="Year" style="width: 100%;" class="datepick col-xs-1 form-control" value="<?= date("Y") ?>">
+                                <input type="text" id="Year" name="Year" style="width: 100%;" class="yearpick col-xs-1 form-control" value="<?= date("Y") ?>">
                             </div>
                             <div class="dropdown-item" style="display: flex; justify-content: right; justify-items: right; padding: 2%;">
-                                <button id="graphfilter" class="btn btn-sm btn-primary" oncl    ick="loadlinegraph(); closeDropdown()">Submit</button>
+                                <button id="graphfilter" class="btn btn-sm btn-primary" onclick="loadbargraph();">Submit</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div style="display: flex; justify-content: center; justify-items: center; border: 1px solid grey; border-top: 0px solid; ">
+                <div style="display: flex; justify-content: center; justify-items: center; max-height: 600px; border: 1px solid grey; border-top: 0px solid; ">
                     <canvas id="myChart" style="width:100%; max-width:500px; min-height: 200px;"></canvas>
                 </div>
             </div>
@@ -196,7 +205,7 @@
                             }
                         ?></h4>
                 </div>
-                <div style="display: flex;  border: 1px solid grey; padding: 2%; max-height: 400px; overflow: auto;">
+                <div style="display: flex;  border: 1px solid grey; padding: 2%; max-height: 600px; overflow: auto;">
                     <!-- <div style="display: flex; width:100%; min-height: 200px; overflow: auto;"> -->
                     <canvas id="PieLegends" style="position: relative; width: 100%;  min-height: 300px; overflow: auto"></canvas>
                     <!-- </div> -->
@@ -238,21 +247,32 @@
 
 <script type='text/javascript'>
     $(document).ready(function(){
-        $('.datepick').datetimepicker({
+        $('.yearpick').datetimepicker({
             defaultDate: moment(),
             viewMode: 'years',
             format: 'YYYY'
         });
 
+        $('.datepick').datetimepicker({
+            defaultDate: moment(),
+            format: 'MM-DD'
+        });
+
+
         LoadHeader();
-        loadlinegraph();
+        loadbargraph();
         loadpiechart();
         loadsummary();
         loadlogs();
 
-        // $("#Periodicals").change(function(){
-        //     loadlinegraph($(this).val());
-        // })
+        $("#Periodicals").change(function(){
+        //     loadbargraph($(this).val());
+            if($(this).val() === "weekly"){
+                $("#dates").css("display", "flex");
+            } else {
+                $("#dates").css("display", "none");
+            }
+        })
 
         $("input[name='status']").change(function(){
             if($(this).is(":checked")){
@@ -296,19 +316,21 @@
         })
     }
 
-    function loadlinegraph(Periodicals = $("#Periodicals").val()){
+    function loadbargraph(Periodicals = $("#Periodicals").val()){
         let year = $("#Year").val();
+        let days = $("#Day").val();
         $.ajax({
             url: "th_loadgraphs.php",
             type: "post",
             data: {
                 Periodicals: Periodicals,
-                year: year
+                year: year,
+                days: days,
             },
             dataType: 'json',
             async: false,
             success: function(res){
-                loadchart(res.Periodicals, res.values)
+                barchart(res.Periodicals, res.values)
             },
             error: function(res){
                 console.log(res)
@@ -328,7 +350,6 @@
             dataType: "json",
             async: false,
             success: function (res) {
-                console.log(res);
                 $("#summary").empty();
                 if(res.valid){
                     res.data.map((item, index) => {
@@ -354,7 +375,7 @@
         });
     }
 
-    function loadchart(months, values){
+    function barchart(months, values){
         var colors = [];
         for (var i = 0; i < months.length; i++) {
             colors.push(getRandomColor());
@@ -369,24 +390,29 @@
                     // backgroundColor: "rgba(100,65,255,1.0)",
                     backgroundColor: colors,
                     borderColor: "rgba(0,0,255,0.1)",
+                    borderWidth: 1,
                     data: values
                 }]
             },
             options: {
+                plugins: {
+                    datalabels: {
+                        display: false // Set to false to hide data labels
+                    }
+                },
                 legend: { display: false },
                 scales: {
-                yAxes: [{
-                    ticks: {
-                    beginAtZero: true,
-                    }
-                }]
-                }
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                        }
+                    }]
+                },
             }
         });
     }
     function PieChart(label, values) {
         // Sort values and labels based on values
-        console.log(values)
         const sortedData = values.map((value, index) => ({ value, label: label[index] })).sort((a, b) => b.value - a.value);
         
         // Get the top 5 values and labels
@@ -396,6 +422,23 @@
         // Generate random colors for the top 5 values
         const colors = top5Labels.map(() => getRandomColor());
 
+        var options = {
+            tooltips: {
+                enabled: true
+            },
+            plugins: {
+                datalabels: {
+                formatter: (value, context) => {
+                    // collecting sum for all data 
+                    const sum = context.dataset.data.reduce((acc, data) => acc + data, 0);
+                    // Converting to Percentage
+                    let percentage = (value * 100 / sum).toFixed(2) + "%";
+                    return percentage;
+                },
+                color: '#fff',
+                }
+            }
+        };
         new Chart("PieLegends", {
             type: "pie",
             data: {
@@ -409,16 +452,7 @@
                     data: top5Values,
                 }]
             },
-            options: {
-                legend: {
-                    position: 'chartArea',
-                    align: 'end',
-                    labels: {
-                        fontSize: 9,
-                    },
-                    fullWidth: true
-                }
-            },
+            options: options
         });
     }
 

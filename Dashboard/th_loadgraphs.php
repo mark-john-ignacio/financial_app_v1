@@ -9,7 +9,8 @@
     // $now = date("Y-m-d", strtotime("08/12/2023"));
     $year = $_POST['year'];
     $Periodicals = $_POST['Periodicals'];
-    $today = date("m-d");
+    $today = $_POST['days'];
+    // $today = date("m-d");
     $now = date("Y-m-d", strtotime("$year-$today"));
 
     function getWeek($date){
