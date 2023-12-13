@@ -14,7 +14,7 @@ require_once "../../Connection/connection_string.php";
 		$sql = "select X.crefident, X.creference as ctranno, X.citemno as cpartno, A.citemdesc, X.cunit, X.nqtyorig, X.nqty as totqty, 1 as nqty, X.nprice, X.nbaseamount, X.namount, A.cunit as qtyunit, X.nfactor, IFNULL(X.citemsysno,'') as citemsysno, IFNULL(X.citempono,'') as citempono
 		from dr_t X
 		left join items A on X.compcode=A.compcode and X.citemno=A.cpartno
-		where X.compcode='$company' and X.ctranno = '$csalesno'";
+		where X.compcode='$company' and X.ctranno = '$csalesno' Order By X.nident";
 	}
 	else{
 		$sql = "select X.crefident, X.creference as ctranno, X.citemno as cpartno, A.citemdesc, X.cunit, X.nqtyorig, X.nqty as totqty, X.nprice, X.nbaseamount, X.namount, A.cunit as qtyunit, X.nfactor,(TRIM(TRAILING '.' FROM(CAST(TRIM(TRAILING '0' FROM B.nqty)AS char)))) AS nqty, IFNULL(X.citemsysno,'') as citemsysno, IFNULL(X.citempono,'') as citempono
@@ -27,7 +27,7 @@ require_once "../../Connection/connection_string.php";
 				where a.compcode='$company' and a.dcutdate <= '$date1'
 				Group by a.cmainunit, a.citemno
 			) B on X.citemno=B.citemno
-		where X.compcode='$company' and X.ctranno = '$csalesno'";
+		where X.compcode='$company' and X.ctranno = '$csalesno' Order By X.nident";
 	}
 
 	//echo $sql;

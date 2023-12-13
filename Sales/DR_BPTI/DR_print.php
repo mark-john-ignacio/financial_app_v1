@@ -283,8 +283,6 @@
 
     <div class="reforder"><?=$cAPCORD?></div>
 
-	<div class="xremarks"><?=nl2br($Remarks)?></div>
-
 	<div class="csign1">
       <?php
         if($xSign1!=""){
@@ -306,10 +304,18 @@
 
     <div class="RowCont">
     <?php 
-      $sqlbody = mysqli_query($con,"select a.*,b.citemdesc from dr_t a left join items b on a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$csalesno'");
+	$firstclass = "";
+
+      $sqlbody = mysqli_query($con,"select a.*,b.citemdesc, c.cdesc  from dr_t a left join items b on a.citemno=b.cpartno join groupings c on b.compcode=c.compcode and b.cclass=c.ccode and c.ctype='ITEMCLS' where a.compcode='$company' and a.ctranno = '$csalesno'");
 
       if (mysqli_num_rows($sqlbody)!=0) { 
+		
+		$cntr=0;
         while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
+			$cntr++;
+            if($cntr==1){
+              $firstclass = $rowbody['cdesc'];
+            }
              
 	  ?>
         <div class="Row">
@@ -322,6 +328,9 @@
       }
     ?>
      </div>
+
+	 <div class="xremarks"><?=nl2br($Remarks)?><br><?=$firstclass?></div>
+
   </div>
 
 
