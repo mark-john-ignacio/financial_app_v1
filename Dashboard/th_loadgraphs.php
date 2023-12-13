@@ -71,7 +71,7 @@
     function PurchaseWeekData($date){
         global $company, $con, $Periodicals, $year;
         // $now = getWeek($date);
-        $month = Months();
+        $month = $Periodicals != "weekly" ? Months() : getWeek($now);
         $amounts = [];
 
         for($i = 0; $i < count($month); $i++){
