@@ -439,6 +439,7 @@
                 }
             }
         };
+        
         new Chart("PieLegends", {
             type: "pie",
             data: {
