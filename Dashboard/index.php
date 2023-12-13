@@ -397,7 +397,7 @@
         const colors = top5Labels.map(() => getRandomColor());
 
         new Chart("PieLegends", {
-            type: "doughnut",
+            type: "pie",
             data: {
                 labels: top5Labels,
                 datasets: [{
