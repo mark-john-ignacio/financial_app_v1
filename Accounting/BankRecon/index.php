@@ -6,6 +6,7 @@
     <link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+    <link rel="stylesheet" type="text/css" href="../../Bootstrap/select2/css/select2.css?h=<?php echo time();?>">
 
     <link rel="stylesheet" type="text/css" href="../../global/plugins/bootstrap-fileinput/bootstrap-fileinput.css"/>
     <link href="../../global/css/components.css" id="style_components" rel="stylesheet" type="text/css"/>
@@ -17,6 +18,7 @@
     <script type="text/javascript" src="../../global/plugins/bootstrap-fileinput/bootstrap-fileinput.js"></script>
     <script src="../../Bootstrap/js/moment.js"></script>
     <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="../../Bootstrap/select2/js/select2.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <title>MyxFinancials</title>
 </head>
@@ -47,7 +49,7 @@
                             <th style='display: flex; justify-items: center; justify-content: center; padding: 10px;'>Select Bank:</th>
                             <th colspan="3" style="width: 300px">
                                 <div class="col-xs-13 nopadding">
-                                    <select name="bank" id="bank" class="form-control input-sm" required></select>
+                                    <select name="bank" id="bank" class="form-control input-sm" required><option value=""></option></select>
                                 </div>
                             </th>
                         </tr>
@@ -110,7 +112,12 @@
 
 <script>
     $(function(){
-        loadbank()
+        loadbank();
+
+        $("#bank").select2({
+			placeholder: "Select Bank...",
+			allowClear: true
+		});
 
         // $("#btnSubmit").click(function(){
         //     let range = $("#range").val();

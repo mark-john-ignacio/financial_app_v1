@@ -103,6 +103,9 @@
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
 
+    <link href="../../global/css/components.css?t=<?php echo time();?>" id="style_components" rel="stylesheet" type="text/css"/>
+	<link href="../../global/css/plugins.css" rel="stylesheet" type="text/css"/>
+
     <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
     <script src="../../Bootstrap/js/bootstrap.js"></script>
     <script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
@@ -112,85 +115,74 @@
     <title>MyxFinancials</title>
 </head>
 <body> 
+
     <div class="container" style="padding: 14px">
+
         <div style="display: flex; justify-content: center; justify-items: center; width: 100%;">
             <div style="text-decoration: underline; font-weight: bold; font-size: 20px">Summary of Bank Reconciliation</div>
         </div>
-        <div style="display: flex; min-width: 10in; padding-top: 40px; font-size: 16px ">
-            <!-- header summary -->
-            <div style="width: 100%; padding: 10px">
-                <div>
-                    Period: <?= date("M d, Y",strtotime($from)) ?> to <?= date("M d, Y",strtotime($to)) ?>
-                </div>
-                <div>
-                    Bank: <?= $bank ?>
-                </div>
-                <div style="display: flex; width: 100%; padding-right: 10px;">
-                    <div style="width: 100%;">Balance per Bank </div>
-                    <div style="width: 100%; text-align: right;"><?= number_format($EXCEL_TOTAL,2) ?></div>
-                </div>
-                <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px;">
-                    <div style="width: 100%; padding-left: 30px;">Add: Deposit in Transit </div>
-                    <div style="width: 100%; text-align: right;"><?= number_format($totalTransit,2) ?></div>
-                </div>
+        <div class="portlet-body" style="margin-top: 10px; font-size: 15px">
+            <div class="well well-large">
+                   <h4 style="margin-bottom: 0 !important"> Period: <?= date("M d, Y",strtotime($from)) ?> to <?= date("M d, Y",strtotime($to)) ?> </h4>
+                    <h4 style="margin-top: 0 !important"> Bank: <?= $bank ?> </h4>
 
-                <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px">
-                    <div style="width: 100%">Total: </div>
-                    <div style="width: 100%; text-align: right;"><?= number_format($totalBank,2) ?></div>
-                </div>
-                <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px;">
-                    <div style="width: 100%; padding-left: 30px;">Less: Outstanding Cheques </div>
-                    <div style="width: 100%; text-align: right;"><?= number_format($OUTSTAND_CHEQUE,2) ?></div>
-                </div>
+                    <div class="row">
+                        <div class="col-xs-3">Balance per Bank </div>
+                        <div class="col-xs-3 text-right"><?= number_format($EXCEL_TOTAL,2) ?></div>
 
-                <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px">
-                    <div style="width: 100%">Adjust Bank Balance: </div>
-                    <div style="width: 100%; text-align: right;"><?= number_format($ADJUST_BANK,2) ?></div>
-                </div>
-            </div>
+                        <div class="col-xs-3">Balance per Book: </div>
+                        <div class="col-xs-3 text-right" id="book"><?= number_format($bookTotal,2) ?></div>
+                    </div>
 
+                    <div class="row">
+                        <div class="col-xs-3" style="padding-left: 30px;">Add: Deposit in Transit </div>
+                        <div class="col-xs-3 text-right"><?= number_format($totalTransit,2) ?></div>
 
-            <div style="width: 100%; padding: 10px;">
-                <div style="display: flex; width: 100%; padding-top: 45px; padding-right: 10px;">
-                    <div style="width: 100%">Balance per Book: </div>
-                    <div style="width: 100%; text-align: right;" id="book"><?= number_format($bookTotal,2) ?></div>
-                </div>
+                        <div class="col-xs-3" style="padding-left: 30px;">Add: Unrecorded Deposit </div>
+                        <div class="col-xs-3 text-right" id="book"><?= number_format($UNRECORD_DEPOSIT,2) ?></div>
+                    </div>
 
-                <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px;">
-                    <div style="width: 100%; padding-left: 30px;">Add: Unrecorded Deposit </div>
-                    <div style="width: 100%; text-align: right;" id="unrecordedbook"><?= number_format($UNRECORD_DEPOSIT,2) ?></div>
-                </div>
+                    <div class="row">
+                        <div class="col-xs-3">Total </div>
+                        <div class="col-xs-3 text-right"><?= number_format($totalBank,2) ?></div>
 
-                <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px">
-                    <div style="width: 100%">Total: </div>
-                    <div style="width: 100%; text-align: right;" id="booktotal"><?= number_format($totalBook,2) ?></div>
-                </div>
+                        <div class="col-xs-3">Total </div>
+                        <div class="col-xs-3 text-right" id="book"><?= number_format($totalBook,2) ?></div>
+                    </div>
 
-                <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px;">
-                    <div style="width: 100%; padding-left: 30px;">Less: Unrecorded Withdrawal </div>
-                    <div style="width: 100%; text-align: right;" id="lesswithdrawal"><?= number_format($UNRECORD_WITHDRAW,2) ?></div>
-                </div>
+                    <div class="row">
+                        <div class="col-xs-3" style="padding-left: 30px;">Less: Outstanding Cheques </div>
+                        <div class="col-xs-3 text-right"><?= number_format($OUTSTAND_CHEQUE,2) ?></div>
 
-                <div style="display: flex; width: 100%; padding-top: 20px; padding-right: 10px">
-                    <div style="width: 100%">Adjust Book Balance: </div>
-                    <div style="width: 100%; text-align: right;" id="adjustment"><?= number_format($ADJUST_BOOK,2) ?></div>
-                </div>
+                        <div class="col-xs-3" style="padding-left: 30px; padding-right: 0;">Less: Unrecorded Withdrawal </div>
+                        <div class="col-xs-3 text-right" id="book"><?= number_format($UNRECORD_WITHDRAW,2) ?></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-3">Adjust Bank Balance: </div>
+                        <div class="col-xs-3 text-right"><?= number_format($ADJUST_BANK,2) ?></div>
+
+                        <div class="col-xs-3">Adjust Book Balance: </div>
+                        <div class="col-xs-3 text-right" id="book"><?= number_format($ADJUST_BOOK,2) ?></div>
+                    </div>
             </div>
         </div>
     </div>
     
+        
+    
     <div style="min-width: 10in; width: 100%; padding: 10px;  display: flex; justify-content: center; justify-items: items">
-        <button type="button" class="btn btn-primary" onclick="Finalized.call(this)" id="Finalized" style="display: none">Finalized</button>
+        <button type="button" class="btn btn-primary" onclick="Finalized.call(this)" id="Finalized" disabled>Finalize Bank Reconciliation</button>
     </div>
-    <div style="min-width: 10in; width: 100%; min-height: 3in; max-height: 3in; border: 1px solid; overflow: auto;">
-        <table class="table" id="chequeBank" style="min-width: 10in; overflow: auto;">
+    <div style="min-width: 10in; width: 100%; min-height: 3in; max-height: 3in; border: 1px solid; overflow: auto; padding: 5px">
+        <table class="table table-sm" id="chequeBank" style="min-width: 10in; overflow: auto;">
             <thead>
                 <tr>
                     <th>Check Date</th>
                     <th>Account Nature</th>
                     <th>Check Number</th>
-                    <th>Debit</th>
-                    <th>Credit</th>
+                    <th style='text-align: right'>Debit</th>
+                    <th style='text-align: right'>Credit</th>
                     <!-- <th>Amount</th> -->
                     <th>&nbsp;</th>
                 </tr>
@@ -322,12 +314,12 @@
                             $("<td>").text(item.date),
                             $("<td>").text(item.name),
                             $("<td>").text(item.refno),
-                            $("<td>").text(item.debit),
-                            $("<td>").text(item.credit),
+                            $("<td style='text-align: right'>").text(item.debit),
+                            $("<td style='text-align: right'>").text(item.credit),
                             $("<td>").text(name),
                             $("<td>").text(reference),
-                            $("<td>").text(debit),
-                            $("<td>").text(credit),
+                            $("<td style='text-align: right'>").text(debit),
+                            $("<td style='text-align: right'>").text(credit),
                             // $("<td>").text(amount),
                             // $("<td>").html("<button class='btn btn-sm btn-success' onclick='matchup.call(this)' value='" + item.tranno + "'>Match</button>")
                         ).appendTo("#match > tbody")
@@ -461,9 +453,9 @@
                         $("<td>").text(date),
                         $("<td>").text(accountNature),
                         $("<td>").text(checkno),
-                        $("<td>").text(debit),
-                        $("<td>").text(credit),
-                        $("<td>").html("<button type='button' onclick='LoadMatchCheque.call(this)' class='btn btn-sm btn-primary'>Find Match</button>")
+                        $("<td style='text-align: right'>").text(number_format(debit,2)),
+                        $("<td style='text-align: right'>").text(number_format(credit,2)),
+                        $("<td style='text-align: center'>").html("<button type='button' onclick='LoadMatchCheque.call(this)' class='btn btn-xs btn-primary'>Find Match</button>")
                     ).appendTo("#chequeBank tbody")
                 }
             }
@@ -492,3 +484,6 @@
         return data == 0;
     }
 </script>
+
+
+<script src="../../global/custom.js"></script>
