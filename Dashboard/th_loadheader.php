@@ -11,7 +11,7 @@
 
     
     function Sales(){
-        global $company, $datefrom, $dateto, $con;
+        global $company, $con;
         $sales = [];
         // Needed a date Query
         // $sql = "SELECT a.*, b.cname FROM receipt a
@@ -50,6 +50,7 @@
 
         return [
             'valid' => true,
+            'label' => "Sales",
             'total' => number_format($sale_cost, 2),
             'cost' => number_format($cost, 2),
             'best_rank' => $payor,
@@ -57,7 +58,7 @@
     }
 
     function Purchase(){
-        global $company, $datefrom, $dateto, $con;
+        global $company, $con;
         $purchase = [];
         // $sql = "SELECT * FROM paybill WHERE compcode = '$company' AND lapproved = 1 AND lcancelled = 0 AND lvoid = 0 AND (dcheckdate BETWEEN '$datefrom' AND '$dateto')";
         $sql = "SELECT * FROM paybill WHERE compcode = '$company' AND lapproved = 1 AND lcancelled = 0 AND lvoid = 0 AND YEAR(ddate) = YEAR(CURDATE())";
