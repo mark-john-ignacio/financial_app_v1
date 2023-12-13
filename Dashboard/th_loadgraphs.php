@@ -43,19 +43,13 @@
         $Period = $Periodicals != "weekly" ? Months() : getWeek($now);
         $amounts = [];
         for($i = 0; $i < count($Period); $i++){
-            
+            $today = date("Y-m-d", strtotime($Period[$i]));
             $cost = 0;
 
-
-            if($Periodicals === "weekly"){
-                $today = date("Y-m-d", strtotime($Period[$i]));
-                $sql = "SELECT a.napplied FROM receipt a
-                WHERE a.compcode = '$company' AND a.lapproved = 1 AND a.lcancelled = 0 AND a.lvoid = 0 AND STR_TO_DATE(a.dcutdate, '%Y-%m-%d') = '$today' AND YEAR(a.dcutdate) = $year";
-            } else {
-                $today = date("Y-m-d", strtotime($Period[$i]));
-                $sql = "SELECT a.napplied FROM receipt a
-                WHERE a.compcode = '$company' AND a.lapproved = 1 AND a.lcancelled = 0 AND a.lvoid = 0 AND MONTH(a.dcutdate) = MONTH('$today') AND YEAR(a.dcutdate) = $year";
-            }
+            $sql = match($Periodicals) {
+                "weekly" => "SELECT a.napplied FROM receipt a WHERE a.compcode = '$company' AND a.lapproved = 1 AND a.lcancelled = 0 AND a.lvoid = 0 AND STR_TO_DATE(a.dcutdate, '%Y-%m-%d') = '$today' AND YEAR(a.dcutdate) = $year",
+                "monthly" => "SELECT a.napplied FROM receipt a WHERE a.compcode = '$company' AND a.lapproved = 1 AND a.lcancelled = 0 AND a.lvoid = 0 AND MONTH(a.dcutdate) = MONTH('$today') AND YEAR(a.dcutdate) = $year"
+            };
             
             $query = mysqli_query($con, $sql);
             
@@ -69,18 +63,21 @@
     }
 
     function PurchaseWeekData($date){
-        global $company, $con;
+        global $company, $con, $Periodicals, $now, $year;
         // $now = getWeek($date);
-        $month = Months();
+        $Period = $Periodicals != "weekly" ? Months() : getWeek($now);
         $amounts = [];
 
-        for($i = 0; $i < count($month); $i++){
-            $today = date("Y-m-d", strtotime($month[$i]));
+        for($i = 0; $i < count($Period); $i++){
+            $today = date("Y-m-d", strtotime($Period[$i]));
             $cost = 0;
+            
+            $sql = match($Periodicals) {
+                "weekly" => "SELECT npaid as total FROM paybill WHERE compcode = '$company' AND lapproved = 1 AND lcancelled = 0 AND lvoid = 0 AND STR_TO_DATE(dcheckdate, '%Y-%m-%d')= '$today' AND YEAR(dcheckdate) = $year",
+                "monthly" => "SELECT npaid as total FROM paybill WHERE compcode = '$company' AND lapproved = 1 AND lcancelled = 0 AND lvoid = 0 AND MONTH(dcheckdate) = MONTH('$today') AND YEAR(dcheckdate) = $year"
+            };
 
-            $sql = "SELECT npaid as total FROM paybill WHERE compcode = '$company' AND lapproved = 1 AND lcancelled = 0 AND lvoid = 0 AND MONTH(dcheckdate) = MONTH('$today') AND YEAR(dcheckdate) = YEAR(CURDATE())";
             $query = mysqli_query($con, $sql);
-
             while($row = $query -> fetch_assoc()){
                 $cost += floatval($row['total']);
             }
