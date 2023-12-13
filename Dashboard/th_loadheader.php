@@ -22,13 +22,25 @@
         LEFT JOIN customers b ON a.compcode = b.compcode AND a.ccode = b.cempid
         WHERE a.compcode = '$company' AND a.lapproved = 1 AND a.lcancelled = 0 AND a.lvoid = 0 AND YEAR(a.ddate) = YEAR(CURDATE())";
         $query = mysqli_query($con, $sql);
-        $receipt = mysqli_num_rows($query);
         
         $cost = 0;
+        $sale_cost = 0;
 
         while($row = $query -> fetch_assoc()){
             array_push($sales, $row['cname']);
-            $cost += $row['napplied'];
+            $cost += floatval($row['napplied']);
+        }
+
+        $sql = "SELECT * FROM sales WHERE compcode = '$company' AND lapproved = 1 AND lcancelled = 0 AND lvoid = 0";
+        $query = mysqli_query($con, $sql);
+        while($row = $query -> fetch_assoc()){
+            $sale_cost += floatval($row['ngross']);
+        }
+
+        $sql = "SELECT * FROM ntsales WHERE compcode = '$company' AND lapproved = 1 AND lcancelled = 0 AND lvoid = 0";
+        $query = mysqli_query($con ,$sql);
+        while($row = $query -> fetch_assoc()){
+            $sale_cost += floatval($row['ngross']);
         }
 
         $payor = match(count($sales)){
@@ -38,8 +50,7 @@
 
         return [
             'valid' => true,
-            'label' => "Sales",
-            'total' => $receipt,
+            'total' => number_format($sale_cost, 2),
             'cost' => number_format($cost, 2),
             'best_rank' => $payor,
         ];
@@ -51,13 +62,19 @@
         // $sql = "SELECT * FROM paybill WHERE compcode = '$company' AND lapproved = 1 AND lcancelled = 0 AND lvoid = 0 AND (dcheckdate BETWEEN '$datefrom' AND '$dateto')";
         $sql = "SELECT * FROM paybill WHERE compcode = '$company' AND lapproved = 1 AND lcancelled = 0 AND lvoid = 0 AND YEAR(ddate) = YEAR(CURDATE())";
         $query = mysqli_query($con, $sql);
-        $paybill = mysqli_num_rows($query);
 
         $cost = 0;
+        $cost_purchase = 0;
 
         while($row = $query -> fetch_assoc()){
             array_push($purchase, $row['cpayee']);
-            $cost += $row['npaid'];
+            $cost += floatval($row['npaid']);
+        }
+
+        $sql = "SELECT ngross FROM apv WHERE compcode = '$company' AND lapproved = 1 AND lvoid = 0 AND lcancelled = 0 AND YEAR(dapvdate) = YEAR(CURDATE())";
+        $query = mysqli_query($con, $sql);
+        while($row = $query -> fetch_assoc()){
+            $cost_purchase += floatval($row['ngross']);
         }
 
         $payee = match(count($purchase)){
@@ -68,7 +85,7 @@
         return [
             'valid' => true,
             'label' => "Purchase",
-            'total' => $paybill,
+            'total' => number_format($cost_purchase,2),
             'cost' => number_format($cost,2),
             'best_rank' => $payee, 
         ];

@@ -1,3 +1,21 @@
+<?php 
+	if(!isset($_SESSION)){
+		session_start();
+	}
+
+	include('Connection/connection_string.php');
+	include('include/denied.php');
+	$company = $_SESSION['companyid'];   
+	$employeeid = $_SESSION['employeeid'];
+
+	$pages = [];
+	$sql = "SELECT pageid FROM users_access WHERE userid = '$employeeid'";
+	$query = mysqli_query($con, $sql);
+	while($list = $query -> fetch_assoc()) {
+		array_push($pages, $list["pageid"]);
+	}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <!--<![endif]-->
@@ -38,17 +56,8 @@
 <!-- DOC: Apply "page-footer-fixed" class to the body element to have fixed footer -->
 <!-- DOC: Apply "page-sidebar-reversed" class to put the sidebar on the right side -->
 <!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
-<body class="page-header-fixed page-quick-sidebar-over-content" onLoad="setpage('MAIN/index.html');">
+<body class="page-header-fixed page-quick-sidebar-over-content" >
 	<?php
-
-		if(!isset($_SESSION)){
-			session_start();
-		}
-
-		include('Connection/connection_string.php');
-		include('include/denied.php');
-		$company = $_SESSION['companyid'];     
-
 		//get user details
 		$arrcompz = array();
 		$cntzcompany = 0;
@@ -737,13 +746,14 @@
 <script src="admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
 
 <script>
-	$(document).ready(function() {    
+	$(document).ready(function() { 
+	setpage("Dashboard/index.php")
 		Metronic.init(); // init metronic core components
 		Layout.init(); // init current layout
 		QuickSidebar.init(); // init quick sidebar
 			
 		loadxtrasession();
-			
+			loaddashboard();   
 	});
 		
 	function loadxtrasession(){
@@ -787,11 +797,22 @@
 					
 				} 
 
-				*/
+					*/
+					
+			}
 				
+	  }
+	  function loaddashboard(){
+		let pages = <?= json_encode($pages) ?>;
+		console.log(pages)
+
+		if (pages.includes("DashboardSales.php") || pages.includes("DashboardPurchase.php")) {
+			setpage("./Dashboard/index.php")
+		} else {
+			setpage('MAIN/index.html')
 		}
-			
-	}
+
+	  }
 	  
 </script>
 <!-- END JAVASCRIPTS -->
