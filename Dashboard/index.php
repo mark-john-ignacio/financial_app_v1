@@ -83,7 +83,7 @@
                         ?>
                     </div>
                 </div>
-                <a href="javascript:;" style='color: white;'>
+                <a href="javascript:;" id="LinkView" style='color: white;'>
                     <div style='position: absolute; width: 100%; bottom: 0; background-color: #a33636; padding: 3px;'>View More</div>
                     <div style='position: absolute; bottom: 0; right: 0; padding: 3px;'><i class='fa fa-forward'></i></div>
                 </a>
@@ -98,7 +98,7 @@
                         Highest Transaction
                     </div>
                 </div>
-                <a href="javascript:;" style='color: white;'>
+                <a href="javascript:;" id="WithCustomer" style='color: white;'>
                     <div style='position: absolute; width: 100%; bottom: 0; background-color: #96b0ff; padding: 3px;'>View More</div>
                     <div style='position: absolute; bottom: 0; right: 0; padding: 3px;'><i class='fa fa-forward'></i></div>
                 </a>
@@ -119,7 +119,7 @@
                         ?>
                     </div>
                 </div>
-                <a href="javascript:;" style='color: white;'>
+                <a href="javascript:;" id="LinkCollect" style='color: white;'>
                     <div style='position: absolute; width: 100%; bottom: 0; background-color: #229c38; padding: 3px;'>View More</div>
                     <div style='position: absolute; bottom: 0; right: 0; padding: 3px;'><i class='fa fa-forward'></i></div>
                 </a>
@@ -292,6 +292,22 @@
             success: function(res){
                 if(res.valid){
                     let ranker = res.best_rank;
+
+                    let linkview = "javascript:;";
+                    let linkcollector = "javascript:;";
+                    
+                    if(res.label === "Sales") {
+                        linkview = "../Sales/Sales/SI.php";
+                        linkcollector = "../Accounting/OR/OR.php";
+                    } else if (res.label == "Purchase"){
+                        linkview = "../Purchases/PO/Purch.php";
+                        linkcollector = "../Accounting/Pay/Paybill.php";
+                    }
+
+                    $("#LinkView").attr("href", linkview)
+                    $("#WithCustomer").attr("href", linkcollector + "?ix=" + ranker)
+                    $("#LinkCollect").attr("href", linkcollector)
+
 
                     if(ranker.trim().length > 30){
                         ranker = ranker.substr(0,30) + "...";
