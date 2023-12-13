@@ -258,7 +258,7 @@ include('../../include/denied.php');
 
     .RowCont{
       position: absolute;
-      top: 310px !important;
+      top: 315px !important;
       display: table;
       left: 28px; /*Optional*/
       table-layout: fixed; /*Optional*/
