@@ -142,15 +142,41 @@
         <!-- Logs -->
         
         <div style=' padding: 10px; min-width: 10.5in; height: 3in; display: grid;  grid-template-columns: repeat(2, minmax(0, 1fr)); grid-gap: 5%;'>
+            
             <div style='width: 100%;'>
-                <div style="display: flex; justify-content: right; justify-items: right;">
-                    <label for="Periodicals" style="padding: 2%">Periodicals: </label>
-                    <select name="Periodicals" id="Periodicals" style="width: 100px" class="col-xs-1 form-control">
-                        <option value="monthly">Monthly</option>
-                        <option value="weekly">Weekly</option>
-                    </select>
+                <div style="display: flex; justify-content: center; justify-items: center; background-color:#2d5f8b; color: white; border-radius: 20px 20px 0 0;">
+                    <h4 style="padding: 3px"><?php 
+                        if(in_array("DashboardSales.php", $page)){
+                            echo "Sales Invoice Bar Chart";
+                        } else if(in_array("DashboardPurchase.php", $page)){
+                            echo "Purchase Order Bar Chart";
+                        }
+                    ?></h4>
                 </div>
-                <div style="display: flex; justify-content: center; justify-items: center;">
+                <div style="display: flex; justify-content: right; justify-items: right; padding: 5px; border-left: 1px solid grey; border-right: 1px solid grey;">
+                    <div class="dropdown">
+                        <button class="dropdown-toggle btn btn-secondary" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            Filter
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="width: 250px;">
+                            <div class="dropdown-item" style="display: flex; padding: 2%;">
+                                <label for="Periodicals" style="width: 100%;">Periodicals: </label>
+                                <select name="Periodicals" id="Periodicals" style="width: 100%;" class="col-xs-1 form-control" onclick="event.stopPropagation();">
+                                    <option value="monthly">Monthly</option>
+                                    <option value="weekly">Weekly</option>
+                                </select>
+                            </div>
+                            <div style="display: flex; padding: 2%;">
+                                <label for="Year" style="width: 100%;">Year of: </label>
+                                <input type="text" id="Year" name="Year" style="width: 100%;" class="datepick col-xs-1 form-control" value="<?= date("Y") ?>">
+                            </div>
+                            <div class="dropdown-item" style="display: flex; justify-content: right; justify-items: right; padding: 2%;">
+                                <button id="graphfilter" class="btn btn-sm btn-primary" oncl    ick="loadlinegraph(); closeDropdown()">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: center; justify-items: center; border: 1px solid grey; border-top: 0px solid; ">
                     <canvas id="myChart" style="width:100%; max-width:500px; min-height: 200px;"></canvas>
                 </div>
             </div>
@@ -212,8 +238,10 @@
 
 <script type='text/javascript'>
     $(document).ready(function(){
-        $(".datepicker").datetimepicker({
-            format: "MM/DD/YYYY",
+        $('.datepick').datetimepicker({
+            defaultDate: moment(),
+            viewMode: 'years',
+            format: 'YYYY'
         });
 
         LoadHeader();
@@ -222,9 +250,9 @@
         loadsummary();
         loadlogs();
 
-        $("#Periodicals").change(function(){
-            loadlinegraph($(this).val());
-        })
+        // $("#Periodicals").change(function(){
+        //     loadlinegraph($(this).val());
+        // })
 
         $("input[name='status']").change(function(){
             if($(this).is(":checked")){
@@ -269,11 +297,13 @@
     }
 
     function loadlinegraph(Periodicals = $("#Periodicals").val()){
+        let year = $("#Year").val();
         $.ajax({
             url: "th_loadgraphs.php",
             type: "post",
             data: {
-                Periodicals: Periodicals
+                Periodicals: Periodicals,
+                year: year
             },
             dataType: 'json',
             async: false,
@@ -376,7 +406,7 @@
                     lineTension: 0,
                     borderColor: "rgba(255,255,255,0.8)",
                     borderWidth: 1,
-                    data: top5Values
+                    data: top5Values,
                 }]
             },
             options: {
@@ -384,7 +414,7 @@
                     position: 'chartArea',
                     align: 'end',
                     labels: {
-                        fontSize: 8,
+                        fontSize: 9,
                     },
                     fullWidth: true
                 }

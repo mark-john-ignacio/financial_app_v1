@@ -7,8 +7,10 @@
     $employee = $_SESSION['employeeid'];
 
     // $now = date("Y-m-d", strtotime("08/12/2023"));
+    $year = $_POST['year'];
     $Periodicals = $_POST['Periodicals'];
-    $now = date("Y-m-d");
+    $today = date("m-d");
+    $now = date("Y-m-d", strtotime("$year-$today"));
 
     function getWeek($date){
         $week = [];
@@ -36,7 +38,7 @@
     }
 
     function SalesWeekData(){
-        global $company, $con, $Periodicals, $now;
+        global $company, $con, $Periodicals, $now, $year;
         $Period = $Periodicals != "weekly" ? Months() : getWeek($now);
         $amounts = [];
         for($i = 0; $i < count($Period); $i++){
@@ -47,11 +49,11 @@
             if($Periodicals === "weekly"){
                 $today = date("Y-m-d", strtotime($Period[$i]));
                 $sql = "SELECT a.napplied FROM receipt a
-                WHERE a.compcode = '$company' AND a.lapproved = 1 AND a.lcancelled = 0 AND a.lvoid = 0 AND STR_TO_DATE(a.dcutdate, '%Y-%m-%d') = '$today' AND YEAR(a.dcutdate) = YEAR(CURDATE())";
+                WHERE a.compcode = '$company' AND a.lapproved = 1 AND a.lcancelled = 0 AND a.lvoid = 0 AND STR_TO_DATE(a.dcutdate, '%Y-%m-%d') = '$today' AND YEAR(a.dcutdate) = $year";
             } else {
                 $today = date("Y-m-d", strtotime($Period[$i]));
                 $sql = "SELECT a.napplied FROM receipt a
-                WHERE a.compcode = '$company' AND a.lapproved = 1 AND a.lcancelled = 0 AND a.lvoid = 0 AND MONTH(a.dcutdate) = MONTH('$today') AND YEAR(a.dcutdate) = YEAR(CURDATE())";
+                WHERE a.compcode = '$company' AND a.lapproved = 1 AND a.lcancelled = 0 AND a.lvoid = 0 AND MONTH(a.dcutdate) = MONTH('$today') AND YEAR(a.dcutdate) = $year";
             }
             
             $query = mysqli_query($con, $sql);

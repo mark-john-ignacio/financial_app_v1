@@ -43,7 +43,7 @@
         return [
             "valid" => true,
             "label" => $label, // Use the $label variable
-            "data" => $list // Use the $list variable containing totals
+            "data" => ToPercentage($list) // Use the $list variable containing totals
         ];
     }
 
@@ -125,15 +125,31 @@
         return [
             "valid" => true,
             "label" => $label,
-            "data" => $list
+            "data" => ToPercentage($list)
         ];
     }
 
+    // Convert To Percentage
     function ToPercentage( $array ){
+        $total = TotalValue($array);
+
+        for($i = 0; $i < count($array); $i++) {
+            $value = floatval($array[$i]);
+            $calculate = ($value / $total) * 100;
+            $array[$i] = round($calculate, 2); 
+        }
+
+        return $array;
+    }
+
+    // Calculate All Values in Array
+    function TotalValue ( $array ) {
         $total = 0;
         for($i = 0; $i < count($array); $i++) {
             $total += floatval($array[$i]);
         }
+
+        return $total;
     }
 
     if( in_array( "DashboardSales.php", user_access() ) ) {
