@@ -69,7 +69,7 @@
     }
 
     function PurchaseWeekData($date){
-        global $company, $con;
+        global $company, $con, $Periodicals, $year;
         // $now = getWeek($date);
         $month = Months();
         $amounts = [];
@@ -77,10 +77,13 @@
         for($i = 0; $i < count($month); $i++){
             $today = date("Y-m-d", strtotime($month[$i]));
             $cost = 0;
-
-            $sql = "SELECT npaid as total FROM paybill WHERE compcode = '$company' AND lapproved = 1 AND lcancelled = 0 AND lvoid = 0 AND MONTH(dcheckdate) = MONTH('$today') AND YEAR(dcheckdate) = YEAR(CURDATE())";
+            
+            if($Periodicals === "weekly"){
+                $sql = "SELECT npaid as total FROM paybill WHERE compcode = '$company' AND lapproved = 1 AND lcancelled = 0 AND lvoid = 0 AND STR_TO_DATE(dcheckdate, '%Y-%m-%d')= '$today' AND YEAR(dcheckdate) = $year";
+            } else {
+                $sql = "SELECT npaid as total FROM paybill WHERE compcode = '$company' AND lapproved = 1 AND lcancelled = 0 AND lvoid = 0 AND MONTH(dcheckdate) = MONTH('$today') AND YEAR(dcheckdate) = $year";
+            }
             $query = mysqli_query($con, $sql);
-
             while($row = $query -> fetch_assoc()){
                 $cost += floatval($row['total']);
             }
