@@ -29,10 +29,8 @@
     <script src="../Bootstrap/js/bootstrap3-typeahead.js"></script>
     <script src="../Bootstrap/js/moment.js"></script>
     <script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+    <!-- Import Script of ChartJS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script> -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
 
     <title>MyxFinancials</title>
@@ -439,7 +437,7 @@
                 }
             }
         };
-        
+
         new Chart("PieLegends", {
             type: "pie",
             data: {
