@@ -288,7 +288,7 @@
 									<a href="javascript:;" onclick="setpage('MasterFiles/Items/coupon.php')">
 										<i class="fa fa-angle-double-right"></i> Coupons
 									</a>
-								</li>
+								</li>-->
 							</ul>
             			</li>
 						<li>
@@ -360,11 +360,11 @@
                 				<i class="fa fa-money"> </i> Currency List
 							</a>
 						</li>
-						<li>
+						<!--<li>
 							<a href="javascript:;" onClick="setpage('MasterFiles/Proforma/Proforma.php?ix=');">
                 				<i class="fa fa-file-text-o"> </i> Proforma
 							</a>
-						</li>
+						</li>-->
 						<li>
 							<a href="javascript:;" onClick="setpage('MasterFiles/Locations/locations.php');">
              					<i class="fa fa-sitemap"></i> Sections
@@ -518,7 +518,12 @@
 					<a href="javascript:;">
 						<i class="icon-book-open "></i><span class="title">Accounting</span><span class="arrow "></span>
 					</a>
-					<ul class="sub-menu">						
+					<ul class="sub-menu">
+						<!--<li>
+							<a href="javascript:;" onClick="setpage('Accounting/Journal/Journal.php?ix=');">
+                				<i class="fa fa-list-alt"> </i>Ledger Entry Templates
+							</a>
+						</li>	-->					
 						<li>
 							<a href="javascript:;" onClick="setpage('Accounting/Journal/Journal.php?ix=');">
                 				<i class="fa fa-book"> </i>Journal Entry
