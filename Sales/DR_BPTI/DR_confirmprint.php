@@ -319,7 +319,7 @@ function PrintRed(x, version){
 <br><br>
 
   <div class="form-container">
-    <img src="drform_blank.png?x=<?=time()?>" width="100%">
+    <img src="drform_blank.jpg?x=<?=time()?>" width="100%">
 
     <div class="delTo"><?=$CustName?></div>
     <div class="date"><?=date_format(date_create($Date), "M d, Y")?></div>
