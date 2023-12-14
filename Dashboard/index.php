@@ -184,7 +184,7 @@
                     </div>
                 </div>
                 <div style="display: flex; justify-content: center; justify-items: center; max-height: 600px; border: 1px solid grey; border-top: 0px solid; ">
-                    <canvas id="myChart" style="width:100%; max-width:500px; min-height: 200px;"></canvas>
+                    <canvas id="myChart" style="width:100%; max-width:500px; min-height: 300px;"></canvas>
                 </div>
             </div>
             
@@ -442,14 +442,14 @@
             },
             plugins: {
                 datalabels: {
-                formatter: (value, context) => {
-                    // collecting sum for all data 
-                    const sum = context.dataset.data.reduce((acc, data) => acc + data, 0);
-                    // Converting to Percentage
-                    let percentage = (value * 100 / sum).toFixed(2) + "%";
-                    return percentage;
-                },
-                color: '#fff',
+                    formatter: (value, context) => {
+                        // collecting sum for all data 
+                        const sum = context.dataset.data.reduce((acc, data) => acc + data, 0);
+                        // Converting to Percentage
+                        let percentage = (value * 100 / sum).toFixed(2) + "%";
+                        return percentage;
+                    },
+                    color: '#fff',
                 }
             }
         };
