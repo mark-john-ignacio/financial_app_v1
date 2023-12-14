@@ -1659,9 +1659,9 @@ function myFunctionadd(qty,nqtyorig,pricex,curramt,amtx,factr,cref,crefident,itm
 
 	var insbtn = "<td width=\"50\"> <input class='btn btn-info btn-xs' type='button' name='ins' id='ins" + lastRow + "' value='insert' /></td>";	
 
-	var tdapcitmno = "<td width=\"130\" nowrap> <input type='text' value='"+itmsku+"' class='numeric form-control input-xs' name='txtapcitmno' id='txtapcitmno"+lastRow+"'> </td>"; 
+	var tdapcitmno = "<td width=\"130\" nowrap> <input type='text' value='"+itmsku+"' class='form-control input-xs' name='txtapcitmno' id='txtapcitmno"+lastRow+"'> </td>"; 
 
-	var tditmpono = "<td width=\"130\" nowrap> <input type='text' value='"+itmpono+"' class='numeric form-control input-xs' name='txtapono' id='txtapono"+lastRow+"'> </td>"; 
+	var tditmpono = "<td width=\"130\" nowrap> <input type='text' value='"+itmpono+"' class='form-control input-xs' name='txtapono' id='txtapono"+lastRow+"'> </td>"; 
 
 	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode" + lastRow + "\">"+itmcode+" <input type='hidden' value='"+cref+"' name=\"txtcreference\" id=\"txtcreference" + lastRow + "\"><input type='hidden' value='"+crefident+"' name=\"txtcrefident\" id=\"txtcrefident" + lastRow + "\"></td>";
 	var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmdesc+"</td>";
