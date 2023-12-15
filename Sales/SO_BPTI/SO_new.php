@@ -342,19 +342,19 @@ function listcurrencies(){ //API for currency list
 							</div>
 						</div>
 						<div class="portlet-body" style="overflow: auto">
-							<div style="min-height: 30vh; width: 1300px;">
+							<div style="min-height: 30vh; width: 1500px;">
 								<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
 									<thead>
 										<tr>
 											<th width="100px" style="border-bottom:1px solid #999">Code</th>
 											<th width="300px" style="border-bottom:1px solid #999">Description</th>
 											<th width="100px" style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
-											<th width="80px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
+											<th width="150px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
 											<th width="80px" style="border-bottom:1px solid #999">UOM</th>
 											<th width="60px" style="border-bottom:1px solid #999">Factor</th>
 											<th width="80px" style="border-bottom:1px solid #999">Qty</th>
-											<th width="150px" style="border-bottom:1px solid #999">Price</th>
-											<th width="150px" style="border-bottom:1px solid #999">Amount</th>
+											<th width="200px" style="border-bottom:1px solid #999">Price</th>
+											<th width="200px" style="border-bottom:1px solid #999">Amount</th>
 											<th width="200px" style="border-bottom:1px solid #999">PO NO.</th>
 											<th width="120px" style="border-bottom:1px solid #999">Date Needed</th>
 											<th width="200px" style="border-bottom:1px solid #999">Remarks</th>

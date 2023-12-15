@@ -75,13 +75,13 @@ background-repeat: no-repeat;
 #menu{
 	position: fixed;
 	padding-top:0px 0px 0px 0px;
-	top: 0px;
+	top: 5px;
 	height:30px;
 	width:98%;
 	border-style:solid;
 	background-color:#9FF;
-  border:1px solid black;
-  opacity:1.0;
+  	border:1px solid black;
+  	opacity:1.0;
 }
 html, body {
 	top:0px;
