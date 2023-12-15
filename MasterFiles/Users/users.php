@@ -482,7 +482,7 @@ if(@$lvlcompute==1){
 					url:'users_chkID.php',// put your real file name 
 					data:{id: x},
 					success:function(msg){
-						if(msg.trim()!=""){
+						if(msg.trim()!="YES"){
 							$("#add_err").css('display', 'none', 'important'); // your message will come here. 
 							$("#userid").val("").change();
 							$("#userid").focus(); 
