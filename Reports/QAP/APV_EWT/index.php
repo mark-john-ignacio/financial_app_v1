@@ -4,7 +4,6 @@
     }
     $company = $_SESSION['companyid'];
     include "../../../Connection/connection_string.php";
-
     $month = date("m", strtotime($_REQUEST['months']));
     $year = date("Y", strtotime($_REQUEST['years']));
 
@@ -19,7 +18,7 @@
     ];
 
     $apv = [];
-    $sql = "SELECT a.ncredit, a.cewtcode, c.cname, c.ctin FROM apv_t a
+    $sql = "SELECT a.ncredit, a.cewtcode, a.ctranno, b.ngross, b.dapvdate, c.cname, c.chouseno, c.ccity, c.ctin FROM apv_t a
         LEFT JOIN apv b ON a.compcode = b.compcode AND a.ctranno = b.ctranno
         LEFT JOIN suppliers c ON a.compcode = b.compcode AND b.ccode = c.ccode 
         WHERE a.compcode = '$company' AND MONTH(b.dapvdate) = '$month' AND YEAR(b.dapvdate) = '$year'";
@@ -35,7 +34,11 @@
                     'tin' => $list['ctin'],
                     'credit' => $list['ncredit'],
                     'ewt' => $ewt['code'],
-                    'rate' => $ewt['rate']
+                    'rate' => $ewt['rate'],
+                    'date' => $list['dapvdate'],
+                    'tranno' => $list['ctranno'],
+                    'address' => $list['chouseno'] . " " . $list['ccity'],
+                    'gross' => $list['ngross']
                 ];
 
             $apv[] = $json;
