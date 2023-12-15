@@ -548,3 +548,24 @@
         $replace = preg_replace('/[^0-9]/', '', $tin);
         return substr($replace, 0, 9);
     }
+
+    function getEWT($data) {
+        global $con, $company;
+        
+        $sql = "SELECT ctaxcode, nrate FROM wtaxcodes WHERE compcode = '$company' AND ctaxcode = '$data'";
+        $queries = mysqli_query($con, $sql);
+        
+        if(mysqli_num_rows($queries) !== 0) {
+            $fetch = $queries -> fetch_array(MYSQLI_ASSOC);
+            return [
+                'valid' => true,
+                'code' => $fetch['ctaxcode'],
+                'rate' => $fetch['nrate'],
+            ];
+            
+        }
+
+        return [
+            'valid' => false,
+        ];
+    }
