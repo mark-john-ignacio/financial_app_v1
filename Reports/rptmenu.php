@@ -227,7 +227,7 @@
 												<i class="fa fa-book"></i>Monthly Purchase</a>
 										</li>   
 										<li>
-											<form action="./QAP/EWT" target="_blank">
+											<form action="./QAP" target="_blank">
 												<button type="submit" style="border: 0px; padding:0px; width: 100%; display: flex; justify-content: left; justify-items: left; font-size: 16px">
 													<a href="javascript:;" ><i class="fa fa-book"></i>QAP</a>
 												</button>

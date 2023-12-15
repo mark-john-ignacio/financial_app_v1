@@ -1,15 +1,12 @@
-<?php 
-    if(!isset($_SESSION)) {
-        session_start();
-    }
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="../../global/plugins/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?<?php echo time();?>">
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+
 
     <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
     <script src="../../js/bootstrap3-typeahead.min.js"></script>
@@ -22,41 +19,163 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>MyxFinancials</title>
 </head>
-<body>
-    <div class="container">
-        <div style="display: flex; justify-content: center; justify-items: center">
-            <h2>Quarterly Alphalist of Payees</h2>
+<body >
+        <div  style="padding-top: 20px;">
+            <form action="../TO_CSV/" method="post" id="formexport" enctype="multipart/form-data">
+                <div style="display: flex; padding: 10px">
+                    <div class="col-xs-2">
+                        <label for="years">Years: </label>
+                        <input type="text" id="years" name="years" class="yearpicker form-control input-sm" value="<?= date("Y") ?>">
+                    </div>
+                    <div class="col-xs-2">
+                        <label for="months">Month: </label>
+                        <input type="text" id="months" name="months" class="monthpicker form-control input-sm" value="<?= date("MM") ?>">
+                    </div>
+                    <div class="col-xs-2" style="display: flex; min-width: 200px;">
+                        <button class="btn btn-success btn-sm col-xs-4" style="margin: 5px;" onclick="export_file.call(this)" value="CSV">CSV</button>
+                        <button class="btn btn-primary btn-sm col-xs-4" style="margin: 5px;" onclick="export_file.call(this)" value="DAT">DAT</button>
+                    </div>
+                </div>
+            </form>
+            
         </div>
-
-        <div class="display: flex; justify-content: center; justify-items: center;">
-            <div style="display: relative; width: 100%; padding-top: 1in;">
-                <table width="100%" border="0" cellpadding="2" >
-                    <tr >
-                        <th class=" nopadwtop"><button type="button" class="btn btn-danger col-sm-5"><i class="fa fa-search"></i>&nbsp; Search</button></th>
-                        <th>Year: </th>
-                        <th><div class="col-sm-5"><input type="text" class="yearpicker form-control" ></div></th>
-                    </tr>
-                    <tr>
-                        <th class="nopadwtop"><button type="button" class="btn btn-success col-sm-5"><i class="fa fa-file-excel-o"></i>&nbsp; To Excel</button></th>
-                        <th></th>
-                    </tr>
-                    <tr>
-                        <th class="nopadwtop"><button type="button" class="btn btn-primary col-sm-5"><i class="fa fa-file"></i>&nbsp; To DAT</button></th>
-
-                    </tr>
-                </table>
-            </div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(100px, .2fr)); width: 100%; padding: 10px;">
+            <h5>TAX PAYER TRADE NAME:</h5> <h4 id='trade'>Acme Corp.</h4>
+            <h5>TAX PAYER NAME:</h5> <h4 id='company'>Acme Corp.</h4>
+            <h5>TIN:</h5> <h4 id='tin'>Acme Corp.</h4>
+            <h5>TAX PAYER ADDRESS:</h5> <h4 id='address'>Acme Corp.</h4>
         </div>
-    </div>
+        <div style="display: flex; height: 350px; overflow: auto; border: 1px solid grey; margin-top: 10px">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>TRANSACTION DATE</th>
+                        <th>CV REFERENCE NO.</th>
+                        <th>VENDOR TIN</th>
+                        <th>VENDOR NAME</th>
+                        <th>VENDOR ADDRESS</th>
+                        <th>W/TAX CODE</th>
+                        <th>W/TAX RATE</th>
+                        <th>W/TAX BASE AMOUNT</th>
+                        <th>W/TAX AMOUNT</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
 </body>
 </html>
-
-<script type="text/javascript">
+<script>
+    var apv = [];
+    
     $(document).ready(function(){
+        
         $(".yearpicker").datetimepicker({
             defaultDate: moment(),
             viewMode: 'years',
             format: 'YYYY'
-        } )
+        }).on('dp.change', function (e) {
+            FetchAPV();
+        });
+
+        $(".monthpicker").datetimepicker({
+            defaultDate: moment(),
+            viewMode: 'months',
+            format: 'MMMM'
+        }).on('dp.change', function (e) {
+            FetchAPV();
+        });
+
+        FetchAPV();
     })
+    function FetchAPV() {
+        let year = $("#years").val();
+        let month = $("#months").val();
+        let msg = "";
+        $.ajax({
+            url: "./APV_EWT",
+            data: {
+                years: year,
+                months: month
+            },
+            dataType: "json",
+            async: false,
+            success: function(res) {
+                if(res.valid) {
+                    apv = res.data
+                } else {
+                    apv.length = 0;
+                    apv = [];
+                    msg = res.msg
+                }
+                $("#trade").text(res.company.trade);
+                $("#company").text(res.company.name);
+                $("#tin").text(res.company.tin);
+                $("#address").text(res.company.address);
+            },
+            error: function(msg){
+                console.log(msg)
+            }
+        })
+
+        DisplayCode();
+        if(apv.length === 0){
+            alert(msg)
+            return {
+                valid: false
+            };
+        } 
+
+        return {
+            valid: true
+        };
+    }
+    
+    function export_file () {
+        let type = $(this).val();
+        var formData = new FormData(this);
+        let fetch = FetchAPV();
+        
+        if(fetch.valid) {
+            switch(type) {
+                case "CSV": 
+                    $.ajax({
+                        type: 'POST',
+                        url: './TO_CSV/',
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function(response) {
+                            console.log(response);
+                        },
+                        error: function(error) {
+                            // Handle the error response here
+                            console.log(error);
+                        }
+                    });
+                    break;
+                case "DAT":
+                    $("#formexport").prop("action", "DAT").change();
+                    break;
+            }
+        } 
+        $("#formexport").submit();
+    }
+
+    function DisplayCode() {
+        $("table tbody").empty();
+        apv.map((item, index) => {
+            $("<tr>").append(
+                $("<td>").text(item.date),
+                $("<td>").text(item.tranno),
+                $("<td>").text(item.tin),
+                $("<td>").text(item.name),
+                $("<td>").text(item.address),
+                $("<td>").text(item.ewt),
+                $("<td>").text((item.rate / 100) + "%"),
+                $("<td>").text(parseFloat(item.gross).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')),
+                $("<td>").text(parseFloat(item.credit).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')),
+            ).appendTo("table tbody");
+        });
+    }
 </script>
