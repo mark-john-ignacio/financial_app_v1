@@ -90,6 +90,7 @@ function listcurrencies(){ //API for currency list
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css">
 
 	<link href="../../global/css/components.css?t=<?php echo time();?>" id="style_components" rel="stylesheet" type="text/css"/>
+	<link href="../../global/css/plugins.css" rel="stylesheet" type="text/css"/>
     
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
@@ -101,6 +102,8 @@ function listcurrencies(){ //API for currency list
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+
+	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
 	<!--
 	--
 	-- FileType Bootstrap Scripts and Link
@@ -138,7 +141,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$Gross = $row['ngross'];
 		$cpricever = $row['cpricever'];
 		$nlimit = $row['nlimit'];
-    $cSITyp = $row['csalestype'];    
+    	$cSITyp = $row['csalestype'];    
 		$cCPONo = $row['cpono']; 
 
 		$nbasegross = $row['nbasegross'];
@@ -453,7 +456,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					</div>
 				</div>
 				<div class="portlet-body" style="overflow: auto">
-					<div style="min-height: 30vh; width: 1300px;">
+					<div style="min-height: 30vh; width: 1500px;">
 		
 						<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
 							<thead>
@@ -461,12 +464,12 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									<th width="100px" style="border-bottom:1px solid #999">Code</th>
 									<th width="300px" style="border-bottom:1px solid #999">Description</th>
 									<th width="100px" style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
-									<th width="80px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
+									<th width="150px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
 									<th width="80px" style="border-bottom:1px solid #999">UOM</th>
 									<th width="80px" style="border-bottom:1px solid #999">Factor</th>
 									<th width="80px" style="border-bottom:1px solid #999">Qty</th>
-									<th width="100px" style="border-bottom:1px solid #999">Price</th>
-									<th width="100px" style="border-bottom:1px solid #999">Amount</th>
+									<th width="200px" style="border-bottom:1px solid #999">Price</th>
+									<th width="200px" style="border-bottom:1px solid #999">Amount</th>
 									<th width="200px" style="border-bottom:1px solid #999">PO NO.</th>
 									<th width="100px" style="border-bottom:1px solid #999">Date Needed</th>
 									<th width="200px" style="border-bottom:1px solid #999">Remarks</th>
@@ -603,54 +606,54 @@ if (mysqli_num_rows($sqlhead)!=0) {
 </fieldset>
     
    
-			<!-- Add Info -->
-    	<div class="modal fade" id="MyDetModal" role="dialog">
-    		<div class="modal-dialog modal-lg">
+	<!-- Add Info -->
+    <div class="modal fade" id="MyDetModal" role="dialog">
+    	<div class="modal-dialog modal-lg">
        		<div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close"  aria-label="Close"  onclick="chkCloseInfo();"><span aria-hidden="true">&times;</span></button>
-              <h3 class="modal-title" id="invheader"> Additional Details Info</h3>           
-						</div>
+            	<div class="modal-header">
+              		<button type="button" class="close"  aria-label="Close"  onclick="chkCloseInfo();"><span aria-hidden="true">&times;</span></button>
+             		<h3 class="modal-title" id="invheader"> Additional Details Info</h3>           
+				</div>
     
-            <div class="modal-body">
-              <input type="hidden" name="hdnrowcnt2" id="hdnrowcnt2">
-              <table id="MyTable2" class="MyTable table table-condensed" width="100%">
-								<thead>
-									<tr>
-										<th style="border-bottom:1px solid #999">Code</th>
-										<th style="border-bottom:1px solid #999">Description</th>
-										<th style="border-bottom:1px solid #999">Field Name</th>
-										<th style="border-bottom:1px solid #999">Value</th>
-										<th style="border-bottom:1px solid #999">&nbsp;</th>
-									</tr>
-								</thead>
-								<tbody class="tbody">
-                </tbody>
-              </table>
+				<div class="modal-body">
+					<input type="hidden" name="hdnrowcnt2" id="hdnrowcnt2">
+					<table id="MyTable2" class="MyTable table table-condensed" width="100%">
+						<thead>
+							<tr>
+								<th style="border-bottom:1px solid #999">Code</th>
+								<th style="border-bottom:1px solid #999">Description</th>
+								<th style="border-bottom:1px solid #999">Field Name</th>
+								<th style="border-bottom:1px solid #999">Value</th>
+								<th style="border-bottom:1px solid #999">&nbsp;</th>
+							</tr>
+						</thead>
+						<tbody class="tbody">
+                		</tbody>
+              		</table>
     
-						</div>
+				</div>
         	</div><!-- /.modal-content -->
-    		</div><!-- /.modal-dialog -->
-			</div><!-- /.modal -->
+    	</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
 
 
-<!-- FULL PO LIST REFERENCES-->
+	<!-- FULL PO LIST REFERENCES-->
 
-<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog modal-full">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="InvListHdr">PO List</h3>
-            </div>
-            
-            <div class="modal-body" style="height:45vh">
-            
-       		<div class="col-xs-12 nopadding">
+	<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
+	<div class="modal-dialog modal-full">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h3 class="modal-title" id="InvListHdr">PO List</h3>
+			</div>
+			
+			<div class="modal-body" style="height:45vh">
+			
+			<div class="col-xs-12 nopadding">
 
-                <div class="form-group">
-                    <div class="col-xs-4 pre-scrollable" style="height:42vh; border-right: 2px solid #ccc">
-                        <table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight">
+				<div class="form-group">
+					<div class="col-xs-4 pre-scrollable" style="height:42vh; border-right: 2px solid #ccc">
+						<table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight">
 							<thead>
 								<tr>
 									<th nowrap>Quote No</th>
@@ -660,12 +663,12 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</thead>
 							<tbody>
 							</tbody>
-                        </table>
-                    </div>
+						</table>
+					</div>
 
-                    <div class="col-xs-8 pre-scrollable" style="height:37==42vh; border-right: 2px solid #ccc">
-                        <table name='MyInvDetList' id='MyInvDetList' class="table table-small">
-                           <thead>
+					<div class="col-xs-8 pre-scrollable" style="height:37==42vh; border-right: 2px solid #ccc">
+						<table name='MyInvDetList' id='MyInvDetList' class="table table-small">
+							<thead>
 								<tr>
 									<th style="text-align: center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
 									<th>Item No</th>
@@ -675,30 +678,30 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									<th style='text-align: right'>Price</th>
 									<th style='text-align: right'>Amount</th>
 								</tr>
-                            </thead>
-                            <tbody>
-                            	
-                            </tbody>
-                          </table>
-                    </div>
-               </div>
+							</thead>
+							<tbody>
+								
+							</tbody>
+							</table>
+					</div>
+				</div>
 
-        </div>
-         	            
+		</div>
+						
 			</div>
 			
-            <div class="modal-footer">
-                <button type="button" id="btnInsDet" onClick="InsertSI()" class="btn btn-primary">Insert</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+			<div class="modal-footer">
+				<button type="button" id="btnInsDet" onClick="InsertSI()" class="btn btn-primary">Insert</button>
+				<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
 
-								<input type="hidden" name="hdncurr" id="hdncurr">
-								<input type="hidden" name="hdncurrate" id="hdncurrate">
+				<input type="hidden" name="hdncurr" id="hdncurr">
+				<input type="hidden" name="hdncurrate" id="hdncurrate">
 
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<!-- End FULL INVOICE LIST -->
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	<!-- End FULL INVOICE LIST -->
 
 </form>
 
@@ -707,18 +710,18 @@ if (mysqli_num_rows($sqlhead)!=0) {
 else{
 ?>
 <form action="SO_edit.php" name="frmpos2" id="frmpos2">
-  <fieldset>
-   	<legend>Sales Order</legend>	
-<table width="100%" border="0">
-  <tr>
-    <tH width="100">TRANS NO.:</tH>
-    <td colspan="3" style="padding:2px" align="left"><div class="col-xs-2"><input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?php echo $txtctranno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos2');"></div></td>
-    </tr>
-  <tr>
-    <tH colspan="4" align="center" style="padding:10px"><font color="#FF0000"><b>SO No. DID NOT EXIST!</b></font></tH>
-    </tr>
-</table>
-</fieldset>
+	<fieldset>
+		<legend>Sales Order</legend>	
+			<table width="100%" border="0">
+				<tr>
+					<tH width="100">TRANS NO.:</tH>
+					<td colspan="3" style="padding:2px" align="left"><div class="col-xs-2"><input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?php echo $txtctranno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos2');"></div></td>
+				</tr>
+				<tr>
+					<tH colspan="4" align="center" style="padding:10px"><font color="#FF0000"><b>SO No. DID NOT EXIST!</b></font></tH>
+				</tr>
+			</table>
+	</fieldset>
 </form>
 <?php
 }
@@ -779,7 +782,7 @@ else{
     <div class="modal-dialog modal-lg">
         <div class="modal-contnorad">   
             <div class="modal-bodylong">
-<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" id="printclose"><span aria-hidden="true">&times;</span></button>        
         
                <iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:8.5in; display:block; margin:0px; padding:0px; border:0px"></iframe>
     
@@ -793,12 +796,11 @@ else{
 </body>
 </html>
 
-<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
-
 <script type="text/javascript">
 	var xChkBal = "";
 	var xChkLimit = "";
 	var xChkLimitWarn = "";
+	var xChkVatableStatus = "";
 
 	var xtoday = new Date();
 	var xdd = xtoday.getDate();
@@ -846,7 +848,7 @@ else{
 			url: "th_filedelete.php?id="+name+"&code=<?=$txtctranno?>", 
 			key: i + 1
 		});
-	})
+	});
 
 	<?php
 		if($poststat == "True"){
@@ -912,52 +914,52 @@ else{
     		$(this).tab('show');
 		});
 
-			if(file_name.length > 0){
-				$('#file-0').fileinput({
-					showUpload: false,
-					showClose: false,
-					allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
-					overwriteInitial: false,
-					maxFileSize:100000,
-					maxFileCount: 5,
-					browseOnZoneClick: true,
-					fileActionSettings: { showUpload: false, showDrag: false, },
-					initialPreview: list_file,
-					initialPreviewAsData: true,
-					initialPreviewFileType: 'image',
-					initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/SO/<?=$company."_".$txtctranno?>/{filename}',
-					initialPreviewConfig: file_config
+		if(file_name.length > 0){
+			$('#file-0').fileinput({
+				showUpload: false,
+				showClose: false,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, },
+				initialPreview: list_file,
+				initialPreviewAsData: true,
+				initialPreviewFileType: 'image',
+				initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/SO/<?=$company."_".$txtctranno?>/{filename}',
+				initialPreviewConfig: file_config
+			});
+		} else {
+			$("#file-0").fileinput({
+				showUpload: false,
+				showClose: false,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, }
+			});
+		}			
+			
+		$.ajax({
+			url : "../../include/th_xtrasessions.php",
+			type: "Post",
+			async:false,
+			dataType: "json",
+			success: function(data)
+			{	
+				console.log(data);
+				$.each(data,function(index,item){
+					xChkBal = item.chkinv; //0 = Check ; 1 = Dont Check
+					xChkLimit = item.chkcustlmt; //0 = Disable ; 1 = Enable
+					xChkLimitWarn = item.chklmtwarn; //0 = Accept Warninf ; 1 = Accept Block ; 2 = Refuse Order
+					xChkVatableStatus = item.chkcompvat;
 				});
-			} else {
-				$("#file-0").fileinput({
-					showUpload: false,
-					showClose: false,
-					allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
-					overwriteInitial: false,
-					maxFileSize:100000,
-					maxFileCount: 5,
-					browseOnZoneClick: true,
-					fileActionSettings: { showUpload: false, showDrag: false, }
-				});
-			}			
-				
-	   			$.ajax({
-					url : "../../include/th_xtrasessions.php",
-					type: "Post",
-					async:false,
-					dataType: "json",
-					success: function(data)
-					{	
-					   console.log(data);
-                       $.each(data,function(index,item){
-						   xChkBal = item.chkinv; //0 = Check ; 1 = Dont Check
-						   xChkLimit = item.chkcustlmt; //0 = Disable ; 1 = Enable
-						   xChkLimitWarn = item.chklmtwarn; //0 = Accept Warninf ; 1 = Accept Block ; 2 = Refuse Order
-						   xChkVatableStatus = item.chkcompvat;
-					   });
-					}
-				});
-	
+			}
+		});
+
 		if(xChkVatableStatus==1){
 			$(".chkVATClass").show();	
 		}
@@ -979,14 +981,9 @@ else{
 		else{
 			$(".chklimit").show();
 		}
-
-		loaddetails();
-		//loaddetinfo();
 		
 		$('#txtprodnme').attr("disabled", true);
 		$('#txtprodid').attr("disabled", true);
-		
-		disabled();
 			
 		$('#date_delivery, #date_PO').datetimepicker({
 			format: 'MM/DD/YYYY'
@@ -1128,37 +1125,36 @@ else{
 				$("#txtcustid").val(item.id);
 				//$("#imgemp").attr("src",item.imgsrc);
 				$("#hdnpricever").val(item.cver);
-					$('#txtdelcustid').val(item.id);
-					$('#txtdelcust').val(item.value); 
-					
-					$('#txtsalesmanid').val(item.csman);
-					$('#txtsalesman').val(item.smaname);
-					
-					$('#txtchouseno').val(item.chouseno);
-					$('#txtcCity').val(item.ccity);
-					$('#txtcState').val(item.cstate);
-					$('#txtcCountry').val(item.ccountry);
-					$('#txtcZip').val(item.czip);			
+				$('#txtdelcustid').val(item.id);
+				$('#txtdelcust').val(item.value); 
+				
+				$('#txtsalesmanid').val(item.csman);
+				$('#txtsalesman').val(item.smaname);
+				
+				$('#txtchouseno').val(item.chouseno);
+				$('#txtcCity').val(item.ccity);
+				$('#txtcState').val(item.cstate);
+				$('#txtcCountry').val(item.ccountry);
+				$('#txtcZip').val(item.czip);			
 				$('#hdnvalid').val("YES");
 				
 				$('#txtremarks').focus();
 
-					if(xChkLimit==1){
-						
-						var limit = item.nlimit;
-						if(limit % 1 == 0){
-							limit = parseInt(limit);
-						}
-
-						limit = Number(limit).toLocaleString('en');					
-						$('#ncustlimit').html("<b><font size='+1'>"+limit+"</font></b>");
-						$('#hdncustlimit').val(item.nlimit);
-						
-						checkcustlimit(item.id, item.nlimit);
-
+				if(xChkLimit==1){
+					
+					var limit = item.nlimit;
+					if(limit % 1 == 0){
+						limit = parseInt(limit);
 					}
-				
-				
+
+					limit = Number(limit).toLocaleString('en');					
+					$('#ncustlimit').html("<b><font size='+1'>"+limit+"</font></b>");
+					$('#hdncustlimit').val(item.nlimit);
+					
+					checkcustlimit(item.id, item.nlimit);
+
+				}
+						
 			}
 		
 		});
@@ -1443,177 +1439,178 @@ else{
 			recomputeCurr();
 		});
 	
+		loaddetails();
+		//loaddetinfo();
+		disabled();
 
 	});
 
-function checkcustlimit(id,xcred){
-	//Check Credit Limit BALNCE here
-	var xBalance = 0;
-	var xinvs = 0;
-	var xors = 0;
-	
-		$.ajax ({
-			url: "../th_creditlimit.php",
-			data: { id: id },
-			async: false,
-			dataType: "json",
-			success: function( data ) {
-											
-				console.log(data);
-				$.each(data,function(index,item){
-					if(item.invs!=null){
-						xinvs = item.invs;
-					}
-					
-					if(item.ors!=null){
-						xors = item.ors;
-					}
-					
-				});
-			}
-		});
-	
-	//alert("("+parseFloat(xcred) +"-"+ parseFloat(xinvs)+") + "+parseFloat(xors));
+	function checkcustlimit(id,xcred){
+		//Check Credit Limit BALNCE here
+		var xBalance = 0;
+		var xinvs = 0;
+		var xors = 0;
 		
-	xBalance = (parseFloat(xcred) - parseFloat(xinvs)) + parseFloat(xors);
-	$("#hdncustbalance").val(xBalance);
-	
-	
-	
-	if(xBalance > 0){
-		xBalance = Number(xBalance).toLocaleString('en');
-		$("#ncustbalance").html("<b><font size='+1'>"+xBalance+"</font></b>");
-	}
-	else{	
-		if(parseFloat(xcred) > 0){
-
-			if(xChkLimitWarn==0) { //0 = Accept Warninf ; 1 = Accept Block ; 2 = Refuse Order
-				$("#ncustbalance").html("<b><i><font color='red'>Max Limit Reached</font></i></b>");
-			}
-			else if(xChkLimitWarn==1) {
-				$("#ncustbalance").html("<b><i><font color='red' size='-1'>Max Limit Reached</font></i></b>");
-				$("#ncustbalance2").html("<b><i><font color='white' size='+1'>Delivery is blocked</font></i></b>");
-			}
-			else if(xChkLimitWarn==2) {
-				$("#ncustbalance").html("<b><i><font color='red' size='-1'>Max Limit Reached</font></i></b>");
-				$("#ncustbalance2").html("<b><i><font color='white' size='+1'>ORDERS BLOCKED</font></i></b>");
-				$("#btnSave").attr("disabled", true);
-				$("#btnIns").attr("disabled", true);
-				$('#txtprodnme').attr("disabled", true);
-				$('#txtprodid').attr("disabled", true);
-
-			}
-		}else{
-			$("#ncustbalance").html("<b><i><font color='red'>Unlimited Credit Limit</font></i></b>");
+			$.ajax ({
+				url: "../th_creditlimit.php",
+				data: { id: id },
+				async: false,
+				dataType: "json",
+				success: function( data ) {
+												
+					console.log(data);
+					$.each(data,function(index,item){
+						if(item.invs!=null){
+							xinvs = item.invs;
+						}
+						
+						if(item.ors!=null){
+							xors = item.ors;
+						}
+						
+					});
+				}
+			});
+		
+		//alert("("+parseFloat(xcred) +"-"+ parseFloat(xinvs)+") + "+parseFloat(xors));
+			
+		xBalance = (parseFloat(xcred) - parseFloat(xinvs)) + parseFloat(xors);
+		$("#hdncustbalance").val(xBalance);
+		
+		
+		
+		if(xBalance > 0){
+			xBalance = Number(xBalance).toLocaleString('en');
+			$("#ncustbalance").html("<b><font size='+1'>"+xBalance+"</font></b>");
 		}
-	}
+		else{	
+			if(parseFloat(xcred) > 0){
 
-}
-
-function addItemName(qty,price,curramt,amt,factr,cref,nrefident,crmx,ditmneed,citmpono){
-
-	 if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
-
-		var isItem = "NO";
-		var disID = "";
-
-			$("#MyTable > tbody > tr").each(function() {	
-				disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-
-				if($("#txtprodid").val()==disID){
-					
-					isItem = "YES";
+				if(xChkLimitWarn==0) { //0 = Accept Warninf ; 1 = Accept Block ; 2 = Refuse Order
+					$("#ncustbalance").html("<b><i><font color='red'>Max Limit Reached</font></i></b>");
+				}
+				else if(xChkLimitWarn==1) {
+					$("#ncustbalance").html("<b><i><font color='red' size='-1'>Max Limit Reached</font></i></b>");
+					$("#ncustbalance2").html("<b><i><font color='white' size='+1'>Delivery is blocked</font></i></b>");
+				}
+				else if(xChkLimitWarn==2) {
+					$("#ncustbalance").html("<b><i><font color='red' size='-1'>Max Limit Reached</font></i></b>");
+					$("#ncustbalance2").html("<b><i><font color='white' size='+1'>ORDERS BLOCKED</font></i></b>");
+					$("#btnSave").attr("disabled", true);
+					$("#btnIns").attr("disabled", true);
+					$('#txtprodnme').attr("disabled", true);
+					$('#txtprodid').attr("disabled", true);
 
 				}
-			});	
+			}else{
+				$("#ncustbalance").html("<b><i><font color='red'>Unlimited Credit Limit</font></i></b>");
+			}
+		}
 
-	 //if(isItem=="NO"){	
-	 	myFunctionadd(qty,price,curramt,amt,factr,cref,nrefident,crmx,ditmneed,citmpono);
-		
-		ComputeGross();	
+	}
 
-	// }
-	// else{
+	function addItemName(qty,price,curramt,amt,factr,cref,nrefident,crmx,ditmneed,citmpono){
 
-	//	addqty();	
+		if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
+
+			var isItem = "NO";
+			var disID = "";
+
+				$("#MyTable > tbody > tr").each(function() {	
+					disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+
+					if($("#txtprodid").val()==disID){
+						
+						isItem = "YES";
+
+					}
+				});	
+
+		//if(isItem=="NO"){	
+			myFunctionadd(qty,price,curramt,amt,factr,cref,nrefident,crmx,ditmneed,citmpono);
 			
-	// }
-		
-		$("#txtprodid").val("");
-		$("#txtprodnme").val("");
-		$("#hdnunit").val("");
-		$("#hdnqty").val("");
-		$("#hdnqtyunit").val("");
-		$("#hdnvat").val("");
-		$("#hdnmakebuy").val("");
-		
-	 }
+			ComputeGross();	
 
-}
+		// }
+		// else{
 
-function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident,crmx,ditmneed,citmpono){
-	//alert("hello");
-	var itmcode = $("#txtprodid").val();
-	var itmdesc = $("#txtprodnme").val();
-	var itmqtyunit = $("#hdnqtyunit").val();
-	var itmqty = $("#hdnqty").val();
-	var itmunit = $("#hdnunit").val();
-	var itmccode = $("#hdnpricever").val(); 
-	var itmakebuy = $("#hdnmakebuy").val(); 
-
-
-	if(qty=="" && pricex=="" && amtx=="" && factr==""){
-		var itmtotqty = 1;
-		var price = chkprice(itmcode,itmunit,itmccode,xtoday);
-		var curramtz = price;
-		//var amtz = price;
-		var factz = 1;
-		var baseprice = curramtz * parseFloat($("#basecurrval").val());
-		baseprice = baseprice.toFixed(4);
-	}
-	else{
-		var itmtotqty = qty
-		var price = pricex;
-		var curramtz = curramt;
-	//	var amtz = amtx;	
-		var factz = factr;	
-		var baseprice = amtx;
-
+		//	addqty();	
+				
+		// }
+			
+			$("#txtprodid").val("");
+			$("#txtprodnme").val("");
+			$("#hdnunit").val("");
+			$("#hdnqty").val("");
+			$("#hdnqtyunit").val("");
+			$("#hdnvat").val("");
+			$("#hdnmakebuy").val("");
+			
+		}
 
 	}
 
-	if(crmx==""){
-		crmx = itmakebuy;
-	}
-	
+	function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident,crmx,ditmneed,citmpono){
+		//alert("hello");
+		var itmcode = $("#txtprodid").val();
+		var itmdesc = $("#txtprodnme").val();
+		var itmqtyunit = $("#hdnqtyunit").val();
+		var itmqty = $("#hdnqty").val();
+		var itmunit = $("#hdnunit").val();
+		var itmccode = $("#hdnpricever").val(); 
+		var itmakebuy = $("#hdnmakebuy").val(); 
 
-	
-	
-	//alert(itmcode+","+itmunit+","+itmccode+","+xtoday);
+
+		if(qty=="" && pricex=="" && amtx=="" && factr==""){
+			var itmtotqty = 1;
+			var price = chkprice(itmcode,itmunit,itmccode,xtoday);
+			var curramtz = price;
+			//var amtz = price;
+			var factz = 1;
+			var baseprice = curramtz * parseFloat($("#basecurrval").val());
+			baseprice = baseprice.toFixed(4);
+		}
+		else{
+			var itmtotqty = qty
+			var price = pricex;
+			var curramtz = curramt;
+		//	var amtz = amtx;	
+			var factz = factr;	
+			var baseprice = amtx;
+
+
+		}
+
+		if(crmx==""){
+			crmx = itmakebuy;
+		}
 		
+		
+		//alert(itmcode+","+itmunit+","+itmccode+","+xtoday);
+			
 		if(xChkBal==1){
 			var avail = "";
 		}
 		else{
 
-      if($("#selsityp").val()=="Goods"){
-        if(parseFloat(itmqty)>0){
-          var avail = "<td> <input type='hidden' name='hdnavailqty' id='hdnavailqty' value='"+itmqty+"'> " + itmqty + " " + itmqtyunit +" </td>";
-          var qtystat = "";
-        }
-        else{
-          var avail = "<td> <input type='hidden' name='hdnavailqty' id='hdnavailqty' value='0'> Unavailable </td>";
-          var qtystat = "readonly";
-         // itmtotqty = 0;
-        }
-      }else{
-          var avail = "<td> <input type='hidden' name='hdnavailqty' id='hdnavailqty' value='0'> NA </td>";
-          var qtystat = "";
-         // itmtotqty = 0;
-      }
+			if($("#selsityp").val()=="Goods"){
+				if(parseFloat(itmqty)>0){
+				var avail = "<td> <input type='hidden' name='hdnavailqty' id='hdnavailqty' value='"+itmqty+"'> " + itmqty + " " + itmqtyunit +" </td>";
+				var qtystat = "";
+				}
+				else{
+				var avail = "<td> <input type='hidden' name='hdnavailqty' id='hdnavailqty' value='0'> Unavailable </td>";
+				var qtystat = "readonly";
+				// itmtotqty = 0;
+				}
+			}else{
+				var avail = "<td> <input type='hidden' name='hdnavailqty' id='hdnavailqty' value='0'> NA </td>";
+				var qtystat = "";
+				// itmtotqty = 0;
+			}
 		}
+			
 		
-	
 		var xz = $("#hdnitmfactors").val();
 		if(itmqtyunit==itmunit){
 			isselctd = "selected";
@@ -1635,414 +1632,406 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident,crmx,ditmnee
 			}
 		});			
 
-	if(cref==null){
-		cref = ""
-	}
+		if(cref==null){
+			cref = ""
+		}
+		
+		var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
+		var lastRow = tbl.length;
 
-	
-	
-	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
-	var lastRow = tbl.length;
+		var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+nrefident+"' name=\"hdnrefident\" id=\"hdnrefident\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+" <input type='hidden' value='"+cref+"' name=\"txtcreference\" id=\"txtcreference\"></td>";
+		var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmdesc+"</td>";
+		var tditmavail = avail;
 
-	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+nrefident+"' name=\"hdnrefident\" id=\"hdnrefident\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+" <input type='hidden' value='"+cref+"' name=\"txtcreference\" id=\"txtcreference\"></td>";
-	var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmdesc+"</td>";
-	var tditmavail = avail;
-
-	var tditmvats = "";
+		var tditmvats = "";
 		if(xChkVatableStatus==1){ 
-			
-				var xz = $("#hdntaxcodes").val();
-				taxoptions = "";
-				$.each(jQuery.parseJSON(xz), function() { 
-					if($("#hdnvat").val()==this['ctaxcode']){
-						isselctd = "selected";
-					}else{
-						isselctd = "";
-					}
-					taxoptions = taxoptions + "<option value='"+this['ctaxcode']+"' data-id='"+this['nrate']+"' "+isselctd+">"+this['ctaxdesc']+"</option>";
-				});
+		
+			var xz = $("#hdntaxcodes").val();
+			taxoptions = "";
+			$.each(jQuery.parseJSON(xz), function() { 
+				if($("#hdnvat").val()==this['ctaxcode']){
+					isselctd = "selected";
+				}else{
+					isselctd = "";
+				}
+				taxoptions = taxoptions + "<option value='"+this['ctaxcode']+"' data-id='"+this['nrate']+"' "+isselctd+">"+this['ctaxdesc']+"</option>";
+			});
 
 			tditmvats = "<td width=\"100\" nowrap> <select class='form-control input-xs' name=\"selitmvatyp\" id=\"selitmvatyp"+lastRow+"\">" + taxoptions + "</select> </td>";
 
 		}
 
-	var tditmunit = "<td width=\"100\" nowrap> <select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\" data-main='"+itmqtyunit+"'>"+uomoptions+"</select> </td>";
+		var tditmunit = "<td width=\"100\" nowrap> <select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\" data-main='"+itmqtyunit+"'>"+uomoptions+"</select> </td>";
 
-	isfactoread = "";
-	if(itmqtyunit==itmunit){
-		isfactoread = "readonly";
-	}
-
-	var tditmfactor = "<td width=\"100\" nowrap> <input type='text' value='"+factz+"' class='numeric form-control input-xs' style='text-align:right' name='hdnfactor' id='hdnfactor"+lastRow+"' "+isfactoread+"> </td>";
-
-	var tditmqty = "<td width=\"100\" nowrap> <input type='text' value='"+itmtotqty+"' data-v-min=\"1\" class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' "+qtystat+"> <input type='hidden' value='"+itmqtyunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> </td>";
-		
-	var tditmprice = "<td width=\"100\" nowrap> <input type='text' value='"+price+"' class='numeric2 form-control input-xs' style='text-align:right' name=\"txtnprice\" id='txtnprice"+lastRow+"' "+qtystat+" \"> </td>";
-
-	var tditmbaseamount = "<td width=\"100\" nowrap> <input type='text' value='"+curramtz+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtntranamount\" id='txtntranamount"+lastRow+"' readonly> <input type='hidden' value='"+baseprice+"' name=\"txtnamount\" id='txtnamount"+lastRow+"' readonly> </td>";
-
-	var tditmrempo = "<td><input type='text' value='"+citmpono+"' class='form-control input-xs' name=\"txtcitmrempo\" id='txtcitmrempo"+lastRow+"'></td>";
-
-	var tddneed = "<td width=\"100\" style=\"padding: 1px; position:relative;\" nowrap><input type='text' class='form-control input-xs' name=\"txtcitmdneed\" id='txtcitmdneed"+lastRow+"'></td>";
-
-	var tditmremx = "<td><input type='text' value='"+crmx+"' class='form-control input-xs' name=\"txtcitmremx\" id='txtcitmremx"+lastRow+"'></td>";
-
-	var tditmdel = "<td width=\90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + lastRow + "' value='delete'/></td>"; // &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> 
-
-	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmavail + tditmvats + tditmunit + tditmfactor + tditmqty + tditmprice + tditmbaseamount + tditmrempo + tddneed + tditmremx + tditmdel + '</tr>');
-
-									$("#del"+lastRow).on('click', function() {
-										$(this).closest('tr').remove();
-
-										Reindex();
-										ComputeGross();
-									});
-
-									$("input.numeric2").autoNumeric('init',{mDec:4});
-
-									$("input.numeric").autoNumeric('init',{mDec:2});
-
-									$("#selitmvatyp"+lastRow).on("change", function() {
-										ComputeGross();
-									});
-
-									/*
-                  $("input.numeric").numeric(
-                    {negative: false}
-                  );
-
-                  $("input.numericdec").numeric(
-                    {
-                      negative: false,
-                      decimalPlaces: 4
-                    }
-                  );
-									*/
-
-									$("input.numeric, input.numeric2").on("click", function () {
-									   $(this).select();
-									});
-									
-                  $("input.numeric, input.numeric2").on("keyup", function () {
-                     ComputeAmt($(this).attr('id'));
-                     ComputeGross();
-                  }); 
-
-									$("#seluom"+lastRow).on('change', function() {
-
-										var xyz = chkprice(itmcode,$(this).val(),itmccode,xtoday);
-										var mainuomdata = $(this).data("main");
-										var fact = $(this).find(':selected').data('factor');
-
-										if(fact!=0){
-											$('#hdnfactor'+lastRow).val(fact);
-										}
-
-										if(mainuomdata!==$(this).val()){
-											$('#hdnfactor'+lastRow).attr("readonly", false);
-										}else{
-											$('#hdnfactor'+lastRow).attr("readonly", true);
-										}
-
-										$('#txtnprice'+lastRow).val(xyz.trim());
-										//alert($(this).attr('id'));
-										ComputeAmt($(this).attr('id'));
-										ComputeGross();
-
-									});
-									
-									ComputeGross();
-
-	if(ditmneed!=""){
-		dneeded = moment(ditmneed).format('MM/DD/YYYY');
-		$('#txtcitmdneed'+lastRow).datetimepicker({
-			format: 'MM/DD/YYYY',
-			useCurrent: false,
-			//minDate: moment().format('L'),
-			defaultDate: dneeded,
-			widgetPositioning: {
-				horizontal: 'right',
-				vertical: 'bottom'
-			}
-		});
-	}else{
-	
-		$('#txtcitmdneed'+lastRow).datetimepicker({
-			format: 'MM/DD/YYYY',
-			useCurrent: false,
-			//minDate: moment().format('L'),
-			defaultDate: moment().format('L'),
-			widgetPositioning: {
-				horizontal: 'right',
-				vertical: 'bottom'
-			}
-		});
-	}
-									
-									
-}
-
-function Reindex(){
-			$("#MyTable > tbody > tr").each(function(index) {	
-				tx = index + 1;
-
-				$(this).find('select[name="seluom"]').attr("id","seluom"+tx);
-				$(this).find('input[name="txtnqty"]').attr("id","txtnqty"+tx);
-				$(this).find('input[name="txtnprice"]').attr("id","txtnprice"+tx);
-				$(this).find('input[type="hidden"][name="txtnamount"]').attr("id","txtnamount"+tx);
-				$(this).find('input[name="txtntranamount"]').attr("id","txtntranamount"+tx);
-				$(this).find('input[type="hidden"][name="hdnmainuom"]').attr("id","hdnmainuom"+tx);
-				$(this).find('input[name="hdnfactor"]').attr("id","hdnfactor"+tx); 
-
-				if(xChkVatableStatus==1){ 
-					$(this).find('select[name="selitmvatyp"]').attr("id","selitmvatyp"+tx); 
-				}
-
-				$(this).find('input[name="txtcitmrempo"]').attr("id","txtcitmrempo"+tx);
-				$(this).find('input[name="txtcitmdneed"]').attr("id","txtcitmdneed"+tx);
-				$(this).find('input[name="txtcitmremx"]').attr("id","txtcitmremx"+tx);
-
-			});
-}
-
-			
-		function ComputeAmt(nme){
-			var r = nme.replace( /^\D+/g, '');
-			var nnet = 0;
-			var nqty = 0;
-			
-			nqty = $("#txtnqty"+r).val().replace(/,/g,'');
-			nqty = parseFloat(nqty)
-			nprc = $("#txtnprice"+r).val().replace(/,/g,'');
-			nprc = parseFloat(nprc);
-			
-			namt = nqty * nprc;
-			namt = namt.toFixed(4);
-
-			namt2 = namt * parseFloat($("#basecurrval").val());
-			namt2 = namt2.toFixed(4);
-
-			
-			$("#txtntranamount"+r).val(namt);		
-
-			$("#txtnamount"+r).val(namt2);
-
-			$("#txtntranamount"+r).autoNumeric('destroy');
-			//$("#txtnamount"+r).autoNumeric('destroy');
-
-			$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
-			//$("#txtnamount"+r).autoNumeric('init',{mDec:2});
-
-
+		isfactoread = "";
+		if(itmqtyunit==itmunit){
+			isfactoread = "readonly";
 		}
 
-		function ComputeGross(){
-			var rowCount = $('#MyTable tr').length;
+		var tditmfactor = "<td width=\"100\" nowrap> <input type='text' value='"+factz+"' class='numeric form-control input-xs' style='text-align:right' name='hdnfactor' id='hdnfactor"+lastRow+"' "+isfactoread+"> </td>";
+
+		var tditmqty = "<td width=\"100\" nowrap> <input type='text' value='"+itmtotqty+"' data-v-min=\"1\" class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' "+qtystat+"> <input type='hidden' value='"+itmqtyunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> </td>";
 			
-			var gross = 0;
-			var nnet = 0;
-			var vatz = 0;
+		var tditmprice = "<td width=\"100\" nowrap> <input type='text' value='"+price+"' class='numeric2 form-control input-xs' style='text-align:right' name=\"txtnprice\" id='txtnprice"+lastRow+"' "+qtystat+" \"> </td>";
 
-			var nnetTot = 0;
-			var vatzTot = 0;
+		var tditmbaseamount = "<td width=\"100\" nowrap> <input type='text' value='"+curramtz+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtntranamount\" id='txtntranamount"+lastRow+"' readonly> <input type='hidden' value='"+baseprice+"' name=\"txtnamount\" id='txtnamount"+lastRow+"' readonly> </td>";
 
-			if(rowCount>1){
-				for (var i = 1; i <= rowCount-1; i++) {
+		var tditmrempo = "<td><input type='text' value='"+citmpono+"' class='form-control input-xs' name=\"txtcitmrempo\" id='txtcitmrempo"+lastRow+"'></td>";
+
+		var tddneed = "<td width=\"100\" style=\"padding: 1px; position:relative;\" nowrap><input type='text' class='form-control input-xs' name=\"txtcitmdneed\" id='txtcitmdneed"+lastRow+"'></td>";
+
+		var tditmremx = "<td><input type='text' value='"+crmx+"' class='form-control input-xs' name=\"txtcitmremx\" id='txtcitmremx"+lastRow+"'></td>";
+
+		var tditmdel = "<td width=\90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + lastRow + "' value='delete'/></td>"; // &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> 
+
+		$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmavail + tditmvats + tditmunit + tditmfactor + tditmqty + tditmprice + tditmbaseamount + tditmrempo + tddneed + tditmremx + tditmdel + '</tr>');
+
+		$("#del"+lastRow).on('click', function() {
+			$(this).closest('tr').remove();
+
+			Reindex();
+			ComputeGross();
+		});
+
+		$("input.numeric2").autoNumeric('init',{mDec:4});
+
+		$("input.numeric").autoNumeric('init',{mDec:2});
+
+		$("#selitmvatyp"+lastRow).on("change", function() {
+			ComputeGross();
+		});
+
+		/*
+		$("input.numeric").numeric(
+			{negative: false}
+		);
+
+		$("input.numericdec").numeric(
+		{
+			negative: false,
+			decimalPlaces: 4
+		});
+		*/
+
+		$("input.numeric, input.numeric2").on("click", function () {
+			$(this).select();
+		});
+										
+		$("input.numeric, input.numeric2").on("keyup", function () {
+			ComputeAmt($(this).attr('id'));
+			ComputeGross();
+		}); 
+
+		$("#seluom"+lastRow).on('change', function() {
+
+			var xyz = chkprice(itmcode,$(this).val(),itmccode,xtoday);
+			var mainuomdata = $(this).data("main");
+			var fact = $(this).find(':selected').data('factor');
+
+			if(fact!=0){
+				$('#hdnfactor'+lastRow).val(fact);
+			}
+
+			if(mainuomdata!==$(this).val()){
+				$('#hdnfactor'+lastRow).attr("readonly", false);
+			}else{
+				$('#hdnfactor'+lastRow).attr("readonly", true);
+			}
+
+			$('#txtnprice'+lastRow).val(xyz.trim());
+			//alert($(this).attr('id'));
+			ComputeAmt($(this).attr('id'));
+			ComputeGross();
+
+		});
+		
+		ComputeGross();
+
+		if(ditmneed!=""){
+			dneeded = moment(ditmneed).format('MM/DD/YYYY');
+			$('#txtcitmdneed'+lastRow).datetimepicker({
+				format: 'MM/DD/YYYY',
+				useCurrent: false,
+				//minDate: moment().format('L'),
+				defaultDate: dneeded,
+				widgetPositioning: {
+					horizontal: 'right',
+					vertical: 'bottom'
+				}
+			});
+		}else{
+		
+			$('#txtcitmdneed'+lastRow).datetimepicker({
+				format: 'MM/DD/YYYY',
+				useCurrent: false,
+				//minDate: moment().format('L'),
+				defaultDate: moment().format('L'),
+				widgetPositioning: {
+					horizontal: 'right',
+					vertical: 'bottom'
+				}
+			});
+		}
+										
+										
+	}
+
+	function Reindex(){
+		$("#MyTable > tbody > tr").each(function(index) {	
+			tx = index + 1;
+
+			$(this).find('select[name="seluom"]').attr("id","seluom"+tx);
+			$(this).find('input[name="txtnqty"]').attr("id","txtnqty"+tx);
+			$(this).find('input[name="txtnprice"]').attr("id","txtnprice"+tx);
+			$(this).find('input[type="hidden"][name="txtnamount"]').attr("id","txtnamount"+tx);
+			$(this).find('input[name="txtntranamount"]').attr("id","txtntranamount"+tx);
+			$(this).find('input[type="hidden"][name="hdnmainuom"]').attr("id","hdnmainuom"+tx);
+			$(this).find('input[name="hdnfactor"]').attr("id","hdnfactor"+tx); 
+
+			if(xChkVatableStatus==1){ 
+				$(this).find('select[name="selitmvatyp"]').attr("id","selitmvatyp"+tx); 
+			}
+
+			$(this).find('input[name="txtcitmrempo"]').attr("id","txtcitmrempo"+tx);
+			$(this).find('input[name="txtcitmdneed"]').attr("id","txtcitmdneed"+tx);
+			$(this).find('input[name="txtcitmremx"]').attr("id","txtcitmremx"+tx);
+
+		});
+	}
 			
-					if(xChkVatableStatus==1){  
-						var slctdval = $("#selitmvatyp"+i+" option:selected").data('id');
+	function ComputeAmt(nme){
+		var r = nme.replace( /^\D+/g, '');
+		var nnet = 0;
+		var nqty = 0;
+		
+		nqty = $("#txtnqty"+r).val().replace(/,/g,'');
+		nqty = parseFloat(nqty)
+		nprc = $("#txtnprice"+r).val().replace(/,/g,'');
+		nprc = parseFloat(nprc);
+		
+		namt = nqty * nprc;
+		namt = namt.toFixed(4);
 
-						if(slctdval!=0){
-							if(parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) > 0 ){
+		namt2 = namt * parseFloat($("#basecurrval").val());
+		namt2 = namt2.toFixed(4);
 
-								nnet = parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) / parseFloat(1 + (parseInt(slctdval)/100));
-								vatz = nnet * (parseInt(slctdval)/100);
+		
+		$("#txtntranamount"+r).val(namt);		
 
-								nnetTot = nnetTot + nnet;
-								vatzTot = vatzTot + vatz;
-							}
-						}else{
-							nnetTot = nnetTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
+		$("#txtnamount"+r).val(namt2);
+
+		$("#txtntranamount"+r).autoNumeric('destroy');
+		//$("#txtnamount"+r).autoNumeric('destroy');
+
+		$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
+		//$("#txtnamount"+r).autoNumeric('init',{mDec:2});
+
+
+	}
+
+	function ComputeGross(){
+		var rowCount = $('#MyTable tr').length;
+		
+		var gross = 0;
+		var nnet = 0;
+		var vatz = 0;
+
+		var nnetTot = 0;
+		var vatzTot = 0;
+
+		if(rowCount>1){
+			for (var i = 1; i <= rowCount-1; i++) {
+		
+				if(xChkVatableStatus==1){  
+					var slctdval = $("#selitmvatyp"+i+" option:selected").data('id');
+
+					if(slctdval!=0){
+						if(parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) > 0 ){
+
+							nnet = parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) / parseFloat(1 + (parseInt(slctdval)/100));
+							vatz = nnet * (parseInt(slctdval)/100);
+
+							nnetTot = nnetTot + nnet;
+							vatzTot = vatzTot + vatz;
 						}
 					}else{
-
 						nnetTot = nnetTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
-
 					}
+				}else{
 
-					gross = gross + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
+					nnetTot = nnetTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
+
 				}
+
+				gross = gross + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
+			}
+		}
+
+		gross2 = gross * parseFloat($("#basecurrval").val().replace(/,/g,''));
+
+		$("#txtnNetVAT").val(nnetTot);
+		$("#txtnVAT").val(vatzTot);
+		$("#txtnGross").val(gross2);
+		$("#txtnBaseGross").val(gross);
+
+		$("#divtxtnNetVAT").text(nnetTot.toFixed(2));
+		$("#divtxtnVAT").text(vatzTot.toFixed(2));
+		$("#divtxtnGross").text(gross.toFixed(2));
+
+		$("#divtxtnNetVAT").formatNumber();
+		$("#divtxtnVAT").formatNumber();
+		$("#divtxtnGross").formatNumber();
+
+	}
+
+	function addqty(){
+
+		var itmcode = document.getElementById("txtprodid").value;
+
+		var TotQty = 0;
+		var TotAmt = 0;
+		
+		$("#MyTable > tbody > tr").each(function() {	
+		var disID = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+		
+		//alert(disID);
+			if(disID==itmcode){
+				
+				var itmqty = $(this).find("input[name='txtnqty']").val();
+				var itmprice = $(this).find("input[name='txtnprice']").val().replace(/,/g,'');
+				
+				//alert(itmqty +" : "+ itmprice);
+				
+				TotQty = parseFloat(itmqty) + 1;
+				$(this).find("input[name='txtnqty']").val(TotQty);
+				
+				TotAmt = TotQty * parseFloat(itmprice);
+				$(this).find("input[name='txtntranamount']").val(TotAmt.toFixed(4)); 
+
+				$("#txtntranamount"+r).autoNumeric('destroy');
+				$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
+
+
+				namt2 = TotAmt * parseFloat($("#basecurrval").val());
+				$(this).find("input[type='hidden'][name='txtnamount']").val(namt2.toFixed(4)); 
+
+				//$("#txtnamount"+r).autoNumeric('destroy');
+				//$("#txtnamount"+r).autoNumeric('init',{mDec:2});
 			}
 
-			gross2 = gross * parseFloat($("#basecurrval").val().replace(/,/g,''));
-
-			$("#txtnNetVAT").val(nnetTot);
-			$("#txtnVAT").val(vatzTot);
-			$("#txtnGross").val(gross2);
-			$("#txtnBaseGross").val(gross);
-
-			$("#divtxtnNetVAT").text(nnetTot.toFixed(2));
-			$("#divtxtnVAT").text(vatzTot.toFixed(2));
-			$("#divtxtnGross").text(gross.toFixed(2));
-
-			$("#divtxtnNetVAT").formatNumber();
-			$("#divtxtnVAT").formatNumber();
-			$("#divtxtnGross").formatNumber();
-
-		}
-
-
-
-function addqty(){
-
-	var itmcode = document.getElementById("txtprodid").value;
-
-	var TotQty = 0;
-	var TotAmt = 0;
-	
-	$("#MyTable > tbody > tr").each(function() {	
-	var disID = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-	
-	//alert(disID);
-		if(disID==itmcode){
-			
-			var itmqty = $(this).find("input[name='txtnqty']").val();
-			var itmprice = $(this).find("input[name='txtnprice']").val().replace(/,/g,'');
-			
-			//alert(itmqty +" : "+ itmprice);
-			
-			TotQty = parseFloat(itmqty) + 1;
-			$(this).find("input[name='txtnqty']").val(TotQty);
-			
-			TotAmt = TotQty * parseFloat(itmprice);
-			$(this).find("input[name='txtntranamount']").val(TotAmt.toFixed(4)); 
-
-			$("#txtntranamount"+r).autoNumeric('destroy');
-			$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
-
-
-			namt2 = TotAmt * parseFloat($("#basecurrval").val());
-			$(this).find("input[type='hidden'][name='txtnamount']").val(namt2.toFixed(4)); 
-
-			//$("#txtnamount"+r).autoNumeric('destroy');
-			//$("#txtnamount"+r).autoNumeric('init',{mDec:2});
-		}
-
-	});
-	
-	ComputeGross();
-
-}
-
-function viewhidden(itmcde,itmnme){
-	var tbl = document.getElementById('MyTable2').getElementsByTagName('tr');
-	var lastRow2 = tbl.length-1;
-	
-	if(lastRow2>=1){
-			$("#MyTable2 > tbody > tr").each(function() {	
-			
-				var citmno = $(this).find('input[type="hidden"][name="txtinfocode"]').val();
-				alert(citmno+"!="+itmcde);
-				if(citmno!=itmcde){
-					
-					$(this).find('input[name="txtinfofld"]').attr("disabled", true);
-					$(this).find('input[name="txtinfoval"]').attr("disabled", true);
-					$(this).find('input[type="button"][name="delinfo"]').attr("class", "btn btn-danger btn-xs disabled");
-					
-				}
-				else{
-					$(this).find('input[name="txtinfofld"]').attr("disabled", false);
-					$(this).find('input[name="txtinfoval"]').attr("disabled", false);
-					$(this).find('input[type="button"][id="delinfo'+itmcde+'"]').attr("class", "btn btn-danger btn-xs");
-				}
-				
-			});
-	}			
-			
-	addinfo(itmcde,itmnme,"","");
-	
-	$('#MyDetModal').modal('show');
-}
-
-function addinfo(itmcde,itmnme,fldnme,cvlaz){
-	//alert(itmcde+","+itmnme);
-	var tbl = document.getElementById('MyTable2').getElementsByTagName('tr');
-	var lastRow = tbl.length;
-
-	
-	var tdinfocode = "<td><input type='hidden' value='"+itmcde+"' name='txtinfocode' id='txtinfocode"+lastRow+"'>"+itmcde+"</td>";
-	var tdinfodesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmnme+"</td>"
-	var tdinfofld = "<td><input type='text' name='txtinfofld' id='txtinfofld"+lastRow+"' class='form-control input-xs' value=\""+fldnme+"\"></td>";
-	var tdinfoval = "<td><input type='text' name='txtinfoval' id='txtinfoval"+lastRow+"' class='form-control input-xs' value=\""+cvlaz+"\"></td>";
-	var tdinfodel = "<td><input class='btn btn-danger btn-xs' type='button' name='delinfo' id='delinfo" + lastRow + itmcde + "' value='delete' /></td>";
-
-	//alert(tdinfocode + "\n" + tdinfodesc + "\n" + tdinfofld + "\n" + tdinfoval + "\n" + tdinfodel);
-	
-	$('#MyTable2 > tbody:last-child').append('<tr>'+tdinfocode + tdinfodesc + tdinfofld + tdinfoval + tdinfodel + '</tr>');
-
-									$("#delinfo"+lastRow+itmcde).on('click', function() {
-										$(this).closest('tr').remove();
-									});
-
-
-}
-
-function chkCloseInfo(){
-	var isInfo = "TRUE";
-	
-	$("#MyTable > tbody > tr").each(function(index) {	
-			
-		var citmfld = $(this).find('input[name="txtinfofld"]');
-		var citmval = $(this).find('input[name="txtinfoval"]');
+		});
 		
-		if(citmfld=="" || citmval==""){
-			isInfo = "FALSE";
-		}
-				
-	});
+		ComputeGross();
 
-	
-	if(isInfo == "TRUE"){
-		$('#MyDetModal').modal('hide');	}
-	else{
-		alert("Incomplete info values!");
 	}
-}
 
+	function viewhidden(itmcde,itmnme){
+		var tbl = document.getElementById('MyTable2').getElementsByTagName('tr');
+		var lastRow2 = tbl.length-1;
+		
+		if(lastRow2>=1){
+				$("#MyTable2 > tbody > tr").each(function() {	
+				
+					var citmno = $(this).find('input[type="hidden"][name="txtinfocode"]').val();
+					alert(citmno+"!="+itmcde);
+					if(citmno!=itmcde){
+						
+						$(this).find('input[name="txtinfofld"]').attr("disabled", true);
+						$(this).find('input[name="txtinfoval"]').attr("disabled", true);
+						$(this).find('input[type="button"][name="delinfo"]').attr("class", "btn btn-danger btn-xs disabled");
+						
+					}
+					else{
+						$(this).find('input[name="txtinfofld"]').attr("disabled", false);
+						$(this).find('input[name="txtinfoval"]').attr("disabled", false);
+						$(this).find('input[type="button"][id="delinfo'+itmcde+'"]').attr("class", "btn btn-danger btn-xs");
+					}
+					
+				});
+		}			
+				
+		addinfo(itmcde,itmnme,"","");
+		
+		$('#MyDetModal').modal('show');
+	}
 
-function chkprice(itmcode,itmunit,ccode,datez){
-	var result;
+	function addinfo(itmcde,itmnme,fldnme,cvlaz){
+		//alert(itmcde+","+itmnme);
+		var tbl = document.getElementById('MyTable2').getElementsByTagName('tr');
+		var lastRow = tbl.length;
+
+		
+		var tdinfocode = "<td><input type='hidden' value='"+itmcde+"' name='txtinfocode' id='txtinfocode"+lastRow+"'>"+itmcde+"</td>";
+		var tdinfodesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmnme+"</td>"
+		var tdinfofld = "<td><input type='text' name='txtinfofld' id='txtinfofld"+lastRow+"' class='form-control input-xs' value=\""+fldnme+"\"></td>";
+		var tdinfoval = "<td><input type='text' name='txtinfoval' id='txtinfoval"+lastRow+"' class='form-control input-xs' value=\""+cvlaz+"\"></td>";
+		var tdinfodel = "<td><input class='btn btn-danger btn-xs' type='button' name='delinfo' id='delinfo" + lastRow + itmcde + "' value='delete' /></td>";
+
+		//alert(tdinfocode + "\n" + tdinfodesc + "\n" + tdinfofld + "\n" + tdinfoval + "\n" + tdinfodel);
+		
+		$('#MyTable2 > tbody:last-child').append('<tr>'+tdinfocode + tdinfodesc + tdinfofld + tdinfoval + tdinfodel + '</tr>');
+
+		$("#delinfo"+lastRow+itmcde).on('click', function() {
+			$(this).closest('tr').remove();
+		});
+
+	}
+
+	function chkCloseInfo(){
+		var isInfo = "TRUE";
+		
+		$("#MyTable > tbody > tr").each(function(index) {	
+				
+			var citmfld = $(this).find('input[name="txtinfofld"]');
+			var citmval = $(this).find('input[name="txtinfoval"]');
 			
-	$.ajax ({
-		url: "../th_checkitmprice.php",
-		data: { itm: itmcode, cust: ccode, cunit: itmunit, dte: datez },
-		async: false,
-		success: function( data ) {
-			 result = data;
+			if(citmfld=="" || citmval==""){
+				isInfo = "FALSE";
+			}
+					
+		});
+
+		
+		if(isInfo == "TRUE"){
+			$('#MyDetModal').modal('hide');	}
+		else{
+			alert("Incomplete info values!");
 		}
-	});
-			
-	return result;
-	
-}
+	}
 
-function setfactor(itmunit, itmcode){
-	var result;
-			
-	$.ajax ({
-		url: "../th_checkitmfactor.php",
-		data: { itm: itmcode, cunit: itmunit },
-		async: false,
-		success: function( data ) {
-			 result = data;
-		}
-	});
-			
-	return result;
-	
-}
+	function chkprice(itmcode,itmunit,ccode,datez){
+		var result;
+				
+		$.ajax ({
+			url: "../th_checkitmprice.php",
+			data: { itm: itmcode, cust: ccode, cunit: itmunit, dte: datez },
+			async: false,
+			success: function( data ) {
+				result = data;
+			}
+		});
+				
+		return result;
+		
+	}
 
-function openinv(){
+	function setfactor(itmunit, itmcode){
+		var result;
+				
+		$.ajax ({
+			url: "../th_checkitmfactor.php",
+			data: { itm: itmcode, cunit: itmunit },
+			async: false,
+			success: function( data ) {
+				result = data;
+			}
+		});
+				
+		return result;
+		
+	}
+
+	function openinv(){
 		if($('#txtcustid').val() == ""){
 			alert("Please pick a valid customer!");
 		}
@@ -2070,16 +2059,16 @@ function openinv(){
 			//disable escape insert and save button muna
 			
 				$.ajax({
-                    url: 'th_qolist.php',
+					url: 'th_qolist.php',
 					data: 'x='+x+ "&selsi=" + $("#selsityp").val(),
-                    dataType: 'json',
-                    method: 'post',
-                    success: function (data) {
-                       // var classRoomsTable = $('#mytable tbody');
-					   $("#allbox").prop('checked', false);
-					   
-                       console.log(data);
-                       $.each(data,function(index,item){
+					dataType: 'json',
+					method: 'post',
+					success: function (data) {
+						// var classRoomsTable = $('#mytable tbody');
+						$("#allbox").prop('checked', false);
+						
+						console.log(data);
+						$.each(data,function(index,item){
 
 								
 						if(item.cpono=="NONE"){
@@ -2109,11 +2098,11 @@ function openinv(){
 							$("#td"+item.cpono).on("mouseover", function(){
 								$(this).css('cursor','pointer');
 							});
-					   	}
+						}
 
-                       });
+						});
 
-					   $('#MyInvTbl').DataTable({
+						$('#MyInvTbl').DataTable({
 							"bPaginate": false,
 							"bLengthChange": false,
 							"bFilter": true,
@@ -2130,173 +2119,172 @@ function openinv(){
 						$('.dataTables_filter input').css(
 							{'width':'150%','display':'inline-block'}
 						);
-					   
+						
 
-					   if(xstat=="YES"){
-						   $('#mySIRef').modal('show');
-					   }
-                    },
-                    error: function (req, status, err) {
+						if(xstat=="YES"){
+							$('#mySIRef').modal('show');
+						}
+					},
+					error: function (req, status, err) {
 						//alert();
 						console.log('Something went wrong', status, err);
 						$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
 						$("#alertbtnOK").show();
 						$("#AlertModal").modal('show');
 					}
-                });
+				});
 			
 			
 			
 		}
+	}
 
-}
+	function checkcurrency(tranno,currcode,currrate){
+		var cnttbl = $('#MyTable tr').length - 1;
 
-function checkcurrency(tranno,currcode,currrate){
-	var cnttbl = $('#MyTable tr').length - 1;
+		if(cnttbl>0){
+			//check if same ng currency
+			if(currcode!=$("#selbasecurr").val()){
+				var xyz = confirm("Currency of the selected reference is different from the previous reference selected.\nIf you continue, total amount in "+$("#basecurrvalmain").val()+" will be computed base from the current currency selected.");
 
-	if(cnttbl>0){
-		//check if same ng currency
-		if(currcode!=$("#selbasecurr").val()){
-			var xyz = confirm("Currency of the selected reference is different from the previous reference selected.\nIf you continue, total amount in "+$("#basecurrvalmain").val()+" will be computed base from the current currency selected.");
-
-			if(xyz==true){
-				//$("#selbasecurr").val(currcode).change();
-				//$("#basecurrval").val(currrate);
+				if(xyz==true){
+					//$("#selbasecurr").val(currcode).change();
+					//$("#basecurrval").val(currrate);
+					opengetdet(tranno);
+				}
+			}else{
 				opengetdet(tranno);
 			}
 		}else{
+			$("#hdncurr").val(currcode);
+			$("#hdncurrate").val(currrate);
 			opengetdet(tranno);
 		}
-	}else{
-		$("#hdncurr").val(currcode);
-		$("#hdncurrate").val(currrate);
-		opengetdet(tranno);
 	}
-}
 
-function opengetdet(valz){
-	var drno = valz;
+	function opengetdet(valz){
+		var drno = valz;
 
-	$("#txtrefSI").val(drno);
+		$("#txtrefSI").val(drno);
 
-	$('#InvListHdr').html("Quote List: " + $('#txtcust').val() + " | Quote Details: " + drno + "<div id='loadimg'><center><img src='../../images/cusload.gif' style='show:none;'> </center> </div>");
-	
-	$('#MyInvDetList').DataTable().destroy();
-
-	$('#MyInvDetList tbody').empty();
-	$('#MyDRDetList tbody').empty();
+		$('#InvListHdr').html("Quote List: " + $('#txtcust').val() + " | Quote Details: " + drno + "<div id='loadimg'><center><img src='../../images/cusload.gif' style='show:none;'> </center> </div>");
 		
-	$('#loadimg').show();
-	
-			var salesnos = "";
-			var cnt = 0;
+		$('#MyInvDetList').DataTable().destroy();
+
+		$('#MyInvDetList tbody').empty();
+		$('#MyDRDetList tbody').empty();
 			
-			$("#MyTable > tbody > tr").each(function() {
-				myxref = $(this).find('input[type="hidden"][name="txtcreference"]').val();
+		$('#loadimg').show();
+		
+		var salesnos = "";
+		var cnt = 0;
+		
+		$("#MyTable > tbody > tr").each(function() {
+			myxref = $(this).find('input[type="hidden"][name="txtcreference"]').val();
+			
+			if(myxref == drno){
+				cnt = cnt + 1;
 				
-				if(myxref == drno){
-					cnt = cnt + 1;
-					
-				  if(cnt>1){
-					  salesnos = salesnos + ",";
-				  }
-							  
-					salesnos = salesnos +  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+				if(cnt>1){
+					salesnos = salesnos + ",";
 				}
+							
+				salesnos = salesnos +  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+			}
+			
+		});
+
+		//alert('th_sinumdet.php?x='+drno+"&y="+salesnos);
+		$.ajax({
+			url: 'th_qolistdet.php',
+			data: 'x='+drno+"&y="+salesnos+"&itmbal="+xChkBal,
+			dataType: 'json',
+			method: 'post',
+			success: function (data) {
+				// var classRoomsTable = $('#mytable tbody');
+				$("#allbox").prop('checked', false); 
 				
-			});
-
-				//alert('th_sinumdet.php?x='+drno+"&y="+salesnos);
-				$.ajax({
-                    url: 'th_qolistdet.php',
-					data: 'x='+drno+"&y="+salesnos+"&itmbal="+xChkBal,
-                    dataType: 'json',
-                    method: 'post',
-                    success: function (data) {
-                       // var classRoomsTable = $('#mytable tbody');
-					  	$("#allbox").prop('checked', false); 
-					   
-                     	console.log(data);
-					  	$.each(data,function(index,item){
-						  	if(item.citemno==""){
-							  alert("NO more items to add!")
-						  	}
-						  	else{
-						  
-								if (item.nqty>=1){
-									if(item.navail>=1){
-										var xxmsg = "<input type='checkbox' value='"+item.id+"' name='chkSales[]' data-id=\""+drno+"\">";
-									}
-									else{
-										var xxmsg = "<font color='red'><b>X</b></font>";
-									}
-									
-									$("<tr>").append(
-									$("<td align='center'>").html(xxmsg),
-									$("<td>").text(item.citemno),
-									$("<td>").text(item.cdesc),
-									$("<td>").text(item.cunit),
-									$("<td>").text(item.nqty),
-									$("<td align='right'>").text(item.nprice),
-									$("<td align='right'>").text(item.namount)
-									).appendTo("#MyInvDetList tbody");
-								}
-					 		}
-					 	});
-
-						$('#MyInvDetList').DataTable({
-							"bPaginate": false,
-							"bLengthChange": false,
-							"bFilter": true,
-							"bInfo": false,
-							"bAutoWidth": false,
-							"dom": '<"pull-left"f><"pull-right"l>tip',
-							language: {
-								search: "",
-								searchPlaceholder: "Search Item "
+				console.log(data);
+				$.each(data,function(index,item){
+					if(item.citemno==""){
+						alert("NO more items to add!")
+					}
+					else{
+					
+						if (item.nqty>=1){
+							if(item.navail>=1){
+								var xxmsg = "<input type='checkbox' value='"+item.id+"' name='chkSales[]' data-id=\""+drno+"\">";
 							}
-						});
+							else{
+								var xxmsg = "<font color='red'><b>X</b></font>";
+							}
+							
+							$("<tr>").append(
+							$("<td align='center'>").html(xxmsg),
+							$("<td>").text(item.citemno),
+							$("<td>").text(item.cdesc),
+							$("<td>").text(item.cunit),
+							$("<td>").text(item.nqty),
+							$("<td align='right'>").text(item.nprice),
+							$("<td align='right'>").text(item.namount)
+							).appendTo("#MyInvDetList tbody");
+						}
+					}
+				});
 
-						$('.dataTables_filter input').addClass('form-control input-sm');
-						$('.dataTables_filter input').css(
-							{'width':'150%','display':'inline-block'}
-						);
+				$('#MyInvDetList').DataTable({
+					"bPaginate": false,
+					"bLengthChange": false,
+					"bFilter": true,
+					"bInfo": false,
+					"bAutoWidth": false,
+					"dom": '<"pull-left"f><"pull-right"l>tip',
+					language: {
+						search: "",
+						searchPlaceholder: "Search Item "
+					}
+				});
 
-                    },
-					complete: function(){
-						$('#loadimg').hide();
-					},
-                    error: function (req, status, err) {
-						//alert('Something went wrong\nStatus: '+status +"\nError: "+err);
-						console.log('Something went wrong', status, err);
- 						$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
-						$("#alertbtnOK").show();
-						$("#AlertModal").modal('show');
-                   }
-                });
+				$('.dataTables_filter input').addClass('form-control input-sm');
+				$('.dataTables_filter input').css(
+					{'width':'150%','display':'inline-block'}
+				);
 
-}
+			},
+			complete: function(){
+				$('#loadimg').hide();
+			},
+			error: function (req, status, err) {
+				//alert('Something went wrong\nStatus: '+status +"\nError: "+err);
+				console.log('Something went wrong', status, err);
+				$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
+			}
+		});
 
-function InsertSI(){	
-
-	if($("#hdncurr").val()!=""){
-		$("#selbasecurr").val($("#hdncurr").val()).change();
-		$("#basecurrval").val($("#hdncurrate").val());
 	}
-	
-   $("input[name='chkSales[]']:checked").each( function () {
-	   
-	
+
+	function InsertSI(){	
+
+		if($("#hdncurr").val()!=""){
+			$("#selbasecurr").val($("#hdncurr").val()).change();
+			$("#basecurrval").val($("#hdncurrate").val());
+		}
+		
+		$("input[name='chkSales[]']:checked").each( function () {
+			
+			
 				var tranno = $(this).data("id");
-	   			var id = $(this).val();
-	   			$.ajax({
+				var id = $(this).val();
+				$.ajax({
 					url : "th_qolistput.php?id=" + tranno + "&itm=" + id + "&itmbal=" + xChkBal,
 					type: "GET",
 					dataType: "JSON",
 					success: function(data)
 					{	
-					   console.log(data);
-                       $.each(data,function(index,item){
+						console.log(data);
+						$.each(data,function(index,item){
 						
 							$('#txtprodnme').val(item.desc); 
 							$('#txtprodid').val(item.id); 
@@ -2309,8 +2297,8 @@ function InsertSI(){
 
 							// qty,price,curramt,amt,factr,cref,nrefident,crmx,ditmneed,citmpono
 							addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.nident,"","","");
-											   
-					   });
+												
+						});
 						
 					},
 					error: function (jqXHR, textStatus, errorThrown)
@@ -2320,459 +2308,458 @@ function InsertSI(){
 					
 				});
 
-   });
-   //alert($("#hdnQuoteNo").val());
-   
-   $('#mySIModal').modal('hide');
-   $('#mySIRef').modal('hide');
-
-}
-
-
-function chkSIEnter(keyCode,frm){
-	if(keyCode==13){
-		document.getElementById(frm).action = "SO_edit.php";
-		document.getElementById(frm).submit();
-	}
-}
-
-function disabled(){
-
-	$("#frmpos :input").attr("disabled", true);
-	
-	$("#txtcsalesno").attr("disabled", false);
-	$("#btnMain").attr("disabled", false);
-	$("#btnNew").attr("disabled", false);
-	$("#btnPrint").attr("disabled", false);
-	$("#btnEdit").attr("disabled", false);
-
-}
-
-function enabled(){
-	if(document.getElementById("hdnposted").value==1 || document.getElementById("hdncancel").value==1){
-		if(document.getElementById("hdnposted").value==1){
-			if(document.getElementById("hdnvoid").value==1){
-					var msgsx = "VOIDED";
-				}else{
-					var msgsx = "POSTED";
-				}
-		}
-		
-		if(document.getElementById("hdncancel").value==1){
-			var msgsx = "CANCELLED"
-		}
-		
-		document.getElementById("statmsgz").innerHTML = "<font style=\"font-size: x-small\">TRANSACTION IS ALREADY "+msgsx+", EDITING IS NOT ALLOWED!</font>";
-		document.getElementById("statmsgz").style.color = "#FF0000";
-		
-	}
-	else{
-		
-		$("#frmpos :input").attr("disabled", false);
-		
-			
-			$("#txtcsalesno").attr("readonly", true);
-			$("#btnMain").attr("disabled", true);
-			$("#btnNew").attr("disabled", true);
-			$("#btnPrint").attr("disabled", true);
-			$("#btnEdit").attr("disabled", true);
-					
-		ComputeGross();
-		
-		checkcustlimit($("#txtcustid").val(), $("#ncustlimit").text());
-		
-
-	}
-}
-
-function printchk(x){
-	if(document.getElementById("hdncancel").value==1){	
-		document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
-		document.getElementById("statmsgz").style.color = "#FF0000";
-	}
-	else{
-
-		  var url = "SO_confirmprint.php?x="+x;
-		  
-		  $("#myprintframe").attr('src',url);
-
-
-		  $("#PrintModal").modal('show');
-
-	}
-}
-
-
-function loaddetails(){
-	//alert(xChkBal);
-	
-	$.ajax ({
-		url: "th_loaddetails.php",
-		data: { id: $("#txtcsalesno").val(), itmbal: xChkBal },
-		async: false,
-		dataType: "json",
-		success: function( data ) {
-											
-			console.log(data);
-			$.each(data,function(index,item){
-
-				$('#txtprodnme').val(item.desc); 
-				$('#txtprodid').val(item.id); 
-				$("#hdnunit").val(item.cunit); 
-				$("#hdnqty").val(item.nqty);
-				$("#hdnqtyunit").val(item.cqtyunit);
-				$("#hdnvat").val(item.ctaxcode);
-
-				//qty,price,curramt,amt,factr,cref,nrefident,crmx,ditmneed,citmpono
-				addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.nident,item.cremarks,item.citemneed,item.citempono)
-			});
-
-		}
-	});
-
-}
-
-function loaddetinfo(){
-	$.ajax ({
-		url: "th_loaddetinfo.php",
-		data: { id: $("#txtcsalesno").val() },
-		async: false,
-		dataType: "json",
-		success: function( data ) {
-											
-			console.log(data);
-			$.each(data,function(index,item){
-
-				addinfo(item.id,item.desc,item.fldnme,item.cvalue);
-
-			});
-
-		}
-	});
-
-}
-
-function chkform(){
-	var ISOK = "YES";
-	
-	
-	if(document.getElementById("txtcust").value=="" && document.getElementById("txtcustid").value==""){
-			$("#AlertMsg").html("");
-			
-			$("#AlertMsg").html("&nbsp;&nbsp;Customer Required!");
-			$("#alertbtnOK").show();
-			$("#AlertModal").modal('show');
-
-		document.getElementById("txtcust").focus();
-		return false;
-		
-		ISOK = "NO";
-	}
-	// ACTIVATE MUNA LAHAT NG INFO
-	
-	/*$("#MyTable2 > tbody > tr").each(function() {				
-
-		var itmcde = $(this).find('input[type="hidden"][name="txtinfocode"]').val();
-		
-		$(this).find('input[name="txtinfofld"]').attr("disabled", false);
-		$(this).find('input[name="txtinfoval"]').attr("disabled", false);
-		$(this).find('input[type="button"][id="delinfo'+itmcde+'"]').attr("class", "btn btn-danger btn-xs");
-
-	});*/
-	
-	//alert(ISOK);
-
-
-	// Check pag meron wla Qty na Order vs available inventory
-	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
-	var lastRow = tbl.length-1;
-
-	if(lastRow == 0){
-			$("#AlertMsg").html("");
-			
-			$("#AlertMsg").html("&nbsp;&nbsp;NO details found!");
-			$("#alertbtnOK").show();
-			$("#AlertModal").modal('show');
-
-		return false;
-		ISOK = "NO";
-	}
-	else{
-		var msgz = "";
-		var myqty = "";
-		var myav = "";
-		var myfacx = "";
-		var myprice = "";
-		
-		$("#MyTable > tbody > tr").each(function(index) {
-			myqty = $(this).find('input[name="txtnqty"]').val();
-			myav = $(this).find('input[type="hidden"][name="hdnavailqty"]').val();
-			myfacx = $(this).find('input[name="hdnfactor"]').val();
-			
-			myprice = $(this).find('input[type="hidden"][name="txtnamount"]').val();
-			
-			if(myqty == 0 || myqty == ""){
-				msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero or blank qty is not allowed: row " + index;	
-			}else{
-				var myqtytots = parseFloat(myqty) * parseFloat(myfacx);
-				
-        if($("#selsityp").val()=="Goods"){
-  				if(parseFloat(myav) < parseFloat(myqtytots)){
-  					msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Not enough inventory: row " + index;
-  				}
-        }
-			}
-			
-			//if(myprice == 0 || myprice == ""){
-			//	msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero amount is not allowed: row " + index;	
-		//	}
-
-			
 		});
+		//alert($("#hdnQuoteNo").val());
 		
-		if(msgz!=""){
-			$("#AlertMsg").html("&nbsp;&nbsp;Details Error: "+msgz);
-			$("#alertbtnOK").show();
-			$("#AlertModal").modal('show');
+		$('#mySIModal').modal('hide');
+		$('#mySIRef').modal('hide');
+
+	}
+
+	function chkSIEnter(keyCode,frm){
+		if(keyCode==13){
+			document.getElementById(frm).action = "SO_edit.php";
+			document.getElementById(frm).submit();
+		}
+	}
+
+	function chkform(){
+		var ISOK = "YES";
+		
+		
+		if(document.getElementById("txtcust").value=="" && document.getElementById("txtcustid").value==""){
+				$("#AlertMsg").html("");
+				
+				$("#AlertMsg").html("&nbsp;&nbsp;Customer Required!");
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
+
+			document.getElementById("txtcust").focus();
+			return false;
+			
+			ISOK = "NO";
+		}
+		// ACTIVATE MUNA LAHAT NG INFO
+		
+		/*$("#MyTable2 > tbody > tr").each(function() {				
+
+			var itmcde = $(this).find('input[type="hidden"][name="txtinfocode"]').val();
+			
+			$(this).find('input[name="txtinfofld"]').attr("disabled", false);
+			$(this).find('input[name="txtinfoval"]').attr("disabled", false);
+			$(this).find('input[type="button"][id="delinfo'+itmcde+'"]').attr("class", "btn btn-danger btn-xs");
+
+		});*/
+		
+		//alert(ISOK);
+
+
+		// Check pag meron wla Qty na Order vs available inventory
+		var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
+		var lastRow = tbl.length-1;
+
+		if(lastRow == 0){
+				$("#AlertMsg").html("");
+				
+				$("#AlertMsg").html("&nbsp;&nbsp;NO details found!");
+				$("#alertbtnOK").show();
+				$("#AlertModal").modal('show');
 
 			return false;
 			ISOK = "NO";
 		}
-	}
+		else{
+			var msgz = "";
+			var myqty = "";
+			var myav = "";
+			var myfacx = "";
+			var myprice = "";
+			
+			$("#MyTable > tbody > tr").each(function(index) {
+				myqty = $(this).find('input[name="txtnqty"]').val();
+				myav = $(this).find('input[type="hidden"][name="hdnavailqty"]').val();
+				myfacx = $(this).find('input[name="hdnfactor"]').val();
+				
+				myprice = $(this).find('input[type="hidden"][name="txtnamount"]').val();
+				
+				if(myqty == 0 || myqty == ""){
+					msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero or blank qty is not allowed: row " + index;	
+				}else{
+					var myqtytots = parseFloat(myqty) * parseFloat(myfacx);
+					
+					if($("#selsityp").val()=="Goods"){
+						if(parseFloat(myav) < parseFloat(myqtytots)){
+							msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Not enough inventory: row " + index;
+						}
+					}
+				}
+				
+				//if(myprice == 0 || myprice == ""){
+				//	msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero amount is not allowed: row " + index;	
+			//	}
 
-
-	// Check if Credit Limit activated (kung sobra)
-	if(xChkLimit==1 && parseFloat($('#hdncustlimit').val()) > 0){
-		if(parseFloat($("#txtnGross").val())>parseFloat($("#hdncustbalance").val())){
-				$("#AlertMsg").html("&nbsp;&nbsp;<b>ERROR: </b> Available Credit Limit is not enough!");
+				
+			});
+			
+			if(msgz!=""){
+				$("#AlertMsg").html("&nbsp;&nbsp;Details Error: "+msgz);
 				$("#alertbtnOK").show();
 				$("#AlertModal").modal('show');
-				
+
 				return false;
 				ISOK = "NO";
+			}
+		}
+
+
+		// Check if Credit Limit activated (kung sobra)
+		if(xChkLimit==1 && parseFloat($('#hdncustlimit').val()) > 0){
+			if(parseFloat($("#txtnGross").val())>parseFloat($("#hdncustbalance").val())){
+					$("#AlertMsg").html("&nbsp;&nbsp;<b>ERROR: </b> Available Credit Limit is not enough!");
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
+					
+					return false;
+					ISOK = "NO";
+
+
+			}
+		}
+		
+		
+		if(ISOK == "YES"){
+		var isDone = "True";
+		
+			//Saving the header
+			var trancode = $("#txtcsalesno").val();
+			var ccode = $("#txtcustid").val();
+			var crem = $("#txtremarks").val();
+			var ddate = $("#date_delivery").val();
+			var ngross = $("#txtnGross").val().replace(/,/g,'');
+			var csitype = $("#selsityp").val(); 
+			var ccpono = $("#txtcPONo").val(); 
+
+			var ncurrcode = $("#selbasecurr").val();
+			var ncurrdesc = $("#selbasecurr option:selected").text();
+			var ncurrrate = $("#basecurrval").val();
+			var nbasegross = $("#txtnBaseGross").val().replace(/,/g,'');
+
+			$("#hidcurrvaldesc").val($("#selbasecurr option:selected").text());
+
+			var specins = ""; //$("#txtSpecIns").val();
+			var salesman = ""; //$("#txtsalesmanid").val();
+			var delcodes = $("#txtdelcustid").val();
+			var delhousno = $("#txtchouseno").val();
+			var delcity = $("#txtcCity").val();
+			var delstate = $("#txtcState").val();
+			var delcountry = $("#txtcCountry").val();
+			var delzip = $("#txtcZip").val();
+			
+			//alert("SO_updatehdr.php?ccode=" + ccode + "&crem="+ crem + "&ddate="+ ddate + "&ngross="+ngross + "&selsityp="+csitype+"&ccpono="+ ccpono+"&salesman="+ salesman+"&delcodes="+ delcodes+"&delhousno="+ delhousno+"&delcity="+ delcity+"&delstate="+ delstate+"&delcountry="+ delcountry+"&delzip="+ delzip+"&specins="+ specins);
+			//data: { id:trancode, ccode: ccode, crem: crem, ddate: ddate, ngross: ngross, selsityp: csitype, ccpono:ccpono, salesman:salesman, delcodes:delcodes, delhousno:delhousno, delcity:delcity, delstate:delstate, delcountry:delcountry, delzip:delzip, specins:specins },
+			var myform = $("#frmpos").serialize();
+
+			var formdata = new FormData($('#frmpos')[0]);
+
+			formdata.delete('upload[]');
+			jQuery.each($('#file-0')[0].files, function(i, file){
+				formdata.append('file-'+i, file);
+			})
+
+			$.ajax ({
+				url: "SO_updatehdr.php",
+				data: formdata,
+				cache: false,
+				processData: false,
+				contentType: false,
+				type: 'post',
+				method: 'post',
+				async: false,
+				beforeSend: function(){
+					$("#AlertMsg").html("&nbsp;&nbsp;<b>UPDATING SALES ORDER: </b> Please wait a moment...");
+					$("#alertbtnOK").hide();
+					$("#AlertModal").modal('show');
+				},
+				success: function( data ) {
+					if(data.trim()!="False"){
+						trancode = data.trim();
+					}
+					else{
+						$("#AlertMsg").html(trancode);
+					}
+				}
+			});
+			
+			if(trancode!=""){
+				//Save Details
+				$("#MyTable > tbody > tr").each(function(index) {	
+				//alert(index);
+					var nrefident = $(this).find('input[type="hidden"][name="hdnrefident"]').val();
+					var crefno = $(this).find('input[type="hidden"][name="txtcreference"]').val();
+					var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+					var cuom = $(this).find('select[name="seluom"]').val();
+					var nqty = $(this).find('input[name="txtnqty"]').val();
+					var nprice = $(this).find('input[name="txtnprice"]').val();
+					var namt = $(this).find('input[type="hidden"][name="txtnamount"]').val();
+					var nbaseamt = $(this).find('input[name="txtntranamount"]').val();
+					var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
+					var nfactor = $(this).find('input[name="hdnfactor"]').val(); 
+
+					if(xChkVatableStatus==1){ 
+						var vatcode = $(this).find('select[name="selitmvatyp"]').val(); 
+						var nrate = $(this).find('select[name="selitmvatyp"] option:selected').data('id');
+					}else{
+						var vatcode = "";
+						var nrate = 0;
+					}
+
+					var citmrempo = $(this).find('input[name="txtcitmrempo"]').val();
+					var citmremdneed = $(this).find('input[name="txtcitmdneed"]').val();
+					var citmremx = $(this).find('input[name="txtcitmremx"]').val();
+
+					if(nqty!==undefined){
+						nqty = nqty.replace(/,/g,'');
+						nprice = nprice.replace(/,/g,'');
+						namt = namt.replace(/,/g,'');
+						nbaseamt = nbaseamt.replace(/,/g,'');
+					}
+				
+					//alert("SO_newsavedet.php?nrefident="+nrefident+"&trancode="+trancode+"&crefno="+crefno+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+nprice+"&namt="+namt+"&nbaseamt="+nbaseamt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&vatcode="+vatcode+"&nrate="+nrate+"&citmrempo="+citmrempo+"&citmremdneed="+citmremdneed+"&citmremx="+citmremx);
+
+					$.ajax ({
+						url: "SO_newsavedet.php",
+						data: { nrefident:nrefident, trancode: trancode, crefno: crefno, indx:index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, nbaseamt:nbaseamt, mainunit:mainunit, nfactor:nfactor, vatcode:vatcode, nrate:nrate, citmrempo:citmrempo, citmremdneed:citmremdneed, citmremx:citmremx },
+						async: false,
+						success: function( data ) {
+							if(data.trim()=="False"){
+								isDone = "False";
+							}
+						}
+					});
+					
+				});
+
+
+				//Save Info
+				/*$("#MyTable2 > tbody > tr").each(function(index) {	
+				
+					var citmno = $(this).find('input[type="hidden"][name="txtinfocode"]').val();
+					var citmfld = $(this).find('input[name="txtinfofld"]').val();
+					var citmvlz = $(this).find('input[name="txtinfoval"]').val();
+				
+					$.ajax ({
+						url: "SO_newsaveinfo.php",
+						data: { trancode: trancode, indx: index, citmno: citmno, citmfld: citmfld, citmvlz:citmvlz },
+						async: false,
+						success: function( data ) {
+							if(data.trim()=="False"){
+								isDone = "False";
+							}
+						}
+					});
+					
+				});*/
+				
+				if(isDone=="True"){
+					$("#AlertMsg").html("<b>SUCCESFULLY UPDATED: </b> Please wait a moment...");
+					$("#alertbtnOK").hide();
+
+						setTimeout(function() {
+							$("#AlertMsg").html("");
+							$('#AlertModal').modal('hide');
+				
+							$("#txtcsalesno").val(trancode);
+							$("#frmpos").submit();
+				
+						}, 3000); // milliseconds = 3seconds
+
+					
+				}
+				
+			}
+			else{
+					$("#AlertMsg").html("<b>ERROR: </b> There's a problem updating your transaction...");
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
+			}
 
 
 		}
+
 	}
-	
-	
-	if(ISOK == "YES"){
-	var isDone = "True";
-	
-		//Saving the header
-		var trancode = $("#txtcsalesno").val();
-		var ccode = $("#txtcustid").val();
-		var crem = $("#txtremarks").val();
-		var ddate = $("#date_delivery").val();
-		var ngross = $("#txtnGross").val().replace(/,/g,'');
-		var csitype = $("#selsityp").val(); 
-    	var ccpono = $("#txtcPONo").val(); 
 
-		var ncurrcode = $("#selbasecurr").val();
-		var ncurrdesc = $("#selbasecurr option:selected").text();
-		var ncurrrate = $("#basecurrval").val();
-		var nbasegross = $("#txtnBaseGross").val().replace(/,/g,'');
-
-		$("#hidcurrvaldesc").val($("#selbasecurr option:selected").text());
-
-		var specins = ""; //$("#txtSpecIns").val();
-		var salesman = ""; //$("#txtsalesmanid").val();
-		var delcodes = $("#txtdelcustid").val();
-		var delhousno = $("#txtchouseno").val();
-		var delcity = $("#txtcCity").val();
-		var delstate = $("#txtcState").val();
-		var delcountry = $("#txtcCountry").val();
-		var delzip = $("#txtcZip").val();
+	function trclickable(hsno,ccty,stt,ctry,zip){
+		$('#txtchouseno').val(hsno);
+		$('#txtcCity').val(ccty);
+		$('#txtcState').val(stt);
+		$('#txtcCountry').val(ctry);
+		$('#txtcZip').val(zip);
 		
-		//alert("SO_updatehdr.php?ccode=" + ccode + "&crem="+ crem + "&ddate="+ ddate + "&ngross="+ngross + "&selsityp="+csitype+"&ccpono="+ ccpono+"&salesman="+ salesman+"&delcodes="+ delcodes+"&delhousno="+ delhousno+"&delcity="+ delcity+"&delstate="+ delstate+"&delcountry="+ delcountry+"&delzip="+ delzip+"&specins="+ specins);
-		//data: { id:trancode, ccode: ccode, crem: crem, ddate: ddate, ngross: ngross, selsityp: csitype, ccpono:ccpono, salesman:salesman, delcodes:delcodes, delhousno:delhousno, delcity:delcity, delstate:delstate, delcountry:delcountry, delzip:delzip, specins:specins },
-		var myform = $("#frmpos").serialize();
+		$("#MyAddModal").modal("hide");
+	}
 
-		var formdata = new FormData($('#frmpos')[0]);
-
-		formdata.delete('upload[]');
-		jQuery.each($('#file-0')[0].files, function(i, file){
-			formdata.append('file-'+i, file);
-		})
-
+	/*
+	function convertCurrency(fromCurrency) {
+	
+		toCurrency = $("#basecurrvalmain").val(); //statgetrate
 		$.ajax ({
-			url: "SO_updatehdr.php",
-			data: formdata,
-			cache: false,
-			processData: false,
-			contentType: false,
-			type: 'post',
-			method: 'post',
+			url: "../th_convertcurr.php",
+			data: { fromcurr: fromCurrency, tocurr: toCurrency },
 			async: false,
-			beforeSend: function(){
-				$("#AlertMsg").html("&nbsp;&nbsp;<b>UPDATING SALES ORDER: </b> Please wait a moment...");
-				$("#alertbtnOK").hide();
-				$("#AlertModal").modal('show');
+			beforeSend: function () {
+				$("#statgetrate").html(" <i>Getting exchange rate please wait...</i>");
 			},
 			success: function( data ) {
-				if(data.trim()!="False"){
-					trancode = data.trim();
-				}
-				else{
-					$("#AlertMsg").html(trancode);
-				}
+
+				$("#basecurrval").val(data);
+				
+			},
+			complete: function(){
+				$("#statgetrate").html("");
+				recomputeCurr();
 			}
 		});
-		
-		if(trancode!=""){
-			//Save Details
-			$("#MyTable > tbody > tr").each(function(index) {	
-			//alert(index);
-				var nrefident = $(this).find('input[type="hidden"][name="hdnrefident"]').val();
-				var crefno = $(this).find('input[type="hidden"][name="txtcreference"]').val();
-				var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-				var cuom = $(this).find('select[name="seluom"]').val();
-				var nqty = $(this).find('input[name="txtnqty"]').val();
-				var nprice = $(this).find('input[name="txtnprice"]').val();
-				var namt = $(this).find('input[type="hidden"][name="txtnamount"]').val();
-				var nbaseamt = $(this).find('input[name="txtntranamount"]').val();
-				var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
-				var nfactor = $(this).find('input[name="hdnfactor"]').val(); 
 
-				if(xChkVatableStatus==1){ 
-					var vatcode = $(this).find('select[name="selitmvatyp"]').val(); 
-					var nrate = $(this).find('select[name="selitmvatyp"] option:selected').data('id');
-				}else{
-					var vatcode = "";
-					var nrate = 0;
-				}
+	}*/
+	
 
-				var citmrempo = $(this).find('input[name="txtcitmrempo"]').val();
-				var citmremdneed = $(this).find('input[name="txtcitmdneed"]').val();
-				var citmremx = $(this).find('input[name="txtcitmremx"]').val();
+	function recomputeCurr(){
 
-				if(nqty!==undefined){
-					nqty = nqty.replace(/,/g,'');
-					nprice = nprice.replace(/,/g,'');
-					namt = namt.replace(/,/g,'');
-					nbaseamt = nbaseamt.replace(/,/g,'');
-				}
-			
-				//alert("SO_newsavedet.php?nrefident="+nrefident+"&trancode="+trancode+"&crefno="+crefno+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+nprice+"&namt="+namt+"&nbaseamt="+nbaseamt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&vatcode="+vatcode+"&nrate="+nrate+"&citmrempo="+citmrempo+"&citmremdneed="+citmremdneed+"&citmremx="+citmremx);
-
-				$.ajax ({
-					url: "SO_newsavedet.php",
-					data: { nrefident:nrefident, trancode: trancode, crefno: crefno, indx:index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, nbaseamt:nbaseamt, mainunit:mainunit, nfactor:nfactor, vatcode:vatcode, nrate:nrate, citmrempo:citmrempo, citmremdneed:citmremdneed, citmremx:citmremx },
-					async: false,
-					success: function( data ) {
-						if(data.trim()=="False"){
-							isDone = "False";
-						}
-					}
-				});
+		var newcurate = $("#basecurrval").val();
+		var rowCount = $('#MyTable tr').length;
 				
-			});
+		var gross = 0;
+		var amt = 0;
 
+		if(rowCount>1){
+			for (var i = 1; i <= rowCount-1; i++) {
+				amt = $("#txtntranamount"+i).val();			
+				recurr = parseFloat(newcurate) * parseFloat(amt);
 
-			//Save Info
-			/*$("#MyTable2 > tbody > tr").each(function(index) {	
-			  
-				var citmno = $(this).find('input[type="hidden"][name="txtinfocode"]').val();
-				var citmfld = $(this).find('input[name="txtinfofld"]').val();
-				var citmvlz = $(this).find('input[name="txtinfoval"]').val();
-			
-				$.ajax ({
-					url: "SO_newsaveinfo.php",
-					data: { trancode: trancode, indx: index, citmno: citmno, citmfld: citmfld, citmvlz:citmvlz },
-					async: false,
-					success: function( data ) {
-						if(data.trim()=="False"){
-							isDone = "False";
-						}
-					}
-				});
-				
-			});*/
-			
-			if(isDone=="True"){
-				$("#AlertMsg").html("<b>SUCCESFULLY UPDATED: </b> Please wait a moment...");
-				$("#alertbtnOK").hide();
-
-					setTimeout(function() {
-						$("#AlertMsg").html("");
-						$('#AlertModal').modal('hide');
-			
-						$("#txtcsalesno").val(trancode);
-						$("#frmpos").submit();
-			
-					}, 3000); // milliseconds = 3seconds
-
-				
+				$("#txtnamount"+i).val(recurr.toFixed(4));
 			}
+		}
+
+		ComputeGross();
+
+	}
+	
+	function disabled(){
+
+		$("#frmpos :input").attr("disabled", true);
+
+		$("#txtcsalesno").attr("disabled", false);
+		$("#btnMain").attr("disabled", false);
+		$("#btnNew").attr("disabled", false);
+		$("#btnPrint").attr("disabled", false);
+		$("#btnEdit").attr("disabled", false);
+		$("#printclose").attr("disabled", false);
+		
+
+	}
+
+	function enabled(){
+		if(document.getElementById("hdnposted").value==1 || document.getElementById("hdncancel").value==1){
+			if(document.getElementById("hdnposted").value==1){
+				if(document.getElementById("hdnvoid").value==1){
+						var msgsx = "VOIDED";
+					}else{
+						var msgsx = "POSTED";
+					}
+			}
+			
+			if(document.getElementById("hdncancel").value==1){
+				var msgsx = "CANCELLED"
+			}
+			
+			document.getElementById("statmsgz").innerHTML = "<font style=\"font-size: x-small\">TRANSACTION IS ALREADY "+msgsx+", EDITING IS NOT ALLOWED!</font>";
+			document.getElementById("statmsgz").style.color = "#FF0000";
 			
 		}
 		else{
-				$("#AlertMsg").html("<b>ERROR: </b> There's a problem updating your transaction...");
-				$("#alertbtnOK").show();
-				$("#AlertModal").modal('show');
-		}
+			
+			$("#frmpos :input").attr("disabled", false);
+			
+				
+				$("#txtcsalesno").attr("readonly", true);
+				$("#btnMain").attr("disabled", true);
+				$("#btnNew").attr("disabled", true);
+				$("#btnPrint").attr("disabled", true);
+				$("#btnEdit").attr("disabled", true);
+						
+			ComputeGross();
+			
+			checkcustlimit($("#txtcustid").val(), $("#ncustlimit").text());
+			
 
+		}
+	}
+
+	function printchk(x){
+		if(document.getElementById("hdncancel").value==1){	
+			document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
+			document.getElementById("statmsgz").style.color = "#FF0000";
+		}
+		else{
+
+			var url = "SO_confirmprint.php?x="+x;
+			
+			$("#myprintframe").attr('src',url);
+
+
+			$("#PrintModal").modal('show');
+
+		}
+	}
+
+	function loaddetails(){
+		//alert(xChkBal);
+
+		$.ajax ({
+			url: "th_loaddetails.php",
+			data: { id: $("#txtcsalesno").val(), itmbal: xChkBal },
+			async: false,
+			dataType: "json",
+			success: function( data ) {
+												
+				console.log(data);
+				$.each(data,function(index,item){
+
+					$('#txtprodnme').val(item.desc); 
+					$('#txtprodid').val(item.id); 
+					$("#hdnunit").val(item.cunit); 
+					$("#hdnqty").val(item.nqty);
+					$("#hdnqtyunit").val(item.cqtyunit);
+					$("#hdnvat").val(item.ctaxcode);
+
+					//qty,price,curramt,amt,factr,cref,nrefident,crmx,ditmneed,citmpono
+					addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.nident,item.cremarks,item.citemneed,item.citempono)
+				});
+
+			}
+		});
 
 	}
 
-}
+	function loaddetinfo(){
+		$.ajax ({
+			url: "th_loaddetinfo.php",
+			data: { id: $("#txtcsalesno").val() },
+			async: false,
+			dataType: "json",
+			success: function( data ) {
+												
+				console.log(data);
+				$.each(data,function(index,item){
 
-function trclickable(hsno,ccty,stt,ctry,zip){
-	$('#txtchouseno').val(hsno);
-	$('#txtcCity').val(ccty);
-	$('#txtcState').val(stt);
-	$('#txtcCountry').val(ctry);
-	$('#txtcZip').val(zip);
-	
-	$("#MyAddModal").modal("hide");
-}
+					addinfo(item.id,item.desc,item.fldnme,item.cvalue);
 
-/*
-function convertCurrency(fromCurrency) {
-  
-  toCurrency = $("#basecurrvalmain").val(); //statgetrate
-   $.ajax ({
-	 url: "../th_convertcurr.php",
-	 data: { fromcurr: fromCurrency, tocurr: toCurrency },
-	 async: false,
-	 beforeSend: function () {
-		 $("#statgetrate").html(" <i>Getting exchange rate please wait...</i>");
-	 },
-	 success: function( data ) {
+				});
 
-		 $("#basecurrval").val(data);
-		 
-	 },
-	 complete: function(){
-		 $("#statgetrate").html("");
-		 recomputeCurr();
-	 }
- });
+			}
+		});
 
-}
-*/
+	}
 
-function recomputeCurr(){
-
- var newcurate = $("#basecurrval").val();
- var rowCount = $('#MyTable tr').length;
-		 
- var gross = 0;
- var amt = 0;
-
- if(rowCount>1){
-	 for (var i = 1; i <= rowCount-1; i++) {
-		 amt = $("#txtntranamount"+i).val();			
-		 recurr = parseFloat(newcurate) * parseFloat(amt);
-
-		 $("#txtnamount"+i).val(recurr.toFixed(4));
-	 }
- }
-
-
- ComputeGross();
-
-
-}
 
 </script>
