@@ -205,6 +205,20 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 								<?php
 										}
+									}else{
+								?>
+									<td width="25%">
+										<div style="padding-bottom: 50px; text-align: center">Checked By</div>
+										<div style="text-align: center">_________________________</div>
+
+									</td>
+
+									<td width="25%">
+										<div style="padding-bottom: 50px; text-align: center">Approved By</div>
+										<div style="text-align: center">_________________________</div>
+
+									</td>
+								<?php
 									}
 								?>
 								</tr>
