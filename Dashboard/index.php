@@ -228,7 +228,7 @@
                     <input type="radio" name="status" id="Pending" value="Pending" style="display: none">
                 </div>
                 <div style="display: relative; max-height: 2.5in; overflow: auto;">
-                    <table class="table">
+                    <table class="table" id="TransactionSummary">
                         <thead>
                             <tr>
                                 <th>Transaction ID</th>
@@ -379,27 +379,27 @@
             async: false,
             success: function (res) {
                 $("#summary").empty();
-                $("table tbody").empty();
+                $("#TransactionSummary tbody").empty();
                 if(res.valid){
                     res.data.map((item, index) => {
                         let link = res.link.toString() + "?txtctranno=" + item.tranno.toString();
-                        let DivNavigation = $("<div id='DivNavigation'>").click( function(){
+                        let DivNavigation = $("<div id='DivNavigation'>").click( function() {
                             navigate(link);
                         })
-                        $(DivNavigation).append(
-                            $("<div style='display: flex; width: 100%; padding: 5px;'>").append(
-                                $("<div style='font-weight: bold; font-size: 14px; width: 75%;' id='title'>").text(item.names),
-                                $("<div style='flex-grow: 1; display: flex; justify-content: flex-end; align-items: center; color: green; font-size: 12px' id='date'>").text(item.dates)
-                            ),
-                            $("<div style='width:100%; max-height: 30px; color: grey; font-size: 12px; overflow: hidden; padding: 5px' id='remarks'>").text(item.remarks)
-                        ).appendTo("#summary");
+                        // $(DivNavigation).append(
+                        //     $("<div style='display: flex; width: 100%; padding: 5px;'>").append(
+                        //         $("<div style='font-weight: bold; font-size: 14px; width: 75%;' id='title'>").text(item.names),
+                        //         $("<div style='flex-grow: 1; display: flex; justify-content: flex-end; align-items: center; color: green; font-size: 12px' id='date'>").text(item.dates)
+                        //     ),
+                        //     $("<div style='width:100%; max-height: 30px; color: grey; font-size: 12px; overflow: hidden; padding: 5px' id='remarks'>").text(item.remarks)
+                        // ).appendTo("#summary");
 
                         $("<tr>").append(
                             $("<td>").html("<a href='"+link+"'>"+item.tranno+"</a>"),
                             $("<td>").text(item.names),
                             $("<td>").text(parseFloat(item.gross).toFixed(2)),
                             $("<td>").text(item.dates),
-                        ).appendTo("table tbody")
+                        ).appendTo("#TransactionSummary tbody")
                     });
                 } else {
                     console.log(res.msg)

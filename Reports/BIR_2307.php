@@ -145,10 +145,10 @@
         })
 
         $('#btnFind').on('click', function(){
-            console.log('clicked')
                     $.ajax({
                         url: "BIR/thPaybill.php",
                         dataType: "json",
+                        async: false,
                         data: { 
                             name:  $('#txtcustid').val(),
                             trantype: $('#trantype').val(),
@@ -156,10 +156,8 @@
                             datefrom: $('#datefrom').val()
                         },
                         success: function(data){
-
-                            console.log(data[0].msg);
                             if(data[0].msg != "NO"){
-                                +
+                                
                                 $('#supplierTable > tbody').html("");
                                 $.each(data,function(index,{ctranno, supplier, date, approve}){
 

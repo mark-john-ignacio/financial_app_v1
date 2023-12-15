@@ -225,7 +225,16 @@
 										<li>
 											<a href="" onclick="setI('A', 'PurchaseDat.php')" data-toggle="tab">
 												<i class="fa fa-book"></i>Monthly Purchase</a>
-										</li>         
+										</li>   
+										<li>
+											<form action="./QAP/EWT" target="_blank">
+												<button type="submit" style="border: 0px; padding:0px; width: 100%; display: flex; justify-content: left; justify-items: left; font-size: 16px">
+													<a href="javascript:;" ><i class="fa fa-book"></i>QAP</a>
+												</button>
+											</form>
+											<!-- <a href="" onclick="setI('A', './QAP/EWT')" data-toggle="tab">
+											<i class="fa fa-book"></i>QAP</a> -->
+										</li>               
 										<!-- <li>
 											<a href="" onClick="setI('A','MonthlyVAT.php')" data-toggle="tab">
 											<i class="fa fa-book"></i> Monthly Output VAT</a>
