@@ -192,13 +192,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 								<?php
 
-									$sqdts = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname from purchase_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cpono = '$csalesno' order by a.nlevel");
+									$sqdts = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname from purchrequest_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cprno = '$csalesno' order by a.nlevel");
 
 									if (mysqli_num_rows($sqdts)!=0) {
 										while($row = mysqli_fetch_array($sqdts, MYSQLI_ASSOC)){
 								?>
 											<td width="25%">
-												<div style="padding-bottom: 50px; text-align: center">Approved By</div>
+												<div style="padding-bottom: 50px; text-align: center"><?=($row['nlevel']==1) ? "Checked By" : "Approved By"?></div>
 												<div style="text-align: center"><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div>
 
 											</td>
