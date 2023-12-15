@@ -4,6 +4,7 @@
     }
     $company = $_SESSION['companyid'];
     include "../../../Connection/connection_string.php";
+    include "../../../Model/helper.php";
     $month = date("m", strtotime($_REQUEST['months']));
     $year = date("Y", strtotime($_REQUEST['years']));
 
@@ -25,14 +26,14 @@
     $query = mysqli_query($con, $sql);
     while($list = $query -> fetch_assoc()) {
         $ewt = $list['cewtcode'];
-        
-        if(strlen($ewt) != 0){
+        $credit = floatval($list['ncredit']);
+        if(strlen($ewt) != 0 && $credit != 0){
             $ewt = getEWT($ewt);
             if($ewt['valid']) {
                 $json = [
                     'name' => $list['cname'],
                     'tin' => $list['ctin'],
-                    'credit' => $list['ncredit'],
+                    'credit' => $credit,
                     'ewt' => $ewt['code'],
                     'rate' => $ewt['rate'],
                     'date' => $list['dapvdate'],
@@ -45,27 +46,6 @@
             }
         }
         
-    }
-
-    function getEWT($data) {
-        global $con, $company;
-        
-        $sql = "SELECT ctaxcode, nrate FROM wtaxcodes WHERE compcode = '$company' AND ctaxcode = '$data'";
-        $queries = mysqli_query($con, $sql);
-        
-        if(mysqli_num_rows($queries) !== 0) {
-            $fetch = $queries -> fetch_array(MYSQLI_ASSOC);
-            return [
-                'valid' => true,
-                'code' => $fetch['ctaxcode'],
-                'rate' => $fetch['nrate'],
-            ];
-           
-        }
-
-        return [
-            'valid' => false,
-        ];
     }
 
     if(!empty($apv)) {

@@ -76,26 +76,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('I12', "'(9)");
 
 
-    function getEWT($data) {
-        global $con, $company;
-        
-        $sql = "SELECT ctaxcode, nrate FROM wtaxcodes WHERE compcode = '$company' AND ctaxcode = '$data'";
-        $queries = mysqli_query($con, $sql);
-        
-        if(mysqli_num_rows($queries) !== 0) {
-            $fetch = $queries -> fetch_array(MYSQLI_ASSOC);
-            return [
-                'valid' => true,
-                'code' => $fetch['ctaxcode'],
-                'rate' => $fetch['nrate'],
-            ];
-            
-        }
-
-        return [
-            'valid' => false,
-        ];
-    }
+    
     
 
     $sql = "SELECT a.ncredit, a.cewtcode, a.ctranno, b.ngross, b.dapvdate, c.cname, c.chouseno, c.ccity, c.ctin FROM apv_t a
@@ -109,7 +90,8 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         while($row = $query -> fetch_array(MYSQLI_ASSOC)){
             
             $code = $row['cewtcode'];
-            if(strlen($code) != 0){
+            $credit = $row['ncredit'];
+            if(strlen($code) != 0 && $credit != 0){
                 $fullAddress = stringValidation($row['chouseno']);
                 if(trim($row['ccity']) != ""){
                     $fullAddress .= " ". stringValidation($row['ccity']);
@@ -126,10 +108,10 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
                 ->setCellValue("F$index", $ewt['code'])
                 ->setCellValue("G$index", $ewt['rate'])
                 ->setCellValue("H$index", $row['ngross'])
-                ->setCellValue("I$index", $row['ncredit']);
+                ->setCellValue("I$index", $credit);
 
                 $TOTAL_GROSS += floatval($row['ngross']); 
-                $TOTAL_CREDIT += floatval($row['ncredit']); 
+                $TOTAL_CREDIT += floatval($credit); 
                 
                 $index++;
             }

@@ -149,7 +149,6 @@
                             console.log(response);
                         },
                         error: function(error) {
-                            // Handle the error response here
                             console.log(error);
                         }
                     });
