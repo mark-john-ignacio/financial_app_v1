@@ -21,7 +21,7 @@
 </head>
 <body >
         <div  style="padding-top: 20px;">
-            <form action="../TO_CSV/" method="post" id="formexport" enctype="multipart/form-data">
+            <form action="" method="post" id="formexport" enctype="multipart/form-data">
                 <div style="display: flex; padding: 10px">
                     <div class="col-xs-2">
                         <label for="years">Years: </label>
@@ -31,9 +31,13 @@
                         <label for="months">Month: </label>
                         <input type="text" id="months" name="months" class="monthpicker form-control input-sm" value="<?= date("MM") ?>">
                     </div>
+                    <div class="cold-xs-2">
+                        <label for="rdo">Enter RDO:</label>
+                        <input type="text" id="rdo" name="rdo" class="form-control input-sm" placeholder="RDO...">
+                    </div>
                     <div class="col-xs-2" style="display: flex; min-width: 200px;">
-                        <button class="btn btn-success btn-sm col-xs-4" style="margin: 5px;" onclick="export_file.call(this)" value="CSV">CSV</button>
-                        <button class="btn btn-primary btn-sm col-xs-4" style="margin: 5px;" onclick="export_file.call(this)" value="DAT">DAT</button>
+                        <button type="button" class="btn btn-success btn-sm col-xs-4" style="margin: 5px;" onclick="export_file.call(this)" value="CSV">CSV</button>
+                        <button type="button" class="btn btn-primary btn-sm col-xs-4" style="margin: 5px;" onclick="export_file.call(this)" value="DAT">DAT</button>
                     </div>
                 </div>
             </form>
@@ -131,34 +135,29 @@
         };
     }
     
-    function export_file () {
+
+    function export_file() {
         let type = $(this).val();
-        var formData = new FormData(this);
+        var form = document.getElementById('formexport');
+        var formData = new FormData(form);
         let fetch = FetchAPV();
+
+        var newAction = "";
         
-        if(fetch.valid) {
-            switch(type) {
-                case "CSV": 
-                    $.ajax({
-                        type: 'POST',
-                        url: './TO_CSV/',
-                        data: formData,
-                        contentType: false,
-                        processData: false,
-                        success: function(response) {
-                            console.log(response);
-                        },
-                        error: function(error) {
-                            console.log(error);
-                        }
-                    });
+        if (fetch.valid) {
+            switch (type) {
+                case "CSV":
+                    newAction = "./TO_CSV/";
                     break;
                 case "DAT":
-                    $("#formexport").prop("action", "DAT").change();
+                    newAction = "./TO_DAT/";
                     break;
+                // Add more cases if needed for other file types
             }
-        } 
-        $("#formexport").submit();
+            form.action = newAction;
+            // console.log(form)
+            form.submit();
+        }
     }
 
     function DisplayCode() {

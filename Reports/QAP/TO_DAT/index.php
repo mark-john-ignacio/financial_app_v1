@@ -15,7 +15,8 @@
     $sql = "SELECT * FROM company WHERE compcode = '$company'";
     $query = mysqli_query($con, $sql);
     while($list = $query -> fetch_assoc()) {
-        $companies[] = $list;
+        $compname = stringValidation($list['compname']);
+        $comptin = TinValidation($list['comptin']);
     }
 
     $sql = "SELECT a.ncredit, a.cewtcode, a.ctranno, b.ngross, b.dapvdate, c.cname, c.chouseno, c.ccity, c.ctin FROM apv_t a
@@ -25,12 +26,7 @@
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         header("Content-type: text/plain");
-        header("Content-Disposition: attachment; filename=\"".$tin."QAP".$month . $year . ".dat\"");
-        
-        $company_name = stringValidation($company['compname']);
-        // $data = "H,S,\"$tin\",\"$company_name\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"$compaddress\",\"{$company['compzip']}\",$exempt,$zerorated,$net,$vat,$rdo,$lastDay,12\n";
-        $comptin = TinValidation($companies['comptin']);
-        $compname = stringValidation($companies['compname']);
+        header("Content-Disposition: attachment; filename=\"".$comptin."QAP".$month . $year . ".dat\"");
         
         $data = "HQAP,H1601EQ,$comptin,0000,\"$compname\",$month/$year,$rdo\n";
         $TOTAL_CREDIT = 0;
@@ -38,19 +34,20 @@
         while($list = $query -> fetch_assoc()) {
 
             $credit = $list['ncredit'];
+            $code = $list['cewtcode'];
 
             if(strlen($code) != 0 && $credit != 0){
                 $ewt = getEWT($list['cewtcode']);
                 if($ewt['valid']) {
                     $count = 1;
-                    $tin = TinValidation($list['ctin']);
+                    $tins = TinValidation($list['ctin']);
                     $name = stringValidation($list['cname']);
                     $ewtcode = $ewt['code'];
                     $rate = round($ewt['rate'],2);
                     $gross = round($list['ngross'],2);
                     $credit = round($list['ncredit'],2);
 
-                    $data .= "D1,1601EQ,$count,$tin,0000,\"$name\",,,,$month/$year,$ewtcode,$rate,$gross,$credit";
+                    $data .= "D1,1601EQ,$count,$tins,0000,\"$name\",,,,$month/$year,$ewtcode,$rate,$gross,$credit";
                     $count += 1;
 
                     $TOTAL_CREDIT += $credit;
