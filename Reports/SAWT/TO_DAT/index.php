@@ -21,7 +21,7 @@
 
     $sql = "SELECT a.cewtcode, a.newtamt, a.ctranno, b.ngross, b.dcheckdate, c.cname, c.chouseno, c.ccity, c.ctin FROM paybill_t a 
         LEFT JOIN paybill b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-        LEFT JOIN suppliers c on a.compcode = c.compcode AND b.ccode = c.cempid
+        LEFT JOIN suppliers c on a.compcode = c.compcode AND b.ccode = c.ccode
         WHERE a.compcode = '$company' AND MONTH(b.dcheckdate) = '$month' AND YEAR(b.dcheckdate) = '$year'";
     
     $query = mysqli_query($con, $sql);
