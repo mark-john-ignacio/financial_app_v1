@@ -28,6 +28,7 @@
         header("Content-type: text/plain");
         header("Content-Disposition: attachment; filename=\"".$comptin."SAWT".$month . $year . ".dat\"");
         
+        // Changing Data Heading H1601EQ
         $data = "HSAWT,H1601EQ,$comptin,0000,\"$compname\",$month/$year,$rdo\n";
         $TOTAL_CREDIT = 0;
         $TOTAL_GROSS = 0;
@@ -37,7 +38,7 @@
             $code = $list['cewtcode'];
 
             if(strlen($code) != 0 && $credit != 0){
-                $ewt = getEWT($list['cewtcode']);
+                $ewt = getEWT($code);
                 if($ewt['valid']) {
                     $count = 1;
                     $tins = TinValidation($list['ctin']);
@@ -47,6 +48,7 @@
                     $gross = round($list['namount'], 2);
                     $credit = round($credit, 2);
 
+                    // Changing Data 1601EQ
                     $data .= "D1,1601EQ,$count,$tins,0000,\"$name\",,,,$month/$year,$ewtcode,$rate,$gross,$credit";
                     $count += 1;
 
