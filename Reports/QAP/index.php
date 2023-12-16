@@ -40,10 +40,10 @@
             
         </div>
         <div style="display: grid; grid-template-columns: repeat(2, minmax(100px, .2fr)); width: 100%; padding: 10px;">
-            <h5>TAX PAYER TRADE NAME:</h5> <h4 id='trade'>Acme Corp.</h4>
-            <h5>TAX PAYER NAME:</h5> <h4 id='company'>Acme Corp.</h4>
-            <h5>TIN:</h5> <h4 id='tin'>Acme Corp.</h4>
-            <h5>TAX PAYER ADDRESS:</h5> <h4 id='address'>Acme Corp.</h4>
+            <h5>TAX PAYER TRADE NAME:</h5> <h5 id='trade'>Acme Corp.</h5>
+            <h5>TAX PAYER NAME:</h5> <h5 id='company'>Acme Corp.</h5>
+            <h5>TIN:</h5> <h5 id='tin'>Acme Corp.</h5>
+            <h5>TAX PAYER ADDRESS:</h5> <h5 id='address'>Acme Corp.</h5>
         </div>
         <div style="display: flex; height: 350px; overflow: auto; border: 1px solid grey; margin-top: 10px">
             <table class="table">

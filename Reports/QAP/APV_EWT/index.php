@@ -15,7 +15,7 @@
         'name' => $list['compname'],
         'trade' => $list['compdesc'],
         'address' => $list['compadd'],
-        'tin' => $list['comptin']
+        'tin' => TinValidation($list['comptin'])
     ];
 
     $apv = [];

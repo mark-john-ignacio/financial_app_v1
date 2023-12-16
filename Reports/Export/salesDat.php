@@ -81,7 +81,7 @@
         echo $data;
     } else {
         ?>
-        <script type="text/javascript">alert("No record has been found on month of <?= $monthcut ?>/<?= $yearcut?>")</script>
+        <script type="text/javascript">alert("No record has been found on month of <?= $monthcut . "/" . $yearcut?>")</script>
         <?php
     }
     exit;

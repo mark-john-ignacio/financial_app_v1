@@ -97,23 +97,24 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
                     $fullAddress .= " ". stringValidation($row['ccity']);
                 }
                 $ewt = getEWT($code);
+                if($ewt['valid']) {
+                    $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
+                    $spreadsheet->setActiveSheetIndex(0)
+                    ->setCellValue("A$index", $row['dapvdate'])
+                    ->setCellValue("B$index", $row['ctranno'])
+                    ->setCellValue("C$index", TinValidation($row['ctin']))
+                    ->setCellValue("D$index", $row['cname'])
+                    ->setCellValue("E$index", $fullAddress)
+                    ->setCellValue("F$index", $ewt['code'])
+                    ->setCellValue("G$index", $ewt['rate'])
+                    ->setCellValue("H$index", $row['ngross'])
+                    ->setCellValue("I$index", $credit);
 
-                $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
-                $spreadsheet->setActiveSheetIndex(0)
-                ->setCellValue("A$index", $row['dapvdate'])
-                ->setCellValue("B$index", $row['ctranno'])
-                ->setCellValue("C$index", TinValidation($row['ctin']))
-                ->setCellValue("D$index", $row['cname'])
-                ->setCellValue("E$index", $fullAddress)
-                ->setCellValue("F$index", $ewt['code'])
-                ->setCellValue("G$index", $ewt['rate'])
-                ->setCellValue("H$index", $row['ngross'])
-                ->setCellValue("I$index", $credit);
-
-                $TOTAL_GROSS += floatval($row['ngross']); 
-                $TOTAL_CREDIT += floatval($credit); 
-                
-                $index++;
+                    $TOTAL_GROSS += floatval($row['ngross']); 
+                    $TOTAL_CREDIT += floatval($credit); 
+                    
+                    $index++;
+                }
             }
         }
         $lastindex = $index;
