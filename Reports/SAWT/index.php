@@ -31,7 +31,6 @@
     <title>MyxFinancials</title>
 </head>
 <body>
-<div class='container'>
         <div style="text-align: center; font-weight: bold; text-decoration: underline;">
             <font size="+1">Summary Alphalist of Withholding Tax at Source</font>
         </div>
@@ -39,39 +38,45 @@
             <form action="" method="post" id="SAWTForm" enctype="multipart/form-data" target="_blank">
                 <table>
                     <tr valign="top">
-                        <th><button class='btn btn-danger btn-block' id="btnView" onclick="btnonclick.call(this)" value="VIEW"><i class='fa fa-search'></i>&nbsp;&nbsp;View Report</button></th>
+                        <th><button type="button" class='btn btn-danger btn-block' id="btnView" onclick="btnonclick.call(this)" value="VIEW"><i class='fa fa-search'></i>&nbsp;&nbsp;View Report</button></th>
                         <th width='100px'>Month of:</th>
                         <th>
-                            <div class="col-xs-8 nopadding">
-                                <input type="text" id='months' name='months' class='monthpicker form-control input-sm' value="<?= date("MM"); ?>">
+                            <div class="col-xs-10 nopadding">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input type="text" id="months" name="months" class="monthpicker form-control input-sm" value="<?= date("MM") ?>">
+                                </div>
                             </div>
                         </th>
                         <th>Year:</th>
                         <th>
-                            <div class="col-xs-8 nopadding">
-                                <input type="text" id='years' name='years' class='yearpicker form-control input-sm' value="<?= date("Y"); ?>">
+                            <div class="col-xs-10 nopadding">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input type="text" id='years' name='years' class='yearpicker form-control input-sm' value="<?= date("Y"); ?>">
+                                </div>
+                                
                             </div>
                         </th>
                     </tr>
                     <tr valign="top">
-                        <th><button class="btn btn-success btn-block" id="btnExcel"><i class="fa fa-file-excel-o" onclick="btnonclick.call(this)" value="CSV"></i>&nbsp;&nbsp;To Excel</button></th>
+                        <th><button type="button" class="btn btn-success btn-block" id="btnExcel" onclick="btnonclick.call(this)" value="CSV"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;To Excel</button></th>
                         <th>RDO Type: </th>
                         <th><input type="text" id='rdo' name="rdo" class='form-control input-sm' placeholder="RDO TYPE...." required></th>
                         <th colspan='4'>&nbsp;</th>
                     </tr>
                     <tr>
-                        <th><button class="btn btn-info btn-block" id="btnDat"><i class="fa fa-file" onclick="btnonclick.call(this)" value="DAT"></i>&nbsp;&nbsp;To DAT</button></th>
+                        <th><button type="button" class="btn btn-info btn-block" id="btnDat" onclick="btnonclick.call(this)" value="DAT"><i class="fa fa-file"></i>&nbsp;&nbsp;To DAT</button></th>
                         <th colspan='4'>&nbsp;</th>
                     </tr>
                 </table>
             </form>
         </div>
-    </div>
 </body>
 </html>
 
 <script type="text/javascript">
-    var swat = [];
+    var sawt = [];
     $(document).ready(function(){
         $(".yearpicker").datetimepicker({
             defaultDate: moment(),
@@ -104,10 +109,13 @@
 
         switch (type) {
             case "CSV":
-                newAction = "../TO_CSV/";
+                newAction = "./TO_CSV/";
                 break;
             case "DAT":
-                newAction = "../TO_DAT/";
+                newAction = "./TO_DAT/";
+                break;
+            case "VIEW":
+                newAction = "./TO_VIEW/";
                 break;
         }
         form.action = newAction;

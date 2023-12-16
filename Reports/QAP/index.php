@@ -31,65 +31,48 @@
     <title>MyxFinancials</title>
 </head>
 <body>
-    <div style="padding: 10px;">
-        <h4>Quality Assurance Plan</h4>
-    </div>
-    <div style="padding-top: 10px;">
-        <div style="display: flex; justify-content: center; justify-items: center">
-            <h2>Quality Assurance Plan</h2>
+    
+    <div style="text-align: center; font-weight: bold; text-decoration: underline;">
+            <font size="+1">Quality Assurance Plan</font>
         </div>
-
-        <div class="container"style="display: relative;  width: 50%; padding-top: 50px; min-width: 500px">
+        <div class='container' style='padding-top: 50px'>
             <form action="" method="post" id="QAPForm" enctype="multipart/form-data" target="_blank">
                 <table>
-                    <tr>
-                        <th rowspan="3">
-                            <div class="nopadwtop">
-                                <button type="button" class="btn btn-danger col-sm-12" onclick="btnonclick.call(this)" value="VIEW"><i class="fa fa-search"></i>&nbsp; Search</button><br><br>
-                            </div>
-                            <div class="nopadwtop">
-                                <button type="button" class="btn btn-success col-sm-12" onclick="btnonclick.call(this)" value="CSV"><i class="fa fa-file-excel-o"></i>&nbsp; To Excel</button><br><br>
-                            </div>
-                            <div class="nopadwtop">
-                                <button type="button" class="btn btn-primary col-sm-12" onclick="btnonclick.call(this)" value="DAT"><i class="fa fa-file"></i>&nbsp; To DAT</button>
-                            </div>
-                        </th>
+                    <tr valign="top">
+                        <th><button type="button" class='btn btn-danger btn-block' id="btnView" onclick="btnonclick.call(this)" value="VIEW"><i class='fa fa-search'></i>&nbsp;&nbsp;View Report</button></th>
+                        <th width='100px'>Month of:</th>
                         <th>
-                            <div class="col-xs-12">  
-                                <label for="months">Months: </label>
+                            <div class="col-xs-10 nopadding">
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                     <input type="text" id="months" name="months" class="monthpicker form-control input-sm" value="<?= date("MM") ?>">
                                 </div>
                             </div>
                         </th>
-                        <th >
-                            <div class="col-xs-12">
-                                <label for="years">Years: </label>
-                                
+                        <th>Year:</th>
+                        <th>
+                            <div class="col-xs-10 nopadding">
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" id="years" name="years" class="yearpicker form-control input-sm col-xs-2" value="<?= date("Y") ?>">
+                                    <input type="text" id='years' name='years' class='yearpicker form-control input-sm' value="<?= date("Y"); ?>">
                                 </div>
+                                
                             </div>
                         </th>
                     </tr>
+                    <tr valign="top">
+                        <th><button type="button" class="btn btn-success btn-block" id="btnExcel" onclick="btnonclick.call(this)" value="CSV"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;To Excel</button></th>
+                        <th>RDO Type: </th>
+                        <th><input type="text" id='rdo' name="rdo" class='form-control input-sm' placeholder="RDO TYPE...." required></th>
+                        <th colspan='4'>&nbsp;</th>
+                    </tr>
                     <tr>
-                        <th colspan="2">
-                            <div class="col-xs-6">
-                                <label for="rdo">Enter RDO:</label>
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="fa fa-icon"></i></span>
-                                    <input type="text" id="rdo" name="rdo" class="form-control input-sm" placeholder="Enter RDO..." required>
-                                </div>
-                            </div>
-                        </th>
+                        <th><button type="button" class="btn btn-info btn-block" id="btnDat" onclick="btnonclick.call(this)" value="DAT"><i class="fa fa-file"></i>&nbsp;&nbsp;To DAT</button></th>
+                        <th colspan='4'>&nbsp;</th>
                     </tr>
                 </table>
             </form>
-            
         </div>
-    </div>
 </body>
 </html>
 

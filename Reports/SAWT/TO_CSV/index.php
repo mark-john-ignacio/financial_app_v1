@@ -24,10 +24,10 @@ $year = date("Y", strtotime($_POST['years']));
 // Set document properties
 $spreadsheet->getProperties()->setCreator('Myx Financials')
     ->setLastModifiedBy('Myx Financials')
-    ->setTitle('Summary Alphalist of Withholding Tax at Source')
-    ->setSubject('Summary Alphalist of Withholding Tax at Source')
-    ->setDescription('Summary Alphalist of Withholding Tax at Source, generated using Myx Financials.')
-    ->setKeywords('myx_financials Summary Alphalist of Withholding Tax at Source')
+    ->setTitle('SAWT')
+    ->setSubject('SAWT')
+    ->setDescription('SAWT, generated using Myx Financials.')
+    ->setKeywords('myx_financials SAWT')
     ->setCategory('Myx Financials Report');
 
 
@@ -74,7 +74,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         while($row = $query -> fetch_array(MYSQLI_ASSOC)){
             
             $code = $row['cewtcode'];
-            $credit = $row['ncredit'];
+            $credit = $row['newtamt'];
             if(strlen($code) != 0 && $credit != 0){
                 $fullAddress = stringValidation($row['chouseno']);
                 if(trim($row['ccity']) != ""){
@@ -125,7 +125,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
 
 	// Rename worksheet
-	$spreadsheet->getActiveSheet()->setTitle('Summary Alphalist of Withholding Tax at Source');
+	$spreadsheet->getActiveSheet()->setTitle('SAWT');
 
 	// Set active sheet index to the first sheet, so Excel opens this as the first sheet
 	$spreadsheet->setActiveSheetIndex(0);
