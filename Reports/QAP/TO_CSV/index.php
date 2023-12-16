@@ -63,20 +63,6 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('G11', "W/TAX RATE")
         ->setCellValue('H11', "W/TAX BASE AMOUNT")
         ->setCellValue('I11', "W/TAX AMOUNT");
-
-    $spreadsheet->setActiveSheetIndex(0)
-        ->setCellValue('A12', "'(1)")
-        ->setCellValue('B12', "'(2)")
-        ->setCellValue('C12', "'(3)")
-        ->setCellValue('D12', "'(4)")
-        ->setCellValue('E12', "'(5)")
-        ->setCellValue('F12', "'(6)")
-        ->setCellValue('G12', "'(7)")
-        ->setCellValue('H12', "'(8)")
-        ->setCellValue('I12', "'(9)");
-
-
-    
     
 
     $sql = "SELECT a.ncredit, a.cewtcode, a.ctranno, b.ngross, b.dapvdate, c.cname, c.chouseno, c.ccity, c.ctin FROM apv_t a
@@ -85,8 +71,9 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         WHERE a.compcode = '$company' AND MONTH(b.dapvdate) = '$month' AND YEAR(b.dapvdate) = '$year'";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
-        $index = 13;
-        $TOTAL_GROSS =0; $TOTAL_CREDIT = 0;;
+        $index = 12;
+        $TOTAL_GROSS =0;
+        $TOTAL_CREDIT = 0;;
         while($row = $query -> fetch_array(MYSQLI_ASSOC)){
             
             $code = $row['cewtcode'];
