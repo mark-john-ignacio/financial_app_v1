@@ -19,70 +19,59 @@
     <script src="../../Bootstrap/js/moment.js"></script>
     <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
+    <style>
+        th, td {
+            padding-top: 2px;
+            padding-left: 15px;
+            padding-right: 15px;
+            padding-bottom: 2px;
+        }
+    </style>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>MyxFinancials</title>
 </head>
 <body>
-    <div class="container">
-        <div style="display: flex; justify-content: center; justify-items: center">
-            <h2>Summary Alphalist of Withholding Tax</h2>
+<div class='container'>
+        <div style="text-align: center; font-weight: bold; text-decoration: underline;">
+            <font size="+1">Sales Generate DAT</font>
         </div>
-
-        <div class="display: flex; justify-content: center; justify-items: center;">
-            <div style="display: relative; width: 100%; padding-top: 1in;">
-                <table width="100%" border="0" cellpadding="2" >
-                    <tr>
-                        <th rowspan="3">
-                            <div class="nopadwtop">
-                                <button type="button" class="btn btn-danger col-sm-5"><i class="fa fa-search"></i>&nbsp; Search</button><br><br>
-                            </div>
-                            <div class="nopadwtop">
-                                <button type="button" class="btn btn-success col-sm-5"><i class="fa fa-file-excel-o"></i>&nbsp; To Excel</button><br><br>
-                            </div>
-                            <div class="nopadwtop">
-                                <button type="button" class="btn btn-primary col-sm-5"><i class="fa fa-file"></i>&nbsp; To DAT</button>
-                            </div>
-                        </th>
+        <div class='container' style='padding-top: 50px'>
+            <form action="" method="post" id="SAWTForm" enctype="multipart/form-data" target="_blank">
+                <table>
+                    <tr valign="top">
+                        <th><button class='btn btn-danger btn-block' id="btnView" onclick="btnonclick.call(this)" value="VIEW"><i class='fa fa-search'></i>&nbsp;&nbsp;View Report</button></th>
+                        <th width='100px'>Month of:</th>
                         <th>
-                            <div class="col-xs-8">  
-                                
-                                <label for="months">Months: </label>
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" id="months" name="months" class="monthpicker form-control input-sm" value="<?= date("MM") ?>">
-                                </div>
+                            <div class="col-xs-8 nopadding">
+                                <input type="text" id='months' name='months' class='monthpicker form-control input-sm' value="<?= date("MM"); ?>">
                             </div>
                         </th>
-                        <th >
-                            <div class="col-xs-4">
-                                <label for="years">Years: </label>
-                                
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" id="years" name="years" class="yearpicker form-control input-sm col-xs-2" value="<?= date("Y") ?>">
-                                </div>
+                        <th>Year:</th>
+                        <th>
+                            <div class="col-xs-8 nopadding">
+                                <input type="text" id='years' name='years' class='yearpicker form-control input-sm' value="<?= date("Y"); ?>">
                             </div>
                         </th>
                     </tr>
+                    <tr valign="top">
+                        <th><button class="btn btn-success btn-block" id="btnExcel"><i class="fa fa-file-excel-o" onclick="btnonclick.call(this)" value="CSV"></i>&nbsp;&nbsp;To Excel</button></th>
+                        <th>RDO Type: </th>
+                        <th><input type="text" id='rdo' name="rdo" class='form-control input-sm' placeholder="RDO TYPE...." required></th>
+                        <th colspan='4'>&nbsp;</th>
+                    </tr>
                     <tr>
-                        <th class="col-xs-3">
-                            <div class="cold-xs-2">
-                                <label for="rdo">Enter RDO:</label>
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="fa fa-icon"></i></span>
-                                    <input type="text" id="rdo" name="rdo" class="form-control input-sm" placeholder="Enter RDO..." required>
-                                </div>
-                            </div>
-                        </th>
+                        <th><button class="btn btn-info btn-block" id="btnDat"><i class="fa fa-file" onclick="btnonclick.call(this)" value="DAT"></i>&nbsp;&nbsp;To DAT</button></th>
+                        <th colspan='4'>&nbsp;</th>
                     </tr>
                 </table>
-            </div>
+            </form>
         </div>
     </div>
 </body>
 </html>
 
 <script type="text/javascript">
+    var swat = [];
     $(document).ready(function(){
         $(".yearpicker").datetimepicker({
             defaultDate: moment(),
@@ -98,4 +87,58 @@
 
         // FetchAPV();
     })
+
+    function btnonclick() {
+        let type = $(this).val();
+        let rdo = $("#rdo").val();
+        var form = document.getElementById('SAWTForm');
+        var formData = new FormData(form);
+
+        if(sawt.length != 0) {
+            return alert("No Reference found");
+        }
+        
+        if(rdo == ""){ 
+            return alert("No RDO found please! Fill this detail!");
+        }
+
+        switch (type) {
+            case "CSV":
+                newAction = "../TO_CSV/";
+                break;
+            case "DAT":
+                newAction = "../TO_DAT/";
+                break;
+        }
+        form.action = newAction;
+        // console.log(form)
+        form.submit();
+    }
+
+    function fetchSAWT() {
+        let month = $("#months").val();
+        let year = $("#years").val();
+
+        $.ajax({
+            url: "./SAWT_LIST/",
+            data: {
+                month: month,
+                year: year
+            },
+            dataType: "json",
+            async: false,
+            success: function(res) {
+                if(res.valid) {
+                    sawt = res.data;
+                } else {
+                    sawt.length = 0;
+                    sawt = [];
+                    console.log(res.msg)
+                }
+            },
+            error: function(msg) {
+                console.log(msg)
+            }
+        })
+    }
 </script>

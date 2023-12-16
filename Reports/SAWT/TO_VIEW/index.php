@@ -25,16 +25,17 @@
         
     </style>
 </head>
-<body >
-        <div style="padding-top: 20px;">
-            <form action="" method="post" id="formexport" enctype="multipart/form-data">
+<body>
+    <div style="padding-top: 20px;">
+            <form action="" method="post" id="SAWTForm" enctype="multipart/form-data">
                 <div style="display: flex; padding: 10px">
                     
                     <div class="col-xs-2">
                         <label for="months">Month: </label>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                            <input type="text" id="months" name="months" class="monthpicker form-control input-sm" value="<?= date("MM", strtotime($_POST['months'])) ?>">
+                            <!-- <input type="text" id="months" name="months" class="monthpicker form-control input-sm" value="< ?= date("MM", strtotime($_POST['months'])) ?>"> -->
+                            <input type="text" id="months" name="months" class="monthpicker form-control input-sm" value="<?= date("MM") ?>">
                         </div>
                     </div>
                     <div class="col-xs-2">
@@ -42,7 +43,7 @@
                         
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                            <input type="text" id="years" name="years" class="yearpicker form-control input-sm col-xs-2" value="<?= date("Y", strtotime($_POST['years'])) ?>">
+                            <input type="text" id="years" name="years" class="yearpicker form-control input-sm col-xs-2" value="<?= date("Y") ?>">
                         </div>
                     </div>
                     <div class="cold-xs-2">
@@ -59,28 +60,10 @@
                     </div>
                 </div>
             </form>
-            
         </div>
-        <div style="display: flex;">
-            <div style="display: grid; grid-template-columns: repeat(2, minmax(25%, .2fr)); width: 100%; padding: 10px;">
-                <h5>TAX PAYER TRADE NAME:</h5> <h5 id='trade'>Acme Corp.</h5>
-                <h5>TAX PAYER NAME:</h5> <h5 id='company'>Acme Corp.</h5>
-                <h5>TIN:</h5> <h5 id='tin'>Acme Corp.</h5>
-                <h5>TAX PAYER ADDRESS:</h5> <h5 id='address'>Acme Corp.</h5>
-            </div>
-            <div style="display: flex; justify-content: left; justify-items: left;">
-                <div style="display: grid; grid-template-columns: repeat(2, minmax(100px, .2fr)); padding: 10px;">
-                    <h5>TOTAL GROSS: </h5>
-                    <h5>₱ <span id="TOTAL_GROSS">00.00</span></h5>
-                    <h5>TOTAL CREDIT: </h5>
-                    <h5>₱ <span id="TOTAL_CREDIT">00.00</span></h5>
-                </div>
-            </div>
-            
-        </div>
-        
+
         <div style="display: flex; height: 350px; overflow: auto; border: 1px solid grey; border-radius: 20px;  margin: 10px">
-            <table class="table" id="QAPList">
+            <table class="table" id="List">
                 <thead>
                     <tr>
                         <th>TRANSACTION DATE</th>
@@ -99,17 +82,16 @@
         </div>
 </body>
 </html>
+
 <script>
-    var apv = [];
-    
-    $(document).ready(function(){
-        
+    var sawt = [];
+     $(document).ready(function(){
         $(".yearpicker").datetimepicker({
             defaultDate: moment(),
             viewMode: 'years',
             format: 'YYYY'
         }).on('dp.change', function (e) {
-            FetchAPV();
+            fetchSAWT();
         });
 
         $(".monthpicker").datetimepicker({
@@ -117,63 +99,26 @@
             viewMode: 'months',
             format: 'MMMM'
         }).on('dp.change', function (e) {
-            FetchAPV();
+            fetchSAWT();
         });
 
-        FetchAPV();
+        fetchSAWT();
     })
-    function FetchAPV() {
-        let year = $("#years").val();
-        let month = $("#months").val();
-        $.ajax({
-            url: "../LIST_EWT/",
-            data: {
-                years: year,
-                months: month
-            },
-            dataType: "json",
-            async: false,
-            success: function(res) {
-                if(res.valid) {
-                    apv = res.data
-                } else {
-                    apv.length = 0;
-                    apv = [];
-                    
-                    $("#TOTAL_CREDIT").text("00.00");
-                    $("#TOTAL_GROSS").text("00.00");
-                    console.log(res.msg)
-                }
-                $("#trade").text(res.company.trade);
-                $("#company").text(res.company.name);
-                $("#tin").text(res.company.tin);
-                $("#address").text(res.company.address);
-            },
-            error: function(msg){
-                console.log(msg)
-            }
-        })
-
-        DisplayCode();
-    }
-    
 
     function export_file() {
         let type = $(this).val();
-        var form = document.getElementById('formexport');
+        let rdo = $("#rdo").val();
+        var form = document.getElementById('SAWTForm');
         var formData = new FormData(form);
 
-        let rdo = $("#rdo").val();
-        var newAction = "";
-
-        if (apv.length === 0) {
-            return alert("No Referrence found!");
-        } 
-
+        if(sawt.length != 0) {
+            return alert("No Reference found");
+        }
+        
         if(rdo == ""){ 
             return alert("No RDO found please! Fill this detail!");
         }
-        
+
         switch (type) {
             case "CSV":
                 newAction = "../TO_CSV/";
@@ -185,16 +130,47 @@
         form.action = newAction;
         // console.log(form)
         form.submit();
+
+    }
+    
+    function fetchSAWT(){
+        let month = $("#months").val();
+        let year = $("#years").val();
+
+        $.ajax({
+            url: "../SAWT_LIST/",
+            type: "post",
+            data: {
+                months: month,
+                years: year,
+            },
+            dataType: "json",
+            async: false,
+            success: function(res) {
+                if(res.valid) {
+                    sawt = res.data;
+                } else {
+                    sawt.length = 0;
+                    sawt = [];
+                    console.log(res.msg)
+                }
+            },
+            error: function(msg) {
+                console.log(msg)
+            }
+        })
+        display()
     }
 
-    function DisplayCode() {
-        $("table tbody").empty();
-        
-        let credit = 0;
-        let gross = 0;
-        apv.map((item, index) => {
-            credit += parseFloat(item.credit);
-            gross += parseFloat(item.gross);
+    function display () {
+        $("#List tbody").empty();
+
+        let TOTAL_CREDIT = 0;
+        let TOTAL_GROSS = 0;
+        sawt.map((item, index) => { 
+            TOTAL_CREDIT += parseFloat(item.credit);
+            TOTAL_GROSS += parseFloat(item.gross);
+
             $("<tr>").append(
                 $("<td>").text(item.date),
                 $("<td>").text(item.tranno),
@@ -205,10 +181,8 @@
                 $("<td>").text((item.rate / 100) + "%"),
                 $("<td>").text(parseFloat(item.gross).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')),
                 $("<td>").text(parseFloat(item.credit).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')),
-            ).appendTo("#QAPList tbody");
-        });
-        
-        $("#TOTAL_CREDIT").text(parseFloat(credit).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
-        $("#TOTAL_GROSS").text(parseFloat(gross).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+            ).appendTo("#List tbody")
+        })
+
     }
 </script>

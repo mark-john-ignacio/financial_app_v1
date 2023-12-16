@@ -20,17 +20,25 @@
     <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style>
+        th, td {
+            padding-top: 2px;
+            padding-left: 15px;
+            padding-right: 15px;
+            padding-bottom: 2px;
+        }
+    </style>
     <title>MyxFinancials</title>
 </head>
 <body>
-    <div class="container">
+    <div class="">
         <div style="display: flex; justify-content: center; justify-items: center">
             <h2>Quality Assurance Plan</h2>
         </div>
 
-        <div style="display: relative; width: 50%; padding-top: 1in; min-width: 500px">
+        <div class="container"style="display: relative;  width: 50%; padding-top: 50px; min-width: 500px">
             <form action="" method="post" id="QAPForm" enctype="multipart/form-data" target="_blank">
-                <table width="100%" border="0" >
+                <table>
                     <tr>
                         <th rowspan="3">
                             <div class="nopadwtop">

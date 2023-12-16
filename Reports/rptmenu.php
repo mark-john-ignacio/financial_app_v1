@@ -234,7 +234,11 @@
 											</form> -->
 											<a href="" onClick="setI('A', './QAP/')" data-toggle="tab">
 											<i class="fa fa-book"></i>BIR QAP</a>
-										</li>               
+										</li>    
+										<li>
+											<a href="" onclick="setI('A', './SAWT/')" data-toggle="tab">
+											<i class="fa fa-book"></i>BIR SAWT</a>
+										</li>           
 										<!-- <li>
 											<a href="" onClick="setI('A','MonthlyVAT.php')" data-toggle="tab">
 											<i class="fa fa-book"></i> Monthly Output VAT</a>
