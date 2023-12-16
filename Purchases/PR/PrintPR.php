@@ -23,7 +23,7 @@ include('../../include/denied.php');
 	
 	$csalesno = $_REQUEST['hdntransid'];
 
-	$sqlhead = mysqli_query($con,"select a.*, b.cdesc as locname, c.Fname, c.Minit, c.Lname from purchrequest a left join locations b on a.compcode=b.compcode and a.locations_id=b.nid left join users c on a.cpreparedby=c.Userid where a.compcode='$company' and a.ctranno = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*, b.cdesc as locname, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign from purchrequest a left join locations b on a.compcode=b.compcode and a.locations_id=b.nid left join users c on a.cpreparedby=c.Userid where a.compcode='$company' and a.ctranno = '$csalesno'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -35,8 +35,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
+		$lSent = $row['lsent'];
 
 		$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
+		$cpreparedBySign = $row['cusersign'];
 	}
 }
 
@@ -178,54 +180,76 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	<tr>
 		<td style="vertical-align: bottom;">
 			<br><br>	<br><br>		
-			<table border="0" width="100%">
-				<tr>
-					<td>
-						<table border=0 width="100%">
-								<tr>
 
-									<td width="25%">
-										<div style="padding-bottom: 50px; text-align: center">Prepared By</div>
-										<div style="text-align: center"><?=$cpreparedBy?></div>
+			<table border=1 width="100%">
+					<tr>
 
-									</td>
+						<td width="25%">
+							<div style="padding-bottom: 10px; text-align: center;">Prepared By</div>
+							<div style="text-align: center;">
+							<?php
+								if($lSent==1 && $cpreparedBySign!=""){
+							?>
+								<div style="display: block;"><img src = '<?=$cpreparedBySign?>?x=<?=time()?>' width="100px"></div>
+								<div style="display: block;"><?=$cpreparedBy?></div> 
+							<?php
+								}else{
+							?>
+							<div style="display: inline-block;"><?=$cpreparedBy?></div> 
+							<?php
+								}
+							?>
+							</div>
 
-								<?php
+						</td>
 
-									$sqdts = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname from purchrequest_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cprno = '$csalesno' order by a.nlevel");
+					<?php
 
-									if (mysqli_num_rows($sqdts)!=0) {
-										while($row = mysqli_fetch_array($sqdts, MYSQLI_ASSOC)){
-								?>
-											<td width="25%">
-												<div style="padding-bottom: 50px; text-align: center"><?=($row['nlevel']==1) ? "Checked By" : "Approved By"?></div>
-												<div style="text-align: center"><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div>
+						$sqdts = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign from purchrequest_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cprno = '$csalesno' order by a.nlevel");
 
-											</td>
-
-								<?php
+						if (mysqli_num_rows($sqdts)!=0) {
+							while($row = mysqli_fetch_array($sqdts, MYSQLI_ASSOC)){
+					?>
+								<td width="25%">
+									<div style="padding-bottom: 10px; text-align: center"><?=($row['nlevel']==1) ? "Checked By" : "Approved By"?> .. <?=$row['lapproved']?></div>
+									<div style="text-align: center">
+									<?php
+										if($row['lapproved']==1 && $row['cusersign']!=""){
+									?>
+										<div style="display: block;"><img src = '<?=$row['cusersign']?>?x=<?=time()?>' width="100px"></div>
+										<div style="display: block;"><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div> 
+									<?php
+										}else{
+									?>
+									<div style="display: inline-block;"><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div> 
+									<?php
 										}
-									}else{
-								?>
-									<td width="25%">
-										<div style="padding-bottom: 50px; text-align: center">Checked By</div>
-										<div style="text-align: center">_________________________</div>
+									?>
+																				
+								</div>
 
-									</td>
+								</td>
 
-									<td width="25%">
-										<div style="padding-bottom: 50px; text-align: center">Approved By</div>
-										<div style="text-align: center">_________________________</div>
+					<?php
+							}
+						}else{
+					?>
+						<td width="25%">
+							<div style="padding-bottom: 50px; text-align: center">Checked By</div>
+							<div style="text-align: center">_________________________</div>
 
-									</td>
-								<?php
-									}
-								?>
-								</tr>
-								
-						</table>
-					</td>
-				</tr>
+						</td>
+
+						<td width="25%">
+							<div style="padding-bottom: 50px; text-align: center">Approved By</div>
+							<div style="text-align: center">_________________________</div>
+
+						</td>
+					<?php
+						}
+					?>
+					</tr>
+					
 			</table>
 
 		</td>

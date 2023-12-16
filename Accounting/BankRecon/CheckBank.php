@@ -46,7 +46,10 @@
         $excel_debit = floatval($data[3]);
         $excel_credit = floatval($data[4]);
         
-        $EXCEL_TOTAL += floatval($excel_credit) + floatval($excel_debit);
+        if($i == count($excel)-1){
+            $EXCEL_TOTAL = floatval($data[5]);
+        }
+        //$EXCEL_TOTAL += floatval($excel_credit) + floatval($excel_debit);
         
         foreach($deposit as $list){
             $tranno = $list['ctranno'];
@@ -111,15 +114,23 @@
     <script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
     <script src="../../Bootstrap/js/moment.js"></script>
     <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="../../global/scripts/metronic.js" type="text/javascript"></script>
     <title>MyxFinancials</title>
 </head>
-<body> 
+<body style="padding:5px">
+	<section>
+        <div class="row nopadding">
+        	<div class="col-xs-6 nopadding" style="float:left; width:50%">
+				<font size="+2"><u>Bank Reconciliation</u></font>	
+          </div>
+        </div>
 
     <div class="container" style="padding: 14px">
 
         <div style="display: flex; justify-content: center; justify-items: center; width: 100%;">
-            <div style="text-decoration: underline; font-weight: bold; font-size: 20px">Summary of Bank Reconciliation</div>
+            <div style="text-decoration: underline; font-weight: bold; font-size: 20px">Reconciliation Summary</div>
         </div>
         <div class="portlet-body" style="margin-top: 10px; font-size: 15px">
             <div class="well well-large">
@@ -167,28 +178,87 @@
                     </div>
             </div>
         </div>
-    </div>
-    
-        
+    </div>       
     
     <div style="min-width: 10in; width: 100%; padding: 10px;  display: flex; justify-content: center; justify-items: items">
         <button type="button" class="btn btn-primary" onclick="Finalized.call(this)" id="Finalized" disabled>Finalize Bank Reconciliation</button>
     </div>
+
+    <div class="portlet box blue">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="fa fa-copy"></i>Matched Items
+            </div>
+            <div class="tools">
+                <a href="javascript:;" class="collapse">
+                </a>
+               
+            </div>
+        </div>
+        <div class="portlet-body">
+            <div class="row"><div class="col-md-12 col-sm-12 col-xs-12">
+                <table class="table table-sm" id="chequeBank">
+                    <thead>
+                        <tr>
+                            <th>Check Date</th>
+                            <th>Account Nature</th>
+                            <th>Check Number</th>
+                            <th style='text-align: right'>Debit</th>
+                            <th style='text-align: right'>Credit</th>
+                            <!-- <th>Amount</th> -->
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody> </tbody>
+                </table>
+            </div></div>
+        </div>
+    </div>
+
+    <div class="portlet box yellow">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="fa fa-tasks"></i>Unmatched Bank Statement
+            </div>
+            <div class="tools">
+                <a href="javascript:;" class="collapse">
+                </a>
+               
+            </div>
+        </div>
+        <div class="portlet-body">
+            <div class="row">
+               
+            </div>
+        </div>
+    </div>
+
+    <div class="portlet box purple">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="fa fa-tasks"></i>Unmatched MYX Transactions
+            </div>
+            <div class="tools">
+                <a href="javascript:;" class="collapse">
+                </a>
+               
+            </div>
+        </div>
+        <div class="portlet-body">
+            <div class="row">
+               
+            </div>
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs">
+		<li class="active"><a href="#items" data-toggle="tab">Matched Items</a></li>
+		<li><a href="#attc" data-toggle="tab">Unmatched Bank Statement</a></li>
+        <li><a href="#attc" data-toggle="tab">Unmatched System Transactions</a></li>
+	</ul>
+
     <div style="min-width: 10in; width: 100%; min-height: 3in; max-height: 3in; border: 1px solid; overflow: auto; padding: 5px">
-        <table class="table table-sm" id="chequeBank" style="min-width: 10in; overflow: auto;">
-            <thead>
-                <tr>
-                    <th>Check Date</th>
-                    <th>Account Nature</th>
-                    <th>Check Number</th>
-                    <th style='text-align: right'>Debit</th>
-                    <th style='text-align: right'>Credit</th>
-                    <!-- <th>Amount</th> -->
-                    <th>&nbsp;</th>
-                </tr>
-            </thead>
-            <tbody> </tbody>
-        </table>
+        
     </div>
 
     <div class="modal fade" id="ReferenceModal">
@@ -230,6 +300,8 @@
 </html>
 
 <script>
+    Metronic.init(); // init metronic core components
+
     var transactions = [];
     //PHP Array Converting to JS Array
     var Reconciliation = <?= json_encode($bankRecon) ?>;
@@ -287,8 +359,8 @@
         // let amount = row.find("td:eq(3)").text();
         let debit = row.find("td:eq(3)").text();
         let credit = row.find("td:eq(4)").text();
-        let bank = <?= $bankcode ?>;
-        let tranno = <?= json_encode($bankRecon['tranno']) ?>;
+        let bank = '<?= $bankcode ?>';
+        let tranno = '<?= json_encode($bankRecon['tranno']) ?>';
         console.log(tranno)
 
         $("#match > tbody").empty();

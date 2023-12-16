@@ -22,14 +22,33 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <title>MyxFinancials</title>
 </head>
-<body>
+<body style="padding:5px">
+	<section>
+        <div class="row nopadding">
+        	<div class="col-xs-6 nopadding" style="float:left; width:50%">
+				<font size="+2"><u>Bank Reconciliation</u></font>	
+          </div>
+        </div>
+
+
     <div class='container' style='padding-top: 2%'>
         <div class='container-fluid' style='display: flex; justify-content: center; justify-items: center;'>
-            <h3 style="text-decoration: underline">BANK RECONCILATION</h3>
+            <h4 style="text-decoration: underline">Import Bank Statement</h4>
         </div>
         <div style=' width: 100%;'>
             <div class='container' style='padding: 50px; display: flex; justify-content: center; justify-items: center; border: 1px solid;'>
                 <form action="CheckBank.php" method="POST" enctype="multipart/form-data">
+                    <table>
+                        <tr valign="top">
+                            <th style='display: flex; justify-items: center; justify-content: center; padding: 10px;'>Download Template:</th>
+                            <th colspan="3" style="width: 300px">
+                                <div class="col-xs-13 nopadding">
+                                    <a href="template/Bank-Reconciliation-template.xlsx" download="Bank-Reconciliation-template.xlsx" class="btn btn-primary btn-sm"> Download Here </a>
+                                </div>
+                            </th>
+                        </tr>
+                    </table>
+                    <hr>
                     <table>
                         <tr valign="top">
                             <th style='display: flex; justify-items: center; justify-content: center; padding: 10px;'>Date Range From:</th>
@@ -50,14 +69,6 @@
                             <th colspan="3" style="width: 300px">
                                 <div class="col-xs-13 nopadding">
                                     <select name="bank" id="bank" class="form-control input-sm" required><option value=""></option></select>
-                                </div>
-                            </th>
-                        </tr>
-                        <tr valign="top">
-                            <th style='display: flex; justify-items: center; justify-content: center; padding: 10px;'>Sample Template:</th>
-                            <th colspan="3" style="width: 300px">
-                                <div class="col-xs-13 nopadding">
-                                    <a href="template/Bank-Reconciliation-template.xlsx" download="Bank-Reconciliation-template.xlsx" class="btn btn-primary btn-sm"> Download Here </a>
                                 </div>
                             </th>
                         </tr>
