@@ -19,10 +19,11 @@
         $comptin = TinValidation($list['comptin']);
     }
 
-    $sql = "SELECT a.cewtcode, a.newtamt, a.ctranno, a.namount, b.dcutdate, c.cname, c.chouseno, c.ccity, c.ctin FROM receipt_sales_t a
-        LEFT JOIN receipt b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-        LEFT JOIN customers c on a.compcode = c.compcode AND b.ccode = c.cempid
-        WHERE a.compcode = '$company' AND MONTH(b.dcutdate) = '$month' AND YEAR(b.dcutdate) = '$year'";
+    $sql = "SELECT a.cewtcode, a.newtamt, a.ctranno, b.ngross, b.dcheckdate, c.cname, c.chouseno, c.ccity, c.ctin FROM paybill_t a 
+        LEFT JOIN paybill b on a.compcode = b.compcode AND a.ctranno = b.ctranno
+        LEFT JOIN suppliers c on a.compcode = c.compcode AND b.ccode = c.cempid
+        WHERE a.compcode = '$company' AND MONTH(b.dcheckdate) = '$month' AND YEAR(b.dcheckdate) = '$year'";
+    
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         header("Content-type: text/plain");
@@ -45,7 +46,7 @@
                     $name = stringValidation($list['cname']);
                     $ewtcode = $ewt['code'];
                     $rate = round($ewt['rate'], 2);
-                    $gross = round($list['namount'], 2);
+                    $gross = round($list['ngross'], 2);
                     $credit = round($credit, 2);
 
                     // Changing Data 1601EQ

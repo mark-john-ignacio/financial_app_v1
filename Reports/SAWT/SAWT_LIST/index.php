@@ -22,10 +22,15 @@
         ];
     }
 
-    $sql = "SELECT a.cewtcode, a.newtamt, a.ctranno, a.namount, b.dcutdate, c.cname, c.chouseno, c.ccity, c.ctin FROM receipt_sales_t a
-        LEFT JOIN receipt b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-        LEFT JOIN customers c on a.compcode = c.compcode AND b.ccode = c.cempid
-        WHERE a.compcode = '$company' AND MONTH(b.dcutdate) = '$month' AND YEAR(b.dcutdate) = '$year'";
+    // $sql = "SELECT a.cewtcode, a.newtamt, a.ctranno, a.namount, b.dcutdate, c.cname, c.chouseno, c.ccity, c.ctin FROM receipt_sales_t a
+    //     LEFT JOIN receipt b on a.compcode = b.compcode AND a.ctranno = b.ctranno
+    //     LEFT JOIN customers c on a.compcode = c.compcode AND b.ccode = c.cempid
+    //     WHERE a.compcode = '$company' AND MONTH(b.dcutdate) = '$month' AND YEAR(b.dcutdate) = '$year'";
+
+    $sql = "SELECT a.cewtcode, a.newtamt, a.ctranno, b.ngross, b.dcheckdate, c.cname, c.chouseno, c.ccity, c.ctin FROM paybill_t a 
+        LEFT JOIN paybill b on a.compcode = b.compcode AND a.ctranno = b.ctranno
+        LEFT JOIN suppliers c on a.compcode = c.compcode AND b.ccode = c.cempid
+        WHERE a.compcode = '$company' AND MONTH(b.dcheckdate) = '$month' AND YEAR(b.dcheckdate) = '$year'";
     $query = mysqli_query($con, $sql);
 
     $array = [];
@@ -40,9 +45,9 @@
                 'address' => $list['chouseno'] . " " . $list['ccity'],
                 'tin' => $list['ctin'],
                 'tranno' => $list['ctranno'],
-                'gross' => $list['namount'],
+                'gross' => $list['ngross'],
                 'credit' => $list['newtamt'],
-                'date' => $list['dcutdate'],
+                'date' => $list['dcheckdate'],
                 'ewt' => $ewt['code'],
                 'rate' => $ewt['rate']
             ];
