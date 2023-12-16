@@ -25,26 +25,27 @@
 <body>
     <div class="container">
         <div style="display: flex; justify-content: center; justify-items: center">
-            <h2>Quality Assurance Plan</h2>
+            <h2>Summary Alphalist of Withholding Tax</h2>
         </div>
 
-        <div style="display: relative; width: 50%; padding-top: 1in; min-width: 500px">
-            <form action="" method="post" id="QAPForm" enctype="multipart/form-data" target="_blank">
-                <table width="100%" border="0" >
+        <div class="display: flex; justify-content: center; justify-items: center;">
+            <div style="display: relative; width: 100%; padding-top: 1in;">
+                <table width="100%" border="0" cellpadding="2" >
                     <tr>
                         <th rowspan="3">
                             <div class="nopadwtop">
-                                <button type="button" class="btn btn-danger col-sm-12" onclick="btnonclick.call(this)" value="VIEW"><i class="fa fa-search"></i>&nbsp; Search</button><br><br>
+                                <button type="button" class="btn btn-danger col-sm-5"><i class="fa fa-search"></i>&nbsp; Search</button><br><br>
                             </div>
                             <div class="nopadwtop">
-                                <button type="button" class="btn btn-success col-sm-12" onclick="btnonclick.call(this)" value="CSV"><i class="fa fa-file-excel-o"></i>&nbsp; To Excel</button><br><br>
+                                <button type="button" class="btn btn-success col-sm-5"><i class="fa fa-file-excel-o"></i>&nbsp; To Excel</button><br><br>
                             </div>
                             <div class="nopadwtop">
-                                <button type="button" class="btn btn-primary col-sm-12" onclick="btnonclick.call(this)" value="DAT"><i class="fa fa-file"></i>&nbsp; To DAT</button>
+                                <button type="button" class="btn btn-primary col-sm-5"><i class="fa fa-file"></i>&nbsp; To DAT</button>
                             </div>
                         </th>
                         <th>
-                            <div class="col-xs-12">  
+                            <div class="col-xs-8">  
+                                
                                 <label for="months">Months: </label>
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -53,7 +54,7 @@
                             </div>
                         </th>
                         <th >
-                            <div class="col-xs-12">
+                            <div class="col-xs-4">
                                 <label for="years">Years: </label>
                                 
                                 <div class="input-group">
@@ -64,8 +65,8 @@
                         </th>
                     </tr>
                     <tr>
-                        <th colspan="2">
-                            <div class="col-xs-6">
+                        <th class="col-xs-3">
+                            <div class="cold-xs-2">
                                 <label for="rdo">Enter RDO:</label>
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-icon"></i></span>
@@ -75,15 +76,13 @@
                         </th>
                     </tr>
                 </table>
-            </form>
-            
+            </div>
         </div>
     </div>
 </body>
 </html>
 
 <script type="text/javascript">
-    var apv = [];
     $(document).ready(function(){
         $(".yearpicker").datetimepicker({
             defaultDate: moment(),
@@ -97,69 +96,6 @@
             format: 'MMMM'
         })
 
-        FetchAPV();
+        // FetchAPV();
     })
-
-    function FetchAPV() {
-        let year = $("#years").val();
-        let month = $("#months").val();
-        $.ajax({
-            url: "./LIST_EWT/",
-            data: {
-                years: year,
-                months: month
-            },
-            dataType: "json",
-            async: false,
-            success: function(res) {
-                if(res.valid) {
-                    apv = res.data
-                } else {
-                    apv.length = 0;
-                    apv = [];
-                    console.log(res.msg)
-                }
-                $("#trade").text(res.company.trade);
-                $("#company").text(res.company.name);
-                $("#tin").text(res.company.tin);
-                $("#address").text(res.company.address);
-            },
-            error: function(msg){
-                console.log(msg)
-            }
-        })
-    }
-
-    function btnonclick() {
-        let type = $(this).val();
-        var form = document.getElementById('QAPForm');
-        var formData = new FormData(form);
-        FetchAPV();
-
-        let rdo = $("#rdo").val();
-        var newAction = "";
-
-        if (apv.length === 0) {
-            return alert("No Referrence found!");
-        } 
-
-        if(rdo == ""){ 
-            return alert("No RDO found please! Fill this detail!");
-        }
-        
-        switch (type) {
-            case "CSV":
-                newAction = "./TO_CSV/";
-                break;
-            case "DAT":
-                newAction = "./TO_DAT/";
-                break;
-            case "VIEW":
-                newAction = "./TO_VIEW/";
-                break;
-        }
-        form.action = newAction;
-        // console.log(form)
-        form.submit();
-    }
 </script>
