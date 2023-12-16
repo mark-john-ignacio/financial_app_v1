@@ -62,14 +62,26 @@
             </form>
             
         </div>
-        <div style="display: grid; grid-template-columns: repeat(2, minmax(100px, .2fr)); width: 100%; padding: 10px;">
-            <h5>TAX PAYER TRADE NAME:</h5> <h5 id='trade'>Acme Corp.</h5>
-            <h5>TAX PAYER NAME:</h5> <h5 id='company'>Acme Corp.</h5>
-            <h5>TIN:</h5> <h5 id='tin'>Acme Corp.</h5>
-            <h5>TAX PAYER ADDRESS:</h5> <h5 id='address'>Acme Corp.</h5>
+        <div style="display: flex;">
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(25%, .2fr)); width: 100%; padding: 10px;">
+                <h5>TAX PAYER TRADE NAME:</h5> <h5 id='trade'>Acme Corp.</h5>
+                <h5>TAX PAYER NAME:</h5> <h5 id='company'>Acme Corp.</h5>
+                <h5>TIN:</h5> <h5 id='tin'>Acme Corp.</h5>
+                <h5>TAX PAYER ADDRESS:</h5> <h5 id='address'>Acme Corp.</h5>
+            </div>
+            <div style="display: flex; justify-content: left; justify-items: left;">
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(100px, .2fr)); padding: 10px;">
+                    <h5>TOTAL GROSS: </h5>
+                    <h5>₱ <span id="TOTAL_GROSS">00.00</span></h5>
+                    <h5>TOTAL CREDIT: </h5>
+                    <h5>₱ <span id="TOTAL_CREDIT">00.00</span></h5>
+                </div>
+            </div>
+            
         </div>
-        <div style="display: flex; height: 350px; overflow: auto; border: 1px solid grey; border-radius: 20px; margin-top: 10px">
-            <table class="table">
+        
+        <div style="display: flex; height: 350px; overflow: auto; border: 1px solid grey; border-radius: 20px;  margin: 10px">
+            <table class="table" id="QAPList">
                 <thead>
                     <tr>
                         <th>TRANSACTION DATE</th>
@@ -114,9 +126,8 @@
     function FetchAPV() {
         let year = $("#years").val();
         let month = $("#months").val();
-        let msg = "";
         $.ajax({
-            url: "./APV_EWT",
+            url: "./LIST_EWT/",
             data: {
                 years: year,
                 months: month
@@ -129,7 +140,10 @@
                 } else {
                     apv.length = 0;
                     apv = [];
-                    msg = res.msg
+                    
+                    $("#TOTAL_CREDIT").text("00.00");
+                    $("#TOTAL_GROSS").text("00.00");
+                    console.log(res.msg)
                 }
                 $("#trade").text(res.company.trade);
                 $("#company").text(res.company.name);
@@ -142,16 +156,6 @@
         })
 
         DisplayCode();
-        if(apv.length === 0){
-            alert(msg)
-            return {
-                valid: false
-            };
-        } 
-
-        return {
-            valid: true
-        };
     }
     
 
@@ -159,29 +163,39 @@
         let type = $(this).val();
         var form = document.getElementById('formexport');
         var formData = new FormData(form);
-        let fetch = FetchAPV();
 
+        let rdo = $("#rdo").val();
         var newAction = "";
-        
-        if (fetch.valid) {
-            switch (type) {
-                case "CSV":
-                    newAction = "./TO_CSV/";
-                    break;
-                case "DAT":
-                    newAction = "./TO_DAT/";
-                    break;
-                // Add more cases if needed for other file types
-            }
-            form.action = newAction;
-            // console.log(form)
-            form.submit();
+
+        if (apv.length === 0) {
+            return alert("No Referrence found!");
+        } 
+
+        if(rdo == ""){ 
+            return alert("No RDO found please! Fill this detail!");
         }
+        
+        switch (type) {
+            case "CSV":
+                newAction = "./TO_CSV/";
+                break;
+            case "DAT":
+                newAction = "./TO_DAT/";
+                break;
+        }
+        form.action = newAction;
+        // console.log(form)
+        form.submit();
     }
 
     function DisplayCode() {
         $("table tbody").empty();
+        
+        let credit = 0;
+        let gross = 0;
         apv.map((item, index) => {
+            credit += parseFloat(item.credit);
+            gross += parseFloat(item.gross);
             $("<tr>").append(
                 $("<td>").text(item.date),
                 $("<td>").text(item.tranno),
@@ -192,7 +206,10 @@
                 $("<td>").text((item.rate / 100) + "%"),
                 $("<td>").text(parseFloat(item.gross).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')),
                 $("<td>").text(parseFloat(item.credit).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')),
-            ).appendTo("table tbody");
+            ).appendTo("#QAPList tbody");
         });
+        
+        $("#TOTAL_CREDIT").text(parseFloat(credit).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+        $("#TOTAL_GROSS").text(parseFloat(gross).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
     }
 </script>
