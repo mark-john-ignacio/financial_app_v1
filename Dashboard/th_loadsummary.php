@@ -26,7 +26,7 @@
                 "Void" => "AND a.lvoid = 1 ",
             };
     
-            $sql = "SELECT b.cname as names, a.ctranno as tranno, a.dcutdate as dates, a.cremarks as remarks FROM sales a
+            $sql = "SELECT b.cname as names, a.ctranno as tranno, a.dcutdate as dates, a.cremarks as remarks, a.ngross as gross FROM sales a
             LEFT JOIN customers b ON a.compcode = b.compcode AND a.ccode = b.cempid
             WHERE a.compcode = '$company' ". $isStatus ." ORDER BY a.dcutdate DESC LIMIT 10";
 
@@ -59,7 +59,7 @@
                 "Pending" => "AND a.lapproved = 0 AND a.lvoid = 0 AND a.lcancelled = 0",
             };
     
-            $sql = "SELECT b.cname as names, a.cpono as tranno, a.dneeded as dates, a.cremarks as remarks FROM purchase a
+            $sql = "SELECT b.cname as names, a.cpono as tranno, a.dneeded as dates, a.cremarks as remarks, a.ngross as gross FROM purchase a
             LEFT JOIN suppliers b ON a.compcode = b.compcode AND a.ccode = b.ccode
             WHERE a.compcode = '$company' ". $isStatus ." ORDER BY a.dneeded DESC LIMIT 10";
 

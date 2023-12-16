@@ -54,7 +54,7 @@
             $query = mysqli_query($con, $sql);
             
             while($row = $query -> fetch_assoc()){
-                $cost += floatval($row['napplied']);
+                $cost += round($row['napplied'], 2);
             }
             array_push($amounts, $cost);
         }
@@ -79,7 +79,7 @@
 
             $query = mysqli_query($con, $sql);
             while($row = $query -> fetch_assoc()){
-                $cost += floatval($row['total']);
+                $cost += round($row['total'], 2);
             }
             array_push($amounts, $cost);
         }

@@ -184,7 +184,7 @@
                     </div>
                 </div>
                 <div style="display: flex; justify-content: center; justify-items: center; max-height: 600px; border: 1px solid grey; border-top: 0px solid; ">
-                    <canvas id="myChart" style="width:100%; max-width:500px; min-height: 200px;"></canvas>
+                    <canvas id="myChart" style="width:100%; max-width:500px; min-height: 300px;"></canvas>
                 </div>
             </div>
             
@@ -227,13 +227,27 @@
                     <label for="Pending" class="btn btn-sm btn-warning" style="margin: 2px"> Pending </label>
                     <input type="radio" name="status" id="Pending" value="Pending" style="display: none">
                 </div>
-                <div style="display: relative;  max-height: 2.5in; overflow: auto;" id="summary">
+                <div style="display: relative; max-height: 2.5in; overflow: auto;">
+                    <table class="table" id="TransactionSummary">
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th><?=  in_array("DashboardSales.php", $page) ? "Customer" : (in_array("DashboardPurchase.php", $page) ? "Supplier" : "")?></th>
+                                <th>Gross</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody style="margin-top: 2%;"></tbody>
+                    </table>
                 </div>
+                <!-- <div style="display: relative;  max-height: 2.5in; overflow: auto;" id="summary">
+                </div> -->
             </div>
             <div id="RecentLog" style="display: relative; width: 100%; border: 1px solid; border-radius: 20px 20px 0 0;">
                 <div style="display: flex; justify-content: center; justify-items: center; background-color:#2d5f8b; color: white; border-radius: 20px 20px 0 0;">
                     <h4>Recent Logs</h4>
                 </div>
+                
                 <div style="display: relative;  max-height: 2.5in; overflow: auto;" id="logs">
                 </div>
             </div>
@@ -365,19 +379,27 @@
             async: false,
             success: function (res) {
                 $("#summary").empty();
+                $("#TransactionSummary tbody").empty();
                 if(res.valid){
                     res.data.map((item, index) => {
                         let link = res.link.toString() + "?txtctranno=" + item.tranno.toString();
-                        let DivNavigation = $("<div id='DivNavigation'>").click( function(){
+                        let DivNavigation = $("<div id='DivNavigation'>").click( function() {
                             navigate(link);
                         })
-                        $(DivNavigation).append(
-                            $("<div style='display: flex; width: 100%; padding: 5px;'>").append(
-                                $("<div style='font-weight: bold; font-size: 14px; width: 75%;' id='title'>").text(item.names),
-                                $("<div style='flex-grow: 1; display: flex; justify-content: flex-end; align-items: center; color: green; font-size: 12px' id='date'>").text(item.dates)
-                            ),
-                            $("<div style='width:100%; max-height: 30px; color: grey; font-size: 12px; overflow: hidden; padding: 5px' id='remarks'>").text(item.remarks)
-                        ).appendTo("#summary");
+                        // $(DivNavigation).append(
+                        //     $("<div style='display: flex; width: 100%; padding: 5px;'>").append(
+                        //         $("<div style='font-weight: bold; font-size: 14px; width: 75%;' id='title'>").text(item.names),
+                        //         $("<div style='flex-grow: 1; display: flex; justify-content: flex-end; align-items: center; color: green; font-size: 12px' id='date'>").text(item.dates)
+                        //     ),
+                        //     $("<div style='width:100%; max-height: 30px; color: grey; font-size: 12px; overflow: hidden; padding: 5px' id='remarks'>").text(item.remarks)
+                        // ).appendTo("#summary");
+
+                        $("<tr>").append(
+                            $("<td>").html("<a href='"+link+"'>"+item.tranno+"</a>"),
+                            $("<td>").text(item.names),
+                            $("<td>").text(parseFloat(item.gross).toFixed(2)),
+                            $("<td>").text(item.dates),
+                        ).appendTo("#TransactionSummary tbody")
                     });
                 } else {
                     console.log(res.msg)
@@ -442,14 +464,14 @@
             },
             plugins: {
                 datalabels: {
-                formatter: (value, context) => {
-                    // collecting sum for all data 
-                    const sum = context.dataset.data.reduce((acc, data) => acc + data, 0);
-                    // Converting to Percentage
-                    let percentage = (value * 100 / sum).toFixed(2) + "%";
-                    return percentage;
-                },
-                color: '#fff',
+                    formatter: (value, context) => {
+                        // collecting sum for all data 
+                        const sum = context.dataset.data.reduce((acc, data) => acc + data, 0);
+                        // Converting to Percentage
+                        let percentage = (value * 100 / sum).toFixed(2) + "%";
+                        return percentage;
+                    },
+                    color: '#fff',
                 }
             }
         };

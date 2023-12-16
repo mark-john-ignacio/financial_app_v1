@@ -809,7 +809,6 @@
 	  }
 	  function loaddashboard(){
 		let pages = <?= json_encode($pages) ?>;
-		console.log(pages)
 
 		if (pages.includes("DashboardSales.php") || pages.includes("DashboardPurchase.php")) {
 			setpage("./Dashboard/index.php")
