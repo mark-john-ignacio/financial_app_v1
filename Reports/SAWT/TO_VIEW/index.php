@@ -38,7 +38,7 @@
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                             <!-- <input type="text" id="months" name="months" class="monthpicker form-control input-sm" value="< ?= date("MM", strtotime($_POST['months'])) ?>"> -->
-                            <input type="text" id="months" name="months" class="monthpicker form-control input-sm" value="<?= date("MM") ?>">
+                            <input type="text" id="months" name="months" class="monthpicker form-control input-sm" value="<?= date("MM", strtotime($_POST['months'])) ?>">
                         </div>
                     </div>
                     <div class="col-xs-2">
@@ -46,7 +46,7 @@
                         
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                            <input type="text" id="years" name="years" class="yearpicker form-control input-sm col-xs-2" value="<?= date("Y") ?>">
+                            <input type="text" id="years" name="years" class="yearpicker form-control input-sm col-xs-2" value="<?= date("Y", strtotime($_POST['years'])) ?>">
                         </div>
                     </div>
                     <div class="cold-xs-2">
