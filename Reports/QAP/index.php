@@ -23,18 +23,31 @@
         <div  style="padding-top: 20px;">
             <form action="" method="post" id="formexport" enctype="multipart/form-data">
                 <div style="display: flex; padding: 10px">
-                    <div class="col-xs-2">
-                        <label for="years">Years: </label>
-                        <input type="text" id="years" name="years" class="yearpicker form-control input-sm" value="<?= date("Y") ?>">
-                    </div>
+                    
                     <div class="col-xs-2">
                         <label for="months">Month: </label>
-                        <input type="text" id="months" name="months" class="monthpicker form-control input-sm" value="<?= date("MM") ?>">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input type="text" id="months" name="months" class="monthpicker form-control input-sm" value="<?= date("MM") ?>">
+                        </div>
+                    </div>
+                    <div class="col-xs-2">
+                        <label for="years">Years: </label>
+                        
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input type="text" id="years" name="years" class="yearpicker form-control input-sm col-xs-2" value="<?= date("Y") ?>">
+                        </div>
                     </div>
                     <div class="cold-xs-2">
                         <label for="rdo">Enter RDO:</label>
-                        <input type="text" id="rdo" name="rdo" class="form-control input-sm" placeholder="RDO...">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-icon"></i></span>
+                            <input type="text" id="rdo" name="rdo" class="form-control input-sm" placeholder="Enter RDO..." required>
+                        </div>
+
                     </div>
+                    
                     <div class="col-xs-2" style="display: flex; min-width: 200px;">
                         <button type="button" class="btn btn-success btn-sm col-xs-4" style="margin: 5px;" onclick="export_file.call(this)" value="CSV">CSV</button>
                         <button type="button" class="btn btn-primary btn-sm col-xs-4" style="margin: 5px;" onclick="export_file.call(this)" value="DAT">DAT</button>
