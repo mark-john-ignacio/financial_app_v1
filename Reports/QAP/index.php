@@ -31,7 +31,10 @@
     <title>MyxFinancials</title>
 </head>
 <body>
-    <div class="">
+    <div style="padding: 10px;">
+        <h4>Quality Assurance Plan</h4>
+    </div>
+    <div style="padding-top: 10px;">
         <div style="display: flex; justify-content: center; justify-items: center">
             <h2>Quality Assurance Plan</h2>
         </div>

@@ -33,7 +33,7 @@
 <body>
 <div class='container'>
         <div style="text-align: center; font-weight: bold; text-decoration: underline;">
-            <font size="+1">Sales Generate DAT</font>
+            <font size="+1">Summary Alphalist of Withholding Tax at Source</font>
         </div>
         <div class='container' style='padding-top: 50px'>
             <form action="" method="post" id="SAWTForm" enctype="multipart/form-data" target="_blank">
@@ -135,6 +135,10 @@
                     sawt = [];
                     console.log(res.msg)
                 }
+                $("#trade").text(res.company.trade);
+                $("#company").text(res.company.name);
+                $("#tin").text(res.company.tin);
+                $("#address").text(res.company.address);
             },
             error: function(msg) {
                 console.log(msg)

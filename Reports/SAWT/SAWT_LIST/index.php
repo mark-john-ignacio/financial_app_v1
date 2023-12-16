@@ -14,7 +14,12 @@
     $sql = "SELECT * FROM company WHERE compcode = '$company'";
     $query = mysqli_query($con, $sql);
     while($list = $query -> fetch_assoc()) {
-        array_push($companies, $list);
+        $companies = [
+            'name' => $list['compname'],
+            'trade' => $list['compdesc'],
+            'address' => $list['compadd'],
+            'tin' => TinValidation($list['comptin'])
+        ];
     }
 
     $sql = "SELECT a.cewtcode, a.newtamt, a.ctranno, a.namount, b.dcutdate, c.cname, c.chouseno, c.ccity, c.ctin FROM receipt_sales_t a

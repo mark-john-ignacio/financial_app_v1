@@ -26,7 +26,10 @@
     </style>
 </head>
 <body>
-    <div style="padding-top: 20px;">
+    <div style="padding: 10px;">
+        <h4>Summary Alphalist of Withholding Tax at Source</h4>
+    </div>
+    <div style="padding-top: 10px;">
             <form action="" method="post" id="SAWTForm" enctype="multipart/form-data">
                 <div style="display: flex; padding: 10px">
                     
@@ -60,6 +63,24 @@
                     </div>
                 </div>
             </form>
+        </div>
+
+        <div style="display: flex;">
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(25%, .2fr)); width: 100%; padding: 10px;">
+                <h5>TAX PAYER TRADE NAME:</h5> <h5 id='trade'>Acme Corp.</h5>
+                <h5>TAX PAYER NAME:</h5> <h5 id='company'>Acme Corp.</h5>
+                <h5>TIN:</h5> <h5 id='tin'>Acme Corp.</h5>
+                <h5>TAX PAYER ADDRESS:</h5> <h5 id='address'>Acme Corp.</h5>
+            </div>
+            <!-- <div style="display: flex; justify-content: left; justify-items: left;">
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(100px, .2fr)); padding: 10px;">
+                    <h5>TOTAL GROSS: </h5>
+                    <h5>₱ <span id="TOTAL_GROSS">00.00</span></h5>
+                    <h5>TOTAL CREDIT: </h5>
+                    <h5>₱ <span id="TOTAL_CREDIT">00.00</span></h5>
+                </div>
+            </div> -->
+            
         </div>
 
         <div style="display: flex; height: 350px; overflow: auto; border: 1px solid grey; border-radius: 20px;  margin: 10px">
@@ -154,6 +175,10 @@
                     sawt = [];
                     console.log(res.msg)
                 }
+                $("#trade").text(res.company.trade);
+                $("#company").text(res.company.name);
+                $("#tin").text(res.company.tin);
+                $("#address").text(res.company.address);
             },
             error: function(msg) {
                 console.log(msg)
