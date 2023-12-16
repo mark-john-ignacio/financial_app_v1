@@ -18,6 +18,12 @@
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>MyxFinancials</title>
+    <style>
+        table, th, td {
+            font-size: 10px
+        }
+        
+    </style>
 </head>
 <body >
         <div  style="padding-top: 20px;">
@@ -62,7 +68,7 @@
             <h5>TIN:</h5> <h5 id='tin'>Acme Corp.</h5>
             <h5>TAX PAYER ADDRESS:</h5> <h5 id='address'>Acme Corp.</h5>
         </div>
-        <div style="display: flex; height: 350px; overflow: auto; border: 1px solid grey; margin-top: 10px">
+        <div style="display: flex; height: 350px; overflow: auto; border: 1px solid grey; border-radius: 20px; margin-top: 10px">
             <table class="table">
                 <thead>
                     <tr>
