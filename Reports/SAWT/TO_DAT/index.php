@@ -27,7 +27,7 @@
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         header("Content-type: text/plain");
-        header("Content-Disposition: attachment; filename=\"".$comptin."SAWT".$month . $year . ".dat\"");
+        header("Content-Disposition: attachment; filename=\"".$comptin.$month.$year."1601EQ.dat\"");
         
         // Changing Data Heading H1601EQ
         $data = "HSAWT,H1601EQ,$comptin,0000,\"$compname\",$month/$year,$rdo\n";
