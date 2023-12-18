@@ -492,8 +492,18 @@
 						<i class="fa fa-shopping-cart"></i><span class="title">Purchases</span><span class="arrow"></span>
 					</a>
 					<ul class="sub-menu">
+
+						<?php
+							//check if SO_subdomain exist
+							if ( file_exists( "Purchases/PR_".$durlSUB ) || is_dir( "Purchases/PR_".$durlSUB) ) {   
+								$SILink = "Purchases/PR_".$durlSUB."/PR.php?ix=";
+							}else{
+								$SILink = "Purchases/PR/PR.php?ix=";
+							}
+						?>
+
 						<li>
-							<a href="javascript:;" onClick="setpage('Purchases/PR/PR.php?ix=');">
+							<a href="javascript:;" onClick="setpage('<?=$SILink?>');">
 								<i class="fa fa-cart-plus" ></i> Purchase Request
 							</a>
 						</li>
