@@ -118,8 +118,8 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
                     ->setCellValue("H$index", $gross)
                     ->setCellValue("I$index", number_format($ewt['rate'], 2))
                     ->setCellValue("J$index", $credit)
-                    ->setCellValue("K$index", $ewt['rate'])
-                    ->setCellValue("L$index", $gross)
+                    ->setCellValue("K$index", $gross)
+                    ->setCellValue("L$index", $ewt['rate'])
                     ->setCellValue("M$index", $credit);
 
                     $TOTAL_GROSS += floatval($row['ngross']); 

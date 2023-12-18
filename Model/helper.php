@@ -556,7 +556,7 @@
     function getEWT($data) {
         global $con, $company;
         
-        $sql = "SELECT ctaxcode, nrate FROM wtaxcodes WHERE compcode = '$company' AND ctaxcode = '$data'";
+        $sql = "SELECT ctaxcode, nrate, cdesc FROM wtaxcodes WHERE compcode = '$company' AND ctaxcode = '$data'";
         $queries = mysqli_query($con, $sql);
         
         if(mysqli_num_rows($queries) !== 0) {
@@ -565,6 +565,7 @@
                 'valid' => true,
                 'code' => $fetch['ctaxcode'],
                 'rate' => $fetch['nrate'],
+                'notify' => $fetch['cdesc'],
             ];
             
         }
