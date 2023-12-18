@@ -94,24 +94,15 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 
 					<tr>
-
 						<td style="padding-bottom: 10px">
 							<font style="font-size: 14px;"><b>Date needed:</b> <?=date_format(date_create($DateNeeded),"F d, Y")?></font>
 						</td>
-
 						<td align="right" style="padding-bottom: 10px">
-						<font style="font-size: 14px;"><b> PR No.:</b> <?=$csalesno?></font>
+							<font style="font-size: 14px;"><b> PR No.:</b> <?=$csalesno?></font>
 						</td>
 
 					</tr>
-
-					<tr>
-
-						<td style="padding-bottom: 10px" colspan="3">
-							<font style="font-size: 14px;"><b>Remarks:</b> <?=$Remarks?></font>
-						</td>
-					
-					</tr>			
+							
 				</table>
 
 				<table border="1" align="center" width="100%" style="border-collapse: collapse;">
@@ -160,23 +151,61 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 			<?php
 				//get approvals 2nd and 3rd
+				$appnmbr = 1;
+
+				$sqdts1 = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign from purchrequest_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cprno = '$csalesno' and a.nlevel=1 order by a.nlevel");
+
+				if (mysqli_num_rows($sqdts1)!=0) {
+					$appnmbr++;
+				}
+
 				$sqdts2 = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign from purchrequest_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cprno = '$csalesno' and a.nlevel=2 order by a.nlevel");
 
+				if (mysqli_num_rows($sqdts2)!=0) {
+					$appnmbr++;
+				}
+
 				$sqdts3 = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign from purchrequest_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cprno = '$csalesno' and a.nlevel=3 order by a.nlevel");
+
+				if (mysqli_num_rows($sqdts3)!=0) {
+					$appnmbr++;
+				}
+
+				$prcwid = 0;
+				switch ($appnmbr) {
+					case 2:
+						$prcwid = 50;
+					break;
+					case 3:
+						$prcwid = 33.33;
+					break;
+					case 4:
+						$prcwid = 25;
+					break;
+					default:
+						$prcwid = 100;
+				}
+  
 			?>
 				<table border="0" width="100%" style="border-collapse: collapse;">
 					<tr>
-						<td align="center" width="33%">
+						<td align="center" width="<?=$prcwid?>%">
 							<b>Prepared By</b>
 						</td>
 
-						<td align="center" width="34%">
-							<b><?=(mysqli_num_rows($sqdts2)!=0) ? "Checked By" : ""?></b>
-						</td>
+						<?php
+							if(mysqli_num_rows($sqdts1)!=0){
+								echo "<td align='center' width='".$prcwid."%'><b>Checked By</b></td>";
+							}
 
-						<td align="center" width="33%">
-							<b><?=(mysqli_num_rows($sqdts3)!=0) ? "Approved By" : ""?></b>		
-						</td>
+							if(mysqli_num_rows($sqdts2)!=0){
+								echo "<td align='center' width='".$prcwid."%'><b>Approved By</b></td>";
+							}
+
+							if(mysqli_num_rows($sqdts3)!=0){
+								echo "<td align='center' width='".$prcwid."%'><b>Approved By</b></td>";
+							}
+						?>
 					</tr>
 
 					<tr>
@@ -193,6 +222,41 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							?>
 						</td>
 
+						<?php
+							if(mysqli_num_rows($sqdts1)!=0){
+						?>
+						<td align="center" valign="top">
+							<table border="0" width="100%" style="border-collapse: collapse;">	
+
+								<?php
+									if (mysqli_num_rows($sqdts1)!=0) {
+										while($row = mysqli_fetch_array($sqdts1, MYSQLI_ASSOC)){
+											$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
+								?>
+									<tr>
+										<td align="center">
+											<?php
+												if($row['lapproved']==1 && $row['cusersign']!=""){
+													echo "<div style=\"text-align: center; display: block\"><img src = '".$row['cusersign']."?x=".time()."' width='150px'></div>";
+													echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";												
+												}else{
+													echo "<div style=\"text-align: center; display: block; height: 50px\">&nbsp;</div>";
+													echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";
+												}
+											?>
+										</td>
+									</tr>
+								<?php
+										}
+									}
+								?>
+							</table>
+						</td>
+						<?php
+							}
+
+							if(mysqli_num_rows($sqdts2)!=0){
+						?>
 						<td align="center" valign="top">
 							<table border="0" width="100%" style="border-collapse: collapse;">	
 
@@ -221,7 +285,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								?>
 							</table>
 						</td>
+						<?php
+							}
 
+							if(mysqli_num_rows($sqdts3)!=0){
+						?>
 						<td align="center" valign="top">
 							<table border="0" width="100%" style="border-collapse: collapse;">	
 
@@ -250,6 +318,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								?>
 							</table>
 						</td>
+						<?php
+							}
+						?>
 					</tr>
 				</table>
 
@@ -257,6 +328,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		</tr>
 	</table>
 
+	<table border="0" width="100%" style="border-collapse: collapse; margin-top: 20px; font-size: 10px">	
+		<td><?=date("h:i:sa");?> <?=date("d-m-Y");?></td>
+		<td><i>Note: In Case of Error Please Report  to the concern Department within 24hrs ERASURE IS NOT ALLOWED</i></td>
+		<td>BMRC-PC-001-F</td>
+	</table>
 
 </body>
 </html>

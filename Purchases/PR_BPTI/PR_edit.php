@@ -213,21 +213,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</td>
 									<tH width="150">&nbsp;</tH>
 									<td style="padding:2px;">
-									&nbsp;
+										<input type='hidden' id="txtremarks" name="txtremarks" value='<?=$cRemarks?>'>
 									</td>
 								</tr>
-								<tr>
-									<tH width="100">Remarks:</tH>
-									<td style="padding:2px">
-										<div class="col-xs-11 nopadding">
-											<textarea class="form-control input-sm" id="txtremarks" name="txtremarks"><?=$cRemarks?></textarea>
-										</div>
-									</td>
-									<tH width="150">&nbsp;</tH>
-									<td style="padding:2px;">
-									&nbsp;
-									</td>
-								</tr>
+								
 
 								<tr>
 									<td colspan="4">&nbsp;</td>
