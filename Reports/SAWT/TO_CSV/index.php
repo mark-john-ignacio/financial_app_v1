@@ -41,36 +41,64 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
      */
     $spreadsheet->getActiveSheet()->getStyle('A11:K11')->getFont()->setBold(true);
     $spreadsheet->setActiveSheetIndex(0)
-        ->setCellValue('A1', 'Summary Alphalist of Withholding Tax at Source')
-        ->setCellValue('A6', 'TAX PAYER TRADE NAME: ' . $comp['compdesc'])
-        ->setCellValue('A7', "TAX PAYER NAME: " . $comp['compname'])
-        ->setCellValue('A8', "TAX PAYER TIN: " . TinValidation($comp['comptin']))
-        ->setCellValue('A9', "TAX PAYER ADDRESS: " . $comp['compadd']);
+        ->setCellValue('A1', 'BIR FORM 1702Q')
+        ->setCellValue('A2', "SUMMARY ALPHALIST OF WITHHOLDING TAXES (SAWT)")
+        ->setCellValue('A3', "FOR THE MONTH OF $month, $year")
+        ->setCellValue('A6', 'TIN: ' . TinValidation($comp['comptin']))
+        ->setCellValue('A7', "PAYEE'S NAME: " . $comp['compname']);
 
     /**
      * List of Details
      */
 
     $spreadsheet->setActiveSheetIndex(0)
-        ->setCellValue('A11', "TRANSACTION DATE")
-        ->setCellValue('B11', "CV REFERRENCE NO.")
-        ->setCellValue('C11', "VENDOR TIN")
-        ->setCellValue('D11', "VENDOR NAME")
-        ->setCellValue('E11', "VENDOR ADDRESS ADDRESS")
-        ->setCellValue('F11', "W/TAX CODE")
-        ->setCellValue('G11', "W/TAX RATE")
-        ->setCellValue('H11', "W/TAX BASE AMOUNT")
-        ->setCellValue('I11', "W/TAX AMOUNT");
+        ->setCellValue('A11', "SEQ")
+        ->setCellValue('A12', "NO")
+        ->setCellValue('B11', "TAXPAYER")
+        ->setCellValue('B12', "IDENTIFICATION")
+        ->setCellValue('B13', "NUMBER")
+        ->setCellValue('C11', "CORPORATION")    
+        ->setCellValue('C12', "(Registered Name)")
+        ->setCellValue('D11', "INDIVIDUAL")
+        ->setCellValue('D12', "(Last Name, First Name, Middle Name)")
+        ->setCellValue('E11', "ATC CODE")
+        ->setCellValue('F11', "NATURE OF PAYMENT")
+        ->setCellValue('G11', "AMOUNT OF")
+        ->setCellValue('G12', "INCOME PAYMENT")
+        ->setCellValue('H11', "TAX RATE")
+        ->setCellValue('I11', "AMOUNT OF ")
+        ->setCellValue('I12', "TAX WITHHELD")
+
+        
+        ->setCellValue('A14', "'(1)")
+        ->setCellValue('B14', "'(2)")
+        ->setCellValue('C14', "'(3)") 
+        ->setCellValue('D14', "'(4)")
+        ->setCellValue('E14', "'(5)")
+        ->setCellValue('F14', "'(6)")
+        ->setCellValue('G14', "'(7)")
+        ->setCellValue('H14', "'(8)")
+        ->setCellValue('I14', "'(9)")
+        
+        ->setCellValue('A15', "'------------------------------")
+        ->setCellValue('B15', "'------------------------------")
+        ->setCellValue('C15', "'------------------------------") 
+        ->setCellValue('D15', "'------------------------------")
+        ->setCellValue('E15', "'------------------------------")
+        ->setCellValue('F15', "'------------------------------")
+        ->setCellValue('G15', "'------------------------------")
+        ->setCellValue('H15', "'------------------------------")
+        ->setCellValue('I15', "'------------------------------");
     
 
-        $sql = "SELECT a.cewtcode, a.newtamt, a.ctranno, b.namount, b.dcutdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM receipt_sales_t a
+    $sql = "SELECT a.cewtcode, a.newtamt, a.ctranno, b.namount, b.dcutdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM receipt_sales_t a
         LEFT JOIN receipt b on a.compcode = b.compcode AND a.ctranno = b.ctranno
         LEFT JOIN customers c on a.compcode = c.compcode AND b.ccode = c.cempid
         LEFT JOIN groupings d on a.compcode = b.compcode AND c.ccustomertype = d.ccode
         WHERE a.compcode = '$company' AND MONTH(b.dcutdate) = '$month' AND YEAR(b.dcutdate) = '$year' AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 AND d.ctype = 'CUSTYP'";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
-        $index = 12;
+        $index = 16;
         $TOTAL_GROSS =0; $TOTAL_CREDIT = 0;;
         while($row = $query -> fetch_array(MYSQLI_ASSOC)){
             
@@ -81,19 +109,36 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
                 if(trim($row['ccity']) != ""){
                     $fullAddress .= " ". stringValidation($row['ccity']);
                 }
+                $CORPORATE = "";
+                $INDIVIDUAl = "";
+                switch($row['cdesc']) {
+                    case "PERSON": 
+                        $INDIVIDUAl = stringValidation($row['cname']);
+                        break;
+                    case "COMPANY": 
+                        $CORPORATE = stringValidation($row['cname']);
+                        break;
+                    case "SCHOOL":
+                        $CORPORATE = stringValidation($row['cname']);
+                        break;
+                    case "OTHERS":
+                        $CORPORATE = stringValidation($row['cname']);
+                        break;
+                }
+                $nature = "Income payment made by top withholding agents to their local/resident supplier of goods other than those covered by other rates of withholding tax -  Corporate";
                 $ewt = getEWT($code);
                 if($ewt['valid']) {
                     $gross = $row['namount'];
                     $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
                     $spreadsheet->setActiveSheetIndex(0)
                         ->setCellValue("A$index", $row['dcutdate'])
-                        ->setCellValue("B$index", $row['ctranno'])
-                        ->setCellValue("C$index", TinValidation($row['ctin']))
-                        ->setCellValue("D$index", $row['cname'])
-                        ->setCellValue("E$index", $fullAddress)
-                        ->setCellValue("F$index", $ewt['code'])
-                        ->setCellValue("G$index", $ewt['rate'])
-                        ->setCellValue("H$index", $gross)
+                        ->setCellValue("B$index", $row['ctin'])
+                        ->setCellValue("C$index", $CORPORATE)
+                        ->setCellValue("D$index", $INDIVIDUAl)
+                        ->setCellValue("E$index", $ewt['code'])
+                        ->setCellValue("F$index", $nature)
+                        ->setCellValue("G$index", $gross)
+                        ->setCellValue("H$index", number_format($ewt['rate'],2))
                         ->setCellValue("I$index", $credit);
 
                     $TOTAL_GROSS += floatval($gross); 
