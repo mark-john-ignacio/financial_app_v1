@@ -15,6 +15,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 // Create new Spreadsheet object
 $spreadsheet = new Spreadsheet();
 $company = $_SESSION['companyid'];
+$month_text = $_POST['months'];
 // $month = $_POST['months'];
 // $year = $_POST['years'];
 
@@ -41,38 +42,53 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
      */
     $spreadsheet->getActiveSheet()->getStyle('A11:K11')->getFont()->setBold(true);
     $spreadsheet->setActiveSheetIndex(0)
-        ->setCellValue('A1', 'QUARTERLY ALPHALIST OF PAYEES')
-        // ->setCellValue('A6', 'TAX PAYER TRADE NAME: ' . $comp['compdesc'])
-        ->setCellValue('A6', 'TAX PAYER TRADE NAME: ' . $month)
-        // ->setCellValue('A7', "TAX PAYER NAME: " . $comp['compname'])
-        ->setCellValue('A7', "TAX PAYER NAME: " . $year)
-        ->setCellValue('A8', "TAX PAYER TIN: " . TinValidation($comp['comptin']))
-        ->setCellValue('A9', "TAX PAYER ADDRESS: " . $comp['compadd']);
-
+        ->setCellValue('A1', 'Attachment to BIR Form 1601-EQ')
+        ->setCellValue('A2', 'QUARTERLY ALPHABETICAL LIST OF PAYEES SUBJECTED TO EXPANDED WITHHOLDING TAX & PAYEES WHOSE INCOME PAYMENTS ARE EXEMPT ')
+        ->setCellValue('A3', "FOR THE QUARTER ENDING $month, $year")
+        ->setCellValue('A6', 'TIN: ' . $comp['comptin'])
+        ->setCellValue('A7', "WITHHOLDING AGENT'S NAME: " . $comp['compname']);
     /**
      * List of Details
      */
 
     $spreadsheet->setActiveSheetIndex(0)
-        ->setCellValue('A11', "TRANSACTION DATE")
-        ->setCellValue('B11', "CV REFERRENCE NO.")
-        ->setCellValue('C11', "VENDOR TIN")
-        ->setCellValue('D11', "VENDOR NAME")
-        ->setCellValue('E11', "VENDOR ADDRESS ADDRESS")
-        ->setCellValue('F11', "W/TAX CODE")
-        ->setCellValue('G11', "W/TAX RATE")
-        ->setCellValue('H11', "W/TAX BASE AMOUNT")
-        ->setCellValue('I11', "W/TAX AMOUNT");
+        ->setCellValue('A11', "SEQ")
+        ->setCellValue('A12', "NO")
+        ->setCellValue('B11', "TAXPAYER")
+        ->setCellValue('B12', "IDENTIFICATION")
+        ->setCellValue('B13', "NUMBER")
+        ->setCellValue('C11', "CORPORATION")
+        ->setCellValue('C12', "(Registered Name)")
+        ->setCellValue('D11', "INDIVIDUAL")
+        ->setCellValue('D12', "(Last Name, First Name, Middle Name)")
+        ->setCellValue('E11', "ATC CODE")
+        ->setCellValue('F11', "NATURE OF PAYMENT")
+        ->setCellValue('K10', "1ST MONTH OF THE QUARTER")
+        ->setCellValue('K11', "AMOUNT OF")
+        ->setCellValue('K12', "INCOME PAYMENT")
+        ->setCellValue('L11', "TAX RATE")
+        ->setCellValue('M11', "AMOUNT OF")
+        ->setCellValue('M12', "TAX WITHHELD")
+        
+        ->setCellValue('A14', "'(1)")
+        ->setCellValue('B14', "'(2)")
+        ->setCellValue('C14', "'(3)") 
+        ->setCellValue('D14', "'(4)")
+        ->setCellValue('E14', "'(5)")
+        ->setCellValue('F14', "'(6)")
+        ->setCellValue('K14', "'(7)")
+        ->setCellValue('L14', "'(8)")
+        ->setCellValue('M14', "'(9)");
     
 
     $sql = "SELECT a.ncredit, a.cewtcode, a.ctranno, b.ngross, b.dapvdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM apv_t a
         LEFT JOIN apv b ON a.compcode = b.compcode AND a.ctranno = b.ctranno
         LEFT JOIN suppliers c ON a.compcode = b.compcode AND b.ccode = c.ccode 
         LEFT JOIN groupings d ON a.compcode = b.compcode AND c.csuppliertype = d.ccode
-        WHERE a.compcode = '$company' AND MONTH(b.dapvdate) = '$month' AND YEAR(b.dapvdate) = '$year' AND  b.lapproved = 1, AND b.lvoid = 0 AND b.lcancelled = 0 AND d.ctype = 'SUPTYP'";
+        WHERE a.compcode = '$company' AND MONTH(b.dapvdate) = '$month' AND YEAR(b.dapvdate) = '$year' AND  b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 AND d.ctype = 'SUPTYP'";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
-        $index = 12;
+        $index = 15;
         $TOTAL_GROSS =0;
         $TOTAL_CREDIT = 0;;
         while($row = $query -> fetch_array(MYSQLI_ASSOC)){
@@ -85,18 +101,26 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
                     $fullAddress .= " ". stringValidation($row['ccity']);
                 }
                 $ewt = getEWT($code);
+                $gross = $row['ngross'];
                 if($ewt['valid']) {
                     $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
                     $spreadsheet->setActiveSheetIndex(0)
                     ->setCellValue("A$index", $row['dapvdate'])
                     ->setCellValue("B$index", $row['ctranno'])
-                    ->setCellValue("C$index", TinValidation($row['ctin']))
+                    ->setCellValue("C$index", $row['ctin'])
                     ->setCellValue("D$index", $row['cname'])
                     ->setCellValue("E$index", $fullAddress)
                     ->setCellValue("F$index", $ewt['code'])
-                    ->setCellValue("G$index", $ewt['rate'])
-                    ->setCellValue("H$index", $row['ngross'])
-                    ->setCellValue("I$index", $credit);
+                    /**
+                     * @param G$index value was unknown
+                     */
+                    ->setCellValue("G$index", "")
+                    ->setCellValue("H$index", $gross)
+                    ->setCellValue("I$index", number_format($ewt['rate'], 2))
+                    ->setCellValue("J$index", $credit)
+                    ->setCellValue("K$index", $ewt['rate'])
+                    ->setCellValue("L$index", $gross)
+                    ->setCellValue("M$index", $credit);
 
                     $TOTAL_GROSS += floatval($row['ngross']); 
                     $TOTAL_CREDIT += floatval($credit); 
@@ -137,7 +161,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
 	// Redirect output to a client’s web browser (Xlsx)
 	header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-	header('Content-Disposition: attachment;filename="QAP_.xlsx"');
+	header('Content-Disposition: attachment;filename="QAP-Q2 ' . $year . ' - ' . $month_text . '.xlsx"');
 	header('Cache-Control: max-age=0');
 	// If you're serving to IE 9, then the following may be needed
 	header('Cache-Control: max-age=1');

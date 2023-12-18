@@ -125,9 +125,9 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
                         $CORPORATE = stringValidation($row['cname']);
                         break;
                 }
-                $nature = "Income payment made by top withholding agents to their local/resident supplier of goods other than those covered by other rates of withholding tax -  Corporate";
                 $ewt = getEWT($code);
                 if($ewt['valid']) {
+                    $nature = $ewt['notify'];
                     $gross = $row['namount'];
                     $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
                     $spreadsheet->setActiveSheetIndex(0)

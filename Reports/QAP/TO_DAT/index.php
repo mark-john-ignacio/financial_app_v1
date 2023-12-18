@@ -24,7 +24,7 @@
         LEFT JOIN apv b ON a.compcode = b.compcode AND a.ctranno = b.ctranno
         LEFT JOIN suppliers c ON a.compcode = b.compcode AND b.ccode = c.ccode 
         LEFT JOIN groupings d ON a.compcode = b.compcode AND c.csuppliertype = d.ccode
-        WHERE a.compcode = '$company' AND MONTH(b.dapvdate) = '$month' AND YEAR(b.dapvdate) = '$year' AND  b.lapproved = 1, AND b.lvoid = 0 AND b.lcancelled = 0 AND d.ctype = 'SUPTYP'";
+        WHERE a.compcode = '$company' AND MONTH(b.dapvdate) = '$month' AND YEAR(b.dapvdate) = '$year' AND  b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 AND d.ctype = 'SUPTYP'";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         header("Content-type: text/plain");
