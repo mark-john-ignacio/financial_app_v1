@@ -1,12 +1,15 @@
+<?php 
+    if(!isset($_SESSION)) {
+        session_start();
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="../../global/plugins/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?<?php echo time();?>">
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
-
 
     <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
     <script src="../../js/bootstrap3-typeahead.min.js"></script>
@@ -17,100 +20,85 @@
     <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style>
+        th, td {
+            padding-top: 2px;
+            padding-left: 15px;
+            padding-right: 15px;
+            padding-bottom: 2px;
+        }
+    </style>
     <title>MyxFinancials</title>
 </head>
-<body >
-        <div  style="padding-top: 20px;">
-            <form action="" method="post" id="formexport" enctype="multipart/form-data">
-                <div style="display: flex; padding: 10px">
-                    
-                    <div class="col-xs-2">
-                        <label for="months">Month: </label>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                            <input type="text" id="months" name="months" class="monthpicker form-control input-sm" value="<?= date("MM") ?>">
-                        </div>
-                    </div>
-                    <div class="col-xs-2">
-                        <label for="years">Years: </label>
-                        
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                            <input type="text" id="years" name="years" class="yearpicker form-control input-sm col-xs-2" value="<?= date("Y") ?>">
-                        </div>
-                    </div>
-                    <div class="cold-xs-2">
-                        <label for="rdo">Enter RDO:</label>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-icon"></i></span>
-                            <input type="text" id="rdo" name="rdo" class="form-control input-sm" placeholder="Enter RDO..." required>
-                        </div>
-
-                    </div>
-                    
-                    <div class="col-xs-2" style="display: flex; min-width: 200px;">
-                        <button type="button" class="btn btn-success btn-sm col-xs-4" style="margin: 5px;" onclick="export_file.call(this)" value="CSV">CSV</button>
-                        <button type="button" class="btn btn-primary btn-sm col-xs-4" style="margin: 5px;" onclick="export_file.call(this)" value="DAT">DAT</button>
-                    </div>
-                </div>
-            </form>
-            
+<body>
+    
+    <div style="text-align: center; font-weight: bold; text-decoration: underline;">
+            <font size="+1">Quality Assurance Plan</font>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(2, minmax(100px, .2fr)); width: 100%; padding: 10px;">
-            <h5>TAX PAYER TRADE NAME:</h5> <h5 id='trade'>Acme Corp.</h5>
-            <h5>TAX PAYER NAME:</h5> <h5 id='company'>Acme Corp.</h5>
-            <h5>TIN:</h5> <h5 id='tin'>Acme Corp.</h5>
-            <h5>TAX PAYER ADDRESS:</h5> <h5 id='address'>Acme Corp.</h5>
-        </div>
-        <div style="display: flex; height: 350px; overflow: auto; border: 1px solid grey; margin-top: 10px">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>TRANSACTION DATE</th>
-                        <th>CV REFERENCE NO.</th>
-                        <th>VENDOR TIN</th>
-                        <th>VENDOR NAME</th>
-                        <th>VENDOR ADDRESS</th>
-                        <th>W/TAX CODE</th>
-                        <th>W/TAX RATE</th>
-                        <th>W/TAX BASE AMOUNT</th>
-                        <th>W/TAX AMOUNT</th>
+        <div class='container' style='padding-top: 50px'>
+            <form action="" method="post" id="QAPForm" enctype="multipart/form-data" target="_blank">
+                <table>
+                    <tr valign="top">
+                        <th><button type="button" class='btn btn-danger btn-block' id="btnView" onclick="btnonclick.call(this)" value="VIEW"><i class='fa fa-search'></i>&nbsp;&nbsp;View Report</button></th>
+                        <th width='100px'>Month of:</th>
+                        <th>
+                            <div class="col-xs-10 nopadding">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input type="text" id="months" name="months" class="monthpicker form-control input-sm" value="<?= date("MM") ?>">
+                                </div>
+                            </div>
+                        </th>
+                        <th>Year:</th>
+                        <th>
+                            <div class="col-xs-10 nopadding">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input type="text" id='years' name='years' class='yearpicker form-control input-sm' value="<?= date("Y"); ?>">
+                                </div>
+                                
+                            </div>
+                        </th>
                     </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+                    <tr valign="top">
+                        <th><button type="button" class="btn btn-success btn-block" id="btnExcel" onclick="btnonclick.call(this)" value="CSV"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;To Excel</button></th>
+                        <th>RDO Type: </th>
+                        <th><input type="text" id='rdo' name="rdo" class='form-control input-sm' placeholder="RDO TYPE...." required></th>
+                        <th colspan='4'>&nbsp;</th>
+                    </tr>
+                    <tr>
+                        <th><button type="button" class="btn btn-info btn-block" id="btnDat" onclick="btnonclick.call(this)" value="DAT"><i class="fa fa-file"></i>&nbsp;&nbsp;To DAT</button></th>
+                        <th colspan='4'>&nbsp;</th>
+                    </tr>
+                </table>
+            </form>
         </div>
 </body>
 </html>
-<script>
+
+<script type="text/javascript">
     var apv = [];
-    
     $(document).ready(function(){
-        
         $(".yearpicker").datetimepicker({
             defaultDate: moment(),
             viewMode: 'years',
             format: 'YYYY'
-        }).on('dp.change', function (e) {
-            FetchAPV();
-        });
+        })
 
         $(".monthpicker").datetimepicker({
             defaultDate: moment(),
             viewMode: 'months',
             format: 'MMMM'
-        }).on('dp.change', function (e) {
-            FetchAPV();
-        });
+        })
 
         FetchAPV();
     })
+
     function FetchAPV() {
         let year = $("#years").val();
         let month = $("#months").val();
-        let msg = "";
         $.ajax({
-            url: "./APV_EWT",
+            url: "./LIST_EWT/",
             data: {
                 years: year,
                 months: month
@@ -123,7 +111,7 @@
                 } else {
                     apv.length = 0;
                     apv = [];
-                    msg = res.msg
+                    console.log(res.msg)
                 }
                 $("#trade").text(res.company.trade);
                 $("#company").text(res.company.name);
@@ -134,59 +122,38 @@
                 console.log(msg)
             }
         })
+    }
 
-        DisplayCode();
-        if(apv.length === 0){
-            alert(msg)
-            return {
-                valid: false
-            };
+    function btnonclick() {
+        let type = $(this).val();
+        var form = document.getElementById('QAPForm');
+        var formData = new FormData(form);
+        FetchAPV();
+
+        let rdo = $("#rdo").val();
+        var newAction = "";
+
+        if (apv.length === 0) {
+            return alert("No Referrence found!");
         } 
 
-        return {
-            valid: true
-        };
-    }
-    
-
-    function export_file() {
-        let type = $(this).val();
-        var form = document.getElementById('formexport');
-        var formData = new FormData(form);
-        let fetch = FetchAPV();
-
-        var newAction = "";
-        
-        if (fetch.valid) {
-            switch (type) {
-                case "CSV":
-                    newAction = "./TO_CSV/";
-                    break;
-                case "DAT":
-                    newAction = "./TO_DAT/";
-                    break;
-                // Add more cases if needed for other file types
-            }
-            form.action = newAction;
-            // console.log(form)
-            form.submit();
+        if(rdo == ""){ 
+            return alert("No RDO found please! Fill this detail!");
         }
-    }
-
-    function DisplayCode() {
-        $("table tbody").empty();
-        apv.map((item, index) => {
-            $("<tr>").append(
-                $("<td>").text(item.date),
-                $("<td>").text(item.tranno),
-                $("<td>").text(item.tin),
-                $("<td>").text(item.name),
-                $("<td>").text(item.address),
-                $("<td>").text(item.ewt),
-                $("<td>").text((item.rate / 100) + "%"),
-                $("<td>").text(parseFloat(item.gross).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')),
-                $("<td>").text(parseFloat(item.credit).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')),
-            ).appendTo("table tbody");
-        });
+        
+        switch (type) {
+            case "CSV":
+                newAction = "./TO_CSV/";
+                break;
+            case "DAT":
+                newAction = "./TO_DAT/";
+                break;
+            case "VIEW":
+                newAction = "./TO_VIEW/";
+                break;
+        }
+        form.action = newAction;
+        // console.log(form)
+        form.submit();
     }
 </script>
