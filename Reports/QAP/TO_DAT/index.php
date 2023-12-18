@@ -28,7 +28,7 @@
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         header("Content-type: text/plain");
-        header("Content-Disposition: attachment; filename=\"".$tinHeader.$month.$year."1702Q.dat\"");
+        header("Content-Disposition: attachment; filename=\"".$tinHeader.$month.$year."1601EQ.dat\"");
         
         $data = "HQAP,H1601EQ,$comptin,0000,\"$compname\",$month/$year,$rdo\n";
         $TOTAL_CREDIT = 0;
