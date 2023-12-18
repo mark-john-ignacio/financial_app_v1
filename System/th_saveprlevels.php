@@ -8,7 +8,9 @@ require_once "../Connection/connection_string.php";
 	$compname = php_uname('n');
 	$preparedby = $_SESSION['employeeid'];
 
+	//echo "<pre>";
 	//print_r($_POST);
+	//echo "</pre>";
 
 	$company = $_SESSION['companyid'];
 
@@ -19,6 +21,8 @@ require_once "../Connection/connection_string.php";
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 
 		$lvlnum = $row['nlevel'];
+
+		//echo $lvlnum."<br>";
 
 		$x1 = intval($_POST['tblPRLVL'.$lvlnum.'count']);
 
