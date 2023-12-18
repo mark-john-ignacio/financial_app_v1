@@ -32,7 +32,7 @@
         LEFT JOIN receipt b on a.compcode = b.compcode AND a.ctranno = b.ctranno
         LEFT JOIN customers c on a.compcode = c.compcode AND b.ccode = c.cempid
         LEFT JOIN groupings d on a.compcode = b.compcode AND c.ccustomertype = d.ccode
-        WHERE a.compcode = '$company' AND MONTH(b.dcutdate) = '$month' AND YEAR(b.dcutdate) = '$year' AND d.ctype = 'CUSTYP'";
+        WHERE a.compcode = '$company' AND MONTH(b.dcutdate) = '$month' AND YEAR(b.dcutdate) = '$year' AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 AND d.ctype = 'CUSTYP'";
     $query = mysqli_query($con, $sql);
 
     $array = [];

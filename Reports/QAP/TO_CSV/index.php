@@ -65,10 +65,11 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('I11', "W/TAX AMOUNT");
     
 
-    $sql = "SELECT a.ncredit, a.cewtcode, a.ctranno, b.ngross, b.dapvdate, c.cname, c.chouseno, c.ccity, c.ctin FROM apv_t a
+    $sql = "SELECT a.ncredit, a.cewtcode, a.ctranno, b.ngross, b.dapvdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM apv_t a
         LEFT JOIN apv b ON a.compcode = b.compcode AND a.ctranno = b.ctranno
         LEFT JOIN suppliers c ON a.compcode = b.compcode AND b.ccode = c.ccode 
-        WHERE a.compcode = '$company' AND MONTH(b.dapvdate) = '$month' AND YEAR(b.dapvdate) = '$year'";
+        LEFT JOIN groupings d ON a.compcode = b.compcode AND c.csuppliertype = d.ccode
+        WHERE a.compcode = '$company' AND MONTH(b.dapvdate) = '$month' AND YEAR(b.dapvdate) = '$year' AND  b.lapproved = 1, AND b.lvoid = 0 AND b.lcancelled = 0 AND d.ctype = 'SUPTYP'";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         $index = 12;
