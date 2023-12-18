@@ -30,7 +30,7 @@
         header("Content-type: text/plain");
         header("Content-Disposition: attachment; filename=\"".$tinHeader.$month.$year."1601EQ.dat\"");
         
-        $data = "HQAP,H1601EQ,$comptin,0000,\"$compname\",$month/$year,$rdo\n";
+        $data = "HQAP,H1601EQ,$comptin,0000,\"$compname\",\"\",\"\",\"\",$month/$year,$rdo\n";
         $TOTAL_CREDIT = 0;
         $TOTAL_GROSS = 0;
         $count = 1;

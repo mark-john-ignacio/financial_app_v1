@@ -35,7 +35,7 @@
         header("Content-Disposition: attachment; filename=\"".$comptin.$month.$year."1702Q.dat\"");
         
         // Changing Data Heading H1601EQ
-        $data = "HSAWT,H1601EQ,$comptin,0000,\"$compname\",$month/$year,$rdo\n";
+        $data = "HSAWT,H1601EQ,$comptin,0000,\"$compname\",\"\",\"\",\"\",$month/$year,$rdo\n";
         $TOTAL_CREDIT = 0;
         $TOTAL_GROSS = 0;
         $count = 1;
