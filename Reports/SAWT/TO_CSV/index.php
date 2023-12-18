@@ -15,7 +15,6 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 // Create new Spreadsheet object
 $spreadsheet = new Spreadsheet();
 $company = $_SESSION['companyid'];
-$month_text = $_POST['months'];
 // $month = $_POST['months'];
 // $year = $_POST['years'];
 
@@ -25,10 +24,10 @@ $year = date("Y", strtotime($_POST['years']));
 // Set document properties
 $spreadsheet->getProperties()->setCreator('Myx Financials')
     ->setLastModifiedBy('Myx Financials')
-    ->setTitle('QUARTERLY ALPHALIST OF PAYEES')
-    ->setSubject('QUARTERLY ALPHALIST OF PAYEESt')
-    ->setDescription('QUARTERLY ALPHALIST OF PAYEES, generated using Myx Financials.')
-    ->setKeywords('myx_financials QUARTERLY ALPHALIST OF PAYEES')
+    ->setTitle('SAWT')
+    ->setSubject('SAWT')
+    ->setDescription('SAWT, generated using Myx Financials.')
+    ->setKeywords('myx_financials SAWT')
     ->setCategory('Myx Financials Report');
 
 
@@ -42,11 +41,12 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
      */
     $spreadsheet->getActiveSheet()->getStyle('A11:K11')->getFont()->setBold(true);
     $spreadsheet->setActiveSheetIndex(0)
-        ->setCellValue('A1', 'Attachment to BIR Form 1601-EQ')
-        ->setCellValue('A2', 'QUARTERLY ALPHABETICAL LIST OF PAYEES SUBJECTED TO EXPANDED WITHHOLDING TAX & PAYEES WHOSE INCOME PAYMENTS ARE EXEMPT ')
-        ->setCellValue('A3', "FOR THE QUARTER ENDING $month, $year")
-        ->setCellValue('A6', 'TIN: ' . $comp['comptin'])
-        ->setCellValue('A7', "WITHHOLDING AGENT'S NAME: " . $comp['compname']);
+        ->setCellValue('A1', 'BIR FORM 1702Q')
+        ->setCellValue('A2', "SUMMARY ALPHALIST OF WITHHOLDING TAXES (SAWT)")
+        ->setCellValue('A3', "FOR THE MONTH OF $month, $year")
+        ->setCellValue('A6', 'TIN: ' . TinValidation($comp['comptin']))
+        ->setCellValue('A7', "PAYEE'S NAME: " . $comp['compname']);
+
     /**
      * List of Details
      */
@@ -57,18 +57,18 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('B11', "TAXPAYER")
         ->setCellValue('B12', "IDENTIFICATION")
         ->setCellValue('B13', "NUMBER")
-        ->setCellValue('C11', "CORPORATION")
+        ->setCellValue('C11', "CORPORATION")    
         ->setCellValue('C12', "(Registered Name)")
         ->setCellValue('D11', "INDIVIDUAL")
         ->setCellValue('D12', "(Last Name, First Name, Middle Name)")
         ->setCellValue('E11', "ATC CODE")
         ->setCellValue('F11', "NATURE OF PAYMENT")
-        ->setCellValue('K10', "1ST MONTH OF THE QUARTER")
-        ->setCellValue('K11', "AMOUNT OF")
-        ->setCellValue('K12', "INCOME PAYMENT")
-        ->setCellValue('L11', "TAX RATE")
-        ->setCellValue('M11', "AMOUNT OF")
-        ->setCellValue('M12', "TAX WITHHELD")
+        ->setCellValue('G11', "AMOUNT OF")
+        ->setCellValue('G12', "INCOME PAYMENT")
+        ->setCellValue('H11', "TAX RATE")
+        ->setCellValue('I11', "AMOUNT OF ")
+        ->setCellValue('I12', "TAX WITHHELD")
+
         
         ->setCellValue('A14', "'(1)")
         ->setCellValue('B14', "'(2)")
@@ -76,53 +76,72 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('D14', "'(4)")
         ->setCellValue('E14', "'(5)")
         ->setCellValue('F14', "'(6)")
-        ->setCellValue('K14', "'(7)")
-        ->setCellValue('L14', "'(8)")
-        ->setCellValue('M14', "'(9)");
+        ->setCellValue('G14', "'(7)")
+        ->setCellValue('H14', "'(8)")
+        ->setCellValue('I14', "'(9)")
+        
+        ->setCellValue('A15', "'------------------------------")
+        ->setCellValue('B15', "'------------------------------")
+        ->setCellValue('C15', "'------------------------------") 
+        ->setCellValue('D15', "'------------------------------")
+        ->setCellValue('E15', "'------------------------------")
+        ->setCellValue('F15', "'------------------------------")
+        ->setCellValue('G15', "'------------------------------")
+        ->setCellValue('H15', "'------------------------------")
+        ->setCellValue('I15', "'------------------------------");
     
 
-    $sql = "SELECT a.ncredit, a.cewtcode, a.ctranno, b.ngross, b.dapvdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM apv_t a
-        LEFT JOIN apv b ON a.compcode = b.compcode AND a.ctranno = b.ctranno
-        LEFT JOIN suppliers c ON a.compcode = b.compcode AND b.ccode = c.ccode 
-        LEFT JOIN groupings d ON a.compcode = b.compcode AND c.csuppliertype = d.ccode
-        WHERE a.compcode = '$company' AND MONTH(b.dapvdate) = '$month' AND YEAR(b.dapvdate) = '$year' AND  b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 AND d.ctype = 'SUPTYP'";
+    $sql = "SELECT a.cewtcode, a.newtamt, a.ctranno, b.namount, b.dcutdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM receipt_sales_t a
+        LEFT JOIN receipt b on a.compcode = b.compcode AND a.ctranno = b.ctranno
+        LEFT JOIN customers c on a.compcode = c.compcode AND b.ccode = c.cempid
+        LEFT JOIN groupings d on a.compcode = b.compcode AND c.ccustomertype = d.ccode
+        WHERE a.compcode = '$company' AND MONTH(b.dcutdate) = '$month' AND YEAR(b.dcutdate) = '$year' AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 AND d.ctype = 'CUSTYP'";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
-        $index = 15;
-        $TOTAL_GROSS =0;
-        $TOTAL_CREDIT = 0;;
+        $index = 16;
+        $TOTAL_GROSS =0; $TOTAL_CREDIT = 0;;
         while($row = $query -> fetch_array(MYSQLI_ASSOC)){
             
             $code = $row['cewtcode'];
-            $credit = $row['ncredit'];
+            $credit = $row['newtamt'];
             if(strlen($code) != 0 && $credit != 0){
                 $fullAddress = stringValidation($row['chouseno']);
                 if(trim($row['ccity']) != ""){
                     $fullAddress .= " ". stringValidation($row['ccity']);
                 }
+                $CORPORATE = "";
+                $INDIVIDUAl = "";
+                switch($row['cdesc']) {
+                    case "PERSON": 
+                        $INDIVIDUAl = stringValidation($row['cname']);
+                        break;
+                    case "COMPANY": 
+                        $CORPORATE = stringValidation($row['cname']);
+                        break;
+                    case "SCHOOL":
+                        $CORPORATE = stringValidation($row['cname']);
+                        break;
+                    case "OTHERS":
+                        $CORPORATE = stringValidation($row['cname']);
+                        break;
+                }
                 $ewt = getEWT($code);
-                $gross = $row['ngross'];
                 if($ewt['valid']) {
+                    $nature = $ewt['notify'];
+                    $gross = $row['namount'];
                     $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
                     $spreadsheet->setActiveSheetIndex(0)
-                    ->setCellValue("A$index", $row['dapvdate'])
-                    ->setCellValue("B$index", $row['ctranno'])
-                    ->setCellValue("C$index", $row['ctin'])
-                    ->setCellValue("D$index", $row['cname'])
-                    ->setCellValue("E$index", $fullAddress)
-                    ->setCellValue("F$index", $ewt['code'])
-                    /**
-                     * @param G$index value was unknown
-                     */
-                    ->setCellValue("G$index", "")
-                    ->setCellValue("H$index", $gross)
-                    ->setCellValue("I$index", number_format($ewt['rate'], 2))
-                    ->setCellValue("J$index", $credit)
-                    ->setCellValue("K$index", $ewt['rate'])
-                    ->setCellValue("L$index", $gross)
-                    ->setCellValue("M$index", $credit);
+                        ->setCellValue("A$index", $row['dcutdate'])
+                        ->setCellValue("B$index", $row['ctin'])
+                        ->setCellValue("C$index", $CORPORATE)
+                        ->setCellValue("D$index", $INDIVIDUAl)
+                        ->setCellValue("E$index", $ewt['code'])
+                        ->setCellValue("F$index", $nature)
+                        ->setCellValue("G$index", $gross)
+                        ->setCellValue("H$index", number_format($ewt['rate'],2))
+                        ->setCellValue("I$index", $credit);
 
-                    $TOTAL_GROSS += floatval($row['ngross']); 
+                    $TOTAL_GROSS += floatval($gross); 
                     $TOTAL_CREDIT += floatval($credit); 
                     
                     $index++;
@@ -152,7 +171,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
 
 	// Rename worksheet
-	$spreadsheet->getActiveSheet()->setTitle('QUARTERLY ALPHALIST OF PAYEES');
+	$spreadsheet->getActiveSheet()->setTitle('SAWT');
 
 	// Set active sheet index to the first sheet, so Excel opens this as the first sheet
 	$spreadsheet->setActiveSheetIndex(0);
@@ -161,7 +180,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
 	// Redirect output to a client’s web browser (Xlsx)
 	header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-	header('Content-Disposition: attachment;filename="QAP-Q2 ' . $year . ' - ' . $month_text . '.xlsx"');
+	header('Content-Disposition: attachment;filename="SWAT_.xlsx"');
 	header('Cache-Control: max-age=0');
 	// If you're serving to IE 9, then the following may be needed
 	header('Cache-Control: max-age=1');

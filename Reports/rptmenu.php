@@ -224,19 +224,33 @@
 									<ul class="ver-inline-menu tabbable margin-bottom-25"> 
 										<li>
 											<a href="" onclick="setI('A', 'SalesDat.php')"  data-toggle="tab">
+<<<<<<< HEAD
 											<i class="fa fa-book"></i>BIR Sales Relief</a>
 										</li>
 										<li>
 											<a href="" onclick="setI('A', 'PurchaseDat.php')" data-toggle="tab">
 												<i class="fa fa-book"></i>BIR Purchase Relief</a>
+=======
+											<i class="fa fa-book"></i>BIR Sales RELIEF</a>
+										</li>
+										<li>
+											<a href="" onclick="setI('A', 'PurchaseDat.php')" data-toggle="tab">
+												<i class="fa fa-book"></i>BIR Purchase RELIEF</a>
+>>>>>>> clyde
 										</li>   
 										<li>
-											<form action="./QAP" target="_blank">
+											<!-- <form action="./QAP" target="_blank">
 												<button type="submit" style="border: 0px; padding:0px; width: 100%; display: flex; justify-content: left; justify-items: left; font-size: 16px">
-													<a href="javascript:;" ><i class="fa fa-book"></i>QAP</a>
+													<a href="javascript:;" ><i class="fa fa-book"></i>BIR QAP</a>
 												</button>
-											</form>
-										</li>               
+											</form> -->
+											<a href="" onClick="setI('A', './QAP/')" data-toggle="tab">
+											<i class="fa fa-book"></i>BIR QAP</a>
+										</li>    
+										<li>
+											<a href="" onclick="setI('A', './SAWT/')" data-toggle="tab">
+											<i class="fa fa-book"></i>BIR SAWT</a>
+										</li>           
 										<!-- <li>
 											<a href="" onClick="setI('A','MonthlyVAT.php')" data-toggle="tab">
 											<i class="fa fa-book"></i> Monthly Output VAT</a>

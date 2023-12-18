@@ -21,8 +21,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
-	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css">
+    
+	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
+	<!-- <link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css"> -->
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
+    
+  <link rel="stylesheet" type="text/css" href="../Bootstrap/css/alert-modal.css">
+	<link rel="stylesheet" type="text/css" href="../Bootstrap/select2/css/select2.css?h=<?php echo time();?>">
 
     <script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
     <script src="../Bootstrap/js/bootstrap.js"></script>
@@ -220,28 +225,42 @@
                             }
                         ?></h4>
                 </div>
-                <div>
-                    <label for="Approved" class="btn btn-sm btn-success" style="margin: 2px"> Approved </label>
+                <div style="padding: 3px;">
+                    <!-- <label for="Approved" class="btn btn-sm btn-success" style="margin: 2px"> Approved </label>
                     <input type="radio" name="status" id="Approved" value="Approved" style="display: none">
 
                     <label for="Pending" class="btn btn-sm btn-warning" style="margin: 2px"> Pending </label>
-                    <input type="radio" name="status" id="Pending" value="Pending" style="display: none">
+                    <input type="radio" name="status" id="Pending" value="Pending" style="display: none"> -->
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#summaries" data-toggle="tabs"><label for="Approved" style="padding: 1px;" >Approved </label></a>
+                            <input type="radio" name="status" id="Approved" value="Approved" style="display: none">
+                        </li>
+                        <li>
+                            <a href="#Pending" data-toggle="tabs"><label for="Pending" style="padding: 1px;" > Pending </label></a>
+                            <input type="radio" name="status" id="Pending" value="Pending" style="display: none">
+                        </li>
+                    </ul>
+                    
                 </div>
-                <div style="display: relative; max-height: 2.5in; overflow: auto;">
-                    <table class="table" id="TransactionSummary">
-                        <thead>
-                            <tr>
-                                <th>Transaction ID</th>
-                                <th><?=  in_array("DashboardSales.php", $page) ? "Customer" : (in_array("DashboardPurchase.php", $page) ? "Supplier" : "")?></th>
-                                <th>Gross</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody style="margin-top: 2%;"></tbody>
-                    </table>
+                <div class="tab-content">
+                    <div class="tab-pane fade in active" id="summaries" style="display: relative; max-height: 2.5in; overflow: auto;">
+                        <table class="table" id="TransactionSummary">
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th><?=  in_array("DashboardSales.php", $page) ? "Customer" : (in_array("DashboardPurchase.php", $page) ? "Customer" : "")?></th>
+                                    <th>Gross</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody style="margin-top: 2%;"></tbody>
+                        </table>
+                    </div>
+                   
+                    <!-- <div style="display: relative;  max-height: 2.5in; overflow: auto;" id="summary">
+                    </div> -->
                 </div>
-                <!-- <div style="display: relative;  max-height: 2.5in; overflow: auto;" id="summary">
-                </div> -->
             </div>
             <div id="RecentLog" style="display: relative; width: 100%; border: 1px solid; border-radius: 20px 20px 0 0;">
                 <div style="display: flex; justify-content: center; justify-items: center; background-color:#2d5f8b; color: white; border-radius: 20px 20px 0 0;">

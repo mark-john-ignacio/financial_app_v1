@@ -549,6 +549,10 @@
         return substr($replace, 0, 9);
     }
 
+    function onlyNumber($data) {
+        return preg_replace("/[^0-9]/", "", $data);
+    }
+
     function getEWT($data) {
         global $con, $company;
         
