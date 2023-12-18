@@ -287,7 +287,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						</thead>
 						<tbody class="tbody">
 							<?php 
-								$sqlbody = mysqli_query($con,"select a.*, B.citemdesc from purchrequest_t a left join items b on A.compcode=B.compcode and A.citemno=b.cpartno where a.compcode = '$company' and a.ctranno = '$cprno'");
+								$sqlbody = mysqli_query($con,"select a.* from purchrequest_t a left join items b on A.compcode=B.compcode and A.citemno=b.cpartno where a.compcode = '$company' and a.ctranno = '$cprno'");
 
 								if (mysqli_num_rows($sqlbody)!=0) {
 									$cntr = 0;
