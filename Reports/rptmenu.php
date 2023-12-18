@@ -224,19 +224,11 @@
 									<ul class="ver-inline-menu tabbable margin-bottom-25"> 
 										<li>
 											<a href="" onclick="setI('A', 'SalesDat.php')"  data-toggle="tab">
-<<<<<<< HEAD
-											<i class="fa fa-book"></i>BIR Sales Relief</a>
-										</li>
-										<li>
-											<a href="" onclick="setI('A', 'PurchaseDat.php')" data-toggle="tab">
-												<i class="fa fa-book"></i>BIR Purchase Relief</a>
-=======
 											<i class="fa fa-book"></i>BIR Sales RELIEF</a>
 										</li>
 										<li>
 											<a href="" onclick="setI('A', 'PurchaseDat.php')" data-toggle="tab">
 												<i class="fa fa-book"></i>BIR Purchase RELIEF</a>
->>>>>>> clyde
 										</li>   
 										<li>
 											<!-- <form action="./QAP" target="_blank">
