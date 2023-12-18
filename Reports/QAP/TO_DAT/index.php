@@ -28,11 +28,13 @@
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         header("Content-type: text/plain");
-        header("Content-Disposition: attachment; filename=\"".$tinHeader.$month.$year."1601EQ.dat\"");
+        header("Content-Disposition: attachment; filename=\"".$tinHeader.$month.$year."1702Q.dat\"");
         
         $data = "HQAP,H1601EQ,$comptin,0000,\"$compname\",$month/$year,$rdo\n";
         $TOTAL_CREDIT = 0;
         $TOTAL_GROSS = 0;
+        $count = 1;
+
         while($list = $query -> fetch_assoc()) {
 
             $credit = $list['ncredit'];
@@ -41,7 +43,6 @@
             if(strlen($code) != 0 && $credit != 0){
                 $ewt = getEWT($list['cewtcode']);
                 if($ewt['valid']) {
-                    $count = 1;
                     $tins = TinValidation($list['ctin']);
                     $ewtcode = $ewt['code'];
                     $rate = number_format($ewt['rate'],2);
