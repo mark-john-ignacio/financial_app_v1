@@ -22,15 +22,17 @@
         ];
     }
 
-    // $sql = "SELECT a.cewtcode, a.newtamt, a.ctranno, a.namount, b.dcutdate, c.cname, c.chouseno, c.ccity, c.ctin FROM receipt_sales_t a
-    //     LEFT JOIN receipt b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-    //     LEFT JOIN customers c on a.compcode = c.compcode AND b.ccode = c.cempid
-    //     WHERE a.compcode = '$company' AND MONTH(b.dcutdate) = '$month' AND YEAR(b.dcutdate) = '$year'";
 
-    $sql = "SELECT a.cewtcode, a.newtamt, a.ctranno, b.ngross, b.dcheckdate, c.cname, c.chouseno, c.ccity, c.ctin FROM paybill_t a 
-        LEFT JOIN paybill b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-        LEFT JOIN suppliers c on a.compcode = c.compcode AND b.ccode = c.ccode
-        WHERE a.compcode = '$company' AND MONTH(b.dcheckdate) = '$month' AND YEAR(b.dcheckdate) = '$year'";
+    // $sql = "SELECT a.cewtcode, a.newtamt, a.ctranno, b.ngross, b.dcheckdate, c.cname, c.chouseno, c.ccity, c.ctin FROM paybill_t a 
+    //     LEFT JOIN paybill b on a.compcode = b.compcode AND a.ctranno = b.ctranno
+    //     LEFT JOIN suppliers c on a.compcode = c.compcode AND b.ccode = c.ccode
+    //     WHERE a.compcode = '$company' AND MONTH(b.dcheckdate) = '$month' AND YEAR(b.dcheckdate) = '$year'";
+
+    $sql = "SELECT a.cewtcode, a.newtamt, a.ctranno, b.namount, b.dcutdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM receipt_sales_t a
+        LEFT JOIN receipt b on a.compcode = b.compcode AND a.ctranno = b.ctranno
+        LEFT JOIN customers c on a.compcode = c.compcode AND b.ccode = c.cempid
+        LEFT JOIN groupings d on a.compcode = b.compcode AND c.ccustomertype = d.ccode
+        WHERE a.compcode = '$company' AND MONTH(b.dcutdate) = '$month' AND YEAR(b.dcutdate) = '$year' AND d.ctype = 'CUSTYP'";
     $query = mysqli_query($con, $sql);
 
     $array = [];
@@ -45,9 +47,9 @@
                 'address' => $list['chouseno'] . " " . $list['ccity'],
                 'tin' => $list['ctin'],
                 'tranno' => $list['ctranno'],
-                'gross' => $list['ngross'],
+                'gross' => $list['namount'],
                 'credit' => $list['newtamt'],
-                'date' => $list['dcheckdate'],
+                'date' => $list['dcutdate'],
                 'ewt' => $ewt['code'],
                 'rate' => $ewt['rate']
             ];

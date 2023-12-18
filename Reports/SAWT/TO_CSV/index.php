@@ -63,10 +63,11 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('I11', "W/TAX AMOUNT");
     
 
-    $sql = "SELECT a.cewtcode, a.newtamt, a.ctranno, b.ngross, b.dcheckdate, c.cname, c.chouseno, c.ccity, c.ctin FROM paybill_t a 
-        LEFT JOIN paybill b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-        LEFT JOIN suppliers c on a.compcode = c.compcode AND b.ccode = c.ccode
-        WHERE a.compcode = '$company' AND MONTH(b.dcheckdate) = '$month' AND YEAR(b.dcheckdate) = '$year'";
+    $sql = "SELECT a.cewtcode, a.newtamt, a.ctranno, b.namount, b.dcutdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM receipt_sales_t a
+        LEFT JOIN receipt b on a.compcode = b.compcode AND a.ctranno = b.ctranno
+        LEFT JOIN customers c on a.compcode = c.compcode AND b.ccode = c.cempid
+        LEFT JOIN groupings d on a.compcode = b.compcode AND c.ccustomertype = d.ccode
+        WHERE a.compcode = '$company' AND MONTH(b.dcutdate) = '$month' AND YEAR(b.dcutdate) = '$year' AND d.ctype = 'CUSTYP'";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         $index = 12;
@@ -82,10 +83,10 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
                 }
                 $ewt = getEWT($code);
                 if($ewt['valid']) {
-                    $gross = $row['ngross'];
+                    $gross = $row['namount'];
                     $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
                     $spreadsheet->setActiveSheetIndex(0)
-                        ->setCellValue("A$index", $row['dcheckdate'])
+                        ->setCellValue("A$index", $row['dcutdate'])
                         ->setCellValue("B$index", $row['ctranno'])
                         ->setCellValue("C$index", TinValidation($row['ctin']))
                         ->setCellValue("D$index", $row['cname'])
