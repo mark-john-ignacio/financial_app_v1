@@ -35,7 +35,7 @@
         header("Content-Disposition: attachment; filename=\"".$comptin.$month.$year."1702Q.dat\"");
         
         // Changing Data Heading H1601EQ
-        $data = "HSAWT,H1601EQ,$comptin,0000,\"$compname\",\"\",\"\",\"\",$month/$year,$rdo\n";
+        $data = "HSAWT,H1702Q,$comptin,0000,\"$compname\",\"\",\"\",\"\",$month/$year,$rdo\n";
         $TOTAL_CREDIT = 0;
         $TOTAL_GROSS = 0;
         $count = 1;
@@ -79,7 +79,7 @@
                     }
 
                     // Changing Data D1702Q
-                    $data .= "DSAWT,D1702Q,$count,$tins,0000,$company_name,$lname,$fname,$midname,$month/$year,$ewtcode,$rate,$gross,$credit";
+                    $data .= "DSAWT,D1702Q,$count,$tins,0000,$company_name,$lname,$fname,$midname,$month/$year,$ewtcode,$rate,$gross,$credit\n";
                     $count += 1;
 
                     $TOTAL_CREDIT += $credit;
