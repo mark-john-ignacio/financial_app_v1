@@ -119,7 +119,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 					<?php 
 					$cnt = 0;
-					$sqlbody = mysqli_query($con,"select a.*,b.citemdesc as cpartdesc from purchrequest_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$csalesno' Order by a.nident");
+					$sqlbody = mysqli_query($con,"select a.* from purchrequest_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$csalesno' Order by a.nident");
 
 					if (mysqli_num_rows($sqlbody)!=0) {
 						while($rowdtls = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){ 
