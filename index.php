@@ -284,7 +284,6 @@ $(document).ready(function(){
 					attempts += 1;
 					$("#add_err").css('display', 'inline', 'important');
 					$("#add_err").html("<center><img src='images/loader.gif' width='50' height='50' /></center>")
-					console.log(attempts)
 			   },
 			   success: function(res){   
 			   //alert(html);
