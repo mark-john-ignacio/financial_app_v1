@@ -85,22 +85,30 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('R11', "TAX RATE")
         ->setCellValue('S11', "AMOUNT OF")
         ->setCellValue('S12', "TAX WITHHELD")
+
+        
+        ->setCellValue('T10', "TOTAL FOR THE QUARTER")
+        ->setCellValue('T11', "TOTAL")
+        ->setCellValue('T12', "INCOME PAYMENT")
+        ->setCellValue('U11', "TOTAL")
+        ->setCellValue('U12', "TAX WITHHELD")
         
         ->setCellValue('A14', "'(1)")
         ->setCellValue('B14', "'(2)")
         ->setCellValue('C14', "'(3)") 
         ->setCellValue('D14', "'(4)")
         ->setCellValue('E14', "'(5)")
-        ->setCellValue('F14', "'(6)")
-        ->setCellValue('K14', "'(7)")
-        ->setCellValue('L14', "'(8)")
-        ->setCellValue('M14', "'(9)")
-        ->setCellValue('N14', "'(10)")
-        ->setCellValue('O14', "'(11)")
-        ->setCellValue('P14', "'(12)")
-        ->setCellValue('Q14', "'(13)")
-        ->setCellValue('R14', "'(14)")
-        ->setCellValue('S14', "'(15)");
+        ->setCellValue('K14', "'(6)")
+        ->setCellValue('L14', "'(7)")
+        ->setCellValue('M14', "'(8)")
+        ->setCellValue('N14', "'(9)")
+        ->setCellValue('O14', "'(10)")
+        ->setCellValue('P14', "'(11)")
+        ->setCellValue('Q14', "'(12)")
+        ->setCellValue('R14', "'(13)")
+        ->setCellValue('S14', "'(14)")
+        ->setCellValue('T14', "'(15)")
+        ->setCellValue('U14', "'(16)");
     
     function dataquarterly($data) {
         global $con, $company, $year, $month_text;
