@@ -91,8 +91,8 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('I15', "'------------------------------");
     
 
-    $sql = "SELECT a.cewtcode, a.newtamt, a.ctranno, b.namount, b.dcutdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM receipt_sales_t a
-        LEFT JOIN receipt b on a.compcode = b.compcode AND a.ctranno = b.ctranno
+    $sql = "SELECT a.cewtcode, a.newtamt, a.ctranno, b.ngross, b.dcutdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM sales_t a
+        LEFT JOIN sales b on a.compcode = b.compcode AND a.ctranno = b.ctranno
         LEFT JOIN customers c on a.compcode = c.compcode AND b.ccode = c.cempid
         LEFT JOIN groupings d on a.compcode = b.compcode AND c.ccustomertype = d.ccode
         WHERE a.compcode = '$company' AND MONTH(b.dcutdate) = '$month' AND YEAR(b.dcutdate) = '$year' AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 AND d.ctype = 'CUSTYP'";
@@ -103,8 +103,11 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         while($row = $query -> fetch_array(MYSQLI_ASSOC)){
             
             $code = $row['cewtcode'];
-            $credit = $row['newtamt'];
-            if(strlen($code) != 0 && $credit != 0){
+            $gross = $row['ngross'];
+            $toEwtAmt = $gross * ($rate / 100);
+            $credit = round($toEwtAmt, 2);
+            $ewt = getEWT($code);
+            if (ValidateEWT($code) && $ewt['valid']) {
                 $fullAddress = stringValidation($row['chouseno']);
                 if(trim($row['ccity']) != ""){
                     $fullAddress .= " ". stringValidation($row['ccity']);
@@ -125,10 +128,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
                         $CORPORATE = stringValidation($row['cname']);
                         break;
                 }
-                $ewt = getEWT($code);
-                if($ewt['valid']) {
                     $nature = $ewt['notify'];
-                    $gross = $row['namount'];
                     $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
                     $spreadsheet->setActiveSheetIndex(0)
                         ->setCellValue("A$index", $row['dcutdate'])
@@ -145,7 +145,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
                     $TOTAL_CREDIT += floatval($credit); 
                     
                     $index++;
-                }
+                
             }
         }
         $lastindex = $index;

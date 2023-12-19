@@ -132,7 +132,7 @@
         var form = document.getElementById('SAWTForm');
         var formData = new FormData(form);
 
-        if(sawt.length != 0) {
+        if(sawt.length === 0) {
             return alert("No Reference found");
         }
         
