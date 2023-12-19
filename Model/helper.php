@@ -556,7 +556,7 @@
     function getEWT($data) {
         global $con, $company;
         
-        $sql = "SELECT ctaxcode, nrate FROM wtaxcodes WHERE compcode = '$company' AND ctaxcode = '$data'";
+        $sql = "SELECT ctaxcode, nrate, cdesc FROM wtaxcodes WHERE compcode = '$company' AND ctaxcode = '$data'";
         $queries = mysqli_query($con, $sql);
         
         if(mysqli_num_rows($queries) !== 0) {
@@ -565,6 +565,7 @@
                 'valid' => true,
                 'code' => $fetch['ctaxcode'],
                 'rate' => $fetch['nrate'],
+                'notify' => $fetch['cdesc'],
             ];
             
         }
@@ -572,4 +573,28 @@
         return [
             'valid' => false,
         ];
+    }
+
+    function getMonthsInQuarter($quarter) {
+        $startMonth = ($quarter - 1) * 3 + 1;
+        return range($startMonth, $startMonth + 2);
+    }
+    
+    function getQuartersAndMonths($year) {
+        $quartersAndMonths = [];
+    
+        for ($quarter = 1; $quarter <= 4; $quarter++) {
+            $months = getMonthsInQuarter($quarter);
+            $quarterLabel = "Q$quarter";
+            
+            foreach ($months as $month) {
+                $quartersAndMonths[$quarterLabel][] = DateTime::createFromFormat('!m', $month)->format('F');
+            }
+        }
+    
+        return $quartersAndMonths;
+    }
+
+    function ValidateEWT ($data) {
+        return strlen($data) != 0 && $data != "none";
     }
