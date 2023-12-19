@@ -574,3 +574,27 @@
             'valid' => false,
         ];
     }
+
+    function getMonthsInQuarter($quarter) {
+        $startMonth = ($quarter - 1) * 3 + 1;
+        return range($startMonth, $startMonth + 2);
+    }
+    
+    function getQuartersAndMonths($year) {
+        $quartersAndMonths = [];
+    
+        for ($quarter = 1; $quarter <= 4; $quarter++) {
+            $months = getMonthsInQuarter($quarter);
+            $quarterLabel = "Q$quarter";
+            
+            foreach ($months as $month) {
+                $quartersAndMonths[$quarterLabel][] = DateTime::createFromFormat('!m', $month)->format('F');
+            }
+        }
+    
+        return $quartersAndMonths;
+    }
+
+    function ValidateEWT ($data) {
+        return strlen($data) != 0 && $data != "none";
+    }

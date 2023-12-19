@@ -19,8 +19,10 @@ $month_text = $_POST['months'];
 // $month = $_POST['months'];
 // $year = $_POST['years'];
 
-$month = date("m", strtotime($_POST['months']));
+
 $year = date("Y", strtotime($_POST['years']));
+$quartersAndMonths = getQuartersAndMonths($year);
+
 
 // Set document properties
 $spreadsheet->getProperties()->setCreator('Myx Financials')
@@ -44,7 +46,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
     $spreadsheet->setActiveSheetIndex(0)
         ->setCellValue('A1', 'Attachment to BIR Form 1601-EQ')
         ->setCellValue('A2', 'QUARTERLY ALPHABETICAL LIST OF PAYEES SUBJECTED TO EXPANDED WITHHOLDING TAX & PAYEES WHOSE INCOME PAYMENTS ARE EXEMPT ')
-        ->setCellValue('A3', "FOR THE QUARTER ENDING $month, $year")
+        ->setCellValue('A3', "FOR THE QUARTER ENDING $month_text, $year")
         ->setCellValue('A6', 'TIN: ' . $comp['comptin'])
         ->setCellValue('A7', "WITHHOLDING AGENT'S NAME: " . $comp['compname']);
     /**
@@ -69,6 +71,20 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('L11', "TAX RATE")
         ->setCellValue('M11', "AMOUNT OF")
         ->setCellValue('M12', "TAX WITHHELD")
+
+        ->setCellValue('N10', "2ND MONTH OF THE QUARTER")
+        ->setCellValue('N11', "AMOUNT OF")
+        ->setCellValue('N12', "INCOME PAYMENT")
+        ->setCellValue('O11', "TAX RATE")
+        ->setCellValue('P11', "AMOUNT OF")
+        ->setCellValue('P12', "TAX WITHHELD")
+
+        ->setCellValue('Q10', "3RD MONTH OF THE QUARTER")
+        ->setCellValue('Q11', "AMOUNT OF")
+        ->setCellValue('Q12', "INCOME PAYMENT")
+        ->setCellValue('R11', "TAX RATE")
+        ->setCellValue('S11', "AMOUNT OF")
+        ->setCellValue('S12', "TAX WITHHELD")
         
         ->setCellValue('A14', "'(1)")
         ->setCellValue('B14', "'(2)")
@@ -78,78 +94,142 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('F14', "'(6)")
         ->setCellValue('K14', "'(7)")
         ->setCellValue('L14', "'(8)")
-        ->setCellValue('M14', "'(9)");
+        ->setCellValue('M14', "'(9)")
+        ->setCellValue('N14', "'(10)")
+        ->setCellValue('O14', "'(11)")
+        ->setCellValue('P14', "'(12)")
+        ->setCellValue('Q14', "'(13)")
+        ->setCellValue('R14', "'(14)")
+        ->setCellValue('S14', "'(15)");
     
-
-    $sql = "SELECT a.ncredit, a.cewtcode, a.ctranno, b.ngross, b.dapvdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM apv_t a
-        LEFT JOIN apv b ON a.compcode = b.compcode AND a.ctranno = b.ctranno
-        LEFT JOIN suppliers c ON a.compcode = b.compcode AND b.ccode = c.ccode 
-        LEFT JOIN groupings d ON a.compcode = b.compcode AND c.csuppliertype = d.ccode
-        WHERE a.compcode = '$company' AND MONTH(b.dapvdate) = '$month' AND YEAR(b.dapvdate) = '$year' AND  b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 AND d.ctype = 'SUPTYP'";
-    $query = mysqli_query($con, $sql);
-    if(mysqli_num_rows($query) != 0){
-        $index = 15;
-        $TOTAL_GROSS =0;
-        $TOTAL_CREDIT = 0;;
-        while($row = $query -> fetch_array(MYSQLI_ASSOC)){
-            
-            $code = $row['cewtcode'];
-            $credit = $row['ncredit'];
-            if(strlen($code) != 0 && $credit != 0){
-                $fullAddress = stringValidation($row['chouseno']);
-                if(trim($row['ccity']) != ""){
-                    $fullAddress .= " ". stringValidation($row['ccity']);
+    function dataquarterly($data) {
+        global $con, $company, $year, $month_text;
+        $apv = [];
+        $index = 0;
+        if(in_array($month_text, $data)) {
+            foreach($data as $quarter) {
+                $months = date("m", strtotime($quarter));
+                $sql = "SELECT a.ncredit, a.cewtcode, a.ctranno, b.ngross, b.dapvdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM apv_t a
+                    LEFT JOIN apv b ON a.compcode = b.compcode AND a.ctranno = b.ctranno
+                    LEFT JOIN suppliers c ON a.compcode = b.compcode AND b.ccode = c.ccode 
+                    LEFT JOIN groupings d ON a.compcode = b.compcode AND c.csuppliertype = d.ccode
+                    WHERE a.compcode = '$company' AND MONTH(b.dapvdate) = '$months' AND YEAR(b.dapvdate) = '$year' AND  b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 AND d.ctype = 'SUPTYP'";
+                $query = mysqli_query($con, $sql);
+                if( mysqli_num_rows($query) === 0) {
+                    return [
+                        'valid' => false,
+                    ];
                 }
-                $ewt = getEWT($code);
-                $gross = $row['ngross'];
-                if($ewt['valid']) {
-                    $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
-                    $spreadsheet->setActiveSheetIndex(0)
-                    ->setCellValue("A$index", $row['dapvdate'])
-                    ->setCellValue("B$index", $row['ctranno'])
-                    ->setCellValue("C$index", $row['ctin'])
-                    ->setCellValue("D$index", $row['cname'])
-                    ->setCellValue("E$index", $fullAddress)
-                    ->setCellValue("F$index", $ewt['code'])
-                    /**
-                     * @param G$index value was unknown
-                     */
-                    ->setCellValue("G$index", "")
-                    ->setCellValue("H$index", $gross)
-                    ->setCellValue("I$index", number_format($ewt['rate'], 2))
-                    ->setCellValue("J$index", $credit)
-                    ->setCellValue("K$index", $gross)
-                    ->setCellValue("L$index", $ewt['rate'])
-                    ->setCellValue("M$index", $credit);
-
-                    $TOTAL_GROSS += floatval($row['ngross']); 
-                    $TOTAL_CREDIT += floatval($credit); 
-                    
-                    $index++;
+                
+                while($row = $query -> fetch_assoc()){
+                    switch($index) {
+                        case 0:
+                            $json = [
+                                "label" => "First",
+                                "data" => $row
+                            ];
+                            array_push($apv, $json);
+                            break;
+                        case 1: 
+                            $json = [
+                                "label" => "Second",
+                                "data" => $row
+                            ];
+                            array_push($apv, $json);
+                            break;
+                        case 2:
+                            $json = [
+                                "label" => "Third",
+                                "data" => $row
+                            ];
+                            array_push($apv, $json);
+                            break;
+                    }
                 }
+                $index++;
             }
+        } else {
+            return [
+                'valid' => false,
+            ];
         }
-        $lastindex = $index;
-        $index += 2;
+        
+       
 
-        /**
-         * Total Amount of Details
-         */
-        $spreadsheet->getActiveSheet()->getStyle("A$index:K$index")->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
-        $spreadsheet->setActiveSheetIndex(0)
-        ->setCellValue("H$index", "=SUM(H13:H$lastindex)")
-        ->setCellValue("I$index", "=SUM(I13:I$lastindex)");
-        // ->setCellValue("J$index", "=SUM(I$index:H$index)");
-
-        $index += 2;
-        $spreadsheet->setActiveSheetIndex(0)
-        ->setCellValue("A$index","END OF REPORT");
-    } else {
-        $spreadsheet->setActiveSheetIndex(0)
-        -> setCellValue("A15", "NO RECORD");
+        return [
+            'valid' => true,
+            'quarter' => $apv
+        ];
     }
 
+    $index = 15;
+    $TOTAL_GROSS = 0;
+    $TOTAL_CREDIT = 0;
+    
+    foreach ($quartersAndMonths as $quarter => $month) {
+        $QUARTERDATA = dataquarterly($month);
+    
+        // var_dump($QUARTERDATA);
+        if ($QUARTERDATA['valid']) {
+            foreach($QUARTERDATA['quarter'] as $row) {
+                $list = $row['data'];
+                // var_dump($list);
+                $code = $list['cewtcode'];
+                $credit = $list['ncredit'];
+                $gross = $list['ngross'];
+    
+                $ewt = getEWT($code);
+                if (ValidateEWT($code) && $credit != 0 && $ewt['valid']) {
+                    $fullAddress = stringValidation($list['chouseno']);
+                    if (trim($list['ccity']) != "") {
+                        $fullAddress .= " " . stringValidation($list['ccity']);
+                    }
+                    
+                    $spreadsheet->getActiveSheet()->getStyle("T$index:U$index")->getFont()->setBold(true);
+                    $spreadsheet->getActiveSheet()->getStyle("F$index:U$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
+                    $spreadsheet->setActiveSheetIndex(0)
+                        ->setCellValue("A$index", $list['dapvdate'])
+                        ->setCellValue("B$index", $list['ctranno'])
+                        ->setCellValue("C$index", $list['ctin'])
+                        ->setCellValue("D$index", $list['cname'])
+                        ->setCellValue("E$index", $fullAddress)
+                        ->setCellValue("F$index", $ewt['code'])
+                        ->setCellValue("G$index", "") // G$index value was unknown
+                        ->setCellValue("H$index", $gross)
+                        ->setCellValue("I$index", number_format($ewt['rate'], 2))
+                        ->setCellValue("J$index", $credit)
+
+                        ->setCellValue("K$index", $row['label'] === "First" ? $gross : 0)
+                        ->setCellValue("L$index", $row['label'] === "First" ? $ewt['rate'] : 0)
+                        ->setCellValue("M$index", $row['label'] === "First" ? $credit : 0)
+            
+                        ->setCellValue("N$index", $row['label'] === "Second" ? $gross : 0)
+                        ->setCellValue("O$index", $row['label'] === "Second" ? $ewt['rate'] : 0)
+                        ->setCellValue("P$index", $row['label'] === "Second" ? $credit : 0)
+            
+                        ->setCellValue("Q$index", $row['label'] === "Third" ? $gross : 0)
+                        ->setCellValue("R$index", $row['label'] === "Third" ? $ewt['rate'] : 0)
+                        ->setCellValue("S$index", $row['label'] === "Third" ? $credit : 0)
+                        
+                        ->setCellValue("T$index", "=K$index+N$index+Q$index")
+                        ->setCellValue("U$index", "=M$index+P$index+S$index");
+
+
+                    $TOTAL_GROSS += floatval($list['ngross']);
+                    $TOTAL_CREDIT += floatval($credit);
+
+                    $index++;
+                }
+                
+            }
+        
+            $index += 2;
+            $spreadsheet->setActiveSheetIndex(0)
+                ->setCellValue("A$index", "END OF REPORT");
+                
+        } 
+    }
+    
 
 	// Rename worksheet
 	$spreadsheet->getActiveSheet()->setTitle('QUARTERLY ALPHALIST OF PAYEES');
