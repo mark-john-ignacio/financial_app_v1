@@ -41,16 +41,18 @@
         $count = 1;
 
         while($list = $query -> fetch_assoc()) {
+            
+            $code = $list['cewtcode'];
+            $ewt = getEWT($code);
 
             $tins = TinValidation($list['ctin']);
             $name = stringValidation($list['cname']);
-            $ewtcode = $ewt['code'];
-            $rate = round($ewt['rate'], 2);
+            $rate = $ewt['valid'] ? round($ewt['rate'], 2) : 0;
             $gross = round($list['ngross'], 2);
             $toEwtAmt = $gross * ($rate / 100);
             $credit = round($toEwtAmt, 2);
-            $code = $list['cewtcode'];
-            $ewt = getEWT($code);
+            $ewtcode = $ewt['valid'] ? $ewt['code'] : "";
+
             if (ValidateEWT($code) && $ewt['valid']) {
                     
                     $company_name = "";

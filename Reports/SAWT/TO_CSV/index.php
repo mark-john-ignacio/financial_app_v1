@@ -91,7 +91,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('I15', "'------------------------------");
     
 
-    $sql = "SELECT a.cewtcode, a.newtamt, a.ctranno, b.ngross, b.dcutdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM sales_t a
+    $sql = "SELECT a.cewtcode, a.ctranno, b.ngross, b.dcutdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM sales_t a
         LEFT JOIN sales b on a.compcode = b.compcode AND a.ctranno = b.ctranno
         LEFT JOIN customers c on a.compcode = c.compcode AND b.ccode = c.cempid
         LEFT JOIN groupings d on a.compcode = b.compcode AND c.ccustomertype = d.ccode
@@ -104,9 +104,12 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
             
             $code = $row['cewtcode'];
             $gross = $row['ngross'];
+            $ewt = getEWT($code);
+            $rate = $ewt['valid'] ? $ewt['rate'] : 0;
             $toEwtAmt = $gross * ($rate / 100);
             $credit = round($toEwtAmt, 2);
-            $ewt = getEWT($code);
+            $ewtCode = $ewt['valid'] ? $ewt['code'] : "";
+
             if (ValidateEWT($code) && $ewt['valid']) {
                 $fullAddress = stringValidation($row['chouseno']);
                 if(trim($row['ccity']) != ""){
@@ -135,10 +138,10 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
                         ->setCellValue("B$index", $row['ctin'])
                         ->setCellValue("C$index", $CORPORATE)
                         ->setCellValue("D$index", $INDIVIDUAl)
-                        ->setCellValue("E$index", $ewt['code'])
+                        ->setCellValue("E$index", $ewtCode)
                         ->setCellValue("F$index", $nature)
                         ->setCellValue("G$index", $gross)
-                        ->setCellValue("H$index", number_format($ewt['rate'],2))
+                        ->setCellValue("H$index", number_format($rate,2))
                         ->setCellValue("I$index", $credit);
 
                     $TOTAL_GROSS += floatval($gross); 
