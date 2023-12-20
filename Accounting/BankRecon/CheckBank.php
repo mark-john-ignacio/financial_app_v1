@@ -123,53 +123,51 @@
         </div>
         <div class="portlet-body" style="margin-top: 10px; font-size: 15px">
             <div class="well well-large">
-                   <h4 style="margin-bottom: 0 !important"> Period: <?= date("M d, Y",strtotime($from)) ?> to <?= date("M d, Y",strtotime($to)) ?> </h4>
-                    <h4 style="margin-top: 0 !important"> Bank: <?= $bank ?> </h4>
+                <h4 style="margin-bottom: 0 !important"> Period: <?= date("M d, Y",strtotime($from)) ?> to <?= date("M d, Y",strtotime($to)) ?> </h4>
+                <h4 style="margin-top: 0 !important"> Bank: <?= $bank ?> </h4>
 
-                    <div class="row">
-                        <div class="col-xs-3">Balance per Bank </div>
-                        <div class="col-xs-3 text-right"><?= number_format($EXCEL_TOTAL,2) ?></div>
+                <div class="row">
+                    <div class="col-xs-3">Balance per Bank </div>
+                    <div class="col-xs-3 text-right"><?= number_format($EXCEL_TOTAL,2) ?></div>
 
-                        <div class="col-xs-3">Balance per Book: </div>
-                        <div class="col-xs-3 text-right" id="book"><?= number_format($bookTotal,2) ?></div>
-                    </div>
+                    <div class="col-xs-3">Balance per Book: </div>
+                    <div class="col-xs-3 text-right" id="book"><?= number_format($bookTotal,2) ?></div>
+                </div>
 
-                    <div class="row">
-                        <div class="col-xs-3" style="padding-left: 30px;">Add: Deposit in Transit </div>
-                        <div class="col-xs-3 text-right"><?= number_format($totalTransit,2) ?></div>
+                <div class="row">
+                    <div class="col-xs-3" style="padding-left: 30px;">Add: Deposit in Transit </div>
+                    <div class="col-xs-3 text-right"><?= number_format($totalTransit,2) ?></div>
 
-                        <div class="col-xs-3" style="padding-left: 30px;">Add: Unrecorded Deposit </div>
-                        <div class="col-xs-3 text-right" id="book"><?= number_format($UNRECORD_DEPOSIT,2) ?></div>
-                    </div>
+                    <div class="col-xs-3" style="padding-left: 30px;">Add: Unrecorded Deposit </div>
+                    <div class="col-xs-3 text-right" id="book"><?= number_format($UNRECORD_DEPOSIT,2) ?></div>
+                </div>
 
-                    <div class="row">
-                        <div class="col-xs-3">Total </div>
-                        <div class="col-xs-3 text-right"><?= number_format($totalBank,2) ?></div>
+                <div class="row">
+                    <div class="col-xs-3">Total </div>
+                    <div class="col-xs-3 text-right"><?= number_format($totalBank,2) ?></div>
 
-                        <div class="col-xs-3">Total </div>
-                        <div class="col-xs-3 text-right" id="book"><?= number_format($totalBook,2) ?></div>
-                    </div>
+                    <div class="col-xs-3">Total </div>
+                    <div class="col-xs-3 text-right" id="book"><?= number_format($totalBook,2) ?></div>
+                </div>
 
-                    <div class="row">
-                        <div class="col-xs-3" style="padding-left: 30px;">Less: Outstanding Cheques </div>
-                        <div class="col-xs-3 text-right"><?= number_format($OUTSTAND_CHEQUE,2) ?></div>
+                <div class="row">
+                    <div class="col-xs-3" style="padding-left: 30px;">Less: Outstanding Cheques </div>
+                    <div class="col-xs-3 text-right"><?= number_format($OUTSTAND_CHEQUE,2) ?></div>
 
-                        <div class="col-xs-3" style="padding-left: 30px; padding-right: 0;">Less: Unrecorded Withdrawal </div>
-                        <div class="col-xs-3 text-right" id="book"><?= number_format($UNRECORD_WITHDRAW,2) ?></div>
-                    </div>
+                    <div class="col-xs-3" style="padding-left: 30px; padding-right: 0;">Less: Unrecorded Withdrawal </div>
+                    <div class="col-xs-3 text-right" id="book"><?= number_format($UNRECORD_WITHDRAW,2) ?></div>
+                </div>
 
-                    <div class="row">
-                        <div class="col-xs-3">Adjust Bank Balance: </div>
-                        <div class="col-xs-3 text-right"><?= number_format($ADJUST_BANK,2) ?></div>
+                <div class="row">
+                    <div class="col-xs-3">Adjust Bank Balance: </div>
+                    <div class="col-xs-3 text-right"><?= number_format($ADJUST_BANK,2) ?></div>
 
-                        <div class="col-xs-3">Adjust Book Balance: </div>
-                        <div class="col-xs-3 text-right" id="book"><?= number_format($ADJUST_BOOK,2) ?></div>
-                    </div>
+                    <div class="col-xs-3">Adjust Book Balance: </div>
+                    <div class="col-xs-3 text-right" id="book"><?= number_format($ADJUST_BOOK,2) ?></div>
+                </div>
             </div>
         </div>
     </div>
-    
-        
     
     <div style="min-width: 10in; width: 100%; padding: 10px;  display: flex; justify-content: center; justify-items: items">
         <button type="button" class="btn btn-primary" onclick="Finalized.call(this)" id="Finalized" disabled>Finalize Bank Reconciliation</button>
@@ -198,7 +196,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h3 class="modal-title" id="invheader"> Find Match Cheque </h3>     
                 </div>
-                <div class="modal-body" >
+                <div class="modal-body">
                         <table class="table" id="match" style="padding: 10px;">
                             <thead>
                                 <tr>
@@ -214,8 +212,7 @@
                                     <!-- <th style="background-color: #2d5f8b; color: white;">Amount</th> -->
                                     <th style="background-color: #2d5f8b; color: white;">Debit</th>
                                     <th style="background-color: #2d5f8b; color: white;">Credit</th>
-                                </tr>
-                                
+                                </tr>                               
                             </thead>
                             <tbody></tbody>
                         </table>
