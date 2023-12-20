@@ -30,6 +30,25 @@
     $bcode = $row['ccode'];
     $bank = $row['cname'];
 
+
+    //References from PV and OR
+    $depositRef = array();
+    $sql = "SELECT cpayee as named, CASE WHEN cpaymethod='cheque' THEN ccheckno Else cpayrefno END as refno, npaid
+    FROM paybill
+    WHERE compcode = '$company' and cacctno = '$bankcode' AND lapproved = 1 AND lvoid = 0
+    UNION ALL 
+    SELECT c.cname as named, CASE WHEN a.cpaymethod='cheque' THEN d.ccheckno Else e.crefno END as refno, d.nchkamt
+    FROM receipt a
+    LEFT JOIN customers c ON a.compcode = c.compcode AND a.ccode = c.cempid
+    LEFT JOIN receipt_check_t d ON a.compcode = d.compcode AND a.ctranno = d.ctranno
+    LEFT JOIN receipt_opay_t e ON a.compcode = e.compcode AND a.ctranno = e.ctranno
+    WHERE a.compcode ='$company' AND a.cacctcode ='$bankcode' AND a.lapproved = 1 AND a.lvoid = 0";
+    $query = mysqli_query($con, $sql);
+    while($row = $query -> fetch_assoc()){
+        array_push($depositRef, $row);
+    }
+
+    $deposit = array();
     $sql = "SELECT * FROM glactivity WHERE compcode = '$company' AND acctno = '$bankcode' AND (STR_TO_DATE(ddate, '%Y-%m-%d') BETWEEN '$from' AND '$to')";
     $query = mysqli_query($con, $sql);
     // Fetching Data for GL Activity
@@ -54,22 +73,26 @@
             $credit = $list['ncredit'];
             $debit = $list['ndebit'];
 
-            if($module != "JE"){
-                $bookTotal += round($credit,2) + round($debit,2);
-            } else {
-                $UNRECORD_DEPOSIT += round($credit,2) + round($debit,2);
-            }
+            $bookTotal += round($credit,2) + round($debit,2);
+
+            //if($module != "JE"){
+                
+           // } else {
+               //$UNRECORD_DEPOSIT += round($credit,2) + round($debit,2);
+           // }
         
             // Check if module is PV or OR
             $sql = match($module){
-                "PV" => "SELECT cpayee as named, cpayrefno as refno FROM paybill WHERE compcode = '$company' AND cpayrefno = '$refno' AND ctranno = '$tranno' AND cbankcode = '$bcode' AND STR_TO_DATE(dcheckdate, '%Y-%m-%d') = '$date' AND lapproved = 1 AND lvoid = 0",
-                "OR" => "SELECT c.cname as named, a.ccheckno as refno FROM receipt_check_t a
-                        LEFT JOIN receipt b ON a.compcode = b.compcode AND a.ctranno = b.ctranno
-                        LEFT JOIN customers c ON a.compcode = c.compcode AND b.ccode = c.cempid
-                        WHERE a.compcode ='$company' AND a.ctranno = '$tranno' AND a.cbank ='$bcode' AND a.ccheckno = '$refno' AND (a.ddate, '%Y-%m-%d') = '$date' AND b.lapproved = 1 AND b.lvoid = 0",
+                "PV" => "SELECT cpayee as named, CASE WHEN cpaymethod='cheque' THEN ccheckno Else cpayrefno END as refno FROM paybill WHERE compcode = '$company' AND cpayrefno = '$refno' AND ctranno = '$tranno' AND cbankcode = '$bcode' AND STR_TO_DATE(dcheckdate, '%Y-%m-%d') = '$date' AND lapproved = 1 AND lvoid = 0",
+                "OR" => "SELECT c.cname as named, CASE WHEN a.cpaymethod='cheque' THEN d.ccheckno Else e.crefno END as refno FROM receipt a
+                LEFT JOIN customers c ON a.compcode = c.compcode AND a.ccode = c.cempid
+                LEFT JOIN receipt_check_t d ON a.compcode = d.compcode AND a.ctranno = d.ctranno
+                LEFT JOIN receipt_opay_t e ON a.compcode = e.compcode AND a.ctranno = e.ctranno
+                WHERE a.compcode ='$company' AND a.ctranno = '$tranno' AND a.cbank ='$bcode' AND a.ccheckno = '$refno' AND (a.ddate, '%Y-%m-%d') = '$date' AND b.lapproved = 1 AND b.lvoid = 0",
             };
     
             // Validation for Inserting for Paycheck Logs
+
             $queries = mysqli_query($con, $sql);
             $rows = $queries -> fetch_assoc();
             if(mysqli_num_rows($queries) != 0){
@@ -92,6 +115,10 @@
     $totalBook = floatval($bookTotal) + $UNRECORD_DEPOSIT;
     $UNRECORD_WITHDRAW = 0; 
     $ADJUST_BOOK = $totalBook + $UNRECORD_WITHDRAW;
+
+    //echo "<pre>";
+    //print_r($bankRecon);
+    //echo "<pre>";
 ?>
 
 <!DOCTYPE html>
@@ -112,6 +139,7 @@
     <script src="../../Bootstrap/js/moment.js"></script>
     <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="../../global/scripts/metronic.js" type="text/javascript"></script>
     <title>MyxFinancials</title>
 </head>
 <body> 
@@ -165,6 +193,77 @@
                     <div class="col-xs-3">Adjust Book Balance: </div>
                     <div class="col-xs-3 text-right" id="book"><?= number_format($ADJUST_BOOK,2) ?></div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="portlet box blue">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="fa fa-copy"></i>Matched Items
+            </div>
+            <div class="tools">
+                <a href="javascript:;" class="collapse">
+                </a>
+               
+            </div>
+        </div>
+        <div class="portlet-body">
+            <div class="row"><div class="col-md-12 col-sm-12 col-xs-12">
+                <table class="table table-sm" id="chequeBank">
+                    <thead>
+                        <tr>
+                            <th class="success" colspan='3' style='text-align: center'>Bank Statement</th>
+                            <th class="danger" colspan='3' style='text-align: center'>Myx Transactions</th>
+                            <th class="warning" rowspan='2' style='text-align: center; vertical-align: middle'>Confirm</th>
+                        </tr>
+                        <tr>
+                            <th>Transaction Details</th>
+                            <th>Reference</th>
+                            <th style='text-align: right'>Amount</th>
+                            <th>Transaction Details</th>
+                            <th>Reference</th>
+                            <th style='text-align: right'>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody> </tbody>
+                </table>
+            </div></div>
+        </div>
+    </div>
+
+    <div class="portlet box yellow">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="fa fa-tasks"></i>Unmatched Bank Statement
+            </div>
+            <div class="tools">
+                <a href="javascript:;" class="collapse">
+                </a>
+               
+            </div>
+        </div>
+        <div class="portlet-body">
+            <div class="row">
+               
+            </div>
+        </div>
+    </div>
+
+    <div class="portlet box purple">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="fa fa-tasks"></i>Unmatched MYX Transactions
+            </div>
+            <div class="tools">
+                <a href="javascript:;" class="collapse">
+                </a>
+               
+            </div>
+        </div>
+        <div class="portlet-body">
+            <div class="row">
+               
             </div>
         </div>
     </div>
@@ -227,6 +326,9 @@
 </html>
 
 <script>
+
+    Metronic.init(); // init metronic core components
+
     var transactions = [];
     //PHP Array Converting to JS Array
     var Reconciliation = <?= json_encode($bankRecon) ?>;
@@ -446,12 +548,27 @@
 
                 console.log(Reconciliation)
                 if( !CheckStore(checkno, debit, credit) ){
+
+                    var xdbtc = "";
+                    var namt = 0;
+                    if(debit!=0){
+                        xdbtc = "Debit";
+                        namt = debit;
+
+                    }else{
+                        xdbtc = "Credit";
+                        namt = credit;
+                    }
+
+                    if(checkno==""){
+                        checkno = "<i>No Reference</i>";
+                    }
                     $("<tr>").append(
-                        $("<td>").text(date),
-                        $("<td>").text(accountNature),
-                        $("<td>").text(checkno),
-                        $("<td style='text-align: right'>").text(number_format(debit,2)),
-                        $("<td style='text-align: right'>").text(number_format(credit,2)),
+                        $("<td>").html(accountNature+"<br>"+date),
+                        $("<td>").html(checkno+"<br>"+xdbtc),
+                        $("<td style='text-align: right; vertical-align: middle'>").text(number_format(namt,2)),
+                        $("<td>").text(""),
+                        $("<td style='text-align: right'>").text(""),
                         $("<td style='text-align: center'>").html("<button type='button' onclick='LoadMatchCheque.call(this)' class='btn btn-xs btn-primary'>Find Match</button>")
                     ).appendTo("#chequeBank tbody")
                 }
