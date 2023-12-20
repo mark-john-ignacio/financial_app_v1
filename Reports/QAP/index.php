@@ -33,7 +33,7 @@
 <body>
     
     <div style="text-align: center; font-weight: bold; text-decoration: underline;">
-            <font size="+1">Quality Assurance Plan</font>
+            <font size="+1">Quarterly Alphalist of Payees</font>
         </div>
         <div class='container' style='padding-top: 50px'>
             <form action="" method="post" id="QAPForm" enctype="multipart/form-data" target="_blank">
