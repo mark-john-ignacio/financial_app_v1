@@ -17,6 +17,7 @@
     while($list = $query -> fetch_assoc()) {
         $compname = stringValidation($list['compname']);
         $comptin = TinValidation($list['comptin']);
+        $tinHeader = onlyNumber($list['comptin']);
     }
 
     // $sql = "SELECT a.cewtcode, a.newtamt, a.ctranno, b.ngross, b.dcheckdate, c.cname, c.chouseno, c.ccity, c.ctin FROM paybill_t a 
@@ -32,7 +33,7 @@
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         header("Content-type: text/plain");
-        header("Content-Disposition: attachment; filename=\"".$comptin.$month.$year."1702Q.dat\"");
+        header("Content-Disposition: attachment; filename=\"".$tinHeader.$month.$year."1702Q.dat\"");
         
         // Changing Data Heading H1601EQ
         $data = "HSAWT,H1702Q,$comptin,0000,\"$compname\",\"\",\"\",\"\",$month/$year,$rdo\n";
@@ -54,7 +55,6 @@
             $ewtcode = $ewt['valid'] ? $ewt['code'] : "";
 
             if (ValidateEWT($code) && $ewt['valid']) {
-                    
                     $company_name = "";
                     $fname = "";
                     $lname = "";
