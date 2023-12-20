@@ -48,42 +48,43 @@
 
             $tins = TinValidation($list['ctin']);
             $name = stringValidation($list['cname']);
-            $rate = $ewt['valid'] ? round($ewt['rate'], 2) : 0;
             $gross = round($list['ngross'], 2);
-            $toEwtAmt = $gross * ($rate / 100);
-            $credit = round($toEwtAmt, 2);
-            $ewtcode = $ewt['valid'] ? $ewt['code'] : "";
 
             if (ValidateEWT($code) && $ewt['valid']) {
-                    $company_name = "";
-                    $fname = "";
-                    $lname = "";
-                    $midname = "";
+                $rate = round($ewt['rate'], 2);
+                $toEwtAmt = $gross * ($rate / 100);
+                $credit = round($toEwtAmt, 2);
+                $ewtcode = $ewt['code'];
 
-                    switch($list['cdesc']) {
-                        case "PERSON": 
-                            $fullname = explode(" ", $list['cname']);
-                            $fname = "\"" . $fullname[0] . "\"";
-                            $lname = "\"" . $fullname[1] . "\"";
-                            $midname = !empty($fullname[2])? "\"" . $fullname[2] . "\"" : ""; 
-                            break;
-                        case "COMPANY": 
-                            $company_name = "\"" . stringValidation($list['cname']) . "\"";
-                            break;
-                        case "SCHOOL":
-                            $company_name = "\"" . stringValidation($list['cname']) . "\"";
-                            break;
-                        case "OTHERS":
-                            $company_name = "\"" . stringValidation($list['cname']) . "\"";
-                            break;
-                    }
+                $company_name = "";
+                $fname = "";
+                $lname = "";
+                $midname = "";
 
-                    // Changing Data D1702Q
-                    $data .= "DSAWT,D1702Q,$count,$tins,0000,$company_name,$lname,$fname,$midname,$month/$year,$ewtcode,$rate,$gross,$credit\n";
-                    $count += 1;
+                switch($list['cdesc']) {
+                    case "PERSON": 
+                        $fullname = explode(" ", $list['cname']);
+                        $fname = "\"" . $fullname[0] . "\"";
+                        $lname = "\"" . $fullname[1] . "\"";
+                        $midname = !empty($fullname[2]) ? "\"" . $fullname[2] . "\"" : ""; 
+                        break;
+                    case "COMPANY": 
+                        $company_name = "\"" . stringValidation($list['cname']) . "\"";
+                        break;
+                    case "SCHOOL":
+                        $company_name = "\"" . stringValidation($list['cname']) . "\"";
+                        break;
+                    case "OTHERS":
+                        $company_name = "\"" . stringValidation($list['cname']) . "\"";
+                        break;
+                }
 
-                    $TOTAL_CREDIT += $credit;
-                    $TOTAL_GROSS += $gross;
+                // Changing Data D1702Q
+                $data .= "DSAWT,D1702Q,$count,$tins,0000,$company_name,$lname,$fname,$midname,$month/$year,,$ewtcode,$rate,$gross,$credit\n";
+                $count += 1;
+
+                $TOTAL_CREDIT += $credit;
+                $TOTAL_GROSS += $gross;
                 
             }
         }
