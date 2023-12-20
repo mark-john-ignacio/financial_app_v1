@@ -18,6 +18,7 @@ $company = $_SESSION['companyid'];
 // $month = $_POST['months'];
 // $year = $_POST['years'];
 
+$month_text = $_POST['months'];
 $month = date("m", strtotime($_POST['months']));
 $year = date("Y", strtotime($_POST['years']));
 
@@ -169,7 +170,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue("A$index","END OF REPORT");
     } else {
         $spreadsheet->setActiveSheetIndex(0)
-        -> setCellValue("A15", "NO RECORD");
+        -> setCellValue("A16", "NO RECORD");
     }
 
 
@@ -183,7 +184,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
 	// Redirect output to a client’s web browser (Xlsx)
 	header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-	header('Content-Disposition: attachment;filename="SWAT_.xlsx"');
+	header('Content-Disposition: attachment;filename="SAWT- Q2 '. $year . ' - ' . $month_text . '.xlsx"');
 	header('Cache-Control: max-age=0');
 	// If you're serving to IE 9, then the following may be needed
 	header('Cache-Control: max-age=1');
