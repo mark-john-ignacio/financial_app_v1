@@ -18,6 +18,7 @@ $company = $_SESSION['companyid'];
 // $month = $_POST['months'];
 // $year = $_POST['years'];
 
+$month_text = $_POST['months'];
 $month = date("m", strtotime($_POST['months']));
 $year = date("Y", strtotime($_POST['years']));
 
@@ -91,8 +92,8 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('I15', "'------------------------------");
     
 
-    $sql = "SELECT a.cewtcode, a.newtamt, a.ctranno, b.namount, b.dcutdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM receipt_sales_t a
-        LEFT JOIN receipt b on a.compcode = b.compcode AND a.ctranno = b.ctranno
+    $sql = "SELECT a.cewtcode, a.ctranno, b.ngross, b.dcutdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM sales_t a
+        LEFT JOIN sales b on a.compcode = b.compcode AND a.ctranno = b.ctranno
         LEFT JOIN customers c on a.compcode = c.compcode AND b.ccode = c.cempid
         LEFT JOIN groupings d on a.compcode = b.compcode AND c.ccustomertype = d.ccode
         WHERE a.compcode = '$company' AND MONTH(b.dcutdate) = '$month' AND YEAR(b.dcutdate) = '$year' AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 AND d.ctype = 'CUSTYP'";
@@ -103,8 +104,14 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         while($row = $query -> fetch_array(MYSQLI_ASSOC)){
             
             $code = $row['cewtcode'];
-            $credit = $row['newtamt'];
-            if(strlen($code) != 0 && $credit != 0){
+            $gross = $row['ngross'];
+            $ewt = getEWT($code);
+            $rate = $ewt['valid'] ? $ewt['rate'] : 0;
+            $toEwtAmt = $gross * ($rate / 100);
+            $credit = round($toEwtAmt, 2);
+            $ewtCode = $ewt['valid'] ? $ewt['code'] : "";
+
+            if (ValidateEWT($code) && $ewt['valid']) {
                 $fullAddress = stringValidation($row['chouseno']);
                 if(trim($row['ccity']) != ""){
                     $fullAddress .= " ". stringValidation($row['ccity']);
@@ -125,27 +132,24 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
                         $CORPORATE = stringValidation($row['cname']);
                         break;
                 }
-                $ewt = getEWT($code);
-                if($ewt['valid']) {
                     $nature = $ewt['notify'];
-                    $gross = $row['namount'];
                     $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
                     $spreadsheet->setActiveSheetIndex(0)
                         ->setCellValue("A$index", $row['dcutdate'])
                         ->setCellValue("B$index", $row['ctin'])
                         ->setCellValue("C$index", $CORPORATE)
                         ->setCellValue("D$index", $INDIVIDUAl)
-                        ->setCellValue("E$index", $ewt['code'])
+                        ->setCellValue("E$index", $ewtCode)
                         ->setCellValue("F$index", $nature)
                         ->setCellValue("G$index", $gross)
-                        ->setCellValue("H$index", number_format($ewt['rate'],2))
+                        ->setCellValue("H$index", number_format($rate,2))
                         ->setCellValue("I$index", $credit);
 
                     $TOTAL_GROSS += floatval($gross); 
                     $TOTAL_CREDIT += floatval($credit); 
                     
                     $index++;
-                }
+                
             }
         }
         $lastindex = $index;
@@ -166,7 +170,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue("A$index","END OF REPORT");
     } else {
         $spreadsheet->setActiveSheetIndex(0)
-        -> setCellValue("A15", "NO RECORD");
+        -> setCellValue("A16", "NO RECORD");
     }
 
 
@@ -180,7 +184,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
 	// Redirect output to a client’s web browser (Xlsx)
 	header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-	header('Content-Disposition: attachment;filename="SWAT_.xlsx"');
+	header('Content-Disposition: attachment;filename="SAWT- Q2 '. $year . ' - ' . $month_text . '.xlsx"');
 	header('Cache-Control: max-age=0');
 	// If you're serving to IE 9, then the following may be needed
 	header('Cache-Control: max-age=1');

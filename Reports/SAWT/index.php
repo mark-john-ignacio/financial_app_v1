@@ -129,6 +129,7 @@
 
         $.ajax({
             url: "./SAWT_LIST/",
+            type: "post",
             data: {
                 month: month,
                 year: year
