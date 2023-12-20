@@ -11,6 +11,7 @@
     $year = date("Y", strtotime($_POST['years']));
     $rdo = $_POST['rdo'];
     $companies = [];
+    $quartersAndMonths = getQuartersAndMonths($year);
 
     $sql = "SELECT * FROM company WHERE compcode = '$company'";
     $query = mysqli_query($con, $sql);
@@ -19,37 +20,35 @@
         $comptin = TinValidation($list['comptin']);
         $tinHeader = onlyNumber($list['comptin']);
     }
+
+
+    header("Content-type: text/plain");
+    header("Content-Disposition: attachment; filename=\"".$tinHeader.$month.$year."1601EQ.dat\"");
+    
+    $data = "HQAP,H1601EQ,$comptin,0000,\"$compname\",\"\",\"\",\"\",$month/$year,$rdo\n";
     $TOTAL_CREDIT = 0;
     $TOTAL_GROSS = 0;
     $count = 1;
 
-    $sql = "SELECT a.ncredit, a.cewtcode, a.ctranno, b.ngross, b.dapvdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM apv_t a
-        LEFT JOIN apv b ON a.compcode = b.compcode AND a.ctranno = b.ctranno
-        LEFT JOIN suppliers c ON a.compcode = b.compcode AND b.ccode = c.ccode 
-        LEFT JOIN groupings d ON a.compcode = b.compcode AND c.csuppliertype = d.ccode
-        WHERE a.compcode = '$company' AND MONTH(b.dapvdate) = '$month' AND YEAR(b.dapvdate) = '$year' AND  b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 AND d.ctype = 'SUPTYP'";
-    $query = mysqli_query($con, $sql);
-    if(mysqli_num_rows($query) != 0){
-        header("Content-type: text/plain");
-        header("Content-Disposition: attachment; filename=\"".$tinHeader.$month.$year."1601EQ.dat\"");
-        
-        $data = "HQAP,H1601EQ,$comptin,0000,\"$compname\",$month/$year,$rdo\n";
-        
+    foreach($quartersAndMonths as $quarter => $months) :
+        $QUARTERDATA = dataquarterly($months);
+        if($QUARTERDATA['valid']) {
+            foreach($QUARTERDATA['quarter'] as $row): 
+                $list = $row['data'];
+                $Quarter_last = $row['last_month'];
 
-        while($list = $query -> fetch_assoc()) {
+                $credit = $list['ncredit'];
+                $code = $list['cewtcode'];
 
-            $credit = $list['ncredit'];
-            $code = $list['cewtcode'];
-
-            if(strlen($code) != 0 && $credit != 0){
                 $ewt = getEWT($list['cewtcode']);
-                if($ewt['valid']) {
-                    $tins = TinValidation($list['ctin']);
-                    $ewtcode = $ewt['code'];
-                    $rate = number_format($ewt['rate'],2);
-                    $gross = round($list['ngross'],2);
-                    $credit = round($list['ncredit'],2);
 
+                $tins = TinValidation($list['ctin']);
+                $ewtcode = $ewt['code'];
+                $rate = number_format($ewt['rate'],2);
+                $gross = round($list['ngross'],2);
+                $credit = round($list['ncredit'],2);
+
+                if (ValidateEWT($code) && $credit != 0 && $ewt['valid']) {
                     $company_name = "";
                     $fname = "";
                     $lname = "";
@@ -78,14 +77,15 @@
 
                     $TOTAL_CREDIT += $credit;
                     $TOTAL_GROSS += $gross;
+                    
                 }
-            }
+            endforeach;
         }
-        $data .= "C1,1601EQ,$comptin,0000,$month/$year,$TOTAL_GROSS,$TOTAL_CREDIT";
-        echo $data;
-    } else {
-        ?>
-            <script type="text/javascript">alert("No record has been found on month of <?= $monthcut . "/" . $yearcut?>")</script>
-        <?php
-    }
+    endforeach;
+
+        
+    
+    $data .= "C1,1601EQ,$comptin,0000,$month/$year,$TOTAL_GROSS,$TOTAL_CREDIT";
+    echo $data;
+
     exit;
