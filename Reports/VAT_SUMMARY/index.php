@@ -169,7 +169,6 @@
 
         $.ajax({
             url: "./PURCHASE",
-            type: "post",
             data: {
                 from: from,
                 to: to
@@ -178,7 +177,7 @@
             async: false,
             success: function(res) {
                 if(res.valid) {
-                    
+                    console.log(res)
                 } else {
                     console.log(msg)
                 }
@@ -230,7 +229,7 @@
             $("<td align='center'>").text(parseFloat(TOTAL_NET).toFixed(2)),
             $("<td align='center'>").text(parseFloat(TOTAL_TAX).toFixed(2)),
         ).appendTo(table + " tbody")
-        
+
         return {
             gross: TOTAL_GROSS,
             net: TOTAL_NET,

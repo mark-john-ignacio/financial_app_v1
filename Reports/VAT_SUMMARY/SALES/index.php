@@ -12,7 +12,7 @@
             LEFT JOIN receipt b ON a.compcode = b.compcode AND a.ctranno = b.ctranno
             LEFT JOIN sales_t c ON a.compcode = c.compcode AND a.csalesno = c.ctranno
             LEFT JOIN customers d ON a.compcode = d.compcode AND b.ccode = d.cempid
-            WHERE a.compcode = '$company' AND (STR_TO_DATE(b.dcutdate, '%Y-%m-%d') BETWEEN '$datefrom' AND '$dateto') ";
+            WHERE a.compcode = '$company' AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 AND (STR_TO_DATE(b.dcutdate, '%Y-%m-%d') BETWEEN '$datefrom' AND '$dateto') ";
 
     if($query = mysqli_query($con, $sql)) {
         $vatable = [];
@@ -35,16 +35,24 @@
             
             switch($list['ctaxcode']) {
                 case "VT":
-                    array_push($vatable, $json);
+                    if(!in_array($json, $vatable)) :
+                        array_push($vatable, $json);
+                    endif;
                     break;
                 case "NV":
-                    array_push($nonvat, $json);
+                    if(!in_array($nonvat, $vatable)) :
+                        array_push($nonvat, $json);
+                    endif;
                     break;
                 case "ZR":
-                    array_push($zero, $json);
+                    if(!in_array($json, $zero)) :
+                        array_push($zero, $json);
+                    endif;
                     break;
                 case "VE":
-                    array_push($exempt, $json);
+                    if(!in_array($json, $exempt)) :
+                        array_push($exempt, $json);
+                    endif;
                     break;
             }
         endwhile;
