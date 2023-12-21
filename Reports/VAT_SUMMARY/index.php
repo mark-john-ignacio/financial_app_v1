@@ -25,24 +25,29 @@
     <title>MyxFinancials</title>
 </head>
 <body>
-    <div style="display: flex; padding: 20px">
-        <div style="padding-left: 10px">
-            <div class="col-xs-8">
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                    <input type="text" id="datefrom" name="datefrom" class="datepicker form-control input-sm" value="<?= date("Y-m-d") ?>">
+    
+    <form action="" method="post" enctype="multipart/form-data">
+        <div style="display: flex; padding: 20px">
+            <div style="width: 100%;">
+                <div class="col-xs-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <input type="text" id="datefrom" name="datefrom" class="datepicker form-control input-sm" value="<?= date("Y-m-d") ?>">
+                    </div>
+                </div>
+                <div class="col-xs-4" >
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <input type="text" id="dateto" name="dateto" class="datepicker form-control input-sm " value="<?= date("Y-m-d") ?>">
+                    </div>
                 </div>
             </div>
-        </div>
-        <div style="padding-left: 10px">
-            <div class="col-xs-8">
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                    <input type="text" id="dateto" name="dateto" class="datepicker form-control input-sm" value="<?= date("Y-m-d") ?>">
-                </div>
+            <div style="display: flex; justify-content: right; justify-items: right; width: 100%;">
+                <button class="btn btn-success btn-sm">Export</button>
             </div>
         </div>
-    </div>
+    </form>
+        
 
     <div style="padding-top:10px;">
         <div style="padding: 10px">
@@ -97,7 +102,50 @@
                 </table>
             </div>
         </div>
-        
+    </div>
+
+    <div class='modal fade' id='ViewModal' role='dialog' data-backdrop="static">
+        <div class='modal-sm modal-dialog' style="width: 800px;" role="document">
+            <div class='modal-content' >
+                <div class='modal-header'>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>  
+                    <h3 class="modal-title" id="invheader">Sample Header</h3>
+                </div>
+
+                <div class='modal-body' id='modal-body' style='height: 100%'>
+                    <div style="display: flex; width: 100%;">
+                        <div style="display: flex; justify-content: center; justify-items: center; width: 100%; height: 3in;">
+                            hello
+                        </div>
+                        <div style="width: 100%;">
+                            <table style="width: 50%;">
+                                <tr>
+                                    <th>DATE: </th>
+                                    <td><div id="date"></div></td>
+                                </tr>
+                                <tr>
+                                    <th>DUE DATE: </th>
+                                    <td><div id="duedate"></div></td>
+                                </tr>
+                                <tr>
+                                    <th>INVOICE NO: </th>
+                                    <td><div id="invoice"></div></td>
+                                </tr>
+                                <tr>
+                                    <th>REFERENCE No: </th>
+                                    <td><div id="reference"></div></td>
+                                </tr>   
+                            </table>
+                        </div>
+                    </div>
+                    <div>
+                        <table></table>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
     </div>
 </body>
 </html>
@@ -116,6 +164,13 @@
             Fetch_Purchase();
         });
     })
+
+    function ViewModal(label){
+        let header = $(this).text() ? $(this).text() : label;
+        $("#invheader").text(header);
+        $(".modal").modal("show");
+
+    }
 
     function Fetch_Sales() {
         $("#sales_table tbody").empty();
@@ -136,13 +191,13 @@
             async: false,
             success: function(res) {
                 if(res.valid) {
-                    let zero = SALES_TABLE_DATA("OUTPUT VAT ZERO RATED SALES", res.zr, "#sales_table");
-                    let nonvat = SALES_TABLE_DATA("OUTPUT VAT TO GOVERNMENT", res.nv, "#sales_table");
-                    let exempt = SALES_TABLE_DATA("OUTPUT VAT EXEMPT SALES", res.ve, "#sales_table");
-                    let vat = SALES_TABLE_DATA("OUTPUT VATABLE SALES", res.vt, "#sales_table");
-                    TOTAL_GROSS += zero.gross + nonvat.gross + exempt.gross + vat.gross;
-                    TOTAL_NET += zero.net + nonvat.net + exempt.net + vat.net;
-                    TOTAL_TAX += zero.tax + nonvat.tax + exempt.tax + vat.tax;
+                    let zero = SALES_TABLE_DATA("OUTPUT VAT ZERO RATED SALES", res.zr);
+                    let nonvat = SALES_TABLE_DATA("OUTPUT VAT TO GOVERNMENT", res.nv);
+                    let exempt = SALES_TABLE_DATA("OUTPUT VAT EXEMPT SALES", res.ve);
+                    let vat = SALES_TABLE_DATA("OUTPUT VATABLE SALES", res.vt);
+                    TOTAL_GROSS += (zero.gross + exempt.gross) - (vat.gross + nonvat.gross);
+                    TOTAL_NET += (zero.net + exempt.net) - (nonvat.net + vat.net);
+                    TOTAL_TAX += (zero.tax + exempt.tax) - (nonvat.tax + vat.tax);
                     $("<tr>").append(
                             $("<td colspan='7' align='right'>").text("Grand Total"),
                             $("<td align='center'>").text(parseFloat(TOTAL_GROSS).toFixed(2)),
@@ -177,7 +232,7 @@
             async: false,
             success: function(res) {
                 if(res.valid) {
-                    console.log(res)
+                    let zero = PURCHASE_TABLE_DATA("INPUT VAT GOODS (OTHER THAN CAPITAL GOODS)  ", res.data);
                 } else {
                     console.log(msg)
                 }
@@ -188,7 +243,7 @@
         })
     }
 
-    function SALES_TABLE_DATA(label, data, table) {
+    function SALES_TABLE_DATA(label, data) {
         $("<tr>").append(
             $("<td colspan='10'>").text(label)
         ).appendTo("#sales_table tbody")
@@ -210,9 +265,9 @@
             TOTAL_TAX += parseFloat(item.tax);
 
             $("<tr>").append(
-                $("<td>").text(item.transaction),
+                $("<td>").html("<a href='javascript:;' onclick='ViewModal.call(this)'>" + item.transaction + "</a"),
                 $("<td>").text(item.date),
-                $("<td>").text(item.sales),
+                $("<td>").html("<a href='javascript:;' onclick='ViewModal(\"sample\")'>" + item.sales + "</a>"),
                 $("<td>").text(item.reference),
                 $("<td>").text(item.partner),
                 $("<td>").text(item.tin),
@@ -220,7 +275,7 @@
                 $("<td align='center'>").text(parseFloat(item.gross).toFixed(2)),
                 $("<td align='center'>").text(parseFloat(item.net).toFixed(2)),
                 $("<td align='center'>").text(parseFloat(item.tax).toFixed(2)),
-            ).appendTo(table + " tbody");
+            ).appendTo("#sales_table tbody");
         });
 
         $("<tr>").append(
@@ -228,7 +283,56 @@
             $("<td align='center'>").text(parseFloat(TOTAL_GROSS).toFixed(2)),
             $("<td align='center'>").text(parseFloat(TOTAL_NET).toFixed(2)),
             $("<td align='center'>").text(parseFloat(TOTAL_TAX).toFixed(2)),
-        ).appendTo(table + " tbody")
+        ).appendTo("#sales_table tbody")
+
+        return {
+            gross: TOTAL_GROSS,
+            net: TOTAL_NET,
+            tax: TOTAL_TAX
+        }
+    }
+
+    function PURCHASE_TABLE_DATA(label, data) {
+        $("<tr>").append(
+            $("<td colspan='10'>").text(label)
+        ).appendTo("#purchase_table tbody")
+
+        $("<tr>").append(
+            $("<td colspan='7'>").text("Beginning"),
+            $("<td align='center'>").text("(0.00)"),
+            $("<td align='center'>").text("(0.00)"),
+            $("<td align='center'>").text("(0.00)"),
+        ).appendTo("#purchase_table tbody")
+
+        let TOTAL_GROSS = 0;
+        let TOTAL_NET = 0;
+        let TOTAL_TAX = 0;
+
+        data.map((item, index) => {
+            TOTAL_GROSS += parseFloat(item.gross);
+            TOTAL_NET += parseFloat(item.net);
+            TOTAL_TAX += parseFloat(item.tax);
+
+            $("<tr>").append(
+                $("<td>").text(item.transaction),
+                $("<td>").text(item.date),
+                $("<td>").text(item.invoice),
+                $("<td>").text(item.reference),
+                $("<td>").text(item.partner),
+                $("<td>").text(item.tin),
+                $("<td>").text(item.address),
+                $("<td align='center'>").text(parseFloat(item.gross).toFixed(2)),
+                $("<td align='center'>").text(parseFloat(item.net).toFixed(2)),
+                $("<td align='center'>").text(parseFloat(item.tax).toFixed(2)),
+            ).appendTo("#purchase_table tbody");
+        });
+
+        $("<tr>").append(
+            $("<td colspan='7' align='right'>").text("TOTAL: "),
+            $("<td align='center'>").text(parseFloat(TOTAL_GROSS).toFixed(2)),
+            $("<td align='center'>").text(parseFloat(TOTAL_NET).toFixed(2)),
+            $("<td align='center'>").text(parseFloat(TOTAL_TAX).toFixed(2)),
+        ).appendTo("#purchase_table tbody");
 
         return {
             gross: TOTAL_GROSS,

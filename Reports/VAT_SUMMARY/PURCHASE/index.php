@@ -10,19 +10,37 @@
     $dateto = date("Y-m-d", strtotime($_REQUEST['to']));
     $paybill = [];
 
-    $sql = "SELECT a.ctranno, a.dapvdate, a.crefrr, a.namount,  d.cname, d.ctin, d.chouseno, d.ccity,  FROM paybill_t a
+    $sql = "SELECT a.ctranno, a.dapvdate, a.capvno, a.crefrr, a.namount, d.cname, d.ctin, d.chouseno, d.ccity FROM paybill_t a
     LEFT JOIN paybill b ON a.compcode = b.compcode AND a.ctranno = b.ctranno
     LEFT JOIN suppliers d ON a.compcode = d.compcode AND b.ccode = d.ccode
     WHERE a.compcode = '$company' AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 AND (STR_TO_DATE(a.dapvdate, '%Y-%m-%d') BETWEEN '$datefrom' AND '$dateto')";
 
-    $query = mysqli_query($con, $sql);
-    while($list = $query -> fetch_assoc()) :
-        if(!in_array($list, $paybill)){
-            array_push($paybill, $list);
-        }
-    endwhile;
-
-    echo json_encode([
-        'valid' => true,
-        'data' => $paybill
-    ]);
+    if($query = mysqli_query($con, $sql)) {
+        while($list = $query -> fetch_assoc()) :
+            $json = [
+                'transaction' => $list['ctranno'],
+                'date' => date("F d, Y", strtotime($list['dapvdate'])),
+                'invoice' => $list['capvno'],
+                'reference' => $list['crefrr'],
+                'partner' => $list['cname'],
+                'tin' => $list['ctin'],
+                'address' => $list['chouseno'] . " " . $list['ccity'],
+                'gross' => round($list['namount'], 2),
+                'net' => !empty($list['nnet']) ? round($list['nnet'], 2) : 0,
+                'tax' => !empty($list['nvat']) ? round($list['nvat'], 2) : 0
+            ];
+            if(!in_array($json, $paybill) && $list['ctin'] != ".."){
+                array_push($paybill, $json);
+            }
+        endwhile;
+    
+        echo json_encode([
+            'valid' => true,
+            'data' => $paybill
+        ]);
+    } else {
+        echo json_encode([
+            'valid' => false,
+            'msg' => ""
+        ]);
+    }
