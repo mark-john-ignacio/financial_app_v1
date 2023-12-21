@@ -85,13 +85,12 @@
 
 	<title>Myx Financials</title>
     
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
-	<link rel="stylesheet" type="text/css" href="../../global/plugins/font-awesome/css/font-awesome.min.css?h=<?php echo time();?>"/>
-	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
 
-	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+	<link href="../../global/css/components.css?t=<?php echo time();?>" id="style_components" rel="stylesheet" type="text/css"/>
 
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../js/bootstrap3-typeahead.min.js"></script>
@@ -101,6 +100,8 @@
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
 	<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
 	<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
 	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
@@ -118,7 +119,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$cpreparedBy = $row['cpreparedby'];
 
 		$mi = ($row['Minit']!="") ? " ".$row['Minit'] : "";
-    $cpreparedName =  $row['Lname'] . ", ". $row['Fname'] . $mi;
+    	$cpreparedName =  $row['Lname'] . ", ". $row['Fname'] . $mi;
 
 		$cSecID = $row['locations_id'];
 		$cRemarks = $row['cremarks'];
@@ -130,15 +131,18 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	}
 ?>
 	<form action="PR_editsave.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" method="post"  enctype="multipart/form-data">
-		<fieldset>
-    	<legend>
 
-				<div class="col-xs-6 nopadding"> Purchase Request Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
+		<div class="portlet">
+			<div class="portlet-title">
+				<div class="caption">
+				<i class="fa fa-cart-plus"></i>Purchase Request Details
+				</div>
+				<div class="status">
 					<?php
 						if($lCancelled==1){
 							echo "<font color='#FF0000'><b>CANCELLED</b></font>";
 						}
-								
+						
 						if($lPosted==1){
 							if($lVoid==1){
 								echo "<font color='#FF0000'><b>VOIDED</b></font>";
@@ -148,238 +152,233 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						}
 					?>
 				</div>
-
-			</legend>	
+			</div>
+			<div class="portlet-body">
 
 				<ul class="nav nav-tabs">
 					<li class="active"><a href="#home">PR Details</a></li>
 					<li><a href="#attc">Attachments</a></li>
 				</ul>
 
-					<div class="tab-content">  
+				<div class="tab-content">  
 
-						<div id="home" class="tab-pane fade in active" style="padding-left:5px; padding-top: 10px;">
+					<div id="home" class="tab-pane fade in active" style="padding-left:5px; padding-top: 10px;">
 
-							<table width="100%" border="0">
-								<tr>
-											<tH>PR No.:</tH>
-											<td style="padding:2px">
-												<div class="col-xs-3 nopadding">
-													<input type="text" class="form-control input-sm" id="txtcprno" name="txtcprno" width="20px" tabindex="1" value="<?php echo $cprno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
-												</div>     
-												<input type="hidden" name="hdntranno" id="hdntranno" value="<?php echo $cprno;?>">
-												<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
-												<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
-												<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?php echo $lVoid;?>">
-												&nbsp;&nbsp;
-												
-											</td>
-											<td colspan="2"  style="padding:2px" align="right">
-												<div id="statmsgz" class="small" style="display:inline"></div>
-											</td>
-										</tr>
-
-								<tr>
-									<tH width="100">Requested By:</tH>
-									<td style="padding:2px">
-										<div class="col-xs-12 nopadding">
-											<div class="col-xs-11 nopadding">
-												<input type="hidden" id="txtcustid" name="txtcustid" value="<?=$cpreparedBy?>">
-												<?=$cpreparedName?>
-											</div>
-										</div>
-									</td>
-									<tH width="150" style="padding:2px">Date Needed:</tH>
-									<td style="padding:2px" width="200">
-										<div class="col-xs-8 nopadding">
-											<input type='text' class="form-control input-sm" id="date_needed" name="date_needed" value="<?=$dDueDate; ?>"/>
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<tH width="100">Section:</tH>
-									<td style="padding:2px">
-										<div class="col-xs-5 nopadding">
-										<select class="form-control input-sm" name="selwhfrom" id="selwhfrom"> 
-											<?php
-													foreach($rowdetloc as $localocs){									
-											?>
-														<option value="<?php echo $localocs['nid'];?>" <?=($cSecID==$localocs['nid']) ? "selected" : "";?>><?php echo $localocs['cdesc'];?></option>										
-											<?php	
-													}						
-											?>
-										</select>
-										</div>
-									</td>
-									<tH width="150">&nbsp;</tH>
-									<td style="padding:2px;">
-										<input type='hidden' id="txtremarks" name="txtremarks" value='<?=$cRemarks?>'>
-									</td>
-								</tr>
-								
-
-								<tr>
-									<td colspan="4">&nbsp;</td>
-								</tr>
-							</table>
-
-						</div>
-
-						<div id="attc" class="tab-pane fade in" style="padding-left: 5px; padding-top: 10px;">
-							<!--
-							--
-							-- Import Files Modal
-							--
-							-->
-							<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-							<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
-							<input type="file" name="upload[]" id="file-0" multiple />
-							
-						</div>
-
-					</div>
-
-				<hr>
-				<div class="col-xs-12 nopadwdown"><b>Details</b></div>
-
-				<div class="col-xs-12 nopadwdown">
-					<input type="hidden" name="hdnunit" id="hdnunit">
-							
-					<div class="col-xs-3 nopadding">
-						<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Item/SKU Code..." tabindex="4">
-					</div>
-					<div class="col-xs-5 nopadwleft">
-						<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL + F) Search Product Name..." size="80" tabindex="5">
-					</div>
-				</div>  
-
-				<div class="alt2" dir="ltr" style="
-					margin: 0px;
-					padding: 3px;
-					border: 1px solid #919b9c;
-					width: 100%;
-					height: 300px;
-					text-align: left;
-					overflow: auto">
-				
-					<table id="MyTable" class="MyTable" width="100%">
-						<thead>	
+						<table width="100%" border="0">
 							<tr>
-								<th style="border-bottom:1px solid #999">Part No.</th>
-								<th style="border-bottom:1px solid #999">Description</th>
-								<th style="border-bottom:1px solid #999">&nbsp;&nbsp;Item Code</th>								
-								<th style="border-bottom:1px solid #999">UOM</th>
-								<th style="border-bottom:1px solid #999">Qty</th>
-								<th style="border-bottom:1px solid #999">Remarks</th>
-								<th style="border-bottom:1px solid #999">&nbsp;</th>
+								<tH>PR No.:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-3 nopadding">
+										<input type="text" class="form-control input-sm" id="txtcprno" name="txtcprno" width="20px" tabindex="1" value="<?php echo $cprno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
+									</div>     
+									<input type="hidden" name="hdntranno" id="hdntranno" value="<?php echo $cprno;?>">
+									<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
+									<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
+									<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?php echo $lVoid;?>">
+									&nbsp;&nbsp;
+									
+								</td>
+								<td colspan="2"  style="padding:2px" align="right">
+									<div id="statmsgz" class="small" style="display:inline"></div>
+								</td>
 							</tr>
-						</thead>
-						<tbody class="tbody">
-							<?php 
-								$sqlbody = mysqli_query($con,"select a.* from purchrequest_t a left join items b on A.compcode=B.compcode and A.citemno=b.cpartno where a.compcode = '$company' and a.ctranno = '$cprno'");
 
-								if (mysqli_num_rows($sqlbody)!=0) {
-									$cntr = 0;
-									while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
-									$cntr = $cntr + 1;
-							?>
-								<tr>
-									<td style="white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;"><input type='hidden' value='<?=$rowbody['cpartdesc']?>' name="txtcpartdesc" id="txtcpartdesc"><?=$rowbody['cpartdesc']?></td>
-									<td width='350px'><input type='text' class='form-control input-xs' id='txtcitemdesc' name='txtcitemdesc' placeholder='Enter remarks...' value='<?=$rowbody['citemdesc']?>' /></td>
-									<td width='100px'><input type='hidden' value='<?=$rowbody['citemno']?>' name="txtitemcode" id="txtitemcode">&nbsp;&nbsp;<?=$rowbody['citemno']?></td>
-									<td width='80px' style='padding:1px'>
-										<select class='xseluom form-control input-xs' name="seluom" id="seluom<?=$cntr?>">
-											<?php
-												foreach($arruomlist as $rs2){
-													if($rs2['citemno']==$rowbody['citemno']){
-														if($rs2['cunit']==$rowbody['cunit']){
-															echo "<option value='".$rs2['cunit']."' selected>".$rs2['cDesc']."</option>";
-														}else{
-															echo "<option value='".$rs2['cunit']."'>".$rs2['cDesc']."</option>";
+							<tr>
+								<tH width="100">Requested By:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-12 nopadding">
+										<div class="col-xs-11 nopadding">
+											<input type="hidden" id="txtcustid" name="txtcustid" value="<?=$cpreparedBy?>">
+											<?=$cpreparedName?>
+										</div>
+									</div>
+								</td>
+								<tH width="150" style="padding:2px">Date Needed:</tH>
+								<td style="padding:2px" width="200">
+									<div class="col-xs-8 nopadding">
+										<input type='text' class="form-control input-sm" id="date_needed" name="date_needed" value="<?=$dDueDate; ?>"/>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<tH width="100">Cost Center:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-5 nopadding">
+									<select class="form-control input-sm" name="selwhfrom" id="selwhfrom"> 
+										<?php
+											foreach($rowdetloc as $localocs){									
+										?>
+												<option value="<?php echo $localocs['nid'];?>" <?=($cSecID==$localocs['nid']) ? "selected" : "";?>><?php echo $localocs['cdesc'];?></option>										
+										<?php	
+											}						
+										?>
+									</select>
+									</div>
+								</td>
+								<tH width="150">&nbsp;</tH>
+								<td style="padding:2px;">
+									<input type='hidden' id="txtremarks" name="txtremarks" value='<?=$cRemarks?>'>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4">&nbsp;</td>
+							</tr>
+						</table>
+
+					</div>
+
+					<div id="attc" class="tab-pane fade in" style="padding-left: 5px; padding-top: 10px;">
+						<!--
+						--
+						-- Import Files Modal
+						--
+						-->
+						<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+						<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+						<input type="file" name="upload[]" id="file-0" multiple />
+						
+					</div>
+
+				</div>
+
+				<div class="portlet light bordered">
+					<div class="portlet-title">
+						<div class="caption">
+							<i class="fa fa-cogs"></i>Details
+						</div>
+						<div class="inputs">
+							<div class="portlet-input input-inline">
+								<div class="col-xs-12 nopadding">
+
+									<input type="hidden" name="hdnunit" id="hdnunit">
+											
+									<div class="col-xs-4 nopadding"><input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Item/SKU Code..." tabindex="4"></div>
+									<div class="col-xs-8 nopadwleft"><input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL + F) Search Product Name..." size="80" tabindex="5"></div>
+								</div> 
+							</div>	  
+						</div>
+					</div>
+					<div class="portlet-body" style="overflow: auto">
+						<div style="min-height: 30vh; width: 1500px;">
+
+							<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
+								<thead>	
+									<tr>
+										<th width="200px" style="border-bottom:1px solid #999">Part No.</th>
+										<th width="300px" style="border-bottom:1px solid #999">Description</th>
+										<th width="100px" style="border-bottom:1px solid #999">&nbsp;&nbsp;Item Code</td>
+										<th width="80px" style="border-bottom:1px solid #999">UOM</th>
+										<th width="120px" style="border-bottom:1px solid #999">Qty</th>
+										<th width="250px" style="border-bottom:1px solid #999">Remarks</th>
+										<th width="50px" style="border-bottom:1px solid #999">&nbsp;</th>
+									</tr>
+								</thead>
+								<tbody class="tbody">
+									<?php 
+										$sqlbody = mysqli_query($con,"select a.* from purchrequest_t a left join items b on A.compcode=B.compcode and A.citemno=b.cpartno where a.compcode = '$company' and a.ctranno = '$cprno'");
+
+										if (mysqli_num_rows($sqlbody)!=0) {
+											$cntr = 0;
+											while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
+											$cntr = $cntr + 1;
+									?>
+									<tr>
+										<td style="white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;"><input type='hidden' value='<?=$rowbody['cpartdesc']?>' name="txtcpartdesc" id="txtcpartdesc"><?=$rowbody['cpartdesc']?></td>
+										<td width='350px'><input type='text' class='form-control input-xs' id='txtcitemdesc' name='txtcitemdesc' placeholder='Enter remarks...' value='<?=$rowbody['citemdesc']?>' /></td>
+										<td width='100px'><input type='hidden' value='<?=$rowbody['citemno']?>' name="txtitemcode" id="txtitemcode">&nbsp;&nbsp;<?=$rowbody['citemno']?></td>
+										<td width='80px' style='padding:1px'>
+											<select class='xseluom form-control input-xs' name="seluom" id="seluom<?=$cntr?>">
+												<?php
+													foreach($arruomlist as $rs2){
+														if($rs2['citemno']==$rowbody['citemno']){
+															if($rs2['cunit']==$rowbody['cunit']){
+																echo "<option value='".$rs2['cunit']."' selected>".$rs2['cDesc']."</option>";
+															}else{
+																echo "<option value='".$rs2['cunit']."'>".$rs2['cDesc']."</option>";
+															}
 														}
 													}
-												}
-											?>
-										</select>
-									</td>
-									<td width='80px' style='padding:1px'>
-										<input type='text' value='<?=$rowbody['nqty']?>' class='numeric form-control input-xs' style='text-align:right' name="txtnqty" id="txtnqty<?=$cntr?>" autocomplete='off' onFocus='this.select();' /> 
-										<input type='hidden' value='<?=$rowbody['cmainunit']?>' name='hdnmainuom' id='hdnmainuom<?=$cntr?>'> 
-										<input type='hidden' value='<?=$rowbody['nfactor']?>' name='hdnfactor' id='hdnfactor<?=$cntr?>'>
-									</td>
-									<td width='250px' style='padding:1px'><input type='text' class='form-control input-xs' id='dremarks<?=$cntr?>' name='dremarks' placeholder='Enter remarks...'value="<?=$rowbody['cremarks']?>" /></td>
-									<td width='50px' style='padding:1px'><input class='btn btn-danger btn-xs' type='button' id='del<?=$cntr?>' value='delete' /></td>
-								</tr>
+												?>
+											</select>
+										</td>
+										<td width='80px' style='padding:1px'>
+											<input type='text' value='<?=$rowbody['nqty']?>' class='numeric form-control input-xs' style='text-align:right' name="txtnqty" id="txtnqty<?=$cntr?>" autocomplete='off' onFocus='this.select();' /> 
+											<input type='hidden' value='<?=$rowbody['cmainunit']?>' name='hdnmainuom' id='hdnmainuom<?=$cntr?>'> 
+											<input type='hidden' value='<?=$rowbody['nfactor']?>' name='hdnfactor' id='hdnfactor<?=$cntr?>'>
+										</td>
+										<td width='250px' style='padding:1px'><input type='text' class='form-control input-xs' id='dremarks<?=$cntr?>' name='dremarks' placeholder='Enter remarks...'value="<?=$rowbody['cremarks']?>" /></td>
+										<td width='50px' style='padding:1px'><input class='btn btn-danger btn-xs' type='button' id='del<?=$cntr?>' value='delete' /></td>
+									</tr>
 
 									<script>
 										$("#del<?=$cntr?>").on('click', function() { 
 											$(this).closest('tr').remove();
 										});
 									</script>
-							<?php
-									}
-								}
-							?>
+									<?php
+											}
+										}
+									?>
 
-						</tbody>			                    
-					</table>
+								</tbody>				                    
+							</table>
 
+						</div>
+					</div>
 				</div>
-					
-				<br>
+
 				<?php
 					if($poststat=="True"){
 				?>
-				<table width="100%" border="0" cellpadding="3">
-					<tr>
-						<td rowspan="2" width="70%">
-							<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
-					
-							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
-								Back to Main<br>(ESC)
-							</button>
-						
-							<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='PR_new.php';" id="btnNew" name="btnNew">
-								New<br>(F1)
-							</button>
 
-							<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
-								Undo Edit<br>(CTRL+Z)
-							</button>
-
-							<?php
-								$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'PR_print'");
-
-								if(mysqli_num_rows($sql) == 1){
-								
-							?>
-
-								<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cprno;?>','Print');" id="btnPrint" name="btnPrint">
-									Print<br>(CTRL+P)
+				<div class="row nopadwtop2x">
+					<div class="col-xs-12">
+						<div class="portlet">
+							<div class="portlet-body">
+								<input type="hidden" name="hdnrowcnt" id="hdnrowcnt">
+								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
+									Back to Main<br>(ESC)
+								</button>
+							
+								<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='PR_new.php';" id="btnNew" name="btnNew">
+									New<br>(F1)
 								</button>
 
-							<?php		
-									}
-							?>
+								<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
+									Undo Edit<br>(CTRL+Z)
+								</button>
 
-							<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
-								Edit<br>(CTRL+E)    
-							</button>
-							
-							<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
-								Save<br>(CTRL+S)
-							</button>
-						
-						</td>
-						
-					</tr>
-					
-				</table>
+								<?php
+									$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'PR_print'");
+
+									if(mysqli_num_rows($sql) == 1){
+									
+								?>
+
+									<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cprno;?>','Print');" id="btnPrint" name="btnPrint">
+										Print<br>(CTRL+P)
+									</button>
+
+								<?php		
+										}
+								?>
+
+								<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
+									Edit<br>(CTRL+E)    
+								</button>
+								
+								<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
+									Save<br>(CTRL+S)
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
 				<?php
 					}
 				?>
-
-    </fieldset>
+			</div>
+		</div>
 
 	</form>
 <?php

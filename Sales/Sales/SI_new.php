@@ -1143,7 +1143,7 @@ $company = $_SESSION['companyid'];
 			recomputeCurr();
 		});
 
-		$("#txtSearchBill").keypress(function(event){
+		/*$("#txtSearchBill").keypress(function(event){
 			//event.preventDefault();
 
 			$('#MyTable > tbody').empty();
@@ -1236,7 +1236,7 @@ $company = $_SESSION['companyid'];
 				}
 
 			}
-		});
+		});*/
 
 		$("#selewt").on("change", function(){ 
 

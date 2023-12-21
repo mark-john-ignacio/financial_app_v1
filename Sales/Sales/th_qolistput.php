@@ -21,7 +21,7 @@ require_once "../../Connection/connection_string.php";
 				 	Select x.creference,x.nrefident,x.citemno,sum(x.nqty) as nqty
 				 	From sales_t x
 				 	left join sales y on x.compcode=y.compcode and x.ctranno=y.ctranno
-					Where x.compcode='$company' and x.creference='".$_REQUEST['id']."' and y.lcancelled=0
+					Where x.compcode='$company' and x.creference='".$_REQUEST['id']."' and y.lcancelled=0 and y.lvoid=0
 				 	group by x.creference,x.nrefident,x.citemno
 				 ) c on a.ctranno=c.creference and a.citemno=c.citemno and a.nident=c.nrefident
 			left join accounts e on b.compcode=e.compcode and b.cacctcodesales=e.cacctno
@@ -53,7 +53,7 @@ require_once "../../Connection/connection_string.php";
 				 	Select x.creference,x.nrefident,x.citemno,sum(x.nqty) as nqty
 				 	From sales_t x
 				 	left join sales y on x.compcode=y.compcode and x.ctranno=y.ctranno
-					Where x.compcode='$company' and x.creference='".$_REQUEST['id']."' and y.lcancelled=0
+					Where x.compcode='$company' and x.creference='".$_REQUEST['id']."' and y.lcancelled=0 and y.lvoid=0
 				 	group by x.creference,x.nrefident,x.citemno
 				 ) c on a.ctranno=c.creference and a.citemno=c.citemno and a.nident=c.nrefident
 			left join accounts f on b.compcode=f.compcode and b.cacctcodesales=f.cacctno
@@ -74,7 +74,7 @@ require_once "../../Connection/connection_string.php";
 				 	Select x.creference,x.nrefident,x.citemno,sum(x.nqty) as nqty
 				 	From sales_t x
 				 	left join sales y on x.compcode=y.compcode and x.ctranno=y.ctranno
-					Where x.compcode='$company' and x.creference='".$_REQUEST['id']."' and y.lcancelled=0
+					Where x.compcode='$company' and x.creference='".$_REQUEST['id']."' and y.lcancelled=0 and y.lvoid=0
 				 	group by x.creference,x.nrefident,x.citemno
 				 ) c on a.ctranno=c.creference and a.citemno=c.citemno and a.nident=c.nrefident
 			left join accounts e on b.compcode=e.compcode and b.cacctcodesales=e.cacctno

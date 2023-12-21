@@ -22,8 +22,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <title>MyxFinancials</title>
 </head>
+<<<<<<< HEAD
 <body style="padding:5px">
 	<section>
+=======
+<body>
+    <section>
+>>>>>>> production
         <div class="row nopadding">
         	<div class="col-xs-6 nopadding" style="float:left; width:50%">
 				<font size="+2"><u>Bank Reconciliation</u></font>	
