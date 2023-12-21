@@ -2119,6 +2119,33 @@ if(mysqli_num_rows($sql) != 0){
 											</div>                    
 										</div>
 
+										<div class="col-xs-12" style="margin-left: 15px !important">
+											<div class="col-xs-3 nopadwtop2x">
+												<b>Allow Item Code Change</b>
+												<div id="divPostRRprint" style="display:inline; padding-left:5px"></div>
+											</div>                    
+											<div class="col-xs-3 nopadwtop2x">
+												<?php
+													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='ALLOW_PO_ITEM_CHANGE'"); 
+												
+													if (mysqli_num_rows($result)!=0) {
+														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
+														$nvalue = $all_course_data['cvalue']; 												
+													}
+													else{
+														$nvalue = "";
+													}
+												?>
+												<select class="form-control input-sm selectpicker" name="selpoitmchng" id="selpoitmchng" onChange="setparamval('ALLOW_PO_ITEM_CHANGE',this.value,'poitmchange')">
+													<option value="0" <?php if ($nvalue==0) { echo "selected"; } ?>> NO </option>
+													<option value="1" <?php if ($nvalue==1) { echo "selected"; } ?>> YES </option>
+												</select>
+											</div>
+												
+											<div class="col-xs-1 nopadwtop2x" id="poitmchange">
+											</div>                    
+										</div>
+
 										<div class="col-xs-12" style="margin-bottom: 15px !important; margin-left: 15px !important">
 											<div class="col-xs-3 nopadwtop2x">
 												<b>Send Approval Email Notif.</b>

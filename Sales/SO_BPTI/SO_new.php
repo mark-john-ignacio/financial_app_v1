@@ -321,54 +321,53 @@ function listcurrencies(){ //API for currency list
 				</div><!--tab-content-->
 
 
-					<div class="portlet light bordered">
-						<div class="portlet-title">
-							<div class="caption">
-								<i class="fa fa-cogs"></i>Details
-							</div>
-							<div class="inputs">
-								<div class="portlet-input input-inline">
-									<div class="col-xs-12 nopadding">
-										<input type="hidden" name="hdnqty" id="hdnqty">
-										<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
-										<input type="hidden" name="hdnunit" id="hdnunit">
-										<input type="hidden" name="hdnvat" id="hdnvat">
-										<input type="hidden" name="hdnmakebuy" id="hdnmakebuy">
-												
-										<div class="col-xs-4 nopadding"><input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4"></div>
-										<div class="col-xs-8 nopadwleft"><input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL + F) Search Product Name..." size="80" tabindex="5"></div>
-									</div> 
-								</div>	  
-							</div>
+				<div class="portlet light bordered">
+					<div class="portlet-title">
+						<div class="caption">
+							<i class="fa fa-cogs"></i>Details
 						</div>
-						<div class="portlet-body" style="overflow: auto">
-							<div style="min-height: 30vh; width: 1500px;">
-								<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
-									<thead>
-										<tr>
-											<th width="100px" style="border-bottom:1px solid #999">Code</th>
-											<th width="300px" style="border-bottom:1px solid #999">Description</th>
-											<th width="100px" style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
-											<th width="150px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
-											<th width="80px" style="border-bottom:1px solid #999">UOM</th>
-											<th width="60px" style="border-bottom:1px solid #999">Factor</th>
-											<th width="80px" style="border-bottom:1px solid #999">Qty</th>
-											<th width="200px" style="border-bottom:1px solid #999">Price</th>
-											<th width="200px" style="border-bottom:1px solid #999">Amount</th>
-											<th width="200px" style="border-bottom:1px solid #999">PO NO.</th>
-											<th width="120px" style="border-bottom:1px solid #999">Date Needed</th>
-											<th width="200px" style="border-bottom:1px solid #999">Remarks</th>
-											<!--<th style="border-bottom:1px solid #999">Total Amt in <?//php echo $nvaluecurrbase; ?></th>-->
-											<th style="border-bottom:1px solid #999">&nbsp;</th>
-										</tr>	
-									</thead>														
-									<tbody class="tbody">
-									</tbody>															
-								</table>
-							</div>
+						<div class="inputs">
+							<div class="portlet-input input-inline">
+								<div class="col-xs-12 nopadding">
+									<input type="hidden" name="hdnqty" id="hdnqty">
+									<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
+									<input type="hidden" name="hdnunit" id="hdnunit">
+									<input type="hidden" name="hdnvat" id="hdnvat">
+									<input type="hidden" name="hdnmakebuy" id="hdnmakebuy">
+											
+									<div class="col-xs-4 nopadding"><input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4"></div>
+									<div class="col-xs-8 nopadwleft"><input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL + F) Search Product Name..." size="80" tabindex="5"></div>
+								</div> 
+							</div>	  
 						</div>
 					</div>
-
+					<div class="portlet-body" style="overflow: auto">
+						<div style="min-height: 30vh; width: 1500px;">
+							<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
+								<thead>
+									<tr>
+										<th width="100px" style="border-bottom:1px solid #999">Code</th>
+										<th width="300px" style="border-bottom:1px solid #999">Description</th>
+										<th width="100px" style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
+										<th width="150px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
+										<th width="80px" style="border-bottom:1px solid #999">UOM</th>
+										<th width="60px" style="border-bottom:1px solid #999">Factor</th>
+										<th width="80px" style="border-bottom:1px solid #999">Qty</th>
+										<th width="200px" style="border-bottom:1px solid #999">Price</th>
+										<th width="200px" style="border-bottom:1px solid #999">Amount</th>
+										<th width="200px" style="border-bottom:1px solid #999">PO NO.</th>
+										<th width="120px" style="border-bottom:1px solid #999">Date Needed</th>
+										<th width="200px" style="border-bottom:1px solid #999">Remarks</th>
+										<!--<th style="border-bottom:1px solid #999">Total Amt in <?//php echo $nvaluecurrbase; ?></th>-->
+										<th style="border-bottom:1px solid #999">&nbsp;</th>
+									</tr>	
+								</thead>														
+								<tbody class="tbody">
+								</tbody>															
+							</table>
+						</div>
+					</div>
+				</div>
 
 				<div class="row nopadwtop2x">
 					<div class="col-xs-6">
@@ -1544,112 +1543,113 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 																		
 }
 
-function Reindex(){
-			$("#MyTable > tbody > tr").each(function(index) {	
-				tx = index + 1;
+	function Reindex(){
+		$("#MyTable > tbody > tr").each(function(index) {	
+			tx = index + 1;
 
-				$(this).find('select[name="seluom"]').attr("id","seluom"+tx);
-				$(this).find('input[name="txtnqty"]').attr("id","txtnqty"+tx);
-				$(this).find('input[name="txtnprice"]').attr("id","txtnprice"+tx);
-				$(this).find('input[type="hidden"][name="txtnamount"]').attr("id","txtnamount"+tx);
-				$(this).find('input[name="txtntranamount"]').attr("id","txtntranamount"+tx);
-				$(this).find('input[type="hidden"][name="hdnmainuom"]').attr("id","hdnmainuom"+tx);
-				$(this).find('input[name="hdnfactor"]').attr("id","hdnfactor"+tx); 
+			$(this).find('select[name="seluom"]').attr("id","seluom"+tx);
+			$(this).find('input[name="txtnqty"]').attr("id","txtnqty"+tx);
+			$(this).find('input[name="txtnprice"]').attr("id","txtnprice"+tx);
+			$(this).find('input[type="hidden"][name="txtnamount"]').attr("id","txtnamount"+tx);
+			$(this).find('input[name="txtntranamount"]').attr("id","txtntranamount"+tx);
+			$(this).find('input[type="hidden"][name="hdnmainuom"]').attr("id","hdnmainuom"+tx);
+			$(this).find('input[name="hdnfactor"]').attr("id","hdnfactor"+tx); 
 
-				if(xChkVatableStatus==1){ 
-					$(this).find('select[name="selitmvatyp"]').attr("id","selitmvatyp"+tx); 
-				}
-
-				$(this).find('input[name="txtcitmrempo"]').attr("id","txtcitmrempo"+tx);
-				$(this).find('input[name="txtcitmdneed"]').attr("id","txtcitmdneed"+tx);
-				$(this).find('input[name="txtcitmremx"]').attr("id","txtcitmremx"+tx);
-
-			});
-}
-		function ComputeAmt(nme){
-			var r = nme.replace( /^\D+/g, '');
-			var nnet = 0;
-			var nqty = 0;
-			
-			nqty = $("#txtnqty"+r).val().replace(/,/g,'');
-			nqty = parseFloat(nqty)
-			nprc = $("#txtnprice"+r).val().replace(/,/g,'');
-			nprc = parseFloat(nprc);
-			
-			namt = nqty * nprc;
-			namt = namt.toFixed(4);
-
-			namt2 = namt * parseFloat($("#basecurrval").val());
-			namt2 = namt2.toFixed(4);
-
-			
-			$("#txtntranamount"+r).val(namt);		
-
-			$("#txtnamount"+r).val(namt2);
-
-			$("#txtntranamount"+r).autoNumeric('destroy');
-			//$("#txtnamount"+r).autoNumeric('destroy');
-
-			$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
-			//$("#txtnamount"+r).autoNumeric('init',{mDec:2});
-
-
-		}
-
-		function ComputeGross(){
-			var rowCount = $('#MyTable tr').length;
-			
-			var gross = 0;
-			var nnet = 0;
-			var vatz = 0;
-
-			var nnetTot = 0;
-			var vatzTot = 0;
-
-			if(rowCount>1){
-				for (var i = 1; i <= rowCount-1; i++) {
-			
-					if(xChkVatableStatus==1){  
-						var slctdval = $("#selitmvatyp"+i+" option:selected").data('id');
-
-						if(slctdval!=0){
-							if(parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) > 0 ){
-
-								nnet = parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) / parseFloat(1 + (parseInt(slctdval)/100));
-								vatz = nnet * (parseInt(slctdval)/100);
-
-								nnetTot = nnetTot + nnet;
-								vatzTot = vatzTot + vatz;
-							}
-						}else{
-							nnetTot = nnetTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
-						}
-					}else{
-
-						nnetTot = nnetTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
-
-					}
-
-					gross = gross + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
-				}
+			if(xChkVatableStatus==1){ 
+				$(this).find('select[name="selitmvatyp"]').attr("id","selitmvatyp"+tx); 
 			}
 
-			gross2 = gross * parseFloat($("#basecurrval").val().replace(/,/g,''));
+			$(this).find('input[name="txtcitmrempo"]').attr("id","txtcitmrempo"+tx);
+			$(this).find('input[name="txtcitmdneed"]').attr("id","txtcitmdneed"+tx);
+			$(this).find('input[name="txtcitmremx"]').attr("id","txtcitmremx"+tx);
 
-			$("#txtnNetVAT").val(nnetTot);
-			$("#txtnVAT").val(vatzTot);
-			$("#txtnGross").val(gross2);
-			$("#txtnBaseGross").val(gross);		
+		});
+	}
 
-			$("#divtxtnNetVAT").text(nnetTot.toFixed(2));
-			$("#divtxtnVAT").text(vatzTot.toFixed(2));
-			$("#divtxtnGross").text(gross.toFixed(2));
+	function ComputeAmt(nme){
+		var r = nme.replace( /^\D+/g, '');
+		var nnet = 0;
+		var nqty = 0;
+		
+		nqty = $("#txtnqty"+r).val().replace(/,/g,'');
+		nqty = parseFloat(nqty)
+		nprc = $("#txtnprice"+r).val().replace(/,/g,'');
+		nprc = parseFloat(nprc);
+		
+		namt = nqty * nprc;
+		namt = namt.toFixed(4);
 
-			$("#divtxtnNetVAT").formatNumber();
-			$("#divtxtnVAT").formatNumber();
-			$("#divtxtnGross").formatNumber();
-			
+		namt2 = namt * parseFloat($("#basecurrval").val());
+		namt2 = namt2.toFixed(4);
+
+		
+		$("#txtntranamount"+r).val(namt);		
+
+		$("#txtnamount"+r).val(namt2);
+
+		$("#txtntranamount"+r).autoNumeric('destroy');
+		//$("#txtnamount"+r).autoNumeric('destroy');
+
+		$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
+		//$("#txtnamount"+r).autoNumeric('init',{mDec:2});
+
+
+	}
+
+	function ComputeGross(){
+		var rowCount = $('#MyTable tr').length;
+		
+		var gross = 0;
+		var nnet = 0;
+		var vatz = 0;
+
+		var nnetTot = 0;
+		var vatzTot = 0;
+
+		if(rowCount>1){
+			for (var i = 1; i <= rowCount-1; i++) {
+		
+				if(xChkVatableStatus==1){  
+					var slctdval = $("#selitmvatyp"+i+" option:selected").data('id');
+
+					if(slctdval!=0){
+						if(parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) > 0 ){
+
+							nnet = parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) / parseFloat(1 + (parseInt(slctdval)/100));
+							vatz = nnet * (parseInt(slctdval)/100);
+
+							nnetTot = nnetTot + nnet;
+							vatzTot = vatzTot + vatz;
+						}
+					}else{
+						nnetTot = nnetTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
+					}
+				}else{
+
+					nnetTot = nnetTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
+
+				}
+
+				gross = gross + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
+			}
 		}
+
+		gross2 = gross * parseFloat($("#basecurrval").val().replace(/,/g,''));
+
+		$("#txtnNetVAT").val(nnetTot);
+		$("#txtnVAT").val(vatzTot);
+		$("#txtnGross").val(gross2);
+		$("#txtnBaseGross").val(gross);		
+
+		$("#divtxtnNetVAT").text(nnetTot.toFixed(2));
+		$("#divtxtnVAT").text(vatzTot.toFixed(2));
+		$("#divtxtnGross").text(gross.toFixed(2));
+
+		$("#divtxtnNetVAT").formatNumber();
+		$("#divtxtnVAT").formatNumber();
+		$("#divtxtnGross").formatNumber();
+		
+	}
 
 
 

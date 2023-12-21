@@ -47,9 +47,12 @@
 
 	<title>Myx Financials</title>
     
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+
+	<link href="../../global/css/components.css?t=<?php echo time();?>" id="style_components" rel="stylesheet" type="text/css"/>
 
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../js/bootstrap3-typeahead.min.js"></script>
@@ -75,135 +78,143 @@
 
 <body style="padding:5px">
 	<form action="PR_newsave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
-		<fieldset>
-    	<legend>Purchase Request</legend>	
+
+		<div class="portlet">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-cart-plus"></i>New Purchase Request
+				</div>
+			</div>
+			<div class="portlet-body">
 
 				<ul class="nav nav-tabs">
 					<li class="active"><a href="#home">PR Details</a></li>
 					<li><a href="#attc">Attachments</a></li>
 				</ul>
 
-					<div class="tab-content">  
+				<div class="tab-content">  
 
-						<div id="home" class="tab-pane fade in active" style="padding-left:5px; padding-top: 10px;">
+					<div id="home" class="tab-pane fade in active" style="padding-left:5px; padding-top: 10px;">
 
-							<table width="100%" border="0">
-								<tr>
-									<tH width="100">Requested By:</tH>
-									<td style="padding:2px">
-										<div class="col-xs-12 nopadding">
-											<div class="col-xs-11 nopadding">
-												<input type="hidden" id="txtcustid" name="txtcustid" value="<?=$_SESSION['employeeid']?>">
-												<?=$cfname?>
-											</div>
+						<table width="100%" border="0">
+							<tr>
+								<tH width="100">Requested By:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-12 nopadding">
+										<div class="col-xs-11 nopadding">
+											<input type="hidden" id="txtcustid" name="txtcustid" value="<?=$_SESSION['employeeid']?>">
+											<?=$cfname?>
 										</div>
-									</td>
-									<tH width="150" style="padding:2px">Date Needed:</tH>
-									<td style="padding:2px" width="200">
-										<div class="col-xs-8 nopadding">
-											<input type='text' class="datepick form-control input-sm" id="date_needed" name="date_needed" />
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<tH width="100">Section:</tH>
-									<td style="padding:2px">
-										<div class="col-xs-5 nopadding">
-										<select class="form-control input-sm" name="selwhfrom" id="selwhfrom"> 
-											<?php
-													foreach($rowdetloc as $localocs){									
-											?>
-														<option value="<?php echo $localocs['nid'];?>"><?php echo $localocs['cdesc'];?></option>										
-											<?php	
-													}						
-											?>
-										</select>
-										</div>
-									</td>
-									<tH width="150">&nbsp;</tH>
-									<td style="padding:2px;">
-										<input type='hidden' id="txtremarks" name="txtremarks">
-									</td>
-								</tr>
-								
-								<tr>
-									<td colspan="4">&nbsp;</td>
-								</tr>
+									</div>
+								</td>
+								<tH width="150" style="padding:2px">Date Needed:</tH>
+								<td style="padding:2px" width="200">
+									<div class="col-xs-8 nopadding">
+										<input type='text' class="datepick form-control input-sm" id="date_needed" name="date_needed" />
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<tH width="100">Cost Center:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-5 nopadding">
+									<select class="form-control input-sm" name="selwhfrom" id="selwhfrom"> 
+										<?php
+											foreach($rowdetloc as $localocs){									
+										?>
+												<option value="<?php echo $localocs['nid'];?>"><?php echo $localocs['cdesc'];?></option>										
+										<?php	
+											}						
+										?>
+									</select>
+									</div>
+								</td>
+								<tH width="150">&nbsp;</tH>
+								<td style="padding:2px;">
+									<input type='hidden' id="txtremarks" name="txtremarks">
+								</td>
+							</tr>
+							
+							<tr>
+								<td colspan="4">&nbsp;</td>
+							</tr>
+						</table>
+
+					</div>
+
+					<div id="attc" class="tab-pane fade in" style="padding-left: 5px; padding-top: 10px;">
+						<!--
+						--
+						-- Import Files Modal
+						--
+						-->
+						<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+						<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+						<input type="file" name="upload[]" id="file-0" multiple />
+						
+					</div>
+
+				</div>
+
+				<div class="portlet light bordered">
+					<div class="portlet-title">
+						<div class="caption">
+							<i class="fa fa-cogs"></i>Details
+						</div>
+						<div class="inputs">
+							<div class="portlet-input input-inline">
+								<div class="col-xs-12 nopadding">
+
+									<input type="hidden" name="hdnunit" id="hdnunit">
+											
+									<div class="col-xs-4 nopadding"><input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Item/SKU Code..." tabindex="4"></div>
+									<div class="col-xs-8 nopadwleft"><input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL + F) Search Product Name..." size="80" tabindex="5"></div>
+								</div> 
+							</div>	  
+						</div>
+					</div>
+					<div class="portlet-body" style="overflow: auto">
+						<div style="min-height: 30vh; width: 1500px;">
+
+							<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
+								<thead>	
+									<tr>
+										<th width="200px" style="border-bottom:1px solid #999">Part No.</th>
+										<th width="300px" style="border-bottom:1px solid #999">Description</th>
+										<th width="100px" style="border-bottom:1px solid #999">&nbsp;&nbsp;Item Code</td>
+										<th width="80px" style="border-bottom:1px solid #999">UOM</th>
+										<th width="120px" style="border-bottom:1px solid #999">Qty</th>
+										<th width="250px" style="border-bottom:1px solid #999">Remarks</th>
+										<th width="50px" style="border-bottom:1px solid #999">&nbsp;</th>
+									</tr>
+								</thead>
+								<tbody class="tbody">
+								</tbody>			                    
 							</table>
 
 						</div>
-
-						<div id="attc" class="tab-pane fade in" style="padding-left: 5px; padding-top: 10px;">
-							<!--
-							--
-							-- Import Files Modal
-							--
-							-->
-							<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-							<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
-							<input type="file" name="upload[]" id="file-0" multiple />
-							
-						</div>
-
 					</div>
-
-				<hr>
-				<div class="col-xs-12 nopadwdown"><b>Details</b></div>
-
-				<div class="col-xs-12 nopadwdown">
-					<input type="hidden" name="hdnunit" id="hdnunit">
-							
-					<div class="col-xs-3 nopadding">
-						<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Item/SKU Code..." tabindex="4">
-					</div>
-					<div class="col-xs-5 nopadwleft">
-						<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL + F) Search Product Name..." size="80" tabindex="5">
-					</div>
-				</div>  
-
-				<div class="alt2" dir="ltr" style="
-					margin: 0px;
-					padding: 3px;
-					border: 1px solid #919b9c;
-					width: 100%;
-					height: 300px;
-					text-align: left;
-					overflow: auto">
-				
-					<table id="MyTable" class="MyTable" width="100%" border="0">
-						<thead>	
-							<tr>
-								<th style="border-bottom:1px solid #999">Part No.</th>
-								<th style="border-bottom:1px solid #999">Description</th>
-								<th style="border-bottom:1px solid #999">&nbsp;&nbsp;Item Code</th>								
-								<th style="border-bottom:1px solid #999">UOM</th>
-								<th style="border-bottom:1px solid #999">Qty</th>
-								<th style="border-bottom:1px solid #999">Remarks</th>
-								<th style="border-bottom:1px solid #999">&nbsp;</th>
-							</tr>
-						</thead>
-						<tbody class="tbody">
-						</tbody>			                    
-					</table>
-
 				</div>
-					
-				<br>
-				<table width="100%" border="0" cellpadding="3">
-					<tr>
-						<td>
-							<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
 
-							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PR.php';" id="btnMain" name="btnMain">
-								Back to Main<br>(ESC)
-							</button>
-							
-							<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();">Save<br> (CTRL+S)</button>
-						</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-					</tr>
-				</table>
+				<div class="row nopadwtop2x">
+					<div class="col-xs-12">
+						<div class="portlet">
+							<div class="portlet-body">
+								<input type="hidden" name="hdnrowcnt" id="hdnrowcnt">
+								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PR.php';" id="btnMain" name="btnMain">
+									Back to Main<br>(ESC)
+								</button>
+			
+								<button type="submit" class="btn green btn-sm" tabindex="6"  id="btnSave" onClick="return chkform();" name="btnSave">
+									SAVE<br> (CTRL+S)
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
 
     </fieldset>
 
@@ -211,20 +222,20 @@
 
 	<!-- 1) Alert Modal -->
 	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-			<div class="vertical-alignment-helper">
-					<div class="modal-dialog vertical-align-top">
-							<div class="modal-content">
-								<div class="alert-modal-danger">
-										<p id="AlertMsg"></p>
-									<p>
-											<center>
-													<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-											</center>
-									</p>
-								</div>
-							</div>
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+					<div class="alert-modal-danger">
+						<p id="AlertMsg"></p>
+						<p>
+							<center>
+								<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+							</center>
+						</p>
 					</div>
+				</div>
 			</div>
+		</div>
 	</div>
 
 	<form method="post" name="frmedit" id="frmedit" action="PurchRet_edit.php">
@@ -431,12 +442,12 @@ function myFunctionadd(){
 		$('#MyTable > tbody:last-child').append( 
 			"<tr>"
 			+"<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\"><input type='hidden' value='"+itmdesc+"' name=\"txtcpartdesc\" id=\"txtcpartdesc\">"+itmdesc+"</td>"
-			+"<td width='350px'><input type='text' class='form-control input-xs' id='txtcitemdesc' name='txtcitemdesc' placeholder='Enter remarks...' value='"+itmdesc+"' /></td>"
-			+"<td width='100px'><input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">&nbsp;&nbsp;"+itmcode+"</td>"
-			+"<td style='padding:1px' width='80px'>"+uomoptions+"</td>"
-			+"<td style='padding:1px' width='80px'><input type='text' value='1' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+itmunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='1' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>"
-			+"<td style='padding:1px' width='250px'><input type='text' class='form-control input-xs' id='dremarks"+lastRow+"' name='dremarks' placeholder='Enter remarks...' /></td>"
-			+"<td width='50px' style='padding:1px'><input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' /></td>"
+			+"<td><input type='text' class='form-control input-xs' id='txtcitemdesc' name='txtcitemdesc' placeholder='Enter remarks...' value='"+itmdesc+"' /></td>"
+			+"<td><input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">&nbsp;&nbsp;"+itmcode+"</td>"
+			+"<td style='padding:1px'>"+uomoptions+"</td>"
+			+"<td style='padding:1px'><input type='text' value='1' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+itmunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='1' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>"
+			+"<td style='padding:1px'><input type='text' class='form-control input-xs' id='dremarks"+lastRow+"' name='dremarks' placeholder='Enter remarks...' /></td>"
+			+"<td style='padding:1px'><input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' /></td>"
 		);								
 
 		$("#del"+itmcode).on('click', function() { 

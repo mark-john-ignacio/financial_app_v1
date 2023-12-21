@@ -507,8 +507,19 @@
 								<i class="fa fa-cart-plus" ></i> Purchase Request
 							</a>
 						</li>
+
+
+						<?php
+							//check if SO_subdomain exist
+							if ( file_exists( "Purchases/PO_".$durlSUB ) || is_dir( "Purchases/PO_".$durlSUB) ) {   
+								$SILink = "Purchases/PO_".$durlSUB."/Purch.php?ix=";
+							}else{
+								$SILink = "Purchases/PO/Purch.php?ix=";
+							}
+						?>
+
 						<li>
-							<a href="javascript:;" onClick="setpage('Purchases/PO/Purch.php?ix=');">
+							<a href="javascript:;" onClick="setpage('<?=$SILink?>');">
                 				<i class="glyphicon glyphicon-list"> </i> Purchase Order
 							</a>
 						</li>
