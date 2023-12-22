@@ -103,7 +103,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
   <tr>
     <td colspan="3" style="height: 5.6in; padding-top: 13px;" VALIGN="TOP">
     
-    <table width="100%" border="0" cellpadding="3">
+    <table width="100%" border="0" cellpadding="1">
       <?php 
         $sqlbody = mysqli_query($con,"select a.*, b.citemdesc, c.nrate from sales_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno left join taxcode c on a.compcode=c.compcode and a.ctaxcode=c.ctaxcode where a.compcode='$company' and a.ctranno = '$csalesno'");
 
@@ -122,11 +122,12 @@ if (mysqli_num_rows($sqlhead)!=0) {
           $nnetprice = floatval($rowbody['nprice']) - floatval($rowbody['ndiscount']);
                 
       ?>
+        <tr><td>&nbsp;</td></tr>
       
             <tr> 
-              <td style="width: 1in"  align="center"><?=$cntr;?></td>
+              <td align="center"><?=$cntr;?></td>
               <td style="text-overflow: ellipsis; width: .55in">&nbsp;&nbsp;<?php echo $rowbody['citemno'];?></td>
-              <td style="text-overflow: ellipsis; width: 14.5in"><?php echo $rowbody['citemdesc'];?></td>
+              <td style="text-overflow: ellipsis; width: 11.5in"><?php echo $rowbody['citemdesc'];?></td>
               <td style="width: 1.15in" align="center"><?php echo number_format($rowbody['nqty']);?>&nbsp;</td> 
               <td style="width: 1.15in" align="center"><?php echo $rowbody['cunit'];?></td>
               <td style="text-overflow: ellipsis; width: 2.25in" align="right"><?php echo number_format($nnetprice,2);?></td>
@@ -197,11 +198,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
   <tr>
     <td colspan="2" valign="top" style="padding-top: 30px !important">
       <table width="100%" border="0">
-
+<!-- 
         <tr>
-          <td colspan="4" align="right"  valign="bottom" ><!--<b>Total Sales (VAT INCLUSIVE) </b>-->&nbsp;</td>
-          <td  valign="top" align="right"><b><?//=$totvatable?>&nbsp;</b></td>
-        </tr>
+          <td colspan="4" align="right"  valign="bottom" ><<b>Total Sales (VAT INCLUSIVE) </b>&nbsp;</td>
+          <td  valign="top" align="right"><b>< ?//=$totvatable?>&nbsp;</b></td>
+        </tr> -->
         <tr>
           <td colspan="2" valign="bottom">&nbsp;</td>
           <td colspan="2" valign="bottom" align="right"><!--<b><b>LESS: VAT</b>-->&nbsp;</td>
@@ -216,25 +217,25 @@ if (mysqli_num_rows($sqlhead)!=0) {
         <tr>
           <td align="right" valign="bottom"><!--<b><b>Vat-Exempt Sales</b>-->&nbsp;</td>
           <td valign="bottom"><div style="text-align:right; width:50%"><b><?=($printVEGross !== 0) ? $printVEGross : '' ?></b>&nbsp;</div></td>
-          <td colspan="2" valign="bottom" align="right"><!--<b><b>LESS: SC/PWD DISC.</b>-->&nbsp;</td>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?//=number_format($Gross,2)?>&nbsp;</b></td>
+          <td colspan="2" valign="bottom" align="right"><!--<b><b>Amt. Due</b>-->&nbsp;</td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in; padding-top: 5px;"><b><?=number_format($totvatable,2)?></b></td>
         </tr>
         <tr>
           <td align="right" valign="bottom"><!--<b><b>Zero-Rated Sales</b>-->&nbsp;</td>
           <td valign="bottom"><div style="text-align:right; width:50%"><b><?=($printZRGross !== 0) ? $printZRGross : '' ?></b>&nbsp;</div></td>
-          <td colspan="2" valign="bottom" align="right"><!--<b><b>Amt. Due</b>-->&nbsp;</td>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=number_format($totvatable,2)?></b></td>
+          <td colspan="2" valign="bottom" align="right"><!--<b><b>LESS: SC/PWD DISC.</b>-->&nbsp;</td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?//=number_format($Gross,2)?>&nbsp;</b></td>
         </tr>
         <tr>
           <td align="right" valign="bottom"><!--<b><b>Vat Amt</b>-->&nbsp;</td>
           <td valign="bottom"><div style="text-align:right; width:50%">&nbsp;</div></td>
           <td colspan="2" valign="bottom" align="right"><!--<b><b>ADD VAT</b>-->&nbsp;</td>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=number_format($totlessvat,2)?></b></td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in; padding-top: 5px;"><b><?=number_format($totlessvat,2)?></b></td>
         </tr>
         <tr>
           <td colspan="2" valign="bottom">&nbsp;</td>
           <td colspan="2" valign="bottom" align="right"><!--<b><b>TOTAL AMT. DUE</b>-->&nbsp;</td>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=number_format($Gross,2)?></b></td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in; padding-top: 5px;"><b><?=number_format($Gross,2)?></b></td>
         </tr>
 
       </table>
