@@ -101,21 +101,26 @@
                     <tbody></tbody>
                 </table>
             </div>
+            
         </div>
     </div>
 
-    <div class='modal fade' id='ViewModal' role='dialog' data-backdrop="static">
+    <div class='Sales modal fade' id='ViewModal' role='dialog' data-backdrop="static">
         <div class='modal-sm modal-dialog' style="width: 800px;" role="document">
             <div class='modal-content' >
                 <div class='modal-header'>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>  
-                    <h3 class="modal-title" id="invheader">Sample Header</h3>
+                    <h3 class="modal-title" id="invheader">View  Accounts Receivable</h3>
                 </div>
 
                 <div class='modal-body' id='modal-body' style='height: 100%'>
                     <div style="display: flex; width: 100%;">
-                        <div style="display: flex; justify-content: center; justify-items: center; width: 100%; height: 3in;">
-                            hello
+                        <div style="width: 100%; height: 1in; ">
+                            <div class="btn btn-success btn" id="AR_STATUS">PAID</div>
+                            <div style="display: flex">
+                                <h3 >Accounts Receivable</h3> 
+                                <div style="color: gray; margin-top: 15px;" id="AR">(AR SAMPLE)</div>
+                            </div>
                         </div>
                         <div style="width: 100%;">
                             <table style="width: 50%;">
@@ -138,12 +143,75 @@
                             </table>
                         </div>
                     </div>
-                    <div>
-                        <table></table>
+                    <div style="display: relative;">
+                        <table class="table" id="GL_AR_TABLE">
+                            <thead>
+                                <tr>
+                                    <th align='center'>Profit Center</th>
+                                    <th align='center'>Account</th>
+                                    <th align='center'>Desc ription</th>
+                                    <th align='center'>Debit</th>
+                                    <th align='center'>Credit</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
                     </div>
+                    <div style="display: relative; margin-top: 1in;">
+                        <div style="font-weight: bold;">Receive Payments</div>
+                        <table class="table" id="AR_TABLE">
+                            <thead>
+                                <tr>
+                                    <th align="center">DATE</th>
+                                    <th align="center">RV No.</th>
+                                    <th align="center">MODE</th>
+                                    <th align="center">REFERENCE</th>
+                                    <th align="center">PAYMENT ACCOUNT</th>
+                                    <th align="center">AMOUNT</th>
+                                    <th align="center">DISCOUNT</th>
+                                    <th align="center">ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <div class='Sales modal fade' id='ViewModal' role='dialog' data-backdrop="static">
+        <div class='modal-sm modal-dialog' style="width: 800px;" role="document">
+            <div class='modal-content' >
+                <div class='modal-header'>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>  
+                    <h3 class="modal-title" id="invheader">View Sales Invoice</h3>
                 </div>
 
+                <div class='modal-body' id='modal-body' style='height: 100%'> 
+                    <div style="display: flex;">
+                        <div>
+
+                        </div>
+                        <div style="display: flex; justify-content: center; justify-items: center;">
+                            <table class="table" id="Invoice_list">
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Description</th>
+                                        <th>Qty</th>
+                                        <th>UOM</th>
+                                        <th>Price</th>
+                                        <th>Discount</th>
+                                        <th>Tax</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -165,11 +233,67 @@
         });
     })
 
-    function ViewModal(label){
-        let header = $(this).text() ? $(this).text() : label;
-        $("#invheader").text(header);
-        $(".modal").modal("show");
+    function Invoice_Modal () {
+        let invoice = $(this).text();
 
+        $.ajax({
+            url: "./INVOICE/",
+            data: {
+                transaction: invoice
+            },
+            dataType: "json",
+            async: false,
+            success: function(res) {
+                if(res.valid) {
+
+                } else {
+                    console.log(res.msg)
+                }
+            },
+            error: function(msg) {
+                console.log(msg)
+            }
+        })
+    }
+
+    function AR_MODAL(){
+        let header = $(this).text();
+        $("#AR").html("<h4>(" + header + ")</h4>");
+
+        $.ajax({
+            url: "./RECEIPT",
+            data: {
+                transaction: header
+            },
+            dataType: "json",
+            async: false,
+            success: function(res) {
+                if(res.valid) { 
+                    $(".Sales").modal("show");
+                    res.GLData.map((item, index) => {
+                        $("<tr>").append(
+                            $("<td>").html("&nbsp;"),
+                            $("<td>").text(item.acctno + " " + item.ctitle),
+                            $("<td>").text(""),
+                            $("<td>").text(item.ndebit),
+                            $("<td>").text(item.ncredit),
+                        ).appendTo("#GL_AR_TABLE tbody")
+                    })
+
+                    res.data.map((item, index) => {
+                        $("<tr>").append(
+                            $("<td>").text(),
+                        ).appendTo("#AR_TABLE tbody");
+                    })
+                    console.log(res.data)
+                } else {
+                    console.log(res.msg)
+                }
+            },
+            error: function(msg) {
+                console.log(msg)
+            }
+        })
     }
 
     function Fetch_Sales() {
@@ -265,9 +389,9 @@
             TOTAL_TAX += parseFloat(item.tax);
 
             $("<tr>").append(
-                $("<td>").html("<a href='javascript:;' onclick='ViewModal.call(this)'>" + item.transaction + "</a"),
+                $("<td>").html("<a href='javascript:;' onclick='AR_MODAL.call(this)'>" + item.transaction + "</a"),
                 $("<td>").text(item.date),
-                $("<td>").html("<a href='javascript:;' onclick='ViewModal(\"sample\")'>" + item.sales + "</a>"),
+                $("<td>").html("<a href='javascript:;' onclick='AR_MODAL(\"sample\")'>" + item.sales + "</a>"),
                 $("<td>").text(item.reference),
                 $("<td>").text(item.partner),
                 $("<td>").text(item.tin),
