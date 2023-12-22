@@ -33,11 +33,11 @@
 
     //References from PV and OR
     $depositRef = array();
-    $sql = "SELECT cpayee as named, CASE WHEN cpaymethod='cheque' THEN ccheckno Else cpayrefno END as refno, npaid
+    $sql = "SELECT cpayee as named, ctranno, CASE WHEN cpaymethod='cheque' THEN ccheckno Else cpayrefno END as refno, npaid
     FROM paybill
     WHERE compcode = '$company' and cacctno = '$bankcode' AND lapproved = 1 AND lvoid = 0
     UNION ALL 
-    SELECT c.cname as named, CASE WHEN a.cpaymethod='cheque' THEN d.ccheckno Else e.crefno END as refno, d.nchkamt
+    SELECT c.cname as named, ctranno, CASE WHEN a.cpaymethod='cheque' THEN d.ccheckno Else e.crefno END as refno, d.nchkamt as npaid
     FROM receipt a
     LEFT JOIN customers c ON a.compcode = c.compcode AND a.ccode = c.cempid
     LEFT JOIN receipt_check_t d ON a.compcode = d.compcode AND a.ctranno = d.ctranno
@@ -55,73 +55,24 @@
     while($row = $query -> fetch_assoc()){
         array_push($deposit, $row);
     }
-    
-    // READ Excel file row
-    for($i = 1; $i < count($excel); $i++){
-        $data = $excel[$i];
 
-        $date = $data[0];
-        $refno = $data[2];
-        $excel_debit = floatval($data[3]);
-        $excel_credit = floatval($data[4]);
-        
-        if($i == count($excel)-1){
-            $EXCEL_TOTAL = floatval($data[5]);
-        }
-        //$EXCEL_TOTAL += floatval($excel_credit) + floatval($excel_debit);
-        
-        foreach($deposit as $list){
-            $tranno = $list['ctranno'];
-            $module = $list['cmodule'];
-            $credit = $list['ncredit'];
-            $debit = $list['ndebit'];
+    function getref($cxmod,$cxtran){
+        global $depositRef;
 
-            $bookTotal += round($credit,2) + round($debit,2);
-
-            //if($module != "JE"){
-                
-           // } else {
-               //$UNRECORD_DEPOSIT += round($credit,2) + round($debit,2);
-           // }
-        
-            // Check if module is PV or OR
-            $sql = match($module){
-                "PV" => "SELECT cpayee as named, CASE WHEN cpaymethod='cheque' THEN ccheckno Else cpayrefno END as refno FROM paybill WHERE compcode = '$company' AND cpayrefno = '$refno' AND ctranno = '$tranno' AND cbankcode = '$bcode' AND STR_TO_DATE(dcheckdate, '%Y-%m-%d') = '$date' AND lapproved = 1 AND lvoid = 0",
-                "OR" => "SELECT c.cname as named, CASE WHEN a.cpaymethod='cheque' THEN d.ccheckno Else e.crefno END as refno FROM receipt a
-                LEFT JOIN customers c ON a.compcode = c.compcode AND a.ccode = c.cempid
-                LEFT JOIN receipt_check_t d ON a.compcode = d.compcode AND a.ctranno = d.ctranno
-                LEFT JOIN receipt_opay_t e ON a.compcode = e.compcode AND a.ctranno = e.ctranno
-                WHERE a.compcode ='$company' AND a.ctranno = '$tranno' AND a.cbank ='$bcode' AND a.ccheckno = '$refno' AND (a.ddate, '%Y-%m-%d') = '$date' AND b.lapproved = 1 AND b.lvoid = 0",
-            };
-    
-            // Validation for Inserting for Paycheck Logs
-
-            $queries = mysqli_query($con, $sql);
-            $rows = $queries -> fetch_assoc();
-            if(mysqli_num_rows($queries) != 0){
-
-                array_push($bankRecon['refno'], $refno);
-                array_push($bankRecon['credit'], $excel_credit);
-                array_push($bankRecon['debit'], $excel_debit);
-                array_push($bankRecon['tranno'], $tranno);
-                array_push($bankRecon['module'], $module);
+        $retrefarray = array();
+        foreach($depositRef as $reff){
+            if($cxtran==$reff['ctranno']){
+                $retrefarray[] = array('cref' => $reff['ctranno'], 'namt' => $reff['npaid']);
             }
-        }        
+        }
+
+        return $retrefarray;
     }
 
-    //Excel Transactions
-    $totalBank = floatval($EXCEL_TOTAL) + $totalTransit;
-    $OUTSTAND_CHEQUE = 0;
-    $ADJUST_BANK = $totalBank + $OUTSTAND_CHEQUE;
 
-    //Read Database for Reference Transaction
-    $totalBook = floatval($bookTotal) + $UNRECORD_DEPOSIT;
-    $UNRECORD_WITHDRAW = 0; 
-    $ADJUST_BOOK = $totalBook + $UNRECORD_WITHDRAW;
-
-    //echo "<pre>";
-    //print_r($bankRecon);
-    //echo "<pre>";
+    echo "<pre>";
+    print_r($deposit);
+    echo "</pre>";
 ?>
 
 <!DOCTYPE html>
@@ -235,6 +186,46 @@
                             <th>Reference</th>
                             <th style='text-align: right'>Amount</th>
                         </tr>
+                        <?php
+                            $ref = "";
+                            $namt = "";
+                            foreach($data_excel as $row){
+                                $ref = "";
+                                $namt = "";
+                                $namtLabel = "";
+                                if($row[2]==""){
+                                    $ref = "<i>No Reference</i>";
+                                }else{
+                                    $ref = $row[2];
+                                }
+
+                                if($row[3]=="" || $row[3]==0){
+                                    $namt = $row[4];
+                                    $namtLabel = "<i>Credit</i>";
+                                }else{
+                                    $namt = $row[3];
+                                    $namtLabel = "<i>Debit</i>";
+                                }
+
+                                $reftran = "";
+                                foreach($deposit as $rsx){
+                                    $xref = getref($rsx['cmodule'],$rsx['ctranno']);
+                                    if($rsx['ddate']==$row[0] && $xref==$ref){
+                                        $reftran = $rsx['ctranno'];
+                                    }
+                                }
+                        ?>
+                        <tr>
+                            <td><?=$row[0]."<br>".$row[1]?></td>
+                            <td><?=$ref."<br>".$namtLabel?></td>
+                            <td style='text-align: right'><?=number_format($namt,2)?></td>
+                            <td>Transaction Details</td>
+                            <td>Reference</td>
+                            <td style='text-align: right'>Amount</td>
+                        </tr>
+                        <?php
+                            }
+                        ?>
                     </thead>
                     <tbody> </tbody>
                 </table>
@@ -401,6 +392,7 @@
 </html>
 
 <script>
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 
@@ -675,6 +667,10 @@
     function isEqualsZero(data){
         return data == 0;
     }
+=======
+    Metronic.init(); // init metronic core components
+
+>>>>>>> production
 </script>
 
 

@@ -1161,16 +1161,16 @@
 			var x = $('#txtcustid').val();
 			$('#invheader').html("Invoice List: " + $('#txtcust').val() + " (" + $('#selbasecurr').val() + ")")
 			
-			//alert("th_orlist.php?x="+x+"&y="+salesnos+"&typ="+typ+"&curr="+$('#selbasecurr').val());
+			//alert("th_orlist.php?x="+x+"&y="+salesnos+"&curr="+$('#selbasecurr').val()+"&type="+$('#receipt').val());
 			$.ajax({
-		url: 'th_orlist.php',
+				url: 'th_orlist.php',
 				data: { x:x, y:salesnos, curr:$('#selbasecurr').val(), type: $('#receipt').val() },
-		dataType: 'json',
-		method: 'post',
-		success: function (data) {
-			// var classRoomsTable = $('#mytable tbody');
-			console.log(data);
-			$.each(data,function(index,item){
+				dataType: 'json',
+				method: 'post',
+				success: function (data) {
+					// var classRoomsTable = $('#mytable tbody');
+					console.log(data);
+					$.each(data,function(index,item){
 
 						var chkbox = "";
 						if(item.ccurrencycode!=$('#selbasecurr').val()){
@@ -1179,28 +1179,28 @@
 							chkbox = "<input type='checkbox' value='"+item.csalesno+"' name='chkSales[]' data-dm='"+item.cdm+"' data-cm='"+item.ccm+"' data-payment='"+item.npayment+"' data-vatcode='"+item.ctaxcode+"' data-vatrate='"+item.vatrate+"' data-vat='"+item.cvatamt+"' data-netvat='"+item.cnetamt+"' data-ewtcode='"+item.cewtcode+"' data-ewtrate='"+item.newtrate+"' data-amt='"+item.ngross+"' data-acctid='"+item.cacctno+"' data-acctdesc='"+item.ctitle+"' data-cutdate='"+item.dcutdate+"'>";
 						}
 
-			$("<tr>").append(
+						$("<tr>").append(
 							$("<td align='center'>").html(chkbox),
-				$("<td>").text(item.csalesno),
-				$("<td>").text(item.dcutdate),
+							$("<td>").text(item.csalesno),
+							$("<td>").text(item.dcutdate),
 							$("<td>").text(item.ngross + " " + item.ccurrencycode),
 							$("<td>").text(item.cewtcode),
 							$("<td>").text(item.ctaxcode)
-			).appendTo("#MyORTbl tbody");
+						).appendTo("#MyORTbl tbody");
 
-			});
-		},
-		error: function (textStatus)
+					});
+				},
+				error: function (textStatus)
 				{
 					// if(errorThrown!="Unexpected end of JSON input"){
 					// }
 					console.log(textStatus)
 				}
-		});
+			});
 			
-			$('#myModal').modal('show');
+				$('#myModal').modal('show');
 			
-		}
+			}
 	}
 
 	function save(){
