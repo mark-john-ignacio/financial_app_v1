@@ -108,7 +108,7 @@
 			//check if ung nakalogin ay isa sa mga mag aapprove.
 			if(in_array(trim($preparedby),@$arrapprovers)){
 
-				if (!mysqli_query($con,"Update purchrequest_trans_approvals set lapproved=1,ddatetimeapp='".date('Y-m-d H:i:s')."' where compcode='$company' and cprno='$tranno' and userid='$preparedby'")){
+				if (!mysqli_query($con,"Update purchrequest_trans_approvals set lapproved=1,ddatetimeapp='".date('Y-m-d H:i:s')."' where compcode='$company' and cprno='$tranno' and userid='$preparedby' and nlevel=$xcdlowest")){
 					$msgz = "<b>ERROR: </b>There's a problem posting your transaction!";
 					$status = "False";	
 				}else{

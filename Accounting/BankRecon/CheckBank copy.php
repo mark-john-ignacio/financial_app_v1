@@ -2,7 +2,7 @@
     if(!isset($_SESSION)){
         session_start();
     }
-    include "../../Connection/connection_string.php";
+    include "2../Connection/connection_string.php";
     include "../../Model/helper.php";
     $company = $_SESSION['companyid'];
     $bankcode = $_POST['bank'];
@@ -73,7 +73,7 @@
         }        
     }
     
-
+    //print_r($data_excel);
     
 
     for($i = 1; $i < count($excel); $i++){
