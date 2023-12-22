@@ -66,17 +66,18 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <head>
 </head>
 
-<body style="padding-top:.79in" onLoad="window.print()">
+<body style="padding-top:0.59in" onLoad="window.print()">
 
 <table width="100%" border="0" cellpadding="1" style="border-collapse:collapse;" id="tblMain">
   <tr>
-    <td colspan="2" style="padding-right: 0.25in;" align="right"><font size="3"><b><?php echo $csalesno;?></b></font></td>
+    <td colspan="2" style="padding-right: 0.25in;" align="right"><font size="3"><b>&nbsp;<?php echo "" //$csalesno;?></b></font></td>
   </tr>
 
   <tr>
     <td VALIGN="TOP">
 
-      <table width="100%" border="0" cellpadding="2" style=" margin-top: .16in !important">
+      <table width="100%" border="0" cellpadding="2" style=" margin-top: .13in !important">
+        <tr>&nbsp;</tr>
         <tr><td style="padding-left: 1.2in;"> <?=$CustName?> </td></tr>
         <tr><td style="padding-left: 1.2in"><?=$cTin?></td></tr>
         <tr><td style="padding-left: 1.2in"><?=$Adds?> </td></tr>       
@@ -86,10 +87,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
     </td>
     <td style="width: 2.7in" VALIGN="TOP"> 
       <table width="100%" border="0" >
-        <tr><td style="padding-right: 0.3in;" align="right"> <?=date_format(date_create($Date), "M d, Y")?> </td></tr>
-        <tr><td style="padding-right: 0.3in;" align="right"> &nbsp; </td></tr>
-        <tr><td style="padding-right: 0.3in;" align="right"> <?=$cTerms?> </td></tr>
-        <tr><td style="padding-right: 0.3in;" align="right"> &nbsp; </td></tr>
+        <tr><td style="padding-right: 0.3in;" align="right"><div style="height: 10px;"><?=date_format(date_create($Date), "M d, Y")?></div>  </td></tr>
+        <tr><td style="padding-right: 0.3in;" align="right"><div style="height: 10px; padding-top: 10px;"> <?= " " ?> </div></td></tr>
+        <tr><td style="padding-right: 0.3in;" align="right"><div style="height: 10px; padding-top: 10px;"> <?=$cTerms?> </div></td></tr>
+        <tr><td style="padding-right: 0.3in;" align="right"><div style="height: 10px; padding-top: 10px;"> <?= " " ?></div></td></tr>
       </table>
     </td>
   </tr>
