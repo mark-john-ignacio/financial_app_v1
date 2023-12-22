@@ -82,32 +82,15 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 </head>
 
 <body onLoad="window.print()">
-
+<div style='float: right'> <font style="font-size: 18px;">PURCHASE ORDER FORM</font> </div>
 <table border="0" width="100%" cellpadding="1px"  id="tblMain">
-	<tr>
-		<td align="center"> 
-
-				<table border="0" width="100%">
-						<tr align="center">
-							<td><img src="<?php echo "../".$logosrc; ?>" height="68px"></td>
-						</tr>
-						<tr align="center">
-							<td><font style="font-size: 18px;"><?php echo $logonamz; ?></font></td>
-						</tr>
-						<tr align="center">
-							<td style="padding-bottom: 20px"><font><?php echo $logoaddrs; ?></font></td>
-						</tr>
-				</table>
-
-		</td>
-	</tr>
 	<tr>
 		<td style="vertical-align: top; padding-top: 10px">
 
 			<table border="0" width="100%" style="border-collapse:collapse">
 				<tr>
 					<td colspan="2" align="center" style="padding-bottom: 20px">
-							<font style="font-size: 24px;">PURCHASE ORDER </font>
+							
 					</td>
 				</tr>
 
@@ -246,6 +229,12 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 				</tr>
 
 			</table>
+		</td>
+
+		<td style="vertical-align: top; padding-top: 10px">
+		</td>
+
+		<td style="vertical-align: top; padding-top: 10px">
 		</td>
 	</tr>
 	<tr>
