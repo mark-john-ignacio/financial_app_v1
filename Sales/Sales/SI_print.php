@@ -101,7 +101,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
     <td colspan="2">&nbsp;</td>
   </tr>
   <tr>
-    <td colspan="3" style="height: 5.5in; padding-top: 13px;" VALIGN="TOP">
+    <td colspan="3" style="height: 5.6in; padding-top: 13px;" VALIGN="TOP">
     
     <table width="100%" border="0" cellpadding="3">
       <?php 
@@ -124,7 +124,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
       ?>
       
             <tr> 
-              <td style="width: 1.4in"  align="center"><?=$cntr;?></td>
+              <td style="width: 1in"  align="center"><?=$cntr;?></td>
               <td style="text-overflow: ellipsis; width: .55in">&nbsp;&nbsp;<?php echo $rowbody['citemno'];?></td>
               <td style="text-overflow: ellipsis; width: 14.5in"><?php echo $rowbody['citemdesc'];?></td>
               <td style="width: 1.15in" align="center"><?php echo number_format($rowbody['nqty']);?>&nbsp;</td> 
@@ -148,14 +148,14 @@ if (mysqli_num_rows($sqlhead)!=0) {
         }
 
           if($cvatcode=='VT' || $cvatcode=='NV'){
-            $printVATGross = number_format($Gross,2);
+            $printVATGross = $SalesType != "Services" ? number_format($Gross,2) : 0;
             
               if(floatval($totvatxmpt)==0){
                 //echo "A";
                 $printVEGross = 0;
               }else{
                 //echo "AB";
-                $printVEGross =  $totvatxmpt;
+                $printVEGross =  $SalesType != "Services" ? $totvatxmpt : 0;
               }
 
             $printZRGross = 0;
@@ -167,7 +167,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
             
           }elseif($cvatcode=='VE'){
             $printVATGross = 0;
-            $printVEGross = $Gross;
+            $printVEGross = $SalesType != "Services" ? $Gross : 0;
             $printZRGross = 0;
             
               $totnetvat = 0;
@@ -177,7 +177,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
           }elseif($cvatcode=='ZR'){
             $printVATGross = 0;
             $printVEGross = 0;
-            $printZRGross = $Gross;
+            $printZRGross = $SalesType != "Services" ? $Gross : 0;
 
               $totnetvat = 0;
               $totlessvat = 0;
