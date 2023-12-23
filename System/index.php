@@ -1533,7 +1533,7 @@ if(mysqli_num_rows($sql) != 0){
 											<b>Default Remarks</b>
 											<div id="QuoteRemarksChk" style="display: inline; padding-left:5px"></div>
 										</div>
-										<div class="col-xs-12 nopadwtop2x" style="margin-left: 30px !important">
+										<div class="col-xs-12" style="margin-left: 15px !important">
 											<textarea name="QuoteRemarks" id="QuoteRemarks" class="form-control input-sm" rows="5"></textarea>
 										</div>
 									</div>
