@@ -8,6 +8,11 @@
     $datefrom = date("Y-m-d", strtotime($_REQUEST['from']));
     $dateto = date("Y-m-d", strtotime($_REQUEST['to']));
 
+    $vat = $_REQUEST['vatable'];
+    $zr = $_REQUEST['zero'];
+    $gov = $_REQUEST['gov'];
+    $ve = $_REQUEST['exempt'];
+
     $sql = "SELECT a.ctranno, a.csalesno, a.namount, a.nnet, a.nvat, b.dcutdate, c.creference, d.cname, d.ctin, d.chouseno, d.ccity, a.ctaxcode, d.cvattype FROM receipt_sales_t a
             LEFT JOIN receipt b ON a.compcode = b.compcode AND a.ctranno = b.ctranno
             LEFT JOIN sales_t c ON a.compcode = c.compcode AND a.csalesno = c.ctranno
@@ -35,22 +40,22 @@
             
             $taxcode = $list['cvattype'];
             switch($taxcode) {
-                case "VT":
+                case $vat:
                     if(!in_array($json, $vatable)) :
                         array_push($vatable, $json);
                     endif;
                     break;
-                case "NV":
+                case $gov:
                     if(!in_array($nonvat, $vatable)) :
                         array_push($nonvat, $json);
                     endif;
                     break;
-                case "ZR":
+                case $zr:
                     if(!in_array($json, $zero)) :
                         array_push($zero, $json);
                     endif;
                     break;
-                case "VE":
+                case $ve:
                     if(!in_array($json, $exempt)) :
                         array_push($exempt, $json);
                     endif;
