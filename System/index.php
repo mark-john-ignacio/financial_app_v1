@@ -1529,11 +1529,18 @@ if(mysqli_num_rows($sql) != 0){
 															
 											</textarea>
 										</div>
-										<div class="col-xs-12 nopadwtop2x" style="margin-left: 30px !important">
+										<div class="col-xs-12 nopadwtop2x" style="display: flex; margin-left: 30px !important">
 											<b>Default Remarks</b>
 											<div id="QuoteRemarksChk" style="display: inline; padding-left:5px"></div>
 										</div>
 										<div class="col-xs-12" style="margin-left: 15px !important">
+										
+											<div class="col-xs-4" style="padding-left: 0px; padding-bottom: 10px;">
+												<select name="QuoteType" id="QuoteType" class="form-control input-sm">
+													<option value="QUOTE_BILLING">Billing</option>
+													<option value="QUOTE_RMKS">Quote</option>
+												</select>
+											</div>
 											<textarea name="QuoteRemarks" id="QuoteRemarks" class="form-control input-sm" rows="5"></textarea>
 										</div>
 									</div>
@@ -5274,12 +5281,13 @@ if(mysqli_num_rows($sql) != 0){
 
 			$("#QuoteRemarks").on("blur", function() {
 				let remarks = $(this).val();
+				let code = $("#QuoteType").find(":selected").val();
 				$.ajax({
 					url: "updatequote.php",
 					type: "POST",
 					data: { 
 						description: remarks,
-						code: "QUOTE_RMKS" 
+						code: code 
 					},
 					dataType: "json",
 					async: false,
@@ -5438,6 +5446,7 @@ if(mysqli_num_rows($sql) != 0){
 
 	function loadquotesprint(){
 
+		let quotetype = $("#QuoteType").find(":selected").val();
 			$.ajax ({
 				url: "th_loadQuotesPrint.php",
 				dataType: 'json',
@@ -5457,10 +5466,16 @@ if(mysqli_num_rows($sql) != 0){
 							if(item.ccode=='POEMAILBODY'){
 									$("#txtPOBodyEmail").val(item.cdesc);
 							}
-
-							if(item.ccode == 'QUOTE_RMKS') {
-								$("#QuoteRemarks").val(item.cdesc);
+							if(quotetype == 'QUOTE_RMKS') {
+								if(item.ccode == 'QUOTE_RMKS') {
+									$("#QuoteRemarks").val(item.cdesc);
+								}
+							} else {
+								if(item.ccode == 'QUOTE_BILLING') {
+									$("#QuoteRemarks").val(item.cdesc);
+								}
 							}
+							
 
 					});     
 				}
