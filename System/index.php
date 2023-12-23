@@ -5321,6 +5321,9 @@ if(mysqli_num_rows($sql) != 0){
 						},
 					});
 			});
+			$("#QuoteType").change(function() {
+				loadquotesprint();
+			})
 
 			$("#btnewt").on("click", function(){
 
@@ -5480,8 +5483,6 @@ if(mysqli_num_rows($sql) != 0){
 					});     
 				}
 			});
-
-
 	}
 
 	function loadcompany(){
