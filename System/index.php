@@ -5455,7 +5455,6 @@ if(mysqli_num_rows($sql) != 0){
 				dataType: 'json',
 				async:false,
 				success: function( result ) {
-					console.log(result);
 					$.each(result,function(index,item){   
 
 							if(item.ccode=='QUOTEHDR'){
@@ -5469,6 +5468,7 @@ if(mysqli_num_rows($sql) != 0){
 							if(item.ccode=='POEMAILBODY'){
 									$("#txtPOBodyEmail").val(item.cdesc);
 							}
+
 							if(quotetype == 'QUOTE_RMKS') {
 								if(item.ccode == 'QUOTE_RMKS') {
 									$("#QuoteRemarks").val(item.cdesc);
