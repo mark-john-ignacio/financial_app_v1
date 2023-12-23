@@ -1529,6 +1529,13 @@ if(mysqli_num_rows($sql) != 0){
 															
 											</textarea>
 										</div>
+										<div class="col-xs-12 nopadwtop2x" style="margin-left: 30px !important">
+											<b>Default Remarks</b>
+											<div id="QuoteRemarksChk" style="display: inline; padding-left:5px"></div>
+										</div>
+										<div class="col-xs-12" style="margin-left: 15px !important">
+											<textarea name="QuoteRemarks" id="QuoteRemarks" class="form-control input-sm" rows="5"></textarea>
+										</div>
 									</div>
 												
 								<div class="col-xs-12  nopadwtop">&nbsp;</div>
@@ -5292,6 +5299,29 @@ if(mysqli_num_rows($sql) != 0){
 					});
 			});
 
+			$("#QuoteRemarks").on("blur", function() {
+				let remarks = $(this).val();
+				$.ajax({
+					url: "updatequote.php",
+					type: "POST",
+					data: { 
+						description: remarks,
+						code: "QUOTE_RMKS" 
+					},
+					dataType: "json",
+					async: false,
+					success: function(res) {
+						if(res.valid) {
+							$("#QuoteRemarksChk").css("color", "green");
+							$("#QuoteRemarksChk").text(res.msg);
+						} 
+					},
+					error: function(res) {
+						console.log(res)
+					}
+				})
+			})
+
 			$(".lvlamtcls").on("blur", function(){
 
 				var dlvl =  $(this).data("id");
@@ -5453,6 +5483,10 @@ if(mysqli_num_rows($sql) != 0){
 
 							if(item.ccode=='POEMAILBODY'){
 									$("#txtPOBodyEmail").val(item.cdesc);
+							}
+
+							if(item.ccode == 'QUOTE_RMKS') {
+								$("#QuoteRemarks").val(item.cdesc);
 							}
 
 					});     
