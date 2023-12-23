@@ -148,10 +148,13 @@
 							</tr>
 
 							<tr>
-								<tH width="100">Remarks:</tH>
+								<tH width="100">Contact:</tH>
 								<td style="padding:2px">
-									<div class="col-xs-11 nopadding">
-										<input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2">
+									<div class="col-xs-3 nopadding"> 
+										<button class="btn btn-sm btn-block btn-warning" name="btnSearchCont" id="btnSearchCont" type="button">Search</button>
+									</div>
+									<div class="col-xs-8 nopadwleft">
+										<input type="text" id="txtcontactname" name="txtcontactname" class="required form-control input-sm" placeholder="Contact Person Name..." tabindex="1"  required="true">
 									</div>
 								</td>
 								<tH width="150" style="padding:2px">Date Needed:</tH>
@@ -165,13 +168,18 @@
 							</tr>
 
 							<tr>
-								<tH width="100">Contact:</tH>
+								<tH width="100">Contact Details:</tH>
 								<td style="padding:2px">
-									<div class="col-xs-3 nopadding"> 
-										<button class="btn btn-sm btn-block btn-warning" name="btnSearchCont" id="btnSearchCont" type="button">Search</button>
-									</div>
-									<div class="col-xs-8 nopadwleft">
-										<input type="text" id="txtcontactname" name="txtcontactname" class="required form-control input-sm" placeholder="Contact Person Name..." tabindex="1"  required="true">
+									<div class="col-xs-11 nopadding">
+										<div class="col-xs-4 nopadding">
+											<input type='text' class="form-control input-sm" id="contact_email" name="contact_email" placeholder="Email Address"/>
+										</div>
+										<div class="col-xs-4 nopadwleft">
+											<input type='text' class="form-control input-sm" id="contact_mobile" name="contact_mobile" placeholder="Mobile No." />
+										</div>
+										<div class="col-xs-4 nopadwleft">
+											<input type='text' class="form-control input-sm" id="contact_fax" name="contact_fax" placeholder="Fax No." />
+										</div>
 									</div>
 								</td>
 								<tH width="150" style="padding:2px">Terms: </tH>
@@ -192,22 +200,6 @@
 												}
 											?>
 										</select>
-								</td>
-							</tr>
-
-							<tr>
-								<tH width="100">Email:</tH>
-								<td style="padding:2px">
-									<div class="col-xs-11 nopadding">
-										<input type='text' class="form-control input-sm" id="contact_email" name="contact_email" />
-									</div>
-								</td>
-								<tH width="150" style="padding:2px">Payment Type: </tH>
-								<td style="padding:2px">
-									<select class="form-control input-sm" name="selpaytype" id="selpaytype">
-										<option value="0">Credit (Paid After Delivery)</option>
-										<option value="1">Advance (Payment Before Delivery)</option>
-									</select>
 								</td>
 							</tr>
 
@@ -268,8 +260,25 @@
 										</div>
 									</div>
 								</td>
-								<tH width="150" style="padding:2px"><div id="setewt">EWT Code: </div> </tH>
+								<tH width="150" style="padding:2px">Payment Type: </tH>
 								<td style="padding:2px">
+									<select class="form-control input-sm" name="selpaytype" id="selpaytype">
+										<option value="0">Credit (Paid After Delivery)</option>
+										<option value="1">Advance (Payment Before Delivery)</option>
+									</select>
+								</td>
+							</tr>
+
+							<tr>
+								<tH width="100">Remarks:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-11 nopadding">
+										<textarea class="form-control" id="txtremarks" name="txtremarks" rows='3' tabindex="2"></textarea>
+									</div>
+								</td>
+								
+								<tH width="150" style="padding:2px" valign='top'><div id="setewt">EWT Code: </div> </tH>
+								<td style="padding:2px" valign='top'>
 									<div id="setewtval"> 
 										<select id="selewt" name="selewt" class="form-control input-sm selectpicker"  tabindex="3">
 											<option value="none">None</option>
@@ -305,7 +314,23 @@
 								<td><b>Delivery Address</b></td>
 								<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><textarea class="form-control input-sm" id="txtdeladd" name="txtdeladd" placeholder="Enter Delivery Address..." autocomplete="off"> <?=$compadd?> </textarea></div></td>
 							</tr>					
-
+							<tr>
+								
+								<tH width="100">Contact Details:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-8 nopadding">
+										<div class="col-xs-4 nopadding">
+											<input type='text' class="form-control input-sm" id="contact_email" name="contact_email" placeholder="Email Address"/>
+										</div>
+										<div class="col-xs-4 nopadwleft">
+											<input type='text' class="form-control input-sm" id="contact_mobile" name="contact_mobile" placeholder="Mobile No." />
+										</div>
+										<div class="col-xs-4 nopadwleft">
+											<input type='text' class="form-control input-sm" id="contact_fax" name="contact_fax" placeholder="Fax No." />
+										</div>
+									</div>
+								</td>
+							</tr>
 							<tr>
 								<td width="150"><b>Delivery Notes</b></td>
 								<td width="310" colspan="2" style="padding:2px">
@@ -482,7 +507,7 @@
 
 	<!-- MODAL FOR CONTACT NAME -->
 	<div class="modal fade" id="ContactModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-		<div class="modal-dialog vertical-align-top">
+		<div class="modal-dialog modal-lg vertical-align-top">
 			<div class="modal-content">
 				<div class="modal-header">
 					Select Contact Person
@@ -496,6 +521,8 @@
 								<th>Designation</th>
 								<th>Department</th>
 								<th>Email</th>
+								<th>Mobile</th>
+								<th>Fax</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -605,11 +632,17 @@
 			if($(this).attr("class")=="disemls"){
 				$("#contact_email").val($(this).text());
 			}
+			if($(this).attr("class")=="dismbls"){
+				$("#contact_mobile").val($(this).text());
+			}
+			if($(this).attr("class")=="disxfax"){
+				//alert($(this).text());
+				$("#contact_fax").val($(this).text());
+			}  
 		});
 
 		$("#ContactModal").modal("hide");
 	});
-
 
 	$(document).ready(function() {
 		$('.datepick').datetimepicker({
@@ -871,11 +904,13 @@
 								$("<td class='disnme'>").text(item.cname),
 								$("<td class='disndesig'>").text(item.cdesig),
 								$("<td class='disdept'>").text(item.cdept),
-								$("<td class='disemls'>").text(item.cemail)
+								$("<td class='disemls'>").text(item.cemail),
+								$("<td class='dismbls'>").text(item.cphone),
+								$("<td class='disxfax'>").text(item.cfaxno)
 							).appendTo("#ContactTbls tbody");
 
 						});
-					}
+					} 
 				});
 
 				$("#ContactModal").modal("show");
@@ -1351,7 +1386,8 @@
 			//Saving the header
 			var ccode = $("#txtcustid").val();
 			var crem = $("#txtremarks").val();
-			var ddate = $("#date_needed").val();
+			var ddate = $("#date_needed").val(); 
+			var dpodate = $("#date_delivery").val();
 			var ngross = $("#txtnGross").val();
 
 			var myform = $("#frmpos").serialize();		
@@ -1520,12 +1556,12 @@
 				if(value.trim()=="Multi"){
 					$("#btnSearchCont").click();
 				}else{
-						var data = value.split(":");
+					var data = value.split(":");
 						
-						$('#txtcontactname').val(data[0]);
-						//$('#txtcontactdesig').val(data[1]);
-			//$('#txtcontactdept').val(data[2]);
-			$("#contact_email").val(data[3]);
+					$('#txtcontactname').val(data[0]);
+					//$('#txtcontactdesig').val(data[1]);
+					//$('#txtcontactdept').val(data[2]);
+					$("#contact_email").val(data[3]);
 				}
 			}
 		}

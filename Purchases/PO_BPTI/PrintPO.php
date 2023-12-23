@@ -35,14 +35,14 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$CurrCode = $row['ccurrencycode'];
 
 		$Remarks = $row['cremarks'];
-		$Date = $row['ddate'];
+		$Date = $row['dpodate'];
 		$DateNeeded = $row['dneeded'];
 		$Gross = $row['ngross'];
 		
 		$delto = $row['cdelto'];  
 		$deladd = $row['ddeladd']; 
 		$delinfo = $row['ddelinfo']; 
-		$billto = $row['cbillto']; 
+		$billto = $row['cbillto'];   
 		
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
@@ -81,103 +81,84 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 	</style>
 </head>
 
-<body onLoad="window.print()">
+<body >
 <div style='float: right'> <font style="font-size: 18px;">PURCHASE ORDER FORM</font> </div>
-<table border="0" width="100%" cellpadding="1px"  id="tblMain">
+<table border="0" width="100%" cellpadding="1px"  id="tblMain" style="border-collapse:collapse">
 	<tr>
-		<td style="vertical-align: top; padding-top: 10px">
+		<td style="vertical-align: top; padding-top: 10px; padding-right: 5px; width: 33%">
 
 			<table border="0" width="100%" style="border-collapse:collapse">
 				<tr>
-					<td colspan="2" align="center" style="padding-bottom: 20px">
-							
-					</td>
+					<td> <b>EXTERNAL PROVIDER:</b> <td>
 				</tr>
-
 				<tr>
-					<td style="padding-bottom: 10px">
-						<font style="font-size: 14px;"><b>Date:</b> <?=date("F d, Y")?></font>
-					</td>
-
-					<td align="right" style="padding-bottom: 10px">
-					<font style="font-size: 14px;"><b>No.:</b> <?=$csalesno?></font>
-					</td>
+					<td> <?=$CustName?> <td>
 				</tr>
-
-
 				<tr>
-					<td colspan="2" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">
-							<table border="0" width="100%">
-								<tr>
-									<td width="150px" style="padding: 10px;">
-											<b>SUPPLIER'S NAME: </b>
-									</td>
-									<td style="padding: 10px;">
-											<?=$CustName?>
-											<br>
-											<?=$CustAdd?>
-									</td>
-									<td width="100px" style="padding: 10px;" align="right">
-											<b>TERMS</b>
-									</td>
-									<td width="100px" style="padding: 10px;" align="right">
-											<?=$Terms?>										
-									</td>
-								</tr>
-							</table>
-					</td>
+					<td> <div style="min-height: 100px"><?=$CustAdd?></div> <td>
 				</tr>
 
-				<tr>
-					<td colspan="2" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">
-							<table border="0" width="100%">
-								<tr>
-									<td width="150px" style="padding: 10px">
-										<b>DELIVERED TO: </b>									
-									</td>
-									<td style="padding: 10px">
-										<?=$delto?>
-										<br>
-										<?=$deladd?>
-									</td>
-									 
-								</tr> 
-
-								<tr>
-									<td width="150px" style="padding: 10px">
-										<b>Remarks/Notes: </b>									
-									</td>
-									<td style="padding: 10px">
-										<?=$Remarks?><br><?=$delinfo?>
-									</td>
-									 
-								</tr>
-							</table>
-					</td>
-				</tr>
-
-				<tr>
-					<td colspan="2" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">
-							<table border="0" width="100%">
-								<tr>
-									<td style="padding-left: 10px;">
-										<b> BILL TO: </b> <?=$billto?>
-									</td>
-									<td>
-										<b> DELIVERY DATE: </b> <?=date_format(date_create($DateNeeded),"F d, Y");?>
-									</td>
-									<td>
-										<b> REQUISITION NO. </b>
-									</td>
-								</tr>
-							</table>
-					</td>
-					
-					
-				</tr>
-				
 			</table>
+			
+		</td>
 
+		<td style="vertical-align: top; padding-top: 10px; padding-left: 5px; padding-right: 5px; width: 33%">
+			<table border="0" width="100%" style="border-collapse:collapse">
+				<tr>
+					<td> <b>DELIVER TO:</b> <td>
+				</tr>
+				<tr>
+					<td> <?=$delto?> <td>   
+				</tr>
+				<tr>
+					<td> <div style="min-height: 100px"><?=$deladd?></div> <td>
+				</tr>
+
+			</table>
+		</td>
+
+		<td style="vertical-align: top; padding-top: 10px; padding-left: 5px; width: 34%">
+			<table border="1" width="100%" style="border-collapse:collapse" cellpadding="5px">
+				<tr>
+					<td> <b>PO No.</b> </td>
+					<td> <?=$csalesno?> </td>
+				</tr>
+				<tr>
+					<td> <b>PR No.</b> </td>
+					<td> &nbsp; </td>
+				</tr>
+				<tr>
+					<td> <b>PAGE</b> </td>
+					<td> &nbsp; </td>
+				</tr>
+				<tr>
+					<td> <b>COST CENTER</b> </td>
+					<td> &nbsp; </td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td style="vertical-align: top; padding-top: 10px; padding-right: 5px; width: 33%" colspan='3'>
+
+			<table border="1" width="100%" style="border-collapse:collapse" cellpadding="5px">
+				<tr>
+					<td width="25%" align="center"> <b>REVISION NO.</b> </td>
+					<td width="25%" align="center"> <b>DATE PREPARED</b> </td>
+					<td width="25%" align="center"> <b>PO DUE DATE</b> </td>
+					<td width="25%" align="center"> <b>PAYMENT TERMS</b> </td>
+				</tr>	
+				<tr>
+					<td align="center"> <b>0</b> </td>
+					<td align="center"> <b><?=$Date?></b> </td>
+					<td align="center"> <b><?=$DateNeeded?></b> </td>
+					<td align="center"> <b><?=$Terms?></b> </td>
+				</tr>			
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td style="vertical-align: top; padding-top: 10px" colspan='3'>
 			<table border="0" align="center" width="100%" style="border-collapse: collapse;">
 	
 				<tr>
@@ -230,15 +211,9 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 
 			</table>
 		</td>
-
-		<td style="vertical-align: top; padding-top: 10px">
-		</td>
-
-		<td style="vertical-align: top; padding-top: 10px">
-		</td>
 	</tr>
 	<tr>
-		<td style="vertical-align: bottom;">
+		<td style="vertical-align: bottom;"  colspan='3'>
 			<br><br>	<br><br>		
 			<table border="0" width="100%">
 				<tr>
