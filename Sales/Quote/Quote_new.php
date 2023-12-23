@@ -542,9 +542,10 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 		});
 
 		$(".nav-tabs a").click(function(){
-	    $(this).tab('show');
-	  });
+			$(this).tab('show');
+		});
 
+	  getRemarks();
 		/*$("#file-0").fileinput({
 				showUpload: false,
 				showClose: false,
@@ -882,26 +883,54 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 	$("#selqotyp").on("change", function (){
 		var dval = $(this).find(':selected').val();
 
-		if(dval=="billing"){
-			$("#selrecurrtyp").attr("disabled", false); 
-			$("#selterms").attr("disabled", true); 
-			$("#prcevallabel").html("<b>Due Date</b>");
+		// if(dval=="billing"){
+		// 	$("#selrecurrtyp").attr("disabled", false); 
+		// 	$("#selterms").attr("disabled", true); 
+		// 	$("#prcevallabel").html("<b>Due Date</b>");
 
-			xval = "<p>Kindly make all checks payable to <b>SERT TECHNOLOGY INC</b><br>For bank transfer please deposit to:</p><b><u>For MBTC acct:</u></b><br><b>Account Name: SERT TECHNOLOGY INC.</b><br><b>Account Number: 3547354509772</b><br><b>Bank Address: Mangghan,Gen. Trias, Cavite</b><br><br><i>Note: Please settle your account to prevent service interruptions.</i><br><i>Kindly disregards pass due notice if payments have been made.</i><div><br></div><br><br><br><br><br>";
+		// 	xval = "<p>Kindly make all checks payable to <b>SERT TECHNOLOGY INC</b><br>For bank transfer please deposit to:</p><b><u>For MBTC acct:</u></b><br><b>Account Name: SERT TECHNOLOGY INC.</b><br><b>Account Number: 3547354509772</b><br><b>Bank Address: Mangghan,Gen. Trias, Cavite</b><br><br><i>Note: Please settle your account to prevent service interruptions.</i><br><i>Kindly disregards pass due notice if payments have been made.</i><div><br></div><br><br><br><br><br>";
 
-		}else{
-			$("#selrecurrtyp").attr("disabled", true); 
-			$("#selterms").attr("disabled", false);
-			$("#prcevallabel").html("<b>Price Validity</b>");
+		// }else{
+		// 	$("#selrecurrtyp").attr("disabled", true); 
+		// 	$("#selterms").attr("disabled", false);
+		// 	$("#prcevallabel").html("<b>Price Validity</b>");
 
-			xval = "<b>WARRANTY </b>  : SERT Technology Inc. Guarantees the equipment and cable workmanship under this proposal to be free from defect for a period of Twelve (12) months from in service date. Provided that no party except  SERT Technology Inc. Trained technicians/enginners shall be entrusted with the service maintenance and repair of the equipment during the warranty period shall be at SERT Technology Inc. Defects arising from misuse, tampering, forced majored, such as fire earthquake, flood, lightning strike, and abnormal conditions are excluded from the above warranty.<br><br><br>If you have concern(s) please feel free to call at If you have concerns, please feel free to call at 02.8897.4830, 0917.503.1616, 0917.555.0849, 0917.551.3200.<br><br><br> Very truly yours,";
-		}
-		$("#txtremarks").summernote("code", xval);
+		// 	xval = "<b>WARRANTY </b>  : SERT Technology Inc. Guarantees the equipment and cable workmanship under this proposal to be free from defect for a period of Twelve (12) months from in service date. Provided that no party except  SERT Technology Inc. Trained technicians/enginners shall be entrusted with the service maintenance and repair of the equipment during the warranty period shall be at SERT Technology Inc. Defects arising from misuse, tampering, forced majored, such as fire earthquake, flood, lightning strike, and abnormal conditions are excluded from the above warranty.<br><br><br>If you have concern(s) please feel free to call at If you have concerns, please feel free to call at 02.8897.4830, 0917.503.1616, 0917.555.0849, 0917.551.3200.<br><br><br> Very truly yours,";
+		// }
 		
+		getRemarks(dval)
 	});
 	
 
 });
+
+function getRemarks(type = $("selqotyp").find(":selected").val()) {
+	let remarks = "";
+		$.ajax({
+			url: "../../System/th_loadQuotesPrint.php",
+			dataType: 'json',
+			async:false,
+			success: function(res) {
+				$.each(res,function(index,item){
+					if(type == "billing")  {
+						if(item.ccode == 'QUOTE_BILLING') {
+							remarks = item.cdesc;
+						}
+					} else {
+						if(item.ccode == 'QUOTE_RMKS') {
+							remarks = item.cdesc;
+						}
+					}
+					
+					
+				});     
+			},
+			error: function(msg) {
+				console.log(msg)
+			}
+		})
+		$("#txtremarks").summernote("code", remarks);
+}
 
 function getcontact(cid){
 
@@ -1029,7 +1058,7 @@ function myFunctionadd(){
 
 	var tditmamount = "<td width=\"100\" nowrap> <input type='text' value='"+baseprice.toFixed(4)+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnamount\" id='txtnamount"+lastRow+"' readonly> </td>";
 	
-	var tditmdel = "<td width=\90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' onClick=\"deleteRow(this);\"/> &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"','"+lastRow+"');\"/> </td>";
+	var tditmdel = "<td width=\"90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' onClick=\"deleteRow(this);\"/> &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"','"+lastRow+"');\"/> </td>";
 
 
 	$('#MyTable > tbody:last-child').append('<tr id="'+lastRow+'">'+tditmcode + tditmdesc + tditmavail + tditmunit + tditmfactor + tditmqty + tditmprice + tditmbaseamount + tditmamount+ tditmdel + '</tr>');
