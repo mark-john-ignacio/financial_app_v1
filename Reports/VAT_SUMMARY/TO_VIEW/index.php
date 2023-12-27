@@ -335,6 +335,7 @@
     function AR_MODAL(){
         let header = $(this).text();
         $("#AR").html("<h4>(" + header + ")</h4>");
+        $("#GL_AR_TABLE tbody").empty();
 
         $.ajax({
             url: "../RECEIPT",
@@ -394,6 +395,7 @@
         let TOTAL_SALES = 0;
         let TOTAL_DISCOUNT = 0;
         let TOTAL_AMOUNT_DUE = 0;
+        $("#Invoice_list tbody").empty();
 
         $.ajax({
             url: "../INVOICE",
@@ -486,7 +488,7 @@
                             $("<td align='center'>").text(ToMoney(TOTAL_GROSS)),
                             $("<td align='center'>").text(ToMoney(TOTAL_NET)),
                             $("<td align='center'>").text(ToMoney(TOTAL_TAX)),
-                ).appendTo("#sales_table tbody")
+                    ).appendTo("#sales_table tbody")
                 } else {
                     console.log(msg)
                 }
