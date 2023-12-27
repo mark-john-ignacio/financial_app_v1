@@ -105,7 +105,7 @@
         </div>
     </div>
 
-    <div class='AR modal fade' id='ViewModal' role='dialog' data-backdrop="static">
+    <div class='AR modal fade' id='ViewModal' role='dialog'>
         <div class='modal-sm modal-dialog' style="width: 800px;" role="document">
             <div class='modal-content' >
                 <div class='modal-header'>
@@ -147,19 +147,19 @@
                         <table>
                             <tr>
                                 <th>Name: </th>
-                                <td id="customer"></td>
+                                <td id="AR_customer"></td>
                             </tr>
                             <tr>
                                 <th>Email: </th>
-                                <td id="email"></td>
+                                <td id="AR_email"></td>
                             </tr>
                             <tr>
                                 <th>TIN</th>
-                                <td id="tin"></td>
+                                <td id="AR_tin"></td>
                             </tr>
                             <tr>
                                 <th>Address</th>
-                                <td id="address"></td>
+                                <td id="AR_address"></td>
                             </tr>
                         </table>
                     </div>
@@ -200,7 +200,7 @@
         </div>
     </div>
 
-    <div class='Sales modal fade' id='ViewModal' role='dialog' data-backdrop="static">
+    <div class='Sales modal fade' id='ViewModal' role='dialog' >
         <div class='modal-sm modal-dialog' style="width: 800px;" role="document"  style="width:80%" >
             <div class='modal-content'>
                 <div class='modal-header'>
@@ -362,9 +362,9 @@
                         $("#invoice").text(item.invoice);
                         $("#reference").text(item.reference)
 
-                        $("#customer").text(res.customer);
-                        $("#tin").text(res.tin);
-                        $("address").text(res.address)
+                        $("#AR_customer").text(item.customer);
+                        $("#AR_tin").text(item.tin);
+                        $("#AR_address").text(item.address)
                     })
 
                     if(res.approved === 1) {
