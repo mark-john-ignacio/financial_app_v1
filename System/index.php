@@ -5555,7 +5555,6 @@ if(mysqli_num_rows($sql) != 0){
 									$("#txtPOBodyEmail").val(item.cdesc);
 							}
 
-<<<<<<< HEAD
 							if(quotetype == 'QUOTE_RMKS') {
 								if(item.ccode == 'QUOTE_RMKS') {
 									$("#QuoteRemarks").val(item.cdesc);
@@ -5566,7 +5565,6 @@ if(mysqli_num_rows($sql) != 0){
 								}
 							}
 							
-=======
 							if(item.ccode=='PODEFDELTO'){
 									$("#txtpodefdelto").val(item.cdesc);
 							}
@@ -5590,7 +5588,6 @@ if(mysqli_num_rows($sql) != 0){
 									$("#txtpodefdelfax").val(item.cdesc);
 							}
 
->>>>>>> maita
 
 					});     
 				}

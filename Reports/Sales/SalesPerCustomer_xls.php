@@ -67,7 +67,7 @@ if($trantype=="Trade"){
 	left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 	left join customers c on b.ccode=c.cempid and b.compcode=c.compcode
 	left join items d on a.citemno=d.cpartno and a.compcode=d.compcode
-	where a.compcode='$company' and b.ccode='$custid' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0 ".$qrytp.$qryposted.") A order by A.dcutdate, A.ctranno";
+	where a.compcode='$company' and b.ccode='$custid' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0 and b.lvoid=0 ".$qrytp.$qryposted.") A order by A.dcutdate, A.ctranno";
 }elseif($trantype=="Non-Trade"){
 	$sql = "select A.dcutdate, A.ctranno as csalesno, A.ccode, A.cname, A.citemno, A.citemdesc, A.cunit, A.nqty, A.ndiscount, A.nprice, A.namount
 	FROM(
@@ -76,7 +76,7 @@ if($trantype=="Trade"){
 	left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 	left join customers c on b.ccode=c.cempid and b.compcode=c.compcode
 	left join items d on a.citemno=d.cpartno and a.compcode=d.compcode
-	where a.compcode='$company' and b.ccode='$custid' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0 ".$qrytp.$qryposted.") A order by A.dcutdate, A.ctranno";
+	where a.compcode='$company' and b.ccode='$custid' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0 and b.lvoid=0 ".$qrytp.$qryposted.") A order by A.dcutdate, A.ctranno";
 }else{
 	$sql = "select A.dcutdate, A.ctranno as csalesno, A.ccode, A.cname, A.citemno, A.citemdesc, A.cunit, A.nqty, A.ndiscount, A.nprice, A.namount
 	FROM(
@@ -85,7 +85,7 @@ if($trantype=="Trade"){
 		left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join customers c on b.ccode=c.cempid and b.compcode=c.compcode
 		left join items d on a.citemno=d.cpartno and a.compcode=d.compcode
-		where a.compcode='$company' and b.ccode='$custid' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0 ".$qrytp.$qryposted."
+		where a.compcode='$company' and b.ccode='$custid' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0 and b.lvoid=0 ".$qrytp.$qryposted."
 
 		UNION ALL
 
@@ -94,7 +94,7 @@ if($trantype=="Trade"){
 		left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join customers c on b.ccode=c.cempid and b.compcode=c.compcode
 		left join items d on a.citemno=d.cpartno and a.compcode=d.compcode
-		where a.compcode='$company' and b.ccode='$custid' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0 ".$qrytp.$qryposted."
+		where a.compcode='$company' and b.ccode='$custid' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0 and b.lvoid=0 ".$qrytp.$qryposted."
 	) A order by A.dcutdate, A.ctranno";
 }
 
