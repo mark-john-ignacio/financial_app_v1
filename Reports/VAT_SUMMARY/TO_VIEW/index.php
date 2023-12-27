@@ -526,7 +526,7 @@
                 if(res.valid) {
                     let other = PURCHASE_TABLE_DATA("INPUT VAT GOODS (OTHER THAN CAPITAL GOODS)  ", res.data);
                 } else {
-                    console.log(msg)
+                    console.log(res.msg)
                 }
             },
             error: function(msg) {
