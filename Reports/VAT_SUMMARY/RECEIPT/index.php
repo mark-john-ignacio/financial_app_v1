@@ -13,7 +13,7 @@
             LEFT JOIN receipt b ON a.compcode = b.compcode AND a.ctranno = b.ctranno
             LEFT JOIN sales_t c ON a.compcode = c.compcode AND a.csalesno = c.ctranno
             LEFT JOIN customers d ON a.compcode = d.compcode AND b.ccode = d.cempid
-            WHERE a.compcode = '$company' AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 AND a.ctranno = '$transaction'";
+            WHERE a.compcode = '$company' AND b.lvoid = 0 AND b.lcancelled = 0 AND a.ctranno = '$transaction'";
 
     $query = mysqli_query($con, $sql);
     while($list = $query -> fetch_assoc()) :
@@ -27,6 +27,9 @@
             'tin' => $list['ctin'],
             'address' => $list['chouseno'] . " " . $list['ccity'],
         ];
+        $cancel = floatval($list['lcancelled']);
+        $void = floatval($list['lvoid']);
+        $approved = floatval($list['lapproved']);
         array_push($receipt, $json);
     endwhile;
 
@@ -40,7 +43,10 @@
         echo json_encode([
             'valid' => true,
             'data' => $receipt,
-            'GLData' => $gl
+            'GLData' => $gl,
+            'approved' => $approved,
+            'void' => $void,
+            'cancel' => $cancel
         ]);
     } else {
         echo json_encode([

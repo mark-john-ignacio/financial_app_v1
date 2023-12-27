@@ -201,8 +201,8 @@
     </div>
 
     <div class='Sales modal fade' id='ViewModal' role='dialog' data-backdrop="static">
-        <div class='modal-sm modal-dialog' style="width: 800px;" role="document">
-            <div class='modal-content' >
+        <div class='modal-sm modal-dialog' style="width: 800px;" role="document"  style="width:80%" >
+            <div class='modal-content'>
                 <div class='modal-header'>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>  
                     <h3 class="modal-title" id="invheader">View Sales Invoice</h3>
@@ -277,7 +277,7 @@
                         </table>
                     </div>
                     <div style="display: flex; justify-content: right; justify-items: right; width: 100%; padding-top: 30px;">
-                        <div style="width: 30%">
+                        <div style="width: 35%">
                             <table>
                                 <tr>
                                     <th style="text-align: right;">VATable Sales</th>
@@ -355,7 +355,6 @@
                             $("<td>").text(item.ncredit),
                         ).appendTo("#GL_AR_TABLE tbody")
                     })
-
                     res.data.map((item, index) => {
                         $("#date").text(item.date);
                         $("#duedate").text(item.due);
@@ -366,10 +365,19 @@
                         $("#tin").text(res.tin);
                         $("address").text(res.address)
                     })
-                    console.log(res.data)
+
+                    if(res.approved === 1) {
+                        $("#AR_STATUS").prop("class", "btn btn-success btn-sm");
+                        $("#AR_STATUS").text("Paid");
+                    } else {
+                        $("#AR_STATUS").prop("class", "btn btn-primary btn-sm");
+                        $("#AR_STATUS").text("Pending");
+                    }
+
                 } else {
                     console.log(res.msg)
                 }
+                
             },
             error: function(msg) {
                 console.log(msg)
