@@ -8,17 +8,21 @@
     $company = $_SESSION['companyid'];
     $datefrom = date("Y-m-d", strtotime($_REQUEST['from']));
     $dateto = date("Y-m-d", strtotime($_REQUEST['to']));
-    $other = $_POST['other'];
-    $service = $_POST['service'];
-    $capital = $_POST['capital'];
+    $other = $_REQUEST['other'];
+    $service = $_REQUEST['service'];
+    $capital = $_REQUEST['capital'];
     $paybill = [];
+
+    $CAPITALS = [];
+    $SERVICES = [];
+    $OTHERS = [];
 
     $sql = "SELECT a.ctranno, a.dapvdate, a.capvno, a.crefrr, a.namount, d.cname, d.ctin, d.chouseno, d.ccity FROM paybill_t a
     LEFT JOIN paybill b ON a.compcode = b.compcode AND a.ctranno = b.ctranno
     LEFT JOIN suppliers d ON a.compcode = d.compcode AND b.ccode = d.ccode
     WHERE a.compcode = '$company' AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 AND (STR_TO_DATE(a.dapvdate, '%Y-%m-%d') BETWEEN '$datefrom' AND '$dateto')";
-
-    if($query = mysqli_query($con, $sql)) {
+    $query = mysqli_query($con, $sql);
+    if(mysqli_num_rows($query) > 0) {
         while($list = $query -> fetch_assoc()) :
             $json = [
                 'transaction' => $list['ctranno'],
