@@ -89,8 +89,11 @@
 				$cIConNme = $_REQUEST['txtConNme'.$z];
 				$cIConDes = $_REQUEST['txtConDes'.$z];
 				$cIConDept = $_REQUEST['txtConDept'.$z];
-										
-				if (!mysqli_query($con, "INSERT INTO `suppliers_contacts`(`compcode`, `ccode`, `cname`, `cdesignation`, `cdept`) VALUES ('$company','$cCustCode','$cIConNme','$cIConDes','$cIConDept')")) {
+				$cIConEmail = $_REQUEST['txtConEmail'.$z];
+				$cIConMobile = $_REQUEST['txtConMob'.$z];
+				$cIConFaxs = $_REQUEST['txtConFax'.$z];
+
+				if (!mysqli_query($con, "INSERT INTO `suppliers_contacts`(`compcode`, `ccode`, `cname`, `cdesignation`, `cdept`, `cemail`, `cphone`, `cfaxno`) VALUES ('$company','$cCustCode','$cIConNme','$cIConDes','$cIConDept','$cIConEmail','$cIConMobile','$cIConFaxs')")) {
 					echo "Error Contacts: ".mysqli_error($con);
 				}else{
 					$xcid = mysqli_insert_id($con);

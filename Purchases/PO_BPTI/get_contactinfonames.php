@@ -12,6 +12,8 @@ require_once "../../Connection/connection_string.php";
 			 $json['cdesig'] = $row['cdesignation']; 
 			 $json['cdept'] = $row['cdept'];
 			 $json['cemail'] = $row['cemail'];
+			 $json['cphone'] = $row['cphone'];
+			 $json['cfaxno'] = $row['cfaxno'];
 			 $json2[] = $json;
 		}	 
 	
