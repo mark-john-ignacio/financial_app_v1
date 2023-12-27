@@ -277,7 +277,7 @@
                         </table>
                     </div>
                     <div style="display: flex; justify-content: right; justify-items: right; width: 100%; padding-top: 30px;">
-                        <div style="width: 50%">
+                        <div style="width: 30%">
                             <table>
                                 <tr>
                                     <th style="text-align: right;">VATable Sales</th>
