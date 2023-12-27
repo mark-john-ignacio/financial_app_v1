@@ -9,7 +9,7 @@
     $receipt = [];
     $gl = [];
 
-    $sql = "SELECT a.*, b.dcutdate, b.lapproved, b.lvoid, b.lcancelled, c.creference, d.cname, d.ctin, d.chouseno, d.ccity, d.cvattype FROM receipt_sales_t a
+    $sql = "SELECT a.*, b.dcutdate, b.ddate, b.lapproved, b.lvoid, b.lcancelled, c.creference, d.cname, d.ctin, d.chouseno, d.ccity, d.cvattype FROM receipt_sales_t a
             LEFT JOIN receipt b ON a.compcode = b.compcode AND a.ctranno = b.ctranno
             LEFT JOIN sales_t c ON a.compcode = c.compcode AND a.csalesno = c.ctranno
             LEFT JOIN customers d ON a.compcode = d.compcode AND b.ccode = d.cempid
@@ -17,11 +17,17 @@
 
     $query = mysqli_query($con, $sql);
     while($list = $query -> fetch_assoc()) :
+
         $json = [
-            'date' => $list['dcutdate'],
-            
+            'due' => date("F d, Y", strtotime($list['dcutdate'])),
+            'date' => date("F d, Y", strtotime($list['ddate'])),
+            'invoice' => $list['csalesno'],
+            'reference' => $list['creference'],
+            'customer' => $list['cname'],
+            'tin' => $list['ctin'],
+            'address' => $list['chouseno'] . " " . $list['ccity'],
         ];
-        array_push($receipt, $list);
+        array_push($receipt, $json);
     endwhile;
 
     $sql = "SELECT a.* FROM glactivity a WHERE a.compcode = '$company' AND a.ctranno = '$transaction'";

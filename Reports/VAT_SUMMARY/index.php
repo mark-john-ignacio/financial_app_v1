@@ -68,9 +68,16 @@
                 </table>
         </div>
 
-        <div style="display: flex; justify-content: center; justify-items: center; width: 100%; padding-top: 50px;">
-            <div style="display: flex; justify-content: center; justify-items: center; width: 50%;">
-                <table style="border: 1px solid; border-radius: 10px; ">
+        <div style="display: flex; width: 100%; padding-top: 50px; gap: 15px">
+            <div style="display: flex; justify-content: center; justify-items: center; width: 50%; border: 1px solid; border-radius: 25px; padding: 10px">
+                <table>
+                    <tr>
+                        <th colspan="2" style="text-align: center; width: 100%;">Sales</th>
+                    </tr>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th style="text-align: center;"><div class="col-sm-10">TAX Code</div></th>
+                    </tr>
                     <tr>
                         <th><div>Zero Rated</div></th>
                         <th>
@@ -106,6 +113,41 @@
                 </table>
             </div>
             
+            <div style="display: flex; justify-content: center; justify-items: center; width: 50%; border: 1px solid; border-radius: 25px; padding: 10px">
+                <table>
+                        <tr>
+                            <th colspan="2" style="text-align: center; width: 100%">Purchase</th>
+                        </tr>
+                        <tr>
+                            <th>&nbsp;</th>
+                            <th style="text-align: center;"><div class="col-sm-10">Tax Code</div></th>
+                        </tr>
+                        <tr>
+                            <th>Input VAT Goods (other than Capital Goods) </th>
+                            <td>
+                                <div class="col-sm-10">
+                                    <input type="text" id="other_goods" name="other_goods" class="form-control input-sm">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Services</th>
+                            <td>
+                                <div class="col-sm-10">
+                                    <input type="text" id="services" name="services" class="form-control input-sm">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Capital Goods</th>
+                            <td>
+                                <div class="col-sm-10">
+                                    <input type="text" id="capital" name="capital" class="form-control input-sm">
+                                </div>
+                            </td>
+                        </tr>
+                </table>
+            </div>
         </div>
     </form>
 </body>
@@ -135,11 +177,20 @@
             async: false,
             success: function(res) {
                 if(res.valid) {
-                    console.log(res)
+                    /**
+                     * Sales Tax Codes
+                     */
                     $("#zero").val(res.zero);
                     $("#vatgov").val(res.gov);
                     $("#vatexempt").val(res.exempt);
                     $("#vatable").val(res.vatable);
+
+                    /**
+                     * Purchase Tax Code
+                     */
+                    $("#capital").val(res.capital);
+                    $("#services").val(res.service);
+                    $("#other_goods").val(res.others)
                 } else {
                     console.log("error")
                 }

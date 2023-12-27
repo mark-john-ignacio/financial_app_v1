@@ -8,6 +8,9 @@
     $company = $_SESSION['companyid'];
     $datefrom = date("Y-m-d", strtotime($_REQUEST['from']));
     $dateto = date("Y-m-d", strtotime($_REQUEST['to']));
+    $other = $_POST['other'];
+    $service = $_POST['service'];
+    $capital = $_POST['capital'];
     $paybill = [];
 
     $sql = "SELECT a.ctranno, a.dapvdate, a.capvno, a.crefrr, a.namount, d.cname, d.ctin, d.chouseno, d.ccity FROM paybill_t a
@@ -29,6 +32,8 @@
                 'net' => !empty($list['nnet']) ? round($list['nnet'], 2) : 0,
                 'tax' => !empty($list['nvat']) ? round($list['nvat'], 2) : 0
             ];
+
+            
             if(!in_array($json, $paybill) && $list['ctin'] != ".."){
                 array_push($paybill, $json);
             }

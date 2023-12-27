@@ -105,12 +105,12 @@
         </div>
     </div>
 
-    <div class='Sales modal fade' id='ViewModal' role='dialog' data-backdrop="static">
+    <div class='AR modal fade' id='ViewModal' role='dialog' data-backdrop="static">
         <div class='modal-sm modal-dialog' style="width: 800px;" role="document">
             <div class='modal-content' >
                 <div class='modal-header'>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>  
-                    <h3 class="modal-title" id="invheader">View  Accounts Receivable</h3>
+                    <h3 class="modal-title" id="invheader">View Accounts Receivable</h3>
                 </div>
 
                 <div class='modal-body' id='modal-body' style='height: 100%'>
@@ -123,7 +123,7 @@
                             </div>
                         </div>
                         <div style="width: 100%;">
-                            <table style="width: 50%;">
+                            <table style="width: 80%;">
                                 <tr>
                                     <th>DATE: </th>
                                     <td><div id="date"></div></td>
@@ -149,7 +149,7 @@
                                 <tr>
                                     <th align='center'>Profit Center</th>
                                     <th align='center'>Account</th>
-                                    <th align='center'>Desc ription</th>
+                                    <th align='center'>Description</th>
                                     <th align='center'>Debit</th>
                                     <th align='center'>Credit</th>
                                 </tr>
@@ -193,8 +193,8 @@
                         <div>
 
                         </div>
-                        <div style="display: flex; justify-content: center; justify-items: center;">
-                            <table class="table" id="Invoice_list">
+                        <div style="display: flex; justify-content: center; justify-items: center; width: 100%;">
+                            <table class="table" id="Invoice_list" style="width: 100%;">
                                 <thead>
                                     <tr>
                                         <th>Item</th>
@@ -269,21 +269,23 @@
             async: false,
             success: function(res) {
                 if(res.valid) { 
-                    $(".Sales").modal("show");
+                    $(".AR").modal("show");
                     res.GLData.map((item, index) => {
                         $("<tr>").append(
                             $("<td>").html("&nbsp;"),
-                            $("<td>").text(item.acctno + " " + item.ctitle),
+                            $("<td>").text(item.acctno + " - " + item.ctitle),
                             $("<td>").text(""),
                             $("<td>").text(item.ndebit),
                             $("<td>").text(item.ncredit),
                         ).appendTo("#GL_AR_TABLE tbody")
                     })
 
+                    console.log(res.data)
                     res.data.map((item, index) => {
-                        $("<tr>").append(
-                            $("<td>").text(),
-                        ).appendTo("#AR_TABLE tbody");
+                        $("#date").text(item.date);
+                        $("#duedate").text(item.due);
+                        $("#invoice").text(item.invoice);
+                        $("#reference").text(item.reference)
                     })
                     console.log(res.data)
                 } else {
@@ -294,6 +296,11 @@
                 console.log(msg)
             }
         })
+    }
+
+    function Sales_Modal() {
+        let header = $(this).val();
+        $(".Sales").modal("show");
     }
 
     function Fetch_Sales() {
@@ -354,11 +361,18 @@
         let from = $("#datefrom").val();
         let to = $("#dateto").val();
 
+        let other = "<?= $_POST['other_goods'] ?>";
+        let service = "<?= $_POST['services'] ?>";
+        let capital = "<?= $_POST['capital'] ?>";
+
         $.ajax({
             url: "../PURCHASE",
             data: {
                 from: from,
-                to: to
+                to: to,
+                other: other,
+                service: service,
+                capital: capital
             },
             dataType: "json",
             async: false,
@@ -399,7 +413,7 @@
             $("<tr>").append(
                 $("<td>").html("<a href='javascript:;' onclick='AR_MODAL.call(this)'>" + item.transaction + "</a"),
                 $("<td>").text(item.date),
-                $("<td>").html("<a href='javascript:;' onclick='AR_MODAL(\"sample\")'>" + item.sales + "</a>"),
+                $("<td>").html("<a href='javascript:;' onclick='Sales_Modal.call(this)'>" + item.sales + "</a>"),
                 $("<td>").text(item.reference),
                 $("<td>").text(item.partner),
                 $("<td>").text(item.tin),
