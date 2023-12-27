@@ -1782,917 +1782,976 @@ if(mysqli_num_rows($sql) != 0){
 
 								<div class="collapse" id="itmpurchreq">  
 
-											<div class="col-xs-12" style="margin-bottom: 15px !important; margin-left: 15px !important">
-												<div class="col-xs-3 nopadwtop2x">
-													<b>Send Approval Email Notif.</b>
-													<div id="divPOEmailprint" style="display:inline; padding-left:5px"></div>
-												</div>                    
-												<div class="col-xs-3 nopadwtop2x">
-													<?php
-														$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='PR_APP_EMAIL'"); 
-													
-														if (mysqli_num_rows($result)!=0) {
-															$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
-															$nvalue = $all_course_data['cvalue']; 												
-														}
-														else{
-															$nvalue = "";
-														}
-													?>
-													<select class="form-control input-sm selectpicker" name="selpoautopost" id="selpoautopost" onChange="setparamval('PR_APP_EMAIL',this.value,'premailmsg')">
-														<option value="0" <?php if ($nvalue==0) { echo "selected"; } ?>> NO </option>
-														<option value="1" <?php if ($nvalue==1) { echo "selected"; } ?>> YES </option>
-													</select>
-												</div>                   
-												<div class="col-xs-1 nopadwtop2x" id="premailmsg">
-												</div>												
+									<div class="col-xs-12" style="margin-bottom: 15px !important; margin-left: 15px !important">
+										<div class="col-xs-3 nopadwtop2x">
+											<b>Send Approval Email Notif.</b>
+											<div id="divPOEmailprint" style="display:inline; padding-left:5px"></div>
+										</div>                    
+										<div class="col-xs-3 nopadwtop2x">
+											<?php
+												$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='PR_APP_EMAIL'"); 
+											
+												if (mysqli_num_rows($result)!=0) {
+													$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
+													$nvalue = $all_course_data['cvalue']; 												
+												}
+												else{
+													$nvalue = "";
+												}
+											?>
+											<select class="form-control input-sm selectpicker" name="selpoautopost" id="selpoautopost" onChange="setparamval('PR_APP_EMAIL',this.value,'premailmsg')">
+												<option value="0" <?php if ($nvalue==0) { echo "selected"; } ?>> NO </option>
+												<option value="1" <?php if ($nvalue==1) { echo "selected"; } ?>> YES </option>
+											</select>
+										</div>                   
+										<div class="col-xs-1 nopadwtop2x" id="premailmsg">
+										</div>												
+									</div>
+
+									<?php
+										$resPRApps = mysqli_query($con,"SELECT * FROM `purchrequest_approvals_id` WHERE compcode='".$_SESSION['companyid']."'"); 
+									?>
+
+
+									<form action="th_saveprlevels.php" method="POST" name="frmPRLvls" id="frmPRLvls" onSubmit="return chkprlvlform();" target="_self">
+
+										<!--<input type="hidden" name="tbPRLVL1count" id="tbLVL1count" value="0">-->
+										<input type="hidden" name="tblPRLVL2count" id="tblPRLVL2count" value="0">
+										<input type="hidden" name="tblPRLVL3count" id="tblPRLVL3count" value="0">
+
+										<div class="col-xs-12" style="padding-bottom: 5px !important">
+											<div class="col-xs-2">
+												<b>Approval Levels</b>
+											</div>                    
+											<div class="col-xs-3">
+												<button type="submit" class="btn btn-xs btn-success" name="btnsavePRApp" id="btnsavePRApp"><i class="fa fa-save"></i>&nbsp; &nbsp;Save Approvals</button>
+											</div>
+										</div>
+
+
+										<div class="col-xs-12" style="margin-top: 5px !important; margin-left: 15px !important; margin-bottom: 15px !important">
+
+											<ul class="nav nav-tabs">
+												<li class="active"><a data-toggle="tab" href="#prlevel1">Level 1</a></li>
+												<li><a data-toggle="tab" href="#prlevel2">Level 2</a></li>
+												<li><a data-toggle="tab" href="#prlevel3">Level 3</a></li>
+											</ul>
+
+
+											<div class="tab-content col-lg-12 nopadwtop2x">   
+
+												<!-- LEVEL 1 -->
+													<div id="prlevel1" class="tab-pane fade in active">
+														<!--<input type="hidden" data-id="2" id = "lvlamt1" name = "lvlamt1" value="0">-->
+														<div class="col-xs-12 nopadding">
+															<div style="padding: 20px">
+																<h5><i>* Set Level 1 approval by giving Post and Cancel access in User's Access module and selecting the Sections in Inventory tab in the same module.</i></h5>
+															</div>
+
+														</div>
+
+													</div>
+
+												<!-- LEVEL 2 -->
+													<div id="prlevel2" class="tab-pane fade in">
+
+														<div class="col-xs-12 nopadding">
+										
+															<div class="col-xs-2 nopadding"> 
+																<button type="button" class="btn btn-xs btn-primary" onClick="addprlevel(2,'PRAPP2');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button>		
+																
+																<input type="hidden" data-id="2" id = "lvlamt2" name = "lvlamt2" value="0">
+															</div>
+
+															<!--<div class="col-xs-2 nopadwleft"> 
+																<b>Minimum Amount</b>
+															</div>
+
+															<div class="col-xs-2 nopadwleft"> 
+																<input type="hidden" data-id="2" id = "lvlamt2" name = "lvlamt2" value="0">
+																
+															</div>-->
+
+															<div class="col-xs-3 nopadwleft" id="divlevel2amounts"> 
+																
+															</div>
+
+														</div>
+
+														<div class="col-xs-12 border pre-scrollable" style="height: 150px; margin-top: 5px !important">
+
+															<table cellpadding="3px" width="100%" border="0" style="font-size: 14px"  id="PRAPP2">
+																<thead>
+																	<tr>
+																		<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">User ID</td>
+																		<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Sections</td>
+																		<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px"><small>Delete</small></td>
+																	</tr>
+																</thead>
+
+																<tbody>
+																	<?php
+																	$rowPRresult = array();
+																	if (mysqli_num_rows($resPRApps)!=0) {
+																		$cntr = 0;
+
+																		while($rowxcv=mysqli_fetch_array($resPRApps, MYSQLI_ASSOC)){
+																			$rowPRresult[] = $rowxcv;
+																		}
+
+																		foreach ($rowPRresult as $row){
+																			if(intval($row['pr_approval_id'])==2){
+																				$cntr++;
+																	?>	
+																		<tr>
+																			<td width="200px" style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																				<select class="form-control" name="selprsuser<?=$row['pr_approval_id'].$cntr?>" id="selprsuser<?=$row['pr_approval_id'].$cntr?>" >
+																					<?php
+																						foreach(@$ursnmse as $rsusr){
+																							if($rsusr['userid']==$row['userid']){
+																								$xscd = "selected";
+																							}else{
+																								$xscd = "";
+																							}
+
+																							echo "<option value='".$rsusr['userid']."' ".$xscd."> ".$rsusr['name']." </option>";
+																						}
+																					?> 
+																				</select>
+																			</td>
+																			<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">																
+																				<select required multiple class="form-control" name="selprsecs<?=$row['pr_approval_id'].$cntr?>[]" id="selprsecs<?=$row['pr_approval_id'].$cntr?>" >
+
+																				<option value='ALL' <?=($row['locations_id']=="ALL") ? "selected" : ""?>> ALL</option>
+
+																					<?php
+																						foreach(@$arsecs as $rsitm){
+
+																							$xsc = "";
+																							if($row['locations_id']!==""){
+																								if(in_array($rsitm['ccode'], explode(",",$row['locations_id']))){
+																									$xsc = "selected";
+																								}
+																							}
+																							
+																							echo "<option value='".$rsitm['ccode']."' ".$xsc."> ".$rsitm['cdesc']." </option>";
+																						}
+																					?> 
+																				</select>  
+																			</td>
+																		
+																			<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																				<button class="btn btn-danger btn-sm" type="button" onclick="prtransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
+																			</td>
+																		</tr>
+
+																		<script>
+																			$(document).ready(function(e) {
+																				$('#selprsuser<?=$row['pr_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
+																				$('#selprsecs<?=$row['pr_approval_id'].$cntr?>').select2({width: '100%'});
+																			});
+																		</script>
+																	<?php
+																			}
+																		}
+																	}
+																	?>
+																</tbody>
+															</table> 
+
+														</div>
+
+													</div>
+
+												<!-- LEVEL 3 -->
+													<div id="prlevel3" class="tab-pane fade in">
+
+														<div class="col-xs-12 nopadding">
+										
+															<div class="col-xs-2 nopadding"> 
+																<button type="button" class="lvlamtcls btn btn-xs btn-primary" onClick="addprlevel(3,'PRAPP3');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button>		
+																
+																<input type="hidden" data-id="3" id="lvlamt3" name="lvlamt3" value="0">
+															</div>
+
+															<!--<div class="col-xs-2 nopadwleft"> 
+																<b>Minimum Amount</b>
+															</div>
+
+															<div class="col-xs-2 nopadwleft"> 
+																<input type="hidden" data-id="3" id="lvlamt3" name="lvlamt3" value="0">
+															</div>-->
+
+															<div class="col-xs-3 nopadwleft" id="divlevel3amounts"> 
+															</div>
+
+														</div>
+
+														<div class="col-xs-12 border pre-scrollable" style="height: 150px; margin-top: 5px !important">
+
+															<table cellpadding="3px" width="100%" border="0" style="font-size: 14px" id="PRAPP3">
+																<thead>
+																	<tr>
+																		<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">User ID</td>
+																		<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Sections</td>
+																		<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px"><small>Delete</small></td>
+																	</tr>
+																</thead>
+
+																<tbody>
+																	<?php
+																	if (mysqli_num_rows($resPRApps)!=0) {
+																		$cntr = 0;
+																		foreach ($rowPRresult as $row){
+																			if($row['pr_approval_id']==3){
+																				$cntr++;
+																	?>	
+																		<tr>
+																			<td width="200px" style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																				<select class="form-control" name="selprsuser<?=$row['pr_approval_id'].$cntr?>" id="selprsuser<?=$row['pr_approval_id'].$cntr?>" >
+																					<?php
+																						foreach(@$ursnmse as $rsusr){
+																							if($rsusr['userid']==$row['userid']){
+																								$xscd = "selected";
+																							}else{
+																								$xscd = "";
+																							}
+																							echo "<option value='".$rsusr['userid']."' ".$xscd."> ".$rsusr['name']." </option>";
+																						}
+																					?> 
+																				</select>
+																			</td>
+																			<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">																
+																				<select required multiple class="form-control" name="selprsecs<?=$row['pr_approval_id'].$cntr?>[]" id="selprsecs<?=$row['pr_approval_id'].$cntr?>" >
+
+																				<option value='ALL' <?=($row['locations_id']=="ALL") ? "selected" : ""?>> ALL</option>
+
+																					<?php
+																						foreach(@$arsecs as $rsitm){
+
+																							$xsc = "";
+																							if($row['locations_id']!==""){
+																								if(in_array($rsitm['ccode'], explode(",",$row['locations_id']))){
+																									$xsc = "selected";
+																								}
+																							}
+																							
+																							echo "<option value='".$rsitm['ccode']."' ".$xsc."> ".$rsitm['cdesc']." </option>";
+																						}
+																					?> 
+																				</select>  
+																			</td>																	
+																			<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																				<button class="btn btn-danger btn-sm" type="button" onclick="prtransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
+																			</td>
+																		</tr>
+
+																		<script>
+																			$(document).ready(function(e) {
+																				$('#selprsuser<?=$row['pr_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
+																				$('#selprsecs<?=$row['pr_approval_id'].$cntr?>').select2({width: '100%'});
+																			});
+																		</script>
+																	<?php
+																			}
+																		}
+																	}
+																	?>
+																</tbody>
+															</table> 
+
+														</div>
+
+													</div>
+
 											</div>
 
-												<?php
-													$resPRApps = mysqli_query($con,"SELECT * FROM `purchrequest_approvals_id` WHERE compcode='".$_SESSION['companyid']."'"); 
-												?>
+										</div>
 
 
-											<form action="th_saveprlevels.php" method="POST" name="frmPRLvls" id="frmPRLvls" onSubmit="return chkprlvlform();" target="_self">
-
-												<!--<input type="hidden" name="tbPRLVL1count" id="tbLVL1count" value="0">-->
-												<input type="hidden" name="tblPRLVL2count" id="tblPRLVL2count" value="0">
-												<input type="hidden" name="tblPRLVL3count" id="tblPRLVL3count" value="0">
-
-												<div class="col-xs-12" style="padding-bottom: 5px !important">
-													<div class="col-xs-2">
-														<b>Approval Levels</b>
-													</div>                    
-													<div class="col-xs-3">
-														<button type="submit" class="btn btn-xs btn-success" name="btnsavePRApp" id="btnsavePRApp"><i class="fa fa-save"></i>&nbsp; &nbsp;Save Approvals</button>
-													</div>
-												</div>
-
-
-												<div class="col-xs-12" style="margin-top: 5px !important; margin-left: 15px !important; margin-bottom: 15px !important">
-
-													<ul class="nav nav-tabs">
-														<li class="active"><a data-toggle="tab" href="#prlevel1">Level 1</a></li>
-														<li><a data-toggle="tab" href="#prlevel2">Level 2</a></li>
-														<li><a data-toggle="tab" href="#prlevel3">Level 3</a></li>
-													</ul>
-
-
-													<div class="tab-content col-lg-12 nopadwtop2x">   
-
-														<!-- LEVEL 1 -->
-															<div id="prlevel1" class="tab-pane fade in active">
-																<!--<input type="hidden" data-id="2" id = "lvlamt1" name = "lvlamt1" value="0">-->
-																<div class="col-xs-12 nopadding">
-																	<div style="padding: 20px">
-																		<h5><i>* Set Level 1 approval by giving Post and Cancel access in User's Access module and selecting the Sections in Inventory tab in the same module.</i></h5>
-																	</div>
-
-																</div>
-
-															</div>
-
-														<!-- LEVEL 2 -->
-															<div id="prlevel2" class="tab-pane fade in">
-
-																<div class="col-xs-12 nopadding">
-												
-																	<div class="col-xs-2 nopadding"> 
-																		<button type="button" class="btn btn-xs btn-primary" onClick="addprlevel(2,'PRAPP2');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button>		
-																		
-																		<input type="hidden" data-id="2" id = "lvlamt2" name = "lvlamt2" value="0">
-																	</div>
-
-																	<!--<div class="col-xs-2 nopadwleft"> 
-																		<b>Minimum Amount</b>
-																	</div>
-
-																	<div class="col-xs-2 nopadwleft"> 
-																		<input type="hidden" data-id="2" id = "lvlamt2" name = "lvlamt2" value="0">
-																		
-																	</div>-->
-
-																	<div class="col-xs-3 nopadwleft" id="divlevel2amounts"> 
-																		
-																	</div>
-
-																</div>
-
-																<div class="col-xs-12 border pre-scrollable" style="height: 150px; margin-top: 5px !important">
-
-																	<table cellpadding="3px" width="100%" border="0" style="font-size: 14px"  id="PRAPP2">
-																		<thead>
-																			<tr>
-																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">User ID</td>
-																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Sections</td>
-																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px"><small>Delete</small></td>
-																			</tr>
-																		</thead>
-
-																		<tbody>
-																			<?php
-																			$rowPRresult = array();
-																			if (mysqli_num_rows($resPRApps)!=0) {
-																				$cntr = 0;
-
-																				while($rowxcv=mysqli_fetch_array($resPRApps, MYSQLI_ASSOC)){
-																					$rowPRresult[] = $rowxcv;
-																				}
-
-																				foreach ($rowPRresult as $row){
-																					if(intval($row['pr_approval_id'])==2){
-																						$cntr++;
-																			?>	
-																				<tr>
-																					<td width="200px" style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
-																						<select class="form-control" name="selprsuser<?=$row['pr_approval_id'].$cntr?>" id="selprsuser<?=$row['pr_approval_id'].$cntr?>" >
-																							<?php
-																								foreach(@$ursnmse as $rsusr){
-																									if($rsusr['userid']==$row['userid']){
-																										$xscd = "selected";
-																									}else{
-																										$xscd = "";
-																									}
-
-																									echo "<option value='".$rsusr['userid']."' ".$xscd."> ".$rsusr['name']." </option>";
-																								}
-																							?> 
-																						</select>
-																					</td>
-																					<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">																
-																						<select required multiple class="form-control" name="selprsecs<?=$row['pr_approval_id'].$cntr?>[]" id="selprsecs<?=$row['pr_approval_id'].$cntr?>" >
-
-																						<option value='ALL' <?=($row['locations_id']=="ALL") ? "selected" : ""?>> ALL</option>
-
-																							<?php
-																								foreach(@$arsecs as $rsitm){
-
-																									$xsc = "";
-																									if($row['locations_id']!==""){
-																										if(in_array($rsitm['ccode'], explode(",",$row['locations_id']))){
-																											$xsc = "selected";
-																										}
-																									}
-																									
-																									echo "<option value='".$rsitm['ccode']."' ".$xsc."> ".$rsitm['cdesc']." </option>";
-																								}
-																							?> 
-																						</select>  
-																					</td>
-																				
-																					<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
-																						<button class="btn btn-danger btn-sm" type="button" onclick="prtransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
-																					</td>
-																				</tr>
-
-																				<script>
-																					$(document).ready(function(e) {
-																						$('#selprsuser<?=$row['pr_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
-																						$('#selprsecs<?=$row['pr_approval_id'].$cntr?>').select2({width: '100%'});
-																					});
-																				</script>
-																			<?php
-																					}
-																				}
-																			}
-																			?>
-																		</tbody>
-																	</table> 
-
-																</div>
-
-															</div>
-
-														<!-- LEVEL 3 -->
-															<div id="prlevel3" class="tab-pane fade in">
-
-																<div class="col-xs-12 nopadding">
-												
-																	<div class="col-xs-2 nopadding"> 
-																		<button type="button" class="lvlamtcls btn btn-xs btn-primary" onClick="addprlevel(3,'PRAPP3');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button>		
-																		
-																		<input type="hidden" data-id="3" id="lvlamt3" name="lvlamt3" value="0">
-																	</div>
-
-																	<!--<div class="col-xs-2 nopadwleft"> 
-																		<b>Minimum Amount</b>
-																	</div>
-
-																	<div class="col-xs-2 nopadwleft"> 
-																		<input type="hidden" data-id="3" id="lvlamt3" name="lvlamt3" value="0">
-																	</div>-->
-
-																	<div class="col-xs-3 nopadwleft" id="divlevel3amounts"> 
-																	</div>
-
-																</div>
-
-																<div class="col-xs-12 border pre-scrollable" style="height: 150px; margin-top: 5px !important">
-
-																	<table cellpadding="3px" width="100%" border="0" style="font-size: 14px" id="PRAPP3">
-																		<thead>
-																			<tr>
-																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">User ID</td>
-																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Sections</td>
-																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px"><small>Delete</small></td>
-																			</tr>
-																		</thead>
-
-																		<tbody>
-																			<?php
-																			if (mysqli_num_rows($resPRApps)!=0) {
-																				$cntr = 0;
-																				foreach ($rowPRresult as $row){
-																					if($row['pr_approval_id']==3){
-																						$cntr++;
-																			?>	
-																				<tr>
-																					<td width="200px" style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
-																						<select class="form-control" name="selprsuser<?=$row['pr_approval_id'].$cntr?>" id="selprsuser<?=$row['pr_approval_id'].$cntr?>" >
-																							<?php
-																								foreach(@$ursnmse as $rsusr){
-																									if($rsusr['userid']==$row['userid']){
-																										$xscd = "selected";
-																									}else{
-																										$xscd = "";
-																									}
-																									echo "<option value='".$rsusr['userid']."' ".$xscd."> ".$rsusr['name']." </option>";
-																								}
-																							?> 
-																						</select>
-																					</td>
-																					<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">																
-																						<select required multiple class="form-control" name="selprsecs<?=$row['pr_approval_id'].$cntr?>[]" id="selprsecs<?=$row['pr_approval_id'].$cntr?>" >
-
-																						<option value='ALL' <?=($row['locations_id']=="ALL") ? "selected" : ""?>> ALL</option>
-
-																							<?php
-																								foreach(@$arsecs as $rsitm){
-
-																									$xsc = "";
-																									if($row['locations_id']!==""){
-																										if(in_array($rsitm['ccode'], explode(",",$row['locations_id']))){
-																											$xsc = "selected";
-																										}
-																									}
-																									
-																									echo "<option value='".$rsitm['ccode']."' ".$xsc."> ".$rsitm['cdesc']." </option>";
-																								}
-																							?> 
-																						</select>  
-																					</td>																	
-																					<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
-																						<button class="btn btn-danger btn-sm" type="button" onclick="prtransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
-																					</td>
-																				</tr>
-
-																				<script>
-																					$(document).ready(function(e) {
-																						$('#selprsuser<?=$row['pr_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
-																						$('#selprsecs<?=$row['pr_approval_id'].$cntr?>').select2({width: '100%'});
-																					});
-																				</script>
-																			<?php
-																					}
-																				}
-																			}
-																			?>
-																		</tbody>
-																	</table> 
-
-																</div>
-
-															</div>
-
-													</div>
-
-												</div>
-
-
-											</form>
+									</form>
 									
 								</div>
 
 
 								<p data-toggle="collapse" data-target="#itmpo"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Purchase Order</b></u></p>
 
-									<div class="collapse" id="itmpo">  
+								<div class="collapse" id="itmpo">  
 
-										<!--
-											<div class="col-xs-12">
-												<div class="col-xs-2 nopadwtop2x">
-													<b>Auto post upon printing</b>
-													<div id="divPostPOprint" style="display:inline; padding-left:5px"></div>
-												</div>                    
-												<div class="col-xs-3 nopadwtop2x">
-													<?php
-														//$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='AUTO_POST_PO'"); 
-													
-													//	if (mysqli_num_rows($result)!=0) {
-													//		$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
-													//		$nvalue = $all_course_data['cvalue']; 												
-													//	}
-													//	else{
-													//		$nvalue = "";
-													//	}
-													?>
-													<select class="form-control input-sm selectpicker" name="selpoautopost" id="selpoautopost" onChange="setparamval('AUTO_POST_PO',this.value,'popostmsg')">
-														<option value="0" <?//php if ($nvalue==0) { echo "selected"; } ?>> NO </option>
-														<option value="1" <?//php if ($nvalue==1) { echo "selected"; } ?>> YES </option>
-													</select>
-												</div>                   
-												<div class="col-xs-1 nopadwtop2x" id="popostmsg">
-												</div>												
-											</div>
-										-->
-
-										<div class="col-xs-12" style="margin-left: 15px !important">
-											<div class="col-xs-3 nopadwtop2x">
-												<b>Reference PR</b>
-												<div id="divPostRRprint" style="display:inline; padding-left:5px"></div>
+									<!--
+										<div class="col-xs-12">
+											<div class="col-xs-2 nopadwtop2x">
+												<b>Auto post upon printing</b>
+												<div id="divPostPOprint" style="display:inline; padding-left:5px"></div>
 											</div>                    
 											<div class="col-xs-3 nopadwtop2x">
 												<?php
-													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='ALLOW_REF_PR'"); 
+													//$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='AUTO_POST_PO'"); 
 												
-													if (mysqli_num_rows($result)!=0) {
-														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
-														$nvalue = $all_course_data['cvalue']; 												
-													}
-													else{
-														$nvalue = "";
-													}
+												//	if (mysqli_num_rows($result)!=0) {
+												//		$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
+												//		$nvalue = $all_course_data['cvalue']; 												
+												//	}
+												//	else{
+												//		$nvalue = "";
+												//	}
 												?>
-												<select class="form-control input-sm selectpicker" name="selporefpr" id="selporefpr" onChange="setparamval('ALLOW_REF_PR',this.value,'porefprmsg')">
-													<option value="0" <?php if ($nvalue==0) { echo "selected"; } ?>> Allow No Reference </option>
-													<option value="1" <?php if ($nvalue==1) { echo "selected"; } ?>> With Reference </option>
-												</select>
-											</div>
-												
-											<div class="col-xs-1 nopadwtop2x" id="porefprmsg">
-											</div>                    
-										</div>
-
-										<div class="col-xs-12" style="margin-left: 15px !important">
-											<div class="col-xs-3 nopadwtop2x">
-												<b>Allow Item Code Change</b>
-												<div id="divPostRRprint" style="display:inline; padding-left:5px"></div>
-											</div>                    
-											<div class="col-xs-3 nopadwtop2x">
-												<?php
-													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='ALLOW_PO_ITEM_CHANGE'"); 
-												
-													if (mysqli_num_rows($result)!=0) {
-														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
-														$nvalue = $all_course_data['cvalue']; 												
-													}
-													else{
-														$nvalue = "";
-													}
-												?>
-												<select class="form-control input-sm selectpicker" name="selpoitmchng" id="selpoitmchng" onChange="setparamval('ALLOW_PO_ITEM_CHANGE',this.value,'poitmchange')">
-													<option value="0" <?php if ($nvalue==0) { echo "selected"; } ?>> NO </option>
-													<option value="1" <?php if ($nvalue==1) { echo "selected"; } ?>> YES </option>
-												</select>
-											</div>
-												
-											<div class="col-xs-1 nopadwtop2x" id="poitmchange">
-											</div>                    
-										</div>
-
-										<div class="col-xs-12" style="margin-bottom: 15px !important; margin-left: 15px !important">
-											<div class="col-xs-3 nopadwtop2x">
-												<b>Send Approval Email Notif.</b>
-												<div id="divPOEmailprint" style="display:inline; padding-left:5px"></div>
-											</div>                    
-											<div class="col-xs-3 nopadwtop2x">
-												<?php
-													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='PO_APP_EMAIL'"); 
-												
-													if (mysqli_num_rows($result)!=0) {
-														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
-														$nvalue = $all_course_data['cvalue']; 												
-													}
-													else{
-														$nvalue = "";
-													}
-												?>
-												<select class="form-control input-sm selectpicker" name="selpoautopost" id="selpoautopost" onChange="setparamval('PO_APP_EMAIL',this.value,'poemailmsg')">
-													<option value="0" <?php if ($nvalue==0) { echo "selected"; } ?>> NO </option>
-													<option value="1" <?php if ($nvalue==1) { echo "selected"; } ?>> YES </option>
+												<select class="form-control input-sm selectpicker" name="selpoautopost" id="selpoautopost" onChange="setparamval('AUTO_POST_PO',this.value,'popostmsg')">
+													<option value="0" <?//php if ($nvalue==0) { echo "selected"; } ?>> NO </option>
+													<option value="1" <?//php if ($nvalue==1) { echo "selected"; } ?>> YES </option>
 												</select>
 											</div>                   
-											<div class="col-xs-1 nopadwtop2x" id="poemailmsg">
+											<div class="col-xs-1 nopadwtop2x" id="popostmsg">
 											</div>												
 										</div>
+									-->
 
+									<div class="col-xs-12" style="margin-left: 15px !important">
+										<div class="col-xs-3 nopadwtop2x">
+											<b>Reference PR</b>
+											<div id="divPostRRprint" style="display:inline; padding-left:5px"></div>
+										</div>                    
+										<div class="col-xs-3 nopadwtop2x">
 											<?php
-												$resPOAppsHDR = mysqli_query($con,"SELECT * FROM `purchase_approvals` WHERE compcode='".$_SESSION['companyid']."'"); 
-												while($rowpoaph=mysqli_fetch_array($resPOAppsHDR, MYSQLI_ASSOC)){
-													$i = $rowpoaph['nlevel'];
-													$rwpoapphdramt[$i] = $rowpoaph['namount'];
+												$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='ALLOW_REF_PR'"); 
+											
+												if (mysqli_num_rows($result)!=0) {
+													$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
+													$nvalue = $all_course_data['cvalue']; 												
 												}
-
-												$resPOApps = mysqli_query($con,"SELECT * FROM `purchase_approvals_id` WHERE compcode='".$_SESSION['companyid']."'"); 
+												else{
+													$nvalue = "";
+												}
 											?>
-
-
-										<form action="th_savepolevels.php" method="POST" name="frmPOLvls" id="frmPOLvls" onSubmit="return chkpolvlform();" target="_self">
-
-											<input type="hidden" name="tbLVL1count" id="tbLVL1count" value="0">
-											<input type="hidden" name="tbLVL2count" id="tbLVL2count" value="0">
-											<input type="hidden" name="tbLVL3count" id="tbLVL3count" value="0">
-
-											<div class="col-xs-12" style="padding-bottom: 5px !important">
-												<div class="col-xs-2">
-													<b>Approval Levels</b>
-												</div>                    
-												<div class="col-xs-3">
-													<button type="submit" class="btn btn-xs btn-success" name="btnsavePOApp" id="btnsavePOApp"><i class="fa fa-save"></i>&nbsp; &nbsp;Save Approvals</button>
-												</div>
-											</div>
-
-
-											<div class="col-xs-12" style="margin-top: 5px !important; margin-left: 15px !important">
-
-												<ul class="nav nav-tabs">
-													<li class="active"><a data-toggle="tab" href="#level1">Level 1</a></li>
-													<li><a data-toggle="tab" href="#level2">Level 2</a></li>
-													<li><a data-toggle="tab" href="#level3">Level 3</a></li>
-												</ul>
-
-
-												<div class="tab-content col-lg-12 nopadwtop2x">   
-
-													<!-- LEVEL 1 -->
-														<div id="level1" class="tab-pane fade in active">
-															<input type="hidden" data-id="2" id = "lvlamt1" name = "lvlamt1" value="0">
-															<div class="col-xs-12 nopadding">
+											<select class="form-control input-sm selectpicker" name="selporefpr" id="selporefpr" onChange="setparamval('ALLOW_REF_PR',this.value,'porefprmsg')">
+												<option value="0" <?php if ($nvalue==0) { echo "selected"; } ?>> Allow No Reference </option>
+												<option value="1" <?php if ($nvalue==1) { echo "selected"; } ?>> With Reference </option>
+											</select>
+										</div>
 											
-																<div class="col-xs-2 nopadding"> 
-																	<button type="button" class="btn btn-xs btn-primary" name="btnaddapplvl1" id="btnaddapplvl1" onClick="addpolevel(1,'POAPP1');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button> 															
-																</div>
-
-															</div>
-
-															<div class="col-xs-12 border pre-scrollable" style="height: 150px; margin-top: 5px !important">
-
-																	<table cellpadding="3px" width="100%" border="0" style="font-size: 14px" id="POAPP1">
-																		<thead>
-																			<tr>
-																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">User ID</td>
-																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Item Type</td>
-																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Supplier Type</td>
-																				<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px"><small>Delete</small></td>
-																			</tr>
-																		</thead>
-																		<tbody>
-																			<?php
-																			if (mysqli_num_rows($resPOApps)!=0) {
-																				$cntr = 0;
-
-																				while($rowxcv=mysqli_fetch_array($resPOApps, MYSQLI_ASSOC)){
-																					$rowPOresult[] = $rowxcv;
-																				}
-
-																				foreach ($rowPOresult as $row){
-																					if($row['po_approval_id']==1){
-																						$cntr++;
-																			?>	
-																				<tr>
-																					<td width="200px" style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
-																						<select class="form-control" name="selposuser<?=$row['po_approval_id'].$cntr?>" id="selposuser<?=$row['po_approval_id'].$cntr?>" >
-
-																							<?php
-																								foreach(@$ursnmse as $rsusr){
-																									if($rsusr['userid']==$row['userid']){
-																										$xscd = "selected";
-																									}else{
-																										$xscd = "";
-																									}
-																									echo "<option value='".$rsusr['userid']."' ".$xscd."> ".$rsusr['name']." </option>";
-																								}
-																							?> 
-																						</select>
-																					</td>
-																					<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">																
-																						<select required multiple class="form-control" name="selpoitmtyp<?=$row['po_approval_id'].$cntr?>[]" id="selpoitmtyp<?=$row['po_approval_id'].$cntr?>" >
-
-																						<option value='ALL' <?=($row['items']=="ALL") ? "selected" : ""?>> ALL</option>
-
-																							<?php
-																								foreach(@$itmtype as $rsitm){
-
-																									$xsc = "";
-																									if($row['items']!=="" && $row['items']!==null){
-																										if(in_array($rsitm['ccode'], explode(",",$row['items']))){
-																											$xsc = "selected";
-																										}
-																									}
-																									
-																									echo "<option value='".$rsitm['ccode']."' ".$xsc."> ".$rsitm['cdesc']." </option>";
-																								}
-																							?> 
-																						</select>  
-																					</td>
-																					<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
-																						<select required multiple class="form-control" name="selposutyp<?=$row['po_approval_id'].$cntr?>[]" id="selposutyp<?=$row['po_approval_id'].$cntr?>" >
-
-																						<option value='ALL' <?=($row['suppliers']=="ALL") ? "selected" : ""?>> ALL</option>
-
-																							<?php
-																								foreach(@$suptype as $rssup){
-																									
-																									$xsc = "";
-																									if($row['suppliers']!=="" && $row['suppliers']!==null){
-																										if(in_array($rssup['ccode'], explode(",",$row['suppliers']))){
-																											$xsc = "selected";
-																										}
-																									}
-
-																									echo "<option value='".$rssup['ccode']."' ".$xsc."> ".$rssup['cdesc']." </option>";
-																								}
-																							?> 
-																						</select>
-																					</td>																					
-																					<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
-																						<button class="btn btn-danger btn-sm" type="button" onclick="potransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
-																					</td>
-																				</tr>
-
-																				<script>
-																					$(document).ready(function(e) {
-																						$('#selposuser<?=$row['po_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
-																						$('#selpoitmtyp<?=$row['po_approval_id'].$cntr?>').select2({width: '100%'});
-																						$('#selposutyp<?=$row['po_approval_id'].$cntr?>').select2({width: '100%'});
-																					});
-																				</script>
-																			<?php
-																					}
-																				}
-																			}
-																			?>
-																		</tbody>
-																	</table> 
-
-															</div>
-
-														</div>
-
-													<!-- LEVEL 2 -->
-														<div id="level2" class="tab-pane fade in">
-
-															<div class="col-xs-12 nopadding">
-											
-																<div class="col-xs-2 nopadding"> 
-																	<button type="button" class="btn btn-xs btn-primary" name="btnaddapplvl2" id="btnaddapplvl2" onClick="addpolevel(2,'POAPP2');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button>															
-																</div>
-
-																<div class="col-xs-2 nopadwleft"> 
-																	<b>Minimum Amount</b>
-																</div>
-
-																<div class="col-xs-2 nopadwleft"> 
-																	<input type="text" class="lvlamtcls form-control input-xs" data-id="2" id = "lvlamt2" name = "lvlamt2" value="<?=$rwpoapphdramt[2]?>">
-																	
-																</div>
-
-																<div class="col-xs-3 nopadwleft" id="divlevel2amounts"> 
-																	
-																</div>
-
-															</div>
-
-															<div class="col-xs-12 border pre-scrollable" style="height: 150px; margin-top: 5px !important">
-
-																<table cellpadding="3px" width="100%" border="0" style="font-size: 14px"  id="POAPP2">
-																	<thead>
-																		<tr>
-																			<td style="padding-top: 5px">User ID</td>
-																			<td style="padding-top: 5px">Item Type</td>
-																			<td style="padding-top: 5px">Supplier Type</td>
-																		</tr>
-																	</thead>
-
-																	<tbody>
-																		<?php
-																		if (mysqli_num_rows($resPOApps)!=0) {
-																			$cntr = 0;
-																			foreach ($rowPOresult as $row){
-																				if(intval($row['po_approval_id'])==2){
-																					$cntr++;
-																		?>	
-																			<tr>
-																				<td width="200px" style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
-																					<select class="form-control" name="selposuser<?=$row['po_approval_id'].$cntr?>" id="selposuser<?=$row['po_approval_id'].$cntr?>" >
-																						<?php
-																							foreach(@$ursnmse as $rsusr){
-																								if($rsusr['userid']==$row['userid']){
-																									$xscd = "selected";
-																								}else{
-																									$xscd = "";
-																								}
-
-																								echo "<option value='".$rsusr['userid']."' ".$xscd."> ".$rsusr['name']." </option>";
-																							}
-																						?> 
-																					</select>
-																				</td>
-																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">																
-																					<select required multiple class="form-control" name="selpoitmtyp<?=$row['po_approval_id'].$cntr?>[]" id="selpoitmtyp<?=$row['po_approval_id'].$cntr?>" >
-
-																					<option value='ALL' <?=($row['items']=="ALL") ? "selected" : ""?>> ALL</option>
-
-																						<?php
-																							foreach(@$itmtype as $rsitm){
-
-																								$xsc = "";
-																								if($row['items']!==""){
-																									if(in_array($rsitm['ccode'], explode(",",$row['items']))){
-																										$xsc = "selected";
-																									}
-																								}
-																								
-																								echo "<option value='".$rsitm['ccode']."' ".$xsc."> ".$rsitm['cdesc']." </option>";
-																							}
-																						?> 
-																					</select>  
-																				</td>
-																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
-																					<select required multiple class="form-control" name="selposutyp<?=$row['po_approval_id'].$cntr?>[]" id="selposutyp<?=$row['po_approval_id'].$cntr?>" >
-
-																					<option value='ALL' <?=($row['suppliers']=="ALL") ? "selected" : ""?>> ALL</option>
-
-																						<?php
-																							foreach(@$suptype as $rssup){
-																								
-																								$xsc = "";
-																								if($row['suppliers']!==""){
-																									if(in_array($rssup['ccode'], explode(",",$row['suppliers']))){
-																										$xsc = "selected";
-																									}
-																								}
-
-																								echo "<option value='".$rssup['ccode']."' ".$xsc."> ".$rssup['cdesc']." </option>";
-																							}
-																						?> 
-																					</select>
-																				</td>
-																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
-																					<button class="btn btn-danger btn-sm" type="button" onclick="potransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
-																				</td>
-																			</tr>
-
-																			<script>
-																				$(document).ready(function(e) {
-																					$('#selposuser<?=$row['po_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
-																					$('#selpoitmtyp<?=$row['po_approval_id'].$cntr?>').select2({width: '100%'});
-																					$('#selposutyp<?=$row['po_approval_id'].$cntr?>').select2({width: '100%'});
-																				});
-																			</script>
-																		<?php
-																				}
-																			}
-																		}
-																		?>
-																	</tbody>
-																</table> 
-
-															</div>
-
-														</div>
-
-													<!-- LEVEL 3 -->
-														<div id="level3" class="tab-pane fade in">
-
-															<div class="col-xs-12 nopadding">
-											
-																<div class="col-xs-2 nopadding"> 
-																	<button type="button" class="lvlamtcls btn btn-xs btn-primary" name="btnaddapplvl3" id="btnaddapplvl3" onClick="addpolevel(3,'POAPP3');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button>															
-																</div>
-
-																<div class="col-xs-2 nopadwleft"> 
-																	<b>Minimum Amount</b>
-																</div>
-
-																<div class="col-xs-2 nopadwleft"> 
-																	<input type="text" class="form-control input-xs" data-id="3" id="lvlamt3" name="lvlamt3" value="<?=$rwpoapphdramt[3]?>">
-																</div>
-
-																<div class="col-xs-3 nopadwleft" id="divlevel3amounts"> 
-																</div>
-
-															</div>
-
-															<div class="col-xs-12 border pre-scrollable" style="height: 150px; margin-top: 5px !important">
-
-																<table cellpadding="3px" width="100%" border="0" style="font-size: 14px" id="POAPP3">
-																	<thead>
-																		<tr>
-																			<td style="padding-top: 5px">User ID</td>
-																			<td style="padding-top: 5px">Item Type</td>
-																			<td style="padding-top: 5px">Supplier Type</td>
-																		</tr>
-																	</thead>
-
-																	<tbody>
-																		<?php
-																		if (mysqli_num_rows($resPOApps)!=0) {
-																			$cntr = 0;
-																			foreach ($rowPOresult as $row){
-																				if($row['po_approval_id']==3){
-																					$cntr++;
-																		?>	
-																			<tr>
-																				<td width="200px" style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
-																					<select class="form-control" name="selposuser<?=$row['po_approval_id'].$cntr?>" id="selposuser<?=$row['po_approval_id'].$cntr?>" >
-																						<?php
-																							foreach(@$ursnmse as $rsusr){
-																								if($rsusr['userid']==$row['userid']){
-																									$xscd = "selected";
-																								}else{
-																									$xscd = "";
-																								}
-																								echo "<option value='".$rsusr['userid']."' ".$xscd."> ".$rsusr['name']." </option>";
-																							}
-																						?> 
-																					</select>
-																				</td>
-																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">																
-																					<select required multiple class="form-control" name="selpoitmtyp<?=$row['po_approval_id'].$cntr?>[]" id="selpoitmtyp<?=$row['po_approval_id'].$cntr?>" >
-
-																					<option value='ALL' <?=($row['items']=="ALL") ? "selected" : ""?>> ALL</option>
-
-																						<?php
-																							foreach(@$itmtype as $rsitm){
-
-																								$xsc = "";
-																								if($row['items']!==""){
-																									if(in_array($rsitm['ccode'], explode(",",$row['items']))){
-																										$xsc = "selected";
-																									}
-																								}
-																								
-																								echo "<option value='".$rsitm['ccode']."' ".$xsc."> ".$rsitm['cdesc']." </option>";
-																							}
-																						?> 
-																					</select>  
-																				</td>
-																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
-																					<select required multiple class="form-control" name="selposutyp<?=$row['po_approval_id'].$cntr?>[]" id="selposutyp<?=$row['po_approval_id'].$cntr?>" >
-
-																					<option value='ALL' <?=($row['suppliers']=="ALL") ? "selected" : ""?>> ALL</option>
-
-																						<?php
-																							foreach(@$suptype as $rssup){
-																								
-																								$xsc = "";
-																								if($row['suppliers']!==""){
-																									if(in_array($rssup['ccode'], explode(",",$row['suppliers']))){
-																										$xsc = "selected";
-																									}
-																								}
-
-																								echo "<option value='".$rssup['ccode']."' ".$xsc."> ".$rssup['cdesc']." </option>";
-																							}
-																						?> 
-																					</select>
-																				</td>																				
-																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
-																					<button class="btn btn-danger btn-sm" type="button" onclick="potransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
-																				</td>
-																			</tr>
-
-																			<script>
-																				$(document).ready(function(e) {
-																					$('#selposuser<?=$row['po_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
-																					$('#selpoitmtyp<?=$row['po_approval_id'].$cntr?>').select2({width: '100%'});
-																					$('#selposutyp<?=$row['po_approval_id'].$cntr?>').select2({width: '100%'});
-																				});
-																			</script>
-																		<?php
-																				}
-																			}
-																		}
-																		?>
-																	</tbody>
-																</table> 
-
-															</div>
-
-														</div>
-
-												</div>
-
-											</div>
-
-
-										</form>
-
-
-
-													<div class="col-xs-12" style="margin-top: 10px !important; margin-left: 15px !important; padding-top: 10px !important">
-														<b>Default Email Body</b>
-														<div id="divPOBodyEmail" style="display:inline; padding-left:5px"></div>
-													</div>
-													<div class="col-xs-12" style="margin-left: 15px !important; margin-bottom: 15px !important;">
-														<textarea rows="5" class="form-control input-sm" name="txtPOBodyEmail" id="txtPOBodyEmail">													
-														</textarea>
-													</div>
-
-										
+										<div class="col-xs-1 nopadwtop2x" id="porefprmsg">
+										</div>                    
 									</div>
+
+									<div class="col-xs-12" style="margin-left: 15px !important">
+										<div class="col-xs-3 nopadwtop2x">
+											<b>Allow Item Code Change</b>
+											<div id="divPostRRprint" style="display:inline; padding-left:5px"></div>
+										</div>                    
+										<div class="col-xs-3 nopadwtop2x">
+											<?php
+												$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='ALLOW_PO_ITEM_CHANGE'"); 
+											
+												if (mysqli_num_rows($result)!=0) {
+													$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
+													$nvalue = $all_course_data['cvalue']; 												
+												}
+												else{
+													$nvalue = "";
+												}
+											?>
+											<select class="form-control input-sm selectpicker" name="selpoitmchng" id="selpoitmchng" onChange="setparamval('ALLOW_PO_ITEM_CHANGE',this.value,'poitmchange')">
+												<option value="0" <?php if ($nvalue==0) { echo "selected"; } ?>> NO </option>
+												<option value="1" <?php if ($nvalue==1) { echo "selected"; } ?>> YES </option>
+											</select>
+										</div>
+											
+										<div class="col-xs-1 nopadwtop2x" id="poitmchange">
+										</div>                    
+									</div>
+
+									<div class="col-xs-12" style="margin-bottom: 15px !important; margin-left: 15px !important">
+										<div class="col-xs-3 nopadwtop2x">
+											<b>Send Approval Email Notif.</b>
+											<div id="divPOEmailprint" style="display:inline; padding-left:5px"></div>
+										</div>                    
+										<div class="col-xs-3 nopadwtop2x">
+											<?php
+												$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='PO_APP_EMAIL'"); 
+											
+												if (mysqli_num_rows($result)!=0) {
+													$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
+													$nvalue = $all_course_data['cvalue']; 												
+												}
+												else{
+													$nvalue = "";
+												}
+											?>
+											<select class="form-control input-sm selectpicker" name="selpoautopost" id="selpoautopost" onChange="setparamval('PO_APP_EMAIL',this.value,'poemailmsg')">
+												<option value="0" <?php if ($nvalue==0) { echo "selected"; } ?>> NO </option>
+												<option value="1" <?php if ($nvalue==1) { echo "selected"; } ?>> YES </option>
+											</select>
+										</div>                   
+										<div class="col-xs-1 nopadwtop2x" id="poemailmsg">
+										</div>												
+									</div>
+
+										<?php
+											$resPOAppsHDR = mysqli_query($con,"SELECT * FROM `purchase_approvals` WHERE compcode='".$_SESSION['companyid']."'"); 
+											while($rowpoaph=mysqli_fetch_array($resPOAppsHDR, MYSQLI_ASSOC)){
+												$i = $rowpoaph['nlevel'];
+												$rwpoapphdramt[$i] = $rowpoaph['namount'];
+											}
+
+											$resPOApps = mysqli_query($con,"SELECT * FROM `purchase_approvals_id` WHERE compcode='".$_SESSION['companyid']."'"); 
+										?>
+
+
+									<form action="th_savepolevels.php" method="POST" name="frmPOLvls" id="frmPOLvls" onSubmit="return chkpolvlform();" target="_self">
+
+										<input type="hidden" name="tbLVL1count" id="tbLVL1count" value="0">
+										<input type="hidden" name="tbLVL2count" id="tbLVL2count" value="0">
+										<input type="hidden" name="tbLVL3count" id="tbLVL3count" value="0">
+
+										<div class="col-xs-12" style="padding-bottom: 5px !important">
+											<div class="col-xs-2">
+												<b>Approval Levels</b>
+											</div>                    
+											<div class="col-xs-3">
+												<button type="submit" class="btn btn-xs btn-success" name="btnsavePOApp" id="btnsavePOApp"><i class="fa fa-save"></i>&nbsp; &nbsp;Save Approvals</button>
+											</div>
+										</div>
+
+
+										<div class="col-xs-12" style="margin-top: 5px !important; margin-left: 15px !important">
+
+											<ul class="nav nav-tabs">
+												<li class="active"><a data-toggle="tab" href="#level1">Level 1</a></li>
+												<li><a data-toggle="tab" href="#level2">Level 2</a></li>
+												<li><a data-toggle="tab" href="#level3">Level 3</a></li>
+											</ul>
+
+
+											<div class="tab-content col-lg-12 nopadwtop2x">   
+
+												<!-- LEVEL 1 -->
+													<div id="level1" class="tab-pane fade in active">
+														<input type="hidden" data-id="2" id = "lvlamt1" name = "lvlamt1" value="0">
+														<div class="col-xs-12 nopadding">
+										
+															<div class="col-xs-2 nopadding"> 
+																<button type="button" class="btn btn-xs btn-primary" name="btnaddapplvl1" id="btnaddapplvl1" onClick="addpolevel(1,'POAPP1');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button> 															
+															</div>
+
+														</div>
+
+														<div class="col-xs-12 border pre-scrollable" style="height: 150px; margin-top: 5px !important">
+
+																<table cellpadding="3px" width="100%" border="0" style="font-size: 14px" id="POAPP1">
+																	<thead>
+																		<tr>
+																			<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">User ID</td>
+																			<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Item Type</td>
+																			<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Supplier Type</td>
+																			<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px"><small>Delete</small></td>
+																		</tr>
+																	</thead>
+																	<tbody>
+																		<?php
+																		if (mysqli_num_rows($resPOApps)!=0) {
+																			$cntr = 0;
+
+																			while($rowxcv=mysqli_fetch_array($resPOApps, MYSQLI_ASSOC)){
+																				$rowPOresult[] = $rowxcv;
+																			}
+
+																			foreach ($rowPOresult as $row){
+																				if($row['po_approval_id']==1){
+																					$cntr++;
+																		?>	
+																			<tr>
+																				<td width="200px" style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<select class="form-control" name="selposuser<?=$row['po_approval_id'].$cntr?>" id="selposuser<?=$row['po_approval_id'].$cntr?>" >
+
+																						<?php
+																							foreach(@$ursnmse as $rsusr){
+																								if($rsusr['userid']==$row['userid']){
+																									$xscd = "selected";
+																								}else{
+																									$xscd = "";
+																								}
+																								echo "<option value='".$rsusr['userid']."' ".$xscd."> ".$rsusr['name']." </option>";
+																							}
+																						?> 
+																					</select>
+																				</td>
+																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">																
+																					<select required multiple class="form-control" name="selpoitmtyp<?=$row['po_approval_id'].$cntr?>[]" id="selpoitmtyp<?=$row['po_approval_id'].$cntr?>" >
+
+																					<option value='ALL' <?=($row['items']=="ALL") ? "selected" : ""?>> ALL</option>
+
+																						<?php
+																							foreach(@$itmtype as $rsitm){
+
+																								$xsc = "";
+																								if($row['items']!=="" && $row['items']!==null){
+																									if(in_array($rsitm['ccode'], explode(",",$row['items']))){
+																										$xsc = "selected";
+																									}
+																								}
+																								
+																								echo "<option value='".$rsitm['ccode']."' ".$xsc."> ".$rsitm['cdesc']." </option>";
+																							}
+																						?> 
+																					</select>  
+																				</td>
+																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<select required multiple class="form-control" name="selposutyp<?=$row['po_approval_id'].$cntr?>[]" id="selposutyp<?=$row['po_approval_id'].$cntr?>" >
+
+																					<option value='ALL' <?=($row['suppliers']=="ALL") ? "selected" : ""?>> ALL</option>
+
+																						<?php
+																							foreach(@$suptype as $rssup){
+																								
+																								$xsc = "";
+																								if($row['suppliers']!=="" && $row['suppliers']!==null){
+																									if(in_array($rssup['ccode'], explode(",",$row['suppliers']))){
+																										$xsc = "selected";
+																									}
+																								}
+
+																								echo "<option value='".$rssup['ccode']."' ".$xsc."> ".$rssup['cdesc']." </option>";
+																							}
+																						?> 
+																					</select>
+																				</td>																					
+																				<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																					<button class="btn btn-danger btn-sm" type="button" onclick="potransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
+																				</td>
+																			</tr>
+
+																			<script>
+																				$(document).ready(function(e) {
+																					$('#selposuser<?=$row['po_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
+																					$('#selpoitmtyp<?=$row['po_approval_id'].$cntr?>').select2({width: '100%'});
+																					$('#selposutyp<?=$row['po_approval_id'].$cntr?>').select2({width: '100%'});
+																				});
+																			</script>
+																		<?php
+																				}
+																			}
+																		}
+																		?>
+																	</tbody>
+																</table> 
+
+														</div>
+
+													</div>
+
+												<!-- LEVEL 2 -->
+													<div id="level2" class="tab-pane fade in">
+
+														<div class="col-xs-12 nopadding">
+										
+															<div class="col-xs-2 nopadding"> 
+																<button type="button" class="btn btn-xs btn-primary" name="btnaddapplvl2" id="btnaddapplvl2" onClick="addpolevel(2,'POAPP2');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button>															
+															</div>
+
+															<div class="col-xs-2 nopadwleft"> 
+																<b>Minimum Amount</b>
+															</div>
+
+															<div class="col-xs-2 nopadwleft"> 
+																<input type="text" class="lvlamtcls form-control input-xs" data-id="2" id = "lvlamt2" name = "lvlamt2" value="<?=$rwpoapphdramt[2]?>">
+																
+															</div>
+
+															<div class="col-xs-3 nopadwleft" id="divlevel2amounts"> 
+																
+															</div>
+
+														</div>
+
+														<div class="col-xs-12 border pre-scrollable" style="height: 150px; margin-top: 5px !important">
+
+															<table cellpadding="3px" width="100%" border="0" style="font-size: 14px"  id="POAPP2">
+																<thead>
+																	<tr>
+																		<td style="padding-top: 5px">User ID</td>
+																		<td style="padding-top: 5px">Item Type</td>
+																		<td style="padding-top: 5px">Supplier Type</td>
+																	</tr>
+																</thead>
+
+																<tbody>
+																	<?php
+																	if (mysqli_num_rows($resPOApps)!=0) {
+																		$cntr = 0;
+																		foreach ($rowPOresult as $row){
+																			if(intval($row['po_approval_id'])==2){
+																				$cntr++;
+																	?>	
+																		<tr>
+																			<td width="200px" style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																				<select class="form-control" name="selposuser<?=$row['po_approval_id'].$cntr?>" id="selposuser<?=$row['po_approval_id'].$cntr?>" >
+																					<?php
+																						foreach(@$ursnmse as $rsusr){
+																							if($rsusr['userid']==$row['userid']){
+																								$xscd = "selected";
+																							}else{
+																								$xscd = "";
+																							}
+
+																							echo "<option value='".$rsusr['userid']."' ".$xscd."> ".$rsusr['name']." </option>";
+																						}
+																					?> 
+																				</select>
+																			</td>
+																			<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">																
+																				<select required multiple class="form-control" name="selpoitmtyp<?=$row['po_approval_id'].$cntr?>[]" id="selpoitmtyp<?=$row['po_approval_id'].$cntr?>" >
+
+																				<option value='ALL' <?=($row['items']=="ALL") ? "selected" : ""?>> ALL</option>
+
+																					<?php
+																						foreach(@$itmtype as $rsitm){
+
+																							$xsc = "";
+																							if($row['items']!==""){
+																								if(in_array($rsitm['ccode'], explode(",",$row['items']))){
+																									$xsc = "selected";
+																								}
+																							}
+																							
+																							echo "<option value='".$rsitm['ccode']."' ".$xsc."> ".$rsitm['cdesc']." </option>";
+																						}
+																					?> 
+																				</select>  
+																			</td>
+																			<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																				<select required multiple class="form-control" name="selposutyp<?=$row['po_approval_id'].$cntr?>[]" id="selposutyp<?=$row['po_approval_id'].$cntr?>" >
+
+																				<option value='ALL' <?=($row['suppliers']=="ALL") ? "selected" : ""?>> ALL</option>
+
+																					<?php
+																						foreach(@$suptype as $rssup){
+																							
+																							$xsc = "";
+																							if($row['suppliers']!==""){
+																								if(in_array($rssup['ccode'], explode(",",$row['suppliers']))){
+																									$xsc = "selected";
+																								}
+																							}
+
+																							echo "<option value='".$rssup['ccode']."' ".$xsc."> ".$rssup['cdesc']." </option>";
+																						}
+																					?> 
+																				</select>
+																			</td>
+																			<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																				<button class="btn btn-danger btn-sm" type="button" onclick="potransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
+																			</td>
+																		</tr>
+
+																		<script>
+																			$(document).ready(function(e) {
+																				$('#selposuser<?=$row['po_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
+																				$('#selpoitmtyp<?=$row['po_approval_id'].$cntr?>').select2({width: '100%'});
+																				$('#selposutyp<?=$row['po_approval_id'].$cntr?>').select2({width: '100%'});
+																			});
+																		</script>
+																	<?php
+																			}
+																		}
+																	}
+																	?>
+																</tbody>
+															</table> 
+
+														</div>
+
+													</div>
+
+												<!-- LEVEL 3 -->
+													<div id="level3" class="tab-pane fade in">
+
+														<div class="col-xs-12 nopadding">
+										
+															<div class="col-xs-2 nopadding"> 
+																<button type="button" class="lvlamtcls btn btn-xs btn-primary" name="btnaddapplvl3" id="btnaddapplvl3" onClick="addpolevel(3,'POAPP3');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button>															
+															</div>
+
+															<div class="col-xs-2 nopadwleft"> 
+																<b>Minimum Amount</b>
+															</div>
+
+															<div class="col-xs-2 nopadwleft"> 
+																<input type="text" class="form-control input-xs" data-id="3" id="lvlamt3" name="lvlamt3" value="<?=$rwpoapphdramt[3]?>">
+															</div>
+
+															<div class="col-xs-3 nopadwleft" id="divlevel3amounts"> 
+															</div>
+
+														</div>
+
+														<div class="col-xs-12 border pre-scrollable" style="height: 150px; margin-top: 5px !important">
+
+															<table cellpadding="3px" width="100%" border="0" style="font-size: 14px" id="POAPP3">
+																<thead>
+																	<tr>
+																		<td style="padding-top: 5px">User ID</td>
+																		<td style="padding-top: 5px">Item Type</td>
+																		<td style="padding-top: 5px">Supplier Type</td>
+																	</tr>
+																</thead>
+
+																<tbody>
+																	<?php
+																	if (mysqli_num_rows($resPOApps)!=0) {
+																		$cntr = 0;
+																		foreach ($rowPOresult as $row){
+																			if($row['po_approval_id']==3){
+																				$cntr++;
+																	?>	
+																		<tr>
+																			<td width="200px" style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																				<select class="form-control" name="selposuser<?=$row['po_approval_id'].$cntr?>" id="selposuser<?=$row['po_approval_id'].$cntr?>" >
+																					<?php
+																						foreach(@$ursnmse as $rsusr){
+																							if($rsusr['userid']==$row['userid']){
+																								$xscd = "selected";
+																							}else{
+																								$xscd = "";
+																							}
+																							echo "<option value='".$rsusr['userid']."' ".$xscd."> ".$rsusr['name']." </option>";
+																						}
+																					?> 
+																				</select>
+																			</td>
+																			<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">																
+																				<select required multiple class="form-control" name="selpoitmtyp<?=$row['po_approval_id'].$cntr?>[]" id="selpoitmtyp<?=$row['po_approval_id'].$cntr?>" >
+
+																				<option value='ALL' <?=($row['items']=="ALL") ? "selected" : ""?>> ALL</option>
+
+																					<?php
+																						foreach(@$itmtype as $rsitm){
+
+																							$xsc = "";
+																							if($row['items']!==""){
+																								if(in_array($rsitm['ccode'], explode(",",$row['items']))){
+																									$xsc = "selected";
+																								}
+																							}
+																							
+																							echo "<option value='".$rsitm['ccode']."' ".$xsc."> ".$rsitm['cdesc']." </option>";
+																						}
+																					?> 
+																				</select>  
+																			</td>
+																			<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																				<select required multiple class="form-control" name="selposutyp<?=$row['po_approval_id'].$cntr?>[]" id="selposutyp<?=$row['po_approval_id'].$cntr?>" >
+
+																				<option value='ALL' <?=($row['suppliers']=="ALL") ? "selected" : ""?>> ALL</option>
+
+																					<?php
+																						foreach(@$suptype as $rssup){
+																							
+																							$xsc = "";
+																							if($row['suppliers']!==""){
+																								if(in_array($rssup['ccode'], explode(",",$row['suppliers']))){
+																									$xsc = "selected";
+																								}
+																							}
+
+																							echo "<option value='".$rssup['ccode']."' ".$xsc."> ".$rssup['cdesc']." </option>";
+																						}
+																					?> 
+																				</select>
+																			</td>																				
+																			<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																				<button class="btn btn-danger btn-sm" type="button" onclick="potransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
+																			</td>
+																		</tr>
+
+																		<script>
+																			$(document).ready(function(e) {
+																				$('#selposuser<?=$row['po_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
+																				$('#selpoitmtyp<?=$row['po_approval_id'].$cntr?>').select2({width: '100%'});
+																				$('#selposutyp<?=$row['po_approval_id'].$cntr?>').select2({width: '100%'});
+																			});
+																		</script>
+																	<?php
+																			}
+																		}
+																	}
+																	?>
+																</tbody>
+															</table> 
+
+														</div>
+
+													</div>
+
+											</div>
+
+										</div>
+
+
+									</form>
+
+
+
+									<div class="col-xs-12" style="margin-top: 10px !important; margin-left: 15px !important; padding-top: 10px !important">
+										<b>Default Email Body</b>
+										<div id="divPOBodyEmail" style="display:inline; padding-left:5px"></div>
+									</div>
+									<div class="col-xs-12" style="margin-left: 15px !important; margin-bottom: 15px !important;">
+										<textarea rows="5" class="form-control input-sm" name="txtPOBodyEmail" id="txtPOBodyEmail">													
+										</textarea>
+									</div>
+
+									<div class="col-xs-12" style="margin-top: 5px !important; margin-left: 15px !important; padding-top: 10px !important">
+										<b>Default Delivery Details</b>
+									</div>
+									<div class="col-xs-12" style="margin-left: 15px !important; margin-bottom: 15px !important;">
+										<table width="100%" border="0">
+											<tr>
+												<td width="150">&nbsp;&nbsp;&nbsp;<b>Deliver To</b></td>
+												<td width="310" colspan="2" style="padding:2px">
+													<div class="col-xs-8 nopadding">
+														<div class="col-xs-12 nopadding">
+															<input type="text" class="form-control input-sm" id="txtpodefdelto" name="txtpodefdelto" width="20px" tabindex="1" placeholder="Enter Deliver To..."  size="60" autocomplete="off" onblur="setPODefs(this.value, 'PODEFDELTO', 'divPODefDelTo')">
+														</div> 
+													</div>	
+													<div class="col-xs-1 nopadwleft">
+														<div id="divPODefDelTo" style="display:inline; padding-left:5px"></div>
+													</div>			
+												</td>
+											</tr>
+											<tr>
+												<td>&nbsp;&nbsp;&nbsp;<b>Delivery Address</b></td>
+												<td colspan="2" style="padding:2px">
+													<div class="col-xs-8 nopadding">
+														<textarea class="form-control input-sm" id="txtpodefdeladd" name="txtpodefdeladd" placeholder="Enter Delivery Address..." autocomplete="off" onblur="setPODefs(this.value, 'PODEFDELADD', 'divPODefDelAdd')"><?=$compadd?></textarea>
+													</div>
+													<div class="col-xs-1 nopadwleft">
+														<div id="divPODefDelAdd" style="display:inline; padding-left:5px"></div>
+													</div>
+												</td>
+											</tr>					
+											<tr>
+												
+												<tH width="100">&nbsp;&nbsp;&nbsp;Contact Details:</tH>   
+												<td style="padding:2px">
+													<div class="col-xs-8 nopadding">
+														<div class="col-xs-4 nopadding">
+															<input type='text' class="form-control input-sm" id="txtpodefdelemail" name="txtpodefdelemail" placeholder="Email Address" value="<?=$compemail?>" onblur="setPODefs(this.value, 'PODEFDELEMAIL', 'divPODefDelEmail')"/>
+														</div>
+														<div class="col-xs-4 nopadwleft">
+															<input type='text' class="form-control input-sm" id="txtpodefdelphone" name="txtpodefdelphone" placeholder="Mobile No." value="<?=$compphone?>" onblur="setPODefs(this.value, 'PODEFDELPHONE', 'divPODefDelPhone')"/>
+														</div>
+														<div class="col-xs-4 nopadwleft">
+															<input type='text' class="form-control input-sm" id="txtpodefdelfax" name="txtpodefdelfax" placeholder="Fax No." value="<?=$compfax?>" onblur="setPODefs(this.value, 'PODEFDELFAX', 'divPODefDelFax')"/>
+														</div>
+													</div>
+													<div class="col-xs-3 nopadwleft">
+														<div id="divPODefDelEmail" style="display:inline; padding-left:5px"></div>
+														<div id="divPODefDelPhone" style="display:inline; padding-left:5px"></div>
+														<div id="divPODefDelFax" style="display:inline; padding-left:5px"></div>
+													</div>
+												</td>
+											</tr>
+
+											<tr>
+												<td width="150" colspan="2"><br><br></td>
+
+											</tr>
+
+										</table>
+									</div>
+
+									
+								</div>
 
 								<p data-toggle="collapse" data-target="#itmwrr"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Receiving</b></u></p>
 								
-									<div class="collapse" id="itmwrr">             	
-										<div class="col-xs-12">
-											<div class="col-xs-2 nopadwtop2x">
-												<b>Auto post upon printing</b>
-												<div id="divPostRRprint" style="display:inline; padding-left:5px"></div>
-											</div>                    
-											<div class="col-xs-3 nopadwtop2x">
-												<?php
-													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='AUTO_POST_RR'"); 
-												
-													if (mysqli_num_rows($result)!=0) {
-														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
-														$nvalue = $all_course_data['cvalue']; 												
-													}
-													else{
-														$nvalue = "";
-													}
-												?>
-												<select class="form-control input-sm selectpicker" name="selrrautopost" id="selrrautopost" onChange="setparamval('AUTO_POST_RR',this.value,'rrpostmsg')">
-													<option value="0" <?php if ($nvalue==0) { echo "selected"; } ?>> NO </option>
-													<option value="1" <?php if ($nvalue==1) { echo "selected"; } ?>> YES </option>
-												</select>
-											</div>
-												
-											<div class="col-xs-1 nopadwtop2x" id="rrpostmsg">
-											</div>                    
+								<div class="collapse" id="itmwrr">             	
+									<div class="col-xs-12">
+										<div class="col-xs-2 nopadwtop2x">
+											<b>Auto post upon printing</b>
+											<div id="divPostRRprint" style="display:inline; padding-left:5px"></div>
+										</div>                    
+										<div class="col-xs-3 nopadwtop2x">
+											<?php
+												$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='AUTO_POST_RR'"); 
+											
+												if (mysqli_num_rows($result)!=0) {
+													$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
+													$nvalue = $all_course_data['cvalue']; 												
+												}
+												else{
+													$nvalue = "";
+												}
+											?>
+											<select class="form-control input-sm selectpicker" name="selrrautopost" id="selrrautopost" onChange="setparamval('AUTO_POST_RR',this.value,'rrpostmsg')">
+												<option value="0" <?php if ($nvalue==0) { echo "selected"; } ?>> NO </option>
+												<option value="1" <?php if ($nvalue==1) { echo "selected"; } ?>> YES </option>
+											</select>
 										</div>
-										
-										<div class="col-xs-12">
-											<div class="col-xs-2 nopadwtop2x">
-												<b>Reference PO</b>
-												<div id="divcRefPORR" style="display:inline; padding-left:5px"></div>
-											</div>                   
-											<div class="col-xs-3 nopadwtop2x">
-												<?php
-													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='ALLOW_REF_RR'"); 										
-													if (mysqli_num_rows($result)!=0) {
-														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
-														$nvalue = $all_course_data['cvalue']; 												
-													}
-													else{
-														$nvalue = "";
-													}
-												?>
-												<select class="form-control input-sm selectpicker" name="selrrallowref" id="selrrallowref" onChange="setparamval('ALLOW_REF_RR',this.value,'rrallowmsg')">
-													<option value="0" <?php if ($nvalue==0) { echo "selected"; } ?>> Allow No Reference </option>
-													<option value="1" <?php if ($nvalue==1) { echo "selected"; } ?>> W/ Reference (Check Qty) </option>
-													<option value="2" <?php if ($nvalue==2) { echo "selected"; } ?>> W/ Reference (Open Qty) </option>
-												</select>
-											</div>
-												
-											<div class="col-xs-1 nopadwtop2x" id="rrallowmsg">
-											</div>                    
-										</div>               
+											
+										<div class="col-xs-1 nopadwtop2x" id="rrpostmsg">
+										</div>                    
 									</div>
 									
-									
+									<div class="col-xs-12">
+										<div class="col-xs-2 nopadwtop2x">
+											<b>Reference PO</b>
+											<div id="divcRefPORR" style="display:inline; padding-left:5px"></div>
+										</div>                   
+										<div class="col-xs-3 nopadwtop2x">
+											<?php
+												$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='ALLOW_REF_RR'"); 										
+												if (mysqli_num_rows($result)!=0) {
+													$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);											
+													$nvalue = $all_course_data['cvalue']; 												
+												}
+												else{
+													$nvalue = "";
+												}
+											?>
+											<select class="form-control input-sm selectpicker" name="selrrallowref" id="selrrallowref" onChange="setparamval('ALLOW_REF_RR',this.value,'rrallowmsg')">
+												<option value="0" <?php if ($nvalue==0) { echo "selected"; } ?>> Allow No Reference </option>
+												<option value="1" <?php if ($nvalue==1) { echo "selected"; } ?>> W/ Reference (Check Qty) </option>
+												<option value="2" <?php if ($nvalue==2) { echo "selected"; } ?>> W/ Reference (Open Qty) </option>
+											</select>
+										</div>
+											
+										<div class="col-xs-1 nopadwtop2x" id="rrallowmsg">
+										</div>                    
+									</div>               
+								</div>
+																		
 								<p data-toggle="collapse" data-target="#itmpret"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Purchase Return</b></u></p>
 								
-									<div class="collapse" id="itmpret">              	
-										<div class="col-xs-12">
-											<div class="col-xs-2 nopadwtop2x">
-												<b>Auto post upon printing</b>
-												<div id="divcPostPRprint" style="display:inline; padding-left:5px">
-												</div>
+								<div class="collapse" id="itmpret">              	
+									<div class="col-xs-12">
+										<div class="col-xs-2 nopadwtop2x">
+											<b>Auto post upon printing</b>
+											<div id="divcPostPRprint" style="display:inline; padding-left:5px">
 											</div>
-												
-											<div class="col-xs-3 nopadwtop2x">
-												<?php
-													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='AUTO_POST_PR'"); 										
-													if (mysqli_num_rows($result)!=0) {
-														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);													
-														$nvalue = $all_course_data['cvalue']; 												
-													}
-													else{
-														$nvalue = "";
-													}
-												?>
-												<select class="form-control input-sm selectpicker" name="selpretautopost" id="selpretautopost" onChange="setparamval('AUTO_POST_PR',this.value,'pretpostmsg')">
-													<option value="0" <?php if ($nvalue==0) { echo "selected"; } ?>> NO </option>
-													<option value="1" <?php if ($nvalue==1) { echo "selected"; } ?>> YES </option>
-												</select>
-											</div>
-												
-											<div class="col-xs-1 nopadwtop2x" id="pretpostmsg">
-											</div>                    
-										</div>              	               
-									</div>             
+										</div>
+											
+										<div class="col-xs-3 nopadwtop2x">
+											<?php
+												$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='AUTO_POST_PR'"); 										
+												if (mysqli_num_rows($result)!=0) {
+													$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);													
+													$nvalue = $all_course_data['cvalue']; 												
+												}
+												else{
+													$nvalue = "";
+												}
+											?>
+											<select class="form-control input-sm selectpicker" name="selpretautopost" id="selpretautopost" onChange="setparamval('AUTO_POST_PR',this.value,'pretpostmsg')">
+												<option value="0" <?php if ($nvalue==0) { echo "selected"; } ?>> NO </option>
+												<option value="1" <?php if ($nvalue==1) { echo "selected"; } ?>> YES </option>
+											</select>
+										</div>
+											
+										<div class="col-xs-1 nopadwtop2x" id="pretpostmsg">
+										</div>                    
+									</div>              	               
+								</div>             
 							</div>
 						<!-- PURCHASES SETUP END -->
 									
@@ -3466,243 +3525,243 @@ if(mysqli_num_rows($sql) != 0){
 
 						<!-- INVENTORY SETUP -->
 							<div id="invntry" class="tab-pane fade in">
-										<div class="col-xs-12">
-											<div class="col-xs-2 nopadwtop">
-												<b>Inventory Type</b>
-												<div id="divInvChecking" style="display:inline; padding-left:5px">
-												</div>
-											</div>                    
-											<div class="col-xs-3 nopadwtop">
-												<?php
-													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='INVSYSTEM'"); 
-									
-													if (mysqli_num_rows($result)!=0) {
-														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
-														$nvalue = $all_course_data['cvalue']; 							
-													}
-													else{
-														$nvalue = "";
-													}
-												?>
-												<select class="form-control input-sm selectpicker" name="selchkinvsys" id="selchkinvsys" onChange="setparamval('INVSYSTEM',this.value,'invsyschkmsg')">
-													<option value="periodic" <?php if ($nvalue=='periodic') { echo "selected"; } ?>> Periodic Inventory</option>
-													<option value="perpetual" <?php if ($nvalue=='perpetual') { echo "selected"; } ?>> Perpetual Inventory </option>
-												</select>
-											</div>                    
-											<div class="col-xs-1 nopadwtop" id="invsyschkmsg">
-											</div>                    
-										</div> 
+								<div class="col-xs-12">
+									<div class="col-xs-2 nopadwtop">
+										<b>Inventory Type</b>
+										<div id="divInvChecking" style="display:inline; padding-left:5px">
+										</div>
+									</div>                    
+									<div class="col-xs-3 nopadwtop">
+										<?php
+											$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='INVSYSTEM'"); 
+							
+											if (mysqli_num_rows($result)!=0) {
+												$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
+												$nvalue = $all_course_data['cvalue']; 							
+											}
+											else{
+												$nvalue = "";
+											}
+										?>
+										<select class="form-control input-sm selectpicker" name="selchkinvsys" id="selchkinvsys" onChange="setparamval('INVSYSTEM',this.value,'invsyschkmsg')">
+											<option value="periodic" <?php if ($nvalue=='periodic') { echo "selected"; } ?>> Periodic Inventory</option>
+											<option value="perpetual" <?php if ($nvalue=='perpetual') { echo "selected"; } ?>> Perpetual Inventory </option>
+										</select>
+									</div>                    
+									<div class="col-xs-1 nopadwtop" id="invsyschkmsg">
+									</div>                    
+								</div> 
 
-									<div class="col-xs-12">
-										<div class="col-xs-2 nopadwtop">
-											<b>Inventory Checking</b>
-											<div id="divInvChecking" style="display:inline; padding-left:5px">
-											</div>
-										</div>                    
-										<div class="col-xs-3 nopadwtop">
-											<?php
-												$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='".$_SESSION['companyid']."' and ccode='INVPOST'"); 
-								
-												if (mysqli_num_rows($result)!=0) {
-													$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
-													$nvalue = $all_course_data['cvalue']; 							
-												}
-												else{
-													$nvalue = "";
-												}
-											?>
-											<select class="form-control input-sm selectpicker" name="selchkinv" id="selchkinv" onChange="setparamval('INVPOST',this.value,'invchkmsg')">
-												<option value="1" <?php if ($nvalue==1) { echo "selected"; } ?>> Don't Check Available Inventory </option>
-												<option value="0" <?php if ($nvalue==0) { echo "selected"; } ?>> Always Check Available Inventory </option>
-											</select>
-										</div>                    
-										<div class="col-xs-1 nopadwtop" id="invchkmsg">
-										</div>                    
-									</div> 
+								<div class="col-xs-12">
+									<div class="col-xs-2 nopadwtop">
+										<b>Inventory Checking</b>
+										<div id="divInvChecking" style="display:inline; padding-left:5px">
+										</div>
+									</div>                    
+									<div class="col-xs-3 nopadwtop">
+										<?php
+											$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='".$_SESSION['companyid']."' and ccode='INVPOST'"); 
+							
+											if (mysqli_num_rows($result)!=0) {
+												$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);						 
+												$nvalue = $all_course_data['cvalue']; 							
+											}
+											else{
+												$nvalue = "";
+											}
+										?>
+										<select class="form-control input-sm selectpicker" name="selchkinv" id="selchkinv" onChange="setparamval('INVPOST',this.value,'invchkmsg')">
+											<option value="1" <?php if ($nvalue==1) { echo "selected"; } ?>> Don't Check Available Inventory </option>
+											<option value="0" <?php if ($nvalue==0) { echo "selected"; } ?>> Always Check Available Inventory </option>
+										</select>
+									</div>                    
+									<div class="col-xs-1 nopadwtop" id="invchkmsg">
+									</div>                    
+								</div> 
 
-									<?php
-										$sqlempsec = mysqli_query($con,"select A.nid, A.cdesc From locations A Where A.compcode='$company' and A.cstatus='ACTIVE' Order By A.cdesc");
-										$arrseclist[] = 0;
-										$rowdetloc = $sqlempsec->fetch_all(MYSQLI_ASSOC);
-										foreach($rowdetloc as $row0){
-											$arrallsec[] = array('nid' => $row0['nid'], 'cdesc' => $row0['cdesc']);
+								<?php
+									$sqlempsec = mysqli_query($con,"select A.nid, A.cdesc From locations A Where A.compcode='$company' and A.cstatus='ACTIVE' Order By A.cdesc");
+									$arrseclist[] = 0;
+									$rowdetloc = $sqlempsec->fetch_all(MYSQLI_ASSOC);
+									foreach($rowdetloc as $row0){
+										$arrallsec[] = array('nid' => $row0['nid'], 'cdesc' => $row0['cdesc']);
+									}
+
+									$sqlparams = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='".$_SESSION['companyid']."' and ccode in ('DEF_WHOUT','DEF_WHIN','DEF_PROUT','DEF_SRIN','MES_REQ_FROM','MES_REQ_TO')");
+									$rowdetprms = $sqlparams->fetch_all(MYSQLI_ASSOC);
+
+									$def_whout = "";
+									$def_whin = "";
+									$def_prout = "";
+									$def_srin = "";
+
+									$def_matreqfrm = "";
+									$def_matreqtop = "";
+									foreach($rowdetprms as $rowx){
+
+										if($rowx['ccode']=="DEF_WHOUT"){
+											$def_whout = $rowx['cvalue'];
 										}
-
-										$sqlparams = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='".$_SESSION['companyid']."' and ccode in ('DEF_WHOUT','DEF_WHIN','DEF_PROUT','DEF_SRIN','MES_REQ_FROM','MES_REQ_TO')");
-										$rowdetprms = $sqlparams->fetch_all(MYSQLI_ASSOC);
-
-										$def_whout = "";
-										$def_whin = "";
-										$def_prout = "";
-										$def_srin = "";
-
-										$def_matreqfrm = "";
-										$def_matreqtop = "";
-										foreach($rowdetprms as $rowx){
-
-											if($rowx['ccode']=="DEF_WHOUT"){
-												$def_whout = $rowx['cvalue'];
-											}
-											
-											if($rowx['ccode']=="DEF_WHIN"){
-												$def_whin = $rowx['cvalue'];
-											}
-
-											if($rowx['ccode']=="DEF_PROUT"){
-												$def_prout = $rowx['cvalue'];
-											}
-
-											if($rowx['ccode']=="DEF_SRIN"){
-												$def_srin = $rowx['cvalue'];
-											}
-
-											if($rowx['ccode']=="MES_REQ_FROM"){
-												$def_matreqfrm = $rowx['cvalue'];
-											}
-
-											if($rowx['ccode']=="MES_REQ_TO"){
-												$def_matreqtop = $rowx['cvalue'];
-											}
 										
+										if($rowx['ccode']=="DEF_WHIN"){
+											$def_whin = $rowx['cvalue'];
 										}
-									?>
+
+										if($rowx['ccode']=="DEF_PROUT"){
+											$def_prout = $rowx['cvalue'];
+										}
+
+										if($rowx['ccode']=="DEF_SRIN"){
+											$def_srin = $rowx['cvalue'];
+										}
+
+										if($rowx['ccode']=="MES_REQ_FROM"){
+											$def_matreqfrm = $rowx['cvalue'];
+										}
+
+										if($rowx['ccode']=="MES_REQ_TO"){
+											$def_matreqtop = $rowx['cvalue'];
+										}
 									
+									}
+								?>
+								
+								<div class="col-xs-12">
+									<div class="col-xs-2 nopadwtop">
+										<b>Finished Goods (Out)</b>
+										<div id="divInvChecking" style="display:inline; padding-left:5px">
+										</div>
+									</div> 
+									<div class="col-xs-3 nopadwtop">
+										<select class="form-control input-sm" name="selfgout" id="selfgout" onChange="setparamval('DEF_WHOUT',this.value,'invdefwhout')">
+											<?php
+													foreach($arrallsec as $localocs){
+												?>
+													<option value="<?php echo $localocs['nid'];?>" <?=($def_whout==$localocs['nid']) ? "selected" : ""?>><?php echo $localocs['cdesc'];?></option>										
+												<?php	
+													}						
+												?>
+										</select>
+									</div>
+									<div class="col-xs-1 nopadwtop" id="invdefwhout">
+									</div> 
+								</div>
+
+								<div class="col-xs-12">
+									<div class="col-xs-2 nopadwtop">
+										<b>Main Warehouse (In)</b>
+										<div id="divInvChecking" style="display:inline; padding-left:5px">
+										</div>
+									</div>
+									<div class="col-xs-3 nopadwtop">
+										<select class="form-control input-sm" name="selwhiin" id="selwhiin" onChange="setparamval('DEF_WHIN',this.value,'invdefwhin')">
+											<?php
+												$issel = 0;
+													foreach($arrallsec as $localocs){
+														$issel++;
+												?>
+													<option value="<?php echo $localocs['nid'];?>" <?=($def_whin==$localocs['nid']) ? "selected" : ""?>><?php echo $localocs['cdesc'];?></option>										
+												<?php	
+													}						
+												?>
+										</select>
+									</div>
+									<div class="col-xs-1 nopadwtop" id="invdefwhin">
+									</div>
+								</div>
+
+								<div class="col-xs-12">
+									<div class="col-xs-2 nopadwtop">
+										<b>Purchase Return (Out)</b>
+										<div id="divInvChecking" style="display:inline; padding-left:5px">
+										</div>
+									</div> 
+									<div class="col-xs-3 nopadwtop">
+										<select class="form-control input-sm" name="selprout" id="selprout" onChange="setparamval('DEF_PROUT',this.value,'invdefprout')">
+											<?php
+												$issel = 0;
+													foreach($arrallsec as $localocs){
+														$issel++;
+												?>
+													<option value="<?php echo $localocs['nid'];?>" <?=($def_prout==$localocs['nid']) ? "selected" : ""?>><?php echo $localocs['cdesc'];?></option>										
+												<?php	
+													}						
+												?>
+										</select>
+									</div>
+									<div class="col-xs-1 nopadwtop" id="invdefprout">
+									</div>
+								</div>
+
+								<div class="col-xs-12">
+									<div class="col-xs-2 nopadwtop">
+										<b>Sales Return (In)</b>
+										<div id="divInvChecking" style="display:inline; padding-left:5px">
+										</div>
+									</div>
+									<div class="col-xs-3 nopadwtop">
+										<select class="form-control input-sm" name="selsrin" id="selsrin" onChange="setparamval('DEF_SRIN',this.value,'invdefsrin')">
+											<?php
+												$issel = 0;
+													foreach($arrallsec as $localocs){
+														$issel++;
+												?>
+													<option value="<?php echo $localocs['nid'];?>" <?=($def_srin==$localocs['nid']) ? "selected" : ""?>><?php echo $localocs['cdesc'];?></option>										
+												<?php	
+													}						
+												?>
+										</select>
+									</div>
+									<div class="col-xs-1 nopadwtop" id="invdefsrin">
+									</div>
+								</div>
+								
+
+								<p data-toggle="collapse" data-target="#mescollapse" style="margin-top:10px"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>MES Settings</b></u> <i></i></p>
+
+								<div class="collapse" id="mescollapse">
+										
 									<div class="col-xs-12">
 										<div class="col-xs-2 nopadwtop">
-											<b>Finished Goods (Out)</b>
-											<div id="divInvChecking" style="display:inline; padding-left:5px">
-											</div>
+											<b>Material Request (From)</b>												
 										</div> 
 										<div class="col-xs-3 nopadwtop">
-											<select class="form-control input-sm" name="selfgout" id="selfgout" onChange="setparamval('DEF_WHOUT',this.value,'invdefwhout')">
+											<select class="form-control input-sm" name="selfgout" id="selfgout" onChange="setparamval('MES_REQ_FROM',this.value,'matreqfrom')">
 												<?php
 														foreach($arrallsec as $localocs){
 													?>
-														<option value="<?php echo $localocs['nid'];?>" <?=($def_whout==$localocs['nid']) ? "selected" : ""?>><?php echo $localocs['cdesc'];?></option>										
+														<option value="<?php echo $localocs['nid'];?>" <?=($def_matreqfrm==$localocs['nid']) ? "selected" : ""?>><?php echo $localocs['cdesc'];?></option>										
 													<?php	
 														}						
 													?>
 											</select>
 										</div>
-										<div class="col-xs-1 nopadwtop" id="invdefwhout">
+										<div class="col-xs-1 nopadwtop" id="matreqfrom">
 										</div> 
 									</div>
 
 									<div class="col-xs-12">
 										<div class="col-xs-2 nopadwtop">
-											<b>Main Warehouse (In)</b>
-											<div id="divInvChecking" style="display:inline; padding-left:5px">
-											</div>
+											<b>Material Request (To)</b>												
 										</div>
 										<div class="col-xs-3 nopadwtop">
-											<select class="form-control input-sm" name="selwhiin" id="selwhiin" onChange="setparamval('DEF_WHIN',this.value,'invdefwhin')">
+											<select class="form-control input-sm" name="selwhiin" id="selwhiin" onChange="setparamval('MES_REQ_TO',this.value,'matreqto')">
 												<?php
 													$issel = 0;
 														foreach($arrallsec as $localocs){
 															$issel++;
 													?>
-														<option value="<?php echo $localocs['nid'];?>" <?=($def_whin==$localocs['nid']) ? "selected" : ""?>><?php echo $localocs['cdesc'];?></option>										
+														<option value="<?php echo $localocs['nid'];?>" <?=($def_matreqtop==$localocs['nid']) ? "selected" : ""?>><?php echo $localocs['cdesc'];?></option>										
 													<?php	
 														}						
 													?>
 											</select>
 										</div>
-										<div class="col-xs-1 nopadwtop" id="invdefwhin">
+										<div class="col-xs-1 nopadwtop" id="matreqto">
 										</div>
 									</div>
 
-									<div class="col-xs-12">
-										<div class="col-xs-2 nopadwtop">
-											<b>Purchase Return (Out)</b>
-											<div id="divInvChecking" style="display:inline; padding-left:5px">
-											</div>
-										</div> 
-										<div class="col-xs-3 nopadwtop">
-											<select class="form-control input-sm" name="selprout" id="selprout" onChange="setparamval('DEF_PROUT',this.value,'invdefprout')">
-												<?php
-													$issel = 0;
-														foreach($arrallsec as $localocs){
-															$issel++;
-													?>
-														<option value="<?php echo $localocs['nid'];?>" <?=($def_prout==$localocs['nid']) ? "selected" : ""?>><?php echo $localocs['cdesc'];?></option>										
-													<?php	
-														}						
-													?>
-											</select>
-										</div>
-										<div class="col-xs-1 nopadwtop" id="invdefprout">
-										</div>
-									</div>
-
-									<div class="col-xs-12">
-										<div class="col-xs-2 nopadwtop">
-											<b>Sales Return (In)</b>
-											<div id="divInvChecking" style="display:inline; padding-left:5px">
-											</div>
-										</div>
-										<div class="col-xs-3 nopadwtop">
-											<select class="form-control input-sm" name="selsrin" id="selsrin" onChange="setparamval('DEF_SRIN',this.value,'invdefsrin')">
-												<?php
-													$issel = 0;
-														foreach($arrallsec as $localocs){
-															$issel++;
-													?>
-														<option value="<?php echo $localocs['nid'];?>" <?=($def_srin==$localocs['nid']) ? "selected" : ""?>><?php echo $localocs['cdesc'];?></option>										
-													<?php	
-														}						
-													?>
-											</select>
-										</div>
-										<div class="col-xs-1 nopadwtop" id="invdefsrin">
-										</div>
-									</div>
-									
-
-									<p data-toggle="collapse" data-target="#mescollapse" style="margin-top:10px"><i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>MES Settings</b></u> <i></i></p>
-
-									<div class="collapse" id="mescollapse">
-											
-										<div class="col-xs-12">
-											<div class="col-xs-2 nopadwtop">
-												<b>Material Request (From)</b>												
-											</div> 
-											<div class="col-xs-3 nopadwtop">
-												<select class="form-control input-sm" name="selfgout" id="selfgout" onChange="setparamval('MES_REQ_FROM',this.value,'matreqfrom')">
-													<?php
-															foreach($arrallsec as $localocs){
-														?>
-															<option value="<?php echo $localocs['nid'];?>" <?=($def_matreqfrm==$localocs['nid']) ? "selected" : ""?>><?php echo $localocs['cdesc'];?></option>										
-														<?php	
-															}						
-														?>
-												</select>
-											</div>
-											<div class="col-xs-1 nopadwtop" id="matreqfrom">
-											</div> 
-										</div>
-
-										<div class="col-xs-12">
-											<div class="col-xs-2 nopadwtop">
-												<b>Material Request (To)</b>												
-											</div>
-											<div class="col-xs-3 nopadwtop">
-												<select class="form-control input-sm" name="selwhiin" id="selwhiin" onChange="setparamval('MES_REQ_TO',this.value,'matreqto')">
-													<?php
-														$issel = 0;
-															foreach($arrallsec as $localocs){
-																$issel++;
-														?>
-															<option value="<?php echo $localocs['nid'];?>" <?=($def_matreqtop==$localocs['nid']) ? "selected" : ""?>><?php echo $localocs['cdesc'];?></option>										
-														<?php	
-															}						
-														?>
-												</select>
-											</div>
-											<div class="col-xs-1 nopadwtop" id="matreqto">
-											</div>
-										</div>
-
-									</div>
+								</div>
 
 							</div>						
 						<!-- INVENTORY SETUP END 
@@ -5258,19 +5317,19 @@ if(mysqli_num_rows($sql) != 0){
 			});
 
 			$("#txtPOBodyEmail").on("blur", function(){
-					$.ajax({
-						url: 'updtequote.php',
-						data: { val: $(this).val(), nme:"POEMAILBODY" },
-						dataType: "text",
-							success: function(response){
+				$.ajax({
+					url: 'updtequote.php',
+					data: { val: $(this).val(), nme:"POEMAILBODY" },
+					dataType: "text",
+						success: function(response){
 
-								if(response.trim() == "True"){
+							if(response.trim() == "True"){
 
-									$("#divPOBodyEmail").html("Header Saved!");
+								$("#divPOBodyEmail").html("Saved!");
 
-								}
-							},
-					});
+							}
+						},
+				});
 			});
 
 			$("#txtQuotePrintHdr").on("blur", function(){
@@ -5496,6 +5555,7 @@ if(mysqli_num_rows($sql) != 0){
 									$("#txtPOBodyEmail").val(item.cdesc);
 							}
 
+<<<<<<< HEAD
 							if(quotetype == 'QUOTE_RMKS') {
 								if(item.ccode == 'QUOTE_RMKS') {
 									$("#QuoteRemarks").val(item.cdesc);
@@ -5506,6 +5566,31 @@ if(mysqli_num_rows($sql) != 0){
 								}
 							}
 							
+=======
+							if(item.ccode=='PODEFDELTO'){
+									$("#txtpodefdelto").val(item.cdesc);
+							}
+
+
+							if(item.ccode=='PODEFDELADD'){
+									$("#txtpodefdeladd").val(item.cdesc);
+							}
+
+
+							if(item.ccode=='PODEFDELEMAIL'){
+									$("#txtpodefdelemail").val(item.cdesc);
+							}
+
+							if(item.ccode=='PODEFDELPHONE'){
+									$("#txtpodefdelphone").val(item.cdesc);
+							}
+
+
+							if(item.ccode=='PODEFDELFAX'){
+									$("#txtpodefdelfax").val(item.cdesc);
+							}
+
+>>>>>>> maita
 
 					});     
 				}
@@ -6992,5 +7077,21 @@ if(mysqli_num_rows($sql) != 0){
 				
 			}
 		})
+	}
+
+	function setPODefs(valxz, defID, bodyxID){
+		$.ajax({
+			url: 'updtequote.php',
+			data: { val: valxz, nme: defID },
+			dataType: "text",
+				success: function(response){
+
+					if(response.trim() == "True"){
+
+						$("#"+bodyxID).html("<i class=\"fa fa-check\" style=\"color:green;\"></i>");
+
+					}
+				},
+		});
 	}
 </script>

@@ -199,15 +199,18 @@
          <div id="menu1" class="tab-pane fade" style="padding-left:10px; padding-top:10px;">
              <p>
 
-                 <input type="button" value="Add Contact" name="btnNewCont" id="btnNewCont" class="btn btn-primary btn-xs" onClick="addcontlist();">
+                <input type="button" value="Add Contact" name="btnNewCont" id="btnNewCont" class="btn btn-primary btn-xs" onClick="addcontlist();">
             
 	            <input name="hdncontlistcnt" id="hdncontlistcnt" type="hidden" value="0">
 	            <br>
-								<table width="150%" border="0" cellpadding="2" id="myContactDetTable">
+				<table width="150%" border="0" cellpadding="2" id="myContactDetTable">
                   <tr>
                     <th scope="col" width="200">Name</th>
                     <th scope="col" width="180">Designation</th>
                     <th scope="col" width="180">Department</th>
+					<th scope="col" width="180">Email Add</th>
+					<th scope="col" width="180">Phone No.</th>
+					<th scope="col" width="180">Fax No.</th>
                       <?php
                           $arrcontctsdet = array();
                           $sql = "Select * From contacts_types where compcode='$company'";
@@ -1195,20 +1198,25 @@ function setgrpvals(code,desc,r){
     var b=a.insertCell(0);
     var c=a.insertCell(1);
     var d=a.insertCell(2);
+	var d1=a.insertCell(3);
+	var d2=a.insertCell(4);
+	var d3=a.insertCell(5);
 
     b.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='required form-control input-xs' id='txtConNme"+lastRow+"' name='txtConNme"+lastRow+"' value=''></div>";
     c.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConDes"+lastRow+"' name='txtConDes"+lastRow+"' value=''> </div>";
     d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConDept"+lastRow+"' name='txtConDept"+lastRow+"' value=''> </div>";
+	d1.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConEmail"+lastRow+"' name='txtConEmail"+lastRow+"' value=''> </div>";
+	d2.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConMob"+lastRow+"' name='txtConMob"+lastRow+"' value=''> </div>";
+	d3.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConFax"+lastRow+"' name='txtConFax"+lastRow+"' value=''> </div>";
 
-    $cntng = 2;
+    $cntng = 5;
     var xz = $("#conctsadddet").val();
-			$.each(jQuery.parseJSON(xz), function() { 
-				$cntng = $cntng + 1;
-        var e=a.insertCell($cntng);
+	$.each(jQuery.parseJSON(xz), function() { 
+		$cntng = $cntng + 1;
+		var e=a.insertCell($cntng);
 
-        e.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConAdd"+this['cid']+lastRow+"' name='txtConAdd"+this['cid']+lastRow+"' value=''> </div>";
-
-			});
+		e.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConAdd"+this['cid']+lastRow+"' name='txtConAdd"+this['cid']+lastRow+"' value=''> </div>";
+	});
 
     $cntng = $cntng + 1
     var h=a.insertCell($cntng);
@@ -1226,11 +1234,11 @@ function adddeladdlist(){
 	var d=a.insertCell(2);
 	var e=a.insertCell(3);
 	var f=a.insertCell(4);
-  var h=a.insertCell(5);
+  	var h=a.insertCell(5);
 	
 	b.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='required form-control input-sm' id='txtdeladdno"+lastRow+"' name='txtdeladdno"+lastRow+"' value=''></div>";
 	c.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtdeladdcity"+lastRow+"' name='txtdeladdcity"+lastRow+"' value=''> </div>";
-  d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtdeladdstt"+lastRow+"' name='txtdeladdstt"+lastRow+"' value=''> </div>";
+  	d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtdeladdstt"+lastRow+"' name='txtdeladdstt"+lastRow+"' value=''> </div>";
 	e.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtdeladdcntr"+lastRow+"' name='txtdeladdcntr"+lastRow+"' value=''> </div>";
 	f.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtdeladdzip"+lastRow+"' name='txtdeladdzip"+lastRow+"' value=''> </div>";
 	

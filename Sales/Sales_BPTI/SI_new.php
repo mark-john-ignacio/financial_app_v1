@@ -1491,7 +1491,7 @@ $company = $_SESSION['companyid'];
 
 			var tdpono = "<td nowrap><input type='text' value='"+itmacctnm+"' class='form-control input-xs' name=\"txtposno\" id='txtposno"+lastRow+"'></td>";
 
-			var tditmdel = "<td nowrap><input class='btn btn-danger btn-xs btn-block' type='button' id='del"+ itmcode +"' value='delete' data-var='"+lastRow+"'/></td>";
+			var tditmdel = "<td nowrap><input class='btn btn-danger btn-xs btn-block' type='button' id='del"+ lastRow +"' value='delete' data-var='"+lastRow+"'/></td>";
 
 		//}
 
@@ -1499,33 +1499,33 @@ $company = $_SESSION['companyid'];
 
 		$('#MyTable > tbody:last-child').append('<tr>'+ tdpono + tdsysno + tditmcode + tditmdesc + tditmewts + tditmvats + tditmunit + tditmqty + tditmprice + tditmdisc + tditmbaseamount +  tditmdel + '</tr>'); 
 
-										$("#del"+itmcode).on('click', function() { 
-											var xy = $(this).data('var');
-											
-											$(this).attr("data-var",parseInt(xy)-1);
+			$("#del"+lastRow).on('click', function() { 
+				var xy = $(this).data('var');
+				
+				$(this).attr("data-var",parseInt(xy)-1);
 
-											//remove discounts rows
-											$("#MyTable3 > tbody > tr").each(function() {					
-												varxc = $(this).attr("class");
-												if(parseInt(varxc)!==parseInt(lastRow)){
-													$(this).remove();
-												}
-											});
-											
-											$(this).closest('tr').remove();
-											
-											ReIdentity(xy);
-											ComputeGross();
-										});
+				//remove discounts rows
+				$("#MyTable3 > tbody > tr").each(function() {					
+					varxc = $(this).attr("class");
+					if(parseInt(varxc)!==parseInt(lastRow)){
+						$(this).remove();
+					}
+				});
+				
+				$(this).closest('tr').remove();
+				
+				ReIdentity(xy);
+				ComputeGross();
+			});
 
-										$("input.numeric2").autoNumeric('init',{mDec:4});
-										$("input.numeric").autoNumeric('init',{mDec:2});
+			$("input.numeric2").autoNumeric('init',{mDec:4});
+			$("input.numeric").autoNumeric('init',{mDec:2});
 
-										$("#selitmvatyp"+lastRow).on("change", function() {
-											ComputeGross();
-										});
+			$("#selitmvatyp"+lastRow).on("change", function() {
+				ComputeGross();
+			});
 
-										$("#selitmewtyp"+lastRow).select2();
+			$("#selitmewtyp"+lastRow).select2();
 											
 
 
@@ -1540,179 +1540,182 @@ $company = $_SESSION['companyid'];
 									//		}
 									//	);
 
-										$("input.numeric, input.numeric2").on("click", function () {
-											$(this).select();
-										});
-										
-										$("input.numeric, input.numeric2").on("keyup", function () {
-											ComputeAmt($(this).attr('id'));
-											ComputeGross();
-										});
-										
-										$(".xseluom").on('change', function() {
+		$("input.numeric, input.numeric2").on("click", function () {
+			$(this).select();
+		});
+		
+		$("input.numeric, input.numeric2").on("keyup", function () {
+			ComputeAmt($(this).attr('id'));
+			ComputeGross();
+		});
+		
+		$(".xseluom").on('change', function() {
 
-											var xyz = chkprice(itmcode,$(this).val(),itmccode,xtoday);
-											
-											$('#txtnprice'+lastRow).val(xyz.trim());
-											//alert($(this).attr('id'));
-											ComputeAmt($(this).attr('id'));
-											ComputeGross();
-											
-											var fact = setfactor($(this).val(), itmcode);
-											//alert(fact);
-											$('#hdnfactor'+lastRow).val(fact.trim());
-											
-										});										
+			var xyz = chkprice(itmcode,$(this).val(),itmccode,xtoday);
+			
+			$('#txtnprice'+lastRow).val(xyz.trim());
+			//alert($(this).attr('id'));
+			ComputeAmt($(this).attr('id'));
+			ComputeGross();
+			
+			var fact = setfactor($(this).val(), itmcode);
+			//alert(fact);
+			$('#hdnfactor'+lastRow).val(fact.trim());
+			
+		});										
 										
 	}
 
 			
 	function ComputeAmt(nme){
-			var r = nme.replace( /^\D+/g, '');
-			var nnet = 0;
-			var nqty = 0;
-			
-			nqty = $("#txtnqty"+r).val().replace(/,/g,'');
-			nqty = parseFloat(nqty)
-			nprc = $("#txtnprice"+r).val().replace(/,/g,'');
-			nprc = parseFloat(nprc);
-			
-			ndsc = $("#txtndisc"+r).val().replace(/,/g,'');
-			ndsc = parseFloat(ndsc);
-			
-			if (parseFloat(ndsc) != 0) {
-				nprc = parseFloat(nprc) - parseFloat(ndsc);
-			}
-			
-			namt = nqty * nprc;
-			namt2 = namt * parseFloat($("#basecurrval").val().replace(/,/g,''));
-						
-			$("#txtnamount"+r).val(namt2);
+		var r = nme.replace( /^\D+/g, '');
+		var nnet = 0;
+		var nqty = 0;
+		
+		nqty = $("#txtnqty"+r).val().replace(/,/g,'');
+		nqty = parseFloat(nqty)
+		nprc = $("#txtnprice"+r).val().replace(/,/g,'');
+		nprc = parseFloat(nprc);
+		
+		ndsc = $("#txtndisc"+r).val().replace(/,/g,'');
+		ndsc = parseFloat(ndsc);
+		
+		if (parseFloat(ndsc) != 0) {
+			nprc = parseFloat(nprc) - parseFloat(ndsc);
+		}
+		
+		namt = nqty * nprc;
+		namt2 = namt * parseFloat($("#basecurrval").val().replace(/,/g,''));
+					
+		$("#txtnamount"+r).val(namt2);
 
-			$("#txtntranamount"+r).val(namt);	
+		$("#txtntranamount"+r).val(namt);	
 
-			$("#txtntranamount"+r).autoNumeric('destroy');
-			//$("#txtnamount"+r).autoNumeric('destroy');
+		$("#txtntranamount"+r).autoNumeric('destroy');
+		//$("#txtnamount"+r).autoNumeric('destroy');
 
-			$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
-			//$("#txtnamount"+r).autoNumeric('init',{mDec:2}); 
+		$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
+		//$("#txtnamount"+r).autoNumeric('init',{mDec:2}); 
 
 	}
 	
 	function ComputeGross(){
-			var rowCount = $('#MyTable tr').length;
-			
-			var gross = 0;
-			var nnet = 0;
-			var vatz = 0;
+		var rowCount = $('#MyTable tr').length;
+		
+		var gross = 0;
+		var nnet = 0;
+		var vatz = 0;
 
-			var nnetTot = 0;
-			var vatzTot = 0;
+		var nnetTot = 0;
+		var vatzTot = 0;
 
-			if(rowCount>1){
-				for (var i = 1; i <= rowCount-1; i++) {
-			
-					if(xChkVatableStatus==1){  
-						var slctdval = $("#selitmvatyp"+i+" option:selected").data('id');
-						var slctdvalid = $("#selitmvatyp"+i+" option:selected").val();
+		if(rowCount>1){
+			for (var i = 1; i <= rowCount-1; i++) {
+		
+				if(xChkVatableStatus==1){  
+					var slctdval = $("#selitmvatyp"+i+" option:selected").data('id');
+					var slctdvalid = $("#selitmvatyp"+i+" option:selected").val();
 
-						if(slctdval!=0){
-							if(parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) > 0 ){
+					if(slctdval!=0){
+						if(parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) > 0 ){
 
-								nnet = parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) / parseFloat(1 + (parseInt(slctdval)/100));
-								vatz = nnet * (parseInt(slctdval)/100);
+							nnet = parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) / parseFloat(1 + (parseInt(slctdval)/100));
+							vatz = nnet * (parseInt(slctdval)/100);
 
-								nnetTot = nnetTot + nnet;
-								vatzTot = vatzTot + vatz;
-							}
-						}else{
-							nnetTot = nnetTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
+							nnetTot = nnetTot + nnet;
+							vatzTot = vatzTot + vatz;
 						}
 					}else{
-
 						nnetTot = nnetTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
-
 					}
+				}else{
 
-					gross = gross + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
+					nnetTot = nnetTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
+
 				}
+
+				gross = gross + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
 			}
+		}
 
-			gross2 = gross * parseFloat($("#basecurrval").val().replace(/,/g,''));
+		gross2 = gross * parseFloat($("#basecurrval").val().replace(/,/g,''));
 
-			$("#txtnNetVAT").val(nnetTot);
-			$("#txtnVAT").val(vatzTot);
-			$("#txtnGross").val(gross2);
-			$("#txtnBaseGross").val(gross);
+		$("#txtnNetVAT").val(nnetTot);
+		$("#txtnVAT").val(vatzTot);
+		$("#txtnGross").val(gross2);
+		$("#txtnBaseGross").val(gross);
 
-			$("#divtxtnNetVAT").text(nnetTot.toFixed(2));
-			$("#divtxtnVAT").text(vatzTot.toFixed(2));
-			$("#divtxtnGross").text(gross.toFixed(2));
+		$("#divtxtnNetVAT").text(nnetTot.toFixed(2));
+		$("#divtxtnVAT").text(vatzTot.toFixed(2));
+		$("#divtxtnGross").text(gross.toFixed(2));
 
-			$("#divtxtnNetVAT").formatNumber();
-			$("#divtxtnVAT").formatNumber();
-			$("#divtxtnGross").formatNumber();			
+		$("#divtxtnNetVAT").formatNumber();
+		$("#divtxtnVAT").formatNumber();
+		$("#divtxtnGross").formatNumber();			
 			
 	}
 		
 	function ReIdentity(xy){
-
 			
-			var rowCount = $('#MyTable tr').length;
-						
-			if(rowCount>1){
-				for (var i = xy+1; i <= rowCount; i++) {
-					//alert(i);
-					var ITMCode = document.getElementById('txtitemcode' + i); 
-					var ITMDesc = document.getElementById('txtcitemdesc' + i); 
-					var SelUOM = document.getElementById('seluom' + i); 
-					var ItmTyp = document.getElementById('hdncitmtype' + i); 
-					var SelVAT = document.getElementById('selitmvatyp' + i);
-					var nQty = document.getElementById('txtnqty' + i);
-					var MainUom = document.getElementById('hdnmainuom' + i);
-					var nFactor = document.getElementById('hdnfactor' + i);
-					var nPrice = document.getElementById('txtnprice' + i);
-					var nDisc = document.getElementById('txtndisc' + i); 
-					var nTranAmount = document.getElementById('txtntranamount' + i);
-					var nAmount = document.getElementById('txtnamount' + i);
-
-					//var cacctcode = document.getElementById('txtacctcode' + i); 
-					var cacctno = document.getElementById('txtsytemno' + i);
-					var cacctnm = document.getElementById('txtposno' + i);
-
-					var RowInfo = document.getElementById('row_' + i + '_info');					
+		var rowCount = $('#MyTable tr').length;
 					
-					var za = i - 1;
-					
-					//alert(za);
-					ITMCode.id = "txtitemcode" + za;
-					ITMDesc.id = "txtcitemdesc" + za;
-					SelUOM.id = "seluom" + za;
-					ItmTyp.id = "hdncitmtype" + za;
-					SelVAT.id = "selitmvatyp" + za;
-					nQty.id = "txtnqty" + za;
-					MainUom.id = "hdnmainuom" + za;
-					nFactor.id = "hdnfactor" + za;
-					nPrice.id = "txtnprice" + za;
-					nDisc.id = "txtndisc" + za;
-					nTranAmount.id = "txtntranamount" + za;
-					nAmount.id = "txtnamount" + za;
-					//cacctcode.id = "txtacctcode" + za;
-					cacctno.id = "txtsytemno" + za;
-					cacctnm.id = "txtposno" + za;
-					RowInfo.id = "row_" + za + "_info";
+		if(rowCount>1){
+			for (var i = xy+1; i <= rowCount; i++) {
+				//alert(i);
+				var ITMCode = document.getElementById('txtitemcode' + i); 
+				var ITMDesc = document.getElementById('txtcitemdesc' + i); 
+				var SelUOM = document.getElementById('seluom' + i); 
+				var ItmTyp = document.getElementById('hdncitmtype' + i); 
+				var SelVAT = document.getElementById('selitmvatyp' + i);
+				var nQty = document.getElementById('txtnqty' + i);
+				var MainUom = document.getElementById('hdnmainuom' + i);
+				var nFactor = document.getElementById('hdnfactor' + i);
+				var nPrice = document.getElementById('txtnprice' + i);
+				var nDisc = document.getElementById('txtndisc' + i); 
+				var nTranAmount = document.getElementById('txtntranamount' + i);
+				var nAmount = document.getElementById('txtnamount' + i);
 
-					$("#MyTable3 > tbody > tr").each(function() {					
-						varxc = $(this).attr("class");
-						if(parseInt(varxc)!==parseInt(i)){
-							$(this).removeClass(i)
-         					$(this).addClass(za);
-						}
-					});
+				//var cacctcode = document.getElementById('txtacctcode' + i); 
+				var cacctno = document.getElementById('txtsytemno' + i);
+				var cacctnm = document.getElementById('txtposno' + i);
 
-					
-				}
+				var RowInfo = document.getElementById('row_' + i + '_info');	 				
+				var delRow = document.getElementById('del' + i);
+
+				var za = i - 1;
+				
+				//alert(za);
+				ITMCode.id = "txtitemcode" + za;
+				ITMDesc.id = "txtcitemdesc" + za;
+				SelUOM.id = "seluom" + za;
+				ItmTyp.id = "hdncitmtype" + za;
+				SelVAT.id = "selitmvatyp" + za;
+				nQty.id = "txtnqty" + za;
+				MainUom.id = "hdnmainuom" + za;
+				nFactor.id = "hdnfactor" + za;
+				nPrice.id = "txtnprice" + za;
+				nDisc.id = "txtndisc" + za;
+				nTranAmount.id = "txtntranamount" + za;
+				nAmount.id = "txtnamount" + za;
+				//cacctcode.id = "txtacctcode" + za;
+				cacctno.id = "txtsytemno" + za;
+				cacctnm.id = "txtposno" + za;
+				RowInfo.id = "row_" + za + "_info";
+
+				delRow.id = "del" + za;
+				$("#del" + za).data('var', za);
+
+				$("#MyTable3 > tbody > tr").each(function() {					
+					varxc = $(this).attr("class");
+					if(parseInt(varxc)!==parseInt(i)){
+						$(this).removeClass(i)
+						$(this).addClass(za);
+					}
+				});
+
+				
 			}
+		}
 	}
 
 	function addqty(){

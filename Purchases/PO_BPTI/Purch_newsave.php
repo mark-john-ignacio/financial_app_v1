@@ -49,10 +49,13 @@ else {
 
 	
 	$cCustID = $_REQUEST['txtcustid'];
+	$dPODate = $_REQUEST['date_delivery'];
 	$dDelDate = $_REQUEST['date_needed'];
 	$cRemarks = chkgrp($_REQUEST['txtremarks']); 
 	$cContact = chkgrp($_REQUEST['txtcontactname']); 
 	$cContactEmail = chkgrp($_REQUEST['contact_email']);
+	$cContactPhone = chkgrp($_REQUEST['contact_mobile']);
+	$cContactFax = chkgrp($_REQUEST['contact_fax']);
 	$nGross = str_replace(",","",$_REQUEST['txtnGross']);
 
 	$CurrCode = $_REQUEST['selbasecurr']; 
@@ -69,6 +72,9 @@ else {
 
 	$delto = chkgrp($_REQUEST['txtdelcust']); 
 	$deladd = chkgrp($_REQUEST['txtdeladd']); 
+	$delemail = chkgrp($_REQUEST['textdelemail']);
+	$delphone = chkgrp($_REQUEST['textdelphone']);
+	$delfax = chkgrp($_REQUEST['textdelfax']);
 	$delnotes = chkgrp($_REQUEST['textdelnotes']);
 	$billto = chkgrp($_REQUEST['txtbillto']); 
 	//$cterms = chkgrp($_REQUEST['selterms']); 
@@ -94,7 +100,7 @@ else {
 	$preparedby = $_SESSION['employeeid'];
 	
 	//INSERT HEADER	
-	if (!mysqli_query($con,"INSERT INTO purchase(`compcode`, `cpono`, `ccode`, `cremarks`, `ddate`, `dneeded`, `ngross`, `nbasegross`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `cpreparedby`, `lcancelled`, `lapproved`, `lprintposted`, `ccustacctcode`, `ccontact`, `ccontactemail`, `ladvancepay`, `cterms`, `cdelto`, `ddeladd`, `ddelinfo`, `cbillto`, `cewtcode`) values('$company', '$cSINo', '$cCustID', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby', 0, 0, 0, '$AccntCode', $cContact, $cContactEmail, $PayType, $PayTerms, $delto, $deladd, $delnotes, $billto, $cewtcode)")){
+	if (!mysqli_query($con,"INSERT INTO purchase(`compcode`, `cpono`, `ccode`, `cremarks`, `ddate`, `dneeded`, `dpodate`, `ngross`, `nbasegross`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `cpreparedby`, `lcancelled`, `lapproved`, `lprintposted`, `ccustacctcode`, `ccontact`, `ccontactemail`, `ccontactphone`, `ccontactfax`, `ladvancepay`, `cterms`, `cdelto`, `ddeladd`, `ddelemail`, `ddelphone`, `ddelfax`, `ddelinfo`, `cbillto`, `cewtcode`) values('$company', '$cSINo', '$cCustID', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), STR_TO_DATE('$dPODate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby', 0, 0, 0, '$AccntCode', $cContact, $cContactEmail, $cContactPhone, $cContactFax , $PayType, $PayTerms, $delto, $deladd, $delemail, $delphone, $delfax, $delnotes, $billto, $cewtcode)")){
 		echo "False";
 	}
 	else{
