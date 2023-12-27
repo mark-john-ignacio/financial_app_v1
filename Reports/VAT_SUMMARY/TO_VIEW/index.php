@@ -105,12 +105,12 @@
         </div>
     </div>
 
-    <div class='Sales modal fade' id='ViewModal' role='dialog' data-backdrop="static">
+    <div class='AR modal fade' id='ViewModal' role='dialog' data-backdrop="static">
         <div class='modal-sm modal-dialog' style="width: 800px;" role="document">
             <div class='modal-content' >
                 <div class='modal-header'>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>  
-                    <h3 class="modal-title" id="invheader">View  Accounts Receivable</h3>
+                    <h3 class="modal-title" id="invheader">View Accounts Receivable</h3>
                 </div>
 
                 <div class='modal-body' id='modal-body' style='height: 100%'>
@@ -123,7 +123,7 @@
                             </div>
                         </div>
                         <div style="width: 100%;">
-                            <table style="width: 50%;">
+                            <table style="width: 80%;">
                                 <tr>
                                     <th>DATE: </th>
                                     <td><div id="date"></div></td>
@@ -143,13 +143,33 @@
                             </table>
                         </div>
                     </div>
+                    <div style="display: relative; width: 100%">
+                        <table>
+                            <tr>
+                                <th>Name: </th>
+                                <td id="customer"></td>
+                            </tr>
+                            <tr>
+                                <th>Email: </th>
+                                <td id="email"></td>
+                            </tr>
+                            <tr>
+                                <th>TIN</th>
+                                <td id="tin"></td>
+                            </tr>
+                            <tr>
+                                <th>Address</th>
+                                <td id="address"></td>
+                            </tr>
+                        </table>
+                    </div>
                     <div style="display: relative;">
                         <table class="table" id="GL_AR_TABLE">
                             <thead>
                                 <tr>
                                     <th align='center'>Profit Center</th>
                                     <th align='center'>Account</th>
-                                    <th align='center'>Desc ription</th>
+                                    <th align='center'>Description</th>
                                     <th align='center'>Debit</th>
                                     <th align='center'>Credit</th>
                                 </tr>
@@ -181,8 +201,8 @@
     </div>
 
     <div class='Sales modal fade' id='ViewModal' role='dialog' data-backdrop="static">
-        <div class='modal-sm modal-dialog' style="width: 800px;" role="document">
-            <div class='modal-content' >
+        <div class='modal-sm modal-dialog' style="width: 800px;" role="document"  style="width:80%" >
+            <div class='modal-content'>
                 <div class='modal-header'>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>  
                     <h3 class="modal-title" id="invheader">View Sales Invoice</h3>
@@ -190,24 +210,103 @@
 
                 <div class='modal-body' id='modal-body' style='height: 100%'> 
                     <div style="display: flex;">
-                        <div>
-
+                        <div style="display: flex; justify-content: center; justify-items: center; width: 100%;">
+                            <table style="width: 100%;">
+                                <tr>
+                                    <th style="text-align: end;">Invoice No.</th>
+                                    <td id="sales_invoice"></td>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: end;">Customer</th>
+                                    <td id="sales_customer"></td>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: end;">Delivery Receipt</th>
+                                    <td id="sales_dr"></td>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: end; font-style: italic">Tin.</th>
+                                    <td id="sales_tin"></td>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: end; font-style: italic">Terms</th>
+                                    <td id="sales_term"></td>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: end; font-style: italic">Address</th>
+                                    <td id="sales_address"></td>
+                                </tr>
+                            </table>
                         </div>
-                        <div style="display: flex; justify-content: center; justify-items: center;">
-                            <table class="table" id="Invoice_list">
-                                <thead>
-                                    <tr>
-                                        <th>Item</th>
-                                        <th>Description</th>
-                                        <th>Qty</th>
-                                        <th>UOM</th>
-                                        <th>Price</th>
-                                        <th>Discount</th>
-                                        <th>Tax</th>
-                                        <th>Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
+                        <div style="display: flex; justify-content: center; justify-items: center; width: 100%;">
+                            <table>
+                                <tr>
+                                    <th style="text-align: end;">Invoice Date</th>
+                                    <td id="sales_date"></td>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: end;">Reference</th>
+                                    <td id="sales_reference"></td>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: end;">Due Date</th>
+                                    <td id="sales_due"></td>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: end;">Notes</th>
+                                    <td id="sales_note"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: center; justify-items: center; width: 100%; padding-top: 30px;">
+                        <table class="table" id="Invoice_list" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Description</th>
+                                    <th>Qty</th>
+                                    <th>UOM</th>
+                                    <th>Price</th>
+                                    <th>Discount</th>
+                                    <th>Tax</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div style="display: flex; justify-content: right; justify-items: right; width: 100%; padding-top: 30px;">
+                        <div style="width: 35%">
+                            <table>
+                                <tr>
+                                    <th style="text-align: right;">VATable Sales</th>
+                                    <td id="vatable_sales"></td>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: right;">VAT-Exempt Sales</th>
+                                    <td id="vatable_exempt"></td>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: right;">VAT Zero Rated Sales</th>
+                                    <td id="vatable_zero"></td>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: right;">Total Sales</th>
+                                    <td id="total_sales"></td>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: right;">Add VAT</th>
+                                    <td id="add_vat"></td>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: right;">Total Amount Due</th>
+                                    <td id="amount_due"></td>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: right;">Discount</th>
+                                    <td id="vat_discount"></td>
+                                </tr>
                             </table>
                         </div>
                     </div>
@@ -233,29 +332,6 @@
         });
     })
 
-    function Invoice_Modal () {
-        let invoice = $(this).text();
-
-        $.ajax({
-            url: "../INVOICE/",
-            data: {
-                transaction: invoice
-            },
-            dataType: "json",
-            async: false,
-            success: function(res) {
-                if(res.valid) {
-
-                } else {
-                    console.log(res.msg)
-                }
-            },
-            error: function(msg) {
-                console.log(msg)
-            }
-        })
-    }
-
     function AR_MODAL(){
         let header = $(this).text();
         $("#AR").html("<h4>(" + header + ")</h4>");
@@ -269,31 +345,106 @@
             async: false,
             success: function(res) {
                 if(res.valid) { 
-                    $(".Sales").modal("show");
+                    $(".AR").modal("show");
                     res.GLData.map((item, index) => {
                         $("<tr>").append(
                             $("<td>").html("&nbsp;"),
-                            $("<td>").text(item.acctno + " " + item.ctitle),
+                            $("<td>").text(item.acctno + " - " + item.ctitle),
                             $("<td>").text(""),
                             $("<td>").text(item.ndebit),
                             $("<td>").text(item.ncredit),
                         ).appendTo("#GL_AR_TABLE tbody")
                     })
-
                     res.data.map((item, index) => {
-                        $("<tr>").append(
-                            $("<td>").text(),
-                        ).appendTo("#AR_TABLE tbody");
+                        $("#date").text(item.date);
+                        $("#duedate").text(item.due);
+                        $("#invoice").text(item.invoice);
+                        $("#reference").text(item.reference)
+
+                        $("#customer").text(res.customer);
+                        $("#tin").text(res.tin);
+                        $("address").text(res.address)
                     })
-                    console.log(res.data)
+
+                    if(res.approved === 1) {
+                        $("#AR_STATUS").prop("class", "btn btn-success btn-sm");
+                        $("#AR_STATUS").text("Paid");
+                    } else {
+                        $("#AR_STATUS").prop("class", "btn btn-primary btn-sm");
+                        $("#AR_STATUS").text("Pending");
+                    }
+
                 } else {
                     console.log(res.msg)
                 }
+                
             },
             error: function(msg) {
                 console.log(msg)
             }
         })
+    }
+
+    function Sales_Modal() {
+        let header = $(this).text().trim();
+        let TOTAL_VAT = 0;
+        let TOTAL_VATABLE = 0;
+        let TOTAL_EXEMPT = 0;
+        let TOTAL_ZERO = 0;
+        let TOTAL_SALES = 0;
+        let TOTAL_DISCOUNT = 0;
+        let TOTAL_AMOUNT_DUE = 0;
+
+        $.ajax({
+            url: "../INVOICE",
+            data: {
+                transaction: header
+            },
+            dataType: "json",
+            async: false,
+            success: function(res) {
+                if(res.valid) {
+                    $(".Sales").modal("show");
+                    $("#sales_invoice").text(res.transaction)
+                    $("#sales_customer").text(res.customer)
+                    $("#sales_dr").text(res.reference)
+                    $("#sales_tin").text(res.tin)
+                    $("#sales_term").text(res.term)
+                    $("#sales_address").text(res.address)
+                    $("#sales_date").text(res.date)
+                    $("#sales_reference").text(res.reference)
+                    $("#sales_due").text(res.due)
+                    $("#sales_note").text(res.notes)
+
+                    res.data.map((item, index) => {
+                        TOTAL_SALES += parseFloat(item.amount);
+                        $("<tr>").append(
+                            $("<td>").text(item.items),
+                            $("<td>").text(item.description),
+                            $("<td>").text(item.quantity),
+                            $("<td>").text(item.UOM),
+                            $("<td>").text(ToMoney(item.price)),
+                            $("<td>").text(ToMoney(item.discount)),
+                            $("<td>").text(item.tax),
+                            $("<td>").text(ToMoney(item.amount)),
+                        ).appendTo("#Invoice_list tbody")
+                    })
+                } else {
+                    console.log(res.msg)
+                }
+            },
+            error: function(res) {
+                console.log(res)
+            }
+        })
+
+        $("#vatable_sales").text(ToMoney(TOTAL_VATABLE))
+        $("#vatable_exempt").text(ToMoney(TOTAL_EXEMPT))
+        $("#vatable_zero").text(ToMoney(TOTAL_ZERO))
+        $("#total_sales").text(ToMoney(TOTAL_SALES))
+        $("#add_vat").text(ToMoney(TOTAL_VAT))
+        $("#amount_due").text(ToMoney(TOTAL_AMOUNT_DUE))
+        $("#vat_discount").text(ToMoney(TOTAL_DISCOUNT))
     }
 
     function Fetch_Sales() {
@@ -354,17 +505,24 @@
         let from = $("#datefrom").val();
         let to = $("#dateto").val();
 
+        let other = "<?= $_POST['other_goods'] ?>";
+        let service = "<?= $_POST['services'] ?>";
+        let capital = "<?= $_POST['capital'] ?>";
+
         $.ajax({
             url: "../PURCHASE",
             data: {
                 from: from,
-                to: to
+                to: to,
+                other: other,
+                service: service,
+                capital: capital
             },
             dataType: "json",
             async: false,
             success: function(res) {
                 if(res.valid) {
-                    let zero = PURCHASE_TABLE_DATA("INPUT VAT GOODS (OTHER THAN CAPITAL GOODS)  ", res.data);
+                    let other = PURCHASE_TABLE_DATA("INPUT VAT GOODS (OTHER THAN CAPITAL GOODS)  ", res.data);
                 } else {
                     console.log(msg)
                 }
@@ -399,22 +557,22 @@
             $("<tr>").append(
                 $("<td>").html("<a href='javascript:;' onclick='AR_MODAL.call(this)'>" + item.transaction + "</a"),
                 $("<td>").text(item.date),
-                $("<td>").html("<a href='javascript:;' onclick='AR_MODAL(\"sample\")'>" + item.sales + "</a>"),
+                $("<td>").html("<a href='javascript:;' onclick='Sales_Modal.call(this)'>" + item.sales + "</a>"),
                 $("<td>").text(item.reference),
                 $("<td>").text(item.partner),
                 $("<td>").text(item.tin),
                 $("<td>").text(item.address),
-                $("<td align='center'>").text(parseFloat(item.gross).toFixed(2)),
-                $("<td align='center'>").text(parseFloat(item.net).toFixed(2)),
-                $("<td align='center'>").text(parseFloat(item.tax).toFixed(2)),
+                $("<td align='center'>").text(ToMoney(item.gross)),
+                $("<td align='center'>").text(ToMoney(item.net)),
+                $("<td align='center'>").text(ToMoney(item.tax)),
             ).appendTo("#sales_table tbody");
         });
 
         $("<tr>").append(
             $("<td colspan='7' align='right'>").text("TOTAL: "),
-            $("<td align='center'>").text(parseFloat(TOTAL_GROSS).toFixed(2)),
-            $("<td align='center'>").text(parseFloat(TOTAL_NET).toFixed(2)),
-            $("<td align='center'>").text(parseFloat(TOTAL_TAX).toFixed(2)),
+            $("<td align='center'>").text(ToMoney(TOTAL_GROSS)),
+            $("<td align='center'>").text(ToMoney(TOTAL_NET)),
+            $("<td align='center'>").text(ToMoney(TOTAL_TAX)),
         ).appendTo("#sales_table tbody")
 
         return {
@@ -453,17 +611,17 @@
                 $("<td>").text(item.partner),
                 $("<td>").text(item.tin),
                 $("<td>").text(item.address),
-                $("<td align='center'>").text(parseFloat(item.gross).toFixed(2)),
-                $("<td align='center'>").text(parseFloat(item.net).toFixed(2)),
-                $("<td align='center'>").text(parseFloat(item.tax).toFixed(2)),
+                $("<td align='center'>").text(ToMoney(item.gross)),
+                $("<td align='center'>").text(ToMoney(item.net)),
+                $("<td align='center'>").text(ToMoney(item.tax)),
             ).appendTo("#purchase_table tbody");
         });
 
         $("<tr>").append(
             $("<td colspan='7' align='right'>").text("TOTAL: "),
-            $("<td align='center'>").text(parseFloat(TOTAL_GROSS).toFixed(2)),
-            $("<td align='center'>").text(parseFloat(TOTAL_NET).toFixed(2)),
-            $("<td align='center'>").text(parseFloat(TOTAL_TAX).toFixed(2)),
+            $("<td align='center'>").text(ToMoney(TOTAL_GROSS)),
+            $("<td align='center'>").text(ToMoney(TOTAL_NET)),
+            $("<td align='center'>").text(ToMoney(TOTAL_TAX)),
         ).appendTo("#purchase_table tbody");
 
         return {
@@ -471,5 +629,9 @@
             net: TOTAL_NET,
             tax: TOTAL_TAX
         }
+    }
+
+    function ToMoney(amount) {
+        return parseFloat(amount).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
     }
 </script>

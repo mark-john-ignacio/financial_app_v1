@@ -85,7 +85,7 @@
 		}
 
 		@$arrpaymnts = array();
-		$sqlpay = "select X.* from receipt_sales_t X left join receipt B on X.compcode=B.compcode and X.ctranno=B.ctranno where X.compcode='$company' and B.lcancelled = 0 order By X.csalesno, B.ddate";
+		$sqlpay = "select X.* from receipt_sales_t X left join receipt B on X.compcode=B.compcode and X.ctranno=B.ctranno where X.compcode='$company' and B.lcancelled = 0 and B.lvoid=0 order By X.csalesno, B.ddate";
 		$respay = mysqli_query ($con, $sqlpay);
 		while($rowardj = mysqli_fetch_array($respay, MYSQLI_ASSOC)){
 			@$arrpaymnts[] = $rowardj;
@@ -107,7 +107,7 @@
 		left join customers C on B.compcode=C.compcode and B.ccode=C.cempid 
 		left join accounts D on C.compcode=D.compcode and C.cacctcodesales=D.cacctno 
 		left join wtaxcodes E on A.compcode=E.compcode and A.cewtcode=E.ctaxcode 
-		where A.compcode='$company' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.lcancelled=0
+		where A.compcode='$company' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.lcancelled=0 and B.lvoid=0
 		".$qryposted."
 		
 		UNION ALL
@@ -125,7 +125,7 @@
 		left join customers C on B.compcode=C.compcode and B.ccode=C.cempid 
 		left join items E on A.compcode=E.compcode and A.citemno=E.cpartno 
 		left join taxcode F on E.compcode=F.compcode and E.ctaxcode=F.ctaxcode
-		where A.compcode='$company' and B.quotetype='billing' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.lcancelled=0 ".$qryposted." and A.ctranno not in (Select Y.creference From sales_t Y left join sales X on Y.compcode=X.compcode and Y.ctranno=X.ctranno where Y.compcode='$company' and X.lcancelled=0)
+		where A.compcode='$company' and B.quotetype='billing' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.lcancelled=0 and B.lvoid=0 ".$qryposted." and A.ctranno not in (Select Y.creference From sales_t Y left join sales X on Y.compcode=X.compcode and Y.ctranno=X.ctranno where Y.compcode='$company' and X.lcancelled=0 and X.lvoid=0)
 
 		) A
 		Group By A.ctranno, A.ccode, A.cname, A.cacctid, A.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, A.dcutdate
@@ -145,7 +145,7 @@
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 		left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 		left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
-		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
+		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0 and b.lvoid=0
 		".$qryitm.$qrycust.$qryposted."
 		order by a.ctranno, a.nident");
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
@@ -161,7 +161,7 @@
 			left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 			left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 			left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
-			where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
+			where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0 and b.lvoid=0
 			".$qryitm.$qrycust.$qryposted."
 
 			UNION ALL
@@ -172,7 +172,7 @@
 			left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 			left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 			left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
-			where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
+			where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0 and b.lvoid=0
 			".$qryitm.$qrycust.$qryposted."
 		) A 
 		order by A.ctranno, A.nident");

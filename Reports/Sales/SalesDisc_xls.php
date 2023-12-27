@@ -70,7 +70,7 @@ if($trantype!==""){
 	left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 	left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 	left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
-	where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
+	where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0 and b.lvoid=0
 	".$qryposted.$qrycust."
 	order by a.ctranno, a.nident";
 
@@ -84,7 +84,7 @@ if($trantype!==""){
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 		left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 		left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
-		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
+		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0 and b.lvoid=0
 		".$qryposted.$qrycust."
 
 		UNION ALL
@@ -95,20 +95,20 @@ if($trantype!==""){
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 		left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 		left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
-		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
+		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0 and b.lvoid=0
 		".$qryposted.$qrycust."
 	) A 
 	order by A.ctranno, A.nident";
 	
 }
 
-$resDR=mysqli_query($con,"Select A.ctranno, A.nident, A.creference, A.crefident, A.citemno, A.nqty from dr_t A left join dr B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 UNION ALL Select A.ctranno, A.nident, A.creference, A.crefident, A.citemno, A.nqty from ntdr_t A left join ntdr B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1");
+$resDR=mysqli_query($con,"Select A.ctranno, A.nident, A.creference, A.crefident, A.citemno, A.nqty from dr_t A left join dr B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 UNION ALL Select A.ctranno, A.nident, A.creference, A.crefident, A.citemno, A.nqty from ntdr_t A left join ntdr B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 and B.lvoid=0");
 $findr = array();
 while($row = mysqli_fetch_array($resDR, MYSQLI_ASSOC)){
 	$findr[] = $row;
 }
 
-$resSI=mysqli_query($con,"Select creference, nrefident, citemno, sum(nqty) as nqty from sales_t A left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 Group By creference, nrefident, citemno UNION ALL Select creference, nrefident, citemno, sum(nqty) as nqty from ntsales_t A left join ntsales B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 Group By creference, nrefident, citemno");
+$resSI=mysqli_query($con,"Select creference, nrefident, citemno, sum(nqty) as nqty from sales_t A left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 Group By creference, nrefident, citemno UNION ALL Select creference, nrefident, citemno, sum(nqty) as nqty from ntsales_t A left join ntsales B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 Group By creference, nrefident, citemno");
 $finsi = array();
 while($row = mysqli_fetch_array($resSI, MYSQLI_ASSOC)){
 	$finsi[] = $row;

@@ -67,7 +67,7 @@ if($trantype=="Trade"){
 		left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join customers c on b.ccode=c.cempid and b.compcode=c.compcode
 		left join items d on a.citemno=d.cpartno and a.compcode=d.compcode
-		where a.compcode='$company' and a.citemno='$ItmID' and b.lcancelled=0".$qrytp.$qryposted."
+		where a.compcode='$company' and a.citemno='$ItmID' and b.lcancelled=0 and b.lvoid=0".$qrytp.$qryposted."
 	) A
 	Where A.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
 	order by A.dcutdate, A.csalesno";
@@ -80,7 +80,7 @@ if($trantype=="Trade"){
 		left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join customers c on b.ccode=c.cempid and b.compcode=c.compcode
 		left join items d on a.citemno=d.cpartno and a.compcode=d.compcode
-		where a.compcode='$company' and a.citemno='$ItmID' and b.lcancelled=0".$qrytp.$qryposted."
+		where a.compcode='$company' and a.citemno='$ItmID' and b.lcancelled=0 and b.lvoid=0".$qrytp.$qryposted."
 	) A
 	Where A.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
 	order by A.dcutdate, A.csalesno";
@@ -93,7 +93,7 @@ if($trantype=="Trade"){
 		left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join customers c on b.ccode=c.cempid and b.compcode=c.compcode
 		left join items d on a.citemno=d.cpartno and a.compcode=d.compcode
-		where a.compcode='$company' and a.citemno='$ItmID' and b.lcancelled=0".$qrytp.$qryposted."
+		where a.compcode='$company' and a.citemno='$ItmID' and b.lcancelled=0 and b.lvoid=0".$qrytp.$qryposted."
 
 		UNION ALL
 
@@ -102,7 +102,7 @@ if($trantype=="Trade"){
 		left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
 		left join customers c on b.ccode=c.cempid and b.compcode=c.compcode
 		left join items d on a.citemno=d.cpartno and a.compcode=d.compcode
-		where a.compcode='$company' and a.citemno='$ItmID' and b.lcancelled=0".$qrytp.$qryposted."
+		where a.compcode='$company' and a.citemno='$ItmID' and b.lcancelled=0 and b.lvoid=0".$qrytp.$qryposted."
 	) A
 	Where A.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
 	order by A.dcutdate, A.csalesno";

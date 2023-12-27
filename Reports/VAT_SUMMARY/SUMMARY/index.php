@@ -23,6 +23,15 @@
                 case "VT":
                     $vatable = $list['taxcode'];
                     break;
+                case "CAPITAL":
+                    $goods = $list['taxcode'];
+                    break;
+                case "SERVICE":
+                    $service = $list['taxcode'];
+                    break;  
+                case "OTHER":
+                    $otg = $list['taxcode'];
+                    break;  
             }
         }
 
@@ -31,7 +40,10 @@
             'zero' => $zero,
             'gov' => $gov,
             'exempt' => $exempt,
-            'vatable' => $vatable
+            'vatable' => $vatable,
+            'capital' => $goods,
+            'service' => $service,
+            'others' => $otg
         ]);
     } else {
         echo json_encode([
