@@ -1,10 +1,10 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
+	if(!isset($_SESSION)){
+		session_start();
+	}
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
 
 	$company = $_SESSION['companyid'];
 	$xwithvat = 0;
@@ -25,36 +25,41 @@ include('../../include/denied.php');
 	$csalesno = $_REQUEST['hdntransid'];
 	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign, d.cdesc as termsdesc from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join users c on a.cpreparedby=c.Userid left join groupings d on a.compcode=b.compcode and a.cterms=d.ccode and d.ctype='TERMS' where a.compcode='$company' and a.cpono = '$csalesno'");
 
-if (mysqli_num_rows($sqlhead)!=0) {
-	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-		$CustCode = $row['ccode'];
-		$CustName = $row['cname'];
+	if (mysqli_num_rows($sqlhead)!=0) {
+		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+			$CustCode = $row['ccode'];
+			$CustName = $row['cname'];
 
-		$CustAdd = $row['chouseno']." ".$row['ccity']." ".$row['cstate']." ".$row['ccountry'];
-		$Terms = $row['termsdesc']; 
-		$CurrCode = $row['ccurrencycode'];
+			$CustAdd = $row['chouseno']." ".$row['ccity']." ".$row['cstate']." ".$row['ccountry'];
+			$Terms = $row['termsdesc']; 
+			$CurrCode = $row['ccurrencycode'];
 
-		$Remarks = $row['cremarks'];
-		$Date = $row['dpodate'];
-		$DateNeeded = $row['dneeded'];
-		$Gross = $row['ngross'];
-		
-		$delto = $row['cdelto'];  
-		$deladd = $row['ddeladd']; 
-		$delinfo = $row['ddelinfo']; 
-		$billto = $row['cbillto'];   
-		
-		$lCancelled = $row['lcancelled'];
-		$lPosted = $row['lapproved'];
-		$lSent = $row['lsent'];
+			$Remarks = $row['cremarks'];
+			$Date = $row['dpodate'];
+			$DateNeeded = $row['dneeded'];
+			$Gross = $row['ngross'];
 
-		$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
-		$cpreparedBySign = $row['cusersign'];
+			$contactphone = $row['ccontactphone'];
+			$contactfax = $row['ccontactfax'];
+			
+			$delto = $row['cdelto'];  
+			$deladd = $row['ddeladd']; 
+			$delemail = $row['ddelemail'];
+			$delphone = $row['ddelphone'];
+			$delfax = $row['ddelfax'];
+			$delinfo = $row['ddelinfo']; 
+			$billto = $row['cbillto'];   
+			
+			$lCancelled = $row['lcancelled'];
+			$lPosted = $row['lapproved'];
+			$lSent = $row['lsent'];
+
+			$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
+			$cpreparedBySign = $row['cusersign'];
+		}
 	}
-}
 
-
-$sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t A left join items B on A.citemno=B.cpartno where A.compcode='$company' and A.ctranno = '$csalesno'");
+	$sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t A left join items B on A.citemno=B.cpartno where A.compcode='$company' and A.ctranno = '$csalesno'");
 
 ?>
 
@@ -62,227 +67,254 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 <html>
 <head>
 	<style>
-		body{
+
+		body {
 			font-family: Verdana, sans-serif;
-			font-size: 9pt;
+			font-size: 8pt;
 		}
+
 		.tdpadx{
-			padding-top: 5px; 
-			padding-bottom: 5px
+			border: 1px solid #000;
 		}
-		.tddetz{
-			border-left: 1px solid; 
-			border-right: 1px solid;
+
+		.page-header-space {
+			height: 250px;
 		}
-		.tdright{
-			padding-right: 10px;
+
+		.page-footer-space {
+			height: 250px;
 		}
+
+
+		@page {
+			margin: 2mm
+			size: letter portrait;
+		}
+
+		@media print {
+			thead {display: table-header-group;} 
+			tfoot {display: table-footer-group;}
+			
+			body {margin: 2mm}
+		}
+		
+
 		
 	</style>
 </head>
 
-<body >
-<div style='float: right'> <font style="font-size: 18px;">PURCHASE ORDER FORM</font> </div>
-<table border="0" width="100%" cellpadding="1px"  id="tblMain" style="border-collapse:collapse">
-	<tr>
-		<td style="vertical-align: top; padding-top: 10px; padding-right: 5px; width: 33%">
+<body onLoad="window.print()">
 
-			<table border="0" width="100%" style="border-collapse:collapse">
-				<tr>
-					<td> <b>EXTERNAL PROVIDER:</b> <td>
-				</tr>
-				<tr>
-					<td> <?=$CustName?> <td>
-				</tr>
-				<tr>
-					<td> <div style="min-height: 100px"><?=$CustAdd?></div> <td>
-				</tr>
+	<table>
+  		<thead><tr><td>
+			<div class="page-header-space">
+				<table border="0" cellpadding="5px" width="100%" id="tblMain" style="border-collapse:collapse">
+					<tr>
+						<td style="text-align: right" colspan='8'> <font style="font-size: 18px;">PURCHASE ORDER FORM</font> </td>
+					</tr>
+					<tr>
+						<td style="vertical-align: top; padding-top: 10px; padding-right: 5px;" colspan='2'>
 
-			</table>
-			
-		</td>
-
-		<td style="vertical-align: top; padding-top: 10px; padding-left: 5px; padding-right: 5px; width: 33%">
-			<table border="0" width="100%" style="border-collapse:collapse">
-				<tr>
-					<td> <b>DELIVER TO:</b> <td>
-				</tr>
-				<tr>
-					<td> <?=$delto?> <td>   
-				</tr>
-				<tr>
-					<td> <div style="min-height: 100px"><?=$deladd?></div> <td>
-				</tr>
-
-			</table>
-		</td>
-
-		<td style="vertical-align: top; padding-top: 10px; padding-left: 5px; width: 34%">
-			<table border="1" width="100%" style="border-collapse:collapse" cellpadding="5px">
-				<tr>
-					<td> <b>PO No.</b> </td>
-					<td> <?=$csalesno?> </td>
-				</tr>
-				<tr>
-					<td> <b>PR No.</b> </td>
-					<td> &nbsp; </td>
-				</tr>
-				<tr>
-					<td> <b>PAGE</b> </td>
-					<td> &nbsp; </td>
-				</tr>
-				<tr>
-					<td> <b>COST CENTER</b> </td>
-					<td> &nbsp; </td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-	<tr>
-		<td style="vertical-align: top; padding-top: 10px; padding-right: 5px; width: 33%" colspan='3'>
-
-			<table border="1" width="100%" style="border-collapse:collapse" cellpadding="5px">
-				<tr>
-					<td width="25%" align="center"> <b>REVISION NO.</b> </td>
-					<td width="25%" align="center"> <b>DATE PREPARED</b> </td>
-					<td width="25%" align="center"> <b>PO DUE DATE</b> </td>
-					<td width="25%" align="center"> <b>PAYMENT TERMS</b> </td>
-				</tr>	
-				<tr>
-					<td align="center"> <b>0</b> </td>
-					<td align="center"> <b><?=$Date?></b> </td>
-					<td align="center"> <b><?=$DateNeeded?></b> </td>
-					<td align="center"> <b><?=$Terms?></b> </td>
-				</tr>			
-			</table>
-		</td>
-	</tr>
-	<tr>
-		<td style="vertical-align: top; padding-top: 10px" colspan='3'>
-			<table border="0" align="center" width="100%" style="border-collapse: collapse;">
-	
-				<tr>
-					<th style="border: 1px solid" class="tdpadx">Qty</th>
-					<th style="border: 1px solid" class="tdpadx">Unit</th>
-					<th style="border: 1px solid" class="tdpadx">Product Description/s</th>
-					<th style="border: 1px solid" class="tdpadx"><b>Unit Price</b></th>
-					<th style="border: 1px solid" class="tdpadx"><b>Amount</b></th>
-				</tr>
-
-				<?php 
-				$sqlbody = mysqli_query($con,"select a.*,b.citemdesc, a.citemdesc as newdesc from purchase_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.cpono = '$csalesno' Order by a.nident");
-
-				if (mysqli_num_rows($sqlbody)!=0) {
-
-					while($rowdtls = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){ 
-						if(floatval($rowdtls['nrate']) > 0){
-							$xwithvat = 1;
-						}
-				?>
-
-				<tr>
-					<td align="center" class="tdpadx tddetz"><?php echo intval($rowdtls['nqty']);?></td>
-					<td align="center" class="tdpadx tddetz"><?php echo $rowdtls['cunit'];?></td>					
-					<td align="center" class="tdpadx tddetz"><?php echo $rowdtls['citemdesc'];?></td>
-					<td align="right" class="tdpadx tddetz tdright"><?php echo number_format($rowdtls['nprice'],2);?></td>
-					<td align="right" class="tdpadx tddetz tdright"><?php echo number_format($rowdtls['namount'],2);?></td>					
-				</tr>
-
-				<?php 
-					} 
-
-				}
-				?>
-
-				<tr>
-					<td colspan="3" class="tdpadx" style="border-top: 1px solid; border-left: 1px solid; border-bottom: 1px solid; padding-right: 10px">
-						<?php
-							if($xwithvat==1){
-								echo "<b><i>Note: Price inclusive of VAT</i></b>";
-							}else{
-								echo "<b><i>Note: Price exclusive of VAT</i></b>";
-							}
-						?>
-					</td>
-					<td align="right" class="tdpadx" style="border-top: 1px solid; border-right: 1px solid; border-bottom: 1px solid; padding-right: 10px"><b>TOTAL</b></td>
-					<td align="right"  class="tdpadx" style="border: 1px solid;padding-right: 10px"><?php echo number_format($Gross,2);?></td>
-					
-				</tr>
-
-			</table>
-		</td>
-	</tr>
-	<tr>
-		<td style="vertical-align: bottom;"  colspan='3'>
-			<br><br>	<br><br>		
-			<table border="0" width="100%">
-				<tr>
-					<td>
-						<table border=0 width="100%">
+							<table border="0" width="100%" style="border-collapse:collapse">
 								<tr>
-									<td width="25%">
-										<div style="padding-bottom: 50px; text-align: center">Accepted By</div>
-										<div style="text-align: center"><?=$CustName?></div>
-
-									</td>
-									<td width="25%">
-
-									<?php
-										if($lSent==1 && $cpreparedBySign!=""){
-									?>
-										<div style="text-align: center">Prepared By</div>
-										<div style="text-align: center"><div><img src = '<?=$cpreparedBySign?>?x=<?=time()?>' ></div> 
-									
-										<?php
-										}else{
-										?>
-											<div style="padding-bottom: 50px; text-align: center">Prepared By</div>
-											<div style="text-align: center"><?=$cpreparedBy?></div>
-										<?php
-										}
-										?>
-
-									</td>
-
-								<?php
-
-									$sqdts = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign from purchase_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cpono = '$csalesno' order by a.nlevel");
-
-									if (mysqli_num_rows($sqdts)!=0) {
-										while($row = mysqli_fetch_array($sqdts, MYSQLI_ASSOC)){
-								?>
-											<td width="25%">
-												<?php
-													if($row['lapproved']==1 && $row['cusersign']!=""){
-												?>
-												<div style="text-align: center">Approved By</div>
-												<div style="text-align: center"><div><img src = '<?=$row['cusersign']?>?x=<?=time()?>' ></div>
-												<?php
-													}else{
-												?>
-													<div style="padding-bottom: 50px; text-align: center">Approved By</div>
-													<div style="text-align: center"><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div>
-												<?php
-													}
-												?>
-
-											</td>
-
-								<?php
-										}
-									}
-								?>
+									<td> <b>EXTERNAL PROVIDER:</b> <td>
 								</tr>
-								
-						</table>
-					</td>
-				</tr>
-			</table>
+								<tr>
+									<td> <?=$CustName?> <td>
+								</tr>
+								<tr>
+									<td> <div style="min-height: 70px"><?=$CustAdd?></div> <td>
+								</tr>
+								<tr>
+									<td> Phone No.: <?=$contactphone?> <td>
+								</tr>
+								<tr>
+									<td> Fax No.: <?=$contactfax?> <td>
+								</tr>
 
-		</td>
-	</tr>
-</table>
 
+							</table>
+							
+						</td>
+
+						<td style="vertical-align: top; padding-top: 10px; padding-left: 5px; padding-right: 5px;" colspan='2'>
+							<table border="0" width="100%" style="border-collapse:collapse">
+								<tr>
+									<td> <b>DELIVER TO:</b> <td>
+								</tr>
+								<tr>
+									<td> <?=$delto?> <td>   
+								</tr>
+								<tr>
+									<td> <div style="min-height: 70px"><?=$deladd?></div> <td>
+								</tr>
+								<tr>
+									<td> Phone No.: <?=$delphone?> <td>
+								</tr>
+								<tr>
+									<td> Fax No.: <?=$delfax?> <td>
+								</tr>
+							</table>
+						</td>
+
+						<td style="vertical-align: top; padding-top: 10px; padding-left: 5px; width: 34%" colspan='4'>
+							<table border="1" width="100%" style="border-collapse:collapse" cellpadding="5px">
+								<tr>
+									<td> <b>PO No.</b> </td>
+									<td> <?=$csalesno?> </td>
+								</tr>
+								<tr>
+									<td> <b>PR No.</b> </td>
+									<td> &nbsp; </td>
+								</tr>
+								<tr>
+									<td> <b>PAGE</b> </td>
+									<td> <div class="page-number"></div> </td>
+								</tr>
+								<tr>
+									<td> <b>COST CENTER</b> </td>
+									<td> &nbsp; </td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+				<table border="1" width="100%" style="border-collapse:collapse" cellpadding="5px">
+					<tr>
+						<td width="25%" align="center"> <b>REVISION NO.</b> </td>
+						<td width="25%" align="center"> <b>DATE PREPARED</b> </td>
+						<td width="25%" align="center"> <b>PO DUE DATE</b> </td>
+						<td width="25%" align="center"> <b>PAYMENT TERMS</b> </td>
+					</tr>	
+					<tr>
+						<td align="center"> <b>0</b> </td>
+						<td align="center"> <b><?=date_format(date_create($Date), "d-M-Y")?></b> </td>
+						<td align="center"> <b><?=date_format(date_create($DateNeeded), "d-M-Y")?></b> </td>
+						<td align="center"> <b><?=$Terms?></b> </td>
+					</tr>			
+				</table>
+			</div>
+		</td></tr></thead>
+
+		<tbody><tr><td>
+    		<div class="page">
+				<table border="1" width="100%" style="border-collapse:collapse" cellpadding="5px">
+					<tr>
+						<th class="tdpadx" with="10px">No.</th>
+						<th class="tdpadx">Part No.</th>
+						<th class="tdpadx">Description/Size<br>Specifications</th>
+						<th class="tdpadx">Item Code</th>
+						<th class="tdpadx" with="80px">Qty</th>					
+						<th class="tdpadx" with="50px"><b>Unit Price</b></th>
+						<th class="tdpadx" with="50px">UOM</th>
+						<th class="tdpadx" with="100px"><b>Amount</b></th>
+					</tr>
+
+					<?php 
+					$sqlbody = mysqli_query($con,"select a.*,b.citemdesc, a.citemdesc as newdesc from purchase_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.cpono = '$csalesno' Order by a.nident");
+
+					if (mysqli_num_rows($sqlbody)!=0) {
+
+						$cnt = 0;
+						while($rowdtls = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){ 
+							$cnt++;
+							if(floatval($rowdtls['nrate']) > 0){
+								$xwithvat = 1;
+							}
+					?>
+
+					<tr>
+						<td align="center" class="tdpadx"><?=$cnt?></td>
+						<td align="center" class="tdpadx"><?=$rowdtls['cpartno'];?></td>
+						<td align="center" class="tdpadx"><?php echo $rowdtls['newdesc'];?></td>
+						<td align="center" class="tdpadx"><?=$rowdtls['citemno'];?></td>
+						<td align="center" class="tdpadx"><?php echo intval($rowdtls['nqty']);?></td>
+						<td align="right" class="tdpadx"><?php echo number_format($rowdtls['nprice'],4);?></td>
+						<td align="center" class="tdpadx"><?php echo $rowdtls['cunit'];?></td>										
+						<td align="right" class="tdpadx"><?php echo number_format($rowdtls['namount'],2);?></td>					
+					</tr>
+
+					<?php 
+						} 
+
+					}
+					?>
+
+					<tr>
+						
+						<td align="right" class="tdpadx" colspan="7"><b>TOTAL</b></td>
+						<td align="right" class="tdpadx"><?php echo number_format($Gross,2);?></td>
+						
+					</tr>
+				</table>
+			</div>
+		</td></tr></tbody>
+
+
+		<tfoot><tr><td>
+			<div class="footer-space">
+				<table border="0" width="100%" style="border-collapse:collapse" cellpadding="5px">
+					<tr>
+						<td width="70%" valign="top">
+							<div style="display: block"></b>Conditions:</b></div>
+							<div style="display: block;">
+								<ol style="padding-left: 20px;">
+									<li>Item to be delivered must comply to quality requiremnts.</li>
+									<li>The company has the right to reject items found defective and not in accordance with the required specifications.</li>
+									<li>Daily interest of __% shall be charged on all delayed deliveries, including cancellation of order contractor or production for services will pay for all the damages incurred by BPTI caused by failure to complete project within  he agreed.</li>
+									<li>Processing of payment shall commence only upon submission of complete documents i.e. sales invoice, delivery reciept, installation, order, etc., of the purchase terms.</li>
+									<li>Payments shall be released only upon issuance of official receipt by the supplier.</li>
+									<li>Inability of supplier to meet above conditions shall be a valid reason to cancel this Purchase Order without prejudice to supplier's interest.</li>
+									<li>Delivery leadtime shall be in staggered delivery, as per required delivery date.</li>
+								</ol>
+							</div>
+						</td>
+						<td width="30%">
+							<div style="display: block"></b>REMARKS:</b></div>
+							<div style="display: block; height: 150px; width: 100%; border: 1px solid #000"></div>
+						</td>
+					</tr>
+				</table>
+					
+				<table border="1" width="100%" style="border-collapse:collapse" cellpadding="5px">
+					<tr>
+						<td width="25%">
+							Prepared By
+						</td>
+						<td width="25%">
+							Checked By
+						</td>
+						<td width="25%">
+							Approved By
+						</td>
+						<td rowspan="2" style="border-top: hidden; border-bottom: hidden;" width="5%">
+							&nbsp;
+						</td>
+						<td width="20%">
+							Supplier Confirmation
+						</td>
+					</tr>
+					<tr>
+						<td height="50px">
+							&nbsp;
+						</td>
+						<td height="50px">
+							&nbsp;
+						</td>
+						<td height="50px">
+							&nbsp;
+						</td>
+						<td height="50px">
+							&nbsp;
+						</td>
+					</tr>
+				</table>
+						
+				
+			</div>
+		</td></tr></tfoot>
+	</table>
 
 </body>
 </html>
+ 

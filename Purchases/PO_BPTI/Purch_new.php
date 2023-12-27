@@ -18,6 +18,9 @@
 		{
 			$compname = $rowcomp['compname'];
 			$compadd = $rowcomp['compadd'];
+			$compemail = $rowcomp['email'];
+			$compphone = $rowcomp['cpnum'];
+			$compfax = $rowcomp['faxnum']; 
 		}
 
 	}
@@ -39,6 +42,18 @@
 		$xAllowITMCH = $all_course_data['cvalue']; 												
 	}
 
+	//parameters def delivery
+	$arrdefdel = array();
+	$result = mysqli_query($con,"SELECT * FROM `parameters` where compcode='$company' and ccode in ('PODEFDELTO','PODEFDELADD','PODEFDELEMAIL','PODEFDELPHONE','PODEFDELFAX')");      
+    if (mysqli_num_rows($result)!=0) {
+      while($comprow = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+                 
+		$arrdefdel[$comprow['ccode']] = $comprow['cdesc'];
+
+      }
+                    
+    }
+     
 
 	@$arrewtlist = array();
 	$getewt = mysqli_query($con,"SELECT * FROM `wtaxcodes` WHERE compcode='$company'"); 
@@ -305,28 +320,28 @@
 								<td width="310" colspan="2" style="padding:2px">
 									<div class="col-xs-8 nopadding">
 										<div class="col-xs-12 nopadding">
-											<input type="text" class="form-control input-sm" id="txtdelcust" name="txtdelcust" width="20px" tabindex="1" placeholder="Enter Deliver To..."  size="60" autocomplete="off" value="<?=$compname?>">
+											<input type="text" class="form-control input-sm" id="txtdelcust" name="txtdelcust" width="20px" tabindex="1" placeholder="Enter Deliver To..."  size="60" autocomplete="off" value="<?=(isset($arrdefdel["PODEFDELTO"])) ? $arrdefdel["PODEFDELTO"] : ""?>">
 										</div> 
 									</div>						
 								</td>
 							</tr>
 							<tr>
 								<td><b>Delivery Address</b></td>
-								<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><textarea class="form-control input-sm" id="txtdeladd" name="txtdeladd" placeholder="Enter Delivery Address..." autocomplete="off"> <?=$compadd?> </textarea></div></td>
+								<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><textarea class="form-control input-sm" id="txtdeladd" name="txtdeladd" placeholder="Enter Delivery Address..." autocomplete="off"><?=(isset($arrdefdel["PODEFDELADD"])) ? $arrdefdel["PODEFDELADD"] : ""?></textarea></div></td>
 							</tr>					
 							<tr>
 								
-								<tH width="100">Contact Details:</tH>
+								<tH width="100">Contact Details:</tH>   
 								<td style="padding:2px">
 									<div class="col-xs-8 nopadding">
 										<div class="col-xs-4 nopadding">
-											<input type='text' class="form-control input-sm" id="contact_email" name="contact_email" placeholder="Email Address"/>
+											<input type='text' class="form-control input-sm" id="textdelemail" name="textdelemail" placeholder="Email Address" value="<?=(isset($arrdefdel["PODEFDELEMAIL"])) ? $arrdefdel["PODEFDELEMAIL"] : ""?>"/>
 										</div>
 										<div class="col-xs-4 nopadwleft">
-											<input type='text' class="form-control input-sm" id="contact_mobile" name="contact_mobile" placeholder="Mobile No." />
+											<input type='text' class="form-control input-sm" id="textdelphone" name="textdelphone" placeholder="Mobile No." value="<?=(isset($arrdefdel["PODEFDELPHONE"])) ? $arrdefdel["PODEFDELPHONE"] : ""?>" />
 										</div>
 										<div class="col-xs-4 nopadwleft">
-											<input type='text' class="form-control input-sm" id="contact_fax" name="contact_fax" placeholder="Fax No." />
+											<input type='text' class="form-control input-sm" id="textdelfax" name="textdelfax" placeholder="Fax No." value="<?=(isset($arrdefdel["PODEFDELFAX"])) ? $arrdefdel["PODEFDELFAX"] : ""?>" />
 										</div>
 									</div>
 								</td>
@@ -646,86 +661,46 @@
 
 	$(document).ready(function() {
 		$('.datepick').datetimepicker({
-		format: 'MM/DD/YYYY',
-				useCurrent: false,
-				//minDate: moment(),
-				defaultDate: moment(),
+			format: 'MM/DD/YYYY',
+			useCurrent: false,
+			//minDate: moment(),
+			defaultDate: moment(),
 		});
 
-			$(".nav-tabs a").click(function(){
+		$(".nav-tabs a").click(function(){
 			$(this).tab('show');
-			});
+		});
 
-			$("#file-0").fileinput({
-				uploadUrl: '#',
-				showUpload: false,
-				showClose: false,
-				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
-				overwriteInitial: false,
-				maxFileSize:100000,
-				maxFileCount: 5,
-				browseOnZoneClick: true,
-				fileActionSettings: { showUpload: false, showDrag: false,}
-			});
+		$("#file-0").fileinput({
+			uploadUrl: '#',
+			showUpload: false,
+			showClose: false,
+			allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+			overwriteInitial: false,
+			maxFileSize:100000,
+			maxFileCount: 5,
+			browseOnZoneClick: true,
+			fileActionSettings: { showUpload: false, showDrag: false,}
+		});
 
-			$("#selbasecurr").on("change", function (){
-				
-				//convertCurrency($(this).val());
-		
-				var dval = $(this).find(':selected').attr('data-val');
-		
-				$("#basecurrval").val(dval);
-				$("#statgetrate").html("");
-				recomputeCurr();
+		$("#selbasecurr").on("change", function (){
 			
-			});
-			
-			$("#basecurrval").on("keyup", function () {
-				recomputeCurr();
-			});
-
-			$("#allbox").click(function(){
-				$('input:checkbox').not(this).prop('checked', this.checked);
-			});
-			
-
-		$('#BlankItmModal').on('shown.bs.modal', function () {
-			$('#txtblankitm').focus();
-		}) 
-
-		$("#txtblankitm").on("keydown", function(e) {
-			if(e.keyCode == 13){
-				
-				var x = $(this).val();
-				
-				var x1 = x.split("*",2);
-				
-					document.getElementById("txtprodid").value = "NEW_ITEM";
-					document.getElementById("txtprodnme").value = x1[1];
-					document.getElementById("txtpartnme").value = x1[1];
-					document.getElementById("hdnunit").value = x1[0];
-
-					document.getElementById("hdnqty").value = 1;
-					document.getElementById("hdnfact").value = 1; 
-					document.getElementById("hdnmainunit").value = x1[0];
-					document.getElementById("hdnxrefrpr").value = "";
-					document.getElementById("hdnxrefrprident").value = "";
+			//convertCurrency($(this).val());
+	
+			var dval = $(this).find(':selected').attr('data-val');
+	
+			$("#basecurrval").val(dval);
+			$("#statgetrate").html("");
+			recomputeCurr();
 		
-					myFunctionadd();
-					
-					$("#BlankItmModal").modal('hide');
-					
-					$("#txtprodid").val("");
-					$("#txtprodnme").val("");
-					$("#txtpartnme").val("");
-					$("#hdnunit").val("");
-					$("#hdnqty").val("");
-					$("#hdnfact").val(""); 
-					$("#hdnmainunit").val("");
-					$("#hdnxrefrpr").val("");
-					$("#hdnxrefrprident").val("");
+		});
+		
+		$("#basecurrval").on("keyup", function () {
+			recomputeCurr();
+		});
 
-			}
+		$("#allbox").click(function(){
+			$('input:checkbox').not(this).prop('checked', this.checked);
 		});
 		
 		$('#txtcust').typeahead({
@@ -984,16 +959,16 @@
 				}
 			}
 			
-		if(isItem=="NO"){	
+			if(isItem=="NO"){	
 
-				myFunctionadd();		
-				ComputeGross();	
-		}
-		else{
-			
-			addqty();	
+					myFunctionadd();		
+					ComputeGross();	
+			}
+			else{
 				
-		}
+				addqty();	
+					
+			}
 			
 			$("#txtprodid").val("");
 			$("#txtprodnme").val("");
@@ -1028,32 +1003,28 @@
 
 		var uomoptions = "";
 		
-		if(itmcode == "NEW_ITEM"){	
-			uomoptions = "<option value='"+itmunit.toUpperCase()+"'>"+itmunit.toUpperCase()+"</option>";
-		}else{
-			$.ajax ({
-				url: "../th_loaduomperitm.php",
-				data: { id: itmcode },
-				async: false,
-				dataType: "json",
-				success: function( data ) {
-												
-					console.log(data);
-					$.each(data,function(index,item){
-						if(item.id==itmunit){
-							isselctd = "selected";
-						}
-						else{
-							isselctd = "";
-						}
+		$.ajax ({
+			url: "../th_loaduomperitm.php",
+			data: { id: itmcode },
+			async: false,
+			dataType: "json",
+			success: function( data ) {
+											
+				console.log(data);
+				$.each(data,function(index,item){
+					if(item.id==itmunit){
+						isselctd = "selected";
+					}
+					else{
+						isselctd = "";
+					}
+					
+					uomoptions = uomoptions + '<option value='+item.id+' '+isselctd+'>'+item.name+'</option>';
+				});
 						
-						uomoptions = uomoptions + '<option value='+item.id+' '+isselctd+'>'+item.name+'</option>';
-					});
-							
-												
-				}
-			});
-		}
+											
+			}
+		});
 			
 		var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 		var lastRow = tbl.length;
@@ -1122,16 +1093,20 @@
 		var tditmbaseamount = "<td style=\"padding: 1px\" nowrap> <input type='text' value='"+itmbaseamt+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtntranamount\" id='txtntranamount"+lastRow+"' readonly> <input type='hidden' value='"+itmamt+"' name='txtnamount' id='txtnamount"+lastRow+"' readonly> </td>"; 
 
 		var tdneeded = "<td style=\"padding: 1px; position:relative;\" nowrap><input type='text' class='form-control input-xs' id='dneed"+lastRow+"' name='dneed' value='"+dneeded+"' /></td>"
-		
-		var tditmdel = "<td style=\"padding: 1px\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + lastRow + "' value='delete' /> </td>";
 
 		var tditmremarks = "<td> <input type='text' class='form-control input-xs' value='' name=\"txtitemrem\" id=\"txtitemrem" + lastRow + "\" maxlength=\"255\"></td>";
+
+		var tditmdel = "<td style=\"padding: 1px\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + lastRow + "' value='delete' data-var='"+lastRow+"'/> </td>";
 
 		$('#MyTable > tbody:last-child').append('<tr>'+tditmchange + tditmpartdesc + tditmdesc + tditmcode + ewttd + vattd + tditmunit + tditmqty + tditmprice + tditmbaseamount + tdneeded  + tditmremarks + tditmdel + '</tr>');
 
 
 			$("#del"+lastRow).on('click', function() {
+				var xy = $(this).data('var');
+
 				$(this).closest('tr').remove();
+				Reident(xy);
+				ComputeGross();
 			});
 
 			$("input.numeric2").autoNumeric('init',{mDec:4});
@@ -1173,6 +1148,45 @@
 				}
 			});
 										
+	}
+
+	function Reident(xy){
+		var rowCount = $('#MyTable tr').length;						
+		if(rowCount>1){
+			for (var i = xy+1; i <= rowCount; i++) {
+				var seluom = document.getElementById('seluom' + i);
+				var selitmewtyp = document.getElementById('selitmewtyp' + i);
+				var selitmvatyp = document.getElementById('selitmvatyp' + i);
+				var txtnqty = document.getElementById('txtnqty' + i);
+				var hdnmainuom = document.getElementById('hdnmainuom' + i);
+				var hdnfactor = document.getElementById('hdnfactor' + i);
+				var txtnprice = document.getElementById('txtnprice' + i);
+				var txtntranamount = document.getElementById('txtntranamount' + i);
+				var txtnamount  = document.getElementById('txtnamount' + i);
+				var dneed = document.getElementById('dneed' + i);
+				var del = document.getElementById('del' + i);
+				var txtitemrem = document.getElementById('txtitemrem' + i);				
+
+				var za = i - 1;
+
+				seluom.id = "seluom" + za;
+				selitmewtyp.id = "selitmewtyp" + za;
+				selitmvatyp.id = "selitmvatyp" + za;
+				txtnqty.id = "txtnqty" + za;
+				hdnmainuom.id = "hdnmainuom" + za;
+				hdnfactor.id = "hdnfactor" + za;
+				txtnprice.id = "txtnprice" + za;
+				txtntranamount.id = "txtntranamount" + za;
+				txtnamount.id = "txtnamount" + za;
+				dneed.id = "dneed" + za;
+				txtitemrem.id = "txtitemrem" + za;
+
+				del.id = "del" + za;
+				$("#del" + za).data('var', za);
+
+				
+			}
+		}
 	}
 
 	function ComputeAmt(nme){
@@ -1383,14 +1397,14 @@
 		var isDone = "True";
 
 
-			//Saving the header
+			/*Saving the header
 			var ccode = $("#txtcustid").val();
 			var crem = $("#txtremarks").val();
 			var ddate = $("#date_needed").val(); 
 			var dpodate = $("#date_delivery").val();
 			var ngross = $("#txtnGross").val();
 
-			var myform = $("#frmpos").serialize();		
+			var myform = $("#frmpos").serialize();	*/	
 			var formdata = new FormData($('#frmpos')[0]);
 			formdata.delete('upload[]');
 			jQuery.each($('#file-0')[0].files, function(i, file){
@@ -1425,9 +1439,11 @@
 
 					var crefpr = $(this).find('input[type="hidden"][name="hdncreference"]').val(); 
 					var crefprident = $(this).find('input[type="hidden"][name="hdnrefident"]').val();
-				
+
+					var citmpartno = $(this).find('input[type="hidden"][name="txtitempartdesc"]').val();
+					var citmoldno = $(this).find('input[type="hidden"][name="txtolditemcode"]').val();
 					var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-					var citmdesc = $(this).find('input[type="hidden"][name="txtitemdesc"]').val();
+					var citmdesc = $(this).find('input[name="txtitemdesc"]').val();
 					var cuom = $(this).find('select[name="seluom"]').val();
 					var nqty = $(this).find('input[name="txtnqty"]').val();
 					var nprice = $(this).find('input[name="txtnprice"]').val();
@@ -1437,7 +1453,6 @@
 					var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
 					var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val(); 
 					var citmremarks = $(this).find('input[name="txtitemrem"]').val();
-
 
 					var ewtcode = $(this).find('select[name="selitmewtyp"]').val();
 					var ewtrate = $(this).find('select[name="selitmewtyp"] option:selected').data('rate'); 
@@ -1455,7 +1470,7 @@
 					
 					$.ajax ({
 						url: "Purch_newsavedet.php",
-						data: { trancode: trancode, crefpr:crefpr, crefprident:crefprident, dneed: dneed, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, citmdesc:citmdesc, ntranamt:ntranamt, citmremarks:citmremarks, vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate },
+						data: { trancode: trancode, crefpr:crefpr, crefprident:crefprident, dneed: dneed, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, ntranamt:ntranamt, citmremarks:citmremarks, vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate, citmpartno:citmpartno, citmoldno:citmoldno, citmdesc:citmdesc },
 						async: false,
 						success: function( data ) {
 							if(data.trim()=="False"){
