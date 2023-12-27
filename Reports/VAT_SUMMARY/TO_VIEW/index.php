@@ -483,9 +483,9 @@
                     TOTAL_TAX += (zero.tax + exempt.tax) - (nonvat.tax + vat.tax);
                     $("<tr>").append(
                             $("<td colspan='7' align='right'>").text("Grand Total"),
-                            $("<td align='center'>").text(parseFloat(TOTAL_GROSS).toFixed(2)),
-                            $("<td align='center'>").text(parseFloat(TOTAL_NET).toFixed(2)),
-                            $("<td align='center'>").text(parseFloat(TOTAL_TAX).toFixed(2)),
+                            $("<td align='center'>").text(ToMoney(TOTAL_GROSS)),
+                            $("<td align='center'>").text(ToMoney(TOTAL_NET)),
+                            $("<td align='center'>").text(ToMoney(TOTAL_TAX)),
                 ).appendTo("#sales_table tbody")
                 } else {
                     console.log(msg)
