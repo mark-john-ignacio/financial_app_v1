@@ -562,17 +562,17 @@
                 $("<td>").text(item.partner),
                 $("<td>").text(item.tin),
                 $("<td>").text(item.address),
-                $("<td align='center'>").text(parseFloat(item.gross).toFixed(2)),
-                $("<td align='center'>").text(parseFloat(item.net).toFixed(2)),
-                $("<td align='center'>").text(parseFloat(item.tax).toFixed(2)),
+                $("<td align='center'>").text(ToMoney(item.gross)),
+                $("<td align='center'>").text(ToMoney(item.net)),
+                $("<td align='center'>").text(ToMoney(item.tax)),
             ).appendTo("#sales_table tbody");
         });
 
         $("<tr>").append(
             $("<td colspan='7' align='right'>").text("TOTAL: "),
-            $("<td align='center'>").text(parseFloat(TOTAL_GROSS).toFixed(2)),
-            $("<td align='center'>").text(parseFloat(TOTAL_NET).toFixed(2)),
-            $("<td align='center'>").text(parseFloat(TOTAL_TAX).toFixed(2)),
+            $("<td align='center'>").text(ToMoney(TOTAL_GROSS)),
+            $("<td align='center'>").text(ToMoney(TOTAL_NET)),
+            $("<td align='center'>").text(ToMoney(TOTAL_TAX)),
         ).appendTo("#sales_table tbody")
 
         return {
@@ -611,17 +611,17 @@
                 $("<td>").text(item.partner),
                 $("<td>").text(item.tin),
                 $("<td>").text(item.address),
-                $("<td align='center'>").text(parseFloat(item.gross).toFixed(2)),
-                $("<td align='center'>").text(parseFloat(item.net).toFixed(2)),
-                $("<td align='center'>").text(parseFloat(item.tax).toFixed(2)),
+                $("<td align='center'>").text(ToMoney(item.gross)),
+                $("<td align='center'>").text(ToMoney(item.net)),
+                $("<td align='center'>").text(ToMoney(item.tax)),
             ).appendTo("#purchase_table tbody");
         });
 
         $("<tr>").append(
             $("<td colspan='7' align='right'>").text("TOTAL: "),
-            $("<td align='center'>").text(parseFloat(TOTAL_GROSS).toFixed(2)),
-            $("<td align='center'>").text(parseFloat(TOTAL_NET).toFixed(2)),
-            $("<td align='center'>").text(parseFloat(TOTAL_TAX).toFixed(2)),
+            $("<td align='center'>").text(ToMoney(TOTAL_GROSS)),
+            $("<td align='center'>").text(ToMoney(TOTAL_NET)),
+            $("<td align='center'>").text(ToMoney(TOTAL_TAX)),
         ).appendTo("#purchase_table tbody");
 
         return {
