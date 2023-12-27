@@ -439,7 +439,7 @@
                 console.log(res)
             }
         })
-
+        TOTAL_AMOUNT_DUE = TOTAL_SALES - TOTAL_VAT;
         $("#vatable_sales").text(ToMoney(TOTAL_VATABLE))
         $("#vatable_exempt").text(ToMoney(TOTAL_EXEMPT))
         $("#vatable_zero").text(ToMoney(TOTAL_ZERO))
