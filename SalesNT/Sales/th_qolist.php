@@ -15,7 +15,7 @@ require_once "../../Connection/connection_string.php";
 			}
 		}
 
-		$result = mysqli_query ($con, "select * from ntdr where compcode='$company' and lapproved=1 and ccode='".$_REQUEST['x']."' order by ddate desc, ctranno desc"); 
+		$result = mysqli_query ($con, "select * from ntdr where compcode='$company' and lapproved=1 and lvoid=0 and ccode='".$_REQUEST['x']."' order by ddate desc, ctranno desc"); 
 
 	}elseif($_REQUEST['typ']=="QO"){ // BILLING QUOTE REFEERENCE
 
@@ -48,7 +48,7 @@ require_once "../../Connection/connection_string.php";
 			}
 		}
 
-		$result = mysqli_query ($con, "select * from ntso where compcode='$company' and lapproved=1 and ccode='".$_REQUEST['x']."' and csalestype='Services' order by ddate desc, ctranno desc"); 
+		$result = mysqli_query ($con, "select * from ntso where compcode='$company' and lapproved=1 and lvoid=0 and ccode='".$_REQUEST['x']."' and csalestype='Services' order by ddate desc, ctranno desc"); 
 	}
 
 
