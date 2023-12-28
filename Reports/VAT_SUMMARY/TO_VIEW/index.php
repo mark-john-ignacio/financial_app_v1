@@ -31,7 +31,7 @@
             <div style="width: 100%;">
                 <div class="col-xs-4">
                     <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <span class="input-group-addon"><i class="fa fa-calenda r"></i></span>
                         <input type="text" id="datefrom" name="datefrom" class="datepicker form-control input-sm" value="<?= date("Y-m-d", strtotime($_POST['from'])) ?>" disabled>
                     </div>
                 </div>
@@ -118,7 +118,7 @@
                         <div style="width: 100%; height: 1in; ">
                             <div class="btn btn-success btn" id="AR_STATUS">PAID</div>
                             <div style="display: flex">
-                                <h3 >Accounts Receivable</h3> 
+                                <h3 id="AR_TITLE">Accounts Receivable</h3> 
                                 <div style="color: gray; margin-top: 15px;" id="AR">(AR SAMPLE)</div>
                             </div>
                         </div>
@@ -354,6 +354,60 @@
                             $("<td>").text(""),
                             $("<td>").text(item.ndebit),
                             $("<td>").text(item.ncredit),
+                        ).appendTo("#GL_AR_TABLE tbody")
+                    })
+                    res.data.map((item, index) => {
+                        $("#date").text(item.date);
+                        $("#duedate").text(item.due);
+                        $("#invoice").text(item.invoice);
+                        $("#reference").text(item.reference)
+
+                        $("#AR_customer").text(item.customer);
+                        $("#AR_tin").text(item.tin);
+                        $("#AR_address").text(item.address)
+                    })
+
+                    if(res.approved === 1) {
+                        $("#AR_STATUS").prop("class", "btn btn-success btn-sm");
+                        $("#AR_STATUS").text("Paid");
+                    } else {
+                        $("#AR_STATUS").prop("class", "btn btn-primary btn-sm");
+                        $("#AR_STATUS").text("Pending");
+                    }
+
+                } else {
+                    console.log(res.msg)
+                }
+                
+            },
+            error: function(msg) {
+                console.log(msg)
+            }
+        })
+    }
+
+    function AP_MODAL() {
+        let header = $(this).text();
+        $("#AR").html("<h4>(" + header + ")</h4>");
+        $("#GL_AR_TABLE tbody").empty();
+
+        $.ajax({
+            url: "../AP_LIST",
+            data: {
+                transaction: header
+            },
+            dataType: "json",
+            async: false,
+            success: function(res) {
+                if(res.valid) { 
+                    $(".AR").modal("show");
+                    res.GLData.map((item, index) => {
+                        $("<tr>").append(
+                            $("<td>").html("&nbsp;"),
+                            $("<td>").text(item.acctno + " - " + item.ctitle),
+                            $("<td>").text(""),
+                            $("<td>").text(ToMoney(item.ndebit)),
+                            $("<td>").text(ToMoney(item.ncredit)),
                         ).appendTo("#GL_AR_TABLE tbody")
                     })
                     res.data.map((item, index) => {
@@ -630,7 +684,7 @@
             TOTAL_NET += parseFloat(net);
             TOTAL_TAX += parseFloat(tax);
             $("<tr>").append(
-                $("<td>").text(item.transaction),
+                $("<td>").html("<a href='javascript:;' onclick='AP_MODAL.call(this)'>" +item.transaction + "</a>"),
                 $("<td>").text(item.date),
                 $("<td>").text(""),
                 $("<td>").text(""),

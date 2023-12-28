@@ -28,18 +28,6 @@
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) > 0) {
         while($list = $query -> fetch_assoc()) :
-            // $json = [
-            //     'transaction' => $list['ctranno'],
-            //     'date' => date("F d, Y", strtotime($list['dapvdate'])),
-            //     'invoice' => $list['capvno'],
-            //     'reference' => $list['crefrr'],
-            //     'partner' => $list['cname'],
-            //     'tin' => $list['ctin'],
-            //     'address' => $list['chouseno'] . " " . $list['ccity'],
-            //     'gross' => round($list['namount'], 2),
-            //     'net' => !empty($list['nnet']) ? round($list['nnet'], 2) : 0,
-            //     'tax' => !empty($list['nvat']) ? round($list['nvat'], 2) : 0
-            // ];
 
             $json = [
                 'transaction' => $list['ctranno'],
