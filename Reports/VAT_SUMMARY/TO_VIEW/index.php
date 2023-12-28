@@ -314,6 +314,64 @@
             </div>
         </div>
     </div>
+
+    <div class='Paybills modal fade' id='ViewModal' role='dialog' >
+        <div class='modal-sm modal-dialog' style="width: 800px;" role="document"  style="width:80%" >
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>  
+                    <h3 class="modal-title" id="invheader">View Bills Payment</h3>
+                </div>
+
+                <div class='modal-body' id='modal-body' style='height: 100%'> 
+                    
+                    <div style="display: flex; width: 100%;">
+                        <div style="width: 100%; height: 1in; ">
+                            <div style="display: flex">
+                                <h3 id="AR_TITLE">Account Payments</h3> 
+                                <div style="color: gray; margin-top: 15px;" id="AP">(AR SAMPLE)</div>
+                            </div>
+                        </div>
+                        <div style="width: 100%;">
+                            <table style="width: 80%;">
+                                <tr>
+                                    <th>DATE: </th>
+                                    <td><div id="AP_DATE"></div></td>
+                                </tr>
+                                <tr>
+                                    <th>DUE DATE: </th>
+                                    <td><div id="AP_DUE"></div></td>
+                                </tr>
+                                <tr>
+                                    <th>INVOICE NO: </th>
+                                    <td><div id="AP_INVOICE"></div></td>
+                                </tr>
+                                <tr>
+                                    <th>REFERENCE No: </th>
+                                    <td><div id="AP_REFERENCE"></div></td>
+                                </tr>   
+                            </table>
+                        </div>
+                    </div>
+
+                    <div style="display: relative;">
+                        <table class="table" id="GL_AP_TABLE">
+                            <thead>
+                                <tr>
+                                    <th align='center'>Profit Center</th>
+                                    <th align='center'>Account</th>
+                                    <th align='center'>Description</th>
+                                    <th align='center'>Debit</th>
+                                    <th align='center'>Credit</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
 
@@ -388,8 +446,8 @@
 
     function AP_MODAL() {
         let header = $(this).text();
-        $("#AR").html("<h4>(" + header + ")</h4>");
-        $("#GL_AR_TABLE tbody").empty();
+        $("#AP").html("<h4>(" + header + ")</h4>");
+        $("#GL_AP_TABLE tbody").empty();
 
         $.ajax({
             url: "../AP_LIST",
@@ -400,7 +458,7 @@
             async: false,
             success: function(res) {
                 if(res.valid) { 
-                    $(".AR").modal("show");
+                    $(".Paybills").modal("show");
                     res.GLData.map((item, index) => {
                         $("<tr>").append(
                             $("<td>").html("&nbsp;"),
@@ -408,13 +466,13 @@
                             $("<td>").text(""),
                             $("<td>").text(ToMoney(item.ndebit)),
                             $("<td>").text(ToMoney(item.ncredit)),
-                        ).appendTo("#GL_AR_TABLE tbody")
+                        ).appendTo("#GL_AP_TABLE tbody")
                     })
                     res.data.map((item, index) => {
-                        $("#date").text(item.date);
-                        $("#duedate").text(item.due);
-                        $("#invoice").text(item.invoice);
-                        $("#reference").text(item.reference)
+                        $("#AP_DATE").text(item.date);
+                        $("#AP_DUE").text(item.due);
+                        $("#AP_INVOICE").text(item.invoice);
+                        $("#AP_REFERENCE").text(item.reference)
 
                         $("#AR_customer").text(item.customer);
                         $("#AR_tin").text(item.tin);
@@ -686,7 +744,8 @@
             $("<tr>").append(
                 $("<td>").html("<a href='javascript:;' onclick='AP_MODAL.call(this)'>" +item.transaction + "</a>"),
                 $("<td>").text(item.date),
-                $("<td>").text(""),
+                // $("<td>").html("<a href='javascript:;' onclick=''>" + item.reference + "</a>"),
+                $("<td>").html("<a href='javascript:;' onclick=''>" + "</a>"),
                 $("<td>").text(""),
                 $("<td>").text(item.partner),
                 $("<td>").text(item.tin),

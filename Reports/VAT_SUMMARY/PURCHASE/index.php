@@ -34,6 +34,7 @@
                 'debit' => round($list['ndebit'], 2),
                 'credit' => round($list['ncredit'], 2),
                 'gross' => round($list['ngross'], 2),
+                // 'reference' => $list['crefrr'],
                 'date' => $list['dapvdate'],
                 'partner' => $list['cname'],
                 'address' => $list['chouseno'] . " " . $list['ccity'],
