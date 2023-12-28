@@ -511,6 +511,10 @@
         let service = "<?= $_POST['services'] ?>";
         let capital = "<?= $_POST['capital'] ?>";
 
+        let TOTAL_GROSS = 0;
+        let TOTAL_NET = 0;
+        let TOTAL_TAX = 0;
+
         $.ajax({
             url: "../PURCHASE",
             data: {
@@ -524,7 +528,22 @@
             async: false,
             success: function(res) {
                 if(res.valid) {
-                    let other = PURCHASE_TABLE_DATA("INPUT VAT GOODS (OTHER THAN CAPITAL GOODS)  ", res.data);
+                    let other = PURCHASE_TABLE_DATA("INPUT VAT GOODS (OTHER THAN CAPITAL GOODS)  ", res.other);
+                    
+                    let service = PURCHASE_TABLE_DATA("INPUT VAT SERVICES  ", res.service);
+                    
+                    let capital = PURCHASE_TABLE_DATA("INPUT VAT CAPITAL GOODS  ", res.capital);
+
+                    
+                    TOTAL_GROSS += other.gross + service.gross + capital.gross;
+                    TOTAL_NET += other.net + service.net + capital.net;
+                    TOTAL_TAX += other.tax + service.tax + capital.tax;
+                    $("<tr>").append(
+                            $("<td colspan='7' align='right'>").text("Grand Total"),
+                            $("<td align='center'>").text(ToMoney(TOTAL_GROSS)),
+                            $("<td align='center'>").text(ToMoney(TOTAL_NET)),
+                            $("<td align='center'>").text(ToMoney(TOTAL_TAX)),
+                    ).appendTo("#purchase_table tbody")
                 } else {
                     console.log(res.msg)
                 }
@@ -555,6 +574,7 @@
             TOTAL_GROSS += parseFloat(item.gross);
             TOTAL_NET += parseFloat(item.net);
             TOTAL_TAX += parseFloat(item.tax);
+
 
             $("<tr>").append(
                 $("<td>").html("<a href='javascript:;' onclick='AR_MODAL.call(this)'>" + item.transaction + "</a"),
@@ -601,21 +621,25 @@
         let TOTAL_TAX = 0;
 
         data.map((item, index) => {
-            TOTAL_GROSS += parseFloat(item.gross);
-            TOTAL_NET += parseFloat(item.net);
-            TOTAL_TAX += parseFloat(item.tax);
+            const tax = item.credit != 0 ? item.credit : item.debit;
+            const gross = item.gross;
+            const net = item.gross - tax;
+            const isCredit = item.credit != 0 ? true : false; 
 
+            TOTAL_GROSS += parseFloat(gross);
+            TOTAL_NET += parseFloat(net);
+            TOTAL_TAX += parseFloat(tax);
             $("<tr>").append(
                 $("<td>").text(item.transaction),
                 $("<td>").text(item.date),
-                $("<td>").text(item.invoice),
-                $("<td>").text(item.reference),
+                $("<td>").text(""),
+                $("<td>").text(""),
                 $("<td>").text(item.partner),
                 $("<td>").text(item.tin),
                 $("<td>").text(item.address),
-                $("<td align='center'>").text(ToMoney(item.gross)),
-                $("<td align='center'>").text(ToMoney(item.net)),
-                $("<td align='center'>").text(ToMoney(item.tax)),
+                $("<td align='center'>").text(ToMoney(gross)),
+                $("<td align='center'>").text(ToMoney(net)),
+                $("<td align='center'>").text(ToMoney(tax)),
             ).appendTo("#purchase_table tbody");
         });
 
