@@ -38,7 +38,7 @@
                 'tax' => round($list['nvat'], 2)
             ];
             
-            $taxcode = $list['cvattype'];
+            $taxcode = $list['ctaxcode'];
             switch($taxcode) {
                 case $vat:
                     if(!in_array($json, $vatable)) :
