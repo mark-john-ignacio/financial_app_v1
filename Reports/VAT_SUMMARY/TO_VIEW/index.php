@@ -31,7 +31,7 @@
             <div style="width: 100%;">
                 <div class="col-xs-4">
                     <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <span class="input-group-addon"><i class="fa fa-calenda r"></i></span>
                         <input type="text" id="datefrom" name="datefrom" class="datepicker form-control input-sm" value="<?= date("Y-m-d", strtotime($_POST['from'])) ?>" disabled>
                     </div>
                 </div>
@@ -105,7 +105,7 @@
         </div>
     </div>
 
-    <div class='AR modal fade' id='ViewModal' role='dialog' data-backdrop="static">
+    <div class='AR modal fade' id='ViewModal' role='dialog'>
         <div class='modal-sm modal-dialog' style="width: 800px;" role="document">
             <div class='modal-content' >
                 <div class='modal-header'>
@@ -118,7 +118,7 @@
                         <div style="width: 100%; height: 1in; ">
                             <div class="btn btn-success btn" id="AR_STATUS">PAID</div>
                             <div style="display: flex">
-                                <h3 >Accounts Receivable</h3> 
+                                <h3 id="AR_TITLE">Accounts Receivable</h3> 
                                 <div style="color: gray; margin-top: 15px;" id="AR">(AR SAMPLE)</div>
                             </div>
                         </div>
@@ -147,19 +147,19 @@
                         <table>
                             <tr>
                                 <th>Name: </th>
-                                <td id="customer"></td>
+                                <td id="AR_customer"></td>
                             </tr>
                             <tr>
                                 <th>Email: </th>
-                                <td id="email"></td>
+                                <td id="AR_email"></td>
                             </tr>
                             <tr>
                                 <th>TIN</th>
-                                <td id="tin"></td>
+                                <td id="AR_tin"></td>
                             </tr>
                             <tr>
                                 <th>Address</th>
-                                <td id="address"></td>
+                                <td id="AR_address"></td>
                             </tr>
                         </table>
                     </div>
@@ -200,7 +200,7 @@
         </div>
     </div>
 
-    <div class='Sales modal fade' id='ViewModal' role='dialog' data-backdrop="static">
+    <div class='Sales modal fade' id='ViewModal' role='dialog' >
         <div class='modal-sm modal-dialog' style="width: 800px;" role="document"  style="width:80%" >
             <div class='modal-content'>
                 <div class='modal-header'>
@@ -314,6 +314,64 @@
             </div>
         </div>
     </div>
+
+    <div class='Paybills modal fade' id='ViewModal' role='dialog' >
+        <div class='modal-sm modal-dialog' style="width: 800px;" role="document"  style="width:80%" >
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>  
+                    <h3 class="modal-title" id="invheader">View Bills Payment</h3>
+                </div>
+
+                <div class='modal-body' id='modal-body' style='height: 100%'> 
+                    
+                    <div style="display: flex; width: 100%;">
+                        <div style="width: 100%; height: 1in; ">
+                            <div style="display: flex">
+                                <h3 id="AR_TITLE">Account Payments</h3> 
+                                <div style="color: gray; margin-top: 15px;" id="AP">(AR SAMPLE)</div>
+                            </div>
+                        </div>
+                        <div style="width: 100%;">
+                            <table style="width: 80%;">
+                                <tr>
+                                    <th>DATE: </th>
+                                    <td><div id="AP_DATE"></div></td>
+                                </tr>
+                                <tr>
+                                    <th>DUE DATE: </th>
+                                    <td><div id="AP_DUE"></div></td>
+                                </tr>
+                                <tr>
+                                    <th>INVOICE NO: </th>
+                                    <td><div id="AP_INVOICE"></div></td>
+                                </tr>
+                                <tr>
+                                    <th>REFERENCE No: </th>
+                                    <td><div id="AP_REFERENCE"></div></td>
+                                </tr>   
+                            </table>
+                        </div>
+                    </div>
+
+                    <div style="display: relative;">
+                        <table class="table" id="GL_AP_TABLE">
+                            <thead>
+                                <tr>
+                                    <th align='center'>Profit Center</th>
+                                    <th align='center'>Account</th>
+                                    <th align='center'>Description</th>
+                                    <th align='center'>Debit</th>
+                                    <th align='center'>Credit</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
 
@@ -335,6 +393,7 @@
     function AR_MODAL(){
         let header = $(this).text();
         $("#AR").html("<h4>(" + header + ")</h4>");
+        $("#GL_AR_TABLE tbody").empty();
 
         $.ajax({
             url: "../RECEIPT",
@@ -361,9 +420,63 @@
                         $("#invoice").text(item.invoice);
                         $("#reference").text(item.reference)
 
-                        $("#customer").text(res.customer);
-                        $("#tin").text(res.tin);
-                        $("address").text(res.address)
+                        $("#AR_customer").text(item.customer);
+                        $("#AR_tin").text(item.tin);
+                        $("#AR_address").text(item.address)
+                    })
+
+                    if(res.approved === 1) {
+                        $("#AR_STATUS").prop("class", "btn btn-success btn-sm");
+                        $("#AR_STATUS").text("Paid");
+                    } else {
+                        $("#AR_STATUS").prop("class", "btn btn-primary btn-sm");
+                        $("#AR_STATUS").text("Pending");
+                    }
+
+                } else {
+                    console.log(res.msg)
+                }
+                
+            },
+            error: function(msg) {
+                console.log(msg)
+            }
+        })
+    }
+
+    function AP_MODAL() {
+        let header = $(this).text();
+        $("#AP").html("<h4>(" + header + ")</h4>");
+        $("#GL_AP_TABLE tbody").empty();
+
+        $.ajax({
+            url: "../AP_LIST",
+            data: {
+                transaction: header
+            },
+            dataType: "json",
+            async: false,
+            success: function(res) {
+                if(res.valid) { 
+                    $(".Paybills").modal("show");
+                    res.GLData.map((item, index) => {
+                        $("<tr>").append(
+                            $("<td>").html("&nbsp;"),
+                            $("<td>").text(item.acctno + " - " + item.ctitle),
+                            $("<td>").text(""),
+                            $("<td>").text(ToMoney(item.ndebit)),
+                            $("<td>").text(ToMoney(item.ncredit)),
+                        ).appendTo("#GL_AP_TABLE tbody")
+                    })
+                    res.data.map((item, index) => {
+                        $("#AP_DATE").text(item.date);
+                        $("#AP_DUE").text(item.due);
+                        $("#AP_INVOICE").text(item.invoice);
+                        $("#AP_REFERENCE").text(item.reference)
+
+                        $("#AR_customer").text(item.customer);
+                        $("#AR_tin").text(item.tin);
+                        $("#AR_address").text(item.address)
                     })
 
                     if(res.approved === 1) {
@@ -394,6 +507,7 @@
         let TOTAL_SALES = 0;
         let TOTAL_DISCOUNT = 0;
         let TOTAL_AMOUNT_DUE = 0;
+        $("#Invoice_list tbody").empty();
 
         $.ajax({
             url: "../INVOICE",
@@ -437,7 +551,7 @@
                 console.log(res)
             }
         })
-
+        TOTAL_AMOUNT_DUE = TOTAL_SALES + TOTAL_VAT;
         $("#vatable_sales").text(ToMoney(TOTAL_VATABLE))
         $("#vatable_exempt").text(ToMoney(TOTAL_EXEMPT))
         $("#vatable_zero").text(ToMoney(TOTAL_ZERO))
@@ -483,10 +597,10 @@
                     TOTAL_TAX += (zero.tax + exempt.tax) - (nonvat.tax + vat.tax);
                     $("<tr>").append(
                             $("<td colspan='7' align='right'>").text("Grand Total"),
-                            $("<td align='center'>").text(parseFloat(TOTAL_GROSS).toFixed(2)),
-                            $("<td align='center'>").text(parseFloat(TOTAL_NET).toFixed(2)),
-                            $("<td align='center'>").text(parseFloat(TOTAL_TAX).toFixed(2)),
-                ).appendTo("#sales_table tbody")
+                            $("<td align='center'>").text(ToMoney(TOTAL_GROSS)),
+                            $("<td align='center'>").text(ToMoney(TOTAL_NET)),
+                            $("<td align='center'>").text(ToMoney(TOTAL_TAX)),
+                    ).appendTo("#sales_table tbody")
                 } else {
                     console.log(msg)
                 }
@@ -509,6 +623,10 @@
         let service = "<?= $_POST['services'] ?>";
         let capital = "<?= $_POST['capital'] ?>";
 
+        let TOTAL_GROSS = 0;
+        let TOTAL_NET = 0;
+        let TOTAL_TAX = 0;
+
         $.ajax({
             url: "../PURCHASE",
             data: {
@@ -522,9 +640,24 @@
             async: false,
             success: function(res) {
                 if(res.valid) {
-                    let other = PURCHASE_TABLE_DATA("INPUT VAT GOODS (OTHER THAN CAPITAL GOODS)  ", res.data);
+                    let other = PURCHASE_TABLE_DATA("INPUT VAT GOODS (OTHER THAN CAPITAL GOODS)  ", res.other);
+                    
+                    let service = PURCHASE_TABLE_DATA("INPUT VAT SERVICES  ", res.service);
+                    
+                    let capital = PURCHASE_TABLE_DATA("INPUT VAT CAPITAL GOODS  ", res.capital);
+
+                    
+                    TOTAL_GROSS += other.gross + service.gross + capital.gross;
+                    TOTAL_NET += other.net + service.net + capital.net;
+                    TOTAL_TAX += other.tax + service.tax + capital.tax;
+                    $("<tr>").append(
+                            $("<td colspan='7' align='right'>").text("Grand Total"),
+                            $("<td align='center'>").text(ToMoney(TOTAL_GROSS)),
+                            $("<td align='center'>").text(ToMoney(TOTAL_NET)),
+                            $("<td align='center'>").text(ToMoney(TOTAL_TAX)),
+                    ).appendTo("#purchase_table tbody")
                 } else {
-                    console.log(msg)
+                    console.log(res.msg)
                 }
             },
             error: function(msg) {
@@ -553,6 +686,7 @@
             TOTAL_GROSS += parseFloat(item.gross);
             TOTAL_NET += parseFloat(item.net);
             TOTAL_TAX += parseFloat(item.tax);
+
 
             $("<tr>").append(
                 $("<td>").html("<a href='javascript:;' onclick='AR_MODAL.call(this)'>" + item.transaction + "</a"),
@@ -599,21 +733,26 @@
         let TOTAL_TAX = 0;
 
         data.map((item, index) => {
-            TOTAL_GROSS += parseFloat(item.gross);
-            TOTAL_NET += parseFloat(item.net);
-            TOTAL_TAX += parseFloat(item.tax);
+            const tax = item.credit != 0 ? item.credit : item.debit;
+            const gross = item.gross;
+            const net = item.gross - tax;
+            const isCredit = item.credit != 0 ? true : false; 
 
+            TOTAL_GROSS += parseFloat(gross);
+            TOTAL_NET += parseFloat(net);
+            TOTAL_TAX += parseFloat(tax);
             $("<tr>").append(
-                $("<td>").text(item.transaction),
+                $("<td>").html("<a href='javascript:;' onclick='AP_MODAL.call(this)'>" +item.transaction + "</a>"),
                 $("<td>").text(item.date),
-                $("<td>").text(item.invoice),
-                $("<td>").text(item.reference),
+                // $("<td>").html("<a href='javascript:;' onclick=''>" + item.reference + "</a>"),
+                $("<td>").html("<a href='javascript:;' onclick=''>" + "</a>"),
+                $("<td>").text(""),
                 $("<td>").text(item.partner),
                 $("<td>").text(item.tin),
                 $("<td>").text(item.address),
-                $("<td align='center'>").text(ToMoney(item.gross)),
-                $("<td align='center'>").text(ToMoney(item.net)),
-                $("<td align='center'>").text(ToMoney(item.tax)),
+                $("<td align='center'>").text(ToMoney(gross)),
+                $("<td align='center'>").text(ToMoney(net)),
+                $("<td align='center'>").text(ToMoney(tax)),
             ).appendTo("#purchase_table tbody");
         });
 
