@@ -91,7 +91,7 @@
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 		left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 		left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
-		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
+		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lvoid=0 and b.lcancelled=0
 		".$qryitm.$qrycust.$qryposted."
 		Group By a.compcode, b.ccode, d.ctradename, b.lapproved, d.ccustomertype, e.cdesc
 		order by d.ccustomertype, sum(A.namount) DESC";
@@ -104,7 +104,7 @@
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 		left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 		left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
-		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
+		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lvoid=0 and b.lcancelled=0
 		".$qryitm.$qrycust.$qryposted."
 		Group By a.compcode, b.ccode, d.ctradename, b.lapproved, d.ccustomertype, e.cdesc
 		order by d.ccustomertype, sum(A.namount) DESC";
@@ -119,7 +119,7 @@
 			left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 			left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 			left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
-			where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
+			where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lvoid=0 and b.lcancelled=0
 			".$qryitm.$qrycust.$qryposted."
 			Group By a.compcode, b.ccode, d.ctradename, b.lapproved, d.ccustomertype, e.cdesc
 			UNION ALL
@@ -129,7 +129,7 @@
 			left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 			left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 			left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
-			where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
+			where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lvoid=0 and b.lcancelled=0
 			".$qryitm.$qrycust.$qryposted."
 			Group By a.compcode, b.ccode, d.ctradename, b.lapproved, d.ccustomertype, e.cdesc
 		) A 
