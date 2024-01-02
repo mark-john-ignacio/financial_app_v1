@@ -79,14 +79,14 @@ if($rpt==""){
 }
 
 $arrPO = array();
-$result=mysqli_query($con,"Select A.cpono, A.nident, A.citemno, A.nprice, A.namount From purchase_t A left join purchase B on A.compcode=B.compcode and A.cpono=B.cpono where A.compcode='".$company."' and B.lcancelled=0 and B.lapproved=1");
+$result=mysqli_query($con,"Select A.cpono, A.nident, A.citemno, A.nprice, A.namount From purchase_t A left join purchase B on A.compcode=B.compcode and A.cpono=B.cpono where A.compcode='".$company."' and B.lcancelled=0 and B.lapproved=1 and B.lvoid=0");
 while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 	$arrPO[] = $row;
 }
 
 
 $arrSI = array();
-$result=mysqli_query($con,"Select A.creference, A.nrefidentity, A.citemno, A.nprice, A.namount From suppinv_t A left join suppinv B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='".$company."' and B.lcancelled=0");
+$result=mysqli_query($con,"Select A.creference, A.nrefidentity, A.citemno, A.nprice, A.namount From suppinv_t A left join suppinv B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='".$company."' and B.lcancelled=0 and B.lvoid=0");
 while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 	$arrSI[] = $row;
 }
@@ -96,7 +96,7 @@ From receive_t a
 left join receive b on a.compcode=b.compcode and a.ctranno=b.ctranno
 left join suppliers c on b.compcode=c.compcode and b.ccode=c.ccode
 left join items d on a.compcode=d.compcode and a.citemno=d.cpartno
-where a.compcode='001' and b.dreceived between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled = 0" .$qry. $qrytyp. "
+where a.compcode='".$company."' and b.dreceived between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled = 0 and b.lvoid=0" .$qry. $qrytyp. "
 order by b.dreceived, a.ctranno";
 
 

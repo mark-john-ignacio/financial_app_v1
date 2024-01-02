@@ -49,14 +49,14 @@ else{
 }
 
 $arrPO = array();
-$result=mysqli_query($con,"Select A.cpono, A.nident, A.citemno, A.nprice, A.namount From purchase_t A left join purchase B on A.compcode=B.compcode and A.cpono=B.cpono where A.compcode='".$company."' and B.lcancelled=0 and B.lapproved=1");
+$result=mysqli_query($con,"Select A.cpono, A.nident, A.citemno, A.nprice, A.namount From purchase_t A left join purchase B on A.compcode=B.compcode and A.cpono=B.cpono where A.compcode='".$company."' and B.lcancelled=0 and B.lapproved=1 and B.lvoid=1");
 while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 	$arrPO[] = $row;
 }
 
 
 $arrSI = array();
-$result=mysqli_query($con,"Select A.creference, A.nrefidentity, A.citemno, A.nprice, A.namount From suppinv_t A left join suppinv B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='".$company."' and B.lcancelled=0");
+$result=mysqli_query($con,"Select A.creference, A.nrefidentity, A.citemno, A.nprice, A.namount From suppinv_t A left join suppinv B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='".$company."' and B.lcancelled=0 and B.lvoid=1");
 while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 	$arrSI[] = $row;
 }
@@ -72,7 +72,7 @@ From suppinv_t a
 left join suppinv b on a.ctranno=b.ctranno and a.compcode=b.compcode
 left join items d on a.citemno=d.cpartno and a.compcode=d.compcode
 left join groupings c on d.cclass=c.ccode and a.compcode=c.compcode and c.ctype='ITEMCLS'
-where a.compcode='$company' and b.dreceived between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0".$qry."
+where a.compcode='$company' and b.dreceived between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0  and b.lvoid=1 ".$qry."
 ) A
 group by A.cclass, A.cdesc,A.citemno, A.citemdesc, A.cunit
 order by A.cclass, sum(a.nqty) DESC";

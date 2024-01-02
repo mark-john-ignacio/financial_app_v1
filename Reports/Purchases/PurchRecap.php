@@ -1,24 +1,24 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "PurchReg.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "PurchReg.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
-$company = $_SESSION['companyid'];
-				$sql = "select * From company where compcode='$company'";
-				$result=mysqli_query($con,$sql);
-				
-					if (!mysqli_query($con, $sql)) {
-						printf("Errormessage: %s\n", mysqli_error($con));
-					} 
-					
-				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-				{
-					$compname =  $row['compname'];
-				}
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
+	$company = $_SESSION['companyid'];
+	$sql = "select * From company where compcode='$company'";
+	$result=mysqli_query($con,$sql);
+	
+	if (!mysqli_query($con, $sql)) {
+		printf("Errormessage: %s\n", mysqli_error($con));
+	} 
+		
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
+		$compname =  $row['compname'];
+	}
 ?>
 
 <html>
@@ -53,7 +53,7 @@ $sql = "Select A.* From
 (
 SELECT 1 as orderd, A.`acctno`, A.`ctitle`, Sum(A.`ndebit`) as ndebit, Sum(A.`ncredit`) as ncredit
 From `glactivity` A left join `receive` B on A.`ctranno`=B.`ctranno` and A.`compcode`=B.`compcode`
-Where A.compcode='$company' and B.`dreceived` between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.`lcancelled`=0 and B.`lapproved`=1 and A.`ndebit` <> 0
+Where A.compcode='$company' and B.`dreceived` between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.`lcancelled`=0 and B.`lapproved`=1 and B.lvoid = 0 and A.`ndebit` <> 0
  group by A.`acctno`, A.`ctitle`
  
  UNION ALL
@@ -61,14 +61,14 @@ Where A.compcode='$company' and B.`dreceived` between STR_TO_DATE('$date1', '%m/
 SELECT 2 as orderd, B.`ccode`, C.`cname`, Sum(A.`ndebit`) as ndebit, Sum(A.`ncredit`) as ncredit
 From `glactivity` A left join `receive` B on A.`ctranno`=B.`ctranno` and A.`compcode`=B.`compcode`
 left join `suppliers` C on B.`ccode`=C.`ccode`
-Where A.compcode='$company' and B.`dreceived` between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.`lcancelled`=0 and B.`lapproved`=1 and A.`ncredit` <> 0
+Where A.compcode='$company' and B.`dreceived` between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.`lcancelled`=0 and B.`lapproved`=1 and B.lvoid = 0 and A.`ncredit` <> 0
  group by  B.`ccode`, C.`cname`
  
  UNION ALL
  
 SELECT 3 as orderd, A.`acctno`, A.`ctitle`, Sum(A.`ndebit`) as ndebit, Sum(A.`ncredit`) as ncredit
 From `glactivity` A left join `receive` B on A.`ctranno`=B.`ctranno` and A.`compcode`=B.`compcode`
-Where A.compcode='$company' and B.`dreceived` between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.`lcancelled`=0 and B.`lapproved`=1 and A.`ncredit` <> 0
+Where A.compcode='$company' and B.`dreceived` between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.`lcancelled`=0 and B.`lapproved`=1 and B.lvoid = 0 and A.`ncredit` <> 0
  group by  A.`acctno`, A.`ctitle`
 ) A
 order by A.orderd, A.`acctno`";

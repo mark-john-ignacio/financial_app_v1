@@ -85,7 +85,7 @@ From suppinv_t a
 left join suppinv b on a.ctranno=b.ctranno and a.compcode=b.compcode
 left join items d on a.citemno=d.cpartno and a.compcode=d.compcode
 left join groupings c on d.cclass=c.ccode and c.ctype='ITEMCLS'
-where a.compcode='$company' and YEAR(b.dreceived) = '$selyr' and b.lcancelled=0 ".$qry.") A
+where a.compcode='$company' and YEAR(b.dreceived) = '$selyr' and b.lcancelled=0 and b.lvoid=0 ".$qry.") A
 group by A.dmonth, A.cclass, A.cdesc,A.citemno, A.citemdesc, A.cunit
 order by A.cclass, A.citemdesc, A.dmonth ";
 
