@@ -57,7 +57,7 @@ else{
 $sql = "select a.ccode, b.cname, sum(a.ngross) as namnt
 From suppinv a
 left join suppliers b on a.ccode=b.ccode
-where a.compcode='001' and a.dreceived between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and a.lcancelled=0 ".$qry." group by a.ccode, b.cname order by sum(a.ngross) DESC";
+where a.compcode='$company' and a.dreceived between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and a.lcancelled=0 and a.lvoid=0 ".$qry." group by a.ccode, b.cname order by sum(a.ngross) DESC";
 
 //echo $sql;
 

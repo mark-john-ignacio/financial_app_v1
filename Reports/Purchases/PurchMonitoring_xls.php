@@ -65,7 +65,7 @@ left join purchase b on a.compcode=b.compcode and a.cpono=b.cpono
 left join suppliers c on b.compcode=c.compcode and b.ccode=c.ccode
 left join items d on a.compcode=d.compcode and a.citemno=d.cpartno
 left join groupings e on d.compcode=e.compcode and d.ctype=e.ccode and e.ctype='ITEMTYP'
-where a.compcode='".$company."' and DATE(b.".$datefil.") between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')".$qrypost."
+where a.compcode='".$company."' and b.lvoid = 0 and DATE(b.".$datefil.") between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')".$qrypost."
 order by d.ctype, a.citemno, b.".$datefil." DESC";
 
 //echo $sql;

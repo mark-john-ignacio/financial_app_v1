@@ -50,7 +50,7 @@ $spreadsheet->setActiveSheetIndex(0)
 	$sql = "select a.ccode, b.cname, a.ngross as namnt, a.ctranno as csalesno, a.dreceived as dcutdate
 	From suppinv a
 	left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode
-	where a.compcode='001' and a.dreceived between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and a.lcancelled=0  ".$qry." order by a.ctranno";
+	where a.compcode='$company' and a.dreceived between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and a.lcancelled=0 and a.lvoid=0 ".$qry." order by a.ctranno";
 
 	//echo $sql;
 
