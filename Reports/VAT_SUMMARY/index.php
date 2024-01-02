@@ -27,12 +27,12 @@
 </head>
 <body>
     <div style="text-align: center; font-weight: bold; text-decoration: underline;">
-        <font size="+1">Quarterly Alphalist of Payees</font>
+        <font size="+1">VAT Summary Report</font>
     </div>
     <form action="" method="post" id="FORM_VATSUM" enctype="multipart/form-data" target="_blank">
         <div class='container' style='padding-top: 50px'>
             
-                <table>
+                <table border="0">
                     <tr valign="top">
                         <th><button type="button" class='btn btn-danger btn-block' id="btnView" onclick="btnonclick.call(this)" value="VIEW"><i class='fa fa-search'></i>&nbsp;&nbsp;View Report</button></th>
                         <th width='100px'>Month of:</th>
@@ -57,14 +57,22 @@
                     </tr>
                     <tr valign="top">
                         <th><button type="button" class="btn btn-success btn-block" id="btnExcel" onclick="btnonclick.call(this)" value="CSV"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;To Excel</button></th>
-                        <!-- <th>RDO Type: </th> -->
-                        <!-- <th><input type="text" id='rdo' name="rdo" class='form-control input-sm' placeholder="RDO TYPE...." required></th> -->
-                        <th colspan='4'>&nbsp;</th>
+                        <th width='100px'>Type: </th>
+                        <th >
+                            <div class="col-xs-11 nopadding">
+
+                                    <select id='seltyp' name='seltyp' class='form-control input-sm'>
+                                        <option value="Sales.php">Sales</option>
+                                        <option value="Purchases.php">Purchases</option>
+                                    </select> 
+
+                                
+                            </div>
+                        </th>
+                        <th>&nbsp;</th>
+                        <th>&nbsp;</th>
                     </tr>
-                    <tr>
-                        <!-- <th><button type="button" class="btn btn-info btn-block" id="btnDat" onclick="btnonclick.call(this)" value="DAT"><i class="fa fa-file"></i>&nbsp;&nbsp;To DAT</button></th> -->
-                        <th colspan='4'>&nbsp;</th>
-                    </tr>
+                   
                 </table>
         </div>
 
@@ -202,13 +210,15 @@
     }
 
     function btnonclick() {
-        let button = $(this).val()
+        let button = $(this).val();
         var form = document.getElementById('FORM_VATSUM');
         var newAction = "";
+
+        var seltyp = $("#seltyp").val();
         
         switch (button) {
             case "VIEW":
-                newAction = "./TO_VIEW/";
+                newAction = "./TO_VIEW/"+seltyp;
                 break;
         }
         

@@ -55,7 +55,7 @@ include('../../include/denied.php');
 	}
 	
 	$csalesno = $_REQUEST['hdntransid'];
-	$sqlhead = mysqli_query($con,"select a.*,b.cname, b.chouseno, b.ccity, b.cstate, C.cdesc as termdesc, D.Fname, D.Minit, D.Lname, D.cemailadd from quote a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join groupings C on A.cterms = C.ccode left join users D on a.cpreparedby=D.Userid where a.compcode='$company' and a.ctranno = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*,b.cname, b.chouseno, b.ccity, b.cstate, C.cdesc as termdesc, D.Fname, D.Minit, D.Lname, D.cemailadd, D.cusersign from quote a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join groupings C on A.cterms = C.ccode left join users D on a.cpreparedby=D.Userid where a.compcode='$company' and a.ctranno = '$csalesno'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -102,9 +102,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
+		$lSent = $row['lsent'];
 
 		$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
 		$useremailadd = $row['cemailadd'];
+		$cpreparedBySign = $row['cusersign'];
 
 	
 	}
@@ -306,7 +308,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic, C.nrate From
 			
 		<?php
 			@$rowaaprovals = array();
-			$sqdts = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname from quote_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.ctranno = '$csalesno' order by a.nlevel");
+			$sqdts = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname, c.cusersign from quote_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.ctranno = '$csalesno' order by a.nlevel");
 
 			if (mysqli_num_rows($sqdts)!=0) {
 
@@ -317,48 +319,56 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic, C.nrate From
 		?>
 			
 		<table border="0" width="100%" cellspacing="20">
+
 				<tr>
 					<td width="25%" align="center">
-						Prepared By:<br><br><br><br>
+						<?php
+							if($lSent==1 && $cpreparedBySign != "" && $cpreparedBySign != null){
+						?>
+					
+							Prepared By:
+							<div><img src="<?php echo $cpreparedBySign; ?>" width="160px" height="88px"></div>
+						<?php
+							}else{
+						?>
+
+						Prepared By:<br><br><br>
+							<div style="border-top: 1px solid">&nbsp;&nbsp;&nbsp;<?=$cpreparedBy?>&nbsp;&nbsp;&nbsp;</div>
+						<?php
+							}
+						?>
 					</td>
 
 					<?php
+						$dmsg = "";
 						foreach(@$rowaaprovals as $row){
+
+							$cnames = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
+							if(intval($row['nlevel'])==1){
+								$dmsg = "Checked By:";
+							}elseif(intval($row['nlevel'])==2){
+								$dmsg = "Approved By:";
+							}if(intval($row['nlevel'])==3){
+								$dmsg = "Approved By:";
+							}
 					?>
 
 						<td width="25%" align="center">
 							<?php
-								if(intval($row['nlevel'])==1){
-									echo "Checked By:";
-								}elseif(intval($row['nlevel'])==2){
-									echo "Approved By:";
-								}if(intval($row['nlevel'])==3){
-									echo "Approved By:";
+								if($row['lapproved']==1 && $row['cusersign'] != "" && $row['cusersign'] != null){
+							?>							
+								<?=$dmsg?>
+								<div><img src="<?php echo $row['cusersign']; ?>" width="160px" height="88px"></div>
+								
+							<?php
+								}else{
+							?>
+								<?=$dmsg?><br><br><br>
+								<div style="border-top: 1px solid">&nbsp;&nbsp;&nbsp;<?=$cnames;?>&nbsp;&nbsp;&nbsp;</div>
+							<?php
 								}
-							?><br><br><br><br>
-						</td>
-				  
-					<?php
-							}
-					?>
-					
-				</tr>
-
-				<tr>
-					<td width="25%" align="center" style="border-top: 1px solid">
-						<?=$cpreparedBy?>
-					</td>
-
-					<?php
-
-							foreach(@$rowaaprovals as $row){
-
-								$cnames = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
-					?>
-
-						<td width="25%" align="center" style="border-top: 1px solid">
-							<?=$cnames;?>
-						</td>
+							?>
+						</td>			
 				  
 					<?php
 							}

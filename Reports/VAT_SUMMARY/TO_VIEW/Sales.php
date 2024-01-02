@@ -25,44 +25,8 @@
     <title>MyxFinancials</title>
 </head>
 <body>
-    
-    <form action="" method="post" enctype="multipart/form-data">
-        <div style="display: flex; padding: 20px">
-            <div style="width: 100%;">
-                <div class="col-xs-4">
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-calenda r"></i></span>
-                        <input type="text" id="datefrom" name="datefrom" class="datepicker form-control input-sm" value="<?= date("Y-m-d", strtotime($_POST['from'])) ?>" disabled>
-                    </div>
-                </div>
-                <div class="col-xs-4" >
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                        <input type="text" id="dateto" name="dateto" class="datepicker form-control input-sm " value="<?= date("Y-m-d", strtotime($_POST['to'])) ?>" disabled>
-                    </div>
-                </div>
-            </div>
-            <div style="display: flex; justify-content: right; justify-items: right; width: 100%;">
-                <button class="btn btn-success btn-sm">Export</button>
-            </div>
-        </div>
-    </form>
         
 
-    <div style="padding-top:10px;">
-        <div style="padding: 10px">
-            <ul class="nav nav-tabs">
-                <li class="active"> 
-                    <a href="#Sales" data-toggle="tab">Sales</a>
-                </li>
-                <li>
-                    <a href="#Purchase" data-toggle="tab">Purchase</a>
-                </li>
-            </ul>
-        </div>
-        
-        <div class="tab-content nopadwtop2x">
-            <div id="Sales" class="tab-pane fade in active" style="padding: 10px;">
                 <table id="sales_table" class="table">
                     <thead>
                         <tr>
@@ -80,31 +44,8 @@
                     </thead>
                     <tbody></tbody>
                 </table>
-            </div>
-
-            <div id="Purchase" class="tab-pane fade" style="padding: 10px;">
-                <table id="purchase_table" class="table">
-                    <thead>
-                        <tr>
-                            <th align='center'>Voucher no.</th>
-                            <th align='center'>Transaction Date</th>
-                            <th align='center'>Invoice No.</th>
-                            <th align='center'>Reference</th>
-                            <th align='center'>Partner</th>
-                            <th align='center'>TIN</th>
-                            <th align='center'>Address</th>
-                            <th align='center'>Gross Amount</th>
-                            <th align='center'>Net Amount</th>
-                            <th align='center'>Tax Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
             
-        </div>
-    </div>
-
+                
     <div class='AR modal fade' id='ViewModal' role='dialog'>
         <div class='modal-sm modal-dialog' style="width: 800px;" role="document">
             <div class='modal-content' >
