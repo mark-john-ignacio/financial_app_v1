@@ -46,6 +46,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         left join glactivity b on a.ctranno=b.ctranno and a.compcode=b.compcode
         left join customers c on a.ccode=c.cempid and a.compcode=c.compcode
         where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
+        and a.lapproved=1 and a.lvoid = 0
         ) A
         group by A.ccode, A.cname, A.acctno, A.ctitle
         order by A.ccode, sum(A.ndebit) desc";
