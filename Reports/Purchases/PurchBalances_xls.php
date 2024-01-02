@@ -47,7 +47,7 @@ $date2 = $_POST["date2"];
 $datefil = $_POST["seltype"];
 
 $arrPO = array();
-$result=mysqli_query($con,"Select A.creference, A.nrefidentity, A.citemno, sum(A.nqty) as nqty From receive_t A left join receive B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='".$company."' and B.lcancelled=0 Group By A.creference, A.nrefidentity, A.citemno");
+$result=mysqli_query($con,"Select A.creference, A.nrefidentity, A.citemno, sum(A.nqty) as nqty From receive_t A left join receive B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='".$company."' and B.lvoid=0 and B.lcancelled=0 Group By A.creference, A.nrefidentity, A.citemno");
 while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 	$arrPO[] = $row;
 }
@@ -57,7 +57,7 @@ From purchase_t a
 left join purchase b on a.compcode=b.compcode and a.cpono=b.cpono
 left join suppliers c on b.compcode=c.compcode and b.ccode=c.ccode
 left join items d on a.compcode=d.compcode and a.citemno=d.cpartno
-where a.compcode='".$company."' and DATE(b.".$datefil.") between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lapproved = 1
+where a.compcode='".$company."' and DATE(b.".$datefil.") between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lvoid=0 and b.lapproved = 1
 order by b.".$datefil.", a.cpono";
 
 $result=mysqli_query($con,$sql);

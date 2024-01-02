@@ -1,26 +1,26 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "PurchReg.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "PurchReg.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
-$company = $_SESSION['companyid'];
-				$sql = "select * From company where compcode='$company'";
-				$result=mysqli_query($con,$sql);
-				
-					if (!mysqli_query($con, $sql)) {
-						printf("Errormessage: %s\n", mysqli_error($con));
-					} 
-					
-				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-				{
-					$compname =  $row['compname'];
-					$compadd = $row['compadd'];
-					$comptin = $row['comptin'];
-				}
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
+	$company = $_SESSION['companyid'];
+	$sql = "select * From company where compcode='$company'";
+	$result=mysqli_query($con,$sql);
+	
+	if (!mysqli_query($con, $sql)) {
+		printf("Errormessage: %s\n", mysqli_error($con));
+	} 
+		
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
+		$compname =  $row['compname'];
+		$compadd = $row['compadd'];
+		$comptin = $row['comptin'];
+	}
 ?>
 
 <html>
@@ -55,7 +55,7 @@ $company = $_SESSION['companyid'];
 $date1 = $_POST["date1"];
 $date2 = $_POST["date2"];
 
-$sql = "select a.dreceived as dcutdate, a.ctranno as csalesno, a.ccode, c.cname, b.acctno, b.ctitle, b.ncredit, b.ndebit, a.lcancelled, a.lapproved
+$sql = "select a.dreceived as dcutdate, a.ctranno as csalesno, a.ccode, c.cname, b.acctno, b.ctitle, b.ncredit, b.ndebit, a.lcancelled, a.lapproved, a.lvoid
 From suppinv a
 left join glactivity b on a.ctranno=b.ctranno and a.compcode=b.compcode
 left join suppliers c on a.ccode=c.ccode and a.compcode=c.compcode
@@ -99,6 +99,16 @@ $result=mysqli_query($con,$sql);
                 <td><?php echo $code;?></td>
                 <td><?php echo $name;?></td>
                 <td colspan="4" align="center">- C A N C E L L E D -</td>
+            </tr>
+            <?php
+		}elseif($row['lvoid']==1){
+			?>
+            <tr <?php echo $classcode;?>>
+                <td><?php echo $dateval;?></td>
+                <td><?php echo $invval;?></td>
+                <td><?php echo $code;?></td>
+                <td><?php echo $name;?></td>
+                <td colspan="4" align="center">- V O I D E D -</td>
             </tr>
             <?php
 		}

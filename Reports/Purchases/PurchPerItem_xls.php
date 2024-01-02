@@ -52,7 +52,7 @@ $spreadsheet->setActiveSheetIndex(0)
 	left join suppinv b on a.ctranno=b.ctranno and a.compcode=b.compcode
 	left join suppliers c on b.ccode=c.ccode and a.compcode=c.compcode
 	left join items d on a.citemno=d.cpartno and a.compcode=d.compcode
-	where a.compcode='$company' and a.citemno='$custid' and b.dreceived between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0 ".$qryposted." order by b.dreceived, a.ctranno";
+	where a.compcode='$company' and b.lvoid = 0 and a.citemno='$custid' and b.dreceived between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0 ".$qryposted." order by b.dreceived, a.ctranno";
 
 	$result=mysqli_query($con,$sql);
 				
