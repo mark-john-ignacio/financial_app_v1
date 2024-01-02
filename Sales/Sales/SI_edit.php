@@ -48,10 +48,10 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 		}
 	}
 
-	$gettaxcd = mysqli_query($con,"SELECT * FROM `taxcode` where compcode='$company' order By nidentity"); 
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `vatcode` where compcode='$company' and ctype in ('Sales','Both') and cstatus='ACTIVE' order By cvatdesc"); 
 	if (mysqli_num_rows($gettaxcd)!=0) {
 		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
-			@$arrtaxlist[] = array('ctaxcode' => $row['ctaxcode'], 'ctaxdesc' => $row['ctaxdesc'], 'nrate' => $row['nrate']); 
+			@$arrtaxlist[] = array('ctaxcode' => $row['cvatcode'], 'ctaxdesc' => $row['cvatdesc'], 'nrate' => $row['nrate']); 
 		}
 	}
 
@@ -112,13 +112,16 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
     
 	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?=time();?>">
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/select2/css/select2.css?h=<?php echo time();?>">
-    
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
-<script src="../../include/autoNumeric.js"></script>
+
+	<link href="../../global/css/components.css?t=<?php echo time();?>" id="style_components" rel="stylesheet" type="text/css"/>
+		
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
+	<script src="../../include/autoNumeric.js"></script>
+	<script src="../../include/FormatNumber.js"></script>
 <!--
 <script src="../../Bootstrap/js/jquery.numeric.js"></script>
 <script src="../../Bootstrap/js/jquery.inputlimiter.min.js"></script>
@@ -432,16 +435,16 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</div>
 								</td>		
 								
-								<td><b><div class="chklimit">Credit Limit:</div></b></td>
+								<td><!--<b><div class="chklimit">Credit Limit:</div></b>--></td>
 								<td style="padding:2px;" align="right">
-									<div class="chklimit col-xs-11 nopadding" id="ncustlimit"><b><font size='+1'><?=number_format($nlimit,4);?></font></b></div>
-									<input type="hidden" id="hdncustlimit" name="hdncustlimit" value="">
+									<!--<div class="chklimit col-xs-11 nopadding" id="ncustlimit"><b><font size='+1'><?//=number_format($nlimit,4);?></font></b></div>
+									<input type="hidden" id="hdncustlimit" name="hdncustlimit" value="">-->
 								</td>
 
 								
 								
 							</tr>
-
+<!--
 							<tr>
 								<tH width="100">&nbsp;</tH>
 								<td style="padding:2px">&nbsp;</td>		
@@ -462,7 +465,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									<div class="chklimit col-xs-11 nopadwright" id="ncustbalance2"></div>
 								</td>								
 							</tr>
-
+												-->
 							<tr>
 								<td colspan="2"><div class="col-xs-12 nopadwtop2x">
 									<div class="chkitmsadd col-xs-3 nopadwdown">
@@ -506,7 +509,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					<div id="tableContainer" class="alt2" dir="ltr" style="
 								margin: 0px;
 								padding: 3px;
-								width: 1250px;
+								width: 1500px;
 								height: 300px;
 								text-align: left;">
 		
@@ -538,92 +541,140 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				</div>
 			<br>
 
-			<table width="100%" border="0" cellpadding="3">
-				<tr>
-					<td valign="top" width= "70%">
-						<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
-				
+
+			<div class="row nopadwtop2x">
+					<div class="col-xs-6">
 						<?php
-							if($poststat == "True"){
+							$xc = check_credit_limit($company);
+							if($xc==1){
 						?>
-
-						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SI.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
-							Back to Main<br>(ESC)
-						</button>
-					
-						<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='SI_new.php';" id="btnNew" name="btnNew">
-							New<br>(F1)
-						</button>
-
-						<!-- <button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
-							DR<br>(Insert)
-						</button>-->
-
-						<div class="dropdown" style="display:inline-block !important;">
-							<button type="button" data-toggle="dropdown" class="btn btn-info btn-sm dropdown-toggle">
-								Reference <br>(Insert) <span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu">
-								<li><a href="javascript:;" onClick="openinv('QO');">Billing</a></li>
-								<li><a href="javascript:;" onClick="openinv('SO');">Sales Order</a></li>
-								<li><a href="javascript:;" onClick="openinv('DR');">Delivery</a></li>
-							</ul>
+						<div class="portlet blue-hoki box" id="creditport">
+							<div class="portlet-title">
+								<div class="caption">
+									<i class="fa fa-cogs"></i>Credit Info
+								</div>
+								<div class="status" id="ncustbalance2">
+									
+								</div>
+							</div>
+							<div class="portlet-body">
+								<div class="row static-info">
+									<div class="col-md-3 name">
+										 Credit Limit:
+									</div>
+									<div class="col-md-9 value">
+										<div class="chklimit col-xs-10 nopadding" id="ncustlimit"></div>
+										<input type="hidden" id="hdncustlimit" name="hdncustlimit" value="">
+									</div>
+								</div>
+								<div class="row static-info">
+									<div class="col-md-3 name">
+										Balance:
+									</div>
+									<div class="col-md-9 value">
+										<div class="chklimit col-xs-10 nopadding" id="ncustbalance"></div>
+										<input type="hidden" id="hdncustbalance" name="hdncustbalance" value="">
+									</div>
+								</div>
+													
+							</div>
 						</div>
-
-						<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
-							Undo Edit<br>(CTRL+Z)
-						</button>
-
 						<?php
-							$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'POS_print'");
-
-							if(mysqli_num_rows($sql) == 1){
-							
+							}
 						?>
-								<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?=$txtctranno;?>');" id="btnPrint" name="btnPrint">
-									Print<br>(CTRL+P)
+						<div class="portlet">
+							<div class="portlet-body">
+								<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
+
+								<?php
+									if($poststat == "True"){
+								?>
+
+								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SI.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
+								Back to Main<br>(ESC)
+								</button>
+							
+								<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='SI_new.php';" id="btnNew" name="btnNew">
+									New<br>(F1)
 								</button>
 
-						<?php		
-							}
+								<div class="dropdown" style="display:inline-block !important;">
+									<button type="button" data-toggle="dropdown" class="btn purple btn-sm dropdown-toggle">
+										Reference <br>(Insert) <span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu">
+										<li><a href="javascript:;" onClick="openinv('QO');">Billing</a></li>
+										<li><a href="javascript:;" onClick="openinv('SO');">Sales Order</a></li>
+										<li><a href="javascript:;" onClick="openinv('DR');">Delivery</a></li>
+									</ul>
+								</div>
+								
+								<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
+									Undo Edit<br>(CTRL+Z)
+								</button>
 
-						?>
-					
-						<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
-							Edit<br>(CTRL+E)
-						</button>
-						
-						<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
-							Save<br>(CTRL+S)
-						</button>
-						
-						<?php
-							}
-						?>
-					</td>    
-					<td align="right" valign="top">
-						<table width="90%" border="0" cellspacing="0" cellpadding="0">
-							<tr>
-								<td width="110px" align="right"><b>Net of VAT </b>&nbsp;&nbsp;</td>
-								<td width="150px"> <input type="text" id="txtnNetVAT" name="txtnNetVAT" readonly value="<?=$nnetvat; ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10"></td>
-							</tr>
-							<tr>
-								<td width="110px" align="right"><b>VAT </b>&nbsp;&nbsp;</td>
-								<td width="150px"> <input type="text" id="txtnVAT" name="txtnVAT" readonly value="<?=$nvat; ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10"></td>
-							</tr>
-							<tr>
-								<td width="110px" align="right"><b>Gross Amt </b>&nbsp;&nbsp;</td>
-								<td width="150px"> <input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="<?=$nbasegross; ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10"></td>
-							</tr>
-							<tr>
-								<td width="110px" align="right"><b>Gross Amt in <?=$nvaluecurrbase; ?></b>&nbsp;&nbsp;</td>
-								<td width="150px"> <input type="text" id="txtnGross" name="txtnGross" readonly value="<?=$Gross; ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10"></td>
-							</tr>
-						</table>
-				
-					</td>
-				</tr>
-			</table>
+								<?php
+									$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'POS_print'");
+
+									if(mysqli_num_rows($sql) == 1){
+									
+								?>
+										<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?=$txtctranno;?>');" id="btnPrint" name="btnPrint">
+											Print<br>(CTRL+P)
+										</button>
+
+								<?php		
+									}
+
+								?>
+							
+								<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
+									Edit<br>(CTRL+E)
+								</button>
+								
+								<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
+									Save<br>(CTRL+S)
+								</button>
+
+								<?php
+									}
+								?>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="well">							
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									Total NET Sales:
+									<input type="hidden" id="txtnNetVAT" name="txtnNetVAT" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnNetVAT">
+									0.00
+								</div>
+							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									Add VAT:
+									<input type="hidden" id="txtnVAT" name="txtnVAT" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnVAT">
+									0.00
+								</div>
+							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									Total Amount:
+									<input type="hidden" id="txtnGross" name="txtnGross" value="0">
+									<input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnGross">
+									0.00
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 
     </fieldset>
     
@@ -1570,30 +1621,36 @@ function checkcustlimit(id,xcred){
   xBalance = (parseFloat(xcred) - parseFloat(xinvs)) + parseFloat(xors);
   $("#hdncustbalance").val(xBalance);
   
-  if(xBalance > 0){
-    xBalance = Number(xBalance).toLocaleString('en', { minimumFractionDigits: 4 });
-    $("#ncustbalance").html("<b><font size='+1'>"+xBalance+"</font></b>");
-  }
-  else{
+  	if(xBalance > 0){
+		xBalance = Number(xBalance).toLocaleString('en', { minimumFractionDigits: 2 });
+		$("#ncustbalance").html("<b><font size='+1'>"+xBalance+"</font></b>");
+	}
+	else{
+		if(parseFloat(xcred) > 0){
 
-    if(xChkLimitWarn==0) { //0 = Accept Warninf ; 1 = Accept Block ; 2 = Refuse Order
-      $("#ncustbalance").html("<b><i><font color='red'>Max Limit Reached</font></i></b>");
-    }
-    else if(xChkLimitWarn==1) {
-      $("#ncustbalance").html("<b><i><font color='red' size='-1'>Max Limit Reached</font></i></b>");
-      $("#ncustbalance2").html("<b><i><font color='red' size='-1'>Delivery is blocked</font></i></b>");
-    }
-    else if(xChkLimitWarn==2) {
-      $("#ncustbalance").html("<b><i><font color='red' size='-1'>Max Limit Reached</font></i></b>");
-      $("#ncustbalance").html("<b><i><font color='red' size='-1'>ORDERS BLOCKED</font></i></b>");
-      $("#btnSave").attr("disabled", true);
-      $("#btnIns").attr("disabled", true);
-      //$('#txtprodnme').attr("disabled", true);
-        //$('#txtprodid').attr("disabled", true);
+			if(xChkLimitWarn==0) { //0 = Accept Warninf ; 1 = Accept Block ; 2 = Refuse Order
+				$("#ncustbalance").html("<b><i><font color='red'>Max Limit Reached</font></i></b>");
+			}
+			else if(xChkLimitWarn==1) {
+				$("#ncustbalance").html("<b><i><font color='red' size='-1'>Max Limit Reached</font></i></b>");
+				$("#ncustbalance2").html("<b><i><font color='white' size='+1'>Delivery is blocked</font></i></b>");
+			}
+			else if(xChkLimitWarn==2) {
+				$("#ncustbalance").html("<b><i><font color='red' size='-1'>Max Limit Reached</font></i></b>");
+				$("#ncustbalance2").html("<b><i><font color='white' size='+1'>ORDERS BLOCKED</font></i></b>");
+				$("#btnSave").attr("disabled", true);
+				$("#btnIns").attr("disabled", true);
 
-    }
-    
-  }
+				if($("#selsityp").val()!="Goods"){
+					$('#txtprodnme').attr("disabled", true);
+					$('#txtprodid').attr("disabled", true);
+				}
+
+			}
+		}else{
+			$("#ncustbalance").html("<b><i><font color='red'>Unlimited Credit Limit</font></i></b>");
+		}
+	}
 
 }
 
@@ -1943,15 +2000,13 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 			$("#txtnGross").val(gross2);
 			$("#txtnBaseGross").val(gross);
 
-			$("#txtnNetVAT").autoNumeric('destroy');
-			$("#txtnVAT").autoNumeric('destroy');			
-			$("#txtnGross").autoNumeric('destroy');
-			$("#txtnBaseGross").autoNumeric('destroy');
+			$("#divtxtnNetVAT").text(nnetTot.toFixed(2));
+			$("#divtxtnVAT").text(vatzTot.toFixed(2));
+			$("#divtxtnGross").text(gross.toFixed(2));
 
-			$("#txtnNetVAT").autoNumeric('init',{mDec:2});
-			$("#txtnVAT").autoNumeric('init',{mDec:2});
-			$("#txtnGross").autoNumeric('init',{mDec:2});
-			$("#txtnBaseGross").autoNumeric('init',{mDec:2});			
+			$("#divtxtnNetVAT").formatNumber();
+			$("#divtxtnVAT").formatNumber();
+			$("#divtxtnGross").formatNumber();			
 			
 	}
 		

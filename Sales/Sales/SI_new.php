@@ -114,10 +114,13 @@ $company = $_SESSION['companyid'];
  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
   	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/select2/css/select2.css?h=<?php echo time();?>">
+
+	<link href="../../global/css/components.css?t=<?php echo time();?>" id="style_components" rel="stylesheet" type="text/css"/>
     
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
 	<script src="../../include/autoNumeric.js"></script>
+	<script src="../../include/FormatNumber.js"></script>
 	<!--
 		<script src="../../Bootstrap/js/jquery.numeric.js"></script>
 		<script src="../../Bootstrap/js/jquery.inputlimiter.min.js"></script>
@@ -340,7 +343,7 @@ $company = $_SESSION['companyid'];
 										
 								</tr>
 
-								<tr>
+								<!--<tr>
 										<td style="padding:2px" colspan="2">&nbsp;</td>
 										
 										<td><b><div class="chklimit">Credit Limit:</div></b></td>
@@ -358,7 +361,7 @@ $company = $_SESSION['companyid'];
 															<div class="chklimit col-xs-11 nopadding" id="ncustbalance"></div>
 														<input type="hidden" id="hdncustbalance" name="hdncustbalance" value="">
 										</td>
-								</tr>
+								</tr>-->
 
 
 								<tr>
@@ -383,7 +386,7 @@ $company = $_SESSION['companyid'];
 										</td>
 										<td>&nbsp;</td>
 										<td style="padding:2px;"  align="right">
-											<div class="chklimit col-xs-11 nopadding" id="ncustbalance2"></div>
+											<!--<div class="chklimit col-xs-11 nopadding" id="ncustbalance2"></div>-->
 										</td>
 								</tr>
 
@@ -445,54 +448,103 @@ $company = $_SESSION['companyid'];
 					</div>
 				</div>
 
-		<br>
+				<div class="row nopadwtop2x">
+					<div class="col-xs-6">
+						<?php
+							$xc = check_credit_limit($company);
+							if($xc==1){
+						?>
+						<div class="portlet blue-hoki box" id="creditport">
+							<div class="portlet-title">
+								<div class="caption">
+									<i class="fa fa-cogs"></i>Credit Info
+								</div>
+								<div class="status" id="ncustbalance2">
+									
+								</div>
+							</div>
+							<div class="portlet-body">
+								<div class="row static-info">
+									<div class="col-md-3 name">
+										 Credit Limit:
+									</div>
+									<div class="col-md-9 value">
+										<div class="chklimit col-xs-10 nopadding" id="ncustlimit"></div>
+										<input type="hidden" id="hdncustlimit" name="hdncustlimit" value="">
+									</div>
+								</div>
+								<div class="row static-info">
+									<div class="col-md-3 name">
+										Balance:
+									</div>
+									<div class="col-md-9 value">
+										<div class="chklimit col-xs-10 nopadding" id="ncustbalance"></div>
+										<input type="hidden" id="hdncustbalance" name="hdncustbalance" value="">
+									</div>
+								</div>
+													
+							</div>
+						</div>
+						<?php
+							}
+						?>
+						<div class="portlet">
+							<div class="portlet-body">
+								<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
+								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SI.php';" id="btnMain" name="btnMain">Back to Main<br>(ESC)</button>
 
-		<table width="100%" border="0" cellpadding="3">
-			<tr>
-				<td valign="top">
+								<!--<button type="button" class="btn btn-info btn-sm" tabindex="6" id="btnIns" name="btnIns">DR<br>(Insert)</button>-->
 
-					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SI.php';" id="btnMain" name="btnMain">Back to Main<br>(ESC)</button>
-
-					<!--<button type="button" class="btn btn-info btn-sm" tabindex="6" id="btnIns" name="btnIns">DR<br>(Insert)</button>-->
-
-					<div class="dropdown" style="display:inline-block !important;">
-						<button type="button" data-toggle="dropdown" class="btn btn-info btn-sm dropdown-toggle">
-							Reference <br>(Insert) <span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu">
-							<li><a href="javascript:;" onClick="openinv('QO');">Billing</a></li>
-							<li><a href="javascript:;" onClick="openinv('SO');">Sales Order</a></li>
-							<li><a href="javascript:;" onClick="openinv('DR');">Delivery</a></li>
-						</ul>
+								<div class="dropdown" style="display:inline-block !important;">
+									<button type="button" data-toggle="dropdown" class="btn purple btn-sm dropdown-toggle">
+										Reference <br>(Insert) <span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu">
+										<li><a href="javascript:;" onClick="openinv('QO');">Billing</a></li>
+										<li><a href="javascript:;" onClick="openinv('SO');">Sales Order</a></li>
+										<li><a href="javascript:;" onClick="openinv('DR');">Delivery</a></li>
+									</ul>
+								</div>
+								
+								<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">SAVE<br> (CTRL+S)</button>
+							</div>
+						</div>
 					</div>
-					
-					<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
-					<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">SAVE<br> (CTRL+S)</button></td>
-					<td align="right" valign="top">
-					
-					<table width="90%" border="0" cellspacing="0" cellpadding="0">
-						<tr>
-							<td nowrap align="right"><b>Net of VAT </b>&nbsp;&nbsp;</td>
-							<td> <input type="text" id="txtnNetVAT" name="txtnNetVAT" readonly value="0" style="text-align:right; border:none;  background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20"></td>
-						</tr>
-						<tr>
-							<td nowrap align="right"><b>VAT </b>&nbsp;&nbsp;</td> 
-							<td> <input type="text" id="txtnVAT" name="txtnVAT" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20"></td>
-						</tr>
-						<tr>
-							<td nowrap align="right"><b>Gross Amount </b>&nbsp;&nbsp;</td>
-							<td> <input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20"></td>
-						</tr>
-						<tr>
-							<td nowrap align="right"><b>Gross Amount in <?php echo $nvaluecurrbase; ?></b>&nbsp;&nbsp;</td>
-							<td> <input type="text" id="txtnGross" name="txtnGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20"></td>
-						</tr>
-					</table>
-				
-				</td>
-			</tr>
-		</table>
+					<div class="col-xs-6">
+						<div class="well">							
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									Total NET Sales:
+									<input type="hidden" id="txtnNetVAT" name="txtnNetVAT" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnNetVAT">
+									0.00
+								</div>
+							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									Add VAT:
+									<input type="hidden" id="txtnVAT" name="txtnVAT" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnVAT">
+									0.00
+								</div>
+							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									Total Amount:
+									<input type="hidden" id="txtnGross" name="txtnGross" value="0">
+									<input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnGross">
+									0.00
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 
+		<br>
   </fieldset>
     
 
@@ -1124,6 +1176,14 @@ $company = $_SESSION['companyid'];
 
 			}else{
 				$(".chkitmsadd").show();
+				if( $('#txtcustid').val() !="" && $('#txtcust').val() !="" ){ 
+					$('#txtprodnme').attr("disabled", false);				
+					$('#txtprodid').attr("disabled", false);
+				}else{
+					$('#txtprodnme').attr("disabled", true);				
+					$('#txtprodid').attr("disabled", true);
+				}
+				
 			}
 		});
 
@@ -1328,24 +1388,30 @@ $company = $_SESSION['companyid'];
 			$("#ncustbalance").html("<b><font size='+1'>"+xBalance+"</font></b>");
 		}
 		else{
+			if(parseFloat(xcred) > 0){
 
-			if(xChkLimitWarn==0) { //0 = Accept Warninf ; 1 = Accept Block ; 2 = Refuse Order
-				$("#ncustbalance").html("<b><i><font color='red'>Max Limit Reached</font></i></b>");
-			}
-			else if(xChkLimitWarn==1) {
-				$("#ncustbalance").html("<b><i><font color='red' size='-1'>Max Limit Reached</font></i></b>");
-				$("#ncustbalance2").html("<b><i><font color='red' size='-1'>Delivery is blocked</font></i></b>");
-			}
-			else if(xChkLimitWarn==2) {
-				$("#ncustbalance").html("<b><i><font color='red' size='-1'>Max Limit Reached</font></i></b>");
-				$("#ncustbalance").html("<b><i><font color='red' size='-1'>ORDERS BLOCKED</font></i></b>");
-				$("#btnSave").attr("disabled", true);
-				$("#btnIns").attr("disabled", true);
-				//$('#txtprodnme').attr("disabled", true);
-					//$('#txtprodid').attr("disabled", true);
+				if(xChkLimitWarn==0) { //0 = Accept Warninf ; 1 = Accept Block ; 2 = Refuse Order
+					$("#ncustbalance").html("<b><i><font color='red'>Max Limit Reached</font></i></b>");
+				}
+				else if(xChkLimitWarn==1) {
+					$("#ncustbalance").html("<b><i><font color='red' size='-1'>Max Limit Reached</font></i></b>");
+					$("#ncustbalance2").html("<b><i><font color='white' size='+1'>Delivery is blocked</font></i></b>");
+				}
+				else if(xChkLimitWarn==2) {
+					$("#ncustbalance").html("<b><i><font color='red' size='-1'>Max Limit Reached</font></i></b>");
+					$("#ncustbalance2").html("<b><i><font color='white' size='+1'>ORDERS BLOCKED</font></i></b>");
+					$("#btnSave").attr("disabled", true);
+					$("#btnIns").attr("disabled", true);
 
+					if($("#selsityp").val()!="Goods"){
+						$('#txtprodnme').attr("disabled", true);
+						$('#txtprodid').attr("disabled", true);
+					}
+
+				}
+			}else{
+				$("#ncustbalance").html("<b><i><font color='red'>Unlimited Credit Limit</font></i></b>");
 			}
-			
 		}
 
 	}
@@ -1695,15 +1761,13 @@ $company = $_SESSION['companyid'];
 			$("#txtnGross").val(gross2);
 			$("#txtnBaseGross").val(gross);
 
-			$("#txtnNetVAT").autoNumeric('destroy');
-			$("#txtnVAT").autoNumeric('destroy');			
-			$("#txtnGross").autoNumeric('destroy');
-			$("#txtnBaseGross").autoNumeric('destroy');
+			$("#divtxtnNetVAT").text(nnetTot.toFixed(2));
+			$("#divtxtnVAT").text(vatzTot.toFixed(2));
+			$("#divtxtnGross").text(gross.toFixed(2));
 
-			$("#txtnNetVAT").autoNumeric('init',{mDec:2});
-			$("#txtnVAT").autoNumeric('init',{mDec:2});
-			$("#txtnGross").autoNumeric('init',{mDec:2});
-			$("#txtnBaseGross").autoNumeric('init',{mDec:2});			
+			$("#divtxtnNetVAT").formatNumber();
+			$("#divtxtnVAT").formatNumber();
+			$("#divtxtnGross").formatNumber();			
 			
 	}
 		
