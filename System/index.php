@@ -742,7 +742,7 @@ if(mysqli_num_rows($sql) != 0){
 										</div>
 												
 									</div>
-								-->		
+										
 
 								<p data-toggle="collapse" data-target="#vatcodecollapse"> <i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>VAT Codes</b></u></p>
 										
@@ -891,7 +891,7 @@ if(mysqli_num_rows($sql) != 0){
 										</div>
 												
 									</div> 
-								
+								-->
 									<p data-toggle="collapse" data-target="#contypescollapse"> <i class="fa fa-caret-down" style="cursor: pointer"></i>&nbsp;&nbsp;<u><b>Contacts Details</b></u></p>
 									
 									<div class="collapse" id="contypescollapse">

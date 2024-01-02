@@ -468,8 +468,8 @@ xmlhttp.send();
             	<label><input type="checkbox" name="chkAcc[]" value="Bank_Edit.php" id="chkBox159" <?=(in_array("Bank_Edit.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
             </div>
 		 </div>
-		</div>
-
+		</div
+    
     <br>
     <b><u><i>Sections List</i></u></b>
 		<div style="padding-left:10px;">
@@ -482,6 +482,54 @@ xmlhttp.send();
             </div>
             <div class="col-xs-2 nopadding">
             	<label><input type="checkbox" name="chkAcc[]" value="Locations_Edit.php" id="chkBox159" <?=(in_array("Locations_Edit.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
+            </div>
+		 </div>
+		</div>
+
+    <br>
+        <b><u><i>Currency List</i></u></b>
+        <div style="padding-left:10px;"> 
+          <div class="col-xs-12 nopadwleft">
+         	  <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="Currency.php" <?=(in_array("Currency.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;View List</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="Currency_new.php" <?=(in_array("Currency_new.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Add New</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="Currency_edit.php" <?=(in_array("Currency_edit.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
+            </div>
+		      </div>
+		    </div>
+
+    <br>
+    <b><u><i>Tax Types</i></u></b>
+		<div style="padding-left:10px;">
+         <div class="col-xs-12 nopadwleft">
+         	<div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="TaxType.php" <?=(in_array("TaxType.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;View List</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="TaxType_New.php" <?=(in_array("TaxType_New.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Add New</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="TaxType_Edit.php" <?=(in_array("TaxType_Edit.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
+            </div>
+		 </div>
+		</div>
+
+    <br>
+    <b><u><i>EWT Codes</i></u></b>
+		<div style="padding-left:10px;">
+         <div class="col-xs-12 nopadwleft">
+         	<div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="EWTCodes.php" <?=(in_array("EWTCodes.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;View List</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="EWTCodes_New.php" <?=(in_array("EWTCodes_New.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Add New</label>
+            </div>
+            <div class="col-xs-2 nopadding">
+            	<label><input type="checkbox" name="chkAcc[]" value="EWTCodes_Edit.php" <?=(in_array("EWTCodes_Edit.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
             </div>
 		 </div>
 		</div>
@@ -816,22 +864,6 @@ xmlhttp.send();
     </div>
     
      <div id="menu3" class="tab-pane fade">
-		
-        <br>
-        <b><u><i>Currency List</i></u></b>
-        <div style="padding-left:10px;"> 
-          <div class="col-xs-12 nopadwleft">
-         	  <div class="col-xs-2 nopadding">
-            	<label><input type="checkbox" name="chkAcc[]" value="Currency.php" <?=(in_array("Currency.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;View List</label>
-            </div>
-            <div class="col-xs-2 nopadding">
-            	<label><input type="checkbox" name="chkAcc[]" value="Currency_new.php" <?=(in_array("Currency_new.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Add New</label>
-            </div>
-            <div class="col-xs-2 nopadding">
-            	<label><input type="checkbox" name="chkAcc[]" value="Currency_edit.php" <?=(in_array("Currency_edit.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
-            </div>
-		      </div>
-		    </div>
 
         <br><br><br>
         <b><u><i>Journal Entry</i></u></b>

@@ -360,6 +360,16 @@
                 				<i class="fa fa-money"> </i> Currency List
 							</a>
 						</li>
+						<li>
+							<a href="javascript:;" onClick="setpage('MasterFiles/TaxTypes/taxtype.php?ix=');">
+                				<i class="fa fa-tasks"> </i> Tax Types
+							</a>
+						</li>
+						<li>
+							<a href="javascript:;" onClick="setpage('MasterFiles/EWTCodes/ewtcodes.php?ix=');">
+                				<i class="fa fa-sliders"> </i> EWT Codes
+							</a>
+						</li>
 						<!--<li>
 							<a href="javascript:;" onClick="setpage('MasterFiles/Proforma/Proforma.php?ix=');">
                 				<i class="fa fa-file-text-o"> </i> Proforma
