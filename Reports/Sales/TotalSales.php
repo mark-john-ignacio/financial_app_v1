@@ -66,7 +66,7 @@ select  a.dcutdate, a.ddate, a.ctranno, a.ccode, c.cname, c.nlimit as ncreditlim
 From sales a
 left join sales_t_dues b on a.ctranno=b.ctranno and a.compcode=b.compcode
 left join customers c on a.ccode=c.cempid and a.compcode=c.compcode
-where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and lcancelled=0 and lapproved=1
+where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and lvoid=0 and lcancelled=0 and lapproved=1
 
 
 UNION ALL
@@ -75,7 +75,7 @@ select  a.dcutdate, a.ddate, a.ctranno, a.ccode, c.cname, c.nlimit as ncreditlim
 From salesback a
 left join sales_t_dues b on a.ctranno=b.ctranno and a.compcode=b.compcode
 left join customers c on a.ccode=c.cempid and a.compcode=c.compcode
-where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and lcancelled=0 and lapproved=1
+where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and lcancelled=0 and lapproved=1 and lvoid=0
 ) A
 
 order by A.ccode, A.dcutdate, A.ddate

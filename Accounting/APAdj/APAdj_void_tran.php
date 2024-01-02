@@ -33,6 +33,8 @@
 			}
 
 			if($status=="True"){
+
+				mysqli_query($con,"Delete FROM glactivity where compcode='$company' and ctranno in ('".implode("','",$_POST["allbox"])."')");
 ?>
 
 				<script>

@@ -62,6 +62,7 @@ select  a.dcutdate,a.ccode, c.cname, a.ncreditlimit, a.ngross, c.ccustomerclass
 From sales a
 left join customers c on a.ccode=c.cempid and a.compcode=c.compcode
 where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')
+and lcancelled=0 and lapproved=1 and lvoid=0
 
 UNION ALL
 

@@ -51,7 +51,7 @@ $company = $_SESSION['companyid'];
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 		left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 		left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
-		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
+		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lvoid=0 and b.lcancelled=0
 		".$qryposted.$qrycust."
 		order by a.ctranno, a.nident";
 
@@ -65,7 +65,7 @@ $company = $_SESSION['companyid'];
 			left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 			left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 			left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
-			where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
+			where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lvoid=0 and b.lcancelled=0
 			".$qryposted.$qrycust."
 
 			UNION ALL
@@ -76,7 +76,7 @@ $company = $_SESSION['companyid'];
 			left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 			left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 			left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
-			where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0
+			where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lvoid=0 and b.lcancelled=0
 			".$qryposted.$qrycust."
 		) A 
 		order by A.ctranno, A.nident";
@@ -100,7 +100,7 @@ $company = $_SESSION['companyid'];
 	}
 
 
-	$resDR=mysqli_query($con,"Select A.ctranno, A.nident, B.ccode, A.creference, A.crefident, A.citemno, A.nqty from dr_t A left join dr B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') UNION ALL Select A.ctranno, A.nident, B.ccode, A.creference, A.crefident, A.citemno, A.nqty from ntdr_t A left join ntdr B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')");
+	$resDR=mysqli_query($con,"Select A.ctranno, A.nident, B.ccode, A.creference, A.crefident, A.citemno, A.nqty from dr_t A left join dr B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') UNION ALL Select A.ctranno, A.nident, B.ccode, A.creference, A.crefident, A.citemno, A.nqty from ntdr_t A left join ntdr B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')");
 	$findr = array();
 	while($row = mysqli_fetch_array($resDR, MYSQLI_ASSOC)){
 		$findr[] = $row;
