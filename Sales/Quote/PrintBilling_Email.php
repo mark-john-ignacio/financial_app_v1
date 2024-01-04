@@ -2,7 +2,6 @@
 if(!isset($_SESSION)){
 session_start();
 
-
 include('../../vendor/autoload.php');
 
 require("../../vendor/phpmailer/phpmailer/src/PHPMailer.php");
@@ -14,6 +13,7 @@ ob_start();
 
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
+include('../../Model/helper.php');
 
 	$company = $_SESSION['companyid'];
 
@@ -389,6 +389,11 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic, C.nrate From
 	$html = ob_get_contents();
 	ob_end_clean();
 
+
+	$getcred = getEmailCred();
+
+	//print_r($getcred);
+
 	// send the captured HTML from the output buffer to the mPDF class for processing
 	$mpdf->WriteHTML($html);
 	$mpdf->Output('../../PDFiles/Quotes/'.$csalesno.'.pdf', \Mpdf\Output\Destination::FILE);
@@ -400,22 +405,22 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic, C.nrate From
 	$output.='<p>Myx Financials,</p>';
 
 	$body = $output; 
-	$subject = $companame." - Quotation";
+	$subject = $companame." - BILLING STATEMENT";
 
 	$email_to = $email;
 	//$email_to = "mhaitzendriga@gmail.com";
 
-	$fromserver = "myxfin@serttech.com"; 
+	$fromserver = $getcred['cusnme']; 
 	$mail = new PHPMailer\PHPMailer\PHPMailer();
 	$mail->IsSMTP();
-	$mail->Host = "mail.serttech.com"; // Enter your host here
+	$mail->Host = $getcred['csmtp']; // Enter your host here
 	$mail->SMTPAuth = true;
-	$mail->Username = "myxfin@serttech.com"; // Enter your email here
-	$mail->Password = "Sert@2022"; //Enter your password here
-	$mail->SMTPSecure = 'tls';
-	$mail->Port = 587;
+	$mail->Username = $getcred['cusnme']; // Enter your email here
+	$mail->Password = $getcred['cuspass']; //Enter your password here
+	$mail->SMTPSecure = $getcred['csecure'];
+	$mail->Port = $getcred['cport'];
 	$mail->IsHTML(true);
-	$mail->From = "noreply@serttech.com";
+	$mail->From = $getcred['cusnme'];
 	$mail->FromName = $companame;
 	$mail->Sender = $useremailadd; // indicates ReturnPath header
 	$mail->Subject = $subject;

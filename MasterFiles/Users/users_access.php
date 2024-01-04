@@ -1458,6 +1458,15 @@ xmlhttp.send();
           <label><input type="checkbox" name="chkAcc[]" value="PurchaseDat.php" <?=(in_array("PurchaseDat.php",@$arrpgist)) ? "checked" : "";?>>
           BIR Purchase Relief</label>
           <br>
+          <label><input type="checkbox" name="chkAcc[]" value="BIRQAP.php" <?=(in_array("BIRQAP.php",@$arrpgist)) ? "checked" : "";?>>
+          BIR QAP</label>
+          <br>
+          <label><input type="checkbox" name="chkAcc[]" value="BIRSAWT.php" <?=(in_array("BIRSAWT.php",@$arrpgist)) ? "checked" : "";?>>
+          BIR SAWT</label>
+          <br>
+          <label><input type="checkbox" name="chkAcc[]" value="VATSummary.php" <?=(in_array("VATSummary.php",@$arrpgist)) ? "checked" : "";?>>
+          VAT Summary</label>
+          <br>
           <label><input type="checkbox" name="chkAcc[]" value="bir2307.php" id="chkBox168" <?=(in_array("bir2307.php",@$arrpgist)) ? "checked" : "";?>>
           BIR Form - 2307</label>
           <br>

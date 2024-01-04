@@ -44,7 +44,7 @@
     //     LEFT JOIN paybill_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
     // )";
 
-    if($code == 'VT'){
+    if($code != ''){
         $sql = "SELECT a.*, b.* FROM paybill a
         LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
         WHERE a.compcode = '$company_code'

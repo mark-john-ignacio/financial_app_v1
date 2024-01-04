@@ -105,6 +105,10 @@
     <title>MyxFinancials</title>
 
     <style>
+        #addcustomer {
+            cursor: pointer;
+        }
+
         #filter {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
@@ -243,7 +247,7 @@
                 <div class='col' id='right-side' style='width: 50%; height: 100%; padding: 10px;'>
                         <div id='filter'>
                             <div class='input-group'>
-                                <span class='input-group-addon'><i class='fa fa-user'></i></span><input class='form-control input-sm' type="text" name='customer' id='customer' placeholder="Walkin Customer (Default)" autocomplete="off">
+                                <span class='input-group-addon' id="addcustomer" onclick="add_customer_modal()"><i class='fa fa-user'></i></span><input class='form-control input-sm' type="text" name='customer' id='customer' placeholder="Walkin Customer (Default)" autocomplete="off">
                             </div>
 
                                 <div class='input-group'>
@@ -422,11 +426,20 @@
                             </td>
                             <td style='width: 35%' id='paymentcol'>
                                 <div id='payment-details'>
-                                    <div style='display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-gap: 10px;'>
+                                    <div style='display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); grid-gap: 10px;'>
                                             <button type="button" class="btn btn-sm btn-warning form-control " id='spcdBtn' name='spcdBtn'>Discount</button>
                                             <button type="button" class="btn btn-sm btn-info form-control " id='couponBtn' name='couponBtn'>Coupon</button>
+                                            <select name="paymethod" id="paymethod">
+                                                <option value="CASH">CASH</option>
+                                                <option value="MOBILE">MOBILE PAYMENT</option>
+                                                <option value="DEBIT">DEBIT</option>
+                                                <option value="CREDIT">CREDIT</option>
+                                            </select>
                                     </div>
                                     <div style='width: 100%'>
+                                        <label for="paymethod_txt">Reference no.</label>
+                                        <input type="text" id="paymethod_txt" class="form-control" disabled>
+
                                         <label for="tendered">Tendered</label>
                                         <input type="number" id='tendered' class='form-control' />
 
@@ -571,6 +584,52 @@
                 <div class="modal-bodylong">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:8.5in; display:block; margin:0px; padding:0px; border:0px"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="AddCustomerModal" role="dialog" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-contnorad">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="invheader">New Customer</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div style="display: grid; grid-template-columns: repeat(2, minmax(200px, 1fr)); grid-gap: 5px">
+                        <div style="font-size: 14px; font-weight: bold;">Enter Customer Name: </div>
+                        <div class="col-xs-10 nopadding">
+                            <input type="text" id="customer_name" placeholder="Enter Customer's Name...." class="form-control input-sm">
+                        </div>
+                        <div style="font-size: 14px; font-weight: bold;">Enter Tin Number: </div>
+                        <div class="col-xs-10 nopadding">
+                            <input type="text" id="tin_number" placeholder="Tin Number... (xxx-xxx-xxx-xxxxx)" class="form-control input-sm">
+                        </div>
+                        <div style="font-size: 14px; font-weight: bold;">Enter House Number: </div>
+                        <div class="col-xs-10 nopadding">
+                            <input type="text" id="customer_house" placeholder="Enter House no. ... (blk xx lot xx)" class="form-control input-sm" />
+                        </div>
+                        <div style="font-size: 14px; font-weight: bold">Enter City: </div>
+                        <div class="col-xs-10 nopadding">
+                            <input type="text" id="customer_city" placeholder="Enter City..." class="form-control input-sm">
+                        </div>
+                        <div style="font-size: 14px; font-weight: bold">Enter State: </div>
+                        <div class="col-xs-10 nopadding">
+                            <input type="text" id="customer_state" placeholder="Enter State..." class="form-control input-sm">
+                        </div>
+                        <div style="font-size: 14px; font-weight: bold">Enter Country: </div>
+                        <div class="col-xs-10 nopadding">
+                            <input type="text" id="customer_country" placeholder="Enter Country..." class="form-control input-sm">
+                        </div>
+                        <div style="font-size: 14px; font-weight: bold">Enter Zip Code: </div>
+                        <div class="col-xs-6 nopadding">
+                            <input type="text" id="customer_zip" placeholder="Zip Code..." class="form-control input-sm"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-sm" onclick="create_new_customer()">Submit</button>
                 </div>
             </div>
         </div>
@@ -1208,6 +1267,14 @@
             PaymentCompute();
         })
 
+        $("#paymethod").change(function(){
+            if($(this).val() === "CASH") {
+                $("#paymethod_txt").prop("disabled", true)
+                return $("#paymethod_txt").val("");
+            }
+            return $("#paymethod_txt").prop("disabled", false)
+        })
+
         /**
          * Pay Submit Function where storing of Payments
          */
@@ -1223,6 +1290,8 @@
             let transaction = $("#tranno").val()
             let servicefee = $("#ServiceInput").val().replace(/,/g,'')
             // let totalAmt = $("#totalAmt").val().replace(/./g,'');
+            let method = $("#paymethod").find(":selected").val();
+            let reference = $("#paymethod_txt").val();
             let tranno = '';
             
             if(parseFloat(total) <= parseFloat(totalTender)){
@@ -1231,6 +1300,8 @@
                     type: 'post',
                     data: {
                         tranno: transaction ,
+                        method: method,
+                        reference: reference,
                         amount: gross,
                         net: net,
                         vat: vat,
@@ -1732,6 +1803,10 @@
         $("#"+modal).modal("hide");
     }
 
+    function add_customer_modal() {
+        $("#AddCustomerModal").modal("show");
+    }
+
     function checkAccess(id){
 			var flag;
 			$.ajax ({
@@ -1760,5 +1835,40 @@
         }, 5000)
     }
 
-    
+    function create_new_customer() {
+        let customer = $("#customer_name").val();
+        let tin = $("#tin_number").val();
+        let houseno = $("#customer_house").val();
+        let city = $("#customer_city").val();
+        let state = $("#customer_state").val();
+        let country = $("#customer_country").val();
+        let zip = $("#customer_zip").val();
+
+        $.ajax({
+            url: "Function/add_customer.php",
+            type: "post",
+            data: {
+                customer: customer,
+                tin: tin,
+                houseno: houseno,
+                city: city,
+                state: state,
+                country: country,
+                zip: zip
+            },
+            dataType: "json",
+            async: false,
+            success: function(res) {
+                if(res.valid) {
+                    alert(res.msg)
+                } else {
+                    alert(res.msg)
+                }
+                location.reload();
+            }, 
+            error: function(msg) {
+                console.log(msg);
+            }
+        })
+    }
 </script>

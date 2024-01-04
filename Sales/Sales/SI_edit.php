@@ -48,7 +48,7 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 		}
 	}
 
-	$gettaxcd = mysqli_query($con,"SELECT * FROM `vatcode` where compcode='$company' and ctype in ('Sales','Both') and cstatus='ACTIVE' order By cvatdesc"); 
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `vatcode` where compcode='$company' and ctype = 'Sales' and cstatus='ACTIVE' order By cvatdesc"); 
 	if (mysqli_num_rows($gettaxcd)!=0) {
 		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
 			@$arrtaxlist[] = array('ctaxcode' => $row['cvatcode'], 'ctaxdesc' => $row['cvatdesc'], 'nrate' => $row['nrate']); 
@@ -466,30 +466,6 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</td>								
 							</tr>
 												-->
-							<tr>
-								<td colspan="2"><div class="col-xs-12 nopadwtop2x">
-									<div class="chkitmsadd col-xs-3 nopadwdown">
-									<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4">
-									</div>
-									<div class="chkitmsadd col-xs-8 nopadwleft">
-									<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="Search Product Name..." size="80" tabindex="5">
-									</div>
-									</div>
-									<input type="hidden" name="hdnqty" id="hdnqty">
-									<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
-									<input type="hidden" name="hdnunit" id="hdnunit"> 
-									<input type="hidden" name="hdnctype" id="hdnctype">
-									<input type="hidden" name="hdncvat" id="hdncvat"> 
-									<input type="hidden" name="hdncvat" id="hdncewt"> 
-
-									<input type="hidden" name="hdnacctno" id="hdnacctno">  
-									<input type="hidden" name="hdnacctid" id="hdnacctid"> 
-									<input type="hidden" name="hdnacctdesc" id="hdnacctdesc"> 
-								
-								</td>
-								<td>&nbsp;</td>
-								<td>&nbsp;</td>
-							</tr>
 						</table>
 
 					</div>
@@ -503,15 +479,37 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				</div>
 
 				<hr>
-				<div class="col-xs-12 nopadwdown"><b>Details</b></div>
+				<div class="col-xs-12 nopadwdown">					
+					<div class="col-xs-3 nopadding">
+						<b>Details</b>
+					</div>
+					<div class="col-xs-9 nopadwleft">
+						<div class="chkitmsadd col-xs-3 nopadwdown">
+							<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4">
+						</div>
+						<div class="chkitmsadd col-xs-9 nopadwleft">
+							<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="Search Product Name..." size="80" tabindex="5">
+							<input type="hidden" name="hdnqty" id="hdnqty">
+							<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
+							<input type="hidden" name="hdnunit" id="hdnunit"> 
+							<input type="hidden" name="hdnctype" id="hdnctype">
+							<input type="hidden" name="hdncvat" id="hdncvat"> 
+							<input type="hidden" name="hdncvat" id="hdncewt"> 
+
+							<input type="hidden" name="hdnacctno" id="hdnacctno">  
+							<input type="hidden" name="hdnacctid" id="hdnacctid"> 
+							<input type="hidden" name="hdnacctdesc" id="hdnacctdesc"> 
+						</div>
+					</div>
+				</div>
 
 				<div style="border: 1px solid #919b9c; height: 40vh; overflow: auto">
 					<div id="tableContainer" class="alt2" dir="ltr" style="
-								margin: 0px;
-								padding: 3px;
-								width: 1500px;
-								height: 300px;
-								text-align: left;">
+					margin: 0px;
+					padding: 3px;
+					width: 1500px;
+					height: 300px;
+					text-align: left;">
 		
 						<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
 							<thead>
@@ -543,7 +541,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 
 			<div class="row nopadwtop2x">
-					<div class="col-xs-6">
+					<div class="col-xs-7">
 						<?php
 							$xc = check_credit_limit($company);
 							if($xc==1){
@@ -642,7 +640,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</div>
 						</div>
 					</div>
-					<div class="col-xs-6">
+					<div class="col-xs-5">
 						<div class="well">							
 							<div class="row static-info align-reverse">
 								<div class="col-xs-7 name">
@@ -1123,55 +1121,53 @@ if(file_name.length != 0){
 	?>
 
 	$(document).ready(function(e) {	
-			   			$.ajax({
-					url : "../../include/th_xtrasessions.php",
-					type: "Post",
-					async:false,
-					dataType: "json",
-					success: function(data)
-					{	
-					 console.log(data);
-            $.each(data,function(index,item){
-						  xChkBal = item.chkinv; //0 = Check ; 1 = Dont Check
-						  xChkLimit = item.chkcustlmt; //0 = Disable ; 1 = Enable
-						  xChkLimitWarn = item.chklmtwarn; //0 = Accept Warninf ; 1 = Accept Block ; 2 = Refuse Order
-              xChkVatableStatus = item.chkcompvat;
-
-						   
-					 });
-					}
-				});
-
-
-			if(file_name.length > 0){
-				$('#file-0').fileinput({
-					showUpload: false,
-					showClose: false,
-					allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
-					overwriteInitial: false,
-					maxFileSize:100000,
-					maxFileCount: 5,
-					browseOnZoneClick: true,
-					fileActionSettings: { showUpload: false, showDrag: false, },
-					initialPreview: list_file,
-					initialPreviewAsData: true,
-					initialPreviewFileType: 'image',
-					initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/RFP_Files/<?=$company."_".$txtctranno?>/{filename}',
-					initialPreviewConfig: file_config
-				});
-			} else {
-				$("#file-0").fileinput({
-					theme: 'fa5',
-					showUpload: false,
-					showClose: false,
-					allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
-					overwriteInitial: false,
-					maxFileSize:100000,
-					maxFileCount: 5,
-					browseOnZoneClick: true,
-					fileActionSettings: { showUpload: false, showDrag: false, }
+		$.ajax({
+			url : "../../include/th_xtrasessions.php",
+			type: "Post",
+			async:false,
+			dataType: "json",
+			success: function(data)
+			{	
+				console.log(data);
+            	$.each(data,function(index,item){
+					xChkBal = item.chkinv; //0 = Check ; 1 = Dont Check
+					xChkLimit = item.chkcustlmt; //0 = Disable ; 1 = Enable
+					xChkLimitWarn = item.chklmtwarn; //0 = Accept Warninf ; 1 = Accept Block ; 2 = Refuse Order
+              		xChkVatableStatus = item.chkcompvat;						   
 				});
 			}
+		});
+
+
+		if(file_name.length > 0){
+			$('#file-0').fileinput({
+				showUpload: false,
+				showClose: false,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, },
+				initialPreview: list_file,
+				initialPreviewAsData: true,
+				initialPreviewFileType: 'image',
+				initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/RFP_Files/<?=$company."_".$txtctranno?>/{filename}',
+				initialPreviewConfig: file_config
+			});
+		} else {
+			$("#file-0").fileinput({
+				theme: 'fa5',
+				showUpload: false,
+				showClose: false,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, }
+			});
+		}
 				
 	//	if(xChkBal==1){
 	//		$("#tblAvailable").hide();
@@ -1181,34 +1177,34 @@ if(file_name.length != 0){
 	//	}
 
 	if(xChkVatableStatus==1){
-			$(".chkVATClass").show();	
-			$("#isewt").show();
-			$("#isewt2").show();
-		}
-		else{
-			$(".chkVATClass").hide();
-			$("#isewt").hide();
-			$("#isewt2").hide();
-		}
+		$(".chkVATClass").show();	
+		$("#isewt").show();
+		$("#isewt2").show();
+	}
+	else{
+		$(".chkVATClass").hide();
+		$("#isewt").hide();
+		$("#isewt2").hide();
+	}
 
-		if(xChkLimit==0){
-			$(".chklimit").hide();
-		}
-		else{
-			$(".chklimit").show();
-		}
+	if(xChkLimit==0){
+		$(".chklimit").hide();
+	}
+	else{
+		$(".chklimit").show();
+	}
 
-		if($("#incmracct").val()=="item"){
-			$(".chkinctype").show();
-		}else{
-			$(".chkinctype").hide();
-		}
+	if($("#incmracct").val()=="item"){
+		$(".chkinctype").show();
+	}else{
+		$(".chkinctype").hide();
+	}
 
-		$("#basecurrval").autoNumeric('init',{mDec:4});
-		$("#selewt").select2();
+	$("#basecurrval").autoNumeric('init',{mDec:4});
+	$("#selewt").select2();
 
-		loaddetails();
-		loaddetinfo();
+	loaddetails();
+	loaddetinfo();
 
     ComputeGross();
 
@@ -1224,9 +1220,9 @@ if(file_name.length != 0){
 	  disabled();
 
   
-	  $('#date_delivery').datetimepicker({
-      format: 'MM/DD/YYYY',
-			//minDate: new Date(),
+	$('#date_delivery').datetimepicker({
+      	format: 'MM/DD/YYYY',
+		//minDate: new Date(),
      });
 		
 		$('#date_delivery').on('dp.change', function(e){ 

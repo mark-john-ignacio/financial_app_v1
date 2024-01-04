@@ -40,6 +40,14 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	}
 }
 
+@$rdocodes = array();
+$sqlhead=mysqli_query($con,"Select * from rdocodes");
+if (mysqli_num_rows($sqlhead)!=0) {
+	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+		@$rdocodes[] = array("ccode" => $row['ccode'], "cdesc" => $row['cdesc']); 
+	}
+}
+
 $isCheck = 0;
 $service = "";
 $sql = mysqli_query($con, "SELECT * FROM parameters WHERE compcode = '$company' AND ccode = 'SERVICE_FEE'");
@@ -150,7 +158,7 @@ if(mysqli_num_rows($sql) != 0){
 										<div class="col-xs-12 nopadwtop">
 											<table width="100%" border="0" cellpadding="0">
 												<tr>
-													<td width="180" rowspan="5" align="center">
+													<td width="180" rowspan="6" align="center">
 														<?php 
 															$imgsrc = "../images/COMPLOGO.png";
 														?>
@@ -160,7 +168,7 @@ if(mysqli_num_rows($sql) != 0){
 													<td style="padding:2px" colspan="3"><div class="col-xs-10 nopadding"><input type="text" name="txtcompanycom" id="txtcompanycom" class="form-control input-sm" placeholder="Company Name..." maxlength="90"></div></td>
 												</tr>											
 												<tr>
-													<td><b>Business/Trade Name:</b></td>
+													<td><b>Trade Name:</b></td>
 													<td style="padding:2px" colspan="3">
 														<div class="col-xs-10 nopadding">
 															<input type="text" name="txtcompanydesc" id="txtcompanydesc" class="form-control input-sm" placeholder="Company Description..." maxlength="90" >
@@ -193,15 +201,44 @@ if(mysqli_num_rows($sql) != 0){
 												</tr>
 												<tr>
 													
-													<td><b>Business Type / TIN:</b></td>
+													<td><b>Business Type / VAT Type:</b></td>
 													<td style="padding:2px" colspan="3">
 
 														<div class="col-xs-5 nopadwright">
-															<select class="form-control input-sm" name="selcompanyvat" id="selcompanyvat">
+															<select class="form-control input-sm" name="selcompanybust" id="selcompanybust">
+																<option value="Corporation"> Corporation </option>
+																<option value="Sole"> Sole Proprietorship </option>
+																<option value="Partnership"> Partnership </option>
 															</select>
 														</div>
 														<div class="col-xs-5 nopadding">
+															<select class="form-control input-sm" name="selcompanyvat" id="selcompanyvat">
+																<option value="VAT_REG"> VAT-Registered </option>
+																<option value="NON-VAT_REG"> Non-VAT Registered </option>
+																<option value="NA"> NA </option>
+															</select>
+														</div>
+
+													</td>
+												</tr>
+												<tr>
+													
+													<td><b>TIN / RDO Code:</b></td>
+													<td style="padding:2px" colspan="3">
+
+														<div class="col-xs-5 nopadwright">
 															<input type="text" name="txtcompanytin" id="txtcompanytin" class="form-control input-sm" placeholder="TIN..." maxlength="50">
+														</div>
+														<div class="col-xs-5 nopadding">
+															<select class="form-control input-sm" name="selcompanyrdo" id="selcompanyrdo">
+																<?php
+																	foreach(@$rdocodes as $rx){
+																?>
+																<option value="<?=$rx['ccode']?>"> <?=$rx['ccode'].": ".$rx['cdesc']?> </option>
+																<?php
+																	}
+																?>
+															</select>
 														</div>
 
 													</td>
@@ -4052,6 +4089,7 @@ if(mysqli_num_rows($sql) != 0){
 		loadsemi();
 		
 		loadterms();
+		
 		loadAccountEntry();
 		
 		//loadloantyp();
@@ -4642,15 +4680,18 @@ if(mysqli_num_rows($sql) != 0){
 			var zip = $("#txtcompanyzip").val();
 			var tin = $("#txtcompanytin").val();
 			var vatz = $("#selcompanyvat").val();
+			var rdoc = $("#selcompanyrdo").val();
+			var busty = $("#selcompanybust").val();
 			var email = $("#txtcompanyemail").val();
 			var cpnum = $("#txtcompanycpnum").val();
 			var ptucode = $('#ptucode').val();
 			var ptudate = $('#ptudate').val();
+
 			//var texthdr = $("#texthdr").val();
 			
 				$.ajax ({
 					url: "th_savecompany.php",
-					data: { nme: nme,  desc: desc, add: add, tin: tin, vatz: vatz, zip: zip, email: email, cpnum: cpnum ,ptucode: ptucode, ptudate: ptudate},
+					data: { nme: nme,  desc: desc, add: add, tin: tin, vatz: vatz, zip: zip, email: email, cpnum: cpnum ,ptucode: ptucode, ptudate: ptudate, rdoc: rdoc, busty: busty},
 					async: false,
 					success: function( data ) {
 						if(data.trim()!="True"){
@@ -5613,11 +5654,15 @@ if(mysqli_num_rows($sql) != 0){
 						$('#ptucode').val(item.ptucode);
 						$('#ptudate').val(item.ptudate);
 
+						$('#selcompanyvat').val(item.lvat);
+						$('#selcompanyrdo').val(item.rdoc);
+						$('#selcompanybust').val(item.compbustype);
+
 						$("#previewing").attr('src',item.clogoname);
 
-						var vatcompcode = item.lvat;
+						//var vatcompcode = item.lvat;
 						
-									$.ajax ({
+									/*$.ajax ({
 									url: "th_loadvat.php",
 									dataType: 'json',
 									async:false,
@@ -5635,7 +5680,7 @@ if(mysqli_num_rows($sql) != 0){
 											$("#selcompanyvat").append("<option value=\""+item.cvatcode+"\" "+isselctd+">"+item.cvatdesc+"</option>");
 										});
 									}
-									});
+									});*/
 
 						
 					});

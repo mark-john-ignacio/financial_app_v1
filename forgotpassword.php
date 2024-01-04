@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <?php
 
+	include('vendor/autoload.php');
+
 	require("vendor/phpmailer/phpmailer/src/PHPMailer.php");
-	require("vendor/phpmailer/phpmailer/src/Exception.php");
-  require("vendor/phpmailer/phpmailer/src/SMTP.php");
+	require("vendor/phpmailer/phpmailer/src/SMTP.php");
 
-if(!isset($_SESSION)){
-session_start();
-}
-require_once "Connection/connection_string.php";
-
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	require_once "Connection/connection_string.php";
+	include('Model/helper.php');
 ?>
 
 <html lang="en">
@@ -187,7 +188,7 @@ $error = "";
 		$output.='<p>The link will expire after 1 day for security reason.</p>';
 		$output.='<p>If you did not request this forgotten password email, no action 
 		is needed, your password will not be reset. However, you may want to log into 
-		your account and change your security password as someone may have guessed it.</p>';   
+		your account and change your security password as someone is trying to hack your account.</p>';   
 		$output.='<p>Thanks,</p>';
 		$output.='<p>Myx Financials,</p>';
 		$body = $output; 
@@ -199,21 +200,20 @@ $error = "";
 		//use PHPMailer\PHPMailer\PHPMailer; 	
 		//use PHPMailer\PHPMailer\Exception;
 
+		$getcred = getEmailCred();
+
 		$mail = new PHPMailer\PHPMailer\PHPMailer();
 		$mail->IsSMTP();
-		$mail->SMTPDebug = 2;  // debugging: 1 = errors and messages, 2 = messages only
+		$mail->Host = $getcred['csmtp']; // Enter your host here
 		$mail->SMTPAuth = true;
-		$mail->SMTPSecure = 'tls';
-		$mail->SMTPAutoTLS = false;
-		$mail->Host = "ssl://mail.serttech.com"; // Enter your host here
-		$mail->Port = 587;
-
+		$mail->Username = $getcred['cusnme']; // Enter your email here
+		$mail->Password = $getcred['cuspass']; //Enter your password here
+		$mail->SMTPSecure = $getcred['csecure'];
+		$mail->Port = $getcred['cport'];
 		$mail->IsHTML(true);
-		$mail->Username = "myxfin@serttech.com"; // Enter your email here
-		$mail->Password = "Sert@2022"; //Enter your password here
-		$mail->From = "noreply@serttech.com";
-		$mail->FromName = "Myx Financials";
-		$mail->Sender = "myxfin@serttech.com"; // indicates ReturnPath header
+		$mail->From = $getcred['cusnme'];
+		$mail->FromName = "MYX Financials";
+		$mail->Sender = $getcred['cusnme']; // indicates ReturnPath header
 		$mail->Subject = $subject;
 		$mail->Body = $body;
 		$mail->AddAddress($email_to);

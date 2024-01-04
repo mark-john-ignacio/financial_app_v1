@@ -1,3 +1,37 @@
+<?php
+    if(!isset($_SESSION)){
+        session_start();
+    }
+    $_SESSION['pageid'] = "VATSummary.php";
+    
+    include('../../Connection/connection_string.php');
+    include('../../include/denied.php');
+    include('../../include/access2.php');
+    
+    $company = $_SESSION['companyid'];
+
+    @$arrtaxSI = array();
+    @$arrtaxPR = array();
+
+    $gettaxcd = mysqli_query($con,"SELECT * FROM `vatcode` where compcode='$company' and cstatus='ACTIVE' order By cvatdesc"); 
+	if (mysqli_num_rows($gettaxcd)!=0) {
+		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+
+            if($row['ctype']=="Sales" || $row['ctype']=="Both"){
+			    @$arrtaxSI[] = array('ctaxcode' => $row['cvatcode'], 'ctaxdesc' => $row['cvatdesc'], 'nrate' => $row['nrate']); 
+            }
+
+            if($row['ctype']=="Purchase" || $row['ctype']=="Both"){
+			    @$arrtaxPR[] = array('ctaxcode' => $row['cvatcode'], 'ctaxdesc' => $row['cvatdesc'], 'nrate' => $row['nrate']); 
+            }
+
+		}
+	}
+
+    //print_r(@$arrtaxSI);
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,175 +39,86 @@
     <link rel="stylesheet" type="text/css" href="../../global/plugins/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?<?php echo time();?>">
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+    <link rel="stylesheet" type="text/css" href="../../Bootstrap/select2/css/select2.css?h=<?php echo time();?>">
 
     <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
     <script src="../../js/bootstrap3-typeahead.min.js"></script>
     <script src="../../include/autoNumeric.js"></script>
 
+    <script src="../../Bootstrap/select2/js/select2.full.min.js"></script>
     <script src="../../Bootstrap/js/bootstrap.js"></script>
     <script src="../../Bootstrap/js/moment.js"></script>
     <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <style>
-        th, td {
-            padding-top: 2px;
-            padding-left: 15px;
-            padding-right: 15px;
-            padding-bottom: 2px;
-        }
-    </style>
+   
     <title>MyxFinancials</title>
 </head>
-<body>
-    <div style="text-align: center; font-weight: bold; text-decoration: underline;">
-        <font size="+1">VAT Summary Report</font>
-    </div>
+
+<body style="padding-left:50px; padding-right:10px;">
+    <center>
+    <b><u><font size="+1">VAT Summary Report</font></u></b>
+
+    </center>
+    <br>
+
     <form action="" method="post" id="FORM_VATSUM" enctype="multipart/form-data" target="_blank">
-        <div class='container' style='padding-top: 50px'>
+       
+        <table width="100%" border="0" cellpadding="2">
+            <tr>
+                <th style="padding:2px" width="50">
+                    <button type="button" class='btn btn-danger btn-block' id="btnView" onclick="btnonclick.call(this)" value="VIEW"><i class='fa fa-search'></i>&nbsp;&nbsp;View Report</button>
+                </th>
+                <td width="90" style="padding-left:10px"><b>Date Range:</td>
+                <td style="padding:2px">
+                    <div class="form-group nopadding">
+                        <div class="col-xs-8">
+                            <div class="input-group input-large date-picker input-daterange">
+                                <input type="text" class="datepick form-control input-sm" id="from" name="from" value="<?php echo date("m/d/Y"); ?>">
+                                <span class="input-group-addon">to </span>
+                                <input type="text" class="datepick form-control input-sm" id="to" name="to" value="<?php echo date("m/d/Y"); ?>">
+                            </div>
+                        </div>	
+                    </div>
+                </td>
+
+                
+            </tr>
+            <tr width="50">
+                <th style="padding:2px"><button type="button" class="btn btn-success btn-block" id="btnExcel" onclick="btnonclick.call(this)" value="CSV"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;To Excel</button></th>
+                <td width="90" style="padding-left:10px"><b>Type: </td>
+                <td style="padding:2px">
+                    <div class="form-group nopadding">
+                        <div class="col-xs-8">
+                            <select id='seltyp' name='seltyp' class='form-control input-sm'>
+                                <option value="Sales.php">Sales</option>
+                                <option value="Purchases.php">Purchases</option>
+                            </select> 
+                        </div>
+                    </div>
+                </th>
+
+
+            </tr>
             
-                <table border="0">
-                    <tr valign="top">
-                        <th><button type="button" class='btn btn-danger btn-block' id="btnView" onclick="btnonclick.call(this)" value="VIEW"><i class='fa fa-search'></i>&nbsp;&nbsp;View Report</button></th>
-                        <th width='100px'>Month of:</th>
-                        <th>
-                            <div class="col-xs-10 nopadding">
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" id="from" name="from" class="monthpicker form-control input-sm" value="<?= date("Y-m-d") ?>">
-                                </div>
-                            </div>
-                        </th>
-                        <th>Year:</th>
-                        <th>
-                            <div class="col-xs-10 nopadding">
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" id='to' name='to' class='yearpicker form-control input-sm' value="<?= date("Y-m-d"); ?>">
-                                </div>
-                                
-                            </div>
-                        </th>
-                    </tr>
-                    <tr valign="top">
-                        <th><button type="button" class="btn btn-success btn-block" id="btnExcel" onclick="btnonclick.call(this)" value="CSV"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;To Excel</button></th>
-                        <th width='100px'>Type: </th>
-                        <th >
-                            <div class="col-xs-11 nopadding">
+        </table>
+        
 
-                                    <select id='seltyp' name='seltyp' class='form-control input-sm'>
-                                        <option value="Sales.php">Sales</option>
-                                        <option value="Purchases.php">Purchases</option>
-                                    </select> 
-
-                                
-                            </div>
-                        </th>
-                        <th>&nbsp;</th>
-                        <th>&nbsp;</th>
-                    </tr>
-                   
-                </table>
-        </div>
-
-        <div style="display: flex; width: 100%; padding-top: 50px; gap: 15px">
-            <div style="display: flex; justify-content: center; justify-items: center; width: 50%; border: 1px solid; border-radius: 25px; padding: 10px">
-                <table>
-                    <tr>
-                        <th colspan="2" style="text-align: center; width: 100%;">Sales</th>
-                    </tr>
-                    <tr>
-                        <th>&nbsp;</th>
-                        <th style="text-align: center;"><div class="col-sm-10">TAX Code</div></th>
-                    </tr>
-                    <tr>
-                        <th><div>Zero Rated</div></th>
-                        <th>
-                            <div class="col-sm-10">
-                                <input type="text" id="zero" name="zero" class="form-control input-sm">
-                            </div>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th><div>VAT to Government</div></th>
-                        <th>
-                            <div class="col-sm-10">
-                                <input type="text" id="vatgov" name="vatgov" class="form-control input-sm">
-                            </div>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th><div>VAT EXEMPT SALES</div></th>
-                        <th>
-                            <div class="col-sm-10">
-                                <input type="text" id="vatexempt" name="vatexempt" class="form-control input-sm">
-                            </div>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th><div>VATABLE SALES</div></th>
-                        <th>
-                            <div class="col-sm-10">
-                                <input type="text" id="vatable" name="vatable" class="form-control input-sm">
-                            </div>
-                        </th>
-                    </tr>
-                </table>
-            </div>
-            
-            <div style="display: flex; justify-content: center; justify-items: center; width: 50%; border: 1px solid; border-radius: 25px; padding: 10px">
-                <table>
-                        <tr>
-                            <th colspan="2" style="text-align: center; width: 100%">Purchase</th>
-                        </tr>
-                        <tr>
-                            <th>&nbsp;</th>
-                            <th style="text-align: center;"><div class="col-sm-10">Tax Code</div></th>
-                        </tr>
-                        <tr>
-                            <th>Input VAT Goods (other than Capital Goods) </th>
-                            <td>
-                                <div class="col-sm-10">
-                                    <input type="text" id="other_goods" name="other_goods" class="form-control input-sm">
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Services</th>
-                            <td>
-                                <div class="col-sm-10">
-                                    <input type="text" id="services" name="services" class="form-control input-sm">
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Capital Goods</th>
-                            <td>
-                                <div class="col-sm-10">
-                                    <input type="text" id="capital" name="capital" class="form-control input-sm">
-                                </div>
-                            </td>
-                        </tr>
-                </table>
-            </div>
-        </div>
     </form>
 </body>
 </html>
 
 <script>
     $(document).ready(function() {
-        $(".yearpicker").datetimepicker({
+
+        $(".selewt").select2();
+
+        $(".datepick").datetimepicker({
             defaultDate: moment(),
             viewMode: 'months',
-            format: 'YYYY-MM-DD'
+            format: 'MM/DD/YYYY'
         })
 
-        $(".monthpicker").datetimepicker({
-            defaultDate: moment(),
-            viewMode: 'months',
-            format: 'YYYY-MM-DD'
-        })
         fetch_vatables();
 
     })

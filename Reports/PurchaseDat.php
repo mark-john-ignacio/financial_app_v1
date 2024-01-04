@@ -8,8 +8,28 @@
      include('../include/access.php');
     $company = $_SESSION['companyid'];
     
-    $sql = "SELECT * FROM vatcode WHERE compcode = '$company' AND cstatus = 'ACTIVE'";
+    $sql = "SELECT * FROM vatcode WHERE compcode = '$company' AND cstatus = 'ACTIVE' and ctype='PURCHASE'";
     $query = mysqli_query($con, $sql);
+
+    $sql = "select * From company where compcode='$company'";
+    $result=mysqli_query($con,$sql);
+    
+    if (!mysqli_query($con, $sql)) {
+        printf("Errormessage: %s\n", mysqli_error($con));
+    } 
+        
+    while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+    {
+        $comprdo = $row['comprdo'];
+    }
+
+    @$rdocodes = array();
+    $sqlhead=mysqli_query($con,"Select * from rdocodes");
+    if (mysqli_num_rows($sqlhead)!=0) {
+        while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+            @$rdocodes[] = array("ccode" => $row['ccode'], "cdesc" => $row['cdesc']); 
+        }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -43,7 +63,7 @@
         </div>
         <div class='container' style='padding-top: 50px'>
             <table>
-                <tr valign="top">
+                <tr>
                     <th><button class='btn btn-danger btn-block' id="btnView"><i class='fa fa-search'></i>&nbsp;&nbsp;View Report</button></th>
                     <th width='100px'>Month of:</th>
                     <th>
@@ -58,11 +78,12 @@
                         </div>
                     </th>
                 </tr>
-                <tr valign="top">
+                <tr>
                     <th><button class="btn btn-success btn-block" id="btnExcel"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;To Excel</button></th>
-                    <th>Business Type: </th>
+                    <th>Tax Type: </th>
                     <th>
                         <select name="vatcode" id="vatcode" class='form-control input-sm'>
+                            <option value="">-ALL-</option>
                             <?php while($row = $query -> fetch_assoc()): ?>
                                 <option value="<?= $row['cvatcode'] ?>"><?= $row['cvatdesc'] ?></option>
                             <?php endwhile; ?>
@@ -72,9 +93,26 @@
                 </tr>
                 <tr>
                     <th><button class="btn btn-info btn-block" id="btnDat"><i class="fa fa-file"></i>&nbsp;&nbsp;To DAT</button></th>
-                    <th>RDO Type: </th>
-                    <th><input type="text" id='rdo' class='form-control input-sm' required></th>
-                    <th colspan='2'>&nbsp;</th>
+                    <th>RDO Code: </th>
+                    <th colspan='3'>
+
+                        <select class="form-control input-sm" name="rdo" id="rdo">
+                            <?php
+                                $isslc = "";
+                                foreach(@$rdocodes as $rx){
+                                    if($comprdo==$rx['ccode']){
+                                        $isslc = " selected ";
+                                    }else{
+                                        $isslc = "";
+                                    }
+                            ?>
+                            <option value="<?=$rx['ccode']?>"<?=$isslc?>> <?=$rx['ccode'].": ".$rx['cdesc']?> </option>
+                            <?php
+                                }
+                            ?>
+                        </select>
+                    </th>
+
                 </tr>
             </table>
         </div>

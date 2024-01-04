@@ -52,7 +52,7 @@ $company = $_SESSION['companyid'];
 		}
 	}
 
-	$gettaxcd = mysqli_query($con,"SELECT * FROM `vatcode` where compcode='$company' and ctype in ('Sales','Both') and cstatus='ACTIVE' order By cvatdesc"); 
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `vatcode` where compcode='$company' and ctype = 'Sales' and cstatus='ACTIVE' order By cvatdesc"); 
 	if (mysqli_num_rows($gettaxcd)!=0) {
 		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
 			@$arrtaxlist[] = array('ctaxcode' => $row['cvatcode'], 'ctaxdesc' => $row['cvatdesc'], 'nrate' => $row['nrate']); 
@@ -363,33 +363,6 @@ $company = $_SESSION['companyid'];
 										</td>
 								</tr>-->
 
-
-								<tr>
-										<td colspan="2">&nbsp;
-											<div class="col-xs-12 nopadding">
-												<div class="chkitmsadd col-xs-3 nopadwdown">
-													<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4">
-												</div>
-												<div class="chkitmsadd col-xs-8 nopadwleft">
-													<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="Search Product Name..." size="80" tabindex="5">
-												</div>
-											</div>
-											<input type="hidden" name="hdnqty" id="hdnqty">
-											<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
-											<input type="hidden" name="hdnunit" id="hdnunit"> 
-											<input type="hidden" name="hdnctype" id="hdnctype"> 
-											<input type="hidden" name="hdncvat" id="hdncvat"> 
-
-											<input type="hidden" name="hdnacctno" id="hdnacctno">  
-											<input type="hidden" name="hdnacctid" id="hdnacctid"> 
-											<input type="hidden" name="hdnacctdesc" id="hdnacctdesc"> 
-										</td>
-										<td>&nbsp;</td>
-										<td style="padding:2px;"  align="right">
-											<!--<div class="chklimit col-xs-11 nopadding" id="ncustbalance2"></div>-->
-										</td>
-								</tr>
-
 							</table>
 
 						</div>
@@ -413,7 +386,28 @@ $company = $_SESSION['companyid'];
 
 
 				<hr>
-				<div class="col-xs-12 nopadwdown"><b>Details</b></div>
+				<div class="col-xs-12 nopadwdown">					
+					<div class="col-xs-3 nopadding">
+						<b>Details</b>
+					</div>
+					<div class="col-xs-9 nopadwleft">
+						<div class="chkitmsadd col-xs-3 nopadwdown">
+							<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4">
+						</div>
+						<div class="chkitmsadd col-xs-9 nopadwleft">
+							<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="Search Product Name..." size="80" tabindex="5">
+							<input type="hidden" name="hdnqty" id="hdnqty">
+							<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
+							<input type="hidden" name="hdnunit" id="hdnunit"> 
+							<input type="hidden" name="hdnctype" id="hdnctype"> 
+							<input type="hidden" name="hdncvat" id="hdncvat"> 
+
+							<input type="hidden" name="hdnacctno" id="hdnacctno">  
+							<input type="hidden" name="hdnacctid" id="hdnacctid"> 
+							<input type="hidden" name="hdnacctdesc" id="hdnacctdesc"> 
+						</div>
+					</div>
+				</div>
 
 				<div style="border: 1px solid #919b9c; height: 40vh; overflow: auto">
 					<div id="tableContainer" class="alt2" dir="ltr" style="

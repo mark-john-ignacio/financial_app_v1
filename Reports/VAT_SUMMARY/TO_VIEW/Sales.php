@@ -1,3 +1,20 @@
+<?php
+    if(!isset($_SESSION)){
+        session_start();
+    }
+    $_SESSION['pageid'] = "Journal.php";
+
+    include('../../../Connection/connection_string.php');
+    include('../../../include/denied.php');
+    include('../../../include/access2.php');
+
+    $company = $_SESSION['companyid'];
+    $sql =  "SELECT * FROM company WHERE compcode = '$company'";
+    $query = mysqli_query($con, $sql);
+    $company = $query -> fetch_array(MYSQLI_ASSOC);
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,27 +42,36 @@
     <title>MyxFinancials</title>
 </head>
 <body>
+    <div class='container-fluid'>
+        <h5>SALES TRANSACTION</h5>
+        <h5>VAT SUMMARY</h5>
+        <br><br>
+        <h5>TIN: <?= substr($company['comptin'],0,11) ?></h5>
+        <h5>OWNER'S Name: <?= $company['compname'] ?></h5>
+        <h5>OWNER'S TRADE NAME: <?= $company['compdesc'] ?></h5>
+        <h5>OWNER'S ADDRESS: <?= $company['compadd'] ?></h5>
+    </div>
         
 
-                <table id="sales_table" class="table">
-                    <thead>
-                        <tr>
-                            <th>Voucher no.</th>
-                            <th>Transaction Date</th>
-                            <th>Invoice No.</th>
-                            <th>Reference</th>
-                            <th>Partner</th>
-                            <th>TIN</th>
-                            <th>Address</th>
-                            <th>Gross Amount</th>
-                            <th>Net Amount</th>
-                            <th>Tax Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+    <table id="sales_table" class="table">
+        <thead>
+            <tr>
+                <th>Voucher no.</th>
+                <th>Transaction Date</th>
+                <th>Invoice No.</th>
+                <th>Reference</th>
+                <th>Partner</th>
+                <th>TIN</th>
+                <th>Address</th>
+                <th>Gross Amount</th>
+                <th>Net Amount</th>
+                <th>Tax Amount</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
             
-                
+
     <div class='AR modal fade' id='ViewModal' role='dialog'>
         <div class='modal-sm modal-dialog' style="width: 800px;" role="document">
             <div class='modal-content' >
@@ -505,12 +531,20 @@
     function Fetch_Sales() {
         $("#sales_table tbody").empty();
 
-        let from = $("#datefrom").val();
-        let to = $("#dateto").val();
-        let vatable = '<?= $_POST['vatable'] ?>';
-        let zero = '<?= $_POST['zero'] ?>';
-        let gov =  '<?= $_POST['vatgov'] ?>';  
-        let exempt = '<?= $_POST['vatexempt'] ?>';
+        let from = '<?= $_POST['from'] ?>';
+        let to = '<?= $_POST['to'] ?>';
+       /* let vatable = '<?//= $_POST['vatable'] ?>';
+        let zero = '<?//= $_POST['zero'] ?>';
+        let gov =  '<?//= $_POST['vatgov'] ?>';  
+        let exempt = '<?//= $_POST['vatexempt'] ?>';
+        
+        
+        ,
+                vatable: vatable,
+                gov: gov,
+                zero: zero,
+                exempt: exempt
+        */
                     
         let TOTAL_GROSS = 0;
         let TOTAL_NET = 0;
@@ -519,11 +553,7 @@
             url: "../SALES",
             data: {
                 from: from,
-                to: to,
-                vatable: vatable,
-                gov: gov,
-                zero: zero,
-                exempt: exempt
+                to: to
             },
             dataType: "json",
             async: false,
@@ -557,8 +587,8 @@
     function Fetch_Purchase() {
         $("#purchase_table tbody").empty();
 
-        let from = $("#datefrom").val();
-        let to = $("#dateto").val();
+        let from = '<?= $_POST['from'] ?>';
+        let to = '<?= $_POST['to'] ?>';
 
         let other = "<?= $_POST['other_goods'] ?>";
         let service = "<?= $_POST['services'] ?>";

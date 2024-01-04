@@ -14,6 +14,7 @@ ob_start();
 
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
+include('../../Model/helper.php');
 
 $company = $_SESSION['companyid'];
 
@@ -315,33 +316,36 @@ ob_end_clean();
 
 // send the captured HTML from the output buffer to the mPDF class for processing
 $mpdf->WriteHTML($html);
-$mpdf->Output('../../PDFiles/Quotes/'.$csalesno.'.pdf', \Mpdf\Output\Destination::FILE);
+$mpdf->Output('../../PDFiles/PO/'.$csalesno.'.pdf', \Mpdf\Output\Destination::FILE);
 
 //Redirect to sending email file
+
+$getcred = getEmailCred();
+
 	$body = $emi; 
 	$subject = $logonamz." - Purchase Order";
  
 	$email_to = $Conemail;
 
-	$fromserver = "myxfin@serttech.com"; 
+	$fromserver = $getcred['cusnme']; 
 
 	$mail = new PHPMailer\PHPMailer\PHPMailer();
 	$mail->IsSMTP();
-	$mail->Host = "mail.serttech.com"; // Enter your host here
+	$mail->Host = $getcred['csmtp']; // Enter your host here
 	$mail->SMTPAuth = true;
-	$mail->Username = "myxfin@serttech.com"; // Enter your email here
-	$mail->Password = "Sert@2022"; //Enter your password here
-	$mail->SMTPSecure = 'tls';
-	$mail->Port = 587;
+	$mail->Username = $getcred['cusnme']; // Enter your email here
+	$mail->Password = $getcred['cuspass']; //Enter your password here
+	$mail->SMTPSecure = $getcred['csecure'];
+	$mail->Port = $getcred['cport'];
 	$mail->IsHTML(true);
-	$mail->From = "noreply@myxfinancials.com";
+	$mail->From = $getcred['cusnme'];
 	$mail->FromName = $logonamz;
-	$mail->Sender = "myxfin@serttech.com"; // indicates ReturnPath header
+	$mail->Sender = $getcred['cusnme']; // indicates ReturnPath header
 	$mail->Subject = $subject;
 	$mail->Body = $body;
 	$mail->AddAddress($email_to);
 
-	$mail->addAttachment("../../PDFiles/Quotes/".$csalesno.".pdf");
+	$mail->addAttachment("../../PDFiles/PO/".$csalesno.".pdf");
 	if(!$mail->Send()){
 		echo "Mailer Error: " . $mail->ErrorInfo;
 	}else{

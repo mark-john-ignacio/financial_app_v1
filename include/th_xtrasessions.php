@@ -14,10 +14,10 @@
 			$json['chkinv'] = $rowavil['cvalue'];
 			
 			//Check VAT setup
-			$resvat = mysqli_query($con,"select B.lcompute from company A left join vatcode B on A.compcode=B.compcode and A.compvat=B.cvatcode where A.compcode = '$company'");
+			$resvat = mysqli_query($con,"select A.compvat from company A where A.compcode = '$company'");
 			$rowvat = mysqli_fetch_assoc($resvat);
 			
-			 $json['chkcompvat'] = $rowvat['lcompute'];
+			$json['chkcompvat'] = ($rowvat['compvat']=="VAT_REG") ? 1 : 0;
 
 			//Check Customer Credit Limit
 			$rescrdlmt = mysqli_query($con,"select * from parameters where `compcode` = '$company' and `ccode` = 'CRDLIMIT'");

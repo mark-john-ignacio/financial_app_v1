@@ -24,8 +24,8 @@ function better_crypt($input, $rounds = 10) {
 <link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 <link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
 
-<script src="Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="Bootstrap/js/bootstrap.js"></script>
+<script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
+<script src="../Bootstrap/js/bootstrap.js"></script>
 
 <style type="text/css">
     body {
@@ -178,17 +178,25 @@ if (isset($_GET["key"]) && isset($_GET["email"]) && isset($_GET["action"])
 						<div class="modal-body">
 
 
-							<form method="post" action="" name="update">
+							<form method="post" action="reset-password.php" name="frmupdatepass" id="frmupdatepass">
 								<input type="hidden" name="action" value="update" />
 								<div class="form-group">
-									<input type="password" class="form-control form-control-sm" name="pass1" maxlength="15" required placeholder="Enter New Password..."/>
+									<input type="password" class="form-control form-control-sm" id="pass1" name="pass1" maxlength="15" required placeholder="Enter New Password..."/>
 								</div>
 								<div class="form-group">
-								<input type="password" class="form-control form-control-sm" name="pass2" maxlength="15" required placeholder="Re-Enter New Password..."/>
+								<input type="password" class="form-control form-control-sm" id="pass2" name="pass2" maxlength="15" required placeholder="Re-Enter New Password..."/>
 								</div>
-								<br /><br />
+
+								<div class="col-xs-12" id="warning" style="display: none">
+									<div id="alphabettxt"><span id="alphabet"></span> Must have an Alphabetical character! </div>
+									<div id="numerictxt"><span id="numeric"></span> Must have a Numeric character!</div>
+									<div id="stringlentxt"><span id="stringlen"></span> Minimum of 8 characters! </div>
+									<div id="passmatchtxt"><span id="passmatch"></span> Password Match! </div>
+									
+								</div>
+
 								<input type="hidden" name="email" value="<?php echo $email;?>"/>
-								<input type="submit" value="Reset Password" class="btn btn-warning btn-lg btn-block login-btn" />
+								<input type="button" name="btnAdd" id="btnAdd" value="Reset Password" class="btn btn-warning btn-lg btn-block login-btn" />
 							</form>
 
 						</div>
@@ -284,3 +292,83 @@ if(isset($_POST["email"]) && isset($_POST["action"]) && ($_POST["action"]=="upda
 
 </body>
 </html>
+
+<script type="text/javascript">
+  var warnings = { alpha: false, numeric: false, stringlen: false };
+
+      $(document).ready(function(){
+        $('#btnAdd').on('click', function(){
+          const newpassword = $('#pass1').val();
+          const confirmpassword = $('#pass2').val();
+          
+          const confirmNewPassword = PasswordValidation( newpassword );
+          const confirmPassword = PasswordValidation( confirmpassword );
+
+		  const chGkGo = PassMatch();
+          
+
+				if( confirmNewPassword && confirmPassword && chGkGo){
+					
+					$("#frmupdatepass").submit();
+
+				} else {
+					$('#warning').css('display', 'block')
+					$('#alphabet').html("<i " + (!warnings.alpha ?  "class='fa fa-exclamation' style='color: #FF0000;'" : "class='fa fa-check' style='color: #008000;' ") + "></i> ");
+					$('#alphabettxt').css('color', ( !warnings.alpha ? '#FF0000' : '#000000' ))
+
+					$('#numeric').html("<i " + ( !warnings.numeric ? "class='fa fa-exclamation' style='color: #FF0000;'" : "class='fa fa-check' style='color: #008000;' ") + "></i> ");
+					$('#numerictxt').css('color', ( !warnings.numeric ? '#FF0000' : '#000000' ))
+
+					$('#stringlen').html("<i " + ( !warnings.stringlen ? "class='fa fa-exclamation' style='color: #FF0000;'" : "class='fa fa-check' style='color: #008000;' ") + "></i>");
+					$('#stringlentxt').css('color', ( !warnings.stringlen ?  '#FF0000' : '#000000' ))
+
+					$('#passmatch').html("<i " + ( !chGkGo ? "class='fa fa-exclamation' style='color: #FF0000;'" : "class='fa fa-check' style='color: #008000;' ") + "></i>");
+					$('#passmatchtxt').css('color', ( !chGkGo ?  '#FF0000' : '#000000' ))
+				}
+			
+          })
+
+          /**
+           * Update users password
+           */
+
+          function AlphabetFilter(password){
+            var filter = /^(?=.*[a-zA-Z])/;
+            return filter.test(password)
+          }
+          function NumericFilter(password){
+            var filter = /(?=.*[0-9])/;
+            return filter.test(password);
+          }
+
+          function PasswordLimit(inputs){
+            return inputs.length >= 8;
+          }
+
+		  function PassMatch(){
+            const newpassword = $('#pass1').val();
+         	const confirmpassword = $('#pass2').val();
+
+			if(newpassword!=confirmpassword){
+				return false;
+			}else{
+				return true;
+			}
+
+          }
+
+          function PasswordValidation(inputs){
+            warnings['alpha'] = AlphabetFilter(inputs)
+            warnings['numeric'] = NumericFilter(inputs)
+            warnings['stringlen'] = PasswordLimit(inputs)
+
+            return warnings['alpha'] && warnings['numeric'] && warnings['stringlen'];
+
+            // if( inputs.length < 8 ){
+            //   warning['stringlen'] = false;
+            //   console.log("Characters must 8 - 15" + arr)
+            // }
+          }	
+
+      })
+</script>

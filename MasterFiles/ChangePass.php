@@ -112,7 +112,7 @@ session_start();
             <td style="padding:2px" align="center">
               <div class="col-xs-12 " id="warning" style="display: none">
                 <div id="alphabettxt"><span id="alphabet"></span> Must have a Alphabetical characters! </div>
-                <div id="numerictxt"><span id="numeric"></span> Must have a Numberic characters!</div>
+                <div id="numerictxt"><span id="numeric"></span> Must have a Numeric characters!</div>
                 <div id="stringlentxt"><span id="stringlen"></span> Minimum of 8 characters! </div>
                   
               </div>

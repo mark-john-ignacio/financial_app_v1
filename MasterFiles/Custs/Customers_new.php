@@ -533,12 +533,12 @@
 
               <div class="row nopadwtop">
                 <div class="col-xs-2 nopadding">
-                  <b>Business Type</b>
+                  <b>TAX Type</b>
                 </div>  
                 <div class="col-xs-3 nopadwleft">
                   <select id="selvattype" name="selvattype" class="form-control input-sm selectpicker"  tabindex="26">
                     <?php
-                      $sql = "Select * From vatcode where compcode='$company'";
+                      $sql = "Select * From vatcode where compcode='$company' and ctype='Sales' and cstatus='ACTIVE'";
                       $result=mysqli_query($con,$sql);
                       if (!mysqli_query($con, $sql)) {
                         printf("Errormessage: %s\n", mysqli_error($con));

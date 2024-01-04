@@ -347,6 +347,7 @@
              */
             switch($vatcode){
                 case "VT":
+                case "VT2":
                     $TOTAL_NET += floatval($net);
                     $TOTAL_VAT += floatval($vat);
                     $TOTAL_TAX_GROSS += floatval($gross);
@@ -358,9 +359,11 @@
                     $TOTAL_TAX_GROSS += floatval($gross);
                     break;
                 case "VE":
+                case "VE2":
                     $TOTAL_EXEMPT += floatval($exempt);
                     break;
                 case "ZR":
+                case "ZR2":
                     $TOTAL_ZERO_RATED += floatval($row['namount']);
                     break;
                 default:
@@ -662,4 +665,20 @@
             'quarter' => $apv,
 
         ];
+    }
+
+    function getEmailCred(){
+        global $con;
+        $sql = "SELECT * FROM parameters_email WHERE cstatus = 'ACTIVE'";
+        $queries = mysqli_query($con, $sql);
+        if(mysqli_num_rows($queries) !== 0) {
+            $fetch = $queries -> fetch_array(MYSQLI_ASSOC);
+            return [
+                'csmtp' => $fetch['csmtp'],
+                'cusnme' => $fetch['cuname'],
+                'cuspass' => $fetch['cpass'],
+                'csecure' => $fetch['csecure'],
+                'cport' => $fetch['cport'],
+            ];
+        }
     }

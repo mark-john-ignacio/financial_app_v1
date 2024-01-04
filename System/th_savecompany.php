@@ -13,6 +13,8 @@ require_once "../Connection/connection_string.php";
 	$add = $_REQUEST['add'];
 	$tin = $_REQUEST['tin'];
 	$vat = $_REQUEST['vatz']; 
+	$RDOC = $_REQUEST['rdoc']; 
+	$BUSTY = $_REQUEST['busty']; 
 	$email = $_REQUEST['email'];
 	$cpnum = $_REQUEST['cpnum'];
 	$czip = $_REQUEST['zip'];
@@ -23,7 +25,7 @@ require_once "../Connection/connection_string.php";
 	//, `txtheader` = '$txthdr'
 
 
-			if (!mysqli_query($con,"UPDATE company set `compname` = '$name', `compdesc` = '$desc', `compadd` = '$add', `comptin` = '$tin', `compvat` = '$vat', `compzip` = '$czip', `email` = '$email', `cpnum` = '$cpnum', `ptucode` = '$ptucode', `ptudate` = '$ptudate' where `compcode` = '$company'")) {
+			if (!mysqli_query($con,"UPDATE company set `compname` = '$name', `compdesc` = '$desc', `compadd` = '$add', `comptin` = '$tin', `compvat` = '$vat', `compzip` = '$czip', `email` = '$email', `cpnum` = '$cpnum', `ptucode` = '$ptucode', `ptudate` = '$ptudate', `comprdo` = '$RDOC', `compbustype` = '$BUSTY' where `compcode` = '$company'")) {
 				printf("Errormessage: %s\n", mysqli_error($con));
 			} 
 			else{										
