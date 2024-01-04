@@ -1424,7 +1424,6 @@
                             for (let i = 0; i < itemStored.length; i++) {
                                 if (itemStored[i].partno === item.partno) {
                                     itemStored[i].quantity = parseFloat(qty);
-                                    itemStored[i].price = parseFloat(itemStored[i].quantity) * parseFloat(price);
 
                                     switch(disc.type){
                                         case "PRICE":
@@ -1436,7 +1435,7 @@
                                     }
 
                                     itemStored[i].discount = parseFloat(discvalue);
-                                    itemStored[i].amount = parseFloat(itemStored[i].price) - parseFloat(itemStored[i].discount);
+                                    itemStored[i].amount = (parseFloat(itemStored[i].price) * parseFloat(itemStored[i].quantity)) - parseFloat(itemStored[i].discount);
                                     break;
                                 }
                             }
@@ -1537,7 +1536,6 @@
 
             if (itemStored[i].partno === data.partno) {
                 itemStored[i].quantity += parseFloat(qty);
-                itemStored[i].price = parseFloat(itemStored[i].quantity) * parseFloat(price);
 
                 switch(disc.type){
                     case "PRICE":
@@ -1549,7 +1547,7 @@
                 }
 
                 itemStored[i].discount = parseFloat(discvalue);
-                itemStored[i].amount = parseFloat(itemStored[i].price) - parseFloat(itemStored[i].discount);
+                itemStored[i].amount = (parseFloat(itemStored[i].price) * parseFloat(itemStored[i].quantity)) - parseFloat(itemStored[i].discount);
                 found = true;
                 break;
             }

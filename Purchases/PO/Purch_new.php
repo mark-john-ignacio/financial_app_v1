@@ -41,10 +41,10 @@
 		}
 	}
 
-	$gettaxcd = mysqli_query($con,"SELECT * FROM `taxcode` where compcode='$company' order By nidentity"); 
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `vatcode` where compcode='$company' and ctype = 'Purchase' and cstatus='ACTIVE' order By cvatdesc"); 
 	if (mysqli_num_rows($gettaxcd)!=0) {
 		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
-			@$arrtaxlist[] = array('ctaxcode' => $row['ctaxcode'], 'ctaxdesc' => $row['ctaxdesc'], 'nrate' => $row['nrate']); 
+			@$arrtaxlist[] = array('ctaxcode' => $row['cvatcode'], 'ctaxdesc' => $row['cvatdesc'], 'nrate' => $row['nrate']); 
 		}
 	}
 
@@ -250,9 +250,9 @@
 														</div>
 													</div>
 									</td>
-									<tH width="150" style="padding:2px"><div id="setewt" style="display:none">EWT Code: </div> </tH>
+									<tH width="150" style="padding:2px">EWT Code:</tH>
 									<td style="padding:2px">
-										<div id="setewtval" style="display:none"> 
+										<div id="setewtval"> 
 											<select id="selewt" name="selewt" class="form-control input-sm selectpicker"  tabindex="3">
 													<option value="none">None</option>
 													<option value="multi">Multiple</option>
@@ -373,8 +373,8 @@
 									<tr>
 										<th style="border-bottom:1px solid #999">Code</th>
 										<th style="border-bottom:1px solid #999">Description</th>
-										<th style="border-bottom:1px solid #999; display: none" class="codeshdn">EWT Code</th>
-										<th style="border-bottom:1px solid #999; display: none" class="codeshdn">VAT</th>
+										<th style="border-bottom:1px solid #999;">EWT Code</th>
+										<th style="border-bottom:1px solid #999;">VAT</th>
 										<th style="border-bottom:1px solid #999">UOM</th>
 										<th style="border-bottom:1px solid #999">Qty</th>
 										<th style="border-bottom:1px solid #999">Price</th>
@@ -848,16 +848,16 @@ $(document).ready(function() {
 		if($(this).val()==1){
 			$("#selterms").attr("disabled", true);
 
-			$("#setewtval").show();  
-			$("#setewt").show(); 
-			$(".codeshdn").show();
+			//$("#setewtval").show();  
+			//$("#setewt").show(); 
+			//$(".codeshdn").show();
 
 		}else{
 			$("#selterms").attr("disabled", false);
 
-			$("#setewtval").hide();
-			$("#setewt").hide();
-			$(".codeshdn").hide();
+			//$("#setewtval").hide();
+			//$("#setewt").hide();
+			//$(".codeshdn").hide();
 
 		}
 	});

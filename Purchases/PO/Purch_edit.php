@@ -43,10 +43,10 @@
 		}
 	}
 
-	$gettaxcd = mysqli_query($con,"SELECT * FROM `taxcode` where compcode='$company' order By nidentity"); 
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `vatcode` where compcode='$company' and ctype = 'Purchase' and cstatus='ACTIVE' order By cvatdesc"); 
 	if (mysqli_num_rows($gettaxcd)!=0) {
 		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
-			@$arrtaxlist[] = array('ctaxcode' => $row['ctaxcode'], 'ctaxdesc' => $row['ctaxdesc'], 'nrate' => $row['nrate']); 
+			@$arrtaxlist[] = array('ctaxcode' => $row['cvatcode'], 'ctaxdesc' => $row['cvatdesc'], 'nrate' => $row['nrate']); 
 		}
 	}
 
@@ -324,7 +324,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 														</div>
 										</div>
 									</td>
-									<tH width="150" style="padding:2px"><div id="setewt" style="<?=($cpaytype==0) ? "display:none" : ""?>">EWT Code: </div> </tH>
+									<tH width="150" style="padding:2px">EWT Code: </tH>
 									<td style="padding:2px">
 										<div id="setewtval" style="<?=($cpaytype==0) ? "display:none" : ""?>"> 
 											<select id="selewt" name="selewt" class="form-control input-sm selectpicker"  tabindex="3">

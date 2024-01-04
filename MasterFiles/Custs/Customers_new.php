@@ -202,7 +202,7 @@
 
             </div>
 
-            <div id="menu1" class="tab-pane fade" style="padding-left:10px; padding-top:15px;">                    
+            <div id="menu1" class="tab-pane fade" style="padding-left:10px; padding-top:15px; overflow: auto; height: 250px">                    
               <input type="button" value="Add Contact" name="btnNewCont" id="btnNewCont" class="btn btn-primary btn-xs" onClick="addcontlist();">
               <input name="hdncontlistcnt" id="hdncontlistcnt" type="hidden" value="0">
               <br><br>
