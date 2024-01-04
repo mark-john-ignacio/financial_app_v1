@@ -326,7 +326,7 @@
 								}
 								
 								$cntrstrx = 0;
-								$qrycontx = "Select * From customers_contacts where ccode = '$citemno' Order by cid";
+								$qrycontx = "Select * From customers_contacts where compcode = '$company' and ccode = '$citemno' Order by cid";
 								$rowcontx = mysqli_query($con, $qrycontx) or die(mysqli_error($con));
 								while($row = mysqli_fetch_array($rowcontx, MYSQLI_ASSOC))
 								{
