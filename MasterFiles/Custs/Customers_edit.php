@@ -642,28 +642,31 @@
 							</div>
 						</div>
 
-						<div class="row nopadwtop">
+
+						<input type="hidden" id="selvattype" name="selvattype" value="<?=$VatType?>">
+
+						<!--<div class="row nopadwtop">
 							<div class="col-xs-2 nopadding">
 								<b>Business Type</b>
 							</div>  
 							<div class="col-xs-3 nopadwleft">
 								<select id="selvattype" name="selvattype" class="form-control input-sm selectpicker"  tabindex="26">
 									<?php
-										$sql = "Select * From vatcode where compcode='$company'";
-										$result=mysqli_query($con,$sql);
-										if (!mysqli_query($con, $sql)) {
-											printf("Errormessage: %s\n", mysqli_error($con));
-										}			          
-										while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-										{
+										//$sql = "Select * From vatcode where compcode='$company'";
+										//$result=mysqli_query($con,$sql);
+										//if (!mysqli_query($con, $sql)) {
+										//	printf("Errormessage: %s\n", mysqli_error($con));
+										//}			          
+										//while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+										//{
 									?>
-										<option value="<?php echo $row['cvatcode'];?>" <?php if($VatType==$row['cvatcode']){ echo "selected"; }?>><?php echo $row['cvatdesc']?></option>
+										<option value="<?//php echo $row['cvatcode'];?>" <?//php if($VatType==$row['cvatcode']){ echo "selected"; }?>><?//php echo $row['cvatdesc']?></option>
 									<?php
-										}
+										//}
 									?>
 								</select>
 							</div>
-						</div>    
+						</div>  -->  
 										
 						<div class="row nopadwtop">
 							<div class="col-xs-2 nopadding">
@@ -893,7 +896,7 @@
 				$.ajax({
 					url: "../th_accounts.php",
 					dataType: "json",
-					data: { query: request },
+					data: { query: request, typ: "ASSETS"  },
 					success: function (data) {
 						response(data);
 					}

@@ -266,84 +266,84 @@
 		function fill_datatable(searchByName = '',  searchBystat = ''){
 			var dataTable = $('#example').DataTable( {
 				stateSave: true,
-		    "processing" : true,
-		    "serverSide" : true,
-		    "lengthChange": true,
-		    "order" : [],
-		    "searching" : false,
-		    "ajax" : {
+				"processing" : true,
+				"serverSide" : true,
+				"lengthChange": true,
+				"order" : [],
+				"searching" : false,
+				"ajax" : {
 					url:"th_datatable.php",
 					type:"POST",
 					data:{
 						searchByName: searchByName, searchBystat: searchBystat
 					}
-		    },
-					"columns": [
-						{ "data": null,
-								"render": function (data, type, full, row) {
-										var sts = "";
-										if (full[6] == 1 || full[11] == 1) {
-											sts="class='text-danger'";
-										}
-										return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
-								}								
-						},
-						{ "data": 1 },
-						{ "data": 10 },
-						{ "data": null,
+		    	},
+				"columns": [
+					{ "data": null,
 							"render": function (data, type, full, row) {
-
-								return full[7]+" - "+full[2];
-									
-							}
-								
-						},
-						{ "data": 9 },
-						{ "data": 4 },	
-						{ "data": null,
-							"render": function (data, type, full, row) {
-		
-								if (full[5] == 1) {
-									
-									if(full[11] == 1){
-										return '<b>Voided</b>';
-									}else{										
-										return 'Posted';
+									var sts = "";
+									if (full[6] == 1 || full[11] == 1) {
+										sts="class='text-danger'";
 									}
-								
-								}
-								
-								else if (full[6] == 1) {
-								
-									return '<b>Cancelled</b>';
-								
-								}
-								
-								else{
+									return "<a "+sts+" href=\"javascript:;\" onclick=\"editfrm('"+full[0]+"')\">"+full[0]+"</a>";
+							}								
+					},
+					{ "data": 1 },
+					{ "data": 10 },
+					{ "data": null,
+						"render": function (data, type, full, row) {
 
-									return 	"<div id=\"msg"+full[0]+"\"> <a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"','Posted','"+full[7]+"',"+full[8]+")\" class=\"btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"','Cancelled')\" class=\"btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a> </div>";
-
+							return full[7]+" - "+full[2];
+								
+						}
+							
+					},
+					{ "data": 9 },
+					{ "data": 4 },	
+					{ "data": null,
+						"render": function (data, type, full, row) {
+	
+							if (full[5] == 1) {
+								
+								if(full[11] == 1){
+									return '<b>Voided</b>';
+								}else{										
+									return 'Posted';
 								}
+							
+							}
+							
+							else if (full[6] == 1) {
+							
+								return '<b>Cancelled</b>';
+							
+							}
+							
+							else{
+
+								return 	"<div id=\"msg"+full[0]+"\"> <a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"','Posted','"+full[7]+"',"+full[8]+")\" class=\"btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"','Cancelled')\" class=\"btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a> </div>";
+
 							}
 						}
-					],
-					"columnDefs": [ 
-						{
-							"targets": 4,
-							"className": "text-right"
-						},
-						{
-							"targets": [5,6],
-							"className": "text-center dt-body-nowrap"
-						}
-					],
-					"createdRow": function( row, data, dataIndex ) {
-						// Set the data-status attribute, and add a class
-						if(data[6]==1 || data[11]==1){
-							$(row).addClass('text-danger');
-						}
-						
 					}
-				});
+				],
+				"columnDefs": [ 
+					{
+						"targets": 4,
+						"className": "text-right"
+					},
+					{
+						"targets": [5,6],
+						"className": "text-center dt-body-nowrap"
+					}
+				],
+				"createdRow": function( row, data, dataIndex ) {
+					// Set the data-status attribute, and add a class
+					if(data[6]==1 || data[11]==1){
+						$(row).addClass('text-danger');
+					}
+					
+				}
+			});
 		}
 	</script>

@@ -496,7 +496,10 @@
                    		</div>
                 </div>
 
-				<div class="col-xs-7 nopadwtop">
+				<input type="hidden" id="selvattype" name="selvattype" value="VT">
+				<input type="hidden" id="procurement" name="procurement" value="">
+
+				<!--<div class="col-xs-7 nopadwtop">
 					<div class="col-xs-3 nopadding">
 						<b>Procurement Type</b>
 					</div>
@@ -522,18 +525,18 @@
 						        <div class="col-xs-4 nopadding">
 	                                  <select id="selvattype" name="selvattype" class="form-control input-sm selectpicker"  tabindex="26">
 										<?php
-	                                    $sql = "Select * From vatcode where compcode='$company'";
-	                                    $result=mysqli_query($con,$sql);
-	                                        if (!mysqli_query($con, $sql)) {
-	                                            printf("Errormessage: %s\n", mysqli_error($con));
-	                                        }			
+	                                    //$sql = "Select * From vatcode where compcode='$company'";
+	                                   // $result=mysqli_query($con,$sql);
+	                                     //   if (!mysqli_query($con, $sql)) {
+	                                    //        printf("Errormessage: %s\n", mysqli_error($con));
+	                                   //     }			
 	                            
-	                                        while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-	                                            {
+	                                    //    while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	                                   //         {
 	                                        ?>
-	                                    <option value="<?php echo $row['cvatcode'];?>"><?php echo $row['cvatdesc']?></option>
+	                                    <option value="<?//php echo $row['cvatcode'];?>"><?//php echo $row['cvatdesc']?></option>
 	                                    <?php
-	                                            }
+	                                         //   }
 	                                            
 	                            
 	                                        ?>
@@ -554,7 +557,7 @@
                                 	<b>&nbsp;% </b>
                                 </div>
                    			</div>
-                </div>
+                </div>-->
                 
               <div class="col-xs-7 nopadwtop">
                 	<div class="col-xs-3 nopadwtop">
@@ -583,7 +586,7 @@
 
 				<div class="col-xs-7 nopadwtop">
                 		<div class="col-xs-3 nopadding">
-                			<b>Account Code</b>
+                			<b>Liability Code</b>
                     	</div>
                     
                    		<div class="col-xs-9 nopadwleft">
@@ -893,7 +896,7 @@ $(function() {
 				$.ajax({
 					url: "../th_accounts.php",
 					dataType: "json",
-					data: { query: request },
+					data: { query: request, typ: "LIABILITIES" },
 					success: function (data) {
 						response(data);
 					}

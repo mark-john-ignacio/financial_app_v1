@@ -7,8 +7,13 @@ require_once "../Connection/connection_string.php";
 
 
 	$company = $_SESSION['companyid'];
+
+	$istyp = "";
+	if(isset($_GET['typ'])){
+		$istyp = " and ccategory='".$_GET['typ']."'";
+	}
 	
-	$result = mysqli_query ($con, "SELECT cacctid, cacctno, cacctdesc, IFNULL(nbalance,0) as nbalance FROM accounts WHERE compcode='$company' and (cacctdesc like '%".$_GET['query']."%' OR cacctid like '%".$_GET['query']."%') and ctype='Details'"); 
+	$result = mysqli_query ($con, "SELECT cacctid, cacctno, cacctdesc, IFNULL(nbalance,0) as nbalance FROM accounts WHERE compcode='$company' and (cacctdesc like '%".$_GET['query']."%' OR cacctid like '%".$_GET['query']."%') and ctype='Details' ".$istyp); 
 	
 	//$json2 = array();
 	//$json = [];

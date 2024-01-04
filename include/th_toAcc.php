@@ -14,7 +14,7 @@ $sqlhead = mysqli_query($con,"Select A.compvat, B.lcompute from company A left j
 if (mysqli_num_rows($sqlhead)!=0) {
 	$row = mysqli_fetch_assoc($sqlhead);
 	$xvatcode = $row["compvat"];
-	$xcomp = $row["lcompute"];
+	$xcomp = ($row["compvat"]=="VAT_REG") ? 1 : 0;
 }
 
 //periodic or perpetual for DR entry
@@ -253,17 +253,17 @@ function getSetAcct($id){
 		 if($xcomp==1){ // Pag ung mismo may ari system ay Vatable
 			
 			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','SI','$tran',A.dcutdate,A.cacctcode,A.cacctdesc,0,Sum(A.cCredit),0,NOW() 
-		From (
-			Select B.dcutdate, A.citemno, C.cacctid as cacctcode, C.cacctdesc, CASE WHEN E.lcompute=1 OR D.nrate<>0 Then ROUND(SUM(A.namount)/(1 + (D.nrate/100)) ,2) Else SUM(A.namount) END as cCredit
-			From sales_t A 
-			left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno 
-			left join accounts C on A.compcode=C.compcode and A.cacctcode=C.cacctno 
-			left join taxcode D on A.compcode=D.compcode and A.ctaxcode=D.ctaxcode 
-			left join vatcode E on B.compcode=E.compcode and B.cvatcode=E.cvatcode 
-			where A.compcode='$company' and A.ctranno='$tran' 
-			group by B.dcutdate,C.cacctid,C.cacctdesc,A.citemno
-		) A Group By A.cacctcode")){
-			
+			From (
+				Select B.dcutdate, A.citemno, C.cacctid as cacctcode, C.cacctdesc, CASE WHEN D.nrate<>0 Then ROUND(SUM(A.namount)/(1 + (D.nrate/100)) ,2) Else SUM(A.namount) END as cCredit
+				From sales_t A 
+				left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno 
+				left join accounts C on A.compcode=C.compcode and A.cacctcode=C.cacctno 
+				left join taxcode D on A.compcode=D.compcode and A.ctaxcode=D.ctaxcode 
+				left join vatcode E on B.compcode=E.compcode and B.cvatcode=E.cvatcode 
+				where A.compcode='$company' and A.ctranno='$tran' 
+				group by B.dcutdate,C.cacctid,C.cacctdesc,A.citemno
+			) A Group By A.cacctcode"))
+			{			
 				echo "False";
 			}
 			else{
