@@ -942,7 +942,7 @@ if(mysqli_num_rows($sql) != 0){
 												<div class="alert alert-danger nopadding" id="ConDetAlertMsg">                         
 												</div>
 												<div class="alert alert-success nopadding" id="ConDetAlertDone">                              
-												</div>
+												</div> 
 											</div>                 
 										</div>
 
@@ -7134,6 +7134,36 @@ if(mysqli_num_rows($sql) != 0){
 
 					}
 				},
+		});
+	}
+
+	function setCNTCTDETStat(id,stat){
+		$.ajax ({
+			url: "th_setcontactstat.php",
+			data: { code: id,  stat: stat },
+			async: false,
+			success: function( data ) {
+				if(data.trim()!="True"){
+					$("#ConDetAlertMsg").html("<b>Error: </b>"+ data);  
+					$("#ConDetAlertMsg").show();
+					
+					$("#ConDetAlertDone").html("");
+					$("#ConDetAlertDone").hide();
+
+				}
+				else{
+					$("#TblVAT").html("");
+					loadvat();
+					
+					$("#ConDetAlertDone").html("<b>SUCCESS: </b> "+id+" status changed to "+ stat);
+					$("#ConDetAlertDone").show();
+
+					$("#ConDetAlertMsg").html("");
+					$("#ConDetAlertMsg").hide();
+
+				}
+			}
+		
 		});
 	}
 </script>

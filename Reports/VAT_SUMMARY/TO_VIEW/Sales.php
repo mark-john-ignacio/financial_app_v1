@@ -345,7 +345,7 @@
 <script>
     $(document).ready(function() {
         Fetch_Sales();
-        Fetch_Purchase();
+       // Fetch_Purchase();
 
         $(".datepicker").datetimepicker({
             defaultDate: moment(),
@@ -353,7 +353,7 @@
             format: 'YYYY-MM-DD'
         }).on('dp.change', function (e) {
             Fetch_Sales();
-            Fetch_Purchase();
+            //Fetch_Purchase();
         });
     })
 
@@ -411,7 +411,7 @@
         })
     }
 
-    function AP_MODAL() {
+    /*function AP_MODAL() {
         let header = $(this).text();
         $("#AP").html("<h4>(" + header + ")</h4>");
         $("#GL_AP_TABLE tbody").empty();
@@ -463,7 +463,7 @@
                 console.log(msg)
             }
         })
-    }
+    }*/
 
     function Sales_Modal() {
         let header = $(this).text().trim();
@@ -563,6 +563,8 @@
                     let nonvat = SALES_TABLE_DATA("OUTPUT VAT TO GOVERNMENT", res.nv);
                     let exempt = SALES_TABLE_DATA("OUTPUT VAT EXEMPT SALES", res.ve);
                     let vat = SALES_TABLE_DATA("OUTPUT VATABLE SALES", res.vt);
+
+                    alert(vat);
                     TOTAL_GROSS += (zero.gross + exempt.gross) - (vat.gross + nonvat.gross);
                     TOTAL_NET += (zero.net + exempt.net) - (nonvat.net + vat.net);
                     TOTAL_TAX += (zero.tax + exempt.tax) - (nonvat.tax + vat.tax);
@@ -584,7 +586,7 @@
         })
     }
 
-    function Fetch_Purchase() {
+    /*function Fetch_Purchase() {
         $("#purchase_table tbody").empty();
 
         let from = '<?= $_POST['from'] ?>';
@@ -635,7 +637,7 @@
                 console.log(msg)
             }
         })
-    }
+    }*/
 
     function SALES_TABLE_DATA(label, data) {
         $("<tr>").append(
@@ -687,7 +689,7 @@
         }
     }
 
-    function PURCHASE_TABLE_DATA(label, data) {
+   /* function PURCHASE_TABLE_DATA(label, data) {
         $("<tr>").append(
             $("<td colspan='10'>").text(label)
         ).appendTo("#purchase_table tbody")
@@ -739,7 +741,7 @@
             net: TOTAL_NET,
             tax: TOTAL_TAX
         }
-    }
+    }*/
 
     function ToMoney(amount) {
         return parseFloat(amount).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');

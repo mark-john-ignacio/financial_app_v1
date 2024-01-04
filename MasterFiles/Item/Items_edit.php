@@ -1,4 +1,4 @@
- <?php
+  <?php
     if(!isset($_SESSION)){
         session_start();
     }
@@ -379,13 +379,13 @@
                     </div>
                     <div class="col-xs-12">
                         <div class="col-xs-2 nopadwtop">
-                            <b>Tax Code</b>
+                            <b>Sales Tax Types</b>
                         </div>
                         
                         <div class="col-xs-4 nopadwtop">
                         <select id="seltax" name="seltax" class="form-control input-sm selectpicker"  tabindex="4">
                             <?php
-                        $sql = "select * from taxcode where compcode='$company' order by nidentity";
+                        $sql = "select * from vatcode where compcode='$company' and ctype='Sales' and cstatus='ACTIVE' order by nidentity";
                         $result=mysqli_query($con,$sql);
                             if (!mysqli_query($con, $sql)) {
                                 printf("Errormessage: %s\n", mysqli_error($con));
@@ -394,7 +394,34 @@
                             while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
                                 {
                             ?>   
-                            <option value="<?php echo $row['ctaxcode'];?>" <?php if($Seltax==$row['ctaxcode']){ echo "selected"; } ?>> <?php echo $row['ctaxdesc'];?> - <?php echo $row['nrate']."%";?>
+                            <option value="<?php echo $row['cvatcode'];?>" <?php if($Seltax==$row['cvatcode']){ echo "selected"; } ?>> <?php echo $row['cvatdesc'];?> - <?php echo number_format($row['nrate'])."%";?>
+                            </option>
+                            <?php
+                                }
+                                
+                                
+                            ?>     
+                        </select>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="col-xs-2 nopadwtop">
+                            <b>Purchases Tax Types</b>
+                        </div>
+                        
+                        <div class="col-xs-4 nopadwtop">
+                        <select id="seltaxpurch" name="seltaxpurch" class="form-control input-sm selectpicker"  tabindex="4">
+                            <?php
+                        $sql = "select * from vatcode where compcode='$company' and ctype='Purchase' and cstatus='ACTIVE' order by nidentity";
+                        $result=mysqli_query($con,$sql);
+                            if (!mysqli_query($con, $sql)) {
+                                printf("Errormessage: %s\n", mysqli_error($con));
+                            }           
+                
+                            while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+                                {
+                            ?>   
+                            <option value="<?php echo $row['cvatcode'];?>" <?php if($Seltax==$row['cvatcode']){ echo "selected"; } ?>> <?php echo $row['cvatdesc'];?> - <?php echo number_format($row['nrate'])."%";?>
                             </option>
                             <?php
                                 }

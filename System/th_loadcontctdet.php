@@ -6,7 +6,7 @@
 
 	$company = $_SESSION['companyid'];
 
-	$sql = "Select * From contacts_types where compcode='$company' and cstatus='ACTIVE' order by cid";	
+	$sql = "Select * From contacts_types where compcode='$company' order by cid";	
 	$rsd = mysqli_query($con,$sql);
 	
 	if(mysqli_num_rows($rsd)==0){

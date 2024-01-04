@@ -42,7 +42,7 @@ require_once "../Connection/connection_string.php";
 			} 
 			else{
 				
-				if($olddesc!=$desc || $olddesc!=$acctid){
+				if($olddesc!=$desc){
 										
 					mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
 					values('$company','$code','$preparedby',NOW(),'UPDATED','CONTACTS DETAILS','$compname','Update Record')");

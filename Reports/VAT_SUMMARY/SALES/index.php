@@ -8,10 +8,15 @@
     $datefrom = date("Y-m-d", strtotime($_REQUEST['from']));
     $dateto = date("Y-m-d", strtotime($_REQUEST['to']));
 
-    $vat = $_REQUEST['vatable'];
-    $zr = $_REQUEST['zero'];
-    $gov = $_REQUEST['gov'];
-    $ve = $_REQUEST['exempt'];
+   // $vat = $_REQUEST['vatable'];
+    //$zr = $_REQUEST['zero'];
+    //$gov = $_REQUEST['gov'];
+    //$ve = $_REQUEST['exempt'];
+
+    $vat = "VT";
+    $zr = "ZR";
+    $gov = "VTGOV";
+    $ve = "VE";
 
     $sql = "SELECT a.ctranno, a.csalesno, a.namount, a.nnet, a.nvat, b.dcutdate, c.creference, d.cname, d.ctin, d.chouseno, d.ccity, a.ctaxcode, d.cvattype FROM receipt_sales_t a
             LEFT JOIN receipt b ON a.compcode = b.compcode AND a.ctranno = b.ctranno

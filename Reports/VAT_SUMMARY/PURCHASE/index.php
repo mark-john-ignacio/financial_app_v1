@@ -8,9 +8,13 @@
     $company = $_SESSION['companyid'];
     $datefrom = date("Y-m-d", strtotime($_REQUEST['from']));
     $dateto = date("Y-m-d", strtotime($_REQUEST['to']));
-    $other = $_REQUEST['other'];
-    $service = $_REQUEST['service'];
-    $capital = $_REQUEST['capital'];
+
+    $other1 = "VTGIMOCG";
+    $other2 = "VTGOCG";
+    $service1 = "VTSDOM";
+    $service2 = "VTSNR";
+    $capital1 = "VTGE1M";
+    $capital2 = "VTGNE1M";
 
     $CAPITALS = [];
     $SERVICES = [];
@@ -24,7 +28,7 @@
     $sql = "SELECT a.ctranno, a.ndebit, a.ncredit, a.ctaxcode, b.ngross, b.dapvdate, c.cname, c.chouseno, c.ccity, c.ctin FROM glactivity a 
         LEFT JOIN apv b ON a.compcode = b.compcode AND a.ctranno = b.ctranno
         LEFT JOIN suppliers c ON a.compcode = c.compcode AND b.ccode = c.ccode
-        WHERE a.compcode = '$company' AND a.cmodule = 'APV' AND (a.ctaxcode in ('$other', '$capital', '$service')) AND (STR_TO_DATE(b.ddate, '%Y-%m-%d') BETWEEN '$datefrom' AND '$dateto') AND b.lcancelled = 0 AND b.lvoid = 0;";
+        WHERE a.compcode = '$company' AND a.cmodule = 'APV' AND (a.ctaxcode in ('$other1', '$capital1', '$service1', '$other2', '$capital2', '$service2')) AND (STR_TO_DATE(b.ddate, '%Y-%m-%d') BETWEEN '$datefrom' AND '$dateto') AND b.lcancelled = 0 AND b.lvoid = 0;";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) > 0) {
         while($list = $query -> fetch_assoc()) :
@@ -43,13 +47,16 @@
             
             $taxcode = $list['ctaxcode'];
             switch($taxcode) {
-                case $other: 
+                case $other1: 
+                case $other2: 
                     array_push($OTHERS, $json);
                     break;
-                case $capital:
+                case $capital1:
+                case $capital2:
                     array_push($CAPITALS, $json);
                     break;
-                case $service:
+                case $service1:
+                case $service2:
                     array_push($SERVICES, $json);
                     break;
             }

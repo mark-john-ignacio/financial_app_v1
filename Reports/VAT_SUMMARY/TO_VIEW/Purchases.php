@@ -1,3 +1,20 @@
+<?php
+    if(!isset($_SESSION)){
+        session_start();
+    }
+    $_SESSION['pageid'] = "Journal.php";
+
+    include('../../../Connection/connection_string.php');
+    include('../../../include/denied.php');
+    include('../../../include/access2.php');
+
+    $company = $_SESSION['companyid'];
+    $sql =  "SELECT * FROM company WHERE compcode = '$company'";
+    $query = mysqli_query($con, $sql);
+    $company = $query -> fetch_array(MYSQLI_ASSOC);
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,63 +42,37 @@
     <title>MyxFinancials</title>
 </head>
 <body>
-        
-
-    <div style="padding-top:10px;">
-        <div style="padding: 10px">
-            <ul class="nav nav-tabs">
-                <li class="active"> 
-                    <a href="#Sales" data-toggle="tab">Sales</a>
-                </li>
-                <li>
-                    <a href="#Purchase" data-toggle="tab">Purchase</a>
-                </li>
-            </ul>
-        </div>
-        
-        <div class="tab-content nopadwtop2x">
-            <div id="Sales" class="tab-pane fade in active" style="padding: 10px;">
-                <table id="sales_table" class="table">
-                    <thead>
-                        <tr>
-                            <th>Voucher no.</th>
-                            <th>Transaction Date</th>
-                            <th>Invoice No.</th>
-                            <th>Reference</th>
-                            <th>Partner</th>
-                            <th>TIN</th>
-                            <th>Address</th>
-                            <th>Gross Amount</th>
-                            <th>Net Amount</th>
-                            <th>Tax Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-
-            <div id="Purchase" class="tab-pane fade" style="padding: 10px;">
-                <table id="purchase_table" class="table">
-                    <thead>
-                        <tr>
-                            <th align='center'>Voucher no.</th>
-                            <th align='center'>Transaction Date</th>
-                            <th align='center'>Invoice No.</th>
-                            <th align='center'>Reference</th>
-                            <th align='center'>Partner</th>
-                            <th align='center'>TIN</th>
-                            <th align='center'>Address</th>
-                            <th align='center'>Gross Amount</th>
-                            <th align='center'>Net Amount</th>
-                            <th align='center'>Tax Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            
-        </div>
+    <div class='container-fluid'>
+        <h5>PURCHASES TRANSACTION</h5>
+        <h5>VAT SUMMARY</h5>
+        <br><br>
+        <h5>TIN: <?= substr($company['comptin'],0,11) ?></h5>
+        <h5>OWNER'S Name: <?= $company['compname'] ?></h5>
+        <h5>OWNER'S TRADE NAME: <?= $company['compdesc'] ?></h5>
+        <h5>OWNER'S ADDRESS: <?= $company['compadd'] ?></h5>
     </div>
+        
+
+    <div id="Purchase" class="tab-pane fade" style="padding: 10px;">
+        <table id="purchase_table" class="table">
+            <thead>
+                <tr>
+                    <th align='center'>Voucher no.</th>
+                    <th align='center'>Transaction Date</th>
+                    <th align='center'>Invoice No.</th>
+                    <th align='center'>Reference</th>
+                    <th align='center'>Partner</th>
+                    <th align='center'>TIN</th>
+                    <th align='center'>Address</th>
+                    <th align='center'>Gross Amount</th>
+                    <th align='center'>Net Amount</th>
+                    <th align='center'>Tax Amount</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+            
 
     <div class='AR modal fade' id='ViewModal' role='dialog'>
         <div class='modal-sm modal-dialog' style="width: 800px;" role="document">
@@ -355,7 +346,7 @@
 
 <script>
     $(document).ready(function() {
-        Fetch_Sales();
+        //Fetch_Sales();
         Fetch_Purchase();
 
         $(".datepicker").datetimepicker({
@@ -363,12 +354,12 @@
             viewMode: 'months',
             format: 'YYYY-MM-DD'
         }).on('dp.change', function (e) {
-            Fetch_Sales();
+            //Fetch_Sales();
             Fetch_Purchase();
         });
     })
 
-    function AR_MODAL(){
+    /*function AR_MODAL(){
         let header = $(this).text();
         $("#AR").html("<h4>(" + header + ")</h4>");
         $("#GL_AR_TABLE tbody").empty();
@@ -420,7 +411,7 @@
                 console.log(msg)
             }
         })
-    }
+    }*/
 
     function AP_MODAL() {
         let header = $(this).text();
@@ -476,7 +467,7 @@
         })
     }
 
-    function Sales_Modal() {
+    /*function Sales_Modal() {
         let header = $(this).text().trim();
         let TOTAL_VAT = 0;
         let TOTAL_VATABLE = 0;
@@ -537,17 +528,25 @@
         $("#add_vat").text(ToMoney(TOTAL_VAT))
         $("#amount_due").text(ToMoney(TOTAL_AMOUNT_DUE))
         $("#vat_discount").text(ToMoney(TOTAL_DISCOUNT))
-    }
+    }*/
 
-    function Fetch_Sales() {
+    /*function Fetch_Sales() {
         $("#sales_table tbody").empty();
 
-        let from = $("#datefrom").val();
-        let to = $("#dateto").val();
-        let vatable = '<?= $_POST['vatable'] ?>';
-        let zero = '<?= $_POST['zero'] ?>';
-        let gov =  '<?= $_POST['vatgov'] ?>';  
-        let exempt = '<?= $_POST['vatexempt'] ?>';
+        let from = '<?//= $_POST['from'] ?>';
+        let to = '<?//= $_POST['to'] ?>';
+       /* let vatable = '<?//= $_POST['vatable'] ?>';
+        let zero = '<?//= $_POST['zero'] ?>';
+        let gov =  '<?//= $_POST['vatgov'] ?>';  
+        let exempt = '<?//= $_POST['vatexempt'] ?>';
+        
+        
+        ,
+                vatable: vatable,
+                gov: gov,
+                zero: zero,
+                exempt: exempt
+        
                     
         let TOTAL_GROSS = 0;
         let TOTAL_NET = 0;
@@ -556,11 +555,7 @@
             url: "../SALES",
             data: {
                 from: from,
-                to: to,
-                vatable: vatable,
-                gov: gov,
-                zero: zero,
-                exempt: exempt
+                to: to
             },
             dataType: "json",
             async: false,
@@ -570,6 +565,8 @@
                     let nonvat = SALES_TABLE_DATA("OUTPUT VAT TO GOVERNMENT", res.nv);
                     let exempt = SALES_TABLE_DATA("OUTPUT VAT EXEMPT SALES", res.ve);
                     let vat = SALES_TABLE_DATA("OUTPUT VATABLE SALES", res.vt);
+
+                    alert(vat);
                     TOTAL_GROSS += (zero.gross + exempt.gross) - (vat.gross + nonvat.gross);
                     TOTAL_NET += (zero.net + exempt.net) - (nonvat.net + vat.net);
                     TOTAL_TAX += (zero.tax + exempt.tax) - (nonvat.tax + vat.tax);
@@ -589,17 +586,17 @@
                 console.log(msg)
             }
         })
-    }
+    }*/
 
     function Fetch_Purchase() {
         $("#purchase_table tbody").empty();
 
-        let from = $("#datefrom").val();
-        let to = $("#dateto").val();
+        let from = '<?= $_POST['from'] ?>';
+        let to = '<?= $_POST['to'] ?>';
 
-        let other = "<?= $_POST['other_goods'] ?>";
-        let service = "<?= $_POST['services'] ?>";
-        let capital = "<?= $_POST['capital'] ?>";
+        //let other = "<?//= $_POST['other_goods'] ?>";
+       // let service = "<?////= $_POST['services'] ?>";
+       // let capital = "<?//= $_POST['capital'] ?>";
 
         let TOTAL_GROSS = 0;
         let TOTAL_NET = 0;
@@ -610,9 +607,9 @@
             data: {
                 from: from,
                 to: to,
-                other: other,
-                service: service,
-                capital: capital
+                //other: other,
+                //service: service,
+                //capital: capital
             },
             dataType: "json",
             async: false,
@@ -644,7 +641,7 @@
         })
     }
 
-    function SALES_TABLE_DATA(label, data) {
+    /*function SALES_TABLE_DATA(label, data) {
         $("<tr>").append(
             $("<td colspan='10'>").text(label)
         ).appendTo("#sales_table tbody")
@@ -692,7 +689,7 @@
             net: TOTAL_NET,
             tax: TOTAL_TAX
         }
-    }
+    }*/
 
     function PURCHASE_TABLE_DATA(label, data) {
         $("<tr>").append(
