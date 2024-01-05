@@ -11,6 +11,11 @@
 
     $detail= [];
     $items = [];
+    
+    $sql = "SELECT * FROM parameters WHERE compcode = '$company' AND ccode = 'BASE_CUSTOMER_POS'";
+    $query = mysqli_query($con, $sql);
+    $fetch = $query -> fetch_assoc();
+    $default_customer = $fetch['cvalue'];
 
     $sql = "SELECT * FROM company WHERE compcode = '$company' LIMIT 1";
     $query = mysqli_query($con, $sql);
@@ -20,7 +25,7 @@
     $phone = explode(";",$detail['cpnum']);
 
 
-    $sql = "SELECT a.quantity, a.gross, a.uom, b.ddate, b.orderType, d.cname, b.exchange, b.tendered, b.coupon, b.gross as total, b.net, b.vat, b.preparedby, b.subtotal, b.serviceFee, b.discount, c.citemdesc FROM pos_t a
+    $sql = "SELECT a.quantity, a.gross, a.uom, b.ddate, b.orderType, d.cname, b.exchange, b.tendered, b.coupon, b.gross as total, b.net, b.vat, b.preparedby, b.subtotal, b.serviceFee, b.discount, c.citemdesc, d.chouseno, d.ccity, d.ctin, d.cempid FROM pos_t a
         LEFT JOIN pos b on a.compcode = b.compcode AND a.tranno = b.tranno
         LEFT JOIN items c on a.compcode = c.compcode AND a.item = c.cpartno
         LEFT JOIN customers d on a.compcode  = d.compcode AND b.customer = d.cempid
@@ -33,7 +38,10 @@
         $tender = floatval($row['tendered']);
 
         $prepared = $row['preparedby'];
-        $customer = $row['cname'];
+        $customer_id = $row['cempid'];
+        $customer =  $customer_id != $default_customer ? $row['cname'] : "";
+        $customer_tin = $customer_id != $default_customer ? $row['ctin'] : "";
+        $customer_address = $customer_id != $default_customer ? $row['chouseno'] . " " . $row['ccity'] : "";
         $ordertype=$row['orderType'];
         $date = $row['ddate'];
 
@@ -138,7 +146,9 @@
                     <div><?= date("D d M Y", strtotime($date)) ?></div> 
                     
             </div>
-            <div>Customer: <?= $customer ?></div>
+            <div>SOLD TO: <?= $customer != "" ? $customer : "______________________" ?></div>
+            <div>ADDRESS: <?= $customer_address != "" ?$customer_address : "______________________"  ?></div>
+            <div>TIN: <?= $customer_tin != "" ? $customer_tin : "______________________"  ?></div>
             <div>Prepared By: <?= $prepared ?></div>
             
             

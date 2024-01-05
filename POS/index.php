@@ -1390,9 +1390,9 @@
 
                 $("#myprintframe").attr("src", "pos_print.php?tranno="+ tranno)
                 $("#PrintModal").modal('show');
-                // setInterval(() => {
-                //     location.reload()
-                // }, 10000);
+                setInterval(() => {
+                    location.reload()
+                }, 3000);
 
             }
             
