@@ -278,9 +278,6 @@ include('../../include/access2.php');
                       <th scope="col" width="200">Name</th>
                       <th scope="col" width="180">Designation</th>
                       <th scope="col" width="180">Department</th>
-                      <th scope="col" width="180">Email Add</th>
-                      <th scope="col" width="180">Phone No.</th>
-                      <th scope="col" width="180">Fax No.</th>
                         <?php
                             $arrcontctsdet = array();
                             $sql = "Select * From contacts_types where compcode='$company'";
@@ -318,13 +315,10 @@ include('../../include/access2.php');
                         $cntrstrx = $cntrstrx + 1;
                     ?>
                         <tr>
-                          <td><div class="col-xs-12 nopadtopleft"><input type='text' class='required form-control input-sm' id='txtConNme<?php echo $cntrstrx;?>' name='txtConNme<?php echo $cntrstrx;?>' value='<?php echo $row['cname'];?>' ></div></td>
-                          <td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConDes<?php echo $cntrstrx;?>' name='txtConDes<?php echo $cntrstrx;?>' value='<?php echo $row['cdesignation'];?>'> </div></td>
-                          <td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConDept<?php echo $cntrstrx;?>' name='txtConDept<?php echo $cntrstrx;?>' value='<?php echo $row['cdept'];?>'> </div></td>
-                          <td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConEmail<?php echo $cntrstrx;?>' name='txtConEmail<?php echo $cntrstrx;?>' value='<?php echo $row['cemail'];?>'> </div></td>
-                          <td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConMob<?php echo $cntrstrx;?>' name='txtConMob<?php echo $cntrstrx;?>' value='<?php echo $row['cphone'];?>'> </div></td>
-                          <td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConFax<?php echo $cntrstrx;?>' name='txtConFax<?php echo $cntrstrx;?>' value='<?php echo $row['cfaxno'];?>'> </div></td>
-                          
+                          <td><div class="col-xs-12 nopadtopleft"><input type='text' class='required form-control input-xs' id='txtConNme<?php echo $cntrstrx;?>' name='txtConNme<?php echo $cntrstrx;?>' value='<?php echo $row['cname'];?>' ></div></td>
+                          <td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-xs' id='txtConDes<?php echo $cntrstrx;?>' name='txtConDes<?php echo $cntrstrx;?>' value='<?php echo $row['cdesignation'];?>'> </div></td>
+                          <td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-xs' id='txtConDept<?php echo $cntrstrx;?>' name='txtConDept<?php echo $cntrstrx;?>' value='<?php echo $row['cdept'];?>'> </div></td>
+                                       
                           <?php
                             foreach($arrcontctsdet as $ckdh){
                               $dval = "";
@@ -334,11 +328,11 @@ include('../../include/access2.php');
                                 }
                               }
                           ?>
-                          <td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConAdd<?=$ckdh['cid'].$cntrstrx;?>' name='txtConAdd<?=$ckdh['cid'].$cntrstrx;?>' value='<?=$dval?>'> </div></td>
+                          <td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-xs' id='txtConAdd<?=$ckdh['cid'].$cntrstrx;?>' name='txtConAdd<?=$ckdh['cid'].$cntrstrx;?>' value='<?=$dval?>'> </div></td>
                           <?php
                             }
                           ?>
-                          <td><div class="col-xs-12 nopadtopleft"><input class='btn btn-danger btn-xs' type='button' id='row_<?php echo $cntrstrx;?>_delete' class='delete' value='Delete' onClick="deleteRowconts(this);"/></div></td>
+                          <td><div class="col-xs-12 nopadtopleft"><input class='btn btn-danger  btn-block btn-xs' type='button' id='row_<?php echo $cntrstrx;?>_delete' class='delete' value='Delete' onClick="deleteRowconts(this);"/></div></td>
                         </tr>
                     <?php
                       }
@@ -915,6 +909,7 @@ include('../../include/access2.php');
                 var lastRowdl = tbldl.length-1;
                 document.getElementById('hdnaddresscnt').value = lastRowdl;
 
+               // var formdata = form.serialize();
                 var formx = document.getElementById("frmSupp");
 								var formData = new FormData(formx);
 

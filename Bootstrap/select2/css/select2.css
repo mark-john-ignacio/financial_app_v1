@@ -1,4 +1,5 @@
 .select2-container {
+  display:block;
   box-sizing: border-box;
   display: inline-block;
   margin: 0;

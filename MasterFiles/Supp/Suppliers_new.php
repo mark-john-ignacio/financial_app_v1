@@ -208,9 +208,6 @@
                     <th scope="col" width="200">Name</th>
                     <th scope="col" width="180">Designation</th>
                     <th scope="col" width="180">Department</th>
-					<th scope="col" width="180">Email Add</th>
-					<th scope="col" width="180">Phone No.</th>
-					<th scope="col" width="180">Fax No.</th>
                       <?php
                           $arrcontctsdet = array();
                           $sql = "Select * From contacts_types where compcode='$company'";
@@ -814,6 +811,7 @@ $(function() {
 				document.getElementById('hdnaddresscnt').value = lastRowdl;
 
 				var formdata = form.serialize();
+
 				$.ajax({
 					url: 'Suppliers_newsave.php',
 					type: 'POST',
@@ -1201,18 +1199,18 @@ function setgrpvals(code,desc,r){
     var b=a.insertCell(0);
     var c=a.insertCell(1);
     var d=a.insertCell(2);
-	var d1=a.insertCell(3);
-	var d2=a.insertCell(4);
-	var d3=a.insertCell(5);
+	//var d1=a.insertCell(3);
+	//var d2=a.insertCell(4);
+	//var d3=a.insertCell(5);
 
     b.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='required form-control input-xs' id='txtConNme"+lastRow+"' name='txtConNme"+lastRow+"' value=''></div>";
     c.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConDes"+lastRow+"' name='txtConDes"+lastRow+"' value=''> </div>";
     d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConDept"+lastRow+"' name='txtConDept"+lastRow+"' value=''> </div>";
-	d1.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConEmail"+lastRow+"' name='txtConEmail"+lastRow+"' value=''> </div>";
-	d2.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConMob"+lastRow+"' name='txtConMob"+lastRow+"' value=''> </div>";
-	d3.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConFax"+lastRow+"' name='txtConFax"+lastRow+"' value=''> </div>";
+	//d1.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConEmail"+lastRow+"' name='txtConEmail"+lastRow+"' value=''> </div>";
+	//d2.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConMob"+lastRow+"' name='txtConMob"+lastRow+"' value=''> </div>";
+	//d3.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConFax"+lastRow+"' name='txtConFax"+lastRow+"' value=''> </div>";
 
-    $cntng = 5;
+    $cntng = 2;
     var xz = $("#conctsadddet").val();
 	$.each(jQuery.parseJSON(xz), function() { 
 		$cntng = $cntng + 1;

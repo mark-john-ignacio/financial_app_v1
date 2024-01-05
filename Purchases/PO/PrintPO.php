@@ -274,9 +274,9 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 										?>
 											<div style="padding-bottom: 50px; text-align: center">Prepared By</div>
 											<div style="text-align: center"><?=$cpreparedBy?></div>
-										<?php
+									<?php
 										}
-										?>
+									?>
 
 									</td>
 

@@ -27,11 +27,19 @@
 		}
 	}
 
-	@$arrwtxlist = array();
-	$gettaxcd = mysqli_query($con,"SELECT * FROM `wtaxcodes` where compcode='$company'"); 
+	@$arrtaxlist = array();
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `vatcode` where compcode='$company' and ctype = 'Purchase' and cstatus='ACTIVE' order By cvatdesc"); 
 	if (mysqli_num_rows($gettaxcd)!=0) {
 		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
-			@$arrwtxlist[] = array('ctaxcode' => $row['ctaxcode'], 'cbase' => $row['cbase']); 
+			@$arrtaxlist[] = array('ctaxcode' => $row['cvatcode'], 'ctaxdesc' => $row['cvatdesc'], 'nrate' => number_format($row['nrate'])); 
+		}
+	}
+
+	@$arrwtxlist = array();
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `wtaxcodes` where compcode='$company' and cstatus='ACTIVE'"); 
+	if (mysqli_num_rows($gettaxcd)!=0) {
+		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+			@$arrwtxlist[] = array('ctaxcode' => $row['ctaxcode'], 'cbase' => $row['cbase'], 'nrate' => $row['nrate']); 
 		}
 	}
 
@@ -62,6 +70,15 @@
 			@$ewtpaydef = $row['cacctno']; 
 		}
 	}
+
+	//get default Input tax acct code
+	@$OTpaydef = "";
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `accounts_default` where compcode='$company' and ccode='PURCH_VAT'"); 
+	if (mysqli_num_rows($gettaxcd)!=0) {
+		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+			@$OTpaydef = $row['cacctno']; 
+		}
+	}
 ?>
 
 <!DOCTYPE html>
@@ -73,24 +90,28 @@
 	<title>Myx Financials</title>
     
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?<?php echo time();?>">
-  <link rel="stylesheet" type="text/css" href="../../global/plugins/font-awesome/css/font-awesome.min.css?h=<?php echo time();?>"/>
+  	<link rel="stylesheet" type="text/css" href="../../global/plugins/font-awesome/css/font-awesome.min.css?h=<?php echo time();?>"/>
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/select2/css/select2.css?h=<?php echo time();?>">
 
 	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
 
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-  <script src="../../js/bootstrap3-typeahead.min.js"></script>
+  	<script src="../../js/bootstrap3-typeahead.min.js"></script>
 	<script src="../../include/autoNumeric.js"></script>
 	<!--
   <script src="../../Bootstrap/js/jquery.numeric.js"></script>
   <script src="../../Bootstrap/js/jquery.inputlimiter.min.js"></script>
 	-->
     
-  <script src="../../Bootstrap/js/bootstrap.js"></script>
-  <script src="../../Bootstrap/js/moment.js"></script>
-  <script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+	<script src="../../Bootstrap/select2/js/select2.full.min.js"></script>
+
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<script src="../../Bootstrap/js/moment.js"></script>
+	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
 	<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
 	<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
@@ -102,7 +123,8 @@
 <body style="padding:5px" onLoad="document.getElementById('txtctranno').focus(); disabled();">
 	<input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes"> 
 	<input type="hidden" value='<?=json_encode(@$arrwtxlist)?>' id="hdnxtax">  
-	<input type="hidden" value='<?=@$ewtpaydef?>' id="hdnewtpay">
+	<input type="hidden" value='<?=@$ewtpaydef?>' id="hdnewtpay"> 
+	<input type="hidden" value='<?=@$OTpaydef ?>' id="hdnoutaxpay">
 
 	<input type="hidden" value='<?=json_encode(@$arrname)?>' id="hdnfileconfig"> 
 
@@ -135,6 +157,7 @@
 
 	<form action="APV_editsave.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
 		<fieldset>
+
 			<legend>
 				<div class="col-xs-6 nopadding"> AP Voucher </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
 				<?php
@@ -154,326 +177,325 @@
 			</legend>	
 
 			<ul class="nav nav-tabs">
-					<li class="active"><a href="#items" data-toggle="tab">AP Voucher Details</a></li>
-					<li><a href="#attc" data-toggle="tab">Attachments</a></li>
-				</ul>
-				
-				<div class="tab-content">
-					<div id="items" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
+				<li class="active"><a href="#items" data-toggle="tab">AP Voucher Details</a></li>
+				<li><a href="#attc" data-toggle="tab">Attachments</a></li>
+			</ul>
+			
+			<div class="tab-content">
+				<div id="items" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
 
-						<table width="100%" border="0">
-							<tr>
-								<tH>APV No.:</tH>
-								<td style="padding:2px;"><div class="col-xs-4 nopadding">
-									<input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" placeholder="Enter APV No..." required  value="<?php echo $ctranno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
-									</div>
-									<input type="hidden" name="hdnorigNo" id="hdnorigNo" value="<?php echo $ctranno;?>">
-									
-									<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
-									<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
-									<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?php echo $lVoid;?>">
-									&nbsp;&nbsp;
-									
-									
-								</td>
-								<td colspan="2" style="padding:2px;" align="right">
-								<div id="statmsgz" class="small" style="display:inline"></div>    
-								</td>
-							</tr>
-							<tr>
-								<tH width="150">Paid To:</tH>
-								<td style="padding:2px;" width="500">
-									<div class="row nopadding">
-										<div class="col-xs-3 nopadding">
-											<input type="text" class="form-control input-sm" id="txtcustid" name="txtcustid" readonly placeholder="Supplier Code..." value="<?php echo $CustCode; ?>">
-											<input type="hidden" id="hdncustewt" name="hdncustewt" value="<?=$EWTCode?>">
-											<input type="hidden" id="hdncustewtrate" name="hdncustewtrate" value="<?=$EWTRate?>">
-										</div>
-										<div class="col-xs-7 nopadwleft">
-											<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..." required autocomplete="off"  value="<?php echo $CustName; ?>">
-										</div>
-									</div>            
-									<input type="hidden" id="txtcustchkr" name="txtcustchkr">
-									<input type="hidden" id="seltype" name="seltype">
-												
-								</td>
-								<tH width="150" style="padding:2px">AP Type:<input type="hidden" id="txtpayee" name="txtpayee"></tH>
-								<td style="padding:2px;">
-									<div class="col-xs-12">
-										<select id="selaptyp" name="selaptyp" class="form-control input-sm selectpicker" tabindex="2">
-											<option value="Purchases" <?php if($cAPType=="Purchases"){ echo "selected"; } ?>>Purchases (Credit)</option>
-											<option value="PurchAdv" <?php if($cAPType=="PurchAdv"){ echo "selected"; } ?>>Purchases (Advance Payment)</option>
-											<option value="PettyCash" <?php if($cAPType=="PettyCash"){ echo "selected"; } ?>>Petty Cash Replenishment</option>
-											<option value="Others" <?php if($cAPType=="Others"){ echo "selected"; } ?>>Others</option>
-										</select>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<tH width="150" rowspan="2" valign="top">Remarks:</tH>
-								<td rowspan="2" valign="top" style="padding:2px">
-									<div class="col-xs-10 nopadding">
-										<textarea class="form-control" rows="2" id="txtremarks" name="txtremarks"><?php echo $Remarks;?></textarea>
-									</div>
-								</td>
-								<tH width="150" style="padding:2px">AP Date:</tH>
-								<td style="padding:2px">
-									<div class="col-xs-8">
-										<input type='text' class="datepick form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $DateAPV; ?>" />
+					<table width="100%" border="0">
+						<tr>
+							<tH>APV No.:</tH>
+							<td style="padding:2px;"><div class="col-xs-4 nopadding">
+								<input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" placeholder="Enter APV No..." required  value="<?php echo $ctranno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
 								</div>
-								</td>
-							</tr>
-							<tr>
-								<tH style="padding:2px">Total Amount :</tH>
-								<td style="padding:2px">
-									<div class="col-xs-8">
-										<input type="text" class="form-control input-sm" id="txtnGross" name="txtnGross" tabindex="1" required value="<?php echo number_format($nGross,2);?>" style="font-weight:bold; color:#F00; text-align:right" readonly>
-									</div>   
+								<input type="hidden" name="hdnorigNo" id="hdnorigNo" value="<?php echo $ctranno;?>">
+								
+								<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
+								<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
+								<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?php echo $lVoid;?>">
+								&nbsp;&nbsp;
+								
+								
 							</td>
-							</tr>
-							<tr>
-								<tH width="150" rowspan="2" valign="top">Currency:</tH>
-								<td rowspan="2" valign="top" style="padding:2px">
-									<div class="row nopadding">
-										<div class="col-xs-7 nopadding">
-											<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">					
-												<?php
-																	
-													$nvaluecurrbase = "";	
-													$nvaluecurrbasedesc = "";	
-													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
-																			
-													if (mysqli_num_rows($result)!=0) {
-														$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);																				
-														$nvaluecurrbase = $all_course_data['cvalue']; 																					
-													}
-													else{
-														$nvaluecurrbase = "";
-													}
-
-													$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
-													if (mysqli_num_rows($sqlhead)!=0) {
-														while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-												?>
-													<option value="<?=$rows['id']?>" <?php if ($ccurrcode==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>" data-desc="<?=$rows['currencyName']?>"><?=$rows['currencyName']?></option>
-												<?php
-														}
-													}
-												?>
-											</select>
-											<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?=$nvaluecurrbase; ?>"> 	
-											<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?=$ccurrdesc; ?>"> 
-										</div>
-										<div class="col-xs-2 nopadwleft">
-											<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="<?=$ccurrrate; ?>">	 
-										</div>
-										<div class="col-xs-3" id="statgetrate" style="padding: 4px !important"> 																	
-										</div>
+							<td colspan="2" style="padding:2px;" align="right">
+							<div id="statmsgz" class="small" style="display:inline"></div>    
+							</td>
+						</tr>
+						<tr>
+							<tH width="150">Paid To:</tH>
+							<td style="padding:2px;" width="500">
+								<div class="row nopadding">
+									<div class="col-xs-3 nopadding">
+										<input type="text" class="form-control input-sm" id="txtcustid" name="txtcustid" readonly placeholder="Supplier Code..." value="<?php echo $CustCode; ?>">
+										<input type="hidden" id="hdncustewt" name="hdncustewt" value="<?=$EWTCode?>">
+										<input type="hidden" id="hdncustewtrate" name="hdncustewtrate" value="<?=$EWTRate?>">
 									</div>
-								</td>
-								<tH style="padding:2px">&nbsp;</tH>
-								<td style="padding:2px">&nbsp;</td>
-							</tr>
-						</table>
+									<div class="col-xs-7 nopadwleft">
+										<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..." required autocomplete="off"  value="<?php echo $CustName; ?>">
+									</div>
+								</div>            
+								<input type="hidden" id="txtcustchkr" name="txtcustchkr">
+								<input type="hidden" id="seltype" name="seltype">
+											
+							</td>
+							<tH width="150" style="padding:2px">AP Type:<input type="hidden" id="txtpayee" name="txtpayee"></tH>
+							<td style="padding:2px;">
+								<div class="col-xs-12">
+									<select id="selaptyp" name="selaptyp" class="form-control input-sm selectpicker" tabindex="2">
+										<option value="Purchases" <?php if($cAPType=="Purchases"){ echo "selected"; } ?>>Purchases (Credit)</option>
+										<option value="PurchAdv" <?php if($cAPType=="PurchAdv"){ echo "selected"; } ?>>Purchases (Advance Payment)</option>
+										<option value="PettyCash" <?php if($cAPType=="PettyCash"){ echo "selected"; } ?>>Petty Cash Replenishment</option>
+										<option value="Others" <?php if($cAPType=="Others"){ echo "selected"; } ?>>Others</option>
+									</select>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<tH width="150" rowspan="2" valign="top">Remarks:</tH>
+							<td rowspan="2" valign="top" style="padding:2px">
+								<div class="col-xs-10 nopadding">
+									<textarea class="form-control" rows="2" id="txtremarks" name="txtremarks"><?php echo $Remarks;?></textarea>
+								</div>
+							</td>
+							<tH width="150" style="padding:2px">AP Date:</tH>
+							<td style="padding:2px">
+								<div class="col-xs-8">
+									<input type='text' class="datepick form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $DateAPV; ?>" />
+							</div>
+							</td>
+						</tr>
+						<tr>
+							<tH style="padding:2px">Total Amount :</tH>
+							<td style="padding:2px">
+								<div class="col-xs-8">
+									<input type="text" class="form-control input-sm" id="txtnGross" name="txtnGross" tabindex="1" required value="<?php echo number_format($nGross,2);?>" style="font-weight:bold; color:#F00; text-align:right" readonly>
+								</div>   
+						</td>
+						</tr>
+						<tr>
+							<tH width="150" rowspan="2" valign="top">Currency:</tH>
+							<td rowspan="2" valign="top" style="padding:2px">
+								<div class="row nopadding">
+									<div class="col-xs-7 nopadding">
+										<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">					
+											<?php
+																
+												$nvaluecurrbase = "";	
+												$nvaluecurrbasedesc = "";	
+												$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+																		
+												if (mysqli_num_rows($result)!=0) {
+													$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);																				
+													$nvaluecurrbase = $all_course_data['cvalue']; 																					
+												}
+												else{
+													$nvaluecurrbase = "";
+												}
 
-					</div>
+												$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+												if (mysqli_num_rows($sqlhead)!=0) {
+													while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+											?>
+												<option value="<?=$rows['id']?>" <?php if ($ccurrcode==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>" data-desc="<?=$rows['currencyName']?>"><?=$rows['currencyName']?></option>
+											<?php
+													}
+												}
+											?>
+										</select>
+										<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?=$nvaluecurrbase; ?>"> 	
+										<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?=$ccurrdesc; ?>"> 
+									</div>
+									<div class="col-xs-2 nopadwleft">
+										<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="<?=$ccurrrate; ?>">	 
+									</div>
+									<div class="col-xs-3" id="statgetrate" style="padding: 4px !important"> 																	
+									</div>
+								</div>
+							</td>
+							<tH style="padding:2px">&nbsp;</tH>
+							<td style="padding:2px">&nbsp;</td>
+						</tr>
+					</table>
 
-					<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
-
-						<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-						<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
-						<input type="file" name="upload[]" id="file-0" multiple />
-
-					</div>
 				</div>
 
-				<hr>
-				<div class="col-xs-12 nopadwdown"><b>Details</b></div>
+				<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
+
+					<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+					<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+					<input type="file" name="upload[]" id="file-0" multiple />
+
+				</div>
+			</div>
+
+			<hr>
+			<div class="col-xs-12 nopadwdown"><b>Details</b></div>
 
 			<ul class="nav nav-tabs">
 				<li id="lidet" <?=($cAPType=="Purchases" || $cAPType=="PurchAdv") ? "class='active'" : ""?>><a href="#1" data-toggle="tab">Details</a></li>
 				<li id="liacct" <?=($cAPType!=="Purchases" && $cAPType!=="PurchAdv") ? "class='active'" : ""?>><a href="#2" data-toggle="tab">Accounting</a></li>
 			</ul>
 
+			<div class="tab-content nopadwtop2x">
 
-  		<div class="tab-content nopadwtop2x">
+				<div class="tab-pane <?=($cAPType=="Purchases"|| $cAPType=="PurchAdv") ? "active" : ""?>" id="1">  
 
-    		<div class="tab-pane <?=($cAPType=="Purchases"|| $cAPType=="PurchAdv") ? "active" : ""?>" id="1">  
+					<div class="alt2" dir="ltr" style="
+						margin: 0px;
+						padding: 3px;
+						border: 1px solid #919b9c;
+						width: 100%;
+						height: 250px;
+						text-align: left;
+						overflow: scroll">
+					
+							<table id="MyTable" border="1" bordercolor="#CCCCCC" width="170%">
+								<thead>
+								<tr>
+									<th style="border-bottom:1px solid #999">Ref No.</th>
+									<!--<th style="border-bottom:1px solid #999">Supplier SI</th>-->
+									<!--<th style="border-bottom:1px solid #999">Description</th>-->
+									<th style="border-bottom:1px solid #999">Amount</th>
+									<th scope="col" class="text-center" nowrap>Total CM</th>
+									<th scope="col" class="text-center" nowrap>Total Disc.</th>
+									<!--<th style="border-bottom:1px solid #999">Remarks</th>-->                                                
+									<th scope="col" class="text-center" nowrap>VATCode</th>
+									<th scope="col" class="text-center" nowrap>VATRate(%)</th>
+									<th scope="col" class="text-center" nowrap>VATAmt</th>
+									<th scope="col" class="text-center" nowrap>NetofVat</th>
+									<th scope="col" class="text-center" nowrap>EWTCode</th>                            
+									<th scope="col" class="text-center" nowrap>EWTRate(%)</th>
+									<th scope="col" class="text-center" nowrap>EWTAmt</th>
+									<!-- <th scope="col" class="text-center" nowrap>Payments</th> -->
+									<th scope="col" class="text-center" nowrap>Total Due</th>
+									<!--  <th scope="col" class="text-center" nowrap>Amt Applied&nbsp;</th> -->
+									<th style="border-bottom:1px solid #999">&nbsp;</th>
+								</tr>
+								</thead>
+								<tbody class="tbody">
+									<?php 
+										$sqlbody = mysqli_query($con,"select a.* from apv_d a where a.compcode = '$company' and a.ctranno = '$ctranno' order by a.nidentity");
 
-          <div class="alt2" dir="ltr" style="
-            margin: 0px;
-            padding: 3px;
-            border: 1px solid #919b9c;
-            width: 100%;
-            height: 250px;
-            text-align: left;
-            overflow: scroll">
-        
-              <table id="MyTable" border="1" bordercolor="#CCCCCC" width="170%">
-                <thead>
-                  <tr>
-                    <th style="border-bottom:1px solid #999">Ref No.</th>
-                    <!--<th style="border-bottom:1px solid #999">Supplier SI</th>-->
-                    <!--<th style="border-bottom:1px solid #999">Description</th>-->
-                    <th style="border-bottom:1px solid #999">Amount</th>
-					<th scope="col" class="text-center" nowrap>Total CM</th>
-					<th scope="col" class="text-center" nowrap>Total Disc.</th>
-                    <!--<th style="border-bottom:1px solid #999">Remarks</th>-->                                                
-                    <th scope="col" class="text-center" nowrap>VATCode</th>
-					<th scope="col" class="text-center" nowrap>VATRate(%)</th>
-                    <th scope="col" class="text-center" nowrap>VATAmt</th>
-                    <th scope="col" class="text-center" nowrap>NetofVat</th>
-                    <th scope="col" class="text-center" nowrap>EWTCode</th>                            
-                    <th scope="col" class="text-center" nowrap>EWTRate(%)</th>
-                    <th scope="col" class="text-center" nowrap>EWTAmt</th>
-                    <!-- <th scope="col" class="text-center" nowrap>Payments</th> -->
-                    <th scope="col" class="text-center" nowrap>Total Due</th>
-                    <!--  <th scope="col" class="text-center" nowrap>Amt Applied&nbsp;</th> -->
-                    <th style="border-bottom:1px solid #999">&nbsp;</th>
-                  </tr>
-                </thead>
-                <tbody class="tbody">
-                  	<?php 
-						$sqlbody = mysqli_query($con,"select a.* from apv_d a where a.compcode = '$company' and a.ctranno = '$ctranno' order by a.nidentity");
-
-						if (mysqli_num_rows($sqlbody)!=0) {
-							$cntr = 0;
-							while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
-								$cntr = $cntr + 1;
-					?>
-                    <tr>
-                      	<td width="130px" style="padding:1px"> <input type='text' name="txtrefno" id="txtrefno<?php echo $cntr;?>" class="form-control input-sm" required value="<?php echo $rowbody['crefno'];?>" readonly> <input type='hidden' name="txtrefacctno" id="txtrefacctno<?php echo $cntr;?>" value="<?=$rowbody['cacctno']?>"> <input type='hidden' name="txtrefsi<?php echo $cntr;?>" id="txtrefsi<?php echo $cntr;?>" value="<?php echo $rowbody['crefinv'];?>"> </td>
-
-                      	<td  width="150px" style="padding:1px"><input type='text' name="txtnamount" id="txtnamount<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['namount'];?>" style="text-align:right" readonly></td>
- 
-						<td  width="150px" style="padding:1px"><div class="input-group"><input type='text' name="txtncm" id="txtncm<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['napcm'];?>" style="text-align:right" readonly><span class="input-group-btn"><button class="btn btn-primary btn-sm" name="btnaddcm" id="btnaddcm<?php echo $cntr;?>" type="button" onclick="addCM('<?php echo $rowbody['crefno'];?>','txtncm<?php echo $cntr;?>')"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button></span></div></td>
-
-						<td  width="150px" style="padding:1px"><div class="input-group"><input type='text' name="txtndiscs" id="txtndiscs<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['napdisc'];?>" style="text-align:right" readonly><span class="input-group-btn"><button class="btn btn-primary btn-sm" type="button" name="btnadddc" id="btnadddc<?php echo $cntr;?>" onclick="addDISCS('<?php echo $rowbody['crefno'];?>','txtndiscs<?php echo $cntr;?>')"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button></span></div></td>
-
-						<td  width="100px" style="padding:1px">
-							<select class='form-control input-sm' name="txtnvatcode" id="txtnvatcode<?php echo $cntr;?>"> " + taxoptions + " 
-								<?php
-									foreach($arrtaxlist as $rowx){
-										if($rowbody['cvatcode']==$rowx['ctaxcode']){
-											$isselctd = "selected";
-										}else{
-											$isselctd = "";
-										}
-													
-										echo "<option value='".$rowx['ctaxcode']."' data-id='".$rowx['nrate']."' ".$isselctd.">".$rowx['ctaxdesc']."</option>";
-
-									}
-								?>
-							</select> 
-						</td>
-
-						<td  width="50px" style="padding:1px"><input type='text' class="numeric form-control input-sm text-right" name="txtnvatrate" id="txtnvatrate<?php echo $cntr;?>" value="<?=$rowbody['nvatrate']?>" readonly></td>
-
-						<td  width="150px" style="padding:1px"><input type='text' name="txtnvatval" id="txtnvatval<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?=$rowbody['nvatamt']?>" style="text-align:right" readonly></td>
-                            
-						<td  width="150px" style="padding:1px"><input type='text' name="txtvatnet" id="txtvatnet<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['nnet'];?>" style="text-align:right" readonly></td>
-								
-						<td  width="130px" style="padding:1px"><input type='text' name="txtewtcode" id="txtewtcode<?php echo $cntr;?>" class="form-control input-sm" value="<?php echo $rowbody['cewtcode'];?>" autocomplete="off"></td>
-								
-						<td  width="80px" style="padding:1px"><input type='text' name="txtewtrate" id="txtewtrate<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['newtrate'];?>" style="text-align:right" readonly></td>
-								
-						<td  width="150px" style="padding:1px"><input type='text' name="txtewtamt" id="txtewtamt<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['newtamt'];?>" style="text-align:right" readonly></td>
-                            
-									
-						<!--<td  width="150px" style="padding:1px"><input type='text' name="txtpayment" id="txtpayment<?//php echo $cntr;?>" class="numeric form-control input-sm" value="<?//php echo $rowbody['npayments'];?>" style="text-align:right" readonly></td>-->
-								
-						<td  width="150px" style="padding:1px"><input type='text' name="txtDue" id="txtDue<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['ndue'];?>" style="text-align:right" readonly></td>
-                                
-						<!--<td style="padding:1px"><input type='text' name="txtnapplied" id="txtnapplied<?//php echo $cntr;?>" class="numeric form-control input-sm  text-right" value="<?//php echo $rowbody['napplied'];?>" onkeyup="compgross1();"   autocomplete="off"></td>-->
-									
-						<td width="50px" style="padding:1px"><input class='btn btn-danger btn-xs' type='button' id='row_<?php echo $rowbody['crefno'].$cntr;?>_delete' class='delete' value='delete' onClick="deleteRow1(this);"/></td>
-                            	
-                    </tr>                           
-                    <script>
-											$("#txtewtcode<?php echo $cntr;?>").typeahead({
-												items: 10,
-												source: function(request, response) {
-													$.ajax({
-														url: "../th_ewtcodes.php",
-														dataType: "json",
-														data: {
-															query: $("#txtewtcode<?php echo $cntr;?>").val()
-														},
-														success: function (data) {
-															response(data);																				
-														}
-													});
-												},
-												autoSelect: true,
-													displayText: function (item) {
-														return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.ctaxcode + '</span><br><small>' + item.cdesc + "</small></div>";
-												},
-												highlighter: Object,
-												afterSelect: function(item, event) { 
-													$("#txtewtcode<?php echo $cntr;?>").val(item.ctaxcode).change(); 
-													$("#txtewtrate<?php echo $cntr;?>").val(item.nrate);
-
-													var xcb = 0;
-													var xcbdue = 0;
-													//alert(item.cbase)
-													vatamt = $("#txtvatnet<?php echo $cntr;?>").val().replace(/,/g,'');
-													amt = $("#txtnamount<?php echo $cntr;?>").val().replace(/,/g,'');
-																		
-													if(item.cbase=="NET"){
-														xcb = parseFloat(vatamt)*(item.nrate/100);
-													}else{
-														xcb = parseFloat(amt)*(item.nrate/100);
-													}
-																		
-													$("#txtewtamt<?php echo $cntr;?>").val(xcb);
-													$("#txtewtamt<?php echo $cntr;?>").autoNumeric('destroy');
-													$("#txtewtamt<?php echo $cntr;?>").autoNumeric('init',{mDec:2});
-
-													var ndiscs = $("#txtndiscs<?php echo $cntr;?>").val().replace(/,/g,''); 
-													xcbdue = amt - xcb - parseFloat(ndiscs);
-																		
-													$("#txtDue<?php echo $cntr;?>").val(xcbdue);
-													$("#txtDue<?php echo $cntr;?>").autoNumeric('destroy');
-													$("#txtDue<?php echo $cntr;?>").autoNumeric('init',{mDec:2});
-
-													compgross1();
-																																				
-												}
-											});
-																
-											$("#txtewtcode<?php echo $cntr;?>").on("blur", function() {
-												if($(this).val()==""){
-													$("#txtewtamt<?php echo $cntr;?>").val(0.0000);
-													$("#txtewtrate<?php echo $cntr;?>").val(0);
-
-													//recomlines();
-													compgross1();
-												}
-											});
-
-											$("#txtnvatcode<?php echo $cntr;?>").on("change", function() {
-												var zxc = $(this).find(':selected').data('id');
-												var zxcamt = $("#txtnamount<?php echo $cntr;?>").val().replace(/,/g,'');
-
-												compvat('<?php echo $cntr;?>',zxc,zxcamt);
-												compgross1();
-
-											});
-										</script>                            
-                            
-                  <?php
-											}
-										}															
+										if (mysqli_num_rows($sqlbody)!=0) {
+											$cntr = 0;
+											while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
+												$cntr = $cntr + 1;
 									?>
+									<tr>
+										<td width="130px" style="padding:1px"> <input type='text' name="txtrefno" id="txtrefno<?php echo $cntr;?>" class="form-control input-sm" required value="<?php echo $rowbody['crefno'];?>" readonly> <input type='hidden' name="txtrefacctno" id="txtrefacctno<?php echo $cntr;?>" value="<?=$rowbody['cacctno']?>"> <input type='hidden' name="txtrefsi<?php echo $cntr;?>" id="txtrefsi<?php echo $cntr;?>" value="<?php echo $rowbody['crefinv'];?>"> </td>
 
-                </tbody>
-                        
-              </table>
-    					<input type="hidden" name="hdnRRCnt" id="hdnRRCnt"> 
+										<td  width="150px" style="padding:1px"><input type='text' name="txtnamount" id="txtnamount<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['namount'];?>" style="text-align:right" readonly></td>
+				
+										<td  width="150px" style="padding:1px"><div class="input-group"><input type='text' name="txtncm" id="txtncm<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['napcm'];?>" style="text-align:right" readonly><span class="input-group-btn"><button class="btn btn-primary btn-sm" name="btnaddcm" id="btnaddcm<?php echo $cntr;?>" type="button" onclick="addCM('<?php echo $rowbody['crefno'];?>','txtncm<?php echo $cntr;?>')"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button></span></div></td>
 
-          </div>
- 
-     		</div>
+										<td  width="150px" style="padding:1px"><div class="input-group"><input type='text' name="txtndiscs" id="txtndiscs<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['napdisc'];?>" style="text-align:right" readonly><span class="input-group-btn"><button class="btn btn-primary btn-sm" type="button" name="btnadddc" id="btnadddc<?php echo $cntr;?>" onclick="addDISCS('<?php echo $rowbody['crefno'];?>','txtndiscs<?php echo $cntr;?>')"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button></span></div></td>
+
+										<td  width="100px" style="padding:1px">
+											<select class='form-control input-sm' name="txtnvatcode" id="txtnvatcode<?php echo $cntr;?>"> " + taxoptions + " 
+												<?php
+													foreach($arrtaxlist as $rowx){
+														if($rowbody['cvatcode']==$rowx['ctaxcode']){
+															$isselctd = "selected";
+														}else{
+															$isselctd = "";
+														}
+																	
+														echo "<option value='".$rowx['ctaxcode']."' data-id='".$rowx['nrate']."' ".$isselctd.">".$rowx['ctaxdesc']."</option>";
+
+													}
+												?>
+											</select> 
+										</td>
+
+										<td  width="50px" style="padding:1px"><input type='text' class="numeric form-control input-sm text-right" name="txtnvatrate" id="txtnvatrate<?php echo $cntr;?>" value="<?=$rowbody['nvatrate']?>" readonly></td>
+
+										<td  width="150px" style="padding:1px"><input type='text' name="txtnvatval" id="txtnvatval<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?=$rowbody['nvatamt']?>" style="text-align:right" readonly></td>
+											
+										<td  width="150px" style="padding:1px"><input type='text' name="txtvatnet" id="txtvatnet<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['nnet'];?>" style="text-align:right" readonly></td>
+												
+										<td  width="130px" style="padding:1px"><input type='text' name="txtewtcode" id="txtewtcode<?php echo $cntr;?>" class="form-control input-sm" value="<?php echo $rowbody['cewtcode'];?>" autocomplete="off"></td>
+												
+										<td  width="80px" style="padding:1px"><input type='text' name="txtewtrate" id="txtewtrate<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['newtrate'];?>" style="text-align:right" readonly></td>
+												
+										<td  width="150px" style="padding:1px"><input type='text' name="txtewtamt" id="txtewtamt<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['newtamt'];?>" style="text-align:right" readonly></td>
+											
+													
+										<!--<td  width="150px" style="padding:1px"><input type='text' name="txtpayment" id="txtpayment<?//php echo $cntr;?>" class="numeric form-control input-sm" value="<?//php echo $rowbody['npayments'];?>" style="text-align:right" readonly></td>-->
+												
+										<td  width="150px" style="padding:1px"><input type='text' name="txtDue" id="txtDue<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['ndue'];?>" style="text-align:right" readonly></td>
+												
+										<!--<td style="padding:1px"><input type='text' name="txtnapplied" id="txtnapplied<?//php echo $cntr;?>" class="numeric form-control input-sm  text-right" value="<?//php echo $rowbody['napplied'];?>" onkeyup="compgross1();"   autocomplete="off"></td>-->
+													
+										<td width="50px" style="padding:1px"><input class='btn btn-danger btn-xs' type='button' id='row_<?php echo $rowbody['crefno'].$cntr;?>_delete' class='delete' value='delete' onClick="deleteRow1(this);"/></td>
+												
+									</tr>                           
+									<script>
+										$("#txtewtcode<?php echo $cntr;?>").typeahead({
+											items: 10,
+											source: function(request, response) {
+												$.ajax({
+													url: "../th_ewtcodes.php",
+													dataType: "json",
+													data: {
+														query: $("#txtewtcode<?php echo $cntr;?>").val()
+													},
+													success: function (data) {
+														response(data);																				
+													}
+												});
+											},
+											autoSelect: true,
+												displayText: function (item) {
+													return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.ctaxcode + '</span><br><small>' + item.cdesc + "</small></div>";
+											},
+											highlighter: Object,
+											afterSelect: function(item, event) { 
+												$("#txtewtcode<?php echo $cntr;?>").val(item.ctaxcode).change(); 
+												$("#txtewtrate<?php echo $cntr;?>").val(item.nrate);
+
+												var xcb = 0;
+												var xcbdue = 0;
+												//alert(item.cbase)
+												vatamt = $("#txtvatnet<?php echo $cntr;?>").val().replace(/,/g,'');
+												amt = $("#txtnamount<?php echo $cntr;?>").val().replace(/,/g,'');
+																	
+												if(item.cbase=="NET"){
+													xcb = parseFloat(vatamt)*(item.nrate/100);
+												}else{
+													xcb = parseFloat(amt)*(item.nrate/100);
+												}
+																	
+												$("#txtewtamt<?php echo $cntr;?>").val(xcb);
+												$("#txtewtamt<?php echo $cntr;?>").autoNumeric('destroy');
+												$("#txtewtamt<?php echo $cntr;?>").autoNumeric('init',{mDec:2});
+
+												var ndiscs = $("#txtndiscs<?php echo $cntr;?>").val().replace(/,/g,''); 
+												xcbdue = amt - xcb - parseFloat(ndiscs);
+																	
+												$("#txtDue<?php echo $cntr;?>").val(xcbdue);
+												$("#txtDue<?php echo $cntr;?>").autoNumeric('destroy');
+												$("#txtDue<?php echo $cntr;?>").autoNumeric('init',{mDec:2});
+
+												compgross1();
+																																			
+											}
+										});
+															
+										$("#txtewtcode<?php echo $cntr;?>").on("blur", function() {
+											if($(this).val()==""){
+												$("#txtewtamt<?php echo $cntr;?>").val(0.0000);
+												$("#txtewtrate<?php echo $cntr;?>").val(0);
+
+												//recomlines();
+												compgross1();
+											}
+										});
+
+										$("#txtnvatcode<?php echo $cntr;?>").on("change", function() {
+											var zxc = $(this).find(':selected').data('id');
+											var zxcamt = $("#txtnamount<?php echo $cntr;?>").val().replace(/,/g,'');
+
+											compvat('<?php echo $cntr;?>',zxc,zxcamt);
+											compgross1();
+
+										});
+									</script>                            
+											
+								<?php
+															}
+														}															
+													?>
+
+								</tbody>
+										
+							</table>
+							<input type="hidden" name="hdnRRCnt" id="hdnRRCnt"> 
+
+					</div>
+	
+				</div>
 
 				<div class="tab-pane <?=($cAPType!=="Purchases" && $cAPType!=="PurchAdv") ? "active" : ""?>" id="2">
 
@@ -495,7 +517,7 @@
 									<th style="border-bottom:1px solid #999">Credit</th>
 									<!--<th style="border-bottom:1px solid #999">Subsidiary</th>-->
 									<th style="border-bottom:1px solid #999">Remarks</th>
-									<th style="border-bottom:1px solid #999">EWT Code</th>
+									<th style="border-bottom:1px solid #999">EWT/VAT Code</th>
 									<!--<th style="border-bottom:1px solid #999">Type</th>-->
 									<th style="border-bottom:1px solid #999">&nbsp;</th>
 								</tr>
@@ -528,10 +550,40 @@
 										<td style="padding:1px">
 											<input type='text' name="txtacctrem<?php echo $cntr;?>" id="txtacctrem<?php echo $cntr;?>" class="form-control input-sm" value='<?php echo $rowbody['cremarks'];?>'>
 										</td>
+
 										<td style="padding:1px">
-											<input type='text' name="txtewtcodeothers<?php echo $cntr;?>" id="txtewtcodeothers<?php echo $cntr;?>" class="form-control input-sm" autocomplete="off" value='<?php echo $rowbody['cewtcode'];?>'> <input type='hidden' name="txtewtrateothers<?php echo $cntr;?>" id="txtewtrateothers<?php echo $cntr;?>" value="<?php echo $rowbody['newtrate'];?>" autocomplete="off">
+											<?php
+												$optns = "";
+												$optnsselc = "";
+												$isslctd = "";
+												if($rowbody['cacctno']==@$ewtpaydef){     
+													$optns = @$arrwtxlist;
+												}elseif($rowbody['cacctno']==@$OTpaydef){
+													$optns = @$arrtaxlist;
+												}
+												if($optns!=""){
+													foreach($optns as $rsx){
+														if($rsx['ctaxcode']==$rowbody['cewtcode']){
+															$isslctd = "selected";
+														}else{
+															$isslctd = "";
+														}
+														$optnsselc = $optnsselc."<option value='".$rsx['ctaxcode']."' data-rate='".$rsx['nrate']."' ".$isslctd.">".$rsx['ctaxcode'].": ".$rsx['nrate']."%</option>";
+													}
+												}
+											?>
+
+											<select class='form-control input-xs' name="txtewtcodeothers<?php echo $cntr;?>" id="txtewtcodeothers<?php echo $cntr;?>" style="width: 100%">
+												<option value="">&nbsp;</option>
+												<?=$optnsselc?>
+											</select> 
+
+											<input type='hidden' name="txtewtrateothers<?php echo $cntr;?>" id="txtewtrateothers<?php echo $cntr;?>" value="<?php echo $rowbody['newtrate'];?>">
 										</td>
-										<!--
+										<!--<td style="padding:1px">
+											<input type='text' name="txtewtcodeothers<?//php echo $cntr;?>" id="txtewtcodeothers<?//php echo $cntr;?>" class="form-control input-sm" autocomplete="off" value='<?//php echo $rowbody['cewtcode'];?>'> 
+										</td>
+										
 										<td style="padding:1px" width="100px">
 											<select name="selacctpaytyp<?//php echo $cntr;?>" id="selacctpaytyp<?//php echo $cntr;?>" class="form-control input-sm selectpicker">
 												<option value="Payables" <?//php if($rowbody['cacctrem']=="Payables") { echo "selected"; } ?>>Payables</option>
@@ -547,14 +599,19 @@
 									</tr>
 
 									<script type="text/javascript">
-										$("#txtewtcodeothers<?php echo $cntr;?>").typeahead({
+										$("#txtewtcodeothers<?php echo $cntr;?>").select2();
+										$("#txtewtcodeothers<?php echo $cntr;?>").on("select2:select", function(event) {
+											$("#txtewtrateothers<?php echo $cntr;?>").val($(this).select2().find(":selected").data("rate"));
+										});
+
+										/*$("#txtewtcodeothers<?//php echo $cntr;?>").typeahead({
 											items: 10,
 											source: function(request, response) {
 												$.ajax({
 													url: "../th_ewtcodes.php",
 													dataType: "json",
 													data: {
-														query: $("#txtewtcodeothers<?php echo $cntr;?>").val()
+														query: $("#txtewtcodeothers<?//php echo $cntr;?>").val()
 													},
 													success: function (data) {
 														response(data);														
@@ -567,10 +624,10 @@
 											},
 											highlighter: Object,
 											afterSelect: function(item, event) { 
-												$("#txtewtcodeothers<?php echo $cntr;?>").val(item.ctaxcode).change(); 		
-												$("#txtewtrateothers<?php echo $cntr;?>").val(item.nrate); 																	
+												$("#txtewtcodeothers<?//php echo $cntr;?>").val(item.ctaxcode).change(); 		
+												$("#txtewtrateothers<?//php echo $cntr;?>").val(item.nrate); 																	
 											}
-										});
+										});*/
 									</script>
 								<?php
 										}
@@ -584,8 +641,8 @@
 
 				</div>
 
-    	</div>
-        
+			</div>
+			
 			<?php
 				if($poststat == "True"){
 			?>
@@ -636,8 +693,7 @@
 				}
 			?>
 
-    </fieldset>
-	
+   		</fieldset>
 	
 		<!-- add CM Module -->
 		<div class="modal fade" id="MyDetModal" role="dialog">
@@ -796,7 +852,7 @@
 				</div><!-- /.modal-content -->
 			</div><!-- /.modal-dialog -->
 		</div><!-- /.modal -->
-		
+
 		<!-- add DISC Module -->
 		<div class="modal fade" id="MyDiscsModal" role="dialog">
 			<div class="modal-dialog modal-lg">
@@ -918,8 +974,8 @@
 	</form>
 
 	<?php
-		}
-		else{
+	}
+	else{
 	?>
 
 		<form action="APV_edit.php" name="frmpos2" id="frmpos2" method="post">
@@ -929,12 +985,12 @@
 					<tr>
 						<tH width="100">APV NO:</tH>
 						<td colspan="3" style="padding:2px" align="left"><div class="col-xs-2"><input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" value="<?php echo $ctranno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos2');"></div></td>
-						</tr>
+					</tr>
 					<tr>
 						<tH colspan="4" align="center" style="padding:10px"><font color="#FF0000"><b>AP No. DID NOT EXIST!</b></font></tH>
-						</tr>
+					</tr>
 				</table>
-		</fieldset>
+			</fieldset>
 		</form>
 
 	<?php
@@ -943,107 +999,103 @@
 
 	<!-- DETAILS ONLY -->
 	<div class="modal fade" id="mySIModal" role="dialog" data-keyboard="false" data-backdrop="static">
-			<div class="modal-dialog modal-lg">
-					<div class="modal-content">
-							<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-									<h3 class="modal-title" id="DRListHeader">Supplier's Invoice List</h3>
-							</div>
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h3 class="modal-title" id="DRListHeader">Supplier's Invoice List</h3>
+				</div>
 							
-							<div class="modal-body pre-scrollable">
+				<div class="modal-body pre-scrollable">
+				
+					<table name='MyDRDetList' id='MyDRDetList' class="table table-small">
+						<thead>
+							<tr>
+								<th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
+								<th>Trans No</th>
+								<th>Supp Inv Date</th>
+								<th>Gross</th>
+								<th>EWT Code</th>
+								<th>VAT Code</th>
+							</tr>
+						</thead>
+						<tbody>
 							
-														<table name='MyDRDetList' id='MyDRDetList' class="table table-small">
-														<thead>
-														<tr>
-																<th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
-																<th>Trans No</th>
-																<th>Supp Inv Date</th>
-																<th>Gross</th>
-																<th>EWT Code</th>
-																<th>VAT Code</th>
-															</tr>
-															</thead>
-															<tbody>
-																
-															</tbody>
-														</table>
-							</div>         	
-									
-									
-							<div class="modal-footer">
-									<button type="button" id="btnSave" onClick="InsertSI()" class="btn btn-primary">Insert</button>
-									<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-
-							</div>
-					</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
+						</tbody>
+					</table>
+				</div>         	
+						
+						
+				<div class="modal-footer">
+					<button type="button" id="btnSave" onClick="InsertSI()" class="btn btn-primary">Insert</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
 	<!-- End Bootstrap modal -->
-
 
 	<!-- LOANS LIST DETAILS ONLY -->
 	<div class="modal fade" id="myLOModal" role="dialog" data-keyboard="false" data-backdrop="static">
-			<div class="modal-dialog modal-lg">
-					<div class="modal-content">
-							<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-									<h3 class="modal-title" id="LOListHeader">RR List</h3>
-							</div>
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h3 class="modal-title" id="LOListHeader">RR List</h3>
+				</div>
 							
-							<div class="modal-body pre-scrollable">
+				<div class="modal-body pre-scrollable">
+				
+					<table name='MyLODetList' id='MyLODetList' class="table table-small">
+						<thead>
+							<tr>
+								<th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
+								<th>Loan No</th>
+								<th>Application Date</th>
+								<th>Amount</th>
+								<th>Remarks</th>
+							</tr>
+						</thead>
+						<tbody>
 							
-														<table name='MyLODetList' id='MyLODetList' class="table table-small">
-														<thead>
-															<tr>
-																<th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
-																<th>Loan No</th>
-																<th>Application Date</th>
-																<th>Amount</th>
-																<th>Remarks</th>
-															</tr>
-															</thead>
-															<tbody>
-																
-															</tbody>
-														</table>
-							</div>         	
-									
-									
-							<div class="modal-footer">
-								<div class="col-xs-12 nopadding">
-									<div class="col-xs-4 nopadding" style="text-align: left;">
-										<input name="chkLoadAll" id="chkLoadAll" type="checkbox" value="LoadAll" /> Load All
-									</div>
-									
-									<div class="col-xs-8 nopadding">
-										<button type="button" id="btnSave2" onClick="InsertSI()" class="btn btn-primary">Insert</button>
-										<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+						</tbody>
+					</table>
+				</div>         	
+																		
+				<div class="modal-footer">
+					<div class="col-xs-12 nopadding">
+						<div class="col-xs-4 nopadding" style="text-align: left;">
+							<input name="chkLoadAll" id="chkLoadAll" type="checkbox" value="LoadAll" /> Load All
+						</div>
+						
+						<div class="col-xs-8 nopadding">
+							<button type="button" id="btnSave2" onClick="InsertSI()" class="btn btn-primary">Insert</button>
+							<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
 
-									</div>
-								</div>
-							</div>
-					</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
+						</div>
+					</div>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
 	<!-- End Bootstrap modal -->
 
-
 	<!-- 1) Alert Modal -->
 	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-			<div class="vertical-alignment-helper">
-					<div class="modal-dialog vertical-align-top">
-							<div class="modal-content">
-								<div class="alert-modal-danger">
-										<p id="AlertMsg"></p>
-									<p>
-											<center>
-													<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-											</center>
-									</p>
-								</div>
-							</div>
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+					<div class="alert-modal-danger">
+						<p id="AlertMsg"></p>
+						<p>
+						<center>
+								<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+						</center>
+						</p>
 					</div>
+				</div>
 			</div>
+		</div>
 	</div>
 
 </body>
@@ -1962,18 +2014,18 @@
 		
 		//t.innerHTML = "<select name=\"selacctpaytyp"+lastRow+"\" id=\"selacctpaytyp"+lastRow+"\" class=\"form-control input-sm selectpicker\"><option value=\"Payables\">Payables</options><option value=\"Others\">Others</options></select>";
 		
-		t.innerHTML = "<input type='text' name=\"txtewtcodeothers"+lastRow+"\" id=\"txtewtcodeothers"+lastRow+"\" class=\"form-control input-sm\" value=\"\"  autocomplete=\"off\"> <input type='hidden' name=\"txtewtrateothers"+lastRow+"\" id=\"txtewtrateothers"+lastRow+"\" value=\"0\"  autocomplete=\"off\">";
+		t.innerHTML = "<select class='form-control input-xs' name=\"txtewtcodeothers"+lastRow+"\" id=\"txtewtcodeothers"+lastRow+"\" style=\"width: 100%\"><option value=\"\">&nbsp;</option> </select> <input type='hidden' name=\"txtewtrateothers"+lastRow+"\" id=\"txtewtrateothers"+lastRow+"\" value=\"0\"  autocomplete=\"off\">";
 
 		b.innerHTML = "<input class='btn btn-danger btn-xs' type='button' id='row2_"+lastRow+"_delete' value='delete' onClick=\"deleteRow2(this);\"/>";
 		
 		//alert(lastRow);
 			$("#txtacctitle"+lastRow).focus();
 
-									$("input.numeric").autoNumeric('init',{mDec:2});
-									//$("input.numeric").numeric();
-									$("input.numeric").on("focus", function () {
-										$(this).select();
-									});
+			$("input.numeric").autoNumeric('init',{mDec:2});
+			//$("input.numeric").numeric();
+			$("input.numeric").on("focus", function () {
+				$(this).select();
+			});
 									
 			$("#txtacctno"+lastRow).on("keyup", function(event) {
 				if(event.keyCode == 13){
@@ -1988,15 +2040,50 @@
 							//alert(value);
 							if(value.trim()!=""){
 								$("#txtacctitle"+lastRow).val(value.trim());
-
+								
 								var xz = chkDef(dInput,'PAYABLES');
 								$("#selacctpaytyp"+lastRow).val(xz);
 
-								if(this.value==$("#hdnewtpay").val()){
-									$("#txtewtcodeothers"+lastRow).val($("#hdncustewt").val());
-									$("#txtewtrateothers"+lastRow).val($("#hdncustewtrate").val());
+								if(dInput==$("#hdnewtpay").val()){
+
+									var xz = $("#hdnxtax").val();
+									var ewtoptions = "";
+									var ewtslctd = "";
+
+									$.each(jQuery.parseJSON(xz), function() { 
+										if($("#hdncustewt").val()==this['ctaxcode']){
+											isselctd = "selected";
+											ewtslctd = this['nrate'];
+										}else{
+											isselctd = "";
+										}
+
+										ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
+									});
+
+									$("#txtewtcodeothers"+lastRow).select2('destroy').html(ewtoptions).select2();
+									$("#txtewtrateothers"+lastRow).val(ewtslctd);
 								}
 
+								if(dInput==$("#hdnoutaxpay").val()){
+									var xz = $("#hdntaxcodes").val();
+									var ewtoptions = "";
+									var ewtslctd = "";
+									var $cnt = 0;
+									$.each(jQuery.parseJSON(xz), function() { 
+										$cnt++;
+										if($cnt==1){
+											isselctd = "selected";
+											ewtslctd = this['nrate'];
+										}else{
+											isselctd = "";
+										}
+										ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
+									});
+
+									$("#txtewtcodeothers"+lastRow).select2('destroy').html(ewtoptions).select2();
+									$("#txtewtrateothers"+lastRow).val(ewtslctd);
+								}
 							}
 						}
 						});
@@ -2021,25 +2108,66 @@
 				},
 				autoSelect: true,
 				displayText: function (item) {
-					return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.name + '</small></div>';
+					return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.name + "</small></div>";
 				},
 				highlighter: Object,
 				afterSelect: function(item) { 
 					$("#txtacctitle"+lastRow).val(item.name).change(); 
 					$("#txtacctno"+lastRow).val(item.id);
 					$("#txtdebit"+lastRow).focus();
-
+					
 					var xz = chkDef(item.id,'PAYABLES');
 					$("#selacctpaytyp"+lastRow).val(xz);
 
 					if(item.id==$("#hdnewtpay").val()){
-						$("#txtewtcodeothers"+lastRow).val($("#hdncustewt").val());
-						$("#txtewtrateothers"+lastRow).val($("#hdncustewtrate").val());
+
+						var xz = $("#hdnxtax").val();
+						var ewtoptions = "";
+						var ewtslctd = "";
+
+						$.each(jQuery.parseJSON(xz), function() { 
+							if($("#hdncustewt").val()==this['ctaxcode']){
+								isselctd = "selected";
+								ewtslctd = this['nrate'];
+							}else{
+								isselctd = "";
+							}
+							ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
+						});
+
+						$("#txtewtcodeothers"+lastRow).select2('destroy').html(ewtoptions).select2();
+						$("#txtewtrateothers"+lastRow).val(ewtslctd);
+
+						//$("#txtewtcodeothers"+lastRow).removeAttr('disabled');
+						//$("#txtewtcodeothers"+lastRow).val($("#hdncustewt").val()).trigger('change');
+						//$("#txtewtrateothers"+lastRow).val($("#hdncustewtrate").val());
 					}
+
+					if(item.id==$("#hdnoutaxpay").val()){
+						var xz = $("#hdntaxcodes").val();
+						var ewtoptions = "";
+						var ewtslctd = "";
+						var $cnt = 0;
+						$.each(jQuery.parseJSON(xz), function() { 
+							if($("#hdncustewt").val()==this['ctaxcode']){
+								isselctd = "selected";
+								ewtslctd = this['nrate'];
+							}else{
+								isselctd = "";
+							}
+							ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
+						});
+
+						$("#txtewtcodeothers"+lastRow).select2('destroy').html(ewtoptions).select2();
+						$("#txtewtrateothers"+lastRow).val(ewtslctd);
+					}
+
 				}
 			});
 
-			$("#txtewtcodeothers"+lastRow).typeahead({
+
+			$("#txtewtcodeothers"+lastRow).select2();
+			/*$("#txtewtcodeothers"+lastRow).typeahead({
 				items: 10,
 				source: function(request, response) {
 					$.ajax({
@@ -2062,7 +2190,7 @@
 					$("#txtewtcodeothers"+lastRow).val(item.ctaxcode).change(); 
 					$("#txtewtrateothers"+lastRow).val(item.nrate);																					
 				}
-			});
+			});*/
 
 
 	}

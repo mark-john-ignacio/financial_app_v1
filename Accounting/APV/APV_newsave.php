@@ -9,6 +9,10 @@ $dmonth = date("m");
 $dyear = date("y");
 $company = $_SESSION['companyid'];
 
+//echo "<pre>";
+//print_r($_REQUEST);
+//echo "</pre>";
+
 $chkSales = mysqli_query($con,"select * from apv where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");
 if (mysqli_num_rows($chkSales)==0) {
 	$cSINo = "AP".$dmonth.$dyear."00000";
