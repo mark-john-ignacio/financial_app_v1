@@ -28,7 +28,7 @@ include('../../include/denied.php');
 	}
 	
 	$csalesno = $_REQUEST['hdntransid'];
-	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, c.Fname, c.Minit, c.Lname, d.cdesc as termsdesc from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join users c on a.cpreparedby=c.Userid left join groupings d on a.compcode=b.compcode and a.cterms=d.ccode and d.ctype='TERMS' where a.compcode='$company' and a.cpono = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign, d.cdesc as termsdesc from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join users c on a.cpreparedby=c.Userid left join groupings d on a.compcode=b.compcode and a.cterms=d.ccode and d.ctype='TERMS' where a.compcode='$company' and a.cpono = '$csalesno'");
 
 	if (mysqli_num_rows($sqlhead)!=0) {
 		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -51,8 +51,10 @@ include('../../include/denied.php');
 			
 			$lCancelled = $row['lcancelled'];
 			$lPosted = $row['lapproved'];
+			$lSent = $row['lsent'];
 
 			$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
+			$cpreparedBySign = $row['cusersign'];
 		}
 	}
 
@@ -249,15 +251,26 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 						<table border=0 width="100%">
 								<tr>
 									<td width="25%" align="center">
-										<div style="margin-bottom: 50px; text-align: center">Accepted By</div>
+										<div style="text-align: center">Accepted By<br><br><br></div>
 										<br><br>
 										<div style="text-align: center"><?=$CustName?></div>
 
 									</td>
 									<td width="25%" align="center">
-										<div style="margin-bottom: 50px; text-align: center">Prepared By</div>
-										<br><br>
-										<div style="text-align: center"><?=$cpreparedBy?></div>
+									<?php
+										if($lSent==1 && $cpreparedBySign!=""){
+									?>
+										<div style="text-align: center">Prepared By</div>
+										<div style="text-align: center"><div><img src="<?=$cpreparedBySign?>"></div> 
+									
+										<?php
+										}else{
+										?>
+											<div style="text-align: center">Prepared By<br><br><br></div>
+											<div style="text-align: center"><?=$cpreparedBy?></div>
+									<?php
+										}
+									?>
 
 									</td>
 
@@ -268,11 +281,11 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 									if (mysqli_num_rows($sqdts)!=0) {
 										while($row = mysqli_fetch_array($sqdts, MYSQLI_ASSOC)){
 								?>
-											<td width="25%">
+											<td width="25%" style="text-align: center">
 												<?php
 													if($row['lapproved']==1 && $row['cusersign']!=""){
 												?>
-												<div style="text-align: center">
+												<div>
 														<?php
 															if($row['nlevel']==1){
 																echo "Checked By";
@@ -283,11 +296,11 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 															}
 														?>
 												</div>
-												<div style="text-align: center"><div><img src = '<?=$row['cusersign']?>?x=<?=time()?>' ></div>
+												<div style="text-align: center"><div><img src="<?=$row['cusersign']?>"></div>
 												<?php
 													}else{
 												?>
-													<div style="padding-bottom: 50px; text-align: center">
+													<div>
 														<?php
 															if($row['nlevel']==1){
 																echo "Checked By";
@@ -296,7 +309,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 															}elseif($row['nlevel']==3){
 																echo "Approved By";
 															}
-														?>
+														?><br><br><br>
 													</div>
 													<div style="text-align: center"><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div>
 												<?php

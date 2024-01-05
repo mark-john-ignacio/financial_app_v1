@@ -32,7 +32,7 @@ if(mysqli_num_rows($sqlcomp) != 0){
 }
 
 $csalesno = $_REQUEST['hdntransid'];
-$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, b.cterms, c.Fname, c.Minit, c.Lname from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join users c on a.cpreparedby=c.Userid where a.compcode='$company' and a.cpono = '$csalesno'");
+$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, b.cterms, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign, d.cdesc as termsdesc from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join users c on a.cpreparedby=c.Userid left join groupings d on a.compcode=b.compcode and a.cterms=d.ccode and d.ctype='TERMS' where a.compcode='$company' and a.cpono = '$csalesno'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
 while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -40,7 +40,7 @@ while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
 	$CustName = $row['cname'];
 
 	$CustAdd = $row['chouseno']." ".$row['ccity']." ".$row['cstate']." ".$row['ccountry'];
-	$Terms = $row['cterms']; 
+	$Terms = $row['termsdesc']; 
 	$CurrCode = $row['ccurrencycode'];
 
 	$Conemail = $row['ccontactemail'];
@@ -58,8 +58,10 @@ while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
 	
 	$lCancelled = $row['lcancelled'];
 	$lPosted = $row['lapproved'];
+	$lSent = $row['lsent'];
 
 	$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
+	$cpreparedBySign = $row['cusersign'];
 }
 }
 
@@ -254,15 +256,14 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 						<table border=0 width="100%">
 								<tr>
 									<td width="25%" align="center">
-										<div style="margin-bottom: 50px; text-align: center">Accepted By</div>
-										<br><br>
+										<div style="text-align: center">Accepted By<br><br><br><br><br></div>
 										<div style="text-align: center"><?=$CustName?></div>
 
 									</td>
 									<td width="25%" align="center">
-										<div style="margin-bottom: 50px; text-align: center">Prepared By</div>
-										<br><br>
-										<div style="text-align: center"><?=$cpreparedBy?></div>
+
+										<div style="text-align: center">Prepared By</div>
+										<div style="text-align: center"><div><img src="<?=$cpreparedBySign?>"></div> 
 
 									</td>
 
@@ -285,8 +286,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 													}
 												?>
 												</div>
-												<br><br>
-												<div style="text-align: center"><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div>
+												<div style="text-align: center"><div><img src="<?=$row['cusersign']?>"></div>
 
 											</td>
 
@@ -335,7 +335,8 @@ $getcred = getEmailCred();
 	$body = $emi; 
 	$subject = $logonamz." - Purchase Order";
  
-	$email_to = $Conemail;
+	//$email_to = $Conemail;
+	$email_to = "maita@serttech.com";
 
 	$fromserver = $getcred['cusnme']; 
 
