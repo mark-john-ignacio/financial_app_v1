@@ -117,7 +117,7 @@ require_once "../../Connection/connection_string.php";
 				
 			//InputVat
 			//getvat from vat amount in apv_d
-			$sqlvat = "Select Sum(A.nvatamt) as nVat from apv_d A left join apv B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and A.ctranno = '$tran'";
+			$sqlvat = "Select Sum(A.nvatamt) as nVat, A.cvatcode, A.nvatrate from apv_d A left join apv B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and A.ctranno = '$tran' Group By A.cvatcode, A.nvatrate";
 			/*
 			$sqlvat = "Select Sum(A.nVat) as nVat
 				From (
@@ -156,7 +156,7 @@ require_once "../../Connection/connection_string.php";
 						$xyValx = "Payables";
 					}
 				 				 
-				 mysqli_query ($con, "INSERT INTO `apv_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `crefrr`, `cacctno`, `ctitle`, `cremarks`, `ndebit`, `ncredit`, `cacctrem`) VALUES ('$company','$refcidenttran',$z,'$tran','','".$SID."','".$SNM."','',".$rowTX['nVat'].",0,'$xyValx')");
+				 mysqli_query ($con, "INSERT INTO `apv_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `crefrr`, `cacctno`, `ctitle`, `cremarks`, `ndebit`, `ncredit`, `cacctrem`, `cewtcode`, `newtrate`) VALUES ('$company','$refcidenttran',$z,'$tran','','".$SID."','".$SNM."','',".$rowTX['nVat'].",0,'$xyValx','".$rowTX['cvatcode']."','".$rowTX['nvatrate']."')");
 			
 			
 				}
@@ -174,23 +174,22 @@ require_once "../../Connection/connection_string.php";
 		if(mysqli_num_rows($result)!=0){
 			while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 				
-					$xy = getAcctDef($row['cacctcode'],"PAYABLES");
-					$xyValx = "";
-					if($xy=="None"){
-						$xyValx = "Others";
-					}else{
-						$xyValx = "Payables";
-					}
+				$xy = getAcctDef($row['cacctcode'],"PAYABLES");
+				$xyValx = "";
+				if($xy=="None"){
+					$xyValx = "Others";
+				}else{
+					$xyValx = "Payables";
+				}
+			
+				mysqli_query ($con, "INSERT INTO `apv_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `crefrr`, `cacctno`, `ctitle`, `cremarks`, `ndebit`, `ncredit`, `cacctrem`) VALUES ('$company','$refcidenttran',$z,'$tran','','".$row['cacctcode']."','".$row['cacctdesc']."','',0,".$row['nappld'].",'$xyValx')");
 				
-				 mysqli_query ($con, "INSERT INTO `apv_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `crefrr`, `cacctno`, `ctitle`, `cremarks`, `ndebit`, `ncredit`, `cacctrem`) VALUES ('$company','$refcidenttran',$z,'$tran','','".$row['cacctcode']."','".$row['cacctdesc']."','',0,".$row['nappld'].",'$xyValx')");
-				 
 		
 			}
 		}
 		
-	//EWT
-		
-		$result = mysqli_query ($con, "Select D.cacctid as cacctcode, D.cacctdesc, sum(A.newtamt) as nappld From apv_d A left join apv B on A.compcode=B.compcode and A.ctranno=B.ctranno left join suppliers C on B.compcode=C.compcode and B.ccode=C.ccode left join accounts D on C.compcode=D.compcode and C.cacctcode=D.cacctno Where A.compcode='$company' and A.ctranno='$tran' Group By C.cacctcode, D.cacctdesc Having sum(A.newtamt) > 0"); 
+		//EWT		
+		$result = mysqli_query ($con, "Select sum(A.newtamt) as nappld, A.cewtcode, A.newtrate From apv_d A left join apv B on A.compcode=B.compcode and A.ctranno=B.ctranno left join suppliers C on B.compcode=C.compcode and B.ccode=C.ccode left join accounts D on C.compcode=D.compcode and C.cacctcode=D.cacctno Where A.compcode='$company' and A.ctranno='$tran' Group By A.cewtcode, A.newtrate Having sum(A.newtamt) > 0"); 
 	
 		if(mysqli_num_rows($result)!=0){
 			while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
@@ -209,7 +208,7 @@ require_once "../../Connection/connection_string.php";
 						$xyValx = "Payables";
 					}
 				 				 
-				 mysqli_query ($con, "INSERT INTO `apv_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `crefrr`, `cacctno`, `ctitle`, `cremarks`, `ndebit`, `ncredit`, `cacctrem`) VALUES ('$company','$refcidenttran',$z,'$tran','','$SID','$SNM','',0,".$row['nappld'].",'$xyValx')");
+				 mysqli_query ($con, "INSERT INTO `apv_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `crefrr`, `cacctno`, `ctitle`, `cremarks`, `ndebit`, `ncredit`, `cacctrem`, `cewtcode`, `newtrate`) VALUES ('$company','$refcidenttran',$z,'$tran','','$SID','$SNM','',0,".$row['nappld'].",'$xyValx','".$row['cewtcode']."','".$row['newtrate']."')");
 				 
 		
 			}

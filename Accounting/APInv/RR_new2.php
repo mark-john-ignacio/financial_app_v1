@@ -38,19 +38,19 @@ $company = $_SESSION['companyid'];
 		
 //	}
 
-//access for items encoding
-$varitmenc = "";
-$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'SuppInv2'");
-if(mysqli_num_rows($sql) == 0){
-			
-	$varitmenc = "NO";
-}
+	//access for items encoding
+	$varitmenc = "";
+	$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'SuppInv2'");
+	if(mysqli_num_rows($sql) == 0){
+				
+		$varitmenc = "NO";
+	}
 
 	@$arrtaxlist = array();
-	$gettaxcd = mysqli_query($con,"SELECT * FROM `taxcode` where compcode='$company' order By nidentity"); 
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `vatcode` where compcode='$company' and ctype = 'Purchase' and cstatus='ACTIVE' order By cvatdesc"); 
 	if (mysqli_num_rows($gettaxcd)!=0) {
 		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
-			@$arrtaxlist[] = array('ctaxcode' => $row['ctaxcode'], 'ctaxdesc' => $row['ctaxdesc'], 'nrate' => $row['nrate']); 
+			@$arrtaxlist[] = array('ctaxcode' => $row['cvatcode'], 'ctaxdesc' => $row['cvatdesc'], 'nrate' => $row['nrate']); 
 		}
 	}
 
@@ -271,7 +271,7 @@ if(mysqli_num_rows($sql) == 0){
 						text-align: left;
 						overflow: auto">
 		
-							<table id="MyTable" class="MyTable" width="100%" cellpadding="1px">
+							<table id="MyTable" class="MyTable" width="150%" cellpadding="1px">
 									<thead>
 										<tr>
 											<!--<th style="border-bottom:1px solid #999">&nbsp;</th>-->
@@ -846,7 +846,7 @@ function myFunctionadd(nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident
 
 		}
 
-	tditmunit = "<td width=\"100\"> &nbsp; " + uomoptions + "</td>";
+	tditmunit = "<td width=\"50\"> &nbsp; " + uomoptions + "</td>";
 	
 	if(itmxref!==""){
 		$qtystatx = "readonly";

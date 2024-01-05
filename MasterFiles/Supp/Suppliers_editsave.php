@@ -29,8 +29,10 @@
 	$Class = $_REQUEST['selcls'];
 	$Terms = $_REQUEST['selterms'];
 	$PROCUREMENT = $_REQUEST['procurement'];
-	$VatType = $_REQUEST['selvattype']; 
-	$VatTypeRate = $_REQUEST['txttaxrate'];
+	//$VatType = $_REQUEST['selvattype']; 
+	//$VatTypeRate = $_REQUEST['txttaxrate'];
+	$VatType = "";   
+	$VatTypeRate = 0;
 	$VatEWTCode = chkgrp($_REQUEST['txtewtD']); 
 	$Tin = $_REQUEST['txtTinNo']; 
 		

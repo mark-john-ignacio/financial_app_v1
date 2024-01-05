@@ -282,7 +282,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 
 								<?php
 
-									$sqdts = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign from purchase_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cpono = '$csalesno' order by a.nlevel");
+									$sqdts = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign,a.nlevel from purchase_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cpono = '$csalesno' order by a.nlevel");
 
 									if (mysqli_num_rows($sqdts)!=0) {
 										while($row = mysqli_fetch_array($sqdts, MYSQLI_ASSOC)){
@@ -291,7 +291,17 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 												<?php
 													if($row['lapproved']==1 && $row['cusersign']!=""){
 												?>
-												<div style="text-align: center">Approved By</div>
+												<div style="text-align: center">
+														<?php
+															if($row['nlevel']==1){
+																echo "Checked By";
+															}elseif($row['nlevel']==2){
+																echo "Noted By";
+															}elseif($row['nlevel']==1){
+																echo "Approved By";
+															}
+														?>
+												</div>
 												<div style="text-align: center"><div><img src = '<?=$row['cusersign']?>?x=<?=time()?>' ></div>
 												<?php
 													}else{

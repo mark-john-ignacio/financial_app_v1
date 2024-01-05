@@ -20,10 +20,10 @@
 
 	$sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.captype, a.cpaymentfor, a.cpayee, DATE_FORMAT(a.dapvdate,'%m/%d/%Y') as dapvdate, a.ngross, a.cpreparedby, a.lcancelled, a.lapproved, a.lprintposted, a.lvoid, b.cname, c.nrate, b.newtcode, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate from apv a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join wtaxcodes c on b.compcode=c.compcode and b.newtcode=c.ctaxcode where a.compcode = '$company' and a.ctranno = '$ctranno'");
 
-	$gettaxcd = mysqli_query($con,"SELECT * FROM `taxcode` where compcode='$company' order By nidentity"); 
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `vatcode` where compcode='$company' and ctype = 'Purchase' and cstatus='ACTIVE' order By cvatdesc"); 
 	if (mysqli_num_rows($gettaxcd)!=0) {
 		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
-			@$arrtaxlist[] = array('ctaxcode' => $row['ctaxcode'], 'ctaxdesc' => $row['ctaxdesc'], 'nrate' => $row['nrate']); 
+			@$arrtaxlist[] = array('ctaxcode' => $row['cvatcode'], 'ctaxdesc' => $row['cvatdesc'], 'nrate' => $row['nrate']); 
 		}
 	}
 
@@ -316,11 +316,11 @@
                     <!--<th style="border-bottom:1px solid #999">Supplier SI</th>-->
                     <!--<th style="border-bottom:1px solid #999">Description</th>-->
                     <th style="border-bottom:1px solid #999">Amount</th>
-										<th scope="col" class="text-center" nowrap>Total CM</th>
-										<th scope="col" class="text-center" nowrap>Total Disc.</th>
+					<th scope="col" class="text-center" nowrap>Total CM</th>
+					<th scope="col" class="text-center" nowrap>Total Disc.</th>
                     <!--<th style="border-bottom:1px solid #999">Remarks</th>-->                                                
                     <th scope="col" class="text-center" nowrap>VATCode</th>
-										<th scope="col" class="text-center" nowrap>VATRate(%)</th>
+					<th scope="col" class="text-center" nowrap>VATRate(%)</th>
                     <th scope="col" class="text-center" nowrap>VATAmt</th>
                     <th scope="col" class="text-center" nowrap>NetofVat</th>
                     <th scope="col" class="text-center" nowrap>EWTCode</th>                            
@@ -333,60 +333,60 @@
                   </tr>
                 </thead>
                 <tbody class="tbody">
-                  <?php 
-										$sqlbody = mysqli_query($con,"select a.* from apv_d a where a.compcode = '$company' and a.ctranno = '$ctranno' order by a.nidentity");
+                  	<?php 
+						$sqlbody = mysqli_query($con,"select a.* from apv_d a where a.compcode = '$company' and a.ctranno = '$ctranno' order by a.nidentity");
 
-										if (mysqli_num_rows($sqlbody)!=0) {
-											$cntr = 0;
-											while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
-												$cntr = $cntr + 1;
-									?>
+						if (mysqli_num_rows($sqlbody)!=0) {
+							$cntr = 0;
+							while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
+								$cntr = $cntr + 1;
+					?>
                     <tr>
-                      <td width="130px" style="padding:1px"> <input type='text' name="txtrefno" id="txtrefno<?php echo $cntr;?>" class="form-control input-sm" required value="<?php echo $rowbody['crefno'];?>" readonly> <input type='hidden' name="txtrefacctno" id="txtrefacctno<?php echo $cntr;?>" value="<?=$rowbody['cacctno']?>"> <input type='hidden' name="txtrefsi<?php echo $cntr;?>" id="txtrefsi<?php echo $cntr;?>" value="<?php echo $rowbody['crefinv'];?>"> </td>
+                      	<td width="130px" style="padding:1px"> <input type='text' name="txtrefno" id="txtrefno<?php echo $cntr;?>" class="form-control input-sm" required value="<?php echo $rowbody['crefno'];?>" readonly> <input type='hidden' name="txtrefacctno" id="txtrefacctno<?php echo $cntr;?>" value="<?=$rowbody['cacctno']?>"> <input type='hidden' name="txtrefsi<?php echo $cntr;?>" id="txtrefsi<?php echo $cntr;?>" value="<?php echo $rowbody['crefinv'];?>"> </td>
 
-                      <td  width="150px" style="padding:1px"><input type='text' name="txtnamount" id="txtnamount<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['namount'];?>" style="text-align:right" readonly></td>
+                      	<td  width="150px" style="padding:1px"><input type='text' name="txtnamount" id="txtnamount<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['namount'];?>" style="text-align:right" readonly></td>
  
-											<td  width="150px" style="padding:1px"><div class="input-group"><input type='text' name="txtncm" id="txtncm<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['napcm'];?>" style="text-align:right" readonly><span class="input-group-btn"><button class="btn btn-primary btn-sm" name="btnaddcm" id="btnaddcm<?php echo $cntr;?>" type="button" onclick="addCM('<?php echo $rowbody['crefno'];?>','txtncm<?php echo $cntr;?>')"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button></span></div></td>
+						<td  width="150px" style="padding:1px"><div class="input-group"><input type='text' name="txtncm" id="txtncm<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['napcm'];?>" style="text-align:right" readonly><span class="input-group-btn"><button class="btn btn-primary btn-sm" name="btnaddcm" id="btnaddcm<?php echo $cntr;?>" type="button" onclick="addCM('<?php echo $rowbody['crefno'];?>','txtncm<?php echo $cntr;?>')"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button></span></div></td>
 
-											<td  width="150px" style="padding:1px"><div class="input-group"><input type='text' name="txtndiscs" id="txtndiscs<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['napdisc'];?>" style="text-align:right" readonly><span class="input-group-btn"><button class="btn btn-primary btn-sm" type="button" name="btnadddc" id="btnadddc<?php echo $cntr;?>" onclick="addDISCS('<?php echo $rowbody['crefno'];?>','txtndiscs<?php echo $cntr;?>')"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button></span></div></td>
+						<td  width="150px" style="padding:1px"><div class="input-group"><input type='text' name="txtndiscs" id="txtndiscs<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['napdisc'];?>" style="text-align:right" readonly><span class="input-group-btn"><button class="btn btn-primary btn-sm" type="button" name="btnadddc" id="btnadddc<?php echo $cntr;?>" onclick="addDISCS('<?php echo $rowbody['crefno'];?>','txtndiscs<?php echo $cntr;?>')"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button></span></div></td>
 
-											<td  width="100px" style="padding:1px">
-												<select class='form-control input-sm' name="txtnvatcode" id="txtnvatcode<?php echo $cntr;?>"> " + taxoptions + " 
-													<?php
-														foreach($arrtaxlist as $rowx){
-															if($rowbody['cvatcode']==$rowx['ctaxcode']){
-																$isselctd = "selected";
-															}else{
-																$isselctd = "";
-															}
-																		
-															echo "<option value='".$rowx['ctaxcode']."' data-id='".$rowx['nrate']."' ".$isselctd.">".$rowx['ctaxdesc']."</option>";
+						<td  width="100px" style="padding:1px">
+							<select class='form-control input-sm' name="txtnvatcode" id="txtnvatcode<?php echo $cntr;?>"> " + taxoptions + " 
+								<?php
+									foreach($arrtaxlist as $rowx){
+										if($rowbody['cvatcode']==$rowx['ctaxcode']){
+											$isselctd = "selected";
+										}else{
+											$isselctd = "";
+										}
+													
+										echo "<option value='".$rowx['ctaxcode']."' data-id='".$rowx['nrate']."' ".$isselctd.">".$rowx['ctaxdesc']."</option>";
 
-														}
-													?>
-												</select> 
-											</td>
+									}
+								?>
+							</select> 
+						</td>
 
-											<td  width="50px" style="padding:1px"><input type='text' class="numeric form-control input-sm text-right" name="txtnvatrate" id="txtnvatrate<?php echo $cntr;?>" value="<?=$rowbody['nvatrate']?>" readonly></td>
+						<td  width="50px" style="padding:1px"><input type='text' class="numeric form-control input-sm text-right" name="txtnvatrate" id="txtnvatrate<?php echo $cntr;?>" value="<?=$rowbody['nvatrate']?>" readonly></td>
 
-											<td  width="150px" style="padding:1px"><input type='text' name="txtnvatval" id="txtnvatval<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?=$rowbody['nvatrate']?>" style="text-align:right" readonly></td>
+						<td  width="150px" style="padding:1px"><input type='text' name="txtnvatval" id="txtnvatval<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?=$rowbody['nvatamt']?>" style="text-align:right" readonly></td>
                             
-                      <td  width="150px" style="padding:1px"><input type='text' name="txtvatnet" id="txtvatnet<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['nnet'];?>" style="text-align:right" readonly></td>
-                            
-                      <td  width="130px" style="padding:1px"><input type='text' name="txtewtcode" id="txtewtcode<?php echo $cntr;?>" class="form-control input-sm" value="<?php echo $rowbody['cewtcode'];?>" autocomplete="off"></td>
-                            
-                      <td  width="80px" style="padding:1px"><input type='text' name="txtewtrate" id="txtewtrate<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['newtrate'];?>" style="text-align:right" readonly></td>
-                            
-                      <td  width="150px" style="padding:1px"><input type='text' name="txtewtamt" id="txtewtamt<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['newtamt'];?>" style="text-align:right" readonly></td>
-                            
+						<td  width="150px" style="padding:1px"><input type='text' name="txtvatnet" id="txtvatnet<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['nnet'];?>" style="text-align:right" readonly></td>
 								
-                      <!--<td  width="150px" style="padding:1px"><input type='text' name="txtpayment" id="txtpayment<?//php echo $cntr;?>" class="numeric form-control input-sm" value="<?//php echo $rowbody['npayments'];?>" style="text-align:right" readonly></td>-->
+						<td  width="130px" style="padding:1px"><input type='text' name="txtewtcode" id="txtewtcode<?php echo $cntr;?>" class="form-control input-sm" value="<?php echo $rowbody['cewtcode'];?>" autocomplete="off"></td>
+								
+						<td  width="80px" style="padding:1px"><input type='text' name="txtewtrate" id="txtewtrate<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['newtrate'];?>" style="text-align:right" readonly></td>
+								
+						<td  width="150px" style="padding:1px"><input type='text' name="txtewtamt" id="txtewtamt<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['newtamt'];?>" style="text-align:right" readonly></td>
                             
-                      <td  width="150px" style="padding:1px"><input type='text' name="txtDue" id="txtDue<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['ndue'];?>" style="text-align:right" readonly></td>
+									
+						<!--<td  width="150px" style="padding:1px"><input type='text' name="txtpayment" id="txtpayment<?//php echo $cntr;?>" class="numeric form-control input-sm" value="<?//php echo $rowbody['npayments'];?>" style="text-align:right" readonly></td>-->
+								
+						<td  width="150px" style="padding:1px"><input type='text' name="txtDue" id="txtDue<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['ndue'];?>" style="text-align:right" readonly></td>
                                 
-                      <!--<td style="padding:1px"><input type='text' name="txtnapplied" id="txtnapplied<?//php echo $cntr;?>" class="numeric form-control input-sm  text-right" value="<?//php echo $rowbody['napplied'];?>" onkeyup="compgross1();"   autocomplete="off"></td>-->
-                                
-                      <td width="50px" style="padding:1px"><input class='btn btn-danger btn-xs' type='button' id='row_<?php echo $rowbody['crefno'].$cntr;?>_delete' class='delete' value='delete' onClick="deleteRow1(this);"/></td>
+						<!--<td style="padding:1px"><input type='text' name="txtnapplied" id="txtnapplied<?//php echo $cntr;?>" class="numeric form-control input-sm  text-right" value="<?//php echo $rowbody['napplied'];?>" onkeyup="compgross1();"   autocomplete="off"></td>-->
+									
+						<td width="50px" style="padding:1px"><input class='btn btn-danger btn-xs' type='button' id='row_<?php echo $rowbody['crefno'].$cntr;?>_delete' class='delete' value='delete' onClick="deleteRow1(this);"/></td>
                             	
                     </tr>                           
                     <script>

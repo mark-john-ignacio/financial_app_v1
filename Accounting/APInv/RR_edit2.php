@@ -52,10 +52,10 @@ if(mysqli_num_rows($sql) == 0){
 }
 
 	@$arrtaxlist = array();
-	$gettaxcd = mysqli_query($con,"SELECT * FROM `taxcode` where compcode='$company' order By nidentity"); 	
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `vatcode` where compcode='$company' and ctype = 'Purchase' and cstatus='ACTIVE' order By cvatdesc"); 
 	if (mysqli_num_rows($gettaxcd)!=0) {
 		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
-			@$arrtaxlist[] = array('ctaxcode' => $row['ctaxcode'], 'ctaxdesc' => $row['ctaxdesc'], 'nrate' => $row['nrate']); 
+			@$arrtaxlist[] = array('ctaxcode' => $row['cvatcode'], 'ctaxdesc' => $row['cvatdesc'], 'nrate' => $row['nrate']); 
 		}
 	}
 
@@ -543,97 +543,95 @@ else{
 
 	$(document).keydown(function(e) {	 
 	
-	 if(e.keyCode == 112) { //F1
-		if($("#btnNew").is(":disabled")==false){
-			e.preventDefault();
-			window.location.href='RR_new.php';
-		}
-	  }
-	  else if(e.keyCode == 83 && e.ctrlKey){//CTRL S
-		if($("#btnSave").is(":disabled")==false){ 
-			e.preventDefault();
-			return chkform();
-		}
-	  }
-	  else if(e.keyCode == 69 && e.ctrlKey){//CTRL E
-		if($("#btnEdit").is(":disabled")==false){
-			e.preventDefault();
-			enabled();
-		}
-	  }
-	  else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
-		if($("#btnPrint").is(":disabled")==false){
-			e.preventDefault();
-			printchk('<?= $cpono;?>');
-		}
-	  }
-	  else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
-		if($("#btnUndo").is(":disabled")==false){
-			e.preventDefault();
-			chkSIEnter(13,'frmpos');
-		}
-	  }
-	  else if(e.keyCode == 27){//ESC
-		if($("#btnMain").is(":disabled")==false){
-			e.preventDefault();
-			$("#btnMain").click();
-		}
-	  
-	  }else if(e.keyCode == 88 && e.ctrlKey){ //CTRL X - Close Modal
-			if($('#SerialMod').hasClass('in')==true){
-		 		$("#btnClsSer").click();
+		if(e.keyCode == 112) { //F1
+			if($("#btnNew").is(":disabled")==false){
+				e.preventDefault();
+				window.location.href='RR_new.php';
 			}
-
-	  }
+		}
+		else if(e.keyCode == 83 && e.ctrlKey){//CTRL S
+			if($("#btnSave").is(":disabled")==false){ 
+				e.preventDefault();
+				return chkform();
+			}
+		}
+		else if(e.keyCode == 69 && e.ctrlKey){//CTRL E
+			if($("#btnEdit").is(":disabled")==false){
+				e.preventDefault();
+				enabled();
+			}
+		}
+		else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
+			if($("#btnPrint").is(":disabled")==false){
+				e.preventDefault();
+				printchk('<?= $cpono;?>');
+			}
+		}
+		else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
+			if($("#btnUndo").is(":disabled")==false){
+				e.preventDefault();
+				chkSIEnter(13,'frmpos');
+			}
+		}
+		else if(e.keyCode == 27){//ESC
+			if($("#btnMain").is(":disabled")==false){
+				e.preventDefault();
+				$("#btnMain").click();
+			}
+		
+		}else if(e.keyCode == 88 && e.ctrlKey){ //CTRL X - Close Modal
+			if($('#SerialMod').hasClass('in')==true){
+				$("#btnClsSer").click();
+			}
+		}
 
 	});
 
-$(document).ready(function() {
+	$(document).ready(function() {
 
-				$.ajax({
-					url : "../../include/th_xtrasessions.php",
-					type: "Post",
-					async:false,
-					dataType: "json",
-					success: function(data)
-					{	
-					  console.log(data);
-            $.each(data,function(index,item){
-						  xChkVatableStatus = item.chkcompvat;						   
-					  });
-					}
+		$.ajax({
+			url : "../../include/th_xtrasessions.php",
+			type: "Post",
+			async:false,
+			dataType: "json",
+			success: function(data)
+			{	
+				console.log(data);
+           		$.each(data,function(index,item){
+					xChkVatableStatus = item.chkcompvat;						   
 				});
+			}
+		});
 
-
-				if(file_name.length > 0){
-					$('#file-0').fileinput({
-						showUpload: false,
-						showClose: false,
-						allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
-						overwriteInitial: false,
-						maxFileSize:100000,
-						maxFileCount: 5,
-						browseOnZoneClick: true,
-						fileActionSettings: { showUpload: false, showDrag: false, },
-						initialPreview: list_file,
-						initialPreviewAsData: true,
-						initialPreviewFileType: 'image',
-						initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/RI/<?=$company."_".$cpono?>/{filename}',
-						initialPreviewConfig: file_config
-					});
-				} else {
-					$("#file-0").fileinput({
-						theme: 'fa5',
-						showUpload: false,
-						showClose: false,
-						allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
-						overwriteInitial: false,
-						maxFileSize:100000,
-						maxFileCount: 5,
-						browseOnZoneClick: true,
-						fileActionSettings: { showUpload: false, showDrag: false, }
-					});
-				}
+		if(file_name.length > 0){
+			$('#file-0').fileinput({
+				showUpload: false,
+				showClose: false,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, },
+				initialPreview: list_file,
+				initialPreviewAsData: true,
+				initialPreviewFileType: 'image',
+				initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/RI/<?=$company."_".$cpono?>/{filename}',
+				initialPreviewConfig: file_config
+			});
+		} else {
+			$("#file-0").fileinput({
+				theme: 'fa5',
+				showUpload: false,
+				showClose: false,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, }
+			});
+		}
 
 		if(xChkVatableStatus==1){
 			$(".chkVATClass").show();	
@@ -643,19 +641,19 @@ $(document).ready(function() {
 		}
 
 		
-    $('.datepick').datetimepicker({
-        format: 'MM/DD/YYYY'
-    });
+		$('.datepick').datetimepicker({
+			format: 'MM/DD/YYYY'
+		});
 
-			loaddetails();
-		
-			$("#txtcpono").focus();
-		
+		loaddetails();
+	
+		$("#txtcpono").focus();
+	
 
-			$("#txtnBaseGross").autoNumeric('init',{mDec:2});
-			$("#txtnGross").autoNumeric('init',{mDec:2});
+		$("#txtnBaseGross").autoNumeric('init',{mDec:2});
+		$("#txtnGross").autoNumeric('init',{mDec:2});
 
-			disabled();
+		disabled();
 
 		$("#basecurrval").autoNumeric('init',{mDec:4});
 		$("#selbasecurr").on("change", function (){
@@ -676,195 +674,194 @@ $(document).ready(function() {
 		});
 
 
-	$('#txtcust').typeahead({
-	
-		items: 10,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_supplier.php",
-				dataType: "json",
-				data: {
-					query: $("#txtcust").val()
-				},
-				success: function (data) {
-					response(data);
-				}
-			});
-		},
-		autoSelect: true,
-		displayText: function (item) {
-			return '<div style="border-top:1px solid gray; width: 300px"><span>'+ item.id + '</span><br><small>' + item.value + '</small></div>';
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 
-			$("#txtcust").val(item.value).change(); 
-			$("#txtcustid").val(item.id);
-
-			$("#selbasecurr").val(item.cdefaultcurrency).change(); //val
-		}
-	});
-	
-	$("#txtrefrr").keydown(function(event){
+		$('#txtcust').typeahead({
 		
-		var issokso = "YES";
-		var msgs = "";
-		
-		if(event.keyCode == 13){
-
-			//SO Header
-			$.ajax({
-				url : "th_getrr.php?id=" + $(this).val() ,
-				type: "GET",
-				dataType: "JSON",
-				async: false,
-				success: function(data)
-				{	
-					console.log(data);
-                    $.each(data,function(index,item){
-
-						if(item.lapproved==0 && item.lcancelled==0){
-						   msgs = "Transaction is still pending";
-						   issokso = "NO";
-						}
-						
-						if(item.lapproved==0 && item.lcancelled==1){
-						   msgs = "Transaction is already cancelled";
-						   issokso = "NO";
-						}
-					
-					if(issokso=="YES"){
-						$('#txtcust').val(item.cname); 
-						$("#txtcustid").val(item.ccode);
-
-						$('#date_received').val(item.dcutdate);
-					}
-						
-					});
-						
-				},
-				error: function (jqXHR, textStatus, errorThrown)
-				{
-					alert(jqXHR.responseText);
-				}					
-			});
-			
-			if(issokso=="YES"){
-
-				
-				$("#MyyTbltbody").empty();
-			//add details
-			//alert("th_qolistputall.php?id=" + $(this).val() + "&itmbal=" + xChkBal);
+			items: 10,
+			source: function(request, response) {
 				$.ajax({
-					url : "th_qolistputall.php?id=" + $(this).val(),
+					url: "../th_supplier.php",
+					dataType: "json",
+					data: {
+						query: $("#txtcust").val()
+					},
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			autoSelect: true,
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span>'+ item.id + '</span><br><small>' + item.value + '</small></div>';
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 
+				$("#txtcust").val(item.value).change(); 
+				$("#txtcustid").val(item.id);
+
+				$("#selbasecurr").val(item.cdefaultcurrency).change(); //val
+			}
+		});
+		
+		$("#txtrefrr").keydown(function(event){
+			
+			var issokso = "YES";
+			var msgs = "";
+			
+			if(event.keyCode == 13){
+
+				//SO Header
+				$.ajax({
+					url : "th_getrr.php?id=" + $(this).val() ,
 					type: "GET",
 					dataType: "JSON",
 					async: false,
 					success: function(data)
 					{	
-					   console.log(data);
-					   $.each(data,function(index,item){
+						console.log(data);
+						$.each(data,function(index,item){
 
-						$('#txtprodnme').val(item.desc); 
-						$('#txtprodid').val(item.id); 
-						$("#hdnunit").val(item.cunit); 
-						//$("#hdnqty").val(item.nqty);
-					//	$("#hdnqtyunit").val(item.cqtyunit);
-						//alert(item.cqtyunit + ":" + item.cunit);
-						//addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident);
+							if(item.lapproved==0 && item.lcancelled==0){
+							msgs = "Transaction is still pending";
+							issokso = "NO";
+							}
+							
+							if(item.lapproved==0 && item.lcancelled==1){
+							msgs = "Transaction is already cancelled";
+							issokso = "NO";
+							}
+						
+						if(issokso=="YES"){
+							$('#txtcust').val(item.cname); 
+							$("#txtcustid").val(item.ccode);
 
-						//nqty,nqtyorig,nprice,curramt,namount,nfactor,cmainunit,xref,nident
-						myFunctionadd(item.totqty,item.totqty,item.nprice,item.namount,item.namount,item.nfactor,item.cqtyunit,item.xref,item.xrefident,item.xrefPO,item.xrefidentPO,item.ladvancepay)
-
-					 });
-
+							$('#date_received').val(item.dcutdate);
+						}
+							
+						});
+							
 					},
 					error: function (jqXHR, textStatus, errorThrown)
 					{
 						alert(jqXHR.responseText);
-					}
-
+					}					
 				});
-			}
-			
-			if(issokso=="NO"){
-				alert(msgs);
-			}
-		}
-	});
-
-	$('#txtprodnme').typeahead({
-		autoSelect: true,
-		source: function(request, response) {
-			$.ajax({
-				url: "../../Purchases/th_product.php",
-				dataType: "json",
-				data: {
-					query: $("#txtprodnme").val()
-				},
-				success: function (data) {
-					response(data);
-				}
-			});
-		},
-		displayText: function (item) {
-			return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.cname+'</span><br><small><span class="dropdown-item-extra">' + item.cunit + '</span></small></div>';
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 					
-
-			//$('.datepick').each(function(){
-			//	$(this).data('DateTimePicker').destroy();
-			//});
-		
-				$('#txtprodnme').val(item.cname).change(); 
-				$('#txtprodid').val(item.id); 
-				$("#hdnunit").val(item.cunit);
-				$("#hdncvat").val(item.ctaxcode);
 				
-				myFunctionadd(1,1,0,0,0,1,item.cunit,"","","","");
+				if(issokso=="YES"){
 
-				$('#txtprodnme').val("").change(); 
-				$('#txtprodid').val(""); 
-				$("#hdnunit").val("");
-				$("#hdncvat").val("");
-		}
-	
-	});
+					
+					$("#MyyTbltbody").empty();
+				//add details
+				//alert("th_qolistputall.php?id=" + $(this).val() + "&itmbal=" + xChkBal);
+					$.ajax({
+						url : "th_qolistputall.php?id=" + $(this).val(),
+						type: "GET",
+						dataType: "JSON",
+						async: false,
+						success: function(data)
+						{	
+						console.log(data);
+						$.each(data,function(index,item){
 
+							$('#txtprodnme').val(item.desc); 
+							$('#txtprodid').val(item.id); 
+							$("#hdnunit").val(item.cunit); 
+							//$("#hdnqty").val(item.nqty);
+						//	$("#hdnqtyunit").val(item.cqtyunit);
+							//alert(item.cqtyunit + ":" + item.cunit);
+							//addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.xrefident);
 
-	$("#txtprodid").keydown(function(e){
-		if(e.keyCode == 13){
+							//nqty,nqtyorig,nprice,curramt,namount,nfactor,cmainunit,xref,nident
+							myFunctionadd(item.totqty,item.totqty,item.nprice,item.namount,item.namount,item.nfactor,item.cqtyunit,item.xref,item.xrefident,item.xrefPO,item.xrefidentPO,item.ladvancepay)
 
-		$.ajax({
-        url:'../../Purchases/get_productid.php',
-        data: 'c_id='+ $(this).val(),                 
-        success: function(value){
+						});
+
+						},
+						error: function (jqXHR, textStatus, errorThrown)
+						{
+							alert(jqXHR.responseText);
+						}
+
+					});
+				}
+				
+				if(issokso=="NO"){
+					alert(msgs);
+				}
+			}
+		});
+
+		$('#txtprodnme').typeahead({
+			autoSelect: true,
+			source: function(request, response) {
+				$.ajax({
+					url: "../../Purchases/th_product.php",
+					dataType: "json",
+					data: {
+						query: $("#txtprodnme").val()
+					},
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.cname+'</span><br><small><span class="dropdown-item-extra">' + item.cunit + '</span></small></div>';
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 					
+
+				//$('.datepick').each(function(){
+				//	$(this).data('DateTimePicker').destroy();
+				//});
 			
-          var data = value.split(",");
-          $('#txtprodid').val(data[0]);
-          $('#txtprodnme').val(data[1]);
-					$('#hdnunit').val(data[2]);
-					$("#hdncvat").val(data[3]);
-		 	
-					myFunctionadd(1,1,0,0,0,1,item.cunit,"","","","","","");
-			
-					$("#txtprodid").val("");
-					$("#txtprodnme").val("");
+					$('#txtprodnme').val(item.cname).change(); 
+					$('#txtprodid').val(item.id); 
+					$("#hdnunit").val(item.cunit);
+					$("#hdncvat").val(item.ctaxcode);
+					
+					myFunctionadd(1,1,0,0,0,1,item.cunit,"","","","");
+
+					$('#txtprodnme').val("").change(); 
+					$('#txtprodid').val(""); 
 					$("#hdnunit").val("");
 					$("#hdncvat").val("");
- 
-	    //closing for success: function(value){
-	    }
-        }); 
+			}
+		
+		});
 
+		$("#txtprodid").keydown(function(e){
+			if(e.keyCode == 13){
+
+			$.ajax({
+			url:'../../Purchases/get_productid.php',
+			data: 'c_id='+ $(this).val(),                 
+			success: function(value){
+				
+			var data = value.split(",");
+			$('#txtprodid').val(data[0]);
+			$('#txtprodnme').val(data[1]);
+						$('#hdnunit').val(data[2]);
+						$("#hdncvat").val(data[3]);
+				
+						myFunctionadd(1,1,0,0,0,1,item.cunit,"","","","","","");
+				
+						$("#txtprodid").val("");
+						$("#txtprodnme").val("");
+						$("#hdnunit").val("");
+						$("#hdncvat").val("");
 	
-		 
-		//if ebter is clicked
-		}
+			//closing for success: function(value){
+			}
+			}); 
+
+		
+			
+			//if ebter is clicked
+			}
+			
+		});
 		
 	});
-	
-});
 
 function myFunctionadd(nqty,nqtyorig,nprice,curramt,namount,nfactor,cmainunit,xref,nident,ctaxcode,cewtcode,itmxrefPO,itmidentPO,ladvpay){
 
@@ -896,27 +893,27 @@ function myFunctionadd(nqty,nqtyorig,nprice,curramt,namount,nfactor,cmainunit,xr
 	tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\"> " +  itmdesc + "</td>";
 	
 
-				var gvnewt = cewtcode;
-				var xz = $("#hdnewtlist").val();
-				ewtoptions = "";
-				$.each(jQuery.parseJSON(xz), function() { 
-				
-						if(gvnewt==this['ctaxcode']){
-							isselctd = "selected";
-						}else{
-							isselctd = "";
-						}
+	var gvnewt = cewtcode;
+	var xz = $("#hdnewtlist").val();
+	ewtoptions = "";
+	$.each(jQuery.parseJSON(xz), function() { 
+	
+			if(gvnewt==this['ctaxcode']){
+				isselctd = "selected";
+			}else{
+				isselctd = "";
+			}
 
-					ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
-				});
+		ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
+	});
 
-				if(ladvpay=="1" ){
-					isdisabled = "disabled";
-				}else{
-					isdisabled = "";
-				}
+	if(ladvpay=="1" ){
+		isdisabled = "disabled";
+	}else{
+		isdisabled = "";
+	}
 
-				var ewttd = "<td width=\"100\" nowrap> <select class='form-control input-xs "+isdisabled+"' name=\"selitmewtyp\" id=\"selitmewtyp"+lastRow+"\"> <option value=\"none\">None</option>" + ewtoptions + "</select> </td>";
+	var ewttd = "<td width=\"100\" nowrap> <select class='form-control input-xs "+isdisabled+"' name=\"selitmewtyp\" id=\"selitmewtyp"+lastRow+"\"> <option value=\"none\">None</option>" + ewtoptions + "</select> </td>";
 
 	var tditmvats = "";
 		if(xChkVatableStatus==1){ 
@@ -1436,7 +1433,7 @@ function loaddetails(){
 				$("#hdncvat").val(item.cvatcode);
 				//alert(item.nqty);
 
-				//myFunctionadd(nqty,nprice,curramt,namount,nfactor,cmainunit,xref,nident)
+				//myFunctionadd(nqty,nqtyorig,nprice,curramt,namount,nfactor,cmainunit,xref,nident,ctaxcode,cewtcode,itmxrefPO,itmidentPO,ladvpay)
 				myFunctionadd(item.nqty,item.nqtyorig,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.cmainuom,item.xref,item.nident,item.cvatcode,item.cewtcode,item.xrefPO,item.nidentPO,item.ladvancepay);
 			});
 
