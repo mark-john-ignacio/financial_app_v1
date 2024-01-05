@@ -268,10 +268,40 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 									if (mysqli_num_rows($sqdts)!=0) {
 										while($row = mysqli_fetch_array($sqdts, MYSQLI_ASSOC)){
 								?>
-											<td width="25%" align="center">
-												<div style="margin-bottom: 50px; text-align: center">Approved By</div>
-												<br><br>
-												<div style="text-align: center"><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div>
+											<td width="25%">
+												<?php
+													if($row['lapproved']==1 && $row['cusersign']!=""){
+												?>
+												<div style="text-align: center">
+														<?php
+															if($row['nlevel']==1){
+																echo "Checked By";
+															}elseif($row['nlevel']==2){
+																echo "Noted By";
+															}elseif($row['nlevel']==3){
+																echo "Approved By";
+															}
+														?>
+												</div>
+												<div style="text-align: center"><div><img src = '<?=$row['cusersign']?>?x=<?=time()?>' ></div>
+												<?php
+													}else{
+												?>
+													<div style="padding-bottom: 50px; text-align: center">
+														<?php
+															if($row['nlevel']==1){
+																echo "Checked By";
+															}elseif($row['nlevel']==2){
+																echo "Noted By";
+															}elseif($row['nlevel']==3){
+																echo "Approved By";
+															}
+														?>
+													</div>
+													<div style="text-align: center"><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div>
+												<?php
+													}
+												?>
 
 											</td>
 

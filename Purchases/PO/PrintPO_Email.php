@@ -274,7 +274,17 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 										while($row = mysqli_fetch_array($sqdts, MYSQLI_ASSOC)){
 								?>
 											<td width="25%" align="center">
-												<div style="margin-bottom: 50px; text-align: center">Approved By</div>
+												<div style="margin-bottom: 50px; text-align: center">
+												<?php
+													if($row['nlevel']==1){
+														echo "Checked By";
+													}elseif($row['nlevel']==2){
+														echo "Noted By";
+													}elseif($row['nlevel']==3){
+														echo "Approved By";
+													}
+												?>
+												</div>
 												<br><br>
 												<div style="text-align: center"><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div>
 
