@@ -681,6 +681,7 @@
             url: "../System/th_loadbasecustomer.php",
             dataType: "json",
             success: function (res) {
+                $("#myprintframe").attr("src", "");
                 $('#customer').val(res.data).change();
                 $('#customer').attr("data-val", res.code).change();
                 matrix = res.pm
@@ -1392,7 +1393,6 @@
                 $("#myprintframe").attr("src", "pos_print.php?tranno="+ tranno);
                 setInterval(() => {
                     location.reload()  
-                    $("#PrintModal").modal('hide');
                 }, 3000);
 
             }
