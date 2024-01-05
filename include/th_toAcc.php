@@ -211,7 +211,7 @@ function getSetAcct($id){
 			$SID = $Sales_Ewt["id"];
 			$SNM = $Sales_Ewt["name"];
 
-			$qrySIEWT  = "Select A.dcutdate,A.cacctid,A.cacctdesc,sum(A.newtgross) as newtgross
+			$qrySIEWT  = "Select A.dcutdate,A.cacctid,A.cacctdesc,A.cewtcode,sum(A.newtgross) as newtgross
 			From (Select B.dcutdate, C.cacctid,C.cacctdesc, A.citemno, A.nrate, A.newtrate, D.cbase, nqty, nprice, 
 			CASE 
 				WHEN IFNULL(A.newtrate,0) <> 0 
@@ -223,12 +223,12 @@ function getSetAcct($id){
 						END 
 				ELSE 
 					0 
-				END as newtgross
+				END as newtgross, A.cewtcode
 			From sales_t A 
 			left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno 
 			left join accounts C on A.compcode=C.compcode and B.cacctcode=C.cacctno 
 			left join wtaxcodes D on A.compcode=D.compcode and A.cewtcode=D.ctaxcode 
-			where A.compcode='$company' and A.ctranno='$tran') A Group By A.dcutdate,A.cacctid,A.cacctdesc";
+			where A.compcode='$company' and A.ctranno='$tran') A Group By A.dcutdate,A.cacctid,A.cacctdesc,A.cewtcode";
 			$resewt = mysqli_query($con,$qrySIEWT);
 				$isok = "True";
 				if (mysqli_num_rows($resewt)!=0) {
@@ -236,7 +236,7 @@ function getSetAcct($id){
 
 						if(floatval($rowewt["newtgross"]) != 0){
 						
-							if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) values ('$company','SI','$tran','".$rowewt["dcutdate"]."','$SID','$SNM',".$rowewt["newtgross"].",0,0, NOW())")){
+							if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`, `ctaxcode`) values ('$company','SI','$tran','".$rowewt["dcutdate"]."','$SID','$SNM',".$rowewt["newtgross"].",0,0, NOW(),'".$rowewt["cewtcode"]."')")){
 								echo "False";
 								//echo mysqli_error($con);
 								$isok = "False";
@@ -274,9 +274,9 @@ function getSetAcct($id){
 			$SID = $Sales_Vat["id"];
 			$SNM = $Sales_Vat["name"];
 			
-			$sqlvat = "Select A.dcutdate, Sum(A.nVat) as nVat
+			$sqlvat = "Select A.dcutdate, A.ctaxcode, Sum(A.nVat) as nVat
 				From (
-					Select B.dcutdate, A.citemno, ROUND((SUM(A.namount)/(1 + (D.nrate/100))) * ((D.nrate/100)), 2) AS nVat
+					Select B.dcutdate, A.citemno, A.ctaxcode, ROUND((SUM(A.namount)/(1 + (D.nrate/100))) * ((D.nrate/100)), 2) AS nVat
 					From sales_t A 
 					left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno 
 					left join accounts C on A.compcode=C.compcode and A.cacctcode=C.cacctno 
@@ -292,7 +292,7 @@ function getSetAcct($id){
 				if (mysqli_num_rows($resvat)!=0) {
 					while($rowvat = mysqli_fetch_array($resvat, MYSQLI_ASSOC)){
 						
-						if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) values ('$company','SI','$tran','".$rowvat["dcutdate"]."','$SID','$SNM',0,".$rowvat["nVat"].",0, NOW())")){
+						if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`, `ctaxcode`) values ('$company','SI','$tran','".$rowvat["dcutdate"]."','$SID','$SNM',0,".$rowvat["nVat"].",0, NOW(), '".$rowvat["ctaxcode"]."')")){
 							echo "False";
 							//echo mysqli_error($con);
 							$isok = "False";

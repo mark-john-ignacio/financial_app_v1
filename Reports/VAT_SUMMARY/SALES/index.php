@@ -19,10 +19,12 @@
     $ve = "VE";
 
     $sql = "SELECT a.ctranno, a.csalesno, a.namount, a.nnet, a.nvat, b.dcutdate, c.creference, d.cname, d.ctin, d.chouseno, d.ccity, a.ctaxcode, d.cvattype FROM receipt_sales_t a
-            LEFT JOIN receipt b ON a.compcode = b.compcode AND a.ctranno = b.ctranno
-            LEFT JOIN sales_t c ON a.compcode = c.compcode AND a.csalesno = c.ctranno
-            LEFT JOIN customers d ON a.compcode = d.compcode AND b.ccode = d.cempid
-            WHERE a.compcode = '$company' AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 AND (STR_TO_DATE(b.dcutdate, '%Y-%m-%d') BETWEEN '$datefrom' AND '$dateto') ";
+    LEFT JOIN receipt b ON a.compcode = b.compcode AND a.ctranno = b.ctranno
+    LEFT JOIN sales_t c ON a.compcode = c.compcode AND a.csalesno = c.ctranno
+    LEFT JOIN customers d ON a.compcode = d.compcode AND b.ccode = d.cempid
+    WHERE a.compcode = '$company' AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 AND (STR_TO_DATE(b.dcutdate, '//%Y-%m-%d') BETWEEN '$datefrom' AND '$dateto') ";
+
+    $sql = "Select a.ctranno, a.csalesno, a.namount";
 
     if($query = mysqli_query($con, $sql)) {
         $vatable = [];

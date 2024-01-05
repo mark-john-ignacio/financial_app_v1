@@ -968,7 +968,7 @@ else{
 											<td>Account Credit</td>  
 										</tr>		
 										<?php
-											$getewtcd = mysqli_query($con,"SELECT * FROM glactivity where compcode='$company' and ctranno='$txtctranno'"); 
+											$getewtcd = mysqli_query($con,"SELECT acctno,ctitle,sum(ndebit) as ndebit,sum(ncredit) as ncredit FROM glactivity where compcode='$company' and ctranno='$txtctranno' Group By acctno,ctitle"); 
 											if (mysqli_num_rows($getewtcd)!=0) {
 												while($row = mysqli_fetch_array($getewtcd, MYSQLI_ASSOC)){
 										?>					

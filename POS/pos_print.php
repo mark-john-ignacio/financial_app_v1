@@ -23,7 +23,7 @@
     $sql = "SELECT a.quantity, a.gross, a.uom, b.ddate, b.orderType, d.cname, b.exchange, b.tendered, b.coupon, b.gross as total, b.net, b.vat, b.preparedby, b.subtotal, b.serviceFee, b.discount, c.citemdesc FROM pos_t a
         LEFT JOIN pos b on a.compcode = b.compcode AND a.tranno = b.tranno
         LEFT JOIN items c on a.compcode = c.compcode AND a.item = c.cpartno
-        LEFT JOIN customer d on a.compcode  = d.compcode AND b.customer = d.cempid
+        LEFT JOIN customers d on a.compcode  = d.compcode AND b.customer = d.cempid
         WHERE a.compcode = '$company' and a.tranno = '$tranno'";
     $query = mysqli_query($con, $sql);
     while($row = $query -> fetch_assoc()){
