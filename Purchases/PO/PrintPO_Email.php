@@ -94,6 +94,10 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 
 <body>
 
+<?php
+if(filter_var($Conemail, FILTER_VALIDATE_EMAIL)) {
+?>
+
 <table border="0" width="100%" cellpadding="1px"  id="tblMain">
 	<tr>
 		<td align="center"> 
@@ -305,6 +309,11 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 	</tr>
 </table>
 
+<?php
+}else{
+	echo "Invalid Email Address Detected!";
+}
+?>
 </body>
 </html>
 
@@ -313,30 +322,31 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 $html = ob_get_contents();
 ob_end_clean();
 
+if(filter_var($Conemail, FILTER_VALIDATE_EMAIL)) {
 
-		$result = mysqli_query($con,"SELECT * FROM `parameters` where compcode='$company' and ccode in ('POEMAILBODY')"); 
+	$result = mysqli_query($con,"SELECT * FROM `parameters` where compcode='$company' and ccode in ('POEMAILBODY')"); 
             
     if (mysqli_num_rows($result)!=0) {
-      while($comprow = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+      	while($comprow = mysqli_fetch_array($result, MYSQLI_ASSOC)){
                  
            $emi= $comprow['cdesc']; 
 
-			}
 		}
+	}
 
-// send the captured HTML from the output buffer to the mPDF class for processing
-$mpdf->WriteHTML($html);
-$mpdf->Output('../../PDFiles/PO/'.$csalesno.'.pdf', \Mpdf\Output\Destination::FILE);
+	// send the captured HTML from the output buffer to the mPDF class for processing
+	$mpdf->WriteHTML($html);
+	$mpdf->Output('../../PDFiles/PO/'.$csalesno.'.pdf', \Mpdf\Output\Destination::FILE);
 
-//Redirect to sending email file
+	//Redirect to sending email file
 
-$getcred = getEmailCred();
+	$getcred = getEmailCred();
 
 	$body = $emi; 
 	$subject = $logonamz." - Purchase Order";
  
-	//$email_to = $Conemail;
-	$email_to = "maita@serttech.com";
+	$email_to = $Conemail;
+	//$email_to = "maita@serttech.com";
 
 	$fromserver = $getcred['cusnme']; 
 
@@ -362,5 +372,6 @@ $getcred = getEmailCred();
 	}else{
 		echo "Email Successfully Sent";
 	}
+}
 
 ?>
