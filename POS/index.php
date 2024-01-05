@@ -1388,10 +1388,11 @@
                     }
                 })
 
-                $("#myprintframe").attr("src", "pos_print.php?tranno="+ tranno)
                 $("#PrintModal").modal('show');
+                $("#myprintframe").attr("src", "pos_print.php?tranno="+ tranno);
                 setInterval(() => {
-                    location.reload()
+                    location.reload()  
+                    $("#PrintModal").modal('hide');
                 }, 3000);
 
             }
