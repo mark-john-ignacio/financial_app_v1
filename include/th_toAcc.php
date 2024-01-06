@@ -500,18 +500,18 @@ function getSetAcct($id){
 		if($varlnoapvref==0){
 				
 			//Accounts Payable -> supplier account -> Debit
-			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'PV', '$tran', C.dcheckdate, A.cacctno, B.cacctdesc, A.napplied, 0, 0, NOW() From paybill_t A left join paybill C on A.compcode=C.compcode and A.ctranno=C.ctranno left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ctranno='$tran' ")){
+			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`, `ctaxcode`) Select '$company', 'PV', '$tran', C.dcheckdate, A.cacctno, B.cacctdesc, A.napplied, 0, 0, NOW(), A.cewtcode From paybill_t A left join paybill C on A.compcode=C.compcode and A.ctranno=C.ctranno left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ctranno='$tran' ")){
 				echo "False";
 			}
 			else{
 
-					//Accounts Payable -> supplier account -> Credit
-					if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'PV', '$tran', A.dcheckdate, A.cacctno, B.cacctdesc, 0, A.npaid, 0, NOW() From paybill A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ctranno='$tran' ")){
-						echo "False";
-					}				
-					else{
-						echo "True";
-					}
+				//Accounts Payable -> supplier account -> Credit
+				if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'PV', '$tran', A.dcheckdate, A.cacctno, B.cacctdesc, 0, A.npaid, 0, NOW() From paybill A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ctranno='$tran' ")){
+					echo "False";
+				}				
+				else{
+					echo "True";
+				}
 				
 			}
 
@@ -523,11 +523,11 @@ function getSetAcct($id){
 			while($row = mysqli_fetch_array($sqlchk, MYSQLI_ASSOC)){
 
 				if($row['entrytyp']=="Debit"){
-					if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Values('$company','PV', '$tran', '".$row['dcheckdate']."', '".$row['cacctno']."', '".$row['cacctdesc']."', '".$row['napplied']."', 0, 0, NOW()) ")){
+					if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`, `ctaxcode`) Values('$company','PV', '$tran', '".$row['dcheckdate']."', '".$row['cacctno']."', '".$row['cacctdesc']."', '".$row['napplied']."', 0, 0, NOW(), '".$row['cewtcode']."') ")){
 						$witherr = 1;
 					}
 				}else{
-					if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Values('$company','PV', '$tran', '".$row['dcheckdate']."', '".$row['cacctno']."', '".$row['cacctdesc']."', 0, '".$row['napplied']."', 0, NOW()) ")){
+					if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`, `ctaxcode`) Values('$company','PV', '$tran', '".$row['dcheckdate']."', '".$row['cacctno']."', '".$row['cacctdesc']."', 0, '".$row['napplied']."', 0, NOW(), '".$row['cewtcode']."') ")){
 						$witherr = 1;
 					}
 				}
