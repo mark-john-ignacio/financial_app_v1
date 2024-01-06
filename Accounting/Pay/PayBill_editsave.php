@@ -18,18 +18,18 @@ include('../../include/denied.php');
 		}
 	}
 
+	//get default Input tax acct code
+	@$OTpaydef = "";
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `accounts_default` where compcode='$company' and ccode='PURCH_VAT'"); 
+	if (mysqli_num_rows($gettaxcd)!=0) {
+		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+			@$OTpaydef = $row['cacctno']; 
+		}
+	}
+
 	//echo "<pre>";
 	//print_r($_REQUEST);
 	//echo "</pre>";
-
-		//get default EWT acct code
-		@$ewtpaydef = "";
-		$gettaxcd = mysqli_query($con,"SELECT * FROM `accounts_default` where compcode='$company' and ccode='EWTPAY'"); 
-		if (mysqli_num_rows($gettaxcd)!=0) {
-			while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
-				@$ewtpaydef = $row['cacctno']; 
-			}
-		}
 
 	$cCustID = mysqli_real_escape_string($con, $_REQUEST['txtcustid']);
 	$cPayee = mysqli_real_escape_string($con, $_REQUEST['txtpayee']);
@@ -111,8 +111,8 @@ include('../../include/denied.php');
 		$caccno = mysqli_real_escape_string($con, $_REQUEST['cacctno'.$z]); 
 		
 		if($_POST['isNoRef']==1){
-			if($caccno==@$ewtpaydef){
-				$hdnewt =$namnt; 
+			if($caccno==@$ewtpaydef || $caccno==@$OTpaydef){
+				$hdnewt = $namnt; 
 				$hdnewtcode = mysqli_real_escape_string($con, $_POST['napvewt'.$z]);
 			}else{
 				$hdnewt = 0; 
@@ -128,14 +128,12 @@ include('../../include/denied.php');
 
 		if($napplied<>0){
 			
-			$cnt = $cnt + 1;
-			
+			$cnt = $cnt + 1;		
 			$refcidenttran = $cCVNo."P".$cnt;
 		
 			if($dapvdate==""){
 				$dapvdate = date("m/d/Y");
 			}
-						
 			
 			if (!mysqli_query($con, "INSERT INTO `paybill_t`(`compcode`, `cidentity`, `nident`, `ctranno`, `crefrr`, `capvno`, `dapvdate`, `namount`, `ndiscount`, `nowed`, `napplied`, `cacctno`, `newtamt`, `cewtcode`, `entrytyp`, `ncostcenter`) values('$company', '$refcidenttran', '$cnt', '$cCVNo', '$crefrr', '$capvno', STR_TO_DATE('$dapvdate', '%m/%d/%Y'), $namnt, $ndiscount, $nowed, $napplied, '$caccno', $hdnewt, '$hdnewtcode', '$hdnentrtyp', '$selcostctr')")) {
 			printf("Errormessage: %s\n", mysqli_error($con));
@@ -209,5 +207,5 @@ include('../../include/denied.php');
 </form>
 <script>
 	alert('Record Succesfully Updated');
-  document.forms['frmpos'].submit();
+  	document.forms['frmpos'].submit();
 </script>

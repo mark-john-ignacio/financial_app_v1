@@ -85,11 +85,6 @@
 	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
 	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
 
-	<style>
-		.select2-selection { overflow: hidden; }
-		.select2-selection__rendered { white-space: normal; word-break: break-all; }
-	</style>
-
 </head>
 
 <body style="padding:5px">
@@ -1246,7 +1241,7 @@
 
 		//tditmewts = "<td width=\"150\" nowrap>  </td>";
 		
-		t.innerHTML = "<select class='form-control input-xs' name=\"txtewtcodeothers"+lastRow+"\" id=\"txtewtcodeothers"+lastRow+"\" style=\"width: 100%\"><option value=\"\">&nbsp;</option> </select> <input type='hidden' name=\"txtewtrateothers"+lastRow+"\" id=\"txtewtrateothers"+lastRow+"\" value=\"0\"  autocomplete=\"off\">";
+		t.innerHTML = "<select class='form-control input-sm' name=\"txtewtcodeothers"+lastRow+"\" id=\"txtewtcodeothers"+lastRow+"\" style=\"width: 100%\"><option value=\"\">&nbsp;</option> </select> <input type='hidden' name=\"txtewtrateothers"+lastRow+"\" id=\"txtewtrateothers"+lastRow+"\" value=\"0\"  autocomplete=\"off\">";
 		
 		//t.innerHTML = "<input type='text' name=\"txtewtcodeothers"+lastRow+"\" id=\"txtewtcodeothers"+lastRow+"\" class=\"form-control input-sm\" value=\"\"  autocomplete=\"off\"> <input type='hidden' name=\"txtewtrateothers"+lastRow+"\" id=\"txtewtrateothers"+lastRow+"\" value=\"0\"  autocomplete=\"off\">";
 			

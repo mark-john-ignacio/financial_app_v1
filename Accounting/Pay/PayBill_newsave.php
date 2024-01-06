@@ -10,12 +10,25 @@
 	$dyear = date("y");
 	$company = $_SESSION['companyid'];
 
+	//echo "<pre>";
+	//print_r($_POST);
+	//echo "</pre>";
+
 	//get default EWT acct code
 	@$ewtpaydef = "";
 	$gettaxcd = mysqli_query($con,"SELECT * FROM `accounts_default` where compcode='$company' and ccode='EWTPAY'"); 
 	if (mysqli_num_rows($gettaxcd)!=0) {
 		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
 			@$ewtpaydef = $row['cacctno']; 
+		}
+	}
+
+	//get default Input tax acct code
+	@$OTpaydef = "";
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `accounts_default` where compcode='$company' and ccode='PURCH_VAT'"); 
+	if (mysqli_num_rows($gettaxcd)!=0) {
+		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+			@$OTpaydef = $row['cacctno']; 
 		}
 	}
 
@@ -131,7 +144,7 @@
 		$caccno = mysqli_real_escape_string($con, $_POST['cacctno'.$z]); 
 
 		if($_POST['isNoRef']==1){
-			if($caccno==@$ewtpaydef){
+			if($caccno==@$ewtpaydef || $caccno==@$OTpaydef){
 				$hdnewt =$namnt; 
 				$hdnewtcode = mysqli_real_escape_string($con, $_POST['napvewt'.$z]);
 			}else{
@@ -160,7 +173,6 @@
 			if (!mysqli_query($con, "INSERT INTO `paybill_t`(`compcode`, `cidentity`, `nident`, `ctranno`, `crefrr`, `capvno`, `dapvdate`, `namount`, `ndiscount`, `nowed`, `napplied`, `cacctno`, `newtamt`, `cewtcode`, `entrytyp`, `ncostcenter`) values('$company', '$refcidenttran', '$cnt', '$cSINo', '$crefrr', '$capvno', STR_TO_DATE('$dapvdate', '%m/%d/%Y'), $namnt, $ndiscount, $nowed, $napplied, '$caccno', '$hdnewt', '$hdnewtcode', '$hdnentrtyp', '$selcostctr')")) {
 			printf("Errormessage: %s\n", mysqli_error($con));
 			} 
-
 		
 		}
 
@@ -209,5 +221,5 @@
 </form>
 <script>
 	alert('Record Succesfully Saved');
-  document.forms['frmpos'].submit();
+  	document.forms['frmpos'].submit();
 </script>
