@@ -11,21 +11,21 @@
 	//require("../vendor/phpmailer/phpmailer/src/PHPMailer.php");
 	//require("../vendor/phpmailer/phpmailer/src/SMTP.php");
 
-	function sendEmail($email_to,$body,$subject,$companyname){
+	function sendEmail($email_to,$body,$subject,$companyname,$getcred){
 
-		$fromserver = "myxfin@serttech.com"; 
+		$fromserver = $getcred['cusnme']; 
 		$mail = new PHPMailer();
 		$mail->IsSMTP();
-		$mail->Host = "smtp.gmail.com"; // Enter your host here
+		$mail->Host = $getcred['csmtp']; // Enter your host here
 		$mail->SMTPAuth = true;
-		$mail->Username = "maita.galang@gmail.com"; // Enter your email here
-		$mail->Password = "odxipppwdmpgechm"; //Enter your password here
-		$mail->SMTPSecure = 'ssl';
-		$mail->Port = 465;
+		$mail->Username = $getcred['cusnme']; // Enter your email here
+		$mail->Password = $getcred['cuspass']; //Enter your password here
+		$mail->SMTPSecure = $getcred['csecure'];
+		$mail->Port = $getcred['cport'];;
 		$mail->IsHTML(true);
-		$mail->From = "noreply@serttech.com";
+		$mail->From = $getcred['cusnme'];
 		$mail->FromName = $companyname;
-		$mail->Sender = "myxfin@serttech.com"; // indicates ReturnPath header
+		$mail->Sender = $getcred['cusnme']; // indicates ReturnPath header
 		$mail->Subject = $subject;
 		$mail->Body = $body;
 		$mail->AddAddress($email_to);

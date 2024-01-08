@@ -15,6 +15,7 @@ ob_start();
 include('../../Connection/connection_string.php');
 include('../../include/denied.php');
 include('../../Model/helper.php');
+include("../../include/sendEmail.php");
 
 $company = $_SESSION['companyid'];
 

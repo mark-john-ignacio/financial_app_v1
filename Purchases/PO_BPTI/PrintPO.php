@@ -21,6 +21,18 @@
 		}
 
 	}
+
+	$locsdesc = array();
+	$sqlcomp = mysqli_query($con,"select * from locations where compcode='$company'");
+
+	if(mysqli_num_rows($sqlcomp) != 0){
+
+		while($rowcomp = mysqli_fetch_array($sqlcomp, MYSQLI_ASSOC))
+		{
+			$locsdesc[$rowcomp['nid']] = $rowcomp['cdesc'];
+		}
+
+	}
 	
 	$csalesno = $_REQUEST['hdntransid'];
 	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign, d.cdesc as termsdesc from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join users c on a.cpreparedby=c.Userid left join groupings d on a.compcode=b.compcode and a.cterms=d.ccode and d.ctype='TERMS' where a.compcode='$company' and a.cpono = '$csalesno'");
@@ -55,11 +67,38 @@
 			$lSent = $row['lsent'];
 
 			$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
-			$cpreparedBySign = $row['cusersign'];
+			$cpreparedBySign = $row['cusersign']; 
 		}
 	}
 
 	$sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t A left join items B on A.citemno=B.cpartno where A.compcode='$company' and A.ctranno = '$csalesno'");
+
+
+	$sqlbody = mysqli_query($con,"select a.*,b.citemdesc, a.citemdesc as newdesc, c.locations_id from purchase_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno left join purchrequest c on a.compcode=c.compcode and a.creference=c.ctranno where a.compcode='$company' and a.cpono = '$csalesno' Order by a.nident");
+
+	$roxbdy = array();
+	$roxbdyPRLIST = array();
+	$roxbdyDEPLIST = array();
+	if (mysqli_num_rows($sqlbody)!=0) {
+
+		$cnt = 0;
+		while($rowdtls = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
+			$roxbdy[] = $rowdtls;
+			if(!in_array($rowdtls['creference'], $roxbdyPRLIST)){
+				if($rowdtls['creference']!="" && $rowdtls['creference']!=null){
+					$roxbdyPRLIST[] = $rowdtls['creference'];
+				}
+			}
+
+			if(!in_array($rowdtls['locations_id'], $roxbdyDEPLIST)){
+				if($rowdtls['locations_id']!="" && $rowdtls['locations_id']!=null){
+					$roxbdyDEPLIST[] = $rowdtls['locations_id'];
+				}
+			}
+		}
+	}
+
+	//print_r($roxbdy);
 
 ?>
 
@@ -165,7 +204,7 @@
 								</tr>
 								<tr>
 									<td> <b>PR No.</b> </td>
-									<td> &nbsp; </td>
+									<td> <?=implode("<br>", $roxbdyPRLIST)?> </td>
 								</tr>
 								<tr>
 									<td> <b>PAGE</b> </td>
@@ -173,7 +212,19 @@
 								</tr>
 								<tr>
 									<td> <b>COST CENTER</b> </td>
-									<td> &nbsp; </td>
+									<td> 
+										<?php
+											$cncost = 0;
+											foreach($roxbdyDEPLIST as $rxcost){
+												$cncost++;
+												if($cncost>1){
+													echo "<br>";
+												}
+
+												echo (isset($locsdesc[$rxcost])) ? $locsdesc[$rxcost] : $rxcost;
+											}
+										?> 
+									</td>
 								</tr>
 							</table>
 						</td>
@@ -210,13 +261,9 @@
 						<th class="tdpadx" with="100px"><b>Amount</b></th>
 					</tr>
 
-					<?php 
-					$sqlbody = mysqli_query($con,"select a.*,b.citemdesc, a.citemdesc as newdesc from purchase_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.cpono = '$csalesno' Order by a.nident");
-
-					if (mysqli_num_rows($sqlbody)!=0) {
-
-						$cnt = 0;
-						while($rowdtls = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){ 
+					<?php
+					if(count($roxbdy)>0){
+						foreach($roxbdy as $rowdtls){
 							$cnt++;
 							if(floatval($rowdtls['nrate']) > 0){
 								$xwithvat = 1;
@@ -236,7 +283,6 @@
 
 					<?php 
 						} 
-
 					}
 					?>
 
@@ -251,7 +297,7 @@
 		</td></tr></tbody>
 
 
-		<tfoot><tr><td>
+		<tr><td>
 			<div class="footer-space">
 				<table border="0" width="100%" style="border-collapse:collapse" cellpadding="5px">
 					<tr>
@@ -276,43 +322,94 @@
 					</tr>
 				</table>
 					
-				<table border="1" width="100%" style="border-collapse:collapse" cellpadding="5px">
-					<tr>
-						<td width="25%">
-							Prepared By
-						</td>
-						<td width="25%">
-							Checked By
-						</td>
-						<td width="25%">
-							Approved By
-						</td>
-						<td rowspan="2" style="border-top: hidden; border-bottom: hidden;" width="5%">
-							&nbsp;
-						</td>
-						<td width="20%">
-							Supplier Confirmation
-						</td>
-					</tr>
+				<table border="1" width="100%" style="border-collapse:collapse" cellpadding="5px">					
 					<tr>
 						<td height="50px">
-							&nbsp;
+							<?php
+								if($lSent==1 && $cpreparedBySign!=""){
+							?>
+								<div style="text-align: center">Prepared By</div>
+								<div style="text-align: center"><div><img src = '<?=$cpreparedBySign?>?x=<?=time()?>' ></div> 
+							
+								<?php
+								}else{
+								?>
+									<div style="padding-bottom: 50px; text-align: center">Prepared By</div>
+									<div style="text-align: center"><?=$cpreparedBy?></div>
+							<?php
+								}
+							?>
 						</td>
-						<td height="50px">
-							&nbsp;
-						</td>
-						<td height="50px">
-							&nbsp;
-						</td>
-						<td height="50px">
-							&nbsp;
+
+						<?php
+
+							$sqdts = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign,a.nlevel from purchase_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cpono = '$csalesno' order by a.nlevel");
+
+							if (mysqli_num_rows($sqdts)!=0) {
+								while($row = mysqli_fetch_array($sqdts, MYSQLI_ASSOC)){
+						?>
+							<td width="25%" height="50px">
+								<?php
+									if($row['lapproved']==1 && $row['cusersign']!=""){
+								?>
+								<div style="text-align: center">
+										<?php
+											if($row['nlevel']==1){
+												echo "Checked By";
+											}elseif($row['nlevel']==2 || $row['nlevel']==3){
+												echo "Approved By";
+											}
+										?>
+								</div>
+								<div style="text-align: center"><div><img src = '<?=$row['cusersign']?>?x=<?=time()?>' ></div>
+								<?php
+									}else{
+								?>
+									<div style="padding-bottom: 60px; text-align: center">
+										<?php
+											if($row['nlevel']==1){
+												echo "Checked By";
+											}elseif($row['nlevel']==2 || $row['nlevel']==3){
+												echo "Approved By";
+											}
+										?>
+									</div>
+									<div style="text-align: center"><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div>
+								<?php
+									}
+								?>
+
+							</td>
+						<?php
+								}
+							}else{
+						?>
+							<td width="25%" height="50px">							
+								<div style="padding-bottom: 50px; text-align: center">
+									Checked By <br><br><br><br>
+								</div>								
+							</td>
+							<td width="25%" height="50px">							
+								<div style="padding-bottom: 50px; text-align: center">
+									Approved By <br><br><br><br>
+								</div>								
+							</td>
+						<?php
+							}
+						?>
+
+						<td width="25%" height="50px">							
+							<div style="padding-bottom: 60px; text-align: center">
+								Supplier Confirmation
+							</div>	
+							<br>							
 						</td>
 					</tr>
 				</table>
 						
 				
 			</div>
-		</td></tr></tfoot>
+		</td></tr>
 	</table>
 
 </body>

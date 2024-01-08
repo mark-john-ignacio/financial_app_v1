@@ -152,8 +152,9 @@
 										$output.='<p>Myx Financials,</p>';
 
 										$subject = $logonamz." - Purchase Request";
+										$getcred = getEmailCred();
 
-										sendEmail($rs['cemailadd'],$output,$subject,$logonamz);
+										sendEmail($rs['cemailadd'],$output,$subject,$logonamz,$getcred);
 
 									}
 								}
