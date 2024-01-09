@@ -18,7 +18,7 @@ include('../../include/access2.php');
 				
 				if($citemno <> ""){
 					
-					$sql = "select suppliers.*, A1.cacctdesc as salescode, A2.cdesc as ewtdesc, A2.nrate as ewtrate, A1.cacctid from suppliers LEFT JOIN accounts A1 ON (suppliers.cacctcode = A1.cacctno) LEFT JOIN wtaxcodes A2 ON (suppliers.newtcode = A2.ctaxcode) where suppliers.compcode='".$_SESSION['companyid']."' and suppliers.ccode='$citemno'";
+					$sql = "select suppliers.*, A1.cacctdesc as salescode, A2.cdesc as ewtdesc, A2.nrate as ewtrate, A1.cacctid from suppliers LEFT JOIN accounts A1 ON suppliers.compcode = A1.compcode  and suppliers.cacctcode = A1.cacctno LEFT JOIN wtaxcodes A2 ON suppliers.compcode = A2.compcode and suppliers.newtcode = A2.ctaxcode where suppliers.compcode='".$_SESSION['companyid']."' and suppliers.ccode='$citemno'";
 				}else{
 					header('Items.php');
 					die();

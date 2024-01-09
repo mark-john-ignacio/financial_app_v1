@@ -12,26 +12,22 @@
 	$sqlcomp = mysqli_query($con,"select * from company where compcode='$company'");
 
 	if(mysqli_num_rows($sqlcomp) != 0){
-
 		while($rowcomp = mysqli_fetch_array($sqlcomp, MYSQLI_ASSOC))
 		{
 			$logosrc = $rowcomp['clogoname'];
 			$logoaddrs = $rowcomp['compadd'];
 			$logonamz = $rowcomp['compname'];
 		}
-
 	}
 
 	$locsdesc = array();
 	$sqlcomp = mysqli_query($con,"select * from locations where compcode='$company'");
 
 	if(mysqli_num_rows($sqlcomp) != 0){
-
 		while($rowcomp = mysqli_fetch_array($sqlcomp, MYSQLI_ASSOC))
 		{
 			$locsdesc[$rowcomp['nid']] = $rowcomp['cdesc'];
 		}
-
 	}
 	
 	$csalesno = $_REQUEST['hdntransid'];
@@ -73,14 +69,12 @@
 
 	$sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t A left join items B on A.citemno=B.cpartno where A.compcode='$company' and A.ctranno = '$csalesno'");
 
-
 	$sqlbody = mysqli_query($con,"select a.*,b.citemdesc, a.citemdesc as newdesc, c.locations_id from purchase_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno left join purchrequest c on a.compcode=c.compcode and a.creference=c.ctranno where a.compcode='$company' and a.cpono = '$csalesno' Order by a.nident");
 
 	$roxbdy = array();
 	$roxbdyPRLIST = array();
 	$roxbdyDEPLIST = array();
 	if (mysqli_num_rows($sqlbody)!=0) {
-
 		$cnt = 0;
 		while($rowdtls = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
 			$roxbdy[] = $rowdtls;
@@ -97,9 +91,6 @@
 			}
 		}
 	}
-
-	//print_r($roxbdy);
-
 ?>
 
 <!DOCTYPE html>
@@ -126,19 +117,14 @@
 
 
 		@page {
-			margin: 2mm
 			size: letter portrait;
 		}
 
 		@media print {
-			thead {display: table-header-group;} 
-			tfoot {display: table-footer-group;}
-			
-			body {margin: 2mm}
+			thead {display: table-header-group;} 			
+			body {margin: 6.35mm}
 		}
-		
-
-		
+			
 	</style>
 </head>
 
