@@ -652,24 +652,13 @@ else{
 
 	xtoday = xmm + '/' + xdd + '/' + xyyyy;
 
-	<?php
-		if(count(@$arrname)>0){
-	?>
-		var file_name = <?= json_encode(@$arrname) ?>;
-		/**
-		 * Checking of list files
-		 */
-		file_name.map(({name, ext}) => {
-				console.log("Name: " + name + " ext: " + ext)
-		});
-
-	<?php
-		}else{
-	?>
-		var file_name = "";
-	<?php
-		}
-	?>
+	var file_name = <?= json_encode(@$arrname) ?>;
+	/**
+	 * Checking of list files
+	 */
+	file_name.map(({name, ext}) => {
+			console.log("Name: " + name + " ext: " + ext)
+	});
 
 	var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
 	var arrimg = new Array("jpg","png","gif","jpeg");
