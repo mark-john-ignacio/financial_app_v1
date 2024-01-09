@@ -326,7 +326,6 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</td>
 									<tH width="150" style="padding:2px">EWT Code: </tH>
 									<td style="padding:2px">
-										<div id="setewtval" style="<?=($cpaytype==0) ? "display:none" : ""?>"> 
 											<select id="selewt" name="selewt" class="form-control input-sm selectpicker"  tabindex="3">
 													<option value="none">None</option>
 													<option value="multi">Multiple</option>
@@ -342,7 +341,6 @@ if (mysqli_num_rows($sqlhead)!=0) {
 													?>
 													
 											</select>
-										</div>
 									</td>
 								</tr>
 
@@ -430,115 +428,114 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 
         <div class="alt2" dir="ltr" style="
-						margin: 0px;
-						padding: 3px;
-						border: 1px solid #919b9c;
-						width: 100%;
-						height: 250px;
-						text-align: left;
-						overflow: auto">
+			margin: 0px;
+			padding: 3px;
+			border: 1px solid #919b9c;
+			width: 100%;
+			height: 250px;
+			text-align: left;
+			overflow: auto">
 	
             <table id="MyTable" class="MyTable" cellpadding"3px" width="130%" border="0">
-							<thead> 
-								<tr>
-									<th style="border-bottom:1px solid #999">Code</th>
-									<th style="border-bottom:1px solid #999">Description</th>
-									<th style="border-bottom:1px solid #999 <?=($cpaytype==0) ? "; display:none" : ""?>" class="codeshdn">EWT Code</th>
-									<th style="border-bottom:1px solid #999 <?=($cpaytype==0) ? "; display:none" : ""?>" class="codeshdn">VAT</th>
-									<th style="border-bottom:1px solid #999">UOM</th>
-									<th style="border-bottom:1px solid #999">Qty</th>
-									<th style="border-bottom:1px solid #999">Price</th>
-									<th style="border-bottom:1px solid #999">Amount</th>
-									<th style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
-									<th style="border-bottom:1px solid #999">Date Needed</th>
-									<th style="border-bottom:1px solid #999">Remarks</th>
-									<th style="border-bottom:1px solid #999">&nbsp;</th>
-								</tr>
-							</thead>
-							<tbody class="tbody">
-              </tbody>                    
-						</table>
-
-				</div>
-
-				<br>
-
-				<table width="100%" border="0" cellpadding="3">
+				<thead> 
 					<tr>
-						<td rowspan="2" width="70%">
-							<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
-					
-							<?php
-								if($poststat=="True"){
-							?>
-
-							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Purch.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
-								Back to Main<br>(ESC)
-							</button>
-						
-							<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='Purch_new.php';" id="btnNew" name="btnNew">
-								New<br>(F1)
-							</button>
-
-							<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
-								PR<br>(Insert)
-							</button>
-
-							<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
-								Undo Edit<br>(CTRL+Z)
-							</button>
-
-							<?php
-								$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'Purch_print'");
-
-								if(mysqli_num_rows($sql) == 1){
-								
-							?>
-
-								<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','Print');" id="btnPrint" name="btnPrint">
-									Print<br>(CTRL+P)
-								</button>
-
-								<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','PDF');" id="btnPDF" name="btnPDF">
-									View PDF<br>&nbsp;
-								</button>
-
-								<?php
-									if($lPosted==1){
-								?>
-								<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','Email');" id="btnEmail" name="btnEmail">
-									Send Email<br>&nbsp;
-								</button>
-
-							<?php		
-									}
-								}
-							?>
-
-							<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
-								Edit<br>(CTRL+E)    
-							</button>
-							
-							<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
-								Save<br>(CTRL+S)
-							</button>
-						
-							<?php
-								}
-							?>
-
-						</td>
-						<td width="110px" align="right"><b>Gross Amount </b>&nbsp;&nbsp;</td>
-							<td width="150px"> <input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="<?php echo number_format($nbasegross,4); ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10">
-						</td>
+						<th style="border-bottom:1px solid #999">Code</th>
+						<th style="border-bottom:1px solid #999">Description</th>
+						<th style="border-bottom:1px solid #999" class="codeshdn">EWT Code</th>
+						<th style="border-bottom:1px solid #999" class="codeshdn">VAT</th>
+						<th style="border-bottom:1px solid #999">UOM</th>
+						<th style="border-bottom:1px solid #999">Qty</th>
+						<th style="border-bottom:1px solid #999">Price</th>
+						<th style="border-bottom:1px solid #999">Amount</th>
+						<th style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
+						<th style="border-bottom:1px solid #999">Date Needed</th>
+						<th style="border-bottom:1px solid #999">Remarks</th>
+						<th style="border-bottom:1px solid #999">&nbsp;</th>
 					</tr>
-					<tr>
-						<td width="110px" align="right"><b>Gross Amount in <?php echo $nvaluecurrbase; ?></b>&nbsp;&nbsp;</td>
-						<td width="150px"> <input type="text" id="txtnGross" name="txtnGross" readonly value="<?php echo number_format($Gross,4); ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10"></td>
-					</tr>
-				</table>
+				</thead>
+				<tbody class="tbody">
+              	</tbody>                    
+			</table>
+
+		</div>
+
+		<br>
+
+		<table width="100%" border="0" cellpadding="3">
+			<tr>
+				<td rowspan="2" width="70%">
+					<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
+			
+					<?php
+						if($poststat=="True"){
+					?>
+
+					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Purch.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
+						Back to Main<br>(ESC)
+					</button>
 				
+					<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='Purch_new.php';" id="btnNew" name="btnNew">
+						New<br>(F1)
+					</button>
 
+					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
+						PR<br>(Insert)
+					</button>
+
+					<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
+						Undo Edit<br>(CTRL+Z)
+					</button>
+
+					<?php
+						$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'Purch_print'");
+
+						if(mysqli_num_rows($sql) == 1){
+						
+					?>
+
+						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','Print');" id="btnPrint" name="btnPrint">
+							Print<br>(CTRL+P)
+						</button>
+
+						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','PDF');" id="btnPDF" name="btnPDF">
+							View PDF<br>&nbsp;
+						</button>
+
+						<?php
+							if($lPosted==1){
+						?>
+						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','Email');" id="btnEmail" name="btnEmail">
+							Send Email<br>&nbsp;
+						</button>
+
+					<?php		
+							}
+						}
+					?>
+
+					<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
+						Edit<br>(CTRL+E)    
+					</button>
+					
+					<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
+						Save<br>(CTRL+S)
+					</button>
+				
+					<?php
+						}
+					?>
+
+				</td>
+				<td width="110px" align="right"><b>Gross Amount </b>&nbsp;&nbsp;</td>
+					<td width="150px"> <input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="<?php echo number_format($nbasegross,4); ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10">
+				</td>
+			</tr>
+			<tr>
+				<td width="110px" align="right"><b>Gross Amount in <?php echo $nvaluecurrbase; ?></b>&nbsp;&nbsp;</td>
+				<td width="150px"> <input type="text" id="txtnGross" name="txtnGross" readonly value="<?php echo number_format($Gross,4); ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10"></td>
+			</tr>
+		</table>
+				
     </fieldset>
 	</form>
 
@@ -1065,16 +1062,16 @@ else{
 			if($(this).val()==1){
 				$("#selterms").attr("disabled", true);
 
-				$("#setewtval").show();  
-				$("#setewt").show(); 
-				$(".codeshdn").show();
+				//$("#setewtval").show();  
+				//$("#setewt").show(); 
+				//$(".codeshdn").show();
 
 			}else{
 				$("#selterms").attr("disabled", false);
 
-				$("#setewtval").hide();
-				$("#setewt").hide();
-				$(".codeshdn").hide();
+				//$("#setewtval").hide();
+				//$("#setewt").hide();
+				//$(".codeshdn").hide();
 
 			}
 		});
@@ -1179,13 +1176,13 @@ else{
 				var itmnqty = nqty;
 				var dneeded = moment(dneed).format('MM/DD/YYYY');
 				
-					if(itmprice == null){
-						var itmnqty = 1;
-						var itmprice = 0;
-						var itmamnt = 0;
-						var itmfactor = 1;
-						var mainuom = itmunit.toUpperCase();
-					}
+				if(itmprice == null){
+					var itmnqty = 1;
+					var itmprice = 0;
+					var itmamnt = 0;
+					var itmfactor = 1;
+					var mainuom = itmunit.toUpperCase();
+				}
 			}
 		}else{
 			var itmprice = chkprice(itmcode,itmunit);
@@ -1225,62 +1222,59 @@ else{
 		var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 		var lastRow = tbl.length;
 
-		var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+" <input type='hidden' value='"+crefPR+"' name=\"hdncreference\" id=\"hdncreference\"> <input type='hidden' value='"+crefPRIdent+"' name=\"hdnrefident\" id=\"hdnrefident\"> </td>";
-		var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\"><input type='hidden' value='"+itmdesc.toUpperCase()+"' name=\"txtitemdesc\" id=\"txtitemdesc\">"+itmdesc.toUpperCase()+"</td>";
-
-
-		if($("#selpaytype").val()=="1"){
-			var ewtstyle="";
-		}else{
-			var ewtstyle="display: none";
-		}
-
-				var gvnewt = $("#selewt").val();
-				var xz = $("#hdnewtlist").val();
-				ewtoptions = "";
-				$.each(jQuery.parseJSON(xz), function() { 
-					if(gvnewt=="multi"){
-						if(this['ctaxcode']==ewtcode){
-							isselctd = "selected";
-						}else{
-							isselctd = "";
-						}
-					}else{
-						if(gvnewt==this['ctaxcode']){
-							isselctd = "selected";
-						}else{
-							isselctd = "";
-						}
-					}
-					ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
-				});
-
-				if(gvnewt!=="none" || gvnewt!=="multi"){
-					isdisabled = "disabled";
-				}else{
-					isdisabled = "";
-				}
-
-				var ewttd = "<td width=\"100\" nowrap style=\""+ewtstyle+"\" class=\"codeshdn\"> <select class='form-control input-xs' name=\"selitmewtyp\" id=\"selitmewtyp"+lastRow+"\" "+isdisabled+"> <option value=\"none\">None</option>" + ewtoptions + "</select> </td>";
-
-
-
-				var xz = $("#hdntaxcodes").val();
-				taxoptions = "";
-				$.each(jQuery.parseJSON(xz), function() { 
-					if(vatcode==this['ctaxcode']){
-						isselctd = "selected";
-					}else{
-						isselctd = "";
-					}
-					taxoptions = taxoptions + "<option value='"+this['ctaxcode']+"' data-id='"+this['nrate']+"' "+isselctd+">"+this['ctaxdesc']+"</option>";
-				});
-
-				var vattd = "<td width=\"120\" nowrap style=\""+ewtstyle+"\" class=\"codeshdn\"> <select class='form-control input-xs' name=\"selitmvatyp\" id=\"selitmvatyp"+lastRow+"\">" + taxoptions + "</select> </td>";
-
-
+		var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode"+lastRow+"\">"+itmcode+" <input type='hidden' value='"+crefPR+"' name=\"hdncreference\" id=\"hdncreference\"> <input type='hidden' value='"+crefPRIdent+"' name=\"hdnrefident\" id=\"hdnrefident\"> </td>";
+		
+		var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\"><input type='hidden' value='"+itmdesc.toUpperCase()+"' name=\"txtitemdesc\" id=\"txtitemdesc"+lastRow+"\">"+itmdesc.toUpperCase()+"</td>";
 
 		var tditmunit = "<td width=\"80\" style=\"padding: 1px\" nowrap> <select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\">"+uomoptions+"</select> </td>";
+
+		//if($("#selpaytype").val()=="1"){
+			var ewtstyle="";
+		//}else{
+		//	var ewtstyle="display: none";
+		//}
+
+		var gvnewt = $("#selewt").val();
+		var xz = $("#hdnewtlist").val();
+		ewtoptions = "";
+		$.each(jQuery.parseJSON(xz), function() { 
+			if(gvnewt=="multi"){
+				if(this['ctaxcode']==ewtcode){
+					isselctd = "selected";
+				}else{
+					isselctd = "";
+				}
+			}else{
+				if(gvnewt==this['ctaxcode']){
+					isselctd = "selected";
+				}else{
+					isselctd = "";
+				}
+			}
+			ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
+		});
+
+		if(gvnewt!=="none" || gvnewt!=="multi"){
+			isdisabled = "disabled";
+		}else{
+			isdisabled = "";
+		}
+
+		var ewttd = "<td width=\"100\" nowrap style=\""+ewtstyle+"\" class=\"codeshdn\"> <select class='form-control input-xs' name=\"selitmewtyp\" id=\"selitmewtyp"+lastRow+"\" "+isdisabled+"> <option value=\"none\">None</option>" + ewtoptions + "</select> </td>";
+
+		var xz = $("#hdntaxcodes").val();
+		taxoptions = "";
+		$.each(jQuery.parseJSON(xz), function() { 
+			if(vatcode==this['ctaxcode']){
+				isselctd = "selected";
+			}else{
+				isselctd = "";
+			}
+
+			taxoptions = taxoptions + "<option value='"+this['ctaxcode']+"' data-id='"+this['nrate']+"' "+isselctd+">"+this['ctaxdesc']+"</option>";
+		});
+
+		var vattd = "<td width=\"120\" nowrap style=\""+ewtstyle+"\" class=\"codeshdn\"> <select class='form-control input-xs' name=\"selitmvatyp\" id=\"selitmvatyp"+lastRow+"\">" + taxoptions + "</select> </td>";
 
 		var tditmqty = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='"+itmnqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+mainuom+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+itmfactor+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
 			
@@ -1292,61 +1286,105 @@ else{
 
 		var tdneeded = "<td width=\"100\" style=\"padding: 1px; position:relative;\" nowrap><input type='text' class='datepick form-control input-xs' id='dneed"+lastRow+"' name='dneed' value='"+dneeded+"' /></td>"
 		
-		var tditmdel = "<td width=\"80\" style=\"padding: 1px\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + lastRow + "' value='delete' /> </td>";
+		var tditmdel = "<td width=\"80\" style=\"padding: 1px\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + lastRow + "' value='delete' data-var='"+lastRow+"'/> </td>";
 
 		var tditmremarks = "<td width=\"150\"> <input type='text' class='form-control input-xs' value='"+crem+"' name=\"txtitemrem\" id=\"txtitemrem" + lastRow + "\" maxlength=\"255\"></td>";
 
 		$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + ewttd + vattd + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmamount+ tdneeded + tditmremarks + tditmdel + '</tr>');
 
 
-										$("#del"+lastRow).on('click', function() {
-											$(this).closest('tr').remove();
-										});
+			$("#del"+lastRow).on('click', function() {
+				var xy = $(this).data('var');
 
-										//$("input.numeric").numeric();
-										$("input.numeric2").autoNumeric('init',{mDec:4});
-										$("input.numeric").autoNumeric('init',{mDec:2});
+				$(this).closest('tr').remove();
+				ReIndexTbl(xy);
+				ComputeGross();
+			});
 
-										$("input.numeric").on("click", function () {
-											$(this).select();
-										});
-										
-										$("input.numeric").on("keyup", function () {
-											ComputeAmt($(this).attr('id'));
-											ComputeGross();
-										});
-										
-										$("#seluom"+lastRow).on('change', function() {
+			//$("input.numeric").numeric();
+			$("input.numeric2").autoNumeric('init',{mDec:4});
+			$("input.numeric").autoNumeric('init',{mDec:2});
 
-											var xyz = chkprice(itmcode,$(this).val());
-											
-											$('#txtnprice'+lastRow).val(xyz.trim());
-											
-											ComputeAmt($(this).attr('id'));
-											ComputeGross();
-											
-											var fact = setfactor($(this).val(), itmcode);
-											
-											$('#hdnfactor'+lastRow).val(fact.trim());
-											
-										});
-										
-										$('#dneed'+lastRow).datetimepicker({
-											format: 'MM/DD/YYYY',
-											useCurrent: false,
-											minDate: moment().format('L'),
-											defaultDate: moment().format('L'),
-											widgetPositioning: {
-													horizontal: 'right',
-													vertical: 'bottom'
-											}
-										});
+			$("input.numeric").on("click", function () {
+				$(this).select();
+			});
+			
+			$("input.numeric").on("keyup", function () {
+				ComputeAmt($(this).attr('id'));
+				ComputeGross();
+			});
+			
+			$("#seluom"+lastRow).on('change', function() {
 
-										ComputeGross();
+				var xyz = chkprice(itmcode,$(this).val());
+				
+				$('#txtnprice'+lastRow).val(xyz.trim());
+				
+				ComputeAmt($(this).attr('id'));
+				ComputeGross();
+				
+				var fact = setfactor($(this).val(), itmcode);
+				
+				$('#hdnfactor'+lastRow).val(fact.trim());
+				
+			});
+			
+			$('#dneed'+lastRow).datetimepicker({
+				format: 'MM/DD/YYYY',
+				useCurrent: false,
+				minDate: moment().format('L'),
+				defaultDate: moment().format('L'),
+				widgetPositioning: {
+						horizontal: 'right',
+						vertical: 'bottom'
+				}
+			});
+
+			ComputeGross();
 
 
 	}
 
+	function ReIndexTbl(xy){
+		var rowCount = $('#MyTable tr').length;						
+		if(rowCount>1){
+			for (var i = xy+1; i <= rowCount; i++) {
+
+				var ITMCode = document.getElementById('txtitemcode' + i);
+				var ITMuom = document.getElementById('seluom' + i);
+				var ITMewt = document.getElementById('selitmewtyp' + i);
+				var ITMvats = document.getElementById('selitmvatyp' + i);				
+				var ITMqty = document.getElementById('txtnqty' + i);
+				var ITMmauom = document.getElementById('hdnmainuom' + i);
+				var ITMfctr = document.getElementById('hdnfactor' + i);
+				var ITMprce = document.getElementById('txtnprice' + i);
+				var ITMtramnt = document.getElementById('txtntranamount' + i); 
+				var ITMamnt = document.getElementById('txtnamount' + i); 
+				var ITMneed = document.getElementById('dneed' + i);
+				var ITMdelx = document.getElementById('del' + i);
+				var ITMremx = document.getElementById('txtitemrem' + i);
+
+				var za = i - 1;
+
+				ITMCode.id = "txtitemcode" + za;
+				ITMuom.id = "seluom" + za;
+				ITMewt.id = "selitmewtyp" + za;
+				ITMvats.id = "selitmvatyp" + za;
+				ITMqty.id = "txtnqty" + za;
+				ITMmauom.id = "hdnmainuom" + za;
+				ITMfctr.id = "hdnfactor" + za;
+				ITMprce.id = "txtnprice" + za;
+				ITMtramnt.id = "txtntranamount" + za;
+				ITMamnt.id = "txtnamount" + za;
+				ITMneed.id = "dneed" + za;
+
+				ITMdelx.setAttribute('data-var',''+za+'');
+				ITMdelx.id = "del" + za;
+	
+				ITMremx.id = "txtitemrem" + za;
+			}
+		}
+	}
 
 		function ComputeAmt(nme){
 			var r = nme.replace( /^\D+/g, '');
@@ -1802,6 +1840,8 @@ else{
 					$('#txtprodid').val(item.id); 
 					$("#hdnunit").val(item.cunit); 
 					//alert(item.nqty);
+
+					//nqty, nprice, nbaseamt, namount, nfactor, cmainunit, dneed, crem="", ewtcode, vatcode, dxref, dcrefident
 					myFunctionadd(item.nqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.cmainunit,item.dneed,item.cremarks,item.cewtcode,item.ctaxcode,item.creference,item.nrefident);
 				});
 

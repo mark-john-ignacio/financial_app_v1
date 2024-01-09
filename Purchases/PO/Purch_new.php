@@ -196,59 +196,59 @@
 								<tr>
 									<tH width="100">Currency:</tH>
 									<td style="padding:2px">
-													<div class="col-xs-12 nopadding">
-														<div class="col-xs-6 nopadding">
-															<select class="form-control input-sm" name="selbasecurr" id="selbasecurr"> 						
-																<?php
-																		$nvaluecurrbase = "";	
-																		$nvaluecurrbasedesc = "";	
-																		$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
-																		
-																			if (mysqli_num_rows($result)!=0) {
-																				$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
-																				
-																				$nvaluecurrbase = $all_course_data['cvalue']; 
-																					
-																			}
-																			else{
-																				$nvaluecurrbase = "";
-																			}
-
-																			/*
-													
-																				$objcurrs = listcurrencies();
-																				$objrows = json_decode($objcurrs, true);
-																					
-																		foreach($objrows as $rows){
-																			if ($nvaluecurrbase==$rows['currencyCode']) {
-																				$nvaluecurrbasedesc = $rows['currencyName'];
-																			}
-
-																			if($rows['countryCode']!=="Crypto" && $rows['currencyName']!==null){
-
-																				*/
-
-																				$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
-																				if (mysqli_num_rows($sqlhead)!=0) {
-																					while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-																?>
-																			<option value="<?=$rows['id']?>" <?php if ($nvaluecurrbase==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
-																<?php
-																			}
-																		}
-																?>
-															</select>
-																<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?php echo $nvaluecurrbase; ?>"> 	
-																<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?php echo $nvaluecurrbasedesc; ?>"> 
-														</div>
-														<div class="col-xs-2 nopadwleft">
-															<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
-														</div>
-
-														<div class="col-xs-4" id="statgetrate" style="padding: 4px !important"> 
+										<div class="col-xs-12 nopadding">
+											<div class="col-xs-6 nopadding">
+												<select class="form-control input-sm" name="selbasecurr" id="selbasecurr"> 						
+													<?php
+															$nvaluecurrbase = "";	
+															$nvaluecurrbasedesc = "";	
+															$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+															
+															if (mysqli_num_rows($result)!=0) {
+																$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
+																
+																$nvaluecurrbase = $all_course_data['cvalue']; 
 																	
-														</div>
-													</div>
+															}
+															else{
+																$nvaluecurrbase = "";
+															}
+
+															/*
+									
+																$objcurrs = listcurrencies();
+																$objrows = json_decode($objcurrs, true);
+																		
+															foreach($objrows as $rows){
+																if ($nvaluecurrbase==$rows['currencyCode']) {
+																	$nvaluecurrbasedesc = $rows['currencyName'];
+																}
+
+																if($rows['countryCode']!=="Crypto" && $rows['currencyName']!==null){
+
+																	*/
+
+															$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+															if (mysqli_num_rows($sqlhead)!=0) {
+																while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+													?>
+																<option value="<?=$rows['id']?>" <?php if ($nvaluecurrbase==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
+													<?php
+																}
+															}
+													?>
+												</select>
+												<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?php echo $nvaluecurrbase; ?>"> 	
+												<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?php echo $nvaluecurrbasedesc; ?>"> 
+											</div>
+											<div class="col-xs-2 nopadwleft">
+												<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
+											</div>
+
+											<div class="col-xs-4" id="statgetrate" style="padding: 4px !important"> 
+														
+											</div>
+										</div>
 									</td>
 									<tH width="150" style="padding:2px">EWT Code:</tH>
 									<td style="padding:2px">
@@ -946,84 +946,85 @@ function myFunctionadd(){
 	var itmamt = parseFloat(itmnqty)*parseFloat(itmprice);
 	var itmbaseamt = parseFloat($("#basecurrval").val())*parseFloat(itmamt); 
 
-		var uomoptions = "";
-		
-		if(itmcode == "NEW_ITEM"){	
-			uomoptions = "<option value='"+itmunit.toUpperCase()+"'>"+itmunit.toUpperCase()+"</option>";
-		}else{
-			$.ajax ({
-				url: "../th_loaduomperitm.php",
-				data: { id: itmcode },
-				async: false,
-				dataType: "json",
-				success: function( data ) {
-												
-					console.log(data);
-					$.each(data,function(index,item){
-						if(item.id==itmunit){
-							isselctd = "selected";
-						}
-						else{
-							isselctd = "";
-						}
+	var uomoptions = "";
+	
+	if(itmcode == "NEW_ITEM"){	
+		uomoptions = "<option value='"+itmunit.toUpperCase()+"'>"+itmunit.toUpperCase()+"</option>";
+	}else{
+		$.ajax ({
+			url: "../th_loaduomperitm.php",
+			data: { id: itmcode },
+			async: false,
+			dataType: "json",
+			success: function( data ) {
+											
+				console.log(data);
+				$.each(data,function(index,item){
+					if(item.id==itmunit){
+						isselctd = "selected";
+					}
+					else{
+						isselctd = "";
+					}
+					
+					uomoptions = uomoptions + '<option value='+item.id+' '+isselctd+'>'+item.name+'</option>';
+				});
 						
-						uomoptions = uomoptions + '<option value='+item.id+' '+isselctd+'>'+item.name+'</option>';
-					});
-							
-												 
-				}
-			});
-		}
-		
+												
+			}
+		});
+	}
+	
 	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 	var lastRow = tbl.length;
 
-	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+" <input type='hidden' value='"+crefPR+"' name=\"hdncreference\" id=\"hdncreference\"> <input type='hidden' value='"+crefPRIdent+"' name=\"hdnrefident\" id=\"hdnrefident\"> </td>";
-	var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\"><input type='hidden' value='"+itmdesc.toUpperCase()+"' name=\"txtitemdesc\" id=\"txtitemdesc\">"+itmdesc.toUpperCase()+"</td>";
+	var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode"+lastRow+"\">"+itmcode+" <input type='hidden' value='"+crefPR+"' name=\"hdncreference\" id=\"hdncreference\"> <input type='hidden' value='"+crefPRIdent+"' name=\"hdnrefident\" id=\"hdnrefident\"> </td>";
+
+	var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\"><input type='hidden' value='"+itmdesc.toUpperCase()+"' name=\"txtitemdesc\" id=\"txtitemdesc"+lastRow+"\">"+itmdesc.toUpperCase()+"</td>";
+
 	var tditmunit = "<td width=\"80\" style=\"padding: 1px\" nowrap> <select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\">"+uomoptions+"</select> </td>";
 
 
-		if($("#selpaytype").val()=="1"){
-			var ewtstyle="";
+	//if($("#selpaytype").val()=="1"){
+		var ewtstyle="";
+	//}else{
+		//var ewtstyle="display: none";
+	//}
+
+	var gvnewt = $("#selewt").val();
+	var xz = $("#hdnewtlist").val();
+	ewtoptions = "";
+	$.each(jQuery.parseJSON(xz), function() { 
+		if(gvnewt==this['ctaxcode']){
+			isselctd = "selected";
 		}else{
-			var ewtstyle="display: none";
+			isselctd = "";
 		}
+		ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
+	});
 
-				var gvnewt = $("#selewt").val();
-				var xz = $("#hdnewtlist").val();
-				ewtoptions = "";
-				$.each(jQuery.parseJSON(xz), function() { 
-					if(gvnewt==this['ctaxcode']){
-						isselctd = "selected";
-					}else{
-						isselctd = "";
-					}
-					ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
-				});
+	if(gvnewt=="none" || gvnewt=="multi"){
+		isdisabled = "disabled";
+	}else{
+		isdisabled = "";
+	}
 
-				if(gvnewt=="none" || gvnewt=="multi"){
-					isdisabled = "disabled";
-				}else{
-					isdisabled = "";
-				}
-
-				var ewttd = "<td width=\"100\" nowrap style=\""+ewtstyle+"\" class=\"codeshdn\"> <select class='form-control input-xs' name=\"selitmewtyp\" id=\"selitmewtyp"+lastRow+"\" "+isdisabled+"> <option value=\"none\">None</option>" + ewtoptions + "</select> </td>";
+	var ewttd = "<td width=\"100\" nowrap style=\""+ewtstyle+"\" class=\"codeshdn\"> <select class='form-control input-xs' name=\"selitmewtyp\" id=\"selitmewtyp"+lastRow+"\" "+isdisabled+"> <option value=\"none\">None</option>" + ewtoptions + "</select> </td>";
 
 
 
-				var xz = $("#hdntaxcodes").val();
-				taxoptions = "";
-				$.each(jQuery.parseJSON(xz), function() { 
-					if($("#hdncvat").val()==this['ctaxcode']){
-						isselctd = "selected";
-					}else{
-						isselctd = "";
-					}
-					taxoptions = taxoptions + "<option value='"+this['ctaxcode']+"' data-id='"+this['nrate']+"' "+isselctd+">"+this['ctaxdesc']+"</option>";
-				});
+	var xz = $("#hdntaxcodes").val();
+	taxoptions = "";
+	$.each(jQuery.parseJSON(xz), function() { 
+		if($("#hdncvat").val()==this['ctaxcode']){
+			isselctd = "selected";
+		}else{
+			isselctd = "";
+		}
+		taxoptions = taxoptions + "<option value='"+this['ctaxcode']+"' data-id='"+this['nrate']+"' "+isselctd+">"+this['ctaxdesc']+"</option>";
+	});
 
-				var vattd = "<td width=\"120\" nowrap style=\""+ewtstyle+"\" class=\"codeshdn\"> <select class='form-control input-xs' name=\"selitmvatyp\" id=\"selitmvatyp"+lastRow+"\">" + taxoptions + "</select> </td>";
-
+	var vattd = "<td width=\"120\" nowrap style=\""+ewtstyle+"\" class=\"codeshdn\"> <select class='form-control input-xs' name=\"selitmvatyp\" id=\"selitmvatyp"+lastRow+"\">" + taxoptions + "</select> </td>";
 
 	var tditmqty = "<td width=\"100\" style=\"padding: 1px\" nowrap> <input type='text' value='"+itmnqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+itmnmain+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+itmnfact+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
 		
@@ -1035,59 +1036,104 @@ function myFunctionadd(){
 
 	var tdneeded = "<td width=\"100\" style=\"padding: 1px; position:relative;\" nowrap><input type='text' class='form-control input-xs' id='dneed"+lastRow+"' name='dneed' value='"+dneeded+"' /></td>"
 	
-	var tditmdel = "<td width=\"80\" style=\"padding: 1px\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + lastRow + "' value='delete' /> </td>";
+	var tditmdel = "<td width=\"80\" style=\"padding: 1px\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + lastRow + "' value='delete' data-var='"+lastRow+"'/> </td>";
 
 	var tditmremarks = "<td width=\"150\"> <input type='text' class='form-control input-xs' value='' name=\"txtitemrem\" id=\"txtitemrem" + lastRow + "\" maxlength=\"255\"></td>";
 
 	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + ewttd + vattd + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmamount+ tdneeded  + tditmremarks + tditmdel + '</tr>');
 
 
-									$("#del"+lastRow).on('click', function() {
-										$(this).closest('tr').remove();
-									});
+		$("#del"+lastRow).on('click', function() {
+			var xy = $(this).data('var');
 
-									$("input.numeric2").autoNumeric('init',{mDec:4});
-									$("input.numeric").autoNumeric('init',{mDec:2});
+			$(this).closest('tr').remove();
+			ReIndexTbl(xy);
+			ComputeGross();
+		});
 
-									//$("input.numeric").numeric();
-									$("input.numeric").on("click", function () {
-									   $(this).select();
-									});
-									
-									$("input.numeric").on("keyup", function () {
-									   ComputeAmt($(this).attr('id'));
-									   ComputeGross();
-									});
-									
-									$("#seluom"+lastRow).on('change', function() {
+		$("input.numeric2").autoNumeric('init',{mDec:4});
+		$("input.numeric").autoNumeric('init',{mDec:2});
 
-										var xyz = chkprice(itmcode,$(this).val());
-										
-										$('#txtnprice'+lastRow).val(xyz.trim());
-										
-										ComputeAmt($(this).attr('id'));
-										ComputeGross();
-										
-										var fact = setfactor($(this).val(), itmcode);
-										
-										$('#hdnfactor'+lastRow).val(fact.trim());
-										
-									});
+		//$("input.numeric").numeric();
+		$("input.numeric, input.numeric2").on("click", function () {
+			$(this).select();
+		});
+		
+		$("input.numeric, input.numeric2").on("keyup", function () {
+			ComputeAmt($(this).attr('id'));
+			ComputeGross();
+		});
+		
+		$("#seluom"+lastRow).on('change', function() {
 
-									$('#dneed'+lastRow).datetimepicker({
-										format: 'MM/DD/YYYY',
-										useCurrent: false,
-										minDate: moment().format('L'),
-										defaultDate: moment().format('L'),
-										widgetPositioning: {
-												horizontal: 'right',
-												vertical: 'bottom'
-										}
-									});
+			var xyz = chkprice(itmcode,$(this).val());
+			
+			$('#txtnprice'+lastRow).val(xyz.trim());
+			
+			ComputeAmt($(this).attr('id'));
+			ComputeGross();
+			
+			var fact = setfactor($(this).val(), itmcode);
+			
+			$('#hdnfactor'+lastRow).val(fact.trim());
+			
+		});
+
+		$('#dneed'+lastRow).datetimepicker({
+			format: 'MM/DD/YYYY',
+			useCurrent: false,
+			minDate: moment().format('L'),
+			defaultDate: moment().format('L'),
+			widgetPositioning: {
+					horizontal: 'right',
+					vertical: 'bottom'
+			}
+		});
 									
 
 
 }
+
+	function ReIndexTbl(xy){
+		var rowCount = $('#MyTable tr').length;						
+		if(rowCount>1){
+			for (var i = xy+1; i <= rowCount; i++) {
+
+				var ITMCode = document.getElementById('txtitemcode' + i);
+				var ITMuom = document.getElementById('seluom' + i);
+				var ITMewt = document.getElementById('selitmewtyp' + i);
+				var ITMvats = document.getElementById('selitmvatyp' + i);				
+				var ITMqty = document.getElementById('txtnqty' + i);
+				var ITMmauom = document.getElementById('hdnmainuom' + i);
+				var ITMfctr = document.getElementById('hdnfactor' + i);
+				var ITMprce = document.getElementById('txtnprice' + i);
+				var ITMtramnt = document.getElementById('txtntranamount' + i); 
+				var ITMamnt = document.getElementById('txtnamount' + i); 
+				var ITMneed = document.getElementById('dneed' + i);
+				var ITMdelx = document.getElementById('del' + i);
+				var ITMremx = document.getElementById('txtitemrem' + i);
+
+				var za = i - 1;
+
+				ITMCode.id = "txtitemcode" + za;
+				ITMuom.id = "seluom" + za;
+				ITMewt.id = "selitmewtyp" + za;
+				ITMvats.id = "selitmvatyp" + za;
+				ITMqty.id = "txtnqty" + za;
+				ITMmauom.id = "hdnmainuom" + za;
+				ITMfctr.id = "hdnfactor" + za;
+				ITMprce.id = "txtnprice" + za;
+				ITMtramnt.id = "txtntranamount" + za;
+				ITMamnt.id = "txtnamount" + za;
+				ITMneed.id = "dneed" + za;
+
+				ITMdelx.setAttribute('data-var',''+za+'');
+				ITMdelx.id = "del" + za;
+	
+				ITMremx.id = "txtitemrem" + za;
+			}
+		}
+	}
 
 
 		function ComputeAmt(nme){
