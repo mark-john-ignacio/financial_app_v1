@@ -652,14 +652,24 @@ else{
 
 	xtoday = xmm + '/' + xdd + '/' + xyyyy;
 
+	<?php
+		if(count(@$arrname)>0){
+	?>
+		var file_name = <?= json_encode(@$arrname) ?>;
+		/**
+		 * Checking of list files
+		 */
+		file_name.map(({name, ext}) => {
+				console.log("Name: " + name + " ext: " + ext)
+		});
 
-	var file_name = <?= json_encode(@$arrname) ?>;
-	/**
-	 * Checking of list files
-	 */
-	file_name.map(({name, ext}) => {
-			console.log("Name: " + name + " ext: " + ext)
-	})
+	<?php
+		}else{
+	?>
+		var file_name = "";
+	<?php
+		}
+	?>
 
 	var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
 	var arrimg = new Array("jpg","png","gif","jpeg");
@@ -670,7 +680,7 @@ else{
 	/**
 	 * setting up an list of file and config of a file
 	 */
-	file_name.map(({name, ext}, i) => {
+		file_name.map(({name, ext}, i) => {
 		list_file.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/QO/<?=$company."_".$txtctranno?>/" + name)
 		console.log(ext);
 
