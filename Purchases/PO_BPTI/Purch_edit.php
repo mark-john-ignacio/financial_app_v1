@@ -1189,7 +1189,7 @@ else{
 					url: "../th_product.php",
 					dataType: "json",
 					data: {
-						query: $("#txtprodnme").val()
+						query: $("#txtchangeitm").val()
 					},
 					success: function (data) {
 						response(data);
