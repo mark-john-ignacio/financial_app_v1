@@ -24,7 +24,7 @@ function chkgrp($valz) {
 		$indexz = $_REQUEST['indx'];
 		$cItemNo = $_REQUEST['citmno'];
 
-		$cItemOldNo = $_REQUEST['citmoldno'];
+		$cItemOldNo = $_REQUEST['citmnoOLD'];
 		$cItemDesc = chkgrp(mysqli_real_escape_string($con,$_REQUEST['citmdesc']));
 		$cItemPartNo = chkgrp(mysqli_real_escape_string($con,$_REQUEST['citmpartno']));
 
@@ -59,7 +59,7 @@ function chkgrp($valz) {
 		
 	$refcidenttran = $cSINo."P".$indexz;
 
-	if (!mysqli_query($con,"INSERT INTO purchase_t(`compcode`, `cidentity`, `cpono`, `nident`, `creference`, `nrefident`, `citemno`, `colditemno`, `cpartno`, `citemdesc`, `nqty`, `cunit`, `nprice`, `nbaseamount`, `namount`, `ncost`, `nfactor`, `cmainunit`, `cacctcode`, `ddateneeded`, `cremarks`,`ctaxcode`, `nrate`, `cewtcode`, `newtrate`) values('$company', '$refcidenttran', '$cSINo', '$indexz', '$cRefPR', '$cRefPRIdent', '$cItemNo', '$cItemOldNo', $cItemPartNo,  $cItemDesc, '$nQty', '$cUnit', '$nPrice', '$nBaseAmount', '$nAmount', 0, $nFactor, '$cMainUOM', '$ItmAccnt', STR_TO_DATE('$dneed', '%m/%d/%Y'), $cRemarks, '$ctaxcode', '$nrate', '$cewtcode', '$cewtrate')")){
+	if (!mysqli_query($con,"INSERT INTO purchase_t(`compcode`, `cidentity`, `cpono`, `nident`, `creference`, `nrefident`, `citemno`, `citemno_old`, `cpartno`, `citemdesc`, `nqty`, `cunit`, `nprice`, `nbaseamount`, `namount`, `ncost`, `nfactor`, `cmainunit`, `cacctcode`, `ddateneeded`, `cremarks`,`ctaxcode`, `nrate`, `cewtcode`, `newtrate`) values('$company', '$refcidenttran', '$cSINo', '$indexz', '$cRefPR', '$cRefPRIdent', '$cItemNo', '$cItemOldNo', $cItemPartNo,  $cItemDesc, '$nQty', '$cUnit', '$nPrice', '$nBaseAmount', '$nAmount', 0, $nFactor, '$cMainUOM', '$ItmAccnt', STR_TO_DATE('$dneed', '%m/%d/%Y'), $cRemarks, '$ctaxcode', '$nrate', '$cewtcode', '$cewtrate')")){
 		echo "False";
 	}
 	else{

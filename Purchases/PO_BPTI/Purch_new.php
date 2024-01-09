@@ -53,20 +53,20 @@
       }
                     
     }
-     
 
 	@$arrewtlist = array();
-	$getewt = mysqli_query($con,"SELECT * FROM `wtaxcodes` WHERE compcode='$company'"); 
+	$getewt = mysqli_query($con,"SELECT * FROM `wtaxcodes` WHERE compcode='$company' and cstatus='ACTIVE'"); 
 	if (mysqli_num_rows($getewt)!=0) {
 		while($rows = mysqli_fetch_array($getewt, MYSQLI_ASSOC)){
 			@$arrewtlist[] = array('ctaxcode' => $rows['ctaxcode'], 'nrate' => $rows['nrate']); 
 		}
 	}
 
-	$gettaxcd = mysqli_query($con,"SELECT * FROM `taxcode` where compcode='$company' order By nidentity"); 
+	@$arrtaxlist = array();
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `vatcode` where compcode='$company' and ctype='Purchase' and cstatus='ACTIVE' order By nidentity"); 
 	if (mysqli_num_rows($gettaxcd)!=0) {
 		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
-			@$arrtaxlist[] = array('ctaxcode' => $row['ctaxcode'], 'ctaxdesc' => $row['ctaxdesc'], 'nrate' => $row['nrate']); 
+			@$arrtaxlist[] = array('ctaxcode' => $row['cvatcode'], 'ctaxdesc' => $row['cvatdesc'], 'nrate' => number_format($row['nrate'])); 
 		}
 	}
 
@@ -430,7 +430,7 @@
 						</div>
 					</div>
 					<div class="portlet-body" style="overflow: auto">
-						<div style="min-height: 30vh; width: 1600px;">
+						<div style="min-height: 30vh; width: 1700px;">
 
 							<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
 								<thead>
@@ -446,7 +446,7 @@
 										<th width="350px" style="border-bottom:1px solid #999">Description</th>
 										<th width="100px" style="border-bottom:1px solid #999">Item Code</th>
 										<th width="100px" style="border-bottom:1px solid #999;" class="codeshdn">EWT Code</th>
-										<th width="100px" style="border-bottom:1px solid #999;" class="codeshdn">VAT</th>
+										<th width="200px" style="border-bottom:1px solid #999;" class="codeshdn">VAT</th>
 										<th width="100px" style="border-bottom:1px solid #999">UOM</th>
 										<th width="100px" style="border-bottom:1px solid #999">Qty</th>
 										<th width="100px" style="border-bottom:1px solid #999">Price</th>
@@ -551,6 +551,28 @@
 			</div>
 		</div>
 	</div>
+
+	<!-- MODAL FOR CHANGE ITEM -->
+	<div class="modal fade" id="ChangeItmMod" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="modal-dialog vertical-align-top">
+			<div class="modal-content">
+				<div class="modal-header">
+					Select Item
+				</div>
+				<div class="modal-body" style="height: 10vh">
+					<input type="text" class="form-control input-sm" id="txtchangeitm" name="txtchangeitm" placeholder="Search Item Code/Description..."  autocomplete="off" value="">
+
+					<input type="hidden" id="txtchangeitmID" name="txtchangeitmID" value="">
+
+					<input type="hidden" id="txtchangeitmtxtval" name="txtchangeitmtxtval" value="">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-success btn-sm" id="btnchangeitm">Change</button>
+					<button type="button" class="btn btn-warning btn-sm" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div> 
 
 	<!-- FULL PO LIST REFERENCES-->
 	<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
@@ -902,16 +924,16 @@
 			if($(this).val()==1){
 				$("#selterms").attr("disabled", true);
 
-				$("#setewtval").show();  
-				$("#setewt").show(); 
-				$(".codeshdn").show();
+				//$("#setewtval").show();  
+				//$("#setewt").show(); 
+				//$(".codeshdn").show();
 
 			}else{
 				$("#selterms").attr("disabled", false);
 
-				$("#setewtval").hide();
-				$("#setewt").hide();
-				$(".codeshdn").hide();
+				//$("#setewtval").hide();
+				//$("#setewt").hide();
+				//$(".codeshdn").hide();
 
 			}
 		});
@@ -936,6 +958,46 @@
 				}
 
 			}
+		});
+
+		$('#txtchangeitm').typeahead({
+			autoSelect: true,
+			source: function(request, response) {
+				$.ajax({
+					url: "../th_product.php",
+					dataType: "json",
+					data: {
+						query: $("#txtprodnme").val()
+					},
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.cname+'</span><br><small><span class="dropdown-item-extra">' + item.cunit + '</span></small></div>';
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 
+
+				$('#txtchangeitm').val(item.cname).change(); 
+				$('#txtchangeitmID').val(item.id); 
+				
+			}
+		});
+
+		$('#btnchangeitm').on("click", function(){
+			var cnghb = $("#txtchangeitmtxtval").val();
+
+			$("#txtitemcode"+cnghb).val($('#txtchangeitmID').val());  
+			$("#txtitemdesc"+cnghb).val($('#txtchangeitm').val());
+			$("#txtitempartdesc"+cnghb).val($('#txtchangeitm').val());
+
+			$('#txtchangeitm').val("").change(); 
+			$('#txtchangeitmID').val(""); 
+
+			$("#ChangeItmMod").modal("hide");
+			 
 		});
 		
 
@@ -1029,19 +1091,20 @@
 		var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 		var lastRow = tbl.length;
 
-		var tditmchange = "";
+		var tdedt = "";
 		<?php
 			if($xAllowITMCH==1){
 		?>
-			tditmchange = "<td style=\"padding-right: 2px\" align='center'> <button type='button' class=\"btn btn-xs btn-success\"><i class=\"fa fa-edit\"></i></button> </td>";
+			//tditmchange = "<td style=\"padding-right: 2px\" align='center'> <button type='button' class=\"btn btn-xs btn-success\"><i class=\"fa fa-edit\"></i></button> </td>";
+			var tdedt = "<td width=\"30\" align=\"center\"><button type=\"button\" class=\"btn btn-success btn-xs\" onclick=\"ChangeItem('"+lastRow+"');\" name=\"txtedtitm\" id=\"txtedtitm"+lastRow+"\"><i class=\"fa fa-pencil\"></i></button></td>";
 		<?php
 			} 
 		?>
-		var tditmpartdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\"><input type='hidden' value='"+itmpartdesc+"' name=\"txtitempartdesc\" id=\"txtitempartdesc\">"+itmpartdesc+"</td>";
+		var tditmpartdesc = "<td><input type='text' class='form-control input-xs' value='"+itmpartdesc+"' name=\"txtitempartdesc\" id=\"txtitempartdesc"+lastRow+"\" readonly></td>";
 
-		var tditmdesc = "<td style=\"padding: 1px\" nowrap><input type='text' class='form-control input-xs' value='"+itmdesc+"' name=\"txtitemdesc\" id=\"txtitemdesc\"></td>";
+		var tditmdesc = "<td style=\"padding: 1px\" nowrap><input type='text' class='form-control input-xs' value='"+itmdesc+"' name=\"txtitemdesc\" id=\"txtitemdesc"+lastRow+"\"></td>";
 
-		var tditmcode = "<td> <input type='hidden' value='"+itmcode+"' name=\"txtolditemcode\" id=\"txtolditemcode\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+" <input type='hidden' value='"+crefPR+"' name=\"hdncreference\" id=\"hdncreference\"> <input type='hidden' value='"+crefPRIdent+"' name=\"hdnrefident\" id=\"hdnrefident\"> </td>";
+		var tditmcode = "<td><input type='text' class='form-control input-xs' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode"+lastRow+"\" readonly> <input type='hidden' value='"+crefPR+"' name=\"hdncreference\" id=\"hdncreference\"> <input type='hidden' value='"+crefPRIdent+"' name=\"hdnrefident\" id=\"hdnrefident\"> <input type='hidden' value='"+itmcode+"' name=\"txtolditemcode\" id=\"txtolditemcode\">  </td>";
 		
 		var tditmunit = "<td style=\"padding: 1px\" nowrap> <select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\">"+uomoptions+"</select> </td>";
 
@@ -1080,7 +1143,7 @@
 				}else{
 					isselctd = "";
 				}
-				taxoptions = taxoptions + "<option value='"+this['ctaxcode']+"' data-id='"+this['nrate']+"' "+isselctd+">"+this['ctaxdesc']+"</option>";
+				taxoptions = taxoptions + "<option value='"+this['ctaxcode']+"' data-id='"+this['nrate']+"' "+isselctd+">"+this['nrate']+"%: "+this['ctaxdesc']+"</option>";
 			});
 
 			var vattd = "<td width=\"120px\" nowrap style=\""+ewtstyle+"\" class=\"codeshdn\"> <select class='form-control input-xs' name=\"selitmvatyp\" id=\"selitmvatyp"+lastRow+"\">" + taxoptions + "</select> </td>";
@@ -1098,14 +1161,14 @@
 
 		var tditmdel = "<td style=\"padding: 1px\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + lastRow + "' value='delete' data-var='"+lastRow+"'/> </td>";
 
-		$('#MyTable > tbody:last-child').append('<tr>'+tditmchange + tditmpartdesc + tditmdesc + tditmcode + ewttd + vattd + tditmunit + tditmqty + tditmprice + tditmbaseamount + tdneeded  + tditmremarks + tditmdel + '</tr>');
+		$('#MyTable > tbody:last-child').append('<tr>'+tdedt + tditmpartdesc + tditmdesc + tditmcode + ewttd + vattd + tditmunit + tditmqty + tditmprice + tditmbaseamount + tdneeded  + tditmremarks + tditmdel + '</tr>');
 
 
 			$("#del"+lastRow).on('click', function() {
 				var xy = $(this).data('var');
 
 				$(this).closest('tr').remove();
-				Reident(xy);
+				ReIndexTbl(xy);
 				ComputeGross();
 			});
 
@@ -1150,41 +1213,51 @@
 										
 	}
 
-	function Reident(xy){
+	function ReIndexTbl(xy){
 		var rowCount = $('#MyTable tr').length;						
 		if(rowCount>1){
 			for (var i = xy+1; i <= rowCount; i++) {
-				var seluom = document.getElementById('seluom' + i);
-				var selitmewtyp = document.getElementById('selitmewtyp' + i);
-				var selitmvatyp = document.getElementById('selitmvatyp' + i);
-				var txtnqty = document.getElementById('txtnqty' + i);
-				var hdnmainuom = document.getElementById('hdnmainuom' + i);
-				var hdnfactor = document.getElementById('hdnfactor' + i);
-				var txtnprice = document.getElementById('txtnprice' + i);
-				var txtntranamount = document.getElementById('txtntranamount' + i);
-				var txtnamount  = document.getElementById('txtnamount' + i);
-				var dneed = document.getElementById('dneed' + i);
-				var del = document.getElementById('del' + i);
-				var txtitemrem = document.getElementById('txtitemrem' + i);				
+
+				var ITMedt = document.getElementById('txtedtitm' + i);
+				var ITMCode = document.getElementById('txtitemcode' + i);
+				var ITMDesc = document.getElementById('txtitemdesc' + i);
+				var ITMTdesc = document.getElementById('tdDesc' + i);
+				var ITMewt = document.getElementById('selitmewtyp' + i);
+				var ITMvats = document.getElementById('selitmvatyp' + i);
+				var ITMuom = document.getElementById('seluom' + i);
+				var ITMqty = document.getElementById('txtnqty' + i);
+				var ITMmauom = document.getElementById('hdnmainuom' + i);
+				var ITMfctr = document.getElementById('hdnfactor' + i);
+				var ITMprce = document.getElementById('txtnprice' + i);
+				var ITMtramnt = document.getElementById('txtntranamount' + i); 
+				var ITMamnt = document.getElementById('txtnamount' + i); 
+				var ITMneed = document.getElementById('dneed' + i);
+				var ITMdelx = document.getElementById('del' + i);
+				var ITMremx = document.getElementById('txtitemrem' + i);
 
 				var za = i - 1;
 
-				seluom.id = "seluom" + za;
-				selitmewtyp.id = "selitmewtyp" + za;
-				selitmvatyp.id = "selitmvatyp" + za;
-				txtnqty.id = "txtnqty" + za;
-				hdnmainuom.id = "hdnmainuom" + za;
-				hdnfactor.id = "hdnfactor" + za;
-				txtnprice.id = "txtnprice" + za;
-				txtntranamount.id = "txtntranamount" + za;
-				txtnamount.id = "txtnamount" + za;
-				dneed.id = "dneed" + za;
-				txtitemrem.id = "txtitemrem" + za;
+				ITMedt.setAttribute('onclick','ChangeItem('+za+')');
+				ITMedt.id = "txtedtitm" + za;
 
-				del.id = "del" + za;
-				$("#del" + za).data('var', za);
+				ITMCode.id = "txtitemcode" + za;
+				ITMDesc.id = "txtitemdesc" + za;
+				ITMTdesc.id = "tdDesc" + za;
+				ITMewt.id = "selitmewtyp" + za;
+				ITMvats.id = "selitmvatyp" + za;
+				ITMuom.id = "seluom" + za;
+				ITMqty.id = "txtnqty" + za;
+				ITMmauom.id = "hdnmainuom" + za;
+				ITMfctr.id = "hdnfactor" + za;
+				ITMprce.id = "txtnprice" + za;
+				ITMtramnt.id = "txtntranamount" + za;
+				ITMamnt.id = "txtnamount" + za;
+				ITMneed.id = "dneed" + za;
 
-				
+				ITMdelx.setAttribute('data-var',''+za+'');
+				ITMdelx.id = "del" + za;
+	
+				ITMremx.id = "txtitemrem" + za;
 			}
 		}
 	}
@@ -1212,16 +1285,15 @@
 		namt = nqty * nprc;
 
 		namt2 = namt * parseFloat($("#basecurrval").val());
-	
-		$("#txtnamount"+r).val(namt2);
 
 		$("#txtntranamount"+r).val(namt);
-
 		$("#txtntranamount"+r).autoNumeric('destroy');
-		$("#txtnamount"+r).autoNumeric('destroy');
-
 		$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
-		$("#txtnamount"+r).autoNumeric('init',{mDec:2});
+
+		$("#txtnamount"+r).val(namt2);
+		//$("#txtnamount"+r).autoNumeric('destroy');
+		//$("#txtnamount"+r).autoNumeric('init',{mDec:2});
+
 
 	}
 
@@ -1282,10 +1354,10 @@
 
 
 				namt2 = TotAmt * parseFloat($("#basecurrval").val());
-				$(this).find("input[name='txtnamount']").val(namt2); 
+				$(this).find("input[type='hidden'][name='txtnamount']").val(namt2); 
 
-				$("#txtnamount"+r).autoNumeric('destroy');
-				$("#txtnamount"+r).autoNumeric('init',{mDec:2});
+				//$("#txtnamount"+r).autoNumeric('destroy');
+				//$("#txtnamount"+r).autoNumeric('init',{mDec:2});
 			}
 
 		});
@@ -1440,15 +1512,15 @@
 					var crefpr = $(this).find('input[type="hidden"][name="hdncreference"]').val(); 
 					var crefprident = $(this).find('input[type="hidden"][name="hdnrefident"]').val();
 
-					var citmpartno = $(this).find('input[type="hidden"][name="txtitempartdesc"]').val();
-					var citmoldno = $(this).find('input[type="hidden"][name="txtolditemcode"]').val();
-					var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+					var citmpartno = $(this).find('input[name="txtitempartdesc"]').val();
+					var citmnoOLD = $(this).find('input[type="hidden"][name="txtolditemcode"]').val();
+					var citmno = $(this).find('input[name="txtitemcode"]').val();
 					var citmdesc = $(this).find('input[name="txtitemdesc"]').val();
 					var cuom = $(this).find('select[name="seluom"]').val();
 					var nqty = $(this).find('input[name="txtnqty"]').val();
 					var nprice = $(this).find('input[name="txtnprice"]').val();
 					var ntranamt = $(this).find('input[name="txtntranamount"]').val();
-					var namt = $(this).find('input[name="txtnamount"]').val();
+					var namt = $(this).find('input[type="hidden"][name="txtnamount"]').val();
 					var dneed = $(this).find('input[name="dneed"]').val();
 					var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
 					var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val(); 
@@ -1470,7 +1542,7 @@
 					
 					$.ajax ({
 						url: "Purch_newsavedet.php",
-						data: { trancode: trancode, crefpr:crefpr, crefprident:crefprident, dneed: dneed, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, ntranamt:ntranamt, citmremarks:citmremarks, vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate, citmpartno:citmpartno, citmoldno:citmoldno, citmdesc:citmdesc },
+						data: { trancode: trancode, crefpr:crefpr, crefprident:crefprident, dneed: dneed, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, ntranamt:ntranamt, citmremarks:citmremarks, vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate, citmpartno:citmpartno, citmnoOLD:citmnoOLD, citmdesc:citmdesc },
 						async: false,
 						success: function( data ) {
 							if(data.trim()=="False"){
@@ -1550,8 +1622,8 @@
 
 				$("#txtnamount"+i).val(recurr);
 
-				$("#txtnamount"+i).autoNumeric('destroy');
-				$("#txtnamount"+i).autoNumeric('init',{mDec:2});
+				//$("#txtnamount"+i).autoNumeric('destroy');
+				//$("#txtnamount"+i).autoNumeric('init',{mDec:2});
 			}
 		}
 
@@ -1779,5 +1851,10 @@
 			$('#mySIRef').modal('hide');
 
 		});
+	}
+
+	function ChangeItem(za){
+		$("#txtchangeitmtxtval").val(za);
+		$("#ChangeItmMod").modal("show");
 	}
 </script>

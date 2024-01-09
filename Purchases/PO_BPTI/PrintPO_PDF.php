@@ -235,7 +235,7 @@
 					$setfooter = $setfooter .'<div style="text-align: center"><div><img src = "'.$cpreparedBySign.'" ></div>';
 			
 				}else{
-					$setfooter = $setfooter .'<div style="padding-bottom: 50px; text-align: center">Prepared By</div>';
+					$setfooter = $setfooter .'<div style="text-align: center">Prepared By<br><br><br><br></div>';
 					$setfooter = $setfooter .'<div style="text-align: center">'.$cpreparedBy.'</div>';
 				}
 
@@ -288,7 +288,7 @@
 
 			$setfooter = $setfooter.'<td width="25%" height="50px">							
 				<div style="padding-bottom: 60px; text-align: center">
-					Supplier Confirmation<br><br><br><br><br><br><br>
+					Supplier Confirmation<br><br><br><br><br>
 				</div>	
 				<br>							
 			</td>
