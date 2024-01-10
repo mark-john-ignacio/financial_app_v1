@@ -58,7 +58,7 @@
 		}
 	}
 
-	$sqlhead = mysqli_query($con,"select a.cpono, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dneeded,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.nbasegross, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.lcancelled, a.lapproved, a.lprintposted, a.lvoid, a.ccustacctcode, b.cname, a.ccontact, a.ccontactemail, a.ccontactphone, a.ccontactfax, a.ladvancepay, a.cterms, a.cdelto, a.ddeladd, a.ddelinfo, a.cbillto, a.cewtcode from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
+	$sqlhead = mysqli_query($con,"select a.cpono, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dneeded,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.nbasegross, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.lcancelled, a.lapproved, a.lprintposted, a.lvoid, a.ccustacctcode, b.cname, a.ccontact, a.ccontactemail, a.ccontactphone, a.ccontactfax, a.ladvancepay, a.cterms, a.cdelto, a.ddeladd, a.ddelemail, a.ddelphone, a.ddelfax, a.ddelinfo, a.cbillto, a.cewtcode from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
 
 
 	@$arrname = array();
@@ -146,6 +146,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$deladd = $row['ddeladd']; 
 		$delinfo = $row['ddelinfo']; 
 		$billto = $row['cbillto']; 
+		$delemail = $row['ddelemail']; 
+		$delfone = $row['ddelphone'];
+		$delfax = $row['ddelfax'];
 		
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
@@ -397,9 +400,25 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</tr>
 							<tr>
 								<td><b>Delivery Address</b></td>
-								<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><textarea class="form-control input-sm" id="txtdeladd" name="txtdeladd" placeholder="Enter Delivery Address..." autocomplete="off"> <?=$deladd?> </textarea></div></td>
+								<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><textarea class="form-control input-sm" id="txtdeladd" name="txtdeladd" placeholder="Enter Delivery Address..." autocomplete="off"><?=$deladd?></textarea></div></td>
 							</tr>					
-
+							<tr>
+								
+								<tH width="100">Contact Details:</tH>   
+								<td style="padding:2px">
+									<div class="col-xs-8 nopadding">
+										<div class="col-xs-4 nopadding">
+											<input type='text' class="form-control input-sm" id="textdelemail" name="textdelemail" placeholder="Email Address" value="<?=$delemail?>"/>   
+										</div>
+										<div class="col-xs-4 nopadwleft">
+											<input type='text' class="form-control input-sm" id="textdelphone" name="textdelphone" placeholder="Mobile No." value="<?=$delfone?>" />
+										</div>
+										<div class="col-xs-4 nopadwleft">
+											<input type='text' class="form-control input-sm" id="textdelfax" name="textdelfax" placeholder="Fax No." value="<?=$delfax?>" />
+										</div>
+									</div>
+								</td>
+							</tr>
 							<tr>
 								<td width="150"><b>Delivery Notes</b></td>
 								<td width="310" colspan="2" style="padding:2px">
@@ -420,6 +439,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										</div> 
 									</div>						
 								</td>
+							</tr>
+
+							<tr>
+								<td width="150" colspan="2"><br><br></td>
+
 							</tr>
 
 						</table>
