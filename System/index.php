@@ -2659,7 +2659,7 @@ if(mysqli_num_rows($sql) != 0){
 												<td>&nbsp;&nbsp;&nbsp;<b>Delivery Address</b></td>
 												<td colspan="2" style="padding:2px">
 													<div class="col-xs-8 nopadding">
-														<textarea class="form-control input-sm" id="txtpodefdeladd" name="txtpodefdeladd" placeholder="Enter Delivery Address..." autocomplete="off" onblur="setPODefs(this.value, 'PODEFDELADD', 'divPODefDelAdd')"><?=$compadd?></textarea>
+														<textarea class="form-control input-sm" id="txtpodefdeladd" name="txtpodefdeladd" placeholder="Enter Delivery Address..." autocomplete="off" onblur="setPODefs(this.value, 'PODEFDELADD', 'divPODefDelAdd')"></textarea>
 													</div>
 													<div class="col-xs-1 nopadwleft">
 														<div id="divPODefDelAdd" style="display:inline; padding-left:5px"></div>
@@ -2672,13 +2672,13 @@ if(mysqli_num_rows($sql) != 0){
 												<td style="padding:2px">
 													<div class="col-xs-8 nopadding">
 														<div class="col-xs-4 nopadding">
-															<input type='text' class="form-control input-sm" id="txtpodefdelemail" name="txtpodefdelemail" placeholder="Email Address" value="<?=$compemail?>" onblur="setPODefs(this.value, 'PODEFDELEMAIL', 'divPODefDelEmail')"/>
+															<input type='text' class="form-control input-sm" id="txtpodefdelemail" name="txtpodefdelemail" placeholder="Email Address" value="" onblur="setPODefs(this.value, 'PODEFDELEMAIL', 'divPODefDelEmail')"/>
 														</div>
 														<div class="col-xs-4 nopadwleft">
-															<input type='text' class="form-control input-sm" id="txtpodefdelphone" name="txtpodefdelphone" placeholder="Mobile No." value="<?=$compphone?>" onblur="setPODefs(this.value, 'PODEFDELPHONE', 'divPODefDelPhone')"/>
+															<input type='text' class="form-control input-sm" id="txtpodefdelphone" name="txtpodefdelphone" placeholder="Mobile No." value="" onblur="setPODefs(this.value, 'PODEFDELPHONE', 'divPODefDelPhone')"/>
 														</div>
 														<div class="col-xs-4 nopadwleft">
-															<input type='text' class="form-control input-sm" id="txtpodefdelfax" name="txtpodefdelfax" placeholder="Fax No." value="<?=$compfax?>" onblur="setPODefs(this.value, 'PODEFDELFAX', 'divPODefDelFax')"/>
+															<input type='text' class="form-control input-sm" id="txtpodefdelfax" name="txtpodefdelfax" placeholder="Fax No." value="" onblur="setPODefs(this.value, 'PODEFDELFAX', 'divPODefDelFax')"/>
 														</div>
 													</div>
 													<div class="col-xs-3 nopadwleft">
