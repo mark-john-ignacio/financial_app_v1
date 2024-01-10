@@ -13,7 +13,7 @@
 
     $remarks = $_REQUEST['remarks'];
     $label = $_REQUEST['label'];
-    $effect = $_REQUEST['effect'];
+    $effect = date("Y-m-d", strtotime($_REQUEST['effect']));
     $due = date("Y-m-d", strtotime($_REQUEST['due']));
     $date = date("Y-m-d H:i:s");
 

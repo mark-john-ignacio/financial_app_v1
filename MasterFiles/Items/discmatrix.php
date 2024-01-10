@@ -60,8 +60,7 @@
             <div>
                 <div style="float:left; width:50%">
                     <font size="+2"><u>Discount Matrix List</u></font>	
-                </div>
-                
+                </div>               
             </div>
 			<br><br>
             <button type="button" class="btn btn-primary btn-md" id="btnadd" name="btnadd"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
@@ -167,9 +166,9 @@
             <div class="cgroup col-xs-3 nopadwtop">
                 <b>Effectivity Date</b>
             </div>
-            
+
             <div class="col-xs-3 nopadwtop">
-                <input type="text" class="datepicker form-control input-sm" id="effect_date" name="effect_date" value='<?php echo date("m/d/Y");?>'>
+				<input type="text" class="datepicker form-control input-sm" id="effect_date" name="effect_date" value="">
             </div>
 			
 			<div class="col-xs-2" style='padding-top: 3px !important; padding-bottom: 0 !important; margin: 0 !important;'>
@@ -177,7 +176,7 @@
             </div>
             
             <div class="col-xs-3 "  style='padding-top: 3px !important; padding-bottom: 0 !important; margin: 0 !important;'>
-                <input type="text" class="datepicker form-control input-sm" id="duedate" name="duedate" value='<?php echo date("m/d/Y");?>'>
+                <input type="text" class="datepicker form-control input-sm" id="duedate" name="duedate">
             </div>
         </div> 
 
@@ -191,6 +190,9 @@
             </div>
         </div> 
 
+		<div class="col-xs-12" id="divalert" style="display: none; text-align: center; padding-top: 5px">
+
+		</div> 
 		<div class='col-xs-12' id='itemlist' style='height: 40vh; overflow: auto; border: 1px solid grey; margin-top: 10px'>
 			<table class='table' style='width: 100%;'>
 				<thead>
@@ -251,16 +253,18 @@ mysqli_close($con);
 </html>
 <script>
 	var itemStored = [];
+	var itemStoredxli = [];
 	$(function(){
-		$('#example').DataTable();
 
 		$("#add_err").hide();
 		$(".itmalert").hide();
 
+		$('#example').DataTable();
+
         //effect date format
         $('.datepicker').datetimepicker({
-                 format: 'MM/DD/YYYY',
-				 minDate: new Date(),
+            format: 'MM/DD/YYYY',
+			//minDate: new Date(),
         });
 
 		$('#searchitem').typeahead({
@@ -288,19 +292,29 @@ mysqli_close($con);
             highlighter: Object,
             afterSelect: function(items) { 
 				$('#searchitem').val("").change()
-				itemStored.push(items)
 
-				$("#itemlist tbody").empty()
-				itemStored.map((item, index) => {
-					$("<tr>").append(
-						$("<td>").text(item.cpartno),
-						$("<td>").text(item.citemdesc),
-						$("<td>").text(item.cunit),
-						$("<td>").html("<select id='type' name='type'> <option value='PERCENT'>PERCENT</option> <option value='PRICE'>PRICE</option> </select>"),
-						$("<td>").html("<input type='text' id='discountAmt' name='discountAmt' autocomplete='false'/> "),
-						$("<td>").html("<button type='button' class='btn btn-xs btn-danger' id='deleteItem' name='deleteitem' onclick='deleteList.call(this)'>delete</buton>")
-					).appendTo("#itemlist tbody")
-				})
+				if(jQuery.inArray(items.cpartno, itemStoredxli) == -1){
+					itemStored.push(items);
+					itemStoredxli.push(items.cpartno);
+
+					//$("#itemlist tbody").empty();
+					//itemStored.map((item, index) => {
+						$("<tr>").append(
+							$("<td>").html(items.cpartno+"<input type='hidden' id='cpartno' name='cpartno' value='"+items.cpartno+"'/> "),
+							$("<td>").html(items.citemdesc),
+							$("<td>").html(items.cunit+"<input type='hidden' id='cunit' name='cunit' value='"+items.cunit+"'/> "),
+							$("<td>").html("<select id='type' name='type'> <option value='PERCENT'>PERCENT</option> <option value='PRICE'>PRICE</option> </select>"),
+							$("<td>").html("<input type='text' id='discountAmt' name='discountAmt' autocomplete='false'/> "),
+							$("<td>").html("<button type='button' class='btn btn-xs btn-danger' id='deleteItem' name='deleteitem' onclick='deleteList.call(this)'>delete</buton>")
+						).appendTo("#itemlist tbody")
+					//})
+
+					$("#divalert").html("");
+					$("#divalert").hide();
+				}else{
+					$("#divalert").html("Item Already Added!");
+					$("#divalert").show();
+				}
 				
 			}
 		})
@@ -325,9 +339,9 @@ mysqli_close($con);
 				day = "0" + day;
 			}
 			if(month < 10){
-				month = "0"+month
+				month = "0"+(month+1)
 			}
-			let inDay = year + "/" + month + "/" + day;
+			let inDay =  month + "/" + day + "/" +year;
 
 			if(access.trim() == "True"){
 				$("#btnSave").show();
@@ -384,11 +398,19 @@ mysqli_close($con);
 			let effect = $('#effect_date').val();
 			let tranno = '';
 
-			itemStored.map((item, index) => {
+			/*itemStored.map((item, index) => {
 				itemno.push(item.cpartno);
 				unit.push(item.cunit)
 				console.log(item.cunit)
-			})
+			})*/
+
+			$("input[id='cpartno").each(function(){
+				itemno.push($(this).val())
+			});
+
+			$("input[id='cunit").each(function(){
+				unit.push($(this).val())
+			});
 
 			$("select[id='type']").each(function() {
 				types.push($(this).find(":selected").val());
@@ -396,7 +418,7 @@ mysqli_close($con);
 
 			$("input[id='discountAmt").each(function(){
 				discounts.push($(this).val())
-			})
+			});
 
 			$.ajax({
 				url: "th_savedm.php",
@@ -449,7 +471,7 @@ mysqli_close($con);
 		})
 		
 		$('#btnUpdate').click(function(){
-			let itemno = [], discounts = [], types = []
+			let itemno = [], discounts = [], types = [], unit = []
 			let transaction = $('#tranno').val();
 			let label = $('#txtlabel').val();
 			let desc = $('#txtdesc').val();
@@ -457,9 +479,21 @@ mysqli_close($con);
 			let effect = $('#effect_date').val();
 			let tranno = $('#tranno').val();
 
-			itemStored.map((item, index) => {
+			let isProcceed = false;
+
+			/*itemStored.map((item, index) => {
 				itemno.push(item.itemno);
-			})
+			})*/
+
+			
+			$("input[id='cpartno").each(function(){
+				itemno.push($(this).val())
+			});
+
+			$("input[id='cunit").each(function(){
+				unit.push($(this).val())
+			});
+
 
 			$("select[id='type']").each(function() {
 				types.push($(this).find(":selected").val());
@@ -477,25 +511,45 @@ mysqli_close($con);
 					label: label,
 					effective: effect,
 					due: due,
-
-					items: JSON.stringify(itemno),
-					discount: JSON.stringify(discounts),
-					types: JSON.stringify(types)
 				},
 				dataType: 'json',
 				async: false,
 				success: function(res){
 					if(res.valid){
-						console.log(res.msg)
-					} else{
-						console.log(res.msg)
+						isProcceed = res.valid
 					}
-					location.reload()
 				},
 				error: function(res){
 					console.log(res)
 				}
 			})
+
+
+			if(isProcceed){
+				$.ajax({
+					url: "th_savedm_t.php",
+					data: {
+						item: JSON.stringify(itemno),
+						unit: JSON.stringify(unit),
+						discount: JSON.stringify(discounts),
+						types: JSON.stringify(types),
+						tranno: transaction
+					},
+					dataType: 'json',
+					async: false,
+					success: function(res){
+						if(res.valid){
+							console.log(res.msg)
+						}else {
+							console.log(res.msg)
+						}
+						location.reload();
+					},
+					error: function(res){
+						console.log(res)
+					}
+				})
+			}
 		})
 	});
 
@@ -540,9 +594,9 @@ mysqli_close($con);
 							$('#effect_date').val(item.deffective);
 
 							$("<tr>").append(
-								$("<td>").text(item.itemno),
+								$("<td>").html(item.itemno+"<input type='hidden' id='cpartno' name='cpartno' value='"+item.itemno+"'/>"),
 								$("<td>").text(item.citemdesc),
-								$("<td>").text(item.unit),
+								$("<td>").html(item.unit+"<input type='hidden' id='cunit' name='cunit' value='"+item.unit+"'/>"),
 								$("<td>").html("<select id='type' name='type'> <option "+(item.type == "PERCENT" ? "selected" : null)+" value='PERCENT'>PERCENT</option> <option "+(item.type == "PRICE" ? "selected" : null)+" value='PRICE'>PRICE</option> </select>"),
 								$("<td>").html("<input type='text' id='discountAmt' name='discountAmt' value='"+item.discount+"' autocomplete='false'/> "),
 								$("<td>").html("<button type='button' class='btn btn-xs btn-danger' id='deleteItem' name='deleteitem' value='"+item.id+"' onclick='deleteList.call(this)'>delete</buton>")
@@ -551,6 +605,8 @@ mysqli_close($con);
 							$('#myModalLabel').html("<b>Update Discounts Detail</b>");
 							$('#myModal').modal('show');
 							})
+
+							console.log(itemStored);
 						
 					} else {
 						console.log(res.msg)
@@ -569,31 +625,31 @@ mysqli_close($con);
 
 	
 	function setStat(code, stat){
-			$.ajax ({
-				url: "th_itemdmstat.php",
-				data: { code: code,  stat: stat },
-				async: false,
-				success: function( data ) {
-					if(data.trim()!="True"){
-						$("#itm"+code).html("<b>Error: </b>"+ data);
-						$("#itm"+code).attr("class", "itmalert alert alert-danger nopadding")
-						$("#itm"+code).show();
-					}
-					else{
-					  if(stat=="ACTIVE"){
-						$("#itmstat"+code).html("<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>");
-					  }else{
-						 $("#itmstat"+code).html("<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>");
-					  }
-						
-						$("#itm"+code).html("<b>SUCCESS: </b> Status changed to "+stat);
-						$("#itm"+code).attr("class", "itmalert alert alert-success nopadding")
-						$("#itm"+code).show();
-
-					}
+		$.ajax ({
+			url: "th_itemdmstat.php",
+			data: { code: code,  stat: stat },
+			async: false,
+			success: function( data ) {
+				if(data.trim()!="True"){
+					$("#itm"+code).html("<b>Error: </b>"+ data);
+					$("#itm"+code).attr("class", "itmalert alert alert-danger nopadding")
+					$("#itm"+code).show();
 				}
-			
-			});
+				else{
+					if(stat=="ACTIVE"){
+					$("#itmstat"+code).html("<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>");
+					}else{
+						$("#itmstat"+code).html("<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>");
+					}
+					
+					$("#itm"+code).html("<b>SUCCESS: </b> Status changed to "+stat);
+					$("#itm"+code).attr("class", "itmalert alert alert-success nopadding")
+					$("#itm"+code).show();
+
+				}
+			}
+		
+		});
 
 	}
 
@@ -602,8 +658,10 @@ mysqli_close($con);
 		let id = $(this).val();
 		let row = $(this).closest("tr");
 
+		row.remove();
 
-		$.ajax({
+
+		/*$.ajax({
 			url: "th_deletedm.php", 
 			data: {
 				id: id
@@ -623,39 +681,39 @@ mysqli_close($con);
 			error: function(res){
 				console.log(res)
 			}
-		})
+		})*/
 	}
 
 	function trans(x,num,msg){
 	
 		$.ajax ({
-			url: "Discmatrix_tran.php",
+			url: "discmatrix_tran.php",
 			data: { tranno: num, typ: x },
 			async: false,
 			success: function( data ) {
-					$("#AlertMsg").html(data);
-					$("#AlertModal").modal('show');
-					
-					$("#msg"+num).html(msg);
+				$("#AlertMsg").html(data);
+				$("#AlertModal").modal('show');
+				
+				$("#msg"+num).html(msg);
 			}
 		});
 	
 	}
 
-		function chkAccess(id){
-			var result;
-			
-			$.ajax ({
-				url: "chkAccess.php",
-				data: { id: id },
-				async: false,
-				success: function( data ) {
-					 result = data;
-				}
-			});
-			
-			return result;
-		}
+	function chkAccess(id){
+		var result;
+		
+		$.ajax ({
+			url: "chkAccess.php",
+			data: { id: id },
+			async: false,
+			success: function( data ) {
+					result = data;
+			}
+		});
+		
+		return result;
+	}
 
 
 </script>
