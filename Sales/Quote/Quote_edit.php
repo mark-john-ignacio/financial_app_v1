@@ -57,7 +57,11 @@ $getfctrs = mysqli_query($con,"SELECT * FROM `items_factor` where compcode='$com
 	@$arrname = array();
 	$directory = "../../Components/assets/QO/{$company}_{$txtctranno}/";
 	if(file_exists($directory)){
-		@$arrname = file_checker($directory);
+		if (is_dir_empty($directory)) {
+		}else{
+			@$arrname = file_checker($directory);
+		}
+		
 	}
 ?>
 
