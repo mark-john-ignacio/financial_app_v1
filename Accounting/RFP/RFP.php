@@ -32,6 +32,14 @@
 		$unpststat = "False";
 	}
 
+	$chkapprovals = array();
+	$sqlappx = mysqli_query($con,"Select * from rfp_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 and userid = '$employeeid' Group BY crfpno HAVING nlevel = MIN(nlevel) Order By crfpno, nlevel");
+	if (mysqli_num_rows($sqlappx)!=0) {
+		while($rows = mysqli_fetch_array($sqlappx, MYSQLI_ASSOC)){
+			@$chkapprovals[] = $rows['crfpno']; 
+		}
+	}
+
 
 ?>
 
@@ -396,13 +404,36 @@ mysqli_close($con);
 									}else{
 
 										if(full[7] == 0 && full[8]==0){
-											$msgx =	"<a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a>";
+
+											var chkrejstat1 = "disabled";
+											var chkrejstat2 = "disabled";
+											var xcz = '<?=json_encode(@$chkapprovals)?>';
+											if(xcz!=""){
+												$.each( JSON.parse(xcz), function( key, val ) {
+													if(val==full[0]){
+														chkrejstat1 = "";
+														chkrejstat2 = "";
+													}
+													//console.log(key,val);
+												});
+											}
+
+											if(chkrejstat1==""){
+												chkrejstat1 = "<?=($poststat!="True") ? " disabled" : ""?>";
+											}
+
+											if(chkrejstat2==""){
+												chkrejstat2 = "<?=($cancstat!="True") ? " disabled" : ""?>";
+											}
+											
+											mgsx = "<button type=\"button\" onClick=\"trans('POST','"+full[0]+"')\" class=\"btn btn-xs btn-default\" "+chkrejstat1+"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></button> <button type=\"button\" onClick=\"trans('CANCEL','"+full[0]+"')\" class=\"btn btn-xs btn-default\" "+chkrejstat2+"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></button>";
+											
 										}
 
 									}
 
 									if(full[9] == 1 && full[10]==0) {
-										return "<div id=\"msg"+full[0]+"\"> "+ $msgx +" <a href=\"javascript:;\" onClick=\"track('"+full[0]+"')\" class=\"btn btn-xs btn-default\"> <i class=\"fa fa-file-text-o\" style=\"font-size:20px;color: #3374ff;\" title=\"Track transaction\"></i></a> </div>"
+										return "<div id=\"msg"+full[0]+"\"> "+ $msgx +" <button type=\"button\" onClick=\"track('"+full[0]+"')\" class=\"btn btn-xs btn-default\"> <i class=\"fa fa-file-text-o\" style=\"font-size:20px;color: #3374ff;\" title=\"Track transaction\"></i></button> </div>"
 									}else{
 										return "<div id=\"msg"+full[0]+"\"> "+ $msgx +" </div>";
 									}
