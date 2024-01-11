@@ -30,6 +30,14 @@ $company = $_SESSION['companyid'];
 	if(mysqli_num_rows($sql) == 0){
 		$unpostat = "False";
 	}
+
+	$chkapprovals = array();
+	$sqlappx = mysqli_query($con,"Select * from purchase_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 and userid = '$employeeid' Group BY cpono HAVING nlevel = MIN(nlevel) Order By cpono, nlevel");
+	if (mysqli_num_rows($sqlappx)!=0) {
+		while($rows = mysqli_fetch_array($sqlappx, MYSQLI_ASSOC)){
+			@$chkapprovals[] = $rows['cpono']; 
+		}
+	}
 ?>
 
 <!DOCTYPE html>
@@ -394,13 +402,29 @@ $company = $_SESSION['companyid'];
 										}else{
 
 											if(full[4] == 0 && full[5]==0){
-												$msgx =	"<a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a>";
+
+												var chkrejstat = "disabled";
+												var xcz = '<?=json_encode(@$chkapprovals)?>';
+												if(xcz!=""){
+													$.each( JSON.parse(xcz), function( key, val ) {
+														if(val==full[0]){
+															chkrejstat = "";
+														}
+														//console.log(key,val);
+													});
+												}
+
+												if(chkrejstat==""){
+													chkrejstat = "<?=($poststat!="True") ? " disabled" : ""?>";
+												}
+
+												$msgx =	"<button type=\"button\"  onClick=\"trans('POST','"+full[0]+"')\" class=\"btn btn-xs btn-default\" "+chkrejstat+"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></button> <button type=\"button\"  onClick=\"trans('CANCEL','"+full[0]+"')\" class=\"btn btn-xs btn-default\" "+chkrejstat+"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></button>";
 											}
 
 										}
 
 										if(full[7] == 1) {
-											return "<div id=\"msg"+full[0]+"\"> "+ $msgx +" <a href=\"javascript:;\" onClick=\"track('"+full[0]+"')\" class=\"btn btn-xs btn-default\"> <i class=\"fa fa-file-text-o\" style=\"font-size:20px;color: #3374ff;\" title=\"Track transaction\"></i></a> </div>"
+											return "<div id=\"msg"+full[0]+"\"> "+ $msgx +" <button type=\"button\" onClick=\"track('"+full[0]+"')\" class=\"btn btn-xs btn-default\"> <i class=\"fa fa-file-text-o\" style=\"font-size:20px;color: #3374ff;\" title=\"Track transaction\"></i></button> </div>"
 										}else{
 											if($msgx==""){
 												$msgx = "-";
