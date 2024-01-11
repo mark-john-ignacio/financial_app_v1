@@ -403,22 +403,28 @@ $company = $_SESSION['companyid'];
 
 											if(full[4] == 0 && full[5]==0){
 
-												var chkrejstat = "disabled";
+												var chkrejstat1 = "disabled";
+												var chkrejstat2 = "disabled";
 												var xcz = '<?=json_encode(@$chkapprovals)?>';
 												if(xcz!=""){
 													$.each( JSON.parse(xcz), function( key, val ) {
 														if(val==full[0]){
-															chkrejstat = "";
+															chkrejstat1 = "";
+															chkrejstat2 = "";
 														}
 														//console.log(key,val);
 													});
 												}
 
-												if(chkrejstat==""){
-													chkrejstat = "<?=($poststat!="True") ? " disabled" : ""?>";
+												if(chkrejstat1==""){
+													chkrejstat1 = "<?=($poststat!="True") ? " disabled" : ""?>";
 												}
 
-												$msgx =	"<button type=\"button\"  onClick=\"trans('POST','"+full[0]+"')\" class=\"btn btn-xs btn-default\" "+chkrejstat+"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></button> <button type=\"button\"  onClick=\"trans('CANCEL','"+full[0]+"')\" class=\"btn btn-xs btn-default\" "+chkrejstat+"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></button>";
+												if(chkrejstat2==""){
+													chkrejstat2 = "<?=($cancstat!="True") ? " disabled" : ""?>";
+												}
+
+												$msgx =	"<button type=\"button\"  onClick=\"trans('POST','"+full[0]+"')\" class=\"btn btn-xs btn-default\" "+chkrejstat1+"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></button> <button type=\"button\"  onClick=\"trans('CANCEL','"+full[0]+"')\" class=\"btn btn-xs btn-default\" "+chkrejstat2+"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></button>";
 											}
 
 										}
