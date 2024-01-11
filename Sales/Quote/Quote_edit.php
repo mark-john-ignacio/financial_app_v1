@@ -63,6 +63,10 @@ $getfctrs = mysqli_query($con,"SELECT * FROM `items_factor` where compcode='$com
 		}
 		
 	}
+
+	function is_dir_empty($dir) {
+		return (count(scandir($dir)) == 2);
+	}
 ?>
 
 <!DOCTYPE html>
