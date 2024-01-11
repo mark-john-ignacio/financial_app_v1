@@ -1094,19 +1094,19 @@ else{
 				$("#selterms").attr("disabled", true); 
 				$("#prcevallabel").html("<b>Due Date</b>");
 
-				xval = "<p>Kindly make all checks payable to <b>HRWEB INC</b><br>For bank transfer please deposit to:</p><b><u>For EASTWEST acct:</u></b><br><b>Account Name: HRWEB INC.</b><br><b>Account Number: 200044514167</b><br><b>Bank Address: IMUS Cavite</b><br><br><i>Note: Please settle your account to prevent service interruptions.</i><br><i>Kindly disregards pass due notice if payments have been made.</i><div><br></div><br><br><br><br><br>";
+				//xval = "<p>Kindly make all checks payable to <b>HRWEB INC</b><br>For bank transfer please deposit to:</p><b><u>For EASTWEST acct:</u></b><br><b>Account Name: HRWEB INC.</b><br><b>Account Number: 200044514167</b><br><b>Bank Address: IMUS Cavite</b><br><br><i>Note: Please settle your account to prevent service interruptions.</i><br><i>Kindly disregards pass due notice if payments have been made.</i><div><br></div><br><br><br><br><br>";
 
 			}else{
 				$("#selrecurrtyp").attr("disabled", true); 
 				$("#selterms").attr("disabled", false);
 				$("#prcevallabel").html("<b>Price Validity</b>");
 
-				xval = "Should you have questions regarding our offer, kindly let us know or you can call at Tel. no. 09175513200 / 09499974988 / 09338632777 or email at sales@serttech.com.  Thank you for your interest in our products and services.";
+				//xval = "Should you have questions regarding our offer, kindly let us know or you can call at Tel. no. 09175513200 / 09499974988 / 09338632777 or email at sales@serttech.com.  Thank you for your interest in our products and services.";
 			}
 
 			//$("#txtremarks").val(xval);
 
-			$("#txtremarks").summernote("code", xval);
+			getRemarks(dval)
 			
 		});
 		
@@ -1890,6 +1890,34 @@ function recomputeCurr(){
 	ComputeGross();
 
 
+}
+
+function getRemarks(type = $("selqotyp").find(":selected").val()) {
+	let remarks = "";
+		$.ajax({
+			url: "../../System/th_loadQuotesPrint.php",
+			dataType: 'json',
+			async:false,
+			success: function(res) {
+				$.each(res,function(index,item){
+					if(type == "billing")  {
+						if(item.ccode == 'QUOTE_BILLING') {
+							remarks = item.cdesc;
+						}
+					} else {
+						if(item.ccode == 'QUOTE_RMKS') {
+							remarks = item.cdesc;
+						}
+					}
+					
+					
+				});     
+			},
+			error: function(msg) {
+				console.log(msg)
+			}
+		})
+		$("#txtremarks").summernote("code", remarks);
 }
 
 

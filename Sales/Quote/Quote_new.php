@@ -1,38 +1,36 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "Quote_new.php";
+	if(!isset($_SESSION)){
+	session_start();
+	}
+	$_SESSION['pageid'] = "Quote_new.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
-$company = $_SESSION['companyid'];
+	$company = $_SESSION['companyid'];
 
-$ndcutdate = date("m/d/Y");
-$ndcutdate = date("m/d/Y", strtotime($ndcutdate . "+1 day"));
+	$ndcutdate = date("m/d/Y");
+	$ndcutdate = date("m/d/Y", strtotime($ndcutdate . "+1 day"));
 
-//echo $_SESSION['chkitmbal']."<br>";
-//echo $_SESSION['chkcompvat'];
+	//echo $_SESSION['chkitmbal']."<br>";
+	//echo $_SESSION['chkcompvat'];
 
-////function listcurrencies(){ //API for currency list
-	//$apikey = $_SESSION['currapikey'];
-  
-//	$json = file_get_contents("https://free.currconv.com/api/v7/currencies?&apiKey={$apikey}");
-	//$obj = json_decode($json, true);
-  
-//	return $json;
-//}
+	////function listcurrencies(){ //API for currency list
+		//$apikey = $_SESSION['currapikey'];
+	
+	//	$json = file_get_contents("https://free.currconv.com/api/v7/currencies?&apiKey={$apikey}");
+		//$obj = json_decode($json, true);
+	
+	//	return $json;
+	//}
 
-$getfctrs = mysqli_query($con,"SELECT * FROM `items_factor` where compcode='$company' and cstatus='ACTIVE' order By nidentity"); 
+	$getfctrs = mysqli_query($con,"SELECT * FROM `items_factor` where compcode='$company' and cstatus='ACTIVE' order By nidentity"); 
 	if (mysqli_num_rows($getfctrs)!=0) {
 		while($row = mysqli_fetch_array($getfctrs, MYSQLI_ASSOC)){
 			@$arruomslist[] = array('cpartno' => $row['cpartno'], 'nfactor' => $row['nfactor'], 'cunit' => $row['cunit']); 
 		}
 	}
-
-
 
 	$postbilling = "True";
 	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'qotype_billing'");
@@ -58,8 +56,8 @@ $getfctrs = mysqli_query($con,"SELECT * FROM `items_factor` where compcode='$com
 	<title>Myx Financials</title>
     
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
 
 	<link rel="stylesheet" href="../../include/summernote/summernote.css">
     
@@ -883,20 +881,20 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 	$("#selqotyp").on("change", function (){
 		var dval = $(this).find(':selected').val();
 
-		// if(dval=="billing"){
-		// 	$("#selrecurrtyp").attr("disabled", false); 
-		// 	$("#selterms").attr("disabled", true); 
-		// 	$("#prcevallabel").html("<b>Due Date</b>");
+		 if(dval=="billing"){
+		 	$("#selrecurrtyp").attr("disabled", false); 
+		 	$("#selterms").attr("disabled", true); 
+		 	$("#prcevallabel").html("<b>Due Date</b>");
 
 		// 	xval = "<p>Kindly make all checks payable to <b>SERT TECHNOLOGY INC</b><br>For bank transfer please deposit to:</p><b><u>For MBTC acct:</u></b><br><b>Account Name: SERT TECHNOLOGY INC.</b><br><b>Account Number: 3547354509772</b><br><b>Bank Address: Mangghan,Gen. Trias, Cavite</b><br><br><i>Note: Please settle your account to prevent service interruptions.</i><br><i>Kindly disregards pass due notice if payments have been made.</i><div><br></div><br><br><br><br><br>";
 
-		// }else{
-		// 	$("#selrecurrtyp").attr("disabled", true); 
-		// 	$("#selterms").attr("disabled", false);
-		// 	$("#prcevallabel").html("<b>Price Validity</b>");
+		}else{
+		 	$("#selrecurrtyp").attr("disabled", true); 
+		 	$("#selterms").attr("disabled", false);
+		 	$("#prcevallabel").html("<b>Price Validity</b>");
 
 		// 	xval = "<b>WARRANTY </b>  : SERT Technology Inc. Guarantees the equipment and cable workmanship under this proposal to be free from defect for a period of Twelve (12) months from in service date. Provided that no party except  SERT Technology Inc. Trained technicians/enginners shall be entrusted with the service maintenance and repair of the equipment during the warranty period shall be at SERT Technology Inc. Defects arising from misuse, tampering, forced majored, such as fire earthquake, flood, lightning strike, and abnormal conditions are excluded from the above warranty.<br><br><br>If you have concern(s) please feel free to call at If you have concerns, please feel free to call at 02.8897.4830, 0917.503.1616, 0917.555.0849, 0917.551.3200.<br><br><br> Very truly yours,";
-		// }
+		}
 		
 		getRemarks(dval)
 	});
