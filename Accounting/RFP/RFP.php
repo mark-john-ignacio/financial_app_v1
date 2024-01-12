@@ -373,7 +373,7 @@ mysqli_close($con);
 								if(full[9] == 0 && full[8]==0){
 									return "For Sending";
 								}else{
-									if (full[7] == 0 && (full[8] == 0)) {
+									if (full[7] == 0 && full[8] == 0 full[9] == 1) {
 										return "For Approval";
 									}else{
 										if (full[7] == 1) {		
