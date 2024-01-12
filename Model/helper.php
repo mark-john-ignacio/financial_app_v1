@@ -249,6 +249,34 @@
         };
     }
 
+    function ReadDescription($module, $ctranno, $company){
+        return match($module){
+            'DR' => "Select ctranno, 'DELIVERY RECEIPT' as typ From dr where ctranno = '$ctranno' and compcode='$company'",
+
+            'SI' => "Select ctranno, 'SALES INVOICE' as typ From sales where ctranno = '$ctranno' and compcode='$company'",
+
+            'IN' => "Select ctranno, 'SALES INVOICE' as typ From ntsales where ctranno = '$ctranno' and compcode='$company'",
+
+            'JE' => "Select ctranno, cmemo as typ From journal where ctranno = '$ctranno' and compcode='$company'",
+
+            'ARADJ' => "Select ctranno, CASE WHEN cremarks <> '' THEN cremarks ELSE 'AR ADJUSTMENT' END as typ From aradjustment where ctranno = '$ctranno' and compcode='$company'",
+
+            'OR' => "Select ctranno, CASE WHEN cremarks <> '' THEN cremarks ELSE 'RECEIVE PAYMENT' END as typ From receipt where ctranno = '$ctranno' and compcode='$company'",
+
+            'BD' => "Select ctranno, CASE WHEN cremarks <> '' THEN cremarks ELSE 'BANK DEPOSITS' END as typ From deposit where ctranno = '$ctranno' and compcode='$company'",
+
+            'PV' => "Select ctranno, CASE WHEN cparticulars <> '' THEN cparticulars ELSE 'BILLS PAYMENT' END as typ From paybill where ctranno = '$ctranno' and compcode='$company'",        
+
+            'APV' => "Select ctranno, CASE WHEN cpaymentfor <> '' THEN cpaymentfor ELSE 'AP VOUCHER' END as typ From apv where ctranno = '$ctranno' and compcode='$company'",
+            
+            'APADJ' => "Select ctranno, CASE WHEN cremarks <> '' THEN cremarks ELSE 'AP ADJUSTMENT' END as typ From apadjustment where ctranno = '$ctranno' and compcode='$company'",
+            default => [
+                'errCode' => 'ERR_DATA',
+                'errMsg' => 'Data no referrence'
+            ]
+        };
+    }
+
     function ExcelRead($files){
         $excel_data = [];
         if (isset($files['excel_file']) && !empty($files['excel_file'])) {
@@ -321,14 +349,16 @@
         $TOTAL_NET = 0;
         $TOTAL_VAT = 0;
         $TOTAL_TAX_GROSS = 0;
+        $TOTAL_DISCOUNTS = 0;
 
         $net = 0;
         $vat = 0;
         $gross = 0;
         $exempt = 0;
 
-        $sql = "SELECT a.*, b.nrate FROM receipt_sales_t a
+        $sql = "SELECT a.*, b.nrate, c.ntotdiscount FROM receipt_sales_t a
         LEFT JOIN taxcode b on a.compcode=b.compcode AND a.ctaxcode=b.ctaxcode
+        LEFT JOIN sales c on a.compcode=c.compcode AND a.csalesno=c.ctranno
         WHERE a.compcode = '$company' AND a.csalesno = '$transaction'";
         $query = mysqli_query($con, $sql);
         while($row = $query -> fetch_assoc()){
@@ -342,12 +372,14 @@
                 $exempt = floatval($row['namount']);
             }
 
+           $ntotdiscount = floatval($row['ntotdiscount']);
+
             /**
              * Vat Code Validation
              */
             switch($vatcode){
                 case "VT":
-                case "VT2":
+                case "VTGOV":
                     $TOTAL_NET += floatval($net);
                     $TOTAL_VAT += floatval($vat);
                     $TOTAL_TAX_GROSS += floatval($gross);
@@ -359,16 +391,16 @@
                     $TOTAL_TAX_GROSS += floatval($gross);
                     break;
                 case "VE":
-                case "VE2":
                     $TOTAL_EXEMPT += floatval($exempt);
                     break;
                 case "ZR":
-                case "ZR2":
                     $TOTAL_ZERO_RATED += floatval($row['namount']);
                     break;
                 default:
                     break;
             }
+
+            $TOTAL_DISCOUNTS += floatval($ntotdiscount);
         }
 
         return [
@@ -377,7 +409,8 @@
             'vat' => $TOTAL_VAT,
             'exempt' => $TOTAL_EXEMPT,
             'zero' => $TOTAL_ZERO_RATED,
-            'gross_vat' => $TOTAL_TAX_GROSS
+            'gross_vat' => $TOTAL_TAX_GROSS,
+            'total_discount' => $TOTAL_DISCOUNTS
         ];
     }
 
