@@ -37,6 +37,9 @@
 		
 	$dteyr = $_POST["selyr"];
 
+	$date1 = "01/01/".$dteyr;
+	$date2 = "12/31/".$dteyr;
+
 	//getall accounts
 	$allaccounts = array();
 	$result=mysqli_query($con,"SELECT A.cacctno, A.cacctid, A.cacctdesc, A.nlevel, A.mainacct, A.ctype FROM `accounts` A where A.compcode='$company' and A.cFinGroup='Balance Sheet' ORDER BY CASE WHEN A.ccategory='ASSETS' THEN 1 WHEN A.ccategory='LIABILITIES' THEN 2 WHEN A.ccategory='EQUITY' THEN 3 END, A.nlevel, A.cacctid");
@@ -251,7 +254,7 @@
 <center>
 <h2><?php echo strtoupper($compname);  ?></h2>
 <h2>Balance Sheet - Monthly</h2>
-<h3>For the Year <?=$dteyr?></h3>
+ 
 </center>
 
 <br><br>

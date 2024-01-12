@@ -9,11 +9,16 @@
 
     $ctranno = mysqli_real_escape_string($con, $_POST['ctranno']);
     $module = mysqli_real_escape_string($con, $_POST['module']);
+    $foraptyp = mysqli_real_escape_string($con, $_POST['captypex']);
     $company = $_SESSION['companyid'];
 
     /**
      * {String} $module what module of General Ledger Report Transaciton
      */
+
+     if($module=="APV" && (LTRIM(RTRIM($foraptyp))=="Others" || LTRIM(RTRIM($foraptyp))=="PettyCash")){
+        $module = "APV_Others";
+     }
 
     $controller = match($module){
 
@@ -67,27 +72,27 @@
                 where a.compcode='$company' and a.ctranno = '$ctranno' order by a.nidentity",
 
         'BD' => "select a.*, b.cornumber, b.dcutdate, b.cremarks as remarks_t, b.cpaymethod, b.namount, c.cacctdesc, c.ddate, c.namount
-        from deposit_t a 
-        left join receipt b on a.compcode=b.compcode and a.corno=b.ctranno and a.compcode=b.compcode 
-        left join (
-                SELECT a.compcode, a.ctranno, b.cacctdesc, a.ddate, a.namount
-                from deposit a
-                left join accounts b on a.compcode = b.compcode and a.cacctcode = b.cacctid
-                where a.compcode = '$company' and a.ctranno='$ctranno'
-        ) c on a.compcode = c.compcode and a.ctranno = c.ctranno
-        where a.compcode='$company' and a.ctranno = '$ctranno' ",
+                from deposit_t a 
+                left join receipt b on a.compcode=b.compcode and a.corno=b.ctranno and a.compcode=b.compcode 
+                left join (
+                        SELECT a.compcode, a.ctranno, b.cacctdesc, a.ddate, a.namount
+                        from deposit a
+                        left join accounts b on a.compcode = b.compcode and a.cacctcode = b.cacctid
+                        where a.compcode = '$company' and a.ctranno='$ctranno'
+                ) c on a.compcode = c.compcode and a.ctranno = c.ctranno
+                where a.compcode='$company' and a.ctranno = '$ctranno' ",
 
         'PV' => "Select A.cacctno, b.ctranno, d.ctin, b.bankname, b.cpayrefno, b.ddate, A.crefrr, a.capvno, DATE_FORMAT(a.dapvdate,'%m/%d/%Y') as dapvdate, a.namount, a.nowed, a.napplied, IFNULL(b.npayed,0) as npayed, c.cacctdesc, a.newtamt, d.cname
 		From paybill_t a
 		left join
-			(
-				select x.capvno, y.ccode, y.ctranno, y.cpayrefno, y.ddate, z.cname as bankname, sum(x.napplied) as npayed
-				from paybill_t x 
-                                left join paybill y on x.compcode=y.compcode and x.ctranno=y.ctranno
-                                left join bank z on x.compcode=z.compcode and y.cbankcode=z.ccode
-				where x.compcode = '$company' and x.ctranno = '$ctranno'
-				group by x.capvno
-			) b on a.capvno=b.capvno
+                (
+                        select x.capvno, y.ccode, y.ctranno, y.cpayrefno, y.ddate, z.cname as bankname, sum(x.napplied) as npayed
+                        from paybill_t x 
+                        left join paybill y on x.compcode=y.compcode and x.ctranno=y.ctranno
+                        left join bank z on x.compcode=z.compcode and y.cbankcode=z.ccode
+                        where x.compcode = '$company' and x.ctranno = '$ctranno'
+                        group by x.capvno
+                ) b on a.capvno=b.capvno
 		left join accounts c on a.compcode=c.compcode and a.cacctno=c.cacctid 
                 left join suppliers d on a.compcode = d.compcode and b.ccode = d.ccode
 		where a.compcode='$company' and a.ctranno='$ctranno' ",        
@@ -96,6 +101,11 @@
                 left join apv b on a.compcode = b.compcode and a.ctranno = b.ctranno
                 left join suppliers c on a.compcode = c.compcode and b.ccode = c.ccode
                 where a.compcode = '$company' and a.ctranno = '$ctranno'",      
+
+        'APV_Others' => "select a.*, b.*, c.ctin from apv_t a
+                left join apv b on a.compcode = b.compcode and a.ctranno = b.ctranno
+                left join suppliers c on a.compcode = c.compcode and b.ccode = c.ccode
+                where a.compcode = '$company' and a.ctranno = '$ctranno'",  
         
         'APADJ' => "select a.*, b.cacctno, b.ctitle, b.ndebit, b.ncredit, b.cremarks as remark_t, c.* from apadjustment a
                 left join apadjustment_t b on a.compcode=b.compcode and a.ctranno=b.ctranno

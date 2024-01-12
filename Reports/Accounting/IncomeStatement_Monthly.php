@@ -24,6 +24,9 @@
 
 	$dteyr = $_POST["selyr"];
 
+	$date1 = "01/01/".$dteyr;
+	$date2 = "12/31/".$dteyr;
+
 	//getall accounts
 	$allaccounts = array();
 	$result=mysqli_query($con,"SELECT A.cacctno, A.cacctid, A.cacctdesc, A.nlevel, A.mainacct, A.ctype FROM `accounts` A where A.compcode='$company' and A.cFinGroup='Income Statement' ORDER BY CASE WHEN A.ccategory='REVENUE' THEN 1 WHEN A.ccategory='COST OF SALES' THEN 2 WHEN A.ccategory='EXPENSES' THEN 3 END, A.nlevel, A.cacctid");
@@ -197,7 +200,7 @@
 <center>
 <h2><?php echo strtoupper($compname);  ?></h2>
 <h2>Profit &amp; Lost Statement</h2>
-<h3>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h3>
+<h3>For the Year <?=$dteyr?></h3>
 </center>
 
 <br><br>

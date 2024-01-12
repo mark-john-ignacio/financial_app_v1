@@ -36,9 +36,10 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
 	$spreadsheet->getActiveSheet()->getStyle('A1:E1')->getFont()->setBold(true);
 
-	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit, A.ddate
+	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit, A.ddate, C.cmemo
 			From glactivity A 
 			left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
+            left join journal C on A.compcode=B.compcode and A.ctranno=C.ctranno
 			Where A.compcode='$company' and A.ddate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2   ', '%m/%d/%Y')
 			Order By A.dpostdate, A.ctranno, CASE WHEN (A.ndebit <> 0) THEN 1 ELSE 0 END desc, A.acctno";
 
@@ -76,10 +77,11 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         $spreadsheet->setActiveSheetIndex(0) 
         ->setCellValue('A7', 'DATE')
         ->setCellValue('B7', 'REFERENCE')
-        ->setCellValue('C7', 'CUSTOMER NAME')
-        ->setCellValue('D7', 'ACCOUNT TITLE ')
-        ->setCellValue('E7', 'DEBIT')
-        ->setCellValue('F7', 'CREDIT');
+        ->setCellValue('C7', 'DESCRIPTION')
+        ->setCellValue('D7', 'CUSTOMER NAME')
+        ->setCellValue('E7', 'ACCOUNT TITLE ')
+        ->setCellValue('F7', 'DEBIT')
+        ->setCellValue('G7', 'CREDIT');
 
         // $spreadsheet->getActiveSheet()
         // ->getStyle("A7:F7")->getFill()
@@ -103,22 +105,23 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A'.$cnt, $row['ddate'])
             ->setCellValue('B'.$cnt, $row['ctranno'])
-            ->setCellValue('C'.$cnt, (@$namerow['cname'] != null ? @$namerow['cname'] : ''))
-            ->setCellValue('D'.$cnt, $row['cacctdesc'])
-            ->setCellValue('E'.$cnt, $row['ndebit'])
-            ->setCellValue('F'.$cnt, $row['ncredit']);
+            ->setCellValue('C'.$cnt, $row['cmemo'])
+            ->setCellValue('D'.$cnt, (@$namerow['cname'] != null ? @$namerow['cname'] : ''))
+            ->setCellValue('E'.$cnt, $row['cacctdesc'])
+            ->setCellValue('F'.$cnt, $row['ndebit'])
+            ->setCellValue('G'.$cnt, $row['ncredit']);
 
-            $spreadsheet->setActiveSheetIndex(0)->getStyle('E'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
             $spreadsheet->setActiveSheetIndex(0)->getStyle('F'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
+            $spreadsheet->setActiveSheetIndex(0)->getStyle('G'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
         
             $tranno = $row['ctranno'];
 	}
     $cnt += 2;
     $spreadsheet->setActiveSheetIndex(0) 
-            ->setCellValue('D'.$cnt, 'Total: ')
-            ->setCellValue('E'.$cnt, floatval($ntotdebit))
-            ->setCellValue('F'.$cnt, floatval($ntotcredit));
-    $spreadsheet->getActiveSheet()->getStyle("A$cnt:F$cnt")->getFont()->setBold(true);
+            ->setCellValue('E'.$cnt, 'Total: ')
+            ->setCellValue('F'.$cnt, floatval($ntotdebit))
+            ->setCellValue('G'.$cnt, floatval($ntotcredit));
+    $spreadsheet->getActiveSheet()->getStyle("A$cnt:G$cnt")->getFont()->setBold(true);
 
 	// Rename worksheet
 	$spreadsheet->getActiveSheet()->setTitle('General Journal');

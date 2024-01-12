@@ -34,22 +34,25 @@
 
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">	
+	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
+
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
-	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
+	
 	<title>Cash Receipts Book</title>
 </head>
 
-<body style="padding:20px">
-<h4><b>Company: <?=strtoupper($compname);  ?></b></h4>
-<h4><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h4>
-<h4><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h4>
-<h4><b>Kind of Book: CASH RECEIPTS BOOK</b></h4>
-<h4><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h4>
+<body style="padding:10px">
+<h3><b>Company: <?=strtoupper($compname);  ?></b></h3>
+<h3><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h3>
+<h3><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h3>
+<h3><b>Kind of Book: CASH RECEIPTS BOOK</b></h3>
+<h3><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h3>
+
+
 <br>
 <table class='table table-condensed' id='crjTable' border="0" align="center">
   <tr>

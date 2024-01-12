@@ -96,10 +96,14 @@
 
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css?x=<?=time()?>">
+	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css?x=<?=time()?>">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
 	<link href="../../Bootstrap/css/NFont.css" rel="stylesheet">
 	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
+	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
+
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
 
@@ -107,14 +111,15 @@
 <title>Cash Position</title>
 </head>
 
-<body style="padding: 20px">
+<body style="padding:10px">
+<h3><b>Company: <?=strtoupper($compname);  ?></b></h3>
+<h3><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h3>
+<h3><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h3>
+<h3><b>Kind of Book: CASH POSITION</b></h3>
+<h3><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h3>
 
-<span style="font-weight: bold; font-size: 14px">Company: <?=strtoupper($compname);  ?><br>
-Company Address: <?php echo strtoupper($compadd);  ?><br>
-Vat Registered Tin: <?php echo $comptin;  ?><br>
-Cash Position<br>
-For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></span>
-<br><br>
+<br>
+
 <table width="100%" border="1" align="center" cellpadding="5px" class="table table-small table-hover">
 	<thead>
 		<tr>

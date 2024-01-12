@@ -1,36 +1,33 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "GLedger.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "GLedger.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
-require_once "../../Model/helper.php";
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
+	require_once "../../Model/helper.php";
 
-$company = $_SESSION['companyid'];
-				$sql = "select * From company where compcode='$company'";
-				$result=mysqli_query($con,$sql);
-				
-					if (!mysqli_query($con, $sql)) {
-						printf("Errormessage: %s\n", mysqli_error($con));
-					} 
-					
-				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-				{
-					$compname =  $row['compname'];
-					$compadd = $row['compadd'];
-					$comptin = $row['comptin'];
-				}
+	$company = $_SESSION['companyid'];
+	$sql = "select * From company where compcode='$company'";
+	$result=mysqli_query($con,$sql);
+	
+	if (!mysqli_query($con, $sql)) {
+		printf("Errormessage: %s\n", mysqli_error($con));
+	} 
+		
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
+		$compname =  $row['compname'];
+		$compadd = $row['compadd'];
+		$comptin = $row['comptin'];
+	}
 
 
-$date1 = $_POST["date1"];
-$date2 = $_POST["date2"];
+	$date1 = $_POST["date1"];
+	$date2 = $_POST["date2"];
 
-function getbalance($cnt, $bal, $ndebit, $ncredit){
-
-}
 ?>
 
 <html>
@@ -41,9 +38,11 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 	<link href="../../Bootstrap/css/NFont.css" rel="stylesheet">
 	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
+	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
+
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
-	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
+	
 	<title>General Ledger</title>
 </head>
 
@@ -51,9 +50,8 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 <h3><b>Company: <?=strtoupper($compname);  ?></b></h3>
 <h3><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h3>
 <h3><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h3>
-<h3><b>Kind of Book: General Ledger</b></h3>
+<h3><b>Kind of Book: GENERAL LEDGER BOOK</b></h3>
 <h3><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h3>
-
 
 <br><br>
 
@@ -64,8 +62,9 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 		$jqy = " and A.acctno = '".$_POST['selbanks']."' ";
 	}
 
-	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit
+	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit, C.captype
 	From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
+	left join apv C on A.compcode=C.compcode and A.ctranno=C.ctranno
 	Where A.compcode='$company' and A.ddate between STR_TO_DATE('".$_POST['date1']."', '%m/%d/%Y') and STR_TO_DATE('".$_POST['date2']."', '%m/%d/%Y')".$jqy."
 	Order By A.acctno, A.dpostdate, A.ctranno, CASE WHEN (A.ndebit <> 0) THEN 1 ELSE 0 END desc, A.acctno";
 
@@ -93,7 +92,7 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 
 <table class='table' width="100%" border="0"  cellpadding = "3" class="tbl-serate">
 	<tr>
-		<th colspan="6">
+		<th colspan="7">
 			<table width="100%" border="0" align="center" cellpadding = "3">
 				<tr>
 					<td width="30%"><b>Acct ID:</b> <?=$rowxz['cacctno']?></td>
@@ -106,6 +105,7 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
   <tr>
   	<th style="text-align:left" width="100px">Date</th>
 	<th style="text-align:left" width="100px">Reference</th>
+	<th style="text-align:left">Description</th>
 	<th style="text-align:left" width="150px">Customer Name</th>
 	<th style="text-align:left" width="150px">Account Title</th>
 	<th style="text-align:right" width="150px">Debit</th>
@@ -134,13 +134,22 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 		<td><?=date_format(date_create($drow['ddate']), "d-M-y")?></td>
 		<td><a href='javascript:;'><?=$drow['ctranno']?></a></td>
 
-			<?php 
-				$ctranno = $drow['ctranno'];
-				$controller = CustomerNames($drow['cmodule'], $ctranno, $company);
-				$result = mysqli_query($con, $controller);
-				$namerow = mysqli_fetch_array($result, MYSQLI_ASSOC);
-			?>
+		<?php 
+			$ctranno = $drow['ctranno'];
+			$controller = ReadDescription($drow['cmodule'], $ctranno, $company);
+			$result = mysqli_query($con, $controller);
+			$descrow = mysqli_fetch_array($result, MYSQLI_ASSOC);
+		?>
+		
+		<td><?=(@$descrow['typ'] != null ? @$descrow['typ'] : '-')?></td>
 
+
+		<?php 
+			$ctranno = $drow['ctranno'];
+			$controller = CustomerNames($drow['cmodule'], $ctranno, $company);
+			$result = mysqli_query($con, $controller);
+			$namerow = mysqli_fetch_array($result, MYSQLI_ASSOC);
+		?>
 
 		<td><?=(@$namerow['cname'] != null ? @$namerow['cname'] : '-')?></td>
 		<td><?=(@$drow['cacctdesc'] != null ? @$drow['cacctdesc'] : '-')?></td>
@@ -152,6 +161,8 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 					//echo number_format(floatval($xv), 2);
 			?>
 		</td>-->
+
+		<td style="display: none;"><?= $drow['captype'] ?></td>
   </tr>
 	<?php
 		}
@@ -159,9 +170,9 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 	?>
 
 	<tr>
-		<td style="text-align:right;" colspan="4"><b>Total <?=$dcurrentacct?></b></td>
-  	<td style="text-align:right; border-bottom-style: double; border-top: 1px solid"><b><?=(floatval($totdebit)<>0) ? number_format(floatval($totdebit), 2) : ""?></b></td>
-    <td style="text-align:right; border-bottom-style: double; border-top: 1px solid"><b><?=(floatval($totcredit)<>0) ? number_format(floatval($totcredit), 2) : ""?></b></td>
+		<td style="text-align:right;" colspan="5"><b>Total <?=$dcurrentacct?></b></td>
+  		<td style="text-align:right; border-bottom-style: double; border-top: 1px solid"><b><?=(floatval($totdebit)<>0) ? number_format(floatval($totdebit), 2) : ""?></b></td>
+    	<td style="text-align:right; border-bottom-style: double; border-top: 1px solid"><b><?=(floatval($totcredit)<>0) ? number_format(floatval($totcredit), 2) : ""?></b></td>
 		<!--<td>
 			&nbsp;
 		</td>-->
@@ -185,7 +196,7 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				</div>
 				<div class="modal-body" style="height: 100%; overflow: auto">
 
-					<table class='table ' id="HeadDetail" border="1" bordercolor="#CCCCCC" width="100%" style="overflow: auto;">
+					<table class='table' id="HeadDetail" border="1" bordercolor="#CCCCCC" width="100%" style="overflow: auto;">
 						<thead></thead>
 						<tbody></tbody>
 					</table>
@@ -211,19 +222,21 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 		$(document).on('click', '#tableContent', function(){
 			let modules = $(this).closest('#tableContent').find('td:eq(0)').text();
 			let ctranno = $(this).closest('#tableContent').find('td:eq(2)').text();
-			console.log(modules)
+
+			var captypex = $(this).closest('#tableContent').find('td:eq(8)').text();
 
 			clearTable("#HeadDetail")
 			clearTable('#detailTable')
 			clearTable('#subdetailTable')
-			
+			console.log(modules)
 			$.ajax({
 				url: 'Controller/TBal_Controller.php',
 				type: 'post',
 				dataType: 'json',
 				data: {
 					module: modules,
-					ctranno: ctranno
+					ctranno: ctranno,
+					captypex: captypex
 				},
 				success: function(res){
 					$('#detailModal').modal('show')
@@ -248,7 +261,11 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 								break;
 							case 'APV':
 								$('#modalTitle').text('Accounts Payment Voucher')
-								ShowAPV(index, item)
+								if(captypex=="Others" || captypex=="PettyCash"){
+									ShowAPV_Others(index, item)
+								}else{
+									ShowAPV(index, item)
+								}
 								console.log(item)
 								break;
 							case 'JE':
@@ -301,14 +318,13 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 	// 	cidentity, compcode, csalesno, ctaxcode, ctaxcodeorig, ctranno, 
 	// 	dcutdate, namount, napplied, ncm, ndiscount, ndm, ndue, newtamt, 
 	// 	newtgiven, newtrate, nidentity, nnet, npayment, ntaxrate, nvat}){
-	function ShowOR(index, data){
+		function ShowOR(index, data){
 		if(index <= 0){
 			$('<tr>').append(
 				$('<tH>').text('Transaction No. '),
 				$('<tH>').text('Supplier: '),
 				$('<tH>').text('Credit Account'),
 				$('<tH>').text('Date:'),
-				$('<tH>').text('Tin:'),
 				$('<tH>').text('Remarks:'),
 
 			).appendTo('#HeadDetail > thead')
@@ -318,7 +334,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<td>').text(data.cname),
 				$('<td>').text(data.cacctdesc),
 				$('<td>').text(data.ddate),
-				$('<td>').text(data.ctin),
 				$('<td>').text((data.cremarks != null ? data.cremarks : '-')),
 				
 			).appendTo('#HeadDetail > tbody')
@@ -359,29 +374,29 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 						$('<tr>').append(
 							$("<td style='text-align: left'>").text(item.acctno),
 							$("<td style='text-align: left'>").text(item.ctitle),
-							$('<td>').text(parseFloat(item.ndebit).toFixed(2)),
-							$('<td>').text(parseFloat(item.ncredit).toFixed(2)),
+							$('<td>').text(settodecl(item.ndebit)),
+							$('<td>').text(settodecl(item.ncredit)),
 						).appendTo('#detailTable > thead')
 					})
 				}
 			})
-		}
+		} 
 
 		$('<tr>').append(
 			$('<td>').text( (data.csalesno != null ? data.csalesno : '-') ),
 			$('<td>').text( (data.cdesc != null ? data.cdesc : '-') ),
-			$('<td>').text( (data.namount != null ? parseFloat(data.namount).toFixed(2) : '-') ),
-			$('<td>').text( (data.ndiscount != null ? parseFloat(data.ndiscount).toFixed(2) : '-') ),
-			$('<td>').text( (data.ncm != null ? parseFloat(data.ncm).toFixed(2) : '-') ),
-			$('<td>').text( (data.npayment != null ? parseFloat(data.npayment).toFixed(2) : '-') ),
+			$('<td>').text( (data.namount != null ? settodecl(data.namount) : '-') ),
+			$('<td>').text( (data.ndiscount != null ? settodecl(data.ndiscount) : '-') ),
+			$('<td>').text( (data.ncm != null ? settodecl(data.ncm) : '-') ),
+			$('<td>').text( (data.npayment != null ? settodecl(data.npayment) : '-') ),
 			$('<td>').text( (data.ctaxcode != null ? data.ctaxcode : '-') ),
-			$('<td>').text( (data.nvat != null ? parseFloat(data.nvat).toFixed(2) : '-') ),
-			$('<td>').text( (data.nnet != null ? parseFloat(data.nnet).toFixed(2) : '-') ),
+			$('<td>').text( (data.nvat != null ? settodecl(data.nvat) : '-') ),
+			$('<td>').text( (data.nnet != null ? settodecl(data.nnet) : '-') ),
 			$('<td>').text( (data.cewtcode != "" ? data.cewtcode : '-') ),
-			$('<td>').text( (data.newtgiven != null ?  parseFloat(data.newtgiven).toFixed(2) : '-' ) ),
-			$('<td>').text( (data.newtamt != null ?  parseFloat(data.newtamt).toFixed(2) : '-' ) ),
-			$('<td>').text( (data.ndue != null ?  parseFloat(data.ndue).toFixed(2) : '-' ) ),
-			$('<td>').text( (data.napplied != null ?  parseFloat(data.napplied).toFixed(2) : '-' ) ),
+			$('<td>').text( (data.newtgiven != null ?  settodecl(data.newtgiven) : '-' ) ),
+			$('<td>').text( (data.newtamt != null ?  settodecl(data.newtamt) : '-' ) ),
+			$('<td>').text( (data.ndue != null ?  settodecl(data.ndue) : '-' ) ),
+			$('<td>').text( (data.napplied != null ?  settodecl(data.napplied) : '-' ) ),
 		).appendTo('#subdetailTable > tbody')
 
 	}
@@ -393,7 +408,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Customer: '),
 				$('<tH>').text('Type'),
 				$('<tH>').text('Date:'),
-				$('<tH>').text('Tin:'),
 				$('<tH>').text('Remarks'),
 
 			).appendTo('#HeadDetail > thead')
@@ -404,7 +418,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<td>').text(data.cname),
 				$('<td>').text(data.csalestype),
 				$('<td>').text(data.ddate),
-				$('<td>').text(data.ctin),
 				$('<td>').text((data.cremarks != null ? data.cremarks : '-')),
 			).appendTo('#HeadDetail > tbody')
 
@@ -426,6 +439,24 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Amount'),
 				$('<tH>').text('Total Amount in PHP')
 			).appendTo('#subdetailTable > thead')
+
+			$.ajax({
+				url: 'Controller/th_GLactivity_List.php',
+				type: 'post',
+				dataType: 'json',
+				data: {ctranno: data.ctranno},
+				async: false,
+				success: function(res){
+					res['data'].map((item, res) =>{
+						$('<tr>').append(
+							$("<td style='text-align: left'>").text(item.acctno),
+							$("<td style='text-align: left'>").text(item.ctitle),
+								$('<td>').text(settodecl(item.ndebit)),
+								$('<td>').text(settodecl(item.ncredit)),
+						).appendTo('#detailTable > thead')
+					})
+				}
+			})
 		}
 
 		$('<tr>').append(
@@ -433,30 +464,12 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 			$('<td>').text( (data.cewtcode != "" ? data.cewtcode : '-') ),
 			$('<td>').text( (data.ctaxcode != null ? data.ctaxcode : '-') ),
 			$('<td>').text( (data.cmainunit != null ? data.cmainunit : '-') ),
-			$('<td>').text( (data.nqty != null ? parseFloat(data.nqty).toFixed(2) : '-') ),
-			$('<td>').text( (data.nprice != null ? parseFloat(data.nprice).toFixed(2) : '-') ),
-			$('<td>').text( (data.ndiscount != null ? parseFloat(data.ndiscount).toFixed(2) : '-') ),
-			$('<td>').text( (data.nbaseamount != null ? parseFloat(data.nbaseamount).toFixed(2) : '-') ),
-			$('<td>').text( (data.namount != null ? parseFloat(data.namount).toFixed(2) : '-') ),
+			$('<td>').text( (data.nqty != null ? settodecl(data.nqty) : '-') ),
+			$('<td>').text( (data.nprice != null ? settodecl(data.nprice) : '-') ),
+			$('<td>').text( (data.ndiscount != null ? settodecl(data.ndiscount) : '-') ),
+			$('<td>').text( (data.nbaseamount != null ? settodecl(data.nbaseamount) : '-') ),
+			$('<td>').text( (data.namount != null ? settodecl(data.namount) : '-') ),
 		).appendTo('#subdetailTable > tbody')
-
-		$.ajax({
-			url: 'Controller/th_GLactivity_List.php',
-			type: 'post',
-			dataType: 'json',
-			data: {ctranno: data.ctranno},
-			async: false,
-			success: function(res){
-				res['data'].map((item, res) =>{
-					$('<tr>').append(
-						$("<td style='text-align: left'>").text(item.acctno),
-						$("<td style='text-align: left'>").text(item.ctitle),
-							$('<td>').text(parseFloat(item.ndebit).toFixed(2)),
-							$('<td>').text(parseFloat(item.ncredit).toFixed(2)),
-					).appendTo('#detailTable > thead')
-				})
-			}
-		})
 	}
 
 	function ShowIN(index, data){
@@ -465,7 +478,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Transaction No.'),
 				$('<tH>').text('Customer: '),
 				$('<tH>').text('Type'),
-				$('<tH>').text('Tin:'),
 				$('<tH>').text('Date:')
 
 			).appendTo('#HeadDetail > thead')
@@ -474,7 +486,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<td>').text(data.ctranno),
 				$('<td>').text(data.cname),
 				$('<td>').text(data.csalestype),
-				$('<td>').text(data.ctin),
 				$('<td>').text(data.ddate)
 			).appendTo('#HeadDetail > tbody')
 
@@ -494,34 +505,39 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Amount'),
 				$('<tH>').text('Total Amount in PHP')
 			).appendTo('#subdetailTable > thead')
+
+
+			$.ajax({
+				url: 'Controller/th_GLactivity_List.php',
+				type: 'post',
+				dataType: 'json',
+				data: {ctranno: data.ctranno},
+				async: false,
+				success: function(res){
+
+					res['data'].map((item, res) =>{
+						$('<tr>').append(
+							$("<td style='text-align: left'>").text(item.acctno),
+							$("<td style='text-align: left'>").text(item.ctitle),
+								$('<td>').text(settodecl(item.ndebit)),
+								$('<td>').text(settodecl(item.ncredit)),
+						).appendTo('#detailTable > thead')
+					})
+				}
+			})
 		}
+
 		$('<tr>').append(
 			$("<td style='text-align: left'>").text( (data.citemdesc != null ? data.citemdesc : '-') ),
 			$('<td>').text( (data.cunit != null ? data.cunit : '-') ),
-			$('<td>').text( (data.nqty != null ? parseFloat(data.nqty).toFixed(2) : '-') ),
-			$('<td>').text( (data.nprice != null ? parseFloat(data.nprice).toFixed(2) : '-') ),
-			$('<td>').text( (data.ndiscount != null ? parseFloat(data.ndiscount).toFixed(2) : '-') ),
-			$('<td>').text( (data.nbaseamount != null ? parseFloat(data.nbaseamount).toFixed(2) : '-') ),
-			$('<td>').text( (data.namount != null ? parseFloat(data.namount).toFixed(2) : '-') ),
+			$('<td>').text( (data.nqty != null ? settodecl(data.nqty) : '-') ),
+			$('<td>').text( (data.nprice != null ? settodecl(data.nprice) : '-') ),
+			$('<td>').text( (data.ndiscount != null ? settodecl(data.ndiscount) : '-') ),
+			$('<td>').text( (data.nbaseamount != null ? settodecl(data.nbaseamount) : '-') ),
+			$('<td>').text( (data.namount != null ? settodecl(data.namount) : '-') ),
 		).appendTo('#subdetailTable > tbody')
 
-		$.ajax({
-			url: 'Controller/th_GLactivity_List.php',
-			type: 'post',
-			dataType: 'json',
-			data: {ctranno: data.ctranno},
-			async: false,
-			success: function(res){
-				res['data'].map((item, res) =>{
-					$('<tr>').append(
-						$("<td style='text-align: left'>").text(item.acctno),
-						$("<td style='text-align: left'>").text(item.ctitle),
-							$('<td>').text(parseFloat(item.ndebit).toFixed(2)),
-							$('<td>').text(parseFloat(item.ncredit).toFixed(2)),
-					).appendTo('#detailTable > thead')
-				})
-			}
-		})
+		
 	}
 
 
@@ -531,7 +547,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Transaction No.: '),
 				$('<tH>').text('Supplier: '),
 				$('<tH>').text('Date:'),
-				$('<tH>').text('Tin:'),
 				$('<tH>').text('Remarks')
 
 			).appendTo('#HeadDetail > thead')
@@ -539,8 +554,7 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<td>').text(data.ctranno),
 				$('<td>').text(data.cpayee),
 				$('<td>').text(data.ddate),
-				$('<tH>').text(data.ctin),
-				$('<td>').text(data.cremarks)
+				$('<td>').text(data.cpaymentfor)
 			).appendTo('#HeadDetail > tbody')
 
 
@@ -569,19 +583,19 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Credit'),
 			).appendTo('#detailTable > thead')
 		}
-			$('<tr>').append(
+		$('<tr>').append(
 				$("<td style='text-align: left'>").text( (data.crefno != null ? data.crefno : '-') ),
-				$('<td>').text( (data.namount != null ? parseFloat(data.namount).toFixed(2) : '-') ),
-				$('<td>').text( (data.napcm != null ? parseFloat(data.napcm).toFixed(2) : '-') ),
-				$('<td>').text( (data.napdisc != null ? parseFloat(data.napdisc).toFixed(2) : '-') ),
+				$('<td>').text( (data.namount != null ? settodecl(data.namount) : '-') ),
+				$('<td>').text( (data.napcm != null ? settodecl(data.napcm) : '-') ),
+				$('<td>').text( (data.napdisc != null ? settodecl(data.napdisc) : '-') ),
 				$('<td>').text( (data.cvatcode != null ? data.cvatcode : '-') ),
-				$('<td>').text( (data.nvatrate != null ? parseFloat(data.nvatrate).toFixed(2) : '-') ),
-				$('<td>').text( (data.nvatamt != null ? parseFloat(data.nvatamt).toFixed(2) : '-') ),
-				$('<td>').text( (data.nnet != null ? parseFloat(data.nnet).toFixed(2) : '-') ),
+				$('<td>').text( (data.nvatrate != null ? settodecl(data.nvatrate) : '-') ),
+				$('<td>').text( (data.nvatamt != null ? settodecl(data.nvatamt) : '-') ),
+				$('<td>').text( (data.nnet != null ? settodecl(data.nnet) : '-') ),
 				$('<td>').text( (data.cewtcode != null ? data.cewtcode : '-') ),
-				$('<td>').text( (data.newtrate != null ? parseFloat(data.newtrate).toFixed(2) : '-') ),
-				$('<td>').text( (data.newtamt != null ? parseFloat(data.newtamt).toFixed(2) : '-') ),
-				$('<td>').text( (data.ngross != null ? parseFloat(data.ngross).toFixed(2) : '-') ),
+				$('<td>').text( (data.newtrate != null ? settodecl(data.newtrate) : '-') ),
+				$('<td>').text( (data.newtamt != null ? settodecl(data.newtamt) : '-') ),
+				$('<td>').text( (data.ngross != null ? settodecl(data.ngross) : '-') ),
 			).appendTo('#subdetailTable > tbody')
 		
 			
@@ -607,8 +621,8 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 								$("<td style='text-align: left'>").text(data.crefno),
 								$("<td style='text-align: left'>").text( item.cacctno),	
 								$("<td style='text-align: left'>").text( (item.ctitle != null ? item.ctitle: '-') ),
-								$('<td>').text( (item.ndebit != null ? parseFloat(item.ndebit).toFixed(2) : '-') ),
-								$('<td>').text( (item.ncredit != null ? parseFloat(item.ncredit).toFixed(2) : '-') ),
+								$('<td>').text( (item.ndebit != null ? settodecl(item.ndebit) : '-') ),
+								$('<td>').text( (item.ncredit != null ? settodecl(item.ncredit) : '-') ),
 							).appendTo('#detailTable > tbody')
 						}
 					})
@@ -619,6 +633,38 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				
 			}
 		})
+	}
+
+	function ShowAPV_Others(index, data){
+		if(index <= 0){
+			$('<tr>').append(
+				$('<tH>').text('Transaction No.: '),
+				$('<tH>').text('Supplier: '),
+				$('<tH>').text('Date:'),
+				$('<tH>').text('Remarks')
+
+			).appendTo('#HeadDetail > thead')
+			$('<tr>').append(
+				$('<td>').text(data.ctranno),
+				$('<td>').text(data.cpayee),
+				$('<td>').text(data.ddate),
+				$('<td>').text(data.cpaymentfor)
+			).appendTo('#HeadDetail > tbody')
+
+			$('<tr>').append(
+				$('<tH>').text('Account No.'),
+				$('<tH>').text('Title'),
+				$('<tH>').text('Debit'),
+				$('<tH>').text('Credit'),
+			).appendTo('#detailTable > thead')
+		}
+
+		$('<tr>').append(
+			$("<td style='text-align: left'>").text( data.cacctno),	
+			$("<td style='text-align: left'>").text( (data.ctitle != null ? data.ctitle: '-') ),
+			$('<td>').text( (data.ndebit != null ? settodecl(data.ndebit) : '-') ),
+			$('<td>').text( (data.ncredit != null ? settodecl(data.ncredit) : '-') ),
+		).appendTo('#detailTable > tbody')
 	}
 
 	function ShowJE(index, data){
@@ -650,8 +696,8 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 		$('<tr>').append(
 			$("<td style='text-align: left'>").text( (data.cacctno != null ? data.cacctno : '-') ),
 			$("<td style='text-align: left'>").text( (data.ctitle != null ? data.ctitle : '-') ),
-			$('<td>').text( (data.ndebit != null ? data.ndebit : '-') ),
-			$('<td>').text( (data.ncredit != null ? data.ncredit : '-') ),
+			$('<td>').text( (data.ndebit != null ? settodecl(data.ndebit) : '-') ),
+			$('<td>').text( (data.ncredit != null ? settodecl(data.ncredit) : '-') ),
 			$("<td style='text-align: left'>").text( (data.csub != null ? data.csub : '-') ),
 			$("<td style='text-align: left'>").text( (data.cremarks != null ? data.cremarks : '-') ),
 		).appendTo('#detailTable > tbody')
@@ -664,7 +710,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Customer '),
 				$('<tH>').text('SR Referrence '),
 				$('<tH>').text('SI Referrence '),
-				$('<tH>').text('Tin:'),
 				$('<tH>').text('Date:')
 
 			).appendTo('#HeadDetail > thead')
@@ -674,7 +719,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<td>').text(data.cname),
 				$('<td>').text(data.crefsr),
 				$('<td>').text(data.crefsi),
-				$('<tH>').text(data.ctin),
 				$('<td>').text(data.ddate)
 			).appendTo('#HeadDetail > tbody')
 
@@ -692,8 +736,8 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 		$('<tr>').append(
 			$("<td style='text-align: left'>").text( (data.cacctno != null ? data.cacctno : '-') ),
 			$("<td style='text-align: left'>").text( (data.ctitle != null ? data.ctitle : '-') ),
-			$('<td>').text( (data.ndebit != null ? parseFloat(item.ndebit).toFixed(2) : '-') ),
-			$('<td>').text( (data.ncredit != null ? parseFloat(item.ncredit).toFixed(2) : '-') ),
+			$('<td>').text( (data.ndebit != null ? settodecl(item.ndebit) : '-') ),
+			$('<td>').text( (data.ncredit != null ? settodecl(item.ncredit) : '-') ),
 			$("<td style='text-align: left'>").text( (data.csub != null ? data.csub : '-') ),
 			$("<td style='text-align: left'>").text( (data.cremarks != null ? data.cremarks : '-') ),
 		).appendTo('#detailTable > tbody')
@@ -706,7 +750,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Paid to '),
 				$('<tH>').text('Referrence No.:'),
 				$('<tH>').text('Bank:'),
-				$('<tH>').text('Tin:'),
 				$('<tH>').text('Date:')
 
 			).appendTo('#HeadDetail > thead')
@@ -716,7 +759,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<td>').text(data.cname),
 				$('<td>').text(data.cpayrefno),
 				$('<td>').text(data.bankname),
-				$('<tH>').text(data.ctin),
 				$('<td>').text(data.ddate)
 			).appendTo('#HeadDetail > tbody')
 
@@ -745,10 +787,10 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 			$("<td style='text-align: left'>").text( (data.capvno != null ? data.capvno : '-') ),
 			$("<td style='text-align: left'>").text( (data.crefrr != null ? data.crefrr : '-') ),
 			$('<td>').text( (data.dapvdate != null ? data.dapvdate : '-') ),
-			$('<td>').text( (data.namount != null ? parseFloat(data.namount).toFixed(2) : '-') ),
-			$('<td>').text( (data.npayed != null ? parseFloat(data.npayed).toFixed(2) : '-') ),
-			$('<td>').text( (data.nowed != null ? parseFloat(data.nowed).toFixed(2) : '-') ),
-			$('<td>').text( (data.napplied != null ? parseFloat(data.napplied).toFixed(2) : '-') ),
+			$('<td>').text( (data.namount != null ? settodecl(data.namount) : '-') ),
+			$('<td>').text( (data.npayed != null ? settodecl(data.npayed) : '-') ),
+			$('<td>').text( (data.nowed != null ? settodecl(data.nowed) : '-') ),
+			$('<td>').text( (data.napplied != null ? settodecl(data.napplied) : '-') ),
 			$("<td style='text-align: left'>").text( (data.cacctdesc != null ? data.cacctdesc : '-') ),
 			$("<td style='text-align: left'>").text( (data.cacctno != null ? data.cacctno : '-') ),
 		).appendTo('#subdetailTable > tbody')
@@ -764,8 +806,8 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 					$('<tr>').append(
 						$("<td style='text-align: left'>").text(item.acctno),
 						$("<td style='text-align: left'>").text(item.ctitle),
-						$('<td>').text(parseFloat(item.ndebit).toFixed(2)),
-						$('<td>').text(parseFloat(item.ncredit).toFixed(2)),
+						$('<td>').text(settodecl(item.ndebit)),
+						$('<td>').text(settodecl(item.ncredit)),
 					).appendTo('#detailTable > thead')
 				})
 			}
@@ -812,7 +854,7 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 			$('<td>').text( (data.corno != null ? data.corno : '-') ),
 			$('<td>').text( (data.dcutdate != null ? data.dcutdate : '-') ),
 			$('<td>').text( (data.cpaymethod != null ? data.cpaymethod : '-') ),
-			$('<td>').text( (data.namount != null ? parseFloat(data.namount).toFixed(2) : '-') ),
+			$('<td>').text( (data.namount != null ? settodecl(data.namount) : '-') ),
 			$('<td>').text( (data.remark_t != null ? data.remark_t : '-') ),
 		).appendTo('#subdetailTable > tbody')
 
@@ -827,8 +869,8 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 					$('<tr>').append(
 						$("<td style='text-align: left'>").text(item.acctno),
 						$("<td style='text-align: left'>").text(item.ctitle),
-						$('<td>').text(parseFloat(item.ndebit).toFixed(2)),
-						$('<td>').text(parseFloat(item.ncredit).toFixed(2)),
+						$('<td>').text(settodecl(item.ndebit)),
+						$('<td>').text(settodecl(item.ncredit)),
 					).appendTo('#detailTable > thead')
 				})
 			}
@@ -842,7 +884,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Customer '),
 				$('<tH>').text('Salesman '),
 				$('<tH>').text('Date:'),
-				$('<tH>').text('Tin:'),
 				$('<tH>').text('Remarks'),
 			).appendTo('#HeadDetail > thead')
 			// const fulldate = ddate.getMonth() + '-' + ddate.getDate() + '-' + ddate.getFullYear()
@@ -851,7 +892,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<td>').text(data.cname),
 				$('<td>').text(data.csalesman),
 				$('<td>').text(data.ddate),
-				$('<tH>').text(data.ctin),
 				$('<td>').text(data.cremarks)
 			).appendTo('#HeadDetail > tbody')
 
@@ -868,8 +908,8 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 		$('<tr>').append(
 			$('<td>').text( (data.citemdesc != null ? data.citemdesc : '-') ),
 			$('<td>').text( (data.cunit != null ? data.cunit : '-') ),
-			$('<td>').text( (data.nfactor != null ? parseFloat(data.nfactor).toFixed(0) : '-') ),
-			$('<td>').text( (data.nqty != null ? parseFloat(data.nqty).toFixed(2) : '-') ),
+			$('<td>').text( (data.nfactor != null ? settodecl(data.nfactor) : '-') ),
+			$('<td>').text( (data.nqty != null ? settodecl(data.nqty) : '-') ),
 		).appendTo('#detailTable > tbody')
 	}
 	
@@ -880,7 +920,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<tH>').text('Transaction No. '),
 				$('<tH>').text('Supplier '),
 				$('<tH>').text('Date '),
-				$('<tH>').text('Tin:'),
 				$('<tH>').text('Remarks:')
 
 			).appendTo('#HeadDetail > thead')
@@ -889,7 +928,6 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 				$('<td>').text(data.ctranno),
 				$('<td>').text(data.cname),
 				$('<td>').text(data.ddate),
-				$('<tH>').text(data.ctin),
 				$('<td>').text(data.cremarks)
 			).appendTo('#HeadDetail > tbody')
 
@@ -906,9 +944,14 @@ function getbalance($cnt, $bal, $ndebit, $ncredit){
 		$('<tr>').append(
 				$("<td style='text-align: left'>").text((data.cacctno != null ? data.cacctno : '-')),
 				$("<td style='text-align: left'>").text((data.ctitle != null ? data.ctitle : '-')),
-				$('<tH>').text((data.ndebit != null ? parseFloat(data.ndebit).toFixed(2) : '-')),
-				$('<tH>').text((data.ncredit != null ? parseFloat(data.ncredit).toFixed(2) : '-')),
+				$('<tH>').text((data.ndebit != null ? settodecl(data.ndebit) : '-')),
+				$('<tH>').text((data.ncredit != null ? settodecl(data.ncredit) : '-')),
 				$("<td style='text-align: left'>").text((data.remark_t != null ? data.remark_t : '-')),
 			).appendTo('#detailTable > tbody')
+	}
+
+	function settodecl(xyz){
+		xyz = parseFloat(xyz);
+		return xyz.toLocaleString('en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2});
 	}
 </script>

@@ -40,7 +40,7 @@ include('../include/access.php');
     <td style="padding:2px">
     <div class="col-xs-5 nopadding">
         <select id="seltype" name="seltype" class="form-control input-sm" onChange="setact(this.value);">
-          <option value="Accounting/SalesJournal.php">Journal</option>
+          <option value="Accounting/SalesLedger.php">Ledger</option>
           <option value="Accounting/SalesRecap.php">Recap</option>
           <option value="Accounting/SalesRecapCust.php">Recap Per Customer</option>
         </select>

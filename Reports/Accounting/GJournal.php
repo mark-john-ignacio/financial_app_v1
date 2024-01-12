@@ -1,54 +1,57 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "GJournal.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "GJournal.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
-require_once('../../Model/helper.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
+	require_once('../../Model/helper.php');
 
-$company = $_SESSION['companyid'];
-				$sql = "select * From company where compcode='$company'";
-				$result=mysqli_query($con,$sql);
-				
-					if (!mysqli_query($con, $sql)) {
-						printf("Errormessage: %s\n", mysqli_error($con));
-					} 
-					
-				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-				{
-					$compname =  $row['compname'];
-					$compadd = $row['compadd'];
-					$comptin = $row['comptin'];
-				}
+	$company = $_SESSION['companyid'];
+	$sql = "select * From company where compcode='$company'";
+	$result=mysqli_query($con,$sql);
+	
+		if (!mysqli_query($con, $sql)) {
+			printf("Errormessage: %s\n", mysqli_error($con));
+		} 
+		
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
+		$compname =  $row['compname'];
+		$compadd = $row['compadd'];
+		$comptin = $row['comptin'];
+	}
 
 
-$date1 = $_POST["date1"];
-$date2 = $_POST["date2"];
+	$date1 = $_POST["date1"];
+	$date2 = $_POST["date2"];
 ?>
 
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css?x=<?=time()?>">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-<link href="../../Bootstrap/css/NFont.css" rel="stylesheet">
-<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../Bootstrap/js/bootstrap.js"></script>
-<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
+	<link href="../../Bootstrap/css/NFont.css" rel="stylesheet">
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
+	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
+
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<script src="../../include/FormatNumber.js"></script>
+	
 <title>General Journal</title>
 </head>
 
-<body style="padding:20px">
-<h4><b>Company: <?=strtoupper($compname);  ?></b></h4>
-<h4><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h4>
-<h4><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h4>
-<h4><b>Kind of Book: GENERAL JOURNAL BOOK</b></h4>
-<h4><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h4>
+<body style="padding:10px">
+<h3><b>Company: <?=strtoupper($compname);  ?></b></h3>
+<h3><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h3>
+<h3><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h3>
+<h3><b>Kind of Book: GENERAL JOURNAL BOOK</b></h3>
+<h3><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h3>
 
 
 <br>
@@ -57,6 +60,7 @@ $date2 = $_POST["date2"];
 		<th width="50px" style='display:none;'>Module</th>
 		<th width='50px'>Date</th>
 		<th width="50px">Reference</th>
+		<th width="50px">Description</th>
 		<th width='50px'>Account Code</th>
 		<th width='50px'>Account Title</th>
   	<th style="text-align:center"  width="50px">Debit</th>
@@ -65,9 +69,10 @@ $date2 = $_POST["date2"];
  
  <?php
 //Order By A.dpostdate, A.ctranno, CASE WHEN (A.ndebit <> 0) THEN 1 ELSE 0 END desc, A.acctno
-	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit, A.ddate
+	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit, A.ddate, C.cmemo
 			From glactivity A 
 			left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
+			left join journal C on A.compcode=B.compcode and A.ctranno=C.ctranno
 			Where A.compcode='$company' and A.cmodule='JE' and A.ddate between STR_TO_DATE('".$_REQUEST['date1']."', '%m/%d/%Y') and STR_TO_DATE('".$_REQUEST['date2']."', '%m/%d/%Y')
 			Order By A.ctranno, A.nidentity";
 
@@ -119,6 +124,7 @@ $date2 = $_POST["date2"];
 		<td style='display: none;'><?=$cmod;?></td>
 		<td><?=$row['ddate'];?></td>
 		<td><?=$ecode;?></td>
+		<td><?=$row['cmemo'];?></td>
 
 			<?php
 				if($ecode != ''){
@@ -153,7 +159,7 @@ $date2 = $_POST["date2"];
 
 
 	echo "<tr>
-			<td colspan ='4' align='right'>&nbsp;</td>
+			<td colspan ='5' align='right'>&nbsp;</td>
 			<td style='text-align:right; border-top: 2px solid !important'><b>".number_format($ntotdebit,2)."</b></td>
 			<td style='text-align:right; border-top: 2px solid !important'><b>".number_format($ntotcredit,2)."</b></td>
 		<tr>";
@@ -638,11 +644,14 @@ $date2 = $_POST["date2"];
 			).appendTo('#detailTable > thead')
 		}
 
+		ndbx = parseFloat(data.ndebit);
+		ncbx = parseFloat(data.ncredit);
+
 		$('<tr>').append(
 			$("<td style='text-align: left'>").text( (data.cacctno != null ? data.cacctno : '-') ),
 			$("<td style='text-align: left'>").text( (data.ctitle != null ? data.ctitle : '-') ),
-			$('<td>').text( (data.ndebit != null ? data.ndebit : '-') ),
-			$('<td>').text( (data.ncredit != null ? data.ncredit : '-') ),
+			$('<td>').text( (data.ndebit != null ? ndbx.toLocaleString('en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2}) : '-') ),
+			$('<td>').text( (data.ncredit != null ? ncbx.toLocaleString('en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2}) : '-') ),
 			$("<td style='text-align: left'>").text( (data.csub != null ? data.csub : '-') ),
 			$("<td style='text-align: left'>").text( (data.cremarks != null ? data.cremarks : '-') ),
 		).appendTo('#detailTable > tbody')
@@ -858,7 +867,6 @@ $date2 = $_POST["date2"];
 		).appendTo('#detailTable > tbody')
 	}
 	
-
 	function ShowAPADJ(index, data){
 		if(index <= 0){
 			$('<tr>').append(

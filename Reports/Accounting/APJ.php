@@ -51,7 +51,7 @@ $varmsg = "";
 <h3><b>Company: <?=strtoupper($compname);  ?></b></h3>
 <h3><b>Company Address: <?php echo strtoupper($compadd);  ?></b></h3>
 <h3><b>Vat Registered Tin: <?php echo $comptin;  ?></b></h3>
-<h3><b>Kind of Book: Accounts Payable Journal</b></h3>
+<h3><b>Kind of Book: ACCOUNTS PAYABLE JOURNAL</b></h3>
 <h3><b>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></b></h3>
 
 
