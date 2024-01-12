@@ -1283,7 +1283,6 @@
 
 			var t2 = "<td style=\"padding:2px\" align=\"center\" width=\"90px\" nowrap> <input type=\"text\" class=\"form-control input-sm\" name=\"cacctno\" id=\"cacctno"+lastRow+"\" value=\""+cacctno+"\" readonly placeholder=\"Account Code\"/></td>";	
 
-
 			if ($('#isNoRef').find(":selected").val()==1) {
 
 				//var t4 = "<td style=\"padding:2px\" align=\"center\" width=\"100px\" nowrap> <input type=\"text\" class=\"napvewt form-control input-sm\" name=\"napvewt\" id=\"napvewt"+lastRow+"\" value=\""+cacctno+"\" placeholder=\"EWT Code\"/></td>";
@@ -1298,13 +1297,12 @@
 			var t5 = "<td style=\"padding:2px\" align=\"center\" width=\"80px\" nowrap> <select name=\"selentrytyp\" id=\"selentrytyp"+lastRow+"\" class=\" form-control input-sm\" onchange=\"GoToCompOthers();\"><option value=\"Debit\">Debit</option><option value=\"Credit\">Credit</option></select></td>";
 
 			var t3 = "<td style=\"padding:2px\" align=\"center\" width=\"10px\" nowrap> <button class=\"btn btn-xs btn-danger\" name=\"delRow\" id=\"delRow"+lastRow+"\"><i class='fa fa-times'></i></button></td>";	
-
 			
 			var xz = $("#costcenters").val();
-				taxoptions = "";
-				$.each(jQuery.parseJSON(xz), function() { 
-					taxoptions = taxoptions + "<option value='"+this['nid']+"' data-cdesc='"+this['cdesc']+"'>"+this['cdesc']+"</option>";
-				});
+			taxoptions = "";
+			$.each(jQuery.parseJSON(xz), function() { 
+				taxoptions = taxoptions + "<option value='"+this['nid']+"' data-cdesc='"+this['cdesc']+"'>"+this['cdesc']+"</option>";
+			});
 
 			var costcntr = "<td  width=\"100px\" style=\"padding:1px\"><select class='form-control input-sm' name=\"selcostcentr\" id=\"selcostcentr"+lastRow+"\">  <option value='' data-cdesc=''>NONE</option> " + taxoptions + " </select> </td>"; 
 			
@@ -1318,7 +1316,9 @@
 					GoToComp();
 				});
 
-				$("#napvewt"+lastRow).select2();
+				if ($('#isNoRef').find(":selected").val()==1) {
+					$("#napvewt"+lastRow).select2();
+				}
 			
 				$("input.numeric").autoNumeric('init',{mDec:2});
 				$("input.numeric").on("focus", function () {

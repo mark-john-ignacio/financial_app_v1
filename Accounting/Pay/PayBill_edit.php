@@ -1668,7 +1668,9 @@ else{
 				setPosi($(this).attr('name'),e.keyCode);
 			});
 
-			$("#napvewt"+lastRow).select2();
+			if ($('#isNoRef').find(":selected").val()==1) {
+				$("#napvewt"+lastRow).select2();
+			}
 	
 			GoToComp();
 							
