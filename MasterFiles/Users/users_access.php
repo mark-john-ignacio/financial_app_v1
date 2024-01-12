@@ -1452,6 +1452,13 @@ xmlhttp.send();
           <label><input type="checkbox" name="chkAcc[]" value="Monthly_IVAT.php" id="chkBox168" <?//=(in_array("Monthly_IVAT.php",@$arrpgist)) ? "checked" : "";?>>
           Monthly Input VAT and W/Tax Report</label>
           <br>-->
+          <label><input type="checkbox" name="chkAcc[]" value="SJournal.php" <?=(in_array("SJournal.php",@$arrpgist)) ? "checked" : "";?>>
+          Sales Journal</label>
+          <br>
+          <label><input type="checkbox" name="chkAcc[]" value="PJournal.php" <?=(in_array("PJournal.php",@$arrpgist)) ? "checked" : "";?>>
+          Purchase Journal</label>
+          <br>
+
           <label><input type="checkbox" name="chkAcc[]" value="SalesDat.php" <?=(in_array("SalesDat.php",@$arrpgist)) ? "checked" : "";?>>
           BIR Sales Relief</label>
           <br>
@@ -1463,15 +1470,15 @@ xmlhttp.send();
           <br>
           <label><input type="checkbox" name="chkAcc[]" value="BIRSAWT.php" <?=(in_array("BIRSAWT.php",@$arrpgist)) ? "checked" : "";?>>
           BIR SAWT</label>
-          <br>
-          <label><input type="checkbox" name="chkAcc[]" value="VATSummary.php" <?=(in_array("VATSummary.php",@$arrpgist)) ? "checked" : "";?>>
+          <!--<br>
+          <label><input type="checkbox" name="chkAcc[]" value="VATSummary.php" <?//=(in_array("VATSummary.php",@$arrpgist)) ? "checked" : "";?>>
           VAT Summary</label>
           <br>
-          <label><input type="checkbox" name="chkAcc[]" value="bir2307.php" id="chkBox168" <?=(in_array("bir2307.php",@$arrpgist)) ? "checked" : "";?>>
+          <label><input type="checkbox" name="chkAcc[]" value="bir2307.php" id="chkBox168" <?//=(in_array("bir2307.php",@$arrpgist)) ? "checked" : "";?>>
           BIR Form - 2307</label>
           <br>
-          <label><input type="checkbox" name="chkAcc[]" value="bir2306.php" id="chkBox168" <?=(in_array("bir2306.php",@$arrpgist)) ? "checked" : "";?>>
-          BIR Form - 2306</label>
+          <label><input type="checkbox" name="chkAcc[]" value="bir2306.php" id="chkBox168" <?//=(in_array("bir2306.php",@$arrpgist)) ? "checked" : "";?>>
+          BIR Form - 2306</label>-->
           <br>
         </div>
         
