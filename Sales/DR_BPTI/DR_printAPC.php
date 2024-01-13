@@ -83,6 +83,7 @@
 
   body{
     font-family: Arial;
+    padding-left: 5px;
   }
 
   .form-container{
@@ -345,7 +346,7 @@
     <div class="delsched"><?=$rowapc[7]?></div>
     <div class="dothers"><?=$rowapc[8]?></div>
 		<div class="deldate"><?=date_format(date_create($Date), "Y-M-d")?></div>
-    <div class="logosmall"><img src="../../images/logosmall.jpg?x=<?=time()?>" width="100%" height="30px"></div>
+    <div class="logosmall"><img src="../../images/logosmall.jpg?x=<?=time()?>" width="90%" height="30px"></div>
 
     <div class="salesrep"><?=$rowapc[5]?></div> 
     <div class="truckno"><?=$rowapc[6]?></div>

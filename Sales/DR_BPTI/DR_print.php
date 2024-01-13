@@ -107,89 +107,89 @@
       font-family: Arial;
     }
 
-		.form-container{
-				position: relative;
-				text-align: left;
-				color: #000;
-         font-size: 15px;
-				font-weight: bold;
-				text-transform: uppercase;
-				width: 8.5in;
-				height: 7in;
-		}
+	.form-container{
+		position: relative;
+		text-align: left;
+		color: #000;
+		font-size: 15px;
+		font-weight: bold;
+		text-transform: uppercase;
+		width: 8.5in;
+		height: 7in;
+	}
 
-		.delTo{
-			position: absolute;
-			top: 158px;
-			left: 125px;
-			width: 400px;
-			height:  15px;  
-      text-align: left; 
-     /* border: 1px solid #000; 
-			letter-spacing: 11px;
-			border: 1px solid #000;*/
-		}
+	.delTo{
+		position: absolute;
+		top: 158px;
+		left: 125px;
+		width: 400px;
+		height:  15px;  
+		text-align: left; 
+		/* border: 1px solid #000; 
+		letter-spacing: 11px;
+		border: 1px solid #000;*/
+	}
 
     .address{
-			position: absolute;
-			top: 178px;
-			left: 125px;
-			width: 400px;
-			height:  15px;  
-      text-align: left; 
-     /* border: 1px solid #000; 
-			letter-spacing: 11px;
-			border: 1px solid #000;*/
-		}
+		position: absolute;
+		top: 178px;
+		left: 125px;
+		width: 400px;
+		height:  15px;  
+		text-align: left; 
+		/* border: 1px solid #000; 
+		letter-spacing: 11px;
+		border: 1px solid #000;*/
+	}
 
     .tin{
-			position: absolute;
-			top: 198px;
-			left: 125px;
-			width: 400px;
-			height:  15px;  
-      text-align: left; 
-      /*border: 1px solid #000; 
-			letter-spacing: 11px;
-			border: 1px solid #000;*/
-		}
+		position: absolute;
+		top: 198px;
+		left: 125px;
+		width: 400px;
+		height:  15px;  
+		text-align: left; 
+		/*border: 1px solid #000; 
+		letter-spacing: 11px;
+		border: 1px solid #000;*/
+	}
 
     .date{
-			position: absolute;
-			top: 160px;
-			left: 650px;
-			width: 135px;
-			height:  15px;  
-      text-align: left; 
-      /*border: 1px solid #000; 
-			letter-spacing: 11px;
-			border: 1px solid #000;*/
-		}
+		position: absolute;
+		top: 160px;
+		left: 650px;
+		width: 135px;
+		height:  15px;  
+		text-align: left; 
+		/*border: 1px solid #000; 
+		letter-spacing: 11px;
+		border: 1px solid #000;*/
+	}
 
-		.terms{
-			position: absolute;
-			top: 183px;
-			left: 650px;
-			width: 145px;
-			height:  15px;  
-      text-align: left; 
-      overflow: hidden;
-      /*border: 1px solid #000; 
-			letter-spacing: 11px;
-			border: 1px solid #000;*/
-		}
+	.terms{
+		position: absolute;
+		top: 183px;
+		left: 650px;
+		width: 145px;
+		height:  15px;  
+		text-align: left; 
+		overflow: hidden;
+		/*border: 1px solid #000; 
+		letter-spacing: 11px;
+		border: 1px solid #000;*/
+	}
 
     .refdr{
-			position: absolute;
-			top: 200px;
-			left: 650px;
-			width: 135px;
-			height:  15px;  
-      text-align: left; 
-     /* border: 1px solid #000; 
-			letter-spacing: 11px;
-			border: 1px solid #000;*/
-		} 
+		position: absolute;
+		top: 200px;
+		left: 650px;
+		width: 135px;
+		height:  15px;  
+		text-align: left; 
+		/* border: 1px solid #000; 
+		letter-spacing: 11px;
+		border: 1px solid #000;*/
+	} 
 
     .reforder{
 		position: absolute;
@@ -204,34 +204,34 @@
 	}   
 
 	.csign1{
-      position: absolute;
-      top: 500px;
-      left: 35px;
-      width: 135px;
-      height:  15px;  
-      text-align: left; 
-       /*border: 1px solid #000; 
-      letter-spacing: 11px;
-      border: 1px solid #000;*/
+		position: absolute;
+		top: 500px;
+		left: 35px;
+		width: 135px;
+		height:  15px;  
+		text-align: left; 
+		/*border: 1px solid #000; 
+		letter-spacing: 11px;
+		border: 1px solid #000;*/
     }  
 
     .csign2{
-      position: absolute;
-      top: 500px;
-      left: 220px;
-      width: 135px;
-      height:  15px;  
-      text-align: left; 
-      /* border: 1px solid #000; 
-      letter-spacing: 11px;
-      border: 1px solid #000;*/
+		position: absolute;
+		top: 500px;
+		left: 220px;
+		width: 135px;
+		height:  15px;  
+		text-align: left; 
+		/* border: 1px solid #000; 
+		letter-spacing: 11px;
+		border: 1px solid #000;*/
     } 
 
   	.RowCont{
 		position: absolute;
 		top: 260px !important;
 		display: table;
-		left: 190px; /*Optional*/
+		left: 200px; /*Optional*/
 		table-layout: fixed; /*Optional*/
 		height:  242px;
 		overflow: hidden;
@@ -254,15 +254,15 @@
 	}
 
 	.xremarks{
-    position: absolute;
-    left: 645px;
-    top: 260px;
-    width: 140px;
-    height:  15px;  
-    text-align: right; 
-    /*border: 1px solid #000; 
-    letter-spacing: 11px;
-    border: 1px solid #000;*/
+		position: absolute;
+		left: 645px;
+		top: 260px;
+		width: 140px;
+		height:  15px;  
+		text-align: right; 
+		/*border: 1px solid #000; 
+		letter-spacing: 11px;
+		border: 1px solid #000;*/
 	}
 
 </style>
