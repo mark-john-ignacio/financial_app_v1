@@ -107,17 +107,19 @@ include('../../include/denied.php');
     body{
       font-family: Arial;
       font-size: 14px;
+	  padding-left: 5px;
     }
 
-		.form-container{
-				position: relative;
-				text-align: center;
-				color: #000;
-				font-weight: bold;
-				/*text-transform: uppercase;*/
-				width: 8.5in;
-				height: 7in;
-		}
+	.form-container{
+		position: relative;
+		text-align: center;
+		color: #000;
+		font-weight: bold;
+		/*text-transform: uppercase;*/
+		width: 8.5in;
+		height: 7in;
+		
+}
 
     .soldTo{ 
 			position: absolute;
@@ -316,12 +318,12 @@ include('../../include/denied.php');
 						
 	?>
     <div class="Row">
-      <div class="Column" style="width: 115px"><?=$rowbody['citmposno'];?></div>
-      <div class="Column" style="width: 119px"><?=$rowbody['citmsysno']?> </div>
-      <div class="Column" style="width: 216px; text-align: left; padding-left: 5px"><?=$rowbody['citemdesc']?></div>
-      <div class="Column" style="width: 88px"><?=number_format($rowbody['nqty']);?> <?=$rowbody['cunit'];?></div>
-      <div class="Column" style="width: 100px; text-align: right"><?=number_format($rowbody['nprice'],4);?></div>
-      <div class="Column" style="width: 119px; text-align: right"><?=number_format($rowbody['namount'],2);?></div>
+		<div class="Column" style="width: 119px; text-align: left;"><?=$rowbody['citmposno'];?></div>
+		<div class="Column" style="width: 121px; text-align: left"><?=$rowbody['citmsysno']?> </div>
+		<div class="Column" style="width: 219px; text-align: left;"><?=$rowbody['citemdesc']?></div>
+		<div class="Column" style="width: 90px; text-align: left" ><?=number_format($rowbody['nqty']);?> <?=$rowbody['cunit'];?></div>
+		<div class="Column" style="width: 102px; text-align: left"><?=number_format($rowbody['nprice'],4);?></div>
+		<div class="Column" style="width: 119px; text-align: left"><?=number_format($rowbody['namount'],2);?></div>
     </div>
 
       <?php 

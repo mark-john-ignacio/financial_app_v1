@@ -45,8 +45,8 @@ include('../../include/denied.php');
       $cRefDR = $row['crefmoduletran'];
       $Gross = $row['nbasegross'];
 
-	  $cOracleNo = $row['coracleinv'];
-	  $cDocType = $row['cdoctype'];
+	    $cOracleNo = $row['coracleinv'];
+	    $cDocType = $row['cdoctype'];
 
       $Adds = $row['chouseno']." ". $row['ccity']." ". $row['cstate'];
       $cTin = $row['ctin'];
@@ -126,13 +126,13 @@ include('../../include/denied.php');
     }
 
 		.form-container{
-				position: relative;
-				text-align: center;
-				color: #000;
-				font-weight: bold;
-				/*text-transform: uppercase;*/
-				width: 8.5in;
-				height: 7in;
+			position: relative;
+      text-align: center;
+      color: #000;
+      font-weight: bold;
+      /*text-transform: uppercase;*/
+      width: 8.5in;
+      height: 7in;
 		}
 
     .soldTo{ 
