@@ -219,20 +219,20 @@ include('../../include/denied.php');
 		}  
 
     .invno{
-			position: absolute;
-			top: 238px;
-			left: 680px;
-			width: 135px;
-			height:  15px;  
-      text-align: left; 
-     /* border: 1px solid #000; 
+		position: absolute;
+		top: 238px;
+		left: 680px;
+		width: 135px;
+		height:  15px;  
+      	text-align: left; 
+    	 /* border: 1px solid #000; 
 			letter-spacing: 11px;
 			border: 1px solid #000;*/
 		}   
 
 	.TotalFoot{
 		position: absolute;
-		top: 575px;
+		top: 585px;
 		left: 650px;
 		width: 113px;
 		height:  15px;  
