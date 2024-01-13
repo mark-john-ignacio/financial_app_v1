@@ -511,6 +511,39 @@ $company = $_SESSION['companyid'];
 					</div>
 				</div>
 				<div class="col-xs-6">
+						<div class="well">							
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									Total NET Sales:
+									<input type="hidden" id="txtnNetVAT" name="txtnNetVAT" value="0">
+									<input type="hidden" id="txtnTotDisc" name="txtnTotDisc" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnNetVAT">
+									0.00
+								</div>
+							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									Add VAT:
+									<input type="hidden" id="txtnVAT" name="txtnVAT" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnVAT">
+									0.00
+								</div>
+							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									Total Amount:
+									<input type="hidden" id="txtnGross" name="txtnGross" value="0">
+									<input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnGross">
+									0.00
+								</div>
+							</div>
+						</div>
+					</div>
+				<!--<div class="col-xs-6">
 					<div class="well">							
 						<div class="row static-info align-reverse">
 							<div class="col-xs-7 name">
@@ -550,6 +583,15 @@ $company = $_SESSION['companyid'];
 						</div>
 						<div class="row static-info align-reverse">
 							<div class="col-xs-7 name">
+								Less EWT:
+								<input type="hidden" id="txtnEWT" name="txtnVAT" value="0">
+							</div>
+							<div class="col-xs-4 value" id="divtxtnVAT">
+								0.00
+							</div>
+						</div>
+						<div class="row static-info align-reverse">
+							<div class="col-xs-7 name">
 								Total Amount Due:
 								<input type="hidden" id="txtnGross" name="txtnGross" value="0">
 								<input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="0">
@@ -568,7 +610,7 @@ $company = $_SESSION['companyid'];
 							</div>
 						</div>
 					</div>
-				</div>
+				</div>-->
 			</div>
 
 		<br>
