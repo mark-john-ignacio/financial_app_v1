@@ -120,7 +120,7 @@
 
 	.delTo{
 		position: absolute;
-		top: 158px;
+		top: 148px;
 		left: 125px;
 		width: 400px;
 		height:  15px;  
@@ -157,7 +157,7 @@
     .date{
 		position: absolute;
 		top: 160px;
-		left: 650px;
+		left: 660px;
 		width: 135px;
 		height:  15px;  
 		text-align: left; 
@@ -169,7 +169,7 @@
 	.terms{
 		position: absolute;
 		top: 183px;
-		left: 650px;
+		left: 660px;
 		width: 145px;
 		height:  15px;  
 		text-align: left; 
@@ -182,7 +182,7 @@
     .refdr{
 		position: absolute;
 		top: 200px;
-		left: 650px;
+		left: 660px;
 		width: 135px;
 		height:  15px;  
 		text-align: left; 
@@ -205,7 +205,7 @@
 
 	.csign1{
 		position: absolute;
-		top: 500px;
+		top: 485px;
 		left: 35px;
 		width: 135px;
 		height:  15px;  
@@ -217,7 +217,7 @@
 
     .csign2{
 		position: absolute;
-		top: 500px;
+		top: 485px;
 		left: 220px;
 		width: 135px;
 		height:  15px;  
