@@ -225,9 +225,9 @@ include('../../include/denied.php');
 		width: 135px;
 		height:  15px;  
       	text-align: left; 
-    	 /* border: 1px solid #000; 
-			letter-spacing: 11px;
-			border: 1px solid #000;*/
+    	/* border: 1px solid #000; 
+		letter-spacing: 11px;
+		border: 1px solid #000;*/
 		}   
 
 	.TotalFoot{
