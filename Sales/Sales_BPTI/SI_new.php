@@ -503,6 +503,7 @@ $company = $_SESSION['companyid'];
 								<div class="col-xs-7 name">
 									Total NET Sales:
 									<input type="hidden" id="txtnNetVAT" name="txtnNetVAT" value="0">
+									<input type="hidden" id="txtnTotDisc" name="txtnTotDisc" value="0">
 								</div>
 								<div class="col-xs-4 value" id="divtxtnNetVAT">
 									0.00
@@ -2426,7 +2427,9 @@ $company = $_SESSION['companyid'];
 			var myav = "";
 			var myfacx = "";
 			var myprice = "";
+			var mydisc = "";
 
+			var xcdisctot = 0;
 			$("#MyTable > tbody > tr").each(function(index) {
 				
 				myqty = $(this).find('input[name="txtnqty"]').val();
@@ -2444,12 +2447,18 @@ $company = $_SESSION['companyid'];
 						msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Not enough inventory: row " + index;
 					}
 				}
-				
+
+				//get Discounts Total 
+				mydisc = $(this).find('input[name="txtndisc"]').val();
+
+				xcdisctot = xcdisctot + (parseFloat(myqty) * parseFloat(mydisc));
 				//if(myprice == 0 || myprice == ""){
 				//	msgz = msgz + "<br>&nbsp;&nbsp;&nbsp;&nbsp;Zero amount is not allowed: row " + index;	
 				//}
 
 			});
+
+			$('#txtnTotDisc').val(xcdisctot);
 
 			// Check if Credit Limit activated (kung sobra)
 			if(xChkLimit==1 && parseFloat($('#hdncustlimit').val()) > 0){
@@ -2463,7 +2472,6 @@ $company = $_SESSION['companyid'];
 						
 						//return false;
 						
-
 
 				}
 			}

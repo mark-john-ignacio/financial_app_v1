@@ -514,10 +514,28 @@ $company = $_SESSION['companyid'];
 					<div class="well">							
 						<div class="row static-info align-reverse">
 							<div class="col-xs-7 name">
-								Total NET Sales:
+								Vatable Sales:
 								<input type="hidden" id="txtnNetVAT" name="txtnNetVAT" value="0">
 							</div>
 							<div class="col-xs-4 value" id="divtxtnNetVAT">
+								0.00
+							</div>
+						</div>
+						<div class="row static-info align-reverse">
+							<div class="col-xs-7 name">
+								VATExempt Sales:
+								<input type="hidden" id="txtnExemptVAT" name="txtnExemptVAT" value="0">
+							</div>
+							<div class="col-xs-4 value" id="divtxtnExemptVAT">
+								0.00
+							</div>
+						</div>
+						<div class="row static-info align-reverse">
+							<div class="col-xs-7 name">
+								ZERO Rated Sales:
+								<input type="hidden" id="txtnZeroVAT" name="txtnZeroVAT" value="0">
+							</div>
+							<div class="col-xs-4 value" id="divtxtnZeroVAT">
 								0.00
 							</div>
 						</div>
@@ -532,11 +550,20 @@ $company = $_SESSION['companyid'];
 						</div>
 						<div class="row static-info align-reverse">
 							<div class="col-xs-7 name">
-								Total Amount:
+								Total Amount Due:
 								<input type="hidden" id="txtnGross" name="txtnGross" value="0">
 								<input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="0">
 							</div>
 							<div class="col-xs-4 value" id="divtxtnGross">
+								0.00
+							</div>
+						</div>
+						<div class="row static-info align-reverse">
+							<div class="col-xs-7 name">
+								Total Discount:
+								<input type="hidden" id="txtnGrossDisc" name="txtnGrossDisc" value="0">
+							</div>
+							<div class="col-xs-4 value" id="divtxtnGrossDisc" style="border-top: 1px solid #ccc">
 								0.00
 							</div>
 						</div>
@@ -1782,7 +1809,6 @@ $company = $_SESSION['companyid'];
 	}
 		
 	function ReIdentity(xy){
-
 			
 			var rowCount = $('#MyTable tr').length;
 						
@@ -2374,7 +2400,6 @@ $company = $_SESSION['companyid'];
 				}
 						
 			});	
-
 
 			if(cnt==0){
 				var xz = $("#hdndiscs").val();

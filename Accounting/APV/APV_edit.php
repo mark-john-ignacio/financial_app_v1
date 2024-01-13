@@ -2167,6 +2167,9 @@
 
 
 			$("#txtewtcodeothers"+lastRow).select2();
+			$("#txtewtcodeothers"+lastRow).on("select2:select", function(event) {
+				$("#txtewtrateothers"+lastRow).val($(this).select2().find(":selected").data("rate"));
+			});
 			/*$("#txtewtcodeothers"+lastRow).typeahead({
 				items: 10,
 				source: function(request, response) {
@@ -2341,6 +2344,8 @@
 				var tempcdet = document.getElementById('txtcredit' + z);
 				var tempracrem = document.getElementById('txtacctrem' + z);
 				var tempptyps = document.getElementById('selacctpaytyp' + z);
+				var tempotewt = document.getElementById('txtewtcodeothers' + z);
+				var tempotewtrate = document.getElementById('txtewtrateothers' + z);
 				
 				var tempbtn= document.getElementById('row2_' + z + '_delete');
 				
@@ -2357,6 +2362,13 @@
 				tempracrem.name = "txtacctrem" + x;
 				tempptyps.id = "selacctpaytyp" + x;
 				tempptyps.name = "selacctpaytyp" + x;
+				
+				tempotewt.id = "txtewtcodeothers" + x;
+				tempotewt.name = "txtewtcodeothers" + x;
+
+				tempotewtrate.id = "txtewtrateothers" + x;
+				tempotewtrate.name = "txtewtrateothers" + x;
+
 				tempbtn.id = "row2_" + x + "_delete";
 				tempbtn.name = "row2_" + x + "_delete";						
 			}
