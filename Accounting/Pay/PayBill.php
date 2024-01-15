@@ -429,7 +429,7 @@ mysqli_close($con);
 						{ "data": null,		
 								"render": function (data, type, full, row) {
 
-									$msgx = "";
+									var $msgx = "";
 									if(full[12] == 0 && full[5]==0){
 
 										$msgx = "<a href=\"javascript:;\" onClick=\"trans('SEND','"+full[0]+"')\" class=\"btn btn-xs btn-default\"> <i class=\"fa fa-share\" style=\"font-size:20px;color: #ffb533;\" title=\"Send transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL1','"+full[0]+"')\" class=\"btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a>";
