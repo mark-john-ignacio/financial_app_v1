@@ -123,7 +123,7 @@ include('../../include/denied.php');
 
     .soldTo{ 
 			position: absolute;
-			top: 160px;
+			top: 158px;
 			left: 145px;
 			width: 400px;
 			height:  15px;  
