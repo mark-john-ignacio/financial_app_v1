@@ -26,7 +26,7 @@
 		$poststat = "False";
 	}
 
-	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.cpricever,(TRIM(TRAILING '.' FROM(CAST(TRIM(TRAILING '0' FROM B.nlimit)AS char)))) as nlimit from sales a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.ctranno = '$txtctranno' and a.compcode='$company'");	
+	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.cpricever,(TRIM(TRAILING '.' FROM(CAST(TRIM(TRAILING '0' FROM B.nlimit)AS char)))) as nlimit, b.cvattype from sales a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.ctranno = '$txtctranno' and a.compcode='$company'");	
 
 	/*
 	function listcurrencies(){ //API for currency list
@@ -165,7 +165,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$cpricever = $row['cpricever'];
 		$nlimit = $row['nlimit'];
 		$creinv = $row['creinvoice'];
-    $cslstypz = $row['csalestype'];
+    	$cslstypz = $row['csalestype'];
 		$cpaytypz = $row['cpaytype'];
 		$selsiseries = $row['csiprintno'];
 		$nnetvat = $row['nnet'];
@@ -174,6 +174,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$cewtcode = $row['cewtcode'];
 
 		$cterms = $row['cterms'];
+
+		$cdefvat = $row['cvattype']; 
 
 		$refmods = $row['crefmodule'];
 		$refmodstran = $row['crefmoduletran']; 
@@ -287,6 +289,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 											<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1" value="<?=$CustCode; ?>" readonly>
 												<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
 												<input type="hidden" id="hdnpricever" name="hdnpricever" value="<?=$cpricever;?>">
+												<input type="hidden" id="hdndefVAT" name="hdndefVAT" value="<?=$cdefvat?>">
 										</div>
 
 										<div class="col-xs-8 nopadwleft">
@@ -507,7 +510,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					<div id="tableContainer" class="alt2" dir="ltr" style="
 					margin: 0px;
 					padding: 3px;
-					width: 1500px;
+					width: 1550px;
 					height: 300px;
 					text-align: left;">
 		
@@ -517,7 +520,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									<th width="100px" style="border-bottom:1px solid #999">Code</th>
 									<th width="250px" style="border-bottom:1px solid #999">Description</th>
 									<th width="150px" style="border-bottom:1px solid #999" class="chkVATClass">EWTCode</th>
-									<th width="100px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
+									<th width="150px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
 									<th width="100px" style="border-bottom:1px solid #999">UOM</th>
 									<th width="100px" style="border-bottom:1px solid #999">Qty</th>
 									<th width="100px" style="border-bottom:1px solid #999">Price</th>
@@ -1327,7 +1330,11 @@ if(file_name.length != 0){
 			$("#hdnctype").val(item.citmcls);
 			$("#hdnqty").val(item.nqty);
 			$("#hdnqtyunit").val(item.cqtyunit);
-      $("#hdncvat").val(item.ctaxcode);
+			if($("#hdndefVAT").val()==""){
+				$("#hdncvat").val(item.ctaxcode); 
+			}else{
+				$("#hdncvat").val($("#hdndefVAT").val()); 
+			}	
 			$("#hdncewt").val("");
 
 			$("#hdnacctno").val(item.cacctno); 
@@ -1346,22 +1353,26 @@ if(file_name.length != 0){
 		if(event.keyCode == 13){
 
 		$.ajax({
-        url:'../get_productid.php',
-        data: 'c_id='+ $(this).val() + "&itmbal="+xChkBal+"&styp="+ $("#selsityp").val(),                 
-        success: function(value){
-          var data = value.split(",");
-          $('#txtprodid').val(data[0]);
-          $('#txtprodnme').val(data[1]);
+			url:'../get_productid.php',
+			data: 'c_id='+ $(this).val() + "&itmbal="+xChkBal+"&styp="+ $("#selsityp").val(),                 
+			success: function(value){
+				var data = value.split(",");
+				$('#txtprodid').val(data[0]);
+				$('#txtprodnme').val(data[1]);
 			    $('#hdnunit').val(data[2]);
-		      $("#hdnqty").val(data[3]);
-		      $("#hdnqtyunit").val(data[4]);
-		      $("#hdnctype").val(data[5]);
-          $("#hdncvat").val(data[6]);
-					$("#hdncewt").val("");
+				$("#hdnqty").val(data[3]);
+				$("#hdnqtyunit").val(data[4]);
+				$("#hdnctype").val(data[5]);
+				if($("#hdndefVAT").val()==""){
+					$("#hdncvat").val(data[6]);
+				}else{
+					$("#hdncvat").val($("#hdndefVAT").val()); 
+				}
+				$("#hdncewt").val("");
 
-					$("#hdnacctno").val(data[7]); 
-					$("#hdnacctid").val(data[8]); 
-					$("#hdnacctdesc").val(data[9]); 
+				$("#hdnacctno").val(data[7]); 
+				$("#hdnacctid").val(data[8]); 
+				$("#hdnacctdesc").val(data[9]); 
 
 		if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
 			var isItem = "NO";
@@ -1455,102 +1466,6 @@ if(file_name.length != 0){
 				recomputeCurr();
 			});
 	
-
-		$("#txtSearchBill").keypress(function(event){
-			//event.preventDefault();
-
-			$('#MyTable > tbody').empty();
-
-			$iswpo = "False";
-
-			if(event.keyCode == 13){
-				//gethdr
-				$.ajax({
-					url : "th_getqohdr.php?id=" + $(this).val(),
-					type: "GET",
-					dataType: "JSON",
-					async: false,
-					success: function(data)
-					{	
-						console.log(data);
-						$.each(data,function(index,item){  //  
-							if(item.ccode!="NONE"){
-
-								$("#txtcust").val(item.cname);
-								$("#txtcustid").val(item.ccode);
-								$("#hdnpricever").val(item.cpricever);
-
-								if(xChkLimit==1){
-								
-									limit = Number(item.nlimit).toLocaleString('en', { minimumFractionDigits: 2 });	 
-
-									$('#ncustbalance2').html("");
-									$('#ncustlimit').html("<b><font size='+1'>"+limit+"</font></b>");
-									$('#hdncustlimit').val(item.nlimit);
-
-									checkcustlimit(item.ccode, item.nlimit);
-
-								}
-
-								$("#selsityp").val(item.csalestype).trigger('change');
-
-								$iswpo = "True";
-							}else{
-								alert("Transaction cannot be found!");
-							}
-						});
-
-
-						
-
-					}
-				});
-
-				if($iswpo=="True"){
-					//getdetails
-					$.ajax({
-						url : "th_qolistput.php?id=" + $(this).val() + "&itm=ALL&typ=QO",
-						type: "GET",
-						dataType: "JSON",
-						async: false,
-						success: function(data)
-						{	
-							console.log(data);
-							$.each(data,function(index,item){
-									
-								$('#txtprodnme').val(item.desc); 
-								$('#txtprodid').val(item.id); 
-								$("#hdnunit").val(item.cunit); 
-								$("#hdnqty").val(item.nqty);
-								$("#hdnqtyunit").val(item.cqtyunit);
-								$("#hdncvat").val(item.ctaxcode);
-								$("#hdncewt").val("");
-
-								$("#hdnacctno").val(item.cacctno);
-								$("#hdnacctid").val(item.cacctid); 
-								$("#hdnacctdesc").val(item.cacctdesc);
-										
-								if(index==0){
-									$("#selbasecurr").val(item.ccurrencycode).change();
-									$("#hidcurrvaldesc").val(item.ccurrencydesc);
-									convertCurrency(item.ccurrencycode);
-								}
-
-
-								addItemName(item.totqty,item.nprice,item.nbaseamount,item.namount,item.nfactor,item.xref,item.crefident,item.citmcls);
-														
-							});
-						},
-						error: function (jqXHR, textStatus, errorThrown)
-						{
-							alert(jqXHR.responseText);
-						}
-							
-					});
-				}
-
-			}
-		});
 
 		$("#selewt").on("change", function(){ 
 
@@ -2493,7 +2408,15 @@ function openinv(typ){
 									$("#hdnunit").val(item.cunit); 
 									$("#hdnqty").val(item.nqty);
 									$("#hdnqtyunit").val(item.cqtyunit);
-									$("#hdncvat").val(item.ctaxcode);
+									if(typ=="SO"){
+										if($("#hdndefVAT").val()==""){
+											$("#hdncvat").val(item.ctaxcode);
+										}else{
+											$("#hdncvat").val($("#hdndefVAT").val()); 
+										}
+									}else{
+										$("#hdncvat").val(item.ctaxcode);
+									}
 									$("#hdncewt").val("");
 
 									$("#hdnacctno").val(item.cacctno); 

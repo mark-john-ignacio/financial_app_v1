@@ -107,7 +107,7 @@ include('../../include/denied.php');
     body{
       font-family: Arial;
       font-size: 14px;
-	  padding-left: 5px;
+	  padding-left: 10px;
     }
 
 	.form-container{

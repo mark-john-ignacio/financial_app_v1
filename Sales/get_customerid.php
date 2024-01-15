@@ -27,6 +27,8 @@
 		$c_smanme = $row['smaname'];
 		$c_curr = $row['cdefaultcurrency'];
 
+		$c_vatt = $row['cvattype'];
+
 		$acctcodecr = $row['cacctcodesalescr'];
 		
 		if(!file_exists("../imgcust/".$c_id .".jpg")){
@@ -36,7 +38,7 @@
 			$imgsrc = "../../imgcust/".$c_id .".jpg";
 		}
 		
-		echo $c_prodnme.":".$c_pricever.":".$imgsrc.":".$c_limit.":".$cr_limit.":".$c_chouseno.":".$c_ccity.":".$c_cstate.":".$c_ccountry.":".$c_czip.":".$c_smanid.":".$c_smanme.":".$c_cterms.":".$c_curr.":".$acctcodecr;
+		echo $c_prodnme.":".$c_pricever.":".$imgsrc.":".$c_limit.":".$cr_limit.":".$c_chouseno.":".$c_ccity.":".$c_cstate.":".$c_ccountry.":".$c_czip.":".$c_smanid.":".$c_smanme.":".$c_cterms.":".$c_curr.":".$acctcodecr.":".$c_vatt;
 	}
 	else{
 		echo "";

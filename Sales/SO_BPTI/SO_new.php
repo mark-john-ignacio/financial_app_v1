@@ -31,10 +31,10 @@ function listcurrencies(){ //API for currency list
 
 */
 
-	$gettaxcd = mysqli_query($con,"SELECT * FROM `taxcode` where compcode='$company' order By nidentity"); 
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `vatcode` where compcode='$company' and ctype = 'Sales' and cstatus='ACTIVE' order By cvatdesc"); 
 	if (mysqli_num_rows($gettaxcd)!=0) {
 		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
-			@$arrtaxlist[] = array('ctaxcode' => $row['ctaxcode'], 'ctaxdesc' => $row['ctaxdesc'], 'nrate' => $row['nrate']); 
+			@$arrtaxlist[] = array('ctaxcode' => $row['cvatcode'], 'ctaxdesc' => $row['cvatdesc'], 'nrate' => $row['nrate']); 
 		}
 	}
 
@@ -129,6 +129,7 @@ function listcurrencies(){ //API for currency list
 												<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
 												<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
 												<input type="hidden" id="hdnpricever" name="hdnpricever" value="">
+												<input type="hidden" id="hdndefVAT" name="hdndefVAT" value="">
 											</div>
 
 											<div class="col-xs-8 nopadwleft">
@@ -772,6 +773,8 @@ function listcurrencies(){ //API for currency list
 
 						$("#selbasecurr").val(data[13]).change(); //val
 						$("#basecurrvalmain").val($("#selbasecurr").data("val"));
+
+						$('#hdndefVAT').val(data[15]);
 									
 						$('#hdnvalid').val("YES");
 						
@@ -810,6 +813,8 @@ function listcurrencies(){ //API for currency list
 						$('#txtcState').val("");
 						$('#txtcCountry').val("");
 						$('#txtcZip').val("");
+
+						$('#hdndefVAT').val("");
 						
 						$('#hdnvalid').val("NO");
 					}
@@ -896,6 +901,8 @@ function listcurrencies(){ //API for currency list
 
 					$("#selbasecurr").val(item.cdefaultcurrency).change(); //val
 					$("#basecurrvalmain").val($("#selbasecurr").data("val"));
+
+					$('#hdndefVAT').val(item.cvattype);
 								
 				$('#hdnvalid').val("YES");
 				
@@ -1061,7 +1068,11 @@ function listcurrencies(){ //API for currency list
 				$("#hdnunit").val(item.cunit); 
 				$("#hdnqty").val(item.nqty);
 				$("#hdnqtyunit").val(item.cqtyunit);
-				$("#hdnvat").val(item.ctaxcode);
+				if($("#hdndefVAT").val()==""){
+					$("#hdnvat").val(item.ctaxcode); 
+				}else{
+					$("#hdnvat").val($("#hdndefVAT").val()); 
+				}
 				$("#hdnmakebuy").val(item.makebuy);
 				
 				addItemName("","","","","","","");
@@ -1086,7 +1097,11 @@ function listcurrencies(){ //API for currency list
 						$('#hdnunit').val(data[2]);
 						$("#hdnqty").val(data[3]);
 						$("#hdnqtyunit").val(data[4]);
-						$("#hdnvat").val(data[6]);
+						if($("#hdndefVAT").val()==""){
+							$("#hdnvat").val(data[6]);
+						}else{
+							$("#hdnvat").val($("#hdndefVAT").val()); 
+						}
 						$("#hdnmakebuy").val(data[10]);
 
 
@@ -2059,7 +2074,11 @@ function InsertSI(){
 					$("#hdnunit").val(item.cunit); 
 					$("#hdnqty").val(item.nqty);
 					$("#hdnqtyunit").val(item.cqtyunit);
-					$("#hdnvat").val(item.ctaxcode);
+					if($("#hdndefVAT").val()==""){
+						$("#hdnvat").val(item.ctaxcode);
+					}else{
+						$("#hdnvat").val($("#hdndefVAT").val()); 
+					}
 					$("#hdnmakebuy").val(item.makebuy);
 
 					//alert(item.cqtyunit + ":" + item.cunit);

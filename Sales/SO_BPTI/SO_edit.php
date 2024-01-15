@@ -40,10 +40,10 @@ function listcurrencies(){ //API for currency list
 
 */
 
-	$gettaxcd = mysqli_query($con,"SELECT * FROM `taxcode` where compcode='$company' order By nidentity"); 
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `vatcode` where compcode='$company' and ctype = 'Sales' and cstatus='ACTIVE' order By cvatdesc"); 
 	if (mysqli_num_rows($gettaxcd)!=0) {
 		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
-			@$arrtaxlist[] = array('ctaxcode' => $row['ctaxcode'], 'ctaxdesc' => $row['ctaxdesc'], 'nrate' => $row['nrate']); 
+			@$arrtaxlist[] = array('ctaxcode' => $row['cvatcode'], 'ctaxdesc' => $row['cvatdesc'], 'nrate' => $row['nrate']); 
 		}
 	}
 
@@ -125,7 +125,7 @@ function listcurrencies(){ //API for currency list
 <?php
 $sqlhead = mysqli_query($con,"select a.*,b.cname,b.cpricever, (TRIM(TRAILING '.' 
 FROM(CAST(TRIM(TRAILING '0' FROM B.nlimit)AS char)))) as nlimit, c.cname as cdelname,
- d.cname as salesmaname from so a left join customers b on a.compcode=b.compcode and 
+ d.cname as salesmaname, c.cvattype from so a left join customers b on a.compcode=b.compcode and 
  a.ccode=b.cempid left join customers c on a.compcode=c.compcode and a.cdelcode=c.cempid
   left join salesman d on a.compcode=b.compcode and a.csalesman=d.ccode where a.ctranno 
   = '$txtctranno' and a.compcode='$company'");
@@ -159,6 +159,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$delcountry = $row['cdeladdcountry'];
 		$delzip = $row['cdeladdzip'];
 		$specins = $row['cspecins'];
+
+		$cdefvat = $row['cvattype']; 
 		
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
@@ -237,8 +239,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									<div class="col-xs-12 nopadding">
 										<div class="col-xs-3 nopadding">
 											<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1" value="<?php echo $CustCode; ?>">
-												<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
-												<input type="hidden" id="hdnpricever" name="hdnpricever" value="<?php echo $cpricever;?>">
+											<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
+											<input type="hidden" id="hdnpricever" name="hdnpricever" value="<?php echo $cpricever;?>">
+											<input type="hidden" id="hdndefVAT" name="hdndefVAT" value="<?=$cdefvat?>">
 										</div>
 
 										<div class="col-xs-8 nopadwleft">
@@ -1020,7 +1023,12 @@ else{
 					$('#txtcCity').val(data[6]);
 					$('#txtcState').val(data[7]);
 					$('#txtcCountry').val(data[8]);
-					$('#txtcZip').val(data[9]);							
+					$('#txtcZip').val(data[9]);	
+					
+					$("#selbasecurr").val(data[13]).change(); //val
+					$("#basecurrvalmain").val($("#selbasecurr").data("val"));
+					
+					$('#hdndefVAT').val(data[15]);
 								
 									
 					$('#hdnvalid').val("YES");
@@ -1056,7 +1064,8 @@ else{
 					$('#txtcCity').val("");
 					$('#txtcState').val("");
 					$('#txtcCountry').val("");
-					$('#txtcZip').val("");				
+					$('#txtcZip').val("");	
+					$('#hdndefVAT').val("");						
 					$('#hdnvalid').val("NO");
 				}
 			},
@@ -1135,7 +1144,13 @@ else{
 				$('#txtcCity').val(item.ccity);
 				$('#txtcState').val(item.cstate);
 				$('#txtcCountry').val(item.ccountry);
-				$('#txtcZip').val(item.czip);			
+				$('#txtcZip').val(item.czip);		
+				
+				("#selbasecurr").val(item.cdefaultcurrency).change(); //val
+				$("#basecurrvalmain").val($("#selbasecurr").data("val"));
+				
+				$('#hdndefVAT').val(item.cvattype);
+
 				$('#hdnvalid').val("YES");
 				
 				$('#txtremarks').focus();
@@ -1287,7 +1302,11 @@ else{
 				$("#hdnunit").val(item.cunit); 
 				$("#hdnqty").val(item.nqty);
 				$("#hdnqtyunit").val(item.cqtyunit);
-				$("#hdnvat").val(item.ctaxcode);
+				if($("#hdndefVAT").val()==""){
+					$("#hdnvat").val(item.ctaxcode); 
+				}else{
+					$("#hdnvat").val($("#hdndefVAT").val()); 
+				}
 				$("#hdnmakebuy").val(item.makebuy);
 				
 				myFunctionadd("","","","","","","","","","");
@@ -1319,7 +1338,11 @@ else{
 					$('#hdnunit').val(data[2]);
 					$("#hdnqty").val(data[3]);
 					$("#hdnqtyunit").val(data[4]);
-					$("#hdnvat").val(data[6]);
+					if($("#hdndefVAT").val()==""){
+						$("#hdnvat").val(data[6]);
+					}else{
+						$("#hdnvat").val($("#hdndefVAT").val()); 
+					}
 					$("#hdnmakebuy").val(data[10]);
 
 					if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
@@ -2291,7 +2314,12 @@ else{
 							$("#hdnunit").val(item.cunit); 
 							$("#hdnqty").val(item.nqty);
 							$("#hdnqtyunit").val(item.cqtyunit);
-							$("#hdnvat").val(item.ctaxcode);
+							if($("#hdndefVAT").val()==""){
+								$("#hdnvat").val(item.ctaxcode);
+							}else{
+								$("#hdnvat").val($("#hdndefVAT").val()); 
+							}
+							
 							$("#hdnmakebuy").val(item.makebuy);
 							//alert(item.cqtyunit);
 

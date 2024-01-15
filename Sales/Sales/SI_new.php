@@ -1,36 +1,36 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "POS_new.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "POS_new.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
-$company = $_SESSION['companyid'];
+	$company = $_SESSION['companyid'];
 
-//echo $_SESSION['chkitmbal']."<br>";
-//echo $_SESSION['chkcompvat'];
+	//echo $_SESSION['chkitmbal']."<br>";
+	//echo $_SESSION['chkcompvat'];
 
-//$ddeldate = date("m/d/Y");
-//$ddeldate = date("m/d/Y", strtotime($ddeldate . "+1 day"));
+	//$ddeldate = date("m/d/Y");
+	//$ddeldate = date("m/d/Y", strtotime($ddeldate . "+1 day"));
 
-//echo $ddeldate;
+	//echo $ddeldate;
 
-//where dcutdate = STR_TO_DATE('$ddeldate', '%m/%d/%Y')
- //where Month(dcutdate) <> Month(ddate) and Month(dcutdate) > Month(ddate);
- 
-	//$result1 = mysqli_query($con,"SELECT dcutdate FROM `sales` order By ddate desc Limit 1"); 
+	//where dcutdate = STR_TO_DATE('$ddeldate', '%m/%d/%Y')
+	//where Month(dcutdate) <> Month(ddate) and Month(dcutdate) > Month(ddate);
+	
+		//$result1 = mysqli_query($con,"SELECT dcutdate FROM `sales` order By ddate desc Limit 1"); 
 
-	//if (mysqli_num_rows($result1)!=0) {
-	// $all_course_data1 = mysqli_fetch_array($result1, MYSQLI_ASSOC);
-	 
-		//$ndcutdate = $all_course_data1["dcutdate"];
-	//}	
-	//else{
-		$ndcutdate = date("Y-m-d");
-	//}
+		//if (mysqli_num_rows($result1)!=0) {
+		// $all_course_data1 = mysqli_fetch_array($result1, MYSQLI_ASSOC);
+		
+			//$ndcutdate = $all_course_data1["dcutdate"];
+		//}	
+		//else{
+			$ndcutdate = date("Y-m-d");
+		//}
 	
 	/*
 	function listcurrencies(){ //API for currency list
@@ -82,7 +82,6 @@ $company = $_SESSION['companyid'];
 		}
 	}
 
-
 	$nicomeaccount = "";
 	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='INCOME_ACCOUNT'"); 								
 	if (mysqli_num_rows($result)!=0) {
@@ -105,7 +104,6 @@ $company = $_SESSION['companyid'];
 			@$disclst[] = $rows; 
 		}
 	}
-
 
 ?>
 
@@ -201,7 +199,7 @@ $company = $_SESSION['companyid'];
 									<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
 									<input type="hidden" id="hdnpricever" name="hdnpricever" value="">
 									<input type="hidden" id="hdncacctcodesalescr" name="hdncacctcodesalescr" value="">
-
+									<input type="hidden" id="hdndefVAT" name="hdndefVAT" value="">
 
 									</div>
 								<div class="col-xs-8 nopadwleft">
@@ -417,11 +415,11 @@ $company = $_SESSION['companyid'];
 
 			<div style="border: 1px solid #919b9c; height: 40vh; overflow: auto">
 				<div id="tableContainer" class="alt2" dir="ltr" style="
-							margin: 0px;
-							padding: 3px;
-							width: 1500px;
-							height: 300px;
-							text-align: left;">
+					margin: 0px;
+					padding: 3px;
+					width: 1550px;
+					height: 300px;
+					text-align: left;">
 	
 					<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
 						<thead>
@@ -429,7 +427,7 @@ $company = $_SESSION['companyid'];
 								<th width="100px" style="border-bottom:1px solid #999">Code</th>
 								<th width="250px" style="border-bottom:1px solid #999">Description</th>
 								<th width="150px" style="border-bottom:1px solid #999" class="chkVATClass">EWTCode</th>
-								<th width="100px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
+								<th width="150px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
 								<th width="100px" style="border-bottom:1px solid #999">UOM</th>
 								<th width="100px" style="border-bottom:1px solid #999">Qty</th>
 								<th width="100px" style="border-bottom:1px solid #999">Price</th>
@@ -510,7 +508,7 @@ $company = $_SESSION['companyid'];
 						</div>
 					</div>
 				</div>
-				<div class="col-xs-6">
+				<!--<div class="col-xs-6">
 						<div class="well">							
 							<div class="row static-info align-reverse">
 								<div class="col-xs-7 name">
@@ -542,8 +540,8 @@ $company = $_SESSION['companyid'];
 								</div>
 							</div>
 						</div>
-					</div>
-				<!--<div class="col-xs-6">
+					</div>-->
+				<div class="col-xs-6">
 					<div class="well">							
 						<div class="row static-info align-reverse">
 							<div class="col-xs-7 name">
@@ -583,16 +581,16 @@ $company = $_SESSION['companyid'];
 						</div>
 						<div class="row static-info align-reverse">
 							<div class="col-xs-7 name">
-								Less EWT:
-								<input type="hidden" id="txtnEWT" name="txtnVAT" value="0">
+								Less Gross Discount:
+								
 							</div>
-							<div class="col-xs-4 value" id="divtxtnVAT">
-								0.00
+							<div class="col-xs-4 value">
+								<input type="text" class="form-control input-xs text-right" id="txtnGrossDisc" name="txtnGrossDisc" value="0">
 							</div>
 						</div>
 						<div class="row static-info align-reverse">
 							<div class="col-xs-7 name">
-								Total Amount Due:
+								Total Gross:
 								<input type="hidden" id="txtnGross" name="txtnGross" value="0">
 								<input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="0">
 							</div>
@@ -602,15 +600,24 @@ $company = $_SESSION['companyid'];
 						</div>
 						<div class="row static-info align-reverse">
 							<div class="col-xs-7 name">
-								Total Discount:
-								<input type="hidden" id="txtnGrossDisc" name="txtnGrossDisc" value="0">
+								Less EWT:
+								<input type="hidden" id="txtnEWT" name="txtnEWT" value="0">
 							</div>
-							<div class="col-xs-4 value" id="divtxtnGrossDisc" style="border-top: 1px solid #ccc">
+							<div class="col-xs-4 value" id="divtxtnEWT">
+								0.00
+							</div>
+						</div>
+						<div class="row static-info align-reverse">
+							<div class="col-xs-7 name">
+								<b>Total Amount Due: </b>
+								<input type="hidden" id="txtnGrossDue" name="txtnGrossDue" value="0">
+							</div>
+							<div class="col-xs-4 value" id="divtxtnGrossDue" style="border-top: 1px solid #ccc">
 								0.00
 							</div>
 						</div>
 					</div>
-				</div>-->
+				</div>
 			</div>
 
 		<br>
@@ -904,7 +911,8 @@ $company = $_SESSION['companyid'];
 	  $('#txtprodnme').attr("disabled", true);
 	  $('#txtprodid').attr("disabled", true);
 	  $(".chkitmsadd").hide();
-		$("#basecurrval").autoNumeric('init',{mDec:4});
+	  $("#basecurrval").autoNumeric('init',{mDec:4});
+	  $("#txtnGrossDisc").autoNumeric('init',{mDec:2});
 
 		$("#selewt").select2();
 
@@ -995,6 +1003,8 @@ $company = $_SESSION['companyid'];
 
 						$("#selbasecurr").val(data[13]).change(); //val
 						$("#basecurrvalmain").val($("#selbasecurr").data("val"));
+
+						$('#hdndefVAT').val(data[15]);
 															
 						$('#hdnvalid').val("YES");
 						
@@ -1035,6 +1045,7 @@ $company = $_SESSION['companyid'];
 					$('#txtcust').val("");
 				//	$('#imgemp').attr("src","../../images/blueX.png");
 					$('#hdnpricever').val("");
+					$('#hdndefVAT').val("");
 					
 					$('#hdnvalid').val("NO");
 				}
@@ -1096,6 +1107,7 @@ $company = $_SESSION['companyid'];
 				$("#hdnpricever").val(item.cver);
 				$("#selcterms").val(item.cterms);
 				$('#hdncacctcodesalescr').val(item.acctcodecr);
+				$('#hdndefVAT').val(item.cvattype);
 
 				$('#hdnvalid').val("YES"); 
 				
@@ -1126,6 +1138,7 @@ $company = $_SESSION['companyid'];
 		});
 
 		document.getElementById('txtcust').focus();
+
 		
 		$('#txtprodnme').typeahead({
 			autoSelect: true,
@@ -1150,8 +1163,12 @@ $company = $_SESSION['companyid'];
 				$("#hdnunit").val(item.cunit);
 				$("#hdnctype").val(item.citmcls);
 				$("#hdnqty").val(item.nqty);
-				$("#hdnqtyunit").val(item.cqtyunit); 
-				$("#hdncvat").val(item.ctaxcode); 
+				$("#hdnqtyunit").val(item.cqtyunit);
+				if($("#hdndefVAT").val()==""){
+					$("#hdncvat").val(item.ctaxcode); 
+				}else{
+					$("#hdncvat").val($("#hdndefVAT").val()); 
+				}		
 				$("#hdnacctno").val(item.cacctno); 
 				$("#hdnacctid").val(item.cacctid); 
 				$("#hdnacctdesc").val(item.cacctdesc); 
@@ -1163,11 +1180,10 @@ $company = $_SESSION['companyid'];
 		
 		});
 
-
 		$("#txtprodid").keypress(function(event){
 			if(event.keyCode == 13){
 
-			$.ajax({
+				$.ajax({
 					url:'../get_productid.php',
 					data: 'c_id='+ $(this).val() + "&itmbal="+xChkBal+"&styp="+ $("#selsityp").val(),                 
 					success: function(value){
@@ -1178,59 +1194,61 @@ $company = $_SESSION['companyid'];
 						$("#hdnqty").val(data[3]);
 						$("#hdnqtyunit").val(data[4]);
 						$("#hdnctype").val(data[5]);
-						$("#hdncvat").val(data[6]);	
 
+						if($("#hdndefVAT").val()==""){
+							$("#hdncvat").val(data[6]);
+						}else{
+							$("#hdncvat").val($("#hdndefVAT").val()); 
+						}							
+							
 						$("#hdnacctno").val(data[7]); 
 						$("#hdnacctid").val(data[8]); 
 						$("#hdnacctdesc").val(data[9]); 
 
-			if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
-				var isItem = "NO";
-				var disID = "";
+						if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
+							var isItem = "NO";
+							var disID = "";
+							
+							$("#MyTable > tbody > tr").each(function() {	
+								disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+
+								if($("#txtprodid").val()==disID){
+									
+									isItem = "YES";
+
+								}
+							});	
+
+						//if value is not blank
+						}else{
+							alert("ITEM BARCODE NOT EXISTING!");
+							$('#txtprodnme').focus();
+						}
+					
+						if(isItem=="NO"){		
+
+							myFunctionadd("","","","","","","","");
+							ComputeGross();	
+							
+						}
+						else{
+							
+							addqty();
+						}
 				
-				$("#MyTable > tbody > tr").each(function() {	
-					disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-
-					if($("#txtprodid").val()==disID){
-						
-						isItem = "YES";
-
-					}
-				});	
-
-			//if value is not blank
-			}else{
-				alert("ITEM BARCODE NOT EXISTING!");
-				$('#txtprodnme').focus();
-			}
-			
-			if(isItem=="NO"){		
-
-				myFunctionadd("","","","","","","","");
-				ComputeGross();	
-				
-				}
-				else{
-				
-				addqty();
-			}
-			
-			$("#txtprodid").val("");
-			$("#txtprodnme").val("");
-			$("#hdnunit").val("");
-			$("#hdnqty").val("");
-			$("#hdnqtyunit").val("");
-			$("#hdnctype").val("");
-	
-				//closing for success: function(value){
-				}
-					}); 
-
+						$("#txtprodid").val("");
+						$("#txtprodnme").val("");
+						$("#hdnunit").val("");
+						$("#hdnqty").val("");
+						$("#hdnqtyunit").val("");
+						$("#hdnctype").val("");
 		
-			
+						//closing for success: function(value){
+					}
+				}); 
+
 			//if enter is clicked
-			}
-			
+			}			
 		});
 
 		$("#selsityp").on("change", function(){
@@ -1694,159 +1712,157 @@ $company = $_SESSION['companyid'];
 
 		$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmewts + tditmvats + tditmunit + tditmqty + tditmprice + tditmdisc + tditmbaseamount+ tditmamount + tdglaccount + tdgltitle + tditmdel + '</tr>'); 
 
-										$("#del"+itmcode).on('click', function() { 
-											var xy = $(this).data('var');
+			$("#del"+itmcode).on('click', function() { 
+				var xy = $(this).data('var');
+				
+				$(this).attr("data-var",parseInt(xy)-1);
+
+				//remove discounts rows
+				$("#MyTable3 > tbody > tr").each(function() {					
+					varxc = $(this).attr("class");
+					if(parseInt(varxc)!==parseInt(lastRow)){
+						$(this).remove();
+					}
+				});
+				
+				$(this).closest('tr').remove();
+				
+				ReIdentity(xy);
+				ComputeGross();
+			});
+
+			$("input.numeric2").autoNumeric('init',{mDec:4});
+			$("input.numeric").autoNumeric('init',{mDec:2});
+
+			$("#selitmvatyp"+lastRow).on("change", function() {
+				ComputeGross();
+			});
+
+			$("#selitmewtyp"+lastRow).select2();
 											
-											$(this).attr("data-var",parseInt(xy)-1);
+			//	$("input.numeric").numeric(
+				//	{negative: false}
+			//	);
 
-											//remove discounts rows
-											$("#MyTable3 > tbody > tr").each(function() {					
-												varxc = $(this).attr("class");
-												if(parseInt(varxc)!==parseInt(lastRow)){
-													$(this).remove();
-												}
-											});
-											
-											$(this).closest('tr').remove();
-											
-											ReIdentity(xy);
-											ComputeGross();
-										});
+			//	$("input.numericdec").numeric(
+			//		{
+			//			negative: false,
+			//			decimalPlaces: 4
+			//		}
+			//	);
 
-										$("input.numeric2").autoNumeric('init',{mDec:4});
-										$("input.numeric").autoNumeric('init',{mDec:2});
+			$("input.numeric, input.numeric2").on("click", function () {
+				$(this).select();
+			});
+			
+			$("input.numeric, input.numeric2").on("keyup", function () {
+				ComputeAmt($(this).attr('id'));
+				ComputeGross();
+			});
+			
+			$(".xseluom").on('change', function() {
 
-										$("#selitmvatyp"+lastRow).on("change", function() {
-											ComputeGross();
-										});
-
-										$("#selitmewtyp"+lastRow).select2();
-											
-
-
-									//	$("input.numeric").numeric(
-										//	{negative: false}
-									//	);
-
-									//	$("input.numericdec").numeric(
-									//		{
-									//			negative: false,
-									//			decimalPlaces: 4
-									//		}
-									//	);
-
-										$("input.numeric, input.numeric2").on("click", function () {
-											$(this).select();
-										});
-										
-										$("input.numeric, input.numeric2").on("keyup", function () {
-											ComputeAmt($(this).attr('id'));
-											ComputeGross();
-										});
-										
-										$(".xseluom").on('change', function() {
-
-											var xyz = chkprice(itmcode,$(this).val(),itmccode,xtoday);
-											
-											$('#txtnprice'+lastRow).val(xyz.trim());
-											//alert($(this).attr('id'));
-											ComputeAmt($(this).attr('id'));
-											ComputeGross();
-											
-											var fact = setfactor($(this).val(), itmcode);
-											//alert(fact);
-											$('#hdnfactor'+lastRow).val(fact.trim());
-											
-										});										
+				var xyz = chkprice(itmcode,$(this).val(),itmccode,xtoday);
+				
+				$('#txtnprice'+lastRow).val(xyz.trim());
+				//alert($(this).attr('id'));
+				ComputeAmt($(this).attr('id'));
+				ComputeGross();
+				
+				var fact = setfactor($(this).val(), itmcode);
+				//alert(fact);
+				$('#hdnfactor'+lastRow).val(fact.trim());
+				
+			});										
 										
 	}
 
 			
 	function ComputeAmt(nme){
-			var r = nme.replace( /^\D+/g, '');
-			var nnet = 0;
-			var nqty = 0;
-			
-			nqty = $("#txtnqty"+r).val().replace(/,/g,'');
-			nqty = parseFloat(nqty)
-			nprc = $("#txtnprice"+r).val().replace(/,/g,'');
-			nprc = parseFloat(nprc);
-			
-			ndsc = $("#txtndisc"+r).val().replace(/,/g,'');
-			ndsc = parseFloat(ndsc);
-			
-			if (parseFloat(ndsc) != 0) {
-				nprc = parseFloat(nprc) - parseFloat(ndsc);
-			}
-			
-			namt = nqty * nprc;
-			namt2 = namt * parseFloat($("#basecurrval").val().replace(/,/g,''));
-						
-			$("#txtnamount"+r).val(namt2);
+		var r = nme.replace( /^\D+/g, '');
+		var nnet = 0;
+		var nqty = 0;
+		
+		nqty = $("#txtnqty"+r).val().replace(/,/g,'');
+		nqty = parseFloat(nqty)
+		nprc = $("#txtnprice"+r).val().replace(/,/g,'');
+		nprc = parseFloat(nprc);
+		
+		ndsc = $("#txtndisc"+r).val().replace(/,/g,'');
+		ndsc = parseFloat(ndsc);
+		
+		if (parseFloat(ndsc) != 0) {
+			nprc = parseFloat(nprc) - parseFloat(ndsc);
+		}
+		
+		namt = nqty * nprc;
+		namt2 = namt * parseFloat($("#basecurrval").val().replace(/,/g,''));
+					
+		$("#txtnamount"+r).val(namt2);
 
-			$("#txtntranamount"+r).val(namt);	
+		$("#txtntranamount"+r).val(namt);	
 
-			$("#txtntranamount"+r).autoNumeric('destroy');
-			$("#txtnamount"+r).autoNumeric('destroy');
+		$("#txtntranamount"+r).autoNumeric('destroy');
+		$("#txtnamount"+r).autoNumeric('destroy');
 
-			$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
-			$("#txtnamount"+r).autoNumeric('init',{mDec:2}); 
+		$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
+		$("#txtnamount"+r).autoNumeric('init',{mDec:2}); 
 
 	}
 	
 	function ComputeGross(){
-			var rowCount = $('#MyTable tr').length;
-			
-			var gross = 0;
-			var nnet = 0;
-			var vatz = 0;
+		var rowCount = $('#MyTable tr').length;
+		
+		var gross = 0;
+		var nnet = 0;
+		var vatz = 0;
 
-			var nnetTot = 0;
-			var vatzTot = 0;
+		var nnetTot = 0;
+		var vatzTot = 0;
 
-			if(rowCount>1){
-				for (var i = 1; i <= rowCount-1; i++) {
-			
-					if(xChkVatableStatus==1){  
-						var slctdval = $("#selitmvatyp"+i+" option:selected").data('id');
-						var slctdvalid = $("#selitmvatyp"+i+" option:selected").val();
+		if(rowCount>1){
+			for (var i = 1; i <= rowCount-1; i++) {
+		
+				if(xChkVatableStatus==1){  
+					var slctdval = $("#selitmvatyp"+i+" option:selected").data('id');
+					var slctdvalid = $("#selitmvatyp"+i+" option:selected").val();
 
-						if(slctdval!=0){
-							if(parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) > 0 ){
+					if(slctdval!=0){
+						if(parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) > 0 ){
 
-								nnet = parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) / parseFloat(1 + (parseInt(slctdval)/100));
-								vatz = nnet * (parseInt(slctdval)/100);
+							nnet = parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) / parseFloat(1 + (parseInt(slctdval)/100));
+							vatz = nnet * (parseInt(slctdval)/100);
 
-								nnetTot = nnetTot + nnet;
-								vatzTot = vatzTot + vatz;
-							}
-						}else{
-							nnetTot = nnetTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
+							nnetTot = nnetTot + nnet;
+							vatzTot = vatzTot + vatz;
 						}
 					}else{
-
 						nnetTot = nnetTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
-
 					}
+				}else{
 
-					gross = gross + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
+					nnetTot = nnetTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
+
 				}
+
+				gross = gross + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
 			}
+		}
 
-			gross2 = gross * parseFloat($("#basecurrval").val().replace(/,/g,''));
+		gross2 = gross * parseFloat($("#basecurrval").val().replace(/,/g,''));
 
-			$("#txtnNetVAT").val(nnetTot);
-			$("#txtnVAT").val(vatzTot);
-			$("#txtnGross").val(gross2);
-			$("#txtnBaseGross").val(gross);
+		$("#txtnNetVAT").val(nnetTot);
+		$("#txtnVAT").val(vatzTot);
+		$("#txtnGross").val(gross2);
+		$("#txtnBaseGross").val(gross);
 
-			$("#divtxtnNetVAT").text(nnetTot.toFixed(2));
-			$("#divtxtnVAT").text(vatzTot.toFixed(2));
-			$("#divtxtnGross").text(gross.toFixed(2));
+		$("#divtxtnNetVAT").text(nnetTot.toFixed(2));
+		$("#divtxtnVAT").text(vatzTot.toFixed(2));
+		$("#divtxtnGross").text(gross.toFixed(2));
 
-			$("#divtxtnNetVAT").formatNumber();
-			$("#divtxtnVAT").formatNumber();
-			$("#divtxtnGross").formatNumber();			
+		$("#divtxtnNetVAT").formatNumber();
+		$("#divtxtnVAT").formatNumber();
+		$("#divtxtnGross").formatNumber();			
 			
 	}
 		
@@ -2329,7 +2345,7 @@ $company = $_SESSION['companyid'];
 
 				$("input[name='chkSales[]']:checked").each( function () {
 			
-					var tranno = $(this).data("id");
+					var tranno = $(this).data("id"); 
 					var id = $(this).val();
 					
 					//alert("th_qolistput.php?id=" + tranno + "&itm=" + id + "&typ=" + typ);
@@ -2347,8 +2363,18 @@ $company = $_SESSION['companyid'];
 									$('#txtprodid').val(item.id); 
 									$("#hdnunit").val(item.cunit); 
 									$("#hdnqty").val(item.nqty);
-									$("#hdnqtyunit").val(item.cqtyunit);
-									$("#hdncvat").val(item.ctaxcode);
+									$("#hdnqtyunit").val(item.cqtyunit);									
+
+									if(typ=="SO"){
+										if($("#hdndefVAT").val()==""){
+											$("#hdncvat").val(item.ctaxcode);
+										}else{
+											$("#hdncvat").val($("#hdndefVAT").val()); 
+										}
+									}else{
+										$("#hdncvat").val(item.ctaxcode);
+									}
+																							
 									$("#hdnacctno").val(item.cacctno); 
 									$("#hdnacctid").val(item.cacctid); 
 									$("#hdnacctdesc").val(item.cacctdesc); 

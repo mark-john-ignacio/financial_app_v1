@@ -641,33 +641,7 @@
 								</select>
 							</div>
 						</div>
-
-
-						<input type="hidden" id="selvattype" name="selvattype" value="<?=$VatType?>">
-
-						<!--<div class="row nopadwtop">
-							<div class="col-xs-2 nopadding">
-								<b>Business Type</b>
-							</div>  
-							<div class="col-xs-3 nopadwleft">
-								<select id="selvattype" name="selvattype" class="form-control input-sm selectpicker"  tabindex="26">
-									<?php
-										//$sql = "Select * From vatcode where compcode='$company'";
-										//$result=mysqli_query($con,$sql);
-										//if (!mysqli_query($con, $sql)) {
-										//	printf("Errormessage: %s\n", mysqli_error($con));
-										//}			          
-										//while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-										//{
-									?>
-										<option value="<?//php echo $row['cvatcode'];?>" <?//php if($VatType==$row['cvatcode']){ echo "selected"; }?>><?//php echo $row['cvatdesc']?></option>
-									<?php
-										//}
-									?>
-								</select>
-							</div>
-						</div>  -->  
-										
+														
 						<div class="row nopadwtop">
 							<div class="col-xs-2 nopadding">
 								<b>Terms</b>
@@ -710,6 +684,33 @@
 								</select>
 							</div>
 						</div>
+
+						<div class="row nopadwtop">
+							<div class="col-xs-2 nopadding">
+								<b>Default Sales Tax Type</b>
+							</div>  
+							<div class="col-xs-3 nopadwleft">
+								<select id="selvattype" name="selvattype" class="form-control input-sm selectpicker"  tabindex="26">
+									<option value="" <?php if($VatType==""){ echo "selected"; }?>>N/A</option>
+									<?php
+										$sql = "Select * From vatcode where compcode='$company' and ctype='Sales' and cstatus='ACTIVE'";
+										$result=mysqli_query($con,$sql);
+										if (!mysqli_query($con, $sql)) {
+											printf("Errormessage: %s\n", mysqli_error($con));
+										}			          
+										while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+										{
+									?>
+										<option value="<?php echo $row['cvatcode'];?>" <?php if($VatType==$row['cvatcode']){ echo "selected"; }?>><?php echo $row['cvatdesc']?></option>
+									<?php
+										}
+									?>
+								</select>
+							</div>
+							<div class="col-xs-7 nopadwleft">
+								<div class="nopadwtop"><small><i> N/A means that the Item's Sales Tax Type will be read by the system in Sales Transactions</i></small></div>
+							</div>
+						</div> 
 
 					</div>				
 							
@@ -770,20 +771,6 @@
 
 							<button type="submit" class="btn btn-success btn-sm" name="btnSave" id="btnSave">Save<br> (CTRL+S)</button>
 
-							<?php
-							
-								$arrcompx = array();
-								$sqlcomx = "Select * From company where compcode <> '$company'";
-								$sqlcompanies=mysqli_query($con,$sqlcomx);
-					
-								if (mysqli_num_rows($sqlcompanies)!=0) {
-									$arrcompx = $sqlcompanies->fetch_all(MYSQLI_ASSOC);
-							?>
-									<button type="button" class="btn btn-info btn-sm" onClick="copyto();" id="btnCopyDet" name="btnCopyDet"> Copy<br>Details </button>
-							<?php
-								}
-							?>
-
 						</div>
 					</div>
 			 <?php
@@ -793,52 +780,19 @@
 </form>
 
 <!-- SAVING MODAL -->
-<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-    <div class="vertical-alignment-helper">
-        <div class="modal-dialog vertical-align-top">
-            <div class="modal-content">
-               <div class="alert-modal-danger">
-                  <p id="AlertMsg"></p>
-               </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal -->		
-
-<!-- Copy MODAL -->
-		<div class="modal fade" id="ModCopyDet" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-			<div class="modal-dialog modal-md">
+	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
 				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">
-						<span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						
-						<h5 class="modal-title" id="myModalLabel"><b>Copy Customer Details</b></h5>
-						
-					</div>
-
-					<div class="modal-body" style="height: 10vh">
-						<select name="" id="" class="form-control input-sm selectpicker">
-							<?php
-								foreach($arrcompx as $rsy){
-									echo "<option value='".$rsy['compcode']."'>".$rsy['compname']."</option>";
-								}
-							?>
-							</select>
-					</div>
-
-					<div class="modal-footer">
-						<button type="button" id="btncopyproceed" name="btncopyproceed" class="btn btn-primary">Save</button>
-					</div>
-
+				<div class="alert-modal-danger">
+					<p id="AlertMsg"></p>
+				</div>
 				</div>
 			</div>
 		</div>
+	</div>
 
 <!-- Modal -->		
-
 
 <form name="frmedit" id="frmedit" action="Customers_edit.php" method="POST">
 	<input type="hidden" name="txtcitemno" id="txtcitemno" value="<?php echo $cCustCode;?>">
@@ -1210,14 +1164,6 @@
 
 		});
 
-		$("#btnCopyDet").on("click", function(){
-			$("#ModCopyDet").modal("show");
-		}); 
-
-		$("#btncopyproceed").on("click", function(){
-			
-		});
-
 	});
 
 	$(document).keydown(function(e) {	 
@@ -1491,6 +1437,10 @@
 				tempdeladdzip.name = "txtdeladdzip" + x;
 				tempdeladddelt.id = "row_" + x + "_delete";
 			}
+	}
+
+	function copyto(){
+
 	}
 
 </script>

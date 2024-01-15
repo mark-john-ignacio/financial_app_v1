@@ -26,7 +26,7 @@
 		$poststat = "False";
 	}
 
-	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.cpricever,(TRIM(TRAILING '.' FROM(CAST(TRIM(TRAILING '0' FROM B.nlimit)AS char)))) as nlimit from sales a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.ctranno = '$txtctranno' and a.compcode='$company'");	
+	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.cpricever,(TRIM(TRAILING '.' FROM(CAST(TRIM(TRAILING '0' FROM B.nlimit)AS char)))) as nlimit, b.cvattype from sales a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.ctranno = '$txtctranno' and a.compcode='$company'");	
 
 	/*
 	function listcurrencies(){ //API for currency list
@@ -181,6 +181,8 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 
 				$cterms = $row['cterms'];
 
+				$cdefvat = $row['cvattype']; 
+
 				$refmods = $row['crefmodule'];
 				$refmodstran = $row['crefmoduletran']; 
 
@@ -274,6 +276,7 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 											<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1" value="<?=$CustCode; ?>" readonly>
 												<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
 												<input type="hidden" id="hdnpricever" name="hdnpricever" value="<?=$cpricever;?>">
+												<input type="hidden" id="hdndefVAT" name="hdndefVAT" value="<?=$cdefvat?>">
 										</div>
 
 										<div class="col-xs-8 nopadwleft">
@@ -1320,7 +1323,11 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 				$("#hdnctype").val(item.citmcls);
 				$("#hdnqty").val(item.nqty);
 				$("#hdnqtyunit").val(item.cqtyunit);
-				$("#hdncvat").val(item.ctaxcode);
+				if($("#hdndefVAT").val()==""){
+					$("#hdncvat").val(item.ctaxcode); 
+				}else{
+					$("#hdncvat").val($("#hdndefVAT").val()); 
+				}	
 				$("#hdncewt").val("");
 
 				$("#hdnacctno").val(""); 
@@ -1349,7 +1356,11 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 						$("#hdnqty").val(data[3]);
 						$("#hdnqtyunit").val(data[4]);
 						$("#hdnctype").val(data[5]);
-						$("#hdncvat").val(data[6]);
+						if($("#hdndefVAT").val()==""){
+							$("#hdncvat").val(data[6]);
+						}else{
+							$("#hdncvat").val($("#hdndefVAT").val()); 
+						}
 						$("#hdncewt").val("");
 
 						$("#hdnacctno").val(""); 
@@ -1514,7 +1525,15 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 								$("#hdnunit").val(item.cunit); 
 								$("#hdnqty").val(item.nqty);
 								$("#hdnqtyunit").val(item.cqtyunit);
-								$("#hdncvat").val(item.ctaxcode);
+								if(typ=="SO"){
+									if($("#hdndefVAT").val()==""){
+										$("#hdncvat").val(item.ctaxcode);
+									}else{
+										$("#hdncvat").val($("#hdndefVAT").val()); 
+									}
+								}else{
+									$("#hdncvat").val(item.ctaxcode);
+								}
 								$("#hdncewt").val("");
 										
 								if(index==0){

@@ -183,6 +183,7 @@ $company = $_SESSION['companyid'];
 										<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
 										<input type="hidden" id="hdnpricever" name="hdnpricever" value="">
 										<input type="hidden" id="hdncacctcodesalescr" name="hdncacctcodesalescr" value="">
+										<input type="hidden" id="hdndefVAT" name="hdndefVAT" value="">
 									</div>
 									<div class="col-xs-8 nopadwleft">
 										<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
@@ -886,6 +887,8 @@ $company = $_SESSION['companyid'];
 
 					$("#selbasecurr").val(data[13]).change(); //val
 					$("#basecurrvalmain").val($("#selbasecurr").data("val"));
+
+					$('#hdndefVAT').val(data[15]);
 														
 					$('#hdnvalid').val("YES");
 					
@@ -917,6 +920,8 @@ $company = $_SESSION['companyid'];
 				//	$('#imgemp').attr("src","../../images/blueX.png");
 					$('#hdnpricever').val("");
 					$('#hdncacctcodesalescr').val("");
+
+					$('#hdndefVAT').val("");
 					$('#hdnvalid').val("NO");
 				}
 			},
@@ -987,6 +992,8 @@ $company = $_SESSION['companyid'];
 				$("#selcterms").val(item.cterms);
 				$('#hdncacctcodesalescr').val(item.acctcodecr);
 
+				$('#hdndefVAT').val(item.cvattype);
+
 				$('#hdnvalid').val("YES"); 
 				
 				$('#txtremarks').focus();
@@ -1040,7 +1047,11 @@ $company = $_SESSION['companyid'];
 				$("#hdnctype").val(item.citmcls);
 				$("#hdnqty").val(item.nqty);
 				$("#hdnqtyunit").val(item.cqtyunit); 
-				$("#hdncvat").val(item.ctaxcode); 
+				if($("#hdndefVAT").val()==""){
+					$("#hdncvat").val(item.ctaxcode); 
+				}else{
+					$("#hdncvat").val($("#hdndefVAT").val()); 
+				}	 
 				$("#hdnacctno").val(""); 
 				$("#hdnacctid").val(item.cskucode); 
 				$("#hdnacctdesc").val(""); 
@@ -1067,7 +1078,11 @@ $company = $_SESSION['companyid'];
 						$("#hdnqty").val(data[3]);
 						$("#hdnqtyunit").val(data[4]);
 						$("#hdnctype").val(data[5]);
-						$("#hdncvat").val(data[6]);	
+						if($("#hdndefVAT").val()==""){
+							$("#hdncvat").val(data[6]);
+						}else{
+							$("#hdncvat").val($("#hdndefVAT").val()); 
+						}	
 
 						$("#hdnacctno").val(""); 
 						$("#hdnacctid").val(""); 
@@ -2218,7 +2233,15 @@ $company = $_SESSION['companyid'];
 									$("#hdnunit").val(item.cunit); 
 									$("#hdnqty").val(item.nqty);
 									$("#hdnqtyunit").val(item.cqtyunit);
-									$("#hdncvat").val(item.ctaxcode);
+									if(typ=="SO"){
+										if($("#hdndefVAT").val()==""){
+											$("#hdncvat").val(item.ctaxcode);
+										}else{
+											$("#hdncvat").val($("#hdndefVAT").val()); 
+										}
+									}else{
+										$("#hdncvat").val(item.ctaxcode);
+									}
 									$("#hdnacctno").val(""); 
 									$("#hdnacctid").val(item.systemno); 
 									$("#hdnacctdesc").val(item.cpono); 
