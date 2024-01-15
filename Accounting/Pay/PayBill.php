@@ -436,7 +436,6 @@ mysqli_close($con);
 
 									}else{
 
-										console.log(full[0]+":"+full[4]+":"+full[5]);
 										if(full[4]==0 && full[5]==0){
 
 											var chkrejstat1 = "disabled";
