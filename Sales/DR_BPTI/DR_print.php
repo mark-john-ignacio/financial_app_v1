@@ -120,7 +120,7 @@
 
 	.delTo{
 		position: absolute;
-		top: 148px;
+		top: 145px;
 		left: 125px;
 		width: 400px;
 		height:  15px;  
@@ -205,7 +205,7 @@
 
 	.csign1{
 		position: absolute;
-		top: 485px;
+		top: 482px;
 		left: 35px;
 		width: 135px;
 		height:  15px;  
@@ -217,7 +217,7 @@
 
     .csign2{
 		position: absolute;
-		top: 485px;
+		top: 482px;
 		left: 220px;
 		width: 135px;
 		height:  15px;  
