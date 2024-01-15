@@ -22,17 +22,21 @@ $company = $_SESSION['companyid'];
 	$cCustID = $_REQUEST['txtcustid'];
 	$dDelDate = $_REQUEST['date_delivery'];
 	$cRemarks = chkgrp($_REQUEST['txtremarks']); 
-	$nGross = str_replace(",","",$_REQUEST['txtnGross']);
 	//$selreinv = $_REQUEST['selreinv'];
 	$selsitypz = $_REQUEST['selsityp'];	
 	$selsiseries = chkgrp($_REQUEST['csiprintno']);
-	$nnetvat = str_replace(",","",$_REQUEST['txtnNetVAT']);
-	$nvat = str_replace(",","",$_REQUEST['txtnVAT']);
-
 	$CurrCode = $_REQUEST['selbasecurr']; 
 	$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
 	$CurrRate= $_REQUEST['basecurrval']; 
-	$BaseGross= str_replace(",","",$_REQUEST['txtnBaseGross']);
+	
+	$nnetvat = $_REQUEST['txtnNetVAT']; //VATABLE SALES   nnet
+	$nexempt = $_REQUEST['txtnExemptVAT']; //VAT EXEMPT SALES   nexempt
+	$nzeror = $_REQUEST['txtnZeroVAT']; // ZERO RATED SALES  nzerorated
+	$nvat = $_REQUEST['txtnVAT']; //VAT   nvat
+	$nGrossBefore = $_REQUEST['txtnGrossBef']; //TOTAL GROSS  BEFORE DISCOUNT ngrossbefore
+	$nGrossDisc = str_replace(",","",$_REQUEST['txtnGrossDisc']);  //GROSS DISCOUNT  ngrossdisc
+	$nGross = $_REQUEST['txtnGross']; //TOTAL AMOUNT ngross
+	$BaseGross= $_REQUEST['txtnBaseGross']; //TOTAL AMOUNT * currency rate    nbasegross
 
 	$RefMods= $_REQUEST['txtrefmod']; 
 	$RefModsNo= $_REQUEST['txtrefmodnos']; 
@@ -47,15 +51,15 @@ $company = $_SESSION['companyid'];
 	$cacctcode = "NULL";
 	$cvatcode = "NULL";
 
-				$sqlhead = mysqli_query($con,"Select cacctcodesales, cvattype from customers where compcode='$company' and cempid='$cCustID'");
-				if (mysqli_num_rows($sqlhead)!=0) {
-					$row = mysqli_fetch_assoc($sqlhead);
-					$cacctcode = "'".$row["cacctcodesales"]."'";
-					$cvatcode = "'".$row["cvattype"]."'";
-				}
+	$sqlhead = mysqli_query($con,"Select cacctcodesales, cvattype from customers where compcode='$company' and cempid='$cCustID'");
+	if (mysqli_num_rows($sqlhead)!=0) {
+		$row = mysqli_fetch_assoc($sqlhead);
+		$cacctcode = "'".$row["cacctcodesales"]."'";
+		$cvatcode = "'".$row["cvattype"]."'";
+	}
 
 
-	if (!mysqli_query($con, "UPDATE sales set `ccode` = '$cCustID', `cremarks` = $cRemarks, `dcutdate` = STR_TO_DATE('$dDelDate', '%m/%d/%Y'), `ngross` = '$nGross', `nnet` = '$nnetvat', `nvat` = '$nvat', `cacctcode` = $cacctcode, `cvatcode` = $cvatcode, `lapproved` = 0, `csalestype` = '$selsitypz', `csiprintno` = $selsiseries, `nbasegross` = '$BaseGross', `ccurrencycode` = '$CurrCode', `ccurrencydesc` = '$CurrDesc', `nexchangerate` = '$CurrRate', `crefmodule` = '$RefMods', `crefmoduletran` = '$RefModsNo', `cewtcode` = '$cewtcode' where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
+	if (!mysqli_query($con, "UPDATE sales set `ccode` = '$cCustID', `cremarks` = $cRemarks, `dcutdate` = STR_TO_DATE('$dDelDate', '%m/%d/%Y'), `ngross` = '$nGross', `nnet` = '$nnetvat', `nvat` = '$nvat', `cacctcode` = $cacctcode, `cvatcode` = $cvatcode, `lapproved` = 0, `csalestype` = '$selsitypz', `csiprintno` = $selsiseries, `nbasegross` = '$BaseGross', `ccurrencycode` = '$CurrCode', `ccurrencydesc` = '$CurrDesc', `nexchangerate` = '$CurrRate', `crefmodule` = '$RefMods', `crefmoduletran` = '$RefModsNo', `cewtcode` = '$cewtcode', `nexempt` = '$nexempt', `nzerorated` = '$nzeror', `ngrossbefore` = '$nGrossBefore', `ngrossdisc` = '$nGrossDisc' where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
 		echo "False";
 
 		

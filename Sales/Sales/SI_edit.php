@@ -185,6 +185,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$ccurrdesc = $row['ccurrencydesc']; 
 		$ccurrrate = $row['nexchangerate']; 
 
+		$GrossDiscount = $row['ngrossdisc'];
+
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
 		$lVoid = $row['lvoid'];
@@ -643,7 +645,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</div>
 						</div>
 					</div>
-					<div class="col-xs-5">
+					<!--<div class="col-xs-5">
 						<div class="well">							
 							<div class="row static-info align-reverse">
 								<div class="col-xs-7 name">
@@ -674,6 +676,76 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</div>
 							</div>
 						</div>
+					</div>-->
+
+					<div class="col-xs-5">
+						<div class="well">							
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									Vatable Sales:
+									<input type="hidden" id="txtnNetVAT" name="txtnNetVAT" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnNetVAT">
+									0.00
+								</div>
+							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									VATExempt Sales:
+									<input type="hidden" id="txtnExemptVAT" name="txtnExemptVAT" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnExemptVAT">
+									0.00
+								</div>
+							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									ZERO Rated Sales:
+									<input type="hidden" id="txtnZeroVAT" name="txtnZeroVAT" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnZeroVAT">
+									0.00
+								</div>
+							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									Add VAT:
+									<input type="hidden" id="txtnVAT" name="txtnVAT" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnVAT">
+									0.00
+								</div>
+							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									Total Gross:
+									<input type="hidden" id="txtnGrossBef" name="txtnGrossBef" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnGrossBef"> 
+									0.00
+								</div>
+							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									Less Gross Discount:
+									
+								</div>
+								<div class="col-xs-4 value">
+									<input type="text" class="form-control input-xs text-right" id="txtnGrossDisc" name="txtnGrossDisc" value="<?=$GrossDiscount?>">
+								</div>
+							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									<b>Total Amount: </b>
+									<input type="hidden" id="txtnGross" name="txtnGross" value="0">
+									<input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="0">								
+								</div>
+								<div class="col-xs-4 value" id="divtxtnGross" style="border-top: 1px solid #ccc">
+									0.00
+								</div>
+							</div>
+							
+						</div>
 					</div>
 				</div>
 
@@ -681,32 +753,32 @@ if (mysqli_num_rows($sqlhead)!=0) {
     
    
 	<!-- add details modal -->
-  <div class="modal fade" id="MyDetModal" role="dialog">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close"  aria-label="Close"  onclick="chkCloseInfo();"><span aria-hidden="true">&times;</span></button>
-              <h3 class="modal-title" id="invheader"> Additional Details Info</h3>           
-						</div>
-    
-            <div class="modal-body">
-                <input type="hidden" name="hdnrowcnt2" id="hdnrowcnt2">
-                <table id="MyTable2" class="MyTable table table-condensed" width="100%">
-									<thead>
-										<tr>
-											<th style="border-bottom:1px solid #999">Code</th>
-											<th style="border-bottom:1px solid #999">Description</th>
-											<th style="border-bottom:1px solid #999">Field Name</th>
-											<th style="border-bottom:1px solid #999">Value</th>
-											<th style="border-bottom:1px solid #999">&nbsp;</th>
-										</tr>
-									</thead>
-									<tbody class="tbody">
-									</tbody>
-                </table>   
-						</div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
+	<div class="modal fade" id="MyDetModal" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+				<button type="button" class="close"  aria-label="Close"  onclick="chkCloseInfo();"><span aria-hidden="true">&times;</span></button>
+				<h3 class="modal-title" id="invheader"> Additional Details Info</h3>           
+							</div>
+		
+				<div class="modal-body">
+					<input type="hidden" name="hdnrowcnt2" id="hdnrowcnt2">
+					<table id="MyTable2" class="MyTable table table-condensed" width="100%">
+						<thead>
+							<tr>
+								<th style="border-bottom:1px solid #999">Code</th>
+								<th style="border-bottom:1px solid #999">Description</th>
+								<th style="border-bottom:1px solid #999">Field Name</th>
+								<th style="border-bottom:1px solid #999">Value</th>
+								<th style="border-bottom:1px solid #999">&nbsp;</th>
+							</tr>
+						</thead>
+						<tbody class="tbody">
+						</tbody>
+					</table>   
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
 
 
@@ -1205,6 +1277,7 @@ if(file_name.length != 0){
 
 	$("#basecurrval").autoNumeric('init',{mDec:4});
 	$("#selewt").select2();
+	$("#txtnGrossDisc").autoNumeric('init',{mDec:2});
 
 	loaddetails();
 	loaddetinfo();
@@ -1493,6 +1566,17 @@ if(file_name.length != 0){
 
 		$("#btnentry").on("click", function(){		
 			$("#modGLEntry").modal("show");
+		});
+
+		$("#txtnGrossDisc").on("keyup", function(){
+			var ttgross = $("#txtnGrossBef").val();
+
+			TotAmt = parseFloat(ttgross) -  parseFloat($(this).val());
+
+			$("#txtnGross").val(TotAmt);
+			$("#divtxtnGross").text(TotAmt.toFixed(2));
+			$("#divtxtnGross").formatNumber();  
+
 		});
 
 
@@ -1866,58 +1950,81 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 	}
 	
 	function ComputeGross(){
-			var rowCount = $('#MyTable tr').length;
-			
-			var gross = 0;
-			var nnet = 0;
-			var vatz = 0;
+		var rowCount = $('#MyTable tr').length;
+		
+		var gross = 0;
+		var nvatz = 0;
+		var nvatble = 0;
 
-			var nnetTot = 0;
-			var vatzTot = 0;
+		var nexmptTot = 0;
+		var nzeroTot = 0;
+		var nvatbleTot = 0;
+		var vatzTot = 0;
 
-			if(rowCount>1){
-				for (var i = 1; i <= rowCount-1; i++) {
-			
-					if(xChkVatableStatus==1){  
-						var slctdval = $("#selitmvatyp"+i+" option:selected").data('id');
-						var slctdvalid = $("#selitmvatyp"+i+" option:selected").val();
+		var totewt = 0;
 
-						if(slctdval!=0){
-							if(parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) > 0 ){
+		var xcrate = 0;
 
-								nnet = parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) / parseFloat(1 + (parseInt(slctdval)/100));
-								vatz = nnet * (parseInt(slctdval)/100);
+		var TotAmtDue = 0;
 
-								nnetTot = nnetTot + nnet;
-								vatzTot = vatzTot + vatz;
-							}
-						}else{
-							nnetTot = nnetTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
-						}
-					}else{
+		if(rowCount>1){
+			for (var i = 1; i <= rowCount-1; i++) {
+		
+				var slctdval = $("#selitmvatyp"+i+" option:selected").data('id'); //data-id is the rate
+				var slctdvalid = $("#selitmvatyp"+i+" option:selected").val();
 
-						nnetTot = nnetTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
+				if(slctdvalid=="VT" || slctdvalid=="VTGOV"){
+					nvatble = parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) / parseFloat(1 + (parseInt(slctdval)/100));
+					vatz = nvatble * (parseInt(slctdval)/100);
 
-					}
-
-					gross = gross + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
+					nvatbleTot = nvatbleTot + nvatble;
+					vatzTot = vatzTot + vatz;
+					
+				}else if(slctdvalid=="VE"){
+					nexmptTot = nexmptTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
+				}else if(slctdvalid=="ZR"){
+					nzeroTot = nzeroTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
 				}
+
+				
+				gross = gross + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
 			}
+		}
 
-			gross2 = gross * parseFloat($("#basecurrval").val().replace(/,/g,''));
+		//VATABLE
+		$("#txtnNetVAT").val(nvatbleTot);
+		$("#divtxtnNetVAT").text(nvatbleTot.toFixed(2));
+		$("#divtxtnNetVAT").formatNumber();
 
-			$("#txtnNetVAT").val(nnetTot);
-			$("#txtnVAT").val(vatzTot);
-			$("#txtnGross").val(gross2);
-			$("#txtnBaseGross").val(gross);
+		//EXEMPT
+		$("#txtnExemptVAT").val(nexmptTot);
+		$("#divtxtnExemptVAT").text(nexmptTot.toFixed(2));
+		$("#divtxtnExemptVAT").formatNumber();
 
-			$("#divtxtnNetVAT").text(nnetTot.toFixed(2));
-			$("#divtxtnVAT").text(vatzTot.toFixed(2));
-			$("#divtxtnGross").text(gross.toFixed(2));
+		//ZERO RATED
+		$("#txtnZeroVAT").val(nzeroTot);
+		$("#divtxtnZeroVAT").text(nzeroTot.toFixed(2));
+		$("#divtxtnZeroVAT").formatNumber();
+		
+		// LESS VAT
+		$("#txtnVAT").val(vatzTot);
+		$("#divtxtnVAT").text(vatzTot.toFixed(2));
+		$("#divtxtnVAT").formatNumber();
 
-			$("#divtxtnNetVAT").formatNumber();
-			$("#divtxtnVAT").formatNumber();
-			$("#divtxtnGross").formatNumber();			
+		//TOTAL GROSS
+		$("#txtnGrossBef").val(gross);
+		$("#divtxtnGrossBef").text(gross.toFixed(2));
+		$("#divtxtnGrossBef").formatNumber();
+
+		//Total Amount
+		$gettmtt = gross - parseFloat($("#txtnGrossDisc").val());
+		gross2 = $gettmtt * parseFloat($("#basecurrval").val().replace(/,/g,''));
+		
+		$("#txtnGross").val(gross2);
+		$("#txtnBaseGross").val($gettmtt);
+		$("#divtxtnGross").text($gettmtt.toFixed(2));		
+		$("#divtxtnGross").formatNumber();
+
 			
 	}
 		
@@ -2746,7 +2853,7 @@ function chkform(){
 		var ddate = $("#date_delivery").val();
 		var ngross = $("#txtnGross").val();
 		var selreinv = $("#selreinv").val();
-    var selsitypz = $("#selsityp").val();
+    	var selsitypz = $("#selsityp").val();
 		var siprintno = $("#csiprintno").val();
 		var nnetvat = $("#txtnNetVAT").val(); 
 		var nvat = $("#txtnVAT").val();

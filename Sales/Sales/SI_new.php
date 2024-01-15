@@ -581,6 +581,15 @@
 						</div>
 						<div class="row static-info align-reverse">
 							<div class="col-xs-7 name">
+								Total Gross:
+								<input type="hidden" id="txtnGrossBef" name="txtnGrossBef" value="0">
+							</div>
+							<div class="col-xs-4 value" id="divtxtnGrossBef"> 
+								0.00
+							</div>
+						</div>
+						<div class="row static-info align-reverse">
+							<div class="col-xs-7 name">
 								Less Gross Discount:
 								
 							</div>
@@ -590,32 +599,15 @@
 						</div>
 						<div class="row static-info align-reverse">
 							<div class="col-xs-7 name">
-								Total Gross:
+								<b>Total Amount: </b>
 								<input type="hidden" id="txtnGross" name="txtnGross" value="0">
-								<input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="0">
+								<input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="0">								
 							</div>
-							<div class="col-xs-4 value" id="divtxtnGross">
+							<div class="col-xs-4 value" id="divtxtnGross" style="border-top: 1px solid #ccc">
 								0.00
 							</div>
 						</div>
-						<div class="row static-info align-reverse">
-							<div class="col-xs-7 name">
-								Less EWT:
-								<input type="hidden" id="txtnEWT" name="txtnEWT" value="0">
-							</div>
-							<div class="col-xs-4 value" id="divtxtnEWT">
-								0.00
-							</div>
-						</div>
-						<div class="row static-info align-reverse">
-							<div class="col-xs-7 name">
-								<b>Total Amount Due: </b>
-								<input type="hidden" id="txtnGrossDue" name="txtnGrossDue" value="0">
-							</div>
-							<div class="col-xs-4 value" id="divtxtnGrossDue" style="border-top: 1px solid #ccc">
-								0.00
-							</div>
-						</div>
+						
 					</div>
 				</div>
 			</div>
@@ -913,6 +905,8 @@
 	  $(".chkitmsadd").hide();
 	  $("#basecurrval").autoNumeric('init',{mDec:4});
 	  $("#txtnGrossDisc").autoNumeric('init',{mDec:2});
+
+	  
 
 		$("#selewt").select2();
 
@@ -1417,6 +1411,17 @@
 
 			}
 		});
+
+		$("#txtnGrossDisc").on("keyup", function(){
+			var ttgross = $("#txtnGrossBef").val();
+
+			TotAmt = parseFloat(ttgross) -  parseFloat($(this).val());
+
+			$("#txtnGross").val(TotAmt);
+			$("#divtxtnGross").text(TotAmt.toFixed(2));
+			$("#divtxtnGross").formatNumber();  
+
+		});
 		
 
 	});
@@ -1649,7 +1654,7 @@
 					}else{
 						isselctd = "";
 					}
-					ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
+					ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>"; 
 				});
 
 				if(gvnewt==""){
@@ -1739,7 +1744,10 @@
 			});
 
 			$("#selitmewtyp"+lastRow).select2();
-											
+			$("#selitmewtyp"+lastRow).on('select2:select', function (e) {
+				ComputeGross();
+			});
+														
 			//	$("input.numeric").numeric(
 				//	{negative: false}
 			//	);
@@ -1814,55 +1822,78 @@
 		var rowCount = $('#MyTable tr').length;
 		
 		var gross = 0;
-		var nnet = 0;
-		var vatz = 0;
+		var nvatz = 0;
+		var nvatble = 0;
 
-		var nnetTot = 0;
+		var nexmptTot = 0;
+		var nzeroTot = 0;
+		var nvatbleTot = 0;
 		var vatzTot = 0;
+
+		var totewt = 0;
+
+		var xcrate = 0;
+
+		var TotAmtDue = 0;
 
 		if(rowCount>1){
 			for (var i = 1; i <= rowCount-1; i++) {
 		
-				if(xChkVatableStatus==1){  
-					var slctdval = $("#selitmvatyp"+i+" option:selected").data('id');
-					var slctdvalid = $("#selitmvatyp"+i+" option:selected").val();
+				var slctdval = $("#selitmvatyp"+i+" option:selected").data('id'); //data-id is the rate
+				var slctdvalid = $("#selitmvatyp"+i+" option:selected").val();
 
-					if(slctdval!=0){
-						if(parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) > 0 ){
+				if(slctdvalid=="VT" || slctdvalid=="VTGOV"){
+					nvatble = parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) / parseFloat(1 + (parseInt(slctdval)/100));
+					vatz = nvatble * (parseInt(slctdval)/100);
 
-							nnet = parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) / parseFloat(1 + (parseInt(slctdval)/100));
-							vatz = nnet * (parseInt(slctdval)/100);
-
-							nnetTot = nnetTot + nnet;
-							vatzTot = vatzTot + vatz;
-						}
-					}else{
-						nnetTot = nnetTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
-					}
-				}else{
-
-					nnetTot = nnetTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
-
+					nvatbleTot = nvatbleTot + nvatble;
+					vatzTot = vatzTot + vatz;
+					
+				}else if(slctdvalid=="VE"){
+					nexmptTot = nexmptTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
+				}else if(slctdvalid=="ZR"){
+					nzeroTot = nzeroTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
 				}
 
+				
 				gross = gross + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
 			}
 		}
 
-		gross2 = gross * parseFloat($("#basecurrval").val().replace(/,/g,''));
-
-		$("#txtnNetVAT").val(nnetTot);
-		$("#txtnVAT").val(vatzTot);
-		$("#txtnGross").val(gross2);
-		$("#txtnBaseGross").val(gross);
-
-		$("#divtxtnNetVAT").text(nnetTot.toFixed(2));
-		$("#divtxtnVAT").text(vatzTot.toFixed(2));
-		$("#divtxtnGross").text(gross.toFixed(2));
-
+		//VATABLE
+		$("#txtnNetVAT").val(nvatbleTot);
+		$("#divtxtnNetVAT").text(nvatbleTot.toFixed(2));
 		$("#divtxtnNetVAT").formatNumber();
+
+		//EXEMPT
+		$("#txtnExemptVAT").val(nexmptTot);
+		$("#divtxtnExemptVAT").text(nexmptTot.toFixed(2));
+		$("#divtxtnExemptVAT").formatNumber();
+
+		//ZERO RATED
+		$("#txtnZeroVAT").val(nzeroTot);
+		$("#divtxtnZeroVAT").text(nzeroTot.toFixed(2));
+		$("#divtxtnZeroVAT").formatNumber();
+		
+		// LESS VAT
+		$("#txtnVAT").val(vatzTot);
+		$("#divtxtnVAT").text(vatzTot.toFixed(2));
 		$("#divtxtnVAT").formatNumber();
-		$("#divtxtnGross").formatNumber();			
+
+		//TOTAL GROSS
+		$("#txtnGrossBef").val(gross);
+		$("#divtxtnGrossBef").text(gross.toFixed(2));
+		$("#divtxtnGrossBef").formatNumber();
+
+		//Total Amount
+		$gettmtt = gross - parseFloat($("#txtnGrossDisc").val());
+		gross2 = $gettmtt * parseFloat($("#basecurrval").val().replace(/,/g,''));
+		
+		$("#txtnGross").val(gross2);
+		$("#txtnBaseGross").val($gettmtt);
+		$("#divtxtnGross").text($gettmtt.toFixed(2));		
+		$("#divtxtnGross").formatNumber();
+
 			
 	}
 		
@@ -2660,20 +2691,7 @@
 
 			var formdata = new FormData($('#frmpos')[0]);
 			formdata.delete('upload[]')
-			var input_data = [
-				{	code: "ccode", values: $("#txtcustid").val()	},
-				{	code: "crem", values: $("#txtremarks").val()	},
-				{	code: "ddate", values: $("#date_delivery").val()	},
-				{	code: "ngross", values: $("#txtnGross").val()	},
-				{	code: "selreinv", values: $("#selreinv").val()	},
-				{	code: "selsitypz", values: $("#selsityp").val()	},
-				{	code: "siprintno", values: $("#csiprintno").val()	},
-				{	code: "nnetvat", values: $("#txtnNetVAT").val()	},
-				{	code: "nvat", values: $("#txtnVAT").val()	}
-			]
-			jQuery.each(input_data, function(i, {code, values}){
-				formdata.append(code, values);
-			})
+			
 			jQuery.each($("#file-0")[0].files, function(i, file){
 				formdata.append("file-"+i, file);
 			})
@@ -2853,8 +2871,8 @@
 							$("#AlertMsg").html("");
 							$('#AlertModal').modal('hide');
 				
-								$("#txtctranno").val(trancode);
-								$("#frmedit").submit();
+							$("#txtctranno").val(trancode);
+							$("#frmedit").submit();
 				
 						}, 3000); // milliseconds = 3seconds
 

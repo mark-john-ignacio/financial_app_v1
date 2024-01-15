@@ -76,8 +76,6 @@
 		$qryposted2 = " and A.lapproved=".$postedtran."";
 	}
 
-	if($trantype=="Trade"){
-
 		$transrefDR = array();
 		$result=mysqli_query($con,"Select ctranno, GROUP_CONCAT(DISTINCT creference) as cref from sales_t where compcode='$company' group by ctranno");
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
@@ -136,51 +134,7 @@
 			$finarray[] = $row;
 			$transctions[] = $row['ctranno'];
 		}
-
-	}elseif($trantype=="Non-Trade"){
-
-		$result=mysqli_query($con,"select b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
-		From ntsales_t a	
-		left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
-		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
-		left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
-		left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
-		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0 and b.lvoid=0
-		".$qryitm.$qrycust.$qryposted."
-		order by a.ctranno, a.nident");
-		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-			$finarray[] = $row;
-		}
-
-	}else{
-		$result=mysqli_query($con,"Select A.dcutdate, A.ctranno, A.ctype, A.typdesc, A.ccode, A.cname, A.lapproved, A.citemno, A.citemdesc, A.cunit, A.nqty, A.nprice, A.ndiscount, A.namount
-		From (
-			select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
-			From sales_t a	
-			left join sales b on a.ctranno=b.ctranno and a.compcode=b.compcode
-			left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
-			left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
-			left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
-			where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0 and b.lvoid=0
-			".$qryitm.$qrycust.$qryposted."
-
-			UNION ALL
-
-			select a.nident, b.dcutdate, a.ctranno, d.ccustomertype as ctype, e.cdesc as typdesc, b.ccode, d.ctradename as cname, b.lapproved, a.citemno, c.citemdesc, a.cunit, a.nqty, a.nprice, a.ndiscount, a.namount
-			From ntsales_t a	
-			left join ntsales b on a.ctranno=b.ctranno and a.compcode=b.compcode
-			left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
-			left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
-			left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
-			where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lcancelled=0 and b.lvoid=0
-			".$qryitm.$qrycust.$qryposted."
-		) A 
-		order by A.ctranno, A.nident");
-		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-			$finarray[] = $row;
-		}
-	}
-
+		
 	$salesno = "";
 	$remarks = "";
 	$invval = "";
