@@ -123,7 +123,11 @@
 		left join customers C on B.compcode=C.compcode and B.ccode=C.cempid 
 		left join items E on A.compcode=E.compcode and A.citemno=E.cpartno 
 		left join taxcode F on E.compcode=F.compcode and E.ctaxcode=F.ctaxcode
-		where A.compcode='$company' and B.quotetype='billing' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.lcancelled=0 and B.lvoid=0 ".$qryposted." and A.ctranno not in (Select Y.creference From sales_t Y left join sales X on Y.compcode=X.compcode and Y.ctranno=X.ctranno where Y.compcode='$company' and X.lcancelled=0 and X.lvoid=0)
+		left join (
+			Select Y.creference From sales_t Y left join sales X on Y.compcode=X.compcode and Y.ctranno=X.ctranno 
+			where Y.compcode='$company' and X.lcancelled=0 and X.lvoid=0
+		) G on A.ctranno=G.creference
+		where A.compcode='$company' and B.quotetype='billing' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.lcancelled=0 and B.lvoid=0 ".$qryposted." and IFNULL(G.creference,'') = ''
 
 		) A
 		Group By A.ctranno, A.ccode, A.cname, A.cacctid, A.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, A.dcutdate
