@@ -1805,6 +1805,7 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 			var xz = $("#hdntaxcodes").val();
 				taxoptions = "";
 				$.each(jQuery.parseJSON(xz), function() { 
+					alert($("#hdncvat").val()+"=="+this['ctaxcode']);
 					if($("#hdncvat").val()==this['ctaxcode']){
 						isselctd = "selected";
 					}else{
