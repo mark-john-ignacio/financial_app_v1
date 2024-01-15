@@ -1805,7 +1805,7 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 			var xz = $("#hdntaxcodes").val();
 				taxoptions = "";
 				$.each(jQuery.parseJSON(xz), function() { 
-					if(cvat==this['ctaxcode']){
+					if($("#hdncvat").val()==this['ctaxcode']){
 						isselctd = "selected";
 					}else{
 						isselctd = "";
@@ -2692,7 +2692,7 @@ function loaddetails(){
 				$("#hdnunit").val(item.cunit); 
 				$("#hdnqty").val(item.nqty);
 				$("#hdnqtyunit").val(item.cqtyunit);
-       	$("#hdncvat").val(item.ctaxcode);
+       			$("#hdncvat").val(item.ctaxcode);
 				$("#hdncewt").val(item.cewtcode);
 				$("#hdnacctno").val(item.cacctno); 
 				$("#hdnacctid").val(item.cacctid); 
