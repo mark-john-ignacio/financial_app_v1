@@ -332,7 +332,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 												<option value="VatIn" <?php if ($cvattyp=="VatIn") { echo "selected"; } ?>>VAT Inclusive</option>
 											</select>
 										</div>
-											<div class="col-xs-2" id="prcevallabel"><b>Price Validity</b></div>
+											<div class="col-xs-2" id="prcevallabel">
+												<b><?=($cQOType=="billing") ? "Due Date" : "Price Validity"; ?></b>
+											</div>
 										<div class="col-xs-2 nopadwleft">
 											<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo date_format(date_create($Date),'m/d/Y'); ?>" />
 										</div>

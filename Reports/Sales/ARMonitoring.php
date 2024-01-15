@@ -129,12 +129,14 @@
 		Group By A.ctranno, A.ccode, A.cname, A.cacctid, A.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, A.dcutdate
 		order by A.dcutdate, A.ctranno";
 
+		echo $sqlx;
+
 		$result=mysqli_query($con,$sqlx);
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 			$finarray[] = $row;
 			$transctions[] = $row['ctranno'];
 		}
-		
+
 	$salesno = "";
 	$remarks = "";
 	$invval = "";
