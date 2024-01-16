@@ -22,6 +22,14 @@
 
     $controller = match($module){
 
+        'BS' => "select a.*, c.ctin, c.cname, d.citemdesc, b.csalestype, b.ddate, b.cremarks, b.crecurrtype, b.cvattype, e.nrate
+                from quote_t a
+                left join quote b on a.compcode = b.compcode and a.ctranno = b.ctranno
+                left join customers c on a.compcode = c.compcode and b.ccode = c.cempid
+                left join items d on a.compcode = d.compcode and a.citemno = d.cpartno
+                left join taxcode e on d.compcode=e.compcode and d.ctaxcode=e.ctaxcode
+                where a.compcode = '$company' and a.ctranno='$ctranno'",
+
         'DR' => "select * from dr_t a
                 left join
                 (

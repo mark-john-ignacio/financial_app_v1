@@ -15,26 +15,46 @@
 	{
 		$compname =  $row['compname'];
 	}
+
+
+	@$allqinfo = array();
+	$sql = "select * From quote_t_info where compcode='$company'";
+	$result=mysqli_query($con,$sql);
+	if (mysqli_num_rows($result)>0) {
+		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+		{
+			@$allqinfo[] =  $row;
+		}
+	}
+
 ?>
 
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
+	<link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css?x=<?=time()?>">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+	<link href="../../Bootstrap/css/NFont.css" rel="stylesheet">
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
 
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>AR Monitoring</title>
 </head>
 
 <body style="padding:10px">
+	<input type="hidden" value='<?=json_encode(@$allqinfo)?>' id="hdnqinfos"> 
+
 <center>
-<h2><?php echo strtoupper($compname);  ?></h2>
-<h2>AR Monitoring</h2>
-<h3>For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h3><br>
+<h3 class="nopadding"><?php echo strtoupper($compname);  ?></h3>
+<h3 class="nopadding">AR Monitoring</h3>
+<h4 class="nopadding">For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h4><br>
 </center>
 
 <br><br>
-<table border="0" align="center" cellpadding="5px" id="MyTable">
+<table border="0" align="center" cellpadding="5px" id="MyTable" class="table table-sm table-hover">
   <tr>
     <th nowrap>Type</th>
     <th nowrap>Transaction No.</th>
@@ -42,14 +62,14 @@
     <th nowrap>Date</th>
     <th nowrap colspan="2">Customer</th>
     <th nowrap align="right">Vatable Sales</th>
-		<th nowrap align="right">VAT%</th>
-		<th nowrap align="right">VAT Amount</th>
-		<th nowrap align="right">Sales Amount</th>
-		<th nowrap style="text-align: center">EWT</th>
-		<th nowrap align="right">EWT Amount</th>
-		<th nowrap align="right">AR Balance<br>Net of TAX</th>
-		<th nowrap align="right">Amount Collected</th>
-		<th nowrap align="right">Balance</th>
+	<th nowrap align="right">VAT%</th>
+	<th nowrap align="right">VAT Amount</th>
+	<th nowrap align="right">Sales Amount</th>
+	<th nowrap style="text-align: center">EWT</th>
+	<th nowrap align="right">EWT Amount</th>
+	<th nowrap align="right">AR Balance<br>Net of TAX</th>
+	<th nowrap align="right">Amount Collected</th>
+	<th nowrap align="right">Balance</th>
   </tr>
   
 <?php
@@ -172,16 +192,24 @@
 			}
 		
 ?>  
-  <tr>
-    <td nowrap><?=$row['type'];?></td>
-    <td nowrap><a style="text-decoration: none;" href="javascript:;" onClick="printchk('<?=$row['ctranno'];?>','<?=$row['type'];?>');"><?=$row['ctranno'];?></a></td>
-		<td nowrap><?=($row['type']=="SI") ? $transrefDR[$row['ctranno']] : "";?></td>
+	<tr style="cursor: pointer">
+		<td nowrap><?=$row['type'];?></td>
+		<td nowrap><a href="javascript:;" onclick="viewDets('<?=$row['type'];?>','<?=$row['ctranno'];?>')"><?=$row['ctranno'];?></a></td>
+		<td nowrap>
+			<?php
+				if($row['type']=="SI") {
+			?>
+				<a href="javascript:;" onclick="viewDets('BS','<?=$transrefDR[$row['ctranno']];?>')"><?=$transrefDR[$row['ctranno']];?></a>
+			<?php
+				}
+			?>
+		</td>
 		<td nowrap><?=$dateval;?></td>
-    <td nowrap><?= $row['ccode'];?></td>
-    <td nowrap><?=$row['cname'];?></td>   
+		<td nowrap><?= $row['ccode'];?></td>
+		<td nowrap><?=$row['cname'];?></td>   
 		<td nowrap style="text-align: right"><?=(floatval($row['nvatgross'])!=0) ? number_format($row['nvatgross'],2) : ""?></td> 
-    <td nowrap style="text-align: center"><?=(intval($row['nrate'])!=0 && intval($row['nrate'])!="") ? number_format($row['nrate'])."%" : ""?></td>
-    <td nowrap style="text-align: right">
+		<td nowrap style="text-align: center"><?=(intval($row['nrate'])!=0 && intval($row['nrate'])!="") ? number_format($row['nrate'])."%" : ""?></td>
+		<td nowrap style="text-align: right">
 			<?php
 				if(intval($row['nrate'])!=0 && intval($row['nrate'])!=""){
 					if(floatval($row['vatamt'])!=0) {
@@ -196,46 +224,46 @@
 			<?php
 				$phpewtamt = 0;
 
-					if(intval($ewtcode)!=0 && intval($ewtcode)!=""){
-						$phpewtamt = floatval($row['nvatgross']) * (floatval($ewtcode)/100);
-					}
+				if(intval($ewtcode)!=0 && intval($ewtcode)!=""){
+					$phpewtamt = floatval($row['nvatgross']) * (floatval($ewtcode)/100);
+				}
 
-					echo (floatval($phpewtamt)!=0) ? number_format($phpewtamt,2) : "";
+				echo (floatval($phpewtamt)!=0) ? number_format($phpewtamt,2) : "";
 			?>
 		</td>
 		<td nowrap style="text-align: right">
-				<?php
-					$netvatamt = floatval($row['ngross']) - floatval($phpewtamt);
-					echo number_format($netvatamt,2);
-				?>
+			<?php
+				$netvatamt = floatval($row['ngross']) - floatval($phpewtamt);
+				echo number_format($netvatamt,2);
+			?>
 		</td>
 		<td nowrap style="text-align: right">
 			<?php
 				$npay = 0;
 				$cntofist = 0;
 				foreach(@$arrpaymnts as $rxpymnts){
-				 if($row['ctranno']==$rxpymnts['csalesno'] && $row['ctaxcode']==$rxpymnts['ctaxcodeorig'] && $row['cewtcode']==$rxpymnts['cewtcodeorig']){
-					 $cntofist++;
-					 
-					 if($cntofist==1){
-						 $ntotal = floatval($rxpymnts['ndue']) - floatval($rxpymnts['napplied']);
-					 }
- 
-					 $npay = $npay + floatval($rxpymnts['napplied']);
-				 }
+					if($row['ctranno']==$rxpymnts['csalesno'] && $row['ctaxcode']==$rxpymnts['ctaxcodeorig'] && $row['cewtcode']==$rxpymnts['cewtcodeorig']){
+						$cntofist++;
+						
+						if($cntofist==1){
+							$ntotal = floatval($rxpymnts['ndue']) - floatval($rxpymnts['napplied']);
+						}
+
+						$npay = $npay + floatval($rxpymnts['napplied']);
+					}
 				}
 
 				echo (floatval($npay)!=0) ? number_format($npay,2) : "";
 			?>
 		</td>
 		<td nowrap style="text-align: right">
-				<?php
-					$nbalace = floatval($netvatamt) - floatval($npay);
+			<?php
+				$nbalace = floatval($netvatamt) - floatval($npay);
 
-					echo (floatval($nbalace)!=0) ? number_format($nbalace,2) : "";
-				?>
+				echo (floatval($nbalace)!=0) ? number_format($nbalace,2) : "";
+			?>
 		</td>
-  </tr>
+	</tr>
 <?php 
 	}
 ?>
@@ -247,29 +275,243 @@
 </table>
 
 
-<form action="PrintQuote_PDF.php" method="post" name="frmQPrint" id="frmQprint" target="_blank">
-	<input type="hidden" name="hdntransid" id="hdntransid" value="">
-	<input type="hidden" name="x" id="x" value="">
-</form>
+	<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModal" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<h5><b><i><span id='modalTitle'></span></i></b></h5>
+					
+				</div>
+				<div class="modal-body" style="height: 100%; overflow: auto">
+
+					<table class='table ' id="HeadDetail" border="1" bordercolor="#CCCCCC" width="100%" style="overflow: auto;">
+						<thead></thead>
+						<tbody></tbody>
+					</table>
+					<br><br>
+					<table class='table' id="detailTable" border="1" bordercolor="#CCCCCC" width="100%" style="text-align: right; min-width: 30%; overflow: auto;">
+						<thead></thead>
+						<tbody></tbody>
+					</table>
+					<table class='table' id="subdetailTable" border="1" bordercolor="#CCCCCC" width="100%" style="text-align: right; min-width: 30%; overflow: auto;">
+						<thead></thead>
+						<tbody></tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
 
 </body>
 </html>
 
+
 <script type="text/javascript">
-/*$( document ).ready(function() {
+	$(document).ready(function(){
+		$(document).on('click', '#tableContent', function(){
+			let modules = $(this).closest('#tableContent').find('td:eq(0)').text();
+			let ctranno = $(this).closest('#tableContent').find('td:eq(1)').text();
 
-	$('#MyTable tbody tr:last').clone().insertBefore('#MyTable tbody tr:first');
-});*/
+			
 
-	function printchk(x,$xtyp){
-		if($xtyp=="BS"){
-			$("#hdntransid").val(x);
-			$("#frmQprint").attr("action","../../Sales/Quote/PrintBilling_PDF.php");
-		}else{
-			$("#x").val(x);
-			$("#frmQprint").attr("action","../../Sales/Sales/SI_confirmprint.php");
+		});
+	});
+
+	function clearTable(table){
+		$(table +' thead').empty();
+		$(table + ' tbody').empty();
+	}
+
+	function viewDets(modules,ctranno){
+		clearTable("#HeadDetail")
+		clearTable('#detailTable')
+		clearTable('#subdetailTable')
+
+		$.ajax({
+			url: '../Accounting/Controller/TBal_Controller.php',
+			type: 'post',
+			dataType: 'json',
+			data: {
+				module: modules,
+				ctranno: ctranno,
+				captypex: ""
+			},
+			success: function(res){
+
+				//console.log(res);
+				$('#detailModal').modal('show')
+
+				var sample = res.data;
+				sample.map((item, index) => {
+					switch(modules){						
+						case 'SI':
+							$('#modalTitle').text('Sales Invoice')
+							ShowSI(index, item)
+							//console.log(item)
+							break;												
+						case 'BS':
+							$('#modalTitle').text('Quotation - Billing Statement')
+							ShowBS(index, item)
+							//console.log(item)
+							break;
+						default: 
+							break;
+					}
+					
+				})
+				
+			}
+		})
+	}
+
+	function ShowSI(index, data){
+		if(index <= 0){
+			$('<tr>').append(
+				$('<tH>').text('Transaction No.: '),
+				$('<tH>').text('Customer: '),
+				$('<tH>').text('Type'),
+				$('<tH>').text('Date:'),
+				$('<tH>').text('Remarks'),
+
+			).appendTo('#HeadDetail > thead')
+			// const fulldate = ddate.getMonth() + '-' + ddate.getDate() + '-' + ddate.getFullYear()
+			
+			$('<tr>').append(
+				$('<td>').text(data.ctranno),
+				$('<td>').text(data.cname),
+				$('<td>').text(data.csalestype),
+				$('<td>').text(data.ddate),
+				$('<td>').text((data.cremarks != null ? data.cremarks : '-')),
+			).appendTo('#HeadDetail > tbody')
+
+			$('<tr>').append(
+				$('<tH>').text('Account No. '),
+				$('<tH>').text('Account Title '),
+				$('<tH>').text('Debit: '),
+				$('<tH>').text('Credit'),
+			).appendTo('#detailTable > thead')
+
+			$('<tr>').append(
+				$('<tH>').text('Item'),
+				$('<tH>').text('EWT Code'),
+				$('<tH>').text('Vat Code'),
+				$('<tH>').text('UOM'),
+				$('<tH>').text('Quantity'),
+				$('<tH>').text('Price'),
+				$('<tH>').text('Discount'),
+				$('<tH>').text('Amount'),
+				$('<tH>').text('Total Amount in PHP')
+			).appendTo('#subdetailTable > thead')
+
+			$.ajax({
+				url: '../Accounting/Controller/th_GLactivity_List.php',
+				type: 'post',
+				dataType: 'json',
+				data: {ctranno: data.ctranno},
+				async: false,
+				success: function(res){
+					//console.log(res);
+					res['data'].map((item, res) =>{
+						$('<tr>').append(
+							$("<td style='text-align: left'>").text(item.acctno),
+							$("<td style='text-align: left'>").text(item.ctitle),
+							$('<td>').text(settodecl(item.ndebit)),
+							$('<td>').text(settodecl(item.ncredit)),
+						).appendTo('#detailTable > thead')
+					})
+				}
+			})
 		}
 
-		$("#frmQprint").submit();
+		$('<tr>').append(
+			$("<td style='text-align: left'>").text( (data.citemdesc != null ? data.citemdesc : '-') ),
+			$('<td>').text( (data.cewtcode != "" ? data.cewtcode : '-') ),
+			$('<td>').text( (data.ctaxcode != null ? data.ctaxcode : '-') ),
+			$('<td>').text( (data.cmainunit != null ? data.cmainunit : '-') ),
+			$('<td>').text( (data.nqty != null ? settodecl(data.nqty) : '-') ),
+			$('<td>').text( (data.nprice != null ? settodecl(data.nprice) : '-') ),
+			$('<td>').text( (data.ndiscount != null ? settodecl(data.ndiscount) : '-') ),
+			$('<td>').text( (data.nbaseamount != null ? settodecl(data.nbaseamount) : '-') ),
+			$('<td>').text( (data.namount != null ? settodecl(data.namount) : '-') ),
+		).appendTo('#subdetailTable > tbody')
+	}
+
+	function ShowBS(index, data){
+		if(index <= 0){
+
+			$('<tr>').append(
+				$('<tH>').text('Transaction No.: '),
+				$('<tH>').text('Customer: '),
+				$('<tH>').text('Type'),
+				$('<tH>').text('Date:'),
+				$('<tH>').text('Recurr Type'),
+
+			).appendTo('#HeadDetail > thead')
+			// const fulldate = ddate.getMonth() + '-' + ddate.getDate() + '-' + ddate.getFullYear()
+			
+			$('<tr>').append(
+				$('<td>').text(data.ctranno),
+				$('<td>').text(data.cname),
+				$('<td>').text(data.csalestype),
+				$('<td>').text(data.ddate),
+				$('<td>').text((data.crecurrtype != null ? data.crecurrtype : '-')),
+			).appendTo('#HeadDetail > tbody')
+
+
+			$('<tr>').append(
+				$('<tH>').text('Bill Period'),
+				$('<tH>').text('Description'),
+				$('<tH>').text('VAT SALES'),
+				$('<tH>').text('VAT AMOUNT'),
+				$('<tH>').text('TOTAL AMOUNT'),
+			).appendTo('#subdetailTable > thead')
+
+			var billperd = "";
+			var billdesc = "";
+			$zxc = $("#hdnqinfos").val();		
+			$.each(jQuery.parseJSON($zxc), function() {
+				
+				if(this['ctranno']==data.ctranno ){
+					//console.log(this['ctranno']+"=="+data.ctranno +"&&"+ this['nrefident']+"=="+data.nident);
+					if(this['nrefident']==data.nident){
+						if(billperd!=""){
+							billperd + "\n";
+						}
+						if(billdesc!=""){
+							billdesc + "\n";
+						}
+						billperd = billperd +  this['cfldnme'];
+						billdesc = billdesc +  this['cvalue'];
+					}
+				}				
+			});
+
+			if(data.cvattyp=="VatEx"){							
+				var $nvatamt = data.namount;
+				var $nvat=0;
+				var $ntotamt = data.namount;
+			}else{
+				var $ntotamt = data.namount;
+				var $nvatamt = parseFloat(data.namount) / (1 + (parseFloat(data.nrate)/100));
+				var $nvat = $ntotamt - $nvatamt;											
+			}
+
+			$('<tr>').append(
+				$("<td style='text-align: center'>").html( ((billperd != null && billperd !="") ? billperd : '') ),
+				$("<td style='text-align: center'>").html( (data.citemdesc != null ? data.citemdesc : '-') + ((billdesc != null && billdesc !="") ? "<br>" + billdesc : '') ),
+				$('<td>').text( ($nvatamt != null ? settodecl($nvatamt) : '-') ),
+				$('<td>').text( ($nvat != null ? settodecl($nvat) : '-') ),
+				$('<td>').text( ($ntotamt != null ? settodecl($ntotamt) : '-') ),
+			).appendTo('#subdetailTable > tbody')
+
+		}
+	}
+
+	function settodecl(xyz){
+		xyz = parseFloat(xyz);
+		return xyz.toLocaleString('en-US', {minimumFractionDigits: 2,maximumFractionDigits: 2});
 	}
 </script>
