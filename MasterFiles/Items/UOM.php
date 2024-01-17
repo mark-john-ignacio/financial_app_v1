@@ -154,7 +154,10 @@ a.info:hover span{ /*the span will display just on :hover state*/
 							</div>
 					</div>   
 					
-					<div class="alert alert-danger nopadding" id="add_err"></div>         
+					<div class="col-xs-12 alert alert-danger text-center" id="add_err" style="margin-top:5px !important">
+            
+		
+					</div>       
 
 		</div>
 			
@@ -199,10 +202,11 @@ a.info:hover span{ /*the span will display just on :hover state*/
 	<script>
 	
 	$(function(){
-			$('#example').DataTable();
+			
 			$("#add_err").hide();
 			$(".itmalert").hide();	
 
+			$('#example').DataTable();
 
 		// Adding new user
 		$("#btnadd").on("click", function() {
