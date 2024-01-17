@@ -79,6 +79,7 @@ background-repeat: no-repeat;
 .noPrint {
     display:none;
 }
+
 }
 #menu{
 	position: fixed;

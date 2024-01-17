@@ -56,12 +56,19 @@
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">	
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
+    <style>
+        @media print{
+            body {
+                margin: 5mm 5mm 5mm 5mm;
+            }
+        }
+        </style>
 </head>
 <body style="position: relative; padding-top:0" id='body'>
     <div id='header' class='container' style='width: 100%;'>
         <div class='row' style='display: flex;'>
             <div class='col-sm' style='width: 100%; '>
-                <img src='../../images/SLogo.png' alt='Sert technology Logo' width='100%' height="100%">
+                <img src='../../images/SLogo.png' alt='Sert technology Logo' width='200px'>
             </div>
             <div class='col-sm' style='width: 100%; text-align: justify; text-justify: inter-word;'>
                     <h5 class='nopadding'><?= $compadd ?></h5>
@@ -70,38 +77,38 @@
                     <!-- <h5 class='nopadding'>Manila Line: </h5> -->
                     <h5 class='nopadding'>Email: <?= $compemail ?></h5>
                     <!-- <h5 class='nopadding'>Website: www.serttech.com</h5> -->
-                    <h5 class='nopadding'>VAT Reg. TIN: <?= $comptin ?></h5>
+                   <!-- <h5 class='nopadding'>VAT Reg. TIN: <?//= $comptin ?></h5>-->
             </div>
-            <div class='col-sm' style='width: 100%; margin: 5%; text-align: center;'>
-                <h1>Sales Invoice</h1>
-                <h2>No. 00001</h2>
+            <div class='col-sm' style='width: 100%; text-align: center;'>
+                <h3>Delivery Receipt</h3>
+                <h4><?=$tranno?></h4>
             </div>
         </div>
     </div>
-    <div id='body' class='container' style='width: 100%;'>
+    <div id='body' class='container' style='width: 100%; margin-top: 5px'>
         <div class='row' style="display: flex;">
             <div class='col-sm' style='width: 100%'>
                 <h5><span style="font-weight: bold;">Sold To: </span> <?= $data['cname'] ?> </h5>
             </div>
             <div class='col-sm' style='width: 75%'>
-                <h5><span style="font-weight: bold;">Date: </span> <?= $data['dcutdate'] ?> </h5>
+                <h5><span style="font-weight: bold;">Delivery Date: </span> <?= $data['dcutdate'] ?> </h5>
             </div>
         </div>
         <div class='row' style="display: flex;">
             <div class='col-sm' style='width: 100%'>
                 <h5 class='nopadding'><span style="font-weight: bold;">TIN: </span> <?= $data['ctin'] ?></h5>
             </div>
-            <div class='col-sm' style='width: 75%'>
-                <h5 class='nopadding'><span style="font-weight: bold;">P.O. Terms: </span><?= $data['ctranno'] ?> </h5>
-            </div>
+            <!--<div class='col-sm' style='width: 75%'>
+                <h5 class='nopadding'><span style="font-weight: bold;">P.O. Terms: </span><?//= $data['ctranno'] ?> </h5>
+            </div>-->
         </div>
         <div class='row' style="display: flex;">
             <div class='col-sm' style='width: 100%'>
                 <h5><span style="font-weight: bold;">Address: </span> <?= $address ?> </h5>
             </div>
-            <div class='col-sm' style='width: 75%'>
-                <h5><span style="font-weight: bold;"> Business Style: </span> <?= $data['cname'] ?></h5>
-            </div>
+            <!--<div class='col-sm' style='width: 75%'>
+                <h5><span style="font-weight: bold;"> Business Style: </span> <?//= $data['cname'] ?></h5>
+            </div>-->
         </div>
     </div>
 
@@ -145,14 +152,19 @@
 
     <div id='footer' class='container' style='width: 100%; margin-top: 2px;'>
         <div class='row' style='display: flex;'>
-            <div class='col-sm' style='width: 20%; font-size: 9px; font-weight: bold;'>
-                <h5>PTU No.: <?= $ptucode ?></h5>
-                <h5>Date Issued: <?= $ptudate ?></h5>
+           <!-- <div class='col-sm' style='width: 20%; font-size: 9px; font-weight: bold;'>
+                <h5>PTU No.: <?//= $ptucode ?></h5>
+                <h5>Date Issued: <?//= $ptudate ?></h5>
                 <h5>Inclusive Serial No.: <?= $tranno ?></h5>
-                <h5>Timestamp: <?= date('m-d-Y') ?></h5>
+                <h5>Timestamp: <?//= date('m-d-Y') ?></h5>
+            </div>-->
+            <div class='col-sm' style='width: 40%; '>
+                <div style='font-size: 10px; margin-left: 15px; font-weight: bold; width: 100%;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prepared By:</div>
+                <div style='width: 85%; margin-left:10%; margin-top: 20%; border: 1px solid black;'></div>
+                <div style='font-size: 14px; width: 100%; text-align: center;'>Signature over printed name</div>
             </div>
             <div class='col-sm' style='width: 40%; '>
-                <div style='font-size: 10px; margin-left: 5px; font-weight: bold; width: 100%;'>Issued By:</div>
+                <div style='font-size: 10px; margin-left: 15px; font-weight: bold; width: 100%;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Issued By:</div>
                 <div style='width: 85%; margin-left:10%; margin-top: 20%; border: 1px solid black;'></div>
                 <div style='font-size: 14px; width: 100%; text-align: center;'>Signature over printed name</div>
             </div>
