@@ -35,11 +35,13 @@
     where a.ctranno = '$tranno' and a.compcode='$company'";
 
     $data = [];
+    $totGrossAmt = 0;
     $result = mysqli_query($con, $sql);
     while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
         $address = $row['chouseno'] . " " . $row['ccity'] . " " . $row['cstate'] . " " . $row['ccountry'];
         // array_push($data, $row);
         $data = $row;
+        $totGrossAmt = $row['ngross'];
     }
 
 ?>
@@ -64,13 +66,12 @@
         }
         </style>
 </head>
-<body style="position: relative; padding-top:0" id='body'>
+<body style="position: relative; padding-top:0" id='body' onclick="window.print();">
     <div id='header' class='container' style='width: 100%;'>
         <div class='row' style='display: flex;'>
-            <div class='col-sm' style='width: 100%; '>
-                <img src='../../images/SLogo.png' alt='Sert technology Logo' width='200px'>
-            </div>
+
             <div class='col-sm' style='width: 100%; text-align: justify; text-justify: inter-word;'>
+                    <h3 class='nopadding'><?= $compname ?></h3>
                     <h5 class='nopadding'><?= $compadd ?></h5>
                     <!-- <h5 class='nopadding'>Tel/Fax: </h5> -->
                     <h5 class='nopadding'>Mobile No.: <?= $compphone ?></h5>
@@ -85,26 +86,26 @@
             </div>
         </div>
     </div>
-    <div id='body' class='container' style='width: 100%; margin-top: 5px'>
+    <div id='body' class='container' style='width: 100%; margin-top: 15px'>
         <div class='row' style="display: flex;">
+            <div class='col-sm ' style='width: 100%;'>
+                <h4 class='nopadding'><span style="font-weight: bold;">Sold To: </span> <?= $data['cname'] ?> </h4>
+            </div>
+            <div class='col-sm text-right nopadding' style='width: 75%;'>
+                <h4 class='nopadding'><span style="font-weight: bold;">Delivery Date: </span> <?= date_format(date_create($data['dcutdate']),"m/d/Y")  ?> </h4>
+            </div>
+        </div>
+        <!--<div class='row' style="display: flex;">
             <div class='col-sm' style='width: 100%'>
-                <h5><span style="font-weight: bold;">Sold To: </span> <?= $data['cname'] ?> </h5>
+                <h5 class='nopadding'><span style="font-weight: bold;">TIN: </span> <?//= $data['ctin'] ?></h5>
             </div>
             <div class='col-sm' style='width: 75%'>
-                <h5><span style="font-weight: bold;">Delivery Date: </span> <?= $data['dcutdate'] ?> </h5>
-            </div>
-        </div>
-        <div class='row' style="display: flex;">
-            <div class='col-sm' style='width: 100%'>
-                <h5 class='nopadding'><span style="font-weight: bold;">TIN: </span> <?= $data['ctin'] ?></h5>
-            </div>
-            <!--<div class='col-sm' style='width: 75%'>
                 <h5 class='nopadding'><span style="font-weight: bold;">P.O. Terms: </span><?//= $data['ctranno'] ?> </h5>
-            </div>-->
-        </div>
+            </div>
+        </div>-->
         <div class='row' style="display: flex;">
             <div class='col-sm' style='width: 100%'>
-                <h5><span style="font-weight: bold;">Address: </span> <?= $address ?> </h5>
+                <h4 class='nopadding'><span style="font-weight: bold;">Address: </span> <?= $address ?> </h4>
             </div>
             <!--<div class='col-sm' style='width: 75%'>
                 <h5><span style="font-weight: bold;"> Business Style: </span> <?//= $data['cname'] ?></h5>
@@ -113,21 +114,62 @@
     </div>
 
 
-    <div class='container' id='item' style='width: 100%; top: 0; height: 5.5in;'>
+    <div class='container' id='item' style='width: 100%; margin-top: 15px; height: 5.5in;'>
         <div class='row' >
             <table class='table' id='salestable' >
                 <thead  style=' border: .5 solid black;border-radius: 20%;'>
                     <tr>
                         <th>No.</th>
                         <th width='50%'>ITEM DESCRIPTION</th>
-                        <th>QTY</th>
+                        <th style="text-align: right">QTY</th>
                         <th>UNIT</th>
-                        <th>UNIT PRICE</th>
-                        <th>AMOUNT</th>
+                        <th style="text-align: right">UNIT PRICE</th>
+                        <th style="text-align: right">AMOUNT</th>
                     </tr>
                 </thead>
                 <tbody >
-                    
+                    <?php
+
+                        $sqlbody = mysqli_query($con,"Select * from ntdr_t_serials a where a.compcode='$company'");
+                        $dataserials = array();
+                        while($row = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
+                            $dataserials[] = $row;
+                        }
+
+                        $sqlbody = mysqli_query($con,"select a.*, d.ngross, b.citemdesc, c.nrate from ntsales_t a 
+                        left join items b on a.compcode=b.compcode and a.citemno=b.cpartno 
+                        left join taxcode c on a.compcode=c.compcode and a.ctaxcode=c.ctaxcode 
+                        left join sales d on a.compcode = d.compcode and a.ctranno = d.ctranno
+                        where a.compcode='$company' and a.ctranno = '$tranno'");
+                        $data = array();
+                        $cnt = 0;
+                        while($row = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
+                            $cnt++;
+                    ?>
+                        <tr>
+                            <td><?=$cnt?></td>
+                            <td><?=$row['citemdesc']?>
+                                <?php
+                                    $serials = array();
+                                    foreach($dataserials as $rcx){
+                                        if($row['creference']==$rcx['ctranno'] && $row['nrefident']==$rcx['nrefidentity']){
+                                            $serials[] = $row['cserial'];
+                                        }
+                                    }
+
+                                    if(count($serials)>1){
+                                        echo implode("<br>",$serials);
+                                    }
+                                ?>
+                            </td>
+                            <td style="text-align: right"><?=number_format($row['nqty'])?></td>
+                            <td><?=$row['cunit']?></td>
+                            <td style="text-align: right"><?=number_format($row['nprice'],2)?></td>
+                            <td style="text-align: right"><?=number_format($row['namount'],2)?></td>
+                        </tr>
+                    <?php
+                        }                
+                    ?>
                 </tbody>
             </table>
         </div>
@@ -141,7 +183,7 @@
                         <th width='35%' colspan='4' align='right'>
                             <div style='display: flex;'>
                                 <div style='width: 50%; font-weight: 700'>TOTAL AMOUNT DUE: </div>
-                                <div id='totaldue' style='width: 50%; font-weight: 700; padding-right: 10px; text-align: right'> </div>
+                                <div id='totaldue' style='width: 50%; font-weight: 700; padding-right: 10px; text-align: right'><?=number_format($totGrossAmt,2)?></div>
                             </div>
                         </th>
                     </tr>
@@ -180,58 +222,3 @@
     
 </body>
 </html>
-
-<script type='text/javascript'>
-
-    var totnetvat = 0, totlessvat = 0, totvatable = 0, totvatxmpt= 0, gross= 0;
-    var vatcode = '', vatgross ='';
-    $(document).ready(function(){
-
-        $.ajax({
-            // url: 'th_loaddetails.php',
-            url: 'th_loadtransaction.php',
-            data: {tranno: '<?= $tranno ?>' },
-            dataType: "json",
-            async: false,
-		    
-            success: function(res){
-                console.log(res.data);
-                if(res.valid){
-                    res['data'].map((item, index)=> {
-
-                        if(item.namount != 0){
-                            totnetvat = totnetvat + parseFloat(item.nnetvat);
-                            totlessvat = totlessvat + parseFloat(item.nlessvat);
-                            totvatable = totvatable + parseFloat(item.namount);
-                        } else {
-                            totvatxmpt = totvatxmpt + parseFloat(item.namount);
-                        }
-                        $("<tr class='spacer'>").append(
-                            $("<td>").text(item.citemno),
-                            $("<td>").text(item.citemdesc),
-                            $("<td>").text(parseFloat(item.nqty).toFixed(0)),
-                            $("<td>").text(item.cunit),
-                            $("<td>").text(toNumber(item.nprice)), 
-                            $("<td>").text(toNumber(item.namount)),
-                        ).appendTo('#salestable > tbody')
-
-                        var printgross =0;
-                        var printVATGross = '', printVEGross='', printZRGross='';
-                        gross += parseFloat(item.namount);
-
-                        
-                    })
-                    $('#totaldue').text((gross !== null ? toNumber(gross) : ''))
-                    window.print();
-                }
-            },
-            error: function(res){
-                console.log(res)
-            }
-        })
-
-    })
-    function toNumber(number){
-        return parseFloat(number).toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
-    }
-</script>
