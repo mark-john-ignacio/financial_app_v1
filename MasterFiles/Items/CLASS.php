@@ -156,9 +156,13 @@ a.info:hover span{ /*the span will display just on :hover state*/
             <div class="col-xs-9 nopadwtop">
                 <input type="text" class="form-control input-sm" id="txtcdesc" name="txtcdesc"  placeholder="Enter Description.." required>
             </div>
-        </div>   
+        </div> 
+		
+		<div class="col-xs-12">
         
-        <div class="alert alert-danger nopadding" id="add_err"></div>         
+        	<div class="alert alert-danger nopadding" id="add_err"></div>       
+		
+		</div>
 
 	</div>
     
