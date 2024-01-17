@@ -631,9 +631,9 @@
                 				<i class="fa fa-bank"> </i> Bank Deposit
 							</a>
 						</li>
-						<li>
+						<!--<li>
 							<a href="javascript:;" onclick="setpage('Accounting/BankRecon')"><i class="fa fa-file-text"></i> Bank Reconciliation</a>
-						</li>
+						</li>-->
 					</ul>
 				</li>
 				<li>

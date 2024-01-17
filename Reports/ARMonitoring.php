@@ -54,38 +54,14 @@
             <span class="glyphicon glyphicon-search"></span> View Report
           </button>
         </td>
-        <td width="150" style="padding-left:10px"><b>Transaction Type: </b></td>
-        <td style="padding:2px">
-          <?php
-            if($lallowNT==1){
-          ?>
-          <div class="col-xs-4 nopadding">
-            <select id="seltrantype" name="seltrantype" class="form-control input-sm selectpicker"  tabindex="4">
-              <option value="">All Transactions</option>   
-              <option value="Trade">Trade</option>      
-              <option value="Non-Trade">Non-Trade</option>           
-            </select>               
-          </div>
-          <div class="col-xs-4 nopadwleft">
-            <select id="selrpt" name="selrpt" class="form-control input-sm selectpicker"  tabindex="4">
-              <option value="">All Transactions</option>   
-              <option value="1">Posted</option>      
-              <option value="0">UnPosted</option>           
-            </select>                            
-          </div>  
-          <?php
-            }else{
-          ?>
+        <td width="150" style="padding-left:10px"><b>Report Type: </b></td>
+        <td style="padding:2px">        
           <div class="col-xs-8 nopadwleft">
-            <select id="selrpt" name="selrpt" class="form-control input-sm selectpicker"  tabindex="4">
-              <option value="">All Transactions</option>   
-              <option value="1">All Posted Transactions only</option>      
-              <option value="0">All UnPosted Transactions only</option>           
+            <select id="selrptnme" name="selrptnme" class="form-control input-sm selectpicker"  tabindex="4">
+              <option value="ARMonitoring">Billing/Invoice</option>      
+              <option value="QuoteMonitoring">Quotation/Billing</option>           
             </select>                            
-          </div> 
-          <?php
-            }
-          ?>
+          </div>         
         </td>
       </tr>
       <tr>
@@ -94,11 +70,26 @@
             <i class="fa fa-file-excel-o"></i> To Excel
           </button>
         </td>
+        <td width="150" style="padding-left:10px"><b>Transaction Type: </b></td>
+        <td style="padding:2px">
+          <div class="col-xs-8 nopadwleft">
+            <select id="selrpt" name="selrpt" class="form-control input-sm selectpicker"  tabindex="4">
+              <option value="">All Transactions</option>   
+              <option value="1">All Posted Transactions only</option>      
+              <option value="0">All UnPosted Transactions only</option>           
+            </select>                            
+          </div> 
+        </td>
+      </tr>
+      <tr>
+        <td valign="top" width="50" style="padding:2px">
+          &nbsp;
+        </td>
         <td width="150" style="padding-left:10px"><div id="dtelabel"><b>Date Range: </b></div></td>
         <td style="padding:2px">
           <div id="dterange">
             <div class="col-xs-12 nopadding">
-              <div class="col-xs-3 nopadding">             
+              <div class="col-xs-3 nopadwleft">             
                 <input type='text' class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/d/Y"); ?>" />              
               </div>
               
@@ -156,14 +147,14 @@ $(function(){
 
 
   $('#btnView').on("click", function(){
-    //$dval = $("#selrpt").val();
-    $('#frmrep').attr("action", "Sales/ARMonitoring.php");
+    $dval = $("#selrptnme").val();
+    $('#frmrep').attr("action", "Sales/"+$dval+".php");
     $('#frmrep').submit();
   });
 
   $('#btnexcel').on("click", function(){
-    //$dval = $("#selrpt").val();
-    $('#frmrep').attr("action", "Sales/ARMonitoring_xls.php");
+    $dval = $("#selrptnme").val();
+    $('#frmrep').attr("action", "Sales/"+$dval+"_xls.php");
     $('#frmrep').submit();
   });
 	

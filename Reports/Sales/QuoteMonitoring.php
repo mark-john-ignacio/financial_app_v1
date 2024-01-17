@@ -27,6 +27,20 @@
 		}
 	}
 
+	@$allrefx = array();
+	$sql = "Select 'SI' as typ, x.creference as ctranno, GROUP_CONCAT(DISTINCT x.ctranno) as cref from sales_t x left join sales y on x.compcode=y.compcode and x.ctranno=y.ctranno where x.compcode='$company' and y.lcancelled=0 and y.lvoid=0 and IFNULL(x.creference,'') <> '' group by x.creference UNION ALL Select 'SO' as typ, x.creference as ctranno, GROUP_CONCAT(DISTINCT x.ctranno) as cref from so_t x left join so y on x.compcode=y.compcode and x.ctranno=y.ctranno where x.compcode='001' and y.lcancelled=0 and y.lvoid=0 and IFNULL(x.creference,'') <> '' group by x.creference";
+	$result=mysqli_query($con,$sql);
+	if (mysqli_num_rows($result)>0) {
+		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+		{
+			@$allrefx[$row['ctranno']] =  array('typ' => $row['typ'], 'ref' => $row['cref']);
+		}
+	}
+
+	//echo "<pre>";
+	//print_r(@$allrefx);
+	//echo "</pre>";
+
 ?>
 
 <html>
@@ -41,7 +55,7 @@
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
 
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>AR Monitoring</title>
+	<title>Quotation Monitoring</title>
 </head>
 
 <body style="padding:10px">
@@ -49,40 +63,30 @@
 
 <center>
 <h3 class="nopadding"><?php echo strtoupper($compname);  ?></h3>
-<h3 class="nopadding">AR Monitoring</h3>
+<h3 class="nopadding">Quotation Monitoring</h3>
 <h4 class="nopadding">For the Period <?php echo date_format(date_create($_POST["date1"]),"F d, Y");?> to <?php echo date_format(date_create($_POST["date2"]),"F d, Y");?></h4><br>
 </center>
 
 <br><br>
-<table border="0" align="center" cellpadding="5px" id="MyTable" class="table table-sm table-hover">
+<table border="0" align="center" cellpadding="5px" id="BillTable" class="table table-sm table-hover">
+	<tr>
+		<td colspan="9"><b>BILLING</b></td>
+	</tr>
   <tr>
-    <th nowrap>Type</th>
     <th nowrap>Transaction No.</th>
-    <th nowrap>Reference</th>
-    <th nowrap>Date</th>
+	<th nowrap>Reference</th>
+    <th nowrap>Due Date</th>
     <th nowrap colspan="2">Customer</th>
-    <th nowrap align="right">Vatable Sales</th>
-	<th nowrap align="right">VAT%</th>
-	<th nowrap align="right">VAT Amount</th>
-	<th nowrap align="right">Sales Amount</th>
-	<th nowrap style="text-align: center">EWT</th>
-	<th nowrap align="right">EWT Amount</th>
-	<th nowrap align="right">AR Balance<br>Net of TAX</th>
-	<th nowrap align="right">Amount Collected</th>
-	<th nowrap align="right">Balance</th>
+    <th nowrap>Recurr</th>
+	<th nowrap>Sales Type</th>
+	<th nowrap>VAT Type</th>
+	<th nowrap style="text-align: right">Gross</th>
   </tr>
   
 <?php
 
 	$date1 = $_POST["date1"];
 	$date2 = $_POST["date2"];
-
-	$trantype = "";
-	if(isset($_POST['seltrantype'])){
-		$trantype=$_POST['seltrantype'];
-	}else{
-		$trantype="Trade";
-	}
 
 	$postedtran = $_POST["selrpt"];
 
@@ -96,70 +100,20 @@
 		$qryposted2 = " and A.lapproved=".$postedtran."";
 	}
 
-		$transrefDR = array();
-		$result=mysqli_query($con,"Select ctranno, GROUP_CONCAT(DISTINCT creference) as cref from sales_t where compcode='$company' group by ctranno");
-		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-			$transrefDR[$row['ctranno']] = $row['cref'];
-		}
 
-		@$arrpaymnts = array();
-		$sqlpay = "select X.* from receipt_sales_t X left join receipt B on X.compcode=B.compcode and X.ctranno=B.ctranno where X.compcode='$company' and B.lcancelled = 0 and B.lvoid=0 order By X.csalesno, B.ddate";
-		$respay = mysqli_query ($con, $sqlpay);
-		while($rowardj = mysqli_fetch_array($respay, MYSQLI_ASSOC)){
-			@$arrpaymnts[] = $rowardj;
-		}
+	$transctions = array();
+	$sqlx = "Select B.*, C.cname
+	From quote B
+	left join customers C on B.compcode=C.compcode and B.ccode=C.cempid  
+	where B.compcode='$company' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.lcancelled=0 and B.lvoid=0 ".$qryposted."";
 
-		$transctions = array();
-		$sqlx = "Select A.type, A.ctranno, A.ccode, A.cname, A.cacctid, A.cacctdesc, IFNULL(A.ctaxcode,'') as ctaxcode, A.nrate, IFNULL(A.cewtcode,'') as cewtcode, A.newtrate, A.dcutdate, SUM(ROUND(A.namountfull,2)) as ngross, SUM(ROUND(A.namount,2)) as cm, SUM(nvatgross) as nvatgross, (SUM(ROUND(A.namountfull,2)) - SUM(ROUND(A.namount,2)) - SUM(nvatgross)) as vatamt
-		From (
-			Select 'SI' as type, A.ctranno, B.ccode, COALESCE(C.ctradename, C.cname) as cname, A.citemno, ((A.nqtyreturned) * (A.nprice-A.ndiscount)) as namount, (A.nqty * (A.nprice-A.ndiscount)) as namountfull, B.dcutdate, D.cacctid, D.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, 
-						CASE 
-							WHEN IFNULL(A.nrate,0) <> 0 
-							THEN 
-								ROUND(((A.nqty-A.nqtyreturned)*(A.nprice-A.ndiscount))/(1 + (A.nrate/100)),2)
-							ELSE 
-								A.namount 
-							END as nvatgross
-		From sales_t A 
-		left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno 
-		left join customers C on B.compcode=C.compcode and B.ccode=C.cempid 
-		left join accounts D on C.compcode=D.compcode and C.cacctcodesales=D.cacctno 
-		left join wtaxcodes E on A.compcode=E.compcode and A.cewtcode=E.ctaxcode 
-		where A.compcode='$company' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.lcancelled=0 and B.lvoid=0
-		".$qryposted."
-		
-		UNION ALL
+	//echo $sqlx;
 
-		Select 'BS' as type, A.ctranno, B.ccode, COALESCE(C.ctradename, C.cname) as cname, '' as citemno, 0 as namount, A.namount as namountfull, B.dcutdate, '' as cacctid, '' as cacctdesc, CASE WHEN B.cvattype='VatIn' THEN F.ctaxcode ELSE '' END as ctaxcode, CASE WHEN B.cvattype='VatIn' THEN F.nrate ELSE '' END as nrate, '' as cewtcode, 0 as newtrate, 	
-						CASE 
-							WHEN B.cvattype='VatIn'
-							THEN 
-								ROUND((A.nqty*A.nprice)/(1 + (F.nrate/100)),2)
-							ELSE 
-								A.namount 
-							END as nvatgross
-		From quote_t A
-		left join quote B on A.compcode=B.compcode and A.ctranno=B.ctranno
-		left join customers C on B.compcode=C.compcode and B.ccode=C.cempid 
-		left join items E on A.compcode=E.compcode and A.citemno=E.cpartno 
-		left join taxcode F on E.compcode=F.compcode and E.ctaxcode=F.ctaxcode
-		left join (
-			Select Y.creference From sales_t Y left join sales X on Y.compcode=X.compcode and Y.ctranno=X.ctranno 
-			where Y.compcode='$company' and X.lcancelled=0 and X.lvoid=0
-		) G on A.ctranno=G.creference
-		where A.compcode='$company' and B.quotetype='billing' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.lcancelled=0 and B.lvoid=0 ".$qryposted." and IFNULL(G.creference,'') = ''
-
-		) A
-		Group By A.ctranno, A.ccode, A.cname, A.cacctid, A.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, A.dcutdate
-		order by A.dcutdate, A.ctranno";
-
-		//echo $sqlx;
-
-		$result=mysqli_query($con,$sqlx);
-		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-			$finarray[] = $row;
-			$transctions[] = $row['ctranno'];
-		}
+	$result=mysqli_query($con,$sqlx);
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+		$finarray[] = $row;
+		$transctions[] = $row['ctranno'];
+	}
 
 	$salesno = "";
 	$remarks = "";
@@ -172,106 +126,114 @@
 	$ngross = 0;
 	foreach($finarray as $row)
 	{
-		//if($salesno==""){
-			//$salesno = $row['csalesno'];
-		//}
-		
-			$invval = 
-			$remarks = 
-			$ccode =
-			$xtypx =  
-			$dateval= date_format(date_create($row['dcutdate']),"m/d/Y");
-			$classcode="class='rpthead'";
-
-			$ewtcode = 0;
-			$vx = explode(";",$row['newtrate']);
-			foreach($vx as $vx2){
-				if($vx2!=""){
-					$ewtcode = $ewtcode + floatval($vx2);
-				}
-			}
+		if($row['quotetype']=="billing"){
 		
 ?>  
 	<tr style="cursor: pointer">
-		<td nowrap><?=$row['type'];?></td>
-		<td nowrap><a href="javascript:;" onclick="viewDets('<?=$row['type'];?>','<?=$row['ctranno'];?>')"><?=$row['ctranno'];?></a></td>
+		<td nowrap><a href="javascript:;" onclick="viewDets('BS','<?=$row['ctranno'];?>')"><?=$row['ctranno'];?></a></td>
 		<td nowrap>
-			<?php
-				if($row['type']=="SI") {
-			?>
-				<a href="javascript:;" onclick="viewDets('BS','<?=$transrefDR[$row['ctranno']];?>')"><?=$transrefDR[$row['ctranno']];?></a>
-			<?php
-				}
-			?>
+
+			<a href="javascript:;" onclick="viewDets('<?=@$allrefx[$row['ctranno']]['typ'];?>','<?=@$allrefx[$row['ctranno']]['ref'];?>')"><?=@$allrefx[$row['ctranno']]['ref'];?></a>
+
 		</td>
-		<td nowrap><?=$dateval;?></td>
+		<td nowrap><?= $row['dcutdate'];?></td>
 		<td nowrap><?= $row['ccode'];?></td>
 		<td nowrap><?=$row['cname'];?></td>   
-		<td nowrap style="text-align: right"><?=(floatval($row['nvatgross'])!=0) ? number_format($row['nvatgross'],2) : ""?></td> 
-		<td nowrap style="text-align: center"><?=(intval($row['nrate'])!=0 && intval($row['nrate'])!="") ? number_format($row['nrate'])."%" : ""?></td>
-		<td nowrap style="text-align: right">
-			<?php
-				if(intval($row['nrate'])!=0 && intval($row['nrate'])!=""){
-					if(floatval($row['vatamt'])!=0) {
-						echo number_format($row['vatamt'],2);
-					}
-				}
-			?>
+		<td nowrap><?=strtoupper($row['crecurrtype']);?></td> 
+		<td nowrap><?=$row['csalestype'];?></td>
+		<td nowrap><?=$row['cvattype'];?></td>
+		<td nowrap style="text-align: right"><?=number_format($row['ngross'],2)." ".$row['ccurrencycode']?>
 		</td>
-		<td nowrap style="text-align: right"><?=(floatval($row['ngross'])!=0) ? number_format($row['ngross'],2) : ""?></td>		
-		<td nowrap style="text-align: center"><?=(intval($ewtcode)!=0 && intval($ewtcode)!="") ? number_format($ewtcode)."%" : ""?></td>
-		<td nowrap style="text-align: right">
-			<?php
-				$phpewtamt = 0;
-
-				if(intval($ewtcode)!=0 && intval($ewtcode)!=""){
-					$phpewtamt = floatval($row['nvatgross']) * (floatval($ewtcode)/100);
-				}
-
-				echo (floatval($phpewtamt)!=0) ? number_format($phpewtamt,2) : "";
-			?>
-		</td>
-		<td nowrap style="text-align: right">
-			<?php
-				$netvatamt = floatval($row['ngross']) - floatval($phpewtamt);
-				echo number_format($netvatamt,2);
-			?>
-		</td>
-		<td nowrap style="text-align: right">
-			<?php
-				$npay = 0;
-				$cntofist = 0;
-				foreach(@$arrpaymnts as $rxpymnts){
-					if($row['ctranno']==$rxpymnts['csalesno'] && $row['ctaxcode']==$rxpymnts['ctaxcodeorig'] && $row['cewtcode']==$rxpymnts['cewtcodeorig']){
-						$cntofist++;
-						
-						if($cntofist==1){
-							$ntotal = floatval($rxpymnts['ndue']) - floatval($rxpymnts['napplied']);
-						}
-
-						$npay = $npay + floatval($rxpymnts['napplied']);
-					}
-				}
-
-				echo (floatval($npay)!=0) ? number_format($npay,2) : "";
-			?>
-		</td>
-		<td nowrap style="text-align: right">
-			<?php
-				$nbalace = floatval($netvatamt) - floatval($npay);
-
-				echo (floatval($nbalace)!=0) ? number_format($nbalace,2) : "";
-			?>
-		</td>
+		
 	</tr>
 <?php 
+		}
 	}
 ?>
 
-    <!--<tr class='rptGrand'>
-    	<td colspan="12" align="right"><b>G R A N D&nbsp;&nbsp;T O T A L:</b></td>
-        <td align="right"><b><?//php echo number_format($totAmount,2);?></b></td>
-    </tr>-->
+</table>
+
+<br>
+
+<table border="0" align="center" cellpadding="5px" id="BillTable" class="table table-sm table-hover">
+	<tr>
+		<td colspan="8"><b>QUOTATIONS</b></td>
+	</tr>
+  <tr>
+    <th nowrap>Transaction No.</th>
+	<th nowrap>Reference</th>
+    <th nowrap>Effectivity Date</th>
+    <th nowrap colspan="2">Customer</th>
+	<th nowrap>Sales Type</th>
+	<th nowrap>VAT Type</th>
+	<th nowrap style="text-align: right">Gross</th>
+  </tr>
+  
+<?php
+
+	$date1 = $_POST["date1"];
+	$date2 = $_POST["date2"];
+
+	$postedtran = $_POST["selrpt"];
+
+	$mainqry = "";
+	$finarray = array();
+
+	$qryposted = "";
+	$qryposted2 = "";
+	if($postedtran!==""){
+		$qryposted = " and B.lapproved=".$postedtran."";
+		$qryposted2 = " and A.lapproved=".$postedtran."";
+	}
+
+
+	$transctions = array();
+	$sqlx = "Select B.*, C.cname
+	From quote B
+	left join customers C on B.compcode=C.compcode and B.ccode=C.cempid  
+	where B.compcode='$company' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.lcancelled=0 and B.lvoid=0 ".$qryposted." Order by B.dcutdate, B.ctranno";
+
+	//echo $sqlx;
+
+	$result=mysqli_query($con,$sqlx);
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+		$finarray[] = $row;
+		$transctions[] = $row['ctranno'];
+	}
+
+	$salesno = "";
+	$remarks = "";
+	$invval = "";
+	$code = "";
+	$name= "";
+	$dateval="";
+	$classcode="";
+	$totAmount=0;	
+	$ngross = 0;
+	foreach($finarray as $row)
+	{
+		if($row['quotetype']=="quote"){
+		
+?>  
+	<tr style="cursor: pointer">
+		<td nowrap><a href="javascript:;" onclick="viewDets('BS','<?=$row['ctranno'];?>')"><?=$row['ctranno'];?></a></td>
+		<td nowrap>
+			<a href="javascript:;" onclick="viewDets('<?=@$allrefx[$row['ctranno']]['typ'];?>','<?=@$allrefx[$row['ctranno']]['ref'];?>')"><?=@$allrefx[$row['ctranno']]['ref'];?></a>
+		</td>
+		<td nowrap><?=$row['dcutdate'];?></td>
+		<td nowrap><?=$row['ccode'];?></td>
+		<td nowrap><?=$row['cname'];?></td>   
+		<td nowrap><?=$row['csalestype'];?></td>
+		<td nowrap><?=$row['cvattype'];?></td>
+		<td nowrap style="text-align: right"><?=number_format($row['ngross'],2)." ".$row['ccurrencycode']?>
+		</td>
+		
+	</tr>
+<?php 
+		}
+	}
+?>
+
 </table>
 
 
@@ -345,17 +307,23 @@
 				$('#detailModal').modal('show')
 
 				var sample = res.data;
+
 				sample.map((item, index) => {
 					switch(modules){						
 						case 'SI':
 							$('#modalTitle').text('Sales Invoice')
 							ShowSI(index, item)
 							//console.log(item)
-							break;												
-						case 'BS':
-							$('#modalTitle').text('Quotation - Billing Statement')
-							ShowBS(index, item)
+							break;	
+						case 'SO':
+							$('#modalTitle').text('Sales Order')
+							ShowSO(index, item)
 							//console.log(item)
+							break;													
+						case 'BS':
+							$('#modalTitle').text('Quotation Details')
+							ShowBS(index, item)
+							console.log(item)
 							break;
 						default: 
 							break;
@@ -439,7 +407,80 @@
 		).appendTo('#subdetailTable > tbody')
 	}
 
+	function ShowSO(index, data){
+		if(index <= 0){
+			$('<tr>').append(
+				$('<tH>').text('Transaction No.: '),
+				$('<tH>').text('Customer: '),
+				$('<tH>').text('Type'),
+				$('<tH>').text('Date:'),
+				$('<tH>').text('Remarks'),
+
+			).appendTo('#HeadDetail > thead')
+			// const fulldate = ddate.getMonth() + '-' + ddate.getDate() + '-' + ddate.getFullYear()
+			
+			$('<tr>').append(
+				$('<td>').text(data.ctranno),
+				$('<td>').text(data.cname),
+				$('<td>').text(data.csalestype),
+				$('<td>').text(data.ddate),
+				$('<td>').text((data.cremarks != null ? data.cremarks : '-')),
+			).appendTo('#HeadDetail > tbody')
+
+			$('<tr>').append(
+				$('<tH>').text('Account No. '),
+				$('<tH>').text('Account Title '),
+				$('<tH>').text('Debit: '),
+				$('<tH>').text('Credit'),
+			).appendTo('#detailTable > thead')
+
+			$('<tr>').append(
+				$('<tH>').text('Item'),
+				$('<tH>').text('EWT Code'),
+				$('<tH>').text('Vat Code'),
+				$('<tH>').text('UOM'),
+				$('<tH>').text('Quantity'),
+				$('<tH>').text('Price'),
+				$('<tH>').text('Discount'),
+				$('<tH>').text('Amount'),
+				$('<tH>').text('Total Amount in PHP')
+			).appendTo('#subdetailTable > thead')
+
+			$.ajax({
+				url: '../Accounting/Controller/th_GLactivity_List.php',
+				type: 'post',
+				dataType: 'json',
+				data: {ctranno: data.ctranno},
+				async: false,
+				success: function(res){
+					//console.log(res);
+					res['data'].map((item, res) =>{
+						$('<tr>').append(
+							$("<td style='text-align: left'>").text(item.acctno),
+							$("<td style='text-align: left'>").text(item.ctitle),
+							$('<td>').text(settodecl(item.ndebit)),
+							$('<td>').text(settodecl(item.ncredit)),
+						).appendTo('#detailTable > thead')
+					})
+				}
+			})
+		}
+
+		$('<tr>').append(
+			$("<td style='text-align: left'>").text( (data.citemdesc != null ? data.citemdesc : '-') ),
+			$('<td>').text( (data.cewtcode != "" ? data.cewtcode : '-') ),
+			$('<td>').text( (data.ctaxcode != null ? data.ctaxcode : '-') ),
+			$('<td>').text( (data.cmainunit != null ? data.cmainunit : '-') ),
+			$('<td>').text( (data.nqty != null ? settodecl(data.nqty) : '-') ),
+			$('<td>').text( (data.nprice != null ? settodecl(data.nprice) : '-') ),
+			$('<td>').text( (data.ndiscount != null ? settodecl(data.ndiscount) : '-') ),
+			$('<td>').text( (data.nbaseamount != null ? settodecl(data.nbaseamount) : '-') ),
+			$('<td>').text( (data.namount != null ? settodecl(data.namount) : '-') ),
+		).appendTo('#subdetailTable > tbody')
+	}
+
 	function ShowBS(index, data){
+		console.log(index);
 		if(index <= 0){
 
 			$('<tr>').append(
@@ -460,7 +501,6 @@
 				$('<td>').text((data.crecurrtype != null ? data.crecurrtype : '-')),
 			).appendTo('#HeadDetail > tbody')
 
-
 			$('<tr>').append(
 				$('<tH>').text('Bill Period'),
 				$('<tH>').text('Description'),
@@ -468,8 +508,9 @@
 				$('<tH>').text('VAT AMOUNT'),
 				$('<tH>').text('TOTAL AMOUNT'),
 			).appendTo('#subdetailTable > thead')
-
 		}
+
+		
 
 		var billperd = "";
 		var billdesc = "";
@@ -508,7 +549,7 @@
 			$('<td>').text( ($nvat != null ? settodecl($nvat) : '-') ),
 			$('<td>').text( ($ntotamt != null ? settodecl($ntotamt) : '-') ),
 		).appendTo('#subdetailTable > tbody')
-		
+
 	}
 
 	function settodecl(xyz){
