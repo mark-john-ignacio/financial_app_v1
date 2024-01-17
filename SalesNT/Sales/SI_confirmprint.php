@@ -108,11 +108,11 @@ function Print(tranno,id,lmt){
 function PrintRed(x, version){
   
 
-  if(version == 1){
+  //if(version == 1){
     location.href = "SI_printv1.php?x=" +x;
-  } else {
-    location.href = "SI_print.php?x="+x;
-  }
+  //} else {
+   // location.href = "SI_print.php?x="+x;
+ // }
   
 }
 
