@@ -8,7 +8,7 @@ require_once "../../Connection/connection_string.php";
 		$date1 = date("Y-m-d");
 		
 		$sql = "select a.creference,a.nrefidentity,a.citemno,a.nqty,a.cunit,a.cserial,a.nlocation,DATE_FORMAT(a.dexpired,'%m/%d/%Y') as dexpired,a.cremarks,b.cdesc as locadesc
-		from dr_t_serials a
+		from ntdr_t_serials a
 		left join locations b on a.nlocation=b.nid
 		WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."'";
 
