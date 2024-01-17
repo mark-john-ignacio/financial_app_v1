@@ -158,7 +158,7 @@ a.info:hover span{ /*the span will display just on :hover state*/
             </div>
         </div> 
 		
-		<div class="col-xs-12 alert alert-danger" id="add_err">
+		<div class="col-xs-12 alert alert-danger nopadwtop text-center" id="add_err">
             
 		
 		</div>
