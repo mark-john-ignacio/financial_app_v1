@@ -71,7 +71,7 @@ a.info:hover span{ /*the span will display just on :hover state*/
 						<th width="100">Class Code</th>
 						<th>Class Description</th>
                         <th width="80">Status</th>
-                        <th width="80">Delete</th>
+                       <!-- <th width="80">Delete</th>-->
 					</tr>
 				</thead>
 
@@ -113,7 +113,7 @@ a.info:hover span{ /*the span will display just on :hover state*/
 						?>
                         </div>
                         </td>
-                        <td><input class='btn btn-danger btn-xs' type='button' id='row_<?php echo $row['ccode'];?>_delete' value='delete' onClick="deleteRow('<?php echo $row['ccode'];?>');"/></td>
+                        <!--<td><input class='btn btn-danger btn-xs' type='button' id='row_<?//php echo $row['ccode'];?>_delete' value='delete' onClick="deleteRow('<?//php echo $row['ccode'];?>');"/></td>-->
 					</tr>
                 <?php 
 				}
@@ -202,9 +202,11 @@ mysqli_close($con);
 	
 	<script>	
 	$(function(){
-		$('#example').DataTable();
+
 		$("#add_err").hide();
 		$(".itmalert").hide();
+
+		$('#example').DataTable();
 		
 		// Adding new user
 		$("#btnadd").on("click", function() {
@@ -219,7 +221,7 @@ mysqli_close($con);
 			$("#txtccode").val("");
 			$("#txtcdesc").val("");			
 			
-			$('#myModalLabel').html("<b>Add New Group Detail</b>");
+			$('#myModalLabel').html("<b>Add New Classification</b>");
 			$('#myModal').modal('show');
 		 } else {
 			 $("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
@@ -388,7 +390,7 @@ mysqli_close($con);
 			return result;
 		}
 		
-		function deleteRow(xid){
+		/*function deleteRow(xid){
 			$.ajax ({
 				url: "../th_delete.php",
 				data: { code: xid,  id: "itemCLS" },
@@ -407,6 +409,6 @@ mysqli_close($con);
 				}
 			
 			});
-		}
+		}*/
 
 	</script>
