@@ -9,7 +9,7 @@ require_once "../../Connection/connection_string.php";
 		
 		$sql = "select a.creference,a.nrefidentity,a.citemno,a.nqty,a.cunit,a.cserial,a.nlocation,DATE_FORMAT(a.dexpired,'%m/%d/%Y') as dexpired,a.cremarks,b.cdesc as locadesc
 		from dr_t_serials a
-		left join receive_putaway_location b on a.nlocation=b.nid
+		left join locations b on a.nlocation=b.nid
 		WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['id']."'";
 
 		$result = mysqli_query ($con, $sql); 
