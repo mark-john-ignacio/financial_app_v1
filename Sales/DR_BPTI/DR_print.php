@@ -205,7 +205,7 @@
 
 	.csign1{
 		position: absolute;
-		top: 485px;
+		top: 490px;
 		left: 35px;
 		width: 135px;
 		height:  15px;  
@@ -217,7 +217,7 @@
 
     .csign2{
 		position: absolute;
-		top: 485px;
+		top: 490px;
 		left: 220px;
 		width: 135px;
 		height:  15px;  
