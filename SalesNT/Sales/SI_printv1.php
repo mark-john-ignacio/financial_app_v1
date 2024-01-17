@@ -153,7 +153,7 @@
                                     $serials = array();
                                     foreach($dataserials as $rcx){
                                         if($row['creference']==$rcx['ctranno'] && $row['nrefident']==$rcx['nrefidentity']){
-                                            $serials[] = $row['cserial'];
+                                            $serials[] = $rcx['cserial'];
                                         }
                                     }
 
