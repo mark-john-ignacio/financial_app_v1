@@ -101,7 +101,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
     
     <table width="100%" border="0" cellpadding="2">
       <?php 
-		$sqlbody = mysqli_query($con,"select a.*,b.citemdesc from ntdr_t a left join items b on a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$csalesno'");
+		$sqlbody = mysqli_query($con,"select a.*,b.citemdesc from ntdr_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$csalesno'");
 
 		if (mysqli_num_rows($sqlbody)!=0) { 
 		$cntr = 0;
