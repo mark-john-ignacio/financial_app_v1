@@ -149,18 +149,22 @@
                         <tr>
                             <td><?=$cnt?></td>
                             <td><?=$row['citemdesc']?>
-                                <?php
-                                    $serials = array();
-                                    foreach($dataserials as $rcx){
-                                        if($row['creference']==$rcx['ctranno'] && $row['nrefident']==$rcx['nrefidentity']){
-                                            $serials[] = $rcx['cserial'];
+                               
+                                    <?php
+                                        $serials = array();
+                                        foreach($dataserials as $rcx){
+                                            if($row['creference']==$rcx['ctranno'] && $row['nrefident']==$rcx['nrefidentity']){
+                                                $serials[] = "SN.".$rcx['cserial'];
+                                            }
                                         }
-                                    }
 
-                                    if(count($serials)>1){
-                                        echo implode("<br>",$serials);
-                                    }
-                                ?>
+                                        if(count($serials)>1){
+                                            echo " <div style=\"padding-left: 10px\">";
+                                            echo implode("<br>",$serials);
+                                            echo "</div>";
+                                        }
+                                    ?>
+                                </div>
                             </td>
                             <td style="text-align: right"><?=number_format($row['nqty'])?></td>
                             <td><?=$row['cunit']?></td>
