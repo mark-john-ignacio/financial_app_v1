@@ -75,6 +75,7 @@
   <tr>
     <th nowrap>Transaction No.</th>
 	<th nowrap>Reference</th>
+	<th nowrap>Prepared Date</th>
     <th nowrap>Due Date</th>
     <th nowrap colspan="2">Customer</th>
     <th nowrap>Recurr</th>
@@ -87,6 +88,7 @@
 
 	$date1 = $_POST["date1"];
 	$date2 = $_POST["date2"];
+	$datefil = $_POST["seldtetp"];
 
 	$postedtran = $_POST["selrpt"];
 
@@ -105,7 +107,7 @@
 	$sqlx = "Select B.*, C.cname
 	From quote B
 	left join customers C on B.compcode=C.compcode and B.ccode=C.cempid  
-	where B.compcode='$company' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.lcancelled=0 and B.lvoid=0 ".$qryposted."";
+	where B.compcode='$company' and date(B.".$datefil.") between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.lcancelled=0 and B.lvoid=0 ".$qryposted." Order by B.dcutdate, B.ctranno";
 
 	//echo $sqlx;
 
@@ -136,7 +138,8 @@
 			<a href="javascript:;" onclick="viewDets('<?=@$allrefx[$row['ctranno']]['typ'];?>','<?=@$allrefx[$row['ctranno']]['ref'];?>')"><?=@$allrefx[$row['ctranno']]['ref'];?></a>
 
 		</td>
-		<td nowrap><?= $row['dcutdate'];?></td>
+		<td nowrap><?=date_format(date_create($row['ddate']),"m/d/Y");?></td>
+		<td nowrap><?=date_format(date_create($row['dcutdate']),"m/d/Y");?></td>
 		<td nowrap><?= $row['ccode'];?></td>
 		<td nowrap><?=$row['cname'];?></td>   
 		<td nowrap><?=strtoupper($row['crecurrtype']);?></td> 
@@ -162,6 +165,7 @@
   <tr>
     <th nowrap>Transaction No.</th>
 	<th nowrap>Reference</th>
+	<th nowrap>Prepared Date</th>
     <th nowrap>Effectivity Date</th>
     <th nowrap colspan="2">Customer</th>
 	<th nowrap>Sales Type</th>
@@ -170,36 +174,6 @@
   </tr>
   
 <?php
-
-	$date1 = $_POST["date1"];
-	$date2 = $_POST["date2"];
-
-	$postedtran = $_POST["selrpt"];
-
-	$mainqry = "";
-	$finarray = array();
-
-	$qryposted = "";
-	$qryposted2 = "";
-	if($postedtran!==""){
-		$qryposted = " and B.lapproved=".$postedtran."";
-		$qryposted2 = " and A.lapproved=".$postedtran."";
-	}
-
-
-	$transctions = array();
-	$sqlx = "Select B.*, C.cname
-	From quote B
-	left join customers C on B.compcode=C.compcode and B.ccode=C.cempid  
-	where B.compcode='$company' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.lcancelled=0 and B.lvoid=0 ".$qryposted." Order by B.dcutdate, B.ctranno";
-
-	//echo $sqlx;
-
-	$result=mysqli_query($con,$sqlx);
-	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-		$finarray[] = $row;
-		$transctions[] = $row['ctranno'];
-	}
 
 	$salesno = "";
 	$remarks = "";
@@ -220,6 +194,7 @@
 		<td nowrap>
 			<a href="javascript:;" onclick="viewDets('<?=@$allrefx[$row['ctranno']]['typ'];?>','<?=@$allrefx[$row['ctranno']]['ref'];?>')"><?=@$allrefx[$row['ctranno']]['ref'];?></a>
 		</td>
+		<td nowrap><?=date_format(date_create($row['ddate']),"m/d/Y");?></td>
 		<td nowrap><?=$row['dcutdate'];?></td>
 		<td nowrap><?=$row['ccode'];?></td>
 		<td nowrap><?=$row['cname'];?></td>   

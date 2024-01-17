@@ -85,7 +85,16 @@
         <td valign="top" width="50" style="padding:2px">
           &nbsp;
         </td>
-        <td width="150" style="padding-left:10px"><div id="dtelabel"><b>Date Range: </b></div></td>
+        <td width="150" style="padding-left:10px">
+          <div id="dtelabel1" style="display:none">
+            <select id="seldtetp" name="seldtetp" class="form-control input-sm selectpicker"  tabindex="4">
+              <option value="ddate">Prepared Date</option>      
+              <option value="dcutdate">Due/Effectivity Date</option>           
+            </select> 
+          </div>
+
+          <div id="dtelabel2" ><b>Invoice Date: </b></div>
+        </td>
         <td style="padding:2px">
           <div id="dterange">
             <div class="col-xs-12 nopadding">
@@ -133,15 +142,13 @@ $(function(){
     format: 'MM/DD/YYYY'
   });
 
-  $("#selrpt").on("change", function(){
-    if($(this).val()=="Accounting/TBal_Monthly"){
-      $("#dtelabel").html("<b>Year: </b>");
-      $("#dterange").hide();
-      $("#dtemonth").show();
+  $("#selrptnme").on("change", function(){
+    if($(this).val()=="ARMonitoring"){
+      $("#dtelabel1").hide();
+      $("#dtelabel2").show();
     }else{
-      $("#dtelabel").html("<b>Date Range: </b>");
-      $("#dterange").show();
-      $("#dtemonth").hide();
+      $("#dtelabel1").show();
+      $("#dtelabel2").hide();
     }
   });
 

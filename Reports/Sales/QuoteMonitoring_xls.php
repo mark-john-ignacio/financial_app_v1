@@ -18,6 +18,7 @@
 	$company = $_SESSION['companyid'];
 	$date1 = $_POST["date1"];
 	$date2 = $_POST["date2"];
+	$datefil = $_POST["seldtetp"];
 
 	$sql = "select * From company where compcode='$company'";
 	$result=mysqli_query($con,$sql);
@@ -64,7 +65,7 @@
 	$spreadsheet->setActiveSheetIndex(0)
 		->setCellValue('A1', strtoupper($compname))
 		->setCellValue('A2', 'QUOTATION MONITORING')
-		->setCellValue('A3', 'For the Period'.date_format(date_create($_POST["date1"]),"F d, Y")." to ".date_format(date_create($_POST["date2"]),"F d, Y"));
+		->setCellValue('A3', 'For the Period '.date_format(date_create($_POST["date1"]),"F d, Y")." to ".date_format(date_create($_POST["date2"]),"F d, Y"));
 
 	$spreadsheet->getActiveSheet()->mergeCells("A1:I1");
 	$spreadsheet->getActiveSheet()->mergeCells("A2:I2");
@@ -87,9 +88,7 @@
 	$sqlx = "Select B.*, C.cname
 	From quote B
 	left join customers C on B.compcode=C.compcode and B.ccode=C.cempid  
-	where B.compcode='$company' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.lcancelled=0 and B.lvoid=0 ".$qryposted." Order by B.dcutdate, B.ctranno";
-
-	//echo $sqlx;
+	where B.compcode='$company' and date(B.".$datefil.") between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.lcancelled=0 and B.lvoid=0 ".$qryposted." Order by B.dcutdate, B.ctranno";
 
 	$result=mysqli_query($con,$sqlx);
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
@@ -105,16 +104,17 @@
 	$spreadsheet->setActiveSheetIndex(0)
 		->setCellValue('A6', 'Transaction No.')
 		->setCellValue('B6', 'Reference')
-		->setCellValue('C6', 'Due Date')
-		->setCellValue('D6', 'Customer')
-		->setCellValue('E6', '')
-		->setCellValue('F6', 'Recurr')
-		->setCellValue('G6', 'Sales Type')
-		->setCellValue('H6', 'VAT Type')
-		->setCellValue('I6', 'Gross');
+		->setCellValue('C6', 'Prepared Date')
+		->setCellValue('D6', 'Due Date')
+		->setCellValue('E6', 'Customer')
+		->setCellValue('F6', '')
+		->setCellValue('G6', 'Recurr')
+		->setCellValue('H6', 'Sales Type')
+		->setCellValue('I6', 'VAT Type')
+		->setCellValue('J6', 'Gross');
 
-	$spreadsheet->getActiveSheet()->mergeCells("D6:E6");
-	$spreadsheet->getActiveSheet()->getStyle('A6:I6')->getFont()->setBold(true);
+	$spreadsheet->getActiveSheet()->mergeCells("E6:F6");
+	$spreadsheet->getActiveSheet()->getStyle('A6:J6')->getFont()->setBold(true);
 
 	$salesno = "";
 	$remarks = "";
@@ -135,13 +135,14 @@
 			$spreadsheet->setActiveSheetIndex(0)
 			->setCellValue('A'.$cnt, $row['ctranno'])
 			->setCellValue('B'.$cnt, @$allrefx[$row['ctranno']]['ref'])
-			->setCellValue('C'.$cnt, $row['dcutdate'])
-			->setCellValue('D'.$cnt, $row['ccode'])
-			->setCellValue('E'.$cnt, $row['cname'])
-			->setCellValue('F'.$cnt, strtoupper($row['crecurrtype']))
-			->setCellValue('G'.$cnt, $row['csalestype'])
-			->setCellValue('H'.$cnt, $row['cvattype'])
-			->setCellValue('I'.$cnt, $row['ngross']);
+			->setCellValue('C'.$cnt, date_format(date_create($row['ddate']),"m/d/Y"))
+			->setCellValue('D'.$cnt, date_format(date_create($row['dcutdate']),"m/d/Y"))
+			->setCellValue('E'.$cnt, $row['ccode'])
+			->setCellValue('F'.$cnt, $row['cname'])
+			->setCellValue('G'.$cnt, strtoupper($row['crecurrtype']))
+			->setCellValue('H'.$cnt, $row['csalestype'])
+			->setCellValue('I'.$cnt, $row['cvattype'])
+			->setCellValue('J'.$cnt, $row['ngross']);
 
 			$spreadsheet->setActiveSheetIndex(0)->getStyle('J'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");			
 		}
@@ -152,22 +153,23 @@
 
 	$spreadsheet->setActiveSheetIndex(0)
 	->setCellValue('A'.$cnt, 'QUOTATIONS');
-	$spreadsheet->getActiveSheet()->mergeCells("A".$cnt.":H".$cnt);
+	$spreadsheet->getActiveSheet()->mergeCells("A".$cnt.":I".$cnt);
 
 	// Add some data
 	$cnt++;
 	$spreadsheet->setActiveSheetIndex(0)
 		->setCellValue('A'.$cnt, 'Transaction No.')
 		->setCellValue('B'.$cnt, 'Reference')
-		->setCellValue('C'.$cnt, 'Effectivity Date')
-		->setCellValue('D'.$cnt, 'Customer')
-		->setCellValue('E'.$cnt, '')
-		->setCellValue('F'.$cnt, 'Sales Type')
-		->setCellValue('G'.$cnt, 'VAT Type')
-		->setCellValue('H'.$cnt, 'Gross');
+		->setCellValue('C'.$cnt, 'Prepared Date')
+		->setCellValue('D'.$cnt, 'Effectivity Date')
+		->setCellValue('E'.$cnt, 'Customer')
+		->setCellValue('F'.$cnt, '')
+		->setCellValue('G'.$cnt, 'Sales Type')
+		->setCellValue('H'.$cnt, 'VAT Type')
+		->setCellValue('I'.$cnt, 'Gross');
 
-	$spreadsheet->getActiveSheet()->mergeCells("D".$cnt.":E".$cnt);
-	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":H".$cnt)->getFont()->setBold(true);
+	$spreadsheet->getActiveSheet()->mergeCells("E".$cnt.":F".$cnt);
+	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":I".$cnt)->getFont()->setBold(true);
 
 	$salesno = "";
 	$remarks = "";
@@ -178,7 +180,6 @@
 	$classcode="";
 	$totAmount=0;	
 	$ngross = 0;
-	$cnt = 6;
 	foreach($finarray as $row)
 	{
 		if($row['quotetype']=="quote"){
@@ -188,15 +189,15 @@
 			$spreadsheet->setActiveSheetIndex(0)
 			->setCellValue('A'.$cnt, $row['ctranno'])
 			->setCellValue('B'.$cnt, @$allrefx[$row['ctranno']]['ref'])
-			->setCellValue('C'.$cnt, $row['dcutdate'])
-			->setCellValue('D'.$cnt, $row['ccode'])
-			->setCellValue('E'.$cnt, $row['cname'])
-			->setCellValue('F'.$cnt, strtoupper($row['crecurrtype']))
+			->setCellValue('C'.$cnt, date_format(date_create($row['ddate']),"m/d/Y"))
+			->setCellValue('D'.$cnt, date_format(date_create($row['dcutdate']),"m/d/Y"))
+			->setCellValue('E'.$cnt, $row['ccode'])
+			->setCellValue('F'.$cnt, $row['cname'])
 			->setCellValue('G'.$cnt, $row['csalestype'])
 			->setCellValue('H'.$cnt, $row['cvattype'])
-			->setCellValue('J'.$cnt, $row['ngross']);
+			->setCellValue('I'.$cnt, $row['ngross']);
 
-			$spreadsheet->setActiveSheetIndex(0)->getStyle('J'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");			
+			$spreadsheet->setActiveSheetIndex(0)->getStyle('I'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");			
 		}
 	}	
 

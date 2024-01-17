@@ -44,7 +44,7 @@
 	$spreadsheet->setActiveSheetIndex(0)
 		->setCellValue('A1', strtoupper($compname))
 		->setCellValue('A2', 'AR MONITORING')
-		->setCellValue('A3', 'For the Period'.date_format(date_create($_POST["date1"]),"F d, Y")." to ".date_format(date_create($_POST["date2"]),"F d, Y"));
+		->setCellValue('A3', 'For the Period '.date_format(date_create($_POST["date1"]),"F d, Y")." to ".date_format(date_create($_POST["date2"]),"F d, Y"));
 
 	$spreadsheet->getActiveSheet()->mergeCells("A1:O1");
 	$spreadsheet->getActiveSheet()->mergeCells("A2:O2");
