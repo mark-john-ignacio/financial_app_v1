@@ -330,7 +330,7 @@ mysqli_close($con);
 	function editgrp(code,desc){
 		 var x = chkAccess('CLASS_Edit.php');
 		 console.log(x);
-		 if(x.trim()=="True"){
+		 if(x=="True"){
 			$("#btnSave").hide();
 			$("#btnUpdate").show();
 			
