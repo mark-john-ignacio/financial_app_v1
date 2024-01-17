@@ -356,7 +356,7 @@
         $gross = 0;
         $exempt = 0;
 
-        $sql = "SELECT a.*, b.nrate, c.ntotdiscount FROM receipt_sales_t a
+        $sql = "SELECT a.*, b.nrate, c.ntotaldiscounts FROM receipt_sales_t a
         LEFT JOIN taxcode b on a.compcode=b.compcode AND a.ctaxcode=b.ctaxcode
         LEFT JOIN sales c on a.compcode=c.compcode AND a.csalesno=c.ctranno
         WHERE a.compcode = '$company' AND a.csalesno = '$transaction'";
@@ -372,7 +372,7 @@
                 $exempt = floatval($row['namount']);
             }
 
-           $ntotdiscount = floatval($row['ntotdiscount']);
+           $ntotdiscount = floatval($row['ntotaldiscounts']);
 
             /**
              * Vat Code Validation
