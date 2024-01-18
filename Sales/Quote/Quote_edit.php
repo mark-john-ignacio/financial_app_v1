@@ -1259,11 +1259,11 @@ function myFunctionadd(qty,pricex,amtx,factr,nident){
 									$("input.numeric").autoNumeric('init',{mDec:2});
 
 									//$("input.numeric").numeric();
-									$("input.numeric").on("click", function () {
+									$("input.numeric, input.numeric2").on("click", function () {
 									   $(this).select();
 									});
 									
-									$("input.numeric").on("keyup", function () {
+									$("input.numeric, input.numeric2").on("keyup", function () {
 									   ComputeAmt($(this).attr('id'));
 									   ComputeGross();
 									});
