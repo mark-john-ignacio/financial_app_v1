@@ -566,13 +566,20 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 
 <!-- FULL PO LIST REFERENCES-->
-
 <div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-full">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="InvListHdr">PO List</h3>
+				<div class="col-xs-12 nopadding">
+					<div class="col-xs-8">							
+						<h4 class="modal-title" id="InvListHdr">PO List</h4>
+					</div>
+					<div class="col-xs-4">
+						
+						<input type="text" class="form-control input-xs" id="txtSrchByDesc" name="txtSrchByDesc" placeholder="Search All SO by Item Description..." autocomplete="off" />
+											
+					</div>
+				</div>
             </div>
             
             <div class="modal-body" style="height:45vh">
@@ -1482,6 +1489,109 @@ $(function(){
 		
 			 $("#MyAddModal").modal("show");// 
 		}
+	});
+
+	$('#txtSrchByDesc').typeahead({
+		autoSelect: true,
+		source: function(request, response) {
+			$.ajax({
+				url: "../th_product.php",
+				dataType: "json",
+				data: { query: $("#txtSrchByDesc").val(), itmbal: 1, styp: "Goods" },
+				success: function (data) {
+					response(data);
+				}
+			});
+		},
+		displayText: function (item) {
+			return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.desc+'</span</div>';
+		},
+		highlighter: Object,
+		afterSelect: function(item) { 					
+						
+			$('#MyInvTbl').DataTable().destroy();
+			$('#MyInvTbl tbody').empty(); 
+			$('#MyInvDetList tbody').empty();
+
+			$.ajax({
+                url: 'th_qolist_items.php',
+				data: 'x='+$('#txtcustid').val()+'&itm='+item.id,
+                dataType: 'json',
+                method: 'post',
+                success: function (data) {
+                    // var classRoomsTable = $('#mytable tbody');
+					$("#allbox").prop('checked', false);
+					   
+                    console.log(data);
+                    $.each(data,function(index,item){
+
+								
+						if(item.cpono=="NONE"){
+							$("#AlertMsg").html("No Sales Order Available");
+							$("#alertbtnOK").show();
+							$("#AlertModal").modal('show');
+
+							xstat = "NO";
+							
+							$("#txtcustid").attr("readonly", false);
+							$("#txtcust").attr("readonly", false);
+
+						}
+						else{
+							$("<tr>").append(
+								$("<td id='td"+item.cpono+"'>").text(item.cpono), 
+								$("<td>").text(item.ccontrolno),
+								$("<td>").text(item.dcutdate)
+							).appendTo("#MyInvTbl tbody");
+							
+							
+							$("#td"+item.cpono).on("click", function(){
+								opengetdet($(this).text());
+							});
+							
+							$("#td"+item.cpono).on("mouseover", function(){
+								$(this).css('cursor','pointer');
+							});
+					   	}
+
+                    });
+
+					$('#MyInvTbl').DataTable({
+						"bPaginate": false,
+						"bLengthChange": false,
+						"bFilter": true,
+						"bInfo": false,
+						"bAutoWidth": false,
+						"dom": '<"pull-left"f><"pull-right"l>tip',
+						language: {
+							search: "",
+							searchPlaceholder: "Search SO "
+						}
+					});
+
+					$('.dataTables_filter input').addClass('form-control input-sm');
+					$('.dataTables_filter input').css(
+						{'width':'150%','display':'inline-block'}
+					);
+					   
+
+					if(xstat=="YES"){
+						$('#mySIRef').modal('show');
+					  }
+                },
+                error: function (req, status, err) {
+					//alert();
+					console.log('Something went wrong', status, err);
+					$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
+				}
+            });		
+
+			$('#txtSrchByDesc').val("").change(); 
+			
+		}
+	
 	});
 
 });

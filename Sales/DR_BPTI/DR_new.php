@@ -632,6 +632,40 @@
 
 	xtoday = xmm + '/' + xdd + '/' + xyyyy;
 
+	$(document).keydown(function(e) {	
+	
+		if(e.keyCode == 83 && e.ctrlKey) { //CTRL S
+			e.preventDefault();
+		if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
+			return chkform();
+		}
+		}
+		else if(e.keyCode == 27){ //ESC
+			e.preventDefault();
+		if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
+		window.location.replace("SO.php");
+		}
+
+		}
+		else if(e.keyCode == 45) { //Insert
+			if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
+			openinv();
+		}
+		}
+		else if(e.keyCode == 88 && e.ctrlKey){ //CTRL X - Close Modal
+			if($('#SerialMod').hasClass('in')==true){
+				$("#btnClsSer").click();
+			}
+		} 
+	
+	});
+
+	$(document).keypress(function(e) {
+		if ($("#SerialMod").hasClass('in') && (e.keycode == 13 || e.which == 13)) {
+		$("#btnInsSer").click();
+		}
+	});
+
 	$(document).ready(function(e) {
 
 		$(".nav-tabs a").click(function(){
@@ -701,44 +735,7 @@
 	 	$('#txtprodnme').attr("disabled", true);
 	  	$('#txtprodid').attr("disabled", true);
 
-    });
 
-
-	$(document).keydown(function(e) {	
-	
-	  if(e.keyCode == 83 && e.ctrlKey) { //CTRL S
-	  	  e.preventDefault();
-		 if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
-		  return chkform();
-		 }
-	  }
-	  else if(e.keyCode == 27){ //ESC
-		  e.preventDefault();
-		if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
-		 window.location.replace("SO.php");
-	    }
-
-	  }
-	  else if(e.keyCode == 45) { //Insert
-	  	if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
-			openinv();
-		}
-	  }
-		else if(e.keyCode == 88 && e.ctrlKey){ //CTRL X - Close Modal
-			if($('#SerialMod').hasClass('in')==true){
-		 		$("#btnClsSer").click();
-			}
-	  } 
-	
-	});
-
-	$(document).keypress(function(e) {
-	  if ($("#SerialMod").hasClass('in') && (e.keycode == 13 || e.which == 13)) {
-	    $("#btnInsSer").click();
-	  }
-	});
-
-$(function(){
 	    $('#date_delivery').datetimepicker({
                  format: 'MM/DD/YYYY',
 				// minDate: new Date(),
@@ -749,100 +746,100 @@ $(function(){
 		});
 
 		$("#txtcustid").keyup(function(event){
-		if(event.keyCode == 13){
-		
-		var dInput = this.value;
-		
-		$.ajax({
-        type:'post',
-        url:'../get_customerid.php',
-        data: 'c_id='+ $(this).val(),                 
-        success: function(value){
-			//alert(value);
-			if(value!=""){
-				var data = value.split(":");
-				$('#txtcust').val(data[0]);
-				//$('#imgemp').attr("src",data[2]);
-				$('#hdnpricever').val(data[1]);
-				//deliveredto   
-				$('#txtdelcustid').val(dInput);
-				$('#txtdelcust').val(data[0]); 
-				 
-				$('#txtsalesmanid').val(data[10]);
-				$('#txtsalesman').val(data[11]);
-				
-				$('#txtchouseno').val(data[5]);
-				$('#txtcCity').val(data[6]);
-				$('#txtcState').val(data[7]);
-				$('#txtcCountry').val(data[8]);
-				$('#txtcZip').val(data[9]);
-								
-				$('#hdnvalid').val("YES");
-				
-				$('#txtremarks').focus();
-				
-				if(xChkLimit==1){
-
-					var limit = data[1];
-					if(limit % 1 == 0){
-						limit = parseInt(limit);
-					}
-					
-					limit = Number(limit).toLocaleString('en');
-					
-					$('#ncustlimit').html("<b><font size='+1'>"+limit+"</font></b>");
-					$('#hdncustlimit').val(data[1]);
-					//alert(dInput);
-					checkcustlimit(dInput, data[1]);
-				}
-				
-			}
-			else{
-				$('#txtcustid').val("");
-				$('#txtcust').val("");
-				//$('#imgemp').attr("src","../../images/blueX.png");
-				$('#hdnpricever').val("");
-				
-				$('#txtdelcustid').val("");
-				$('#txtdelcust').val(""); 
-				 
-				$('#txtsalesmanid').val("");
-				$('#txtsalesman').val("");
-				
-				$('#txtchouseno').val("");
-				$('#txtcCity').val("");
-				$('#txtcState').val("");
-				$('#txtcCountry').val("");
-				$('#txtcZip').val("");
-				
-				$('#hdnvalid').val("NO");
-			}
-		},
-		error: function(){
-			$('#txtcustid').val("");
-			$('#txtcust').val("");
-			//$('#imgemp').attr("src","../../images/blueX.png");
-			$('#hdnpricever').val("");
-
-				$('#txtdelcustid').val("");
-				$('#txtdelcust').val(""); 
-				 
-				$('#txtsalesmanid').val("");
-				$('#txtsalesman').val("");
-				
-				$('#txtchouseno').val("");
-				$('#txtcCity').val("");
-				$('#txtcState').val("");
-				$('#txtcCountry').val("");
-				$('#txtcZip').val("");
+			if(event.keyCode == 13){
 			
-			$('#hdnvalid').val("NO");
-		}
-		});
+				var dInput = this.value;
+				
+				$.ajax({
+					type:'post',
+					url:'../get_customerid.php',
+					data: 'c_id='+ $(this).val(),                 
+					success: function(value){
+						//alert(value);
+						if(value!=""){
+							var data = value.split(":");
+							$('#txtcust').val(data[0]);
+							//$('#imgemp').attr("src",data[2]);
+							$('#hdnpricever').val(data[1]);
+							//deliveredto   
+							$('#txtdelcustid').val(dInput);
+							$('#txtdelcust').val(data[0]); 
+							
+							$('#txtsalesmanid').val(data[10]);
+							$('#txtsalesman').val(data[11]);
+							
+							$('#txtchouseno').val(data[5]);
+							$('#txtcCity').val(data[6]);
+							$('#txtcState').val(data[7]);
+							$('#txtcCountry').val(data[8]);
+							$('#txtcZip').val(data[9]);
+											
+							$('#hdnvalid').val("YES");
+							
+							$('#txtremarks').focus();
+							
+							if(xChkLimit==1){
 
-		}
-		
-	});
+								var limit = data[1];
+								if(limit % 1 == 0){
+									limit = parseInt(limit);
+								}
+								
+								limit = Number(limit).toLocaleString('en');
+								
+								$('#ncustlimit').html("<b><font size='+1'>"+limit+"</font></b>");
+								$('#hdncustlimit').val(data[1]);
+								//alert(dInput);
+								checkcustlimit(dInput, data[1]);
+							}
+							
+						}
+						else{
+							$('#txtcustid').val("");
+							$('#txtcust').val("");
+							//$('#imgemp').attr("src","../../images/blueX.png");
+							$('#hdnpricever').val("");
+							
+							$('#txtdelcustid').val("");
+							$('#txtdelcust').val(""); 
+							
+							$('#txtsalesmanid').val("");
+							$('#txtsalesman').val("");
+							
+							$('#txtchouseno').val("");
+							$('#txtcCity').val("");
+							$('#txtcState').val("");
+							$('#txtcCountry').val("");
+							$('#txtcZip').val("");
+							
+							$('#hdnvalid').val("NO");
+						}
+					},
+					error: function(){
+						$('#txtcustid').val("");
+						$('#txtcust').val("");
+						//$('#imgemp').attr("src","../../images/blueX.png");
+						$('#hdnpricever').val("");
+
+							$('#txtdelcustid').val("");
+							$('#txtdelcust').val(""); 
+							
+							$('#txtsalesmanid').val("");
+							$('#txtsalesman').val("");
+							
+							$('#txtchouseno').val("");
+							$('#txtcCity').val("");
+							$('#txtcState').val("");
+							$('#txtcCountry').val("");
+							$('#txtcZip').val("");
+						
+						$('#hdnvalid').val("NO");
+					}
+				});
+
+			}
+			
+		});
 
 	$('#txtcust, #txtcustid').on("blur", function(){
 		if($('#hdnvalid').val()=="NO"){
@@ -1158,6 +1155,109 @@ $(function(){
 				alert(msgs);
 			}
 		}
+	});
+
+	$('#txtSrchByDesc').typeahead({
+		autoSelect: true,
+		source: function(request, response) {
+			$.ajax({
+				url: "../th_product.php",
+				dataType: "json",
+				data: { query: $("#txtSrchByDesc").val(), itmbal: 1, styp: "Goods" },
+				success: function (data) {
+					response(data);
+				}
+			});
+		},
+		displayText: function (item) {
+			return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.desc+'</span</div>';
+		},
+		highlighter: Object,
+		afterSelect: function(item) { 					
+						
+			$('#MyInvTbl').DataTable().destroy();
+			$('#MyInvTbl tbody').empty(); 
+			$('#MyInvDetList tbody').empty();
+
+			$.ajax({
+                url: 'th_qolist_items.php',
+				data: 'x='+$('#txtcustid').val()+'&itm='+item.id,
+                dataType: 'json',
+                method: 'post',
+                success: function (data) {
+                    // var classRoomsTable = $('#mytable tbody');
+					$("#allbox").prop('checked', false);
+					   
+                    console.log(data);
+                    $.each(data,function(index,item){
+
+								
+						if(item.cpono=="NONE"){
+							$("#AlertMsg").html("No Sales Order Available");
+							$("#alertbtnOK").show();
+							$("#AlertModal").modal('show');
+
+							xstat = "NO";
+							
+							$("#txtcustid").attr("readonly", false);
+							$("#txtcust").attr("readonly", false);
+
+						}
+						else{
+							$("<tr>").append(
+								$("<td id='td"+item.cpono+"'>").text(item.cpono), 
+								$("<td>").text(item.ccontrolno),
+								$("<td>").text(item.dcutdate)
+							).appendTo("#MyInvTbl tbody");
+							
+							
+							$("#td"+item.cpono).on("click", function(){
+								opengetdet($(this).text());
+							});
+							
+							$("#td"+item.cpono).on("mouseover", function(){
+								$(this).css('cursor','pointer');
+							});
+					   	}
+
+                    });
+
+					$('#MyInvTbl').DataTable({
+						"bPaginate": false,
+						"bLengthChange": false,
+						"bFilter": true,
+						"bInfo": false,
+						"bAutoWidth": false,
+						"dom": '<"pull-left"f><"pull-right"l>tip',
+						language: {
+							search: "",
+							searchPlaceholder: "Search SO "
+						}
+					});
+
+					$('.dataTables_filter input').addClass('form-control input-sm');
+					$('.dataTables_filter input').css(
+						{'width':'150%','display':'inline-block'}
+					);
+					   
+
+					if(xstat=="YES"){
+						$('#mySIRef').modal('show');
+					  }
+                },
+                error: function (req, status, err) {
+					//alert();
+					console.log('Something went wrong', status, err);
+					$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
+				}
+            });		
+
+			$('#txtSrchByDesc').val("").change(); 
+			
+		}
+	
 	});
 
 });
