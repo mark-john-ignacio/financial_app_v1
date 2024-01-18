@@ -2081,6 +2081,8 @@
 										ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
 									});
 
+									ewtoptions = ewtoptions + "<option value='none' data-rate='0'>N/A</option>";
+
 									$("#txtewtcodeothers"+lastRow).select2('destroy').html(ewtoptions).select2();
 									$("#txtewtrateothers"+lastRow).val(ewtslctd);
 								}
@@ -2134,6 +2136,8 @@
 							}
 							ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
 						});
+
+						ewtoptions = ewtoptions + "<option value='none' data-rate='0'>N/A</option>";
 
 						$("#txtewtcodeothers"+lastRow).select2('destroy').html(ewtoptions).select2();
 						$("#txtewtrateothers"+lastRow).val(ewtslctd);
