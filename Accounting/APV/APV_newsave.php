@@ -13,6 +13,17 @@ $company = $_SESSION['companyid'];
 //print_r($_REQUEST);
 //echo "</pre>";
 
+	@$arrwtxlist = array();
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `wtaxcodes` where compcode='$company' and cstatus='ACTIVE'"); 
+	if (mysqli_num_rows($gettaxcd)!=0) {
+		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+			@$arrwtxlist[$row['ctaxcode']] = $row['nrate']; 
+		}
+	}
+
+
+
+
 $chkSales = mysqli_query($con,"select * from apv where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");
 if (mysqli_num_rows($chkSales)==0) {
 	$cSINo = "AP".$dmonth.$dyear."00000";
@@ -125,6 +136,14 @@ else {
 		$refcidenttran = $cSINo."P".$z;
 
 		//echo "INSERT INTO `apv_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `crefrr`, `cacctno`, `ctitle`, `cremarks`, `ndebit`, `ncredit`) values('$company', '$refcidenttran', '$z', '$cSINo', '$crefrr', '$cacctno', '$ctitle', '$cacctrem', $ndebit, $ncredit)";
+
+		if($cacewtcode=="none"){
+			$cacewtcode = "";
+		}
+
+		if($cacewteate==""){
+			$cacewteate = @$arrwtxlist[$cacewtcode];
+		}
 		
 		mysqli_query($con,"INSERT INTO `apv_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `crefrr`, `cacctno`, `ctitle`, `cremarks`, `ndebit`, `ncredit`, `cewtcode`, `newtrate`) values('$company', '$refcidenttran', '$z', '$cSINo', '$crefrr', '$cacctno', '$ctitle', '$cacctrem', $ndebit, $ncredit, '$cacewtcode', $cacewteate)");
 

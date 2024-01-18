@@ -1282,16 +1282,23 @@
 									var ewtoptions = "";
 									var ewtslctd = "";
 
+									var ctg = 0;
 									$.each(jQuery.parseJSON(xz), function() { 
+										ctg++;
 										if($("#hdncustewt").val()==this['ctaxcode']){
 											isselctd = "selected";
 											ewtslctd = this['nrate'];
 										}else{
 											isselctd = "";
+											if(ctg==1){
+												ewtslctd = this['nrate'];
+											}
 										}
 
 										ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
 									});
+
+									ewtoptions = ewtoptions + "<option value='none' data-rate='0'>N/A</option>";
 
 									$("#txtewtcodeothers"+lastRow).select2('destroy').html(ewtoptions).select2();
 									$("#txtewtrateothers"+lastRow).val(ewtslctd);
@@ -1357,15 +1364,21 @@
 						var ewtoptions = "";
 						var ewtslctd = "";
 
+						var ctg = 0;
 						$.each(jQuery.parseJSON(xz), function() { 
 							if($("#hdncustewt").val()==this['ctaxcode']){
 								isselctd = "selected";
 								ewtslctd = this['nrate'];
 							}else{
 								isselctd = "";
+								if(ctg==1){
+									ewtslctd = this['nrate'];
+								}
 							}
 							ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
 						});
+
+						ewtoptions = ewtoptions + "<option value='none' data-rate='0'>N/A</option>";
 
 						$("#txtewtcodeothers"+lastRow).select2('destroy').html(ewtoptions).select2();
 						$("#txtewtrateothers"+lastRow).val(ewtslctd);

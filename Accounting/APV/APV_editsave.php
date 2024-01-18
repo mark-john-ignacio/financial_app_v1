@@ -1,13 +1,20 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
+	if(!isset($_SESSION)){
+	session_start();
+	}
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
 
-$cPVNo = $_REQUEST['txtctranno'];
-$company = $_SESSION['companyid'];
+	$cPVNo = $_REQUEST['txtctranno'];
+	$company = $_SESSION['companyid'];
 
+	@$arrwtxlist = array();
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `wtaxcodes` where compcode='$company' and cstatus='ACTIVE'"); 
+	if (mysqli_num_rows($gettaxcd)!=0) {
+		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+			@$arrwtxlist[$row['ctaxcode']] = $row['nrate']; 
+		}
+	}
 
 	$cCustID =  mysqli_real_escape_string($con, $_REQUEST['txtcustid']);
 	$dTranDate = $_REQUEST['date_delivery'];
@@ -101,6 +108,14 @@ $company = $_SESSION['companyid'];
 	//	$cacctpaytyp= mysqli_real_escape_string($con,$_REQUEST['selacctpaytyp'.$z]);
 
 		$refcidenttran = $cPVNo."P".$z;
+
+		if($cacewtcode=="none"){
+			$cacewtcode = "";
+		}
+
+		if($cacewteate==""){
+			$cacewteate = @$arrwtxlist[$cacewtcode];
+		}
 		
 		mysqli_query($con,"INSERT INTO `apv_t`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `crefrr`, `cacctno`, `ctitle`, `cremarks`, `ndebit`, `ncredit`, `cewtcode`, `newtrate`) values('$company', '$refcidenttran', '$z', '$cPVNo', '$crefrr', '$cacctno', '$ctitle', '$cacctrem', $ndebit, $ncredit, '$cacewtcode', $cacewteate)");
 

@@ -454,8 +454,16 @@
 		<div class="modal-dialog modal-full">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h3 class="modal-title" id="InvListHdr">PO List</h3>
+					<div class="col-xs-12 nopadding">
+						<div class="col-xs-8">							
+							<h4 class="modal-title" id="InvListHdr">PO List</h4>
+						</div>
+						<div class="col-xs-4">
+							
+							<input type="text" class="form-control input-xs" id="txtSrchByDesc" name="txtSrchByDesc" placeholder="Search All SO by Item Description..." autocomplete="off" />
+												
+						</div>
+					</div>
 				</div>
 									
 				<div class="modal-body" style="height:45vh">
