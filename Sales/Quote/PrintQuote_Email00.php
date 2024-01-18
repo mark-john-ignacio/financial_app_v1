@@ -1,6 +1,15 @@
 <?php
 if(!isset($_SESSION)){
 session_start();
+
+
+include('../../vendor/autoload.php');
+
+require("../../vendor/phpmailer/phpmailer/src/PHPMailer.php");
+require("../../vendor/phpmailer/phpmailer/src/SMTP.php");
+
+$mpdf = new \Mpdf\Mpdf(['format' => 'Legal']);
+ob_start();
 }
 
 include('../../Connection/connection_string.php');
@@ -109,7 +118,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 }
 
 
-$sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic, B.cnotes From quote_t A left join items B on A.compcode=B.compcode and A.citemno=B.cpartno where A.compcode='$company' and A.ctranno = '$csalesno' Order By A.nident");
+$sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t A left join items B on A.compcode=B.compcode and A.citemno=B.cpartno where A.compcode='$company' and A.ctranno = '$csalesno'");
 
 ?>
 
@@ -206,19 +215,13 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic, B.cnotes Fro
 			</table>
 			
 			<table border="0" align="center" width="95%" cellspacing="0">
-				<?php
-					$cssofr1 = "padding: 10px; color: white; background-color: gray; border-top: 1px solid gray; border-left: 1px solid gray; border-right: 1px solid white;";
-
-					$cssofrB = "padding: 10px; color: white; background-color: gray; border-top: 1px solid gray; border-left: 1px solid white; border-right: 1px solid white;";
-				
-					$cssofr0 = "padding: 10px; color: white; background-color: gray; border-top: 1px solid gray; border-left: 1px solid white; border-right: 1px solid gray;";
-				?>				
+	
 				<tr>
-					<th style="<?=$cssofr1?> width: 50px">#</th>
-					<th style="<?=$cssofrB?> width: 350px; text-align: left">Item &amp; Description</th>
-					<th style="<?=$cssofrB?>">Qty</th>
-					<th style="<?=$cssofrB?>">Unit Price</th>
-					<th style="<?=$cssofr0?>">Total Amount</th>
+					<th class="tblborder" style="padding: 3px;">ITEM</th>
+					<th class="tblborder" style="padding: 3px">PRODUCT</th>
+					<th class="tblborder" style="padding: 3px;">QTY</th>
+					<th class="tblborder" style="padding: 3px;">UOM</th>
+					<th class="tblborder" style="padding: 3px">TOTAL AMOUNT</th>
 				</tr>
 
 				<?php 
@@ -227,40 +230,32 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic, B.cnotes Fro
 					while($rowdtls = mysqli_fetch_array($sqldtlss, MYSQLI_ASSOC)){ 
 						$cnt++;
 						$ggross = $ggross + floatval($rowdtls['namount']);
-
-						$imgurpcsx = "";
-						if($rowdtls['cuserpic']!=""){
-							$imgurpcsx = "<img src='".$rowdtls['cuserpic']."' style=\"display:block;\" width=\"100px\"><br>";
-						}
 				?>
 
 				<tr>
-					<td style="padding: 5px; border-spacing: 0px;border-collapse: collapse; border-top: 1px solid Gainsboro; vertical-align: top" align="center"><?=$cnt?></td>
-					<td style="padding: 5px; border-spacing: 0px;border-collapse: collapse; border-top: 1px solid Gainsboro;" align="left">
+					<td class="tblborder" style="padding: 3px" align="center"><?=$cnt?></td>
+					<td class="tblborder" style="padding: 3px" align="center"><?php echo $rowdtls['citemdesc'];?></td>
+					<td class="tblborder" style="padding: 3px" align="center"><?php echo $rowdtls['nqty'];?></td>
+					<td class="tblborder" style="padding: 3px" align="center"><?php echo $rowdtls['cunit'];?></td>
+					<td class="tblborder" style="padding: 3px" align="center">
 						<?php
-							if($imgurpcsx!=""){
-								echo "<table border=\"0\" width=\"100%\" cellpadding=\"1px\" style=\"border-collapse: collapse\"> <tr><td width=\"100px\" style=\"vertical-align: top; text-align: right\"> ".$imgurpcsx." </td><td style=\"vertical-align: top; text-align: left; padding-left: 5px\"> ".$rowdtls['citemdesc']." <br><font color=\"#686868\"><small><i>".nl2br($rowdtls['cnotes'])."</i></small></font></br> </td> </tr></table>";
-							}else{
-								echo $rowdtls['citemdesc']."<br><i>".$rowdtls['cnotes']."</i>";
-							}
-						?>			
+
+								if($rowdtls['cuserpic']!=""){
+									echo "<img src='".$rowdtls['cuserpic']."' height='82' width='80'><br>";
+								}
+							?>
+							<?php echo $cCurrCode." ".number_format($rowdtls['namount'],2);?>
+
 					</td>
-					<td style="padding: 5px; border-spacing: 0px;border-collapse: collapse;border-top: 1px solid Gainsboro;" align="center"><?=number_format($rowdtls['nqty'])." ".$rowdtls['cunit']?></td>
-					<td style="padding: 5px; border-spacing: 0px;border-collapse: collapse;border-top: 1px solid Gainsboro;" align="right"><?=$cCurrCode." ".number_format($rowdtls['nprice'],2)?></td>
-					<td style="padding: 5px; border-spacing: 0px;border-collapse: collapse;border-top: 1px solid Gainsboro;" align="right"><?=$cCurrCode." ".number_format($rowdtls['namount'],2)?></td>
 				</tr>
 
 				<?php 
 					} 
 				?>
 
-				<tr> 
-					<td align="right" colspan="5">&nbsp;</td> 
-				</tr> 
 				<tr>
-					<td align="right" colspan="3">&nbsp;</td>
-					<td align="right" style="padding: 5px; border: none !important; background-color: Gainsboro;">TOTAL</td>
-					<td align="right" style="padding: 5px; background-color: Gainsboro;"><?=$cCurrCode." ".number_format($ggross,2)?></td>
+					<td class="tblhide" align="right" colspan="4" style="padding: 3px; border: none !important;"><b>TOTAL</b></td>
+					<td class="tblhide" align="center" style="padding: 3px"><b><?php echo $cCurrCode." ".number_format($ggross,2);?></b></td>
 				</tr>
 
 			</table>
@@ -275,7 +270,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic, B.cnotes Fro
 						<b>Price</b>
 					</td>
 					<td style="padding: 2px; padding-top: 20px !important">
-						:&nbsp; Valid until <b><?php echo date("F d, Y", strtotime($Date)); ?></b> only. Thereafter, all prices will be subject to our confirmation
+						:&nbsp;Valid until <b><?php echo date("F d, Y", strtotime($Date)); ?></b> only. Thereafter, all prices will be subject to our confirmation
 					</td>
 				</tr>
 				<tr>
@@ -367,3 +362,50 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic, B.cnotes Fro
 
 </body>
 </html>
+
+<?php
+
+$html = ob_get_contents();
+ob_end_clean();
+
+// send the captured HTML from the output buffer to the mPDF class for processing
+$mpdf->WriteHTML($html);
+$mpdf->Output('../../PDFiles/Quotes/'.$csalesno.'.pdf', \Mpdf\Output\Destination::FILE);
+
+//Redirect to sending email file
+$output='<p>Dear '.$ccontname.',</p>';
+$output.='<p>Please find here attached the quotation you requested.</p>'; 
+$output.='<p>Thanks You for choosing <b>'.$compname.'</b>,</p>';
+$output.='<p>Myx Financials,</p>';
+
+$body = $output; 
+$subject = $compname." - Quotation";
+
+//$email_to = $email;
+$email_to = "mhaitzendriga@gmail.com";
+
+$fromserver = "myxfin@serttech.com"; 
+$mail = new PHPMailer\PHPMailer\PHPMailer();
+$mail->IsSMTP();
+$mail->Host = "mail.serttech.com"; // Enter your host here
+$mail->SMTPAuth = true;
+$mail->Username = "myxfin@serttech.com"; // Enter your email here
+$mail->Password = "Sert@2022"; //Enter your password here
+$mail->SMTPSecure = 'tls';
+$mail->Port = 587;
+$mail->IsHTML(true);
+$mail->From = "noreply@serttech.com";
+$mail->FromName = $compname;
+$mail->Sender = "noreply@serttech.com"; // indicates ReturnPath header
+$mail->Subject = $subject;
+$mail->Body = $body;
+$mail->AddAddress($email_to);
+$mail->addAttachment("../../PDFiles/Quotes/".$csalesno.".pdf");
+
+	if(!$mail->Send()){
+		echo "Mailer Error: " . $mail->ErrorInfo;
+	}else{
+		echo "Email Successfully Sent";
+	}
+
+?>

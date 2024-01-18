@@ -186,7 +186,7 @@
                                 $imgsrc = $cUserPic;
                             }
                             ?>
-                            <img src="<?php echo $imgsrc;?>" width="145" height="145" id="previewing">
+                            <img src="<?php echo $imgsrc;?>" width="145" height="145" id="previewing" name="previewing">
                         </div>
 
                         <div class="col-xs-10 nopadwleft">

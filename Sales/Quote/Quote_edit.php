@@ -343,7 +343,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 											<select class="form-control input-sm" name="selterms" id="selterms">
 												<option value='' <?=($cterms=='') ? "selected" : "";?>>N/A</option>
 												<?php
-													$sqlters = mysqli_query($con,"Select ccode, cdesc From groupings Where ctype='TERMS' and cstatus='ACTIVE'");
+													$sqlters = mysqli_query($con,"Select ccode, cdesc From groupings Where compcode='$company' and ctype='TERMS' and cstatus='ACTIVE'");
 													while($row = mysqli_fetch_array($sqlters, MYSQLI_ASSOC)){
 														if ($cterms==$row['ccode']) { 
 															$ctermstext = "selected"; 

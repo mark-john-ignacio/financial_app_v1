@@ -370,16 +370,16 @@ $company = $_SESSION['companyid'];
                  
            $emi= $comprow['cdesc']; 
 
-			}
 		}
+	}
 
 	$getcred = getEmailCred();
 
 	$body = $emi; 
 	$subject = $logonamz." - Purchase Order";
  
-	//$email_to = $Conemail;
-	$email_to = "maita.galang@gmail.com";
+	$email_to = $Conemail;
+	//$email_to = "maita.galang@gmail.com";
 
 	$fromserver = $getcred['cusnme']; 
 

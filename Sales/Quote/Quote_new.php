@@ -45,6 +45,22 @@
 		$postquote = "False";
 	}
 
+	$lastremarksQ = "";
+	$sqlno = mysqli_query($con,"select * from quote where compcode='$company' and quotetype='quote' Order By ddate DESC LIMIT 1");
+	if (mysqli_num_rows($sqlno)!=0) {
+		while($row = mysqli_fetch_array($sqlno, MYSQLI_ASSOC)){
+			$lastremarksQ = $row['cremarks'];
+		}
+	}
+
+	$lastremarksB = "";
+	$sqlno = mysqli_query($con,"select * from quote where compcode='$company' and quotetype='billing' Order By ddate DESC LIMIT 1");
+	if (mysqli_num_rows($sqlno)!=0) {
+		while($row = mysqli_fetch_array($sqlno, MYSQLI_ASSOC)){
+			$lastremarksB = $row['cremarks'];
+		}
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -113,7 +129,9 @@
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
-<input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
+	<input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
+	<input type="hidden" value='<?=$lastremarksQ?>' id="qrems">
+	<input type="hidden" value='<?=$lastremarksB?>' id="brems">
 
 <form action="Quote_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;" enctype="multipart/form-data">
 	<fieldset>
@@ -274,7 +292,7 @@
 								<div class="col-xs-1"><b>Remarks</b></div>
 								<div class="col-xs-9 nopadwleft">
 
-										<textarea rows="4" name="txtremarks" id="txtremarks" style="width: 100%; height: 300px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"><b>WARRANTY </b>  : SERT Technology Inc. Guarantees the equipment and cable workmanship under this proposal to be free from defect for a period of Twelve (12) months from in service date. Provided that no party except  SERT Technology Inc. Trained technicians/enginners shall be entrusted with the service maintenance and repair of the equipment during the warranty period shall be at SERT Technology Inc. Defects arising from misuse, tampering, forced majored, such as fire earthquake, flood, lightning strike, and abnormal conditions are excluded from the above warranty.<br><br><br>If you have concern(s) please feel free to call at If you have concerns, please feel free to call at 02.8897.4830, 0917.503.1616, 0917.555.0849, 0917.551.3200.</textarea>
+										<textarea rows="4" name="txtremarks" id="txtremarks" style="width: 100%; height: 300px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"><?=$lastremarksQ?></textarea>
 
 								</div>
 							</div>
@@ -543,7 +561,7 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 			$(this).tab('show');
 		});
 
-	  getRemarks();
+	  //getRemarks();
 		/*$("#file-0").fileinput({
 				showUpload: false,
 				showClose: false,
@@ -881,10 +899,18 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 	$("#selqotyp").on("change", function (){
 		var dval = $(this).find(':selected').val();
 
+		
+
 		 if(dval=="billing"){
 		 	$("#selrecurrtyp").attr("disabled", false); 
 		 	$("#selterms").attr("disabled", true); 
 		 	$("#prcevallabel").html("<b>Due Date</b>");
+
+			text = $("#brems").val();
+			text = text.toString().replace(/"/g, "'");
+
+			alert(text);
+			$("#txtremarks").summernote("code",text);
 
 		// 	xval = "<p>Kindly make all checks payable to <b>SERT TECHNOLOGY INC</b><br>For bank transfer please deposit to:</p><b><u>For MBTC acct:</u></b><br><b>Account Name: SERT TECHNOLOGY INC.</b><br><b>Account Number: 3547354509772</b><br><b>Bank Address: Mangghan,Gen. Trias, Cavite</b><br><br><i>Note: Please settle your account to prevent service interruptions.</i><br><i>Kindly disregards pass due notice if payments have been made.</i><div><br></div><br><br><br><br><br>";
 
@@ -893,16 +919,20 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 		 	$("#selterms").attr("disabled", false);
 		 	$("#prcevallabel").html("<b>Price Validity</b>");
 
+			text = $("#qrems").val();
+			text = text.toString().replace(/"/g, "'")
+			$("#txtremarks").summernote("code",text);
+
 		// 	xval = "<b>WARRANTY </b>  : SERT Technology Inc. Guarantees the equipment and cable workmanship under this proposal to be free from defect for a period of Twelve (12) months from in service date. Provided that no party except  SERT Technology Inc. Trained technicians/enginners shall be entrusted with the service maintenance and repair of the equipment during the warranty period shall be at SERT Technology Inc. Defects arising from misuse, tampering, forced majored, such as fire earthquake, flood, lightning strike, and abnormal conditions are excluded from the above warranty.<br><br><br>If you have concern(s) please feel free to call at If you have concerns, please feel free to call at 02.8897.4830, 0917.503.1616, 0917.555.0849, 0917.551.3200.<br><br><br> Very truly yours,";
 		}
 		
-		getRemarks(dval)
+		//getRemarks(dval)
 	});
 	
 
 });
 
-function getRemarks(type = $("selqotyp").find(":selected").val()) {
+/*function getRemarks(type = $("selqotyp").find(":selected").val()) {
 	let remarks = "";
 		$.ajax({
 			url: "../../System/th_loadQuotesPrint.php",
@@ -928,7 +958,7 @@ function getRemarks(type = $("selqotyp").find(":selected").val()) {
 			}
 		})
 		$("#txtremarks").summernote("code", remarks);
-}
+}*/
 
 function getcontact(cid){
 

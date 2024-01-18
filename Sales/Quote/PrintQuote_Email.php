@@ -1,19 +1,13 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
+	if(!isset($_SESSION)){
+		session_start();
+	}
 
+	include('../../vendor/autoload.php');
 
-include('../../vendor/autoload.php');
-
-require("../../vendor/phpmailer/phpmailer/src/PHPMailer.php");
-require("../../vendor/phpmailer/phpmailer/src/SMTP.php");
-
-$mpdf = new \Mpdf\Mpdf(['format' => 'Legal']);
-ob_start();
-}
-
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../Model/helper.php');
 
 	$company = $_SESSION['companyid'];
 
@@ -25,7 +19,6 @@ include('../../include/denied.php');
 		}
 	}
 
-	
 	$sqlcomp = mysqli_query($con,"select * from company where compcode='$company'");
 	$logosrc = "";
 
@@ -67,345 +60,301 @@ include('../../include/denied.php');
 	$csalesno = $_REQUEST['hdntransid'];
 	$sqlhead = mysqli_query($con,"select a.*,b.cname, b.chouseno, b.ccity, b.cstate, C.cdesc as termdesc from quote a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join groupings C on A.cterms = C.ccode where a.compcode='$company' and a.ctranno = '$csalesno'");
 
-if (mysqli_num_rows($sqlhead)!=0) {
-	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-		$CustCode = $row['ccode'];
-		$CustName = $row['cname'];
-		$CustAddress= "";
+	if (mysqli_num_rows($sqlhead)!=0) {
+		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+			$CustCode = $row['ccode'];
+			$CustName = $row['cname'];
+			$CustAddress= "";
 
-		if($row['chouseno']<>""){
-			$CustAddress = $row['chouseno'];
+			if($row['chouseno']<>""){
+				$CustAddress = $row['chouseno'];
+			}
+
+			if($row['ccity']<>""){
+				if($CustAddress<>""){
+					$CustAddress = $CustAddress.", ".$row['ccity'];
+				}else{
+					$CustAddress = $row['ccity'];
+				}			
+			}
+			
+			if($row['cstate']<>""){
+				if($CustAddress<>""){
+					$CustAddress = $CustAddress.", ".$row['cstate'];
+				}else{
+					$CustAddress = $row['cstate'];
+				}			
+			}
+
+			$Remarks = $row['cremarks'];
+			$Date = $row['dcutdate'];
+			$Gross = $row['ngross'];
+			$cCurrCode = $row['ccurrencycode'];
+
+			$ccontname = $row['ccontactname'];
+			$ccontdesg = $row['ccontactdesig'];
+			$ccontdept = $row['ccontactdept'];
+			$ccontemai = $row['ccontactemail'];
+			$ccontsalt = $row['ccontactsalut'];
+			$cvattyp = $row['cvattype'];
+			$cterms = $row['cterms'];
+			$cdelinfo = $row['cdelinfo'];
+			$cservinfo = $row['cservinfo'];
+
+			$ctermsdesc = $row['termdesc']." upon delivery";
+
+			$cprepby =  $row['cpreparedby'];
+			
+			$lCancelled = $row['lcancelled'];
+			$lPosted = $row['lapproved'];
 		}
-
-		if($row['ccity']<>""){
-			if($CustAddress<>""){
-				$CustAddress = $CustAddress.", ".$row['ccity'];
-			}else{
-				$CustAddress = $row['ccity'];
-			}			
-		}
-		
-		if($row['cstate']<>""){
-			if($CustAddress<>""){
-				$CustAddress = $CustAddress.", ".$row['cstate'];
-			}else{
-				$CustAddress = $row['cstate'];
-			}			
-		}
-
-		$Remarks = $row['cremarks'];
-		$Date = $row['dcutdate'];
-		$Gross = $row['ngross'];
-		$cCurrCode = $row['ccurrencycode'];
-
-		$ccontname = $row['ccontactname'];
-		$ccontdesg = $row['ccontactdesig'];
-		$ccontdept = $row['ccontactdept'];
-		$ccontemai = $row['ccontactemail'];
-		$ccontsalt = $row['ccontactsalut'];
-		$cvattyp = $row['cvattype'];
-		$cterms = $row['cterms'];
-		$cdelinfo = $row['cdelinfo'];
-		$cservinfo = $row['cservinfo'];
-
-		$ctermsdesc = $row['termdesc']." upon delivery";
-
-		$cprepby =  $row['cpreparedby'];
-		
-		$lCancelled = $row['lcancelled'];
-		$lPosted = $row['lapproved'];
 	}
-}
 
 
-$sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t A left join items B on A.compcode=B.compcode and A.citemno=B.cpartno where A.compcode='$company' and A.ctranno = '$csalesno'");
+	$sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic, B.cnotes From quote_t A left join items B on A.compcode=B.compcode and A.citemno=B.cpartno where A.compcode='$company' and A.ctranno = '$csalesno' Order By A.nident");
 
-?>
 
-<!DOCTYPE html>
-<html>
-<head>
-	<style>
-		body{
-			font-family: Verdana, sans-serif;
-			font-size: 10pt;
-		}
-		.tblborder {
-			border-spacing: 0px;
-			border-collapse: collapse;  /* <--- add this so all the internal <td>s share adjacent borders  */
-			border: 1px solid black;  /* <--- so the outside of the <th> don't get missed  */
-		}
+	$sethdr = "<table border=\"0\" width=\"100%\" cellpadding=\"1px\" style=\"border-collapse: collapse\">
+		<tr>
+			<td style=\"height: 1in; border-bottom: 2px dashed #000\"> 
 
-		.tblhide {
-
-				border-spacing: 0px;  /* <---- won't really need this if you have border-collapse = collapse */
-				border-style: none;   /* <--- add this for no borders in the <th>s  */
-		}
-	</style>
-</head>
-
-<body>
-
-<table border="0" width="100%" cellpadding="1px" style="border-collapse: collapse">
-	<tr>
-		<td style="height: 1in; border-bottom: 2px dashed #000"> 
-
-				<table border="0">
-						<tr>
-							<td width="20%"><img src="<?php echo "../".$logosrc; ?>" width="136px" height="70px"></td>
-							<td><font style="font-size: 9pt;"><?php echo $printhdrsrc; ?></font></td>
-						</tr>
+				<table border=\"0\">
+					<tr>
+						<td width=\"20%\"><img src=\"../".$logosrc."\" width=\"136px\" height=\"70px\"></td>
+						<td><font style=\"font-size: 9pt;\">".$printhdrsrc."</font></td>
+					</tr>
 				</table>
 
-		</td>
-	</tr>
-	<tr>
-		<td style="min-height: 6in; max-height: 7in; vertical-align: top;">
+			</td>
+		</tr>		
+	</table>";
 
-			<table border="0" style="border-collapse: collapse" width="100%">
-				<tr>
-					<td style="height: 50px; vertical-align: top;">
-						<b><?php echo date("F d, Y"); ?></b>
+	$setfooter = "<table border=\"0\" width=\"100%\" cellpadding=\"1px\" style=\"border-collapse: collapse\">
+		<tr>
+			<td width=\"40%\"><br><br>
+				Very Truly Yours,<br><br><br><br><br><br>
+				<b>".$userinfo[$cprepby]."</b> 
+				<br>	
+				<b>".$userdept[$cprepby]."</b>
+				<br>
+				".ucwords(strtolower($compname))."							
+			</td>
+			<td>
+				<table border=0 width=\"80%\" align=\"center\">
 
-					</td>
+						<tr>
+							<td align=\"center\" colspan=\"2\"><b>Signature and Acceptance:</b></td>
+						</tr>
+						<tr>
+							<td width=\"100px\" align=\"right\">Print Name:&nbsp;&nbsp;&nbsp;</td>
+							<td style=\"border-bottom: 1px solid #000; height: 30px\">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width=\"100px\" align=\"right\">Title:&nbsp;&nbsp;&nbsp;</td>
+							<td style=\"border-bottom: 1px solid #000; height: 30px\">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width=\"100px\" align=\"right\">Signature:&nbsp;&nbsp;&nbsp;</td>
+							<td style=\"border-bottom: 1px solid #000; height: 30px\">&nbsp;</td>
+						</tr>
+				</table>
+			</td>
+		</tr>	
+	</table><br><br><hr>".$printftrsrc;
 
-					<td align="right">
-						<h4><?=$csalesno?></h4>
 
-					</td>
+	$html = "<table border=\"0\" width=\"100%\" cellpadding=\"1px\" style=\"border-collapse: collapse\">
+		<tr>
+			<td style=\"height: 30px; vertical-align: top;\">
+				<b>".date("F d, Y")."</b>
 
-				</tr>
-				<tr>
-					<td style="padding-bottom: 20px" colspan="2">
-						<b>
-							<?php 
+			</td>
 
-								echo $ccontname;
-								if($ccontdesg<>""){
-									echo "<br>".$ccontdesg;
-								}
-								if($ccontdept<>""){
-									echo "<br>".$ccontdept;
-								}
-								echo "<br>".$CustName;
-								if($CustAddress<>""){
-									echo "<br>".$CustAddress;
-								}
-								echo "<br>".$ccontemai; 
-							?>
-						</b>
-						
-					</td>
+			<td style=\"height: 30px; vertical-align: top; text-align: right\">
+				<h4>".$csalesno."</h4>
 
-				</tr>
-				<tr>
-					<td style="height: 30px; vertical-align: top;" colspan="2">
-						<b>
-							<?php echo $ccontsalt; ?>
-						</b>
-					</td>
+			</td>
 
-				</tr>
-				<tr>
-					<td style="height: 25px; vertical-align: top; padding-left: 30px"  colspan="2">
-							This is our proposal for your requirement which includes the following:
-					</td>
+		</tr>
+		<tr>
+			<td style=\"padding-bottom: 20px\" colspan=\"2\">
+			<b>".$ccontname;
 
-				</tr>
-			</table>
-			
-			<table border="0" align="center" width="95%" cellspacing="0">
+			if($ccontdesg<>""){
+				$html = $html . "<br>".$ccontdesg;
+			}
+			if($ccontdept<>""){
+				$html = $html . "<br>".$ccontdept;
+			}
+			$html = $html . "<br>".$CustName;
+			if($CustAddress<>""){
+				$html = $html . "<br>".$CustAddress;
+			}
+			$html = $html . "<br>".$ccontemai; 
+
+		$html = $html . "</b>							
+			</td>
+		</tr>
+	</table>";
 	
-				<tr>
-					<th class="tblborder" style="padding: 3px;">ITEM</th>
-					<th class="tblborder" style="padding: 3px">PRODUCT</th>
-					<th class="tblborder" style="padding: 3px;">QTY</th>
-					<th class="tblborder" style="padding: 3px;">UOM</th>
-					<th class="tblborder" style="padding: 3px">TOTAL AMOUNT</th>
-				</tr>
+	
+	$html = $html . "<table border=\"0\" width=\"100%\" cellpadding=\"1px\" style=\"border-collapse: collapse\">
+		<tr>
+			<td style=\"height: 30px; vertical-align: top;\" colspan=\"2\">
+				<b>".$ccontsalt."</b>
+			</td>
+		</tr>
+		<tr>
+			<td style=\"height: 25px; vertical-align: top; padding-left: 30px\"  colspan=\"2\">
+					This is our proposal for your requirement which includes the following:
+			</td>
+		</tr>
+	</table>";
 
-				<?php 
-				$cnt = 0;
-				$ggross=0;
-					while($rowdtls = mysqli_fetch_array($sqldtlss, MYSQLI_ASSOC)){ 
-						$cnt++;
-						$ggross = $ggross + floatval($rowdtls['namount']);
-				?>
+	$cssofr1 = "padding: 10px; color: white; background-color: gray; border-top: 1px solid gray; border-left: 1px solid gray; border-right: 1px solid white;";
 
-				<tr>
-					<td class="tblborder" style="padding: 3px" align="center"><?=$cnt?></td>
-					<td class="tblborder" style="padding: 3px" align="center"><?php echo $rowdtls['citemdesc'];?></td>
-					<td class="tblborder" style="padding: 3px" align="center"><?php echo $rowdtls['nqty'];?></td>
-					<td class="tblborder" style="padding: 3px" align="center"><?php echo $rowdtls['cunit'];?></td>
-					<td class="tblborder" style="padding: 3px" align="center">
-						<?php
+	$cssofrB = "padding: 10px; color: white; background-color: gray; border-top: 1px solid gray; border-left: 1px solid white; border-right: 1px solid white;";
 
-								if($rowdtls['cuserpic']!=""){
-									echo "<img src='".$rowdtls['cuserpic']."' height='82' width='80'><br>";
-								}
-							?>
-							<?php echo $cCurrCode." ".number_format($rowdtls['namount'],2);?>
+	$cssofr0 = "padding: 10px; color: white; background-color: gray; border-top: 1px solid gray; border-left: 1px solid white; border-right: 1px solid gray;";
 
-					</td>
-				</tr>
+	$html = $html . "<table border=\"0\" width=\"100%\" cellpadding=\"1px\" style=\"border-collapse: collapse\">	
+		<tr>
+			<th style=\"".$cssofr1." width: 50px\">#</th>
+			<th style=\"".$cssofrB." width: 350px; text-align: left\">Item &amp; Description</th>
+			<th style=\"".$cssofrB."\">Qty</th>
+			<th style=\"".$cssofrB."\">Unit Price</th>
+			<th style=\"".$cssofr0."\">Total Amount</th>
+		</tr>";			
 
-				<?php 
-					} 
-				?>
+		$cnt = 0;
+		$ggross=0;
+			while($rowdtls = mysqli_fetch_array($sqldtlss, MYSQLI_ASSOC)){ 
+				$cnt++;
+				$ggross = $ggross + floatval($rowdtls['namount']);
+				$imgurpcsx = "";
+				if($rowdtls['cuserpic']!=""){
+					$imgurpcsx = "<img src='".$rowdtls['cuserpic']."' style=\"display:block;\" width=\"100px\"><br>";
+				}
 
-				<tr>
-					<td class="tblhide" align="right" colspan="4" style="padding: 3px; border: none !important;"><b>TOTAL</b></td>
-					<td class="tblhide" align="center" style="padding: 3px"><b><?php echo $cCurrCode." ".number_format($ggross,2);?></b></td>
-				</tr>
-
-			</table>
-
-			<br>
-			<table border="0" style="border-collapse: collapse"> 
-				<tr>
-					<td><b>Terms & Conditions</b><td>
-				</tr>
-				<tr>
-					<td style="padding: 2px; padding-top: 20px !important" width="150px">
-						<b>Price</b>
-					</td>
-					<td style="padding: 2px; padding-top: 20px !important">
-						:&nbsp;Valid until <b><?php echo date("F d, Y", strtotime($Date)); ?></b> only. Thereafter, all prices will be subject to our confirmation
-					</td>
-				</tr>
-				<tr>
-					<td style="padding: 2px;" width="150px">
-						<b>Payment</b>
-					</td>
-					<td style="padding: 2px;">
-						:&nbsp;&nbsp;<?php echo $ctermsdesc; ?>.
-						<b>
-						<?php 
-							if($cvattyp=="VatEx"){
-								echo "VAT EXCLUSIVE";
-							}else{
-								echo "VAT INCLUSIVE";
-							}
-						?>
-						</b>
-					</td>
-				</tr>
-				<tr>
-					<td style="padding: 2px;" width="150px">
-						<b>Delivery</b>
-					</td>
-					<td style="padding: 2px;">
-						:&nbsp;&nbsp;<?php echo $cdelinfo; ?>
-					</td>
-				</tr>
-				<tr>
-					<td style="padding: 2px;" width="150px">
-						<b>Service</b>
-					</td>
-					<td style="padding: 2px;">
-							:&nbsp;&nbsp;<?php echo $cservinfo; ?>
-					</td>
-				</tr>				
-				<tr>
-					<td style="padding: 2px;" colspan="2">
-						<?php echo $Remarks; ?>
-					</td>
-				</tr>	
-			</table>
-
-		</td>
-	</tr>
-	<tr>
-		<td style="height: 2in; vertical-align: bottom;">
-			
-			
-			<table border="0" width="100%">
-				<tr>
-					<td width="40%"><br><br>
-						Very Truly Yours,<br><br><br><br><br><br>
-						<b><?=$userinfo[$cprepby]?></b> 
-						<br>	
-						<b><?=$userdept[$cprepby]?></b>
-						<br>
-						<?=ucwords(strtolower($compname))?>
-						
-					</td>
-					<td>
-						<table border=0 width="80%" align="center">
-
-								<tr>
-									<td align="center" colspan="2"><b>Signature and Acceptance:</b></td>
-								</tr>
-								<tr>
-									<td width="100px" align="right">Print Name:&nbsp;&nbsp;&nbsp;</td>
-									<td style="border-bottom: 1px solid #000; height: 30px">&nbsp;</td>
-								</tr>
-								<tr>
-									<td width="100px" align="right">Title:&nbsp;&nbsp;&nbsp;</td>
-									<td style="border-bottom: 1px solid #000; height: 30px">&nbsp;</td>
-								</tr>
-								<tr>
-									<td width="100px" align="right">Signature:&nbsp;&nbsp;&nbsp;</td>
-									<td style="border-bottom: 1px solid #000; height: 30px">&nbsp;</td>
-								</tr>
-						</table>
-					</td>
-				</tr>
-
+				$html = $html ."<tr>
+				<td style=\"padding: 5px; border-spacing: 0px;border-collapse: collapse; border-top: 1px solid Gainsboro; vertical-align: top\" align=\"center\">".$cnt."</td>
+				<td style=\"padding: 5px; border-spacing: 0px;border-collapse: collapse; border-top: 1px solid Gainsboro;\" align=\"left\">";
 				
-			</table>
-			<br><br><hr>
-			<?php echo $printftrsrc; ?>	
-		</td>
-	</tr>
-</table>
+				if($imgurpcsx!=""){
+					$html = $html . "<table border=\"0\" width=\"100%\" cellpadding=\"1px\" style=\"border-collapse: collapse\"> <tr><td width=\"100px\" style=\"vertical-align: top; text-align: right\"> ".$imgurpcsx." </td><td style=\"vertical-align: top; text-align: left; padding-left: 5px\"> ".$rowdtls['citemdesc']." <br><font color=\"#686868\"><small><i>".nl2br($rowdtls['cnotes'])."</i></small></font></br> </td> </tr></table>";
+				}else{
+					$html = $html . $rowdtls['citemdesc']."<br><i>".$rowdtls['cnotes']."</i>";
+				}
+				
+				$html = $html ."</td>
+				<td style=\"padding: 5px; border-spacing: 0px;border-collapse: collapse;border-top: 1px solid Gainsboro;\" align=\"center\">".number_format($rowdtls['nqty'])." ".$rowdtls['cunit']."</td>
+				<td style=\"padding: 5px; border-spacing: 0px;border-collapse: collapse;border-top: 1px solid Gainsboro;\" align=\"right\">".$cCurrCode." ".number_format($rowdtls['nprice'],2)."</td>
+				<td style=\"padding: 5px; border-spacing: 0px;border-collapse: collapse;border-top: 1px solid Gainsboro;\" align=\"right\">".$cCurrCode." ".number_format($rowdtls['namount'],2)."</td></tr>";
 
-</body>
-</html>
+			} 
+			$html = $html ."<tr> <td align=\"right\" colspan=\"5\">&nbsp;</td> </tr> <tr>
+					<td align=\"right\" colspan=\"3\">&nbsp;</td>
+					<td align=\"right\" style=\"padding: 5px; border: none !important; background-color: Gainsboro;\">TOTAL</td>
+					<td align=\"right\" style=\"padding: 5px; background-color: Gainsboro;\">".$cCurrCode." ".number_format($ggross,2)."</td>
+				</tr>
+	</table>";
 
-<?php
+	$html = $html . "<table border=\"0\" style=\"border-collapse: collapse; margin-top: 10px\"> 
+		<tr>
+			<td><b>Terms & Conditions</b><td>
+		</tr>
+		<tr>
+			<td style=\"padding: 2px; padding-top: 20px !important\" width=\"150px\">
+				<b>Price</b>
+			</td>
+			<td style=\"padding: 2px; padding-top: 20px !important\">
+				:&nbsp;&nbsp;Valid until <b>".date("F d, Y", strtotime($Date))."</b> only. Thereafter, all prices will be subject to our confirmation
+			</td>
+		</tr>
+		<tr>
+			<td style=\"padding: 2px;\" width=\"150px\">
+				<b>Payment</b>
+			</td>
+			<td style=\"padding: 2px;\">:&nbsp;&nbsp;".$ctermsdesc."
+				<b>".(($cvattyp=="VatEx") ? "VAT EXCLUSIVE" : "VAT INCLUSIVE")."</b>
+			</td>
+		</tr>
+		<tr>
+			<td style=\"padding: 2px;\" width=\"150px\">
+				<b>Delivery</b>
+			</td>
+			<td style=\"padding: 2px;\">:&nbsp;&nbsp;".$cdelinfo."</td>
+		</tr>
+		<tr>
+			<td style=\"padding: 2px;\" width=\"150px\">
+				<b>Service</b>
+			</td>
+			<td style=\"padding: 2px;\">:&nbsp;&nbsp;".$cservinfo."</td>
+		</tr>				
+		<tr>
+			<td style=\"padding: 2px;\" colspan=\"2\">".$Remarks."</td>
+		</tr>	
+	</table>";
 
-$html = ob_get_contents();
-ob_end_clean();
 
-// send the captured HTML from the output buffer to the mPDF class for processing
-$mpdf->WriteHTML($html);
-$mpdf->Output('../../PDFiles/Quotes/'.$csalesno.'.pdf', \Mpdf\Output\Destination::FILE);
+	$mpdf = new \Mpdf\Mpdf([
+		'mode' => '',
+		'format' => 'A4',
+		'default_font_size' => 9,
+		'default_font' => 'Verdana, sans-serif',
+		'margin_left' => 10,
+		'margin_right' => 10,
+		'margin_top' => 11,
+		'margin_bottom' => 11,
+		'margin_header' => 9,
+		'margin_footer' => 9,
+		'orientation' => 'P',
+		'setAutoTopMargin' => 'stretch',
+		'contenteditable'=>true,
+	]);
 
-//Redirect to sending email file
-$output='<p>Dear '.$ccontname.',</p>';
-$output.='<p>Please find here attached the quotation you requested.</p>'; 
-$output.='<p>Thanks You for choosing <b>'.$compname.'</b>,</p>';
-$output.='<p>Myx Financials,</p>';
+	$mpdf->SetHTMLHeader($sethdr);
 
-$body = $output; 
-$subject = $compname." - Quotation";
+	$mpdf->WriteHTML($html.$setfooter);
+	$mpdf->Output('../../PDFiles/Quotes/'.$csalesno.'.pdf', \Mpdf\Output\Destination::FILE);
 
-//$email_to = $email;
-$email_to = "mhaitzendriga@gmail.com";
+	$getcred = getEmailCred();
 
-$fromserver = "myxfin@serttech.com"; 
-$mail = new PHPMailer\PHPMailer\PHPMailer();
-$mail->IsSMTP();
-$mail->Host = "mail.serttech.com"; // Enter your host here
-$mail->SMTPAuth = true;
-$mail->Username = "myxfin@serttech.com"; // Enter your email here
-$mail->Password = "Sert@2022"; //Enter your password here
-$mail->SMTPSecure = 'tls';
-$mail->Port = 587;
-$mail->IsHTML(true);
-$mail->From = "noreply@serttech.com";
-$mail->FromName = $compname;
-$mail->Sender = "noreply@serttech.com"; // indicates ReturnPath header
-$mail->Subject = $subject;
-$mail->Body = $body;
-$mail->AddAddress($email_to);
-$mail->addAttachment("../../PDFiles/Quotes/".$csalesno.".pdf");
+	//Redirect to sending email file
+	$output='<p>Dear '.$ccontname.',</p>';
+	$output.='<p>Please find here attached the quotation you requested.</p>'; 
+	$output.='<p>Thanks You for choosing <b>'.$compname.'</b>,</p>';
+	$output.='<p>Myx Financials,</p>';
 
+	$body = $output; 
+	$subject = $compname." - Quotation";
+
+	//$email_to = $email;
+	$email_to = "mhaitzendriga@gmail.com";
+
+	$fromserver = $getcred['cusnme']; 
+	$mail = new PHPMailer\PHPMailer\PHPMailer();
+	$mail->IsSMTP();
+	$mail->Host = $getcred['csmtp']; // Enter your host here
+	$mail->SMTPAuth = true;
+	$mail->Username = $getcred['cusnme']; // Enter your email here
+	$mail->Password = $getcred['cuspass']; //Enter your password here
+	$mail->SMTPSecure = $getcred['csecure'];
+	$mail->Port = $getcred['cport'];
+	$mail->IsHTML(true);
+	$mail->From = $getcred['cusnme'];
+	$mail->FromName = $compname;
+	$mail->Sender = $getcred['cusnme']; // indicates ReturnPath header
+	$mail->Subject = $subject;
+	$mail->Body = $body;
+	$mail->AddAddress($email_to);
+
+	$mail->addAttachment("../../PDFiles/Quotes/".$csalesno.".pdf");
 	if(!$mail->Send()){
 		echo "Mailer Error: " . $mail->ErrorInfo;
 	}else{
 		echo "Email Successfully Sent";
 	}
+
 
 ?>
