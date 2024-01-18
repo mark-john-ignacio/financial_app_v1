@@ -77,10 +77,10 @@
 	$finarray = array();
 
 	$qryposted = "";
-	$qryposted2 = "";
-	if($postedtran!==""){
-		$qryposted = " and B.lapproved=".$postedtran."";
-		$qryposted2 = " and A.lapproved=".$postedtran."";
+	if($postedtran==1 || $postedtran==0){
+		$qryposted = " and B.lcancelled=0 and B.lvoid=0 and B.lapproved=".$postedtran."";
+	}elseif($postedtran==2){
+		$qryposted = " and (B.lcancelled=1 or B.lvoid=1)";
 	}
 
 
@@ -88,7 +88,7 @@
 	$sqlx = "Select B.*, C.cname
 	From quote B
 	left join customers C on B.compcode=C.compcode and B.ccode=C.cempid  
-	where B.compcode='$company' and date(B.".$datefil.") between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.lcancelled=0 and B.lvoid=0 ".$qryposted." Order by B.dcutdate, B.ctranno";
+	where B.compcode='$company' and date(B.".$datefil.") between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') ".$qryposted." Order by B.dcutdate, B.ctranno";
 
 	$result=mysqli_query($con,$sqlx);
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
@@ -111,10 +111,11 @@
 		->setCellValue('G6', 'Recurr')
 		->setCellValue('H6', 'Sales Type')
 		->setCellValue('I6', 'VAT Type')
-		->setCellValue('J6', 'Gross');
+		->setCellValue('J6', 'Gross')
+		->setCellValue('K6', 'Status');
 
 	$spreadsheet->getActiveSheet()->mergeCells("E6:F6");
-	$spreadsheet->getActiveSheet()->getStyle('A6:J6')->getFont()->setBold(true);
+	$spreadsheet->getActiveSheet()->getStyle('A6:K6')->getFont()->setBold(true);
 
 	$salesno = "";
 	$remarks = "";
@@ -132,6 +133,23 @@
 
 			$cnt++;
 
+			if($row['lcancelled']==1 || $row['lvoid']==1){
+				if($row['lcancelled']==1){
+					$xycolor = "Cancelled";
+				}
+	
+				if($row['lvoid']==1){
+					$xycolor = "Void";
+				}
+				
+			}else{
+				if($row['lapproved']==1){
+					$xycolor = "Posted";
+				}else{
+					$xycolor = "Pending";
+				}
+			}
+
 			$spreadsheet->setActiveSheetIndex(0)
 			->setCellValue('A'.$cnt, $row['ctranno'])
 			->setCellValue('B'.$cnt, @$allrefx[$row['ctranno']]['ref'])
@@ -142,7 +160,8 @@
 			->setCellValue('G'.$cnt, strtoupper($row['crecurrtype']))
 			->setCellValue('H'.$cnt, $row['csalestype'])
 			->setCellValue('I'.$cnt, $row['cvattype'])
-			->setCellValue('J'.$cnt, $row['ngross']);
+			->setCellValue('J'.$cnt, $row['ngross'])
+			->setCellValue('K'.$cnt, $xycolor);
 
 			$spreadsheet->setActiveSheetIndex(0)->getStyle('J'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");			
 		}
@@ -166,10 +185,11 @@
 		->setCellValue('F'.$cnt, '')
 		->setCellValue('G'.$cnt, 'Sales Type')
 		->setCellValue('H'.$cnt, 'VAT Type')
-		->setCellValue('I'.$cnt, 'Gross');
+		->setCellValue('I'.$cnt, 'Gross')
+		->setCellValue('J'.$cnt, 'Status');
 
 	$spreadsheet->getActiveSheet()->mergeCells("E".$cnt.":F".$cnt);
-	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":I".$cnt)->getFont()->setBold(true);
+	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":K".$cnt)->getFont()->setBold(true);
 
 	$salesno = "";
 	$remarks = "";
@@ -186,6 +206,23 @@
 
 			$cnt++;
 
+			if($row['lcancelled']==1 || $row['lvoid']==1){
+				if($row['lcancelled']==1){
+					$xycolor = "Cancelled";
+				}
+	
+				if($row['lvoid']==1){
+					$xycolor = "Void";
+				}
+				
+			}else{
+				if($row['lapproved']==1){
+					$xycolor = "Posted";
+				}else{
+					$xycolor = "Pending";
+				}
+			}
+
 			$spreadsheet->setActiveSheetIndex(0)
 			->setCellValue('A'.$cnt, $row['ctranno'])
 			->setCellValue('B'.$cnt, @$allrefx[$row['ctranno']]['ref'])
@@ -195,7 +232,8 @@
 			->setCellValue('F'.$cnt, $row['cname'])
 			->setCellValue('G'.$cnt, $row['csalestype'])
 			->setCellValue('H'.$cnt, $row['cvattype'])
-			->setCellValue('I'.$cnt, $row['ngross']);
+			->setCellValue('I'.$cnt, $row['ngross'])
+			->setCellValue('J'.$cnt, $xycolor);
 
 			$spreadsheet->setActiveSheetIndex(0)->getStyle('I'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");			
 		}

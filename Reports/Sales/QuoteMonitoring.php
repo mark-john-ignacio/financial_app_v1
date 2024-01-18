@@ -96,10 +96,10 @@
 	$finarray = array();
 
 	$qryposted = "";
-	$qryposted2 = "";
-	if($postedtran!==""){
-		$qryposted = " and B.lapproved=".$postedtran."";
-		$qryposted2 = " and A.lapproved=".$postedtran."";
+	if($postedtran==1 || $postedtran==0){
+		$qryposted = " and B.lcancelled=0 and B.lvoid=0 and B.lapproved=".$postedtran."";
+	}elseif($postedtran==2){
+		$qryposted = " and (B.lcancelled=1 or B.lvoid=1)";
 	}
 
 
@@ -107,7 +107,7 @@
 	$sqlx = "Select B.*, C.cname
 	From quote B
 	left join customers C on B.compcode=C.compcode and B.ccode=C.cempid  
-	where B.compcode='$company' and date(B.".$datefil.") between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.lcancelled=0 and B.lvoid=0 ".$qryposted." Order by B.dcutdate, B.ctranno";
+	where B.compcode='$company' and date(B.".$datefil.") between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') ".$qryposted." Order by B.dcutdate, B.ctranno";
 
 	//echo $sqlx;
 
@@ -129,9 +129,19 @@
 	foreach($finarray as $row)
 	{
 		if($row['quotetype']=="billing"){
+
+			if($row['lcancelled']==1 || $row['lvoid']==1){
+				$xycolor = "BlanchedAlmond";
+			}else{
+				if($row['lapproved']==1){
+					$xycolor = "White";
+				}else{
+					$xycolor = "LightCyan";
+				}
+			}
 		
 ?>  
-	<tr style="cursor: pointer">
+	<tr style="cursor: pointer; background-color:<?=$xycolor?> !important">
 		<td nowrap><a href="javascript:;" onclick="viewDets('BS','<?=$row['ctranno'];?>')"><?=$row['ctranno'];?></a></td>
 		<td nowrap>
 
@@ -187,9 +197,19 @@
 	foreach($finarray as $row)
 	{
 		if($row['quotetype']=="quote"){
+
+			if($row['lcancelled']==1 || $row['lvoid']==1){
+				$xycolor = "BlanchedAlmond";
+			}else{
+				if($row['lapproved']==1){
+					$xycolor = "White";
+				}else{
+					$xycolor = "LightCyan";
+				}
+			}
 		
 ?>  
-	<tr style="cursor: pointer">
+	<tr style="cursor: pointer; background-color:<?=$xycolor?> !important">
 		<td nowrap><a href="javascript:;" onclick="viewDets('BS','<?=$row['ctranno'];?>')"><?=$row['ctranno'];?></a></td>
 		<td nowrap>
 			<a href="javascript:;" onclick="viewDets('<?=@$allrefx[$row['ctranno']]['typ'];?>','<?=@$allrefx[$row['ctranno']]['ref'];?>')"><?=@$allrefx[$row['ctranno']]['ref'];?></a>
@@ -200,8 +220,7 @@
 		<td nowrap><?=$row['cname'];?></td>   
 		<td nowrap><?=$row['csalestype'];?></td>
 		<td nowrap><?=$row['cvattype'];?></td>
-		<td nowrap style="text-align: right"><?=number_format($row['ngross'],2)." ".$row['ccurrencycode']?>
-		</td>
+		<td nowrap style="text-align: right"><?=number_format($row['ngross'],2)." ".$row['ccurrencycode']?></td>
 		
 	</tr>
 <?php 

@@ -90,11 +90,13 @@
 	$finarray = array();
 
 	$qryposted = "";
-	$qryposted2 = "";
-	if($postedtran!==""){
-		$qryposted = " and B.lapproved=".$postedtran."";
-		$qryposted2 = " and A.lapproved=".$postedtran."";
+
+	if($postedtran==1 || $postedtran==0){
+		$qryposted = " and B.lcancelled=0 and B.lvoid=0 and B.lapproved=".$postedtran."";
+	}elseif($postedtran==2){
+		$qryposted = " and (B.lcancelled=1 or B.lvoid=1)";
 	}
+		
 
 		$transrefDR = array();
 		$result=mysqli_query($con,"Select ctranno, GROUP_CONCAT(DISTINCT creference) as cref from sales_t where compcode='$company' group by ctranno");
@@ -110,23 +112,15 @@
 		}
 
 		$transctions = array();
-		$sqlx = "Select A.type, A.ctranno, A.ccode, A.cname, A.cacctid, A.cacctdesc, IFNULL(A.ctaxcode,'') as ctaxcode, A.nrate, IFNULL(A.cewtcode,'') as cewtcode, A.newtrate, A.dcutdate, SUM(ROUND(A.namountfull,2)) as ngross, SUM(ROUND(A.namount,2)) as cm, SUM(nvatgross) as nvatgross, (SUM(ROUND(A.namountfull,2)) - SUM(ROUND(A.namount,2)) - SUM(nvatgross)) as vatamt
+		$sqlx = "Select A.type, A.ctranno, A.ccode, A.cname, A.cacctid, A.cacctdesc, IFNULL(A.ctaxcode,'') as ctaxcode, A.nrate, IFNULL(A.cewtcode,'') as cewtcode, A.newtrate, A.dcutdate, SUM(ROUND(A.namountfull,2)) as ngross, SUM(ROUND(A.namount,2)) as cm, SUM(nvatgross) as nvatgross, (SUM(ROUND(A.namountfull,2)) - SUM(ROUND(A.namount,2)) - SUM(nvatgross)) as vatamt, A.lcancelled, A.lvoid, A.lapproved
 		From (
-			Select 'SI' as type, A.ctranno, B.ccode, COALESCE(C.ctradename, C.cname) as cname, A.citemno, ((A.nqtyreturned) * (A.nprice-A.ndiscount)) as namount, (A.nqty * (A.nprice-A.ndiscount)) as namountfull, B.dcutdate, D.cacctid, D.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, 
-						CASE 
-							WHEN IFNULL(A.nrate,0) <> 0 
-							THEN 
-								ROUND(((A.nqty-A.nqtyreturned)*(A.nprice-A.ndiscount))/(1 + (A.nrate/100)),2)
-							ELSE 
-								A.namount 
-							END as nvatgross
+			Select 'SI' as type, A.ctranno, B.ccode, COALESCE(C.ctradename, C.cname) as cname, A.citemno, ((A.nqtyreturned) * (A.nprice-A.ndiscount)) as namount, (A.nqty * (A.nprice-A.ndiscount)) as namountfull, B.dcutdate, D.cacctid, D.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, CASE WHEN IFNULL(A.nrate,0) <> 0 THEN ROUND(((A.nqty-A.nqtyreturned)*(A.nprice-A.ndiscount))/(1 + (A.nrate/100)),2) ELSE A.namount END as nvatgross, B.lcancelled, B.lvoid, B.lapproved
 		From sales_t A 
 		left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno 
 		left join customers C on B.compcode=C.compcode and B.ccode=C.cempid 
 		left join accounts D on C.compcode=D.compcode and C.cacctcodesales=D.cacctno 
 		left join wtaxcodes E on A.compcode=E.compcode and A.cewtcode=E.ctaxcode 
-		where A.compcode='$company' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.lcancelled=0 and B.lvoid=0
-		".$qryposted."
+		where A.compcode='$company' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') ".$qryposted."
 		
 		UNION ALL
 
@@ -137,7 +131,7 @@
 								ROUND((A.nqty*A.nprice)/(1 + (F.nrate/100)),2)
 							ELSE 
 								A.namount 
-							END as nvatgross
+							END as nvatgross, B.lcancelled, B.lvoid, B.lapproved
 		From quote_t A
 		left join quote B on A.compcode=B.compcode and A.ctranno=B.ctranno
 		left join customers C on B.compcode=C.compcode and B.ccode=C.cempid 
@@ -147,10 +141,10 @@
 			Select Y.creference From sales_t Y left join sales X on Y.compcode=X.compcode and Y.ctranno=X.ctranno 
 			where Y.compcode='$company' and X.lcancelled=0 and X.lvoid=0
 		) G on A.ctranno=G.creference
-		where A.compcode='$company' and B.quotetype='billing' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and B.lcancelled=0 and B.lvoid=0 ".$qryposted." and IFNULL(G.creference,'') = ''
+		where A.compcode='$company' and B.quotetype='billing' and B.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') ".$qryposted." and IFNULL(G.creference,'') = ''
 
 		) A
-		Group By A.ctranno, A.ccode, A.cname, A.cacctid, A.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, A.dcutdate
+		Group By A.ctranno, A.ccode, A.cname, A.cacctid, A.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, A.dcutdate, A.lcancelled, A.lvoid, A.lapproved
 		order by A.dcutdate, A.ctranno";
 
 		//echo $sqlx;
@@ -190,9 +184,20 @@
 					$ewtcode = $ewtcode + floatval($vx2);
 				}
 			}
+
+			if($row['lcancelled']==1 || $row['lvoid']==1){
+				$xycolor = "BlanchedAlmond";
+			}else{
+				if($row['lapproved']==1){
+					$xycolor = "White";
+				}else{
+					$xycolor = "LightCyan";
+				}
+			}
+			
 		
 ?>  
-	<tr style="cursor: pointer">
+	<tr style="cursor: pointer; background-color:<?=$xycolor?> !important">
 		<td nowrap><?=$row['type'];?></td>
 		<td nowrap><a href="javascript:;" onclick="viewDets('<?=$row['type'];?>','<?=$row['ctranno'];?>')"><?=$row['ctranno'];?></a></td>
 		<td nowrap>

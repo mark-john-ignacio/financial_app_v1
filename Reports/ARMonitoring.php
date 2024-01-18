@@ -75,8 +75,9 @@
           <div class="col-xs-8 nopadwleft">
             <select id="selrpt" name="selrpt" class="form-control input-sm selectpicker"  tabindex="4">
               <option value="">All Transactions</option>   
-              <option value="1">All Posted Transactions only</option>      
-              <option value="0">All UnPosted Transactions only</option>           
+              <option value="1">All Posted Transactions</option>      
+              <option value="0">All Pending Transactions</option>    
+              <option value="2">All Cancelled/Void Transactions</option>        
             </select>                            
           </div> 
         </td>
