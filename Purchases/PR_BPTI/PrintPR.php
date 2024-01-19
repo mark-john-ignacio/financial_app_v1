@@ -253,6 +253,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</table>
 						</td>
 						<?php
+							}else{
+								echo "<td align=\"center\" valign=\"top\">&nbsp;</td>";
 							}
 
 							if(mysqli_num_rows($sqdts2)!=0){
@@ -286,6 +288,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</table>
 						</td>
 						<?php
+							}else{
+								echo "<td align=\"center\" valign=\"top\">&nbsp;</td>";
 							}
 						?>
 						
