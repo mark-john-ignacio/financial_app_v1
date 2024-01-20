@@ -190,10 +190,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							<?php
 
 								if($lSent==1 && $cpreparedBySign!=""){
-									echo "<div style=\"text-align: center; display: block\"><img src = '".$cpreparedBySign."?x=".time()."' width='150px'></div>";
+									echo "<div style=\"text-align: center; display: block\"><img src = '".$cpreparedBySign."?x=".time()."' height='80px'></div>";
 									echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";												
 								}else{
-									echo "<div style=\"text-align: center; display: block; height: 50px\">&nbsp;</div>";
+									echo "<div style=\"text-align: center; display: block; height: 80px\">&nbsp;</div>";
 									echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";
 								}
 							?>
@@ -214,10 +214,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										<td align="center">
 											<?php
 												if($row['lapproved']==1 && $row['cusersign']!=""){
-													echo "<div style=\"text-align: center; display: block\"><img src = '".$row['cusersign']."?x=".time()."' width='150px'></div>";
+													echo "<div style=\"text-align: center; display: block\"><img src = '".$row['cusersign']."?x=".time()."' height='80px'></div>";
 													echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";												
 												}else{
-													echo "<div style=\"text-align: center; display: block; height: 50px\">&nbsp;</div>";
+													echo "<div style=\"text-align: center; display: block; height: 80px\">&nbsp;</div>";
 													echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";
 												}
 											?>
@@ -249,10 +249,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 											<?php
 
 												if($row['lapproved']==1 && $row['cusersign']!=""){
-													echo "<div style=\"text-align: center; display: block\"><img src = '".$row['cusersign']."?x=".time()."' width='150px'></div>";
+													echo "<div style=\"text-align: center; display: block\"><img src = '".$row['cusersign']."?x=".time()."' height='80px'></div>";
 													echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";												
 												}else{
-													echo "<div style=\"text-align: center; display: block; height: 50px\">&nbsp;</div>";
+													echo "<div style=\"text-align: center; display: block; height: 80px\">&nbsp;</div>";
 													echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";
 												}
 											?>
@@ -284,10 +284,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 											<?php
 
 												if($row['lapproved']==1 && $row['cusersign']!=""){
-													echo "<div style=\"text-align: center; display: block\"><img src = '".$row['cusersign']."?x=".time()."' width='150px'></div>";
+													echo "<div style=\"text-align: center; display: block\"><img src = '".$row['cusersign']."?x=".time()."' height='80px'></div>";
 													echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";												
 												}else{
-													echo "<div style=\"text-align: center; display: block; height: 50px\">&nbsp;</div>";
+													echo "<div style=\"text-align: center; display: block; height: 80px\">&nbsp;</div>";
 													echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";
 												}
 											?>
