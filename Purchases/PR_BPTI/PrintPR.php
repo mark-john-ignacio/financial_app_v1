@@ -165,47 +165,24 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					$appnmbr++;
 				}
 
-				//$sqdts3 = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign from purchrequest_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cprno = '$csalesno' and a.nlevel=3 order by a.nlevel");
+				$sqdts3 = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign from purchrequest_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cprno = '$csalesno' and a.nlevel=3 order by a.nlevel");
 
-				//if (mysqli_num_rows($sqdts3)!=0) {
-				//	$appnmbr++;
-				//}
-
-				/*$prcwid = 0;
-				switch ($appnmbr) {
-					case 2:
-						$prcwid = 50;
-					break;
-					case 3:
-						$prcwid = 33.33;
-					break;
-					case 4:
-						$prcwid = 25;
-					break;
-					default:
-						$prcwid = 100;
-				}*/
+				if (mysqli_num_rows($sqdts3)!=0) {
+					$appnmbr++;
+				}
   
 			?>
 				<table border="1" width="100%" style="border-collapse: collapse;">
 					<tr>
-						<td align="center" width="33.33%">
+						<td align="center" width="25%">
 							<b>Prepared By</b>
 						</td>
-
-						<?php
-							//if(mysqli_num_rows($sqdts1)!=0){
-								echo "<td align='center' width='33.33%'><b>Checked By</b></td>";
-							//}
-
-							//if(mysqli_num_rows($sqdts2)!=0){
-								echo "<td align='center'><b>Approved By</b></td>";
-							//}
-
-							//if(mysqli_num_rows($sqdts3)!=0){
-								//echo "<td align='center' width='".$prcwid."%'><b>Approved By</b></td>";
-						//	}
-						?>
+						<td align="center" colspan="2">
+							<b>Checked By</b>
+						</td>
+						<td align="center" width="25%">
+							<b>Approved By</b>
+						</td>
 					</tr>
 
 					<tr>
@@ -225,7 +202,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						<?php
 							if(mysqli_num_rows($sqdts1)!=0){
 						?>
-						<td align="center" valign="top">
+						<td align="center" valign="top" width="25%" style="border-right: 0px">
 							<table border="0" width="100%" style="border-collapse: collapse;">	
 
 								<?php
@@ -259,7 +236,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 							if(mysqli_num_rows($sqdts2)!=0){
 						?>
-						<td align="center" valign="top">
+						<td align="center" valign="top" width="25%" style="border-left: 0px">
 							<table border="0" width="100%" style="border-collapse: collapse;">	
 
 								<?php
@@ -291,8 +268,42 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							}else{
 								echo "<td align=\"center\" valign=\"top\">&nbsp;</td>";
 							}
+
+							if(mysqli_num_rows($sqdts3)!=0){
 						?>
-						
+						<td align="center" valign="top">
+							<table border="0" width="100%" style="border-collapse: collapse;">	
+
+								<?php
+									if (mysqli_num_rows($sqdts3)!=0) {
+										while($row = mysqli_fetch_array($sqdts2, MYSQLI_ASSOC)){
+											$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
+								?>
+									<tr>
+										<td align="center">
+											<?php
+
+												if($row['lapproved']==1 && $row['cusersign']!=""){
+													echo "<div style=\"text-align: center; display: block\"><img src = '".$row['cusersign']."?x=".time()."' width='150px'></div>";
+													echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";												
+												}else{
+													echo "<div style=\"text-align: center; display: block; height: 50px\">&nbsp;</div>";
+													echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";
+												}
+											?>
+										</td>
+									</tr>
+								<?php
+										}
+									}
+								?>
+							</table>
+						</td>
+						<?php
+							}else{
+								echo "<td align=\"center\" valign=\"top\">&nbsp;</td>";
+							}
+						?>
 					</tr>
 				</table>
 
