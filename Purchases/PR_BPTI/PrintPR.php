@@ -231,7 +231,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						</td>
 						<?php
 							}else{
-								echo "<td align=\"center\" valign=\"top\">&nbsp;</td>";
+								echo "<td align=\"center\" valign=\"top\" style=\"border-right: 0px\">&nbsp;</td>";
 							}
 
 							if(mysqli_num_rows($sqdts2)!=0){
@@ -266,7 +266,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						</td>
 						<?php
 							}else{
-								echo "<td align=\"center\" valign=\"top\">&nbsp;</td>";
+								echo "<td align=\"center\" valign=\"top\" style=\"border-left: 0px\">&nbsp;</td>";
 							}
 
 							if(mysqli_num_rows($sqdts3)!=0){
