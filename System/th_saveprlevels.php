@@ -17,7 +17,7 @@ require_once "../Connection/connection_string.php";
 	mysqli_query($con,"UPDATE purchrequest_approvals_id set compcode='".date('m/d/Y_H:i:s')."' where compcode='$company'");
 
 
-	$result = mysqli_query ($con, "Select * From purchrequest_approvals where compcode='$company' and nlevel > 1"); 
+	$result = mysqli_query ($con, "Select * From purchrequest_approvals where compcode='$company'"); 
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 
 		$lvlnum = $row['nlevel'];
@@ -66,14 +66,14 @@ if($isokall=="True"){
 	?>
 	<script>
 		alert("PR Approvals Successfully Saved!");
-		window.location.replace("https://<?=$_SERVER['HTTP_HOST']?>/System");
+		window.location.replace("https://<?//=$_SERVER['HTTP_HOST']?>/System");
 	</script>
 	<?php
 }else{
 	?>
 	<script>
 		alert("PR Approvals has error saving!");
-		window.location.replace("https://<?=$_SERVER['HTTP_HOST']?>/System");
+		window.location.replace("https://<?//=$_SERVER['HTTP_HOST']?>/System");
 	</script>
 	<?php
 }

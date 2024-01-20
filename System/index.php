@@ -1852,7 +1852,7 @@ if(mysqli_num_rows($sql) != 0){
 
 									<form action="th_saveprlevels.php" method="POST" name="frmPRLvls" id="frmPRLvls" onSubmit="return chkprlvlform();" target="_self">
 
-										<!--<input type="hidden" name="tbPRLVL1count" id="tbLVL1count" value="0">-->
+										<input type="hidden" name="tblPRLVL1count" id="tblPRLVL1count" value="0">
 										<input type="hidden" name="tblPRLVL2count" id="tblPRLVL2count" value="0">
 										<input type="hidden" name="tblPRLVL3count" id="tblPRLVL3count" value="0">
 
@@ -1878,16 +1878,105 @@ if(mysqli_num_rows($sql) != 0){
 											<div class="tab-content col-lg-12 nopadwtop2x">   
 
 												<!-- LEVEL 1 -->
-													<div id="prlevel1" class="tab-pane fade in active">
-														<!--<input type="hidden" data-id="2" id = "lvlamt1" name = "lvlamt1" value="0">-->
-														<div class="col-xs-12 nopadding">
-															<div style="padding: 20px">
-																<h5><i>* Set Level 1 approval by giving Post and Cancel access in User's Access module and selecting the Sections in Inventory tab in the same module.</i></h5>
-															</div>
+												<div id="prlevel1" class="tab-pane fade in active">
+													<div class="col-xs-12 nopadding">
+										
+														<div class="col-xs-2 nopadding"> 
+															<button type="button" class="btn btn-xs btn-primary" onClick="addprlevel(1,'PRAPP1');"><i class="fa fa-plus"></i>&nbsp; &nbsp;Add Approver</button>		
+															
+															<input type="hidden" data-id="1" id = "lvlamt1" name = "lvlamt1" value="0">
+														</div>
 
+														<div class="col-xs-3 nopadwleft" id="divlevel1amounts"> 
+															
 														</div>
 
 													</div>
+
+													<div class="col-xs-12 border pre-scrollable" style="height: 150px; margin-top: 5px !important">
+
+														<table cellpadding="3px" width="100%" border="0" style="font-size: 14px"  id="PRAPP1">
+															<thead>
+																<tr>
+																	<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">User ID</td>
+																	<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px">Sections</td>
+																	<td style="padding-top: 5px; border-bottom: 1px solid; padding-bottom: 5px"><small>Delete</small></td>
+																</tr>
+															</thead>
+
+															<tbody>
+																<?php
+																$rowPRresult = array();
+																if (mysqli_num_rows($resPRApps)!=0) {
+																	$cntr = 0;
+
+																	while($rowxcv=mysqli_fetch_array($resPRApps, MYSQLI_ASSOC)){
+																		$rowPRresult[] = $rowxcv;
+																	}
+
+																	foreach ($rowPRresult as $row){
+																		if(intval($row['pr_approval_id'])==1){
+																			$cntr++;
+																?>	
+																	<tr>
+																		<td width="200px" style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																			<select class="form-control" name="selprsuser<?=$row['pr_approval_id'].$cntr?>" id="selprsuser<?=$row['pr_approval_id'].$cntr?>" >
+																				<?php
+																					foreach(@$ursnmse as $rsusr){
+																						if($rsusr['userid']==$row['userid']){
+																							$xscd = "selected";
+																						}else{
+																							$xscd = "";
+																						}
+
+																						echo "<option value='".$rsusr['userid']."' ".$xscd."> ".$rsusr['name']." </option>";
+																					}
+																				?> 
+																			</select>
+																		</td>
+																		<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">																
+																			<select required multiple class="form-control" name="selprsecs<?=$row['pr_approval_id'].$cntr?>[]" id="selprsecs<?=$row['pr_approval_id'].$cntr?>" >
+
+																			<option value='ALL' <?=($row['locations_id']=="ALL") ? "selected" : ""?>> ALL</option>
+
+																				<?php
+																					foreach(@$arsecs as $rsitm){
+
+																						$xsc = "";
+																						if($row['locations_id']!==""){
+																							if(in_array($rsitm['ccode'], explode(",",$row['locations_id']))){
+																								$xsc = "selected";
+																							}
+																						}
+																						
+																						echo "<option value='".$rsitm['ccode']."' ".$xsc."> ".$rsitm['cdesc']." </option>";
+																					}
+																				?> 
+																			</select>  
+																		</td>
+																	
+																		<td style="padding-top: 2px; padding-left: 1px; padding-right: 1px">
+																			<button class="btn btn-danger btn-sm" type="button" onclick="prtransset('delete',<?=$row['id']?>)"> <i class="fa fa-trash-o" aria-hidden="true"></i></button>
+																		</td>
+																	</tr>
+
+																	<script>
+																		$(document).ready(function(e) {
+																			$('#selprsuser<?=$row['pr_approval_id'].$cntr?>').select2({minimumResultsForSearch: Infinity,width: '100%'});
+																			$('#selprsecs<?=$row['pr_approval_id'].$cntr?>').select2({width: '100%'});
+																		});
+																	</script>
+																<?php
+																		}
+																	}
+																}
+																?>
+															</tbody>
+														</table> 
+
+													</div>
+
+												</div>
 
 												<!-- LEVEL 2 -->
 													<div id="prlevel2" class="tab-pane fade in">
@@ -1928,7 +2017,6 @@ if(mysqli_num_rows($sql) != 0){
 
 																<tbody>
 																	<?php
-																	$rowPRresult = array();
 																	if (mysqli_num_rows($resPRApps)!=0) {
 																		$cntr = 0;
 
@@ -6703,9 +6791,11 @@ if(mysqli_num_rows($sql) != 0){
 
 	function chkprlvlform(){
 
+		var lastRow1 = $("#PRAPP1 > tbody > tr").length;
 		var lastRow2 = $("#PRAPP2 > tbody > tr").length;
 		var lastRow3 = $("#PRAPP3 > tbody > tr").length;
   
+		$("#tblPRLVL1count").val(lastRow1);
 		$("#tblPRLVL2count").val(lastRow2); 
 		$("#tblPRLVL3count").val(lastRow3); 
 
