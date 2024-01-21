@@ -75,7 +75,7 @@
                         <th width="80">Label</th>
 						<th width="100">Effect Date</th>
                         <th width="80">Due</th>
-                        <th width="100">Status</th>
+                        <th width="100"  style="text-align: center">Status</th>
 					</tr>
 				</thead>
 
@@ -90,7 +90,7 @@
                         <td><?php echo $row['label'];?></td>
                         <td><?php echo $row['deffective'];?></td>
                         <td><?php echo $row['ddue'];?></td>
-						<td>
+						<td style="text-align: center">
 							<div id="msg<?php echo $row['tranno'];?>">
 								<?php 
 									if(intval($row['cancelled'])==intval(0) && intval($row['approved'])==intval(0)){
@@ -142,7 +142,7 @@
 	  <div class="modal-body" style="height: 70vh;"> 
 
         <div class="col-xs-12">
-            <div class="cgroup col-xs-3 nopadwtop">
+            <div class="cgroup col-xs-3 nopadwtop2x">
                 <b>Label</b>
             </div>
             
@@ -153,7 +153,7 @@
         </div>   
 
         <div class="col-xs-12">
-            <div class="cgroup col-xs-3 nopadwtop">
+            <div class="cgroup col-xs-3 nopadwtop2x">
                 <b>Description</b>
             </div>
             
@@ -163,7 +163,7 @@
         </div>   
         
         <div class="col-xs-12">
-            <div class="cgroup col-xs-3 nopadwtop">
+            <div class="cgroup col-xs-3 nopadwtop2x">
                 <b>Effectivity Date</b>
             </div>
 
@@ -171,7 +171,7 @@
 				<input type="text" class="datepicker form-control input-sm" id="effect_date" name="effect_date" value="">
             </div>
 			
-			<div class="col-xs-2" style='padding-top: 3px !important; padding-bottom: 0 !important; margin: 0 !important;'>
+			<div class="col-xs-1 nopadwtop2x text-right">
                 <b>Due Date: </b>
             </div>
             
@@ -181,7 +181,22 @@
         </div> 
 
 		<div class="col-xs-12">
-            <div class="cgroup col-xs-3 nopadwtop">
+            <div class="cgroup col-xs-3 nopadwtop2x">
+                <b>Sales Debit Acct</b>
+            </div>
+            
+            <div class="col-xs-9 nopadwtop">
+				<div class="col-xs-3 nopadding">
+               		<input type="text" class="form-control input-sm" id="salesdracct" name="salesdracct" value='' readonly placeholder="Account Code">
+				</div>
+				<div class="col-xs-9 nopadwleft">
+					<input type="text" class="form-control input-sm" id="salesdracctnme" name="salesdracctnme" value='' placeholder="Account Title">
+				</div>
+            </div>
+        </div> 
+
+		<div class="col-xs-12">
+            <div class="cgroup col-xs-3 nopadwtop2x">
                 <b>Search Item: </b>
             </div>
             
@@ -214,10 +229,10 @@
 	</div>
     
  	<div class="modal-footer">
-    			<input type="hidden" id="txtcode" name="txtcode" value=''>
-                <button type="button" id="btnSave" name="Save" class="btn btn-primary btn-sm">Add Detail</button>
-                <button type="button" id="btnUpdate" name="Update" class="btn btn-success btn-sm">Update Detail</button>
-                <button type="button" id='btnCancel' class="btn btn-danger  btn-sm" data-dismiss="modal">Cancel</button>
+		<input type="hidden" id="txtcode" name="txtcode" value=''>
+		<button type="button" id="btnSave" name="Save" class="btn btn-primary btn-sm">Add Detail</button>
+		<button type="button" id="btnUpdate" name="Update" class="btn btn-success btn-sm">Update Detail</button>
+		<button type="button" id='btnCancel' class="btn btn-danger  btn-sm" data-dismiss="modal">Cancel</button>
 	</div>
     
     </div>
@@ -353,6 +368,14 @@ mysqli_close($con);
 				$('#effect_date').val(inDay);
 				$('#duedate').val(inDay);
 				$('#myModalLabel').html("<b>Add New Discount</b>");
+
+				$("#tranno").attr("readonly", false);
+				$("#txtcode").attr("readonly", false);
+				$('#txtdesc').attr("readonly", false);	
+				$('#txtlabel').attr("readonly", false);
+				$('#duedate').attr("readonly", false);
+				$('#effect_date').attr("readonly", false);
+
                 $('#myModal').modal('show');
 			} else {
 				$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
@@ -396,6 +419,7 @@ mysqli_close($con);
 			let due = $('#duedate').val();
 			let discount = $("#discount").val();
 			let effect = $('#effect_date').val();
+			var acctcode = $("#salesdracct").val();
 			let tranno = '';
 
 			/*itemStored.map((item, index) => {
@@ -426,7 +450,8 @@ mysqli_close($con);
 					label: label,
 					remarks: desc,
 					due: due,
-					effect: effect
+					effect: effect,
+					acctcode:acctcode
 				},
 				dataType: 'json',
 				async: false,
@@ -478,6 +503,7 @@ mysqli_close($con);
 			let due = $('#duedate').val();
 			let effect = $('#effect_date').val();
 			let tranno = $('#tranno').val();
+			var acctcode = $("#salesdracct").val();
 
 			let isProcceed = false;
 
@@ -511,6 +537,7 @@ mysqli_close($con);
 					label: label,
 					effective: effect,
 					due: due,
+					acctcode:acctcode
 				},
 				dataType: 'json',
 				async: false,
@@ -551,10 +578,41 @@ mysqli_close($con);
 				})
 			}
 		})
+
+		$("#salesdracctnme").typeahead({
+			items: 10,
+			source: function(request, response) {
+				$.ajax({
+					url: "../../Sales/th_accounts.php",
+					dataType: "json",
+					data: {
+						query: $("#salesdracctnme").val()
+					},
+					success: function (data) {
+						console.log(data);
+						response(data);
+					}
+				});
+			},
+			autoSelect: true,
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.acct + '</span><br><small>' + item.name + '</small></div>';
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 
+
+				$('#salesdracctnme').val(item.name).change(); 
+				$("#salesdracct").val(item.acct);
+
+			}
+		});
 	});
 
 
 	function update(data){
+
+		var isposted = 0;
+		var xcblabelz = "";
 		var access = chkAccess('DISC_Edit');
 		if(access.trim() == "True"){
 			console.log(data)
@@ -568,15 +626,22 @@ mysqli_close($con);
 						$("#itemlist tbody").empty();
 						res.data.map((item, index)=>{
 							$("#btnSave").hide();
-							$("#searchitem").hide();
+							
 							$("#btnUpdate").show();
 
+							var isddfc ="";
 							if(item.approved != 0){
-								return alert("Discount has been approved")
+							//	return alert("Discount has been approved")
+								isposted = 1;
+								isddfc = "disabled";
+								xcblabelz = "<font style=\"color: red\">(POSTED)</font>";
 							}
 
 							if(item.cancelled != 0){
-								return alert("Discount has been cancelled")
+							//	return alert("Discount has been cancelled")
+								isposted = 1;
+								isddfc = "disabled";
+								xcblabelz = "<font style=\"color: red\">(CANCELLED)</font>";
 							}	
 
 							itemStored.push(item)
@@ -592,20 +657,52 @@ mysqli_close($con);
 							$('#txtlabel').val(item.label);
 							$('#duedate').val(item.ddue);
 							$('#effect_date').val(item.deffective);
+							$('#salesdracctnme').val(item.cacctdesc);
+							$('#salesdracct').val(item.cacctcode);
 
+							if(isposted==1){
+								$("#tranno").attr("readonly", true);
+								$("#txtcode").attr("readonly", true);
+								$('#txtdesc').attr("readonly", true);	
+								$('#txtlabel').attr("readonly", true);
+								$('#duedate').attr("readonly", true);
+								$('#effect_date').attr("readonly", true);
+								$('#salesdracctnme').attr("readonly", true);
+							}else{
+								$("#tranno").attr("readonly", false);
+								$("#txtcode").attr("readonly", false);
+								$('#txtdesc').attr("readonly", false);	
+								$('#txtlabel').attr("readonly", false);
+								$('#duedate').attr("readonly", false);
+								$('#effect_date').attr("readonly", false);
+								$('#salesdracctnme').attr("readonly", false);
+							}
+
+							if(isposted==1){
+								mlctypxz = item.type;
+							}else{
+								mlctypxz = "<select id='type' name='type'> <option "+(item.type == "PERCENT" ? "selected" : null)+" value='PERCENT'>PERCENT</option> <option "+(item.type == "PRICE" ? "selected" : null)+" value='PRICE'>PRICE</option> </select>";
+							}
+							
 							$("<tr>").append(
 								$("<td>").html(item.itemno+"<input type='hidden' id='cpartno' name='cpartno' value='"+item.itemno+"'/>"),
 								$("<td>").text(item.citemdesc),
 								$("<td>").html(item.unit+"<input type='hidden' id='cunit' name='cunit' value='"+item.unit+"'/>"),
-								$("<td>").html("<select id='type' name='type'> <option "+(item.type == "PERCENT" ? "selected" : null)+" value='PERCENT'>PERCENT</option> <option "+(item.type == "PRICE" ? "selected" : null)+" value='PRICE'>PRICE</option> </select>"),
-								$("<td>").html("<input type='text' id='discountAmt' name='discountAmt' value='"+item.discount+"' autocomplete='false'/> "),
-								$("<td>").html("<button type='button' class='btn btn-xs btn-danger' id='deleteItem' name='deleteitem' value='"+item.id+"' onclick='deleteList.call(this)'>delete</buton>")
+								$("<td>").html(mlctypxz),
+								$("<td>").html("<input type='text' id='discountAmt' name='discountAmt' value='"+item.discount+"' autocomplete='false' "+isddfc+"/> "),
+								$("<td>").html("<button type='button' class='btn btn-xs btn-danger' id='deleteItem' name='deleteitem' value='"+item.id+"' onclick='deleteList.call(this)' "+isddfc+">delete</buton>")
 							).appendTo("#itemlist tbody")
 
-							$('#myModalLabel').html("<b>Update Discounts Detail</b>");
+							$('#myModalLabel').html("<b>Update Discounts Detail</b> "+xcblabelz);
 							$('#myModal').modal('show');
-							})
+						})
 
+							if(isposted==1){
+								$("#btnUpdate").attr("disabled", true);
+								$("#searchitem").hide();
+							}else{
+								$("#searchitem").show();
+							}
 							console.log(itemStored);
 						
 					} else {

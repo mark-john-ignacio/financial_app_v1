@@ -16,6 +16,7 @@
     $effect = date("Y-m-d", strtotime($_REQUEST['effect']));
     $due = date("Y-m-d", strtotime($_REQUEST['due']));
     $date = date("Y-m-d H:i:s");
+    $acctcode = $_REQUEST['acctcode'];
 
     $sql = "SELECT * FROM discountmatrix where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By `tranno` desc LIMIT 1";
     $query = mysqli_query($con, $sql);
@@ -45,8 +46,8 @@
     }
 
 
-    $sql = "INSERT INTO discountmatrix (`compcode`, `tranno`, `remarks`, `label`, `deffective`, `ddue`, `approved`, `cancelled`, `status`, `ddate`) 
-            VALUES ('$company', '$code', '$remarks', '$label', '$effect', '$due', 0, 0 ,'ACTIVE', '$date')";
+    $sql = "INSERT INTO discountmatrix (`compcode`, `tranno`, `remarks`, `label`, `deffective`, `ddue`, `approved`, `cancelled`, `status`, `ddate`, `cacctcode`) VALUES ('$company', '$code', '$remarks', '$label', '$effect', '$due', 0, 0 ,'ACTIVE', '$date', '$acctcode')";
+    
     if(!mysqli_query($con, $sql)){
         printf("Errormessage: %s\n", mysqli_error($con));
     } else {

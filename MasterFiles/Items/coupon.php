@@ -268,6 +268,14 @@ mysqli_close($con);
 				$("#itemlist tbody").empty();
 
 				$('.modal-body input').val("");
+
+				$("#tranno").attr("readonly", false);
+				$("#remarks").attr("readonly", false);
+				$('#txtlabel').attr("readonly", false);	
+				$('#Price').attr("readonly", false);
+				$('#days').attr("readonly", false);
+				$('#barcode').attr("readonly", false);
+
 				$('#expired').val(inDay);
 				$('#myModalLabel').html("<b>Create New Coupon</b>");
                 $('#myModal').modal('show');
@@ -348,6 +356,9 @@ mysqli_close($con);
 
 
 	function update(data){
+		var isposted = 0;
+		var xcblabelz = "";
+
 		var access = chkAccess('DISC_Edit');
 		if(access.trim() == "True"){
 			console.log(data)
@@ -364,12 +375,19 @@ mysqli_close($con);
 							$("#btnUpdate").show();
 							console.log(item)
 
+							var isddfc ="";
 							if(item.approved != 0){
-								return alert("Discount has been approved")
+								//return alert("Discount has been approved")
+								isposted = 1;
+								isddfc = "disabled";
+								xcblabelz = "<font style=\"color: red\">(POSTED)</font>";
 							}
 
 							if(item.cancelled != 0){
-								return alert("Discount has been cancelled")
+								//return alert("Discount has been cancelled")
+								isposted = 1;
+								isddfc = "disabled";
+								xcblabelz = "<font style=\"color: red\">(CANCELLED)</font>";
 							}
 
 							$("#tranno").val(item.CouponNo)
@@ -379,9 +397,29 @@ mysqli_close($con);
 							$("#days ").val(item.days);
 							$('#barcode').val(item.barcode);
 
-							$('#myModalLabel').html("<b>Update Coupon Detail</b>");
+							if(isposted==1){
+								$("#tranno").attr("readonly", true);
+								$("#remarks").attr("readonly", true);
+								$('#txtlabel').attr("readonly", true);	
+								$('#Price').attr("readonly", true);
+								$('#days').attr("readonly", true);
+								$('#barcode').attr("readonly", true);
+							}else{
+								$("#tranno").attr("readonly", false);
+								$("#remarks").attr("readonly", false);
+								$('#txtlabel').attr("readonly", false);	
+								$('#Price').attr("readonly", false);
+								$('#days').attr("readonly", false);
+								$('#barcode').attr("readonly", false);
+							}
+
+							$('#myModalLabel').html("<b>Update Coupon Detail</b> "+xcblabelz);
 							$('#myModal').modal('show');
                         })
+
+						if(isposted==1){
+							$("#btnUpdate").attr("disabled", true);
+						}
 					} else {
 						console.log(res.msg)
 					}

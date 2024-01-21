@@ -15,9 +15,10 @@
     $effect = date("Y-m-d", strtotime($_REQUEST['effective']));
     $due = date("Y-m-d", strtotime($_REQUEST['due']));
     $tranno = $_REQUEST['tranno'];
+    $acctcode = $_REQUEST['acctcode'];
 
+    $sql = "UPDATE discountmatrix SET `remarks` = '$remarks', `label` = '$label', `deffective` = '$effect', `ddue` = '$due', `cacctcode` = '$acctcode' WHERE compcode = '$company' AND tranno = '$tranno'";
 
-    $sql = "UPDATE discountmatrix SET `remarks` = '$remarks', `label` = '$label', `deffective` = '$effect', `ddue` = '$due' WHERE compcode = '$company' AND tranno = '$tranno'";
     if(mysqli_query($con, $sql)){
         mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
         values('$company','$tranno','$preparedby',NOW(),'UPDATED','DISCOUNT_MATRIX','$compname','Updated Record')");

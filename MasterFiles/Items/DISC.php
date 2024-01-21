@@ -17,6 +17,7 @@ include('../../include/accessinner.php');
 <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
     
 <script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
 <script src="../../Bootstrap/js/jquery.numeric.js"></script>
 
 <script src="../../Bootstrap/js/bootstrap.js"></script>
@@ -53,7 +54,7 @@ include('../../include/accessinner.php');
                         <th width="80">Label</th>
                         <th width="80">Value</th>
                         <th width="100">Effect Date</th>
-                        <th width="100">Status</th>
+                        <th width="100" style="text-align: center">Status</th>
 					</tr>
 				</thead>
 
@@ -61,7 +62,7 @@ include('../../include/accessinner.php');
               	<?php
 				$company = $_SESSION['companyid'];
 				
-					$sql = "select * from discounts where compcode='$company' order by clabel";
+					$sql = "select A.*, B.cacctdesc from discounts A left join accounts B on A.compcode=B.compcode and A.cacctcode=B.cacctid where A.compcode='$company' order by A.clabel";
 				
 					$result=mysqli_query($con,$sql);
 					
@@ -74,7 +75,7 @@ include('../../include/accessinner.php');
 				?>
  					<tr>
 
-						<td width="100"><a href="javascript:;" onClick="editgrp('<?php echo $row['ctranno'];?>','<?php echo $row['cdescription'];?>','<?php echo $row['clabel'];?>','<?php echo $row['nvalue'];?>','<?php echo date_format(date_create($row['deffectdate']),"m/d/Y");?>', '<?= $row['type']?>', <?= $row['lapproved'] ?>, <?= $row['lcancelled'] ?>)"><?php echo $row['ctranno'];?></a></td>
+						<td width="100"><a href="javascript:;" onClick="editgrp('<?php echo $row['ctranno'];?>','<?php echo $row['cdescription'];?>','<?php echo $row['clabel'];?>','<?php echo $row['nvalue'];?>','<?php echo date_format(date_create($row['deffectdate']),"m/d/Y");?>', '<?= $row['type']?>', <?= $row['lapproved'] ?>, <?= $row['lcancelled'] ?>, '<?= $row['cacctcode'] ?>', '<?= $row['cacctdesc'] ?>')"><?php echo $row['ctranno'];?></a></td>
                         <td><?php echo $row['cdescription'];?>
                         	<div class="itmalert alert alert-danger nopadding" id="itm<?php echo $row['ctranno'];?>" style="display: inline"></div>
                         </td>
@@ -82,7 +83,7 @@ include('../../include/accessinner.php');
                         
                         <td><?php echo ($row["type"]) != "PERCENT" ? number_format($row['nvalue'],2) : number_format($row['nvalue'],0) . "%";?></td>
 						<td><?php echo $row['deffectdate'];?></td>
-						<td>
+						<td style="text-align: center">
 							<div id="msg<?php echo $row['ctranno'];?>">
 								<?php 
 									if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
@@ -94,22 +95,21 @@ include('../../include/accessinner.php');
 										if(intval($row['lapproved'])==intval(1)){
 								?>			
 								<div id="itmstat<?php echo $row['ctranno'];?>">
-								<?php 
-									if($row['cstatus']=="ACTIVE"){
-										echo "<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('". $row['ctranno'] ."','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>";
-									}
-									else{
-										echo "<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('". $row['ctranno'] ."','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>";
-									}
-								?>
+									<?php 
+										if($row['cstatus']=="ACTIVE"){
+											echo "<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('". $row['ctranno'] ."','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>";
+										}
+										else{
+											echo "<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('". $row['ctranno'] ."','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>";
+										}
+									?>
 								</div>
 								<?php			
-									}
-									if(intval($row['lcancelled'])==intval(1)){
-										echo "Cancelled";
-									}
-								}
-								
+										}
+										if(intval($row['lcancelled'])==intval(1)){
+											echo "Cancelled";
+										}
+									}								
 								?>
 							</div>
                         </td>
@@ -139,7 +139,7 @@ include('../../include/accessinner.php');
 	  <div class="modal-body" style="height: 30vh">
     
         <div class="col-xs-12">
-            <div class="cgroup col-xs-3 nopadwtop">
+            <div class="cgroup col-xs-3 nopadwtop2x">
                 <b>Description</b>
             </div>
             
@@ -149,7 +149,7 @@ include('../../include/accessinner.php');
         </div>   
 
         <div class="col-xs-12">
-            <div class="cgroup col-xs-3 nopadwtop">
+            <div class="cgroup col-xs-3 nopadwtop2x">
                 <b>Label</b>
             </div>
             
@@ -159,29 +159,43 @@ include('../../include/accessinner.php');
         </div>   
  
         <div class="col-xs-12">
-            <div class="cgroup col-xs-3 nopadwtop">
+            <div class="cgroup col-xs-3 nopadwtop2x">
                 <b>Discount Amount</b>
             </div>
             
-            <div class="col-xs-5 nopadwtop" style='padding-right: 20px'>
+            <div class="col-xs-4 nopadwtop" style='padding-right: 20px'>
                 <input type="text" class="numeric form-control input-sm" id="txtvalue" name="txtvalue"  placeholder="Enter Decimal Value.." required>
 			</div>
 
-			<div class="cgroup col-xs-3 nopadwtop">
-				<label for="discount">PERCENT</label>
+			<div class="cgroup col-xs-4 nopadwtop">
+				<label for="discount">&nbsp;&nbsp;PERCENT</label>
 				<input type="radio" name='discount[]' class='rad' id='discount' value="PERCENT" />
-				<label for="price">PRICE</label>
+				<label for="price">&nbsp;&nbsp;PRICE</label>
 				<input type="radio" name='discount[]' class='rad' id='price' value="PRICE" />
 			</div>
         </div>   
         
         <div class="col-xs-12">
-            <div class="cgroup col-xs-3 nopadwtop">
+            <div class="cgroup col-xs-3 nopadwtop2x">
                 <b>Effectivity Date</b>
             </div>
             
             <div class="col-xs-9 nopadwtop">
                 <input type="text" class="form-control input-sm" id="effect_date" name="effect_date" value='<?php echo date("m/d/Y");?>'>
+            </div>
+        </div> 
+		<div class="col-xs-12">
+            <div class="cgroup col-xs-3 nopadwtop2x">
+                <b>Sales Debit Acct</b>
+            </div>
+            
+            <div class="col-xs-9 nopadwtop">
+				<div class="col-xs-3 nopadding">
+               		<input type="text" class="form-control input-sm" id="salesdracct" name="salesdracct" value='' readonly placeholder="Account Code">
+				</div>
+				<div class="col-xs-9 nopadwleft">
+					<input type="text" class="form-control input-sm" id="salesdracctnme" name="salesdracctnme" value='' placeholder="Account Title">
+				</div>
             </div>
         </div> 
          
@@ -190,10 +204,10 @@ include('../../include/accessinner.php');
 	</div>
     
  	<div class="modal-footer">
-    			<input type="hidden" id="txtcode" name="txtcode" value=''>
-                <button type="button" id="btnSave" name="Save" class="btn btn-primary btn-sm">Add Detail</button>
-                <button type="button" id="btnUpdate" name="Update" class="btn btn-success btn-sm">Update Detail</button>
-                <button type="button" class="btn btn-danger  btn-sm" data-dismiss="modal">Cancel</button>
+		<input type="hidden" id="txtcode" name="txtcode" value=''>
+		<button type="button" id="btnSave" name="Save" class="btn btn-primary btn-sm">Add Detail</button>
+		<button type="button" id="btnUpdate" name="Update" class="btn btn-success btn-sm">Update Detail</button>
+		<button type="button" class="btn btn-danger  btn-sm" data-dismiss="modal">Cancel</button>
 	</div>
     
     </div>
@@ -250,22 +264,22 @@ mysqli_close($con);
 		// Adding new user
 		$("#btnadd").on("click", function() {
 		
-		var today = new Date();
-		var dd = today.getDate();
-		var mm = today.getMonth()+1; //January is 0!
-		
-		var yyyy = today.getFullYear();
-		if(dd<10){
-			dd='0'+dd;
-		} 
-		if(mm<10){
-			mm='0'+mm;
-		} 
-		var today = mm+'/'+dd+'/'+yyyy;
+			var today = new Date();
+			var dd = today.getDate();
+			var mm = today.getMonth()+1; //January is 0!
+			
+			var yyyy = today.getFullYear();
+			if(dd<10){
+				dd='0'+dd;
+			} 
+			if(mm<10){
+				mm='0'+mm;
+			} 
+			var today = mm+'/'+dd+'/'+yyyy;
 
-			 var x = chkAccess('DISC_New');
-			 
-			 if(x.trim()=="True"){
+			var x = chkAccess('DISC_New');
+			
+			if(x.trim()=="True"){
 				$("#btnSave").show();
 				$("#btnUpdate").hide();
 		
@@ -273,15 +287,29 @@ mysqli_close($con);
 				$('#txtdesc').val("");	
 				$('#txtlabel').val("");
 				$('#txtvalue').val("");
+				$('#salesdracctnme').val("");
+				$('#salesdracct').val("");
 				$('#effect_date').val(today);
+
+				$("#btnUpdate").attr("disabled",false);
+						
+				$("#txtcode").attr("readonly", false);
+				$('#txtdesc').attr("readonly", false);	
+				$('#txtlabel').attr("readonly", false);
+				$('#txtvalue').attr("readonly", false);
+				$('#effect_date').attr("readonly", false);
+
+				$(".rad").each(function(){
+					$(this).attr("disabled",false);
+				});
 				
 				$('#myModalLabel').html("<b>Add New Discount</b>");
 				$('#myModal').modal('show');
-			 } else {
-				 $("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
-				 $("#AlertModal").modal('show');
-	
-			 }
+			} else {
+				$("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
+				$("#AlertModal").modal('show');
+
+			}
 		});
 				
 		$("#btnSave, #btnUpdate").on("click", function() {
@@ -291,10 +319,11 @@ mysqli_close($con);
 			var vareffect = $('#effect_date').val();
 			var varcode = $('#txtcode').val();
 			var type = $("input[type='radio']:checked").val();
+			var acctcode = $("#salesdracct").val();
 						 
 			$.ajax ({
 				url: "th_savedisc.php",
-				data: { code:varcode, effdte: vareffect, desc: vardesc, lbl: varlabel, val: varvalz, type: type},
+				data: { code:varcode, effdte: vareffect, desc: vardesc, lbl: varlabel, val: varvalz, type: type, acctcode:acctcode},
 				async: false,
 				success: function( data ) {
 					if(data.trim()=="True"){
@@ -312,18 +341,50 @@ mysqli_close($con);
 			});
 
 		});
-		
+
+		$("#salesdracctnme").typeahead({
+			items: 10,
+			source: function(request, response) {
+				$.ajax({
+					url: "../../Sales/th_accounts.php",
+					dataType: "json",
+					data: {
+						query: $("#salesdracctnme").val()
+					},
+					success: function (data) {
+						console.log(data);
+						response(data);
+					}
+				});
+			},
+			autoSelect: true,
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.acct + '</span><br><small>' + item.name + '</small></div>';
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 
+
+				$('#salesdracctnme').val(item.name).change(); 
+				$("#salesdracct").val(item.acct);
+
+			}
+		});
+	
 	});
 	
-	function editgrp(code,desc,lbl,val,effdte, types, approve, cancel){
+	function editgrp(code,desc,lbl,val,effdte, types, approve, cancel, cacctcode, cacctdesc){
 		 var x = chkAccess('DISC_Edit');
 
+		 var isposcd = 0;
+
 		 if(cancel === 1){
-			return alert("Discount has been Cancelled. cannot update");
+			//return alert("Discount has been Cancelled. cannot update");
+			isposcd = "CANCELLED";
 		 }
 
 		if(approve === 1){
-			return alert("Discount has been Approved. cannot update");
+			//return alert("Discount has been Approved. cannot update");
+			isposcd = "POSTED";
 		}
 		 
 		 if(x.trim()=="True"){
@@ -335,11 +396,45 @@ mysqli_close($con);
 			$('#txtlabel').val(lbl);
 			$('#txtvalue').val(val);
 			$('#effect_date').val(effdte);
+			$('#salesdracctnme').val(cacctdesc);
+			$('#salesdracct').val(cacctcode);
 			$(".rad").each(function(){
 				if($(this).val() === types) return $(this).prop("checked",true) 
-			})
+			});
+
+			if(isposcd!=0){
+				$("#btnUpdate").attr("disabled",true);
+						
+				$("#txtcode").attr("readonly", true);
+				$('#txtdesc').attr("readonly", true);	
+				$('#txtlabel').attr("readonly", true);
+				$('#txtvalue').attr("readonly", true);
+				$('#effect_date').attr("readonly", true);
+				$('#salesdracctnme').attr("readonly", true);
+
+				$(".rad").each(function(){
+					$(this).attr("disabled",true);
+				});
+
+				$('#myModalLabel').html("<b>Update Discounts Detail</b> <font style='color: red'>("+isposcd+")</font>");
+			}else{
+				$("#btnUpdate").attr("disabled",false);
+						
+				$("#txtcode").attr("readonly", false);
+				$('#txtdesc').attr("readonly", false);	
+				$('#txtlabel').attr("readonly", false);
+				$('#txtvalue').attr("readonly", false);
+				$('#effect_date').attr("readonly", false);
+				$('#salesdracctnme').attr("readonly", false);
+
+				$(".rad").each(function(){
+					$(this).attr("disabled",false);
+				});
+
+				$('#myModalLabel').html("<b>Update Discounts Detail</b>");
+			}
 								
-			$('#myModalLabel').html("<b>Update Discounts Detail</b>");
+			
 			$('#myModal').modal('show');
 		 } else {
 			 $("#AlertMsg").html("<center><b>ACCESS DENIED!</b></center>");
@@ -396,20 +491,20 @@ mysqli_close($con);
 	
 	}
 
-		function chkAccess(id){
-			var result;
-			
-			$.ajax ({
-				url: "chkAccess.php",
-				data: { id: id },
-				async: false,
-				success: function( data ) {
-					 result = data;
-				}
-			});
-			
-			return result;
-		}
+	function chkAccess(id){
+		var result;
+		
+		$.ajax ({
+			url: "chkAccess.php",
+			data: { id: id },
+			async: false,
+			success: function( data ) {
+					result = data;
+			}
+		});
+		
+		return result;
+	}
 
 
 	</script>
