@@ -290,7 +290,7 @@
                     $uploadedFile = $uploadDir . $file['name'];
                     move_uploaded_file($file['tmp_name'], $uploadedFile);
     
-                    require '../../vendor2/autoload.php';
+                    require '../vendor2/autoload.php';
     
                     $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($uploadedFile);
                     $worksheet = $spreadsheet->getActiveSheet();
