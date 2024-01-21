@@ -12,6 +12,9 @@
 
     $excel_data = ExcelRead($_FILES);
 
+    $xxcmsg = "";
+
+    $okinsert = 0;
     if(count($excel_data) != 0){
 
         for($i = 1; $i < sizeof($excel_data); $i++){
@@ -21,22 +24,34 @@
             if(mysqli_num_rows($query) != 0){
                 $isFinished = false;
             } else {
-                $sql = "INSERT INTO `coupon`(`compcode`, `CouponNo`, `label`, `remarks`, `barcode`, `price`, `days`, `status`, `ddate`) 
-                VALUES ('$company', '{$data[0]}', '{$data[1]}', '{$data[2]}', '{$data[3]}', '{$data[4]}', '{$data[5]}', 'INACTIVE', NOW())";
-                if(mysqli_query($con, $sql)){
-                    $isFinished = true;
-                } else {
-                    $isFinished = false;
+                $sql = "INSERT INTO `coupon`(`compcode`, `CouponNo`, `label`, `remarks`, `barcode`, `price`, `days`, `status`, `ddate`, `cacctcode`) VALUES ('$company', '{$data[0]}', '{$data[1]}', '{$data[2]}', '{$data[3]}', '{$data[4]}', '{$data[5]}', 'INACTIVE', NOW(), '{$data[6]}')";
+                
+                if(!mysqli_query($con, $sql)){
+                //    $isFinished = false;
+                }else{
+                    $okinsert++;
                 }
             }
             
         }    
-        if($isFinished) { 
-            echo json_encode([
-                "valid" => true,
-                "msg" => "Successfully inserted"
-            ]);
-        } else { 
+
+        $totexcel = count($excel_data)-1;
+        if($okinsert>0){
+            if($okinsert<$totexcel){
+                $y1 = "Some Data are inserted successfully";
+                echo json_encode([
+                    "valid" => true,
+                    "msg" => $y1
+                ]);
+            }
+            if($okinsert==$totexcel){
+                echo json_encode([
+                    "valid" => true,
+                    "msg" => "All Data Successfully inserted"
+                ]);
+            }
+        }
+        else { 
             deleteInserted($excel_data);
             echo json_encode([
                 "valid" => false,

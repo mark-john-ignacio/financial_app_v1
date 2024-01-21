@@ -42,7 +42,8 @@
                     
                     <div style='padding-top: 30px; padding-bottom: 30px'>
                         <input type="button" id='submit' value="Submit" class='btn btn-success btn-sm' >
-                        <a href="../MassUpload/Coupon-Template-Mass-Uploading.xlsx" download="Coupon-Template-Mass-Uploading.xlsx" class="btn btn-info btn-sm" id="download" >Download Template</a>
+                        <a href="../MassUpload/templates/Coupon-Template-Mass-Uploading.xlsx" download="Coupon-Template-Mass-Uploading.xlsx" class="btn btn-info btn-sm" id="download" >Download Template</a>
+
                     </div>
                 </div>
             </div>
@@ -125,6 +126,7 @@
                     success: function (res) {
                         if(res.valid){
                             alert(res.msg)
+                            location.href = "../MasterFiles/Items/coupon.php";
                         } else {
                             alert(res.msg)
                         }
