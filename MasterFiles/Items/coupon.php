@@ -175,6 +175,21 @@
             <div class="col-xs-9 nopadwtop">
                 <input type="text" class="form-control input-sm" id="barcode" name="barcode" placeholder="Enter Barcode..." autocomplete="FALSE"/>
             </div>
+        </div>
+
+		<div class="col-xs-12">
+            <div class="cgroup col-xs-3 nopadwtop">
+                <b>Sales Debit Account: </b>
+            </div>
+            
+            <div class="col-xs-9 nopadwtop">
+				<div class="col-xs-3 nopadding">
+               		<input type="text" class="form-control input-sm" id="salesdracct" name="salesdracct" value='' readonly placeholder="Account Code">
+				</div>
+				<div class="col-xs-9 nopadwleft">
+					<input type="text" class="form-control input-sm" id="salesdracctnme" name="salesdracctnme" value='' placeholder="Account Title">
+				</div>
+            </div>
         </div> 
 
         <div class="col-xs-12">
@@ -291,6 +306,7 @@ mysqli_close($con);
 			let barcode = $('#barcode').val();
 			let price = $("#Price").val();
 			let days = $('#days').val();
+			let acctcode = $('#salesdracct').val();
 
 			$.ajax({
 				url: "th_couponsave.php",
@@ -299,7 +315,8 @@ mysqli_close($con);
 					remarks: remarks,
 					barcode: barcode,
 					priced: price,
-                    days: days
+                    days: days,
+					acctcode: acctcode
 				},
 				dataType: 'json',
 				async: false,
@@ -325,7 +342,7 @@ mysqli_close($con);
             let barcode = $('#barcode').val();
             let price = $('#Price').val();
 			let days = $('#days').val();
-			
+			let acctcode = $('#salesdracct').val();
 
 			$.ajax({
 				url: "th_couponupdate.php",
@@ -335,7 +352,8 @@ mysqli_close($con);
 					label: label,
 					barcode: barcode,
 					priced: price,
-                    days: days
+                    days: days,
+					acctcode: acctcode
 				},
 				dataType: 'json',
 				async: false,
@@ -352,6 +370,34 @@ mysqli_close($con);
 				}
 			})
 		})
+
+		$("#salesdracctnme").typeahead({
+			items: 10,
+			source: function(request, response) {
+				$.ajax({
+					url: "../../Sales/th_accounts.php",
+					dataType: "json",
+					data: {
+						query: $("#salesdracctnme").val()
+					},
+					success: function (data) {
+						console.log(data);
+						response(data);
+					}
+				});
+			},
+			autoSelect: true,
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.acct + '</span><br><small>' + item.name + '</small></div>';
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 
+
+				$('#salesdracctnme').val(item.name).change(); 
+				$("#salesdracct").val(item.acct);
+
+			}
+		});
 	});
 
 
@@ -396,6 +442,8 @@ mysqli_close($con);
 							$('#Price').val(item.price);
 							$("#days ").val(item.days);
 							$('#barcode').val(item.barcode);
+							$('#salesdracctnme').val(item.cacctdesc);
+							$('#salesdracct').val(item.cacctcode);
 
 							if(isposted==1){
 								$("#tranno").attr("readonly", true);
@@ -404,6 +452,7 @@ mysqli_close($con);
 								$('#Price').attr("readonly", true);
 								$('#days').attr("readonly", true);
 								$('#barcode').attr("readonly", true);
+								$('#salesdracctnme').attr("readonly", true);
 							}else{
 								$("#tranno").attr("readonly", false);
 								$("#remarks").attr("readonly", false);
@@ -411,6 +460,7 @@ mysqli_close($con);
 								$('#Price').attr("readonly", false);
 								$('#days').attr("readonly", false);
 								$('#barcode').attr("readonly", false);
+								$('#salesdracctnme').attr("readonly", false);
 							}
 
 							$('#myModalLabel').html("<b>Update Coupon Detail</b> "+xcblabelz);

@@ -44,10 +44,10 @@
     $remarks = mysqli_real_escape_string($con, $_REQUEST['remarks']);
     $price = mysqli_real_escape_string($con, $_REQUEST['priced']);
     $barcode = mysqli_real_escape_string($con, $_REQUEST['barcode']);
-    $days = mysqli_real_escape_string($con, $_REQUEST['days']);
+    $days = mysqli_real_escape_string($con, $_REQUEST['days']); 
+    $acctcode = mysqli_real_escape_string($con, $_REQUEST['acctcode']);
 
-    $sql = "INSERT INTO coupon (`compcode`, `label`, `remarks`, `CouponNo`, `barcode`, `days`, `price`, `status`, `approved`, `cancelled`, `ddate`)
-                        VALUES('$company', '$label', '$remarks', '$code', '$barcode', '$days', '$price', 'INACTIVE', 0, 0, NOW())";
+    $sql = "INSERT INTO coupon (`compcode`, `label`, `remarks`, `CouponNo`, `barcode`, `days`, `price`, `status`, `approved`, `cancelled`, `ddate`, `cacctcode`) VALUES('$company', '$label', '$remarks', '$code', '$barcode', '$days', '$price', 'INACTIVE', 0, 0, NOW(), '$acctcode')";
     if(mysqli_query($con, $sql)){
         echo json_encode([
             'valid' => true,

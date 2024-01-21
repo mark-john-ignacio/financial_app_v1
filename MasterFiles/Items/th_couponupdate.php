@@ -12,8 +12,9 @@
     $price = mysqli_real_escape_string($con, $_REQUEST['priced']);
     $barcode = mysqli_real_escape_string($con, $_REQUEST['barcode']);
     $days = mysqli_real_escape_string($con, $_REQUEST['days']);
+    $acctcode = mysqli_real_escape_string($con, $_REQUEST['acctcode']);
 
-    $sql = "UPDATE coupon SET `label` = '$label', `remarks` = '$remarks', `price` = '$price', `barcode` = '$barcode', `days` = '$days' WHERE compcode = '$company' AND CouponNo = '$coupon'";
+    $sql = "UPDATE coupon SET `label` = '$label', `remarks` = '$remarks', `price` = '$price', `barcode` = '$barcode', `days` = '$days', `cacctcode` = '$acctcode' WHERE compcode = '$company' AND CouponNo = '$coupon'";
     if(mysqli_query($con, $sql)){
         $compname = php_uname('n');
         $preparedby = $_SESSION['employeeid'];
