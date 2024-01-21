@@ -15,6 +15,7 @@
      */
     $label = $_POST['label'];
     $description = $_POST['description'];
+    $cacctcode = $_POST['salesdracct'];
     $effect = date("Y-m-d", strtotime($_POST['effectdate']));
     $due = date("Y-m-d", strtotime($_POST['duedate']));
 
@@ -55,13 +56,11 @@
             $data = $excel_data[$i];
 
             if($i === 1){
-                $sql = "INSERT INTO discountmatrix (`compcode`, `tranno`, `remarks`, `label`, `deffective`, `ddue`, `status`, `ddate`, `approved`, `cancelled`) 
-                                        VALUES('$company', '$code', '$description', '$label', '$effect', '$due', 'ACTIVE', NOW(), 0, 0)";
+                $sql = "INSERT INTO discountmatrix (`compcode`, `tranno`, `remarks`, `label`, `deffective`, `ddue`, `status`, `ddate`, `approved`, `cancelled`, `cacctcode`) VALUES('$company', '$code', '$description', '$label', '$effect', '$due', 'ACTIVE', NOW(), 0, 0, '$cacctcode')";
                 $query = mysqli_query($con, $sql);
             }
             
-            $sql = "INSERT INTO discountmatrix_t (`compcode`, `tranno`, `itemno`, `unit`, `discount`, `type`)
-                                        VALUES('$company', '$code', '{$data[0]}', '{$data[1]}', '{$data[2]}', '{$data[3]}')";
+            $sql = "INSERT INTO discountmatrix_t (`compcode`, `tranno`, `itemno`, `unit`, `discount`, `type`) VALUES('$company', '$code', '{$data[0]}', '{$data[1]}', '{$data[2]}', '{$data[3]}')";
             if(mysqli_query($con, $sql)){
                 $isFinished = true;
             } else {

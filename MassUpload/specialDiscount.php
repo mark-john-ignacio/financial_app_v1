@@ -129,6 +129,7 @@
                     success: function (res) {
                         if(res.valid){
                             alert(res.msg)
+                            location.href = "../MasterFiles/Items/DISC.php";
                         } else {
                             alert(res.msg)
                         }

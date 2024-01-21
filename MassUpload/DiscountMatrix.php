@@ -16,6 +16,7 @@
     <link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
         
     <script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
+    <script src="../Bootstrap/js/bootstrap3-typeahead.js"></script>
 
     <script src="../Bootstrap/js/bootstrap.js"></script>
     <script src="../Bootstrap/js/moment.js"></script>
@@ -27,13 +28,13 @@
     <title>MyxFinancials</title>
 </head>
 <body>
-    <div style='float: center; padding-top: 3%;'>
+    <div style='float: center; padding-top: 1%;'>
         <center>
         <form id="frm" method="POST" enctype="multipart/form-data">
             <div style='width: 50%; border: 1px solid black;'>
                 <div style='background-color: #2d5f8b; padding: 10px; color: white; text-align: left; font-weight: bold;'>Discount Matrix Mass Uploading</div>
                 <div style='width: 80%; padding-top: 30px'>
-                    <div id='inputs' style='padding-bottom: 30px;'>
+                    <div class="row" id='inputs' style='padding-bottom: 30px;'>
                         <div style='padding-bottom: 10px;'>
                             <label for="label">Enter Label</label>
                             <input type="text" name="label" id="label" placeholder="Enter Label..." class="form-control input-sm" require>
@@ -43,23 +44,38 @@
                             <label for="description">Enter Description</label>
                             <input type="text" name="description" id="description" placeholder="Enter Description..." class="form-control input-sm" require>
                         </div>
+                        <div style='padding-bottom: 10px;'>
+                            <label for="description">Enter Sales Debit Account</label>
 
-                        <div style='display: flex;' class="col-sm-6 nopadding">
+                            <div class="col-xs-12 nopadding">
+                                <div class="col-xs-3 nopadding">
+                                    <input type="text" class="form-control input-sm" id="salesdracct" name="salesdracct" value='' readonly placeholder="Account Code">
+                                </div>
+                                <div class="col-xs-9 nopadwleft">
+                                    <input type="text" class="form-control input-sm" id="salesdracctnme" name="salesdracctnme" value='' placeholder="Account Title">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div style='display: flex;' class="col-sm-6 nopadwtop">
                             <label for="effectdate" style='width: 100px; padding-top:2%'>Effect Date</label>
                             <input type="text" class="datepicker form-control input-sm" id="effectdate" name="effectdate" value='<?= date("m/d/Y");?>' require>
                         </div>
 
-                        <div style='display: flex;' class="col-sm-6 nopadding">
+                        <div style='display: flex;' class="col-sm-6 nopadwtop">
                             <label for="duedate" style='width: 80px; padding-top:2%'>Due Date</label>
                             <input type="text" class="datepicker form-control input-sm" id="duedate" name="duedate" value='<?= date("m/d/Y");?>' require>
                         </div>
                     </div>
-                    <div style='padding-top: 10px; padding-bottom: 30px;'>
+
+                    <div class="row" style='!important; padding-bottom: 30px;'>
                         <select class='form-control input-sm' name="type" id="type">
                             <option value="Preview">Preview</option>
                             <option value="Save">Save</option>
                         </select>
                     </div>
+
                     <div style='width: 80%; height: 80px; background-color: #519bc9'>
                         <label for="excel_file" class="custom-file-upload" style='padding-top: 10px'>
                             File Upload
@@ -104,7 +120,33 @@
         })
     })
     $(document).ready(function(){
-        
+        $("#salesdracctnme").typeahead({
+			items: 10,
+			source: function(request, response) {
+				$.ajax({
+					url: "../Sales/th_accounts.php",
+					dataType: "json",
+					data: {
+						query: $("#salesdracctnme").val()
+					},
+					success: function (data) {
+						console.log(data);
+						response(data);
+					}
+				});
+			},
+			autoSelect: true,
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.acct + '</span><br><small>' + item.name + '</small></div>';
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 
+
+				$('#salesdracctnme').val(item.name).change(); 
+				$("#salesdracct").val(item.acct);
+
+			}
+		});
 
         $("#submit").click(function(){
             $("#ExcelList tbody").empty();
@@ -164,6 +206,7 @@
                     success: function (res) {
                         if(res.valid){
                             alert(res.msg)
+                            location.href = "../MasterFiles/Items/discmatrix.php";
                         } else {
                             alert(res.msg)
                         }
