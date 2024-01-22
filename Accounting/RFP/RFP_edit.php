@@ -775,13 +775,14 @@
 			
 	function showapvmod(custid){
 
-		if ( $.fn.DataTable.isDataTable('#MyAPVList') ) {
-			$('#MyAPVList').DataTable().destroy();
-		}
+		//if ( $.fn.DataTable.isDataTable('#MyAPVList') ) {
+			
+		//}
 
 		$('#APListHeader').html("AP List: "+$('#txtcust').val()+" ("+$('#selbasecurr').val()+")");
 
 		$('#MyAPVList tbody').empty();
+		$('#MyAPVList').DataTable().destroy();
 
 		$.ajax({
 			url: 'th_APVlist.php',
