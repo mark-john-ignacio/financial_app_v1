@@ -422,11 +422,12 @@
 								<table name='MyAPVList' id='MyAPVList' class="table table-small table-hoverO" style="cursor:pointer">
 									<thead>
 										<tr>
+											<th> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
 											<th>AP No.</th>
 											<th>Date</th>
 											<th>Account</th>
 											<th>Total Payable</th>
-											<th>Payable Amount</th>
+											<th>Payable Balance</th>
 											<th>Currency</th>
 										</tr>
 									</thead>
