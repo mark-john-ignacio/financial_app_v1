@@ -508,6 +508,9 @@
 </body>
 </html>
 
+<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
+<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
+
 <script type="text/javascript">
 
 	var fileslist = [];
@@ -775,14 +778,13 @@
 			
 	function showapvmod(custid){
 
-		//if ( $.fn.DataTable.isDataTable('#MyAPVList') ) {
-			
-		//}
-
 		$('#APListHeader').html("AP List: "+$('#txtcust').val()+" ("+$('#selbasecurr').val()+")");
 
 		$('#MyAPVList tbody').empty();
-		$('#MyAPVList').DataTable().destroy();
+		
+		if ( $.fn.DataTable.isDataTable('#MyAPVList') ) {
+			$('#MyAPVList').DataTable().destroy();
+		}
 
 		$.ajax({
 			url: 'th_APVlist.php',
