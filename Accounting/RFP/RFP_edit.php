@@ -424,7 +424,8 @@
 										<tr>
 											<th>AP No.</th>
 											<th>Date</th>
-											<th>Payment For</th>
+											<th>Account</th>
+											<th>Total Payable</th>
 											<th>Payable Amount</th>
 											<th>Currency</th>
 										</tr>
@@ -824,16 +825,15 @@
 				});
 
 				$('#MyAPVList').dataTable({
-							"info":false, 
-							"ordering":true, 
-							"paging":false,
-							"autoWidth": false,
-							"columnDefs": [
-								{ "width": "5%", "className": "text-center", "targets": 0 },
-								{ "width": "10%", "targets": 1 },
-								{ "width": "8%", "targets": 2 }
-							],
-						
+					"info":false, 
+					"ordering":true, 
+					"paging":false,
+					"autoWidth": false,
+					"columnDefs": [
+						{ "width": "5%", "className": "text-center", "targets": 0 },
+						{ "width": "10%", "targets": 1 },
+						{ "width": "8%", "targets": 2 }
+					],					
 				});
 
 			},
