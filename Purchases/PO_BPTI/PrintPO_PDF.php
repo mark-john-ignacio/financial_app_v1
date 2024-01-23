@@ -227,15 +227,17 @@
 	<br>
 	<table border="1" width="100%" style="border-collapse:collapse" cellpadding="5px">					
 		<tr>
-			<td height="50px">';
+			<td align="center"  height="100px" valign="top">';
 
 				if($lSent==1 && $cpreparedBySign!=""){
 
 					$setfooter = $setfooter .'<div style="text-align: center">Prepared By</div>';
-					$setfooter = $setfooter .'<div style="text-align: center"><div><img src = "'.$cpreparedBySign.'" ></div>';
+					$setfooter = $setfooter .'<div style="text-align: center"><div><img src = "'.$cpreparedBySign.'" height="80px"></div>';
+					$setfooter = $setfooter .'<div style="text-align: center"><div>'.$cpreparedBy.'</div>';
 			
 				}else{
-					$setfooter = $setfooter .'<div style="text-align: center">Prepared By<br><br><br><br></div>';
+					$setfooter = $setfooter .'<div style="text-align: center">Prepared By</div>';
+					$setfooter = $setfooter .'<div style="text-align: center"><img src = "white.jpg" height="80px"></div>';
 					$setfooter = $setfooter .'<div style="text-align: center">'.$cpreparedBy.'</div>';
 				}
 
@@ -246,22 +248,25 @@
 			if (mysqli_num_rows($sqdts)!=0) {
 				while($row = mysqli_fetch_array($sqdts, MYSQLI_ASSOC)){
 
-					$setfooter = $setfooter.'<td width="25%" height="50px">';
+					$setfooter = $setfooter.'<td width="25%"  height="100px" valign="top" align="center">';
 						
 					if($row['lapproved']==1 && $row['cusersign']!=""){
 
 						$xp = ($row['nlevel']==1) ? "Checked By" : "Approved By";
 
-						$setfooter = $setfooter.'<div style="text-align: center">'.$xp.'<br><br><br><br><br><br></div>';
+						$setfooter = $setfooter.'<div style="text-align: center">'.$xp.'</div>';
 
-						$setfooter = $setfooter.'<div style="text-align: center"><div><img src = "'.$row['cusersign'].'" ></div>';
+						$setfooter = $setfooter.'<div style="text-align: center"><div><img src = "'.$row['cusersign'].'" height="80px"></div>';
+
+						$xp = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
+						$setfooter = $setfooter.'<div style="text-align: center">'.$xp.'</div>';
 
 					}else{
 
 						$xp = ($row['nlevel']==1) ? "Checked By" : "Approved By";
 
-						$setfooter = $setfooter.'<div style="padding-bottom: 60px; text-align: center">'.$xp .'<br><br><br><br><br><br></div>';
-
+						$setfooter = $setfooter.'<div style="padding-bottom: 60px; text-align: center">'.$xp .'</div>';
+						$setfooter = $setfooter .'<div style="text-align: center"><img src = "white.jpg" height="80px"></div>';
 
 						$xp = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
 
@@ -274,22 +279,25 @@
 				}
 
 			}else{
-				$setfooter = $setfooter.'<td width="25%" height="50px">							
+				$setfooter = $setfooter.'<td width="25%" align="center" height="100px" valign="top">							
 					<div style="padding-bottom: 50px; text-align: center">
-						Checked By <br><br><br><br><br><br>
-					</div>								
+						Checked By
+					</div>	
+					<div style="text-align: center"><img src = "white.jpg" height="90px"></div>							
 				</td>
-				<td width="25%" height="50px">							
+				<td width="25%" align="center" height="100px" valign="top">							
 					<div style="padding-bottom: 50px; text-align: center">
-						Approved By <br><br><br><br><br><br>
-					</div>								
+						Approved By
+					</div>	
+					<div style="text-align: center"><img src = "white.jpg" height="90px"></div>							
 				</td>';
 			}
 
-			$setfooter = $setfooter.'<td width="25%" height="50px">							
+			$setfooter = $setfooter.'<td width="25%"  align="center" height="100px" valign="top">							
 				<div style="padding-bottom: 60px; text-align: center">
-					Supplier Confirmation<br><br><br><br><br>
+					Supplier Confirmation
 				</div>	
+				<div style="text-align: center"><img src = "white.jpg" height="90px"></div>	
 				<br>							
 			</td>
 		</tr>

@@ -314,13 +314,15 @@
 							<?php
 								if($lSent==1 && $cpreparedBySign!=""){
 							?>
-								<div style="text-align: center">Prepared By</div>
-								<div style="text-align: center"><div><img src = '<?=$cpreparedBySign?>?x=<?=time()?>' ></div> 
-							
+									<div style="text-align: center">Prepared By</div>
+									<div style="text-align: center"><div><img src = '<?=$cpreparedBySign?>?x=<?=time()?>' height="80px"></div> 
+									<div style="text-align: center"><?=$cpreparedBy?></div> 
+								
 								<?php
 								}else{
 								?>
-									<div style="padding-bottom: 50px; text-align: center">Prepared By</div>
+									<div style="text-align: center">Prepared By</div>
+									<div style="text-align: center"><div style="height:80px">&nbsp;</div></div>
 									<div style="text-align: center"><?=$cpreparedBy?></div>
 							<?php
 								}
@@ -351,7 +353,7 @@
 								<?php
 									}else{
 								?>
-									<div style="padding-bottom: 60px; text-align: center">
+									<div style="text-align: center">
 										<?php
 											if($row['nlevel']==1){
 												echo "Checked By";
@@ -360,6 +362,7 @@
 											}
 										?>
 									</div>
+									<div style="text-align: center"><div style="height:80px">&nbsp;</div> 
 									<div style="text-align: center"><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div>
 								<?php
 									}
@@ -370,25 +373,27 @@
 								}
 							}else{
 						?>
-							<td width="25%" height="50px">							
-								<div style="padding-bottom: 50px; text-align: center">
-									Checked By <br><br><br><br>
-								</div>								
+							<td width="25%">							
+								<div style="text-align: center">
+									Checked By
+								</div>	
+								<div style="text-align: center"><div style="height:90px">&nbsp;</div></div>						
 							</td>
-							<td width="25%" height="50px">							
-								<div style="padding-bottom: 50px; text-align: center">
-									Approved By <br><br><br><br>
-								</div>								
+							<td width="25%">							
+								<div style="text-align: center">
+									Approved By
+								</div>	
+								<div style="text-align: center"><div style="height:90px">&nbsp;</div></div>							
 							</td>
 						<?php
 							}
 						?>
 
-						<td width="25%" height="50px">							
-							<div style="padding-bottom: 60px; text-align: center">
+						<td width="25%">							
+							<div style="text-align: center">
 								Supplier Confirmation
 							</div>	
-							<br>							
+							<div style="text-align: center"><div style="height:90px">&nbsp;</div>							
 						</td>
 					</tr>
 				</table>

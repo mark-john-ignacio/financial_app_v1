@@ -30,6 +30,14 @@ $company = $_SESSION['companyid'];
 	if(mysqli_num_rows($sql) == 0){
 		$unpostat = "False";
 	}
+
+	$chkapprovals = array();
+	$sqlappx = mysqli_query($con,"Select * from purchase_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 and userid = '$employeeid' Group BY cpono HAVING nlevel = MIN(nlevel) Order By cpono, nlevel");
+	if (mysqli_num_rows($sqlappx)!=0) {
+		while($rows = mysqli_fetch_array($sqlappx, MYSQLI_ASSOC)){
+			@$chkapprovals[] = $rows['cpono']; 
+		}
+	}
 ?>
 
 <!DOCTYPE html>
