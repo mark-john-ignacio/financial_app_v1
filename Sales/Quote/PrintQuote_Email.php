@@ -88,6 +88,7 @@
 
 			$Remarks = $row['cremarks'];
 			$Date = $row['dcutdate'];
+			$QuoteDate = $row['dtrandate'];
 			$Gross = $row['ngross'];
 			$cCurrCode = $row['ccurrencycode'];
 
@@ -166,7 +167,7 @@
 	$html = "<table border=\"0\" width=\"100%\" cellpadding=\"1px\" style=\"border-collapse: collapse\">
 		<tr>
 			<td style=\"height: 30px; vertical-align: top;\">
-				<b>".date("F d, Y")."</b>
+				<b>".date_format(date_create($QuoteDate ), "F d, Y")."</b>
 
 			</td>
 

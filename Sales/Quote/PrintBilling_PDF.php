@@ -174,7 +174,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic, C.nrate From
 
 				<tr>
 					<td style="height: 50px; vertical-align: top;" colspan="4">
-						<b><?php echo date("F d, Y"); ?></b>
+						<b><?php echo date_format(date_create($QuoteDate ), "F d, Y"); ?></b>
 					</td>
 				</tr>
 				<tr>

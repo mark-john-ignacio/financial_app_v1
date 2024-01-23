@@ -75,6 +75,8 @@ include('../../include/denied.php');
 
 			$Remarks = $row['cremarks'];
 			$Date = $row['dcutdate'];
+			$QuoteDate = $row['dtrandate'];
+			$QuoteDate = $row['dtrandate'];
 			$Gross = $row['ngross'];
 			$cCurrCode = $row['ccurrencycode'];
 
@@ -165,7 +167,7 @@ include('../../include/denied.php');
 
 				<tr>
 					<td style="height: 50px; vertical-align: top;" colspan="4">
-						<b><?php echo date("F d, Y"); ?></b>
+						<b><?php echo date_format(date_create($QuoteDate ), "F d, Y"); ?></b>
 					</td>
 				</tr>
 				<tr>

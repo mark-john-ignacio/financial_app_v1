@@ -86,6 +86,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 		$Remarks = $row['cremarks'];
 		$Date = $row['dcutdate'];
+		$QuoteDate = $row['dtrandate'];
 		$Gross = $row['ngross'];
 		$cCurrCode = $row['ccurrencycode'];
 
@@ -156,7 +157,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic, B.cnotes Fro
 			<table border="0" style="border-collapse: collapse" width="100%">
 				<tr>
 					<td style="height: 50px; vertical-align: top;">
-						<b><?php echo date("F d, Y"); ?></b>
+						<b><?php echo date_format(date_create($QuoteDate ), "F d, Y"); ?></b>
 
 					</td>
 
