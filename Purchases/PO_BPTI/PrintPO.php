@@ -349,7 +349,8 @@
 											}
 										?>
 								</div>
-								<div style="text-align: center"><div><img src = '<?=$row['cusersign']?>?x=<?=time()?>' ></div>
+								<div style="text-align: center"><div><img src = '<?=$row['cusersign']?>?x=<?=time()?>' height="80px"></div>
+								<div style="text-align: center"><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div>
 								<?php
 									}else{
 								?>
