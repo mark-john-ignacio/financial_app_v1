@@ -61,6 +61,7 @@
 		}
 	}
 
+
 ?>
 
 <!DOCTYPE html>
@@ -147,8 +148,8 @@
 					<div id="home" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
 
 						<div class="col-xs-12 nopadwtop">
-							<div class="col-xs-2">
-									<b>Quote Type</b>
+							<div class="col-xs-1 nopadwtop2x">
+									<b>&nbsp;&nbsp;Quote Type</b>
 								</div>
 							<div class="col-xs-2 nopadding">
 								<select id="selqotyp" name="selqotyp" class="form-control input-sm selectpicker"  tabindex="1">
@@ -172,8 +173,8 @@
 									?>
 								</select>
 							</div>
-							<div class="col-xs-2">
-									<b>Reccur Every</b>
+							<div class="col-xs-1 nopadwtop2x">
+									<b> &nbsp;&nbsp;&nbsp;&nbsp;Reccur Every</b>
 								</div>
 							<div class="col-xs-2 nopadding">
 								<select id="selrecurrtyp" name="selrecurrtyp" class="form-control input-sm selectpicker"  tabindex="1" <?=$isdisblerecurr?>>
@@ -185,14 +186,20 @@
 									<option value="semi_annual">Semi Annual</option>
 								</select>
 							</div>
-							<div class="col-xs-2">
-								<b>Sales Type</b>
+							<div class="col-xs-1 nopadwtop2x">
+								<b>&nbsp;&nbsp;&nbsp;&nbsp;Sales Type</b>
 							</div>
 							<div class="col-xs-2 nopadding">
 								<select id="selsityp" name="selsityp" class="form-control input-sm selectpicker"  tabindex="1">
 									<option value="Goods">Goods</option>
 									<option value="Services">Services</option>
 								</select>
+							</div>
+							<div class="col-xs-1 nopadwtop2x">
+								<b>&nbsp;&nbsp;&nbsp;&nbsp;Date</b>
+							</div>
+							<div class="col-xs-2 nopadding">
+								<input type='text' class="form-control input-sm" id="date_trans" name="date_trans" value="<?php echo date_format(date_create($ndcutdate),'m/d/Y'); ?>" />
 							</div>
 						</div>
 
@@ -522,14 +529,14 @@
 </html>
 
 <script type="text/javascript">
-var xChkBal = "";
+	var xChkBal = "";
 
-var xtoday = new Date();
-var xdd = xtoday.getDate();
-var xmm = xtoday.getMonth()+1; //January is 0!
-var xyyyy = xtoday.getFullYear();
+	var xtoday = new Date();
+	var xdd = xtoday.getDate();
+	var xmm = xtoday.getMonth()+1; //January is 0!
+	var xyyyy = xtoday.getFullYear();
 
-xtoday = xmm + '/' + xdd + '/' + xyyyy;
+	xtoday = xmm + '/' + xdd + '/' + xyyyy;
 
 
 	$(document).keydown(function(e) {	
@@ -578,20 +585,20 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 		$("#txtnGross").autoNumeric('init',{mDec:2});
 	
 	
-	   		$.ajax({
-					url : "../../include/th_xtrasessions.php",
-					type: "Post",
-					async:false,
-					dataType: "json",
-					success: function(data)
-					{	
-					   console.log(data);
-                       $.each(data,function(index,item){
-						   xChkBal = item.chkinv; //0 = Check ; 1 = Dont Check
-						   
-					   });
-					}
-				});
+		$.ajax({
+				url : "../../include/th_xtrasessions.php",
+				type: "Post",
+				async:false,
+				dataType: "json",
+				success: function(data)
+				{	
+					console.log(data);
+					$.each(data,function(index,item){
+						xChkBal = item.chkinv; //0 = Check ; 1 = Dont Check
+						
+					});
+				}
+			});
 	
 		if(xChkBal==1){
 			$("#tblAvailable").hide();
@@ -601,9 +608,14 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 	  $('#txtprodid').attr("disabled", true);
 
 
-	  $('#date_delivery').datetimepicker({
-      format: 'MM/DD/YYYY'
-    });
+		$('#date_delivery').datetimepicker({
+			format: 'MM/DD/YYYY'
+		});
+
+		$('#date_trans').datetimepicker({
+			format: 'MM/DD/YYYY'
+		});
+		
 	
 		$("#txtcustid").keyup(function(event){
 			if(event.keyCode == 13){
@@ -653,193 +665,193 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 			
 		});
 
-	$('#txtcust, #txtcustid').on("blur", function(){
-		if($('#hdnvalid').val()=="NO"){
-		  $('#txtcust').attr("placeholder", "ENTER A VALID CUSTOMER FIRST...");
-		  
-		  $('#txtprodnme').attr("disabled", true);
-		  $('#txtprodid').attr("disabled", true);
-		}else{
+		$('#txtcust, #txtcustid').on("blur", function(){
+			if($('#hdnvalid').val()=="NO"){
+			$('#txtcust').attr("placeholder", "ENTER A VALID CUSTOMER FIRST...");
 			
-		  $('#txtprodnme').attr("disabled", false);
-		  $('#txtprodid').attr("disabled", false);
-		  
-		  $('#txtremarks').focus();
-	
-		}
-	});
-
-	//Search Cust name
-	$('#txtcust').typeahead({
-		autoSelect: true,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_customer.php",
-				dataType: "json",
-				data: {
-					query: $("#txtcust").val()
-				},
-				success: function (data) {
-					response(data);
-				}
-			});
-		},
-		displayText: function (item) {
-			return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 					
-						
-			$('#txtcust').val(item.value).change(); 
-			$("#txtcustid").val(item.id);
-			//$("#imgemp").attr("src",item.imgsrc);
-			$("#hdnpricever").val(item.cver);
-
-			$("#selbasecurr").val(item.cdefaultcurrency).change(); //val
-			$("#basecurrvalmain").val($("#selbasecurr").data("val"));
-			
-			$('#hdnvalid').val("YES");
+			$('#txtprodnme').attr("disabled", true);
+			$('#txtprodid').attr("disabled", true);
+			}else{
+				
+			$('#txtprodnme').attr("disabled", false);
+			$('#txtprodid').attr("disabled", false);
 			
 			$('#txtremarks').focus();
-
-			getcontact(item.id);
-			
-			
-		}
-	
-	});
-	
-	$('#txtprodnme').typeahead({
-		autoSelect: true,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_product.php",
-				dataType: "json",
-				data: { query: $("#txtprodnme").val(), itmbal: xChkBal, styp: $("#selsityp").val() },
-				success: function (data) {
-					response(data);
-				}
-			});
-		},
-		displayText: function (item) {
-			return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.desc+'</span</div>';
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 					
-						
-			$('#txtprodnme').val(item.desc).change(); 
-			$('#txtprodid').val(item.id); 
-			$("#hdnunit").val(item.cunit); 
-			$("#hdnqty").val(item.nqty);
-			$("#hdnqtyunit").val(item.cqtyunit);
-			
-			addItemName();
-			
-			
-		}
-	
-	});
-
-	$("#txtprodid").keypress(function(event){
-		if(event.keyCode == 13){
-
-			$.ajax({
-        url:'../get_productid.php',
-        data: 'c_id='+ $(this).val()+"&itmbal="+xChkBal+"&styp="+ $("#selsityp").val(),                 
-        success: function(value){
-        	var data = value.split(",");
-          $('#txtprodid').val(data[0]);
-          $('#txtprodnme').val(data[1]);
-					$('#hdnunit').val(data[2]);
-					$("#hdnqty").val(data[3]);
-					$("#hdnqtyunit").val(data[4]);
-
-
-					if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
-						//var isItem = "NO";
-						//	var disID = "";
-			
-							/*
-							$("#MyTable > tbody > tr").each(function() {	
-								disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-
-								if($("#txtprodid").val()==disID){
-									
-									isItem = "YES";
-
-								}
-							});	
-
-						//if value is not blank
-						}
-						
-						if(isItem=="NO"){		
-							*/
-
-							myFunctionadd();
-							ComputeGross();	
 		
-							/*
-							}
-							else{
+			}
+		});
+
+		//Search Cust name
+		$('#txtcust').typeahead({
+			autoSelect: true,
+			source: function(request, response) {
+				$.ajax({
+					url: "../th_customer.php",
+					dataType: "json",
+					data: {
+						query: $("#txtcust").val()
+					},
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 					
 							
-							addqty();
-						}
-						*/
-		
-						$("#txtprodid").val("");
-						$("#txtprodnme").val("");
-						$("#hdnunit").val("");
-						$("#hdnqty").val("");
-						$("#hdnqtyunit").val("");
- 
-	    
-	    		} //closing for success: function(value){
-				}
-      }); 
+				$('#txtcust').val(item.value).change(); 
+				$("#txtcustid").val(item.id);
+				//$("#imgemp").attr("src",item.imgsrc);
+				$("#hdnpricever").val(item.cver);
 
+				$("#selbasecurr").val(item.cdefaultcurrency).change(); //val
+				$("#basecurrvalmain").val($("#selbasecurr").data("val"));
+				
+				$('#hdnvalid').val("YES");
+				
+				$('#txtremarks').focus();
+
+				getcontact(item.id);
+				
+				
+			}
+		
+		});
+		
+		$('#txtprodnme').typeahead({
+			autoSelect: true,
+			source: function(request, response) {
+				$.ajax({
+					url: "../th_product.php",
+					dataType: "json",
+					data: { query: $("#txtprodnme").val(), itmbal: xChkBal, styp: $("#selsityp").val() },
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.desc+'</span</div>';
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 					
+							
+				$('#txtprodnme').val(item.desc).change(); 
+				$('#txtprodid').val(item.id); 
+				$("#hdnunit").val(item.cunit); 
+				$("#hdnqty").val(item.nqty);
+				$("#hdnqtyunit").val(item.cqtyunit);
+				
+				addItemName();
+				
+				
+			}
+		
+		});
+
+		$("#txtprodid").keypress(function(event){
+			if(event.keyCode == 13){
+
+				$.ajax({
+			url:'../get_productid.php',
+			data: 'c_id='+ $(this).val()+"&itmbal="+xChkBal+"&styp="+ $("#selsityp").val(),                 
+			success: function(value){
+				var data = value.split(",");
+			$('#txtprodid').val(data[0]);
+			$('#txtprodnme').val(data[1]);
+						$('#hdnunit').val(data[2]);
+						$("#hdnqty").val(data[3]);
+						$("#hdnqtyunit").val(data[4]);
+
+
+						if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
+							//var isItem = "NO";
+							//	var disID = "";
+				
+								/*
+								$("#MyTable > tbody > tr").each(function() {	
+									disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+
+									if($("#txtprodid").val()==disID){
+										
+										isItem = "YES";
+
+									}
+								});	
+
+							//if value is not blank
+							}
+							
+							if(isItem=="NO"){		
+								*/
+
+								myFunctionadd();
+								ComputeGross();	
+			
+								/*
+								}
+								else{
+								
+								addqty();
+							}
+							*/
+			
+							$("#txtprodid").val("");
+							$("#txtprodnme").val("");
+							$("#hdnunit").val("");
+							$("#hdnqty").val("");
+							$("#hdnqtyunit").val("");
 	
-		 
-		//if ebter is clicked
-		}
+			
+					} //closing for success: function(value){
+					}
+		}); 
+
 		
-	});
+			
+			//if ebter is clicked
+			}
+			
+		});
 
-	$("#btnSearchCont").on("click", function(){
+		$("#btnSearchCont").on("click", function(){
 
-		//get contact names
-		if($('#txtcustid').val()!="" && $('#txtcust').val()!=""){
-			$('#ContactTbls tbody').empty(); 
+			//get contact names
+			if($('#txtcustid').val()!="" && $('#txtcust').val()!=""){
+				$('#ContactTbls tbody').empty(); 
 
-			$.ajax({
-		        url:'../get_contactinfonames.php',
-		        data: 'c_id='+ $('#txtcustid').val(),  
-		        dataType: "json",               
-		        success: function(data){
-		        	
-		        	$.each(data,function(index,item){
+				$.ajax({
+					url:'../get_contactinfonames.php',
+					data: 'c_id='+ $('#txtcustid').val(),  
+					dataType: "json",               
+					success: function(data){
+						
+						$.each(data,function(index,item){
 
-		            //put to table
-			            $("<tr class='bdydeigid' style='cursor:pointer'>").append(
-							$("<td class='disnme'>").text(item.cname),
-							$("<td class='disndesig'>").text(item.cdesig),
-							$("<td class='disdept'>").text(item.cdept),
-							$("<td class='disemls'>").text(item.cemail)
-						).appendTo("#ContactTbls tbody");
+						//put to table
+							$("<tr class='bdydeigid' style='cursor:pointer'>").append(
+								$("<td class='disnme'>").text(item.cname),
+								$("<td class='disndesig'>").text(item.cdesig),
+								$("<td class='disdept'>").text(item.cdept),
+								$("<td class='disemls'>").text(item.cemail)
+							).appendTo("#ContactTbls tbody");
 
-		       		});
-				}
-			});
+						});
+					}
+				});
 
-			$("#ContactModal").modal("show");
-		}else{
-			alert("Customer Required!");
-			document.getElementById("txtcust").focus();
-			return false;
-		}
-		
+				$("#ContactModal").modal("show");
+			}else{
+				alert("Customer Required!");
+				document.getElementById("txtcust").focus();
+				return false;
+			}
+			
 
-	});
+		});
 
 	$(document).on("click", "tr.bdydeigid" , function() {
     var $row = $(this).closest("tr"),       // Finds the closest row <tr> 
@@ -909,7 +921,7 @@ xtoday = xmm + '/' + xdd + '/' + xyyyy;
 			text = $("#brems").val();
 			text = text.toString().replace(/"/g, "'");
 
-			alert(text);
+			//alert($("#brems").val());
 			$("#txtremarks").summernote("code",text);
 
 		// 	xval = "<p>Kindly make all checks payable to <b>SERT TECHNOLOGY INC</b><br>For bank transfer please deposit to:</p><b><u>For MBTC acct:</u></b><br><b>Account Name: SERT TECHNOLOGY INC.</b><br><b>Account Number: 3547354509772</b><br><b>Bank Address: Mangghan,Gen. Trias, Cavite</b><br><br><i>Note: Please settle your account to prevent service interruptions.</i><br><i>Kindly disregards pass due notice if payments have been made.</i><div><br></div><br><br><br><br><br>";

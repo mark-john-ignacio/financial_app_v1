@@ -90,6 +90,7 @@ foreach($result as $row)
  $sub_array[] = $row['lsent'];
  $sub_array[] = $row['quotetype'];
  $sub_array[] = $row['lvoid'];
+ $sub_array[] = $row['dtrandate'];
  $data[] = $sub_array;
 }
 

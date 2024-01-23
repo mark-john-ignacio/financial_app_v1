@@ -106,7 +106,8 @@ $company = $_SESSION['companyid'];
 						<th>Type</th>
 						<th>Customer</th>
 						<th>Date</th>
-            <th class="text-center">Status</th>
+						<th>Due</th>
+            			<th class="text-center">Status</th>
 						<th class="text-center">Actions</th>
 					</tr>
 				</thead>			
@@ -325,18 +326,18 @@ function track(xno){
 	function fill_datatable(searchByName = '', searchBystat = ''){
 		var dataTable = $('#MyTable').DataTable({
 			stateSave: true,
-		  "processing" : true,
-		  "serverSide" : true,
-		  "lengthChange": true,
-		  "order" : [],
-		  "searching" : false,
-		  "ajax" : {
-		     url:"th_datatable.php",
-		     type:"POST",
-		     data:{
-		      searchByName:searchByName, searchBystat:searchBystat
-		     }
-		  },
+			"processing" : true,
+			"serverSide" : true,
+			"lengthChange": true,
+			"order" : [],
+			"searching" : false,
+			"ajax" : {
+				url:"th_datatable.php",
+				type:"POST",
+				data:{
+				searchByName:searchByName, searchBystat:searchBystat
+				}
+			},
 		    "columns": [
 				{ "data": null,
 
@@ -360,6 +361,7 @@ function track(xno){
 
 				},
 				{ "data": 3 },
+				{ "data": 12 },
 				{ "data": null,
 					"render": function(data, type, full, row) {
 
@@ -433,8 +435,12 @@ function track(xno){
         	],
         	"columnDefs": [
 					{
-						targets: [4,5],
-						className: 'text-center'
+						targets: [5,6],
+						className: 'text-center dt-nowrap'
+					},
+					{
+						targets: [3,4],
+						className: 'dt-nowrap'
 					}
 			  ],
 				"createdRow": function( row, data, dataIndex ) {

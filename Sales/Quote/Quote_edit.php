@@ -161,6 +161,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 		$Remarks = $row['cremarks'];
 		$Date = $row['dcutdate'];
+		$QuoteDate = $row['dtrandate'];
 		$cpricever = $row['cpricever'];
 
 		$CurrCode = $row['ccurrencycode'];
@@ -227,7 +228,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</div>
 
 							<div class="col-xs-12 nopadwtop">
-								<div class="col-xs-2">
+								<div class="col-xs-1">
 									<b>Quote Type</b>
 								</div>
 								<div class="col-xs-2 nopadding">
@@ -248,7 +249,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 																	
 									</select>
 								</div>
-								<div class="col-xs-2">
+								<div class="col-xs-1">
 										<b>Reccur Every</b>
 									</div>
 								<div class="col-xs-2 nopadding">
@@ -261,7 +262,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										<option value="semi_annual" <?php if($cRCType=="semi_annual") { echo "selected"; }  ?>>Semi Annual</option>
 									</select>
 								</div>
-								<div class="col-xs-2">
+								<div class="col-xs-1">
 									<b>Sales Type</b>
 								</div>
 								<div class="col-xs-2 nopadding">
@@ -269,6 +270,12 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										<option value="Goods" <?php if($cSelType=="Goods") { echo "selected"; } ?> >Goods</option>
 										<option value="Services" <?php if($cSelType=="Services") { echo "selected"; } ?>>Services</option>
 									</select>
+								</div>
+								<div class="col-xs-1 nopadwtop2x">
+									<b>&nbsp;&nbsp;&nbsp;&nbsp;Date</b>
+								</div>
+								<div class="col-xs-2 nopadding">
+									<input type='text' class="form-control input-sm" id="date_trans" name="date_trans" value="<?php echo date_format(date_create($QuoteDate),'m/d/Y'); ?>" />
 								</div>
 							</div>
 
@@ -813,6 +820,10 @@ else{
 	  $('#date_delivery').datetimepicker({
       format: 'MM/DD/YYYY'
     });
+
+	$('#date_trans').datetimepicker({
+			format: 'MM/DD/YYYY'
+		});
 
 	
 		$("#txtcustid").keyup(function(event){
