@@ -75,7 +75,7 @@
   <tr>
     <th nowrap>Transaction No.</th>
 	<th nowrap>Reference</th>
-	<th nowrap>Prepared Date</th>
+	<th nowrap>Billing Date</th>
     <th nowrap>Due Date</th>
     <th nowrap colspan="2">Customer</th>
     <th nowrap>Recurr</th>
@@ -148,7 +148,7 @@
 			<a href="javascript:;" onclick="viewDets('<?=@$allrefx[$row['ctranno']]['typ'];?>','<?=@$allrefx[$row['ctranno']]['ref'];?>')"><?=@$allrefx[$row['ctranno']]['ref'];?></a>
 
 		</td>
-		<td nowrap><?=date_format(date_create($row['ddate']),"m/d/Y");?></td>
+		<td nowrap><?=date_format(date_create($row['dtrandate']),"m/d/Y");?></td>
 		<td nowrap><?=date_format(date_create($row['dcutdate']),"m/d/Y");?></td>
 		<td nowrap><?= $row['ccode'];?></td>
 		<td nowrap><?=$row['cname'];?></td>   
@@ -175,7 +175,7 @@
   <tr>
     <th nowrap>Transaction No.</th>
 	<th nowrap>Reference</th>
-	<th nowrap>Prepared Date</th>
+	<th nowrap>Quote Date</th>
     <th nowrap>Effectivity Date</th>
     <th nowrap colspan="2">Customer</th>
 	<th nowrap>Sales Type</th>
@@ -214,7 +214,7 @@
 		<td nowrap>
 			<a href="javascript:;" onclick="viewDets('<?=@$allrefx[$row['ctranno']]['typ'];?>','<?=@$allrefx[$row['ctranno']]['ref'];?>')"><?=@$allrefx[$row['ctranno']]['ref'];?></a>
 		</td>
-		<td nowrap><?=date_format(date_create($row['ddate']),"m/d/Y");?></td>
+		<td nowrap><?=date_format(date_create($row['dtrandate']),"m/d/Y");?></td>
 		<td nowrap><?=$row['dcutdate'];?></td>
 		<td nowrap><?=$row['ccode'];?></td>
 		<td nowrap><?=$row['cname'];?></td>   
