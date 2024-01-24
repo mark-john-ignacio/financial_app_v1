@@ -211,7 +211,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</td>
 							</tr>
 							<tr>
-								<tH width="100">Cost Center:</tH>
+								<tH width="100">Requesting Dept:</tH>
 								<td style="padding:2px">
 									<div class="col-xs-5 nopadding">
 									<select class="form-control input-sm" name="selwhfrom" id="selwhfrom"> 
