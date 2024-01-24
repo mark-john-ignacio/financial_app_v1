@@ -2016,8 +2016,8 @@ else{
 			$("#MyTable > tbody > tr").each(function(index) {	
 				$xintval = index + 1;
 				
-				if ($("#napvewt"+$xintval).val()!="") {
-					$ewtamt = $("#napvewt"+$xintval).val();
+				if ($("#napvewt"+$xintval).val()!="" && $("#napvewt"+$xintval).val()!=0) {
+					$ewtamt++;
 					//$ewtamt = ($("#napvewt"+$xintval).val()=="") ? 0 : $("#napvewt"+$xintval).val();
 				}
 				//else{
