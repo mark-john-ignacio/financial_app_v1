@@ -2016,9 +2016,11 @@ else{
 			$("#MyTable > tbody > tr").each(function(index) {	
 				$xintval = index + 1;
 				
-			//	if ($('#isNoRef').val()==1) {
-					$ewtamt = ($("#napvewt"+$xintval).val()=="") ? 0 : $("#napvewt"+$xintval).val();
-				//}else{
+				if ($("#napvewt"+$xintval).val()!="") {
+					$ewtamt = $("#napvewt"+$xintval).val();
+					//$ewtamt = ($("#napvewt"+$xintval).val()=="") ? 0 : $("#napvewt"+$xintval).val();
+				}
+				//else{
 					//$ewtamt = $("#napvewt"+$xintval).val();
 				//}
 				
