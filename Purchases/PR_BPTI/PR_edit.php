@@ -75,6 +75,16 @@
 	
 	}
 
+
+	//get locations of cost center
+	@$clocs = array();
+	$gettaxcd = mysqli_query($con,"SELECT nid, cdesc FROM `locations` where compcode='$company' and cstatus='ACTIVE'"); 
+	if (mysqli_num_rows($gettaxcd)!=0) {
+		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+			@$clocs[] = $row; 
+		}
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -110,7 +120,7 @@
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcprno').focus();">
-
+<input type="hidden" id="costcenters" value='<?=json_encode($clocs)?>'>
 <input type="hidden" value='<?=json_encode(@$arrname)?>' id="hdnfileconfig"> 
 
 <?php
@@ -307,6 +317,20 @@ if (mysqli_num_rows($sqlhead)!=0) {
 											<input type='hidden' value='<?=$rowbody['nfactor']?>' name='hdnfactor' id='hdnfactor<?=$cntr?>'>
 										</td>
 										<td width='250px' style='padding:1px'><input type='text' class='form-control input-xs' id='dremarks<?=$cntr?>' name='dremarks' placeholder='Enter remarks...'value="<?=$rowbody['cremarks']?>" /></td>
+										<td width='150px'>
+											<select class='form-control input-xs' name='txtnSub' id='txtnSub<?=$cntr?>'>  
+												<option value='0' data-cdesc=''>NONE</option>
+												<?php
+													foreach($clocs as $rs2){
+														if($rs2['nid']==$rowbody['location_id']){
+																echo "<option value='".$rs2['nid']."' data-cdesc='".$rs2['cdesc']."' selected>".$rs2['cdesc']."</option>";
+														}else{
+															echo "<option value='".$rs2['nid']."' data-cdesc='".$rs2['cdesc']."'>".$rs2['cdesc']."</option>";
+														}
+													}
+												?>
+											</select>
+										</td>
 										<td width='50px' style='padding:1px'><input class='btn btn-danger btn-xs' type='button' id='del<?=$cntr?>' value='delete' /></td>
 									</tr>
 
@@ -725,6 +749,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			
 			uomoptions = "<select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\">"+uomoptions+"</select>";
 
+			var xz = $("#costcenters").val();
+			taxoptions = "";
+			$.each(jQuery.parseJSON(xz), function() { 
+				taxoptions = taxoptions + "<option value='"+this['nid']+"' data-cdesc='"+this['cdesc']+"'>"+this['cdesc']+"</option>";
+			});
+
+			var costcntr = "<select class='form-control input-xs' name='txtnSub' id='txtnSub"+lastRow+"'>  <option value='0' data-cdesc=''>NONE</option> " + taxoptions + " </select>";
 
 			$('#MyTable > tbody:last-child').append( 
 			"<tr>"
@@ -734,6 +765,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			+"<td style='padding:1px' width='80px'>"+uomoptions+"</td>"
 			+"<td style='padding:1px' width='80px'><input type='text' value='1' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+itmunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='1' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>"
 			+"<td style='padding:1px' width='250px'><input type='text' class='form-control input-xs' id='dremarks"+lastRow+"' name='dremarks' placeholder='Enter remarks...' /></td>"
+			+'<td width="150px" style="padding:1px">'+costcntr+'</td>'
 			+"<td width='50px' style='padding:1px'><input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' /></td>"
 		);									
 
@@ -896,7 +928,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				$(this).find('input[name="txtnqty"]').attr("name","txtnqty" + tx);
 				$(this).find('input[type=hidden][name="hdnmainuom"]').attr("name","hdnmainuom" + tx);
 				$(this).find('input[type=hidden][name="hdnfactor"]').attr("name","hdnfactor" + tx);
-				$(this).find('input[name="dremarks"]').attr("name","dremarks" + tx);			
+				$(this).find('input[name="dremarks"]').attr("name","dremarks" + tx);	
+				$(this).find('select[name="txtnSub"]').attr("name","txtnSub" + tx);		
 			});
 
 			$("#frmpos").submit();

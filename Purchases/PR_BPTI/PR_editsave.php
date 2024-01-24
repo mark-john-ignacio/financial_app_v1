@@ -38,10 +38,11 @@ $preparedby = $_SESSION['employeeid'];
 		$nmainuom = mysqli_real_escape_string($con, $_REQUEST['hdnmainuom'.$z]);
 		$nfactor = mysqli_real_escape_string($con, $_REQUEST['hdnfactor'.$z]);
 		$drmrks = mysqli_real_escape_string($con, $_REQUEST['dremarks'.$z]);
+		$nSub = mysqli_real_escape_string($con, $_REQUEST['txtnSub'.$z]);
 
 		$refcidenttran = $cSINo."P".$z;
 	
-		if(!mysqli_query($con,"INSERT INTO `purchrequest_t`(`compcode`, `cidentity`, `nident`, `ctranno`, `citemno`, `cpartdesc`, `citemdesc`, `cunit`, `cmainunit`, `nfactor`, `nqty`, `cremarks`) values('$company', '$refcidenttran', '$z', '$cSINo', '$itmcode', '$itmpart', '$itmdesc', '$seluom', '$nmainuom', '$nfactor', '$nqty', '$drmrks')")){ 
+		if(!mysqli_query($con,"INSERT INTO `purchrequest_t`(`compcode`, `cidentity`, `nident`, `ctranno`, `citemno`, `cpartdesc`, `citemdesc`, `cunit`, `cmainunit`, `nfactor`, `nqty`, `cremarks`, `location_id`) values('$company', '$refcidenttran', '$z', '$cSINo', '$itmcode', '$itmpart', '$itmdesc', '$seluom', '$nmainuom', '$nfactor', '$nqty', '$drmrks', $nSub)")){ 
 			
 			printf("Errormessage: %s\n", mysqli_error($con));
 		}

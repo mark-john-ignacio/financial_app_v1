@@ -119,7 +119,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 					<?php 
 					$cnt = 0;
-					$sqlbody = mysqli_query($con,"select a.* from purchrequest_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno where a.compcode='$company' and a.ctranno = '$csalesno' Order by a.nident");
+					$sqlbody = mysqli_query($con,"select a.*, IFNULL(c.cdesc,'') as locdesc from purchrequest_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno left join locations c on a.compcode=c.compcode and a.location_id=c.nid where a.compcode='$company' and a.ctranno = '$csalesno' Order by a.nident");
 
 					if (mysqli_num_rows($sqlbody)!=0) {
 						while($rowdtls = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){ 
@@ -133,7 +133,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						<td align="center" class="tdpadx tddetz"><?=$rowdtls['citemno']?></td>
 						<td align="center" class="tdpadx tddetz"><?php echo intval($rowdtls['nqty']);?></td>
 						<td align="center" class="tdpadx tddetz"><?php echo $rowdtls['cunit'];?></td>					
-						<td align="center" class="tdpadx tddetz"><?=$rowdtls['cremarks']?></td>
+						<td align="center" class="tdpadx tddetz">
+							<?=$rowdtls['cremarks']?>
+							<?=($rowdtls['cremarks']!="" && $rowdtls['locdesc']!="") ? "<br>" : ""?>
+							<?=($rowdtls['locdesc']!="") ? $rowdtls['locdesc'] : ""?>
+						</td>
 						
 					</tr>
 

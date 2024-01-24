@@ -8,18 +8,19 @@
 	include('../../include/denied.php');
 	include('../../include/access2.php');
 
+	$company = $_SESSION['companyid'];
 	$id = $_SESSION['employeeid'];
                         
-  $sql = "select * From users where Userid='$id'";
-  $result=mysqli_query($con,$sql);
-                                                    
-	$cfname = "";                                       
-                        
-  while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-  {
-		$mi = ($row['Minit']!="") ? " ".$row['Minit'] : "";
-    $cfname =  $row['Lname'] . ", ". $row['Fname'] . $mi;
-  }
+	$sql = "select * From users where Userid='$id'";
+	$result=mysqli_query($con,$sql);
+														
+		$cfname = "";                                       
+							
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
+			$mi = ($row['Minit']!="") ? " ".$row['Minit'] : "";
+		$cfname =  $row['Lname'] . ", ". $row['Fname'] . $mi;
+	}
 
 	$arrseclist = array();
 	$sqlempsec = mysqli_query($con,"select A.section_nid as nid, B.cdesc from users_sections A left join locations B on A.section_nid=B.nid where A.UserID='$employeeid' and B.cstatus='ACTIVE' Order By B.cdesc");
@@ -34,6 +35,15 @@
 	}else{
 		if(count($arrseclist)==0){
 			$arrseclist[] = 0;
+		}
+	}
+
+	//get locations of cost center
+	@$clocs = array();
+	$gettaxcd = mysqli_query($con,"SELECT nid, cdesc FROM `locations` where compcode='$company' and cstatus='ACTIVE'"); 
+	if (mysqli_num_rows($gettaxcd)!=0) {
+		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+			@$clocs[] = $row; 
 		}
 	}
 
@@ -77,6 +87,7 @@
 </head>
 
 <body style="padding:5px">
+	<input type="hidden" id="costcenters" value='<?=json_encode($clocs)?>'>
 	<form action="PR_newsave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
 
 		<div class="portlet">
@@ -115,7 +126,7 @@
 								</td>
 							</tr>
 							<tr>
-								<tH width="100">Cost Center:</tH>
+								<tH width="100">Requesting Dept:</tH>
 								<td style="padding:2px">
 									<div class="col-xs-5 nopadding">
 									<select class="form-control input-sm" name="selwhfrom" id="selwhfrom"> 
@@ -185,6 +196,7 @@
 										<th width="80px" style="border-bottom:1px solid #999">UOM</th>
 										<th width="120px" style="border-bottom:1px solid #999">Qty</th>
 										<th width="250px" style="border-bottom:1px solid #999">Remarks</th>
+										<th width="150px" style="border-bottom:1px solid #999">Cost Center</th>
 										<th width="50px" style="border-bottom:1px solid #999">&nbsp;</th>
 									</tr>
 								</thead>
@@ -439,6 +451,15 @@ function myFunctionadd(){
 		
 		uomoptions = "<select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\">"+uomoptions+"</select>";
 
+
+		var xz = $("#costcenters").val();
+		taxoptions = "";
+		$.each(jQuery.parseJSON(xz), function() { 
+			taxoptions = taxoptions + "<option value='"+this['nid']+"' data-cdesc='"+this['cdesc']+"'>"+this['cdesc']+"</option>";
+		});
+
+		var costcntr = "<select class='form-control input-xs' name='txtnSub' id='txtnSub"+lastRow+"'>  <option value='0' data-cdesc=''>NONE</option> " + taxoptions + " </select>"; 
+		
 		$('#MyTable > tbody:last-child').append( 
 			"<tr>"
 			+"<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\"><input type='hidden' value='"+itmdesc+"' name=\"txtcpartdesc\" id=\"txtcpartdesc\">"+itmdesc+"</td>"
@@ -447,6 +468,7 @@ function myFunctionadd(){
 			+"<td style='padding:1px'>"+uomoptions+"</td>"
 			+"<td style='padding:1px'><input type='text' value='1' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+itmunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='1' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>"
 			+"<td style='padding:1px'><input type='text' class='form-control input-xs' id='dremarks"+lastRow+"' name='dremarks' placeholder='Enter remarks...' /></td>"
+			+'<td width="150px" style="padding:1px">'+costcntr+'</td>'
 			+"<td style='padding:1px'><input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' /></td>"
 		);								
 
@@ -542,6 +564,7 @@ function chkform(){
 			$(this).find('input[type=hidden][name="hdnmainuom"]').attr("name","hdnmainuom" + tx);
 			$(this).find('input[type=hidden][name="hdnfactor"]').attr("name","hdnfactor" + tx);
 			$(this).find('input[name="dremarks"]').attr("name","dremarks" + tx);			
+			$(this).find('select[name="txtnSub"]').attr("name","txtnSub" + tx);
 		});
 
 		$("#frmpos").submit();
