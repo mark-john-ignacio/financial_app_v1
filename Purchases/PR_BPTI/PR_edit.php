@@ -280,6 +280,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										<th width="80px" style="border-bottom:1px solid #999">UOM</th>
 										<th width="120px" style="border-bottom:1px solid #999">Qty</th>
 										<th width="250px" style="border-bottom:1px solid #999">Remarks</th>
+										<th width="150px" style="border-bottom:1px solid #999">Cost Center</th>
 										<th width="50px" style="border-bottom:1px solid #999">&nbsp;</th>
 									</tr>
 								</thead>
