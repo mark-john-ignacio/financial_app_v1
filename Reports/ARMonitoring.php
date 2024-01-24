@@ -89,7 +89,7 @@
         <td width="150" style="padding-left:10px">
           <div id="dtelabel1" style="display:none">
             <select id="seldtetp" name="seldtetp" class="form-control input-sm selectpicker"  tabindex="4">
-              <option value="ddate">Prepared Date</option>      
+              <option value="ddate">Bill/Quote Date</option>      
               <option value="dcutdate">Due/Effectivity Date</option>           
             </select> 
           </div>
