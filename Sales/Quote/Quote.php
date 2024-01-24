@@ -105,8 +105,8 @@ $company = $_SESSION['companyid'];
 						<th>Quote No</th>
 						<th>Type</th>
 						<th>Customer</th>
-						<th>Date</th>
-						<th>Due</th>
+						<th>Bill/Quote Date</th>
+						<th>Due/Effect Date</th>
             			<th class="text-center">Status</th>
 						<th class="text-center">Actions</th>
 					</tr>
@@ -360,8 +360,8 @@ function track(xno){
 					}
 
 				},
-				{ "data": 3 },
 				{ "data": 12 },
+				{ "data": 13 },
 				{ "data": null,
 					"render": function(data, type, full, row) {
 
@@ -435,12 +435,8 @@ function track(xno){
         	],
         	"columnDefs": [
 					{
-						targets: [5,6],
+						targets: [3,4, 5,6],
 						className: 'text-center dt-nowrap'
-					},
-					{
-						targets: [3,4],
-						className: 'dt-nowrap'
 					}
 			  ],
 				"createdRow": function( row, data, dataIndex ) {
