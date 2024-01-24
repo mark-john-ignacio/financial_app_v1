@@ -404,6 +404,7 @@
 			$totewts = 0;
 			while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) 
 			{
+				if($row['cewtcode']!=""){
 				$cnt++;
 					if($cnt > 1){
 						$deftop = $deftop + 39;
@@ -441,7 +442,7 @@
 				
 				$totewts = $totewts + floatval($row['newtamt']);;
 			}
-		
+			}
 		?>
 	</div>
 
