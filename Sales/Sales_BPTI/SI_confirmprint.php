@@ -352,8 +352,8 @@ include('../../include/denied.php');
 						
 	?>
     <div class="Row">
-      <div class="Column" style="width: 119px; text-align: left"><?=$rowbody['citmposno'];?></div>
-      <div class="Column" style="width: 121px; text-align: left"><?=$rowbody['citmsysno']?> </div>
+      <div class="Column" style="width: 119px; text-align: left"><?=$rowbody['citmsysno']?></div>
+      <div class="Column" style="width: 121px; text-align: left"><?=$rowbody['citmposno'];?></div>
       <div class="Column" style="width: 219px; text-align: left;"><?=$rowbody['citemdesc']?></div>
       <div class="Column" style="width: 90px; text-align: left" ><?=number_format($rowbody['nqty']);?> <?=$rowbody['cunit'];?></div>
       <div class="Column" style="width: 102px; text-align: left"><?=number_format($rowbody['nprice'],4);?></div>
