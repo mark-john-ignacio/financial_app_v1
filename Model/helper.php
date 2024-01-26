@@ -720,7 +720,7 @@
         global $con;       
        
         // Store the cipher method
-        $ciphering = "AES-128-CTR";
+        $ciphering = "AES-128-CBC";
         
         // Use OpenSSl Encryption method
         $iv_length = openssl_cipher_iv_length($ciphering);
@@ -741,7 +741,7 @@
 
     function MyDec($encryption, $key) {
 
-        $ciphering = "AES-128-CTR";
+        $ciphering = "AES-128-CBC";
         $decryption_iv = '1234567891011121';
         $options = 0;
         

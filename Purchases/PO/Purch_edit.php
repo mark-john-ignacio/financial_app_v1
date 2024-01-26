@@ -50,8 +50,7 @@
 		}
 	}
 
-	$sqlhead = mysqli_query($con,"select a.cpono, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dneeded,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.nbasegross, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.lcancelled, a.lapproved, a.lprintposted, a.lvoid, a.ccustacctcode, b.cname, a.ccontact, a.ccontactemail, a.ladvancepay, a.cterms, a.cdelto, a.ddeladd, a.ddelinfo, a.cbillto, a.cewtcode from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
-
+	$sqlhead = mysqli_query($con,"select a.cpono, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dneeded,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.nbasegross, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.lcancelled, a.lapproved, a.lprintposted, a.lvoid, a.ccustacctcode, b.cname, a.ccontact, a.ccontactemail, a.ladvancepay, a.cterms, a.cdelto, a.ddeladd, a.ddelinfo, a.cbillto, a.cewtcode, a.cemailto, a.cemailcc, a.cemailbcc, a.cemailsubject, a.cemailbody, a.cemailsentby, a.demailsent from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
 
 	@$arrname = array();
 	$directory = "../../Components/assets/PO/{$company}_{$cpono}/";
@@ -71,29 +70,36 @@
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+	<link rel="stylesheet" type="text/css" href="../../include/summernote/summernote.css?t=<?php echo time();?>">
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bootstrap-tagsinput/bootstrap-tagsinput.css?t=<?php echo time();?>"/>
 
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../js/bootstrap3-typeahead.min.js"></script>
-<script src="../../include/autoNumeric.js"></script>
-<!--
-<script src="../../Bootstrap/js/jquery.numeric.js"></script>
--->
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
+	<script src="../../include/autoNumeric.js"></script>
+	<!--
+	<script src="../../Bootstrap/js/jquery.numeric.js"></script>
+	-->
 
-<script src="../../Bootstrap/js/bootstrap.js"></script>
-<script src="../../Bootstrap/js/moment.js"></script>
-<script src="../../Bootstrap/js/bootstrap-datetimepicker.js"></script>
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<script src="../../Bootstrap/js/moment.js"></script>
+	<script src="../../Bootstrap/js/bootstrap-datetimepicker.js"></script>
+	<script src="../../Bootstrap/bootstrap-tagsinput/bootstrap-tagsinput.js" type="text/javascript"></script>
 
-<!--
---
--- FileType Bootstrap Scripts and Link
---
--->
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
-<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
-<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
-<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
-<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
-<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+	<script src="../../include/summernote/summernote.js"></script>
+
+	<!--
+	--
+	-- FileType Bootstrap Scripts and Link
+	--
+	-->
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
+	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+
+	<script src="../../global/custom.js?h=<?php echo time();?>"></script>
 
 </head>
 
@@ -134,11 +140,31 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
 		$lVoid = $row['lvoid'];
+
+
+		$cemailstoo = $row['cemailto'];
+		$cemailsccc = $row['cemailcc'];
+		$cemailsbcc = $row['cemailbcc'];
+		$cemailsbjc = $row['cemailsubject'];
+		$cemailsbod = $row['cemailbody'];
+		$cemailsentby = $row['cemailsentby'];
+		$cemailsentdate = $row['demailsent'];
+	}
+
+	//get last email body
+	if($cemailsbod==""){
+		$sqlno = mysqli_query($con,"select cemailbody from purchase where compcode='$company' and ccode='$CustCode' Order By ddate DESC LIMIT 1");
+		if (mysqli_num_rows($sqlno)!=0) {
+			while($row = mysqli_fetch_array($sqlno, MYSQLI_ASSOC)){
+				$cemailsbod = $row['cemailbody'];
+			}
+		}
 	}
 ?>
+	
 	<form action="Purch_editsave.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
 		<fieldset>
-    	<legend>
+    		<legend>
 				<div class="col-xs-6 nopadding"> Purchase Order Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
 					<?php
 						if($lCancelled==1){
@@ -162,383 +188,384 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				<li><a href="#attc">Attachments</a></li>
 			</ul>
 
- 				<div class="tab-content">  
+ 			<div class="tab-content">  
 
-      		<div id="home" class="tab-pane fade in active" style="padding-left:5px; padding-top:10px">
+      			<div id="home" class="tab-pane fade in active" style="padding-left:5px; padding-top:10px">
 
-						<table width="100%" border="0">
-							<tr>
-								<tH>PO No.:</tH>
-								<td style="padding:2px">
+					<table width="100%" border="0">
+						<tr>
+							<tH>PO No.:</tH>
+							<td style="padding:2px">
+								<div class="col-xs-3 nopadding">
+									<input type="text" class="form-control input-sm" id="txtcpono" name="txtcpono" width="20px" tabindex="1" value="<?php echo $cpono;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
+								</div>     
+								<input type="hidden" name="hdntranno" id="hdntranno" value="<?php echo $cpono;?>">
+								<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
+								<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
+								<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?php echo $lVoid;?>">
+								&nbsp;&nbsp;
+								
+							</td>
+							<td colspan="2" style="padding:2px" align="right">
+								<div id="statmsgz" class="small" style="display:inline"></div>
+							</td>
+						</tr>
+
+						<tr>
+							<tH width="100">Supplier:</tH>
+							<td style="padding:2px">
+								<div class="col-xs-12 nopadding">
 									<div class="col-xs-3 nopadding">
-										<input type="text" class="form-control input-sm" id="txtcpono" name="txtcpono" width="20px" tabindex="1" value="<?php echo $cpono;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
-									</div>     
-									<input type="hidden" name="hdntranno" id="hdntranno" value="<?php echo $cpono;?>">
-									<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
-									<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
-									<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?php echo $lVoid;?>">
-									&nbsp;&nbsp;
-									
-								</td>
-								<td colspan="2" style="padding:2px" align="right">
-									<div id="statmsgz" class="small" style="display:inline"></div>
-								</td>
-							</tr>
-
-							<tr>
-								<tH width="100">Supplier:</tH>
-								<td style="padding:2px">
-									<div class="col-xs-12 nopadding">
-										<div class="col-xs-3 nopadding">
-											<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" value="<?php echo $CustCode;?>" readonly>
-										</div>
-
-										<div class="col-xs-8 nopadwleft">
-											<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" value="<?php echo $CustName;?>">
-										</div> 
+										<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" value="<?php echo $CustCode;?>" readonly>
 									</div>
-								</td>
-								<tH width="150">PO Date:</tH>
-								<td width="250" style="padding:2px;">
-								<div class="col-xs-5 nopadding">
-								<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $Date; ?>" readonly/>
 
-								</div>
-								</td>
-							</tr>
-
-							<tr>
-								<tH width="100">Remarks:</tH>
-								<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value='<?php echo str_replace("'","\'",$Remarks); ?>'></div></td>
-								<tH width="100" style="padding:2px">Date Needed:</tH>
-								<td style="padding:2px">
-								<div class="col-xs-5 nopadding">
-								<input type='text' class="datepick form-control input-sm" id="date_needed" name="date_needed" value="<?php echo $DateNeeded; ?>" />
-
-								</div>
-								</td>
-							</tr>
-
-							<tr>
-								<tH width="100">Contact:</tH>
-								<td style="padding:2px">
-									<div class="col-xs-3 nopadding"> 
-										<button class="btn btn-sm btn-block btn-warning" name="btnSearchCont" id="btnSearchCont" type="button">Search</button>
-									</div>
 									<div class="col-xs-8 nopadwleft">
-										<input type="text" id="txtcontactname" name="txtcontactname" class="required form-control input-sm" placeholder="Contact Person Name..." tabindex="1"  required="true" value="<?php echo $ccontact; ?>">
-									</div>
-								</td>
-								<tH width="150" style="padding:2px">Terms: </tH> 
-									<td style="padding:2px">				
-											<select id="selterms" name="selterms" class="form-control input-sm selectpicker">  
-												<?php
-													$sql = "Select * From groupings where compcode='$company' and ctype='TERMS'";
-													$result=mysqli_query($con,$sql);
-													if (!mysqli_query($con, $sql)) {
-														printf("Errormessage: %s\n", mysqli_error($con));
-													}			
-																													
-													while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-													{
-												?>
-													<option value="<?php echo $row['ccode'];?>" <?=($cpayterms==$row['ccode']) ? "selected" : ""?>><?php echo $row['cdesc']?></option>
-												<?php
-													}
-												?>
-											</select>
-									</td>
-							</tr>
-
-							<tr>
-								<tH width="100">Email:</tH>
-								<td style="padding:2px">
-								<div class="col-xs-11 nopadding">
-									<input type='text' class="form-control input-sm" id="contact_email" name="contact_email" value="<?php echo $ccontactemail; ?>" />
-
+										<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" value="<?php echo $CustName;?>">
+									</div> 
 								</div>
+							</td>
+							<tH width="150">PO Date:</tH>
+							<td width="250" style="padding:2px;">
+							<div class="col-xs-5 nopadding">
+							<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $Date; ?>" readonly/>
+
+							</div>
+							</td>
+						</tr>
+
+						<tr>
+							<tH width="100">Remarks:</tH>
+							<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value='<?php echo str_replace("'","\'",$Remarks); ?>'></div></td>
+							<tH width="100" style="padding:2px">Date Needed:</tH>
+							<td style="padding:2px">
+							<div class="col-xs-5 nopadding">
+							<input type='text' class="datepick form-control input-sm" id="date_needed" name="date_needed" value="<?php echo $DateNeeded; ?>" />
+
+							</div>
+							</td>
+						</tr>
+
+						<tr>
+							<tH width="100">Contact:</tH>
+							<td style="padding:2px">
+								<div class="col-xs-3 nopadding"> 
+									<button class="btn btn-sm btn-block btn-warning" name="btnSearchCont" id="btnSearchCont" type="button">Search</button>
+								</div>
+								<div class="col-xs-8 nopadwleft">
+									<input type="text" id="txtcontactname" name="txtcontactname" class="required form-control input-sm" placeholder="Contact Person Name..." tabindex="1"  required="true" value="<?php echo $ccontact; ?>">
+								</div>
+							</td>
+							<tH width="150" style="padding:2px">Terms: </tH> 
+								<td style="padding:2px">				
+										<select id="selterms" name="selterms" class="form-control input-sm selectpicker">  
+											<?php
+												$sql = "Select * From groupings where compcode='$company' and ctype='TERMS'";
+												$result=mysqli_query($con,$sql);
+												if (!mysqli_query($con, $sql)) {
+													printf("Errormessage: %s\n", mysqli_error($con));
+												}			
+																												
+												while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+												{
+											?>
+												<option value="<?php echo $row['ccode'];?>" <?=($cpayterms==$row['ccode']) ? "selected" : ""?>><?php echo $row['cdesc']?></option>
+											<?php
+												}
+											?>
+										</select>
 								</td>
-								<tH width="150" style="padding:2px">Payment Type: </tH>
-								<td style="padding:2px">
-									<select class="form-control input-sm" name="selpaytype" id="selpaytype">
-										<option value="0" <?=($cpaytype==0) ? "selected" : ""?>>Credit (Paid After Delivery)</option>
-										<option value="1" <?=($cpaytype==1) ? "selected" : ""?>>Advance (Payment Before Delivery)</option>
+						</tr>
+
+						<tr>
+							<tH width="100">Email:</tH>
+							<td style="padding:2px">
+							<div class="col-xs-11 nopadding">
+								<input type='text' class="form-control input-sm" id="contact_email" name="contact_email" value="<?php echo $ccontactemail; ?>" />
+
+							</div>
+							</td>
+							<tH width="150" style="padding:2px">Payment Type: </tH>
+							<td style="padding:2px">
+								<select class="form-control input-sm" name="selpaytype" id="selpaytype">
+									<option value="0" <?=($cpaytype==0) ? "selected" : ""?>>Credit (Paid After Delivery)</option>
+									<option value="1" <?=($cpaytype==1) ? "selected" : ""?>>Advance (Payment Before Delivery)</option>
+								</select>
+							</td>
+						</tr>
+
+						<tr>
+							<tH width="100">Currency:</tH>
+							<td style="padding:2px">
+								<div class="col-xs-12 nopadding">
+									<div class="col-xs-6 nopadding">
+										<select class="form-control input-sm" name="selbasecurr" id="selbasecurr"> 						
+											<?php
+												$nvaluecurrbase = "";	
+												$nvaluecurrbasedesc = "";	
+												$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='DEF_CURRENCY'"); 
+												
+												if (mysqli_num_rows($result)!=0) {
+													$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
+													
+													$nvaluecurrbase = $all_course_data['cvalue']; 
+														
+												}
+												else{
+													$nvaluecurrbase = "";
+												}
+						
+												/*
+													$objcurrs = listcurrencies();
+													$objrows = json_decode($objcurrs, true);
+														
+												foreach($objrows as $rows){
+												if ($nvaluecurrbase==$rows['currencyCode']) {
+													$nvaluecurrbasedesc = $rows['currencyName'];
+												}
+
+												if($rows['countryCode']!=="Crypto" && $rows['currencyName']!==null){
+
+													*/
+
+												$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+												if (mysqli_num_rows($sqlhead)!=0) {
+													while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+											?>
+												<option value="<?=$rows['id']?>" <?php if ($ccurrcode==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
+											<?php
+
+													}
+												}
+											?>
+										</select>
+										<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?php echo $nvaluecurrbase; ?>"> 	
+										<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?php echo $ccurrdesc; ?>"> 
+									</div>
+									<div class="col-xs-2 nopadwleft">
+										<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="<?php echo $ccurrrate; ?>">	 
+									</div>
+
+									<div class="col-xs-4" id="statgetrate" style="padding: 4px !important"> 
+												
+									</div>
+							</td>
+							<tH width="150" style="padding:2px">EWT Code: </tH>
+							<td style="padding:2px">
+									<select id="selewt" name="selewt" class="form-control input-sm selectpicker"  tabindex="3">
+											<option value="none">None</option>
+											<option value="multi">Multiple</option>
+											<?php
+												foreach(@$arrewtlist as $rows){ //$cewtcode
+													if($cewtcode==$rows['ctaxcode']){
+														$isselc = "selected";
+													}else{
+														$isselc = "";
+													}
+													echo "<option value=\"".$rows['ctaxcode']."\" ".$isselc.">".$rows['ctaxcode'].": ".$rows['nrate']."%</option>";
+												}
+											?>
+											
 									</select>
-								</td>
-							</tr>
-
-							<tr>
-									<tH width="100">Currency:</tH>
-									<td style="padding:2px">
-										<div class="col-xs-12 nopadding">
-														<div class="col-xs-6 nopadding">
-															<select class="form-control input-sm" name="selbasecurr" id="selbasecurr"> 						
-																<?php
-																		$nvaluecurrbase = "";	
-																		$nvaluecurrbasedesc = "";	
-																		$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE compcode='$company' and ccode='DEF_CURRENCY'"); 
-																		
-																			if (mysqli_num_rows($result)!=0) {
-																				$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
-																				
-																				$nvaluecurrbase = $all_course_data['cvalue']; 
-																					
-																			}
-																			else{
-																				$nvaluecurrbase = "";
-																			}
-													
-																			/*
-																				$objcurrs = listcurrencies();
-																				$objrows = json_decode($objcurrs, true);
-																					
-																		foreach($objrows as $rows){
-																			if ($nvaluecurrbase==$rows['currencyCode']) {
-																				$nvaluecurrbasedesc = $rows['currencyName'];
-																			}
-
-																			if($rows['countryCode']!=="Crypto" && $rows['currencyName']!==null){
-
-																				*/
-
-																				$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
-																				if (mysqli_num_rows($sqlhead)!=0) {
-																					while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-																?>
-																			<option value="<?=$rows['id']?>" <?php if ($ccurrcode==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
-																<?php
-
-																			}
-																		}
-																?>
-															</select>
-																<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?php echo $nvaluecurrbase; ?>"> 	
-																<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?php echo $ccurrdesc; ?>"> 
-														</div>
-														<div class="col-xs-2 nopadwleft">
-															<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="<?php echo $ccurrrate; ?>">	 
-														</div>
-
-														<div class="col-xs-4" id="statgetrate" style="padding: 4px !important"> 
-																	
-														</div>
-										</div>
-									</td>
-									<tH width="150" style="padding:2px">EWT Code: </tH>
-									<td style="padding:2px">
-											<select id="selewt" name="selewt" class="form-control input-sm selectpicker"  tabindex="3">
-													<option value="none">None</option>
-													<option value="multi">Multiple</option>
-													<?php
-														foreach(@$arrewtlist as $rows){ //$cewtcode
-															if($cewtcode==$rows['ctaxcode']){
-																$isselc = "selected";
-															}else{
-																$isselc = "";
-															}
-															echo "<option value=\"".$rows['ctaxcode']."\" ".$isselc.">".$rows['ctaxcode'].": ".$rows['nrate']."%</option>";
-														}
-													?>
-													
-											</select>
-									</td>
-								</tr>
+							</td>
+						</tr>
 
 
-						</table>
+					</table>
 					
-					</div>
-
-					<div id="menu1" class="tab-pane fade" style="padding-left:5px; padding-top:10px">
-						<table width="100%" border="0">
-							<tr>
-								<td width="150"><b>Deliver To</b></td>
-								<td width="310" colspan="2" style="padding:2px">
-									<div class="col-xs-8 nopadding">
-										<div class="col-xs-12 nopadding">
-											<input type="text" class="form-control input-sm" id="txtdelcust" name="txtdelcust" width="20px" tabindex="1" placeholder="Enter Deliver To..."  size="60" autocomplete="off" value="<?=$delto?>">
-										</div> 
-									</div>						
-								</td>
-							</tr>
-							<tr>
-								<td><b>Delivery Address</b></td>
-								<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><textarea class="form-control input-sm" id="txtdeladd" name="txtdeladd" placeholder="Enter Delivery Address..." autocomplete="off"> <?=$deladd?> </textarea></div></td>
-							</tr>					
-
-							<tr>
-								<td width="150"><b>Delivery Notes</b></td>
-								<td width="310" colspan="2" style="padding:2px">
-									<div class="col-xs-8 nopadding">
-										<div class="col-xs-12 nopadding">
-											<input type="text" class="form-control input-sm" id="textdelnotes" name="textdelnotes" width="20px" tabindex="1" placeholder="Enter Delivery Notes..."  size="60" autocomplete="off" value="<?=$delinfo?>">
-										</div> 
-									</div>						
-								</td>
-							</tr>
-
-							<tr>
-								<td width="150"><b>Bill To</b></td>
-								<td width="310" colspan="2" style="padding:2px">
-									<div class="col-xs-8 nopadding">
-										<div class="col-xs-12 nopadding">
-											<input type="text" class="form-control input-sm" id="txtbillto" name="txtbillto" width="20px" tabindex="1" placeholder="Enter Bill To..."  size="60" autocomplete="off" value="<?=$billto?>">
-										</div> 
-									</div>						
-								</td>
-							</tr>
-
-						</table>
-					</div>
-
-					<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px">
-						<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-						<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
-						<input type="file" name="upload[]" id="file-0" multiple />
-					</div>
-
 				</div>
 
-		<hr>
-		<div class="col-xs-12 nopadwdown"><b>Details</b></div>
-		<div class="col-xs-12 nopadwdown"> 
+				<div id="menu1" class="tab-pane fade" style="padding-left:5px; padding-top:10px">
+					<table width="100%" border="0">
+						<tr>
+							<td width="150"><b>Deliver To</b></td>
+							<td width="310" colspan="2" style="padding:2px">
+								<div class="col-xs-8 nopadding">
+									<div class="col-xs-12 nopadding">
+										<input type="text" class="form-control input-sm" id="txtdelcust" name="txtdelcust" width="20px" tabindex="1" placeholder="Enter Deliver To..."  size="60" autocomplete="off" value="<?=$delto?>">
+									</div> 
+								</div>						
+							</td>
+						</tr>
+						<tr>
+							<td><b>Delivery Address</b></td>
+							<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><textarea class="form-control input-sm" id="txtdeladd" name="txtdeladd" placeholder="Enter Delivery Address..." autocomplete="off"> <?=$deladd?> </textarea></div></td>
+						</tr>					
 
-			<input type="hidden" name="hdnxrefrpr" id="hdnxrefrpr">
-			<input type="hidden" name="hdnxrefrprident" id="hdnxrefrprident">
+						<tr>
+							<td width="150"><b>Delivery Notes</b></td>
+							<td width="310" colspan="2" style="padding:2px">
+								<div class="col-xs-8 nopadding">
+									<div class="col-xs-12 nopadding">
+										<input type="text" class="form-control input-sm" id="textdelnotes" name="textdelnotes" width="20px" tabindex="1" placeholder="Enter Delivery Notes..."  size="60" autocomplete="off" value="<?=$delinfo?>">
+									</div> 
+								</div>						
+							</td>
+						</tr>
 
-			<input type="hidden" name="hdnunit" id="hdnunit">
-			<input type="hidden" name="hdnqty" id="hdnqty">
-			<input type="hidden" name="hdnfact" id="hdnfact">
-			<input type="hidden" name="hdnmainunit" id="hdnmainunit">
+						<tr>
+							<td width="150"><b>Bill To</b></td>
+							<td width="310" colspan="2" style="padding:2px">
+								<div class="col-xs-8 nopadding">
+									<div class="col-xs-12 nopadding">
+										<input type="text" class="form-control input-sm" id="txtbillto" name="txtbillto" width="20px" tabindex="1" placeholder="Enter Bill To..."  size="60" autocomplete="off" value="<?=$billto?>">
+									</div> 
+								</div>						
+							</td>
+						</tr>
 
-			<?php
-				if($xAllowPR==0){
-			?>
-			<div class="col-xs-3 nopadding"><input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Item/SKU Code..." tabindex="4"></div>
-			<div class="col-xs-5 nopadwleft"><input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL + F) Search Product Name..." size="80" tabindex="5"></div>
-			<?php
-				}else{
-			?>
-				<input type="hidden" name="txtprodid" id="txtprodid">
-				<input type="hidden" name="txtprodnme" id="txtprodnme">
-			<?php
-				}
-			?>
-		</div>  
+					</table>
+				</div>
 
+				<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px">
+					<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+					<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+					<input type="file" name="upload[]" id="file-0" multiple />
+				</div>
 
-        <div class="alt2" dir="ltr" style="
-			margin: 0px;
-			padding: 3px;
-			border: 1px solid #919b9c;
-			width: 100%;
-			height: 250px;
-			text-align: left;
-			overflow: auto">
-	
-            <table id="MyTable" class="MyTable" cellpadding"3px" width="130%" border="0">
-				<thead> 
-					<tr>
-						<th style="border-bottom:1px solid #999">Code</th>
-						<th style="border-bottom:1px solid #999">Description</th>
-						<th style="border-bottom:1px solid #999" class="codeshdn">EWT Code</th>
-						<th style="border-bottom:1px solid #999" class="codeshdn">VAT</th>
-						<th style="border-bottom:1px solid #999">UOM</th>
-						<th style="border-bottom:1px solid #999">Qty</th>
-						<th style="border-bottom:1px solid #999">Price</th>
-						<th style="border-bottom:1px solid #999">Amount</th>
-						<th style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
-						<th style="border-bottom:1px solid #999">Date Needed</th>
-						<th style="border-bottom:1px solid #999">Remarks</th>
-						<th style="border-bottom:1px solid #999">&nbsp;</th>
-					</tr>
-				</thead>
-				<tbody class="tbody">
-              	</tbody>                    
-			</table>
+			</div>
 
-		</div>
+			<hr>
+			<div class="row nopadwdown">
+				<div class="col-xs-4 nopadwdown">
+					<b>Details</b>
+				</div>
+				<div class="col-xs-8 nopadwdown"> 
 
-		<br>
+					<input type="hidden" name="hdnxrefrpr" id="hdnxrefrpr">
+					<input type="hidden" name="hdnxrefrprident" id="hdnxrefrprident">
 
-		<table width="100%" border="0" cellpadding="3">
-			<tr>
-				<td rowspan="2" width="70%">
-					<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
-			
+					<input type="hidden" name="hdnunit" id="hdnunit">
+					<input type="hidden" name="hdnqty" id="hdnqty">
+					<input type="hidden" name="hdnfact" id="hdnfact">
+					<input type="hidden" name="hdnmainunit" id="hdnmainunit">
+
 					<?php
-						if($poststat=="True"){
+						if($xAllowPR==0){
 					?>
+					<div class="col-xs-4 nopadding"><input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Item/SKU Code..." tabindex="4"></div>
+					<div class="col-xs-8 nopadwleft"><input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL + F) Search Product Name..." size="80" tabindex="5"></div>
+					<?php
+						}else{
+					?>
+						<input type="hidden" name="txtprodid" id="txtprodid">
+						<input type="hidden" name="txtprodnme" id="txtprodnme">
+					<?php
+						}
+					?>
+				</div> 
+			</div>	
 
-					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Purch.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
-						Back to Main<br>(ESC)
-					</button>
+			<div class="alt2" dir="ltr" style="
+				margin: 0px;
+				padding: 3px;
+				border: 1px solid #919b9c;
+				width: 100%;
+				height: 250px;
+				text-align: left;
+				overflow: auto">
+		
+				<table id="MyTable" class="MyTable" cellpadding"3px" width="130%" border="0">
+					<thead> 
+						<tr>
+							<th style="border-bottom:1px solid #999">Code</th>
+							<th style="border-bottom:1px solid #999">Description</th>
+							<th style="border-bottom:1px solid #999" class="codeshdn">EWT Code</th>
+							<th style="border-bottom:1px solid #999" class="codeshdn">VAT</th>
+							<th style="border-bottom:1px solid #999">UOM</th>
+							<th style="border-bottom:1px solid #999">Qty</th>
+							<th style="border-bottom:1px solid #999">Price</th>
+							<th style="border-bottom:1px solid #999">Amount</th>
+							<th style="border-bottom:1px solid #999">Total Amt in <?php echo $nvaluecurrbase; ?></th>
+							<th style="border-bottom:1px solid #999">Date Needed</th>
+							<th style="border-bottom:1px solid #999">Remarks</th>
+							<th style="border-bottom:1px solid #999">&nbsp;</th>
+						</tr>
+					</thead>
+					<tbody class="tbody">
+					</tbody>                    
+				</table>
+
+			</div>
+
+			<br>
+
+			<table width="100%" border="0" cellpadding="3">
+				<tr>
+					<td rowspan="2" width="70%">
+						<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
 				
-					<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='Purch_new.php';" id="btnNew" name="btnNew">
-						New<br>(F1)
-					</button>
+						<?php
+							if($poststat=="True"){
+						?>
 
-					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
-						PR<br>(Insert)
-					</button>
-
-					<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
-						Undo Edit<br>(CTRL+Z)
-					</button>
-
-					<?php
-						$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'Purch_print'");
-
-						if(mysqli_num_rows($sql) == 1){
-						
-					?>
-
-						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','Print');" id="btnPrint" name="btnPrint">
-							Print<br>(CTRL+P)
+						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Purch.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
+							Back to Main<br>(ESC)
+						</button>
+					
+						<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='Purch_new.php';" id="btnNew" name="btnNew">
+							New<br>(F1)
 						</button>
 
-						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','PDF');" id="btnPDF" name="btnPDF">
-							View PDF<br>&nbsp;
+						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
+							PR<br>(Insert)
+						</button>
+
+						<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
+							Undo Edit<br>(CTRL+Z)
 						</button>
 
 						<?php
-							if($lPosted==1){
+							$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'Purch_print'");
+
+							if(mysqli_num_rows($sql) == 1){
+							
 						?>
-						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','Email');" id="btnEmail" name="btnEmail">
-							Send Email<br>&nbsp;
-						</button>
 
-					<?php		
+							<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','Print');" id="btnPrint" name="btnPrint">
+								Print<br>(CTRL+P)
+							</button>
+
+							<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','PDF');" id="btnPDF" name="btnPDF">
+								View PDF<br>&nbsp;
+							</button>
+
+							<?php
+								if($lPosted==1 && $lVoid==0){
+							?>
+								<button type="button" class="btn btn-info btn-sm" tabindex="6" id="btnEmail" name="btnEmail" onclick="sendEmail()">  
+									Send Email<br>&nbsp;
+								</button>
+
+						<?php		
+								}
 							}
-						}
-					?>
+						?>
 
-					<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
-						Edit<br>(CTRL+E)    
-					</button>
+						<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
+							Edit<br>(CTRL+E)    
+						</button>
+						
+						<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
+							Save<br>(CTRL+S)
+						</button>
 					
-					<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
-						Save<br>(CTRL+S)
-					</button>
-				
-					<?php
-						}
-					?>
+						<?php
+							}
+						?>
 
-				</td>
-				<td width="110px" align="right"><b>Gross Amount </b>&nbsp;&nbsp;</td>
-					<td width="150px"> <input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="<?php echo number_format($nbasegross,4); ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10">
-				</td>
-			</tr>
-			<tr>
-				<td width="110px" align="right"><b>Gross Amount in <?php echo $nvaluecurrbase; ?></b>&nbsp;&nbsp;</td>
-				<td width="150px"> <input type="text" id="txtnGross" name="txtnGross" readonly value="<?php echo number_format($Gross,4); ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10"></td>
-			</tr>
-		</table>
+					</td>
+					<td width="110px" align="right"><b>Gross Amount </b>&nbsp;&nbsp;</td>
+						<td width="150px"> <input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="<?php echo number_format($nbasegross,4); ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10">
+					</td>
+				</tr>
+				<tr>
+					<td width="110px" align="right"><b>Gross Amount in <?php echo $nvaluecurrbase; ?></b>&nbsp;&nbsp;</td>
+					<td width="150px"> <input type="text" id="txtnGross" name="txtnGross" readonly value="<?php echo number_format($Gross,4); ?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="10"></td>
+				</tr>
+			</table>
 				
-    </fieldset>
+    	</fieldset>
 	</form>
-
 <?php
 }
 else{
@@ -546,7 +573,6 @@ else{
 	<form action="Purch_edit.php" name="frmpos2" id="frmpos2" method="post">
 		<fieldset>
 			<legend>Purchase Order</legend>	
-
 			<table width="100%" border="0">
 				<tr>
 					<tH width="100">PO NO.:</tH>
@@ -562,7 +588,80 @@ else{
 }
 ?>
 
+<!--SEND EMAIL-->
+<div class="modal fade" id="SendEmailMod" tabindex="-1" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+		
+			<form name="frmsendemail" id="frmsendemail" action="SendToEmail.php">
+				<input type="hidden" id="cemailtranno" name="cemailtranno" value="<?=$cpono?>">
 
+				<div class="modal-header">
+					<div class="row nopadding">
+						<div class="col-xs-4 nopadding">
+							<h3 class="modal-title" id="invheader"> Send Email </h3>  
+						</div>   
+						<div class="col-xs-8 nopadwtop2x text-right">
+							<?php
+								echo ($cemailsentby!="") ? "<b>Last Sent By: </b>".$cemailsentby." <b>Date/Time: </b>".$cemailsentdate: "";
+							?>
+						</div>      
+					</div>
+				</div>
+
+				<div class="modal-body" style="height: 70vh">
+					<div class="row nopadding">
+						<div class="col-xs-1 nopadwtop2x">
+							<b>&nbsp;&nbsp;&nbsp;&nbsp;To </b>
+						</div>	
+						<div class="col-xs-11">
+							<input type="text" id="cemailto" name="cemailto" value="<?=($cemailstoo=="") ? $ccontactemail : $cemailstoo?>">
+						</div>
+						
+					</div>
+					<div class="row nopadwtop">
+						<div class="col-xs-1 nopadwtop2x">
+							<b>&nbsp;&nbsp;&nbsp;&nbsp;CC </b>
+						</div>	
+						<div class="col-xs-11">
+							<input type="text" class="form-control input-sm" id="cemailcc" name="cemailcc" value="<?=$cemailsccc?>">
+						</div>
+						
+					</div>
+					<div class="row nopadwtop">
+						<div class="col-xs-1 nopadwtop2x">
+							<b>&nbsp;&nbsp;&nbsp;&nbsp;BCC </b>
+						</div>	
+						<div class="col-xs-11">
+							<input type="text" class="form-control input-sm tags" id="cemailbcc" name="cemailbcc" value="<?=$cemailsbcc?>">
+						</div>
+						
+					</div>
+					<div class="row nopadwtop">
+						<div class="col-xs-1 nopadwtop2x">
+							<b>&nbsp;&nbsp;&nbsp;&nbsp;Subject </b>
+						</div>	
+						<div class="col-xs-11">
+							<input type="text" class="form-control input-sm" id="cemailsubject" name="cemailsubject" value="<?=$cemailsbjc?>">
+						</div>
+						
+					</div>
+					<div class="row nopadwtop">
+						<div class="col-xs-12">
+							<textarea rows="4" class="form-control input-sm" name="txtemailremarks" id="txtemailremarks"><?=($cemailsbod=="") ? "" : $cemailsbod;?></textarea>
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-success btn-sm">Send Email</button>
+					<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal" id="btnmodclose">Cancel</button>
+				</div>
+			</form>
+
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <!-- PRINT OUT MODAL-->
 <div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
@@ -628,63 +727,62 @@ else{
 </div>
 
 <!-- FULL PO LIST REFERENCES-->
-	<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
-		<div class="modal-dialog modal-lg">			
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h3 class="modal-title" id="InvListHdr">PR List</h3>
-				</div>
-							
-				<div class="modal-body" style="height:40vh">
-							
-					<div class="col-xs-12 nopadding">
+<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
+	<div class="modal-dialog modal-lg">			
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h3 class="modal-title" id="InvListHdr">PR List</h3>
+			</div>
+						
+			<div class="modal-body" style="height:40vh">
+						
+				<div class="col-xs-12 nopadding">
 
-						<div class="form-group">
-							<div class="col-xs-3 nopadding pre-scrollable" style="height:37vh">
-								<table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight small">
-									<thead>
-										<tr>
-											<th>PR No</th>
-											<th>Section</th>
-										</tr>
-									</thead>
-									<tbody>
-									</tbody>
-								</table>
-							</div>
-
-							<div class="col-xs-9 nopadwleft pre-scrollable" style="height:37vh">
-								<table name='MyInvDetList' id='MyInvDetList' class="table table-small small">
-									<thead>
-										<tr>
-											<th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
-											<th>Item No</th>
-											<th>Description</th>
-											<th>UOM</th>
-											<th>Qty</th>
-										</tr>
-									</thead>
-									<tbody>
-																
-									</tbody>
-								</table>
-							</div>
+					<div class="form-group">
+						<div class="col-xs-3 nopadding pre-scrollable" style="height:37vh">
+							<table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight small">
+								<thead>
+									<tr>
+										<th>PR No</th>
+										<th>Section</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
 						</div>
 
+						<div class="col-xs-9 nopadwleft pre-scrollable" style="height:37vh">
+							<table name='MyInvDetList' id='MyInvDetList' class="table table-small small">
+								<thead>
+									<tr>
+										<th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
+										<th>Item No</th>
+										<th>Description</th>
+										<th>UOM</th>
+										<th>Qty</th>
+									</tr>
+								</thead>
+								<tbody>
+															
+								</tbody>
+							</table>
+						</div>
 					</div>
-												
-				</div>
-				
-				<div class="modal-footer">
-					<button type="button" id="btnInsDet" onClick="InsertPRDets()" class="btn btn-primary">Insert</button>
-					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-				</div>
-			</div><!-- /.modal-content -->
-		</div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->
-<!-- End FULL INVOICE LIST -->
 
+				</div>
+											
+			</div>
+			
+			<div class="modal-footer">
+				<button type="button" id="btnInsDet" onClick="InsertPRDets()" class="btn btn-primary">Insert</button>
+				<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- End FULL INVOICE LIST -->
 
 <form method="post" name="frmedit" id="frmedit" action="Purch_edit.php">
 	<input type="hidden" name="txtctranno" id="txtctranno" value="">
@@ -719,7 +817,7 @@ else{
 		 */
 		file_name.map(({name, ext}, i) => {
 
-			list_file.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/PO/<?=$company."_".$cpono?>/" + name)
+			list_file.push("https://<?=($_SERVER['HTTP_HOST']=="localhost") ? $_SERVER['HTTP_HOST']."/st_myxfinancials": $_SERVER['HTTP_HOST'];?>/Components/assets/PO/<?=$company."_".$cpono?>/" + name)
 			console.log(ext);
 
 			if(jQuery.inArray(ext, arroffice) !== -1){
@@ -794,6 +892,10 @@ else{
 		}
 	?>
 
+	$(document).on("keydown", "#frmsendemail", function(event) { 
+		return event.key != "Enter";
+	});
+
 	$(document).on("click", "tr.bdydeigid" , function() {
     var $row = $(this).closest("tr"),       // Finds the closest row <tr> 
 	  $tds = $row.find("td");             // Finds all children <td> elements
@@ -813,43 +915,64 @@ else{
   });
 
 	$(document).ready(function() {
-    $('.datepick').datetimepicker({
-        format: 'MM/DD/YYYY'
-    });
+		$('.datepick').datetimepicker({
+			format: 'MM/DD/YYYY'
+		});
 
 		$(".nav-tabs a").click(function(){
-    	$(this).tab('show');
+			$(this).tab('show');
 		});
 
 
-			if(file_name.length > 0){
-				$('#file-0').fileinput({
-					showUpload: false,
-					showClose: false,
-					allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
-					overwriteInitial: false,
-					maxFileSize:100000,
-					maxFileCount: 5,
-					browseOnZoneClick: true,
-					fileActionSettings: { showUpload: false, showDrag: false, },
-					initialPreview: list_file,
-					initialPreviewAsData: true,
-					initialPreviewFileType: 'image',
-					initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/PO/<?=$company."_".$cpono?>/{filename}',
-					initialPreviewConfig: file_config
-				});
-			} else {
-				$("#file-0").fileinput({
-					showUpload: false,
-					showClose: false,
-					allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
-					overwriteInitial: false,
-					maxFileSize:100000,
-					maxFileCount: 5,
-					browseOnZoneClick: true,
-					fileActionSettings: { showUpload: false, showDrag: false, }
-				});
-			}
+		if(file_name.length > 0){
+			$('#file-0').fileinput({
+				showUpload: false,
+				showClose: false,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, },
+				initialPreview: list_file,
+				initialPreviewAsData: true,
+				initialPreviewFileType: 'image',
+				initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/PO/<?=$company."_".$cpono?>/{filename}',
+				initialPreviewConfig: file_config
+			});
+		} else {
+			$("#file-0").fileinput({
+				showUpload: false,
+				showClose: false,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, }
+			});
+		}
+
+		$("#cemailto, #cemailcc, #cemailbcc").tagsinput();
+		$('#cemailto, #cemailcc, #cemailbcc').on('beforeItemAdd', function(event) {
+			if(!IsEmail(event.item)){
+				event.cancel = true;
+			};
+			// event.item: contains the item
+			// event.cancel = true : set to true to prevent the item getting added
+		});
+
+		$("#txtemailremarks").summernote({
+			placeholder: 'Email Body',
+			height: 240,
+			toolbar: [
+				['style', ['style']],
+				['font', ['bold', 'underline', 'clear']],
+				['fontname', ['fontname']],
+				['color', ['color']],
+				['para', ['ul', 'ol', 'paragraph']],
+			]
+		});
 		
 		$('#txtprodnme').attr("disabled", true);
 		$('#txtprodid').attr("disabled", true);
@@ -946,7 +1069,6 @@ else{
 		
 		});
 
-
 		$("#txtprodid").keydown(function(e){
 			if(e.keyCode == 13){
 
@@ -1023,7 +1145,6 @@ else{
 			
 		});
 	
-
 		$("#btnSearchCont").on("click", function(){
 
 			//get contact names
@@ -1744,6 +1865,9 @@ else{
 		$("#btnPDF").attr("disabled", false);   
 		$("#btnEmail").attr("disabled", false);
 		$("#btnEdit").attr("disabled", false);
+
+		$(".kv-file-zoom").attr("disabled", false);
+		
 	}
 
 	function enabled(){
@@ -2082,6 +2206,11 @@ else{
 			$('#mySIRef').modal('hide');
 
 		});
+	}
+
+	function sendEmail(){
+		window.parent.parent.scrollTo(0,0);
+		$("#SendEmailMod").modal("show");
 	}
 
 </script>

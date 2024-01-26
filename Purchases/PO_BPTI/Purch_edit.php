@@ -58,7 +58,7 @@
 		}
 	}
 
-	$sqlhead = mysqli_query($con,"select a.cpono, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dneeded,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.nbasegross, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.lcancelled, a.lapproved, a.lprintposted, a.lvoid, a.ccustacctcode, b.cname, a.ccontact, a.ccontactemail, a.ccontactphone, a.ccontactfax, a.ladvancepay, a.cterms, a.cdelto, a.ddeladd, a.ddelemail, a.ddelphone, a.ddelfax, a.ddelinfo, a.cbillto, a.cewtcode from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
+	$sqlhead = mysqli_query($con,"select a.cpono, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dneeded,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.nbasegross, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.lcancelled, a.lapproved, a.lprintposted, a.lvoid, a.ccustacctcode, b.cname, a.ccontact, a.ccontactemail, a.ccontactphone, a.ccontactfax, a.ladvancepay, a.cterms, a.cdelto, a.ddeladd, a.ddelemail, a.ddelphone, a.ddelfax, a.ddelinfo, a.cbillto, a.cewtcode, a.cemailto, a.cemailcc, a.cemailbcc, a.cemailsubject, a.cemailbody, a.cemailsentby, a.demailsent from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
 
 
 	@$arrname = array();
@@ -81,6 +81,9 @@
   	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
+	<link rel="stylesheet" type="text/css" href="../../include/summernote/summernote.css?t=<?php echo time();?>">
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bootstrap-tagsinput/bootstrap-tagsinput.css?t=<?php echo time();?>"/>
+
 
 	<link href="../../global/css/components.css?t=<?php echo time();?>" id="style_components" rel="stylesheet" type="text/css"/>
 
@@ -97,6 +100,9 @@
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.js"></script>
 	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
+	<script src="../../Bootstrap/bootstrap-tagsinput/bootstrap-tagsinput.js" type="text/javascript"></script>
+
+	<script src="../../include/summernote/summernote.js"></script>
 	<!--
 	--
 	-- FileType Bootstrap Scripts and Link
@@ -108,6 +114,8 @@
 	<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
 	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
 	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+
+	<script src="../../global/custom.js?h=<?php echo time();?>"></script>
 
 </head>
 
@@ -153,6 +161,24 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
 		$lVoid = $row['lvoid'];
+
+		$cemailstoo = $row['cemailto'];
+		$cemailsccc = $row['cemailcc'];
+		$cemailsbcc = $row['cemailbcc'];
+		$cemailsbjc = $row['cemailsubject'];
+		$cemailsbod = $row['cemailbody'];
+		$cemailsentby = $row['cemailsentby'];
+		$cemailsentdate = $row['demailsent'];
+	}
+
+	//get last email body
+	if($cemailsbod==""){
+		$sqlno = mysqli_query($con,"select cemailbody from purchase where compcode='$company' and ccode='$CustCode' Order By ddate DESC LIMIT 1");
+		if (mysqli_num_rows($sqlno)!=0) {
+			while($row = mysqli_fetch_array($sqlno, MYSQLI_ASSOC)){
+				$cemailsbod = $row['cemailbody'];
+			}
+		}
 	}
 ?>
 	<form action="Purch_editsave.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
@@ -575,10 +601,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</button>
 
 									<?php
-										if($lPosted==1){
+										if($lPosted==1 && $lVoid==0){
 									?>
-									<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','Email');" id="btnEmail" name="btnEmail">
-										Send Email<br>&nbsp;
+									<button type="button" class="btn btn-info btn-sm" tabindex="6" id="btnEmail" name="btnEmail" onclick="sendEmail()">  
+									Send Email<br>&nbsp;
 									</button>
 
 								<?php		
@@ -787,6 +813,82 @@ else{
 	</div><!-- /.modal -->
 <!-- End FULL INVOICE LIST -->
 
+<!--SEND EMAIL-->
+	<div class="modal fade" id="SendEmailMod" tabindex="-1" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+			
+				<form name="frmsendemail" id="frmsendemail" action="SendToEmail.php">
+					<input type="hidden" id="cemailtranno" name="cemailtranno" value="<?=$cpono?>">
+
+					<div class="modal-header">
+						<div class="row nopadding">
+							<div class="col-xs-4 nopadding">
+								<h3 class="modal-title" id="invheader"> Send Email </h3>  
+							</div>   
+							<div class="col-xs-8 nopadwtop2x text-right">
+								<?php
+									echo ($cemailsentby!="") ? "<b>Last Sent By: </b>".$cemailsentby." <b>Date/Time: </b>".$cemailsentdate: "";
+								?>
+							</div>      
+						</div>
+					</div>
+
+					<div class="modal-body" style="height: 35vh">
+						<div class="row nopadding">
+							<div class="col-xs-1 nopadwtop2x">
+								<b>&nbsp;&nbsp;&nbsp;&nbsp;To </b>
+							</div>	
+							<div class="col-xs-11">
+								<input type="text" id="cemailto" name="cemailto" value="<?=($cemailstoo=="") ? $ccontactemail : $cemailstoo?>">
+							</div>
+							
+						</div>
+						<div class="row nopadwtop">
+							<div class="col-xs-1 nopadwtop2x">
+								<b>&nbsp;&nbsp;&nbsp;&nbsp;CC </b>
+							</div>	
+							<div class="col-xs-11">
+								<input type="text" class="form-control input-sm" id="cemailcc" name="cemailcc" value="<?=$cemailsccc?>">
+							</div>
+							
+						</div>
+						<div class="row nopadwtop">
+							<div class="col-xs-1 nopadwtop2x">
+								<b>&nbsp;&nbsp;&nbsp;&nbsp;BCC </b>
+							</div>	
+							<div class="col-xs-11">
+								<input type="text" class="form-control input-sm tags" id="cemailbcc" name="cemailbcc" value="<?=$cemailsbcc?>">
+							</div>
+							
+						</div>
+						<div class="row nopadwtop">
+							<div class="col-xs-1 nopadwtop2x">
+								<b>&nbsp;&nbsp;&nbsp;&nbsp;Subject </b>
+							</div>	
+							<div class="col-xs-11">
+								<input type="text" class="form-control input-sm" id="cemailsubject" name="cemailsubject" value="<?=$cemailsbjc?>">
+							</div>
+							
+						</div>
+						<div class="row nopadwtop">
+							<div class="col-xs-12">
+								<textarea rows="4" class="form-control input-sm" name="txtemailremarks" id="txtemailremarks"><?=($cemailsbod=="") ? "" : $cemailsbod;?></textarea>
+							</div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-success btn-sm">Send Email</button>
+						<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal" id="btnmodclose">Cancel</button>
+					</div>
+				</form>
+
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div>
+<!--END SEND EMAIL -->
+
 
 <form method="post" name="frmedit" id="frmedit" action="Purch_edit.php">
 	<input type="hidden" name="txtctranno" id="txtctranno" value="">
@@ -850,55 +952,59 @@ else{
 	?>
 	$(document).keydown(function(e) {	 
 	
-	 if(e.keyCode == 112) { //F1
-		if($("#btnNew").is(":disabled")==false){
-			e.preventDefault();
-			window.location.href='Purch_new.php';
+		if(e.keyCode == 112) { //F1
+			if($("#btnNew").is(":disabled")==false){
+				e.preventDefault();
+				window.location.href='Purch_new.php';
+			}
 		}
-	  }
-	  else if(e.keyCode == 83 && e.ctrlKey){//CTRL S
-		if($("#btnSave").is(":disabled")==false){ 
-			e.preventDefault();
-			return chkform();
+		else if(e.keyCode == 83 && e.ctrlKey){//CTRL S
+			if($("#btnSave").is(":disabled")==false){ 
+				e.preventDefault();
+				return chkform();
+			}
 		}
-	  }
-	  else if(e.keyCode == 69 && e.ctrlKey){//CTRL E
-		if($("#btnEdit").is(":disabled")==false){
-			e.preventDefault();
-			enabled();
+		else if(e.keyCode == 69 && e.ctrlKey){//CTRL E
+			if($("#btnEdit").is(":disabled")==false){
+				e.preventDefault();
+				enabled();
+			}
 		}
-	  }
-	  else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
-		if($("#btnPrint").is(":disabled")==false){
-			e.preventDefault();
-			printchk('<?php echo $cpono;?>', 'Print');
+		else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
+			if($("#btnPrint").is(":disabled")==false){
+				e.preventDefault();
+				printchk('<?php echo $cpono;?>', 'Print');
+			}
 		}
-	  }
-	  else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
-		if($("#btnUndo").is(":disabled")==false){
-			e.preventDefault();
-			chkSIEnter(13,'frmpos');
+		else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
+			if($("#btnUndo").is(":disabled")==false){
+				e.preventDefault();
+				chkSIEnter(13,'frmpos');
+			}
 		}
-	  }
-	  else if(e.keyCode == 27){//ESC
-		if($("#btnMain").is(":disabled")==false){
-			e.preventDefault();
-			$("#btnMain").click();
+		else if(e.keyCode == 27){//ESC
+			if($("#btnMain").is(":disabled")==false){
+				e.preventDefault();
+				$("#btnMain").click();
+			}
 		}
-	  }
-	  else if(e.keyCode == 70 && e.ctrlKey) { // CTRL + F .. search product code
-		e.preventDefault();
-		$('#txtprodnme').focus();
-      }
+		else if(e.keyCode == 70 && e.ctrlKey) { // CTRL + F .. search product code
+			e.preventDefault();
+			$('#txtprodnme').focus();
+		}
 
 	});
 	<?php
 		}
 	?>
 
+	$(document).on("keydown", "#frmsendemail", function(event) { 
+		return event.key != "Enter";
+	});
+
 	$(document).on("click", "tr.bdydeigid" , function() {
-   	 var $row = $(this).closest("tr"),       // Finds the closest row <tr> 
-	  $tds = $row.find("td");             // Finds all children <td> elements
+   		var $row = $(this).closest("tr"),       // Finds the closest row <tr> 
+	  	$tds = $row.find("td");             // Finds all children <td> elements
 
 		$.each($tds, function() {               // Visits every single <td> element
 		   // alert($(this).attr("class"));        // Prints out the text within the <td>
@@ -952,6 +1058,27 @@ else{
 				fileActionSettings: { showUpload: false, showDrag: false, }
 			});
 		}
+
+		$("#cemailto, #cemailcc, #cemailbcc").tagsinput();
+		$('#cemailto, #cemailcc, #cemailbcc').on('beforeItemAdd', function(event) {
+			if(!IsEmail(event.item)){
+				event.cancel = true;
+			};
+			// event.item: contains the item
+			// event.cancel = true : set to true to prevent the item getting added
+		});
+
+		$("#txtemailremarks").summernote({
+			placeholder: 'Email Body',
+			height: 240,
+			toolbar: [
+				['style', ['style']],
+				['font', ['bold', 'underline', 'clear']],
+				['fontname', ['fontname']],
+				['color', ['color']],
+				['para', ['ul', 'ol', 'paragraph']],
+			]
+		});
 		
 		$('#txtprodnme').attr("disabled", true);
 		$('#txtprodid').attr("disabled", true);
@@ -1910,6 +2037,8 @@ else{
 		$("#btnPDF").attr("disabled", false);   
 		$("#btnEmail").attr("disabled", false);
 		$("#btnEdit").attr("disabled", false);
+
+		$(".kv-file-zoom").attr("disabled", false);
 	}
 
 	function enabled(){
@@ -2255,6 +2384,11 @@ else{
 	function ChangeItem(za){
 		$("#txtchangeitmtxtval").val(za);
 		$("#ChangeItmMod").modal("show");
+	}
+
+	function sendEmail(){
+		window.parent.parent.scrollTo(0,0);
+		$("#SendEmailMod").modal("show");
 	}
 
 </script>

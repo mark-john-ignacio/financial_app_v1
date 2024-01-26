@@ -1,16 +1,17 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
+	if(!isset($_SESSION)){
+	session_start();
 
 
-include('../../vendor/autoload.php');
+	include('../../vendor/autoload.php');
 
-$mpdf = new \Mpdf\Mpdf();
-ob_start();
-}
+	$mpdf = new \Mpdf\Mpdf();
+	ob_start();
+	}
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+
 
 	$company = $_SESSION['companyid'];
 
@@ -28,6 +29,7 @@ include('../../include/denied.php');
 	}
 	
 	$csalesno = $_REQUEST['hdntransid'];
+
 	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign, d.cdesc as termsdesc from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join users c on a.cpreparedby=c.Userid left join groupings d on a.compcode=b.compcode and a.cterms=d.ccode and d.ctype='TERMS' where a.compcode='$company' and a.cpono = '$csalesno'");
 
 	if (mysqli_num_rows($sqlhead)!=0) {
@@ -55,6 +57,7 @@ include('../../include/denied.php');
 
 			$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
 			$cpreparedBySign = $row['cusersign'];
+
 		}
 	}
 

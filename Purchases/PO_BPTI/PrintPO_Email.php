@@ -1,23 +1,23 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
+	if(!isset($_SESSION)){
+	session_start();
 
 
-include('../../vendor/autoload.php');
+	include('../../vendor/autoload.php');
 
-require("../../vendor/phpmailer/phpmailer/src/PHPMailer.php");
-require("../../vendor/phpmailer/phpmailer/src/SMTP.php");
+	require("../../vendor/phpmailer/phpmailer/src/PHPMailer.php");
+	require("../../vendor/phpmailer/phpmailer/src/SMTP.php");
 
-$mpdf = new \Mpdf\Mpdf();
-ob_start();
-}
+	$mpdf = new \Mpdf\Mpdf();
+	ob_start();
+	}
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../Model/helper.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../Model/helper.php');
 
 
-$company = $_SESSION['companyid'];
+	$company = $_SESSION['companyid'];
 	$xwithvat = 0;
 
 	$sqlcomp = mysqli_query($con,"select * from company where compcode='$company'");
@@ -29,6 +29,7 @@ $company = $_SESSION['companyid'];
 			$logosrc = $rowcomp['clogoname'];
 			$logoaddrs = $rowcomp['compadd'];
 			$logonamz = $rowcomp['compname'];
+			$compakey = $rowcomp['code'];
 		}
 
 	}
@@ -45,7 +46,14 @@ $company = $_SESSION['companyid'];
 
 	}
 	
-	$csalesno = $_REQUEST['hdntransid'];
+	$csalesno = MyDec($_REQUEST['id'],$compakey);
+
+	$cemailstoo = "";
+	$cemailsccc = "";
+	$cemailsbcc = "";
+	$cemailsbjc = "";
+	$cemailsbod = "";
+
 	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign, d.cdesc as termsdesc from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join users c on a.cpreparedby=c.Userid left join groupings d on a.compcode=b.compcode and a.cterms=d.ccode and d.ctype='TERMS' where a.compcode='$company' and a.cpono = '$csalesno'");
 
 	if (mysqli_num_rows($sqlhead)!=0) {
@@ -79,6 +87,12 @@ $company = $_SESSION['companyid'];
 
 			$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
 			$cpreparedBySign = $row['cusersign']; 
+
+			$cemailstoo = $row['cemailto'];
+			$cemailsccc = $row['cemailcc'];
+			$cemailsbcc = $row['cemailbcc'];
+			$cemailsbjc = $row['cemailsubject'];
+			$cemailsbod = $row['cemailbody'];
 		}
 	}
 
@@ -373,16 +387,13 @@ $company = $_SESSION['companyid'];
 		}
 	}
 
+	$cxsmsgs = "";
 	$getcred = getEmailCred();
 
-	$body = $emi; 
-	$subject = $logonamz." - Purchase Order";
- 
-	$email_to = $Conemail;
-	//$email_to = "maita.galang@gmail.com";
+	$body = $cemailsbod; 
+	$subject = $logonamz." - ".$cemailsbjc;
 
 	$fromserver = $getcred['cusnme']; 
-
 	$mail = new PHPMailer\PHPMailer\PHPMailer();
 	$mail->IsSMTP();
 	$mail->Host = $getcred['csmtp']; // Enter your host here
@@ -397,13 +408,41 @@ $company = $_SESSION['companyid'];
 	$mail->Sender = $getcred['cusnme']; // indicates ReturnPath header
 	$mail->Subject = $subject;
 	$mail->Body = $body;
-	$mail->AddAddress($email_to);
+
+	$array = explode(',', $cemailstoo);
+	foreach($array as $value){
+		$mail->AddAddress($value);
+	}
+	
+	if($cemailsccc!=""){
+		$array = explode(',', $cemailsccc);
+		foreach($array as $value){
+			$mail->addCC($cemailsccc); 
+		}			
+	}
+	if($cemailsbcc!=""){
+		$array = explode(',', $cemailsbcc);
+		foreach($array as $value){
+			$mail->addBCC($cemailsbcc); 
+		}		
+	}
 
 	$mail->addAttachment("../../PDFiles/PO/".$csalesno.".pdf");
+
+	
 	if(!$mail->Send()){
-		echo "Mailer Error: " . $mail->ErrorInfo;
+		$cxsmsgs = "Mailer Error: " . $mail->ErrorInfo;
 	}else{
-		echo "Email Successfully Sent";
+		$cxsmsgs = "Email Successfully Sent";
 	}
 
 ?>
+
+
+<form action="Purch_edit.php" name="frmpos" id="frmpos" method="post">
+	<input type="hidden" name="txtctranno" id="txtctranno" value="<?php echo $csalesno;?>" />
+</form>
+<script>
+	alert("<?=$cxsmsgs?>");
+    document.forms['frmpos'].submit();
+</script>

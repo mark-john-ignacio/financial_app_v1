@@ -696,7 +696,7 @@ else{
 							</div>   
 							<div class="col-xs-8 nopadwtop2x text-right">
 								<?php
-									echo ($cemailsentby!="") ? "`<b>Last Sent By: </b>".$cemailsentby." <b>Date/Time: </b>".$cemailsentdate: "";
+									echo ($cemailsentby!="") ? "<b>Last Sent By: </b>".$cemailsentby." <b>Date/Time: </b>".$cemailsentdate: "";
 								?>
 							</div>      
 						</div>
@@ -740,7 +740,7 @@ else{
 							
 						</div>
 						<div class="row nopadwtop">
-							<div class="col-xs-12">
+							<div class="col-xs-12 nopadwtop2x">
 								<textarea rows="4" class="form-control input-sm" name="txtemailremarks" id="txtemailremarks"><?=($cemailsbod=="") ? $ccontsalt : $cemailsbod;?></textarea>
 							</div>
 						</div>
@@ -1671,6 +1671,8 @@ else{
 		$("#btnPDF").attr("disabled", false);
 		$("#btnEmail").attr("disabled", false);
 		$("#btnEdit").attr("disabled", false);
+
+		$(".kv-file-zoom").attr("disabled", false);
 
 	}
 
