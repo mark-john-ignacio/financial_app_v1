@@ -1610,24 +1610,24 @@ jQuery Sparkline
 Modify jquery-tags-input plugin css
 ***/
 div.tagsinput {
-  min-height: 35px;
+  min-height: 25px;
   height: auto !important;
   margin: 0;
-  padding: 5px 5px 0px 5px;
+  padding: 2px 2px 0px 2px;
   overflow: auto;
 }
 
 div.tagsinput span.tag {
-  background: #aaaaaa;
+  background: #8ad2ec;
   color: white;
   border: 0;
-  padding: 3px 6px;
-  margin-top: 0;
-  margin-bottom: 5px;
+  padding: 2px 5px;
+  margin-top: 2px;
+  margin-bottom: 0px;
 }
 
 div.tagsinput input {
-  padding: 3px 6px;
+  padding: 2px 2px;
   width: 75px !important;
 }
 
@@ -1637,7 +1637,7 @@ div.tagsinput span.tag a {
 
 div.tagsinput .not_valid {
   color: white;
-  padding: 3px 6px;
+  padding: 3px 3px;
   background-color: #e02222;
 }
 
