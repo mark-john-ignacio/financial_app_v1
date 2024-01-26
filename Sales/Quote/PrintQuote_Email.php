@@ -27,7 +27,8 @@
 		while($rowcomp = mysqli_fetch_array($sqlcomp, MYSQLI_ASSOC))
 		{
 			$logosrc = $rowcomp['clogoname'];
-			$compname = $rowcomp['compname'];
+			$companame = $rowcomp['compname'];
+			$compakey = $rowcomp['code'];
 		}
 
 	}
@@ -57,8 +58,16 @@
 		}
 	}
 	
-	$csalesno = $_REQUEST['hdntransid'];
+	$csalesno = MyDec($_REQUEST['id'],$compakey);
+
 	$sqlhead = mysqli_query($con,"select a.*,b.cname, b.chouseno, b.ccity, b.cstate, C.cdesc as termdesc from quote a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join groupings C on A.cterms = C.ccode where a.compcode='$company' and a.ctranno = '$csalesno'");
+
+	$cemailstoo = "";
+	$cemailsccc = "";
+	$cemailsbcc = "";
+	$cemailsbjc = "";
+	$cemailsbod = "";
+
 
 	if (mysqli_num_rows($sqlhead)!=0) {
 		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -108,7 +117,27 @@
 			
 			$lCancelled = $row['lcancelled'];
 			$lPosted = $row['lapproved'];
+
+			$cemailstoo = $row['cemailto'];
+			$cemailsccc = $row['cemailcc'];
+			$cemailsbcc = $row['cemailbcc'];
+			$cemailsbjc = $row['cemailsubject'];
+			$cemailsbod = $row['cemailbody'];
 		}
+	}
+
+	//attachments
+	@$arrname = array();
+	$directory = "../../Components/assets/QO/{$company}_{$csalesno}/";
+	if(file_exists($directory)){
+		if (is_dir_empty($directory)) {
+		}else{
+			@$arrname = file_checker($directory);
+		}
+	}
+
+	function is_dir_empty($dir) {
+		return (count(scandir($dir)) == 2);
 	}
 
 
@@ -138,7 +167,7 @@
 				<br>	
 				<b>".$userdept[$cprepby]."</b>
 				<br>
-				".ucwords(strtolower($compname))."							
+				".ucwords(strtolower($companame))."							
 			</td>
 			<td>
 				<table border=0 width=\"80%\" align=\"center\">
@@ -321,17 +350,8 @@
 
 	$getcred = getEmailCred();
 
-	//Redirect to sending email file
-	$output='<p>Dear '.$ccontname.',</p>';
-	$output.='<p>Please find here attached the quotation you requested.</p>'; 
-	$output.='<p>Thanks You for choosing <b>'.$compname.'</b>,</p>';
-	$output.='<p>Myx Financials,</p>';
-
-	$body = $output; 
-	$subject = $compname." - Quotation";
-
-	//$email_to = $email;
-	$email_to = "mhaitzendriga@gmail.com";
+	$body = $cemailsbod; 
+	$subject = $companame." - ".$cemailsbjc;
 
 	$fromserver = $getcred['cusnme']; 
 	$mail = new PHPMailer\PHPMailer\PHPMailer();
@@ -344,18 +364,51 @@
 	$mail->Port = $getcred['cport'];
 	$mail->IsHTML(true);
 	$mail->From = $getcred['cusnme'];
-	$mail->FromName = $compname;
+	$mail->FromName = $companame;
 	$mail->Sender = $getcred['cusnme']; // indicates ReturnPath header
 	$mail->Subject = $subject;
 	$mail->Body = $body;
-	$mail->AddAddress($email_to);
+
+	$array = explode(',', $cemailstoo);
+	foreach($array as $value){
+		$mail->AddAddress($value);
+	}
+	
+	if($cemailsccc!=""){
+		$array = explode(',', $cemailsccc);
+		foreach($array as $value){
+			$mail->addCC($cemailsccc); 
+		}			
+	}
+	if($cemailsbcc!=""){
+		$array = explode(',', $cemailsbcc);
+		foreach($array as $value){
+			$mail->addBCC($cemailsbcc); 
+		}		
+	}
 
 	$mail->addAttachment("../../PDFiles/Quotes/".$csalesno.".pdf");
+
+	if(count(@$arrname)>0){
+		foreach($arrname as $ract){
+			$mail->addAttachment($directory.$ract['name']);
+		}
+	}
+
+	$cxsmsgs = "";
 	if(!$mail->Send()){
-		echo "Mailer Error: " . $mail->ErrorInfo;
+		$cxsmsgs = "Mailer Error: " . $mail->ErrorInfo;
 	}else{
-		echo "Email Successfully Sent";
+		$cxsmsgs = "Email Successfully Sent";
 	}
 
 
 ?>
+
+<form action="Quote_edit.php" name="frmpos" id="frmpos" method="post">
+	<input type="hidden" name="txtctranno" id="txtctranno" value="<?php echo $csalesno;?>" />
+</form>
+<script>
+	alert("<?=$cxsmsgs?>");
+   	document.forms['frmpos'].submit();
+</script>

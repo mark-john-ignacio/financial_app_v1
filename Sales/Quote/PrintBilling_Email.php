@@ -1,19 +1,19 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
+	if(!isset($_SESSION)){
+		session_start();
 
-include('../../vendor/autoload.php');
+		include('../../vendor/autoload.php');
 
-require("../../vendor/phpmailer/phpmailer/src/PHPMailer.php");
-require("../../vendor/phpmailer/phpmailer/src/SMTP.php");
+		require("../../vendor/phpmailer/phpmailer/src/PHPMailer.php");
+		require("../../vendor/phpmailer/phpmailer/src/SMTP.php");
 
-$mpdf = new \Mpdf\Mpdf();
-ob_start();
-}
+		$mpdf = new \Mpdf\Mpdf();
+		ob_start();
+	}
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../Model/helper.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../Model/helper.php');
 
 	$company = $_SESSION['companyid'];
 
@@ -34,6 +34,7 @@ include('../../Model/helper.php');
 		{
 			$logosrc = $rowcomp['clogoname'];
 			$companame = $rowcomp['compname'];
+			$compakey = $rowcomp['code'];
 		}
 
 	}
@@ -53,68 +54,82 @@ include('../../Model/helper.php');
 		}
 
 	}
-	
-	$csalesno = $_REQUEST['hdntransid'];
-	$sqlhead = mysqli_query($con,"select a.*,b.cname, b.chouseno, b.ccity, b.cstate, C.cdesc as termdesc, D.Fname, D.Minit, D.Lname, D.cemailadd, D.cusersign from quote a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join groupings C on A.cterms = C.ccode left join users D on a.cpreparedby=D.Userid where a.compcode='$company' and a.ctranno = '$csalesno'");
 
-if (mysqli_num_rows($sqlhead)!=0) {
-	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-		$CustCode = $row['ccode'];
-		$CustName = $row['cname'];
-		$CustAddress= "";
+	$csalesno = MyDec($_REQUEST['id'],$compakey);
 
-		if($row['chouseno']<>""){
-			$CustAddress = $row['chouseno'];
-		}
+	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, C.cdesc as termdesc, D.Fname, D.Minit, D.Lname, D.cemailadd, D.cusersign from quote a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join groupings C on A.cterms = C.ccode left join users D on a.cpreparedby=D.Userid where a.compcode='$company' and a.ctranno = '$csalesno'");
 
-		if($row['ccity']<>""){
-			if($CustAddress<>""){
-				$CustAddress = $CustAddress.", ".$row['ccity'];
-			}else{
-				$CustAddress = $row['ccity'];
-			}			
-		}
+	$cemailstoo = "";
+	$cemailsccc = "";
+	$cemailsbcc = "";
+	$cemailsbjc = "";
+	$cemailsbod = "";
+
+	if (mysqli_num_rows($sqlhead)!=0) {
+		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+			$CustCode = $row['ccode'];
+			$CustName = $row['cname'];
+			$CustAddress= "";
+
+			if($row['chouseno']<>""){
+				$CustAddress = $row['chouseno'];
+			}
+
+			if($row['ccity']<>""){
+				if($CustAddress<>""){
+					$CustAddress = $CustAddress.", ".$row['ccity'];
+				}else{
+					$CustAddress = $row['ccity'];
+				}			
+			}
+			
+			if($row['cstate']<>""){
+				if($CustAddress<>""){
+					$CustAddress = $CustAddress.", ".$row['cstate'];
+				}else{
+					$CustAddress = $row['cstate'];
+				}			
+			}
+
+			$Remarks = $row['cremarks'];
+			$Date = $row['dcutdate'];
+			$QuoteDate = $row['dtrandate'];
+			$Gross = $row['ngross'];
+			$cCurrCode = $row['ccurrencycode'];
+
+			$ccontname = $row['ccontactname'];
+			$ccontdesg = $row['ccontactdesig'];
+			$ccontdept = $row['ccontactdept'];
+			$ccontemai = $row['ccontactemail'];
+			$ccontsalt = $row['ccontactsalut'];
+			$cvattyp = $row['cvattype'];
+			$cterms = $row['cterms'];
+			$cdelinfo = $row['cdelinfo'];
+			$cservinfo = $row['cservinfo'];
+
+			$ctermsdesc = $row['termdesc']." upon delivery";
+			
+			$lCancelled = $row['lcancelled'];
+			$lPosted = $row['lapproved'];
+			$lSent = $row['lsent'];
+
+			$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
+			$useremailadd = $row['cemailadd'];
+			$cpreparedBySign = $row['cusersign'];
+
+
+			$cemailstoo = $row['cemailto'];
+			$cemailsccc = $row['cemailcc'];
+			$cemailsbcc = $row['cemailbcc'];
+			$cemailsbjc = $row['cemailsubject'];
+			$cemailsbod = $row['cemailbody'];
+
 		
-		if($row['cstate']<>""){
-			if($CustAddress<>""){
-				$CustAddress = $CustAddress.", ".$row['cstate'];
-			}else{
-				$CustAddress = $row['cstate'];
-			}			
 		}
-
-		$Remarks = $row['cremarks'];
-		$Date = $row['dcutdate'];
-		$QuoteDate = $row['dtrandate'];
-		$Gross = $row['ngross'];
-		$cCurrCode = $row['ccurrencycode'];
-
-		$ccontname = $row['ccontactname'];
-		$ccontdesg = $row['ccontactdesig'];
-		$ccontdept = $row['ccontactdept'];
-		$ccontemai = $row['ccontactemail'];
-		$ccontsalt = $row['ccontactsalut'];
-		$cvattyp = $row['cvattype'];
-		$cterms = $row['cterms'];
-		$cdelinfo = $row['cdelinfo'];
-		$cservinfo = $row['cservinfo'];
-
-		$ctermsdesc = $row['termdesc']." upon delivery";
-		
-		$lCancelled = $row['lcancelled'];
-		$lPosted = $row['lapproved'];
-		$lSent = $row['lsent'];
-
-		$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
-		$useremailadd = $row['cemailadd'];
-		$cpreparedBySign = $row['cusersign'];
-
-	
 	}
-}
 
 
-$sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic, C.nrate From quote_t A left join items B on A.compcode=B.compcode and A.citemno=B.cpartno left join taxcode C on B.compcode=C.compcode and B.ctaxcode=C.ctaxcode where A.compcode='$company' and A.ctranno = '$csalesno'");
+	$sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic, C.nrate From quote_t A left join items B on A.compcode=B.compcode and A.citemno=B.cpartno left join taxcode C on B.compcode=C.compcode and B.ctaxcode=C.ctaxcode where A.compcode='$company' and A.ctranno = '$csalesno'");
 
 	if (mysqli_num_rows($sqldtlss)!=0) {
 		while($row = mysqli_fetch_array($sqldtlss, MYSQLI_ASSOC)){
@@ -129,6 +144,20 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic, C.nrate From
 		while($row = mysqli_fetch_array($sqldtlss, MYSQLI_ASSOC)){
 			@$arrdtlsinfo[] = $row;
 		}
+	}
+
+	//attachments
+	@$arrname = array();
+	$directory = "../../Components/assets/QO/{$company}_{$csalesno}/";
+	if(file_exists($directory)){
+		if (is_dir_empty($directory)) {
+		}else{
+			@$arrname = file_checker($directory);
+		}
+	}
+
+	function is_dir_empty($dir) {
+		return (count(scandir($dir)) == 2);
 	}
 
 ?>
@@ -390,26 +419,14 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic, C.nrate From
 	$html = ob_get_contents();
 	ob_end_clean();
 
-
 	$getcred = getEmailCred();
-
-	//print_r($getcred);
 
 	// send the captured HTML from the output buffer to the mPDF class for processing
 	$mpdf->WriteHTML($html);
 	$mpdf->Output('../../PDFiles/Quotes/'.$csalesno.'.pdf', \Mpdf\Output\Destination::FILE);
 
-	//Redirect to sending email file
-	$output='<p>Dear '.$ccontname.',</p>';
-	$output.='<p>Please find here attached the BILLING STATEMENT.</p>'; 
-	$output.='<p>Thanks You for choosing <b>'.$companame.'</b>,</p>';
-	$output.='<p>Myx Financials,</p>';
-
-	$body = $output; 
-	$subject = $companame." - BILLING STATEMENT";
-
-	$email_to = $email;
-	//$email_to = "mhaitzendriga@gmail.com";
+	$body = $cemailsbod; 
+	$subject = $companame." - ".$cemailsbjc;
 
 	$fromserver = $getcred['cusnme']; 
 	$mail = new PHPMailer\PHPMailer\PHPMailer();
@@ -423,16 +440,49 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic, C.nrate From
 	$mail->IsHTML(true);
 	$mail->From = $getcred['cusnme'];
 	$mail->FromName = $companame;
-	$mail->Sender = $useremailadd; // indicates ReturnPath header
+	$mail->Sender = $getcred['cusnme']; // indicates ReturnPath header
 	$mail->Subject = $subject;
 	$mail->Body = $body;
-	$mail->AddAddress($email_to);
+
+	$array = explode(',', $cemailstoo);
+	foreach($array as $value){
+		$mail->AddAddress($value);
+	}
+	
+	if($cemailsccc!=""){
+		$array = explode(',', $cemailsccc);
+		foreach($array as $value){
+			$mail->addCC($cemailsccc); 
+		}			
+	}
+	if($cemailsbcc!=""){
+		$array = explode(',', $cemailsbcc);
+		foreach($array as $value){
+			$mail->addBCC($cemailsbcc); 
+		}		
+	}
+	
 	$mail->addAttachment("../../PDFiles/Quotes/".$csalesno.".pdf");
 
+	if(count(@$arrname)>0){
+		foreach($arrname as $ract){
+			$mail->addAttachment($directory.$ract['name']);
+		}
+	}
+
+	$cxsmsgs = "";
 	if(!$mail->Send()){
-		echo "Mailer Error: " . $mail->ErrorInfo;
+		$cxsmsgs = "Mailer Error: " . $mail->ErrorInfo;
 	}else{
-		echo "Email Successfully Sent";
+		$cxsmsgs = "Email Successfully Sent";
 	}
 
 ?>
+
+<form action="Quote_edit.php" name="frmpos" id="frmpos" method="post">
+	<input type="hidden" name="txtctranno" id="txtctranno" value="<?php echo $csalesno;?>" />
+</form>
+<script>
+	alert("<?=$cxsmsgs?>");
+    document.forms['frmpos'].submit();
+</script>
