@@ -14,7 +14,7 @@ require_once "../../Connection/connection_string.php";
 		}
 	}
 
-	$result = mysqli_query ($con, "select * from so where compcode='$company' and lapproved=1 and lvoid=0 and ccode='".$_REQUEST['x']."' order by dcutdate desc, ctranno desc"); 
+	$result = mysqli_query ($con, "select * from so where compcode='$company' and lapproved=1 and lvoid=0 and csalestype='Goods' and ccode='".$_REQUEST['x']."' order by dcutdate desc, ctranno desc"); 
 	
 	//get all existing DR
 	@$arrinv = array();
