@@ -110,7 +110,7 @@
 	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
 	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
 
-	<script src="../../global/custom.js"></script>
+	<script src="../../global/custom.js?h=<?php echo time();?>"></script>
 
 	<style>
 		fieldset.scheduler-border {
