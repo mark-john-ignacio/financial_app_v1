@@ -6,7 +6,7 @@ require_once "../Connection/connection_string.php";
 
 	$company = $_SESSION['companyid'];
 	
-	$result = mysqli_query ($con, "select * from customers WHERE compcode='$company' and cname like '%".$_GET['query']."%'"); 
+	$result = mysqli_query ($con, "select * from customers WHERE compcode='$company'and cstatus='ACTIVE' and cname like '%".$_GET['query']."%'"); 
 
 	//$json2 = array();
 	//$json = [];
@@ -19,8 +19,8 @@ require_once "../Connection/connection_string.php";
 			$imgsrc = "../../imgcust/".$row['cempid'] .".jpg";
 		}
 
-	  $json['id'] = $row['cempid'];
-    $json['value'] = utf8_encode($row['cname']);
+		$json['id'] = $row['cempid'];
+		$json['value'] = utf8_encode($row['cname']);
 		$json['nlimit'] = $row['nlimit'];
 		$json['cver'] = $row['cpricever'];
 		$json['imgsrc'] = $imgsrc;
