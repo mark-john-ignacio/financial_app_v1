@@ -13,13 +13,21 @@ function chkgrp($valz) {
 	}
 }
 
+function chkgrp0($valz) {
+	if($valz==''){
+		return "0";
+	}else{
+    	return "'".$valz."'";
+	}
+}
+
 
 	$company = $_SESSION['companyid'];
 	$CustID = $_REQUEST['ccode'];
 	
 		$cSINo = $_REQUEST['trancode'];
 		$crefno = chkgrp($_REQUEST['crefno']); 
-		$crefident = chkgrp($_REQUEST['crefident']); 
+		$crefident = chkgrp0($_REQUEST['crefident']); 
 		$indexz = $_REQUEST['indx'];
 		$cItemNo = $_REQUEST['citmno'];
 		$nQty = $_REQUEST['nqty'];
