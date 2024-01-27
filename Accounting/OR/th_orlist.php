@@ -126,10 +126,10 @@
 
 	}
 
-	//echo json_encode($json2);
-	echo "<pre>";
-	print_r($json2);
-	echo "</pre>";
+	echo json_encode($json2);
+	//echo "<pre>";
+	//print_r($json2);
+	//echo "</pre>";
 	/*
 
 	if($_REQUEST['typ']=="Trade"){
