@@ -38,185 +38,150 @@
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
-	<!--
-	--
-	-- FileType Bootstrap Scripts and Link
-	--
-	-->
-	<link rel="stylesheet" type="text/css" href="../../Bootstrap/bs-icons/font/bootstrap-icons.css?h=<?php echo time();?>"/>
-	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
-	<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
-	<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
-	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
-	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
-
 </head>
 
-<body style="padding:5px">
-<form action="ARAdj_newsave.php" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
+<body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
+<form action="ARAdj_newsave.php" name="frmpos" id="frmpos" method="post">
 	<fieldset>
     	<legend>AR Adjustment</legend>	
+        <table width="100%" border="0">
+  <tr>
+    <tH width="100">&nbsp;Customer:</tH>
+    <td style="padding:2px">
+    <div class="col-xs-12 nopadding">
+        <div class="col-xs-3 nopadding">
+        	<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
+            <input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
 
-				<ul class="nav nav-tabs">
-					<li class="active"><a href="#items" data-toggle="tab">AR Adjustment Details</a></li>
-					<li><a href="#attc" data-toggle="tab">Attachments</a></li>
-				</ul>
+        </div>
 
-				<div class="tab-content">
+    	<div class="col-xs-8 nopadwleft">
+        	<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
+        </div> 
+      </div>
+    </td>
+    <tH width="150">Date:</tH>
+    <td style="padding:2px;">
+     <div class="col-xs-11 nopadding">
+		<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $ddeldate; ?>" />
+     </div>
+    </td>
+  </tr>
+  <tr>
+    <tH width="100">&nbsp;Remarks:</tH>
+    <td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div></td>
+    <tH width="150">Type:</tH>
+    <td style="padding:2px" align="right">
+      <div class="col-xs-11 nopadding">
+    	<select name="seltype" id="seltype" class="form-control input-sm">
+            <option value="Credit">Credit</option>
+            <option value="Debit">Debit</option>
+        </select>
+      </div>
+    </td>
+  </tr>
+  <tr>
+  	<tH width="100">&nbsp;<!--RETURN NO.:-->Reference:</tH>
+    <td>       
+    	<div class="col-xs-12 nopadding">
+        	<div class="col-xs-3 nopadding">
+						<input type="text" class="form-control input-sm" id="txtSIRef" name="txtSIRef" width="20px" tabindex="2" readonly placeholder="Search Sales Return No...">
+          </div>
+  
+          <div class="col-xs-1 nopadwleft">
+            <button class="btncgroup btn btn-block btn-sm btn-danger" type="button" id="btnSISearch" onClick="InsertDet('REF');"><i class="fa fa-search"></i></button>
+          </div>
 
-					<div id="items" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
-
-						<table width="100%" border="0">
-							<tr>
-								<tH width="100">&nbsp;Customer:</tH>
-								<td style="padding:2px">
-								<div class="col-xs-12 nopadding">
-										<div class="col-xs-3 nopadding">
-											<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
-												<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
-
-										</div>
-
-									<div class="col-xs-8 nopadwleft">
-											<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
-										</div> 
-									</div>
-								</td>
-								<tH width="150">Date:</tH>
-								<td style="padding:2px;">
-								<div class="col-xs-11 nopadding">
-								<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $ddeldate; ?>" />
-								</div>
-								</td>
-							</tr>
-							<tr>
-								<tH width="100">&nbsp;Remarks:</tH>
-								<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div></td>
-								<tH width="150">Type:</tH>
-								<td style="padding:2px" align="right">
-									<div class="col-xs-11 nopadding">
-									<select name="seltype" id="seltype" class="form-control input-sm">
-												<option value="Credit">Credit</option>
-												<option value="Debit">Debit</option>
-										</select>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<tH width="100">&nbsp;<!--RETURN NO.:-->Reference:</tH>
-								<td>       
-									<div class="col-xs-12 nopadding">
-											<div class="col-xs-3 nopadding">
-												<input type="text" class="form-control input-sm" id="txtSIRef" name="txtSIRef" width="20px" tabindex="2" readonly placeholder="Search Sales Return No...">
-											</div>
-							
-											<div class="col-xs-1 nopadwleft">
-												<button class="btncgroup btn btn-block btn-sm btn-danger" type="button" id="btnSISearch" onClick="InsertDet('REF');"><i class="fa fa-search"></i></button>
-											</div>
-
-											<div class="col-xs-3 nopadwleft">
-												<input type="text" class="form-control input-sm" id="txtInvoiceRef" name="txtInvoiceRef" width="20px" tabindex="2" placeholder="Search Sales Invoice No..." readonly>      
-												<input type="hidden" id="invtyp" name="invtyp" value="">      
-											</div>
-
-											<div class="col-xs-2 nopadwleft">
-												<input type="text" class="form-control input-sm" id="txtcurr" name="txtcurr" width="20px" tabindex="2" placeholder="Currency..." readonly>
-											</div>
-									</div>
-								</td>
-								<tH width="150">&nbsp;</tH>
-								<td style="padding:2px"><div class="col-xs-11 nopadding">
-									<div class="form-check">
-										<input class="form-check-input" type="checkbox" value="1" id="isReturn" name="isReturn"  checked/>
-										<label class="form-check-label" for="flexCheckChecked">Sales Return</label>
-									</div>
-								</div></td>
-								<td style="padding:2px"  align="right">&nbsp;</td>
-							</tr>
-							<tr>
-								<td>&nbsp;</td>
-								<td>&nbsp;</td>
-								<td style="padding:2px">&nbsp;</td>
-								<td style="padding:2px"  align="right">&nbsp;</td>
-							</tr>
-							<tr>
-								<td colspan="5">&nbsp;</td>
-							</tr>
-						</table>
-					
-					</div>	
-
-					<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
-
-						<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-						<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
-						<input type="file" name="upload[]" id="file-0" multiple />
-
+					<div class="col-xs-3 nopadwleft">
+						<input type="text" class="form-control input-sm" id="txtInvoiceRef" name="txtInvoiceRef" width="20px" tabindex="2" placeholder="Search Sales Invoice No..." readonly>      
+						<input type="hidden" id="invtyp" name="invtyp" value="">      
 					</div>
-				</div>
-				
-						<hr>
-						<div class="col-xs-12 nopadwdown"><b>Details</b></div>
+			</div>
+		</td>
+    <tH width="150">&nbsp;</tH>
+    <td style="padding:2px"><div class="col-xs-11 nopadding">
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" value="1" id="isReturn" name="isReturn"  checked/>
+				<label class="form-check-label" for="flexCheckChecked">Sales Return</label>
+			</div>
+    </div></td>
+    <td style="padding:2px"  align="right">&nbsp;</td>
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td style="padding:2px">&nbsp;</td>
+    <td style="padding:2px"  align="right">&nbsp;</td>
+  </tr>
 
-						<div class="col-xs-12 nopadwdown">
-							<div class="col-xs-1 nopadwright"><button type="button" class="btn btn-xs btn-warning btn-block" id="btnaddline">Add Line</button></div>
-							<div class="col-xs-4 nopadding"><small><i> OR *Press <b>ENTER</b> on remarks field (last row) to add new line..</i></small></div>
-							<div class="col-xs-7 nopadding text-danger" style='text-align: right !important' id="unbaltext"></div>
-						</div>
+<tr>
+    <td colspan="5">
+     &nbsp;
 
-						<div class="alt2" dir="ltr" style="
-							margin: 0px;
-							padding: 3px;
-							border: 1px solid #919b9c;
-							width: 100%;
-							height: 250px;
-							text-align: left;
-							overflow: auto">
-			
-							<table id="MyTable" class="MyTable table table-xs" width="100%">
-								<thead>
-									<tr>
-										<th style="border-bottom:1px solid #999">Account No.</th>
-										<th style="border-bottom:1px solid #999">Account Title</th>
-										<th style="border-bottom:1px solid #999">Debit</th>
-										<th style="border-bottom:1px solid #999">Credit</th>
-										<th style="border-bottom:1px solid #999">Remarks</th>
-										<th style="border-bottom:1px solid #999">&nbsp;</th>
-									</tr>
-								</thead>   
-								<tbody class="tbody">
-									<tr>
-										<td width="100px" style="padding:1px"><input type="text" class="typeno form-control input-xs" name="txtcAcctNo1" id="txtcAcctNo1"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctDesc1" data-debit="txtnDebit1"></td>
+    </td>
+    </tr>
+</table>
 
-										<td style="padding:1px"><input type="text" class="typedesc form-control input-xs" name="txtcAcctDesc1" id="txtcAcctDesc1"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctNo1" data-debit="txtnDebit1"></td>
-										<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit1" id="txtnDebit1" value="0.00" autocomplete="off"></td>
-										<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit1" id="txtnCredit1" value="0.00" autocomplete="off"></td>
-										<td width="200px" style="padding:1px"><input type="text" class="cRem form-control input-xs" name="txtcRem1" id="txtcRem1" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"></td>
-										<td width="40px" align="right">&nbsp;</td>
-									</tr>
-								</tbody>                    
-							</table>
+<div class="col-xs-12 nopadwdown">
+	<div class="col-xs-1 nopadwright"><button type="button" class="btn btn-xs btn-warning btn-block" id="btnaddline">Add Line</button></div>
+	<div class="col-xs-4 nopadding"><small><i> OR *Press <b>ENTER</b> on remarks field (last row) to add new line..</i></small></div>
+	<div class="col-xs-7 nopadding text-danger" style='text-align: right !important' id="unbaltext"></div>
+</div>
 
-						</div>
 
-				<br>
-				<table width="100%" border="0" cellpadding="3">
-					<tr>
-						<td>
-						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='ARAdj.php';" id="btnMain" name="btnMain">
-							Back to Main<br>(ESC)</button>
-						
-						<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
-						<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">SAVE<br> (F2)</button></td>
-						<td align="right" valign="top">
-						<b>TOTAL AMOUNT </b>
-						&nbsp;&nbsp;
-						<input type="text" id="txtnGross" name="txtnGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="25">
-							</td>
+         <div class="alt2" dir="ltr" style="
+					margin: 0px;
+					padding: 3px;
+					border: 1px solid #919b9c;
+					width: 100%;
+					height: 250px;
+					text-align: left;
+					overflow: auto">
+	
+          <table id="MyTable" class="MyTable table table-condensed" width="100%">
+					<thead>
+						<tr>
+							<th style="border-bottom:1px solid #999">Account No.</th>
+							<th style="border-bottom:1px solid #999">Account Title</th>
+							<th style="border-bottom:1px solid #999">Debit</th>
+							<th style="border-bottom:1px solid #999">Credit</th>
+							<th style="border-bottom:1px solid #999">Remarks</th>
+							<th style="border-bottom:1px solid #999">&nbsp;</th>
 						</tr>
-				</table>
+					</thead>   
+					<tbody class="tbody">
+						<tr>
+              <td width="100px" style="padding:1px"><input type="text" class="typeno form-control input-xs" name="txtcAcctNo1" id="txtcAcctNo1"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctDesc1" data-debit="txtnDebit1"></td>
 
-  </fieldset>
+              <td style="padding:1px"><input type="text" class="typedesc form-control input-xs" name="txtcAcctDesc1" id="txtcAcctDesc1"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctNo1" data-debit="txtnDebit1"></td>
+              <td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit1" id="txtnDebit1" value="0.00" autocomplete="off"></td>
+              <td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit1" id="txtnCredit1" value="0.00" autocomplete="off"></td>
+              <td width="200px" style="padding:1px"><input type="text" class="cRem form-control input-xs" name="txtcRem1" id="txtcRem1" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"></td>
+              <td width="40px" align="right">&nbsp;</td>
+            </tr>
+          </tbody>
+                    
+			</table>
+
+</div>
+<br>
+<table width="100%" border="0" cellpadding="3">
+  <tr>
+    <td>
+    <button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='ARAdj.php';" id="btnMain" name="btnMain">
+Back to Main<br>(ESC)</button>
+    
+    <input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
+    <button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">SAVE<br> (F2)</button></td>
+    <td align="right" valign="top">
+    <b>TOTAL AMOUNT </b>
+    &nbsp;&nbsp;
+    <input type="text" id="txtnGross" name="txtnGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="25">
+      </td>
+    </tr>
+</table>
+
+    </fieldset>
     
     
 </form>
@@ -233,8 +198,7 @@
                     <center>
                         <button type="button" class="btnmodz btn btn-primary btn-sm" id="OK">Ok</button>
                         <button type="button" class="btnmodz btn btn-danger btn-sm" id="Cancel">Cancel</button>
-                        
-                        
+                                                
                         <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
                         
                         <input type="hidden" id="typ" name="typ" value = "">
@@ -247,42 +211,40 @@
     </div>
 </div>
 
-<!-- FULL PO LIST REFERENCES-->
-
-<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog modal-md">
-        <div class="modal-content">
-            <div class="modal-header">
+			<!-- FULL SALES RETURN LIST REFERENCES-->
+				<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
+    			<div class="modal-dialog modal-md">
+        		<div class="modal-content">
+            	<div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h3 class="modal-title" id="InvListHdr">Sales Return List</h3>
-            </div>
+            	</div>
             
-            <div class="modal-body" style="height:40vh">
+            	<div class="modal-body" style="height:40vh">
             
-                    <div class="col-xs-12 nopadding pre-scrollable" style="height:37vh">
-                          <table name='MyInvTbl' id='MyInvTbl' class="table table-condensed">
-                           <thead>
-                            <tr>
-                              <th>SR No.</th>
-															<th>Ref Invoice</th>
-                              <th>Date</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                          </table>
-                    </div>
+                <div class="col-xs-12 nopadding pre-scrollable" style="height:37vh">
+                  <table name='MyInvTbl' id='MyInvTbl' class="table table-condensed">
+                    <thead>
+                      <tr>
+												<th>Sales Return No.</th>
+												<th>Reference Invoice</th>
+												<th>Date</th>
+											</tr>
+										</thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                </div>
          	            
-			</div>
+							</div>
 			
-            <div class="modal-footer">
+            	<div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<!-- End FULL INVOICE LIST -->
+            	</div>
+        		</div><!-- /.modal-content -->
+    			</div><!-- /.modal-dialog -->
+				</div><!-- /.modal -->
+			<!-- End FULL INVOICE LIST -->
 
 			<!-- FULL SALES INVOICE LIST REFERENCES-->
 				<div class="modal fade" id="myInvoiceRef" role="dialog" data-keyboard="false" data-backdrop="static">
@@ -345,27 +307,10 @@
 	});
 
 	$(document).ready(function(){
-
-		$(".nav-tabs a").click(function(){
-			$(this).tab('show');
-		});
-
-		$("#file-0").fileinput({
-			theme: 'fa5',
-			showUpload: false,
-			showClose: false,
-			allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
-			overwriteInitial: false,
-			maxFileSize:100000,
-			maxFileCount: 5,
-			browseOnZoneClick: true,
-			fileActionSettings: { showUpload: false, showDrag: false,}
-		});
-
-	  $('#date_delivery').datetimepicker({
-      format: 'MM/DD/YYYY',
+	  	$('#date_delivery').datetimepicker({
+			format: 'MM/DD/YYYY',
 			//minDate: new Date(),
-    });
+		});
 
 		$("input.numeric").autoNumeric('init',{mDec:2});
 		$("input.numeric").on("focus click", function () {
@@ -461,12 +406,10 @@
 			}
 		
 		});
-
-		document.getElementById('txtcust').focus();
 	
 		var sltypprev_val;
 			
-		$('#seltype').on('focus', function () {
+		/*$('#seltype').on('focus', function () {
 				sltypprev_val = $(this).val();
 			}).change(function() {
 
@@ -502,7 +445,7 @@
 				$('#MyTable > tbody > tr').not(':first').empty();
 			}
 					
-		});
+		});*/
 	
 		$('body').on('keyup', '.typedesc', function() {
 
@@ -510,7 +453,7 @@
 			var varidno = $(this).attr("data-id"); 
 			var variddr = $(this).attr("data-debit");
 
-			$("input.typedesc").typeahead({
+			$("#"+varid).typeahead({
 				autoSelect: true,
 				source: function(request, response) {
 					$.ajax({
@@ -542,7 +485,7 @@
 			var varidno = $(this).attr("data-id"); 
 			var variddr = $(this).attr("data-debit"); 
 
-			$("input.typeno").typeahead({
+			$("#"+varid).typeahead({
 				autoSelect: true,
 				source: function(request, response) {
 					$.ajax({
@@ -568,8 +511,8 @@
 			});
 		});	
 
-		$('body').on('keyup', '#txtInvoiceRef', function() {
-			/*$("#txtInvoiceRef").typeahead({
+		/*$('body').on('keyup', '#txtInvoiceRef', function() {
+			$("#txtInvoiceRef").typeahead({
 				autoSelect: true,
 				source: function(request, response) {
 					$.ajax({
@@ -591,8 +534,8 @@
 					$('#txtInvoiceRef').val(item.no).change(); 	
 					$('#invtyp').val(item.typx).change();							
 				}
-			});*/
-		});
+			});
+		});*/
 
 		$('body').on('keypress', '.cRem', function(e) {
 			if(e.keyCode==13){
@@ -613,11 +556,13 @@
 			computegross();
 		});
 
+		
 		$('#isReturn').change(function() {
 			$("#txtSIRef").val("");
 			$("#txtInvoiceRef").val("");
 
-			$('#MyTable > tbody > tr').not(':first').empty();		
+			$('#MyTable tbody tr:not(:first)').empty();		
+
 			/*
       if(this.checked) {				
 				$("#btnSISearch").attr("disabled", false);
@@ -628,6 +573,7 @@
 			}
 			*/
 		});
+		
 
 		$('#btnaddline').on('click', function(e) {
 				var cnt = $('#MyTable tr').length;
@@ -713,7 +659,7 @@
 								else{
 
 									$("<tr>").append(
-										$("<td id='td"+item.cpono+"'>").html("<a href=\"javascript:;\" data-dismiss=\"modal\" onclick=\"setinvref('"+item.cpono+"', '"+item.cref+"', '"+item.typx+"','"+varcheck+"','"+item.ccurrencycode+"')\">"+item.cpono+"</a>"),
+										$("<td id='td"+item.cpono+"'>").html("<a href=\"javascript:;\" data-dismiss=\"modal\" onclick=\"setinvref('"+item.cpono+"', '"+item.cref+"', '"+item.typx+"','"+varcheck+"')\">"+item.cpono+"</a>"),
 										$("<td>").text(item.cref),
 										$("<td>").text(item.dcutdate)
 									).appendTo("#MyInvTbl tbody");
@@ -763,7 +709,7 @@
 								else{
 
 									$("<tr>").append(
-										$("<td id='td"+item.cpono+"'>").html("<a href=\"javascript:;\" data-dismiss=\"modal\" onclick=\"setinvref('', '"+item.cpono+"', '"+item.typx+"','"+varcheck+"','"+item.ccurrencycode+"')\">"+item.cpono+"</a>"),
+										$("<td id='td"+item.cpono+"'>").html("<a href=\"javascript:;\" data-dismiss=\"modal\" onclick=\"setinvref('', '"+item.cpono+"', '"+item.typx+"','"+varcheck+"')\">"+item.cpono+"</a>"),
 										$("<td>").text(item.csiprintno),
 										$("<td>").text(item.cremarks),
 										$("<td>").text(item.cutdate)
@@ -789,6 +735,7 @@
 						}
 					});
 				}
+
 		}else{
 			$("#AlertMsg").html("&nbsp;&nbsp;Enter a valid customer first...");
 			$("#alertbtnOK").show();
@@ -800,19 +747,20 @@
 		}
 	}
 
-	function setinvref(srno,invno,typx,chkx,currcode){
+	function setinvref(srno,invno,typx,chkx){
 
 		$('#txtSIRef').val(srno);
 		$('#txtInvoiceRef').val(invno);
 		$('#invtyp').val(typx);		
-		$('#txtcurr').val(currcode);	
 
 		//alert(srno+","+invno+","+typx);
 
 		//default entry from invoice... reverese
-		$('#MyTable > tbody').empty();	
-
 		if(chkx=="sr"){
+
+			$('#MyTable > tbody').empty();	
+
+			//alert('srno='+srno+'&invno='+invno+'&styp='+$('#invtyp').val());
 			$.ajax({
 				url: 'th_getsientry.php',
 				data: 'srno='+srno+'&invno='+invno+'&styp='+$('#invtyp').val(),
@@ -827,11 +775,11 @@
 
 						$('#MyTable > tbody:last-child').append(
 							'<tr>'// need to change closing tag to an opening `<tr>` tag.
-							+'<td width="100px"><input type="text" class="typeno form-control input-xs" name="txtcAcctNo'+rowCount+'" id="txtcAcctNo'+rowCount+'"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctDesc'+rowCount+'" data-debit="txtnDebit'+rowCount+'" value="'+item.cacctid+'"></td>'
-							+'<td><input type="text" class="typedesc form-control input-xs" name="txtcAcctDesc'+rowCount+'" id="txtcAcctDesc'+rowCount+'"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctNo'+rowCount+'" data-debit="txtnDebit'+rowCount+'" value="'+item.cacctdesc+'"> </td>'
-							+'<td width="100px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit'+rowCount+'" id="txtnDebit'+rowCount+'" autocomplete="off" value="'+item.ndebit+'"</td>'
-							+'<td width="100px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit'+rowCount+'" id="txtnCredit'+rowCount+'" autocomplete="off" value="'+item.ncredit+'"></td>'
-							+'<td width="200px"><input type="text" class="cRem form-control input-xs" name="txtcRem'+rowCount+'" id="txtcRem'+rowCount+'" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"></td>'
+							+'<td width="100px" style="padding:1px"><input type="text" class="typeno form-control input-xs" name="txtcAcctNo'+rowCount+'" id="txtcAcctNo'+rowCount+'"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctDesc'+rowCount+'" data-debit="txtnDebit'+rowCount+'" value="'+item.cacctid+'"></td>'
+							+'<td style="padding:1px"><input type="text" class="typedesc form-control input-xs" name="txtcAcctDesc'+rowCount+'" id="txtcAcctDesc'+rowCount+'"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctNo'+rowCount+'" data-debit="txtnDebit'+rowCount+'" value="'+item.cacctdesc+'"> </td>'
+							+'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit'+rowCount+'" id="txtnDebit'+rowCount+'" autocomplete="off" value="'+item.ndebit+'"</td>'
+							+'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit'+rowCount+'" id="txtnCredit'+rowCount+'" autocomplete="off" value="'+item.ncredit+'"></td>'
+							+'<td width="200px" style="padding:1px"><input type="text" class="cRem form-control input-xs" name="txtcRem'+rowCount+'" id="txtcRem'+rowCount+'" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"></td>'
 							+'<td width="40px" align="right"><input class="btn btn-danger btn-xs" type="button" id="row_'+rowCount+'_delete" value="delete" onClick="deleteRow(this);"/></td>'+'</tr>'
 						);
 
@@ -985,6 +933,7 @@
 				$("#AlertMsg").html("");
 									
 				$("#AlertMsg").html("Please check your details!");
+				$(".btnmodz").hide();
 				$("#alertbtnOK").show();
 				$("#AlertModal").modal('show');
 

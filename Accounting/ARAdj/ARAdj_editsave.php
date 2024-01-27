@@ -14,7 +14,6 @@ $company = $_SESSION['companyid'];
 	$cSelType =  mysqli_real_escape_string($con, $_REQUEST['seltype']);   
 	$cSRRef =  mysqli_real_escape_string($con, $_REQUEST['txtSIRef']);
 	$cSIRef =  mysqli_real_escape_string($con, $_REQUEST['txtInvoiceRef']);
-	$cCurrCode =  mysqli_real_escape_string($con, $_REQUEST['txtcurr']);
 	$ngross =  mysqli_real_escape_string($con, str_replace( ',', '', $_REQUEST['txtnGross']));
 	
 	$dret = 0;
@@ -24,7 +23,7 @@ $company = $_SESSION['companyid'];
 
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 	
-	if (!mysqli_query($con, "UPDATE `aradjustment` set `ccode` = '$cCustID', `dcutdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `ctype` = '$cSelType', `cremarks` = '$cRemarks', `ngross` = '$ngross', `crefsr` = '$cSRRef', `crefsi` = '$cSIRef', `isreturn` = '$dret', `ccurrencycode` = '$cCurrCode' where `compcode`='$company' and `ctranno` = '$cSINo'")) {
+	if (!mysqli_query($con, "UPDATE `aradjustment` set `ccode` = '$cCustID', `dcutdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `ctype` = '$cSelType', `cremarks` = '$cRemarks', `ngross` = '$ngross', `crefsr` = '$cSRRef', `crefsi` = '$cSIRef', `isreturn` = '$dret' where `compcode`='$company' and `ctranno` = '$cSINo'")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 
@@ -38,6 +37,10 @@ $company = $_SESSION['companyid'];
 	
 	$rowcnt = $_REQUEST['hdnrowcnt'];
 	$isok = "YES";
+
+	$ntotalewt = 0;
+	$ntotaltax = 0;
+
 	for($z=1; $z<=$rowcnt; $z++){
 		
 		$cacctno = mysqli_real_escape_string($con, $_REQUEST['txtcAcctNo'.$z]);
@@ -58,43 +61,24 @@ $company = $_SESSION['companyid'];
 			$isok = "No";
 		}
 
+		if($cacctno==@$ewtpaydef && floatval($ncredit) > 0){
+			$ntotalewt = $ntotalewt + floatval($ncredit);
+		}
+
+		if($cacctno==@$OTpaydef && floatval($ndebit) > 0){
+			$ntotaltax = $ntotaltax + floatval($ndebit);
+		}
+
 	}
+
+	//update total vat and EWT
+	mysqli_query($con, "UPDATE aradjustment set ntovat=".$ntotaltax.", ntotewt=".$ntotalewt." where compcode = '$company' and ctranno='$cSINo'");
+	
 
 	if($isok=="YES"){
 		mysqli_query($con, "DELETE FROM `aradjustment_t` where `compcode`='xxx' and `ctranno`= 'xxx'");
 	}
 	
-
-	//insert attachment
-	$files = array_filter($_FILES['upload']['name']); //Use something similar before processing files.
-	// Count the number of uploaded files in array
-	$total_count = count($_FILES['upload']['name']);
-
-	if(file_exists('../../Components/assets/ARAdj/'.$company.'_'.$cSINo.'/')) {
-		/*$allfiles = scandir('../../RFP_Files/'.$cSINo.'/');
-		$files = array_diff($allfiles, array('.', '..'));
-		foreach($files as $file) {
-			unlink("../../RFP_Files/".$cSINo."/".$file);
-		}*/
-	}else{
-		if($total_count>=1){
-			mkdir('../../Components/assets/ARAdj/'.$company.'_'.$cSINo.'/',0777);
-		}
-	}
-
-	// Loop through every file
-	for( $i=0 ; $i < $total_count ; $i++ ) {
-		//The temp file path is obtained
-		$tmpFilePath = $_FILES['upload']['tmp_name'][$i];
-		//A file path needs to be present
-		if ($tmpFilePath != ""){
-				//Setup our new file path
-				$newFilePath = "../../Components/assets/ARAdj/" .$company.'_'. $cSINo . "/" . $_FILES['upload']['name'][$i];
-				//File is uploaded to temp dir
-				move_uploaded_file($tmpFilePath, $newFilePath);
-				
-		}
-	}
 	
 	//INSERT LOGFILE
 	$compname = php_uname('n');

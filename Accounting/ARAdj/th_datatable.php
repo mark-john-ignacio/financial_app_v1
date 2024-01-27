@@ -5,7 +5,7 @@
 
 	include('../../Connection/connection_string.php');
 
-	$column = array('A.ctranno', 'A.crefsr', 'A.crefsi', 'A.ctype', 'A.dcutdate', 'CONCAT(a.ccode,"-",b.cname)', 'a.ngross', 'CASE WHEN A.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN A.lcancelled=1 THEN "Cancelled" ELSE "" END');
+	$column = array('A.ctranno', 'A.crefsr', 'A.crefsi', 'A.ctype', 'A.dcutdate', 'CONCAT(a.ccode,"-",b.cname)', 'a.ngross', 'CASE WHEN A.lapproved=1 THEN "Posted" WHEN A.lcancelled=1 THEN "Cancelled" ELSE "" END');
 
 	$query = "select A.*, B.cname from aradjustment A left join customers B on  A.compcode=B.compcode and A.ccode=B.cempid where A.compcode='".$_SESSION['companyid']."' ";
 
@@ -17,11 +17,7 @@
 	if(isset($_POST['searchBystat']) && $_POST['searchBystat'] != '')
 	{
 		if($_POST['searchBystat']=="post"){
-			$query .= " and (A.lapproved=1 and A.lvoid=0)";
-		}
-
-		if($_POST['searchBystat']=="void"){
-			$query .= " and A.lvoid=1";
+			$query .= " and A.lapproved=1";
 		}
 
 		if($_POST['searchBystat']=="cancel"){
@@ -79,7 +75,6 @@
 		$sub_array[] = $row['lapproved'];
 		$sub_array[] = $row['lcancelled'];
 		$sub_array[] = number_format($row['ngross'],2);
-		$sub_array[] = $row['lvoid'];
 		$data[] = $sub_array;
 	}
 

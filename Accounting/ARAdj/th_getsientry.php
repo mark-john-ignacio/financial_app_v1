@@ -67,7 +67,6 @@ require_once "../../Connection/connection_string.php";
 		$cSIsalescodetype = $row["cacctcodetype"];
 	}
 
-
 	//ITEMS ENTRY - SALES AND VATS - DEBIT
 	if($xcomp==1){ // Pag ung mismo may ari system ay Vatable
 
@@ -153,7 +152,6 @@ require_once "../../Connection/connection_string.php";
 
 
 	}
-
 
 	//CUSTOMERS ENTRY - RECEIVABLES CREDIT
 	if($cSIsalescodetype=="multiple"){
