@@ -3,7 +3,6 @@
 		session_start();
 	}
 
-	header('Content-Type: application/json; charset=utf-8');
 	include('../../Connection/connection_string.php');
 
 	$column = array('cempid', 'cname', 'ctin', 'cterms', 'cstatus');
@@ -77,6 +76,6 @@
 		"data" => $data
 	);
 
-	echo json_encode($output);
+	echo json_encode($output, JSON_UNESCAPED_UNICODE);
 
 ?>
