@@ -1,8 +1,8 @@
 <?php
-session_start();
-require_once "../../Connection/connection_string.php";
-
-
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	require_once "../../Connection/connection_string.php";
 	$company = $_SESSION['companyid'];
 	
 	if ($_REQUEST['y'] <> "") {
@@ -16,23 +16,16 @@ require_once "../../Connection/connection_string.php";
 
 	$tbl = "sales";
 	$tbl2 = "sales_t";
-	// if($_REQUEST['typ']=="Trade"){
-	// 	$tbl = "sales";
-	// 	$tbl2 = "sales_t";
-	// }elseif($_REQUEST['typ']=="Non-Trade"){
-	// 	$tbl = "ntsales";
-	// 	$tbl2 = "ntsales_t";
-	// }
 
 	$receipt = $_REQUEST['type'];
 
 	$receipttype = '';
 	switch($receipt){
 		case 'OR':
-			$receipttype = "and B.csalestype = 'Services'";
+			$receipttype = "and A.csalestype = 'Services'";
 			break;
 		case 'CR':
-			$receipttype = "and B.csalestype = 'Goods'";
+			$receipttype = "and A.csalestype = 'Goods'";
 			break;
 		case 'AR':
 			$tbl = "ntsales";
@@ -40,15 +33,9 @@ require_once "../../Connection/connection_string.php";
 			break;
 	}
 
-	// match($receipt){
-	// 	"OR" => "and B.csalestype = 'Goods'",
-	// 	"CR" => "and B.csalestype = 'Services'",
-	// 	"AR" => ""
-	// };
-
 	//alldebitlist
 	@$arradjlist = array();
-	$sqlardj = "select X.ctranno,X.crefsi, X.ngross, X.ctype from aradjustment X where X.compcode='$company' and X.ccode='".$_REQUEST['x']."' and IFNULL(crefsi,'') <> '' and isreturn = 0 and X.lapproved = 1 and X.ctranno not in (Select A.aradjustment_ctranno from receipt_deds A left join receipt B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lcancelled=0 and B.lvoid=0)";
+	$sqlardj = "select X.ctranno, X.crefsi, X.ctype, X.ngross, X.ntotvat, X.ntotewt from aradjustment X where X.compcode='$company' and X.ccode='".$_REQUEST['x']."' and IFNULL(crefsi,'') <> '' and X.lapproved = 1 and X.ctranno not in (Select A.aradjustment_ctranno from receipt_deds A left join receipt B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.lcancelled=0 and B.lvoid=0)";
 	$resardj = mysqli_query ($con, $sqlardj);
 	while($rowardj = mysqli_fetch_array($resardj, MYSQLI_ASSOC)){
 		@$arradjlist[] = $rowardj;		
@@ -62,23 +49,10 @@ require_once "../../Connection/connection_string.php";
 		@$arrpaymnts[] = $rowardj;
 	}
 
-	$sql = "Select A.ctranno, A.cacctid, A.cacctdesc, IFNULL(A.ctaxcode,'') as ctaxcode, A.nrate, A.ccurrencycode, IFNULL(A.cewtcode,'') as cewtcode, A.newtrate, A.dcutdate, SUM(ROUND(A.namountfull,2)) as ngross, SUM(ROUND(A.namount,2)) as cm, SUM(nvatgross) as nvatgross, (SUM(ROUND(A.namountfull,2)) - SUM(ROUND(A.namount,2)) - SUM(nvatgross)) as vatamt
-	From (
-		Select A.ctranno, A.citemno, ((A.nqtyreturned) * (A.nprice-A.ndiscount)) as namount, (A.nqty * (A.nprice-A.ndiscount)) as namountfull, B.dcutdate, D.cacctid, D.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, B.ccurrencycode, 
-					CASE 
-						WHEN IFNULL(A.nrate,0) <> 0 
-						THEN 
-							ROUND(((A.nqty-A.nqtyreturned)*(A.nprice-A.ndiscount))/(1 + (A.nrate/100)),2)
-						ELSE 
-							A.namount 
-						END as nvatgross
-	From ".$tbl2." A 
-	left join ".$tbl." B on A.compcode=B.compcode and A.ctranno=B.ctranno 
-	left join customers C on B.compcode=C.compcode and B.ccode=C.cempid 
-	left join accounts D on C.compcode=D.compcode and C.cacctcodesales=D.cacctno 
-	left join wtaxcodes E on A.compcode=E.compcode and A.cewtcode=E.ctaxcode 
-	where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 $receipttype and B.ccode='".$_REQUEST['x']."') A
-	Group By A.ctranno, A.cacctid, A.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, A.dcutdate, A.ccurrencycode
+	$sql = "Select A.ctranno, A.ngross, A.cacctcode, D.cacctid, D.cacctdesc, A.nnet, A.nzerorated, A.nexempt, A.nvat, A.nordue, A.dcutdate, A.ccurrencycode
+	From ".$tbl." A 
+	left join accounts D on A.compcode=D.compcode and A.cacctcode=D.cacctno 
+	where A.compcode='$company' and A.lapproved=1 and A.lvoid=0 $receipttype and A.ccode='".$_REQUEST['x']."'
 	order by A.dcutdate, A.ctranno";
 
 	//echo $sql;
@@ -90,31 +64,32 @@ require_once "../../Connection/connection_string.php";
 		$ntotal = $row['ngross'];
 		$ngross = $row['ngross'];
 
-			 $nwithadjcm = 0;
-			 $nwithadjdm = 0;
-			 foreach(@$arradjlist as $rxdebit){
-				if($rxdebit['crefsi']==$row['ctranno'] && $rxdebit['ctype']=="Credit"){
-					$nwithadjcm = $nwithadjcm + $rxdebit['ngross'];
+		$nwithadjcm = 0;
+		$nwithadjdm = 0;
+		foreach(@$arradjlist as $rxdebit){
+		if($rxdebit['crefsi']==$row['ctranno'] && $rxdebit['ctype']=="Credit"){
+			$nwithadjcm = $nwithadjcm + $rxdebit['ngross'];
+		}
+
+		if($rxdebit['crefsi']==$row['ctranno'] && $rxdebit['ctype']=="Debit"){
+			$nwithadjdm = $nwithadjdm + $rxdebit['ngross'];
+		}
+		}
+
+		$npay = 0;
+		$cntofist = 0;
+		//current payment
+		foreach(@$arrpaymnts as $rxpymnts){
+			if($row['ctranno']==$rxpymnts['csalesno']){
+				$cntofist++;
+				
+				if($cntofist==1){
+					$ntotal = floatval($rxpymnts['ndue']) - floatval($rxpymnts['napplied']);
 				}
 
-				if($rxdebit['crefsi']==$row['ctranno'] && $rxdebit['ctype']=="Debit"){
-					$nwithadjdm = $nwithadjdm + $rxdebit['ngross'];
-				}
-			 }
-
-			 $npay = 0;
-			 $cntofist = 0;
-			 foreach(@$arrpaymnts as $rxpymnts){
-				if($row['ctranno']==$rxpymnts['csalesno'] && $row['ctaxcode']==$rxpymnts['ctaxcodeorig'] && $row['cewtcode']==$rxpymnts['cewtcodeorig']){
-					$cntofist++;
-					
-					if($cntofist==1){
-						$ntotal = floatval($rxpymnts['ndue']) - floatval($rxpymnts['napplied']);
-					}
-
-					$npay = $npay + floatval($rxpymnts['napplied']);
-				}
-			 }
+				$npay = $npay + floatval($rxpymnts['napplied']);
+			}
+		}
 		
 		
 		//echo $ntotal." - ".$npay."<br><br>";
@@ -122,33 +97,23 @@ require_once "../../Connection/connection_string.php";
 		{
 			
 			$json['csalesno'] = $row['ctranno'];
-			$json['cewtcode'] = $row['cewtcode'];
-			$json['newtrate'] = $row['newtrate'];
 
-			$json['vatrate'] = $row['nrate'];
-			$json['ctaxcode'] = $row['ctaxcode'];
-
-			if($npay==0){
-							
-				$json['cvatamt'] = $row['vatamt'];
-				$json['cnetamt'] = $row['nvatgross'];
-				
+			if($npay==0){							
+				$json['cvatamt'] = $row['nvat'];
+				$json['cnetamt'] = floatval($row['nnet']) + floatval($row['nzerorated']) + floatval($row['nexempt']);
+				$json['ngross'] = $row['ngross'];	
+				$json['ngrossdisplay'] = number_format($row['ngross'],2);				
 			}else{
-					//get VATABLE AMOUNT OF PAID - ibawas ang ewtrate
-
-					$grossamt = floatval($npay) / ((100-floatval($row['newtrate']))/100);
-					$dewt = round($grossamt,2) * (floatval($row['newtrate'])/100);
-					$vatableamt = round($grossamt,2) / (1+(floatval($row['nrate'])/100));
-					$dvatamt = round($vatableamt,2) * (floatval($row['nrate'])/100);
-							
-					$json['cvatamt'] = floatval($row['vatamt']) - round($dvatamt,2);
-					$json['cnetamt'] = floatval($row['nvatgross']) - round($vatableamt,2);
+				$json['cvatamt'] = 0;
+				$json['cnetamt'] = 0;	
+				$json['ngross'] = $row['nordue'];	
+				$json['ngrossdisplay'] = number_format($row['nordue'],2);								
 			}	
 					 		
 			$json['cdm'] = $nwithadjdm;
 			$json['ccm'] = floatval($row['cm']) + $nwithadjcm;
 			$json['dcutdate'] = $row['dcutdate'];
-			$json['ngross'] = $row['ngross'];			 
+					 
 			//$json['withadj'] = $nwithadj;
 			$json['npayment'] = $npay;
 			$json['cacctno'] = $row['cacctid'];
@@ -161,8 +126,10 @@ require_once "../../Connection/connection_string.php";
 
 	}
 
-	echo json_encode($json2);
-
+	//echo json_encode($json2);
+	echo "<pre>";
+	print_r($json2);
+	echo "</pre>";
 	/*
 
 	if($_REQUEST['typ']=="Trade"){

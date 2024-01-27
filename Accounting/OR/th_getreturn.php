@@ -17,7 +17,6 @@ require_once "../../Connection/connection_string.php";
 		$json['reftran'] = $row['ctranno'];
 		$json['dte'] = $row['dcutdate'];
 		$json['grss'] = $row['ngross'];
-		$json['grss'] = $row['ngross'];
 		$json['rmks'] = $row['cremarks'];
 
 		$json2[] = $json;

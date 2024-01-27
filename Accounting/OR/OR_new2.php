@@ -356,13 +356,12 @@
 								<tr>
 									<th scope="col" width="100px" nowrap>Invoice No</th>
 									<th scope="col" width="110px" class="text-center" nowrap>Date</th>
-									<th scope="col" width="150px" class="text-center" nowrap>Amount</th>
+									<th scope="col" width="150px" class="text-center" nowrap>Total Amount</th>
 									<th scope="col" width="150px" class="text-center" nowrap>DM</th>
 									<th scope="col" width="150px" class="text-center" nowrap>CM</th>
 									<th scope="col" width="150px" class="text-center" nowrap>Payments</th>
-									<th scope="col" width="150px" class="text-center" nowrap>VAT Code</th>
-									<th scope="col" width="150px" class="text-center" nowrap>VAT</th>
-									<th scope="col" width="150px" class="text-center" nowrap>NetofVat</th>
+									<th scope="col" width="150px" class="text-center" nowrap>Total VAT</th>
+									<th scope="col" width="150px" class="text-center" nowrap>Total Net Gross</th>
 									<th scope="col" width="250px" class="text-center" nowrap>EWTCode</th>
 									<th scope="col" width="100px" class="text-center" nowrap>EWTAmt/Rate</th>                          
 									<th scope="col" width="100px" class="text-center" nowrap>Total EWT</th>
@@ -423,21 +422,10 @@
 							Back to Main<br>(ESC)
 						</button>
 						
-						<?php
-							if($lallowNT==1){
-						?>
-							<button type="button" onclick="getInvs();" id="btnaddSI" class="btn btn-info btn-sm">
-								SI <br>(Insert)</span>
-							</button>
-						<?php
-							}else{
-						?>
-							<button type="button" class="btn btn-info btn-sm" id="btnaddSI" onclick="getInvs();">
-								SI <br>(Insert)
-							</button>
-						<?php
-							}
-						?>
+						<button type="button" class="btn btn-info btn-sm" id="btnaddSI" onclick="getInvs();">
+							SI <br>(Insert)
+						</button>
+
 				
 						<button type="button" class="btn btn-success btn-sm" tabindex="6" id="btnSave" onclick="chkform();">
 							Save<br> (CTRL+S)
@@ -625,8 +613,9 @@
 					<input type="hidden" name="hdnrowcnt2" id="hdnrowcnt2"> 
 					<input type="hidden" name="txtdetsinoinfo" id="txtdetsinoinfo">  
 					<input type="hidden" name="txthdnTYPAdj" id="txthdnTYPAdj"> 
-					<input type="hidden" name="txthdnCMtxtbx" id="txthdnCMtxtbx"> 
-	
+					<input type="hidden" name="txthdnCMtxtbx" id="txthdnCMtxtbx">  
+					<input type="hidden" name="txthdnCMtxtbxrowref" id="txthdnCMtxtbxrowref">
+
 					<table id="MyTableCMx" class="MyTable table table-sm" width="100%">
 						<thead>
 							<tr>
@@ -646,50 +635,49 @@
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal-dialog -->
 	</div>
-	<!-- /.modal -->
+	<!-- /.modal --> 
 
 </form>
 
 	<!-- Bootstrap modal INVOICES -->
 	<div class="modal fade" id="myModal" role="dialog">
 		<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-						<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-								<h3 class="modal-title" id="invheader">Invoice List</h3>
-								<input name="invtyp" id="invtyp" type="hidden" value="" />
-						</div>
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h3 class="modal-title" id="invheader">Invoice List</h3>
+					<input name="invtyp" id="invtyp" type="hidden" value="" />
+				</div>
 						
-						<div class="modal-body" style="height:40vh">
-						
-							<div class="col-xs-12 nopadding pre-scrollable" style="height:37vh">
-									<table name='MyORTbl' id='MyORTbl' class="table table-scroll table-striped">
-									<thead>
-										<tr>
-											<th style="text-align: center !important">
-											<input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
-											<th>Invoice No</th>
-											<th>Sales Date</th>
-											<th>Gross</th>
-											<th>EWT</th>
-											<th>VAT</th>
-											<th>&nbsp;</th>
-										</tr>
-										</thead>
-										<tbody>
-										</tbody>
-					</table>
-								
-						</div>
-			</div>
-			
-						<div class="modal-footer">
-								
-								<button type="button" id="btnInsert" onclick="save();" class="btn btn-primary">Insert</button>
-								<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+				<div class="modal-body" style="height:40vh">	
+					<div class="col-xs-12 nopadding pre-scrollable" style="height:37vh">
 
-						</div>
-				</div><!-- /.modal-content -->
+						<table name='MyORTbl' id='MyORTbl' class="table table-scroll table-striped">
+							<thead>
+								<tr>
+									<th style="text-align: center !important">
+									<input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
+									<th>Invoice No</th>
+									<th>Sales Date</th>
+									<th width="80px">EWT</th>
+									<th width="80px">VAT</th>
+									<th style='text-align:right'>Gross</th>
+								</tr>
+								</thead>
+								<tbody>
+								</tbody>
+						</table>
+						
+					</div>
+				</div>
+			
+				<div class="modal-footer">
+						
+					<button type="button" id="btnInsert" onclick="save();" class="btn btn-primary">Insert</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+
+				</div>
+			</div><!-- /.modal-content -->
 		</div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
 	<!-- End Bootstrap modal -->
@@ -705,6 +693,11 @@
 			e.preventDefault();
 			window.location.replace("OR.php");
 
+		}
+		else if(e.keyCode == 45) { //Insert    
+			if($('#myModal').hasClass('in')==false && $('#CashModal').hasClass('in')==false && $('#ChequeModal').hasClass('in')==false && $('#OthersModal').hasClass('in')==false && $('#MyAdjustmentModal').hasClass('in')==false){
+				getInvs();
+			}
 		}
 	});
 
@@ -964,8 +957,9 @@
 
 			var xsino = $("#txtdetsinoinfo").val();
 			var xadjtype = $("#txthdnTYPAdj").val();
+			var xrefsirow = $("#txthdnCMtxtbxrowref").val();
 
-			AddRefAdj(xadjtype,xsino,"","","","");
+			AddRefAdj(xadjtype,xsino,"","","","",xrefsirow);
 		
 		});
 
@@ -1183,9 +1177,9 @@
 							$("<td align='center'>").html(chkbox),
 							$("<td>").text(item.csalesno),
 							$("<td>").text(item.dcutdate),
-							$("<td>").text(item.ngross + " " + item.ccurrencycode),
 							$("<td>").text(item.cewtcode),
-							$("<td>").text(item.ctaxcode)
+							$("<td>").text(item.ctaxcode),
+							$("<td style='text-align:right'>").text(item.ngrossdisplay + " " + item.ccurrencycode),
 						).appendTo("#MyORTbl tbody");
 
 					});
@@ -1393,7 +1387,7 @@
 				computeGross(); 
 
 				if(parseFloat(ncm)!==0){
-					getrefreturn(tranno);
+					getrefreturn(tranno,lastRow);
 				}
 			
 			
@@ -1481,7 +1475,7 @@
 			//$(this).find('input[name="txtncredit"]').attr("name","txtncredit"+tx2);
 			$(this).find('input[name="txtncredit"]').attr("id","txtncredit"+tx2);
 			$(this).find('button[name="btnaddcm"]').attr("id","btnaddcm"+tx2);
-			$(this).find('input[name="txtncredit"]').attr("onclick","addCM('CM','"+tranno+"','txtncredit"+tx2+"')");
+			$(this).find('input[name="txtncredit"]').attr("onclick","addCM('CM','"+tranno+"','txtncredit"+tx2+"')"); 
 
 			//$(this).find('input[name="txtnpayments"]').attr("name","txtnpayments"+tx2);
 			$(this).find('input[name="txtnpayments"]').attr("id","txtnpayments"+tx2);
@@ -1767,13 +1761,20 @@
 		var tbl = document.getElementById('MyTableCMx').getElementsByTagName('tr');
 		var lastRow2 = tbl.length-1;
 
+		if(xyadjtype=="CM"){
+			var refrow = txtbx.replace("txtncredit","");  
+		}else if(xyadjtype=="DM"){
+			var refrow = txtbx.replace("txtndebit","");
+		}
+
 		if(lastRow2>=1){
 			$("#MyTableCMx > tbody > tr").each(function() {	
 			
+				var crefrowsgvn = $(this).find('input[type="hidden"][name="hdndetsinorow"]').val();
 				var citmno = $(this).find('input[type="hidden"][name="hdndetsino"]').val();
 				var cadjyp = $(this).find('input[name="hdnctypeadj"]').val();
 				//alert(citmno+"!="+itmcde);
-				if(citmno!=xytran && cadjyp!==xyadjtype){
+				if(citmno!=xytran && refrow==crefrowsgvn && cadjyp!==xyadjtype){
 
 					$(this).find('input[name="txtapcmdm"]').attr("readonly", true);
 					//$(this).find('input[name="txtcmamt"]').attr("readonly", true);
@@ -1805,6 +1806,7 @@
 		$('#txtdetsinoinfo').val(xytran); 
 		$('#txthdnTYPAdj').val(xyadjtype);   
 		$("#txthdnCMtxtbx").val(txtbx);
+		$("#txthdnCMtxtbxrowref").val(refrow);
 		$('#MyAdjustmentModal').modal('show');
 	}
 
@@ -1859,26 +1861,22 @@
 		}
 	}
 
-	function getrefreturn(cinvno){
-
-			$.ajax({
-		url: 'th_getreturn.php',
-				data: { x:cinvno },
-		dataType: 'json',
-		method: 'post',
-		success: function (data) {
-			console.log(data);
-			$.each(data,function(index,item){
-
-
-						AddRefAdj(item.ctype,item.refsi,item.reftran,item.dte,item.grss,item.rmks);
-					});
-				}
-
-			});
+	function getrefreturn(cinvno,xrefsirow){
+		$.ajax({
+			url: 'th_getreturn.php',
+			data: { x:cinvno },
+			dataType: 'json',
+			method: 'post',
+			success: function (data) {
+				console.log(data);
+				$.each(data,function(index,item){
+					AddRefAdj(item.ctype,item.refsi,item.reftran,item.dte,item.grss,item.rmks,xrefsirow);
+				});
+			}
+		});
 	}
 
-	function AddRefAdj($adjtyp,$adjsi,$adjtran,$adjdte,$adjgrss,$rmks){
+	function AddRefAdj($adjtyp,$adjsi,$adjtran,$adjdte,$adjgrss,$rmks,xrefsirow){
 
 			var tbl = document.getElementById('MyTableCMx').getElementsByTagName('tr');
 			var lastRow = tbl.length;
@@ -1891,7 +1889,7 @@
 
 			var tdaptypx = "<td><input type='text' class='form-control input-xs' name='hdnctypeadj' id='hdnctypeadj"+lastRow+"' value='"+$adjtyp+"' readonly></td>";
 
-			var tdapcm = "<td><input type='hidden' name='hdndetsino' id='hdndetsino"+lastRow+"' value='"+$adjsi+"'><input type='hidden' name='hdnisgiven' id='hdnisgiven"+lastRow+"' value='"+$did+"'><input type='text' name='txtapcmdm' id='txtapcmdm"+lastRow+"' class='form-control input-xs' value='"+$adjtran+"'></td>";
+			var tdapcm = "<td><input type='hidden' name='hdndetsinorow' id='hdndetsinorow"+lastRow+"' value='"+xrefsirow+"'><input type='hidden' name='hdndetsino' id='hdndetsino"+lastRow+"' value='"+$adjsi+"'><input type='hidden' name='hdnisgiven' id='hdnisgiven"+lastRow+"' value='"+$did+"'><input type='text' name='txtapcmdm' id='txtapcmdm"+lastRow+"' class='form-control input-xs' value='"+$adjtran+"'></td>";
 
 			var tddate = "<td><input type='text' name='txtapdte' id='txtapdte"+lastRow+"' class='form-control input-xs' readonly value='"+$adjdte+"'></td>";
 
