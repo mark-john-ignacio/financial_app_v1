@@ -111,7 +111,7 @@
 			}	
 					 		
 			$json['cdm'] = $nwithadjdm;
-			$json['ccm'] = floatval($row['cm']) + $nwithadjcm;
+			$json['ccm'] = $nwithadjcm;
 			$json['dcutdate'] = $row['dcutdate'];
 					 
 			//$json['withadj'] = $nwithadj;
