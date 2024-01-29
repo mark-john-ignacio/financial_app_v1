@@ -1176,50 +1176,45 @@ else{
 	<?php
 		if($poststat=="True"){
 	?>
-		$(document).keydown(function(e) {	 
-		
-			if(e.keyCode == 112) { //F1
-				if($("#btnNew").is(":disabled")==false){
-					e.preventDefault();
-					window.location.href='OR_new2.php';
-				}
-			}
-			else if(e.keyCode == 83 && e.ctrlKey){//CTRL S
-				if($("#btnSave").is(":disabled")==false){ 
-					e.preventDefault();
-					$("#btnSave").click();
-				}
-			}
-			else if(e.keyCode == 69 && e.ctrlKey){//CTRL E
-				if($("#btnEdit").is(":disabled")==false){
-					e.preventDefault();
-					enabled();
-				}
-			}
-			else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
-				if($("#btnPrint").is(":disabled")==false){
-					e.preventDefault();
-					printchk('<?=$corno;?>');
-				}
-			}
-			else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
-				if($("#btnUndo").is(":disabled")==false){
-					e.preventDefault();
-					chkSIEnter(13,'frmOR');
-				}
-			}
-			else if(e.keyCode == 27){//ESC
-				if($("#btnMain").is(":disabled")==false){
-					e.preventDefault();
-					$("#btnMain").click();
-				}
-			}
-			else if(e.keyCode == 45) { //Insert    
-				if($('#myModal').hasClass('in')==false && $('#CashModal').hasClass('in')==false && $('#ChequeModal').hasClass('in')==false && $('#OthersModal').hasClass('in')==false && $('#MyAdjustmentModal').hasClass('in')==false){
-					getInvs();
-				}
-			}
-		});
+	$(document).keydown(function(e) {	 
+	
+	 if(e.keyCode == 112) { //F1
+		if($("#btnNew").is(":disabled")==false){
+			e.preventDefault();
+			window.location.href='OR_new2.php';
+		}
+	  }
+	  else if(e.keyCode == 83 && e.ctrlKey){//CTRL S
+		if($("#btnSave").is(":disabled")==false){ 
+			e.preventDefault();
+			$("#btnSave").click();
+		}
+	  }
+	  else if(e.keyCode == 69 && e.ctrlKey){//CTRL E
+		if($("#btnEdit").is(":disabled")==false){
+			e.preventDefault();
+			enabled();
+		}
+	  }
+	  else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
+		if($("#btnPrint").is(":disabled")==false){
+			e.preventDefault();
+			printchk('<?=$corno;?>');
+		}
+	  }
+	  else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
+		if($("#btnUndo").is(":disabled")==false){
+			e.preventDefault();
+			chkSIEnter(13,'frmOR');
+		}
+	  }
+	  else if(e.keyCode == 27){//ESC
+		if($("#btnMain").is(":disabled")==false){
+			e.preventDefault();
+			$("#btnMain").click();
+		}
+	  }
+	});
 	<?php
 		}
 	?>

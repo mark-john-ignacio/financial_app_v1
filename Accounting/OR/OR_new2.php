@@ -356,13 +356,13 @@
 								<tr>
 									<th scope="col" width="100px" nowrap>Invoice No</th>
 									<th scope="col" width="110px" class="text-center" nowrap>Date</th>
-									<th scope="col" width="150px" class="text-center" nowrap>Total Amount</th>
+									<th scope="col" width="150px" class="text-center" nowrap>Amount</th>
 									<th scope="col" width="150px" class="text-center" nowrap>DM</th>
 									<th scope="col" width="150px" class="text-center" nowrap>CM</th>
 									<th scope="col" width="150px" class="text-center" nowrap>Payments</th>
 									<th scope="col" width="150px" class="text-center" nowrap>VAT Code</th>
-									<th scope="col" width="150px" class="text-center" nowrap>Total VAT</th>
-									<th scope="col" width="150px" class="text-center" nowrap>Total Net Gross</th>
+									<th scope="col" width="150px" class="text-center" nowrap>VAT</th>
+									<th scope="col" width="150px" class="text-center" nowrap>NetofVat</th>
 									<th scope="col" width="250px" class="text-center" nowrap>EWTCode</th>
 									<th scope="col" width="100px" class="text-center" nowrap>EWTAmt/Rate</th>                          
 									<th scope="col" width="100px" class="text-center" nowrap>Total EWT</th>
@@ -636,7 +636,7 @@
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal-dialog -->
 	</div>
-	<!-- /.modal --> 
+	<!-- /.modal -->
 
 </form>
 
@@ -695,8 +695,8 @@
 			window.location.replace("OR.php");
 
 		}
-		else if(e.keyCode == 45) { //Insert    
-			if($('#myModal').hasClass('in')==false && $('#CashModal').hasClass('in')==false && $('#ChequeModal').hasClass('in')==false && $('#OthersModal').hasClass('in')==false && $('#MyAdjustmentModal').hasClass('in')==false){
+		else if(e.keyCode == 45) { //Insert
+			if($('#myModal').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
 				getInvs();
 			}
 		}
