@@ -174,13 +174,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
         </tr>
         <tr>
           <td align="right" valign="bottom"><!--<b><b>Vat-Exempt Sales</b>-->&nbsp;</td>
-          <td valign="bottom"><div style="text-align:right; width:50%"><b><?=(floatval($TotVEx) !== 0) ? number_format($TotVEx,2) : '' ?></b>&nbsp;</div></td>
+          <td valign="bottom"><div style="text-align:right; width:50%"><b><?=(floatval($TotVEx) != 0) ? number_format($TotVEx,2) : '' ?></b>&nbsp;</div></td>
           <td colspan="2" valign="bottom" align="right"><!--<b><b>Amt. Due</b>-->&nbsp;</td>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in; padding-top: 5px;"><b><?=(floatval($TotVatable) !== 0) ? number_format($TotVatable,2) : ""?></b></td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in; padding-top: 5px;"><b><?=(floatval($TotVatable) != 0) ? number_format($TotVatable,2) : ""?></b></td>
         </tr>
         <tr>
           <td align="right" valign="bottom"><!--<b><b>Zero-Rated Sales</b>-->&nbsp;</td>
-          <td valign="bottom"><div style="text-align:right; width:50%"><b><?=(floatval($TotZero) !== 0) ? number_format($TotZero,2) : '' ?></b>&nbsp;</div></td>
+          <td valign="bottom"><div style="text-align:right; width:50%"><b><?=(floatval($TotZero) != 0) ? number_format($TotZero,2) : '' ?></b>&nbsp;</div></td>
           <td colspan="2" valign="bottom" align="right"><!--<b><b>LESS: SC/PWD DISC.</b>-->&nbsp;</td>
           <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?//=number_format($Gross,2)?>&nbsp;</b></td>
         </tr>
@@ -188,12 +188,12 @@ if (mysqli_num_rows($sqlhead)!=0) {
           <td align="right" valign="bottom"><!--<b><b>Vat Amt</b>-->&nbsp;</td>
           <td valign="bottom"><div style="text-align:right; width:50%">&nbsp;</div></td>
           <td colspan="2" valign="bottom" align="right"><!--<b><b>ADD VAT</b>-->&nbsp;</td>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in; padding-top: 5px;"><b><?=(floatval($TotVat) !== 0) ? number_format($TotVat,2) : ""?></b></td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in; padding-top: 5px;"><b><?=(floatval($TotVat) != 0) ? number_format($TotVat,2) : ""?></b></td>
         </tr>
         <tr>
           <td colspan="2" valign="bottom">&nbsp;</td>
           <td colspan="2" valign="bottom" align="right"><!--<b><b>TOTAL AMT. DUE</b>-->&nbsp;</td>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in; padding-top: 5px;"><b><?=(floatval($Gross) !== 0) ? number_format($Gross,2) : ""?></b></td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in; padding-top: 5px;"><b><?=(floatval($Gross) != 0) ? number_format($Gross,2) : ""?></b></td>
         </tr>
 
       </table>
@@ -210,20 +210,20 @@ if (mysqli_num_rows($sqlhead)!=0) {
           <td rowspan="7" valign="top" align="right" style="width: 4in; padding-top: 13px !important">
 
             <table width="100%" border="0" cellpadding="1px">
-              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=(floatval($TotVatable) !==0) ? number_format($TotVatable,2) : " "?> </b></td></tr>
-              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=(floatval($TotVEx) !==0) ? number_format($TotVEx,2) : " "?> </b> </td></tr>
-              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=(floatval($TotZero) !==0) ? number_format($TotZero,2) : " "?> </b> </td></tr>
-              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=(floatval($TotVat) !==0) ? number_format($TotVat,2) : " "?></b> </td></tr>
+              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=(floatval($TotVatable) !=0) ? number_format($TotVatable,2) : " "?> </b></td></tr>
+              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=(floatval($TotVEx) !=0) ? number_format($TotVEx,2) : " "?> </b> </td></tr>
+              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=(floatval($TotZero) !=0) ? number_format($TotZero,2) : " "?> </b> </td></tr>
+              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=(floatval($TotVat) !=0) ? number_format($TotVat,2) : " "?></b> </td></tr>
             </table>
 
           </td>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in; height: 0.22in"><b><?=(floatval($TotVatable)!==0) ? number_format($totvatable,2) : " "?>&nbsp;</b></td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in; height: 0.22in"><b><?=(floatval($TotVatable)!=0) ? number_format($totvatable,2) : " "?>&nbsp;</b></td>
         </tr>
         <tr>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=(floatval($TotVat)!==0) ? number_format($TotVat,2) : " "?></b>&nbsp;</td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=(floatval($TotVat)!=0) ? number_format($TotVat,2) : " "?></b>&nbsp;</td>
         </tr>
         <tr>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in; padding-top: 3px !important"><b><?=(floatval($TotVatable)!==0) ? number_format($TotVatable,2) : " "?></b>&nbsp;</td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in; padding-top: 3px !important"><b><?=(floatval($TotVatable)!=0) ? number_format($TotVatable,2) : " "?></b>&nbsp;</td>
         </tr>
         <tr>
 
@@ -231,11 +231,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
         </tr>
         <tr>
 
-          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=(floatval($TotVatable)!==0) ? number_format($TotVatable,2) : " "?></b></td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=(floatval($TotVatable)!=0) ? number_format($TotVatable,2) : " "?></b></td>
         </tr>
         <tr>
 
-          <td valign="bottom" align="right" style="padding-right: 0.3in"><b><?=(floatval($TotVat)!==0) ? number_format($TotVat,2) : " "?></b></td>
+          <td valign="bottom" align="right" style="padding-right: 0.3in"><b><?=(floatval($TotVat)!=0) ? number_format($TotVat,2) : " "?></b></td>
         </tr>
         <tr>
          
