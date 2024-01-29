@@ -174,13 +174,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
         </tr>
         <tr>
           <td align="right" valign="bottom"><!--<b><b>Vat-Exempt Sales</b>-->&nbsp;</td>
-          <td valign="bottom"><div style="text-align:right; width:50%"><b><?=($printVEGross !== 0) ? $printVEGross : '' ?></b>&nbsp;</div></td>
+          <td valign="bottom"><div style="text-align:right; width:50%"><b><?=(floatval($TotVEx) !== 0) ? number_format($TotVEx,2) : '' ?></b>&nbsp;</div></td>
           <td colspan="2" valign="bottom" align="right"><!--<b><b>Amt. Due</b>-->&nbsp;</td>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in; padding-top: 5px;"><b><?=number_format($totvatable,2)?></b></td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in; padding-top: 5px;"><b><?=number_format($TotVatable,2)?></b></td>
         </tr>
         <tr>
           <td align="right" valign="bottom"><!--<b><b>Zero-Rated Sales</b>-->&nbsp;</td>
-          <td valign="bottom"><div style="text-align:right; width:50%"><b><?=($printZRGross !== 0) ? $printZRGross : '' ?></b>&nbsp;</div></td>
+          <td valign="bottom"><div style="text-align:right; width:50%"><b><?=(floatval($TotZero) !== 0) ? number_format($TotZero,2) : '' ?></b>&nbsp;</div></td>
           <td colspan="2" valign="bottom" align="right"><!--<b><b>LESS: SC/PWD DISC.</b>-->&nbsp;</td>
           <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?//=number_format($Gross,2)?>&nbsp;</b></td>
         </tr>
@@ -188,7 +188,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
           <td align="right" valign="bottom"><!--<b><b>Vat Amt</b>-->&nbsp;</td>
           <td valign="bottom"><div style="text-align:right; width:50%">&nbsp;</div></td>
           <td colspan="2" valign="bottom" align="right"><!--<b><b>ADD VAT</b>-->&nbsp;</td>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in; padding-top: 5px;"><b><?=number_format($totlessvat,2)?></b></td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in; padding-top: 5px;"><b><?=number_format($TotVat,2)?></b></td>
         </tr>
         <tr>
           <td colspan="2" valign="bottom">&nbsp;</td>
