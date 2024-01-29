@@ -43,7 +43,7 @@
 
 	//allinvoice to get siseries
 	@$arrsiseriesz = array();
-	$sqlpay = "select a.ctranno, a.csiprintno from sales a where a.compcode='$company' and a.lcancelled = 0 and a.lvoid=0";
+	$sqlpay = "select a.ctranno, a.csiprintno from sales a where a.compcode='$company' and a.lcancelled = 0 and a.lvoid=0 UNION ALL select a.ctranno, a.csiprintno from ntsales a where a.compcode='$company' and a.lcancelled = 0 and a.lvoid=0";
 	$respay = mysqli_query ($con, $sqlpay);
 	while($rowsi = mysqli_fetch_array($respay, MYSQLI_ASSOC)){
 		@$arrsiseriesz[$rowsi['ctranno']] = $rowsi['csiprintno'];
