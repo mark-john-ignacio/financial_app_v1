@@ -135,7 +135,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
               <td style="text-overflow: ellipsis; width: .55in; padding-left: 15px">&nbsp;&nbsp;<?php echo $rowbody['citemno'];?></td>
               <td style="text-overflow: ellipsis; width: 11.5in"><?php echo $rowbody['citemdesc'];?></td>
               <td style="width: 1.15in" align="center"><?php echo number_format($rowbody['nqty']);?>&nbsp;</td> 
-              <td style="width: 1.15in" align="center"><?php echo $rowbody['cunit'];?></td>
+              <td style="width: 1in" align="center"><?php echo $rowbody['cunit'];?></td>
               <td style="text-overflow: ellipsis; width: 2.25in" align="right"><?php echo number_format($nnetprice,2);?></td>
               <td style="width: 2.25in;" align="right"><?php echo number_format($rowbody['namount'],2);?></td>
             </tr>
@@ -154,7 +154,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
     if($SalesType=="Services"){
   ?>
   <tr>
-    <td colspan="2" valign="top" style="padding-top: 30px !important">
+    <td colspan="2" valign="top" style="padding-top: 10px !important">
       <table width="100%" border="0">
 <!-- 
         <tr>
