@@ -107,7 +107,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
     <td colspan="2">&nbsp;</td>
   </tr>
   <tr>
-    <td colspan="3" style="height: 5.6in; padding-top: 13px;" VALIGN="TOP">
+    <td colspan="3" style="height: 5in; padding-top: 13px;" VALIGN="TOP">
     
     <table width="96%" border="0" cellpadding="1" align="left">
       <?php 
