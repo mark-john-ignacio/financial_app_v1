@@ -686,6 +686,7 @@ if (mysqli_num_rows($sqlchk)!=0) {
                       <th align="center">
                       <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
                       <th>Invoice No</th>
+					  <th>Invoice Series</th>
                       <th>Sales Date</th>
                       <th>Gross</th>
                       <th>EWT</th>
@@ -1832,6 +1833,7 @@ else{
 						$("<tr>").append(
 							$("<td>").html("<input type='checkbox' value='"+item.csalesno+"' name='chkSales[]' data-cm='"+item.ccm+"' data-payment='"+item.npayment+"' data-vatcode='"+item.ctaxcode+"' data-vat='"+item.cvatamt+"' data-vatrate='"+item.vatrate+"' data-netvat='"+item.cnetamt+"' data-ewtcode='"+item.cewtcode+"' data-ewtrate='"+item.newtrate+"' data-amt='"+item.ngross+"' data-acctid='"+item.cacctno+"' data-acctdesc='"+item.ctitle+"' data-cutdate='"+item.dcutdate+"'>"),
 							$("<td>").text(item.csalesno),
+							$("<td>").text(item.csalesseries),
 							$("<td>").text(item.dcutdate),
 							$("<td>").text(item.ngross),
 							$("<td>").text(item.cewtcode),

@@ -41,6 +41,14 @@
 		@$arradjlist[] = $rowardj;		
 	}
 
+	//allinvoice to get siseries
+	@$arrsiseriesz = array();
+	$sqlpay = "select a.ctranno, a.csiprintno from sales a where a.compcode='$company' and B.lcancelled = 0 and B.lvoid=0";
+	$respay = mysqli_query ($con, $sqlpay);
+	while($rowsi = mysqli_fetch_array($respay, MYSQLI_ASSOC)){
+		@$arrsiseriesz[$rowsi['ctranno']] = $rowsi['csiprintno'];
+	}
+
 	//allpayemnts
 	@$arrpaymnts = array();
 	$sqlpay = "select X.* from receipt_sales_t X left join receipt B on X.compcode=B.compcode and X.ctranno=B.ctranno where X.compcode='$company' and B.lcancelled = 0 and B.lvoid=0 order By X.csalesno, B.ddate";
@@ -155,6 +163,7 @@
 			$json['cacctno'] = $row['cacctid'];
 			$json['ctitle'] = $row['cacctdesc'];
 			$json['ccurrencycode'] = $row['ccurrencycode'];
+			$json['csalesseries'] = @$arrsiseriesz[$row['ctranno']];
 
 			$json2[] = $json;
 		 

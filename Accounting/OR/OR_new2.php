@@ -659,6 +659,7 @@
 									<th style="text-align: center !important">
 									<input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
 									<th>Invoice No</th>
+									<th>Invoice Series</th>
 									<th>Sales Date</th>
 									<th width="80px">EWT</th>
 									<th width="80px">VAT</th>
@@ -1177,6 +1178,7 @@
 						$("<tr>").append(
 							$("<td align='center'>").html(chkbox),
 							$("<td>").text(item.csalesno),
+							$("<td>").text(item.csalesseries),
 							$("<td>").text(item.dcutdate),
 							$("<td>").text(item.cewtcode),
 							$("<td>").text(item.ctaxcode),
