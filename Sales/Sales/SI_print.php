@@ -92,7 +92,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
       </table>
 
     </td>
-    <td style="width: 2.7in" VALIGN="TOP"> 
+    <td style="width: 2.7in; padding-top: 10px" VALIGN="TOP"> 
       <table width="100%" border="0" >
         <tr><td style="padding-right: 0.1in;" align="right"> <?=($PayType=="Credit") ? date_format(date_create($Date), "M d, Y") : "&nbsp;";?> </td></tr>
         <tr><td style="padding-right: 0.1in; padding-top: 5px" align="right"> <?=($PayType=="Cash") ? date_format(date_create($Date), "M d, Y") : "&nbsp;";?> </td></tr>
@@ -132,7 +132,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
       
             <tr> 
               <td align="center"><?=$cntr;?></td>
-              <td style="text-overflow: ellipsis; width: .55in">&nbsp;&nbsp;<?php echo $rowbody['citemno'];?></td>
+              <td style="text-overflow: ellipsis; width: .55in; padding-left: 5px">&nbsp;&nbsp;<?php echo $rowbody['citemno'];?></td>
               <td style="text-overflow: ellipsis; width: 11.5in"><?php echo $rowbody['citemdesc'];?></td>
               <td style="width: 1.15in" align="center"><?php echo number_format($rowbody['nqty']);?>&nbsp;</td> 
               <td style="width: 1.15in" align="center"><?php echo $rowbody['cunit'];?></td>
