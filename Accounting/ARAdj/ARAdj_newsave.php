@@ -109,7 +109,7 @@ else {
 	}
 	
 	//update total vat and EWT
-	mysqli_query($con, "UPDATE aradjustment set ntovat=".$ntotaltax.", ntotewt=".$ntotalewt." where compcode = '$company' and ctranno='$cSINo'");
+	mysqli_query($con, "UPDATE aradjustment set ntotvat=".$ntotaltax.", ntotewt=".$ntotalewt." where compcode = '$company' and ctranno='$cSINo'");
 
 	 
 	//INSERT LOGFILE
