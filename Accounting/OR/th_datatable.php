@@ -5,7 +5,7 @@
 
 	include('../../Connection/connection_string.php');
 
-	$column = array('a.ctranno', 'a.cornumber', 'd.cref', 'CONCAT(a.ccode,"-",b.cname)', 'a.namount', 'a.dcutdate', 'CASE WHEN a.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN a.lcancelled=1 THEN "Cancelled" ELSE "" END');
+	$column = array('a.ctranno', 'a.cornumber', 'd.cref', 'CONCAT(a.ccode,"-",b.cname)', 'a.namount', 'a.ddate', 'a.dcutdate', 'CASE WHEN a.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN a.lcancelled=1 THEN "Cancelled" ELSE "" END');
 
 	$query = "select a.*,b.cname, d.cref from receipt a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid LEFT JOIN (Select x.ctranno, GROUP_CONCAT(DISTINCT x.csalesno) as cref from receipt_sales_t x where x.compcode='".$_SESSION['companyid']."' group by x.ctranno) d on a.ctranno=d.ctranno where a.compcode='".$_SESSION['companyid']."' ";
 
@@ -79,6 +79,7 @@
 		$sub_array[] = $row['lcancelled'];
 		$sub_array[] = number_format($row['namount'],2);
 		$sub_array[] = $row['lvoid'];
+		$sub_array[] = $row['ddate'];
 		$data[] = $sub_array;
 
 	}

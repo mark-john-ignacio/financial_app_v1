@@ -96,9 +96,10 @@
 						<th>Tran No</th>
 						<th>OR No.</th>
 						<th>Reference</th>
-            <th>Payor</th>
+            			<th>Payor</th>
 						<th>Gross</th>
-						<th>Date</th>
+						<th>Transaction Date</th>
+						<th>OR Date</th>
 						<th>Status</th>
 					</tr>
 				</thead>
