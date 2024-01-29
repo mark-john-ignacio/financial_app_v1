@@ -44,6 +44,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$Date = $row['dcutdate'];
 		//$SalesType = $row['csalestype'];
 		$Gross = $row['ngross'];
+
+    $TotVatable = $row['nnet'];
+    $TotZero = $row['nzerorated'];
+    $TotVEx = $row['nexempt'];
+    $TotVat = $row['nvat'];
 		
 		$nLimit = $row['nlimit'];
 		
@@ -194,86 +199,33 @@ function PrintRed(x, version){
         <td align="right"><?=number_format($rowbody['namount'],2);?></td>
         
       </tr>
-      <?php 
-	  
-	  		if(floatval($rowbody['nrate'])!=0){
-				//echo "A";
-				$totnetvat = floatval($totnetvat) + floatval($rowbody['nnetvat']);
-				$totlessvat = floatval($totlessvat) + floatval($rowbody['nlessvat']);
-				
-				$totvatable = floatval($totvatable) + floatval($rowbody['namount']);
-
-          }
-          else{
-            //echo "B";
-            $totvatxmpt = floatVAL($totvatxmpt) + floatval($rowbody['namount']);
-          }
-    }
-    
-		}
-		
-		
-		if($cvatcode=='VT' || $cvatcode=='NV'){
-			$printVATGross = number_format($Gross,2);
-			
-				if((float)$totvatxmpt==0){
-					//echo "A";
-					$printVEGross = "";
-				}else{
-					//echo "AB";
-					$printVEGross =  number_format($totvatxmpt,2);
-				}
-
-			$printZRGross = "";
-
-
-				$totnetvat = number_format($totnetvat,2);
-				$totlessvat = number_format($totlessvat,2);
-				$totvatable = number_format($totvatable,2);
-			
-		}elseif($cvatcode=='VE'){
-			$printVATGross = "";
-			$printVEGross = number_format($Gross,2);
-			$printZRGross = "";
-			
-				$totnetvat = "";
-				$totlessvat = "";
-				$totvatable = "";
-			
-		}elseif($cvatcode=='ZR'){
-			$printVATGross = "";
-			$printVEGross = "";
-			$printZRGross = number_format($Gross,2);
-
-				$totnetvat = "";
-				$totlessvat = "";
-				$totvatable = "";
-			
-		}
-	  ?>
-        <tr>
+      
+      <tr>
         <td colspan="5" style="border-top:1px dashed;"><?php //echo $cvatcode.":".(float)$totvatxmpt." : ".$printVEGross;?></td>
-        </tr>
+      </tr>
 
         <tr>
+          <?php
+            $xtotvatincxzs = floatval($TotVatable) + floatval($TotVat) + floatval($TotZero) + floatval($TotVEx);
+          ?>
         <td colspan="4" style="border-top:1px dashed;" align="right"  valign="bottom"><b>Total Sales (VAT INCLUSIVE) </b></td>
-        <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($totvatable!=="") ? $totvatable : "";?></b></td>
+        <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=number_format($xtotvatincxzs,2)?></b></td>
         </tr>
         <tr>
           <td style="border-top:1px dashed;" align="right" valign="bottom"><b>Vatable Sales</b></td>
-          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%"><b><?=($totvatable!=="") ? $totvatable : "";?></b></div></td>
+          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%"><b><?=($TotVatable!=="") ? number_format((floatval($TotVatable) + floatval($TotVat)),2) : "";?></b></div></td>
           <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>Amt. Net of VAT</b></td>
-          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($totnetvat!=="") ? $totnetvat : "";?></b></td>
+          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($TotVatable!=="") ? number_format($TotVatable,2) : "";?></b></td>
         </tr>
         <tr>
           <td style="border-top:1px dashed;" align="right" valign="bottom"><b>Vat-Exempt Sales</b></td>
-          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%"><b><?=($printVEGross!=="") ? $printVEGross : "";?></b></div></td>
+          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%"><b><?=($TotVEx!=="") ? number_format($TotVEx,2) : "";?></b></div></td>
           <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>LESS: VAT</b></td>
-          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($totlessvat!=="") ? $totlessvat : "";?></b></td>
+          <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($TotVat!=="") ? number_format($TotVat,2) : "";?></b></td>
         </tr>
         <tr>
           <td style="border-top:1px dashed;" align="right" valign="bottom"><b>Zero-Rated Sales</b></td>
-          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%"><b><?=($printZRGross!=="") ? $printZRGross : "";?></b></div></td>
+          <td style="border-top:1px dashed;" valign="bottom"><div style="text-align:right; width:50%"><b><?=($TotZero!=="") ? number_format($TotZero,2) : "";?></b></div></td>
           <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>LESS: SC/PWD DISC.</b></td>
           <td style="border-top:1px dashed;"  valign="bottom" align="right">&nbsp;</td>
         </tr>
@@ -298,7 +250,10 @@ function PrintRed(x, version){
           <td colspan="2" style="border-top:1px dashed;" valign="bottom" align="right"><b>TOTAL AMT. DUE</b></td>
           <td style="border-top:1px dashed;"  valign="bottom" align="right"><b><?=($Gross!=="") ? number_format($Gross,2) : "";?></b></td>
         </tr>
+<?php
 
+    }}
+?>
     </table></td>
   </tr>
 </table>
