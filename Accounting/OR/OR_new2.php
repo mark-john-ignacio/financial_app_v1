@@ -360,6 +360,7 @@
 									<th scope="col" width="150px" class="text-center" nowrap>DM</th>
 									<th scope="col" width="150px" class="text-center" nowrap>CM</th>
 									<th scope="col" width="150px" class="text-center" nowrap>Payments</th>
+									<th scope="col" width="150px" class="text-center" nowrap>VAT Code</th>
 									<th scope="col" width="150px" class="text-center" nowrap>Total VAT</th>
 									<th scope="col" width="150px" class="text-center" nowrap>Total Net Gross</th>
 									<th scope="col" width="250px" class="text-center" nowrap>EWTCode</th>
