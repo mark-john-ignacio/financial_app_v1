@@ -52,7 +52,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 		$SalesType = $row['csalestype'];
     $PayType = $row['cpaytype'];
+
 		$Gross = $row['ngross'];
+
+    $TotVatable = $row['nnet'];
+    $TotZero = $row['nzerorated'];
+    $TotVEx = $row['nexempt'];
+    $TotVat = $row['nvat'];
 		
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
@@ -134,57 +140,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
               <td style="width: 2.25in;" align="right"><?php echo number_format($rowbody['namount'],2);?></td>
             </tr>
       <?php
-            if((int)$rowbody['nrate']!=0){
-              //echo "A";
-              $totnetvat = floatval($totnetvat) + floatval($rowbody['nnetvat']);
-              $totlessvat = floatval($totlessvat) + floatval($rowbody['nlessvat']);
-              
-              $totvatable = floatval($totvatable) + floatval($rowbody['namount']);
-            }
-            else{
-              //echo "B";
-              $totvatxmpt = floatval($totvatxmpt) + floatval($rowbody['namount']);
-            }
+            
           }
         }
-
-          if($cvatcode=='VT' || $cvatcode=='NV'){
-            $printVATGross = $SalesType != "Services" ? number_format($Gross,2) : 0;
-            
-              if(floatval($totvatxmpt)==0){
-                //echo "A";
-                $printVEGross = 0;
-              }else{
-                //echo "AB";
-                $printVEGross =  $SalesType != "Services" ? $totvatxmpt : 0;
-              }
-
-            $printZRGross = 0;
-
-
-              $totnetvat = $totnetvat;
-              $totlessvat = $totlessvat;
-              $totvatable = $totvatable;
-            
-          }elseif($cvatcode=='VE'){
-            $printVATGross = 0;
-            $printVEGross = $SalesType != "Services" ? $Gross : 0;
-            $printZRGross = 0;
-            
-              $totnetvat = 0;
-              $totlessvat = 0;
-              $totvatable = 0;
-            
-          }elseif($cvatcode=='ZR'){
-            $printVATGross = 0;
-            $printVEGross = 0;
-            $printZRGross = $SalesType != "Services" ? $Gross : 0;
-
-              $totnetvat = 0;
-              $totlessvat = 0;
-              $totvatable = 0;
-            
-          }
 
       ?>
 
@@ -252,20 +210,20 @@ if (mysqli_num_rows($sqlhead)!=0) {
           <td rowspan="7" valign="top" align="right" style="width: 4in; padding-top: 13px !important">
 
             <table width="100%" border="0" cellpadding="1px">
-              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($totvatable!==0) ? number_format($totvatable,2) : " "?> </b></td></tr>
-              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($printVEGross!==0) ? number_format($printVEGross,2) : " "?> </b> </td></tr>
-              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($printZRGross!==0) ? number_format($printZRGross,2) : " "?> </b> </td></tr>
-              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($totlessvat!==0) ? number_format($totlessvat,2) : " "?></b> </td></tr>
+              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($TotVatable !==0) ? number_format($TotVatable,2) : " "?> </b></td></tr>
+              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($TotVEx !==0) ? number_format($TotVEx,2) : " "?> </b> </td></tr>
+              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($TotZero !==0) ? number_format($TotZero,2) : " "?> </b> </td></tr>
+              <tr><td style="padding-right: 0.3in; padding-top: 3px !important" align="right"> &nbsp;<b><?=($TotVat !==0) ? number_format($TotVat,2) : " "?></b> </td></tr>
             </table>
 
           </td>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in; height: 0.22in"><b><?=($totvatable!==0) ? number_format($totvatable,2) : " "?>&nbsp;</b></td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in; height: 0.22in"><b><?=($TotVatable!==0) ? number_format($totvatable,2) : " "?>&nbsp;</b></td>
         </tr>
         <tr>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=($totlessvat!==0) ? number_format($totlessvat,2) : " "?></b>&nbsp;</td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=($TotVat!==0) ? number_format($TotVat,2) : " "?></b>&nbsp;</td>
         </tr>
         <tr>
-          <td  valign="bottom" align="right" style="padding-right: 0.3in; padding-top: 3px !important"><b><?=($totnetvat!==0) ? number_format($totnetvat,2) : " "?></b>&nbsp;</td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in; padding-top: 3px !important"><b><?=($TotVatable!==0) ? number_format($TotVatable,2) : " "?></b>&nbsp;</td>
         </tr>
         <tr>
 
@@ -273,11 +231,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
         </tr>
         <tr>
 
-          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=($totvatable!==0) ? number_format($totvatable,2) : " "?></b></td>
+          <td  valign="bottom" align="right" style="padding-right: 0.3in"><b><?=($TotVatable!==0) ? number_format($TotVatable,2) : " "?></b></td>
         </tr>
         <tr>
 
-          <td valign="bottom" align="right" style="padding-right: 0.3in"><b><?=($totlessvat!==0) ? number_format($totlessvat,2) : " "?></b></td>
+          <td valign="bottom" align="right" style="padding-right: 0.3in"><b><?=($TotVat!==0) ? number_format($TotVat,2) : " "?></b></td>
         </tr>
         <tr>
          
