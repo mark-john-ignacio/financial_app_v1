@@ -109,7 +109,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
   <tr>
     <td colspan="3" style="height: 5.6in; padding-top: 13px;" VALIGN="TOP">
     
-    <table width="98%" border="0" cellpadding="1" align="left">
+    <table width="96%" border="0" cellpadding="1" align="left">
       <?php 
         $sqlbody = mysqli_query($con,"select a.*, b.citemdesc, c.nrate from sales_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno left join taxcode c on a.compcode=c.compcode and a.ctaxcode=c.ctaxcode where a.compcode='$company' and a.ctranno = '$csalesno'");
 
