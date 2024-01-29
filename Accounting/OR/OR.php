@@ -364,10 +364,10 @@
 			"columnDefs": [ 
 				{
 					"targets": [4],
-					"className": "text-right"
+					"className": "text-right dt-body-nowrap"
 				},
 				{
-					"targets": [5,6],
+					"targets": [5,6,7],
 					"className": "text-center dt-body-nowrap"
 				}
 			],
