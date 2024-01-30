@@ -862,7 +862,8 @@
 				var xz = $("#hdntaxcodes").val();
 				taxoptions = "";
 				$.each(jQuery.parseJSON(xz), function() { 
-					if(ewtcode==this['ctaxcode']){
+
+					if(vatcode==this['ctaxcode']){
 						isselctd = "selected";
 					}else{
 						isselctd = "";
@@ -882,8 +883,8 @@
 			var xz = $("#hdnxtax").val();
 			ewtoptions = "";
 
-			$.each(jQuery.parseJSON(xz), function() { 
-				if(vatcode==this['ctaxcode']){
+			$.each(jQuery.parseJSON(xz), function() {  
+				if(ewtcode==this['ctaxcode']){
 					isselctd = "selected";
 				}else{
 					isselctd = "";
@@ -1102,7 +1103,7 @@
 						var modcust = $('#txtcustid').val();
 					}
 
-					//alert(''+url+'.php?x='+x+'&cust='+modcust+'&y='+salesnos+'&typ='+$('#selaptyp').val());
+					alert(''+url+'.php?x='+x+'&cust='+modcust+'&y='+salesnos+'&typ='+$('#selaptyp').val()+'&curr='+$('#selbasecurr').val());
 
 					$.ajax({
 						url: ''+url+'.php',
@@ -1979,6 +1980,8 @@
 				$chkifewt = $("#txtacctno" + $ix).val();
 
 				if($chkifewt==$("#hdnewtpay").val()){
+
+					
 					if($("#txtewtcodeothers" + $ix).val()==""){
 						$("#AlertMsg").html("");
 									
@@ -1990,6 +1993,7 @@
 						return false;
 					}
 				}
+					
 			};
 			
 			if(isOK=="YES"){

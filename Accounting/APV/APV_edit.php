@@ -20,13 +20,6 @@
 
 	$sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.captype, a.cpaymentfor, a.cpayee, DATE_FORMAT(a.dapvdate,'%m/%d/%Y') as dapvdate, a.ngross, a.cpreparedby, a.lcancelled, a.lapproved, a.lprintposted, a.lvoid, b.cname, c.nrate, b.newtcode, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate from apv a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join wtaxcodes c on b.compcode=c.compcode and b.newtcode=c.ctaxcode where a.compcode = '$company' and a.ctranno = '$ctranno'");
 
-	$gettaxcd = mysqli_query($con,"SELECT * FROM `vatcode` where compcode='$company' and ctype = 'Purchase' and cstatus='ACTIVE' order By cvatdesc"); 
-	if (mysqli_num_rows($gettaxcd)!=0) {
-		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
-			@$arrtaxlist[] = array('ctaxcode' => $row['cvatcode'], 'ctaxdesc' => $row['cvatdesc'], 'nrate' => $row['nrate']); 
-		}
-	}
-
 	@$arrtaxlist = array();
 	$gettaxcd = mysqli_query($con,"SELECT * FROM `vatcode` where compcode='$company' and ctype = 'Purchase' and cstatus='ACTIVE' order By cvatdesc"); 
 	if (mysqli_num_rows($gettaxcd)!=0) {
@@ -395,9 +388,25 @@
 											
 										<td  width="150px" style="padding:1px"><input type='text' name="txtvatnet" id="txtvatnet<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['nnet'];?>" style="text-align:right" readonly></td>
 												
-										<td  width="130px" style="padding:1px"><input type='text' name="txtewtcode" id="txtewtcode<?php echo $cntr;?>" class="form-control input-sm" value="<?php echo $rowbody['cewtcode'];?>" autocomplete="off"></td>
-												
-										<td  width="80px" style="padding:1px"><input type='text' name="txtewtrate" id="txtewtrate<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['newtrate'];?>" style="text-align:right" readonly></td>
+										<!--<td  width="130px" style="padding:1px"><input type='text' name="txtewtcode" id="txtewtcode<?php echo $cntr;?>" class="form-control input-sm" value="<?//php echo $rowbody['cewtcode'];?>" autocomplete="off"></td>-->
+										<td width="100px" style="padding:1px">
+											<select class='form-control input-sm' name="txtewtcode" id="txtewtcode<?php echo $cntr;?>"> " + taxoptions + " 
+												<?php
+													foreach(@$arrwtxlist as $rowx){
+														if($rowbody['cewtcode']==$rowx['ctaxcode']){
+															$isselctd = "selected";
+														}else{
+															$isselctd = "";
+														}
+																	
+														echo "<option value='".$rowx['ctaxcode']."' data-id='".$rowx['nrate']."' ".$isselctd.">".$rowx['ctaxcode'].": ".$rowx['nrate']."% </option>";
+
+													}
+												?>
+											</select> 
+										</td>	
+
+										<td  width="50px" style="padding:1px"><input type='text' name="txtewtrate" id="txtewtrate<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['newtrate'];?>" style="text-align:right" readonly></td>
 												
 										<td  width="150px" style="padding:1px"><input type='text' name="txtewtamt" id="txtewtamt<?php echo $cntr;?>" class="numeric form-control input-sm" value="<?php echo $rowbody['newtamt'];?>" style="text-align:right" readonly></td>
 											
@@ -412,72 +421,47 @@
 												
 									</tr>                           
 									<script>
-										$("#txtewtcode<?php echo $cntr;?>").typeahead({
-											items: 10,
-											source: function(request, response) {
-												$.ajax({
-													url: "../th_ewtcodes.php",
-													dataType: "json",
-													data: {
-														query: $("#txtewtcode<?php echo $cntr;?>").val()
-													},
-													success: function (data) {
-														response(data);																				
-													}
-												});
-											},
-											autoSelect: true,
-												displayText: function (item) {
-													return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.ctaxcode + '</span><br><small>' + item.cdesc + "</small></div>";
-											},
-											highlighter: Object,
-											afterSelect: function(item, event) { 
-												$("#txtewtcode<?php echo $cntr;?>").val(item.ctaxcode).change(); 
-												$("#txtewtrate<?php echo $cntr;?>").val(item.nrate);
+										$("#txtnvatcode<?php echo $cntr;?>").select2({ width: '100%' });
+										$("#txtewtcode<?php echo $cntr;?>").select2({ width: '100%' }); 
+										$("#txtewtcode<?php echo $cntr;?>").on('select2:select', function (e) {
 
-												var xcb = 0;
-												var xcbdue = 0;
-												//alert(item.cbase)
-												vatamt = $("#txtvatnet<?php echo $cntr;?>").val().replace(/,/g,'');
-												amt = $("#txtnamount<?php echo $cntr;?>").val().replace(/,/g,'');
-																	
-												if(item.cbase=="NET"){
-													xcb = parseFloat(vatamt)*(item.nrate/100);
-												}else{
-													xcb = parseFloat(amt)*(item.nrate/100);
-												}
-																	
-												$("#txtewtamt<?php echo $cntr;?>").val(xcb);
-												$("#txtewtamt<?php echo $cntr;?>").autoNumeric('destroy');
-												$("#txtewtamt<?php echo $cntr;?>").autoNumeric('init',{mDec:2});
-
-												var ndiscs = $("#txtndiscs<?php echo $cntr;?>").val().replace(/,/g,''); 
-												xcbdue = amt - xcb - parseFloat(ndiscs);
-																	
-												$("#txtDue<?php echo $cntr;?>").val(xcbdue);
-												$("#txtDue<?php echo $cntr;?>").autoNumeric('destroy');
-												$("#txtDue<?php echo $cntr;?>").autoNumeric('init',{mDec:2});
-
-												compgross1();
-																																			
+											//$("#txtewtcode"+lastRow).val(item.ctaxcode).change(); 
+											xcrate = $(e.params.data.element).data('rate');
+											$("#txtewtrate"+lastRow).val(xcrate);
+											
+											var xcb = 0;
+											var xcbdue = 0;
+											//alert(item.cbase)
+											xcbase = $(e.params.data.element).data('cbase');
+											if(xcbase=="NET"){
+												xcb = parseFloat($("#txtvatnet"+lastRow).val().replace(/,/g,''))*(xcrate/100);
+											}else{
+												xcb = parseFloat($("#txtnamount"+lastRow).val().replace(/,/g,''))*(xcrate/100);
 											}
-										});
-															
-										$("#txtewtcode<?php echo $cntr;?>").on("blur", function() {
-											if($(this).val()==""){
-												$("#txtewtamt<?php echo $cntr;?>").val(0.0000);
-												$("#txtewtrate<?php echo $cntr;?>").val(0);
-
-												//recomlines();
-												compgross1();
-											}
+											
+											xcnmdue = parseFloat($("#txtDue"+lastRow).val().replace(/,/g,''));
+											$("#txtewtamt"+lastRow).val(xcb)
+											$("#txtewtamt"+lastRow).autoNumeric('destroy');
+											$("#txtewtamt"+lastRow).autoNumeric('init',{mDec:2});
+											//recompute due
+											var ndiscs = $("#txtndiscs"+lastRow).val().replace(/,/g,''); 
+											xcbdue = xcnmdue - xcb - parseFloat(ndiscs);
+												
+											$("#txtDue"+lastRow).val(xcbdue);
+											$("#txtDue"+lastRow).autoNumeric('destroy');
+											$("#txtDue"+lastRow).autoNumeric('init',{mDec:2}); 
+											
+											//recomlines();
+											compgross1();
+											//setPosi("txtcSalesAcctTitle"+lastRow,13,'MyTable');
+												
 										});
 
 										$("#txtnvatcode<?php echo $cntr;?>").on("change", function() {
 											var zxc = $(this).find(':selected').data('id');
-											var zxcamt = $("#txtnamount<?php echo $cntr;?>").val().replace(/,/g,'');
+											var zxcamt = $("#txtnamount"+lastRow).val().replace(/,/g,'');
 
-											compvat('<?php echo $cntr;?>',zxc,zxcamt);
+											compvat(lastRow,zxc,zxcamt);
 											compgross1();
 
 										});
@@ -599,7 +583,7 @@
 									</tr>
 
 									<script type="text/javascript">
-										$("#txtewtcodeothers<?php echo $cntr;?>").select2();
+										$("#txtewtcodeothers<?php echo $cntr;?>").select2({ width: '100%' });
 										$("#txtewtcodeothers<?php echo $cntr;?>").on("select2:select", function(event) {
 											$("#txtewtrateothers<?php echo $cntr;?>").val($(this).select2().find(":selected").data("rate"));
 										});
@@ -1192,14 +1176,14 @@
       }
 	  else if(e.keyCode == 45) { //Insert
 	  	if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
-				//openinv();
+			//openinv();
 
-				if($("#selaptyp").val()=="Purchases"){
-					$('#btnqo').trigger('click');
-				}else if($("#selaptyp").val()=="PurchAdv"){
-					$('#btnpo').trigger('click');
-				}
+			if($("#selaptyp").val()=="Purchases"){
+				$('#btnqo').trigger('click');
+			}else if($("#selaptyp").val()=="PurchAdv"){
+				$('#btnpo').trigger('click');
 			}
+		}
 	  }
 	});
 
@@ -1211,9 +1195,9 @@
 
 		$("input.numeric").autoNumeric('init',{mDec:2});
 	
-    $('.datepick').datetimepicker({
-        format: 'MM/DD/YYYY'
-    });
+		$('.datepick').datetimepicker({
+			format: 'MM/DD/YYYY'
+		});
 
 		if(fileslist.length>0){
 			$("#file-0").fileinput({
@@ -1281,18 +1265,18 @@
 			}
 		});
 
-   	$("#allbox").click(function () {
-        if ($("#allbox").is(':checked')) {
-            $("input[name='chkSales[]']").each(function () {
-                $(this).prop("checked", true);
-            });
+		$("#allbox").click(function () {
+			if ($("#allbox").is(':checked')) {
+				$("input[name='chkSales[]']").each(function () {
+					$(this).prop("checked", true);
+				});
 
-        } else {
-            $("input[name='chkSales[]']").each(function () {
-                $(this).prop("checked", false);
-            });
-        }
-    });
+			} else {
+				$("input[name='chkSales[]']").each(function () {
+					$(this).prop("checked", false);
+				});
+			}
+		});
 	
 	
 		$("#selaptyp").on("change", function() {
@@ -1614,7 +1598,25 @@
 			var d = "<td  width=\"150px\" style=\"padding:1px\"><input type='text' name=\"txtvatnet\" id=\"txtvatnet"+lastRow+"\" class=\"numeric form-control input-sm\" value=\""+netvat+"\" style=\"text-align:right\" readonly></td>"; 
 
 			//EWT 
-			var e = "<td width=\"100px\" style=\"padding:1px\"><input type='text' name=\"txtewtcode\" id=\"txtewtcode"+lastRow+"\" class=\"form-control input-sm\" value=\""+ewtcode+"\" autocomplete=\"off\"></td>";
+			//var e = "<td width=\"100px\" style=\"padding:1px\"><input type='text' name=\"txtewtcode\" id=\"txtewtcode"+lastRow+"\" class=\"form-control input-sm\" value=\""+ewtcode+"\" autocomplete=\"off\"></td>";
+
+			//EWT 
+			var xz = $("#hdnxtax").val();
+			ewtoptions = "";
+
+			$.each(jQuery.parseJSON(xz), function() {  
+				if(ewtcode==this['ctaxcode']){
+					isselctd = "selected";
+				}else{
+					isselctd = "";
+				}
+				ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' data-base='"+this['cbase']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
+			});
+
+			//tditmewts = "<td width=\"150\" nowrap>  </td>";
+			
+			var e = "<td width=\"100px\" style=\"padding:1px\"><select class='form-control input-xs' name=\"txtewtcode\" id=\"txtewtcode"+lastRow+"\" style=\"width: 100%\"> <option value=\"\" data-rate='0' data-base='NET'>None</option>" + ewtoptions + "</select></td>";
+
 			var f = "<td width=\"50px\" style=\"padding:1px\"><input type='text' name=\"txtewtrate\" id=\"txtewtrate"+lastRow+"\" class=\"numeric form-control input-sm\" value=\""+ewtrate+"\" style=\"text-align:right\" readonly></td>";
 			var g = "<td width=\"150px\" style=\"padding:1px\"><input type='text' name=\"txtewtamt\" id=\"txtewtamt"+lastRow+"\" class=\"numeric form-control input-sm\" value=\""+ewtamt+"\" style=\"text-align:right\" readonly></td>";
 
@@ -1632,81 +1634,55 @@
 
 			$('#MyTable > tbody:last-child').append('<tr>'+a + b + gcm + gdisc + c + c1 + c2 + d + e + f + g + i + k +'</tr>');
 			
-									compgross1();	
+			compgross1();	
 
-									$("input.numeric").autoNumeric('init',{mDec:2});
+			$("input.numeric").autoNumeric('init',{mDec:2});
 
-									//$("input.numeric").numeric({negative: false, decimalPlaces: 4}); 
-									
-										$("#txtewtcode"+lastRow).typeahead({
-											items: 10,
-											source: function(request, response) {
-												$.ajax({
-													url: "../th_ewtcodes.php",
-													dataType: "json",
-													data: {
-														query: $("#txtewtcode"+lastRow).val()
-													},
-													success: function (data) {
-														response(data);
-														
-													}
-												});
-											},
-											autoSelect: true,
-											displayText: function (item) {
-												return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.ctaxcode + '</span><br><small>' + item.cdesc + "</small></div>";
-											},
-											highlighter: Object,
-											afterSelect: function(item, event) { 
-												$("#txtewtcode"+lastRow).val(item.ctaxcode).change(); 
-												$("#txtewtrate"+lastRow).val(item.nrate);
-												
-												var xcb = 0;
-												var xcbdue = 0;
-												//alert(item.cbase)
-												if(item.cbase=="NET"){
-													xcb = parseFloat($("#txtvatnet"+lastRow).val().replace(/,/g,''))*(item.nrate/100);
-												}else{
-													xcb = parseFloat($("#txtnamount"+lastRow).val().replace(/,/g,''))*(item.nrate/100);
-												}
-												
-												$("#txtewtamt"+lastRow).val(xcb)
-												$("#txtewtamt"+lastRow).autoNumeric('destroy');
-												$("#txtewtamt"+lastRow).autoNumeric('init',{mDec:2});
-												//recompute due
-												var ndiscs = $("#txtndiscs"+lastRow).val().replace(/,/g,''); 
-												xcbdue = ndue - xcb - parseFloat(ndiscs);
-													
-												$("#txtDue"+lastRow).val(xcbdue);
-												$("#txtDue"+lastRow).autoNumeric('destroy');
-												$("#txtDue"+lastRow).autoNumeric('init',{mDec:2}); 
-												
-												//recomlines();
-												compgross1();
-												//setPosi("txtcSalesAcctTitle"+lastRow,13,'MyTable');
-												
-											}
-										});
-										
-										$("#txtewtcode"+lastRow).on("blur", function() {
-											if($(this).val()==""){
-												$("#txtewtamt"+lastRow).val(0.00);
-												$("#txtewtrate"+lastRow).val(0);
+			//$("input.numeric").numeric({negative: false, decimalPlaces: 4}); 
+		
+			$("#txtewtcode"+lastRow).select2(); 
+			$("#txtewtcode"+lastRow).on('select2:select', function (e) {
 
-												//recomlines();
-												compgross1();
-											}
-										});
+				//$("#txtewtcode"+lastRow).val(item.ctaxcode).change(); 
+				xcrate = $(e.params.data.element).data('rate');
+				$("#txtewtrate"+lastRow).val(xcrate);
+				
+				var xcb = 0;
+				var xcbdue = 0;
+				//alert(item.cbase)
+				xcbase = $(e.params.data.element).data('cbase');
+				if(xcbase=="NET"){
+					xcb = parseFloat($("#txtvatnet"+lastRow).val().replace(/,/g,''))*(xcrate/100);
+				}else{
+					xcb = parseFloat($("#txtnamount"+lastRow).val().replace(/,/g,''))*(xcrate/100);
+				}
+				
+				xcnmdue = parseFloat($("#txtDue"+lastRow).val().replace(/,/g,''));
+				$("#txtewtamt"+lastRow).val(xcb)
+				$("#txtewtamt"+lastRow).autoNumeric('destroy');
+				$("#txtewtamt"+lastRow).autoNumeric('init',{mDec:2});
+				//recompute due
+				var ndiscs = $("#txtndiscs"+lastRow).val().replace(/,/g,''); 
+				xcbdue = xcnmdue - xcb - parseFloat(ndiscs);
+					
+				$("#txtDue"+lastRow).val(xcbdue);
+				$("#txtDue"+lastRow).autoNumeric('destroy');
+				$("#txtDue"+lastRow).autoNumeric('init',{mDec:2}); 
+				
+				//recomlines();
+				compgross1();
+				//setPosi("txtcSalesAcctTitle"+lastRow,13,'MyTable');
+					
+			});
 
-										$("#txtnvatcode"+lastRow).on("change", function() {
-											var zxc = $(this).find(':selected').data('id');
-											var zxcamt = $("#txtnamount"+lastRow).val().replace(/,/g,'');
+			$("#txtnvatcode"+lastRow).on("change", function() {
+				var zxc = $(this).find(':selected').data('id');
+				var zxcamt = $("#txtnamount"+lastRow).val().replace(/,/g,'');
 
-											compvat(lastRow,zxc,zxcamt);
-											compgross1();
+				compvat(lastRow,zxc,zxcamt);
+				compgross1();
 
-										});
+			});
 			
 				//if(parseFloat(nncmx)!=0){
 					addCMReturn(rrno,'txtncm'+lastRow);
@@ -2061,7 +2037,7 @@
 										ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
 									});
 
-									$("#txtewtcodeothers"+lastRow).select2('destroy').html(ewtoptions).select2();
+									$("#txtewtcodeothers"+lastRow).select2('destroy').html(ewtoptions).select2({ width: '100%' });
 									$("#txtewtrateothers"+lastRow).val(ewtslctd);
 								}
 
@@ -2083,7 +2059,7 @@
 
 									ewtoptions = ewtoptions + "<option value='none' data-rate='0'>N/A</option>";
 
-									$("#txtewtcodeothers"+lastRow).select2('destroy').html(ewtoptions).select2();
+									$("#txtewtcodeothers"+lastRow).select2('destroy').html(ewtoptions).select2({ width: '100%' });
 									$("#txtewtrateothers"+lastRow).val(ewtslctd);
 								}
 							}
@@ -2139,7 +2115,7 @@
 
 						ewtoptions = ewtoptions + "<option value='none' data-rate='0'>N/A</option>";
 
-						$("#txtewtcodeothers"+lastRow).select2('destroy').html(ewtoptions).select2();
+						$("#txtewtcodeothers"+lastRow).select2('destroy').html(ewtoptions).select2({ width: '100%' });
 						$("#txtewtrateothers"+lastRow).val(ewtslctd);
 
 						//$("#txtewtcodeothers"+lastRow).removeAttr('disabled');
@@ -2162,7 +2138,7 @@
 							ewtoptions = ewtoptions + "<option value='"+this['ctaxcode']+"' data-rate='"+this['nrate']+"' "+isselctd+">"+this['ctaxcode']+": "+this['nrate']+"%</option>";
 						});
 
-						$("#txtewtcodeothers"+lastRow).select2('destroy').html(ewtoptions).select2();
+						$("#txtewtcodeothers"+lastRow).select2('destroy').html(ewtoptions).select2({ width: '100%' });
 						$("#txtewtrateothers"+lastRow).val(ewtslctd);
 					}
 
@@ -2170,7 +2146,7 @@
 			});
 
 
-			$("#txtewtcodeothers"+lastRow).select2();
+			$("#txtewtcodeothers"+lastRow).select2({ width: '100%' });
 			$("#txtewtcodeothers"+lastRow).on("select2:select", function(event) {
 				$("#txtewtrateothers"+lastRow).val($(this).select2().find(":selected").data("rate"));
 			});
