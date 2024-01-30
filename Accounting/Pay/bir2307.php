@@ -380,7 +380,8 @@
 					
 					UNION ALL 
 					
-					Select G.compcode, G.ctranno, G.cewtcode, 
+					Select G.compcode, G.ctranno, 
+					CASE WHEN G.cacctno = '".$disregEWT."' THEN G.cewtcode ELSE '' END as cewtcode, 
 					CASE WHEN G.cacctno not in ('".implode("','",$disreg)."') and G.ndebit <> 0 THEN SUM(G.ndebit) ELSE 0 END as namount, 
 					CASE WHEN G.cacctno not in ('".implode("','",$disreg)."') and G.ndebit <> 0 THEN SUM(G.ndebit) ELSE 0 END as ndue,
 					CASE WHEN G.cacctno = '".$disregEWT."' THEN SUM(G.ncredit) ELSE 0 END as newtamt
