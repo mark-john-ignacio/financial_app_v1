@@ -702,6 +702,17 @@
 
     function getEmailCred(){
         global $con;
+
+        $usid = $_SESSION['employeeid'];
+
+        $usmeails = "";
+        $sql = "SELECT cemailadd FROM users WHERE Userid = '$usid'";
+        $queries = mysqli_query($con, $sql);
+        if(mysqli_num_rows($queries) !== 0) {
+            $fetch = $queries -> fetch_array(MYSQLI_ASSOC);
+            $usmeails =  $fetch['cemailadd'];
+        }
+
         $sql = "SELECT * FROM parameters_email WHERE cstatus = 'ACTIVE'";
         $queries = mysqli_query($con, $sql);
         if(mysqli_num_rows($queries) !== 0) {
@@ -712,6 +723,7 @@
                 'cuspass' => $fetch['cpass'],
                 'csecure' => $fetch['csecure'],
                 'cport' => $fetch['cport'],
+                'useremail' => $usmeails,
             ];
         }
     }

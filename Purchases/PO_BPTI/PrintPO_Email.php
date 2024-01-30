@@ -403,11 +403,13 @@
 	$mail->SMTPSecure = $getcred['csecure'];
 	$mail->Port = $getcred['cport'];
 	$mail->IsHTML(true);
-	$mail->From = $getcred['cusnme'];
+	$mail->From = $getcred['useremail'];
 	$mail->FromName = $logonamz;
 	$mail->Sender = $getcred['cusnme']; // indicates ReturnPath header
 	$mail->Subject = $subject;
 	$mail->Body = $body;
+
+	$mail->addReplyTo($getcred['useremail'], $_SESSION['employeefull']);
 
 	$array = explode(',', $cemailstoo);
 	foreach($array as $value){
