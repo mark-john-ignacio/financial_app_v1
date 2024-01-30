@@ -380,7 +380,8 @@
 					
 					UNION ALL 
 					
-					Select G.compcode, G.ctranno, G.cewtcode, sum(G.ncredit) as namount, 
+					Select G.compcode, G.ctranno, G.cewtcode, 
+					CASE WHEN G.cacctno not in ('".implode("','",$disreg)."') THEN SUM(G.ncredit) ELSE 0 END as namount, 
 					CASE WHEN G.cacctno not in ('".implode("','",$disreg)."') THEN SUM(G.ndebit) ELSE 0 END as ndue,
 					CASE WHEN G.cacctno = '".$disregEWT."' THEN SUM(G.ncredit) ELSE 0 END as newtamt
 					From apv_t G 
