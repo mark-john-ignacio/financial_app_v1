@@ -15,8 +15,8 @@ require_once "../../Connection/connection_string.php";
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 		$disreg[] = $row['cacctno'];
 		if($row['ccode']=="EWTPAY"){
-      $disregEWT = $row['cacctno'];
-    }
+			$disregEWT = $row['cacctno'];
+		}
 	}
 
 
@@ -52,7 +52,7 @@ require_once "../../Connection/connection_string.php";
 					CASE WHEN G.cacctno = '".$disregEWT."' THEN G.ncredit ELSE 0 END as newtamt,
 					CASE WHEN G.cacctno not in ('".implode("','",$disreg)."') THEN G.cacctno ELSE null END as cacctno 
 					From apv_t G left join apv H on G.compcode=H.compcode and G.ctranno=H.ctranno 
-					Where G.compcode='$company' and H.captype='Others' and G.ncredit <> 0 
+					Where G.compcode='$company' and H.captype in ('Others','PettyCash') and G.ncredit <> 0 
 				) X 
 				Group By X.compcode, X.ctranno, X.crefno, X.cacctno
 				HAVING SUM(newtamt) = 0
@@ -66,7 +66,7 @@ require_once "../../Connection/connection_string.php";
 					CASE WHEN G.cacctno = '".$disregEWT."' THEN G.ncredit ELSE 0 END as newtamt,
 					CASE WHEN G.cacctno not in ('".implode("','",$disreg)."') THEN G.cacctno ELSE null END as cacctno 
 					FROM apv_t G left join apv H on G.compcode=H.compcode and G.ctranno=H.ctranno 
-					WHERE G.compcode='$company' and H.captype='Others' and G.ncredit <> 0 
+					WHERE G.compcode='$company' and H.captype in ('Others','PettyCash') and G.ncredit <> 0 
 				) X 
 				GROUP BY X.compcode, X.ctranno, X.crefno
 				HAVING SUM(newtamt) > 0
