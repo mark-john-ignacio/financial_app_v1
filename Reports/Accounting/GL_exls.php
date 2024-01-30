@@ -123,10 +123,13 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         
 	}
     $cnt += 2;
+
+    $ntotGBalTB = floatval($ntotdebit) - floatval($ntotcredit);
     $spreadsheet->setActiveSheetIndex(0)
-            ->setCellValue('F'.$cnt, 'Total')
-            ->setCellValue('G'.$cnt, floatval($ntotdebit))
-            ->setCellValue('H'.$cnt, floatval($ntotcredit));
+            ->setCellValue('E'.$cnt, 'Total')
+            ->setCellValue('F'.$cnt, floatval($ntotdebit))
+            ->setCellValue('G'.$cnt, floatval($ntotcredit))
+            ->setCellValue('H'.$cnt, floatval($ntotGBalTB));
 
 	// Rename worksheet
 	$spreadsheet->getActiveSheet()->setTitle('General Ledger');
