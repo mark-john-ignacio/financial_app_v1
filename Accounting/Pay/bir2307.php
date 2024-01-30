@@ -382,7 +382,7 @@
 					
 					Select G.compcode, G.ctranno, G.cewtcode, sum(G.ndebit) as namount, 
 					CASE WHEN G.cacctno not in ('".implode("','",$disreg)."') THEN SUM(G.ndebit) ELSE 0 END as ndue,
-					CASE WHEN G.cacctno = '".$disregEWT."' THEN SUM(G.ncredit) ELSE 0 END as newtamt
+					CASE WHEN G.cacctno = '".$disregEWT."' THEN SUM(G.ndebit) ELSE 0 END as newtamt
 					From apv_t G 
 					left join apv H on G.compcode=H.compcode and G.ctranno=H.ctranno
 					left join accounts I on G.compcode=I.compcode and G.cacctno=I.cacctid
