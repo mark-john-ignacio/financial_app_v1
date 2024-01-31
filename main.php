@@ -56,7 +56,7 @@
 <!-- DOC: Apply "page-footer-fixed" class to the body element to have fixed footer -->
 <!-- DOC: Apply "page-sidebar-reversed" class to put the sidebar on the right side -->
 <!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
-<body class="page-header-fixed page-quick-sidebar-over-content" >
+<body class="page-header-fixed page-quick-sidebar-over-content page-style-square"> 
 	<?php
 		//get user details
 		$arrcompz = array();
@@ -533,8 +533,17 @@
                 				<i class="glyphicon glyphicon-list"> </i> Purchase Order
 							</a>
 						</li>
+
+						<?php
+							//check if SO_subdomain exist
+							if ( file_exists( "Purchases/RR_".$durlSUB ) || is_dir( "Purchases/RR_".$durlSUB) ) {   
+								$SILink = "Purchases/RR_".$durlSUB."/RR.php?ix=";
+							}else{
+								$SILink = "Purchases/RR/RR.php?ix=";
+							}
+						?>
 						<li>
-							<a href="javascript:;" onClick="setpage('Purchases/RR/RR.php?ix=');">
+							<a href="javascript:;" onClick="setpage('<?=$SILink?>');">
                 				<i class="fa fa-download"> </i> Receiving
 							</a>
 						</li>
