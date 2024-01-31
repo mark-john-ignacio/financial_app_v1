@@ -1,28 +1,29 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "SalesOrders.php";
-include('../Connection/connection_string.php');
-include('../include/denied.php');
-include('../include/access.php');
+    if(!isset($_SESSION)){
+        session_start();
+    }
+    
+    $_SESSION['pageid'] = "SalesOrders.php";
+    include('../Connection/connection_string.php');
+    include('../include/denied.php');
+    include('../include/access.php');
 
 ?><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Myx Financials</title>
 
-<link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
+    link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
 
-<script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
+    <script src="../Bootstrap/js/jquery-3.2.1.min.js"></script>
 
-<script src="../Bootstrap/js/bootstrap.js"></script>
-<script src="../Bootstrap/js/bootstrap3-typeahead.js"></script>
+    <script src="../Bootstrap/js/bootstrap.js"></script>
+    <script src="../Bootstrap/js/bootstrap3-typeahead.js"></script>
 
-<script src="../Bootstrap/js/moment.js"></script>
-<script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="../Bootstrap/js/moment.js"></script>
+    <script src="../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
 </head>
 

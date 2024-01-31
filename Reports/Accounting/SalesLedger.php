@@ -1,26 +1,27 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "SalesReg.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "SalesReg.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
-$company = $_SESSION['companyid'];
-				$sql = "select * From company where compcode='$company'";
-				$result=mysqli_query($con,$sql);
-				
-					if (!mysqli_query($con, $sql)) {
-						printf("Errormessage: %s\n", mysqli_error($con));
-					} 
-					
-				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-				{
-					$compname =  $row['compname'];
-					$compadd = $row['compadd'];
-					$comptin = $row['comptin'];
-				}
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
+
+	$company = $_SESSION['companyid'];
+	$sql = "select * From company where compcode='$company'";
+	$result=mysqli_query($con,$sql);
+
+	if (!mysqli_query($con, $sql)) {
+		printf("Errormessage: %s\n", mysqli_error($con));
+	} 
+		
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
+		$compname =  $row['compname'];
+		$compadd = $row['compadd'];
+		$comptin = $row['comptin'];
+	}
 ?>
 
 <html>
@@ -55,19 +56,51 @@ $company = $_SESSION['companyid'];
   
 <?php
 
-$date1 = $_POST["date1"];
-$date2 = $_POST["date2"];
+	$date1 = $_POST["date1"];
+	$date2 = $_POST["date2"];
 
-$sql = "
-select A.dcutdate, A.csalesno, A.ccode, A.cname, A.acctno, A.ctitle, A.ncredit, A.ndebit, A.lcancelled, A.lapproved
-FROM(
-select a.dcutdate, a.ctranno as csalesno, a.ccode, c.cname, b.acctno, b.ctitle, b.ncredit, b.ndebit, a.lcancelled, a.lapproved
-From sales a
-left join glactivity b on a.ctranno=b.ctranno and a.compcode=b.compcode
-left join customers c on a.ccode=c.cempid and a.compcode=c.compcode
-where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and a.lapproved=1 and a.lvoid=0
-) A
-order by A.dcutdate, A.csalesno, A.ndebit desc";
+	$sql = "select A.dcutdate, A.csalesno, A.ccode, A.cname, A.acctno, A.ctitle, A.ncredit, A.ndebit, A.lcancelled, A.lapproved
+	FROM(
+	select a.dcutdate, a.ctranno as csalesno, a.ccode, c.cname, b.acctno, b.ctitle, b.ncredit, b.ndebit, a.lcancelled, a.lapproved
+	From sales a
+	left join glactivity b on a.ctranno=b.ctranno and a.compcode=b.compcode
+	left join customers c on a.ccode=c.cempid and a.compcode=c.compcode
+	where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and a.lapproved=1 and a.lvoid=0
+	) A order by A.dcutdate, A.csalesno, A.ndebit desc";
+
+
+	$x = check_nt($_SESSION['companyid']);
+    if($x==1){
+
+		if($_POST["selNTy"]=="Non-Trade"){
+			$sql = "select A.dcutdate, A.csalesno, A.ccode, A.cname, A.acctno, A.ctitle, A.ncredit, A.ndebit, A.lcancelled, A.lapproved
+			FROM(
+			select a.dcutdate, a.ctranno as csalesno, a.ccode, c.cname, b.acctno, b.ctitle, b.ncredit, b.ndebit, a.lcancelled, a.lapproved
+			From ntsales a
+			left join glactivity b on a.ctranno=b.ctranno and a.compcode=b.compcode
+			left join customers c on a.ccode=c.cempid and a.compcode=c.compcode
+			where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and a.lapproved=1 and a.lvoid=0
+			) A order by A.dcutdate, A.csalesno, A.ndebit desc";
+		}else{
+			$sql = "select A.dcutdate, A.csalesno, A.ccode, A.cname, A.acctno, A.ctitle, A.ncredit, A.ndebit, A.lcancelled, A.lapproved
+			FROM(
+			select a.dcutdate, a.ctranno as csalesno, a.ccode, c.cname, b.acctno, b.ctitle, b.ncredit, b.ndebit, a.lcancelled, a.lapproved
+			From sales a
+			left join glactivity b on a.ctranno=b.ctranno and a.compcode=b.compcode
+			left join customers c on a.ccode=c.cempid and a.compcode=c.compcode
+			where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and a.lapproved=1 and a.lvoid=0
+
+			UNION ALL
+
+			select a.dcutdate, a.ctranno as csalesno, a.ccode, c.cname, b.acctno, b.ctitle, b.ncredit, b.ndebit, a.lcancelled, a.lapproved
+			From ntsales a
+			left join glactivity b on a.ctranno=b.ctranno and a.compcode=b.compcode
+			left join customers c on a.ccode=c.cempid and a.compcode=c.compcode
+			where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and a.lapproved=1 and a.lvoid=0
+			) A order by A.dcutdate, A.csalesno, A.ndebit desc";
+		}
+
+	}
 
 $result=mysqli_query($con,$sql);
 				

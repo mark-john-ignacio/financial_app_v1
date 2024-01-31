@@ -41,24 +41,17 @@ include('../include/access.php');
 
     <td style="padding-left:10px"><b>Date Range: </b></td>
     <td style="padding:2px">
-    <div class="col-xs-12 nopadding">
-        <div class="col-xs-3 nopadding">
 
-		<input type='text' class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/d/Y"); ?>" />
-
-		</div>
-        
-        <div class="col-xs-2 nopadding" style="vertical-align:bottom;" align="center">
-        	<label style="padding:1px;">TO</label>
-        </div>
- 
-         <div class="col-xs-3 nopadding">
-
-		<input type='text' class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>" />
-
-		</div>
-
-     </div>   
+      <div class="form-group nopadding">
+        <div class="col-xs-8 nopadding">
+          <div class="input-group input-large date-picker input-daterange">
+            <input type="text" class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/d/Y"); ?>">
+            <span class="input-group-addon">to </span>
+            <input type="text" class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>">
+          </div>
+        </div>	
+      </div>
+       
     </td>
   </tr>
   <tr>
