@@ -38,7 +38,8 @@ require_once "../../Connection/connection_string.php";
 		$json['nfactor'] = $row['nfactor'];		
 		$json['ncostid'] = $row['ncostcenterid'];
 		$json['ncostdesc'] = $row['ncostcenterdesc'];	 
-			
+		$json['cremarks'] = ($row['cremarks']==null) ? "" : $row['cremarks'];
+
 		$json2[] = $json;
 
 	}

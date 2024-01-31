@@ -24,7 +24,9 @@ $company = $_SESSION['companyid'];
 		$nFactor = $_REQUEST['nfactor'];
 
 		$nCostID = $_REQUEST['ncostid'];
-		$nCostDesc = $_REQUEST['ncostdesc'];
+		$nCostDesc = $_REQUEST['ncostdesc']; 
+
+		$cIRemakrs = $_REQUEST['crmkss']; 
 
 		$chkItmAcct = mysqli_query($con,"select cacctcodewrr from items where compcode='$company' and cpartno='$cItemNo'");
 	
@@ -53,7 +55,7 @@ $company = $_SESSION['companyid'];
 
 	$refcidenttran = $cSINo."P".$indexz;
 	
-	if (!mysqli_query($con,"INSERT INTO receive_t(`compcode`, `cidentity`, `ctranno`, `nident`, `creference`, `nrefidentity`, `citemno`, `cskucode`, `citemdesc`, `nqty`, `nqtyorig`, `cunit`,`nfactor`, `cmainunit`, `cacctcode`, `ncostcenterid`, `ncostcenterdesc`) values('$company', '$refcidenttran', '$cSINo', '$indexz', '$cRef', '$nRefIdent', '$cItemNo', '$cSKUNo', '$cSKUDesc', '$nQty', '$nQtyOrig', '$cUnit', $nFactor, '$cMainUOM', '$ItmAccnt', '$nCostID', '$nCostDesc')")){
+	if (!mysqli_query($con,"INSERT INTO receive_t(`compcode`, `cidentity`, `ctranno`, `nident`, `creference`, `nrefidentity`, `citemno`, `cskucode`, `citemdesc`, `nqty`, `nqtyorig`, `cunit`,`nfactor`, `cmainunit`, `cacctcode`, `ncostcenterid`, `ncostcenterdesc`, `cremarks`) values('$company', '$refcidenttran', '$cSINo', '$indexz', '$cRef', '$nRefIdent', '$cItemNo', '$cSKUNo', '$cSKUDesc', '$nQty', '$nQtyOrig', '$cUnit', $nFactor, '$cMainUOM', '$ItmAccnt', '$nCostID', '$nCostDesc', '$cIRemakrs')")){
 		echo "False";
 		//echo "Error:".mysqli_error($con)."<br>";
 	}

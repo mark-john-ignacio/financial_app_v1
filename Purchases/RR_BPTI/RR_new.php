@@ -286,6 +286,7 @@ $company = $_SESSION['companyid'];
 											<th style="border-bottom:1px solid #999">Amount</th>
 											<th style="border-bottom:1px solid #999">Total Amt in <?//php echo $nvaluecurrbase; ?></th>-->
 											<!--<th style="border-bottom:1px solid #999">Date Expired</th>-->
+											<th style="border-bottom:1px solid #999">Remarks</th>
 											<th style="border-bottom:1px solid #999">&nbsp;</th>
 										</tr>
 									</thead>
@@ -612,7 +613,7 @@ $company = $_SESSION['companyid'];
 
 			if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
 			
-				myFunctionadd("","","","","","","");
+				myFunctionadd("","","","","","","","");
 				//ComputeGross();	
 									
 			}
@@ -641,7 +642,7 @@ $company = $_SESSION['companyid'];
 
 						if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){								
 			
-							myFunctionadd("","","","","","","");
+							myFunctionadd("","","","","","","","");
 							//ComputeGross();	
 												
 						}
@@ -751,7 +752,7 @@ $company = $_SESSION['companyid'];
 
 	}
 
-	function myFunctionadd(nqty,nfactor,cmainunit,xref,nident,costid,costdesc){
+	function myFunctionadd(nqty,nfactor,cmainunit,xref,nident,costid,costdesc,cremarks=""){
 
 		var itmcode = document.getElementById("txtprodid").value;
 		var itmcsku = document.getElementById("txtcskuid").value;
@@ -857,12 +858,14 @@ $company = $_SESSION['companyid'];
 		tditmporef = "<td width=\"90\" style=\"padding:1px\"> <input type='hidden' value='"+itmxref+"' name=\"txtcreference\" id=\"txtcreference\"> <input type='hidden' value='"+itmident+"' name=\"txtnrefident\" id=\"txtnrefident\"> &nbsp;&nbsp;&nbsp;"+itmxref+"</td>";
 
 		tditmcostc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:120px; padding:1px\"> <input type='hidden' value='"+costid+"' name=\"txtncostid\" id=\"txtncostid\"> <input type='hidden' value='"+costdesc+"' name=\"txtncostdesc\" id=\"txtncostdesc\"> &nbsp;&nbsp;&nbsp;"+costdesc+"</td>"; 
+
+		tditmrmks = "<td width=\"200\" style=\"padding:1px\" align=\"center\"> <input type='text' class='form-control input-xs' name=\"txtcremarks\" id=\"txtcremarks\" value=\""+cremarks+"\"/> </td>";
 		
 		tditmdel = "<td width=\"80\" style=\"padding:1px\" align=\"center\"> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' /> </td>";
 
 		//+ tditmprice + tditmbaseamount+ tditmamount 
 
-		$('#MyTable > tbody:last-child').append('<tr style=\"padding-top:1px\">'+tditmbtn+tditmcode + tdskucode + tditmdesc + tditmunit + tditmfactor + tditmqty + tditmporef + tditmcostc + tditmdel + '</tr>');
+		$('#MyTable > tbody:last-child').append('<tr style=\"padding-top:1px\">'+tditmbtn+tditmcode + tdskucode + tditmdesc + tditmunit + tditmfactor + tditmqty + tditmporef + tditmcostc + tditmrmks + tditmdel + '</tr>');
 
 
 										$("#del"+itmcode).on('click', function() {
@@ -1212,7 +1215,7 @@ $company = $_SESSION['companyid'];
 						$("#hdnunit").val(item.cunit); 
 						$("#txtcskuid").val(item.cskucode);
 						
-						myFunctionadd(item.nqty,item.nfactor,item.cmainuom,item.xref,item.nident,item.nlocation_id,item.ncostcenter);
+						myFunctionadd(item.nqty,item.nfactor,item.cmainuom,item.xref,item.nident,item.nlocation_id,item.ncostcenter,"");
 						
 						$("#txtprodid").val("");
 						$("#txtprodnme").val("");	
@@ -1385,8 +1388,9 @@ function chkform(){
 				var xcref = $(this).find('input[type="hidden"][name="txtcreference"]').val();
 				var crefidnt = $(this).find('input[type="hidden"][name="txtnrefident"]').val();
 				var ncostid = $(this).find('input[type="hidden"][name="txtncostid"]').val();  
-				var ncostdesc = $(this).find('input[type="hidden"][name="txtncostdesc"]').val();
-				
+				var ncostdesc = $(this).find('input[type="hidden"][name="txtncostdesc"]').val(); 
+				var crmkss = $(this).find('input[name="txtcremarks"]').val();
+
 				//alert("trancode="+ trancode+ "&indx=" + index+ "&citmno=" + citmno+ "&cuom=" + cuom+ "&nqty=" + nqty+ "&mainunit=" + mainunit+ "&nfactor=" + nfactor+ "&nqtyorig=" + nqtyOrig+ "&xcref=" + xcref+ "&crefidnt=" + crefidnt);
 
 				if(nqty!==undefined){
@@ -1395,7 +1399,7 @@ function chkform(){
 				
 				$.ajax ({
 					url: "RR_newsavedet.php",
-					data: { trancode: trancode, indx: index, citmno: citmno, cskuno:cskuno, cskudesc:cskudesc, cuom: cuom, nqty:nqty, mainunit:mainunit, nfactor:nfactor, nqtyorig:nqtyOrig, xcref:xcref, crefidnt:crefidnt, ncostid:ncostid, ncostdesc:ncostdesc},
+					data: { trancode: trancode, indx: index, citmno: citmno, cskuno:cskuno, cskudesc:cskudesc, cuom: cuom, nqty:nqty, mainunit:mainunit, nfactor:nfactor, nqtyorig:nqtyOrig, xcref:xcref, crefidnt:crefidnt, ncostid:ncostid, ncostdesc:ncostdesc, crmkss:crmkss},
 					async: false,
 					success: function( data ) {
 						if(data.trim()=="False"){

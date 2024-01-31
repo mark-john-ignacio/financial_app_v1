@@ -359,6 +359,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 											<th style="border-bottom:1px solid #999">Amount</th>
 											<th style="border-bottom:1px solid #999">Total Amt in <?//php echo $nvaluecurrbase; ?></th>-->
 											<!--<th style="border-bottom:1px solid #999">Date Expired</th>-->
+											<th style="border-bottom:1px solid #999">Remarks</th>
 											<th style="border-bottom:1px solid #999">&nbsp;</th>
 										</tr>
 									</thead>
@@ -863,7 +864,7 @@ else{
 				
 				if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
 				
-					myFunctionadd("","","","","","","","","","","");
+					myFunctionadd("","","","","","","","","","");
 
 				}	
 					
@@ -991,7 +992,7 @@ else{
 			
 		if(isItem=="NO"){	*/
 
-				myFunctionadd("","","","","","","","","");		
+				myFunctionadd("","","","","","","","","","");		
 			//	ComputeGross();	
 		// }
 		// else{
@@ -1009,7 +1010,7 @@ else{
 
 	}
 
-	function myFunctionadd(nqty,nqtyOrig,nfactor,cmainunit,xref,nident,detsku,costid,costdesc){
+	function myFunctionadd(nqty,nqtyOrig,nfactor,cmainunit,xref,nident,detsku,costid,costdesc,cremarks=""){
 
 		var itmcode = document.getElementById("txtprodid").value;
 		var itmcsku = document.getElementById("txtcskuid").value;
@@ -1113,12 +1114,14 @@ else{
 		tditmporef = "<td width=\"90\" style=\"padding:1px\"> <input type='hidden' value='"+itmxref+"' name=\"txtcreference\" id=\"txtcreference\"> <input type='hidden' value='"+itmident+"' name=\"txtnrefident\" id=\"txtnrefident\"> &nbsp;&nbsp;&nbsp;"+itmxref+"</td>";
 
 		tditmcostc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:120px; padding:1px\"> <input type='hidden' value='"+costid+"' name=\"txtncostid\" id=\"txtncostid\"> <input type='hidden' value='"+costdesc+"' name=\"txtncostdesc\" id=\"txtncostdesc\"> &nbsp;&nbsp;&nbsp;"+costdesc+"</td>"; 
+
+		tditmrmks = "<td width=\"200\" style=\"padding:1px\" align=\"center\"> <input type='text' class='form-control input-xs' name=\"txtcremarks\" id=\"txtcremarks\" value=\""+cremarks+"\"/> </td>";
 		
 		tditmdel = "<td width=\"80\" style=\"padding:1px\" align=\"center\"> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' /> </td>";
 
 		//+ tditmprice + tditmbaseamount+ tditmamount 
 
-		$('#MyTable > tbody:last-child').append('<tr style=\"padding-top:1px\">'+tditmbtn+tditmcode + tdskucode+ tditmdesc + tditmunit + tditmfactor + tditmqty + tditmporef + tditmcostc + tditmdel + '</tr>');
+		$('#MyTable > tbody:last-child').append('<tr style=\"padding-top:1px\">'+tditmbtn+tditmcode + tdskucode+ tditmdesc + tditmunit + tditmfactor + tditmqty + tditmporef + tditmcostc + tditmrmks + tditmdel + '</tr>');
 
 
 		$("#del"+itmcode).on('click', function() {
@@ -1567,6 +1570,7 @@ else{
 								$('#txtprodnme').val(item.cdesc); 
 								$('#txtprodid').val(item.citemno); 
 								$("#hdnunit").val(item.cunit); 
+								$("#txtcskuid").val(item.cskucode);
 
 								//if(index==0){
 								//	$("#selbasecurr").val(item.ccurrencycode).change();
@@ -1575,12 +1579,14 @@ else{
 								//}
 
 								//alert(item.cqtyunit + ":" + item.cunit);
-								
-									myFunctionadd(item.nqty,item.nqty,item.nfactor,item.cmainuom,item.xref,item.nident,"")
+								// /nqty,nqtyOrig,nfactor,cmainunit,xref,nident,detsku,costid,costdesc,cremarks=""
+
+									myFunctionadd(item.nqty,item.nqty,item.nfactor,item.cmainuom,item.xref,item.nident,"",item.nlocation_id,item.ncostcenter,"")
 									
 									$("#txtprodid").val("");
 									$("#txtprodnme").val("");	
 									$("#hdnunit").val("");	
+									$("#txtcskuid").val("");
 				
 						});
 							
@@ -1739,6 +1745,7 @@ else{
 					var crefidnt = $(this).find('input[type="hidden"][name="txtnrefident"]').val();
 					var ncostid = $(this).find('input[type="hidden"][name="txtncostid"]').val();  
 					var ncostdesc = $(this).find('input[type="hidden"][name="txtncostdesc"]').val();
+					var crmkss = $(this).find('input[name="txtcremarks"]').val();
 				
 					if(nqty!==undefined){
 						nqty = nqty.replace(/,/g,'');
@@ -1748,7 +1755,7 @@ else{
 					
 					$.ajax ({
 						url: "RR_newsavedet.php",
-						data: { trancode: trancode, indx: index, citmno: citmno, cskuno:cskuno, cskudesc:cskudesc, cuom: cuom, nqty:nqty, mainunit:mainunit, nfactor:nfactor, nqtyorig:nqtyOrig, xcref:xcref, crefidnt:crefidnt, ncostid:ncostid, ncostdesc:ncostdesc},
+						data: { trancode: trancode, indx: index, citmno: citmno, cskuno:cskuno, cskudesc:cskudesc, cuom: cuom, nqty:nqty, mainunit:mainunit, nfactor:nfactor, nqtyorig:nqtyOrig, xcref:xcref, crefidnt:crefidnt, ncostid:ncostid, ncostdesc:ncostdesc, crmkss:crmkss},
 						async: false,
 						success: function( data ) {
 						//	alert(data);
@@ -1961,7 +1968,7 @@ else{
 					$('#txtcskuid').val(item.cskucode); 
 					$("#hdnunit").val(item.cunit);  
 
-					myFunctionadd(item.nqty,item.nqtyorig,item.nfactor,item.cmainuom,item.xref,item.nident,item.cskucode,item.ncostid,item.ncostdesc);
+					myFunctionadd(item.nqty,item.nqtyorig,item.nfactor,item.cmainuom,item.xref,item.nident,item.cskucode,item.ncostid,item.ncostdesc,item.cremarks);
 				});
 
 			}
