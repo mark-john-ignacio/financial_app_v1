@@ -81,7 +81,7 @@
 			left join customers c on a.ccode=c.cempid and a.compcode=c.compcode
 			where a.compcode='$company' and a.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and a.lapproved=1 and a.lvoid=0
 			) A order by A.dcutdate, A.csalesno, A.ndebit desc";
-		}else{
+		}elseif($_POST["selNTy"]==""){
 			$sql = "select A.dcutdate, A.csalesno, A.ccode, A.cname, A.acctno, A.ctitle, A.ncredit, A.ndebit, A.lcancelled, A.lapproved
 			FROM(
 			select a.dcutdate, a.ctranno as csalesno, a.ccode, c.cname, b.acctno, b.ctitle, b.ncredit, b.ndebit, a.lcancelled, a.lapproved
