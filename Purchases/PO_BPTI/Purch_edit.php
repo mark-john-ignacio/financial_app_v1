@@ -2335,7 +2335,7 @@ else{
 					else{
 							
 						$("<tr>").append(
-							$("<td>").html("<input type='checkbox' value='"+item.nident+"' name='chkSales[]' data-id=\""+drno+"\" data-ident=\""+item.nident+"\" data-itm='"+item.citemno+"' data-itmdesc='"+item.cdesc+"' data-partdesc='"+item.cpartdesc+"' data-itmunit='"+item.cunit+"' data-qty='"+item.nqty+"' data-factor='"+item.nqty+"'>"),
+							$("<td>").html("<input type='checkbox' value='"+item.nident+"' name='chkSales[]' data-id=\""+drno+"\" data-ident=\""+item.nident+"\" data-itm='"+item.citemno+"' data-itmdesc='"+item.cdesc+"' data-partdesc='"+item.cpartdesc+"' data-itmunit='"+item.cunit+"' data-qty='"+item.nqty+"' data-factor='"+item.nfactor+"'>"),
 							$("<td>").text(item.citemno),
 							$("<td>").text(item.cdesc),
 							$("<td>").text(item.cunit),
