@@ -98,8 +98,8 @@ include('../include/access.php');
 
     $('#btnxls').click(function(){
 
-      var selected = $('#seltype').find(":selected").text();   
-      alert(selected+"_xls.php");
+      var selected = $('#seltype').find(":selected").val();   
+      alert(selected);
       $('#frmrep').attr('action', selected+"_xls.php")
       $('#frmrep').submit()
     });
