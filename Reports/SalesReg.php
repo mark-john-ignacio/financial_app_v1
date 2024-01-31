@@ -86,21 +86,21 @@ $(function() {
 	        $('.datepick').datetimepicker({
                  format: 'MM/DD/YYYY'
            });
+
           $('#btnsales').click(function() {
              
             var selected = $('#seltype').find(":selected").val();
-            $('#frmrep').attr('action', selected.".php")
+            $('#frmrep').attr('action', selected+".php")
             $('#frmrep').submit()
-          })
+          });
 
 
           $('#btnxls').click(function(){
 
-            var selected = $('#seltype').find(":selected").text();
-            
-            $('#frmrep').attr('action', selected."_xls.php")
+            var selected = $('#seltype').find(":selected").text();   
+            $('#frmrep').attr('action', selected+"_xls.php")
             $('#frmrep').submit()
-          })
+          });
 	   
 });
 
