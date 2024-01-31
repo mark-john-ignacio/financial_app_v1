@@ -29,10 +29,10 @@ $comp = mysqli_fetch_array($result, MYSQLI_ASSOC);
 // Set document properties
 $spreadsheet->getProperties()->setCreator('Myx Financials')
     ->setLastModifiedBy('Myx Financials')
-    ->setTitle('Sales Journal Report')
-    ->setSubject('Sales Journal Report')
-    ->setDescription('Sales Journal Report, generated using Myx Financials.')
-    ->setKeywords('myx_financials sales_journal')
+    ->setTitle('Sales Book Report')
+    ->setSubject('Sales Book Report')
+    ->setDescription('Sales Book Report, generated using Myx Financials.')
+    ->setKeywords('myx_financials sales_book')
     ->setCategory('Myx Financials Report');
 
 
@@ -58,7 +58,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('A1', 'Name of Tax Payer: ' . $comp['compdesc'])
         ->setCellValue('A2', 'Address: ' . $comp['compadd'])
         ->setCellValue('A3', 'Vat Registered Tin: ' . $comp['comptin'])
-        ->setCellValue('A4', 'Kind of Book: Sales Journal ')
+        ->setCellValue('A4', 'Kind of Book: SALES BOOK ')
         ->setCellValue('A5', "For the Month of $date1 to $date2");
 
 	$ntotdebit = 0;
