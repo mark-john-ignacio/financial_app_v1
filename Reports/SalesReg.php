@@ -81,28 +81,30 @@ include('../include/access.php');
 </html>
 
 <script type="text/javascript">
-$(function() {              
-           // Bootstrap DateTimePicker v4
-	        $('.datepick').datetimepicker({
-                 format: 'MM/DD/YYYY'
-           });
+  $(function() {     
 
-          $('#btnsales').click(function() {
-             
-            var selected = $('#seltype').find(":selected").val();
-            $('#frmrep').attr('action', selected+".php")
-            $('#frmrep').submit()
-          });
+    // Bootstrap DateTimePicker v4
+    $('.datepick').datetimepicker({
+      format: 'MM/DD/YYYY'
+    });
+
+    $('#btnsales').click(function() {
+        
+      var selected = $('#seltype').find(":selected").val();
+      $('#frmrep').attr('action', selected+".php")
+      $('#frmrep').submit()
+    });
 
 
-          $('#btnxls').click(function(){
+    $('#btnxls').click(function(){
 
-            var selected = $('#seltype').find(":selected").text();   
-            $('#frmrep').attr('action', selected+"_xls.php")
-            $('#frmrep').submit()
-          });
+      var selected = $('#seltype').find(":selected").text();   
+      alert(selected+"_xls.php");
+      $('#frmrep').attr('action', selected+"_xls.php")
+      $('#frmrep').submit()
+    });
 	   
-});
+  });
 
 
 function setact(x){
