@@ -40,9 +40,9 @@ include('../include/access.php');
     <td style="padding:2px">
     <div class="col-xs-5 nopadding">
         <select id="seltype" name="seltype" class="form-control input-sm" onChange="setact(this.value);">
-          <option value="Accounting/SalesLedger.php">Ledger</option>
-          <option value="Accounting/SalesRecap.php">Recap</option>
-          <option value="Accounting/SalesRecapCust.php">Recap Per Customer</option>
+          <option value="Accounting/SalesLedger">Ledger</option>
+          <option value="Accounting/SalesRecap">Recap</option>
+          <option value="Accounting/SalesRecapCust">Recap Per Customer</option>
         </select>
    </div>
    </td>
@@ -89,7 +89,7 @@ $(function() {
           $('#btnsales').click(function() {
              
             var selected = $('#seltype').find(":selected").val();
-            $('#frmrep').attr('action', selected)
+            $('#frmrep').attr('action', selected.".php")
             $('#frmrep').submit()
           })
 
@@ -97,21 +97,8 @@ $(function() {
           $('#btnxls').click(function(){
 
             var selected = $('#seltype').find(":selected").text();
-            var link = null
-            switch (selected) {
-              case 'Journal':
-                link = 'Sales/SalesJournal_xls.php'
-                break
-              case 'Recap':
-                link = 'Sales/SalesRecap_xls.php'
-                break
-              case 'Recap Per Customer':
-                link = 'Sales/SalesRecapCust_xls.php'
-                break
-              default:
-                break
-            }
-            $('#frmrep').attr('action', link)
+            
+            $('#frmrep').attr('action', selected."_xls.php")
             $('#frmrep').submit()
           })
 	   
