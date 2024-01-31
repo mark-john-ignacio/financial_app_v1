@@ -24,9 +24,10 @@
 
     $tranno = $_REQUEST['tranno'];
 
-    $sql = "SELECT a.*, b.*, c.Fname, c.Lname, c.Minit, IFNULL(c.cusersign,'') as cusersign FROM `receive` a
+    $sql = "SELECT a.*, b.*, c.Fname, c.Lname, c.Minit, IFNULL(c.cusersign,'') as cusersign, IFNULL(d.cusersign,'') as cchecksign FROM `receive` a
         left join `suppliers` b on a.compcode = b.compcode and a.ccode = b.ccode
         left join `users` c on a.cpreparedby = c.Userid
+        left join `users` d on a.lappbyid = d.Userid
         where a.compcode = '$company' and a.ctranno = '$tranno'";
 
     $query = mysqli_query($con, $sql);
@@ -39,11 +40,16 @@
             $SupTin = $row['ctin'];
             $date = $row['ddate'];
 
+            $lposted = $row['lapproved'];
+
             $delto = $row['Fname'] . " " . $row['Lname'];
             $Remarks = $row['cremarks'];
             $Gross = $row['ngross'];
             $cpreparedBy = $row['Fname']." ".(($row['Minit']!=="" && $row['Minit']!==null) ? " " : $row['Minit']).$row['Lname'];
 		    $cpreparedBySign = $row['cusersign'];
+
+            $cCheckedBy = $row['lappby'];
+		    $cCheckedBySign = $row['cchecksign'];
         }
     }
 ?>
@@ -70,186 +76,159 @@
 		
 	</style>
 </head>
-
+<!--"-->
 <body onLoad="window.print()">
 
-    <table border="0" width="100%" cellpadding="1px"  id="tblMain">
+    <table border="0" width="100%" style="border-collapse:collapse">
         <tr>
-            <td align="center"> 
-
-                    <table border="0" width="100%">
-                            <tr align="center">
-                                <td><img src="<?php echo "../".$logosrc; ?>" height="68px"></td>
-                            </tr>
-                            <tr align="center">
-                                <td><font style="font-size: 18px;"><?php echo $logonamz; ?></font></td>
-                            </tr>
-                            <tr align="center">
-                                <td style="padding-bottom: 20px"><font><?php echo $logoaddrs; ?></font></td>
-                            </tr>
-                    </table>
-
+            <td colspan="2" align="center" style="padding-bottom: 20px">
+                <font style="font-size: 18px;">PURCHASED STOCK-IN SLIP  </font><br>
+                <font style="font-size: 18px;">(RECEIVED FROM SUPPLIER/SOURCE)  </font>
+            </td>
+        </tr>
+        <tr> 
+            <td colspan="2" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid; border-bottom: 1px solid;">
+                <table border="0" width="100%" cellspacing="0">
+                    <tr>
+                        <td width="50%" style="border-right: 1px solid #000; padding: 5px">
+                            Supplier/Source:
+                        </td>
+                        <td width="30%" style="border-right: 1px solid #000; padding: 5px">
+                            Reference No.:
+                        </td>
+                        <td style=" padding: 5px">
+                            Date: <?=$delto?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="50%" style="border-right: 1px solid #000; padding: 5px">
+                            <?=$SupName?>
+                        </td>
+                        <td width="30%" style="border-right: 1px solid #000; padding: 5px">
+                            &nbsp;
+                        </td>
+                        <td style="padding: 5px">
+                            PSS No.: <?=$tranno?>
+                        </td>
+                    </tr>
+                </table>
             </td>
         </tr>
 
-
-
-
-        
-        <tr>
-            <td style="vertical-align: top; padding-top: 10px">
-
-                <table border="0" width="100%" style="border-collapse:collapse">
-                    <tr>
-                        <td colspan="2" align="center" style="padding-bottom: 20px">
-                                <font style="font-size: 24px;">Receiving  </font>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="padding-bottom: 10px">
-                            <font style="font-size: 14px;"><b>Date:</b> <?=date("F d, Y")?></font>
-                        </td>
-
-                        <td align="right" style="padding-bottom: 10px">
-                        <font style="font-size: 14px;"><b>No.:</b> <?=$tranno?></font>
-                        </td>
-                    </tr>
-
-
-                    <tr>
-                        <td colspan="2" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">
-                                <table border="0" width="100%">
-                                    <tr>
-                                        <td width="150px" style="padding: 10px;">
-                                                <b>SUPPLIER'S NAME: </b>
-                                        </td>
-                                        <td style="padding: 10px;">
-                                                <?=$SupName?>
-                                        </td>
-                                        <td width="100px" style="padding: 10px;" align="right">
-                                                <b>TERMS</b>
-                                        </td>
-                                        <td width="100px" style="padding: 10px;" align="right">
-                                                <?=$Terms?>
-                                        </td>
-                                    </tr>
-                                </table>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td colspan="2" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">
-                                <table border="0" width="100%">
-                                    <tr>
-                                        <td width="150px" style="padding: 10px">
-                                            <b>DELIVERED TO: </b>									
-                                        </td>
-                                        <td style="padding: 10px">
-                                            <?=$delto?>
-                                        </td>
-                                        
-                                    </tr> 
-
-                                    <tr>
-                                        <td width="150px" style="padding: 10px">
-                                            <b>Remarks/Notes: </b>									
-                                        </td>
-                                        <td style="padding: 10px">
-                                            <?=$Remarks?>
-                                        </td>
-                                        
-                                    </tr>
-                                </table>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td colspan="2" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid;">
-                                <table border="0" width="100%">
-                                    <tr>
-                                        <td style="padding-left: 10px;">
-                                            <b> SALES TO: </b> <?=$delto?>
-                                        </td>
-                                        <td>
-                                            <b> DELIVERY DATE: </b> <?=date_format(date_create($date),"F d, Y");?>
-                                        </td>
-                                    </tr>
-                                </table>
-                        </td>
-                        
-                        
-                    </tr>
-                    
-                </table>
-
-                <table border="0" align="center" width="100%" style="border-collapse: collapse;">
-        
-                    <tr>
-                        <th style="border: 1px solid" class="tdpadx">Qty</th>
-                        <th style="border: 1px solid" class="tdpadx">Unit</th>
-                        <th style="border: 1px solid; width: 80%;" class="tdpadx">Product Description/s</th>
-                    </tr>
-
-                    <?php 
-                    $sql = "SELECT a.*, b.cpartno, b.citemdesc, b.cunit FROM receive_t a
-                        left join items b on a.compcode = b.compcode and b.cpartno = a.citemno
-                        where a.compcode = '$company' and a.ctranno = '$tranno'";
-                
-                    $query = mysqli_query($con, $sql);
-                    if(mysqli_num_rows($query) != 0){
-                        while($row = $query -> fetch_assoc()){
-                            // for items
-                            $itemcode = $row['cpartno'];
-                            $itemname = $row['citemdesc'];
-                            $itemunit = $row['cunit'];
-                    
-                            //for sales return details
-                            $qty = $row['nqty'];
-                            $price = $row['nprice'];
-                            $amount = $row['namount']; 
-                        
-                    ?>
-
-                    <tr>
-                        <td align="center" class="tdpadx tddetz"><?php echo intval($row['nqty']);?></td>
-                        <td align="center" class="tdpadx tddetz"><?php echo $row['cunit'];?></td>
-                        <td align="center" class="tdpadx tddetz"><?php echo $row['citemdesc'];?></td>
-                    </tr>
-
-                    <?php 
-                        } 
-
-                    }
-                    ?>
-
-                </table>
-            </td>
-        </tr> 
-        <tr>
-            <td style="vertical-align: bottom;">
-                <br><br>	<br><br>		
-                <table border="0" width="100%">
-                    <tr>
-                        <td>
-                            <table border=0 width="100%">
-                                    <tr>
-                                        <td width="25%">
-                                            <div style="padding-bottom: 50px; text-align: center">Prepared By</div>
-                                            <div style="text-align: center"><?=$cpreparedBy?></div>
-
-                                        </td>
-                                    </tr>
-                                    
-                            </table>
-                        </td>
-                    </tr>
-                </table>
-
-            </td>
-        </tr>
     </table>
 
+    <table border="1" align="center" width="100%" style="border-collapse: collapse; margin-top: 5px" cellpadding="5px">
 
+        <tr>
+            <th style="width: 5%;">No</th>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Qty</th>
+            <th>Size/Spec</th>
+            <th>Unit</th>
+            <th>POR</th>
+            <th>Cost Center</th>
+            <th>Remarks</th>
+        </tr>
+
+        <?php 
+            $cnt = 0;
+            $sql = "SELECT a.*, b.cpartno, b.citemdesc, b.cunit FROM receive_t a
+            left join items b on a.compcode = b.compcode and b.cpartno = a.citemno
+            where a.compcode = '$company' and a.ctranno = '$tranno'";
+    
+            $query = mysqli_query($con, $sql);
+            if(mysqli_num_rows($query) != 0){
+                while($row = $query -> fetch_assoc()){
+
+                    $cnt++;
+                    // for items
+                    $itemcode = $row['cpartno'];
+                    $itemname = $row['citemdesc'];
+                    $itemunit = $row['cunit'];
+            
+                    //for sales return details
+                    $qty = $row['nqty'];
+                    $price = $row['nprice'];
+                    $amount = $row['namount']; 
+            
+        ?>
+
+        <tr>
+            <td align="center" class="tdpadx tddetz"><?=$cnt?></td>
+            <td align="center" class="tdpadx tddetz"><?=$row['citemno'];?></td>
+            <td align="center" class="tdpadx tddetz"><?=$row['cskucode'];?></td>
+            <td align="center" class="tdpadx tddetz"><?=number_format($row['nqty']);?></td>
+            <td align="center" class="tdpadx tddetz"><?php echo $row['citemdesc'];?></td>
+            <td align="center" class="tdpadx tddetz"><?=$row['cunit'];?></td>
+            <td align="center" class="tdpadx tddetz"><?=$row['creference'];?></td>
+            <td align="center" class="tdpadx tddetz"><?=$row['ncostcenterdesc'];?></td>
+            <td align="center" class="tdpadx tddetz"><?=$row['cremarks'];?></td>
+        </tr>
+
+        <?php 
+            } 
+
+        }
+        ?>
+
+    </table>
+
+    <table border="0" width="100%" style="border-collapse:collapse; margin-top: 5px">
+        <tr> 
+            <td colspan="2" style="border-top: 1px solid; border-left: 1px solid; border-right: 1px solid; border-bottom: 1px solid;">
+                <table border="0" width="100%" cellspacing="0">
+                    <tr>
+                        <td width="33%" style="border-right: 1px solid #000; padding: 5px">
+                            PSS Prepared By/Date:
+                        </td>
+                        <td width="34%" style="border-right: 1px solid #000; padding: 5px">
+                            Checked By: (Name/Sign/Dept/Date)
+                        </td>
+                        <td width="33%" style="padding: 5px">
+                            Acknowledged By: (Purchasing/Date)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="border-right: 1px solid #000; padding: 5px">
+                            <?php
+                                if($cpreparedBySign!=""){                          
+                            ?>
+                                    <div style="text-align: center"><div><img src = '<?=$cpreparedBySign?>?x=<?=time()?>' height="80px"></div> 
+									<div style="text-align: center"><?=$cpreparedBy?></div> 
+                            <?php
+                                }else{
+                            ?>
+                                    <div style="text-align: center"><div style="height:80px">&nbsp;</div></div>
+									<div style="text-align: center"><?=$cpreparedBy?></div>
+                            <?php
+                                }
+                            ?>
+                        </td>
+                        <td style="border-right: 1px solid #000; padding: 5px">
+                            <?php
+                                if($lposted==1 && $cCheckedBySign!=""){                          
+                            ?>
+                                    <div style="text-align: center"><div><img src = '<?=$cCheckedBySign?>?x=<?=time()?>' height="80px"></div> 
+									<div style="text-align: center"><?=$cCheckedBy?></div> 
+                            <?php
+                                }else{
+                            ?>
+                                    <div style="text-align: center"><div style="height:80px">&nbsp;</div></div>
+									<div style="text-align: center"><?=$cCheckedBy?></div>
+                            <?php
+                                }                              
+                            ?>
+                        </td>
+                        <td style="padding: 5px">
+                           &nbsp;
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+    </table>
+            
 </body>
 </html>

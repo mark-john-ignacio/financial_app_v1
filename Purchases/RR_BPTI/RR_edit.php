@@ -628,14 +628,14 @@ else{
 		<div class="modal-dialog modal-lg">
 			<div class="modal-contnorad">   
 				<div class="modal-bodylong">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
+					<button type="button" id="closePrint" class="close"><span aria-hidden="true">&times;</span></button>        
 	
 					<iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:8.5in; display:block; margin:0px; padding:0px; border:0px"></iframe>
 			
 				</div>
 			</div>
 		</div>
-	</div>
+	</div> 
 
 	<form method="post" id="frmMyEdit" action="RR_edit.php">
 		<input type="hidden" name="txtctranno" id="txtctranno" value="">
@@ -756,196 +756,202 @@ else{
 	});
 
 
-$(document).ready(function() {
-	$(".nav-tabs a").click(function(){
-    	$(this).tab('show');
-	});
-
-    $('.datepick').datetimepicker({
-      format: 'MM/DD/YYYY',
-    });	
-
-	if(file_name.length > 0){
-		$('#file-0').fileinput({
-			showUpload: false,
-			showClose: false,
-			allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
-			overwriteInitial: false,
-			maxFileSize:100000,
-			maxFileCount: 5,
-			browseOnZoneClick: true,
-			fileActionSettings: { showUpload: false, showDrag: false, },
-			initialPreview: list_file,
-			initialPreviewAsData: true,
-			initialPreviewFileType: 'image',
-			initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/RR/<?=$company."_".$cpono?>/{filename}',
-			initialPreviewConfig: file_config
+	$(document).ready(function() {
+		$(".nav-tabs a").click(function(){
+			$(this).tab('show');
 		});
-	} else {
-		$("#file-0").fileinput({
-			theme: 'fa5',
-			showUpload: false,
-			showClose: false,
-			allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
-			overwriteInitial: false,
-			maxFileSize:100000,
-			maxFileCount: 5,
-			browseOnZoneClick: true,
-			fileActionSettings: { showUpload: false, showDrag: false, }
+
+		$('.datepick').datetimepicker({
+		format: 'MM/DD/YYYY',
+		});	
+
+		if(file_name.length > 0){
+			$('#file-0').fileinput({
+				showUpload: false,
+				showClose: false,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, },
+				initialPreview: list_file,
+				initialPreviewAsData: true,
+				initialPreviewFileType: 'image',
+				initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/RR/<?=$company."_".$cpono?>/{filename}',
+				initialPreviewConfig: file_config
+			});
+		} else {
+			$("#file-0").fileinput({
+				theme: 'fa5',
+				showUpload: false,
+				showClose: false,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, }
+			});
+		}
+
+		loaddetails();
+		loadserials();
+
+		$('#txtprodnme').attr("disabled", true);
+		$('#txtprodid').attr("disabled", true);
+		
+		$("#txtcpono").focus();
+		
+		disabled();
+
+		$("#allbox").click(function(){
+				$('input:checkbox').not(this).prop('checked', this.checked);
 		});
-	}
+		
+		$('#txtcust').typeahead({
+		
+			items: 10,
+			source: function(request, response) {
+				$.ajax({
+					url: "../th_supplier.php",
+					dataType: "json",
+					data: {
+						query: $("#txtcust").val()
+					},
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			autoSelect: true,
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 
+				$('#txtcust').val(item.value).change(); 
+				$("#txtcustid").val(item.id);
+			}
+		});
+		
+		$('#txtprodnme').typeahead({
+			autoSelect: true,
+			source: function(request, response) {
+				$.ajax({
+					url: "../th_product.php",
+					dataType: "json",
+					data: {
+						query: $("#txtprodnme").val()
+					},
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.cname+'</span><br><small><span class="dropdown-item-extra">' + item.cunit + '</span></small></div>';
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 					
 
-	loaddetails();
-	loadserials();
+									
+				$('#txtprodnme').val(item.cname).change(); 
+				$('#txtprodid').val(item.id); 
+				$("#hdnunit").val(item.cunit);
+				$("#txtcskuid").val(item.cskucode);
+				
+				if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
+				
+					myFunctionadd("","","","","","","","","","","");
 
-	$('#txtprodnme').attr("disabled", true);
-	$('#txtprodid').attr("disabled", true);
-	
-	$("#txtcpono").focus();
-	
-	disabled();
+				}	
+					
+				
+			}
+		
+		});
 
-	$("#allbox").click(function(){
-			$('input:checkbox').not(this).prop('checked', this.checked);
-	});
-	
-	$('#txtcust').typeahead({
-	
-		items: 10,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_supplier.php",
-				dataType: "json",
-				data: {
-					query: $("#txtcust").val()
-				},
-				success: function (data) {
-					response(data);
+
+		$("#txtprodid").keydown(function(e){
+			if(e.keyCode == 13){
+
+				$.ajax({
+				url:'../get_productid.php',
+				data: 'c_id='+ $(this).val(),                 
+				success: function(value){
+					
+					var data = value.split(",");
+					$('#txtprodid').val(data[0]);
+					$('#txtprodnme').val(data[1]);
+					$('#hdnunit').val(data[2]);
+					$('#txtcskuid').val(data[3]);
+
+
+				if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
+					
+					myFunctionadd("","","","","","","","","","");
+
 				}
-			});
-		},
-		autoSelect: true,
-		displayText: function (item) {
-			 return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 
-			$('#txtcust').val(item.value).change(); 
-			$("#txtcustid").val(item.id);
-		}
-	});
-	
-	$('#txtprodnme').typeahead({
-		autoSelect: true,
-		source: function(request, response) {
-			$.ajax({
-				url: "../th_product.php",
-				dataType: "json",
-				data: {
-					query: $("#txtprodnme").val()
-				},
-				success: function (data) {
-					response(data);
+				
+				$("#txtprodid").val("");
+				$("#txtprodnme").val("");
+				$("#hdnunit").val("");
+				$("#txtcskuid").val("");
+		
+				//closing for success: function(value){
 				}
-			});
-		},
-		displayText: function (item) {
-			return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.cname+'</span><br><small><span class="dropdown-item-extra">' + item.cunit + '</span></small></div>';
-		},
-		highlighter: Object,
-		afterSelect: function(item) { 					
+				}); 
 
-								
-			$('#txtprodnme').val(item.cname).change(); 
-			$('#txtprodid').val(item.id); 
-			$("#hdnunit").val(item.cunit);
-			$("#txtcskuid").val(item.cskucode);
+		
 			
-			if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
-			
-				myFunctionadd("","","","","","","","","","","");
-
-			}	
-				
-			
-		}
-	
-	});
-
-
-	$("#txtprodid").keydown(function(e){
-		if(e.keyCode == 13){
-
-			$.ajax({
-			url:'../get_productid.php',
-			data: 'c_id='+ $(this).val(),                 
-			success: function(value){
-				
-				var data = value.split(",");
-				$('#txtprodid').val(data[0]);
-				$('#txtprodnme').val(data[1]);
-				$('#hdnunit').val(data[2]);
-				$('#txtcskuid').val(data[3]);
-
-
-			if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
-				
-				myFunctionadd("","","","","","","","","","");
-
+			//if ebter is clicked
 			}
 			
-			$("#txtprodid").val("");
-			$("#txtprodnme").val("");
-			$("#hdnunit").val("");
-			$("#txtcskuid").val("");
-	
-			//closing for success: function(value){
-			}
-			}); 
-
-	
-		 
-		//if ebter is clicked
-		}
+		});
 		
-	});
-	
-	$('#SerialMod').on('shown.bs.modal', function () {
-	    $('#serdis').focus();
-	});
+		$('#SerialMod').on('shown.bs.modal', function () {
+			$('#serdis').focus();
+		});
 
-	$("#btnInsSer").on("click", function(){
-		var itmcode = $("#serdisitmcode").val();
-		var itmcoderefident = $("#serdisrefident").val();
-		var serials = $("#serdis").val();
-		var barcodes = $("#serdisbarc").val();
-		var uoms = $("#serdisuom").val();
-		var qtys = $("#serdisqty").val();
-		var locas = $("#selserloc").val();
-		var locasdesc = $("#selserloc").find(':selected').attr('data-id');
-		var expz = $("#dexpate").val();      
-		var refnox = $("#serdisrefno").val(); 
-		InsertToSerials(itmcode,serials,uoms,qtys,locas,locasdesc,expz,itmcoderefident,refnox,barcodes);
-		//AddtoQtyTot(itmcode,qtys,itmcoderefident);
+		$("#btnInsSer").on("click", function(){
+			var itmcode = $("#serdisitmcode").val();
+			var itmcoderefident = $("#serdisrefident").val();
+			var serials = $("#serdis").val();
+			var barcodes = $("#serdisbarc").val();
+			var uoms = $("#serdisuom").val();
+			var qtys = $("#serdisqty").val();
+			var locas = $("#selserloc").val();
+			var locasdesc = $("#selserloc").find(':selected').attr('data-id');
+			var expz = $("#dexpate").val();      
+			var refnox = $("#serdisrefno").val(); 
+			InsertToSerials(itmcode,serials,uoms,qtys,locas,locasdesc,expz,itmcoderefident,refnox,barcodes);
+			//AddtoQtyTot(itmcode,qtys,itmcoderefident);
 
-		//var existqty = document.getElementById("txtnqty"+itmcode+itmcoderefident).value;
-		//var qtynow = parseFloat(existqty)+parseFloat(qtys);
+			//var existqty = document.getElementById("txtnqty"+itmcode+itmcoderefident).value;
+			//var qtynow = parseFloat(existqty)+parseFloat(qtys);
 
-		//document.getElementById("txtnqty"+itmcode+itmcoderefident).value = qtynow;
+			//document.getElementById("txtnqty"+itmcode+itmcoderefident).value = qtynow;
+			
+			//reset form
+			$("#serdis").val("");
+			$("#serdisbarc").val("");
+			$("#serdisqty").val("1");
+			
+			$("#TheSerialStat").text(serials + " Inserted...");
+
+
+			$("#serdis").focus();
+
+		});
+
+		$("#closePrint").on("click", function(){
+			alert("close");
+			$("#PrintModal").modal("hide");
+		});
 		
-		//reset form
-		$("#serdis").val("");
-		$("#serdisbarc").val("");
-		$("#serdisqty").val("1");
-		
-		$("#TheSerialStat").text(serials + " Inserted...");
-
-
-		$("#serdis").focus();
 
 	});
-
-});
 
 	function InsertToSerials(itmcode,serials,uoms,qtys,locas,locasdesc,expz,nident,refno,bcodes){
 
