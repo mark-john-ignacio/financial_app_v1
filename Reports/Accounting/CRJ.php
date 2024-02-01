@@ -59,6 +59,7 @@
 		<!--<th style=''>module</th>-->
     <th width="100" style="vertical-align:middle">Date</th>
     <th width="100" style="vertical-align:middle">Trans No.</th>
+	<th width="100" style="vertical-align:middle">Receipt No.</th>
     <th style="vertical-align:middle">Account Credited</th>
     <th style="vertical-align:middle">Account No.</th>
     <th style="vertical-align:middle">Account Title</th>
@@ -137,6 +138,7 @@
 							//$("<td display:none; nowrap>").text(item.cmodule),
 							$("<td nowrap>").text(item.ddate),
 							$("<td nowrap>").text(item.ctranno),
+							$("<td nowrap>").text(item.cornumber),
 							$("<td nowrap>").text(item.cname),
 							$("<td nowrap>").text(item.acctno),
 							$("<td nowrap>").text(item.cacctdesc),

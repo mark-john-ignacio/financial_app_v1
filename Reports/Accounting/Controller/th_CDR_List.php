@@ -9,7 +9,7 @@
     $dateto = $_POST['dateto'];
     $datefrom = $_POST['datefrom'];
 
-    $sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.acctno, A.ndebit, A.ncredit, D.cname, D.ctin , C.cremarks
+    $sql = "Select A.cmodule, A.ctranno, C.cornumber, A.ddate, A.acctno, B.cacctdesc, A.acctno, A.ndebit, A.ncredit, D.cname, D.ctin , C.cremarks
         From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
         left join receipt C on A.compcode=C.compcode and A.ctranno=C.ctranno
         left join customers D on C.compcode=D.compcode and C.ccode=D.cempid
