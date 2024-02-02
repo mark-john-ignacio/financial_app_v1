@@ -11,6 +11,8 @@ $company = $_SESSION['companyid'];
 
 	$cSINo = $_REQUEST['txtcsalesno'];
 	$cCustID = $_REQUEST['txtcustid'];
+	$cCustIDel = $_REQUEST['txtcustiddel'];
+
 	$nGross = str_replace(",","",$_REQUEST['txtnGross']);
 
 	$ccontname = $_REQUEST['txtcontactname'];
@@ -42,7 +44,7 @@ $company = $_SESSION['companyid'];
 	
 	//INSERT HEADER
 
-	if (!mysqli_query($con, "UPDATE quote set `ccode` = '$cCustID', `ccontactname` = '$ccontname', `ccontactdesig` = '$ccontdesg', `ccontactdept` = '$ccontdept', `ccontactemail` = '$ccontemai', `ccontactsalut` = '$ccontsalt', `cvattype` = '$cvattyp', `cterms` = '$cterms', `cdelinfo` = '$cdelinfo', `cservinfo` = '$cservinfo', `cremarks` = '$cRemarks', `dcutdate` = STR_TO_DATE('$dDelDate', '%m/%d/%Y'), `ngross` = '$nGross', `csalestype` = '$cSITyp', `ccurrencycode` = '$CurrCode', `ccurrencydesc` = '$CurrDesc', `nexchangerate` = '$CurrRate', `nbasegross` = $BaseGross, `dtrandate` = STR_TO_DATE('$dQuoteDate', '%m/%d/%Y') where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
+	if (!mysqli_query($con, "UPDATE quote set `ccode` = '$cCustID', `cdelcode` = '$cCustIDel', `ccontactname` = '$ccontname', `ccontactdesig` = '$ccontdesg', `ccontactdept` = '$ccontdept', `ccontactemail` = '$ccontemai', `ccontactsalut` = '$ccontsalt', `cvattype` = '$cvattyp', `cterms` = '$cterms', `cdelinfo` = '$cdelinfo', `cservinfo` = '$cservinfo', `cremarks` = '$cRemarks', `dcutdate` = STR_TO_DATE('$dDelDate', '%m/%d/%Y'), `ngross` = '$nGross', `csalestype` = '$cSITyp', `ccurrencycode` = '$CurrCode', `ccurrencydesc` = '$CurrDesc', `nexchangerate` = '$CurrRate', `nbasegross` = $BaseGross, `dtrandate` = STR_TO_DATE('$dQuoteDate', '%m/%d/%Y') where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
 		echo "False";
 
 		//print_r(mysqli_error($con));
