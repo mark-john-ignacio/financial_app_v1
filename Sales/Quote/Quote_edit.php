@@ -21,7 +21,7 @@
 	$company = $_SESSION['companyid'];
 
 
-	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.cpricever from quote a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid where a.ctranno = '$txtctranno' and a.compcode='$company'");
+	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.cpricever,c.cname as cdelname from quote a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join customers c on a.compcode=c.compcode and a.cdelcode=c.cempid where a.ctranno = '$txtctranno' and a.compcode='$company'");
 
 	/*
 	function listcurrencies(){ //API for currency list
@@ -147,6 +147,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
 		$CustCode = $row['ccode'];
 		$CustName = $row['cname'];
+
+		$CustCodeDel = $row['cdelcode'];
+		$CustNameDel = $row['cdelname']; 
+
 		$Gross = $row['ngross']; // gross base sa Main currency ng system
 		$BaseGross = $row['nbasegross']; //gross base sa currency selected
 
@@ -307,7 +311,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					<legend class="scheduler-border">Customer Details</legend>
 
 					<div class='col-xs-12 nopadwtop'>
-						<div class="col-xs-2"><b>Customer</b></div>
+						<div class="col-xs-2"><b>Billed To</b></div>
 						<div class="col-xs-1 nopadding">
 							<input type="text" id="txtcustid" name="txtcustid" class="required form-control input-sm" placeholder="Code..." tabindex="1" required="true" value="<?php echo $CustCode; ?>">
 								<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
@@ -323,12 +327,14 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					</div>
 
 					<div class='col-xs-12 nopadwtop'>
-						<div class="col-xs-2"><b>Contact Person</b></div>
-						<div class="col-xs-1 nopadding"> 
-							<button class="btn btn-sm btn-block btn-warning" name="btnSearchCont" id="btnSearchCont" type="button">Search</button>
+						<div class="col-xs-2"><b>Delivered To</b></div>  
+						<div class="col-xs-1 nopadding">
+							<input type="text" id="txtcustiddel" name="txtcustiddel" class="form-control input-sm" placeholder="Code..." tabindex="1" value="<?=$CustCodeDel?>">
+								<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
+								<input type="hidden" id="hdnpricever" name="hdnpricever" value="">
 						</div>
-						<div class="col-xs-4 nopadwleft">
-							<input type="text" id="txtcontactname" name="txtcontactname" class="required form-control input-sm" placeholder="Contact Person Name..." tabindex="1"  required="true" value="<?php echo $ccontname; ?>">
+						<div class="col-xs-4 nopadwleft"> 
+							<input type="text" class="form-control input-sm" id="txtcustdel" name="txtcustdel" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off" value="<?=$CustNameDel?>">
 						</div>
 						<div class="col-xs-2"><b>Designation</b></div>
 						<div class="col-xs-3 nopadding"> 
@@ -337,14 +343,25 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					</div>
 
 					<div class='col-xs-12 nopadwtop'>
-						<div class="col-xs-2"><b>Department</b></div>
-						<div class="col-xs-5 nopadding">
-							<input type="text" id="txtcontactdept" name="txtcontactdept" class="form-control input-sm" placeholder="Department..." tabindex="1" value="<?php echo $ccontdept; ?>">
+						<div class="col-xs-2"><b>Contact Person</b></div>
+						<div class="col-xs-1 nopadding"> 
+							<button class="btn btn-sm btn-block btn-warning" name="btnSearchCont" id="btnSearchCont" type="button">Search</button>
+						</div>
+						<div class="col-xs-4 nopadwleft">
+							<input type="text" id="txtcontactname" name="txtcontactname" class="required form-control input-sm" placeholder="Contact Person Name..." tabindex="1"  required="true" value="<?php echo $ccontname; ?>">
 						</div>
 						<div class="col-xs-2"><b>Email Address</b></div>
 						<div class="col-xs-3 nopadding">
 							<input type="text" id="txtcontactemail" name="txtcontactemail" class="required form-control input-sm" placeholder="Email Address..." tabindex="1" required="true" value="<?php echo $ccontemai; ?>">
 						</div>
+					</div>
+
+					<div class='col-xs-12 nopadwtop'>
+						<div class="col-xs-2"><b>Department</b></div>
+						<div class="col-xs-5 nopadding">
+							<input type="text" id="txtcontactdept" name="txtcontactdept" class="form-control input-sm" placeholder="Department..." tabindex="1" value="<?php echo $ccontdept; ?>">
+						</div>
+						
 					</div>
 
 				</fieldset>

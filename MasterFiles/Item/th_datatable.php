@@ -20,7 +20,7 @@
 	}
 	else
 	{
-	$query .= 'ORDER BY citemdesc DESC ';
+	$query .= 'ORDER BY citemdesc ASC ';
 	}
 
 	$query1 = '';

@@ -208,7 +208,7 @@
 							<legend class="scheduler-border">Customer Details</legend>
 
 							<div class='col-xs-12 nopadding'>
-								<div class="col-xs-2"><b>Customer</b></div>
+								<div class="col-xs-2"><b>Billed To</b></div>
 								<div class="col-xs-1 nopadding">
 									<input type="text" id="txtcustid" name="txtcustid" class="required form-control input-sm" placeholder="Code..." tabindex="1" required="true">
 										<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
@@ -224,6 +224,22 @@
 							</div>
 
 							<div class='col-xs-12 nopadwtop'>
+								<div class="col-xs-2"><b>Delivered To</b></div>
+								<div class="col-xs-1 nopadding">
+									<input type="text" id="txtcustiddel" name="txtcustiddel" class="form-control input-sm" placeholder="Code..." tabindex="1">
+										<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
+										<input type="hidden" id="hdnpricever" name="hdnpricever" value="">
+								</div>
+								<div class="col-xs-4 nopadwleft"> 
+									<input type="text" class="form-control input-sm" id="txtcustdel" name="txtcustdel" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
+								</div>
+								<div class="col-xs-2"><b>Designation</b></div>
+								<div class="col-xs-3 nopadding"> 
+									<input type="text" id="txtcontactdesig" name="txtcontactdesig" class="form-control input-sm" placeholder="Designation..." tabindex="1"> 
+								</div>
+							</div>
+
+							<div class='col-xs-12 nopadwtop'>
 								<div class="col-xs-2"><b>Contact Person</b></div>
 								<div class="col-xs-1 nopadding"> 
 									<button class="btn btn-sm btn-block btn-warning" name="btnSearchCont" id="btnSearchCont" type="button">Search</button>
@@ -231,9 +247,9 @@
 								<div class="col-xs-4 nopadwleft">
 									<input type="text" id="txtcontactname" name="txtcontactname" class="required form-control input-sm" placeholder="Contact Person Name..." tabindex="1"  required="true">
 								</div>
-								<div class="col-xs-2"><b>Designation</b></div>
-								<div class="col-xs-3 nopadding"> 
-									<input type="text" id="txtcontactdesig" name="txtcontactdesig" class="form-control input-sm" placeholder="Designation..." tabindex="1">
+								<div class="col-xs-2"><b>Email Address</b></div>
+								<div class="col-xs-3 nopadding">
+									<input type="text" id="txtcontactemail" name="txtcontactemail" class="required form-control input-sm" placeholder="Email Address..." tabindex="1" required="true">
 								</div>
 							</div>
 
@@ -242,11 +258,10 @@
 								<div class="col-xs-5 nopadding">
 									<input type="text" id="txtcontactdept" name="txtcontactdept" class="form-control input-sm" placeholder="Department..." tabindex="1">
 								</div>
-								<div class="col-xs-2"><b>Email Address</b></div>
-								<div class="col-xs-3 nopadding">
-									<input type="text" id="txtcontactemail" name="txtcontactemail" class="required form-control input-sm" placeholder="Email Address..." tabindex="1" required="true">
-								</div>
+								
 							</div>
+
+							
 
 						</fieldset>
 
@@ -716,6 +731,66 @@
 
 				getcontact(item.id);
 				
+				
+			}
+		
+		});
+
+		$("#txtcustiddel").keyup(function(event){
+			if(event.keyCode == 13){
+			
+				var dInput = this.value;
+				
+					$.ajax({
+						type:'post',
+						url:'../get_customerid.php',
+						data: 'c_id='+ dInput,                 
+						success: function(value){
+							//alert(value);
+							if(value!=""){
+								var data = value.split(":");
+								$('#txtcust').val(data[0]);								
+							}
+							else{
+								$('#c').val("");
+								$('#txtcustdel').val("");								
+							}
+						},
+						error: function(){
+							$('#txtcustdel').val("");
+							$('#txtcustdel').val("");							
+						}
+					});
+
+			}
+			
+		});
+
+		//Search Cust name
+		$('#txtcustdel').typeahead({
+			autoSelect: true,
+			source: function(request, response) {
+				$.ajax({
+					url: "../th_customer.php",
+					dataType: "json",
+					data: {
+						query: $("#txtcustdel").val()
+					},
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 					
+							
+				$('#txtcustdel').val(item.value).change(); 
+				$("#txtcustiddel").val(item.id);
+				
+				$('#txtremarks').focus();				
 				
 			}
 		
