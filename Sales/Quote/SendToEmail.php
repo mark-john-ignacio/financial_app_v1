@@ -34,14 +34,14 @@
         }
 
 		echo "<center><h3>EMAIL SENDING<br>Please Wait!<h3><img src='../../images/emailsend.gif' width='200px'></center>";
-		$xtranno = MyEnc($tranno,$key);
+		//$xtranno = MyEnc($tranno,$key);
 
 		//echo $xtranno ;
 
 		if($_REQUEST['cemailtrantyp']=="billing"){
-			header("refresh:5;url=PrintBilling_Email.php?id=".$xtranno);
+			header("refresh:5;url=PrintBilling_Email.php?id=".$tranno);
 		}else{
-			header("refresh:5;url=PrintQuote_Email.php?id=".$xtranno);
+			header("refresh:5;url=PrintQuote_Email.php?id=".$tranno);
 		}
 		
 	}
