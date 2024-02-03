@@ -1,24 +1,24 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-
-function chkgrp($valz) {
-	global $con;
-	
-	if($valz==''){
-		return "NULL";
-	}else{
-    	return "'".mysqli_real_escape_string($con, $valz)."'";
+	if(!isset($_SESSION)){
+		session_start();
 	}
-}
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
 
-$cCustCode = strtoupper($_REQUEST['txtccode']);
-$company = $_SESSION['companyid'];
-$mymsg = "True";
-$myerror = "True";
+	function chkgrp($valz) {
+		global $con;
+		
+		if($valz==''){
+			return "NULL";
+		}else{
+			return "'".mysqli_real_escape_string($con, $valz)."'";
+		}
+	}
+
+	$cCustCode = strtoupper($_REQUEST['txtccode']);
+	$company = $_SESSION['companyid'];
+	$mymsg = "True";
+	$myerror = "True";
 	
 	$cCustName = mysqli_real_escape_string($con, strtoupper($_REQUEST['txtcdesc']));
 	$cTradeName = mysqli_real_escape_string($con, strtoupper($_REQUEST['txttradename']));
@@ -69,106 +69,150 @@ $myerror = "True";
 	//IUPDATE ITEM
 	if (!mysqli_query($con,"UPDATE `customers` set `cname`='$cCustName', `ctradename` = '$cTradeName', `ctin` = '$Tin', `cacctcodesales` = '$SalesCode', `cacctcodetype` = '$SalesCodeType', `ccustomertype`='$CustTyp', `ccustomerclass`='$CustCls', `cpricever` = '$PriceVer', `cvattype`='$VatType', `cterms` = '$Terms', `nlimit` = $CreditLimit, `chouseno` = $HouseNo, `ccity` = $City, `cstate` = $State, `ccountry` = $Country, `czip` = $ZIP, `csman` = $csman, `cGroup1` = $cGrp1, `cGroup2` = $cGrp2, `cGroup3` = $cGrp3, `cGroup4` = $cGrp4, `cGroup5` = $cGrp5, `cGroup6` = $cGrp6, `cGroup7` = $cGrp7, `cGroup8` = $cGrp8, `cGroup9` = $cGrp9, `cGroup10` = $cGrp10, `cdefaultcurrency` = '$SelCurr' Where compcode='$company' and `cempid`='$cCustCode'")){
 
-					if(mysqli_error($con)!=""){
-						$myerror = "Update Error: ". mysqli_error($con)."<br/><br/>";
-					}
+		if(mysqli_error($con)!=""){
+			$myerror = "Update Error: ". mysqli_error($con)."<br/><br/>";
+		}
 	}
 
-		if($SalesCodeType=="multiple") {
-			
-				$sql = "select A.ccode, A.cdesc, ifnull(B.ccode,'') as custcode from groupings A left join customers_accts B on A.ccode=B.citemtype and B.ccode='$cCustCode' where A.compcode='$company' and ctype='ITEMTYP' and cstatus='ACTIVE' order by cdesc";
-        $result=mysqli_query($con,$sql);
-			              
-        while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-        {
-				//echo "<br>".$row['custcode'];
-				if($row['custcode']==""){
+	if($SalesCodeType=="multiple") {
+		
+		$sql = "select A.ccode, A.cdesc, ifnull(B.ccode,'') as custcode from groupings A left join customers_accts B on A.ccode=B.citemtype and B.ccode='$cCustCode' where A.compcode='$company' and ctype='ITEMTYP' and cstatus='ACTIVE' order by cdesc";
+		$result=mysqli_query($con,$sql);
+						
+		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+		{
+			//echo "<br>".$row['custcode'];
+			if($row['custcode']==""){
 
-					$citemtype = $row['ccode'];
-					$cacctno = $_REQUEST['txtsalesacctD'.$citemtype];
+				$citemtype = $row['ccode'];
+				$cacctno = $_REQUEST['txtsalesacctD'.$citemtype];
 
-					
-					mysqli_query($con,"INSERT INTO customers_accts(`compcode`, `ccode`, `citemtype`, `cacctno`) 
-					values('$company', '$cCustCode','$citemtype','$cacctno')");
-					if(mysqli_error($con)!=""){
-						printf("Error creating customer acct codes: %s\n", mysqli_error($con));	
-					}
-
-					
-				}else{
-					$citemtype = $row['ccode'];
-					$cacctno = $_REQUEST['txtsalesacctD'.$citemtype];
-
-					mysqli_query($con,"Update customers_accts set `cacctno` = '$cacctno' where `compcode` = '$company' and `citemtype` = '$citemtype' and  `ccode` = '$cCustCode'");
-					if(mysqli_error($con)!=""){
-						//printf("Errormessage: %s\n", mysqli_error($con));	
-						printf("Error updating customer acct codes: %s\n", mysqli_error($con));	
-					}
-					
+				
+				mysqli_query($con,"INSERT INTO customers_accts(`compcode`, `ccode`, `citemtype`, `cacctno`) 
+				values('$company', '$cCustCode','$citemtype','$cacctno')");
+				if(mysqli_error($con)!=""){
+					printf("Error creating customer acct codes: %s\n", mysqli_error($con));	
 				}
-							
-			}
-			
-		}
 
-	
-//cntacts
-		$UnitRowCnt = $_REQUEST['hdncontlistcnt'];
-		//INSERT CONTACTS IF MERON
-		if($UnitRowCnt>=1){
-			mysqli_query($con,"DELETE FROM `customers_contacts` where `compcode` = '$company' and ccode = '$cCustCode'");
-			mysqli_query($con,"DELETE A FROM `customers_contacts_nos` A left join `customers_contacts` B on A.compcode=B.compcode and A.customers_contacts_cid=B.cid where A.`compcode` = '$company' and B.ccode = '$cCustCode'");
-			//echo $UnitRowCnt;
+				
+			}else{
+				$citemtype = $row['ccode'];
+				$cacctno = $_REQUEST['txtsalesacctD'.$citemtype];
 
-			$arridxcv = array();
-			$sql = "Select * From contacts_types where compcode='$company'";
-			$result=mysqli_query($con,$sql);
-			while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-			{
-				$arridxcv[] = $row['cid'];
-			}
-
-			for($z=1; $z<=$UnitRowCnt; $z++){
-				$cIConNme = $_REQUEST['txtConNme'.$z];
-				$cIConDes = $_REQUEST['txtConDes'.$z];
-				$cIConDept = $_REQUEST['txtConDept'.$z];
-										
-				if (!mysqli_query($con, "INSERT INTO `customers_contacts`(`compcode`, `ccode`, `cname`, `cdesignation`, `cdept`) VALUES ('$company','$cCustCode','$cIConNme','$cIConDes','$cIConDept')")) {
-					echo "Error Contacts: ".mysqli_error($con);
-				} else{
-					$xcid = mysqli_insert_id($con);
-
-					foreach($arridxcv as $rmnb){
-						$xcvlxcz = $_REQUEST['txtConAdd'.$rmnb.$z];
-						mysqli_query($con, "INSERT INTO `customers_contacts_nos`(`compcode`, `customers_contacts_cid`, `contact_type`, `cnumber`) VALUES ('$company','$xcid','$rmnb','$xcvlxcz')");
-					}
+				mysqli_query($con,"Update customers_accts set `cacctno` = '$cacctno' where `compcode` = '$company' and `citemtype` = '$citemtype' and  `ccode` = '$cCustCode'");
+				if(mysqli_error($con)!=""){
+					//printf("Errormessage: %s\n", mysqli_error($con));	
+					printf("Error updating customer acct codes: %s\n", mysqli_error($con));	
 				}
-	
+				
 			}
+						
 		}
 		
-		$DelAddrsCnt = $_REQUEST['hdnaddresscnt'];
-		//INSERT ADDRESS IF MERON
-		if($DelAddrsCnt>=1){
-			mysqli_query($con,"DELETE FROM `customers_address` where ccode = '$cCustCode'");
-			//echo $UnitRowCnt;
-			for($z=1; $z<=$DelAddrsCnt; $z++){
-				$cDelAddNo = $_REQUEST['txtdeladdno'.$z];
-				$cDelAddCt = $_REQUEST['txtdeladdcity'.$z]; 
-				$cDelAddSt = $_REQUEST['txtdeladdstt'.$z];
-				$cDelAddCr = $_REQUEST['txtdeladdcntr'.$z];
-				$cDelAddZp = $_REQUEST['txtdeladdzip'.$z];
-										
-				if (!mysqli_query($con, "INSERT INTO `customers_address`(`compcode`, `ccode`, `chouseno`, `ccity`, `cstate`, `ccountry`, `czip`) VALUES ('$company','$cCustCode','$cDelAddNo','$cDelAddCt','$cDelAddSt','$cDelAddCr','$cDelAddZp')")) {
-						if(mysqli_error($con)!=""){
-							echo "Error Addresses: ".mysqli_error($con);
-						}
+	}
+
+	//cntacts
+	$UnitRowCnt = $_REQUEST['hdncontlistcnt'];
+	//INSERT CONTACTS IF MERON
+	if($UnitRowCnt>=1){
+		mysqli_query($con,"DELETE FROM `customers_contacts` where `compcode` = '$company' and ccode = '$cCustCode'");
+		mysqli_query($con,"DELETE A FROM `customers_contacts_nos` A left join `customers_contacts` B on A.compcode=B.compcode and A.customers_contacts_cid=B.cid where A.`compcode` = '$company' and B.ccode = '$cCustCode'");
+		//echo $UnitRowCnt;
+
+		$arridxcv = array();
+		$sql = "Select * From contacts_types where compcode='$company'";
+		$result=mysqli_query($con,$sql);
+		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+		{
+			$arridxcv[] = $row['cid'];
+		}
+
+		for($z=1; $z<=$UnitRowCnt; $z++){
+			$cIConNme = $_REQUEST['txtConNme'.$z];
+			$cIConDes = $_REQUEST['txtConDes'.$z];
+			$cIConDept = $_REQUEST['txtConDept'.$z];
+									
+			if (!mysqli_query($con, "INSERT INTO `customers_contacts`(`compcode`, `ccode`, `cname`, `cdesignation`, `cdept`) VALUES ('$company','$cCustCode','$cIConNme','$cIConDes','$cIConDept')")) {
+				echo "Error Contacts: ".mysqli_error($con);
+			} else{
+				$xcid = mysqli_insert_id($con);
+
+				foreach($arridxcv as $rmnb){
+					$xcvlxcz = $_REQUEST['txtConAdd'.$rmnb.$z];
+					mysqli_query($con, "INSERT INTO `customers_contacts_nos`(`compcode`, `customers_contacts_cid`, `contact_type`, `cnumber`) VALUES ('$company','$xcid','$rmnb','$xcvlxcz')");
+				}
+			}
+
+		}
+	}
+		
+	$DelAddrsCnt = $_REQUEST['hdnaddresscnt'];
+	//INSERT ADDRESS IF MERON
+	if($DelAddrsCnt>=1){
+		mysqli_query($con,"DELETE FROM `customers_address` where compcode='$company' and ccode = '$cCustCode'");
+		//echo $UnitRowCnt;
+		for($z=1; $z<=$DelAddrsCnt; $z++){
+			$cDelAddNo = $_REQUEST['txtdeladdno'.$z];
+			$cDelAddCt = $_REQUEST['txtdeladdcity'.$z]; 
+			$cDelAddSt = $_REQUEST['txtdeladdstt'.$z];
+			$cDelAddCr = $_REQUEST['txtdeladdcntr'.$z];
+			$cDelAddZp = $_REQUEST['txtdeladdzip'.$z];
+									
+			if (!mysqli_query($con, "INSERT INTO `customers_address`(`compcode`, `ccode`, `chouseno`, `ccity`, `cstate`, `ccountry`, `czip`) VALUES ('$company','$cCustCode','$cDelAddNo','$cDelAddCt','$cDelAddSt','$cDelAddCr','$cDelAddZp')")) {
+					if(mysqli_error($con)!=""){
+						echo "Error Addresses: ".mysqli_error($con);
+					}
+			} 
+
+		}
+	}
+
+	//INSERT Childs
+	$ChildCnt = $_REQUEST['hdnchildcnt'];
+	if($ChildCnt>=1){
+		$sql = "SELECT norder FROM  customers_secondary where compcode='$company' and cmaincode = '$cCustCode' Order By norder DESC";
+		$result = mysqli_query($con, $sql);
+		$rowcount=mysqli_num_rows($result);
+
+		if($rowcount>0){
+			$row   = mysqli_fetch_row($result);	
+			$chilNUM = floatval($row[0]) + 1;			
+		}else{
+			$chilNUM = "0001";
+			$chilNUM = 1;
+		}
+
+		//echo $UnitRowCnt;
+		for($z=1; $z<=$ChildCnt; $z++){
+			$cChildNo = $_REQUEST['txtchildno'.$z];
+			$cChildName = $_REQUEST['txtchildname'.$z]; 
+			$cChildAdd = $_REQUEST['txtchildadd'.$z];
+			$cChildTin = $_REQUEST['txtchildtin'.$z];
+
+			if($cChildNo==""){
+				$chilnonxt = str_pad($chilNUM, 4, '0', STR_PAD_LEFT);
+				$chilnonxt = $cCustCode."-".$chilnonxt;
+
+				if (!mysqli_query($con, "INSERT INTO `customers_secondary`(`compcode`, `norder`, `cmaincode`, `ccode`, `cname`, `caddress`, `ctin`) VALUES ('$company','$chilNUM','$cCustCode','$chilnonxt','$cChildName','$cChildAdd','$cChildTin')")) {
+					if(mysqli_error($con)!=""){
+						echo "Error Addresses: ".mysqli_error($con);
+					}
 				} 
-	
+
+				$chilNUM = floatval($chilNUM) + 1;	
+
+			}else{
+				if (!mysqli_query($con, "UPDATE `customers_secondary` set `cname` = '$cChildName', `caddress` = '$cChildAdd', `ctin` = '$cChildTin' where `compcode` = '$company' and `cmaincode` = '$cCustCode' and `ccode` = '$cChildNo'")) {
+					if(mysqli_error($con)!=""){
+						echo "Error Addresses: ".mysqli_error($con);
+					}
+				} 
 			}
+
 		}
+	}
 		
-//INSERT LOGFILE
+	//INSERT LOGFILE
 	$compname = php_uname('n');
 	
 	mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 

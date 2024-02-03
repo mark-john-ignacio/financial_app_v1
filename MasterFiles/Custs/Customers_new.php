@@ -108,6 +108,7 @@
           <li class="active"><a href="#home">General</a></li>
           <li><a href="#menu1">Contacts List</a></li>
           <li><a href="#menu4">Addresses</a></li>
+          <li><a href="#menu5">Secondary Customers</a></li>
           <li><a href="#menu2">Groupings</a></li>
           <li><a href="#menu3">Accounting</a></li>
         </ul>
@@ -603,6 +604,20 @@
 
             </div>
 
+            <div id="menu5" class="tab-pane fade" style="padding-left:10px; padding-top:15px">                
+              <input type="button" value="Add Name" name="btnNewAddChild" id="btnNewAddChild" class="btn btn-primary btn-xs" onClick="adddelchildlist();">
+              <input name="hdnchildcnt" id="hdnchildcnt" type="hidden" value="0"> 
+              <br><br>
+              <table width="100%" border="0" cellpadding="2" id="myChildAddTable"> 
+                <tr>
+                  <th scope="col" width="10%">Code</th>
+                  <th scope="col" width="35%">Customer Name</th>
+                  <th scope="col" width="40%">Address</th>
+                  <th scope="col" width="15%">TIN</th>
+                </tr>
+              </table>
+            </div>
+
           </div><!-- tab-content -->
 
 
@@ -907,48 +922,51 @@
         var lastRow = tbl.length-1;											
         document.getElementById('hdncontlistcnt').value = lastRow;
 
-
         var tbldl = document.getElementById('myDelAddTable').getElementsByTagName('tr');
         var lastRowdl = tbldl.length-1;
         document.getElementById('hdnaddresscnt').value = lastRowdl;	
+
+        var tbld2 = document.getElementById('myChildAddTable').getElementsByTagName('tr');
+        var lastRowdl2= tbld2.length-1;
+        document.getElementById('hdnchildcnt').value = lastRowdl2;
                                                   
         var form = $("#frmITEM");
         var formdata = form.serialize();
         $.ajax({
-        url: 'Customers_newsave.php',
-        type: 'POST',
-        async: false,
-        data: formdata,
-        beforeSend: function(){
-          $("#AlertMsg").html("<b>SAVING NEW CUSTOMER: </b> Please wait a moment...");
-          $("#AlertModal").modal('show');
-        },
-        success: function(data) {
-          if(data.trim()=="True"){
-            $("#AlertMsg").html("<b>SUCCESS: </b>Succesfully saved! <br><br> Loading new customer... <br> Please wait!");
-                          
-            setTimeout(function() {
-              $("#AlertMsg").html("");
-                $('#AlertModal').modal('hide');
+          url: 'Customers_newsave.php',
+          type: 'POST',
+          async: false,
+          data: formdata,
+          beforeSend: function(){
+            $("#AlertMsg").html("<b>SAVING NEW CUSTOMER: </b> Please wait a moment...");
+            $("#AlertModal").modal('show');
+          },
+          success: function(data) {
+            if(data.trim()=="True"){
+              $("#AlertMsg").html("<b>SUCCESS: </b>Succesfully saved! <br><br> Loading new customer... <br> Please wait!");
                             
-                $("#txtcitemno").val($("#txtccode").val());
-                  $("#frmedit").submit();
-                }, 3000); // milliseconds = 3seconds
-                          
+              setTimeout(function() {
+                $("#AlertMsg").html("");
+                  $('#AlertModal').modal('hide');
+                              
+                  $("#txtcitemno").val($("#txtccode").val());
+                    $("#frmedit").submit();
+                  }, 3000); // milliseconds = 3seconds
+                            
+              }
+            else{
+              $("#AlertMsg").html(data);	
             }
-          else{
-            $("#AlertMsg").html(data);	
+          },
+          error: function(){
+            $("#AlertMsg").html("");
+            $("#AlertModal").modal('hide');
+                      
+            $("#itmcode_err").html("<b><font color='red'>ERROR: </font></b> Unable to save new customer!");
+            $("#itmcode_err").show();
+                      
           }
-        },
-        error: function(){
-          $("#AlertMsg").html("");
-          $("#AlertModal").modal('hide');
-                    
-          $("#itmcode_err").html("<b><font color='red'>ERROR: </font></b> Unable to save new customer!");
-          $("#itmcode_err").show();
-                    
-        }
-          });							
+        });							
     });
     
       $("#txtcEmail").on("blur", function() {
@@ -1234,5 +1252,58 @@
         tempdeladddelt.id = "row_" + x + "_delete";
       }
   }
+
+  function adddelchildlist(){
+		var tbl = document.getElementById('myChildAddTable').getElementsByTagName('tr');
+		var lastRow = tbl.length;
+
+		var a=document.getElementById('myChildAddTable').insertRow(-1);
+		var b=a.insertCell(0);
+		var c=a.insertCell(1);
+		var d=a.insertCell(2);
+		var e=a.insertCell(3);
+		var f=a.insertCell(4);
+		
+		b.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildno"+lastRow+"' name='txtchildno"+lastRow+"' value='' readonly></div>";
+		c.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildname"+lastRow+"' name='txtchildname"+lastRow+"' value='' required> </div>";
+		d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildadd"+lastRow+"' name='txtchildadd"+lastRow+"' value=''> </div>";
+		e.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildtin"+lastRow+"' name='txtchildtin"+lastRow+"' value=''> </div>";
+
+		f.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRowChild(this);\"/></div>";
+		
+	}
+
+	function deleteRowChild(r) {
+		var tbl = document.getElementById('myChildAddTable').getElementsByTagName('tr');
+		var lastRow = tbl.length;
+		var i=r.parentNode.parentNode.parentNode.rowIndex;
+		//alert(i)
+		document.getElementById('myChildAddTable').deleteRow(i);
+		var lastRow = tbl.length;
+		var z; //for loop counter changing textboxes ID;
+		
+			for (z=i+1; z<=lastRow; z++){
+				var tempchildno = document.getElementById('txtchildno' + z);
+				var tempchildnme = document.getElementById('txtchildname' + z);
+				var tempchildadd = document.getElementById('txtchildadd' + z);
+				var tempchildtin = document.getElementById('txtchildtin' + z);
+				var tempchilddel = document.getElementById('row_' + z + '_delete');
+				
+				var x = z-1;
+				tempchildno.id = "txtchildno" + x;
+				tempchildno.name = "txtchildno" + x;
+
+				tempchildnme.id = "txtchildname" + x;
+				tempchildnme.name = "txtchildname" + x;
+
+				tempchildadd.id = "txtchildadd" + x;
+				tempchildadd.name = "txtchildadd" + x;
+
+				tempchildtin.id = "txtchildtin" + x;
+				tempchildtin.name = "txtchildtin" + x;
+
+				tempchilddel.id = "row_" + x + "_delete";
+			}
+	}
 
 </script>

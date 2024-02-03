@@ -195,6 +195,7 @@
 					<li class="active"><a href="#home">General</a></li>
 					<li><a href="#menu1">Contacts List</a></li>
 					<li><a href="#menu4">Addresses</a></li>
+					<li><a href="#menu5">Secondary Customers</a></li>
 					<li><a href="#menu2">Groupings</a></li>
 					<li><a href="#menu3">Accounting</a></li>
 				</ul>
@@ -730,7 +731,7 @@
 							</tr>
 							<?php
 								$cntrstrdl = 0;
-								$qrycontdl = "Select * From customers_address where ccode = '$citemno' Order by nidentity";
+								$qrycontdl = "Select * From customers_address where compcode='$company' and ccode = '$citemno' Order by nidentity";
 								$rowcontdl = mysqli_query($con, $qrycontdl) or die(mysqli_error($con));
 								while($rowdl = mysqli_fetch_array($rowcontdl, MYSQLI_ASSOC))
 								{
@@ -749,7 +750,38 @@
 							?>
 						</table>
 
-					</div>						
+					</div>		
+					
+					<div id="menu5" class="tab-pane fade" style="padding-left:10px; padding-top:15px">                
+						<input type="button" value="Add Name" name="btnNewAddChild" id="btnNewAddChild" class="btn btn-primary btn-xs" onClick="adddelchildlist();">
+						<input name="hdnchildcnt" id="hdnchildcnt" type="hidden" value="0"> 
+						<br><br>
+						<table width="100%" border="0" cellpadding="2" id="myChildAddTable"> 
+							<tr>
+								<th scope="col" width="10%">Code</th>
+								<th scope="col" width="35%">Customer Name</th>
+								<th scope="col" width="40%">Address</th>
+								<th scope="col" width="15%">TIN</th>
+							</tr>
+							<?php
+								$cntrstrdl = 0;
+								$qrycontdl = "Select * From customers_secondary where compcode='$company' and cmaincode = '$citemno' Order by norder ASC";
+								$rowcontdl = mysqli_query($con, $qrycontdl) or die(mysqli_error($con));
+								while($rowdl = mysqli_fetch_array($rowcontdl, MYSQLI_ASSOC))
+								{
+									$cntrstrdl = $cntrstrdl + 1;
+							?>
+							<tr>
+								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildno<?=$cntrstrdl?>' name='txtchildno<?=$cntrstrdl?>' value='<?=$rowdl['ccode']?>' readonly></div></td>
+								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildname<?=$cntrstrdl?>' name='txtchildname<?=$cntrstrdl?>' value='<?=$rowdl['cname']?>' required> </div></td>
+								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildadd<?=$cntrstrdl?>' name='txtchildadd<?=$cntrstrdl?>' value='<?=$rowdl['caddress']?>'> </div></td>
+								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildtin<?=$cntrstrdl?>' name='txtchildtin<?=$cntrstrdl?>' value='<?=$rowdl['ctin']?>'> </div></td>
+							</tr>	
+							<?php
+								}
+							?>
+						</table>
+					</div>
 
 				</div>
 
@@ -1051,69 +1083,71 @@
 
 		});
 
-						$("#frmCust").on('submit', function (e) {
-								e.preventDefault();
-								var tbl = document.getElementById('myContactDetTable').getElementsByTagName('tr');
-								var lastRow = tbl.length-1;
-								document.getElementById('hdncontlistcnt').value = lastRow;
-								//alert(lastRow);
+		$("#frmCust").on('submit', function (e) {
+			e.preventDefault();
+			var tbl = document.getElementById('myContactDetTable').getElementsByTagName('tr');
+			var lastRow = tbl.length-1;
+			document.getElementById('hdncontlistcnt').value = lastRow;
+			//alert(lastRow);
 
-								var tbldl = document.getElementById('myDelAddTable').getElementsByTagName('tr');
-								var lastRowdl = tbldl.length-1;
-								document.getElementById('hdnaddresscnt').value = lastRowdl;			
+			var tbldl = document.getElementById('myDelAddTable').getElementsByTagName('tr');
+			var lastRowdl = tbldl.length-1;
+			document.getElementById('hdnaddresscnt').value = lastRowdl;		
+						
+			var tbld2 = document.getElementById('myChildAddTable').getElementsByTagName('tr');
+			var lastRowdl2= tbld2.length-1;
+			document.getElementById('hdnchildcnt').value = lastRowdl2;	
+													
+			var formx = document.getElementById("frmCust");
+			var formData = new FormData(formx);
 
-							  var formx = document.getElementById("frmCust");
-								var formData = new FormData(formx);
+			$.ajax({
+				type: 'post',
+				url: 'Customers_editsave.php',
+				data: formData,
+				contentType: false,
+				processData: false,
+				async:false,
+				beforeSend: function(){
+					$("#AlertMsg").html("<b>UPDATING CUSTOMER: </b> Please wait a moment...");
+					$("#AlertModal").modal('show');
+				},
+				success: function(data) {
 
-							//alert($("#frmCust").serialize());
+					if(data.trim()=="True" || data.trim()=="Size" || data.trim()=="NO"){
+						if(data.trim()=="True"){
+							$("#AlertMsg").html("<b>SUCCESS: </b>Succesfully updated! <br><br> Loading supplier details... <br> Please wait!");				
+						}else if(data.trim()=="Size"){
+							$("#AlertMsg").html("<b>SUCCESS: </b>Succesfully updated<br><br> Invalid Image Type or Size is too big! <br><br> Loading supplier details... <br> Please wait!");				
+						}
+						else if(data.trim()=="NO"){
+							$("#AlertMsg").html("<b>SUCCESS: </b>Succesfully updated <br><br> NO new image to be uploaded! <br><br> Loading supplier details... <br> Please wait!");				
+						}
+						
+						setTimeout(function() {
+							$("#AlertMsg").html("");
+							$('#AlertModal').modal('hide');
+							
+							$("#txtcitemno").val($("#txtccode").val());
+							$("#frmedit").submit();
+						}, 3000); // milliseconds = 3seconds
+						
+					}
+					else{
+						$("#AlertMsg").html(data);	
+					}
+				},
+				error: function(){
+					$("#AlertMsg").html("");
+					$("#AlertModal").modal('hide');
+					
+					$("#itmcode_err").html("<b><font color='red'>ERROR: </font></b> Unable to update customer!");
+					$("#itmcode_err").show();
+					
+				}
+			});							
 
-							  $.ajax({
-								type: 'post',
-								url: 'Customers_editsave.php',
-								data: formData,
-								contentType: false,
-								processData: false,
-								async:false,
-								beforeSend: function(){
-								  	$("#AlertMsg").html("<b>UPDATING CUSTOMER: </b> Please wait a moment...");
-									$("#AlertModal").modal('show');
-								},
-								success: function(data) {
-
-										if(data.trim()=="True" || data.trim()=="Size" || data.trim()=="NO"){
-											if(data.trim()=="True"){
-									 			$("#AlertMsg").html("<b>SUCCESS: </b>Succesfully updated! <br><br> Loading supplier details... <br> Please wait!");				
-											}else if(data.trim()=="Size"){
-												$("#AlertMsg").html("<b>SUCCESS: </b>Succesfully updated<br><br> Invalid Image Type or Size is too big! <br><br> Loading supplier details... <br> Please wait!");				
-											}
-											else if(data.trim()=="NO"){
-												$("#AlertMsg").html("<b>SUCCESS: </b>Succesfully updated <br><br> NO new image to be uploaded! <br><br> Loading supplier details... <br> Please wait!");				
-											}
-											
-											setTimeout(function() {
-											  $("#AlertMsg").html("");
-											  $('#AlertModal').modal('hide');
-											  
-											  $("#txtcitemno").val($("#txtccode").val());
-											  $("#frmedit").submit();
-											}, 3000); // milliseconds = 3seconds
-											
-										}
-										else{
-											$("#AlertMsg").html(data);	
-										}
-								},
-								error: function(){
-									$("#AlertMsg").html("");
-									$("#AlertModal").modal('hide');
-									
-							  		$("#itmcode_err").html("<b><font color='red'>ERROR: </font></b> Unable to update customer!");
-									$("#itmcode_err").show();
-								  
-								}
-							  });							
-
-						});
+		});
 
 		//Checking of uploaded file.. must be image
 		$("#file").change(function() {
@@ -1419,7 +1453,7 @@
 			for (z=i+1; z<=lastRow; z++){
 				var tempdeladdno = document.getElementById('txtdeladdno' + z);
 				var tempdeladdcity = document.getElementById('txtdeladdcity' + z);
-						var tempdeladdstt = document.getElementById('txtdeladdstt' + z);
+				var tempdeladdstt = document.getElementById('txtdeladdstt' + z);
 				var tempdeladdntr = document.getElementById('txtdeladdcntr' + z);
 				var tempdeladdzip = document.getElementById('txtdeladdzip' + z);
 				var tempdeladddelt = document.getElementById('row_' + z + '_delete');
@@ -1429,8 +1463,8 @@
 				tempdeladdno.name = "txtdeladdno" + x;
 				tempdeladdcity.id = "txtdeladdcity" + x;
 				tempdeladdcity.name = "txtdeladdcity" + x;
-					tempdeladdstt.id = "txtdeladdstt" + x;
-						tempdeladdstt.name = "txtdeladdstt" + x;
+				tempdeladdstt.id = "txtdeladdstt" + x;
+				tempdeladdstt.name = "txtdeladdstt" + x;
 				tempdeladdntr.id = "txtdeladdcntr" + x;
 				tempdeladdntr.name = "txtdeladdcntr" + x;
 				tempdeladdzip.id = "txtdeladdzip" + x;
@@ -1439,8 +1473,58 @@
 			}
 	}
 
-	function copyto(){
+	function adddelchildlist(){
+		var tbl = document.getElementById('myChildAddTable').getElementsByTagName('tr');
+		var lastRow = tbl.length;
 
+		var a=document.getElementById('myChildAddTable').insertRow(-1);
+		var b=a.insertCell(0);
+		var c=a.insertCell(1);
+		var d=a.insertCell(2);
+		var e=a.insertCell(3);
+		var f=a.insertCell(4);
+		
+		b.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildno"+lastRow+"' name='txtchildno"+lastRow+"' value='' readonly></div>";
+		c.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildname"+lastRow+"' name='txtchildname"+lastRow+"' value='' required> </div>";
+		d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildadd"+lastRow+"' name='txtchildadd"+lastRow+"' value=''> </div>";
+		e.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildtin"+lastRow+"' name='txtchildtin"+lastRow+"' value=''> </div>";
+
+		f.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRowChild(this);\"/></div>";
+		
 	}
 
-</script>
+	function deleteRowChild(r) {
+		var tbl = document.getElementById('myChildAddTable').getElementsByTagName('tr');
+		var lastRow = tbl.length;
+		var i=r.parentNode.parentNode.parentNode.rowIndex;
+		//alert(i)
+		document.getElementById('myChildAddTable').deleteRow(i);
+		var lastRow = tbl.length;
+		var z; //for loop counter changing textboxes ID;
+		
+			for (z=i+1; z<=lastRow; z++){
+				var tempchildno = document.getElementById('txtchildno' + z);
+				var tempchildnme = document.getElementById('txtchildname' + z);
+				var tempchildadd = document.getElementById('txtchildadd' + z);
+				var tempchildtin = document.getElementById('txtchildtin' + z);
+				var tempchilddel = document.getElementById('row_' + z + '_delete');
+				
+				var x = z-1;
+				tempchildno.id = "txtchildno" + x;
+				tempchildno.name = "txtchildno" + x;
+
+				tempchildnme.id = "txtchildname" + x;
+				tempchildnme.name = "txtchildname" + x;
+
+				tempchildadd.id = "txtchildadd" + x;
+				tempchildadd.name = "txtchildadd" + x;
+
+				tempchildtin.id = "txtchildtin" + x;
+				tempchildtin.name = "txtchildtin" + x;
+
+				tempchilddel.id = "row_" + x + "_delete";
+			}
+	}
+
+
+</script> 
