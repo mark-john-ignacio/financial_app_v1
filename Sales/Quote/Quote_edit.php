@@ -21,7 +21,7 @@
 	$company = $_SESSION['companyid'];
 
 
-	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.cpricever,c.cname as cdelname from quote a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join customers c on a.compcode=c.compcode and a.cdelcode=c.cempid where a.ctranno = '$txtctranno' and a.compcode='$company'");
+	$sqlhead = mysqli_query($con,"select a.*,b.cname,b.cpricever,c.cname as cdelname from quote a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join customers_secondary c on a.compcode=c.compcode and a.cdelcode=c.ccode where a.ctranno = '$txtctranno' and a.compcode='$company'");
 
 	/*
 	function listcurrencies(){ //API for currency list
@@ -1061,6 +1061,66 @@ else{
 				
 				$('#txtremarks').focus();
 							
+			}
+		
+		});
+
+		$("#txtcustiddel").keyup(function(event){
+			if(event.keyCode == 13){
+			
+				var dInput = this.value;
+				
+				$.ajax({
+					type:'post',
+					url:'../get_custchildid.php',
+					data: 'c_id='+ dInput + '&m_id=' + $("#txtcustid").val(),                 
+					success: function(value){
+						//alert(value);
+						if(value!=""){
+							var data = value.split(":");
+							$('#txtcustdel').val(data[1]);								
+						}
+						else{
+							$('#txtcustiddel').val("");
+							$('#txtcustdel').val("");								
+						}
+					},
+					error: function(){
+						$('#txtcustiddel').val("");
+						$('#txtcustdel').val("");							
+					}
+				});
+
+			}
+			
+		});
+
+		//Search Cust name
+		$('#txtcustdel').typeahead({
+			autoSelect: true,
+			source: function(request, response) {
+				$.ajax({
+					url: "../th_customerdel.php",
+					dataType: "json",
+					data: {
+						query: $("#txtcustdel").val(), cmain: $("#txtcustid").val()
+					},
+					success: function (data) {
+						response(data);
+					}
+				});
+			},
+			displayText: function (item) {
+				return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+			},
+			highlighter: Object,
+			afterSelect: function(item) { 					
+							
+				$('#txtcustdel').val(item.value).change(); 
+				$("#txtcustiddel").val(item.id);
+				
+				$('#txtremarks').focus();				
+				
 			}
 		
 		});

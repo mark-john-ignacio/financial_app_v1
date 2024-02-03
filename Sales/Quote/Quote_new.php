@@ -741,26 +741,26 @@
 			
 				var dInput = this.value;
 				
-					$.ajax({
-						type:'post',
-						url:'../get_customerid.php',
-						data: 'c_id='+ dInput,                 
-						success: function(value){
-							//alert(value);
-							if(value!=""){
-								var data = value.split(":");
-								$('#txtcust').val(data[0]);								
-							}
-							else{
-								$('#c').val("");
-								$('#txtcustdel').val("");								
-							}
-						},
-						error: function(){
-							$('#txtcustdel').val("");
-							$('#txtcustdel').val("");							
+				$.ajax({
+					type:'post',
+					url:'../get_custchildid.php',
+					data: 'c_id='+ dInput + '&m_id=' + $("#txtcustid").val(),                 
+					success: function(value){
+						//alert(value);
+						if(value!=""){
+							var data = value.split(":");
+							$('#txtcustdel').val(data[1]);								
 						}
-					});
+						else{
+							$('#txtcustiddel').val("");
+							$('#txtcustdel').val("");								
+						}
+					},
+					error: function(){
+						$('#txtcustiddel').val("");
+						$('#txtcustdel').val("");							
+					}
+				});
 
 			}
 			
@@ -771,10 +771,10 @@
 			autoSelect: true,
 			source: function(request, response) {
 				$.ajax({
-					url: "../th_customer.php",
+					url: "../th_customerdel.php",
 					dataType: "json",
 					data: {
-						query: $("#txtcustdel").val()
+						query: $("#txtcustdel").val(), cmain: $("#txtcustid").val()
 					},
 					success: function (data) {
 						response(data);
