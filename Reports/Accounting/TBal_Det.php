@@ -31,7 +31,10 @@ function getcustsupp($tranno,$xmodule){
 	$sql = "";
 	switch ($xmodule) {
 		case "SI":
-			$sql = "select B.cname From sales A left join customers B on A.compcode=B.compcode and A.ccode=B.cempid where A.compcode='$company' and A.ctranno='$tranno' UNION ALL select B.cname From ntsales A left join customers B on A.compcode=B.compcode and A.ccode=B.cempid where A.compcode='$company' and A.ctranno='$tranno'";
+			$sql = "select B.cname From sales A left join customers B on A.compcode=B.compcode and A.ccode=B.cempid where A.compcode='$company' and A.ctranno='$tranno'";
+			break;
+		case "IN":
+			$sql = "select B.cname From ntsales A left join customers B on A.compcode=B.compcode and A.ccode=B.cempid where A.compcode='$company' and A.ctranno='$tranno'";
 			break;
 		case "DR":
 			$sql = "select B.cname From dr A left join customers B on A.compcode=B.compcode and A.ccode=B.cempid where A.compcode='$company' and A.ctranno='$tranno' UNION ALL select B.cname From ntdr A left join customers B on A.compcode=B.compcode and A.ccode=B.cempid where A.compcode='$company' and A.ctranno='$tranno'";
