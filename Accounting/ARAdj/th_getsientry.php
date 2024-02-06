@@ -68,7 +68,7 @@ require_once "../../Connection/connection_string.php";
 	}
 
 	//ITEMS ENTRY - SALES AND VATS - DEBIT
-	if($xcomp==1){ // Pag ung mismo may ari system ay Vatable
+	//if($xcomp==1){ // Pag ung mismo may ari system ay Vatable
 
 			$sql0 = "Select A.cacctcode,A.cacctdesc, ROUND(sum(A.ngross),2) as ngross
 			From (Select B.dcutdate, A.citemno, C.cacctid as cacctcode, C.cacctdesc, CASE WHEN E.lcompute=1 OR D.nrate<>0 Then ROUND(SUM(F.nqty*A.nprice)/(1 + (A.nrate/100)) ,2) Else SUM(F.nqty*A.nprice) END as ngross
@@ -129,7 +129,7 @@ require_once "../../Connection/connection_string.php";
 			}
 
 
-	}else{ // pag nde vatable no VAT dapat
+	/*}else{ // pag nde vatable no VAT dapat
 
 		$sql0 = "Select A.cacctcode,A.cacctdesc, sum(A.ngross) as ngross
 		From (Select C.cacctid as cacctcode,C.cacctdesc,SUM(F.nqty*A.nprice) as ngross
@@ -149,7 +149,7 @@ require_once "../../Connection/connection_string.php";
 		}
 
 
-	}
+	}*/
 
 	//CUSTOMERS ENTRY - RECEIVABLES CREDIT
 	if($cSIsalescodetype=="multiple"){
