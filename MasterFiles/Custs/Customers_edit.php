@@ -1379,10 +1379,10 @@
 	}
 
 	function addcontlist(){
-			var tbl = document.getElementById('myUnitTable').getElementsByTagName('tr');
+			var tbl = document.getElementById('myContactDetTable').getElementsByTagName('tr');
 			var lastRow = tbl.length;
 
-			var a=document.getElementById('myUnitTable').insertRow(-1);
+			var a=document.getElementById('myContactDetTable').insertRow(-1);
 			var b=a.insertCell(0);
 			var c=a.insertCell(1);
 			var d=a.insertCell(2);
