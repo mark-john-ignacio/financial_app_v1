@@ -71,12 +71,10 @@ require_once "../../Connection/connection_string.php";
 	//if($xcomp==1){ // Pag ung mismo may ari system ay Vatable
 
 			$sql0 = "Select A.cacctcode,A.cacctdesc, ROUND(sum(A.ngross),2) as ngross
-			From (Select B.dcutdate, A.citemno, C.cacctid as cacctcode, C.cacctdesc, CASE WHEN E.lcompute=1 OR D.nrate<>0 Then ROUND(SUM(F.nqty*A.nprice)/(1 + (A.nrate/100)) ,2) Else SUM(F.nqty*A.nprice) END as ngross
+			From (Select B.dcutdate, A.citemno, C.cacctid as cacctcode, C.cacctdesc, CASE WHEN A.nrate<>0 Then ROUND(SUM(F.nqty*A.nprice)/(1 + (A.nrate/100)) ,2) Else SUM(F.nqty*A.nprice) END as ngross
 			From ".$tbldtl." A 
 			left join ".$tblhdr." B on A.compcode=B.compcode and A.ctranno=B.ctranno 
 			left join accounts C on A.compcode=C.compcode and A.cacctcode=C.cacctno 
-			left join taxcode D on A.compcode=D.compcode and A.ctaxcode=D.ctaxcode 
-			left join vatcode E on B.compcode=E.compcode and B.cvatcode=E.cvatcode 
 			left join ".$tbldtlsr." F on A.compcode=F.compcode and A.citemno=F.citemno and A.nident=F.nrefident and F.ctranno='$SRtran'
 			where A.compcode='$company' and A.ctranno='$SItran' 
 			group by B.dcutdate,C.cacctid,C.cacctdesc,A.citemno) A Where IFNULL(A.ngross,0) <> 0";
@@ -232,16 +230,19 @@ require_once "../../Connection/connection_string.php";
 			$json2[] = $json;
 		}
 
-		$Sales_Ewt = getDefAcct("EWTREC");
 
-		$SID = $Sales_Ewt["id"];
-		$SNM = $Sales_Ewt["name"];
+		if(floatval($totewtamt)>0){
+			$Sales_Ewt = getDefAcct("EWTREC");
 
-		$json['cacctid'] = $SID;
-		$json['cacctdesc'] = $SNM;
-		$json['ndebit'] = 0;
-		$json['ncredit'] = $totewtamt;
-		$json2[] = $json;
+			$SID = $Sales_Ewt["id"];
+			$SNM = $Sales_Ewt["name"];
+
+			$json['cacctid'] = $SID;
+			$json['cacctdesc'] = $SNM;
+			$json['ndebit'] = 0;
+			$json['ncredit'] = $totewtamt;
+			$json2[] = $json;
+		}
 
 
 	}
