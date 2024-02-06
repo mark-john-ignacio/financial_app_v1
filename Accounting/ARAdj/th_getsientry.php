@@ -101,12 +101,10 @@ require_once "../../Connection/connection_string.php";
 				
 				$sqlvat = "Select IFNULL(Sum(A.nVat),0) as nVat
 				From (
-					Select B.dcutdate, A.citemno, ROUND((SUM(F.nqty*A.nprice)/(1 + (D.nrate/100))) * ((D.nrate/100)), 2) AS nVat
+					Select B.dcutdate, A.citemno, ROUND((SUM(F.nqty*A.nprice)/(1 + (A.nrate/100))) * ((A.nrate/100)), 2) AS nVat
 					From sales_t A 
 					left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno 
 					left join accounts C on A.compcode=C.compcode and A.cacctcode=C.cacctno 
-					left join taxcode D on A.compcode=D.compcode and A.ctaxcode=D.ctaxcode 
-					left join vatcode E on B.compcode=E.compcode and B.cvatcode=E.cvatcode
 					left join salesreturn_t F on A.compcode=F.compcode and A.citemno=F.citemno and A.nident=F.nrefident and F.ctranno='$SRtran'
 					where A.compcode='$company' and A.ctranno='$SItran'
 					group by B.dcutdate, A.citemno
