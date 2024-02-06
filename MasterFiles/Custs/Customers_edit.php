@@ -334,9 +334,9 @@
 									$cntrstrx = $cntrstrx + 1;
 							?>
 								<tr>
-									<td><div class="col-xs-12 nopadtopleft"><input type='text' class='required form-control input-sm' id='txtConNme<?php echo $cntrstrx;?>' name='txtConNme<?php echo $cntrstrx;?>' value='<?php echo $row['cname'];?>' required></div></td>
-									<td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConDes<?php echo $cntrstrx;?>' name='txtConDes<?php echo $cntrstrx;?>' value='<?php echo $row['cdesignation'];?>'> </div></td>
-									<td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConDept<?php echo $cntrstrx;?>' name='txtConDept<?php echo $cntrstrx;?>' value='<?php echo $row['cdept'];?>'> </div></td>
+									<td><div class="col-xs-12 nopadtopleft"><input type='text' class='required form-control input-sm' id='txtConNme<?php echo $cntrstrx;?>' name='txtConNme<?php echo $cntrstrx;?>' value="<?php echo $row['cname'];?>" required></div></td>
+									<td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConDes<?php echo $cntrstrx;?>' name='txtConDes<?php echo $cntrstrx;?>' value="<?php echo $row['cdesignation'];?>"> </div></td>
+									<td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConDept<?php echo $cntrstrx;?>' name='txtConDept<?php echo $cntrstrx;?>' value="<?php echo $row['cdept'];?>"> </div></td>
 									
 									<?php
 										foreach($arrcontctsdet as $ckdh){
@@ -347,11 +347,11 @@
 												}
 											}
 									?>
-									<td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConAdd<?=$ckdh['cid'].$cntrstrx;?>' name='txtConAdd<?=$ckdh['cid'].$cntrstrx;?>' value='<?=$dval?>'> </div></td>
+									<td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-sm' id='txtConAdd<?=$ckdh['cid'].$cntrstrx;?>' name='txtConAdd<?=$ckdh['cid'].$cntrstrx;?>' value="<?=$dval?>"> </div></td>
 									<?php
 										}
 									?>
-									<td><div class="col-xs-12 nopadtopleft"><input class='btn btn-danger btn-xs' type='button' id='row_<?php echo $cntrstrx;?>_delete' class='delete' value='Delete' onClick="deleteRowconts(this);"/></div></td>
+									<td><div class="col-xs-12 nopadtopleft"><input class='btn btn-danger btn-xs' type='button' id='row_<?php echo $cntrstrx;?>_delete' class='delete' value="Delete" onClick="deleteRowconts(this);"/></div></td>
 								</tr>
 							<?php
 								}
@@ -738,12 +738,12 @@
 									$cntrstrdl = $cntrstrdl + 1;
 							?>
 								<tr>
-									<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='required form-control input-sm' id='txtdeladdno<?php echo $cntrstrdl;?>' name='txtdeladdno<?php echo $cntrstrdl;?>' value='<?php echo $rowdl['chouseno'];?>' required></div></td>
-									<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtdeladdcity<?php echo $cntrstrdl;?>' name='txtdeladdcity<?php echo $cntrstrdl;?>' value='<?php echo $rowdl['ccity'];?>'> </div></td>
-									<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtdeladdstt<?php echo $cntrstrdl;?>' name='txtdeladdstt<?php echo $cntrstrdl;?>' value='<?php echo $rowdl['cstate'];?>'> </div></td>
-									<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtdeladdcntr<?php echo $cntrstrdl;?>' name='txtdeladdcntr<?php echo $cntrstrdl;?>' value='<?php echo $rowdl['ccountry'];?>'> </div></td>
-									<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtdeladdzip<?php echo $cntrstrdl;?>' name='txtdeladdzip<?php echo $cntrstrdl;?>' value='<?php echo $rowdl['czip'];?>'> </div></td>
-									<td><div class="col-xs-12 nopadtopleft" ><input class='btn btn-danger btn-xs' type='button' id='row_<?php echo $cntrstrdl;?>_delete' class='delete' value='Delete' onClick="deleteRowAddresss(this);"/></div></td>
+									<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='required form-control input-sm' id='txtdeladdno<?php echo $cntrstrdl;?>' name='txtdeladdno<?php echo $cntrstrdl;?>' value="<?php echo $rowdl['chouseno'];?>" required></div></td>
+									<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtdeladdcity<?php echo $cntrstrdl;?>' name='txtdeladdcity<?php echo $cntrstrdl;?>' value="<?php echo $rowdl['ccity'];?>"> </div></td>
+									<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtdeladdstt<?php echo $cntrstrdl;?>' name='txtdeladdstt<?php echo $cntrstrdl;?>' value="<?php echo $rowdl['cstate'];?>"> </div></td>
+									<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtdeladdcntr<?php echo $cntrstrdl;?>' name='txtdeladdcntr<?php echo $cntrstrdl;?>' value="<?php echo $rowdl['ccountry'];?>"> </div></td>
+									<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtdeladdzip<?php echo $cntrstrdl;?>' name='txtdeladdzip<?php echo $cntrstrdl;?>' value="<?php echo $rowdl['czip'];?>"> </div></td>
+									<td><div class="col-xs-12 nopadtopleft" ><input class='btn btn-danger btn-xs' type='button' id='row_<?php echo $cntrstrdl;?>_delete' class='delete' value="Delete" onClick="deleteRowAddresss(this);"/></div></td>
 								</tr>
 							<?php
 								}
@@ -777,14 +777,14 @@
 									$cntrstrdl = $cntrstrdl + 1;
 							?>
 							<tr nowrap>
-								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildno<?=$cntrstrdl?>' name='txtchildno<?=$cntrstrdl?>' value='<?=$rowdl['ccode']?>' readonly></div></td>
-								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildname<?=$cntrstrdl?>' name='txtchildname<?=$cntrstrdl?>' value='<?=$rowdl['cname']?>' required> </div></td>
-								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildadd<?=$cntrstrdl?>' name='txtchildadd<?=$cntrstrdl?>' value='<?=$rowdl['caddress']?>'> </div></td>
-								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildcity<?=$cntrstrdl?>' name='txtchildcity<?=$cntrstrdl?>' value='<?=$rowdl['ccity']?>'> </div></td>
-								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildstate<?=$cntrstrdl?>' name='txtchildstate<?=$cntrstrdl?>' value='<?=$rowdl['cstate']?>'> </div></td>
-								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildcountry<?=$cntrstrdl?>' name='txtchildcountry<?=$cntrstrdl?>' value='<?=$rowdl['ccountry']?>'> </div></td>
-								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildzip<?=$cntrstrdl?>' name='txtchildzip<?=$cntrstrdl?>' value='<?=$rowdl['czip']?>'> </div></td>
-								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildtin<?=$cntrstrdl?>' name='txtchildtin<?=$cntrstrdl?>' value='<?=$rowdl['ctin']?>'> </div></td>
+								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildno<?=$cntrstrdl?>' name='txtchildno<?=$cntrstrdl?>' value="<?=$rowdl['ccode']?>" readonly></div></td>
+								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildname<?=$cntrstrdl?>' name='txtchildname<?=$cntrstrdl?>' value="<?=$rowdl['cname']?>" required> </div></td>
+								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildadd<?=$cntrstrdl?>' name='txtchildadd<?=$cntrstrdl?>' value="<?=$rowdl['caddress']?>"> </div></td>
+								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildcity<?=$cntrstrdl?>' name='txtchildcity<?=$cntrstrdl?>' value="<?=$rowdl['ccity']?>"> </div></td>
+								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildstate<?=$cntrstrdl?>' name='txtchildstate<?=$cntrstrdl?>' value="<?=$rowdl['cstate']?>"> </div></td>
+								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildcountry<?=$cntrstrdl?>' name='txtchildcountry<?=$cntrstrdl?>' value="<?=$rowdl['ccountry']?>"> </div></td>
+								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildzip<?=$cntrstrdl?>' name='txtchildzip<?=$cntrstrdl?>' value="<?=$rowdl['czip']?>"> </div></td>
+								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildtin<?=$cntrstrdl?>' name='txtchildtin<?=$cntrstrdl?>' value="<?=$rowdl['ctin']?>"> </div></td>
 
 								<td id="sec_stat<?=$rowdl['nidentity']?>">
 									<div class="col-xs-12 nopadtopleft" >
@@ -1379,31 +1379,31 @@
 	}
 
 	function addcontlist(){
-			var tbl = document.getElementById('myContactDetTable').getElementsByTagName('tr');
-			var lastRow = tbl.length;
+		var tbl = document.getElementById('myContactDetTable').getElementsByTagName('tr');
+		var lastRow = tbl.length;
 
-			var a=document.getElementById('myContactDetTable').insertRow(-1);
-			var b=a.insertCell(0);
-			var c=a.insertCell(1);
-			var d=a.insertCell(2);
+		var a=document.getElementById('myContactDetTable').insertRow(-1);
+		var b=a.insertCell(0);
+		var c=a.insertCell(1);
+		var d=a.insertCell(2);
 
-			b.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConNme"+lastRow+"' name='txtConNme"+lastRow+"' value='' required></div>";
-			c.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConDes"+lastRow+"' name='txtConDes"+lastRow+"' value=''> </div>";
-			d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConDept"+lastRow+"' name='txtConDept"+lastRow+"' value=''> </div>";
+		b.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConNme"+lastRow+"' name='txtConNme"+lastRow+"' value='' required></div>";
+		c.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConDes"+lastRow+"' name='txtConDes"+lastRow+"' value=''> </div>";
+		d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConDept"+lastRow+"' name='txtConDept"+lastRow+"' value=''> </div>";
 
-			$cntng = 2;
-			var xz = $("#conctsadddet").val();
-				$.each(jQuery.parseJSON(xz), function() { 
-					$cntng = $cntng + 1;
-					var e=a.insertCell($cntng);
+		$cntng = 2;
+		var xz = $("#conctsadddet").val();
+			$.each(jQuery.parseJSON(xz), function() { 
+				$cntng = $cntng + 1;
+				var e=a.insertCell($cntng);
 
-					e.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConAdd"+this['cid']+lastRow+"' name='txtConAdd"+this['cid']+lastRow+"' value=''> </div>";
+				e.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConAdd"+this['cid']+lastRow+"' name='txtConAdd"+this['cid']+lastRow+"' value=''> </div>";
 
-				});
+			});
 
-			$cntng = $cntng + 1
-			var h=a.insertCell($cntng);
-			h.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input class='btn btn-danger btn-block btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRowconts(this);\"/></div>";
+		$cntng = $cntng + 1
+		var h=a.insertCell($cntng);
+		h.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input class='btn btn-danger btn-block btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRowconts(this);\"/></div>";
 			
 	}
 
