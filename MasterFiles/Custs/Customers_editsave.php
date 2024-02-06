@@ -128,9 +128,9 @@
 		}
 
 		for($z=1; $z<=$UnitRowCnt; $z++){
-			$cIConNme = $_REQUEST['txtConNme'.$z];
-			$cIConDes = $_REQUEST['txtConDes'.$z];
-			$cIConDept = $_REQUEST['txtConDept'.$z];
+			$cIConNme = mysql_real_escape_string($con,$_REQUEST['txtConNme'.$z]);
+			$cIConDes = mysql_real_escape_string($con,$_REQUEST['txtConDes'.$z]); 
+			$cIConDept = mysql_real_escape_string($con,$_REQUEST['txtConDept'.$z]);
 									
 			if (!mysqli_query($con, "INSERT INTO `customers_contacts`(`compcode`, `ccode`, `cname`, `cdesignation`, `cdept`) VALUES ('$company','$cCustCode','$cIConNme','$cIConDes','$cIConDept')")) {
 				echo "Error Contacts: ".mysqli_error($con);
@@ -138,7 +138,7 @@
 				$xcid = mysqli_insert_id($con);
 
 				foreach($arridxcv as $rmnb){
-					$xcvlxcz = $_REQUEST['txtConAdd'.$rmnb.$z];
+					$xcvlxcz = mysql_real_escape_string($con,$_REQUEST['txtConAdd'.$rmnb.$z]);
 					mysqli_query($con, "INSERT INTO `customers_contacts_nos`(`compcode`, `customers_contacts_cid`, `contact_type`, `cnumber`) VALUES ('$company','$xcid','$rmnb','$xcvlxcz')");
 				}
 			}
