@@ -113,9 +113,9 @@ $company = $_SESSION['companyid'];
 		}
 
 		for($z=1; $z<=$UnitRowCnt; $z++){
-			$cIConNme = addslashes($_REQUEST['txtConNme'.$z]);
-			$cIConDes = addslashes($_REQUEST['txtConDes'.$z]); 
-			$cIConDept = addslashes($_REQUEST['txtConDept'.$z]);
+			$cIConNme = str_replace("'","\'",$_REQUEST['txtConNme'.$z]);
+			$cIConDes = str_replace("'","\'",$_REQUEST['txtConDes'.$z]); 
+			$cIConDept = str_replace("'","\'",$_REQUEST['txtConDept'.$z]);
 
 									
 			if (!mysqli_query($con, "INSERT INTO `customers_contacts`(`compcode`, `ccode`, `cname`, `cdesignation`, `cdept`) VALUES ('$company','$cCustCode','$cIConNme','$cIConDes','$cIConDept')")) {
@@ -124,7 +124,7 @@ $company = $_SESSION['companyid'];
 				$xcid = mysqli_insert_id($con);
 
 				foreach($arridxcv as $rmnb){
-					$xcvlxcz = addslashes($_REQUEST['txtConAdd'.$rmnb.$z]);
+					$xcvlxcz = str_replace("'","\'",$_REQUEST['txtConAdd'.$rmnb.$z]);
 					mysqli_query($con, "INSERT INTO `customers_contacts_nos`(`compcode`, `customers_contacts_cid`, `contact_type`, `cnumber`) VALUES ('$company','$xcid','$rmnb','$xcvlxcz')");
 				}
 			}
