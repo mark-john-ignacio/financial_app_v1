@@ -31,6 +31,8 @@ require_once "../../Connection/connection_string.php";
 
 
 	$json = array();
+	$json2 = array();
+
 	if (mysqli_num_rows($result)!=0){
 
 		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
@@ -75,16 +77,7 @@ require_once "../../Connection/connection_string.php";
 
 		}
 
-		if(count($json)==0){
-			$json['cpono'] = "NONE";
-			$json2[] = $json;
-		}
-	}
-	else{
-		$json['cpono'] = "NONE";
-		$json2[] = $json;
-	}
-	
+	}	
 	
 	echo json_encode($json2);
 

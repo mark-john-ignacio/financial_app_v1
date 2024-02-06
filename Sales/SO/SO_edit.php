@@ -1163,19 +1163,19 @@ file_name.map(({name, ext}, i) => {
 			
 			$.ajax({
 				type:'post',
-				url:'../get_customerid.php',
-				data: 'c_id='+ $(this).val(),                 
+				url:'../get_custchildid.php',
+				data: 'c_id='+ $(this).val() + 'm_id='+ $("#txtcustid").val(),                 
 				success: function(value){
 					if(value!=""){				 
 						var data = value.split(":");
 
-						$('#txtdelcust').val(data[0]); 
+						$('#txtdelcust').val(data[1]); 
 						
-						$('#txtchouseno').val(data[5]);
-						$('#txtcCity').val(data[6]);
-						$('#txtcState').val(data[7]);
-						$('#txtcCountry').val(data[8]);
-						$('#txtcZip').val(data[9]);
+						$('#txtchouseno').val(data[2]);
+						$('#txtcCity').val(data[3]);
+						$('#txtcState').val(data[4]);
+						$('#txtcCountry').val(data[5]);
+						$('#txtcZip').val(data[6]);
 					}
 				}
 			});
@@ -1183,13 +1183,15 @@ file_name.map(({name, ext}, i) => {
 	});
 	
 	$('#txtdelcust').typeahead({
+		items: "all",
 		autoSelect: true,
+		fitToElement: true,
 		source: function(request, response) {
 			$.ajax({
-				url: "../th_customer.php",
+				url: "../th_customerdel.php",
 				dataType: "json",
 				data: {
-					query: $("#txtdelcust").val()
+					query: request, cmain: $("#txtcustid").val()
 				},
 				success: function (data) {
 					response(data);
@@ -1197,20 +1199,26 @@ file_name.map(({name, ext}, i) => {
 			});
 		},
 		displayText: function (item) {
-			return '<div style="border-top:1px solid gray; width: 300px"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+			//if(item.cname != item.value){
+			//	return '<div style="border-top:1px solid gray;"><span>' + item.id + '</span><br><small>' + item.value + " / " + item.cname + "</small></div>";
+			//}else{
+				return '<div style="border-top:1px solid gray;"><span>' + item.id + '</span><br><small>' + item.value + "</small></div>";
+		//	}
 		},
 		highlighter: Object,
 		afterSelect: function(item) { 					
 						
 			$('#txtdelcust').val(item.value).change(); 
-			$("#txtdelcustid").val(item.id);			
-
-			$('#txtchouseno').val(item.chouseno);
+			$("#txtdelcustid").val(item.id);
+			
+			$('#txtchouseno').val(item.cadd);
 			$('#txtcCity').val(item.ccity);
 			$('#txtcState').val(item.cstate);
 			$('#txtcCountry').val(item.ccountry);
 			$('#txtcZip').val(item.czip);
 							
+			$('#hdnvalid').val("YES");
+			
 		}
 	
 	});

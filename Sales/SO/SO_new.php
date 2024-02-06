@@ -100,488 +100,488 @@ function listcurrencies(){ //API for currency list
 	<input type="hidden" value='<?=json_encode(@$arrtaxlist)?>' id="hdntaxcodes">  
 	<input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
 
-
 	<form action="SO_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;" enctype="multipart/form-data">
-		<fieldset>
-    	<legend>New Sales Order</legend>	
-				<div class="col-xs-12 nopadwdown"><b>Sales Order Information</b></div>
-				<ul class="nav nav-tabs">
-						<li class="active"><a href="#home">Order Details</a></li>
-						<li><a href="#menu1">Delivered To</a></li>
-						<li><a href="#attc">Attachments</a></li>	
-				</ul>
- 
-				<div class="tab-content">  
-					<!--
-					--
-					-- Home Panel
-					--
-					-->
-						<div id="home" class="tab-pane fade in active" style="padding-left:5px; padding-top: 10px">
-									
-							<table width="100%" border="0">
-								<tr>
-									<tH width="150">&nbsp;Customer:</tH>
-									<td style="padding:2px">
-										<div class="col-xs-12 nopadding">
-												<div class="col-xs-3 nopadding">
-													<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
-														<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
-														<input type="hidden" id="hdnpricever" name="hdnpricever" value="">
-														<input type="hidden" id="hdndefVAT" name="hdndefVAT" value="">
-												</div>
-
-												<div class="col-xs-8 nopadwleft">
-														<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
-													</div> 
-										</div>
-									</td>
-									<tH width="150">PO No.:</tH>
-									<td style="padding:2px;">
-									<div class="col-xs-11 nopadding">
-										<input type='text' class="form-control input-sm" id="txtcPONo" name="txtcPONo" value="" autocomplete="off" />
-									</div>
-									</td>
-								</tr>
-								<tr>
-									<tH width="150">&nbsp;Currency:</tH>
-									<td style="padding:2px">
-										<div class="col-xs-6 nopadding">
-											<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">							
-												<?php
-														$nvaluecurrbase = "";	
-														$nvaluecurrbasedesc = "";	
-														$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
-														
-															if (mysqli_num_rows($result)!=0) {
-																$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
-																
-																$nvaluecurrbase = $all_course_data['cvalue']; 
-																	
-															}
-															else{
-																$nvaluecurrbase = "";
-															}
-									
-															/*
-														$objcurrs = listcurrencies();
-														$objrows = json_decode($objcurrs, true);
-																	
-														foreach($objrows as $rows){
-															if ($nvaluecurrbase==$rows['currencyCode']) {
-																$nvaluecurrbasedesc = $rows['currencyName'];
-															}
-
-															if($rows['countryCode']!=="Crypto" && $rows['currencyName']!==null){
-
-																*/
-
-																$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
-																if (mysqli_num_rows($sqlhead)!=0) {
-																	while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-												?>
-															<option value="<?=$rows['id']?>" <?php if ($nvaluecurrbase==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
-												<?php
-																	}	
-																}
-												?>
-											</select>
-												<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?php echo $nvaluecurrbase; ?>"> 	
-												<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?php echo $nvaluecurrbasedesc; ?>"> 
-										</div>
-										<div class="col-xs-2 nopadwleft">
-											<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
-										</div>
-
-										<div class="col-xs-4" id="statgetrate" style="padding: 4px !important"> 
-													
-										</div>
-									</td>
-
-									<tH width="150">PO Date:</tH>
-									<td style="padding:2px;">
-										<div class="col-xs-11 nopadding">
-											<input type='text' class="form-control input-sm" id="date_PO" name="date_PO" value="<?php echo $ddeldate; ?>" />
-										</div>
-									</td>
-								</tr>
-								<tr>
-										<tH width="150">&nbsp;Remarks:</tH>
-										<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div>
-										</td>
-										<tH width="150">Delivery Date:</tH>
-									<td style="padding:2px;">
-										<div class="col-xs-11 nopadding">
-											<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $ddeldate; ?>" />
-										</div>
-									</td>	
-										
-								</tr>
-								<tr>
-									<tH rowspan="3" width="150">&nbsp;Special Instructions:</tH>
-									<td rowspan="3" style="padding:2px"><div class="col-xs-11 nopadding">
-										<textarea rows="3"  class="form-control input-sm" name="txtSpecIns"  id="txtSpecIns"></textarea>
-											</div>
-									</td>
-									<tH width="150">Sales Type:</th>
-										<td style="padding:2px">
-											<div class="col-xs-11 nopadding">
-												<select id="selsityp" name="selsityp" class="form-control input-sm selectpicker"  tabindex="1">
-																	<option value="Goods">Goods</option>
-																	<option value="Services">Services</option>
-															</select>
-											</div>
-										</td>
-								</tr>
-								<tr>
-									<td style="padding:2px">
-										<div class="chklimit"><b>Credit Limit:</b></div>
-									</td>
-									<td style="padding:2px"  align="right">
-										<div class="chklimit col-xs-10 nopadding" id="ncustlimit"></div>
-											<input type="hidden" id="hdncustlimit" name="hdncustlimit" value="">
-									</td>
-								</tr>
-								<tr>
-									<td style="padding:2px">
-										<div class="chklimit"><b>Balance:</b></div>
-									</td>
-									<td style="padding:2px"  align="right">
-										<div class="chklimit col-xs-10 nopadding" id="ncustbalance"></div>
-											<input type="hidden" id="hdncustbalance" name="hdncustbalance" value="">
-									</td>				
-								</tr>
-								<tr>
-									<tH width="150"><?=($setSman=="True") ? " Salesman:" : ""?></tH>
-									<td style="padding:2px">
-										<?php if($setSman=="True"){ ?>
-											<div class="col-xs-12 nopadding">
-												<div class="col-xs-3 nopadding">
-													<input type="text" id="txtsalesmanid" name="txtsalesmanid" class="form-control input-sm" placeholder="Salesman Code..." tabindex="1">
-												</div>
-
-												<div class="col-xs-8 nopadwleft">
-													<input type="text" class="form-control input-sm" id="txtsalesman" name="txtsalesman" width="20px" tabindex="1" placeholder="Search Salesman Name..."  size="60" autocomplete="off">
-												</div> 
-											</div>
-										<?php
-											}
-										?>
-									</td>
-									<td>&nbsp;</td>
-									<td style="padding:2px"  align="right" colspan="2">
-										<div class="chklimit col-xs-11 nopadwright" id="ncustbalance2"></div>
-									</td>		
-								</tr>
-							</table>		
-							
-						</div>
-					<!--
-					--
-					-- Delivery To Panel
-					--
-					-->
-						<div id="menu1" class="tab-pane fade" style="padding-left:5px; padding-left: 10px;">
-									<table width="100%" border="0">
-										<tr>
-											<td width="150"><b>Customer</b></td>
-											<td width="310" colspan="2" style="padding:2px">
-												<div class="col-xs-8 nopadding">
-													<div class="col-xs-3 nopadding">
-														<input type="text" id="txtdelcustid" name="txtdelcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
-													</div>
-													<div class="col-xs-9 nopadwleft">
-														<input type="text" class="form-control input-sm" id="txtdelcust" name="txtdelcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
-													</div> 
-												</div>						
-											</td>
-										</tr>
-										<tr>
-											<td><button type="button" class="btn btn-primary btn-sm" tabindex="6" id="btnNewAdd" name="btnNewAdd">Select Address</button></td>
-											<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="form-control input-sm" id="txtchouseno" name="txtchouseno" placeholder="House/Building No./Street..." autocomplete="off"  readonly="true" /></div></td>
-										</tr>					
-										<tr>
-											<td>&nbsp;</td>
-											<td colspan="2" style="padding:2px">
-												<div class="col-xs-8 nopadding">
-													<div class="col-xs-6 nopadding">
-														<input type="text" class="form-control input-sm" id="txtcCity" name="txtcCity" placeholder="City..." autocomplete="off"  readonly="true" />
-													</div>														
-													<div class="col-xs-6 nopadwleft">
-														<input type="text" class="form-control input-sm" id="txtcState" name="txtcState" placeholder="State..." autocomplete="off"   readonly="true" />
-													</div>
-												</div>
-											</td>
-										</tr> 
-										<tr>
-											<td>&nbsp;</td>
-											<td colspan="2" style="padding:2px">
-												<div class="col-xs-8 nopadding">
-													<div class="col-xs-9 nopadding">
-														<input type="text" class="form-control input-sm" id="txtcCountry" name="txtcCountry" placeholder="Country..." autocomplete="off" readonly="true" />
-													</div>														
-													<div class="col-xs-3 nopadwleft">
-														<input type="text" class="form-control input-sm" id="txtcZip" name="txtcZip" placeholder="Zip Code..." autocomplete="off"  readonly="true" />
-													</div>
-												</div>
-											</td>
-										</tr> 
-									</table>
-						</div>
-					<!--
-					--
-					-- Attachment Panel
-					--
-					-->
-						<div id="attc" class="tab-pane fade" style="padding-left:5px; padding-left: 10px;">
-
-							<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-							<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
-							<input type="file" name="upload[]" id="file-0" multiple />
-							
-						</div>
-
-				</div><!--tab-content-->
-
-		<hr>
-		<div class="col-xs-12 nopadwdown"><b>Details</b></div>
-		<div class="col-xs-12 nopadwdown">
-			<input type="hidden" name="hdnqty" id="hdnqty">
-			<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
-			<input type="hidden" name="hdnunit" id="hdnunit">
-			<input type="hidden" name="hdnvat" id="hdnvat">
-					
-			<div class="col-xs-3 nopadding"><input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4"></div>
-				<div class="col-xs-5 nopadwleft"><input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL + F) Search Product Name..." size="80" tabindex="5"></div>
-		</div>         
-            
-
-						<div style="border: 1px solid #919b9c; height: 40vh; overflow: auto">
-							<div id="tableContainer" class="alt2" dir="ltr" style="
-								margin: 0px;
-								padding: 3px;
-								width: 1300px;
-								height: 300px;
-								text-align: left;">
 		
-								<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
-									<thead>
-										<tr>
-											<th width="100px" style="border-bottom:1px solid #999">Code</th>
-											<th width="300px" style="border-bottom:1px solid #999">Description</th>
-											<th width="100px" style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
-											<th width="150px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
-											<th width="80px" style="border-bottom:1px solid #999">UOM</th>
-											<th width="80px" style="border-bottom:1px solid #999">Factor</th>
-											<th width="80px" style="border-bottom:1px solid #999">Qty</th>
-											<th width="100px" style="border-bottom:1px solid #999">Price</th>
-											<th width="100px" style="border-bottom:1px solid #999">Amount</th>
-											<th width="200px" style="border-bottom:1px solid #999"><?=$xdetremlabel?></th>
-											<!--<th style="border-bottom:1px solid #999">Total Amt in <?//php echo $nvaluecurrbase; ?></th>-->
-											<th style="border-bottom:1px solid #999">&nbsp;</th>
-										</tr>	
-										</thead>														
-									<tbody class="tbody">
-									</tbody>															
-								</table>
-
-							</div>
-						</div>
-
-		<table width="100%" border="0" cellpadding="3" style="margin-top: 5px">
-			<tr>
-				<td valign="top">
-
-					<input type="hidden" name="hdnrowcnt" id="hdnrowcnt">
-					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SO.php';" id="btnMain" name="btnMain">
-						Back to Main<br>(ESC)
-					</button>
-
-					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
-						Quote<br>(Insert)
-					</button>	
+		<fieldset>
+    		<legend>New Sales Order</legend>	
+			<div class="col-xs-12 nopadwdown"><b>Sales Order Information</b></div>
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#home">Order Details</a></li>
+				<li><a href="#menu1">Delivered To</a></li>
+				<li><a href="#attc">Attachments</a></li>	
+			</ul>
  
-    			<button type="submit" class="btn btn-success btn-sm" tabindex="6"  id="btnSave" onClick="return chkform();" name="btnSave">
-						SAVE<br> (CTRL+S)
-					</button>
+			<div class="tab-content">  
+				<!--
+				--
+				-- Home Panel
+				--
+				-->
+					<div id="home" class="tab-pane fade in active" style="padding-left:5px; padding-top: 10px">
+								
+						<table width="100%" border="0">
+							<tr>
+								<tH width="150">&nbsp;Customer:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-12 nopadding">
+											<div class="col-xs-3 nopadding">
+												<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
+													<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
+													<input type="hidden" id="hdnpricever" name="hdnpricever" value="">
+													<input type="hidden" id="hdndefVAT" name="hdndefVAT" value="">
+											</div>
 
-				</td>
-					<td align="right" valign="top">
-					
-					<table width="90%" border="0" cellspacing="0" cellpadding="0">
-						<tr>
-							<td nowrap align="right"><b>Net of VAT </b>&nbsp;&nbsp;</td>
-							<td> <input type="text" id="txtnNetVAT" name="txtnNetVAT" readonly value="0" style="text-align:right; border:none;  background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20"></td>
-						</tr>
-						<tr>
-							<td nowrap align="right"><b>VAT </b>&nbsp;&nbsp;</td> 
-							<td> <input type="text" id="txtnVAT" name="txtnVAT" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20"></td>
-						</tr>
-						<tr>
-							<td nowrap align="right"><b>Gross Amount </b>&nbsp;&nbsp;</td>
-							<td> <input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20"></td>
-						</tr>
-						<tr>
-							<td nowrap align="right"><b>Gross Amount in <?php echo $nvaluecurrbase; ?></b>&nbsp;&nbsp;</td>
-							<td> <input type="text" id="txtnGross" name="txtnGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20"></td>
-						</tr>
-					</table>
-				
-				</td>
-			</tr>
-		</table>
+											<div class="col-xs-8 nopadwleft">
+													<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
+												</div> 
+									</div>
+								</td>
+								<tH width="150">PO No.:</tH>
+								<td style="padding:2px;">
+								<div class="col-xs-11 nopadding">
+									<input type='text' class="form-control input-sm" id="txtcPONo" name="txtcPONo" value="" autocomplete="off" />
+								</div>
+								</td>
+							</tr>
+							<tr>
+								<tH width="150">&nbsp;Currency:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-6 nopadding">
+										<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">							
+											<?php
+													$nvaluecurrbase = "";	
+													$nvaluecurrbasedesc = "";	
+													$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+													
+														if (mysqli_num_rows($result)!=0) {
+															$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
+															
+															$nvaluecurrbase = $all_course_data['cvalue']; 
+																
+														}
+														else{
+															$nvaluecurrbase = "";
+														}
+								
+														/*
+													$objcurrs = listcurrencies();
+													$objrows = json_decode($objcurrs, true);
+																
+													foreach($objrows as $rows){
+														if ($nvaluecurrbase==$rows['currencyCode']) {
+															$nvaluecurrbasedesc = $rows['currencyName'];
+														}
 
-  </fieldset>
+														if($rows['countryCode']!=="Crypto" && $rows['currencyName']!==null){
+
+															*/
+
+															$sqlhead=mysqli_query($con,"Select symbol as id, CONCAT(symbol,\" - \",country,\" \",unit) as currencyName, rate from currency_rate");
+															if (mysqli_num_rows($sqlhead)!=0) {
+																while($rows = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+											?>
+														<option value="<?=$rows['id']?>" <?php if ($nvaluecurrbase==$rows['id']) { echo "selected='true'"; } ?> data-val="<?=$rows['rate']?>"><?=$rows['currencyName']?></option>
+											<?php
+																}	
+															}
+											?>
+										</select>
+											<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?php echo $nvaluecurrbase; ?>"> 	
+											<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?php echo $nvaluecurrbasedesc; ?>"> 
+									</div>
+									<div class="col-xs-2 nopadwleft">
+										<input type='text' class="numeric required form-control input-sm text-right" id="basecurrval" name="basecurrval" value="1">	 
+									</div>
+
+									<div class="col-xs-4" id="statgetrate" style="padding: 4px !important"> 
+												
+									</div>
+								</td>
+
+								<tH width="150">PO Date:</tH>
+								<td style="padding:2px;">
+									<div class="col-xs-11 nopadding">
+										<input type='text' class="form-control input-sm" id="date_PO" name="date_PO" value="<?php echo $ddeldate; ?>" />
+									</div>
+								</td>
+							</tr>
+							<tr>
+									<tH width="150">&nbsp;Remarks:</tH>
+									<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div>
+									</td>
+									<tH width="150">Delivery Date:</tH>
+								<td style="padding:2px;">
+									<div class="col-xs-11 nopadding">
+										<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?php echo $ddeldate; ?>" />
+									</div>
+								</td>	
+									
+							</tr>
+							<tr>
+								<tH rowspan="3" width="150">&nbsp;Special Instructions:</tH>
+								<td rowspan="3" style="padding:2px"><div class="col-xs-11 nopadding">
+									<textarea rows="3"  class="form-control input-sm" name="txtSpecIns"  id="txtSpecIns"></textarea>
+										</div>
+								</td>
+								<tH width="150">Sales Type:</th>
+									<td style="padding:2px">
+										<div class="col-xs-11 nopadding">
+											<select id="selsityp" name="selsityp" class="form-control input-sm selectpicker"  tabindex="1">
+																<option value="Goods">Goods</option>
+																<option value="Services">Services</option>
+														</select>
+										</div>
+									</td>
+							</tr>
+							<tr>
+								<td style="padding:2px">
+									<div class="chklimit"><b>Credit Limit:</b></div>
+								</td>
+								<td style="padding:2px"  align="right">
+									<div class="chklimit col-xs-10 nopadding" id="ncustlimit"></div>
+										<input type="hidden" id="hdncustlimit" name="hdncustlimit" value="">
+								</td>
+							</tr>
+							<tr>
+								<td style="padding:2px">
+									<div class="chklimit"><b>Balance:</b></div>
+								</td>
+								<td style="padding:2px"  align="right">
+									<div class="chklimit col-xs-10 nopadding" id="ncustbalance"></div>
+										<input type="hidden" id="hdncustbalance" name="hdncustbalance" value="">
+								</td>				
+							</tr>
+							<tr>
+								<tH width="150"><?=($setSman=="True") ? " Salesman:" : ""?></tH>
+								<td style="padding:2px">
+									<?php if($setSman=="True"){ ?>
+										<div class="col-xs-12 nopadding">
+											<div class="col-xs-3 nopadding">
+												<input type="text" id="txtsalesmanid" name="txtsalesmanid" class="form-control input-sm" placeholder="Salesman Code..." tabindex="1">
+											</div>
+
+											<div class="col-xs-8 nopadwleft">
+												<input type="text" class="form-control input-sm" id="txtsalesman" name="txtsalesman" width="20px" tabindex="1" placeholder="Search Salesman Name..."  size="60" autocomplete="off">
+											</div> 
+										</div>
+									<?php
+										}
+									?>
+								</td>
+								<td>&nbsp;</td>
+								<td style="padding:2px"  align="right" colspan="2">
+									<div class="chklimit col-xs-11 nopadwright" id="ncustbalance2"></div>
+								</td>		
+							</tr>
+						</table>		
+						
+					</div>
+				<!--
+				--
+				-- Delivery To Panel
+				--
+				-->
+					<div id="menu1" class="tab-pane fade" style="padding-left:5px; padding-left: 10px;">
+								<table width="100%" border="0">
+									<tr>
+										<td width="150"><b>Customer</b></td>
+										<td width="310" colspan="2" style="padding:2px">
+											<div class="col-xs-8 nopadding">
+												<div class="col-xs-3 nopadding">
+													<input type="text" id="txtdelcustid" name="txtdelcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
+												</div>
+												<div class="col-xs-9 nopadwleft">
+													<input type="text" class="form-control input-sm" id="txtdelcust" name="txtdelcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
+												</div> 
+											</div>						
+										</td>
+									</tr>
+									<tr>
+										<td><button type="button" class="btn btn-primary btn-sm" tabindex="6" id="btnNewAdd" name="btnNewAdd">Select Address</button></td>
+										<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="form-control input-sm" id="txtchouseno" name="txtchouseno" placeholder="House/Building No./Street..." autocomplete="off"  readonly="true" /></div></td>
+									</tr>					
+									<tr>
+										<td>&nbsp;</td>
+										<td colspan="2" style="padding:2px">
+											<div class="col-xs-8 nopadding">
+												<div class="col-xs-6 nopadding">
+													<input type="text" class="form-control input-sm" id="txtcCity" name="txtcCity" placeholder="City..." autocomplete="off"  readonly="true" />
+												</div>														
+												<div class="col-xs-6 nopadwleft">
+													<input type="text" class="form-control input-sm" id="txtcState" name="txtcState" placeholder="State..." autocomplete="off"   readonly="true" />
+												</div>
+											</div>
+										</td>
+									</tr> 
+									<tr>
+										<td>&nbsp;</td>
+										<td colspan="2" style="padding:2px">
+											<div class="col-xs-8 nopadding">
+												<div class="col-xs-9 nopadding">
+													<input type="text" class="form-control input-sm" id="txtcCountry" name="txtcCountry" placeholder="Country..." autocomplete="off" readonly="true" />
+												</div>														
+												<div class="col-xs-3 nopadwleft">
+													<input type="text" class="form-control input-sm" id="txtcZip" name="txtcZip" placeholder="Zip Code..." autocomplete="off"  readonly="true" />
+												</div>
+											</div>
+										</td>
+									</tr> 
+								</table>
+					</div>
+				<!--
+				--
+				-- Attachment Panel
+				--
+				-->
+					<div id="attc" class="tab-pane fade" style="padding-left:5px; padding-left: 10px;">
+
+						<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+						<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+						<input type="file" name="upload[]" id="file-0" multiple />
+						
+					</div>
+
+			</div><!--tab-content-->
+
+			<hr>
+			<div class="col-xs-12 nopadwdown"><b>Details</b></div>
+				<div class="col-xs-12 nopadwdown">
+					<input type="hidden" name="hdnqty" id="hdnqty">
+					<input type="hidden" name="hdnqtyunit" id="hdnqtyunit">
+					<input type="hidden" name="hdnunit" id="hdnunit">
+					<input type="hidden" name="hdnvat" id="hdnvat">
+							
+					<div class="col-xs-3 nopadding">
+						<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Product Code..." tabindex="4">
+					</div>
+					<div class="col-xs-5 nopadwleft">
+						<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm	" placeholder="(CTRL + F) Search Product Name..." size="80" tabindex="5">
+					</div>
+				</div>         		
+
+				<div style="border: 1px solid #919b9c; height: 40vh; overflow: auto">
+					<div id="tableContainer" class="alt2" dir="ltr" style="
+						margin: 0px;
+						padding: 3px;
+						width: 1300px;
+						height: 300px;
+						text-align: left;">
+
+						<table id="MyTable" class="MyTable table-sm table-bordered" border="1">
+							<thead>
+								<tr>
+									<th width="100px" style="border-bottom:1px solid #999">Code</th>
+									<th width="300px" style="border-bottom:1px solid #999">Description</th>
+									<th width="100px" style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
+									<th width="150px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
+									<th width="80px" style="border-bottom:1px solid #999">UOM</th>
+									<th width="80px" style="border-bottom:1px solid #999">Factor</th>
+									<th width="80px" style="border-bottom:1px solid #999">Qty</th>
+									<th width="100px" style="border-bottom:1px solid #999">Price</th>
+									<th width="100px" style="border-bottom:1px solid #999">Amount</th>
+									<th width="200px" style="border-bottom:1px solid #999"><?=$xdetremlabel?></th>
+									<!--<th style="border-bottom:1px solid #999">Total Amt in <?//php echo $nvaluecurrbase; ?></th>-->
+									<th style="border-bottom:1px solid #999">&nbsp;</th>
+								</tr>	
+								</thead>														
+							<tbody class="tbody">
+							</tbody>															
+						</table>
+
+					</div>
+				</div>
+
+				<table width="100%" border="0" cellpadding="3" style="margin-top: 5px">
+					<tr>
+						<td valign="top">
+
+							<input type="hidden" name="hdnrowcnt" id="hdnrowcnt">
+							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='SO.php';" id="btnMain" name="btnMain">
+								Back to Main<br>(ESC)
+							</button>
+
+							<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
+								Quote<br>(Insert)
+							</button>	
+
+						<button type="submit" class="btn btn-success btn-sm" tabindex="6"  id="btnSave" onClick="return chkform();" name="btnSave">
+								SAVE<br> (CTRL+S)
+							</button>
+
+						</td>
+							<td align="right" valign="top">
+							
+							<table width="90%" border="0" cellspacing="0" cellpadding="0">
+								<tr>
+									<td nowrap align="right"><b>Net of VAT </b>&nbsp;&nbsp;</td>
+									<td> <input type="text" id="txtnNetVAT" name="txtnNetVAT" readonly value="0" style="text-align:right; border:none;  background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20"></td>
+								</tr>
+								<tr>
+									<td nowrap align="right"><b>VAT </b>&nbsp;&nbsp;</td> 
+									<td> <input type="text" id="txtnVAT" name="txtnVAT" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20"></td>
+								</tr>
+								<tr>
+									<td nowrap align="right"><b>Gross Amount </b>&nbsp;&nbsp;</td>
+									<td> <input type="text" id="txtnBaseGross" name="txtnBaseGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20"></td>
+								</tr>
+								<tr>
+									<td nowrap align="right"><b>Gross Amount in <?php echo $nvaluecurrbase; ?></b>&nbsp;&nbsp;</td>
+									<td> <input type="text" id="txtnGross" name="txtnGross" readonly value="0" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="20"></td>
+								</tr>
+							</table>
+						
+						</td>
+					</tr>
+				</table>
+
+  		</fieldset>
    
-				<!-- Add Info -->
-				<div class="modal fade" id="MyDetModal" role="dialog">
-    			<div class="modal-dialog modal-lg">
+		<!-- Add Info -->
+		<div class="modal fade" id="MyDetModal" role="dialog">
+			<div class="modal-dialog modal-lg">
         		<div class="modal-content">
-            	<div class="modal-header">
-                <button type="button" class="close"  aria-label="Close"  onclick="chkCloseInfo();"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="invheader"> Additional Details Info</h3>           
-							</div>
+					<div class="modal-header">
+						<button type="button" class="close"  aria-label="Close"  onclick="chkCloseInfo();"><span aria-hidden="true">&times;</span></button>
+						<h3 class="modal-title" id="invheader"> Additional Details Info</h3>           
+					</div>
     
-            	<div class="modal-body">
-                <input type="hidden" name="hdnrowcnt2" id="hdnrowcnt2">
-                <table id="MyTable2" class="MyTable table table-condensed" width="100%">
+            		<div class="modal-body">
+						<input type="hidden" name="hdnrowcnt2" id="hdnrowcnt2">
+						<table id="MyTable2" class="MyTable table table-condensed" width="100%">
+							<thead>
+								<tr>
+									<th style="border-bottom:1px solid #999">Code</th>
+									<th style="border-bottom:1px solid #999">Description</th>
+									<th style="border-bottom:1px solid #999">Field Name</th>
+									<th style="border-bottom:1px solid #999">Value</th>
+									<th style="border-bottom:1px solid #999">&nbsp;</th>
+								</tr>
+							</thead>
+							<tbody class="tbody">
+							</tbody>
+						</table>
+    
+					</div>
+        		</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+
+		<!-- FULL PO LIST REFERENCES-->
+		<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
+			<div class="modal-dialog modal-lg">
+
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h3 class="modal-title" id="InvListHdr">PO List</h3>
+					</div>
+		
+					<div class="modal-body" style="height:40vh">
+		
+						<div class="col-xs-12 nopadding">
+
+							<div class="form-group">
+								<div class="col-xs-4 nopadding pre-scrollable" style="height:37vh">
+									<table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight">
+										<thead>
+										<tr>
+											<th>Quote No</th>
+											<th>Amount</th>
+										</tr>
+										</thead>
+										<tbody>
+										</tbody>
+									</table>
+								</div>
+
+								<div class="col-xs-8 nopadwleft pre-scrollable" style="height:37vh">
+								<table name='MyInvDetList' id='MyInvDetList' class="table table-small">
 									<thead>
 										<tr>
-											<th style="border-bottom:1px solid #999">Code</th>
-											<th style="border-bottom:1px solid #999">Description</th>
-											<th style="border-bottom:1px solid #999">Field Name</th>
-											<th style="border-bottom:1px solid #999">Value</th>
-											<th style="border-bottom:1px solid #999">&nbsp;</th>
-										</tr>
+										<th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
+										<th>Item No</th>
+										<th>Description</th>
+										<th>UOM</th>
+										<th>Qty</th>
+									</tr>
 									</thead>
-									<tbody class="tbody">
-                  </tbody>
-                </table>
-    
+									<tbody>                            	
+									</tbody>
+								</table>
+								</div>
 							</div>
-        		</div><!-- /.modal-content -->
-    			</div><!-- /.modal-dialog -->
-				</div><!-- /.modal -->
+
+						</div>
+						
+					</div>
+		
+					<div class="modal-footer">
+						<button type="button" id="btnInsDet" onClick="InsertSI()" class="btn btn-primary">Insert</button>
+						<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+
+						<input type="hidden" name="hdncurr" id="hdncurr">
+						<input type="hidden" name="hdncurrate" id="hdncurrate">
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div>
+		<!-- End FULL INVOICE LIST -->
+
+		<!-- Address List -->
+		<div class="modal fade" id="MyAddModal" role="dialog">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close"  data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
+						<h3 class="modal-title" id="invheader"> Address Lists </h3>           
+					</div>
+
+					<div class="modal-body">
+						<table id="MyAddTble" class="table table-condensed" width="100%">
+							<thead>
+								<tr>
+									<th style="border-bottom:1px solid #999">&nbsp;</th>
+									<th style="border-bottom:1px solid #999">House No.</th>
+									<th style="border-bottom:1px solid #999">City</th>
+									<th style="border-bottom:1px solid #999">State</th>
+									<th style="border-bottom:1px solid #999">Country</th>
+									<th style="border-bottom:1px solid #999">Zip</th>
+									<th style="border-bottom:1px solid #999">&nbsp;</th>
+								</tr>
+							</thead>
+							<tbody class="tbody">
+							</tbody>
+						</table>   
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+
+	</form>
 
 
-				<!-- FULL PO LIST REFERENCES-->
-				<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
-    			<div class="modal-dialog modal-lg">
-        		<div class="modal-content">
-            	<div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="InvListHdr">PO List</h3>
-            	</div>
-            
-            	<div class="modal-body" style="height:40vh">
-            
-       					<div class="col-xs-12 nopadding">
-
-                	<div class="form-group">
-                    <div class="col-xs-4 nopadding pre-scrollable" style="height:37vh">
-                      <table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight">
-                        <thead>
-                          <tr>
-                            <th>Quote No</th>
-                            <th>Amount</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                      </table>
-                    </div>
-
-                    <div class="col-xs-8 nopadwleft pre-scrollable" style="height:37vh">
-                      <table name='MyInvDetList' id='MyInvDetList' class="table table-small">
-                        <thead>
-                        	<tr>
-                            <th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
-                            <th>Item No</th>
-                            <th>Description</th>
-                            <th>UOM</th>
-                            <th>Qty</th>
-                          </tr>
-                        </thead>
-                        <tbody>                            	
-                        </tbody>
-                      </table>
-                    </div>
-               		</div>
-
-        				</div>
-         	            
-							</div>
-			
-            	<div class="modal-footer">
-                <button type="button" id="btnInsDet" onClick="InsertSI()" class="btn btn-primary">Insert</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-
-								<input type="hidden" name="hdncurr" id="hdncurr">
-								<input type="hidden" name="hdncurrate" id="hdncurrate">
-
-            	</div>
-        		</div><!-- /.modal-content -->
-    			</div><!-- /.modal-dialog -->
+	<!-- ALERT-->
+	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+				<div class="alert-modal-danger">
+					<p id="AlertMsg"></p>
+					<p>
+						<center>
+							<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+						</center>
+					</p>
 				</div>
-				<!-- End FULL INVOICE LIST -->
+				</div>
+			</div>
+		</div>
+	</div>
 
-				<!-- Address List -->
-				<div class="modal fade" id="MyAddModal" role="dialog">
-    			<div class="modal-dialog modal-lg">
-        		<div class="modal-content">
-            	<div class="modal-header">
-                <button type="button" class="close"  data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="invheader"> Address Lists </h3>           
-							</div>
-    
-            	<div class="modal-body">
-                <table id="MyAddTble" class="table table-condensed" width="100%">
-                	<thead>
-    								<tr>
-                    	<th style="border-bottom:1px solid #999">&nbsp;</th>
-											<th style="border-bottom:1px solid #999">House No.</th>
-											<th style="border-bottom:1px solid #999">City</th>
-                      <th style="border-bottom:1px solid #999">State</th>
-											<th style="border-bottom:1px solid #999">Country</th>
-                      <th style="border-bottom:1px solid #999">Zip</th>
-                      <th style="border-bottom:1px solid #999">&nbsp;</th>
-										</tr>
-                  </thead>
-									<tbody class="tbody">
-                  </tbody>
-                </table>
-    
-							</div>
-        		</div><!-- /.modal-content -->
-    			</div><!-- /.modal-dialog -->
-				</div><!-- /.modal -->
-
-</form>
-
-
-<!-- FULL PO LIST REFERENCES-->
-<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-    <div class="vertical-alignment-helper">
-        <div class="modal-dialog vertical-align-top">
-            <div class="modal-content">
-               <div class="alert-modal-danger">
-                  <p id="AlertMsg"></p>
-                <p>
-                    <center>
-                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-                    </center>
-                </p>
-               </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-<form method="post" name="frmedit" id="frmedit" action="SO_edit.php">
-	<input type="hidden" name="txtctranno" id="txtctranno" value="">
-</form>
+	<form method="post" name="frmedit" id="frmedit" action="SO_edit.php">
+		<input type="hidden" name="txtctranno" id="txtctranno" value="">
+	</form>
 
 
 </body>
@@ -950,19 +950,19 @@ function listcurrencies(){ //API for currency list
 				
 				$.ajax({
 					type:'post',
-					url:'../get_customerid.php',
-					data: 'c_id='+ $(this).val(),                 
+					url:'../get_custchildid.php',
+					data: 'c_id='+ $(this).val() + 'm_id='+ $("#txtcustid").val(),                 
 					success: function(value){
 						if(value!=""){				 
 							var data = value.split(":");
 
-							$('#txtdelcust').val(data[0]); 
+							$('#txtdelcust').val(data[1]); 
 							
-							$('#txtchouseno').val(data[5]);
-							$('#txtcCity').val(data[6]);
-							$('#txtcState').val(data[7]);
-							$('#txtcCountry').val(data[8]);
-							$('#txtcZip').val(data[9]);
+							$('#txtchouseno').val(data[2]);
+							$('#txtcCity').val(data[3]);
+							$('#txtcState').val(data[4]);
+							$('#txtcCountry').val(data[5]);
+							$('#txtcZip').val(data[6]);
 						}
 					}
 				});
@@ -976,10 +976,10 @@ function listcurrencies(){ //API for currency list
 			fitToElement: true,
 			source: function(request, response) {
 				$.ajax({
-					url: "../th_customer.php",
+					url: "../th_customerdel.php",
 					dataType: "json",
 					data: {
-						query: request
+						query: request, cmain: $("#txtcustid").val()
 					},
 					success: function (data) {
 						response(data);
@@ -998,12 +998,12 @@ function listcurrencies(){ //API for currency list
 							
 				$('#txtdelcust').val(item.value).change(); 
 				$("#txtdelcustid").val(item.id);
-					
-					$('#txtchouseno').val(item.chouseno);
-					$('#txtcCity').val(item.ccity);
-					$('#txtcState').val(item.cstate);
-					$('#txtcCountry').val(item.ccountry);
-					$('#txtcZip').val(item.czip);
+				
+				$('#txtchouseno').val(item.cadd);
+				$('#txtcCity').val(item.ccity);
+				$('#txtcState').val(item.cstate);
+				$('#txtcCountry').val(item.ccountry);
+				$('#txtcZip').val(item.czip);
 								
 				$('#hdnvalid').val("YES");
 				
@@ -1790,61 +1790,57 @@ function openinv(){
 			
 			//disable escape insert and save button muna
 			$.ajax({
-          url: 'th_qolist.php',
-					data: 'x='+x+ "&selsi=" + $("#selsityp").val(),
-          dataType: 'json',
-          method: 'post',
-          success: function (data) {
-            // var classRoomsTable = $('#mytable tbody');
-					  $("#allbox").prop('checked', false);
+          		url: 'th_qolist.php',
+				data: 'x='+x+ "&selsi=" + $("#selsityp").val(),
+				dataType: 'json',
+				method: 'post',
+				success: function (data) {
+
+					$("#allbox").prop('checked', false);				   
+					console.log(data);
+					$.each(data,function(index,item){
+								
+						if(item.cpono=="NONE"){
+							$("#AlertMsg").html("No Quotations Available");
+							$("#alertbtnOK").show();
+							$("#AlertModal").modal('show');
+
+							xstat = "NO";
+							
+							$("#txtcustid").attr("readonly", false);
+							$("#txtcust").attr("readonly", false);
+
+						}
+						else{
+							$("<tr>").append(
+							$("<td id='td"+item.cpono+"' data-curr='"+item.ccurrencycode+"' data-rate='"+item.nexchangerate+"'>").text(item.cpono),
+							$("<td>").text(item.ngross)
+							).appendTo("#MyInvTbl tbody");
+							
+							
+							$("#td"+item.cpono).on("click", function(){
+								checkcurrency($(this).text(),$(this).data("curr"),$(this).data("rate"));
+							//	opengetdet($(this).text());
+							});
+							
+							$("#td"+item.cpono).on("mouseover", function(){
+								$(this).css('cursor','pointer');
+							});
+						}
+
+          			});
 					   
-            console.log(data);
-          	$.each(data,function(index,item){
-
-								
-							if(item.cpono=="NONE"){
-								$("#AlertMsg").html("No Quotations Available");
-								$("#alertbtnOK").show();
-								$("#AlertModal").modal('show');
-
-								xstat = "NO";
-								
-								$("#txtcustid").attr("readonly", false);
-								$("#txtcust").attr("readonly", false);
-
-							}
-							else{
-								$("<tr>").append(
-								$("<td id='td"+item.cpono+"' data-curr='"+item.ccurrencycode+"' data-rate='"+item.nexchangerate+"'>").text(item.cpono),
-								$("<td>").text(item.ngross)
-								).appendTo("#MyInvTbl tbody");
-								
-								
-								$("#td"+item.cpono).on("click", function(){
-									checkcurrency($(this).text(),$(this).data("curr"),$(this).data("rate"));
-								//	opengetdet($(this).text());
-								});
-								
-								$("#td"+item.cpono).on("mouseover", function(){
-									$(this).css('cursor','pointer');
-								});
-							}
-
-          	});
-					   
-
-					   if(xstat=="YES"){
-						   $('#mySIRef').modal('show');
-					   }
-                    },
-                    error: function (req, status, err) {
-						//alert();
-						console.log('Something went wrong', status, err);
-						$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
-						$("#alertbtnOK").show();
-						$("#AlertModal").modal('show');
+					if(xstat=="YES"){
+						$('#mySIRef').modal('show');
 					}
-                });
+				},
+				error: function (req, status, err) {
+					console.log('Something went wrong', status, err);
+					$("#AlertMsg").html("Something went wrong<br>Status: "+status +"<br>Error: "+err);
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
+				}
+			});
 			
 			
 			
