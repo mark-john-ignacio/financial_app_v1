@@ -231,11 +231,7 @@
 						<i class="icon-settings"></i><span class="title">Master Data Files</span><span class="arrow "></span>
 					</a>
 					<ul class="sub-menu">
-						<li>
-							<a href="javascript:;" onClick="setpage('MasterFiles/Accounts/Accounts.php?f=');">
-             					<i class="fa fa-bars"></i> Chart of Accounts
-							</a>
-						</li>
+						
 						<li>
 							<a href="javascript:;" class="nav-link nav-toggle">
                 				<i class="icon-handbag"></i> Items <span class="arrow"></span> 
@@ -346,35 +342,36 @@
 							</ul>
 						</li>
 						<li>
+							<a href="javascript:;" class="nav-link nav-toggle">
+                				<i class="fa fa-bars"></i> Accounting Files <span class="arrow"></span> 
+							</a>
+							<ul class="sub-menu">
+								<li>
+								<a href="javascript:;" onClick="setpage('MasterFiles/Accounts/Accounts.php?f=');"> <i class="fa fa-angle-double-right"></i> Chart of Accounts </a>
+								</li>
+								<li>
+								<a href="javascript:;" onClick="setpage('MasterFiles/Banks/Bank.php');"> <i class="fa fa-angle-double-right"></i> Banks </a>
+								</li>
+								<li>
+								<a href="javascript:;" onClick="setpage('MasterFiles/Currency/currency.php?ix=');"> <i class="fa fa-angle-double-right"></i> Currency List </a>
+								</li>
+								<li>
+								<a href="javascript:;" onClick="setpage('MasterFiles/TaxTypes/taxtype.php?ix=');"> <i class="fa fa-angle-double-right"></i> TAX Types </a>
+								</li>
+								<li>
+								<a href="javascript:;" onClick="setpage('MasterFiles/EWTCodes/ewtcodes.php?ix=');"> <i class="fa fa-angle-double-right"></i> EWT Codes </a> 									
+								</li>
+								<li>
+								<a href="javascript:;" onClick="setpage('MasterFiles/Proforma/Proforma.php?ix=');"> <i class="fa fa-angle-double-right"></i> A/P Proforma </a> 									
+								</li>
+							</ul>
+						</li>
+						<li>
 							<a href="javascript:;" onClick="setpage('MasterFiles/Salesman/Salesman.php');">
                					<i class="fa fa-user-secret"></i> Salesman
 							</a>
 						</li>
-						<li>
-							<a href="javascript:;" onClick="setpage('MasterFiles/Banks/Bank.php');">
-                				<i class="fa fa-bank"></i> Banks
-							</a>
-						</li>
-						<li>
-							<a href="javascript:;" onClick="setpage('MasterFiles/Currency/currency.php?ix=');">
-                				<i class="fa fa-money"> </i> Currency List
-							</a>
-						</li>
-						<li>
-							<a href="javascript:;" onClick="setpage('MasterFiles/TaxTypes/taxtype.php?ix=');">
-                				<i class="fa fa-tasks"> </i> Tax Types
-							</a>
-						</li>
-						<li>
-							<a href="javascript:;" onClick="setpage('MasterFiles/EWTCodes/ewtcodes.php?ix=');">
-                				<i class="fa fa-sliders"> </i> EWT Codes
-							</a>
-						</li>
-						<!--<li>
-							<a href="javascript:;" onClick="setpage('MasterFiles/Proforma/Proforma.php?ix=');">
-                				<i class="fa fa-file-text-o"> </i> Proforma
-							</a>
-						</li>-->
+						
 						<li>
 							<a href="javascript:;" onClick="setpage('MasterFiles/Locations/locations.php');">
              					<i class="fa fa-sitemap"></i> Sections

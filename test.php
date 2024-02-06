@@ -1,36 +1,30 @@
 <?php
+    include('Connection/connection_string.php');
+    $company = '001';
 
-$apiKey = '523f06959367d033-602c9c1035ecf184-307c81fa0e334f96';
-$recipient = '+639266138981';
-$message = 'Hello, this is a test message!';
+    $sql = "SELECT norder FROM  customers_secondary where compcode='$company' and cmaincode = 'CUST072' Order By norder DESC";
+    $result = mysqli_query($con, $sql);
+    $rowcount=mysqli_num_rows($result);
 
-$url = 'https://api.viber.com/send_message';
+    if($rowcount>0){
+        $row   = mysqli_fetch_row($result);
 
-$data = [
-    'receiver' => $recipient,
-    'text' => $message,
-];
+        print_r($row);
 
-$headers = [
-    'Content-Type: application/json',
-    'X-Viber-Auth-Token: ' . $apiKey,
-];
+        $chilnonxt = floatval($row[0]) + 1;
+		$chilnonxt = str_pad($chilnonxt, 4, '0', STR_PAD_LEFT);
 
-$ch = curl_init($url);
+        echo $chilnonxt;
+    }else{
+        echo "00000000";
+    }
+   
 
-curl_setopt($ch, CURLOPT_POST, 1);
-curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    echo "<br><br><br>";
 
-$response = curl_exec($ch);
-
-if (curl_errno($ch)) {
-    echo 'Error: ' . curl_error($ch);
-} else {
-    echo 'Response: ' . $response;
-}
-
-curl_close($ch);
-
+    $sdft = "abc@gmail.com,123@gmail.com";
+    $array = explode(',', $sdft);
+	foreach($array as $value){
+		echo $value."<br>";
+	}
 ?>
