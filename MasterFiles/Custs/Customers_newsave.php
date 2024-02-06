@@ -172,12 +172,16 @@ $company = $_SESSION['companyid'];
 			$cChildNo = $_REQUEST['txtchildno'.$z];
 			$cChildName = $_REQUEST['txtchildname'.$z]; 
 			$cChildAdd = $_REQUEST['txtchildadd'.$z];
+			$cChildCty = $_REQUEST['txtchildcity'.$z];
+			$cChildStt = $_REQUEST['txtchildstate'.$z];
+			$cChildCtr = $_REQUEST['txtchildcountry'.$z];
+			$cChildZip = $_REQUEST['txtchildzip'.$z];
 			$cChildTin = $_REQUEST['txtchildtin'.$z];
 
 			$chilnonxt = str_pad($chilNUM, 4, '0', STR_PAD_LEFT);
 			$chilnonxt = $cCustCode."-".$chilnonxt;
 
-			if (!mysqli_query($con, "INSERT INTO `customers_secondary`(`compcode`, `norder`, `cmaincode`, `ccode`, `cname`, `caddress`, `ctin`) VALUES ('$company','$chilNUM','$cCustCode','$chilnonxt','$cChildName','$cChildAdd','$cChildTin')")) {
+			if (!mysqli_query($con, "INSERT INTO `customers_secondary`(`compcode`, `norder`, `cmaincode`, `ccode`, `cname`, `caddress`, `ccity`, `cstate`, `ccountry`, `czip`, `ctin`) VALUES ('$company','$chilNUM','$cCustCode','$chilnonxt','$cChildName','$cChildAdd','$cChildCty','$cChildStt','$cChildCtr','$cChildZip','$cChildTin')")) {
 				if(mysqli_error($con)!=""){
 					echo "Error Addresses: ".mysqli_error($con);
 				}

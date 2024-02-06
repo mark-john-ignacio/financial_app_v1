@@ -752,16 +752,21 @@
 
 					</div>		
 					
-					<div id="menu5" class="tab-pane fade" style="padding-left:10px; padding-top:15px">                
+					<div id="menu5" class="tab-pane fade" style="padding-left:10px; padding-top:15px; overflow-y: auto; min-height: 200px">                
 						<input type="button" value="Add Name" name="btnNewAddChild" id="btnNewAddChild" class="btn btn-primary btn-xs" onClick="adddelchildlist();">
 						<input name="hdnchildcnt" id="hdnchildcnt" type="hidden" value="0"> 
 						<br><br>
-						<table width="100%" border="0" cellpadding="2" id="myChildAddTable"> 
+						<table width="150%" border="0" cellpadding="2" id="myChildAddTable"> 
 							<tr>
-								<th scope="col" width="10%">Code</th>
-								<th scope="col" width="35%">Customer Name</th>
-								<th scope="col" width="40%">Address</th>
-								<th scope="col" width="15%">TIN</th>
+								<th scope="col" width="10%" style="padding-left: 10px">Code</th>
+								<th scope="col" width="20%" style="padding-left: 10px">Customer Name</th>
+								<th scope="col" width="20%" style="padding-left: 10px">House No.</th>
+								<th scope="col" width="10%" style="padding-left: 10px">City</th>
+								<th scope="col" width="10%" style="padding-left: 10px">State</th>
+								<th scope="col" width="10%" style="padding-left: 10px">Country</th>
+								<th scope="col" width="5%" style="padding-left: 10px">ZIP</th>
+								<th scope="col" width="10%" style="padding-left: 10px">TIN</th>
+								<th scope="col" width="5%" style="padding-left: 10px">&nbsp;</th>
 							</tr>
 							<?php
 								$cntrstrdl = 0;
@@ -771,11 +776,28 @@
 								{
 									$cntrstrdl = $cntrstrdl + 1;
 							?>
-							<tr>
+							<tr nowrap>
 								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildno<?=$cntrstrdl?>' name='txtchildno<?=$cntrstrdl?>' value='<?=$rowdl['ccode']?>' readonly></div></td>
 								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildname<?=$cntrstrdl?>' name='txtchildname<?=$cntrstrdl?>' value='<?=$rowdl['cname']?>' required> </div></td>
 								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildadd<?=$cntrstrdl?>' name='txtchildadd<?=$cntrstrdl?>' value='<?=$rowdl['caddress']?>'> </div></td>
+								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildcity<?=$cntrstrdl?>' name='txtchildcity<?=$cntrstrdl?>' value='<?=$rowdl['ccity']?>'> </div></td>
+								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildstate<?=$cntrstrdl?>' name='txtchildstate<?=$cntrstrdl?>' value='<?=$rowdl['cstate']?>'> </div></td>
+								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildcountry<?=$cntrstrdl?>' name='txtchildcountry<?=$cntrstrdl?>' value='<?=$rowdl['ccountry']?>'> </div></td>
+								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildzip<?=$cntrstrdl?>' name='txtchildzip<?=$cntrstrdl?>' value='<?=$rowdl['czip']?>'> </div></td>
 								<td><div class="col-xs-12 nopadtopleft" ><input type='text' class='form-control input-sm' id='txtchildtin<?=$cntrstrdl?>' name='txtchildtin<?=$cntrstrdl?>' value='<?=$rowdl['ctin']?>'> </div></td>
+
+								<td id="sec_stat<?=$rowdl['nidentity']?>">
+									<div class="col-xs-12 nopadtopleft" >
+									<?php 
+									if($rowdl['cstatus']=="ACTIVE"){
+										echo "<span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('". $rowdl['nidentity'] ."','INACTIVE','CHILDSTAT')\" class=\"delactnac\"><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a>";
+									}
+									else{
+										echo "<span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('". $rowdl['nidentity'] ."','ACTIVE','CHILDSTAT')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a>";
+									}
+									?>
+									</div>
+								</td>
 							</tr>	
 							<?php
 								}
@@ -1246,20 +1268,25 @@
 		$("#btnEdit").attr("disabled", false);
 		$("#btnCopyDet").attr("disabled", false);
 
+		$(".delactnac").hide();
+		
+
 	}
 
 	function enabled(){
 
-			$("#frmCust :input, label").attr("disabled", false);
+		$("#frmCust :input, label").attr("disabled", false);
+		
 			
-				
-				$("#txtccode").attr("readonly", true);
-				$("#btnMain").attr("disabled", true);
-				$("#btnNew").attr("disabled", true);
-				$("#btnEdit").attr("disabled", true);
-				$("#btnCopyDet").attr("disabled", true);
-				
-				$("#txtcdesc").focus();
+		$("#txtccode").attr("readonly", true);
+		$("#btnMain").attr("disabled", true);
+		$("#btnNew").attr("disabled", true);
+		$("#btnEdit").attr("disabled", true);
+		$("#btnCopyDet").attr("disabled", true);
+		
+		$("#txtcdesc").focus();
+
+		$(".delactnac").show();
 
 	}
 
@@ -1305,53 +1332,47 @@
 
 	function chkGroupVal(){
 		$(".txtCustGroup").each(function(i, obj) {
-				var id = $(this).attr("id");
-				var r = id.replace( /^\D+/g, '');
+			var id = $(this).attr("id");
+			var r = id.replace( /^\D+/g, '');
 
-				var nme = "CustGroup"+r;
-				
-				$.ajax ({
-							url: "../th_checkexistcgroup.php",
+			var nme = "CustGroup"+r;
+			
+			$.ajax ({
+				url: "../th_checkexistcgroup.php",
 				data: { id: nme },
-							success: function(result) {
+				success: function(result) {
 					if(result.trim()=="False"){					
 						$("#"+id).attr("readonly", true);					
 						$("#btn"+nme).attr("disabled", true);
 					}
-							}
-					});
-
-
+				}
+			});
 		});
 	}
 
 	function loadgroupvalues(){
-			$(".txtCustGroup").each(function(i, obj) {
-				
-				var id = $(this).attr("id");
-				var r = id.replace( /^\D+/g, '');
+		$(".txtCustGroup").each(function(i, obj) {
+			
+		var id = $(this).attr("id");
+		var r = id.replace( /^\D+/g, '');
 
-				var nme = "CustGroup"+r;
-				var citmno = $("#txtccode").val();
-				
-				$.ajax ({
-							url: "../th_loadcgroupvalue.php",
-				data: { id: r, grpno: nme, itm: citmno },
-				dataType: 'json',
-							success: function(data) {
-					console.log(data);
-					$.each(data,function(index,item){
-						
-						if(item.id!=""){				  
+		var nme = "CustGroup"+r;
+		var citmno = $("#txtccode").val();
+		
+		$.ajax ({
+			url: "../th_loadcgroupvalue.php",
+			data: { id: r, grpno: nme, itm: citmno },
+			dataType: 'json',
+			success: function(data) {
+				console.log(data);
+				$.each(data,function(index,item){					
+					if(item.id!=""){				  
 						$("#txtCustGroup"+r).val(item.name);
 						$("#txtCustGroup"+r+"D").val(item.id);
-						}
-											
-								
-					});
-
-							}
-					});
+					}																
+				});
+			}
+		});
 
 		});
 
@@ -1483,13 +1504,28 @@
 		var d=a.insertCell(2);
 		var e=a.insertCell(3);
 		var f=a.insertCell(4);
+		var g=a.insertCell(5);
+		var h=a.insertCell(6);
+		var i=a.insertCell(7);
+		var j=a.insertCell(8);
 		
 		b.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildno"+lastRow+"' name='txtchildno"+lastRow+"' value='' readonly></div>";
-		c.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildname"+lastRow+"' name='txtchildname"+lastRow+"' value='' required> </div>";
-		d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildadd"+lastRow+"' name='txtchildadd"+lastRow+"' value=''> </div>";
-		e.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildtin"+lastRow+"' name='txtchildtin"+lastRow+"' value=''> </div>";
 
-		f.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRowChild(this);\"/></div>";
+		c.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildname"+lastRow+"' name='txtchildname"+lastRow+"' value='' required> </div>";
+    
+    	d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildadd"+lastRow+"' name='txtchildadd"+lastRow+"' value=''> </div>";
+
+    	e.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildcity"+lastRow+"' name='txtchildcity"+lastRow+"' value=''> </div>";
+
+   	 	f.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildstate"+lastRow+"' name='txtchildstate"+lastRow+"' value=''> </div>";
+
+    	g.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildcountry"+lastRow+"' name='txtchildcountry"+lastRow+"' value=''> </div>";
+
+		h.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildzip"+lastRow+"' name='txtchildzip"+lastRow+"' value=''> </div>";
+
+    	i.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildtin"+lastRow+"' name='txtchildtin"+lastRow+"' value=''> </div>";
+
+		j.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRowChild(this);\"/></div>";
 		
 	}
 
@@ -1502,28 +1538,71 @@
 		var lastRow = tbl.length;
 		var z; //for loop counter changing textboxes ID;
 		
-			for (z=i+1; z<=lastRow; z++){
-				var tempchildno = document.getElementById('txtchildno' + z);
-				var tempchildnme = document.getElementById('txtchildname' + z);
-				var tempchildadd = document.getElementById('txtchildadd' + z);
-				var tempchildtin = document.getElementById('txtchildtin' + z);
-				var tempchilddel = document.getElementById('row_' + z + '_delete');
-				
-				var x = z-1;
-				tempchildno.id = "txtchildno" + x;
-				tempchildno.name = "txtchildno" + x;
+		for (z=i+1; z<=lastRow; z++){
+			var tempchildno = document.getElementById('txtchildno' + z);
+			var tempchildnme = document.getElementById('txtchildname' + z);
+			var tempchildadd = document.getElementById('txtchildadd' + z);
 
-				tempchildnme.id = "txtchildname" + x;
-				tempchildnme.name = "txtchildname" + x;
+			var tempchildcity = document.getElementById('txtchildcity' + z);
+			var tempchildstate = document.getElementById('txtchildstate' + z);
+			var tempchildcntr = document.getElementById('txtchildcountry' + z);
+			var tempchildzip = document.getElementById('txtchildzip' + z);
 
-				tempchildadd.id = "txtchildadd" + x;
-				tempchildadd.name = "txtchildadd" + x;
+			var tempchildtin = document.getElementById('txtchildtin' + z);
+			var tempchilddel = document.getElementById('row_' + z + '_delete');
+			
+			var x = z-1;
+			tempchildno.id = "txtchildno" + x;
+			tempchildno.name = "txtchildno" + x;
 
-				tempchildtin.id = "txtchildtin" + x;
-				tempchildtin.name = "txtchildtin" + x;
+			tempchildnme.id = "txtchildname" + x;
+			tempchildnme.name = "txtchildname" + x;
 
-				tempchilddel.id = "row_" + x + "_delete";
+			tempchildadd.id = "txtchildadd" + x;
+			tempchildadd.name = "txtchildadd" + x;
+
+        	tempchildcity.id = "txtchildcity" + x;
+			tempchildcity.name = "txtchildcity" + x;
+        	tempchildstate.id = "txtchildstate" + x;
+			tempchildstate.name = "txtchildstate" + x;
+        	tempchildcntr.id = "txtchildcountry" + x;
+			tempchildcntr.name = "txtchildcountry" + x;
+        	tempchildzip.id = "txtchildzip" + x;
+			tempchildzip.name = "txtchildzip" + x;
+
+			tempchildtin.id = "txtchildtin" + x;
+			tempchildtin.name = "txtchildtin" + x;
+
+			tempchilddel.id = "row_" + x + "_delete";
+		}
+	}
+
+	function setStat(code, stat){
+
+		$.ajax ({
+			url: "th_itmsetstat.php",
+			data: { code: code,  stat: stat, typz: 'CHILDSTAT' },
+			async: false,
+			success: function( data ) {
+				if(data.trim()!="True"){
+					$("#itm"+code).html("<b>Error: </b>"+ data);
+					$("#itm"+code).attr("class", "itmalert alert alert-danger nopadding")
+					$("#itm"+code).show();
+				}
+				else{
+					if(stat=="ACTIVE"){
+						$("#sec_stat"+code).html("<div class=\"col-xs-12 nopadtopleft\"><span class='label label-success'>Active</span>&nbsp;&nbsp;<a id=\"popoverData1\" href=\"#\" data-content=\"Set as Inactive\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','INACTIVE')\" ><i class=\"fa fa-refresh\" style=\"color: #f0ad4e\"></i></a></div>");
+					}else{
+						$("#sec_stat"+code).html("<div class=\"col-xs-12 nopadtopleft\"><span class='label label-warning'>Inactive</span>&nbsp;&nbsp;<a id=\"popoverData2\" href=\"#\" data-content=\"Set as Active\" rel=\"popover\" data-placement=\"bottom\" data-trigger=\"hover\" onClick=\"setStat('"+code+"','ACTIVE')\"><i class=\"fa fa-refresh\" style=\"color: #5cb85c\"></i></a></div>");
+					}
+					
+					//$("#AlertMsg").html("<b>SUCCESS: </b> Status changed to "+stat);
+					//$("#AlertModal").modal('show');
+				}
 			}
+		
+		});
+
 	}
 
 

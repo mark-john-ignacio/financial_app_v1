@@ -604,16 +604,21 @@
 
             </div>
 
-            <div id="menu5" class="tab-pane fade" style="padding-left:10px; padding-top:15px">                
+            <div id="menu5" class="tab-pane fade" style="padding-left:10px; padding-top:15px; overflow-y: auto; min-height: 200px">                
               <input type="button" value="Add Name" name="btnNewAddChild" id="btnNewAddChild" class="btn btn-primary btn-xs" onClick="adddelchildlist();">
               <input name="hdnchildcnt" id="hdnchildcnt" type="hidden" value="0"> 
               <br><br>
-              <table width="100%" border="0" cellpadding="2" id="myChildAddTable"> 
+              <table border="0" cellpadding="2" id="myChildAddTable" style="min-width: 150%"> 
                 <tr>
-                  <th scope="col" width="10%">Code</th>
-                  <th scope="col" width="35%">Customer Name</th>
-                  <th scope="col" width="40%">Address</th>
-                  <th scope="col" width="15%">TIN</th>
+                  <th scope="col" width="10%" style="padding-left: 10px">Code</th>
+                  <th scope="col" width="20%" style="padding-left: 10px">Customer Name</th>
+                  <th scope="col" width="20%" style="padding-left: 10px">House No.</th>
+                  <th scope="col" width="10%" style="padding-left: 10px">City</th>
+                  <th scope="col" width="10%" style="padding-left: 10px">State</th>
+                  <th scope="col" width="10%" style="padding-left: 10px">Country</th>
+                  <th scope="col" width="5%" style="padding-left: 10px">ZIP</th>
+                  <th scope="col" width="10%" style="padding-left: 10px">TIN</th>
+                  <th scope="col" width="2%" style="padding-left: 10px">&nbsp;</th>
                 </tr>
               </table>
             </div>
@@ -1263,13 +1268,28 @@
 		var d=a.insertCell(2);
 		var e=a.insertCell(3);
 		var f=a.insertCell(4);
+    var g=a.insertCell(5);
+    var h=a.insertCell(6);
+    var i=a.insertCell(7);
+    var j=a.insertCell(8);
 		
 		b.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildno"+lastRow+"' name='txtchildno"+lastRow+"' value='' readonly></div>";
-		c.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildname"+lastRow+"' name='txtchildname"+lastRow+"' value='' required> </div>";
-		d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildadd"+lastRow+"' name='txtchildadd"+lastRow+"' value=''> </div>";
-		e.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildtin"+lastRow+"' name='txtchildtin"+lastRow+"' value=''> </div>";
 
-		f.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRowChild(this);\"/></div>";
+		c.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildname"+lastRow+"' name='txtchildname"+lastRow+"' value='' required> </div>";
+    
+    d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildadd"+lastRow+"' name='txtchildadd"+lastRow+"' value=''> </div>";
+
+    e.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildcity"+lastRow+"' name='txtchildcity"+lastRow+"' value=''> </div>";
+
+    f.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildstate"+lastRow+"' name='txtchildstate"+lastRow+"' value=''> </div>";
+
+    g.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildcountry"+lastRow+"' name='txtchildcountry"+lastRow+"' value=''> </div>";
+
+		h.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildzip"+lastRow+"' name='txtchildzip"+lastRow+"' value=''> </div>";
+
+    i.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-sm' id='txtchildtin"+lastRow+"' name='txtchildtin"+lastRow+"' value=''> </div>";
+
+		j.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRowChild(this);\"/></div>";
 		
 	}
 
@@ -1286,6 +1306,12 @@
 				var tempchildno = document.getElementById('txtchildno' + z);
 				var tempchildnme = document.getElementById('txtchildname' + z);
 				var tempchildadd = document.getElementById('txtchildadd' + z);
+
+        var tempchildcity = document.getElementById('txtchildcity' + z);
+        var tempchildstate = document.getElementById('txtchildstate' + z);
+        var tempchildcntr = document.getElementById('txtchildcountry' + z);
+        var tempchildzip = document.getElementById('txtchildzip' + z);
+
 				var tempchildtin = document.getElementById('txtchildtin' + z);
 				var tempchilddel = document.getElementById('row_' + z + '_delete');
 				
@@ -1298,6 +1324,15 @@
 
 				tempchildadd.id = "txtchildadd" + x;
 				tempchildadd.name = "txtchildadd" + x;
+
+        tempchildcity.id = "txtchildcity" + x;
+				tempchildcity.name = "txtchildcity" + x;
+        tempchildstate.id = "txtchildstate" + x;
+				tempchildstate.name = "txtchildstate" + x;
+        tempchildcntr.id = "txtchildcountry" + x;
+				tempchildcntr.name = "txtchildcountry" + x;
+        tempchildzip.id = "txtchildzip" + x;
+				tempchildzip.name = "txtchildzip" + x;
 
 				tempchildtin.id = "txtchildtin" + x;
 				tempchildtin.name = "txtchildtin" + x;
