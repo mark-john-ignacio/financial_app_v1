@@ -41,14 +41,14 @@
         WHERE a.compcode = '$company' AND MONTH(b.dcutdate) = '$month' AND YEAR(b.dcutdate) = '$year' AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 AND d.ctype = 'CUSTYP'";
     $query = mysqli_query($con, $sql);
 
-    $array = [];
+    $array = array();
 
     while($list = $query -> fetch_assoc()) {
         $code = $list['cewtcode'];
         $ewt = getEWT($code);
 
         if (ValidateEWT($code) && $ewt['valid']) {
-            $json = [
+            $json = array(
                 'name' => $list['cname'],
                 'address' => $list['chouseno'] . " " . $list['ccity'],
                 'tin' => $list['ctin'],
@@ -58,8 +58,8 @@
                 'date' => $list['dcutdate'],
                 'ewt' => $ewt['code'],
                 'rate' => $ewt['rate']
-            ];
-            array_push($array, $json);
+            );
+            $array[] = $json;
         }
     }
 
