@@ -81,58 +81,58 @@
     <title>MyxFinancials</title>
 </head>
 <body>
-
-    <table width="100%" border=0 cellpadding="3px">
-        <tr>
-            <td><h4 style="margin: 0">SUMMARY ALPHALIST OF WITHHOLDING TAXES (SAWT)</h4></td>
-        </tr>
-        <tr>
-            <td><h4  style="margin: 0">FOR THE MONTH OF <?=$_POST['months']?>, <?=$_POST['years']?></h4></td>
-        </tr>
-
-        <tr>
-            <td style="padding-top: 10px"><h4  style="margin: 0">TIN: <?=$company_detail['tin']?> </h4></td>
-        </tr>
-        <tr>
-            <td style="padding-bottom: 20px"><h4  style="margin: 0">PAYEE'S NAME: <?=$company_detail['name']?></h4></td>
-        </tr>
-    </table>
-
-    <table class="table table-sm" id="QAPList" style="font-size: 11px !important">
-        <thead>
+    <div style="padding: 10px;">
+        <table width="100%" border=0 cellpadding="3px">
             <tr>
-                <th>TRANSACTION DATE</th>
-                <th>CV REFERENCE NO.</th>
-                <th>VENDOR TIN</th>
-                <th>VENDOR NAME</th>
-                <th>VENDOR ADDRESS</th>
-                <th>W/TAX CODE</th>
-                <th>W/TAX RATE</th>
-                <th>W/TAX BASE AMOUNT</th>
-                <th>W/TAX AMOUNT</th>
+                <td><h4 style="margin: 0">SUMMARY ALPHALIST OF WITHHOLDING TAXES (SAWT)</h4></td>
             </tr>
-        </thead>
-        <tbody>
-            <?php
-                foreach($array as $rs2){
-            ?>
-                <tr>
-                    <td> <?=$rs2['date']?> </td>
-                    <td> <?=$rs2['tranno']?> </td>
-                    <td> <?=$rs2['tin']?> </td>
-                    <td> <?=$rs2['name']?> </td>
-                    <td> <?=$rs2['address']?> </td>
-                    <td> <?=$rs2['ewt']?> </td>
-                    <td> <?=floatval($rs2['rate'] / 100) . "%"?> </td>
-                    <td> <?=number_format($rs2['gross'],2)?> </td>
-                    <td> <?=number_format($rs2['credit'],2)?> </td>
-                </tr>
-            <?php
-                }
-            ?>
-        </tbody>
-    </table>
+            <tr>
+                <td><h4  style="margin: 0">FOR THE MONTH OF <?=$_POST['months']?>, <?=$_POST['years']?></h4></td>
+            </tr>
 
+            <tr>
+                <td style="padding-top: 10px"><h4  style="margin: 0">TIN: <?=$company_detail['tin']?> </h4></td>
+            </tr>
+            <tr>
+                <td style="padding-bottom: 20px"><h4  style="margin: 0">PAYEE'S NAME: <?=$company_detail['name']?></h4></td>
+            </tr>
+        </table>
+
+        <table class="table table-sm" id="QAPList" style="font-size: 11px !important">
+            <thead>
+                <tr>
+                    <th>TRANSACTION DATE</th>
+                    <th>CV REFERENCE NO.</th>
+                    <th>VENDOR TIN</th>
+                    <th>VENDOR NAME</th>
+                    <th>VENDOR ADDRESS</th>
+                    <th>W/TAX CODE</th>
+                    <th>W/TAX RATE</th>
+                    <th>W/TAX BASE AMOUNT</th>
+                    <th>W/TAX AMOUNT</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                    foreach($array as $rs2){
+                ?>
+                    <tr>
+                        <td> <?=$rs2['date']?> </td>
+                        <td> <?=$rs2['tranno']?> </td>
+                        <td> <?=$rs2['tin']?> </td>
+                        <td> <?=$rs2['name']?> </td>
+                        <td> <?=$rs2['address']?> </td>
+                        <td> <?=$rs2['ewt']?> </td>
+                        <td> <?=floatval($rs2['rate'] / 100) . "%"?> </td>
+                        <td> <?=number_format($rs2['gross'],2)?> </td>
+                        <td> <?=number_format($rs2['credit'],2)?> </td>
+                    </tr>
+                <?php
+                    }
+                ?>
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
 
