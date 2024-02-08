@@ -7,7 +7,7 @@ require_once "../../Connection/connection_string.php";
 	$company = $_SESSION['companyid'];
 	
 	@$refpaylistMAIN = array();
-	$resrefpay = mysqli_query($con, "Select crefno from apv_d A left join apv B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.captype='PurchAdv' and (B.lvoid=1 or B.lcancelled=1)");
+	$resrefpay = mysqli_query($con, "Select crefno from apv_d A left join apv B on A.compcode=B.compcode and A.ctranno=B.ctranno where A.compcode='$company' and B.captype='PurchAdv' and (B.lvoid=0 and B.lcancelled=0)");
 	if(mysqli_num_rows($resrefpay)!=0){
 		while($rowpayref = mysqli_fetch_array($resrefpay, MYSQLI_ASSOC)){
 			@$refpaylistMAIN[] = $rowpayref['crefno']; 
