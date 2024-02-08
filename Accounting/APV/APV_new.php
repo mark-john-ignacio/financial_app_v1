@@ -1131,7 +1131,7 @@
 
 			var a = "<td  width=\"130px\" style=\"padding:1px\"> <input type='text' name=\"txtrefno\" id=\"txtrefno"+lastRow+"\" class=\"txtrefsi form-control input-sm\" required value=\""+rrno+"\" readonly> <input type='hidden' name=\"txtrefacctno\" id=\"txtrefacctno"+lastRow+"\" value=\""+acctno+"\"> <input type='hidden' name=\"txtrefsi\" id=\"txtrefsi"+lastRow+"\" value=\""+suppsi+"\"> </td>";
 
-			var b = "<td  width=\"150px\" style=\"padding:1px\"><input type='text' name=\"txtnamount\" id=\"txtnamount"+lastRow+"\" class=\"numeric form-control input-sm\" value=\""+amt+"\" style=\"text-align:right\" readonly></td>";
+			var b = "<td  width=\"150px\" style=\"padding:1px\"><input type='text' name=\"txtnamount\" id=\"txtnamount"+lastRow+"\" class=\"numeric form-control input-sm\" value=\""+amt+"\" style=\"text-align:right\" readonly></td>"; 
 
 			var gcm = "<td  width=\"150px\" style=\"padding:1px\"><div class=\"input-group\"><input type='text' name=\"txtncm\" id=\"txtncm"+lastRow+"\" class=\"numeric form-control input-sm\" value=\""+nncmx+"\" style=\"text-align:right\" readonly><span class=\"input-group-btn\"><button class=\"btn btn-primary btn-sm\" name=\"btnaddcm\" id=\"btnaddcm"+lastRow+"\" type=\"button\" onclick=\"addCM('"+rrno+"','txtncm"+lastRow+"')\"><span class=\"glyphicon glyphicon-plus\" aria-hidden=\"true\"></span></button></span></div></td>";  
 
@@ -1216,7 +1216,8 @@
 					xcb = parseFloat($("#txtnamount"+lastRow).val().replace(/,/g,''))*(xcrate/100);
 				}
 				
-				xcnmdue = parseFloat($("#txtDue"+lastRow).val().replace(/,/g,''));
+				xcnmdue = parseFloat($("#txtnamount"+lastRow).val().replace(/,/g,'')) - parseFloat($("#txtncm"+lastRow).val().replace(/,/g,'')) - parseFloat($("#txtndiscs"+lastRow).val().replace(/,/g,''));   
+
 				$("#txtewtamt"+lastRow).val(xcb)
 				$("#txtewtamt"+lastRow).autoNumeric('destroy');
 				$("#txtewtamt"+lastRow).autoNumeric('init',{mDec:2});

@@ -1933,7 +1933,9 @@
 					xcb = parseFloat($("#txtnamount"+lastRow).val().replace(/,/g,''))*(xcrate/100);
 				}
 				
-				xcnmdue = parseFloat($("#txtDue"+lastRow).val().replace(/,/g,''));
+				//xcnmdue = parseFloat($("#txtDue"+lastRow).val().replace(/,/g,''));
+				xcnmdue = parseFloat($("#txtnamount"+lastRow).val().replace(/,/g,'')) - parseFloat($("#txtncm"+lastRow).val().replace(/,/g,'')) - parseFloat($("#txtndiscs"+lastRow).val().replace(/,/g,''));  
+				
 				$("#txtewtamt"+lastRow).val(xcb)
 				$("#txtewtamt"+lastRow).autoNumeric('destroy');
 				$("#txtewtamt"+lastRow).autoNumeric('init',{mDec:2});
