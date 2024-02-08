@@ -1382,7 +1382,7 @@
 					var modcust = $('#txtcustid').val();
 				}
 
-				alert(''+url+'.php?x='+x+'&cust='+modcust+'&y='+salesnos+'&typ='+$('#selaptyp').val()+'&curr='+$('#selbasecurr').val());
+				//alert(''+url+'.php?x='+x+'&cust='+modcust+'&y='+salesnos+'&typ='+$('#selaptyp').val()+'&curr='+$('#selbasecurr').val());
 
 				$.ajax({
 					url: ''+url+'.php',
