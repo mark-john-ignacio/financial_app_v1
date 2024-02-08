@@ -638,53 +638,37 @@
 
     function dataquarterly($data) {
         global $con, $company, $year, $month_text;
-        $apv = [];
+        $apvlist = array();
         $index = 0;
         if(in_array($month_text, $data)) {
             foreach($data as $quarter) {
+
                 $months = date("m", strtotime($quarter));
+
                 $sql = "SELECT a.ncredit, a.cewtcode, a.ctranno, b.ngross, b.dapvdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM apv_t a
                     LEFT JOIN apv b ON a.compcode = b.compcode AND a.ctranno = b.ctranno
                     LEFT JOIN suppliers c ON a.compcode = b.compcode AND b.ccode = c.ccode 
                     LEFT JOIN groupings d ON a.compcode = b.compcode AND c.csuppliertype = d.ccode
                     WHERE a.compcode = '$company' AND MONTH(b.dapvdate) = '$months' AND YEAR(b.dapvdate) = '$year' AND  b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 AND d.ctype = 'SUPTYP'";
-                $query = mysqli_query($con, $sql);
-                if( mysqli_num_rows($query) === 0) {
-                    return [
-                        'valid' => false,
-                    ];
-                }
                 
+               // echo $sql."<br>";
+                $query = mysqli_query($con, $sql);               
                 while($row = $query -> fetch_assoc()){
-                    switch($index) {
-                        case 0:
-                            $json = [
-                                "label" => "First",
-                                "data" => $row,
-                                "last_month" => $data[2]
-                            ];
-                            array_push($apv, $json);
-                            break;
-                        case 1: 
-                            $json = [
-                                "label" => "Second",
-                                "data" => $row,
-                                "last_month" => $data[2]
-                            ];
-                            array_push($apv, $json);
-                            break;
-                        case 2:
-                            $json = [
-                                "label" => "Third",
-                                "data" => $row,
-                                "last_month" => $data[2]
-                            ];
-                            array_push($apv, $json);
-                            break;
+
+                    if($index==0) {           
+                        $apvlist[] = array("label" => "First","data" => $row,"last_month" => $data[2]);
+                    }
+                    else if($index==1){ 
+                        $apvlist[] = array("label" => "Second","data" => $row,"last_month" => $data[2]);
+                    }
+                    else if($index==2){
+                        $apvlist[] = array("label" => "Third","data" => $row,"last_month" => $data[2]);
                     }
                 }
+
                 $index++;
             }
+
         } else {
             return [
                 'valid' => false,
@@ -692,13 +676,13 @@
         }
         
        
-
+       
         return [
             'valid' => true,
-            'quarter' => $apv,
-
+            'quarter' => $apvlist,
         ];
     }
+    
 
     function getEmailCred(){
         global $con;

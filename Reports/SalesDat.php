@@ -3,6 +3,7 @@
         session_start();
     }
     $_SESSION['pageid'] = "SalesDat.php";
+    
     include("../Connection/connection_string.php");
     include('../include/denied.php');
     include('../include/access.php');
