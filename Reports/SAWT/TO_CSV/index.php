@@ -20,7 +20,7 @@ $company = $_SESSION['companyid'];
 
 $month_text = $_POST['months'];
 $month = date("m", strtotime($_POST['months']));
-$year = date("Y", strtotime($_POST['years']));
+$year = $_POST['years'];
 
 // Set document properties
 $spreadsheet->getProperties()->setCreator('Myx Financials')

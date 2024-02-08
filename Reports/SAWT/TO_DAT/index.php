@@ -8,7 +8,7 @@
 
     $company = $_SESSION['companyid'];
     $month = date("m", strtotime($_POST['months']));
-    $year = date("Y", strtotime($_POST['years']));
+    $year = $_POST['years'];
     $rdo = $_POST['rdo'];
     $companies = [];
 

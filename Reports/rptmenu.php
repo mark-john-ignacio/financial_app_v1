@@ -218,18 +218,18 @@
 						</ul>
 					</div>
 
-							<h4 class="nopadwtop2x">BIR Reports</h4>
+							<h4 class="nopadwtop2x">BIR Forms &amp; Reports</h4>
 							<hr class="alert-danger nopadding">
 								<div style="padding-left:10px; padding-top:3px">
 									<ul class="ver-inline-menu tabbable margin-bottom-25"> 
-										<li>
+										<!--<li>
 											<a href="" onclick="setI('A', 'SJournal.php')"  data-toggle="tab">
 											<i class="fa fa-book"></i>Sales Journal</a>
 										</li>
 										<li>
 											<a href="" onclick="setI('A', 'PurchJourn.php')"  data-toggle="tab">
 											<i class="fa fa-book"></i>Purchase Journal</a>
-										</li>
+										</li>-->
 										<li>
 											<a href="" onclick="setI('A', 'SalesDat.php')"  data-toggle="tab">
 											<i class="fa fa-book"></i>BIR Sales RELIEF</a>
