@@ -56,7 +56,9 @@
 			echo "<center><h3>EMAIL SENDING<br>Please Wait!<h3><img src='../../images/emailsend.gif' width='200px'></center>";
 		?>			
 			<script> 
-				$("#frmQPrint").submit(); 
+				setTimeout(function() {
+					$("#frmQPrint").submit();		
+				}, 3000); 
 			</script>
 		<?php			
 			
