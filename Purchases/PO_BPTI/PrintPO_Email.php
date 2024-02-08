@@ -46,7 +46,8 @@
 
 	}
 	
-	$csalesno = MyDec($_REQUEST['id'],$compakey);
+	//$csalesno = MyDec($_REQUEST['id'],$compakey);
+	$csalesno = $_POST['hdntransid'];
 
 	$cemailstoo = "";
 	$cemailsccc = "";
@@ -407,6 +408,8 @@
 	$mail->FromName = $logonamz;
 	$mail->Sender = $getcred['cusnme']; // indicates ReturnPath header
 	$mail->Subject = $subject;
+	$mail->CharSet = "UTF-8";
+	$mail->Encoding = 'base64';
 	$mail->Body = $body;
 
 	$mail->addReplyTo($getcred['useremail'], $_SESSION['employeefull']);

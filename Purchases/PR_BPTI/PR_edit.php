@@ -59,7 +59,7 @@
 
 	// END UOM LIST
 
-	$sqlhead = mysqli_query($con,"Select A.*, B.Minit, B.Fname, B.Lname from purchrequest A left join users B on A.cpreparedby=B.Userid Where A.compcode='$company' and A.ctranno='$cprno'");
+	$sqlhead = mysqli_query($con,"Select A.*, B.cdesc from purchrequest A left join mrp_operators B on A.crequestedby=B.nid Where A.compcode='$company' and A.ctranno='$cprno'");
 
 	@$arrname = array();
 	if (file_exists('../../Components/assets/PReq/'.$company.'_'.$cprno.'/')) {
@@ -82,6 +82,14 @@
 	if (mysqli_num_rows($gettaxcd)!=0) {
 		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
 			@$clocs[] = $row; 
+		}
+	}
+
+	@$arrempslist = array();
+	$getempz = mysqli_query($con,"SELECT nid, cdesc, csign FROM `mrp_operators` where compcode='$company' and cstatus='ACTIVE' order By cdesc"); 
+	if (mysqli_num_rows($getempz)!=0) {
+		while($row = mysqli_fetch_array($getempz, MYSQLI_ASSOC)){
+			@$arrempslist[] = array('nid' => $row['nid'], 'cdesc' => $row['cdesc'], 'csign' => $row['csign']); 
 		}
 	}
 
@@ -126,14 +134,13 @@
 <?php
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-		$cpreparedBy = $row['cpreparedby'];
-
-		$mi = ($row['Minit']!="") ? " ".$row['Minit'] : "";
-    	$cpreparedName =  $row['Lname'] . ", ". $row['Fname'] . $mi;
+		$cpreparedBy = $row['crequestedby'];
 
 		$cSecID = $row['locations_id'];
 		$cRemarks = $row['cremarks'];
 		$dDueDate = date_format(date_create($row['dneeded']), "m/d/Y");
+
+		$clastapprvby = $row['capprovedby'];
 
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
@@ -197,9 +204,27 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								<tH width="100">Requested By:</tH>
 								<td style="padding:2px">
 									<div class="col-xs-12 nopadding">
-										<div class="col-xs-11 nopadding">
-											<input type="hidden" id="txtcustid" name="txtcustid" value="<?=$cpreparedBy?>">
-											<?=$cpreparedName?>
+										<div class="col-xs-5 nopadding">
+											<select class='xsel2 form-control input-sm' id="txtcustid" name="txtcustid">`
+												<option value="">&nbsp;</option>
+												<?php
+													foreach(@$arrempslist as $rsx){
+														$slcted = ($cpreparedBy==$rsx['nid']) ? "selected" : "";
+														echo "<option value='".$rsx['nid']."' ".$slcted."> ".$rsx['cdesc']." </option>";
+													}
+												?>
+											</select>
+										</div>
+										<div class="col-xs-5 nopadwleft">
+											<select class="form-control input-sm" name="selwhfrom" id="selwhfrom"> 
+												<?php
+													foreach($rowdetloc as $localocs){									
+												?>
+														<option value="<?php echo $localocs['nid'];?>" <?=($cSecID==$localocs['nid']) ? "selected" : "";?>><?php echo $localocs['cdesc'];?></option>										
+												<?php	
+													}						
+												?>
+											</select>
 										</div>
 									</div>
 								</td>
@@ -211,19 +236,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</td>
 							</tr>
 							<tr>
-								<tH width="100">Requesting Dept:</tH>
+								<tH width="100">Approved By:</tH>
 								<td style="padding:2px">
-									<div class="col-xs-5 nopadding">
-									<select class="form-control input-sm" name="selwhfrom" id="selwhfrom"> 
-										<?php
-											foreach($rowdetloc as $localocs){									
-										?>
-												<option value="<?php echo $localocs['nid'];?>" <?=($cSecID==$localocs['nid']) ? "selected" : "";?>><?php echo $localocs['cdesc'];?></option>										
-										<?php	
-											}						
-										?>
-									</select>
-									</div>
+									<div class="col-xs-10 nopadding">
+										<input type='text' class="form-control input-sm" id="apprby" name="apprby" placeholder="Enter Approved By..." value="<?=$clastapprvby?>">
+									</div>	
 								</td>
 								<tH width="150">&nbsp;</tH>
 								<td style="padding:2px;">

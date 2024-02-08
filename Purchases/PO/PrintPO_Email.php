@@ -85,6 +85,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
+
+	<title>Myx Financials</title>
+
 	<style>
 		body{
 			font-family: Verdana, sans-serif;
@@ -372,6 +377,8 @@ $cxsmsgs = "";
 	$mail->FromName = $logonamz;
 	$mail->Sender = $getcred['cusnme']; // indicates ReturnPath header
 	$mail->Subject = $subject;
+	$mail->CharSet = "UTF-8";
+	$mail->Encoding = 'base64'; 
 	$mail->Body = $body;
 
 	$mail->addReplyTo($getcred['useremail'], $_SESSION['employeefull']);

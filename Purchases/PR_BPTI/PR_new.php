@@ -14,12 +14,20 @@
 	$sql = "select * From users where Userid='$id'";
 	$result=mysqli_query($con,$sql);
 														
-		$cfname = "";                                       
-							
+	$cfname = "";                                       							
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 	{
-			$mi = ($row['Minit']!="") ? " ".$row['Minit'] : "";
+		$mi = ($row['Minit']!="") ? " ".$row['Minit'] : "";
 		$cfname =  $row['Lname'] . ", ". $row['Fname'] . $mi;
+	}
+
+	//get last approvedby
+	$sql = "SELECT capprovedby From purchrequest WHERE compcode='$company' ORDER BY ddate DESC LIMIT 1";
+	$result=mysqli_query($con,$sql);														
+	$clastapprvby = "";                                       							
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
+		$clastapprvby = $row['capprovedby'];
 	}
 
 	$arrseclist = array();
@@ -47,6 +55,14 @@
 		}
 	}
 
+	@$arrempslist = array();
+	$getempz = mysqli_query($con,"SELECT nid, cdesc, csign FROM `mrp_operators` where compcode='$company' and cstatus='ACTIVE' order By cdesc"); 
+	if (mysqli_num_rows($getempz)!=0) {
+		while($row = mysqli_fetch_array($getempz, MYSQLI_ASSOC)){
+			@$arrempslist[] = array('nid' => $row['nid'], 'cdesc' => $row['cdesc'], 'csign' => $row['csign']); 
+		}
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -61,12 +77,14 @@
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
   	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/select2/css/select2.css?h=<?php echo time();?>">
 
 	<link href="../../global/css/components.css?t=<?php echo time();?>" id="style_components" rel="stylesheet" type="text/css"/>
 
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../js/bootstrap3-typeahead.min.js"></script>
 	<script src="../../include/autoNumeric.js"></script>
+	<script src="../../Bootstrap/select2/js/select2.full.min.js"></script>
 
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
 	<script src="../../Bootstrap/js/moment.js"></script>
@@ -112,9 +130,26 @@
 								<tH width="100">Requested By:</tH>
 								<td style="padding:2px">
 									<div class="col-xs-12 nopadding">
-										<div class="col-xs-11 nopadding">
-											<input type="hidden" id="txtcustid" name="txtcustid" value="<?=$_SESSION['employeeid']?>">
-											<?=$cfname?>
+										<div class="col-xs-5 nopadding">
+											<select class='xsel2 form-control input-sm' id="txtcustid" name="txtcustid">`
+												<option value="">&nbsp;</option>
+												<?php
+													foreach(@$arrempslist as $rsx){
+														echo "<option value='".$rsx['nid']."'> ".$rsx['cdesc']." </option>";
+													}
+												?>
+											</select>
+										</div>
+										<div class="col-xs-5 nopadwleft">
+											<select class="form-control input-sm" name="selwhfrom" id="selwhfrom"> 
+												<?php
+													foreach($rowdetloc as $localocs){									
+												?>
+														<option value="<?php echo $localocs['nid'];?>"><?php echo $localocs['cdesc'];?></option>										
+												<?php	
+													}						
+												?>
+											</select>
 										</div>
 									</div>
 								</td>
@@ -126,18 +161,10 @@
 								</td>
 							</tr>
 							<tr>
-								<tH width="100">Requesting Dept:</tH>
+								<tH width="100">Approved By:</tH>
 								<td style="padding:2px">
-									<div class="col-xs-5 nopadding">
-									<select class="form-control input-sm" name="selwhfrom" id="selwhfrom"> 
-										<?php
-											foreach($rowdetloc as $localocs){									
-										?>
-												<option value="<?php echo $localocs['nid'];?>"><?php echo $localocs['cdesc'];?></option>										
-										<?php	
-											}						
-										?>
-									</select>
+									<div class="col-xs-10 nopadding">
+										<input type='text' class="form-control input-sm" id="apprby" name="apprby" placeholder="Enter Approved By..." value="<?=$clastapprvby?>">
 									</div>
 								</td>
 								<tH width="150">&nbsp;</tH>
@@ -286,6 +313,11 @@
 			useCurrent: false,
 			minDate: moment(),
 			defaultDate: moment(),
+		});
+
+		$("#txtcustid").select2({
+			placeholder: "Select Requested By...",
+			allowClear: true
 		});
 
 		$("#file-0").fileinput({
