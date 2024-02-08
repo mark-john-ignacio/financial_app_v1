@@ -6,9 +6,6 @@
     include "../../../Connection/connection_string.php";
     include "../../../Model/helper.php";
 
-    
-
-    
 
     $month_text = $_REQUEST['months'];
     $month = date("m", strtotime($_REQUEST['months']));

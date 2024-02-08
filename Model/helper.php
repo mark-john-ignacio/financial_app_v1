@@ -669,6 +669,10 @@
                 $index++;
             }
 
+                
+          //  echo "00p2nd<br><br>";
+          //  print_r($apvlist);
+
         } else {
             return [
                 'valid' => false,
@@ -676,11 +680,17 @@
         }
         
        
-       
-        return [
-            'valid' => true,
-            'quarter' => $apvlist,
-        ];
+       if(count($apvlist)>1){
+            return [
+                'valid' => true,
+                'quarter' => $apvlist,
+            ];
+       }else{
+            return [
+                'valid' => false,
+            ];
+       }
+        
     }
     
 
