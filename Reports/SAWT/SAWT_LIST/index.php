@@ -7,8 +7,8 @@
     include "../../../Model/helper.php";
 
     $company = $_SESSION['companyid'];
-    $month = date("m", strtotime($_POST['months']));
-    $year = date("Y", strtotime($_POST['years']));
+    $month = date("m", strtotime($_REQUEST['months']));
+    $year = date("Y", strtotime($_REQUEST['years']));
 
     $companies = [];
     $sql = "SELECT * FROM company WHERE compcode = '$company'";
