@@ -414,6 +414,6 @@ $cxsmsgs = "";
 	<input type="hidden" name="txtctranno" id="txtctranno" value="<?php echo $csalesno;?>" />
 </form>
 <script>
-	alert("<?//=$cxsmsgs?>");
+	alert("<?=$cxsmsgs?>");
     document.forms['frmpos'].submit();
 </script>
