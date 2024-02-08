@@ -57,7 +57,7 @@
 
 			
 			<script> 
-				$("frmQPrint").submit(); 
+				$("#frmQPrint").submit(); 
 			</script>
 		<?php
 			//echo $xtranno . " , " . $key ;
