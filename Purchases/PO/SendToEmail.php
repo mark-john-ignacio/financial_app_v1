@@ -1,3 +1,4 @@
+
 <?php
 	if(!isset($_SESSION)){
 		session_start();
@@ -37,9 +38,16 @@
 
 		echo "<center><h3>EMAIL SENDING<br>Please Wait!<h3><img src='../../images/emailsend.gif' width='200px'></center>";
 		//$xtranno = MyEnc($tranno,$key);
+	?>
+		<form action="PrintPO_Email.php" method="post" name="frmQPrint" id="frmQprint" target="_blank">
+			<input type="hidden" name="hdntransid" id="hdntransid" value="<?php echo $tranno; ?>">
+		</form>
 
-		echo "<script> document.getElementById(\"frmQPrint\").submit(); </script>";
-
+		<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+		<script> 
+			$("frmQPrint").submit(); 
+		</script>";
+	<?php
 		//echo $xtranno . " , " . $key ;
 		//header("refresh:3;url=PrintPO_Email.php?id=".$xtranno);
 		
@@ -50,6 +58,3 @@
 
 
 ?>
-<form action="PrintPO_Email.php" method="post" name="frmQPrint" id="frmQprint" target="_blank">
-	<input type="hidden" name="hdntransid" id="hdntransid" value="<?php echo $tranno; ?>">
-</form>
