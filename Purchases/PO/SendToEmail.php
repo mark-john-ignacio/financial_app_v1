@@ -1,4 +1,27 @@
 
+<?php
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	require_once "../../Connection/connection_string.php";
+	require_once('../../Model/helper.php');
+
+	$company = $_SESSION['companyid'];
+	$tranno = $_REQUEST['cemailtranno'];
+	$preparedby = $_SESSION['employeeid'];
+
+	$sqlcomp = mysqli_query($con,"select * from company where compcode='$company'");
+
+	if(mysqli_num_rows($sqlcomp) != 0){
+
+		while($rowcomp = mysqli_fetch_array($sqlcomp, MYSQLI_ASSOC))
+		{
+			$key = $rowcomp['code'];
+		}
+
+	}
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,16 +34,11 @@
 
 <body style="padding:5px">
 
-	<?php
-		if(!isset($_SESSION)){
-			session_start();
-		}
-		require_once "../../Connection/connection_string.php";
-		require_once('../../Model/helper.php');
+	<form action="PrintPO_Email.php" method="post" name="frmQPrint" id="frmQprint">
+		<input type="hidden" name="hdntransid" id="hdntransid" value="<?=$tranno; ?>">
+	</form>
 
-		$company = $_SESSION['companyid'];
-		$tranno = $_REQUEST['cemailtranno'];
-		$preparedby = $_SESSION['employeeid'];
+	<?php
 
 		$emailto = $_REQUEST['cemailto'];
 		$emailcc = $_REQUEST['cemailcc'];
@@ -35,40 +53,15 @@
 
 		}else{
 
-			$sqlcomp = mysqli_query($con,"select * from company where compcode='$company'");
-
-			if(mysqli_num_rows($sqlcomp) != 0){
-		
-				while($rowcomp = mysqli_fetch_array($sqlcomp, MYSQLI_ASSOC))
-				{
-					$key = $rowcomp['code'];
-				}
-		
-			}
-
-			//echo $tranno . " <br> ";
-
 			echo "<center><h3>EMAIL SENDING<br>Please Wait!<h3><img src='../../images/emailsend.gif' width='200px'></center>";
-			//$xtranno = MyEnc($tranno,$key);
-		?>
-			<form action="PrintPO_Email.php" method="post" name="frmQPrint" id="frmQprint">
-				<input type="hidden" name="hdntransid" id="hdntransid" value="<?=$tranno; ?>">
-			</form>
-
-			
+		?>			
 			<script> 
 				$("#frmQPrint").submit(); 
 			</script>
-		<?php
-			//echo $xtranno . " , " . $key ;
-			//header("refresh:3;url=PrintPO_Email.php?id=".$xtranno);
-			
+		<?php			
 			
 		}
 
-		
-
-
-	?>
+		?>
 
 </body>
