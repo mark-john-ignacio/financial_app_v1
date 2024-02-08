@@ -32,8 +32,7 @@
 
 	}
 
-
-	$csalesno = MyDec($_REQUEST['id'],$compakey);
+	$csalesno = $_POST['hdntransid'];
 
 	$cemailstoo = "";
 	$cemailsccc = "";
@@ -109,7 +108,7 @@
 <body>
 
 <?php
-if($cemailstoo!="") {
+	if($cemailstoo!="") {
 ?>
 
 <table border="0" width="100%" cellpadding="1px"  id="tblMain">
@@ -117,15 +116,15 @@ if($cemailstoo!="") {
 		<td align="center"> 
 
 				<table border="0" width="100%">
-						<tr align="center">
-							<td><img src="<?php echo "../".$logosrc; ?>" height="68px"></td>
-						</tr>
-						<tr align="center">
-							<td><font style="font-size: 18px;"><?php echo $logonamz; ?></font></td>
-						</tr>
-						<tr align="center">
-							<td style="padding-bottom: 20px"><font><?php echo $logoaddrs; ?></font></td>
-						</tr>
+					<tr align="center">
+						<td><img src="<?php echo "../".$logosrc; ?>" height="68px"></td>
+					</tr>
+					<tr align="center">
+						<td><font style="font-size: 18px;"><?php echo $logonamz; ?></font></td>
+					</tr>
+					<tr align="center">
+						<td style="padding-bottom: 20px"><font><?php echo $logoaddrs; ?></font></td>
+					</tr>
 				</table>
 
 		</td>
@@ -400,6 +399,9 @@ $cxsmsgs = "";
 	
 	if(!$mail->Send()){
 		$cxsmsgs = "Mailer Error: " . $mail->ErrorInfo;
+
+		//echo  "Mailer Error: " . $mail->ErrorInf."<br><br>";
+		//print_r($mail);
 	}else{
 		$cxsmsgs = "Email Successfully Sent";
 	}
@@ -412,6 +414,6 @@ $cxsmsgs = "";
 	<input type="hidden" name="txtctranno" id="txtctranno" value="<?php echo $csalesno;?>" />
 </form>
 <script>
-	alert("<?=$cxsmsgs?>");
+	alert("<?//=$cxsmsgs?>");
     document.forms['frmpos'].submit();
 </script>
