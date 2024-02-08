@@ -1,3 +1,64 @@
+<?php
+    if(!isset($_SESSION)) {
+        session_start();
+    }
+
+    $_SESSION['pageid'] = "BIRSAWT";
+
+    include("../../../Connection/connection_string.php");
+    include('../../../include/denied.php');
+    include('../../../include/access.php');
+    include('../../../Model/helper.php');
+
+    $company = $_SESSION['companyid'];
+
+    $sql = "SELECT * FROM company WHERE compcode = '$company'";
+    $query = mysqli_query($con, $sql);
+    $list = $query -> fetch_assoc();
+    $company_detail = [
+        'name' => $list['compname'],
+        'trade' => $list['compdesc'],
+        'address' => $list['compadd'],
+        'tin' => TinValidation($list['comptin'])
+    ];
+
+    $month = date("m", strtotime($_POST['months']));
+    $year = $_POST['years'];
+
+    $sql = "SELECT a.cewtcode, a.ctranno, b.ngross, b.dcutdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM sales_t a
+        LEFT JOIN sales b on a.compcode = b.compcode AND a.ctranno = b.ctranno
+        LEFT JOIN customers c on a.compcode = c.compcode AND b.ccode = c.cempid
+        LEFT JOIN groupings d on a.compcode = b.compcode AND c.ccustomertype = d.ccode
+        WHERE a.compcode = '$company' AND MONTH(b.dcutdate) = '$month' AND YEAR(b.dcutdate) = '$year' AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 AND d.ctype = 'CUSTYP'";
+
+    $query = mysqli_query($con, $sql);
+
+    $array = array();
+
+    while($list = $query -> fetch_assoc()) {
+        $code = $list['cewtcode'];
+        $ewt = getEWT($code);
+
+        if (ValidateEWT($code) && $ewt['valid']) {
+            $json = array(
+                'name' => $list['cname'],
+                'address' => $list['chouseno'] . " " . $list['ccity'],
+                'tin' => $list['ctin'],
+                'tranno' => $list['ctranno'],
+                'gross' => $list['ngross'],
+                'credit' => floatval($list['ngross']) * (floatval($ewt['rate']) / 100),
+                'date' => $list['dcutdate'],
+                'ewt' => $ewt['code'],
+                'rate' => $ewt['rate']
+            );
+            $array[] = $json;
+        }
+    }
+
+   // print_r($array);
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,142 +79,65 @@
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>MyxFinancials</title>
-    <style>
-        table, th, td {
-            font-size: 10px
-        }
-        
-    </style>
 </head>
 <body>
-    <div style="padding: 10px;">
-        <h4>Summary Alphalist of Withholding Tax at Source</h4>
-    </div>
-    <div style="padding-top: 10px;">
-            <form action="" method="post" id="SAWTForm" enctype="multipart/form-data">
-                <div style="display: flex; padding: 10px">
-                    
-                    <div class="col-xs-2">
-                        <label for="months">Month: </label>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                            <!-- <input type="text" id="months" name="months" class="monthpicker form-control input-sm" value="< ?= date("MM", strtotime($_POST['months'])) ?>"> -->
-                            <input type="text" id="months" name="months" class="monthpicker form-control input-sm" value="<?= date("MM", strtotime($_POST['months'])) ?>">
-                        </div>
-                    </div>
-                    <div class="col-xs-2">
-                        <label for="years">Years: </label>
-                        
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                            <input type="text" id="years" name="years" class="yearpicker form-control input-sm col-xs-2" value="<?= date("Y", strtotime($_POST['years'])) ?>">
-                        </div>
-                    </div>
-                    <div class="cold-xs-2">
-                        <label for="rdo">Enter RDO:</label>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-icon"></i></span>
-                            <input type="text" id="rdo" name="rdo" class="form-control input-sm" placeholder="Enter RDO..." required>
-                        </div>
-                    </div>
-                    
-                    <div class="col-xs-2" style="display: flex; min-width: 200px;">
-                        <button type="button" class="btn btn-success btn-sm col-xs-4" style="margin: 5px;" onclick="export_file.call(this)" value="CSV">CSV</button>
-                        <button type="button" class="btn btn-primary btn-sm col-xs-4" style="margin: 5px;" onclick="export_file.call(this)" value="DAT">DAT</button>
-                    </div>
-                </div>
-            </form>
-        </div>
 
-        <div style="display: flex;">
-            <div style="display: grid; grid-template-columns: repeat(2, minmax(25%, .2fr)); width: 100%; padding: 10px;">
-                <h5>TAX PAYER TRADE NAME:</h5> <h5 id='trade'>Acme Corp.</h5>
-                <h5>TAX PAYER NAME:</h5> <h5 id='company'>Acme Corp.</h5>
-                <h5>TIN:</h5> <h5 id='tin'>Acme Corp.</h5>
-                <h5>TAX PAYER ADDRESS:</h5> <h5 id='address'>Acme Corp.</h5>
-            </div>
-            <!-- <div style="display: flex; justify-content: left; justify-items: left;">
-                <div style="display: grid; grid-template-columns: repeat(2, minmax(100px, .2fr)); padding: 10px;">
-                    <h5>TOTAL GROSS: </h5>
-                    <h5>₱ <span id="TOTAL_GROSS">00.00</span></h5>
-                    <h5>TOTAL CREDIT: </h5>
-                    <h5>₱ <span id="TOTAL_CREDIT">00.00</span></h5>
-                </div>
-            </div> -->
-            
-        </div>
+    <table width="100%" border=0 cellpadding="3px">
+        <tr>
+            <td><h4 style="margin: 0">SUMMARY ALPHALIST OF WITHHOLDING TAXES (SAWT)</h4></td>
+        </tr>
+        <tr>
+            <td><h4  style="margin: 0">FOR THE MONTH OF <?=$_POST['months']?>, <?=$_POST['years']?></h4></td>
+        </tr>
 
-        <div style="display: flex; height: 350px; overflow: auto; border: 1px solid grey; border-radius: 20px;  margin: 10px">
-            <table class="table" id="List">
-                <thead>
-                    <tr>
-                        <th>TRANSACTION DATE</th>
-                        <th>CV REFERENCE NO.</th>
-                        <th>VENDOR TIN</th>
-                        <th>VENDOR NAME</th>
-                        <th>VENDOR ADDRESS</th>
-                        <th>W/TAX CODE</th>
-                        <th>W/TAX RATE</th>
-                        <th>W/TAX BASE AMOUNT</th>
-                        <th>W/TAX AMOUNT</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+        <tr>
+            <td style="padding-top: 10px"><h4  style="margin: 0">TIN: <?=$company_detail['tin']?> </h4></td>
+        </tr>
+        <tr>
+            <td style="padding-bottom: 20px"><h4  style="margin: 0">PAYEE'S NAME: <?=$company_detail['name']?></h4></td>
+        </tr>
+    </table>
+
+    <table class="table table-sm" id="QAPList" style="font-size: 11px !important">
+        <thead>
+            <tr>
+                <th>TRANSACTION DATE</th>
+                <th>CV REFERENCE NO.</th>
+                <th>VENDOR TIN</th>
+                <th>VENDOR NAME</th>
+                <th>VENDOR ADDRESS</th>
+                <th>W/TAX CODE</th>
+                <th>W/TAX RATE</th>
+                <th>W/TAX BASE AMOUNT</th>
+                <th>W/TAX AMOUNT</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+                foreach($array as $rs2){
+            ?>
+                <tr>
+                    <td> <?=$rs2['date']?> </td>
+                    <td> <?=$rs2['tranno']?> </td>
+                    <td> <?=$rs2['tin']?> </td>
+                    <td> <?=$rs2['name']?> </td>
+                    <td> <?=$rs2['address']?> </td>
+                    <td> <?=$rs2['ewt']?> </td>
+                    <td> <?=floatval($rs2['rate'] / 100) . "%"?> </td>
+                    <td> <?=number_format($rs2['gross'],2)?> </td>
+                    <td> <?=number_format($rs2['credit'],2)?> </td>
+                </tr>
+            <?php
+                }
+            ?>
+        </tbody>
+    </table>
+
 </body>
 </html>
 
 <script>
-    var sawt = [];
-     $(document).ready(function(){
-        $(".yearpicker").datetimepicker({
-            defaultDate: moment(),
-            viewMode: 'years',
-            format: 'YYYY'
-        }).on('dp.change', function (e) {
-            fetchSAWT();
-        });
 
-        $(".monthpicker").datetimepicker({
-            defaultDate: moment(),
-            viewMode: 'months',
-            format: 'MMMM'
-        }).on('dp.change', function (e) {
-            fetchSAWT();
-        });
-
-        fetchSAWT();
-    })
-
-    function export_file() {
-        let type = $(this).val();
-        let rdo = $("#rdo").val();
-        var form = document.getElementById('SAWTForm');
-        var formData = new FormData(form);
-
-        if(sawt.length === 0) {
-            return alert("No Reference found");
-        }
-        
-        if(rdo == ""){ 
-            return alert("No RDO found please! Fill this detail!");
-        }
-
-        switch (type) {
-            case "CSV":
-                newAction = "../TO_CSV/";
-                break;
-            case "DAT":
-                newAction = "../TO_DAT/";
-                break;
-        }
-        form.action = newAction;
-        // console.log(form)
-        form.submit();
-
-    }
-    
     function fetchSAWT(){
         let month = $("#months").val();
         let year = $("#years").val();
