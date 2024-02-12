@@ -336,7 +336,7 @@
 							if (mysqli_num_rows($sqdts)!=0) {
 								while($row = mysqli_fetch_array($sqdts, MYSQLI_ASSOC)){
 						?>
-							<td width="25%" height="50px">
+							<td width="30%" height="50px">
 								<?php
 									if($row['lapproved']==1 && $row['cusersign']!=""){
 								?>
@@ -374,13 +374,13 @@
 								}
 							}else{
 						?>
-							<td width="25%">							
+							<td width="30%">							
 								<div style="text-align: center">
 									Checked By
 								</div>	
 								<div style="text-align: center"><div style="height:90px">&nbsp;</div></div>						
 							</td>
-							<td width="25%">							
+							<td width="30%">							
 								<div style="text-align: center">
 									Approved By
 								</div>	
@@ -390,7 +390,7 @@
 							}
 						?>
 
-						<td width="25%">							
+						<td width="20%">							
 							<div style="text-align: center">
 								Supplier Confirmation
 							</div>	
