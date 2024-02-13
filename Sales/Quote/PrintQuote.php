@@ -52,11 +52,12 @@ include('../../include/denied.php');
 		{
 			$userinfo[$rowusr['Userid']] = $rowusr['Fname']." ".$rowusr['Minit'].(($rowusr['Minit']!=="" && $rowusr['Minit']!==null) ? " " : "").$rowusr['Lname'];
 			$userdept[$rowusr['Userid']] = $rowusr['cdepartment'];
+			$usersign[$rowusr['Userid']] = $rowusr['cusersign'];
 		}
 	}
 	
 	$csalesno = $_REQUEST['hdntransid'];
-	$sqlhead = mysqli_query($con,"select a.*,b.cname, b.chouseno, b.ccity, b.cstate, C.cdesc as termdesc from quote a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join groupings C on A.cterms = C.ccode where a.compcode='$company' and a.ctranno = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*,b.cname, b.chouseno, b.ccity, b.cstate, C.cdesc as termdesc from quote a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid left join groupings C on A.cterms = C.ccode left join users D on a.cpreparedby=D.Userid where a.compcode='$company' and a.ctranno = '$csalesno'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -101,11 +102,12 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$cservinfo = $row['cservinfo'];
 
 		$ctermsdesc = $row['termdesc']." upon delivery";
-
-		$cprepby =  $row['cpreparedby'];
 		
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
+		$lSent= $row['lsent'];
+
+		$cprepby = $row['cpreparedby'];
 	}
 }
 
@@ -327,12 +329,25 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic, B.cnotes Fro
 			
 			<table border="0" width="100%">
 				<tr>
-					<td width="40%"><br><br>
-						Very Truly Yours,<br><br><br><br><br><br>
-						<b><?=$userinfo[$cprepby]?></b> 
-						<br>	
-						<b><?=$userdept[$cprepby]?></b>
-						<br>
+					<td width="40%"><br><br> 
+						Very Truly Yours,
+						<?php
+							if($lSent==1 && $usersign[$cprepby] != "" && $usersign[$cprepby] != null){
+						?>							
+							<div><img src="<?php echo $usersign[$cprepby]; ?>" width="160px" height="88px"></div>
+						<?php
+							}else{
+						?>
+							<br><br><br><br><br><br>
+							<b><?=$userinfo[$cprepby]?></b> 
+							<br>	
+							<b><?=$userdept[$cprepby]?></b>
+							<br>
+						<?php
+							}
+						?>
+						
+						
 						<?=ucwords(strtolower($compname))?>
 						
 					</td>
