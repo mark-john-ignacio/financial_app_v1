@@ -161,28 +161,64 @@ function numberTowords($num)
 <?php
 
 	if($cdoctype==1){
-?>
 
-	<table border="0" width="100%" cellpadding="1px"  id="tblMain">
-		<tr>
-			<td align="right" colspan="2" style="padding-right: 1.35in; padding-bottom: 23px; padding-top: 36px; font-size: 11pt;"> 
-				<?=date_format(date_create($Date),"M d, Y")?>
-			</td>
-		</tr>
-		<tr>
-			<td style="padding-left: 1.27in; font-size: 12pt;"> 
-				<?=$Payee?>
-			</td>
-			<td align="right" style="padding-right: 1.5in; font-size: 12pt;"> 
-				<?=number_format($Amount,2)?>
-			</td>
-		</tr>
-		<tr>
-			<td style="padding-left: 1.29in; padding-right: 0.27in; font-size: 11pt;" colspan="2"> 
-				<?=numberTowords($Amount)?>
-			</td>
-		</tr>
-	</table>
+?>
+	<style>
+		body{
+			font-family: 'Courier New', monospace !important;
+			font-weight: 900 !important;
+		}
+		table {
+			border-collapse: collapse;
+		}
+		.ewdate{
+			position: absolute;
+			float: right;
+			top: 45px;
+			right: 40px;
+			width: 200px;
+			height:  25px;    
+			font-size: 10pt;		
+
+			/*border: 1px solid #000;*/				
+		}
+		.ewdamt{
+			position: absolute;
+			float: right;
+			top: 85px;
+			right:90px;
+			width: 150px;
+			height:  18px;   
+
+			/*border: 1px solid #000;*/
+		}
+		.ewdpay{
+			position: absolute;
+			top: 85px;
+			left: 130px;
+			width: 338px;
+			height:  18px;   
+
+			/*border: 1px solid #000;*/
+		}
+		.ewdamtwords{
+			position: absolute;
+			top: 105px;
+			left: 128px;
+			width: 600px;
+			height:  18px;    
+
+			/*border: 1px solid #000;*/
+			
+		}
+		
+	</style>
+		
+	<div class="ewdate"><?=date_format(date_create($Date),"M d, Y")?></div>
+
+	<div class="ewdamt"><?=number_format($Amount,2)?></div>
+	<div class="ewdpay"><?=$Payee?></div>
+	<div class="ewdamtwords"><?=numberTowords($Amount)?></div>
 <?php
 	}elseif($cdoctype==2){
 ?>
