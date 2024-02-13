@@ -388,9 +388,7 @@
 							}
 						?>
 						<td width="20%">							
-							<div style="text-align: center">
-								Approved By
-							</div>	
+							<div style="text-align: center">Approved By</div>	
 							<div style="text-align: center"><div style="height:80px">&nbsp;</div> 
 							<div style="text-align: center"><?=$cApprBy;?></div>							
 						</td>
