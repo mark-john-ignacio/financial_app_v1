@@ -154,6 +154,125 @@ function numberTowords($num)
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>Check</title>
+	
+</head>
+<body>
+
+<?php
+
+	if($cdoctype==1){
+?>
+
+	<table border="0" width="100%" cellpadding="1px"  id="tblMain">
+		<tr>
+			<td align="right" colspan="2" style="padding-right: 1.35in; padding-bottom: 23px; padding-top: 36px; font-size: 11pt;"> 
+				<?=date_format(date_create($Date),"M d, Y")?>
+			</td>
+		</tr>
+		<tr>
+			<td style="padding-left: 1.27in; font-size: 12pt;"> 
+				<?=$Payee?>
+			</td>
+			<td align="right" style="padding-right: 1.5in; font-size: 12pt;"> 
+				<?=number_format($Amount,2)?>
+			</td>
+		</tr>
+		<tr>
+			<td style="padding-left: 1.29in; padding-right: 0.27in; font-size: 11pt;" colspan="2"> 
+				<?=numberTowords($Amount)?>
+			</td>
+		</tr>
+	</table>
+<?php
+	}elseif($cdoctype==2){
+?>
+
+		<style>
+			body{
+				font-family: 'Courier New', monospace !important;
+				font-weight: 900 !important;
+			}
+			table {
+				border-collapse: collapse;
+			}
+			.ewdatemo{
+				position: absolute;
+				float: right;
+				top: 45px;
+				right: 215px;
+				width: 30px;
+				height:  25px;    
+				letter-spacing:5px;
+				font-size: 10pt;			
+				/*border: 1px solid #000;*/				
+			}
+			.ewdatedy{
+				position: absolute;
+				float: right;
+				top: 45px;
+				right: 179px;
+				width: 30px;
+				height:  25px;    
+				letter-spacing:5px;
+				font-size: 10pt;
+			}
+			.ewdateyr{
+				position: absolute;
+				float: right;
+				top: 45px;
+				right: 139px;
+				width: 30px;
+				height:  25px;    
+				letter-spacing:5px;
+				font-size: 10pt;
+			}
+			.ewdamt{
+				position: absolute;
+				float: right;
+				top: 75px;
+				right:90px;
+				width: 150px;
+				height:  18px;    
+				/*border: 1px solid #000;*/
+			}
+			.ewdpay{
+				position: absolute;
+				top: 80px;
+				left: 130px;
+				width: 338px;
+				height:  18px;   
+
+				/*border: 1px solid #000;*/
+			}
+			.ewdamtwords{
+				position: absolute;
+				top: 108px;
+				left: 108px;
+				width: 600px;
+				height:  18px;    
+
+				/*border: 1px solid #000;*/
+				
+			}
+			
+		</style>
+<?php
+		$dmo = date_format(date_create($Date),"m");
+		$ddt = date_format(date_create($Date),"d");
+		$dyr = date_format(date_create($Date),"Y");
+?>
+
+	<div class="ewdatemo"><?=$dmo?></div>
+	<div class="ewdatedy"><?=$ddt?></div>
+	<div class="ewdateyr"><?=$dyr?></div>
+
+	<div class="ewdamt"><?=number_format($Amount,2)?></div>
+	<div class="ewdpay"><?=$Payee?></div>
+	<div class="ewdamtwords"><?=numberTowords($Amount)?></div>
+<?php
+	}elseif($cdoctype==3){
+?>
+
 	<style>
 		body{
 			font-family: 'Courier New', monospace !important;
@@ -222,68 +341,7 @@ function numberTowords($num)
 		}
 		
 	</style>
-</head>
-<body>
-
 <?php
-
-	if($cdoctype==1){
-?>
-
-	<table border="0" width="100%" cellpadding="1px"  id="tblMain">
-		<tr>
-			<td align="right" colspan="2" style="padding-right: 1.35in; padding-bottom: 23px; padding-top: 36px; font-size: 11pt;"> 
-				<?=date_format(date_create($Date),"M d, Y")?>
-			</td>
-		</tr>
-		<tr>
-			<td style="padding-left: 1.27in; font-size: 12pt;"> 
-				<?=$Payee?>
-			</td>
-			<td align="right" style="padding-right: 1.5in; font-size: 12pt;"> 
-				<?=number_format($Amount,2)?>
-			</td>
-		</tr>
-		<tr>
-			<td style="padding-left: 1.29in; padding-right: 0.27in; font-size: 11pt;" colspan="2"> 
-				<?=numberTowords($Amount)?>
-			</td>
-		</tr>
-	</table>
-<?php
-	}elseif($cdoctype==2){
-?>
-
-	<table border="0" width="100%" cellpadding="1px"  id="tblMain">
-		<tr>
-			<td align="right" colspan="2" style="padding-right: 1.05in; padding-bottom: 15px; padding-top: 36px; font-size: 10pt"> 
-				<?php
-					$dmo = date_format(date_create($Date),"m");
-					$ddt = date_format(date_create($Date),"d");
-					$dyr = date_format(date_create($Date),"Y");
-
-				
-					echo trim(chunk_split($dmo, 1, '  '))."&nbsp;&nbsp;&nbsp;".trim(chunk_split($ddt, 1, '  '))."&nbsp;&nbsp;&nbsp;".trim(chunk_split($dyr, 1, '  '));
-				?>
-			</td>
-		</tr>
-		<tr>
-			<td style="padding-left: 1in; font-size: 12pt;"> 
-				<?=$Payee?>
-			</td>
-			<td align="right" style="padding-right: 1.5in; font-size: 12pt;"> 
-				<?=number_format($Amount,2)?>
-			</td>
-		</tr>
-		<tr>
-			<td style="padding-left: 1.1in; padding-right: 1.4in; font-size: 10pt;" colspan="2"> 
-				<?=numberTowords($Amount)?>
-			</td>
-		</tr>
-	</table>
-<?php
-	}elseif($cdoctype==3){
-
 		$dmo = date_format(date_create($Date),"m");
 		$ddt = date_format(date_create($Date),"d");
 		$dyr = date_format(date_create($Date),"Y");
