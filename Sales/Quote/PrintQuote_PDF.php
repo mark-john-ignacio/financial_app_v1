@@ -102,7 +102,11 @@
 			$cdelinfo = $row['cdelinfo'];
 			$cservinfo = $row['cservinfo'];
 
-			$ctermsdesc = $row['termdesc']." upon delivery";
+			if($row['csalestype']=="Goods"){
+				$ctermsdesc = $row['termdesc']." upon delivery";
+			}else{
+				$ctermsdesc = $row['termdesc']." upon subscription/renewal";
+			}
 
 			$cprepby =  $row['cpreparedby'];
 			

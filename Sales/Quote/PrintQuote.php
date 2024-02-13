@@ -101,7 +101,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$cdelinfo = $row['cdelinfo'];
 		$cservinfo = $row['cservinfo'];
 
-		$ctermsdesc = $row['termdesc']." upon delivery";
+		if($row['csalestype']=="Goods"){
+			$ctermsdesc = $row['termdesc']." upon delivery";
+		}else{
+			$ctermsdesc = $row['termdesc']." upon subscription/renewal";
+		}
 		
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
