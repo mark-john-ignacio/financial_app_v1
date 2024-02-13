@@ -78,6 +78,7 @@ include('../../include/access.php');
       <select class="form-control input-sm" name="seldoctype" id="seldoctype">
 				<option value="1">BDO CHECK FORMAT</option>
 				<option value="2">MB CHECK FORMAT</option>
+				<option value="3">EASTWEST CHECK FORMAT</option>
 			</select>
 
     </div></td>
