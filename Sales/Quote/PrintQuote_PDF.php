@@ -53,6 +53,7 @@
 		{
 			$userinfo[$rowusr['Userid']] = $rowusr['Fname']." ".$rowusr['Minit'].(($rowusr['Minit']!=="" && $rowusr['Minit']!==null) ? " " : "").$rowusr['Lname'];
 			$userdept[$rowusr['Userid']] = $rowusr['cdepartment'];
+			$usersign[$rowusr['Userid']] = $rowusr['cusersign'];			
 		}
 	}
 	
@@ -107,6 +108,7 @@
 			
 			$lCancelled = $row['lcancelled'];
 			$lPosted = $row['lapproved'];
+			$lSent= $row['lsent'];
 		}
 	}
 
@@ -129,15 +131,18 @@
 		</tr>		
 	</table>";
 
-	$setfooter = "<table border=\"0\" width=\"100%\" cellpadding=\"1px\" style=\"border-collapse: collapse\">
-		<tr>
-			<td width=\"40%\"><br><br>
-				Very Truly Yours,<br><br><br><br><br><br>
-				<b>".$userinfo[$cprepby]."</b> 
-				<br>	
-				<b>".$userdept[$cprepby]."</b>
-				<br>
-				".ucwords(strtolower($compname))."							
+	$setfooter = "<table border=\"0\" width=\"100%\" cellpadding=\"1px\" style=\"border-collapse: collapse\"><tr><td width=\"40%\"><br><br>
+	Very Truly Yours,";
+			if($lSent==1 && $usersign[$cprepby] != "" && $usersign[$cprepby] != null){
+				$setfooter = $setfooter . "<div><img src=\"".$usersign[$cprepby]."\" width=\"160px\" height=\"88px\"></div>";
+			}else{
+				$setfooter = $setfooter . "<br><br><br><br><br><br>
+					<b>".$userinfo[$cprepby]."</b> 
+					<br>	
+					<b>".$userdept[$cprepby]."</b>
+					<br>";
+			}
+			$setfooter = $setfooter.ucwords(strtolower($compname))."							
 			</td>
 			<td>
 				<table border=0 width=\"80%\" align=\"center\">
