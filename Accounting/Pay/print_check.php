@@ -166,7 +166,7 @@ function numberTowords($num)
 			position: absolute;
 			float: right;
 			top: 43px;
-			right: 201px;
+			right: 203px;
 			width: 30px;
 			height:  25px;    
 			letter-spacing:8px;
@@ -178,7 +178,7 @@ function numberTowords($num)
 			position: absolute;
 			float: right;
 			top: 43px;
-			right: 155px;
+			right: 157px;
 			width: 30px;
 			height:  25px;    
 			letter-spacing:8px;
@@ -188,7 +188,7 @@ function numberTowords($num)
 			position: absolute;
 			float: right;
 			top: 43px;
-			right: 105px;
+			right: 107px;
 			width: 30px;
 			height:  25px;    
 			letter-spacing:8px;
