@@ -131,6 +131,7 @@
 				<thead>
 					<tr>
 						<th>PR No</th>
+						<th>Prepared By</th>
 						<th>Requested By</th>
 						<th>Section</th>
 						<th>Date Needed</th>
@@ -275,6 +276,7 @@
 								}								
 						},
 						{ "data": 1 },
+						{ "data": 9 },
 						{ "data": 2 },
 						{ "data": 3 },
 						{ "data": 4 },	
@@ -366,11 +368,11 @@
 					],
 					"columnDefs": [ 
 						{
-							"targets": [3,4],
+							"targets": [4,5],
 							"className": "text-right"
 						},
 						{
-							"targets": [5,6],
+							"targets": [6,7],
 							"className": "text-center",
 							orderable: false
 						}

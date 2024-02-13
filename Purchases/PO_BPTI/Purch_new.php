@@ -70,6 +70,15 @@
 		}
 	}
 
+	//get last approvedby
+	$sql = "SELECT capprovedby From purchase WHERE compcode='$company' ORDER BY ddate DESC LIMIT 1";
+	$result=mysqli_query($con,$sql);														
+	$clastapprvby = "";                                       							
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
+		$clastapprvby = $row['capprovedby'];
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -308,7 +317,16 @@
 									</div>
 								</td>
 							</tr>
-			
+							<tr>
+								<tH width="100">Approved By:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-11 nopadding">
+										<input type='text' class="form-control input-sm" id="apprby" name="apprby" placeholder="Enter Approved By..." value="<?=$clastapprvby?>">
+									</div>
+								</td>
+								<tH width="150">&nbsp;</tH>
+								<td style="padding:2px;">&nbsp;</td>
+							</tr>
 						</table>
 					
 					</div>

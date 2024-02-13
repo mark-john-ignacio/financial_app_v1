@@ -23,7 +23,7 @@ include('../../include/denied.php');
 	
 	$csalesno = $_REQUEST['hdntransid'];
 
-	$sqlhead = mysqli_query($con,"select a.*, b.cdesc as locname, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign from purchrequest a left join locations b on a.compcode=b.compcode and a.locations_id=b.nid left join users c on a.cpreparedby=c.Userid where a.compcode='$company' and a.ctranno = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*, b.cdesc as locname, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign, d.cdesc as creqname from purchrequest a left join locations b on a.compcode=b.compcode and a.locations_id=b.nid left join users c on a.cpreparedby=c.Userid left join mrp_operators d on a.compcode=d.compcode and a.crequestedby=d.nid where a.compcode='$company' and a.ctranno = '$csalesno'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
 	while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -38,6 +38,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$lSent = $row['lsent'];
 
 		$cApprvBy = $row['capprovedby'];
+
+		$cReqBy = $row['creqname'] ;
 
 		$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
 		$cpreparedBySign = $row['cusersign'];
@@ -181,7 +183,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				<table border="1" width="100%" style="border-collapse: collapse;">
 					<tr>
 						<td align="center" width="30%">
-							<b>Prepared By</b>
+							<b>Requested By</b>
 						</td>
 						<td align="center" width="30%">
 							<b>Checked By</b>
@@ -195,13 +197,13 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						<td align="center"  valign="top">
 							<?php
 
-								if($lSent==1 && $cpreparedBySign!=""){
-									echo "<div style=\"text-align: center; display: block\"><img src = '".$cpreparedBySign."?x=".time()."' height='80px'></div>";
-									echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";												
-								}else{
+								//if($lSent==1 && $cpreparedBySign!=""){
+								//	echo "<div style=\"text-align: center; display: block\"><img src = '".$cpreparedBySign."?x=".time()."' height='80px'></div>";
+								//	echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";												
+								//}else{
 									echo "<div style=\"text-align: center; display: block; height: 80px\">&nbsp;</div>";
-									echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";
-								}
+									echo "<div style=\"text-align: center; display: block\">".$cReqBy."</div>";
+								//}
 							?>
 						</td>
 

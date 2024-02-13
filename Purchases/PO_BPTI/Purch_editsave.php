@@ -32,6 +32,8 @@ function chkgrp($valz) {
 	$BaseGross= str_replace(",","",$_REQUEST['txtnBaseGross']);
 	$PayType = $_REQUEST['selpaytype']; 
 
+	$cApprvBy =  mysqli_real_escape_string($con, $_REQUEST['apprby']);
+
 	if(isset($_REQUEST['selterms'])){
 		$PayTerms = "'".$_REQUEST['selterms']."'";
 	}else{
@@ -65,7 +67,7 @@ function chkgrp($valz) {
 	
 	//UPDATE HEADER
 
-	if (!mysqli_query($con,"Update purchase set `ccode` ='$cCustID', `cremarks`=$cRemarks, `ccontact`=$cContact, `ccontactemail`=$cContactEmail, `dneeded`=STR_TO_DATE('$dDelDate', '%m/%d/%Y'),`ngross`='$nGross', `ccustacctcode`='$AccntCode', `nbasegross`='$BaseGross', `ccurrencycode`='$CurrCode', `ccurrencydesc`='$CurrDesc', `nexchangerate`='$CurrRate', `ladvancepay` = $PayType, `cterms` = $PayTerms, `cdelto` = $delto, `ddeladd` = $deladd, `ddelinfo` = $delnotes, `cbillto` = $billto, `cewtcode` = $cewtcode Where compcode='$company' and cpono='$cSINo'")){
+	if (!mysqli_query($con,"Update purchase set `ccode` ='$cCustID', `cremarks`=$cRemarks, `ccontact`=$cContact, `ccontactemail`=$cContactEmail, `dneeded`=STR_TO_DATE('$dDelDate', '%m/%d/%Y'),`ngross`='$nGross', `ccustacctcode`='$AccntCode', `nbasegross`='$BaseGross', `ccurrencycode`='$CurrCode', `ccurrencydesc`='$CurrDesc', `nexchangerate`='$CurrRate', `ladvancepay` = $PayType, `cterms` = $PayTerms, `cdelto` = $delto, `ddeladd` = $deladd, `ddelinfo` = $delnotes, `cbillto` = $billto, `cewtcode` = $cewtcode, `capprovedby` = '$cApprvBy' Where compcode='$company' and cpono='$cSINo'")){
 		echo "False";
 	}
 	else{

@@ -58,7 +58,7 @@
 		}
 	}
 
-	$sqlhead = mysqli_query($con,"select a.cpono, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dneeded,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.nbasegross, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.lcancelled, a.lapproved, a.lprintposted, a.lvoid, a.ccustacctcode, b.cname, a.ccontact, a.ccontactemail, a.ccontactphone, a.ccontactfax, a.ladvancepay, a.cterms, a.cdelto, a.ddeladd, a.ddelemail, a.ddelphone, a.ddelfax, a.ddelinfo, a.cbillto, a.cewtcode, a.cemailto, a.cemailcc, a.cemailbcc, a.cemailsubject, a.cemailbody, a.cemailsentby, a.demailsent from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
+	$sqlhead = mysqli_query($con,"select a.cpono, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dneeded,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.nbasegross, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.lcancelled, a.lapproved, a.lprintposted, a.lvoid, a.ccustacctcode, b.cname, a.ccontact, a.ccontactemail, a.ccontactphone, a.ccontactfax, a.ladvancepay, a.cterms, a.cdelto, a.ddeladd, a.ddelemail, a.ddelphone, a.ddelfax, a.ddelinfo, a.cbillto, a.cewtcode, a.cemailto, a.cemailcc, a.cemailbcc, a.cemailsubject, a.cemailbody, a.cemailsentby, a.demailsent, a.capprovedby from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
 
 
 	@$arrname = array();
@@ -169,6 +169,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$cemailsbod = $row['cemailbody'];
 		$cemailsentby = $row['cemailsentby'];
 		$cemailsentdate = $row['demailsent'];
+
+		$clastapprvby = $row['capprovedby'];
 	}
 
 	//get last email body
@@ -407,7 +409,16 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</div>
 								</td>
 							</tr>
-			
+							<tr>
+								<tH width="100">Approved By:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-11 nopadding">
+										<input type='text' class="form-control input-sm" id="apprby" name="apprby" placeholder="Enter Approved By..." value="<?=$clastapprvby?>">
+									</div>
+								</td>
+								<tH width="150">&nbsp;</tH>
+								<td style="padding:2px;">&nbsp;</td>
+							</tr>
 						</table>
 							
 					</div>

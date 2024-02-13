@@ -79,6 +79,8 @@ else {
 	$billto = chkgrp($_REQUEST['txtbillto']); 
 	//$cterms = chkgrp($_REQUEST['selterms']); 
 
+	$cApprvBy =  mysqli_real_escape_string($con, $_REQUEST['apprby']);
+
 	if(isset($_REQUEST['selewt'])){
 		$cewtcode = "'".$_REQUEST['selewt']."'";
 	}else{
@@ -100,7 +102,7 @@ else {
 	$preparedby = $_SESSION['employeeid'];
 	
 	//INSERT HEADER	
-	if (!mysqli_query($con,"INSERT INTO purchase(`compcode`, `cpono`, `ccode`, `cremarks`, `ddate`, `dneeded`, `dpodate`, `ngross`, `nbasegross`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `cpreparedby`, `lcancelled`, `lapproved`, `lprintposted`, `ccustacctcode`, `ccontact`, `ccontactemail`, `ccontactphone`, `ccontactfax`, `ladvancepay`, `cterms`, `cdelto`, `ddeladd`, `ddelemail`, `ddelphone`, `ddelfax`, `ddelinfo`, `cbillto`, `cewtcode`) values('$company', '$cSINo', '$cCustID', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), STR_TO_DATE('$dPODate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby', 0, 0, 0, '$AccntCode', $cContact, $cContactEmail, $cContactPhone, $cContactFax , $PayType, $PayTerms, $delto, $deladd, $delemail, $delphone, $delfax, $delnotes, $billto, $cewtcode)")){
+	if (!mysqli_query($con,"INSERT INTO purchase(`compcode`, `cpono`, `ccode`, `cremarks`, `ddate`, `dneeded`, `dpodate`, `ngross`, `nbasegross`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `cpreparedby`, `lcancelled`, `lapproved`, `lprintposted`, `ccustacctcode`, `ccontact`, `ccontactemail`, `ccontactphone`, `ccontactfax`, `ladvancepay`, `cterms`, `cdelto`, `ddeladd`, `ddelemail`, `ddelphone`, `ddelfax`, `ddelinfo`, `cbillto`, `cewtcode`, `capprovedby`) values('$company', '$cSINo', '$cCustID', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), STR_TO_DATE('$dPODate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby', 0, 0, 0, '$AccntCode', $cContact, $cContactEmail, $cContactPhone, $cContactFax , $PayType, $PayTerms, $delto, $deladd, $delemail, $delphone, $delfax, $delnotes, $billto, $cewtcode,'$cApprvBy')")){
 		echo "False";
 	}
 	else{

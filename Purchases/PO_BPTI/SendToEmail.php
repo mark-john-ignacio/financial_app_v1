@@ -57,7 +57,7 @@
 		?>			
 			<script> 
 				setTimeout(function() {
-					alert("here");
+					//alert("here");
 					$("#frmQprint").submit();		
 				}, 3000); 
 			</script>
