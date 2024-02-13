@@ -156,11 +156,69 @@ function numberTowords($num)
 	<title>Check</title>
 	<style>
 		body{
-			font-family: 'Courier New', monospace;
-			font-weight: 900;
+			font-family: 'Courier New', monospace !important;
+			font-weight: 900 !important;
 		}
 		table {
 			border-collapse: collapse;
+		}
+		.ewdatemo{
+			position: absolute;
+			float: right;
+			top: 43px;
+			right: 176px;
+			width: 30px;
+			height:  25px;    
+			letter-spacing:8px;
+			font-size: 10pt;
+			/*border: 1px solid #000;*/
+			
+		}
+		.ewdatedy{
+			position: absolute;
+			float: right;
+			top: 43px;
+			right: 130px;
+			width: 30px;
+			height:  25px;    
+			letter-spacing:8px;
+			font-size: 10pt;
+		}
+		.ewdateyr{
+			position: absolute;
+			float: right;
+			top: 43px;
+			right: 80px;
+			width: 30px;
+			height:  25px;    
+			letter-spacing:8px;
+			font-size: 10pt;
+		}
+		.ewdamt{
+			position: absolute;
+			float: right;
+			top: 75px;
+			right: 70px;
+			width: 150px;
+			height:  18px;    
+			/*border: 1px solid #000;*/
+		}
+		.ewdpay{
+			position: absolute;
+			top: 80px;
+			left: 150px;
+			width: 338px;
+			height:  18px;    
+			/*border: 1px solid #000;*/
+		}
+		.ewdamtwords{
+			position: absolute;
+			top: 108px;
+			left: 108px;
+			width: 600px;
+			height:  18px;    
+			/*border: 1px solid #000;*/
+			
 		}
 		
 	</style>
@@ -196,8 +254,6 @@ function numberTowords($num)
 	}elseif($cdoctype==2){
 ?>
 
-
-
 	<table border="0" width="100%" cellpadding="1px"  id="tblMain">
 		<tr>
 			<td align="right" colspan="2" style="padding-right: 1.05in; padding-bottom: 15px; padding-top: 36px; font-size: 10pt"> 
@@ -225,6 +281,22 @@ function numberTowords($num)
 			</td>
 		</tr>
 	</table>
+<?php
+	}elseif($cdoctype==3){
+
+		$dmo = date_format(date_create($Date),"m");
+		$ddt = date_format(date_create($Date),"d");
+		$dyr = date_format(date_create($Date),"Y");
+
+?> 
+	<div class="ewdatemo"><?=$dmo?></div>
+	<div class="ewdatedy"><?=$ddt?></div>
+	<div class="ewdateyr"><?=$dyr?></div>
+
+	<div class="ewdamt"><?=number_format($Amount,2)?></div>
+	<div class="ewdpay"><?=$Payee?></div>
+	<div class="ewdamtwords"><?=numberTowords($Amount)?></div>
+
 <?php
 	}
 ?>
