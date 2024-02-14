@@ -22,10 +22,15 @@
     $row = $query -> fetch_assoc();
     $detail =$row;
 
+    $sql = "SELECT * FROM pos_system WHERE compcode = '$company' LIMIT 1";
+    $query = mysqli_query($con, $sql);
+    $row = $query -> fetch_assoc();
+    $posys =$row;
+
     $phone = explode(";",$detail['cpnum']);
 
 
-    $sql = "SELECT a.quantity, a.gross, a.uom, b.ddate, b.orderType, d.cname, b.exchange, b.tendered, b.coupon, b.gross as total, b.net, b.vat, b.preparedby, b.subtotal, b.serviceFee, b.discount, c.citemdesc, d.chouseno, d.ccity, d.ctin, d.cempid FROM pos_t a
+    $sql = "SELECT a.quantity, a.gross, a.uom, b.ddate, b.orderType, d.cname, b.exchange, b.tendered, b.coupon, a.amount, b.gross as total, b.net, b.vat, b.preparedby, b.subtotal, b.serviceFee, b.discount, c.citemdesc, d.chouseno, d.ccity, d.ctin, d.cempid, b.payment_method FROM pos_t a
         LEFT JOIN pos b on a.compcode = b.compcode AND a.tranno = b.tranno
         LEFT JOIN items c on a.compcode = c.compcode AND a.item = c.cpartno
         LEFT JOIN customers d on a.compcode  = d.compcode AND b.customer = d.cempid
@@ -51,6 +56,7 @@
         $net = $row['net'];
         $subtotal = $row['subtotal'];
         $total = $row['total'];
+        $pay_meth = ($row['payment_method']=="DEBIT" || $row['payment_method']=="CREDIT") ? $row['payment_method']." CARD" : $row['payment_method'];
         
     }
     $cash = $tender + $coupon;
@@ -64,9 +70,13 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
  
         <style>
+            body{
+                padding: 0 !important;
+                margin: 0 !important
+            }
             * {
-                font-size: 12px;
-                font-family: 'Times New Roman';
+                font-size: 10px;
+                font-family: 'Helvetica';
             }
 
             td,th, tr,table {
@@ -75,9 +85,8 @@
 
             td.description,
             th.description {
-                width: 100%;
-                max-width: 100%;
-                font-weight: bold;
+                width: 70%;
+                max-width: 70%;
             }
 
             #receipt {
@@ -105,8 +114,8 @@
             }
 
             .ticket {
-                width: 155px;
-                max-width: 155px;
+                width: 2.19in;
+                max-width: 2.19in;
             }
 
             img {
@@ -127,109 +136,152 @@
         <div class="ticket">
             <!-- <img src="< ?= $detail['clogoname'] ?>" alt="Logo"> -->
             <p class="centered"><?= $detail['compname']?>
-                <br><?= $detail['compadd'] ?>
-                <?php foreach($phone as $list ): ?>
-                    <br><?= $list?>
-                <?php endforeach; ?>
-                <br>MIN: 
-                <br>S/N: 
-                <br><b>VAT REGISTERED TIN</b>
-                <br><?= $detail['comptin'] ?>
-
-            __________________________
-            <br>
-            <b><br>Official Receipt No. 
-            <br>----- <?= $tranno ?> -----
+                <br><?= $detail['compadd'] ?>        
+                <br>
+                    <?php
+                        if($detail['compvat']=="VAT_REG"){
+                            echo "VAT REG TIN: ".$detail['comptin'];
+                        }else if($detail['compvat']=="NON-VAT_REG"){
+                            echo "NON-VAT REG TIN: ".$detail['comptin'];
+                        }
+                    ?>
+            <br>S/N: <?=$posys['cserialno']?>
+            <br>MIN: <?=$posys['cmachine']?> 
             <br><?= $ordertype != null ? "----- ". $ordertype ." -----" : null ?></b>
             <div style='display: flex; width: 100%'>
-                    <div><?= date("h:i:s A", strtotime($date)) ?></div>&nbsp;
-                    <div><?= date("D d M Y", strtotime($date)) ?></div> 
+                    <div>OR No.: <?= $tranno ?><br>Date:<?= date("d/m/Y H:i:s A", strtotime($date)) ?></div> 
                     
             </div>
-            <div>SOLD TO: <?= $customer != "" ? $customer : "______________________" ?></div>
-            <div>ADDRESS: <?= $customer_address != "" ?$customer_address : "______________________"  ?></div>
-            <div>TIN: <?= $customer_tin != "" ? $customer_tin : "______________________"  ?></div>
-            <div>Prepared By: <?= $prepared ?></div>
+            <div style="padding-bottom: 2px; border-bottom: 1px dashed #000">Cashier: <?= $prepared ?></div>
             
-            
-            
-            <br><div style='text-align: center; font-weight: bold'>OFFICIAL RECEIPT</div>
-            <br>
             <table >
                 <tbody>
-                    <?php foreach($items as $list):  ?>
+                    <?php 
+                        $subtot = 0;
+                        foreach($items as $list):  
+                            
+                            $subtot = $subtot + floatval($list['gross']);
+                    ?>
                         <tr>
-                            <td colspan="2" class="description"><?= $list['citemdesc'] ?></td>
+                            <td width="80%"><?= $list['citemdesc'] ?></td>
+                            <td align="right"><?=number_format($list['gross'], 2) ?></td>
                         </tr>
+                        <?php
+                            if(floatval($list['quantity'])>1){
+                        ?>
                         <tr>
-                            <td class="quantity"><center>@<?php echo $list['quantity'] . " " . $list['uom'] ?></center></td>
-                            <td class="price"><?= number_format($list['gross'], 2) ?> </td>
+                            <td colspan="2"><center><?php echo $list['quantity'] ?>&nbsp;@&nbsp;<?=number_format($list['amount'], 2) ?></center></td>
                         </tr>
+                        <?php
+                         }
+                        ?>
                     <?php endforeach; ?>
+
                     <tr>
-                        <td colspan='2'>__________________________</td>
+                        <td class="description" style='font-weight: bold;'>SUB TOTAL:</td>
+                        <td class="price" style='font-weight: bold'><?= number_format($subtot, 2) ?></td>
                     </tr>
+
+                    <?php
+                        if(floatval($serviceFee)>0){
+                    ?>
                     <tr>
-                        <td class="description" style='font-weight: bold'>DISCOUNT:</td>
-                        <td class="price" style='font-weight: bold'><?= number_format($discount, 2) ?></td>
-                    </tr>
-                    <tr>
-                        <td class="description" style='font-weight: bold'>SERVICE FEE:</td>
+                        <td class="description" style='font-weight: bold; padding-left: 5px'>add Service Fee:</td>
                         <td class="price" style='font-weight: bold'><?= number_format($serviceFee, 2) ?></td>
                     </tr>
+                    <?php
+                        }
+                        if(floatval($discount)>0){
+                    ?>
                     <tr>
-                        <td class="description" style='font-weight: bold'>COUPON:</td>
+                        <td class="description" style='font-weight: bold; padding-left: 5px'>less discounts:</td>
+                        <td class="price" style='font-weight: bold'><?= number_format($discount, 2) ?></td>
+                    </tr>   
+                    <?php
+                        }
+                        if(floatval($coupon)>0){
+                    ?>                
+                    <tr>
+                        <td class="description" style='font-weight: bold; padding-left: 5px'>less coupon:</td>
                         <td class="price" style='font-weight: bold'><?= number_format($coupon, 2) ?></td>
                     </tr>
+                    <?php
+                        }
+                    ?>
+
                     <tr>
-                        <td colspan='2'>__________________________</td>
+                        <td style="padding-TOP: 5px;"><b>TOTAL: </b></td>
+                        <td style="padding-TOP: 5px;" align="right"><b><?= number_format($total, 2) ?></b></td>
                     </tr>
                     <tr>
-                        <td class="quantity" style='font-weight: bold'>NET:</td>
-                        <td class="price" style='font-weight: bold'><?= number_format($net, 2) ?></td>
+                        <td colspan="2"><b>AMOUNT TENDERED</b></td>
                     </tr>
                     <tr>
-                        <td class="quantity" style='font-weight: bold'>VAT:</td>
-                        <td class="price" style='font-weight: bold'><?= number_format($vat, 2) ?></td>
-                    </tr>
-                    <tr>
-                        <td class="description" style='font-weight: bold'>SUB-TOTAL:</td>
-                        <td class="price" style='font-weight: bold'><?= number_format($subtotal, 2) ?></td>
-                    </tr>
-                    <tr>
-                        <td class="description" style='font-weight: bold'>TOTAL:</td>
-                        <td class="price" style='font-weight: bold'><?= number_format($total, 2) ?></td>
-                    </tr>
-                    <tr>
-                        <td colspan='2'>__________________________</td>
-                    </tr>
-                    <tr>
-                        <td class="quantity" style='font-weight: bold;'>Cash:</td>
+                        <td class="quantity" style='font-weight: bold; padding-left: 5px'><?=$pay_meth?></td>
                         <td class="price" style='font-weight: bold'><?= number_format($cash, 2) ?></td>
                     </tr>
+                    <?php
+                        if(floatval($exchange)>0){
+                    ?>
                     <tr>
                         <td class="quantity" style='font-weight: bold'>Change:</td>
                         <td class="price" style='font-weight: bold'><?= number_format($exchange, 2) ?></td>
                     </tr>
+                    <?php
+                        }
+                    ?>
+                    
+                    <tr>
+                        <td colspan='2' align="center">Tax Summary</td>
+                    </tr>
+                    <tr>
+                        <td class="quantity" style='font-weight: bold'>Vatable Sales:</td>
+                        <td class="price" style='font-weight: bold'><?= number_format($net, 2) ?></td>
+                    </tr>
+                    <tr>
+                        <td class="quantity" style='font-weight: bold'>VAT Amount:</td>
+                        <td class="price" style='font-weight: bold'><?= number_format($vat, 2) ?></td>
+                    </tr>
+                    <tr>
+                        <td class="description" style='font-weight: bold'>Zero Rated Sales:</td>
+                        <td class="price" style='font-weight: bold'>0.00</td>
+                    </tr>
+                    <tr>
+                        <td class="description" style='font-weight: bold'>Vat Exempt Sales:</td>
+                        <td class="price" style='font-weight: bold'>0.00</td>
+                    </tr>
+                    <tr>
+                        <td colspan='2'>&nbsp;</td>
+                    </tr>
+
+                    <tr>
+                        <td colspan='2'><div style="float: left; width 10%">Name:</div><div style="float:right; border-bottom: 1px solid #000; width: 80%">&nbsp;</div></td>
+                    </tr>
+                    <tr>
+                        <td colspan='2'><div style="float: left; width 15%">Address:</div><div style="float:right; border-bottom: 1px solid #000; width: 75%">&nbsp;</div></td>
+                    </tr>
+                    <tr>
+                        <td colspan='2'><div style="float: left; width 10%">TIN:</div><div style="float:right; border-bottom: 1px solid #000; width: 85%">&nbsp;</div></td>
+                    </tr>
+                   
 
                 </tbody>
             </table>
-            <br>__________________________
+
             <center>
-                <br><div style='font-weight: bold'>THIS SERVES AS AN OFFICIAL RECEIPT</div>
+                <br>Thank You, Come Again!
                 <br>
                 <br>Powered By MyxFinancials
-                <br>Sert Technology Inc. | HRWeb
-                <br>Blk 2 Lot 15 Tierra Grande Mangahan General Trias
-                <br>VAT REG TIN: 
-                <br>Accred No.: 
-                <br>Date Issued: 
-                <br>PTU No.: 
-                <br>Date Issued: 
+                <br><?=$posys['cpoweredname']?>
+                <br><?=$posys['cpoweredadd']?>
+                <br>VAT REG TIN: <?=$posys['cpoweredtin']?>
+                <br>Accred No.: <?=$posys['caccredno']?>
+                <br>Date Issued: <?=$posys['ddateissued']?>
+                <br>Effectivity Date: <?=$posys['deffectdate']?>
+                <br>PTU No.: <?=$posys['cptunum']?>
+                <br>Date Issued: <?=$posys['dptuissued']?>
             </center>
-            <br>__________________________
-            <p class="centered">Thanks for your purchase!</p>
-                </p>
+            
         </div>
     </body>
 </html>
