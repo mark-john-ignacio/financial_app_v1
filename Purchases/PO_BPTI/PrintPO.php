@@ -344,49 +344,42 @@
 						<td height="50px">
 							<div style="text-align: center"> Checked By </div>
 							<div style="display: flex;width: 100%;">
-							<?php
-
-							$sqdts = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign,a.nlevel from purchase_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cpono = '$csalesno' order by a.nlevel");
-
-							if (mysqli_num_rows($sqdts)!=0) {
-								while($row = mysqli_fetch_array($sqdts, MYSQLI_ASSOC)){
-							?>
-							<div class="flex-child-element">
 								<?php
-									if($row['lapproved']==1 && $row['cusersign']!=""){
+
+								$sqdts = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign,a.nlevel from purchase_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cpono = '$csalesno' order by a.nlevel");
+
+								if (mysqli_num_rows($sqdts)!=0) {
+									while($row = mysqli_fetch_array($sqdts, MYSQLI_ASSOC)){
 								?>
-								
-								<div style="text-align: center; display: inline"><div><img src = '<?=$row['cusersign']?>?x=<?=time()?>' height="80px"></div>
-								<div style="text-align: center; display: inline"><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div>
-								<?php
-									}else{
-								?>
-								<div style="text-align: center; display: inline"><div style="height:80px">&nbsp;</div></div>
-								<div style="text-align: center; display: inline"><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div>
+								<div class="flex-child-element">
+									<?php
+										if($row['lapproved']==1 && $row['cusersign']!=""){
+									?>
+									
+									<div style="text-align: center; display: inline"><div><img src = '<?=$row['cusersign']?>?x=<?=time()?>' height="80px"></div>
+									<div style="text-align: center; display: inline"><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div>
+									<?php
+										}else{
+									?>
+									<div style="text-align: center; display: inline"><div style="height:80px">&nbsp;</div></div>
+									<div style="text-align: center; display: inline"><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div>
+									<?php
+										}
+									?>
+
+								</div>
 								<?php
 									}
-								?>
+								}else{						
 
-							</div>
-							<?php
+								echo "<div style=\"text-align: center\"><div style=\"height:90px\">&nbsp;</div></div>";			
+
 								}
-							?>
+								?>
 							
 							</div>
-						</td>
-						<?php
-							}else{
-						?>
-							<td width="30%">							
-								<div style="text-align: center">
-									Checked By
-								</div>	
-								<div style="text-align: center"><div style="height:90px">&nbsp;</div></div>						
-							</td>
-							
-						<?php
-							}
-						?>
+						</td>							
+						
 						<td width="20%">							
 							<div style="text-align: center">Approved By</div>	
 							<div style="text-align: center"><div style="height:80px">&nbsp;</div> 
