@@ -245,7 +245,7 @@
 
 			$setfooter = $setfooter .'</td>';
 
-			$setfooter = $setfooter.'<td width="25%"  height="100px" valign="top" align="center"> <div style="text-align: center"> Checked By </div><table border="1" width="100%" style="border-collapse:collapse" cellpadding="1px"><tr>';
+			$setfooter = $setfooter.'<td height="100px" valign="top" align="center"> <div style="text-align: center"> Checked By </div><table border="1" width="100%" style="border-collapse:collapse" cellpadding="1px"><tr>';
 
 			$sqdts = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign,a.nlevel from purchase_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cpono = '$csalesno' order by a.nlevel");
 
