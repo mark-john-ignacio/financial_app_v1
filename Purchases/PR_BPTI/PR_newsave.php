@@ -44,12 +44,13 @@ else {
 
 	
 	$cReqBy =  mysqli_real_escape_string($con, $_REQUEST['txtcustid']); 
+	$cCheckBy =  mysqli_real_escape_string($con, $_REQUEST['chkdby']);
 	$cApprvBy =  mysqli_real_escape_string($con, $_REQUEST['apprby']);
 	$dDateNeed = $_REQUEST['date_needed'];
 	$cRemarks =  mysqli_real_escape_string($con, $_REQUEST['txtremarks']); 
 	$cSection =  mysqli_real_escape_string($con, $_REQUEST['selwhfrom']);
 
-	if (!mysqli_query($con, "INSERT INTO `purchrequest`(`compcode`, `ctranno`, `dneeded`, `cremarks`, `crequestedby`, `cpreparedby`, `capprovedby`, `locations_id`) values('$company', '$cSINo', STR_TO_DATE('$dDateNeed', '%m/%d/%Y'),'$cRemarks', '$cReqBy', '$preparedby', '$cApprvBy', '$cSection')")) {
+	if (!mysqli_query($con, "INSERT INTO `purchrequest`(`compcode`, `ctranno`, `dneeded`, `cremarks`, `crequestedby`, `cpreparedby`, `capprovedby`, `ccheckedby`, `locations_id`) values('$company', '$cSINo', STR_TO_DATE('$dDateNeed', '%m/%d/%Y'),'$cRemarks', '$cReqBy', '$preparedby', '$cApprvBy', '$cCheckBy', '$cSection')")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 	

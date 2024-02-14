@@ -141,6 +141,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$dDueDate = date_format(date_create($row['dneeded']), "m/d/Y");
 
 		$clastapprvby = $row['capprovedby'];
+		$clastchkdby = $row['ccheckedby'];
 
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
@@ -201,7 +202,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</tr>
 
 							<tr>
-								<tH width="100">Requested By:</tH>
+								<tH width="150">Requested By:</tH>
 								<td style="padding:2px">
 									<div class="col-xs-12 nopadding">
 										<div class="col-xs-5 nopadding">
@@ -236,11 +237,14 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</td>
 							</tr>
 							<tr>
-								<tH width="100">Approved By:</tH>
+							<tH>Checked/Approved:</tH>
 								<td style="padding:2px">
-									<div class="col-xs-10 nopadding">
+									<div class="col-xs-5 nopadding">
+										<input type='text' class="form-control input-sm" id="chkdby" name="chkdby" placeholder="Enter Checked By..." value="<?=$clastchkdby?>">
+									</div>
+									<div class="col-xs-5 nopadwleft">
 										<input type='text' class="form-control input-sm" id="apprby" name="apprby" placeholder="Enter Approved By..." value="<?=$clastapprvby?>">
-									</div>	
+									</div>
 								</td>
 								<tH width="150">&nbsp;</tH>
 								<td style="padding:2px;">

@@ -71,12 +71,13 @@
 	}
 
 	//get last approvedby
-	$sql = "SELECT capprovedby From purchase WHERE compcode='$company' ORDER BY ddate DESC LIMIT 1";
+	$sql = "SELECT capprovedby, ccheckedby From purchase WHERE compcode='$company' ORDER BY ddate DESC LIMIT 1";
 	$result=mysqli_query($con,$sql);														
 	$clastapprvby = "";                                       							
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 	{
-		$clastapprvby = $row['capprovedby'];
+		$clastapprvby = $row['capprovedby']; 
+		$clastchkdby = $row['ccheckedby'];
 	}
 
 ?>
@@ -151,7 +152,7 @@
 
 						<table width="100%" border="0">
 							<tr>
-								<tH width="100">Supplier:</tH>
+								<tH width="150">Supplier:</tH>
 								<td style="padding:2px">
 									<div class="col-xs-12 nopadding">
 										<div class="col-xs-3 nopadding">
@@ -172,7 +173,7 @@
 							</tr>
 
 							<tr>
-								<tH width="100">Contact:</tH>
+								<tH>Contact:</tH>
 								<td style="padding:2px">
 									<div class="col-xs-3 nopadding"> 
 										<button class="btn btn-sm btn-block btn-warning" name="btnSearchCont" id="btnSearchCont" type="button">Search</button>
@@ -192,7 +193,7 @@
 							</tr>
 
 							<tr>
-								<tH width="100">Contact Details:</tH>
+								<tH>Contact Details:</tH>
 								<td style="padding:2px">
 									<div class="col-xs-11 nopadding">
 										<div class="col-xs-4 nopadding">
@@ -228,7 +229,7 @@
 							</tr>
 
 							<tr>
-								<tH width="100">Currency:</tH>
+								<tH>Currency:</tH>
 								<td style="padding:2px">
 									<div class="col-xs-12 nopadding">
 										<div class="col-xs-6 nopadding">
@@ -294,7 +295,7 @@
 							</tr>
 
 							<tr>
-								<tH width="100">Remarks:</tH>
+								<tH>Remarks:</tH>
 								<td style="padding:2px">
 									<div class="col-xs-11 nopadding">
 										<textarea class="form-control" id="txtremarks" name="txtremarks" rows='3' tabindex="2"></textarea>
@@ -318,9 +319,13 @@
 								</td>
 							</tr>
 							<tr>
-								<tH width="100">Approved By:</tH>
+								<tH>Checked/Approved:</tH>
 								<td style="padding:2px">
-									<div class="col-xs-11 nopadding">
+
+									<div class="col-xs-5 nopadding">
+										<input type='text' class="form-control input-sm" id="chkdby" name="chkdby" placeholder="Enter Checked By..." value="<?=$clastchkdby?>">
+									</div>
+									<div class="col-xs-6 nopadwleft">
 										<input type='text' class="form-control input-sm" id="apprby" name="apprby" placeholder="Enter Approved By..." value="<?=$clastapprvby?>">
 									</div>
 								</td>

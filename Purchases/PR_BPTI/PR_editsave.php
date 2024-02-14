@@ -12,12 +12,13 @@ $preparedby = $_SESSION['employeeid'];
 
 	$cSINo = mysqli_real_escape_string($con, $_REQUEST['txtcprno']);
 	$cReqBy =  mysqli_real_escape_string($con, $_REQUEST['txtcustid']);
+	$cCheckBy =  mysqli_real_escape_string($con, $_REQUEST['chkdby']);
 	$cApprvBy =  mysqli_real_escape_string($con, $_REQUEST['apprby']);
 	$dDateNeed = $_REQUEST['date_needed'];
 	$cRemarks =  mysqli_real_escape_string($con, $_REQUEST['txtremarks']); 
 	$cSection =  mysqli_real_escape_string($con, $_REQUEST['selwhfrom']);
 
-	if (!mysqli_query($con, "UPDATE `purchrequest` set `locations_id` = '$cSection', `cremarks` = '$cRemarks', `dneeded` = STR_TO_DATE('$dDateNeed', '%m/%d/%Y'), `crequestedby` = '$cReqBy', `capprovedby` = '$cApprvBy' where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
+	if (!mysqli_query($con, "UPDATE `purchrequest` set `locations_id` = '$cSection', `cremarks` = '$cRemarks', `dneeded` = STR_TO_DATE('$dDateNeed', '%m/%d/%Y'), `crequestedby` = '$cReqBy', `capprovedby` = '$cApprvBy', `ccheckedby` = '$cCheckBy' where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 	

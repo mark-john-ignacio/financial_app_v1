@@ -58,7 +58,7 @@
 		}
 	}
 
-	$sqlhead = mysqli_query($con,"select a.cpono, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dneeded,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.nbasegross, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.lcancelled, a.lapproved, a.lprintposted, a.lvoid, a.ccustacctcode, b.cname, a.ccontact, a.ccontactemail, a.ccontactphone, a.ccontactfax, a.ladvancepay, a.cterms, a.cdelto, a.ddeladd, a.ddelemail, a.ddelphone, a.ddelfax, a.ddelinfo, a.cbillto, a.cewtcode, a.cemailto, a.cemailcc, a.cemailbcc, a.cemailsubject, a.cemailbody, a.cemailsentby, a.demailsent, a.capprovedby from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
+	$sqlhead = mysqli_query($con,"select a.cpono, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dneeded,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.nbasegross, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate, a.lcancelled, a.lapproved, a.lprintposted, a.lvoid, a.ccustacctcode, b.cname, a.ccontact, a.ccontactemail, a.ccontactphone, a.ccontactfax, a.ladvancepay, a.cterms, a.cdelto, a.ddeladd, a.ddelemail, a.ddelphone, a.ddelfax, a.ddelinfo, a.cbillto, a.cewtcode, a.cemailto, a.cemailcc, a.cemailbcc, a.cemailsubject, a.cemailbody, a.cemailsentby, a.demailsent, a.capprovedby, a.ccheckedby from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono = '$cpono'");
 
 
 	@$arrname = array();
@@ -171,6 +171,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$cemailsentdate = $row['demailsent'];
 
 		$clastapprvby = $row['capprovedby'];
+		$clastchkdby = $row['ccheckedby'];
 	}
 
 	//get last email body
@@ -238,7 +239,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</tr>
 
 							<tr>
-								<tH width="100">Supplier:</tH>
+								<tH width="150">Supplier:</tH>
 								<td style="padding:2px">
 									<div class="col-xs-12 nopadding">
 										<div class="col-xs-3 nopadding">
@@ -259,7 +260,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</tr>
 
 							<tr>
-								<tH width="100">Contact:</tH>
+								<tH>Contact:</tH>
 								<td style="padding:2px">
 									<div class="col-xs-3 nopadding"> 
 										<button class="btn btn-sm btn-block btn-warning" name="btnSearchCont" id="btnSearchCont" type="button">Search</button>
@@ -279,7 +280,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</tr>
 
 							<tr>
-								<tH width="100">Contact Details:</tH>
+								<tH>Contact Details:</tH>
 								<td style="padding:2px">
 									<div class="col-xs-11 nopadding">
 										<div class="col-xs-4 nopadding">
@@ -315,7 +316,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</tr>
 
 							<tr>
-								<tH width="100">Currency:</tH>
+								<tH>Currency:</tH>
 								<td style="padding:2px">
 									<div class="col-xs-12 nopadding">
 										<div class="col-xs-6 nopadding">
@@ -381,7 +382,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</tr>
 
 							<tr>
-								<tH width="100">Remarks:</tH>
+								<tH>Remarks:</tH>
 								<td style="padding:2px">
 									<div class="col-xs-11 nopadding">
 										<textarea class="form-control" id="txtremarks" name="txtremarks" rows='3' tabindex="2"><?php echo str_replace("'","\'",$Remarks); ?></textarea>
@@ -410,9 +411,12 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</td>
 							</tr>
 							<tr>
-								<tH width="100">Approved By:</tH>
+								<tH width="100">Checked/Approved:</tH>
 								<td style="padding:2px">
-									<div class="col-xs-11 nopadding">
+									<div class="col-xs-5 nopadding">
+										<input type='text' class="form-control input-sm" id="chkdby" name="chkdby" placeholder="Enter Checked By..." value="<?=$clastchkdby?>">
+									</div>
+									<div class="col-xs-6 nopadwleft">
 										<input type='text' class="form-control input-sm" id="apprby" name="apprby" placeholder="Enter Approved By..." value="<?=$clastapprvby?>">
 									</div>
 								</td>

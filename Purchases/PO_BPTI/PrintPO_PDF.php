@@ -77,6 +77,7 @@
 			$cpreparedBySign = $row['cusersign']; 
 
 			$cApprBy = $row['capprovedby'];
+			$cCheckedBy = $row['ccheckedby'];
 		}
 	}
 
@@ -229,7 +230,7 @@
 	<br>
 	<table border="1" width="100%" style="border-collapse:collapse" cellpadding="5px">					
 		<tr>
-			<td width="20%" align="center"  height="100px" valign="top">';
+			<td width="25%" align="center"  height="100px" valign="top">';
 
 				if($lSent==1 && $cpreparedBySign!=""){
 
@@ -245,49 +246,19 @@
 
 			$setfooter = $setfooter .'</td>';
 
-			$setfooter = $setfooter.'<td height="100px" valign="top" align="center"> <div style="text-align: center"> Checked By </div><table border="1" width="100%" style="border-collapse:collapse" cellpadding="1px"><tr>';
+			$setfooter = $setfooter.'<td width="25%" align="center" height="100px" valign="top">							
+			<div style="text-align: center">Approved By</div>				
+			<div style="text-align: center"><img src = "white.jpg" height="80px"></div>		
+			<div style="text-align: center">'.$cCheckedBy.'</div>					
+			</td>';
 
-			$sqdts = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign,a.nlevel from purchase_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cpono = '$csalesno' order by a.nlevel");
 
-			if (mysqli_num_rows($sqdts)!=0) {
-				while($row = mysqli_fetch_array($sqdts, MYSQLI_ASSOC)){
-
-					$setfooter = $setfooter.'<td style="border: 0 !important">';
-						
-					if($row['lapproved']==1 && $row['cusersign']!=""){
-
-						//$setfooter = $setfooter.'<div style="text-align: center">'.$xp.'</div>';
-
-						$setfooter = $setfooter.'<div style="text-align: center"><div><img src = "'.$row['cusersign'].'" height="80px"></div>';
-
-						$xp = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
-						$setfooter = $setfooter.'<div style="text-align: center">'.$xp.'</div>';
-
-					}else{
-
-						//$setfooter = $setfooter.'<div style="padding-bottom: 60px; text-align: center">'.$xp .'</div>';
-						$setfooter = $setfooter .'<div style="text-align: center"><img src = "white.jpg" height="80px"></div>';
-
-						$xp = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
-
-						$setfooter = $setfooter.'<div style="text-align: center">'.$xp.'</div>';
-					}
-
-					$setfooter = $setfooter.'</td>';
-				}
-				//$setfooter = $setfooter.'</td>';
-			}else{
-				$setfooter = $setfooter.'<div style="text-align: center"><img src = "white.jpg" height="90px"></div>';
-			}
-
-			$setfooter = $setfooter.'</tr></table></td>';
-
-			$setfooter = $setfooter.'<td width="20%" align="center" height="100px" valign="top">							
+			$setfooter = $setfooter.'<td width="25%" align="center" height="100px" valign="top">							
 			<div style="text-align: center">Approved By</div>				
 			<div style="text-align: center"><img src = "white.jpg" height="80px"></div>		
 			<div style="text-align: center">'.$cApprBy.'</div>					
 			</td>
-			<td width="20%"  align="center" height="100px" valign="top">							
+			<td width="25%"  align="center" height="100px" valign="top">							
 				<div style="padding-bottom: 60px; text-align: center">
 					Supplier Confirmation
 				</div>	

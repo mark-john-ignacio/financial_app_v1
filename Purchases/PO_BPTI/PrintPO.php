@@ -66,6 +66,7 @@
 			$cpreparedBySign = $row['cusersign']; 
 
 			$cApprBy = $row['capprovedby'];
+			$cCheckedBy = $row['ccheckedby'];
 		}
 	}
 
@@ -322,7 +323,7 @@
 					
 				<table border="1" width="100%" style="border-collapse:collapse" cellpadding="5px">					
 					<tr>
-						<td  width="20%" height="50px">
+						<td  width="25%" height="50px">
 							<?php
 								if($lSent==1 && $cpreparedBySign!=""){
 							?>
@@ -340,52 +341,18 @@
 								}
 							?>
 						</td>
-
-						<td height="50px">
-							<div style="text-align: center"> Checked By </div>
-							<div style="display: flex;width: 100%;">
-								<?php
-
-								$sqdts = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign,a.nlevel from purchase_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cpono = '$csalesno' order by a.nlevel");
-
-								if (mysqli_num_rows($sqdts)!=0) {
-									while($row = mysqli_fetch_array($sqdts, MYSQLI_ASSOC)){
-								?>
-								<div class="flex-child-element">
-									<?php
-										if($row['lapproved']==1 && $row['cusersign']!=""){
-									?>
-									
-									<div style="text-align: center; display: inline"><div><img src = '<?=$row['cusersign']?>?x=<?=time()?>' height="80px"></div>
-									<div style="text-align: center; display: inline"><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div>
-									<?php
-										}else{
-									?>
-									<div style="text-align: center; display: inline"><div style="height:80px">&nbsp;</div></div>
-									<div style="text-align: center; display: inline"><?=$row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];?></div>
-									<?php
-										}
-									?>
-
-								</div>
-								<?php
-									}
-								}else{						
-
-								echo "<div style=\"text-align: center\"><div style=\"height:90px\">&nbsp;</div></div>";			
-
-								}
-								?>
-							
-							</div>
-						</td>							
-						
-						<td width="20%">							
+						 						
+						<td width="25%">							
+							<div style="text-align: center">Checked By</div>	
+							<div style="text-align: center"><div style="height:80px">&nbsp;</div> 
+							<div style="text-align: center" nowrap><?=$cCheckedBy;?></div>							
+						</td>
+						<td width="25%">							
 							<div style="text-align: center">Approved By</div>	
 							<div style="text-align: center"><div style="height:80px">&nbsp;</div> 
-							<div style="text-align: center"><?=$cApprBy;?></div>							
+							<div style="text-align: center" nowrap><?=$cApprBy;?></div>							
 						</td>
-						<td width="20%">							
+						<td width="25%">							
 							<div style="text-align: center">
 								Supplier Confirmation
 							</div>	

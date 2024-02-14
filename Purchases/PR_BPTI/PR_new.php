@@ -22,12 +22,14 @@
 	}
 
 	//get last approvedby
-	$sql = "SELECT capprovedby From purchrequest WHERE compcode='$company' ORDER BY ddate DESC LIMIT 1";
+	$sql = "SELECT capprovedby, ccheckedby From purchrequest WHERE compcode='$company' ORDER BY ddate DESC LIMIT 1";
 	$result=mysqli_query($con,$sql);														
-	$clastapprvby = "";                                       							
+	$clastapprvby = "";      
+	$clastchkdby = "";                                  							
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 	{
 		$clastapprvby = $row['capprovedby'];
+		$clastchkdby = $row['ccheckedby'];
 	}
 
 	$arrseclist = array();
@@ -127,7 +129,7 @@
 
 						<table width="100%" border="0">
 							<tr>
-								<tH width="100">Requested By:</tH>
+								<tH width="150">Requested By:</tH>
 								<td style="padding:2px">
 									<div class="col-xs-12 nopadding">
 										<div class="col-xs-5 nopadding">
@@ -161,9 +163,12 @@
 								</td>
 							</tr>
 							<tr>
-								<tH width="100">Approved By:</tH>
+								<tH>Checked/Approved:</tH>
 								<td style="padding:2px">
-									<div class="col-xs-10 nopadding">
+									<div class="col-xs-5 nopadding">
+										<input type='text' class="form-control input-sm" id="chkdby" name="chkdby" placeholder="Enter Checked By..." value="<?=$clastchkdby?>">
+									</div>
+									<div class="col-xs-5 nopadwleft">
 										<input type='text' class="form-control input-sm" id="apprby" name="apprby" placeholder="Enter Approved By..." value="<?=$clastapprvby?>">
 									</div>
 								</td>

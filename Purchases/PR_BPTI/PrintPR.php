@@ -38,6 +38,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$lSent = $row['lsent'];
 
 		$cApprvBy = $row['capprovedby'];
+		$cCheckedBy = $row['ccheckedby'];
 
 		$cReqBy = $row['creqname'] ;
 
@@ -182,10 +183,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			?>
 				<table border="1" width="100%" style="border-collapse: collapse;">
 					<tr>
-						<td align="center" width="30%">
+						<td align="center" width="33%">
 							<b>Requested By</b>
 						</td>
-						<td align="center" width="30%">
+						<td align="center" width="33%">
 							<b>Checked By</b>
 						</td>
 						<td align="center">
@@ -207,42 +208,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							?>
 						</td>
 
-						<?php
-							if(mysqli_num_rows($sqdts1)!=0){
-						?>
-						<td align="center" valign="top" width="25%" style="border-right: 0px">
-							<table border="0" width="100%" style="border-collapse: collapse;">	
-
-								<?php
-									if (mysqli_num_rows($sqdts1)!=0) {
-										while($row = mysqli_fetch_array($sqdts1, MYSQLI_ASSOC)){
-											$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
-								?>
-									<tr>
-										<td align="center">
-											<?php
-												if($row['lapproved']==1 && $row['cusersign']!=""){
-													echo "<div style=\"text-align: center; display: block\"><img src = '".$row['cusersign']."?x=".time()."' height='80px'></div>";
-													echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";												
-												}else{
-													echo "<div style=\"text-align: center; display: block; height: 80px\">&nbsp;</div>";
-													echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";
-												}
-											?>
-										</td>
-									</tr>
-								<?php
-										}
-									}
-								?>
-							</table>
+						
+						<td align="center" valign="top">
+							<div style="text-align: center; display: block; height: 80px">&nbsp;</div>
+							<div style="text-align: center; display: block\"><?=$cCheckedBy?></div>												
 						</td>
-						<?php
-							}else{
-								echo "<td align=\"center\" valign=\"top\" style=\"border-right: 0px\">&nbsp;</td>";
-							}							
-
-						?>
 						<td align="center" valign="top">
 							<div style="text-align: center; display: block; height: 80px">&nbsp;</div>
 							<div style="text-align: center; display: block\"><?=$cApprvBy?></div>												
