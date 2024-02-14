@@ -277,12 +277,7 @@
 				}
 				//$setfooter = $setfooter.'</td>';
 			}else{
-				$setfooter = $setfooter.'<td align="center" height="100px" valign="top">							
-					<div style="padding-bottom: 50px; text-align: center">
-						Checked By
-					</div>	
-					<div style="text-align: center"><img src = "white.jpg" height="90px"></div>							
-				</td>';
+				$setfooter = $setfooter.'<div style="text-align: center"><img src = "white.jpg" height="90px"></div>';
 			}
 
 			$setfooter = $setfooter.'</tr></table></td>';
