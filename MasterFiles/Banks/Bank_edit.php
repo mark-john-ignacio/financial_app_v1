@@ -128,8 +128,8 @@ include('../../include/access.php');
     <td><b>Check Doc Type</b></td>
     <td colspan="2" style="padding:2px"><div class="col-xs-4 nopadding">
       <select class="form-control input-sm" name="seldoctype" id="seldoctype">
-				<option value="1" <?=($cDoctype==1) ? "selected" : "" ?>>BDO CHECK FORMAT</option>
-				<option value="2" <?=($cDoctype==2) ? "selected" : "" ?>>MB CHECK FORMAT</option>
+				<option value="1" <?=($cDoctype==1) ? "selected" : "" ?>>BDO/LANDBANK CHECK FORMAT</option>
+				<option value="2" <?=($cDoctype==2) ? "selected" : "" ?>>METROBANK CHECK FORMAT</option>
 				<option value="3" <?=($cDoctype==3) ? "selected" : "" ?>>EASTWEST CHECK FORMAT</option>
 			</select>
 

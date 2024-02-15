@@ -206,7 +206,7 @@
 									$cnt++;
 							?>
 							<tr>
-								<td width="100px" style="padding:1px"><input type="text" class="typeno form-control input-xs" name="txtcAcctNo<?=$cnt?>" id="txtcAcctNo<?=$cnt?>"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctDesc<?=$cnt?>" data-debit="txtnDebit<?=$cnt?>" value="<?=$row['cacctno']?>"></td>
+								<td width="100px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtcAcctNo<?=$cnt?>" id="txtcAcctNo<?=$cnt?>"  placeholder="Enter Acct No..." readonly data-id="txtcAcctDesc<?=$cnt?>" data-debit="txtnDebit<?=$cnt?>" value="<?=$row['cacctno']?>"></td>
 
 								<td style="padding:1px"><input type="text" class="typedesc form-control input-xs" name="txtcAcctDesc<?=$cnt?>" id="txtcAcctDesc<?=$cnt?>"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctNo<?=$cnt?>" data-debit="txtnDebit<?=$cnt?>"  value="<?=$row['ctitle']?>"></td>
 								<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit<?=$cnt?>" id="txtnDebit<?=$cnt?>"  value="<?=$row['ndebit']?>" autocomplete="off"></td>
@@ -553,64 +553,6 @@
 				}
 			});
 		});	
-
-		$('body').on('keyup', '.typeno', function() {
-
-			var varid = $(this).attr("id"); 
-			var varidno = $(this).attr("data-id"); 
-			var variddr = $(this).attr("data-debit"); 
-
-			$("#"+varid).typeahead({
-				autoSelect: true,
-				source: function(request, response) {
-					$.ajax({
-						url: "th_accounts.php",
-						dataType: "json",
-						data: {
-							query: request, id: "cacctid"
-						},
-						success: function (data) {
-							response(data);
-						}
-					});
-				},
-				displayText: function (item) {
-					return '<div style="border-top:1px solid gray; width: 300px"><span clas="dropdown-item-extra">'+item.name+'</span><br><small>' + item.id + '</small>';
-				},
-				highlighter: Object,
-				afterSelect: function(item) { 	
-					$('#'+varid).val(item.id).change(); 
-					$('#'+varidno).val(item.name); 
-					$('#'+variddr).focus();													
-				}
-			});
-		});	
-
-		/*$('body').on('keyup', '#txtInvoiceRef', function() {
-			$("#txtInvoiceRef").typeahead({
-				autoSelect: true,
-				source: function(request, response) {
-					$.ajax({
-						url: "th_invoices.php",
-						dataType: "json",
-						data: {
-							query: request, ccode: $("#txtcustid").val()
-						},
-						success: function (data) {
-							response(data);
-						}
-					});
-				},
-				displayText: function (item) {
-					return '<div style="border-top:1px solid gray; width: 300px"><span clas="dropdown-item-extra">'+item.no+'</span><br><small>' + item.cname + '</small><br><small>' + item.cutdate;
-				},
-				highlighter: Object,
-				afterSelect: function(item) { 		
-					$('#txtInvoiceRef').val(item.no).change(); 	
-					$('#invtyp').val(item.typx).change();							
-				}
-			});
-		});*/
 
 		$('body').on('keypress', '.cRem', function(e) {
 			if(e.keyCode==13){
@@ -978,9 +920,10 @@
 			$("#txtcAcctNo"+x).data("debit","txtnDebit" + x);
 
 		}
-		GoToComp("txtnDebit" + x);
+		//GoToComp("txtnDebit" + x);
 		
-		GoToComp("txtnCredit" + x);
+		//GoToComp("txtnCredit" + x);
+		computegross();
 	}
 
 	function chkform(){

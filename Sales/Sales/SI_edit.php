@@ -417,7 +417,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 															$isselctd = "";
 														}
 
-														echo "<option value=\"".$rows['ctaxcode']."\" ".$isselctd.">".$rows['ctaxcode'].": ".$rows['nrate']."%</option>";
+														echo "<option value=\"".$rows['ctaxcode']."\" ".$isselctd." data-rate=\"".$rows['nrate']."\">".$rows['ctaxcode'].": ".$rows['nrate']."%</option>";
 													}
 												?>                         
 														
@@ -521,7 +521,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								<tr>
 									<th width="100px" style="border-bottom:1px solid #999">Code</th>
 									<th width="250px" style="border-bottom:1px solid #999">Description</th>
-									<th width="150px" style="border-bottom:1px solid #999" class="chkVATClass">EWTCode</th>
+									<!--<th width="150px" style="border-bottom:1px solid #999" class="chkVATClass">EWTCode</th>-->
 									<th width="150px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
 									<th width="100px" style="border-bottom:1px solid #999">UOM</th>
 									<th width="100px" style="border-bottom:1px solid #999">Qty</th>
@@ -691,7 +691,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</div>
 							<div class="row static-info align-reverse">
 								<div class="col-xs-7 name">
-									VATExempt Sales:
+									VAT Exempt Sales:
 									<input type="hidden" id="txtnExemptVAT" name="txtnExemptVAT" value="0">
 								</div>
 								<div class="col-xs-4 value" id="divtxtnExemptVAT">
@@ -709,7 +709,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</div>
 							<div class="row static-info align-reverse">
 								<div class="col-xs-7 name">
-									Add VAT:
+									add VAT:
 									<input type="hidden" id="txtnVAT" name="txtnVAT" value="0">
 								</div>
 								<div class="col-xs-4 value" id="divtxtnVAT">
@@ -718,7 +718,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</div>
 							<div class="row static-info align-reverse">
 								<div class="col-xs-7 name">
-									Total Gross:
+									Total Sales:
 									<input type="hidden" id="txtnGrossBef" name="txtnGrossBef" value="0">
 								</div>
 								<div class="col-xs-4 value" id="divtxtnGrossBef"> 
@@ -727,7 +727,16 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							</div>
 							<div class="row static-info align-reverse">
 								<div class="col-xs-7 name">
-									Less Gross Discount:
+									less EWT:
+									<input type="hidden" id="txtnEWT" name="txtnEWT" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnEWT"> 
+									0.00
+								</div>
+							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									less Gross Discount:
 									
 								</div>
 								<div class="col-xs-4 value">
@@ -1541,8 +1550,8 @@ if(file_name.length != 0){
 	
 
 		$("#selewt").on("change", function(){ 
-
-			var rowCount = $('#MyTable tr').length;
+			ComputeGross();
+			/*var rowCount = $('#MyTable tr').length;
 			if(rowCount>1){
 				if($(this).val()!=""){			
 						for (var i = 1; i <= rowCount-1; i++) {
@@ -1561,7 +1570,7 @@ if(file_name.length != 0){
 					}
 				}
 
-			}
+			}*/
 		});
 
 		$("#btnentry").on("click", function(){		
@@ -1760,7 +1769,7 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 	var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmdesc+"</td>";
 	var tditmunit = "<td width=\"100\" nowrap>"+uomoptions+"</td>";
 
-		var tditmewts = "";
+		/*var tditmewts = "";
 		if(xChkVatableStatus==1){ 
 			
 			var gvnewt = $("#selewt").val();
@@ -1796,7 +1805,7 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 
 				tditmewts = "<td width=\"150\" nowrap> <select class='form-control input-xs' name=\"selitmewtyp\" id=\"selitmewtyp"+lastRow+"\" "+isdisabled+" multiple> <option value=\"none\">None</option>" + ewtoptions + "</select> </td>";
 
-		}
+		}*/
 
   var tditmvats = "";
   var itsvats = "";
@@ -1841,9 +1850,9 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 
 		}
 	
-	var tditmdel = "<td width=\"90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del"+ lastRow +"' value='delete' data-var='"+lastRow+"'/> &nbsp; </td>"; // <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/>
+	var tditmdel = "<td width=\"90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del"+ lastRow +"' value='delete' data-var='"+lastRow+"'/> &nbsp; </td>"; // <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/> tditmewts
 
-	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmewts + tditmvats + tditmunit + tditmqty + tditmprice + tditmdisc + tditmbaseamount + tditmamount + tdglaccount + tdgltitle + tditmdel + '</tr>');
+	$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmvats + tditmunit + tditmqty + tditmprice + tditmdisc + tditmbaseamount + tditmamount + tdglaccount + tdgltitle + tditmdel + '</tr>');
 
 									$("#del"+lastRow).on('click', function() {
 										
@@ -1869,10 +1878,10 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 									$("input.numeric2").autoNumeric('init',{mDec:4});
 									$("input.numeric").autoNumeric('init',{mDec:2});
 
-									$("#selitmewtyp"+lastRow).select2();
+									//$("#selitmewtyp"+lastRow).select2({width: '100%'});
 
 									$("#selitmvatyp"+lastRow).on("change", function() {
-												ComputeGross();
+										ComputeGross();
 									});
 									/*
                   $("input.numeric").numeric(
@@ -2016,8 +2025,22 @@ function myFunctionadd(qty,pricex,ndisc,curramt,amtx,factr,cref,nrefident,citmcl
 		$("#divtxtnGrossBef").text(gross.toFixed(2));
 		$("#divtxtnGrossBef").formatNumber();
 
+		// LESS EWT
+		$xtotewrate = 0;
+		ewtTotz = 0;
+		$('#selewt > option:selected').each(function() {
+			$xtotewrate = $xtotewrate + parseFloat($(this).data("rate"));
+		});
+		if(parseFloat($xtotewrate)>0){
+			ewtTotz = (parseFloat(nvatbleTot) + parseFloat(nexmptTot) + parseFloat(nzeroTot)) * ($xtotewrate/100);
+		}
+		$("#txtnEWT").val(ewtTotz);
+		$("#divtxtnEWT").text(ewtTotz.toFixed(2));  
+		$("#divtxtnEWT").formatNumber();
+
+
 		//Total Amount
-		$gettmtt = gross - parseFloat($("#txtnGrossDisc").val());
+		$gettmtt = gross - parseFloat($("#txtnGrossDisc").val()) - parseFloat(ewtTotz);
 		gross2 = $gettmtt * parseFloat($("#basecurrval").val().replace(/,/g,''));
 		
 		$("#txtnGross").val(gross2);
@@ -2904,15 +2927,15 @@ function chkform(){
 			$("#MyTable > tbody > tr").each(function(index) {	
 				//if(index>0){
 				
-					$(this).find('select[name="selitmewtyp"]').attr("disabled", false);
+					//$(this).find('select[name="selitmewtyp"]').attr("disabled", false);
 
 					var crefno = $(this).find('input[type="hidden"][name="txtcreference"]').val();
 					var crefident = $(this).find('input[type="hidden"][name="txtcrefident"]').val();
 					var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-					var ewtcode = $(this).find('select[name="selitmewtyp"]').val();
+					//var ewtcode = $(this).find('select[name="selitmewtyp"]').val();
 
 						//getrate of selected
-						var ewtrate = "";
+						/*var ewtrate = "";
 						var cnt = 0;
 						$(this).find('select[name="selitmewtyp"] > option:selected').each(function() {
 							//	alert($(this).data("rate"));
@@ -2922,7 +2945,7 @@ function chkform(){
 							}else{
 								ewtrate = ewtrate + $(this).data("rate");
 							}
-						});
+						});*/
 
 					var vatcode = $(this).find('select[name="selitmvatyp"]').val(); 
 					var nrate = $(this).find('select[name="selitmvatyp"] option:selected').data('id'); 
@@ -2963,11 +2986,11 @@ function chkform(){
 						}
 
 						$xinx = parseInt(index) + 1;
-						//alert("SI_newsavedet.php?trancode="+trancode+"&crefno="+crefno+"&crefident="+crefident+"&indx="+$xinx+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+ nprice+"&ndiscount="+ndiscount+"&ntranamt="+ntranamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&ccode="+ccode+"&vatcode="+vatcode+"&nrate="+nrate+"&ewtcode="+ewtcode+"&ewtrate="+ewtrate+"&acctid="+acctid);
+						//alert("SI_newsavedet.php?trancode="+trancode+"&crefno="+crefno+"&crefident="+crefident+"&indx="+$xinx+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+ nprice+"&ndiscount="+ndiscount+"&ntranamt="+ntranamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&ccode="+ccode+"&vatcode="+vatcode+"&nrate="+nrate+"&ewtcode="+ewtcode+"&ewtrate="+ewtrate+"&acctid="+acctid); , ewtcode:ewtcode, ewtrate:ewtrate
 
 						$.ajax ({
 							url: "SI_newsavedet.php",
-							data: { trancode: trancode, crefno: crefno, crefident:crefident, indx:$xinx, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, ndiscount:ndiscount, ntranamt:ntranamt, namt:namt, mainunit:mainunit, nfactor:nfactor, ccode:ccode, vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate, acctid: acctid },
+							data: { trancode: trancode, crefno: crefno, crefident:crefident, indx:$xinx, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, ndiscount:ndiscount, ntranamt:ntranamt, namt:namt, mainunit:mainunit, nfactor:nfactor, ccode:ccode, vatcode:vatcode, nrate:nrate, acctid: acctid },
 							async: false,
 							success: function( data ) {
 

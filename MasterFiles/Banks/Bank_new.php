@@ -76,8 +76,8 @@ include('../../include/access.php');
     <td><b>Check Doc Type</b></td>
     <td colspan="2" style="padding:2px"><div class="col-xs-4 nopadding">
       <select class="form-control input-sm" name="seldoctype" id="seldoctype">
-				<option value="1">BDO CHECK FORMAT</option>
-				<option value="2">MB CHECK FORMAT</option>
+				<option value="1">BDO/LANDBANK CHECK FORMAT</option>
+				<option value="2">METROBANK CHECK FORMAT</option>
 				<option value="3">EASTWEST CHECK FORMAT</option>
 			</select>
 

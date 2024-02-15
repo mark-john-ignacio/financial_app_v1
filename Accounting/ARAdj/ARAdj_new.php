@@ -151,7 +151,7 @@
 					</thead>   
 					<tbody class="tbody">
 						<tr>
-              <td width="100px" style="padding:1px"><input type="text" class="typeno form-control input-xs" name="txtcAcctNo1" id="txtcAcctNo1"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctDesc1" data-debit="txtnDebit1"></td>
+              <td width="100px" style="padding:1px"><input type="text" class="typeno form-control input-xs" name="txtcAcctNo1" id="txtcAcctNo1"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctDesc1" data-debit="txtnDebit1" readonly></td>
 
               <td style="padding:1px"><input type="text" class="typedesc form-control input-xs" name="txtcAcctDesc1" id="txtcAcctDesc1"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctNo1" data-debit="txtnDebit1"></td>
               <td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit1" id="txtnDebit1" value="0.00" autocomplete="off"></td>
@@ -780,7 +780,7 @@ Back to Main<br>(ESC)</button>
 							+'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit'+rowCount+'" id="txtnDebit'+rowCount+'" autocomplete="off" value="'+item.ndebit+'"</td>'
 							+'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit'+rowCount+'" id="txtnCredit'+rowCount+'" autocomplete="off" value="'+item.ncredit+'"></td>'
 							+'<td width="200px" style="padding:1px"><input type="text" class="cRem form-control input-xs" name="txtcRem'+rowCount+'" id="txtcRem'+rowCount+'" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"></td>'
-							+'<td width="40px" align="right"><input class="btn btn-danger btn-xs" type="button" id="row_'+rowCount+'_delete" value="delete" onClick="deleteRow(this);"/></td>'+'</tr>'
+							+'<td width="40px" style="padding:1px" align="right"><input class="btn btn-danger btn-xs" type="button" id="row_'+rowCount+'_delete" value="delete" onClick="deleteRow(this);"/></td>'+'</tr>'
 						);
 
 					});
@@ -801,12 +801,12 @@ Back to Main<br>(ESC)</button>
 
 		$('#MyTable > tbody:last-child').append(
 			'<tr>'// need to change closing tag to an opening `<tr>` tag.
-			+'<td width="100px" style="padding:1px"><input type="text" class="typeno form-control input-xs" name="txtcAcctNo'+rowCount+'" id="txtcAcctNo'+rowCount+'"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctDesc'+rowCount+'" data-debit="txtnDebit'+rowCount+'"></td>'
+			+'<td width="100px" style="padding:1px"><input type="text" class="typeno form-control input-xs" name="txtcAcctNo'+rowCount+'" id="txtcAcctNo'+rowCount+'"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctDesc'+rowCount+'" data-debit="txtnDebit'+rowCount+'" readonly></td>'
 			+'<td style="padding:1px"><input type="text" class="typedesc form-control input-xs" name="txtcAcctDesc'+rowCount+'" id="txtcAcctDesc'+rowCount+'"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctNo'+rowCount+'" data-debit="txtnDebit'+rowCount+'"> </td>'
 			+'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit'+rowCount+'" id="txtnDebit'+rowCount+'" value="0.00" autocomplete="off"></td>'
 			+'<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit'+rowCount+'" id="txtnCredit'+rowCount+'" value="0.00" autocomplete="off"></td>'
 			+'<td width="200px" style="padding:1px"><input type="text" class="cRem form-control input-xs" name="txtcRem'+rowCount+'" id="txtcRem'+rowCount+'" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"></td>'
-			+'<td width="40px" align="right"><input class="btn btn-danger btn-xs" type="button" id="row_'+rowCount+'_delete" value="delete" onClick="deleteRow(this);"/></td>'+'</tr>'
+			+'<td width="40px" style="padding:1px" align="right"><input class="btn btn-danger btn-xs" type="button" id="row_'+rowCount+'_delete" value="delete" onClick="deleteRow(this);"/></td>'+'</tr>'
 		);
 
 		$("input.numeric").autoNumeric('init',{mDec:2});
@@ -911,9 +911,10 @@ Back to Main<br>(ESC)</button>
 			$("#txtcAcctNo"+x).data("debit","txtnDebit" + x);
 
 		}
-		GoToComp("txtnDebit" + x);
+		//GoToComp("txtnDebit" + x);
 		
-		GoToComp("txtnCredit" + x);
+		//GoToComp("txtnCredit" + x);
+		computegross();
 	}
 
 	function chkform(){

@@ -985,71 +985,73 @@ if (mysqli_num_rows($sqlchk)!=0) {
 			</div><!-- /.modal-dialog -->
 	</div>
 
-			<!-- add CM Module -->
-				<div class="modal fade" id="MyAdjustmentModal" role="dialog">
-   				<div class="modal-dialog modal-lg">
-        		<div class="modal-content">
+	<!-- add CM Module -->
+	<div class="modal fade" id="MyAdjustmentModal" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
             	<div class="modal-header">
-                <button type="button" class="close"  aria-label="Close"  onclick="chkCloseInfo();"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="invadjheader"> Additional AR Adjustment <button class="btn btn-sm btn-primary" name="btnaddcm" id="btnaddcm" type="button">Add</button></h4>           
-							</div>
+                	<h4 class="modal-title" id="invadjheader"> Additional AR Adjustment <button class="btn btn-sm btn-primary" name="btnaddcm" id="btnaddcm" type="button">Add</button></h4>           
+				</div>
     
             	<div class="modal-body">
-                <input type="hidden" name="hdnrowcnt2" id="hdnrowcnt2"> 
-								<input type="hidden" name="txtdetsinoinfo" id="txtdetsinoinfo">  
-								<input type="hidden" name="txthdnTYPAdj" id="txthdnTYPAdj"> 
-								<input type="hidden" name="txthdnCMtxtbx" id="txthdnCMtxtbx"> 
+               	 	<input type="hidden" name="hdnrowcnt2" id="hdnrowcnt2"> 
+					<input type="hidden" name="txtdetsinoinfo" id="txtdetsinoinfo">  
+					<input type="hidden" name="txthdnTYPAdj" id="txthdnTYPAdj"> 
+					<input type="hidden" name="txthdnCMtxtbx" id="txthdnCMtxtbx"> 
 				
-                <table id="MyTableCMx" class="MyTable table table-sm" width="100%">
-									<thead>
-										<tr>
-											<th style="border-bottom:1px solid #999" width="50px">Adj Type</th>
-											<th style="border-bottom:1px solid #999">AP CM No.</th>
-											<th style="border-bottom:1px solid #999">Date</th>
-											<th style="border-bottom:1px solid #999">Amount</th>
-											<th style="border-bottom:1px solid #999" width="200px">Remarks</th>
-											<th style="border-bottom:1px solid #999">&nbsp;</th>
-										</tr>
-									</thead>
-									<tbody class="tbody">				
-										<?php										
-											$sqlbody = mysqli_query($con,"select a.* from receipt_deds a where a.compcode='$company' and a.ctranno = '$corno' order by a.nidentity");				
-												if (mysqli_num_rows($sqlbody)!=0) {
-													$cntr = 0;
-													while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
-														$cntr++;
-											?>	
-											<tr>
-												<td><input type='text' class='form-control input-xs' name='hdnctypeadj' id='hdnctypeadj<?=$cntr?>' value='<?=$rowbody['aradjustment_ctype']?>' readonly></td>
-												<td><input type='hidden' name='hdndetsino' id='hdndetsino<?=$cntr?>' value='<?=$rowbody['aradjustment_crefsi']?>'><input type='hidden' name='hdnisgiven' id='hdnisgiven<?=$cntr?>' value='<?=$rowbody['isgiven']?>'><input type='text' name='txtapcmdm' id='txtapcmdm<?=$cntr?>' class='form-control input-xs' value='<?=$rowbody['aradjustment_ctranno']?>'></td>
-												<td><input type='text' name='txtapdte' id='txtapdte<?=$cntr?>' class='form-control input-xs' readonly value='<?=$rowbody['aradjustment_dcutdate']?>'></td>
-												<td><input type='text' name='txtapamt' id='txtapamt<?=$cntr?>' class='form-control input-xs text-right' readonly value='<?=$rowbody['aradjustment_ngross']?>'></td>
-												<td><input type='text' name='txtremz' id='txtremz<?=$cntr?>' value='<?=$rowbody['cremarks']?>' class='form-control input-xs'></td>
-												<td>
-												<?php
-													if($rowbody['isgiven']==0){
-												?>
-													<input class='btn btn-danger btn-xs' type='button' name='delinfo' id='delinfo<?=$rowbody['aradjustment_crefsi'].$cntr?>' value='delete' />
-												<?php
-													}else{
-														echo "";
-													}
-												?>
-												</td>
+                	<table id="MyTableCMx" class="MyTable table table-sm" width="100%">
+						<thead>
+							<tr>
+								<th style="border-bottom:1px solid #999" width="50px">Adj Type</th>
+								<th style="border-bottom:1px solid #999">AP CM No.</th>
+								<th style="border-bottom:1px solid #999">Date</th>
+								<th style="border-bottom:1px solid #999">Amount</th>
+								<th style="border-bottom:1px solid #999" width="200px">Remarks</th>
+								<th style="border-bottom:1px solid #999">&nbsp;</th>
+							</tr>
+						</thead>
+						<tbody class="tbody">				
+							<?php										
+								$sqlbody = mysqli_query($con,"select a.* from receipt_deds a where a.compcode='$company' and a.ctranno = '$corno' order by a.nidentity");				
+									if (mysqli_num_rows($sqlbody)!=0) {
+										$cntr = 0;
+										while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
+											$cntr++;
+								?>	
+								<tr>
+									<td><input type='text' class='form-control input-xs' name='hdnctypeadj' id='hdnctypeadj<?=$cntr?>' value='<?=$rowbody['aradjustment_ctype']?>' readonly></td>
+									<td><input type='hidden' name='hdndetsino' id='hdndetsino<?=$cntr?>' value='<?=$rowbody['aradjustment_crefsi']?>'><input type='hidden' name='hdnisgiven' id='hdnisgiven<?=$cntr?>' value='<?=$rowbody['isgiven']?>'><input type='text' name='txtapcmdm' id='txtapcmdm<?=$cntr?>' class='form-control input-xs' value='<?=$rowbody['aradjustment_ctranno']?>'></td>
+									<td><input type='text' name='txtapdte' id='txtapdte<?=$cntr?>' class='form-control input-xs' readonly value='<?=$rowbody['aradjustment_dcutdate']?>'></td>
+									<td><input type='text' name='txtapamt' id='txtapamt<?=$cntr?>' class='form-control input-xs text-right' readonly value='<?=$rowbody['aradjustment_ngross']?>'></td>
+									<td><input type='text' name='txtremz' id='txtremz<?=$cntr?>' value='<?=$rowbody['cremarks']?>' class='form-control input-xs'></td>
+									<td>
+									<?php
+										if($rowbody['isgiven']==0){
+									?>
+										<input class='btn btn-danger btn-xs' type='button' name='delinfo' id='delinfo<?=$rowbody['aradjustment_crefsi'].$cntr?>' value='delete' />
+									<?php
+										}else{
+											echo "";
+										}
+									?>
+									</td>
 
-											</tr>
-											<?php
-													}
-												}
-											?>
-                  </tbody>
-                </table>
+								</tr>
+							<?php
+									}
+								}
+							?>
+						</tbody>
+                	</table>
     
-							</div>
-        		</div><!-- /.modal-content -->
-    			</div><!-- /.modal-dialog -->
 				</div>
-			<!-- /.modal -->
+				<div class="modal-footer">
+					<button type="button" class="btn btn-sm btn-success"  aria-label="Close"  onclick="chkCloseInfo();">PROCEED</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
 
 			<!--modal entry view-->
 			<div class="modal fade" id="modGLEntry" role="dialog">
@@ -2568,7 +2570,7 @@ else{
 				
 			});
 			
-			if(parseFloat(tot)>0){
+			if(parseFloat(tot)>=0){
 				$("#"+dsc).val(tot);
 
 				$("#"+dsc).autoNumeric('destroy');

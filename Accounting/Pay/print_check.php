@@ -161,7 +161,9 @@ function numberTowords($num)
 <?php
 
 	if($cdoctype==1){
-
+		$dmo = date_format(date_create($Date),"m");
+		$ddt = date_format(date_create($Date),"d");
+		$dyr = date_format(date_create($Date),"Y");
 ?>
 	<style>
 		body{
@@ -171,50 +173,69 @@ function numberTowords($num)
 		table {
 			border-collapse: collapse;
 		}
-		.ewdate{
+		.ewdatemo{
 			position: absolute;
 			float: right;
 			top: 45px;
-			right: 40px;
-			width: 200px;
+			right: 215px;
+			width: 30px;
 			height:  25px;    
-			font-size: 10pt;		
-
+			letter-spacing:5px;
+			font-size: 10pt;			
 			/*border: 1px solid #000;*/				
+		}
+		.ewdatedy{
+			position: absolute;
+			float: right;
+			top: 45px;
+			right: 179px;
+			width: 30px;
+			height:  25px;    
+			letter-spacing:5px;
+			font-size: 10pt;
+		}
+		.ewdateyr{
+			position: absolute;
+			float: right;
+			top: 45px;
+			right: 139px;
+			width: 30px;
+			height:  25px;    
+			letter-spacing:5px;
+			font-size: 10pt;
 		}
 		.ewdamt{
 			position: absolute;
 			float: right;
-			top: 85px;
-			right:90px;
+			top: 80px;
+			right:70px;
 			width: 150px;
 			height:  18px;   
-
 			/*border: 1px solid #000;*/
 		}
 		.ewdpay{
 			position: absolute;
-			top: 85px;
-			left: 130px;
+			top: 81px;
+			left: 165px;
 			width: 338px;
 			height:  18px;   
-
 			/*border: 1px solid #000;*/
 		}
 		.ewdamtwords{
 			position: absolute;
-			top: 105px;
-			left: 128px;
+			top: 110px;
+			left: 132px;
 			width: 600px;
 			height:  18px;    
-
 			/*border: 1px solid #000;*/
 			
 		}
 		
 	</style>
 		
-	<div class="ewdate"><?=date_format(date_create($Date),"M d, Y")?></div>
+	<div class="ewdatemo"><?=$dmo?></div>
+	<div class="ewdatedy"><?=$ddt?></div>
+	<div class="ewdateyr"><?=$dyr?></div>
 
 	<div class="ewdamt"><?=number_format($Amount,2)?></div>
 	<div class="ewdpay"><?=$Payee?></div>

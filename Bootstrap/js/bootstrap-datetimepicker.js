@@ -186,7 +186,7 @@
                             ),
                     $('<div>').addClass('datepicker-months')
                         .append($('<table>').addClass('table-condensed')
-                            .append(headTemplate.clone())
+                            //.append(headTemplate.clone())
                             .append(contTemplate.clone())
                             ),
                     $('<div>').addClass('datepicker-years')

@@ -334,38 +334,17 @@
 							<td style="padding:2px">
 								<div class="col-xs-11 nopadding" id="isewt2">
 									<select id="selewt" name="selewt[]" class="form-control input-sm selectpicker"  tabindex="3" multiple required>
-											<!--<option value="none">None</option>-->
-											<option value="multi">Multiple</option>
-											<?php
-												foreach(@$arrewtlist as $rows){
-													echo "<option value=\"".$rows['ctaxcode']."\">".$rows['ctaxcode'].": ".$rows['nrate']."%</option>";
-												}
-											?>
-											
+										<!--<option value="none">None</option>
+										<option value="multi">Multiple</option>-->
+										<?php
+											foreach(@$arrewtlist as $rows){
+												echo "<option value=\"".$rows['ctaxcode']."\" data-rate=\"".$rows['nrate']."\">".$rows['ctaxcode'].": ".$rows['nrate']."%</option>";
+											}
+										?>											
 									</select>
 								</div>
 							</td>							
 						</tr>
-
-						<!--<tr>
-								<td style="padding:2px" colspan="2">&nbsp;</td>
-								
-								<td><b><div class="chklimit">Credit Limit:</div></b></td>
-								<td style="padding:2px;" align="right">
-									<div class="chklimit col-xs-11 nopadding" id="ncustlimit"></div>
-									<input type="hidden" id="hdncustlimit" name="hdncustlimit" value="">
-								</td>
-						</tr>
-
-						<tr>
-								<td style="padding:2px" colspan="2">&nbsp;</td>
-								
-								<th><div class="chklimit">Balance:</div></th>
-								<td style="padding:2px;"  align="right">				          
-													<div class="chklimit col-xs-11 nopadding" id="ncustbalance"></div>
-												<input type="hidden" id="hdncustbalance" name="hdncustbalance" value="">
-								</td>
-						</tr>-->
 
 					</table>
 
@@ -426,7 +405,7 @@
 							<tr>
 								<th width="100px" style="border-bottom:1px solid #999">Code</th>
 								<th width="250px" style="border-bottom:1px solid #999">Description</th>
-								<th width="150px" style="border-bottom:1px solid #999" class="chkVATClass">EWTCode</th>
+								<!--<th width="150px" style="border-bottom:1px solid #999" class="chkVATClass">EWTCode</th>-->
 								<th width="150px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
 								<th width="100px" style="border-bottom:1px solid #999">UOM</th>
 								<th width="100px" style="border-bottom:1px solid #999">Qty</th>
@@ -508,39 +487,7 @@
 						</div>
 					</div>
 				</div>
-				<!--<div class="col-xs-6">
-						<div class="well">							
-							<div class="row static-info align-reverse">
-								<div class="col-xs-7 name">
-									Total NET Sales:
-									<input type="hidden" id="txtnNetVAT" name="txtnNetVAT" value="0">
-									<input type="hidden" id="txtnTotDisc" name="txtnTotDisc" value="0">
-								</div>
-								<div class="col-xs-4 value" id="divtxtnNetVAT">
-									0.00
-								</div>
-							</div>
-							<div class="row static-info align-reverse">
-								<div class="col-xs-7 name">
-									Add VAT:
-									<input type="hidden" id="txtnVAT" name="txtnVAT" value="0">
-								</div>
-								<div class="col-xs-4 value" id="divtxtnVAT">
-									0.00
-								</div>
-							</div>
-							<div class="row static-info align-reverse">
-								<div class="col-xs-7 name">
-									Total Amount:
-									<input type="hidden" id="txtnGross" name="txtnGross" value="0">
-									<input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="0">
-								</div>
-								<div class="col-xs-4 value" id="divtxtnGross">
-									0.00
-								</div>
-							</div>
-						</div>
-					</div>-->
+				
 				<div class="col-xs-6">
 					<div class="well">							
 						<div class="row static-info align-reverse">
@@ -554,10 +501,10 @@
 						</div>
 						<div class="row static-info align-reverse">
 							<div class="col-xs-7 name">
-								VATExempt Sales:
+								VAT Exempt Sales:
 								<input type="hidden" id="txtnExemptVAT" name="txtnExemptVAT" value="0">
 							</div>
-							<div class="col-xs-4 value" id="divtxtnExemptVAT">
+							<div class="col-xs-4 value" id="divtxtnExemptVAT"> 
 								0.00
 							</div>
 						</div>
@@ -572,7 +519,7 @@
 						</div>
 						<div class="row static-info align-reverse">
 							<div class="col-xs-7 name">
-								Add VAT:
+								add VAT:
 								<input type="hidden" id="txtnVAT" name="txtnVAT" value="0">
 							</div>
 							<div class="col-xs-4 value" id="divtxtnVAT">
@@ -581,7 +528,7 @@
 						</div>
 						<div class="row static-info align-reverse">
 							<div class="col-xs-7 name">
-								Total Gross:
+								Total Sales:
 								<input type="hidden" id="txtnGrossBef" name="txtnGrossBef" value="0">
 							</div>
 							<div class="col-xs-4 value" id="divtxtnGrossBef"> 
@@ -590,7 +537,16 @@
 						</div>
 						<div class="row static-info align-reverse">
 							<div class="col-xs-7 name">
-								Less Gross Discount:
+								less EWT:
+								<input type="hidden" id="txtnEWT" name="txtnEWT" value="0">
+							</div>
+							<div class="col-xs-4 value" id="divtxtnEWT"> 
+								0.00
+							</div>
+						</div>
+						<div class="row static-info align-reverse">
+							<div class="col-xs-7 name">
+								less Gross Discount:
 								
 							</div>
 							<div class="col-xs-4 value">
@@ -599,7 +555,7 @@
 						</div>
 						<div class="row static-info align-reverse">
 							<div class="col-xs-7 name">
-								<b>Total Amount: </b>
+								<b>Total Amount Due: </b>
 								<input type="hidden" id="txtnGross" name="txtnGross" value="0">
 								<input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="0">								
 							</div>
@@ -1389,8 +1345,8 @@
 		});*/
 
 		$("#selewt").on("change", function(){ 
-
-			var rowCount = $('#MyTable tr').length;
+			ComputeGross();
+			/*var rowCount = $('#MyTable tr').length;
 			if(rowCount>1){
 				if($(this).val()!=""){			
 						for (var i = 1; i <= rowCount-1; i++) {
@@ -1409,7 +1365,7 @@
 					}
 				}
 
-			}
+			}*/
 		});
 
 		$("#txtnGrossDisc").on("keyup", function(){
@@ -1628,7 +1584,7 @@
 		var tditmcode = "<td> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode"+lastRow+"\">"+itmcode+" <input type='hidden' value='"+cref+"' name=\"txtcreference\" id=\"txtcreference\"> <input type='hidden' value='"+nrefident+"' name=\"txtcrefident\" id=\"txtcrefident\"> <input type='hidden' value='"+itmctype+"' name=\"hdncitmtype\" id=\"hdncitmtype"+lastRow+"\"> </td>";
 		var tditmdesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmdesc+"</td>";
 
-		var tditmewts = "";
+		/*var tditmewts = "";
 		if(xChkVatableStatus==1){ 
 			
 				var gvnewt = $("#selewt").val();
@@ -1665,7 +1621,7 @@
 
 				tditmewts = "<td width=\"150\" nowrap> <select class='form-control input-xs' name=\"selitmewtyp\" id=\"selitmewtyp"+lastRow+"\" "+isdisabled+" multiple> <option value=\"none\">None</option>" + ewtoptions + "</select> </td>";
 
-		}
+		}*/
 
 
 		var tditmvats = "";
@@ -1687,8 +1643,7 @@
 		}
 
 		var tditmunit = "<td nowrap>"+uomoptions+"</td>";
-			
-		
+					
 		var tditmqty = "<td nowrap> <input type='text' value='"+itmtotqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' "+qtystat+"> <input type='hidden' value='"+itmqtyunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+factz+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
 
 		var tditmprice = "asd<td nowrap> <input type='text' value='"+price+"' class='numeric2 form-control input-xs' style='text-align:right' name=\"txtnprice\" id='txtnprice"+lastRow+"' > </td>";
@@ -1715,7 +1670,9 @@
 
 		//<input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/>
 
-		$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmewts + tditmvats + tditmunit + tditmqty + tditmprice + tditmdisc + tditmbaseamount+ tditmamount + tdglaccount + tdgltitle + tditmdel + '</tr>'); 
+		//tditmewts
+
+		$('#MyTable > tbody:last-child').append('<tr>'+tditmcode + tditmdesc + tditmvats + tditmunit + tditmqty + tditmprice + tditmdisc + tditmbaseamount+ tditmamount + tdglaccount + tdgltitle + tditmdel + '</tr>'); 
 
 			$("#del"+itmcode).on('click', function() { 
 				var xy = $(this).data('var');
@@ -1743,10 +1700,10 @@
 				ComputeGross();
 			});
 
-			$("#selitmewtyp"+lastRow).select2();
-			$("#selitmewtyp"+lastRow).on('select2:select', function (e) {
-				ComputeGross();
-			});
+			//$("#selitmewtyp"+lastRow).select2({width: '100%'});
+			//$("#selitmewtyp"+lastRow).on('select2:select', function (e) {
+			//	ComputeGross();
+		//	});
 														
 			//	$("input.numeric").numeric(
 				//	{negative: false}
@@ -1875,7 +1832,7 @@
 		$("#divtxtnZeroVAT").text(nzeroTot.toFixed(2));
 		$("#divtxtnZeroVAT").formatNumber();
 		
-		// LESS VAT
+		// ADD VAT
 		$("#txtnVAT").val(vatzTot);
 		$("#divtxtnVAT").text(vatzTot.toFixed(2));
 		$("#divtxtnVAT").formatNumber();
@@ -1885,8 +1842,22 @@
 		$("#divtxtnGrossBef").text(gross.toFixed(2));
 		$("#divtxtnGrossBef").formatNumber();
 
+
+		// LESS EWT
+		$xtotewrate = 0;
+		ewtTotz = 0;
+		$('#selewt > option:selected').each(function() {
+			$xtotewrate = $xtotewrate + parseFloat($(this).data("rate"));
+		});
+		if(parseFloat($xtotewrate)>0){
+			ewtTotz = (parseFloat(nvatbleTot) + parseFloat(nexmptTot) + parseFloat(nzeroTot)) * ($xtotewrate/100);
+		}
+		$("#txtnEWT").val(ewtTotz);
+		$("#divtxtnEWT").text(ewtTotz.toFixed(2));  
+		$("#divtxtnEWT").formatNumber();
+
 		//Total Amount
-		$gettmtt = gross - parseFloat($("#txtnGrossDisc").val());
+		$gettmtt = gross - parseFloat($("#txtnGrossDisc").val()) - parseFloat(ewtTotz);
 		gross2 = $gettmtt * parseFloat($("#basecurrval").val().replace(/,/g,''));
 		
 		$("#txtnGross").val(gross2);
@@ -2735,26 +2706,26 @@
 				$("#MyTable > tbody > tr").each(function(index) {	
 					//if(index>0){
 						
-						$(this).find('select[name="selitmewtyp"]').attr("disabled", false);
+						//$(this).find('select[name="selitmewtyp"]').attr("disabled", false);
 
 						var crefno = $(this).find('input[type="hidden"][name="txtcreference"]').val();
 						var crefident = $(this).find('input[type="hidden"][name="txtcrefident"]').val();
 						var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val(); 
-						var ewtcode = $(this).find('select[name="selitmewtyp"]').val();
-						console.log(crefident)
+						//var ewtcode = $(this).find('select[name="selitmewtyp"]').val();
+						//console.log(crefident)
 
 						//getrate of selected
-						var ewtrate = "";
-						var cnt = 0;
-						$(this).find('select[name="selitmewtyp"] > option:selected').each(function() {
+						//var ewtrate = "";
+						//var cnt = 0;
+						//$(this).find('select[name="selitmewtyp"] > option:selected').each(function() {
 							//	alert($(this).data("rate"));
-							cnt++;
-							if(cnt>1){
-								ewtrate = ewtrate + ";" + $(this).data("rate");
-							}else{
-								ewtrate = ewtrate + $(this).data("rate");
-							}
-						});
+						//	cnt++;
+						//	if(cnt>1){
+						//		ewtrate = ewtrate + ";" + $(this).data("rate");
+						//	}else{
+						//		ewtrate = ewtrate + $(this).data("rate");
+						//	}
+					//	});
 
 						var vatcode = $(this).find('select[name="selitmvatyp"]').val(); 
 						var nrate = $(this).find('select[name="selitmvatyp"] option:selected').data('id'); 
@@ -2795,11 +2766,11 @@
 							ntranamt = ntranamt.replace(/,/g,'');
 						}
 
-						//alert("SI_newsavedet.php?trancode="+trancode+"&crefno="+crefno+"&crefident="+crefident+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+ nprice+"&ndiscount="+ndiscount+"&ntranamt="+ntranamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&ccode="+ccode+"&vatcode="+vatcode+"&nrate="+nrate+"&ewtcode="+ewtcode+"&ewtrate="+ewtrate+"&acctid="+acctid);
+						//alert("SI_newsavedet.php?trancode="+trancode+"&crefno="+crefno+"&crefident="+crefident+"&indx="+index+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+ nprice+"&ndiscount="+ndiscount+"&ntranamt="+ntranamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor+"&ccode="+ccode+"&vatcode="+vatcode+"&nrate="+nrate+"&ewtcode="+ewtcode+"&ewtrate="+ewtrate+"&acctid="+acctid); , ewtcode:ewtcode, ewtrate:ewtrate
 
 						$.ajax ({
 							url: "SI_newsavedet.php",
-							data: { trancode: trancode, crefno: crefno, crefident:crefident, indx: parseInt(index) + 1, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, ndiscount:ndiscount, ntranamt:ntranamt, namt:namt, mainunit:mainunit, nfactor:nfactor, ccode:ccode, vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate, acctid: acctid },
+							data: { trancode: trancode, crefno: crefno, crefident:crefident, indx: parseInt(index) + 1, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, ndiscount:ndiscount, ntranamt:ntranamt, namt:namt, mainunit:mainunit, nfactor:nfactor, ccode:ccode, vatcode:vatcode, nrate:nrate, acctid: acctid },
 							async: false,
 							success: function( data ) {
 								if(data.trim()=="False"){
@@ -2890,8 +2861,6 @@
 
 		}
 			
-			
-
 	}
 
 	function getdiscmatrix(itmx,unit){

@@ -34,6 +34,7 @@ $company = $_SESSION['companyid'];
 	$nzeror = $_REQUEST['txtnZeroVAT']; // ZERO RATED SALES  nzerorated
 	$nvat = $_REQUEST['txtnVAT']; //VAT   nvat
 	$nGrossBefore = $_REQUEST['txtnGrossBef']; //TOTAL GROSS  BEFORE DISCOUNT ngrossbefore
+	$nLessEWT = $_REQUEST['txtnEWT']; //EWT
 	$nGrossDisc = str_replace(",","",$_REQUEST['txtnGrossDisc']);  //GROSS DISCOUNT  ngrossdisc
 	$nGross = $_REQUEST['txtnGross']; //TOTAL AMOUNT ngross
 	$BaseGross= $_REQUEST['txtnBaseGross']; //TOTAL AMOUNT * currency rate    nbasegross
@@ -59,7 +60,7 @@ $company = $_SESSION['companyid'];
 	}
 
 
-	if (!mysqli_query($con, "UPDATE sales set `ccode` = '$cCustID', `cremarks` = $cRemarks, `dcutdate` = STR_TO_DATE('$dDelDate', '%m/%d/%Y'), `ngross` = '$nGross', `nnet` = '$nnetvat', `nvat` = '$nvat', `cacctcode` = $cacctcode, `cvatcode` = $cvatcode, `lapproved` = 0, `csalestype` = '$selsitypz', `csiprintno` = $selsiseries, `nbasegross` = '$BaseGross', `ccurrencycode` = '$CurrCode', `ccurrencydesc` = '$CurrDesc', `nexchangerate` = '$CurrRate', `crefmodule` = '$RefMods', `crefmoduletran` = '$RefModsNo', `cewtcode` = '$cewtcode', `nexempt` = '$nexempt', `nzerorated` = '$nzeror', `ngrossbefore` = '$nGrossBefore', `ngrossdisc` = '$nGrossDisc' where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
+	if (!mysqli_query($con, "UPDATE sales set `ccode` = '$cCustID', `cremarks` = $cRemarks, `dcutdate` = STR_TO_DATE('$dDelDate', '%m/%d/%Y'), `ngross` = '$nGross', `nnet` = '$nnetvat', `nvat` = '$nvat', `cacctcode` = $cacctcode, `cvatcode` = $cvatcode, `lapproved` = 0, `csalestype` = '$selsitypz', `csiprintno` = $selsiseries, `nbasegross` = '$BaseGross', `ccurrencycode` = '$CurrCode', `ccurrencydesc` = '$CurrDesc', `nexchangerate` = '$CurrRate', `crefmodule` = '$RefMods', `crefmoduletran` = '$RefModsNo', `cewtcode` = '$cewtcode', `nexempt` = '$nexempt', `nzerorated` = '$nzeror', `ngrossbefore` = '$nGrossBefore', `ngrossdisc` = '$nGrossDisc', `newt` = '$nLessEWT' where `compcode` = '$company' and `ctranno` = '$cSINo'")) {
 		echo "False";
 
 		

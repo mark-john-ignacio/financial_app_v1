@@ -124,5 +124,5 @@ else {
 </form>
 <script>
 	alert('Record Succesfully Saved');
-  document.forms['frmpos'].submit();
+    document.forms['frmpos'].submit();
 </script>

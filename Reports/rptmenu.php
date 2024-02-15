@@ -222,14 +222,14 @@
 							<hr class="alert-danger nopadding">
 								<div style="padding-left:10px; padding-top:3px">
 									<ul class="ver-inline-menu tabbable margin-bottom-25"> 
-										<!--<li>
+										<li>
 											<a href="" onclick="setI('A', 'SJournal.php')"  data-toggle="tab">
 											<i class="fa fa-book"></i>Sales Journal</a>
 										</li>
 										<li>
 											<a href="" onclick="setI('A', 'PurchJourn.php')"  data-toggle="tab">
 											<i class="fa fa-book"></i>Purchase Journal</a>
-										</li>-->
+										</li>
 										<li>
 											<a href="" onclick="setI('A', 'SalesDat.php')"  data-toggle="tab">
 											<i class="fa fa-book"></i>BIR Sales RELIEF</a>
@@ -250,7 +250,12 @@
 										<li>
 											<a href="" onclick="setI('A', './SAWT/')" data-toggle="tab">
 											<i class="fa fa-book"></i>BIR SAWT</a>
-										</li>          
+										</li>
+										<li>
+											<a href="" onclick="setI('A', 'BIR_Forms.php')" data-toggle="tab">
+											<i class="fa fa-book"></i>BIR FORMS</a>
+										</li>
+
 										<!--<li>
 											<a href="" onclick="setI('A', './VAT_SUMMARY/')" data-toggle="tab">
 											<i class="fa fa-book"></i>VAT SUMMARY</a>

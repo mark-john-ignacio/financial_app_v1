@@ -1428,7 +1428,10 @@ xmlhttp.send();
           BIR QAP</label>
           <br>
           <label><input type="checkbox" name="chkAcc[]" value="BIRSAWT" <?=(in_array("BIRSAWT",@$arrpgist)) ? "checked" : "";?>>
-          BIR SAWT</label>         
+          BIR SAWT</label>
+          <br>
+          <label><input type="checkbox" name="chkAcc[]" value="BIR_Forms" <?=(in_array("BIR_Forms",@$arrpgist)) ? "checked" : "";?>>
+          BIR Forms</label>        
           <br>
         </div>
         

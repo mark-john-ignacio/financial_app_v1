@@ -309,7 +309,7 @@
 										<select class='form-control input-sm' name="receipt" id="receipt">
 											<option value="OR">Official Receipt</option>
 											<option value="CR">Collection Receipt</option>
-											<option value="AR">Acknowledgement Receipt</option>
+											<!--<option value="AR">Acknowledgement Receipt</option>-->
 											<option value="NA">N/A</option>
 										</select>
 									</div>
@@ -361,11 +361,11 @@
 									<th scope="col" width="150px" class="text-center" nowrap>DM</th>
 									<th scope="col" width="150px" class="text-center" nowrap>CM</th>
 									<th scope="col" width="150px" class="text-center" nowrap>Payments</th>
-									<th scope="col" width="150px" class="text-center" nowrap>VAT Code</th>
-									<th scope="col" width="150px" class="text-center" nowrap>VAT</th>
-									<th scope="col" width="150px" class="text-center" nowrap>NetofVat</th>
-									<th scope="col" width="250px" class="text-center" nowrap>EWTCode</th>
-									<th scope="col" width="100px" class="text-center" nowrap>EWTAmt/Rate</th>                          
+									<!--<th scope="col" width="150px" class="text-center" nowrap>VAT Code</th>-->
+									<th scope="col" width="150px" class="text-center" nowrap>Total VAT</th>
+									<th scope="col" width="150px" class="text-center" nowrap>Net Gross</th>
+									<!--<th scope="col" width="250px" class="text-center" nowrap>EWTCode</th>
+									<th scope="col" width="100px" class="text-center" nowrap>EWTAmt/Rate</th>-->                         
 									<th scope="col" width="100px" class="text-center" nowrap>Total EWT</th>
 									<th scope="col" width="150px" class="text-center" nowrap>Total Due</th>
 									<th scope="col" width="150px" class="text-center" nowrap>Amt Applied</th>
@@ -1169,7 +1169,7 @@
 					console.log(data);
 					$.each(data,function(index,item){
 
-						var chkbox = "";
+					var chkbox = "";
 						if(item.ccurrencycode!=$('#selbasecurr').val()){
 							chkbox = "";
 						}else{
