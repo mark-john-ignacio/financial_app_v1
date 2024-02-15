@@ -1,16 +1,22 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "IncomeStatement.php";
+  if(!isset($_SESSION)){
+  session_start();
+  }
+  $_SESSION['pageid'] = "IncomeStatement.php";
 
-include('../Connection/connection_string.php');
-include('../include/denied.php');
-include('../include/access.php');
+  include('../Connection/connection_string.php');
+  include('../include/denied.php');
+  include('../include/access.php');
 
 
-$first_day_this_month = date('m-01-Y'); // hard-coded '01' for first day
-$last_day_this_month  = date("Y-m-t", strtotime($first_day_this_month));
+  $first_day_this_month = date('m-01-Y'); // hard-coded '01' for first day
+  $last_day_this_month  = date("Y-m-t", strtotime($first_day_this_month));
+
+  $company = $_SESSION['companyid'];
+	$sql = "select * From company";
+	$result=mysqli_query($con,$sql);
+  $rowcount=mysqli_num_rows($result);
+
 
 ?><html>
 <head>
@@ -56,7 +62,20 @@ $last_day_this_month  = date("Y-m-t", strtotime($first_day_this_month));
               </select>
               
             </div>
-            
+            <?php
+              if($rowcount > 1){
+            ?>
+            <div class="col-xs-5 nopadwleft">
+              
+              <select id="selconso" name="selconso" class="form-control input-sm selectpicker"  tabindex="4">
+                <option value="1">Per Selected Company</option>   
+                <option value="2">Consolidate All Company</option>               
+              </select>
+              
+            </div>
+            <?php
+              }
+            ?>
           </div>   
         </td>
 
@@ -169,15 +188,51 @@ $last_day_this_month  = date("Y-m-t", strtotime($first_day_this_month));
     });
 
     $('#btnView').on("click", function(){
-      $dval = $("#selrpt").val();
-      $('#frmrep').attr("action", $dval+".php");
-      $('#frmrep').submit();
+      <?php
+         if($rowcount > 1){
+      ?>
+        $dval = $("#selrpt").val();
+
+          if($("#selconso").val()==2){
+            $('#frmrep').attr("action", $dval+"_Consolidated.php");
+            $('#frmrep').submit();
+          }else{
+            $('#frmrep').attr("action", $dval+".php");
+            $('#frmrep').submit();
+          }
+      <?php
+        }else{
+      ?>
+        $dval = $("#selrpt").val();
+        $('#frmrep').attr("action", $dval+".php");
+        $('#frmrep').submit();
+      <?php
+        }
+      ?>
     });
 
     $('#btnexcel').on("click", function(){
-      $dval = $("#selrpt").val();
-      $('#frmrep').attr("action", $dval+"_xls.php");
-      $('#frmrep').submit();
+      <?php
+         if($rowcount > 1){
+      ?>
+        $dval = $("#selrpt").val();
+        
+          if($("#selconso").val()==2){
+            $('#frmrep').attr("action", $dval+"_xls_Consolidated.php");
+            $('#frmrep').submit();
+          }else{
+            $('#frmrep').attr("action", $dval+"_xls.php");
+            $('#frmrep').submit();
+          }
+      <?php
+        }else{
+      ?>
+        $dval = $("#selrpt").val();
+        $('#frmrep').attr("action", $dval+"_xls.php");
+        $('#frmrep').submit();
+      <?php
+        }
+      ?>
     });
 
   });
