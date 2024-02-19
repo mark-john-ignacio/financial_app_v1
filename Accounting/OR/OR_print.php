@@ -3,7 +3,162 @@
         session_start();
     }
 
+    include('../../Connection/connection_string.php');
+    include('../../include/denied.php');
+    
+    $company = $_SESSION['companyid'];
+
+    function numberTowords($num)
+    {
+        $ones = array(
+            0 =>"ZERO",
+            1 => "ONE",
+            2 => "TWO",
+            3 => "THREE",
+            4 => "FOUR",
+            5 => "FIVE",
+            6 => "SIX",
+            7 => "SEVEN",
+            8 => "EIGHT",
+            9 => "NINE",
+            10 => "TEN",
+            11 => "ELEVEN",
+            12 => "TWELVE",
+            13 => "THIRTEEN",
+            14 => "FOURTEEN",
+            15 => "FIFTEEN",
+            16 => "SIXTEEN",
+            17 => "SEVENTEEN",
+            18 => "EIGHTEEN",
+            19 => "NINETEEN",
+            "014" => "FOURTEEN"
+        );
+        $tens = array( 
+            0 => "ZERO",
+            1 => "TEN",
+            2 => "TWENTY",
+            3 => "THIRTY", 
+            4 => "FORTY", 
+            5 => "FIFTY", 
+            6 => "SIXTY", 
+            7 => "SEVENTY", 
+            8 => "EIGHTY", 
+            9 => "NINETY" 
+        ); 
+        $hundreds = array( 
+            "HUNDRED", 
+            "THOUSAND", 
+            "MILLION", 
+            "BILLION", 
+            "TRILLION", 
+            "QUARDRILLION"
+        ); /*limit t quadrillion */
+        $num = number_format($num,2,".",","); 
+        $num_arr = explode(".",$num); 
+        $wholenum = $num_arr[0]; 
+        $decnum = $num_arr[1]; 
+        $whole_arr = array_reverse(explode(",",$wholenum)); 
+        krsort($whole_arr,1); 
+        $rettxt = ""; 
+
+        foreach($whole_arr as $key => $i){
+        
+            while(substr($i,0,1)=="0")
+                $i=substr($i,1,5);
+                if($i!=="") {
+
+                    if($i < 20){ 
+                        /* echo "getting:".$i; */
+                        $rettxt .= $ones[$i]; 
+                    }elseif($i < 100){ 
+                        if(substr($i,0,1)!="0")  $rettxt .= $tens[substr($i,0,1)] . "-"; 
+                        if(substr($i,1,1)!="0") $rettxt .= "".$ones[substr($i,1,1)]; 
+                    }else{ 
+                        if(substr($i,0,1)!="0") $rettxt .= $ones[substr($i,0,1)]." ".$hundreds[0]; 
+
+                        if(substr($i,1,1)==1){
+                            if(substr($i,2,1)==0){
+                                $rettxt .= " ".$tens[substr($i,1,1)];
+                            }else{
+                                $rettxt .= " ".$ones[substr($i,1,2)];
+                            }
+                        }else{
+                            if(substr($i,1,1)!="0")$rettxt .= " ".$tens[substr($i,1,1)]; 
+                            if(substr($i,2,1)!="0")$rettxt .= " ".$ones[substr($i,2,1)]; 
+                        }
+
+                    } 
+
+                }
+                
+                if($key > 0){ 
+                    $rettxt .= " ".$hundreds[$key]." "; 
+                }
+            } 
+
+            if($decnum > 0){
+                $rettxt .= " PESOS AND ";
+            
+                if($decnum < 20){
+                    //$rettxt .= $ones[$decnum];
+                }elseif($decnum < 100){
+                //	$rettxt .= $tens[substr($decnum,0,1)];
+                //	$rettxt .= " ".$ones[substr($decnum,1,1)];
+                }
+
+                $rettxt .= $decnum ."/100";
+
+            }else{
+                $rettxt .= " PESOS ONLY";
+            }
+        return $rettxt;
+    }
+
     $tranno = $_REQUEST['tranno'];
+
+    $sql = "SELECT a.*, b.cname,b.ctradename, b.chouseno,b.ccity,b.cstate,b.ctin, c.Fname, c.Lname, c.Minit, d.cbank, d.ccheckno, d.ddate as chekddate
+        FROM receipt a 
+        left join customers b on a.compcode = b.compcode and a.ccode = b.cempid
+        left join users c on a.compcode = b.compcode and a.cpreparedby = c.Userid
+        left join receipt_check_t d on a.compcode = d.compcode and a.ctranno = d.ctranno
+        WHERE a.compcode = '$company' and a.ctranno = '$tranno'";
+     $query = mysqli_query($con, $sql);
+     $data = [];
+     while($row = mysqli_fetch_array($query, MYSQLI_ASSOC)){
+         $data = $row;
+     }    
+
+     //getInvoicedetails
+     $sqlD = "SELECT a.csalesno, b.nexempt, b.nzerorated, b.nnet, b.nvat, a.ndue, a.namount, a.newtamt from receipt_sales_t a
+     left join sales b on a.compcode = b.compcode and a.csalesno = b.ctranno
+     WHERE a.compcode = '$company' and a.ctranno = '$tranno'";
+
+    $queryD = mysqli_query($con, $sqlD);
+    $rowcount=mysqli_num_rows($queryD);
+
+    $xnvatable = 0;
+    $xnexempt = 0;
+    $xnzero = 0;
+    $xnvat = 0;
+
+    $xnewts = 0;
+
+    $totamt = 0;
+    $dataD = array();
+    while($row = mysqli_fetch_array($queryD, MYSQLI_ASSOC)){
+        $dataD[] = $row;
+        $totamt = $totamt + floatval($row['namount']);
+        $xnvatable = $xnvatable + floatval($row['nnet']);
+        $xnexempt = $xnexempt + floatval($row['nexempt']);
+        $xnzero = $xnzero + floatval($row['nzerorated']);
+        $xnvat = $xnvat + floatval($row['nvat']);
+
+        $xnewts = $xnewts + floatval($row['newtamt']);
+
+        $xnetz = $xnvat + floatval($row['nvat']);
+    } 
+
+    //print_r($dataD);
 ?>
 
 <!DOCTYPE html>
@@ -13,26 +168,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Print</title>
 
-    <link rel="stylesheet" type="text/css" href="../../CSS/cssmed.css">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
-	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">	
-	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-	<script src="../../Bootstrap/js/bootstrap.js"></script>
+
     <style>
-        .form-containers{
-				position: relative;
-				color: #000;
-				font-weight: bold;
-				text-transform: uppercase;
-				width: 9.5in;
-				height: 13in;
-                font-size: 0.9em;
-        }
+        body{
+            font-family: 'Courier New', monospace !important;
+			font-weight: 900 !important;
+            font-size: 12px;
+		}
+
         #date{
             position: absolute;
-            top: 155px;
-            left: 720px;
+            top: 100px;
+            right: 2px;
+            width: 1.25in;
+            float: right;
+            
 
         }
         /* #box {
@@ -45,300 +196,300 @@
 
         #receive_by {
             position: absolute; 
-            top: 185px; 
-            left: 415px;
+            top: 125px; 
+            left: 420px;
         }
         #receive_address {
             position: absolute; 
-            top: 220px; 
+            top: 150px; 
             left: 400px;
+            line-height: 12px;
         }
 
         #receive_tin {
             position: absolute; 
-            top: 240px; 
-            left: 650px;
+            top: 170px; 
+            right: 10px;
+            float: right;
+            width: 1.75in;
         }
         #businessstyle {
             position: absolute; 
-            top: 240px; 
+            top: 170px; 
             left: 420px;
+            width: 1.5in;
+            overflow: hidden;
+            line-height: 12px;
         }
 
         #sumInWords {
             position: absolute; 
-            top: 268px; 
+            top: 190px; 
             width: 550px;
-            left: 305px;
-            text-indent: 24%;
+            left: 320px;
+            text-indent: 1.30in;
             letter-spacing: 1px;
             line-height: 2em;
+            width: 4.5in;
+            
+        }
+        #hwo:second-line {
+            width: 3in;
+            border: 1px solid #000;
         }
 
         #sumInText {
             position: absolute; 
-            top: 300px; 
-            left: 700px;
-        }
-        #invoiceTable {
-            position: absolute;
-            top: 110px;
-            left: 25px;
-            width: 200px;
-            height: 280px;
-            
-            /* border: 1px solid black; */
-        }
-        #list{
-            text-align: left; 
-            width: 100%; 
+            top: 220px; 
+            right: 10px;
+            float: right;
+            width: 1.25in;
+        } 
+
+        #xcmemo {
+            position: absolute; 
+            top: 243px; 
+            float: right;
+            right: 20px;
+            width: 3in;
+        }  
+
+        #xcprepby {
+            position: absolute; 
+            top: 290px; 
+            float: right;
+            text-align: right;
+            right: 40px;
+            width: 2in;
+            font-size: 11px;
+        } 
+
+        #nvatable {
+            position: absolute; 
+            top: 125px; 
+            left: 220px;
+            width: 1.25in;
+        } 
+        #nexmpt  {
+            position: absolute; 
+            top: 138px; 
+            left: 220px;
+            width: 1.25in;
+        } 
+        #nzero  {
+            position: absolute; 
+            top: 151px; 
+            left: 220px;
+            width: 1.25in;
+        } 
+        #nvat {
+            position: absolute; 
+            top: 164px; 
+            left: 220px;
+            width: 1.25in;
+        }           
+
+        #nvatinc {
+            position: absolute; 
+            top: 193px; 
+            left: 220px;
+            width: 1.25in;
+        } 
+
+        #nlessvatlbl {
+            position: absolute; 
+            top: 206px; 
+            left: 140px;
+            width: 1.25in;
         }
 
-        #total {
-            position: absolute;
-            text-align: right;   
-            width: 100%; 
-            bottom: 0px;
-            padding-right: 20px;
-            /* border: 1px solid black; */
-            
+        #nlessvat {
+            position: absolute; 
+            top: 206px; 
+            left: 220px;
+            width: 1.25in;
+        }
+        #nnetvat {
+            position: absolute; 
+            top: 219px; 
+            left: 220px;
+            width: 1.25in;
+        }
+        #ndiscount {
+            position: absolute; 
+            top: 232px; 
+            left: 220px;
+            width: 1.25in;
+        }
+        #namtdue {
+            position: absolute; 
+            top: 245px; 
+            left: 220px;
+            width: 1.25in;
+        }
+        #naddvat {
+            position: absolute; 
+            top: 258px; 
+            left: 220px;
+            width: 1.25in;
+        }
+        #ntotdue {
+            position: absolute; 
+            top: 271px; 
+            left: 220px;
+            width: 1.25in;
         }
 
-        #amounts {
-            width: 100%;
-            bottom: .87in;
-            position: absolute;
-            text-align: right; 
-            margin-right: 30px;
-            /* border: 1px solid black; */
+        #ngrossss {
+            position: absolute; 
+            top: 298px; 
+            left: 249px;
+            width: 1.25in;
         }
         
-        #totalamount {
+        #nformcash {
             position: absolute; 
-            top: 405px; 
-            left: 175px;
+            top: 298px; 
+            left: 100px;
+            width: 1.25in;
         }
 
-        #bankdetails {
-            position: absolute;
-            top: 430px;
-            left: 125px;
+        #nformcheck {
+            position: absolute; 
+            top: 298px; 
+            left: 168px;
+            width: 1.25in;
         }
+         
+       
+        .RowCont{
+            position: absolute;
+            top: 60px !important;
+            display: table;
+            left: 100px; /*Optional*/
+            table-layout: fixed; /*Optional*/
+            /*border: 1px solid #000; 
+            color: blue*/
+        }
+
+        .Row{    
+            display: block;
+            left: 48px; /*Optional*/  
+            /*border: 1px solid #000; 
+            letter-spacing: 11px;
+            border: 1px solid #000;*/
+        }
+
+        .Column{
+            display: table-cell; 
+            /*border: 1px solid #000;
+            letter-spacing: 11px;*/
+        }
+
+        #bank {
+            position: absolute; 
+            top: 311px; 
+            left: 160px;
+            width: 1.25in;
+        }
+        #chkno {   
+            position: absolute; 
+            top: 324px; 
+            left: 160px;
+            width: 1.25in;
+        }
+        #chkdate {
+            position: absolute; 
+            top: 337px; 
+            left: 160px;
+            width: 1.25in;
+        }
+        
     </style>
 </head>
 <body id='body'>
-    <div class="form-containers" >
 
-        <div id='date'>asda</div>
-        <div id='receive_by'></div>
-        <div id='receive_address'></div>
-        <div id='businessstyle'></div>
-        <div id='receive_tin'></div>
-        <div id='sumInWords'></div>
-        <div id='sumInText' ></div>
+
+        <div id='date'><?=date_format(date_create($data['ddate']),"M d, Y")?></div>
+        <div id='receive_by'><?=$data['cname']?></div>
+        <div id='receive_address'><?=$data['chouseno']." ,".$data['ccity']." ,".$data['cstate']?></div>
+        <div id='businessstyle'><?=$data['ctradename']?></div>
+        <div id='receive_tin'><?=$data['ctin']?></div>
+        <div id='sumInWords'><span id="hwo"><?=numberTowords($data['napplied'])?></span></div>
+        <div id='sumInText' ><?=number_format($data['napplied'],2)?></div>
+        <div id='xcmemo' ><?=$data['cremarks']?></div>
+
+        <div id='xcprepby' ><?=$data['Fname']." ".$data['Minit'].(($data['Minit']!=="" && $data['Minit']!==null) ? " " : "").$data['Lname']?></div>
         
         
-        <div id='invoiceTable'>
-            <table id='list' >
-                <tbody>
-                </tbody>
-            </table>
-
-            <table id='amounts'></table>
-
-            <table id='total'></table>
-        </div>
         
-        <!-- <div id='box'></div> -->
-        <div id='totalamount'> </div>
-        <div id='bankdetails'>
-            <div id='bank'></div>
-            <div id='chkno'></div>
-            <div id='chkdate'></div>
-        </div>
-    </div>
+        <div class="RowCont">
+            <?php
+                if($rowcount>4){
+            ?>
+                <div class="Row">
+                    <div class="Column" style="width: 119px; text-align: left;">Various</div>
+                    <div class="Column" style="width: 121px; text-align: left"> <?=number_format($xrow['namount'],2);?></div>
+                </div>
+            <?php
+                }else{
+                    foreach($dataD as $xrow){
+            ?>
+                <div class="Row">
+                    <div class="Column" style="width: 119px; text-align: left;"><?=$xrow['csalesno']?></div>
+		            <div class="Column" style="width: 121px; text-align: left"> <?=number_format($xrow['namount'],2);?></div>
+                </div>
+            <?php
+                    }
+                }
+            ?>          
+        </div>  
+
+        <div id='nvatable'><?=(floatval($xnvatable)>0) ? number_format($xnvatable,2) : " ";?></div>
+        <div id='nexmpt'><?=(floatval($xnexempt)>0) ? number_format($xnexempt,2) : " ";?></div>
+        <div id='nzero'><?=(floatval($xnzero)>0) ? number_format($xnzero,2) : " ";?></div>
+        <div id='nvat'><?=(floatval($xnvat)>0) ? number_format($xnvat,2) : " ";?></div>
+
+        <?php
+            //+ floatval($xnexempt) + floatval($xnzero)
+            $xvatinc = floatval($xnvatable) + floatval($xnvat);
+            $xnetvatz = floatval($xvatinc) - floatval($xnvat);
+
+            $xdiscount = 0;
+
+            $xnmtdue = floatval($xnetvatz) - floatval($xdiscount);
+            $xntotue = floatval($xnmtdue) + floatval($xnvat);
+
+            if($xnvatable > 0) {
+        ?>
+        <div id='nvatinc'><?=number_format($xvatinc,2);?></div> 
+        <div id='nlessvatlbl'><?=(floatval($xnewts)>0) ? "/ EWT" : " ";?></div>
+        <div id='nlessvat'><?=(floatval($xnewts)>0) ? number_format($xnewts,2) : " ";?></div>
+        <div id='nnetvat'><?=number_format($xnetvatz,2);?></div>
+        <div id='ndiscount'><?=(floatval($xdiscount)>0) ? number_format($xdiscount,2) : " ";?></div>
+        <div id='namtdue'><?=number_format($xnmtdue,2);?></div>
+        <div id='naddvat'><?=(floatval($xnvat)>0) ? number_format($xnvat,2) : " ";?></div>
+        <div id='ntotdue'><?=number_format($xntotue,2);?></div>
+        <?php
+            }
+        ?>
+        <div id='ngrossss' ><?=number_format($data['napplied'],2)?></div>
+
+        <?php 
+            if($data['cpaymethod']=="cash"){
+                echo " <div id='nformcash' >/</div>";
+            }else if($data['cpaymethod']=="cheque"){
+                echo " <div id='nformcheck' >/</div>";
+            }
+        ?>
+        <div id='bank'><?=$data['cbank']?></div>
+
+        <div id='bank'><?=$data['cbank']?></div>
+
+        <div id='bank'><?=$data['cbank']?></div>
+        <div id='chkno'><?=$data['ccheckno']?></div>
+        <div id='chkdate'><?=$data['chekddate']?></div>
+
+       
 </body>
 </html>
-
-<script type='text/javascript'>
-var totnetvat = 0, totlessvat = 0, totvatable = 0, totvatxmpt= 0, gross=0;
-var vatcode = '', vatgross ='', printVATGross = '', printVEGross='', printZRGross='';
-   var netofvat = 0, ndue=0;
-    $.ajax({
-        url: 'th_transaction.php',
-        data: {
-            tranno: '<?= $tranno ?>'
-        },
-        async: false,
-        dataType: 'json',
-        success: function(res){
-            if(res.valid){
-                var house = (res?.data?.chouseno ? res.data.chouseno : '')
-                var state = (res?.data?.cstate ? res.data.cstate : '')
-                var city = (res?.data?.ccity ? res.data.ccity : '')
-                var address = house + ' ' + state + ' ' + city;
-
-                $('#date').text(datenow(new Date()))
-                $('#receive_by').text(res.data.cname)
-                $('#receive_address').text(address)
-                $('#businessstyle').text(res.data.cname)
-                $('#receive_tin').text(res.data.ctin)
-                $('#sumInWords').text(number_to_text(res.data.namount))
-                $('#sumInText').text(toNumber(res.data.namount))
-
-                res['data2'].map((item, key) => {
-                    console.log(item)
-                        totvatable += parseFloat(item.napplied);
-                        totlessvat += parseFloat(item.nnet);
-                        totnetvat += parseFloat(item.nvat);
-                        ndue += parseFloat(item.ndue);
-
-                        var printgross =0;
-                        gross += parseFloat(item.napplied);
-                        if(item.ctaxcode === 'VT' || item.ctaxcode === 'NV'){
-                            printgross = parseFloat(item.napplied)
-                            if(parseFloat(totvatxmpt) != 0){
-                                printVEGross = parseFloat(totvatxmpt)
-                            }
-
-                            totnetvat = parseFloat(totnetvat);
-                            totlessvat = parseFloat(totlessvat);
-                            totvatable = parseFloat(totvatable);
-                            ndue = parseFloat(ndue);
-                        } else if(item.ctaxcode === 'VE') {
-                            printVEGross = parseFloat(item.napplied);
-                                
-                            totnetvat = "";
-                            totlessvat = "";
-                            totvatable = "";
-                            ndue ="";
-                        } else if(item.ctaxcode === 'ZR'){
-                            printZRGross = parseFloat(item.napplied);
-                            totnetvat = "";
-                            totlessvat = "";
-                            totvatable = "";
-                            ndue ="";
-                        }
-
-
-                        $('<tr>').append(
-                            $('<td>').text(item.csalesno),
-                            $('<td>').text(toNumber(item.nnet))
-                        ).appendTo('#list > tbody')
-                })
-
-                $('<tr>').append(
-                    $("<td>").html("&nbsp;"),
-                    $("<td>").html(
-                        "<div>"+(totvatable !== ""  ? toNumber(totvatable) : "")+"</div>" +
-                        "<div>" + (totlessvat != "" ? toNumber(totlessvat): '') + "</div>" +
-                        "<div>" +(totnetvat !== "" ? toNumber(netofvat) : '') + "</div>" +
-                        "<div> &nbsp; </div>" +
-                        "<div>" + (totlessvat !== "" ? toNumber(totlessvat) : '') + "</div>" +
-                        "<div>" + (totnetvat !== "" ? toNumber(totnetvat) : '')+ "</div>" +
-                        "<div>" + (gross !== '' ? toNumber(gross) : '') + "</div>"
-                    ),
-                ).appendTo('#amounts')
-
-
-                $("<tr>").append(
-                    $("<td>").html("&nbsp;"),
-                    $("<td>").html(
-                        "<div>" + (totvatable !=="" ? toNumber(totvatable) : "") + "&nbsp;</div>" +
-                        "<div>" + (printVEGross !=="" ? toNumber(printVEGross) : "") + "&nbsp;</div>" +
-                        "<div>" + (printZRGross !=="" ? toNumber(printZRGross) : "") + "&nbsp;</div>" +
-                        "<div>" + (totnetvat !=="" ? "": "") + "&nbsp;</div>" 
-                    )
-                ).appendTo('#total')
-                
-                $('#totalamount').text(toNumber(totvatable))
-                $('#bank').text((res.data.cpaymethod === 'cheque' ? res.data.cbank : ''))
-                $('#chkno').text((res.data.cpaymethod === 'cheque' ? res.data.ccheckno : ''))
-                $('#chkdate').text((res.data.cpaymethod === 'cheque' ? res.data.ddate : ''))
-                
-                window.print();
-            }
-        },
-        error: function(res){
-            console.log(res)
-        }
-    })
-
-    function number_to_text (number){
-        const units = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
-        const teens = ["", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
-        const tens = ["", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
-        const thousands = ["", "thousand", "million", "billion", "trillion"]; // You can extend this array as needed
-        
-        // Function to convert a three-digit number to words
-        function convertThreeDigitNumberToWords(num) {
-            let result = "";
-            const hundredsDigit = Math.floor(num / 100);
-            const tensDigit = Math.floor((num % 100) / 10);
-            const onesDigit = num % 10;
-
-            if (hundredsDigit > 0) {
-            result += units[hundredsDigit] + " hundred ";
-            }
-
-            if (tensDigit === 1 && onesDigit > 0) {
-            result += teens[onesDigit] + " ";
-            } else {
-            if (tensDigit > 0) {
-                result += tens[tensDigit] + " ";
-            }
-
-            if (onesDigit > 0) {
-                result += units[onesDigit] + " ";
-            }
-            }
-
-            return result;
-        }
-
-        // Split the number into integer and decimal parts
-        var integerPart = Math.floor(number);
-        var decimalPart = Math.round((number - integerPart) * 100); // Convert decimal part to two digits
-        // Convert the integer part to words
-        let result = "";
-        let index = 0;
-        while (integerPart > 0) {
-            const threeDigitChunk = integerPart % 1000;
-            if (threeDigitChunk > 0) {
-            result = convertThreeDigitNumberToWords(threeDigitChunk) + thousands[index] + " " + result;
-            }
-            integerPart = Math.floor(integerPart / 1000)
-            index++;
-        }
-
-        // Convert the decimal part to words
-
-        let decimal ="";
-        let decval = decimalPart
-        let i = 0;
-        
-        while(decval > 0){
-            console.log(Math.floor(decimalPart % 100 / 100))
-            if (decimalPart > 0) {
-                decimal = convertThreeDigitNumberToWords(decimalPart) + tens[i] +  " " + decimal;
-            }
-            decval = Math.floor(decimalPart % 100 / 100)
-            i++;
-        }
-        if(decimalPart != 0){
-            result += "Pesos and " + decimal + "Cents Only.";
-            return result.trim();
-        }
-        result += "Pesos Only.";
-        return result.trim(); // Trim any leading/trailing whitespace
-    }
-
-    function toNumber(number){
-        return parseFloat(number).toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
-    }
-
-
-function datenow(d){
-    return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate()
-}
-</script>
