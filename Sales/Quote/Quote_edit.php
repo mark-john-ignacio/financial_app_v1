@@ -2,6 +2,9 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
+
+	header('Content-Type: text/html; charset=ISO-8859-1');
+	
 	$_SESSION['pageid'] = "Quote_edit.php";
 
 	include('../../Connection/connection_string.php');
