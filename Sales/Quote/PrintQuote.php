@@ -101,6 +101,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$cdelinfo = $row['cdelinfo'];
 		$cservinfo = $row['cservinfo'];
 
+		$cAccsBy = $row['cacceptedby'];
+
 		if($row['csalestype']=="Goods"){
 			$ctermsdesc = $row['termdesc']." upon delivery";
 		}else{
@@ -361,6 +363,9 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic, B.cnotes Fro
 								<tr>
 									<td align="center" colspan="2"><b>Signature and Acceptance:</b></td>
 								</tr>
+								<?php
+									if($cAccsBy=="" || $cAccsBy==null){
+								?>
 								<tr>
 									<td width="100px" align="right">Print Name:&nbsp;&nbsp;&nbsp;</td>
 									<td style="border-bottom: 1px solid #000; height: 30px">&nbsp;</td>
@@ -369,6 +374,16 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic, B.cnotes Fro
 									<td width="100px" align="right">Title:&nbsp;&nbsp;&nbsp;</td>
 									<td style="border-bottom: 1px solid #000; height: 30px">&nbsp;</td>
 								</tr>
+								<?php
+									}
+									else{
+								?>
+								<tr>
+									<td colspan="2"><?=$cAccsBy?></td>
+								</tr>
+								<?php
+									}
+								?>
 								<tr>
 									<td width="100px" align="right">Signature:&nbsp;&nbsp;&nbsp;</td>
 									<td style="border-bottom: 1px solid #000; height: 30px">&nbsp;</td>
