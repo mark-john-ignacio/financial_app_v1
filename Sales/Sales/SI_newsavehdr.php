@@ -68,7 +68,13 @@ else {
 	$nzeror = $_REQUEST['txtnZeroVAT']; // ZERO RATED SALES  nzerorated
 	$nvat = $_REQUEST['txtnVAT']; //VAT   nvat
 	$nGrossBefore = $_REQUEST['txtnGrossBef']; //TOTAL GROSS  BEFORE DISCOUNT ngrossbefore
-	$nLessEWT = $_REQUEST['txtnEWT']; //EWT
+
+	if(isset($_REQUEST['txtnEWT'])){
+		$nLessEWT = $_REQUEST['txtnEWT']; //EWT
+	}else{
+		$nLessEWT = ""; //EWT
+	}
+	
 	$nGrossDisc = str_replace(",","",$_REQUEST['txtnGrossDisc']);  //GROSS DISCOUNT  ngrossdisc
 	$nGross = $_REQUEST['txtnGross']; //TOTAL AMOUNT ngross
 	$BaseGross= $_REQUEST['txtnBaseGross']; //TOTAL AMOUNT * currency rate    nbasegross
