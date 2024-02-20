@@ -102,6 +102,8 @@
 			$cdelinfo = $row['cdelinfo'];
 			$cservinfo = $row['cservinfo'];
 
+			$cAccsBy = $row['cacceptedby'];
+
 			if($row['csalestype']=="Goods"){
 				$ctermsdesc = $row['termdesc']." upon delivery";
 			}else{
@@ -153,16 +155,24 @@
 
 						<tr>
 							<td align=\"center\" colspan=\"2\"><b>Signature and Acceptance:</b></td>
-						</tr>
-						<tr>
-							<td width=\"100px\" align=\"right\">Print Name:&nbsp;&nbsp;&nbsp;</td>
-							<td style=\"border-bottom: 1px solid #000; height: 30px\">&nbsp;</td>
-						</tr>
-						<tr>
-							<td width=\"100px\" align=\"right\">Title:&nbsp;&nbsp;&nbsp;</td>
-							<td style=\"border-bottom: 1px solid #000; height: 30px\">&nbsp;</td>
-						</tr>
-						<tr>
+						</tr>";
+
+						if($cAccsBy=="" || $cAccsBy==null){
+							$setfooter = $setfooter. "<tr>
+								<td width=\"100px\" align=\"right\">Print Name:&nbsp;&nbsp;&nbsp;</td>
+								<td style=\"border-bottom: 1px solid #000; height: 30px\">&nbsp;</td>
+							</tr>
+							<tr>
+								<td width=\"100px\" align=\"right\">Title:&nbsp;&nbsp;&nbsp;</td>
+								<td style=\"border-bottom: 1px solid #000; height: 30px\">&nbsp;</td>
+							</tr>";
+						}else{
+							$setfooter = $setfooter. "<tr>
+								<td colspan=\"2\" style=\"padding-left: 20px\">".nl2br($cAccsBy)."</td>
+							</tr>";
+						}
+
+						$setfooter = $setfooter. "<tr>
 							<td width=\"100px\" align=\"right\">Signature:&nbsp;&nbsp;&nbsp;</td>
 							<td style=\"border-bottom: 1px solid #000; height: 30px\">&nbsp;</td>
 						</tr>
