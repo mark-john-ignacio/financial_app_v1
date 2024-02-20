@@ -1,18 +1,19 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
+	if(!isset($_SESSION)){
+		session_start();
+	}
 
-header('Content-Type: text/html; charset=ISO-8859-1');
-include('../../vendor/autoload.php');
+	header('Content-Type: text/html; charset=ISO-8859-1');
 
-$mpdf = new \Mpdf\Mpdf();
-ob_start();
+	include('../../vendor/autoload.php');
 
-$mpdf->showImageErrors = true;
-}
+	$mpdf = new \Mpdf\Mpdf();
+	ob_start();
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
+	$mpdf->showImageErrors = true;
+
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
 
 	$company = $_SESSION['companyid'];
 
@@ -132,6 +133,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic, C.nrate From
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="utf-8">
 	<style>
 		body{
 			font-family: Verdana, sans-serif;

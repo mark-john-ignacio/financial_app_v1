@@ -1,16 +1,17 @@
 <?php
 	if(!isset($_SESSION)){
 		session_start();
-		header('Content-Type: text/html; charset=ISO-8859-1');
-		
-		include('../../vendor/autoload.php');
-
-		require("../../vendor/phpmailer/phpmailer/src/PHPMailer.php");
-		require("../../vendor/phpmailer/phpmailer/src/SMTP.php");
-
-		$mpdf = new \Mpdf\Mpdf();
-		ob_start();
 	}
+
+	header('Content-Type: text/html; charset=ISO-8859-1');
+		
+	include('../../vendor/autoload.php');
+
+	require("../../vendor/phpmailer/phpmailer/src/PHPMailer.php");
+	require("../../vendor/phpmailer/phpmailer/src/SMTP.php");
+
+	$mpdf = new \Mpdf\Mpdf();
+	ob_start();
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -166,6 +167,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="utf-8">
 	<style>
 		body{
 			font-family: Verdana, sans-serif;
