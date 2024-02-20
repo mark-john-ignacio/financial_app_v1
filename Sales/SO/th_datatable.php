@@ -5,7 +5,7 @@
 
 	include('../../Connection/connection_string.php');
 
-	$column = array('A.ctranno', 'A.cpono', 'D.cref', 'CONCAT(a.ccode,"-",COALESCE(B.ctradename, B.cname))', 'A.ngross', 'A.dcutdate', 'CASE WHEN A.lapproved=1 THEN CASE WHEN A.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN A.lcancelled=1 THEN "Cancelled" ELSE "" END');
+	$column = array('A.ctranno', 'A.cpono', 'D.cref', 'CONCAT(a.ccode,"-",B.cname)', 'A.ngross', 'A.dcutdate', 'CASE WHEN A.lapproved=1 THEN CASE WHEN A.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN A.lcancelled=1 THEN "Cancelled" ELSE "" END');
 
 	$query = "SELECT A.*, COALESCE(B.ctradename, B.cname) as cname, D.cref, B.nlimit FROM `so` A LEFT JOIN `customers` B ON A.`compcode` = B.`compcode` and A.`ccode` = B.`cempid` LEFT JOIN (Select x.ctranno, GROUP_CONCAT(DISTINCT x.creference) as cref from `so_t` x where x.compcode='".$_SESSION['companyid']."' group by x.ctranno) D on A.ctranno=D.ctranno where A.compcode='".$_SESSION['companyid']."' ";
 
