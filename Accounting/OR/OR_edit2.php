@@ -18,6 +18,40 @@ if(mysqli_num_rows($sql) == 0){
 
 $corno = $_REQUEST['txtctranno'];
 
+//get print links
+$print_or_def = "";
+$print_ar_def = "";
+$print_cr_def = "";
+
+$print_or_cus = "";
+$print_ar_cus = "";
+$print_cr_cus = "";
+$resprint = mysqli_query($con, "SELECT * FROM `nav_menu_prints` WHERE compcode='$company' and code in ('AR_PAYMENT_OR','AR_PAYMENT_CR','AR_PAYMENT_AR')");
+
+if(mysqli_num_rows($resprint) != 0){
+	while($row = mysqli_fetch_array($resprint, MYSQLI_ASSOC)){
+
+		if($row['code']=="AR_PAYMENT_OR" && $row['ldefault']==0){
+			$print_or_def = $row['filename'];
+		}
+		if($row['code']=="AR_PAYMENT_AR" && $row['ldefault']==0){
+			$print_ar_def = $row['filename'];
+		}
+		if($row['code']=="AR_PAYMENT_CR" && $row['ldefault']==0){
+			$print_cr_def = $row['filename'];
+		}
+
+		if($row['code']=="AR_PAYMENT_OR" && $row['ldefault']==1){
+			$print_or_cus = $row['filename'];
+		}
+		if($row['code']=="AR_PAYMENT_AR" && $row['ldefault']==1){
+			$print_ar_cus = $row['filename'];
+		}
+		if($row['code']=="AR_PAYMENT_CR" && $row['ldefault']==1){
+			$print_cr_cus = $row['filename'];
+		}
+	}
+}
 
 $gettaxcd = mysqli_query($con,"SELECT * FROM `taxcode` where compcode='$company' order By nidentity"); 
 if (mysqli_num_rows($gettaxcd)!=0) {
@@ -53,13 +87,13 @@ if (mysqli_num_rows($getewtcd)!=0) {
 	}
 
 
-$result = mysqli_query($con, "SELECT * FROM `parameters` WHERE compcode='$company' and ccode = 'PRINT_VERSION_RP'");
-if(mysqli_num_rows($result) != 0){
-  $verrow = mysqli_fetch_array($result, MYSQLI_ASSOC);
-  $version = $verrow['cvalue'];
-} else {
-  $version =''; 
-}
+	$result = mysqli_query($con, "SELECT * FROM `parameters` WHERE compcode='$company' and ccode = 'PRINT_VERSION_RP'");
+	if(mysqli_num_rows($result) != 0){
+	$verrow = mysqli_fetch_array($result, MYSQLI_ASSOC);
+	$version = $verrow['cvalue'];
+	} else {
+	$version =''; 
+	}
 ?>
 
 <!DOCTYPE html>
@@ -2699,25 +2733,25 @@ else{
 		switch(receipt){
 			case "OR":
 				if(<?= $version ?> != 0){
-					url = "OR_printv1.php?tranno="+tranno;
+					url = "<?=$print_or_cus?>?tranno="+tranno;
 				} else {
-					url = "OR_print.php?tranno="+tranno;
+					url = "<?=$print_or_def?>?tranno="+tranno;
 				}
 				
 				break;
 			case "CR": 
 				if(<?= $version ?> != 0){
-					url = "CR_printv1.php?tranno="+tranno;
+					url = "<?=$print_cr_cus?>?tranno="+tranno;
 				} else {
-					url = "CR_print.php?tranno="+tranno;
+					url = "<?=$print_cr_def?>?tranno="+tranno;
 				}
-				// url = "CR_print.php?tranno="+tranno;
+
 				break;
 			case "AR":
 				if(<?= $version ?> != 0){
-					url = "AR_printv1.php?tranno="+tranno;
+					url = "<?=$print_ar_cus?>?tranno="+tranno;
 				} else {
-					url = "AR_print.php?tranno="+tranno;
+					url = "<?=$print_ar_def?>?tranno="+tranno;
 				}
 				break;
 		};
