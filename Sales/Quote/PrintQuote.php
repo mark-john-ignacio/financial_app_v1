@@ -379,7 +379,7 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic, B.cnotes Fro
 									else{
 								?>
 								<tr>
-									<td colspan="2"><?=$cAccsBy?></td>
+									<td colspan="2" style="padding-left: 20px"><?=nl2br($cAccsBy)?></td>
 								</tr>
 								<?php
 									}
