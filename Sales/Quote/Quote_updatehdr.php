@@ -19,7 +19,10 @@ $company = $_SESSION['companyid'];
 	$ccontdesg = $_REQUEST['txtcontactdesig'];
 	$ccontdept = $_REQUEST['txtcontactdept'];
 	$ccontemai = $_REQUEST['txtcontactemail'];
-	$ccontsalt = $_REQUEST['txtcontactsalut'];
+
+	$ccontsalt = mysqli_real_escape_string($con, $_REQUEST['txtcontactsalut']);
+	
+
 	$cvattyp = $_REQUEST['selvattype'];
 	if(isset($_REQUEST['selterms'])){
 		$cterms = $_REQUEST['selterms'];
