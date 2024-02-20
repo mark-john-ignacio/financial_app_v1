@@ -1,10 +1,12 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
+	if(!isset($_SESSION)){
+		session_start();
+	}
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
+	header('Content-Type: text/html; charset=ISO-8859-1');
+
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
 
 	$company = $_SESSION['companyid'];
 

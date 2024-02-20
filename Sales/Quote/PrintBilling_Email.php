@@ -1,7 +1,8 @@
 <?php
 	if(!isset($_SESSION)){
 		session_start();
-
+		header('Content-Type: text/html; charset=ISO-8859-1');
+		
 		include('../../vendor/autoload.php');
 
 		require("../../vendor/phpmailer/phpmailer/src/PHPMailer.php");
