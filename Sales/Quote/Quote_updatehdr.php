@@ -20,7 +20,7 @@ $company = $_SESSION['companyid'];
 	$ccontdept = $_REQUEST['txtcontactdept'];
 	$ccontemai = $_REQUEST['txtcontactemail'];
 
-	$ccontsalt = mysqli_real_escape_string($con, $_REQUEST['txtcontactsalut']);
+	$ccontsalt = str_replace("'","\'",$_REQUEST['txtcontactsalut']);
 	
 
 	$cvattyp = $_REQUEST['selvattype'];
