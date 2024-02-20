@@ -4,7 +4,7 @@
 	}
 
 	header('Content-Type: text/html; charset=ISO-8859-1');
-	
+
 	$_SESSION['pageid'] = "Quote_edit.php";
 
 	include('../../Connection/connection_string.php');
@@ -162,6 +162,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$ccontdept = $row['ccontactdept'];
 		$ccontemai = $row['ccontactemail'];
 		$ccontsalt = $row['ccontactsalut'];
+
+		$cAccpBy = $row['cacceptedby'];
+
 		$cvattyp = $row['cvattype'];
 		$cterms = $row['cterms'];
 		$cdelinfo = $row['cdelinfo'];
@@ -353,18 +356,26 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						<div class="col-xs-4 nopadwleft">
 							<input type="text" id="txtcontactname" name="txtcontactname" class="required form-control input-sm" placeholder="Contact Person Name..." tabindex="1"  required="true" value="<?php echo $ccontname; ?>">
 						</div>
+
+						<div class="col-xs-2"><b>Department</b></div>
+						<div class="col-xs-3 nopadding">
+							<input type="text" id="txtcontactdept" name="txtcontactdept" class="form-control input-sm" placeholder="Department..." tabindex="1" value="<?php echo $ccontdept; ?>">
+						</div>
+
+						
+					</div> 
+
+					<div class='col-xs-12 nopadwtop'>
+						
+						<div class="col-xs-2"><b>Accepted By</b></div>
+						<div class="col-xs-5 nopadding">
+							<textarea id="txtaccpetby" name="txtaccpetby" class="required form-control input-sm" placeholder="Enter Description..."><?php echo $cAccpBy; ?></textarea>
+						</div>
 						<div class="col-xs-2"><b>Email Address</b></div>
 						<div class="col-xs-3 nopadding">
 							<input type="text" id="txtcontactemail" name="txtcontactemail" class="required form-control input-sm" placeholder="Email Address..." tabindex="1" required="true" value="<?php echo $ccontemai; ?>">
 						</div>
-					</div>
 
-					<div class='col-xs-12 nopadwtop'>
-						<div class="col-xs-2"><b>Department</b></div>
-						<div class="col-xs-5 nopadding">
-							<input type="text" id="txtcontactdept" name="txtcontactdept" class="form-control input-sm" placeholder="Department..." tabindex="1" value="<?php echo $ccontdept; ?>">
-						</div>
-						
 					</div>
 
 				</fieldset>

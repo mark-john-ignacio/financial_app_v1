@@ -247,18 +247,25 @@
 								<div class="col-xs-4 nopadwleft">
 									<input type="text" id="txtcontactname" name="txtcontactname" class="required form-control input-sm" placeholder="Contact Person Name..." tabindex="1"  required="true">
 								</div>
+								<div class="col-xs-2"><b>Department</b></div>
+								<div class="col-xs-3 nopadding">
+									<input type="text" id="txtcontactdept" name="txtcontactdept" class="form-control input-sm" placeholder="Department..." tabindex="1">
+								</div>
+
+								
+							</div>
+
+							<div class='col-xs-12 nopadwtop'>
+								
+								<div class="col-xs-2"><b>Accepted By</b></div>
+								<div class="col-xs-5 nopadding">
+									<textarea id="txtaccpetby" name="txtaccpetby" class="required form-control input-sm" placeholder="Enter Description..."></textarea>
+								</div>
+
 								<div class="col-xs-2"><b>Email Address</b></div>
 								<div class="col-xs-3 nopadding">
 									<input type="text" id="txtcontactemail" name="txtcontactemail" class="required form-control input-sm" placeholder="Email Address..." tabindex="1" required="true">
 								</div>
-							</div>
-
-							<div class='col-xs-12 nopadwtop'>
-								<div class="col-xs-2"><b>Department</b></div>
-								<div class="col-xs-5 nopadding">
-									<input type="text" id="txtcontactdept" name="txtcontactdept" class="form-control input-sm" placeholder="Department..." tabindex="1">
-								</div>
-								
 							</div>
 
 							

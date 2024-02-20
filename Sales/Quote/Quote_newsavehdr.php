@@ -47,7 +47,10 @@ else {
 	$ccontdesg = $_REQUEST['txtcontactdesig'];
 	$ccontdept = $_REQUEST['txtcontactdept'];
 	$ccontemai = $_REQUEST['txtcontactemail'];
-	$ccontsalt = $_REQUEST['txtcontactsalut'];
+	$ccontsalt = str_replace("'","\'",$_REQUEST['txtcontactsalut']); 
+
+	$cacceptby = $_REQUEST['txtaccpetby'];
+
 	$cvattyp = $_REQUEST['selvattype'];
 	if(isset($_REQUEST['selterms'])){
 		$cterms = $_REQUEST['selterms'];
@@ -73,7 +76,7 @@ else {
 	
 	//INSERT HEADER
 
-	if (!mysqli_query($con, "INSERT INTO quote(`compcode`, `ctranno`, `ccode`, `cdelcode`, `ddate`, `ccontactname`, `ccontactdesig`, `ccontactdept`, `ccontactemail`, `ccontactsalut`, `cvattype`, `cterms`, `cdelinfo`, `cservinfo`, `dcutdate`, `ngross`, `nbasegross`, `cremarks`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `cpreparedby`, `csalestype`, `quotetype`, `crecurrtype`, `dtrandate`) Values('$company', '$cSINo', '$cCustID', '$cCustIDel', NOW(), '$ccontname', '$ccontdesg', '$ccontdept', '$ccontemai', '$ccontsalt', '$cvattyp', '$cterms', '$cdelinfo', '$cservinfo', STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$cRemarks', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby','$cSITyp', '$cQOTyp', '$cRCTyp', STR_TO_DATE('$dQuoteDate', '%m/%d/%Y'))")) {
+	if (!mysqli_query($con, "INSERT INTO quote(`compcode`, `ctranno`, `ccode`, `cdelcode`, `ddate`, `ccontactname`, `ccontactdesig`, `ccontactdept`, `ccontactemail`, `ccontactsalut`, `cvattype`, `cterms`, `cdelinfo`, `cservinfo`, `dcutdate`, `ngross`, `nbasegross`, `cremarks`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `cpreparedby`, `csalestype`, `quotetype`, `crecurrtype`, `dtrandate`, `cacceptedby`) Values('$company', '$cSINo', '$cCustID', '$cCustIDel', NOW(), '$ccontname', '$ccontdesg', '$ccontdept', '$ccontemai', '$ccontsalt', '$cvattyp', '$cterms', '$cdelinfo', '$cservinfo', STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$cRemarks', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby','$cSITyp', '$cQOTyp', '$cRCTyp', STR_TO_DATE('$dQuoteDate', '%m/%d/%Y'), '$cacceptby')")) {
 		echo "False";
 	} 
 	else {
