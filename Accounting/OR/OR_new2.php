@@ -357,16 +357,16 @@
 								<tr>
 									<th scope="col" width="100px" nowrap>Invoice No</th>
 									<th scope="col" width="110px" class="text-center" nowrap>Date</th>
-									<th scope="col" width="150px" class="text-center" nowrap>Amount</th>
+									<th scope="col" width="150px" class="text-center" nowrap>SI Amount</th>
 									<th scope="col" width="150px" class="text-center" nowrap>DM</th>
 									<th scope="col" width="150px" class="text-center" nowrap>CM</th>
 									<th scope="col" width="150px" class="text-center" nowrap>Payments</th>
-									<!--<th scope="col" width="150px" class="text-center" nowrap>VAT Code</th>-->
+									<!--<th scope="col" width="150px" class="text-center" nowrap>VAT Code</th>
 									<th scope="col" width="150px" class="text-center" nowrap>Total VAT</th>
 									<th scope="col" width="150px" class="text-center" nowrap>Net Gross</th>
-									<!--<th scope="col" width="250px" class="text-center" nowrap>EWTCode</th>
-									<th scope="col" width="100px" class="text-center" nowrap>EWTAmt/Rate</th>-->                         
-									<th scope="col" width="100px" class="text-center" nowrap>Total EWT</th>
+									<th scope="col" width="250px" class="text-center" nowrap>EWTCode</th>
+									<th scope="col" width="100px" class="text-center" nowrap>EWTAmt/Rate</th>                         
+									<th scope="col" width="100px" class="text-center" nowrap>Total EWT</th>-->
 									<th scope="col" width="150px" class="text-center" nowrap>Total Due</th>
 									<th scope="col" width="150px" class="text-center" nowrap>Amt Applied</th>
 									<th scope="col" width="80px" nowrap>&nbsp;Credit Acct Code</th>
@@ -643,7 +643,7 @@
 
 	<!-- Bootstrap modal INVOICES -->
 	<div class="modal fade" id="myModal" role="dialog">
-		<div class="modal-dialog modal-lg">
+		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -662,8 +662,6 @@
 									<th>Invoice No</th>
 									<th>Invoice Series</th>
 									<th>Sales Date</th>
-									<th width="80px">EWT</th>
-									<th width="80px">VAT</th>
 									<th style='text-align:right'>Gross</th>
 								</tr>
 								</thead>
@@ -1173,7 +1171,7 @@
 						if(item.ccurrencycode!=$('#selbasecurr').val()){
 							chkbox = "";
 						}else{
-							chkbox = "<input type='checkbox' value='"+item.csalesno+"' name='chkSales[]' data-dm='"+item.cdm+"' data-cm='"+item.ccm+"' data-payment='"+item.npayment+"' data-vatcode='"+item.ctaxcode+"' data-vatrate='"+item.vatrate+"' data-vat='"+item.cvatamt+"' data-netvat='"+item.cnetamt+"' data-ewtcode='"+item.cewtcode+"' data-ewtrate='"+item.newtrate+"' data-amt='"+item.ngross+"' data-acctid='"+item.cacctno+"' data-acctdesc='"+item.ctitle+"' data-cutdate='"+item.dcutdate+"'>";
+							chkbox = "<input type='checkbox' value='"+item.csalesno+"' name='chkSales[]' data-dm='"+item.cdm+"' data-cm='"+item.ccm+"' data-payment='"+item.npayment+"' data-amt='"+item.ngross+"' data-acctid='"+item.cacctno+"' data-acctdesc='"+item.ctitle+"' data-cutdate='"+item.dcutdate+"'>";
 						}
 
 						$("<tr>").append(
@@ -1181,8 +1179,6 @@
 							$("<td>").text(item.csalesno),
 							$("<td>").text(item.csalesseries),
 							$("<td>").text(item.dcutdate),
-							$("<td>").text(item.cewtcode),
-							$("<td>").text(item.ctaxcode),
 							$("<td style='text-align:right'>").text(item.ngrossdisplay + " " + item.ccurrencycode),
 						).appendTo("#MyORTbl tbody");
 
@@ -1216,13 +1212,13 @@
 				var ndm = $(this).data("dm");
 				var ncm = $(this).data("cm");
 				var npayments = $(this).data("payment");
-				var nvat = $(this).data("vat");
-				var vatcode = $(this).data("vatcode"); 
-				var vatrate = $(this).data("vatrate");
-				var nnetvat = $(this).data("netvat");
-				var newtcode = $(this).data("ewtcode");
-				var newtrate = $(this).data("ewtrate");
-				var newtamt = 0; 
+				//var nvat = $(this).data("vat");
+				//var vatcode = $(this).data("vatcode"); 
+				//var vatrate = $(this).data("vatrate");
+				//var nnetvat = $(this).data("netvat");
+				//var newtcode = $(this).data("ewtcode");
+				//var newtrate = $(this).data("ewtrate");
+			//	var newtamt = 0; 
 
 				var acctcode = $(this).data("acctid");
 				var acctdesc = $(this).data("acctdesc");
@@ -1270,7 +1266,7 @@
 				var c1=z.insertCell(-1);
 				c1.align = "right";
 				c1.innerHTML = "<select class='form-control input-xs' name=\"txtnvatcode\" id=\"txtnvatcode"+lastRow+"\" readonly> " + taxoptions + " </select>";
-				*/
+				
 
 				var c1=z.insertCell(-1);
 				c1.align = "right";
@@ -1289,12 +1285,12 @@
 				if(newtcode!=="none" && newtcode!==""){
 					$ifrdonly = "readonly";
 					$ifrdonlyint = 1;
-				}
+				}*/
 
 				
 				//l.innerHTML = "<input type='text' class='ewtcode form-control input-xs' placeholder='EWT Code' name='txtnEWT"+lastRow+"' id='txtnEWT"+lastRow+"' autocomplete=\"off\" value='"+newtcode+"' "+$ifrdonly+"/>";
 
-				var xz = $("#hdnewtcodes").val();
+				/*var xz = $("#hdnewtcodes").val();
 				taxoptions = "";
 				$.each(jQuery.parseJSON(xz), function() { 
 
@@ -1346,8 +1342,11 @@
 						var ntotdue = (parseFloat(nnetvat) + parseFloat(nvat)) - parseFloat(ncm) - parseFloat(newtamt);
 					}else{
 						var ntotdue = parseFloat(ngross) - parseFloat(ncm) - parseFloat(npayments) - parseFloat(newtamt);
-					}
-												
+					}*/
+
+									
+				var ntotdue = parseFloat(ngross) + parseFloat(ndm) - parseFloat(ncm) - parseFloat(npayments);
+
 				var g=z.insertCell(-1);
 				g.align = "right";
 				g.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' name='txtDue' id='txtDue"+lastRow+"' value='"+ntotdue+"' readonly=\"true\" />";
@@ -1372,11 +1371,11 @@
 										
 				//var varnnet = item.nnet;
 				//var varngrs = item.ngross;	
-				$("#txtnEWT"+lastRow).select2();
-				$("#txtnEWT"+lastRow).on("change", function(){
-					computeDue(this);
-					computeGross();
-				});
+				//$("#txtnEWT"+lastRow).select2();
+			//	$("#txtnEWT"+lastRow).on("change", function(){
+				//	computeDue(this);
+			///		computeGross();
+			//	});
 
 				$("input.numeric").autoNumeric('init',{mDec:2});
 				$("input.numeric").on("click focus", function () {
@@ -1405,7 +1404,7 @@
 		
 	}
 
-	function computeDue(selewt){
+	/*function computeDue(selewt){
 
 		lastRow = selewt.attributes["id"].value;
 		lastRow = lastRow.replace("txtnEWT","");
@@ -1460,7 +1459,7 @@
 		$("#txtApplied"+lastRow).autoNumeric('destroy');
 		$("#txtApplied"+lastRow).autoNumeric('init',{mDec:2});
 
-	}
+	}*/
 
 	function ReIndexMyTable(tranno){
 		$("#MyTable > tbody > tr").each(function(index) {   
@@ -1485,40 +1484,40 @@
 			$(this).find('input[name="txtnpayments"]').attr("id","txtnpayments"+tx2);
 
 			//$(this).find('input[name="txtnvatcode"]').attr("name","txtnvatcode"+tx2);
-			$(this).find('input[name="txtnvatcode"]').attr("id","txtnvatcode"+tx2);
+			//$(this).find('input[name="txtnvatcode"]').attr("id","txtnvatcode"+tx2);
 
 			//$(this).find('input[type=hidden][name="txtnvatrate"]').attr("name","txtnvatrate"+tx2);					
-			$(this).find('input[type=hidden][name="txtnvatrate"]').attr("id","txtnvatrate"+tx2);
+			//$(this).find('input[type=hidden][name="txtnvatrate"]').attr("id","txtnvatrate"+tx2);
 
 			//$(this).find('input[type=hidden][name="txtnvatcodeorig"]').attr("name","txtnvatcodeorig" + tx2);
-			$(this).find('input[type=hidden][name="txtnvatcodeorig"]').attr("id","txtnvatcodeorig" + tx2);
+			//$(this).find('input[type=hidden][name="txtnvatcodeorig"]').attr("id","txtnvatcodeorig" + tx2);
 
 			//$(this).find('input[name="txtvatamt"]').attr("name","txtvatamt" + tx2);
-			$(this).find('input[name="txtvatamt"]').attr("id","txtvatamt" + tx2);
+			//$(this).find('input[name="txtvatamt"]').attr("id","txtvatamt" + tx2);
 
 			//$(this).find('input[name="txtvatamt"]').attr("name","txtvatamt" + tx2);
-			$(this).find('input[name="txtvatamt"]').attr("id","txtvatamt" + tx2);
+			//$(this).find('input[name="txtvatamt"]').attr("id","txtvatamt" + tx2);
 
 			//$(this).find('input[name="txtnetvat"]').attr("name","txtnetvat" + tx2);
-			$(this).find('input[name="txtnetvat"]').attr("id","txtnetvat" + tx2);
+			//$(this).find('input[name="txtnetvat"]').attr("id","txtnetvat" + tx2);
 
-			//$(this).find('select[name="txtnetvat"]').attr("name","txtnetvat" + tx2);
-			$(this).find('select[name="txtnetvat"]').attr("id","txtnetvat" + tx2);
+			///$(this).find('select[name="txtnetvat"]').attr("name","txtnetvat" + tx2);
+			//$(this).find('select[name="txtnetvat"]').attr("id","txtnetvat" + tx2);
 
 			//$(this).find('select[name="txtnEWT"]').attr("name","txtnEWT" + tx2);
-			$(this).find('select[name="txtnEWT[]"]').attr("id","txtnEWT" + tx2);
+			//$(this).find('select[name="txtnEWT[]"]').attr("id","txtnEWT" + tx2);
 
 			//$(this).find('input[type=hidden][name="hdnewtgiven"]').attr("name","hdnewtgiven" + tx2);
-			$(this).find('input[type=hidden][name="hdnewtgiven"]').attr("id","hdnewtgiven" + tx2);
+			//$(this).find('input[type=hidden][name="hdnewtgiven"]').attr("id","hdnewtgiven" + tx2);
 
 			//$(this).find('input[type=hidden][name="txtnEWTorig"]').attr("name","txtnEWTorig" + tx2);
-			$(this).find('input[type=hidden][name="txtnEWTorig"]').attr("id","txtnEWTorig" + tx2);
+			//$(this).find('input[type=hidden][name="txtnEWTorig"]').attr("id","txtnEWTorig" + tx2);
 
 			//$(this).find('input[type=hidden][name="txtnEWTRate"]').attr("name","txtnEWTRate" + tx2);
-			$(this).find('input[type=hidden][name="txtnEWTRate"]').attr("id","txtnEWTRate" + tx2);
+			//$(this).find('input[type=hidden][name="txtnEWTRate"]').attr("id","txtnEWTRate" + tx2);
 
 			//$(this).find('input[name="txtnEWTAmt"]').attr("name","txtnEWTAmt" + tx2);
-			$(this).find('input[name="txtnEWTAmt"]').attr("id","txtnEWTAmt" + tx2);
+			//$(this).find('input[name="txtnEWTAmt"]').attr("id","txtnEWTAmt" + tx2);
 
 			//$(this).find('input[name="txtDue"]').attr("name","txtDue" + tx2);
 			$(this).find('input[name="txtDue"]').attr("id","txtDue" + tx2);

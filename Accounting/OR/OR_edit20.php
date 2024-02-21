@@ -478,7 +478,60 @@ if (mysqli_num_rows($sqlchk)!=0) {
 												<div class="input-group"><input type='text' name='txtncredit' id='txtncredit<?=$cntr;?>' class="numeric form-control input-xs" value="<?=$rowbody['ncm'];?>" style="text-align:right" readonly><span class="input-group-btn"><button class="btn btn-primary btn-xs" name="btnaddcm" id="btnaddcm<?=$cntr;?>" type="button" onclick="addCM('CM','<?=$rowbody['csalesno'];?>','txtncredit<?=$cntr;?>')"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button></span></div>
 											</td>
 
-											<td align='right'><input type='text' class='numeric form-control input-xs text-right' name='txtnpayments' id='txtnpayments<?=$cntr;?>' value='<?=$rowbody['npayment'];?>' readonly="true" /></td>																
+											<td align='right'><input type='text' class='numeric form-control input-xs text-right' name='txtnpayments' id='txtnpayments<?=$cntr;?>' value='<?=$rowbody['npayment'];?>' readonly="true" /></td>
+
+											<td align='right'><input type='text' class='form-control input-xs text-right' name="txtnvatcode" id="txtnvatcode<?=$cntr;?>" readonly value='<?=$rowbody['ctaxcode'];?>' readonly /> <input type='hidden' name="txtnvatrate" id="txtnvatrate<?=$cntr;?>" value='<?=$rowbody['ntaxrate'];?>' /> <input type='hidden' name="txtnvatcodeorig" id="txtnvatcodeorig<?=$cntr;?>" value='<?=$rowbody['ctaxcodeorig'];?>' /></td>
+
+											<td align='right'><input type='text' class='numeric form-control input-xs text-right' name='txtvatamt' id='txtvatamt<?=$cntr;?>' value='<?=$rowbody['nvat'];?>' readonly="true" /></td>
+
+											<td align='right'><input type='text' class='numeric form-control input-xs text-right' name='txtnetvat' id='txtnetvat<?=$cntr;?>' value='<?=$rowbody['nnet'];?>' readonly="true" /></td>
+
+
+											<?php
+											$xoptz = "";
+											$isselctd = "";
+												foreach($arrewtlist as $rsx){
+													//print_r($rsx);
+													// echo "<br>";
+													if(in_array($rsx['ctaxcode'], explode(",",$rowbody['cewtcode']))){
+														$isselctd = "selected";
+													}else{
+														$isselctd = "";
+													}
+													
+													$xoptz = $xoptz . "<option value='".$rsx['ctaxcode']."' data-rate='".$rsx['nrate']."' data-base='".$rsx['cbase']."' ".$isselctd.">".$rsx['ctaxcode']. "(".$rsx['nrate']."%)" . "</option>";
+												}
+											?>
+                            
+                           				  	<td>
+												<select name='txtnEWT[]' id='txtnEWT<?=$cntr;?>' class='select2' multiple='multiple' style='width: 100%'><?=$xoptz?></select>
+
+												<!--<input type='text' class='form-control input-xs' placeholder='EWT Code' name='txtnEWT<?//=$cntr;?>' id='txtnEWT<?//=$cntr;?>' autocomplete="off" value="<?//=$rowbody['cewtcode'];?>" <?//=($rowbody['newtgiven']==1) ? "readonly" : ""?>/>--> <input type='hidden' name='hdnewtgiven<?=$cntr;?>' id='hdnewtgiven<?=$cntr;?>' value='<?=$rowbody['newtgiven'];?>' /> <input type='hidden' name='txtnEWTorig<?=$cntr;?>' id='txtnEWTorig<?=$cntr;?>' value='<?=$rowbody['cewtcodeorig'];?>' /> <input type='hidden' placeholder='EWT Rate' name='txtnEWTRate' value="<?=$rowbody['newtrate'];?>" id='txtnEWTRate<?=$cntr;?>' />
+											</td>
+
+											<?php
+												$ewtdesc = "";
+												$rsewtrates = array();
+
+												if($rowbody['cewtcode']!="" && $rowbody['cewtcode']!="none"){
+													$ewtcodes = explode(",",$rowbody['newtrate']);																	
+													foreach($ewtcodes as $rsewt){
+														if($rsewt!="0" && $rsewt!=""){
+															$rsewtrates[] = $rsewt . "% - ". number_format(floatval($rowbody['nnet']) * (floatval($rsewt)/100),2);
+														}
+													}
+									
+													$ewtdesc = implode(";",$rsewtrates);
+												}else{
+													$ewtdesc = "-";
+												}
+									
+											?>
+
+											<td><div id='txtnEWTPer<?=$cntr;?>' class='text-right'> <?=str_replace(";","<br>",$ewtdesc);?> </div></td>
+
+											<td><input type='text' class='numeric form-control input-xs text-right' placeholder='EWT Amt' name='txtnEWTAmt'  value="<?=$rowbody['newtamt'];?>" id='txtnEWTAmt<?=$cntr;?>' readonly="true" /></td>
+														
 							
 											<td align='right'><input type='text' name='txtDue' id='txtDue<?=$cntr;?>' value='<?=$rowbody['ndue'];?>' class='numericchkamt form-control input-xs text-right' readonly="true" /></div></td>
 											
@@ -500,11 +553,11 @@ if (mysqli_num_rows($sqlchk)!=0) {
 																	
 											//var varnnet = item.nnet;
 											//var varngrs = item.ngross;	
-											//$("#txtnEWT<?=$cntr;?>").select2();
-											//$("#txtnEWT<?=$cntr;?>").on("change", function(){
-											//	computeDue(this);
-											//	computeGross();
-											//});
+											$("#txtnEWT<?=$cntr;?>").select2();
+											$("#txtnEWT<?=$cntr;?>").on("change", function(){
+												computeDue(this);
+												computeGross();
+											});
 
 											$("#txtcSalesAcctTitle<?=$cntr;?>").on("click focus", function(event) {
 												$(this).select();
@@ -671,6 +724,8 @@ if (mysqli_num_rows($sqlchk)!=0) {
 					  <th>Invoice Series</th>
                       <th>Sales Date</th>
                       <th>Gross</th>
+                      <th>EWT</th>
+                      <th>VAT</th>
                       <th>&nbsp;</th>
                     </tr>
                     </thead>
@@ -1813,11 +1868,13 @@ else{
 					console.log(data);
 					$.each(data,function(index,item){
 						$("<tr>").append(
-							$("<td>").html("<input type='checkbox' value='"+item.csalesno+"' name='chkSales[]' data-cm='"+item.ccm+"' data-payment='"+item.npayment+"' data-amt='"+item.ngross+"' data-acctid='"+item.cacctno+"' data-acctdesc='"+item.ctitle+"' data-cutdate='"+item.dcutdate+"'>"),
+							$("<td>").html("<input type='checkbox' value='"+item.csalesno+"' name='chkSales[]' data-cm='"+item.ccm+"' data-payment='"+item.npayment+"' data-vatcode='"+item.ctaxcode+"' data-vat='"+item.cvatamt+"' data-vatrate='"+item.vatrate+"' data-netvat='"+item.cnetamt+"' data-ewtcode='"+item.cewtcode+"' data-ewtrate='"+item.newtrate+"' data-amt='"+item.ngross+"' data-acctid='"+item.cacctno+"' data-acctdesc='"+item.ctitle+"' data-cutdate='"+item.dcutdate+"'>"),
 							$("<td>").text(item.csalesno),
 							$("<td>").text(item.csalesseries),
 							$("<td>").text(item.dcutdate),
-							$("<td style='text-align:right'>").text(item.ngrossdisplay + " " + item.ccurrencycode)
+							$("<td>").text(item.ngross),
+							$("<td>").text(item.cewtcode),
+							$("<td>").text(item.ctaxcode)
 						).appendTo("#MyORTbl tbody");
 
 					});
@@ -1848,13 +1905,13 @@ else{
 			var ngross = $(this).data("amt");
 			var ncm = $(this).data("cm");
 			var npayments = $(this).data("payment");
-			//var nvat = $(this).data("vat");
-			//var vatcode = $(this).data("vatcode"); 
-			//var vatrate = $(this).data("vatrate");
-			//var nnetvat = $(this).data("netvat");
-			//var newtcode = $(this).data("ewtcode");
-			//var newtrate = $(this).data("ewtrate");
-			//var newtamt = 0; 
+			var nvat = $(this).data("vat");
+			var vatcode = $(this).data("vatcode"); 
+			var vatrate = $(this).data("vatrate");
+			var nnetvat = $(this).data("netvat");
+			var newtcode = $(this).data("ewtcode");
+			var newtrate = $(this).data("ewtrate");
+			var newtamt = 0; 
 
 			var acctcode = $(this).data("acctid");
 			var acctdesc = $(this).data("acctdesc");
@@ -1905,7 +1962,7 @@ else{
 			var c1=z.insertCell(-1);
 			c1.align = "right";
 			c1.innerHTML = "<select class='form-control input-xs' name=\"txtnvatcode\" id=\"txtnvatcode"+lastRow+"\" readonly> " + taxoptions + " </select>";
-			
+			*/
 
 			var c1=z.insertCell(-1);
 			c1.align = "right";
@@ -1922,13 +1979,13 @@ else{
 			$ifrdonly = "";
 			if(newtcode!=="none" && newtcode!==""){
 				$ifrdonly = "readonly";
-			}*/
+			}
 
 			/*var l=z.insertCell(-1);
 			l.innerHTML = "<input type='text' class='ewtcode form-control input-xs' placeholder='EWT Code' name='txtnEWT"+lastRow+"' id='txtnEWT"+lastRow+"' autocomplete=\"off\" value='"+newtcode+"' "+$ifrdonly+"/> <input type='hidden' name='txtnEWTorig"+lastRow+"' id='txtnEWTorig"+lastRow+"' value='"+newtcode+"' />";*/
 
 
-			/*$ifrdonly = "";
+			$ifrdonly = "";
 				$ifrdonlyint = 0;
 				if(newtcode!=="none" && newtcode!==""){
 					$ifrdonly = "readonly";
@@ -1981,7 +2038,7 @@ else{
 			l2.innerHTML = "<div id='txtnEWTPer"+lastRow+"' class='text-right'> "+ewtdesc.replace(";","<br>")+" </div>";
 										
 			var l3=z.insertCell(-1);
-			l3.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' placeholder='EWT Amt' name='txtnEWTAmt'  value=\""+newtamt+"\" id='txtnEWTAmt"+lastRow+"' readonly=\"true\" />";*/
+			l3.innerHTML = "<input type='text' class='numeric form-control input-xs text-right' placeholder='EWT Amt' name='txtnEWTAmt'  value=\""+newtamt+"\" id='txtnEWTAmt"+lastRow+"' readonly=\"true\" />";
 										
 			var g=z.insertCell(-1);
 			g.align = "right";
@@ -2004,11 +2061,11 @@ else{
 				ReIndexMyTable(tranno);
 			});
 
-			//$("#txtnEWT"+lastRow).select2();
-			//$("#txtnEWT"+lastRow).on("change", function(){
-			//	computeDue(this);
-			//	computeGross();
-			//});
+			$("#txtnEWT"+lastRow).select2();
+			$("#txtnEWT"+lastRow).on("change", function(){
+				computeDue(this);
+				computeGross();
+			});
 												
 			$("input.numeric").autoNumeric('init',{mDec:2});
 			$("input.numeric").on("click focus", function () {
@@ -2036,7 +2093,7 @@ else{
 	
 	}
 
-	/*function computeDue(selewt){
+	function computeDue(selewt){
 
 		lastRow = selewt.attributes["id"].value;
 		lastRow = lastRow.replace("txtnEWT","");
@@ -2091,7 +2148,7 @@ else{
 		$("#txtApplied"+lastRow).autoNumeric('destroy');
 		$("#txtApplied"+lastRow).autoNumeric('init',{mDec:2});
 
-	}*/
+	}
 
 	function ReIndexMyTable(tranno){
 		$("#MyTable > tbody > tr").each(function(index) {   
@@ -2116,40 +2173,40 @@ else{
 			$(this).find('input[name="txtnpayments"]').attr("id","txtnpayments"+tx2);
 
 			//$(this).find('input[name="txtnvatcode"]').attr("name","txtnvatcode"+tx2);
-			//$(this).find('input[name="txtnvatcode"]').attr("id","txtnvatcode"+tx2);
+			$(this).find('input[name="txtnvatcode"]').attr("id","txtnvatcode"+tx2);
 
 			//$(this).find('input[type=hidden][name="txtnvatrate"]').attr("name","txtnvatrate"+tx2);					
-			//$(this).find('input[type=hidden][name="txtnvatrate"]').attr("id","txtnvatrate"+tx2);
+			$(this).find('input[type=hidden][name="txtnvatrate"]').attr("id","txtnvatrate"+tx2);
 
 			//$(this).find('input[type=hidden][name="txtnvatcodeorig"]').attr("name","txtnvatcodeorig" + tx2);
-			//$(this).find('input[type=hidden][name="txtnvatcodeorig"]').attr("id","txtnvatcodeorig" + tx2);
+			$(this).find('input[type=hidden][name="txtnvatcodeorig"]').attr("id","txtnvatcodeorig" + tx2);
 
 			//$(this).find('input[name="txtvatamt"]').attr("name","txtvatamt" + tx2);
-			//$(this).find('input[name="txtvatamt"]').attr("id","txtvatamt" + tx2);
+			$(this).find('input[name="txtvatamt"]').attr("id","txtvatamt" + tx2);
 
 			//$(this).find('input[name="txtvatamt"]').attr("name","txtvatamt" + tx2);
-			//$(this).find('input[name="txtvatamt"]').attr("id","txtvatamt" + tx2);
+			$(this).find('input[name="txtvatamt"]').attr("id","txtvatamt" + tx2);
 
 			//$(this).find('input[name="txtnetvat"]').attr("name","txtnetvat" + tx2);
-			//$(this).find('input[name="txtnetvat"]').attr("id","txtnetvat" + tx2);
+			$(this).find('input[name="txtnetvat"]').attr("id","txtnetvat" + tx2);
 
 			//$(this).find('select[name="txtnetvat"]').attr("name","txtnetvat" + tx2);
-			//$(this).find('select[name="txtnetvat"]').attr("id","txtnetvat" + tx2);
+			$(this).find('select[name="txtnetvat"]').attr("id","txtnetvat" + tx2);
 
 			//$(this).find('select[name="txtnEWT"]').attr("name","txtnEWT" + tx2);
-			//$(this).find('select[name="txtnEWT[]"]').attr("id","txtnEWT" + tx2);
+			$(this).find('select[name="txtnEWT[]"]').attr("id","txtnEWT" + tx2);
 
 			//$(this).find('input[type=hidden][name="hdnewtgiven"]').attr("name","hdnewtgiven" + tx2);
-			//$(this).find('input[type=hidden][name="hdnewtgiven"]').attr("id","hdnewtgiven" + tx2);
+			$(this).find('input[type=hidden][name="hdnewtgiven"]').attr("id","hdnewtgiven" + tx2);
 
 			//$(this).find('input[type=hidden][name="txtnEWTorig"]').attr("name","txtnEWTorig" + tx2);
-			//$(this).find('input[type=hidden][name="txtnEWTorig"]').attr("id","txtnEWTorig" + tx2);
+			$(this).find('input[type=hidden][name="txtnEWTorig"]').attr("id","txtnEWTorig" + tx2);
 
 			//$(this).find('input[type=hidden][name="txtnEWTRate"]').attr("name","txtnEWTRate" + tx2);
-			//$(this).find('input[type=hidden][name="txtnEWTRate"]').attr("id","txtnEWTRate" + tx2);
+			$(this).find('input[type=hidden][name="txtnEWTRate"]').attr("id","txtnEWTRate" + tx2);
 
 			//$(this).find('input[name="txtnEWTAmt"]').attr("name","txtnEWTAmt" + tx2);
-			//$(this).find('input[name="txtnEWTAmt"]').attr("id","txtnEWTAmt" + tx2);
+			$(this).find('input[name="txtnEWTAmt"]').attr("id","txtnEWTAmt" + tx2);
 
 			//$(this).find('input[name="txtDue"]').attr("name","txtDue" + tx2);
 			$(this).find('input[name="txtDue"]').attr("id","txtDue" + tx2);
