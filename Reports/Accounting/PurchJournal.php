@@ -42,12 +42,15 @@
 <table width="100%" border="0" align="center">
   <tr>
     <th>Date</th>
-    <th>WRR No.</th>
-    <th colspan="2">Supplier</th>
-    <th>Account No.</th>
-    <th>Account Title</th>
-    <th>Debit</th>
-    <th>Credit</th>
+    <th>Suppplier TIN.</th>
+    <th colspan="2">Supplier's Name</th>
+    <th>Address</th>
+    <th>Description</th>
+    <th>Reference</th>
+    <th style="text-align: right">Amount</th>
+	<th style="text-align: right">Discount</th>
+	<th style="text-align: right">VAT Amount</th>
+	<th style="text-align: right">Net Purchases</th>
   </tr>
   
 <?php
@@ -149,9 +152,11 @@ $result=mysqli_query($con,$sql);
 ?>
 
     <tr class='rptGrand'>
-    	<td colspan="6" align="right"><b>G R A N D&nbsp;&nbsp;T O T A L:</b></td>
+    	<td colspan="7" align="right"><b>G R A N D&nbsp;&nbsp;T O T A L:</b></td>
         <td align="right"><b><?php echo $totDebit;?></b></td>
         <td align="right"><b><?php echo $totCredit;?></b></td>
+		<td align="right"><b><?php echo $totCredit;?></b></td>
+		<td align="right"><b><?php echo $totCredit;?></b></td>
     </tr>
 </table>
 

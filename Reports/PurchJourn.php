@@ -29,7 +29,7 @@ include('../include/access.php');
 <center><font size="+1"><b><u>Purchase Journal</u></b></font></center>
 <br>
 
-<form action="Purchases/PurchJournal.php" method="post" name="frmrep" id="frmrep" target="_blank">
+<form action="Accounting/PurchJournal.php" method="post" name="frmrep" id="frmrep" target="_blank">
 <table width="100%" border="0" cellpadding="2">
   <tr>
     <td rowspan="1" valign="top" width="50" style="padding:2px">
@@ -81,7 +81,7 @@ $(function(){
            })
 
            $('#btnsales').on('click', function(){
-            $('#frmrep').attr('action', 'Purchases/PurchJournal.php')
+            $('#frmrep').attr('action', 'Accounting/PurchJournal.php')
             $('#frmrep').submit();
            })
 	

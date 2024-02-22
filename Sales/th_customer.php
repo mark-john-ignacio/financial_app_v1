@@ -22,7 +22,7 @@ require_once "../Connection/connection_string.php";
 		}
 
 	  	$json['id'] = $row['cempid'];
-    	$json['value'] = utf8_encode($row['cname']);
+    	$json['value'] = $row['cname'];
 		$json['nlimit'] = $row['nlimit'];
 		$json['ncrlimit'] = 0;
 		$json['cver'] = $row['cpricever'];

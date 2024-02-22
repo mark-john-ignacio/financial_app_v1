@@ -5,9 +5,9 @@ if(!isset($_SESSION)){
 
 include('../../Connection/connection_string.php');
 
-$column = array('A.ctranno', 'A.cdrprintno', 'D.cref', 'CONCAT(a.ccode,"-",COALESCE(B.ctradename, B.cname))', 'A.dcutdate', 'CASE WHEN A.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN A.lcancelled=1 THEN "Cancelled" ELSE "" END');
+$column = array('A.ctranno', 'A.cdrprintno', 'D.cref', 'CONCAT(a.ccode,"-",B.cname)', 'A.dcutdate', 'CASE WHEN A.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN A.lcancelled=1 THEN "Cancelled" ELSE "" END');
 
-$query = "SELECT A.*, COALESCE(B.ctradename, B.cname) as cname, D.cref, B.nlimit FROM `dr` A LEFT JOIN `customers` B ON A.`compcode` = B.`compcode` and A.`cdelcode` = B.`cempid` LEFT JOIN (Select x.ctranno, GROUP_CONCAT(DISTINCT x.creference) as cref from `dr_t` x where x.compcode='".$_SESSION['companyid']."' group by x.ctranno) D on A.ctranno=D.ctranno where A.compcode='".$_SESSION['companyid']."' ";
+$query = "SELECT A.*, B.cname as cname, D.cref, B.nlimit FROM `dr` A LEFT JOIN `customers` B ON A.`compcode` = B.`compcode` and A.`cdelcode` = B.`cempid` LEFT JOIN (Select x.ctranno, GROUP_CONCAT(DISTINCT x.creference) as cref from `dr_t` x where x.compcode='".$_SESSION['companyid']."' group by x.ctranno) D on A.ctranno=D.ctranno where A.compcode='".$_SESSION['companyid']."' ";
 
 if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
 {

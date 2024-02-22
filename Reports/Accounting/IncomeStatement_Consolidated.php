@@ -10,6 +10,7 @@
 
 	$arrcomps = array();
 	$arrcompsname = array();
+	
 	$company = $_SESSION['companyid'];
 	$sql = "select compcode, compname From company";
 	$result=mysqli_query($con,$sql);
