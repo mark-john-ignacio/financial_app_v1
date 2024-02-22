@@ -73,7 +73,8 @@
 	//get last approvedby
 	$sql = "SELECT capprovedby, ccheckedby From purchase WHERE compcode='$company' ORDER BY ddate DESC LIMIT 1";
 	$result=mysqli_query($con,$sql);														
-	$clastapprvby = "";                                       							
+	$clastapprvby = "";   
+	$clastchkdby = "";                                    							
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 	{
 		$clastapprvby = $row['capprovedby']; 
