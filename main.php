@@ -399,17 +399,6 @@
                 				<i class="fgly flaticon-020-receipt"></i> Quotation
 							</a>
 						</li>
-
-						<?php
-							if($lallowNT==1){
-						?>
-
-						<li class="side-item-category">Trade Transactions</li>
-
-						<?php
-							}
-						?> 
-
 						<li>
 							<?php
 								//check if SO_subdomain exist
@@ -464,34 +453,7 @@
                 				<i class="fgly flaticon-060-cash-register"></i> Point of Sale
 							</a>
 						</li>
-						-->
-						<?php
-							if($lallowNT==1){
-						?>
-						<li class="side-item-category">Non Trade Transactions</li>						
-						<li>
-							<a href="javascript:;" onClick="setpage('SalesNT/SO/SO.php?ix=');">
-                				<i class="fgly-sm flaticon-003-shopping-list"></i> SO Non Trade
-							</a>
-						</li>
-						<li>
-							<a href="javascript:;" onClick="setpage('SalesNT/DR/DR.php?ix=');">
-                				<i class="fgly-sm flaticon-035-invoice"></i> DR Non-Trade
-							</a>
-						</li>						
-						<li>
-							<a href="javascript:;" onClick="setpage('SalesNT/Sales/SI.php?ix=');">
-                				<i class="fgly-sm flaticon-065-bill"></i> SI Non-Trade
-							</a>
-						</li>
-						<li>
-							<a href="javascript:;" onClick="setpage('SalesNT/Return/SR.php?ix=');">
-                				<i class="icon-action-undo"></i> SR Non-Trade
-							</a>
-						</li>
-						<?php
-							}
-						?>                    
+						-->						                  
 					</ul>
 				</li>
 				<li>
@@ -789,13 +751,13 @@
 
 <script>
 	$(document).ready(function() { 
-	setpage("Dashboard/index.php")
+		setpage("Dashboard/dashboard.php")
 		Metronic.init(); // init metronic core components
 		Layout.init(); // init current layout
 		QuickSidebar.init(); // init quick sidebar
 			
 		loadxtrasession();
-			loaddashboard();   
+		loaddashboard();   
 	});
 		
 	function loadxtrasession(){
@@ -848,7 +810,7 @@
 		let pages = <?= json_encode($pages) ?>;
 
 		if (pages.includes("DashboardSales.php") || pages.includes("DashboardPurchase.php")) {
-			setpage("./Dashboard/index.php")
+			setpage("./Dashboard/dashboard.php")
 		} else {
 			setpage('MAIN/index.html')
 		}
