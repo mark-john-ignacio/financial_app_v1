@@ -120,7 +120,8 @@ require_once "../../Connection/connection_string.php";
 				$json['ctaxcode'] = $row['cvattype'];
 			}
 
-			 $json['creference'] = $row['creference'];
+			$json['ccurrencycode'] = $row['ccurrencycode'];
+			 $json['creference'] = $row['creference']; 
 			 $json2[] = $json;
 	
 		}
