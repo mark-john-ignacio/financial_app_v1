@@ -56,7 +56,7 @@
         </td>
         <td width="150" style="padding-left:10px"><b>Report Type: </b></td>
         <td style="padding:2px">        
-          <div class="col-xs-8 nopadwleft">
+          <div class="col-xs-8 nopadding">
             <select id="selrptnme" name="selrptnme" class="form-control input-sm selectpicker"  tabindex="4">
               <option value="ARMonitoring">Billing/Invoice</option>      
               <option value="QuoteMonitoring">Quotation/Billing</option>           
@@ -72,7 +72,7 @@
         </td>
         <td width="150" style="padding-left:10px"><b>Transaction Type: </b></td>
         <td style="padding:2px">
-          <div class="col-xs-8 nopadwleft">
+          <div class="col-xs-8 nopadding">
             <select id="selrpt" name="selrpt" class="form-control input-sm selectpicker"  tabindex="4">
               <option value="">All Transactions</option>   
               <option value="1">All Posted Transactions</option>      
@@ -97,39 +97,15 @@
           <div id="dtelabel2" ><b>Invoice Date: </b></div>
         </td>
         <td style="padding:2px">
-          <div id="dterange">
-            <div class="col-xs-12 nopadding">
-              <div class="col-xs-3 nopadwleft">             
-                <input type='text' class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/d/Y"); ?>" />              
-              </div>
-              
-              <div class="col-xs-2 nopadding" style="vertical-align:bottom;" align="center">
-                <label style="padding:1px;">TO</label>
-              </div>
-              
-              <div class="col-xs-3 nopadding">              
-                <input type='text' class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>" />              
-              </div>           
-            </div>   
-          </div>
-
-          <div id="dtemonth" style="display:none">
-              <div class="col-xs-12 nopadding">
-                <div class="col-xs-3 nopadding">          
-                  <select id="selyr" name="selyr" class="form-control input-sm selectpicker"  tabindex="4">
-                    <?php
-                      $yrnow = date("Y");
-                      $yrstart = 2023;
-                      for($i=$yrnow; $i>=$yrstart ; $i--){
-                    ?>
-                      <option value="<?=$i?>"><?=$i?></option>     
-                    <?php
-                      }
-                    ?>
-                  </select>           
-                </div>
-              </div>
-          </div>
+          <div class="form-group">
+            <div class="col-xs-8 nopadding">
+            <div class="input-group input-large date-picker input-daterange">
+                <input type="text" class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/d/Y"); ?>">
+                <span class="input-group-addon">to </span>
+                <input type="text" class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>">
+            </div>
+            </div>	
+          </div> 
         </td>
       </tr>
     </table>

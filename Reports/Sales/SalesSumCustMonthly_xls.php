@@ -25,8 +25,10 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
 	$company = $_SESSION['companyid'];
 
-	$date1 = $_POST["date1"];
-	$date2 = $_POST["date2"];
+	//$date1 = $_POST["date1"];
+	//$date2 = $_POST["date2"];
+
+	$dateyr = $_POST["selmonth"];
 
 	$itmtype = $_POST["seltype"];
 	$custype = $_POST["selcustype"];
@@ -51,7 +53,8 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 		$qryposted = " and b.lapproved=".$postedtran."";
 	}
 
-	if($trantype=="Trade"){
+	//and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') 
+	if($trantype=="Trade"){ 
 
 		$sqlx = "select MONTH(b.dcutdate) as mdate, YEAR(b.dcutdate) as ydate, a.compcode, b.ccode, d.ctradename as cname, b.lapproved, d.ccustomertype as ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.nprice*a.nqty) as nprice
 		From sales_t a	
@@ -59,7 +62,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 		left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 		left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
-		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lvoid=0 and b.lcancelled=0
+		where a.compcode='$company' and YEAR(b.dcutdate) = '$dateyr' and b.lvoid=0 and b.lcancelled=0
 		".$qryitm.$qrycust.$qryposted."
 		Group By MONTH(b.dcutdate), YEAR(b.dcutdate), a.compcode, b.ccode, d.ctradename, b.lapproved, d.ccustomertype, e.cdesc
 		order by d.ccustomertype, b.ccode, YEAR(b.dcutdate), MONTH(b.dcutdate)";
@@ -72,7 +75,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 		left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 		left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
-		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lvoid=0 and b.lcancelled=0
+		where a.compcode='$company' and YEAR(b.dcutdate) = '$dateyr' and b.lvoid=0 and b.lcancelled=0
 		".$qryitm.$qrycust.$qryposted."
 		Group By MONTH(b.dcutdate), YEAR(b.dcutdate), a.compcode, b.ccode, d.ctradename, b.lapproved, d.ccustomertype, e.cdesc
 		order by d.ccustomertype, b.ccode, YEAR(b.dcutdate), MONTH(b.dcutdate)";
@@ -87,7 +90,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 			left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 			left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 			left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
-			where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lvoid=0 and b.lcancelled=0
+			where a.compcode='$company' and YEAR(b.dcutdate) = '$dateyr' and b.lvoid=0 and b.lcancelled=0
 			".$qryitm.$qrycust.$qryposted."
 			Group By MONTH(b.dcutdate), YEAR(b.dcutdate), a.compcode, b.ccode, d.ctradename, b.lapproved, d.ccustomertype, e.cdesc
 			UNION ALL
@@ -97,7 +100,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 			left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 			left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 			left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
-			where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lvoid=0 and b.lcancelled=0
+			where a.compcode='$company' and YEAR(b.dcutdate) = '$dateyr' and b.lvoid=0 and b.lcancelled=0
 			".$qryitm.$qrycust.$qryposted."
 			Group By MONTH(b.dcutdate), YEAR(b.dcutdate), a.compcode, b.ccode, d.ctradename, b.lapproved, d.ccustomertype, e.cdesc
 		) A 

@@ -1,25 +1,25 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "SalesSummary.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "SalesSummary.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
-$company = $_SESSION['companyid'];
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
+	$company = $_SESSION['companyid'];
 
-				$sql = "select * From company where compcode='$company'";
-				$result=mysqli_query($con,$sql);
-				
-					if (!mysqli_query($con, $sql)) {
-						printf("Errormessage: %s\n", mysqli_error($con));
-					} 
-					
-				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-				{
-					$compname =  $row['compname'];
-				}
+	$sql = "select * From company where compcode='$company'";
+	$result=mysqli_query($con,$sql);
+
+	if (!mysqli_query($con, $sql)) {
+		printf("Errormessage: %s\n", mysqli_error($con));
+	} 
+		
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
+		$compname =  $row['compname'];
+	}
 ?>
 
 <html>
@@ -41,8 +41,10 @@ $company = $_SESSION['companyid'];
 <br><br>
 
 <?php
-	$date1 = $_POST["date1"];
-	$date2 = $_POST["date2"];
+	//$date1 = $_POST["date1"];
+	//$date2 = $_POST["date2"];
+
+	$dateyr = $_POST["selmonth"];
 
 	$itmtype = $_POST["seltype"];
 	$custype = $_POST["selcustype"];
@@ -67,6 +69,7 @@ $company = $_SESSION['companyid'];
 		$qryposted = " and b.lapproved=".$postedtran."";
 	}
 
+	//and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') 
 	if($trantype=="Trade"){
 
 		$sqlx = "select MONTH(b.dcutdate) as mdate, YEAR(b.dcutdate) as ydate, a.compcode, b.ccode, d.ctradename as cname, d.ccustomertype as ctype, e.cdesc as typdesc, sum(a.nqty) as nqty, sum(A.namount) as nprice
@@ -75,7 +78,7 @@ $company = $_SESSION['companyid'];
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 		left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 		left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
-		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lvoid=0 and b.lcancelled=0
+		where a.compcode='$company' and YEAR(b.dcutdate) = '$dateyr' and b.lvoid=0 and b.lcancelled=0
 		".$qryitm.$qrycust.$qryposted."
 		Group By MONTH(b.dcutdate), YEAR(b.dcutdate), a.compcode, b.ccode, d.ctradename, d.ccustomertype, e.cdesc
 		order by d.ccustomertype, b.ccode, YEAR(b.dcutdate), MONTH(b.dcutdate)";
@@ -88,7 +91,7 @@ $company = $_SESSION['companyid'];
 		left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 		left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 		left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
-		where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lvoid=0 and b.lcancelled=0
+		where a.compcode='$company' and YEAR(b.dcutdate) = '$dateyr' and b.lvoid=0 and b.lcancelled=0
 		".$qryitm.$qrycust.$qryposted."
 		Group By MONTH(b.dcutdate), YEAR(b.dcutdate), a.compcode, b.ccode, d.ctradename, d.ccustomertype, e.cdesc
 		order by d.ccustomertype, b.ccode, YEAR(b.dcutdate), MONTH(b.dcutdate)";
@@ -103,7 +106,7 @@ $company = $_SESSION['companyid'];
 			left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 			left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 			left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
-			where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lvoid=0 and b.lcancelled=0
+			where a.compcode='$company' and YEAR(b.dcutdate) = '$dateyr' and b.lvoid=0 and b.lcancelled=0
 			".$qryitm.$qrycust.$qryposted."
 			Group By MONTH(b.dcutdate), YEAR(b.dcutdate), a.compcode, b.ccode, d.ctradename, d.ccustomertype, e.cdesc
 			UNION ALL
@@ -113,7 +116,7 @@ $company = $_SESSION['companyid'];
 			left join items c on a.citemno=c.cpartno and a.compcode=c.compcode
 			left join customers d on b.ccode=d.cempid and b.compcode=d.compcode
 			left join groupings e on d.ccustomertype=e.ccode and c.compcode=e.compcode and e.ctype='CUSTYP'
-			where a.compcode='$company' and b.dcutdate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y') and b.lvoid=0 and b.lcancelled=0
+			where a.compcode='$company' and YEAR(b.dcutdate) = '$dateyr' and b.lvoid=0 and b.lcancelled=0
 			".$qryitm.$qrycust.$qryposted."
 			Group By MONTH(b.dcutdate), YEAR(b.dcutdate), a.compcode, b.ccode, d.ctradename, d.ccustomertype, e.cdesc
 		) A 

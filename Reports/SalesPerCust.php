@@ -1,11 +1,13 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "SalesPerCust.php";
-include('../Connection/connection_string.php');
-include('../include/denied.php');
-include('../include/access.php');
+    if(!isset($_SESSION)){
+        session_start();
+    }
+    $_SESSION['pageid'] = "SalesPerCust.php";
+    include('../Connection/connection_string.php');
+    include('../include/denied.php');
+    include('../include/access.php');
+
+    $company = $_SESSION['companyid'];
 
 ?><html>
 <head>
@@ -62,9 +64,9 @@ include('../include/access.php');
             <div class="col-xs-8 nopadding">
                 <select id="seltype" name="seltype" class="form-control input-sm selectpicker"  tabindex="4">
                     <option value="">All Items</option>
-                            <?php
-                        $sql = "select * from groupings where ctype='ITEMTYP' order by cdesc";
-                        $result=mysqli_query($con,$sql);
+                        <?php
+                            $sql = "select * from groupings where compcode='$company' and ctype='ITEMTYP' order by cdesc";
+                            $result=mysqli_query($con,$sql);
                             if (!mysqli_query($con, $sql)) {
                                 printf("Errormessage: %s\n", mysqli_error($con));
                             }			
@@ -84,14 +86,8 @@ include('../include/access.php');
     <tr>
         <td style="padding-left:10px"><b>Transaction Type: </b></td>
         <td style="padding:2px">
-            <div class="col-xs-4 nopadding">
-                <select id="seltrantype" name="seltrantype" class="form-control input-sm selectpicker"  tabindex="4">
-                    <option value="">All Transactions</option>   
-                    <option value="Trade">Trade</option>      
-                    <option value="Non-Trade">Non-Trade</option>           
-                </select>               
-            </div>
-            <div class="col-xs-4 nopadwleft">
+            <div class="col-xs-8 nopadding">
+                <input type="hidden" name="seltrantype" id="seltrantype" value="">
                 <select id="sleposted" name="sleposted" class="form-control input-sm selectpicker"  tabindex="4">
                     <option value="">All Transactions</option>   
                     <option value="1">Posted</option>      
@@ -105,24 +101,15 @@ include('../include/access.php');
   <tr>
     <td style="padding-left:10px"><b>Date Range: </b></td>
     <td style="padding:2px">
-    <div class="col-xs-12 nopadding">
-        <div class="col-xs-3 nopadding">
-
-		<input type='text' class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/d/Y"); ?>" />
-
-		</div>
-        
-        <div class="col-xs-2 nopadding" style="vertical-align:bottom;" align="center">
-        	<label style="padding:1px;">TO</label>
+        <div class="form-group nopadding">
+            <div class="col-xs-8 nopadding">
+            <div class="input-group input-large date-picker input-daterange">
+                <input type="text" class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/d/Y"); ?>">
+                <span class="input-group-addon">to </span>
+                <input type="text" class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>">
+            </div>
+            </div>	
         </div>
- 
-         <div class="col-xs-3 nopadding">
-
-		<input type='text' class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>" />
-
-		</div>
-
-     </div>   
     </td>
   </tr>
 </table>

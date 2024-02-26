@@ -8,12 +8,14 @@
     include('../include/denied.php');
     include('../include/access.php');
 
+    $company = $_SESSION['companyid'];
+
 ?><html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Myx Financials</title>
 
-    link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
+    <link href="../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="../Bootstrap/css/bootstrap-datetimepicker.css">
 
@@ -47,6 +49,8 @@
                     </div>
                     <div class="col-xs-3 nopadwleft">
                         <input type="text" class="form-control" name="txtCustID" id="txtCustID" readonly>
+
+                        <input type="hidden" name="seltrantype" id="seltrantype" value="">
                     </div>
                     </div>
                 </td>
@@ -64,7 +68,7 @@
                         <select id="seltype" name="seltype" class="form-control input-sm selectpicker"  tabindex="4">
                             <option value="">All Items</option>
                             <?php
-                                $sql = "select * from groupings where ctype='ITEMTYP' order by cdesc";
+                                $sql = "select * from groupings where compcode='$company' and ctype='ITEMTYP' order by cdesc";
                                 $result=mysqli_query($con,$sql);
                                 if (!mysqli_query($con, $sql)) {
                                     printf("Errormessage: %s\n", mysqli_error($con));
@@ -89,7 +93,7 @@
                         <select id="seliclass" name="seliclass" class="form-control input-sm selectpicker"  tabindex="4">
                             <option value="">All Items</option>
                             <?php
-                                $sql = "select * from groupings where ctype='ITEMCLS' order by cdesc";
+                                $sql = "select * from groupings where compcode='$company' and ctype='ITEMCLS' order by cdesc";
                                 $result=mysqli_query($con,$sql);
                                 if (!mysqli_query($con, $sql)) {
                                     printf("Errormessage: %s\n", mysqli_error($con));
@@ -112,9 +116,9 @@
                 <td style="padding:2px">
                     <div class="col-xs-8 nopadding">
                         <select id="selcustype" name="selcustype" class="form-control input-sm selectpicker"  tabindex="4">
-                            <option value="">All Items</option>
+                            <option value="">All Customers</option>
                             <?php
-                                $sql = "select * from groupings where ctype='CUSTYP' order by cdesc";
+                                $sql = "select * from groupings where compcode='$company' and ctype='CUSTYP' order by cdesc";
                                 $result=mysqli_query($con,$sql);
                                 if (!mysqli_query($con, $sql)) {
                                     printf("Errormessage: %s\n", mysqli_error($con));
@@ -133,16 +137,16 @@
             </tr>
 
             <tr>
-                <td style="padding-left:10px"><b>Transaction Type: </b></td>
+                <td style="padding-left:10px"><b>Report Type: </b></td>
                 <td style="padding:2px">
-                    <div class="col-xs-4 nopadding">
-                        <select id="seltrantype" name="seltrantype" class="form-control input-sm selectpicker"  tabindex="4">
-                            <option value="">All Transactions</option>   
-                            <option value="Trade">Trade</option>      
-                            <option value="Non-Trade">Non-Trade</option>           
+                    <div class="col-xs-5 nopadding">
+                        <select id="selreporttyp" name="selreporttyp" class="form-control input-sm selectpicker"  tabindex="4">
+                            <option value="SOSumCust">Summary per Customer</option>      
+                            <option value="SOSumItem">Summary per Item</option>
+                            <option value="SOSumCustItem">Summary per Customer/Item</option>          
                         </select>               
                     </div>
-                    <div class="col-xs-4 nopadwleft">
+                    <div class="col-xs-3 nopadwleft">
                         <select id="sleposted" name="sleposted" class="form-control input-sm selectpicker"  tabindex="4">
                             <option value="">All Transactions</option>   
                             <option value="1">Posted</option>      
@@ -152,41 +156,20 @@
                     </div>
                 </td>
             </tr>
-
-            <tr>
-                <td style="padding-left:10px"><b>Report Type: </b></td>
-                <td style="padding:2px">
-                    <div class="col-xs-8 nopadding">
-                        <select id="selreporttyp" name="selreporttyp" class="form-control input-sm selectpicker"  tabindex="4">
-                            <option value="SOSumCust">Summary per Customer</option>      
-                            <option value="SOSumItem">Summary per Item</option>
-                            <option value="SOSumCustItem">Summary per Customer/Item</option>          
-                        </select>               
-                    </div>
-                </td>
-            </tr>
         
             <tr>
                 <td style="padding-left:10px"><b>Date Range: </b></td>
                 <td style="padding:2px">
-                <div class="col-xs-12 nopadding">
-                    <div class="col-xs-3 nopadding">
-
-                    <input type='text' class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/d/Y"); ?>" />
-
+                    <div class="form-group nopadding">
+                        <div class="col-xs-8 nopadding">
+                        <div class="input-group input-large date-picker input-daterange">
+                            <input type="text" class="datepick form-control input-sm" id="date1" name="date1" value="<?php echo date("m/d/Y"); ?>">
+                            <span class="input-group-addon">to </span>
+                            <input type="text" class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>">
+                        </div>
+                        </div>	
                     </div>
-                    
-                    <div class="col-xs-2 nopadding" style="vertical-align:bottom;" align="center">
-                        <label style="padding:1px;">TO</label>
-                    </div>
-            
-                    <div class="col-xs-3 nopadding">
-
-                    <input type='text' class="datepick form-control input-sm" id="date2" name="date2" value="<?php echo date("m/d/Y"); ?>" />
-
-                    </div>
-
-                </div>   
+ 
                 </td>
             </tr>
         </table>
