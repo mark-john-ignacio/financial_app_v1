@@ -61,12 +61,22 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <!DOCTYPE html>
 <html>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link rel="stylesheet" type="text/css" href="../../css/cssmed.css">
+
+    <style>
+      body{
+        font-family: 'Courier New', monospace !important;
+        font-weight: 900 !important;
+        font-size: 12px;
+      }
+    </style>
 
 <head>
 </head>
 
-<body style="padding-top:0.59in" onLoad="window.print()">
+<body style="padding-top:0.4in; margin-top: 0.5in;
+        margin-bottom: 0.5in;
+        margin-left: 0.5in;
+        margin-right: 0.5in;" onLoad="window.print()">
 
 <table width="100%" border="0" cellpadding="1" style="border-collapse:collapse;" id="tblMain">
   <tr>
