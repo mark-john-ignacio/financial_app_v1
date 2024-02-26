@@ -27,10 +27,6 @@
 		case 'CR':
 			$receipttype = "and A.csalestype = 'Goods'";
 			break;
-		case 'AR':
-			$tbl = "ntsales";
-			$tbl2 = "ntsales_t";
-			break;
 	}
 
 	//alldebitlist

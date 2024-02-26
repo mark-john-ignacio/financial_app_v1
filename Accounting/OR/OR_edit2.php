@@ -389,7 +389,6 @@ if (mysqli_num_rows($sqlchk)!=0) {
 										<select class='form-control input-sm' name="receipt" id="receipt" >
 											<option <?= ($receipt ==='OR') ? "selected" : '' ?> value="OR">Official Receipt</option>
 											<option <?= ($receipt === 'CR') ? "selected" : '' ?>  value="CR">Collection Receipt</option>
-											<option <?= ($receipt === 'AR') ? "selected" : ''  ?> value="AR">Acknowledgement Receipt</option>
 											<option <?= ($receipt === 'NA') ? "selected" : ''  ?> value="NA">N/A</option>
 										</select>
 									</div>
