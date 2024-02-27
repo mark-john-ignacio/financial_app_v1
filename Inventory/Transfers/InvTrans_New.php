@@ -177,10 +177,12 @@
 	
 		</fieldset>	
 
-		<div class="col-xs-12 nopadwtop2x">			
-			<input type="text" class="form-control input-lg" name="txtscan" id="txtscan" value="" placeholder="Search Item Name...">
+		<div class="row nopadding">
+			<div class="col-xs-12 nopadwtop2x">			
+				<input type="text" class="form-control input-md" name="txtscan" id="txtscan" value="" placeholder="Search Item Name...">
 
-			<input type="hidden" name="rowcnt" id="rowcnt" value="">
+				<input type="hidden" name="rowcnt" id="rowcnt" value="">
+			</div>
 		</div>
 
 		<div class="alt2" dir="ltr" style="
@@ -190,17 +192,18 @@
 						width: 100%;
 						height: 250px;
 						text-align: left;
-						overflow: auto">
+						overflow: auto; margin-top: 2px !important">
 
                 <table name='MyTbl' id='MyTbl' class="table table-scroll table-striped table-condensed">
                   <thead>
                     <tr>
-											<th width="50">&nbsp;</th>
-                      <th width="150">Item Code</th>
-                      <th>Item Description</th>
-                      <th width="70">Unit</th>
-                      <th width="100" class="text-center">Qty</th>
-                      <th width="50">&nbsp;</th>
+						<th width="50">&nbsp;</th>
+						<th width="150">Item Code</th>
+						<th>Item Description</th>
+						<th width="70">Unit</th>
+						<th width="100" class="text-center">Qty</th>
+						<th width="250" class="text-center">Remarks</th>
+						<th width="50">&nbsp;</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -414,6 +417,7 @@
 				$("<td>").html("<input type='hidden' value='"+itmdesc+"' name=\"txtitmdesc\" id=\"txtitmdesc"+sornum+"\">"+itmdesc),
 				$("<td>").html("<input type='hidden' value='"+itmunit+"' name=\"txtcunit\" id=\"txtcunit"+sornum+"\">"+itmunit),
 				$("<td>").html("<input type='text' class=\"numeric form-control input-xs text-center\" name=\"txtnqty\" id=\"txtnqty"+sornum+"\" value=\"0\">"),
+				$("<td>").html("<input type='text' class=\"form-control input-xs text-center\" name=\"txtcrems\" id=\"txtcrems"+sornum+"\" value=\"\">"),
 				$("<td align=\"center\">").html("<button type=\"button\" class=\"btn btn-danger btn-xs\" id=\"btnDel\" id=\"btnDel"+sornum+"\"><i class=\"fa fa-times\"></i></button>")
 			).appendTo("#MyTbl tbody");
 
@@ -438,7 +442,8 @@
 				$(this).find('input:hidden[name="txtitmcode"]').attr('id','txtitmcode'+$newval);
 				$(this).find('input:hidden[name="txtitmdesc"]').attr('id','txtitmdesc'+$newval);
 				$(this).find('input:hidden[name="txtcunit"]').attr('id','txtcunit'+$newval); 
-				$(this).find('input[name="txtnqty"]').attr('id','txtnqty'+$newval); 
+				$(this).find('input[name="txtnqty"]').attr('id','txtnqty'+$newval);  
+				$(this).find('input[name="txtcrems"]').attr('id','txtcrems'+$newval); 
 			});
 	}
 
@@ -477,7 +482,8 @@
 					$(this).find('input:hidden[name="txtitmcode"]').attr('name','txtitmcode'+$newval);
 					$(this).find('input:hidden[name="txtitmdesc"]').attr('name','txtitmdesc'+$newval);
 					$(this).find('input:hidden[name="txtcunit"]').attr('name','txtcunit'+$newval);
-					$(this).find('input[name="txtnqty"]').attr('name','txtnqty'+$newval); 
+					$(this).find('input[name="txtnqty"]').attr('name','txtnqty'+$newval);  
+					$(this).find('input[name="txtcrems"]').attr('name','txtcrems'+$newval);
 				});
 
 				$("#rowcnt").val(lastRow1);

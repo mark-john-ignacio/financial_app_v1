@@ -74,11 +74,12 @@
 		$citemno = filter_input(INPUT_POST, 'txtitmcode'.$i, FILTER_SANITIZE_STRING);
 		$citemunit = filter_input(INPUT_POST, 'txtcunit'.$i, FILTER_SANITIZE_STRING);
 		$citemqty = filter_input(INPUT_POST, 'txtnqty'.$i, FILTER_SANITIZE_STRING);
+		$citmremarks = filter_input(INPUT_POST, 'txtcrems'.$i, FILTER_SANITIZE_STRING);
 
 		$citemqty = str_replace(",","",$citemqty);
 
 		$cident = $MainTranNo."P".$cntr;
-		if (!mysqli_query($con,"INSERT INTO invtransfer_t(`compcode`, `ctranno`, `cidentity`, `nidentity`, `citemno`, `cunit`, `nqty1`, `nqty2`) values('$company', '$MainTranNo', '$cident','$cntr', '$citemno', '$citemunit', '$citemqty', '$citemqty')")){
+		if (!mysqli_query($con,"INSERT INTO invtransfer_t(`compcode`, `ctranno`, `cidentity`, `nidentity`, `citemno`, `cunit`, `nqty1`, `nqty2`, `cremarks`) values('$company', '$MainTranNo', '$cident','$cntr', '$citemno', '$citemunit', '$citemqty', '$citemqty', '$citmremarks')")){
 			//echo "Errormessage: %s\n", mysqli_error($con);
 			$witherrr++;
 		}

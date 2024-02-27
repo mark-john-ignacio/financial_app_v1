@@ -43,6 +43,13 @@
 		$arrtempsname[] = $row0;
 	}
 
+	$prntnme = array();
+	$sqltempname = mysqli_query($con,"select * from nav_menu_prints where compcode='$company'");
+	$rowdettempname= $sqltempname->fetch_all(MYSQLI_ASSOC);
+	foreach($rowdettempname as $row0){
+		$prntnme[$row0['code']] = $row0['filename'];
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -96,7 +103,7 @@
 		}
 	?>
 
-		<form id="frmCount" name="frmCount" method="post" action="<?="https://".$_SERVER['SERVER_NAME']?>/Inventory/Transfers/InvTrans_EditSave.php">
+		<form id="frmCount" name="frmCount" method="post" action="<?="http://".$_SERVER['SERVER_NAME']?>/Inventory/Transfers/InvTrans_EditSave.php">
 
 			<input type="hidden" name="hdnmyxfin" value="<?= $_SESSION['myxtoken'] ?? '' ?>">
 			<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
@@ -227,9 +234,9 @@
 					</div>
 					<div class="col-xs-2 nopadding">
 						<select class="form-control input-sm" name="selcntyp" id="selcntyp">			
-							<option value="request" <?=($seltype=="request") ? "selected" : ""?>>Request</option>		
-							<option value="transfer" <?=($seltype=="transfer") ? "selected" : ""?>>Transfer</option>		
-							<option value="fg_transfer" <?=($seltype=="fg_transfer") ? "selected" : ""?>>FG Transfer</option>				
+							<option value="request" <?=($seltype=="request") ? "selected" : ""?> data-prt="<?=$prntnme['INVTRANS_REQUEST']?>">Request</option>		
+							<option value="transfer" <?=($seltype=="transfer") ? "selected" : ""?> data-prt="<?=$prntnme['INVTRANS_ISSUANCE']?>">Transfer</option>		
+							<option value="fg_transfer" <?=($seltype=="fg_transfer") ? "selected" : ""?> data-prt="<?=$prntnme['INVTRANS_FGISS']?>">FG Transfer</option>				
 						</select>
 					</div>
 
@@ -238,7 +245,7 @@
 			</fieldset>	
 
 			<div class="col-xs-12 nopadwtop2x">			
-				<input type="text" class="form-control input-lg" name="txtscan" id="txtscan" value="" placeholder="Search Item Name...">
+				<input type="text" class="form-control input-md" name="txtscan" id="txtscan" value="" placeholder="Search Item Name...">
 
 				<input type="hidden" name="rowcnt" id="rowcnt" value="">
 			</div>
@@ -251,7 +258,7 @@
 						width: 100%;
 						height: 250px;
 						text-align: left;
-						overflow: auto">
+						overflow: auto; margin-top: 2px !important">
 
 									<table name='MyTbl' id='MyTbl' class="table table-scroll table-striped table-condensed">
 										<thead>
@@ -261,6 +268,7 @@
 												<th>Item Description</th>
 												<th width="70">Unit</th>
 												<th width="100" class="text-center">Qty</th>
+												<th width="250" class="text-center">Remarks</th>
 												<th width="50">&nbsp;</th>
 											</tr>
 										</thead>
@@ -280,6 +288,9 @@
 													<td><input type='hidden' value='<?=$row['cunit']?>' name="txtcunit" id="txtcunit<?=$cnt?>"><?=$row['cunit']?></td>
 													<td>
 														<input type='text' class="numeric form-control input-xs text-center" name="txtnqty" id="txtnqty<?=$cnt?>" value="<?=number_format($row['nqty1'],2)?>">
+													</td>
+													<td>
+														<input type='text' class="form-control input-xs text-center" name="txtcrems" id="txtcrems<?=$cnt?>" value="<?=$row['cremarks']?>">
 													</td>
 													<td align="center"><button class="btn btn-danger btn-xs" id="btnDel" id="btnDel<?=$cnt?>"><i class="fa fa-times"></i></button></td>
 												</tr>
@@ -322,6 +333,10 @@
 
 					<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="window.location='https://<?=$_SERVER['SERVER_NAME']?>/Inventory/Transfers/InvTrans_Edit.php?id=<?=$_REQUEST['id']?>'" id="btnUndo" name="btnUndo">
 						Undo Edit<br>(CTRL+Z)
+					</button>
+
+					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?=$_REQUEST['id']?>');" id="btnPrint" name="btnPrint">
+						Print<br>(CTRL+P)
 					</button>
 
 					<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
@@ -380,6 +395,20 @@
 				</div>
 		</div>
 
+		<!-- PRINT OUT MODAL-->
+			<div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
+				<div class="modal-dialog modal-lg">
+					<div class="modal-contnorad">   
+						<div class="modal-body" style="height: 12in !important">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
+					
+								<iframe id="myprintframe" name="myprintframe" scrolling="yes" style="width:100%; height: 11.5in; display:block; margin:0px; padding:0px; border:0px; overflow: scroll;"></iframe>    
+							
+							</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+		<!-- End Bootstrap modal -->
 </body>
 
 </html>
@@ -389,18 +418,24 @@
 	$("#txtscan").focus();
 
 	$(document).keydown(function(e) {	 
-	  if(e.keyCode == 83 && e.ctrlKey){//CTRL S
-			if($("#btnSave").is(":disabled")==false){
+		if(e.keyCode == 83 && e.ctrlKey){//CTRL S
+				if($("#btnSave").is(":disabled")==false){
+					e.preventDefault();
+					return chkform();
+				}
+		}
+		else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
+			if($("#btnPrint").is(":disabled")==false){
 				e.preventDefault();
-				return chkform();
+				printchk('<?=$_REQUEST['id']?>');
 			}
-	  }
-	  else if(e.keyCode == 27){//ESC
+		}
+		else if(e.keyCode == 27){//ESC
 			if($("#btnMain").is(":disabled")==false){
 				e.preventDefault();
 				window.location.href='Inv.php';
 			}
-	  }
+		}
 
 	});
 
@@ -504,6 +539,7 @@
 				$("<td>").html("<input type='hidden' value='"+itmdesc+"' name=\"txtitmdesc\" id=\"txtitmdesc"+sornum+"\">"+itmdesc),
 				$("<td>").html("<input type='hidden' value='"+itmunit+"' name=\"txtcunit\" id=\"txtcunit"+sornum+"\">"+itmunit),
 				$("<td>").html("<input type='text' class=\"numeric form-control input-xs text-center\" name=\"txtnqty\" id=\"txtnqty"+sornum+"\" value=\"0\">"),
+				$("<td>").html("<input type='text' class=\"form-control input-xs text-center\" name=\"txtcrems\" id=\"txtcrems"+sornum+"\" value=\"\">"),
 				$("<td align=\"center\">").html("<button class=\"btn btn-danger btn-xs\" id=\"btnDel\" id=\"btnDel"+sornum+"\"><i class=\"fa fa-times\"></i></button>")
 			).appendTo("#MyTbl tbody");
 
@@ -529,6 +565,7 @@
 				$(this).find('input:hidden[name="txtitmdesc"]').attr('id','txtitmdesc'+$newval);
 				$(this).find('input:hidden[name="txtcunit"]').attr('id','txtcunit'+$newval); 
 				$(this).find('input[name="txtnqty"]').attr('id','txtnqty'+$newval); 
+				$(this).find('input[name="txtcrems"]').attr('id','txtcrems'+$newval); 
 			});
 	}
 
@@ -559,6 +596,7 @@
 					$(this).find('input:hidden[name="txtitmdesc"]').attr('name','txtitmdesc'+$newval);
 					$(this).find('input:hidden[name="txtcunit"]').attr('name','txtcunit'+$newval);
 					$(this).find('input[name="txtnqty"]').attr('name','txtnqty'+$newval); 
+					$(this).find('input[name="txtcrems"]').attr('name','txtcrems'+$newval); 
 				});
 
 				$("#rowcnt").val(lastRow1);
@@ -572,12 +610,24 @@
 		}
 	}
 
+	function printchk(x){
+		if(document.getElementById("hdncancel").value==1){	
+			document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
+			document.getElementById("statmsgz").style.color = "#FF0000";
+		}
+		else{
+			var $prtname = $("#selcntyp option:selected").data("prt");
+			$("#myprintframe").attr("src",$prtname+"?id="+x);
+			$("#PrintModal").modal('show');
+		}
+	}
+
 	function disabled(){
 
 		$("#frmCount :input").attr("disabled", true);
 
 		$("#btnMain").attr("disabled", false);
-		//$("#btnPrint").attr("disabled", false);
+		$("#btnPrint").attr("disabled", false);
 		$("#btnNew").attr("disabled", false);
 		$("#btnEdit").attr("disabled", false); 
 
@@ -605,7 +655,7 @@
 			$("#seltempname").attr("disabled", true);
 
 				$("#btnMain").attr("disabled", true);
-				//$("#btnPrint").attr("disabled", true);
+				$("#btnPrint").attr("disabled", true);
 				$("#btnNew").attr("disabled", true);
 				$("#btnEdit").attr("disabled", true);
 						
