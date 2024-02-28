@@ -175,14 +175,16 @@
             font-family: 'Courier New', monospace !important;
 			font-weight: 900 !important;
             font-size: 12px;
+
 		}
 
         #date{
             position: absolute;
-            top: 100px;
-            right: 2px;
+            top: 90px;
+            right: 98px;
             width: 1.25in;
             float: right;
+            
             
 
         }
@@ -196,27 +198,27 @@
 
         #receive_by {
             position: absolute; 
-            top: 125px; 
-            left: 420px;
+            top: 115px; 
+            left: 324px;
         }
         #receive_address {
             position: absolute; 
-            top: 150px; 
-            left: 400px;
+            top: 140px; 
+            left: 304px;
             line-height: 12px;
         }
 
         #receive_tin {
             position: absolute; 
-            top: 170px; 
-            right: 10px;
+            top: 160px; 
+            right: 106px;
             float: right;
             width: 1.75in;
         }
         #businessstyle {
             position: absolute; 
-            top: 170px; 
-            left: 420px;
+            top: 160px; 
+            left: 324px;
             width: 1.5in;
             overflow: hidden;
             line-height: 12px;
@@ -224,9 +226,9 @@
 
         #sumInWords {
             position: absolute; 
-            top: 190px; 
+            top: 180px; 
             width: 550px;
-            left: 320px;
+            left: 224px;
             text-indent: 1.30in;
             letter-spacing: 1px;
             line-height: 2em;
@@ -240,124 +242,124 @@
 
         #sumInText {
             position: absolute; 
-            top: 220px; 
-            right: 10px;
+            top: 210px; 
+            right: 106px;
             float: right;
             width: 1.25in;
         } 
 
         #xcmemo {
             position: absolute; 
-            top: 243px; 
+            top: 233px; 
             float: right;
-            right: 20px;
+            right: 116px;
             width: 3in;
         }  
 
         #xcprepby {
             position: absolute; 
-            top: 290px; 
+            top: 280px; 
             float: right;
             text-align: right;
-            right: 40px;
+            right: 136px;
             width: 2in;
             font-size: 11px;
         } 
 
         #nvatable {
             position: absolute; 
-            top: 125px; 
-            left: 220px;
+            top: 115px; 
+            left: 124px;
             width: 1.25in;
         } 
         #nexmpt  {
             position: absolute; 
-            top: 138px; 
-            left: 220px;
+            top: 128px; 
+            left: 124px;
             width: 1.25in;
         } 
         #nzero  {
             position: absolute; 
-            top: 151px; 
-            left: 220px;
+            top: 141px; 
+            left: 124px;
             width: 1.25in;
         } 
         #nvat {
             position: absolute; 
-            top: 164px; 
-            left: 220px;
+            top: 154px; 
+            left: 124px;
             width: 1.25in;
         }           
 
         #nvatinc {
             position: absolute; 
-            top: 193px; 
-            left: 220px;
+            top: 183px; 
+            left: 124px;
             width: 1.25in;
         } 
 
         #nlessvatlbl {
             position: absolute; 
-            top: 206px; 
-            left: 140px;
+            top: 196px; 
+            left: 44px;
             width: 1.25in;
         }
 
         #nlessvat {
             position: absolute; 
-            top: 206px; 
-            left: 220px;
+            top: 196px; 
+            left: 124px;
             width: 1.25in;
         }
         #nnetvat {
             position: absolute; 
-            top: 219px; 
-            left: 220px;
+            top: 209px; 
+            left: 124px;
             width: 1.25in;
         }
         #ndiscount {
             position: absolute; 
-            top: 232px; 
-            left: 220px;
+            top: 222px; 
+            left: 124px;
             width: 1.25in;
         }
         #namtdue {
             position: absolute; 
-            top: 245px; 
-            left: 220px;
+            top: 235px; 
+            left: 124px;
             width: 1.25in;
         }
         #naddvat {
             position: absolute; 
-            top: 258px; 
-            left: 220px;
+            top: 248px; 
+            left: 124px;
             width: 1.25in;
         }
         #ntotdue {
             position: absolute; 
-            top: 271px; 
-            left: 220px;
+            top: 261px; 
+            left: 124px;
             width: 1.25in;
         }
 
         #ngrossss {
             position: absolute; 
-            top: 298px; 
-            left: 249px;
+            top: 288px; 
+            left: 153px;
             width: 1.25in;
         }
         
         #nformcash {
             position: absolute; 
-            top: 298px; 
-            left: 100px;
+            top: 288px; 
+            left: 4px;
             width: 1.25in;
         }
 
         #nformcheck {
             position: absolute; 
-            top: 298px; 
-            left: 168px;
+            top: 288px; 
+            left: 72px;
             width: 1.25in;
         }
          
@@ -366,7 +368,7 @@
             position: absolute;
             top: 60px !important;
             display: table;
-            left: 100px; /*Optional*/
+            left: 4px; /*Optional*/
             table-layout: fixed; /*Optional*/
             /*border: 1px solid #000; 
             color: blue*/
@@ -388,26 +390,27 @@
 
         #bank {
             position: absolute; 
-            top: 311px; 
-            left: 160px;
+            top: 301px; 
+            left: 64px;
             width: 1.25in;
         }
         #chkno {   
             position: absolute; 
-            top: 324px; 
-            left: 160px;
+            top: 314px; 
+            left: 64px;
             width: 1.25in;
         }
         #chkdate {
             position: absolute; 
-            top: 337px; 
-            left: 160px;
+            top: 327px; 
+            left: 64px;
             width: 1.25in;
         }
         
     </style>
 </head>
 <body id='body' onload="print();">
+
 
 
         <div id='date'><?=date_format(date_create($data['ddate']),"M d, Y")?></div>
@@ -490,6 +493,6 @@
         <div id='chkno'><?=$data['ccheckno']?></div>
         <div id='chkdate'><?=$data['chekddate']?></div>
 
-       
+  
 </body>
 </html>
