@@ -407,7 +407,7 @@
         
     </style>
 </head>
-<body id='body'>
+<body id='body' onload="print();">
 
 
         <div id='date'><?=date_format(date_create($data['ddate']),"M d, Y")?></div>
