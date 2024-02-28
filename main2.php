@@ -354,13 +354,13 @@
 
 <script>
 	$(document).ready(function() { 
-	setpage("Dashboard/index.php")
+	setpage("Dashboard/dasboard.php")
 		Metronic.init(); // init metronic core components
 		Layout.init(); // init current layout
 		QuickSidebar.init(); // init quick sidebar
 			
 		loadxtrasession();
-			loaddashboard();   
+		loaddashboard();   
 	});
 		
 	function loadxtrasession(){
@@ -413,7 +413,7 @@
 		let pages = <?= json_encode($pages) ?>;
 
 		if (pages.includes("DashboardSales.php") || pages.includes("DashboardPurchase.php")) {
-			setpage("./Dashboard/index.php")
+			setpage("./Dashboard/dashboard.php")
 		} else {
 			setpage('MAIN/index.html')
 		}

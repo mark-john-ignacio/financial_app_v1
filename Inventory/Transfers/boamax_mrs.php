@@ -67,7 +67,7 @@
 			<td width="20%" valign="top"> <b>Date Requested:</b> <br><br><br><?=date_format(date_create($hddatecnt), "F d, Y")?></td>
 			<td width="25%" valign="top"> <b>Requesting Department:</b> <br><br><br> <?=$arrallsec[$selwhfrom]?></td>
 			<td width="30%" valign="top"> <b>MRS Received By Date (<?=$arrallsec[$selwhto]?>):</b> </td>
-			<td width="25%" valign="top"> <b>MRS No.:</b> <?=$cno?></td>
+			<td width="25%" valign="top"> <b>MRS No.:</b> <?=$cno?><br><br><b>Model No.: </b><?=$hdremarks?><br></td>
 		</tr>			
 	</table>
 

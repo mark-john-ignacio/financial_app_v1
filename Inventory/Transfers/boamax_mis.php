@@ -68,7 +68,7 @@
 			<td width="15%" valign="top"> <b>Date:</b> <br><br><br><?=date_format(date_create($hddatecnt), "F d, Y")?></td>
 			<td width="20%" valign="top"> <b>Received By:</b> </td>
 			<td width="20%" valign="top"> <b>Encoded By:</b> </td>
-			<td width="25%" valign="top"> <b>MRS No.:</b> <?=$cno?></td>
+			<td width="25%" valign="top"> <b>MRS No.:</b> <?=$cno?><br><br><b>Model No.: </b><?=$hdremarks?><br></td>
 		</tr>			
 	</table>
 

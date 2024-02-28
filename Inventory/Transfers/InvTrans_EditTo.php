@@ -264,7 +264,7 @@
 							Back to Main<br>(ESC)
 						</button>
 
-						<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location='https://<?=$_SERVER['SERVER_NAME']?>/Inventory/Count/InvTrans_New.php'" id="btnNew" name="btnNew">
+						<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location='https://<?=$_SERVER['SERVER_NAME']?>/Inventory/Transfers/InvTrans_New.php'" id="btnNew" name="btnNew">
 							New<br>(F1)
 						</button>
 
