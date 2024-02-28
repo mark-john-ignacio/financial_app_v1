@@ -93,7 +93,7 @@
 				<td><?=$row['citemno']?></td>
 				<td><?=$row['citemdesc']?></td>
 				<td><?=$row['cnotes']?></td>
-				<td class="text-center"><?=number_format($row['nqty1'],2)." ".$row['cunit']?></td>
+				<td class="text-center"><?=number_format($row['nqty'.$_REQUEST['n']],2)." ".$row['cunit']?></td>
 				<td><?=$row['cremarks']?></td>
 			</tr>
 		<?php

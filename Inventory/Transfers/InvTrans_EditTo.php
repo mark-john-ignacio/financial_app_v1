@@ -20,6 +20,11 @@
 		$poststat = "False";
 	}
 
+	$printstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$EmpID' and pageid = 'InvTrans_print'");
+	if(mysqli_num_rows($sql) == 0){
+		$printstat = "False";
+	}
 
 	$arrseclist = array();
 	$arrallsec = array();
@@ -34,6 +39,13 @@
 		
 		$arrallsec[] = array('nid' => $row0['nid'], 'cdesc' => $row0['cdesc']);
 				
+	}
+
+	$prntnme = array();
+	$sqltempname = mysqli_query($con,"select * from nav_menu_prints where compcode='$company'");
+	$rowdettempname= $sqltempname->fetch_all(MYSQLI_ASSOC);
+	foreach($rowdettempname as $row0){
+		$prntnme[$row0['code']] = $row0['filename'];
 	}
 
 ?>
@@ -187,16 +199,21 @@
 					<div class="col-xs-2 nopadding">
 						<?php
 							$seltypx = "";
+							$selrprint = "";
 							if($seltype=="request"){
 								$seltypx = "Request";
+								$selrprint = $prntnme['INVTRANS_ISSUANCE'];
 							}elseif($seltype=="transfer"){
 								$seltypx = "Transfer";
+								$selrprint = $prntnme['INVTRANS_ISSUANCE'];
 							}elseif($seltype=="fg_transfer"){
 								$seltypx = "FG Transfer";
+								$selrprint = $prntnme['INVTRANS_ISSUANCE'];
 							}
 						?>	
 							<input type="hidden" id="selcntyp" value="<?=$selwhto ?>">
 							<input type="text" class="form-control input-sm" value="<?=$seltypx?>" readonly>	
+							<input type="hidden" id="selrprint" value="<?=$selrprint?>" readonly>	
 					</div>
 				</div>
 
@@ -254,12 +271,15 @@
 			<br>
 
 			<?php
-				if($poststat == "True"){
+				if($poststat == "True" || $printstat == "True"){
 			?>
 
 			<table width="100%" border="0" cellpadding="3">
 				<tr>
 					<td>
+						<?php
+							if($poststat == "True"){
+						?>
 						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Inv.php';" id="btnMain" name="btnMain">
 							Back to Main<br>(ESC)
 						</button>
@@ -267,6 +287,20 @@
 						<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location='https://<?=$_SERVER['SERVER_NAME']?>/Inventory/Transfers/InvTrans_New.php'" id="btnNew" name="btnNew">
 							New<br>(F1)
 						</button>
+
+						<?php
+						}
+						
+						if($printstat == "True"){
+						?>
+						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?=$_REQUEST['id']?>');" id="btnPrint" name="btnPrint">
+							Print<br>(CTRL+P)
+						</button>
+						<?php
+							}
+
+							if($poststat == "True"){
+						?>
 
 						<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="window.location='https://<?=$_SERVER['SERVER_NAME']?>/Inventory/Transfers/InvTrans_Edit.php?id=<?=$_REQUEST['id']?>'" id="btnUndo" name="btnUndo">
 							Undo Edit<br>(CTRL+Z)
@@ -277,6 +311,10 @@
 						</button>
 
 						<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">SAVE<br> (CTRL+S)</button>
+
+						<?php
+							}
+						?>
 					</td>
 				</tr>
 			</table>
@@ -328,6 +366,20 @@
 				</div>
 		</div>
 
+		<!-- PRINT OUT MODAL-->
+		<div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
+				<div class="modal-dialog modal-lg">
+					<div class="modal-contnorad">   
+						<div class="modal-body" style="height: 12in !important">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
+					
+								<iframe id="myprintframe" name="myprintframe" scrolling="yes" style="width:100%; height: 11.5in; display:block; margin:0px; padding:0px; border:0px; overflow: scroll;"></iframe>    
+							
+							</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+		<!-- End Bootstrap modal -->
 </body>
 
 </html>
@@ -341,6 +393,12 @@
 				return chkform();
 			}
 	  }
+	  else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
+			if($("#btnPrint").is(":disabled")==false){
+				e.preventDefault();
+				printchk('<?=$_REQUEST['id']?>');
+			}
+		}
 	  else if(e.keyCode == 27){//ESC
 			if($("#btnMain").is(":disabled")==false){
 				e.preventDefault();
@@ -478,12 +536,24 @@
 		}
 	}
 
+	function printchk(x){
+		if(document.getElementById("hdncancel").value==1){	
+			document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
+			document.getElementById("statmsgz").style.color = "#FF0000";
+		}
+		else{
+			var $prtname = $("#selrprint").val();
+			$("#myprintframe").attr("src",$prtname+"?id="+x+"&n=2");
+			$("#PrintModal").modal('show');
+		}
+	}
+
 	function disabled(){
 
 		$("#frmCount :input").attr("disabled", true);
 
 		$("#btnMain").attr("disabled", false);
-		//$("#btnPrint").attr("disabled", false);
+		$("#btnPrint").attr("disabled", false);
 		$("#btnNew").attr("disabled", false);
 		$("#btnEdit").attr("disabled", false); 
 
@@ -508,7 +578,7 @@
 			$("#frmCount :input").attr("disabled", false);
 			
 				$("#btnMain").attr("disabled", true);
-				//$("#btnPrint").attr("disabled", true);
+				$("#btnPrint").attr("disabled", true);
 				$("#btnNew").attr("disabled", true);
 				$("#btnEdit").attr("disabled", true);
 						

@@ -1251,6 +1251,9 @@ xmlhttp.send();
             <div class="col-xs-2 nopadding">
               <label><input type="checkbox" name="chkAcc[]" value="InvTrans_cancel" id="chkBox187" <?=(in_array("InvTrans_cancel",@$arrpgist)) ? "checked" : "";?>>&nbsp;Cancel</label>
             </div>
+            <div class="col-xs-2 nopadding">
+              <label><input type="checkbox" name="chkAcc[]" value="InvTrans_print" <?=(in_array("InvTrans_print",@$arrpgist)) ? "checked" : "";?>>&nbsp;Print</label>
+            </div>
           </div>
         </div>
       

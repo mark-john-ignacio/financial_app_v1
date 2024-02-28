@@ -14,10 +14,16 @@
 	$_SESSION['myxtoken'] = gen_token();
 
 
-	$poststat = "True";
+	$poststat = "True"; 
 	$sql = mysqli_query($con,"select * from users_access where userid = '$EmpID' and pageid = 'InvTrans_edit.php'");
 	if(mysqli_num_rows($sql) == 0){
 		$poststat = "False";
+	}
+
+	$printstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$EmpID' and pageid = 'InvTrans_print'");
+	if(mysqli_num_rows($sql) == 0){
+		$printstat = "False";
 	}
 
 
@@ -103,7 +109,7 @@
 		}
 	?>
 
-		<form id="frmCount" name="frmCount" method="post" action="<?="http://".$_SERVER['SERVER_NAME']?>/Inventory/Transfers/InvTrans_EditSave.php">
+		<form id="frmCount" name="frmCount" method="post" action="<?="https://".$_SERVER['SERVER_NAME']?>/Inventory/Transfers/InvTrans_EditSave.php">
 
 			<input type="hidden" name="hdnmyxfin" value="<?= $_SESSION['myxtoken'] ?? '' ?>">
 			<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
@@ -317,12 +323,15 @@
 			<br>
 
 			<?php
-				if($poststat == "True"){
+				if($poststat == "True" || $printstat == "True"){
 			?>
 
 			<table width="100%" border="0" cellpadding="3">
 				<tr>
 					<td>
+					<?php
+						if($poststat == "True"){
+					?>
 					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Inv.php';" id="btnMain" name="btnMain">
 						Back to Main<br>(ESC)
 					</button>
@@ -334,18 +343,29 @@
 					<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="window.location='https://<?=$_SERVER['SERVER_NAME']?>/Inventory/Transfers/InvTrans_Edit.php?id=<?=$_REQUEST['id']?>'" id="btnUndo" name="btnUndo">
 						Undo Edit<br>(CTRL+Z)
 					</button>
-
+					<?php
+						}
+						
+						if($printstat == "True"){
+					?>
 					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?=$_REQUEST['id']?>');" id="btnPrint" name="btnPrint">
 						Print<br>(CTRL+P)
 					</button>
+					<?php
+						}
 
+						if($poststat == "True"){
+					?>
 					<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
 						Edit<br>(CTRL+E)
 					</button>
 
-					<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">SAVE<br> (CTRL+S)</button></td>
-
-					</tr>
+					<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">SAVE<br> (CTRL+S)</button>
+					<?php
+						}
+					?>
+					</td>
+				</tr>
 			</table>
 
 			<?php
@@ -617,7 +637,7 @@
 		}
 		else{
 			var $prtname = $("#selcntyp option:selected").data("prt");
-			$("#myprintframe").attr("src",$prtname+"?id="+x);
+			$("#myprintframe").attr("src",$prtname+"?id="+x+"&n=1");
 			$("#PrintModal").modal('show');
 		}
 	}
