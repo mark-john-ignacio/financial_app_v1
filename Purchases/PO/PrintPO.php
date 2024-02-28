@@ -296,9 +296,9 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 															if($row['nlevel']==1){
 																echo "Checked By";
 															}elseif($row['nlevel']==2){
-																echo "Noted By";
-															}elseif($row['nlevel']==3){
 																echo "Approved By";
+															}elseif($row['nlevel']==3){
+																echo "Noted By";
 															}
 														?>
 												</div>
@@ -311,9 +311,9 @@ $sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t 
 															if($row['nlevel']==1){
 																echo "Checked By";
 															}elseif($row['nlevel']==2){
-																echo "Noted By";
-															}elseif($row['nlevel']==3){
 																echo "Approved By";
+															}elseif($row['nlevel']==3){
+																echo "Noted By";
 															}
 														?>
 													</div>
