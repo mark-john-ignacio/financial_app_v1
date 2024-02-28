@@ -215,13 +215,16 @@
             float: right;
             width: 1.75in;
         }
+
         #businessstyle {
             position: absolute; 
             top: 160px; 
-            left: 324px;
-            width: 1.5in;
+            left: 224px;
             overflow: hidden;
             line-height: 12px;
+            text-indent: 1.1in;
+            line-height: 1em;
+            width: 2.7in;
         }
 
         #sumInWords {
@@ -237,7 +240,7 @@
         }
         #hwo:second-line {
             width: 3in;
-            border: 1px solid #000;
+           /* border: 1px solid #000;*/
         }
 
         #sumInText {
@@ -409,14 +412,14 @@
         
     </style>
 </head>
-<body id='body' onload="print();">
+<body id='body'>
 
 
 
         <div id='date'><?=date_format(date_create($data['ddate']),"M d, Y")?></div>
         <div id='receive_by'><?=$data['cname']?></div>
         <div id='receive_address'><?=$data['chouseno']." ,".$data['ccity']." ,".$data['cstate']?></div>
-        <div id='businessstyle'><?=$data['ctradename']?></div>
+        <div id='businessstyle'><span id="trd"><?=$data['ctradename']?></span></div>
         <div id='receive_tin'><?=$data['ctin']?></div>
         <div id='sumInWords'><span id="hwo"><?=numberTowords($data['napplied'])?></span></div>
         <div id='sumInText' ><?=number_format($data['napplied'],2)?></div>

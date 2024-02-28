@@ -215,11 +215,13 @@
         }
         #businessstyle {
             position: absolute; 
-            top: 170px; 
-            left: 420px;
-            width: 1.5in;
+            top: 160px; 
+            left: 224px;
             overflow: hidden;
             line-height: 12px;
+            text-indent: 1.1in;
+            line-height: 1em;
+            width: 2.7in;
         }
 
         #sumInWords {
