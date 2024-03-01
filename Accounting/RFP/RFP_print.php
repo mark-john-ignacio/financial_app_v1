@@ -1,123 +1,122 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
+	if(!isset($_SESSION)){
+		session_start();
+	}
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
 
-function numberTowords($num)
-{
-	$ones = array(
-		0 => "",
-		1 => "One",
-		2 => "Two",
-		3 => "Three",
-		4 => "Four",
-		5 => "Five",
-		6 => "Six",
-		7 => "Seven",
-		8 => "Eight",
-		9 => "Nine",
-		10 => "Ten",
-		11 => "Eleven",
-		12 => "Twelve",
-		13 => "Thirteen",
-		14 => "Fourteen",
-		15 => "Fifteen",
-		16 => "Sixteen",
-		17 => "Seventeen",
-		18 => "Eighteen",
-		19 => "Nineteen",
-		"01" => "One",
-		"02" => "Two",
-		"03" => "Three",
-		"04" => "Four",
-		"05" => "Five",
-		"06" => "Six",
-		"07" => "Seven",
-		"08" => "Eight",
-		"09" => "Nine",
-		"014" => "Fourteen"
-	);
-	$tens = array( 
-		0 => "",
-		1 => "Ten",
-		2 => "Twenty",
-		3 => "Thirty", 
-		4 => "Forty", 
-		5 => "Fifty", 
-		6 => "Sixty", 
-		7 => "Seventy", 
-		8 => "Eighty", 
-		9 => "Ninety" 
-	); 
-	$hundreds = array( 
-		"Hundred", 
-		"Thousand", 
-		"Million", 
-		"Billion", 
-		"Trillion", 
-		"Quadrillion" 
-	); /*limit t quadrillion */
+	function numberTowords($num)
+	{
+		$ones = array(
+			0 => "",
+			1 => "One",
+			2 => "Two",
+			3 => "Three",
+			4 => "Four",
+			5 => "Five",
+			6 => "Six",
+			7 => "Seven",
+			8 => "Eight",
+			9 => "Nine",
+			10 => "Ten",
+			11 => "Eleven",
+			12 => "Twelve",
+			13 => "Thirteen",
+			14 => "Fourteen",
+			15 => "Fifteen",
+			16 => "Sixteen",
+			17 => "Seventeen",
+			18 => "Eighteen",
+			19 => "Nineteen",
+			"01" => "One",
+			"02" => "Two",
+			"03" => "Three",
+			"04" => "Four",
+			"05" => "Five",
+			"06" => "Six",
+			"07" => "Seven",
+			"08" => "Eight",
+			"09" => "Nine",
+			"014" => "Fourteen"
+		);
+		$tens = array( 
+			0 => "",
+			1 => "Ten",
+			2 => "Twenty",
+			3 => "Thirty", 
+			4 => "Forty", 
+			5 => "Fifty", 
+			6 => "Sixty", 
+			7 => "Seventy", 
+			8 => "Eighty", 
+			9 => "Ninety" 
+		); 
+		$hundreds = array( 
+			"Hundred", 
+			"Thousand", 
+			"Million", 
+			"Billion", 
+			"Trillion", 
+			"Quadrillion" 
+		); /*limit t quadrillion */
 
-	$num = number_format($num,2,".",","); 
-	$num_arr = explode(".",$num); 
-	$wholenum = $num_arr[0]; 
-	$decnum = $num_arr[1]; 
-	$whole_arr = array_reverse(explode(",",$wholenum)); 
-	krsort($whole_arr,1); 
-	$rettxt = ""; 
+		$num = number_format($num,2,".",","); 
+		$num_arr = explode(".",$num); 
+		$wholenum = $num_arr[0]; 
+		$decnum = $num_arr[1]; 
+		$whole_arr = array_reverse(explode(",",$wholenum)); 
+		krsort($whole_arr,1); 
+		$rettxt = ""; 
 
-	foreach($whole_arr as $key => $i){
-	
-		while(substr($i,0,1)=="0")
-			$i=substr($i,1,5);
-			if($i!=="") {
-				if($i < 20){ 
-					$rettxt .= $ones[$i]; 
-				}elseif($i < 100){ 
-					if(substr($i,0,1)!="0")  $rettxt .= $tens[substr($i,0,1)]; 
-					if(substr($i,1,1)!="0") $rettxt .= " ".$ones[substr($i,1,1)]; 
-				}else{ 
-					if(substr($i,0,1)!="0") $rettxt .= $ones[substr($i,0,1)]." ".$hundreds[0]; 
+		foreach($whole_arr as $key => $i){
+		
+			while(substr($i,0,1)=="0")
+				$i=substr($i,1,5);
+				if($i!=="") {
+					if($i < 20){ 
+						$rettxt .= $ones[$i]; 
+					}elseif($i < 100){ 
+						if(substr($i,0,1)!="0")  $rettxt .= $tens[substr($i,0,1)]; 
+						if(substr($i,1,1)!="0") $rettxt .= " ".$ones[substr($i,1,1)]; 
+					}else{ 
+						if(substr($i,0,1)!="0") $rettxt .= $ones[substr($i,0,1)]." ".$hundreds[0]; 
 
-					if(substr($i,1,1)==1){
-						if(substr($i,2,1)==0){
-							$rettxt .= " ".$tens[substr($i,1,1)];
+						if(substr($i,1,1)==1){
+							if(substr($i,2,1)==0){
+								$rettxt .= " ".$tens[substr($i,1,1)];
+							}else{
+								$rettxt .= " ".$ones[substr($i,1,2)];
+							}
 						}else{
-							$rettxt .= " ".$ones[substr($i,1,2)];
+							if(substr($i,1,1)!="0")$rettxt .= " ".$tens[substr($i,1,1)]; 
+							if(substr($i,2,1)!="0")$rettxt .= " ".$ones[substr($i,2,1)]; 
 						}
-					}else{
-						if(substr($i,1,1)!="0")$rettxt .= " ".$tens[substr($i,1,1)]; 
-						if(substr($i,2,1)!="0")$rettxt .= " ".$ones[substr($i,2,1)]; 
-					}
-				} 
-			}
-			
-			if($key > 0){ 
-				$rettxt .= " ".$hundreds[$key]." "; 
-			}
-		} 
-
-		if($decnum > 0){
-			$rettxt .= " Pesos and ";
-			if($decnum < 20){
-				if($decnum == 1){
-					$rettxt .= $ones[$decnum]. " Centavo";
-				}else{
-					$rettxt .= $ones[$decnum]. " Centavos";
+					} 
 				}
-			}elseif($decnum < 100){
-				$rettxt .= $tens[substr($decnum,0,1)];
-				$rettxt .= " ".$ones[substr($decnum,1,1)]. " Centavos";
-			}
-		}else{
-			$rettxt .= " Pesos";
-		}
-	return $rettxt;
-}
+				
+				if($key > 0){ 
+					$rettxt .= " ".$hundreds[$key]." "; 
+				}
+			} 
 
+			if($decnum > 0){
+				$rettxt .= " Pesos and ";
+				if($decnum < 20){
+					if($decnum == 1){
+						$rettxt .= $ones[$decnum]. " Centavo";
+					}else{
+						$rettxt .= $ones[$decnum]. " Centavos";
+					}
+				}elseif($decnum < 100){
+					$rettxt .= $tens[substr($decnum,0,1)];
+					$rettxt .= " ".$ones[substr($decnum,1,1)]. " Centavos";
+				}
+			}else{
+				$rettxt .= " Pesos";
+			}
+		return $rettxt;
+	}
 
 	$company = $_SESSION['companyid'];
 
@@ -135,8 +134,8 @@ function numberTowords($num)
 
   //ewt and vat accts PURCH_VAT EWTPAY
 	$disreg = array();
-  $disregVAT = "";
-  $disregEWT = "";
+ 	$disregVAT = "";
+  	$disregEWT = "";
 	$sql = "Select * from accounts_default where compcode='$company' and ccode in ('PURCH_VAT','EWTPAY')";
 	$result = mysqli_query ($con, $sql); 
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
@@ -152,59 +151,62 @@ function numberTowords($num)
 	
   //header
 	$csalesno = $_REQUEST['x'];
-	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, c.Fname, c.Minit, c.Lname, c.cdesignation , b.ctin, d.captype, e.cacctno as acctbank, f.cacctdesc as acctdescbank, c.cusersign
-  from rfp a 
-  left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode 
-  left join users c on a.cpreparedby=c.Userid 
-  left join apv d on a.compcode=d.compcode and a.capvno=d.ctranno 
-  left join bank e on a.compcode=e.compcode and a.cbankcode=e.ccode
-  left join accounts f on e.compcode=f.compcode and e.cacctno=f.cacctid 
-  where a.compcode='$company' and a.ctranno = '$csalesno'");
+	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, c.Fname, c.Minit, c.Lname, c.cdesignation , b.ctin, d.captype, c.cusersign
+	from rfp a 
+	left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode 
+	left join users c on a.cpreparedby=c.Userid 
+	left join apv d on a.compcode=d.compcode and a.capvno=d.ctranno 
+  	where a.compcode='$company' and a.ctranno = '$csalesno'");
 
-  if (mysqli_num_rows($sqlhead)!=0) {
-    while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
-      $RefAPV = $row['capvno'];
-      $cAPtype = $row['captype'];
+	//left join bank e on a.compcode=e.compcode and a.cbankcode=e.ccode
+	//left join accounts f on e.compcode=f.compcode and e.cacctno=f.cacctid   , e.cacctno as acctbank, f.cacctdesc as acctdescbank
+	if (mysqli_num_rows($sqlhead)!=0) {
+		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+			$RefAPV = $row['capvno'];
+			$cAPtype = $row['captype'];
 
-      $Bankacct = $row['acctbank'];
-      $Bankacctdesc = $row['acctdescbank'];
+			$cpaymeth = $row['cpaymethod']; 
 
-      $CustCode = $row['ccode'];
-      $CustName = $row['cname'];
+			$cBank = $row['cbankname'];
+			$cBankAcct = $row['cbankacctno'];
+			$cBankAcNm = $row['cbankacctname'];
 
-      $CustAdd = $row['chouseno']." ".$row['ccity']." ".$row['cstate']." ".$row['ccountry'];
+			$CustCode = $row['ccode'];
+			$CustName = $row['cname'];
 
-      $Date = $row['ddate'];
-      $DateNeeded = $row['dtransdate'];
-      $Gross = $row['ngross'];
+			$CustAdd = $row['chouseno']." ".$row['ccity']." ".$row['cstate']." ".$row['ccountry'];
+
+			$Date = $row['ddate'];
+			$DateNeeded = $row['dtransdate'];
+			$Gross = $row['ngross'];
 			$GrossBal = $row['nbalance'];
 
-      $cTin = $row['ctin'];
+			$cTin = $row['ctin'];
 
 			$cremakrs = $row['cremarks'];
-      
-      $lCancelled = $row['lcancelled'];
-      $lPosted = $row['lapproved'];
+		
+			$lCancelled = $row['lcancelled'];
+			$lPosted = $row['lapproved'];
 			$lSent = $row['lsent'];
 
-      $cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
-      $cpreparedByDesig = $row['cdesignation'];
+			$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
+			$cpreparedByDesig = $row['cdesignation'];
 			$cpreparedBySign = $row['cusersign'];
-    }
-  }
+		}
+	}
 
-  //get reference invoices
-  $refinvsx = array();
-  $sqldtlss = mysqli_query($con,"Select A.crefinv from apv_d A where A.compcode='$company' and A.ctranno = '$RefAPV'");
-  if (mysqli_num_rows($sqldtlss)!=0) {
-    while($row = mysqli_fetch_array($sqldtlss, MYSQLI_ASSOC)){
-      $refinvsx[] = $row['crefinv'];
-    }
-  }
+	//get reference invoices
+	$refinvsx = array();
+	$sqldtlss = mysqli_query($con,"Select A.crefinv from apv_d A where A.compcode='$company' and A.ctranno = '$RefAPV'");
+	if (mysqli_num_rows($sqldtlss)!=0) {
+		while($row = mysqli_fetch_array($sqldtlss, MYSQLI_ASSOC)){
+		$refinvsx[] = $row['crefinv'];
+		}
+	}
 
-  //get details
+  	//get details
 
-  $xsql = "select A.ctranno, B.cacctno, A.cpaymentfor, Sum(B.ncredit) as ntotamt, 
+  	$xsql = "select A.ctranno, B.cacctno, A.cpaymentfor, Sum(B.ncredit) as ntotamt, 
   	CASE WHEN B.cacctno='".$disregVAT."' THEN SUM(B.ndebit) ELSE 0 END as ntotvat, 
   	CASE WHEN B.cacctno='".$disregEWT."' THEN SUM(B.ncredit) ELSE 0 END as ntotewt, 
  	CASE WHEN B.cacctno not in ('".implode("','",$disreg)."') THEN SUM(B.ncredit) ELSE 0 END as ntotdue
@@ -216,13 +218,13 @@ function numberTowords($num)
 
 	//echo $xsql."<br><br>";
 
-  $dparticdet = array();
+  	$dparticdet = array();
 	$totsAPVAT = array();
 	$totsAPEWT = array();
-  $sqldtlss = mysqli_query($con,$xsql);
-  if (mysqli_num_rows($sqldtlss)!=0) {
-    while($row = mysqli_fetch_array($sqldtlss, MYSQLI_ASSOC)){
-			
+	$sqldtlss = mysqli_query($con,$xsql);
+	if (mysqli_num_rows($sqldtlss)!=0) {
+		while($row = mysqli_fetch_array($sqldtlss, MYSQLI_ASSOC)){
+				
 
 			if($row['cacctno'] != $disregVAT && $row['cacctno'] != $disregEWT){
 				if($row['ntotamt'] != 0 && $row['ntotdue'] != 0){
@@ -237,9 +239,9 @@ function numberTowords($num)
 			if($row['cacctno'] == $disregEWT){
 				$totsAPEWT[$row['ctranno']] = $row['ntotewt'];
 			}
-      
-    } 
-  }
+		
+		} 
+	}
 
 ?>
 
@@ -262,7 +264,30 @@ function numberTowords($num)
 		.tdright{
 			padding-right: 10px;
 		}
+		/* The standalone checkbox square*/
+		.checkbox {
+			width:20px;
+			height:20px;
+			border: 1px solid #000;
+			display: inline-block;
+		}
+
+		/* This is what simulates a checkmark icon */
+		.checkbox.checked:after {
+			content: '';
+			display: block;
+			width: 4px;
+			height: 7px;
 		
+			/* "Center" the checkmark */
+			position:relative;
+			top:4px;
+			left:7px;
+			
+			border: solid #000;
+			border-width: 0 2px 2px 0;
+			transform: rotate(45deg);
+		}
 	</style>
 </head>
 
@@ -305,7 +330,6 @@ function numberTowords($num)
 					<font style="font-size: 14px;"><b>No.:</b> <?=$csalesno?></font>
 					</td>
 				</tr>
-
 				<tr>
 					<td colspan="2">
 						<table border="0" width="100%" style="border-collapse:collapse" cellpadding="2">
@@ -327,7 +351,7 @@ function numberTowords($num)
 								<td width="100px" colspan="2"><b>Document Reference:</b></td>
 							</tr>
                 			<tr>
-                  				<td width="100px" colspan="2">&nbsp;</td>									
+								<td width="100px" colspan="2"><b>Mode of Payment</b></td>				
 								<td width="100px" colspan="2" align="right">
 									<?php
 									if(count($refinvsx) > 0){
@@ -336,6 +360,41 @@ function numberTowords($num)
 									}
 									?>
 								</td>
+							</tr>
+							<tr>
+                  				<td width="100px">&nbsp;</td>
+								<td>
+									<table border="0" width="100%" style="border-collapse:collapse" cellpadding="2">
+										<tr>
+											
+                  							<td width="10%" nowrap valign="middle">Bank Transfer</td>
+											<td width="5%"><div class="checkbox<?=($cpaymeth=="bank transfer") ? " checked" : ""?>"></div></td>
+											<td>Bank Name: <?=$cBank?></td>
+										</tr>
+										<tr>											
+                  							<td width="10%" nowrap valign="middle">&nbsp;</td>
+											<td width="5%">&nbsp;</td>
+											<td>Account #: <?=$cBankAcct?></td>
+										</tr>
+										<tr>											
+                  							<td width="10%" nowrap valign="middle">&nbsp;</td>
+											<td width="5%">&nbsp;</td>
+											<td>Account Name: <?=$cBankAcNm?></td>
+										</tr>
+										<tr>
+											
+                  							<td valign="middle">Check</td>
+											<td><div class="checkbox"<?=($cpaymeth=="cheque") ? " checked" : ""?>></div></td>
+											<td>&nbsp;</td>
+										</tr>
+										<tr>											
+											<td valign="middle">Cash</td>
+											<td><div class="checkbox"<?=($cpaymeth=="cash") ? " checked" : ""?>></div></td>
+											<td>&nbsp;</td>
+										</tr>
+									</table>
+								</td>
+								<td width="100px" colspan="2">&nbsp;</td>
 							</tr>
 						</table>
 					</td>

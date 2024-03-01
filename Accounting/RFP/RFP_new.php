@@ -60,17 +60,18 @@ include('../../include/access2.php');
 						<div id="apv" class="tab-pane fade in active" style="padding-left:5px; padding-top:10px;">
 							<table width="100%" border="0" cellspacing="0" cellpadding="2"  style="margin-bottom: 25px">
 								<tr>
-									<td><span style="padding:2px"><b>Paid To:</b></span></td>
-									<td>
-									<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
-										<div class="col-xs-4 nopadding ">
-												<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm required" required placeholder="Supplier Code..." readonly>
+									<td width="10%"><span style="padding:2px"><b>Paid To:</b></span></td>
+									<td width="50%">
+										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
+											<div class="col-xs-3 nopadding ">
+													<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm required" required placeholder="Supplier Code..." readonly>
+											</div>
+											<div class="col-xs-9 nopadwleft">
+													<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" placeholder="Search Supplier Name..." required autocomplete="off" tabindex="4">
+											</div>
 										</div>
-										<div class="col-xs-8 nopadwleft">
-												<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" placeholder="Search Supplier Name..." required autocomplete="off" tabindex="4">
-										</div>
-									</div>
 									</td>
+
 									<td><span style="padding:2px" id="chkdate"><b>Due Date:</b></span></td>
 									<td>
 										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
@@ -80,29 +81,13 @@ include('../../include/access2.php');
 										</div>
 									</td>
 								</tr>
-							
+
+
 								<tr>
-									<td width="150"><span style="padding:2px" id="paymntdesc"><b>Bank Name</b></span></td>
+									<td width="150"><span style="padding:2px"><b>Payment Details</b></span></td>
 									<td>
-										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px" id="paymntdescdet">
-											<div class="col-xs-3 nopadding">
-												<input type="text" id="txtBank" class="form-control input-sm required" name="txtBank" value="" placeholder="Bank Code" readonly required>
-											</div>
-											<div class="col-xs-1 nopadwleft">
-												<button type="button" class="btn btn-block btn-primary btn-sm" name="btnsearchbank" id="btnsearchbank"><i class="fa fa-search"></i></button>
-											</div>
-											<div class="col-xs-8 nopadwleft">
-												<input type="text" class="form-control input-sm required" id="txtBankName" name="txtBankName" width="20px" tabindex="1" placeholder="Bank Name..." required value="" autocomplete="off" readonly>
-											</div>
-											
-										</div>
-
-									</td>
-
-									<td width="150"><span style="padding:2px"><b>Payment Method</b></span></td>
-									<td>
-										<div class="col-xs-12" style="padding-left:2px; padding-bottom:2px">
-											<div class="col-xs-8 nopadding">
+										<div class="col-xs-12" style="padding-left:2px; padding-bottom:2px">	
+											<div class="col-xs-4 nopadding">
 												<select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
 													<option value="cheque">Cheque</option>
 													<option value="cash">Cash</option>
@@ -112,26 +97,55 @@ include('../../include/access2.php');
 													<option value="debit card">Debit Card</option>
 												</select>
 											</div>
-									</td>		
-														
-								</tr>
-
-								<tr>
-									
-									<td valign="top" style="padding-top:8px;"><span style="padding:2px;"><b>Remarks</b></span></td>
-									<td>
-										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
-											<textarea class="form-control input-sm" id="txtcremarks" name="txtcremarks" rows="3"></textarea>
+											<div class="col-xs-8 nopadwleft" >
+												<input type='text' class="form-control input-sm" name="txtBankName" id="txtBankName" value="" placeholder="Enter Bank Name..."/>
+											</div>
 										</div>
-									</td>
+									</td>	
+									
 									<td valign="top" style="padding-top:8px;"><span style="padding:2px" id="chkdate"><b>Total Amount to Pay:</b></span></td>
 									<td valign="top">
 										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
 											<div class='col-xs-8 nopadding'>
-													<input type='text' class="form-control input-sm text-right" name="txtnamount" id="txtnamount" value="0.00" readonly/>
+													<input type='text' class="form-control input-sm" name="txtnamount" id="txtnamount" value="0.00" readonly/>
 											</div>
 										</div>
-									</td>											
+									</td>
+								</tr>
+
+								<tr>
+									<td width="150"><span style="padding:2px">&nbsp;</span></td>
+									<td>
+										<div class="col-xs-12" style="padding-left:2px; padding-bottom:2px">	
+											<div class="col-xs-5 nopadding">
+												<input type='text' class="form-control input-sm" name="txtAcctNo" id="txtAcctNo" value="" placeholder="Enter Account No..."/>
+											</div>
+											<div class="col-xs-7 nopadwleft" >
+												<input type='text' class="form-control input-sm" name="txtAcctName" id="txtAcctName" value="" placeholder="Enter Account Name..."/>
+											</div>
+										</div>
+									</td>	
+									<td valign="top" style="padding-top:8px;"><span style="padding:2px" id="chkdate">&nbsp;</span></td>
+									<td valign="top">&nbsp;</td>								
+								</tr>
+							
+								<tr>
+									<td valign="top" style="padding-top:8px;" rowspan="2"><span style="padding:2px;"><b>Remarks</b></span></td>
+									<td rowspan="2">
+										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
+											<textarea class="form-control input-sm" id="txtcremarks" name="txtcremarks" rows="3"></textarea>
+										</div>
+									</td>
+
+									<td valign="top" style="padding-top:8px;"><span style="padding:2px" id="chkdate">&nbsp;</span></td>
+									<td valign="top">&nbsp;</td>		
+														
+								</tr>
+
+
+								<tr>
+									<td valign="top" style="padding-top:8px;"><span style="padding:2px" id="chkdate">&nbsp;</span></td>
+									<td valign="top">&nbsp;</td>																					
 								</tr>
 
 								<tr>
@@ -174,9 +188,9 @@ include('../../include/access2.php');
 											</div>
 										</div>
 									</td>
-									<td width="150">&nbsp;</td>
-									<td>&nbsp;</td>		
-														
+									
+									<td valign="top" style="padding-top:8px;"><span style="padding:2px" id="chkdate">&nbsp;</span></td>
+									<td valign="top">&nbsp;</td>						
 								</tr>
 
 							</table>

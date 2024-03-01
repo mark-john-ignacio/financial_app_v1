@@ -19,7 +19,7 @@
 
 	//echo $_SERVER['SERVER_NAME'];
 
-	$sqlchk = mysqli_query($con,"select a.*, b.cname, e.cname as cbankname from rfp a left join bank e on a.compcode=e.compcode and a.cbankcode=e.ccode left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.ctranno='$ccvno'");
+	$sqlchk = mysqli_query($con,"select a.*, b.cname from rfp a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.ctranno='$ccvno'");
 
 	@$arrfiles = array();
 	@$arrname = array();
@@ -89,9 +89,9 @@
 			
 			$cpaymeth = $row['cpaymethod']; 
 
-			$cBank = $row['cbankcode'];
-			$cBankName = $row['cbankname'];
-			$cRefAPVNo = $row['capvno'];
+			$cBank = $row['cbankname'];
+			$cBankAcct = $row['cbankacctno'];
+			$cBankAcNm = $row['cbankacctname']; 
 
 			$dTransdate = $row['dtransdate'];
 
@@ -182,26 +182,11 @@
 								</tr>
 							
 								<tr>
-									<td width="150"><span style="padding:2px" id="paymntdesc"><b>Bank Name</b></span></td>
-									<td>
-										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px" id="paymntdescdet">
-											<div class="col-xs-3 nopadding">
-												<input type="text" id="txtBank" class="form-control input-sm required" name="txtBank" value="<?=$cBank?>" placeholder="Bank Code" readonly required>
-											</div>
-											<div class="col-xs-1 nopadwleft">
-												<button type="button" class="btn btn-block btn-primary btn-sm" name="btnsearchbank" id="btnsearchbank"><i class="fa fa-search"></i></button>
-											</div>
-											<div class="col-xs-8 nopadwleft">
-												<input type="text" class="form-control input-sm required" id="txtBankName" name="txtBankName" width="20px" tabindex="1" placeholder="Bank Name..." required value="<?=$cBankName?>" autocomplete="off" readonly>
-											</div>
-											
-										</div>
-
-									</td>
-									<td width="150"><span style="padding:2px"><b>Payment Method</b></span></td>
+									<td width="150"><span style="padding:2px" id="paymntdesc"><b>Payment Details</b></span></td>
+								
 									<td>
 										<div class="col-xs-12" style="padding-left:2px; padding-bottom:2px">
-											<div class="col-xs-8 nopadding">
+											<div class="col-xs-4 nopadding">
 												<select id="selpayment" name="selpayment" class="form-control input-sm selectpicker">
 													<option value="cheque" <?=($cpaymeth=="cheque") ? "selected" : ""?>>Cheque</option>
 													<option value="cash" <?=($cpaymeth=="cash") ? "selected" : ""?>>Cash</option>
@@ -211,16 +196,9 @@
 													<option value="debit card" <?=($cpaymeth=="debit card") ? "selected" : ""?>>Debit Card</option>
 												</select>
 											</div>
-									</td>
-									
-								</tr>
-
-								<tr>
-									<td valign="top" style="padding-top:8px;"><span style="padding:2px;"><b>Remarks</b></span></td>
-									<td>
-										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
-											<textarea class="form-control input-sm" id="txtcremarks" name="txtcremarks" rows="3"><?=$cdRemarks?></textarea>
-										</div>
+											<div class="col-xs-8 nopadwleft" >
+												<input type='text' class="form-control input-sm" name="txtBankName" id="txtBankName" value="<?=$cBank?>" placeholder="Enter Bank Name..."/>   
+											</div>
 									</td>
 									<td valign="top" style="padding-top:8px;"><span style="padding:2px" id="chkdate"><b>Total Amount to Pay:</b></span></td>
 									<td valign="top">
@@ -230,7 +208,37 @@
 													<input type='hidden' name="txtnamountbal" id="txtnamountbal" value="<?=$cnBalamt?>" />   
 											</div>
 										</div>
-									</td>						
+									</td>	
+								</tr>
+								<tr>
+									<td width="150"><span style="padding:2px">&nbsp;</span></td>
+									<td>
+										<div class="col-xs-12" style="padding-left:2px; padding-bottom:2px">	
+											<div class="col-xs-5 nopadding">
+												<input type='text' class="form-control input-sm" name="txtAcctNo" id="txtAcctNo" value="<?=$cBankAcct?>" placeholder="Enter Account No..."/>
+											</div>
+											<div class="col-xs-7 nopadwleft" >
+												<input type='text' class="form-control input-sm" name="txtAcctName" id="txtAcctName" value="<?=$cBankAcNm?>" placeholder="Enter Account Name..."/>
+											</div>
+										</div>
+									</td>	
+									<td valign="top" style="padding-top:8px;"><span style="padding:2px" id="chkdate">&nbsp;</span></td>
+									<td valign="top">&nbsp;</td>								
+								</tr>
+								<tr>
+									<td valign="top" style="padding-top:8px;" rowspan="2"><span style="padding:2px;"><b>Remarks</b></span></td>
+									<td  rowspan="2">
+										<div class="col-xs-12"  style="padding-left:2px; padding-bottom:2px">
+											<textarea class="form-control input-sm" id="txtcremarks" name="txtcremarks" rows="3"><?=$cdRemarks?></textarea>
+										</div>
+									</td>
+									<td valign="top" style="padding-top:8px;"><span style="padding:2px" id="chkdate">&nbsp;</span></td>
+									<td valign="top">&nbsp;</td>				
+								</tr>
+
+								<tr>
+									<td valign="top" style="padding-top:8px;"><span style="padding:2px" id="chkdate">&nbsp;</span></td>
+									<td valign="top">&nbsp;</td>																					
 								</tr>
 
 								<tr>

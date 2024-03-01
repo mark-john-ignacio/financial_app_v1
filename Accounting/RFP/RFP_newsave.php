@@ -40,7 +40,10 @@
 	//$cRefAPV = mysqli_real_escape_string($con, $_POST['txtrefapv']);
 	$dDate = mysqli_real_escape_string($con, $_POST['txtChekDate']);
 	$paymeth = mysqli_real_escape_string($con, $_POST['selpayment']); 
-	$cBankCode = mysqli_real_escape_string($con, $_POST['txtBank']);
+
+	$cBankName = mysqli_real_escape_string($con, $_POST['txtBankName']);
+	$cBankAcctNo = mysqli_real_escape_string($con, $_POST['txtAcctNo']);
+	$cBankAcctNm = mysqli_real_escape_string($con, $_POST['txtAcctName']);
 
 //	$cAcctCode = mysqli_real_escape_string($con, $_POST['txtcacctnoref']);
 
@@ -58,7 +61,7 @@
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 
 
-	if (!mysqli_query($con, "INSERT INTO `rfp`(`compcode`, `ctranno`, `ccode`, `cpaymethod`, `cbankcode`, `ngross`, `dtransdate`, `cpreparedby`, `cremarks`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`) values('$company', '$cSINo', '$cCustID', '$paymeth', '$cBankCode', $npaid, STR_TO_DATE('$dDate', '%m/%d/%Y'), '$preparedby', '$cremarks', '$CurrCode', '$CurrDesc', '$CurrRate')")) {
+	if (!mysqli_query($con, "INSERT INTO `rfp`(`compcode`, `ctranno`, `ccode`, `cpaymethod`, `cbankname`, `cbankacctno`, `cbankacctname`, `ngross`, `dtransdate`, `cpreparedby`, `cremarks`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`) values('$company', '$cSINo', '$cCustID', '$paymeth', '$cBankName', '$cBankAcctNo', '$cBankAcctNm', $npaid, STR_TO_DATE('$dDate', '%m/%d/%Y'), '$preparedby', '$cremarks', '$CurrCode', '$CurrDesc', '$CurrRate')")) {
 		$mggx = "Errormessage: ". mysqli_error($con);
 	} else{
 

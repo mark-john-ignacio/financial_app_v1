@@ -16,7 +16,10 @@
 	//$cRefAPV = mysqli_real_escape_string($con, $_POST['txtrefapv']);
 	$dDate = mysqli_real_escape_string($con, $_POST['txtChekDate']);
 	$paymeth = mysqli_real_escape_string($con, $_POST['selpayment']); 
-	$cBankCode = mysqli_real_escape_string($con, $_POST['txtBank']);
+
+	$cBankName = mysqli_real_escape_string($con, $_POST['txtBankName']);
+	$cBankAcctNo = mysqli_real_escape_string($con, $_POST['txtAcctNo']);
+	$cBankAcctNm = mysqli_real_escape_string($con, $_POST['txtAcctName']);
 
 	$npaid = mysqli_real_escape_string($con, $_POST['txtnamount']);	
 	$npaid = str_replace( ',', '', $npaid );
@@ -33,7 +36,7 @@
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 
 
-	if (!mysqli_query($con, "UPDATE `rfp` set `ccode` = '$cCustID', `cpaymethod` = '$paymeth', `cbankcode` = '$cBankCode', `dtransdate` = STR_TO_DATE('$dDate', '%m/%d/%Y'), `ngross` = $npaid, `cremarks` = '$cremarks', `ccurrencycode` = '$CurrCode', `ccurrencydesc` = '$CurrDesc', `nexchangerate` = '$CurrRate' where`compcode` = '$company' and `ctranno` = '$cSINo'")) {
+	if (!mysqli_query($con, "UPDATE `rfp` set `ccode` = '$cCustID', `cpaymethod` = '$paymeth', `cbankname` = '$cBankName', `cbankacctno` = '$cBankAcctNo', `cbankacctname` = '$cBankAcctNm', `dtransdate` = STR_TO_DATE('$dDate', '%m/%d/%Y'), `ngross` = $npaid, `cremarks` = '$cremarks', `ccurrencycode` = '$CurrCode', `ccurrencydesc` = '$CurrDesc', `nexchangerate` = '$CurrRate' where`compcode` = '$company' and `ctranno` = '$cSINo'")) {
 		$mggx = "Errormessage: ". mysqli_error($con);
 	} else{
 
