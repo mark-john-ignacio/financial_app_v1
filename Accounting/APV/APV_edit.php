@@ -2228,7 +2228,7 @@
 		return ydsc;
 	}
 
-	function addacct(nacct,ntitle,ndr,ncr,nvcode,nvrate){
+	function addacct(nacct="",ntitle="",ndr=0,ncr=0,nvcode="",nvrate=0){
 
 		var tbl = document.getElementById('MyTable2').getElementsByTagName('tr');
 		var lastRow = tbl.length;
