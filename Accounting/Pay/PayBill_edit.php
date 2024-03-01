@@ -1672,6 +1672,7 @@ else{
 				$("#napvewt"+lastRow).select2();
 			}
 	
+			GoToCompAmt();
 			GoToComp();
 							
 				
