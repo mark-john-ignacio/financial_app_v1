@@ -1602,10 +1602,10 @@ else{
 				var debtsel = "";
 				var crdtsel = "";
 
-				if(entrytyp=="Debit"){
+				if(entrytyp=="Debit" || entrytyp==""){
 					debtsel = "selected";
 					crdtsel = "";
-				}else{
+				}else if(entrytyp=="Credit"){
 					debtsel = "";
 					crdtsel = "selected";
 				}
