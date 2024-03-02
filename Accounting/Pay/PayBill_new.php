@@ -1460,7 +1460,7 @@
 			$("#MyTable > tbody > tr").each(function(index) {  
 				$chkacdsc = $(this).find('input[name="cacctdesc"]').val();
 				$chkacno = $(this).find('input[name="cacctno"]').val();
-				$chkaval = $(this).find('input[type=hidden][name="nAmount"]').val();
+				$chkaval = $(this).find('input[name="nApplied"]').val();
 
 				if($chkacdsc=="" || $chkacno=="" || $chkaval=="" || parseFloat($chkaval)==0){
 					$xx = index + 1;
