@@ -214,7 +214,6 @@ mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `module`, `c
 	//window.opener.document.getElementById("salesstat").innerHTML = "POSTED";
 	//window.opener.document.getElementById("salesstat").style.color = "#FF0000";
 	//window.opener.document.getElementById("salesstat").style.fontWeight = "bold";
-
 </script>
 
 </body>
