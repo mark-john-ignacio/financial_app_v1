@@ -882,6 +882,11 @@ xmlhttp.send();
             <div class="col-xs-2 nopadding">
               <label><input type="checkbox" name="chkAcc[]" value="Journal_unpost.php" id="chkBox111" <?=(in_array("Journal_unpost.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;Void</label>
             </div>
+
+            <div class="col-xs-2 nopadding">
+              <label><input type="checkbox" name="chkAcc[]" value="Journal_print" id="chkBox80" <?=(in_array("Journal_print",@$arrpgist)) ? "checked" : "";?>>&nbsp;Print</label>
+            </div>
+
           </div>
         </div>
 

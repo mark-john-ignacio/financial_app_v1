@@ -16,8 +16,13 @@ if(mysqli_num_rows($sql) == 0){
 	$poststat = "False";
 }
 
-$cjeno = $_REQUEST['txtctranno'];
+$printstat = "True"; 
+$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'Journal_print'");
+if(mysqli_num_rows($sql) == 0){
+	$printstat = "False";
+}
 
+$cjeno = $_REQUEST['txtctranno'];
 $sqlhead = mysqli_query($con,"select a.* from journal a where a.compcode='$company' and a.ctranno = '$cjeno'");
 
 if (mysqli_num_rows($sqlhead)!=0) {
@@ -359,13 +364,15 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			</div>
 
 			<?php
-				if($poststat=="True"){
+				if($poststat=="True" || $printstat=="True"){
 			?>
 			<br>
 			<table width="100%" border="0" cellpadding="3">
 				<tr>
 					<td width="50%">
-
+						<?php
+							if($poststat=="True"){
+						?>
 						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Journal.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
 							Back to Main<br>(ESC)
 						</button>
@@ -378,10 +385,18 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							Undo Edit<br>(CTRL+Z)
 						</button>
 
-						<!-- <button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php //echo $csalesno;?>');" id="btnPrint" name="btnPrint">
+						<?php
+							}
+							if($printstat=="True"){
+						?>
+
+						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cjeno;?>');" id="btnPrint" name="btnPrint">
 							Print<br>(F4)
-						</button>-->
-					
+						</button>
+						<?php
+							}
+							if($poststat=="True"){
+						?>
 						<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
 							Edit<br>(CTRL+E)    
 						</button>
@@ -389,7 +404,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 						<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
 							Save<br>(CTRL+S)    
 						</button>
-
+						<?php
+							}
+						?>
 					</td>
 					<td align="right">&nbsp;</td>
 				</tr>
@@ -426,23 +443,35 @@ else{
 }
 ?>
 
-<!-- 1) Alert Modal -->
-<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-    <div class="vertical-alignment-helper">
-        <div class="modal-dialog vertical-align-top">
-            <div class="modal-content">
-               <div class="alert-modal-danger">
-                  <p id="AlertMsg"></p>
-                <p>
-                    <center>
-                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-                    </center>
-                </p>
-               </div>
-            </div>
-        </div>
-    </div>
-</div>
+	<!-- 1) Alert Modal -->
+	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+				<div class="alert-modal-danger">
+					<p id="AlertMsg"></p>
+					<p>
+						<center>
+							<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+						</center>
+					</p>
+				</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-contnorad">   
+				<div class="modal-bodylong">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
+			
+				<iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:98%; display:block; margin:0px; padding:0px; border:0px"></iframe>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
 
 </body>
 </html>
@@ -691,7 +720,7 @@ else{
 		var costcntr = "<select class='form-control input-xs' name='txtnSub"+rowCount+"' id='txtnSub"+rowCount+"'>  <option value='' data-cdesc=''>NONE</option> " + taxoptions + " </select>"; 
 
 		//alert(thisKey +" and "+ thisNme);
-			if(thisKey==9){
+		if(thisKey==9){
 			$('#MyTable > tbody:last-child').append(
 				'<tr>'// need to change closing tag to an opening `<tr>` tag.
 				+'<td width="100px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtcAcctNo'+rowCount+'" id="txtcAcctNo'+rowCount+'"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();"></td>'
@@ -701,99 +730,96 @@ else{
 				+'<td width="100px" style="padding:1px">'+costcntr+'</td>'
 				+'<td width="200px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtcRem'+rowCount+'" id="txtcRem'+rowCount+'" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"></td>'
 				+'<td width="40px" align="right"><input class="btn btn-danger btn-xs" type="button" id="row_'+rowCount+'_delete" value="delete" onClick="deleteRow(this);"/></td>'
-							+'</tr>');
+				+'</tr>');
 							
-							$("#txtcAcctNo"+rowCount).typeahead({
-							autoSelect: true,
-							source: function(request, response) {
-								$.ajax({
-									url: "th_accounts.php",
-									dataType: "json",
-									data: {
-										query: $("#txtcAcctNo"+rowCount).val()
-									},
-									success: function (data) {
-										response(data);
-									}
-								});
-							},
-							displayText: function (item) {
-								return '<div style="border-top:1px solid gray; width: 300px"><span clas="dropdown-item-extra">'+item.name+'</span><br><small>' + item.id + '</small>';
-							},
-							highlighter: Object,
-							afterSelect: function(item) { 					
-											
-								$('#txtcAcctNo'+rowCount).val(item.id).change(); 
-								$('#txtcAcctDesc'+rowCount).val(item.name); 
-								$('#txtnDebit'+rowCount).focus();
-								
-							}
-						});
-
-
-
-							$("#txtcAcctDesc"+rowCount).typeahead({
-							autoSelect: true,
-							source: function(request, response) {
-								$.ajax({
-									url: "th_accounts.php",
-									dataType: "json",
-									data: {
-										query: $("#txtcAcctDesc"+rowCount).val()
-									},
-									success: function (data) {
-										response(data);
-									}
-								});
-							},
-							displayText: function (item) {
-								return '<div style="border-top:1px solid gray; width: 300px"><span clas="dropdown-item-extra">'+item.name+'</span><br><small>' + item.id + '</small>';
-							},
-							highlighter: Object,
-							afterSelect: function(item) { 					
-											
-								$('#txtcAcctDesc'+rowCount).val(item.name).change(); 
-								$('#txtcAcctNo'+rowCount).val(item.id); 
-								$('#txtnDebit'+rowCount).focus();
-								
-							}
-						});
-
-				$('#MyTable :input').keydown(function(e) {
-					var cnt = $('#MyTable tr').length;
-					var inFocus = $(this).attr('id');
-					var thisName = inFocus.replace(/\d+/g, '')
-					var thisindex = inFocus.replace(/\D/g,'');
-					
-					var lstrow = parseInt(cnt)-1;
-					
-					if(thisName=="txtcRem"){
-						if(e.keyCode==9){
-						e.preventDefault();
+			$("#txtcAcctNo"+rowCount).typeahead({
+				autoSelect: true,
+				source: function(request, response) {
+					$.ajax({
+						url: "th_accounts.php",
+						dataType: "json",
+						data: {
+							query: $("#txtcAcctNo"+rowCount).val()
+						},
+						success: function (data) {
+							response(data);
 						}
-						if(parseInt(thisindex)==lstrow){
-						InsertRows(e.keyCode,thisName,cnt);
-						}
-					}
-			
-					tblnavigate(e.keyCode,inFocus);
+					});
+				},
+				displayText: function (item) {
+					return '<div style="border-top:1px solid gray; width: 300px"><span clas="dropdown-item-extra">'+item.name+'</span><br><small>' + item.id + '</small>';
+				},
+				highlighter: Object,
+				afterSelect: function(item) { 					
+								
+					$('#txtcAcctNo'+rowCount).val(item.id).change(); 
+					$('#txtcAcctDesc'+rowCount).val(item.name); 
+					$('#txtnDebit'+rowCount).focus();
 					
-				});
+				}
+			});
+
+			$("#txtcAcctDesc"+rowCount).typeahead({
+				autoSelect: true,
+				source: function(request, response) {
+					$.ajax({
+						url: "th_accounts.php",
+						dataType: "json",
+						data: {
+							query: $("#txtcAcctDesc"+rowCount).val()
+						},
+						success: function (data) {
+							response(data);
+						}
+					});
+				},
+				displayText: function (item) {
+					return '<div style="border-top:1px solid gray; width: 300px"><span clas="dropdown-item-extra">'+item.name+'</span><br><small>' + item.id + '</small>';
+				},
+				highlighter: Object,
+				afterSelect: function(item) { 					
+								
+					$('#txtcAcctDesc'+rowCount).val(item.name).change(); 
+					$('#txtcAcctNo'+rowCount).val(item.id); 
+					$('#txtnDebit'+rowCount).focus();
+					
+				}
+			});
+
+			$('#MyTable :input').keydown(function(e) {
+				var cnt = $('#MyTable tr').length;
+				var inFocus = $(this).attr('id');
+				var thisName = inFocus.replace(/\d+/g, '')
+				var thisindex = inFocus.replace(/\D/g,'');
 				
-				$("input.numeric").autoNumeric('init',{mDec:2,wEmpty: 'zero'});
+				var lstrow = parseInt(cnt)-1;
+				
+				if(thisName=="txtcRem"){
+					if(e.keyCode==9){
+					e.preventDefault();
+					}
+					if(parseInt(thisindex)==lstrow){
+					InsertRows(e.keyCode,thisName,cnt);
+					}
+				}
 		
-										//$("input.numeric").numeric();
-										$("input.numeric").on("focus", function () {
-											$(this).select();
-										});
-										
-										$("input.numeric").on("keyup", function () {
-											GoToComp($(this).attr('name'));
-										});
+				tblnavigate(e.keyCode,inFocus);
+				
+			});
 			
-				$("#txtcAcctNo"+rowCount).focus();
+			$("input.numeric").autoNumeric('init',{mDec:2,wEmpty: 'zero'});
+	
+			//$("input.numeric").numeric();
+			$("input.numeric").on("focus", function () {
+				$(this).select();
+			});
+			
+			$("input.numeric").on("keyup", function () {
+				GoToComp($(this).attr('name'));
+			});
+		
+			$("#txtcAcctNo"+rowCount).focus();
 			///	$("#txtcAcctNo"+rowCount).focus();
-
 
 		}
 
@@ -974,6 +1000,23 @@ else{
 		if(keyCode==13){
 			document.getElementById(frm).action = "Journal_edit.php";
 			document.getElementById(frm).submit();
+		}
+	}
+
+	function printchk(x){
+		if(document.getElementById("hdncancel").value==1){	
+			document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
+			document.getElementById("statmsgz").style.color = "#FF0000";
+		}
+		else{
+			var url = "Journal_print.php?x="+x;
+			
+			$("#myprintframe").attr('src',url);
+
+
+			$("#PrintModal").modal('show');
+			
+
 		}
 	}
 

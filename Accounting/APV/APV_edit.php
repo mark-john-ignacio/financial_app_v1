@@ -26,6 +26,12 @@
 		$poststat = "False";
 	}
 
+	$printstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'APV_print'");
+	if(mysqli_num_rows($sql) == 0){
+		$printstat = "False";
+	}
+
 	$sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.captype, a.cpaymentfor, a.cpayee, DATE_FORMAT(a.dapvdate,'%m/%d/%Y') as dapvdate, a.ngross, a.cpreparedby, a.lcancelled, a.lapproved, a.lprintposted, a.lvoid, b.cname, c.nrate, b.newtcode, a.ccurrencycode, a.ccurrencydesc, a.nexchangerate from apv a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join wtaxcodes c on b.compcode=c.compcode and b.newtcode=c.ctaxcode where a.compcode = '$company' and a.ctranno = '$ctranno'");
 
 	@$arrtaxlist = array();
@@ -662,12 +668,15 @@
 			</div>
 			
 			<?php
-				if($poststat == "True"){
+				if($poststat == "True" || $printstat == "True"){
 			?>
 			<br>
 			<table width="100%" border="0" cellpadding="3">
 				<tr>
 					<td width="50%">
+						<?php
+							if($poststat == "True"){
+						?>
 						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='APV.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
 							Back to Main<br>(ESC)
 						</button>
@@ -683,7 +692,7 @@
 						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv('POAdv','supplier','MyDRDetList','DRListHeader','th_polistings','PO','mySIModal');" id="btnpo" style="display:none">
 							P.O<br> (Insert)
 						</button>
-
+						
 						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="addacct();" id="btnacc" style="display:none">
 							New Line<br> (Accounting)
 						</button>
@@ -692,17 +701,30 @@
 							Undo Edit<br>(CTRL+Z)
 						</button>
 
-						<!--
-						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?//php echo $ctranno;?>');" id="btnPrint" name="btnPrint">
+						<?php
+							}
+
+							if($printstat == "True"){
+						?>
+
+						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $ctranno;?>');" id="btnPrint" name="btnPrint">
 							Print<br>(CTRL+P)
 						</button>
-						-->   
+						 
+						<?php
+							}
+
+							if($poststat == "True"){
+						?>
+
 						<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
 							Edit<br>(CTRL+E)    
 						</button>
 							
 						<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();">Save<br> (CTRL+S)</button>
-
+						<?php
+							}
+						?>
 					</td>
 					<td align="right">&nbsp;</td>
 				</tr>
@@ -1232,6 +1254,18 @@
 		</div>
 	</div>
 
+	<div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-contnorad">   
+				<div class="modal-bodylong">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
+			
+				<iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:98%; display:block; margin:0px; padding:0px; border:0px"></iframe>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
 </body>
 </html>
 
@@ -1280,61 +1314,78 @@
 	}
 
 	<?php
-		if($poststat == "True"){
+		if($poststat == "True" || $printstat == "True"){
 	?>
 
 	$(document).keydown(function(e) {	 
-	 if(e.keyCode == 112) { //F1
-		if($("#btnNew").is(":disabled")==false){
-			e.preventDefault();
-			window.location.href='APV_new.php';
-		}
-	  }
-	  else if(e.keyCode == 83 && e.ctrlKey){//CTRL S
-		if($("#btnSave").is(":disabled")==false){ 
-			e.preventDefault();
-			return chkform();
-		}
-	  }
-	  else if(e.keyCode == 69 && e.ctrlKey){//CTRL E
-		if($("#btnEdit").is(":disabled")==false){
-			e.preventDefault();
-			enabled();
-		}
-	  }
-	  else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
-		if($("#btnPrint").is(":disabled")==false){
-			e.preventDefault();
-			printchk('<?php echo $ctranno;?>');
-		}
-	  }
-	  else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
-		if($("#btnUndo").is(":disabled")==false){
-			e.preventDefault();
-			chkSIEnter(13,'frmpos');
-		}
-	  }
-	  else if(e.keyCode == 27){//ESC
-		if($("#btnMain").is(":disabled")==false){
-			e.preventDefault();
-			$("#btnMain").click();
-		}
-	  }
-	  else if(e.keyCode == 70 && e.ctrlKey) { // CTRL + F .. search product code
-		e.preventDefault();
-		$('#txtprodnme').focus();
-      }
-	  else if(e.keyCode == 45) { //Insert
-	  	if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
-			//openinv();
+		<?php
+			if($poststat == "True"){
+		?>
 
-			if($("#selaptyp").val()=="Purchases"){
-				$('#btnqo').trigger('click');
-			}else if($("#selaptyp").val()=="PurchAdv"){
-				$('#btnpo').trigger('click');
+		if(e.keyCode == 112) { //F1
+			if($("#btnNew").is(":disabled")==false){
+				e.preventDefault();
+				window.location.href='APV_new.php';
 			}
 		}
-	  }
+		else if(e.keyCode == 83 && e.ctrlKey){//CTRL S
+			if($("#btnSave").is(":disabled")==false){ 
+				e.preventDefault();
+				return chkform();
+			}
+		}
+		else if(e.keyCode == 69 && e.ctrlKey){//CTRL E
+			if($("#btnEdit").is(":disabled")==false){
+				e.preventDefault();
+				enabled();
+			}
+		}
+
+		<?php
+			}
+			if($printstat == "True"){
+		?>
+
+		else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
+			if($("#btnPrint").is(":disabled")==false){
+				e.preventDefault();
+				printchk('<?php echo $ctranno;?>');
+			}
+		}
+		<?php
+			}
+			if($poststat == "True"){
+		?>
+		else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
+			if($("#btnUndo").is(":disabled")==false){
+				e.preventDefault();
+				chkSIEnter(13,'frmpos');
+			}
+		}
+		else if(e.keyCode == 27){//ESC
+			if($("#btnMain").is(":disabled")==false){
+				e.preventDefault();
+				$("#btnMain").click();
+			}
+		}
+		else if(e.keyCode == 70 && e.ctrlKey) { // CTRL + F .. search product code
+			e.preventDefault();
+			$('#txtprodnme').focus();
+		}
+		else if(e.keyCode == 45) { //Insert
+			if($('#mySIRef').hasClass('in')==false && $('#AlertModal').hasClass('in')==false){
+				//openinv();
+
+				if($("#selaptyp").val()=="Purchases"){
+					$('#btnqo').trigger('click');
+				}else if($("#selaptyp").val()=="PurchAdv"){
+					$('#btnpo').trigger('click');
+				}
+			}
+		}
+		<?php
+			}
+		?>
 	});
 
 	<?php
@@ -2688,7 +2739,7 @@
 			document.getElementById("statmsgz").style.color = "#FF0000";
 		}
 		else{
-				var url = "APV_confirmprint.php?x="+x;
+				var url = "APV_print.php?x="+x;
 				
 				$("#myprintframe").attr('src',url);
 
