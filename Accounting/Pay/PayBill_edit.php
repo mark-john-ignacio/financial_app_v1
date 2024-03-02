@@ -1770,6 +1770,26 @@ else{
 		
 			var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
 			var lastRow = tbl.length-1;
+
+			$("#MyTable > tbody > tr").each(function(index) {  
+				$chkacdsc = $(this).find('input[name="cacctdesc"]').val();
+				$chkacno = $(this).find('input[name="cacctno"]').val();
+				$chkaval = $(this).find('input[type=hidden][name="nAmount"]').val();
+
+				if($chkacdsc=="" || $chkacno=="" || $chkaval=="" || parseFloat($chkaval)==0){
+					$xx = index + 1;
+					$("#AlertMsg").html("Incomplete Details on line "+$xx);
+					$("#alertbtnOK").show();
+					$("#AlertModal").modal('show');
+
+					isOK="False";				
+				}			
+			});
+
+			if(isOK=="False"){
+				
+				return false;
+			}
 			
 			if(document.getElementById("txttotpaid").value == 0){
 				$("#AlertMsg").html("<b>ERROR: </b>Enter total paid!");
@@ -1780,15 +1800,14 @@ else{
 				return false;
 			}
 
-				var npaid = document.getElementById("txttotpaid").value;
-				var napplied = document.getElementById("txtnGross").value;
-				
-				var oob = parseFloat(npaid) - parseFloat(napplied);
-				oob = oob.toFixed(4);
+			var npaid = document.getElementById("txttotpaid").value;
+			var napplied = document.getElementById("txtnGross").value;
+			
+			var oob = parseFloat(npaid) - parseFloat(napplied);
+			oob = oob.toFixed(4);
 			
 			if(parseFloat(oob)  > 1){
-				
-				
+						
 				$("#AlertMsg").html("<b>ERROR: </b>Unbalanced amount!<br>Out of Balance: "+ Math.abs(oob));
 				$("#alertbtnOK").show();
 				$("#AlertModal").modal('show');
