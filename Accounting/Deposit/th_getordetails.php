@@ -5,14 +5,12 @@ session_start();
 require_once "../../Connection/connection_string.php";
 
 	$company = $_SESSION['companyid'];
-
-	$arrchkrem = array();
-	$result = mysqli_query ($con, "SELECT * FROM receipt_check_t WHERE compcode='$company'");
-	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-		$arrchkrem[$row['ctranno']] = $row['ccheckno'];
-	}
 	
-	$result = mysqli_query ($con, "SELECT ctranno, cornumber, dcutdate, cpaymethod, cremarks, namount, cpayrefno FROM receipt WHERE compcode='$company' and ctranno = '".$_GET['id']."'"); 
+	$result = mysqli_query ($con, "SELECT A.ctranno, A.cornumber, A.dcutdate, A.cpaymethod, A.cremarks, A.namount, CASE WHEN A.cpaymethod='cheque' THEN B.ccheckno Else C.crefno END as cpayrefno 
+	From receipt A 
+	LEFT JOIN receipt_check_t B ON A.compcode = B.compcode AND A.ctranno = B.ctranno
+    LEFT JOIN receipt_opay_t C ON A.compcode = C.compcode AND A.ctranno = C.ctranno  
+	WHERE A.compcode='$company' and A.ctranno = '".$_GET['id']."'"); 
 
 	//$json2 = array();
 	//$json = [];
@@ -30,7 +28,7 @@ require_once "../../Connection/connection_string.php";
 		 $json['cremarks'] = $row['cremarks'];
 		 $json['namount'] = number_format($row['namount'],2);
 		 $json['namountorig'] = $row['namount'];
-		 $json['creference'] = ($row['cpaymethod']=="cheque") ? $xcref : $row['cpayrefno'];
+		 $json['creference'] = $row['cpayrefno'];
 		 $json2[] = $json;
 
 	}

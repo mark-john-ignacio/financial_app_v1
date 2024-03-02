@@ -589,8 +589,8 @@
 		$.ajax({
       url: 'th_depositlist.php',
 			data: { y: salesnos },
-      dataType: 'json',
-      method: 'post',
+      		dataType: 'json',
+      		method: 'post',
 			async: false,
       success: function (data) {
 

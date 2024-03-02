@@ -27,7 +27,9 @@ require_once "../../Connection/connection_string.php";
 		$acctsorlist[] = $row['corno'];
 	}
 	
-	$result = mysqli_query ($con, "select * from receipt where compcode='$company' and lapproved=1 and ldeposited=0 and lvoid=0 and cacctcode in ('".implode("','", $acctsreciept)."') ".$qry." and ctranno not in ('".implode("','", $acctsorlist)."') order by cornumber"); 
+	$result = mysqli_query ($con, "select A.* 
+	From receipt A 
+	where A.compcode='$company' and A.lapproved=1 and A.ldeposited=0 and A.lvoid=0 and A.cacctcode in ('".implode("','", $acctsreciept)."') ".$qry." and A.ctranno not in ('".implode("','", $acctsorlist)."') order by A.cornumber"); 
 
 	//$json2 = array();
 	//$json = [];
@@ -36,7 +38,7 @@ require_once "../../Connection/connection_string.php";
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 		$cntr = $cntr + 1;
 		
-	  $json['ctranno'] = $row['ctranno'];
+	  	$json['ctranno'] = $row['ctranno'];
 		$json['corno'] = $row['cornumber'];
 		$json['dcutdate'] = $row['dcutdate'];
 		$json['cpaymethod'] = ucwords($row['cpaymethod']);
