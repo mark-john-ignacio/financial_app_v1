@@ -817,7 +817,8 @@ else{
 		 */
 		file_name.map(({name, ext}, i) => {
 
-			list_file.push("https://<?=($_SERVER['HTTP_HOST']=="localhost") ? $_SERVER['HTTP_HOST']."/st_myxfinancials": $_SERVER['HTTP_HOST'];?>/Components/assets/PO/<?=$company."_".$cpono?>/" + name)
+			$vrx = encodeURIComponent(name);
+			list_file.push("<?=$AttachUrlBase?>PO/<?=$company."_".$cpono?>/" + $vrx)
 			console.log(ext);
 
 			if(jQuery.inArray(ext, arroffice) !== -1){

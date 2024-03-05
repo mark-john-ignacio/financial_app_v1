@@ -27,21 +27,21 @@
 	$sqlhead = mysqli_query($con,"select a.ctranno, a.ccode, a.cremarks, DATE_FORMAT(a.ddate,'%m/%d/%Y') as ddate, DATE_FORMAT(a.dreceived,'%m/%d/%Y') as dneeded, a.ngross, a.cpreparedby, a.lcancelled, a.lapproved, a.lvoid, a.lprintposted, a.ccustacctcode, b.cname, a.crefsi from receive a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.ctranno = '$cpono'");
 
 
-						 $result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='ALLOW_REF_RR'"); 
-					
-						 if (mysqli_num_rows($result)!=0) {
-						 $all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
-						 
-							 $nCHKREFvalue = $all_course_data['cvalue']; 
-							
+	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='ALLOW_REF_RR'"); 
 
-						 }
+	if (mysqli_num_rows($result)!=0) {
+	$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
+	
+		$nCHKREFvalue = $all_course_data['cvalue']; 
+	
 
-						// 0 = Allow No Reference
-						// 1 = W/ Reference Check Qty .. Qty must be less than or equal to reference
-						// 2 = W/ Reference Open Qty .. allow qty even if more tha reference
+	}
 
-/*
+	// 0 = Allow No Reference
+	// 1 = W/ Reference Check Qty .. Qty must be less than or equal to reference
+	// 2 = W/ Reference Open Qty .. allow qty even if more tha reference
+
+	/*
 	function listcurrencies(){ //API for currency list
 		$apikey = $_SESSION['currapikey'];
 		
@@ -662,7 +662,9 @@ else{
 		 * setting up an list of file and config of a file
 		 */
 		file_name.map(({name, ext}, i) => {
-			list_file.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/RR/<?=$company."_".$cpono?>/" + name)
+
+			$vrx = encodeURIComponent(name);
+			list_file.push("<?=$AttachUrlBase?>RR/<?=$company."_".$cpono?>/" + $vrx)
 			console.log(ext);
 
 			if(jQuery.inArray(ext, arroffice) !== -1){

@@ -1043,7 +1043,9 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 		 * setting up an list of file and config of a file
 		 */
 		file_name.map(({name, ext}, i) => {
-			list_file.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/<?=$company."_".$txtctranno?>/" + name)
+
+			$vrx = encodeURIComponent(name);
+			list_file.push("<?=$AttachUrlBase?>SI/<?=$company."_".$txtctranno?>/" + $vrx)
 			console.log(ext);
 
 			if(jQuery.inArray(ext, arroffice) !== -1){
