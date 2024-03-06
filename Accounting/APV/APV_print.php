@@ -201,8 +201,16 @@ html,
 
 <table border="0" width="100%" style="border-collapse:collapse; padding-top: 10px">
 	<tr>
-		<td colspan="2" width="50%" style="padding-top: 10px">
+		<td width="33%" style="padding-top: 10px">
 			<b>Prepared By:<br><br><br>&nbsp;&nbsp;&nbsp;</b><?php echo $PreparedBy;?>
+		</td>
+
+		<td style="padding-top: 10px">
+			<b>Checked By:<br><br><br>&nbsp;&nbsp;&nbsp;</b>____________________
+		</td>
+
+		<td width="33%" style="padding-top: 10px">
+			<b>Approved By:<br><br><br>&nbsp;&nbsp;&nbsp;</b>____________________
 		</td>
 	</tr>
 </table>
