@@ -235,7 +235,7 @@
         
             'APV' => "select a.*, b.*, c.cname from apv_d a
                     left join apv b on a.compcode = b.compcode and a.ctranno = b.ctranno
-                    left join suppliers c on a.compcode = c.compcode and b.ccode = c.ccode
+                    left join suppliers c on b.compcode = c.compcode and b.ccode = c.ccode
                     where a.compcode = '$company' and a.ctranno = '$ctranno'",
             
             'APADJ' => "select a.*, b.cacctno, b.ctitle, b.ndebit, b.ncredit, b.cremarks as remark_t, c.* from apadjustment a
@@ -290,7 +290,11 @@
                     $uploadedFile = $uploadDir . $file['name'];
                     move_uploaded_file($file['tmp_name'], $uploadedFile);
     
-                    require '../vendor2/autoload.php';
+                    if(file_exists("../vendor2/autoload.php")){
+                        require '../vendor2/autoload.php';
+                    }else{
+                        require '../../vendor2/autoload.php';
+                    }
     
                     $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($uploadedFile);
                     $worksheet = $spreadsheet->getActiveSheet();

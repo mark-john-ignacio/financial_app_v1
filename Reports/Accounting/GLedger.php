@@ -106,7 +106,7 @@
   	<th style="text-align:left" width="100px">Date</th>
 	<th style="text-align:left" width="100px">Reference</th>
 	<th style="text-align:left">Description</th>
-	<th style="text-align:left" width="150px">Customer Name</th>
+	<th style="text-align:left" width="150px">Customer/Supplier</th>
 	<th style="text-align:left" width="150px">Account Title</th>
 	<th style="text-align:right" width="150px">Debit</th>
 	<th style="text-align:right" width="150px">Credit</th>
