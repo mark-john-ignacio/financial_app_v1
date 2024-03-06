@@ -233,13 +233,9 @@
                     left join suppliers d on a.compcode = d.compcode and b.ccode = d.ccode
             where a.compcode='$company' and a.ctranno='$ctranno' order by a.nident",        
         
-            'APV' => "select a.*, b.*, c.cname from apv_d a
-                    left join apv b on a.compcode = b.compcode and a.ctranno = b.ctranno
+            'APV' => "select c.cname from apv b
                     left join suppliers c on b.compcode = c.compcode and b.ccode = c.ccode
-                    where a.compcode = '$company' and a.ctranno = '$ctranno' UNION ALL select a.*, b.*, c.cname from apv_t a
-                    left join apv b on a.compcode = b.compcode and a.ctranno = b.ctranno
-                    left join suppliers c on b.compcode = c.compcode and b.ccode = c.ccode
-                    where a.compcode = '$company' and a.ctranno = '$ctranno'",
+                    where b.compcode = '$company' and b.ctranno = '$ctranno'",
             
             'APADJ' => "select a.*, b.cacctno, b.ctitle, b.ndebit, b.ncredit, b.cremarks as remark_t, c.* from apadjustment a
                     left join apadjustment_t b on a.compcode=b.compcode and a.ctranno=b.ctranno
