@@ -236,6 +236,9 @@
             'APV' => "select a.*, b.*, c.cname from apv_d a
                     left join apv b on a.compcode = b.compcode and a.ctranno = b.ctranno
                     left join suppliers c on b.compcode = c.compcode and b.ccode = c.ccode
+                    where a.compcode = '$company' and a.ctranno = '$ctranno' UNION ALL select a.*, b.*, c.cname from apv_t a
+                    left join apv b on a.compcode = b.compcode and a.ctranno = b.ctranno
+                    left join suppliers c on b.compcode = c.compcode and b.ccode = c.ccode
                     where a.compcode = '$company' and a.ctranno = '$ctranno'",
             
             'APADJ' => "select a.*, b.cacctno, b.ctitle, b.ndebit, b.ncredit, b.cremarks as remark_t, c.* from apadjustment a
