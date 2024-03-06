@@ -95,25 +95,26 @@
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
 <input type="hidden" value='<?=json_encode(@$arrname)?>' id="hdnfileconfig"> 
+
 	<form action="APAdj_editsave.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
 		<fieldset>
     	<legend>
-				<div class="col-xs-6 nopadding"> AP Adjustment Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
-					<?php
-						if($lCancelled==1){
-							echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+			<div class="col-xs-6 nopadding"> AP Adjustment Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
+				<?php
+					if($lCancelled==1){
+						echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+					}
+					
+					if($lPosted==1){
+						if($lVoid==1){
+							echo "<font color='#FF0000'><b>VOIDED</b></font>";
+						}else{
+							echo "<font color='#FF0000'><b>POSTED</b></font>";
 						}
-						
-						if($lPosted==1){
-							if($lVoid==1){
-								echo "<font color='#FF0000'><b>VOIDED</b></font>";
-							}else{
-								echo "<font color='#FF0000'><b>POSTED</b></font>";
-							}
-						}
-					?>
+					}
+				?>
    			</div>
-			</legend>	
+		</legend>	
 
 				<ul class="nav nav-tabs">
 					<li class="active"><a href="#items" data-toggle="tab">AP Adjustment Details</a></li>
@@ -234,57 +235,57 @@
 					</div>
 				</div>
 				
-					<hr>
-					<div class="col-xs-12 nopadwdown"><b>Details</b></div>
+				<hr>
+				<div class="col-xs-12 nopadwdown"><b>Details</b></div>
 
-						<div class="col-xs-12 nopadding">
-							<div class="col-xs-4 nopadding"><small><i>*Press <b>ENTER</b> on remarks field (last row) to add new line..</i></small></div>
-							<div class="col-xs-8 nopadding text-danger" style='text-align: right !important' id="unbaltext"></div>
-						</div>
+				<div class="col-xs-12 nopadding">
+					<div class="col-xs-4 nopadding"><small><i>*Press <b>ENTER</b> on remarks field (last row) to add new line..</i></small></div>
+					<div class="col-xs-8 nopadding text-danger" style='text-align: right !important' id="unbaltext"></div>
+				</div>
 
-						<div class="alt2" dir="ltr" style="
-							margin: 0px;
-							padding: 3px;
-							border: 1px solid #919b9c;
-							width: 100%;
-							height: 350px;
-							text-align: left;
-							overflow: auto">
-			
-							<table id="MyTable" class="MyTable table table-xs" width="100%">
-								<thead>
-									<tr>
-										<th style="border-bottom:1px solid #999">Account No.</th>
-										<th style="border-bottom:1px solid #999">Account Title</th>
-										<th style="border-bottom:1px solid #999">Debit</th>
-										<th style="border-bottom:1px solid #999">Credit</th>
-										<th style="border-bottom:1px solid #999">Remarks</th>
-										<th style="border-bottom:1px solid #999">&nbsp;</th>
-									</tr>
-								</thead>   
-								<tbody class="tbody">
-									<?php
-										$cnt = 0;
-										$sqldtls = mysqli_query($con,"select * From apadjustment_t a where a.compcode='$company' and a.ctranno = '$cjeno'");
-										while($row = mysqli_fetch_array($sqldtls, MYSQLI_ASSOC)){
-											$cnt++;
-									?>
-									<tr>
-										<td width="100px" style="padding:1px"><input type="text" class="typeno form-control input-xs" name="txtcAcctNo<?=$cnt?>" id="txtcAcctNo<?=$cnt?>"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctDesc<?=$cnt?>" data-debit="txtnDebit<?=$cnt?>" value="<?=$row['cacctno']?>"></td>
+				<div class="alt2" dir="ltr" style="
+					margin: 0px;
+					padding: 3px;
+					border: 1px solid #919b9c;
+					width: 100%;
+					height: 350px;
+					text-align: left;
+					overflow: auto">
+	
+					<table id="MyTable" class="MyTable table table-xs" width="100%">
+						<thead>
+							<tr>
+								<th style="border-bottom:1px solid #999">Account No.</th>
+								<th style="border-bottom:1px solid #999">Account Title</th>
+								<th style="border-bottom:1px solid #999">Debit</th>
+								<th style="border-bottom:1px solid #999">Credit</th>
+								<th style="border-bottom:1px solid #999">Remarks</th>
+								<th style="border-bottom:1px solid #999">&nbsp;</th>
+							</tr>
+						</thead>   
+						<tbody class="tbody">
+							<?php
+								$cnt = 0;
+								$sqldtls = mysqli_query($con,"select * From apadjustment_t a where a.compcode='$company' and a.ctranno = '$cjeno'");
+								while($row = mysqli_fetch_array($sqldtls, MYSQLI_ASSOC)){
+									$cnt++;
+							?>
+							<tr>
+								<td width="100px" style="padding:1px"><input type="text" class="typeno form-control input-xs" name="txtcAcctNo<?=$cnt?>" id="txtcAcctNo<?=$cnt?>"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctDesc<?=$cnt?>" data-debit="txtnDebit<?=$cnt?>" value="<?=$row['cacctno']?>"></td>
 
-										<td style="padding:1px"><input type="text" class="typedesc form-control input-xs" name="txtcAcctDesc<?=$cnt?>" id="txtcAcctDesc<?=$cnt?>"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctNo<?=$cnt?>" data-debit="txtnDebit<?=$cnt?>"  value="<?=$row['ctitle']?>"></td>
-										<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit<?=$cnt?>" id="txtnDebit<?=$cnt?>"  value="<?=$row['ndebit']?>" autocomplete="off"></td>
-										<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit<?=$cnt?>" id="txtnCredit<?=$cnt?>"  value="<?=$row['ncredit']?>" autocomplete="off"></td>
-										<td width="200px" style="padding:1px"><input type="text" class="cRem form-control input-xs" name="txtcRem<?=$cnt?>" id="txtcRem<?=$cnt?>" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"  value="<?=$row['cremarks']?>"></td>
-										<td width="40px" align="right">&nbsp;</td>
-									</tr>
-									<?php
-										}
-									?>
-								</tbody>                  
-							</table>
+								<td style="padding:1px"><input type="text" class="typedesc form-control input-xs" name="txtcAcctDesc<?=$cnt?>" id="txtcAcctDesc<?=$cnt?>"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctNo<?=$cnt?>" data-debit="txtnDebit<?=$cnt?>"  value="<?=$row['ctitle']?>"></td>
+								<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit<?=$cnt?>" id="txtnDebit<?=$cnt?>"  value="<?=$row['ndebit']?>" autocomplete="off"></td>
+								<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit<?=$cnt?>" id="txtnCredit<?=$cnt?>"  value="<?=$row['ncredit']?>" autocomplete="off"></td>
+								<td width="200px" style="padding:1px"><input type="text" class="cRem form-control input-xs" name="txtcRem<?=$cnt?>" id="txtcRem<?=$cnt?>" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"  value="<?=$row['cremarks']?>"></td>
+								<td width="40px" align="right">&nbsp;</td>
+							</tr>
+							<?php
+								}
+							?>
+						</tbody>                  
+					</table>
 
-						</div>
+				</div>
 
 
 				<br>
@@ -464,7 +465,9 @@
 	for (var i = 0; i < xzconfig.length; i++) {
     var object = xzconfig[i];
 		//alert(object.ext + " : " + object.name);
-		fileslist.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/AP-ADJ/<?=$company."_".$cjeno?>/" + object.name)
+
+		$vrx = encodeURIComponent(object.name);
+		fileslist.push("<?=$AttachUrlBase?>AP-ADJ/<?=$company."_".$cjeno?>/" + $vrx)
 
 		if(jQuery.inArray(object.ext, arroffice) !== -1){
 			xtc = "office";

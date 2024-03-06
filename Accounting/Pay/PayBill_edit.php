@@ -842,7 +842,7 @@ else{
     var object = xzconfig[i];
 		//alert(object.ext + " : " + object.name);
 		$vrx = encodeURIComponent(object.name);
-		fileslist.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/PV/<?=$company."_".$ccvno?>/" + $vrx)
+		fileslist.push("<?=$AttachUrlBase?>PV/<?=$company."_".$ccvno?>/" + $vrx)
 
 		if(jQuery.inArray(object.ext, arroffice) !== -1){
 			xtc = "office";

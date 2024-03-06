@@ -1,17 +1,17 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
 
-$dmonth = date("m");
-$dyear = date("y");
-$company = $_SESSION['companyid'];
+	$dmonth = date("m");
+	$dyear = date("y");
+	$company = $_SESSION['companyid'];
 
-//echo "<pre>";
-//print_r($_REQUEST);
-//echo "</pre>";
+	//echo "<pre>";
+	//print_r($_REQUEST);
+	//echo "</pre>";
 
 	@$arrwtxlist = array();
 	$gettaxcd = mysqli_query($con,"SELECT * FROM `wtaxcodes` where compcode='$company' and cstatus='ACTIVE'"); 
@@ -21,36 +21,33 @@ $company = $_SESSION['companyid'];
 		}
 	}
 
-
-
-
-$chkSales = mysqli_query($con,"select * from apv where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");
-if (mysqli_num_rows($chkSales)==0) {
-	$cSINo = "AP".$dmonth.$dyear."00000";
-}
-else {
-	while($row = mysqli_fetch_array($chkSales, MYSQLI_ASSOC)){
-		$lastSI = $row['ctranno'];
-	}
-	
-	//echo $lastSI."<br>";
-	//echo substr($lastSI,2,2)." <> ".$dmonth."<br>";
-	if(substr($lastSI,2,2) <> $dmonth){
+	$chkSales = mysqli_query($con,"select * from apv where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");
+	if (mysqli_num_rows($chkSales)==0) {
 		$cSINo = "AP".$dmonth.$dyear."00000";
 	}
-	else{
-		$baseno = intval(substr($lastSI,6,5)) + 1;
-		$zeros = 5 - strlen($baseno);
-		$zeroadd = "";
-		
-		for($x = 1; $x <= $zeros; $x++){
-			$zeroadd = $zeroadd."0";
+	else {
+		while($row = mysqli_fetch_array($chkSales, MYSQLI_ASSOC)){
+			$lastSI = $row['ctranno'];
 		}
 		
-		$baseno = $zeroadd.$baseno;
-		$cSINo = "AP".$dmonth.$dyear.$baseno;
+		//echo $lastSI."<br>";
+		//echo substr($lastSI,2,2)." <> ".$dmonth."<br>";
+		if(substr($lastSI,2,2) <> $dmonth){
+			$cSINo = "AP".$dmonth.$dyear."00000";
+		}
+		else{
+			$baseno = intval(substr($lastSI,6,5)) + 1;
+			$zeros = 5 - strlen($baseno);
+			$zeroadd = "";
+			
+			for($x = 1; $x <= $zeros; $x++){
+				$zeroadd = $zeroadd."0";
+			}
+			
+			$baseno = $zeroadd.$baseno;
+			$cSINo = "AP".$dmonth.$dyear.$baseno;
+		}
 	}
-}
 
 	
 	$cCustID =  mysqli_real_escape_string($con, $_REQUEST['txtcustid']);

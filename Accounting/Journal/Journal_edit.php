@@ -224,195 +224,194 @@ if (mysqli_num_rows($sqlhead)!=0) {
     
 				<small><i>*Press tab after remarks field (last row) to add new line..</i></small>
 
-             <div class="alt2" dir="ltr" style="
-                        margin: 0px;
-                        padding: 3px;
-                        border: 1px solid #919b9c;
-                        width: 100%;
-                        height: 250px;
-                        text-align: left;
-                        overflow: auto">
-        
-               <table id="MyTable" class="MyTable" cellpadding"3px" width="100%" border="0">
-    
-                        <tr>
-                            <th style="border-bottom:1px solid #999">Acct#</th>
-                            <th style="border-bottom:1px solid #999">Account Title</th>
-                            <th style="border-bottom:1px solid #999">Debit</th>
-                            <th style="border-bottom:1px solid #999">Credit</th>
-                            <th style="border-bottom:1px solid #999">Cost Center</th>
-                            <th style="border-bottom:1px solid #999">Remarks</th>
-                            <th style="border-bottom:1px solid #999">&nbsp;</th>
-                        </tr>
-               <tbody class="tbody">
-               
-                    <?php 
-						$sqlbody = mysqli_query($con,"select a.* from journal_t a where a.compcode='$company' and a.ctranno = '$cjeno' order by a.nident");
+				<div class="alt2" dir="ltr" style="
+					margin: 0px;
+					padding: 3px;
+					border: 1px solid #919b9c;
+					width: 100%;
+					height: 250px;
+					text-align: left;
+					overflow: auto">
+			
+					<table id="MyTable" class="MyTable" cellpadding"3px" width="100%" border="0">
+		
+						<tr>
+							<th style="border-bottom:1px solid #999">Acct#</th>
+							<th style="border-bottom:1px solid #999">Account Title</th>
+							<th style="border-bottom:1px solid #999">Debit</th>
+							<th style="border-bottom:1px solid #999">Credit</th>
+							<th style="border-bottom:1px solid #999">Cost Center</th>
+							<th style="border-bottom:1px solid #999">Remarks</th>
+							<th style="border-bottom:1px solid #999">&nbsp;</th>
+						</tr>
+						<tbody class="tbody">
+				
+							<?php 
+								$sqlbody = mysqli_query($con,"select a.* from journal_t a where a.compcode='$company' and a.ctranno = '$cjeno' order by a.nident");
 
-						if (mysqli_num_rows($sqlbody)!=0) {
-							$cntr = 0;
-							while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
-								$cntr = $cntr + 1;
-						
-					?>
+								if (mysqli_num_rows($sqlbody)!=0) {
+									$cntr = 0;
+									while($rowbody = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){
+										$cntr = $cntr + 1;
+								
+							?>
 
-                 <tr>
-               	   <td width="100px" style="padding:1px"><input type="text" class="typeahead1 form-control input-xs" name="txtcAcctNo<?php echo $cntr; ?>" id="txtcAcctNo<?php echo $cntr; ?>"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();" value="<?php echo $rowbody['cacctno'];?>"></td>
-                   <td><input type="text" class="form-control input-xs" name="txtcAcctDesc<?php echo $cntr; ?>" id="txtcAcctDesc<?php echo $cntr; ?>"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();" value="<?php echo $rowbody['ctitle'];?>"></td>
-                   <td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit<?php echo $cntr; ?>" id="txtnDebit<?php echo $cntr; ?>" value="<?php echo $rowbody['ndebit'];?>" autocomplete="off"></td>
-                   <td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit<?php echo $cntr; ?>" id="txtnCredit<?php echo $cntr; ?>" value="<?php echo $rowbody['ncredit'];?>" autocomplete="off"></td>
-                   <td width="100px" style="padding:1px">
-
-										<?php
-											$costoption = "";
-											foreach(@$clocs as $xr){
-												if($rowbody['csub']==$xr['nid']){
-													$isselected = "selected";
-												}else{
-													$isselected = "";
+									<tr>
+										<td width="100px" style="padding:1px"><input type="text" class="typeahead1 form-control input-xs" name="txtcAcctNo<?php echo $cntr; ?>" id="txtcAcctNo<?php echo $cntr; ?>"  placeholder="Enter Acct No..." autocomplete="off" onFocus="this.select();" value="<?php echo $rowbody['cacctno'];?>"></td>
+										<td><input type="text" class="form-control input-xs" name="txtcAcctDesc<?php echo $cntr; ?>" id="txtcAcctDesc<?php echo $cntr; ?>"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();" value="<?php echo $rowbody['ctitle'];?>"></td>
+										<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit<?php echo $cntr; ?>" id="txtnDebit<?php echo $cntr; ?>" value="<?php echo $rowbody['ndebit'];?>" autocomplete="off"></td>
+										<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit<?php echo $cntr; ?>" id="txtnCredit<?php echo $cntr; ?>" value="<?php echo $rowbody['ncredit'];?>" autocomplete="off"></td>
+										<td width="100px" style="padding:1px">
+											<?php
+												$costoption = "";
+												foreach(@$clocs as $xr){
+													if($rowbody['csub']==$xr['nid']){
+														$isselected = "selected";
+													}else{
+														$isselected = "";
+													}
+													$costoption = $costoption."<option value='".$xr['nid']."' data-cdesc='".$xr['cdesc']."' ".$isselected.">".$xr['cdesc']."</option>";
 												}
-												$costoption = $costoption."<option value='".$xr['nid']."' data-cdesc='".$xr['cdesc']."' ".$isselected.">".$xr['cdesc']."</option>";
-											}
-										?>
-										<select class='form-control input-xs' name="txtnSub<?php echo $cntr; ?>" id="txtnSub<?php echo $cntr; ?>">  
-											<option value='' data-cdesc=''>NONE</option>
-											<?=$costoption?>
-										</select>
+											?>
+											<select class='form-control input-xs' name="txtnSub<?php echo $cntr; ?>" id="txtnSub<?php echo $cntr; ?>">  
+												<option value='' data-cdesc=''>NONE</option>
+												<?=$costoption?>
+											</select>
 									
 										</td>
-                   <td width="200px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtcRem<?php echo $cntr; ?>" id="txtcRem<?php echo $cntr; ?>" placeholder="Remarks..." autocomplete="off" onFocus="this.select();" value="<?php echo $rowbody['cremarks'];?>"></td>
-                   <td width="40px" align="right">
-                   <?php
-                   	if ($cntr > 1){
-					?>
-                    <input class="btn btn-danger btn-xs" type="button" id="row_<?php echo $cntr; ?>_delete" value="delete" onClick="deleteRow(this);"/>
-                    <?php
-					}
-				   ?>
-                   </td>
-                  </tr>
-                  
-                  <?php 
-							}
-						}
-				  ?>
-                  
-                  <script>
-				  $(function(){
-
-				  	$("#txtcAcctNo1").typeahead({
-						autoSelect: true,
-						source: function(request, response) {
-							$.ajax({
-								url: "th_accounts.php",
-								dataType: "json",
-								data: {
-									query: $("#txtcAcctNo1").val()
-								},
-								success: function (data) {
-									response(data);
-								}
-							});
-						},
-						displayText: function (item) {
-							return '<div style="border-top:1px solid gray; width: 300px"><span clas="dropdown-item-extra">'+item.name+'</span><br><small>' + item.id + '</small>';
-						},
-						highlighter: Object,
-						afterSelect: function(item) { 					
-										
-							$('#txtcAcctNo1').val(item.id).change(); 
-							$('#txtcAcctDesc1').val(item.name); 
-							$('#txtnDebit1').focus();
-							
-						}
-					});
-
-
-				  	$("#txtcAcctDesc1").typeahead({
-						autoSelect: true,
-						source: function(request, response) {
-							$.ajax({
-								url: "th_accounts.php",
-								dataType: "json",
-								data: {
-									query: $("#txtcAcctDesc1").val()
-								},
-								success: function (data) {
-									response(data);
-								}
-							});
-						},
-						displayText: function (item) {
-							return '<div style="border-top:1px solid gray; width: 300px"><span clas="dropdown-item-extra">'+item.name+'</span><br><small>' + item.id + '</small>';
-						},
-						highlighter: Object,
-						afterSelect: function(item) { 					
-										
-							$('#txtcAcctDesc1').val(item.name).change(); 
-							$('#txtcAcctNo1').val(item.id); 
-							$('#txtnDebit1').focus();
-							
-						}
-					});
-
-				  });
-				  </script>
-                 </tbody>
-                        
-                </table>
-            <input type="hidden" name="hdnACCCnt" id="hdnACCCnt">
-			</div>
-
-			<?php
-				if($poststat=="True" || $printstat=="True"){
-			?>
-			<br>
-			<table width="100%" border="0" cellpadding="3">
-				<tr>
-					<td width="50%">
-						<?php
-							if($poststat=="True"){
-						?>
-						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Journal.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
-							Back to Main<br>(ESC)
-						</button>
-				
-						<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='Journal_new.php';" id="btnNew" name="btnNew">
-							New<br>(F1)
-						</button>
-
-						<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
-							Undo Edit<br>(CTRL+Z)
-						</button>
-
-						<?php
-							}
-							if($printstat=="True"){
-						?>
-
-						<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cjeno;?>');" id="btnPrint" name="btnPrint">
-							Print<br>(F4)
-						</button>
-						<?php
-							}
-							if($poststat=="True"){
-						?>
-						<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
-							Edit<br>(CTRL+E)    
-						</button>
+										<td width="200px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtcRem<?php echo $cntr; ?>" id="txtcRem<?php echo $cntr; ?>" placeholder="Remarks..." autocomplete="off" onFocus="this.select();" value="<?php echo $rowbody['cremarks'];?>"></td>
+										<td width="40px" align="right">
+										<?php
+											if ($cntr > 1){
+											?>
+											<input class="btn btn-danger btn-xs" type="button" id="row_<?php echo $cntr; ?>_delete" value="delete" onClick="deleteRow(this);"/>
+											<?php
+											}
+										?>
+										</td>
+									</tr>
+									
+							<?php 
+										}
+									}
+							?>
 					
-						<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
-							Save<br>(CTRL+S)    
-						</button>
-						<?php
-							}
-						?>
-					</td>
-					<td align="right">&nbsp;</td>
-				</tr>
-			</table>
-			<?php
-				}
+							<script>
+								$(function(){
+
+									$("#txtcAcctNo1").typeahead({
+										autoSelect: true,
+										source: function(request, response) {
+											$.ajax({
+												url: "th_accounts.php",
+												dataType: "json",
+												data: {
+													query: $("#txtcAcctNo1").val()
+												},
+												success: function (data) {
+													response(data);
+												}
+											});
+										},
+										displayText: function (item) {
+											return '<div style="border-top:1px solid gray; width: 300px"><span clas="dropdown-item-extra">'+item.name+'</span><br><small>' + item.id + '</small>';
+										},
+										highlighter: Object,
+										afterSelect: function(item) { 					
+														
+											$('#txtcAcctNo1').val(item.id).change(); 
+											$('#txtcAcctDesc1').val(item.name); 
+											$('#txtnDebit1').focus();
+											
+										}
+									});
+
+
+									$("#txtcAcctDesc1").typeahead({
+										autoSelect: true,
+										source: function(request, response) {
+											$.ajax({
+												url: "th_accounts.php",
+												dataType: "json",
+												data: {
+													query: $("#txtcAcctDesc1").val()
+												},
+												success: function (data) {
+													response(data);
+												}
+											});
+										},
+										displayText: function (item) {
+											return '<div style="border-top:1px solid gray; width: 300px"><span clas="dropdown-item-extra">'+item.name+'</span><br><small>' + item.id + '</small>';
+										},
+										highlighter: Object,
+										afterSelect: function(item) { 					
+														
+											$('#txtcAcctDesc1').val(item.name).change(); 
+											$('#txtcAcctNo1').val(item.id); 
+											$('#txtnDebit1').focus();
+											
+										}
+									});
+
+								});
+							</script>
+						</tbody>
+							
+					</table>
+					<input type="hidden" name="hdnACCCnt" id="hdnACCCnt">
+				</div>
+
+				<?php
+					if($poststat=="True" || $printstat=="True"){
+				?>
+				<br>
+				<table width="100%" border="0" cellpadding="3">
+					<tr>
+						<td width="50%">
+							<?php
+								if($poststat=="True"){
+							?>
+							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='Journal.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
+								Back to Main<br>(ESC)
+							</button>
+					
+							<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='Journal_new.php';" id="btnNew" name="btnNew">
+								New<br>(F1)
+							</button>
+
+							<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
+								Undo Edit<br>(CTRL+Z)
+							</button>
+
+							<?php
+								}
+								if($printstat=="True"){
+							?>
+
+							<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cjeno;?>');" id="btnPrint" name="btnPrint">
+								Print<br>(F4)
+							</button>
+							<?php
+								}
+								if($poststat=="True"){
+							?>
+							<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
+								Edit<br>(CTRL+E)    
+							</button>
+						
+							<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
+								Save<br>(CTRL+S)    
+							</button>
+							<?php
+								}
+							?>
+						</td>
+						<td align="right">&nbsp;</td>
+					</tr>
+				</table>
+				<?php
+					}
 			?>
     </fieldset>
 </form>
@@ -499,7 +498,8 @@ else{
 	for (var i = 0; i < xzconfig.length; i++) {
     var object = xzconfig[i];
 		//alert(object.ext + " : " + object.name);
-		fileslist.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/Journal/<?=$company."_".$cjeno?>/" + object.name)
+		$vrx = encodeURIComponent(object.name);
+		fileslist.push("<?=$AttachUrlBase?>Journal/<?=$company."_".$cjeno?>/" + $vrx)
 
 		if(jQuery.inArray(object.ext, arroffice) !== -1){
 			xtc = "office";

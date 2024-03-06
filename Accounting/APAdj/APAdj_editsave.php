@@ -28,11 +28,10 @@ $company = $_SESSION['companyid'];
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 
-
-		//DELETE Details
-		if (!mysqli_query($con, "UPDATE `apadjustment_t` set ctranno='xxx', compcode='xxx', cidentity=CONCAT(cidentity,'xxx') where `compcode`='$company' and `ctranno`= '$cSINo'")) {
-			printf("Errormessage: %s\n", mysqli_error($con));
-		}
+	//DELETE Details
+	if (!mysqli_query($con, "UPDATE `apadjustment_t` set ctranno='xxx', compcode='xxx', cidentity=CONCAT(cidentity,'xxx') where `compcode`='$company' and `ctranno`= '$cSINo'")) {
+		printf("Errormessage: %s\n", mysqli_error($con));
+	}
 	
 	//INSERT DETAILS
 	
@@ -108,5 +107,5 @@ $company = $_SESSION['companyid'];
 </form>
 <script>
 	alert('Record Succesfully Updated');
-  document.forms['frmpos'].submit();
+ 	document.forms['frmpos'].submit();
 </script>
