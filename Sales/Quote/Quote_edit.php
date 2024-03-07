@@ -242,7 +242,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			<div id="home" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
 
 				<div class="col-xs-12 nopadwtop">
-					<div class="col-xs-2"><b>Trans. No.</b></div> 
+					<div class="col-xs-1 nopadwtop2x"><b>&nbsp;&nbsp;Trans. No.</b></div> 
 					<div class="col-xs-3 nopadding">
 						<input type="text" class="form-control input-sm" id="txtcsalesno" name="txtcsalesno" width="20px" tabindex="1" value="<?php echo $txtctranno;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
 						<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
@@ -259,8 +259,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				</div>
 
 				<div class="col-xs-12 nopadwtop">
-					<div class="col-xs-1">
-						<b>Quote Type</b>
+					<div class="col-xs-1 nopadwtop2x">
+						<b>&nbsp;&nbsp;Quote Type</b>
 					</div>
 					<div class="col-xs-2 nopadding">
 						<select id="selqotyp" name="selqotyp" class="form-control input-sm selectpicker"  tabindex="1">
@@ -280,8 +280,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 														
 						</select>
 					</div>
-					<div class="col-xs-1">
-							<b>Reccur Every</b>
+					<div class="col-xs-1 nopadwtop2x">
+							<b>&nbsp;&nbsp;&nbsp;&nbsp;Reccur Every</b>
 						</div>
 					<div class="col-xs-2 nopadding">
 						<select id="selrecurrtyp" name="selrecurrtyp" class="form-control input-sm selectpicker"  tabindex="1">
@@ -293,8 +293,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							<option value="semi_annual" <?php if($cRCType=="semi_annual") { echo "selected"; }  ?>>Semi Annual</option>
 						</select>
 					</div>
-					<div class="col-xs-1">
-						<b>Sales Type</b>
+					<div class="col-xs-1 nopadwtop2x">
+						<b>&nbsp;&nbsp;&nbsp;&nbsp;Sales Type</b>
 					</div>
 					<div class="col-xs-2 nopadding">
 						<select id="selsityp" name="selsityp" class="form-control input-sm selectpicker"  tabindex="1">
