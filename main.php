@@ -816,7 +816,7 @@
 		let pages = <?= json_encode($pages) ?>;
 
 		if (pages.includes("DashboardSales.php") || pages.includes("DashboardPurchase.php")) {
-			setpage("./Dashboard/dashboard.php")
+			setpage("./Dashboard/dashboard2/index.php")
 		} else {
 			setpage('MAIN/index.html')
 		}
