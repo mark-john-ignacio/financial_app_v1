@@ -48,9 +48,10 @@ License: For each use you must have a valid license purchased only from above li
             <div id="kt_content_container" class="container-xxl">
                 <!--begin::Row-->
                 <div class="row gy-5 g-xl-8">
-                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 gy-5 g-xl-10">
+
+                    <div class="row gy-5 g-xl-10">
                         <!--begin::Col-->
-                        <div class="col-xl-4">
+                        <div class="col-xl-4 col-12 col-md-4">
                             <!--begin::Mixed Widget 13-->
                             <div class="card card-xl-stretch mb-xl-10" style="background-color: #F7D9E3">
                                 <!--begin::Body-->
@@ -58,7 +59,7 @@ License: For each use you must have a valid license purchased only from above li
                                     <!--begin::Wrapper-->
                                     <div class="d-flex flex-column flex-grow-1">
                                         <!--begin::Title-->
-                                        <a href="#" class="text-dark text-hover-primary fw-bolder fs-3">Earnings</a>
+                                        <a href="#" class="text-dark text-hover-primary fw-bolder fs-3">Total Sales</a>
                                         <!--end::Title-->
                                         <!--begin::Chart-->
                                         <div class="mixed-widget-13-chart" style="height: 100px"></div>
@@ -85,7 +86,7 @@ License: For each use you must have a valid license purchased only from above li
                         </div>
                         <!--end::Col-->
                         <!--begin::Col-->
-                        <div class="col-xl-4">
+                        <div class="col-xl-4 col-12 col-md-4">
                             <!--begin::Mixed Widget 14-->
                             <div class="card card-xxl-stretch mb-xl-10" style="background-color: #CBF0F4">
                                 <!--begin::Body-->
@@ -93,7 +94,8 @@ License: For each use you must have a valid license purchased only from above li
                                     <!--begin::Wrapper-->
                                     <div class="d-flex flex-column flex-grow-1">
                                         <!--begin::Title-->
-                                        <a href="#" class="text-dark text-hover-primary fw-bolder fs-3">Contributors</a>
+                                        <a href="#" class="text-dark text-hover-primary fw-bolder fs-3">Top Selling Item</a>
+                                        <div class="fs-6 text-dark fw-bolder lh-1">Green Apple</div>
                                         <!--end::Title-->
                                         <!--begin::Chart-->
                                         <div class="mixed-widget-14-chart" style="height: 100px"></div>
@@ -106,7 +108,7 @@ License: For each use you must have a valid license purchased only from above li
                                         <span class="text-dark fw-bolder fs-3x me-2 lh-0">47</span>
                                         <!--end::Number-->
                                         <!--begin::Text-->
-                                        <span class="text-dark fw-bolder fs-6 lh-0">- 12% this week</span>
+                                        <span class="text-dark fw-bolder fs-6 lh-0">+ 12% this week</span>
                                         <!--end::Text-->
                                     </div>
                                     <!--end::Stats-->
@@ -116,7 +118,7 @@ License: For each use you must have a valid license purchased only from above li
                         </div>
                         <!--end::Col-->
                         <!--begin::Col-->
-                        <div class="col-xl-4">
+                        <div class="col-xl-4 col-12 col-md-4">
                             <!--begin::Mixed Widget 14-->
                             <div class="card card-xxl-stretch mb-5 mb-xl-10" style="background-color: #CBD4F4">
                                 <!--begin::Body-->
