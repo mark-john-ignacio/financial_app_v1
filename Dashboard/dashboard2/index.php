@@ -397,7 +397,81 @@ License: For each use you must have a valid license purchased only from above li
                     <div class="col-xxl-4">
 
                   <!--begin::row-->
+                        <!--begin::Row-->
+                        <div class="row g-6 g-xl-9">
+                            <!--begin::Col-->
+                            <div class="col-lg-6">
+                                <!--begin::Summary-->
+                                <div class="card card-flush h-lg-100">
+                                    <!--begin::Card header-->
+                                    <div class="card-header mt-6">
+                                        <!--begin::Card title-->
+                                        <div class="card-title flex-column">
+                                            <h3 class="fw-bolder mb-1">Sales by Channel</h3>
+                                            <div class="fs-6 fw-bold text-gray-400">Breakdown of sales</div>
+                                        </div>
+                                        <!--end::Card title-->
+                                        <!--begin::Card toolbar-->
+                                        <div class="card-toolbar">
+                                            <a href="#" class="btn btn-light btn-sm">View Orders</a>
+                                        </div>
+                                        <!--end::Card toolbar-->
+                                    </div>
+                                    <!--end::Card header-->
+                                    <!--begin::Card body-->
+                                    <div class="card-body p-9 pt-5">
+                                        <!--begin::Wrapper-->
+                                        <div class="d-flex flex-wrap">
+                                            <!--begin::Chart-->
+                                            <div class="position-relative d-flex flex-center h-175px w-175px me-15 mb-7">
+                                                <div class="position-absolute translate-middle start-50 top-50 d-flex flex-column flex-center">
+                                                    <span class="fs-2qx fw-bolder">237</span>
+                                                    <span class="fs-6 fw-bold text-gray-400">Total Sales</span>
+                                                </div>
+                                                <canvas id="project_overview_chart" width="175" height="175" style="display: block; box-sizing: border-box; height: 175px; width: 175px;"></canvas>
+                                            </div>
+                                            <!--end::Chart-->
+                                            <!--begin::Labels-->
+                                            <div class="d-flex flex-column justify-content-center flex-row-fluid pe-11 mb-5">
+                                                <!--begin::Label-->
+                                                <div class="d-flex fs-6 fw-bold align-items-center mb-3">
+                                                    <div class="bullet bg-primary me-3"></div>
+                                                    <div class="text-gray-400">Online</div>
+                                                    <div class="ms-auto fw-bolder text-gray-700">30</div>
+                                                </div>
+                                                <!--end::Label-->
+                                                <!--begin::Label-->
+                                                <div class="d-flex fs-6 fw-bold align-items-center mb-3">
+                                                    <div class="bullet bg-success me-3"></div>
+                                                    <div class="text-gray-400">Physical Store</div>
+                                                    <div class="ms-auto fw-bolder text-gray-700">45</div>
+                                                </div>
+                                                <!--end::Label-->
+                                                <!--begin::Label-->
+                                                <div class="d-flex fs-6 fw-bold align-items-center mb-3">
+                                                    <div class="bullet bg-danger me-3"></div>
+                                                    <div class="text-gray-400">Phone Orders</div>
+                                                    <div class="ms-auto fw-bolder text-gray-700">0</div>
+                                                </div>
+                                                <!--end::Label-->
+                                                <!--begin::Label-->
+                                                <div class="d-flex fs-6 fw-bold align-items-center">
+                                                    <div class="bullet bg-gray-300 me-3"></div>
+                                                    <div class="text-gray-400">Yet to start</div>
+                                                    <div class="ms-auto fw-bolder text-gray-700">25</div>
+                                                </div>
+                                                <!--end::Label-->
+                                            </div>
+                                            <!--end::Labels-->
+                                        </div>
+                                        <!--end::Wrapper-->
 
+                                    </div>
+                                    <!--end::Card body-->
+                                </div>
+                                <!--end::Summary-->
+                            </div>
+                        </div>
                     <!--end::row-->
 
 
@@ -3468,6 +3542,14 @@ License: For each use you must have a valid license purchased only from above li
 <script src="assets/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
 <!--end::Page Vendors Javascript-->
 <!--begin::Page Custom Javascript(used by this page)-->
+<script src="assets/js/custom/widgets.js"></script>
+<script src="assets/js/custom/apps/chat/chat.js"></script>
+<script src="assets/js/custom/modals/create-app.js"></script>
+<script src="assets/js/custom/modals/upgrade-plan.js"></script>
+
+<script src="assets/js/custom/pages/projects/project/project.js"></script>
+<script src="assets/js/custom/modals/users-search.js"></script>
+<script src="assets/js/custom/modals/new-target.js"></script>
 <script src="assets/js/custom/widgets.js"></script>
 <script src="assets/js/custom/apps/chat/chat.js"></script>
 <script src="assets/js/custom/modals/create-app.js"></script>
