@@ -1035,7 +1035,7 @@ else{
 
 				<!--modal entry view-->
 				<div class="modal fade" id="modGLEntry" role="dialog">
-					<div class="modal-dialog">
+					<div class="modal-dialog modal-dialog-scrollable">
 						<div class="modal-content">
 							<div class="modal-header">
 								<button type="button" id="btn-closemod" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
