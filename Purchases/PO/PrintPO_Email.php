@@ -17,6 +17,7 @@
 	include('../../Model/helper.php');
 
 	$company = $_SESSION['companyid'];
+	$xwithvat = 0;
 
 	$sqlcomp = mysqli_query($con,"select * from company where compcode='$company'");
 
@@ -243,6 +244,9 @@
 				if (mysqli_num_rows($sqlbody)!=0) {
 
 					while($rowdtls = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){ 
+						if(floatval($rowdtls['nrate']) > 0){
+							$xwithvat = 1;
+						}
 				?>
 
 				<tr>
@@ -261,7 +265,16 @@
 				?>
 
 				<tr>
-					<td colspan="4" align="right" class="tdpadx" style="border: 1px solid;padding-right: 10px"><b>TOTAL</b></td>
+					<td colspan="3" class="tdpadx" style="border-top: 1px solid; border-left: 1px solid; border-bottom: 1px solid; padding-right: 10px">
+						<?php
+							if($xwithvat==1){
+								echo "<b><i>Note: Price inclusive of VAT</i></b>";
+							}else{
+								echo "<b><i>Note: Price exclusive of VAT</i></b>";
+							}
+						?>
+					</td>
+					<td align="right" class="tdpadx" style="border: 1px solid;padding-right: 10px"><b>TOTAL</b></td>
 					<td align="right"  class="tdpadx" style="border: 1px solid;padding-right: 10px"><?php echo number_format($Gross,2);?></td>
 					
 				</tr>
