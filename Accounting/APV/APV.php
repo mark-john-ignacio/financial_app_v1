@@ -97,7 +97,7 @@
 					}
 				?>
 
-				<button type="button" class="btn btn-warning btn-sm" id="btnUpload" name="btnUpload" title="Upload Liquidations"><span class="fa fa-upload"></span></button>
+				<!--<button type="button" class="btn btn-warning btn-sm" id="btnUpload" name="btnUpload" title="Upload Liquidations"><span class="fa fa-upload"></span></button>-->
 
 			</div>
 			<div class="col-xs-3 nopadwtop text-right" style="height:30px !important; padding-right: 10px !important">
