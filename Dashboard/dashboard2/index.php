@@ -67,7 +67,7 @@ License: For each use you must have a valid license purchased only from above li
                                     </div>
                                     <!--end::Wrapper-->
                                     <!--begin::Stats-->
-                                    <div class="pt-5">
+                                    <div class="pt-18">
                                         <!--begin::Symbol-->
                                         <span class="text-dark fw-bolder fs-2x lh-0">$</span>
                                         <!--end::Symbol-->
