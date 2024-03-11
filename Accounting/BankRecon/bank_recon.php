@@ -72,7 +72,7 @@
                         <tr valign="top" class='nopadwtop'>
                             <th style='display: flex; justify-items: center; justify-content: center; padding: 10px;'>Select Bank:</th>
                             <th colspan="3" style="width: 300px">
-                                <div class="col-xs-13 nopadding">
+                                <div class="col-xs-12 nopadding">
                                     <select name="bank" id="bank" class="form-control input-sm" required>
                                         <option value=""></option>
                                         <?php
@@ -90,7 +90,7 @@
                                 <div class="form-group">
                                     <div class="col-md-12 nopadding">
                                         <div class="fileinput fileinput-new" data-provides="fileinput">
-                                            <div class="input-group input-large">
+                                            <div class="input-group">
                                                 
                                                 <span class="input-group-addon btn btn-success default btn-file">
                                                 <span class="fileinput-new">

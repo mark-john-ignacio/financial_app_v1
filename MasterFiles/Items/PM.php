@@ -27,207 +27,207 @@ include('../../include/accessinner.php');
 
 <body style="padding:5px">
 
-        <div>
-        	<div style="float:left; width:50%">
-				<font size="+2"><u>Sales Pricelist</u></font>	
-            </div>
-            
-        </div>
-			<br><br>
-            <button type="button" class="btn btn-primary btn-sm" id="btnadd" name="btnadd"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
-            <button type="button" class="btn btn-sm" id="btnmass" name="btnmass" style='background-color: #B4C0B7'><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Mass Upload</button>
-            <button type="button" class="btn btn-warning btn-sm" id="btnver" name="btnver"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;PM Versions</button>
-            
-<br><br>    
+	<div>
+		<div style="float:left; width:50%">
+			<font size="+2"><u>Sales Pricelist</u></font>	
+		</div>          
+	</div>
+
+	<br><br>
+
+	<button type="button" class="btn btn-primary btn-sm" id="btnadd" name="btnadd"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
+	<button type="button" class="btn btn-sm" id="btnmass" name="btnmass" style='background-color: #B4C0B7'><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Mass Upload</button>
+	<button type="button" class="btn btn-warning btn-sm" id="btnver" name="btnver"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;PM Versions</button>
+	
+	<br><br>    
                 
-                <table id="example" class="display" cellspacing="0" width="100%">
-                    <thead>
-                        <tr>
-                            <th width="100">PM Batch No.</th>
-                            <th width="150">Effectivity Date</th>
-                            <th>Versions</th>
-                            <th>Remarks</th>
-                            <th width="100">Status</th>
-                        </tr>
-                    </thead>
-    
-                    <tbody>
-                    <?php
-                    $company = $_SESSION['companyid'];
-                    	$sql = "SELECT cbatchno as ctranno, deffectdate, GROUP_CONCAT(cversion SEPARATOR ', ') as cversions, cremarks, lapproved, lcancelled FROM `items_pm` WHERE compcode='$company' Group By cbatchno, deffectdate, cremarks, lapproved, lcancelled order by deffectdate desc";
-                    
-                        $result=mysqli_query($con,$sql);
-                        
-                            if (!mysqli_query($con, $sql)) {
-                                printf("Errormessage: %s\n", mysqli_error($con));
-                            } 
-                            
-                        while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-                        {
-                    ?>
-                        <tr>
-    
-                            <td>
-                            <a href="javascript:;" onClick="editgrp('<?php echo $row['ctranno'];?>')">
-                                <?php echo $row['ctranno'];?>
-                            </a>
-                            </td>
-                            <td>
-                            <?php echo date_format(date_create($row['deffectdate']), "F d, Y");?>
-                            </td>
-                            <td>
-                                <?php echo $row['cversions'];?>
-                            </td>
-                             <td>
-                                <?php echo $row['cremarks'];?>
-                            </td>
-                           <td>
-                            <div id="msg<?php echo $row['ctranno'];?>">
-                        	<?php 
-							if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
-							?>
-								<a href="javascript:;" onClick="trans('post','<?php echo $row['ctranno'];?>')">POST</a> | <a href="javascript:;" onClick="trans('cancel','<?php echo $row['ctranno'];?>')">CANCEL</a>
-							<?php
-                            }
-							else{
-								if(intval($row['lcancelled'])==intval(1)){
-									echo "Cancelled";
-								}
-								if(intval($row['lapproved'])==intval(1)){
-									echo "Posted";
-								}
-							}
+	<table id="example" class="display" cellspacing="0" width="100%">
+		<thead>
+			<tr>
+				<th width="100">PM Batch No.</th>
+				<th width="150">Effectivity Date</th>
+				<th>Versions</th>
+				<th>Remarks</th>
+				<th width="100">Status</th>
+			</tr>
+		</thead>
+
+		<tbody>
+		<?php
+		$company = $_SESSION['companyid'];
+			$sql = "SELECT cbatchno as ctranno, deffectdate, GROUP_CONCAT(cversion SEPARATOR ', ') as cversions, cremarks, lapproved, lcancelled FROM `items_pm` WHERE compcode='$company' Group By cbatchno, deffectdate, cremarks, lapproved, lcancelled order by deffectdate desc";
+		
+			$result=mysqli_query($con,$sql);
+			
+				if (!mysqli_query($con, $sql)) {
+					printf("Errormessage: %s\n", mysqli_error($con));
+				} 
+				
+			while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+			{
+		?>
+			<tr>
+
+				<td>
+				<a href="javascript:;" onClick="editgrp('<?php echo $row['ctranno'];?>')">
+					<?php echo $row['ctranno'];?>
+				</a>
+				</td>
+				<td>
+				<?php echo date_format(date_create($row['deffectdate']), "F d, Y");?>
+				</td>
+				<td>
+					<?php echo $row['cversions'];?>
+				</td>
+					<td>
+					<?php echo $row['cremarks'];?>
+				</td>
+				<td>
+				<div id="msg<?php echo $row['ctranno'];?>">
+				<?php 
+				if(intval($row['lcancelled'])==intval(0) && intval($row['lapproved'])==intval(0)){
+				?>
+					<a href="javascript:;" onClick="trans('post','<?php echo $row['ctranno'];?>')">POST</a> | <a href="javascript:;" onClick="trans('cancel','<?php echo $row['ctranno'];?>')">CANCEL</a>
+				<?php
+				}
+				else{
+					if(intval($row['lcancelled'])==intval(1)){
+						echo "Cancelled";
+					}
+					if(intval($row['lapproved'])==intval(1)){
+						echo "Posted";
+					}
+				}
+				
+				?>
+				</div>
+
+				</td>
+			</tr>
+		<?php 
+		}
+		
+		
+		?>
+		
+		</tbody>
+	</table>
+
+
+	<!-- Modal -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+		<div class="modal-header">
+			<h5 class="modal-title" id="myModalLabel"><b>Add New Version</b></h5>        
+		</div>
+
+		<div class="modal-body" style="height: 20vh">
+		
+			<div class="col-xs-12 nopadding">
+				<div class="alert alert-danger nopadding" id="add_err"></div>        
+			</div>   
+
+				
+			<div class="col-xs-12 nopadwtop">  
+				
+						<div class="col-xs-3 nopadding">
+						<b>Version Code</b> 
+						</div>
+						<div class="col-xs-5 nopadwleft">
+						<b>Version Description</b>  
+						</div>
+									
+			</div>   
+			
+				<!-- BODY -->
+					<div style="height:15vh; display:inline" class="col-lg-12 nopadding pre-scrollable" id="TblItemver">
+					</div> 
+					
+
+		</div>
+		
+		<div class="modal-footer">
+					<button type="button" id="btnaddver" name="btnaddver" class="btn btn-success btn-sm">Add New</button>
+					<button type="button" id="btnSave" name="Save" class="btn btn-primary btn-sm">Save Details</button>
+					<button type="button" class="btn btn-danger  btn-sm" data-dismiss="modal">Close</button>
+		</div>
+		
+		</div>
+	</div>
+	</div>
+	<!-- Modal -->		
+
+	<!-- 1) Alert Modal -->
+	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+				<div class="alert-modal-danger">
+					<p id="AlertMsg"></p>
+					<p>
+						<center>
+							<button type="button" class="btnmodz btn btn-primary btn-sm" id="OK">Ok</button>
+							<button type="button" class="btnmodz btn btn-danger btn-sm" id="Cancel">Cancel</button>
 							
-							?>
-                            </div>
+							
+							<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+							
+							<input type="hidden" id="typ" name="typ" value = "">
+							<input type="hidden" id="modzx" name="modzx" value = "">
+						</center>
+					</p>
+				</div> 
+				</div>
+			</div>
+		</div>
+	</div>
 
-                            </td>
-                        </tr>
-                    <?php 
-                    }
-                    
-                    
-                    ?>
-                   
-                    </tbody>
-                </table>
+	<!-- Modal PICK VERSIONS -->
+	<div class="modal fade" id="myPickMod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-md">
+			<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="myModalLabel"><b>Pick PM Version</b></h5>        
+			</div>
 
-
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-md">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="myModalLabel"><b>Add New Version</b></h5>        
-      </div>
-
-	  <div class="modal-body" style="height: 20vh">
-    
-         <div class="col-xs-12 nopadding">
-			<div class="alert alert-danger nopadding" id="add_err"></div>        
-         </div>   
-
+			<div class="modal-body" style="height: 20vh">
 			
-        <div class="col-xs-12 nopadwtop">  
-            
-                    <div class="col-xs-3 nopadding">
-                       <b>Version Code</b> 
-                    </div>
-                    <div class="col-xs-5 nopadwleft">
-                      <b>Version Description</b>  
-                    </div>
-                    			
-        </div>   
-        
-            <!-- BODY -->
-                <div style="height:15vh; display:inline" class="col-lg-12 nopadding pre-scrollable" id="TblItemver">
-                </div> 
-                 
+				<div class="col-xs-12 nopadding">
+					<div class="alert alert-danger nopadding" id="add_errpick"></div>        
+				</div>   
 
-	</div>
-    
- 	<div class="modal-footer">
-    			<button type="button" id="btnaddver" name="btnaddver" class="btn btn-success btn-sm">Add New</button>
-                <button type="button" id="btnSave" name="Save" class="btn btn-primary btn-sm">Save Details</button>
-                <button type="button" class="btn btn-danger  btn-sm" data-dismiss="modal">Close</button>
-	</div>
-    
-    </div>
-  </div>
-</div>
-<!-- Modal -->		
+					
+				<div class="col-xs-12 nopadwtop">  
+		
+							<div class="col-xs-1 nopadding">
+							&nbsp; 
+							</div>           
+							<div class="col-xs-3 nopadding">
+							<b>Version Code</b> 
+							</div>
+							<div class="col-xs-5 nopadwleft">
+							<b>Version Description</b>  
+							</div>
+										
+				</div>   
+				
+					<!-- BODY -->
+						<div style="height:15vh; display:inline" class="col-lg-12 nopadding pre-scrollable" id="TblPickver">
+						</div> 
+						
 
-<!-- 1) Alert Modal -->
-<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-    <div class="vertical-alignment-helper">
-        <div class="modal-dialog vertical-align-top">
-            <div class="modal-content">
-               <div class="alert-modal-danger">
-                  <p id="AlertMsg"></p>
-                <p>
-                    <center>
-                        <button type="button" class="btnmodz btn btn-primary btn-sm" id="OK">Ok</button>
-                        <button type="button" class="btnmodz btn btn-danger btn-sm" id="Cancel">Cancel</button>
-                        
-                        
-                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-                        
-                        <input type="hidden" id="typ" name="typ" value = "">
-                        <input type="hidden" id="modzx" name="modzx" value = "">
-                    </center>
-                </p>
-               </div> 
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<!-- Modal PICK VERSIONS -->
-<div class="modal fade" id="myPickMod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-md">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="myModalLabel"><b>Pick PM Version</b></h5>        
-      </div>
-
-	  <div class="modal-body" style="height: 20vh">
-    
-         <div class="col-xs-12 nopadding">
-			<div class="alert alert-danger nopadding" id="add_errpick"></div>        
-         </div>   
-
+			</div>
 			
-        <div class="col-xs-12 nopadwtop">  
- 
-                    <div class="col-xs-1 nopadding">
-                       &nbsp; 
-                    </div>           
-                    <div class="col-xs-3 nopadding">
-                       <b>Version Code</b> 
-                    </div>
-                    <div class="col-xs-5 nopadwleft">
-                      <b>Version Description</b>  
-                    </div>
-                    			
-        </div>   
-        
-            <!-- BODY -->
-                <div style="height:15vh; display:inline" class="col-lg-12 nopadding pre-scrollable" id="TblPickver">
-                </div> 
-                 
-
+			<div class="modal-footer">
+						<button type="button" id="btnproceed" name="btnproceed" class="btn btn-success btn-sm">Proceed</button>
+						<button type="button" class="btn btn-danger  btn-sm" data-dismiss="modal">Cancel</button>
+			</div>
+			
+			</div>
+		</div>
 	</div>
-    
- 	<div class="modal-footer">
-    			<button type="button" id="btnproceed" name="btnproceed" class="btn btn-success btn-sm">Proceed</button>
-                <button type="button" class="btn btn-danger  btn-sm" data-dismiss="modal">Cancel</button>
-	</div>
-    
-    </div>
-  </div>
-</div>
-<!-- Modal -->		
+	<!-- Modal -->		
 
 
 <?php
