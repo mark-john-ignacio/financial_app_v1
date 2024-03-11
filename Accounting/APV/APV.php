@@ -11,7 +11,6 @@
 
 	$company = $_SESSION['companyid'];
 
-
 	//POST
 	$poststat = "True";
 	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'APV_post'");
@@ -33,6 +32,20 @@
 		$unpoststat = "False";
 	}
 
+	$accts = array();
+	$sql = mysqli_query($con,"select * from accounts where compcode = '$company' and cstatus = 'ACTIVE' and ctype='Details'");
+    while($row = $sql -> fetch_assoc()){
+        $accts[] = $row;
+    }
+
+	@$arrtaxlist = array();
+	$gettaxcd = mysqli_query($con,"SELECT * FROM `vatcode` where compcode='$company' and ctype = 'Purchase' and cstatus='ACTIVE' order By cvatdesc"); 
+	if (mysqli_num_rows($gettaxcd)!=0) {
+		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+			@$arrtaxlist[] = array('ctaxcode' => $row['cvatcode'], 'ctaxdesc' => $row['cvatdesc'], 'nrate' => number_format($row['nrate'])); 
+		}
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -46,7 +59,20 @@
 	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>"> 
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
+
+	<link rel="stylesheet" type="text/css" href="../../global/plugins/bootstrap-fileinput/bootstrap-fileinput.css?x=<?=time()?>"/>
+
+	<link rel="stylesheet" type="text/css" href="../../global/plugins/bootstrap-select/bootstrap-select.min.css"/>
+	<link rel="stylesheet" type="text/css" href="../../global/plugins/select2/select2.css"/>
+
+	<link href="../../global/css/components.css" id="style_components" rel="stylesheet" type="text/css"/>
+    <link href="../../global/css/plugins.css" rel="stylesheet" type="text/css"/>
+
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+
+	<script type="text/javascript" src="../../global/plugins/bootstrap-fileinput/bootstrap-fileinput.js"></script>
+	<script type="text/javascript" src="../../global/plugins/bootstrap-select/bootstrap-select.min.js"></script>
+	<script type="text/javascript" src="../../global/plugins/select2/select2.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
 
 </head>
@@ -70,6 +96,8 @@
 				<?php
 					}
 				?>
+
+				<button type="button" class="btn btn-warning btn-sm" id="btnUpload" name="btnUpload" title="Upload Liquidations"><span class="fa fa-upload"></span></button>
 
 			</div>
 			<div class="col-xs-3 nopadwtop text-right" style="height:30px !important; padding-right: 10px !important">
@@ -113,31 +141,102 @@
 
 	<!-- 1) Alert Modal -->
 	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-	<div class="vertical-alignment-helper">
-		<div class="modal-dialog vertical-align-top">
-			<div class="modal-content">
-				<div class="alert-modal-danger">
-					<p id="AlertMsg"></p>
-				<p>
-					<center>
-						<button type="button" class="btnmodz btn btn-primary btn-sm" id="OK">Ok</button>
-						<button type="button" class="btnmodz btn btn-danger btn-sm" id="Cancel">Cancel</button>
-						
-						
-						<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-						
-						<input type="hidden" id="typ" name="typ" value = "">
-						<input type="hidden" id="aptyp" name="aptyp" value = "">
-						<input type="hidden" id="modzx" name="modzx" value = "">
-					</center>
-				</p>
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+					<div class="alert-modal-danger">
+						<p id="AlertMsg"></p>
+					<p>
+						<center>
+							<button type="button" class="btnmodz btn btn-primary btn-sm" id="OK">Ok</button>
+							<button type="button" class="btnmodz btn btn-danger btn-sm" id="Cancel">Cancel</button>
+							
+							
+							<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+							
+							<input type="hidden" id="typ" name="typ" value = "">
+							<input type="hidden" id="aptyp" name="aptyp" value = "">
+							<input type="hidden" id="modzx" name="modzx" value = "">
+						</center>
+					</p>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	</div>
-	
 
+	<!-- Modal PICK VERSIONS -->
+	<div class="modal fade" id="myAPVUp" data-keyboard="false" data-backdrop="static" role="dialog">
+		<div class="modal-dialog modal-md">
+			<div class="modal-content">
+				<form action="CheckAPV.php" method="POST" enctype="multipart/form-data">
+
+				<div class="modal-header">
+					<h5 class="modal-title" id="myModalLabel"><b>Upload APV Others</b></h5>        
+				</div>
+
+				<div class="modal-body" style="height: 25vh;">
+
+					
+
+						<div class='row nopadwtop'>
+							<div class="col-md-12 nopadwtop" style="text-align: center">
+								<a href="templates/APV_Others.xlsx" download="APV_Others.xlsx" class="btn btn-info btn-sm" id="download" >Download Template</a>
+								<br><br>
+							</div>
+						</div>
+						<div class='row nopadwtop'>
+							<div class="col-md-4 nopadwtop"> Select a Credit Account </div>
+							<div class="col-md-8 nopadwleft">
+								<select name="accts" id="accts" class='form-control input-sm select2'>
+									<option value="0">From Supplier's Entry</option>
+									<?php foreach($accts as $list): ?>
+										<option value="<?= $list['cacctid'] ?>"><?= $list['cacctdesc'] ?></option>
+									<?php endforeach; ?>
+								</select>
+							</div>
+						</div>	
+						
+						<div class="row nopadwtop">
+							<div class="col-xs-4 nopadwtop"> Select Excel File </div>
+							<div class="col-xs-8 nopadwleft">
+								<div class="form-group">                           
+									<div class="col-xs-12 nopadding">
+										<div class="fileinput fileinput-new" data-provides="fileinput">
+											<div class="input-group input-medium">
+												
+												<span class="input-group-addon btn btn-success default btn-file">
+													<span class="fileinput-new">Browse file </span>
+													<span class="fileinput-exists">Change </span>
+													<input type="file" type="file" name="excel_file" id="excel_file" accept=".xlsx, .xls" required> 
+												</span>
+												<a href="#" class="input-group-addon btn red fileinput-exists" data-dismiss="fileinput">
+												Remove </a>
+												<div class="form-control uneditable-input" data-trigger="fileinput">
+													<i class="fa fa-file fileinput-exists"></i>&nbsp; <span class="fileinput-filename">
+													</span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>	
+						</div>
+					
+
+				</div>
+				<div class="modal-footer">
+						<input type="submit" id='submit' value="Submit" class='btn btn-success btn-sm' >
+						<input type="button" id='cancel' value="Cancel" data-dismiss="modal" class='btn btn-danger btn-sm' >
+						
+				</div>
+
+				</form>	
+			</div>
+		</div>
+	</div>
+	<!-- Modal -->
+	
 </body>
 </html>
 
@@ -266,7 +365,16 @@
 
 				}
 			});
-			
+
+			$("#btnUpload").on("click", function(){
+				$("#myAPVUp").modal("show");
+			});
+
+			$("#accts").select2({
+				placeholder: "Select Account Code...",
+				allowClear: true
+			});
+				
 		});
 
 		function editfrm(x){
