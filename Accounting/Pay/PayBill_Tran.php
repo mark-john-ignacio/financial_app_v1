@@ -35,6 +35,7 @@
 	$compname = php_uname('n');
 
 	$status = "True";
+	$isfinal = "No";
 
 	//email notif parameters
 	$isemail = 0;
@@ -135,9 +136,11 @@
 					if((intval($cntfinalall) - intval($cntfinalapp)) == 1){ //pag 1 meaning last approver na sya.. set to posted na ang transaction
 
 						mysqli_query($con,"Update paybill set lapproved=1 where compcode='$company' and ctranno='$tranno'");
+						$isfinal = "Yes";
 
 					}else{ //pag nde pa send to next approver
 
+						$isfinal = "No";
 						//Check if sending email is set to 1
 						if($isemail==1){ //send emails to next 
 
@@ -339,6 +342,7 @@
 
 	$json['ms'] = $msgz;
 	$json['stat'] = $status;
+	$json['isfinal'] = $isfinal;
 
 	$json2[] = $json;
 		 
