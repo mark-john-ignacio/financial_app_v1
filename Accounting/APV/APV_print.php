@@ -197,8 +197,8 @@ html,
 	?>
 	<tr>
         <td>&nbsp;</td>
-		<td align="right"><?=number_format($xtotdebit,2);?></td>
-		<td align="right"><?=number_format($xtotcredit,2);?></td>
+		<td align="right"><b><?=number_format($xtotdebit,2);?></b></td>
+		<td align="right"><b><?=number_format($xtotcredit,2);?></b></td>
 	</tr>
 </table>
 
