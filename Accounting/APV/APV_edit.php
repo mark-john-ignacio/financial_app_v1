@@ -3100,7 +3100,7 @@
 					$(this).find('input[name="txtnvatrate"]').attr("name","txtnvatrate" + tx);
 					$(this).find('input[name="txtnvatval"]').attr("name","txtnvatval" + tx);
 					$(this).find('input[name="txtvatnet"]').attr("name","txtvatnet" + tx);
-					$(this).find('input[name="txtewtcode"]').attr("name","txtewtcode" + tx);
+					$(this).find('select[name="txtewtcode"]').attr("name","txtewtcode" + tx);
 					$(this).find('input[name="txtewtrate"]').attr("name","txtewtrate" + tx);
 					$(this).find('input[name="txtewtamt"]').attr("name","txtewtamt" + tx);  
 					//$(this).find('input[name="txtpayment"]').attr("name","txtpayment" +tx);
