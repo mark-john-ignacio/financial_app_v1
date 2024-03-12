@@ -22,6 +22,8 @@
             $ctin = $row[2];
             $ccode = $row[3];
             $cacctcode = $row[7];
+            $crem = $row[6];
+
             $nvatamt = str_replace( ',', '', $row[9]);
             $nvat = str_replace( ',', '', $row[10]);
             $cvatcode = $row[11];
@@ -29,16 +31,30 @@
             $nnonvat = str_replace( ',', '', $row[13]);
             $ngross = str_replace( ',', '', $row[14]);
 
-            mysqli_query($con, "INSERT into apv_temp(`compcode`, `nid`, `ddate`, `cref`, `ctin`, `ccode`, `cacctcode`, `nvatamt`, `nvat`, `cvatcode`, `ncharges`, `nnonvat`, `ngross`) VALUES ('$company',".$nforid.",'$date','$cref','$ctin','$ccode','$cacctcode','$nvatamt','$nvat','$cvatcode','$ncharges','$nnonvat','$ngross')");
+            $crem =  mysqli_real_escape_string($con, $crem);
+
+            mysqli_query($con, "INSERT into apv_temp(`compcode`, `nid`, `ddate`, `cref`, `ctin`, `ccode`, `cacctcode`, `nvatamt`, `nvat`, `cvatcode`, `ncharges`, `nnonvat`, `ngross`, `cparticulars`) VALUES ('$company',".$nforid.",'$date','$cref','$ctin','$ccode','$cacctcode','$nvatamt','$nvat','$cvatcode','$ncharges','$nnonvat','$ngross','$crem')");
         }
     }
 
-    $query = mysqli_query($con, "Select A.*, B.cname, C.cacctdesc From apv_temp A left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode left join accounts C on A.compcode=C.compcode and A.cacctcode=C.cacctid Where A.compcode='$company'");
+    $witherr = "";
+    $query = mysqli_query($con, "Select A.*, IFNULL(B.cname,'') as cname, IFNULL(C.cacctdesc,'') as cacctdesc From apv_temp A left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode left join accounts C on A.compcode=C.compcode and A.cacctcode=C.cacctid Where A.compcode='$company'");
     $bkrectemp = array();
     while($row = mysqli_fetch_array($query, MYSQLI_ASSOC)){
         $bkrectemp[] = $row;
-    }
 
+        if($row['ddate']=="" || $row['ddate']==null){
+            $witherr = "YES";
+        }
+
+        if($row['cname']==""){
+            $witherr = "YES";
+        }
+
+        if($row['cacctdesc']==""){
+            $witherr = "YES";
+        }
+    }
     
 ?>
 
@@ -94,7 +110,21 @@
 
 <body style="padding:5px">
     <fieldset>
-        <legend>APV (Others) Uploaded List</legend>	
+        <legend>  
+            <div class="col-xs-6 nopadding"> APV (Others) Uploaded List </div> 
+            <div class= "col-xs-6 text-right nopadwdown" id="salesstat">
+                <?php
+                    if($witherr==""){
+                ?>
+                    <button type="button" class="btn btn-success btn-sm" id="btnproc">Proceed</button>
+                <?php
+                    }else{
+                        echo "<h4>Please Check the file uploaded!</h4>";
+                    }
+                ?>
+            </div>
+            
+        </legend>	
         <table class="table table-sm" id="TblMatch">
             <thead>
                 <tr>
@@ -116,15 +146,16 @@
             <tbody>
                 <?php
                     foreach($bkrectemp as $row){
+                        if($row['ddate']=="" || $row['ddate']==null || $row['cname']=="" || $row['cacctdesc']==""){
                 ?>
                     <tr>
                         <td> <?=$row['ddate']?> </td>
                         <td> <?=$row['cref']?> </td>
                         <td> <?=$row['ccode']?> </td>
                         <td> <?=$row['cname']?></td>
+                        <td> <?=$row['cparticulars']?> </td>
                         <td> <?=$row['cacctcode']?> </td>
                         <td> <?=$row['cacctdesc']?></td>
-                        <td> </td>
                         <td> <?=$row['nvatamt']?> </td>
                         <td> <?=$row['nvat']?> </td>
                         <td> <?=$row['cvatcode']?> </td>
@@ -133,9 +164,31 @@
                         <td> <?=$row['ngross']?> </td>
                     </tr>
                 <?php
+                        }
+                    }
+
+                    if($witherr==""){
+                        echo "<tr><td colspan='13' align='center'> <h4 style='color: red'> NO ERRORS FOUND </h4> </td></tr>";
                     }
                 ?>
             </tbody>
     </table>
+
+    <form action="APVGen/uploadtran_Del.php" method="get" name="frmgen" id="frmgen">
+        <input type="hidden" name="crid" id="crid" value="<?=$creditcode?>">            
+    </form>
 </body>
 </html>
+<?php
+    if($witherr==""){
+?>
+<script type="text/javascript">
+    $(document).ready(function(e) {
+        $("#btnproc").on("click", function(){
+            $("#frmgen").submit();
+        });
+    });
+</script>
+<?php
+    }
+?>

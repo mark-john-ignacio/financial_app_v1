@@ -97,7 +97,7 @@
 					}
 				?>
 
-				<!--<button type="button" class="btn btn-warning btn-sm" id="btnUpload" name="btnUpload" title="Upload Liquidations"><span class="fa fa-upload"></span></button>-->
+				<button type="button" class="btn btn-warning btn-sm" id="btnUpload" name="btnUpload" title="Upload Liquidations"><span class="fa fa-upload"></span></button>
 
 			</div>
 			<div class="col-xs-3 nopadwtop text-right" style="height:30px !important; padding-right: 10px !important">
@@ -455,7 +455,7 @@
 											
 										else{
 
-											return 	"<div id=\"msg"+full[0]+"\"> <a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"','"+full[4]+"')\" class=\"btn btn-xs btn-default<?=($poststat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-up\" style=\"font-size:20px;color:Green ;\" title=\"Approve transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"','"+full[4]+"')\" class=\"btn btn-xs btn-default<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:20px;color:Red ;\" title=\"Cancel transaction\"></i></a> </div>";
+											return 	"<div id=\"msg"+full[0]+"\"> <a href=\"javascript:;\" onClick=\"trans('POST','"+full[0]+"','"+full[4]+"')\" class=\"btn btn-default<?=($poststat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-up\" style=\"font-size:18px;color:Green ;\" title=\"Approve transaction\"></i></a> <a href=\"javascript:;\" onClick=\"trans('CANCEL','"+full[0]+"','"+full[4]+"')\" class=\"btn btn-default<?=($cancstat!="True") ? " disabled" : ""?>\"><i class=\"fa fa-thumbs-down\" style=\"font-size:18px;color:Red ;\" title=\"Cancel transaction\"></i></a> </div>";
 
 										}
 									}
