@@ -355,16 +355,6 @@ ob_end_clean();
 
 $cxsmsgs = "";
 
-	$result = mysqli_query($con,"SELECT * FROM `parameters` where compcode='$company' and ccode in ('POEMAILBODY')"); 
-            
-    if (mysqli_num_rows($result)!=0) {
-      	while($comprow = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-                 
-           $emi= $comprow['cdesc']; 
-
-		}
-	}
-
 	// send the captured HTML from the output buffer to the mPDF class for processing
 	$mpdf->WriteHTML($html);
 	$mpdf->Output('../../PDFiles/PO/'.$csalesno.'.pdf', \Mpdf\Output\Destination::FILE);
@@ -390,8 +380,6 @@ $cxsmsgs = "";
 	$mail->FromName = $logonamz;
 	$mail->Sender = $getcred['cusnme']; // indicates ReturnPath header
 	$mail->Subject = $subject;
-	$mail->CharSet = "UTF-8";
-	$mail->Encoding = 'base64'; 
 	$mail->Body = $body;
 
 	$mail->addReplyTo($getcred['useremail'], $_SESSION['employeefull']);
