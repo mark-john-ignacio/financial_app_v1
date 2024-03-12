@@ -66,14 +66,14 @@ if($isokall=="True"){
 	?>
 	<script>
 		alert("PR Approvals Successfully Saved!");
-		window.location.replace("https://<?//=$_SERVER['HTTP_HOST']?>/System");
+		window.location.replace("https://<?=$_SERVER['HTTP_HOST']?>/System");
 	</script>
 	<?php
 }else{
 	?>
 	<script>
 		alert("PR Approvals has error saving!");
-		window.location.replace("https://<?//=$_SERVER['HTTP_HOST']?>/System");
+		window.location.replace("https://<?=$_SERVER['HTTP_HOST']?>/System");
 	</script>
 	<?php
 }
