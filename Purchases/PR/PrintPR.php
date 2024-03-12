@@ -181,22 +181,29 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 			<?php
 				//get approvals 2nd and 3rd
+
+				$sqdts1 = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign from purchrequest_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cprno = '$csalesno' and a.nlevel=1 order by a.nlevel");
+
 				$sqdts2 = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign from purchrequest_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cprno = '$csalesno' and a.nlevel=2 order by a.nlevel");
 
 				$sqdts3 = mysqli_query($con,"select a.*, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign from purchrequest_trans_approvals a left join users c on a.userid=c.Userid where a.compcode='$company' and a.cprno = '$csalesno' and a.nlevel=3 order by a.nlevel");
 			?>
 				<table border="0" width="100%" style="border-collapse: collapse;">
 					<tr>
-						<td align="center" width="33%">
+						<td align="center" width="25%">
 							<b>Prepared By</b>
 						</td>
 
-						<td align="center" width="34%">
-							<b><?=(mysqli_num_rows($sqdts2)!=0) ? "Checked By" : ""?></b>
+						<td align="center" width="25%">
+							<b><?=(mysqli_num_rows($sqdts1)!=0) ? "Checked By" : ""?></b>
 						</td>
 
-						<td align="center" width="33%">
-							<b><?=(mysqli_num_rows($sqdts3)!=0) ? "Approved By" : ""?></b>		
+						<td align="center" width="25%">
+							<b><?=(mysqli_num_rows($sqdts2)!=0) ? "Approved By" : ""?></b>
+						</td>
+
+						<td align="center" width="25%">
+							<b><?=(mysqli_num_rows($sqdts3)!=0) ? "Noted By" : ""?></b>		
 						</td>
 					</tr>
 
@@ -212,6 +219,35 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";
 								}
 							?>
+						</td>
+
+						<td align="center" valign="top">
+							<table border="0" width="100%" style="border-collapse: collapse;">	
+
+								<?php
+									if (mysqli_num_rows($sqdts1)!=0) {
+										while($row = mysqli_fetch_array($sqdts2, MYSQLI_ASSOC)){
+											$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
+								?>
+									<tr>
+										<td align="center">
+											<?php
+
+												if($row['lapproved']==1 && $row['cusersign']!=""){
+													echo "<div style=\"text-align: center; display: block\"><img src = '".$row['cusersign']."?x=".time()."' width='150px'></div>";
+													echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";												
+												}else{
+													echo "<div style=\"text-align: center; display: block; height: 50px\">&nbsp;</div>";
+													echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";
+												}
+											?>
+										</td>
+									</tr>
+								<?php
+										}
+									}
+								?>
+							</table>
 						</td>
 
 						<td align="center" valign="top">
