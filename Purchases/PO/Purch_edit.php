@@ -1884,14 +1884,14 @@ else{
 					$("#AlertMsg").html("<b>SUCCESFULLY SAVED: </b> Please wait a moment...");
 					$("#alertbtnOK").hide();
 
-						setTimeout(function() {
-							$("#AlertMsg").html("");
-							$('#AlertModal').modal('hide');
-				
-								$("#txtctranno").val(trancode);
-								$("#frmedit").submit();
-				
-						}, 3000); // milliseconds = 3seconds
+					setTimeout(function() {
+						$("#AlertMsg").html("");
+						$('#AlertModal').modal('hide');
+			
+						$("#txtctranno").val(trancode);
+						$("#frmedit").submit();
+			
+					}, 3000); // milliseconds = 3seconds
 
 					
 				}
