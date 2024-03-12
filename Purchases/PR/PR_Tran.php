@@ -280,104 +280,97 @@
 			}
 		}
 
-		//GET LEVEL 1 Approver base on users access
-			$sqlprlvl1 = mysqli_query($con,"select DISTINCT userid from users_access where pageid in ('PR_post','PR_cancel') and userid in (select UserID from users_sections where section_nid = ".$SecsList." and UserID<>'Admin')");
-		//END  LEVEL 1 Approver
+		//to be sure
+		mysqli_query($con,"Update purchrequest_trans_approvals set compcode='".date("Ymd_His")."' where compcode='$company' and cprno='$tranno'");								
 
-			if (mysqli_num_rows($sqlprlvl1)!=0){
+		$sqlhead = mysqli_query($con,"select a.locations_id from purchrequest a where a.compcode='$company' and a.ctranno = '$tranno'");
 
-				while($rowprx = mysqli_fetch_array($sqlprlvl1, MYSQLI_ASSOC)){
-					$sql = "INSERT INTO purchrequest_trans_approvals (`compcode`,`cprno`,`nlevel`,`userid`) values ('$company','$tranno','1','".$rowprx['userid']."')";
+		$SecsList = "";
+		if (mysqli_num_rows($sqlhead)!=0) {
+			while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+				$SecsList = $row['locations_id'];
+			}
+		}
+
+		//get approvers
+		$resPOApps = mysqli_query($con,"SELECT * FROM `purchrequest_approvals_id` WHERE compcode='".$_SESSION['companyid']."'");
+
+		if (mysqli_num_rows($resPOApps)!=0) {
+
+			while($row = mysqli_fetch_array($resPOApps, MYSQLI_ASSOC)){
+
+				//pag ALL criteria insert na for approval
+				if(in_array("ALL", explode(",",$row['locations_id']))){
+
+					$sql = "INSERT INTO purchrequest_trans_approvals (`compcode`,`cprno`,`nlevel`,`userid`) values ('$company','$tranno','".$row['pr_approval_id']."','".$row['userid']."')";
+
 					if ($con->query($sql) !== TRUE) {
 						$msgz = "<b>ERROR: </b>There's a problem sending your transaction!";
 						$status = "False";
-					}else{
-						$xsent="True";
 					}
-				}
 
-				//get approvers
-				$resPOApps = mysqli_query($con,"SELECT * FROM `purchrequest_approvals_id` WHERE compcode='".$_SESSION['companyid']."'");
+				}else{
 
-				if (mysqli_num_rows($resPOApps)!=0) {
-
-					while($row = mysqli_fetch_array($resPOApps, MYSQLI_ASSOC)){
-
-						//pag ALL criteria insert na for approval
-						if(in_array("ALL", explode(",",$row['locations_id']))){
+					$xsent="False";
+						if(in_array($SecsList, explode(",",$row['locations_id']))){
 
 							$sql = "INSERT INTO purchrequest_trans_approvals (`compcode`,`cprno`,`nlevel`,`userid`) values ('$company','$tranno','".$row['pr_approval_id']."','".$row['userid']."')";
 
 							if ($con->query($sql) !== TRUE) {
 								$msgz = "<b>ERROR: </b>There's a problem sending your transaction!";
 								$status = "False";
-							}
-
-						}else{
-
-							$xsent="False";
-								if(in_array($SecsList, explode(",",$row['locations_id']))){
-
-									$sql = "INSERT INTO purchrequest_trans_approvals (`compcode`,`cprno`,`nlevel`,`userid`) values ('$company','$tranno','".$row['pr_approval_id']."','".$row['userid']."')";
-
-									if ($con->query($sql) !== TRUE) {
-										$msgz = "<b>ERROR: </b>There's a problem sending your transaction!";
-										$status = "False";
-									}else{
-										$xsent="True";
-									}
-
-								}
-						}
-
-					}
-
-
-				}
-
-				if($status !== "False"){
-
-					if (!mysqli_query($con,"Update purchrequest set lsent=1, ddatetimesent='".date('Y-m-d H:i:s')."', csentby='".$preparedby."' where compcode='$company' and ctranno='$tranno'")){
-						$msgz = "<b>ERROR: </b>There's a problem sending your transaction!";
-						$status = "False";
-					}else{
-
-						$msgz = "<b>SUCCESS: </b>Your transaction is successfully sent!";
-						$status = "SENT";
-
-						mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-						values('$tranno','$preparedby',NOW(),'SEND','PURCHASE REQUEST','$compname','Cancel Record')");
-
-						if($isemail==1){ //send emails to level 1
-
-							$resemailapps = mysqli_query($con,"SELECT a.cprno,b.Fname,b.cemailadd FROM `purcrequest_trans_approvals` a left join users b on a.userid=b.Userid where a.compcode='$company' and a.cprno='$tranno' and a.nlevel = (Select MIN(nlevel) from `purcrequest_trans_approvals` where compcode='$company' and cprno='$tranno')");
-
-							if (mysqli_num_rows($resemailapps)!=0) {
-								while($row = mysqli_fetch_array($resemailapps, MYSQLI_ASSOC)){
-
-									sendEmail($row['cemailadd'],$row['Fname'],$tranno);
-
-								}
+							}else{
+								$xsent="True";
 							}
 
 						}
-
-					}
-
 				}
 
-			}else{
-				$msgz = "<b>ERROR: </b>NO Level 1 Approver found!";
-				$status = "False";
 			}
 
+
+		}
+
+		if($status !== "False"){
+
+			if (!mysqli_query($con,"Update purchrequest set lsent=1, ddatetimesent='".date('Y-m-d H:i:s')."', csentby='".$preparedby."' where compcode='$company' and ctranno='$tranno'")){
+				$msgz = "<b>ERROR: </b>There's a problem sending your transaction!";
+				$status = "False";
+			}else{
+
+				$msgz = "<b>SUCCESS: </b>Your transaction is successfully sent!";
+				$status = "SENT";
+
+				mysqli_query($con,"INSERT INTO logfile(`ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
+				values('$tranno','$preparedby',NOW(),'SEND','PURCHASE REQUEST','$compname','Cancel Record')");
+
+				if($isemail==1){ //send emails to level 1
+
+					$resemailapps = mysqli_query($con,"SELECT a.cprno,b.Fname,b.cemailadd FROM `purcrequest_trans_approvals` a left join users b on a.userid=b.Userid where a.compcode='$company' and a.cprno='$tranno' and a.nlevel = (Select MIN(nlevel) from `purcrequest_trans_approvals` where compcode='$company' and cprno='$tranno')");
+
+					if (mysqli_num_rows($resemailapps)!=0) {
+						while($row = mysqli_fetch_array($resemailapps, MYSQLI_ASSOC)){
+
+							sendEmail($row['cemailadd'],$row['Fname'],$tranno);
+
+						}
+					}
+
+				}
+
+			}
+
+		}
+
 	}
+
 
 	$json['ms'] = $msgz;
 	$json['stat'] = $status;
 
 	$json2[] = $json;
-		 
+		
 	echo json_encode($json2);
+
 
 ?>
