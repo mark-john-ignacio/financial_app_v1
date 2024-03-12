@@ -226,7 +226,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 								<?php
 									if (mysqli_num_rows($sqdts1)!=0) {
-										while($row = mysqli_fetch_array($sqdts2, MYSQLI_ASSOC)){
+										while($row = mysqli_fetch_array($sqdts1, MYSQLI_ASSOC)){
 											$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
 								?>
 									<tr>
