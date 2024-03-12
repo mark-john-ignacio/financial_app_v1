@@ -201,7 +201,7 @@
 	values('$company','$cPVNo','$preparedby',NOW(),'UPDATED','APV','$compname','Update Record')");
 
 ?>
-<form action="APV_edit.php" name="frmpos" id="frmpos" method="post">
+<form action="th_acctentry2.php" name="frmpos" id="frmpos" method="post">
 	<input type="hidden" name="txtctranno" id="txtctranno" value="<?php echo $cPVNo;?>" />
 </form>
 <script>

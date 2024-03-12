@@ -229,7 +229,7 @@ require_once "../../Connection/connection_string.php";
 		}	
 ?>
 
-<form action="th_acctentry2.php" name="frmpos" id="frmpos" method="post">
+<form action="APV_edit.php" name="frmpos" id="frmpos" method="post">
 	<input type="hidden" name="txtctranno" id="txtctranno" value="<?php echo $cSINo;?>" />
 </form>
 <script>
