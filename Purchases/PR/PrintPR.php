@@ -213,7 +213,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 								if($lSent==1 && $cpreparedBySign!=""){
 									echo "<div style=\"text-align: center; display: block\"><img src = '".$cpreparedBySign."?x=".time()."' width='150px'></div>";
-									echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";												
+									//echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";												
 								}else{
 									echo "<div style=\"text-align: center; display: block; height: 50px\">&nbsp;</div>";
 									echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";
