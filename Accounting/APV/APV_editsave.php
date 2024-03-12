@@ -205,6 +205,6 @@
 	<input type="hidden" name="txtctranno" id="txtctranno" value="<?php echo $cPVNo;?>" />
 </form>
 <script>
-	alert('Record Succesfully Updated');
+	//alert('Record Succesfully Updated');
     document.forms['frmpos'].submit();
 </script>
