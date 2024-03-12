@@ -2,15 +2,16 @@
 	if(!isset($_SESSION)){
 		session_start();
 
-
-		include('../../vendor/autoload.php');
-
-		require("../../vendor/phpmailer/phpmailer/src/PHPMailer.php");
-		require("../../vendor/phpmailer/phpmailer/src/SMTP.php");
-
-		$mpdf = new \Mpdf\Mpdf();
-		ob_start();
 	}
+
+	header('Content-Type: text/html; charset=ISO-8859-1');
+	include('../../vendor/autoload.php');
+
+	require("../../vendor/phpmailer/phpmailer/src/PHPMailer.php");
+	require("../../vendor/phpmailer/phpmailer/src/SMTP.php");
+
+	$mpdf = new \Mpdf\Mpdf();
+	ob_start();
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
@@ -350,10 +351,10 @@
 
 <?php
 
-$html = ob_get_contents();
-ob_end_clean();
+	$html = ob_get_contents();
+	ob_end_clean();
 
-$cxsmsgs = "";
+	$cxsmsgs = "";
 
 	// send the captured HTML from the output buffer to the mPDF class for processing
 	$mpdf->WriteHTML($html);
@@ -404,29 +405,19 @@ $cxsmsgs = "";
 
 	$mail->addAttachment("../../PDFiles/PO/".$csalesno.".pdf");
 
-	
+	$cxsmsgs = "";
 	if(!$mail->Send()){
 		$cxsmsgs = "Mailer Error: " . $mail->ErrorInfo;
-
-		echo  "Mailer Error: " . $mail->ErrorInf."<br><br>";
-		//print_r($mail);
 	}else{
 		$cxsmsgs = "Email Successfully Sent";
-
-		?>
-
-			<form action="Purch_edit.php" name="frmpos" id="frmpos" method="post">
-				<input type="hidden" name="txtctranno" id="txtctranno" value="<?php echo $csalesno;?>" />
-			</form>
-			<script>
-				alert("<?=$cxsmsgs?>");
-				document.forms['frmpos'].submit();
-			</script>
-
-		<?php
 	}
-
 
 ?>
 
-
+<form action="Purch_edit.php" name="frmpos" id="frmpos" method="post">
+	<input type="hidden" name="txtctranno" id="txtctranno" value="<?php echo $csalesno;?>" />
+</form>
+<script>
+	alert("<?=$cxsmsgs?>");
+    document.forms['frmpos'].submit();
+</script>
