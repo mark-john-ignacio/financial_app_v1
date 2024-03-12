@@ -235,7 +235,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 												if($row['lapproved']==1 && $row['cusersign']!=""){
 													echo "<div style=\"text-align: center; display: block\"><img src = '".$row['cusersign']."?x=".time()."' width='150px'></div>";
-													echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";												
+													//echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";												
 												}else{
 													echo "<div style=\"text-align: center; display: block; height: 50px\">&nbsp;</div>";
 													echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";
@@ -264,7 +264,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 												if($row['lapproved']==1 && $row['cusersign']!=""){
 													echo "<div style=\"text-align: center; display: block\"><img src = '".$row['cusersign']."?x=".time()."' width='150px'></div>";
-													echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";												
+													//echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";												
 												}else{
 													echo "<div style=\"text-align: center; display: block; height: 50px\">&nbsp;</div>";
 													echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";
@@ -293,7 +293,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 												if($row['lapproved']==1 && $row['cusersign']!=""){
 													echo "<div style=\"text-align: center; display: block\"><img src = '".$row['cusersign']."?x=".time()."' width='150px'></div>";
-													echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";												
+													//echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";												
 												}else{
 													echo "<div style=\"text-align: center; display: block; height: 50px\">&nbsp;</div>";
 													echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";
