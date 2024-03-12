@@ -18,6 +18,10 @@ function chkgrp($valz) {
 	}
 }
 
+//echo "<br>";
+//print_r($_REQUEST);
+//echo "</br>";
+
 
 $chkSales = mysqli_query($con,"select * from purchase where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By cpono desc LIMIT 1");
 if (mysqli_num_rows($chkSales)==0) {
@@ -53,7 +57,6 @@ else {
 	$cRemarks = chkgrp($_REQUEST['txtremarks']); 
 	$cContact = chkgrp($_REQUEST['txtcontactname']); 
 	$cContactEmail = chkgrp($_REQUEST['contact_email']);
-	$nGross = str_replace(",","",$_REQUEST['txtnGross']);
 
 	$CurrCode = $_REQUEST['selbasecurr']; 
 	$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
@@ -67,17 +70,29 @@ else {
 		$PayTerms = "NULL";
 	}
 
+	$nnetvat = $_REQUEST['txtnNetVAT']; //VATABLE SALES   nnet
+	$nexempt = $_REQUEST['txtnExemptVAT']; //VAT EXEMPT SALES   nexempt
+	$nvat = $_REQUEST['txtnVAT']; //VAT   nvat
+	$nGrossBefore = $_REQUEST['txtnGrossBef']; //TOTAL GROSS  BEFORE DISCOUNT ngrossbefore
+	if(isset($_REQUEST['txtnEWT'])){
+		$nLessEWT = $_REQUEST['txtnEWT']; //EWT
+	}else{
+		$nLessEWT = ""; //EWT
+	}
+	$nGross = $_REQUEST['txtnGross']; //TOTAL AMOUNT ngross
+	$BaseGross= $_REQUEST['txtnBaseGross']; //TOTAL AMOUNT * currency rate    nbasegross
+
+	if(isset($_REQUEST['selewt'])){
+		$cewtcode = implode(",",$_REQUEST['selewt']);
+	}else{
+		$cewtcode = "";
+	}
+
 	$delto = chkgrp($_REQUEST['txtdelcust']); 
 	$deladd = chkgrp($_REQUEST['txtdeladd']); 
 	$delnotes = chkgrp($_REQUEST['textdelnotes']);
 	$billto = chkgrp($_REQUEST['txtbillto']); 
 	//$cterms = chkgrp($_REQUEST['selterms']); 
-
-	if(isset($_REQUEST['selewt'])){
-		$cewtcode = "'".$_REQUEST['selewt']."'";
-	}else{
-		$cewtcode = "NULL";
-	}
 
 	$chkCustAcct = mysqli_query($con,"select cacctcode from suppliers where compcode='$company' and ccode='$cCustID'");
 
@@ -94,7 +109,7 @@ else {
 	$preparedby = $_SESSION['employeeid'];
 	
 	//INSERT HEADER	
-	if (!mysqli_query($con,"INSERT INTO purchase(`compcode`, `cpono`, `ccode`, `cremarks`, `ddate`, `dneeded`, `ngross`, `nbasegross`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `cpreparedby`, `lcancelled`, `lapproved`, `lprintposted`, `ccustacctcode`, `ccontact`, `ccontactemail`, `ladvancepay`, `cterms`, `cdelto`, `ddeladd`, `ddelinfo`, `cbillto`, `cewtcode`) values('$company', '$cSINo', '$cCustID', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby', 0, 0, 0, '$AccntCode', $cContact, $cContactEmail, $PayType, $PayTerms, $delto, $deladd, $delnotes, $billto, $cewtcode)")){
+	if (!mysqli_query($con,"INSERT INTO purchase(`compcode`, `cpono`, `ccode`, `cremarks`, `ddate`, `dneeded`, `nnet`, `nvat`, `nexempt`, `newt`, `cewtcode`, `ngrossbefore`, `ngross`, `nbasegross`, `ccurrencycode`, `ccurrencydesc`, `nexchangerate`, `cpreparedby`, `lcancelled`, `lapproved`, `lprintposted`, `ccustacctcode`, `ccontact`, `ccontactemail`, `ladvancepay`, `cterms`, `cdelto`, `ddeladd`, `ddelinfo`, `cbillto`) values('$company', '$cSINo', '$cCustID', $cRemarks, NOW(), STR_TO_DATE('$dDelDate', '%m/%d/%Y'), '$nnetvat', '$nvat' ,'$nexempt', '$nLessEWT', '$cewtcode' ,'$nGrossBefore', '$nGross', '$BaseGross', '$CurrCode', '$CurrDesc', '$CurrRate', '$preparedby', 0, 0, 0, '$AccntCode', $cContact, $cContactEmail, $PayType, $PayTerms, $delto, $deladd, $delnotes, $billto)")){
 		echo "False";
 	}
 	else{
