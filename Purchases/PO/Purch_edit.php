@@ -146,7 +146,6 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$lPosted = $row['lapproved'];
 		$lVoid = $row['lvoid'];
 
-
 		$cemailstoo = $row['cemailto'];
 		$cemailsccc = $row['cemailcc'];
 		$cemailsbcc = $row['cemailbcc'];
@@ -360,11 +359,12 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								<select id="selewt" name="selewt[]" class="form-control input-sm selectpicker" multiple required tabindex="3">
 									<?php
 										foreach(@$arrewtlist as $rows){ //$cewtcode
-											if($cewtcode==$rows['ctaxcode']){
+											if(in_array($rows['ctaxcode'], explode(",",$cewtcode))){
 												$isselc = "selected";
 											}else{
 												$isselc = "";
 											}
+
 											echo "<option value=\"".$rows['ctaxcode']."\"  data-rate=\"".$rows['nrate']."\" ".$isselc.">".$rows['ctaxcode'].": ".$rows['nrate']."%</option>";
 										}
 									?>										
