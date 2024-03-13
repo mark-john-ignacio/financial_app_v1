@@ -207,7 +207,7 @@
 		$xurl = "th_acctentry2.php";
 	}
 ?>
-<form action="th_acctentry2.php" name="frmpos" id="frmpos" method="post">
+<form action="<?=$xurl?>" name="frmpos" id="frmpos" method="post">
 	<input type="hidden" name="txtctranno" id="txtctranno" value="<?php echo $cPVNo;?>" />
 </form>
 <script>
@@ -218,6 +218,6 @@
 	<?php
 		}
 	?>
-	
+
     document.forms['frmpos'].submit();
 </script>
