@@ -200,11 +200,24 @@
 	mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
 	values('$company','$cPVNo','$preparedby',NOW(),'UPDATED','APV','$compname','Update Record')");
 
+	$xurl = "";
+	if($cAPtype=="Others" || $cAPtype=="PettyCash"){
+		$xurl = "APV_edit.php";
+	}else{
+		$xurl = "th_acctentry2.php";
+	}
 ?>
 <form action="th_acctentry2.php" name="frmpos" id="frmpos" method="post">
 	<input type="hidden" name="txtctranno" id="txtctranno" value="<?php echo $cPVNo;?>" />
 </form>
 <script>
-	//alert('Record Succesfully Updated');
+	<?php
+		if($cAPtype=="Purchases" || $cAPtype=="PurchAdv"){
+	?>
+		alert('Record Succesfully Saved');
+	<?php
+		}
+	?>
+	
     document.forms['frmpos'].submit();
 </script>
