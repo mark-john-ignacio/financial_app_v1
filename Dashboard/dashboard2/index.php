@@ -52,6 +52,9 @@ License: For each use you must have a valid license purchased only from above li
     <link href="assets/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
     <link href="assets/css/style.bundle.css" rel="stylesheet" type="text/css" />
     <!--end::Global Stylesheets Bundle-->
+    <!--begin::Apexchart JS-->
+    <link href="https://cdn.jsdelivr.net/npm/apexcharts@latest/dist/apexcharts.min.css" rel="stylesheet">
+    <!--end::Apexchart JS-->
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -79,7 +82,7 @@ License: For each use you must have a valid license purchased only from above li
                                         <a href="#" class="text-dark text-hover-primary fw-bolder fs-3">Total Sales</a>
                                         <!--end::Title-->
                                         <!--begin::Chart-->
-                                        <div class="mixed-widget-13-chart" style="height: 100px"></div>
+                                        <div class="total-sales-chart" style="height: 100px"></div>
                                         <!--end::Chart-->
                                     </div>
                                     <!--end::Wrapper-->
@@ -596,6 +599,76 @@ License: For each use you must have a valid license purchased only from above li
                         <script src="assets/js/custom/modals/create-app.js"></script>
                         <script src="assets/js/custom/modals/upgrade-plan.js"></script>
                         <!--end::Page Custom Javascript-->
+<!--                        begin:: Javascript apex1-->
+                        <script src="https://cdn.jsdelivr.net/npm/apexcharts@latest"></script>
+                        <script>
+                            var options = {
+                                series: [{
+                                    name: 'Net Profit',
+                                    data: [30000, 40000, 35000, 50000, 49000, 60000, 70000, 91000, 125000]
+                                }],
+                                chart: {
+                                    height: 100,
+                                    type: 'line', // Use a line chart type instead of 'area'
+                                    toolbar: {
+                                        show: false // Hide the toolbar
+                                    },
+                                    zoom: {
+                                        enabled: false // Disable zooming
+                                    },
+                                    sparkline: {
+                                        enabled: true // Enable sparkline mode for a minimalist look
+                                    }
+                                },
+                                stroke: {
+                                    curve: 'smooth',
+                                    width: 3, // Set the stroke width to 1 for a thin line
+                                    colors: ['#FFFFFF'] // Set the line color to white
+                                },
+                                tooltip: {
+                                    enabled: true, // Enable tooltips
+                                    x: {
+                                        formatter: function(val) {
+                                            return 'Month: ' + val; // Format x-axis tooltip
+                                        }
+                                    },
+                                    y: {
+                                        formatter: function(val) {
+                                            return 'Net Profit: ₱' + val.toLocaleString(); // Format y-axis tooltip
+                                        }
+                                    }
+                                },
+                                dataLabels: {
+                                    enabled: false // Disable data labels
+                                },
+                                grid: {
+                                    show: false // Hide the grid lines
+                                },
+                                xaxis: {
+                                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+                                    labels: {
+                                        show: false // Hide the x-axis labels
+                                    },
+                                    axisTicks: {
+                                        show: false // Hide the x-axis ticks
+                                    },
+                                    axisBorder: {
+                                        show: false // Hide the x-axis border
+                                    }
+                                },
+                                yaxis: {
+                                    labels: {
+                                        show: false // Hide the y-axis labels
+                                    }
+                                }
+                            };
+
+                            var chart = new ApexCharts(document.querySelector(".total-sales-chart"), options);
+                            chart.render();
+
+                        </script>
+<!--end::Javascript apex1-->
+
                         <!--end::Javascript-->
 </body>
 <!--end::Body-->
