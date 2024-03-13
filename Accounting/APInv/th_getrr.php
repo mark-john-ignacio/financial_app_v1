@@ -12,9 +12,7 @@ require_once "../../Connection/connection_string.php";
 	$ponos = array();
 	$resrr = mysqli_query ($con, "select * from receive_t WHERE compcode='$company' and ctranno = '".$_REQUEST['id']."'"); 
 	while($rowrr = mysqli_fetch_array($resrr, MYSQLI_ASSOC)){
-		if(!in_array($rowrr['creference'],$apponos)){
-			$ponos[] = $rowrr['creference'];
-		}
+		$ponos[] = $rowrr['creference'];
 	}
 
 

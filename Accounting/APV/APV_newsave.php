@@ -100,8 +100,6 @@
 		//$applid = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtnapplied'.$z]));  
 		$apcms = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtncm'.$z]));
 		//$apdiscs = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtndiscs'.$z]));
-		
-		$cacctno = "";
 
 		$refcidenttran = $cSINo."P".$z;
 	
