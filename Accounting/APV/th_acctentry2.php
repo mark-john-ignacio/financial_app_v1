@@ -230,7 +230,7 @@ require_once "../../Connection/connection_string.php";
 ?>
 
 <form action="APV_edit.php" name="frmpos" id="frmpos" method="post">
-	<input type="hidden" name="txtctranno" id="txtctranno" value="<?php echo $cSINo;?>" />
+	<input type="hidden" name="txtctranno" id="txtctranno" value="<?=$tran;?>" />
 </form>
 <script>
 	alert('Record Succesfully Saved');

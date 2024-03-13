@@ -208,7 +208,7 @@
 	}
 ?>
 <form action="<?=$xurl?>" name="frmpos" id="frmpos" method="post">
-	<input type="hidden" name="txtctranno" id="txtctranno" value="<?php echo $cPVNo;?>" />
+	<input type="hidden" name="txtctranno" id="txtctranno" value="<?=$cPVNo;?>" />
 </form>
 <script>
 	<?php
