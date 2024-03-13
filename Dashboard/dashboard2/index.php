@@ -85,25 +85,20 @@ License: For each use you must have a valid license purchased only from above li
                                     <!--end::Wrapper-->
                                     <!--begin::Stats-->
                                     <?php
-                                    global $company, $con;
-                                    $sales = [];
-                                    // Needed a date Query
-                                    // $sql = "SELECT a.*, b.cname FROM receipt a
-                                    // LEFT JOIN customers b ON a.compcode = b.compcode AND a.ccode = b.cempid
-                                    // WHERE a.compcode = '$company' AND a.lapproved = 1 AND a.lcancelled = 0 AND a.lvoid = 0 AND (a.dcutdate BETWEEN '$datefrom' AND '$dateto')";
+                                    // Get the date range for the current week (Monday to today)
+                                    $start_of_current_week = date("Y-m-d", strtotime("monday this week"));
+                                    $current_date = date("Y-m-d");
 
-                                    $sql = "SELECT a.*, b.cname FROM receipt a
-        LEFT JOIN customers b ON a.compcode = b.compcode AND a.ccode = b.cempid
-        WHERE a.compcode = '$company' AND a.lapproved = 1 AND a.lcancelled = 0 AND a.lvoid = 0 AND YEAR(a.ddate) = YEAR(CURDATE())";
-                                    $query = mysqli_query($con, $sql);
+                                    // Query to get the sum of all nnet values for the current week
+                                    $query_current_week = "SELECT SUM(nnet) AS total_nnet_current_week FROM sales WHERE dcutdate >= '$start_of_current_week' AND dcutdate <= '$current_date'";
+                                    $result_current_week = mysqli_query($con, $query_current_week);
+                                    $row_current_week = mysqli_fetch_assoc($result_current_week);
+                                    $total_nnet_current_week = $row_current_week["total_nnet_current_week"];
 
-                                    $cost = 0;
-                                    $sale_cost = 0;
+                                    // Output the total net sales for the current week
+                                    $cost = number_format($total_nnet_current_week, 2, '.', ',');
 
-                                    while($row = $query -> fetch_assoc()){
-                                        array_push($sales, $row['cname']);
-                                        $cost += floatval($row['napplied']);
-                                    } ?>
+                                    ?>
                                     <div class="pt-18">
                                         <!--begin::Symbol-->
                                         <span class="text-dark fw-bolder fs-2x lh-0">₱</span>
@@ -112,7 +107,44 @@ License: For each use you must have a valid license purchased only from above li
                                         <span class="text-dark fw-bolder fs-3x me-2 lh-0"><?= $cost; ?></span>
                                         <!--end::Number-->
                                         <!--begin::Text-->
-                                        <span class="text-dark fw-bolder fs-6 lh-0">+ 28% this week</span>
+                                        <?php
+                                        // Get the date range for last week (Monday to Saturday)
+                                        $start_of_last_week = date("Y-m-d", strtotime("last monday -1 week"));
+                                        $end_of_last_week = date("Y-m-d", strtotime("last sunday -1 day"));
+
+                                        // Get the date range for the current week (Monday to today)
+                                        $start_of_current_week = date("Y-m-d", strtotime("monday this week"));
+                                        $current_date = date("Y-m-d");
+
+                                        // Query to get the total nnet sales for last week
+                                        $query_last_week = "SELECT SUM(nnet) AS total_nnet_last_week FROM sales WHERE dcutdate >= '$start_of_last_week' AND dcutdate <= '$end_of_last_week'";
+                                        $result_last_week = mysqli_query($con, $query_last_week);
+                                        $row_last_week = mysqli_fetch_assoc($result_last_week);
+                                        $total_nnet_last_week = $row_last_week["total_nnet_last_week"];
+
+                                        // Query to get the total nnet sales for the current week
+                                        $query_current_week = "SELECT SUM(nnet) AS total_nnet_current_week FROM sales WHERE dcutdate >= '$start_of_current_week' AND dcutdate <= '$current_date'";
+                                        $result_current_week = mysqli_query($con, $query_current_week);
+                                        $row_current_week = mysqli_fetch_assoc($result_current_week);
+                                        $total_nnet_current_week = $row_current_week["total_nnet_current_week"];
+
+                                        // Calculate the percentage increase or decrease
+                                        $percentage_change = 0;
+                                        if ($total_nnet_last_week != 0) {
+                                            $percentage_change = (($total_nnet_current_week - $total_nnet_last_week) / $total_nnet_last_week) * 100;
+                                        }
+
+                                        // Output the percentage change
+                                        if ($percentage_change > 0) {
+                                            $percentage_change = "+" . round($percentage_change, 2) . "%";
+                                        } elseif ($percentage_change < 0) {
+                                            $percentage_change = round($percentage_change, 2) . "%";
+                                        } else {
+                                            $percentage_change = "No change";
+                                        }
+
+                                        ?>
+                                        <span class="text-dark fw-bolder fs-6 lh-0"><?=$percentage_change;?> this week</span>
                                         <!--end::Text-->
                                     </div>
                                     <!--end::Stats-->
