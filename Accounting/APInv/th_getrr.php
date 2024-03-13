@@ -5,15 +5,18 @@ session_start();
 require_once "../../Connection/connection_string.php";
 
 	$company = $_SESSION['companyid'];
-
+	$json2 = array();
 
 	//rritems
 	$rrdetails = array();
 	$ponos = array();
 	$resrr = mysqli_query ($con, "select * from receive_t WHERE compcode='$company' and ctranno = '".$_REQUEST['id']."'"); 
 	while($rowrr = mysqli_fetch_array($resrr, MYSQLI_ASSOC)){
-		$ponos[] = $rowrr['creference'];
+		if(!in_array($rowrr['creference'],$apponos)){
+			$ponos[] = $rowrr['creference'];
+		}
 	}
+
 
 	//po details
 	$respo = mysqli_query ($con, "select ccurrencycode, nexchangerate, ccurrencydesc, cewtcode from purchase WHERE compcode='$company' and cpono in ('".implode("','", $ponos)."') order by ddate DESC LIMIT 1"); 
@@ -40,9 +43,8 @@ require_once "../../Connection/connection_string.php";
 			$json['lapproved'] = $row['lapproved'];
 			$json['lcancelled'] = $row['lcancelled'];
 			$json['ngross'] = $row['ngross'];
-
 			
-			 $json2[] = $json;
+			$json2[] = $json;
 	
 		}
 	}
@@ -50,8 +52,7 @@ require_once "../../Connection/connection_string.php";
 		$json['cpono'] = "NONE";
 		$json2[] = $json;
 	}
-	
-	
+		
 	echo json_encode($json2);
 
 

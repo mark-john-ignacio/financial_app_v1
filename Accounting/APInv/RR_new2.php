@@ -151,6 +151,7 @@ $company = $_SESSION['companyid'];
 					</div>
 				
 				</tr>
+				
 				<tr>
 					<tH width="100">Remarks:</tH>
 					<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div></td>
