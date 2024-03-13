@@ -86,26 +86,28 @@
 		$acctno = mysqli_real_escape_string($con, $_REQUEST['txtrefacctno'.$z]);
 		$amnt = mysqli_real_escape_string($con, str_replace( ',', '', $_REQUEST['txtnamount'.$z]));
 		
-		$vtcode = mysqli_real_escape_string($con, $_REQUEST['txtnvatcode'.$z]);
-		$vtrate = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtnvatrate'.$z]));
-		$vtvals = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtnvatval'.$z]));
-		$vtnets = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtvatnet'.$z]));
-		$ewtcde = mysqli_real_escape_string($con, $_REQUEST['txtewtcode'.$z]);
-		$ewtrte = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtewtrate'.$z]));
-		$ewtamt = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtewtamt'.$z]));
+		//$vtcode = mysqli_real_escape_string($con, $_REQUEST['txtnvatcode'.$z]);
+		//$vtrate = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtnvatrate'.$z]));
+		//$vtvals = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtnvatval'.$z]));
+		//$vtnets = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtvatnet'.$z]));
+		//$ewtcde = mysqli_real_escape_string($con, $_REQUEST['txtewtcode'.$z]);
+		//$ewtrte = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtewtrate'.$z]));
+		//$ewtamt = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtewtamt'.$z]));
 		//$paymnt = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtpayment'.$z]));
 		$paymnt = 0;
 		$dueamt = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtDue'.$z]));
 		$applid = $dueamt;
 		//$applid = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtnapplied'.$z]));  
 		$apcms = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtncm'.$z]));
-		$apdiscs = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtndiscs'.$z]));
+		//$apdiscs = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtndiscs'.$z]));
 		
 		$cacctno = "";
 
 		$refcidenttran = $cSINo."P".$z;
 	
-		if(!mysqli_query($con,"INSERT INTO `apv_d`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `crefno`, `crefinv`, `namount`, `cvatcode`, `nvatrate`, `nnet`, `nvatamt`, `cewtcode`, `newtrate`, `newtamt`, `napcm`, `napdisc`, `ndue`, `npayments`, `napplied`, `cacctno`) values('$company', '$refcidenttran', '$z', '$cSINo', '$crrno', '$ccustsi', $amnt, '$vtcode', '$vtrate', $vtnets, $vtvals, '$ewtcde', '$ewtrte', $ewtamt, $apcms, $apdiscs, $dueamt, $paymnt, $applid, '$acctno')")){ 
+		//, `cvatcode`, `nvatrate`, `cewtcode`, `newtrate`, `napdisc`, `nnet`, `nvatamt`, `newtamt`
+		//, '$vtcode', '$vtrate', '$ewtcde', '$ewtrte', $apdisc, $vtnets, $vtvals, $ewtamt
+		if(!mysqli_query($con,"INSERT INTO `apv_d`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `crefno`, `crefinv`, `namount`, `napcm`, `ndue`, `npayments`, `napplied`, `cacctno`) values('$company', '$refcidenttran', '$z', '$cSINo', '$crrno', '$ccustsi', $amnt, $apcms, $dueamt, $paymnt, $applid, '$acctno')")){ 
 			
 			printf("Errormessage: %s\n", mysqli_error($con));
 		}
@@ -168,7 +170,7 @@
 
 	}
 
-	$rowcnt3 = $_REQUEST['hdnrowcnt3'];	 
+	/*$rowcnt3 = $_REQUEST['hdnrowcnt3'];	 
 	for($z=1; $z<=$rowcnt3; $z++){
 		
 		$crefrr = mysqli_real_escape_string($con,$_REQUEST['txtcmdcrr'.$z]);
@@ -182,7 +184,7 @@
 		
 		mysqli_query($con,"INSERT INTO `apv_deds`(`compcode`, `ctranno`, `cidentity`, `nidentity`, `crefrr`, `ctype`, `namount`, `cremarks`, `cacctno`) values('$company', '$cSINo', '$refcidenttran', '$zdc', '$crefrr', 'DISC', $namt, '$cremrks', '$cacctno')");
 
-	}
+	}*/
 
 
 	//insert attachment

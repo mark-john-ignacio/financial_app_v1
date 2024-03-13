@@ -287,7 +287,7 @@
 							var msg = "POSTED";
 							
 							//generate Account Entries
-							if(apx=="Purchases" || apx=="PurchAdv"){
+							/*if(apx=="Purchases" || apx=="PurchAdv"){
 								$.ajax ({
 									url: "th_acctentry.php",
 									data: { tran: num },
@@ -297,7 +297,7 @@
 										//alert(data);
 									}
 								});
-							}
+							}*/
 							
 							
 							
