@@ -212,7 +212,7 @@
 </form>
 <script>
 	<?php
-		if($cAPtype=="Purchases" || $cAPtype=="PurchAdv"){
+		if($cAPtype=="Others" || $cAPtype=="PettyCash"){
 	?>
 		alert('Record Succesfully Saved');
 	<?php
