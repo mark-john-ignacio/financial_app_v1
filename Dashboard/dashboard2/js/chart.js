@@ -25,7 +25,7 @@ var options = {
         enabled: true,
         x: {
             formatter: function(val) {
-                return 'Month-Year: ' + options.xaxis.categories[val];
+                return 'Month-Year: ' + options.xaxis.categories[val-1];
             }
         },
         y: {
