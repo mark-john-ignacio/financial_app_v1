@@ -102,7 +102,7 @@
 	<style>
 
 		body {
-			font-family: Verdana, sans-serif;
+			font-family: Calibri, sans-serif;
 			font-size: 8pt;
 		}
 
