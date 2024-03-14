@@ -314,7 +314,7 @@
 		'mode' => '',
 		'format' => 'letter',
 		'default_font_size' => 8,
-		'default_font' => 'Verdana, sans-serif',
+		'default_font' => 'Calibri',
 		'margin_left' => 10,
 		'margin_right' => 10,
 		'margin_top' => 11,
