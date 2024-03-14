@@ -394,11 +394,11 @@
 						<i class="fa fa-tags"></i><span class="title">Sales &amp; Delivery</span><span class="arrow "></span>
 					</a>
 					<ul class="sub-menu"> 
-						<li>
+						<!--<li>
 							<a href="javascript:;" onClick="setpage('Sales/Recurr/Recurring.php?ix=');">
                 				<i class="fa fa-refresh"></i> Recurring Transactions
 							</a>
-						</li>
+						</li>-->
 						
 						<li>
 							<a href="javascript:;" onClick="setpage('Sales/Quote/Quote.php?ix=');">
@@ -605,9 +605,9 @@
                 				<i class="fa fa-bank"> </i> Bank Deposit
 							</a>
 						</li>
-						<li>
+						<!--<li>
 							<a href="javascript:;" onclick="setpage('Accounting/BankRecon/bank_recon.php')"><i class="fa fa-file-text"></i> Bank Reconciliation</a>
-						</li>
+						</li>-->
 					</ul>
 				</li>
 				<li>
