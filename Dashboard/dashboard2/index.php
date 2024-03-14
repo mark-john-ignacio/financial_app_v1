@@ -501,22 +501,6 @@ License: For each use you must have a valid license purchased only from above li
                                                     <span class="fs-6 fw-bold text-gray-400">Total Sales</span>
                                                 </div>
                                                 <canvas id="project_overview_chart" width="175" height="175" style="display: block; box-sizing: border-box; height: 175px; width: 175px;"></canvas>
-                                                <script>
-
-                                                        // Update chart data and options
-                                                        chart.data.datasets[0].data = [40, 30, 30]; // Update the data values
-                                                        chart.data.datasets[0].backgroundColor = ["#FFC107", "#FF5722", "#607D8B"]; // Update the colors
-                                                        // Update chart data and options
-                                                        chart.data.labels = ["New Label 1", "New Label 2", "New Label 3"]; // Update the labels
-                                                        chart.update(); // Update the chart with the new labels
-
-                                                        }
-
-                                                    // Any other custom code you need
-                                                    // This can be placed after the chart modification code
-                                                    // ...
-
-                                                </script>
                                             </div>
                                             <!--end::Chart-->
                                             <!--begin::Labels-->
@@ -601,7 +585,7 @@ License: For each use you must have a valid license purchased only from above li
                         <!--end::Page Custom Javascript-->
                         <!--begin:: Javascript apex1-->
                         <script src="https://cdn.jsdelivr.net/npm/apexcharts@latest"></script>
-                        <script src="js/chart.js"
+                        <script src="js/chart.js"></script>
                         <!--end::Javascript apex1-->
                         <!--end::Javascript-->
 </body>

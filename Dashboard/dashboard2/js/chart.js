@@ -18,7 +18,7 @@ var options = {
     },
     stroke: {
         curve: 'smooth',
-        width: 1, // Changed to 1 for a thin line
+        width: 3,
         colors: ['#FFFFFF']
     },
     tooltip: {
@@ -60,7 +60,7 @@ var options = {
 };
 
 // Fetch the data from the PHP script
-fetch('../data/sales_trend_data.php')
+fetch('data/sales_trend_data.php')
     .then(response => response.json())
     .then(data => {
         options.series[0].data = data.series[0].data.map((value, index) => ({
