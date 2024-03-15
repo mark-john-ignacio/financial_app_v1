@@ -120,7 +120,7 @@ License: For each use you must have a valid license purchased only from above li
                                         <?php
                                         // Get the date range for last week (Monday to Saturday)
                                         $start_of_last_week = date("Y-m-d", strtotime("last monday -1 week"));
-                                        $end_of_last_week = date("Y-m-d", strtotime("last sunday -1 day"));
+                                        $end_of_last_week = date("Y-m-d", strtotime("last sunday"));
 
                                         // Get the date range for the current week (Monday to today)
                                         $start_of_current_week = date("Y-m-d", strtotime("monday this week"));
