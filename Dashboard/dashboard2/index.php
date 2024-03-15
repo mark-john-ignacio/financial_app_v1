@@ -111,7 +111,7 @@ License: For each use you must have a valid license purchased only from above li
                                         <span class="text-dark fw-bolder fs-2x lh-0">₱</span>
                                         <!--end::Symbol-->
                                         <!--begin::Number-->
-                                        <span class="text-dark fw-bolder fs-3x me-2 lh-0"><?= $total_sales_this_week; ?></span>
+                                        <span class="text-dark fw-bolder fs-3x me-2 lh-0"><?= $total_sales; ?></span>
                                         <!--end::Number-->
                                         <!--begin::Text-->
                                         <?php
@@ -162,9 +162,18 @@ License: For each use you must have a valid license purchased only from above li
                         </div>
                         <!--end::Col-->
                         <!--begin::Col-->
-                        <?php
-                        // SQL query to get the top-selling item
-                        $sql = "
+
+                        <div class="col-xl-4 col-12 col-md-4">
+                            <!--begin::Mixed Widget 14-->
+                            <div class="card card-xxl-stretch mb-xl-10" style="background-color: #CBF0F4">
+                                <!--begin::Body-->
+                                <div class="card-body d-flex flex-column">
+                                    <!--begin::Wrapper-->
+                                    <div class="d-flex flex-column flex-grow-1">
+                                        <!--begin::Title-->
+                                        <?php
+                                        // SQL query to get the top-selling item
+                                        $sql = "
                         SELECT s_t.citemno, SUM(s_t.nprice) AS total_price
                         FROM sales_t s_t
                         INNER JOIN sales s ON s.compcode = s_t.compcode AND s.ctranno = s_t.ctranno
@@ -174,24 +183,23 @@ License: For each use you must have a valid license purchased only from above li
                         LIMIT 1
                         ";
 
-                        $result = $con->query($sql);
+                                        $result = $con->query($sql);
 
-                        if ($result->num_rows > 0) {
-                            // Output the widget HTML with the dynamic data
-                            while ($row = $result->fetch_assoc()) {
-                                $topSellingItem = $row['citemno'];
-                                $totalSaleValue = $row['total_price'];
-                            }
-                        }
-                        ?>
-                        <div class="col-xl-4 col-12 col-md-4">
-                            <!--begin::Mixed Widget 14-->
-                            <div class="card card-xxl-stretch mb-xl-10" style="background-color: #CBF0F4">
-                                <!--begin::Body-->
-                                <div class="card-body d-flex flex-column">
-                                    <!--begin::Wrapper-->
-                                    <div class="d-flex flex-column flex-grow-1">
-                                        <!--begin::Title-->
+                                        if ($result->num_rows > 0) {
+                                            // Output the widget HTML with the dynamic data
+                                            while ($row = $result->fetch_assoc()) {
+                                                $topSellingItem = $row['citemno'];
+                                                $totalSaleValue = $row['total_price'];
+                                            }
+                                        }
+
+                                        if ($totalSaleValue !== null) {
+                                            $totalSaleValue = number_format($totalSaleValue, 2, '.', ',');
+                                        } else {
+                                            // Handle the case when $total_nnet is null
+                                            $totalSaleValue = '0.00';
+                                        }
+                                        ?>
                                         <a href="#" class="text-dark text-hover-primary fw-bolder fs-3">Top Selling Item</a>
                                         <div class="fs-6 text-dark fw-bolder lh-1"><?= $topSellingItem; ?></div>
                                         <!--end::Title-->
@@ -202,6 +210,9 @@ License: For each use you must have a valid license purchased only from above li
                                     <!--end::Wrapper-->
                                     <!--begin::Stats-->
                                     <div class="pt-5">
+                                        <!--begin::Symbol-->
+                                        <span class="text-dark fw-bolder fs-2x lh-0">₱</span>
+                                        <!--end::Symbol-->
                                         <!--begin::Number-->
                                         <span class="text-dark fw-bolder fs-3x me-2 lh-0"><?= $totalSaleValue; ?></span>
                                         <!--end::Number-->
