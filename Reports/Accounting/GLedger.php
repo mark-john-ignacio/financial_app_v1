@@ -62,7 +62,7 @@
 		$jqy = " and A.acctno = '".$_POST['selbanks']."' ";
 	}
 
-	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit, C.captype
+	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit, C.captype, A.crefno
 	From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
 	left join apv C on A.compcode=C.compcode and A.ctranno=C.ctranno
 	Where A.compcode='$company' and A.ddate between STR_TO_DATE('".$_POST['date1']."', '%m/%d/%Y') and STR_TO_DATE('".$_POST['date2']."', '%m/%d/%Y')".$jqy."
@@ -146,7 +146,7 @@
 
 		<?php 
 			$ctranno = $drow['ctranno'];
-			$controller = CustomerNames($drow['cmodule'], $ctranno, $company);
+			$controller = CustomerNames($drow['cmodule'], $ctranno, $company, $drow['crefno']);
 			$result = mysqli_query($con, $controller);
 			$namerow = mysqli_fetch_array($result, MYSQLI_ASSOC);
 		?>

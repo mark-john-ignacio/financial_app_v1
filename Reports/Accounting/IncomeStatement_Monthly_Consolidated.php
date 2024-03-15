@@ -629,9 +629,9 @@
 			$mygtooth = 0;
 			foreach($arrcomps as $cmprw){
 
-				$toformat = (floatval($arrlvlamt[$comprow['cmprw'].intval($arrlvlcnt)-1][$rxzm])<0) ? "(".number_format(abs($arrlvlamt[$comprow['cmprw'].intval($arrlvlcnt)-1][$rxzm]),2).")": number_format($arrlvlamt[$comprow['cmprw'].intval($arrlvlcnt)-1][$rxzm],2);
+				$toformat = (floatval($arrlvlamt[$cmprw['compcode'].intval($arrlvlcnt)-1][$rxzm])<0) ? "(".number_format(abs($arrlvlamt[$cmprw['compcode'].intval($arrlvlcnt)-1][$rxzm]),2).")": number_format($arrlvlamt[$cmprw['compcode'].intval($arrlvlcnt)-1][$rxzm],2);
 
-				$mygtooth = $mygtooth + floatval($arrlvlamt[$comprow['cmprw'].intval($arrlvlcnt)-1][$rxzm]);
+				$mygtooth = $mygtooth + floatval($arrlvlamt[$cmprw['compcode'].intval($arrlvlcnt)-1][$rxzm]);
 
 				echo "<td align='right' style='border-bottom: 1px solid; border-top: 1px solid; padding-right: 20px; padding-left: 20px;'><b>".$toformat."</b></td>";
 

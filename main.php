@@ -70,7 +70,9 @@
 			$arrcompz[] = $row;
 			if($row['compcode'] == $company){
 				$compname =  $row['compname'];
+				
 				$logoname =  str_replace("../","",$row['clogoname']);
+
 				$lallowNT =  $row['lallownontrade'];
 				$lallowMRP = $row['lmrpmodules'];
 				$durlSUB = $row['csubcode'];
@@ -153,7 +155,11 @@
                 $cfname =  $row['Fname'];
                 $imgsrc =  $row['cuserpic'];
                                             
-                $imgsrc =  str_replace("../","",$imgsrc);
+				if($row['cuserpic']!=null){
+                	$imgsrc =  str_replace("../","",$imgsrc);
+				}else{
+					$imgsrc = "imgusers/emp.jpg";	
+				}
               }
                                         
               if($imgsrc == ""){

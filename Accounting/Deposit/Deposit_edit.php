@@ -509,7 +509,7 @@
 							<button type="button" id="btn-closemod" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 							<h3 class="modal-title">GL Entry</h3>
 						</div>
-						<div class="modal-body">
+						<div class="modal-body pre-scrollable">
 								
 							<table width="100%" border="0" class="table table-condensed table-bordered atble-hover" id="TblGLEntry">
 								<thead>

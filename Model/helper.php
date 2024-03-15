@@ -155,7 +155,7 @@
     }
      
 
-    function CustomerNames($module, $ctranno, $company){
+    function CustomerNames($module, $ctranno, $company, $ctranref){
         return match($module){
 
             'DR' => "select b.cname from dr_t a
@@ -207,16 +207,17 @@
                     ) e on a.compcode = e.compcode and a.ctranno = e.ctranno
                     where a.compcode='$company' and a.ctranno = '$ctranno' order by a.nidentity",
     
-            'BD' => "select a.*, b.cornumber, b.dcutdate, b.cremarks as remarks_t, b.cpaymethod, b.namount, c.cacctdesc, c.ddate, c.namount
+            'BD' => "select a.*, b.cornumber, b.dcutdate, b.cremarks as remarks_t, b.cpaymethod, b.namount, c.cacctdesc, c.ddate, c.namount, b.ccode, D.cname
             from deposit_t a 
             left join receipt b on a.compcode=b.compcode and a.corno=b.ctranno and a.compcode=b.compcode 
+            left join customers D on B.compcode = D.compcode and B.ccode = D.cempid 
             left join (
                     SELECT a.compcode, a.ctranno, b.cacctdesc, a.ddate, a.namount
                     from deposit a
                     left join accounts b on a.compcode = b.compcode and a.cacctcode = b.cacctid
                     where a.compcode = '$company' and a.ctranno='$ctranno'
             ) c on a.compcode = c.compcode and a.ctranno = c.ctranno
-            where a.compcode='$company' and a.ctranno = '$ctranno' ",
+            where a.compcode='$company' and a.ctranno = '$ctranno' and b.ctranno='$ctranref'",
     
             'PV' => "Select A.cacctno, b.ctranno, b.bankname, b.cpayrefno, b.ddate, A.crefrr, a.capvno, DATE_FORMAT(a.dapvdate,'%m/%d/%Y') as dapvdate, a.namount, a.nowed, a.napplied, IFNULL(b.npayed,0) as npayed, c.cacctdesc, a.newtamt, d.cname
             From paybill_t a
