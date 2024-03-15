@@ -607,12 +607,12 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									
 								?>
 
-									<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','Print');" id="btnPrint" name="btnPrint">
+									<!--<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','Print');" id="btnPrint" name="btnPrint">
 										Print<br>(CTRL+P)
-									</button>
+									</button>-->
 
 									<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','PDF');" id="btnPDF" name="btnPDF">
-										View PDF<br>&nbsp;
+										Print<br>(CTRL+P)<br>&nbsp;
 									</button>
 
 									<?php
@@ -989,7 +989,7 @@ else{
 		else if(e.keyCode == 80 && e.ctrlKey){//CTRL+P
 			if($("#btnPrint").is(":disabled")==false){
 				e.preventDefault();
-				printchk('<?php echo $cpono;?>', 'Print');
+				printchk('<?php echo $cpono;?>', 'PDF');
 			}
 		}
 		else if(e.keyCode == 90 && e.ctrlKey){//CTRL Z
