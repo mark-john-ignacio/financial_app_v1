@@ -91,7 +91,7 @@ function topSellingBarChart(data) {
         }],
         chart: {
             fontFamily: "inherit",
-            height: 100,
+            height: 150,
             type: "bar",
             toolbar: {
                 show: false
@@ -157,7 +157,7 @@ function topSellingBarChart(data) {
             labels: {
                 show: false,
                 formatter: function (val) {
-                    return val + "%";
+                    return val;
                 }
             }
         }
