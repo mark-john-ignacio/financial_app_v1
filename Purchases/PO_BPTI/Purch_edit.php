@@ -612,7 +612,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									</button>-->
 
 									<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>','PDF');" id="btnPDF" name="btnPDF">
-										Print<br>(CTRL+P)<br>&nbsp;
+										Print<br>(CTRL+P)
 									</button>
 
 									<?php
