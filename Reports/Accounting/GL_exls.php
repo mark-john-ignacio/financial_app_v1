@@ -42,7 +42,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 		$jqy = " and A.acctno = '".$_POST['selbanks']."' ";
 	}
 
-	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit
+	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit, A.crefno
 	From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
 	Where A.compcode='$company' and A.ddate between STR_TO_DATE('$date1', '%m/%d/%Y') and STR_TO_DATE('$date2', '%m/%d/%Y')".$jqy."
 	Order By A.acctno, A.dpostdate, A.ctranno, CASE WHEN (A.ndebit <> 0) THEN 1 ELSE 0 END desc, A.acctno";
@@ -74,7 +74,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
 	{
         $ctranno = $row['ctranno'];
-        $controller = CustomerNames($row['cmodule'], $ctranno, $company);
+        $controller = CustomerNames($row['cmodule'], $ctranno, $company, $row['crefno']);
         $DescCont = ReadDescription($row['cmodule'], $ctranno, $company);
 
 
