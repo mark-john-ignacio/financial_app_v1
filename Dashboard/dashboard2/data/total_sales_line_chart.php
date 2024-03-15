@@ -4,6 +4,8 @@ if(!isset($_SESSION)){
 }
 include "../../../Connection/connection_string.php";
 
+
+//begin::Total Sales line chart
 // Calculate the start and end dates for the last 6 months
 $start_date = date("Y-m-01", strtotime("-6 months"));
 $end_date = date("Y-m-t", strtotime("-1 months"));
@@ -43,3 +45,4 @@ $options['xaxis']['categories'] = $categories;
 
 // Output the updated options variable
 echo json_encode($options);
+//end::Total Sales line chart

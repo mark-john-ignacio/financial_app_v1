@@ -204,7 +204,7 @@ License: For each use you must have a valid license purchased only from above li
                                         <div class="fs-6 text-dark fw-bolder lh-1"><?= $topSellingItem; ?></div>
                                         <!--end::Title-->
                                         <!--begin::Chart-->
-                                        <div class="mixed-widget-14-chart" style="height: 100px"></div>
+                                        <div class="top-selling-bar-chart" style="height: 100px"></div>
                                         <!--end::Chart-->
                                     </div>
                                     <!--end::Wrapper-->
