@@ -174,14 +174,14 @@ License: For each use you must have a valid license purchased only from above li
                                         <?php
                                         // SQL query to get the top-selling item
                                         $sql = "
-                        SELECT s_t.citemno, SUM(s_t.nprice) AS total_price
-                        FROM sales_t s_t
-                        INNER JOIN sales s ON s.compcode = s_t.compcode AND s.ctranno = s_t.ctranno
-                        WHERE s.lapproved = 1 AND s.lvoid = 0
-                        GROUP BY s_t.citemno
-                        ORDER BY total_price DESC
-                        LIMIT 1
-                        ";
+                                        SELECT s_t.citemno, SUM(s_t.nprice) AS total_price
+                                        FROM sales_t s_t
+                                        INNER JOIN sales s ON s.compcode = s_t.compcode AND s.ctranno = s_t.ctranno
+                                        WHERE s.lapproved = 1 AND s.lvoid = 0
+                                        GROUP BY s_t.citemno
+                                        ORDER BY total_price DESC
+                                        LIMIT 1
+                                        ";
 
                                         $result = $con->query($sql);
 
@@ -217,7 +217,57 @@ License: For each use you must have a valid license purchased only from above li
                                         <span class="text-dark fw-bolder fs-3x me-2 lh-0"><?= $totalSaleValue; ?></span>
                                         <!--end::Number-->
                                         <!--begin::Text-->
-                                        <span class="text-dark fw-bolder fs-6 lh-0">+ 12% this week</span>
+                                        <?php
+                                        // Query to get the total revenue for the top selling item for last week
+                                        $query_last_week = "
+    SELECT
+        SUM(s_t.nprice) AS total_revenue_last_week
+    FROM
+        sales_t s_t
+        INNER JOIN sales s ON s.compcode = s_t.compcode AND s.ctranno = s_t.ctranno
+    WHERE
+        s.lapproved = 1 AND s.lvoid = 0 AND s_t.citemno = '$topSellingItem' AND WEEK(s.dcutdate) = WEEK(NOW()) - 1
+";
+
+                                        $result_last_week = $con->query($query_last_week);
+                                        $total_revenue_last_week = 0; // Default value if result is 0
+                                        if ($result_last_week && $result_last_week->num_rows > 0) {
+                                            $row_last_week = $result_last_week->fetch_assoc();
+                                            $total_revenue_last_week = $row_last_week["total_revenue_last_week"];
+                                        }
+
+                                        // Query to get the total revenue for the top selling item for this week
+                                        $query_this_week = "
+    SELECT
+        SUM(s_t.nprice) AS total_revenue_this_week
+    FROM
+        sales_t s_t
+        INNER JOIN sales s ON s.compcode = s_t.compcode AND s.ctranno = s_t.ctranno
+    WHERE
+        s.lapproved = 1 AND s.lvoid = 0 AND s_t.citemno = '$topSellingItem' AND WEEK(s.dcutdate) = WEEK(NOW())
+";
+
+                                        $result_this_week = $con->query($query_this_week);
+                                        $total_revenue_this_week = 0; // Default value if result is 0
+                                        if ($result_this_week && $result_this_week->num_rows > 0) {
+                                            $row_this_week = $result_this_week->fetch_assoc();
+                                            $total_revenue_this_week = $row_this_week["total_revenue_this_week"];
+                                        }
+
+                                        // Calculate the percentage change in revenue
+                                        $percentage_change = ($total_revenue_last_week != 0) ? (($total_revenue_this_week - $total_revenue_last_week) / $total_revenue_last_week) * 100 : 0;
+
+                                        // Format the percentage change
+                                        if ($percentage_change > 0) {
+                                            $percentage_change = "+" . number_format($percentage_change, 2) . "%";
+                                        } elseif ($percentage_change < 0) {
+                                            $percentage_change = number_format($percentage_change, 2) . "%";
+                                        } else {
+                                            $percentage_change = "No change";
+                                        }
+
+                                        ?>
+                                        <span class="text-dark fw-bolder fs-6 lh-0"><?= $percentage_change; ?> this week</span>
                                         <!--end::Text-->
                                     </div>
                                     <!--end::Stats-->
