@@ -99,7 +99,14 @@ License: For each use you must have a valid license purchased only from above li
                                     $total_nnet_current_week = $row_current_week["total_nnet_current_week"];
 
                                     // Output the total net sales for the current week
-                                    $cost = number_format($total_nnet_current_week, 2, '.', ',');
+                                    $total_sales_this_week = '';
+                                    if ($total_nnet_current_week !== null) {
+                                        $total_sales_this_week = number_format($total_nnet_current_week, 2, '.', ',');
+                                    } else {
+                                        // Handle the case when $total_nnet_current_week is null
+                                        $total_sales_this_week = '0.00';
+                                    }
+
 
                                     ?>
                                     <div class="pt-18">
@@ -107,7 +114,7 @@ License: For each use you must have a valid license purchased only from above li
                                         <span class="text-dark fw-bolder fs-2x lh-0">₱</span>
                                         <!--end::Symbol-->
                                         <!--begin::Number-->
-                                        <span class="text-dark fw-bolder fs-3x me-2 lh-0"><?= $cost; ?></span>
+                                        <span class="text-dark fw-bolder fs-3x me-2 lh-0"><?= $total_sales_this_week; ?></span>
                                         <!--end::Number-->
                                         <!--begin::Text-->
                                         <?php
