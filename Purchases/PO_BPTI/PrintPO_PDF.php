@@ -313,8 +313,8 @@
 	$mpdf = new \Mpdf\Mpdf([
 		'mode' => '',
 		'format' => 'letter',
-		'default_font_size' => 8,
-		'default_font' => 'Calibri',
+		'default_font_size' => 10,
+		'default_font' => 'Helvetica, sans-serif',
 		'margin_left' => 10,
 		'margin_right' => 10,
 		'margin_top' => 11,
