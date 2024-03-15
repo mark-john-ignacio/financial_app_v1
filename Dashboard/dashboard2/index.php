@@ -88,24 +88,21 @@ License: For each use you must have a valid license purchased only from above li
                                     <!--end::Wrapper-->
                                     <!--begin::Stats-->
                                     <?php
-                                    // Get the date range for the current week (Monday to today)
-                                    $start_of_current_week = date("Y-m-d", strtotime("monday this week"));
-                                    $current_date = date("Y-m-d");
+                                    // Query to get the sum of all nnet values
+                                    $query_total_nnet = "SELECT SUM(nnet) AS total_nnet FROM sales";
+                                    $result_total_nnet = mysqli_query($con, $query_total_nnet);
+                                    $row_total_nnet = mysqli_fetch_assoc($result_total_nnet);
+                                    $total_nnet = $row_total_nnet["total_nnet"];
 
-                                    // Query to get the sum of all nnet values for the current week
-                                    $query_current_week = "SELECT SUM(nnet) AS total_nnet_current_week FROM sales WHERE dcutdate >= '$start_of_current_week' AND dcutdate <= '$current_date'";
-                                    $result_current_week = mysqli_query($con, $query_current_week);
-                                    $row_current_week = mysqli_fetch_assoc($result_current_week);
-                                    $total_nnet_current_week = $row_current_week["total_nnet_current_week"];
-
-                                    // Output the total net sales for the current week
-                                    $total_sales_this_week = '';
-                                    if ($total_nnet_current_week !== null) {
-                                        $total_sales_this_week = number_format($total_nnet_current_week, 2, '.', ',');
+                                    // Output the total net sales
+                                    $total_sales = '';
+                                    if ($total_nnet !== null) {
+                                        $total_sales = number_format($total_nnet, 2, '.', ',');
                                     } else {
-                                        // Handle the case when $total_nnet_current_week is null
-                                        $total_sales_this_week = '0.00';
+                                        // Handle the case when $total_nnet is null
+                                        $total_sales = '0.00';
                                     }
+
 
 
                                     ?>
@@ -165,6 +162,28 @@ License: For each use you must have a valid license purchased only from above li
                         </div>
                         <!--end::Col-->
                         <!--begin::Col-->
+                        <?php
+                        // SQL query to get the top-selling item
+                        $sql = "
+                        SELECT s_t.citemno, SUM(s_t.nprice) AS total_price
+                        FROM sales_t s_t
+                        INNER JOIN sales s ON s.compcode = s_t.compcode AND s.ctranno = s_t.ctranno
+                        WHERE s.lapproved = 1 AND s.lvoid = 0
+                        GROUP BY s_t.citemno
+                        ORDER BY total_price DESC
+                        LIMIT 1
+                        ";
+
+                        $result = $con->query($sql);
+
+                        if ($result->num_rows > 0) {
+                            // Output the widget HTML with the dynamic data
+                            while ($row = $result->fetch_assoc()) {
+                                $topSellingItem = $row['citemno'];
+                                $totalSaleValue = $row['total_price'];
+                            }
+                        }
+                        ?>
                         <div class="col-xl-4 col-12 col-md-4">
                             <!--begin::Mixed Widget 14-->
                             <div class="card card-xxl-stretch mb-xl-10" style="background-color: #CBF0F4">
@@ -174,7 +193,7 @@ License: For each use you must have a valid license purchased only from above li
                                     <div class="d-flex flex-column flex-grow-1">
                                         <!--begin::Title-->
                                         <a href="#" class="text-dark text-hover-primary fw-bolder fs-3">Top Selling Item</a>
-                                        <div class="fs-6 text-dark fw-bolder lh-1">Green Apple</div>
+                                        <div class="fs-6 text-dark fw-bolder lh-1"><?= $topSellingItem; ?></div>
                                         <!--end::Title-->
                                         <!--begin::Chart-->
                                         <div class="mixed-widget-14-chart" style="height: 100px"></div>
@@ -184,7 +203,7 @@ License: For each use you must have a valid license purchased only from above li
                                     <!--begin::Stats-->
                                     <div class="pt-5">
                                         <!--begin::Number-->
-                                        <span class="text-dark fw-bolder fs-3x me-2 lh-0">47</span>
+                                        <span class="text-dark fw-bolder fs-3x me-2 lh-0"><?= $totalSaleValue; ?></span>
                                         <!--end::Number-->
                                         <!--begin::Text-->
                                         <span class="text-dark fw-bolder fs-6 lh-0">+ 12% this week</span>
