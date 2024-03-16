@@ -55,9 +55,6 @@ License: For each use you must have a valid license purchased only from above li
     <!--begin::Apexchart JS-->
     <link href="https://cdn.jsdelivr.net/npm/apexcharts@latest/dist/apexcharts.min.css" rel="stylesheet">
     <!--end::Apexchart JS-->
-    <!--begin::Font Awesome Icons-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!--end::Font Awesome Icons-->
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -100,7 +97,7 @@ License: For each use you must have a valid license purchased only from above li
                                     // Output the total net sales
                                     $total_sales = '';
                                     if ($total_nnet !== null) {
-                                        $total_sales = number_format($total_nnet, 2, '.', ',');
+                                        $total_sales = number_format($total_nnet, 0, '.', ',');
                                     } else {
                                         // Handle the case when $total_nnet is null
                                         $total_sales = '0.00';
@@ -146,9 +143,9 @@ License: For each use you must have a valid license purchased only from above li
 
                                         // Output the percentage change
                                         if ($percentage_change > 0) {
-                                            $percentage_change = "+" . round($percentage_change, 2) . "%";
+                                            $percentage_change = "+" . round($percentage_change, 0) . "%";
                                         } elseif ($percentage_change < 0) {
-                                            $percentage_change = round($percentage_change, 2) . "%";
+                                            $percentage_change = round($percentage_change, 0) . "%";
                                         } else {
                                             $percentage_change = "No change";
                                         }
@@ -262,9 +259,9 @@ License: For each use you must have a valid license purchased only from above li
 
                                         // Format the percentage change
                                         if ($percentage_change > 0) {
-                                            $percentage_change = "+" . number_format($percentage_change, 2) . "%";
+                                            $percentage_change = "+" . number_format($percentage_change, 0) . "%";
                                         } elseif ($percentage_change < 0) {
-                                            $percentage_change = number_format($percentage_change, 2) . "%";
+                                            $percentage_change = number_format($percentage_change, 0) . "%";
                                         } else {
                                             $percentage_change = "No change";
                                         }
@@ -296,7 +293,7 @@ License: For each use you must have a valid license purchased only from above li
                                     <div class="row g-0">
                                         <!--begin::Col-->
                                         <div class="col-6">
-                                            <div class="d-flex align-items-center mb-20 me-2">
+                                            <div class="d-flex align-items-center mb-15 me-2">
                                                 <!--begin::Symbol-->
                                                 <div class="symbol symbol-40px me-3">
                                                     <div class="symbol-label bg-white bg-opacity-50">
