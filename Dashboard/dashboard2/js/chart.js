@@ -62,7 +62,7 @@ var totalSalesLineChart = {
 };
 
 // Fetch the data from the PHP script
-fetch('data/total_sales_line_chart.php')
+fetch('analytics/total_sales_line_chart.php')
     .then(response => response.json())
     .then(data => {
         totalSalesLineChart.series[0].data = data.series[0].data.map((value, index) => ({
@@ -166,7 +166,7 @@ function topSellingBarChart(data) {
     chart.render();
 }
 
-fetch('data/top_selling_item_bar_chart.php')
+fetch('analytics/top_selling_item_bar_chart.php')
     .then(response => response.json())
     .then(data => {
         topSellingBarChart(data);
