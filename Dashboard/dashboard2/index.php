@@ -19,31 +19,15 @@ while($row = $query -> fetch_assoc()){
 ?>
 
 <!DOCTYPE html>
-<!--
-Author: Keenthemes
-Product Name: Metronic - Bootstrap 5 HTML, VueJS, React, Angular & Laravel Admin Dashboard Theme
-Purchase: https://1.envato.market/EA4JP
-Website: http://www.keenthemes.com
-Contact: support@keenthemes.com
-Follow: www.twitter.com/keenthemes
-Dribbble: www.dribbble.com/keenthemes
-Like: www.facebook.com/keenthemes
-License: For each use you must have a valid license purchased only from above link in order to legally use the theme for your project.
--->
 <html lang="en">
 <!--begin::Head-->
 <head><base href="">
-    <title>Metronic - the world's #1 selling Bootstrap Admin Theme Ecosystem for HTML, Vue, React, Angular &amp; Laravel by Keenthemes</title>
-    <meta name="description" content="The most advanced Bootstrap Admin Theme on Themeforest trusted by 94,000 beginners and professionals. Multi-demo, Dark Mode, RTL support and complete React, Angular, Vue &amp; Laravel versions. Grab your copy now and get life-time updates for free." />
-    <meta name="keywords" content="Metronic, bootstrap, bootstrap 5, Angular, VueJs, React, Laravel, admin themes, web design, figma, web development, free templates, free admin themes, bootstrap theme, bootstrap template, bootstrap dashboard, bootstrap dak mode, bootstrap button, bootstrap datepicker, bootstrap timepicker, fullcalendar, datatables, flaticon" />
+    <title>MyxFin Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta charset="utf-8" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:type" content="article" />
-    <meta property="og:title" content="Metronic - Bootstrap 5 HTML, VueJS, React, Angular &amp; Laravel Admin Dashboard Theme" />
-    <meta property="og:url" content="https://keenthemes.com/metronic" />
-    <meta property="og:site_name" content="Keenthemes | Metronic" />
-    <link rel="canonical" href="https://preview.keenthemes.com/metronic8" />
+    <meta property="og:title" content="MyxFin" />
     <link rel="shortcut icon" href="assets/media/logos/favicon.ico" />
     <!--begin::Fonts-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
@@ -95,10 +79,10 @@ License: For each use you must have a valid license purchased only from above li
                                         <span class="text-dark fw-bolder fs-2x lh-0">₱</span>
                                         <!--end::Symbol-->
                                         <!--begin::Number-->
-                                        <span class="text-dark fw-bolder fs-3x me-2 lh-0"><?= totalSales()['totalSales']; ?></span>
+                                        <span class="text-dark fw-bolder fs-3x me-2 lh-0"><?= totalSales()['revenue']; ?></span>
                                         <!--end::Number-->
                                         <!--begin::Text-->
-                                        <span class="text-dark fw-bolder fs-6 lh-0"><?= totalSales()['totalSalesPercentage'];?> this week</span>
+                                        <span class="text-dark fw-bolder fs-6 lh-0"><?= totalSales()['percentageChange'];?> this week</span>
                                         <!--end::Text-->
                                     </div>
                                     <!--end::Stats-->
@@ -119,7 +103,7 @@ License: For each use you must have a valid license purchased only from above li
                                     <div class="d-flex flex-column flex-grow-1">
                                         <!--begin::Title-->
                                         <a href="#" class="text-dark text-hover-primary fw-bolder fs-3">Top Selling Item</a>
-                                        <div class="fs-6 text-dark fw-bolder lh-1"><?= topSellingItem()['topSellingItem']; ?></div>
+                                        <div class="fs-6 text-dark fw-bolder lh-1"><?= topSellingItem()['name']; ?></div>
                                         <!--end::Title-->
                                         <!--begin::Chart-->
                                         <div class="top-selling-bar-chart" style="height: 100px"></div>
@@ -132,7 +116,7 @@ License: For each use you must have a valid license purchased only from above li
                                         <span class="text-dark fw-bolder fs-2x lh-0">₱</span>
                                         <!--end::Symbol-->
                                         <!--begin::Number-->
-                                        <span class="text-dark fw-bolder fs-3x me-2 lh-0"><?= topSellingItem()['totalSaleValue']; ?></span>
+                                        <span class="text-dark fw-bolder fs-3x me-2 lh-0"><?= topSellingItem()['revenue']; ?></span>
                                         <!--end::Number-->
                                         <!--begin::Text-->
                                         <span class="text-dark fw-bolder fs-6 lh-0"><?= topSellingItem()['percentageChange']; ?> this week</span>

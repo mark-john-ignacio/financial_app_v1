@@ -53,8 +53,8 @@ function totalSales()
     }
 
     return array(
-        'totalSales' => $total_sales,
-        'totalSalesPercentage' => $percentage_change
+        'revenue' => $total_sales,
+        'percentageChange' => $percentage_change
     );
 
 
@@ -151,8 +151,8 @@ function topSellingItem(){
 
 
     return array(
-        'topSellingItem' => $topSellingItem,
-        'totalSaleValue' => $totalSaleValue,
+        'name' => $topSellingItem,
+        'revenue' => $totalSaleValue,
         'percentageChange' => $percentage_change
     );
 }
