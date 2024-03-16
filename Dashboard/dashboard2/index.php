@@ -55,6 +55,9 @@ License: For each use you must have a valid license purchased only from above li
     <!--begin::Apexchart JS-->
     <link href="https://cdn.jsdelivr.net/npm/apexcharts@latest/dist/apexcharts.min.css" rel="stylesheet">
     <!--end::Apexchart JS-->
+    <!--begin::Font Awesome Icons-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!--end::Font Awesome Icons-->
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -194,7 +197,7 @@ License: For each use you must have a valid license purchased only from above li
                                         }
 
                                         if ($totalSaleValue !== null) {
-                                            $totalSaleValue = number_format($totalSaleValue, 2, '.', ',');
+                                            $totalSaleValue = number_format($totalSaleValue, 0, '.', ',');
                                         } else {
                                             // Handle the case when $total_nnet is null
                                             $totalSaleValue = '0.00';
@@ -204,12 +207,12 @@ License: For each use you must have a valid license purchased only from above li
                                         <div class="fs-6 text-dark fw-bolder lh-1"><?= $topSellingItem; ?></div>
                                         <!--end::Title-->
                                         <!--begin::Chart-->
-                                        <div class="top-selling-bar-chart" style="height: 150px"></div>
+                                        <div class="top-selling-bar-chart" style="height: 100px"></div>
                                         <!--end::Chart-->
                                     </div>
                                     <!--end::Wrapper-->
                                     <!--begin::Stats-->
-                                    <div class="pt-5">
+                                    <div class="pt-10">
                                         <!--begin::Symbol-->
                                         <span class="text-dark fw-bolder fs-2x lh-0">₱</span>
                                         <!--end::Symbol-->
@@ -281,7 +284,7 @@ License: For each use you must have a valid license purchased only from above li
                             <!--begin::Mixed Widget 14-->
                             <div class="card card-xxl-stretch mb-5 mb-xl-10" style="background-color: #CBD4F4">
                                 <!--begin::Body-->
-                                <div class="card-body d-flex flex-column">
+                                <div class="card-body d-flex flex-column ">
                                     <!--begin::Wrapper-->
                                     <div class="d-flex flex-column mb-7">
                                         <!--begin::Title-->
@@ -293,17 +296,21 @@ License: For each use you must have a valid license purchased only from above li
                                     <div class="row g-0">
                                         <!--begin::Col-->
                                         <div class="col-6">
-                                            <div class="d-flex align-items-center mb-9 me-2">
+                                            <div class="d-flex align-items-center mb-20 me-2">
                                                 <!--begin::Symbol-->
                                                 <div class="symbol symbol-40px me-3">
                                                     <div class="symbol-label bg-white bg-opacity-50">
-                                                        <!--begin::Svg Icon | path: icons/duotune/abstract/abs043.svg-->
-                                                        <span class="svg-icon svg-icon-1 svg-icon-dark">
-																	<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-																		<path opacity="0.3" d="M22 8H8L12 4H19C19.6 4 20.2 4.39999 20.5 4.89999L22 8ZM3.5 19.1C3.8 19.7 4.4 20 5 20H12L16 16H2L3.5 19.1ZM19.1 20.5C19.7 20.2 20 19.6 20 19V12L16 8V22L19.1 20.5ZM4.9 3.5C4.3 3.8 4 4.4 4 5V12L8 16V2L4.9 3.5Z" fill="black" />
-																		<path d="M22 8L20 12L16 8H22ZM8 16L4 12L2 16H8ZM16 16L12 20L16 22V16ZM8 8L12 4L8 2V8Z" fill="black" />
-																	</svg>
-																</span>
+                                                        <!--begin::Svg Icon -->
+                                                        <span class="svg-icon svg-icon-dark svg-icon-2x">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                                                <defs/>
+                                                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                                    <rect x="0" y="0" width="24" height="24"/>
+                                                                    <path d="M2,6 L21,6 C21.5522847,6 22,6.44771525 22,7 L22,17 C22,17.5522847 21.5522847,18 21,18 L2,18 C1.44771525,18 1,17.5522847 1,17 L1,7 C1,6.44771525 1.44771525,6 2,6 Z M11.5,16 C13.709139,16 15.5,14.209139 15.5,12 C15.5,9.790861 13.709139,8 11.5,8 C9.290861,8 7.5,9.790861 7.5,12 C7.5,14.209139 9.290861,16 11.5,16 Z" fill="#000000" opacity="0.3" transform="translate(11.500000, 12.000000) rotate(-345.000000) translate(-11.500000, -12.000000) "/>
+                                                                    <path d="M2,6 L21,6 C21.5522847,6 22,6.44771525 22,7 L22,17 C22,17.5522847 21.5522847,18 21,18 L2,18 C1.44771525,18 1,17.5522847 1,17 L1,7 C1,6.44771525 1.44771525,6 2,6 Z M11.5,16 C13.709139,16 15.5,14.209139 15.5,12 C15.5,9.790861 13.709139,8 11.5,8 C9.290861,8 7.5,9.790861 7.5,12 C7.5,14.209139 9.290861,16 11.5,16 Z M11.5,14 C12.6045695,14 13.5,13.1045695 13.5,12 C13.5,10.8954305 12.6045695,10 11.5,10 C10.3954305,10 9.5,10.8954305 9.5,12 C9.5,13.1045695 10.3954305,14 11.5,14 Z" fill="#000000"/>
+                                                                </g>
+                                                            </svg><!--end::Svg Icon-->
+                                                        </span>
                                                         <!--end::Svg Icon-->
                                                     </div>
                                                 </div>
@@ -311,7 +318,7 @@ License: For each use you must have a valid license purchased only from above li
                                                 <!--begin::Title-->
                                                 <div>
                                                     <div class="fs-5 text-dark fw-bolder lh-1">₱50K</div>
-                                                    <div class="fs-7 text-gray-600 fw-bold">Sales</div>
+                                                    <div class="fs-7 text-gray-600 fw-bold">Gross Sales</div>
                                                 </div>
                                                 <!--end::Title-->
                                             </div>
@@ -337,7 +344,7 @@ License: For each use you must have a valid license purchased only from above li
                                                 <!--begin::Title-->
                                                 <div>
                                                     <div class="fs-5 text-dark fw-bolder lh-1">₱4,5K</div>
-                                                    <div class="fs-7 text-gray-600 fw-bold">Revenue</div>
+                                                    <div class="fs-7 text-gray-600 fw-bold">Net Sales</div>
                                                 </div>
                                                 <!--end::Title-->
                                             </div>
@@ -345,16 +352,20 @@ License: For each use you must have a valid license purchased only from above li
                                         <!--end::Col-->
                                         <!--begin::Col-->
                                         <div class="col-6">
-                                            <div class="d-flex align-items-center me-2">
+                                            <div class="d-flex align-items-center me-2 mb-9">
                                                 <!--begin::Symbol-->
                                                 <div class="symbol symbol-40px me-3">
                                                     <div class="symbol-label bg-white bg-opacity-50">
                                                         <!--begin::Svg Icon | path: icons/duotune/abstract/abs022.svg-->
                                                         <span class="svg-icon svg-icon-1 svg-icon-dark">
-																	<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-																		<path opacity="0.3" d="M11.425 7.325C12.925 5.825 15.225 5.825 16.725 7.325C18.225 8.825 18.225 11.125 16.725 12.625C15.225 14.125 12.925 14.125 11.425 12.625C9.92501 11.225 9.92501 8.825 11.425 7.325ZM8.42501 4.325C5.32501 7.425 5.32501 12.525 8.42501 15.625C11.525 18.725 16.625 18.725 19.725 15.625C22.825 12.525 22.825 7.425 19.725 4.325C16.525 1.225 11.525 1.225 8.42501 4.325Z" fill="black" />
-																		<path d="M11.325 17.525C10.025 18.025 8.425 17.725 7.325 16.725C5.825 15.225 5.825 12.925 7.325 11.425C8.825 9.92498 11.125 9.92498 12.625 11.425C13.225 12.025 13.625 12.925 13.725 13.725C14.825 13.825 15.925 13.525 16.725 12.625C17.125 12.225 17.425 11.825 17.525 11.325C17.125 10.225 16.525 9.22498 15.625 8.42498C12.525 5.32498 7.425 5.32498 4.325 8.42498C1.225 11.525 1.225 16.625 4.325 19.725C7.425 22.825 12.525 22.825 15.625 19.725C16.325 19.025 16.925 18.225 17.225 17.325C15.425 18.125 13.225 18.225 11.325 17.525Z" fill="black" />
-																	</svg>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                                            <defs/>
+                                                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                                <rect x="0" y="0" width="24" height="24"/>
+                                                                <rect fill="#000000" opacity="0.3" x="7" y="4" width="10" height="4"/>
+                                                                <path d="M7,2 L17,2 C18.1045695,2 19,2.8954305 19,4 L19,20 C19,21.1045695 18.1045695,22 17,22 L7,22 C5.8954305,22 5,21.1045695 5,20 L5,4 C5,2.8954305 5.8954305,2 7,2 Z M8,12 C8.55228475,12 9,11.5522847 9,11 C9,10.4477153 8.55228475,10 8,10 C7.44771525,10 7,10.4477153 7,11 C7,11.5522847 7.44771525,12 8,12 Z M8,16 C8.55228475,16 9,15.5522847 9,15 C9,14.4477153 8.55228475,14 8,14 C7.44771525,14 7,14.4477153 7,15 C7,15.5522847 7.44771525,16 8,16 Z M12,12 C12.5522847,12 13,11.5522847 13,11 C13,10.4477153 12.5522847,10 12,10 C11.4477153,10 11,10.4477153 11,11 C11,11.5522847 11.4477153,12 12,12 Z M12,16 C12.5522847,16 13,15.5522847 13,15 C13,14.4477153 12.5522847,14 12,14 C11.4477153,14 11,14.4477153 11,15 C11,15.5522847 11.4477153,16 12,16 Z M16,12 C16.5522847,12 17,11.5522847 17,11 C17,10.4477153 16.5522847,10 16,10 C15.4477153,10 15,10.4477153 15,11 C15,11.5522847 15.4477153,12 16,12 Z M16,16 C16.5522847,16 17,15.5522847 17,15 C17,14.4477153 16.5522847,14 16,14 C15.4477153,14 15,14.4477153 15,15 C15,15.5522847 15.4477153,16 16,16 Z M16,20 C16.5522847,20 17,19.5522847 17,19 C17,18.4477153 16.5522847,18 16,18 C15.4477153,18 15,18.4477153 15,19 C15,19.5522847 15.4477153,20 16,20 Z M8,18 C7.44771525,18 7,18.4477153 7,19 C7,19.5522847 7.44771525,20 8,20 L12,20 C12.5522847,20 13,19.5522847 13,19 C13,18.4477153 12.5522847,18 12,18 L8,18 Z M7,4 L7,8 L17,8 L17,4 L7,4 Z" fill="#000000"/>
+                                                            </g>
+                                                            </svg>
 																</span>
                                                         <!--end::Svg Icon-->
                                                     </div>
@@ -363,7 +374,7 @@ License: For each use you must have a valid license purchased only from above li
                                                 <!--begin::Title-->
                                                 <div>
                                                     <div class="fs-5 text-dark fw-bolder lh-1">40</div>
-                                                    <div class="fs-7 text-gray-600 fw-bold">Tasks</div>
+                                                    <div class="fs-7 text-gray-600 fw-bold">Total Vat</div>
                                                 </div>
                                                 <!--end::Title-->
                                             </div>
@@ -371,17 +382,21 @@ License: For each use you must have a valid license purchased only from above li
                                         <!--end::Col-->
                                         <!--begin::Col-->
                                         <div class="col-6">
-                                            <div class="d-flex align-items-center ms-2">
+                                            <div class="d-flex align-items-center ms-2 mb-9">
                                                 <!--begin::Symbol-->
                                                 <div class="symbol symbol-40px me-3">
                                                     <div class="symbol-label bg-white bg-opacity-50">
-                                                        <!--begin::Svg Icon | path: icons/duotune/abstract/abs045.svg-->
-                                                        <span class="svg-icon svg-icon-1 svg-icon-dark">
-																	<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-																		<path d="M2 11.7127L10 14.1127L22 11.7127L14 9.31274L2 11.7127Z" fill="black" />
-																		<path opacity="0.3" d="M20.9 7.91274L2 11.7127V6.81275C2 6.11275 2.50001 5.61274 3.10001 5.51274L20.6 2.01274C21.3 1.91274 22 2.41273 22 3.11273V6.61273C22 7.21273 21.5 7.81274 20.9 7.91274ZM22 16.6127V11.7127L3.10001 15.5127C2.50001 15.6127 2 16.2127 2 16.8127V20.3127C2 21.0127 2.69999 21.6128 3.39999 21.4128L20.9 17.9128C21.5 17.8128 22 17.2127 22 16.6127Z" fill="black" />
-																	</svg>
-																</span>
+                                                        <!--begin::Svg Icon -->
+                                                        <span class="svg-icon svg-icon-dark svg-icon-2x">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                                        <defs/>
+                                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                            <rect x="0" y="0" width="24" height="24"/>
+                                                            <path d="M16.0322024,5.68722152 L5.75790403,15.945742 C5.12139076,16.5812778 5.12059836,17.6124773 5.75613416,18.2489906 C5.75642891,18.2492858 5.75672377,18.2495809 5.75701875,18.2498759 L5.75701875,18.2498759 C6.39304347,18.8859006 7.42424328,18.8859006 8.060268,18.2498759 C8.06056298,18.2495809 8.06085784,18.2492858 8.0611526,18.2489906 L18.3196731,7.9746922 C18.9505124,7.34288268 18.9501191,6.31942463 18.3187946,5.68810005 L18.3187946,5.68810005 C17.68747,5.05677547 16.6640119,5.05638225 16.0322024,5.68722152 Z" fill="#000000" fill-rule="nonzero"/>
+                                                            <path d="M9.85714286,6.92857143 C9.85714286,8.54730513 8.5469533,9.85714286 6.93006028,9.85714286 C5.31316726,9.85714286 4,8.54730513 4,6.92857143 C4,5.30983773 5.31316726,4 6.93006028,4 C8.5469533,4 9.85714286,5.30983773 9.85714286,6.92857143 Z M20,17.0714286 C20,18.6901623 18.6898104,20 17.0729174,20 C15.4560244,20 14.1428571,18.6901623 14.1428571,17.0714286 C14.1428571,15.4497247 15.4560244,14.1428571 17.0729174,14.1428571 C18.6898104,14.1428571 20,15.4497247 20,17.0714286 Z" fill="#000000" opacity="0.3"/>
+                                                        </g>
+                                                            </svg>
+                                                        </span>
                                                         <!--end::Svg Icon-->
                                                     </div>
                                                 </div>
@@ -389,7 +404,7 @@ License: For each use you must have a valid license purchased only from above li
                                                 <!--begin::Title-->
                                                 <div>
                                                     <div class="fs-5 text-dark fw-bolder lh-1">₱5.8M</div>
-                                                    <div class="fs-7 text-gray-600 fw-bold">Sales</div>
+                                                    <div class="fs-7 text-gray-600 fw-bold">Total Discount</div>
                                                 </div>
                                                 <!--end::Title-->
                                             </div>
@@ -397,6 +412,7 @@ License: For each use you must have a valid license purchased only from above li
                                         <!--end::Col-->
                                     </div>
                                     <!--end::Row-->
+
                                 </div>
                             </div>
                             <!--end::Mixed Widget 14-->
