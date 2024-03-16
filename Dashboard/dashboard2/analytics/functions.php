@@ -60,13 +60,6 @@ function totalSales()
 
 }
 
-function totalSalesPercentageChange(){
-    // Get the date range for last week (Monday to Saturday)
-    global $con;
-
-    return $percentage_change;
-}
-
 
 function topSellingItem(){
     // SQL query to get the top-selling item
@@ -84,7 +77,6 @@ function topSellingItem(){
     $result = $con->query($sql);
 
     if ($result->num_rows > 0) {
-        // Output the widget HTML with the dynamic data
         while ($row = $result->fetch_assoc()) {
             $topSellingItem = $row['citemno'];
             $totalSaleValue = $row['total_price'];
@@ -99,7 +91,6 @@ function topSellingItem(){
     }
 
     // Start percentage change of topselling item this week compared to last week
-    // Query to get the total revenue for the top selling item for last week
     $query_last_week = "
     SELECT
         SUM(s_t.nprice) AS total_revenue_last_week
@@ -158,3 +149,60 @@ function topSellingItem(){
 }
 
 
+// Function to return total gross sales
+function totalGrossSales() {
+    global $con;
+
+        $query = "SELECT SUM(ngross) AS total_gross_sales FROM sales";
+        $result = $con->query($query);
+        $row = $result->fetch_assoc();
+        $gross = isset($row['total_gross_sales']) ? $row['total_gross_sales'] : 0;
+        return formatCurrency($gross);
+}
+
+function totalNetSales() {
+    global $con;
+
+    $query = "SELECT SUM(nnet) AS total_net_sales FROM sales";
+    $result = $con->query($query);
+    $row = $result->fetch_assoc();
+    $net = isset($row['total_net_sales']) ? $row['total_net_sales'] : 0;
+    return formatCurrency($net);
+}
+
+function totalDiscount() {
+    global $con;
+
+    $query = "SELECT SUM(ntotaldiscounts) AS total_discount FROM sales";
+    $result = $con->query($query);
+    $row = $result->fetch_assoc();
+    $discount = isset($row['total_discount']) ? $row['total_discount'] : 0;
+    return formatCurrency($discount);
+}
+
+function totalVat() {
+    global $con;
+
+    $query = "SELECT SUM(nvat) AS total_vat FROM sales";
+    $result = $con->query($query);
+    $row = $result->fetch_assoc();
+    $vat = isset($row['total_vat']) ? $row['total_vat'] : 0;
+    return formatCurrency($vat);
+}
+
+
+function formatCurrency($amount) {
+    // Check if the amount is greater than or equal to 1 million
+    if ($amount >= 1000000) {
+        // Convert the amount to M format (e.g., 1000000 => 1M, 1500000 => 1.5M)
+        $formattedAmount = number_format($amount / 1000000, 1) . 'M';
+    } elseif ($amount >= 1000) {
+        // Check if the amount is greater than or equal to 1000
+        // Convert the amount to K format (e.g., 1000 => 1K, 1500 => 1.5K)
+        $formattedAmount = number_format($amount / 1000, 1) . 'K';
+    } else {
+        // If the amount is less than 1000, simply format it
+        $formattedAmount = number_format($amount, 0);
+    }
+    return $formattedAmount;
+}

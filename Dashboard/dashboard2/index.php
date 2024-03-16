@@ -166,7 +166,7 @@ while($row = $query -> fetch_assoc()){
                                                 <!--end::Symbol-->
                                                 <!--begin::Title-->
                                                 <div>
-                                                    <div class="fs-5 text-dark fw-bolder lh-1">₱50K</div>
+                                                    <div class="fs-5 text-dark fw-bolder lh-1">₱<?= totalGrossSales();?></div>
                                                     <div class="fs-7 text-gray-600 fw-bold">Gross Sales</div>
                                                 </div>
                                                 <!--end::Title-->
@@ -192,7 +192,7 @@ while($row = $query -> fetch_assoc()){
                                                 <!--end::Symbol-->
                                                 <!--begin::Title-->
                                                 <div>
-                                                    <div class="fs-5 text-dark fw-bolder lh-1">₱4,5K</div>
+                                                    <div class="fs-5 text-dark fw-bolder lh-1">₱<?= totalNetSales(); ?></div>
                                                     <div class="fs-7 text-gray-600 fw-bold">Net Sales</div>
                                                 </div>
                                                 <!--end::Title-->
@@ -222,7 +222,7 @@ while($row = $query -> fetch_assoc()){
                                                 <!--end::Symbol-->
                                                 <!--begin::Title-->
                                                 <div>
-                                                    <div class="fs-5 text-dark fw-bolder lh-1">40</div>
+                                                    <div class="fs-5 text-dark fw-bolder lh-1">₱<?= totalVat()?></div>
                                                     <div class="fs-7 text-gray-600 fw-bold">Total Vat</div>
                                                 </div>
                                                 <!--end::Title-->
@@ -252,7 +252,7 @@ while($row = $query -> fetch_assoc()){
                                                 <!--end::Symbol-->
                                                 <!--begin::Title-->
                                                 <div>
-                                                    <div class="fs-5 text-dark fw-bolder lh-1">₱5.8M</div>
+                                                    <div class="fs-5 text-dark fw-bolder lh-1">₱<?= totalDiscount(); ?></div>
                                                     <div class="fs-7 text-gray-600 fw-bold">Total Discount</div>
                                                 </div>
                                                 <!--end::Title-->
