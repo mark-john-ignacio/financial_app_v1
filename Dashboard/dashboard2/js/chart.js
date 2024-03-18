@@ -1,7 +1,5 @@
 //begin::Total Sales line chart
 //Total sales line chart on dashboard. This is on the first widget
-import KTUtil from "../assets/js/scripts.bundle";
-
 var totalSalesLineChart = {
     series: [{
         name: 'Net Profit',
@@ -180,132 +178,132 @@ fetch('analytics/top_selling_item_bar_chart.php')
 //end::Top Selling Item bar chart
 
 
-function salesProgressBarChart(data) {
-    var s = "304758";
-    var a;
-    var i;
-    var r;
-    var chartElement = document.querySelector(".sales-progress-bar-chart");
-    var chart = new ApexCharts(chartElement, {
-        series: [{
-            name: "Net Profit",
-            data: data.map(item => parseFloat(item.net_profit))
-        }, {
-            name: "Revenue",
-            data: data.map(item => parseFloat(item.revenue))
-        }],
-        chart: {
-            fontFamily: "inherit",
-            type: "bar",
-            height: 175,
-            toolbar: {
-                show: false
-            }
-        },
-        plotOptions: {
-            bar: {
-                horizontal: false,
-                columnWidth: ["50%"],
-                borderRadius: 4
-            }
-        },
-        legend: {
-            show: false
-        },
-        dataLabels: {
-            enabled: false
-        },
-        stroke: {
-            show: true,
-            width: 2,
-            colors: ["transparent"]
-        },
-        xaxis: {
-            categories: data.map(item => item.month),
-            axisBorder: {
-                show: false
-            },
-            axisTicks: {
-                show: false
-            },
-            labels: {
-                style: {
-                    colors: s,
-                    fontSize: "12px"
-                }
-            }
-        },
-        yaxis: {
-            y: 0,
-            offsetX: 0,
-            offsetY: 0,
-            labels: {
-                style: {
-                    colors: s,
-                    fontSize: "12px"
-                }
-            }
-        },
-        fill: {
-            type: "solid"
-        },
-        states: {
-            normal: {
-                filter: {
-                    type: "none",
-                    value: 0
-                }
-            },
-            hover: {
-                filter: {
-                    type: "none",
-                    value: 0
-                }
-            },
-            active: {
-                allowMultipleDataPointsSelection: false,
-                filter: {
-                    type: "none",
-                    value: 0
-                }
-            }
-        },
-        tooltip: {
-            style: {
-                fontSize: "12px"
-            },
-            y: {
-                formatter: function (e) {
-                    return "$" + e + " revenue";
-                }
-            }
-        },
-        colors: [a, i],
-        grid: {
-            padding: {
-                top: 10
-            },
-            borderColor: r,
-            strokeDashArray: 4,
-            yaxis: {
-                lines: {
-                    show: true
-                }
-            }
-        }
-    });
-
-    chart.render();
+function fetchSalesProgressDataAndRenderChart() {
+    fetch('analytics/sales_progress_bar_chart.php')
+        .then(response => response.json())
+        .then(data => renderSalesProgressChart(data))
+        .catch(error => console.error('Error fetching data:', error));
 }
 
-fetch('analytics/sales_progress_bar_chart.php')
-    .then(response => response.json())
-    .then(data => {
-        salesProgressBarChart(data);
-    })
-    .catch(error => {
-        console.error('Error fetching data:', error);
-    });
+function renderSalesProgressChart(data) {
+    var chartElements = document.querySelectorAll(".sales-progress-bar-chart");
+    [].slice.call(chartElements).map(function(chartElement) {
+        var chartColor = chartElement.getAttribute("data-kt-color");
+        var chartHeight = parseInt(KTUtil.css(chartElement, "height"));
+        var chartColorValue = KTUtil.getCssVariableValue("--bs-" + chartColor);
 
+        new ApexCharts(chartElement, {
+            series: [{
+                name: "Net Profit",
+                data: data.map(item => item.net_profit)
+            }, {
+                name: "Revenue",
+                data: data.map(item => item.revenue)
+            }],
+            chart: {
+                fontFamily: "inherit",
+                type: "bar",
+                height: chartHeight,
+                toolbar: {
+                    show: false
+                }
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: ["50%"],
+                    borderRadius: 4
+                }
+            },
+            legend: {
+                show: false
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                show: true,
+                width: 2,
+                colors: ["transparent"]
+            },
+            xaxis: {
+                categories: data.map(item => item.month),
+                axisBorder: {
+                    show: false
+                },
+                axisTicks: {
+                    show: false
+                },
+                labels: {
+                    style: {
+                        colors: chartColor,
+                        fontSize: "12px"
+                    }
+                }
+            },
+            yaxis: {
+                y: 0,
+                offsetX: 0,
+                offsetY: 0,
+                labels: {
+                    style: {
+                        colors: chartColor,
+                        fontSize: "12px"
+                    }
+                }
+            },
+            fill: {
+                type: "solid"
+            },
+            states: {
+                normal: {
+                    filter: {
+                        type: "none",
+                        value: 0
+                    }
+                },
+                hover: {
+                    filter: {
+                        type: "none",
+                        value: 0
+                    }
+                },
+                active: {
+                    allowMultipleDataPointsSelection: false,
+                    filter: {
+                        type: "none",
+                        value: 0
+                    }
+                }
+            },
+            tooltip: {
+                style: {
+                    fontSize: "12px"
+                },
+                y: {
+                    formatter: function(e) {
+                        return "$" + e + " revenue";
+                    }
+                }
+            },
+            colors: [chartColorValue, "#9e9e9e"],
+            grid: {
+                padding: {
+                    top: 10
+                },
+                borderColor: "ffffff",
+                strokeDashArray: 4,
+                yaxis: {
+                    lines: {
+                        show: true
+                    }
+                }
+            }
+        }).render();
+    });
+}
+
+// Usage
+fetchSalesProgressDataAndRenderChart();
 
 

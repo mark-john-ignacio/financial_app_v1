@@ -269,28 +269,31 @@ while($row = $query -> fetch_assoc()){
                         </div>
                         <!--end::Col-->
                     </div>
-
                     <!--begin::Col-->
                     <div class="col-xxl-4">
-                        <!--begin::Mixed Widget 10-->
-                        <div class="card card-xxl-stretch-50 mb-5 mb-xl-8">
-                            <!--begin::Body-->
-                            <div class="card-body p-0 d-flex justify-content-between flex-column overflow-hidden">
-                                <!--begin::Hidden-->
-                                <div class="d-flex flex-stack flex-wrap flex-grow-1 px-9 pt-9 pb-3">
-                                    <div class="me-2">
-                                        <span class="fw-bolder text-gray-800 d-block fs-3">Sales</span>
-                                        <span class="text-gray-400 fw-bold">Oct 8 - Oct 26 21</span>
-                                    </div>
-                                    <div class="fw-bolder fs-3 text-primary">$15,300</div>
+                    <!--begin::Mixed Widget 10-->
+                    <div class="card card-xxl-stretch-50 mb-5 mb-xl-8">
+                        <!--begin::Body-->
+                        <div class="card-body p-0 d-flex justify-content-between flex-column overflow-hidden">
+                            <!--begin::Hidden-->
+                            <div class="d-flex flex-stack flex-wrap flex-grow-1 px-9 pt-9 pb-3">
+                                <div class="me-2">
+                                    <span class="fw-bolder text-gray-800 d-block fs-3">Sales</span>
+                                    <span class="text-gray-400 fw-bold"></span>
                                 </div>
-                                <!--end::Hidden-->
-                                <!--begin::Chart-->
-                                <div class="sales-progress-bar-chart" data-kt-color="primary" style="height: 175px"></div>
-                                <!--end::Chart-->
+                                <div class="fw-bolder fs-3 text-primary">₱<?=totalSales()["revenue"];?></div>
                             </div>
+                            <!--end::Hidden-->
+                            <!--begin::Chart-->
+                            <div class="sales-progress-bar-chart" data-kt-color="primary" style="height: 175px"></div>
+                            <!--end::Chart-->
                         </div>
-                        <!--end::Mixed Widget 10-->
+                    </div>
+                    <!--end::Mixed Widget 10-->
+                    </div>
+                    <!--end::Col-->
+                    <!--begin::Col-->
+                    <div class="col-xxl-4">
                   <!--begin::row-->
                         <!--begin::Row-->
                         <div class="row g-6 g-xl-9">
@@ -302,8 +305,8 @@ while($row = $query -> fetch_assoc()){
                                     <div class="card-header mt-6">
                                         <!--begin::Card title-->
                                         <div class="card-title flex-column">
-                                            <h3 class="fw-bolder mb-1">Sales by Channel</h3>
-                                            <div class="fs-6 fw-bold text-gray-400">Breakdown of sales</div>
+                                            <h3 class="fw-bolder mb-1">Sales by Type</h3>
+                                            <div class="fs-6 fw-bold text-gray-400">Breakdown of sales type</div>
                                         </div>
                                         <!--end::Card title-->
                                         <!--begin::Card toolbar-->
@@ -331,14 +334,14 @@ while($row = $query -> fetch_assoc()){
                                                 <!--begin::Label-->
                                                 <div class="d-flex fs-6 fw-bold align-items-center mb-3">
                                                     <div class="bullet bg-primary me-3"></div>
-                                                    <div class="text-gray-400">Online</div>
+                                                    <div class="text-gray-400">Goods</div>
                                                     <div class="ms-auto fw-bolder text-gray-700">30</div>
                                                 </div>
                                                 <!--end::Label-->
                                                 <!--begin::Label-->
                                                 <div class="d-flex fs-6 fw-bold align-items-center mb-3">
                                                     <div class="bullet bg-success me-3"></div>
-                                                    <div class="text-gray-400">Physical Store</div>
+                                                    <div class="text-gray-400">Services</div>
                                                     <div class="ms-auto fw-bolder text-gray-700">45</div>
                                                 </div>
                                                 <!--end::Label-->

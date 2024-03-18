@@ -44,6 +44,7 @@
 <link href="global/themes/blue.css?h=<?php echo time();?>" id="style_color" rel="stylesheet" type="text/css"/>
 <link href="global/custom.css" rel="stylesheet" type="text/css"/>
 <!-- END THEME STYLES -->
+
 </head>
 <!-- END HEAD -->
 <!-- BEGIN BODY -->

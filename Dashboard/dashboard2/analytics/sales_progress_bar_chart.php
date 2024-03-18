@@ -17,6 +17,7 @@ $sql = "
         INNER JOIN sales_t s_t ON s.compcode = s_t.compcode AND s.ctranno = s_t.ctranno
     WHERE
         s.lapproved = 1 AND s.lvoid = 0
+        AND s.dcutdate >= DATE_SUB(CURDATE(), INTERVAL 8 MONTH)
     GROUP BY
         YEAR(s.dcutdate), MONTH(s.dcutdate)
     ORDER BY
