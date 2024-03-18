@@ -223,7 +223,7 @@
 				</li>
 				<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
 				<li class="start">
-					<a href="javascript:;" onclick="setpage('./Dashboard')">
+					<a href="javascript:;" onclick="setpage('./Dashboard/dashboard.php')">
 						<i class="icon-home"></i><span class="title">Dashboard</span><span class="selected"></span>
 					</a>
 				</li>

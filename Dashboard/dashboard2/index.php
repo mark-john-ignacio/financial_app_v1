@@ -293,6 +293,88 @@ while($row = $query -> fetch_assoc()){
                         <!--end::Col-->
                     </div>
                 <!--end::SecondRow-->
+                <!--begin::ThirdRow-->
+                <div class="row g-5 g-xl-8">
+                    <div class="col-xl-6">
+                        <!--begin::Charts Widget 1-->
+                        <div class="card card-xl-stretch mb-xl-8">
+                            <!--begin::Header-->
+                            <div class="card-header border-0 pt-5">
+                                <!--begin::Title-->
+                                <h3 class="card-title align-items-start flex-column">
+                                    <span class="card-label fw-bolder fs-3 mb-1">Purchase Order Bar Chart</span>
+                                    <span class="text-muted fw-bold fs-7"></span>
+                                </h3>
+                                <!--end::Title-->
+                                <!--begin::Toolbar-->
+                                <div class="card-toolbar">
+                                    <!--begin::Menu-->
+                                    <button type="button" class="btn btn-sm btn-icon btn-color-primary btn-active-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
+                                        <!--begin::Svg Icon | path: icons/duotune/general/gen024.svg-->
+                                        <span class="svg-icon svg-icon-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24">
+                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <rect x="5" y="5" width="5" height="5" rx="1" fill="#000000" />
+                    <rect x="14" y="5" width="5" height="5" rx="1" fill="#000000" opacity="0.3" />
+                    <rect x="5" y="14" width="5" height="5" rx="1" fill="#000000" opacity="0.3" />
+                    <rect x="14" y="14" width="5" height="5" rx="1" fill="#000000" opacity="0.3" />
+                </g>
+            </svg>
+        </span>
+                                        <!--end::Svg Icon-->
+                                    </button>
+                                    <!--begin::Menu 1-->
+                                    <div class="menu menu-sub menu-sub-dropdown w-250px w-md-300px" data-kt-menu="true" id="kt_menu_61484c42e354c">
+                                        <!--begin::Header-->
+                                        <div class="px-7 py-5">
+                                            <div class="fs-5 text-dark fw-bolder">Filter Options</div>
+                                        </div>
+                                        <!--end::Header-->
+                                        <!--begin::Menu separator-->
+                                        <div class="separator border-gray-200"></div>
+                                        <!--end::Menu separator-->
+                                        <!--begin::Form-->
+                                        <div class="px-7 py-5">
+                                            <!--begin::Input group-->
+                                            <div class="mb-10">
+                                                <!--begin::Label-->
+                                                <label class="form-label fw-bold">Date Range:</label>
+                                                <!--end::Label-->
+                                                <!--begin::Input-->
+                                                <div>
+                                                    <input type="text" class="form-control form-control-sm" id="kt_datepicker" placeholder="Select date range" />
+                                                </div>
+                                                <!--end::Input-->
+                                            </div>
+                                            <!--end::Input group-->
+                                            <!--begin::Actions-->
+                                            <div class="d-flex justify-content-end">
+                                                <button type="reset" class="btn btn-sm btn-light btn-active-light-primary me-2" data-kt-menu-dismiss="true">Reset</button>
+                                                <button type="submit" class="btn btn-sm btn-primary" data-kt-menu-dismiss="true">Apply</button>
+                                            </div>
+                                            <!--end::Actions-->
+                                        </div>
+                                        <!--end::Form-->
+                                    </div>
+                                    <!--end::Menu 1-->
+                                    <!--end::Menu-->
+                                </div>
+                                <!--end::Toolbar-->
+
+                            </div>
+                            <!--end::Header-->
+                            <!--begin::Body-->
+                            <div class="card-body">
+                                <!--begin::Chart-->
+                                <div id="kt_charts_widget_1_chart" style="height: 350px"></div>
+                                <!--end::Chart-->
+                            </div>
+                            <!--end::Body-->
+                        </div>
+                        <!--end::Charts Widget 1-->
+                    </div>
+                </div>
+                <!--end::ThirdRow-->
 
 
                 <!--begin::Scrolltop-->
