@@ -41,8 +41,8 @@
 
 	}
 	
-	$csalesno = $_REQUEST['hdntransid'];
-	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign, d.cdesc as termsdesc from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join users c on a.cpreparedby=c.Userid left join groupings d on a.compcode=b.compcode and a.cterms=d.ccode and d.ctype='TERMS' where a.compcode='$company' and a.cpono = '$csalesno'");
+	$csalesno = $_REQUEST['hdntransid']; //left join users c on a.cpreparedby=c.Userid , c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign
+	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, d.cdesc as termsdesc, x.cdesc as cprepname from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join groupings d on a.compcode=b.compcode and a.cterms=d.ccode and d.ctype='TERMS' left join mrp_operators x on a.compcode=x.compcode and a.cprepby=x.nid where a.compcode='$company' and a.cpono = '$csalesno'");
 
 	if (mysqli_num_rows($sqlhead)!=0) {
 		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -56,7 +56,7 @@
 			$Remarks = $row['cremarks'];
 			$Date = $row['dpodate'];
 			$DateNeeded = $row['dneeded'];
-			$Gross = $row['ngross'];
+			$Gross = $row['ngrossbefore'];
 
 			$contactphone = $row['ccontactphone'];
 			$contactfax = $row['ccontactfax'];
@@ -73,16 +73,16 @@
 			$lPosted = $row['lapproved'];
 			$lSent = $row['lsent'];
 
-			$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
-			$cpreparedBySign = $row['cusersign']; 
+			//$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
+			//$cpreparedBySign = $row['cusersign']; 
 
 			$cApprBy = $row['capprovedby'];
 			$cCheckedBy = $row['ccheckedby'];
+			$cPrepBy = $row['cprepname'];
 		}
 	}
 
 	$sqldtlss = mysqli_query($con,"select A.*, B.citemdesc, B.cuserpic From quote_t A left join items B on A.citemno=B.cpartno where A.compcode='$company' and A.ctranno = '$csalesno'");
-
 
 	$sqlbody = mysqli_query($con,"select a.*,b.citemdesc, a.citemdesc as newdesc, c.locations_id from purchase_t a left join items b on a.compcode=b.compcode and a.citemno=b.cpartno left join purchrequest c on a.compcode=c.compcode and a.creference=c.ctranno where a.compcode='$company' and a.cpono = '$csalesno' Order by a.nident");
 
@@ -229,22 +229,25 @@
 	</table>
 	<br>
 	<table border="1" width="100%" style="border-collapse:collapse" cellpadding="5px">					
-		<tr>
-			<td width="25%" align="center"  height="100px" valign="top">';
+		<tr>';
 
-				if($lSent==1 && $cpreparedBySign!=""){
+				//if($lSent==1 && $cpreparedBySign!=""){
 
-					$setfooter = $setfooter .'<div style="text-align: center">Prepared By</div>';
-					$setfooter = $setfooter .'<div style="text-align: center"><img src = "'.$cpreparedBySign.'" height="80px"></div>';
-					$setfooter = $setfooter .'<div style="text-align: center">'.$cpreparedBy.'</div>';
+				//	$setfooter = $setfooter .'<div style="text-align: center">Prepared By</div>';
+					//$setfooter = $setfooter .'<div style="text-align: center"><img src = "'.$cpreparedBySign.'" height="80px"></div>';
+					//$setfooter = $setfooter .'<div style="text-align: center">'.$cpreparedBy.'</div>';
 			
-				}else{
-					$setfooter = $setfooter .'<div style="text-align: center">Prepared By</div>';
-					$setfooter = $setfooter .'<div style="text-align: center"><img src = "white.jpg" height="80px"></div>';
-					$setfooter = $setfooter .'<div style="text-align: center">'.$cpreparedBy.'</div>';
-				}
+				//}else{
+					//$setfooter = $setfooter .'<div style="text-align: center">Prepared By</div>';
+					//$setfooter = $setfooter .'<div style="text-align: center"><img src = "white.jpg" height="80px"></div>';
+					//$setfooter = $setfooter .'<div style="text-align: center">'.$cpreparedBy.'</div>';
+				//}
 
-			$setfooter = $setfooter .'</td>';
+			$setfooter = $setfooter .'<td width="25%" align="center"  height="100px" valign="top">
+			<div style="text-align: center">Prepared By</div>				
+			<div style="text-align: center"><img src = "white.jpg" height="80px"></div>		
+			<div style="text-align: center">'.$cPrepBy.'</div>					
+			</td>';
 
 			$setfooter = $setfooter.'<td width="25%" align="center" height="100px" valign="top">							
 			<div style="text-align: center">Approved By</div>				
@@ -307,9 +310,7 @@
 			<td align="right" class="tdpadx">'.number_format($Gross,2).'</td>			
 		</tr>
 	</table>';
-			
-	
-
+		
 	$mpdf = new \Mpdf\Mpdf([
 		'mode' => '',
 		'format' => 'letter',

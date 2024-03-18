@@ -81,6 +81,14 @@
 		$clastchkdby = $row['ccheckedby'];
 	}
 
+	@$arrempslist = array();
+	$getempz = mysqli_query($con,"SELECT nid, cdesc, csign FROM `mrp_operators` where compcode='$company' and cstatus='ACTIVE' order By cdesc"); 
+	if (mysqli_num_rows($getempz)!=0) {
+		while($row = mysqli_fetch_array($getempz, MYSQLI_ASSOC)){
+			@$arrempslist[] = array('nid' => $row['nid'], 'cdesc' => $row['cdesc'], 'csign' => $row['csign']); 
+		}
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -96,6 +104,7 @@
   	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/select2/css/select2.css?h=<?php echo time();?>">
 
 	<link href="../../global/css/components.css?t=<?php echo time();?>" id="style_components" rel="stylesheet" type="text/css"/>
 
@@ -108,6 +117,7 @@
 	<script src="../../Bootstrap/js/jquery.numeric.js"></script>
 	-->
 
+	<script src="../../Bootstrap/select2/js/select2.full.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.js"></script>
@@ -306,12 +316,10 @@
 								<tH width="150" style="padding:2px" valign='top'><div id="setewt">EWT Code: </div> </tH>
 								<td style="padding:2px" valign='top'>
 									<div id="setewtval"> 
-										<select id="selewt" name="selewt" class="form-control input-sm selectpicker"  tabindex="3">
-											<option value="none">None</option>
-											<option value="multi">Multiple</option>
+										<select id="selewt" name="selewt[]" class="form-control input-sm selectpicker"  tabindex="3">
 											<?php
 												foreach(@$arrewtlist as $rows){
-													echo "<option value=\"".$rows['ctaxcode']."\">".$rows['ctaxcode'].": ".$rows['nrate']."%</option>";
+													echo "<option value=\"".$rows['ctaxcode']."\"  data-rate=\"".$rows['nrate']."\">".$rows['ctaxcode'].": ".$rows['nrate']."%</option>";
 												}
 											?>
 												
@@ -330,8 +338,16 @@
 										<input type='text' class="form-control input-sm" id="apprby" name="apprby" placeholder="Enter Approved By..." value="<?=$clastapprvby?>">
 									</div>
 								</td>
-								<tH width="150">&nbsp;</tH>
-								<td style="padding:2px;">&nbsp;</td>
+								<tH width="150">Prepared By: </tH>
+								<td style="padding:2px;">
+									<select class='xsel2 form-control input-sm' id="selprepby" name="selprepby" required>
+										<?php
+											foreach(@$arrempslist as $rsx){
+												echo "<option value='".$rsx['nid']."'> ".$rsx['cdesc']." </option>";
+											}
+										?>
+									</select>
+								</td>
 							</tr>
 						</table>
 					
@@ -469,7 +485,7 @@
 										<th width="250px" style="border-bottom:1px solid #999">Part No.</th>						
 										<th width="350px" style="border-bottom:1px solid #999">Description</th>
 										<th width="100px" style="border-bottom:1px solid #999">Item Code</th>
-										<th width="100px" style="border-bottom:1px solid #999;" class="codeshdn">EWT Code</th>
+										<!--<th width="100px" style="border-bottom:1px solid #999;" class="codeshdn">EWT Code</th>-->
 										<th width="200px" style="border-bottom:1px solid #999;" class="codeshdn">VAT</th>
 										<th width="100px" style="border-bottom:1px solid #999">UOM</th>
 										<th width="100px" style="border-bottom:1px solid #999">Qty</th>
@@ -508,14 +524,59 @@
 						</div>
 					</div>
 					<div class="col-xs-6">
-						<div class="well">							
+						<div class="well">	
 							<div class="row static-info align-reverse">
 								<div class="col-xs-7 name">
-									Gross Amount:
-									<input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="0">
-									<input type="hidden" id="txtnGross" name="txtnGross" value="0">
+									Vatable Purchase:
+									<input type="hidden" id="txtnNetVAT" name="txtnNetVAT" value="0">
 								</div>
-								<div class="col-xs-4 value" id="divtxtnBaseGross">
+								<div class="col-xs-4 value" id="divtxtnNetVAT">
+									0.00
+								</div>
+							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									Non-Vatable Purchase:
+									<input type="hidden" id="txtnExemptVAT" name="txtnExemptVAT" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnExemptVAT"> 
+									0.00
+								</div>
+							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									add VAT:
+									<input type="hidden" id="txtnVAT" name="txtnVAT" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnVAT">
+									0.00
+								</div>
+							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									Total Purchase:
+									<input type="hidden" id="txtnGrossBef" name="txtnGrossBef" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnGrossBef"> 
+									0.00
+								</div>
+							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									less EWT:
+									<input type="hidden" id="txtnEWT" name="txtnEWT" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnEWT"> 
+									0.00
+								</div>
+							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									<b>Total Amount Payable: </b>
+									<input type="hidden" id="txtnGross" name="txtnGross" value="0">
+									<input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="0">								
+								</div>
+								<div class="col-xs-4 value" id="divtxtnGross" style="border-top: 1px solid #ccc">
 									0.00
 								</div>
 							</div>
@@ -961,9 +1022,12 @@
 
 			}
 		});
+		
+		$("#selprepby").select2();
+		$("#selewt").select2();
 
 		$("#selewt").on("change", function(){ 
-			var rowCount = $('#MyTable tr').length;
+			/*var rowCount = $('#MyTable tr').length;
 
 			if(rowCount>1){
 				if($(this).val()!=="multi"){			
@@ -981,7 +1045,8 @@
 					}
 				}
 
-			}
+			}*/
+			ComputeGross();
 		});
 
 		$('#txtchangeitm').typeahead({
@@ -1133,12 +1198,8 @@
 		var tditmunit = "<td style=\"padding: 1px\" nowrap> <select class='xseluom form-control input-xs' name=\"seluom\" id=\"seluom"+lastRow+"\">"+uomoptions+"</select> </td>";
 
 
-			//if($("#selpaytype").val()=="1"){
-				var ewtstyle="";
-			//}else{
-			//	var ewtstyle="display: none";
-			//}  
-
+			/*var ewtstyle="";
+			
 			var gvnewt = $("#selewt").val();
 			var xz = $("#hdnewtlist").val();
 			ewtoptions = "";
@@ -1157,7 +1218,7 @@
 				isdisabled = "";
 			}
 
-			var ewttd = "<td nowrap style=\""+ewtstyle+"\" class=\"codeshdn\"> <select class='form-control input-xs' name=\"selitmewtyp\" id=\"selitmewtyp"+lastRow+"\" "+isdisabled+"> <option value=\"none\">None</option>" + ewtoptions + "</select> </td>";
+			var ewttd = "<td nowrap style=\""+ewtstyle+"\" class=\"codeshdn\"> <select class='form-control input-xs' name=\"selitmewtyp\" id=\"selitmewtyp"+lastRow+"\" "+isdisabled+"> <option value=\"none\">None</option>" + ewtoptions + "</select> </td>";*/
 
 			var xz = $("#hdntaxcodes").val();
 			taxoptions = "";
@@ -1170,7 +1231,7 @@
 				taxoptions = taxoptions + "<option value='"+this['ctaxcode']+"' data-id='"+this['nrate']+"' "+isselctd+">"+this['nrate']+"%: "+this['ctaxdesc']+"</option>";
 			});
 
-			var vattd = "<td width=\"120px\" nowrap style=\""+ewtstyle+"\" class=\"codeshdn\"> <select class='form-control input-xs' name=\"selitmvatyp\" id=\"selitmvatyp"+lastRow+"\">" + taxoptions + "</select> </td>";
+			var vattd = "<td width=\"120px\" nowrap class=\"codeshdn\"> <select class='form-control input-xs' name=\"selitmvatyp\" id=\"selitmvatyp"+lastRow+"\">" + taxoptions + "</select> </td>";
 
 
 		var tditmqty = "<td style=\"padding: 1px\" nowrap> <input type='text' value='"+itmnqty+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+itmnmain+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='"+itmnfact+"' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>";
@@ -1185,7 +1246,7 @@
 
 		var tditmdel = "<td style=\"padding: 1px\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + lastRow + "' value='delete' data-var='"+lastRow+"'/> </td>";
 
-		$('#MyTable > tbody:last-child').append('<tr>'+tdedt + tditmpartdesc + tditmdesc + tditmcode + ewttd + vattd + tditmunit + tditmqty + tditmprice + tditmbaseamount + tdneeded  + tditmremarks + tditmdel + '</tr>');
+		$('#MyTable > tbody:last-child').append('<tr>'+tdedt + tditmpartdesc + tditmdesc + tditmcode + vattd + tditmunit + tditmqty + tditmprice + tditmbaseamount + tdneeded  + tditmremarks + tditmdel + '</tr>');
 
 
 			$("#del"+lastRow).on('click', function() {
@@ -1319,7 +1380,7 @@
 
 	}
 
-	function ComputeGross(){
+	/*function ComputeGross(){
 		var rowCount = $('#MyTable tr').length;
 
 		var gross = 0;
@@ -1344,6 +1405,88 @@
 
 		$("#divtxtnBaseGross").text(gross.toFixed(2));
 		$("#divtxtnBaseGross").formatNumber();
+		
+	}*/
+
+	function ComputeGross(){
+		var rowCount = $('#MyTable tr').length;
+
+		var gross = 0;
+		var nwvat = 0;
+		var nvat = 0;
+		var nwovat = 0;
+		var totewt = 0;
+		var xcrate = 0;
+		var TotAmtDue = 0;
+
+		var nvatble = 0;
+		var vatzTot = 0;
+
+		if(rowCount>1){
+			for (var i = 1; i <= rowCount-1; i++) {
+
+				var slctdval = $("#selitmvatyp"+i+" option:selected").data('id'); //data-id is the rate
+
+				if(parseFloat(slctdval)>0){
+					nvatble = parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) / parseFloat(1 + (parseInt(slctdval)/100));
+					nvat = nvatble * (parseInt(slctdval)/100);
+
+					nwvat = nwvat + nvatble;
+					vatzTot = vatzTot + nvat;
+					
+				}else{
+					nwovat = nwovat + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
+				}
+
+				gross = gross + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
+				
+			}
+						
+		}
+
+		//VATABLE
+		$("#txtnNetVAT").val(nwvat);
+		$("#divtxtnNetVAT").text(nwvat.toFixed(2));
+		$("#divtxtnNetVAT").formatNumber();
+
+		//NO VAT
+		$("#txtnExemptVAT").val(nwovat);
+		$("#divtxtnExemptVAT").text(nwovat.toFixed(2));
+		$("#divtxtnExemptVAT").formatNumber();
+
+		// ADD VAT
+		$("#txtnVAT").val(vatzTot);
+		$("#divtxtnVAT").text(vatzTot.toFixed(2));
+		$("#divtxtnVAT").formatNumber();
+
+		//TOTAL GROSS
+		$("#txtnGrossBef").val(gross);
+		$("#divtxtnGrossBef").text(gross.toFixed(2));
+		$("#divtxtnGrossBef").formatNumber();
+
+		// LESS EWT
+		$xtotewrate = 0;
+		ewtTotz = 0;
+		$('#selewt > option:selected').each(function() {
+			$xtotewrate = $xtotewrate + parseFloat($(this).data("rate"));
+		});
+		if(parseFloat($xtotewrate)>0){
+			ewtTotz = (parseFloat(nwvat) + parseFloat(nwovat)) * ($xtotewrate/100);
+		}
+		$("#txtnEWT").val(ewtTotz);
+		$("#divtxtnEWT").text(ewtTotz.toFixed(2));  
+		$("#divtxtnEWT").formatNumber();
+
+
+		//Total Amount
+		$gettmtt = gross - parseFloat(ewtTotz);
+		gross2 = $gettmtt * parseFloat($("#basecurrval").val().replace(/,/g,''));
+		
+		$("#txtnGross").val(gross2);
+		$("#txtnBaseGross").val($gettmtt);
+		$("#divtxtnGross").text($gettmtt.toFixed(2));		
+		$("#divtxtnGross").formatNumber();
+
 		
 	}
 
@@ -1548,8 +1691,8 @@
 					var nfactor = $(this).find('input[type="hidden"][name="hdnfactor"]').val(); 
 					var citmremarks = $(this).find('input[name="txtitemrem"]').val();
 
-					var ewtcode = $(this).find('select[name="selitmewtyp"]').val();
-					var ewtrate = $(this).find('select[name="selitmewtyp"] option:selected').data('rate'); 
+					//var ewtcode = $(this).find('select[name="selitmewtyp"]').val();
+					//var ewtrate = $(this).find('select[name="selitmewtyp"] option:selected').data('rate'); 
 					var vatcode = $(this).find('select[name="selitmvatyp"]').val(); 
 					var nrate = $(this).find('select[name="selitmvatyp"] option:selected').data('id'); 
 
@@ -1564,7 +1707,7 @@
 					
 					$.ajax ({
 						url: "Purch_newsavedet.php",
-						data: { trancode: trancode, crefpr:crefpr, crefprident:crefprident, dneed: dneed, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, ntranamt:ntranamt, citmremarks:citmremarks, vatcode:vatcode, nrate:nrate, ewtcode:ewtcode, ewtrate:ewtrate, citmpartno:citmpartno, citmnoOLD:citmnoOLD, citmdesc:citmdesc },
+						data: { trancode: trancode, crefpr:crefpr, crefprident:crefprident, dneed: dneed, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, ntranamt:ntranamt, citmremarks:citmremarks, vatcode:vatcode, nrate:nrate, ewtcode:'', ewtrate:0, citmpartno:citmpartno, citmnoOLD:citmnoOLD, citmdesc:citmdesc },
 						async: false,
 						success: function( data ) {
 							if(data.trim()=="False"){
@@ -1585,7 +1728,7 @@
 							$('#AlertModal').modal('hide');
 				
 								$("#txtctranno").val(trancode);
-								$("#frmedit").submit();
+								//$("#frmedit").submit();
 				
 						}, 3000); // milliseconds = 3seconds
 

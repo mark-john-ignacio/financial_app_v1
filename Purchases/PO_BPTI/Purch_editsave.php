@@ -24,16 +24,15 @@ function chkgrp($valz) {
 	$cRemarks = chkgrp($_REQUEST['txtremarks']); 
 	$cContact = chkgrp($_REQUEST['txtcontactname']); 
 	$cContactEmail = chkgrp($_REQUEST['contact_email']); 
-	$nGross = str_replace(",","",$_REQUEST['txtnGross']);
 
 	$CurrCode = $_REQUEST['selbasecurr']; 
 	$CurrDesc = $_REQUEST['hidcurrvaldesc'];  
 	$CurrRate= $_REQUEST['basecurrval']; 
-	$BaseGross= str_replace(",","",$_REQUEST['txtnBaseGross']);
 	$PayType = $_REQUEST['selpaytype']; 
 
 	$cApprvBy =  mysqli_real_escape_string($con, $_REQUEST['apprby']);
 	$cCheckBy =  mysqli_real_escape_string($con, $_REQUEST['chkdby']);
+	$cPrepByName =  $_REQUEST['selprepby'];
 
 	if(isset($_REQUEST['selterms'])){
 		$PayTerms = "'".$_REQUEST['selterms']."'";
@@ -41,16 +40,28 @@ function chkgrp($valz) {
 		$PayTerms = "NULL";
 	}
 
+	$nnetvat = $_REQUEST['txtnNetVAT']; //VATABLE SALES   nnet
+	$nexempt = $_REQUEST['txtnExemptVAT']; //VAT EXEMPT SALES   nexempt
+	$nvat = $_REQUEST['txtnVAT']; //VAT   nvat
+	$nGrossBefore = $_REQUEST['txtnGrossBef']; //TOTAL GROSS  BEFORE DISCOUNT ngrossbefore
+	if(isset($_REQUEST['txtnEWT'])){
+		$nLessEWT = $_REQUEST['txtnEWT']; //EWT
+	}else{
+		$nLessEWT = ""; //EWT
+	}
+	$nGross = $_REQUEST['txtnGross']; //TOTAL AMOUNT ngross
+	$BaseGross= $_REQUEST['txtnBaseGross']; //TOTAL AMOUNT * currency rate    nbasegross
+
+	if(isset($_REQUEST['selewt'])){
+		$cewtcode = implode(",",$_REQUEST['selewt']);
+	}else{
+		$cewtcode = "";
+	}
+
 	$delto = chkgrp($_REQUEST['txtdelcust']); 
 	$deladd = chkgrp($_REQUEST['txtdeladd']); 
 	$delnotes = chkgrp($_REQUEST['textdelnotes']);
 	$billto = chkgrp($_REQUEST['txtbillto']); 
-
-	if(isset($_REQUEST['selewt'])){
-		$cewtcode = "'".$_REQUEST['selewt']."'";
-	}else{
-		$cewtcode = "NULL";
-	}
 
 	$chkCustAcct = mysqli_query($con,"select cacctcode from suppliers where compcode='$company' and ccode='$cCustID'");
 
@@ -66,9 +77,9 @@ function chkgrp($valz) {
 
 	$preparedby = $_SESSION['employeeid'];
 	
-	//UPDATE HEADER
+	//UPDATE HEADER , , ,,,
 
-	if (!mysqli_query($con,"Update purchase set `ccode` ='$cCustID', `cremarks`=$cRemarks, `ccontact`=$cContact, `ccontactemail`=$cContactEmail, `dneeded`=STR_TO_DATE('$dDelDate', '%m/%d/%Y'),`ngross`='$nGross', `ccustacctcode`='$AccntCode', `nbasegross`='$BaseGross', `ccurrencycode`='$CurrCode', `ccurrencydesc`='$CurrDesc', `nexchangerate`='$CurrRate', `ladvancepay` = $PayType, `cterms` = $PayTerms, `cdelto` = $delto, `ddeladd` = $deladd, `ddelinfo` = $delnotes, `cbillto` = $billto, `cewtcode` = $cewtcode, `capprovedby` = '$cApprvBy', `ccheckedby` = '$cCheckBy' Where compcode='$company' and cpono='$cSINo'")){
+	if (!mysqli_query($con,"Update purchase set `ccode` ='$cCustID', `cremarks`=$cRemarks, `ccontact`=$cContact, `ccontactemail`=$cContactEmail, `dneeded`=STR_TO_DATE('$dDelDate', '%m/%d/%Y'), `nnet` = '$nnetvat', `nvat` = '$nvat', `nexempt` = '$nexempt', `newt` = '$nLessEWT', `cewtcode` = '$cewtcode', `ngrossbefore` = '$nGrossBefore', `ngross`='$nGross', `ccustacctcode`='$AccntCode', `nbasegross`='$BaseGross', `ccurrencycode`='$CurrCode', `ccurrencydesc`='$CurrDesc', `nexchangerate`='$CurrRate', `ladvancepay` = $PayType, `cterms` = $PayTerms, `cdelto` = $delto, `ddeladd` = $deladd, `ddelinfo` = $delnotes, `cbillto` = $billto, `capprovedby` = '$cApprvBy', `ccheckedby` = '$cCheckBy', `cprepby` = '$cPrepByName' Where compcode='$company' and cpono='$cSINo'")){
 		echo "False";
 	}
 	else{
