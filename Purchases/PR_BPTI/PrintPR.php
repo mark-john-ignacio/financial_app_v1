@@ -54,7 +54,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <head>
 	<style>
 		body{
-			font-family: Verdana, sans-serif;
+			font-family: Arial, sans-serif;
 			font-size: 9pt;
 		}
 		.tdpadx{

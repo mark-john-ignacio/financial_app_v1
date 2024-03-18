@@ -314,7 +314,7 @@
 		'mode' => '',
 		'format' => 'letter',
 		'default_font_size' => 10,
-		'default_font' => 'Helvetica, sans-serif',
+		'default_font' => 'Arial, sans-serif',
 		'margin_left' => 10,
 		'margin_right' => 10,
 		'margin_top' => 11,
