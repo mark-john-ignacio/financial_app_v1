@@ -52,11 +52,8 @@ while($row = $query -> fetch_assoc()){
 <div class="d-flex flex-column flex-root">
     <!--begin::Page-->
             <!--begin::Container-->
-
             <div id="kt_content_container" class="container-xxl">
-                <!--begin::Row-->
-                <div class="row gy-5 g-xl-8">
-
+                <!--begin::FirstRow-->
                     <div class="row gy-5 g-xl-10">
                         <!--begin::Col-->
                         <div class="col-xl-4 col-12 col-md-4">
@@ -94,7 +91,6 @@ while($row = $query -> fetch_assoc()){
                         </div>
                         <!--end::Col-->
                         <!--begin::Col-->
-
                         <div class="col-xl-4 col-12 col-md-4">
                             <!--begin::Mixed Widget 14-->
                             <div class="card card-xxl-stretch mb-xl-10" style="background-color: #CBF0F4">
@@ -269,150 +265,82 @@ while($row = $query -> fetch_assoc()){
                         </div>
                         <!--end::Col-->
                     </div>
-                    <!--begin::Col-->
-                    <div class="col-xxl-4">
-                    <!--begin::Mixed Widget 10-->
-                    <div class="card card-xxl-stretch-50 mb-5 mb-xl-8">
-                        <!--begin::Body-->
-                        <div class="card-body p-0 d-flex justify-content-between flex-column overflow-hidden">
-                            <!--begin::Hidden-->
-                            <div class="d-flex flex-stack flex-wrap flex-grow-1 px-9 pt-9 pb-3">
-                                <div class="me-2">
-                                    <span class="fw-bolder text-gray-800 d-block fs-3">Sales</span>
-                                    <span class="text-gray-400 fw-bold"></span>
-                                </div>
-                                <div class="fw-bolder fs-3 text-primary">₱<?=totalSales()["revenue"];?></div>
-                            </div>
-                            <!--end::Hidden-->
-                            <!--begin::Chart-->
-                            <div class="sales-progress-bar-chart" data-kt-color="primary" style="height: 175px"></div>
-                            <!--end::Chart-->
-                        </div>
-                    </div>
-                    <!--end::Mixed Widget 10-->
-                    </div>
-                    <!--end::Col-->
-                    <!--begin::Col-->
-                    <div class="col-xxl-4">
-                  <!--begin::row-->
-                        <!--begin::Row-->
-                        <div class="row g-6 g-xl-9">
-                            <!--begin::Col-->
-                            <div class="col-lg-6">
-                                <!--begin::Summary-->
-                                <div class="card card-flush h-lg-100">
-                                    <!--begin::Card header-->
-                                    <div class="card-header mt-6">
-                                        <!--begin::Card title-->
-                                        <div class="card-title flex-column">
-                                            <h3 class="fw-bolder mb-1">Sales by Type</h3>
-                                            <div class="fs-6 fw-bold text-gray-400">Breakdown of sales type</div>
-                                        </div>
-                                        <!--end::Card title-->
-                                        <!--begin::Card toolbar-->
-                                        <div class="card-toolbar">
-                                            <a href="#" class="btn btn-light btn-sm">View Orders</a>
-                                        </div>
-                                        <!--end::Card toolbar-->
+                <!--end::FirstRow-->
+                <!--begin::SecondRow-->
+                    <div class="row gy-5 g-xl-10">
+                        <!--begin::Col-->
+                        <div class="col-xxl-4">
+                        <!--begin::Mixed Widget 10-->
+                        <div class="card card-xxl-stretch-50 mb-5 mb-xl-8">
+                            <!--begin::Body-->
+                            <div class="card-body p-0 d-flex justify-content-between flex-column overflow-hidden">
+                                <!--begin::Hidden-->
+                                <div class="d-flex flex-stack flex-wrap flex-grow-1 px-9 pt-9 pb-3">
+                                    <div class="me-2">
+                                        <span class="fw-bolder text-gray-800 d-block fs-3">Sales</span>
+                                        <span class="text-gray-400 fw-bold"></span>
                                     </div>
-                                    <!--end::Card header-->
-                                    <!--begin::Card body-->
-                                    <div class="card-body p-9 pt-5">
-                                        <!--begin::Wrapper-->
-                                        <div class="d-flex flex-wrap">
-                                            <!--begin::Chart-->
-                                            <div class="position-relative d-flex flex-center h-175px w-175px me-15 mb-7">
-                                                <div class="position-absolute translate-middle start-50 top-50 d-flex flex-column flex-center">
-                                                    <span class="fs-2qx fw-bolder">237</span>
-                                                    <span class="fs-6 fw-bold text-gray-400">Total Sales</span>
-                                                </div>
-                                                <canvas id="project_overview_chart" width="175" height="175" style="display: block; box-sizing: border-box; height: 175px; width: 175px;"></canvas>
-                                            </div>
-                                            <!--end::Chart-->
-                                            <!--begin::Labels-->
-                                            <div class="d-flex flex-column justify-content-center flex-row-fluid pe-11 mb-5">
-                                                <!--begin::Label-->
-                                                <div class="d-flex fs-6 fw-bold align-items-center mb-3">
-                                                    <div class="bullet bg-primary me-3"></div>
-                                                    <div class="text-gray-400">Goods</div>
-                                                    <div class="ms-auto fw-bolder text-gray-700">30</div>
-                                                </div>
-                                                <!--end::Label-->
-                                                <!--begin::Label-->
-                                                <div class="d-flex fs-6 fw-bold align-items-center mb-3">
-                                                    <div class="bullet bg-success me-3"></div>
-                                                    <div class="text-gray-400">Services</div>
-                                                    <div class="ms-auto fw-bolder text-gray-700">45</div>
-                                                </div>
-                                                <!--end::Label-->
-                                                <!--begin::Label-->
-                                                <div class="d-flex fs-6 fw-bold align-items-center mb-3">
-                                                    <div class="bullet bg-danger me-3"></div>
-                                                    <div class="text-gray-400">Phone Orders</div>
-                                                    <div class="ms-auto fw-bolder text-gray-700">0</div>
-                                                </div>
-                                                <!--end::Label-->
-                                                <!--begin::Label-->
-                                                <div class="d-flex fs-6 fw-bold align-items-center">
-                                                    <div class="bullet bg-gray-300 me-3"></div>
-                                                    <div class="text-gray-400">Credit</div>
-                                                    <div class="ms-auto fw-bolder text-gray-700">25</div>
-                                                </div>
-                                                <!--end::Label-->
-                                            </div>
-                                            <!--end::Labels-->
-                                        </div>
-                                        <!--end::Wrapper-->
-
-                                    </div>
-                                    <!--end::Card body-->
+                                    <div class="fw-bolder fs-3 text-primary">₱<?=totalSales()["revenue"];?></div>
                                 </div>
-                                <!--end::Summary-->
+                                <!--end::Hidden-->
+                                <!--begin::Chart-->
+                                <div class="sales-progress-bar-chart" data-kt-color="primary" style="height: 175px"></div>
+                                <!--end::Chart-->
                             </div>
                         </div>
-                    <!--end::row-->
-
-
-                        <!--begin::Scrolltop-->
-                        <div id="kt_scrolltop" class="scrolltop" data-kt-scrolltop="true">
-                            <!--begin::Svg Icon | path: icons/duotune/arrows/arr066.svg-->
-                            <span class="svg-icon">
-				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-					<rect opacity="0.5" x="13" y="6" width="13" height="2" rx="1" transform="rotate(90 13 6)" fill="black" />
-					<path d="M12.5657 8.56569L16.75 12.75C17.1642 13.1642 17.8358 13.1642 18.25 12.75C18.6642 12.3358 18.6642 11.6642 18.25 11.25L12.7071 5.70711C12.3166 5.31658 11.6834 5.31658 11.2929 5.70711L5.75 11.25C5.33579 11.6642 5.33579 12.3358 5.75 12.75C6.16421 13.1642 6.83579 13.1642 7.25 12.75L11.4343 8.56569C11.7467 8.25327 12.2533 8.25327 12.5657 8.56569Z" fill="black" />
-				</svg>
-			</span>
-                            <!--end::Svg Icon-->
+                        <!--end::Mixed Widget 10-->
                         </div>
-                        <!--end::Scrolltop-->
-                        <!--end::Main-->
-                        <script>var hostUrl = "assets/";</script>
-                        <!--begin::Javascript-->
-                        <!--begin::Global Javascript Bundle(used by all pages)-->
-                        <script src="assets/plugins/global/plugins.bundle.js"></script>
-                        <script src="assets/js/scripts.bundle.js"></script>
-                        <!--end::Global Javascript Bundle-->
-                        <!--begin::Page Vendors Javascript(used by this page)-->
-                        <script src="assets/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
-                        <!--end::Page Vendors Javascript-->
-                        <!--begin::Page Custom Javascript(used by this page)-->
-                        <script src="assets/js/custom/widgets.js"></script>
-                        <script src="assets/js/custom/apps/chat/chat.js"></script>
-                        <script src="assets/js/custom/modals/create-app.js"></script>
-                        <script src="assets/js/custom/modals/upgrade-plan.js"></script>
+                        <!--end::Col-->
+                    </div>
+                <!--end::SecondRow-->
 
-                        <script src="assets/js/custom/pages/projects/project/project.js"></script>
-                        <script src="assets/js/custom/modals/users-search.js"></script>
-                        <script src="assets/js/custom/modals/new-target.js"></script>
-                        <script src="assets/js/custom/widgets.js"></script>
-                        <script src="assets/js/custom/apps/chat/chat.js"></script>
-                        <script src="assets/js/custom/modals/create-app.js"></script>
-                        <script src="assets/js/custom/modals/upgrade-plan.js"></script>
-                        <!--end::Page Custom Javascript-->
-                        <!--begin:: Javascript apex1-->
-                        <script src="js/chart.js"></script>
-                        <!--end::Javascript apex1-->
-                        <!--end::Javascript-->
+
+                <!--begin::Scrolltop-->
+                <div id="kt_scrolltop" class="scrolltop" data-kt-scrolltop="true">
+                    <!--begin::Svg Icon | path: icons/duotune/arrows/arr066.svg-->
+                    <span class="svg-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <rect opacity="0.5" x="13" y="6" width="13" height="2" rx="1" transform="rotate(90 13 6)" fill="black" />
+                            <path d="M12.5657 8.56569L16.75 12.75C17.1642 13.1642 17.8358 13.1642 18.25 12.75C18.6642 12.3358 18.6642 11.6642 18.25 11.25L12.7071 5.70711C12.3166 5.31658 11.6834 5.31658 11.2929 5.70711L5.75 11.25C5.33579 11.6642 5.33579 12.3358 5.75 12.75C6.16421 13.1642 6.83579 13.1642 7.25 12.75L11.4343 8.56569C11.7467 8.25327 12.2533 8.25327 12.5657 8.56569Z" fill="black" />
+                        </svg>
+                    </span>
+                    <!--end::Svg Icon-->
+                </div>
+                <!--end::Scrolltop-->
+
+            </div>
+            <!--end::Container-->
+    <!--end::Page-->
+</div>
+<!--end::Root-->
+<!--end::Main-->
+<script>var hostUrl = "assets/";</script>
+<!--begin::Javascript-->
+<!--begin::Global Javascript Bundle(used by all pages)-->
+<script src="assets/plugins/global/plugins.bundle.js"></script>
+<script src="assets/js/scripts.bundle.js"></script>
+<!--end::Global Javascript Bundle-->
+<!--begin::Page Vendors Javascript(used by this page)-->
+<script src="assets/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
+<!--end::Page Vendors Javascript-->
+<!--begin::Page Custom Javascript(used by this page)-->
+<script src="assets/js/custom/widgets.js"></script>
+<script src="assets/js/custom/apps/chat/chat.js"></script>
+<script src="assets/js/custom/modals/create-app.js"></script>
+<script src="assets/js/custom/modals/upgrade-plan.js"></script>
+
+<script src="assets/js/custom/pages/projects/project/project.js"></script>
+<script src="assets/js/custom/modals/users-search.js"></script>
+<script src="assets/js/custom/modals/new-target.js"></script>
+<script src="assets/js/custom/widgets.js"></script>
+<script src="assets/js/custom/apps/chat/chat.js"></script>
+<script src="assets/js/custom/modals/create-app.js"></script>
+<script src="assets/js/custom/modals/upgrade-plan.js"></script>
+<!--end::Page Custom Javascript-->
+<!--begin:: Javascript apex1-->
+<script src="js/chart.js"></script>
+<!--end::Javascript apex1-->
+<!--end::Javascript-->
 </body>
 <!--end::Body-->
 </html>
