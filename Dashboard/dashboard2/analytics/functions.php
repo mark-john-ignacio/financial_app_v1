@@ -190,7 +190,6 @@ function totalVat() {
     return formatCurrency($vat);
 }
 
-
 function formatCurrency($amount) {
     // Check if the amount is greater than or equal to 1 million
     if ($amount >= 1000000) {
@@ -205,4 +204,38 @@ function formatCurrency($amount) {
         $formattedAmount = number_format($amount, 0);
     }
     return $formattedAmount;
+}
+
+function formatCurrencyWhole($amount){
+    return number_format($amount, 0);
+}
+
+function averageSales() {
+    global $con;
+
+    $query = "SELECT AVG(ngross) AS average_sales FROM sales";
+    $result = $con->query($query);
+    $row = $result->fetch_assoc();
+    $averageSales = isset($row['average_sales']) ? $row['average_sales'] : 0;
+    return formatCurrencyWhole($averageSales);
+}
+
+function totalRevenue() {
+    global $con;
+
+    $query = "SELECT SUM(nnet) AS total_revenue FROM sales";
+    $result = $con->query($query);
+    $row = $result->fetch_assoc();
+    $revenue = isset($row['total_revenue']) ? $row['total_revenue'] : 0;
+    return formatCurrencyWhole($revenue);
+}
+
+function totalNumberOfSales() {
+    global $con;
+
+    $query = "SELECT COUNT(*) AS total_sales FROM sales";
+    $result = $con->query($query);
+    $row = $result->fetch_assoc();
+    $totalSales = isset($row['total_sales']) ? $row['total_sales'] : 0;
+    return $totalSales;
 }

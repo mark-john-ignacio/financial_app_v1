@@ -41,6 +41,7 @@ while($row = $query -> fetch_assoc()){
     <!--end::Global Stylesheets Bundle-->
     <!--begin::Apexchart JS-->
     <link href="https://cdn.jsdelivr.net/npm/apexcharts@latest/dist/apexcharts.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@latest"></script>
     <!--end::Apexchart JS-->
 </head>
 <!--end::Head-->
@@ -268,158 +269,28 @@ while($row = $query -> fetch_assoc()){
                         </div>
                         <!--end::Col-->
                     </div>
-                    <div class="col-xxl-4">
-                        <!--begin::Mixed Widget 12-->
-                        <div class="card card-xl-stretch mb-xl-8">
-                            <!--begin::Header-->
-                            <div class="card-header border-0 bg-primary py-5">
-                                <h3 class="card-title fw-bolder text-white">Sales Progress</h3>
-                                <div class="card-toolbar">
-                                    <!--begin::Menu-->
-                                    <button type="button" class="btn btn-sm btn-icon btn-color-white btn-active-white btn-active-color- border-0 me-n3" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
-                                        <!--begin::Svg Icon | path: icons/duotune/general/gen024.svg-->
-                                        <span class="svg-icon svg-icon-2">
-														<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24">
-															<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																<rect x="5" y="5" width="5" height="5" rx="1" fill="#000000"></rect>
-																<rect x="14" y="5" width="5" height="5" rx="1" fill="#000000" opacity="0.3"></rect>
-																<rect x="5" y="14" width="5" height="5" rx="1" fill="#000000" opacity="0.3"></rect>
-																<rect x="14" y="14" width="5" height="5" rx="1" fill="#000000" opacity="0.3"></rect>
-															</g>
-														</svg>
-													</span>
-                                        <!--end::Svg Icon-->
-                                    </button>
-                                    <!--begin::Menu 3-->
-                                    <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-bold w-200px py-3" data-kt-menu="true" style="">
-                                        <!--begin::Heading-->
-                                        <div class="menu-item px-3">
-                                            <div class="menu-content text-muted pb-2 px-3 fs-7 text-uppercase">Payments</div>
-                                        </div>
-                                        <!--end::Heading-->
-                                        <!--begin::Menu item-->
-                                        <div class="menu-item px-3">
-                                            <a href="#" class="menu-link px-3">Create Invoice</a>
-                                        </div>
-                                        <!--end::Menu item-->
-                                        <!--begin::Menu item-->
-                                        <div class="menu-item px-3">
-                                            <a href="#" class="menu-link flex-stack px-3">Create Payment
-                                                <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="" data-bs-original-title="Specify a target name for future usage and reference" aria-label="Specify a target name for future usage and reference"></i></a>
-                                        </div>
-                                        <!--end::Menu item-->
-                                        <!--begin::Menu item-->
-                                        <div class="menu-item px-3">
-                                            <a href="#" class="menu-link px-3">Generate Bill</a>
-                                        </div>
-                                        <!--end::Menu item-->
-                                        <!--begin::Menu item-->
-                                        <div class="menu-item px-3" data-kt-menu-trigger="hover" data-kt-menu-placement="right-end">
-                                            <a href="#" class="menu-link px-3">
-                                                <span class="menu-title">Subscription</span>
-                                                <span class="menu-arrow"></span>
-                                            </a>
-                                            <!--begin::Menu sub-->
-                                            <div class="menu-sub menu-sub-dropdown w-175px py-4" style="">
-                                                <!--begin::Menu item-->
-                                                <div class="menu-item px-3">
-                                                    <a href="#" class="menu-link px-3">Plans</a>
-                                                </div>
-                                                <!--end::Menu item-->
-                                                <!--begin::Menu item-->
-                                                <div class="menu-item px-3">
-                                                    <a href="#" class="menu-link px-3">Billing</a>
-                                                </div>
-                                                <!--end::Menu item-->
-                                                <!--begin::Menu item-->
-                                                <div class="menu-item px-3">
-                                                    <a href="#" class="menu-link px-3">Statements</a>
-                                                </div>
-                                                <!--end::Menu item-->
-                                                <!--begin::Menu separator-->
-                                                <div class="separator my-2"></div>
-                                                <!--end::Menu separator-->
-                                                <!--begin::Menu item-->
-                                                <div class="menu-item px-3">
-                                                    <div class="menu-content px-3">
-                                                        <!--begin::Switch-->
-                                                        <label class="form-check form-switch form-check-custom form-check-solid">
-                                                            <!--begin::Input-->
-                                                            <input class="form-check-input w-30px h-20px" type="checkbox" value="1" checked="checked" name="notifications">
-                                                            <!--end::Input-->
-                                                            <!--end::Label-->
-                                                            <span class="form-check-label text-muted fs-6">Recuring</span>
-                                                            <!--end::Label-->
-                                                        </label>
-                                                        <!--end::Switch-->
-                                                    </div>
-                                                </div>
-                                                <!--end::Menu item-->
-                                            </div>
-                                            <!--end::Menu sub-->
-                                        </div>
-                                        <!--end::Menu item-->
-                                        <!--begin::Menu item-->
-                                        <div class="menu-item px-3 my-1">
-                                            <a href="#" class="menu-link px-3">Settings</a>
-                                        </div>
-                                        <!--end::Menu item-->
-                                    </div>
-                                    <!--end::Menu 3-->
-                                    <!--end::Menu-->
-                                </div>
-                            </div>
-                            <!--end::Header-->
-                            <!--begin::Body-->
-                            <div class="card-body p-0" style="position: relative;">
-                                <!--begin::Chart-->
-                                <div class="mixed-widget-12-chart card-rounded-bottom bg-primary" data-kt-color="primary" style="height: 250px; min-height: 250px;"><div id="apexcharts0tzvkel7" class="apexcharts-canvas apexcharts0tzvkel7 apexcharts-theme-light" style="width: 1189px; height: 250px;"><svg id="SvgjsSvg1248" width="1189" height="250" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev" class="apexcharts-svg" xmlns:data="ApexChartsNS" transform="translate(0, 0)" style="background: transparent;"><g id="SvgjsG1250" class="apexcharts-inner apexcharts-graphical" transform="translate(20, 0)"><defs id="SvgjsDefs1249"><linearGradient id="SvgjsLinearGradient1253" x1="0" y1="0" x2="0" y2="1"><stop id="SvgjsStop1254" stop-opacity="0.4" stop-color="rgba(216,227,240,0.4)" offset="0"></stop><stop id="SvgjsStop1255" stop-opacity="0.5" stop-color="rgba(190,209,230,0.5)" offset="1"></stop><stop id="SvgjsStop1256" stop-opacity="0.5" stop-color="rgba(190,209,230,0.5)" offset="1"></stop></linearGradient><clipPath id="gridRectMask0tzvkel7"><rect id="SvgjsRect1258" width="1154" height="251" x="-2.5" y="-0.5" rx="0" ry="0" opacity="1" stroke-width="0" stroke="none" stroke-dasharray="0" fill="#fff"></rect></clipPath><clipPath id="forecastMask0tzvkel7"></clipPath><clipPath id="nonForecastMask0tzvkel7"></clipPath><clipPath id="gridRectMarkerMask0tzvkel7"><rect id="SvgjsRect1259" width="1153" height="254" x="-2" y="-2" rx="0" ry="0" opacity="1" stroke-width="0" stroke="none" stroke-dasharray="0" fill="#fff"></rect></clipPath></defs><rect id="SvgjsRect1257" width="24.62142857142857" height="250" x="573.3571280343192" y="0" rx="0" ry="0" opacity="1" stroke-width="0" stroke-dasharray="3" fill="url(#SvgjsLinearGradient1253)" class="apexcharts-xcrosshairs" y2="250" filter="none" fill-opacity="0.9" x1="573.3571280343192" x2="573.3571280343192"></rect><g id="SvgjsG1295" class="apexcharts-xaxis" transform="translate(0, 0)"><g id="SvgjsG1296" class="apexcharts-xaxis-texts-g" transform="translate(0, -4)"></g></g><g id="SvgjsG1304" class="apexcharts-grid"><g id="SvgjsG1305" class="apexcharts-gridlines-horizontal" style="display: none;"><line id="SvgjsLine1307" x1="0" y1="0" x2="1149" y2="0" stroke="#eff2f5" stroke-dasharray="4" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine1308" x1="0" y1="25" x2="1149" y2="25" stroke="#eff2f5" stroke-dasharray="4" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine1309" x1="0" y1="50" x2="1149" y2="50" stroke="#eff2f5" stroke-dasharray="4" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine1310" x1="0" y1="75" x2="1149" y2="75" stroke="#eff2f5" stroke-dasharray="4" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine1311" x1="0" y1="100" x2="1149" y2="100" stroke="#eff2f5" stroke-dasharray="4" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine1312" x1="0" y1="125" x2="1149" y2="125" stroke="#eff2f5" stroke-dasharray="4" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine1313" x1="0" y1="150" x2="1149" y2="150" stroke="#eff2f5" stroke-dasharray="4" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine1314" x1="0" y1="175" x2="1149" y2="175" stroke="#eff2f5" stroke-dasharray="4" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine1315" x1="0" y1="200" x2="1149" y2="200" stroke="#eff2f5" stroke-dasharray="4" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine1316" x1="0" y1="225" x2="1149" y2="225" stroke="#eff2f5" stroke-dasharray="4" stroke-linecap="butt" class="apexcharts-gridline"></line><line id="SvgjsLine1317" x1="0" y1="250" x2="1149" y2="250" stroke="#eff2f5" stroke-dasharray="4" stroke-linecap="butt" class="apexcharts-gridline"></line></g><g id="SvgjsG1306" class="apexcharts-gridlines-vertical" style="display: none;"></g><line id="SvgjsLine1319" x1="0" y1="250" x2="1149" y2="250" stroke="transparent" stroke-dasharray="0" stroke-linecap="butt"></line><line id="SvgjsLine1318" x1="0" y1="1" x2="0" y2="250" stroke="transparent" stroke-dasharray="0" stroke-linecap="butt"></line></g><g id="SvgjsG1260" class="apexcharts-bar-series apexcharts-plot-series"><g id="SvgjsG1261" class="apexcharts-series" rel="1" seriesName="NetxProfit" data:realIndex="0"><path id="SvgjsPath1265" d="M 57.45 250L 57.45 164.5Q 57.45 162.5 59.45 162.5L 79.07142857142857 162.5Q 81.07142857142857 162.5 81.07142857142857 164.5L 81.07142857142857 164.5L 81.07142857142857 250L 81.07142857142857 250z" fill="rgba(255,255,255,0.25)" fill-opacity="1" stroke="transparent" stroke-opacity="1" stroke-linecap="round" stroke-width="1" stroke-dasharray="0" class="apexcharts-bar-area" index="0" clip-path="url(#gridRectMask0tzvkel7)" pathTo="M 57.45 250L 57.45 164.5Q 57.45 162.5 59.45 162.5L 79.07142857142857 162.5Q 81.07142857142857 162.5 81.07142857142857 164.5L 81.07142857142857 164.5L 81.07142857142857 250L 81.07142857142857 250z" pathFrom="M 57.45 250L 57.45 250L 81.07142857142857 250L 81.07142857142857 250L 81.07142857142857 250L 81.07142857142857 250L 81.07142857142857 250L 57.45 250" cy="162.5" cx="221.09285714285716" j="0" val="35" barHeight="87.5" barWidth="24.62142857142857"></path><path id="SvgjsPath1267" d="M 221.59285714285716 250L 221.59285714285716 89.5Q 221.59285714285716 87.5 223.59285714285716 87.5L 243.21428571428572 87.5Q 245.21428571428572 87.5 245.21428571428572 89.5L 245.21428571428572 89.5L 245.21428571428572 250L 245.21428571428572 250z" fill="rgba(255,255,255,0.25)" fill-opacity="1" stroke="transparent" stroke-opacity="1" stroke-linecap="round" stroke-width="1" stroke-dasharray="0" class="apexcharts-bar-area" index="0" clip-path="url(#gridRectMask0tzvkel7)" pathTo="M 221.59285714285716 250L 221.59285714285716 89.5Q 221.59285714285716 87.5 223.59285714285716 87.5L 243.21428571428572 87.5Q 245.21428571428572 87.5 245.21428571428572 89.5L 245.21428571428572 89.5L 245.21428571428572 250L 245.21428571428572 250z" pathFrom="M 221.59285714285716 250L 221.59285714285716 250L 245.21428571428572 250L 245.21428571428572 250L 245.21428571428572 250L 245.21428571428572 250L 245.21428571428572 250L 221.59285714285716 250" cy="87.5" cx="385.23571428571427" j="1" val="65" barHeight="162.5" barWidth="24.62142857142857"></path><path id="SvgjsPath1269" d="M 385.73571428571427 250L 385.73571428571427 64.5Q 385.73571428571427 62.5 387.73571428571427 62.5L 407.35714285714283 62.5Q 409.35714285714283 62.5 409.35714285714283 64.5L 409.35714285714283 64.5L 409.35714285714283 250L 409.35714285714283 250z" fill="rgba(255,255,255,0.25)" fill-opacity="1" stroke="transparent" stroke-opacity="1" stroke-linecap="round" stroke-width="1" stroke-dasharray="0" class="apexcharts-bar-area" index="0" clip-path="url(#gridRectMask0tzvkel7)" pathTo="M 385.73571428571427 250L 385.73571428571427 64.5Q 385.73571428571427 62.5 387.73571428571427 62.5L 407.35714285714283 62.5Q 409.35714285714283 62.5 409.35714285714283 64.5L 409.35714285714283 64.5L 409.35714285714283 250L 409.35714285714283 250z" pathFrom="M 385.73571428571427 250L 385.73571428571427 250L 409.35714285714283 250L 409.35714285714283 250L 409.35714285714283 250L 409.35714285714283 250L 409.35714285714283 250L 385.73571428571427 250" cy="62.5" cx="549.3785714285714" j="2" val="75" barHeight="187.5" barWidth="24.62142857142857"></path><path id="SvgjsPath1271" d="M 549.8785714285714 250L 549.8785714285714 114.5Q 549.8785714285714 112.5 551.8785714285714 112.5L 571.5 112.5Q 573.5 112.5 573.5 114.5L 573.5 114.5L 573.5 250L 573.5 250z" fill="rgba(255,255,255,0.25)" fill-opacity="1" stroke="transparent" stroke-opacity="1" stroke-linecap="round" stroke-width="1" stroke-dasharray="0" class="apexcharts-bar-area" index="0" clip-path="url(#gridRectMask0tzvkel7)" pathTo="M 549.8785714285714 250L 549.8785714285714 114.5Q 549.8785714285714 112.5 551.8785714285714 112.5L 571.5 112.5Q 573.5 112.5 573.5 114.5L 573.5 114.5L 573.5 250L 573.5 250z" pathFrom="M 549.8785714285714 250L 549.8785714285714 250L 573.5 250L 573.5 250L 573.5 250L 573.5 250L 573.5 250L 549.8785714285714 250" cy="112.5" cx="713.5214285714285" j="3" val="55" barHeight="137.5" barWidth="24.62142857142857"></path><path id="SvgjsPath1273" d="M 714.0214285714285 250L 714.0214285714285 139.5Q 714.0214285714285 137.5 716.0214285714285 137.5L 735.6428571428571 137.5Q 737.6428571428571 137.5 737.6428571428571 139.5L 737.6428571428571 139.5L 737.6428571428571 250L 737.6428571428571 250z" fill="rgba(255,255,255,0.25)" fill-opacity="1" stroke="transparent" stroke-opacity="1" stroke-linecap="round" stroke-width="1" stroke-dasharray="0" class="apexcharts-bar-area" index="0" clip-path="url(#gridRectMask0tzvkel7)" pathTo="M 714.0214285714285 250L 714.0214285714285 139.5Q 714.0214285714285 137.5 716.0214285714285 137.5L 735.6428571428571 137.5Q 737.6428571428571 137.5 737.6428571428571 139.5L 737.6428571428571 139.5L 737.6428571428571 250L 737.6428571428571 250z" pathFrom="M 714.0214285714285 250L 714.0214285714285 250L 737.6428571428571 250L 737.6428571428571 250L 737.6428571428571 250L 737.6428571428571 250L 737.6428571428571 250L 714.0214285714285 250" cy="137.5" cx="877.6642857142856" j="4" val="45" barHeight="112.5" barWidth="24.62142857142857"></path><path id="SvgjsPath1275" d="M 878.1642857142856 250L 878.1642857142856 102Q 878.1642857142856 100 880.1642857142856 100L 899.7857142857142 100Q 901.7857142857142 100 901.7857142857142 102L 901.7857142857142 102L 901.7857142857142 250L 901.7857142857142 250z" fill="rgba(255,255,255,0.25)" fill-opacity="1" stroke="transparent" stroke-opacity="1" stroke-linecap="round" stroke-width="1" stroke-dasharray="0" class="apexcharts-bar-area" index="0" clip-path="url(#gridRectMask0tzvkel7)" pathTo="M 878.1642857142856 250L 878.1642857142856 102Q 878.1642857142856 100 880.1642857142856 100L 899.7857142857142 100Q 901.7857142857142 100 901.7857142857142 102L 901.7857142857142 102L 901.7857142857142 250L 901.7857142857142 250z" pathFrom="M 878.1642857142856 250L 878.1642857142856 250L 901.7857142857142 250L 901.7857142857142 250L 901.7857142857142 250L 901.7857142857142 250L 901.7857142857142 250L 878.1642857142856 250" cy="100" cx="1041.8071428571427" j="5" val="60" barHeight="150" barWidth="24.62142857142857"></path><path id="SvgjsPath1277" d="M 1042.3071428571427 250L 1042.3071428571427 114.5Q 1042.3071428571427 112.5 1044.3071428571427 112.5L 1063.9285714285713 112.5Q 1065.9285714285713 112.5 1065.9285714285713 114.5L 1065.9285714285713 114.5L 1065.9285714285713 250L 1065.9285714285713 250z" fill="rgba(255,255,255,0.25)" fill-opacity="1" stroke="transparent" stroke-opacity="1" stroke-linecap="round" stroke-width="1" stroke-dasharray="0" class="apexcharts-bar-area" index="0" clip-path="url(#gridRectMask0tzvkel7)" pathTo="M 1042.3071428571427 250L 1042.3071428571427 114.5Q 1042.3071428571427 112.5 1044.3071428571427 112.5L 1063.9285714285713 112.5Q 1065.9285714285713 112.5 1065.9285714285713 114.5L 1065.9285714285713 114.5L 1065.9285714285713 250L 1065.9285714285713 250z" pathFrom="M 1042.3071428571427 250L 1042.3071428571427 250L 1065.9285714285713 250L 1065.9285714285713 250L 1065.9285714285713 250L 1065.9285714285713 250L 1065.9285714285713 250L 1042.3071428571427 250" cy="112.5" cx="1205.9499999999998" j="6" val="55" barHeight="137.5" barWidth="24.62142857142857"></path><g id="SvgjsG1263" class="apexcharts-bar-goals-markers" style="pointer-events: none"><g id="SvgjsG1264" className="apexcharts-bar-goals-groups"></g><g id="SvgjsG1266" className="apexcharts-bar-goals-groups"></g><g id="SvgjsG1268" className="apexcharts-bar-goals-groups"></g><g id="SvgjsG1270" className="apexcharts-bar-goals-groups"></g><g id="SvgjsG1272" className="apexcharts-bar-goals-groups"></g><g id="SvgjsG1274" className="apexcharts-bar-goals-groups"></g><g id="SvgjsG1276" className="apexcharts-bar-goals-groups"></g></g></g><g id="SvgjsG1278" class="apexcharts-series" rel="2" seriesName="Revenue" data:realIndex="1"><path id="SvgjsPath1282" d="M 82.07142857142857 250L 82.07142857142857 152Q 82.07142857142857 150 84.07142857142857 150L 103.69285714285714 150Q 105.69285714285714 150 105.69285714285714 152L 105.69285714285714 152L 105.69285714285714 250L 105.69285714285714 250z" fill="rgba(255,255,255,1)" fill-opacity="1" stroke="transparent" stroke-opacity="1" stroke-linecap="round" stroke-width="1" stroke-dasharray="0" class="apexcharts-bar-area" index="1" clip-path="url(#gridRectMask0tzvkel7)" pathTo="M 82.07142857142857 250L 82.07142857142857 152Q 82.07142857142857 150 84.07142857142857 150L 103.69285714285714 150Q 105.69285714285714 150 105.69285714285714 152L 105.69285714285714 152L 105.69285714285714 250L 105.69285714285714 250z" pathFrom="M 82.07142857142857 250L 82.07142857142857 250L 105.69285714285714 250L 105.69285714285714 250L 105.69285714285714 250L 105.69285714285714 250L 105.69285714285714 250L 82.07142857142857 250" cy="150" cx="245.71428571428572" j="0" val="40" barHeight="100" barWidth="24.62142857142857"></path><path id="SvgjsPath1284" d="M 246.21428571428572 250L 246.21428571428572 77Q 246.21428571428572 75 248.21428571428572 75L 267.8357142857143 75Q 269.8357142857143 75 269.8357142857143 77L 269.8357142857143 77L 269.8357142857143 250L 269.8357142857143 250z" fill="rgba(255,255,255,1)" fill-opacity="1" stroke="transparent" stroke-opacity="1" stroke-linecap="round" stroke-width="1" stroke-dasharray="0" class="apexcharts-bar-area" index="1" clip-path="url(#gridRectMask0tzvkel7)" pathTo="M 246.21428571428572 250L 246.21428571428572 77Q 246.21428571428572 75 248.21428571428572 75L 267.8357142857143 75Q 269.8357142857143 75 269.8357142857143 77L 269.8357142857143 77L 269.8357142857143 250L 269.8357142857143 250z" pathFrom="M 246.21428571428572 250L 246.21428571428572 250L 269.8357142857143 250L 269.8357142857143 250L 269.8357142857143 250L 269.8357142857143 250L 269.8357142857143 250L 246.21428571428572 250" cy="75" cx="409.85714285714283" j="1" val="70" barHeight="175" barWidth="24.62142857142857"></path><path id="SvgjsPath1286" d="M 410.35714285714283 250L 410.35714285714283 52Q 410.35714285714283 50 412.35714285714283 50L 431.9785714285714 50Q 433.9785714285714 50 433.9785714285714 52L 433.9785714285714 52L 433.9785714285714 250L 433.9785714285714 250z" fill="rgba(255,255,255,1)" fill-opacity="1" stroke="transparent" stroke-opacity="1" stroke-linecap="round" stroke-width="1" stroke-dasharray="0" class="apexcharts-bar-area" index="1" clip-path="url(#gridRectMask0tzvkel7)" pathTo="M 410.35714285714283 250L 410.35714285714283 52Q 410.35714285714283 50 412.35714285714283 50L 431.9785714285714 50Q 433.9785714285714 50 433.9785714285714 52L 433.9785714285714 52L 433.9785714285714 250L 433.9785714285714 250z" pathFrom="M 410.35714285714283 250L 410.35714285714283 250L 433.9785714285714 250L 433.9785714285714 250L 433.9785714285714 250L 433.9785714285714 250L 433.9785714285714 250L 410.35714285714283 250" cy="50" cx="574" j="2" val="80" barHeight="200" barWidth="24.62142857142857"></path><path id="SvgjsPath1288" d="M 574.5 250L 574.5 102Q 574.5 100 576.5 100L 596.1214285714286 100Q 598.1214285714286 100 598.1214285714286 102L 598.1214285714286 102L 598.1214285714286 250L 598.1214285714286 250z" fill="rgba(255,255,255,1)" fill-opacity="1" stroke="transparent" stroke-opacity="1" stroke-linecap="round" stroke-width="1" stroke-dasharray="0" class="apexcharts-bar-area" index="1" clip-path="url(#gridRectMask0tzvkel7)" pathTo="M 574.5 250L 574.5 102Q 574.5 100 576.5 100L 596.1214285714286 100Q 598.1214285714286 100 598.1214285714286 102L 598.1214285714286 102L 598.1214285714286 250L 598.1214285714286 250z" pathFrom="M 574.5 250L 574.5 250L 598.1214285714286 250L 598.1214285714286 250L 598.1214285714286 250L 598.1214285714286 250L 598.1214285714286 250L 574.5 250" cy="100" cx="738.1428571428571" j="3" val="60" barHeight="150" barWidth="24.62142857142857"></path><path id="SvgjsPath1290" d="M 738.6428571428571 250L 738.6428571428571 127Q 738.6428571428571 125 740.6428571428571 125L 760.2642857142857 125Q 762.2642857142857 125 762.2642857142857 127L 762.2642857142857 127L 762.2642857142857 250L 762.2642857142857 250z" fill="rgba(255,255,255,1)" fill-opacity="1" stroke="transparent" stroke-opacity="1" stroke-linecap="round" stroke-width="1" stroke-dasharray="0" class="apexcharts-bar-area" index="1" clip-path="url(#gridRectMask0tzvkel7)" pathTo="M 738.6428571428571 250L 738.6428571428571 127Q 738.6428571428571 125 740.6428571428571 125L 760.2642857142857 125Q 762.2642857142857 125 762.2642857142857 127L 762.2642857142857 127L 762.2642857142857 250L 762.2642857142857 250z" pathFrom="M 738.6428571428571 250L 738.6428571428571 250L 762.2642857142857 250L 762.2642857142857 250L 762.2642857142857 250L 762.2642857142857 250L 762.2642857142857 250L 738.6428571428571 250" cy="125" cx="902.2857142857142" j="4" val="50" barHeight="125" barWidth="24.62142857142857"></path><path id="SvgjsPath1292" d="M 902.7857142857142 250L 902.7857142857142 89.5Q 902.7857142857142 87.5 904.7857142857142 87.5L 924.4071428571428 87.5Q 926.4071428571428 87.5 926.4071428571428 89.5L 926.4071428571428 89.5L 926.4071428571428 250L 926.4071428571428 250z" fill="rgba(255,255,255,1)" fill-opacity="1" stroke="transparent" stroke-opacity="1" stroke-linecap="round" stroke-width="1" stroke-dasharray="0" class="apexcharts-bar-area" index="1" clip-path="url(#gridRectMask0tzvkel7)" pathTo="M 902.7857142857142 250L 902.7857142857142 89.5Q 902.7857142857142 87.5 904.7857142857142 87.5L 924.4071428571428 87.5Q 926.4071428571428 87.5 926.4071428571428 89.5L 926.4071428571428 89.5L 926.4071428571428 250L 926.4071428571428 250z" pathFrom="M 902.7857142857142 250L 902.7857142857142 250L 926.4071428571428 250L 926.4071428571428 250L 926.4071428571428 250L 926.4071428571428 250L 926.4071428571428 250L 902.7857142857142 250" cy="87.5" cx="1066.4285714285713" j="5" val="65" barHeight="162.5" barWidth="24.62142857142857"></path><path id="SvgjsPath1294" d="M 1066.9285714285713 250L 1066.9285714285713 102Q 1066.9285714285713 100 1068.9285714285713 100L 1088.55 100Q 1090.55 100 1090.55 102L 1090.55 102L 1090.55 250L 1090.55 250z" fill="rgba(255,255,255,1)" fill-opacity="1" stroke="transparent" stroke-opacity="1" stroke-linecap="round" stroke-width="1" stroke-dasharray="0" class="apexcharts-bar-area" index="1" clip-path="url(#gridRectMask0tzvkel7)" pathTo="M 1066.9285714285713 250L 1066.9285714285713 102Q 1066.9285714285713 100 1068.9285714285713 100L 1088.55 100Q 1090.55 100 1090.55 102L 1090.55 102L 1090.55 250L 1090.55 250z" pathFrom="M 1066.9285714285713 250L 1066.9285714285713 250L 1090.55 250L 1090.55 250L 1090.55 250L 1090.55 250L 1090.55 250L 1066.9285714285713 250" cy="100" cx="1230.5714285714284" j="6" val="60" barHeight="150" barWidth="24.62142857142857"></path><g id="SvgjsG1280" class="apexcharts-bar-goals-markers" style="pointer-events: none"><g id="SvgjsG1281" className="apexcharts-bar-goals-groups"></g><g id="SvgjsG1283" className="apexcharts-bar-goals-groups"></g><g id="SvgjsG1285" className="apexcharts-bar-goals-groups"></g><g id="SvgjsG1287" className="apexcharts-bar-goals-groups"></g><g id="SvgjsG1289" className="apexcharts-bar-goals-groups"></g><g id="SvgjsG1291" className="apexcharts-bar-goals-groups"></g><g id="SvgjsG1293" className="apexcharts-bar-goals-groups"></g></g></g><g id="SvgjsG1262" class="apexcharts-datalabels" data:realIndex="0"></g><g id="SvgjsG1279" class="apexcharts-datalabels" data:realIndex="1"></g></g><line id="SvgjsLine1320" x1="0" y1="0" x2="1149" y2="0" stroke="#b6b6b6" stroke-dasharray="0" stroke-width="1" stroke-linecap="butt" class="apexcharts-ycrosshairs"></line><line id="SvgjsLine1321" x1="0" y1="0" x2="1149" y2="0" stroke-dasharray="0" stroke-width="0" stroke-linecap="butt" class="apexcharts-ycrosshairs-hidden"></line><g id="SvgjsG1322" class="apexcharts-yaxis-annotations"></g><g id="SvgjsG1323" class="apexcharts-xaxis-annotations"></g><g id="SvgjsG1324" class="apexcharts-point-annotations"></g></g><g id="SvgjsG1303" class="apexcharts-yaxis" rel="0" transform="translate(-18, 0)"></g><g id="SvgjsG1251" class="apexcharts-annotations"></g></svg><div class="apexcharts-legend" style="max-height: 125px;"></div><div class="apexcharts-tooltip apexcharts-theme-light" style="left: 605.668px; top: 66px;"><div class="apexcharts-tooltip-title" style="font-family: inherit; font-size: 12px;">May</div><div class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex;"><span class="apexcharts-tooltip-marker" style="background-color: rgb(255, 255, 255); display: none;"></span><div class="apexcharts-tooltip-text" style="font-family: inherit; font-size: 12px;"><div class="apexcharts-tooltip-y-group"><span class="apexcharts-tooltip-text-y-label">Revenue: </span><span class="apexcharts-tooltip-text-y-value">₱60 thousands</span></div><div class="apexcharts-tooltip-goals-group"><span class="apexcharts-tooltip-text-goals-label"></span><span class="apexcharts-tooltip-text-goals-value"></span></div><div class="apexcharts-tooltip-z-group"><span class="apexcharts-tooltip-text-z-label"></span><span class="apexcharts-tooltip-text-z-value"></span></div></div></div><div class="apexcharts-tooltip-series-group" style="order: 2; display: none;"><span class="apexcharts-tooltip-marker" style="background-color: rgb(255, 255, 255); display: none;"></span><div class="apexcharts-tooltip-text" style="font-family: inherit; font-size: 12px;"><div class="apexcharts-tooltip-y-group"><span class="apexcharts-tooltip-text-y-label">Revenue: </span><span class="apexcharts-tooltip-text-y-value">₱60 thousands</span></div><div class="apexcharts-tooltip-goals-group"><span class="apexcharts-tooltip-text-goals-label"></span><span class="apexcharts-tooltip-text-goals-value"></span></div><div class="apexcharts-tooltip-z-group"><span class="apexcharts-tooltip-text-z-label"></span><span class="apexcharts-tooltip-text-z-value"></span></div></div></div></div><div class="apexcharts-yaxistooltip apexcharts-yaxistooltip-0 apexcharts-yaxistooltip-left apexcharts-theme-light"><div class="apexcharts-yaxistooltip-text"></div></div></div></div>
-                                <!--end::Chart-->
-                                <!--begin::Stats-->
-                                <div class="card-rounded bg-body mt-n10 position-relative card-px py-15">
-                                    <!--begin::Row-->
-                                    <div class="row g-0 mb-7">
-                                        <!--begin::Col-->
-                                        <div class="col mx-5">
-                                            <div class="fs-6 text-gray-400">Avarage Sale</div>
-                                            <div class="fs-2 fw-bolder text-gray-800">₱650</div>
-                                        </div>
-                                        <!--end::Col-->
-                                        <!--begin::Col-->
-                                        <div class="col mx-5">
-                                            <div class="fs-6 text-gray-400">Comissions</div>
-                                            <div class="fs-2 fw-bolder text-gray-800">₱29,500</div>
-                                        </div>
-                                        <!--end::Col-->
-                                    </div>
-                                    <!--end::Row-->
-                                    <!--begin::Row-->
-                                    <div class="row g-0">
-                                        <!--begin::Col-->
-                                        <div class="col mx-5">
-                                            <div class="fs-6 text-gray-400">Revenue</div>
-                                            <div class="fs-2 fw-bolder text-gray-800">₱55,000</div>
-                                        </div>
-                                        <!--end::Col-->
-                                        <!--begin::Col-->
-                                        <div class="col mx-5">
-                                            <div class="fs-6 text-gray-400">Expenses</div>
-                                            <div class="fs-2 fw-bolder text-gray-800">₱1,130,600</div>
-                                        </div>
-                                        <!--end::Col-->
-                                    </div>
-                                    <!--end::Row-->
-                                </div>
-                                <!--end::Stats-->
-                                <div class="resize-triggers"><div class="expand-trigger"><div style="width: 1190px; height: 439px;"></div></div><div class="contract-trigger"></div></div></div>
-                            <!--end::Body-->
-                        </div>
-                        <!--end::Mixed Widget 12-->
-                    </div>
-                    <!--end::Col-->
+
                     <!--begin::Col-->
                     <div class="col-xxl-4">
-
+                        <!--begin::Mixed Widget 10-->
+                        <div class="card card-xxl-stretch-50 mb-5 mb-xl-8">
+                            <!--begin::Body-->
+                            <div class="card-body p-0 d-flex justify-content-between flex-column overflow-hidden">
+                                <!--begin::Hidden-->
+                                <div class="d-flex flex-stack flex-wrap flex-grow-1 px-9 pt-9 pb-3">
+                                    <div class="me-2">
+                                        <span class="fw-bolder text-gray-800 d-block fs-3">Sales</span>
+                                        <span class="text-gray-400 fw-bold">Oct 8 - Oct 26 21</span>
+                                    </div>
+                                    <div class="fw-bolder fs-3 text-primary">$15,300</div>
+                                </div>
+                                <!--end::Hidden-->
+                                <!--begin::Chart-->
+                                <div class="sales-progress-bar-chart" data-kt-color="primary" style="height: 175px"></div>
+                                <!--end::Chart-->
+                            </div>
+                        </div>
+                        <!--end::Mixed Widget 10-->
                   <!--begin::row-->
                         <!--begin::Row-->
                         <div class="row g-6 g-xl-9">
@@ -536,7 +407,6 @@ while($row = $query -> fetch_assoc()){
                         <script src="assets/js/custom/modals/upgrade-plan.js"></script>
                         <!--end::Page Custom Javascript-->
                         <!--begin:: Javascript apex1-->
-                        <script src="https://cdn.jsdelivr.net/npm/apexcharts@latest"></script>
                         <script src="js/chart.js"></script>
                         <!--end::Javascript apex1-->
                         <!--end::Javascript-->
