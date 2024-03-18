@@ -426,7 +426,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										<input type='text' class="form-control input-sm" id="apprby" name="apprby" placeholder="Enter Approved By..." value="<?=$clastapprvby?>">
 									</div>
 								</td>
-								<tH width="150">Prepared By: </tH> $cprepby
+								<tH width="150">Prepared By: </tH>
 								<td style="padding:2px;">
 									<select class='xsel2 form-control input-sm' id="selprepby" name="selprepby" required>
 										<?php
