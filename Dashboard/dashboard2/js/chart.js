@@ -307,3 +307,5 @@ function renderSalesProgressChart(data) {
 fetchSalesProgressDataAndRenderChart();
 
 
+$("#kt_daterangepicker_1").daterangepicker();
+

@@ -43,6 +43,10 @@ while($row = $query -> fetch_assoc()){
     <link href="https://cdn.jsdelivr.net/npm/apexcharts@latest/dist/apexcharts.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/apexcharts@latest"></script>
     <!--end::Apexchart JS-->
+    <!--begin::jQuery-->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <!--end::jQuery-->
+
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -341,8 +345,8 @@ while($row = $query -> fetch_assoc()){
                                                 <label class="form-label fw-bold">Date Range:</label>
                                                 <!--end::Label-->
                                                 <!--begin::Input-->
-                                                <div>
-                                                    <input type="text" class="form-control form-control-sm" id="kt_datepicker" placeholder="Select date range" />
+                                                <div class="mb-0">
+                                                    <input class="form-control form-control-solid" placeholder="Pick date rage" id="kt_daterangepicker_1"/>
                                                 </div>
                                                 <!--end::Input-->
                                             </div>
@@ -360,6 +364,19 @@ while($row = $query -> fetch_assoc()){
                                     <!--end::Menu-->
                                 </div>
                                 <!--end::Toolbar-->
+
+                                <script>
+                                    $(document).ready(function () {
+                                        // Initialize datepicker
+                                        $('#kt_datepicker').datepicker({
+                                            format: 'yyyy-mm-dd',
+                                            todayHighlight: true,
+                                            autoclose: true,
+                                            orientation: "bottom left"
+                                        });
+                                    });
+                                </script>
+
 
                             </div>
                             <!--end::Header-->
