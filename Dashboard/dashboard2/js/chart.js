@@ -323,17 +323,13 @@ fetch('analytics/purchase_per_item_bar.php')
         let gray200 = KTUtil.getCssVariableValue("--bs-gray-200");
         let primary = KTUtil.getCssVariableValue("--bs-primary");
         let gray300 = KTUtil.getCssVariableValue("--bs-gray-300");
-        
+
         if (chartElement) {
             let itemCodes = data.map(item => item.item_code);
-            let quantityData = data.map(item => item.total_quantity);
             let amountData = data.map(item => item.total_amount);
 
             new ApexCharts(chartElement, {
                 series: [{
-                    name: "Total Quantity",
-                    data: quantityData
-                }, {
                     name: "Total Amount",
                     data: amountData
                 }],
@@ -420,7 +416,7 @@ fetch('analytics/purchase_per_item_bar.php')
                         }
                     }
                 },
-                colors: [primary, gray300],
+                colors: [primary],
                 grid: {
                     borderColor: gray200,
                     strokeDashArray: 4,
