@@ -306,7 +306,7 @@ while($row = $query -> fetch_assoc()){
                             <div class="card-header border-0 pt-5">
                                 <!--begin::Title-->
                                 <h3 class="card-title align-items-start flex-column">
-                                    <span class="card-label fw-bolder fs-3 mb-1">Purchase Order Bar Chart</span>
+                                    <span class="card-label fw-bolder fs-3 mb-1">Purchase per item</span>
                                     <span class="text-muted fw-bold fs-7"></span>
                                 </h3>
                                 <!--end::Title-->
