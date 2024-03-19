@@ -433,3 +433,8 @@ fetch('analytics/purchase_per_item_bar.php')
         console.error('Error fetching data:', error);
     });
 //end::Purchase per item bar chart
+
+
+//begin::Purchase per supplier
+
+//end::Purchase per supplier

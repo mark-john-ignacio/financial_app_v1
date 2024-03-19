@@ -300,7 +300,7 @@ while($row = $query -> fetch_assoc()){
                 <!--begin::ThirdRow-->
                 <div class="row g-5 g-xl-8">
                     <div class="col-xl-6">
-                        <!--begin::Charts Widget 1-->
+                        <!--begin::Purchase per item-->
                         <div class="card card-xl-stretch mb-xl-8">
                             <!--begin::Header-->
                             <div class="card-header border-0 pt-5">
@@ -322,7 +322,30 @@ while($row = $query -> fetch_assoc()){
                             </div>
                             <!--end::Body-->
                         </div>
-                        <!--end::Charts Widget 1-->
+                        <!--end::Purchase per item-->
+                    </div>
+                    <div class="col-xl-6">
+                        <!--begin::Purchase per supplier-->
+                        <div class="card card-xl-stretch mb-xl-8">
+                            <!--begin::Header-->
+                            <div class="card-header border-0 pt-5">
+                                <!--begin::Title-->
+                                <h3 class="card-title align-items-start flex-column">
+                                    <span class="card-label fw-bolder fs-3 mb-1">Purchase per supplier</span>
+                                    <span class="text-muted fw-bold fs-7"></span>
+                                </h3>
+                                <!--end::Title-->
+                            </div>
+                            <!--end::Header-->
+                            <!--begin::Body-->
+                            <div class="card-body">
+                                <!--begin::Chart-->
+                                <div id="purchase-per-supplier-pie" style="height: 350px"></div>
+                                <!--end::Chart-->
+                            </div>
+                            <!--end::Body-->
+                        </div>
+                        <!--end::Purchase per supplier-->
                     </div>
                 </div>
                 <!--end::ThirdRow-->
