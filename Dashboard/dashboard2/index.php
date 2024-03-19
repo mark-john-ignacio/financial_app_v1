@@ -340,7 +340,11 @@ while($row = $query -> fetch_assoc()){
                             <!--begin::Body-->
                             <div class="card-body">
                                 <!--begin::Chart-->
-                                <div id="purchase-per-supplier-pie" style="height: 350px"></div>
+                                <div class="card card-bordered">
+                                    <div class="card-body">
+                                        <div id="supplier-pie" style="height: 350px;"></div>
+                                    </div>
+                                </div>
                                 <!--end::Chart-->
                             </div>
                             <!--end::Body-->
@@ -393,9 +397,16 @@ while($row = $query -> fetch_assoc()){
 <script src="assets/js/custom/modals/create-app.js"></script>
 <script src="assets/js/custom/modals/upgrade-plan.js"></script>
 <!--end::Page Custom Javascript-->
-<!--begin:: Javascript apex1-->
+<!--begin:: Javascript amCharts-->
+<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/themes/dataviz.js"></script>
+<!--end:: Javascript amCharts-->
+<!--begin:: Javascript charts-->
 <script src="js/chart.js"></script>
-<!--end::Javascript apex1-->
+<!--end::Javascript charts-->
+
 <!--end::Javascript-->
 </body>
 <!--end::Body-->

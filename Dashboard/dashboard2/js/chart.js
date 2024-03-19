@@ -436,5 +436,40 @@ fetch('analytics/purchase_per_item_bar.php')
 
 
 //begin::Purchase per supplier
+am4core.ready(function() {
+    // Themes begin
+    am4core.useTheme(am4themes_dataviz);
+    am4core.useTheme(am4themes_animated);
+    // Themes end
+
+    fetch('analytics/purchase_per_supplier_pie.php')
+        .then(response => response.json())
+        .then(data => {
+            var chartData = data.map(row => ({
+                country: row.country,
+                value: parseFloat(row.value) // Convert value to number
+            }));
+
+            // Create chart
+            var chart = am4core.create('supplier-pie', am4charts.PieChart);
+            chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+
+            chart.data = chartData;
+
+            var series = chart.series.push(new am4charts.PieSeries());
+            series.dataFields.value = 'value';
+            series.dataFields.radiusValue = 'value';
+            series.dataFields.category = 'country';
+            series.slices.template.cornerRadius = 6;
+            series.colors.step = 3;
+
+            series.hiddenState.properties.endAngle = -90;
+
+            chart.legend = new am4charts.Legend();
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+});
 
 //end::Purchase per supplier
