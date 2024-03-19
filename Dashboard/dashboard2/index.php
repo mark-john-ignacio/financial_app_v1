@@ -281,7 +281,7 @@ while($row = $query -> fetch_assoc()){
                                 <!--begin::Hidden-->
                                 <div class="d-flex flex-stack flex-wrap flex-grow-1 px-9 pt-9 pb-3">
                                     <div class="me-2">
-                                        <span class="fw-bolder text-gray-800 d-block fs-3">Sales</span>
+                                        <span class="fw-bolder text-gray-800 d-block fs-3">Sales Progress</span>
                                         <span class="text-gray-400 fw-bold"></span>
                                     </div>
                                     <div class="fw-bolder fs-3 text-primary">₱<?=totalSales()["revenue"];?></div>
@@ -346,7 +346,7 @@ while($row = $query -> fetch_assoc()){
                                                 <!--end::Label-->
                                                 <!--begin::Input-->
                                                 <div class="mb-0">
-                                                    <input class="form-control form-control-solid" placeholder="Pick date rage" id="kt_daterangepicker_1"/>
+                                                    <input class="form-control form-control-solid" placeholder="Pick date rage" id="kt_datepicker"/>
                                                 </div>
                                                 <!--end::Input-->
                                             </div>
@@ -365,25 +365,13 @@ while($row = $query -> fetch_assoc()){
                                 </div>
                                 <!--end::Toolbar-->
 
-                                <script>
-                                    $(document).ready(function () {
-                                        // Initialize datepicker
-                                        $('#kt_datepicker').datepicker({
-                                            format: 'yyyy-mm-dd',
-                                            todayHighlight: true,
-                                            autoclose: true,
-                                            orientation: "bottom left"
-                                        });
-                                    });
-                                </script>
-
 
                             </div>
                             <!--end::Header-->
                             <!--begin::Body-->
                             <div class="card-body">
                                 <!--begin::Chart-->
-                                <div id="kt_charts_widget_1_chart" style="height: 350px"></div>
+                                <div id="purchase-per-item-bar" style="height: 350px"></div>
                                 <!--end::Chart-->
                             </div>
                             <!--end::Body-->

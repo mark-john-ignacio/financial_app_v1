@@ -177,7 +177,7 @@ fetch('analytics/top_selling_item_bar_chart.php')
 
 //end::Top Selling Item bar chart
 
-
+//begin::Sales Progress bar chart
 function fetchSalesProgressDataAndRenderChart() {
     fetch('analytics/sales_progress_bar_chart.php')
         .then(response => response.json())
@@ -305,7 +305,135 @@ function renderSalesProgressChart(data) {
 
 // Usage
 fetchSalesProgressDataAndRenderChart();
+//end::Sales Progress bar chart
 
-
+//begin::daterangepicker
 $("#kt_daterangepicker_1").daterangepicker();
+//end::daterangepicker
 
+
+//begin::Purchase per item bar chart
+
+fetch('analytics/purchase_per_item_bar.php')
+    .then(response => response.json())
+    .then(data => {
+        let chartElement = document.getElementById("purchase-per-item-bar");
+        let chartHeight = parseInt(KTUtil.css(chartElement, "height"));
+        let gray500 = "#9e9e9e";
+        let gray200 = "#9e9e9e";
+        let primary = "#1e1f22";
+        let gray300 = "#9e9e9e";
+
+        if (chartElement) {
+            let itemCodes = data.map(item => item.item_code);
+            let quantityData = data.map(item => item.total_quantity);
+            let amountData = data.map(item => item.total_amount);
+
+            new ApexCharts(chartElement, {
+                series: [{
+                    name: "Total Quantity",
+                    data: quantityData
+                }, {
+                    name: "Total Amount",
+                    data: amountData
+                }],
+                chart: {
+                    fontFamily: "inherit",
+                    type: "bar",
+                    height: chartHeight,
+                    toolbar: {
+                        show: false
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: ["30%"],
+                        borderRadius: 4
+                    }
+                },
+                legend: {
+                    show: false
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ["transparent"]
+                },
+                xaxis: {
+                    categories: itemCodes,
+                    axisBorder: {
+                        show: false
+                    },
+                    axisTicks: {
+                        show: false
+                    },
+                    labels: {
+                        style: {
+                            colors: gray500,
+                            fontSize: "12px"
+                        }
+                    }
+                },
+                yaxis: {
+                    labels: {
+                        style: {
+                            colors: gray500,
+                            fontSize: "12px"
+                        }
+                    }
+                },
+                fill: {
+                    opacity: 1
+                },
+                states: {
+                    normal: {
+                        filter: {
+                            type: "none",
+                            value: 0
+                        }
+                    },
+                    hover: {
+                        filter: {
+                            type: "none",
+                            value: 0
+                        }
+                    },
+                    active: {
+                        allowMultipleDataPointsSelection: false,
+                        filter: {
+                            type: "none",
+                            value: 0
+                        }
+                    }
+                },
+                tooltip: {
+                    style: {
+                        fontSize: "12px"
+                    },
+                    y: {
+                        formatter: function(e) {
+                            return "₱" + e;
+                        }
+                    }
+                },
+                colors: [primary, gray300],
+                grid: {
+                    borderColor: gray200,
+                    strokeDashArray: 4,
+                    yaxis: {
+                        lines: {
+                            show: true
+                        }
+                    }
+                }
+            }).render();
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+    });
+//end::Purchase per item bar chart
