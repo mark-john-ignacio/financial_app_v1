@@ -191,6 +191,8 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 				$ccurrdesc = $row['ccurrencydesc']; 
 				$ccurrrate = $row['nexchangerate']; 
 
+				$GrossDiscount = $row['ngrossdisc'];
+
 				$lCancelled = $row['lcancelled'];
 				$lPosted = $row['lapproved'];
 				$lVoid = $row['lvoid'];
@@ -456,7 +458,7 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 															$isselctd = "";
 														}
 
-														echo "<option value=\"".$rows['ctaxcode']."\" ".$isselctd.">".$rows['ctaxcode'].": ".$rows['nrate']."%</option>";
+														echo "<option value=\"".$rows['ctaxcode']."\" ".$isselctd." data-rate=\"".$rows['nrate']."\">".$rows['ctaxcode'].": ".$rows['nrate']."%</option>";
 													}
 												?>                         
 														
@@ -515,8 +517,8 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 										<th width="150px" style="border-bottom:1px solid #999">PO No.</th>
 										<th width="100px" style="border-bottom:1px solid #999">Code</th>
 										<th width="250px" style="border-bottom:1px solid #999">Description</th>
-										<th width="150px" style="border-bottom:1px solid #999" class="chkVATClass">EWTCode</th>
-										<th width="100px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
+										<!--<th width="150px" style="border-bottom:1px solid #999" class="chkVATClass">EWTCode</th>-->
+										<th width="250px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
 										<th width="100px" style="border-bottom:1px solid #999">UOM</th>
 										<th width="100px" style="border-bottom:1px solid #999">Qty</th>
 										<th width="150px" style="border-bottom:1px solid #999">Price</th>
@@ -641,35 +643,81 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 						</div>
 					</div>
 					<div class="col-xs-5">
-						<div class="well">							
+					<div class="well">							
 							<div class="row static-info align-reverse">
 								<div class="col-xs-7 name">
-									Total NET Sales:
-									<input type="hidden" id="txtnNetVAT" name="txtnNetVAT" value="<?=$nnetvat; ?>">
+									Vatable Sales:
+									<input type="hidden" id="txtnNetVAT" name="txtnNetVAT" value="0">
 								</div>
 								<div class="col-xs-4 value" id="divtxtnNetVAT">
-									<?=number_format($nnetvat,2); ?>
+									0.00
 								</div>
 							</div>
 							<div class="row static-info align-reverse">
 								<div class="col-xs-7 name">
-									Add VAT:
-									<input type="hidden" id="txtnVAT" name="txtnVAT" value="<?=$nvat; ?>">
+									VAT Exempt Sales:
+									<input type="hidden" id="txtnExemptVAT" name="txtnExemptVAT" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnExemptVAT">
+									0.00
+								</div>
+							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									ZERO Rated Sales:
+									<input type="hidden" id="txtnZeroVAT" name="txtnZeroVAT" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnZeroVAT">
+									0.00
+								</div>
+							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									add VAT:
+									<input type="hidden" id="txtnVAT" name="txtnVAT" value="0">
 								</div>
 								<div class="col-xs-4 value" id="divtxtnVAT">
-									<?=number_format($nvat,2); ?>
+									0.00
 								</div>
 							</div>
 							<div class="row static-info align-reverse">
 								<div class="col-xs-7 name">
-									Total Amount:
-									<input type="hidden" id="txtnGross" name="txtnGross" value="<?=$Gross; ?>">
-									<input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="<?=$nbasegross; ?>">
+									Total Sales:
+									<input type="hidden" id="txtnGrossBef" name="txtnGrossBef" value="0">
 								</div>
-								<div class="col-xs-4 value" id="divtxtnGross">
-									<?=number_format($nbasegross,2); ?>
+								<div class="col-xs-4 value" id="divtxtnGrossBef"> 
+									0.00
 								</div>
 							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									less EWT:
+									<input type="hidden" id="txtnEWT" name="txtnEWT" value="0">
+								</div>
+								<div class="col-xs-4 value" id="divtxtnEWT"> 
+									0.00
+								</div>
+							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									less Gross Discount:
+									
+								</div>
+								<div class="col-xs-4 value">
+									<input type="text" class="form-control input-xs text-right" id="txtnGrossDisc" name="txtnGrossDisc" value="<?=$GrossDiscount?>">
+								</div>
+							</div>
+							<div class="row static-info align-reverse">
+								<div class="col-xs-7 name">
+									<b>Total Amount: </b>
+									<input type="hidden" id="txtnGross" name="txtnGross" value="0">
+									<input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="0">								
+								</div>
+								<div class="col-xs-4 value" id="divtxtnGross" style="border-top: 1px solid #ccc">
+									0.00
+								</div>
+							</div>
+							
 						</div>
 					</div>
 				</div>
@@ -1561,8 +1609,8 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 		});
 
 		$("#selewt").on("change", function(){ 
-
-			var rowCount = $('#MyTable tr').length;
+			ComputeGross();
+			/*var rowCount = $('#MyTable tr').length;
 			if(rowCount>1){
 				if($(this).val()!=""){			
 						for (var i = 1; i <= rowCount-1; i++) {
@@ -1581,7 +1629,7 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 					}
 				}
 
-			}
+			}*/
 		});
 
 		$("#btnentry").on("click", function(){		
@@ -1762,7 +1810,7 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 		var tditmcode = "<td width=\"120\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode"+lastRow+"\">"+itmcode+" <input type='hidden' value='"+cref+"' name=\"txtcreference\" id=\"txtcreference\"> <input type='hidden' value='"+nrefident+"' name=\"txtcrefident\" id=\"txtcrefident\"> <input type='hidden' value='"+itmctype+"' name=\"hdncitmtype\" id=\"hdncitmtype"+lastRow+"\"> </td>";
 		var tditmdesc = "<td><input type='text' value='"+itmdesc+"' class='form-control input-xs' name=\"txtcitemdesc\" id='txtcitemdesc"+lastRow+"'></td>";
 
-			var tditmewts = "";
+			/*var tditmewts = "";
 			if(xChkVatableStatus==1){ 
 				
 				var gvnewt = $("#selewt").val();
@@ -1798,7 +1846,7 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 
 					tditmewts = "<td width=\"150\" nowrap> <select class='form-control input-xs' name=\"selitmewtyp\" id=\"selitmewtyp"+lastRow+"\" "+isdisabled+" multiple> <option value=\"none\">None</option>" + ewtoptions + "</select> </td>";
 
-			}
+			}*/
 
 		var tditmvats = "";
 		var itsvats = "";
@@ -1865,7 +1913,7 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 		
 		var tditmdel = "<td width=\"90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del"+ lastRow +"' value='delete' data-var='"+lastRow+"'/> &nbsp; </td>"; // <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"');\"/>
 
-		$('#MyTable > tbody:last-child').append('<tr>'+ tdpono + tdsysno + tditmcode + tditmdesc + tditmewts + tditmvats + tditmunit + tditmqty + tditmprice + tditmdisc + tditmbaseamount + tditmdel + '</tr>');
+		$('#MyTable > tbody:last-child').append('<tr>'+ tdpono + tdsysno + tditmcode + tditmdesc + tditmvats + tditmunit + tditmqty + tditmprice + tditmdisc + tditmbaseamount + tditmdel + '</tr>');
 
 			$("#del"+lastRow).on('click', function() {
 												
@@ -1888,7 +1936,7 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 
 			$("input.numeric2").autoNumeric('init',{mDec:4});
 			$("input.numeric").autoNumeric('init',{mDec:2});
-			$("#selitmewtyp"+lastRow).select2();
+			//$("#selitmewtyp"+lastRow).select2();
 
 			$("#selitmvatyp"+lastRow).on("change", function() {
 				ComputeGross();
@@ -1954,7 +2002,7 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 
 	}
 	
-	function ComputeGross(){
+	/*function ComputeGross(){
 			var rowCount = $('#MyTable tr').length;
 			
 			var gross = 0;
@@ -2007,6 +2055,98 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 			$("#divtxtnNetVAT").formatNumber();
 			$("#divtxtnVAT").formatNumber();
 			$("#divtxtnGross").formatNumber();			
+			
+	}*/
+	function ComputeGross(){
+		var rowCount = $('#MyTable tr').length;
+		
+		var gross = 0;
+		var nvatz = 0;
+		var nvatble = 0;
+
+		var nexmptTot = 0;
+		var nzeroTot = 0;
+		var nvatbleTot = 0;
+		var vatzTot = 0;
+
+		var totewt = 0;
+
+		var xcrate = 0;
+
+		var TotAmtDue = 0;
+
+		if(rowCount>1){
+			for (var i = 1; i <= rowCount-1; i++) {
+		
+				var slctdval = $("#selitmvatyp"+i+" option:selected").data('id'); //data-id is the rate
+				var slctdvalid = $("#selitmvatyp"+i+" option:selected").val();
+
+				if(slctdvalid=="VT" || slctdvalid=="VTGOV"){
+					nvatble = parseFloat($("#txtntranamount"+i).val().replace(/,/g,'')) / parseFloat(1 + (parseInt(slctdval)/100));
+					vatz = nvatble * (parseInt(slctdval)/100);
+
+					nvatbleTot = nvatbleTot + nvatble;
+					vatzTot = vatzTot + vatz;
+					
+				}else if(slctdvalid=="VE"){
+					nexmptTot = nexmptTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
+				}else if(slctdvalid=="ZR"){
+					nzeroTot = nzeroTot + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
+				}
+
+				
+				gross = gross + parseFloat($("#txtntranamount"+i).val().replace(/,/g,''));
+			}
+		}
+
+		//VATABLE
+		$("#txtnNetVAT").val(nvatbleTot);
+		$("#divtxtnNetVAT").text(nvatbleTot.toFixed(2));
+		$("#divtxtnNetVAT").formatNumber();
+
+		//EXEMPT
+		$("#txtnExemptVAT").val(nexmptTot);
+		$("#divtxtnExemptVAT").text(nexmptTot.toFixed(2));
+		$("#divtxtnExemptVAT").formatNumber();
+
+		//ZERO RATED
+		$("#txtnZeroVAT").val(nzeroTot);
+		$("#divtxtnZeroVAT").text(nzeroTot.toFixed(2));
+		$("#divtxtnZeroVAT").formatNumber();
+		
+		// LESS VAT
+		$("#txtnVAT").val(vatzTot);
+		$("#divtxtnVAT").text(vatzTot.toFixed(2));
+		$("#divtxtnVAT").formatNumber();
+
+		//TOTAL GROSS
+		$("#txtnGrossBef").val(gross);
+		$("#divtxtnGrossBef").text(gross.toFixed(2));
+		$("#divtxtnGrossBef").formatNumber();
+
+		// LESS EWT
+		$xtotewrate = 0;
+		ewtTotz = 0;
+		$('#selewt > option:selected').each(function() {
+			$xtotewrate = $xtotewrate + parseFloat($(this).data("rate"));
+		});
+		if(parseFloat($xtotewrate)>0){
+			ewtTotz = (parseFloat(nvatbleTot) + parseFloat(nexmptTot) + parseFloat(nzeroTot)) * ($xtotewrate/100);
+		}
+		$("#txtnEWT").val(ewtTotz);
+		$("#divtxtnEWT").text(ewtTotz.toFixed(2));  
+		$("#divtxtnEWT").formatNumber();
+
+
+		//Total Amount
+		$gettmtt = gross - parseFloat($("#txtnGrossDisc").val()) - parseFloat(ewtTotz);
+		gross2 = $gettmtt * parseFloat($("#basecurrval").val().replace(/,/g,''));
+		
+		$("#txtnGross").val(gross2);
+		$("#txtnBaseGross").val($gettmtt);
+		$("#divtxtnGross").text($gettmtt.toFixed(2));		
+		$("#divtxtnGross").formatNumber();
+
 			
 	}
 		
@@ -2913,7 +3053,7 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 				$("#MyTable > tbody > tr").each(function(index) {	
 					//if(index>0){
 					
-						$(this).find('select[name="selitmewtyp"]').attr("disabled", false);
+						//$(this).find('select[name="selitmewtyp"]').attr("disabled", false);
 
 						var crefno = $(this).find('input[type="hidden"][name="txtcreference"]').val();
 						var crefident = $(this).find('input[type="hidden"][name="txtcrefident"]').val();
@@ -2921,8 +3061,8 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 						var citmdesc = $(this).find('input[name="txtcitemdesc"]').val();	
 
 						var ewtcode = "";
-						var ewtrate = "";
-						if(xChkVatableStatus==1){ 
+						var ewtrate = 0;
+						/*if(xChkVatableStatus==1){ 
 							ewtcode = $(this).find('select[name="selitmewtyp"]').val();
 
 							//getrate of selected
@@ -2936,7 +3076,7 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 									ewtrate = ewtrate + $(this).data("rate");
 								}
 							});
-						}
+						}*/
 
 						if(xChkVatableStatus==1){
 							var vatcode = $(this).find('select[name="selitmvatyp"]').val(); 
