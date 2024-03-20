@@ -144,6 +144,9 @@ function numberTowords($num)
 			$Refno = ($row['cpaymethod']=="cheque") ? $row['ccheckno'] : $row['cpayrefno']; 
 
 			$cdoctype = $row['cdoctype'];
+			//1. BDO/LANDBANK CHECK FORMAT
+			//2. METROBANK CHECK FORMAT
+			//3. EASTWEST CHECK FORMAT
 		}
 	}
 
@@ -385,6 +388,7 @@ function numberTowords($num)
 			left: 150px;
 			width: 338px;
 			height:  18px;    
+			line-height: 15px;
 			/*border: 1px solid #000;*/
 		}
 		.ewdamtwords{
