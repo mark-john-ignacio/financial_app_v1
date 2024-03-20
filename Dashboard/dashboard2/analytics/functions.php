@@ -3,7 +3,7 @@ function totalSales()
 {
     // Query to get the sum of all nnet values
     global $con;
-    $query_total_nnet = "SELECT SUM(nnet) AS total_nnet FROM sales";
+    $query_total_nnet = "SELECT SUM(ngross) AS total_nnet FROM sales";
     $result_total_nnet = mysqli_query($con, $query_total_nnet);
     $row_total_nnet = mysqli_fetch_assoc($result_total_nnet);
     $total_nnet = $row_total_nnet["total_nnet"];
@@ -65,9 +65,10 @@ function topSellingItem(){
     // SQL query to get the top-selling item
     global $con;
     $sql = "
-                                        SELECT s_t.citemno, SUM(s_t.nprice) AS total_price
+                                        SELECT i.citemdesc, SUM(s_t.nprice) AS total_price
                                         FROM sales_t s_t
                                         INNER JOIN sales s ON s.compcode = s_t.compcode AND s.ctranno = s_t.ctranno
+                                        INNER JOIN items i ON s_t.citemno = i.cpartno
                                         WHERE s.lapproved = 1 AND s.lvoid = 0
                                         GROUP BY s_t.citemno
                                         ORDER BY total_price DESC
@@ -78,7 +79,7 @@ function topSellingItem(){
 
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-            $topSellingItem = $row['citemno'];
+            $topSellingItem = $row['citemdesc'];
             $totalSaleValue = $row['total_price'];
         }
     }

@@ -6,22 +6,28 @@ if (!isset($_SESSION)) {
 }
 include "../../../Connection/connection_string.php";
 
+$currYear = date("Y");
+$currMonth = date("m");
+$currentQuarter = ceil($currMonth / 3);
+
+// Calculate start and end dates of the current quarter for both this year and last year
+$currentQuarterStart = $currYear . '-0' . (($currentQuarter - 1) * 3 + 1) . '-01';
+$currentQuarterEnd = date('Y-m-t', strtotime($currYear . '-0' . ($currentQuarter * 3)));
+
 $sql = "
-   SELECT
-        YEAR(s.dcutdate) AS year,
+    SELECT
         MONTH(s.dcutdate) AS month,
-        SUM(s_t.nprice) AS total_revenue,
-        SUM(s.nnet) AS net_profit
+        SUM(CASE WHEN YEAR(s.dcutdate) = $currYear THEN s.ngross ELSE 0 END) AS this_year_gross,
+        SUM(CASE WHEN YEAR(s.dcutdate) = ($currYear - 1) THEN s.ngross ELSE 0 END) AS last_year_gross
     FROM
         sales s
-        INNER JOIN sales_t s_t ON s.compcode = s_t.compcode AND s.ctranno = s_t.ctranno
     WHERE
         s.lapproved = 1 AND s.lvoid = 0
-        AND s.dcutdate >= DATE_SUB(CURDATE(), INTERVAL 8 MONTH)
+        AND s.dcutdate >= '$currentQuarterStart' AND s.dcutdate < '$currentQuarterEnd'
     GROUP BY
-        YEAR(s.dcutdate), MONTH(s.dcutdate)
+        MONTH(s.dcutdate)
     ORDER BY
-        YEAR(s.dcutdate), MONTH(s.dcutdate)
+        MONTH(s.dcutdate)
 ";
 
 $result = $con->query($sql);
@@ -30,14 +36,19 @@ if ($result->num_rows > 0) {
     $chartData = array();
     while ($row = $result->fetch_assoc()) {
         $formattedMonth = date("M", mktime(0, 0, 0, $row["month"], 1));
+        $thisYearGross = $row["this_year_gross"];
+        $lastYearGross = $row["last_year_gross"];
+
+
         $chartData[] = array(
-            "month" => $formattedMonth . " " . $row["year"],
-            "revenue" => $row["total_revenue"],
-            "net_profit" => $row["net_profit"]
+            "month" => $formattedMonth,
+            "this_year_gross" => $thisYearGross,
+            "last_year_gross" => $lastYearGross,
         );
     }
     echo json_encode($chartData);
 } else {
     echo "No data available";
 }
+
 

@@ -194,11 +194,11 @@ function renderSalesProgressChart(data) {
 
         new ApexCharts(chartElement, {
             series: [{
-                name: "Net Profit",
-                data: data.map(item => item.net_profit)
+                name: "Last Year Gross",
+                data: data.map(item => parseFloat(item.last_year_gross).toFixed(4))
             }, {
-                name: "Revenue",
-                data: data.map(item => item.revenue)
+                name: "This Year Gross",
+                data: data.map(item => parseFloat(item.this_year_gross).toFixed(4))
             }],
             chart: {
                 fontFamily: "inherit",
@@ -286,7 +286,7 @@ function renderSalesProgressChart(data) {
                     }
                 }
             },
-            colors: [chartColorValue, "#9e9e9e"],
+            colors: ["#9e9e9e", chartColorValue],
             grid: {
                 padding: {
                     top: 10
