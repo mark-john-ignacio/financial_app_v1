@@ -82,8 +82,6 @@
 </head>
 <body>
 <!-- Modal HTML -->
-
-THIS IS TEST
 <div id="myModal">
 	<div class="modal-dialog modal-login">
 		<div class="modal-content" >
