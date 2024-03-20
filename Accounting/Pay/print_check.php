@@ -352,10 +352,10 @@ function numberTowords($num)
 			position: absolute;
 			float: right;
 			top: 45px;
-			right: 225px;
+			right: 215px;
 			width: 30px;
 			height:  25px;    
-			letter-spacing:8px;
+			letter-spacing:10px;
 			font-size: 10pt;
 			/*border: 1px solid #000;*/
 			
@@ -364,20 +364,20 @@ function numberTowords($num)
 			position: absolute;
 			float: right;
 			top: 45px;
-			right: 179px;
+			right: 170px;
 			width: 30px;
 			height:  25px;    
-			letter-spacing:8px;
+			letter-spacing:11px;
 			font-size: 10pt;
 		}
 		.ewdateyr{
 			position: absolute;
 			float: right;
 			top: 45px;
-			right: 129px;
+			right: 119px;
 			width: 30px;
 			height:  25px;    
-			letter-spacing:8px;
+			letter-spacing:11px;
 			font-size: 10pt;
 		}
 		.ewdamt{
@@ -403,7 +403,7 @@ function numberTowords($num)
 		.ewdamtwords{
 			position: absolute;
 			top: 108px;
-			left: 70px;
+			left: 75px;
 			width: 650px;
 			height:  18px;    
 			font-size: 10pt;	
