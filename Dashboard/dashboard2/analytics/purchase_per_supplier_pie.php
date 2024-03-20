@@ -8,7 +8,7 @@ include "../../../Connection/connection_string.php";
 
 $sql = "
    SELECT
-        c.cname AS country,
+        c.ccode AS country,
         SUM(a.namount) AS value
     FROM
         suppinv_t a
