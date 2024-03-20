@@ -286,7 +286,7 @@ function getSetAcct($id){
 					Select B.dcutdate, A.citemno, ROUND((SUM(A.namount)/(1 + (D.nrate/100))) * ((D.nrate/100)), 2) AS nVat
 					From sales_t A 
 					left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno 
-					left join accounts C on B.compcode=C.compcode and B.cacctcodecr=C.cacctno 
+					left join accounts C on B.compcode=C.compcode and B.cacctcode=C.cacctno 
 					left join taxcode D on A.compcode=D.compcode and A.ctaxcode=D.ctaxcode 
 					left join vatcode E on B.compcode=E.compcode and B.cvatcode=E.cvatcode 
 					where A.compcode='$company' and A.ctranno='$tran'
