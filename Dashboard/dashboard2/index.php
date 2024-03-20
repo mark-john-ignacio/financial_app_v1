@@ -273,7 +273,7 @@ while($row = $query -> fetch_assoc()){
                 <!--begin::SecondRow-->
                     <div class="row gy-5 g-xl-10">
                         <!--begin::Col-->
-                        <div class="col-xxl-4">
+                        <div class="col-xl-6">
                         <!--begin::Mixed Widget 10-->
                         <div class="card card-xxl-stretch-50 mb-5 mb-xl-8">
                             <!--begin::Body-->
@@ -282,19 +282,45 @@ while($row = $query -> fetch_assoc()){
                                 <div class="d-flex flex-stack flex-wrap flex-grow-1 px-9 pt-9 pb-3">
                                     <div class="me-2">
                                         <span class="fw-bolder text-gray-800 d-block fs-3">Sales Progress</span>
-                                        <span class="text-gray-400 fw-bold"></span>
+                                        <span class="text-gray-400 fw-bold">Current Quarter</span>
                                     </div>
                                     <div class="fw-bolder fs-3 text-primary">₱<?=totalSales()["revenue"];?></div>
                                 </div>
                                 <!--end::Hidden-->
                                 <!--begin::Chart-->
-                                <div class="sales-progress-bar-chart" data-kt-color="primary" style="height: 175px"></div>
+                                <div class="sales-progress-bar-chart" data-kt-color="primary" style="height: 350px"></div>
                                 <!--end::Chart-->
                             </div>
                         </div>
                         <!--end::Mixed Widget 10-->
                         </div>
                         <!--end::Col-->
+                        <!--begin::Col-->
+                        <div class="col-xl-6">
+                            <!--begin::Sale per item-->
+                            <div class="card card-xl-stretch mb-xl-8">
+                                <!--begin::Header-->
+                                <div class="card-header border-0 pt-5">
+                                    <!--begin::Title-->
+                                    <h3 class="card-title align-items-start flex-column">
+                                        <span class="card-label fw-bolder fs-3 mb-1">Sale per item</span>
+                                        <span class="text-muted fw-bold fs-7"></span>
+                                    </h3>
+                                    <!--end::Title-->
+
+
+                                </div>
+                                <!--end::Header-->
+                                <!--begin::Body-->
+                                <div class="card-body">
+                                    <!--begin::Chart-->
+                                    <div id="sale-per-item-bar" style="height: 350px"></div>
+                                    <!--end::Chart-->
+                                </div>
+                                <!--end::Body-->
+                            </div>
+                            <!--end::Sale per item-->
+                        </div>
                     </div>
                 <!--end::SecondRow-->
                 <!--begin::ThirdRow-->

@@ -307,10 +307,135 @@ function renderSalesProgressChart(data) {
 fetchSalesProgressDataAndRenderChart();
 //end::Sales Progress bar chart
 
-//begin::daterangepicker
-$("#kt_daterangepicker_1").daterangepicker();
-//end::daterangepicker
 
+//begin::Sale per item bar chart
+fetch('analytics/sale_per_item_bar.php')
+    .then(response => response.json())
+    .then(data => {
+        let chartElement = document.getElementById("sale-per-item-bar");
+        let chartHeight = parseInt(KTUtil.css(chartElement, "height"));
+        let gray500 = KTUtil.getCssVariableValue("--bs-gray-500");
+        let primary = KTUtil.getCssVariableValue("--bs-primary");
+
+        if (chartElement) {
+            let itemCodes = data.map(item => item.item_number);
+            let itemDesc = data.map(item => item.item_description);
+            let amountData = data.map(item => item.total_sales);
+
+            new ApexCharts(chartElement, {
+                series: [{
+                    name: "Total Sales",
+                    data: amountData
+                }],
+                chart: {
+                    fontFamily: "inherit",
+                    type: "bar",
+                    height: chartHeight,
+                    toolbar: {
+                        show: false
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: ["30%"],
+                        borderRadius: 4
+                    }
+                },
+                legend: {
+                    show: false
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ["transparent"]
+                },
+                xaxis: {
+                    categories: itemCodes.map((item, index) => item !== null ? item : `N/A (${index + 1})`),
+                    axisBorder: {
+                        show: false
+                    },
+                    axisTicks: {
+                        show: false
+                    },
+                    labels: {
+                        style: {
+                            colors: gray500,
+                            fontSize: "12px"
+                        }
+                    }
+                },
+                yaxis: {
+                    labels: {
+                        style: {
+                            colors: gray500,
+                            fontSize: "12px"
+                        }
+                    }
+                },
+                fill: {
+                    opacity: 1
+                },
+                states: {
+                    normal: {
+                        filter: {
+                            type: "none",
+                            value: 0
+                        }
+                    },
+                    hover: {
+                        filter: {
+                            type: "none",
+                            value: 0
+                        }
+                    },
+                    active: {
+                        allowMultipleDataPointsSelection: false,
+                        filter: {
+                            type: "none",
+                            value: 0
+                        }
+                    }
+                },
+                tooltip: {
+                    style: {
+                        fontSize: "12px"
+                    },
+                    x: {
+                        formatter: function(val) {
+                            let index = itemCodes.indexOf(val);
+                            if (index !== -1) {
+                                return itemDesc[index] !== null ? itemDesc[index] : "N/A";
+                            }
+                            return val;
+                        }
+                    },
+                    y: {
+                        formatter: function(e) {
+                            return "₱" + e;
+                        }
+                    }
+                },
+                colors: [primary],
+                grid: {
+                    borderColor: gray500,
+                    strokeDashArray: 4,
+                    yaxis: {
+                        lines: {
+                            show: true
+                        }
+                    }
+                }
+            }).render();
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+    });
+//end::Sale per item bar chart
 
 //begin::Purchase per item bar chart
 

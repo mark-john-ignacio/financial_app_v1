@@ -62,85 +62,70 @@ function totalSales()
 
 
 function topSellingItem(){
-    // SQL query to get the top-selling item
     global $con;
+
+    $topSellingItem = '';
+    $totalSaleValue = '0.00';
+    $percentage_change = 'No change';
+
     $sql = "
-                                        SELECT i.citemdesc, SUM(s_t.nprice) AS total_price
-                                        FROM sales_t s_t
-                                        INNER JOIN sales s ON s.compcode = s_t.compcode AND s.ctranno = s_t.ctranno
-                                        INNER JOIN items i ON s_t.citemno = i.cpartno
-                                        WHERE s.lapproved = 1 AND s.lvoid = 0
-                                        GROUP BY s_t.citemno
-                                        ORDER BY total_price DESC
-                                        LIMIT 1
-                                        ";
+        SELECT i.citemdesc, SUM(s_t.nprice) AS total_price
+        FROM sales_t s_t
+        INNER JOIN sales s ON s.compcode = s_t.compcode AND s.ctranno = s_t.ctranno
+        INNER JOIN items i ON s_t.citemno = i.cpartno
+        WHERE s.lapproved = 1 AND s.lvoid = 0
+        GROUP BY s_t.citemno
+        ORDER BY total_price DESC
+        LIMIT 1
+    ";
 
     $result = $con->query($sql);
 
     if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $topSellingItem = $row['citemdesc'];
-            $totalSaleValue = $row['total_price'];
-        }
-    }
-
-    if ($totalSaleValue !== null) {
-        $totalSaleValue = number_format($totalSaleValue, 0, '.', ',');
-    } else {
-        // Handle the case when $total_nnet is null
-        $totalSaleValue = '0.00';
+        $row = $result->fetch_assoc();
+        $topSellingItem = $row['citemdesc'];
+        $totalSaleValue = number_format($row['total_price'], 2, '.', ',');
     }
 
     // Start percentage change of topselling item this week compared to last week
     $query_last_week = "
-    SELECT
-        SUM(s_t.nprice) AS total_revenue_last_week
-    FROM
-        sales_t s_t
-        INNER JOIN sales s ON s.compcode = s_t.compcode AND s.ctranno = s_t.ctranno
-    WHERE
-        s.lapproved = 1 AND s.lvoid = 0 AND s_t.citemno = '$topSellingItem' AND WEEK(s.dcutdate) = WEEK(NOW()) - 1
-";
+        SELECT
+            SUM(s_t.nprice) AS total_revenue_last_week
+        FROM
+            sales_t s_t
+            INNER JOIN sales s ON s.compcode = s_t.compcode AND s.ctranno = s_t.ctranno
+        WHERE
+            s.lapproved = 1 AND s.lvoid = 0 AND s_t.citemno = '$topSellingItem' AND WEEK(s.dcutdate) = WEEK(NOW()) - 1
+    ";
 
     $result_last_week = $con->query($query_last_week);
-    $total_revenue_last_week = 0; // Default value if result is 0
     if ($result_last_week && $result_last_week->num_rows > 0) {
         $row_last_week = $result_last_week->fetch_assoc();
         $total_revenue_last_week = $row_last_week["total_revenue_last_week"];
+        // Check if total_revenue_last_week is not null or zero
+        if ($total_revenue_last_week != null && $total_revenue_last_week != 0) {
+            // Query to get the total revenue for the top selling item for this week
+            $query_this_week = "
+                SELECT
+                    SUM(s_t.nprice) AS total_revenue_this_week
+                FROM
+                    sales_t s_t
+                    INNER JOIN sales s ON s.compcode = s_t.compcode AND s.ctranno = s_t.ctranno
+                WHERE
+                    s.lapproved = 1 AND s.lvoid = 0 AND s_t.citemno = '$topSellingItem' AND WEEK(s.dcutdate) = WEEK(NOW())
+            ";
+
+            $result_this_week = $con->query($query_this_week);
+            if ($result_this_week && $result_this_week->num_rows > 0) {
+                $row_this_week = $result_this_week->fetch_assoc();
+                $total_revenue_this_week = $row_this_week["total_revenue_this_week"];
+                // Calculate the percentage change in revenue
+                $percentage_change = (($total_revenue_this_week - $total_revenue_last_week) / $total_revenue_last_week) * 100;
+                // Format the percentage change
+                $percentage_change = ($percentage_change > 0) ? "+" . number_format($percentage_change, 0) . "%" : number_format($percentage_change, 0) . "%";
+            }
+        }
     }
-
-    // Query to get the total revenue for the top selling item for this week
-    $query_this_week = "
-    SELECT
-        SUM(s_t.nprice) AS total_revenue_this_week
-    FROM
-        sales_t s_t
-        INNER JOIN sales s ON s.compcode = s_t.compcode AND s.ctranno = s_t.ctranno
-    WHERE
-        s.lapproved = 1 AND s.lvoid = 0 AND s_t.citemno = '$topSellingItem' AND WEEK(s.dcutdate) = WEEK(NOW())
-";
-
-    $result_this_week = $con->query($query_this_week);
-    $total_revenue_this_week = 0; // Default value if result is 0
-    if ($result_this_week && $result_this_week->num_rows > 0) {
-        $row_this_week = $result_this_week->fetch_assoc();
-        $total_revenue_this_week = $row_this_week["total_revenue_this_week"];
-    }
-
-    // Calculate the percentage change in revenue
-    $percentage_change = ($total_revenue_last_week != 0) ? (($total_revenue_this_week - $total_revenue_last_week) / $total_revenue_last_week) * 100 : 0;
-
-    // Format the percentage change
-    if ($percentage_change > 0) {
-        $percentage_change = "+" . number_format($percentage_change, 0) . "%";
-    } elseif ($percentage_change < 0) {
-        $percentage_change = number_format($percentage_change, 0) . "%";
-    } else {
-        $percentage_change = "No change";
-    }
-
-
-
 
     return array(
         'name' => $topSellingItem,
@@ -148,6 +133,7 @@ function topSellingItem(){
         'percentageChange' => $percentage_change
     );
 }
+
 
 
 // Function to return total gross sales
