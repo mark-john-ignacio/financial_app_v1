@@ -394,11 +394,11 @@ function numberTowords($num)
 			position: absolute;
 			top: 80px;
 			left: 100px;
-			width: 388px;
+			width: 500px;
 			height:  18px;    
 			line-height: 15px;
-			font-size: 10pt;	
-			/*border: 1px solid #000;*/
+			font-size: 10pt;
+			border: 1px solid #000;
 		}
 		.ewdamtwords{
 			position: absolute;
