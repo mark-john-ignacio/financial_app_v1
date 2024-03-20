@@ -16,18 +16,22 @@ $currentQuarterEnd = date('Y-m-t', strtotime($currYear . '-0' . ($currentQuarter
 
 $sql = "
     SELECT
-        MONTH(s.dcutdate) AS month,
-        SUM(CASE WHEN YEAR(s.dcutdate) = $currYear THEN s.ngross ELSE 0 END) AS this_year_gross,
-        SUM(CASE WHEN YEAR(s.dcutdate) = ($currYear - 1) THEN s.ngross ELSE 0 END) AS last_year_gross
-    FROM
-        sales s
-    WHERE
-        s.lapproved = 1 AND s.lvoid = 0
-        AND s.dcutdate >= '$currentQuarterStart' AND s.dcutdate < '$currentQuarterEnd'
-    GROUP BY
-        MONTH(s.dcutdate)
-    ORDER BY
-        MONTH(s.dcutdate)
+    MONTH(s.dcutdate) AS month,
+    SUM(CASE WHEN YEAR(s.dcutdate) = $currYear THEN s.ngross ELSE 0 END) AS this_year_gross,
+    SUM(CASE WHEN YEAR(s.dcutdate) = ($currYear - 1) THEN s.ngross ELSE 0 END) AS last_year_gross
+FROM
+    sales s
+WHERE
+    s.lapproved = 1 AND s.lvoid = 0
+    AND (
+        (s.dcutdate >= '$currentQuarterStart' AND s.dcutdate < '$currentQuarterEnd') -- Current year's quarter
+        OR
+        (YEAR(s.dcutdate) = ($currYear - 1) AND MONTH(s.dcutdate) >= MONTH('$currentQuarterStart')) -- Same quarter of the previous year
+    )
+GROUP BY
+    MONTH(s.dcutdate)
+ORDER BY
+    MONTH(s.dcutdate)
 ";
 
 $result = $con->query($sql);
