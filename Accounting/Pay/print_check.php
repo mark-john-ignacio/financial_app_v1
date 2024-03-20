@@ -403,7 +403,7 @@ function numberTowords($num)
 		.ewdamtwords{
 			position: absolute;
 			top: 108px;
-			left: 75px;
+			left: 85px;
 			width: 650px;
 			height:  18px;    
 			font-size: 10pt;	
