@@ -398,7 +398,7 @@ function numberTowords($num)
 			height:  18px;    
 			line-height: 15px;
 			font-size: 10pt;
-			border: 1px solid #000;
+			/*border: 1px solid #000;*/
 		}
 		.ewdamtwords{
 			position: absolute;
