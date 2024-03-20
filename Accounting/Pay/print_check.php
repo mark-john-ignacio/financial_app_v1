@@ -184,7 +184,7 @@ function numberTowords($num)
 			width: 30px;
 			height:  25px;    
 			letter-spacing:5px;
-			font-size: 10pt;			
+			font-size: 8pt;			
 			/*border: 1px solid #000;*/				
 		}
 		.ewdatedy{
@@ -195,7 +195,7 @@ function numberTowords($num)
 			width: 30px;
 			height:  25px;    
 			letter-spacing:5px;
-			font-size: 10pt;
+			font-size: 8pt;
 		}
 		.ewdateyr{
 			position: absolute;
@@ -205,7 +205,7 @@ function numberTowords($num)
 			width: 30px;
 			height:  25px;    
 			letter-spacing:5px;
-			font-size: 10pt;
+			font-size: 8pt;
 		}
 		.ewdamt{
 			position: absolute;
@@ -263,7 +263,7 @@ function numberTowords($num)
 				width: 30px;
 				height:  25px;    
 				letter-spacing:5px;
-				font-size: 10pt;			
+				font-size: 8pt;			
 				/*border: 1px solid #000;*/				
 			}
 			.ewdatedy{
@@ -274,7 +274,7 @@ function numberTowords($num)
 				width: 30px;
 				height:  25px;    
 				letter-spacing:5px;
-				font-size: 10pt;
+				font-size: 8pt;
 			}
 			.ewdateyr{
 				position: absolute;
@@ -284,7 +284,7 @@ function numberTowords($num)
 				width: 30px;
 				height:  25px;    
 				letter-spacing:5px;
-				font-size: 10pt;
+				font-size: 8pt;
 			}
 			.ewdamt{
 				position: absolute;
@@ -349,7 +349,7 @@ function numberTowords($num)
 			width: 30px;
 			height:  25px;    
 			letter-spacing:8px;
-			font-size: 10pt;
+			font-size: 8pt;
 			/*border: 1px solid #000;*/
 			
 		}
@@ -361,7 +361,7 @@ function numberTowords($num)
 			width: 30px;
 			height:  25px;    
 			letter-spacing:8px;
-			font-size: 10pt;
+			font-size: 8pt;
 		}
 		.ewdateyr{
 			position: absolute;
@@ -371,7 +371,7 @@ function numberTowords($num)
 			width: 30px;
 			height:  25px;    
 			letter-spacing:8px;
-			font-size: 10pt;
+			font-size: 8pt;
 		}
 		.ewdamt{
 			position: absolute;
