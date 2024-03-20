@@ -326,6 +326,7 @@ fetch('analytics/purchase_per_item_bar.php')
 
         if (chartElement) {
             let itemCodes = data.map(item => item.item_code);
+            let itemDesc = data.map(item => item.item_description);
             let amountData = data.map(item => item.total_amount);
 
             new ApexCharts(chartElement, {
@@ -410,6 +411,15 @@ fetch('analytics/purchase_per_item_bar.php')
                     style: {
                         fontSize: "12px"
                     },
+                    x: {
+                        formatter: function(val) {
+                            let index = itemCodes.indexOf(val);
+                            if (index !== -1) {
+                                return itemDesc[index];
+                            }
+                            return val;
+                        }
+                    },
                     y: {
                         formatter: function(e) {
                             return "₱" + e;
@@ -464,14 +474,14 @@ am4core.ready(function() {
 
             // Set pastel colors
             series.colors.list = [
-                am4core.color("#D8A9C6"),
-                am4core.color("#A8EAEF"),
-                am4core.color("#A8B7EF"),
-                am4core.color("#76CB76"),
-                am4core.color("#FF8266"),
-                am4core.color("#C8A8D1"),
-                am4core.color("#ECECB5"),
-                am4core.color("#FF9EA9")
+                am4core.color("#F7D9E3"),
+                am4core.color("#CBD4F4"),
+                am4core.color("#CBF0F4"),
+                am4core.color("#98FB98"),
+                am4core.color("#FFA07A"),
+                am4core.color("#D8BFD8"),
+                am4core.color("#FAFAD2"),
+                am4core.color("#FFB6C1")
             ];
 
             series.hiddenState.properties.endAngle = -90;
