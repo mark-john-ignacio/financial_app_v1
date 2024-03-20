@@ -461,7 +461,18 @@ am4core.ready(function() {
             series.dataFields.radiusValue = 'value';
             series.dataFields.category = 'country';
             series.slices.template.cornerRadius = 6;
-            series.colors.step = 3;
+
+            // Set pastel colors
+            series.colors.list = [
+                am4core.color("#F7D9E3"),
+                am4core.color("#CBF0F4"),
+                am4core.color("#CBF0F4"),
+                am4core.color("#98FB98"),
+                am4core.color("#FFA07A"),
+                am4core.color("#D8BFD8"),
+                am4core.color("#FAFAD2"),
+                am4core.color("#FFB6C1")
+            ];
 
             series.hiddenState.properties.endAngle = -90;
 
@@ -471,5 +482,6 @@ am4core.ready(function() {
             console.error('Error fetching data:', error);
         });
 });
+
 
 //end::Purchase per supplier
