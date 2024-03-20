@@ -282,7 +282,7 @@ function renderSalesProgressChart(data) {
                 },
                 y: {
                     formatter: function(e) {
-                        return "$" + e + " revenue";
+                        return "₱" + e;
                     }
                 }
             },

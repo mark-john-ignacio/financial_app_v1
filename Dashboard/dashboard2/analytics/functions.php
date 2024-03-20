@@ -3,7 +3,7 @@ function totalSales()
 {
     // Query to get the sum of all nnet values
     global $con;
-    $query_total_nnet = "SELECT SUM(ngross) AS total_nnet FROM sales";
+    $query_total_nnet = "SELECT SUM(nnet) AS total_nnet FROM sales";
     $result_total_nnet = mysqli_query($con, $query_total_nnet);
     $row_total_nnet = mysqli_fetch_assoc($result_total_nnet);
     $total_nnet = $row_total_nnet["total_nnet"];
