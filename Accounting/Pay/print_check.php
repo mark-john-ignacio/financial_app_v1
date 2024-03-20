@@ -172,6 +172,7 @@ function numberTowords($num)
 		body{
 			font-family: 'Courier New', monospace !important;
 			font-weight: 900 !important;
+			font-size: 8pt;	
 		}
 		table {
 			border-collapse: collapse;
@@ -214,6 +215,7 @@ function numberTowords($num)
 			right:70px;
 			width: 150px;
 			height:  18px;   
+			font-size: 8pt;	
 			/*border: 1px solid #000;*/
 		}
 		.ewdpay{
@@ -222,6 +224,7 @@ function numberTowords($num)
 			left: 165px;
 			width: 338px;
 			height:  18px;   
+			font-size: 8pt;	
 			/*border: 1px solid #000;*/
 		}
 		.ewdamtwords{
@@ -230,6 +233,7 @@ function numberTowords($num)
 			left: 132px;
 			width: 600px;
 			height:  18px;    
+			font-size: 8pt;	
 			/*border: 1px solid #000;*/
 			
 		}
@@ -251,6 +255,7 @@ function numberTowords($num)
 			body{
 				font-family: 'Courier New', monospace !important;
 				font-weight: 900 !important;
+				font-size: 8pt;	
 			}
 			table {
 				border-collapse: collapse;
@@ -292,7 +297,8 @@ function numberTowords($num)
 				top: 75px;
 				right:90px;
 				width: 150px;
-				height:  18px;    
+				height:  18px;
+				font-size: 8pt;	    
 				/*border: 1px solid #000;*/
 			}
 			.ewdpay{
@@ -301,7 +307,7 @@ function numberTowords($num)
 				left: 130px;
 				width: 338px;
 				height:  18px;   
-
+				font-size: 8pt;	
 				/*border: 1px solid #000;*/
 			}
 			.ewdamtwords{
@@ -310,7 +316,7 @@ function numberTowords($num)
 				left: 108px;
 				width: 600px;
 				height:  18px;    
-
+				font-size: 8pt;	
 				/*border: 1px solid #000;*/
 				
 			}
@@ -337,6 +343,7 @@ function numberTowords($num)
 		body{
 			font-family: 'Courier New', monospace !important;
 			font-weight: 900 !important;
+			font-size: 8pt;	
 		}
 		table {
 			border-collapse: collapse;
@@ -380,6 +387,7 @@ function numberTowords($num)
 			right:90px;
 			width: 150px;
 			height:  18px;    
+			font-size: 8pt;	
 			/*border: 1px solid #000;*/
 		}
 		.ewdpay{
@@ -389,6 +397,7 @@ function numberTowords($num)
 			width: 338px;
 			height:  18px;    
 			line-height: 15px;
+			font-size: 8pt;	
 			/*border: 1px solid #000;*/
 		}
 		.ewdamtwords{
@@ -397,6 +406,7 @@ function numberTowords($num)
 			left: 108px;
 			width: 600px;
 			height:  18px;    
+			font-size: 8pt;	
 			/*border: 1px solid #000;*/
 			
 		}
