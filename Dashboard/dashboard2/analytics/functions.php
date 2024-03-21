@@ -126,7 +126,7 @@ function topSellingItem(){
             }
         }
     }
-
+    
     return array(
         'name' => $topSellingItem,
         'revenue' => $totalSaleValue,
