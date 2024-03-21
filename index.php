@@ -351,6 +351,7 @@ function validatePassword() {
     var password = document.getElementById("inputPassword").value;
 	var changepassword = document.getElementById("changePass").value;
 	var confirmpassword = document.getElementById("confirmChange").value;
+	
     var regex = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,15}$/;
     var errorMessage = $("#add_err");
 

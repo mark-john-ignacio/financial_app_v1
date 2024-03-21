@@ -196,7 +196,7 @@
 							<i class="icon-user"></i> Change Password </a>
 						</li>
 						<li>
-							<a href="javascript:;" onClick="setpage('MasterFiles/ChangePass.php');" >
+							<a href="javascript:;" onClick="setpage('historylog.php');" >
 							<i class="icon-time"></i> History Log </a>
 						</li>
 						<li>
