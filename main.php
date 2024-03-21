@@ -3,17 +3,32 @@
 		session_start();
 	}
 
+
+	if(isset($_COOKIE['id'])){
+		echo "<script>alert('The value of the id cookie is: " . $_COOKIE['id'] . "');</script>";
+		header("Location: index.php");
+	} else{
+
+		
 	include('Connection/connection_string.php');
 	include('include/denied.php');
 	$company = $_SESSION['companyid'];   
 	$employeeid = $_SESSION['employeeid'];
+	
+	// Expires in 60 seconds
+
+
 
 	$pages = [];
 	$sql = "SELECT pageid FROM users_access WHERE userid = '$employeeid'";
 	$query = mysqli_query($con, $sql);
 	while($list = $query -> fetch_assoc()) {
 		array_push($pages, $list["pageid"]);
+		
 	}
+	//SET COOKIE FOR EXPIRATION
+	setcookie("last_activity", time(), time() + (5 * 60)); 
+}
 ?>
 
 <!DOCTYPE html>
@@ -43,6 +58,7 @@
 <link href="global/layout.css?h=<?php echo time();?>" rel="stylesheet" type="text/css"/>
 <link href="global/themes/blue.css?h=<?php echo time();?>" id="style_color" rel="stylesheet" type="text/css"/>
 <link href="global/custom.css" rel="stylesheet" type="text/css"/>
+<script src="autologout.js"></script>
 <!-- END THEME STYLES -->
 </head>
 <!-- END HEAD -->
@@ -178,6 +194,10 @@
 						<li>
 							<a href="javascript:;" onClick="setpage('MasterFiles/ChangePass.php');" >
 							<i class="icon-user"></i> Change Password </a>
+						</li>
+						<li>
+							<a href="javascript:;" onClick="setpage('MasterFiles/ChangePass.php');" >
+							<i class="icon-time"></i> History Log </a>
 						</li>
 						<li>
 							<a href="logout.php">

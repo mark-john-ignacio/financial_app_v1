@@ -5,10 +5,13 @@
 	}
 	
 	include('Connection/connection_string.php');
-  require_once('Model/helper.php');
+  	require_once('Model/helper.php');
 
-	if(isset($_SESSION['login'])){
+
+	if(isset($_SESSION['id']) || isset($_COOKIE['id']) || isset($_SESSION['login'])){
+		
 		header("Location: ./main.php");
+	
 	}
 
 ?>
@@ -114,7 +117,7 @@
 					</div>
                     
 					<div class="form-group">
-						<input type="password" class="form-control" name="inputPassword" id="inputPassword" placeholder="Password" required  value=""  autocomplete="off">	
+						<input type="password" class="form-control" name="inputPassword" id="inputPassword" placeholder="Password" required  value=""  autocomplete="off" maxlength="15" onkeyup="validatePassword()">	
 					</div>
                      
                      
@@ -185,12 +188,10 @@ var warnings = { alpha: false, numeric: false, stringlen: false };
 var attempts = 1;
 $(document).ready(function(){
     
-	
+    $('#changeModal').modal('show');
 	$("#add_err").css('display', 'none', 'important'); 
 	//$("#userpic").css('display', 'none', 'important'); 
-	$('#view').on('click', function(){
-		$('#changeModal').modal('show');
-	})
+
 
 	$('#update').on('click', function(){
 
@@ -218,6 +219,7 @@ $(document).ready(function(){
 						switch(res.usertype){
 							case "ADMIN":
 								window.location="main.php";
+								
 								break;
 							case "CASHIER":
 								window.location="POS/index.php";
@@ -254,6 +256,7 @@ $(document).ready(function(){
 	// })
 
 	
+
     $("#btnLogin").click(function(){  
 
 			if(document.getElementById("employeeid").value == "" || document.getElementById("inputPassword").value == ""){
@@ -284,7 +287,7 @@ $(document).ready(function(){
 			   beforeSend:function(){
 					attempts += 1;
 					$("#add_err").css('display', 'inline', 'important');
-					$("#add_err").html("<center><img src='images/loader.gif' width='50' height='50' /></center>")
+					$("#add_err").html("<center><img src='images/loader.gif' width='50' height='50' margin-bottom='30%' /></center>")
 			   },
 			   success: function(res){   
 			   //alert(html);
@@ -344,6 +347,23 @@ $(document).ready(function(){
 	});
 		
 });
+function validatePassword() {
+    var password = document.getElementById("inputPassword").value;
+	var changepassword = document.getElementById("changePass").value;
+	var confirmpassword = document.getElementById("confirmChange").value;
+    var regex = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,15}$/;
+    var errorMessage = $("#add_err");
+
+    if (password === "") {
+        errorMessage.css('display', 'inline', 'important');
+        errorMessage.html("<div class='alert alert-danger' role='alert'><strong>ERROR!</strong> Password is required</div>");
+    } else if (!regex.test(password)) {
+        errorMessage.css('display', 'inline', 'important');
+        errorMessage.html("<div class='alert alert-danger' role='alert'><strong>ERROR!</strong> Password must contain a combination of alphabetic and numeric characters and be 8-15 characters long.</div>");
+    } else {
+        errorMessage.hide(); // Hide any previous error messages
+    }
+}
 
 function attempts({id, password, company}){
 	$.ajax({

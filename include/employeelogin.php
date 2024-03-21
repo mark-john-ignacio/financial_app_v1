@@ -16,6 +16,8 @@ $password = mysqli_real_escape_string($con,$_REQUEST['password']);
 $selcompany = mysqli_real_escape_string($con,$_REQUEST['selcompany']); 
 $attempts = mysqli_real_escape_string($con, $_REQUEST['attempts']);
 
+
+
 $sql = mysqli_query($con,"select * from users where userid = '$employeeid' LIMIT 1");
 //echo "select * from users where userid = '$employeeid' and password='$password'";
 if(mysqli_num_rows($sql) == 0){
@@ -33,28 +35,49 @@ if(mysqli_num_rows($sql) == 0){
 				'password' => $row['password'],
 				'status' => $row['cstatus'],
 				'modify' => $row['modify'],
-				'usertype' => $row['usertype']
+				'usertype' => $row['usertype'],
+				'session_ID' => $row['session_ID']
+				
 			);
 
 			$_SESSION['currapikey'] = '4c151e86299e4588939cdbb45a606021'; 
 			//$_SESSION['currapikey2'] = '755e85fe16cf42a08c2c59c1ec5bd626'; 
+			
+			//FOR AUTO LOGIN WHEN CLOSING BROWSER
+			$cookie_name = "auto_login";
+			$cookie_value = base64_encode($employeeid . ":" . $password);
+			$expiry = time() + (30 * 24 * 60 * 60); // 30 days expiration
+			setcookie($cookie_name, $cookie_value, $expiry, "/");
 
+			
+			
 		}
 
 	$id = mysqli_real_escape_string($con, $employee['id']);
 
 		//86400 one day
-		
+	
+				
 
 	if(statusAccount($employee['status'])){
 		if(password_verify($password, $employee['password'])){
+			
+			//CHECK IF THE SESSION ID IS NOT EQUAL TO 0
+			if ($employee['session_ID'] == 0) {
+                // UPDATE THE SESSION ID TO DATABASE 
+                mysqli_query($con, "UPDATE users SET session_ID = '".session_id()."' WHERE userid = '$employeeid'");
+				
+			
+			$_SESSION['id'] = $employee['id'];
+			setcookie('id', $employee['id'], $expiry);
+
 			$_SESSION['employeeid'] = $employee['id'];
 			$_SESSION['employeename'] = $employee['name'];
 			$_SESSION['employeefull'] = $employee['fullname'];
 			$_SESSION['status'] = $employee['status'];
-
 			$_SESSION['companyid'] = $selcompany;
 			$_SESSION['timestamp']=time();
+			
 			$dateNow = date('Y-m-d h:i:s');
 			$ipaddress = getHostByName(getHostName());
 			$hashedIP = better_crypt($ipaddress);
@@ -63,7 +86,7 @@ if(mysqli_num_rows($sql) == 0){
 			// $sql = "SELECT b.logid, b.status, b.machine FROM `users_log`
 			// WHERE Userid = '".$employee['id']."'
 			// ORDER BY logid DESC LIMIT 1";
-
+			
 			$sql = "SELECT * FROM users_log WHERE Userid = '{$employee['id']}' ORDER BY logid DESC LIMIT 1";
 
 			$result = mysqli_query($con, $sql);
@@ -94,8 +117,14 @@ if(mysqli_num_rows($sql) == 0){
 				}
 			}
 
-
+		//IF THE USER ALREADY LOG IN TO ANOTHER BROWSER
 		} else {
+			echo json_encode([
+				'valid' => false,
+				'errMsg' => "<strong>{$employeeid}</strong> is already logged in to another browser"
+			]);
+		}
+	} else {
 			if(failedAttempt($attempts)){
 				
 				$sql = "UPDATE `users` SET `cstatus` = 'Deactivate' WHERE `Userid` = '$id'";
