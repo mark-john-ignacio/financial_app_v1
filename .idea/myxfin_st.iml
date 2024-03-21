@@ -8,8 +8,10 @@
       <sourceFolder url="file://$MODULE_DIR$/vendor2/markbaker/complex/classes/src" isTestSource="false" packagePrefix="Complex\" />
       <sourceFolder url="file://$MODULE_DIR$/vendor2/markbaker/complex/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/vendor2/markbaker/matrix/classes/src" isTestSource="false" packagePrefix="Matrix\" />
+      <sourceFolder url="file://$MODULE_DIR$/vendor2/markbaker/matrix/unitTests/classes/src" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/vendor2/markbaker/matrix/unitTests/classes/src" isTestSource="true" packagePrefix="MatrixTest\" />
       <sourceFolder url="file://$MODULE_DIR$/vendor2/myclabs/php-enum/src" isTestSource="false" packagePrefix="MyCLabs\Enum\" />
+      <sourceFolder url="file://$MODULE_DIR$/vendor2/myclabs/php-enum/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/vendor2/myclabs/php-enum/tests" isTestSource="true" packagePrefix="MyCLabs\Tests\Enum\" />
       <sourceFolder url="file://$MODULE_DIR$/vendor2/phpoffice/phpspreadsheet/infra" isTestSource="true" packagePrefix="PhpOffice\PhpSpreadsheetInfra\" />
       <sourceFolder url="file://$MODULE_DIR$/vendor2/phpoffice/phpspreadsheet/src/PhpSpreadsheet" isTestSource="false" packagePrefix="PhpOffice\PhpSpreadsheet\" />
@@ -26,6 +28,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpmailer/phpmailer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/log" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/setasign/fpdi" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea/copilot/chatSessions" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
