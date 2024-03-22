@@ -25,7 +25,7 @@ require_once "../../Connection/connection_string.php";
 
 		//poitems
 		$podetails = array();
-		$resrr = mysqli_query ($con, "select A.*, B.ladvancepay from purchase_t A left join purchase B on A.compcode=B.compcode and A.cpono=B.cpono WHERE A.compcode='$company' and A.cpono in ('".implode("','", $ponos)."')"); 
+		$resrr = mysqli_query ($con, "select A.*, B.ladvancepay, B.cewtcode, IFNULL(B.nexchangerate,1) as currate from purchase_t A left join purchase B on A.compcode=B.compcode and A.cpono=B.cpono WHERE A.compcode='$company' and A.cpono in ('".implode("','", $ponos)."')"); 
 		while($rowrr = mysqli_fetch_array($resrr, MYSQLI_ASSOC)){
 			$podetails[] = $rowrr;
 		}
@@ -76,9 +76,11 @@ require_once "../../Connection/connection_string.php";
 
 			foreach($podetails as $rowpo){ // find price sa PO
 				if($row['citemno']==$rowpo['citemno'] && $row['nrefidentity']==$rowpo['nident'] && $row['creference']==$rowpo['cpono']){
+					$zxcamt = (floatval($rowpo['nprice']) * floatval($row['nqty']));
+
 					$json['nprice'] = $rowpo['nprice'];
-					$json['namount'] = $rowpo['namount'];	
-					$json['nbaseamount'] = $rowpo['nbaseamount'];	
+					$json['namount'] = float($zxcamt) * $rowpo['currate'];	
+					$json['nbaseamount'] = $zxcamt;	
 					$json['ctaxcode'] = $rowpo['ctaxcode'];	
 					$json['cewtcode'] = $rowpo['cewtcode'];
 					$json['ladvancepay'] = $rowpo['ladvancepay'];
