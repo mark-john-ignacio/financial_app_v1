@@ -288,7 +288,9 @@ while($row = $query -> fetch_assoc()){
                                 </div>
                                 <!--end::Hidden-->
                                 <!--begin::Chart-->
-                                <div class="sales-progress-bar-chart" data-kt-color="primary" style="height: 350px"></div>
+                                <div class="card-body">
+                                    <div class="sales-progress-bar-chart" data-kt-color="primary" style="height: 350px"></div>
+                                </div>
                                 <!--end::Chart-->
                             </div>
                         </div>
@@ -319,8 +321,9 @@ while($row = $query -> fetch_assoc()){
                                 </div>
                                 <!--end::Body-->
                             </div>
-                            <!--end::Sale per item-->
+
                         </div>
+                        <!--end::Sale per item-->
                     </div>
                 <!--end::SecondRow-->
                 <!--begin::ThirdRow-->

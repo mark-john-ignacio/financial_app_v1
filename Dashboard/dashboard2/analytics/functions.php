@@ -64,7 +64,7 @@ function totalSales()
 function topSellingItem(){
     global $con;
 
-    $topSellingItem = '';
+    $topSellingItem = 'No data';
     $totalSaleValue = '0.00';
     $percentage_change = 'No change';
 
