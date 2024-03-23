@@ -43,11 +43,15 @@ if(mysqli_num_rows($sql) == 0){
 			$_SESSION['currapikey'] = '4c151e86299e4588939cdbb45a606021'; 
 			//$_SESSION['currapikey2'] = '755e85fe16cf42a08c2c59c1ec5bd626'; 
 			
-			//FOR AUTO LOGIN WHEN CLOSING BROWSER
-			$cookie_name = "auto_login";
-			$cookie_value = base64_encode($employeeid . ":" . $password);
-			$expiry = time() + (30 * 24 * 60 * 60); // 30 days expiration
-			setcookie($cookie_name, $cookie_value, $expiry, "/");
+		
+				//FOR AUTO LOGIN WHEN CLOSING BROWSER
+				$cookie_name = "auto-login";
+				$cookie_value = base64_encode($employeeid . ":" . $password);
+				$expiry = time() + 15; // 15 seconds expiration
+				setcookie($cookie_name, $cookie_value, $expiry, "/");
+			
+			
+
 
 			
 			
@@ -100,7 +104,7 @@ if(mysqli_num_rows($sql) == 0){
 
 
 			if(validStatus($status) || empty($status)){	
-				$sql = "INSERT INTO `users_log` (`Userid`, `status`, `machine`, `logged_date`) VALUES ('".$employee['id']."', 'Online', '$hashedIP', '$dateNow')";
+				$sql = "INSERT INTO `users_log` (`Userid`, `status`, `machine`, `logged_date`) VALUES ('".$employee['id']."', 'Online', '$hashedIP', NOW())";
 				$result = mysqli_query($con, $sql);
 				echo json_encode(valid30Days($employee['modify'], $employee['usertype']));
 

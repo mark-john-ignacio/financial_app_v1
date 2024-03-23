@@ -188,7 +188,10 @@ var warnings = { alpha: false, numeric: false, stringlen: false };
 var attempts = 1;
 $(document).ready(function(){
     
-    $('#changeModal').modal('show');
+	$('#view').on('click', function(){
+		$('#changeModal').modal('show');
+	})
+
 	$("#add_err").css('display', 'none', 'important'); 
 	//$("#userpic").css('display', 'none', 'important'); 
 
@@ -215,11 +218,10 @@ $(document).ready(function(){
 				async: false,
 				success: function(res){
 					if(res.valid){
-						alert('<strong>'+ res.msg +'</strong>')
+						alert(res.msg)
 						switch(res.usertype){
 							case "ADMIN":
-								window.location="main.php";
-								
+								window.location="main.php";		
 								break;
 							case "CASHIER":
 								window.location="POS/index.php";
@@ -229,7 +231,9 @@ $(document).ready(function(){
 								break;
 						}
 					} else {
-						alert("<strong>"+res.errCode+": </strong>" + res.errMsg)
+						alert(res.errMsg)
+						//ADDING SHOW MODAL
+						$('#changeModal').modal('show');
 					}
 				}
 			})
@@ -243,6 +247,8 @@ $(document).ready(function(){
 
 			$('#stringlen').html("<i " + ( !warnings.stringlen ? "class='fa fa-exclamation' style='color: #FF0000;'" : "class='fa fa-check' style='color: #008000;' ") + "></i>");
 			$('#stringlentxt').css('color', ( !warnings.stringlen ?  '#FF0000' : '#000000' ))
+			//ADD SHOW MODAL
+			$('#changeModal').modal('show');
 		}
 	})
 	// $.ajax({

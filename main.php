@@ -1,23 +1,18 @@
 <?php 
 	if(!isset($_SESSION)){
 		session_start();
+		
 	}
-
-
-	if(isset($_COOKIE['id'])){
-		echo "<script>alert('The value of the id cookie is: " . $_COOKIE['id'] . "');</script>";
-		header("Location: index.php");
-	} else{
+	//SET COOKIE FOR EXPIRATION 15 seconds	
+	if (basename($_SERVER['PHP_SELF']) === 'main.php') {
+		setcookie('maindash', 'active', time() + 15, "/"); // Cookie expires in 15 seconds
+	}
 
 		
 	include('Connection/connection_string.php');
 	include('include/denied.php');
 	$company = $_SESSION['companyid'];   
 	$employeeid = $_SESSION['employeeid'];
-	
-	// Expires in 60 seconds
-
-
 
 	$pages = [];
 	$sql = "SELECT pageid FROM users_access WHERE userid = '$employeeid'";
@@ -26,9 +21,7 @@
 		array_push($pages, $list["pageid"]);
 		
 	}
-	//SET COOKIE FOR EXPIRATION
-	setcookie("last_activity", time(), time() + (5 * 60)); 
-}
+	
 ?>
 
 <!DOCTYPE html>
@@ -197,7 +190,7 @@
 						</li>
 						<li>
 							<a href="javascript:;" onClick="setpage('historylog.php');" >
-							<i class="icon-time"></i> History Log </a>
+							<i class="icon-user"></i> History Log </a>
 						</li>
 						<li>
 							<a href="logout.php">
@@ -848,6 +841,7 @@
 		}
 
 	  }
+	
 	  
 </script>
 <!-- END JAVASCRIPTS -->
