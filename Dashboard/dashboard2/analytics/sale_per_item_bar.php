@@ -15,20 +15,20 @@ $company = $_SESSION['companyid'];
 
 $sql = "
     SELECT
-        s_t.citemno AS item_number,
-        i.citemdesc AS item_description,
-        SUM(s.ngross) AS total_sales
-    FROM
-        sales s
-        LEFT JOIN sales_t s_t ON s.compcode = s_t.compcode AND s.ctranno = s.ctranno 
-        LEFT JOIN items i ON s_t.citemno = i.cpartno AND s.compcode = i.compcode
-        
-    WHERE
-        s.lapproved = 1 AND s.lvoid = 0
-    GROUP BY
-        s_t.citemno, i.citemdesc
-    ORDER BY
-        total_sales DESC
+    s_t.citemno AS item_number,
+    i.citemdesc AS item_description,
+    SUM(s.ngross) AS total_sales
+FROM
+    sales s
+    INNER JOIN sales_t s_t ON s.compcode = s_t.compcode AND s.ctranno = s_t.ctranno 
+    LEFT JOIN items i ON s_t.citemno = i.cpartno
+WHERE
+    s.lapproved = 1 AND s.lvoid = 0
+GROUP BY
+    s_t.citemno, i.citemdesc
+ORDER BY
+    total_sales DESC
+
 ";
 
 $result = $con->query($sql);
