@@ -1,79 +1,80 @@
 //begin::Total Sales line chart
 //Total sales line chart on dashboard. This is on the first widget
-var totalSalesLineChart = {
-    series: [{
-        name: 'Net Profit',
-        data: [] // Empty array to be populated with data from the PHP script
-    }],
-    chart: {
-        height: 100,
-        type: 'line',
-        toolbar: {
-            show: false
+// Define a function to render the line chart
+function renderTotalSalesLineChart(data) {
+    var totalSalesLineChart = {
+        series: [{
+            name: 'Net Profit',
+            data: data.series[0].data.map((value, index) => ({
+                x: data.xaxis.categories[index],
+                y: value
+            }))
+        }],
+        chart: {
+            height: 100,
+            type: 'line',
+            toolbar: {
+                show: false
+            },
+            zoom: {
+                enabled: false
+            },
+            sparkline: {
+                enabled: true
+            }
         },
-        zoom: {
+        stroke: {
+            curve: 'smooth',
+            width: 3,
+            colors: ['#FFFFFF']
+        },
+        tooltip: {
+            enabled: true,
+            x: {
+                formatter: function(val) {
+                    return 'Month-Year: ' + data.xaxis.categories[val-1];
+                }
+            },
+            y: {
+                formatter: function(val) {
+                    return '₱' + val.toLocaleString();
+                }
+            }
+        },
+        dataLabels: {
             enabled: false
         },
-        sparkline: {
-            enabled: true
-        }
-    },
-    stroke: {
-        curve: 'smooth',
-        width: 3,
-        colors: ['#FFFFFF']
-    },
-    tooltip: {
-        enabled: true,
-        x: {
-            formatter: function(val) {
-                return 'Month-Year: ' + totalSalesLineChart.xaxis.categories[val-1];
+        grid: {
+            show: false
+        },
+        xaxis: {
+            categories: data.xaxis.categories,
+            labels: {
+                show: false
+            },
+            axisTicks: {
+                show: false
+            },
+            axisBorder: {
+                show: false
             }
         },
-        y: {
-            formatter: function(val) {
-                return '₱' + val.toLocaleString();
+        yaxis: {
+            labels: {
+                show: false
             }
         }
-    },
-    dataLabels: {
-        enabled: false
-    },
-    grid: {
-        show: false
-    },
-    xaxis: {
-        categories: [], // Empty array to be populated with month-year values from the PHP script
-        labels: {
-            show: false
-        },
-        axisTicks: {
-            show: false
-        },
-        axisBorder: {
-            show: false
-        }
-    },
-    yaxis: {
-        labels: {
-            show: false
-        }
-    }
-};
+    };
+
+    var chart = new ApexCharts(document.querySelector(".total-sales-chart"), totalSalesLineChart);
+    chart.render();
+}
 
 // Fetch the data from the PHP script
 fetch('analytics/total_sales_line_chart.php')
     .then(response => response.json())
     .then(data => {
-        totalSalesLineChart.series[0].data = data.series[0].data.map((value, index) => ({
-            x: data.xaxis.categories[index],
-            y: value
-        }));
-
-        totalSalesLineChart.xaxis.categories = data.xaxis.categories;
-
-        var chart = new ApexCharts(document.querySelector(".total-sales-chart"), totalSalesLineChart);
-        chart.render();
+        renderTotalSalesLineChart(data);
     })
     .catch(error => {
         console.error('Error fetching data:', error);
