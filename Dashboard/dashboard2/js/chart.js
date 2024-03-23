@@ -617,9 +617,8 @@ am4core.ready(function() {
 
             series.hiddenState.properties.endAngle = -90;
 
-            // Set font to inherit
-            chart.fontFamily = 'Poppins, Helvetica, sans-serif';
-            chart.legend.labels.template.fontFamily = 'Poppins, Helvetica, sans-serif';
+            chart.legend = new am4charts.Legend();
+            
         })
         .catch(error => {
             console.error('Error fetching data:', error);
