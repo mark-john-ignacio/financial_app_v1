@@ -25,6 +25,7 @@ WHERE
     a.compcode = '$company' AND b.lvoid = 0
 GROUP BY
     a.citemno
+LIMIT 5
 ";
 
 $result = mysqli_query($con, $sql);
