@@ -14,14 +14,6 @@ require_once "../../Connection/connection_string.php";
 		$qry = "";
 	}
 
-	//if($_REQUEST['typ']=="PurchAdv"){
-	//	$qry = $qry." and E.ladvancepay=1";
-//	}
-
-//	if($_REQUEST['typ']=="Purchases"){
-		$qry = $qry." and IFNULL(E.ladvancepay,0)=0";
-//	}
-
 	//all existing suppinv in apv
 	$arrrefinvx = array();
 	$result = mysqli_query($con, "Select crefno from apv_d A left join apv B on A.compcode=B.compcode and A.ctranno=B.ctranno Where A.compcode='$company' and B.lcancelled=0"); 
@@ -33,23 +25,19 @@ require_once "../../Connection/connection_string.php";
 
 	//get CMs
 	$nCM = array();
-	$resultcm = mysqli_query ($con, "Select crefsi, IFNULL(sum(A.ngross),0) as ncm from apadjustment A Where A.compcode='$company' and A.lapproved=1  and lvoid=0 Group By crefsi");
+	$resultcm = mysqli_query ($con, "Select crefsi, IFNULL(sum(A.ngross),0) as ncm from apadjustment A Where A.compcode='$company' and A.lapproved=1 and lvoid=0 and ccode='".$_REQUEST['cust']."' Group By crefsi");
 	if(mysqli_num_rows($resultcm)!=0){
 		while($rowpayref = mysqli_fetch_array($resultcm, MYSQLI_ASSOC)){
-			$nCM[] = $rowpayref; 
+			$nCM[$rowpayref['crefsi']] = $rowpayref['ncm']; 
 		}
 	}
 
 	$arrRRLISTING = array();
-	$qryres = "select A.ctranno, sum(A.namount) as ngross, C.cacctid, C.cacctdesc, IFNULL(A.cewtcode,0) as cewtcode, IFNULL(A.newtrate,0) as newtrate, A.cvatcode, A.nrate, ifnull(B.crefsi,'') as crefsi, E.ladvancepay, B.dreceived
-	from suppinv_t A
-	left join suppinv B on A.compcode=B.compcode and A.ctranno=B.ctranno 
+	$qryres = "select B.ctranno, B.ngrossbefore, B.nvat, B.nnet, B.newt, B.ngross, B.nbasegross, C.cacctid, C.cacctdesc, B.crefsi, B.dreceived
+	From suppinv B
 	left join accounts C on B.compcode=C.compcode and B.ccustacctcode=C.cacctno 
 	left join suppliers D on B.compcode=D.compcode and B.ccode=D.ccode 
-	left join purchase E on A.compcode=E.compcode and A.crefPO=E.cpono 
-	where A.compcode='$company' and B.lapproved=1 and B.lvoid=0 and B.ccode='".$_REQUEST['cust']."' and B.ccurrencycode='".$_REQUEST['curr']."'". $qry ." 
-	Group By A.ctranno, C.cacctid, C.cacctdesc, IFNULL(A.cewtcode,0), A.cvatcode, 
-	A.nrate, ifnull(B.crefsi,''), B.dreceived";
+	where B.compcode='$company' and B.lapproved=1 and B.lvoid=0 and B.ccode='".$_REQUEST['cust']."' and B.ccurrencycode='".$_REQUEST['curr']."'";
 
 	//echo $qryres;
 	
@@ -61,67 +49,34 @@ require_once "../../Connection/connection_string.php";
 	}
 
 	$cntr = 0;
-		foreach($arrRRLISTING as $row){
+	$json2 = array();
+	foreach($arrRRLISTING as $row){
 
-			if(!in_array($row['ctranno'], $arrrefinvx)){
+		if(!in_array($row['ctranno'], $arrrefinvx)){
 
-				//ewt compute
-				$nnet = floatval($row['ngross']);
-				$nvatamt = 0;
-				if(floatval($row['nrate'])!==0){
-					$nnet = floatval($row['ngross']) / (1+(floatval($row['nrate'])/100));
-					$nvatamt = floatval($row['ngross']) - round($nnet,2);
-				}
 
-				$newtamt = 0;
-				if(floatval($row['newtrate'])!==0){
-					$newtamt = $nnet * (floatval($row['newtrate'])/100);
-				}
-
-				//allcm
-				$xcm = 0;
-				foreach($nCM as $row90){
-					if($row90['crefsi']==$row['ctranno']){
-						$xcm = $row90['ncm'];
-					}
-				}
-
-				$cntr = $cntr + 1;
-				$json['crrno'] = $row['ctranno'];
-				$json['ngross'] = $row['ngross'];
-				$json['napplied'] = 0;
-				$json['ncm'] = $xcm;
-				$json['vatyp'] = $row['cvatcode'];
-				$json['vatrte'] = $row['nrate'];
-				$json['vatamt'] = round($nvatamt,2);
-				$json['nnetamt'] = round($nnet,2);
-				$json['newtamt'] = round($newtamt,2);
-				$json['cewtcode'] = $row['cewtcode'];
-				$json['newtrate'] = $row['newtrate'];
-				$json['ddate'] = $row['dreceived'];
-						
-				$json['cremarks'] = "";
-				
-				$json['cacctno'] = $row['cacctid'];
-				$json['ctitle'] = $row['cacctdesc']; 
-				$json['crefsi'] = $row['crefsi']; 
-				$json['nadvpay'] = $row['ladvancepay']; 
-							
-				$json2[] = $json;
-
-			}
+			$cntr = $cntr + 1;
+			$json['crrno'] = $row['ctranno'];
+			$json['ngross'] = $row['ngross'];
+			$json['nbasegross'] = $row['nbasegross'];
+			$json['ngrossbefore'] = $row['ngrossbefore'];
+			$json['ncm'] = ((isset($nCM[$row['ctranno']])) ? $nCM[$row['ctranno']] : 0);			
+			$json['nvat'] = $row['nvat'];
+			$json['nnet'] = $row['nnet'];
+			$json['newt'] = $row['newt'];
+			$json['ddate'] = $row['dreceived'];
 			
-		}
-	
-		if($cntr<=0){
-			$json['crrno'] = "NONE";
-			$json['ngross'] = "";
-			$json['ddate'] = "";
-			$json['cremarks'] = "";
-			$json['cacctno'] = "";
+			$json['cacctno'] = $row['cacctid'];
+			$json['ctitle'] = $row['cacctdesc']; 
+			$json['crefsi'] = $row['crefsi']; 
+			$json['nadvpay'] = 0; 
+						
 			$json2[] = $json;
+
 		}
 		
+	}
+	
 	echo json_encode($json2);
 
 

@@ -1,35 +1,35 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "SO_new.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "SO_new.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
-$company = $_SESSION['companyid'];
+	$company = $_SESSION['companyid'];
 
-//echo $_SESSION['chkitmbal']."<br>";
-//echo $_SESSION['chkcompvat'];
+	//echo $_SESSION['chkitmbal']."<br>";
+	//echo $_SESSION['chkcompvat'];
 
-$ddeldate = date("m/d/Y");
-$ddeldate = date("m/d/Y", strtotime($ddeldate . "+1 day"));
+	$ddeldate = date("m/d/Y");
+	$ddeldate = date("m/d/Y", strtotime($ddeldate . "+1 day"));
 
-//echo $ddeldate;
+	//echo $ddeldate;
 
-/*
-function listcurrencies(){ //API for currency list
-	$apikey = $_SESSION['currapikey'];
-  
-	//$json = file_get_contents("https://free.currconv.com/api/v7/currencies?&apiKey={$apikey}");
-	$json = file_get_contents("https://api.currencyfreaks.com/supported-currencies");
-	//$obj = json_decode($json, true);
-  
-	return $json;
-}
+	/*
+	function listcurrencies(){ //API for currency list
+		$apikey = $_SESSION['currapikey'];
+	
+		//$json = file_get_contents("https://free.currconv.com/api/v7/currencies?&apiKey={$apikey}");
+		$json = file_get_contents("https://api.currencyfreaks.com/supported-currencies");
+		//$obj = json_decode($json, true);
+	
+		return $json;
+	}
 
-*/
+	*/
 
 	$gettaxcd = mysqli_query($con,"SELECT * FROM `vatcode` where compcode='$company' and ctype = 'Sales' and cstatus='ACTIVE' order By cvatdesc"); 
 	if (mysqli_num_rows($gettaxcd)!=0) {
@@ -350,7 +350,7 @@ function listcurrencies(){ //API for currency list
 										<th width="100px" style="border-bottom:1px solid #999">Code</th>
 										<th width="300px" style="border-bottom:1px solid #999">Description</th>
 										<th width="100px" style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
-										<th width="150px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
+										<th width="200px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
 										<th width="80px" style="border-bottom:1px solid #999">UOM</th>
 										<th width="60px" style="border-bottom:1px solid #999">Factor</th>
 										<th width="80px" style="border-bottom:1px solid #999">Qty</th>
@@ -431,25 +431,9 @@ function listcurrencies(){ //API for currency list
 						<div class="well">							
 							<div class="row static-info align-reverse">
 								<div class="col-xs-7 name">
-									Total NET Sales:
-									<input type="hidden" id="txtnNetVAT" name="txtnNetVAT" value="0">
-								</div>
-								<div class="col-xs-4 value" id="divtxtnNetVAT">
-									0.00
-								</div>
-							</div>
-							<div class="row static-info align-reverse">
-								<div class="col-xs-7 name">
-									Add VAT:
-									<input type="hidden" id="txtnVAT" name="txtnVAT" value="0">
-								</div>
-								<div class="col-xs-4 value" id="divtxtnVAT">
-									0.00
-								</div>
-							</div>
-							<div class="row static-info align-reverse">
-								<div class="col-xs-7 name">
 									Total Amount:
+									<input type="hidden" id="txtnNetVAT" name="txtnNetVAT" value="0">
+									<input type="hidden" id="txtnVAT" name="txtnVAT" value="0">
 									<input type="hidden" id="txtnGross" name="txtnGross" value="0">
 									<input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="0">
 								</div>
@@ -1656,12 +1640,12 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 		$("#txtnGross").val(gross2);
 		$("#txtnBaseGross").val(gross);		
 
-		$("#divtxtnNetVAT").text(nnetTot.toFixed(2));
-		$("#divtxtnVAT").text(vatzTot.toFixed(2));
+		//$("#divtxtnNetVAT").text(nnetTot.toFixed(2));
+		//$("#divtxtnVAT").text(vatzTot.toFixed(2));
 		$("#divtxtnGross").text(gross.toFixed(2));
 
-		$("#divtxtnNetVAT").formatNumber();
-		$("#divtxtnVAT").formatNumber();
+		//$("#divtxtnNetVAT").formatNumber();
+		//$("#divtxtnVAT").formatNumber();
 		$("#divtxtnGross").formatNumber();
 		
 	}

@@ -102,8 +102,8 @@
 	<style>
 
 		body {
-			font-family: Verdana, sans-serif;
-			font-size: 8pt;
+			font-family: Helvetica, sans-serif;
+			font-size: 10pt;
 		}
 
 		.tdpadx{

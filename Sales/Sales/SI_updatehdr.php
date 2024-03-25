@@ -1,22 +1,20 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-require_once('../../Model/helper.php');
-
-function chkgrp($valz) {
-	if($valz==''){
-		return "NULL";
-	}else{
-    	return "'".$valz."'";
+	if(!isset($_SESSION)){
+		session_start();
 	}
-}
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	require_once('../../Model/helper.php');
 
+	function chkgrp($valz) {
+		if($valz==''){
+			return "NULL";
+		}else{
+			return "'".$valz."'";
+		}
+	}
 
-$company = $_SESSION['companyid'];
-
+	$company = $_SESSION['companyid'];
 
 	$cSINo = $_REQUEST['txtcsalesno'];
 	$cCustID = $_REQUEST['txtcustid'];

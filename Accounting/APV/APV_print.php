@@ -150,7 +150,6 @@ html,
 		<th>Particulars</th>
 		<th width="150px">Debit</th>
 		<th width="150px">Credit</th>
-		<th width="150px">Total Amount</th>
 	</tr>
 	<tr>
 		<td colspan="4">
@@ -160,10 +159,13 @@ html,
 		</td>
 	</tr>
 	<tr>
-        <td colspan="5"><b>Entry</b></td>
+        <td colspan="3"><b>Entry</b></td>
 	</tr>
     <?php
-	  
+
+		$xtotdebit = 0;
+		$xtotcredit = 0;
+
 		$sqlhead = mysqli_query($con,"select a.*,b.cname from apv_t a left join customers b on a.compcode=b.compcode and a.csubsidiary=b.cempid where a.compcode='$company' and a.ctranno = '$cpono'");
 		
 		if (mysqli_num_rows($sqlhead)!=0) {
@@ -175,6 +177,8 @@ html,
 			<?php 
 				if($row['ndebit']!=0){ 
 					echo number_format($row['ndebit'],2);
+
+					$xtotdebit = $xtotdebit + floatval($row['ndebit']);
 				}
 			?>
 		</td>
@@ -182,27 +186,34 @@ html,
 			<?php 
 				if($row['ncredit']!=0){ 
 					echo number_format($row['ncredit'],2);
+					$xtotcredit = $xtotcredit + floatval($row['ncredit']);
 				}
 			?>
 		</td>
-		<td>&nbsp;</td>
 	</tr>
 	<?php
 		}
 	}
 	?>
 	<tr>
-        <td align="center"><b>Total Amount to Pay</b></td>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
-		<td align="right"><b><?=number_format($nGross,2)?></b></td>
+        <td>&nbsp;</td>
+		<td align="right"><b><?=number_format($xtotdebit,2);?></b></td>
+		<td align="right"><b><?=number_format($xtotcredit,2);?></b></td>
 	</tr>
 </table>
 
 <table border="0" width="100%" style="border-collapse:collapse; padding-top: 10px">
 	<tr>
-		<td colspan="2" width="50%" style="padding-top: 10px">
+		<td width="33%" style="padding-top: 10px">
 			<b>Prepared By:<br><br><br>&nbsp;&nbsp;&nbsp;</b><?php echo $PreparedBy;?>
+		</td>
+
+		<td style="padding-top: 10px">
+			<b>Checked By:<br><br><br>&nbsp;&nbsp;&nbsp;</b>____________________
+		</td>
+
+		<td width="33%" style="padding-top: 10px">
+			<b>Approved By:<br><br><br>&nbsp;&nbsp;&nbsp;</b>____________________
 		</td>
 	</tr>
 </table>

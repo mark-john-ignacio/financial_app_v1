@@ -1033,45 +1033,45 @@ else{
     </div>
 </div>
 
-				<!--modal entry view-->
-				<div class="modal fade" id="modGLEntry" role="dialog">
-					<div class="modal-dialog">
-						<div class="modal-content">
-							<div class="modal-header">
-								<button type="button" id="btn-closemod" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-								<h3 class="modal-title">GL Entry</h3>
-							</div>
-							<div class="modal-body">
-									
-								<table width="100%" border="0" class="table table-condensed table-bordered atble-hover" id="TblGLEntry">
-									<thead>
-										<tr>
-											<td>Account Code</td>
-											<td>Account Title</td>
-											<td>Account Debit</td>
-											<td>Account Credit</td>  
-										</tr>		
-										<?php
-											$getewtcd = mysqli_query($con,"SELECT acctno,ctitle,sum(ndebit) as ndebit,sum(ncredit) as ncredit FROM glactivity where compcode='$company' and ctranno='$txtctranno' Group By acctno,ctitle"); 
-											if (mysqli_num_rows($getewtcd)!=0) {
-												while($row = mysqli_fetch_array($getewtcd, MYSQLI_ASSOC)){
-										?>					
-											<tr>
-												<td><?=$row['acctno']?></td>
-												<td><?=$row['ctitle']?></td>
-												<td align="right"><?=(floatval($row['ndebit']) != 0) ? number_format($row['ndebit'],2) : ""?></td>
-												<td align="right"><?=(floatval($row['ncredit']) != 0) ? number_format($row['ncredit'],2) : ""?></td>  
-											</tr>	
-										<?php
-												}
-											}
-										?>
-								</table>
-									
-							</div>
-						</div><!-- /.modal-content -->
-					</div><!-- /.modal-dialog -->
-				</div>
+<!--modal entry view-->
+<div class="modal fade" id="modGLEntry" role="dialog">
+	<div class="modal-dialog modal-dialog-scrollable">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" id="btn-closemod" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h3 class="modal-title">GL Entry</h3>
+			</div>
+			<div class="modal-body">
+					
+				<table width="100%" border="0" class="table table-condensed table-bordered atble-hover" id="TblGLEntry">
+					<thead>
+						<tr>
+							<td>Account Code</td>
+							<td>Account Title</td>
+							<td>Account Debit</td>
+							<td>Account Credit</td>  
+						</tr>		
+						<?php
+							$getewtcd = mysqli_query($con,"SELECT acctno,ctitle,sum(ndebit) as ndebit,sum(ncredit) as ncredit FROM glactivity where compcode='$company' and ctranno='$txtctranno' Group By acctno,ctitle Order By nidentity"); 
+							if (mysqli_num_rows($getewtcd)!=0) {
+								while($row = mysqli_fetch_array($getewtcd, MYSQLI_ASSOC)){
+						?>					
+							<tr>
+								<td><?=$row['acctno']?></td>
+								<td><?=$row['ctitle']?></td>
+								<td align="right"><?=(floatval($row['ndebit']) != 0) ? number_format($row['ndebit'],2) : ""?></td>
+								<td align="right"><?=(floatval($row['ncredit']) != 0) ? number_format($row['ncredit'],2) : ""?></td>  
+							</tr>	
+						<?php
+								}
+							}
+						?>
+				</table>
+					
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div>
 
 <!-- PRINT OUT MODAL-->
 <div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
@@ -1129,7 +1129,9 @@ if(file_name.length != 0){
 	 * setting up an list of file and config of a file
 	 */
 	file_name.map(({name, ext}, i) => {
-		list_file.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/<?=$company."_".$txtctranno?>/" + name)
+
+		$vrx = encodeURIComponent(name);
+		list_file.push("<?=$AttachUrlBase?>SI/<?=$company."_".$txtctranno?>/" + $vrx)
 		console.log(ext);
 
 		if(jQuery.inArray(ext, arroffice) !== -1){

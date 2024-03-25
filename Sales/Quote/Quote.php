@@ -325,7 +325,7 @@ function track(xno){
 
 	function fill_datatable(searchByName = '', searchBystat = ''){
 		var dataTable = $('#MyTable').DataTable({
-			stateSave: true,
+			"stateSave": true,
 			"processing" : true,
 			"serverSide" : true,
 			"lengthChange": true,

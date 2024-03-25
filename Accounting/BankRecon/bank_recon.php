@@ -1,3 +1,19 @@
+<?php 
+    if(!isset($_SESION)){
+        session_start();
+    }
+    include "../../Connection/connection_string.php";
+    $company = $_SESSION['companyid'];
+    $bank = array();
+
+    $sql = "SELECT * FROM bank WHERE compcode = '$company'";
+    $query = mysqli_query($con, $sql);
+    while($row = $query -> fetch_assoc()){
+        $bank[] = $row;
+    }
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,18 +54,7 @@
         <div style=' width: 100%;'>
             <div class='container' style='padding: 50px; display: flex; justify-content: center; justify-items: center; border: 1px solid;'>
                 <form action="CheckBank.php" method="POST" enctype="multipart/form-data">
-                    <table>
-                        <tr valign="top">
-                            <th style='display: flex; justify-items: center; justify-content: center; padding: 10px;'>Download Template:</th>
-                            <th colspan="3" style="width: 300px">
-                                <div class="col-xs-13 nopadding">
-                                    <a href="template/Bank-Reconciliation-template.xlsx" download="Bank-Reconciliation-template.xlsx" class="btn btn-primary btn-sm"> Download Here </a>
-                                </div>
-                            </th>
-                        </tr>
-                    </table>
-                    <hr>
-                    <table>
+                    <table border="0">
                         <tr valign="top">
                             <th style='display: flex; justify-items: center; justify-content: center; padding: 10px;'>Date Range From:</th>
                             <th style="width: 100px">
@@ -67,8 +72,15 @@
                         <tr valign="top" class='nopadwtop'>
                             <th style='display: flex; justify-items: center; justify-content: center; padding: 10px;'>Select Bank:</th>
                             <th colspan="3" style="width: 300px">
-                                <div class="col-xs-13 nopadding">
-                                    <select name="bank" id="bank" class="form-control input-sm" required><option value=""></option></select>
+                                <div class="col-xs-12 nopadding">
+                                    <select name="bank" id="bank" class="form-control input-sm" required>
+                                        <option value=""></option>
+                                        <?php
+                                            foreach($bank as $rs){
+                                                echo "<option value=\"".$rs['ccode']."\">".$rs['cname']." - ".$rs['cbankacctno']."</option>";
+                                            }
+                                        ?>
+                                    </select>
                                 </div>
                             </th>
                         </tr>
@@ -78,7 +90,7 @@
                                 <div class="form-group">
                                     <div class="col-md-12 nopadding">
                                         <div class="fileinput fileinput-new" data-provides="fileinput">
-                                            <div class="input-group input-large">
+                                            <div class="input-group">
                                                 
                                                 <span class="input-group-addon btn btn-success default btn-file">
                                                 <span class="fileinput-new">
@@ -108,9 +120,11 @@
                             </th>
                         </tr> -->
                         <tr >
-                            <th>&nbsp;</th>
                             <th colspan="2" style="padding-top: 10px">
-                                <button type="submit" class='btn btn-danger btn-block' id="btnSubmit"><i class='fa fa-search'></i>&nbsp;&nbsp;View Report</button>
+                                <button type="submit" class='btn btn-danger btn-block' id="btnSubmit"><i class='fa fa-cloud-upload'></i>&nbsp;&nbsp;Import Statement</button>
+                            </th>
+                            <th colspan="2" style="padding-top: 10px">
+                                <a href="template/Bank-Reconciliation-template.xlsx" download="Bank-Reconciliation-template.xlsx" class="btn btn-primary btn-block"><i class='fa fa-cloud-download'></i>&nbsp;&nbsp;Download Template </a>
                             </th>
                         </tr>
                     </table>
@@ -123,53 +137,12 @@
 
 <script>
     $(function(){
-        loadbank();
 
         $("#bank").select2({
 			placeholder: "Select Bank...",
 			allowClear: true
 		});
 
-        // $("#btnSubmit").click(function(){
-        //     let range = $("#range").val();
-        //     let bank = $("#bank").val();
-        //     let type = $("#select").val();
-            
-        //     $.ajax({
-        //         url: "Preview.php",
-        //         data: {
-        //             range: range,
-        //             bank: bank,
-        //         },
-        //         dataType: 'json',
-        //         async: false,
-        //         success: function(res){
-        //             console.log(res)
-        //         },
-        //         error: function(res){
-        //             console.log(res)
-        //         }
-        //     });
-        // })
-    })
+    });
 
-    function loadbank(){
-        $.ajax({
-            url: 'th_loadbank.php',
-            dataType: 'json',
-            async: false,
-            success: function(res){
-                res.map((item, index) =>{
-                    let bank = document.getElementById("bank");
-                    let option = document.createElement("option");
-                    option.text = item.cname;
-                    option.value = item.cacctno;
-                    bank.appendChild(option);
-                })
-            },
-            error: function(res){
-                console.log(res)
-            }
-        })
-    }
 </script>

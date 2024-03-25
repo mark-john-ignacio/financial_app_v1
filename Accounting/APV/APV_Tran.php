@@ -24,7 +24,8 @@
 
 	if($_REQUEST['typ']=="POST"){
 
-		//CHECK MUNA YUNG EBTRY IF MAY LIABILITY
+			$ccontinue = "TRUE";
+			//CHECK MUNA YUNG EBTRY IF MAY LIABILITY
 			//ewt and vat accts PURCH_VAT EWTPAY
 			$EWTVATS = array();
 			$sql = "Select * from accounts_default where compcode='$company' and ccode in ('PURCH_VAT','EWTPAY')";
@@ -33,12 +34,29 @@
 				$EWTVATS[] = $row['cacctno'];
 			}
 
+			//check if balanace debit credit
+			$sqlhead = mysqli_query($con,"Select sum(ndebit) as ndebit, sum(ncredit) as ncredit from apv_t where compcode='$company' and ctranno='$tranno'");
+			$sum=0;
+			if (mysqli_num_rows($sqlhead)!=0) {
+				while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
+
+					$sum = floatval($row['ndebit']) - floatval($row['ncredit']);
+					$sum = abs($sum);
+				}
+
+				if($sum > 1){
+					$ccontinue = "FALSE";
+				}
+			}
+
 			$result = mysqli_query ($con, "SELECT A.cacctno, D.cacctdesc, A.ncredit FROM `apv_t` A left join accounts D on A.compcode=D.compcode and A.cacctno=D.cacctid where A.compcode='$company' and A.ctranno='".$tranno."' and D.ccategory='LIABILITIES' and A.ncredit > 0 and A.cacctno not in ('".implode("','",$EWTVATS)."')"); 
 
-			if(mysqli_num_rows($result)!=0){
+			if(mysqli_num_rows($result)==0){
 				//echo "TRUE";
-			
-			
+				$ccontinue = "FALSE";
+			}
+
+			if($ccontinue == "TRUE"){
 				if (!mysqli_query($con,"Update apv set lapproved=1 where compcode='$company' and ctranno='$tranno'")){
 					$msgz = "<b>ERROR: </b>There's a problem posting your transaction!";
 					$status = "False";
@@ -68,7 +86,7 @@
 				}
 
 			}else{
-				$msgz = "<b>ERROR: </b>There's no Liability Account Detected!";
+				$msgz = "<b>ERROR: </b>Please Check your GL Entries!";
 				$status = "False";
 			}
 

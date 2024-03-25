@@ -41,8 +41,6 @@
 	$AmountTotBalance = 0;
 
 	//for begginning balance
-	
-
 	$resBeg=mysqli_query($con,"Select acctno, sum(ndebit) as ndebit, sum(ncredit) as ncredit from glactivity where compcode='$company' and ddate < STR_TO_DATE('$date1', '%m/%d/%Y')  and acctno in ('".implode("','",$acctslist)."') group by acctno order by acctno");
 	while($row = mysqli_fetch_array($resBeg, MYSQLI_ASSOC)){
 		$begbalaz[$row['acctno']] = (floatval($begbalaz[$row['acctno']]) + floatval($begbalaz[$row['ndebit']])) - floatval($begbalaz[$row['ncredit']]);

@@ -55,7 +55,10 @@
 	$cemailsbjc = "";
 	$cemailsbod = "";
 
-	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign, d.cdesc as termsdesc from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join users c on a.cpreparedby=c.Userid left join groupings d on a.compcode=b.compcode and a.cterms=d.ccode and d.ctype='TERMS' where a.compcode='$company' and a.cpono = '$csalesno'");
+	//left join users c on a.cpreparedby=c.Userid
+	//, c.Fname, c.Minit, c.Lname, IFNULL(c.cusersign,'') as cusersign
+
+	$sqlhead = mysqli_query($con,"select a.*, b.cname, b.chouseno, b.ccity, b.cstate, b.ccountry, d.cdesc as termsdesc, x.cdesc as cprepname from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode left join groupings d on a.compcode=b.compcode and a.cterms=d.ccode and d.ctype='TERMS' left join mrp_operators x on a.compcode=x.compcode and a.cprepby=x.nid where a.compcode='$company' and a.cpono = '$csalesno'");
 
 	if (mysqli_num_rows($sqlhead)!=0) {
 		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -86,8 +89,8 @@
 			$lPosted = $row['lapproved'];
 			$lSent = $row['lsent'];
 
-			$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
-			$cpreparedBySign = $row['cusersign']; 
+			//$cpreparedBy = $row['Fname']." ".$row['Minit'].(($row['Minit']!=="" && $row['Minit']!==null) ? " " : "").$row['Lname'];
+			//$cpreparedBySign = $row['cusersign']; 
 
 			$cemailstoo = $row['cemailto'];
 			$cemailsccc = $row['cemailcc'];
@@ -97,6 +100,7 @@
 
 			$cApprBy = $row['capprovedby'];
 			$cCheckedBy = $row['ccheckedby'];
+			$cPrepBy = $row['cprepname'];
 		}
 	}
 
@@ -248,10 +252,9 @@
 	</table>
 	<br>
 	<table border="1" width="100%" style="border-collapse:collapse" cellpadding="5px">					
-		<tr>
-			<td width="20%"  >';
+		<tr>';
 
-				if($lSent==1 && $cpreparedBySign!=""){
+				/*if($lSent==1 && $cpreparedBySign!=""){
 
 					$setfooter = $setfooter .'<div style="text-align: center">Prepared By</div>';
 					$setfooter = $setfooter .'<div style="text-align: center"><img src = "'.$cpreparedBySign.'" height="80px"></div>';
@@ -261,9 +264,13 @@
 					$setfooter = $setfooter .'<div style="text-align: center">Prepared By</div>';
 					$setfooter = $setfooter .'<div style="text-align: center"><img src = "white.jpg" height="80px"></div>';
 					$setfooter = $setfooter .'<div style="text-align: center">'.$cpreparedBy.'</div>';
-				}
+				}*/
 
-			$setfooter = $setfooter .'</td>';
+			$setfooter = $setfooter .'<td width="25%" align="center"  height="100px" valign="top">
+			<div style="text-align: center">Prepared By</div>				
+			<div style="text-align: center"><img src = "white.jpg" height="80px"></div>		
+			<div style="text-align: center">'.$cPrepBy.'</div>					
+			</td>';
 
 			$setfooter = $setfooter.'<td width="25%" align="center" height="100px" valign="top">							
 			<div style="text-align: center">Approved By</div>				
@@ -328,8 +335,8 @@
 	$mpdf = new \Mpdf\Mpdf([
 		'mode' => '',
 		'format' => 'letter',
-		'default_font_size' => 8,
-		'default_font' => 'Verdana, sans-serif',
+		'default_font_size' => 10,
+		'default_font' => 'Arial, sans-serif',
 		'margin_left' => 10,
 		'margin_right' => 10,
 		'margin_top' => 11,

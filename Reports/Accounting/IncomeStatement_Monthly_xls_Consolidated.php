@@ -622,12 +622,12 @@
 				$mygtooth = 0;
 				foreach($arrcomps as $cmprw){
 
-					$mygtooth = $mygtooth + floatval($arrlvlamt[$comprow['cmprw'].intval($arrlvlcnt)-1][$rxzm]);
-					$GrTots[$cmprw['compcode']] = $GrTots[$cmprw['compcode']] + floatval($arrlvlamt[$comprow['cmprw'].intval($arrlvlcnt)-1][$rxzm]);
+					$mygtooth = $mygtooth + floatval($arrlvlamt[$cmprw['compcode'].intval($arrlvlcnt)-1][$rxzm]);
+					$GrTots[$cmprw['compcode']] = $GrTots[$cmprw['compcode']] + floatval($arrlvlamt[$cmprw['compcode'].intval($arrlvlcnt)-1][$rxzm]);
 
 					$cols++;
 					$lastCellAddress = $spreadsheet->getActiveSheet()->getCellByColumnAndRow($cols, $rows)->getCoordinate();
-					$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow($cols, $rows, $arrlvlamt[$comprow['cmprw'].intval($arrlvlcnt)-1][$rxzm]);					
+					$spreadsheet->getActiveSheet()->setCellValueByColumnAndRow($cols, $rows, $arrlvlamt[$cmprw['compcode'].intval($arrlvlcnt)-1][$rxzm]);					
 					$spreadsheet->setActiveSheetIndex(0)->getStyle($lastCellAddress)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 
 				}

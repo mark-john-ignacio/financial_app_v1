@@ -27,10 +27,31 @@
 			$crefsr = $row['crefsr'];
 			$crefsi = $row['crefsi'];
 			$lsreturn = $row['isreturn'];
+
+			$cCurrCode = $row['ccurrencycode'];
 			
 			$lCancelled = $row['lcancelled'];
 			$lPosted = $row['lapproved'];
+			$lVoid = $row['lvoid'];
 		}
+	}
+
+	@$arrfiles = array();
+	@$arrname = array();
+
+	if (file_exists('../../Components/assets/AR-Adj/'.$company.'_'.$cjeno.'/')) {
+		$allfiles = scandir('../../Components/assets/AR-Adj/'.$company.'_'.$cjeno.'/');
+		$files = array_diff($allfiles, array('.', '..'));
+		foreach($files as $file) {
+
+			$fileNameParts = explode('.', $file);
+			$ext = end($fileNameParts);
+
+			@$arrname[] = array("name" => $file, "ext" => $ext);
+		}
+	
+	}else{
+		//echo "NO FILES";
 	}
 
 ?>
@@ -44,9 +65,11 @@
 	<title>Myx Financials</title>
     
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
-  <link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+
+	<link href="../../Bootstrap/bs-file-input/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
     
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script src="../../Bootstrap/js/bootstrap3-typeahead.js"></script>
@@ -60,202 +83,243 @@
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 
+	<script src="../../Bootstrap/bs-file-input/js/plugins/buffer.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/plugins/filetype.min.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/js/fileinput.js" type="text/javascript"></script>
+	<script src="../../Bootstrap/bs-file-input/themes/explorer-fa5/theme.js" type="text/javascript"></script>
+
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
-	<form action="ARAdj_editsave.php" name="frmpos" id="frmpos" method="post">
+	<form action="ARAdj_editsave.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" method="post" enctype="multipart/form-data">
+	<input type="hidden" value='<?=json_encode(@$arrname)?>' id="hdnfileconfig"> 
+
 		<fieldset>
-    	<legend>AR Adjustment Details</legend>	
-        <table width="100%" border="0">
-					<tr>
-						<tH width="150">&nbsp;Transaction No.:</tH>
-						<td colspan="2" style="padding:2px;">
-        
-							<div class="col-xs-3 nopadding">
-								<input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" placeholder="Enter Journal No..." required autocomplete="off" value="<?php echo $cjeno;?>"  onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
-							</div>
-							
-							<input type="hidden" name="hdntranno" id="hdntranno" value="<?php echo $cjeno;?>">
-
-							<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
-							<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
-          
-    					<div id="statmsgz" style="color:#F00"></div> 
-    				</td>    
-    				<td style="padding:2px;" align="left">
-      
-              <div class="col-xs-5 nopadding" style="text-align:right">
-									<?php
-								if($lCancelled==1){
-										echo "<font color='#FF0000'><b>CANCELLED</b></font>";
-								}
-								
-								if($lPosted==1){
-										echo "<font color='#FF0000'><b>POSTED</b></font>";
-								}
-								?>    	
-          		</div>
-        
-   					</td>
-  				</tr>
-					<tr>
-						<tH width="150">&nbsp;Customer:</tH>
-						<td style="padding:2px">
-							<div class="col-xs-12 nopadding">
-								<div class="col-xs-3 nopadding">
-									<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1" value="<?=$ccode?>">
-										<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
-								</div>
-
-								<div class="col-xs-8 nopadwleft">
-									<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  autocomplete="off" value="<?=$cname?>">
-								</div> 
-							</div>
-						</td>
-						<tH width="150">Date:</tH>
-						<td style="padding:2px;">
-						<div class="col-xs-11 nopadding">
-						<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?=date_format(date_create($ddate), "m/d/Y"); ?>" />
-						</div>
-						</td>
-					</tr>
-					<tr>
-						<tH width="100">&nbsp;Remarks:</tH>
-						<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value="<?=$cremarks?>"></div></td>
-						<tH width="150">Type:</tH>
-						<td style="padding:2px" align="right">
-							<div class="col-xs-11 nopadding">
-							<select name="seltype" id="seltype" class="form-control input-sm">
-										<option value="Credit" <?=($ctype=="Credit") ? "selected" : "";?>>Credit</option>
-										<option value="Debit" <?=($ctype=="Debit") ? "selected" : "";?>>Debit</option>
-								</select>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<tH width="100">&nbsp;<!--RETURN NO.:-->Reference:</tH>
-						<td>       
-							<div class="col-xs-12 nopadding">
-									<div class="col-xs-3 nopadding">
-										<input type="text" class="form-control input-sm" id="txtSIRef" name="txtSIRef" width="20px" tabindex="2" readonly placeholder="Search Sales Return No..."  value="<?=$crefsr ?>">
-									</div>
-					
-									<div class="col-xs-1 nopadwleft">
-										<button class="btncgroup btn btn-block btn-sm btn-danger" type="button" id="btnSISearch" onClick="InsertDet('REF');"><i class="fa fa-search"></i></button>
-									</div>
-
-									<div class="col-xs-3 nopadwleft">
-										<input type="text" class="form-control input-sm" id="txtInvoiceRef" name="txtInvoiceRef" width="20px" tabindex="2" placeholder="Search Sales Invoice No..." readonly  value="<?=$crefsi ?>">      
-										<input type="hidden" id="invtyp" name="invtyp" value="">      
-									</div>
-							</div>
-						</td>
-						<tH width="150">&nbsp;</tH>
-						<td style="padding:2px"><div class="col-xs-11 nopadding">
-							<div class="form-check">
-								<input class="form-check-input" type="checkbox" value="1" id="isReturn" name="isReturn"  <?=(intval($lsreturn)==1) ? "checked" : "";?>/>
-								<label class="form-check-label" for="flexCheckChecked">Sales Return</label>
-							</div>
-						</div></td>
-						<td style="padding:2px"  align="right">&nbsp;</td>
-					</tr>
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td style="padding:2px">&nbsp;</td>
-						<td style="padding:2px"  align="right">&nbsp;</td>
-					</tr>
-					<tr>
-						<td colspan="5">
-						&nbsp;
-						</td>
-					</tr>
-				</table>
-
-				<div class="col-xs-12 nopadwdown">
-					<div class="col-xs-1 nopadwright"><button type="button" class="btn btn-xs btn-warning btn-block" id="btnaddline">Add Line</button></div>
-					<div class="col-xs-4 nopadding"><small><i>*Press <b>ENTER</b> on remarks field (last row) to add new line..</i></small></div>
-					<div class="col-xs-7 nopadding text-danger" style='text-align: right !important' id="unbaltext"></div>
+    		<legend>
+				<div class="col-xs-6 nopadding"> AR Adjustment Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
+					<?php
+						if($lCancelled==1){
+							echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+						}
+						
+						if($lPosted==1){
+							if($lVoid==1){
+								echo "<font color='#FF0000'><b>VOIDED</b></font>";
+							}else{
+								echo "<font color='#FF0000'><b>POSTED</b></font>";
+							}
+						}
+					?>
 				</div>
+			</legend>	
 
-        <div class="alt2" dir="ltr" style="
-					margin: 0px;
-					padding: 3px;
-					border: 1px solid #919b9c;
-					width: 100%;
-					height: 250px;
-					text-align: left;
-					overflow: auto">
-	
-          <table id="MyTable" class="MyTable table table-condensed" width="100%">
-						<thead>
-							<tr>
-								<th style="border-bottom:1px solid #999">Account No.</th>
-								<th style="border-bottom:1px solid #999">Account Title</th>
-								<th style="border-bottom:1px solid #999">Debit</th>
-								<th style="border-bottom:1px solid #999">Credit</th>
-								<th style="border-bottom:1px solid #999">Remarks</th>
-								<th style="border-bottom:1px solid #999">&nbsp;</th>
-							</tr>
-						</thead>   
-						<tbody class="tbody">
-							<?php
-								$cnt = 0;
-								$sqldtls = mysqli_query($con,"select * From aradjustment_t a where a.compcode='$company' and a.ctranno = '$cjeno'");
-								while($row = mysqli_fetch_array($sqldtls, MYSQLI_ASSOC)){
-									$cnt++;
-							?>
-							<tr>
-								<td width="100px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtcAcctNo<?=$cnt?>" id="txtcAcctNo<?=$cnt?>"  placeholder="Enter Acct No..." readonly data-id="txtcAcctDesc<?=$cnt?>" data-debit="txtnDebit<?=$cnt?>" value="<?=$row['cacctno']?>"></td>
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#items" data-toggle="tab">AR Adjustment Details</a></li>
+				<li><a href="#attc" data-toggle="tab">Attachments</a></li>
+			</ul>
+			
+			<div class="tab-content">
+				<div id="items" class="tab-pane fade in active" style="padding-left: 5px; padding-top: 10px;">
 
-								<td style="padding:1px"><input type="text" class="typedesc form-control input-xs" name="txtcAcctDesc<?=$cnt?>" id="txtcAcctDesc<?=$cnt?>"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctNo<?=$cnt?>" data-debit="txtnDebit<?=$cnt?>"  value="<?=$row['ctitle']?>"></td>
-								<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit<?=$cnt?>" id="txtnDebit<?=$cnt?>"  value="<?=$row['ndebit']?>" autocomplete="off"></td>
-								<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit<?=$cnt?>" id="txtnCredit<?=$cnt?>"  value="<?=$row['ncredit']?>" autocomplete="off"></td>
-								<td width="200px" style="padding:1px"><input type="text" class="cRem form-control input-xs" name="txtcRem<?=$cnt?>" id="txtcRem<?=$cnt?>" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"  value="<?=$row['cremarks']?>"></td>
-								<td width="40px" align="right">&nbsp;</td>
-							</tr>
-							<?php
-								}
-							?>
-						</tbody>                  
+					<table width="100%" border="0">
+						<tr>
+							<tH width="150">&nbsp;Transaction No.:</tH>
+							<td colspan="2" style="padding:2px;">
+			
+								<div class="col-xs-3 nopadding">
+									<input type="text" class="form-control input-sm" id="txtctranno" name="txtctranno" width="20px" tabindex="1" placeholder="Enter Journal No..." required autocomplete="off" value="<?php echo $cjeno;?>"  onKeyUp="chkSIEnter(event.keyCode,'frmpos');">
+								</div>
+								
+								<input type="hidden" name="hdntranno" id="hdntranno" value="<?php echo $cjeno;?>">
+
+								<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
+								<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
+								<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?php echo $lVoid;?>">
+				
+								<div id="statmsgz" style="color:#F00"></div> 
+							</td>    
+							<td colspan="2" style="padding:2px;" align="right">
+					
+								<div id="statmsgz" class="small" style="color:#F00"></div>
+					
+							</td>
+						</tr>
+						<tr>
+							<tH width="150">&nbsp;Customer:</tH>
+							<td style="padding:2px">
+								<div class="col-xs-12 nopadding">
+									<div class="col-xs-3 nopadding">
+										<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1" value="<?=$ccode?>">
+											<input type="hidden" id="hdnvalid" name="hdnvalid" value="NO">
+									</div>
+
+									<div class="col-xs-8 nopadwleft">
+										<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  autocomplete="off" value="<?=$cname?>">
+									</div> 
+								</div>
+							</td>
+							<tH width="150">Date:</tH>
+							<td style="padding:2px;">
+							<div class="col-xs-11 nopadding">
+							<input type='text' class="form-control input-sm" id="date_delivery" name="date_delivery" value="<?=date_format(date_create($ddate), "m/d/Y"); ?>" />
+							</div>
+							</td>
+						</tr>
+						<tr>
+							<tH width="100">&nbsp;Remarks:</tH>
+							<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value="<?=$cremarks?>"></div></td>
+							<tH width="150">Type:</tH>
+							<td style="padding:2px" align="right">
+								<div class="col-xs-11 nopadding">
+								<select name="seltype" id="seltype" class="form-control input-sm">
+											<option value="Credit" <?=($ctype=="Credit") ? "selected" : "";?>>Credit</option>
+											<option value="Debit" <?=($ctype=="Debit") ? "selected" : "";?>>Debit</option>
+									</select>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<tH width="100">&nbsp;<!--RETURN NO.:-->Reference:</tH>
+							<td>       
+								<div class="col-xs-12 nopadding">
+										<div class="col-xs-3 nopadding">
+											<input type="text" class="form-control input-sm" id="txtSIRef" name="txtSIRef" width="20px" tabindex="2" readonly placeholder="Search Sales Return No..."  value="<?=$crefsr ?>">
+										</div>
+						
+										<div class="col-xs-1 nopadwleft">
+											<button class="btncgroup btn btn-block btn-sm btn-danger" type="button" id="btnSISearch" onClick="InsertDet('REF');"><i class="fa fa-search"></i></button>
+										</div>
+
+										<div class="col-xs-3 nopadwleft">
+											<input type="text" class="form-control input-sm" id="txtInvoiceRef" name="txtInvoiceRef" width="20px" tabindex="2" placeholder="Search Sales Invoice No..." readonly  value="<?=$crefsi ?>">      
+											<input type="hidden" id="invtyp" name="invtyp" value="">      
+										</div>
+
+										<div class="col-xs-2 nopadwleft">
+											<input type="text" class="form-control input-sm" id="txtcurr" name="txtcurr" width="20px" tabindex="2" placeholder="Currency..." readonly value="<?=$cCurrCode?>">
+										</div>
+								</div>
+							</td>
+							<tH width="150">&nbsp;</tH>
+							<td style="padding:2px"><div class="col-xs-11 nopadding">
+								<div class="form-check">
+									<input class="form-check-input" type="checkbox" value="1" id="isReturn" name="isReturn"  <?=(intval($lsreturn)==1) ? "checked" : "";?>/>
+									<label class="form-check-label" for="flexCheckChecked">Sales Return</label>
+								</div>
+							</div></td>
+							<td style="padding:2px"  align="right">&nbsp;</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td style="padding:2px">&nbsp;</td>
+							<td style="padding:2px"  align="right">&nbsp;</td>
+						</tr>
+						<tr>
+							<td colspan="5">
+							&nbsp;
+							</td>
+						</tr>
 					</table>
 
 				</div>
 
-				<br>
-				<table width="100%" border="0" cellpadding="3">
-					<tr>
-						<td>
-							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='ARAdj.php';" id="btnMain" name="btnMain">
-								Back to Main<br>(ESC)
-							</button>
+				<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px;">
 
-							<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='ARAdj_new.php';" id="btnNew" name="btnNew">
-								New<br>(F1)
-							</button>
+					<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+					<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+					<input type="file" name="upload[]" id="file-0" multiple />
 
-							<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
-								Undo Edit<br>(CTRL+Z)
-							</button>
-										
-							<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
-								Edit<br>(CTRL+E)
-							</button>
-														
-							<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
-							<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
-								SAVE<br> (F2)
-							</button>
-						</td>
-						<td align="right" valign="top">
-							<b>TOTAL AMOUNT </b>
-							&nbsp;&nbsp;
-							<input type="text" id="txtnGross" name="txtnGross" readonly value="<?=number_format($ngross,2)?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="25">
-						</td>
-					</tr>
+				</div>
+			</div>
+
+			<hr>
+			<div class="col-xs-12 nopadwdown"><b>Details</b></div>
+
+			<div class="col-xs-12 nopadwdown">
+				<div class="col-xs-1 nopadwright"><button type="button" class="btn btn-xs btn-warning btn-block" id="btnaddline">Add Line</button></div>
+				<div class="col-xs-4 nopadding"><small><i> OR *Press <b>ENTER</b> on remarks field (last row) to add new line..</i></small></div>
+				<div class="col-xs-7 nopadding text-danger" style='text-align: right !important' id="unbaltext"></div>
+			</div>
+
+			<div class="alt2" dir="ltr" style="
+				margin: 0px;
+				padding: 3px;
+				border: 1px solid #919b9c;
+				width: 100%;
+				height: 250px;
+				text-align: left;
+				overflow: auto">
+	
+				<table id="MyTable" class="MyTable table table-condensed" width="100%">
+					<thead>
+						<tr>
+							<th style="border-bottom:1px solid #999">Account No.</th>
+							<th style="border-bottom:1px solid #999">Account Title</th>
+							<th style="border-bottom:1px solid #999">Debit</th>
+							<th style="border-bottom:1px solid #999">Credit</th>
+							<th style="border-bottom:1px solid #999">Remarks</th>
+							<th style="border-bottom:1px solid #999">&nbsp;</th>
+						</tr>
+					</thead>   
+					<tbody class="tbody">
+						<?php
+							$cnt = 0;
+							$sqldtls = mysqli_query($con,"select * From aradjustment_t a where a.compcode='$company' and a.ctranno = '$cjeno'");
+							while($row = mysqli_fetch_array($sqldtls, MYSQLI_ASSOC)){
+								$cnt++;
+						?>
+						<tr>
+							<td width="100px" style="padding:1px"><input type="text" class="form-control input-xs" name="txtcAcctNo<?=$cnt?>" id="txtcAcctNo<?=$cnt?>"  placeholder="Enter Acct No..." readonly data-id="txtcAcctDesc<?=$cnt?>" data-debit="txtnDebit<?=$cnt?>" value="<?=$row['cacctno']?>"></td>
+
+							<td style="padding:1px"><input type="text" class="typedesc form-control input-xs" name="txtcAcctDesc<?=$cnt?>" id="txtcAcctDesc<?=$cnt?>"  placeholder="Enter Acct Description..." autocomplete="off" onFocus="this.select();" data-id="txtcAcctNo<?=$cnt?>" data-debit="txtnDebit<?=$cnt?>"  value="<?=$row['ctitle']?>"></td>
+							<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnDebit<?=$cnt?>" id="txtnDebit<?=$cnt?>"  value="<?=$row['ndebit']?>" autocomplete="off"></td>
+							<td width="100px" style="padding:1px"><input type="text" class="numeric form-control input-xs" style="text-align:right" name="txtnCredit<?=$cnt?>" id="txtnCredit<?=$cnt?>"  value="<?=$row['ncredit']?>" autocomplete="off"></td>
+							<td width="200px" style="padding:1px"><input type="text" class="cRem form-control input-xs" name="txtcRem<?=$cnt?>" id="txtcRem<?=$cnt?>" placeholder="Remarks..." autocomplete="off" onFocus="this.select();"  value="<?=$row['cremarks']?>"></td>
+							<td width="40px" align="right">&nbsp;</td>
+						</tr>
+						<?php
+							}
+						?>
+					</tbody>                  
 				</table>
 
-    </fieldset>   
+			</div>
+
+			<br>
+			<table width="100%" border="0" cellpadding="3">
+				<tr>
+					<td>
+						<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='ARAdj.php';" id="btnMain" name="btnMain">
+							Back to Main<br>(ESC)
+						</button>
+
+						<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='ARAdj_new.php';" id="btnNew" name="btnNew">
+							New<br>(F1)
+						</button>
+
+						<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
+							Undo Edit<br>(CTRL+Z)
+						</button>
+									
+						<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
+							Edit<br>(CTRL+E)
+						</button>
+													
+						<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
+						<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
+							SAVE<br> (F2)
+						</button>
+					</td>
+					<td align="right" valign="top">
+						<b>TOTAL AMOUNT </b>
+						&nbsp;&nbsp;
+						<input type="text" id="txtnGross" name="txtnGross" readonly value="<?=number_format($ngross,2)?>" style="text-align:right; border:none; background-color:#FFF; font-size:20px; font-weight:bold; color:#F00;" size="25">
+					</td>
+				</tr>
+			</table>
+
+    	</fieldset>   
 	</form>
 
 
@@ -360,6 +424,50 @@
 
 <script type="text/javascript">
 
+var fileslist = [];
+	/*
+	var xz = $("#hdnfiles").val();
+	$.each(jQuery.parseJSON(xz), function() { 
+		fileslist.push(xz);
+	});
+	*/
+
+	console.log(fileslist);
+	var filesconfigs = [];
+	var xzconfig = JSON.parse($("#hdnfileconfig").val());
+
+	//alert(xzconfig.length);
+
+	var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
+	var arrimg = new Array("jpg","png","gif","jpeg");
+
+	var xtc = "";
+	for (var i = 0; i < xzconfig.length; i++) {
+    var object = xzconfig[i];
+		//alert(object.ext + " : " + object.name);
+
+		$vrx = encodeURIComponent(object.name);
+		fileslist.push("<?=$AttachUrlBase?>AP-ADJ/<?=$company."_".$cjeno?>/" + $vrx)
+
+		if(jQuery.inArray(object.ext, arroffice) !== -1){
+			xtc = "office";
+		}else if(jQuery.inArray(object.ext, arrimg) !== -1){
+			xtc = "image";
+		}else if(object.ext=="txt"){
+			xtc = "text";
+		}else{
+			xtc = object.ext;
+		}
+
+		filesconfigs.push({
+			type : xtc, 
+			caption : object.name,
+			width : "120px",
+			url: "th_filedelete.php?id="+object.name+"&code=<?=$cjeno?>", 
+			key: i + 1
+		});
+	}
+
 	$(document).keydown(function(e) {	
 	
 	  if(e.keyCode == 113) { //F2
@@ -382,10 +490,43 @@
 	$(document).ready(function(){
 		disabled();
 
-	  $('#date_delivery').datetimepicker({
-      format: 'MM/DD/YYYY',
-			//minDate: new Date(),
-    });
+	  	$('#date_delivery').datetimepicker({
+			format: 'MM/DD/YYYY',
+				//minDate: new Date(),
+		});
+
+		if(fileslist.length>0){
+			$("#file-0").fileinput({
+				theme: 'fa5',
+				showUpload: false,
+				showClose: false,
+				browseOnZoneClick: true,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, },
+				initialPreview: fileslist,
+				initialPreviewAsData: true,
+				initialPreviewFileType: 'image',
+				initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/AP-ADJ/<?=$company."_".$cjeno?>/{filename}',
+				initialPreviewConfig: filesconfigs
+			});
+		}else{
+			$("#file-0").fileinput({
+				theme: 'fa5',
+				showUpload: false,
+				showClose: false,
+				browseOnZoneClick: true,
+				allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg', 'pdf', 'txt', 'csv', 'xls', 'xlsx', 'doc', 'docx', 'ppt', 'pptx'],
+				overwriteInitial: false,
+				maxFileSize:100000,
+				maxFileCount: 5,
+				browseOnZoneClick: true,
+				fileActionSettings: { showUpload: false, showDrag: false, }
+			});
+		}
 
 		$("input.numeric").autoNumeric('init',{mDec:2});
 		$("input.numeric").on("focus click", function () {

@@ -155,7 +155,7 @@
     }
      
 
-    function CustomerNames($module, $ctranno, $company){
+    function CustomerNames($module, $ctranno, $company, $ctranref){
         return match($module){
 
             'DR' => "select b.cname from dr_t a
@@ -207,16 +207,17 @@
                     ) e on a.compcode = e.compcode and a.ctranno = e.ctranno
                     where a.compcode='$company' and a.ctranno = '$ctranno' order by a.nidentity",
     
-            'BD' => "select a.*, b.cornumber, b.dcutdate, b.cremarks as remarks_t, b.cpaymethod, b.namount, c.cacctdesc, c.ddate, c.namount
+            'BD' => "select a.*, b.cornumber, b.dcutdate, b.cremarks as remarks_t, b.cpaymethod, b.namount, c.cacctdesc, c.ddate, c.namount, b.ccode, D.cname
             from deposit_t a 
             left join receipt b on a.compcode=b.compcode and a.corno=b.ctranno and a.compcode=b.compcode 
+            left join customers D on B.compcode = D.compcode and B.ccode = D.cempid 
             left join (
                     SELECT a.compcode, a.ctranno, b.cacctdesc, a.ddate, a.namount
                     from deposit a
                     left join accounts b on a.compcode = b.compcode and a.cacctcode = b.cacctid
                     where a.compcode = '$company' and a.ctranno='$ctranno'
             ) c on a.compcode = c.compcode and a.ctranno = c.ctranno
-            where a.compcode='$company' and a.ctranno = '$ctranno' ",
+            where a.compcode='$company' and a.ctranno = '$ctranno' and b.ctranno='$ctranref'",
     
             'PV' => "Select A.cacctno, b.ctranno, b.bankname, b.cpayrefno, b.ddate, A.crefrr, a.capvno, DATE_FORMAT(a.dapvdate,'%m/%d/%Y') as dapvdate, a.namount, a.nowed, a.napplied, IFNULL(b.npayed,0) as npayed, c.cacctdesc, a.newtamt, d.cname
             From paybill_t a
@@ -233,10 +234,9 @@
                     left join suppliers d on a.compcode = d.compcode and b.ccode = d.ccode
             where a.compcode='$company' and a.ctranno='$ctranno' order by a.nident",        
         
-            'APV' => "select a.*, b.*, c.cname from apv_d a
-                    left join apv b on a.compcode = b.compcode and a.ctranno = b.ctranno
-                    left join suppliers c on a.compcode = c.compcode and b.ccode = c.ccode
-                    where a.compcode = '$company' and a.ctranno = '$ctranno'",
+            'APV' => "select c.cname from apv b
+                    left join suppliers c on b.compcode = c.compcode and b.ccode = c.ccode
+                    where b.compcode = '$company' and b.ctranno = '$ctranno'",
             
             'APADJ' => "select a.*, b.cacctno, b.ctitle, b.ndebit, b.ncredit, b.cremarks as remark_t, c.* from apadjustment a
                     left join apadjustment_t b on a.compcode=b.compcode and a.ctranno=b.ctranno
@@ -290,7 +290,11 @@
                     $uploadedFile = $uploadDir . $file['name'];
                     move_uploaded_file($file['tmp_name'], $uploadedFile);
     
-                    require '../vendor2/autoload.php';
+                    if(file_exists("../vendor2/autoload.php")){
+                        require '../vendor2/autoload.php';
+                    }else{
+                        require '../../vendor2/autoload.php';
+                    }
     
                     $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($uploadedFile);
                     $worksheet = $spreadsheet->getActiveSheet();

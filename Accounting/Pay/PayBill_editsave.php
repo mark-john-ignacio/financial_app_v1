@@ -84,7 +84,7 @@ include('../../include/denied.php');
 
 	//INSERT WRR DETAILS
 
-	if (!mysqli_query($con, "DELETE FROM `paybill_t` Where `ctranno` = '$cCVNo'")) {
+	if (!mysqli_query($con, "DELETE FROM `paybill_t` Where `compcode` = '$company' and `ctranno` = '$cCVNo'")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 
@@ -92,7 +92,6 @@ include('../../include/denied.php');
 	$rowcnt = $_REQUEST['hdnrowcnt'];
 	$cnt = 0;	 
 	for($z=1; $z<=$rowcnt; $z++){ 
-		
 		
 		$capvno = mysqli_real_escape_string($con, $_REQUEST['cTranNo'.$z]);
 		$crefrr = mysqli_real_escape_string($con, $_POST['cRefRRNo'.$z]);

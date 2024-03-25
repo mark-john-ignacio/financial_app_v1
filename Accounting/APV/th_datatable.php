@@ -12,7 +12,7 @@
 
 	if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
 	{
-		$query .= "and (LOWER(b.cname) like LOWER('%".$_POST['searchByName']."%') OR LOWER(a.ctranno) like LOWER('%".$_POST['searchByName']."%') OR LOWER(c.cref) like LOWER('%".$_POST['searchByName']."%'))";
+		$query .= "and (LOWER(b.ccode) like LOWER('%".$_POST['searchByName']."%') OR LOWER(b.cname) like LOWER('%".$_POST['searchByName']."%') OR LOWER(a.ctranno) like LOWER('%".$_POST['searchByName']."%') OR LOWER(c.cref) like LOWER('%".$_POST['searchByName']."%'))";
 	}
 
 	if(isset($_POST['searchBystat']) && $_POST['searchBystat'] != '')

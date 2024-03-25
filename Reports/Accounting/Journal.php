@@ -1,41 +1,41 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-$_SESSION['pageid'] = "Journal.php";
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	$_SESSION['pageid'] = "Journal.php";
 
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
-include('../../include/access2.php');
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
+	include('../../include/access2.php');
 
-$company = $_SESSION['companyid'];
-				$sql = "select * From company where compcode='$company'";
-				$result=mysqli_query($con,$sql);
-				
-					if (!mysqli_query($con, $sql)) {
-						printf("Errormessage: %s\n", mysqli_error($con));
-					} 
-					
-				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-				{
-					$compname =  $row['compname'];
-				}
+	$company = $_SESSION['companyid'];
+	$sql = "select * From company where compcode='$company'";
+	$result=mysqli_query($con,$sql);
+	
+		if (!mysqli_query($con, $sql)) {
+			printf("Errormessage: %s\n", mysqli_error($con));
+		} 
+		
+	while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+	{
+		$compname =  $row['compname'];
+	}
 
 
-$date1 = $_POST["date1"];
-$date2 = $_POST["date2"];
-$selrp = $_POST["selrpt"];
-$qry = "";
-$varmsg = "";
+	$date1 = $_POST["date1"];
+	$date2 = $_POST["date2"];
+	$selrp = $_POST["selrpt"];
+	$qry = "";
+	$varmsg = "";
 
-if ($selrp=="1"){
-	$varmsg = "POSTED TRANSACTIONS";
-	$qry = " and b.lapproved=1 ";
-}
-elseif ($selrp=="0"){
-	$varmsg = "UNPOSTED TRANSACTIONS";
-	$qry = " and b.lapproved=0 ";
-}
+	if ($selrp=="1"){
+		$varmsg = "POSTED TRANSACTIONS";
+		$qry = " and b.lapproved=1 ";
+	}
+	elseif ($selrp=="0"){
+		$varmsg = "UNPOSTED TRANSACTIONS";
+		$qry = " and b.lapproved=0 ";
+	}
 ?>
 
 <html>

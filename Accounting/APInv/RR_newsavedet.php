@@ -34,27 +34,15 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$nRefIdentPO = $_REQUEST['crefidntPO'];
 
 		$cVTCode = $_REQUEST['vatcode'];
-		$nRate = $_REQUEST['nrate'];
+		$nRate = $_REQUEST['nrate']; 
 
-		$cEWTCode = $_REQUEST['ewtcode'];
-		$nEWTRate = $_REQUEST['ewtrate']; 
+		//$cEWTCode = $_REQUEST['ewtcode'];
+		//$nEWTRate = $_REQUEST['ewtrate']; 
 			
 		$cMainUOM = $_REQUEST['mainunit'];
 		$nFactor = $_REQUEST['nfactor'];
 
-		$chkItmAcct = mysqli_query($con,"select cacctcodewrr from items where compcode='$company' and cpartno='$cItemNo'");
-	
-		if (!mysqli_query($con, "select cacctcodewrr from items where compcode='$company' and cpartno='$cItemNo'")) {
-			printf("Errormessage: %s\n", mysqli_error($con));
-		} 
-
-			$ItmAccnt = "";
-						
-		while($itmaccnt = mysqli_fetch_array($chkItmAcct, MYSQLI_ASSOC)){
-			
-			$ItmAccnt = $itmaccnt['cacctcodewrr'];
-	
-		}
+		$ItmAccnt = $_REQUEST['nacctno'];
 		
 		if($cUnit==$cMainUOM){
 			$ncost = $nPrice;
@@ -63,9 +51,16 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			$ncost = (float)$nPrice / ((float)$nQty * (float)$nFactor);
 		}
 
+		$xNetvat = $nBaseAmount;
+		$xNetvatAmt = 0;
+		if(floatval($nRate)>0){
+			$xNetvat = $nBaseAmount / (1 + (floatval($nRate)/100));
+			$xNetvatAmt = floatval($xNetvat) * (floatval($nRate)/100);
+		}
+
 	$refcidenttran = $cSINo."P".$indexz;
 	
-	if (!mysqli_query($con,"INSERT INTO suppinv_t(`compcode`, `cidentity`, `ctranno`, `nident`, `creference`, `nrefidentity`, `crefPO`, `nrefidentity_po`, `citemno`, `nqty`, `nqtyorig`, `cunit`, `nprice`, `namount`, `nbaseamount`, `nnetvat`, `ncost`, `nfactor`, `cmainunit`, `cacctcode`, `cvatcode`, `nrate`, `cewtcode`, `newtrate`) values('$company', '$refcidenttran', '$cSINo', '$indexz', '$cRef', '$nRefIdent', '$cRefPO', '$nRefIdentPO', '$cItemNo', '$nQty', '$nQtyOrig', '$cUnit', '$nPrice', '$nAmount', '$nBaseAmount', '$nBaseAmount', $ncost, $nFactor, '$cMainUOM', '$ItmAccnt', '$cVTCode', '$nRate', '$cEWTCode', '$nEWTRate')")){
+	if (!mysqli_query($con,"INSERT INTO suppinv_t(`compcode`, `cidentity`, `ctranno`, `nident`, `creference`, `nrefidentity`, `crefPO`, `nrefidentity_po`, `citemno`, `nqty`, `nqtyorig`, `cunit`, `nprice`, `namount`, `nbaseamount`, `nnetvat`, `nlessvat`, `ncost`, `nfactor`, `cmainunit`, `cacctcode`, `cvatcode`, `nrate`) values('$company', '$refcidenttran', '$cSINo', '$indexz', '$cRef', '$nRefIdent', '$cRefPO', '$nRefIdentPO', '$cItemNo', '$nQty', '$nQtyOrig', '$cUnit', '$nPrice', '$nAmount', '$nBaseAmount', '$xNetvat', '$xNetvatAmt', $ncost, $nFactor, '$cMainUOM', '$ItmAccnt', '$cVTCode', '$nRate')")){
 		echo "False";
 
 		//echo "Error:".mysqli_error($con)."<br>";

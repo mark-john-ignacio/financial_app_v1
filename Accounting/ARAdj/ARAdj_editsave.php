@@ -14,6 +14,7 @@ $company = $_SESSION['companyid'];
 	$cSelType =  mysqli_real_escape_string($con, $_REQUEST['seltype']);   
 	$cSRRef =  mysqli_real_escape_string($con, $_REQUEST['txtSIRef']);
 	$cSIRef =  mysqli_real_escape_string($con, $_REQUEST['txtInvoiceRef']);
+	$cCurrCode =  mysqli_real_escape_string($con, $_REQUEST['txtcurr']);
 	$ngross =  mysqli_real_escape_string($con, str_replace( ',', '', $_REQUEST['txtnGross']));
 	
 	$dret = 0;
@@ -23,7 +24,7 @@ $company = $_SESSION['companyid'];
 
 	$preparedby = mysqli_real_escape_string($con, $_SESSION['employeeid']);
 	
-	if (!mysqli_query($con, "UPDATE `aradjustment` set `ccode` = '$cCustID', `dcutdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `ctype` = '$cSelType', `cremarks` = '$cRemarks', `ngross` = '$ngross', `crefsr` = '$cSRRef', `crefsi` = '$cSIRef', `isreturn` = '$dret' where `compcode`='$company' and `ctranno` = '$cSINo'")) {
+	if (!mysqli_query($con, "UPDATE `aradjustment` set `ccode` = '$cCustID', `dcutdate` = STR_TO_DATE('$dTranDate', '%m/%d/%Y'), `ctype` = '$cSelType', `cremarks` = '$cRemarks', `ngross` = '$ngross', `crefsr` = '$cSRRef', `crefsi` = '$cSIRef', `isreturn` = '$dret', `ccurrencycode` = '$cCurrCode' where `compcode`='$company' and `ctranno` = '$cSINo'")) {
 		printf("Errormessage: %s\n", mysqli_error($con));
 	} 
 
@@ -78,6 +79,38 @@ $company = $_SESSION['companyid'];
 	if($isok=="YES"){
 		mysqli_query($con, "DELETE FROM `aradjustment_t` where `compcode`='xxx' and `ctranno`= 'xxx'");
 	}
+
+
+	//insert attachment
+	$files = array_filter($_FILES['upload']['name']); //Use something similar before processing files.
+	// Count the number of uploaded files in array
+	$total_count = count($_FILES['upload']['name']);
+
+	if(file_exists('../../Components/assets/AR-Adj/'.$company.'_'.$cSINo.'/')) {
+		/*$allfiles = scandir('../../RFP_Files/'.$cSINo.'/');
+		$files = array_diff($allfiles, array('.', '..'));
+		foreach($files as $file) {
+			unlink("../../RFP_Files/".$cSINo."/".$file);
+		}*/
+	}else{
+		if($total_count>=1){
+			mkdir('../../Components/assets/AR-Adj/'.$company.'_'.$cSINo.'/',0777);
+		}
+	}
+
+	// Loop through every file
+	for( $i=0 ; $i < $total_count ; $i++ ) {
+		//The temp file path is obtained
+		$tmpFilePath = $_FILES['upload']['tmp_name'][$i];
+		//A file path needs to be present
+		if ($tmpFilePath != ""){
+				//Setup our new file path
+				$newFilePath = "../../Components/assets/AR-Adj/" .$company.'_'. $cSINo . "/" . $_FILES['upload']['name'][$i];
+				//File is uploaded to temp dir
+				move_uploaded_file($tmpFilePath, $newFilePath);
+				
+		}
+	}
 	
 	
 	//INSERT LOGFILE
@@ -92,5 +125,5 @@ $company = $_SESSION['companyid'];
 </form>
 <script>
 	alert('Record Succesfully Updated');
-  document.forms['frmpos'].submit();
+ 	document.forms['frmpos'].submit();
 </script>

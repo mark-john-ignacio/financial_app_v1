@@ -803,7 +803,9 @@ if(file_name.length != 0){
 	 * setting up an list of file and config of a file
 	 */
 	file_name.map(({name, ext}, i) => {
-		list_file.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/DR/<?=$company."_".$txtctranno?>/" + name)
+
+		$vrx = encodeURIComponent(name);
+		list_file.push("<?=$AttachUrlBase?>DR/<?=$company."_".$txtctranno?>/" + $vrx)
 		//console.log(ext);
 
 		if(jQuery.inArray(ext, arroffice) !== -1){

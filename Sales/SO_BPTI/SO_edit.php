@@ -467,7 +467,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 									<th width="100px" style="border-bottom:1px solid #999">Code</th>
 									<th width="300px" style="border-bottom:1px solid #999">Description</th>
 									<th width="100px" style="border-bottom:1px solid #999" id='tblAvailable'>Available</th>
-									<th width="150px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
+									<th width="200px" style="border-bottom:1px solid #999" class="chkVATClass">VAT</th>
 									<th width="80px" style="border-bottom:1px solid #999">UOM</th>
 									<th width="80px" style="border-bottom:1px solid #999">Factor</th>
 									<th width="80px" style="border-bottom:1px solid #999">Qty</th>
@@ -572,25 +572,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 					<div class="well">							
 						<div class="row static-info align-reverse">
 							<div class="col-xs-6 name">
-								Total NET Sales:
-								<input type="hidden" id="txtnNetVAT" name="txtnNetVAT" value="0">
-							</div>
-							<div class="col-xs-4 value" id="divtxtnNetVAT">
-								0.00
-							</div>
-						</div>
-						<div class="row static-info align-reverse">
-							<div class="col-xs-6 name">
-								Add VAT:
-								<input type="hidden" id="txtnVAT" name="txtnVAT" value="0">
-							</div>
-							<div class="col-xs-4 value" id="divtxtnVAT">
-								0.00
-							</div>
-						</div>
-						<div class="row static-info align-reverse">
-							<div class="col-xs-6 name">
 								Total Amount:
+								<input type="hidden" id="txtnNetVAT" name="txtnNetVAT" value="0">
+								<input type="hidden" id="txtnVAT" name="txtnVAT" value="0">
 								<input type="hidden" id="txtnGross" name="txtnGross" value="0">
 								<input type="hidden" id="txtnBaseGross" name="txtnBaseGross" value="0">
 							</div>
@@ -830,7 +814,9 @@ else{
 	 * setting up an list of file and config of a file
 	 */
 	file_name.map(({name, ext}, i) => {
-		list_file.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/SO/<?=$company."_".$txtctranno?>/" + name)
+
+		$vrx = encodeURIComponent(name);
+		list_file.push("<?=$AttachUrlBase?>SO/<?=$company."_".$txtctranno?>/" + $vrx)
 		console.log(ext);
 
 		if(jQuery.inArray(ext, arroffice) !== -1){
@@ -1906,12 +1892,12 @@ else{
 		$("#txtnGross").val(gross2);
 		$("#txtnBaseGross").val(gross);
 
-		$("#divtxtnNetVAT").text(nnetTot.toFixed(2));
-		$("#divtxtnVAT").text(vatzTot.toFixed(2));
+		//$("#divtxtnNetVAT").text(nnetTot.toFixed(2));
+		//$("#divtxtnVAT").text(vatzTot.toFixed(2));
 		$("#divtxtnGross").text(gross.toFixed(2));
 
-		$("#divtxtnNetVAT").formatNumber();
-		$("#divtxtnVAT").formatNumber();
+		//$("#divtxtnNetVAT").formatNumber();
+		//$("#divtxtnVAT").formatNumber();
 		$("#divtxtnGross").formatNumber();
 
 	}

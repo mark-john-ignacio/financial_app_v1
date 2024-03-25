@@ -2,21 +2,23 @@
 	if(!isset($_SESSION)){
 		session_start();
 
-
-		include('../../vendor/autoload.php');
-
-		require("../../vendor/phpmailer/phpmailer/src/PHPMailer.php");
-		require("../../vendor/phpmailer/phpmailer/src/SMTP.php");
-
-		$mpdf = new \Mpdf\Mpdf();
-		ob_start();
 	}
+
+	header('Content-Type: text/html; charset=ISO-8859-1');
+	include('../../vendor/autoload.php');
+
+	require("../../vendor/phpmailer/phpmailer/src/PHPMailer.php");
+	require("../../vendor/phpmailer/phpmailer/src/SMTP.php");
+
+	$mpdf = new \Mpdf\Mpdf();
+	ob_start();
 
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../Model/helper.php');
 
 	$company = $_SESSION['companyid'];
+	$xwithvat = 0;
 
 	$sqlcomp = mysqli_query($con,"select * from company where compcode='$company'");
 
@@ -243,6 +245,9 @@
 				if (mysqli_num_rows($sqlbody)!=0) {
 
 					while($rowdtls = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){ 
+						if(floatval($rowdtls['nrate']) > 0){
+							$xwithvat = 1;
+						}
 				?>
 
 				<tr>
@@ -261,7 +266,16 @@
 				?>
 
 				<tr>
-					<td colspan="4" align="right" class="tdpadx" style="border: 1px solid;padding-right: 10px"><b>TOTAL</b></td>
+					<td colspan="3" class="tdpadx" style="border-top: 1px solid; border-left: 1px solid; border-bottom: 1px solid; padding-right: 10px">
+						<?php
+							if($xwithvat==1){
+								echo "<b><i>Note: Price inclusive of VAT</i></b>";
+							}else{
+								echo "<b><i>Note: Price exclusive of VAT</i></b>";
+							}
+						?>
+					</td>
+					<td align="right" class="tdpadx" style="border: 1px solid;padding-right: 10px"><b>TOTAL</b></td>
 					<td align="right"  class="tdpadx" style="border: 1px solid;padding-right: 10px"><?php echo number_format($Gross,2);?></td>
 					
 				</tr>
@@ -337,20 +351,10 @@
 
 <?php
 
-$html = ob_get_contents();
-ob_end_clean();
+	$html = ob_get_contents();
+	ob_end_clean();
 
-$cxsmsgs = "";
-
-	$result = mysqli_query($con,"SELECT * FROM `parameters` where compcode='$company' and ccode in ('POEMAILBODY')"); 
-            
-    if (mysqli_num_rows($result)!=0) {
-      	while($comprow = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-                 
-           $emi= $comprow['cdesc']; 
-
-		}
-	}
+	$cxsmsgs = "";
 
 	// send the captured HTML from the output buffer to the mPDF class for processing
 	$mpdf->WriteHTML($html);
@@ -377,8 +381,6 @@ $cxsmsgs = "";
 	$mail->FromName = $logonamz;
 	$mail->Sender = $getcred['cusnme']; // indicates ReturnPath header
 	$mail->Subject = $subject;
-	$mail->CharSet = "UTF-8";
-	$mail->Encoding = 'base64'; 
 	$mail->Body = $body;
 
 	$mail->addReplyTo($getcred['useremail'], $_SESSION['employeefull']);
@@ -403,19 +405,14 @@ $cxsmsgs = "";
 
 	$mail->addAttachment("../../PDFiles/PO/".$csalesno.".pdf");
 
-	
+	$cxsmsgs = "";
 	if(!$mail->Send()){
 		$cxsmsgs = "Mailer Error: " . $mail->ErrorInfo;
-
-		//echo  "Mailer Error: " . $mail->ErrorInf."<br><br>";
-		//print_r($mail);
 	}else{
 		$cxsmsgs = "Email Successfully Sent";
 	}
 
-
 ?>
-
 
 <form action="Purch_edit.php" name="frmpos" id="frmpos" method="post">
 	<input type="hidden" name="txtctranno" id="txtctranno" value="<?php echo $csalesno;?>" />

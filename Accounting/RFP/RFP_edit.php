@@ -544,7 +544,8 @@
 	for (var i = 0; i < xzconfig.length; i++) {
     var object = xzconfig[i];
 		//alert(object.ext + " : " + object.name);
-		fileslist.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/RFP/<?=$company."_".$ccvno?>/" + object.name)
+		$vrx = encodeURIComponent(object.name);
+		fileslist.push("<?=$AttachUrlBase?>RFP/<?=$company."_".$ccvno?>/" + object.name)
 
 		if(jQuery.inArray(object.ext, arroffice) !== -1){
 			xtc = "office";

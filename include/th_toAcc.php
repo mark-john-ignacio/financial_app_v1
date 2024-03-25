@@ -211,7 +211,7 @@ function getSetAcct($id){
 			$SID = $Sales_Ewt["id"];
 			$SNM = $Sales_Ewt["name"];
 
-			$qrySIEWT  = "Select A.dcutdate,A.cacctid,A.cacctdesc,A.cewtcode,sum(A.newtgross) as newtgross
+			/*$qrySIEWT  = "Select A.dcutdate,A.cacctid,A.cacctdesc,A.cewtcode,sum(A.newtgross) as newtgross
 			From (Select B.dcutdate, C.cacctid,C.cacctdesc, A.citemno, A.nrate, A.newtrate, D.cbase, nqty, nprice, 
 			CASE 
 				WHEN IFNULL(A.newtrate,0) <> 0 
@@ -228,25 +228,32 @@ function getSetAcct($id){
 			left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno 
 			left join accounts C on A.compcode=C.compcode and B.cacctcode=C.cacctno 
 			left join wtaxcodes D on A.compcode=D.compcode and A.cewtcode=D.ctaxcode 
-			where A.compcode='$company' and A.ctranno='$tran') A Group By A.dcutdate,A.cacctid,A.cacctdesc,A.cewtcode";
+			where A.compcode='$company' and A.ctranno='$tran') A Group By A.dcutdate,A.cacctid,A.cacctdesc,A.cewtcode";*/
+
+			$qrySIEWT = "Select B.dcutdate,C.cacctid,C.cacctdesc,B.cewtcode,sum(B.newt) as newtgross
+			From sales B
+			left join accounts C on B.compcode=C.compcode and B.cacctcode=C.cacctno 
+			left join wtaxcodes D on B.compcode=D.compcode and B.cewtcode=D.ctaxcode 
+			where B.compcode='$company' and B.ctranno='$tran'";
+
 			$resewt = mysqli_query($con,$qrySIEWT);
-				$isok = "True";
-				if (mysqli_num_rows($resewt)!=0) {
-					while($rowewt = mysqli_fetch_array($resewt, MYSQLI_ASSOC)){
+			$isok = "True";
+			if (mysqli_num_rows($resewt)!=0) {
+				while($rowewt = mysqli_fetch_array($resewt, MYSQLI_ASSOC)){
 
-						if(floatval($rowewt["newtgross"]) != 0){
-						
-							if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`, `ctaxcode`) values ('$company','SI','$tran','".$rowewt["dcutdate"]."','$SID','$SNM',".$rowewt["newtgross"].",0,0, NOW(),'".$rowewt["cewtcode"]."')")){
-								echo "False";
-								//echo mysqli_error($con);
-								$isok = "False";
-							}
-
-						}
+					if(floatval($rowewt["newtgross"]) != 0){
 					
+						if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`, `ctaxcode`) values ('$company','SI','$tran','".$rowewt["dcutdate"]."','$SID','$SNM',".$rowewt["newtgross"].",0,0, NOW(),'".$rowewt["cewtcode"]."')")){
+							echo "False";
+							//echo mysqli_error($con);
+							$isok = "False";
+						}
+
 					}
 				
 				}
+			
+			}
 
 		//Items Entry	
 		
@@ -274,12 +281,12 @@ function getSetAcct($id){
 			$SID = $Sales_Vat["id"];
 			$SNM = $Sales_Vat["name"];
 			
-			$sqlvat = "Select A.dcutdate, A.ctaxcode, Sum(A.nVat) as nVat
+			$sqlvat = "Select A.dcutdate, Sum(A.nVat) as nVat
 				From (
-					Select B.dcutdate, A.citemno, A.ctaxcode, ROUND((SUM(A.namount)/(1 + (D.nrate/100))) * ((D.nrate/100)), 2) AS nVat
+					Select B.dcutdate, A.citemno, ROUND((SUM(A.namount)/(1 + (D.nrate/100))) * ((D.nrate/100)), 2) AS nVat
 					From sales_t A 
 					left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno 
-					left join accounts C on A.compcode=C.compcode and A.cacctcode=C.cacctno 
+					left join accounts C on B.compcode=C.compcode and B.cacctcode=C.cacctno 
 					left join taxcode D on A.compcode=D.compcode and A.ctaxcode=D.ctaxcode 
 					left join vatcode E on B.compcode=E.compcode and B.cvatcode=E.cvatcode 
 					where A.compcode='$company' and A.ctranno='$tran'
@@ -292,7 +299,7 @@ function getSetAcct($id){
 				if (mysqli_num_rows($resvat)!=0) {
 					while($rowvat = mysqli_fetch_array($resvat, MYSQLI_ASSOC)){
 						
-						if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`, `ctaxcode`) values ('$company','SI','$tran','".$rowvat["dcutdate"]."','$SID','$SNM',0,".$rowvat["nVat"].",0, NOW(), '".$rowvat["ctaxcode"]."')")){
+						if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) values ('$company','SI','$tran','".$rowvat["dcutdate"]."','$SID','$SNM',0,".$rowvat["nVat"].",0, NOW())")){
 							echo "False";
 							//echo mysqli_error($con);
 							$isok = "False";
@@ -324,51 +331,6 @@ function getSetAcct($id){
 
 	}
 	
-	else if($typ=="IN"){
-
-			//get Item entry
-			global $con;
-			global $compcode;
-			global $xcomp;		
-		
-			//get Customer Entry
-		if($cSIsalescodetype=="multiple"){
-			$qrySI = "INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','IN','$tran',A.dcutdate,B.cacctno,D.cacctdesc,C.ngross,0,0,NOW()
-					From ntsales A
-					left join customers_accts B on A.compcode=B.compcode and A.ccode=B.ccode
-					right join (
-						Select B.ctype, sum(A.namount) as ngross
-						From ntsales_t A
-						left join items B on A.compcode=B.compcode and A.citemno=B.cpartno
-						where A.compcode='$company' and A.ctranno='$tran'
-						Group By B.ctype
-					) C on B.citemtype=C.ctype
-					left join accounts D on B.compcode=D.compcode and B.cacctno=D.cacctno 
-					where A.compcode='$company' and A.ctranno='$tran'";
-		}else{
-			$qrySI = "INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','IN','$tran',A.dcutdate,B.cacctid,B.cacctdesc,A.ngross,0,0,NOW() From ntsales A left join accounts B on A.compcode=B.compcode and A.cacctcode=B.cacctno where A.compcode='$company' and A.ctranno='$tran'";
-		}
-			
-		if (!mysqli_query($con,$qrySI)){
-			
-			echo "False";
-		}
-		else{
-		
-		//Items Entry	
-			
-			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company','IN','$tran',B.dcutdate,C.cacctid as cacctcode,C.cacctdesc,0,ROUND(SUM(A.namount),2),0,NOW() From ntsales_t A left join ntsales B on A.compcode=B.compcode and A.ctranno=B.ctranno left join accounts C on A.compcode=C.compcode and A.cacctcode=C.cacctno where A.compcode='$company' and A.ctranno='$tran' group by B.dcutdate,C.cacctid,C.cacctdesc")){
-				echo "False";
-			}
-			else{
-				echo "True";
-			}
-
-		}
-
-
-	}
-
 	else if($typ=="POS"){
 
 		//get Item entry
@@ -624,22 +586,34 @@ function getSetAcct($id){
 				
 		//Bank Deposit -> Debit Account -> Debit
 
-			if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'BD', '$tran', A.dcutdate, A.cacctcode, B.cacctdesc, A.namount, 0, 0, NOW() From deposit A left join accounts B on A.compcode=B.compcode and A.cacctcode=B.cacctid where A.compcode='$company' and A.ctranno='$tran' ")){
-				echo "False";
-			}
-			else{
+			//if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) Select '$company', 'BD', '$tran', A.dcutdate, A.cacctcode, B.cacctdesc, A.namount, 0, 0, NOW() From deposit A left join accounts B on A.compcode=B.compcode and A.cacctcode=B.cacctid where A.compcode='$company' and A.ctranno='$tran' ")){
+				
+			//}
+		//	else{
 					//ORs in details -> debit account -> Credit
 					
-					$sqlbd = "Select A.ctranno, B.dcutdate, C.cacctcode, D.cacctdesc, C.namount From deposit_t A left join deposit B on A.compcode=B.compcode and A.ctranno=B.ctranno left join receipt C on A.compcode=C.compcode and A.corno=C.ctranno left join accounts D on C.compcode=D.compcode and C.cacctcode=D.cacctid where A.compcode='$company' and A.ctranno='$tran'";
+					$sqlbd = "Select A.ctranno, B.dcutdate, C.cacctcode, D.cacctdesc, C.namount, B.cacctcode as cMainAcct, E.cacctdesc as cMainDesc, A.corno
+					From deposit_t A 
+					left join deposit B on A.compcode=B.compcode and A.ctranno=B.ctranno 
+					left join receipt C on A.compcode=C.compcode and A.corno=C.ctranno 
+					left join accounts D on C.compcode=D.compcode and C.cacctcode=D.cacctid 
+					left join accounts E on B.compcode=E.compcode and B.cacctcode=E.cacctid 
+					where A.compcode='$company' and A.ctranno='$tran'";
 
 					$resbd = mysqli_query($con,$sqlbd);
 					$isok = "True";
 					if (mysqli_num_rows($resbd)!=0) {
 						while($rowbd = mysqli_fetch_array($resbd, MYSQLI_ASSOC)){
 							
-							if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`) values ('$company','BD','$tran','".$rowbd ["dcutdate"]."','".$rowbd ["cacctcode"]."','".$rowbd ["cacctdesc"]."',0,".$rowbd ["namount"].",0, NOW())")){
+							if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`,`crefno`) values ('$company','BD','$tran','".$rowbd ["dcutdate"]."','".$rowbd ["cMainAcct"]."','".$rowbd ["cMainDesc"]."',".$rowbd ["namount"].",0,0, NOW(),'".$rowbd ["corno"]."')")){
 								echo "False";
-								$isok = "False";
+							}
+							else{
+								if (!mysqli_query($con,"INSERT INTO `glactivity`(`compcode`, `cmodule`, `ctranno`, `ddate`, `acctno`, `ctitle`, `ndebit`, `ncredit`, `lposted`, `dpostdate`,`crefno`) values ('$company','BD','$tran','".$rowbd ["dcutdate"]."','".$rowbd ["cacctcode"]."','".$rowbd ["cacctdesc"]."',0,".$rowbd ["namount"].",0, NOW(),'".$rowbd ["corno"]."')")){
+									echo "False";
+									$isok = "False";
+								}
+
 							}
 						
 						}
@@ -649,7 +623,7 @@ function getSetAcct($id){
 						echo "True";
 					}
 									
-			}
+		//	}
 
 	}
 

@@ -67,7 +67,7 @@ include('../../include/access.php');
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-	<title>Coop Financials</title>
+	<title>MYX Financials</title>
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?v=<?php echo time();?>"> 
     <link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>   
     
@@ -304,7 +304,7 @@ $(function() {
 	
 		source: function(request, response) {
 			$.ajax({
-				url: "th_accounts.php",
+				url: "../th_accounts.php",
 				dataType: "json",
 				data: {
 					query: request

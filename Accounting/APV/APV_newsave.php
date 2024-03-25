@@ -1,17 +1,17 @@
 <?php
-if(!isset($_SESSION)){
-session_start();
-}
-include('../../Connection/connection_string.php');
-include('../../include/denied.php');
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	include('../../Connection/connection_string.php');
+	include('../../include/denied.php');
 
-$dmonth = date("m");
-$dyear = date("y");
-$company = $_SESSION['companyid'];
+	$dmonth = date("m");
+	$dyear = date("y");
+	$company = $_SESSION['companyid'];
 
-//echo "<pre>";
-//print_r($_REQUEST);
-//echo "</pre>";
+	//echo "<pre>";
+	//print_r($_REQUEST);
+	//echo "</pre>";
 
 	@$arrwtxlist = array();
 	$gettaxcd = mysqli_query($con,"SELECT * FROM `wtaxcodes` where compcode='$company' and cstatus='ACTIVE'"); 
@@ -21,36 +21,33 @@ $company = $_SESSION['companyid'];
 		}
 	}
 
-
-
-
-$chkSales = mysqli_query($con,"select * from apv where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");
-if (mysqli_num_rows($chkSales)==0) {
-	$cSINo = "AP".$dmonth.$dyear."00000";
-}
-else {
-	while($row = mysqli_fetch_array($chkSales, MYSQLI_ASSOC)){
-		$lastSI = $row['ctranno'];
-	}
-	
-	//echo $lastSI."<br>";
-	//echo substr($lastSI,2,2)." <> ".$dmonth."<br>";
-	if(substr($lastSI,2,2) <> $dmonth){
+	$chkSales = mysqli_query($con,"select * from apv where compcode='$company' and YEAR(ddate) = YEAR(CURDATE()) Order By ctranno desc LIMIT 1");
+	if (mysqli_num_rows($chkSales)==0) {
 		$cSINo = "AP".$dmonth.$dyear."00000";
 	}
-	else{
-		$baseno = intval(substr($lastSI,6,5)) + 1;
-		$zeros = 5 - strlen($baseno);
-		$zeroadd = "";
-		
-		for($x = 1; $x <= $zeros; $x++){
-			$zeroadd = $zeroadd."0";
+	else {
+		while($row = mysqli_fetch_array($chkSales, MYSQLI_ASSOC)){
+			$lastSI = $row['ctranno'];
 		}
 		
-		$baseno = $zeroadd.$baseno;
-		$cSINo = "AP".$dmonth.$dyear.$baseno;
+		//echo $lastSI."<br>";
+		//echo substr($lastSI,2,2)." <> ".$dmonth."<br>";
+		if(substr($lastSI,2,2) <> $dmonth){
+			$cSINo = "AP".$dmonth.$dyear."00000";
+		}
+		else{
+			$baseno = intval(substr($lastSI,6,5)) + 1;
+			$zeros = 5 - strlen($baseno);
+			$zeroadd = "";
+			
+			for($x = 1; $x <= $zeros; $x++){
+				$zeroadd = $zeroadd."0";
+			}
+			
+			$baseno = $zeroadd.$baseno;
+			$cSINo = "AP".$dmonth.$dyear.$baseno;
+		}
 	}
-}
 
 	
 	$cCustID =  mysqli_real_escape_string($con, $_REQUEST['txtcustid']);
@@ -89,26 +86,26 @@ else {
 		$acctno = mysqli_real_escape_string($con, $_REQUEST['txtrefacctno'.$z]);
 		$amnt = mysqli_real_escape_string($con, str_replace( ',', '', $_REQUEST['txtnamount'.$z]));
 		
-		$vtcode = mysqli_real_escape_string($con, $_REQUEST['txtnvatcode'.$z]);
-		$vtrate = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtnvatrate'.$z]));
-		$vtvals = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtnvatval'.$z]));
-		$vtnets = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtvatnet'.$z]));
-		$ewtcde = mysqli_real_escape_string($con, $_REQUEST['txtewtcode'.$z]);
-		$ewtrte = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtewtrate'.$z]));
-		$ewtamt = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtewtamt'.$z]));
+		//$vtcode = mysqli_real_escape_string($con, $_REQUEST['txtnvatcode'.$z]);
+		//$vtrate = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtnvatrate'.$z]));
+		//$vtvals = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtnvatval'.$z]));
+		//$vtnets = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtvatnet'.$z]));
+		//$ewtcde = mysqli_real_escape_string($con, $_REQUEST['txtewtcode'.$z]);
+		//$ewtrte = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtewtrate'.$z]));
+		//$ewtamt = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtewtamt'.$z]));
 		//$paymnt = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtpayment'.$z]));
 		$paymnt = 0;
 		$dueamt = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtDue'.$z]));
 		$applid = $dueamt;
 		//$applid = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtnapplied'.$z]));  
 		$apcms = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtncm'.$z]));
-		$apdiscs = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtndiscs'.$z]));
-		
-		$cacctno = "";
+		//$apdiscs = mysqli_real_escape_string($con,  str_replace( ',', '', $_REQUEST['txtndiscs'.$z]));
 
 		$refcidenttran = $cSINo."P".$z;
 	
-		if(!mysqli_query($con,"INSERT INTO `apv_d`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `crefno`, `crefinv`, `namount`, `cvatcode`, `nvatrate`, `nnet`, `nvatamt`, `cewtcode`, `newtrate`, `newtamt`, `napcm`, `napdisc`, `ndue`, `npayments`, `napplied`, `cacctno`) values('$company', '$refcidenttran', '$z', '$cSINo', '$crrno', '$ccustsi', $amnt, '$vtcode', '$vtrate', $vtnets, $vtvals, '$ewtcde', '$ewtrte', $ewtamt, $apcms, $apdiscs, $dueamt, $paymnt, $applid, '$acctno')")){ 
+		//, `cvatcode`, `nvatrate`, `cewtcode`, `newtrate`, `napdisc`, `nnet`, `nvatamt`, `newtamt`
+		//, '$vtcode', '$vtrate', '$ewtcde', '$ewtrte', $apdisc, $vtnets, $vtvals, $ewtamt
+		if(!mysqli_query($con,"INSERT INTO `apv_d`(`compcode`, `cidentity`, `nidentity`, `ctranno`, `crefno`, `crefinv`, `namount`, `napcm`, `ndue`, `npayments`, `napplied`, `cacctno`) values('$company', '$refcidenttran', '$z', '$cSINo', '$crrno', '$ccustsi', $amnt, $apcms, $dueamt, $paymnt, $applid, '$acctno')")){ 
 			
 			printf("Errormessage: %s\n", mysqli_error($con));
 		}
@@ -171,7 +168,7 @@ else {
 
 	}
 
-	$rowcnt3 = $_REQUEST['hdnrowcnt3'];	 
+	/*$rowcnt3 = $_REQUEST['hdnrowcnt3'];	 
 	for($z=1; $z<=$rowcnt3; $z++){
 		
 		$crefrr = mysqli_real_escape_string($con,$_REQUEST['txtcmdcrr'.$z]);
@@ -185,7 +182,7 @@ else {
 		
 		mysqli_query($con,"INSERT INTO `apv_deds`(`compcode`, `ctranno`, `cidentity`, `nidentity`, `crefrr`, `ctype`, `namount`, `cremarks`, `cacctno`) values('$company', '$cSINo', '$refcidenttran', '$zdc', '$crefrr', 'DISC', $namt, '$cremrks', '$cacctno')");
 
-	}
+	}*/
 
 
 	//insert attachment
@@ -219,11 +216,23 @@ else {
 	mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
 	values('$company','$cSINo','$preparedby',NOW(),'INSERTED','APV','$compname','Inserted New Record')");
 
+	$xurl = "";
+	if($cAPtype=="Others" || $cAPtype=="PettyCash"){
+		$xurl = "APV_edit.php";
+	}else{
+		$xurl = "th_acctentry2.php";
+	}
 ?>
-<form action="APV_edit.php" name="frmpos" id="frmpos" method="post">
+<form action="<?=$xurl?>" name="frmpos" id="frmpos" method="post">
 	<input type="hidden" name="txtctranno" id="txtctranno" value="<?php echo $cSINo;?>" />
 </form>
 <script>
-	alert('Record Succesfully Saved');
+	<?php
+		if($cAPtype=="Others" || $cAPtype=="PettyCash"){
+	?>
+		alert('Record Succesfully Saved');
+	<?php
+		}
+	?>
     document.forms['frmpos'].submit();
 </script>

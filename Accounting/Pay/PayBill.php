@@ -270,21 +270,7 @@ mysqli_close($con);
 				var msg = "POSTED";
 
 				//generate GL ENtry muna
-				$.ajax ({
-					dataType: "text",
-					url: "../../include/th_toAcc.php",
-					data: { tran: num, type: "PV" },
-					async: false,
-					success: function( data ) {
-						//alert(data.trim());
-						if(data.trim()=="True"){
-							itmstat = "OK";								
-						}
-						else{
-							itmstat = data.trim();	
-						}
-					}
-				});
+				
 			}
 			else if(x=="CANCEL" || x=="CANCEL1"){
 				var msg = "CANCELLED";
@@ -305,6 +291,27 @@ mysqli_close($con);
 					},
 					success: function( data ) {
 						console.log(data);
+
+						$.each(data,function(key,value){
+							if(value.isfinal=="Yes"){
+								$.ajax ({
+									dataType: "text",
+									url: "../../include/th_toAcc.php",
+									data: { tran: num, type: "PV" },
+									async: false,
+									success: function( data ) {
+										//alert(data.trim());
+										if(data.trim()=="True"){
+											itmstat = "OK";								
+										}
+										else{
+											itmstat = data.trim();	
+										}
+									}
+								});
+							}
+						});
+
 						setmsg(data,num);
 					}
 				});

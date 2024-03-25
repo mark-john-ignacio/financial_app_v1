@@ -4,75 +4,134 @@
     }
     include "../../Connection/connection_string.php";
     include "../../Model/helper.php";
+
     $company = $_SESSION['companyid'];
     $bankcode = $_POST['bank'];
     $from = date("Y-m-d", strtotime($_POST['rangefrom']));
     $to = date("Y-m-d", strtotime($_POST['rangeto']));
 
-    $deposit = [];
-    $bankRecon = [
-        'refno' => [],
-        'credit' => [],
-        'debit' => [],
-        'tranno' => [],
-        'module' => [], 
-    ];
-    $EXCEL_TOTAL = 0;
-    $totalTransit = 0;
-    
-    $bookTotal = 0;
-    $UNRECORD_DEPOSIT = 0;
 
-    $excel = ExcelRead($_FILES);
-    $sql = "SELECT * FROM bank WHERE compcode = '$company' AND cacctno = '$bankcode'";
+    mysqli_query($con, "Delete From bank_recon_temp Where compcode = '$company'");
+
+    $sql = "SELECT * FROM bank WHERE compcode = '$company' AND ccode = '$bankcode'";
     $query = mysqli_query($con, $sql);
     $row = $query -> fetch_array(MYSQLI_ASSOC);
     $bcode = $row['ccode'];
     $bank = $row['cname'];
+    $bankacct = $row['cacctno'];
+    $bankacctno = $row['cbankacctno'];
 
+    $nBankBalance = 0;
+
+    $excel = ExcelRead($_FILES);
+    $bnkcnt = 0;
+    foreach($excel as $row){
+        $bnkcnt++;
+        if($bnkcnt>1){
+            $nforid = $bnkcnt-1;
+            $date = $row[0];
+            $accountNature = $row[1];
+            $checkno = $row[2];
+            $debit = str_replace( ',', '', $row[3]);
+            $credit = str_replace( ',', '', $row[4]);
+
+            mysqli_query($con, "INSERT into bank_recon_temp(`compcode`, `nid`, `bank_date`, `bank_name`, `bank_reference`, `bank_debit`, `bank_credit`) VALUES ('$company',".$nforid.",STR_TO_DATE('$date', '%m/%d/%Y'),'$accountNature','$checkno','$debit','$credit')");
+            
+            $nBankBalance = str_replace( ',', '', $row[5]); 
+        }
+    }
+
+    $query = mysqli_query($con, "Select * From bank_recon_temp Where compcode='$company'");
+    $bkrectemp = array();
+    while($row = mysqli_fetch_array($query, MYSQLI_ASSOC)){
+        $bkrectemp[] = $row;
+    }
 
     //References from PV and OR
     $depositRef = array();
-    $sql = "SELECT cpayee as named, ctranno, CASE WHEN cpaymethod='cheque' THEN ccheckno Else cpayrefno END as refno, npaid
+    $date1 = $_POST['rangefrom'];
+    $date2 =$_POST['rangeto'];
+
+    $sql = "SELECT 'PV' as cmod, ctranno, dcheckdate as ddate, cpayee as named, CASE WHEN cpaymethod='cheque' THEN ccheckno Else cpayrefno END as refno, npaid, cparticulars as cremarks
     FROM paybill
-    WHERE compcode = '$company' and cacctno = '$bankcode' AND lapproved = 1 AND lvoid = 0
+    WHERE compcode = '$company' and cacctno = '$bankacct' AND lapproved = 1 AND lvoid = 0
+    and dcheckdate between '$date1' and '$date2'
     UNION ALL 
-    SELECT c.cname as named, ctranno, CASE WHEN a.cpaymethod='cheque' THEN d.ccheckno Else e.crefno END as refno, d.nchkamt as npaid
+    SELECT 'OR' as cmod, a.ctranno, a.dcutdate as ddate, c.cname as named, CASE WHEN a.cpaymethod='cheque' THEN d.ccheckno Else e.crefno END as refno, d.nchkamt as npaid, a.cremarks
     FROM receipt a
     LEFT JOIN customers c ON a.compcode = c.compcode AND a.ccode = c.cempid
     LEFT JOIN receipt_check_t d ON a.compcode = d.compcode AND a.ctranno = d.ctranno
     LEFT JOIN receipt_opay_t e ON a.compcode = e.compcode AND a.ctranno = e.ctranno
-    WHERE a.compcode ='$company' AND a.cacctcode ='$bankcode' AND a.lapproved = 1 AND a.lvoid = 0";
+    WHERE a.compcode ='$company' AND a.cacctcode ='$bankacct' AND a.lapproved = 1 AND a.lvoid = 0
+    and dcutdate between '$date1' and '$date2'
+    UNION ALL 
+    SELECT 'OR' as cmod, a.ctranno, a.dcutdate as ddate, d.cname as named, b.creference as refno, b.namount as npaid, CONCAT(b.corno,' - ',c.cremarks) as cremarks
+    FROM deposit a
+    LEFT JOIN deposit_t b ON a.compcode = b.compcode AND a.ctranno = b.ctranno
+    LEFT JOIN receipt c ON b.compcode = c.compcode AND b.corno = c.ctranno
+    LEFT JOIN customers d ON c.compcode = d.compcode AND c.ccode = d.cempid
+    WHERE a.compcode ='$company' AND a.cacctcode ='$bankacct' AND a.lapproved = 1 AND a.lvoid = 0
+    and a.dcutdate between '$date1' and '$date2'
+    ";
+
     $query = mysqli_query($con, $sql);
-    while($row = $query -> fetch_assoc()){
-        array_push($depositRef, $row);
-    }
-
-    $deposit = array();
-    $sql = "SELECT * FROM glactivity WHERE compcode = '$company' AND acctno = '$bankcode' AND (STR_TO_DATE(ddate, '%Y-%m-%d') BETWEEN '$from' AND '$to')";
-    $query = mysqli_query($con, $sql);
-    // Fetching Data for GL Activity
-    while($row = $query -> fetch_assoc()){
-        array_push($deposit, $row);
-    }
-
-    function getref($cxmod,$cxtran){
-        global $depositRef;
-
-        $retrefarray = array();
-        foreach($depositRef as $reff){
-            if($cxtran==$reff['ctranno']){
-                $retrefarray[] = array('cref' => $reff['ctranno'], 'namt' => $reff['npaid']);
-            }
+    $bookcnt = 0;
+    while($row = mysqli_fetch_array($query, MYSQLI_ASSOC)){
+        $depositRef[] = $row;
+        $istre = getref($row, $bnkcnt);
+        if($istre=="True"){
+            $bnkcnt++;
         }
 
-        return $retrefarray;
     }
 
+    $BookTotal = 0;
 
-    echo "<pre>";
-    print_r($deposit);
-    echo "</pre>";
+    function getref($row, $latestid){
+        global $con;
+        global $company;
+        global $depositRef;
+        global $excel;
+        global $bkrectemp;
+
+        $retrefarray = array();
+        $ifyes = "True";
+
+        foreach($bkrectemp as $reff){
+      
+            if($row['cmod']=="PV"){   
+                if($row['refno']==$reff['bank_reference'] && $row['npaid']==$reff['bank_debit']){
+                    $ifyes = "False";
+                    
+                    mysqli_query($con, "UPDATE bank_recon_temp set book_date = '".$row['ddate']."', book_trans = '".$row['ctranno']."', book_amount = '".$row['npaid']."', book_module = '".$row['cmod']."', book_remarks = '".$row['cremarks']."' Where `compcode` = '$company' and `nid` = '".$reff['nid']."'");
+                }
+            }else if($row['cmod']=="OR"){
+                if($row['refno']==$reff['bank_reference'] && $row['npaid']==$reff['bank_credit']){
+                    $ifyes = "False";
+                    
+                    mysqli_query($con, "UPDATE bank_recon_temp set book_date = '".$row['ddate']."', book_trans = '".$row['ctranno']."', book_amount = '".$row['npaid']."', book_module = '".$row['cmod']."', book_remarks = '".$row['cremarks']."' Where `compcode` = '$company' and `nid` = '".$reff['nid']."'");
+                }
+            }
+
+        }
+
+        if($ifyes == "True"){
+            $latestid++;
+
+            $crmx =  mysqli_real_escape_string($con, $row['cremarks']);
+            mysqli_query($con, "INSERT into bank_recon_temp(`compcode`, `nid`, `book_date`, `book_trans`, `book_amount`, `book_module`, `book_remarks`) VALUES ('$company', ".$latestid.",'".$row['ddate']."','".$row['ctranno']."','".$row['npaid']."','".$row['cmod']."','".$crmx."')");  
+        }
+
+        return $ifyes;
+    }
+
+    
+    $query = mysqli_query($con, "Select * From bank_recon_temp Where compcode='$company'");
+    $bkrectemp = array();
+    while($row = mysqli_fetch_array($query, MYSQLI_ASSOC)){
+        $bkrectemp[] = $row;
+    }
+
 ?>
 
 <!DOCTYPE html>
@@ -112,48 +171,32 @@
         </div>
         <div class="portlet-body" style="margin-top: 10px; font-size: 15px">
             <div class="well well-large">
-                <h4 style="margin-bottom: 0 !important"> Period: <?= date("M d, Y",strtotime($from)) ?> to <?= date("M d, Y",strtotime($to)) ?> </h4>
-                <h4 style="margin-top: 0 !important"> Bank: <?= $bank ?> </h4>
 
                 <div class="row">
-                    <div class="col-xs-3">Balance per Bank </div>
-                    <div class="col-xs-3 text-right"><?= number_format($EXCEL_TOTAL,2) ?></div>
+                    <div class="col-xs-1"><b>Bank</b></div>
+                    <div class="col-xs-5"><?= $bank ?></div>
 
-                    <div class="col-xs-3">Balance per Book: </div>
-                    <div class="col-xs-3 text-right" id="book"><?= number_format($bookTotal,2) ?></div>
+                    <div class="col-xs-3"><b>Transactions Period: </b></div>
+                    <div class="col-xs-3 text-right" id="book"><?= date("M d, Y",strtotime($from)) ?> to <?= date("M d, Y",strtotime($to)) ?></div>
                 </div>
-
                 <div class="row">
-                    <div class="col-xs-3" style="padding-left: 30px;">Add: Deposit in Transit </div>
-                    <div class="col-xs-3 text-right"><?= number_format($totalTransit,2) ?></div>
+                    <div class="col-xs-1">&nbsp; </div>
+                    <div class="col-xs-5"><?=$bankacctno?></div>
 
-                    <div class="col-xs-3" style="padding-left: 30px;">Add: Unrecorded Deposit </div>
-                    <div class="col-xs-3 text-right" id="book"><?= number_format($UNRECORD_DEPOSIT,2) ?></div>
                 </div>
-
                 <div class="row">
-                    <div class="col-xs-3">Total </div>
-                    <div class="col-xs-3 text-right"><?= number_format($totalBank,2) ?></div>
-
-                    <div class="col-xs-3">Total </div>
-                    <div class="col-xs-3 text-right" id="book"><?= number_format($totalBook,2) ?></div>
+                    <div class="col-xs-1">&nbsp; </div>
+                    <div class="col-xs-5"><?=$bankacct?></div>
                 </div>
 
-                <div class="row">
-                    <div class="col-xs-3" style="padding-left: 30px;">Less: Outstanding Cheques </div>
-                    <div class="col-xs-3 text-right"><?= number_format($OUTSTAND_CHEQUE,2) ?></div>
+                <div class="row" style="margin-top: 10px">
+                    <div class="col-xs-3">Bank Balance: </div>
+                    <div class="col-xs-3 text-right"><?= number_format($nBankBalance,2) ?></div>
 
-                    <div class="col-xs-3" style="padding-left: 30px; padding-right: 0;">Less: Unrecorded Withdrawal </div>
-                    <div class="col-xs-3 text-right" id="book"><?= number_format($UNRECORD_WITHDRAW,2) ?></div>
+                    <div class="col-xs-3">Book Balance: </div>
+                    <div class="col-xs-3 text-right" id="book"><?= number_format($BookTotal,2) ?></div>
                 </div>
 
-                <div class="row">
-                    <div class="col-xs-3">Adjust Bank Balance: </div>
-                    <div class="col-xs-3 text-right"><?= number_format($ADJUST_BANK,2) ?></div>
-
-                    <div class="col-xs-3">Adjust Book Balance: </div>
-                    <div class="col-xs-3 text-right" id="book"><?= number_format($ADJUST_BOOK,2) ?></div>
-                </div>
             </div>
         </div>
     </div>
@@ -171,507 +214,214 @@
         </div>
         <div class="portlet-body">
             <div class="row"><div class="col-md-12 col-sm-12 col-xs-12">
-                <table class="table table-sm" id="chequeBank">
+                <table class="table table-sm" id="TblMatch">
                     <thead>
                         <tr>
-                            <th class="success" colspan='3' style='text-align: center'>Bank Statement</th>
-                            <th class="danger" colspan='3' style='text-align: center'>Myx Transactions</th>
-                            <th class="warning" rowspan='2' style='text-align: center; vertical-align: middle'>Confirm</th>
+                            <th class="success" colspan='3' style='text-align: center' width="50%">Bank Statement</th>
+                            <th class="danger" colspan='2' style='text-align: center' width="50%">Myx Transactions</th>
                         </tr>
                         <tr>
-                            <th>Transaction Details</th>
+                            <th nowrap>Transaction Details</th>
                             <th>Reference</th>
                             <th style='text-align: right'>Amount</th>
-                            <th>Transaction Details</th>
+                            <th nowrap>Transaction Details</th>
                             <th>Reference</th>
-                            <th style='text-align: right'>Amount</th>
                         </tr>
+                    </thead>
+                    <tbody> 
                         <?php
-                            $ref = "";
-                            $namt = "";
-                            foreach($data_excel as $row){
-                                $ref = "";
-                                $namt = "";
-                                $namtLabel = "";
-                                if($row[2]==""){
-                                    $ref = "<i>No Reference</i>";
-                                }else{
-                                    $ref = $row[2];
-                                }
+                           // print_r($excel);
+                            $cnt = 0;
+                            foreach($bkrectemp as $row){    
 
-                                if($row[3]=="" || $row[3]==0){
-                                    $namt = $row[4];
-                                    $namtLabel = "<i>Credit</i>";
-                                }else{
-                                    $namt = $row[3];
-                                    $namtLabel = "<i>Debit</i>";
-                                }
-
-                                $reftran = "";
-                                foreach($deposit as $rsx){
-                                    $xref = getref($rsx['cmodule'],$rsx['ctranno']);
-                                    if($rsx['ddate']==$row[0] && $xref==$ref){
-                                        $reftran = $rsx['ctranno'];
+                                if((floatval($row['bank_debit'])!=0 || floatval($row['bank_credit'])!=0) && floatval($row['book_amount'])!=0){
+                                    if($row['bank_debit']!=0){
+                                        $xdbtc = "Debit";
+                                        $namt = $row['bank_debit'];
+                
+                                    }else{
+                                        $xdbtc = "Credit";
+                                        $namt = $row['bank_credit'];
                                     }
-                                }
                         ?>
                         <tr>
-                            <td><?=$row[0]."<br>".$row[1]?></td>
-                            <td><?=$ref."<br>".$namtLabel?></td>
-                            <td style='text-align: right'><?=number_format($namt,2)?></td>
-                            <td>Transaction Details</td>
-                            <td>Reference</td>
-                            <td style='text-align: right'>Amount</td>
+                            <td><?=$row['bank_name']."<br>".$row['bank_date']?></td>
+                            <td><?=$row['bank_reference']."<br>".$xdbtc?></td>
+                            <td style='text-align: right; vertical-align: middle'><?=number_format($namt,2)?></td>
+                            <td><?=$row['book_trans']."<br>".$row['book_date']?></td>
+                            <td style='vertical-align: middle'><?=$row['book_remarks']?></td>
                         </tr>
                         <?php
+                                }
                             }
                         ?>
-                    </thead>
-                    <tbody> </tbody>
+                    </tbody>
                 </table>
             </div></div>
         </div>
     </div>
 
-    <div class="portlet box yellow">
-        <div class="portlet-title">
-            <div class="caption">
-                <i class="fa fa-tasks"></i>Unmatched Bank Statement
-            </div>
-            <div class="tools">
-                <a href="javascript:;" class="collapse">
-                </a>
-               
-            </div>
-        </div>
-        <div class="portlet-body">
-            <div class="row">
-               
-            </div>
-        </div>
-    </div>
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 
-    <div class="portlet box purple">
-        <div class="portlet-title">
-            <div class="caption">
-                <i class="fa fa-tasks"></i>Unmatched MYX Transactions
+            <div class="portlet box yellow">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-tasks"></i>Unmatched Bank Statement
+                    </div>
+                    <div class="tools">
+                        <a href="javascript:;" class="collapse">
+                        </a>
+                    
+                    </div>
+                </div>
+                <div class="portlet-body">
+
+                    <table class="table table-sm table-hover" id="TblUnBank">
+                        <thead>
+                            <tr>
+                                <th nowrap>Transaction Details</th>
+                                <th>Reference</th>
+                                <th style='text-align: right'>Amount</th>                                   
+                            </tr>
+                        </thead>
+                        <tbody> 
+                            <?php
+                            // print_r($excel);
+                                $cnt = 0;
+                                foreach($bkrectemp as $row){    
+
+                                    if((floatval($row['bank_debit'])!=0 || floatval($row['bank_credit'])!=0) && floatval($row['book_amount'])==0){
+                                        if($row['bank_debit']!=0){
+                                            $xdbtc = "Debit";
+                                            $namt = $row['bank_debit'];
+                    
+                                        }else{
+                                            $xdbtc = "Credit";
+                                            $namt = $row['bank_credit'];
+                                        }
+                            ?>
+                            <tr onclick="checkbank();" style="cursor: pointer;">
+                                <td><?=$row['bank_name']."<br>".$row['bank_date']?></td>
+                                <td><?=$row['bank_reference']."<br>".$xdbtc?></td>
+                                <td style='text-align: right; vertical-align: middle'><?=number_format($namt,2)?></td>
+                            </tr>
+                            <?php
+                                    }
+                                }
+                            ?>
+                        </tbody>
+                    </table>
+
+                </div>
             </div>
-            <div class="tools">
-                <a href="javascript:;" class="collapse">
-                </a>
-               
-            </div>
+
         </div>
-        <div class="portlet-body">
-            <div class="row">
-               
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+
+            <div class="portlet box purple">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-tasks"></i>Unmatched MYX Transactions
+                    </div>
+                    <div class="tools">
+                        <a href="javascript:;" class="collapse">
+                        </a>
+                    
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <table class="table table-sm table-hover" id="TblUnBook">
+                        <thead>
+                            <tr>
+                                <th nowrap>Transaction Details</th>
+                                <th>Reference</th>
+                                <th style='text-align: right'>Amount</th>                                   
+                            </tr>
+                        </thead>
+                        <tbody> 
+                            <?php
+                            // print_r($excel);
+                                $cnt = 0;
+                                foreach($bkrectemp as $row){    
+
+                                    if((floatval($row['bank_debit'])==0 && floatval($row['bank_credit'])==0) && floatval($row['book_amount'])!=0){
+                            ?>
+                            <tr>
+                                <td style="display: none"><?=$row['book_module']?></td>
+                                <td style="display: none"><?=$row['book_trans']?></td>
+
+                                <td><?=$row['book_trans']."<br>".$row['book_date']?></td>
+                                <td style='vertical-align: middle'><?=$row['book_remarks']?></td>
+                                <td style='text-align: right; vertical-align: middle'><?=number_format($row['book_amount'],2)?></td>
+                            </tr>
+                            <?php
+                                    }
+                                }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
-<<<<<<< HEAD
-    </div>       
-=======
+
+        </div>   
     </div>
->>>>>>> production
     
     <div style="min-width: 10in; width: 100%; padding: 10px;  display: flex; justify-content: center; justify-items: items">
         <button type="button" class="btn btn-primary" onclick="Finalized.call(this)" id="Finalized" disabled>Finalize Bank Reconciliation</button>
     </div>
 
-    <div class="portlet box blue">
-        <div class="portlet-title">
-            <div class="caption">
-                <i class="fa fa-copy"></i>Matched Items
-            </div>
-            <div class="tools">
-                <a href="javascript:;" class="collapse">
-                </a>
-               
-            </div>
-        </div>
-        <div class="portlet-body">
-            <div class="row"><div class="col-md-12 col-sm-12 col-xs-12">
-                <table class="table table-sm" id="chequeBank">
-                    <thead>
-                        <tr>
-                            <th>Check Date</th>
-                            <th>Account Nature</th>
-                            <th>Check Number</th>
-                            <th style='text-align: right'>Debit</th>
-                            <th style='text-align: right'>Credit</th>
-                            <!-- <th>Amount</th> -->
-                            <th>&nbsp;</th>
-                        </tr>
-                    </thead>
-                    <tbody> </tbody>
-                </table>
-            </div></div>
-        </div>
-    </div>
 
-    <div class="portlet box yellow">
-        <div class="portlet-title">
-            <div class="caption">
-                <i class="fa fa-tasks"></i>Unmatched Bank Statement
-            </div>
-            <div class="tools">
-                <a href="javascript:;" class="collapse">
-                </a>
-               
-            </div>
-        </div>
-        <div class="portlet-body">
-            <div class="row">
-               
-            </div>
-        </div>
-    </div>
-
-    <div class="portlet box purple">
-        <div class="portlet-title">
-            <div class="caption">
-                <i class="fa fa-tasks"></i>Unmatched MYX Transactions
-            </div>
-            <div class="tools">
-                <a href="javascript:;" class="collapse">
-                </a>
-               
-            </div>
-        </div>
-        <div class="portlet-body">
-            <div class="row">
-               
-            </div>
-        </div>
-    </div>
-
-    <ul class="nav nav-tabs">
-		<li class="active"><a href="#items" data-toggle="tab">Matched Items</a></li>
-		<li><a href="#attc" data-toggle="tab">Unmatched Bank Statement</a></li>
-        <li><a href="#attc" data-toggle="tab">Unmatched System Transactions</a></li>
-	</ul>
-
-    <div style="min-width: 10in; width: 100%; min-height: 3in; max-height: 3in; border: 1px solid; overflow: auto; padding: 5px">
-        
-    </div>
-
-    <div class="modal fade" id="ReferenceModal">
+    <!-- Bootstrap modal -->
+    <div class="modal fade" id="myModal" role="dialog">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content" style="min-width: 650px">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title" id="invheader"> Find Match Cheque </h3>     
+            <div class="modal-content">
+            	<div class="modal-header">
+                    <h3 class="modal-title" id="invheader">MYX Transactions</h3>
+            	</div>
+            
+            	<div class="modal-body pre-scrollable">
+                      	
+                    <table name='MyORTbl' id='MyORTbl' class="table">
+                   	    <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th>Trans No</th>
+                                <th>Date</th>
+                                <th>Reference</th>
+                                <th>Remarks</th>
+                                <th style='text-align: right'>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                            
                 </div>
-                <div class="modal-body">
-                        <table class="table" id="match" style="padding: 10px;">
-                            <thead>
-                                <tr>
-                                    <th>&nbsp;</th>
-                                    <th>Date</th>
-                                    <th>Account Name</th>
-                                    <th>Reference Number</th>
-                                    <!-- <th>Amount</th> -->
-                                    <th>Debit</th>
-                                    <th>Credit</th>
-                                    <th style="background-color: #2d5f8b; color: white;">Account Name</th>
-                                    <th style="background-color: #2d5f8b; color: white;">Reference Number</th>
-                                    <!-- <th style="background-color: #2d5f8b; color: white;">Amount</th> -->
-                                    <th style="background-color: #2d5f8b; color: white;">Debit</th>
-                                    <th style="background-color: #2d5f8b; color: white;">Credit</th>
-                                </tr>                               
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                </div>
-                <div class="modal-footer">
-                    <button class='btn btn-success' onclick='matchup.call(this)' >Match</button>
-                </div>
-            </div>
-        </div>
-    </div>
+			
+            	<div class="modal-footer">
+                
+                    <button type="button" id="btnSave" onclick="save()" class="btn btn-primary">Match</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+
+           	 	</div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <!-- End Bootstrap modal -->
+
 </body>
 </html>
 
-<script>
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
->>>>>>> production
-    Metronic.init(); // init metronic core components
-
-    var transactions = [];
-    //PHP Array Converting to JS Array
-    var Reconciliation = <?= json_encode($bankRecon) ?>;
-    var ChequeExcel = <?= json_encode($excel) ?>
-
-    $(document).ready(function(){
-        ViewCheque();
-        ViewFinalized();
-    })
-    function isCheck(){
-        let row = $(this).closest("tr");
-        let modules = row.find("td:eq(0)").text();
-        let date = row.find("td:eq(2)").text();
-
-        let book_debit = row.find("td:eq(5)").text();
-        let book_credit = row.find("td:eq(6)").text();
-        
-        let reference = row.find("td:eq(8)").text();
-        
-        let debit = row.find("td:eq(9)").text();
-        let credit = row.find("td:eq(10)").text();
-        let tranno = $(this).val();
-        
-        if ($(this).is(":checked")) {
-            transactions.push({
-                tranno: tranno,
-                module: modules,
-                refno: reference,
-
-                book_debit: book_debit,
-                book_credit: book_credit,
-
-                date: date,
-
-                credit: credit,
-                debit: debit
-            });
-        } else {
-            const indexToRemove = transactions.findIndex(transaction => transaction.tranno === tranno);
-
-            if (indexToRemove !== -1) {
-                transactions.splice(indexToRemove, 1);
-            }
-            
-            $(this).prop("checked", false)
-        }
-        
-    }
-
-    function LoadMatchCheque(){
-        let row = $(this).closest("tr");
-        let reference = row.find("td:eq(2)").text();
-        let name = row.find("td:eq(1)").text();
-        let date = row.find("td:eq(0)").text();
-        // let amount = row.find("td:eq(3)").text();
-        let debit = row.find("td:eq(3)").text();
-        let credit = row.find("td:eq(4)").text();
-        let bank = '<?= $bankcode ?>';
-        let tranno = '<?= json_encode($bankRecon['tranno']) ?>';
-        console.log(tranno)
-
-        $("#match > tbody").empty();
-        $.ajax({
-            url: "th_checkref.php",
-            type: 'post',
-            data: { 
-                refno: reference,  
-                name: name, 
-                date: date,
-                bank: bank,
-                tranno: JSON.stringify(tranno)
-            },
-            dataType: "json",
-            async: false,
-            success: function(res){
-                if(res.valid){
-                    $("#ReferenceModal").modal("show")
-                    res.data.map((item, index) => {
-                        $("<tr>").append(
-                            $("<td style='display: none'>").text(item.module),
-                            $("<td>").html("<input type='checkbox' id='isCheck' name='isCheck' value='"+ item.tranno+"' onclick='isCheck.call(this)'>"),
-                            $("<td>").text(item.date),
-                            $("<td>").text(item.name),
-                            $("<td>").text(item.refno),
-                            $("<td style='text-align: right'>").text(item.debit),
-                            $("<td style='text-align: right'>").text(item.credit),
-                            $("<td>").text(name),
-                            $("<td>").text(reference),
-                            $("<td style='text-align: right'>").text(debit),
-                            $("<td style='text-align: right'>").text(credit),
-                            // $("<td>").text(amount),
-                            // $("<td>").html("<button class='btn btn-sm btn-success' onclick='matchup.call(this)' value='" + item.tranno + "'>Match</button>")
-                        ).appendTo("#match > tbody")
-                    })
-                } else {
-                    alert(res.msg)
-                }
-                
-            }, 
-            error: function(res){
-                console.log(res)
-            }
-        });
-    }
-
-    function matchup(){
-        if(transactions.length == 0){
-            return alert("Empty Transaction");
-        }
-
-        var TOTAL_DEBIT = 0;
-        var TOTAL_CREDIT = 0;
-        var book_credit = 0;
-        var book_debit = 0;
-
-        transactions.map((item, index) => {
-            TOTAL_DEBIT = parseFloat(item.debit);
-            TOTAL_CREDIT = parseFloat(item.credit);
-            book_credit += parseFloat(item.book_credit);
-            book_debit += parseFloat(item.book_debit);
-        })
-        // console.log(transactions)
-
-        var GROSS_DEBIT = parseFloat(book_credit) - parseFloat(TOTAL_DEBIT);
-        var GROSS_CREDIT = parseFloat(book_debit) - parseFloat(TOTAL_CREDIT);
-
-        if( isEqualsZero(GROSS_DEBIT) && isEqualsZero(GROSS_CREDIT) ){
-            transactions.map((item, index) => {
-                Reconciliation['refno'].push(item.refno);
-                Reconciliation['debit'].push(parseFloat(item.debit));
-                Reconciliation['credit'].push(parseFloat(item.credit));
-                Reconciliation['module'].push(item.module);
-                Reconciliation['tranno'].push(item.tranno);
-            })
-        } else {
-            alert("Amount has a balance!\n Amount must be zero")
-        }
-        
-        transactions = [];
-        transactions.length = 0;
-        $("#ReferenceModal").modal("hide")
-        ViewCheque();
-        ViewFinalized();
-    }
-
-    function Finalized(){
-        let bank = "<?= $bcode; ?>";
-        let tranno = Reconciliation['tranno'];
-        let refno = Reconciliation['refno'];
-        let modules = Reconciliation['module'];
-        let credit = Reconciliation['credit'];
-        let debit = Reconciliation['debit'];
-
-        $.ajax({
-            url: 'th_checkbank.php',
-            data: {
-                tranno: JSON.stringify(tranno),
-                refno: JSON.stringify(refno),
-                module: JSON.stringify(modules),
-                credit: JSON.stringify(credit),
-                debit: JSON.stringify(debit),
-                bank: bank
-            },
-            dataType: 'json',
-            async: false,
-            success: function(res){
-                if(res.valid){
-                    alert(res.msg)
-                } else {
-                    alert(res.msg)
-                }
-                location.reload();
-            },
-            error: function(res){
-                console.log(res)
-            }
-        })
-    }
-
-    function ViewCheque(){
-        var proceed = false;
-        $("#chequeBank tbody").empty()
-        ChequeExcel.map((item, index) => {
-            if(index == 0){
-                for(let i = 0; i < item.length; i++){
-                    switch(item[i]){
-                        case "DATE *":  
-                            proceed = true;
-                            break;
-                        case "Name *": 
-                            proceed = true;
-                            break;
-                        case "Reference No. *": 
-                            proceed = true;
-                            break;
-                        case "DEBIT":;
-                            proceed = true;
-                            break;
-                        case "CREDIT": 
-                            proceed = true;
-                            break;
-                        case "BALANCE":
-                            proceed = true;
-                            break;
-                        default: break;
-                    }
-                    if(!proceed) break;
-                }
-            } else {
-                if(!proceed) return;
-                
-                let date = item[0];
-                let accountNature = item[1];
-                let checkno = item[2];
-                let debit = item[3] ? parseFloat(item[3]) : 0;
-                let credit = item[4] ? parseFloat(item[4]) : 0;
-
-                console.log(Reconciliation)
-                if( !CheckStore(checkno, debit, credit) ){
-
-                    var xdbtc = "";
-                    var namt = 0;
-                    if(debit!=0){
-                        xdbtc = "Debit";
-                        namt = debit;
-
-                    }else{
-                        xdbtc = "Credit";
-                        namt = credit;
-                    }
-
-                    if(checkno==""){
-                        checkno = "<i>No Reference</i>";
-                    }
-                    $("<tr>").append(
-                        $("<td>").html(accountNature+"<br>"+date),
-                        $("<td>").html(checkno+"<br>"+xdbtc),
-                        $("<td style='text-align: right; vertical-align: middle'>").text(number_format(namt,2)),
-                        $("<td>").text(""),
-                        $("<td style='text-align: right'>").text(""),
-                        $("<td style='text-align: center'>").html("<button type='button' onclick='LoadMatchCheque.call(this)' class='btn btn-xs btn-primary'>Find Match</button>")
-                    ).appendTo("#chequeBank tbody")
-                }
-            }
-           
-        })
-    }
-
-    function ViewFinalized(){
-        let ExcelLength = ChequeExcel.length -1;
-        let ReconLength = Reconciliation['refno'].length;
-
-        if(ExcelLength === ReconLength){
-            $("#Finalized").css("display", "inline");
-        }
-    }
-
-    function CheckStore(checkno, debit, credit) {
-        return (
-            Reconciliation['refno'].includes(checkno) &&    
-            Reconciliation['debit'].includes(debit) &&
-            Reconciliation['credit'].includes(credit)
-        );
-    }
-    
-    function isEqualsZero(data){
-        return data == 0;
-    }
-=======
-    Metronic.init(); // init metronic core components
-
->>>>>>> production
-</script>
-
-
 <script src="../../global/custom.js"></script>
+<script>
+    function checkbank(){
+
+        $('#TblUnBook > tbody  > tr').each(function(index, tr) { 
+            console.log(index);
+            console.log(tr);
+        });
+
+        $("#myModal").modal("show");
+    }
+</script>

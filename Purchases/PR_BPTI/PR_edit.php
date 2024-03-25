@@ -513,7 +513,9 @@ if (mysqli_num_rows($sqlhead)!=0) {
 	for (var i = 0; i < xzconfig.length; i++) {
     var object = xzconfig[i];
 		//alert(object.ext + " : " + object.name);
-		fileslist.push("https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/PReq/<?=$company."_".$cprno?>/" + object.name)
+
+		$vrx = encodeURIComponent(object.name);
+		fileslist.push("<?=$AttachUrlBase?>PReq/<?=$company."_".$cprno?>/" + $vrx)
 
 		if(jQuery.inArray(object.ext, arroffice) !== -1){
 			xtc = "office";

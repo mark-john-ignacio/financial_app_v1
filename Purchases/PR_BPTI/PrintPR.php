@@ -54,7 +54,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <head>
 	<style>
 		body{
-			font-family: Verdana, sans-serif;
+			font-family: Arial, sans-serif;
 			font-size: 9pt;
 		}
 		.tdpadx{
@@ -202,7 +202,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								//	echo "<div style=\"text-align: center; display: block\"><img src = '".$cpreparedBySign."?x=".time()."' height='80px'></div>";
 								//	echo "<div style=\"text-align: center; display: block\">".$cpreparedBy."</div>";												
 								//}else{
-									echo "<div style=\"text-align: center; display: block; height: 80px\">&nbsp;</div>";
+									echo "<div style=\"text-align: center; display: block; height: 40px\">&nbsp;</div>";
 									echo "<div style=\"text-align: center; display: block\">".$cReqBy."</div>";
 								//}
 							?>
@@ -210,11 +210,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 						
 						<td align="center" valign="top">
-							<div style="text-align: center; display: block; height: 80px">&nbsp;</div>
+							<div style="text-align: center; display: block; height: 40px">&nbsp;</div>
 							<div style="text-align: center; display: block\"><?=$cCheckedBy?></div>												
 						</td>
 						<td align="center" valign="top">
-							<div style="text-align: center; display: block; height: 80px">&nbsp;</div>
+							<div style="text-align: center; display: block; height: 40px">&nbsp;</div>
 							<div style="text-align: center; display: block\"><?=$cApprvBy?></div>												
 						</td>						
 					</tr>

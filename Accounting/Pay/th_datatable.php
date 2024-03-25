@@ -8,7 +8,7 @@
 
 	$column = array('a.ctranno', 'd.cref', 'd.crefrr', 'CONCAT(a.ccode,"-",b.cname)', 'CONCAT(a.cbankcode)', 'a.ddate', 'CASE WHEN a.lapproved=1 THEN CASE WHEN a.lvoid=1 THEN "Voided" ELSE "Posted" END WHEN a.lcancelled=1 THEN "Cancelled" ELSE CASE WHEN a.lsent=0 THEN "For Sending" ELSE "For Approval" END END','');
 
-	$query = "select a.*, b.cname, e.cname as bankname, d.cref ,d.crefrr from paybill a left join bank e on a.compcode=e.compcode and a.cbankcode=e.ccode left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode LEFT JOIN (Select x.ctranno, GROUP_CONCAT(DISTINCT x.capvno) as cref, GROUP_CONCAT(DISTINCT CONCAT(x.crefrr,\": \",y.crefsi)) as crefrr from paybill_t x left join suppinv y on x.compcode=y.compcode and x.crefrr=y.ctranno where x.compcode='".$_SESSION['companyid']."' group by x.ctranno) d on a.ctranno=d.ctranno where a.compcode='".$_SESSION['companyid']."' ";
+	$query = "select a.*, b.cname, e.cname as bankname, IFNULL(d.cref,'') as cref , IFNULL(d.crefrr,'') as crefrr from paybill a left join bank e on a.compcode=e.compcode and a.cbankcode=e.ccode left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode LEFT JOIN (Select x.ctranno, GROUP_CONCAT(DISTINCT x.capvno) as cref, GROUP_CONCAT(DISTINCT CONCAT(x.crefrr,\": \",y.crefsi)) as crefrr from paybill_t x left join suppinv y on x.compcode=y.compcode and x.crefrr=y.ctranno where x.compcode='".$_SESSION['companyid']."' group by x.ctranno) d on a.ctranno=d.ctranno where a.compcode='".$_SESSION['companyid']."' ";
 
 	if(isset($_POST['searchByName']) && $_POST['searchByName'] != '')
 	{
