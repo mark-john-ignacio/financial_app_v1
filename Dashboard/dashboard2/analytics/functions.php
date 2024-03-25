@@ -29,13 +29,13 @@ function totalSales($company)
     $current_date = date("Y-m-d");
 
     // Query to get the total nnet sales for last week
-    $query_last_week = "SELECT SUM(nnet) AS total_nnet_last_week FROM sales WHERE dcutdate >= '$start_of_last_week' AND dcutdate <= '$end_of_last_week'";
+    $query_last_week = "SELECT SUM(nnet) AS total_nnet_last_week FROM sales WHERE dcutdate >= '$start_of_last_week' AND dcutdate <= '$end_of_last_week' AND compcode = '$company';";
     $result_last_week = mysqli_query($con, $query_last_week);
     $row_last_week = mysqli_fetch_assoc($result_last_week);
     $total_nnet_last_week = $row_last_week["total_nnet_last_week"];
 
     // Query to get the total nnet sales for the current week
-    $query_current_week = "SELECT SUM(nnet) AS total_nnet_current_week FROM sales WHERE dcutdate >= '$start_of_current_week' AND dcutdate <= '$current_date'";
+    $query_current_week = "SELECT SUM(nnet) AS total_nnet_current_week FROM sales WHERE dcutdate >= '$start_of_current_week' AND dcutdate <= '$current_date' AND compcode = '$company';";
     $result_current_week = mysqli_query($con, $query_current_week);
     $row_current_week = mysqli_fetch_assoc($result_current_week);
     $total_nnet_current_week = $row_current_week["total_nnet_current_week"];
