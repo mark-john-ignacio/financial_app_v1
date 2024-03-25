@@ -7,7 +7,9 @@ error_reporting(E_ALL);
 if(!isset($_SESSION)){
 session_start();
 }
-	
+
+
+
 include('../Connection/connection_string.php');
 require_once('../Model/helper.php');
 
@@ -42,19 +44,6 @@ if(mysqli_num_rows($sql) == 0){
 
 			$_SESSION['currapikey'] = '4c151e86299e4588939cdbb45a606021'; 
 			//$_SESSION['currapikey2'] = '755e85fe16cf42a08c2c59c1ec5bd626'; 
-			
-		
-				//FOR AUTO LOGIN WHEN CLOSING BROWSER
-				$cookie_name = "auto-login";
-				$cookie_value = base64_encode($employeeid . ":" . $password);
-				$expiry = time() + 15; // 15 seconds expiration
-				setcookie($cookie_name, $cookie_value, $expiry, "/");
-			
-			
-
-
-			
-			
 		}
 
 	$id = mysqli_real_escape_string($con, $employee['id']);
@@ -71,9 +60,9 @@ if(mysqli_num_rows($sql) == 0){
                 // UPDATE THE SESSION ID TO DATABASE 
                 mysqli_query($con, "UPDATE users SET session_ID = '".session_id()."' WHERE userid = '$employeeid'");
 				
-			
-			$_SESSION['id'] = $employee['id'];
-			setcookie('id', $employee['id'], $expiry);
+				//cookie
+				$_SESSION['id'] = $employee['id'];
+				setcookie('id',$employee['id'], time () + 60*60*24,'/');
 
 			$_SESSION['employeeid'] = $employee['id'];
 			$_SESSION['employeename'] = $employee['name'];
@@ -104,6 +93,7 @@ if(mysqli_num_rows($sql) == 0){
 
 
 			if(validStatus($status) || empty($status)){	
+				//make the logged date to now for military time to avoid confusion
 				$sql = "INSERT INTO `users_log` (`Userid`, `status`, `machine`, `logged_date`) VALUES ('".$employee['id']."', 'Online', '$hashedIP', NOW())";
 				$result = mysqli_query($con, $sql);
 				echo json_encode(valid30Days($employee['modify'], $employee['usertype']));

@@ -8,11 +8,11 @@
   	require_once('Model/helper.php');
 
 
-	if(isset($_SESSION['id']) || isset($_COOKIE['id']) || isset($_SESSION['login'])){
-		
+	  if(isset($_SESSION['login']) || (isset($_SESSION["id"]) || isset($_COOKIE['id']))){
 		header("Location: ./main.php");
+	  }
 	
-	}
+	
 
 ?>
 
@@ -117,6 +117,7 @@
 					</div>
                     
 					<div class="form-group">
+						<!-- add validate password input function for password requirements and length is 15 --> 
 						<input type="password" class="form-control" name="inputPassword" id="inputPassword" placeholder="Password" required  value=""  autocomplete="off" maxlength="15" onkeyup="validatePassword()">	
 					</div>
                      
@@ -188,6 +189,7 @@ var warnings = { alpha: false, numeric: false, stringlen: false };
 var attempts = 1;
 $(document).ready(function(){
     
+	//showing modal for changing password in 30 days
 	$('#view').on('click', function(){
 		$('#changeModal').modal('show');
 	})
@@ -232,7 +234,7 @@ $(document).ready(function(){
 						}
 					} else {
 						alert(res.errMsg)
-						//ADDING SHOW MODAL
+						//ADDING SHOW MODAL AGAIN BECAUSE OF BUGS WHEN SHOWING ERROR
 						$('#changeModal').modal('show');
 					}
 				}

@@ -37,7 +37,8 @@
     <!-- Import Script of ChartJS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
-
+   
+    
     <title>MyxFinancials</title>
     <style>
         #DivNavigation {
@@ -53,6 +54,9 @@
     </style>
 </head>
 <body>
+    	<!-- check if the main.php is open -->
+	<input type="hidden" id="activePage" value="dashboard">
+
     <div class='container-fluid' style=' padding-top: 5x;'>
     <!-- Header -->
         <div style='position: relative; min-width: 5.5in; height: .5in; background-color: #2d5f8b; '>
@@ -295,6 +299,8 @@
         loadpiechart();
         loadsummary();
         loadlogs();
+        login(); // call the login function
+
 
         $("#Periodicals").change(function(){
         //     loadbargraph($(this).val());
@@ -566,5 +572,70 @@
         }
         return color;
     }
+
+    //login function for autologout
+    function login() {
+    
+        // Simulate successful login
+        lastActivityTime = Date.now();
+        console.log("User logged in at: " + formatTime(lastActivityTime));
+        
+        // Start monitoring for activity
+        document.addEventListener("mousemove", updateActivityTime);
+        document.addEventListener("keypress", updateActivityTime);
+        document.addEventListener("input", updateActivityTime);
+        document.addEventListener("click", updateActivityTime);
+        
+        // Start the auto-logout timer
+        startLogoutTimer();
+    }
+
+    //converting the time to hh mm ss
+    function formatTime(milliseconds) {
+        let totalSeconds = Math.floor(milliseconds / 1000);
+        let hours = Math.floor(totalSeconds / 3600); // Calculate total hours
+        let remainingSeconds = totalSeconds % 3600; // Remaining seconds after calculating hours
+        let minutes = Math.floor(remainingSeconds / 60); // Calculate minutes from remaining seconds
+        let seconds = remainingSeconds % 60; // Calculate remaining seconds after calculating minutes
+        
+        return `${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    //update the actiivity time from dashboard.php and main.php
+    function updateActivityTime() {
+        parent.updateActivityTime();
+        lastActivityTime = Date.now();
+        console.log("Last activity time: " + formatTime(lastActivityTime));
+    }
+
+    function startLogoutTimer() {
+        logoutTimer = setInterval(function() {
+            checkLogoutTime();
+        }, 10000); // Check every 10 seconds
+    }
+
+    //compare the time to last activity to time now
+    function checkLogoutTime() {
+        let currentTime = Date.now();
+        let timeDifferenceInSeconds = (currentTime - lastActivityTime) / 1000; // Convert milliseconds to seconds
+        console.log(timeDifferenceInSeconds);
+        if (timeDifferenceInSeconds >= 10) { // 10 seconds
+            logout(); // Pass currentPage as an argument
+        }
+    }
+    // add to prevent multiple alert
+    window.addEventListener('message', function(event) {
+            if (event.data && event.data.logoutInitiated) {
+                
+                handleLogout();
+            }
+        });
+
+        function handleLogout() {
+            // Perform logout actions for the dashboard frame
+            clearInterval(logoutTimer);
+            alert("Auto logout due to inactivity." );
+            window.location.href = "logout.php?logout_reason=inactivity";
+        }
 
 </script>

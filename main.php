@@ -3,11 +3,16 @@
 		session_start();
 		
 	}
-	//SET COOKIE FOR EXPIRATION 15 seconds	
-	if (basename($_SERVER['PHP_SELF']) === 'main.php') {
-		setcookie('maindash', 'active', time() + 15, "/"); // Cookie expires in 15 seconds
+	//cookie
+	if (!isset($_COOKIE["id"])){
+		header ("location:index.php");
+		
 	}
-
+	if (!isset($_COOKIE["id"])){
+		$_SESSION['id']=$_COOKIE['id'];
+		
+	}
+	
 		
 	include('Connection/connection_string.php');
 	include('include/denied.php');
@@ -22,6 +27,7 @@
 		
 	}
 	
+
 ?>
 
 <!DOCTYPE html>
@@ -51,7 +57,9 @@
 <link href="global/layout.css?h=<?php echo time();?>" rel="stylesheet" type="text/css"/>
 <link href="global/themes/blue.css?h=<?php echo time();?>" id="style_color" rel="stylesheet" type="text/css"/>
 <link href="global/custom.css" rel="stylesheet" type="text/css"/>
-<script src="autologout.js"></script>
+
+
+
 <!-- END THEME STYLES -->
 </head>
 <!-- END HEAD -->
@@ -88,6 +96,7 @@
 			}
 		}   
 	?>
+
 <!-- BEGIN HEADER -->
 <div class="page-header navbar navbar-fixed-top">
 	<!-- BEGIN HEADER INNER -->
@@ -188,7 +197,7 @@
 							<a href="javascript:;" onClick="setpage('MasterFiles/ChangePass.php');" >
 							<i class="icon-user"></i> Change Password </a>
 						</li>
-						<li>
+						<li>	<!--adding history logs href-->
 							<a href="javascript:;" onClick="setpage('historylog.php');" >
 							<i class="icon-user"></i> History Log </a>
 						</li>
@@ -780,9 +789,11 @@
 		Metronic.init(); // init metronic core components
 		Layout.init(); // init current layout
 		QuickSidebar.init(); // init quick sidebar
+		let currentPage = "dashboard.php";
 			
 		loadxtrasession();
 		loaddashboard();   
+		login(); // call login function
 	});
 		
 	function loadxtrasession(){
@@ -796,7 +807,7 @@
 	}
 	  
 	function setpage(valz){
-
+		
 		if(valz=="POS"){
 			top.location.href="Sales/Win/index.php";
 		}
@@ -807,7 +818,6 @@
 			setInterval(function(){
 					document.getElementById("myframe").style.height = document.getElementById("myframe").contentWindow.document.body.scrollHeight + 'px';
 			},1000);
-
 			
 			/*
 			var iframe = $("#myframe")[0];
@@ -841,8 +851,66 @@
 		}
 
 	  }
-	
-	  
+	  //for autologout detect inactivity
+	  function login() {
+		
+		// Simulate successful login
+		lastActivityTime = Date.now();
+		console.log("User logged in at: " + formatTime(lastActivityTime));
+		
+		// Start monitoring for activity
+		document.addEventListener("mousemove", updateActivityTime);
+		document.addEventListener("keypress", updateActivityTime);
+		document.addEventListener("input", updateActivityTime);
+		document.addEventListener("click", updateActivityTime);
+		
+		// Start the auto-logout timer
+		startLogoutTimer();
+	}
+
+	function formatTime(milliseconds) {
+		let totalSeconds = Math.floor(milliseconds / 1000);
+		let hours = Math.floor(totalSeconds / 3600); // Calculate total hours
+		let remainingSeconds = totalSeconds % 3600; // Remaining seconds after calculating hours
+		let minutes = Math.floor(remainingSeconds / 60); // Calculate minutes from remaining seconds
+		let seconds = remainingSeconds % 60; // Calculate remaining seconds after calculating minutes
+		
+		return `${hours}h ${minutes}m ${seconds}s`;
+	}
+
+	//update the activity time (main is the parent)
+	function updateActivityTime() {
+		parent.lastActivityTime = Date.now();
+		console.log("Last activity time: " + formatTime(parent.lastActivityTime));
+	}
+
+
+	function startLogoutTimer() {
+		logoutTimer = setInterval(function() {
+			checkLogoutTime();
+		}, 10000); // Check every 10 seconds
+	}
+
+	//compare the time from last activity to time now
+	function checkLogoutTime() {
+		let currentTime = Date.now();
+		let timeDifferenceInSeconds = (currentTime - lastActivityTime) / 1000; // Convert milliseconds to seconds
+		console.log(timeDifferenceInSeconds);
+		if (timeDifferenceInSeconds >= 10) { // 10 seconds
+			logout(); // Pass currentPage as an argument
+		}
+	}
+
+	function logout() {
+		clearInterval(logoutTimer);
+		// Send message to the dashboard frame that there are logout
+		window.parent.postMessage({ logoutInitiated: true }, '*');
+		alert("Auto logout due to inactivity." );
+		//adding inactivity for reason to determine the status of logout
+		window.location.href = "logout.php?logout_reason=inactivity";
+	}
+
+
 </script>
 <!-- END JAVASCRIPTS -->
 </body>

@@ -2,10 +2,8 @@
 if (!isset($_SESSION)) {
     session_start();
 }
-if (basename($_SERVER['PHP_SELF']) === 'historylog.php') {
-    setcookie('historylog', 'active', time() + 15, "/"); // Cookie expires in 15 seconds
-}
-$_SESSION['pageid'] = "UOM.php";
+
+$_SESSION['pageid'] = "historylog.php";
 
 include('Connection/connection_string.php');
 include('include/accessinner.php');
@@ -50,6 +48,7 @@ include('include/accessinner.php');
                 </thead>
                 <tbody>
                     <?php
+                        //get the user logs based on who is log in
                         $sql = "SELECT * FROM users_log WHERE Userid = '$employeeid' ORDER BY logged_date DESC";
                         $result = mysqli_query($con, $sql);
                         if (!$result) {
@@ -60,10 +59,11 @@ include('include/accessinner.php');
                         <tr>
                             <td><?php echo $row['logid']; ?></td>
                             <td><?php echo $row['Userid']; ?></td>
+                            <!--extract the date to the database -->
                             <td><?php echo $logged_date = date('Y-m-d', strtotime($row['logged_date'])); ?></td>
                             <td>
                                 <div id="itmstat<?php echo $row['status']; ?>">
-                                    <?php 
+                                    <?php //checking the status and set color green, red, orange
                                         if ($row['status'] == "Online") {
                                             echo "<span class='label label-success'>ONLINE</span>";
                                         } else if ($row['status'] == "Offline"){
@@ -74,6 +74,7 @@ include('include/accessinner.php');
                                     ?>
                                 </div>
                             </td>
+                            <!--extract the time to the database -->
                             <td><?php echo $logged_time = date('H:i:s', strtotime($row['logged_date'])); ?></td>
                         </tr>
                     <?php } ?>
@@ -83,11 +84,79 @@ include('include/accessinner.php');
     </div>
 
     <?php mysqli_close($con); ?>
-    <script src="autologout.js"></script> <!-- Include the autologout.js script here -->
+
     <script>
         $(document).ready(function() {
             $('#example').DataTable();
+            login(); // call the login function
+            
+            
         });
+
+        //login function for autologout
+        function login() {
+            
+            // Simulate successful login
+            lastActivityTime = Date.now();
+            console.log("User logged in at: " + formatTime(lastActivityTime));
+            
+            // Start monitoring for activity
+            document.addEventListener("mousemove", updateActivityTime);
+            document.addEventListener("keypress", updateActivityTime);
+            document.addEventListener("input", updateActivityTime);
+            document.addEventListener("click", updateActivityTime);
+            
+            // Start the auto-logout timer
+            startLogoutTimer();
+        }
+        // converting the time to hh mm ss
+        function formatTime(milliseconds) {
+            let totalSeconds = Math.floor(milliseconds / 1000);
+            let hours = Math.floor(totalSeconds / 3600); // Calculate total hours
+            let remainingSeconds = totalSeconds % 3600; // Remaining seconds after calculating hours
+            let minutes = Math.floor(remainingSeconds / 60); // Calculate minutes from remaining seconds
+            let seconds = remainingSeconds % 60; // Calculate remaining seconds after calculating minutes
+            
+            return `${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        //update the actiivity time from historylog.php and main.php
+        function updateActivityTime() {
+            parent.updateActivityTime();
+            lastActivityTime = Date.now();
+            console.log("Last activity time: " + formatTime(lastActivityTime));
+        }
+
+        function startLogoutTimer() {
+            logoutTimer = setInterval(function() {
+                checkLogoutTime();
+            }, 10000); // Check every 10 seconds
+        }
+
+        //compare the time to last activity to time now
+        function checkLogoutTime() {
+            let currentTime = Date.now();
+            let timeDifferenceInSeconds = (currentTime - lastActivityTime) / 1000; // Convert milliseconds to seconds
+            console.log(timeDifferenceInSeconds);
+            if (timeDifferenceInSeconds >= 10) { // 10 seconds
+                logout(); // Pass currentPage as an argument
+            }
+        }
+        // add to prevent multiple alert
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.logoutInitiated) {
+                
+                handleLogout();
+            }
+        });
+
+        function handleLogout() {
+            // Perform logout actions for the logout frame
+            clearInterval(logoutTimer);
+            alert("Auto logout due to inactivity." );
+            window.location.href = "logout.php?logout_reason=inactivity";
+        }
+
     </script>
 </body>
 </html>
