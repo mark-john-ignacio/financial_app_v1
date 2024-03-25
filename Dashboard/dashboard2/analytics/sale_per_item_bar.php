@@ -28,6 +28,7 @@ GROUP BY
     s_t.citemno, i.citemdesc
 ORDER BY
     total_sales DESC
+LIMIT 5
 
 ";
 
