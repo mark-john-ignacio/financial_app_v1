@@ -11,7 +11,8 @@ function totalSales()
     // Output the total net sales
     $total_sales = '';
     if ($total_nnet !== null) {
-        $total_sales = number_format($total_nnet, 0, '.', ',');
+        $total_sales = $total_nnet;
+        $total_sales = formatCurrencyMillion($total_sales);
     } else {
         // Handle the case when $total_nnet is null
         $total_sales = '0.00';
@@ -84,7 +85,8 @@ function topSellingItem(){
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         $topSellingItem = $row['citemdesc'];
-        $totalSaleValue = number_format($row['total_price'], 2, '.', ',');
+        $totalSaleValue = $row['total_price'];
+        $totalSaleValue = formatCurrencyMillion($totalSaleValue);
     }
 
     // Start percentage change of topselling item this week compared to last week
@@ -126,7 +128,7 @@ function topSellingItem(){
             }
         }
     }
-    
+
     return array(
         'name' => $topSellingItem,
         'revenue' => $totalSaleValue,
@@ -186,6 +188,18 @@ function formatCurrency($amount) {
         // Check if the amount is greater than or equal to 1000
         // Convert the amount to K format (e.g., 1000 => 1K, 1500 => 1.5K)
         $formattedAmount = number_format($amount / 1000, 1) . 'K';
+    } else {
+        // If the amount is less than 1000, simply format it
+        $formattedAmount = number_format($amount, 0);
+    }
+    return $formattedAmount;
+}
+
+function formatCurrencyMillion($amount) {
+    // Check if the amount is greater than or equal to 1 million
+    if ($amount >= 1000000) {
+        // Convert the amount to M format (e.g., 1000000 => 1M, 1500000 => 1.5M)
+        $formattedAmount = number_format($amount / 1000000, 1) . 'M';
     } else {
         // If the amount is less than 1000, simply format it
         $formattedAmount = number_format($amount, 0);
