@@ -4,6 +4,7 @@ global $con;
 if (!isset($_SESSION)) {
     session_start();
 }
+$company = $_SESSION['companyid'];
 include "../../../Connection/connection_string.php";
 
 $currYear = date("Y");
@@ -28,6 +29,7 @@ $sql = "
             OR
             (YEAR(s.dcutdate) = ($currYear - 1) AND MONTH(s.dcutdate) >= MONTH('$currentQuarterStart')) -- Same quarter of the previous year
         )
+        AND s.compcode = $company
     GROUP BY
         MONTH(s.dcutdate)
     ORDER BY
