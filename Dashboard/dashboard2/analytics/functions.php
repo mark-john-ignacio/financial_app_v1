@@ -1,9 +1,11 @@
 <?php
-function totalSales()
+
+
+function totalSales($company)
 {
     // Query to get the sum of all nnet values
     global $con;
-    $query_total_nnet = "SELECT SUM(nnet) AS total_nnet FROM sales";
+    $query_total_nnet = "SELECT SUM(nnet) AS total_nnet FROM sales WHERE compcode = '$company'";
     $result_total_nnet = mysqli_query($con, $query_total_nnet);
     $row_total_nnet = mysqli_fetch_assoc($result_total_nnet);
     $total_nnet = $row_total_nnet["total_nnet"];
@@ -19,7 +21,7 @@ function totalSales()
     }
 
     // Total Sales percentage change
-    $start_of_last_week = date("Y-m-d", strtotime("last monday -1 week"));
+    $start_of_last_week = date("Y-m-d", strtotime("last monday"));
     $end_of_last_week = date("Y-m-d", strtotime("last sunday"));
 
     // Get the date range for the current week (Monday to today)

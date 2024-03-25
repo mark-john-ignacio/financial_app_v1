@@ -81,10 +81,10 @@ while($row = $query -> fetch_assoc()){
                                         <span class="text-dark fw-bolder fs-2x lh-0">₱</span>
                                         <!--end::Symbol-->
                                         <!--begin::Number-->
-                                        <span class="text-dark fw-bolder fs-3x me-2 lh-0"><?= totalSales()['revenue']; ?></span>
+                                        <span class="text-dark fw-bolder fs-3x me-2 lh-0"><?= totalSales($company)['revenue']; ?></span>
                                         <!--end::Number-->
                                         <!--begin::Text-->
-                                        <span class="text-dark fw-bolder fs-6 lh-0"><?= totalSales()['percentageChange'];?> this week</span>
+                                        <span class="text-dark fw-bolder fs-6 lh-0"><?= totalSales($company)['percentageChange'];?> this week</span>
                                         <!--end::Text-->
                                     </div>
                                     <!--end::Stats-->
@@ -284,7 +284,7 @@ while($row = $query -> fetch_assoc()){
                                         <span class="fw-bolder text-gray-800 d-block fs-3">Sales Progress</span>
                                         <span class="text-gray-400 fw-bold">Current Quarter</span>
                                     </div>
-                                    <div class="fw-bolder fs-3 text-primary">₱<?=totalSales()["revenue"];?></div>
+                                    <div class="fw-bolder fs-3 text-primary">₱<?=totalSales($company)["revenue"];?></div>
                                 </div>
                                 <!--end::Hidden-->
                                 <!--begin::Chart-->
