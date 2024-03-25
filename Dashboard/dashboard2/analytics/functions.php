@@ -147,40 +147,40 @@ function topSellingItem($company){
 
 
 // Function to return total gross sales
-function totalGrossSales() {
+function totalGrossSales($company) {
     global $con;
 
-        $query = "SELECT SUM(ngross) AS total_gross_sales FROM sales";
+        $query = "SELECT SUM(ngross) AS total_gross_sales FROM sales WHERE compcode = '$company'";
         $result = $con->query($query);
         $row = $result->fetch_assoc();
         $gross = isset($row['total_gross_sales']) ? $row['total_gross_sales'] : 0;
         return formatCurrency($gross);
 }
 
-function totalNetSales() {
+function totalNetSales($company) {
     global $con;
 
-    $query = "SELECT SUM(nnet) AS total_net_sales FROM sales";
+    $query = "SELECT SUM(nnet) AS total_net_sales FROM sales WHERE compcode = '$company'";
     $result = $con->query($query);
     $row = $result->fetch_assoc();
     $net = isset($row['total_net_sales']) ? $row['total_net_sales'] : 0;
     return formatCurrency($net);
 }
 
-function totalDiscount() {
+function totalDiscount($company) {
     global $con;
 
-    $query = "SELECT SUM(ntotaldiscounts) AS total_discount FROM sales";
+    $query = "SELECT SUM(ntotaldiscounts) AS total_discount FROM sales WHERE compcode = '$company'";
     $result = $con->query($query);
     $row = $result->fetch_assoc();
     $discount = isset($row['total_discount']) ? $row['total_discount'] : 0;
     return formatCurrency($discount);
 }
 
-function totalVat() {
+function totalVat($company) {
     global $con;
 
-    $query = "SELECT SUM(nvat) AS total_vat FROM sales";
+    $query = "SELECT SUM(nvat) AS total_vat FROM sales WHERE compcode = '$company'";
     $result = $con->query($query);
     $row = $result->fetch_assoc();
     $vat = isset($row['total_vat']) ? $row['total_vat'] : 0;
