@@ -5,7 +5,6 @@ global $con;
 if (!isset($_SESSION)) {
     session_start();
 }
-
 // Include database connection
 include "../../../Connection/connection_string.php";
 
@@ -24,6 +23,7 @@ FROM
     LEFT JOIN items i ON s_t.citemno = i.cpartno
 WHERE
     s.lapproved = 1 AND s.lvoid = 0
+    AND s.compcode = '$company'
 GROUP BY
     s_t.citemno, i.citemdesc
 ORDER BY

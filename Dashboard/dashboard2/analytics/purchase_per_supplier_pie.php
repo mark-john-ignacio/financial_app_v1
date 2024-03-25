@@ -4,6 +4,7 @@ global $con;
 if (!isset($_SESSION)) {
     session_start();
 }
+$company = $_SESSION['companyid'];
 include "../../../Connection/connection_string.php";
 
 $sql = "
@@ -15,6 +16,8 @@ $sql = "
         LEFT JOIN suppinv b ON a.ctranno = b.ctranno AND a.compcode = b.compcode
         LEFT JOIN suppliers c ON b.ccode = c.ccode AND a.compcode = c.compcode
         LEFT JOIN items d ON a.citemno = d.cpartno AND a.compcode = d.compcode
+    WHERE
+        a.compcode = '$company'
     GROUP BY
         c.cname
     ORDER BY
