@@ -44,6 +44,7 @@
 <link href="global/themes/blue.css?h=<?php echo time();?>" id="style_color" rel="stylesheet" type="text/css"/>
 <link href="global/custom.css" rel="stylesheet" type="text/css"/>
 <!-- END THEME STYLES -->
+
 </head>
 <!-- END HEAD -->
 <!-- BEGIN BODY -->
@@ -228,7 +229,7 @@
 				</li>
 				<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
 				<li class="start">
-					<a href="javascript:;" onclick="setpage('./Dashboard')">
+					<a href="javascript:;" onclick="setpage('./Dashboard/dashboard.php')">
 						<i class="icon-home"></i><span class="title">Dashboard</span><span class="selected"></span>
 					</a>
 				</li>
@@ -822,7 +823,7 @@
 		let pages = <?= json_encode($pages) ?>;
 
 		if (pages.includes("DashboardSales.php") || pages.includes("DashboardPurchase.php")) {
-			setpage("./Dashboard/dashboard.php")
+			setpage("./Dashboard/dashboard2/index.php")
 		} else {
 			setpage('MAIN/index.html')
 		}
