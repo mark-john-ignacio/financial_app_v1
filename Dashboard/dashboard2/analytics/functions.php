@@ -100,7 +100,7 @@ function topSellingItem($company){
             sales_t s_t
             INNER JOIN sales s ON s.compcode = s_t.compcode AND s.ctranno = s_t.ctranno
         WHERE
-            s.lapproved = 1 AND s.lvoid = 0 AND s_t.citemno = '$topSellingItem' AND WEEK(s.dcutdate) = WEEK(NOW()) - 1
+            s.lapproved = 1 AND s.lvoid = 0 AND s_t.citemno = '$topSellingItem' AND WEEK(s.dcutdate) = WEEK(NOW()) - 1 AND s.compcode = '$company'
     ";
 
     $result_last_week = $con->query($query_last_week);
@@ -118,7 +118,7 @@ function topSellingItem($company){
                     sales_t s_t
                     INNER JOIN sales s ON s.compcode = s_t.compcode AND s.ctranno = s_t.ctranno
                 WHERE
-                    s.lapproved = 1 AND s.lvoid = 0 AND s_t.citemno = '$topSellingItem' AND WEEK(s.dcutdate) = WEEK(NOW())
+                    s.lapproved = 1 AND s.lvoid = 0 AND s_t.citemno = '$topSellingItem' AND WEEK(s.dcutdate) = WEEK(NOW()) AND s.compcode = '$company'
             ";
 
             $result_this_week = $con->query($query_this_week);
