@@ -2,6 +2,7 @@
 if(!isset($_SESSION)){
     session_start();
 }
+$company = $_SESSION['companyid'];
 include "../../../Connection/connection_string.php";
 
 // Query to get the revenue data per month for the top selling item
@@ -9,7 +10,7 @@ $sql = "
     SELECT s_t.citemno, SUM(s_t.nprice) AS total_price
     FROM sales_t s_t
     INNER JOIN sales s ON s.compcode = s_t.compcode AND s.ctranno = s_t.ctranno
-    WHERE s.lapproved = 1 AND s.lvoid = 0
+    WHERE s.lapproved = 1 AND s.lvoid = 0 AND s.compcode = '$company'
     GROUP BY s_t.citemno
     ORDER BY total_price DESC
     LIMIT 1

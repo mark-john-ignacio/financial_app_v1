@@ -2,6 +2,7 @@
 if(!isset($_SESSION)){
     session_start();
 }
+$company = $_SESSION['companyid'];
 include "../../../Connection/connection_string.php";
 
 
@@ -13,7 +14,7 @@ $end_date = date("Y-m-t", strtotime("-1 months"));
 // Query to get the total net profit for each month
 $query = "SELECT YEAR(dcutdate) AS year, MONTH(dcutdate) AS month, SUM(nnet) AS total_net_profit
           FROM sales
-          WHERE dcutdate >= '$start_date' AND dcutdate <= '$end_date'
+          WHERE dcutdate >= '$start_date' AND dcutdate <= '$end_date'  AND compcode = '$company'
           GROUP BY YEAR(dcutdate), MONTH(dcutdate)
           ORDER BY YEAR(dcutdate), MONTH(dcutdate)";
 $result = mysqli_query($con, $query);
