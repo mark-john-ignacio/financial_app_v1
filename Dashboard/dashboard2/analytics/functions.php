@@ -64,7 +64,7 @@ function totalSales($company)
 }
 
 
-function topSellingItem(){
+function topSellingItem($company){
     global $con;
 
     $topSellingItem = 'No data';
@@ -72,11 +72,11 @@ function topSellingItem(){
     $percentage_change = 'No change';
 
     $sql = "
-        SELECT i.citemdesc, SUM(s_t.nprice) AS total_price
+        SELECT s_t.citemno, i.citemdesc, SUM(s_t.nprice) AS total_price
         FROM sales_t s_t
         INNER JOIN sales s ON s.compcode = s_t.compcode AND s.ctranno = s_t.ctranno
         INNER JOIN items i ON s_t.citemno = i.cpartno
-        WHERE s.lapproved = 1 AND s.lvoid = 0
+        WHERE s.lapproved = 1 AND s.lvoid = 0 AND s.compcode = '$company'
         GROUP BY s_t.citemno
         ORDER BY total_price DESC
         LIMIT 1
@@ -86,7 +86,8 @@ function topSellingItem(){
 
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        $topSellingItem = $row['citemdesc'];
+        $topSellingItemDesc = $row['citemdesc'];
+        $topSellingItem = $row['citemno'];
         $totalSaleValue = $row['total_price'];
         $totalSaleValue = formatCurrencyMillion($totalSaleValue);
     }
@@ -106,6 +107,7 @@ function topSellingItem(){
     if ($result_last_week && $result_last_week->num_rows > 0) {
         $row_last_week = $result_last_week->fetch_assoc();
         $total_revenue_last_week = $row_last_week["total_revenue_last_week"];
+
         // Check if total_revenue_last_week is not null or zero
         if ($total_revenue_last_week != null && $total_revenue_last_week != 0) {
             // Query to get the total revenue for the top selling item for this week
@@ -123,8 +125,10 @@ function topSellingItem(){
             if ($result_this_week && $result_this_week->num_rows > 0) {
                 $row_this_week = $result_this_week->fetch_assoc();
                 $total_revenue_this_week = $row_this_week["total_revenue_this_week"];
+
                 // Calculate the percentage change in revenue
                 $percentage_change = (($total_revenue_this_week - $total_revenue_last_week) / $total_revenue_last_week) * 100;
+
                 // Format the percentage change
                 $percentage_change = ($percentage_change > 0) ? "+" . number_format($percentage_change, 0) . "%" : number_format($percentage_change, 0) . "%";
             }
@@ -132,11 +136,13 @@ function topSellingItem(){
     }
 
     return array(
-        'name' => $topSellingItem,
+        'name' => $topSellingItemDesc,
         'revenue' => $totalSaleValue,
         'percentageChange' => $percentage_change
     );
 }
+
+
 
 
 

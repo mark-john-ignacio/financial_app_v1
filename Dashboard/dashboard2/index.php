@@ -104,7 +104,7 @@ while($row = $query -> fetch_assoc()){
                                     <div class="d-flex flex-column flex-grow-1">
                                         <!--begin::Title-->
                                         <a href="#" class="text-dark text-hover-primary fw-bolder fs-3">Top Selling Item</a>
-                                        <div class="fs-6 text-dark fw-bolder lh-1"><?= topSellingItem()['name']; ?></div>
+                                        <div class="fs-6 text-dark fw-bolder lh-1"><?= topSellingItem($company)['name']; ?></div>
                                         <!--end::Title-->
                                         <!--begin::Chart-->
                                         <div class="top-selling-bar-chart" style="height: 100px"></div>
@@ -117,10 +117,10 @@ while($row = $query -> fetch_assoc()){
                                         <span class="text-dark fw-bolder fs-2x lh-0">₱</span>
                                         <!--end::Symbol-->
                                         <!--begin::Number-->
-                                        <span class="text-dark fw-bolder fs-3x me-2 lh-0"><?= topSellingItem()['revenue']; ?></span>
+                                        <span class="text-dark fw-bolder fs-3x me-2 lh-0"><?= topSellingItem($company)['revenue']; ?></span>
                                         <!--end::Number-->
                                         <!--begin::Text-->
-                                        <span class="text-dark fw-bolder fs-6 lh-0"><?= topSellingItem()['percentageChange']; ?> this week</span>
+                                        <span class="text-dark fw-bolder fs-6 lh-0"><?= topSellingItem($company)['percentageChange']; ?> this week</span>
                                         <!--end::Text-->
                                     </div>
                                     <!--end::Stats-->
