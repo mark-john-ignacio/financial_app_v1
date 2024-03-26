@@ -299,23 +299,23 @@ $company = $_SESSION['companyid'];
 
 						<div class="tab-pane fade in" id="2Acct" style="padding-left:5px; padding-top:10px">
 
-							<div style="min-height: 30vh; width: 1000px;">
+							<div style="min-height: 30vh; width: 1100px;">
 						
-								<table id="MyTable2" class="table" width="100%" border="0">
+								<table id="MyTable2" class="MyTable" width="100%" cellpadding="3px">
 									<thead>
-										<tr>                       	
+										<tr>                   	
 											<th style="border-bottom:1px solid #999">Item Code</th>
-											<th style="border-bottom:1px solid #999">Serial No.</th>
-											<th style="border-bottom:1px solid #999">Barcode</th>
+											<th style="border-bottom:1px solid #999">Description</th>
+											<th style="border-bottom:1px solid #999">Lot No.</th>
+											<th style="border-bottom:1px solid #999">Packing List</th>
+											<th style="border-bottom:1px solid #999">Location</th>
 											<th style="border-bottom:1px solid #999">UOM</th>
 											<th style="border-bottom:1px solid #999">Qty</th>
-											<th style="border-bottom:1px solid #999">Location</th>
-											<th style="border-bottom:1px solid #999">Expiration Date</th>
 											<th style="border-bottom:1px solid #999">&nbsp;</th>
 										</tr>
-								</thead>
-								<tbody>
-								</tbody>                       
+									</thead>
+									<tbody>
+									</tbody>                       
 								</table>
 								<input type="hidden" name="hdnserialscnt" id="hdnserialscnt">
 							</div>
@@ -361,44 +361,44 @@ $company = $_SESSION['companyid'];
             
             <div class="modal-body" style="height:40vh">
             
-       <div class="col-xs-12 nopadding">
+				<div class="col-xs-12 nopadding">
 
-                <div class="form-group">
-                    <div class="col-xs-3 nopadding pre-scrollable" style="height:37vh">
-                          <table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight small">
-                           <thead>
-                            <tr>
-                              <th>PO No</th>
-                              <th>Date</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                          </table>
-                    </div>
+					<div class="form-group">
+						<div class="col-xs-3 nopadding pre-scrollable" style="height:37vh">
+							<table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight small">
+							<thead>
+								<tr>
+								<th>PO No</th>
+								<th>Date</th>
+								</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
 
-                    <div class="col-xs-9 nopadwleft pre-scrollable" style="height:37vh">
-                          <table name='MyInvDetList' id='MyInvDetList' class="table table-small small">
-                           <thead>
-                            <tr>
-                              <th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
-                              <th>Item No</th>
-                              <th>Description</th>
-                              <th>UOM</th>
-                              <th>Qty</th>
-															<!--<th>Price</th>
-															<th>Amount</th>
-															<th>Cur</th>-->
-                            </tr>
-                            </thead>
-                            <tbody>
-                            	
-                            </tbody>
-                          </table>
-                    </div>
-               </div>
+						<div class="col-xs-9 nopadwleft pre-scrollable" style="height:37vh">
+							<table name='MyInvDetList' id='MyInvDetList' class="table table-small small">
+							<thead>
+								<tr>
+								<th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
+								<th>Item No</th>
+								<th>Description</th>
+								<th>UOM</th>
+								<th>Qty</th>
+																<!--<th>Price</th>
+																<th>Amount</th>
+																<th>Cur</th>-->
+								</tr>
+								</thead>
+								<tbody>
+									
+								</tbody>
+							</table>
+						</div>
+				</div>
 
-        </div>
+				</div>
          	            
 			</div>
 			
@@ -436,55 +436,75 @@ $company = $_SESSION['companyid'];
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="InvSerDetHdr">Inventory Detail</h4>
-								<input type="hidden" class="form-control input-sm" name="serdisitmcode" id="serdisitmcode"> 
-								<input type="hidden" class="form-control input-sm" name="serdisrefident" id="serdisrefident"> 
-								<input type="hidden" class="form-control input-sm" name="serdisrefno" id="serdisrefno">
+				<div class="row nopadwtop">
+					<div class="col-xs-6 nopadding">
+						<h4 class="modal-title" id="InvSerDetHdr">Inventory Detail</h4>
+						<input type="hidden" class="form-control input-sm" name="serdisitmcode" id="serdisitmcode">
+						<input type="hidden" class="form-control input-sm" name="serdisitmdesc" id="serdisitmdesc">
+						<input type="hidden" class="form-control input-sm" name="serdisrefident" id="serdisrefident"> 
+						<input type="hidden" class="form-control input-sm" name="serdisrefno" id="serdisrefno">
+					</div>
+					<div class="col-xs-6 nopadding">
+						<div class="row">
+							<div class="col-xs-1 nopadwtop text-right"> </div>
+							<div class="col-xs-3 nopadwtop text-right" style="font-size: 1.25em">
+								Total Inserted
+							</div>
+							<div class="col-xs-2 nopadwleft text-right">
+								<input type="text" class="form-control input-sm text-right" name="ToInserted" id="ToInserted" value="0" readonly >
+							</div>
+							<div class="col-xs-3 nopadwtop text-right" style="font-size: 1.25em"> 
+								Total Qty
+							</div>
+							<div class="col-xs-2 nopadwleft text-right">
+								<input type="text" class="form-control input-sm text-right" name="TonnedIns" id="TonnedIns" value="0" readonly>
+							</div>	
+							<div class="col-xs-1 nopadwtop text-right"> </div>					
+						</div>
+					</div>
+				</div>
             </div>
             
             <div class="modal-body" style="height:20vh">
 
-								<div class="row">
-										<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Serial No:</b></div>
-										<div class="col-xs-7 nopadwtop"><input type="text" class="form-control input-sm" name="serdis" id="serdis"></div>
-								</div>
-                                <div class="row">
-										<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Barcode:</b></div>
-										<div class="col-xs-7 nopadwtop"><input type="text" class="form-control input-sm" name="serdisbarc" id="serdisbarc"></div>
-								</div>
-								<div class="row">
-										<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;UOM</b></div>
-										<div class="col-xs-2 nopadwtop"><input type="text" class="form-control input-sm" name="serdisuom" id="serdisuom" readonly></div>
-										<div class="col-xs-1 nopadwtop"><b>&nbsp;&nbsp;&nbsp;QTY</b></div>
-										<div class="col-xs-1 nopadwtop"><input type="text" class="form-control input-sm" name="serdisqty" id="serdisqty" value="1" ></div>
-								</div>
-								<div class="row">
-										<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Location:</b></div>
-										<div class="col-xs-2 nopadwtop">
-														<select class="form-control input-sm" name="selserloc" id="selserloc">
-															<?php
-																	$qrya = mysqli_query($con,"Select * From locations Order By cdesc");
-																	while($row = mysqli_fetch_array($qrya, MYSQLI_ASSOC)){
-																		echo "<option value=\"".$row['nid']."\" data-id=\"".$row['cdesc']."\">".$row['cdesc']."</option>";
-																	}
-															?>
-														</select>
-										</div>
-										<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Expiration Date:</b></div>
-										<div class="col-xs-2 nopadwtop"><input type="text" class="datepick form-control input-sm" name="dexpate" id="dexpate"></div>
-								</div> 
-								<div class="row nopadwtop2x">
-										<div class="col-xs-12" id="TheSerialStat">
-										</div>
-								</div>
-						</div>
+				<div class="row nopadwtop">
+					<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Quantity</b></div>
+					<div class="col-xs-2 nopadding"><input type="text" class="form-control input-sm" name="serdisqty" id="serdisqty" value="1" ></div>
+					<div class="col-xs-1 nopadwleft"><input type="text" class="form-control input-sm" name="serdisuom" id="serdisuom" readonly></div>
 
-						<div class="modal-footer">
-								<button class="btn btn-success btn-sm" name="btnInsSer" id="btnInsSer">Insert (Enter)</button>
-								<button class="btn btn-danger btn-sm" name="btnClsSer" id="btnClsSer" data-dismiss="modal" >Close (Ctrl+X)</button>
-						</div>
+					<div class="col-xs-7 nopadwleft" id="TheSerialStat"></div>
+
+					
 				</div>
+				<div class="row nopadwtop">
+					<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Location:</b></div>
+					<div class="col-xs-2 nopadding">
+						<select class="form-control input-sm" name="selserloc" id="selserloc">
+							<?php
+									$qrya = mysqli_query($con,"Select * From mrp_locations Order By cdesc");
+									while($row = mysqli_fetch_array($qrya, MYSQLI_ASSOC)){
+										echo "<option value=\"".$row['nid']."\" data-id=\"".$row['cdesc']."\">".$row['cdesc']."</option>";
+									}
+							?>
+						</select>
+					</div>
+				</div> 
+				<div class="row nopadwtop">
+					<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Lot #</b></div>
+					<div class="col-xs-9 nopadding"><input type="text" class="form-control input-sm" name="clotno" id="clotno" value="" ></div>
+				</div>
+				<div class="row nopadwtop">
+					<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Packing List</b></div>  
+					<div class="col-xs-9 nopadding"><input type="text" class="form-control input-sm" name="cpackno" id="cpackno" value="" ></div>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button class="btn btn-success btn-sm" name="btnInsSer" id="btnInsSer">Insert (Enter)</button>
+				<button class="btn btn-danger btn-sm" name="btnClsSer" id="btnClsSer" data-dismiss="modal" >Close (Ctrl+X)</button>
+			</div>
 		</div>
+	</div>
 </div>
 
 <form method="post" name="frmedit" id="frmedit" action="RR_edit.php">
@@ -660,96 +680,77 @@ $company = $_SESSION['companyid'];
 		});
 		
 		$('#SerialMod').on('shown.bs.modal', function () {
-				$('#serdis').focus();
+			$('#serdis').focus();
 		});
 
 		$("#btnInsSer").on("click", function(){
 			var itmcode = $("#serdisitmcode").val();
-			var itmcoderefident = $("#serdisrefident").val();
-			var serials = $("#serdis").val();
-			var barcodes = $("#serdisbarc").val();
-			var uoms = $("#serdisuom").val();
-			var qtys = $("#serdisqty").val();
+			var itmcoderefident = $("#serdisrefident").val();   
+			var lotno = $("#clotno").val();
+			var packlist = $("#cpackno").val();
 			var locas = $("#selserloc").val();
 			var locasdesc = $("#selserloc").find(':selected').attr('data-id');
-			var expz = $("#dexpate").val();      
+			var uoms = $("#serdisuom").val();
+			var qtys = $("#serdisqty").val();			
+			var itmdesc = $("#serdisitmdesc").val();      
 			var refnox = $("#serdisrefno").val(); 
-			InsertToSerials(itmcode,serials,uoms,qtys,locas,locasdesc,expz,itmcoderefident,refnox,barcodes);
-			//AddtoQtyTot(itmcode,qtys,itmcoderefident);
 
-			//var existqty = document.getElementById("txtnqty"+itmcode+itmcoderefident).value;
-			//var qtynow = parseFloat(existqty)+parseFloat(qtys);
+			//checkQty if not over total
+			xval1 = parseFloat(qtys) + parseFloat($("#ToInserted").val());
+			xval2 = parseFloat($("#TonnedIns").val());
 
-			//document.getElementById("txtnqty"+itmcode+itmcoderefident).value = qtynow;
-			
-			//reset form
-			$("#serdis").val("");
-			$("#serdisbarc").val("");
-			$("#serdisqty").val("1");
-			
-			$("#TheSerialStat").text(serials + " Inserted...");
+			if(xval1<=xval2){
+				InsertToSerials(itmcode,itmdesc,lotno,packlist,uoms,qtys,locas,locasdesc,itmcoderefident,refnox);
+				
+				//reset form  
+				$("#clotno").val("");
+				$("#cpackno").val("");
+				$("#serdisqty").val("1");
 
+				$("#TheSerialStat").text("Inserted...");
 
-			$("#serdis").focus();
+				$("#serdisqty").focus();
+			}else{
+				$("#TheSerialStat").text("Over Quantity...");
+			}
 		
 		});
 
 	});
 
-	function InsertToSerials(itmcode,serials,uoms,qtys,locas,locasdesc,expz,nident,refno,bcodes){
+	//InsertToSerials(itmcode,itmdesc,lotno,packlist,uoms,qtys,locas,locasdesc,itmcoderefident,refnox);
+	function InsertToSerials(itmcode,itmdesc,lotno,packlist,uoms,qtys,locas,locasdesc,nident,refno){
 
 		$("<tr>").append(
-			$("<td width=\"120px\" style=\"padding:1px\">").html("<input type='hidden' value='"+itmcode+"' name=\"sertabitmcode\" id=\"sertabitmcode\"><input type='hidden' value='"+nident+"' name=\"sertabident\" id=\"sertabident\"><input type='hidden' value='"+refno+"' name=\"sertabrefno\" id=\"sertabrefno\">"+itmcode),
-			$("<td>").html("<input type='hidden' value='"+serials+"' name=\"sertabserial\" id=\"sertabserial\">"+serials), 
-			$("<td>").html("<input type='hidden' value='"+bcodes+"' name=\"sertabcodes\" id=\"sertabcodes\">"+bcodes), 
-			$("<td width=\"80px\" style=\"padding:1px\">").html("<input type='hidden' value='"+uoms+"' name=\"sertabuom\" id=\"sertabuom\">"+uoms),
-			$("<td width=\"80px\" style=\"padding:1px\">").html("<input type='hidden' value='"+qtys+"' name=\"sertabqty\" id=\"sertabqty\">"+qtys),
-			$("<td width=\"150x\" style=\"padding:1px\">").html("<input type='hidden' value='"+locas+"' name=\"sertablocas\" id=\"sertablocas\">"+locasdesc),
-			$("<td width=\"100px\" style=\"padding:1px\">").html("<input type='hidden' value='"+expz+"' name=\"sertabesp\" id=\"sertabesp\">"+expz),
-			$("<td width=\"80px\" style=\"padding:1px\">").html("<input class='btn btn-danger btn-xs' type='button' id='delsrx" + itmcode + "' value='delete' />")
+			$("<td width=\"120px\">").html("<input type='hidden' value='"+itmcode+"' name=\"sertabitmcode\" id=\"sertabitmcode\"><input type='hidden' value='"+nident+"' name=\"sertabident\" id=\"sertabident\"><input type='hidden' value='"+refno+"' name=\"sertabrefno\" id=\"sertabrefno\">"+itmcode),
+			$("<td>").html(itmdesc), 
+			$("<td width=\"200px\">").html("<input type='text' class='form-control input-xs' value='"+lotno+"' name=\"sertablots\" id=\"sertablots\">"), 
+			$("<td width=\"200px\" style=\"padding-left: 1px\">").html("<input type='hidden' value='"+packlist+"' name=\"sertabpacks\" id=\"sertabpacks\">"+packlist), 
+			$("<td width=\"150x\">").html("<input type='hidden' value='"+locas+"' name=\"sertablocas\" id=\"sertablocas\">"+locasdesc),
+			$("<td width=\"80px\">").html("<input type='hidden' value='"+uoms+"' name=\"sertabuom\" id=\"sertabuom\">"+uoms),
+			$("<td width=\"80px\">").html("<input type='hidden' value='"+qtys+"' name=\"sertabqty\" id=\"sertabqty\">"+qtys),
+			$("<td width=\"50px\">").html("<input class='btn btn-danger btn-xs' type='button' id='delsrx" + itmcode + "' value='delete' />")
 		).appendTo("#MyTable2 tbody");
 
 		$("#delsrx"+itmcode).on('click', function() {
 			$(this).closest('tr').remove();
 		});
-	}
 
-	function addItemName(){
-		/* if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
-			var rowCount = $('#MyTable tr').length;
-			var isItem = "NO";
-			var itemindex = 1;
-			
-			if(rowCount > 1){
-				var cntr = rowCount-1;
-				
-				for (var counter = 1; counter <= cntr; counter++) {
-					// alert(counter);
-					if($("#txtprodid").val()==$("#txtitemcode"+counter).val()){
-						isItem = "YES";
-						itemindex = counter;
-					}
-				}
+		var xnqty = 0;
+		$("#MyTable2 > tbody > tr").each(function(index) {	
+
+			xitmrefx =$(this).find('input[type="hidden"][name="sertabitmcode"]').val();
+			xitmidnt =$(this).find('input[type="hidden"][name="sertabident"]').val();
+
+			console.log(xitmrefx +"-"+ xitmidnt);
+			if(xitmrefx==itmcode && xitmidnt==nident){
+				xnqty = xnqty + parseFloat($(this).find('input[type="hidden"][name="sertabqty"]').val());
 			}
-			
-		if(isItem=="NO"){	*/
 
-			myFunctionadd("","","","","","","","");		
-			//	ComputeGross();	
-		// }
-		// else{
-			
-		//	addqty();	
-				
-		// }
-			
-			$("#txtprodid").val("");
-			$("#txtprodnme").val("");
-			$("#hdnunit").val("");
-			$("#txtcskuid").val("");
-			
-		//}
+		});
 
+		$("#ToInserted").val(xnqty);
+	
 	}
 
 	function myFunctionadd(nqty,nfactor,cmainunit,xref,nident,costid,costdesc,cremarks=""){
@@ -825,7 +826,7 @@ $company = $_SESSION['companyid'];
 		}
 			
 
-		tditmbtn = "<td width=\"50\" style=\"padding:1px\">  <input class='btn btn-info btn-xs' type='button' id='ins" + itmcode + "' value='insert' /> </td>";
+		tditmbtn = "<td width=\"50\" style=\"padding:1px\">  <input class='btn btn-info btn-xs' type='button' id='ins" + lastRow + "' value='insert' /> </td>";
 		
 		tditmcode = "<td width=\"120\" style=\"padding:1px\"> <input type='hidden' value='"+itmcode+"' name=\"txtitemcode\" id=\"txtitemcode\">"+itmcode+" </td>";
 
@@ -861,59 +862,59 @@ $company = $_SESSION['companyid'];
 
 		tditmrmks = "<td width=\"200\" style=\"padding:1px\" align=\"center\"> <input type='text' class='form-control input-xs' name=\"txtcremarks\" id=\"txtcremarks\" value=\""+cremarks+"\"/> </td>";
 		
-		tditmdel = "<td width=\"80\" style=\"padding:1px\" align=\"center\"> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' /> </td>";
+		tditmdel = "<td width=\"80\" style=\"padding:1px\" align=\"center\"> <input class='btn btn-danger btn-xs' type='button' id='del" + lastRow + "' value='delete' /> </td>";
 
 		//+ tditmprice + tditmbaseamount+ tditmamount 
 
 		$('#MyTable > tbody:last-child').append('<tr style=\"padding-top:1px\">'+tditmbtn+tditmcode + tdskucode + tditmdesc + tditmunit + tditmfactor + tditmqty + tditmporef + tditmcostc + tditmrmks + tditmdel + '</tr>');
 
 
-										$("#del"+itmcode).on('click', function() {
-											$(this).closest('tr').remove();
-											// ComputeGross();
-										});
-										
-										$("#ins"+itmcode).on('click', function() {
-											InsertDetSerial(itmcode,itmdesc,itmmainunit,itmident,itmxref);
-										});
+			$("#del"+lastRow).on('click', function() {
+				$(this).closest('tr').remove();
+				// ComputeGross();
+			});
+			
+			$("#ins"+lastRow).on('click', function() {
+				InsertDetSerial(itmcode,itmdesc,itmmainunit,itmident,itmxref,$(this).attr("id"));
+			});
 		//alert("b");
 
-										$("input.numeric").autoNumeric('init',{mDec:2});
-										//$("input.numeric").numeric();
-										$("input.numeric").on("click", function () {
-										$(this).select();
-										});
+			$("input.numeric").autoNumeric('init',{mDec:2});
+			//$("input.numeric").numeric();
+			$("input.numeric").on("click", function () {
+			$(this).select();
+			});
 		//alert("c");									
-										$("input.numeric").on("keyup", function (e) {
-											chkqty($(this).attr('id'));
-										//  ComputeAmt($(this).attr('id'));
-										//  ComputeGross();
-										tblnav(e.keyCode,$(this).attr('id'));
-										});
-		//alert("d");								
-										$("#seluom"+lastRow).on('change', function() {
-										//	alert($(this).val());
-										//	var xyz = chkprice(itmcode,$(this).val());
-											
-										//	$('#txtnprice'+lastRow).val(xyz.trim());
-											
-											//ComputeAmt($(this).attr('id'));
-										//	ComputeGross();
-											
-											var mainuomdata = $(this).data("main");
-											var fact = $(this).find(':selected').data('factor');
+			$("input.numeric").on("keyup", function (e) {
+				chkqty($(this).attr('id'));
+				// ComputeAmt($(this).attr('id'));
+				// ComputeGross();
+				tblnav(e.keyCode,$(this).attr('id'));
+			});
+			//alert("d");								
+			$("#seluom"+lastRow).on('change', function() {
+				//alert($(this).val());
+				//var xyz = chkprice(itmcode,$(this).val());
+				
+				//$('#txtnprice'+lastRow).val(xyz.trim());
+				
+				//ComputeAmt($(this).attr('id'));
+				//ComputeGross();
+				
+				var mainuomdata = $(this).data("main");
+				var fact = $(this).find(':selected').data('factor');
 
-											if(fact!=0){
-												$('#hdnfactor'+lastRow).val(fact);
-											}
+				if(fact!=0){
+					$('#hdnfactor'+lastRow).val(fact);
+				}
 
-											if(mainuomdata!==$(this).val()){
-												$('#hdnfactor'+lastRow).attr("readonly", false);
-											}else{
-												$('#hdnfactor'+lastRow).attr("readonly", true);
-											}
-											
-										});
+				if(mainuomdata!==$(this).val()){
+					$('#hdnfactor'+lastRow).attr("readonly", false);
+				}else{
+					$('#hdnfactor'+lastRow).attr("readonly", true);
+				}
+				
+			});
 		//alert("e");	
 
 	}
@@ -946,14 +947,37 @@ $company = $_SESSION['companyid'];
 				
 	}
 
-	function InsertDetSerial(itmcode, itmname, itmunit, itemrrident,refrnce){
+	function InsertDetSerial(itmcode, itmname, itmunit, itemrrident, refrnce, disid){
 		$("#InvSerDetHdr").text("Inventory Details ("+itmname+")");
 		$("#serdisuom").val(itmunit);
 		$("#serdisitmcode").val(itmcode);
+		$("#serdisitmdesc").val(itmname);
 		$("#serdisrefident").val(itemrrident);
 		$("#serdisrefno").val(refrnce);
 
+		$("#serdisqty").val(1);
+		$("#clotno").val("");
+		$("#cpackno").val("");
+
+		$x = disid.replace("ins","");
+		$("#TonnedIns").val($("#txtnqty"+$x).val());
+		
+
 		$("#TheSerialStat").text("");
+
+		var xnqty = 0;
+		$("#MyTable2 > tbody > tr").each(function(index) {	
+			xitmrefx =$(this).find('input[type="hidden"][name="sertabitmcode"]').val();
+			xitmidnt =$(this).find('input[type="hidden"][name="sertabident"]').val();
+
+			console.log(xitmrefx +"-"+ xitmidnt);
+			if(xitmrefx==itmcode && xitmidnt==itemrrident){
+				xnqty = xnqty + parseFloat($(this).find('input[type="hidden"][name="sertabqty"]').val());
+			}
+
+		});
+
+		$("#ToInserted").val(xnqty);
 
 		$("#SerialMod").modal("show");
 	}
@@ -1412,20 +1436,19 @@ function chkform(){
 
 			
 			$("#MyTable2 > tbody > tr").each(function(index) {	
-			
+
 				var xcref = $(this).find('input[type="hidden"][name="sertabrefno"]').val();   
 				var crefidnt = $(this).find('input[type="hidden"][name="sertabident"]').val();
 				var citmno = $(this).find('input[type="hidden"][name="sertabitmcode"]').val();
 				var cuom = $(this).find('input[type="hidden"][name="sertabuom"]').val();
 				var nqty = $(this).find('input[type="hidden"][name="sertabqty"]').val();
-				var dneed = $(this).find('input[type="hidden"][name="sertabesp"]').val();
+				var clotsx = $(this).find('input[name="sertablots"]').val();				
+				var cpackl = $(this).find('input[type="hidden"][name="sertabpacks"]').val(); 
 				var clocas = $(this).find('input[type="hidden"][name="sertablocas"]').val();
-				var seiraln = $(this).find('input[type="hidden"][name="sertabserial"]').val(); 
-				var barcdln = $(this).find('input[type="hidden"][name="sertabcodes"]').val(); 
 
 				$.ajax ({
 					url: "RR_newsavedetserials.php",
-					data: { trancode: trancode, dneed: dneed, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, clocas:clocas, xcref:xcref, crefidnt:crefidnt, seiraln:seiraln, barcdln:barcdln },
+					data: { trancode: trancode, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, clocas:clocas, xcref:xcref, crefidnt:crefidnt, clotsx:clotsx, cpackl:cpackl },
 					async: false,
 					success: function( data ) {
 						if(data.trim()=="False"){

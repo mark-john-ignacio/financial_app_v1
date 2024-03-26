@@ -637,6 +637,9 @@
 										<a href="javascript:;" onClick="setpage('MRP/MasterFiles/MACHINES.php');"> <i class="fa fa-angle-double-right"></i> Machines </a>
 									</li>
 									<li>
+										<a href="javascript:;" onClick="setpage('MRP/MasterFiles/LOCATIONS.php');"> <i class="fa fa-angle-double-right"></i> Locations </a>
+									</li>
+									<li>
 										<a href="javascript:;" onClick="setpage('MRP/MasterFiles/OPERATORS.php');"> <i class="fa fa-angle-double-right"></i> Employees </a>
 									</li>							
 								</ul>

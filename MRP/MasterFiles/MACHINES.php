@@ -2,7 +2,7 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "ProdProcess";
+	$_SESSION['pageid'] = "MESMachines";
 
 	include('../../Connection/connection_string.php');
 	include('../../include/accessinner.php');
@@ -10,13 +10,13 @@
 	$employeeid = $_SESSION['employeeid'];
 	
 	$posnew = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'ProdProcess_new'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'MESMachines_new'");
 	if(mysqli_num_rows($sql) == 0){
 		$posnew = "False";
 	}
 
 	$posedit = "True";
-	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'ProdProcess_edit'");
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'MESMachines_edit'");
 	if(mysqli_num_rows($sql) == 0){
 		$posedit = "False";
 	}

@@ -30,8 +30,8 @@
     
 	<link rel="stylesheet" type="text/css" href="../../global/plugins/font-awesome/css/font-awesome.min.css"/>
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
-  <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
+  	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css">  
     
 	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
@@ -93,7 +93,7 @@
 <input type="hidden" id="hdndefbom" value='<?=json_encode($arrdefitems)?>'>
 
 
-	<form id="frmBOM" name="frmBOM" method="post" action="item_save.php">
+	<form id="frmBOM" name="frmBOM" method="post" action="item_save.php" enctype="multipart/form-data">
 		<input type="hidden" id="hdncount" name="hdncount" value='1'>
 
 		<fieldset>
@@ -108,7 +108,7 @@
 			<div class="col-xs-3 nopadwleft"> <input type="text" class="form-control input-sm" name="citemproj"  id="citemproj" value="" placeholder="Project"> </div>
 
 			<div class="col-xs-1 text-right" style="padding-top: 6px !important; padding-left: 0 !important"> <b>Title: </b> </div>
-			<div class="col-xs-3 nopadwleft"> <input type="text" class="form-control input-sm" name="citemtitl"  id="citemtitl" value="" placeholder="Title"> </div>
+			<div class="col-xs-3 nopadwleft"> <input type="text" class="form-control input-sm" name="citemtitl"  id="citemtitl" value="" placeholder="Title"> </div> 
 		</div>
 
 		<div class="col-xs-12 nopadwtop"> 
@@ -146,11 +146,11 @@
 						</div>
 						<!--<div class="col-xs-2 nopadwleft">	
 							<button type="button" class="btn btn-sm btn-warning btn-block" name="btnaddversion" id="btnaddversion"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Add Version</button>
-						</div>-->
+						</div>
 
 						<div class="col-xs-2 nopadwleft">	
 							<button type="button" class="btn btn-sm btn-success btn-block" name="btnuploadexcel" id="btnuploadexcel" disabled><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp;Upload Excel</button> 
-						</div>
+						</div>-->
 						<input type="hidden" name="rowcnt1" id="rowcnt1" value=""> 
 					</div>
 
@@ -226,125 +226,116 @@
 				</tr>
 		</table>
 
+
+		<!-- Upload Excel -->
+		<div class="modal fade" id="moduploadexcel" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+			<div class="modal-dialog  modal-lg">
+				<div class="modal-content">
+
+					<div class="modal-header">
+						Upload Excel
+					</div>
+					<div class="modal-body" style="height:20vh">
+						<fieldset>
+
+							<div class="row">
+								<div class="col-xs-3">&nbsp;</div>
+								<div class="col-xs-6 text-center">
+									<h4>Select bom template to upload:</h4>
+									<br>
+									<input type="file" name="file" id="file" class="form-control">
+									<br>
+								</div>
+
+								<div class="col-xs-3">&nbsp;</div> 
+
+							</div>
+						
+						</fieldset>									
+					</div>
+
+					<div class="modal-footer">						
+						<button type="button" class="btn btn-success">Continue</button>
+						<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
 	</form>
 
 
 	<!-- 1) Alert Modal -->
 	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-			<div class="vertical-alignment-helper">
-					<div class="modal-dialog vertical-align-top">
-							<div class="modal-content">
-								<div class="alert-modal-danger">
-										<p id="AlertMsg"></p>
-									<p>
-											<center>
-													<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-											</center>
-									</p>
-								</div>
-							</div>
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+					<div class="alert-modal-danger">
+						<p id="AlertMsg"></p>
+						<p><center>
+							<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+						</center></p>
 					</div>
+				</div>
 			</div>
+		</div>
 	</div>
 
-				<!-- 1) Add Sub Item Modal 
-					<div class="modal fade" id="modaddsub" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-						<div class="modal-dialog  modal-lg">
-							<div class="modal-content">
+	<!-- 1) Add Sub Item Modal 
+		<div class="modal fade" id="modaddsub" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+			<div class="modal-dialog  modal-lg">
+				<div class="modal-content">
 
-								<div class="modal-header">
-									Add Sub Level
-								</div>
-								<div class="modal-body" style="height:20vh">
-											<center>
-												<input type="text" class="form-control input-sm" id="txtscan2" value="" placeholder="Sub - Search Item Name...">
-												<input type="hidden" id="levelsub" value="">
-												<input type="hidden" id="levelindex" value="">
-											</center>
-								</div>
-
-								<div class="modal-footer">
-										<button type="button" class="btn btn-danger" data-dismiss="modal">Done</button>
-								</div>
-
-							</div>
-						</div>
-					</div>-->
-
-					<!-- Upload Excel -->
-
-					<div class="modal fade" id="moduploadexcel" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-						<div class="modal-dialog  modal-lg">
-							<div class="modal-content">
-
-							<form action="upload.php" method="post" enctype="multipart/form-data">
-								<div class="modal-header">
-									Upload Excel
-								</div>
-								<div class="modal-body" style="height:20vh">
-
-										<fieldset>
-
-											<div class="row">
-												<div class="col-xs-3">&nbsp;</div>
-												<div class="col-xs-6 text-center">
-
-													<h4>Select bom template to upload:</h4>
-													<br>
-													<input type="file" name="file" id="file" class="form-control">
-													<input type="hidden" name="xcitemno" id="xcitemno" value="">
-													<br>
-												</div>
-
-												<div class="col-xs-3">&nbsp;</div>
-
-											</div>
-
-											
-
-										</fieldset>									
-								</div>
-
-								<div class="modal-footer">
-										
-										<button type="submit" class="btn btn-success">Upload</button>
-
-										<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-								</div>
-
-							</form>
-
-							</div>
-						</div>
+					<div class="modal-header">
+						Add Sub Level
+					</div>
+					<div class="modal-body" style="height:20vh">
+								<center>
+									<input type="text" class="form-control input-sm" id="txtscan2" value="" placeholder="Sub - Search Item Name...">
+									<input type="hidden" id="levelsub" value="">
+									<input type="hidden" id="levelindex" value="">
+								</center>
 					</div>
 
-					<!-- Search Item -->
-					<div class="modal fade" id="moditm" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-						<div class="modal-dialog  modal-lg">
-							<div class="modal-content">
-
-								<div class="modal-header">
-									List of Items
-								</div>
-								<div class="modal-body" style="height:70vh" style="overflow: auto">
-											<input type="text" class="form-control input-sm" id="txtsrchitm" value="" placeholder="Search Item Name...">
-
-											<table id="tblitms" class="table table-sm table-striped" style="width:100%; padding-top: 5px">
-												<thead>
-													<tr>
-														<th>Item Code</th>
-														<th>Description</th>
-														<th>Unit</th>
-													</tr>
-												</thead>
-												<tbody>
-
-												</tbody>
-											</table>
-								</div>
-							</div>
-						</div>
+					<div class="modal-footer">
+							<button type="button" class="btn btn-danger" data-dismiss="modal">Done</button>
 					</div>
+
+				</div>
+			</div>
+		</div>
+	-->
+
+
+
+	<!-- Search Item -->
+	<div class="modal fade" id="moditm" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="modal-dialog  modal-lg">
+			<div class="modal-content">
+
+				<div class="modal-header">
+					List of Items
+				</div>
+				<div class="modal-body" style="height:70vh" style="overflow: auto">
+							<input type="text" class="form-control input-sm" id="txtsrchitm" value="" placeholder="Search Item Name...">
+
+							<table id="tblitms" class="table table-sm table-striped" style="width:100%; padding-top: 5px">
+								<thead>
+									<tr>
+										<th>Item Code</th>
+										<th>Description</th>
+										<th>Unit</th>
+									</tr>
+								</thead>
+								<tbody>
+
+								</tbody>
+							</table>
+				</div>
+			</div>
+		</div>
+	</div>
 
 </body>
 
@@ -586,51 +577,51 @@
 	}*/
 
 	function addprocess(){
-    var tbl = document.getElementById('myProcessTable').getElementsByTagName('tr');
-    var lastRow = tbl.length;
+		var tbl = document.getElementById('myProcessTable').getElementsByTagName('tr');
+		var lastRow = tbl.length;
 
-    var a=document.getElementById('myProcessTable').insertRow(-1);
+		var a=document.getElementById('myProcessTable').insertRow(-1);
 
-    var u=a.insertCell(0);
-		u.style.paddingTop = "1px"; 
-    var y=a.insertCell(1);
-		y.style.paddingTop = "1px"; 
-		var z=a.insertCell(2);
-		z.style.paddingTop = "1px";
+		var u=a.insertCell(0);
+			u.style.paddingTop = "1px"; 
+		var y=a.insertCell(1);
+			y.style.paddingTop = "1px"; 
+			var z=a.insertCell(2);
+			z.style.paddingTop = "1px";
 
-    var xz = $("#hdnprocess").val();
-		prooptions = "";
-		$.each(jQuery.parseJSON(xz), function() { 
-			prooptions = prooptions + "<option value='"+this['nid']+"'>"+this['cdesc']+"</option>";
-		});
+		var xz = $("#hdnprocess").val();
+			prooptions = "";
+			$.each(jQuery.parseJSON(xz), function() { 
+				prooptions = prooptions + "<option value='"+this['nid']+"'>"+this['cdesc']+"</option>";
+			});
 
-		u.innerHTML = "<div class=\"nopadwright\"><input type=\"text\" readonly class=\"form-control input-sm text-center\" id=\"nitemsort"+lastRow+"\" value=\""+lastRow+"\"></div>";
-    y.innerHTML = "<div id='divselproc"+lastRow+"' class=\"col-xs-12 nopadwright\"><select name='selproc"+lastRow+"' id='selproc"+lastRow+"' class='form-control input-sm selectpicker'>"+prooptions+"</select></div>";
-    z.innerHTML = "<button class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' onClick=\"delProcRow(this);\"/> <i class=\"fa fa-trash\"></i></button>";
+			u.innerHTML = "<div class=\"nopadwright\"><input type=\"text\" readonly class=\"form-control input-sm text-center\" id=\"nitemsort"+lastRow+"\" value=\""+lastRow+"\"></div>";
+		y.innerHTML = "<div id='divselproc"+lastRow+"' class=\"col-xs-12 nopadwright\"><select name='selproc"+lastRow+"' id='selproc"+lastRow+"' class='form-control input-sm selectpicker'>"+prooptions+"</select></div>";
+		z.innerHTML = "<button class='btn btn-danger btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' onClick=\"delProcRow(this);\"/> <i class=\"fa fa-trash\"></i></button>";
 
-  }
+	}
 
-  function delProcRow(r) {
-    var tbl = document.getElementById('myProcessTable').getElementsByTagName('tr');
-    var lastRow = tbl.length;
-    var i=r.parentNode.parentNode.rowIndex;
-    document.getElementById('myProcessTable').deleteRow(i);
-    var lastRow = tbl.length;
-    var z; //for loop counter changing textboxes ID;
-        
-    for (z=i+1; z<=lastRow; z++){
-			var tempcitemnosort = document.getElementById('nitemsort' + z);
-      var tempcitemno = document.getElementById('selproc' + z);
-                
-      var x = z-1;
-			tempcitemnosort.id = "nitemsort" + x;
-      tempcitemno.id = "selproc" + x;
-      tempcitemno.name = "selproc" + x;
+	function delProcRow(r) {
+		var tbl = document.getElementById('myProcessTable').getElementsByTagName('tr');
+		var lastRow = tbl.length;
+		var i=r.parentNode.parentNode.rowIndex;
+		document.getElementById('myProcessTable').deleteRow(i);
+		var lastRow = tbl.length;
+		var z; //for loop counter changing textboxes ID;
+			
+		for (z=i+1; z<=lastRow; z++){
+				var tempcitemnosort = document.getElementById('nitemsort' + z);
+		var tempcitemno = document.getElementById('selproc' + z);
+					
+		var x = z-1;
+				tempcitemnosort.id = "nitemsort" + x;
+		tempcitemno.id = "selproc" + x;
+		tempcitemno.name = "selproc" + x;
 
-			$("#nitemsort" + x).val(x);
+				$("#nitemsort" + x).val(x);
 
-    }
-  }
+		}
+	}
 
 
 	function chkform(){
@@ -641,8 +632,8 @@
 		$("#rowcnt1").val(lastRow1);
 
 		var tbl = document.getElementById('myProcessTable').getElementsByTagName('tr');
-    var lastRow = tbl.length-1;                                               
-    $("#hdnprocesslist").val(lastRow);
+    	var lastRow = tbl.length-1;                                               
+    	$("#hdnprocesslist").val(lastRow);
 
 		if(lastRow1!=0){
 			//re intialize

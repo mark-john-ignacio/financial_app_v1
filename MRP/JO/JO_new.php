@@ -372,7 +372,7 @@
 				});
 			},
 			displayText: function (item) {
-				return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.desc+'</span</div>';
+				return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.id+": "+item.desc+'</span</div>';
 			},
 			highlighter: Object,
 			afterSelect: function(item) { 					

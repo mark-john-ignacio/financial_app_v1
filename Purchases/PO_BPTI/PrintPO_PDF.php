@@ -123,7 +123,8 @@
 
 	$sethdr = '<table border="0" cellpadding="5px" width="100%" id="tblMain" style="border-collapse:collapse">
 		<tr>
-			<td style="text-align: right" colspan="8"> <font style="font-size: 18px;">PURCHASE ORDER FORM</font> </td>
+			<td colspan="3" height="50px"> <img src="../'.$logosrc.'" width="100px"/> </td>
+			<td style="text-align: right" colspan="5" height="50px"> <font style="font-size: 18px;">PURCHASE ORDER FORM</font> </td>
 		</tr>
 		<tr>
 			<td style="vertical-align: top; padding-top: 10px; padding-right: 5px;" colspan="2">

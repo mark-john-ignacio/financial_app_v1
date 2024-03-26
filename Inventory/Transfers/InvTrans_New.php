@@ -84,7 +84,7 @@
 			<legend>New Inventory Transfer</legend>
 
 			<div class="col-xs-12 nopadding">
-				<div class="col-xs-2 nopadding" id="secfrom">
+				<div class="col-xs-2 nopadwtop" id="secfrom">
 					<b>Requesting Section: </b>
 				</div>
 				<div class="col-xs-3 nopadding">
@@ -106,7 +106,7 @@
 						&nbsp;
 				</div>
 					
-				<div class="col-xs-2 nopadding">
+				<div class="col-xs-2 nopadwtop">
 					<b>Inventory Template: </b>
 				</div>
 				
@@ -119,7 +119,7 @@
 			</div>
 	
 			<div class="col-xs-12 nopadwtop">
-				<div class="col-xs-2 nopadding" id="secto">
+				<div class="col-xs-2 nopadwtop" id="secto">
 					<b>Issuing Section: </b>
 				</div>
 				<div class="col-xs-3 nopadding">
@@ -141,7 +141,7 @@
 						&nbsp;
 				</div>
 
-				<div class="col-xs-2 nopadding">
+				<div class="col-xs-2 nopadwtop">
 					<b>Inventory Date: </b>
 				</div>
 				
@@ -151,7 +151,7 @@
 			</div>
 
 			<div class="col-xs-12 nopadwtop">
-				<div class="col-xs-2 nopadding">
+				<div class="col-xs-2 nopadwtop">
 					<b>Remarks: </b>
 				</div>
 				<div class="col-xs-3 nopadding">					
@@ -162,14 +162,14 @@
 						&nbsp;
 				</div>
 
-				<div class="col-xs-2 nopadding">
+				<div class="col-xs-2 nopadwtop">
 					<b>Transfer Type: </b>
 				</div>
 				<div class="col-xs-2 nopadding">
 					<select class="form-control input-sm" name="selcntyp" id="selcntyp">			
-						<option value="request">Request</option>		
-						<option value="transfer">Transfer</option>		
-						<option value="fg_transfer">FG Transfer</option>				
+						<option value="request">MRS - Material Requisition Slip</option>		
+						<option value="fg_transfer">SIS - Stock In Slip</option>		
+						<option value="transfer">IRS - Item Return Slip</option>				
 					</select>
 				</div>
 			</div>

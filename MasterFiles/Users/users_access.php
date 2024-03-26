@@ -1137,26 +1137,65 @@ xmlhttp.send();
         <?php
           if($lallowMRP==1){
         ?>
+          <b><u><i>Master Files</i></u></b>
+          <div style="padding-left: 20px;">
+            <div style="padding-top:10px;">  
 
-          <br>&nbsp;<br>
-          <b><u><i>Material BOM</i></u></b>
-          <div style="padding-left:10px;"> 
-            <div class="col-xs-12 nopadwleft">
-              <div class="col-xs-2 nopadding">
-                <label><input type="checkbox" name="chkAcc[]" value="MaterialBOM" <?=(in_array("MaterialBOM",@$arrpgist)) ? "checked" : "";?>>&nbsp;View List</label>
+              <div class="col-xs-12 nopadwleft">
+                <div class="col-xs-2 nopadding">
+                  <label><input type="checkbox" name="chkAcc[]" value="ProdProcess" <?=(in_array("ProdProcess",@$arrpgist)) ? "checked" : "";?>>&nbsp;Processes List</label>
+                </div>
+                <div class="col-xs-2 nopadding">
+                  <label><input type="checkbox" name="chkAcc[]" value="ProdProcess_new" <?=(in_array("ProdProcess_new",@$arrpgist)) ? "checked" : "";?>>&nbsp;Add New</label>
+                </div>
+                <div class="col-xs-2 nopadding">
+                  <label><input type="checkbox" name="chkAcc[]" value="ProdProcess_edit" <?=(in_array("ProdProcess_edit",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
+                </div>
               </div>
-              <div class="col-xs-2 nopadding">
-                <label><input type="checkbox" name="chkAcc[]" value="MaterialBOM_new" <?=(in_array("MaterialBOM_new",@$arrpgist)) ? "checked" : "";?>>&nbsp;Add New</label>
+
+
+              <div class="col-xs-12 nopadwleft">
+                <div class="col-xs-2 nopadding">
+                  <label><input type="checkbox" name="chkAcc[]" value="MESMachines" <?=(in_array("MESMachines",@$arrpgist)) ? "checked" : "";?>>&nbsp;Machines List</label>
+                </div>
+                <div class="col-xs-2 nopadding">
+                  <label><input type="checkbox" name="chkAcc[]" value="MESMachines_new" <?=(in_array("MESMachines_new",@$arrpgist)) ? "checked" : "";?>>&nbsp;Add New</label>
+                </div>
+                <div class="col-xs-2 nopadding">
+                  <label><input type="checkbox" name="chkAcc[]" value="MESMachines_edit" <?=(in_array("MESMachines_edit",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
+                </div>
               </div>
-              <div class="col-xs-2 nopadding">
-                <label><input type="checkbox" name="chkAcc[]" value="MaterialBOM_edit" <?=(in_array("MaterialBOM_edit",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
+
+              <div class="col-xs-12 nopadwleft">
+                <div class="col-xs-2 nopadding">
+                  <label><input type="checkbox" name="chkAcc[]" value="MESLocations" <?=(in_array("MESLocations",@$arrpgist)) ? "checked" : "";?>>&nbsp;Locations List</label>
+                </div>
+                <div class="col-xs-2 nopadding">
+                  <label><input type="checkbox" name="chkAcc[]" value="MESLocations_new" <?=(in_array("MESLocations_new",@$arrpgist)) ? "checked" : "";?>>&nbsp;Add New</label>
+                </div>
+                <div class="col-xs-2 nopadding">
+                  <label><input type="checkbox" name="chkAcc[]" value="MESLocations_edit" <?=(in_array("MESLocations_edit",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
+                </div>
               </div>
+
+              <div class="col-xs-12 nopadwleft">
+                <div class="col-xs-2 nopadding">
+                  <label><input type="checkbox" name="chkAcc[]" value="MESEmployees" <?=(in_array("MESEmployees",@$arrpgist)) ? "checked" : "";?>>&nbsp;Employees List</label>
+                </div>
+                <div class="col-xs-2 nopadding">
+                  <label><input type="checkbox" name="chkAcc[]" value="MESEmployees_new" <?=(in_array("MESEmployees_new",@$arrpgist)) ? "checked" : "";?>>&nbsp;Add New</label>
+                </div>
+                <div class="col-xs-2 nopadding">
+                  <label><input type="checkbox" name="chkAcc[]" value="MESEmployees_edit" <?=(in_array("MESEmployees_edit",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
+                </div>
+              </div>
+
             </div>
           </div>
 
           <br>&nbsp;<br>
           <b><u><i>Production Processes</i></u></b>
-          <div style="padding-left:10px;"> 
+          <div style="padding-left:20px;"> 
             <div class="col-xs-12 nopadwleft">
               <div class="col-xs-2 nopadding">
                 <label><input type="checkbox" name="chkAcc[]" value="ProdProcess" <?=(in_array("ProdProcess",@$arrpgist)) ? "checked" : "";?>>&nbsp;View List</label>
@@ -1171,8 +1210,24 @@ xmlhttp.send();
           </div>
 
           <br>&nbsp;<br>
+          <b><u><i>Material BOM</i></u></b>
+          <div style="padding-left:20px;"> 
+            <div class="col-xs-12 nopadwleft">
+              <div class="col-xs-2 nopadding">
+                <label><input type="checkbox" name="chkAcc[]" value="MaterialBOM" <?=(in_array("MaterialBOM",@$arrpgist)) ? "checked" : "";?>>&nbsp;View List</label>
+              </div>
+              <div class="col-xs-2 nopadding">
+                <label><input type="checkbox" name="chkAcc[]" value="MaterialBOM_new" <?=(in_array("MaterialBOM_new",@$arrpgist)) ? "checked" : "";?>>&nbsp;Add New</label>
+              </div>
+              <div class="col-xs-2 nopadding">
+                <label><input type="checkbox" name="chkAcc[]" value="MaterialBOM_edit" <?=(in_array("MaterialBOM_edit",@$arrpgist)) ? "checked" : "";?>>&nbsp;Edit</label>
+              </div>
+            </div>
+          </div>
+
+          <br>&nbsp;<br>
           <b><u><i>Job Orders</i></u></b>
-          <div style="padding-left:10px;"> 
+          <div style="padding-left:20px;"> 
             <div class="col-xs-12 nopadwleft">
               <div class="col-xs-2 nopadding">
                 <label><input type="checkbox" name="chkAcc[]" value="JobOrders" <?=(in_array("JobOrders",@$arrpgist)) ? "checked" : "";?>>&nbsp;View List</label>
@@ -1197,7 +1252,7 @@ xmlhttp.send();
 
           <br>&nbsp;<br>
           <b><u><i>Production Run</i></u></b>
-          <div style="padding-left:10px;"> 
+          <div style="padding-left:20px;"> 
             <div class="col-xs-12 nopadwleft">
               <div class="col-xs-2 nopadding">
                 <label><input type="checkbox" name="chkAcc[]" value="ProdRun" <?=(in_array("ProdRun",@$arrpgist)) ? "checked" : "";?>>&nbsp;View List</label>
@@ -1217,7 +1272,7 @@ xmlhttp.send();
 
         <br>&nbsp;<br>
         <b><u><i>Inventory Count</i></u></b>
-        <div style="padding-left:10px;"> 
+        <div style="padding-left:20px;"> 
           <div class="col-xs-12 nopadwleft">
             <div class="col-xs-2 nopadding">
               <label><input type="checkbox" name="chkAcc[]" value="InvCnt.php" id="chkBox179" <?=(in_array("InvCnt.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;View List</label>
@@ -1239,7 +1294,7 @@ xmlhttp.send();
 
         <br>&nbsp;<br>
         <b><u><i>Inventory Transfer</i></u></b>
-        <div style="padding-left:10px;"> 
+        <div style="padding-left:20px;"> 
           <div class="col-xs-12 nopadwleft">
             <div class="col-xs-2 nopadding">
               <label><input type="checkbox" name="chkAcc[]" value="InvTrans.php" id="chkBox183" <?=(in_array("InvTrans.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;View List</label>
@@ -1264,7 +1319,7 @@ xmlhttp.send();
       
         <br>&nbsp;<br>
         <b><u><i>Inventory Adjustment</i></u></b>
-        <div style="padding-left:10px;"> 
+        <div style="padding-left:20px;"> 
           <div class="col-xs-12 nopadwleft">
             <div class="col-xs-2 nopadding">
               <label><input type="checkbox" name="chkAcc[]" value="InvAdj.php" id="chkBox119" <?=(in_array("InvAdj.php",@$arrpgist)) ? "checked" : "";?>>&nbsp;View List</label>

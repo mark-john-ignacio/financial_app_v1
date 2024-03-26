@@ -54,19 +54,20 @@
 			}
 		}
 
-		//eco saving
-		/*
-		$cecosn = mysqli_real_escape_string($con,$_REQUEST['bomecosn'.$xz]);
-		$cecorev = mysqli_real_escape_string($con,$_REQUEST['bomecorev'.$xz]);
-		$cecoprep = mysqli_real_escape_string($con,$_REQUEST['bomecoprep'.$xz]);
-		$cecodte = mysqli_real_escape_string($con,$_REQUEST['bomecodate'.$xz]);
-		$cecodesc = mysqli_real_escape_string($con,$_REQUEST['bomecodesc'.$xz]);
+		//eco saving		
+		if(isset($_REQUEST['bomecosn'.$xz])){
+			$cecosn = mysqli_real_escape_string($con,$_REQUEST['bomecosn'.$xz]);
+			$cecorev = mysqli_real_escape_string($con,$_REQUEST['bomecorev'.$xz]);
+			$cecoprep = mysqli_real_escape_string($con,$_REQUEST['bomecoprep'.$xz]);
+			$cecodte = $_REQUEST['bomecodate'.$xz];
+			$cecodesc = mysqli_real_escape_string($con,$_REQUEST['bomecodesc'.$xz]);
 
-		if(!mysqli_query($con,"UPDATE `mrp_bom_label` set `ecoSN` = '$cecosn', `ecoRev` = '$cecorev', `ecoPrepared` = '$cecoprep', `ecoDate` = '$cecodte', `ecoDesc` = '$cecodesc' where `compcode` = '$company' and `citemno` = '".$cMainItemNo ."' and nversion=".$xz)){				
-			printf("Errormessage: %s\n", mysqli_error($con));
-			$xmsg = "False";
+			if(!mysqli_query($con,"UPDATE `mrp_bom_label` set `ecoSN` = '$cecosn', `ecoRev` = '$cecorev', `ecoPrepared` = '$cecoprep', `ecoDate` = '$cecodte', `ecoDesc` = '$cecodesc' where `compcode` = '$company' and `citemno` = '".$cMainItemNo ."' and nversion=".$xz)){				
+				printf("Errormessage: %s\n", mysqli_error($con));
+				$xmsg = "False";
+			}
 		}
-		*/
+		
 
 	}
 
@@ -121,7 +122,6 @@
 			printf("Errormessage: %s\n", mysqli_error($con));
 		}
 	}
-
 
 
 	//INSERT LOGFILE

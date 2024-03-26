@@ -18,7 +18,7 @@ require_once "../../Connection/connection_string.php";
 					$preparedby = $_SESSION['employeeid'];
 					
 					mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-					values('$company','$code','$preparedby',NOW(),'UPDATED','MES (OPERATORS- ".$stat.")','$compname','Updated Record')");
+					values('$company','$code','$preparedby',NOW(),'UPDATED','MES (EMPLOYEES- ".$stat.")','$compname','Updated Record')");
 					
 					
 					echo "True";

@@ -201,13 +201,13 @@
 							$seltypx = "";
 							$selrprint = "";
 							if($seltype=="request"){
-								$seltypx = "Request";
-								$selrprint = $prntnme['INVTRANS_ISSUANCE'];
-							}elseif($seltype=="transfer"){
-								$seltypx = "Transfer";
+								$seltypx = "Material Request Slip";
 								$selrprint = $prntnme['INVTRANS_ISSUANCE'];
 							}elseif($seltype=="fg_transfer"){
-								$seltypx = "FG Transfer";
+								$seltypx = "Stock In Slip";
+								$selrprint = $prntnme['INVTRANS_ISSUANCE'];
+							}elseif($seltype=="Item Return Slip"){
+								$seltypx = "Item Return Slip";
 								$selrprint = $prntnme['INVTRANS_ISSUANCE'];
 							}
 						?>	
