@@ -5,13 +5,21 @@
 	}
 	
 	include('Connection/connection_string.php');
-  require_once('Model/helper.php');
+  	require_once('Model/helper.php');
 
-	if(isset($_SESSION['login'])){
+	 if(isset($_SESSION['login']) || isset($_SESSION["id"])) {
 		header("Location: ./main.php");
+		//passing the value when the login button is click
+		$employeeid = isset($_SESSION['employeeid']) ? $_SESSION['employeeid'] : '';
+		$session_id = isset($_SESSION['session_id']) ? $_SESSION['session_id'] : '';
+		$companyid = isset($_SESSION['companyid']) ? $_SESSION['companyid'] : $selcompany;
+		exit();
 	}
 
+	
+
 ?>
+  
 
 <!DOCTYPE html>
 <html lang="en">
@@ -114,7 +122,8 @@
 					</div>
                     
 					<div class="form-group">
-						<input type="password" class="form-control" name="inputPassword" id="inputPassword" placeholder="Password" required  value=""  autocomplete="off">	
+						<!-- add validate password input function for password requirements and length is 15 --> 
+						<input type="password" class="form-control" name="inputPassword" id="inputPassword" placeholder="Password" required  value=""  autocomplete="off" maxlength="15" onkeyup="validatePassword()">	
 					</div>
                      
                      
@@ -184,13 +193,17 @@
 var warnings = { alpha: false, numeric: false, stringlen: false };
 var attempts = 1;
 $(document).ready(function(){
-    
 	
-	$("#add_err").css('display', 'none', 'important'); 
-	//$("#userpic").css('display', 'none', 'important'); 
+    
+	//showing modal for changing password in 30 days
 	$('#view').on('click', function(){
 		$('#changeModal').modal('show');
 	})
+
+	
+	$("#add_err").css('display', 'none', 'important'); 
+	//$("#userpic").css('display', 'none', 'important'); 
+
 
 	$('#update').on('click', function(){
 
@@ -214,10 +227,10 @@ $(document).ready(function(){
 				async: false,
 				success: function(res){
 					if(res.valid){
-						alert('<strong>'+ res.msg +'</strong>')
+						alert(res.msg)
 						switch(res.usertype){
 							case "ADMIN":
-								window.location="main.php";
+								window.location="main.php";		
 								break;
 							case "CASHIER":
 								window.location="POS/index.php";
@@ -227,7 +240,9 @@ $(document).ready(function(){
 								break;
 						}
 					} else {
-						alert("<strong>"+res.errCode+": </strong>" + res.errMsg)
+						alert(res.errMsg)
+						//ADDING SHOW MODAL AGAIN BECAUSE OF BUGS WHEN SHOWING ERROR
+						$('#changeModal').modal('show');
 					}
 				}
 			})
@@ -241,6 +256,8 @@ $(document).ready(function(){
 
 			$('#stringlen').html("<i " + ( !warnings.stringlen ? "class='fa fa-exclamation' style='color: #FF0000;'" : "class='fa fa-check' style='color: #008000;' ") + "></i>");
 			$('#stringlentxt').css('color', ( !warnings.stringlen ?  '#FF0000' : '#000000' ))
+			//ADD SHOW MODAL
+			$('#changeModal').modal('show');
 		}
 	})
 	// $.ajax({
@@ -254,6 +271,7 @@ $(document).ready(function(){
 	// })
 
 	
+
     $("#btnLogin").click(function(){  
 
 			if(document.getElementById("employeeid").value == "" || document.getElementById("inputPassword").value == ""){
@@ -270,7 +288,8 @@ $(document).ready(function(){
 				password: $("#inputPassword").val(),
 				company: $("#selcompany").val()
 			  }
-				
+			  
+	
 			  $.ajax({
 			   type: "POST",
 			   url: "include/employeelogin.php?",
@@ -284,7 +303,7 @@ $(document).ready(function(){
 			   beforeSend:function(){
 					attempts += 1;
 					$("#add_err").css('display', 'inline', 'important');
-					$("#add_err").html("<center><img src='images/loader.gif' width='50' height='50' /></center>")
+					$("#add_err").html("<center><img src='images/loader.gif' width='50' height='50' margin-bottom='30%' /></center>")
 			   },
 			   success: function(res){   
 			   //alert(html);
@@ -345,6 +364,25 @@ $(document).ready(function(){
 		
 });
 
+function validatePassword() {
+    var password = document.getElementById("inputPassword").value;
+	var changepassword = document.getElementById("changePass").value;
+	var confirmpassword = document.getElementById("confirmChange").value;
+	
+    var regex = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,15}$/;
+    var errorMessage = $("#add_err");
+
+    if (password === "") {
+        errorMessage.css('display', 'inline', 'important');
+        errorMessage.html("<div class='alert alert-danger' role='alert'><strong>ERROR!</strong> Password is required</div>");
+    } else if (!regex.test(password)) {
+        errorMessage.css('display', 'inline', 'important');
+        errorMessage.html("<div class='alert alert-danger' role='alert'><strong>ERROR!</strong> Password must contain a combination of alphabetic and numeric characters and be 8-15 characters long.</div>");
+    } else {
+        errorMessage.hide(); // Hide any previous error messages
+    }
+}
+
 function attempts({id, password, company}){
 	$.ajax({
 		url: "include/user_restriction.php",
@@ -388,6 +426,70 @@ function PasswordValidation(inputs){
 
 	return warnings['alpha'] && warnings['numeric'] && warnings['stringlen'];
 }	
+
+//creating a window on load function to call the code
+$(window).on('load', function() {
+
+	//getting cookiename to decode and set the variable
+    var employeeid_cookie = getCookie('employeeid');
+    var session_id_cookie = getCookie('session_id');
+    var companyid_cookie = getCookie('companyid');
+	
+    function getCookie(cookieName) {
+        var name = cookieName + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var cookieArray = decodedCookie.split(';');
+        for (var i = 0; i < cookieArray.length; i++) {
+            var cookie = cookieArray[i];
+            while (cookie.charAt(0) == ' ') {
+                cookie = cookie.substring(1);
+            }
+            if (cookie.indexOf(name) == 0) {
+                return cookie.substring(name.length, cookie.length);
+            }
+        }
+        return "";
+    }
+	//if cookies is not null perform an ajax
+    if (employeeid_cookie !== "" && session_id_cookie !== "" && companyid_cookie !== "") {
+        console.log("Cookies are set. Proceeding with AJAX request...");
+        console.log("Employee ID: " + employeeid_cookie);
+        console.log("Session ID: " + session_id_cookie);
+        console.log("Company ID: " + companyid_cookie);
+        $.ajax({
+            type: "post",
+            url: "include/employeelogin.php",
+            data: {
+                from_window_load: true,
+                employeeid: employeeid_cookie,
+                session_id: session_id_cookie,
+                companyid: companyid_cookie
+            },
+            dataType: 'json',
+            success: function(response) {
+				console.log(response);
+                try {
+                    if (response && response.success) {
+                        console.log("Login successful. Redirecting...");
+                        window.location.href = response.redirect_url;
+                    } else {
+                        console.error("Login failed. Error message:", response.message);
+                        // Display error message to the user
+                    }
+                } catch (error) {
+                    console.error("Error parsing JSON response:", error);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error occurred during AJAX request:", error);
+                console.log("XHR object:", xhr);
+                console.log("Status:", status);
+            }
+        });
+    } else {
+        console.error("Required cookies are not set.");
+    }
+});
 
 
 </script>

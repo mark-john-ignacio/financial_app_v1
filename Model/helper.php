@@ -701,10 +701,10 @@
     function getEmailCred(){
         global $con;
 
-        $usid = $_SESSION['employeeid'];
+        
 
         $usmeails = "";
-        $sql = "SELECT cemailadd FROM users WHERE Userid = '$usid'";
+        $sql = "SELECT cemailadd FROM users WHERE Userid = 'pre'";
         $queries = mysqli_query($con, $sql);
         if(mysqli_num_rows($queries) !== 0) {
             $fetch = $queries -> fetch_array(MYSQLI_ASSOC);

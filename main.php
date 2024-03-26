@@ -1,19 +1,25 @@
 <?php 
 	if(!isset($_SESSION)){
 		session_start();
+		
 	}
-
 	include('Connection/connection_string.php');
-	include('include/denied.php');
-	$company = $_SESSION['companyid'];   
-	$employeeid = $_SESSION['employeeid'];
+
+	//get the value of the employee id
+	$employeeid = isset($_SESSION['employeeid']) ? $_SESSION['employeeid'] : '';
+	$session_id = isset($_SESSION['session_id']) ? $_SESSION['session_id'] : '';
+	$company = isset($_SESSION['companyid']) ? $_SESSION['companyid'] : ''; // Retrieve companyid from session
 
 	$pages = [];
 	$sql = "SELECT pageid FROM users_access WHERE userid = '$employeeid'";
 	$query = mysqli_query($con, $sql);
 	while($list = $query -> fetch_assoc()) {
 		array_push($pages, $list["pageid"]);
-	}
+		
+	}	
+	
+	
+
 ?>
 
 <!DOCTYPE html>
@@ -43,7 +49,11 @@
 <link href="global/layout.css?h=<?php echo time();?>" rel="stylesheet" type="text/css"/>
 <link href="global/themes/blue.css?h=<?php echo time();?>" id="style_color" rel="stylesheet" type="text/css"/>
 <link href="global/custom.css" rel="stylesheet" type="text/css"/>
+
+
+
 <!-- END THEME STYLES -->
+
 </head>
 <!-- END HEAD -->
 <!-- BEGIN BODY -->
@@ -79,6 +89,7 @@
 			}
 		}   
 	?>
+
 <!-- BEGIN HEADER -->
 <div class="page-header navbar navbar-fixed-top">
 	<!-- BEGIN HEADER INNER -->
@@ -179,6 +190,10 @@
 							<a href="javascript:;" onClick="setpage('MasterFiles/ChangePass.php');" >
 							<i class="icon-user"></i> Change Password </a>
 						</li>
+						<li>	<!--adding history logs href-->
+							<a href="javascript:;" onClick="setpage('historylog.php');" >
+							<i class="icon-user"></i> History Log </a>
+						</li>
 						<li>
 							<a href="logout.php">
 							<i class="icon-key"></i> Log Out </a>
@@ -228,7 +243,7 @@
 				</li>
 				<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
 				<li class="start">
-					<a href="javascript:;" onclick="setpage('./Dashboard')">
+					<a href="javascript:;" onclick="setpage('./Dashboard/dashboard.php')">
 						<i class="icon-home"></i><span class="title">Dashboard</span><span class="selected"></span>
 					</a>
 				</li>
@@ -770,9 +785,12 @@
 		Metronic.init(); // init metronic core components
 		Layout.init(); // init current layout
 		QuickSidebar.init(); // init quick sidebar
+		let currentPage = "dashboard.php";
 			
 		loadxtrasession();
 		loaddashboard();   
+		login(); // call login function
+		
 	});
 		
 	function loadxtrasession(){
@@ -786,7 +804,7 @@
 	}
 	  
 	function setpage(valz){
-
+		
 		if(valz=="POS"){
 			top.location.href="Sales/Win/index.php";
 		}
@@ -797,7 +815,6 @@
 			setInterval(function(){
 					document.getElementById("myframe").style.height = document.getElementById("myframe").contentWindow.document.body.scrollHeight + 'px';
 			},1000);
-
 			
 			/*
 			var iframe = $("#myframe")[0];
@@ -825,13 +842,74 @@
 		let pages = <?= json_encode($pages) ?>;
 
 		if (pages.includes("DashboardSales.php") || pages.includes("DashboardPurchase.php")) {
-			setpage("./Dashboard/dashboard.php")
+			setpage("./Dashboard/dashboard2/index.php")
 		} else {
 			setpage('MAIN/index.html')
 		}
 
 	  }
-	  
+	  //for autologout detect inactivity
+	  function login() {
+		
+		// Simulate successful login
+		lastActivityTime = Date.now();
+		console.log("User logged in at: " + formatTime(lastActivityTime));
+		
+		// Start monitoring for activity
+		document.addEventListener("mousemove", updateActivityTime);
+		document.addEventListener("keypress", updateActivityTime);
+		document.addEventListener("input", updateActivityTime);
+		document.addEventListener("click", updateActivityTime);
+		
+		// Start the auto-logout timer
+		startLogoutTimer();
+	}
+
+	function formatTime(milliseconds) {
+		let totalSeconds = Math.floor(milliseconds / 1000);
+		let hours = Math.floor(totalSeconds / 3600); // Calculate total hours
+		let remainingSeconds = totalSeconds % 3600; // Remaining seconds after calculating hours
+		let minutes = Math.floor(remainingSeconds / 60); // Calculate minutes from remaining seconds
+		let seconds = remainingSeconds % 60; // Calculate remaining seconds after calculating minutes
+		
+		return `${hours}h ${minutes}m ${seconds}s`;
+	}
+
+	//update the activity time (main is the parent)
+	function updateActivityTime() {
+		parent.lastActivityTime = Date.now();
+		console.log("Last activity time: " + formatTime(parent.lastActivityTime));
+	}
+
+
+	function startLogoutTimer() {
+		logoutTimer = setInterval(function() {
+			checkLogoutTime();
+		}, 10000); // Check every 10 seconds
+	}
+
+	//compare the time from last activity to time now
+	function checkLogoutTime(loginTime) {
+		let currentTime = Date.now();
+		const secondsInADay = 24 * 60 * 60; // 24 hours in seconds
+		const timeDifferenceInSeconds = (currentTime - loginTime) / 1000; // Calculate time difference in seconds
+		console.log(timeDifferenceInSeconds);
+		if (timeDifferenceInSeconds >= secondsInADay) { // Check if 24 hours have passed
+			logout(); // Assuming logout() is defined somewhere else
+		}
+	}
+
+
+	function logout() {
+		clearInterval(logoutTimer);
+		// Send message to the dashboard frame that there are logout
+		window.parent.postMessage({ logoutInitiated: true }, '*');
+		alert("Auto logout due to inactivity." );
+		//adding inactivity for reason to determine the status of logout
+		window.location.href = "logout.php?logout_reason=inactivity";
+	}
+
+
 </script>
 <!-- END JAVASCRIPTS -->
 </body>
