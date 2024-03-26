@@ -134,14 +134,16 @@ include('include/accessinner.php');
         }
 
         //compare the time to last activity to time now
-        function checkLogoutTime() {
+        function checkLogoutTime(loginTime) {
             let currentTime = Date.now();
-            let timeDifferenceInSeconds = (currentTime - lastActivityTime) / 1000; // Convert milliseconds to seconds
+            const secondsInADay = 24 * 60 * 60; // 24 hours in seconds
+            const timeDifferenceInSeconds = (currentTime - loginTime) / 1000; // Calculate time difference in seconds
             console.log(timeDifferenceInSeconds);
-            if (timeDifferenceInSeconds >= 10) { // 10 seconds
-                logout(); // Pass currentPage as an argument
+            if (timeDifferenceInSeconds >= secondsInADay) { // Check if 24 hours have passed
+                logout(); // Assuming logout() is defined somewhere else
             }
         }
+
         // add to prevent multiple alert
         window.addEventListener('message', function(event) {
             if (event.data && event.data.logoutInitiated) {
