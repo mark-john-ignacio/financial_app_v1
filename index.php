@@ -7,11 +7,15 @@
 	include('Connection/connection_string.php');
   	require_once('Model/helper.php');
 
-
-	  if(isset($_SESSION['login']) || (isset($_SESSION["id"]) || isset($_COOKIE['id']))){
+	 if(isset($_SESSION['login']) || isset($_SESSION["id"])) {
 		header("Location: ./main.php");
-	  }
-	
+		//passing the value when the login button is click
+		$employeeid = isset($_SESSION['employeeid']) ? $_SESSION['employeeid'] : '';
+		$session_id = isset($_SESSION['session_id']) ? $_SESSION['session_id'] : '';
+		$companyid = isset($_SESSION['companyid']) ? $_SESSION['companyid'] : $selcompany;
+		exit();
+	}
+
 	
 
 ?>
@@ -188,12 +192,14 @@
 var warnings = { alpha: false, numeric: false, stringlen: false };
 var attempts = 1;
 $(document).ready(function(){
+	
     
 	//showing modal for changing password in 30 days
 	$('#view').on('click', function(){
 		$('#changeModal').modal('show');
 	})
 
+	
 	$("#add_err").css('display', 'none', 'important'); 
 	//$("#userpic").css('display', 'none', 'important'); 
 
@@ -281,7 +287,8 @@ $(document).ready(function(){
 				password: $("#inputPassword").val(),
 				company: $("#selcompany").val()
 			  }
-				
+			  
+	
 			  $.ajax({
 			   type: "POST",
 			   url: "include/employeelogin.php?",
@@ -355,6 +362,7 @@ $(document).ready(function(){
 	});
 		
 });
+
 function validatePassword() {
     var password = document.getElementById("inputPassword").value;
 	var changepassword = document.getElementById("changePass").value;
@@ -417,6 +425,70 @@ function PasswordValidation(inputs){
 
 	return warnings['alpha'] && warnings['numeric'] && warnings['stringlen'];
 }	
+
+//creating a window on load function to call the code
+$(window).on('load', function() {
+
+	//getting cookiename to decode and set the variable
+    var employeeid_cookie = getCookie('employeeid');
+    var session_id_cookie = getCookie('session_id');
+    var companyid_cookie = getCookie('companyid');
+	
+    function getCookie(cookieName) {
+        var name = cookieName + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var cookieArray = decodedCookie.split(';');
+        for (var i = 0; i < cookieArray.length; i++) {
+            var cookie = cookieArray[i];
+            while (cookie.charAt(0) == ' ') {
+                cookie = cookie.substring(1);
+            }
+            if (cookie.indexOf(name) == 0) {
+                return cookie.substring(name.length, cookie.length);
+            }
+        }
+        return "";
+    }
+	//if cookies is not null perform an ajax
+    if (employeeid_cookie !== "" && session_id_cookie !== "" && companyid_cookie !== "") {
+        console.log("Cookies are set. Proceeding with AJAX request...");
+        console.log("Employee ID: " + employeeid_cookie);
+        console.log("Session ID: " + session_id_cookie);
+        console.log("Company ID: " + companyid_cookie);
+        $.ajax({
+            type: "post",
+            url: "include/employeelogin.php",
+            data: {
+                from_window_load: true,
+                employeeid: employeeid_cookie,
+                session_id: session_id_cookie,
+                companyid: companyid_cookie
+            },
+            dataType: 'json',
+            success: function(response) {
+				console.log(response);
+                try {
+                    if (response && response.success) {
+                        console.log("Login successful. Redirecting...");
+                        window.location.href = response.redirect_url;
+                    } else {
+                        console.error("Login failed. Error message:", response.message);
+                        // Display error message to the user
+                    }
+                } catch (error) {
+                    console.error("Error parsing JSON response:", error);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error occurred during AJAX request:", error);
+                console.log("XHR object:", xhr);
+                console.log("Status:", status);
+            }
+        });
+    } else {
+        console.error("Required cookies are not set.");
+    }
+});
 
 
 </script>

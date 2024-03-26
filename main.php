@@ -3,21 +3,12 @@
 		session_start();
 		
 	}
-	//cookie
-	if (!isset($_COOKIE["id"])){
-		header ("location:index.php");
-		
-	}
-	if (!isset($_COOKIE["id"])){
-		$_SESSION['id']=$_COOKIE['id'];
-		
-	}
-	
-		
 	include('Connection/connection_string.php');
-	include('include/denied.php');
-	$company = $_SESSION['companyid'];   
-	$employeeid = $_SESSION['employeeid'];
+
+	//get the value of the employee id
+	$employeeid = isset($_SESSION['employeeid']) ? $_SESSION['employeeid'] : '';
+	$session_id = isset($_SESSION['session_id']) ? $_SESSION['session_id'] : '';
+	$company = isset($_SESSION['companyid']) ? $_SESSION['companyid'] : ''; // Retrieve companyid from session
 
 	$pages = [];
 	$sql = "SELECT pageid FROM users_access WHERE userid = '$employeeid'";
@@ -25,7 +16,8 @@
 	while($list = $query -> fetch_assoc()) {
 		array_push($pages, $list["pageid"]);
 		
-	}
+	}	
+	
 	
 
 ?>
@@ -794,6 +786,7 @@
 		loadxtrasession();
 		loaddashboard();   
 		login(); // call login function
+		
 	});
 		
 	function loadxtrasession(){

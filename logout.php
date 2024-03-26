@@ -31,11 +31,6 @@ $sqlSession = "UPDATE users SET session_ID = 0 WHERE Userid = '$id'";
 $result2 = mysqli_query($con, $sqlSession);
 
 
-//remove the value of the id+
-//cookie
-setcookie('id',$_SESSION['id'],60);
-
-unset($_SESSION['id']);
 
 session_unset();
 session_destroy();

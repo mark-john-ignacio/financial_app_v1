@@ -3,20 +3,63 @@ ini_set('display_errors', 1);
 ini_set('log_errors', 1);
 error_reporting(E_ALL);
 
-//ob_start();
-if(!isset($_SESSION)){
-session_start();
+
+// Start session if not started
+if (!isset($_SESSION)) {
+    session_start();
 }
-
-
 
 include('../Connection/connection_string.php');
 require_once('../Model/helper.php');
 
-$employeeid = mysqli_real_escape_string($con,$_REQUEST['employeeid']);
-$password = mysqli_real_escape_string($con,$_REQUEST['password']); 
-$selcompany = mysqli_real_escape_string($con,$_REQUEST['selcompany']); 
-$attempts = mysqli_real_escape_string($con, $_REQUEST['attempts']);
+//creating an array for response
+$response = array();
+
+//check if the request is from on load for auto login after closing the browser
+if (isset($_REQUEST['from_window_load'])) {
+    $employeeid = mysqli_real_escape_string($con, $_REQUEST['employeeid']);
+    $session_id = mysqli_real_escape_string($con, $_REQUEST['session_id']);
+    $companyid = mysqli_real_escape_string($con, $_REQUEST['companyid']);
+
+    // Check if employee ID exists, session ID matches
+    $sql = mysqli_query($con, "select * FROM users where userid = '$employeeid' AND session_ID = '$session_id' LIMIT 1");
+	
+    // Fetch SQL results
+    $sql_results = mysqli_fetch_assoc($sql);
+
+    if (mysqli_num_rows($sql) > 0) {
+        $_SESSION['companyid'] = $companyid;
+        $_SESSION['employeeid'] = $employeeid;
+        $_SESSION['session_id'] = $session_id;
+		
+
+		//response for the json
+        $response = array(
+            'success' => true,
+            'redirect_url' => 'main.php',
+            'sql_results' => $sql_results
+        );
+
+    } else {
+        // If no match, include SQL results and error message
+        $message = "Invalid credentials for Employee ID: $employeeid, Session ID: $session_id, Company ID: $companyid";
+        $response = array(
+            'success' => false,
+            'message' => $message,
+            'sql_results' => $sql_results // Include SQL results in the response
+        );
+    }
+    echo json_encode($response);
+}
+//if the login button is clicked
+ else {
+
+    // Proceed with regular login process
+    $employeeid = mysqli_real_escape_string($con, $_REQUEST['employeeid']);
+    $password = mysqli_real_escape_string($con, $_REQUEST['password']);
+    $selcompany = mysqli_real_escape_string($con, $_REQUEST['selcompany']);
+    $attempts = mysqli_real_escape_string($con, $_REQUEST['attempts']);
+
 
 
 
@@ -59,12 +102,17 @@ if(mysqli_num_rows($sql) == 0){
 			if ($employee['session_ID'] == 0) {
                 // UPDATE THE SESSION ID TO DATABASE 
                 mysqli_query($con, "UPDATE users SET session_ID = '".session_id()."' WHERE userid = '$employeeid'");
-				
-				//cookie
-				$_SESSION['id'] = $employee['id'];
-				setcookie('id',$employee['id'], time () + 60*60*24,'/');
+			
+			$_SESSION['employeeid'] = $employeeid;
+			$_SESSION['session_id'] = session_id();
+			
+			//set the cookies it has 30 days expiration
+			setcookie('employeeid', $employeeid, time() + (86400 * 30), "/myxfin_st"); // 30 days expiration
+			setcookie('session_id', session_id(), time() + (86400 * 30), "/myxfin_st"); // 30 days expiration
+			setcookie('companyid', $selcompany, time() + (86400 * 30), "/myxfin_st"); // 30 days expiration
 
 			$_SESSION['employeeid'] = $employee['id'];
+
 			$_SESSION['employeename'] = $employee['name'];
 			$_SESSION['employeefull'] = $employee['fullname'];
 			$_SESSION['status'] = $employee['status'];
@@ -145,6 +193,6 @@ if(mysqli_num_rows($sql) == 0){
 				'errMsg' => "Your account has been disabled! Contact your organization to reactivate your account"
 			]);
 	}
-}
+}}
 
 ?>
