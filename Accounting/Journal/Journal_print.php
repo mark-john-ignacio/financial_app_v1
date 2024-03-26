@@ -191,7 +191,7 @@ html,
 <table border="0" width="100%" style="border-collapse:collapse; padding-top: 10px">
 	<tr>
 		<td width="33%" style="padding-top: 10px">
-			<b>Prepared By:<br><br><br>&nbsp;&nbsp;&nbsp;</b><img src = '<?=$cpreparedBySign?>?x=<?=time()?>' >
+			<b>Prepared By:<br></b><img src = '<?=$cpreparedBySign?>?x=<?=time()?>' >
 		</td>
 
 		<td style="padding-top: 10px">
