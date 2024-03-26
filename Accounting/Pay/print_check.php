@@ -104,7 +104,7 @@ function numberTowords($num)
 			//	$rettxt .= " ".$ones[substr($decnum,1,1)];
 			}
 
-			$rettxt .= $decnum ."/100";
+			$rettxt .= $decnum ."/100 ONLY";
 
 		}else{
 			$rettxt .= " PESOS ONLY";
@@ -246,7 +246,7 @@ function numberTowords($num)
 
 	<div class="ewdamt"><?=number_format($Amount,2)?></div>
 	<div class="ewdpay"><?=$Payee?></div>
-	<div class="ewdamtwords"><?=numberTowords($Amount)?></div>
+	<div class="ewdamtwords">* <?=numberTowords($Amount)?> *</div>
 <?php
 	}elseif($cdoctype==2){
 ?>
@@ -334,7 +334,7 @@ function numberTowords($num)
 
 	<div class="ewdamt"><?=number_format($Amount,2)?></div>
 	<div class="ewdpay"><?=$Payee?></div>
-	<div class="ewdamtwords"><?=numberTowords($Amount)?></div>
+	<div class="ewdamtwords">* <?=numberTowords($Amount)?> *</div>
 <?php
 	}elseif($cdoctype==3){
 ?>
@@ -425,7 +425,7 @@ function numberTowords($num)
 
 	<div class="ewdamt"><?=number_format($Amount,2)?></div>
 	<div class="ewdpay"><?=$Payee?></div>
-	<div class="ewdamtwords"><?=numberTowords($Amount)?></div>
+	<div class="ewdamtwords">* <?=numberTowords($Amount)?> *</div>
 
 <?php
 	}
