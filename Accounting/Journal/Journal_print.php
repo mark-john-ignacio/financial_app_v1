@@ -26,7 +26,7 @@ include('../../include/denied.php');
 	}
 	
 	$cpono = $_REQUEST['x'];
-	$sqlhead = mysqli_query($con,"select a.*,c.Fname,c.Lname,c.Minit from journal a left join users c on a.cpreparedby=c.Userid where a.compcode='$company' and a.ctranno = '$cpono'");
+	$sqlhead = mysqli_query($con,"select a.*,c.Fname,c.Lname,c.Minit, c.cusersign from journal a left join users c on a.cpreparedby=c.Userid where a.compcode='$company' and a.ctranno = '$cpono'");
 
 	if (mysqli_num_rows($sqlhead)!=0) {
 		while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
@@ -38,7 +38,8 @@ include('../../include/denied.php');
 			$ltaxinc = $row['ltaxinc'];
 
 			$PreparedBy = $row['Lname'].", ".$row['Fname']." ".$row['Minit'];
-			
+			$cpreparedBySign = $row['cusersign'];
+
 			$lCancelled = $row['lcancelled'];
 			$lPosted = $row['lapproved'];
 			$lVoid = $row['lvoid'];
@@ -190,7 +191,7 @@ html,
 <table border="0" width="100%" style="border-collapse:collapse; padding-top: 10px">
 	<tr>
 		<td width="33%" style="padding-top: 10px">
-			<b>Prepared By:<br><br><br>&nbsp;&nbsp;&nbsp;</b><?php echo $PreparedBy;?>
+			<b>Prepared By:<br><br><br>&nbsp;&nbsp;&nbsp;</b><img src = '<?=$cpreparedBySign?>?x=<?=time()?>' >
 		</td>
 
 		<td style="padding-top: 10px">
