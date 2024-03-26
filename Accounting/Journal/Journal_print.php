@@ -194,12 +194,12 @@ html,
 			<b>Prepared By:<br></b><img src = '<?=$cpreparedBySign?>?x=<?=time()?>' >
 		</td>
 
-		<td style="padding-top: 10px">
-			<b>Checked By:<br><br><br>&nbsp;&nbsp;&nbsp;</b>____________________
+		<td style="padding-top: 10px" valign="top">
+			<b>Checked By:<br><br><br><br>&nbsp;&nbsp;&nbsp;</b>____________________
 		</td>
 
-		<td width="33%" style="padding-top: 10px">
-			<b>Approved By:<br><br><br>&nbsp;&nbsp;&nbsp;</b>____________________
+		<td width="33%" style="padding-top: 10px" valign="top">
+			<b>Approved By:<br><br><br><br>&nbsp;&nbsp;&nbsp;</b>____________________
 		</td>
 	</tr>
 </table>
