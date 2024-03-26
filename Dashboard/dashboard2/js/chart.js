@@ -158,7 +158,7 @@ function topSellingBarChart(data) {
             labels: {
                 show: false,
                 formatter: function (val) {
-                    return val;
+                    return "₱" + val.toLocaleString();
                 }
             }
         }
@@ -282,8 +282,8 @@ function renderSalesProgressChart(data) {
                     fontSize: "12px"
                 },
                 y: {
-                    formatter: function(e) {
-                        return "₱" + e;
+                    formatter: function(val) {
+                        return "₱" + val.toLocaleString();
                     }
                 }
             },
@@ -414,7 +414,7 @@ function renderSalesPerItemBarChart(data) {
                 },
                 y: {
                     formatter: function(e) {
-                        return "₱" + e;
+                        return "₱" + e.toLocaleString();
                     }
                 }
             },
@@ -554,7 +554,7 @@ fetch('analytics/purchase_per_item_bar.php')
                     },
                     y: {
                         formatter: function(e) {
-                            return "₱" + e;
+                            return "₱" + e.toLocaleString();
                         }
                     }
                 },
