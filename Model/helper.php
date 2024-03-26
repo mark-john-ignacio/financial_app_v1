@@ -155,7 +155,7 @@
     }
      
 
-    function CustomerNames($module, $ctranno, $company, $ctranref){
+    function CustomerNames($module, $ctranno, $company, $ctranref=''){
         return match($module){
 
             'DR' => "select b.cname from dr_t a
