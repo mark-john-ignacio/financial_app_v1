@@ -26,25 +26,14 @@ function totalSales($company)
 
     $previous_week = strtotime("-1 week +1 day");
 
-    $start_week = strtotime("last sunday midnight",$previous_week);
-    $end_week = strtotime("next saturday",$start_week);
-
-    $start_of_last_week = date("Y-m-d",$start_week);
-    $end_of_last_week = date("Y-m-d",$end_week);
-
-
-    // Get the date range for the current week (Monday to today)
-    $start_of_current_week = date("Y-m-d", strtotime("monday this week"));
-    $current_date = date("Y-m-d");
-
-    // Query to get the total nnet sales for last week
-    $query_last_week = "SELECT SUM(nnet) AS total_nnet_last_week FROM sales WHERE dcutdate >= '$start_of_last_week' AND dcutdate <= '$end_of_last_week' AND compcode = '$company' and lvoid=0 and lcancelled=0;";
+    // Query to get the total nnet sales for last week 
+    $query_last_week = "SELECT SUM(ngross) AS total_nnet_last_week FROM sales WHERE MONTH(dcutdate) = MONTH(DATE_SUB(NOW(),INTERVAL 30 DAY)) AND YEAR(dcutdate) = YEAR(DATE_SUB(NOW(),INTERVAL 30 DAY)) AND compcode = '$company' and lvoid=0 and lcancelled=0";
     $result_last_week = mysqli_query($con, $query_last_week);
     $row_last_week = mysqli_fetch_assoc($result_last_week);
     $total_nnet_last_week = $row_last_week["total_nnet_last_week"];
 
     // Query to get the total nnet sales for the current week
-    $query_current_week = "SELECT SUM(nnet) AS total_nnet_current_week FROM sales WHERE dcutdate >= '$start_of_current_week' AND dcutdate <= '$current_date' AND compcode = '$company' and lvoid=0 and lcancelled=0;";
+    $query_current_week = "SELECT SUM(ngross) AS total_nnet_current_week FROM sales WHERE MONTH(dcutdate) = MONTH(curdate()) AND YEAR(dcutdate) = YEAR(curdate()) AND compcode = '$company' and lvoid=0 and lcancelled=0";
     $result_current_week = mysqli_query($con, $query_current_week);
     $row_current_week = mysqli_fetch_assoc($result_current_week);
     $total_nnet_current_week = $row_current_week["total_nnet_current_week"];

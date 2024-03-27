@@ -1,12 +1,15 @@
 <?php
-if (!isset($_SESSION)) {
-    session_start();
-}
+    if (!isset($_SESSION)) {
+        session_start();
+    }
 
-$_SESSION['pageid'] = "historylog.php";
+   // $_SESSION['pageid'] = "historylog.php";
 
-include('Connection/connection_string.php');
-include('include/accessinner.php');
+    include('Connection/connection_string.php');
+   // include('include/access.php');
+
+
+   $employeeid = $_SESSION['employeeid'];
 ?>
 
 

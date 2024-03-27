@@ -2612,7 +2612,9 @@ function disabled(){
 		$("#btnentry").attr("disabled", false);
 	}
 
-		$("#btn-closemod").attr("disabled", false); 
+	$("#btn-closemod").attr("disabled", false); 
+
+	$(".kv-file-zoom").attr("disabled", false);
 
 }
 

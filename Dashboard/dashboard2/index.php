@@ -69,7 +69,7 @@
                                 <!--begin::Wrapper-->
                                 <div class="d-flex flex-column flex-grow-1">
                                     <!--begin::Title-->
-                                    <a href="#" class="text-dark text-hover-primary fw-bolder fs-3">Total Sales This Week</a>
+                                    <a href="#" class="text-dark text-hover-primary fw-bolder fs-3">Total Sales for the Month</a>
                                     <!--end::Title-->
                                     <!--begin::Chart-->
                                     <div class="total-sales-chart" style="height: 100px"></div>
@@ -85,7 +85,7 @@
                                     <span class="text-dark fw-bolder fs-2x me-2 lh-0"><?= totalSales($company)['revenue']; ?></span>
                                     <!--end::Number-->
                                     <!--begin::Text-->
-                                    <span class="text-dark fw-bolder fs-7 lh-0"><?= totalSales($company)['percentageChange'];?> this week</span>
+                                    <span class="text-dark fw-bolder fs-7 lh-0"><?= totalSales($company)['percentageChange'];?> this month</span>
                                     <!--end::Text-->
                                 </div>
                                 <!--end::Stats-->
@@ -431,7 +431,7 @@
 <script src="https://cdn.amcharts.com/lib/4/themes/dataviz.js"></script>
 <!--end:: Javascript amCharts-->
 <!--begin:: Javascript charts-->
-<script src="js/chart.js"></script>
+<script src="js/chart.js?x<?=time()?>"></script>
 <!--end::Javascript charts-->
 
 <!--end::Javascript-->

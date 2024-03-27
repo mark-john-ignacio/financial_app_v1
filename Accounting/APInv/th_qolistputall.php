@@ -79,7 +79,7 @@ require_once "../../Connection/connection_string.php";
 					$zxcamt = (floatval($rowpo['nprice']) * floatval($row['nqty']));
 
 					$json['nprice'] = $rowpo['nprice'];
-					$json['namount'] = float($zxcamt) * $rowpo['currate'];	
+					$json['namount'] = floatval($zxcamt) * $rowpo['currate'];	
 					$json['nbaseamount'] = $zxcamt;	
 					$json['ctaxcode'] = $rowpo['ctaxcode'];	
 					$json['cewtcode'] = $rowpo['cewtcode'];

@@ -17,7 +17,6 @@
 	}
 
 	
-
 ?>
   
 
@@ -274,64 +273,62 @@ $(document).ready(function(){
 
     $("#btnLogin").click(function(){  
 
-			if(document.getElementById("employeeid").value == "" || document.getElementById("inputPassword").value == ""){
-				$("#add_err").css('display', 'inline', 'important');
-				$("#add_err").html("<div class='alert alert-danger' role='alert'><strong>ERROR!</strong> Complete the form</div>");
-			}else{
+		if(document.getElementById("employeeid").value == "" || document.getElementById("inputPassword").value == ""){
+			$("#add_err").css('display', 'inline', 'important');
+			$("#add_err").html("<div class='alert alert-danger' role='alert'><strong>ERROR!</strong> Complete the form</div>");
+		}else{
 
 
-			  employeeid=$("#employeeid").val();
-			  password=$("#inputPassword").val();
-			  selcat = $("#selcompany").val();
-			  const login = {
+			employeeid=$("#employeeid").val();
+			password=$("#inputPassword").val();
+			selcat = $("#selcompany").val();
+			const login = {
 				id: $("#employeeid").val(),
 				password: $("#inputPassword").val(),
 				company: $("#selcompany").val()
-			  }
-			  
-	
-			  $.ajax({
-			   type: "POST",
-			   url: "include/employeelogin.php?",
-			   data: {
-				employeeid: login.id,
-				password: login.password,
-				selcompany: login.company,
-				attempts: attempts
-			   },
-			   dataType: 'json',
-			   beforeSend:function(){
+			}
+			  	
+			$.ajax({
+				type: "POST",
+				url: "include/employeelogin.php?",
+				data: {
+					employeeid: login.id,
+					password: login.password,
+					selcompany: login.company,
+					attempts: attempts
+				},
+				dataType: 'json',
+				beforeSend:function(){
 					attempts += 1;
 					$("#add_err").css('display', 'inline', 'important');
 					$("#add_err").html("<center><img src='images/loader.gif' width='50' height='50' margin-bottom='30%' /></center>")
-			   },
-			   success: function(res){   
-			   //alert(html);
-			   console.log(res) 
-				if(res.valid)    {
-					if(res.proceed){
-						switch(res.usertype){
-							case "ADMIN":
-								window.location="main.php";
-								break;
-							case "CASHIER":
-								window.location="POS/index.php";
-								break;
-							default: 
-								window.location="main.php";
-								break;
+				},
+				success: function(res){   
+				//alert(html);
+				console.log(res) 
+					if(res.valid)    {
+						if(res.proceed){
+							switch(res.usertype){
+								case "ADMIN":
+									window.location="main.php";
+									break;
+								case "CASHIER":
+									window.location="POS/index.php";
+									break;
+								default: 
+									window.location="main.php";
+									break;
+							}
+							
+						} else {
+							$('#changeModal').modal('show');
 						}
 						
 					} else {
-						$('#changeModal').modal('show');
+						$("#add_err").css('display', 'inline', 'important');
+						$("#add_err").html("<div class='alert alert-danger' role='alert'> "+res.errMsg+"</div>");
 					}
-					 
-				} else {
-					$("#add_err").css('display', 'inline', 'important');
-					$("#add_err").html("<div class='alert alert-danger' role='alert'> "+res.errMsg+"</div>");
-				}
-			}
-			   
+				}			   
 			});
 			return false;
 		

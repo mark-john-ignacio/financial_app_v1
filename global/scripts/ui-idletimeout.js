@@ -37,7 +37,8 @@ var UIIdleTimeout = function () {
                     $countdown.html(counter); // update the counter
                 }
             });
-            
+
+                
         }
 
     };
