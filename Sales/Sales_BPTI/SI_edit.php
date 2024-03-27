@@ -2757,7 +2757,9 @@ $getdcnts = mysqli_query($con,"SELECT * FROM `discounts_list` where compcode='$c
 			$("#btnentry").attr("disabled", false);
 		}
 
-			$("#btn-closemod").attr("disabled", false); 
+		$("#btn-closemod").attr("disabled", false); 
+		
+		$(".kv-file-zoom").attr("disabled", false);
 
 	}
 

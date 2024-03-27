@@ -90,7 +90,11 @@ foreach($result as $row)
  $sub_array[] = $row['lsent'];
  $sub_array[] = $row['quotetype'];
  $sub_array[] = $row['lvoid'];
- $sub_array[] = date_format(date_create($row['dtrandate']), "M d, Y");
+ if($row['dtrandate']!=null){
+ 	$sub_array[] = date_format(date_create($row['dtrandate']), "M d, Y");
+ }else{
+	$sub_array[] = "";
+ }
  $sub_array[] = date_format(date_create($row['dcutdate']), "M d, Y");
  $data[] = $sub_array;
 }

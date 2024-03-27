@@ -1905,6 +1905,8 @@ function disabled(){
 	$("#btnNew").attr("disabled", false);
 	$("#btnPrint").attr("disabled", false);
 	$("#btnEdit").attr("disabled", false);
+
+	$(".kv-file-zoom").attr("disabled", false);
 }
 
 function enabled(){

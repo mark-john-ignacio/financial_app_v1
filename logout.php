@@ -6,8 +6,9 @@ include('Connection/connection_string.php');
 include('Model/helper.php');
 
 $id = mysqli_real_escape_string($con, $_SESSION['employeeid']);
-$ipaddress = getHostByName(getHostName());
-$hashedIP = better_crypt($ipaddress);
+$ipaddress = getMyIP();
+//$hashedIP = better_crypt($ipaddress);
+$hashedIP = $ipaddress;
 
 // $ipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 

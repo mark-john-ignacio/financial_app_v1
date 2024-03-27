@@ -2411,6 +2411,8 @@ if (mysqli_num_rows($getewtcd)!=0) {
 		}
 
 		$("#btn-closemod").attr("disabled", false); 
+
+		$(".kv-file-zoom").attr("disabled", false);
 		
 
 	}

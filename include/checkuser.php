@@ -5,7 +5,7 @@ include('../Connection/connection_string.php');
 $employeeid = $_REQUEST['id'];
 //$password = $_REQUEST['xpass'];
 
-$sql = mysqli_query($con,"select * from users where Userid = '$employeeid'");
+$sql = mysqli_query($con,"select * from users where Userid = '$employeeid' and cstatus <> 'Inactive'");
 //echo "select * from users where userid = '$employeeid' and password='$password'";
 if(mysqli_num_rows($sql) == 0){
 	

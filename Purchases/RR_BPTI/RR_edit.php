@@ -1850,6 +1850,8 @@ else{
 		$("#btnEdit").attr("disabled", false);
 
 		$("#closePrint").attr("disabled", false);
+
+		$(".kv-file-zoom").attr("disabled", false);
 	}
 
 	function enabled(){

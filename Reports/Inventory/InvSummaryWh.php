@@ -199,6 +199,7 @@
     <th style="text-align:center; border-right:1px solid">IT</th>
   </tr>
   <?php
+
 		$rwitms = mysqli_query($con,"Select cpartno as citemno,citemdesc,cunit from items where compcode='$company' and cpartno in ('".implode("','", $arritmslist)."')");
 		$rowallietsm = $rwitms->fetch_all(MYSQLI_ASSOC);
 		$totIn = 0;

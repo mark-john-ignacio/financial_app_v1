@@ -116,7 +116,8 @@
         return match($status){
             'Active' => true,
             'Deactivate' => false,
-            null => true,
+            'Inactive' => false,
+            null => false,
             default => false
         };
     
@@ -125,12 +126,28 @@
     function failedAttempt($attempt){
         return $attempt == 5;
     }
+
+    function getMyIP(){
+        if(!empty($_SERVER['HTTP_CLIENT_IP'])) {  
+            $ip = $_SERVER['HTTP_CLIENT_IP'];  
+        }  
+        //whether ip is from the proxy  
+        elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {  
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];  
+        }  
+        //whether ip is from the remote address  
+        else{  
+            $ip = $_SERVER['REMOTE_ADDR'];  
+        }  
+
+        return $ip;  
+    }
     
     // function validIP($IP){
     //     return $IP == gethostbyaddr($_SERVER['REMOTE_ADDR']) || $IP === null || $IP === '';
     // }
     function validIP($hashedIP){
-        $ip = getHostByName(getHostName());
+        $ip = getMyIP();
         return password_verify($ip, $hashedIP) || empty($IP);
     }
     

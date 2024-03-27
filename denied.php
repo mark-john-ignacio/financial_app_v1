@@ -153,7 +153,7 @@
 <script>
 $(function(){
 	$("#btnLogout").on("click", function() {
-		window.top.location.href = "logout.php"; 
+		window.top.location.href = "index.php"; 
 	});
 });
 </script>

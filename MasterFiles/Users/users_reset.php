@@ -13,7 +13,7 @@ function better_crypt($input, $rounds = 12) {
 	
 	$password_hash = better_crypt($cPass);
 		 
-	$sql = "update users set `password`= '$password_hash', cstatus='Active' where Userid='$cUserID'";
+	$sql = "update users set `password`= '$password_hash', cstatus='Active', session_ID = 0 where Userid='$cUserID'";
 
 		if (!mysqli_query($con, $sql)) {
 			printf("Errormessage: %s\n", mysqli_error($con));
