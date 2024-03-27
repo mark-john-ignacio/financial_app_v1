@@ -251,7 +251,7 @@
 			</td>';
 
 			$setfooter = $setfooter.'<td width="25%" align="center" height="100px" valign="top">							
-			<div style="text-align: center">Approved By</div>				
+			<div style="text-align: center">Checked By</div>				
 			<div style="text-align: center"><img src = "white.jpg" height="80px"></div>		
 			<div style="text-align: center">'.$cCheckedBy.'</div>					
 			</td>';

@@ -577,7 +577,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 										<th width="100px" style="border-bottom:1px solid #999">Qty</th>
 										<th width="100px" style="border-bottom:1px solid #999">Price</th>
 										<th width="100px" style="border-bottom:1px solid #999">Amount</th>
-										<th width="100px" style="border-bottom:1px solid #999">Date Needed</th>
+										<!--<th width="100px" style="border-bottom:1px solid #999">Date Needed</th>-->
 										<th width="100px" style="border-bottom:1px solid #999">Remarks</th>
 										<th style="border-bottom:1px solid #999">&nbsp;</th>
 									</tr>
@@ -1656,7 +1656,8 @@ else{
 
 		var tditmremarks = "<td width=\"150\"> <input type='text' class='form-control input-xs' value='"+crem+"' name=\"txtitemrem\" id=\"txtitemrem" + lastRow + "\" maxlength=\"255\"></td>";
 
-		$('#MyTable > tbody:last-child').append('<tr>'+tdedt + tditmpartdesc + tditmdesc + tditmcode + vattd + tditmunit + tditmqty + tditmprice + tditmbaseamount + tdneeded  + tditmremarks + tditmdel + '</tr>');
+		//tdneeded
+		$('#MyTable > tbody:last-child').append('<tr>'+tdedt + tditmpartdesc + tditmdesc + tditmcode + vattd + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmremarks + tditmdel + '</tr>');
 
 		//$('#MyTable > tbody:last-child').append('<tr>'+tdedt+tditmcode + tditmdesc + ewttd + vattd + tditmunit + tditmqty + tditmprice + tditmbaseamount + tditmamount+ tdneeded + tditmremarks + tditmdel + '</tr>');
 
@@ -1698,7 +1699,7 @@ else{
 				
 			});
 			
-			$('#dneed'+lastRow).datetimepicker({
+			/*$('#dneed'+lastRow).datetimepicker({
 				format: 'MM/DD/YYYY',
 				useCurrent: false,
 				minDate: moment().format('L'),
@@ -1707,7 +1708,7 @@ else{
 					horizontal: 'right',
 					vertical: 'bottom'
 				}
-			});
+			});*/
 
 			ComputeGross();
 
@@ -1732,7 +1733,7 @@ else{
 				var ITMprce = document.getElementById('txtnprice' + i);
 				var ITMtramnt = document.getElementById('txtntranamount' + i); 
 				var ITMamnt = document.getElementById('txtnamount' + i); 
-				var ITMneed = document.getElementById('dneed' + i);
+				//var ITMneed = document.getElementById('dneed' + i);
 				var ITMdelx = document.getElementById('del' + i);
 				var ITMremx = document.getElementById('txtitemrem' + i);
 
@@ -1752,7 +1753,7 @@ else{
 				ITMprce.id = "txtnprice" + za;
 				ITMtramnt.id = "txtntranamount" + za;
 				ITMamnt.id = "txtnamount" + za;
-				ITMneed.id = "dneed" + za;
+				//ITMneed.id = "dneed" + za;
 
 				ITMdelx.setAttribute('data-var',''+za+'');
 				ITMdelx.id = "del" + za;
@@ -2113,7 +2114,7 @@ else{
 						var ntranamt = $(this).find('input[name="txtntranamount"]').val();
 						var namt = $(this).find('input[type="hidden"][name="txtnamount"]').val();
 						//alert("g");
-						var dneed = $(this).find('input[name="dneed"]').val();
+						//var dneed = $(this).find('input[name="dneed"]').val();
 						//alert("h");
 						var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
 						//alert("i");
@@ -2138,7 +2139,7 @@ else{
 					
 						$.ajax ({
 							url: "Purch_newsavedet.php",
-							data: { trancode: trancode, crefpr:crefpr, crefprident:crefprident, dneed: dneed, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, citmdesc:citmdesc, ntranamt:ntranamt, citmremarks:citmremarks, vatcode:vatcode, nrate:nrate, ewtcode:'', ewtrate:0, citmnoOLD:citmnoOLD, citmpartno:citmpartno },
+							data: { trancode: trancode, crefpr:crefpr, crefprident:crefprident, indx: index, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, namt:namt, mainunit:mainunit, nfactor:nfactor, citmdesc:citmdesc, ntranamt:ntranamt, citmremarks:citmremarks, vatcode:vatcode, nrate:nrate, ewtcode:'', ewtrate:0, citmnoOLD:citmnoOLD, citmpartno:citmpartno },
 							async: false,
 							success: function( data ) {
 								if(data.trim()=="False"){
