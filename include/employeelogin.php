@@ -99,7 +99,7 @@ if(mysqli_num_rows($sql) == 0){
 		if(password_verify($password, $employee['password'])){
 			
 			//CHECK IF THE SESSION ID IS NOT EQUAL TO 0
-			if ($employee['session_ID'] == 0) {
+			//if ($employee['session_ID'] == 0) {
                 // UPDATE THE SESSION ID TO DATABASE 
                 mysqli_query($con, "UPDATE users SET session_ID = '".session_id()."' WHERE userid = '$employeeid'");
 			
@@ -160,12 +160,12 @@ if(mysqli_num_rows($sql) == 0){
 				}
 
 			//IF THE USER ALREADY LOG IN TO ANOTHER BROWSER
-			} else {
-				echo json_encode([
-					'valid' => false,
-					'errMsg' => "<strong>{$employeeid}</strong> is already logged in to another browser"
-				]);
-			}
+			//} else {
+			//	echo json_encode([
+			//		'valid' => false,
+			//		'errMsg' => "<strong>{$employeeid}</strong> is already logged in to another browser"
+			//	]);
+		//	}
 		} else {
 			if(failedAttempt($attempts)){
 				
