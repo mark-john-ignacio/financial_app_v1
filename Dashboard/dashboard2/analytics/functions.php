@@ -55,9 +55,19 @@ function totalSales($company)
         $percentage_change = "No change";
     }
 
+
+    $total_sales = '';
+    if ($total_nnet !== null) {
+        $total_sales = $total_nnet_current_week;
+        $total_sales = formatCurrencyMillion($total_sales);
+    } else {
+        // Handle the case when $total_nnet is null
+        $total_sales = '0.00';
+    }
+
     return array(
        // 'revenue' => $total_sales,
-       'revenue' => $total_nnet_current_week,
+       'revenue' => $total_sales,
        'percentageChange' => $percentage_change
     );
 
