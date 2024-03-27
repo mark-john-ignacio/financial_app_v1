@@ -480,7 +480,7 @@ $company = $_SESSION['companyid'];
 				</div>
 				<div class="row nopadwtop">
 					<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Location:</b></div>
-					<div class="col-xs-2 nopadding">
+					<div class="col-xs-3 nopadding">
 						<select class="form-control input-sm" name="selserloc" id="selserloc">
 							<?php
 									$qrya = mysqli_query($con,"Select * From mrp_locations Order By cdesc");
@@ -555,7 +555,10 @@ $company = $_SESSION['companyid'];
 		$(".nav-tabs a").click(function(){
     		$(this).tab('show');
 		});
-		$("#selserloc").select2();
+		$("#selserloc").select2({
+			dropdownParent: $('#SerialMod .modal-content'),
+			width: '100%'
+		});
 		
 		$('.datepick').datetimepicker({
 			format: 'MM/DD/YYYY',

@@ -616,7 +616,7 @@ else{
 					</div>
 					<div class="row nopadwtop">
 						<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Location:</b></div>
-						<div class="col-xs-2 nopadding">
+						<div class="col-xs-3 nopadding">
 							<select class="form-control input-sm" name="selserloc" id="selserloc">
 								<?php
 										$qrya = mysqli_query($con,"Select * From mrp_locations Order By cdesc");
@@ -788,7 +788,10 @@ else{
 		format: 'MM/DD/YYYY',
 		});	
 
-		$("#selserloc").select2();
+		$("#selserloc").select2({
+			dropdownParent: $('#SerialMod .modal-content'),
+			width: '100%'
+		});
 
 		if(file_name.length > 0){
 			$('#file-0').fileinput({
