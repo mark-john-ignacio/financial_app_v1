@@ -1,21 +1,21 @@
 <?php
-global $con;
-if(!isset($_SESSION)){
-    session_start();
-}
+    global $con;
+    if(!isset($_SESSION)){
+        session_start();
+    }
 
-include "../../Connection/connection_string.php";
-include "analytics/functions.php";
-$company = $_SESSION['companyid'];
-$employee = $_SESSION['employeeid'];
+    include "../../Connection/connection_string.php";
+    include "analytics/functions.php";
+    $company = $_SESSION['companyid'];
+    $employee = $_SESSION['employeeid'];
 
-$sql = "SELECT pageid FROM users_access WHERE userid = '$employee'";
-$query = mysqli_query($con, $sql);
+    $sql = "SELECT pageid FROM users_access WHERE userid = '$employee'";
+    $query = mysqli_query($con, $sql);
 
-$page = [];
-while($row = $query -> fetch_assoc()){
-    array_push($page, $row['pageid']);
-}
+    $page = [];
+    while($row = $query -> fetch_assoc()){
+        array_push($page, $row['pageid']);
+    }
 ?>
 
 <!DOCTYPE html>
