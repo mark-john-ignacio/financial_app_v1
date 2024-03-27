@@ -16,6 +16,7 @@
     while($row = $query -> fetch_assoc()){
         array_push($page, $row['pageid']);
     }
+
 ?>
 
 <!DOCTYPE html>
