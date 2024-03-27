@@ -650,7 +650,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				});
 			},
 			displayText: function (item) {
-				return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.cname+'</span><br><small><span class="dropdown-item-extra">' + item.cunit + '</span></small></div>';
+				return '<div style="border-top:1px solid gray; width: 300px"><span >'+item.id+": "+item.cname+'</span><br><small><span class="dropdown-item-extra">' + item.cunit + '</span></small></div>';
 			},
 			highlighter: Object,
 			afterSelect: function(item) { 					
