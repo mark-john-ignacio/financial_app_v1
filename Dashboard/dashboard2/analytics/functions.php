@@ -21,8 +21,17 @@ function totalSales($company)
     }
 
     // Total Sales percentage change
-    $start_of_last_week = date("Y-m-d", strtotime("last monday"));
-    $end_of_last_week = date("Y-m-d", strtotime("last sunday"));
+    //$start_of_last_week = date("Y-m-d", strtotime("last monday"));
+   // $end_of_last_week = date("Y-m-d", strtotime("last sunday"));
+
+    $previous_week = strtotime("-1 week +1 day");
+
+    $start_week = strtotime("last sunday midnight",$previous_week);
+    $end_week = strtotime("next saturday",$start_week);
+
+    $start_of_last_week = date("Y-m-d",$start_week);
+    $end_of_last_week = date("Y-m-d",$end_week);
+
 
     // Get the date range for the current week (Monday to today)
     $start_of_current_week = date("Y-m-d", strtotime("monday this week"));
@@ -57,7 +66,7 @@ function totalSales($company)
 
 
     $total_sales = '';
-    if ($total_nnet !== null) {
+    if ($total_nnet_current_week !== null) {
         $total_sales = $total_nnet_current_week;
         $total_sales = formatCurrencyMillion($total_sales);
     } else {
