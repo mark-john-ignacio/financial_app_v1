@@ -506,7 +506,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 
 	//alert(xzconfig.length);
 
-	var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx","csv");
+	var arroffice = new Array("xls","xlsx","doc","docx","ppt","pptx");
 	var arrimg = new Array("jpg","png","gif","jpeg");
 
 	var xtc = "";
@@ -523,6 +523,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			xtc = "image";
 		}else if(object.ext=="txt"){
 			xtc = "text";
+		}else if(object.ext=="csv"){
+			xtc = "gdocs";
 		}else{
 			xtc = object.ext;
 		}
@@ -607,7 +609,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				initialPreview: fileslist,
 				initialPreviewAsData: true,
 				initialPreviewFileType: 'image',
-				initialPreviewDownloadUrl: 'https://<?=$_SERVER['HTTP_HOST']?>/Components/assets/PReq/<?=$company."_".$cprno?>/{filename}',
+				initialPreviewDownloadUrl: '<?=$AttachUrlBase?>PReq/<?=$company."_".$cprno?>/{filename}',
 				initialPreviewConfig: filesconfigs
 			});
 		}else{
@@ -840,6 +842,8 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$("#btnNew").attr("disabled", false);
 		$("#btnPrint").attr("disabled", false);
 		$("#btnEdit").attr("disabled", false);
+
+		$(".kv-file-zoom").attr("disabled", false);
 	}
 
 	function enabled(){
