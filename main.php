@@ -4,6 +4,7 @@
 		
 	}
 	include('Connection/connection_string.php');
+	include('include/denied.php');
 
 	//get the value of the employee id
 	$employeeid = isset($_SESSION['employeeid']) ? $_SESSION['employeeid'] : '';
@@ -14,11 +15,8 @@
 	$sql = "SELECT pageid FROM users_access WHERE userid = '$employeeid'";
 	$query = mysqli_query($con, $sql);
 	while($list = $query -> fetch_assoc()) {
-		array_push($pages, $list["pageid"]);
-		
-	}	
-	
-	
+		array_push($pages, $list["pageid"]);		
+	}		
 
 ?>
 
@@ -774,10 +772,15 @@
 <script src="global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
 <script src="global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
 <script src="global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+
+<!--<script src="global/plugins/jquery-idle-timeout/jquery.idletimeout.js" type="text/javascript"></script>
+<script src="global/plugins/jquery-idle-timeout/jquery.idletimer.js" type="text/javascript"></script>-->
+
 <!-- END CORE PLUGINS -->
 <script src="global/scripts/metronic.js" type="text/javascript"></script>
 <script src="admin/layout/scripts/layout.js" type="text/javascript"></script>
 <script src="admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
+<!--<script src="global/scripts/ui-idletimeout.js?h=<?//php echo time();?>"></script>-->
 
 <script>
 	$(document).ready(function() { 
@@ -785,6 +788,8 @@
 		Metronic.init(); // init metronic core components
 		Layout.init(); // init current layout
 		QuickSidebar.init(); // init quick sidebar
+		//UIIdleTimeout.init();
+
 		let currentPage = "dashboard.php";
 			
 		loadxtrasession();

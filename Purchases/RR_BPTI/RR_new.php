@@ -61,6 +61,7 @@ $company = $_SESSION['companyid'];
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?t=<?php echo time();?>">
     <link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap-datetimepicker.css">
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/select2/css/select2.css?h=<?php echo time();?>">
 
 	<link href="../../global/css/components.css?t=<?php echo time();?>" id="style_components" rel="stylesheet" type="text/css"/>
 
@@ -75,7 +76,8 @@ $company = $_SESSION['companyid'];
 	<script src="../../Bootstrap/js/bootstrap.js"></script>
 	<script src="../../Bootstrap/js/moment.js"></script>
 	<script src="../../Bootstrap/js/bootstrap-datetimepicker.min.js"></script>
-
+	<script src="../../Bootstrap/select2/js/select2.full.min.js"></script>
+	
 	<!--
 	-- 
 	-- FileType Bootstrap Scripts and Link
@@ -553,6 +555,7 @@ $company = $_SESSION['companyid'];
 		$(".nav-tabs a").click(function(){
     		$(this).tab('show');
 		});
+		$("#selserloc").select2();
 		
 		$('.datepick').datetimepicker({
 			format: 'MM/DD/YYYY',

@@ -49,8 +49,8 @@ if ($result->num_rows > 0) {
         if (($thisYearGross > 0 || $lastYearGross > 0) && $row["month"] <= $currMonth) {
             $chartData[] = array(
                 "month" => $formattedMonth,
-                "this_year_gross" => $thisYearGross,
-                "last_year_gross" => $lastYearGross,
+                "this_year_gross" => number_format(floatval($thisYearGross),2,'.',''),
+                "last_year_gross" => number_format(floatval($lastYearGross),2,'.',''),
             );
         }
     }

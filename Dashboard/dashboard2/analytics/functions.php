@@ -5,7 +5,7 @@ function totalSales($company)
 {
     // Query to get the sum of all nnet values
     global $con;
-    $query_total_nnet = "SELECT SUM(nnet) AS total_nnet FROM sales WHERE compcode = '$company'";
+    $query_total_nnet = "SELECT SUM(nnet) AS total_nnet FROM sales WHERE compcode = '$company' and lvoid=0 and lcancelled=0";
     $result_total_nnet = mysqli_query($con, $query_total_nnet);
     $row_total_nnet = mysqli_fetch_assoc($result_total_nnet);
     $total_nnet = $row_total_nnet["total_nnet"];
@@ -29,13 +29,13 @@ function totalSales($company)
     $current_date = date("Y-m-d");
 
     // Query to get the total nnet sales for last week
-    $query_last_week = "SELECT SUM(nnet) AS total_nnet_last_week FROM sales WHERE dcutdate >= '$start_of_last_week' AND dcutdate <= '$end_of_last_week' AND compcode = '$company';";
+    $query_last_week = "SELECT SUM(nnet) AS total_nnet_last_week FROM sales WHERE dcutdate >= '$start_of_last_week' AND dcutdate <= '$end_of_last_week' AND compcode = '$company' and lvoid=0 and lcancelled=0;";
     $result_last_week = mysqli_query($con, $query_last_week);
     $row_last_week = mysqli_fetch_assoc($result_last_week);
     $total_nnet_last_week = $row_last_week["total_nnet_last_week"];
 
     // Query to get the total nnet sales for the current week
-    $query_current_week = "SELECT SUM(nnet) AS total_nnet_current_week FROM sales WHERE dcutdate >= '$start_of_current_week' AND dcutdate <= '$current_date' AND compcode = '$company';";
+    $query_current_week = "SELECT SUM(nnet) AS total_nnet_current_week FROM sales WHERE dcutdate >= '$start_of_current_week' AND dcutdate <= '$current_date' AND compcode = '$company' and lvoid=0 and lcancelled=0;";
     $result_current_week = mysqli_query($con, $query_current_week);
     $row_current_week = mysqli_fetch_assoc($result_current_week);
     $total_nnet_current_week = $row_current_week["total_nnet_current_week"];
@@ -56,8 +56,9 @@ function totalSales($company)
     }
 
     return array(
-        'revenue' => $total_sales,
-        'percentageChange' => $percentage_change
+       // 'revenue' => $total_sales,
+       'revenue' => $total_nnet_current_week,
+       'percentageChange' => $percentage_change
     );
 
 
@@ -76,14 +77,14 @@ function topSellingItem($company){
         FROM sales_t s_t
         INNER JOIN sales s ON s.compcode = s_t.compcode AND s.ctranno = s_t.ctranno
         INNER JOIN items i ON s_t.citemno = i.cpartno
-        WHERE s.lapproved = 1 AND s.lvoid = 0 AND s.compcode = '$company'
-        GROUP BY s_t.citemno
+        WHERE s.lapproved = 1 AND s.lvoid = 0 AND s.compcode = '$company' and year(s.dcutdate) = year(curdate())
+        GROUP BY s_t.citemno,s.dcutdate
         ORDER BY total_price DESC
         LIMIT 1
     ";
 
     $result = $con->query($sql);
-
+    $topSellingItemDesc = "";
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         $topSellingItemDesc = $row['citemdesc'];
@@ -150,7 +151,7 @@ function topSellingItem($company){
 function totalGrossSales($company) {
     global $con;
 
-        $query = "SELECT SUM(ngross) AS total_gross_sales FROM sales WHERE compcode = '$company'";
+        $query = "SELECT SUM(ngrossbefore) AS total_gross_sales FROM sales WHERE compcode = '$company' and lvoid=0 and lcancelled=0";
         $result = $con->query($query);
         $row = $result->fetch_assoc();
         $gross = isset($row['total_gross_sales']) ? $row['total_gross_sales'] : 0;
@@ -160,7 +161,7 @@ function totalGrossSales($company) {
 function totalNetSales($company) {
     global $con;
 
-    $query = "SELECT SUM(nnet) AS total_net_sales FROM sales WHERE compcode = '$company'";
+    $query = "SELECT SUM(nnet) AS total_net_sales FROM sales WHERE compcode = '$company' and lvoid=0 and lcancelled=0";
     $result = $con->query($query);
     $row = $result->fetch_assoc();
     $net = isset($row['total_net_sales']) ? $row['total_net_sales'] : 0;
@@ -170,7 +171,7 @@ function totalNetSales($company) {
 function totalDiscount($company) {
     global $con;
 
-    $query = "SELECT SUM(ntotaldiscounts) AS total_discount FROM sales WHERE compcode = '$company'";
+    $query = "SELECT SUM(nexempt + nzerorated) AS total_discount FROM sales WHERE compcode = '$company' and lvoid=0 and lcancelled=0";
     $result = $con->query($query);
     $row = $result->fetch_assoc();
     $discount = isset($row['total_discount']) ? $row['total_discount'] : 0;
@@ -180,7 +181,7 @@ function totalDiscount($company) {
 function totalVat($company) {
     global $con;
 
-    $query = "SELECT SUM(nvat) AS total_vat FROM sales WHERE compcode = '$company'";
+    $query = "SELECT SUM(nvat) AS total_vat FROM sales WHERE compcode = '$company' and lvoid=0 and lcancelled=0";
     $result = $con->query($query);
     $row = $result->fetch_assoc();
     $vat = isset($row['total_vat']) ? $row['total_vat'] : 0;

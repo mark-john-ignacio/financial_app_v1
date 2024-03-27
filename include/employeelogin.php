@@ -103,70 +103,70 @@ if(mysqli_num_rows($sql) == 0){
                 // UPDATE THE SESSION ID TO DATABASE 
                 mysqli_query($con, "UPDATE users SET session_ID = '".session_id()."' WHERE userid = '$employeeid'");
 			
-			$_SESSION['employeeid'] = $employeeid;
-			$_SESSION['session_id'] = session_id();
-			
-			//set the cookies it has 30 days expiration
-			setcookie('employeeid', $employeeid, time() + (86400 * 30), "/myxfin_st"); // 30 days expiration
-			setcookie('session_id', session_id(), time() + (86400 * 30), "/myxfin_st"); // 30 days expiration
-			setcookie('companyid', $selcompany, time() + (86400 * 30), "/myxfin_st"); // 30 days expiration
+				$_SESSION['employeeid'] = $employeeid;
+				$_SESSION['session_id'] = session_id();
+				
+				//set the cookies it has 30 days expiration
+				setcookie('employeeid', $employeeid, time() + (86400 * 30), "/myxfin_st"); // 30 days expiration
+				setcookie('session_id', session_id(), time() + (86400 * 30), "/myxfin_st"); // 30 days expiration
+				setcookie('companyid', $selcompany, time() + (86400 * 30), "/myxfin_st"); // 30 days expiration
 
-			$_SESSION['employeeid'] = $employee['id'];
+				$_SESSION['employeeid'] = $employee['id'];
 
-			$_SESSION['employeename'] = $employee['name'];
-			$_SESSION['employeefull'] = $employee['fullname'];
-			$_SESSION['status'] = $employee['status'];
-			$_SESSION['companyid'] = $selcompany;
-			$_SESSION['timestamp']=time();
-			
-			$dateNow = date('Y-m-d h:i:s');
-			$ipaddress = getHostByName(getHostName());
-			$hashedIP = better_crypt($ipaddress);
-			// $ipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+				$_SESSION['employeename'] = $employee['name'];
+				$_SESSION['employeefull'] = $employee['fullname'];
+				$_SESSION['status'] = $employee['status'];
+				$_SESSION['companyid'] = $selcompany;
+				$_SESSION['timestamp']=time();
+				
+				$dateNow = date('Y-m-d h:i:s');
+				$ipaddress = getHostByName(getHostName());
+				$hashedIP = better_crypt($ipaddress);
+				// $ipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 
-			// $sql = "SELECT b.logid, b.status, b.machine FROM `users_log`
-			// WHERE Userid = '".$employee['id']."'
-			// ORDER BY logid DESC LIMIT 1";
-			
-			$sql = "SELECT * FROM users_log WHERE Userid = '{$employee['id']}' ORDER BY logid DESC LIMIT 1";
+				// $sql = "SELECT b.logid, b.status, b.machine FROM `users_log`
+				// WHERE Userid = '".$employee['id']."'
+				// ORDER BY logid DESC LIMIT 1";
+				
+				$sql = "SELECT * FROM users_log WHERE Userid = '{$employee['id']}' ORDER BY logid DESC LIMIT 1";
 
-			$result = mysqli_query($con, $sql);
-			$status = true;
-			$machine = $hashedIP;
-			while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-				$status = $row['status'];
-				$machine = $row['machine'];
-				$_SESSION['loggedid'] = $row['logid'] ;
-			}
-
-
-			if(validStatus($status) || empty($status)){	
-				//make the logged date to now for military time to avoid confusion
-				$sql = "INSERT INTO `users_log` (`Userid`, `status`, `machine`, `logged_date`) VALUES ('".$employee['id']."', 'Online', '$hashedIP', NOW())";
 				$result = mysqli_query($con, $sql);
-				echo json_encode(valid30Days($employee['modify'], $employee['usertype']));
-
-			} else {
-				if(validIP($machine)){
-					echo json_encode(valid30Days($employee['modify'], $employee['usertype']));
-				} else {
-
-					echo json_encode([
-						'valid' => false,
-						'errCode' => 'ERR_LOG',
-						'errMsg' => "Your account was still " . $status
-					]);
+				$status = true;
+				$machine = $hashedIP;
+				while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
+					$status = $row['status'];
+					$machine = $row['machine'];
+					$_SESSION['loggedid'] = $row['logid'] ;
 				}
-			}
 
-		//IF THE USER ALREADY LOG IN TO ANOTHER BROWSER
+
+				if(validStatus($status) || empty($status)){	
+					//make the logged date to now for military time to avoid confusion
+					$sql = "INSERT INTO `users_log` (`Userid`, `status`, `machine`, `logged_date`) VALUES ('".$employee['id']."', 'Online', '$hashedIP', NOW())";
+					$result = mysqli_query($con, $sql);
+					echo json_encode(valid30Days($employee['modify'], $employee['usertype']));
+
+				} else {
+					if(validIP($machine)){
+						echo json_encode(valid30Days($employee['modify'], $employee['usertype']));
+					} else {
+
+						echo json_encode([
+							'valid' => false,
+							'errCode' => 'ERR_LOG',
+							'errMsg' => "Your account was still " . $status
+						]);
+					}
+				}
+
+			//IF THE USER ALREADY LOG IN TO ANOTHER BROWSER
+			} else {
+				echo json_encode([
+					'valid' => false,
+					'errMsg' => "<strong>{$employeeid}</strong> is already logged in to another browser"
+				]);
+			}
 		} else {
-			echo json_encode([
-				'valid' => false,
-				'errMsg' => "<strong>{$employeeid}</strong> is already logged in to another browser"
-			]);
-		}
-	} else {
 			if(failedAttempt($attempts)){
 				
 				$sql = "UPDATE `users` SET `cstatus` = 'Deactivate' WHERE `Userid` = '$id'";
