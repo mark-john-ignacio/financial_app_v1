@@ -292,8 +292,8 @@
             <div style="padding-left:10px; padding-top:3px">
 					    <ul class="ver-inline-menu tabbable margin-bottom-25">  
                 <li>
-          				<a href="" onClick="setI('A','InvSum.php')" data-toggle="tab">
-                  <i class="fa fa-book"></i> FG Inventory Report </a>
+          				<a href="" onClick="setI('A','InvSumWh.php')" data-toggle="tab">
+                  <i class="fa fa-book"></i> Inventory Summary </a>
                 </li>
 								<!--
                 <li>
