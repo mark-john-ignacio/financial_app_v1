@@ -100,10 +100,9 @@ if(@$lvlcompute==1){
 	<div>
 		<section>
 
-
 		<table border="0" width="100%">
-      <tr>                 
-        <td width="20%"><font size="+2"><u>Users List</u></font></td>
+      		<tr>                 
+        		<td width="20%"><font size="+2"><u>Users List</u></font></td>
 				<td rowspan="2" align="right" class="text-danger">
 
 				[Users License:<b><?=@$licval?></b> , Total Employees (Active [<b><?=@$lvlcntA?></b>] + Inactive [<b><?=@$lvlcntI?></b>]) = <b><?=intval(@$lvlcntA)+intval(@$lvlcntI)?></b> , Remaining License : <b><?=@$remain?></b> ]
@@ -111,7 +110,7 @@ if(@$lvlcompute==1){
 				</td>
 			</tr>
 			<tr>                 
-        <td>
+       			<td>
 					<?php
 
 						//check user access level sa page
@@ -133,135 +132,131 @@ if(@$lvlcompute==1){
 			</tr>
 		</table>												
 
-      <br>
+      	<br>
                 
-              <table id="example" class="display">
-								<thead>
-									<tr>
-											
-											<th>&nbsp;</th>
-										<th>UserID</th>
-											<th>Name</th>
-											<th>Email</th>
-											<th style="text-align: center">Status</th>
-											<th style="text-align: center">Actions</th>
-											<!--<th>Password</th>-->
-									</tr>
-								</thead>
-								<tbody>
-									<?php
-										if($_REQUEST['f'] == "search"){
-											
-											$sql = "select * from users where (Userid like '%$_POST[search]%' or Fname like '%$_POST[search]%' or Lname like '%$_POST[search]%') order by Userid";
-										}else{
-											$sql = "select * from users order by Userid";
-										}
-										
-										@$allemailadd = array();
-										$result=mysqli_query($con,$sql);
-										
-											if (!mysqli_query($con, $sql)) {
-												printf("Errormessage: %s\n", mysqli_error($con));
-											} 
-										
+		<table id="example" class="display">
+			<thead>
+				<tr>						
+					<th>&nbsp;</th>
+					<th>UserID</th>
+					<th>Name</th>
+					<th>Email</th>
+					<th style="text-align: center">Status</th>
+					<th style="text-align: center">Actions</th>
+					<!--<th>Password</th>-->
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+					if($_REQUEST['f'] == "search"){
+						
+						$sql = "select * from users where (Userid like '%$_POST[search]%' or Fname like '%$_POST[search]%' or Lname like '%$_POST[search]%') order by Userid";
+					}else{
+						$sql = "select * from users order by Userid";
+					}
+					
+					@$allemailadd = array();
+					$result=mysqli_query($con,$sql);
+					
+						if (!mysqli_query($con, $sql)) {
+							printf("Errormessage: %s\n", mysqli_error($con));
+						} 
+					
 
-										while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
-										{
-											$allowx = "Yes";
-											
-											if ($row['cuserpic']=="") {
-												$imgsrc =  "../../imgusers/emp.jpg";
+					while($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
+					{
+						$allowx = "Yes";
+						
+						if ($row['cuserpic']=="") {
+							$imgsrc =  "../../imgusers/emp.jpg";
 
-												
-											} else {
-												$imgsrc = $row['cuserpic'];
+							
+						} else {
+							$imgsrc = $row['cuserpic'];
 
-											}
+						}
 
-												if($row['Userid']=="Admin" && $_SESSION['employeeid']!="Admin") {
-													$allowx = "No";
-												}
+						if($row['Userid']=="Admin" && $_SESSION['employeeid']!="Admin") {
+							$allowx = "No";
+						}
 
-												if($allowx == "Yes"){
+						if($allowx == "Yes"){
 
-										?>
-													<tr>
-														<td align="center">
-																<img alt="" src="<?php echo $imgsrc; ?>" width="30px" height="30px" />
-														</td>
-														<td><?php echo $row['Userid'];?></td>
-														<td><?php echo $row['Fname']." ".$row['Lname'];?></td>
-														<td><?php echo $row['cemailadd'];?></td>
-														<td align="center">
-															<?php 
-																@$allemailadd[] = array('cemailadd' => $row['cemailadd'], 'Userid' => $row['Userid']);
+					?>
+						<tr>
+							<td align="center">
+									<img alt="" src="<?php echo $imgsrc; ?>" width="30px" height="30px" />
+							</td>
+							<td><?php echo $row['Userid'];?></td>
+							<td><?php echo $row['Fname']." ".$row['Lname'];?></td>
+							<td><?php echo $row['cemailadd'];?></td>
+							<td align="center">
+								<?php 
+									@$allemailadd[] = array('cemailadd' => $row['cemailadd'], 'Userid' => $row['Userid']);
 
-																if ($row['cstatus']=="Active"){
-																	echo "<span class='label label-success'>Active</span>";
-																}
-																elseif ($row['cstatus']=="Inactive"){
-																	echo "<span class='label label-danger'>Inactive</span>";
-																}
-																elseif ($row['cstatus']=="Deactivate"){
-																	echo "<span class='label label-danger'>Blocked</span>";
-																}
-																else{
-																	echo "<span class='label label-default'>Status error!</h1></span>";
-																}
-																
-																
-															?>
-														</td>
-														<td align="center" width="150px">
-															<a href="javascript:;" id="editusr" name="<?php echo $row['Userid'];?>" onClick="editsrc('<?php echo $row['Userid'];?>')">
-																<i class="fa fa-user" style="font-size:20px;color:SlateGrey ;" title="Edit user's details"></i>
-															</a>
-																&nbsp;
-															<a href="javascript:;" onClick="sendedit('<?php echo $row['Userid'];?>')">
-																<i class="fa fa-edit" style="font-size:20px;color:SteelBlue ;" title="Edit user's access"></i>
-															</a>
-																&nbsp;
-															<a href="javascript:;" onClick="resetpass('<?php echo $row['Userid'];?>')" class=info>
-																<i class="fa fa-refresh" style="font-size:20px;color:green;" title="Reset user password"></i>
-															</a>
-																&nbsp;
-															<?php
-																if ($row['cstatus']=="Active"){
-															?>
-															
-															<a href="javascript:;" onClick="setstat('<?php echo $row['Userid'];?>', 'Inactive')" class=info>
-																<i class="fa fa-times-circle" style="font-size:20px;color:red;" title="Inactive user access"></i>
-															</a>
+									if ($row['cstatus']=="Active"){
+										echo "<span class='label label-success'>Active</span>";
+									}
+									elseif ($row['cstatus']=="Inactive"){
+										echo "<span class='label label-danger'>Inactive</span>";
+									}
+									elseif ($row['cstatus']=="Deactivate"){
+										echo "<span class='label label-danger'>Blocked</span>";
+									}
+									else{
+										echo "<span class='label label-default'>Status error!</h1></span>";
+									}
+									
+									
+								?>
+							</td>
+							<td align="center" width="150px">
+								<a href="javascript:;" id="editusr" name="<?php echo $row['Userid'];?>" onClick="editsrc('<?php echo $row['Userid'];?>')">
+									<i class="fa fa-user" style="font-size:20px;color:SlateGrey ;" title="Edit user's details"></i>
+								</a>
+									&nbsp;
+								<a href="javascript:;" onClick="sendedit('<?php echo $row['Userid'];?>')">
+									<i class="fa fa-edit" style="font-size:20px;color:SteelBlue ;" title="Edit user's access"></i>
+								</a>
+									&nbsp;
+								<a href="javascript:;" onClick="resetpass('<?php echo $row['Userid'];?>')" class=info>
+									<i class="fa fa-refresh" style="font-size:20px;color:green;" title="Reset user password"></i>
+								</a>
+									&nbsp;
+								<?php
+									if ($row['cstatus']=="Active"){
+								?>
+								
+								<a href="javascript:;" onClick="setstat('<?php echo $row['Userid'];?>', 'Inactive')" class=info>
+									<i class="fa fa-times-circle" style="font-size:20px;color:red;" title="Inactive user access"></i>
+								</a>
 
-															<?php
-																}
-																elseif ($row['cstatus']=="Inactive"){
-															?>
-															
-															<a href="javascript:;" onClick="setstat('<?php echo $row['Userid'];?>', 'Active')" class=info>
-																<i class="fa fa-check-circle" style="font-size:20px;color:GoldenRod ;" title="Activate user access"></i>
-															</a>
-										
-															<?php
-															}
-															?>
+								<?php
+									}
+									elseif ($row['cstatus']=="Inactive"){
+								?>
+								
+								<a href="javascript:;" onClick="setstat('<?php echo $row['Userid'];?>', 'Active')" class=info>
+									<i class="fa fa-check-circle" style="font-size:20px;color:GoldenRod ;" title="Activate user access"></i>
+								</a>
+			
+								<?php
+								}
+								?>
 
-														</td>
-														<!--<td><a href="" title="<?php //echo base64_decode($row['password']);?>"><?php //echo $row['password'];?></a></td>-->
-													</tr>
-									<?php 
-												}
-									}								
-									?>
-								</tbody>
-              </table>
+							</td>
+							<!--<td><a href="" title="<?php //echo base64_decode($row['password']);?>"><?php //echo $row['password'];?></a></td>-->
+						</tr>
+				<?php 
+						}
+				}								
+				?>
+			</tbody>
+		</table>
 
-							<input type="hidden" value='<?=json_encode(@$allemailadd)?>' id="hdnemails">
+		<input type="hidden" value='<?=json_encode(@$allemailadd)?>' id="hdnemails">
               
     </div> <!-- /container -->
-
-	
-
 
 	<!-- Modal -->
 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

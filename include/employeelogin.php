@@ -99,7 +99,7 @@ if(mysqli_num_rows($sql) == 0){
 		if(password_verify($password, $employee['password'])){
 			
 			//CHECK IF THE SESSION ID IS NOT EQUAL TO 0
-			//if ($employee['session_ID'] == 0) {
+			if ($employee['session_ID'] == 0) {
                 // UPDATE THE SESSION ID TO DATABASE 
                 mysqli_query($con, "UPDATE users SET session_ID = '".session_id()."' WHERE userid = '$employeeid'");
 			
@@ -121,7 +121,9 @@ if(mysqli_num_rows($sql) == 0){
 				
 				$dateNow = date('Y-m-d h:i:s');
 				$ipaddress = getHostByName(getHostName());
-				$hashedIP = better_crypt($ipaddress);
+				//$hashedIP = better_crypt($ipaddress);
+				$hashedIP = getMyIP();
+
 				// $ipaddress = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 
 				// $sql = "SELECT b.logid, b.status, b.machine FROM `users_log`
@@ -160,12 +162,12 @@ if(mysqli_num_rows($sql) == 0){
 				}
 
 			//IF THE USER ALREADY LOG IN TO ANOTHER BROWSER
-			//} else {
-			//	echo json_encode([
-			//		'valid' => false,
-			//		'errMsg' => "<strong>{$employeeid}</strong> is already logged in to another browser"
-			//	]);
-		//	}
+			} else {
+				echo json_encode([
+					'valid' => false,
+					'errMsg' => "<strong>{$employeeid}</strong> is already logged in to another browser"
+				]);
+			}
 		} else {
 			if(failedAttempt($attempts)){
 				
@@ -188,10 +190,10 @@ if(mysqli_num_rows($sql) == 0){
 		}
 	} else {
 		echo json_encode([
-				'valid' => false,
-				'errCode' => 'ACC_DIS',
-				'errMsg' => "Your account has been disabled! Contact your organization to reactivate your account"
-			]);
+			'valid' => false,
+			'errCode' => 'ACC_DIS',
+			'errMsg' => "Your account has been blocked! Contact your organization to reactivate your account"
+		]);
 	}
 }}
 

@@ -116,7 +116,8 @@
         return match($status){
             'Active' => true,
             'Deactivate' => false,
-            null => true,
+            'Inactive' => false,
+            null => false,
             default => false
         };
     

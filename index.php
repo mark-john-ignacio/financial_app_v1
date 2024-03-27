@@ -122,7 +122,7 @@
                     
 					<div class="form-group">
 						<!-- add validate password input function for password requirements and length is 15 --> 
-						<input type="password" class="form-control" name="inputPassword" id="inputPassword" placeholder="Password" required  value=""  autocomplete="off" maxlength="15" onkeyup="validatePassword()">	
+						<input type="password" class="form-control" name="inputPassword" id="inputPassword" placeholder="Password" required  value=""  autocomplete="off" maxlength="15">	
 					</div>
                      
                      
