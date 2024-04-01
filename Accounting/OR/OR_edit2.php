@@ -1083,7 +1083,12 @@ if (mysqli_num_rows($getewtcd)!=0) {
 									<td>Account Credit</td>  
 								</tr>		
 								<?php
+								if($lPosted==1){
 									$getewtcd = mysqli_query($con,"SELECT * FROM glactivity where compcode='$company' and ctranno='$corno'"); 
+								}else{
+									$getewtcd = mysqli_query($con,"SELECT cacctno as acctno, ctitle, ndebit, ncredit FROM receipt_entry where compcode='$company' and ctranno='$corno'"); 
+								}
+									
 									if (mysqli_num_rows($getewtcd)!=0) {
 										while($row = mysqli_fetch_array($getewtcd, MYSQLI_ASSOC)){
 								?>					
@@ -2406,9 +2411,9 @@ if (mysqli_num_rows($getewtcd)!=0) {
 		$("#btnEdit").attr("disabled", false); 
 		$('#receipt').attr('disabled', true);
 
-		if(document.getElementById("hdnposted").value==1 && document.getElementById("hdnvoid").value==0){
+		//if(document.getElementById("hdnposted").value==1 && document.getElementById("hdnvoid").value==0){
 			$("#btnentry").attr("disabled", false);
-		}
+		//}
 
 		$("#btn-closemod").attr("disabled", false); 
 
