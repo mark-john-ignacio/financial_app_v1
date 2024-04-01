@@ -183,6 +183,7 @@ optgroup {
 table {
   border-spacing: 0;
   border-collapse: collapse;
+  font-size: 12px !important;
 }
 td,
 th {
@@ -5533,7 +5534,7 @@ button.close {
 }
 .modal-dialog {
   position: absolute;
-  top: 50%;
+  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%) !important;
 }
@@ -6357,3 +6358,58 @@ button.close {
   }
 }
 /*# sourceMappingURL=bootstrap.css.map */
+
+.nopadding {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.nopadwtop{
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-bottom: 0 !important;
+  padding-top: 3px !important;
+  margin: 0 !important;
+}
+.nopadwtop2x{
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-bottom: 0 !important;
+  padding-top: 10px !important;
+  margin: 0 !important;
+}
+
+.nopadwleft{
+  padding-left: 3px !important;
+  padding-right: 0 !important;
+  padding-bottom: 0 !important;
+  padding-top: 0 !important;
+  margin: 0 !important;
+}
+.nopadwdown{
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-bottom: 3px !important;
+  padding-top: 0 !important;
+  margin: 0 !important;
+}
+.nopadwright{
+  padding-left: 0 !important;
+  padding-right: 3px !important;
+  padding-bottom: 0 !important;
+  padding-top: 0 !important;
+  margin: 0 !important;
+}
+.nopadwright2x{
+  padding-left: 0 !important;
+  padding-right: 5px !important;
+  padding-bottom: 0 !important;
+  padding-top: 0 !important;
+  margin: 0 !important;
+}
+.nopadtopleft{
+  padding-left: 3px !important;
+  padding-right: 0 !important;
+  padding-bottom: 0 !important;
+  padding-top: 3px !important;
+  margin: 0 !important;
+}

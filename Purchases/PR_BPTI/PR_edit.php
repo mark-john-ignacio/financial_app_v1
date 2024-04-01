@@ -792,10 +792,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			+"<td style='padding:1px' width='80px'><input type='text' value='1' class='numeric form-control input-xs' style='text-align:right' name=\"txtnqty\" id=\"txtnqty"+lastRow+"\" autocomplete='off' onFocus='this.select();' /> <input type='hidden' value='"+itmunit+"' name='hdnmainuom' id='hdnmainuom"+lastRow+"'> <input type='hidden' value='1' name='hdnfactor' id='hdnfactor"+lastRow+"'> </td>"
 			+"<td style='padding:1px' width='250px'><input type='text' class='form-control input-xs' id='dremarks"+lastRow+"' name='dremarks' placeholder='Enter remarks...' /></td>"
 			+'<td width="150px" style="padding:1px">'+costcntr+'</td>'
-			+"<td width='50px' style='padding:1px'><input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' /></td>"
+			+"<td width='50px' style='padding:1px'><input class='btn btn-danger btn-xs' type='button' id='del" + lastRow + "' value='delete' /></td>"
 		);									
 
-			$("#del"+itmcode).on('click', function() { 
+			$("#del"+lastRow).on('click', function() { 
 				$(this).closest('tr').remove();
 			});
 

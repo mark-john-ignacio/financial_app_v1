@@ -792,32 +792,10 @@
 
 		let currentPage = "dashboard.php";
 			
-		loadxtrasession();
 		loaddashboard();   
 		login(); // call login function
-
-		//assign appropriate event handlers
-		$(document).bind($.trim((events + ' ').split(' ').join('.idleTimer ')), handleUserEvent);
-
-		$("iframe").each(function()
-		{
-			$(this).load(function()
-			{
-				$($(this).contents()[0]).bind($.trim((events + ' ').split(' ').join('.idleTimer ')), handleUserEvent);
-			});
-		});
 		
 	});
-		
-	function loadxtrasession(){
-		$.ajax ({
-			url: "include/th_xtrasessions.php",
-			async: false,
-			success: function( data ) {
-				console.log(data);
-			}
-		});
-	}
 	  
 	function setpage(valz){
 		

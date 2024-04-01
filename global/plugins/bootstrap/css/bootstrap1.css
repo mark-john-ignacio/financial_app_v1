@@ -6292,10 +6292,12 @@ button.close {
 .modal-body {
   position: relative;
   padding: 15px;
+  height:300px;
 }
 .modal-bodylong {
   position: relative;
   padding: 15px;
+  height:11in;
 }
 .modal-footer {
   padding: 15px;

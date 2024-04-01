@@ -52,6 +52,7 @@ $company = $_SESSION['companyid'];
 	<title>Myx Financials</title>
 
 	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+	
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>">   
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css"> 
 	<link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css">
@@ -77,6 +78,8 @@ $company = $_SESSION['companyid'];
 						<?php
 							}
 						?>
+
+						<button type="button" id="btnRecurr" class="btn btn-success btn-sm"><i class="fa fa-paste"></i>&nbsp;Recurring</button>
 					</div>
 					<!--<div class="col-xs-1 nopadding">
 						<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
@@ -121,6 +124,10 @@ $company = $_SESSION['companyid'];
 	<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
 </form>		
 
+<form name="frmedit" id="frmedit" method="post" action="Quote_edit.php">
+	<input type="hidden" name="txtctranno" id="txtctranno" />
+	<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
+</form>	
 
 <!-- 1) Alert Modal -->
 <div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
@@ -170,6 +177,9 @@ $company = $_SESSION['companyid'];
 </html>
 	<script type="text/javascript" language="javascript" src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
 	<script type="text/javascript" language="javascript" src="../../Bootstrap/js/bootstrap.js"></script>		
+
+	<script src="../../global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
+
 	<script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
 
 <script type="text/javascript">
@@ -193,6 +203,17 @@ $(document).ready(function() {
 		$('#MyTable').DataTable().destroy();
 		fill_datatable(searchByName,searchBystat);
 
+	});
+
+	$("#btnRecurr").on("click", function(){
+		bootbox.prompt({
+			title: 'Pick Target Bill Date',
+			inputType: 'date',
+			centerVertical: true,
+			callback: function (result) {
+				console.log(result);
+			}
+		});
 	});
 		
 });
