@@ -37,6 +37,8 @@
 			//check if balanace debit credit
 			$sqlhead = mysqli_query($con,"Select sum(ndebit) as ndebit, sum(ncredit) as ncredit from apv_t where compcode='$company' and ctranno='$tranno'");
 			$sum=0;
+
+			$ccontinue = "TRUE";
 			if (mysqli_num_rows($sqlhead)!=0) {
 				while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){
 
@@ -86,7 +88,7 @@
 				}
 
 			}else{
-				$msgz = "<b>ERROR: </b>Please Check your GL Entries!";
+				$msgz = "<b>ERROR: </b>Please Check your GL Entries!<br>Unbalanced Amount: ".$sum;
 				$status = "False";
 			}
 
