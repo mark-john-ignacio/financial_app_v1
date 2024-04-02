@@ -1533,7 +1533,7 @@ else{
 	function Reindex(){
 		$("#MyTable > tbody > tr").each(function(index) {
 			$x = index+1;
-			$(this)..attr("id",$x);
+			$(this).attr("id",$x);
 
 			$(this).find('select[name="seluom"]').attr("id", "seluom"+$x);
 			$(this).find('input[name="txtnqty"]').attr("id", "txtnqty"+$x);
