@@ -46,17 +46,18 @@
 					$sum = abs($sum);
 				}
 
-				if($sum > 1){
-					$ccontinue = "FALSE";
-				}
 			}
 
-			$result = mysqli_query ($con, "SELECT A.cacctno, D.cacctdesc, A.ncredit FROM `apv_t` A left join accounts D on A.compcode=D.compcode and A.cacctno=D.cacctid where A.compcode='$company' and A.ctranno='".$tranno."' and D.ccategory='LIABILITIES' and A.ncredit > 0 and A.cacctno not in ('".implode("','",$EWTVATS)."')"); 
+			if($sum > 1){
+				$ccontinue = "FALSE";
+			}
+
+			/*$result = mysqli_query ($con, "SELECT A.cacctno, D.cacctdesc, A.ncredit FROM `apv_t` A left join accounts D on A.compcode=D.compcode and A.cacctno=D.cacctid where A.compcode='$company' and A.ctranno='".$tranno."' and D.ccategory='LIABILITIES' and A.ncredit > 0 and A.cacctno not in ('".implode("','",$EWTVATS)."')"); 
 
 			if(mysqli_num_rows($result)==0){
 				//echo "TRUE";
 				$ccontinue = "FALSE";
-			}
+			}*/
 
 			if($ccontinue == "TRUE"){
 				if (!mysqli_query($con,"Update apv set lapproved=1 where compcode='$company' and ctranno='$tranno'")){
