@@ -1480,7 +1480,7 @@ else{
 		$('#MyTable > tbody:last-child').append('<tr id="'+lastRow+'">'+tditmcode + tditmdesc + tditmavail + tditmunit + tditmfactor + tditmqty + tditmprice + tditmbaseamount + tditmamount + tditmdel + '</tr>');
 
 
-			$("#del"+itmcode).on('click', function() {
+			$("#del"+lastRow).on('click', function() {
 				$(this).closest('tr').remove();
 				Reindex();
 			});
