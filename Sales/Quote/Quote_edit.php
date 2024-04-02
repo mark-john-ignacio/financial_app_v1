@@ -1544,6 +1544,8 @@ else{
 			$(this).find('inpu[type="button"][name="itmdel"]').attr("id", "del"+$x);
 			$(this).find('input[type="button"][name="itmins"]').attr("id", "row_"+$x+"_info");
 		});
+
+		ComputeGross();
 	}
 
 	function ComputeAmt(nme){

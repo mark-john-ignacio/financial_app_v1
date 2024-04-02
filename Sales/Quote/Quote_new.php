@@ -1200,7 +1200,7 @@ function myFunctionadd(){
 		$("input.numeric, input.numeric2").on("keyup", function () {
 			ComputeAmt($(this).attr('id'));
 			ComputeGross();
-			});
+		});
 		
 		$("#seluom"+lastRow).on('change', function() {
 
@@ -1247,6 +1247,8 @@ function myFunctionadd(){
 			$(this).find('inpu[type="button"][name="itmdel"]').attr("id", "del"+$x);
 			$(this).find('input[type="button"][name="itmins"]').attr("id", "row_"+$x+"_info");
 		});
+
+		ComputeGross();
 	}
 			
 	function ComputeAmt(nme){
