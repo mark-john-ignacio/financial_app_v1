@@ -179,10 +179,9 @@
 							<div class="col-xs-2 nopadding">
 								<select id="selrecurrtyp" name="selrecurrtyp" class="form-control input-sm selectpicker"  tabindex="1" <?=$isdisblerecurr?>>
 									<option value="one">One Time Only</option>	
-									<option value="weekly">Weekly</option>
 									<option value="monthly">Monthly</option>
 									<option value="quartertly">Quartertly</option>
-									<option value="yearly">Yearly</option>
+									<option value="yearly">Annual</option>
 									<option value="semi_annual">Semi Annual</option>
 								</select>
 							</div>

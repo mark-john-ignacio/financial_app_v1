@@ -124,9 +124,8 @@ $company = $_SESSION['companyid'];
 	<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
 </form>		
 
-<form name="frmedit" id="frmedit" method="post" action="Quote_edit.php">
-	<input type="hidden" name="txtctranno" id="txtctranno" />
-	<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
+<form name="frmrecurr" id="frmrecurr" method="post" action="Quote_recurr.php">
+	<input type="hidden" name="dtargetbill" id="dtargetbill" />
 </form>	
 
 <!-- 1) Alert Modal -->
@@ -211,7 +210,9 @@ $(document).ready(function() {
 			inputType: 'date',
 			centerVertical: true,
 			callback: function (result) {
-				console.log(result);
+				//console.log(result);
+				$("#dtargetbill").val(result);
+				$("#frmrecurr").submit();
 			}
 		});
 	});
