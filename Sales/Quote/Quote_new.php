@@ -1179,479 +1179,492 @@ function myFunctionadd(){
 
 	var tditmamount = "<td width=\"100\" nowrap> <input type='text' value='"+baseprice.toFixed(4)+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnamount\" id='txtnamount"+lastRow+"' readonly> </td>";
 	
-	var tditmdel = "<td width=\"90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' onClick=\"deleteRow(this);\"/> &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"','"+lastRow+"');\"/> </td>";
+	var tditmdel = "<td width=\"90\" nowrap> <input class='btn btn-danger btn-xs' type='button' name='itmdel' id='del" + lastRow + "' value='delete' onClick=\"deleteRow(this);\"/> &nbsp; <input class='btn btn-primary btn-xs' type='button' name='itmins' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"','"+lastRow+"');\"/> </td>";
 
 
 	$('#MyTable > tbody:last-child').append('<tr id="'+lastRow+'">'+tditmcode + tditmdesc + tditmavail + tditmunit + tditmfactor + tditmqty + tditmprice + tditmbaseamount + tditmamount+ tditmdel + '</tr>');
 
-									$("#del"+itmcode).on('click', function() {
-										$(this).closest('tr').remove();
-									});
+		$("#del"+lastRow).on('click', function() {
+			$(this).closest('tr').remove();
+			Reindex();
+		});
 
-									$("input.numeric2").autoNumeric('init',{mDec:4});
-									$("input.numeric").autoNumeric('init',{mDec:2});
+		$("input.numeric2").autoNumeric('init',{mDec:4});
+		$("input.numeric").autoNumeric('init',{mDec:2});
 
-									//$("input.numeric").numeric();
-									$("input.numeric, input.numeric2").on("click", function () {
-									   $(this).select();
-									});
-									
-									$("input.numeric, input.numeric2").on("keyup", function () {
-									   ComputeAmt($(this).attr('id'));
-									   ComputeGross();
-										});
-									
-									$("#seluom"+lastRow).on('change', function() {
-
-										var xyz = chkprice(itmcode,$(this).val(),itmccode,xtoday);
-										var mainuomdata = $(this).data("main");
-										var fact = $(this).find(':selected').data('factor');
-										
-										if(fact!=0){
-											$('#hdnfactor'+lastRow).val(fact);
-										}
-
-										if(mainuomdata!==$(this).val()){
-											$('#hdnfactor'+lastRow).attr("readonly", false);
-										}else{
-											$('#hdnfactor'+lastRow).attr("readonly", true);
-										}
-										
-										$('#txtnprice'+lastRow).val(xyz.trim());
-										//alert($(this).attr('id'));
-										ComputeAmt($(this).attr('id'));
-										ComputeGross();
-										
-										//var fact = setfactor($(this).val(), itmcode);
-										//alert(fact);
-										
-									});
-									
-									ComputeGross();
-									
-									
-}
-
-			
-		function ComputeAmt(nme){
-			var r = nme.replace( /^\D+/g, '');
-			var nnet = 0;
-			var nqty = 0;
-			
-			nqty = $("#txtnqty"+r).val().replace(/,/g,'');
-			nqty = parseFloat(nqty)
-			nprc = $("#txtnprice"+r).val().replace(/,/g,'');
-			nprc = parseFloat(nprc);
-			
-			namt = nqty * nprc;
-			namt = namt.toFixed(4);
-
-			namt2 = namt * parseFloat($("#basecurrval").val());
-			namt2 = namt2.toFixed(4);
-
-			
-			$("#txtntranamount"+r).val(namt);		
-
-			$("#txtnamount"+r).val(namt2);
-
-			$("#txtntranamount"+r).autoNumeric('destroy');
-			$("#txtnamount"+r).autoNumeric('destroy');
-
-			$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
-			$("#txtnamount"+r).autoNumeric('init',{mDec:2});
-
-		}
-
-		function ComputeGross(){
-			var rowCount = $('#MyTable tr').length;
-			
-			var gross = 0;
-			var amt = 0;
-			
-			//	if(rowCount>1){
-			//		for (var i = 1; i <= rowCount-1; i++) {
-			//			amt = $("#txtntranamount"+i).val().replace(/,/g,'');
-					
-			//			gross = gross + parseFloat(amt);
-			//		}
-			//	}
-
-			$("#MyTable > tbody > tr").each(function() {
-
-				myid = this.id;
-
-				amt = $("#txtntranamount"+myid).val().replace(/,/g,'');					
-				gross = gross + parseFloat(amt);
-
-			});
-
-			gross = gross.toFixed(4);
-
-			gross2 = gross * parseFloat($("#basecurrval").val());
-			gross2 = gross2.toFixed(4);
-
-			
-			$("#txtnBaseGross").val(gross);
-
-			$("#txtnGross").val(gross2);
-
-			$("#txtnBaseGross").autoNumeric('destroy');
-			$("#txtnGross").autoNumeric('destroy');
-
-			$("#txtnBaseGross").autoNumeric('init',{mDec:2});
-			$("#txtnGross").autoNumeric('init',{mDec:2});
-			
-		}
-
-		/*
-		function addqty(){
-
-			var itmcode = document.getElementById("txtprodid").value;
-
-			var TotQty = 0;
-			var TotAmt = 0;
-			
-			$("#MyTable > tbody > tr").each(function() {	
-			var disID = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-			
-			//alert(disID);
-				if(disID==itmcode){
-					
-					var itmqty = $(this).find("input[name='txtnqty']").val().replace(/,/g,'');
-					var itmprice = $(this).find("input[name='txtnprice']").val().replace(/,/g,'');
-					
-					//alert(itmqty +" : "+ itmprice);
-					
-					TotQty = parseFloat(itmqty) + 1;
-					$(this).find("input[name='txtnqty']").val(TotQty);
-					
-					TotAmt = TotQty * parseFloat(itmprice);
-					$(this).find("input[name='txtnamount']").val(TotAmt);
-				}
-
-			});
-			
+		//$("input.numeric").numeric();
+		$("input.numeric, input.numeric2").on("click", function () {
+			$(this).select();
+		});
+		
+		$("input.numeric, input.numeric2").on("keyup", function () {
+			ComputeAmt($(this).attr('id'));
 			ComputeGross();
-
-		}
-
-		*/
-
-
-		function viewhidden(itmcde,itmnme,ident){
-			var tbl = document.getElementById('MyTable2').getElementsByTagName('tr');
-			var lastRow2 = tbl.length-1;
-			
-			if(lastRow2>=1){
-					$("#MyTable2 > tbody > tr").each(function() {	
-					
-						var citmno = $(this).find('input[type="hidden"][name="txtinfocode"]').val();
-						var citmnoident = $(this).find('input[type="hidden"][name="txtinforefident"]').val();
-
-						//alert(citmno+"!="+itmcde);
-						if(citmno!=itmcde && citmnoident!==ident){
-							
-							$(this).find('input[name="txtinfofld"]').attr("disabled", true);
-							$(this).find('input[name="txtinfoval"]').attr("disabled", true);
-							$(this).find('input[type="button"][name="delinfo"]').attr("class", "btn btn-danger btn-xs disabled");
-							
-						}
-						else{
-							$(this).find('input[name="txtinfofld"]').attr("disabled", false);
-							$(this).find('input[name="txtinfoval"]').attr("disabled", false);
-							$(this).find('input[type="button"][id="delinfo'+itmcde+'"]').attr("class", "btn btn-danger btn-xs");
-						}
-						
-					});
-			}			
-					
-			addinfo(itmcde,itmnme,ident);
-			
-			$('#MyDetModal').modal('show');
-		}
-
-		function addinfo(itmcde,itmnme,refident){
-			//alert(itmcde+","+itmnme);
-			var tbl = document.getElementById('MyTable2').getElementsByTagName('tr');
-			var lastRow = tbl.length;
-
-			
-			var tdinfocode = "<td><input type='hidden' value='"+refident+"' name='txtinforefident' id='txtinforefident"+lastRow+"'><input type='hidden' value='"+itmcde+"' name='txtinfocode' id='txtinfocode"+lastRow+"'>"+itmcde+"</td>";
-			var tdinfodesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmnme+"</td>"
-			var tdinfofld = "<td><input type='text' name='txtinfofld' id='txtinfofld"+lastRow+"' class='form-control input-xs'></td>";
-			var tdinfoval = "<td><input type='text' name='txtinfoval' id='txtinfoval"+lastRow+"' class='form-control input-xs'></td>";
-			var tdinfodel = "<td><input class='btn btn-danger btn-xs' type='button' name='delinfo' id='delinfo" + lastRow + itmcde + "' value='delete' /></td>";
-
-			//alert(tdinfocode + "\n" + tdinfodesc + "\n" + tdinfofld + "\n" + tdinfoval + "\n" + tdinfodel);
-			
-			$('#MyTable2 > tbody:last-child').append('<tr>'+tdinfocode + tdinfodesc + tdinfofld + tdinfoval + tdinfodel + '</tr>');
-
-											$("#delinfo"+lastRow+itmcde).on('click', function() {
-												$(this).closest('tr').remove();
-											});
-
-		}
-
-		function chkCloseInfo(){
-			var isInfo = "TRUE";
-			
-			$("#MyTable2 > tbody > tr").each(function(index) {	
-					
-				var citmfld = $(this).find('input[name="txtinfofld"]').val();
-				var citmval = $(this).find('input[name="txtinfoval"]').val();
-				
-				if(citmfld=="" || citmval==""){
-					isInfo = "FALSE";
-				}
-						
 			});
-
-			
-			if(isInfo == "TRUE"){
-				$('#MyDetModal').modal('hide');	}
-			else{
-				alert("Incomplete info values!");
-			}
-		}
-
-
-function chkprice(itmcode,itmunit,ccode,datez){
-	var result;
-			
-	$.ajax ({
-		url: "../th_checkitmprice.php",
-		data: { itm: itmcode, cust: ccode, cunit: itmunit, dte: datez },
-		async: false,
-		success: function( data ) {
-			 result = data;
-		}
-	});
-			
-	return result;
-	
-}
-
-function setfactor(itmunit, itmcode){
-	var result;
-			
-	$.ajax ({
-		url: "../th_checkitmfactor.php",
-		data: { itm: itmcode, cunit: itmunit },
-		async: false,
-		success: function( data ) {
-			 result = data;
-		}
-	});
-			
-	return result;
-	
-}
-
-
-function chkform(){
-	var ISOK = "YES";
-	
-	if(document.getElementById("txtcust").value=="" && document.getElementById("txtcustid").value==""){
-		alert("Customer Required!");
-		document.getElementById("txtcust").focus();	
-		ISOK = "NO";
-
-		return false;
-	}
-
-	$(".required").each( function() {
-	    var check = $(this).val();
-
-	    if(check == '') {
-	    	alert("Please fill-up all fields in red textbox!");
-	        ISOK = "NO";
-	    }
-	});
-
-	// ACTIVATE MUNA LAHAT NG INFO
-	
-	$("#MyTable2 > tbody > tr").each(function() {				
-
-		var itmcde = $(this).find('input[type="hidden"][name="txtinfocode"]').val();
 		
-		$(this).find('input[name="txtinfofld"]').attr("disabled", false);
-		$(this).find('input[name="txtinfoval"]').attr("disabled", false);
-		$(this).find('input[type="button"][id="delinfo'+itmcde+'"]').attr("class", "btn btn-danger btn-xs");
+		$("#seluom"+lastRow).on('change', function() {
 
-	});
-
-
-	var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
-	var lastRow = tbl.length-1;
-
-	if(lastRow == 0){
-		alert("No details found!");
-		ISOK = "NO";
-		return false;
-	}
-	else{
-		var msgz = "";
-		var myqty = "";
-		
-		$("#MyTable > tbody > tr").each(function() {
-			myqty = $(this).find('input[name="txtnqty"]').val();
+			var xyz = chkprice(itmcode,$(this).val(),itmccode,xtoday);
+			var mainuomdata = $(this).data("main");
+			var fact = $(this).find(':selected').data('factor');
 			
-			if(myqty == 0 || myqty == ""){
-				msgz = msgz + "\n Zero or blank qty is not allowed: row " + z;	
+			if(fact!=0){
+				$('#hdnfactor'+lastRow).val(fact);
 			}
+
+			if(mainuomdata!==$(this).val()){
+				$('#hdnfactor'+lastRow).attr("readonly", false);
+			}else{
+				$('#hdnfactor'+lastRow).attr("readonly", true);
+			}
+			
+			$('#txtnprice'+lastRow).val(xyz.trim());
+			//alert($(this).attr('id'));
+			ComputeAmt($(this).attr('id'));
+			ComputeGross();
+			
+			//var fact = setfactor($(this).val(), itmcode);
+			//alert(fact);
 			
 		});
 		
-		if(msgz!=""){
-			alert("Details Error: "+msgz);
+		ComputeGross();
+									
+									
+}
+
+	function Reindex(){
+		$("#MyTable > tbody > tr").each(function(index) {
+			$x = index+1;
+			var cuom = $(this).find('select[name="seluom"]').attr("id", "seluom"+$x);
+			var nqty = $(this).find('input[name="txtnqty"]').attr("id", "txtnqty"+$x);
+			var nprice = $(this).find('input[name="txtnprice"]').attr("id", "txtnprice"+$x);
+			var nbaseamt = $(this).find('input[name="txtntranamount"]').attr("id", "txtntranamount"+$x);
+			var namt = $(this).find('input[name="txtnamount"]').attr("id", "txtnamount"+$x);
+			var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').attr("id", "hdnmainuom"+$x);
+			var nfactor = $(this).find('input[name="hdnfactor"]').attr("id", "hdnfactor"+$x);
+		});
+	}
+			
+	function ComputeAmt(nme){
+		var r = nme.replace( /^\D+/g, '');
+		var nnet = 0;
+		var nqty = 0;
+		
+		nqty = $("#txtnqty"+r).val().replace(/,/g,'');
+		nqty = parseFloat(nqty)
+		nprc = $("#txtnprice"+r).val().replace(/,/g,'');
+		nprc = parseFloat(nprc);
+		
+		namt = nqty * nprc;
+		namt = namt.toFixed(4);
+
+		namt2 = namt * parseFloat($("#basecurrval").val());
+		namt2 = namt2.toFixed(4);
+
+		
+		$("#txtntranamount"+r).val(namt);		
+
+		$("#txtnamount"+r).val(namt2);
+
+		$("#txtntranamount"+r).autoNumeric('destroy');
+		$("#txtnamount"+r).autoNumeric('destroy');
+
+		$("#txtntranamount"+r).autoNumeric('init',{mDec:2});
+		$("#txtnamount"+r).autoNumeric('init',{mDec:2});
+
+	}
+
+	function ComputeGross(){
+		var rowCount = $('#MyTable tr').length;
+		
+		var gross = 0;
+		var amt = 0;
+		
+		//	if(rowCount>1){
+		//		for (var i = 1; i <= rowCount-1; i++) {
+		//			amt = $("#txtntranamount"+i).val().replace(/,/g,'');
+				
+		//			gross = gross + parseFloat(amt);
+		//		}
+		//	}
+
+		$("#MyTable > tbody > tr").each(function() {
+
+			myid = this.id;
+
+			amt = $("#txtntranamount"+myid).val().replace(/,/g,'');					
+			gross = gross + parseFloat(amt);
+
+		});
+
+		gross = gross.toFixed(4);
+
+		gross2 = gross * parseFloat($("#basecurrval").val());
+		gross2 = gross2.toFixed(4);
+
+		
+		$("#txtnBaseGross").val(gross);
+
+		$("#txtnGross").val(gross2);
+
+		$("#txtnBaseGross").autoNumeric('destroy');
+		$("#txtnGross").autoNumeric('destroy');
+
+		$("#txtnBaseGross").autoNumeric('init',{mDec:2});
+		$("#txtnGross").autoNumeric('init',{mDec:2});
+		
+	}
+
+	/*
+	function addqty(){
+
+		var itmcode = document.getElementById("txtprodid").value;
+
+		var TotQty = 0;
+		var TotAmt = 0;
+		
+		$("#MyTable > tbody > tr").each(function() {	
+		var disID = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+		
+		//alert(disID);
+			if(disID==itmcode){
+				
+				var itmqty = $(this).find("input[name='txtnqty']").val().replace(/,/g,'');
+				var itmprice = $(this).find("input[name='txtnprice']").val().replace(/,/g,'');
+				
+				//alert(itmqty +" : "+ itmprice);
+				
+				TotQty = parseFloat(itmqty) + 1;
+				$(this).find("input[name='txtnqty']").val(TotQty);
+				
+				TotAmt = TotQty * parseFloat(itmprice);
+				$(this).find("input[name='txtnamount']").val(TotAmt);
+			}
+
+		});
+		
+		ComputeGross();
+
+	}
+
+	*/
+
+
+	function viewhidden(itmcde,itmnme,ident){
+		var tbl = document.getElementById('MyTable2').getElementsByTagName('tr');
+		var lastRow2 = tbl.length-1;
+		
+		if(lastRow2>=1){
+				$("#MyTable2 > tbody > tr").each(function() {	
+				
+					var citmno = $(this).find('input[type="hidden"][name="txtinfocode"]').val();
+					var citmnoident = $(this).find('input[type="hidden"][name="txtinforefident"]').val();
+
+					//alert(citmno+"!="+itmcde);
+					if(citmno!=itmcde && citmnoident!==ident){
+						
+						$(this).find('input[name="txtinfofld"]').attr("disabled", true);
+						$(this).find('input[name="txtinfoval"]').attr("disabled", true);
+						$(this).find('input[type="button"][name="delinfo"]').attr("class", "btn btn-danger btn-xs disabled");
+						
+					}
+					else{
+						$(this).find('input[name="txtinfofld"]').attr("disabled", false);
+						$(this).find('input[name="txtinfoval"]').attr("disabled", false);
+						$(this).find('input[type="button"][id="delinfo'+itmcde+'"]').attr("class", "btn btn-danger btn-xs");
+					}
+					
+				});
+		}			
+				
+		addinfo(itmcde,itmnme,ident);
+		
+		$('#MyDetModal').modal('show');
+	}
+
+	function addinfo(itmcde,itmnme,refident){
+		//alert(itmcde+","+itmnme);
+		var tbl = document.getElementById('MyTable2').getElementsByTagName('tr');
+		var lastRow = tbl.length;
+
+		
+		var tdinfocode = "<td><input type='hidden' value='"+refident+"' name='txtinforefident' id='txtinforefident"+lastRow+"'><input type='hidden' value='"+itmcde+"' name='txtinfocode' id='txtinfocode"+lastRow+"'>"+itmcde+"</td>";
+		var tdinfodesc = "<td style=\"white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;\">"+itmnme+"</td>"
+		var tdinfofld = "<td><input type='text' name='txtinfofld' id='txtinfofld"+lastRow+"' class='form-control input-xs'></td>";
+		var tdinfoval = "<td><input type='text' name='txtinfoval' id='txtinfoval"+lastRow+"' class='form-control input-xs'></td>";
+		var tdinfodel = "<td><input class='btn btn-danger btn-xs' type='button' name='delinfo' id='delinfo" + lastRow + itmcde + "' value='delete' /></td>";
+
+		//alert(tdinfocode + "\n" + tdinfodesc + "\n" + tdinfofld + "\n" + tdinfoval + "\n" + tdinfodel);
+		
+		$('#MyTable2 > tbody:last-child').append('<tr>'+tdinfocode + tdinfodesc + tdinfofld + tdinfoval + tdinfodel + '</tr>');
+
+										$("#delinfo"+lastRow+itmcde).on('click', function() {
+											$(this).closest('tr').remove();
+										});
+
+	}
+
+	function chkCloseInfo(){
+		var isInfo = "TRUE";
+		
+		$("#MyTable2 > tbody > tr").each(function(index) {	
+				
+			var citmfld = $(this).find('input[name="txtinfofld"]').val();
+			var citmval = $(this).find('input[name="txtinfoval"]').val();
+			
+			if(citmfld=="" || citmval==""){
+				isInfo = "FALSE";
+			}
+					
+		});
+
+		
+		if(isInfo == "TRUE"){
+			$('#MyDetModal').modal('hide');	}
+		else{
+			alert("Incomplete info values!");
+		}
+	}
+
+
+	function chkprice(itmcode,itmunit,ccode,datez){
+		var result;
+				
+		$.ajax ({
+			url: "../th_checkitmprice.php",
+			data: { itm: itmcode, cust: ccode, cunit: itmunit, dte: datez },
+			async: false,
+			success: function( data ) {
+				result = data;
+			}
+		});
+				
+		return result;
+		
+	}
+
+	function setfactor(itmunit, itmcode){
+		var result;
+				
+		$.ajax ({
+			url: "../th_checkitmfactor.php",
+			data: { itm: itmcode, cunit: itmunit },
+			async: false,
+			success: function( data ) {
+				result = data;
+			}
+		});
+				
+		return result;
+		
+	}
+
+
+	function chkform(){
+		var ISOK = "YES";
+		
+		if(document.getElementById("txtcust").value=="" && document.getElementById("txtcustid").value==""){
+			alert("Customer Required!");
+			document.getElementById("txtcust").focus();	
+			ISOK = "NO";
+
+			return false;
+		}
+
+		$(".required").each( function() {
+			var check = $(this).val();
+
+			if(check == '') {
+				alert("Please fill-up all fields in red textbox!");
+				ISOK = "NO";
+			}
+		});
+
+		// ACTIVATE MUNA LAHAT NG INFO
+		
+		$("#MyTable2 > tbody > tr").each(function() {				
+
+			var itmcde = $(this).find('input[type="hidden"][name="txtinfocode"]').val();
+			
+			$(this).find('input[name="txtinfofld"]').attr("disabled", false);
+			$(this).find('input[name="txtinfoval"]').attr("disabled", false);
+			$(this).find('input[type="button"][id="delinfo'+itmcde+'"]').attr("class", "btn btn-danger btn-xs");
+
+		});
+
+
+		var tbl = document.getElementById('MyTable').getElementsByTagName('tr');
+		var lastRow = tbl.length-1;
+
+		if(lastRow == 0){
+			alert("No details found!");
 			ISOK = "NO";
 			return false;
 		}
-	}
-
-
-	
-	if(ISOK == "YES"){
-	var trancode = "";
-	var isDone = "True";
-	
-		//Saving the header
-		$("#currdesc").val($("#selbasecurr option:selected").text());
-		$("#txtremarks").summernote('destroy');
-
-		var formdata = new FormData($("#frmpos")[0]);
-		
-
-		/**
-		 * @property JQuery formulate every file to compose to formdata 
-		 * @property formdata.delete('#upload') delete an upload key without values
-		 */
-		formdata.delete('upload[]');
-		jQuery.each(jQuery('#file-0')[0].files, function(i, file) {
-			formdata.append('file-'+i, file);
-		});
-		
-		$.ajax ({
-			url: "Quote_newsavehdr.php",
-			data: formdata,
-			cache: false,
-			processData: false,
-			contentType: false,
-			method: 'post',
-			type: 'post',
-			async: false,
-			beforeSend: function(){
-				$("#AlertMsg").html("&nbsp;&nbsp;<b>SAVING NEW QUOTATION: </b> Please wait a moment...");
-				$("#alertbtnOK").hide();
-				$("#AlertModal").modal('show');
-			},
-			success: function( data ) {
-				if(data.trim()!="False"){
-					trancode = data.trim();
+		else{
+			var msgz = "";
+			var myqty = "";
+			
+			$("#MyTable > tbody > tr").each(function() {
+				myqty = $(this).find('input[name="txtnqty"]').val();
+				
+				if(myqty == 0 || myqty == ""){
+					msgz = msgz + "\n Zero or blank qty is not allowed: row " + z;	
 				}
-				else{
-					$("#AlertMsg").html(data.trim());
+				
+			});
+			
+			if(msgz!=""){
+				alert("Details Error: "+msgz);
+				ISOK = "NO";
+				return false;
+			}
+		}
+
+
+		
+		if(ISOK == "YES"){
+		var trancode = "";
+		var isDone = "True";
+		
+			//Saving the header
+			$("#currdesc").val($("#selbasecurr option:selected").text());
+			$("#txtremarks").summernote('destroy');
+
+			var formdata = new FormData($("#frmpos")[0]);
+			
+
+			/**
+			 * @property JQuery formulate every file to compose to formdata 
+			 * @property formdata.delete('#upload') delete an upload key without values
+			 */
+			formdata.delete('upload[]');
+			jQuery.each(jQuery('#file-0')[0].files, function(i, file) {
+				formdata.append('file-'+i, file);
+			});
+			
+			$.ajax ({
+				url: "Quote_newsavehdr.php",
+				data: formdata,
+				cache: false,
+				processData: false,
+				contentType: false,
+				method: 'post',
+				type: 'post',
+				async: false,
+				beforeSend: function(){
+					$("#AlertMsg").html("&nbsp;&nbsp;<b>SAVING NEW QUOTATION: </b> Please wait a moment...");
+					$("#alertbtnOK").hide();
+					$("#AlertModal").modal('show');
+				},
+				success: function( data ) {
+					if(data.trim()!="False"){
+						trancode = data.trim();
+					}
+					else{
+						$("#AlertMsg").html(data.trim());
+						$("#alertbtnOK").show();
+						$("#AlertModal").modal('show');
+					}
+				},
+				error: function (request, error) {
+				console.log(arguments);
+				alert(" Can't do because: " + error);
+				}
+				});
+
+		//	alert(trancode);
+			
+
+			
+			if(trancode!=""){
+				//Save Details
+				$("#MyTable > tbody > tr").each(function(index) {	
+				
+					var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+					var cuom = $(this).find('select[name="seluom"]').val();
+					var nqty = $(this).find('input[name="txtnqty"]').val();
+					var nprice = $(this).find('input[name="txtnprice"]').val();
+					var nbaseamt = $(this).find('input[name="txtntranamount"]').val();
+					var namt = $(this).find('input[name="txtnamount"]').val();
+					var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
+					var nfactor = $(this).find('input[name="hdnfactor"]').val();
+				
+
+					if(nqty!==undefined){
+						nqty = nqty.replace(/,/g,'');
+						nprice = nprice.replace(/,/g,'');
+						namt = namt.replace(/,/g,'');
+						nbaseamt = nbaseamt.replace(/,/g,'');
+						nfactor = nfactor.replace(/,/g,'');
+					}
+
+					//alert("Quote_newsavedet.php?trancode="+trancode+"&indx="+this.id+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+nprice+"&nbaseamt="+nbaseamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor);
+
+					$.ajax ({
+						url: "Quote_newsavedet.php",
+						data: { trancode: trancode, indx:this.id, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, nbaseamt:nbaseamt, namt:namt, mainunit:mainunit, nfactor:nfactor },
+						async: false,
+						success: function( data ) {
+							if(data.trim()=="False"){
+								isDone = "False";
+							}
+						}
+					});
+					
+				});
+
+
+				//Save Info
+				$("#MyTable2 > tbody > tr").each(function(index) {	
+				
+					var nrefidx = $(this).find('input[type="hidden"][name="txtinforefident"]').val();
+					var citmno = $(this).find('input[type="hidden"][name="txtinfocode"]').val();
+					var citmfld = $(this).find('input[name="txtinfofld"]').val();
+					var citmvlz = $(this).find('input[name="txtinfoval"]').val();
+				
+					$.ajax ({
+						url: "Quote_newsaveinfo.php",
+						data: { trancode: trancode, indx: index, nrefidx:nrefidx, citmno: citmno, citmfld: citmfld, citmvlz:citmvlz },
+						async: false,
+						success: function( data ) {
+							if(data.trim()=="False"){
+								isDone = "False";
+							}
+						}
+					});
+					
+				});
+				
+				if(isDone=="True"){
+					$("#AlertMsg").html("<b>SUCCESFULLY SAVED: </b> Please wait a moment...");
+					$("#alertbtnOK").hide();
+
+						setTimeout(function() {
+							$("#AlertMsg").html("");
+							$('#AlertModal').modal('hide');
+				
+								$("#txtctranno").val(trancode);
+								$("#frmedit").submit();
+				
+						}, 3000); // milliseconds = 3seconds
+
+					
+				}
+				
+			}
+			else{
+					$("#AlertMsg").html("<b>ERROR: </b> There's a problem saving your transaction...");
 					$("#alertbtnOK").show();
 					$("#AlertModal").modal('show');
-				}
-			},
-			error: function (request, error) {
-			console.log(arguments);
-			alert(" Can't do because: " + error);
-			}
-			});
-
-	//	alert(trancode);
-		
-
-		
-		if(trancode!=""){
-			//Save Details
-			$("#MyTable > tbody > tr").each(function(index) {	
-			
-				var citmno = $(this).find('input[type="hidden"][name="txtitemcode"]').val();
-				var cuom = $(this).find('select[name="seluom"]').val();
-				var nqty = $(this).find('input[name="txtnqty"]').val();
-				var nprice = $(this).find('input[name="txtnprice"]').val();
-				var nbaseamt = $(this).find('input[name="txtntranamount"]').val();
-				var namt = $(this).find('input[name="txtnamount"]').val();
-				var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').val();
-				var nfactor = $(this).find('input[name="hdnfactor"]').val();
-			
-
-				if(nqty!==undefined){
-					nqty = nqty.replace(/,/g,'');
-					nprice = nprice.replace(/,/g,'');
-					namt = namt.replace(/,/g,'');
-					nbaseamt = nbaseamt.replace(/,/g,'');
-					nfactor = nfactor.replace(/,/g,'');
-				}
-
-				//alert("Quote_newsavedet.php?trancode="+trancode+"&indx="+this.id+"&citmno="+citmno+"&cuom="+cuom+"&nqty="+nqty+"&nprice="+nprice+"&nbaseamt="+nbaseamt+"&namt="+namt+"&mainunit="+mainunit+"&nfactor="+nfactor);
-
-				$.ajax ({
-					url: "Quote_newsavedet.php",
-					data: { trancode: trancode, indx:this.id, citmno: citmno, cuom: cuom, nqty:nqty, nprice: nprice, nbaseamt:nbaseamt, namt:namt, mainunit:mainunit, nfactor:nfactor },
-					async: false,
-					success: function( data ) {
-						if(data.trim()=="False"){
-							isDone = "False";
-						}
-					}
-				});
-				
-			});
-
-
-			//Save Info
-			$("#MyTable2 > tbody > tr").each(function(index) {	
-			  
-				var nrefidx = $(this).find('input[type="hidden"][name="txtinforefident"]').val();
-				var citmno = $(this).find('input[type="hidden"][name="txtinfocode"]').val();
-				var citmfld = $(this).find('input[name="txtinfofld"]').val();
-				var citmvlz = $(this).find('input[name="txtinfoval"]').val();
-			
-				$.ajax ({
-					url: "Quote_newsaveinfo.php",
-					data: { trancode: trancode, indx: index, nrefidx:nrefidx, citmno: citmno, citmfld: citmfld, citmvlz:citmvlz },
-					async: false,
-					success: function( data ) {
-						if(data.trim()=="False"){
-							isDone = "False";
-						}
-					}
-				});
-				
-			});
-			
-			if(isDone=="True"){
-				$("#AlertMsg").html("<b>SUCCESFULLY SAVED: </b> Please wait a moment...");
-				$("#alertbtnOK").hide();
-
-					setTimeout(function() {
-						$("#AlertMsg").html("");
-						$('#AlertModal').modal('hide');
-			
-							$("#txtctranno").val(trancode);
-							$("#frmedit").submit();
-			
-					}, 3000); // milliseconds = 3seconds
-
-				
 			}
 			
-		}
-		else{
-				$("#AlertMsg").html("<b>ERROR: </b> There's a problem saving your transaction...");
-				$("#alertbtnOK").show();
-				$("#AlertModal").modal('show');
-		}
-		
 
+
+		}
 
 	}
-
-}
 
 /*
 function convertCurrency(fromCurrency) {

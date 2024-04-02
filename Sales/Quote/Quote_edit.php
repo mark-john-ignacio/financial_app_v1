@@ -1474,59 +1474,73 @@ else{
 				
 		var tditmamount = "<td width=\"100\" nowrap> <input type='text' value='"+baseprice.toFixed(4)+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnamount\" id='txtnamount"+lastRow+"' > </td>";
 		
-		var tditmdel = "<td width=\"90\" nowrap> <input class='btn btn-danger btn-xs' type='button' id='del" + itmcode + "' value='delete' onClick=\"deleteRow(this);\"/> &nbsp; <input class='btn btn-primary btn-xs' type='button' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"','"+lastRow+"');\"/> </td>";
+		var tditmdel = "<td width=\"90\" nowrap> <input class='btn btn-danger btn-xs' type='button' name='itmdel' id='del" + lastRow + "' value='delete' onClick=\"deleteRow(this);\"/> &nbsp; <input class='btn btn-primary btn-xs' type='button' name='itmins' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"','"+lastRow+"');\"/> </td>";
 
 
 		$('#MyTable > tbody:last-child').append('<tr id="'+lastRow+'">'+tditmcode + tditmdesc + tditmavail + tditmunit + tditmfactor + tditmqty + tditmprice + tditmbaseamount + tditmamount + tditmdel + '</tr>');
 
 
-										$("#del"+itmcode).on('click', function() {
-											$(this).closest('tr').remove();
-										});
+			$("#del"+itmcode).on('click', function() {
+				$(this).closest('tr').remove();
+				Reindex();
+			});
 
 
-										$("input.numeric2").autoNumeric('init',{mDec:4});
-										$("input.numeric").autoNumeric('init',{mDec:2});
+			$("input.numeric2").autoNumeric('init',{mDec:4});
+			$("input.numeric").autoNumeric('init',{mDec:2});
 
-										//$("input.numeric").numeric();
-										$("input.numeric, input.numeric2").on("click", function () {
-										$(this).select();
-										});
+			//$("input.numeric").numeric();
+			$("input.numeric, input.numeric2").on("click", function () {
+			$(this).select();
+			});
+			
+			$("input.numeric, input.numeric2").on("keyup", function () {
+			ComputeAmt($(this).attr('id'));
+			ComputeGross();
+			});
+			
+			$("#seluom"+lastRow).on('change', function() {
+
+				var xyz = chkprice(itmcode,$(this).val(),itmccode,xtoday);
+				var mainuomdata = $(this).data("main");
+				var fact = $(this).find(':selected').data('factor');
+
+				if(fact!=0){
+					$('#hdnfactor'+lastRow).val(fact);
+				}
+
+				if(mainuomdata!==$(this).val()){
+					$('#hdnfactor'+lastRow).attr("readonly", false);
+				}else{
+					$('#hdnfactor'+lastRow).attr("readonly", true);
+				}
+
+				$('#txtnprice'+lastRow).val(xyz.trim());
+				//alert($(this).attr('id'));
+				ComputeAmt($(this).attr('id'));
+				ComputeGross();
+
+				//var fact = setfactor($(this).val(), itmcode);
+				//alert(fact);
+
+			});
+			
+			ComputeGross();
 										
-										$("input.numeric, input.numeric2").on("keyup", function () {
-										ComputeAmt($(this).attr('id'));
-										ComputeGross();
-										});
 										
-										$("#seluom"+lastRow).on('change', function() {
+	}
 
-											var xyz = chkprice(itmcode,$(this).val(),itmccode,xtoday);
-											var mainuomdata = $(this).data("main");
-											var fact = $(this).find(':selected').data('factor');
-
-											if(fact!=0){
-												$('#hdnfactor'+lastRow).val(fact);
-											}
-
-											if(mainuomdata!==$(this).val()){
-												$('#hdnfactor'+lastRow).attr("readonly", false);
-											}else{
-												$('#hdnfactor'+lastRow).attr("readonly", true);
-											}
-
-											$('#txtnprice'+lastRow).val(xyz.trim());
-											//alert($(this).attr('id'));
-											ComputeAmt($(this).attr('id'));
-											ComputeGross();
-
-											//var fact = setfactor($(this).val(), itmcode);
-											//alert(fact);
-
-										});
-										
-										ComputeGross();
-										
-										
+	function Reindex(){
+		$("#MyTable > tbody > tr").each(function(index) {
+			$x = index+1;
+			var cuom = $(this).find('select[name="seluom"]').attr("id", "seluom"+$x);
+			var nqty = $(this).find('input[name="txtnqty"]').attr("id", "txtnqty"+$x);
+			var nprice = $(this).find('input[name="txtnprice"]').attr("id", "txtnprice"+$x);
+			var nbaseamt = $(this).find('input[name="txtntranamount"]').attr("id", "txtntranamount"+$x);
+			var namt = $(this).find('input[name="txtnamount"]').attr("id", "txtnamount"+$x);
+			var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').attr("id", "hdnmainuom"+$x);
+			var nfactor = $(this).find('input[name="hdnfactor"]').attr("id", "hdnfactor"+$x);
+		});
 	}
 
 	function ComputeAmt(nme){
