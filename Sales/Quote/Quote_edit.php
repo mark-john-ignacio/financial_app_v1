@@ -1474,7 +1474,7 @@ else{
 				
 		var tditmamount = "<td width=\"100\" nowrap> <input type='text' value='"+baseprice.toFixed(4)+"' class='numeric form-control input-xs' style='text-align:right' name=\"txtnamount\" id='txtnamount"+lastRow+"' > </td>";
 		
-		var tditmdel = "<td width=\"90\" nowrap> <input class='btn btn-danger btn-xs' type='button' name='itmdel' id='del" + lastRow + "' value='delete' onClick=\"deleteRow(this);\"/> &nbsp; <input class='btn btn-primary btn-xs' type='button' name='itmins' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"','"+lastRow+"');\"/> </td>";
+		var tditmdel = "<td width=\"90\" nowrap> <input class='btn btn-danger btn-xs' type='button' name='itmdel' id='del" + lastRow + "' value='delete'/> &nbsp; <input class='btn btn-primary btn-xs' type='button' name='itmins' id='row_" + lastRow + "_info' value='+' onclick = \"viewhidden('"+itmcode+"','"+itmdesc+"','"+lastRow+"');\"/> </td>";
 
 
 		$('#MyTable > tbody:last-child').append('<tr id="'+lastRow+'">'+tditmcode + tditmdesc + tditmavail + tditmunit + tditmfactor + tditmqty + tditmprice + tditmbaseamount + tditmamount + tditmdel + '</tr>');
@@ -1533,13 +1533,16 @@ else{
 	function Reindex(){
 		$("#MyTable > tbody > tr").each(function(index) {
 			$x = index+1;
-			var cuom = $(this).find('select[name="seluom"]').attr("id", "seluom"+$x);
-			var nqty = $(this).find('input[name="txtnqty"]').attr("id", "txtnqty"+$x);
-			var nprice = $(this).find('input[name="txtnprice"]').attr("id", "txtnprice"+$x);
-			var nbaseamt = $(this).find('input[name="txtntranamount"]').attr("id", "txtntranamount"+$x);
-			var namt = $(this).find('input[name="txtnamount"]').attr("id", "txtnamount"+$x);
-			var mainunit = $(this).find('input[type="hidden"][name="hdnmainuom"]').attr("id", "hdnmainuom"+$x);
-			var nfactor = $(this).find('input[name="hdnfactor"]').attr("id", "hdnfactor"+$x);
+			$(this).find('select[name="seluom"]').attr("id", "seluom"+$x);
+			$(this).find('input[name="txtnqty"]').attr("id", "txtnqty"+$x);
+			$(this).find('input[name="txtnprice"]').attr("id", "txtnprice"+$x);
+			$(this).find('input[name="txtntranamount"]').attr("id", "txtntranamount"+$x);
+			$(this).find('input[name="txtnamount"]').attr("id", "txtnamount"+$x);
+			$(this).find('input[type="hidden"][name="hdnmainuom"]').attr("id", "hdnmainuom"+$x);
+			$(this).find('input[name="hdnfactor"]').attr("id", "hdnfactor"+$x);
+
+			$(this).find('inpu[type="button"][name="itmdel"]').attr("id", "del"+$x);
+			$(this).find('input[type="button"][name="itmins"]').attr("id", "row_"+$x+"_info");
 		});
 	}
 
