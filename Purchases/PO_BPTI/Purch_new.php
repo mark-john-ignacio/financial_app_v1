@@ -1729,7 +1729,7 @@
 							$('#AlertModal').modal('hide');
 				
 								$("#txtctranno").val(trancode);
-								//$("#frmedit").submit();
+								$("#frmedit").submit();
 				
 						}, 3000); // milliseconds = 3seconds
 
