@@ -327,7 +327,8 @@
 	}
 
 	$html = $html.'<tr>			
-			<td align="right" class="tdpadx" colspan="7"><b>TOTAL</b></td>
+			<td align="right" class="tdpadx" colspan="6"><b>TOTAL</b></td>
+			<td align="center" class="tdpadx">'.$CurrCode.'</td>
 			<td align="right" class="tdpadx">'.number_format($Gross,2).'</td>			
 		</tr>
 	</table>';
