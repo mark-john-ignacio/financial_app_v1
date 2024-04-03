@@ -9,6 +9,7 @@ require_once "../../Connection/connection_string.php";
 	
 	$sql = mysqli_query($con,"SELECT a.*,b.Fname,b.Minit,b.Lname,b.cemailadd FROM `purchrequest_trans_approvals` a left join users b on a.userid=b.Userid where a.compcode='$company' and a.cprno='$cpono' order by a.nlevel");
 	
+  $rowPOresult = array();
   while($rowxcv=mysqli_fetch_array($sql, MYSQLI_ASSOC)){
 		$rowPOresult[] = $rowxcv;
 	}
