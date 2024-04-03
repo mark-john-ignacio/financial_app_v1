@@ -519,7 +519,7 @@
 									PR<br>(Insert)
 								</button>
 								
-								<button type="button" class="btn green btn-sm" tabindex="6" onClick="return chkform();">Save<br> (CTRL+S)</button>
+								<button type="button" class="btn green btn-sm" id="btnSave" tabindex="6" onClick="return chkform();">Save<br> (CTRL+S)</button>
 							</div>
 						</div>
 					</div>
@@ -1634,7 +1634,7 @@
 		var trancode = "";
 		var isDone = "True";
 
-
+			$("#btnSave").attr("disabled", true);
 			/*Saving the header
 			var ccode = $("#txtcustid").val();
 			var crem = $("#txtremarks").val();

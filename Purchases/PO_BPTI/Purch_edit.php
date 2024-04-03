@@ -2051,7 +2051,8 @@ else{
 		var trancode = "";
 		var isDone = "True";
 
-
+		$("#btnSave").attr("disabled", true);
+		
 			//Saving the header
 			var pono = $("#txtcpono").val();
 			var ccode = $("#txtcustid").val();
