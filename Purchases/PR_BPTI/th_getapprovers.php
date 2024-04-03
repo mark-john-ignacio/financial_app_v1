@@ -16,6 +16,7 @@ require_once "../../Connection/connection_string.php";
 
   //get ung mga levels
   $templvl = "";
+  @$dlevels = array();
   foreach($rowPOresult as $rs){
     if($templvl!=$rs['nlevel']){
       $templvl=$rs['nlevel'];
