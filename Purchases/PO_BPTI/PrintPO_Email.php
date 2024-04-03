@@ -266,28 +266,28 @@
 					$setfooter = $setfooter .'<div style="text-align: center">'.$cpreparedBy.'</div>';
 				}*/
 
-			$setfooter = $setfooter .'<td width="25%" align="center"  height="100px" valign="top">
+			$setfooter = $setfooter .'<td width="25%" align="center"  height="50px" valign="top">
 			<div style="text-align: center">Prepared By</div>				
-			<div style="text-align: center"><img src = "white.jpg" height="80px"></div>		
+			<div style="text-align: center"><img src = "white.jpg" height="30px"></div>		
 			<div style="text-align: center">'.$cPrepBy.'</div>					
 			</td>';
 
-			$setfooter = $setfooter.'<td width="25%" align="center" height="100px" valign="top">							
+			$setfooter = $setfooter.'<td width="25%" align="center" height="50px" valign="top">							
 			<div style="text-align: center">Checked By</div>				
-			<div style="text-align: center"><img src = "white.jpg" height="80px"></div>		
+			<div style="text-align: center"><img src = "white.jpg" height="30px"></div>		
 			<div style="text-align: center">'.$cCheckedBy.'</div>					
 			</td>';
 
-			$setfooter = $setfooter.'<td width="20%" align="center" height="100px" valign="top">							
+			$setfooter = $setfooter.'<td width="20%" align="center" height="50px" valign="top">							
 			<div style="text-align: center">Approved By</div>				
-			<div style="text-align: center"><img src = "white.jpg" height="80px"></div>		
+			<div style="text-align: center"><img src = "white.jpg" height="30px"></div>		
 			<div style="text-align: center">'.$cApprBy.'</div>					
 			</td>
-			<td width="20%"  align="center" height="100px" valign="top">							
+			<td width="20%"  align="center" height="50px" valign="top">							
 				<div style="padding-bottom: 60px; text-align: center">
 					Supplier Confirmation
 				</div>	
-				<div style="text-align: center"><img src = "white.jpg" height="90px"></div>	
+				<div style="text-align: center"><img src = "white.jpg" height="40px"></div>	
 				<br>							
 			</td>
 		</tr>
