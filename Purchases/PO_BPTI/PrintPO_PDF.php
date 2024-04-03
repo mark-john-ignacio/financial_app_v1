@@ -300,7 +300,7 @@
 			<td align="center" class="tdpadx">'.intval($rowdtls['nqty']).'</td>
 			<td align="right" class="tdpadx">'.number_format($rowdtls['nprice'],4).'</td>
 			<td align="center" class="tdpadx">'.$rowdtls['cunit'].'</td>										
-			<td align="right" class="tdpadx">'.number_format($rowdtls['namount'],2).'</td>					
+			<td align="right" class="tdpadx">'.number_format($rowdtls['nbaseamount'],2).'</td>					
 		</tr>';
 
 		} 
