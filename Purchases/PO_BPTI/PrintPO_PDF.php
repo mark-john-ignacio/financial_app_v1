@@ -298,9 +298,9 @@
 			<td align="center" class="tdpadx">'.$rowdtls['newdesc'].'</td>
 			<td align="center" class="tdpadx">'.$rowdtls['citemno'].'</td>
 			<td align="center" class="tdpadx">'.intval($rowdtls['nqty']).'</td>
-			<td align="right" class="tdpadx">'.number_format($rowdtls['nprice'],4).'</td>
-			<td align="center" class="tdpadx">'.$rowdtls['cunit'].'</td>										
-			<td align="right" class="tdpadx">'.number_format($rowdtls['nbaseamount'],2).'</td>					
+			<td align="right" class="tdpadx" width="100px">'.number_format($rowdtls['nprice'],4).'</td>
+			<td align="center" class="tdpadx" width="60px">'.$rowdtls['cunit'].'</td>										
+			<td align="right" class="tdpadx" width="100px">'.number_format($rowdtls['nbaseamount'],2).'</td>					
 		</tr>';
 
 		} 
