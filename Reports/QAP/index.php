@@ -134,10 +134,10 @@
             format: 'MMMM'
         })
 
-        FetchAPV();
+       // FetchAPV();
     })
 
-    function FetchAPV() {
+   /* function FetchAPV() {
         let year = $("#years").val();
         let month = $("#months").val();
 
@@ -166,20 +166,20 @@
                 console.log(msg)
             }
         })
-    }
+    }*/
 
     function btnonclick() {
         let type = $(this).val();
         var form = document.getElementById('QAPForm');
         var formData = new FormData(form);
-        FetchAPV();
+       // FetchAPV();
 
         let rdo = $("#rdo").val();
         var newAction = "";
 
-        if (apv.length === 0) {
-            return alert("No Referrence found!");
-        } 
+       // if (apv.length === 0) {
+       //     return alert("No Referrence found!");
+       // } 
 
         if(rdo == ""){ 
             return alert("No RDO found please! Fill this detail!");
