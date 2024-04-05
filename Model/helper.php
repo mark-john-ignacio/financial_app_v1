@@ -593,6 +593,9 @@
     }
 
     function stringValidation($data){
+        if($data==null){
+            $data = "";
+        }
         $replace = preg_replace('/[^A-Za-z0-9. ]/', '', $data);
         return trim($replace);
     }
@@ -659,6 +662,14 @@
 
     function dataquarterly($data) {
         global $con, $company, $year, $month_text;
+        $ewtpaydef = "";
+        $gettaxcd = mysqli_query($con,"SELECT A.cacctno, B.cacctdesc FROM `accounts_default` A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ccode='EWTPAY'"); 
+        if (mysqli_num_rows($gettaxcd)!=0) {
+            while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+                $ewtpaydef = $row['cacctno'];
+            }
+        }
+
         $apvlist = array();
         $index = 0;
         if(in_array($month_text, $data)) {
@@ -668,9 +679,9 @@
 
                 $sql = "SELECT a.ncredit, a.cewtcode, a.ctranno, b.ngross, b.dapvdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM apv_t a
                     LEFT JOIN apv b ON a.compcode = b.compcode AND a.ctranno = b.ctranno
-                    LEFT JOIN suppliers c ON a.compcode = b.compcode AND b.ccode = c.ccode 
-                    LEFT JOIN groupings d ON a.compcode = b.compcode AND c.csuppliertype = d.ccode AND d.ctype = 'SUPTYP'
-                    WHERE a.compcode = '$company' AND MONTH(b.dapvdate) = '$months' AND YEAR(b.dapvdate) = '$year' AND  b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0";
+                    LEFT JOIN suppliers c ON b.compcode = c.compcode AND b.ccode = c.ccode 
+                    LEFT JOIN groupings d ON c.compcode = d.compcode AND c.csuppliertype = d.ccode AND d.ctype = 'SUPTYP'
+                    WHERE a.compcode = '$company' AND MONTH(b.dapvdate) = '$months' AND YEAR(b.dapvdate) = '$year' AND  b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 and a.cacctno='$ewtpaydef' and IFNULL(a.cewtcode,'') <> '' and a.ncredit>0 Order By b.dapvdate, a.ctranno";
                 
                // echo $sql."<br>";
                 $query = mysqli_query($con, $sql);               
