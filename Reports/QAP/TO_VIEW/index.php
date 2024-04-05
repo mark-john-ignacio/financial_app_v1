@@ -12,6 +12,18 @@
 
     $company = $_SESSION['companyid'];
 
+    //get default EWT acct code
+	@$ewtpaydef = "";
+	@$ewtpaydefdsc = "";
+	$gettaxcd = mysqli_query($con,"SELECT A.cacctno, B.cacctdesc FROM `accounts_default` A left join accounts B on A.compcode=B.compcode and A.cacctno=B.cacctid where A.compcode='$company' and A.ccode='EWTPAY'"); 
+	if (mysqli_num_rows($gettaxcd)!=0) {
+		while($row = mysqli_fetch_array($gettaxcd, MYSQLI_ASSOC)){
+			@$ewtpaydef = $row['cacctno'];
+			@$ewtpaydefdsc = $row['cacctdesc']; 
+		}
+	}
+
+
     $sql = "SELECT * FROM company WHERE compcode = '$company'";
     $query = mysqli_query($con, $sql);
     $list = $query -> fetch_assoc();
@@ -22,46 +34,43 @@
         'tin' => TinValidation($list['comptin'])
     ];
 
-    $month_text = $_POST['months'];
-    $month = date("m", strtotime($_POST['months']));
     $year = date("Y", strtotime($_POST['years']));
 
-    $quartersAndMonths = getQuartersAndMonths($year);
     $apv = array();
-    foreach ($quartersAndMonths as $quarter => $month) {
-
-        $QUARTERDATA = dataquarterly($month);
-
-        if ($QUARTERDATA['valid']) {
-            foreach($QUARTERDATA['quarter'] as $row) {
-                $list = $row['data'];
-                $code = $list['cewtcode'];
-                $credit = $list['ncredit'];
-                $gross = $list['ngross'];
-                $ewt = getEWT($code);
-
-                if (ValidateEWT($code) && $credit != 0 && $ewt['valid']) {
-                    $json = array(
-                        'name' => $list['cname'],
-                        'tin' => $list['ctin'],
-                        'credit' => $credit,
-                        'ewt' => $ewt['code'],
-                        'rate' => $ewt['rate'],
-                        'date' => $list['dapvdate'],
-                        'tranno' => $list['ctranno'],
-                        'address' => $list['chouseno'] . " " . $list['ccity'],
-                        'gross' => $list['ngross']
-                    );
-    
-                    $apv[] = $json;
-                }
-               
-            }
-        }
-        
+    $xendingmonth = "";
+    switch($_POST['selqrtr']){
+        case 1:
+            $months = "1,2,3";
+            $xendingmonth = 3;
+            break;
+        case 2:
+            $months = "4,5,6";
+            $xendingmonth = 6;
+            break;
+        case 3:
+            $months = "7,8,9";
+            $xendingmonth = 9;
+            break;
+        case 4:
+            $months = "10,11,12";
+            $xendingmonth = 12;
+            break;
+        default: 
+            $months = "";
+            break;
     }
-
-   // print_r($apv);
+    $sql = "SELECT a.ncredit, a.cewtcode, a.newtrate, a.ctranno, b.ngross, b.dapvdate, c.cname, CONCAT_WS(', ', c.chouseno, c.ccity) as caddress, c.ctin, d.cdesc 
+        FROM apv_t a
+        LEFT JOIN apv b ON a.compcode = b.compcode AND a.ctranno = b.ctranno
+        LEFT JOIN suppliers c ON b.compcode = c.compcode AND b.ccode = c.ccode 
+        LEFT JOIN groupings d ON c.compcode = d.compcode AND c.csuppliertype = d.ccode AND d.ctype = 'SUPTYP'
+        WHERE a.compcode = '$company' AND MONTH(b.dapvdate) in ($months) AND YEAR(b.dapvdate) = '$year' AND  b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 and a.cacctno='$ewtpaydef' and IFNULL(a.cewtcode,'') <> '' and a.ncredit>0 Order By b.dapvdate, a.ctranno";
+    
+    //echo $sql."<br>";
+    $query = mysqli_query($con, $sql);               
+    while($row = $query -> fetch_assoc()){
+        $apv[] = $row;
+    }
 
 ?>
 
@@ -94,7 +103,11 @@
                 <td><h4 style="margin: 0">QUARTERLY ALPHABETICAL LIST OF PAYEES SUBJECTED TO EXPANDED WITHHOLDING TAX & PAYEES WHOSE INCOME PAYMENTS ARE EXEMPT</h4></td>
             </tr>
             <tr>
-                <td><h4  style="margin: 0">FOR THE QUARTER ENDING <?=$_POST['months']?>, <?=$_POST['years']?></h4></td>
+                <?php
+                    $dateObj   = DateTime::createFromFormat('!m', $xendingmonth);
+                    $xendingmonth = $dateObj->format('F');
+                ?>
+                <td><h4  style="margin: 0">FOR THE QUARTER ENDING <?=$xendingmonth?>, <?=$_POST['years']?></h4></td>
             </tr>
 
             <tr>
@@ -124,15 +137,15 @@
                     foreach($apv as $rs2){
                 ?>
                 <tr>
-                    <td><?=$rs2['date']?></th>
-                    <td style="padding-left: 10px"><?=$rs2['tranno']?></th>
-                    <td style="padding-left: 10px"><?=$rs2['tin']?></th>
-                    <td style="padding-left: 10px"><?=$rs2['name']?></th>
-                    <td style="padding-left: 10px"><?=$rs2['address']?></th>
-                    <td style="padding-left: 10px"><?=$rs2['ewt']?></th>
-                    <td style="padding-left: 10px"><?=(floatval($rs2['rate']) / 100) . "%"?></th>
-                    <td style="padding-left: 10px"><?=number_format($rs2['gross'],2)?></th>
-                    <td style="padding-left: 10px"><?=number_format($rs2['credit'],2)?></th>
+                    <td><?=$rs2['dapvdate']?></th>
+                    <td style="padding-left: 10px"><?=$rs2['ctranno']?></th>
+                    <td style="padding-left: 10px"><?=$rs2['ctin']?></th>
+                    <td style="padding-left: 10px"><?=$rs2['cname']?></th>
+                    <td style="padding-left: 10px"><?=$rs2['caddress']?></th>
+                    <td style="padding-left: 10px"><?=$rs2['cewtcode']?></th>
+                    <td style="padding-left: 10px"><?=(floatval($rs2['newtrate']) / 100) . "%"?></th>
+                    <td style="padding-left: 10px"><?=number_format($rs2['ngross'],2)?></th>
+                    <td style="padding-left: 10px"><?=number_format($rs2['ncredit'],2)?></th>
                 </tr>
                 <?php
                     }
