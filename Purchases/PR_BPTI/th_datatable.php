@@ -16,7 +16,7 @@
 
 	if(isset($_POST['searchBySec']) && $_POST['searchBySec'] != '')
 	{
-		$query .= "and A.locations_id = ".$_POST['searchByName']."";
+		$query .= "and A.locations_id = ".$_POST['searchBySec']."";
 	}
 
 	if(isset($_POST['searchBystat']) && $_POST['searchBystat'] != '')
@@ -56,8 +56,6 @@
 		$query1 = 'LIMIT ' . $_POST['start'] . ', ' . $_POST['length'];
 	}
 	
-
-
 	$statement = $connect->prepare($query);
 
 	$statement->execute();

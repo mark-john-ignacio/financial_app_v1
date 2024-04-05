@@ -105,11 +105,10 @@
 				</div>
 				<div class="col-xs-3 text-right nopadwleft">
 					<select class="form-control input-sm" name="selwhfrom" id="selwhfrom"> 
-						<option value="">All Sections</option>	
 						<?php
-								foreach($rowdetloc as $localocs){									
+							foreach($rowdetloc as $localocs){					
 						?>
-									<option value="<?php echo $localocs['nid'];?>"><?php echo $localocs['cdesc'];?></option>										
+								<option value="<?php echo $localocs['nid'];?>"><?php echo $localocs['cdesc'];?></option>										
 						<?php	
 								}						
 						?>
@@ -203,7 +202,7 @@
 	<script>
 		$(document).ready(function() {
 
-			fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");
+			fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>",$('#selwhfrom').val());
 
 			$("#searchByName").keyup(function(){
 					var searchByName = $('#searchByName').val();
