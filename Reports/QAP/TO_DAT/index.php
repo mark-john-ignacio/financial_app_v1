@@ -144,6 +144,8 @@
             fwrite($myfile, $data);
             $zip->addFile($txtfflnme); //add each file into zip file
             $data = "";
+            $TOTAL_CREDIT = 0;
+            $TOTAL_GROSS  = 0;
         }
 
         $zip->close();
