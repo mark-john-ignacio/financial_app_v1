@@ -130,7 +130,7 @@
                                     break;
                             }
 
-                            $data .= "D1,1601EQ,$count,$tins,0000,$company_name,$lname,$fname,$midname,$r1/$year,$ewtcode,$rate,$gross,$credit\n";
+                            $data .= "D1,1601EQ,$count,$tins,0000,$company_name,$lname,$fname,$midname,$number/$year,$ewtcode,$rate,$gross,$credit\n";
                             $count += 1;
 
                             $TOTAL_CREDIT += $credit;
