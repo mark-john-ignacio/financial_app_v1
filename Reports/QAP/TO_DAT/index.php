@@ -130,11 +130,12 @@
                                     break;
                             }
 
-                            $data .= "D1,1601EQ,$count,$tins,0000,$company_name,$lname,$fname,$midname,$number/$year,$ewtcode,$rate,$gross,$credit\n";
+                            $okgross = floatval($credit) / (floatval($rate)/100);
+                            $data .= "D1,1601EQ,$count,$tins,0000,$company_name,$lname,$fname,$midname,$number/$year,$ewtcode,$rate,$okgross,$credit\n";
                             $count += 1;
 
                             $TOTAL_CREDIT += $credit;
-                            $TOTAL_GROSS += $gross;
+                            $TOTAL_GROSS += $okgross;
                         }
                     }
                 }
