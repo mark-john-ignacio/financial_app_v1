@@ -76,7 +76,7 @@
         }
 
         $zip = new ZipArchive();
-        $zipname="QAP_".$xendingmonth."Qrtr_".$year;// give zip file name 
+        $zipname=$tinHeader."Q".$_POST['selqrtr'].$year;// give zip file name 
         $zip->open($zipname, ZipArchive::CREATE); //example_zip zip file created 
 
         $xarr = explode(",",$months);
@@ -147,6 +147,7 @@
             $data = "";
             $TOTAL_CREDIT = 0;
             $TOTAL_GROSS  = 0;
+            $count = 0;
         }
 
         $zip->close();
@@ -154,6 +155,7 @@
         header('Content-disposition: attachment; filename='.$zipname);
         header('Content-Length: ' . filesize($zipname));
         readfile($zipname);
+       
     } else {
         ?>
             <script type="text/javascript">alert("No record has been found for <?=  $xendingmonth . " Quarter/" . $yearcut?>")</script>
