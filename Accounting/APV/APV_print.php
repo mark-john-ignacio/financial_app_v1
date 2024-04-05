@@ -166,7 +166,7 @@ html,
 		$xtotdebit = 0;
 		$xtotcredit = 0;
 
-		$sqlhead = mysqli_query($con,"select a.*,b.cname from apv_t a left join customers b on a.compcode=b.compcode and a.csubsidiary=b.cempid where a.compcode='$company' and a.ctranno = '$cpono'");
+		$sqlhead = mysqli_query($con,"SELECT a.*,b.cname FROM apv_t a LEFT JOIN customers b on a.compcode=b.compcode and a.csubsidiary=b.cempid WHERE a.compcode='$company' and a.ctranno = '$cpono' ORDER BY nidentity");
 		
 		if (mysqli_num_rows($sqlhead)!=0) {
 			while($row = mysqli_fetch_array($sqlhead, MYSQLI_ASSOC)){     
