@@ -76,7 +76,7 @@
         }
 
         $zip = new ZipArchive();
-        $zipname=$tinHeader."Q".$_POST['selqrtr'].$year;// give zip file name 
+        $zipname=$tinHeader."Q".$_POST['selqrtr'].$year."1601EQ";// give zip file name 
         $zip->open($zipname, ZipArchive::CREATE); //example_zip zip file created 
 
         $xarr = explode(",",$months);

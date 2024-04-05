@@ -22,14 +22,35 @@
         'tin' => TinValidation($list['comptin'])
     ];
 
-    $month = date("m", strtotime($_POST['months']));
+   // $month = date("m", strtotime($_POST['months']));
     $year = $_POST['years'];
-
-    $sql = "SELECT a.cewtcode, a.ctranno, b.ngross, b.dcutdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM sales_t a
-        LEFT JOIN sales b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-        LEFT JOIN customers c on a.compcode = c.compcode AND b.ccode = c.cempid
-        LEFT JOIN groupings d on a.compcode = b.compcode AND c.ccustomertype = d.ccode
-        WHERE a.compcode = '$company' AND MONTH(b.dcutdate) = '$month' AND YEAR(b.dcutdate) = '$year' AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 AND d.ctype = 'CUSTYP'";
+    $xendingmonth = "";
+    switch($_POST['selqrtr']){
+        case 1:
+            $months = "1,2,3";
+            $month = 3;
+            break;
+        case 2:
+            $months = "4,5,6";
+            $month = 6;
+            break;
+        case 3:
+            $months = "7,8,9";
+            $month = 9;
+            break;
+        case 4:
+            $months = "10,11,12";
+            $month = 12;
+            break;
+        default: 
+            $months = "";
+            break;
+    }
+    $sql = "SELECT b.cewtcode, b.ctranno, b.ngrossbefore as ngross, b.dcutdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc 
+        FROM sales b
+        LEFT JOIN customers c on b.compcode = c.compcode AND b.ccode = c.cempid
+        LEFT JOIN groupings d on c.compcode = d.compcode AND c.ccustomertype = d.ccode AND d.ctype = 'CUSTYP'
+        WHERE b.compcode = '$company' AND MONTH(b.dcutdate) in ($months) AND YEAR(b.dcutdate) = '$year' AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 and IFNULL(b.cewtcode,'') <> '' Order By b.dcutdate, b.ctranno";
 
     $query = mysqli_query($con, $sql);
 
@@ -87,7 +108,11 @@
                 <td><h4 style="margin: 0">SUMMARY ALPHALIST OF WITHHOLDING TAXES (SAWT)</h4></td>
             </tr>
             <tr>
-                <td><h4  style="margin: 0">FOR THE MONTH OF <?=$_POST['months']?>, <?=$_POST['years']?></h4></td>
+                <?php
+                    $dateObj   = DateTime::createFromFormat('!m', $month);
+                    $month = $dateObj->format('F');
+                ?>
+                <td><h4  style="margin: 0">FOR THE QUARTER ENDING <?=$month?>, <?=$_POST['years']?></h4></td>
             </tr>
 
             <tr>

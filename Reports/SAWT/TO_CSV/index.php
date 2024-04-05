@@ -1,26 +1,50 @@
 <?php 
-if(!isset($_SESSION)){
-    session_start();
-}
-require_once  "../../../vendor2/autoload.php";
-require_once "../../../Connection/connection_string.php";
-require_once "../../../Model/helper.php";
+    if(!isset($_SESSION)){
+        session_start();
+    }
+    require_once  "../../../vendor2/autoload.php";
+    require_once "../../../Connection/connection_string.php";
+    require_once "../../../Model/helper.php";
 
-//use PhpOffice\PhpSpreadsheet\Helper\Sample;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use \PhpOffice\PhpSpreadsheet\Cell\DataType;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
+    //use PhpOffice\PhpSpreadsheet\Helper\Sample;
+    use PhpOffice\PhpSpreadsheet\IOFactory;
+    use PhpOffice\PhpSpreadsheet\Spreadsheet;
+    use \PhpOffice\PhpSpreadsheet\Cell\DataType;
+    use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-// Create new Spreadsheet object
-$spreadsheet = new Spreadsheet();
-$company = $_SESSION['companyid'];
-// $month = $_POST['months'];
-// $year = $_POST['years'];
+    // Create new Spreadsheet object
+    $spreadsheet = new Spreadsheet();
+    $company = $_SESSION['companyid'];
+    // $month = $_POST['months'];
+    // $year = $_POST['years'];
 
-$month_text = $_POST['months'];
-$month = date("m", strtotime($_POST['months']));
-$year = $_POST['years'];
+    //$getEWT = $_POST['months'];
+    //$month = date("m", strtotime($_POST['months']));
+    $year = $_POST['years'];
+    switch($_POST['selqrtr']){
+        case 1:
+            $months = "1,2,3";
+            $month = 3;
+            break;
+        case 2:
+            $months = "4,5,6";
+            $month = 6;
+            break;
+        case 3:
+            $months = "7,8,9";
+            $month = 9;
+            break;
+        case 4:
+            $months = "10,11,12";
+            $month = 12;
+            break;
+        default: 
+            $months = "";
+            break;
+    }
+
+    $dateObj   = DateTime::createFromFormat('!m', $month);
+    $month_text = $dateObj->format('F');
 
 // Set document properties
 $spreadsheet->getProperties()->setCreator('Myx Financials')
@@ -44,7 +68,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
     $spreadsheet->setActiveSheetIndex(0)
         ->setCellValue('A1', 'BIR FORM 1702Q')
         ->setCellValue('A2', "SUMMARY ALPHALIST OF WITHHOLDING TAXES (SAWT)")
-        ->setCellValue('A3', "FOR THE MONTH OF $month, $year")
+        ->setCellValue('A3', "FOR THE QUARTER ENDING $month_text, $year")
         ->setCellValue('A6', 'TIN: ' . TinValidation($comp['comptin']))
         ->setCellValue('A7', "PAYEE'S NAME: " . $comp['compname']);
 
@@ -92,11 +116,12 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('I15', "'------------------------------");
     
 
-    $sql = "SELECT a.cewtcode, a.ctranno, b.ngross, b.dcutdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM sales_t a
-        LEFT JOIN sales b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-        LEFT JOIN customers c on a.compcode = c.compcode AND b.ccode = c.cempid
-        LEFT JOIN groupings d on a.compcode = b.compcode AND c.ccustomertype = d.ccode
-        WHERE a.compcode = '$company' AND MONTH(b.dcutdate) = '$month' AND YEAR(b.dcutdate) = '$year' AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 AND d.ctype = 'CUSTYP'";
+    $sql = "SELECT b.cewtcode, b.ctranno, b.ngrossbefore as ngross, b.dcutdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc 
+    FROM sales b
+    LEFT JOIN customers c on b.compcode = c.compcode AND b.ccode = c.cempid
+    LEFT JOIN groupings d on c.compcode = d.compcode AND c.ccustomertype = d.ccode AND d.ctype = 'CUSTYP'
+    WHERE b.compcode = '$company' AND MONTH(b.dcutdate) in ($months) AND YEAR(b.dcutdate) = '$year' AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 and IFNULL(b.cewtcode,'') <> '' Order By b.dcutdate, b.ctranno";
+
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         $index = 16;
@@ -184,7 +209,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
 	// Redirect output to a client’s web browser (Xlsx)
 	header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-	header('Content-Disposition: attachment;filename="SAWT- Q2 '. $year . ' - ' . $month_text . '.xlsx"');
+	header('Content-Disposition: attachment;filename="SAWT- Q'.$_POST['selqrtr'].' ' .$year . ' - ' . $month_text . '.xlsx"');
 	header('Cache-Control: max-age=0');
 	// If you're serving to IE 9, then the following may be needed
 	header('Cache-Control: max-age=1');
