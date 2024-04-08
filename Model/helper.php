@@ -677,11 +677,11 @@
 
                 $months = date("m", strtotime($quarter));
 
-                $sql = "SELECT a.ncredit, a.cewtcode, a.ctranno, b.ngross, b.dapvdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM apv_t a
+                $sql = "SELECT a.ncredit-a.ndebit as ncredit, a.cewtcode, a.ctranno, b.ngross, b.dapvdate, c.cname, c.chouseno, c.ccity, c.ctin, d.cdesc FROM apv_t a
                     LEFT JOIN apv b ON a.compcode = b.compcode AND a.ctranno = b.ctranno
                     LEFT JOIN suppliers c ON b.compcode = c.compcode AND b.ccode = c.ccode 
                     LEFT JOIN groupings d ON c.compcode = d.compcode AND c.csuppliertype = d.ccode AND d.ctype = 'SUPTYP'
-                    WHERE a.compcode = '$company' AND MONTH(b.dapvdate) = '$months' AND YEAR(b.dapvdate) = '$year' AND  b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 and a.cacctno='$ewtpaydef' and IFNULL(a.cewtcode,'') <> '' and a.ncredit>0 Order By b.dapvdate, a.ctranno";
+                    WHERE a.compcode = '$company' AND MONTH(b.dapvdate) = '$months' AND YEAR(b.dapvdate) = '$year' AND  b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled = 0 and a.cacctno='$ewtpaydef' and IFNULL(a.cewtcode,'') <> '' Order By b.dapvdate, a.ctranno";
                 
                // echo $sql."<br>";
                 $query = mysqli_query($con, $sql);               
