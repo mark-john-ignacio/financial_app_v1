@@ -98,7 +98,7 @@ include('../../include/access2.php');
 						<th>Description</th>
 						<th>Category</th>
 						<th>Type</th>
-						<th>Beg Balance</th>
+						<th>Beg Balance Bro</th>
 					</tr>
 				</thead>
 			</table>
