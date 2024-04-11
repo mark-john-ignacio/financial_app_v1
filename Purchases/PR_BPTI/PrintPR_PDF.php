@@ -68,7 +68,7 @@
 		<tr>
 			<td height="50px" width="100px"> <img src="../'.$logosrc.'" width="100px"/> </td>
 			<td style="text-align: center" height="50px"> <font style="font-size: 18px;">PURCHASE REQUISITION SLIP</font> </td>
-			<td height="50px" width="100px"> &nbsp; </td>
+			<td height="50px" width="100px" style="text-align: right"> {PAGENO} / {nbpg} </td>
 		</tr>
 		<tr>
 			<td style="vertical-align: top; padding-top: 10px; padding-right: 5px;" colspan="3">
