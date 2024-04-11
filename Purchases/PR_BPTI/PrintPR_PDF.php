@@ -98,32 +98,34 @@
 	</table>';
 	
 	$setfooter = '<table border="1" width="100%" style="border-collapse:collapse">
-					<tr>
-						<td align="center" width="33%">
-							<b>Requested By</b>
-						</td>
-						<td align="center" width="33%">
-							<b>Checked By</b>
-						</td>
-						<td align="center">
-							<b>Approved By</b>
-						</td>
-					</tr>
-					<tr>
-						<td align="center"  valign="top">
-							<div style="text-align: center; display: block; height: 40px">&nbsp;</div>
-							<div style="text-align: center; display: block\">'.$cReqBy.'</div>
-						</td>
-						<td align="center" valign="top">
-							<div style="text-align: center; display: block; height: 40px">&nbsp;</div>
-							<div style="text-align: center; display: block\">'.$cCheckedBy.'</div>												
-						</td>
-						<td align="center" valign="top">
-							<div style="text-align: center; display: block; height: 40px">&nbsp;</div>
-							<div style="text-align: center; display: block\">'.$cApprvBy.'</div>												
-						</td>
-					</tr>
-				</table>';
+	<tr>
+		<td align="center" width="33%">
+			<b>Requested By</b>
+		</td>
+		<td align="center" width="33%">
+			<b>Checked By</b>
+		</td>
+		<td align="center">
+			<b>Approved By</b>
+		</td>
+	</tr>
+	<tr>
+		<td align="center"  valign="top">
+			<div style="text-align: center; display: block; height: 40px">&nbsp;</div>
+			<div style="text-align: center; display: block\">'.$cReqBy.'</div>
+		</td>
+		<td align="center" valign="top">
+			<div style="text-align: center; display: block; height: 40px">&nbsp;</div>
+			<div style="text-align: center; display: block\">'.$cCheckedBy.'</div>												
+		</td>
+		<td align="center" valign="top">
+			<div style="text-align: center; display: block; height: 40px">&nbsp;</div>
+			<div style="text-align: center; display: block\">'.$cApprvBy.'</div>												
+		</td>
+	</tr>
+</table><table border="0" width="100%" style="border-collapse:collapse; font-size: 10px">
+<tr><td> '.date("h:i:sa") . ' '. date("d-m-Y").' </td><td> Note: In Case of Error Please Report  to the concern Department within 24hrs ERASURE IS NOT ALLOWED </td><td> BMRC-PC-001-F </td></tr></table>';
+	//end foot
 
 	$html = '<table border="1" align="center" width="100%" style="border-collapse: collapse;">
 	<tr>
@@ -178,5 +180,6 @@
 	// send the captured HTML from the output buffer to the mPDF class for processing
 	$mpdf->WriteHTML($html);
 	$mpdf->Output($csalesno,'I');
+
 
 ?>
