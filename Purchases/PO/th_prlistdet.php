@@ -29,7 +29,7 @@
 		}
 	}
 
-	$sql = "select a.nident,a.citemno,a.cunit,a.nqty,a.ctranno from purchrequest_t a left join purchrequest b on a.compcode=b.compcode and a.ctranno=b.ctranno WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['x']."' ".$qry;
+	$sql = "select a.nident,a.citemno,a.cunit,a.nqty,a.ctranno from purchrequest_t a left join purchrequest b on a.compcode=b.compcode and a.ctranno=b.ctranno WHERE a.compcode='$company' and a.ctranno = '".$_REQUEST['x']."' ".$qry." Order By a.nident";
 
 	//echo $sql;
 	
