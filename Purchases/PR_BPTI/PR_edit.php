@@ -16,6 +16,20 @@
 		$cprno = $_REQUEST['txtcprno'];
 	}
 
+	//POST
+	$poststat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PR_post'");
+	if(mysqli_num_rows($sql) == 0){
+		$poststat = "False";
+	}
+
+	//CANCEL
+	$cancstat = "True";
+	$sql = mysqli_query($con,"select * from users_access where userid = '$employeeid' and pageid = 'PR_cancel'");
+	if(mysqli_num_rows($sql) == 0){
+		$cancstat = "False";
+	}
+
 	$arrseclist = array();
 	$sqlempsec = mysqli_query($con,"select A.section_nid as nid, B.cdesc from users_sections A left join locations B on A.section_nid=B.nid where A.UserID='$employeeid' and B.cstatus='ACTIVE' Order By B.cdesc");
 	$rowdetloc = $sqlempsec->fetch_all(MYSQLI_ASSOC);
@@ -75,6 +89,13 @@
 	
 	}
 
+	$chkapprovals = "";
+	$sqlappx = mysqli_query($con,"Select * from purchrequest_trans_approvals where compcode='$company' and lapproved=0 and lreject=0 and cprno='$cprno' Order by nlevel ASC LIMIT 1");
+	if (mysqli_num_rows($sqlappx)!=0) {
+		while($rows = mysqli_fetch_array($sqlappx, MYSQLI_ASSOC)){
+			$chkapprovals = $rows['userid']; 
+		}
+	}
 
 	//get locations of cost center
 	@$clocs = array();
@@ -146,6 +167,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$lCancelled = $row['lcancelled'];
 		$lPosted = $row['lapproved'];
 		$lVoid = $row['lvoid'];
+		$lSent = $row['lsent'];
 	}
 ?>
 	<form action="PR_editsave.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" method="post"  enctype="multipart/form-data">
@@ -157,8 +179,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				</div>
 				<div class="status">
 					<?php
+						$xm = 0;
 						if($lCancelled==1){
 							echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+							$xm = 1;
 						}
 						
 						if($lPosted==1){
@@ -167,6 +191,28 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							}else{
 								echo "<font color='#FF0000'><b>POSTED</b></font>";
 							}
+							$xm = 1;
+						}
+
+						if($xm==0 && $lSent==1){ 
+							$chkrejstat1 = "";
+							$chkrejstat2 = "";
+							if($chkapprovals==$employeeid){
+								$chkrejstat1 = (($poststat!="True") ? " disabled" : "");
+								$chkrejstat2 = (($cancstat!="True") ? " disabled" : "");
+							}else{
+								$chkrejstat1 = " disabled";
+								$chkrejstat2 = " disabled";
+							}
+
+							if($chkrejstat1==""){
+								echo "<button id=\"btnPosting\" type=\"button\" onClick=\"trans('POST','".$cprno."')\" class=\"btn btn-default".$chkrejstat1."\"><i class=\"fa fa-thumbs-up\" style=\"font-size:18px;color:Green\" title=\"Approve transaction\"></i></button>";
+							}
+
+							if($chkrejstat2==""){
+								echo " <button id=\"btnCanceling\" type=\"button\" onClick=\"trans('CANCEL','".$cprno."')\" class=\"btn btn-default".$chkrejstat2."\"><i class=\"fa fa-thumbs-down\" style=\"font-size:18px;color:Red\" title=\"Cancel transaction\"></i></button>";
+							}
+														
 						}
 					?>
 				</div>
@@ -307,7 +353,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								</thead>
 								<tbody class="tbody">
 									<?php 
-										$sqlbody = mysqli_query($con,"select a.* from purchrequest_t a left join items b on A.compcode=B.compcode and A.citemno=b.cpartno where a.compcode = '$company' and a.ctranno = '$cprno'");
+										$sqlbody = mysqli_query($con,"select a.* from purchrequest_t a left join items b on A.compcode=B.compcode and A.citemno=b.cpartno where a.compcode = '$company' and a.ctranno = '$cprno' Order By a.nident");
 
 										if (mysqli_num_rows($sqlbody)!=0) {
 											$cntr = 0;
@@ -831,6 +877,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		$("#btnPrint").attr("disabled", false);
 		$("#btnEdit").attr("disabled", false);
 
+		$("#btnPosting").attr("disabled", false);
+		$("#btnCanceling").attr("disabled", false);
+		 
+
 		$(".kv-file-zoom").attr("disabled", false);
 	}
 
@@ -861,7 +911,10 @@ if (mysqli_num_rows($sqlhead)!=0) {
 				$("#btnMain").attr("disabled", true);
 				$("#btnNew").attr("disabled", true);
 				$("#btnPrint").attr("disabled", true);
-				$("#btnEdit").attr("disabled", true);				
+				$("#btnEdit").attr("disabled", true);	
+				
+				$("#btnPosting").attr("disabled", true);
+				$("#btnCanceling").attr("disabled", true);
 		
 		}
 	}
@@ -950,6 +1003,25 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			$("#frmpos").submit();
 
 		}
+
+	}
+
+	function trans(x,num){
+
+		$("#typ").val(x);
+		$("#modzx").val(num);
+
+		$("#AlertMsg").html("");
+
+		if(x=="CANCEL1"){
+			x = "CANCEL";
+		}
+								
+		$("#AlertMsg").html("Are you sure you want to "+x+" PR No.: "+num);
+		$("#alertbtnOK").hide();
+		$("#OK").show();
+		$("#Cancel").show();
+		$("#AlertModal").modal('show');
 
 	}
 </script>
