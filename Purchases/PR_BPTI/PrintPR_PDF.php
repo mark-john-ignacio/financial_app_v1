@@ -128,6 +128,7 @@
 	//end foot
 
 	$html = '<table border="1" align="center" width="100%" style="border-collapse: collapse;">
+	<thead>
 	<tr>
 		<th class="tdpadx">No.</th>
 		<th class="tdpadx">Part No.</th>
@@ -136,8 +137,10 @@
 		<th class="tdpadx">Qty</th>
 		<th class="tdpadx">Unit</th>
 		<th class="tdpadx">Remarks</th>
-	</tr>';
-
+	</tr>
+	</thead>
+	';
+	
 	$cnt = 0;
 	if(count($PRDet)>0){
 		foreach($PRDet as $rowdtls){
