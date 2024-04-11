@@ -467,24 +467,12 @@ if (mysqli_num_rows($sqlhead)!=0) {
 			</div>
 	</div>
 
-
-	<!-- PRINT OUT MODAL-->
-		<div class="modal fade" id="PrintModal" role="dialog" data-keyboard="false" data-backdrop="static">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-contnorad">   
-					<div class="modal-bodylong">
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
-						
-						<iframe id="myprintframe" name="myprintframe" scrolling="no" style="width:100%; height:8.5in; display:block; margin:0px; padding:0px; border:0px"></iframe>
-												
-					</div>
-				</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
-		</div><!-- /.modal -->
-	<!-- End Bootstrap modal -->
-
 	<form method="post" name="frmedit" id="frmedit" action="PurchRet_edit.php">
 		<input type="hidden" name="txtctranno" id="txtctranno" value="">
+	</form>
+
+	<form method="post" name="frmprint" id="frmprint" action="PrintPR_PDF.php" target="_blank">
+		<input type="hidden" name="printid" id="printid" value="">
 	</form>
 
 </body>
@@ -886,12 +874,11 @@ if (mysqli_num_rows($sqlhead)!=0) {
 		else{
 
 				if(typx=="Print"){
-					//alert("PrintPO.php?hdntransid="+x);
-					var url = "PrintPR.php?hdntransid="+x;
-					// var url = "PR_printv1.php?tranno=" + x;
-					$("#myprintframe").attr("src", url);
 
-					$("#PrintModal").modal('show');
+					var url = "PrintPR_PDF.php?hdntransid="+x;
+					$("#printid").val(x);
+
+					$("#frmprint").submit();
 				}
 
 		}
