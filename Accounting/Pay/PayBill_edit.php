@@ -1718,17 +1718,17 @@ else{
 			$(this).find('button[name="delRow"]').attr("id","delRow" + tx);
 
 
-									$("#nAmount"+tx).autoNumeric('init',{mDec:2});
-									$("#nAmount"+tx).on("focus", function () {
-										$(this).select();
-									});
-									$("#nAmount"+tx).on("keyup", function (e) {
-										$("#nApplied"+tx).val($(this).val());
-										GoToCompAmt();
-										GoToComp();
+			$("#nAmount"+tx).autoNumeric('init',{mDec:2});
+			$("#nAmount"+tx).on("focus", function () {
+				$(this).select();
+			});
+			$("#nAmount"+tx).on("keyup", function (e) {
+				$("#nApplied"+tx).val($(this).val());
+				GoToCompAmt();
+				GoToComp();
 
-										setPosi($(this).attr('name'),e.keyCode);
-									});
+				setPosi($(this).attr('name'),e.keyCode);
+			});
 
 									
 
@@ -2032,21 +2032,18 @@ else{
 		}else{
 				
 			//$("#frmvoucher").delay(300).submit();
-    	//$("#frmchek").delay(300).submit();
-
+    		//$("#frmchek").delay(300).submit();
+			var xno = $("#txtctranno").val();
 			$ewtamt = 0;
-			xintval = 0;
-			$("#MyTable > tbody > tr").each(function(index) {	
-				$xintval = index + 1;
-				
-				if ($("#napvewt"+$xintval).val()!="" && $("#napvewt"+$xintval).val()!=0) {
-					$ewtamt++;
-					//$ewtamt = ($("#napvewt"+$xintval).val()=="") ? 0 : $("#napvewt"+$xintval).val();
+			$.ajax({
+				url: 'th_chkAPVewt.php',
+				data: 'x='+xno,
+				dataType: 'text',
+				async:false,
+				method: 'post',
+				success: function (data) {
+					$ewtamt = data;
 				}
-				//else{
-					//$ewtamt = $("#napvewt"+$xintval).val();
-				//}
-				
 			});
 
 			if($ewtamt != 0){

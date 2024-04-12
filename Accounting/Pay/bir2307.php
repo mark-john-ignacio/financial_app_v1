@@ -373,13 +373,7 @@
 			$sqlrfp = "select B.compcode, B.ctranno, GROUP_CONCAT(B.cewtcode,'') as cewtcode, sum(B.namount) as namount, sum(B.ndue) as ndue, sum(B.newtamt) as newtamt, C.cdesc as ewtdesc, C.nrate
 			From paybill_t A 
 			left join
-				(
-					Select compcode, ctranno, cewtcode, sum(nnet) as namount, sum(ndue) as ndue, sum(newtamt) as newtamt
-					From apv_d
-					Group by compcode, ctranno, cewtcode
-					
-					UNION ALL 
-					
+				(					
 					Select G.compcode, G.ctranno, 
 					CASE WHEN G.cacctno = '".$disregEWT."' THEN G.cewtcode ELSE '' END as cewtcode, 
 					CASE WHEN G.cacctno not in ('".implode("','",$disreg)."') and G.ndebit <> 0 THEN G.ndebit ELSE 0 END as namount, 
@@ -388,7 +382,7 @@
 					From apv_t G 
 					left join apv H on G.compcode=H.compcode and G.ctranno=H.ctranno
 					left join accounts I on G.compcode=I.compcode and G.cacctno=I.cacctid
-					Where G.compcode='$company' and H.captype='Others'
+					Where G.compcode='$company'
 				) B on A.compcode=B.compcode and A.capvno=B.ctranno		
 			left join wtaxcodes C on B.compcode=C.compcode and B.cewtcode=C.ctaxcode
 			where A.compcode='$company' and A.ctranno='".$_POST["id"]."'
