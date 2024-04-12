@@ -273,11 +273,15 @@ include('../../include/access2.php');
                   <input type="button" value="Add Contact" name="btnNewCont" id="btnNewCont" class="btn btn-primary btn-xs" onClick="addcontlist();">
                   <input name="hdncontlistcnt" id="hdncontlistcnt" type="hidden" value="0">
                   <br>
-                  <table width="150%" border="0" cellpadding="2" id="myUnitTable">
+                  <table width="150%" border="0" cellpadding="2" id="myContactDetTable">
                     <tr>
                       <th scope="col" width="200">Name</th>
                       <th scope="col" width="180">Designation</th>
                       <th scope="col" width="180">Department</th>
+                      <th scope="col" width="180">Email Add.</th>
+                      <th scope="col" width="180">Mobile No.</th>
+                      <th scope="col" width="180">Phone No.</th>
+                      <th scope="col" width="180">Fax No.</th>
                         <?php
                             $arrcontctsdet = array();
                             $sql = "Select * From contacts_types where compcode='$company'";
@@ -318,7 +322,15 @@ include('../../include/access2.php');
                           <td><div class="col-xs-12 nopadtopleft"><input type='text' class='required form-control input-xs' id='txtConNme<?php echo $cntrstrx;?>' name='txtConNme<?php echo $cntrstrx;?>' value='<?php echo $row['cname'];?>' ></div></td>
                           <td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-xs' id='txtConDes<?php echo $cntrstrx;?>' name='txtConDes<?php echo $cntrstrx;?>' value='<?php echo $row['cdesignation'];?>'> </div></td>
                           <td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-xs' id='txtConDept<?php echo $cntrstrx;?>' name='txtConDept<?php echo $cntrstrx;?>' value='<?php echo $row['cdept'];?>'> </div></td>
-                                       
+
+                          <td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-xs' id='txtConEmail<?php echo $cntrstrx;?>' name='txtConEmail<?php echo $cntrstrx;?>' value='<?php echo $row['cemail'];?>'> </div></td>  
+                          
+                          <td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-xs' id='txtConMob<?php echo $cntrstrx;?>' name='txtConMob<?php echo $cntrstrx;?>' value='<?php echo $row['cphone'];?>'> </div></td>
+
+                          <td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-xs' id='txtConPhone<?php echo $cntrstrx;?>' name='txtConPhone<?php echo $cntrstrx;?>' value='<?php echo $row['cmobile'];?>'> </div></td>
+
+                          <td><div class="col-xs-12 nopadtopleft"><input type='text' class='form-control input-xs' id='txtConFax<?php echo $cntrstrx;?>' name='txtConFax<?php echo $cntrstrx;?>' value='<?php echo $row['cfaxno'];?>'> </div></td>
+
                           <?php
                             foreach($arrcontctsdet as $ckdh){
                               $dval = "";
@@ -901,7 +913,7 @@ include('../../include/access2.php');
                 return false;
                                 
               }else{
-							  var tbl = document.getElementById('myUnitTable').getElementsByTagName('tr');
+							  var tbl = document.getElementById('myContactDetTable').getElementsByTagName('tr');
                 var lastRow = tbl.length-1;
                 document.getElementById('hdncontlistcnt').value = lastRow;
 
@@ -1238,34 +1250,87 @@ function saveprodz(){
 
 }
 
-  function addcontlist(){
-    var tbl = document.getElementById('myUnitTable').getElementsByTagName('tr');
-    var lastRow = tbl.length;
+function addcontlist(){
+		var tbl = document.getElementById('myContactDetTable').getElementsByTagName('tr');
+		var lastRow = tbl.length;
 
-    var a=document.getElementById('myUnitTable').insertRow(-1);
-    var b=a.insertCell(0);
-    var c=a.insertCell(1);
-    var d=a.insertCell(2);
+		var a=document.getElementById('myContactDetTable').insertRow(-1);
+		var b=a.insertCell(0);
+		var c=a.insertCell(1);
+		var d=a.insertCell(2);
+		var d1=a.insertCell(3);
+		var d2=a.insertCell(4);
+		var d3=a.insertCell(5);
+		var d4=a.insertCell(6);
 
-    b.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='required form-control input-xs' id='txtConNme"+lastRow+"' name='txtConNme"+lastRow+"' value='' ></div>";
-    c.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConDes"+lastRow+"' name='txtConDes"+lastRow+"' value=''> </div>";
-    d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConDept"+lastRow+"' name='txtConDept"+lastRow+"' value=''> </div>";
+		b.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='required form-control input-xs' id='txtConNme"+lastRow+"' name='txtConNme"+lastRow+"' value=''></div>";
+		c.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConDes"+lastRow+"' name='txtConDes"+lastRow+"' value=''> </div>";
+		d.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConDept"+lastRow+"' name='txtConDept"+lastRow+"' value=''> </div>";
+		d1.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConEmail"+lastRow+"' name='txtConEmail"+lastRow+"' value=''> </div>";
+		d2.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConMob"+lastRow+"' name='txtConMob"+lastRow+"' value=''> </div>";
+		d3.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConPhone"+lastRow+"' name='txtConPhone"+lastRow+"' value=''> </div>";
+		d4.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConFax"+lastRow+"' name='txtConFax"+lastRow+"' value=''> </div>";
 
-    $cntng = 2;
-    var xz = $("#conctsadddet").val();
+		$cntng = 6;
+		var xz = $("#conctsadddet").val();
+		$.each(jQuery.parseJSON(xz), function() { 
+			$cntng = $cntng + 1;
+			var e=a.insertCell($cntng);
+
+			e.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConAdd"+this['cid']+lastRow+"' name='txtConAdd"+this['cid']+lastRow+"' value=''> </div>";
+		});
+
+		$cntng = $cntng + 1
+		var h=a.insertCell($cntng);
+		h.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input class='btn btn-danger btn-block btn-xs' type='button' id='rowCn_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRowconts(this);\"/></div>";
+		
+	}
+
+	function deleteRowconts(r) {
+		var tbl = document.getElementById('myContactDetTable').getElementsByTagName('tr');
+		var lastRow = tbl.length;
+		var i=r.parentNode.parentNode.parentNode.rowIndex;
+		document.getElementById('myContactDetTable').deleteRow(i);
+		var lastRow = tbl.length;
+		var z; //for loop counter changing textboxes ID;
+		var xz = $("#conctsadddet").val();
+
+		for (z=i+1; z<=lastRow; z++){
+			var tempconname = document.getElementById('txtConNme' + z);
+			var tempcondes = document.getElementById('txtConDes' + z);
+			var tempcondept = document.getElementById('txtConDept' + z);
+			var tempconemail = document.getElementById('txtConEmail' + z);
+			var tempconmob = document.getElementById('txtConMob' + z);
+			var tempconphone = document.getElementById('txtConPhone' + z);
+			var tempconfax = document.getElementById('txtConFax' + z);
+			var tempdelbtn = document.getElementById('rowCn_' + z + '_delete');
+
 			$.each(jQuery.parseJSON(xz), function() { 
-				$cntng = $cntng + 1;
-        var e=a.insertCell($cntng);
-
-        e.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input type='text' class='form-control input-xs' id='txtConAdd"+this['cid']+lastRow+"' name='txtConAdd"+this['cid']+lastRow+"' value=''> </div>";
-
-			});
-
-    $cntng = $cntng + 1
-    var h=a.insertCell($cntng);
-    h.innerHTML = "<div class=\"col-xs-12 nopadtopleft\" ><input class='btn btn-danger btn-block btn-xs' type='button' id='row_" + lastRow + "_delete' class='delete' value='Delete' onClick=\"deleteRowconts(this);\"/></div>";
-    
-  }
+				var tempx = document.getElementById('txtConAdd'+this['cid'] + z);
+				m = z - 1
+				tempx.id = "txtConAdd" + this['cid'] + m;
+				tempx.name = "txtConAdd" + this['cid'] + m;
+			})
+			
+			var x = z-1;
+			tempconname.id = "txtConNme" + x;
+			tempconname.name = "txtConNme" + x;
+			tempcondes.id = "txtConDes" + x;
+			tempcondes.name = "txtConDes" + x;
+			tempcondept.id = "txtConDept" + x;
+			tempcondept.name = "txtConDept" + x;
+			tempconemail.id = "txtConEmail" + x;
+			tempconemail.name = "txtConEmail" + x;
+			tempconmob.id = "txtConMob" + x;
+			tempconmob.name = "txtConMob" + x;
+			tempconphone.id = "txtConPhone" + x;
+			tempconphone.name = "txtConPhone" + x;
+			tempconfax.id = "txtConFax" + x;
+			tempconfax.name = "txtConFax" + x;
+			tempdelbtn.id = "rowCn_" + x + "_delete";
+			tempdelbtn.name = "rowCn_" + x + "_delete";
+		}
+	}
 
 function loadgroupnmes(){
 

@@ -88,10 +88,12 @@ $company = $_SESSION['companyid'];
 				$cIConNme = $_REQUEST['txtConNme'.$z];
 				$cIConDes = $_REQUEST['txtConDes'.$z]; 
 				$cIConDept = $_REQUEST['txtConDept'.$z];
-				//$cIConEmail = $_REQUEST['txtConEmail'.$z];
-				//$cIConMobile = $_REQUEST['txtConMob'.$z];
+				$cIConEmail = $_REQUEST['txtConEmail'.$z];
+				$cIConMobile = $_REQUEST['txtConMob'.$z];
+				$cIConPhone = $_REQUEST['txtConPhone'.$z];
+				$cIConFax = $_REQUEST['txtConFax'.$z];
 										
-				if (!mysqli_query($con, "INSERT INTO `suppliers_contacts`(`compcode`, `ccode`, `cname`, `cdesignation`, `cdept`) VALUES ('$company','$cCustCode','$cIConNme','$cIConDes','$cIConDept')")) {
+				if (!mysqli_query($con, "INSERT INTO `suppliers_contacts`(`compcode`, `ccode`, `cname`, `cdesignation`, `cdept`, `cemail`, `cphone`, `cmobile`, `cfaxno`) VALUES ('$company','$cCustCode','$cIConNme','$cIConDes','$cIConDept','$cIConEmail','$cIConMobile','$cIConPhone','$cIConFax')")) {
 					echo "Error Contacts: ".mysqli_error($con);
 				}else{
 					$xcid = mysqli_insert_id($con);
