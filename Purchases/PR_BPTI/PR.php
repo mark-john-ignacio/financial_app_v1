@@ -221,7 +221,7 @@
 				var searchBySec = $('#selwhfrom').val();
 				var searchBystat = $('#selstats').val();
 
-				$('#example').state.clear();
+				$('#example').DataTable().state.clear();
 				$('#example').DataTable().destroy();
 				fill_datatable(searchByName, searchBySec, searchBystat);
 			});
@@ -231,7 +231,7 @@
 				var searchBySec = $('#selwhfrom').val();
 				var searchBystat = $('#selstats').val(); 
 
-				$('#example').state.clear();
+				$('#example').DataTable().state.clear();
 				$('#example').DataTable().destroy();
 				fill_datatable(searchByName, searchBySec, searchBystat);
 
