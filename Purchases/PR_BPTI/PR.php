@@ -106,9 +106,15 @@
 				<div class="col-xs-3 text-right nopadwleft">
 					<select class="form-control input-sm" name="selwhfrom" id="selwhfrom"> 
 						<?php
-							foreach($rowdetloc as $localocs){					
+							foreach($rowdetloc as $localocs){		
+								$slctd = "";
+								if(isset($_REQUEST['loc'])){
+									if($_REQUEST['loc']==$localocs['nid']){
+										$slctd = "selected";
+									}
+								}	
 						?>
-								<option value="<?php echo $localocs['nid'];?>"><?php echo $localocs['cdesc'];?></option>										
+								<option value="<?php echo $localocs['nid'];?>" <?=$slctd?>><?php echo $localocs['cdesc'];?></option>										
 						<?php	
 								}						
 						?>
@@ -117,10 +123,10 @@
 				<div class="col-xs-2 text-right nopadwleft">
 					<select  class="form-control input-sm" name="selstats" id="selstats">
 						<option value=""> All Transactions</option>
-						<option value="post"> Posted </option>
-						<option value="cancel"> Cancelled </option>
-						<option value="void"> Voided </option>
-						<option value="pending"> Pending </option>
+						<option value="post" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="post") ? "selected" : "" ) : "";?>> Posted </option>
+						<option value="cancel" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="cancel") ? "selected" : "" ) : "";?>> Cancelled </option>
+						<option value="void" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="void") ? "selected" : "" ) : "";?>> Voided </option>
+						<option value="pending" <?=(isset($_REQUEST['st'])) ? (($_REQUEST['st']=="pending") ? "selected" : "" ) : "";?>> Pending </option>
 					</select>
 				</div>
 			</div>
@@ -135,7 +141,7 @@
 						<th>Section</th>
 						<th>Date Needed</th>
 						<th>Created Date</th>
-            <th class="text-center">Status</th>
+            			<th class="text-center">Status</th>
 						<th class="text-center">Actions</th>
 					</tr>
 				</thead>
@@ -148,6 +154,7 @@
 		<input type="hidden" name="txtctranno" id="txtctranno" />
 		<input type="hidden" name="hdnsrchval" id="hdnsrchval" /> 
 		<input type="hidden" name="hdnsrchsec" id="hdnsrchsec" />
+		<input type="hidden" name="hdnsrchsta" id="hdnsrchsta" />
 	</form>		
 
 	<!-- 1) Alert Modal -->
@@ -203,7 +210,7 @@
 	<script>
 		$(document).ready(function() {
 
-			fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>",$('#selwhfrom').val());
+			fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>",$('#selwhfrom').val(),$('#selstats').val());
 
 			$("#searchByName").keyup(function(){
 					var searchByName = $('#searchByName').val();
@@ -276,7 +283,8 @@
 		function editfrm(x){
 			$('#txtctranno').val(x); 
 			$('#hdnsrchval').val($('#searchByName').val()); 
-			$('#hdnsrchsec').val($('#selwhfrom').val()); 
+			$('#hdnsrchsec').val($('#selwhfrom').val());  
+			$('#hdnsrchsta').val($('#selstats').val());
 			document.getElementById("frmedit").submit();
 		}
 		
