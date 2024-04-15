@@ -319,12 +319,12 @@
 								}else{
 									if(full[5]==1){
 										if(full[8] == 1){
-											return '<b>Voided</b>';
+											return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="VOID" style="color: red !important"><b>Voided</b></a>';
 										}else{
 											return 'Posted';
 										}
 									}else if(full[6]==1){
-										return '<a href="#" class="canceltool" data-id="'+full[0]+'" style="color: red !important"><b>Cancelled</b></a>';
+										return '<a href="#" class="canceltool" data-id="'+full[0]+'" data-stat="CANCELLED" style="color: red !important"><b>Cancelled</b></a>';
 									}else{
 										return "Pending";
 									}
