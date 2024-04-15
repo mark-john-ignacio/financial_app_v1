@@ -22,7 +22,7 @@ if (isset($_REQUEST['from_window_load'])) {
     $companyid = mysqli_real_escape_string($con, $_REQUEST['companyid']);
 
     // Check if employee ID exists, session ID matches
-    $sql = mysqli_query($con, "select * FROM users where userid = '$employeeid' AND session_ID = '$session_id' LIMIT 1");
+    $sql = mysqli_query($con, "select * FROM users where userid = BINARY '$employeeid' AND session_ID = '$session_id' LIMIT 1");
 	
     // Fetch SQL results
     $sql_results = mysqli_fetch_assoc($sql);
@@ -61,7 +61,7 @@ if (isset($_REQUEST['from_window_load'])) {
     $attempts = mysqli_real_escape_string($con, $_REQUEST['attempts']);
 
 
-	$sql = mysqli_query($con,"select * from users where userid = '$employeeid' LIMIT 1");
+	$sql = mysqli_query($con,"select * from users where userid = BINARY '$employeeid' LIMIT 1");
 	if(mysqli_num_rows($sql) == 0){		
 		echo "<strong>ERROR!</strong> INVALID USER ID";
 	}else{
