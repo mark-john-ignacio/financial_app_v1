@@ -54,7 +54,7 @@
 	{
 		$sub_array = array();
 		$sub_array[] = $row['cempid'];
-		$sub_array[] = iconv('UTF-8', 'ISO-8859-1//TRANSLIT//IGNORE', $row['cname']);
+		$sub_array[] = $row['cname'];
 		$sub_array[] = $row['ctin'];
 		$sub_array[] = $row['cterms'];
 		$sub_array[] = $row['cstatus'];
