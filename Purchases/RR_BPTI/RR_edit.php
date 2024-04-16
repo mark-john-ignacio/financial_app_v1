@@ -410,7 +410,7 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
 				
 				
-							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='RR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
+							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='RR.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>&st=<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>';" id="btnMain" name="btnMain">
 								Back to Main<br>(ESC)
 							</button>
 					

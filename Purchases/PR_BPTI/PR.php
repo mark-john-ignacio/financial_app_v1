@@ -217,7 +217,7 @@
 					var searchBySec = $('#selwhfrom').val();
 					var searchBystat = $('#selstats').val();
 
-					$('#example').state.clear();
+					$('#example').DataTable().state.clear();
 					$('#example').DataTable().destroy();
 					fill_datatable(searchByName, searchBySec, searchBystat);
 
@@ -258,7 +258,7 @@
 				var id = element.attr("data-id");
 				var stat = element.attr("data-stat");
 				$.ajax({
-					url:"fetchcancel.php",
+					url:"../../include/fetchcancel.php",
 					method:"POST",
 					async: false,
 					data:{id:id, stat:stat},

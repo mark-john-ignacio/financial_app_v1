@@ -67,7 +67,7 @@ $company = $_SESSION['companyid'];
 						$allPOFor[] = $rowxcv['cpono'];
 					}
 					
-					$result=mysqli_query($con,"select a.*,b.cname from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono in ('".implode("','",$allPOFor)."') and a.lvoid=0 order by a.ddate desc");
+					$result=mysqli_query($con,"select a.*,b.cname from purchase a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode where a.compcode='$company' and a.cpono in ('".implode("','",$allPOFor)."') and (a.lapproved=1 and a.lvoid=0) order by a.ddate desc");
 					
 						if (!$result) {
 							printf("Errormessage: %s\n", mysqli_error($con));
@@ -92,7 +92,8 @@ $company = $_SESSION['companyid'];
 				</table>
 
 			</section>
-		</div>		
+		</div>	
+		<input type="hidden" name="hdnreason" id="hdnreason" value="">	
 	</form>  
 
 <!-- PRINT OUT MODAL-->
@@ -110,13 +111,28 @@ $company = $_SESSION['companyid'];
 </div>
 <!-- End Bootstrap modal -->
 
-
+	<!-- 1) Alert Modal -->
+	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+					<div class="alert-modal-danger">
+						<p id="AlertMsg"></p>
+						<p><center>																
+							<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+						</center></p>
+					</div> 
+				</div>
+			</div>
+		</div>
+	</div>
 
 </body>
 </html>
 
 <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
 <script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../../global/plugins/bootbox/bootbox.min.js"></script>
 
 <script type="text/javascript">
 
@@ -127,10 +143,24 @@ $company = $_SESSION['companyid'];
 				checked = $("input[type=checkbox]:checked").length;
 
 				if(!checked) {
-					alert("You must check at least one checkbox.");
+					$("#AlertMsg").html("You must check at least one checkbox.");
+					$("#AlertModal").modal('show');
 					return false;
 				}else{
-					$("#frmunpost").submit();
+					bootbox.prompt({
+						title: 'Enter reason for void.',
+						inputType: 'text',
+						centerVertical: true,
+						callback: function (result) {
+							if(result!="" && result!=null){
+								$("#hdnreason").val(result);
+								$("#frmunpost").submit();
+							}else{
+								$("#AlertMsg").html("Reason for void is required!");
+								$("#AlertModal").modal('show');
+							}						
+						}
+					});
 				}
 
 			});
