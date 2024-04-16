@@ -28,16 +28,9 @@ $company = $_SESSION['companyid'];
 	$arrinvs = array();
 	$arrsupplist = array();
 
-	//select all Sales Invoice
-	if($salestat=="Trade"){
-		$tbl = "sales";
-	}elseif($salestat=="Non-Trade"){
-		$tbl = "ntsales";
-	}
 
-	if($salestat!==""){
 		$sqlsuppinv = "Select A.ctranno, A.ngross, B.ncredit, C.napplied, A.ccode, A.dcutdate
-		from ".$tbl." A 
+		from sales A 
 		left JOIN
 			(
 				Select crefsi, Sum(ngross) as ncredit
@@ -54,46 +47,7 @@ $company = $_SESSION['companyid'];
 				Group by Z.csalesno
 			) C on A.ctranno=C.csalesno
 		Where A.compcode='$company' and A.dcutdate <= STR_TO_DATE('$date1', '%m/%d/%Y') and A.lapproved=1";
-	}else{
-		$sqlsuppinv = "Select A.ctranno, A.ngross, B.ncredit, C.napplied, A.ccode, A.dcutdate
-		from sales A 
-		left JOIN
-			(
-				Select crefsi, Sum(ngross) as ncredit
-				From aradjustment
-				Where compcode='$company' and lapproved=1
-				Group by crefsi
-			) B on A.ctranno=B.crefsi
-		left JOIN
-			(
-				Select Z.csalesno, Sum(Z.napplied + Z.newtamt) as napplied
-				From receipt_sales_t Z
-				left join receipt X on Z.compcode=X.compcode and Z.ctranno=X.ctranno
-				Where Z.compcode='$company' and X.lapproved=1
-				Group by Z.csalesno
-			) C on A.ctranno=C.csalesno
-		Where A.compcode='$company' and A.dcutdate <= STR_TO_DATE('$date1', '%m/%d/%Y') and A.lapproved=1
-		UNION ALL
-		Select A.ctranno, A.ngross, B.ncredit, C.napplied, A.ccode, A.dcutdate
-		from ntsales A 
-		left JOIN
-			(
-				Select crefsi, Sum(ngross) as ncredit
-				From aradjustment
-				Where compcode='$company' and lapproved=1
-				Group by crefsi
-			) B on A.ctranno=B.crefsi
-		left JOIN
-			(
-				Select Z.csalesno, Sum(Z.napplied + Z.newtamt) as napplied
-				From receipt_sales_t Z
-				left join receipt X on Z.compcode=X.compcode and Z.ctranno=X.ctranno
-				Where Z.compcode='$company' and X.lapproved=1
-				Group by Z.csalesno
-			) C on A.ctranno=C.csalesno
-		Where A.compcode='$company' and A.dcutdate <= STR_TO_DATE('$date1', '%m/%d/%Y') and A.lapproved=1
-		";
-	}
+	
 	
 	$result=mysqli_query($con,$sqlsuppinv);
 
