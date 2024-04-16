@@ -20,7 +20,6 @@
     AND MONTH(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $monthcut 
     AND YEAR(STR_TO_DATE(a.dcutdate, '%Y-%m-%d')) = $yearcut  
     AND a.lapproved = 1 AND a.lvoid = 0 AND a.lcancelled = 0
-    AND b.cvattype != 'NV'
     AND a.ctranno in (
         SELECT b.csalesno FROM receipt a 
         left join receipt_sales_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
