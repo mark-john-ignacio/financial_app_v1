@@ -387,7 +387,7 @@
         LEFT JOIN taxcode b on a.compcode=b.compcode AND a.ctaxcode=b.ctaxcode
         LEFT JOIN sales c on a.compcode=c.compcode AND a.csalesno=c.ctranno
         LEFT JOIN receipt d on a.compcode=d.compcode AND a.ctranno=d.ctranno
-        WHERE a.compcode = '$company' AND a.csalesno = '$transaction' AND d.lapproved=1 and d.lvoided=0";
+        WHERE a.compcode = '$company' AND a.csalesno = '$transaction' AND d.lapproved=1 and d.lvoid=0";
 
         $query = mysqli_query($con, $sql);
         while($row = $query -> fetch_assoc()){
