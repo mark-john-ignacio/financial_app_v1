@@ -377,51 +377,60 @@
         $gross = 0;
         $exempt = 0;
 
-        $sql = "SELECT a.*, b.nrate, c.ntotaldiscounts FROM receipt_sales_t a
+        /*$sql = "SELECT a.*, b.nrate, c.ntotaldiscounts
+        FROM receipt_sales_t a
+        LEFT JOIN taxcode b on a.compcode=b.compcode AND a.ctaxcode=b.ctaxcode
+        LEFT JOIN sales c on a.compcode=c.compcode AND a.csalesno=c.ctranno
+        WHERE a.compcode = '$company' AND a.csalesno = '$transaction'";*/
+        $sql = "SELECT a.napplied as namount, c.ngross, c.nnet, c.nexempt, c.nzerorated, c.nvat
+        FROM receipt_sales_t a
         LEFT JOIN taxcode b on a.compcode=b.compcode AND a.ctaxcode=b.ctaxcode
         LEFT JOIN sales c on a.compcode=c.compcode AND a.csalesno=c.ctranno
         WHERE a.compcode = '$company' AND a.csalesno = '$transaction'";
+
         $query = mysqli_query($con, $sql);
         while($row = $query -> fetch_assoc()){
-            $TOTAL_GROSS += $row['namount'];
+            $TOTAL_GROSS += floatval($row['namount']);
 
-            if(floatval($row['nrate']) != 0){
-                $net = floatval($row['nnet']);
-                $vat = floatval($row['nvat']);
-                $gross = floatval($row['namount']);
-            } else {
-                $exempt = floatval($row['namount']);
+            if(floatval($row['namount'])!=floatval($row['ngross'])){
+                $getpercent = floatval($row['ngross']) / floatval($row['namount']);
+
+                if(floatval($row['nnet'])>0){                  
+                    $xcvnet = floatval($row['nnet']) * $getpercent;
+                    $xcvats = floatval($row['nvat']) * $getpercent;
+
+                    $TOTAL_NET += $xcvnet;
+                    $TOTAL_VAT += $xcvats;
+
+                    $TOTAL_TAX_GROSS += floatval($xcvnet) + floatval($xcvats);
+                }
+              
+                if(floatval($row['nexempt'])>0){
+                    $xcvnet = floatval($row['nexempt']) * $getpercent;
+                    $TOTAL_EXEMPT += $xcvnet;
+                }
+
+                if(floatval($row['nzerorated'])>0){
+                    $xcvnet = floatval($row['nzerorated']) * $getpercent;
+                    $TOTAL_ZERO_RATED += $xcvnet;
+                }
+            }else{
+                if(floatval($row['nnet'])>0){                  
+                    $TOTAL_NET += floatval($row['nnet']);
+                    $TOTAL_VAT += floatval($row['nvat']);
+
+                    $TOTAL_TAX_GROSS += floatval($row['nnet']) + floatval($row['nvat']);
+                }
+              
+                if(floatval($row['nexempt'])>0){
+                    $TOTAL_EXEMPT += floatval($row['nexempt']);
+                }
+
+                if(floatval($row['nzerorated'])>0){
+                    $TOTAL_ZERO_RATED += floatval($row['nzerorated']);
+                }
             }
 
-           $ntotdiscount = floatval($row['ntotaldiscounts']);
-
-            /**
-             * Vat Code Validation
-             */
-            switch($vatcode){
-                case "VT":
-                case "VTGOV":
-                    $TOTAL_NET += floatval($net);
-                    $TOTAL_VAT += floatval($vat);
-                    $TOTAL_TAX_GROSS += floatval($gross);
-
-                    break;
-                case "NV":
-                    $TOTAL_NET += floatval($net);
-                    $TOTAL_VAT += floatval($vat);
-                    $TOTAL_TAX_GROSS += floatval($gross);
-                    break;
-                case "VE":
-                    $TOTAL_EXEMPT += floatval($exempt);
-                    break;
-                case "ZR":
-                    $TOTAL_ZERO_RATED += floatval($row['namount']);
-                    break;
-                default:
-                    break;
-            }
-
-            $TOTAL_DISCOUNTS += floatval($ntotdiscount);
         }
 
         return [
@@ -430,8 +439,8 @@
             'vat' => $TOTAL_VAT,
             'exempt' => $TOTAL_EXEMPT,
             'zero' => $TOTAL_ZERO_RATED,
-            'gross_vat' => $TOTAL_TAX_GROSS,
-            'total_discount' => $TOTAL_DISCOUNTS
+            'gross_vat' => $TOTAL_TAX_GROSS
+            //,'total_discount' => $TOTAL_DISCOUNTS
         ];
     }
 
