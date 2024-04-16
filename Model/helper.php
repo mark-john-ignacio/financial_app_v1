@@ -382,7 +382,7 @@
         LEFT JOIN taxcode b on a.compcode=b.compcode AND a.ctaxcode=b.ctaxcode
         LEFT JOIN sales c on a.compcode=c.compcode AND a.csalesno=c.ctranno
         WHERE a.compcode = '$company' AND a.csalesno = '$transaction'";*/
-        $sql = "SELECT a.napplied as namount, c.ngross, c.nnet, c.nexempt, c.nzerorated, c.nvat
+        $sql = "SELECT a.napplied as namount, c.ngross, c.nnet, c.nexempt, c.nzerorated, c.nvat, c.ngrossbefore
         FROM receipt_sales_t a
         LEFT JOIN taxcode b on a.compcode=b.compcode AND a.ctaxcode=b.ctaxcode
         LEFT JOIN sales c on a.compcode=c.compcode AND a.csalesno=c.ctranno
@@ -390,7 +390,7 @@
 
         $query = mysqli_query($con, $sql);
         while($row = $query -> fetch_assoc()){
-            $TOTAL_GROSS += floatval($row['namount']);
+            $TOTAL_GROSS += floatval($row['ngrossbefore']);
 
             if(floatval($row['namount'])!=floatval($row['ngross'])){
                 $getpercent = floatval($row['ngross']) / floatval($row['namount']);
