@@ -109,6 +109,16 @@
             
         }
 
+
+        $net += round((float)$net,2);
+        $vat += round((float)$xcvat,2);
+        $exempt += round((float)$xcexmpt,2);
+        $zerorated += round((float)$xczerotot,2);
+        $goods += round((float)$xsgoods,2);
+        $service += round((float)$xservc,2);
+        $capital += round((float)$xsgoodsother,2);
+        $totaltax += round((float)$totaltax,2);
+
     }
 
     $sql = "SELECT A.*, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname FROM apv A left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode WHERE A.compcode = '$company_code' AND A.ctranno in ('".implode("','",$allapvpaid)."') AND (A.lapproved = 1 AND A.lvoid = 0) Order by A.dapvdate, B.cname";
