@@ -22,7 +22,7 @@
 
     //getallapv with input tax
     $allapvno = array();
-    $sql = "SELECT ctranno FROM glactivity WHERE compcode = '$company_code' AND acctno = '$vat_code' and MONTH(ddate)=$monthcut and YEAR(ddate)=$yearcut)";
+    $sql = "SELECT ctranno FROM glactivity WHERE compcode = '$company_code' AND acctno = '$vat_code' and MONTH(ddate)=$monthcut and YEAR(ddate)=$yearcut";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         while($row = $query -> fetch_assoc()){
