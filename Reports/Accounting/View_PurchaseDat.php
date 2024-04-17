@@ -20,59 +20,34 @@
     $account = $query -> fetch_array(MYSQLI_ASSOC);
     $vat_code = $account['cacctno'];
 
-    // $sql = "SELECT a.*, b.ctradename, b.ctin, b.chouseno, b.cstate, b.ccity, b.ccountry FROM apv a 
-    // LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
-    // LEFT JOIN (
-    //     SELECT DISTINCT(a.ctranno), a.cvatcode, a.compcode from apv_d a
-    //         LEFT JOIN apv b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-    //         WHERE a.compcode ='$company_code' 
-    //         AND MONTH(STR_TO_DATE(b.dapvdate, '%Y-%m-%d')) = $monthcut 
-    //         AND YEAR(STR_TO_DATE(b.dapvdate, '%Y-%m-%d')) = $yearcut 
-    //         AND b.lapproved = 1 AND b.lvoid = 0 AND b.lcancelled =0 
-    //         AND a.ctranno in (
-    //             SELECT capvno FROM paybill a 
-    //             LEFT JOIN paybill_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-    //         )
-    //     ) c on a.compcode = c.compcode AND a.ctranno = c.ctranno
-    // WHERE a.compcode ='$company_code' 
-    // AND MONTH(STR_TO_DATE(a.dapvdate, '%Y-%m-%d')) = $monthcut 
-    // AND YEAR(STR_TO_DATE(a.dapvdate, '%Y-%m-%d')) = $yearcut 
-    // AND a.lapproved = 1 AND a.lvoid = 0 AND a.lcancelled =0 
-    // -- AND c.cvatcode <> 'NT'
-    // AND a.ctranno in (
-    //     SELECT capvno FROM paybill a 
-    //     LEFT JOIN paybill_t b on a.compcode = b.compcode AND a.ctranno = b.ctranno
-    // )";
-
-    if($code != ''){
-        $sql = "SELECT a.*, b.* FROM paybill a
-        LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
-        WHERE a.compcode = '$company_code'
-        AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
-        AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
-        AND ctranno in (
-            SELECT a.ctranno FROM paybill_t a 
-            LEFT JOIN apv_t b on a.compcode = b.compcode AND a.capvno = b.ctranno
-            WHERE a.compcode = '$company_code' AND b.cacctno = '$vat_code'
-        )
-        AND a.lapproved = 1 AND (a.lcancelled != 1 OR a.lvoid != 1)";
-    } else {
-        $sql = "SELECT a.*, b.* FROM paybill a
-        LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
-        WHERE a.compcode = '$company_code'
-        AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
-        AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
-        AND ctranno in (
-            SELECT a.ctranno FROM paybill_t a 
-            WHERE a.compcode = '$company_code' 
-        )
-        AND a.lapproved = 1 AND (a.lcancelled != 1 OR a.lvoid != 1)";
+    //getallapv with input tax
+    $allapvno = array();
+    $sql = "SELECT ctranno FROM glactivity WHERE compcode = '$company_code' AND acctno = '$vat_code' and MONTH(ddate)=$monthcut and YEAR(ddate)=$yearcut)";
+    $query = mysqli_query($con, $sql);
+    if(mysqli_num_rows($query) != 0){
+        while($row = $query -> fetch_assoc()){
+            $allapvno[] = $row['ctranno'];
+        }
     }
+
+    //getall paybill No. based from apvs
+    $allpaybill = array();
+    $sql = "SELECT ctranno FROM paybill_t WHERE compcode = '$company_code' AND capvno in ('".implode("','",$allapvno)."')";
+    $query = mysqli_query($con, $sql);
+    if(mysqli_num_rows($query) != 0){
+        while($row = $query -> fetch_assoc()){
+            $allpaybill[] = $row['ctranno'];
+        }
+    }
+
+    $sql = "SELECT a.*, b.* FROM paybill a
+    LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
+    WHERE a.compcode = '$company_code' AND a.lapproved = 1 AND (a.lcancelled != 1 OR a.lvoid != 1) and a.ctranno in ('".implode("','",$allpaybill)."')";
 
     echo $sql;
 
     $query = mysqli_query($con, $sql);
-    if(mysqli_num_rows($query) != 0){
+    if(mysqli_num_rows($query) != 0){ 
         while($row = $query -> fetch_assoc()){
             array_push($sales, $row);
         }
