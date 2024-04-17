@@ -107,13 +107,13 @@
                         while($row = $query -> fetch_assoc()){
 
                             $fullAddress = str_replace(",", "", $row['chouseno']);
-                            if(trim($list['ccity']) != ""){
+                            if(trim($row['ccity']) != ""){
                                 $fullAddress .= " ". str_replace(",", "", $row['ccity']);
                             }
-                            if(trim($list['cstate']) != ""){
+                            if(trim($row['cstate']) != ""){
                                 $fullAddress .= " ". str_replace(",", "", $row['cstate']);
                             }
-                            if(trim($list['ccountry']) != ""){
+                            if(trim($row['ccountry']) != ""){
                                 $fullAddress .= " ". str_replace(",", "", $row['ccountry']);
                             }
                         
