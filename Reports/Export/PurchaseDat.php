@@ -129,7 +129,6 @@
                 $state .= " " . stringValidation($row['ccity']);
             }
 
-
             $xcnet = 0;
             $xcvat = 0;
             $xczerotot = 0;
@@ -138,7 +137,7 @@
             $xsgoods = 0;
             $xsgoodsother = 0;
             $xcvbnm = 0;
-            
+
             if($apventry[$row['ctranno']]['nrate']>0){
                 $xcnet = floatval($apventry[$row['ctranno']]['ndebit']) / (floatval($apventry[$row['ctranno']]['nrate'])/100);
                 $xcvat = $apventry[$row['ctranno']]['ndebit'];
@@ -176,7 +175,7 @@
             $GOODS =        round((float)$xsgoods,2);
             $VAT =          round((float)$xcvat,2);
             $GROSS_TAX =    round((float)$xcvbnm,2);
-            $data .= "D,P,\"$tinclient\",\"$name\",,,,\"$fullAddress\",\"$state\",$EXEMPT,$ZERO,$SERVICE,$CAPITAL,$GOODS,$VAT,$tin,$lastDay\n";
+            $data .= "D,P,\"$tinclient\",\"$name\",,,,\"$fullAddress\",\"$state\",$EXEMPT,$ZERO,$SERVICE,$GOODS,$CAPITAL,$VAT,$tin,$lastDay\n";
         }
 
         // Output the data
