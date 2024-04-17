@@ -393,7 +393,7 @@
         while($row = $query -> fetch_assoc()){
             $TOTAL_GROSS += floatval($row['ngrossbefore']);
 
-            if(floatval($row['namount'])!=floatval($row['ngross'])){
+           /* if(floatval($row['namount'])!=floatval($row['ngross'])){
                 $getpercent = floatval($row['namount']) / floatval($row['ngross']);
 
                 if(floatval($row['nnet'])>0){                  
@@ -415,7 +415,7 @@
                     $xcvnet = floatval($row['nzerorated']) * $getpercent;
                     $TOTAL_ZERO_RATED += $xcvnet;
                 }
-            }else{
+            }else{*/
                 if(floatval($row['nnet'])>0){                  
                     $TOTAL_NET += floatval($row['nnet']);
                     $TOTAL_VAT += floatval($row['nvat']);
@@ -430,7 +430,7 @@
                 if(floatval($row['nzerorated'])>0){
                     $TOTAL_ZERO_RATED += floatval($row['nzerorated']);
                 }
-            }
+           // }
 
         }
 
