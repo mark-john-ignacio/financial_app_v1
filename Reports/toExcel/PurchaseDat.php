@@ -176,7 +176,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
                     $xcexmpt = floatval($row['ngross']);
                 }
 
-                $TOTAL_GROSS += floatval($row['ngross']);
+                /*$TOTAL_GROSS += floatval($row['ngross']);
                 $TOTAL_NET += floatval($xcnet);
                 $TOTAL_VAT += floatval($xcvat);
                 $TOTAL_EXEMPT += floatval($xcexmpt);
@@ -184,7 +184,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
                 $TOTAL_GOODS += floatval($xsgoods);
                 $TOTAL_SERVICE += floatval($xservc);
                 $TOTAL_CAPITAL += floatval($xsgoodsother);
-                $TOTAL_TAX_GROSS += floatval($xcnet) + floatval($xcvat);
+                $TOTAL_TAX_GROSS += floatval($xcnet) + floatval($xcvat);*/
 
 
                 $index++;
