@@ -137,7 +137,8 @@
             $xservc = 0;
             $xsgoods = 0;
             $xsgoodsother = 0;
-
+            $xcvbnm = 0;
+            
             if($apventry[$row['ctranno']]['nrate']>0){
                 $xcnet = floatval($apventry[$row['ctranno']]['ndebit']) / (floatval($apventry[$row['ctranno']]['nrate'])/100);
                 $xcvat = $apventry[$row['ctranno']]['ndebit'];
