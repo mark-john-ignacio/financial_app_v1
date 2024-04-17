@@ -70,6 +70,9 @@
         )
         AND a.lapproved = 1 AND (a.lcancelled != 1 OR a.lvoid != 1)";
     }
+
+    echo $sql;
+    
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         while($row = $query -> fetch_assoc()){
