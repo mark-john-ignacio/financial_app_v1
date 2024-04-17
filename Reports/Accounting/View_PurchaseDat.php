@@ -167,8 +167,8 @@
                         <td>&nbsp;</td>
                         <td><?= $fullAddress ?></td>
                         <td align='right'><?= number_format($row['ngross'], 2) ?></td>
-                        <td align='right'><?= number_format(0,2) ?></td>
-                        <td align='right'><?= number_format(0, 2) ?></td>
+                        <td align='right'><?= number_format($xcexmpt,2) ?></td>
+                        <td align='right'><?= number_format($xczerotot, 2) ?></td>
                         <td align='right'><?= number_format($xcnet, 2) ?></td>
 
                         <td align='right'><?= number_format($xservc, 2) ?></td>

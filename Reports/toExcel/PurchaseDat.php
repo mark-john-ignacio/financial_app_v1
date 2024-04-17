@@ -28,6 +28,28 @@ $query = mysqli_query($con, $sql);
 $account = $query -> fetch_array(MYSQLI_ASSOC);
 $vat_code = $account['cacctno'];
 
+//getallapv with input tax
+$allapvno = array();
+$apventry = array();
+$sql = "SELECT A.ctranno, A.ctaxcode, B.nrate, A.ndebit FROM glactivity A left join vatcode B on A.compcode=B.compcode and A.ctaxcode=B.cvatcode WHERE A.compcode = '$company_code' AND (A.acctno = '$vat_code' and A.ndebit>0) and MONTH(A.ddate)=$monthcut and YEAR(A.ddate)=$yearcut";
+$query = mysqli_query($con, $sql);
+if(mysqli_num_rows($query) != 0){
+    while($row = $query -> fetch_assoc()){
+        $allapvno[] = $row['ctranno'];
+        $apventry[$row['ctranno']] = $row;
+    }
+}
+
+//getall apv with payment
+$allapvpaid = array();
+$sql = "SELECT A.ctranno, A.capvno FROM paybill_t A left join paybill B on A.compcode=B.compcode and A.ctranno=B.ctranno WHERE A.compcode = '$company_code' AND A.capvno in ('".implode("','",$allapvno)."') AND (B.lapproved = 1 AND B.lvoid = 0)";
+$query = mysqli_query($con, $sql);
+if(mysqli_num_rows($query) != 0){
+    while($row = $query -> fetch_assoc()){
+        $allapvpaid[] = $row['capvno'];
+    }
+}
+
 // Set document properties
 $spreadsheet->getProperties()->setCreator('Myx Financials')
     ->setLastModifiedBy('Myx Financials')
@@ -101,70 +123,85 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('M14', trim("'(13)"))
         ->setCellValue('N14', trim("'(14)"));
 
-    if($code == 'VT'){
-        $sql = "SELECT a.*, b.* FROM paybill a
-        LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
-        WHERE a.compcode = '$company'
-        AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
-        AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
-        AND b.cvattype = '$code'
-        AND ctranno in (
-            SELECT a.ctranno FROM paybill_t a 
-            LEFT JOIN apv_t b on a.compcode = b.compcode AND a.capvno = b.ctranno
-            WHERE a.compcode = '$company' AND b.cacctno = '$vat_code'
-        )
-        AND a.lapproved = 1 AND (a.lcancelled != 1 OR a.lvoid != 1)";
-    } else {
-        $sql = "SELECT a.*, b.* FROM paybill a
-        LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
-        WHERE a.compcode = '$company'
-        AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
-        AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
-        AND b.cvattype = '$code'
-        AND ctranno in (
-            SELECT a.ctranno FROM paybill_t a 
-            WHERE a.compcode = '$company' 
-        )
-        AND a.lapproved = 1 AND (a.lcancelled != 1 OR a.lvoid != 1)";
-    }
-
     
-    $query = mysqli_query($con, $sql);
-    if(mysqli_num_rows($query) != 0){
-        $index = 14;
-        $TOTAL_GROSS =0; $TOTAL_EXEMPT = 0; $TOTAL_ZERO_RATED = 0; $TOTAL_TAXABLE = 0; $TOTAL_VAT = 0; $TOTAl_TAX_GROSS = 0;
-        while($row = $query -> fetch_array(MYSQLI_ASSOC)){
-            $computation = ComputePaybills($row);
-            $index++;
-            $fullAddress = stringValidation($row['chouseno']);
-            if(trim($row['ccity']) != ""){
-                $fullAddress .= " ". stringValidation($row['ccity']);
-            }
-            if(trim($row['ccountry']) != ""){
-                $fullAddress .= " ". stringValidation($row['ccountry']);
-            }
-            if(trim($row['cstate']) != ""){
-                $fullAddress .= " ". stringValidation($row['cstate']);
-            }
+        $sql = "SELECT A.*, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname FROM apv A left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode WHERE A.compcode = '$company_code' AND A.ctranno in ('".implode("','",$allapvpaid)."') AND (A.lapproved = 1 AND A.lvoid = 0) Order by A.dapvdate, B.cname";
+
+        $query = mysqli_query($con, $sql);
+        if(mysqli_num_rows($query) != 0){
             
-            if(trim($row['czip']) != ""){
-                $fullAddress .= " ". stringValidation( $row['czip']);
-            }
+            while($row = $query -> fetch_assoc()){
+
+                $fullAddress = str_replace(",", "", $row['chouseno']);
+                if(trim($row['ccity']) != ""){
+                    $fullAddress .= " ". str_replace(",", "", $row['ccity']);
+                }
+                if(trim($row['cstate']) != ""){
+                    $fullAddress .= " ". str_replace(",", "", $row['cstate']);
+                }
+                if(trim($row['ccountry']) != ""){
+                    $fullAddress .= " ". str_replace(",", "", $row['ccountry']);
+                }
+            
+                $xcnet = 0;
+                $xcvat = 0;
+                $xczerotot = 0;
+                $xcexmpt = 0;
+                $xservc = 0;
+                $xsgoods = 0;
+                $xsgoodsother = 0;
+
+                if($apventry[$row['ctranno']]['nrate']>0){
+                    $xcnet = floatval($apventry[$row['ctranno']]['ndebit']) / (floatval($apventry[$row['ctranno']]['nrate'])/100);
+                    $xcvat = $apventry[$row['ctranno']]['ndebit'];
+
+                    if($apventry[$row['ctranno']]['ctaxcode']=="VTSDOM" || $apventry[$row['ctranno']]['ctaxcode'] == "VTSNR"){
+                        $xservc = $xcnet;
+                    }
+
+                    if($apventry[$row['ctranno']]['ctaxcode']=="VTGE1M" || $apventry[$row['ctranno']]['ctaxcode'] == "VTGNE1M"){
+                        $xsgoods = $xcnet;
+                    }
+
+                    if($apventry[$row['ctranno']]['ctaxcode']=="VTGIMOCG" || $apventry[$row['ctranno']]['ctaxcode'] == "VTGOCG"){
+                        $xsgoodsother = $xcnet;
+                    }
+                }
+
+                if($apventry[$row['ctranno']]['ctaxcode']=="VTZERO"){
+                    $xczerotot = floatval($row['ngross']);
+                }
+
+                if($apventry[$row['ctranno']]['ctaxcode']=="VTNOTQ"){
+                    $xcexmpt = floatval($row['ngross']);
+                }
+
+                $TOTAL_GROSS += floatval($row['ngross']);
+                $TOTAL_NET += floatval($xcnet);
+                $TOTAL_VAT += floatval($xcvat);
+                $TOTAL_EXEMPT += floatval($xcexmpt);
+                $TOTAL_ZERO_RATED += floatval($xczerotot);
+                $TOTAL_GOODS += floatval($xsgoods);
+                $TOTAL_SERVICE += floatval($xservc);
+                $TOTAL_CAPITAL += floatval($xsgoodsother);
+                $TOTAL_TAX_GROSS += floatval($xcnet) + floatval($xcvat);
+
+
+
             $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
             $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue("A$index", $row['dcheckdate'])
             ->setCellValue("B$index", TinValidation($row['ctin']))
             ->setCellValue("C$index", $row['cname'])
             ->setCellValue("E$index", $fullAddress)
-            ->setCellValue("F$index", $computation['gross'])
-            ->setCellValue("G$index", $computation['exempt'],2)
-            ->setCellValue("H$index", $computation['zero'],2)
-            ->setCellValue("I$index", $computation['net'],2)
-            ->setCellValue("J$index", $computation['service'],2)
-            ->setCellValue("K$index", $computation['capital'],2)
-            ->setCellValue("L$index", $computation['goods'],2)
-            ->setCellValue("M$index", $computation['vat'],2)
-            ->setCellValue("N$index", $computation['gross_vat'],2);
+            ->setCellValue("F$index", $row['ngross'])
+            ->setCellValue("G$index", $xcexmpt,2)
+            ->setCellValue("H$index", $xczerotot,2)
+            ->setCellValue("I$index", $xcnet,2)
+            ->setCellValue("J$index", $xservc,2)
+            ->setCellValue("K$index", $xsgoods,2)
+            ->setCellValue("L$index", $xsgoodsother,2)
+            ->setCellValue("M$index", $xcvat,2)
+            ->setCellValue("N$index", (floatval($xcnet) + floatval($xcvat)),2);
 
             // $TOTAL_GROSS += floatval($computation['gross']); 
             // $TOTAL_EXEMPT += floatval($computation['exempt']); 
