@@ -23,7 +23,7 @@ $sql = "SELECT * FROM company WHERE compcode='$company'";
 $result = mysqli_query($con, $sql);
 $comp = mysqli_fetch_array($result, MYSQLI_ASSOC);
 
-$sql = "SELECT a.cacctno FROM accounts_default a WHERE a.compcode = '$company_code' AND a.ccode = 'PURCH_VAT' ORDER BY a.cacctno DESC LIMIT 1";
+$sql = "SELECT a.cacctno FROM accounts_default a WHERE a.compcode = '$company' AND a.ccode = 'PURCH_VAT' ORDER BY a.cacctno DESC LIMIT 1";
 $query = mysqli_query($con, $sql);
 $account = $query -> fetch_array(MYSQLI_ASSOC);
 $vat_code = $account['cacctno'];
@@ -31,7 +31,7 @@ $vat_code = $account['cacctno'];
 //getallapv with input tax
 $allapvno = array();
 $apventry = array();
-$sql = "SELECT A.ctranno, A.ctaxcode, B.nrate, A.ndebit FROM glactivity A left join vatcode B on A.compcode=B.compcode and A.ctaxcode=B.cvatcode WHERE A.compcode = '$company_code' AND (A.acctno = '$vat_code' and A.ndebit>0) and MONTH(A.ddate)=$monthcut and YEAR(A.ddate)=$yearcut";
+$sql = "SELECT A.ctranno, A.ctaxcode, B.nrate, A.ndebit FROM glactivity A left join vatcode B on A.compcode=B.compcode and A.ctaxcode=B.cvatcode WHERE A.compcode = '$company' AND (A.acctno = '$vat_code' and A.ndebit>0) and MONTH(A.ddate)=$monthcut and YEAR(A.ddate)=$yearcut";
 $query = mysqli_query($con, $sql);
 if(mysqli_num_rows($query) != 0){
     while($row = $query -> fetch_assoc()){
@@ -42,7 +42,7 @@ if(mysqli_num_rows($query) != 0){
 
 //getall apv with payment
 $allapvpaid = array();
-$sql = "SELECT A.ctranno, A.capvno FROM paybill_t A left join paybill B on A.compcode=B.compcode and A.ctranno=B.ctranno WHERE A.compcode = '$company_code' AND A.capvno in ('".implode("','",$allapvno)."') AND (B.lapproved = 1 AND B.lvoid = 0)";
+$sql = "SELECT A.ctranno, A.capvno FROM paybill_t A left join paybill B on A.compcode=B.compcode and A.ctranno=B.ctranno WHERE A.compcode = '$company' AND A.capvno in ('".implode("','",$allapvno)."') AND (B.lapproved = 1 AND B.lvoid = 0)";
 $query = mysqli_query($con, $sql);
 if(mysqli_num_rows($query) != 0){
     while($row = $query -> fetch_assoc()){
@@ -125,7 +125,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
         $index = 14;
 
-        $sql = "SELECT A.*, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname FROM apv A left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode WHERE A.compcode = '$company_code' AND A.ctranno in ('".implode("','",$allapvpaid)."') AND (A.lapproved = 1 AND A.lvoid = 0) Order by A.dapvdate, B.cname";
+        $sql = "SELECT A.*, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname FROM apv A left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode WHERE A.compcode = '$company' AND A.ctranno in ('".implode("','",$allapvpaid)."') AND (A.lapproved = 1 AND A.lvoid = 0) Order by A.dapvdate, B.cname";
 
         $query = mysqli_query($con, $sql);
         if(mysqli_num_rows($query) != 0){
@@ -187,54 +187,54 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
                 $TOTAL_TAX_GROSS += floatval($xcnet) + floatval($xcvat);
 
 
-            $index++;
-            $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
+                $index++;
+                $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
+                $spreadsheet->setActiveSheetIndex(0)
+                ->setCellValue("A$index", $row['dcheckdate'])
+                ->setCellValue("B$index", TinValidation($row['ctin']))
+                ->setCellValue("C$index", $row['cname'])
+                ->setCellValue("E$index", $fullAddress)
+                ->setCellValue("F$index", $row['ngross'])
+                ->setCellValue("G$index", $xcexmpt,2)
+                ->setCellValue("H$index", $xczerotot,2)
+                ->setCellValue("I$index", $xcnet,2)
+                ->setCellValue("J$index", $xservc,2)
+                ->setCellValue("K$index", $xsgoods,2)
+                ->setCellValue("L$index", $xsgoodsother,2)
+                ->setCellValue("M$index", $xcvat,2)
+                ->setCellValue("N$index", (floatval($xcnet) + floatval($xcvat)),2);
+
+                // $TOTAL_GROSS += floatval($computation['gross']); 
+                // $TOTAL_EXEMPT += floatval($computation['exempt']); 
+                // $TOTAL_ZERO_RATED += floatval($computation['zero']); 
+                // $TOTAL_TAXABLE += floatval($computation['net']); 
+                // $TOTAL_VAT += floatval($computation['vat']);
+                // $TOTAl_TAX_GROSS += floatval($computation['gross_vat']);
+            }
+            $lastindex = $index;
+            $index += 2;
+
+            $spreadsheet->getActiveSheet()->getStyle("A$index:N$index")->getFont()->setBold(true);
+            $spreadsheet->getActiveSheet()->getStyle("F$index:N$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
             $spreadsheet->setActiveSheetIndex(0)
-            ->setCellValue("A$index", $row['dcheckdate'])
-            ->setCellValue("B$index", TinValidation($row['ctin']))
-            ->setCellValue("C$index", $row['cname'])
-            ->setCellValue("E$index", $fullAddress)
-            ->setCellValue("F$index", $row['ngross'])
-            ->setCellValue("G$index", $xcexmpt,2)
-            ->setCellValue("H$index", $xczerotot,2)
-            ->setCellValue("I$index", $xcnet,2)
-            ->setCellValue("J$index", $xservc,2)
-            ->setCellValue("K$index", $xsgoods,2)
-            ->setCellValue("L$index", $xsgoodsother,2)
-            ->setCellValue("M$index", $xcvat,2)
-            ->setCellValue("N$index", (floatval($xcnet) + floatval($xcvat)),2);
+            ->setCellValue("A$index", "GRAND TOTAL")
+            ->setCellValue("F$index", "=SUM(F15:F$lastindex)")
+            ->setCellValue("G$index", "=SUM(G15:G$lastindex)")
+            ->setCellValue("H$index", "=SUM(H15:H$lastindex)")
+            ->setCellValue("I$index", "=SUM(I15:I$lastindex)")
+            ->setCellValue("J$index", "=SUM(J15:J$lastindex)")
+            ->setCellValue("K$index", "=SUM(K15:K$lastindex)")
+            ->setCellValue("L$index", "=SUM(L15:L$lastindex)")
+            ->setCellValue("M$index", "=SUM(M15:M$lastindex)")
+            ->setCellValue("N$index", "=SUM(N15:N$lastindex)");
 
-            // $TOTAL_GROSS += floatval($computation['gross']); 
-            // $TOTAL_EXEMPT += floatval($computation['exempt']); 
-            // $TOTAL_ZERO_RATED += floatval($computation['zero']); 
-            // $TOTAL_TAXABLE += floatval($computation['net']); 
-            // $TOTAL_VAT += floatval($computation['vat']);
-            // $TOTAl_TAX_GROSS += floatval($computation['gross_vat']);
+            $index += 2;
+            $spreadsheet->setActiveSheetIndex(0)
+            ->setCellValue("A$index","END OF REPORT");
+        } else {
+            $spreadsheet->setActiveSheetIndex(0)
+            -> setCellValue("A15", "NO RECORD");
         }
-        $lastindex = $index;
-        $index += 2;
-
-        $spreadsheet->getActiveSheet()->getStyle("A$index:N$index")->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->getStyle("F$index:N$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
-        $spreadsheet->setActiveSheetIndex(0)
-        ->setCellValue("A$index", "GRAND TOTAL")
-        ->setCellValue("F$index", "=SUM(F15:F$lastindex)")
-        ->setCellValue("G$index", "=SUM(G15:G$lastindex)")
-        ->setCellValue("H$index", "=SUM(H15:H$lastindex)")
-        ->setCellValue("I$index", "=SUM(I15:I$lastindex)")
-        ->setCellValue("J$index", "=SUM(J15:J$lastindex)")
-        ->setCellValue("K$index", "=SUM(K15:K$lastindex)")
-        ->setCellValue("L$index", "=SUM(L15:L$lastindex)")
-        ->setCellValue("M$index", "=SUM(M15:M$lastindex)")
-        ->setCellValue("N$index", "=SUM(N15:N$lastindex)");
-
-        $index += 2;
-        $spreadsheet->setActiveSheetIndex(0)
-        ->setCellValue("A$index","END OF REPORT");
-    } else {
-        $spreadsheet->setActiveSheetIndex(0)
-        -> setCellValue("A15", "NO RECORD");
-    }
 
 
 	// Rename worksheet
