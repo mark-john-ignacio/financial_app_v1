@@ -22,126 +22,150 @@
 
     //getallapv with input tax
     $allapvno = array();
-    $sql = "SELECT ctranno FROM glactivity WHERE compcode = '$company_code' AND acctno = '$vat_code' and MONTH(ddate)=$monthcut and YEAR(ddate)=$yearcut";
+    $apventry = array();
+    $sql = "SELECT A.ctaxcode, B.nrate, B.ndebit FROM glactivity A left join vatcode B on A.compcode=B.compcode and A.ctaxcode=B.cvatcode WHERE A.compcode = '$company_code' AND (A.acctno = '$vat_code' and A.ndebit>0) and MONTH(A.ddate)=$monthcut and YEAR(A.ddate)=$yearcut";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         while($row = $query -> fetch_assoc()){
             $allapvno[] = $row['ctranno'];
+            $apventry[$row['ctranno']] = $row;
         }
     }
 
-    //getall paybill No. based from apvs
-    $allpaybill = array();
-    $sql = "SELECT ctranno FROM paybill_t WHERE compcode = '$company_code' AND capvno in ('".implode("','",$allapvno)."')";
+    //getall apv with payment
+    $allapvpaid = array();
+    $sql = "SELECT A.ctranno, A.capvno FROM paybill_t A left join paybill B on A.compcode=B.compcode and A.ctranno=B.ctranno WHERE A.compcode = '$company_code' AND A.capvno in ('".implode("','",$allapvno)."') AND (B.lapproved = 1 AND B.lvoid = 0)";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         while($row = $query -> fetch_assoc()){
-            $allpaybill[] = $row['ctranno'];
+            $allapvpaid[] = $row['ctranno'];
         }
     }
 
-    $sql = "SELECT a.*, b.* FROM paybill a
-    LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
-    WHERE a.compcode = '$company_code' AND a.lapproved = 1 AND (a.lcancelled != 1 OR a.lvoid != 1) and a.ctranno in ('".implode("','",$allpaybill)."')";
 
-    echo $sql;
-
-    $query = mysqli_query($con, $sql);
-    if(mysqli_num_rows($query) != 0){ 
-        while($row = $query -> fetch_assoc()){
-            array_push($sales, $row);
-        }
-    }
-    function isEmpty($sales){
-        if(empty($sales)){
-            return ;
-        }
-        $TOTAL_GROSS = 0;
-        $TOTAL_NET = 0;
-        $TOTAL_VAT = 0;
-        $TOTAL_EXEMPT = 0;
-        $TOTAL_ZERO_RATED = 0;
-        $TOTAL_GOODS = 0;
-        $TOTAL_SERVICE = 0;
-        $TOTAL_CAPITAL = 0;
-        $TOTAL_TAX_GROSS = 0;
+    $TOTAL_GROSS = 0;
+    $TOTAL_NET = 0;
+    $TOTAL_VAT = 0;
+    $TOTAL_EXEMPT = 0;
+    $TOTAL_ZERO_RATED = 0;
+    $TOTAL_GOODS = 0;
+    $TOTAL_SERVICE = 0;
+    $TOTAL_CAPITAL = 0;
+    $TOTAL_TAX_GROSS = 0;
 ?>
-            <table class='table'>
-                <tr class='btn-primary ' style='text-align: center'>
-                    <th>Tax Payer <br>Month</th>
-                    <th>Tax Payer <br>Indentification Number</th>
-                    <th>Registered Name</th>
-                    <th>Name of Customer <br>(Last Name, First Name, Middle Name)</th>
-                    <th>Customer Address</th>
-                    <th>AMOUNT of Gross Purchase</th>
-                    <th>AMOUNT of Excempt Purchase</th>
-                    <th>AMOUNT of Zero Rated Purchase</th>
-                    <th>AMOUNT of Taxable Purchase</th>
-                    <th>AMOUNT of PURCHASE SERIVICES</th>
-                    <th>AMOUNT OF PURCHASE CAPITAL GOODS</th>
-                    <th>AMOUNT OF PURCHASE GOODS OTHER THAN CAPITAL GOODS</th>
-                    <th>AMOUNT of Input Tax</th>
-                    <th>AMOUNT of Gross Taxable Purchase</th>
-                </tr>
-                <?php 
+    <table class='table'>
+        <tr class='btn-primary ' style='text-align: center'>
+            <th>Tax Payer <br>Month</th>
+            <th>Tax Payer <br>Indentification Number</th>
+            <th>Registered Name</th>
+            <th>Name of Customer <br>(Last Name, First Name, Middle Name)</th>
+            <th>Customer Address</th>
+            <th>AMOUNT of Gross Purchase</th>
+            <th>AMOUNT of Excempt Purchase</th>
+            <th>AMOUNT of Zero Rated Purchase</th>
+            <th>AMOUNT of Taxable Purchase</th>
+            <th>AMOUNT of PURCHASE SERIVICES</th>
+            <th>AMOUNT OF PURCHASE CAPITAL GOODS</th>
+            <th>AMOUNT OF PURCHASE GOODS OTHER THAN CAPITAL GOODS</th>
+            <th>AMOUNT of Input Tax</th>
+            <th>AMOUNT of Gross Taxable Purchase</th>
+        </tr>
+        <?php 
+            $sql = "SELECT A.*, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname FROM apv A left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode WHERE A.compcode = '$company_code' AND A.ctranno in ('".implode("','",$allapvpaid)."') AND (A.lapproved = 1 AND A.lvoid = 0)";
+            $query = mysqli_query($con, $sql);
+            if(mysqli_num_rows($query) != 0){
+                
+                while($row = $query -> fetch_assoc()){
 
-                    foreach($sales as $list):
-                        $compute = ComputePaybills($list);
-                        $fullAddress = str_replace(",", "", $list['chouseno']);
-                        if(trim($list['ccity']) != ""){
-                            $fullAddress .= " ". str_replace(",", "", $list['ccity']);
-                        }
-                        if(trim($list['cstate']) != ""){
-                            $fullAddress .= " ". str_replace(",", "", $list['cstate']);
-                        }
-                        if(trim($list['ccountry']) != ""){
-                            $fullAddress .= " ". str_replace(",", "", $list['ccountry']);
-                        }
-                        
-                        $TOTAL_GROSS += floatval($compute['gross']);
-                        $TOTAL_NET += floatval($compute['net']);
-                        $TOTAL_VAT += floatval($compute['vat']);
-                        $TOTAL_EXEMPT += floatval($compute['exempt']);
-                        $TOTAL_ZERO_RATED += floatval($compute['zero']);
-                        $TOTAL_GOODS += floatval($compute['goods']);
-                        $TOTAL_SERVICE += floatval($compute['service']);
-                        $TOTAL_CAPITAL += floatval($compute['capital']);
-                        $TOTAL_TAX_GROSS += floatval($compute['gross_vat']);
-                ?>
-                    <tr>
-                        <td width='100px'><?= $list['dcheckdate'] ?></td>
-                        <td><?= substr($list['ctin'],0,11) ?></td>
-                        <td><?= $list['ctradename'] ?></td>
-                        <td>&nbsp;</td>
-                        <td><?= $fullAddress ?></td>
-                        <td align='right'><?= number_format($compute['gross'], 2) ?></td>
-                        <td align='right'><?= number_format($compute['exempt'],2) ?></td>
-                        <td align='right'><?= number_format($compute['zero'], 2) ?></td>
-                        <td align='right'><?= number_format($compute['net'], 2) ?></td>
+                    $fullAddress = str_replace(",", "", $list['chouseno']);
+                    if(trim($list['ccity']) != ""){
+                        $fullAddress .= " ". str_replace(",", "", $list['ccity']);
+                    }
+                    if(trim($list['cstate']) != ""){
+                        $fullAddress .= " ". str_replace(",", "", $list['cstate']);
+                    }
+                    if(trim($list['ccountry']) != ""){
+                        $fullAddress .= " ". str_replace(",", "", $list['ccountry']);
+                    }
+                
+                    $xcnet = 0;
+                    $xcvat = 0;
+                    $xczerotot = 0;
+                    $xcexmpt = 0;
+                    $xservc = 0;
+                    $xsgoods = 0;
+                    $xsgoodsother = 0;
 
-                        <td align='right'><?= number_format($compute['service'], 2) ?></td>
-                        <td align='right'><?= number_format($compute['capital'],2) ?></td>
-                        <td align='right'><?= number_format($compute['goods'], 2) ?></td>
+                    if($apventry[$row['ctranno']]['nrate']>0){
+                        $xcnet = floatval($apventry[$row['ctranno']]['ndebit']) / (floatval($apventry[$row['ctranno']]['nrate'])/100);
+                        $xcvat = $apventry[$row['ctranno']]['ndebit'];
 
-                        <td align='right'><?= number_format($compute['vat'], 2) ?></td>
-                        <td align='right'><?= number_format($compute['gross_vat'],2) ?></td>
-                    </tr>
-                <?php endforeach;?>
-                <tr>
-                    <td colspan='5' style='font-weight: bold'>GRAND TOTAL</td>
-                    <td align='right'><?= number_format($TOTAL_GROSS,2) ?></td>
-                    <td align='right'><?= number_format($TOTAL_EXEMPT,2) ?></td>
-                    <td align='right'><?= number_format($TOTAL_ZERO_RATED,2) ?></td>
-                    <td align='right'><?= number_format($TOTAL_NET,2) ?></td>
-                    <td align='right'><?= number_format($TOTAL_SERVICE,2) ?></td>
-                    <td align='right'><?= number_format($TOTAL_CAPITAL,2) ?></td>
-                    <td align='right'><?= number_format($TOTAL_GOODS,2) ?></td>
-                    <td align='right'><?= number_format($TOTAL_VAT,2) ?></td>
-                    <td align='right'><?= number_format($TOTAL_TAX_GROSS,2) ?></td>
-                </tr>
-            </table>
-        <?php
-    }?>
+                        if($apventry[$row['ctranno']]['ctaxcode']=="VTSDOM" || $apventry[$row['ctranno']]['ctaxcode'] == "VTSNR"){
+                            $xservc = $xcnet;
+                        }
+
+                        if($apventry[$row['ctranno']]['ctaxcode']=="VTGE1M" || $apventry[$row['ctranno']]['ctaxcode'] == "VTGNE1M"){
+                            $xsgoods = $xcnet;
+                        }
+
+                        if($apventry[$row['ctranno']]['ctaxcode']=="VTGIMOCG" || $apventry[$row['ctranno']]['ctaxcode'] == "VTGOCG"){
+                            $xsgoodsother = $xcnet;
+                        }
+                    }
+
+                    if($apventry[$row['ctranno']]['ctaxcode']=="VTZERO"){
+                        $xczerotot = floatval($row['ngross']);
+                    }
+
+                    if($apventry[$row['ctranno']]['ctaxcode']=="VTNOTQ"){
+                        $xcexmpt = floatval($row['ngross']);
+                    }
+
+                    $TOTAL_GROSS += floatval($row['ngross']);
+                    $TOTAL_NET += floatval($xcnet);
+                    $TOTAL_VAT += floatval($xcvat);
+                    $TOTAL_EXEMPT += floatval($xcexmpt);
+                    $TOTAL_ZERO_RATED += floatval($xczerotot);
+                    $TOTAL_GOODS += floatval($xsgoods);
+                    $TOTAL_SERVICE += floatval($xservc);
+                    $TOTAL_CAPITAL += floatval($xsgoodsother);
+                    $TOTAL_TAX_GROSS += floatval($xcnet) + floatval($xcvat);
+        ?>
+            <tr>
+                <td width='100px'><?= $row['dapvdate'] ?></td>
+                <td><?= substr($row['ctin'],0,11) ?></td>
+                <td><?= $row['cname'] ?></td>
+                <td>&nbsp;</td>
+                <td><?= $fullAddress ?></td>
+                <td align='right'><?= number_format($row['ngross'], 2) ?></td>
+                <td align='right'><?= number_format(0,2) ?></td>
+                <td align='right'><?= number_format(0, 2) ?></td>
+                <td align='right'><?= number_format($xcnet, 2) ?></td>
+
+                <td align='right'><?= number_format($xservc, 2) ?></td>
+                <td align='right'><?= number_format($xsgoods,2) ?></td>
+                <td align='right'><?= number_format($xsgoodsother, 2) ?></td>
+
+                <td align='right'><?= number_format($xcvat, 2) ?></td>
+                <td align='right'><?= number_format((floatval($xcnet) + floatval($xcvat)),2) ?></td>
+            </tr>
+        <?php 
+                }
+            }
+        ?>
+        <tr>
+            <td colspan='5' style='font-weight: bold'>GRAND TOTAL</td>
+            <td align='right'><?= number_format($TOTAL_GROSS,2) ?></td>
+            <td align='right'><?= number_format($TOTAL_EXEMPT,2) ?></td>
+            <td align='right'><?= number_format($TOTAL_ZERO_RATED,2) ?></td>
+            <td align='right'><?= number_format($TOTAL_NET,2) ?></td>
+            <td align='right'><?= number_format($TOTAL_SERVICE,2) ?></td>
+            <td align='right'><?= number_format($TOTAL_CAPITAL,2) ?></td>
+            <td align='right'><?= number_format($TOTAL_GOODS,2) ?></td>
+            <td align='right'><?= number_format($TOTAL_VAT,2) ?></td>
+            <td align='right'><?= number_format($TOTAL_TAX_GROSS,2) ?></td>
+        </tr>
+    </table>
 
     <!DOCTYPE html>
     <html lang="en">
