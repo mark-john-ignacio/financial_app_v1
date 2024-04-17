@@ -110,14 +110,14 @@
         }
 
 
-        $net += round((float)$net,2);
-        $vat += round((float)$xcvat,2);
-        $exempt += round((float)$xcexmpt,2);
-        $zerorated += round((float)$xczerotot,2);
-        $goods += round((float)$xsgoods,2);
-        $service += round((float)$xservc,2);
-        $capital += round((float)$xsgoodsother,2);
-        $totaltax += round((float)$totaltax,2);
+        $net = round((float)$net,2);
+        $vat = round((float)$vat,2);
+        $exempt = round((float)$exempt,2);
+        $zerorated = round((float)$zerorated,2);
+        $goods = round((float)$goods,2);
+        $service = round((float)$service,2);
+        $capital = round((float)$capital,2);
+        $totaltax = round((float)$totaltax,2);
 
     }
 
