@@ -63,7 +63,7 @@
 						$refpos[] = $rowxcv['creference'];
 					}
 					
-					$result=mysqli_query($con,"select a.*,b.cdesc, c.Minit, c.Fname, c.Lname from purchrequest a left join locations b on a.compcode=b.compcode and a.locations_id=b.nid left join users c on a.cpreparedby=c.Userid where a.compcode='$company' and a.ctranno in ('".implode("','",$refpos)."') and (a.lapproved=1 and a.lvoid=0) order by a.ddate desc");
+					$result=mysqli_query($con,"select a.*,b.cdesc, c.Minit, c.Fname, c.Lname from purchrequest a left join locations b on a.compcode=b.compcode and a.locations_id=b.nid left join users c on a.cpreparedby=c.Userid where a.compcode='$company' and a.ctranno not in ('".implode("','",$refpos)."') and (a.lapproved=1 and a.lvoid=0) order by a.ddate desc");
 					
 						if (!$result) {
 							printf("Errormessage: %s\n", mysqli_error($con));
