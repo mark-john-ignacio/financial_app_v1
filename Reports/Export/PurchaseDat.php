@@ -35,73 +35,143 @@
     $account = $query -> fetch_array(MYSQLI_ASSOC);
     $vat_code = $account['cacctno'];
 
-    if($code == 'VT'){
-        $sql = "SELECT a.*, b.* FROM paybill a
-        LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
-        WHERE a.compcode = '$company_code'
-        AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
-        AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
-        AND b.cvattype = '$code'
-        AND ctranno in (
-            SELECT a.ctranno FROM paybill_t a 
-            LEFT JOIN apv_t b on a.compcode = b.compcode AND a.capvno = b.ctranno
-            WHERE a.compcode = '$company_code' AND b.cacctno = '$vat_code'
-        )
-        AND a.lapproved = 1 AND (a.lcancelled != 1 OR a.lvoid != 1)";
-    } else {
-        $sql = "SELECT a.*, b.* FROM paybill a
-        LEFT JOIN suppliers b on a.compcode = b.compcode AND a.ccode = b.ccode
-        WHERE a.compcode = '$company_code'
-        AND MONTH(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $monthcut
-        AND YEAR(STR_TO_DATE(a.dcheckdate, '%Y-%m-%d')) = $yearcut
-        AND b.cvattype = '$code'
-        AND ctranno in (
-            SELECT a.ctranno FROM paybill_t a 
-            WHERE a.compcode = '$company_code' 
-        )
-        AND a.lapproved = 1 AND (a.lcancelled != 1 OR a.lvoid != 1)";
-    }
+    //getallapv with input tax
+    $allapvno = array();
+    $apventry = array();
+    $sql = "SELECT A.ctranno, A.ctaxcode, B.nrate, A.ndebit FROM glactivity A left join vatcode B on A.compcode=B.compcode and A.ctaxcode=B.cvatcode WHERE A.compcode = '$company_code' AND (A.acctno = '$vat_code' and A.ndebit>0) and MONTH(A.ddate)=$monthcut and YEAR(A.ddate)=$yearcut";
     $query = mysqli_query($con, $sql);
-    while($row = $query -> fetch_assoc()){
-        array_push($sales, $row);
-        $compute = ComputePaybills($row);
-
-        $exempt +=      round((float)$compute['exempt'],2);
-        $zerorated +=   round((float)$compute['zero'],2);
-        $net +=         round((float)$compute['net'],2);
-        $vat +=         round((float)$compute['vat'],2);
-        $goods +=       round((float)$compute['goods'],2);
-        $service +=     round((float)$compute['service'],2);
-        $capital +=     round((float)$compute['capital'],2);
-        $totaltax +=    round((float)$compute['gross_vat'],2);
+    if(mysqli_num_rows($query) != 0){
+        while($row = $query -> fetch_assoc()){
+            $allapvno[] = $row['ctranno'];
+            $apventry[$row['ctranno']] = $row;
+        }
     }
 
-    if(count($sales) > 0){
+    //getall apv with payment
+    $allapvpaid = array();
+    $sql = "SELECT A.ctranno, A.capvno FROM paybill_t A left join paybill B on A.compcode=B.compcode and A.ctranno=B.ctranno WHERE A.compcode = '$company_code' AND A.capvno in ('".implode("','",$allapvno)."') AND (B.lapproved = 1 AND B.lvoid = 0)";
+    $query = mysqli_query($con, $sql);
+    if(mysqli_num_rows($query) != 0){
+        while($row = $query -> fetch_assoc()){
+            $allapvpaid[] = $row['capvno'];
+        }
+    }
+
+    $sql = "SELECT A.*, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname FROM apv A left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode WHERE A.compcode = '$company_code' AND A.ctranno in ('".implode("','",$allapvpaid)."') AND (A.lapproved = 1 AND A.lvoid = 0) Order by A.dapvdate, B.cname";
+
+    $query = mysqli_query($con, $sql);
+    if(mysqli_num_rows($query) != 0){
+        
+        while($row = $query -> fetch_assoc()){
+        
+            $xcnet = 0;
+            $xcvat = 0;
+            $xczerotot = 0;
+            $xcexmpt = 0;
+            $xservc = 0;
+            $xsgoods = 0;
+            $xsgoodsother = 0;
+
+            if($apventry[$row['ctranno']]['nrate']>0){
+                $xcnet = floatval($apventry[$row['ctranno']]['ndebit']) / (floatval($apventry[$row['ctranno']]['nrate'])/100);
+                $xcvat = $apventry[$row['ctranno']]['ndebit'];
+
+                if($apventry[$row['ctranno']]['ctaxcode']=="VTSDOM" || $apventry[$row['ctranno']]['ctaxcode'] == "VTSNR"){
+                    $xservc = $xcnet;
+                }
+
+                if($apventry[$row['ctranno']]['ctaxcode']=="VTGE1M" || $apventry[$row['ctranno']]['ctaxcode'] == "VTGNE1M"){
+                    $xsgoods = $xcnet;
+                }
+
+                if($apventry[$row['ctranno']]['ctaxcode']=="VTGIMOCG" || $apventry[$row['ctranno']]['ctaxcode'] == "VTGOCG"){
+                    $xsgoodsother = $xcnet;
+                }
+            }
+
+            if($apventry[$row['ctranno']]['ctaxcode']=="VTZERO"){
+                $xczerotot = floatval($row['ngross']);
+            }
+
+            if($apventry[$row['ctranno']]['ctaxcode']=="VTNOTQ"){
+                $xcexmpt = floatval($row['ngross']);
+            }
+
+            $TOTAL_GROSS += floatval($row['ngross']);
+            $net += floatval($xcnet);
+            $vat += floatval($xcvat);
+            $exempt += floatval($xcexmpt);
+            $zerorated += floatval($xczerotot);
+            $goods += floatval($xsgoods);
+            $service += floatval($xservc);
+            $capital += floatval($xsgoodsother);
+            $totaltax += floatval($xcnet) + floatval($xcvat);
+            
+        }
+
+    }
+
+    if(mysqli_num_rows($query) != 0){
         //Generate DAT File
         header("Content-type: text/plain");
         header("Content-Disposition: attachment; filename=\"".$tin."P".$monthcut . $yearcut . ".dat\"");
         $company_name = stringValidation($company['compname']);
         $data = "H,P,\"$tin\",\"{$company['compname']}\",\"\",\"\",\"\",\"{$company['compdesc']}\",\"$compaddress\",\"{$company['compzip']}\",$exempt,$zerorated,$service,$capital,$goods,$vat,$vat,0,$rdo,$lastDay,12\n";
 
-        foreach($sales as $list){
-            $compute = ComputePaybills($list);
-            $fullAddress = stringValidation($list['chouseno']);
-            $state = stringValidation($list['cstate']);
-            if(trim($list['ccity']) != ""){
-                $state .= " " . stringValidation($list['ccity']);
+        while($row = $query -> fetch_assoc()){
+
+            $fullAddress = stringValidation($row['chouseno']);
+            $state = stringValidation($row['cstate']);
+            if(trim($row['ccity']) != ""){
+                $state .= " " . stringValidation($row['ccity']);
             }
 
 
-            $tinclient = TinValidation($list['ctin']);
-            $name = stringValidation($list['cname']);
-            $EXEMPT =       round((float)$compute['exempt'],2);
-            $NET =          round((float)$compute['net'],2);
-            $ZERO =         round((float)$compute['zero'],2);
-            $SERVICE =      round((float)$compute['service'],2);
-            $CAPITAL =      round((float)$compute['capital'],2);
-            $GOODS =        round((float)$compute['goods'],2);
-            $VAT =          round((float)$compute['vat'],2);
-            $GROSS_TAX =    round((float)$compute['gross_vat'],2);
+            $xcnet = 0;
+            $xcvat = 0;
+            $xczerotot = 0;
+            $xcexmpt = 0;
+            $xservc = 0;
+            $xsgoods = 0;
+            $xsgoodsother = 0;
+
+            if($apventry[$row['ctranno']]['nrate']>0){
+                $xcnet = floatval($apventry[$row['ctranno']]['ndebit']) / (floatval($apventry[$row['ctranno']]['nrate'])/100);
+                $xcvat = $apventry[$row['ctranno']]['ndebit'];
+
+                if($apventry[$row['ctranno']]['ctaxcode']=="VTSDOM" || $apventry[$row['ctranno']]['ctaxcode'] == "VTSNR"){
+                    $xservc = $xcnet;
+                }
+
+                if($apventry[$row['ctranno']]['ctaxcode']=="VTGE1M" || $apventry[$row['ctranno']]['ctaxcode'] == "VTGNE1M"){
+                    $xsgoods = $xcnet;
+                }
+
+                if($apventry[$row['ctranno']]['ctaxcode']=="VTGIMOCG" || $apventry[$row['ctranno']]['ctaxcode'] == "VTGOCG"){
+                    $xsgoodsother = $xcnet;
+                }
+            }
+
+            if($apventry[$row['ctranno']]['ctaxcode']=="VTZERO"){
+                $xczerotot = floatval($row['ngross']);
+            }
+
+            if($apventry[$row['ctranno']]['ctaxcode']=="VTNOTQ"){
+                $xcexmpt = floatval($row['ngross']);
+            }
+
+            $xcvbnm += floatval($xcnet) + floatval($xcvat);
+
+            $tinclient = TinValidation($row['ctin']);
+            $name = stringValidation($row['cname']);
+            $EXEMPT =       round((float)$xcexmpt,2);
+            $NET =          round((float)$xcnet,2);
+            $ZERO =         round((float)$xczerotot,2);
+            $SERVICE =      round((float)$xservc,2);
+            $CAPITAL =      round((float)$xsgoodsother,2);
+            $GOODS =        round((float)$xsgoods,2);
+            $VAT =          round((float)$xcvat,2);
+            $GROSS_TAX =    round((float)$xcvbnm,2);
             $data .= "D,P,\"$tinclient\",\"$name\",,,,\"$fullAddress\",\"$state\",$EXEMPT,$ZERO,$SERVICE,$CAPITAL,$GOODS,$VAT,$tin,$lastDay\n";
         }
 
