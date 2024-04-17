@@ -190,7 +190,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
                 $index++;
                 $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
                 $spreadsheet->setActiveSheetIndex(0)
-                ->setCellValue("A$index", $row['dcheckdate'])
+                ->setCellValue("A$index", $row['dapvdate'])
                 ->setCellValue("B$index", TinValidation($row['ctin']))
                 ->setCellValue("C$index", $row['cname'])
                 ->setCellValue("E$index", $fullAddress)
