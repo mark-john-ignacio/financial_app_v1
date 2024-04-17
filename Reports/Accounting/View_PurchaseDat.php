@@ -106,15 +106,15 @@
                         
                         while($row = $query -> fetch_assoc()){
 
-                            $fullAddress = str_replace(",", "", $list['chouseno']);
+                            $fullAddress = str_replace(",", "", $row['chouseno']);
                             if(trim($list['ccity']) != ""){
-                                $fullAddress .= " ". str_replace(",", "", $list['ccity']);
+                                $fullAddress .= " ". str_replace(",", "", $row['ccity']);
                             }
                             if(trim($list['cstate']) != ""){
-                                $fullAddress .= " ". str_replace(",", "", $list['cstate']);
+                                $fullAddress .= " ". str_replace(",", "", $row['cstate']);
                             }
                             if(trim($list['ccountry']) != ""){
-                                $fullAddress .= " ". str_replace(",", "", $list['ccountry']);
+                                $fullAddress .= " ". str_replace(",", "", $row['ccountry']);
                             }
                         
                             $xcnet = 0;
