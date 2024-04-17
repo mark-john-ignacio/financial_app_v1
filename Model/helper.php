@@ -394,7 +394,7 @@
             $TOTAL_GROSS += floatval($row['ngrossbefore']);
 
             if(floatval($row['namount'])!=floatval($row['ngross'])){
-                $getpercent = floatval($row['ngross']) / floatval($row['namount']);
+                $getpercent = floatval($row['namount']) / floatval($row['ngross']);
 
                 if(floatval($row['nnet'])>0){                  
                     $xcvnet = floatval($row['nnet']) * $getpercent;
