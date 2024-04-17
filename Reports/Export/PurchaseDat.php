@@ -97,7 +97,7 @@
                 $xcexmpt = floatval($row['ngross']);
             }
 
-            $TOTAL_GROSS += floatval($row['ngross']);
+           // $TOTAL_GROSS += floatval($row['ngross']);
             $net += floatval($xcnet);
             $vat += floatval($xcvat);
             $exempt += floatval($xcexmpt);
