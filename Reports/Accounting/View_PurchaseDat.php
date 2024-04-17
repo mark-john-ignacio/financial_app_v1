@@ -194,7 +194,7 @@
             <h5>OWNER'S ADDRESS: <?= $company['compadd'] ?></h5>
         </div>
         <div style='padding: 10px; padding-top: 20px;'>
-            <?= isEmpty($sales);?>
+            <?//= isEmpty($sales);?>
         </div>
     </body>
     </html>
