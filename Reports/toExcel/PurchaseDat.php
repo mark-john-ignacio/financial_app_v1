@@ -123,7 +123,8 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
         ->setCellValue('M14', trim("'(13)"))
         ->setCellValue('N14', trim("'(14)"));
 
-    
+        $index = 14;
+
         $sql = "SELECT A.*, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname FROM apv A left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode WHERE A.compcode = '$company_code' AND A.ctranno in ('".implode("','",$allapvpaid)."') AND (A.lapproved = 1 AND A.lvoid = 0) Order by A.dapvdate, B.cname";
 
         $query = mysqli_query($con, $sql);
@@ -186,7 +187,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
                 $TOTAL_TAX_GROSS += floatval($xcnet) + floatval($xcvat);
 
 
-
+            $index++;
             $spreadsheet->getActiveSheet()->getStyle("F$index:K$index")->getNumberFormat()->setFormatCode('###,###,###,##0.00');
             $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue("A$index", $row['dcheckdate'])
