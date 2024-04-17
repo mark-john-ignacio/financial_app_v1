@@ -23,7 +23,7 @@
     //getallapv with input tax
     $allapvno = array();
     $apventry = array();
-    $sql = "SELECT A.ctaxcode, B.nrate, B.ndebit FROM glactivity A left join vatcode B on A.compcode=B.compcode and A.ctaxcode=B.cvatcode WHERE A.compcode = '$company_code' AND (A.acctno = '$vat_code' and A.ndebit>0) and MONTH(A.ddate)=$monthcut and YEAR(A.ddate)=$yearcut";
+    $sql = "SELECT A.ctaxcode, B.nrate, A.ndebit FROM glactivity A left join vatcode B on A.compcode=B.compcode and A.ctaxcode=B.cvatcode WHERE A.compcode = '$company_code' AND (A.acctno = '$vat_code' and A.ndebit>0) and MONTH(A.ddate)=$monthcut and YEAR(A.ddate)=$yearcut";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         while($row = $query -> fetch_assoc()){
