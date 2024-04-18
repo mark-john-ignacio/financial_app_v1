@@ -163,7 +163,7 @@
 
 	$mpdf = new \Mpdf\Mpdf([
 		'mode' => '',
-		'format' => [241.3, 139.7],
+		'format' => [215.9, 139.7],
 		'default_font_size' => 10,
 		'default_font' => 'Arial, sans-serif',
 		'margin_left' => 10,
