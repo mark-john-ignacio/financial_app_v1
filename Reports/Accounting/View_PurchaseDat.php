@@ -23,12 +23,20 @@
     //getallapv with input tax
     $allapvno = array();
     $apventry = array();
-    $sql = "SELECT A.ctranno, A.ctaxcode, B.nrate, A.ndebit FROM glactivity A left join vatcode B on A.compcode=B.compcode and A.ctaxcode=B.cvatcode WHERE A.compcode = '$company_code' AND (A.acctno = '$vat_code' and A.ndebit>0) and MONTH(A.ddate)=$monthcut and YEAR(A.ddate)=$yearcut";
+    $sql = "SELECT A.cmodule, A.ctranno, A.ctaxcode, B.nrate, A.ndebit, A.ncredit FROM glactivity A left join vatcode B on A.compcode=B.compcode and A.ctaxcode=B.cvatcode WHERE A.compcode = '$company_code' AND A.acctno = '$vat_code' and MONTH(A.ddate)=$monthcut and YEAR(A.ddate)=$yearcut";
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         while($row = $query -> fetch_assoc()){
-            $allapvno[] = $row['ctranno'];
-            $apventry[$row['ctranno']] = $row;
+            $allapvno[] = $row['ctranno'];            
+        }
+    }
+
+    $suppliersdet = array();
+    $sql = "SELECT * FROM suppliers WHERE compcode = '$company_code'";
+    $query = mysqli_query($con, $sql);
+    if(mysqli_num_rows($query) != 0){
+        while($row = $query -> fetch_assoc()){
+            $suppliersdet[$row['ccode']] = $row;
         }
     }
 
@@ -99,7 +107,27 @@
                     <th>AMOUNT of Gross Taxable Purchase</th>
                 </tr>
                 <?php 
-                    $sql = "SELECT A.*, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname FROM apv A left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode WHERE A.compcode = '$company_code' AND A.ctranno in ('".implode("','",$allapvno)."') AND (A.lapproved = 1 AND A.lvoid = 0) Order by A.dapvdate, B.cname";
+                    /*$sql = "SELECT A.ccode, A.chouseno, A.ccity, A.cstate, A.ccountry, A.ctin, A.cname 
+                    From
+                    (
+                    SELECT A.ccode, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname, A.dapvdate as ddate
+                    FROM apv A 
+                    left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode 
+                    WHERE A.compcode = '$company_code' AND A.ctranno in ('".implode("','",$allapvno)."') AND (A.lapproved = 1 AND A.lvoid = 0) 
+                    
+                    UNION ALL
+                    
+                    SELECT A.ccode, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname, A.djdate as ddate 
+                    FROM journal A 
+                    left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode 
+                    WHERE A.compcode = '$company_code' AND A.ctranno in ('".implode("','",$allapvno)."') AND (A.lapproved = 1 AND A.lvoid = 0) 
+                    ) A
+                    Order by A.ddate, A.cname";*/
+
+                    $sql = " SELECT A.ccode, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname, A.dapvdate as ddate
+                    FROM apv A 
+                    left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode 
+                    WHERE A.compcode = '$company_code' AND A.ctranno in ('".implode("','",$allapvno)."') AND (A.lapproved = 1 AND A.lvoid = 0)";
 
                     $query = mysqli_query($con, $sql);
                     if(mysqli_num_rows($query) != 0){
