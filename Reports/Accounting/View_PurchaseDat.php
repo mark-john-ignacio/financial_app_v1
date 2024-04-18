@@ -118,7 +118,7 @@
                     
                     UNION ALL
                     
-                    SELECT A.ctranno, A.ngross, A.ccode, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname, A.djdate as dapvdate 
+                    SELECT A.ctranno, A.ntotdebit as ngross, A.ccode, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname, A.djdate as dapvdate 
                     FROM journal A 
                     left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode 
                     WHERE A.compcode = '$company_code' AND A.ctranno in ('".implode("','",$allapvno)."') AND (A.lapproved = 1 AND A.lvoid = 0) 
