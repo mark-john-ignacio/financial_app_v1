@@ -57,7 +57,22 @@
         }
     }*/
 
-    $sql = "SELECT A.*, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname FROM apv A left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode WHERE A.compcode = '$company_code' AND A.ctranno in ('".implode("','",$allapvno)."') AND (A.lapproved = 1 AND A.lvoid = 0) Order by A.dapvdate, B.cname";
+    $sql = "SELECT A.ctranno, A.ngross, A.ccode, A.chouseno, A.ccity, A.cstate, A.ccountry, A.ctin, A.cname, A.dapvdate
+    From
+    (
+    SELECT A.ctranno, A.ngross, A.ccode, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname, A.dapvdate as dapvdate
+    FROM apv A 
+    left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode 
+    WHERE A.compcode = '$company_code' AND A.ctranno in ('".implode("','",$allapvno)."') AND (A.lapproved = 1 AND A.lvoid = 0) 
+    
+    UNION ALL
+    
+    SELECT A.ctranno, A.ntotdebit as ngross, A.ccode, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname, A.djdate as dapvdate 
+    FROM journal A 
+    left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode 
+    WHERE A.compcode = '$company_code' AND A.ctranno in ('".implode("','",$allapvno)."') AND (A.lapproved = 1 AND A.lvoid = 0) 
+    ) A
+    Order by A.dapvdate, A.cname";
 
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
@@ -71,10 +86,20 @@
             $xservc = 0;
             $xsgoods = 0;
             $xsgoodsother = 0;
+            $rowgros = 0;
 
             if($apventry[$row['ctranno']]['nrate']>0){
-                $xcnet = floatval($apventry[$row['ctranno']]['ndebit']) / (floatval($apventry[$row['ctranno']]['nrate'])/100);
-                $xcvat = $apventry[$row['ctranno']]['ndebit'];
+
+                if(floatval($apventry[$row['ctranno']]['ndebit'])>0) {
+                    $xcvbam = floatval($apventry[$row['ctranno']]['ndebit']);
+                    $rowgros = $row['ngross'];
+                }else{
+                    $xcvbam = 0-floatval($apventry[$row['ctranno']]['ncredit']);
+                    $rowgros = 0-$row['ngross'];
+                }
+
+                $xcnet = $xcvbam / (floatval($apventry[$row['ctranno']]['nrate'])/100);
+                $xcvat = $xcvbam;
 
                 if($apventry[$row['ctranno']]['ctaxcode']=="VTSDOM" || $apventry[$row['ctranno']]['ctaxcode'] == "VTSNR"){
                     $xservc = $xcnet;
@@ -147,10 +172,19 @@
             $xsgoods = 0;
             $xsgoodsother = 0;
             $xcvbnm = 0;
+            $rowgros = 0;
 
             if($apventry[$row['ctranno']]['nrate']>0){
-                $xcnet = floatval($apventry[$row['ctranno']]['ndebit']) / (floatval($apventry[$row['ctranno']]['nrate'])/100);
-                $xcvat = $apventry[$row['ctranno']]['ndebit'];
+               if(floatval($apventry[$row['ctranno']]['ndebit'])>0) {
+                    $xcvbam = floatval($apventry[$row['ctranno']]['ndebit']);
+                    $rowgros = $row['ngross'];
+                }else{
+                    $xcvbam = 0-floatval($apventry[$row['ctranno']]['ncredit']);
+                    $rowgros = 0-$row['ngross'];
+                }
+
+                $xcnet = $xcvbam / (floatval($apventry[$row['ctranno']]['nrate'])/100);
+                $xcvat = $xcvbam;
 
                 if($apventry[$row['ctranno']]['ctaxcode']=="VTSDOM" || $apventry[$row['ctranno']]['ctaxcode'] == "VTSNR"){
                     $xservc = $xcnet;
