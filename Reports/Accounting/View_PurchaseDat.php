@@ -125,10 +125,10 @@
                     ) A
                     Order by A.ddate, A.cname";*/
 
-                    $sql = " SELECT A.ctranno, A.ngross, A.dpavdate, A.ccode, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname, A.dapvdate as ddate
+                    $sql = " SELECT A.ctranno, A.ngross, A.dapvdate, A.ccode, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname, A.dapvdate as ddate
                     FROM apv A 
                     left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode 
-                    WHERE A.compcode = '$company_code' AND A.ctranno in ('".implode("','",$allapvno)."') AND (A.lapproved = 1 AND A.lvoid = 0)";
+                    WHERE A.compcode = '$company_code' AND A.ctranno in ('".implode("','",$allapvno)."') AND (A.lapproved = 1 AND A.lvoid = 0) Order by A.dapvdate, B.cname";
 
                     $query = mysqli_query($con, $sql);
                     if(mysqli_num_rows($query) != 0){
