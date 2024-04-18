@@ -118,7 +118,6 @@
 </head>
 
 <body style="padding:5px" onLoad="document.getElementById('txtcust').focus();">
-<input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
 
 <?php
 if (mysqli_num_rows($sqlhead)!=0) {
@@ -467,68 +466,74 @@ if (mysqli_num_rows($sqlhead)!=0) {
 </form>
 
 
-<!-- FULL PO LIST REFERENCES-->
-<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="InvListHdr">PO List</h3>
-            </div>
-            
-            <div class="modal-body" style="height:40vh">
-            
-       <div class="col-xs-12 nopadding">
+	<!-- FULL PO LIST REFERENCES-->
+	<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h3 class="modal-title" id="InvListHdr">PO List</h3>
+				</div>
+				
+				<div class="modal-body" style="height:40vh">
+				
+					<div class="col-xs-12 nopadding">
 
-                <div class="form-group">
-                    <div class="col-xs-3 nopadding pre-scrollable" style="height:37vh">
-                          <table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight small">
-                           <thead>
-                            <tr>
-                              <th>PO No</th>
-                              <th>Date</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                          </table>
-                    </div>
+						<div class="form-group">
+							<div class="col-xs-3 nopadding pre-scrollable" style="height:37vh">
+								<table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight small">
+									<thead>
+										<tr>
+											<th>PO No</th>
+											<th>Date</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
 
-                    <div class="col-xs-9 nopadwleft pre-scrollable" style="height:37vh">
-                          <table name='MyInvDetList' id='MyInvDetList' class="table table-small small">
-                           <thead>
-                            <tr>
-                              <th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
-                              <th>Item No</th>
-                              <th>Description</th>
-                              <th>UOM</th>
-                              <th>Qty</th>
-															<!--<th>Price</th>
-															<th>Amount</th>
-															<th>Cur</th>-->
-                            </tr>
-                            </thead>
-                            <tbody>
-                            	
-                            </tbody>
-                          </table>
-                    </div>
-               </div>
+							<div class="col-xs-9 nopadwleft pre-scrollable" style="height:37vh">
+								<table name='MyInvDetList' id='MyInvDetList' class="table table-small small">
+									<thead>
+										<tr>
+											<th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
+											<th>Item No</th>
+											<th>Description</th>
+											<th>UOM</th>
+											<th>Qty</th>
+																		<!--<th>Price</th>
+																		<th>Amount</th>
+																		<th>Cur</th>-->
+										</tr>
+									</thead>
+									<tbody>
+										
+									</tbody>
+								</table>
+							</div>
+					</div>
 
-        </div>
-         	            
-			</div>
-			
-            <div class="modal-footer">
-                <button type="button" id="btnInsDet" onClick="InsertSI()" class="btn btn-primary">Insert</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+					</div>
+							
+				</div>
+				
+				<div class="modal-footer">
+					<button type="button" id="btnInsDet" onClick="InsertSI()" class="btn btn-primary">Insert</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
 
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<!-- End FULL INVOICE LIST -->
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	<!-- End FULL INVOICE LIST -->
 
+	<form method="post" id="frmMyEdit" action="RR_edit.php">
+		<input type="hidden" name="txtctranno" id="txtctranno" value="">
+	</form>
+
+	<form method="post" name="frmprint" id="frmprint" action="" target="_blank">
+	</form>
 
 <?php
 }
@@ -611,7 +616,6 @@ else{
 						<div class="col-xs-1 nopadwleft"><input type="text" class="form-control input-sm" name="serdisuom" id="serdisuom" readonly></div>
 
 						<div class="col-xs-7 nopadwleft" id="TheSerialStat"></div>
-
 						
 					</div>
 					<div class="row nopadwtop">
@@ -619,10 +623,10 @@ else{
 						<div class="col-xs-3 nopadding">
 							<select class="form-control input-sm" name="selserloc" id="selserloc">
 								<?php
-										$qrya = mysqli_query($con,"Select * From mrp_locations Order By cdesc");
-										while($row = mysqli_fetch_array($qrya, MYSQLI_ASSOC)){
-											echo "<option value=\"".$row['nid']."\" data-id=\"".$row['cdesc']."\">".$row['cdesc']."</option>";
-										}
+									$qrya = mysqli_query($con,"Select * From mrp_locations Order By cdesc");
+									while($row = mysqli_fetch_array($qrya, MYSQLI_ASSOC)){
+										echo "<option value=\"".$row['nid']."\" data-id=\"".$row['cdesc']."\">".$row['cdesc']."</option>";
+									}
 								?>
 							</select>
 						</div>
@@ -658,9 +662,6 @@ else{
 		</div>
 	</div> 
 
-	<form method="post" id="frmMyEdit" action="RR_edit.php">
-		<input type="hidden" name="txtctranno" id="txtctranno" value="">
-	</form>
 </body>
 </html>
 
@@ -780,7 +781,7 @@ else{
 
 
 	$(document).ready(function() {
-		$(".nav-tabs a").click(function(){
+		/*$(".nav-tabs a").click(function(){
 			$(this).tab('show');
 		});
 
@@ -821,19 +822,19 @@ else{
 				browseOnZoneClick: true,
 				fileActionSettings: { showUpload: false, showDrag: false, }
 			});
-		}
+		}*/
 
 		loaddetails();
 		loadserials();
 
-		$('#txtprodnme').attr("disabled", true);
+		/*$('#txtprodnme').attr("disabled", true);
 		$('#txtprodid').attr("disabled", true);
 		
-		$("#txtcpono").focus();
+		$("#txtcpono").focus();*/
 		
 		disabled();
 
-		$("#allbox").click(function(){
+		/*$("#allbox").click(function(){
 				$('input:checkbox').not(this).prop('checked', this.checked);
 		});
 		
@@ -899,7 +900,6 @@ else{
 			}
 		
 		});
-
 
 		$("#txtprodid").keydown(function(e){
 			if(e.keyCode == 13){
@@ -973,11 +973,27 @@ else{
 				$("#TheSerialStat").text("Over Quantity...");
 			}
 		
-		});
+		});*/
 		
 
 	});
 
+	function printchk(x){
+		if(document.getElementById("hdncancel").value==1){	
+			document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
+			document.getElementById("statmsgz").style.color = "#FF0000";
+		}
+		else{
+
+			//$("#printid").val(x);
+			//$("#frmprint").submit();' PrintRR_PDF.php
+			document.frmprint.action = "PrintRR_PDF.php?printid="+x;
+			document.getElementById("frmprint").submit();
+
+		}
+	}
+
+	
 	function InsertToSerials(itmcode,itmdesc,lotno,packlist,uoms,qtys,locas,locasdesc,nident,refno){
 
 		$("<tr>").append(
@@ -1055,7 +1071,7 @@ else{
 		var uomoptions = "";
 		
 		if(xref == ""){							
-			var xz = $("#hdnitmfactors").val();
+			var xz = '<?=json_encode(@$arruomslist)?>';
 			if(itmqtyunit==itmunit){
 				isselctd = "selected";
 			}else{
@@ -1297,7 +1313,6 @@ else{
 		}       
 
 	}
-
 
 	function setfactor(itmunit, itmcode){
 		var result;
@@ -1783,52 +1798,53 @@ else{
 		}
 
 	}
+	
 
 	/*
 
-	function convertCurrency(fromCurrency) {
-	
-	toCurrency = $("#basecurrvalmain").val(); //statgetrate
-	$.ajax ({
-		url: "../../Sales/th_convertcurr.php",
-		data: { fromcurr: fromCurrency, tocurr: toCurrency },
-		async: false,
-		beforeSend: function () {
-			$("#statgetrate").html(" <i>Getting exchange rate please wait...</i>");
-		},
-		success: function( data ) {
+		function convertCurrency(fromCurrency) {
+		
+		toCurrency = $("#basecurrvalmain").val(); //statgetrate
+		$.ajax ({
+			url: "../../Sales/th_convertcurr.php",
+			data: { fromcurr: fromCurrency, tocurr: toCurrency },
+			async: false,
+			beforeSend: function () {
+				$("#statgetrate").html(" <i>Getting exchange rate please wait...</i>");
+			},
+			success: function( data ) {
 
-			$("#basecurrval").val(data);
-			$("#hidcurrvaldesc").val($( "#selbasecurr option:selected" ).text()); 
+				$("#basecurrval").val(data);
+				$("#hidcurrvaldesc").val($( "#selbasecurr option:selected" ).text()); 
 
-		},
-		complete: function(){
-			$("#statgetrate").html("");
-			recomputeCurr();
-		}
-	});
-
-	}
-
-	function recomputeCurr(){
-
-		var newcurate = $("#basecurrval").val();
-		var rowCount = $('#MyTable tr').length;
-				
-		var gross = 0;
-		var amt = 0;
-
-		if(rowCount>1){
-			for (var i = 1; i <= rowCount-1; i++) {
-				amt = $("#txtntranamount"+i).val();			
-				recurr = parseFloat(newcurate) * parseFloat(amt);
-
-				$("#txtnamount"+i).val(recurr.toFixed(4));
+			},
+			complete: function(){
+				$("#statgetrate").html("");
+				recomputeCurr();
 			}
+		});
+
 		}
 
-		ComputeGross();
-	}
+		function recomputeCurr(){
+
+			var newcurate = $("#basecurrval").val();
+			var rowCount = $('#MyTable tr').length;
+					
+			var gross = 0;
+			var amt = 0;
+
+			if(rowCount>1){
+				for (var i = 1; i <= rowCount-1; i++) {
+					amt = $("#txtntranamount"+i).val();			
+					recurr = parseFloat(newcurate) * parseFloat(amt);
+
+					$("#txtnamount"+i).val(recurr.toFixed(4));
+				}
+			}
+
+			ComputeGross();
+		}
 
 	*/
 
@@ -1889,24 +1905,7 @@ else{
 				$("#btnEdit").attr("disabled", true);
 		
 		}
-	}
-
-	function printchk(x){
-		if(document.getElementById("hdncancel").value==1){	
-			document.getElementById("statmsgz").innerHTML = "CANCELLED TRANSACTION CANNOT BE PRINTED!";
-			document.getElementById("statmsgz").style.color = "#FF0000";
-		}
-		else{
-			//   var url =  "RR_confirmprint.php?x="+x;
-			var url = "RR_printv1.php?tranno="+x;
-			
-			$("#myprintframe").attr('src',url);
-
-
-			$("#PrintModal").modal('show');
-
-		}
-	}
+	}	
 
 	function loaddetails(){
 		//alert("th_loaddetails.php?id="+$("#txtcpono").val());
@@ -1963,10 +1962,6 @@ else{
 				
 		});
 
-	}
-
-	function tblcheckk(){
-		alert($("#MyTable > tbody tr").length);
 	}
 
 </script>
