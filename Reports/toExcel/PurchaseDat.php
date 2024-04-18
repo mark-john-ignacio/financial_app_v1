@@ -41,14 +41,14 @@ if(mysqli_num_rows($query) != 0){
 }
 
 //getall apv with payment
-$allapvpaid = array();
+/*$allapvpaid = array();
 $sql = "SELECT A.ctranno, A.capvno FROM paybill_t A left join paybill B on A.compcode=B.compcode and A.ctranno=B.ctranno WHERE A.compcode = '$company' AND A.capvno in ('".implode("','",$allapvno)."') AND (B.lapproved = 1 AND B.lvoid = 0)";
 $query = mysqli_query($con, $sql);
 if(mysqli_num_rows($query) != 0){
     while($row = $query -> fetch_assoc()){
         $allapvpaid[] = $row['capvno'];
     }
-}
+}*/
 
 // Set document properties
 $spreadsheet->getProperties()->setCreator('Myx Financials')
@@ -125,7 +125,7 @@ $spreadsheet->getProperties()->setCreator('Myx Financials')
 
         $index = 14;
 
-        $sql = "SELECT A.*, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname FROM apv A left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode WHERE A.compcode = '$company' AND A.ctranno in ('".implode("','",$allapvpaid)."') AND (A.lapproved = 1 AND A.lvoid = 0) Order by A.dapvdate, B.cname";
+        $sql = "SELECT A.*, B.chouseno, B.ccity, B.cstate, B.ccountry, B.ctin, B.cname FROM apv A left join suppliers B on A.compcode=B.compcode and A.ccode=B.ccode WHERE A.compcode = '$company' AND A.ctranno in ('".implode("','",$allapvno)."') AND (A.lapproved = 1 AND A.lvoid = 0) Order by A.dapvdate, B.cname";
 
         $query = mysqli_query($con, $sql);
         if(mysqli_num_rows($query) != 0){
