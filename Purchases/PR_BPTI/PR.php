@@ -97,9 +97,9 @@
 						}
 					?>
 				</div>
-        <div class="col-xs-1 nopadwtop text-right" style="height:30px !important; padding-right: 10px !important">
-          <b> Search PR No: </b>
-        </div>
+				<div class="col-xs-1 nopadwtop text-right" style="height:30px !important; padding-right: 10px !important">
+				<b> Search PR No: </b>
+				</div>
 				<div class="col-xs-2 text-right nopadding">
 					<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>" class="form-control input-sm" placeholder="Search PR No...">
 				</div>
