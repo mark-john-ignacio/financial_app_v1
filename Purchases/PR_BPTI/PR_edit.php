@@ -193,27 +193,6 @@ if (mysqli_num_rows($sqlhead)!=0) {
 							}
 							$xm = 1;
 						}
-
-						if($xm==0 && $lSent==1){ 
-							$chkrejstat1 = "";
-							$chkrejstat2 = "";
-							if($chkapprovals==$employeeid){
-								$chkrejstat1 = (($poststat!="True") ? " disabled" : "");
-								$chkrejstat2 = (($cancstat!="True") ? " disabled" : "");
-							}else{
-								$chkrejstat1 = " disabled";
-								$chkrejstat2 = " disabled";
-							}
-
-							if($chkrejstat1==""){
-								echo "<button id=\"btnPosting\" type=\"button\" onClick=\"trans('POST','".$cprno."')\" class=\"btn btn-default".$chkrejstat1."\"><i class=\"fa fa-thumbs-up\" style=\"font-size:18px;color:Green\" title=\"Approve transaction\"></i></button>";
-							}
-
-							if($chkrejstat2==""){
-								echo " <button id=\"btnCanceling\" type=\"button\" onClick=\"trans('CANCEL','".$cprno."')\" class=\"btn btn-default".$chkrejstat2."\"><i class=\"fa fa-thumbs-down\" style=\"font-size:18px;color:Red\" title=\"Cancel transaction\"></i></button>";
-							}
-														
-						}
 					?>
 				</div>
 			</div>
@@ -462,6 +441,29 @@ if (mysqli_num_rows($sqlhead)!=0) {
 								<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
 									Save<br>(CTRL+S)
 								</button>
+
+								<?php
+								if($xm==0 && $lSent==1){ 
+									$chkrejstat1 = "";
+									$chkrejstat2 = "";
+									if($chkapprovals==$employeeid){
+										$chkrejstat1 = (($poststat!="True") ? " disabled" : "");
+										$chkrejstat2 = (($cancstat!="True") ? " disabled" : "");
+									}else{
+										$chkrejstat1 = " disabled";
+										$chkrejstat2 = " disabled";
+									}
+		
+									if($chkrejstat1==""){
+										echo "<button id=\"btnPosting\" type=\"button\" onClick=\"trans('POST','".$cprno."')\" class=\"btn btn-default btn-sm".$chkrejstat1."\">Post<br><i class=\"fa fa-thumbs-up\" style=\"font-size:18px;color:Green\" title=\"Approve transaction\"></i></button>";
+									}
+		
+									if($chkrejstat2==""){
+										echo " <button id=\"btnCanceling\" type=\"button\" onClick=\"trans('CANCEL','".$cprno."')\" class=\"btn btn-default btn-sm".$chkrejstat2."\">Cancel<br><i class=\"fa fa-thumbs-down\" style=\"font-size:18px;color:Red\" title=\"Cancel transaction\"></i></button>";
+									}
+																
+								}
+								?>
 							</div>
 						</div>
 					</div>
