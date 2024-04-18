@@ -166,7 +166,7 @@
                                 }
 
                                 $xcnet = $xcvbam / (floatval($apventry[$row['ctranno']]['nrate'])/100);
-                                $xcvat = $apventry[$row['ctranno']]['ndebit'];
+                                $xcvat = $xcvbam;
 
                                 if($apventry[$row['ctranno']]['ctaxcode']=="VTSDOM" || $apventry[$row['ctranno']]['ctaxcode'] == "VTSNR"){
                                     $xservc = $xcnet;
