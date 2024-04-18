@@ -153,13 +153,16 @@
                             $xservc = 0;
                             $xsgoods = 0;
                             $xsgoodsother = 0;
+                            $rowgros = 0;
 
                             if($apventry[$row['ctranno']]['nrate']>0){
 
                                 if(floatval($apventry[$row['ctranno']]['ndebit'])>0) {
                                     $xcvbam = floatval($apventry[$row['ctranno']]['ndebit']);
+                                    $rowgros = $row['ngross'];
                                 }else{
                                     $xcvbam = 0-floatval($apventry[$row['ctranno']]['ncredit']);
+                                    $rowgros = 0-$row['ngross'];
                                 }
 
                                 $xcnet = $xcvbam / (floatval($apventry[$row['ctranno']]['nrate'])/100);
@@ -186,7 +189,7 @@
                                 $xcexmpt = floatval($row['ngross']);
                             }
 
-                            $TOTAL_GROSS += floatval($row['ngross']);
+                            $TOTAL_GROSS += floatval($rowgros);
                             $TOTAL_NET += floatval($xcnet);
                             $TOTAL_VAT += floatval($xcvat);
                             $TOTAL_EXEMPT += floatval($xcexmpt);
@@ -202,7 +205,7 @@
                         <td><?= $row['cname'] ?></td>
                         <td>&nbsp;</td>
                         <td><?= $fullAddress ?></td>
-                        <td align='right'><?= number_format($row['ngross'], 2) ?></td>
+                        <td align='right'><?= number_format($rowgros, 2) ?></td>
                         <td align='right'><?= number_format($xcexmpt,2) ?></td>
                         <td align='right'><?= number_format($xczerotot, 2) ?></td>
                         <td align='right'><?= number_format($xcnet, 2) ?></td>
