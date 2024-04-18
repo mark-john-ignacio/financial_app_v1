@@ -682,31 +682,31 @@ $(document).ready(function() {
 	
 	$("#btnInsSer").on("click", function(){
 	
-			var tbl = document.getElementById('MyTableSerials').getElementsByTagName('tr');
-			var lastRow = tbl.length;
+		var tbl = document.getElementById('MyTableSerials').getElementsByTagName('tr');
+		var lastRow = tbl.length;
 
-			if(lastRow>1){
-					$("#MyTableSerials > tbody > tr").each(function(index) {
-						var zxitmcode = $(this).find('input[type="hidden"][name="lagyitmcode"]').val();
-						var zxserial = $(this).find('input[type="hidden"][name="lagyserial"]').val();
-						var zxuom = $(this).find('input[type="hidden"][name="lagycuom"]').val();	
-						var zxqty = $(this).find('input[name="lagyqtyput"]').val();		
-						var zxloca = $(this).find('input[type="hidden"][name="lagylocas"]').val();	
-						var zxlocadesc = $(this).find('input[type="hidden"][name="lagylocadesc"]').val();
-						var zxexpd = $(this).find('input[type="hidden"][name="lagyexpd"]').val();
-						var zxnident = $(this).find('input[type="hidden"][name="lagyrefident"]').val();
-						var zxreference = $(this).find('input[type="hidden"][name="lagyrefno"]').val();
-						var zxmainident = $("#serdisrefident").val();
+		if(lastRow>1){
+			$("#MyTableSerials > tbody > tr").each(function(index) {  
+				var zxitmcode = $(this).find('input[type="hidden"][name="lagyitmcode"]').val();
+				var zxlotno = $(this).find('input[type="hidden"][name="lagylotno"]').val();
+				var zxpacklst = $(this).find('input[type="hidden"][name="lagypacklist"]').val();
+				var zxuom = $(this).find('input[type="hidden"][name="lagycuom"]').val();	
+				var zxqty = $(this).find('input[name="lagyqtyput"]').val();		
+				var zxloca = $(this).find('input[type="hidden"][name="lagylocas"]').val();	
+				var zxlocadesc = $(this).find('input[type="hidden"][name="lagylocadesc"]').val();
+				var zxnident = $(this).find('input[type="hidden"][name="lagyrefident"]').val();
+				var zxreference = $(this).find('input[type="hidden"][name="lagyrefno"]').val();
+				var zxmainident = $("#serdisrefident").val();
 
-						if(parseFloat(zxqty) > 0){
-							InsertToSerials(zxitmcode,zxserial,zxuom,zxqty,zxloca,zxlocadesc,zxexpd,zxnident,zxreference,zxmainident);			
-						}
+				if(parseFloat(zxqty) > 0){
+					InsertToSerials(zxitmcode,zxlotno,zxpacklst,zxuom,zxqty,zxloca,zxlocadesc,zxnident,zxreference,zxmainident);			
+				}
 
-					});
-			}
-		
-			//close modal
-			$("#SerialMod").modal("hide");
+			});
+		}
+	
+		//close modal
+		$("#SerialMod").modal("hide");
 	});
 
 });
@@ -922,21 +922,21 @@ function InsertDetSerial(itmcode, itmname, itmunit, itemrrident, itemqty, itmfct
 	$("#SerialMod").modal("show");
 }
 
-function InsertToSerials(itmcode,serials,uoms,qtys,locas,locasdesc,expz,nident,refe,mainident){ 
+function InsertToSerials(itmcode,lotsno,packlist,uoms,qtys,locas,locasdesc,nident,refe,mainident){
 
 	$("<tr>").append(
 		$("<td width=\"120px\" style=\"padding:1px\">").html("<input type='hidden' value='"+itmcode+"' name=\"sertabitmcode\" id=\"sertabitmcode\"><input type='hidden' value='"+mainident+"' name=\"sertabident\" id=\"sertabident\"><input type='hidden' value='"+nident+"' name=\"sertabreferid\" id=\"sertabreferid\"><input type='hidden' value='"+refe+"' name=\"sertabrefer\" id=\"sertabrefer\">"+itmcode),
-		$("<td>").html("<input type='hidden' value='"+serials+"' name=\"sertabserial\" id=\"sertabserial\">"+serials), 
+		$("<td>").html("<input type='hidden' value='"+lotsno+"' name=\"sertablotsno\" id=\"sertablotsno\">"+lotsno), 
+		$("<td>").html("<input type='hidden' value='"+packlist+"' name=\"sertabpackno\" id=\"sertabpackno\">"+packlist), 
+		$("<td width=\"150x\" style=\"padding:1px\">").html("<input type='hidden' value='"+locas+"' name=\"sertablocas\" id=\"sertablocas\">"+locasdesc),
 		$("<td width=\"80px\" style=\"padding:1px\">").html("<input type='hidden' value='"+uoms+"' name=\"sertabuom\" id=\"sertabuom\">"+uoms),
 		$("<td width=\"80px\" style=\"padding:1px\">").html("<input type='hidden' value='"+qtys+"' name=\"sertabqty\" id=\"sertabqty\">"+qtys),
-		$("<td width=\"150x\" style=\"padding:1px\">").html("<input type='hidden' value='"+locas+"' name=\"sertablocas\" id=\"sertablocas\">"+locasdesc),
-		$("<td width=\"100px\" style=\"padding:1px\">").html("<input type='hidden' value='"+expz+"' name=\"sertabesp\" id=\"sertabesp\">"+expz),
 		$("<td width=\"80px\" style=\"padding:1px\">").html("<input class='btn btn-danger btn-xs' type='button' id='delsrx" + itmcode + "' value='delete' />")
 	).appendTo("#MyTable2 tbody");
 
-									$("#delsrx"+itmcode).on('click', function() {
-										$(this).closest('tr').remove();
-									});
+	$("#delsrx"+itmcode).on('click', function() {
+		$(this).closest('tr').remove();
+	});
 		
 }
 
@@ -1511,32 +1511,32 @@ function loaddetails(){
 
 }
 
-function loadserials(){	
+	function loadserials(){	
 
-	   		$.ajax({
-					url : "th_serialslist.php?id=" + $("#txtcpono").val(),
-					type: "GET",
-					dataType: "JSON",
-					async: false,
-					success: function(data)
-					{	
-					   console.log(data);
-             $.each(data,function(index,item){
+		$.ajax({
+			url : "th_serialslist.php?id=" + $("#txtcpono").val(),
+			type: "GET",
+			dataType: "JSON",
+			async: false,
+			success: function(data)
+			{	
+				console.log(data);
+				$.each(data,function(index,item){
 
-								//InsertToSerials(itmcode,serials,uoms,qtys,locas,locasdesc,expz,nident,refe,mainident){);
-								InsertToSerials(item.citemno,item.cserial,item.cunit,item.nqty,item.nlocation,item.locadesc,item.dexpired,item.nrefidentity,item.crefno,0);
-											   
-					   });
-						
-					},
-					error: function (jqXHR, textStatus, errorThrown)
-					{
-						alert(jqXHR.responseText);
-					}
-					
+					//itmcode,lotsno,packlist,uoms,qtys,locas,locasdesc,nident,refe,mainident
+					InsertToSerials(item.citemno,item.lotsno,item.packlist,item.cunit,item.nqty,item.nlocation,item.locadesc,item.nrefidentity,item.crefno,0);
+										
 				});
+				
+			},
+			error: function (jqXHR, textStatus, errorThrown)
+			{
+				alert(jqXHR.responseText);
+			}
+			
+		});
 
-}
+	}
 
 
 </script>

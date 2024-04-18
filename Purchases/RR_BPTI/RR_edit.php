@@ -785,7 +785,7 @@ else{
 		});
 
 		$('.datepick').datetimepicker({
-		format: 'MM/DD/YYYY',
+			format: 'MM/DD/YYYY',
 		});	
 
 		$("#selserloc").select2({
@@ -955,8 +955,8 @@ else{
 			var refnox = $("#serdisrefno").val(); 
 
 			//checkQty if not over total
-			xval1 = parseFloat(qtys) + parseFloat($("#ToInserted").val());
-			xval2 = parseFloat($("#TonnedIns").val());
+			xval1 = parseFloat(qtys) + parseFloat($("#ToInserted").val().replace(/,/g,''));
+			xval2 = parseFloat($("#TonnedIns").val().replace(/,/g,''));
 
 			if(xval1<=xval2){
 				InsertToSerials(itmcode,itmdesc,lotno,packlist,uoms,qtys,locas,locasdesc,itmcoderefident,refnox);

@@ -93,425 +93,423 @@ $company = $_SESSION['companyid'];
 </head>
 
 <body style="padding:5px">
-<input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
+	<input type="hidden" value='<?=json_encode(@$arruomslist)?>' id="hdnitmfactors">
 
-<form action="RR_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
-	<input type="hidden" value="<?php echo $nCHKREFvalue;?>" name="hdnCHECKREFval" id="hdnCHECKREFval">
-	<div class="portlet">
-		<div class="portlet-title">
-			<div class="caption">
-				<i class="fa fa-download"></i>New Receiving
+	<form action="RR_newsave.php" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
+		<input type="hidden" value="<?php echo $nCHKREFvalue;?>" name="hdnCHECKREFval" id="hdnCHECKREFval">
+		<div class="portlet">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-download"></i>New Receiving
+				</div>
 			</div>
-		</div>
-		<div class="portlet-body">
-       
-			<ul class="nav nav-tabs">
-				<li class="active"><a href="#home">RR Details</a></li>
-				<li><a href="#attc">Attachments</a></li>
-			</ul>
-
-			<div class="tab-content">  
-      			<div id="home" class="tab-pane fade in active" style="padding-left:5px; padding-top:10px">
-
-					<table width="100%" border="0">
-						<tr>
-							<tH width="100">Supplier:</tH>
-							<td style="padding:2px">
-								<div class="col-xs-12 nopadding">
-									<div class="col-xs-3 nopadding">
-										<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" value="" readonly>
-									</div>
-
-									<div class="col-xs-8 nopadwleft">
-										<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" value="">
-									</div> 
-								</div>
-							</td>
-							<tH width="150">Supplier DR:</tH>
-							<td width="250" style="padding:2px;">
-								<div class="col-xs-8 nopadding">
-									<input type='text' class="form-control input-sm" id="txtSuppSI" name="txtSuppSI" required/>
-								</div>
-							</td>
-						</tr>
-
-						<tr>
-							<tH width="100">Remarks:</tH>
-							<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div></td>
-							<tH width="150" style="padding:2px">Date Received:</tH>
-							<td style="padding:2px">
-								<div class="col-xs-8 nopadding">
-									<input type='text' class="datepick form-control input-sm" id="date_received" name="date_received" />
-								</div>		
-								</td>
-						</tr>
+			<div class="portlet-body">
 		
-						<tr>
-							<tH width="100"></tH>
-							<td style="padding:2px" colspan="3">
-								<div class="col-xs-12">
-												<div class="col-xs-3 nopadding">
-													<!--<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">--> 						
-														<?php
-														/*
-																$nvaluecurrbase = "";	
-																$nvaluecurrbasedesc = "";	
-																$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
-																
-																	if (mysqli_num_rows($result)!=0) {
-																		$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
-																		
-																		$nvaluecurrbase = $all_course_data['cvalue']; 
-																			
-																	}
-																	else{
-																		$nvaluecurrbase = "";
-																	}
-											
-																*/
-																	//	$objcurrs = listcurrencies();
-																	//	$objrows = json_decode($objcurrs,true);
-																			
-																//foreach($objrows as $rows){
-																//	if ($nvaluecurrbase==$rows['currencyCode']) {
-																//		$nvaluecurrbasedesc = $rows['currencyName'];
-																//	}
-																	
-														?>
-																<!--	<option value="<?//=$rows['currencyCode']?>" <?//php if ($nvaluecurrbase==$rows['currencyCode']) { echo "selected='true'"; } ?>><?//=$rows['currencyCode']." - ".strtoupper($rows['currencyName'])?></option>-->
-														<?php
-																//}
-														?>
-													<!--</select>
-														<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?//php echo $nvaluecurrbase; ?>"> 	
-														<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?//php echo $nvaluecurrbasedesc; ?>"> -->
-												</div>
-												<div class="col-xs-1 nopadwleft"><!-- class="numeric required form-control input-sm text-right" 
-													<input type='hidden' id="basecurrval" name="basecurrval" value="1">	 -->
-												</div>
+				<ul class="nav nav-tabs">
+					<li class="active"><a href="#home">RR Details</a></li>
+					<li><a href="#attc">Attachments</a></li>
+				</ul>
 
-												<div class="col-xs-5" id="statgetrate" style="padding: 4px !important"> 
-															
-												</div>
-								</div>
-							</td>
-							
-						</tr>
+				<div class="tab-content">  
+					<div id="home" class="tab-pane fade in active" style="padding-left:5px; padding-top:10px">
 
-						<tr>
-							<td colspan="2">&nbsp;</td>
-							<th style="padding:2px"><!--<span style="padding:2px">PURCHASE TYPE:</span>-->&nbsp;</th>
-							<td>&nbsp;
-							<!--
-							<div class="col-xs-5">
-									<select id="seltype" name="seltype" class="form-control input-sm selectpicker"  tabindex="3">
-										<option value="Grocery">Grocery</option>
-										<option value="Cripples">Cripples</option>
-									</select>
-						</div>
-						--></td>
-						</tr>
+						<table width="100%" border="0">
+							<tr>
+								<tH width="100">Supplier:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-12 nopadding">
+										<div class="col-xs-3 nopadding">
+											<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" value="" readonly>
+										</div>
 
-					</table>
-				
-				</div>
-
-				<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px">
-				
-					<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-					<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
-					<input type="file" name="upload[]" id="file-0" multiple />
-
-				</div>
-			</div>
-
-			<div class="portlet light bordered" style="margin-top: 20px">
-				<div class="portlet-title">
-					<div class="caption">
-						<i class="fa fa-cogs"></i>Details
-					</div>
-					<div class="inputs">
-						<div class="portlet-input input-inline">							
-							<?php
-								if($nCHKREFvalue==0) {
-							?>
-								<div class="col-xs-12 nopadding">
-									<div class="col-xs-3 nopadding">
-										<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Item/SKU Code..." width="25" tabindex="4"  autocomplete="off">
-										<input type="hidden" id="txtcskuid" name="txtcskuid">
-									</div> 
-									<div class="col-xs-9 nopadwleft">
-										<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm" placeholder="(CTRL+F) Search Product Name..." size="80" tabindex="5" autocomplete="off">
+										<div class="col-xs-8 nopadwleft">
+											<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" value="">
+										</div> 
 									</div>
-								</div>
-							<?php
-								}
-								else{
-							?> 
-								<input type="hidden" id="txtprodid" name="txtprodid">
-								<input type="hidden" id="txtprodnme" name="txtprodnme">
-								<input type="hidden" id="txtcskuid" name="txtcskuid">
-							<?php
-								}
+								</td>
+								<tH width="150">Supplier DR:</tH>
+								<td width="250" style="padding:2px;">
+									<div class="col-xs-8 nopadding">
+										<input type='text' class="form-control input-sm" id="txtSuppSI" name="txtSuppSI" required/>
+									</div>
+								</td>
+							</tr>
 
-							?> 
+							<tr>
+								<tH width="100">Remarks:</tH>
+								<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2"></div></td>
+								<tH width="150" style="padding:2px">Date Received:</tH>
+								<td style="padding:2px">
+									<div class="col-xs-8 nopadding">
+										<input type='text' class="datepick form-control input-sm" id="date_received" name="date_received" />
+									</div>		
+									</td>
+							</tr>
+			
+							<tr>
+								<tH width="100"></tH>
+								<td style="padding:2px" colspan="3">
+									<div class="col-xs-12">
+													<div class="col-xs-3 nopadding">
+														<!--<select class="form-control input-sm" name="selbasecurr" id="selbasecurr">--> 						
+															<?php
+															/*
+																	$nvaluecurrbase = "";	
+																	$nvaluecurrbasedesc = "";	
+																	$result = mysqli_query($con,"SELECT * FROM `parameters` WHERE ccode='DEF_CURRENCY'"); 
+																	
+																		if (mysqli_num_rows($result)!=0) {
+																			$all_course_data = mysqli_fetch_array($result, MYSQLI_ASSOC);
+																			
+																			$nvaluecurrbase = $all_course_data['cvalue']; 
+																				
+																		}
+																		else{
+																			$nvaluecurrbase = "";
+																		}
+												
+																	*/
+																		//	$objcurrs = listcurrencies();
+																		//	$objrows = json_decode($objcurrs,true);
+																				
+																	//foreach($objrows as $rows){
+																	//	if ($nvaluecurrbase==$rows['currencyCode']) {
+																	//		$nvaluecurrbasedesc = $rows['currencyName'];
+																	//	}
+																		
+															?>
+																	<!--	<option value="<?//=$rows['currencyCode']?>" <?//php if ($nvaluecurrbase==$rows['currencyCode']) { echo "selected='true'"; } ?>><?//=$rows['currencyCode']." - ".strtoupper($rows['currencyName'])?></option>-->
+															<?php
+																	//}
+															?>
+														<!--</select>
+															<input type='hidden' id="basecurrvalmain" name="basecurrvalmain" value="<?//php echo $nvaluecurrbase; ?>"> 	
+															<input type='hidden' id="hidcurrvaldesc" name="hidcurrvaldesc" value="<?//php echo $nvaluecurrbasedesc; ?>"> -->
+													</div>
+													<div class="col-xs-1 nopadwleft"><!-- class="numeric required form-control input-sm text-right" 
+														<input type='hidden' id="basecurrval" name="basecurrval" value="1">	 -->
+													</div>
 
-							<input type="hidden" name="hdnunit" id="hdnunit">
-						</div>
+													<div class="col-xs-5" id="statgetrate" style="padding: 4px !important"> 
+																
+													</div>
+									</div>
+								</td>
+								
+							</tr>
+
+							<tr>
+								<td colspan="2">&nbsp;</td>
+								<th style="padding:2px"><!--<span style="padding:2px">PURCHASE TYPE:</span>-->&nbsp;</th>
+								<td>&nbsp;
+								<!--
+								<div class="col-xs-5">
+										<select id="seltype" name="seltype" class="form-control input-sm selectpicker"  tabindex="3">
+											<option value="Grocery">Grocery</option>
+											<option value="Cripples">Cripples</option>
+										</select>
+							</div>
+							--></td>
+							</tr>
+
+						</table>
+					
+					</div>
+
+					<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px">
+					
+						<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+						<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+						<input type="file" name="upload[]" id="file-0" multiple />
+
 					</div>
 				</div>
-				<div class="portlet-body" style="overflow: auto">
 
-					<ul class="nav nav-tabs">
-						<li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Items List</a></li>
-						<li id="liacct"><a href="#2Acct" data-toggle="tab">Items Inventory</a></li>
-					</ul>
+				<div class="portlet light bordered" style="margin-top: 20px">
+					<div class="portlet-title">
+						<div class="caption">
+							<i class="fa fa-cogs"></i>Details
+						</div>
+						<div class="inputs">
+							<div class="portlet-input input-inline">							
+								<?php
+									if($nCHKREFvalue==0) {
+								?>
+									<div class="col-xs-12 nopadding">
+										<div class="col-xs-3 nopadding">
+											<input type="text" id="txtprodid" name="txtprodid" class="form-control input-sm" placeholder="Search Item/SKU Code..." width="25" tabindex="4"  autocomplete="off">
+											<input type="hidden" id="txtcskuid" name="txtcskuid">
+										</div> 
+										<div class="col-xs-9 nopadwleft">
+											<input type="text" id="txtprodnme" name="txtprodnme" class="form-control input-sm" placeholder="(CTRL+F) Search Product Name..." size="80" tabindex="5" autocomplete="off">
+										</div>
+									</div>
+								<?php
+									}
+									else{
+								?> 
+									<input type="hidden" id="txtprodid" name="txtprodid">
+									<input type="hidden" id="txtprodnme" name="txtprodnme">
+									<input type="hidden" id="txtcskuid" name="txtcskuid">
+								<?php
+									}
 
-					<div class="tab-content nopadwtop2x">
-						<div class="tab-pane active" id="1Det" style="padding-left:5px; padding-top:10px">
+								?> 
 
-							<div style="min-height: 30vh; min-width: 1500px;">
-					
-								<table id="MyTable" class="MyTable" width="100%" cellpadding="3px">
-									<thead>
-										<tr>
-											<th style="border-bottom:1px solid #999">&nbsp;</th>
-											<th style="border-bottom:1px solid #999">Code</th>
-											<th style="border-bottom:1px solid #999">Name</th>
-											<th style="border-bottom:1px solid #999">Size Spec</th>
-											<th style="border-bottom:1px solid #999">UOM</th>
-											<th style="border-bottom:1px solid #999">Factor</th>
-											<th style="border-bottom:1px solid #999">Qty</th>
-											<th style="border-bottom:1px solid #999">&nbsp;&nbsp;&nbsp;Ref PO</th>
-											<th style="border-bottom:1px solid #999">&nbsp;&nbsp;&nbsp;Cost Center</th>
-											<!--<th style="border-bottom:1px solid #999">Price</th>
-											<th style="border-bottom:1px solid #999">Amount</th>
-											<th style="border-bottom:1px solid #999">Total Amt in <?//php echo $nvaluecurrbase; ?></th>-->
-											<!--<th style="border-bottom:1px solid #999">Date Expired</th>-->
-											<th style="border-bottom:1px solid #999">Remarks</th>
-											<th style="border-bottom:1px solid #999">&nbsp;</th>
-										</tr>
-									</thead>
-									<tbody class="tbody">
-									</tbody>
-									
-								</table>
+								<input type="hidden" name="hdnunit" id="hdnunit">
 							</div>
 						</div>
+					</div>
+					<div class="portlet-body" style="overflow: auto">
 
-						<div class="tab-pane fade in" id="2Acct" style="padding-left:5px; padding-top:10px">
+						<ul class="nav nav-tabs">
+							<li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Items List</a></li>
+							<li id="liacct"><a href="#2Acct" data-toggle="tab">Items Inventory</a></li>
+						</ul>
 
-							<div style="min-height: 30vh; width: 1100px;">
+						<div class="tab-content nopadwtop2x">
+							<div class="tab-pane active" id="1Det" style="padding-left:5px; padding-top:10px">
+
+								<div style="min-height: 30vh; min-width: 1500px;">
 						
-								<table id="MyTable2" class="MyTable" width="100%" cellpadding="3px">
-									<thead>
-										<tr>                   	
-											<th style="border-bottom:1px solid #999">Item Code</th>
-											<th style="border-bottom:1px solid #999">Description</th>
-											<th style="border-bottom:1px solid #999">Lot No.</th>
-											<th style="border-bottom:1px solid #999">Packing List</th>
-											<th style="border-bottom:1px solid #999">Location</th>
-											<th style="border-bottom:1px solid #999">UOM</th>
-											<th style="border-bottom:1px solid #999">Qty</th>
-											<th style="border-bottom:1px solid #999">&nbsp;</th>
-										</tr>
+									<table id="MyTable" class="MyTable" width="100%" cellpadding="3px">
+										<thead>
+											<tr>
+												<th style="border-bottom:1px solid #999">&nbsp;</th>
+												<th style="border-bottom:1px solid #999">Code</th>
+												<th style="border-bottom:1px solid #999">Name</th>
+												<th style="border-bottom:1px solid #999">Size Spec</th>
+												<th style="border-bottom:1px solid #999">UOM</th>
+												<th style="border-bottom:1px solid #999">Factor</th>
+												<th style="border-bottom:1px solid #999">Qty</th>
+												<th style="border-bottom:1px solid #999">&nbsp;&nbsp;&nbsp;Ref PO</th>
+												<th style="border-bottom:1px solid #999">&nbsp;&nbsp;&nbsp;Cost Center</th>
+												<!--<th style="border-bottom:1px solid #999">Price</th>
+												<th style="border-bottom:1px solid #999">Amount</th>
+												<th style="border-bottom:1px solid #999">Total Amt in <?//php echo $nvaluecurrbase; ?></th>-->
+												<!--<th style="border-bottom:1px solid #999">Date Expired</th>-->
+												<th style="border-bottom:1px solid #999">Remarks</th>
+												<th style="border-bottom:1px solid #999">&nbsp;</th>
+											</tr>
+										</thead>
+										<tbody class="tbody">
+										</tbody>
+										
+									</table>
+								</div>
+							</div>
+
+							<div class="tab-pane fade in" id="2Acct" style="padding-left:5px; padding-top:10px">
+
+								<div style="min-height: 30vh; width: 1100px;">
+							
+									<table id="MyTable2" class="MyTable" width="100%" cellpadding="3px">
+										<thead>
+											<tr>                   	
+												<th style="border-bottom:1px solid #999">Item Code</th>
+												<th style="border-bottom:1px solid #999">Description</th>
+												<th style="border-bottom:1px solid #999">Lot No.</th>
+												<th style="border-bottom:1px solid #999">Packing List</th>
+												<th style="border-bottom:1px solid #999">Location</th>
+												<th style="border-bottom:1px solid #999">UOM</th>
+												<th style="border-bottom:1px solid #999">Qty</th>
+												<th style="border-bottom:1px solid #999">&nbsp;</th>
+											</tr>
+										</thead>
+										<tbody>
+										</tbody>                       
+									</table>
+									<input type="hidden" name="hdnserialscnt" id="hdnserialscnt">
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+				<div class="row nopadwtop2x">
+					<div class="col-xs-6">
+						<div class="portlet">
+							<div class="portlet-body">
+
+								<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='RR.php';" id="btnMain" name="btnMain">
+									Back to Main<br>(ESC)
+								</button>
+
+								<button type="button" class="btn purple btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
+									PO<br>(Insert)
+								</button>
+		
+								<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();">
+									Save<br> (CTRL+S)
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</form>
+
+	<!-- 1) Alert Modal -->
+	<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+		<div class="vertical-alignment-helper">
+			<div class="modal-dialog vertical-align-top">
+				<div class="modal-content">
+				<div class="alert-modal-danger">
+					<p id="AlertMsg"></p>
+					<p>
+						<center>
+							<button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
+						</center>
+					</p>
+				</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="SerialMod" role="dialog" data-keyboard="false" data-backdrop="static">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<div class="row nopadwtop">
+						<div class="col-xs-6 nopadding">
+							<h4 class="modal-title" id="InvSerDetHdr">Inventory Detail</h4>
+							<input type="hidden" class="form-control input-sm" name="serdisitmcode" id="serdisitmcode">
+							<input type="hidden" class="form-control input-sm" name="serdisitmdesc" id="serdisitmdesc">
+							<input type="hidden" class="form-control input-sm" name="serdisrefident" id="serdisrefident"> 
+							<input type="hidden" class="form-control input-sm" name="serdisrefno" id="serdisrefno">
+						</div>
+						<div class="col-xs-6 nopadding">
+							<div class="row">
+								<div class="col-xs-1 nopadwtop text-right"> </div>
+								<div class="col-xs-3 nopadwtop text-right" style="font-size: 1.25em">
+									Total Inserted
+								</div>
+								<div class="col-xs-2 nopadwleft text-right">
+									<input type="text" class="form-control input-sm text-right" name="ToInserted" id="ToInserted" value="0" readonly >
+								</div>
+								<div class="col-xs-3 nopadwtop text-right" style="font-size: 1.25em"> 
+									Total Qty
+								</div>
+								<div class="col-xs-2 nopadwleft text-right">
+									<input type="text" class="form-control input-sm text-right" name="TonnedIns" id="TonnedIns" value="0" readonly>
+								</div>	
+								<div class="col-xs-1 nopadwtop text-right"> </div>					
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="modal-body" style="height:20vh">
+
+					<div class="row nopadwtop">
+						<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Quantity</b></div>
+						<div class="col-xs-2 nopadding"><input type="text" class="form-control input-sm" name="serdisqty" id="serdisqty" value="1" ></div>
+						<div class="col-xs-1 nopadwleft"><input type="text" class="form-control input-sm" name="serdisuom" id="serdisuom" readonly></div>
+
+						<div class="col-xs-7 nopadwleft" id="TheSerialStat"></div>
+
+						
+					</div>
+					<div class="row nopadwtop">
+						<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Location:</b></div>
+						<div class="col-xs-3 nopadding">
+							<select class="form-control input-sm" name="selserloc" id="selserloc">
+								<?php
+										$qrya = mysqli_query($con,"Select * From mrp_locations Order By cdesc");
+										while($row = mysqli_fetch_array($qrya, MYSQLI_ASSOC)){
+											echo "<option value=\"".$row['nid']."\" data-id=\"".$row['cdesc']."\">".$row['cdesc']."</option>";
+										}
+								?>
+							</select>
+						</div>
+					</div> 
+					<div class="row nopadwtop">
+						<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Lot #</b></div>
+						<div class="col-xs-9 nopadding"><input type="text" class="form-control input-sm" name="clotno" id="clotno" value="" ></div>
+					</div>
+					<div class="row nopadwtop">
+						<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Packing List</b></div>  
+						<div class="col-xs-9 nopadding"><input type="text" class="form-control input-sm" name="cpackno" id="cpackno" value="" ></div>
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button class="btn btn-success btn-sm" name="btnInsSer" id="btnInsSer">Insert (Enter)</button>
+					<button class="btn btn-danger btn-sm" name="btnClsSer" id="btnClsSer" data-dismiss="modal" >Close (Ctrl+X)</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- FULL PO LIST REFERENCES-->
+	<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h3 class="modal-title" id="InvListHdr">PO List</h3>
+				</div>
+				
+				<div class="modal-body" style="height:40vh">
+				
+					<div class="col-xs-12 nopadding">
+
+						<div class="form-group">
+							<div class="col-xs-3 nopadding pre-scrollable" style="height:37vh">
+								<table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight small">
+								<thead>
+									<tr>
+									<th>PO No</th>
+									<th>Date</th>
+									</tr>
 									</thead>
 									<tbody>
-									</tbody>                       
+									</tbody>
 								</table>
-								<input type="hidden" name="hdnserialscnt" id="hdnserialscnt">
 							</div>
-						</div>
 
-					</div>
-				</div>
-			</div>
-
-			<div class="row nopadwtop2x">
-				<div class="col-xs-6">
-					<div class="portlet">
-						<div class="portlet-body">
-
-   							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='RR.php';" id="btnMain" name="btnMain">
-								Back to Main<br>(ESC)
-							</button>
-
-    						<button type="button" class="btn purple btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
-								PO<br>(Insert)
-							</button>
-    
-     						<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();">
-								Save<br> (CTRL+S)
-							</button>
-						</div>
-					</div>
-				</div>
-			</div>
-
-		</div>
-	</div>
-    
-<!-- FULL PO LIST REFERENCES-->
-
-<div class="modal fade" id="mySIRef" role="dialog" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title" id="InvListHdr">PO List</h3>
-            </div>
-            
-            <div class="modal-body" style="height:40vh">
-            
-				<div class="col-xs-12 nopadding">
-
-					<div class="form-group">
-						<div class="col-xs-3 nopadding pre-scrollable" style="height:37vh">
-							<table name='MyInvTbl' id='MyInvTbl' class="table table-small table-highlight small">
-							<thead>
-								<tr>
-								<th>PO No</th>
-								<th>Date</th>
-								</tr>
-								</thead>
-								<tbody>
-								</tbody>
-							</table>
-						</div>
-
-						<div class="col-xs-9 nopadwleft pre-scrollable" style="height:37vh">
-							<table name='MyInvDetList' id='MyInvDetList' class="table table-small small">
-							<thead>
-								<tr>
-								<th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
-								<th>Item No</th>
-								<th>Description</th>
-								<th>UOM</th>
-								<th>Qty</th>
-																<!--<th>Price</th>
-																<th>Amount</th>
-																<th>Cur</th>-->
-								</tr>
-								</thead>
-								<tbody>
-									
-								</tbody>
-							</table>
-						</div>
-				</div>
-
-				</div>
-         	            
-			</div>
-			
-            <div class="modal-footer">
-                <button type="button" id="btnInsDet" onClick="InsertSI()" class="btn btn-primary">Insert</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<!-- End FULL INVOICE LIST -->
-
-</form>
-
-<!-- 1) Alert Modal -->
-<div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">
-    <div class="vertical-alignment-helper">
-        <div class="modal-dialog vertical-align-top">
-            <div class="modal-content">
-               <div class="alert-modal-danger">
-                  <p id="AlertMsg"></p>
-                <p>
-                    <center>
-                        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="alertbtnOK">Ok</button>
-                    </center>
-                </p>
-               </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="SerialMod" role="dialog" data-keyboard="false" data-backdrop="static">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-				<div class="row nopadwtop">
-					<div class="col-xs-6 nopadding">
-						<h4 class="modal-title" id="InvSerDetHdr">Inventory Detail</h4>
-						<input type="hidden" class="form-control input-sm" name="serdisitmcode" id="serdisitmcode">
-						<input type="hidden" class="form-control input-sm" name="serdisitmdesc" id="serdisitmdesc">
-						<input type="hidden" class="form-control input-sm" name="serdisrefident" id="serdisrefident"> 
-						<input type="hidden" class="form-control input-sm" name="serdisrefno" id="serdisrefno">
-					</div>
-					<div class="col-xs-6 nopadding">
-						<div class="row">
-							<div class="col-xs-1 nopadwtop text-right"> </div>
-							<div class="col-xs-3 nopadwtop text-right" style="font-size: 1.25em">
-								Total Inserted
+							<div class="col-xs-9 nopadwleft pre-scrollable" style="height:37vh">
+								<table name='MyInvDetList' id='MyInvDetList' class="table table-small small">
+								<thead>
+									<tr>
+									<th align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></th>
+									<th>Item No</th>
+									<th>Description</th>
+									<th>UOM</th>
+									<th>Qty</th>
+																	<!--<th>Price</th>
+																	<th>Amount</th>
+																	<th>Cur</th>-->
+									</tr>
+									</thead>
+									<tbody>
+										
+									</tbody>
+								</table>
 							</div>
-							<div class="col-xs-2 nopadwleft text-right">
-								<input type="text" class="form-control input-sm text-right" name="ToInserted" id="ToInserted" value="0" readonly >
-							</div>
-							<div class="col-xs-3 nopadwtop text-right" style="font-size: 1.25em"> 
-								Total Qty
-							</div>
-							<div class="col-xs-2 nopadwleft text-right">
-								<input type="text" class="form-control input-sm text-right" name="TonnedIns" id="TonnedIns" value="0" readonly>
-							</div>	
-							<div class="col-xs-1 nopadwtop text-right"> </div>					
-						</div>
 					</div>
-				</div>
-            </div>
-            
-            <div class="modal-body" style="height:20vh">
 
-				<div class="row nopadwtop">
-					<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Quantity</b></div>
-					<div class="col-xs-2 nopadding"><input type="text" class="form-control input-sm" name="serdisqty" id="serdisqty" value="1" ></div>
-					<div class="col-xs-1 nopadwleft"><input type="text" class="form-control input-sm" name="serdisuom" id="serdisuom" readonly></div>
-
-					<div class="col-xs-7 nopadwleft" id="TheSerialStat"></div>
-
-					
-				</div>
-				<div class="row nopadwtop">
-					<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Location:</b></div>
-					<div class="col-xs-3 nopadding">
-						<select class="form-control input-sm" name="selserloc" id="selserloc">
-							<?php
-									$qrya = mysqli_query($con,"Select * From mrp_locations Order By cdesc");
-									while($row = mysqli_fetch_array($qrya, MYSQLI_ASSOC)){
-										echo "<option value=\"".$row['nid']."\" data-id=\"".$row['cdesc']."\">".$row['cdesc']."</option>";
-									}
-							?>
-						</select>
 					</div>
-				</div> 
-				<div class="row nopadwtop">
-					<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Lot #</b></div>
-					<div class="col-xs-9 nopadding"><input type="text" class="form-control input-sm" name="clotno" id="clotno" value="" ></div>
+							
 				</div>
-				<div class="row nopadwtop">
-					<div class="col-xs-2 nopadwtop"><b>&nbsp;&nbsp;&nbsp;Packing List</b></div>  
-					<div class="col-xs-9 nopadding"><input type="text" class="form-control input-sm" name="cpackno" id="cpackno" value="" ></div>
+				
+				<div class="modal-footer">
+					<button type="button" id="btnInsDet" onClick="InsertSI()" class="btn btn-primary">Insert</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+
 				</div>
-			</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	<!-- End FULL INVOICE LIST -->
 
-			<div class="modal-footer">
-				<button class="btn btn-success btn-sm" name="btnInsSer" id="btnInsSer">Insert (Enter)</button>
-				<button class="btn btn-danger btn-sm" name="btnClsSer" id="btnClsSer" data-dismiss="modal" >Close (Ctrl+X)</button>
-			</div>
-		</div>
-	</div>
-</div>
-
-<form method="post" name="frmedit" id="frmedit" action="RR_edit.php">
-	<input type="hidden" name="txtctranno" id="txtctranno" value="">
-</form>
+	<form method="post" name="frmedit" id="frmedit" action="RR_edit.php">
+		<input type="hidden" name="txtctranno" id="txtctranno" value="">
+	</form>
 
 </body>
 </html>
@@ -562,8 +560,6 @@ $company = $_SESSION['companyid'];
 		
 		$('.datepick').datetimepicker({
 			format: 'MM/DD/YYYY',
-			useCurrent: false,
-			minDate: moment(),
 			defaultDate: moment(),
 		});	
 
@@ -702,8 +698,8 @@ $company = $_SESSION['companyid'];
 			var refnox = $("#serdisrefno").val(); 
 
 			//checkQty if not over total
-			xval1 = parseFloat(qtys) + parseFloat($("#ToInserted").val());
-			xval2 = parseFloat($("#TonnedIns").val());
+			xval1 = parseFloat(qtys) + parseFloat($("#ToInserted").val().replace(/,/g,''));
+			xval2 = parseFloat($("#TonnedIns").val().replace(/,/g,''));
 
 			if(xval1<=xval2){
 				InsertToSerials(itmcode,itmdesc,lotno,packlist,uoms,qtys,locas,locasdesc,itmcoderefident,refnox);
