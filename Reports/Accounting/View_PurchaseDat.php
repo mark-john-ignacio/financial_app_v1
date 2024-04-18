@@ -27,7 +27,8 @@
     $query = mysqli_query($con, $sql);
     if(mysqli_num_rows($query) != 0){
         while($row = $query -> fetch_assoc()){
-            $allapvno[] = $row['ctranno'];            
+            $allapvno[] = $row['ctranno'];   
+            $apventry[$row['ctranno']] = $row;    
         }
     }
 
