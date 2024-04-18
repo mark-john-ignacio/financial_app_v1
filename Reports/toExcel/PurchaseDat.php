@@ -31,7 +31,7 @@ $vat_code = $account['cacctno'];
 //getallapv with input tax
 $allapvno = array();
 $apventry = array();
-$sql = "SELECT A.ctranno, A.ctaxcode, B.nrate, A.ndebit, A.ncredit FROM glactivity A left join vatcode B on A.compcode=B.compcode and A.ctaxcode=B.cvatcode WHERE A.compcode = '$company' AND A.acctno = '$vat_code' and MONTH(A.ddate)=$monthcut and YEAR(A.ddate)=$yearcut";
+$sql = "SELECT A.cmodule, A.ctranno, A.ctaxcode, B.nrate, A.ndebit, A.ncredit FROM glactivity A left join vatcode B on A.compcode=B.compcode and A.ctaxcode=B.cvatcode WHERE A.compcode = '$company' AND A.acctno = '$vat_code' and MONTH(A.ddate)=$monthcut and YEAR(A.ddate)=$yearcut";
 $query = mysqli_query($con, $sql);
 if(mysqli_num_rows($query) != 0){
     while($row = $query -> fetch_assoc()){
