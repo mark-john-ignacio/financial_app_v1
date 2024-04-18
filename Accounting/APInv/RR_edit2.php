@@ -585,7 +585,7 @@ else{
 		 */
 		file_name.map(({name, ext}, i) => {
 
-			$vrx = encodeURIComponent(object.name);
+			$vrx = encodeURIComponent(name);
 			list_file.push("<?=$AttachUrlBase?>RI/<?=$company."_".$cpono?>/" + name)
 			console.log(ext);
 
