@@ -45,7 +45,7 @@ require_once "../../Connection/connection_string.php";
 		WHERE a.compcode='$company' and a.cpono = '".$_REQUEST['x']."' ".$qry;
 	*/
 
-	$sql = "select a.nident,a.citemno,a.cunit,a.nqty,a.cpono, a.nprice, a.nbaseamount,b.ccurrencycode from purchase_t a left join purchase b on a.compcode=b.compcode and a.cpono=b.cpono WHERE a.compcode='$company' and a.cpono = '".$_REQUEST['x']."' ".$qry;
+	$sql = "select a.nident,a.citemno,a.cunit,a.nqty,a.cpono, a.nprice, a.nbaseamount,b.ccurrencycode, a.citemdesc from purchase_t a left join purchase b on a.compcode=b.compcode and a.cpono=b.cpono WHERE a.compcode='$company' and a.cpono = '".$_REQUEST['x']."' ".$qry;
 
 	//echo $sql;
 	
@@ -78,7 +78,7 @@ $json = array();
 			if($remain>0){
 				$json['nident'] = $row['nident'];
 				$json['citemno'] = $row['citemno'];
-				$json['cdesc'] = @$arrresq[$row['citemno']];
+				$json['cdesc'] = $row['citemdesc'];
 				$json['nqty'] = $remain;
 				$json['cunit'] = $row['cunit'];
 				$json['nprice'] = $row['nprice'];

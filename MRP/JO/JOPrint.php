@@ -65,36 +65,46 @@ include('../../include/denied.php');
 		.tdright{
 			padding-right: 10px;
 		}
-		
+		#imgcontent {
+        	position: relative;
+		}
+		#imgcontent img {
+			position: absolute;
+			top: 2px;
+			left: 3px;
+		}
 	</style>
 </head>
 
 <body > <!-- onLoad="window.print()" -->
 
-<table border="0" width="100%" cellpadding="1px"  id="tblMain">
+<div id="imgcontent">
+	<img src="../<?=$logosrc?>" class="ribbon" alt="" width="150px"/>
+</div>
+
+<table border="0" width="100%"  id="tblMain">
 	<tr>
-		<td align="left" width="250px"> 
-			<img src="<?php echo "../".$logosrc; ?>" height="68px">
+		<!--<td align="left" width="250px"> 
+			<img src="<//php echo "../".$logosrc; ?>" height="68px">
 		</td>
 		<td align="left"> 
 
 				<table border="0" width="100%">
 						<tr>
-							<td><font style="font-size: 18px;"><?php echo $logonamz; ?></font></td>
+							<td><font style="font-size: 18px;"><?//php echo $logonamz; ?></font></td>
 						</tr>
 						<tr>
-							<td><font><?php echo $logoaddrs; ?></font></td>
+							<td><font><?//php echo $logoaddrs; ?></font></td>
 						</tr>
 				</table>
 
-		</td>
+		</td>-->
 		<td align="center"> 
 			<h1>JOB ORDER</h1>
 		</td>
 	</tr>
 	
 </table>
-<br><br>
 
 <!-- MAIN JO PRINT -->
 <table border="0" width="100%" cellpadding="1px"  id="tblMain">
@@ -211,6 +221,7 @@ include('../../include/denied.php');
 <?php
 	foreach($arrmrpjoproc as $rsc){
 ?>
+
 	<table border="0" width="100%" cellpadding="1px"  id="tblMain" style="page-break-before:always">
 		<tr>
 			<td width="100px"><b>Date Release: </b></td>

@@ -263,51 +263,51 @@
 					
 					<!--Delivery To Panel-->
 						<div id="menu1" class="tab-pane fade" style="padding-left:5px; padding-left: 10px;">
-									<table width="100%" border="0">
-										<tr>
-											<td width="150"><b>Customer</b></td>
-											<td width="310" colspan="2" style="padding:2px">
-												<div class="col-xs-8 nopadding">
-													<div class="col-xs-3 nopadding">
-														<input type="text" id="txtdelcustid" name="txtdelcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
-													</div>
-													<div class="col-xs-9 nopadwleft">
-														<input type="text" class="form-control input-sm" id="txtdelcust" name="txtdelcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
-													</div> 
-												</div>						
-											</td>
-										</tr>
-										<tr>
-											<td><button type="button" class="btn btn-primary btn-sm" tabindex="6" id="btnNewAdd" name="btnNewAdd">Select Address</button></td>
-											<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="form-control input-sm" id="txtchouseno" name="txtchouseno" placeholder="House/Building No./Street..." autocomplete="off"  readonly="true" /></div></td>
-										</tr>					
-										<tr>
-											<td>&nbsp;</td>
-											<td colspan="2" style="padding:2px">
-												<div class="col-xs-8 nopadding">
-													<div class="col-xs-6 nopadding">
-														<input type="text" class="form-control input-sm" id="txtcCity" name="txtcCity" placeholder="City..." autocomplete="off"  readonly="true" />
-													</div>														
-													<div class="col-xs-6 nopadwleft">
-														<input type="text" class="form-control input-sm" id="txtcState" name="txtcState" placeholder="State..." autocomplete="off"   readonly="true" />
-													</div>
-												</div>
-											</td>
-										</tr> 
-										<tr>
-											<td>&nbsp;</td>
-											<td colspan="2" style="padding:2px">
-												<div class="col-xs-8 nopadding">
-													<div class="col-xs-9 nopadding">
-														<input type="text" class="form-control input-sm" id="txtcCountry" name="txtcCountry" placeholder="Country..." autocomplete="off" readonly="true" />
-													</div>														
-													<div class="col-xs-3 nopadwleft">
-														<input type="text" class="form-control input-sm" id="txtcZip" name="txtcZip" placeholder="Zip Code..." autocomplete="off"  readonly="true" />
-													</div>
-												</div>
-											</td>
-										</tr> 
-									</table>
+							<table width="100%" border="0">
+								<tr>
+									<td width="150"><b>Customer</b></td>
+									<td width="310" colspan="2" style="padding:2px">
+										<div class="col-xs-8 nopadding">
+											<div class="col-xs-3 nopadding">
+												<input type="text" id="txtdelcustid" name="txtdelcustid" class="form-control input-sm" placeholder="Customer Code..." tabindex="1">
+											</div>
+											<div class="col-xs-9 nopadwleft">
+												<input type="text" class="form-control input-sm" id="txtdelcust" name="txtdelcust" width="20px" tabindex="1" placeholder="Search Customer Name..."  size="60" autocomplete="off">
+											</div> 
+										</div>						
+									</td>
+								</tr>
+								<tr>
+									<td><button type="button" class="btn btn-primary btn-sm" tabindex="6" id="btnNewAdd" name="btnNewAdd">Select Address</button></td>
+									<td colspan="2" style="padding:2px"><div class="col-xs-8 nopadding"><input type="text" class="form-control input-sm" id="txtchouseno" name="txtchouseno" placeholder="House/Building No./Street..." autocomplete="off"  readonly="true" /></div></td>
+								</tr>					
+								<tr>
+									<td>&nbsp;</td>
+									<td colspan="2" style="padding:2px">
+										<div class="col-xs-8 nopadding">
+											<div class="col-xs-6 nopadding">
+												<input type="text" class="form-control input-sm" id="txtcCity" name="txtcCity" placeholder="City..." autocomplete="off"  readonly="true" />
+											</div>														
+											<div class="col-xs-6 nopadwleft">
+												<input type="text" class="form-control input-sm" id="txtcState" name="txtcState" placeholder="State..." autocomplete="off"   readonly="true" />
+											</div>
+										</div>
+									</td>
+								</tr> 
+								<tr>
+									<td>&nbsp;</td>
+									<td colspan="2" style="padding:2px">
+										<div class="col-xs-8 nopadding">
+											<div class="col-xs-9 nopadding">
+												<input type="text" class="form-control input-sm" id="txtcCountry" name="txtcCountry" placeholder="Country..." autocomplete="off" readonly="true" />
+											</div>														
+											<div class="col-xs-3 nopadwleft">
+												<input type="text" class="form-control input-sm" id="txtcZip" name="txtcZip" placeholder="Zip Code..." autocomplete="off"  readonly="true" />
+											</div>
+										</div>
+									</td>
+								</tr> 
+							</table>
 						</div>
 					
 					<!-- Attachment Panel -->
@@ -1046,7 +1046,7 @@
 			},
 			highlighter: Object,
 			afterSelect: function(item) { 					
-							
+
 				$('#txtprodnme').val(item.desc).change(); 
 				$('#txtprodid').val(item.id); 
 				$("#hdnunit").val(item.cunit); 
@@ -1071,7 +1071,7 @@
 
 			if(event.keyCode == 13){
 
-			$.ajax({
+				$.ajax({
 					url:'../get_productid.php',
 					data: 'c_id='+ $(this).val() + "&itmbal="+xChkBal+"&styp="+ $("#selsityp").val(),                 
 					success: function(value){
@@ -1089,48 +1089,45 @@
 						$("#hdnmakebuy").val(data[10]);
 
 
-			if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
-				var isItem = "NO";
-				var disID = "";
+						if($("#txtprodid").val() != "" && $("#txtprodnme").val() !="" ){
+							var isItem = "NO";
+							var disID = "";
+							
+							$("#MyTable > tbody > tr").each(function() {	
+								disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+
+								if($("#txtprodid").val()==disID){
+									
+									isItem = "YES";
+
+								}
+							});	
+
+						//if value is not blank
+						}
 				
-				$("#MyTable > tbody > tr").each(function() {	
-					disID =  $(this).find('input[type="hidden"][name="txtitemcode"]').val();
+						//if(isItem=="NO"){		
 
-					if($("#txtprodid").val()==disID){
-						
-						isItem = "YES";
-
+						addItemName("","","","","","","");
+						ComputeGross();	
+					
+						//   }
+						//  else{
+							
+						//	addqty();
+						//}
+				
+						$("#txtprodid").val("");
+						$("#txtprodnme").val("");
+						$("#hdnunit").val("");
+						$("#hdnqty").val("");
+						$("#hdnqtyunit").val("");
+				
+						//closing for success: function(value){
 					}
-				});	
-
-			//if value is not blank
-			}
-			
-			//if(isItem=="NO"){		
-
-				addItemName("","","","","","","");
-				ComputeGross();	
-				
-			//   }
-			//  else{
-				
-			//	addqty();
-			//}
-			
-			$("#txtprodid").val("");
-			$("#txtprodnme").val("");
-			$("#hdnunit").val("");
-			$("#hdnqty").val("");
-			$("#hdnqtyunit").val("");
-	
-				//closing for success: function(value){
-				}
-					}); 
-
-		
-			
-			//if enter is clicked
-			}
+				}); 
+						
+			}//if enter is clicked
 			
 		});
 
@@ -1322,7 +1319,6 @@ function myFunctionadd(qty,pricex,curramt,amtx,factr,cref,nrefident){
 	var itmccode = $("#hdnpricever").val();
 	var itmakebuy = $("#hdnmakebuy").val(); 
 	
-	//alert(itmqtyunit);
 	if(qty=="" && pricex=="" && amtx=="" && factr==""){
 		var itmtotqty = 1;
 		var price = chkprice(itmcode,itmunit,itmccode,xtoday);

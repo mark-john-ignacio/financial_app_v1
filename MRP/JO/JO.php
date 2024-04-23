@@ -32,6 +32,27 @@
 	}
 	*/
 
+	$arrallsec = array();
+	$sqlempsec = mysqli_query($con,"select A.nid, A.cdesc From locations A Where A.compcode='$company' and A.cstatus='ACTIVE' Order By A.cdesc");
+	$rowdetloc = $sqlempsec->fetch_all(MYSQLI_ASSOC);
+	foreach($rowdetloc as $row0){
+		$arrallsec[] = array('nid' => $row0['nid'], 'cdesc' => $row0['cdesc']);
+				
+	}
+
+	$def_From = "";
+	$def_To = "";
+
+	$sqlempsec = mysqli_query($con,"select A.ccode, A.cvalue From parameters A Where A.compcode='$company' and A.cstatus='ACTIVE' and A.ccode in ('JO_MRS_FROM','JO_MRS_TO') Order By A.cdesc");
+	$rowdetloc = $sqlempsec->fetch_all(MYSQLI_ASSOC);
+	foreach($rowdetloc as $row0){
+		if($row0['ccode']=="JO_MRS_FROM"){
+			$def_From = $row0['cvalue'];
+		}else if($row0['ccode']=="JO_MRS_TO"){
+			$def_To = $row0['cvalue'];
+		}				
+	}
+
 ?>
 
 <!DOCTYPE html>
@@ -52,31 +73,32 @@
 <body style="padding:5px">
 	<div>
 		<section>
-        <div>
-        	<div style="float:left; width:50%">
-				<font size="+2"><u>Job Order List</u></font>	
-            </div>
-        </div>
+			<div>
+				<div style="float:left; width:50%">
+					<font size="+2"><u>Job Order List</u></font>	
+				</div>
+			</div>
 			<br><br>
 
 			<div class="col-xs-12 nopadding">
 				<div class="col-xs-4 nopadding">
-					<button type="button" class="btn btn-primary btn-sm" onClick="location.href='JO_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>
-
+					<button type="button" class="btn btn-primary btn-sm" onClick="location.href='JO_new.php'"><span class="glyphicon glyphicon glyphicon-file"></span>&nbsp;Create New (F1)</button>	
 					
+					<button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#GenMrsMod"><i class="fa fa-gear"></i></button>
+
 				</div>
-        <div class="col-xs-3 nopadding">
+				<div class="col-xs-3 nopadding">
 					<div class="itmalert alert alert-danger" id="itmerr" style="display: none;"></div> <br><br>
 				</div>
-        <div class="col-xs-2 nopadwtop" style="height:30px !important;">
-          <b> Search Customer/SO No/JO No: </b>
-        </div>
+				<div class="col-xs-2 nopadwtop" style="height:30px !important;">
+				<b> Search Customer/SO No/JO No: </b>
+				</div>
 				<div class="col-xs-3 text-right nopadding">
 					<input type="text" name="searchByName" id="searchByName" value="<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>" class="form-control input-sm" placeholder="Enter Trans No or Customer or SO No....">
 				</div>
 			</div>
 
-      <br><br><br>
+			<br><br><br>
 			<table id="example" class="display" cellspacing="0" width="100%">
 				<thead>
 					<tr>
@@ -85,7 +107,7 @@
 						<th>Customer</th>
 						<th>Target Date</th>
 						<th>Priority</th>
-            <th>Status</th>
+						<th>Status</th>
 					</tr>
 				</thead>
 
@@ -100,6 +122,85 @@
 	<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
 </form>		
 
+
+	<!-- Settings Gen MRS -->
+	<div class="modal fade" id="GenMrsMod" role="dialog" data-keyboard="false" data-backdrop="static">
+		<div class="modal-dialog modal-md">
+			<div class="modal-content">
+
+			<form id="frmgenset" action="default_setiings.php" method="POST">
+				<div class="modal-header">
+					<h3 class="modal-title" id="InvListHdr">MRS Default Settings</h3>
+				</div>
+							
+				<div class="modal-body" style="height: 20vh">
+
+					<div class="col-xs-12 nopadding">
+						<div class="col-xs-3 nopadwtop" id="secfrom">
+							<b>Requesting Section: </b>
+						</div>
+						<div class="col-xs-6 nopadding">
+							<select class="form-control input-sm" name="selwhfrom" id="selwhfrom">
+							<?php
+								$issel = 0;
+									foreach($arrallsec as $localocs){
+										if($def_From!=""){
+											if($localocs['nid']==$def_From){
+												$issel++;
+											}else{
+												$issel = 0;
+											}
+										}else{
+											$issel++;
+										}
+										
+								?>
+									<option value="<?php echo $localocs['nid'];?>" <?=($issel==1) ? "selected" : ""?>><?php echo $localocs['cdesc'];?></option>										
+								<?php	
+									}						
+								?>
+							</select>
+						</div>
+					</div>	
+					
+					<div class="col-xs-12 nopadwtop">
+						<div class="col-xs-3 nopadwtop" id="secto">
+							<b>Issuing Section: </b>
+						</div>
+						<div class="col-xs-6 nopadding">
+							<select class="form-control input-sm" name="selwhto" id="selwhto">
+							<?php
+								$issel = 0;
+									foreach($arrallsec as $localocs){
+										if($def_To!=""){
+											if($localocs['nid']==$def_To){
+												$issel++;
+											}else{
+												$issel = 0;
+											}
+										}else{
+											$issel++;
+										}
+								?>
+									<option value="<?php echo $localocs['nid'];?>" <?=($issel==1) ? "selected" : ""?>><?php echo $localocs['cdesc'];?></option>										
+								<?php	
+									}						
+								?>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-success">Save</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+				</div>				
+			</form>
+
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	<!-- End Bootstrap modal -->
 
 <!-- 1) Alert Modal -->
 <div class="modal fade" id="AlertModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-hidden="true">

@@ -127,6 +127,11 @@
 
 	}
 
+	//process of the main item
+	$rpromain= mysqli_query($con,"select * from mrp_process_t where compcode='$company' and citemno='$dmainitms' and cstatus='ACTIVE' Order By nid");
+	while($row2 = mysqli_fetch_array($chbom, MYSQLI_ASSOC)){
+		$getallboms[] = $row2;
+	}
 
 
 	$json['ms'] = $msgz;
@@ -135,7 +140,6 @@
 	$json2[] = $json;
 		 
 	//echo json_encode($json2);
-
 
 ?>
 

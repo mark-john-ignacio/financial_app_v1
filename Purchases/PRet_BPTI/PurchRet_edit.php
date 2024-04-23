@@ -90,228 +90,228 @@ if (mysqli_num_rows($sqlhead)!=0) {
 <form action="PurchRet_editsave.php?hdnsrchval=<?=(isset($_REQUEST['hdnsrchval'])) ? $_REQUEST['hdnsrchval'] : ""?>" name="frmpos" id="frmpos" method="post" onSubmit="return false;">
 	<fieldset>
     	<legend>
-				<div class="col-xs-6 nopadding"> Purchase Return Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
-					<?php
-						if($lCancelled==1){
-							echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+			<div class="col-xs-6 nopadding"> Purchase Return Details </div>  <div class= "col-xs-6 text-right nopadding" id="salesstat">
+				<?php
+					if($lCancelled==1){
+						echo "<font color='#FF0000'><b>CANCELLED</b></font>";
+					}
+							
+					if($lPosted==1){
+						if($lVoid==1){
+							echo "<font color='#FF0000'><b>VOIDED</b></font>";
+						}else{
+							echo "<font color='#FF0000'><b>POSTED</b></font>";
 						}
-								
-						if($lPosted==1){
-							if($lVoid==1){
-								echo "<font color='#FF0000'><b>VOIDED</b></font>";
-							}else{
-								echo "<font color='#FF0000'><b>POSTED</b></font>";
-							}
-						}
-					?>
-				</div>
-			</legend>	
+					}
+				?>
+			</div>
+		</legend>	
 
-			<ul class="nav nav-tabs">
-				<li class="active"><a href="#home">Purchase Return Details</a></li>
-				<li><a href="#attc">Attachments</a></li>
-			</ul>
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="#home">Purchase Return Details</a></li>
+			<li><a href="#attc">Attachments</a></li>
+		</ul>
 
-			<div class="tab-content">  
-      	<div id="home" class="tab-pane fade in active" style="padding-left:5px; padding-top:10px">
+		<div class="tab-content">  
+      		<div id="home" class="tab-pane fade in active" style="padding-left:5px; padding-top:10px">
 
-					<table width="100%" border="0">
-						<tr>
-							<tH>Transaction No.:</tH>
-							<td style="padding:2px"><div class="col-xs-3 nopadding"><input type="text" class="form-control input-sm" id="txtcpono" name="txtcpono" width="20px" tabindex="1" value="<?php echo $cpono;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');"></div>
-								
-								
-								<input type="hidden" name="hdntranno" id="hdntranno" value="<?php echo $cpono;?>">
-								<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
-								<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
-								<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?php echo $lVoid;?>">
+				<table width="100%" border="0">
+					<tr>
+						<tH>Transaction No.:</tH>
+						<td style="padding:2px"><div class="col-xs-3 nopadding"><input type="text" class="form-control input-sm" id="txtcpono" name="txtcpono" width="20px" tabindex="1" value="<?php echo $cpono;?>" onKeyUp="chkSIEnter(event.keyCode,'frmpos');"></div>
+							
+							
+							<input type="hidden" name="hdntranno" id="hdntranno" value="<?php echo $cpono;?>">
+							<input type="hidden" name="hdnposted" id="hdnposted" value="<?php echo $lPosted;?>">
+							<input type="hidden" name="hdncancel" id="hdncancel" value="<?php echo $lCancelled;?>">
+							<input type="hidden" name="hdnvoid" id="hdnvoid" value="<?php echo $lVoid;?>">
 
-								&nbsp;&nbsp;
-								
-							</td>
-							<td colspan="2" style="padding:2px" align="right">
-								<div id="statmsgz" class="small" style="display:inline"></div>
-							</td>
-						</tr>
-						<tr>
-							<tH width="120">Supplier:</tH>
-							<td style="padding:2px">
-								<div class="col-xs-12 nopadding">
-									<div class="col-xs-3 nopadding">
-										<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" value="<?php echo $CustCode;?>" readonly>
-									</div>
-
-									<div class="col-xs-8 nopadwleft">
-										<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" value="<?php echo $CustName;?>">
-									</div> 
+							&nbsp;&nbsp;
+							
+						</td>
+						<td colspan="2" style="padding:2px" align="right">
+							<div id="statmsgz" class="small" style="display:inline"></div>
+						</td>
+					</tr>
+					<tr>
+						<tH width="120">Supplier:</tH>
+						<td style="padding:2px">
+							<div class="col-xs-12 nopadding">
+								<div class="col-xs-3 nopadding">
+									<input type="text" id="txtcustid" name="txtcustid" class="form-control input-sm" placeholder="Supplier Code..." tabindex="1" value="<?php echo $CustCode;?>" readonly>
 								</div>
-							</td>
-							<tH width="150" style="padding:2px">Date Returned:</tH>
-							<td style="padding:2px">
-								<div class="col-xs-8">
-									<input type='text' class="datepick form-control input-sm" id="date_returned" name="date_returned" value="<?php echo $DateNeeded; ?>" />
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<tH width="100">Remarks:</tH>
-							<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value="<?php echo $Remarks; ?>"></div></td>
-							<tH width="150" style="padding:2px">&nbsp;</tH>
-							<td style="padding:2px">&nbsp;</td>
-						</tr>
-		
-						<tr>
-								<td colspan="2">
-									<input type="hidden" id="txtprodid" name="txtprodid">
-									<input type="hidden" id="txtprodnme" name="txtprodnme">
-									<input type="hidden" name="hdnunit" id="hdnunit">
-								</td>
-								<td>&nbsp;</td>
-								<td>&nbsp;</td>
 
-						</tr>
+								<div class="col-xs-8 nopadwleft">
+									<input type="text" class="form-control input-sm" id="txtcust" name="txtcust" width="20px" tabindex="1" placeholder="Search Supplier Name..."  size="60" autocomplete="off" value="<?php echo $CustName;?>">
+								</div> 
+							</div>
+						</td>
+						<tH width="150" style="padding:2px">Date Returned:</tH>
+						<td style="padding:2px">
+							<div class="col-xs-8">
+								<input type='text' class="datepick form-control input-sm" id="date_returned" name="date_returned" value="<?php echo $DateNeeded; ?>" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<tH width="100">Remarks:</tH>
+						<td style="padding:2px"><div class="col-xs-11 nopadding"><input type="text" class="form-control input-sm" id="txtremarks" name="txtremarks" width="20px" tabindex="2" value="<?php echo $Remarks; ?>"></div></td>
+						<tH width="150" style="padding:2px">&nbsp;</tH>
+						<td style="padding:2px">&nbsp;</td>
+					</tr>
+	
+					<tr>
+							<td colspan="2">
+								<input type="hidden" id="txtprodid" name="txtprodid">
+								<input type="hidden" id="txtprodnme" name="txtprodnme">
+								<input type="hidden" name="hdnunit" id="hdnunit">
+							</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+
+					</tr>
+				</table>
+
+			</div>
+
+			<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px">
+
+				<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
+				<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
+				<input type="file" name="upload[]" id="file-0" multiple />
+
+			</div>
+		</div>
+
+		<hr>
+		<div class="col-xs-12 nopadwdown"><b>Details</b></div>
+
+		<ul class="nav nav-tabs">
+			<li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Items List</a></li>
+			<li id="liacct"><a href="#2Acct" data-toggle="tab">Items Inventory</a></li>
+		</ul>
+
+		<div class="tab-content nopadwtop2x">
+			<div class="tab-pane active" id="1Det">
+
+				<div class="alt2" dir="ltr" style="
+					margin: 0px;
+					padding: 3px;
+					border: 1px solid #919b9c;
+					width: 100%;
+					height: 250px;
+					text-align: left;
+					overflow: auto">
+	
+					<table id="MyTable" class="MyTable" cellpadding"3px" width="100%" border="0">
+						<thead>
+							<tr>
+								<th style="border-bottom:1px solid #999">&nbsp;</th>
+								<th style="border-bottom:1px solid #999">Code</th>
+								<th style="border-bottom:1px solid #999">Description</th>
+								<th style="border-bottom:1px solid #999">UOM</th>
+								<th style="border-bottom:1px solid #999">Qty</th>
+								<th style="border-bottom:1px solid #999">Remarks</th>
+								<th style="border-bottom:1px solid #999">&nbsp;</th>
+							</tr>
+						</thead>
+						<tbody class="tbody">
+						</tbody>																
 					</table>
-
 				</div>
 
-				<div id="attc" class="tab-pane fade in" style="padding-left:5px; padding-top:10px">
+			</div>
 
-					<div class="col-xs-12 nopadwdown"><b>Attachments:</b></div>
-					<div class="col-sm-12 nopadwdown"><i>Can attach a file according to the ff: file type: (jpg,png,gif,jpeg,pdf,txt,csv,xls,xlsx,doc,docx,ppt,pptx)</i></div> <br><br><br>
-					<input type="file" name="upload[]" id="file-0" multiple />
+			<div class="tab-pane" id="2Acct">
 
+				<div class="alt2" dir="ltr" style="
+					margin: 0px;
+					padding: 3px;
+					border: 1px solid #919b9c;
+					width: 100%;
+					height: 250px;
+					text-align: left;
+					overflow: auto">
+		
+					<table id="MyTable2" cellpadding="3px" width="100%" border="0">
+						<thead>
+									<tr>
+										
+											<th style="border-bottom:1px solid #999">Item Code</th>
+											<th style="border-bottom:1px solid #999">Serial No.</th>
+											<th style="border-bottom:1px solid #999">UOM</th>
+											<th style="border-bottom:1px solid #999">Qty</th>
+											<th style="border-bottom:1px solid #999">Location</th>
+											<th style="border-bottom:1px solid #999">Expiration Date</th>
+											<th style="border-bottom:1px solid #999">&nbsp;</th>
+									</tr>
+						</thead>
+						<tbody>
+						</tbody>
+									
+					</table>
+					<input type="hidden" name="hdnserialscnt" id="hdnserialscnt">
 				</div>
 			</div>
 
-			<hr>
-			<div class="col-xs-12 nopadwdown"><b>Details</b></div>
+		</div>
 
-				<ul class="nav nav-tabs">
-					<li class="active" id="lidet"><a href="#1Det" data-toggle="tab">Items List</a></li>
-					<li id="liacct"><a href="#2Acct" data-toggle="tab">Items Inventory</a></li>
-				</ul>
-
-				<div class="tab-content nopadwtop2x">
-						<div class="tab-pane active" id="1Det">
-
-							<div class="alt2" dir="ltr" style="
-								margin: 0px;
-								padding: 3px;
-								border: 1px solid #919b9c;
-								width: 100%;
-								height: 250px;
-								text-align: left;
-								overflow: auto">
-				
-									<table id="MyTable" class="MyTable" cellpadding"3px" width="100%" border="0">
-										<thead>
-											<tr>
-												<th style="border-bottom:1px solid #999">&nbsp;</th>
-												<th style="border-bottom:1px solid #999">Code</th>
-												<th style="border-bottom:1px solid #999">Description</th>
-												<th style="border-bottom:1px solid #999">UOM</th>
-												<th style="border-bottom:1px solid #999">Qty</th>
-												<th style="border-bottom:1px solid #999">Remarks</th>
-												<th style="border-bottom:1px solid #999">&nbsp;</th>
-											</tr>
-										</thead>
-										<tbody class="tbody">
-										</tbody>																
-									</table>
-							</div>
-
-						</div>
-
-						<div class="tab-pane" id="2Acct">
-
-									<div class="alt2" dir="ltr" style="
-															margin: 0px;
-															padding: 3px;
-															border: 1px solid #919b9c;
-															width: 100%;
-															height: 250px;
-															text-align: left;
-															overflow: auto">
-							
-											<table id="MyTable2" cellpadding="3px" width="100%" border="0">
-												<thead>
-															<tr>
-																
-																	<th style="border-bottom:1px solid #999">Item Code</th>
-																	<th style="border-bottom:1px solid #999">Serial No.</th>
-																	<th style="border-bottom:1px solid #999">UOM</th>
-																	<th style="border-bottom:1px solid #999">Qty</th>
-																	<th style="border-bottom:1px solid #999">Location</th>
-																	<th style="border-bottom:1px solid #999">Expiration Date</th>
-																	<th style="border-bottom:1px solid #999">&nbsp;</th>
-															</tr>
-												</thead>
-												<tbody>
-												</tbody>
-															
-											</table>
-												<input type="hidden" name="hdnserialscnt" id="hdnserialscnt">
-										</div>
-						</div>
-
-				</div>
-
-				<?php
-					if($poststat=="True"){
-				?>
-				<br>
-				<table width="100%" border="0" cellpadding="3">
-					<tr>
-						<td>
-							<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
-				
-				
-							<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PurchRet.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>';" id="btnMain" name="btnMain">
-								Back to Main<br>(ESC)
-							</button>
-					
-							<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='PurchRet_new.php';" id="btnNew" name="btnNew">
-								New<br>(F1)
-							</button>
+		<?php
+			if($poststat=="True"){
+		?>
+		<br>
+		<table width="100%" border="0" cellpadding="3">
+			<tr>
+				<td>
+					<input type="hidden" name="hdnrowcnt" id="hdnrowcnt"> 
+		
+		
+					<button type="button" class="btn btn-primary btn-sm" tabindex="6" onClick="window.location.href='PurchRet.php?ix=<?=isset($_REQUEST['hdnsrchval']) ? $_REQUEST['hdnsrchval'] : ""?>&st=<?=isset($_REQUEST['hdnsrchsta']) ? $_REQUEST['hdnsrchsta'] : ""?>';" id="btnMain" name="btnMain">
+						Back to Main<br>(ESC)
+					</button>
+			
+					<button type="button" class="btn btn-default btn-sm" tabindex="6" onClick="window.location.href='PurchRet_new.php';" id="btnNew" name="btnNew">
+						New<br>(F1)
+					</button>
 
 
-							<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
-								RR<br>(Insert)
-							</button>
+					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="openinv();" id="btnIns" name="btnIns">
+						RR<br>(Insert)
+					</button>
 
-							<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
-								Undo Edit<br>(CTRL+Z)
-							</button>
+					<button type="button" class="btn btn-danger btn-sm" tabindex="6" onClick="chkSIEnter(13,'frmpos');" id="btnUndo" name="btnUndo">
+						Undo Edit<br>(CTRL+Z)
+					</button>
 
-							<?php
-								$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'PurchRet_print'");
+					<?php
+						$sql = mysqli_query($con,"select * from users_access where userid = '".$_SESSION['employeeid']."' and pageid = 'PurchRet_print'");
 
-								if(mysqli_num_rows($sql) == 1){
-								
-							?>
-
-							<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>');" id="btnPrint" name="btnPrint">
-								Print<br>(CTRL+P)
-							</button>
-
-							<?php		
-								}
-							?>
-
-							<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
-								Edit<br>(CTRL+E)    
-							</button>
+						if(mysqli_num_rows($sql) == 1){
 						
-							<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
-								Save<br>(CTRL+S)    
-							</button>
-						
-						</td>
-					</tr>
-				</table>
-				<?php
-					}
-				?>
+					?>
+
+					<button type="button" class="btn btn-info btn-sm" tabindex="6" onClick="printchk('<?php echo $cpono;?>');" id="btnPrint" name="btnPrint">
+						Print<br>(CTRL+P)
+					</button>
+
+					<?php		
+						}
+					?>
+
+					<button type="button" class="btn btn-warning btn-sm" tabindex="6" onClick="enabled();" id="btnEdit" name="btnEdit">
+						Edit<br>(CTRL+E)    
+					</button>
+				
+					<button type="button" class="btn btn-success btn-sm" tabindex="6" onClick="return chkform();" id="btnSave" name="btnSave">
+						Save<br>(CTRL+S)    
+					</button>
+				
+				</td>
+			</tr>
+		</table>
+		<?php
+			}
+		?>
 
     </fieldset>
 </form>
@@ -682,31 +682,31 @@ $(document).ready(function() {
 	
 	$("#btnInsSer").on("click", function(){
 	
-			var tbl = document.getElementById('MyTableSerials').getElementsByTagName('tr');
-			var lastRow = tbl.length;
+		var tbl = document.getElementById('MyTableSerials').getElementsByTagName('tr');
+		var lastRow = tbl.length;
 
-			if(lastRow>1){
-					$("#MyTableSerials > tbody > tr").each(function(index) {
-						var zxitmcode = $(this).find('input[type="hidden"][name="lagyitmcode"]').val();
-						var zxserial = $(this).find('input[type="hidden"][name="lagyserial"]').val();
-						var zxuom = $(this).find('input[type="hidden"][name="lagycuom"]').val();	
-						var zxqty = $(this).find('input[name="lagyqtyput"]').val();		
-						var zxloca = $(this).find('input[type="hidden"][name="lagylocas"]').val();	
-						var zxlocadesc = $(this).find('input[type="hidden"][name="lagylocadesc"]').val();
-						var zxexpd = $(this).find('input[type="hidden"][name="lagyexpd"]').val();
-						var zxnident = $(this).find('input[type="hidden"][name="lagyrefident"]').val();
-						var zxreference = $(this).find('input[type="hidden"][name="lagyrefno"]').val();
-						var zxmainident = $("#serdisrefident").val();
+		if(lastRow>1){
+			$("#MyTableSerials > tbody > tr").each(function(index) {  
+				var zxitmcode = $(this).find('input[type="hidden"][name="lagyitmcode"]').val();
+				var zxlotno = $(this).find('input[type="hidden"][name="lagylotno"]').val();
+				var zxpacklst = $(this).find('input[type="hidden"][name="lagypacklist"]').val();
+				var zxuom = $(this).find('input[type="hidden"][name="lagycuom"]').val();	
+				var zxqty = $(this).find('input[name="lagyqtyput"]').val();		
+				var zxloca = $(this).find('input[type="hidden"][name="lagylocas"]').val();	
+				var zxlocadesc = $(this).find('input[type="hidden"][name="lagylocadesc"]').val();
+				var zxnident = $(this).find('input[type="hidden"][name="lagyrefident"]').val();
+				var zxreference = $(this).find('input[type="hidden"][name="lagyrefno"]').val();
+				var zxmainident = $("#serdisrefident").val();
 
-						if(parseFloat(zxqty) > 0){
-							InsertToSerials(zxitmcode,zxserial,zxuom,zxqty,zxloca,zxlocadesc,zxexpd,zxnident,zxreference,zxmainident);			
-						}
+				if(parseFloat(zxqty) > 0){
+					InsertToSerials(zxitmcode,zxlotno,zxpacklst,zxuom,zxqty,zxloca,zxlocadesc,zxnident,zxreference,zxmainident);			
+				}
 
-					});
-			}
-		
-			//close modal
-			$("#SerialMod").modal("hide");
+			});
+		}
+	
+		//close modal
+		$("#SerialMod").modal("hide");
 	});
 
 });
@@ -922,21 +922,21 @@ function InsertDetSerial(itmcode, itmname, itmunit, itemrrident, itemqty, itmfct
 	$("#SerialMod").modal("show");
 }
 
-function InsertToSerials(itmcode,serials,uoms,qtys,locas,locasdesc,expz,nident,refe,mainident){ 
+function InsertToSerials(itmcode,lotsno,packlist,uoms,qtys,locas,locasdesc,nident,refe,mainident){
 
 	$("<tr>").append(
 		$("<td width=\"120px\" style=\"padding:1px\">").html("<input type='hidden' value='"+itmcode+"' name=\"sertabitmcode\" id=\"sertabitmcode\"><input type='hidden' value='"+mainident+"' name=\"sertabident\" id=\"sertabident\"><input type='hidden' value='"+nident+"' name=\"sertabreferid\" id=\"sertabreferid\"><input type='hidden' value='"+refe+"' name=\"sertabrefer\" id=\"sertabrefer\">"+itmcode),
-		$("<td>").html("<input type='hidden' value='"+serials+"' name=\"sertabserial\" id=\"sertabserial\">"+serials), 
+		$("<td>").html("<input type='hidden' value='"+lotsno+"' name=\"sertablotsno\" id=\"sertablotsno\">"+lotsno), 
+		$("<td>").html("<input type='hidden' value='"+packlist+"' name=\"sertabpackno\" id=\"sertabpackno\">"+packlist), 
+		$("<td width=\"150x\" style=\"padding:1px\">").html("<input type='hidden' value='"+locas+"' name=\"sertablocas\" id=\"sertablocas\">"+locasdesc),
 		$("<td width=\"80px\" style=\"padding:1px\">").html("<input type='hidden' value='"+uoms+"' name=\"sertabuom\" id=\"sertabuom\">"+uoms),
 		$("<td width=\"80px\" style=\"padding:1px\">").html("<input type='hidden' value='"+qtys+"' name=\"sertabqty\" id=\"sertabqty\">"+qtys),
-		$("<td width=\"150x\" style=\"padding:1px\">").html("<input type='hidden' value='"+locas+"' name=\"sertablocas\" id=\"sertablocas\">"+locasdesc),
-		$("<td width=\"100px\" style=\"padding:1px\">").html("<input type='hidden' value='"+expz+"' name=\"sertabesp\" id=\"sertabesp\">"+expz),
 		$("<td width=\"80px\" style=\"padding:1px\">").html("<input class='btn btn-danger btn-xs' type='button' id='delsrx" + itmcode + "' value='delete' />")
 	).appendTo("#MyTable2 tbody");
 
-									$("#delsrx"+itmcode).on('click', function() {
-										$(this).closest('tr').remove();
-									});
+	$("#delsrx"+itmcode).on('click', function() {
+		$(this).closest('tr').remove();
+	});
 		
 }
 
@@ -1430,6 +1430,8 @@ function disabled(){
 	$("#btnNew").attr("disabled", false);
 	$("#btnPrint").attr("disabled", false);
 	$("#btnEdit").attr("disabled", false);
+
+	$(".kv-file-zoom").attr("disabled", false);
 }
 
 function enabled(){
@@ -1509,32 +1511,32 @@ function loaddetails(){
 
 }
 
-function loadserials(){	
+	function loadserials(){	
 
-	   		$.ajax({
-					url : "th_serialslist.php?id=" + $("#txtcpono").val(),
-					type: "GET",
-					dataType: "JSON",
-					async: false,
-					success: function(data)
-					{	
-					   console.log(data);
-             $.each(data,function(index,item){
+		$.ajax({
+			url : "th_serialslist.php?id=" + $("#txtcpono").val(),
+			type: "GET",
+			dataType: "JSON",
+			async: false,
+			success: function(data)
+			{	
+				console.log(data);
+				$.each(data,function(index,item){
 
-								//InsertToSerials(itmcode,serials,uoms,qtys,locas,locasdesc,expz,nident,refe,mainident){);
-								InsertToSerials(item.citemno,item.cserial,item.cunit,item.nqty,item.nlocation,item.locadesc,item.dexpired,item.nrefidentity,item.crefno,0);
-											   
-					   });
-						
-					},
-					error: function (jqXHR, textStatus, errorThrown)
-					{
-						alert(jqXHR.responseText);
-					}
-					
+					//itmcode,lotsno,packlist,uoms,qtys,locas,locasdesc,nident,refe,mainident
+					InsertToSerials(item.citemno,item.lotsno,item.packlist,item.cunit,item.nqty,item.nlocation,item.locadesc,item.nrefidentity,item.crefno,0);
+										
 				});
+				
+			},
+			error: function (jqXHR, textStatus, errorThrown)
+			{
+				alert(jqXHR.responseText);
+			}
+			
+		});
 
-}
+	}
 
 
 </script>

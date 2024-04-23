@@ -531,8 +531,16 @@
                 				<i class="fa fa-download"> </i> Receiving
 							</a>
 						</li>
+						<?php
+							//check if SO_subdomain exist
+							if ( file_exists( "Purchases/PRet_".$durlSUB ) || is_dir( "Purchases/PRet_".$durlSUB) ) {   
+								$SILink = "Purchases/PRet_".$durlSUB."/PurchRet.php?ix=";
+							}else{
+								$SILink = "Purchases/PRet/PurchRet.php?ix=";
+							}
+						?>
 						<li>
-							<a href="javascript:;" onClick="setpage('Purchases/PRet/PurchRet.php?ix=');">
+							<a href="javascript:;" onClick="setpage('<?=$SILink?>');">
                 				<i class="fa fa-upload"> </i> Purchase Return
 							</a>
 						</li>

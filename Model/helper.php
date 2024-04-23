@@ -529,8 +529,7 @@
      * Compute for Monthly Purchase
      */
     function ComputePaybills($data){
-        $PROCUREMENT = $data['procurement'];
-        $business = $data['cvattype'];
+
         $TOTAL_GROSS = 0;
         $TOTAL_EXEMPT = 0;
         $TOTAL_ZERO_RATED = 0;
@@ -548,32 +547,6 @@
         $vat = floatval($net) * 0.12;
 
         $TOTAL_GROSS += floatval($amount);
-        // $TOTAL_NET += $net;
-        // $TOTAL_VAT += $vat;
-        // $TOTAL_TAX_GROSS += floatval($amount);
-
-        switch($business){
-            case "VT":
-                $TOTAL_NET += floatval($net);
-                $TOTAL_VAT += floatval($vat);
-                $TOTAL_TAX_GROSS += floatval($amount);
-
-                break;
-            case "NV":
-                $TOTAL_NET += floatval($net);
-                $TOTAL_VAT += floatval($vat);
-                $TOTAL_TAX_GROSS += floatval($amount);
-                break;
-            case "VE":
-                $TOTAL_EXEMPT += floatval($amount);
-                break;
-            case "ZR":
-                $TOTAL_ZERO_RATED += floatval($amount);
-                break;
-            default:
-                break;
-        }
-
 
         switch($PROCUREMENT){
             case "Goods":

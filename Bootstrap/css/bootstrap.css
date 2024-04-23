@@ -7367,3 +7367,6 @@ Input icons
   margin-top: 8px;
   font-size: 13px;
 }
+.my-popup .modal-content {
+  background: #FAEBD7 !important;
+}

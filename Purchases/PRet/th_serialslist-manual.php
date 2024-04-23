@@ -7,19 +7,13 @@ require_once "../../Connection/connection_string.php";
 		$company = $_SESSION['companyid'];
 		$date1 = date("Y-m-d");
 		
-		$sql = "select a.ctranno, a.citemno_nident, a.citemno, (a.nqty * a.nfactor)  as nqty, a.cunit, d.cunit as mainunit, a.clotsno, a.cpacklist, a.nlocation, b.cdesc as locadesc, IFNULL(c.nqty,0) as nqtyout
-		from tblinvin a
-		left join mrp_locations b on a.compcode=b.compcode and a.nlocation=b.nid
-		left join 
-			(
-				Select citemno, nrefidentity, sum(nqty*nfactor) as nqty
-				FROM tblinvout
-				WHERE compcode='$company' and citemno = '".$_REQUEST['itm']."'
-				Group By citemno, nrefidentity
-			) c on a.nidentity=c.nrefidentity
-		left join items d on a.compcode=d.compcode and a.citemno=d.cpartno
-		WHERE a.compcode='$company' and a.citemno = '".$_REQUEST['itm']."' and a.ctranno = '".$_REQUEST['itmxref']."'
-		Order By b.cdesc";
+		$sql = "select a.ctranno, a.nident,a.citemno,a.nqty,a.nfactor,a.cunit,a.cserial,a.nlocation,DATE_FORMAT(a.dexpired,'%m/%d/%Y') as dexpired,b.cdesc as locadesc, c.ctranno as refdr
+		from receive_t_serials a
+		left join locations b on a.compcode=b.compcode and a.nlocation=b.nid
+		left join dr_t_serials c on a.compcode=b.compcode and a.cserial=c.cserial
+		left join purchreturn_t_serials d on a.compcode=d.compcode and a.cserial=d.cserial
+		WHERE a.compcode='$company' and a.citemno = '".$_REQUEST['itm']."' and a.ctranno = '".$_REQUEST['itmxref']."' and ifnull(c.ctranno,'') = ''	and ifnull(d.ctranno,'') = ''		
+		Order By a.dexpired";
 
 		$result = mysqli_query ($con, $sql); 
 		$rowcntr = 0;
@@ -27,21 +21,19 @@ require_once "../../Connection/connection_string.php";
 			while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 			$rowcntr++;
 			
-				//set ilan nlng natitira		 	
-				$nqty = floatval($row['nqty']) - floatval($row['nqtyout']);	
+				//set ilan nlng natitira		 
+				 
+				 $json['ctranno'] = $row['ctranno'];
+				 $json['nrefidentity'] = $row['nident'];
+				 $json['citemno'] = $row['citemno'];
+				 $json['nqty'] = $row['nqty'];
+				 $json['cunit'] = $row['cunit'];
+				 $json['cserial'] = $row['cserial'];
+				 $json['nlocation'] = $row['nlocation'];
+				 $json['dexpired'] = $row['dexpired'];
+				 $json['locadesc'] = $row['locadesc'];
 
-				$json['ctranno'] = $row['ctranno'];
-				$json['nrefidentity'] = $row['citemno_nident'];
-				$json['citemno'] = $row['citemno'];
-				$json['nqty'] = $nqty;
-				$json['cunit'] = $row['cunit'];
-				$json['mainunit'] = $row['mainunit'];
-				$json['clotsno'] = $row['clotsno'];
-				$json['cpacklist'] = $row['cpacklist'];
-				$json['nlocation'] = $row['nlocation'];
-				$json['locadesc'] = $row['locadesc'];
-
-				$json2[] = $json;
+			 	 $json2[] = $json;
 			}
 		}
 	

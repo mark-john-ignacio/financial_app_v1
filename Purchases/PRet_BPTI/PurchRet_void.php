@@ -2,7 +2,8 @@
 	if(!isset($_SESSION)){
 		session_start();
 	}
-	$_SESSION['pageid'] = "SO_unpost.php";
+
+	$_SESSION['pageid'] = "PurchRet_unpost.php";
 	include('../../Connection/connection_string.php');
 	include('../../include/denied.php');
 	include('../../include/access2.php');
@@ -17,20 +18,21 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
 
-<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
-<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css?x=<?=time()?>">  
-<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
-<script src="../../Bootstrap/js/bootstrap.js"></script>
+	<link href="../../global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/> 
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/bootstrap.css">  
+	<link rel="stylesheet" type="text/css" href="../../Bootstrap/css/alert-modal.css">  
+	<script src="../../Bootstrap/js/jquery-3.2.1.min.js"></script>
+	<script src="../../Bootstrap/js/bootstrap.js"></script>
 </head>
 
 <body style="padding:5px">
-	<form action="SO_void_tran.php" name="frmunpost" id="frmunpost" method="POST">
+	<form action="PurchRet_void_tran.php" name="frmunpost" id="frmunpost" method="POST">
 	
 		<div>
 			<section>
 					<div>
 						<div style="float:left; width:50%">
-							<font size="+2"><u>Sales Orders List</u></font>	
+							<font size="+2"><u>Purchase Return List</u></font>	
 						</div>
 					</div>
 				<br><br>
@@ -42,26 +44,23 @@
 				<table id="example" class="table table-hover " cellspacing="1" width="100%">
 					<thead>
 						<tr>
-							<td align="center"> <input name="allbox" id="allbox" type="checkbox" value="Check All" /></td>
-							<th class="text-center">SO No</th>
-							<th class="text-center">PO No</th>
+							<td align="center"> <input id="allbox" type="checkbox" value="Check All" /></td>
+							<th class="text-center">Tran. No</th>
 							<th class="text-center">Reference</th>
-							<th class="text-center">Customer</th>
-							<th class="text-center">Gross</th>
-							<th class="text-center">Delivery Date</th>
+							<th class="text-center">Supplier</th>
+							<th class="text-center">Return Date</th>
 						</tr>
 					</thead>
 
 					<tbody>
 					<?php
-					//select * SI reference in Receive Payment
-					$alrr = mysqli_query($con,"Select a.creference from dr_t a left join dr b on a.compcode=b.compcode and a.ctranno=b.ctranno where a.compcode='$company' and b.lcancelled=0 and b.lvoid=0");
+					$alrr = mysqli_query($con,"Select a.crefsr from apadjustment a where a.compcode='$company' and a.lcancelled=0 and a.lvoid=0");
 					$refpos[] = "";
 					while($rowxcv=mysqli_fetch_array($alrr, MYSQLI_ASSOC)){
-						$refpos[] = $rowxcv['creference'];
+						$refpos[] = $rowxcv['crefsr'];
 					}
 					
-					$result=mysqli_query($con,"select a.*,IFNULL(b.ctradename,b.cname) as cname, D.cref from so a left join customers b on a.compcode=b.compcode and a.ccode=b.cempid LEFT JOIN (Select x.ctranno, GROUP_CONCAT(DISTINCT x.creference) as cref from `so_t` x where x.compcode='".$_SESSION['companyid']."' group by x.ctranno) D on a.ctranno=D.ctranno where a.compcode='$company' and a.ctranno not in ('".implode("','",$refpos)."') and (a.lapproved=1 and a.lvoid=0) order by a.ddate desc");
+					$result=mysqli_query($con,"select a.*,IFNULL(b.ctradename,b.cname) as cname, d.cref from purchreturn a left join suppliers b on a.compcode=b.compcode and a.ccode=b.ccode LEFT JOIN (Select x.ctranno, GROUP_CONCAT(DISTINCT x.creference) as cref from purchreturn_t x where x.compcode='".$_SESSION['companyid']."' group by x.ctranno) d on a.ctranno=d.ctranno where a.compcode='$company' and a.ctranno not in ('".implode("','",$refpos)."') and (a.lapproved=1 and a.lvoid=0) order by a.ddate desc");
 					
 						if (!$result) {
 							printf("Errormessage: %s\n", mysqli_error($con));
@@ -72,13 +71,10 @@
 					?>
 						<tr>
 							<td align="center"> <input name="allbox[]" id="chk<?php echo $row['ctranno'];?>" type="checkbox" value="<?php echo $row['ctranno'];?>" /></td>
-							<td><a href="javascript:;" onClick="printchk('<?php echo $row['ctranno'];?>');"><?php echo $row['ctranno'];?></a></td>
-							<td><?php echo $row['cpono'];?></td>
+							<td><!--<a href="javascript:;" onClick="printchk('<?//php echo $row['ctranno'];?>');">--><?php echo $row['ctranno'];?><!--</a>--></td>
 							<td><?php echo $row['cref'];?></td>
 							<td><?php echo $row['ccode'];?> - <?php echo $row['cname'];?> </td>
-							
-							<td align="right"><?php echo number_format($row['ngross'],2);?></td>
-							<td align="center"><?php echo $row['dcutdate'];?></td>
+							<td align="center"><?php echo $row['dreturned'];?></td>
 						</tr>
 					<?php 
 					}				
@@ -89,8 +85,8 @@
 				</table>
 
 			</section>
-		</div>	
-		<input type="hidden" name="hdnreason" id="hdnreason" value="">	
+		</div>		
+		<input type="hidden" name="hdnreason" id="hdnreason" value="">
 	</form>  
 
 <!-- PRINT OUT MODAL-->
@@ -115,7 +111,6 @@
 
 <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
 <script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="../../global/plugins/bootbox/bootbox.min.js"></script>
 
 <script type="text/javascript">
 
@@ -138,25 +133,18 @@
 								$("#hdnreason").val(result);
 								$("#frmunpost").submit();
 							}else{
-								bootbox.alert({
-									message: "Reason for void is required!",
-									size: "small",
-									className: "bootalert"
-								});
+								$("#AlertMsg").html("Reason for void is required!");
+								$("#AlertModal").modal('show');
 							}						
 						}
 					});
 				}
 
 			});
-
-			$("#allbox").click(function(){
-				$('input:checkbox').not(this).prop('checked', this.checked);
-			});
 	});
 
 	function printchk(x){
-		$("#myprintframe").attr("src","SO_confirmprint.php?x="+x);
+		$("#myprintframe").attr("src","SR_confirmprint.php?x="+x);
 		$("#PrintModal").modal('show');
 	}
 

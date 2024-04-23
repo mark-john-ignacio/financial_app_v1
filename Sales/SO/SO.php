@@ -95,7 +95,7 @@
 						<th>Customer</th>
 						<th>Gross</th>
 						<th>Delivery Date</th>
-            <th>Status</th>
+            			<th>Status</th>
 					</tr>
 				</thead>
 
@@ -108,6 +108,7 @@
 	<form name="frmedit" id="frmedit" method="post" action="SO_edit.php">
 		<input type="hidden" name="txtctranno" id="txtctranno" />
 		<input type="hidden" name="hdnsrchval" id="hdnsrchval" />
+		<input type="hidden" name="hdnsrchsta" id="hdnsrchsta" />
 	</form>		
 
 	<!-- 1) Alert Modal -->
@@ -140,6 +141,7 @@
 
 <link rel="stylesheet" type="text/css" href="../../Bootstrap/DataTable/DataTable.css"> 
 <script type="text/javascript" language="javascript" src="../../Bootstrap/DataTable/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../../global/plugins/bootbox/bootbox.min.js"></script>
 
 <script type="text/javascript">
 	$(document).keydown(function(e) {		 
@@ -151,7 +153,7 @@
 
 	$(document).ready(function(e) {
 
-		fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>");	
+		fill_datatable("<?=(isset($_REQUEST['ix'])) ? $_REQUEST['ix'] : "";?>",$('#selstats').val());	
 
 		$("#searchByName").keyup(function(){
 			var searchByName = $('#searchByName').val();
@@ -186,59 +188,27 @@
 					
 					if(x=="POST"){
 						var msg = "POSTED";
+						gotrans(num,x, msg, "");
 					}
 					else if(x=="CANCEL"){
 						var msg = "CANCELLED";
-					}
-
-					urlx = "SO_Tran.php";
-					if(x=="SEND"){
-						urlx = "SO_GenJO.php";
-					}
-					
-						$.ajax ({
-							url: urlx,
-							data: { x: num, typ: x },
-							async: false,
-							dataType: "json",
-							beforeSend: function(){
-								$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
-								$("#alertbtnOK").hide();
-								$("#OK").hide();
-								$("#Cancel").hide();
-								$("#AlertModal").modal('show');
-							},
-							success: function( data ) {
-								console.log(data);
-								$.each(data,function(index,item){
-									
-									itmstat = item.stat;
-									
-									if(itmstat!="False"){
-										$("#msg"+num).html(item.stat);
-										
-											$("#AlertMsg").html("");
-											
-											$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+msg+"...");
-											$("#alertbtnOK").show();
-											$("#OK").hide();
-											$("#Cancel").hide();
-											$("#AlertModal").modal('show');
-					
-									}
-									else{
-										$("#AlertMsg").html("");
-										
-										$("#AlertMsg").html(item.ms);
-										$("#alertbtnOK").show();
-										$("#OK").hide();
-										$("#Cancel").hide();
-										$("#AlertModal").modal('show');
-					
-									}
-								});
+						bootbox.prompt({
+							title: 'Enter reason for cancellation.',
+							inputType: 'text',
+							centerVertical: true,
+							callback: function (result) {
+								if(result!="" && result!=null){
+									gotrans(num,x, msg, result);
+								}else{
+									$("#AlertMsg").html("Reason for cancellation is required!");
+									$("#alertbtnOK").css("display", "inline");
+									$("#OK").css("display", "none");
+									$("#Cancel").css("display", "none");
+								}						
 							}
 						});
+
+					}
 					
 				}
 				else if(idz=="Cancel"){
@@ -251,7 +221,79 @@
 			}
 		});
 
+		$('body').tooltip({
+			selector: '.canceltool',
+			title: fetchData,
+			html: true,
+			placement: 'top'
+		});
+
+		function fetchData()
+		{
+			var fetch_data = '';
+			var element = $(this);
+			var id = element.attr("data-id");
+			var stat = element.attr("data-stat");
+			$.ajax({
+				url:"../../include/fetchcancel.php",
+				method:"POST",
+				async: false,
+				data:{id:id, stat:stat},
+				success:function(data)
+				{
+					fetch_data = data;
+				}
+			});   
+			return fetch_data;
+		}
+
 	});
+
+	function gotrans(num,x, msg, canmsg){
+		$.ajax ({
+			url: urlx,
+			data: { x: num, typ: x, , canmsg: canmsg },
+			async: false,
+			dataType: "json",
+			beforeSend: function(){
+				$("#AlertMsg").html("&nbsp;&nbsp;<b>Processing " + num + ": </b> Please wait a moment...");
+				$("#alertbtnOK").hide();
+				$("#OK").hide();
+				$("#Cancel").hide();
+				$("#AlertModal").modal('show');
+			},
+			success: function( data ) {
+				console.log(data);
+				$.each(data,function(index,item){
+					
+					itmstat = item.stat;
+					
+					if(itmstat!="False"){
+						$("#msg"+num).html(item.stat);
+						
+							$("#AlertMsg").html("");
+							
+							$("#AlertMsg").html("&nbsp;&nbsp;<b>" + num + ": </b> Successfully "+msg+"...");
+							$("#alertbtnOK").show();
+							$("#OK").hide();
+							$("#Cancel").hide();
+							$("#AlertModal").modal('show');
+	
+					}
+					else{
+						$("#AlertMsg").html("");
+						
+						$("#AlertMsg").html(item.ms);
+						$("#alertbtnOK").show();
+						$("#OK").hide();
+						$("#Cancel").hide();
+						$("#AlertModal").modal('show');
+	
+					}
+				});
+			}
+		});
+	}
 
 	function fill_datatable(searchByName = '', searchBystat = ''){
 
@@ -342,6 +384,7 @@
 	function editfrm(x){
 		$('#txtctranno').val(x); 
 		$('#hdnsrchval').val($('#searchByName').val()); 
+		$('#hdnsrchsta').val($('#selstats').val());
 		document.getElementById("frmedit").submit();
 	}
 

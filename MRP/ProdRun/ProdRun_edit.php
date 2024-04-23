@@ -447,15 +447,28 @@
 	});
 
 	$(document).on('click', 'button.nbtnstart', function(e) {
+
 		let yx = $(this).data("val");
-		let yxval = moment().format('YYYY-MM-DD HH:mm:ss');
 
-		setVals(yx,"ddatestart",yxval);
+		if($("#selmachine"+yx).val()==""){
 
-		yxval = moment().format('MM/DD/YYYY hh:mm:ss A');
-		$("#tdS"+yx).html("<input type=\"text\" class=\"form-control input-sm text-center\" value=\""+yxval+"\" readonly>");
-		$("#btnEnd"+yx).removeAttr("disabled"); 
-		$("#btnEnd"+yx).removeClass("disabled");
+			$("#AlertMsg").html("Select Machine!");
+			$("#alertbtnOK").show();
+			$("#AlertModal").modal('show');
+
+		}else{
+	
+			let yxval = moment().format('YYYY-MM-DD HH:mm:ss');
+
+			setVals(yx,"ddatestart",yxval);
+
+			yxval = moment().format('MM/DD/YYYY hh:mm:ss A');
+			$("#tdS"+yx).html("<input type=\"text\" class=\"form-control input-sm text-center\" value=\""+yxval+"\" readonly>");
+			$("#btnEnd"+yx).removeAttr("disabled"); 
+			$("#btnEnd"+yx).removeClass("disabled");
+
+			$("#selmachine"+yx).attr("disabled", true);
+		}
 
 	});
 
