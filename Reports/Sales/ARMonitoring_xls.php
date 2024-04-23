@@ -100,7 +100,7 @@
 	$transctions = array();
 	$sqlx = "Select A.type, A.ctranno, A.ccode, A.cname, A.cacctid, A.cacctdesc, IFNULL(A.ctaxcode,'') as ctaxcode, A.nrate, IFNULL(A.cewtcode,'') as cewtcode, A.newtrate, A.dcutdate, SUM(ROUND(A.namountfull,2)) as ngross, SUM(ROUND(A.namount,2)) as cm, SUM(nvatgross) as nvatgross, (SUM(ROUND(A.namountfull,2)) - SUM(ROUND(A.namount,2)) - SUM(nvatgross)) as vatamt, A.lcancelled, A.lvoid, A.lapproved
 	From (
-		Select 'SI' as type, A.ctranno, B.ccode, COALESCE(C.ctradename, C.cname) as cname, A.citemno, ((A.nqtyreturned) * (A.nprice-A.ndiscount)) as namount, (A.nqty * (A.nprice-A.ndiscount)) as namountfull, B.dcutdate, D.cacctid, D.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, 
+		Select 'SI' as type, A.ctranno, B.ccode, COALESCE(C.ctradename, C.cname) as cname, A.citemno, ((A.nqtyreturned) * (A.nprice-A.ndiscount)) as namount, (A.nqty * (A.nprice-A.ndiscount)) as namountfull, B.dcutdate, D.cacctid, D.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, IFNULL(A.newtrate,0) as newtrate, 
 			CASE 
 				WHEN IFNULL(A.nrate,0) <> 0 
 				THEN 
@@ -158,6 +158,11 @@
 	$classcode="";
 	$totAmount=0;	
 	$ngross = 0;
+
+	$ARBal = 0;
+	$CollBal = 0;
+	$BalBal = 0;
+
 	foreach($finarray as $row)
 	{
 		$invval = 
@@ -227,6 +232,10 @@
 			}
 		}
 
+		$ARBal += floatval($netvatamt);
+		$CollBal += floatval($npay);
+		$BalBal += floatval($nbalace);
+
 		$cnt++;
 
 		$spreadsheet->setActiveSheetIndex(0)
@@ -253,9 +262,22 @@
 		$spreadsheet->setActiveSheetIndex(0)->getStyle('M'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 		$spreadsheet->setActiveSheetIndex(0)->getStyle('N'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 		$spreadsheet->setActiveSheetIndex(0)->getStyle('O'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
+		$spreadsheet->setActiveSheetIndex(0)->getStyle('P'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 
 	}
 
+	$cnt++;
+	$spreadsheet->setActiveSheetIndex(0)
+		->setCellValue('A'.$cnt, "GRAND TOTAL")
+		->setCellValue('N'.$cnt, $ARBal)
+		->setCellValue('O'.$cnt, $CollBal)
+		->setCellValue('P'.$cnt, $BalBal);
+
+	$spreadsheet->getActiveSheet()->mergeCells("A".$cnt.":M".$cnt);
+	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":M".$cnt)->getFont()->setBold(true);
+	$spreadsheet->setActiveSheetIndex(0)->getStyle('N'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
+	$spreadsheet->setActiveSheetIndex(0)->getStyle('O'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
+	$spreadsheet->setActiveSheetIndex(0)->getStyle('P'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 
 // Rename worksheet
 $spreadsheet->getActiveSheet()->setTitle('ARMonitoring');

@@ -114,7 +114,7 @@
 		$transctions = array();
 		$sqlx = "Select A.type, A.ctranno, A.ccode, A.cname, A.cacctid, A.cacctdesc, IFNULL(A.ctaxcode,'') as ctaxcode, A.nrate, IFNULL(A.cewtcode,'') as cewtcode, A.newtrate, A.dcutdate, SUM(ROUND(A.namountfull,2)) as ngross, SUM(ROUND(A.namount,2)) as cm, SUM(nvatgross) as nvatgross, (SUM(ROUND(A.namountfull,2)) - SUM(ROUND(A.namount,2)) - SUM(nvatgross)) as vatamt, A.lcancelled, A.lvoid, A.lapproved
 		From (
-			Select 'SI' as type, A.ctranno, B.ccode, COALESCE(C.ctradename, C.cname) as cname, A.citemno, ((A.nqtyreturned) * (A.nprice-A.ndiscount)) as namount, (A.nqty * (A.nprice-A.ndiscount)) as namountfull, B.dcutdate, D.cacctid, D.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, A.newtrate, CASE WHEN IFNULL(A.nrate,0) <> 0 THEN ROUND(((A.nqty-A.nqtyreturned)*(A.nprice-A.ndiscount))/(1 + (A.nrate/100)),2) ELSE A.namount END as nvatgross, B.lcancelled, B.lvoid, B.lapproved
+			Select 'SI' as type, A.ctranno, B.ccode, COALESCE(C.ctradename, C.cname) as cname, A.citemno, ((A.nqtyreturned) * (A.nprice-A.ndiscount)) as namount, (A.nqty * (A.nprice-A.ndiscount)) as namountfull, B.dcutdate, D.cacctid, D.cacctdesc, A.ctaxcode, A.nrate, A.cewtcode, IFNULL(A.newtrate,0) as newtrate, CASE WHEN IFNULL(A.nrate,0) <> 0 THEN ROUND(((A.nqty-A.nqtyreturned)*(A.nprice-A.ndiscount))/(1 + (A.nrate/100)),2) ELSE A.namount END as nvatgross, B.lcancelled, B.lvoid, B.lapproved
 		From sales_t A 
 		left join sales B on A.compcode=B.compcode and A.ctranno=B.ctranno 
 		left join customers C on B.compcode=C.compcode and B.ccode=C.cempid 
@@ -164,6 +164,10 @@
 	$classcode="";
 	$totAmount=0;	
 	$ngross = 0;
+
+	$ARBal = 0;
+	$CollBal = 0;
+	$BalBal = 0;
 	foreach($finarray as $row)
 	{
 		//if($salesno==""){
@@ -240,6 +244,8 @@
 			<?php
 				$netvatamt = floatval($row['ngross']) - floatval($phpewtamt);
 				echo number_format($netvatamt,2);
+
+				$ARBal += floatval($netvatamt);
 			?>
 		</td>
 		<td nowrap style="text-align: right">
@@ -259,6 +265,7 @@
 				}
 
 				echo (floatval($npay)!=0) ? number_format($npay,2) : "";
+				$CollBal += floatval($npay);
 			?>
 		</td>
 		<td nowrap style="text-align: right">
@@ -266,17 +273,22 @@
 				$nbalace = floatval($netvatamt) - floatval($npay);
 
 				echo (floatval($nbalace)!=0) ? number_format($nbalace,2) : "";
+
+				$BalBal += floatval($nbalace);
 			?>
 		</td>
 	</tr>
-<?php 
+<?php 		
+		
 	}
 ?>
 
-    <!--<tr class='rptGrand'>
+    <tr class='rptGrand'>
     	<td colspan="12" align="right"><b>G R A N D&nbsp;&nbsp;T O T A L:</b></td>
-        <td align="right"><b><?//php echo number_format($totAmount,2);?></b></td>
-    </tr>-->
+        <td align="right"><b><?=(floatval($ARBal)!=0) ? number_format($ARBal,2) : ""?></b></td>
+		<td align="right"><b><?=(floatval($CollBal)!=0) ? number_format($CollBal,2) : ""?></b></td>
+		<td align="right"><b><?=(floatval($BalBal)!=0) ? number_format($BalBal,2) : ""?></b></td>
+    </tr>
 </table>
 
 
