@@ -67,7 +67,17 @@
 			$PRDet[] = $rowdtls;
 		}
 	}
-	
+
+	//getPO numbers
+	$query = "Select x.ctranno, GROUP_CONCAT(DISTINCT x.creference) as cref from receive_t x where x.compcode='".$_SESSION['companyid']."'  and x.ctranno = '$csalesno' group by x.ctranno";
+	$sqlbody = mysqli_query($con,$query);
+	$PODet = array();
+	if (mysqli_num_rows($sqlbody)!=0) {
+		while($rowdtls = mysqli_fetch_array($sqlbody, MYSQLI_ASSOC)){ 
+			$PODet = $rowdtls['cref'];
+		}
+	}
+
 
 	$sethdr = '<table border="0" cellpadding="0px" width="100%" id="tblMain" style="border-collapse:collapse">
 		<tr>
@@ -80,7 +90,7 @@
 
 				<table border="0" width="100%" cellspacing="0">
 					<tr>
-						<td width="50%" style="border-left: 1px solid #000; border-right: 1px solid #000; border-top: 1px solid #000; padding: 5px">
+						<td width="45%" style="border-left: 1px solid #000; border-right: 1px solid #000; border-top: 1px solid #000; padding: 5px">
 							Supplier/Source: 
 						</td>
 						<td width="30%" style="border-top: 1px solid #000; padding: 5px">
@@ -91,14 +101,14 @@
 						</td>
 					</tr>
 					<tr>
-						<td width="50%" style="border-left: 1px solid #000; border-right: 1px solid #000; border-bottom: 1px solid #000; padding: 5px">
+						<td width="45%" style="border-left: 1px solid #000; border-right: 1px solid #000; border-bottom: 1px solid #000; padding: 5px">
 							'.$SupName.'
 						</td>
 						<td width="30%" style="border-bottom: 1px solid #000; padding: 5px">
-							&nbsp;
+							'.$PODet.'
 						</td>
 						<td style="border-left: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000; padding: 5px">
-							PSS No.: '.$tranno.'
+							PSS No.: '.$csalesno.'
 						</td>
 					</tr>
 				</table>
