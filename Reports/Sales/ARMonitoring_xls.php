@@ -274,7 +274,7 @@
 		->setCellValue('O'.$cnt, $BalBal);
 
 	$spreadsheet->getActiveSheet()->mergeCells("A".$cnt.":L".$cnt);
-	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":M".$cnt)->getFont()->setBold(true);
+	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":O".$cnt)->getFont()->setBold(true);
 	$spreadsheet->setActiveSheetIndex(0)->getStyle('M'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 	$spreadsheet->setActiveSheetIndex(0)->getStyle('N'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 	$spreadsheet->setActiveSheetIndex(0)->getStyle('O'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
