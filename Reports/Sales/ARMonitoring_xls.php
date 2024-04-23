@@ -269,15 +269,15 @@
 	$cnt++;
 	$spreadsheet->setActiveSheetIndex(0)
 		->setCellValue('A'.$cnt, "GRAND TOTAL")
-		->setCellValue('N'.$cnt, $ARBal)
-		->setCellValue('O'.$cnt, $CollBal)
-		->setCellValue('P'.$cnt, $BalBal);
+		->setCellValue('M'.$cnt, $ARBal)
+		->setCellValue('N'.$cnt, $CollBal)
+		->setCellValue('O'.$cnt, $BalBal);
 
-	$spreadsheet->getActiveSheet()->mergeCells("A".$cnt.":M".$cnt);
+	$spreadsheet->getActiveSheet()->mergeCells("A".$cnt.":L".$cnt);
 	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":M".$cnt)->getFont()->setBold(true);
+	$spreadsheet->setActiveSheetIndex(0)->getStyle('M'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 	$spreadsheet->setActiveSheetIndex(0)->getStyle('N'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 	$spreadsheet->setActiveSheetIndex(0)->getStyle('O'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
-	$spreadsheet->setActiveSheetIndex(0)->getStyle('P'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 
 // Rename worksheet
 $spreadsheet->getActiveSheet()->setTitle('ARMonitoring');
