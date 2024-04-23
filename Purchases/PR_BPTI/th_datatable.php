@@ -17,6 +17,8 @@
 	if(isset($_POST['searchBySec']) && $_POST['searchBySec'] != '')
 	{
 		$query .= "and A.locations_id = ".$_POST['searchBySec']."";
+	}else{
+		$query .= "and A.locations_id = ''";
 	}
 
 	if(isset($_POST['searchBystat']) && $_POST['searchBystat'] != '')
