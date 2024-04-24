@@ -45,6 +45,8 @@
             $SupTin = $row['ctin'];
             $date = $row['dreceived'];
 
+			$cRefSI = $row['crefsi'];
+
             $lposted = $row['lapproved'];
 
             $delto = $row['Fname'] . " " . $row['Lname'];
@@ -105,7 +107,7 @@
 							'.$SupName.'
 						</td>
 						<td width="30%" style="border-bottom: 1px solid #000; padding: 5px">
-							'.$PODet.'
+							'.$cRefSI.'
 						</td>
 						<td style="border-left: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000; padding: 5px">
 							PSS No.: '.$csalesno.'
