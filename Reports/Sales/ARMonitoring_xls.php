@@ -202,7 +202,7 @@
 		$npay = 0;
 		$cntofist = 0;
 		foreach(@$arrpaymnts as $rxpymnts){
-			if($row['ctranno']==$rxpymnts['csalesno'] && $row['ctaxcode']==$rxpymnts['ctaxcodeorig'] && $row['cewtcode']==$rxpymnts['cewtcodeorig']){
+			if($row['ctranno']==$rxpymnts['csalesno']){
 				$cntofist++;
 				
 				if($cntofist==1){
