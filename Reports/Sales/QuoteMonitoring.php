@@ -81,7 +81,8 @@
     <th nowrap>Recurr</th>
 	<th nowrap>Sales Type</th>
 	<th nowrap>VAT Type</th>
-	<th nowrap style="text-align: right">Gross</th>
+	<th nowrap style="text-align: right">Total Amount</th>
+	<th nowrap style="text-align: right">Total Balance</th>
   </tr>
   
 <?php
@@ -165,7 +166,13 @@
 		<td nowrap><?=$row['cvattype'];?></td>
 		<td nowrap style="text-align: right"><?=number_format($row['ngross'],2)." ".$row['ccurrencycode']?>
 		</td>
-		
+		<td nowrap style="text-align: right">
+			<?php
+				if(@$allrefx[$row['ctranno']]['ref']=="" || @$allrefx[$row['ctranno']]['ref']==null){
+					echo number_format($row['ngross'],2)." ".$row['ccurrencycode'];
+				}
+			?>
+		</td>
 	</tr>
 <?php 
 		}
@@ -173,14 +180,11 @@
 ?>
 
 	<tr>
-		<td colspan="9"><b>Total Billing Amount: </b></td>
+		<td colspan="9" align="right"><b>Total: </b></td>
 		<td nowrap style="text-align: right"><?=number_format($totbills,2)?>
-	</tr>
-
-	<tr>
-		<td colspan="9"><b>Total Uninvoiced Amount:</b></td>
 		<td nowrap style="text-align: right"><?=number_format($totUnIn,2)?>
 	</tr>
+
 </table>
 
 <br>
