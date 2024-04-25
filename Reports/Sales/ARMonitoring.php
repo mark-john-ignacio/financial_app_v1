@@ -67,6 +67,7 @@
 	<th nowrap align="right">Sales Amount</th>
 	<th nowrap style="text-align: center">EWT</th>
 	<th nowrap align="right">EWT Amount</th>
+	<th nowrap align="right">Adjustments</th>
 	<th nowrap align="right">AR Balance<br>Net of TAX</th>
 	<th nowrap align="right">Amount Collected</th>
 	<th nowrap align="right">Balance</th>
@@ -238,6 +239,30 @@
 				}
 
 				echo (floatval($phpewtamt)!=0) ? number_format($phpewtamt,2) : "";
+			?>
+		</td>
+		<td nowrap style="text-align: right">
+			<?php
+				$nadjs = 0;
+				$nadjsdm = 0;
+				$nadjscm = 0;
+				foreach(@$arrpaymnts as $rxpymnts){
+					if($row['ctranno']==$rxpymnts['csalesno']){
+					
+						if($rxpymnts['ndm']>1){
+							$nadjsdm = $nadjsdm + floatval($rxpymnts['napplied']);
+						}
+
+						if($rxpymnts['ncm']>1){
+							$nadjscm = $nadjscm + floatval($rxpymnts['napplied']);
+						}
+						
+					}
+				}
+
+				$nadjs = ($nadjs + $nadjsdm) - $nadjscm;
+
+				echo (floatval($nadjs)!=0) ? number_format($nadjs,2) : "";
 			?>
 		</td>
 		<td nowrap style="text-align: right">

@@ -64,13 +64,14 @@
 		->setCellValue('J5', 'Sales Amount')
 		->setCellValue('K5', 'EWT')
 		->setCellValue('L5', 'EWT Amount')
-		->setCellValue('M5', 'AR Balance Net of TAX')
-		->setCellValue('N5', 'Amount Collected')
-		->setCellValue('O5', 'Balance')
-		->setCellValue('P5', 'Status');
+		->setCellValue('M5', 'Adjustments')
+		->setCellValue('N5', 'AR Balance Net of TAX')
+		->setCellValue('O5', 'Amount Collected')
+		->setCellValue('P5', 'Balance')
+		->setCellValue('Q5', 'Status');
 
 	$spreadsheet->getActiveSheet()->mergeCells("E5:F5");
-	$spreadsheet->getActiveSheet()->getStyle('A5:P5')->getFont()->setBold(true);
+	$spreadsheet->getActiveSheet()->getStyle('A5:Q5')->getFont()->setBold(true);
 
 	$postedtran = $_POST["selrpt"];
 
@@ -201,6 +202,10 @@
 
 		$npay = 0;
 		$cntofist = 0;
+		$nadjs = 0;
+		$nadjsdm = 0;
+		$nadjscm = 0;
+
 		foreach(@$arrpaymnts as $rxpymnts){
 			if($row['ctranno']==$rxpymnts['csalesno']){
 				$cntofist++;
@@ -210,8 +215,18 @@
 				}
 
 				$npay = $npay + floatval($rxpymnts['napplied']);
+
+				if($rxpymnts['ndm']>1){
+					$nadjsdm = $nadjsdm + floatval($rxpymnts['napplied']);
+				}
+
+				if($rxpymnts['ncm']>1){
+					$nadjscm = $nadjscm + floatval($rxpymnts['napplied']);
+				}
 			}
 		}
+
+		$nadjs = ($nadjs + $nadjsdm) - $nadjscm;
 
 		$nbalace = floatval($netvatamt) - floatval($npay);
 
@@ -252,9 +267,10 @@
 		->setCellValue('K'.$cnt, (intval($ewtcode)!=0 && intval($ewtcode)!="") ? number_format($ewtcode)."%" : "")
 		->setCellValue('L'.$cnt, (floatval($phpewtamt)!=0) ? $phpewtamt : "")
 		->setCellValue('M'.$cnt, $netvatamt)
-		->setCellValue('N'.$cnt, (floatval($npay)!=0) ? $npay : "")
-		->setCellValue('O'.$cnt, $nbalace)
-		->setCellValue('P'.$cnt, $xycolor);
+		->setCellValue('N'.$cnt, $nadjs)
+		->setCellValue('O'.$cnt, (floatval($npay)!=0) ? $npay : "")
+		->setCellValue('P'.$cnt, $nbalace)
+		->setCellValue('Q'.$cnt, $xycolor);
 
 		$spreadsheet->setActiveSheetIndex(0)->getStyle('G'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 		$spreadsheet->setActiveSheetIndex(0)->getStyle('J'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
@@ -263,21 +279,21 @@
 		$spreadsheet->setActiveSheetIndex(0)->getStyle('N'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 		$spreadsheet->setActiveSheetIndex(0)->getStyle('O'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 		$spreadsheet->setActiveSheetIndex(0)->getStyle('P'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
-
+		$spreadsheet->setActiveSheetIndex(0)->getStyle('Q'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 	}
 
 	$cnt++;
 	$spreadsheet->setActiveSheetIndex(0)
 		->setCellValue('A'.$cnt, "GRAND TOTAL")
-		->setCellValue('M'.$cnt, $ARBal)
-		->setCellValue('N'.$cnt, $CollBal)
-		->setCellValue('O'.$cnt, $BalBal);
+		->setCellValue('N'.$cnt, $ARBal)
+		->setCellValue('O'.$cnt, $CollBal)
+		->setCellValue('P'.$cnt, $BalBal);
 
-	$spreadsheet->getActiveSheet()->mergeCells("A".$cnt.":L".$cnt);
-	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":O".$cnt)->getFont()->setBold(true);
-	$spreadsheet->setActiveSheetIndex(0)->getStyle('M'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
+	$spreadsheet->getActiveSheet()->mergeCells("A".$cnt.":M".$cnt);
+	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":P".$cnt)->getFont()->setBold(true);
 	$spreadsheet->setActiveSheetIndex(0)->getStyle('N'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 	$spreadsheet->setActiveSheetIndex(0)->getStyle('O'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
+	$spreadsheet->setActiveSheetIndex(0)->getStyle('P'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");
 
 // Rename worksheet
 $spreadsheet->getActiveSheet()->setTitle('ARMonitoring');
