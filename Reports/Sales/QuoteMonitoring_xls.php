@@ -130,7 +130,7 @@
 	foreach($finarray as $row)
 	{
 		if($row['quotetype']=="billing"){
-
+			if(@$allrefx[$row['ctranno']]['ref']=="" || @$allrefx[$row['ctranno']]['ref']==null){
 			$cnt++;
 
 			if($row['lcancelled']==1 || $row['lvoid']==1){
@@ -163,7 +163,9 @@
 			->setCellValue('J'.$cnt, $row['ngross'])
 			->setCellValue('K'.$cnt, $xycolor);
 
-			$spreadsheet->setActiveSheetIndex(0)->getStyle('J'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");			
+			$spreadsheet->setActiveSheetIndex(0)->getStyle('J'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");		
+			
+		}
 		}
 	}
 
@@ -203,7 +205,7 @@
 	foreach($finarray as $row)
 	{
 		if($row['quotetype']=="quote"){
-
+			if(@$allrefx[$row['ctranno']]['ref']=="" || @$allrefx[$row['ctranno']]['ref']==null){
 			$cnt++;
 
 			if($row['lcancelled']==1 || $row['lvoid']==1){
@@ -235,7 +237,8 @@
 			->setCellValue('I'.$cnt, $row['ngross'])
 			->setCellValue('J'.$cnt, $xycolor);
 
-			$spreadsheet->setActiveSheetIndex(0)->getStyle('I'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");			
+			$spreadsheet->setActiveSheetIndex(0)->getStyle('I'.$cnt)->getNumberFormat()->setFormatCode("_(* #,##0.00_);_(* \(#,##0.00\);_(* \"-\"??_);_(@_)");		
+		}	
 		}
 	}	
 
