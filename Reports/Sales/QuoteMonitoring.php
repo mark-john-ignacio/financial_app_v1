@@ -70,7 +70,7 @@
 <br><br>
 <table border="0" align="center" cellpadding="5px" id="BillTable" class="table table-sm table-hover">
 	<tr>
-		<td colspan="9"><b>BILLING</b></td>
+		<td colspan="10"><b>BILLING</b></td>
 	</tr>
   <tr>
     <th nowrap>Transaction No.</th>
@@ -126,6 +126,9 @@
 	$classcode="";
 	$totAmount=0;	
 	$ngross = 0;
+
+	$totbills = 0;
+	$totUnIn = 0;
 	foreach($finarray as $row)
 	{
 		if($row['quotetype']=="billing"){
@@ -138,6 +141,11 @@
 				}else{
 					$xycolor = "LightCyan";
 				}
+			}
+
+			$totbills += floatval($row['ngross']);
+			if(@$allrefx[$row['ctranno']]['ref']=="" || @$allrefx[$row['ctranno']]['ref']==null){
+				$totUnIn += floatval($row['ngross']);
 			}
 		
 ?>  
@@ -164,6 +172,15 @@
 	}
 ?>
 
+	<tr>
+		<td colspan="9"><b>Total Billing Amount: </b></td>
+		<td nowrap style="text-align: right"><?=number_format($totbills,2)?>
+	</tr>
+
+	<tr>
+		<td colspan="9"><b>Total Uninvoiced Amount:</b></td>
+		<td nowrap style="text-align: right"><?=number_format($totUnIn,2)?>
+	</tr>
 </table>
 
 <br>
