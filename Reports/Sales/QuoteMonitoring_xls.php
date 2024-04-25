@@ -105,8 +105,8 @@
 		->setCellValue('A6', 'Transaction No.')
 		->setCellValue('B6', 'Billing Date')
 		->setCellValue('C6', 'Due Date')
-		->setCellValue('D6', 'Customer')
-		->setCellValue('E6', '')
+		->setCellValue('D6', 'Customer Code')
+		->setCellValue('E6', 'Customer Name')
 		->setCellValue('F6', 'Recurr')
 		->setCellValue('G6', 'Sales Type')
 		->setCellValue('H6', 'VAT Type')
@@ -193,14 +193,12 @@
 		->setCellValue('A'.$cnt, 'Transaction No.')
 		->setCellValue('B'.$cnt, 'Quote Date')
 		->setCellValue('C'.$cnt, 'Effectivity Date')
-		->setCellValue('D'.$cnt, 'Customer')
-		->setCellValue('E'.$cnt, '')
+		->setCellValue('D'.$cnt, 'Customer Code')
+		->setCellValue('E'.$cnt, 'Customer Name')
 		->setCellValue('F'.$cnt, 'Sales Type')
 		->setCellValue('G'.$cnt, 'VAT Type')
 		->setCellValue('H'.$cnt, 'Total Amount')
 		->setCellValue('I'.$cnt, 'Status');
-
-	$spreadsheet->getActiveSheet()->mergeCells("D".$cnt.":E".$cnt);
 	$spreadsheet->getActiveSheet()->getStyle("A".$cnt.":I".$cnt)->getFont()->setBold(true);
 
 	$salesno = "";
