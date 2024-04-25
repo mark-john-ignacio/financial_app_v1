@@ -106,7 +106,7 @@ function getcustsupp($tranno,$xmodule){
 
 	
 	if($dateTo !== ""){
-		$dateManagement = "between STR_TO_DATE('$dateFrom', '%m/%d/%Y') and STR_TO_DATE('$dateTo', '%m/%d/%Y')";
+		$dateManagement = "and A.ddate between STR_TO_DATE('$dateFrom', '%m/%d/%Y') and STR_TO_DATE('$dateTo', '%m/%d/%Y')";
 	}else {
 		$dateManagement =  "and YEAR(A.ddate) = '$dateFrom'";
 	}
@@ -114,7 +114,7 @@ function getcustsupp($tranno,$xmodule){
 	$sql = "Select A.cmodule, A.ctranno, A.ddate, A.acctno, B.cacctdesc, A.ndebit, A.ncredit, C.captype
 	From glactivity A left join accounts B on A.compcode=B.compcode and A.acctno=B.cacctid
 	left join apv C on A.compcode=C.compcode and A.ctranno=C.ctranno
-	Where A.compcode='$company' and A.ddate $dateManagement
+	Where A.compcode='$company' $dateManagement
 	and A.acctno = '".$_REQUEST['ccode']."'
 	Order By A.acctno, A.dpostdate, A.ctranno, A.ndebit desc, A.ncredit desc";
 
