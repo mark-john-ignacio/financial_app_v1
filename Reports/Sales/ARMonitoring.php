@@ -309,7 +309,7 @@
 ?>
 
     <tr class='rptGrand'>
-    	<td colspan="12" align="right"><b>G R A N D&nbsp;&nbsp;T O T A L:</b></td>
+    	<td colspan="13" align="right"><b>G R A N D&nbsp;&nbsp;T O T A L:</b></td>
         <td align="right"><b><?=(floatval($ARBal)!=0) ? number_format($ARBal,2) : ""?></b></td>
 		<td align="right"><b><?=(floatval($CollBal)!=0) ? number_format($CollBal,2) : ""?></b></td>
 		<td align="right"><b><?=(floatval($BalBal)!=0) ? number_format($BalBal,2) : ""?></b></td>
