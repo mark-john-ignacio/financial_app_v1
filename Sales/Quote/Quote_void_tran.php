@@ -17,33 +17,33 @@
 
 	$status = "True";
 
-			if (!mysqli_query($con,"Update quote set lvoid=1 where compcode='$company' and ctranno in ('".implode("','",$_POST["allbox"])."')")){
-				$status = "False";	
-			}else{
+	if (!mysqli_query($con,"Update quote set lvoid=1 where compcode='$company' and ctranno in ('".implode("','",$_POST["allbox"])."')")){
+		$status = "False";	
+	}else{
 
-				$status = "True";
+		$status = "True";
 
-				foreach($_POST["allbox"] as $rz){
-					mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
-				values('$company', '$rz','$preparedby',NOW(),'VOID','QUOTATION','$compname','Void Record')");
-				}
+		foreach($_POST["allbox"] as $rz){
+			mysqli_query($con,"INSERT INTO logfile(`compcode`, `ctranno`, `cuser`, `ddate`, `cevent`, `module`, `cmachine`, `cremarks`) 
+		values('$company', '$rz','$preparedby',NOW(),'VOID','QUOTATION','$compname','Void Record')");
+		}
 
-			}
+	}
 
-			if($status=="True"){
+	if($status=="True"){
 ?>
 
-				<script>
-					alert('Records Succesfully Voided');
-					window.location.href="Quote_void.php";
-				</script>
+		<script>
+			alert('Records Succesfully Voided');
+			window.location.href="Quote_void.php";
+		</script>
 <?php
-			}else{
+	}else{
 ?>
-				<script>
-					alert('Error Voiding transactions!');
-					window.location.href="Quote_void.php";
-				</script>
+		<script>
+			alert('Error Voiding transactions!');
+			window.location.href="Quote_void.php";
+		</script>
 <?php
-			}
+	}
 ?>
