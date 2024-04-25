@@ -116,7 +116,7 @@ function getcustsupp($tranno,$xmodule){
 	left join apv C on A.compcode=C.compcode and A.ctranno=C.ctranno
 	Where A.compcode='$company' $dateManagement
 	and A.acctno = '".$_REQUEST['ccode']."'
-	Order By A.ddate";
+	Order By A.ddate, A.dpostdate";
 
 	$arracctnos = array();
 	$arrallqry = array();
