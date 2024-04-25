@@ -265,8 +265,8 @@
 		->setCellValue('J'.$cnt, (floatval($row['ngross'])!=0) ? $row['ngross'] : "")
 		->setCellValue('K'.$cnt, (intval($ewtcode)!=0 && intval($ewtcode)!="") ? number_format($ewtcode)."%" : "")
 		->setCellValue('L'.$cnt, (floatval($phpewtamt)!=0) ? $phpewtamt : "")
-		->setCellValue('M'.$cnt, $netvatamt)
-		->setCellValue('N'.$cnt, $nadjs)
+		->setCellValue('M'.$cnt, $nadjs)
+		->setCellValue('N'.$cnt, $netvatamt)
 		->setCellValue('O'.$cnt, (floatval($npay)!=0) ? $npay : "")
 		->setCellValue('P'.$cnt, $nbalace)
 		->setCellValue('Q'.$cnt, $xycolor);
